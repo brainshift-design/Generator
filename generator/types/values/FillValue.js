@@ -3,23 +3,26 @@ extends GValue
 {
     color;
     opacity;
+    blend;
 
 
 
     constructor(color   = ColorValue.NaN, 
-                opacity = new NumberValue(100))
+                opacity = new NumberValue(100),
+                blend   = new NumberValue(0))
     {
         super(FILL_VALUE);
 
         this.color   = color  .copy();
         this.opacity = opacity.copy();
+        this.blend   = blend  .copy();
 
         this.valid   = true;
     }
 
 
     
-    static create(r, g, b, opacity)
+    static create(r, g, b, opacity, blend = 0)
     {
         console.assert(
             typeof opacity == 'number',
@@ -27,12 +30,13 @@ extends GValue
 
         return new FillValue(
             ColorValue.create(1, r, g, b),
-            new NumberValue(opacity));
+            new NumberValue(opacity),
+            new NumberValue(blend));
     }
 
 
 
-    static fromRgb(rgb, opacity)
+    static fromRgb(rgb, opacity, blend = 0)
     {
         console.assert(
             typeof opacity == 'number',
@@ -40,7 +44,8 @@ extends GValue
 
         return new FillValue(
             ColorValue.fromRgb(rgb),
-            new NumberValue(opacity));
+            new NumberValue(opacity),
+            new NumberValue(blend));
     }
 
 
@@ -49,7 +54,8 @@ extends GValue
     {
         const copy = new FillValue(
             this.color  .copy(),
-            this.opacity.copy());
+            this.opacity.copy(),
+            this.blend  .copy());
 
         copy.copyBase(this);
 
@@ -61,7 +67,8 @@ extends GValue
     equals(fill)
     {
         return this.color  .equals(fill.color  )
-            && this.opacity.equals(fill.opacity);
+            && this.opacity.equals(fill.opacity)
+            && this.blend  .equals(fill.blend  );
     }
 
 
@@ -96,7 +103,8 @@ extends GValue
         return        new NumberValue(rgb[0]).toString()
               + ' ' + new NumberValue(rgb[1]).toString()
               + ' ' + new NumberValue(rgb[2]).toString()
-              + ' ' + this.opacity           .toString();
+              + ' ' + this.opacity           .toString()
+              + ' ' + this.blend             .toString();
     }
 
 
@@ -108,7 +116,8 @@ extends GValue
         return        new NumberValue(rgb[0]).toDisplayString()
               + ' ' + new NumberValue(rgb[1]).toDisplayString()
               + ' ' + new NumberValue(rgb[2]).toDisplayString()
-              + ' ' + this.opacity           .toDisplayString();
+              + ' ' + this.opacity           .toDisplayString()
+              + ' ' + this.blend             .toDisplayString();
     }
 
 
@@ -116,7 +125,8 @@ extends GValue
     isValid()
     {
         return this.color  .isValid()
-            && this.opacity.isValid();
+            && this.opacity.isValid()
+            && this.blend  .isValid();
     }
 
 
@@ -130,6 +140,7 @@ extends GValue
 
     static NaN = Object.freeze(new FillValue(
         ColorValue .NaN,
+        NumberValue.NaN,
         NumberValue.NaN));
 
 
@@ -150,16 +161,17 @@ function parseFillValue(str, i = -1)
 
     const iStart = i;
 
-    const r = parseNumberValue(str[i]); i += r[1];
-    const g = parseNumberValue(str[i]); i += g[1];
-    const b = parseNumberValue(str[i]); i += b[1];
-    const a = parseNumberValue(str[i]); i += a[1];
+    const r  = parseNumberValue(str[i]); i += r [1];
+    const g  = parseNumberValue(str[i]); i += g [1];
+    const b  = parseNumberValue(str[i]); i += b [1];
+    const a  = parseNumberValue(str[i]); i += a [1];
+    const bl = parseNumberValue(str[i]); i += bl[1];
 
     const color = new ColorValue(new NumberValue(1), r[0], g[0], b[0]);
 
     
     return [
-        new FillValue(color, a[0]),
+        new FillValue(color, a[0], bl[0]),
         i - iStart ];
 }
 

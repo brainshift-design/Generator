@@ -8,6 +8,8 @@ extends OpColorBase
     paramAngle;
     paramAspect;
     paramSkew;
+    paramBlend;
+
 
     checkersHolder;
     checkers;
@@ -45,6 +47,7 @@ extends OpColorBase
         this.addParam(this.paramAngle  = new NumberParam('angle',  'angle',  true,  true, true,   0));
         this.addParam(this.paramAspect = new NumberParam('aspect', 'aspect', true,  true, true,  50));
         this.addParam(this.paramSkew   = new NumberParam('skew',   'skew',   true,  true, true,   0));
+        this.addParam(this.paramBlend  = new SelectParam('blend',  'blend',  false, true, true, BlendModes.map(bm => bm[1]), 0));
 
 
         this.paramX     .controls[0].suffix = '%';
@@ -100,6 +103,7 @@ extends OpColorBase
         request.push(...this.node.paramAngle .genRequest(gen));
         request.push(...this.node.paramAspect.genRequest(gen));
         request.push(...this.node.paramSkew  .genRequest(gen));
+        request.push(...this.node.paramBlend .genRequest(gen));
 
         
         gen.scope.pop();

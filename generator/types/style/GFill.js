@@ -5,6 +5,7 @@ extends GOperator
 
     color   = null;
     opacity = null;
+    blend   = null;
 
 
 
@@ -26,6 +27,7 @@ extends GOperator
 
         if (this.color  ) copy.color   = this.color  .copy();
         if (this.opacity) copy.opacity = this.opacity.copy();
+        if (this.blend  ) copy.blend   = this.blend  .copy();
 
         return copy;
     }
@@ -40,6 +42,7 @@ extends GOperator
 
         const color   = this.color   ? (await this.color  .eval(parse)).toValue() : null;
         const opacity = this.opacity ? (await this.opacity.eval(parse)).toValue() : null;
+        const blend   = this.blend   ? (await this.blend  .eval(parse)).toValue() : null;
 
         
         if (this.input)
@@ -48,20 +51,23 @@ extends GOperator
 
             this.value = new FillValue(
                 color   ?? input.color,
-                opacity ?? input.opacity);
+                opacity ?? input.opacity,
+                blend   ?? input.blend);
         }
         else
         {
             this.value = new FillValue(
                 color, 
-                opacity);
+                opacity,
+                blend);
         }
 
 
         this.updateValues =
         [
             ['color',   this.value.color  ],
-            ['opacity', this.value.opacity]
+            ['opacity', this.value.opacity],
+            ['blend',   this.value.blend  ]
         ];
         
 
@@ -79,6 +85,7 @@ extends GOperator
         if (this.input  ) this.input  .pushValueUpdates(parse);
         if (this.color  ) this.color  .pushValueUpdates(parse);
         if (this.opacity) this.opacity.pushValueUpdates(parse);
+        if (this.blend  ) this.blend  .pushValueUpdates(parse);
     }
     
     
@@ -88,7 +95,8 @@ extends GOperator
         return this.options.enabled
             ? new FillValue(
                 this.color   ? this.color  .toValue() : this.input.color  .toValue(),
-                this.opacity ? this.opacity.toValue() : this.input.opacity.toValue())
+                this.opacity ? this.opacity.toValue() : this.input.opacity.toValue(),
+                this.blend   ? this.blend  .toValue() : this.input.blend  .toValue())
             : FillValue.NaN;
     }
 
@@ -97,7 +105,8 @@ extends GOperator
     isValid()
     {
         return this.color  .isValid()
-            && this.opacity.isValid();
+            && this.opacity.isValid()
+            && this.blend  .isValid();
     }
 
 
@@ -109,5 +118,6 @@ extends GOperator
         if (this.input  ) this.input  .invalidateInputs(from);
         if (this.color  ) this.color  .invalidateInputs(from);
         if (this.opacity) this.opacity.invalidateInputs(from);
+        if (this.blend  ) this.blend  .invalidateInputs(from);
     }
 }

@@ -141,7 +141,8 @@ function addFillProp(obj, prop, target = obj.fills)
         rgb[0], 
         rgb[1], 
         rgb[2], 
-        prop.opacity.toValue().toNumber() ]);
+        prop.opacity.toValue().toNumber(),
+        BlendModes[prop.blend.value][2]]);
 }
 
 
@@ -232,6 +233,9 @@ function addGradientProp(obj, prop, target = obj.fills)
             rgba[3],
             stop.position.toNumber() / 100]);
     }
+
+
+    gradient[3] = BlendModes[prop.blend.value][2];    
 
 
     target.push(gradient);

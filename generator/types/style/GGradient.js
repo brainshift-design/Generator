@@ -10,6 +10,7 @@ extends GOperator
     angle    = null;
     aspect   = null;
     skew     = null;
+    blend    = null;
 
 
 
@@ -35,6 +36,7 @@ extends GOperator
         if (this.angle   ) copy.angle    = this.angle .copy();
         if (this.aspect  ) copy.aspect   = this.aspect.copy();
         if (this.skew    ) copy.skew     = this.skew  .copy();
+        if (this.blend   ) copy.blend    = this.blend .copy();
 
         return copy;
     }
@@ -53,6 +55,7 @@ extends GOperator
         const angle    = this.angle    ? (await this.angle   .eval(parse)).toValue() : null;
         const aspect   = this.aspect   ? (await this.aspect  .eval(parse)).toValue() : null;
         const skew     = this.skew     ? (await this.skew    .eval(parse)).toValue() : null;
+        const blend    = this.blend    ? (await this.blend   .eval(parse)).toValue() : null;
 
 
         const stops = new ListValue();
@@ -72,7 +75,8 @@ extends GOperator
             size, 
             angle, 
             aspect,
-            skew);
+            skew,
+            blend);
 
             
         this.updateValues =
@@ -84,7 +88,8 @@ extends GOperator
             ['size',   size      ],
             ['angle',  angle     ],
             ['aspect', aspect    ],
-            ['skew',   skew      ]
+            ['skew',   skew      ],
+            ['blend',  blend     ]
         ];
         
 
@@ -108,6 +113,7 @@ extends GOperator
         if (this.angle   ) this.angle   .pushValueUpdates(parse);
         if (this.aspect  ) this.aspect  .pushValueUpdates(parse);
         if (this.skew    ) this.skew    .pushValueUpdates(parse);
+        if (this.blend   ) this.blend   .pushValueUpdates(parse);
     }    
     
     
@@ -122,12 +128,13 @@ extends GOperator
         return new GradientValue(
             stops,
             this.gradType ? this.gradType.toValue() : this.input.gradType.toValue(),
-            this.x        ? this.x       .toValue() : this.input.x1      .toValue(),
-            this.y        ? this.y       .toValue() : this.input.y1      .toValue(),
-            this.size     ? this.size    .toValue() : this.input.x2      .toValue(),
-            this.angle    ? this.angle   .toValue() : this.input.y2      .toValue(),
+            this.x        ? this.x       .toValue() : this.input.x       .toValue(),
+            this.y        ? this.y       .toValue() : this.input.y       .toValue(),
+            this.size     ? this.size    .toValue() : this.input.size    .toValue(),
+            this.angle    ? this.angle   .toValue() : this.input.angle   .toValue(),
             this.aspect   ? this.aspect  .toValue() : this.input.aspect  .toValue(),
-            this.skew     ? this.skew    .toValue() : this.input.angle   .toValue());
+            this.skew     ? this.skew    .toValue() : this.input.skew    .toValue(),
+            this.blend    ? this.blend   .toValue() : this.input.blend   .toValue());
     }                 
 
 
@@ -140,7 +147,8 @@ extends GOperator
             && this.size    .isValid()
             && this.angle   .isValid()
             && this.aspect  .isValid()
-            && this.skew    .isValid();
+            && this.skew    .isValid()
+            && this.blend   .isValid();
     }
 
 
@@ -158,5 +166,6 @@ extends GOperator
         if (this.angle   ) this.angle   .invalidateInputs(from);
         if (this.aspect  ) this.aspect  .invalidateInputs(from);
         if (this.skew    ) this.skew    .invalidateInputs(from);
+        if (this.blend   ) this.blend   .invalidateInputs(from);
     }
 }

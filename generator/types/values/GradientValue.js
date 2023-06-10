@@ -9,6 +9,7 @@ extends GValue
     angle;
     aspect;
     skew;
+    blend;
 
 
 
@@ -19,7 +20,8 @@ extends GValue
                 size     = new NumberValue(0),
                 angle    = new NumberValue(0),
                 aspect   = new NumberValue(0),
-                skew     = new NumberValue(0))
+                skew     = new NumberValue(0),
+                blend    = new NumberValue(0))
     {
         super(GRADIENT_VALUE);
 
@@ -31,6 +33,7 @@ extends GValue
         this.angle    = angle   .copy();
         this.aspect   = aspect  .copy();
         this.skew     = skew    .copy();
+        this.blend    = blend   .copy();
 
         this.valid = true;
     }
@@ -47,7 +50,8 @@ extends GValue
             this.size,
             this.angle,
             this.aspect,
-            this.skew);
+            this.skew,
+            this.blend);
 
         copy.copyBase(this);
 
@@ -65,7 +69,8 @@ extends GValue
             && this.size    .isValid()
             && this.angle   .isValid()
             && this.aspect  .isValid()
-            && this.skew    .isValid();
+            && this.skew    .isValid()
+            && this.blend   .isValid();
     }
 
 
@@ -80,7 +85,8 @@ extends GValue
             && this.size    .equals(grad.size    )
             && this.angle   .equals(grad.angle   )
             && this.aspect  .equals(grad.aspect  )
-            && this.skew    .equals(grad.skew    );
+            && this.skew    .equals(grad.skew    )
+            && this.blend   .equals(grad.blend   );
     }
 
 
@@ -108,7 +114,8 @@ extends GValue
             + ' ' + this.size    .toString()
             + ' ' + this.angle   .toString()
             + ' ' + this.aspect  .toString()
-            + ' ' + this.skew    .toString();
+            + ' ' + this.skew    .toString()
+            + ' ' + this.blend   .toString();
     }
 
 
@@ -122,7 +129,8 @@ extends GValue
             + ' ' + this.size    .toDisplayString()
             + ' ' + this.angle   .toDisplayString()
             + ' ' + this.aspect  .toDisplayString()
-            + ' ' + this.skew    .toDisplayString();
+            + ' ' + this.skew    .toDisplayString()
+            + ' ' + this.blend   .toDisplayString();
     }
 
 
@@ -136,6 +144,7 @@ extends GValue
 
     static NaN = Object.freeze(new GradientValue(
         ListValue  .NaN,
+        NumberValue.NaN,
         NumberValue.NaN,
         NumberValue.NaN,
         NumberValue.NaN,
@@ -180,9 +189,10 @@ function parseGradientValue(str, i = -1)
     const angle    = parseNumberValue(str[i]); i += angle   [1];
     const aspect   = parseNumberValue(str[i]); i += aspect  [1];
     const skew     = parseNumberValue(str[i]); i += skew    [1];
+    const blend    = parseNumberValue(str[i]); i += blend   [1];
 
 
     return [
-        new GradientValue(stops[0], gradType[0], x[0], y[0], size[0], angle[0], aspect[0], skew[0]),
+        new GradientValue(stops[0], gradType[0], x[0], y[0], size[0], angle[0], aspect[0], skew[0], blend[0]),
         i - iStart ];
 }

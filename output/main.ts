@@ -3168,9 +3168,10 @@ function getObjectFills(genObjFills)
                     && !isNaN(opacity))
                     fills.push(
                     {
-                        type:    fill[0], 
-                        color:   color,
-                        opacity: opacity
+                        type:      fill[0], 
+                        color:     color,
+                        opacity:   opacity,
+                        blendMode: fill[5]
                     });
 
 
@@ -3206,7 +3207,8 @@ function getObjectFills(genObjFills)
                 {
                     type:              fill[0],
                     gradientTransform: xform,
-                    gradientStops:     stops
+                    gradientStops:     stops,
+                    blendMode:         fill[3]
                 });
 
 

@@ -53,7 +53,7 @@ function genParseFill(parse)
         paramIds = parse.move().split(',');
     }
     else
-        paramIds = ['color', 'opacity'];
+        paramIds = ['color', 'opacity', 'blend'];
 
 
     parse.inParam = false;
@@ -64,6 +64,7 @@ function genParseFill(parse)
         {
         case 'color':   fill.color   = genParse(parse); break;
         case 'opacity': fill.opacity = genParse(parse); break;
+        case 'blend':   fill.blend   = genParse(parse); break;
         }
     }
 
@@ -144,6 +145,7 @@ function genParseGradient(parse)
     grad.angle    = genParse(parse); 
     grad.aspect   = genParse(parse); 
     grad.skew     = genParse(parse); 
+    grad.blend    = genParse(parse); 
 
     
     parse.nTab--;

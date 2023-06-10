@@ -2081,7 +2081,8 @@ function getObjectFills(genObjFills) {
                         fills.push({
                             type: fill[0],
                             color: color,
-                            opacity: opacity
+                            opacity: opacity,
+                            blendMode: fill[5]
                         });
                     break;
                 }
@@ -2106,7 +2107,8 @@ function getObjectFills(genObjFills) {
                     fills.push({
                         type: fill[0],
                         gradientTransform: xform,
-                        gradientStops: stops
+                        gradientStops: stops,
+                        blendMode: fill[3]
                     });
                     break;
                 }

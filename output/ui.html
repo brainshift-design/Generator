@@ -11457,23 +11457,26 @@ extends GValue
 {
     color;
     opacity;
+    blend;
 
 
 
     constructor(color   = ColorValue.NaN, 
-                opacity = new NumberValue(100))
+                opacity = new NumberValue(100),
+                blend   = new NumberValue(0))
     {
         super(FILL_VALUE);
 
         this.color   = color  .copy();
         this.opacity = opacity.copy();
+        this.blend   = blend  .copy();
 
         this.valid   = true;
     }
 
 
     
-    static create(r, g, b, opacity)
+    static create(r, g, b, opacity, blend = 0)
     {
         console.assert(
             typeof opacity == 'number',
@@ -11481,12 +11484,13 @@ extends GValue
 
         return new FillValue(
             ColorValue.create(1, r, g, b),
-            new NumberValue(opacity));
+            new NumberValue(opacity),
+            new NumberValue(blend));
     }
 
 
 
-    static fromRgb(rgb, opacity)
+    static fromRgb(rgb, opacity, blend = 0)
     {
         console.assert(
             typeof opacity == 'number',
@@ -11494,7 +11498,8 @@ extends GValue
 
         return new FillValue(
             ColorValue.fromRgb(rgb),
-            new NumberValue(opacity));
+            new NumberValue(opacity),
+            new NumberValue(blend));
     }
 
 
@@ -11503,7 +11508,8 @@ extends GValue
     {
         const copy = new FillValue(
             this.color  .copy(),
-            this.opacity.copy());
+            this.opacity.copy(),
+            this.blend  .copy());
 
         copy.copyBase(this);
 
@@ -11515,7 +11521,8 @@ extends GValue
     equals(fill)
     {
         return this.color  .equals(fill.color  )
-            && this.opacity.equals(fill.opacity);
+            && this.opacity.equals(fill.opacity)
+            && this.blend  .equals(fill.blend  );
     }
 
 
@@ -11550,7 +11557,8 @@ extends GValue
         return        new NumberValue(rgb[0]).toString()
               + ' ' + new NumberValue(rgb[1]).toString()
               + ' ' + new NumberValue(rgb[2]).toString()
-              + ' ' + this.opacity           .toString();
+              + ' ' + this.opacity           .toString()
+              + ' ' + this.blend             .toString();
     }
 
 
@@ -11562,7 +11570,8 @@ extends GValue
         return        new NumberValue(rgb[0]).toDisplayString()
               + ' ' + new NumberValue(rgb[1]).toDisplayString()
               + ' ' + new NumberValue(rgb[2]).toDisplayString()
-              + ' ' + this.opacity           .toDisplayString();
+              + ' ' + this.opacity           .toDisplayString()
+              + ' ' + this.blend             .toDisplayString();
     }
 
 
@@ -11570,7 +11579,8 @@ extends GValue
     isValid()
     {
         return this.color  .isValid()
-            && this.opacity.isValid();
+            && this.opacity.isValid()
+            && this.blend  .isValid();
     }
 
 
@@ -11584,6 +11594,7 @@ extends GValue
 
     static NaN = Object.freeze(new FillValue(
         ColorValue .NaN,
+        NumberValue.NaN,
         NumberValue.NaN));
 
 
@@ -11604,16 +11615,17 @@ function parseFillValue(str, i = -1)
 
     const iStart = i;
 
-    const r = parseNumberValue(str[i]); i += r[1];
-    const g = parseNumberValue(str[i]); i += g[1];
-    const b = parseNumberValue(str[i]); i += b[1];
-    const a = parseNumberValue(str[i]); i += a[1];
+    const r  = parseNumberValue(str[i]); i += r [1];
+    const g  = parseNumberValue(str[i]); i += g [1];
+    const b  = parseNumberValue(str[i]); i += b [1];
+    const a  = parseNumberValue(str[i]); i += a [1];
+    const bl = parseNumberValue(str[i]); i += bl[1];
 
     const color = new ColorValue(new NumberValue(1), r[0], g[0], b[0]);
 
     
     return [
-        new FillValue(color, a[0]),
+        new FillValue(color, a[0], bl[0]),
         i - iStart ];
 }
 
@@ -11769,6 +11781,7 @@ extends GValue
     angle;
     aspect;
     skew;
+    blend;
 
 
 
@@ -11779,7 +11792,8 @@ extends GValue
                 size     = new NumberValue(0),
                 angle    = new NumberValue(0),
                 aspect   = new NumberValue(0),
-                skew     = new NumberValue(0))
+                skew     = new NumberValue(0),
+                blend    = new NumberValue(0))
     {
         super(GRADIENT_VALUE);
 
@@ -11791,6 +11805,7 @@ extends GValue
         this.angle    = angle   .copy();
         this.aspect   = aspect  .copy();
         this.skew     = skew    .copy();
+        this.blend    = blend   .copy();
 
         this.valid = true;
     }
@@ -11807,7 +11822,8 @@ extends GValue
             this.size,
             this.angle,
             this.aspect,
-            this.skew);
+            this.skew,
+            this.blend);
 
         copy.copyBase(this);
 
@@ -11825,7 +11841,8 @@ extends GValue
             && this.size    .isValid()
             && this.angle   .isValid()
             && this.aspect  .isValid()
-            && this.skew    .isValid();
+            && this.skew    .isValid()
+            && this.blend   .isValid();
     }
 
 
@@ -11840,7 +11857,8 @@ extends GValue
             && this.size    .equals(grad.size    )
             && this.angle   .equals(grad.angle   )
             && this.aspect  .equals(grad.aspect  )
-            && this.skew    .equals(grad.skew    );
+            && this.skew    .equals(grad.skew    )
+            && this.blend   .equals(grad.blend   );
     }
 
 
@@ -11868,7 +11886,8 @@ extends GValue
             + ' ' + this.size    .toString()
             + ' ' + this.angle   .toString()
             + ' ' + this.aspect  .toString()
-            + ' ' + this.skew    .toString();
+            + ' ' + this.skew    .toString()
+            + ' ' + this.blend   .toString();
     }
 
 
@@ -11882,7 +11901,8 @@ extends GValue
             + ' ' + this.size    .toDisplayString()
             + ' ' + this.angle   .toDisplayString()
             + ' ' + this.aspect  .toDisplayString()
-            + ' ' + this.skew    .toDisplayString();
+            + ' ' + this.skew    .toDisplayString()
+            + ' ' + this.blend   .toDisplayString();
     }
 
 
@@ -11896,6 +11916,7 @@ extends GValue
 
     static NaN = Object.freeze(new GradientValue(
         ListValue  .NaN,
+        NumberValue.NaN,
         NumberValue.NaN,
         NumberValue.NaN,
         NumberValue.NaN,
@@ -11940,10 +11961,11 @@ function parseGradientValue(str, i = -1)
     const angle    = parseNumberValue(str[i]); i += angle   [1];
     const aspect   = parseNumberValue(str[i]); i += aspect  [1];
     const skew     = parseNumberValue(str[i]); i += skew    [1];
+    const blend    = parseNumberValue(str[i]); i += blend   [1];
 
 
     return [
-        new GradientValue(stops[0], gradType[0], x[0], y[0], size[0], angle[0], aspect[0], skew[0]),
+        new GradientValue(stops[0], gradType[0], x[0], y[0], size[0], angle[0], aspect[0], skew[0], blend[0]),
         i - iStart ];
 }
 
@@ -22980,6 +23002,7 @@ extends GOperator
 
     color   = null;
     opacity = null;
+    blend   = null;
 
 
 
@@ -23001,6 +23024,7 @@ extends GOperator
 
         if (this.color  ) copy.color   = this.color  .copy();
         if (this.opacity) copy.opacity = this.opacity.copy();
+        if (this.blend  ) copy.blend   = this.blend  .copy();
 
         return copy;
     }
@@ -23015,6 +23039,7 @@ extends GOperator
 
         const color   = this.color   ? (await this.color  .eval(parse)).toValue() : null;
         const opacity = this.opacity ? (await this.opacity.eval(parse)).toValue() : null;
+        const blend   = this.blend   ? (await this.blend  .eval(parse)).toValue() : null;
 
         
         if (this.input)
@@ -23023,20 +23048,23 @@ extends GOperator
 
             this.value = new FillValue(
                 color   ?? input.color,
-                opacity ?? input.opacity);
+                opacity ?? input.opacity,
+                blend   ?? input.blend);
         }
         else
         {
             this.value = new FillValue(
                 color, 
-                opacity);
+                opacity,
+                blend);
         }
 
 
         this.updateValues =
         [
             ['color',   this.value.color  ],
-            ['opacity', this.value.opacity]
+            ['opacity', this.value.opacity],
+            ['blend',   this.value.blend  ]
         ];
         
 
@@ -23054,6 +23082,7 @@ extends GOperator
         if (this.input  ) this.input  .pushValueUpdates(parse);
         if (this.color  ) this.color  .pushValueUpdates(parse);
         if (this.opacity) this.opacity.pushValueUpdates(parse);
+        if (this.blend  ) this.blend  .pushValueUpdates(parse);
     }
     
     
@@ -23063,7 +23092,8 @@ extends GOperator
         return this.options.enabled
             ? new FillValue(
                 this.color   ? this.color  .toValue() : this.input.color  .toValue(),
-                this.opacity ? this.opacity.toValue() : this.input.opacity.toValue())
+                this.opacity ? this.opacity.toValue() : this.input.opacity.toValue(),
+                this.blend   ? this.blend  .toValue() : this.input.blend  .toValue())
             : FillValue.NaN;
     }
 
@@ -23072,7 +23102,8 @@ extends GOperator
     isValid()
     {
         return this.color  .isValid()
-            && this.opacity.isValid();
+            && this.opacity.isValid()
+            && this.blend  .isValid();
     }
 
 
@@ -23084,6 +23115,7 @@ extends GOperator
         if (this.input  ) this.input  .invalidateInputs(from);
         if (this.color  ) this.color  .invalidateInputs(from);
         if (this.opacity) this.opacity.invalidateInputs(from);
+        if (this.blend  ) this.blend  .invalidateInputs(from);
     }
 }
 
@@ -23231,6 +23263,7 @@ extends GOperator
     angle    = null;
     aspect   = null;
     skew     = null;
+    blend    = null;
 
 
 
@@ -23256,6 +23289,7 @@ extends GOperator
         if (this.angle   ) copy.angle    = this.angle .copy();
         if (this.aspect  ) copy.aspect   = this.aspect.copy();
         if (this.skew    ) copy.skew     = this.skew  .copy();
+        if (this.blend   ) copy.blend    = this.blend .copy();
 
         return copy;
     }
@@ -23274,6 +23308,7 @@ extends GOperator
         const angle    = this.angle    ? (await this.angle   .eval(parse)).toValue() : null;
         const aspect   = this.aspect   ? (await this.aspect  .eval(parse)).toValue() : null;
         const skew     = this.skew     ? (await this.skew    .eval(parse)).toValue() : null;
+        const blend    = this.blend    ? (await this.blend   .eval(parse)).toValue() : null;
 
 
         const stops = new ListValue();
@@ -23293,7 +23328,8 @@ extends GOperator
             size, 
             angle, 
             aspect,
-            skew);
+            skew,
+            blend);
 
             
         this.updateValues =
@@ -23305,7 +23341,8 @@ extends GOperator
             ['size',   size      ],
             ['angle',  angle     ],
             ['aspect', aspect    ],
-            ['skew',   skew      ]
+            ['skew',   skew      ],
+            ['blend',  blend     ]
         ];
         
 
@@ -23329,6 +23366,7 @@ extends GOperator
         if (this.angle   ) this.angle   .pushValueUpdates(parse);
         if (this.aspect  ) this.aspect  .pushValueUpdates(parse);
         if (this.skew    ) this.skew    .pushValueUpdates(parse);
+        if (this.blend   ) this.blend   .pushValueUpdates(parse);
     }    
     
     
@@ -23343,12 +23381,13 @@ extends GOperator
         return new GradientValue(
             stops,
             this.gradType ? this.gradType.toValue() : this.input.gradType.toValue(),
-            this.x        ? this.x       .toValue() : this.input.x1      .toValue(),
-            this.y        ? this.y       .toValue() : this.input.y1      .toValue(),
-            this.size     ? this.size    .toValue() : this.input.x2      .toValue(),
-            this.angle    ? this.angle   .toValue() : this.input.y2      .toValue(),
+            this.x        ? this.x       .toValue() : this.input.x       .toValue(),
+            this.y        ? this.y       .toValue() : this.input.y       .toValue(),
+            this.size     ? this.size    .toValue() : this.input.size    .toValue(),
+            this.angle    ? this.angle   .toValue() : this.input.angle   .toValue(),
             this.aspect   ? this.aspect  .toValue() : this.input.aspect  .toValue(),
-            this.skew     ? this.skew    .toValue() : this.input.angle   .toValue());
+            this.skew     ? this.skew    .toValue() : this.input.skew    .toValue(),
+            this.blend    ? this.blend   .toValue() : this.input.blend   .toValue());
     }                 
 
 
@@ -23361,7 +23400,8 @@ extends GOperator
             && this.size    .isValid()
             && this.angle   .isValid()
             && this.aspect  .isValid()
-            && this.skew    .isValid();
+            && this.skew    .isValid()
+            && this.blend   .isValid();
     }
 
 
@@ -23379,6 +23419,7 @@ extends GOperator
         if (this.angle   ) this.angle   .invalidateInputs(from);
         if (this.aspect  ) this.aspect  .invalidateInputs(from);
         if (this.skew    ) this.skew    .invalidateInputs(from);
+        if (this.blend   ) this.blend   .invalidateInputs(from);
     }
 }
 
@@ -24396,7 +24437,8 @@ function addFillProp(obj, prop, target = obj.fills)
         rgb[0], 
         rgb[1], 
         rgb[2], 
-        prop.opacity.toValue().toNumber() ]);
+        prop.opacity.toValue().toNumber(),
+        BlendModes[prop.blend.value][2]]);
 }
 
 
@@ -24487,6 +24529,9 @@ function addGradientProp(obj, prop, target = obj.fills)
             rgba[3],
             stop.position.toNumber() / 100]);
     }
+
+
+    gradient[3] = BlendModes[prop.blend.value][2];    
 
 
     target.push(gradient);
@@ -30211,7 +30256,7 @@ function genParseFill(parse)
         paramIds = parse.move().split(',');
     }
     else
-        paramIds = ['color', 'opacity'];
+        paramIds = ['color', 'opacity', 'blend'];
 
 
     parse.inParam = false;
@@ -30222,6 +30267,7 @@ function genParseFill(parse)
         {
         case 'color':   fill.color   = genParse(parse); break;
         case 'opacity': fill.opacity = genParse(parse); break;
+        case 'blend':   fill.blend   = genParse(parse); break;
         }
     }
 
@@ -30302,6 +30348,7 @@ function genParseGradient(parse)
     grad.angle    = genParse(parse); 
     grad.aspect   = genParse(parse); 
     grad.skew     = genParse(parse); 
+    grad.blend    = genParse(parse); 
 
     
     parse.nTab--;
@@ -46245,23 +46292,26 @@ extends GValue
 {
     color;
     opacity;
+    blend;
 
 
 
     constructor(color   = ColorValue.NaN, 
-                opacity = new NumberValue(100))
+                opacity = new NumberValue(100),
+                blend   = new NumberValue(0))
     {
         super(FILL_VALUE);
 
         this.color   = color  .copy();
         this.opacity = opacity.copy();
+        this.blend   = blend  .copy();
 
         this.valid   = true;
     }
 
 
     
-    static create(r, g, b, opacity)
+    static create(r, g, b, opacity, blend = 0)
     {
         console.assert(
             typeof opacity == 'number',
@@ -46269,12 +46319,13 @@ extends GValue
 
         return new FillValue(
             ColorValue.create(1, r, g, b),
-            new NumberValue(opacity));
+            new NumberValue(opacity),
+            new NumberValue(blend));
     }
 
 
 
-    static fromRgb(rgb, opacity)
+    static fromRgb(rgb, opacity, blend = 0)
     {
         console.assert(
             typeof opacity == 'number',
@@ -46282,7 +46333,8 @@ extends GValue
 
         return new FillValue(
             ColorValue.fromRgb(rgb),
-            new NumberValue(opacity));
+            new NumberValue(opacity),
+            new NumberValue(blend));
     }
 
 
@@ -46291,7 +46343,8 @@ extends GValue
     {
         const copy = new FillValue(
             this.color  .copy(),
-            this.opacity.copy());
+            this.opacity.copy(),
+            this.blend  .copy());
 
         copy.copyBase(this);
 
@@ -46303,7 +46356,8 @@ extends GValue
     equals(fill)
     {
         return this.color  .equals(fill.color  )
-            && this.opacity.equals(fill.opacity);
+            && this.opacity.equals(fill.opacity)
+            && this.blend  .equals(fill.blend  );
     }
 
 
@@ -46338,7 +46392,8 @@ extends GValue
         return        new NumberValue(rgb[0]).toString()
               + ' ' + new NumberValue(rgb[1]).toString()
               + ' ' + new NumberValue(rgb[2]).toString()
-              + ' ' + this.opacity           .toString();
+              + ' ' + this.opacity           .toString()
+              + ' ' + this.blend             .toString();
     }
 
 
@@ -46350,7 +46405,8 @@ extends GValue
         return        new NumberValue(rgb[0]).toDisplayString()
               + ' ' + new NumberValue(rgb[1]).toDisplayString()
               + ' ' + new NumberValue(rgb[2]).toDisplayString()
-              + ' ' + this.opacity           .toDisplayString();
+              + ' ' + this.opacity           .toDisplayString()
+              + ' ' + this.blend             .toDisplayString();
     }
 
 
@@ -46358,7 +46414,8 @@ extends GValue
     isValid()
     {
         return this.color  .isValid()
-            && this.opacity.isValid();
+            && this.opacity.isValid()
+            && this.blend  .isValid();
     }
 
 
@@ -46372,6 +46429,7 @@ extends GValue
 
     static NaN = Object.freeze(new FillValue(
         ColorValue .NaN,
+        NumberValue.NaN,
         NumberValue.NaN));
 
 
@@ -46392,16 +46450,17 @@ function parseFillValue(str, i = -1)
 
     const iStart = i;
 
-    const r = parseNumberValue(str[i]); i += r[1];
-    const g = parseNumberValue(str[i]); i += g[1];
-    const b = parseNumberValue(str[i]); i += b[1];
-    const a = parseNumberValue(str[i]); i += a[1];
+    const r  = parseNumberValue(str[i]); i += r [1];
+    const g  = parseNumberValue(str[i]); i += g [1];
+    const b  = parseNumberValue(str[i]); i += b [1];
+    const a  = parseNumberValue(str[i]); i += a [1];
+    const bl = parseNumberValue(str[i]); i += bl[1];
 
     const color = new ColorValue(new NumberValue(1), r[0], g[0], b[0]);
 
     
     return [
-        new FillValue(color, a[0]),
+        new FillValue(color, a[0], bl[0]),
         i - iStart ];
 }
 
@@ -46557,6 +46616,7 @@ extends GValue
     angle;
     aspect;
     skew;
+    blend;
 
 
 
@@ -46567,7 +46627,8 @@ extends GValue
                 size     = new NumberValue(0),
                 angle    = new NumberValue(0),
                 aspect   = new NumberValue(0),
-                skew     = new NumberValue(0))
+                skew     = new NumberValue(0),
+                blend    = new NumberValue(0))
     {
         super(GRADIENT_VALUE);
 
@@ -46579,6 +46640,7 @@ extends GValue
         this.angle    = angle   .copy();
         this.aspect   = aspect  .copy();
         this.skew     = skew    .copy();
+        this.blend    = blend   .copy();
 
         this.valid = true;
     }
@@ -46595,7 +46657,8 @@ extends GValue
             this.size,
             this.angle,
             this.aspect,
-            this.skew);
+            this.skew,
+            this.blend);
 
         copy.copyBase(this);
 
@@ -46613,7 +46676,8 @@ extends GValue
             && this.size    .isValid()
             && this.angle   .isValid()
             && this.aspect  .isValid()
-            && this.skew    .isValid();
+            && this.skew    .isValid()
+            && this.blend   .isValid();
     }
 
 
@@ -46628,7 +46692,8 @@ extends GValue
             && this.size    .equals(grad.size    )
             && this.angle   .equals(grad.angle   )
             && this.aspect  .equals(grad.aspect  )
-            && this.skew    .equals(grad.skew    );
+            && this.skew    .equals(grad.skew    )
+            && this.blend   .equals(grad.blend   );
     }
 
 
@@ -46656,7 +46721,8 @@ extends GValue
             + ' ' + this.size    .toString()
             + ' ' + this.angle   .toString()
             + ' ' + this.aspect  .toString()
-            + ' ' + this.skew    .toString();
+            + ' ' + this.skew    .toString()
+            + ' ' + this.blend   .toString();
     }
 
 
@@ -46670,7 +46736,8 @@ extends GValue
             + ' ' + this.size    .toDisplayString()
             + ' ' + this.angle   .toDisplayString()
             + ' ' + this.aspect  .toDisplayString()
-            + ' ' + this.skew    .toDisplayString();
+            + ' ' + this.skew    .toDisplayString()
+            + ' ' + this.blend   .toDisplayString();
     }
 
 
@@ -46684,6 +46751,7 @@ extends GValue
 
     static NaN = Object.freeze(new GradientValue(
         ListValue  .NaN,
+        NumberValue.NaN,
         NumberValue.NaN,
         NumberValue.NaN,
         NumberValue.NaN,
@@ -46728,10 +46796,11 @@ function parseGradientValue(str, i = -1)
     const angle    = parseNumberValue(str[i]); i += angle   [1];
     const aspect   = parseNumberValue(str[i]); i += aspect  [1];
     const skew     = parseNumberValue(str[i]); i += skew    [1];
+    const blend    = parseNumberValue(str[i]); i += blend   [1];
 
 
     return [
-        new GradientValue(stops[0], gradType[0], x[0], y[0], size[0], angle[0], aspect[0], skew[0]),
+        new GradientValue(stops[0], gradType[0], x[0], y[0], size[0], angle[0], aspect[0], skew[0], blend[0]),
         i - iStart ];
 }
 
@@ -57768,6 +57837,7 @@ extends GOperator
 
     color   = null;
     opacity = null;
+    blend   = null;
 
 
 
@@ -57789,6 +57859,7 @@ extends GOperator
 
         if (this.color  ) copy.color   = this.color  .copy();
         if (this.opacity) copy.opacity = this.opacity.copy();
+        if (this.blend  ) copy.blend   = this.blend  .copy();
 
         return copy;
     }
@@ -57803,6 +57874,7 @@ extends GOperator
 
         const color   = this.color   ? (await this.color  .eval(parse)).toValue() : null;
         const opacity = this.opacity ? (await this.opacity.eval(parse)).toValue() : null;
+        const blend   = this.blend   ? (await this.blend  .eval(parse)).toValue() : null;
 
         
         if (this.input)
@@ -57811,20 +57883,23 @@ extends GOperator
 
             this.value = new FillValue(
                 color   ?? input.color,
-                opacity ?? input.opacity);
+                opacity ?? input.opacity,
+                blend   ?? input.blend);
         }
         else
         {
             this.value = new FillValue(
                 color, 
-                opacity);
+                opacity,
+                blend);
         }
 
 
         this.updateValues =
         [
             ['color',   this.value.color  ],
-            ['opacity', this.value.opacity]
+            ['opacity', this.value.opacity],
+            ['blend',   this.value.blend  ]
         ];
         
 
@@ -57842,6 +57917,7 @@ extends GOperator
         if (this.input  ) this.input  .pushValueUpdates(parse);
         if (this.color  ) this.color  .pushValueUpdates(parse);
         if (this.opacity) this.opacity.pushValueUpdates(parse);
+        if (this.blend  ) this.blend  .pushValueUpdates(parse);
     }
     
     
@@ -57851,7 +57927,8 @@ extends GOperator
         return this.options.enabled
             ? new FillValue(
                 this.color   ? this.color  .toValue() : this.input.color  .toValue(),
-                this.opacity ? this.opacity.toValue() : this.input.opacity.toValue())
+                this.opacity ? this.opacity.toValue() : this.input.opacity.toValue(),
+                this.blend   ? this.blend  .toValue() : this.input.blend  .toValue())
             : FillValue.NaN;
     }
 
@@ -57860,7 +57937,8 @@ extends GOperator
     isValid()
     {
         return this.color  .isValid()
-            && this.opacity.isValid();
+            && this.opacity.isValid()
+            && this.blend  .isValid();
     }
 
 
@@ -57872,6 +57950,7 @@ extends GOperator
         if (this.input  ) this.input  .invalidateInputs(from);
         if (this.color  ) this.color  .invalidateInputs(from);
         if (this.opacity) this.opacity.invalidateInputs(from);
+        if (this.blend  ) this.blend  .invalidateInputs(from);
     }
 }
 
@@ -58019,6 +58098,7 @@ extends GOperator
     angle    = null;
     aspect   = null;
     skew     = null;
+    blend    = null;
 
 
 
@@ -58044,6 +58124,7 @@ extends GOperator
         if (this.angle   ) copy.angle    = this.angle .copy();
         if (this.aspect  ) copy.aspect   = this.aspect.copy();
         if (this.skew    ) copy.skew     = this.skew  .copy();
+        if (this.blend   ) copy.blend    = this.blend .copy();
 
         return copy;
     }
@@ -58062,6 +58143,7 @@ extends GOperator
         const angle    = this.angle    ? (await this.angle   .eval(parse)).toValue() : null;
         const aspect   = this.aspect   ? (await this.aspect  .eval(parse)).toValue() : null;
         const skew     = this.skew     ? (await this.skew    .eval(parse)).toValue() : null;
+        const blend    = this.blend    ? (await this.blend   .eval(parse)).toValue() : null;
 
 
         const stops = new ListValue();
@@ -58081,7 +58163,8 @@ extends GOperator
             size, 
             angle, 
             aspect,
-            skew);
+            skew,
+            blend);
 
             
         this.updateValues =
@@ -58093,7 +58176,8 @@ extends GOperator
             ['size',   size      ],
             ['angle',  angle     ],
             ['aspect', aspect    ],
-            ['skew',   skew      ]
+            ['skew',   skew      ],
+            ['blend',  blend     ]
         ];
         
 
@@ -58117,6 +58201,7 @@ extends GOperator
         if (this.angle   ) this.angle   .pushValueUpdates(parse);
         if (this.aspect  ) this.aspect  .pushValueUpdates(parse);
         if (this.skew    ) this.skew    .pushValueUpdates(parse);
+        if (this.blend   ) this.blend   .pushValueUpdates(parse);
     }    
     
     
@@ -58131,12 +58216,13 @@ extends GOperator
         return new GradientValue(
             stops,
             this.gradType ? this.gradType.toValue() : this.input.gradType.toValue(),
-            this.x        ? this.x       .toValue() : this.input.x1      .toValue(),
-            this.y        ? this.y       .toValue() : this.input.y1      .toValue(),
-            this.size     ? this.size    .toValue() : this.input.x2      .toValue(),
-            this.angle    ? this.angle   .toValue() : this.input.y2      .toValue(),
+            this.x        ? this.x       .toValue() : this.input.x       .toValue(),
+            this.y        ? this.y       .toValue() : this.input.y       .toValue(),
+            this.size     ? this.size    .toValue() : this.input.size    .toValue(),
+            this.angle    ? this.angle   .toValue() : this.input.angle   .toValue(),
             this.aspect   ? this.aspect  .toValue() : this.input.aspect  .toValue(),
-            this.skew     ? this.skew    .toValue() : this.input.angle   .toValue());
+            this.skew     ? this.skew    .toValue() : this.input.skew    .toValue(),
+            this.blend    ? this.blend   .toValue() : this.input.blend   .toValue());
     }                 
 
 
@@ -58149,7 +58235,8 @@ extends GOperator
             && this.size    .isValid()
             && this.angle   .isValid()
             && this.aspect  .isValid()
-            && this.skew    .isValid();
+            && this.skew    .isValid()
+            && this.blend   .isValid();
     }
 
 
@@ -58167,6 +58254,7 @@ extends GOperator
         if (this.angle   ) this.angle   .invalidateInputs(from);
         if (this.aspect  ) this.aspect  .invalidateInputs(from);
         if (this.skew    ) this.skew    .invalidateInputs(from);
+        if (this.blend   ) this.blend   .invalidateInputs(from);
     }
 }
 
@@ -59184,7 +59272,8 @@ function addFillProp(obj, prop, target = obj.fills)
         rgb[0], 
         rgb[1], 
         rgb[2], 
-        prop.opacity.toValue().toNumber() ]);
+        prop.opacity.toValue().toNumber(),
+        BlendModes[prop.blend.value][2]]);
 }
 
 
@@ -59275,6 +59364,9 @@ function addGradientProp(obj, prop, target = obj.fills)
             rgba[3],
             stop.position.toNumber() / 100]);
     }
+
+
+    gradient[3] = BlendModes[prop.blend.value][2];    
 
 
     target.push(gradient);
@@ -91125,6 +91217,8 @@ extends OpColorBase
 {
     paramColor;
     paramOpacity;
+    paramBlend;
+
 
     checkersHolder;
     checkers;
@@ -91156,6 +91250,8 @@ extends OpColorBase
 
         this.addParam(this.paramColor   = new ColorParam ('color',   'color',   false, true, true, ColorValue.fromRgb(rgbDefaultFill)));
         this.addParam(this.paramOpacity = new NumberParam('opacity', 'opacity', true,  true, true, 100, 0, 100));
+        this.addParam(this.paramBlend   = new SelectParam('blend',   'blend',   false, true, true, BlendModes.map(bm => bm[1]), 0));
+
 
         this.paramOpacity.controls[0].suffix = '%';
 
@@ -91170,7 +91266,8 @@ extends OpColorBase
 
         return new FillValue(
             node.paramColor  .value,
-            node.paramOpacity.value);
+            node.paramOpacity.value,
+            node.paramBlend  .value);
     }
 
 
@@ -91183,6 +91280,7 @@ extends OpColorBase
 
         this.node.paramColor  .setValue(value.color,   false, true, false);
         this.node.paramOpacity.setValue(value.opacity, false, true, false);
+        this.node.paramBlend  .setValue(value.blend,   false, true, false);
     }
 
 
@@ -91696,6 +91794,8 @@ extends OpColorBase
     paramAngle;
     paramAspect;
     paramSkew;
+    paramBlend;
+
 
     checkersHolder;
     checkers;
@@ -91733,6 +91833,7 @@ extends OpColorBase
         this.addParam(this.paramAngle  = new NumberParam('angle',  'angle',  true,  true, true,   0));
         this.addParam(this.paramAspect = new NumberParam('aspect', 'aspect', true,  true, true,  50));
         this.addParam(this.paramSkew   = new NumberParam('skew',   'skew',   true,  true, true,   0));
+        this.addParam(this.paramBlend  = new SelectParam('blend',  'blend',  false, true, true, BlendModes.map(bm => bm[1]), 0));
 
 
         this.paramX     .controls[0].suffix = '%';
@@ -91788,6 +91889,7 @@ extends OpColorBase
         request.push(...this.node.paramAngle .genRequest(gen));
         request.push(...this.node.paramAspect.genRequest(gen));
         request.push(...this.node.paramSkew  .genRequest(gen));
+        request.push(...this.node.paramBlend .genRequest(gen));
 
         
         gen.scope.pop();
