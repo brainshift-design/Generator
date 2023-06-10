@@ -811,6 +811,10 @@
 }
 
 
+.figma-dark  #eulaBody { font-weight: 200; }
+.figma-light #eulaBody { font-weight: 300; }
+
+
 #eulaBody ol
 {
     margin-left:   16px;

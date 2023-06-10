@@ -30,7 +30,7 @@ extends OpColorBase
         this.checkersHolder.appendChild(this.checkers);
 
 
-        this.addInput (new Input([STROKE_VALUE], getNodeInputValuesForUndo));
+        this.addInput (new Input ([STROKE_VALUE], getNodeInputValuesForUndo));
         this.addOutput(new Output([STROKE_VALUE], this.output_genRequest, getNodeOutputValuesForUndo));
 
 

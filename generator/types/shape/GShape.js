@@ -132,11 +132,11 @@ function addColorProp(obj, prop)
 
 
 
-function addFillProp(obj, prop)
+function addFillProp(obj, prop, target = obj.fills)
 {
     const rgb = scaleRgb(prop.color.toRgb());
 
-    obj.fills.push([
+    target.push([
         'SOLID', 
         rgb[0], 
         rgb[1], 
@@ -146,7 +146,7 @@ function addFillProp(obj, prop)
 
 
 
-function addGradientProp(obj, prop)                
+function addGradientProp(obj, prop, target = obj.fills)                
 {
     const gradient = 
     [
@@ -234,7 +234,7 @@ function addGradientProp(obj, prop)
     }
 
 
-    obj.fills.push(gradient);
+    target.push(gradient);
 }
 
 
@@ -318,14 +318,11 @@ function setColorStopPositions(stops)
 
 function addStrokeProp(obj, prop)
 {
-    const rgb = scaleRgb(prop.fill.color.toRgb());
-
-    obj.strokes.push([
-        'SOLID', 
-        rgb[0],
-        rgb[1],
-        rgb[2],
-        prop.fill.opacity.toValue().toNumber() ]);
+    for (const fill of prop.fills.items)
+    {
+        if (fill.type ==     FILL_VALUE) addFillProp    (obj, fill, obj.strokes);
+        if (fill.type == GRADIENT_VALUE) addGradientProp(obj, fill, obj.strokes);
+    }
 
 
     obj.strokeWeight = prop.weight.toValue().toNumber();

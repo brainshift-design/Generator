@@ -3,7 +3,7 @@ extends GOperator
 {
     input  = null;
 
-    fill   = null;
+    fills  = null;
     weight = null;
     fit    = null;
     join   = null;
@@ -27,7 +27,7 @@ extends GOperator
         if (this.input) 
             copy.input = this.input.copy();
 
-        if (this.fill  ) copy.fill   = this.fill  .copy();
+        if (this.fills ) copy.fills  = this.fills .copy();
         if (this.weight) copy.weight = this.weight.copy();
         if (this.fit   ) copy.fit    = this.fit   .copy();
         if (this.join  ) copy.join   = this.join  .copy();
@@ -43,9 +43,9 @@ extends GOperator
         if (this.isCached())
             return this;
 
-        let fill = this.fill ? (await this.fill.eval(parse)).toValue() : null;
+        let fills = this.fills ? (await this.fills.eval(parse)).toValue() : null;
 
-        fill = this.validateFill(fill);
+        fills = this.validateFills(fills);
 
 
         const weight = this.weight ? (await this.weight.eval(parse)).toValue() : null;
@@ -59,7 +59,7 @@ extends GOperator
             const input = (await this.input.eval(parse)).toValue();
 
             this.value = new StrokeValue(
-                fill   ?? input.fill,
+                fills  ?? input.fills,
                 weight ?? input.weight,
                 fit    ?? input.fit,
                 join   ?? input.join,
@@ -68,7 +68,7 @@ extends GOperator
         else
         {
             this.value = new StrokeValue(
-                fill, 
+                fills, 
                 weight, 
                 fit, 
                 join,
@@ -78,7 +78,7 @@ extends GOperator
 
         this.updateValues =
         [
-            ['fill',   this.value.fill  ],
+            ['fills',  this.value.fills ],
             ['weight', this.value.weight],
             ['fit',    this.value.fit   ],
             ['join',   this.value.join  ],
@@ -93,16 +93,23 @@ extends GOperator
 
 
 
-    validateFill(fill)
+    validateFills(fills)
     {
-        if (!fill)
+        if (!fills)
             return null;
 
+            
+        if (fills.type == COLOR_VALUE)
+            return new ListValue([FillValue.fromRgb(scaleRgb(fills.toRgb()), 255)]);
 
-        if (fill.type == COLOR_VALUE)
-            return FillValue.fromRgb(scaleRgb(fill.toRgb()), 0xff);
+        else if (fills.type ==     FILL_VALUE
+              || fills.type == GRADIENT_VALUE)
+            return new ListValue([fills]);
         else
-            return fill;
+        {
+            console.assert(fills.type == LIST_VALUE, 'stroke.fills must be a LIST_VALUE');
+            return fills;
+        }
     }
 
 
@@ -112,7 +119,7 @@ extends GOperator
         super.pushValueUpdates(parse);
 
         if (this.input ) this.input .pushValueUpdates(parse);
-        if (this.fill  ) this.fill  .pushValueUpdates(parse);
+        if (this.fills ) this.fills .pushValueUpdates(parse);
         if (this.weight) this.weight.pushValueUpdates(parse);
         if (this.fit   ) this.fit   .pushValueUpdates(parse);
         if (this.join  ) this.join  .pushValueUpdates(parse);
@@ -124,8 +131,8 @@ extends GOperator
     {
         return new StrokeValue(
             this.options.enabled
-            ? this.validateFill(this.fill ? this.fill.toValue() : this.input.fill.toValue())
-            : FillValue.NaN,
+            ? this.validateFills(this.fills ? this.fills.toValue() : this.input.fills.toValue())
+            : new ListValue(),
             this.weight ? this.weight.toValue() : this.input.weight.toValue(),
             this.fit    ? this.fit   .toValue() : this.input.fit   .toValue(),
             this.join   ? this.join  .toValue() : this.input.join  .toValue(),
@@ -136,7 +143,7 @@ extends GOperator
 
     isValid()
     {
-        return this.fill  .isValid()
+        return this.fills .isValid()
             && this.weight.isValid()
             && this.fit   .isValid()
             && this.join  .isValid()
@@ -150,7 +157,7 @@ extends GOperator
         super.invalidateInputs(from);
 
         if (this.input ) this.input .invalidateInputs(from);
-        if (this.fill  ) this.fill  .invalidateInputs(from);
+        if (this.fills ) this.fills .invalidateInputs(from);
         if (this.weight) this.weight.invalidateInputs(from);
         if (this.fit   ) this.fit   .invalidateInputs(from);
         if (this.join  ) this.join  .invalidateInputs(from);

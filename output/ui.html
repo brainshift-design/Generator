@@ -1016,6 +1016,10 @@
 }
 
 
+.figma-dark  #eulaBody { font-weight: 200; }
+.figma-light #eulaBody { font-weight: 300; }
+
+
 #eulaBody ol
 {
     margin-left:   16px;
@@ -11947,7 +11951,7 @@ function parseGradientValue(str, i = -1)
 class StrokeValue
 extends GValue
 {
-    fill;
+    fills;
     weight;
     fit;
     join;
@@ -11955,25 +11959,25 @@ extends GValue
 
 
 
-    constructor(fill   = FillValue.NaN, 
+    constructor(fills  = new ListValue(), 
                 weight = new NumberValue(1),
                 fit    = new NumberValue(0),
                 join   = new NumberValue(0),
                 miter  = new NumberValue(28.96, 2))
     {
-        if (fill.type != FILL_VALUE)
-            console.assert(false, 'fill.type is ' + fill.type + ', must be FILL_VALUE');
+        if (fills.type != LIST_VALUE)
+            console.assert(false, 'fill.type is ' + fills.type + ', must be LIST_VALUE');
 
 
         super(STROKE_VALUE);
 
-        this.fill   = fill  .copy();
+        this.fills  = fills .copy();
         this.weight = weight.copy();
         this.fit    = fit   .copy();
         this.join   = join  .copy();
         this.miter  = miter .copy();
 
-        this.valid   = true;
+        this.valid  = true;
     }
 
 
@@ -11981,7 +11985,7 @@ extends GValue
     copy()
     {
         const copy = new StrokeValue(
-            this.fill  .copy(),
+            this.fills .copy(),
             this.weight.copy(),
             this.fit   .copy(),
             this.join  .copy(),
@@ -11996,7 +12000,7 @@ extends GValue
 
     isValid()
     {
-        return this.fill  .isValid()
+        return this.fills .isValid()
             && this.weight.isValid()
             && this.fit   .isValid()
             && this.join  .isValid()
@@ -12008,7 +12012,7 @@ extends GValue
     equals(stroke)
     {
         return stroke
-            && this.fill  .equals(stroke.fill  )
+            && this.fills .equals(stroke.fill  )
             && this.weight.equals(stroke.weight)
             && this.fit   .equals(stroke.fit   )
             && this.join  .equals(stroke.join  )
@@ -12033,7 +12037,7 @@ extends GValue
 
     toString()
     {
-        return      this.fill  .toString()
+        return      this.fills .toString()
             + ' ' + this.weight.toString()
             + ' ' + this.fit   .toString()
             + ' ' + this.join  .toString()
@@ -12044,7 +12048,7 @@ extends GValue
 
     toDisplayString()
     {
-        return      this.fill  .toDisplayString()
+        return      this.fills .toDisplayString()
             + ' ' + this.weight.toDisplayString()
             + ' ' + this.fit   .toDisplayString()
             + ' ' + this.join  .toDisplayString()
@@ -12061,7 +12065,7 @@ extends GValue
 
 
     static NaN = Object.freeze(new StrokeValue(
-        FillValue  .NaN,
+        new ListValue(),
         NumberValue.NaN,
         NumberValue.NaN,
         NumberValue.NaN,
@@ -12070,7 +12074,7 @@ extends GValue
 
 
     static default = Object.freeze(new StrokeValue(
-        FillValue.create(0, 0, 0, 100),
+        new ListValue(),
         new NumberValue(1),
         new NumberValue(0),
         new NumberValue(0),
@@ -12095,7 +12099,7 @@ function parseStrokeValue(str, i = -1)
 
     const iStart = i;
 
-    const fill   = parseFillValue  (str, i); i += fill  [1];
+    const fills  = parseListValue  (str, i); i += fills [1];
     const weight = parseNumberValue(str[i]); i += weight[1];
     const fit    = parseNumberValue(str[i]); i += fit   [1];
     const join   = parseNumberValue(str[i]); i += join  [1];
@@ -12103,7 +12107,7 @@ function parseStrokeValue(str, i = -1)
 
 
     return [
-        new StrokeValue(fill[0], weight[0], fit[0], join[0], miter[0]),
+        new StrokeValue(fills[0], weight[0], fit[0], join[0], miter[0]),
         i - iStart ];
 }
 
@@ -23384,7 +23388,7 @@ extends GOperator
 {
     input  = null;
 
-    fill   = null;
+    fills  = null;
     weight = null;
     fit    = null;
     join   = null;
@@ -23408,7 +23412,7 @@ extends GOperator
         if (this.input) 
             copy.input = this.input.copy();
 
-        if (this.fill  ) copy.fill   = this.fill  .copy();
+        if (this.fills ) copy.fills  = this.fills .copy();
         if (this.weight) copy.weight = this.weight.copy();
         if (this.fit   ) copy.fit    = this.fit   .copy();
         if (this.join  ) copy.join   = this.join  .copy();
@@ -23424,9 +23428,9 @@ extends GOperator
         if (this.isCached())
             return this;
 
-        let fill = this.fill ? (await this.fill.eval(parse)).toValue() : null;
+        let fills = this.fills ? (await this.fills.eval(parse)).toValue() : null;
 
-        fill = this.validateFill(fill);
+        fills = this.validateFills(fills);
 
 
         const weight = this.weight ? (await this.weight.eval(parse)).toValue() : null;
@@ -23440,7 +23444,7 @@ extends GOperator
             const input = (await this.input.eval(parse)).toValue();
 
             this.value = new StrokeValue(
-                fill   ?? input.fill,
+                fills  ?? input.fills,
                 weight ?? input.weight,
                 fit    ?? input.fit,
                 join   ?? input.join,
@@ -23449,7 +23453,7 @@ extends GOperator
         else
         {
             this.value = new StrokeValue(
-                fill, 
+                fills, 
                 weight, 
                 fit, 
                 join,
@@ -23459,7 +23463,7 @@ extends GOperator
 
         this.updateValues =
         [
-            ['fill',   this.value.fill  ],
+            ['fills',  this.value.fills ],
             ['weight', this.value.weight],
             ['fit',    this.value.fit   ],
             ['join',   this.value.join  ],
@@ -23474,16 +23478,23 @@ extends GOperator
 
 
 
-    validateFill(fill)
+    validateFills(fills)
     {
-        if (!fill)
+        if (!fills)
             return null;
 
+            
+        if (fills.type == COLOR_VALUE)
+            return new ListValue([FillValue.fromRgb(scaleRgb(fills.toRgb()), 255)]);
 
-        if (fill.type == COLOR_VALUE)
-            return FillValue.fromRgb(scaleRgb(fill.toRgb()), 0xff);
+        else if (fills.type ==     FILL_VALUE
+              || fills.type == GRADIENT_VALUE)
+            return new ListValue([fills]);
         else
-            return fill;
+        {
+            console.assert(fills.type == LIST_VALUE, 'stroke.fills must be a LIST_VALUE');
+            return fills;
+        }
     }
 
 
@@ -23493,7 +23504,7 @@ extends GOperator
         super.pushValueUpdates(parse);
 
         if (this.input ) this.input .pushValueUpdates(parse);
-        if (this.fill  ) this.fill  .pushValueUpdates(parse);
+        if (this.fills ) this.fills .pushValueUpdates(parse);
         if (this.weight) this.weight.pushValueUpdates(parse);
         if (this.fit   ) this.fit   .pushValueUpdates(parse);
         if (this.join  ) this.join  .pushValueUpdates(parse);
@@ -23505,8 +23516,8 @@ extends GOperator
     {
         return new StrokeValue(
             this.options.enabled
-            ? this.validateFill(this.fill ? this.fill.toValue() : this.input.fill.toValue())
-            : FillValue.NaN,
+            ? this.validateFills(this.fills ? this.fills.toValue() : this.input.fills.toValue())
+            : new ListValue(),
             this.weight ? this.weight.toValue() : this.input.weight.toValue(),
             this.fit    ? this.fit   .toValue() : this.input.fit   .toValue(),
             this.join   ? this.join  .toValue() : this.input.join  .toValue(),
@@ -23517,7 +23528,7 @@ extends GOperator
 
     isValid()
     {
-        return this.fill  .isValid()
+        return this.fills .isValid()
             && this.weight.isValid()
             && this.fit   .isValid()
             && this.join  .isValid()
@@ -23531,7 +23542,7 @@ extends GOperator
         super.invalidateInputs(from);
 
         if (this.input ) this.input .invalidateInputs(from);
-        if (this.fill  ) this.fill  .invalidateInputs(from);
+        if (this.fills ) this.fills .invalidateInputs(from);
         if (this.weight) this.weight.invalidateInputs(from);
         if (this.fit   ) this.fit   .invalidateInputs(from);
         if (this.join  ) this.join  .invalidateInputs(from);
@@ -24376,11 +24387,11 @@ function addColorProp(obj, prop)
 
 
 
-function addFillProp(obj, prop)
+function addFillProp(obj, prop, target = obj.fills)
 {
     const rgb = scaleRgb(prop.color.toRgb());
 
-    obj.fills.push([
+    target.push([
         'SOLID', 
         rgb[0], 
         rgb[1], 
@@ -24390,7 +24401,7 @@ function addFillProp(obj, prop)
 
 
 
-function addGradientProp(obj, prop)                
+function addGradientProp(obj, prop, target = obj.fills)                
 {
     const gradient = 
     [
@@ -24478,7 +24489,7 @@ function addGradientProp(obj, prop)
     }
 
 
-    obj.fills.push(gradient);
+    target.push(gradient);
 }
 
 
@@ -24562,14 +24573,11 @@ function setColorStopPositions(stops)
 
 function addStrokeProp(obj, prop)
 {
-    const rgb = scaleRgb(prop.fill.color.toRgb());
-
-    obj.strokes.push([
-        'SOLID', 
-        rgb[0],
-        rgb[1],
-        rgb[2],
-        prop.fill.opacity.toValue().toNumber() ]);
+    for (const fill of prop.fills.items)
+    {
+        if (fill.type ==     FILL_VALUE) addFillProp    (obj, fill, obj.strokes);
+        if (fill.type == GRADIENT_VALUE) addGradientProp(obj, fill, obj.strokes);
+    }
 
 
     obj.strokeWeight = prop.weight.toValue().toNumber();
@@ -30460,7 +30468,7 @@ function genParseStroke(parse)
     {
         switch (id)
         {
-        case 'fill':   stroke.fill   = genParse(parse); break;
+        case 'fill':   stroke.fills   = genParse(parse); break;
         case 'weight': stroke.weight = genParse(parse); break;
         case 'fit':    stroke.fit    = genParse(parse); break;
         case 'join':   stroke.join   = genParse(parse); break;
@@ -46731,7 +46739,7 @@ function parseGradientValue(str, i = -1)
 class StrokeValue
 extends GValue
 {
-    fill;
+    fills;
     weight;
     fit;
     join;
@@ -46739,25 +46747,25 @@ extends GValue
 
 
 
-    constructor(fill   = FillValue.NaN, 
+    constructor(fills  = new ListValue(), 
                 weight = new NumberValue(1),
                 fit    = new NumberValue(0),
                 join   = new NumberValue(0),
                 miter  = new NumberValue(28.96, 2))
     {
-        if (fill.type != FILL_VALUE)
-            console.assert(false, 'fill.type is ' + fill.type + ', must be FILL_VALUE');
+        if (fills.type != LIST_VALUE)
+            console.assert(false, 'fill.type is ' + fills.type + ', must be LIST_VALUE');
 
 
         super(STROKE_VALUE);
 
-        this.fill   = fill  .copy();
+        this.fills  = fills .copy();
         this.weight = weight.copy();
         this.fit    = fit   .copy();
         this.join   = join  .copy();
         this.miter  = miter .copy();
 
-        this.valid   = true;
+        this.valid  = true;
     }
 
 
@@ -46765,7 +46773,7 @@ extends GValue
     copy()
     {
         const copy = new StrokeValue(
-            this.fill  .copy(),
+            this.fills .copy(),
             this.weight.copy(),
             this.fit   .copy(),
             this.join  .copy(),
@@ -46780,7 +46788,7 @@ extends GValue
 
     isValid()
     {
-        return this.fill  .isValid()
+        return this.fills .isValid()
             && this.weight.isValid()
             && this.fit   .isValid()
             && this.join  .isValid()
@@ -46792,7 +46800,7 @@ extends GValue
     equals(stroke)
     {
         return stroke
-            && this.fill  .equals(stroke.fill  )
+            && this.fills .equals(stroke.fill  )
             && this.weight.equals(stroke.weight)
             && this.fit   .equals(stroke.fit   )
             && this.join  .equals(stroke.join  )
@@ -46817,7 +46825,7 @@ extends GValue
 
     toString()
     {
-        return      this.fill  .toString()
+        return      this.fills .toString()
             + ' ' + this.weight.toString()
             + ' ' + this.fit   .toString()
             + ' ' + this.join  .toString()
@@ -46828,7 +46836,7 @@ extends GValue
 
     toDisplayString()
     {
-        return      this.fill  .toDisplayString()
+        return      this.fills .toDisplayString()
             + ' ' + this.weight.toDisplayString()
             + ' ' + this.fit   .toDisplayString()
             + ' ' + this.join  .toDisplayString()
@@ -46845,7 +46853,7 @@ extends GValue
 
 
     static NaN = Object.freeze(new StrokeValue(
-        FillValue  .NaN,
+        new ListValue(),
         NumberValue.NaN,
         NumberValue.NaN,
         NumberValue.NaN,
@@ -46854,7 +46862,7 @@ extends GValue
 
 
     static default = Object.freeze(new StrokeValue(
-        FillValue.create(0, 0, 0, 100),
+        new ListValue(),
         new NumberValue(1),
         new NumberValue(0),
         new NumberValue(0),
@@ -46879,7 +46887,7 @@ function parseStrokeValue(str, i = -1)
 
     const iStart = i;
 
-    const fill   = parseFillValue  (str, i); i += fill  [1];
+    const fills  = parseListValue  (str, i); i += fills [1];
     const weight = parseNumberValue(str[i]); i += weight[1];
     const fit    = parseNumberValue(str[i]); i += fit   [1];
     const join   = parseNumberValue(str[i]); i += join  [1];
@@ -46887,7 +46895,7 @@ function parseStrokeValue(str, i = -1)
 
 
     return [
-        new StrokeValue(fill[0], weight[0], fit[0], join[0], miter[0]),
+        new StrokeValue(fills[0], weight[0], fit[0], join[0], miter[0]),
         i - iStart ];
 }
 
@@ -58168,7 +58176,7 @@ extends GOperator
 {
     input  = null;
 
-    fill   = null;
+    fills  = null;
     weight = null;
     fit    = null;
     join   = null;
@@ -58192,7 +58200,7 @@ extends GOperator
         if (this.input) 
             copy.input = this.input.copy();
 
-        if (this.fill  ) copy.fill   = this.fill  .copy();
+        if (this.fills ) copy.fills  = this.fills .copy();
         if (this.weight) copy.weight = this.weight.copy();
         if (this.fit   ) copy.fit    = this.fit   .copy();
         if (this.join  ) copy.join   = this.join  .copy();
@@ -58208,9 +58216,9 @@ extends GOperator
         if (this.isCached())
             return this;
 
-        let fill = this.fill ? (await this.fill.eval(parse)).toValue() : null;
+        let fills = this.fills ? (await this.fills.eval(parse)).toValue() : null;
 
-        fill = this.validateFill(fill);
+        fills = this.validateFills(fills);
 
 
         const weight = this.weight ? (await this.weight.eval(parse)).toValue() : null;
@@ -58224,7 +58232,7 @@ extends GOperator
             const input = (await this.input.eval(parse)).toValue();
 
             this.value = new StrokeValue(
-                fill   ?? input.fill,
+                fills  ?? input.fills,
                 weight ?? input.weight,
                 fit    ?? input.fit,
                 join   ?? input.join,
@@ -58233,7 +58241,7 @@ extends GOperator
         else
         {
             this.value = new StrokeValue(
-                fill, 
+                fills, 
                 weight, 
                 fit, 
                 join,
@@ -58243,7 +58251,7 @@ extends GOperator
 
         this.updateValues =
         [
-            ['fill',   this.value.fill  ],
+            ['fills',  this.value.fills ],
             ['weight', this.value.weight],
             ['fit',    this.value.fit   ],
             ['join',   this.value.join  ],
@@ -58258,16 +58266,23 @@ extends GOperator
 
 
 
-    validateFill(fill)
+    validateFills(fills)
     {
-        if (!fill)
+        if (!fills)
             return null;
 
+            
+        if (fills.type == COLOR_VALUE)
+            return new ListValue([FillValue.fromRgb(scaleRgb(fills.toRgb()), 255)]);
 
-        if (fill.type == COLOR_VALUE)
-            return FillValue.fromRgb(scaleRgb(fill.toRgb()), 0xff);
+        else if (fills.type ==     FILL_VALUE
+              || fills.type == GRADIENT_VALUE)
+            return new ListValue([fills]);
         else
-            return fill;
+        {
+            console.assert(fills.type == LIST_VALUE, 'stroke.fills must be a LIST_VALUE');
+            return fills;
+        }
     }
 
 
@@ -58277,7 +58292,7 @@ extends GOperator
         super.pushValueUpdates(parse);
 
         if (this.input ) this.input .pushValueUpdates(parse);
-        if (this.fill  ) this.fill  .pushValueUpdates(parse);
+        if (this.fills ) this.fills .pushValueUpdates(parse);
         if (this.weight) this.weight.pushValueUpdates(parse);
         if (this.fit   ) this.fit   .pushValueUpdates(parse);
         if (this.join  ) this.join  .pushValueUpdates(parse);
@@ -58289,8 +58304,8 @@ extends GOperator
     {
         return new StrokeValue(
             this.options.enabled
-            ? this.validateFill(this.fill ? this.fill.toValue() : this.input.fill.toValue())
-            : FillValue.NaN,
+            ? this.validateFills(this.fills ? this.fills.toValue() : this.input.fills.toValue())
+            : new ListValue(),
             this.weight ? this.weight.toValue() : this.input.weight.toValue(),
             this.fit    ? this.fit   .toValue() : this.input.fit   .toValue(),
             this.join   ? this.join  .toValue() : this.input.join  .toValue(),
@@ -58301,7 +58316,7 @@ extends GOperator
 
     isValid()
     {
-        return this.fill  .isValid()
+        return this.fills .isValid()
             && this.weight.isValid()
             && this.fit   .isValid()
             && this.join  .isValid()
@@ -58315,7 +58330,7 @@ extends GOperator
         super.invalidateInputs(from);
 
         if (this.input ) this.input .invalidateInputs(from);
-        if (this.fill  ) this.fill  .invalidateInputs(from);
+        if (this.fills ) this.fills .invalidateInputs(from);
         if (this.weight) this.weight.invalidateInputs(from);
         if (this.fit   ) this.fit   .invalidateInputs(from);
         if (this.join  ) this.join  .invalidateInputs(from);
@@ -59160,11 +59175,11 @@ function addColorProp(obj, prop)
 
 
 
-function addFillProp(obj, prop)
+function addFillProp(obj, prop, target = obj.fills)
 {
     const rgb = scaleRgb(prop.color.toRgb());
 
-    obj.fills.push([
+    target.push([
         'SOLID', 
         rgb[0], 
         rgb[1], 
@@ -59174,7 +59189,7 @@ function addFillProp(obj, prop)
 
 
 
-function addGradientProp(obj, prop)                
+function addGradientProp(obj, prop, target = obj.fills)                
 {
     const gradient = 
     [
@@ -59262,7 +59277,7 @@ function addGradientProp(obj, prop)
     }
 
 
-    obj.fills.push(gradient);
+    target.push(gradient);
 }
 
 
@@ -59346,14 +59361,11 @@ function setColorStopPositions(stops)
 
 function addStrokeProp(obj, prop)
 {
-    const rgb = scaleRgb(prop.fill.color.toRgb());
-
-    obj.strokes.push([
-        'SOLID', 
-        rgb[0],
-        rgb[1],
-        rgb[2],
-        prop.fill.opacity.toValue().toNumber() ]);
+    for (const fill of prop.fills.items)
+    {
+        if (fill.type ==     FILL_VALUE) addFillProp    (obj, fill, obj.strokes);
+        if (fill.type == GRADIENT_VALUE) addGradientProp(obj, fill, obj.strokes);
+    }
 
 
     obj.strokeWeight = prop.weight.toValue().toNumber();
@@ -91819,7 +91831,7 @@ extends OpColorBase
         this.checkersHolder.appendChild(this.checkers);
 
 
-        this.addInput (new Input([STROKE_VALUE], getNodeInputValuesForUndo));
+        this.addInput (new Input ([STROKE_VALUE], getNodeInputValuesForUndo));
         this.addOutput(new Output([STROKE_VALUE], this.output_genRequest, getNodeOutputValuesForUndo));
 
 

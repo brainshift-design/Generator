@@ -1,7 +1,7 @@
 class StrokeValue
 extends GValue
 {
-    fill;
+    fills;
     weight;
     fit;
     join;
@@ -9,25 +9,25 @@ extends GValue
 
 
 
-    constructor(fill   = FillValue.NaN, 
+    constructor(fills  = new ListValue(), 
                 weight = new NumberValue(1),
                 fit    = new NumberValue(0),
                 join   = new NumberValue(0),
                 miter  = new NumberValue(28.96, 2))
     {
-        if (fill.type != FILL_VALUE)
-            console.assert(false, 'fill.type is ' + fill.type + ', must be FILL_VALUE');
+        if (fills.type != LIST_VALUE)
+            console.assert(false, 'fill.type is ' + fills.type + ', must be LIST_VALUE');
 
 
         super(STROKE_VALUE);
 
-        this.fill   = fill  .copy();
+        this.fills  = fills .copy();
         this.weight = weight.copy();
         this.fit    = fit   .copy();
         this.join   = join  .copy();
         this.miter  = miter .copy();
 
-        this.valid   = true;
+        this.valid  = true;
     }
 
 
@@ -35,7 +35,7 @@ extends GValue
     copy()
     {
         const copy = new StrokeValue(
-            this.fill  .copy(),
+            this.fills .copy(),
             this.weight.copy(),
             this.fit   .copy(),
             this.join  .copy(),
@@ -50,7 +50,7 @@ extends GValue
 
     isValid()
     {
-        return this.fill  .isValid()
+        return this.fills .isValid()
             && this.weight.isValid()
             && this.fit   .isValid()
             && this.join  .isValid()
@@ -62,7 +62,7 @@ extends GValue
     equals(stroke)
     {
         return stroke
-            && this.fill  .equals(stroke.fill  )
+            && this.fills .equals(stroke.fill  )
             && this.weight.equals(stroke.weight)
             && this.fit   .equals(stroke.fit   )
             && this.join  .equals(stroke.join  )
@@ -87,7 +87,7 @@ extends GValue
 
     toString()
     {
-        return      this.fill  .toString()
+        return      this.fills .toString()
             + ' ' + this.weight.toString()
             + ' ' + this.fit   .toString()
             + ' ' + this.join  .toString()
@@ -98,7 +98,7 @@ extends GValue
 
     toDisplayString()
     {
-        return      this.fill  .toDisplayString()
+        return      this.fills .toDisplayString()
             + ' ' + this.weight.toDisplayString()
             + ' ' + this.fit   .toDisplayString()
             + ' ' + this.join  .toDisplayString()
@@ -115,7 +115,7 @@ extends GValue
 
 
     static NaN = Object.freeze(new StrokeValue(
-        FillValue  .NaN,
+        new ListValue(),
         NumberValue.NaN,
         NumberValue.NaN,
         NumberValue.NaN,
@@ -124,7 +124,7 @@ extends GValue
 
 
     static default = Object.freeze(new StrokeValue(
-        FillValue.create(0, 0, 0, 100),
+        new ListValue(),
         new NumberValue(1),
         new NumberValue(0),
         new NumberValue(0),
@@ -149,7 +149,7 @@ function parseStrokeValue(str, i = -1)
 
     const iStart = i;
 
-    const fill   = parseFillValue  (str, i); i += fill  [1];
+    const fills  = parseListValue  (str, i); i += fills [1];
     const weight = parseNumberValue(str[i]); i += weight[1];
     const fit    = parseNumberValue(str[i]); i += fit   [1];
     const join   = parseNumberValue(str[i]); i += join  [1];
@@ -157,7 +157,7 @@ function parseStrokeValue(str, i = -1)
 
 
     return [
-        new StrokeValue(fill[0], weight[0], fit[0], join[0], miter[0]),
+        new StrokeValue(fills[0], weight[0], fit[0], join[0], miter[0]),
         i - iStart ];
 }
 
