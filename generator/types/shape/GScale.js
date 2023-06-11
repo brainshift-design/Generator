@@ -41,8 +41,10 @@ extends GAffine
 
         if (this.input)
         {
-            this.value        = (await this.input.eval(parse)).toValue();
-            this.value.nodeId = this.nodeId;
+            this.value = (await this.input.eval(parse)).toValue();
+
+            if (this.value)
+                this.value.nodeId = this.nodeId;
         }
         else
         {

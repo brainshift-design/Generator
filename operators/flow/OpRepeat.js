@@ -104,13 +104,13 @@ extends OperatorBase
     {
         const colors = super.getHeaderColors(options);
 
-        const inputTypes = this.connectedHeaderInputs.map(i => i.connectedOutput.types[0]);
+        // const inputTypes = this.connectedHeaderInputs.map(i => i.connectedOutput.types[0]);
 
         
-        const type = 
-            this.inputs[0].connected 
-            ? finalListTypeFromTypes(inputTypes)
-            : this.type;
+        const type = this.outputs[0].types[0];
+            // this.inputs[0].connected 
+            // ? finalListTypeFromTypes(inputTypes)
+            // : this.type;
 
 
         // colors.back = rgb_a(rgbFromType(type, this.active), 0.95);

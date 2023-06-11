@@ -6204,29 +6204,38 @@ function parseListValue(str, i = -1)
 
 
 
-function finalListTypeFromItems(items)
+function finalListTypeFromItems(items, debug = 0)
 {
     const types = [];
-    
+
+    if (debug == 1)
+        console.log('items =', items);
+
     for (const item of items)
     {
         if (   item.type ==        LIST_VALUE
             || item.type == NUMBER_LIST_VALUE
             || item.type ==   TEXT_LIST_VALUE
             || item.type ==  SHAPE_LIST_VALUE)
-            types.push(finalListTypeFromItems(item.items));
+            pushUnique(types, finalListTypeFromItems(item.items, debug));
+
         else
-            types.push(item.type);
+            pushUnique(types, item.type);
     }
 
-    return finalListTypeFromTypes(types);
+
+    return finalListTypeFromTypes(types, debug);
 }
 
 
 
-function finalListTypeFromTypes(types)
+function finalListTypeFromTypes(types, debug = 0)
 {
     let _type = NULL;
+
+
+    if (debug == 1)
+        console.log('types =', types);
 
     for (const type of types)
     {
@@ -6234,14 +6243,17 @@ function finalListTypeFromTypes(types)
             _type = type;
 
         else if (_type != type
-              ||     SHAPE_VALUES.includes(_type) 
+              &&     SHAPE_VALUES.includes(_type) 
                  && !SHAPE_VALUES.includes( type))
         { 
+            console.log('any', _type +','+type);
             _type = ANY_VALUE;
             break; 
         }
     }
 
+    if (debug == 1)
+        console.log('_type =', _type);
     
          if (  _type == NUMBER_VALUE || _type == NUMBER_LIST_VALUE)  return NUMBER_LIST_VALUE;
     else if (  _type ==   TEXT_VALUE || _type ==   TEXT_LIST_VALUE)  return   TEXT_LIST_VALUE;
@@ -10125,23 +10137,24 @@ extends GOperator
         for (let i = 0, o = 0; i < this.inputs.length; i++)
         {
             await this.inputs[i].eval(parse);
-
+            
             
             // first copy the input objects
+            // to display when list the active node
 
-            // if (this.options.enabled)
-            // {
-            //     for (let j = 0; j < this.inputs[i].objects.length; j++, o++)
-            //     {
-            //         const obj = copyFigmaObject(this.inputs[i].objects[j]);
+            if (this.options.enabled)
+            {
+                for (let j = 0; j < this.inputs[i].objects.length; j++, o++)
+                {
+                    const obj = copyFigmaObject(this.inputs[i].objects[j]);
 
-            //         obj.nodeId   = this.nodeId;
-            //         obj.objectId = obj.objectId + OBJECT_SEPARATOR + this.nodeId;
-            //         obj.listId   = i;
+                    obj.nodeId   = this.nodeId;
+                    obj.objectId = obj.objectId + OBJECT_SEPARATOR + this.nodeId;
+                    obj.listId   = i;
 
-            //         this.objects.push(obj);
-            //     }
-            // }
+                    this.objects.push(obj);
+                }
+            }
 
 
             // now create the output value
@@ -10156,13 +10169,13 @@ extends GOperator
                     for (const item of input.items)
                     {
                         this.value.items  .push(item.copy());   
-                        //this.value.objects.push(...item.objects.map(o => o.copy()));
+                        this.value.objects.push(...item.objects.map(o => o.copy()));
                     }
                 }
                 else
                 {
                     this.value.items  .push(input.copy());
-                    //this.value.objects.push(...input.objects.map(o => o.copy()));
+                    this.value.objects.push(...input.objects.map(o => o.copy()));
                 }
             }
         }
@@ -12211,12 +12224,16 @@ extends GNumberType
             Math.max(start.decimals, step.decimals));
 
 
-        this.updateValues =
-        [
-            ['start', start],
-            ['step',  step ]
-        ];
-
+        // if (  !repeat
+        //     || repeat.iteration == repeat.total-1)
+        // {
+            this.updateValues =
+            [
+                ['start', start],
+                ['step',  step ]
+            ];
+        // }
+        
 
         this.validate();
 
@@ -22377,7 +22394,9 @@ extends GOperator
         if (this.input)
         {
             this.value = (await this.input.eval(parse)).toValue();
-            this.value.nodeId = this.nodeId;
+
+            if (this.value)
+                this.value.nodeId = this.nodeId;
         }
         else
         {
@@ -22686,8 +22705,10 @@ extends GAffine
 
         if (this.input)
         {
-            this.value        = (await this.input.eval(parse)).toValue();
-            this.value.nodeId = this.nodeId;
+            this.value = (await this.input.eval(parse)).toValue();
+
+            if (this.value)
+                this.value.nodeId = this.nodeId;
         }
         else
         {
@@ -22822,8 +22843,10 @@ extends GAffine
 
         if (this.input)
         {
-            this.value        = (await this.input.eval(parse)).toValue();
-            this.value.nodeId = this.nodeId;
+            this.value = (await this.input.eval(parse)).toValue();
+
+            if (this.value)
+                this.value.nodeId = this.nodeId;
         }
         else
         {
@@ -22964,8 +22987,10 @@ extends GAffine
 
         if (this.input)
         {
-            this.value        = (await this.input.eval(parse)).toValue();
-            this.value.nodeId = this.nodeId;
+            this.value = (await this.input.eval(parse)).toValue();
+
+            if (this.value)
+                this.value.nodeId = this.nodeId;
         }
         else
         {

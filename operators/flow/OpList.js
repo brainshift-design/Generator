@@ -65,6 +65,14 @@ extends OperatorBase
 
         const value = values[paramIds.findIndex(id => id == 'value')];
         console.assert(LIST_VALUES.includes(value.type));
+
+
+        // const inputs = this.connectedHeaderInputs.map(i => i.connectedOutput);
+        
+        this.outputs[0].types = [finalListTypeFromItems(value.items, 1)];
+            // this.inputs[0].connected 
+            // ? [finalListTypeFromItems(inputs, 1)]
+            // : [this.type];
     }
 
 
@@ -73,12 +81,13 @@ extends OperatorBase
     {
         const colors = super.getHeaderColors(options);
 
-        const inputTypes = this.connectedHeaderInputs.map(i => i.connectedOutput.types[0]);
+        // const inputTypes = this.connectedHeaderInputs.map(i => i.connectedOutput.types[0]);
 
-        const type = 
-            this.inputs[0].connected 
-            ? finalListTypeFromTypes(inputTypes)
-            : this.type;
+        
+        const type = this.outputs[0].types[0];
+            // this.outputs[0].connected 
+            // ? finalListTypeFromTypes(this.outputs[0].types)
+            // : this.type;
 
 
         colors.back = rgb_a(rgbFromType(type, this.active), 0.95);

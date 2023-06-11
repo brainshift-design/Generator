@@ -222,29 +222,38 @@ function parseListValue(str, i = -1)
 
 
 
-function finalListTypeFromItems(items)
+function finalListTypeFromItems(items, debug = 0)
 {
     const types = [];
-    
+
+    if (debug == 1)
+        console.log('items =', items);
+
     for (const item of items)
     {
         if (   item.type ==        LIST_VALUE
             || item.type == NUMBER_LIST_VALUE
             || item.type ==   TEXT_LIST_VALUE
             || item.type ==  SHAPE_LIST_VALUE)
-            types.push(finalListTypeFromItems(item.items));
+            pushUnique(types, finalListTypeFromItems(item.items, debug));
+
         else
-            types.push(item.type);
+            pushUnique(types, item.type);
     }
 
-    return finalListTypeFromTypes(types);
+
+    return finalListTypeFromTypes(types, debug);
 }
 
 
 
-function finalListTypeFromTypes(types)
+function finalListTypeFromTypes(types, debug = 0)
 {
     let _type = NULL;
+
+
+    if (debug == 1)
+        console.log('types =', types);
 
     for (const type of types)
     {
@@ -252,14 +261,17 @@ function finalListTypeFromTypes(types)
             _type = type;
 
         else if (_type != type
-              ||     SHAPE_VALUES.includes(_type) 
+              &&     SHAPE_VALUES.includes(_type) 
                  && !SHAPE_VALUES.includes( type))
         { 
+            console.log('any', _type +','+type);
             _type = ANY_VALUE;
             break; 
         }
     }
 
+    if (debug == 1)
+        console.log('_type =', _type);
     
          if (  _type == NUMBER_VALUE || _type == NUMBER_LIST_VALUE)  return NUMBER_LIST_VALUE;
     else if (  _type ==   TEXT_VALUE || _type ==   TEXT_LIST_VALUE)  return   TEXT_LIST_VALUE;

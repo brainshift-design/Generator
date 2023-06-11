@@ -54,12 +54,16 @@ extends GNumberType
             Math.max(start.decimals, step.decimals));
 
 
-        this.updateValues =
-        [
-            ['start', start],
-            ['step',  step ]
-        ];
-
+        // if (  !repeat
+        //     || repeat.iteration == repeat.total-1)
+        // {
+            this.updateValues =
+            [
+                ['start', start],
+                ['step',  step ]
+            ];
+        // }
+        
 
         this.validate();
 

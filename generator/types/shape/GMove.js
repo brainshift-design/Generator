@@ -54,7 +54,9 @@ extends GOperator
         if (this.input)
         {
             this.value = (await this.input.eval(parse)).toValue();
-            this.value.nodeId = this.nodeId;
+
+            if (this.value)
+                this.value.nodeId = this.nodeId;
         }
         else
         {
