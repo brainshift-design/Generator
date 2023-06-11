@@ -113,7 +113,7 @@ function hideEulaDialog()
 
 
 
-eulaClose.addEventListener('pointerdown', e => e.stopPropagation());
+// eulaClose.addEventListener('pointerdown', e => e.stopPropagation());
 
 
 

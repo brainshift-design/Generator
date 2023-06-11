@@ -67,12 +67,7 @@ extends OperatorBase
         console.assert(LIST_VALUES.includes(value.type));
 
 
-        // const inputs = this.connectedHeaderInputs.map(i => i.connectedOutput);
-        
-        this.outputs[0].types = [finalListTypeFromItems(value.items, 1)];
-            // this.inputs[0].connected 
-            // ? [finalListTypeFromItems(inputs, 1)]
-            // : [this.type];
+        this.outputs[0].types = [finalListTypeFromItems(value.items)];
     }
 
 
@@ -81,16 +76,11 @@ extends OperatorBase
     {
         const colors = super.getHeaderColors(options);
 
-        // const inputTypes = this.connectedHeaderInputs.map(i => i.connectedOutput.types[0]);
-
         
         const type = this.outputs[0].types[0];
-            // this.outputs[0].connected 
-            // ? finalListTypeFromTypes(this.outputs[0].types)
-            // : this.type;
 
 
-        colors.back = rgb_a(rgbFromType(type, this.active), 0.95);
+        // colors.back = rgb_a(rgbFromType(type, this.active), 0.95);
 
 
         colors.text   = isDark(colors.back) ? [1, 1, 1, 1] : [0, 0, 0, 1]; 

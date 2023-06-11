@@ -226,9 +226,6 @@ function finalListTypeFromItems(items, debug = 0)
 {
     const types = [];
 
-    if (debug == 1)
-        console.log('items =', items);
-
     for (const item of items)
     {
         if (   item.type ==        LIST_VALUE
@@ -252,9 +249,6 @@ function finalListTypeFromTypes(types, debug = 0)
     let _type = NULL;
 
 
-    if (debug == 1)
-        console.log('types =', types);
-
     for (const type of types)
     {
         if (_type == NULL)
@@ -264,14 +258,11 @@ function finalListTypeFromTypes(types, debug = 0)
               &&     SHAPE_VALUES.includes(_type) 
                  && !SHAPE_VALUES.includes( type))
         { 
-            console.log('any', _type +','+type);
             _type = ANY_VALUE;
             break; 
         }
     }
 
-    if (debug == 1)
-        console.log('_type =', _type);
     
          if (  _type == NUMBER_VALUE || _type == NUMBER_LIST_VALUE)  return NUMBER_LIST_VALUE;
     else if (  _type ==   TEXT_VALUE || _type ==   TEXT_LIST_VALUE)  return   TEXT_LIST_VALUE;

@@ -906,7 +906,7 @@
     top:           58px;
     left:          calc(50%);
     transform:     translateX(-50%);
-    width:         420px;
+    width:         540px;
     height:        calc(100% - 80px);
 
     overflow:      hidden;
@@ -4358,11 +4358,11 @@ a
     
     <div id='eulaTitle'>
         <div id='eulaTitleText'>End-User License Agreement</div>
-        <div class='panelButton dialogButtonClose' id='eulaClose' onclick='hideAllMenus(); eulaClose.blur(); hideEulaDialog();'>
+        <!-- <div class='panelButton dialogButtonClose' id='eulaClose' onclick='hideAllMenus(); eulaClose.blur(); hideEulaDialog();'>
             <svg width="30" height="30" viewBox="0 0 30 30" fill="none" xmlns="http://www.w3.org/2000/svg">
                 <path fill-rule="evenodd" clip-rule="evenodd" d="M16 15.293L20.6465 10.6465L21.3536 11.3536L16.7071 16.0001L21.3536 20.6465L20.6465 21.3536L16 16.7072L11.3536 21.3536L10.6465 20.6465L15.2929 16.0001L10.6465 11.3537L11.3536 10.6466L16 15.293Z" fill="var(--figma-color-text)" fill-opacity="0.8"/>
             </svg>
-        </div>
+        </div> -->
     </div>
     
     <div id='eulaDialogContainer'>
@@ -10927,9 +10927,6 @@ function finalListTypeFromItems(items, debug = 0)
 {
     const types = [];
 
-    if (debug == 1)
-        console.log('items =', items);
-
     for (const item of items)
     {
         if (   item.type ==        LIST_VALUE
@@ -10953,9 +10950,6 @@ function finalListTypeFromTypes(types, debug = 0)
     let _type = NULL;
 
 
-    if (debug == 1)
-        console.log('types =', types);
-
     for (const type of types)
     {
         if (_type == NULL)
@@ -10965,14 +10959,11 @@ function finalListTypeFromTypes(types, debug = 0)
               &&     SHAPE_VALUES.includes(_type) 
                  && !SHAPE_VALUES.includes( type))
         { 
-            console.log('any', _type +','+type);
             _type = ANY_VALUE;
             break; 
         }
     }
 
-    if (debug == 1)
-        console.log('_type =', _type);
     
          if (  _type == NUMBER_VALUE || _type == NUMBER_LIST_VALUE)  return NUMBER_LIST_VALUE;
     else if (  _type ==   TEXT_VALUE || _type ==   TEXT_LIST_VALUE)  return   TEXT_LIST_VALUE;
@@ -45719,9 +45710,6 @@ function finalListTypeFromItems(items, debug = 0)
 {
     const types = [];
 
-    if (debug == 1)
-        console.log('items =', items);
-
     for (const item of items)
     {
         if (   item.type ==        LIST_VALUE
@@ -45745,9 +45733,6 @@ function finalListTypeFromTypes(types, debug = 0)
     let _type = NULL;
 
 
-    if (debug == 1)
-        console.log('types =', types);
-
     for (const type of types)
     {
         if (_type == NULL)
@@ -45757,14 +45742,11 @@ function finalListTypeFromTypes(types, debug = 0)
               &&     SHAPE_VALUES.includes(_type) 
                  && !SHAPE_VALUES.includes( type))
         { 
-            console.log('any', _type +','+type);
             _type = ANY_VALUE;
             break; 
         }
     }
 
-    if (debug == 1)
-        console.log('_type =', _type);
     
          if (  _type == NUMBER_VALUE || _type == NUMBER_LIST_VALUE)  return NUMBER_LIST_VALUE;
     else if (  _type ==   TEXT_VALUE || _type ==   TEXT_LIST_VALUE)  return   TEXT_LIST_VALUE;
@@ -82606,12 +82588,7 @@ extends OperatorBase
         console.assert(LIST_VALUES.includes(value.type));
 
 
-        // const inputs = this.connectedHeaderInputs.map(i => i.connectedOutput);
-        
-        this.outputs[0].types = [finalListTypeFromItems(value.items, 1)];
-            // this.inputs[0].connected 
-            // ? [finalListTypeFromItems(inputs, 1)]
-            // : [this.type];
+        this.outputs[0].types = [finalListTypeFromItems(value.items)];
     }
 
 
@@ -82620,16 +82597,11 @@ extends OperatorBase
     {
         const colors = super.getHeaderColors(options);
 
-        // const inputTypes = this.connectedHeaderInputs.map(i => i.connectedOutput.types[0]);
-
         
         const type = this.outputs[0].types[0];
-            // this.outputs[0].connected 
-            // ? finalListTypeFromTypes(this.outputs[0].types)
-            // : this.type;
 
 
-        colors.back = rgb_a(rgbFromType(type, this.active), 0.95);
+        // colors.back = rgb_a(rgbFromType(type, this.active), 0.95);
 
 
         colors.text   = isDark(colors.back) ? [1, 1, 1, 1] : [0, 0, 0, 1]; 
@@ -100827,7 +100799,7 @@ function hideEulaDialog()
 
 
 
-eulaClose.addEventListener('pointerdown', e => e.stopPropagation());
+// eulaClose.addEventListener('pointerdown', e => e.stopPropagation());
 
 
 
