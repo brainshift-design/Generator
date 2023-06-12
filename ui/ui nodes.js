@@ -66,10 +66,12 @@ function createNode(nodeType, creatingButton = null, createdNodeId = -1, options
         case TEXT_LENGTH:             node = new OpTextLength();        break;
         case TEXT_TRIM:               node = new OpTextTrim();          break;
         case TEXT_SUBSTRING:          node = new OpTextSubstring();     break;
+        case TEXT_CASE:               node = new OpTextCase();          break;
         case TEXT_CHAR:               node = new OpTextCharacter();     break;
         case TEXT_REPLACE:            node = new OpTextReplace();       break;
         case TEXT_JOIN:               node = new OpTextJoin();          break;
         case TEXT_PAD:                node = new OpTextPad();           break;
+        case TEXT_COMPARE:            node = new OpTextCompare();       break;
         case TEXT_TO_NUMBER:          node = new OpTextToNumber();      break;
         case TEXT_CSV:                node = new OpTextCSV();           break;
         case TEXT_JSON:               node = new OpTextJson();          break;

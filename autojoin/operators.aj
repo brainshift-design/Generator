@@ -109,11 +109,13 @@
 ../operators/text/OpTextLength.js
 ../operators/text/OpTextTrim.js
 ../operators/text/OpTextSubstring.js
+../operators/text/OpTextCase.js
 ../operators/text/OpTextCharacter.js
 ../operators/text/OpTextReplace.js
 ../operators/text/OpTextJoin.js
 ../operators/text/OpTextPad.js
 ../operators/text/OpTextCSV.js
+../operators/text/OpTextCompare.js
 ../operators/text/OpTextJson.js
 ../operators/text/OpTextFetch.js
 
@@ -140,8 +142,6 @@
 ../operators/style/OpLayerBlur.js
 ../operators/style/OpBackBlur.js
 ../operators/style/OpLayerMask.js
-
-
 
 
 ../operators/shape/OpShapeBase.js

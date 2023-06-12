@@ -660,19 +660,16 @@ function genParseCondition(parse)
 
     if (nInputs == 2)
     {
-        cond.input0    = genParse(parse);
-        cond.input1    = genParse(parse);
-        cond.operation = genParse(parse);
+        cond.input0 = genParse(parse);
+        cond.input1 = genParse(parse);
     }
     else if (nInputs == 1)
     {
-        cond.input0    = genParse(parse); // doesn't matter if it's input0 or input1, the eval() result will be the same
-        cond.operation = genParse(parse);
+        cond.input0 = genParse(parse); // doesn't matter if it's input0 or input1, the eval() result will be the same
     }
-    else if (nInputs == 0)
-    {
-        cond.operation = genParse(parse);
-    }
+  
+    
+    cond.operation = genParse(parse);
 
 
     parse.nTab--;

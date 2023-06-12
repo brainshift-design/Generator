@@ -146,14 +146,16 @@ const TRIG_TYPES =
 ];
 
 
-const TEXT_VALUE     = 'TEXT#';  
-const TEXT           = 'TEXT';   
-const TEXT_LENGTH    = 'TLEN';   
-const TEXT_TRIM      = 'TTRIM';   
-const TEXT_SUBSTRING = 'TSUB'; 
-const TEXT_REPLACE   = 'TREPL'; 
-const TEXT_JOIN      = 'TJOIN';  
-const TEXT_PAD       = 'TPAD';  
+const TEXT_VALUE     = 'TEXT#';
+const TEXT           = 'TEXT';
+const TEXT_LENGTH    = 'TLEN';
+const TEXT_TRIM      = 'TTRIM';
+const TEXT_SUBSTRING = 'TSUB';
+const TEXT_CASE      = 'TCASE';
+const TEXT_REPLACE   = 'TREPL';
+const TEXT_JOIN      = 'TJOIN';
+const TEXT_PAD       = 'TPAD';
+const TEXT_COMPARE   = 'TCMP';
 const TEXT_CHAR      = 'TCHAR';
 const NUMBER_TO_TEXT = 'N2T';
 const TEXT_TO_NUMBER = 'T2N';
@@ -197,9 +199,11 @@ const TEXT_TYPES =
     TEXT_LENGTH,
     TEXT_TRIM,
     TEXT_SUBSTRING,
+    TEXT_CASE,
     TEXT_JOIN,
     TEXT_PAD,
     TEXT_REPLACE,
+    TEXT_COMPARE,
     TEXT_CHAR,
     NUMBER_TO_TEXT,
     TEXT_CSV,

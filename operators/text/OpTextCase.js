@@ -1,14 +1,13 @@
-class   OpTextTrim
+class   OpTextCase
 extends OperatorWithValue
 {
-    paramStart;
-    paramEnd;
+    paramCase;
 
 
 
     constructor()
     {
-        super(TEXT_TRIM, 'trim', 'trim', iconTextTrim);
+        super(TEXT_CASE, 'case', 'case', '');
 
         this.canDisable = true;
         
@@ -17,13 +16,7 @@ extends OperatorWithValue
         this.addOutput(new Output([TEXT_VALUE], this.output_genRequest));
 
         this.addParam(this.paramValue);
-        this.addParam(this.paramStart = new TextParam('start', 'start', false, true, true, ' '));
-        this.addParam(this.paramEnd   = new TextParam('end',   'end',   false, true, true, ' '));
-
-
-        setControlFont(this.paramValue.controls[0].textbox, 'Roboto Mono', 10, 'center');
-        setControlFont(this.paramStart.controls[0].textbox, 'Roboto Mono', 10, 'center');
-        setControlFont(this.paramEnd  .controls[0].textbox, 'Roboto Mono', 10, 'center');
+        this.addParam(this.paramCase = new SelectParam('case', 'case', false, true, true, ['lower', 'UPPER']));
     }
 
 
@@ -48,8 +41,7 @@ extends OperatorWithValue
         if (input.connected)
             request.push(...pushInputOrParam(input, gen));
 
-        request.push(...this.node.paramStart.genRequest(gen));
-        request.push(...this.node.paramEnd  .genRequest(gen));
+        request.push(...this.node.paramCase.genRequest(gen));
 
         
         gen.scope.pop();
@@ -65,8 +57,7 @@ extends OperatorWithValue
         this.paramValue.enableControlText(false);
         this.paramValue.controls[0].valueText = this.isUnknown() ? UNKNOWN_DISPLAY : '';
 
-        this.paramStart.enableControlText(true);
-        this.paramEnd  .enableControlText(true);
+        this.paramCase.enableControlText(true);
 
         this.updateParamControls();
     }

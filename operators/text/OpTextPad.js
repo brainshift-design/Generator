@@ -12,8 +12,7 @@ extends OperatorWithValue
     {
         super(TEXT_PAD, 'pad', 'pad', iconTextPad);
 
-        this.canDisable  = true;
-        // this.iconOffsetY = 1;
+        this.canDisable = true;
         
 
         this.addInput (new Input ([TEXT_VALUE]));

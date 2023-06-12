@@ -187,6 +187,52 @@ function genParseTextSubstring(parse)
 
 
 
+function genParseTextCase(parse)
+{
+    const [, nodeId, options, ignore] = genParseNodeStart(parse);
+
+
+    const _case = new GTextCase(nodeId, options);
+   
+
+    let nInputs = -1;
+    
+    if (!ignore)
+    {
+        nInputs = parseInt(parse.move());
+        console.assert(nInputs == 0 || nInputs == 1, 'nInputs must be [0, 1]');
+    }
+
+    
+    if (parse.settings.logRequests) 
+        logReq(_case, parse, ignore, nInputs);
+
+
+    if (ignore) 
+    {
+        genParseNodeEnd(parse, _case);
+        return parse.parsedNodes.find(n => n.nodeId == nodeId);
+    }
+
+
+    parse.nTab++;
+
+
+    if (nInputs == 1)
+        _case.input = genParse(parse);
+
+    _case.case = genParse(parse);
+
+    
+    parse.nTab--;
+
+
+    genParseNodeEnd(parse, _case);
+    return _case;
+}
+
+
+
 function genParseTextReplace(parse)
 {
     const [, nodeId, options, ignore] = genParseNodeStart(parse);
@@ -284,7 +330,7 @@ function genParseTextPad(parse)
     const [, nodeId, options, ignore] = genParseNodeStart(parse);
 
 
-    const sub = new GTextPad(nodeId, options);
+    const pad = new GTextPad(nodeId, options);
    
 
     let nInputs = -1;
@@ -297,12 +343,12 @@ function genParseTextPad(parse)
 
     
     if (parse.settings.logRequests) 
-        logReq(sub, parse, ignore, nInputs);
+        logReq(pad, parse, ignore, nInputs);
 
 
     if (ignore) 
     {
-        genParseNodeEnd(parse, sub);
+        genParseNodeEnd(parse, pad);
         return parse.parsedNodes.find(n => n.nodeId == nodeId);
     }
 
@@ -311,19 +357,73 @@ function genParseTextPad(parse)
 
 
     if (nInputs == 1)
-        sub.input = genParse(parse);
+        pad.input = genParse(parse);
 
-    sub.startPad   = genParse(parse);
-    sub.startCount = genParse(parse);
-    sub.endPad     = genParse(parse);
-    sub.endCount   = genParse(parse);
+    pad.startPad   = genParse(parse);
+    pad.startCount = genParse(parse);
+    pad.endPad     = genParse(parse);
+    pad.endCount   = genParse(parse);
 
     
     parse.nTab--;
 
 
-    genParseNodeEnd(parse, sub);
-    return sub;
+    genParseNodeEnd(parse, pad);
+    return pad;
+}
+
+
+
+function genParseTextCompare(parse)
+{
+    const [, nodeId, options, ignore] = genParseNodeStart(parse);
+
+
+    const cmp = new GTextCompare(nodeId, options);
+   
+
+    let nInputs = -1;
+
+    if (!ignore)
+    {
+        nInputs = parseInt(parse.move());
+        console.assert(nInputs => 0 && nInputs <= 2, 'nInputs must be [0, 2]');
+    }
+
+    
+    if (parse.settings.logRequests) 
+        logReq(cmp, parse, ignore, nInputs);
+
+
+    if (ignore) 
+    {
+        genParseNodeEnd(parse, cmp);
+        return parse.parsedNodes.find(n => n.nodeId == nodeId);
+    }
+
+
+    parse.nTab++;
+
+
+    if (nInputs == 2)
+    {
+        cmp.input0 = genParse(parse);
+        cmp.input1 = genParse(parse);
+    }
+    else if (nInputs == 1)
+    {
+        cmp.input0 = genParse(parse); // doesn't matter if it's input0 or input1, the eval() result will be the same
+    }
+  
+    
+    cmp.operation = genParse(parse);
+
+    
+    parse.nTab--;
+
+
+    genParseNodeEnd(parse, cmp);
+    return cmp;
 }
 
 

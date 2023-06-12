@@ -3912,14 +3912,16 @@ const TRIG_TYPES =
 ];
 
 
-const TEXT_VALUE     = 'TEXT#';  
-const TEXT           = 'TEXT';   
-const TEXT_LENGTH    = 'TLEN';   
-const TEXT_TRIM      = 'TTRIM';   
-const TEXT_SUBSTRING = 'TSUB'; 
-const TEXT_REPLACE   = 'TREPL'; 
-const TEXT_JOIN      = 'TJOIN';  
-const TEXT_PAD       = 'TPAD';  
+const TEXT_VALUE     = 'TEXT#';
+const TEXT           = 'TEXT';
+const TEXT_LENGTH    = 'TLEN';
+const TEXT_TRIM      = 'TTRIM';
+const TEXT_SUBSTRING = 'TSUB';
+const TEXT_CASE      = 'TCASE';
+const TEXT_REPLACE   = 'TREPL';
+const TEXT_JOIN      = 'TJOIN';
+const TEXT_PAD       = 'TPAD';
+const TEXT_COMPARE   = 'TCMP';
 const TEXT_CHAR      = 'TCHAR';
 const NUMBER_TO_TEXT = 'N2T';
 const TEXT_TO_NUMBER = 'T2N';
@@ -3963,9 +3965,11 @@ const TEXT_TYPES =
     TEXT_LENGTH,
     TEXT_TRIM,
     TEXT_SUBSTRING,
+    TEXT_CASE,
     TEXT_JOIN,
     TEXT_PAD,
     TEXT_REPLACE,
+    TEXT_COMPARE,
     TEXT_CHAR,
     NUMBER_TO_TEXT,
     TEXT_CSV,
@@ -15222,6 +15226,101 @@ extends GTextType
 
 
 
+class GTextCase
+extends GTextType
+{
+    input = null;
+
+    case;
+
+
+    
+    constructor(nodeId, options)
+    {
+        super(TEXT_CASE, nodeId, options);
+    }
+
+
+    
+    copy()
+    {
+        const copy = new GTextCase(this.nodeId, this.options);
+
+        copy.copyBase(this);
+
+        if (this.input) 
+            copy.input = this.input.copy();
+
+        copy.case = this.case.copy();
+
+        return copy;
+    }
+
+
+
+    async eval(parse)
+    {
+        if (this.isCached())
+            return this;
+
+
+        const _case = (await this.case.eval(parse)).toValue();
+
+
+        if (this.input)
+        {
+            this.value = (await this.input.eval(parse)).toValue();
+            
+            console.assert(
+                this.value.type == TEXT_VALUE, 
+                'this.value.type must be TEXT_VALUE');
+                
+                
+            if (this.options.enabled)
+            {
+                     if (_case.value == 0) this.value.value = this.value.value.toLowerCase();
+                else if (_case.value == 1) this.value.value = this.value.value.toUpperCase();
+            }
+        }
+        else
+            this.value = new TextValue();//TextValue.NaN;
+
+
+        this.updateValues =
+        [
+            ['value', this.value],
+            ['case',  _case     ]
+        ];
+
+
+        this.validate();
+
+        return this;
+    }
+
+
+
+    pushValueUpdates(parse)
+    {
+        super.pushValueUpdates(parse);
+
+        if (this.input) this.input.pushValueUpdates(parse);
+        if (this.case ) this.case .pushValueUpdates(parse);
+    }
+
+
+
+    invalidateInputs(from)
+    {
+        super.invalidateInputs(from);
+
+        if (this.input) this.input.invalidateInputs(from);
+        if (this.case ) this.case .invalidateInputs(from);
+    }
+}
+
+
+
 class GNumberToText
 extends GNumberType
 {
@@ -15926,6 +16025,113 @@ extends GOperator
     }
 }
 
+
+
+class GTextCompare
+extends GTextType
+{
+    input0 = null;
+    input1 = null;
+
+    operation;
+
+
+
+    constructor(nodeId, options)
+    {
+        super(TEXT_COMPARE, nodeId, options);
+    }
+
+
+    
+    copy()
+    {
+        const copy = new GTextCompare(this.nodeId, this.options);
+
+        copy.copyBase(this);
+
+        if (this.input0) copy.input0 = this.input0.copy();
+        if (this.input1) copy.input1 = this.input1.copy();
+
+        copy.operation = this.operation.copy();
+
+        return copy;
+    }
+
+
+
+    async eval(parse)
+    {
+        if (this.isCached())
+            return this;
+
+
+        const op = (await this.operation.eval(parse)).toValue().toInteger();
+
+        op.value = Math.min(Math.max(0, op.value), CONDITION_OPS.length-1);
+
+        
+        let result;
+
+        switch (op.value)
+        {
+            case CONDITION_LESS:              result = await evalCompareInputs(this.input0, this.input1, ((a, b) => a <  b), parse);  break;
+            case CONDITION_LESS_OR_EQUAL:     result = await evalCompareInputs(this.input0, this.input1, ((a, b) => a <= b), parse);  break;
+            case CONDITION_NOT_EQUAL:         result = await evalCompareInputs(this.input0, this.input1, ((a, b) => a != b), parse);  break;
+            case CONDITION_EQUAL:             result = await evalCompareInputs(this.input0, this.input1, ((a, b) => a == b), parse);  break;
+            case CONDITION_GREATER_OR_EQUAL:  result = await evalCompareInputs(this.input0, this.input1, ((a, b) => a >= b), parse);  break;
+            case CONDITION_GREATER:           result = await evalCompareInputs(this.input0, this.input1, ((a, b) => a >  b), parse);  break;
+        }
+
+
+        this.updateValues =
+        [
+            ['result',    result],
+            ['operation', op    ]
+        ];
+
+
+        this.validate();
+
+        return this;
+    }
+
+
+
+    pushValueUpdates(parse)
+    {
+        super.pushValueUpdates(parse);
+
+        if (this.input0   ) this.input0   .pushValueUpdates(parse);
+        if (this.input1   ) this.input1   .pushValueUpdates(parse);
+        if (this.operation) this.operation.pushValueUpdates(parse);
+    }
+
+
+
+    invalidateInputs(from)
+    {
+        super.invalidateInputs(from);
+
+        if (this.input0   ) this.input0   .invalidateInputs(from);
+        if (this.input1   ) this.input1   .invalidateInputs(from);
+        if (this.operation) this.operation.invalidateInputs(from);
+    }
+}
+
+
+
+async function evalCompareInputs(input0, input1, op, parse) 
+{
+    const val0 = input0 ? (await input0.eval(parse)).toValue() : TextValue.NaN;
+    const val1 = input1 ? (await input1.eval(parse)).toValue() : TextValue.NaN;
+
+    if (   val0 && val0.isValid() 
+        && val1 && val1.isValid())
+        return new NumberValue(op(val0.value, val1.value) ? 1 : 0);
+    else                  
+        return new NumberValue();
+}
 
 
 class GTextJson
@@ -26938,19 +27144,16 @@ function genParseCondition(parse)
 
     if (nInputs == 2)
     {
-        cond.input0    = genParse(parse);
-        cond.input1    = genParse(parse);
-        cond.operation = genParse(parse);
+        cond.input0 = genParse(parse);
+        cond.input1 = genParse(parse);
     }
     else if (nInputs == 1)
     {
-        cond.input0    = genParse(parse); // doesn't matter if it's input0 or input1, the eval() result will be the same
-        cond.operation = genParse(parse);
+        cond.input0 = genParse(parse); // doesn't matter if it's input0 or input1, the eval() result will be the same
     }
-    else if (nInputs == 0)
-    {
-        cond.operation = genParse(parse);
-    }
+  
+    
+    cond.operation = genParse(parse);
 
 
     parse.nTab--;
@@ -28460,6 +28663,52 @@ function genParseTextSubstring(parse)
 
 
 
+function genParseTextCase(parse)
+{
+    const [, nodeId, options, ignore] = genParseNodeStart(parse);
+
+
+    const _case = new GTextCase(nodeId, options);
+   
+
+    let nInputs = -1;
+    
+    if (!ignore)
+    {
+        nInputs = parseInt(parse.move());
+        console.assert(nInputs == 0 || nInputs == 1, 'nInputs must be [0, 1]');
+    }
+
+    
+    if (parse.settings.logRequests) 
+        logReq(_case, parse, ignore, nInputs);
+
+
+    if (ignore) 
+    {
+        genParseNodeEnd(parse, _case);
+        return parse.parsedNodes.find(n => n.nodeId == nodeId);
+    }
+
+
+    parse.nTab++;
+
+
+    if (nInputs == 1)
+        _case.input = genParse(parse);
+
+    _case.case = genParse(parse);
+
+    
+    parse.nTab--;
+
+
+    genParseNodeEnd(parse, _case);
+    return _case;
+}
+
+
+
 function genParseTextReplace(parse)
 {
     const [, nodeId, options, ignore] = genParseNodeStart(parse);
@@ -28557,7 +28806,7 @@ function genParseTextPad(parse)
     const [, nodeId, options, ignore] = genParseNodeStart(parse);
 
 
-    const sub = new GTextPad(nodeId, options);
+    const pad = new GTextPad(nodeId, options);
    
 
     let nInputs = -1;
@@ -28570,12 +28819,12 @@ function genParseTextPad(parse)
 
     
     if (parse.settings.logRequests) 
-        logReq(sub, parse, ignore, nInputs);
+        logReq(pad, parse, ignore, nInputs);
 
 
     if (ignore) 
     {
-        genParseNodeEnd(parse, sub);
+        genParseNodeEnd(parse, pad);
         return parse.parsedNodes.find(n => n.nodeId == nodeId);
     }
 
@@ -28584,19 +28833,73 @@ function genParseTextPad(parse)
 
 
     if (nInputs == 1)
-        sub.input = genParse(parse);
+        pad.input = genParse(parse);
 
-    sub.startPad   = genParse(parse);
-    sub.startCount = genParse(parse);
-    sub.endPad     = genParse(parse);
-    sub.endCount   = genParse(parse);
+    pad.startPad   = genParse(parse);
+    pad.startCount = genParse(parse);
+    pad.endPad     = genParse(parse);
+    pad.endCount   = genParse(parse);
 
     
     parse.nTab--;
 
 
-    genParseNodeEnd(parse, sub);
-    return sub;
+    genParseNodeEnd(parse, pad);
+    return pad;
+}
+
+
+
+function genParseTextCompare(parse)
+{
+    const [, nodeId, options, ignore] = genParseNodeStart(parse);
+
+
+    const cmp = new GTextCompare(nodeId, options);
+   
+
+    let nInputs = -1;
+
+    if (!ignore)
+    {
+        nInputs = parseInt(parse.move());
+        console.assert(nInputs => 0 && nInputs <= 2, 'nInputs must be [0, 2]');
+    }
+
+    
+    if (parse.settings.logRequests) 
+        logReq(cmp, parse, ignore, nInputs);
+
+
+    if (ignore) 
+    {
+        genParseNodeEnd(parse, cmp);
+        return parse.parsedNodes.find(n => n.nodeId == nodeId);
+    }
+
+
+    parse.nTab++;
+
+
+    if (nInputs == 2)
+    {
+        cmp.input0 = genParse(parse);
+        cmp.input1 = genParse(parse);
+    }
+    else if (nInputs == 1)
+    {
+        cmp.input0 = genParse(parse); // doesn't matter if it's input0 or input1, the eval() result will be the same
+    }
+  
+    
+    cmp.operation = genParse(parse);
+
+    
+    parse.nTab--;
+
+
+    genParseNodeEnd(parse, cmp);
+    return cmp;
 }
 
 
@@ -29022,12 +29325,14 @@ function genParse(parse, inParam = true)
     else if (parse.next == TEXT_LENGTH            ) result = genParseTextLength       (parse);
     else if (parse.next == TEXT_TRIM              ) result = genParseTextTrim         (parse);
     else if (parse.next == TEXT_SUBSTRING         ) result = genParseTextSubstring    (parse);
+    else if (parse.next == TEXT_CASE              ) result = genParseTextCase         (parse);
     else if (parse.next == TEXT_CHAR              ) result = genParseTextCharacter    (parse);
     else if (parse.next == NUMBER_TO_TEXT         ) result = genParseNumberToText     (parse);
     else if (parse.next == TEXT_TO_NUMBER         ) result = genParseTextToNumber     (parse);
     else if (parse.next == TEXT_REPLACE           ) result = genParseTextReplace      (parse);
     else if (parse.next == TEXT_JOIN              ) result = genParseTextJoin         (parse);
     else if (parse.next == TEXT_PAD               ) result = genParseTextPad          (parse);
+    else if (parse.next == TEXT_COMPARE           ) result = genParseTextCompare      (parse);
     else if (parse.next == TEXT_CSV               ) result = genParseTextCSV          (parse);
     else if (parse.next == TEXT_JSON              ) result = genParseTextJson         (parse);
     else if (parse.next == TEXT_FETCH             ) result = genParseTextFetch        (parse);

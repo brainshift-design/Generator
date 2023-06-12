@@ -120,6 +120,7 @@
 ../generator/types/text/GTextLength.js
 ../generator/types/text/GTextTrim.js
 ../generator/types/text/GTextSubstring.js
+../generator/types/text/GTextCase.js
 ../generator/types/text/GNumberToText.js
 ../generator/types/text/GTextToNumber.js
 ../generator/types/text/GTextCharacter.js
@@ -127,6 +128,7 @@
 ../generator/types/text/GTextJoin.js
 ../generator/types/text/GTextPad.js
 ../generator/types/text/GTextCSV.js
+../generator/types/text/GTextCompare.js
 ../generator/types/text/GTextJson.js
 ../generator/types/text/GTextFetch.js
 

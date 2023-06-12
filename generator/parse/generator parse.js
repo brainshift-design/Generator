@@ -167,12 +167,14 @@ function genParse(parse, inParam = true)
     else if (parse.next == TEXT_LENGTH            ) result = genParseTextLength       (parse);
     else if (parse.next == TEXT_TRIM              ) result = genParseTextTrim         (parse);
     else if (parse.next == TEXT_SUBSTRING         ) result = genParseTextSubstring    (parse);
+    else if (parse.next == TEXT_CASE              ) result = genParseTextCase         (parse);
     else if (parse.next == TEXT_CHAR              ) result = genParseTextCharacter    (parse);
     else if (parse.next == NUMBER_TO_TEXT         ) result = genParseNumberToText     (parse);
     else if (parse.next == TEXT_TO_NUMBER         ) result = genParseTextToNumber     (parse);
     else if (parse.next == TEXT_REPLACE           ) result = genParseTextReplace      (parse);
     else if (parse.next == TEXT_JOIN              ) result = genParseTextJoin         (parse);
     else if (parse.next == TEXT_PAD               ) result = genParseTextPad          (parse);
+    else if (parse.next == TEXT_COMPARE           ) result = genParseTextCompare      (parse);
     else if (parse.next == TEXT_CSV               ) result = genParseTextCSV          (parse);
     else if (parse.next == TEXT_JSON              ) result = genParseTextJson         (parse);
     else if (parse.next == TEXT_FETCH             ) result = genParseTextFetch        (parse);
