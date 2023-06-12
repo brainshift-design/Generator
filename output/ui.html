@@ -15146,10 +15146,10 @@ extends GOperator
                     && index.value >= 0
                     && index.value <  input.items.length
                     ? new NumberValue(Math.round(index.value))
-                    : null;//new NumberValue(0);
+                    : NumberValue.NaN;//null;//new NumberValue(0);
 
 
-                if (index)
+                if (index.isValid())
                 {
                     this.value = input.items[index.value];
 
@@ -15171,20 +15171,20 @@ extends GOperator
                     }
                 }
                 else
-                    this.value = NullValue;
+                    this.value = null;//NullValue;
                     
                 //console.log('GSelect.value =', this.value);
             }
             else
             {
                 this.value = NullValue;
-                index      = NumberValue.NaN;
+                index      = null;//NumberValue.NaN;
             }
         }
         else
         {
             this.value = NullValue;
-            index      = NumberValue.NaN;
+            index      = null;//NumberValue.NaN;
         }
 
 
@@ -15660,8 +15660,8 @@ extends GOperator
                     
                     this.input.invalidateInputs(this);
                     
-                   
                     const input = (await this.input.eval(parse)).toValue();
+
 
                     if (input)
                     {
@@ -15693,7 +15693,7 @@ extends GOperator
                 parse.repeats.pop();
             }
 
-
+            
             this.updateValues =
             [
                 ['value', this.value     ],
@@ -50441,10 +50441,10 @@ extends GOperator
                     && index.value >= 0
                     && index.value <  input.items.length
                     ? new NumberValue(Math.round(index.value))
-                    : null;//new NumberValue(0);
+                    : NumberValue.NaN;//null;//new NumberValue(0);
 
 
-                if (index)
+                if (index.isValid())
                 {
                     this.value = input.items[index.value];
 
@@ -50466,20 +50466,20 @@ extends GOperator
                     }
                 }
                 else
-                    this.value = NullValue;
+                    this.value = null;//NullValue;
                     
                 //console.log('GSelect.value =', this.value);
             }
             else
             {
                 this.value = NullValue;
-                index      = NumberValue.NaN;
+                index      = null;//NumberValue.NaN;
             }
         }
         else
         {
             this.value = NullValue;
-            index      = NumberValue.NaN;
+            index      = null;//NumberValue.NaN;
         }
 
 
@@ -50955,8 +50955,8 @@ extends GOperator
                     
                     this.input.invalidateInputs(this);
                     
-                   
                     const input = (await this.input.eval(parse)).toValue();
+
 
                     if (input)
                     {
@@ -50988,7 +50988,7 @@ extends GOperator
                 parse.repeats.pop();
             }
 
-
+            
             this.updateValues =
             [
                 ['value', this.value     ],
@@ -83477,7 +83477,9 @@ extends OperatorBase
         const type = this.outputs[0].types[0];
 
 
-        // colors.back = rgb_a(rgbFromType(type, this.active), 0.95);
+        // const back = rgb_a(rgbFromType(type, this.active), 0.95);
+
+        // colors.back = back;
 
 
         colors.text   = isDark(colors.back) ? [1, 1, 1, 1] : [0, 0, 0, 1]; 
@@ -83678,7 +83680,7 @@ extends ResizableBase
 
         // console.log('action =', action);
 
-        const oldParamConns = this.getAllParamConnections();
+        //const oldParamConns = this.getAllParamConnections();
 
 
         this.disconnectParamsNotInList(paramIds, true);
@@ -83876,7 +83878,7 @@ extends OperatorBase
         const value = values[paramIds.findIndex(id => id == 'value')];
         this.length = values[paramIds.findIndex(id => id == 'length')];
 
-        this.outputs[0].types = [value.type];
+        this.outputs[0].types = [value ? value.type : ANY_VALUE];
     }
 
 

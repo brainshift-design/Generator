@@ -184,7 +184,7 @@ extends ResizableBase
 
         // console.log('action =', action);
 
-        const oldParamConns = this.getAllParamConnections();
+        //const oldParamConns = this.getAllParamConnections();
 
 
         this.disconnectParamsNotInList(paramIds, true);

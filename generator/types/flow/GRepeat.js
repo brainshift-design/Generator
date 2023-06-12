@@ -107,8 +107,8 @@ extends GOperator
                     
                     this.input.invalidateInputs(this);
                     
-                   
                     const input = (await this.input.eval(parse)).toValue();
+
 
                     if (input)
                     {
@@ -140,7 +140,7 @@ extends GOperator
                 parse.repeats.pop();
             }
 
-
+            
             this.updateValues =
             [
                 ['value', this.value     ],
