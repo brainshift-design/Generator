@@ -704,7 +704,7 @@ function initGeneratorMenus()
     btnLayer  = new MenuButton('', menuLayer,  {useMenuName: true, highlight: () => currentMenus.includes(menuLayer ), callback: () => updatePanMode(false)});
     //btnStyle  = new MenuButton('', menuStyle,  {useMenuName: true, highlight: () => currentMenus.includes(menuStyle ), callback: () => updatePanMode(false)});
     btnShape  = new MenuButton('', menuShape,  {useMenuName: true, highlight: () => currentMenus.includes(menuShape ), callback: () => updatePanMode(false)});
-    btnGroup  = new MenuButton('', menuGroup,  {useMenuName: true, highlight: () => currentMenus.includes(menuShape ), callback: () => updatePanMode(false)});
+    //btnGroup  = new MenuButton('', menuGroup,  {useMenuName: true, highlight: () => currentMenus.includes(menuShape ), callback: () => updatePanMode(false)});
 
     // btnGroup  = new MenuButton('Node groups', null, {callback: () => 
     // {
@@ -788,7 +788,7 @@ function initGeneratorMenus()
     btnLayer  .setIcon(iconGradient);
     btnColor  .setIcon(iconColorInterpolate);
     //btnStyle  .setIcon(iconStyle);
-    btnGroup  .setIcon(iconGroup);
+    //btnGroup  .setIcon(iconGroup);
     btnHand   .setIcon(iconHand);
     btnComment.setIcon(iconComment);
 }

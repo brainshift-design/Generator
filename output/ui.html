@@ -28478,7 +28478,7 @@ function enableFeatures(subscription, beta)
     updateElementDisplay(btnFlow                     .div, subscription);
     updateElementDisplay(btnText                     .div, subscription && beta);
     updateElementDisplay(btnShape                    .div, subscription && beta);
-    updateElementDisplay(btnGroup                    .div, subscription && beta);
+    //updateElementDisplay(btnGroup                    .div, subscription && beta);
 
     updateElementDisplay(menuItemLogObjectUpdates    .div, subscription && beta);
     
@@ -63261,7 +63261,7 @@ function enableFeatures(subscription, beta)
     updateElementDisplay(btnFlow                     .div, subscription);
     updateElementDisplay(btnText                     .div, subscription && beta);
     updateElementDisplay(btnShape                    .div, subscription && beta);
-    updateElementDisplay(btnGroup                    .div, subscription && beta);
+    //updateElementDisplay(btnGroup                    .div, subscription && beta);
 
     updateElementDisplay(menuItemLogObjectUpdates    .div, subscription && beta);
     
@@ -69024,7 +69024,7 @@ function initGeneratorMenus()
     btnLayer  = new MenuButton('', menuLayer,  {useMenuName: true, highlight: () => currentMenus.includes(menuLayer ), callback: () => updatePanMode(false)});
     //btnStyle  = new MenuButton('', menuStyle,  {useMenuName: true, highlight: () => currentMenus.includes(menuStyle ), callback: () => updatePanMode(false)});
     btnShape  = new MenuButton('', menuShape,  {useMenuName: true, highlight: () => currentMenus.includes(menuShape ), callback: () => updatePanMode(false)});
-    btnGroup  = new MenuButton('', menuGroup,  {useMenuName: true, highlight: () => currentMenus.includes(menuShape ), callback: () => updatePanMode(false)});
+    //btnGroup  = new MenuButton('', menuGroup,  {useMenuName: true, highlight: () => currentMenus.includes(menuShape ), callback: () => updatePanMode(false)});
 
     // btnGroup  = new MenuButton('Node groups', null, {callback: () => 
     // {
@@ -69108,7 +69108,7 @@ function initGeneratorMenus()
     btnLayer  .setIcon(iconGradient);
     btnColor  .setIcon(iconColorInterpolate);
     //btnStyle  .setIcon(iconStyle);
-    btnGroup  .setIcon(iconGroup);
+    //btnGroup  .setIcon(iconGroup);
     btnHand   .setIcon(iconHand);
     btnComment.setIcon(iconComment);
 }
@@ -93085,7 +93085,7 @@ extends OpShape
     {
         const value = values[paramIds.findIndex(id => id == 'value')];
 
-        this.paramText         .setValue(value.x,             false, true, false);
+        this.paramText         .setValue(value.text,          false, true, false);
         this.paramX            .setValue(value.x,             false, true, false);
         this.paramY            .setValue(value.y,             false, true, false);
         this.paramWidth        .setValue(value.width,         false, true, false);

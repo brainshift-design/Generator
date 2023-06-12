@@ -59,7 +59,7 @@ extends OpShape
     {
         const value = values[paramIds.findIndex(id => id == 'value')];
 
-        this.paramText         .setValue(value.x,             false, true, false);
+        this.paramText         .setValue(value.text,          false, true, false);
         this.paramX            .setValue(value.x,             false, true, false);
         this.paramY            .setValue(value.y,             false, true, false);
         this.paramWidth        .setValue(value.width,         false, true, false);

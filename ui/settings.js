@@ -285,7 +285,7 @@ function enableFeatures(subscription, beta)
     updateElementDisplay(btnFlow                     .div, subscription);
     updateElementDisplay(btnText                     .div, subscription && beta);
     updateElementDisplay(btnShape                    .div, subscription && beta);
-    updateElementDisplay(btnGroup                    .div, subscription && beta);
+    //updateElementDisplay(btnGroup                    .div, subscription && beta);
 
     updateElementDisplay(menuItemLogObjectUpdates    .div, subscription && beta);
     
