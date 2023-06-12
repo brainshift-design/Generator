@@ -11,6 +11,7 @@ extends OperatorBase
     {
         super(SELECT, 'select', 'select', iconSelect);
 
+        //this.cached           = false;
         this.alwaysSaveParams = true;
 
 

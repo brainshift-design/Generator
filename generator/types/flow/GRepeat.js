@@ -106,33 +106,33 @@ extends GOperator
                     
                     
                     this.input.invalidateInputs(this);
-                    await this.input.eval(parse);
                     
                    
-                    this.iterationObjects = [];
-                    
-                    for (let j = 0; j < this.input.objects.length; j++, o++)
-                    {
-                        const obj = copyFigmaObject(this.input.objects[j]);
-
-                        this.iterationObjects.push(obj.copy());
-
-                        obj.nodeId      = this.nodeId;
-                        obj.listId      = i;
-
-                        obj.objectId    = obj.objectId + OBJECT_SEPARATOR + this.nodeId + ':' + (o+1).toString();
-                        obj.objectName += ' ' + (o+1).toString();
-
-                        this      .objects.push(obj);
-                        this.value.objects.push(obj);
-                    }
-        
-
-
-                    const input = this.input.toValue();
+                    const input = (await this.input.eval(parse)).toValue();
 
                     if (input)
+                    {
                         this.value.items.push(input.copy());
+
+
+                        this.iterationObjects = [];
+                    
+                        for (let j = 0; j < this.input.objects.length; j++, o++)
+                        {
+                            const obj = copyFigmaObject(this.input.objects[j]);
+
+                            this.iterationObjects.push(obj.copy());
+
+                            obj.nodeId      = this.nodeId;
+                            obj.listId      = i;
+
+                            obj.objectId    = obj.objectId + OBJECT_SEPARATOR + this.nodeId + ':' + (o+1).toString();
+                            obj.objectName += ' ' + (o+1).toString();
+
+                            this      .objects.push(obj);
+                            this.value.objects.push(obj);
+                        }
+                    }
                 }
 
 

@@ -106,6 +106,10 @@ function genRequest(request)
 
 function genPushUpdateValue(parse, nodeId, paramId, value)
 {
+    if (!value)
+        return;
+    
+    
     removeFromArrayWhere(parse.updateValues, v =>
            v.nodeId     == nodeId
         && v.paramId    == paramId

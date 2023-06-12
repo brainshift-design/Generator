@@ -10420,32 +10420,40 @@ extends GOperator
                 length = input.items.length;
 
 
-                index.value = Math.min(Math.max(0, index.value), input.items.length-1);
+                // index.value = Math.min(Math.max(0, index.value), input.items.length-1);
 
                 index = 
-                    index.isValid()
+                       index.isValid()
+                    && index.value >= 0
+                    && index.value <  input.items.length
                     ? new NumberValue(Math.round(index.value))
-                    : new NumberValue(0);
+                    : null;//new NumberValue(0);
 
-                this.value = input.items[index.value];
+
+                if (index)
+                {
+                    this.value = input.items[index.value];
 
                 
-                const _objects = this.input.objects.filter(o => o.listId == index.value);
+                    const _objects = this.input.objects.filter(o => o.listId == index.value);
 
-                for (let j = 0; j < _objects.length; j++)
-                {
-                    const obj = _objects[j].copy();
+                    for (let j = 0; j < _objects.length; j++)
+                    {
+                        const obj  = _objects[j].copy();
 
-                    obj.nodeId    = this.nodeId;
+                        obj.nodeId = this.nodeId;
 
-                    if (obj.objectId != NULL) obj.objectId += ' ';
-                    obj.objectId += index.value.toString();
+                        if (obj.objectId != NULL) obj.objectId += ' ';
+                        obj.objectId += index.value.toString();
 
-                    obj.listId    = -1;
-                    
-                    this.objects.push(obj);
+                        obj.listId = -1;
+                        
+                        this.objects.push(obj);
+                    }
                 }
-
+                else
+                    this.value = NullValue;
+                    
                 //console.log('GSelect.value =', this.value);
             }
             else
@@ -10643,7 +10651,7 @@ extends GOperator
             this.value = 
                 cond.value != 0
                 ? input0
-                : input0.getNaN()
+                : null;//input0.getNaN()
         }
         else if (this.input1)
         {
@@ -10652,10 +10660,10 @@ extends GOperator
             this.value = 
                 cond.value == 0
                 ? input1
-                : input1.getNaN();
+                : null;//input1.getNaN();
         }
         else                  
-            this.value = NullValue;
+            this.value = null;//NullValue;
 
 
         this.updateValues =
@@ -10932,33 +10940,33 @@ extends GOperator
                     
                     
                     this.input.invalidateInputs(this);
-                    await this.input.eval(parse);
                     
                    
-                    this.iterationObjects = [];
-                    
-                    for (let j = 0; j < this.input.objects.length; j++, o++)
-                    {
-                        const obj = copyFigmaObject(this.input.objects[j]);
-
-                        this.iterationObjects.push(obj.copy());
-
-                        obj.nodeId      = this.nodeId;
-                        obj.listId      = i;
-
-                        obj.objectId    = obj.objectId + OBJECT_SEPARATOR + this.nodeId + ':' + (o+1).toString();
-                        obj.objectName += ' ' + (o+1).toString();
-
-                        this      .objects.push(obj);
-                        this.value.objects.push(obj);
-                    }
-        
-
-
-                    const input = this.input.toValue();
+                    const input = (await this.input.eval(parse)).toValue();
 
                     if (input)
+                    {
                         this.value.items.push(input.copy());
+
+
+                        this.iterationObjects = [];
+                    
+                        for (let j = 0; j < this.input.objects.length; j++, o++)
+                        {
+                            const obj = copyFigmaObject(this.input.objects[j]);
+
+                            this.iterationObjects.push(obj.copy());
+
+                            obj.nodeId      = this.nodeId;
+                            obj.listId      = i;
+
+                            obj.objectId    = obj.objectId + OBJECT_SEPARATOR + this.nodeId + ':' + (o+1).toString();
+                            obj.objectName += ' ' + (o+1).toString();
+
+                            this      .objects.push(obj);
+                            this.value.objects.push(obj);
+                        }
+                    }
                 }
 
 
@@ -16130,7 +16138,7 @@ async function evalCompareInputs(input0, input1, op, parse)
         && val1 && val1.isValid())
         return new NumberValue(op(val0.value, val1.value) ? 1 : 0);
     else                  
-        return new NumberValue();
+        return NullValue;//new NumberValue(0);
 }
 
 
@@ -24446,6 +24454,10 @@ function genRequest(request)
 
 function genPushUpdateValue(parse, nodeId, paramId, value)
 {
+    if (!value)
+        return;
+    
+    
     removeFromArrayWhere(parse.updateValues, v =>
            v.nodeId     == nodeId
         && v.paramId    == paramId

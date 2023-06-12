@@ -256,6 +256,10 @@ extends ResizableBase
             rect.h = defHeaderHeight + this.params.length * defParamHeight;
         
         this.setRect(rect.x, rect.y, rect.w, rect.h, false);
+
+
+        for (const param of this.params)
+            param.divider = Math.min(120 / this.measureData.divOffset.width, 0.5);
     }
 
 

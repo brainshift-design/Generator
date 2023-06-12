@@ -12,6 +12,8 @@ extends OperatorBase
     {
         super(IF_ELSE, 'ifElse', 'if/else', iconIfElse);
 
+        //this.cached = false;
+
 
         this.addInput (new Input ([ANY_VALUE]));
         this.addInput (new Input ([ANY_VALUE]));

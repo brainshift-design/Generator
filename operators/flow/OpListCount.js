@@ -12,7 +12,7 @@ extends OperatorBase
         this.iconOffsetY = 1;
 
 
-        this.addInput (new Input([LIST_VALUE]));
+        this.addInput (new Input(LIST_VALUES));
 
         this.addParam(this.paramValue = new NumberParam('value', 'value', false, false, true, 0, 0));
     }

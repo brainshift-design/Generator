@@ -55,32 +55,40 @@ extends GOperator
                 length = input.items.length;
 
 
-                index.value = Math.min(Math.max(0, index.value), input.items.length-1);
+                // index.value = Math.min(Math.max(0, index.value), input.items.length-1);
 
                 index = 
-                    index.isValid()
+                       index.isValid()
+                    && index.value >= 0
+                    && index.value <  input.items.length
                     ? new NumberValue(Math.round(index.value))
-                    : new NumberValue(0);
+                    : null;//new NumberValue(0);
 
-                this.value = input.items[index.value];
+
+                if (index)
+                {
+                    this.value = input.items[index.value];
 
                 
-                const _objects = this.input.objects.filter(o => o.listId == index.value);
+                    const _objects = this.input.objects.filter(o => o.listId == index.value);
 
-                for (let j = 0; j < _objects.length; j++)
-                {
-                    const obj = _objects[j].copy();
+                    for (let j = 0; j < _objects.length; j++)
+                    {
+                        const obj  = _objects[j].copy();
 
-                    obj.nodeId    = this.nodeId;
+                        obj.nodeId = this.nodeId;
 
-                    if (obj.objectId != NULL) obj.objectId += ' ';
-                    obj.objectId += index.value.toString();
+                        if (obj.objectId != NULL) obj.objectId += ' ';
+                        obj.objectId += index.value.toString();
 
-                    obj.listId    = -1;
-                    
-                    this.objects.push(obj);
+                        obj.listId = -1;
+                        
+                        this.objects.push(obj);
+                    }
                 }
-
+                else
+                    this.value = NullValue;
+                    
                 //console.log('GSelect.value =', this.value);
             }
             else

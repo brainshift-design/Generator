@@ -101,5 +101,5 @@ async function evalCompareInputs(input0, input1, op, parse)
         && val1 && val1.isValid())
         return new NumberValue(op(val0.value, val1.value) ? 1 : 0);
     else                  
-        return new NumberValue();
+        return NullValue;//new NumberValue(0);
 }
