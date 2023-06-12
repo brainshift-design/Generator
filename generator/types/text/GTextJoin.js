@@ -78,12 +78,12 @@ async function evalJoinInputs(inputs, _with, parse)
 
 
     const value = new TextValue();
-
+    const w     = unescapeString(_with.value);
 
     for (let i = 0; i < inputs.length; i++)
     {
         if (i > 0)
-            value.value += _with.value;
+            value.value += w;
 
             
         const val = (await inputs[i].eval(parse)).toValue();
@@ -93,7 +93,7 @@ async function evalJoinInputs(inputs, _with, parse)
             for (let j = 0; j < val.items.length; j++)
             {
                 if (j > 0)
-                    value.value += _with.value;
+                    value.value += w;
 
 
                 const item = val.items[j];

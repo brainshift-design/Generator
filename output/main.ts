@@ -970,6 +970,7 @@ const TEXT_TRIM      = 'TTRIM';
 const TEXT_SUBSTRING = 'TSUB'; 
 const TEXT_REPLACE   = 'TREPL'; 
 const TEXT_JOIN      = 'TJOIN';  
+const TEXT_PAD       = 'TPAD';  
 const TEXT_CHAR      = 'TCHAR';
 const NUMBER_TO_TEXT = 'N2T';
 const TEXT_TO_NUMBER = 'T2N';
@@ -1014,6 +1015,7 @@ const TEXT_TYPES =
     TEXT_TRIM,
     TEXT_SUBSTRING,
     TEXT_JOIN,
+    TEXT_PAD,
     TEXT_REPLACE,
     TEXT_CHAR,
     NUMBER_TO_TEXT,
@@ -1721,6 +1723,10 @@ function logSavedConn(conn, darkMode)
 
 figma.on('documentchange', figOnDocumentChange);
 figma.on('close',          figOnPluginClose);
+
+
+
+figDeleteAllObjects();
 
 
 

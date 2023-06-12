@@ -13,6 +13,10 @@ figma.on('close',          figOnPluginClose);
 
 
 
+figDeleteAllObjects();
+
+
+
 figma.showUI(
     __html__,
     {

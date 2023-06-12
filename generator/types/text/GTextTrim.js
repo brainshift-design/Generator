@@ -53,8 +53,8 @@ extends GTextType
                 
             if (this.options.enabled)
             {
-                if (start.value.length > 0) this.value.value = trimCharFromStart(this.value.value, start.value);
-                if (end  .value.length > 0) this.value.value = trimCharFromEnd  (this.value.value, end  .value);
+                if (start.value.length > 0) this.value.value = trimCharFromStart(this.value.value, unescaleString(start.value));
+                if (end  .value.length > 0) this.value.value = trimCharFromEnd  (this.value.value, unescaleString(end  .value));
             }
         }
         else

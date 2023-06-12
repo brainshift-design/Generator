@@ -2694,6 +2694,28 @@ function getFontStyles(fontName)
 }
 
 
+
+function unescapeString(str)
+{
+    return str.replace(/\\(.)/g, (match, char) => 
+    {
+        const replacements = 
+        {
+            'n':  '\n',
+            'r':  '\r',
+            't':  '\t',
+            '\\': '\\',
+            '\'': '\'',
+            '\"': '\"',
+            '\`': '\`'
+        };
+      
+        return replacements[char] || match;
+    });
+  }
+  
+
+
 "use strict";
 
 // Base64 / binary data / UTF-8 strings utilities
@@ -3897,6 +3919,7 @@ const TEXT_TRIM      = 'TTRIM';
 const TEXT_SUBSTRING = 'TSUB'; 
 const TEXT_REPLACE   = 'TREPL'; 
 const TEXT_JOIN      = 'TJOIN';  
+const TEXT_PAD       = 'TPAD';  
 const TEXT_CHAR      = 'TCHAR';
 const NUMBER_TO_TEXT = 'N2T';
 const TEXT_TO_NUMBER = 'T2N';
@@ -3941,6 +3964,7 @@ const TEXT_TYPES =
     TEXT_TRIM,
     TEXT_SUBSTRING,
     TEXT_JOIN,
+    TEXT_PAD,
     TEXT_REPLACE,
     TEXT_CHAR,
     NUMBER_TO_TEXT,
@@ -15042,8 +15066,8 @@ extends GTextType
                 
             if (this.options.enabled)
             {
-                if (start.value.length > 0) this.value.value = trimCharFromStart(this.value.value, start.value);
-                if (end  .value.length > 0) this.value.value = trimCharFromEnd  (this.value.value, end  .value);
+                if (start.value.length > 0) this.value.value = trimCharFromStart(this.value.value, unescaleString(start.value));
+                if (end  .value.length > 0) this.value.value = trimCharFromEnd  (this.value.value, unescaleString(end  .value));
             }
         }
         else
@@ -15520,8 +15544,8 @@ extends GTextType
                 'this.value.type must be TEXT_VALUE');
 
             this.value.value = this.value.value.replaceAll(
-                _what.value,
-                _with.value);
+                unescapeString(_what.value),
+                unescapeString(_with.value));
         }
         else
             this.value = new TextValue();//TextValue.NaN;
@@ -15645,12 +15669,12 @@ async function evalJoinInputs(inputs, _with, parse)
 
 
     const value = new TextValue();
-
+    const w     = unescapeString(_with.value);
 
     for (let i = 0; i < inputs.length; i++)
     {
         if (i > 0)
-            value.value += _with.value;
+            value.value += w;
 
             
         const val = (await inputs[i].eval(parse)).toValue();
@@ -15660,7 +15684,7 @@ async function evalJoinInputs(inputs, _with, parse)
             for (let j = 0; j < val.items.length; j++)
             {
                 if (j > 0)
-                    value.value += _with.value;
+                    value.value += w;
 
 
                 const item = val.items[j];
@@ -15682,6 +15706,126 @@ async function evalJoinInputs(inputs, _with, parse)
 
     return value;
 }
+
+
+class GTextPad
+extends GTextType
+{
+    input = null;
+
+    startPad;
+    startCount;
+    endPad;
+    endCount;
+
+
+    
+    constructor(nodeId, options)
+    {
+        super(TEXT_PAD, nodeId, options);
+    }
+
+
+    
+    copy()
+    {
+        const copy = new GTextPad(this.nodeId, this.options);
+
+        copy.copyBase(this);
+
+        if (this.input) 
+            copy.input = this.input.copy();
+
+        copy.startPad   = this.startPad  .copy();
+        copy.startCount = this.startCount.copy();
+        copy.endPad     = this.endPad    .copy();
+        copy.endCount   = this.endCount  .copy();
+
+        return copy;
+    }
+
+
+
+    async eval(parse)
+    {
+        if (this.isCached())
+            return this;
+
+
+        const startPad   = (await this.startPad  .eval(parse)).toValue();
+        const startCount = (await this.startCount.eval(parse)).toValue();
+        const endPad     = (await this.endPad    .eval(parse)).toValue();
+        const endCount   = (await this.endCount  .eval(parse)).toValue();
+
+
+        let length = 0;
+
+
+        if (this.input)
+        {
+            const input = (await this.input.eval(parse)).toValue();
+            
+            length = input.value.length;
+            
+            this.value = input.copy();
+            
+            console.assert(
+                this.value.type == TEXT_VALUE, 
+                'this.value.type must be TEXT_VALUE');
+                
+                
+            if (this.options.enabled)
+                this.value.value = this.value.value
+                    .padStart(startCount.value, unescapeString(startPad.value))
+                    .padEnd  (  endCount.value, unescapeString(  endPad.value));
+        }
+        else
+            this.value = new TextValue();//TextValue.NaN;
+
+
+        this.updateValues =
+        [
+            ['value',      this.value             ],
+            ['length',     new NumberValue(length)], // used to set start and end maxima
+            ['startPad',   startPad               ],
+            ['startCount', startCount             ],
+            ['endPad',     endPad                 ],
+            ['endCount',   endCount               ]
+        ];
+        
+
+        this.validate();
+
+        return this;
+    }
+
+
+
+    pushValueUpdates(parse)
+    {
+        super.pushValueUpdates(parse);
+
+        if (this.input     ) this.input     .pushValueUpdates(parse);
+        if (this.startPad  ) this.startPad  .pushValueUpdates(parse);
+        if (this.startCount) this.startCount.pushValueUpdates(parse);
+        if (this.endPad    ) this.endPad    .pushValueUpdates(parse);
+        if (this.endCount  ) this.endCount  .pushValueUpdates(parse);
+    }
+
+
+
+    invalidateInputs(from)
+    {
+        super.invalidateInputs(from);
+
+        if (this.input     ) this.input     .invalidateInputs(from);
+        if (this.startPad  ) this.startPad  .invalidateInputs(from);
+        if (this.startCount) this.startCount.invalidateInputs(from);
+        if (this.endPad    ) this.endPad    .invalidateInputs(from);
+        if (this.endCount  ) this.endCount  .invalidateInputs(from);
+    }
+}
+
 
 
 class GTextCSV
@@ -15733,7 +15877,7 @@ extends GOperator
             const input = (await this.input.eval(parse)).toValue();
             console.assert(input.type == TEXT_VALUE, 'input must be TEXT_VALUE');
 
-            const items = input.value.split(separator.value);
+            const items = input.value.split(unescapeString(separator.value));
 
             for (const item of items)
                 this.value.items.push(new TextValue(item));
@@ -28127,6 +28271,7 @@ function genParseColorStyle(parse)
 
 
 
+
 function genParseTextValue(parse)
 {
     parse.pos++; // tag
@@ -28403,6 +28548,55 @@ function genParseTextJoin(parse, newNode)
         
     genParseNodeEnd(parse, join);
     return join;
+}
+
+
+
+function genParseTextPad(parse)
+{
+    const [, nodeId, options, ignore] = genParseNodeStart(parse);
+
+
+    const sub = new GTextPad(nodeId, options);
+   
+
+    let nInputs = -1;
+    
+    if (!ignore)
+    {
+        nInputs = parseInt(parse.move());
+        console.assert(nInputs == 0 || nInputs == 1, 'nInputs must be [0, 1]');
+    }
+
+    
+    if (parse.settings.logRequests) 
+        logReq(sub, parse, ignore, nInputs);
+
+
+    if (ignore) 
+    {
+        genParseNodeEnd(parse, sub);
+        return parse.parsedNodes.find(n => n.nodeId == nodeId);
+    }
+
+
+    parse.nTab++;
+
+
+    if (nInputs == 1)
+        sub.input = genParse(parse);
+
+    sub.startPad   = genParse(parse);
+    sub.startCount = genParse(parse);
+    sub.endPad     = genParse(parse);
+    sub.endCount   = genParse(parse);
+
+    
+    parse.nTab--;
+
+
+    genParseNodeEnd(parse, sub);
+    return sub;
 }
 
 
@@ -28833,6 +29027,7 @@ function genParse(parse, inParam = true)
     else if (parse.next == TEXT_TO_NUMBER         ) result = genParseTextToNumber     (parse);
     else if (parse.next == TEXT_REPLACE           ) result = genParseTextReplace      (parse);
     else if (parse.next == TEXT_JOIN              ) result = genParseTextJoin         (parse);
+    else if (parse.next == TEXT_PAD               ) result = genParseTextPad          (parse);
     else if (parse.next == TEXT_CSV               ) result = genParseTextCSV          (parse);
     else if (parse.next == TEXT_JSON              ) result = genParseTextJson         (parse);
     else if (parse.next == TEXT_FETCH             ) result = genParseTextFetch        (parse);

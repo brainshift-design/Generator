@@ -53,8 +53,8 @@ extends GTextType
                 'this.value.type must be TEXT_VALUE');
 
             this.value.value = this.value.value.replaceAll(
-                _what.value,
-                _with.value);
+                unescapeString(_what.value),
+                unescapeString(_with.value));
         }
         else
             this.value = new TextValue();//TextValue.NaN;

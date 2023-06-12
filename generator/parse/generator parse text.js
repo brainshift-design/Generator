@@ -1,3 +1,4 @@
+
 function genParseTextValue(parse)
 {
     parse.pos++; // tag
@@ -274,6 +275,55 @@ function genParseTextJoin(parse, newNode)
         
     genParseNodeEnd(parse, join);
     return join;
+}
+
+
+
+function genParseTextPad(parse)
+{
+    const [, nodeId, options, ignore] = genParseNodeStart(parse);
+
+
+    const sub = new GTextPad(nodeId, options);
+   
+
+    let nInputs = -1;
+    
+    if (!ignore)
+    {
+        nInputs = parseInt(parse.move());
+        console.assert(nInputs == 0 || nInputs == 1, 'nInputs must be [0, 1]');
+    }
+
+    
+    if (parse.settings.logRequests) 
+        logReq(sub, parse, ignore, nInputs);
+
+
+    if (ignore) 
+    {
+        genParseNodeEnd(parse, sub);
+        return parse.parsedNodes.find(n => n.nodeId == nodeId);
+    }
+
+
+    parse.nTab++;
+
+
+    if (nInputs == 1)
+        sub.input = genParse(parse);
+
+    sub.startPad   = genParse(parse);
+    sub.startCount = genParse(parse);
+    sub.endPad     = genParse(parse);
+    sub.endCount   = genParse(parse);
+
+    
+    parse.nTab--;
+
+
+    genParseNodeEnd(parse, sub);
+    return sub;
 }
 
 

@@ -387,3 +387,25 @@ function getFontStyles(fontName)
     
     return fonts.map(f => f.fontName.style);
 }
+
+
+
+function unescapeString(str)
+{
+    return str.replace(/\\(.)/g, (match, char) => 
+    {
+        const replacements = 
+        {
+            'n':  '\n',
+            'r':  '\r',
+            't':  '\t',
+            '\\': '\\',
+            '\'': '\'',
+            '\"': '\"',
+            '\`': '\`'
+        };
+      
+        return replacements[char] || match;
+    });
+  }
+  

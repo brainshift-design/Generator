@@ -172,6 +172,7 @@ function genParse(parse, inParam = true)
     else if (parse.next == TEXT_TO_NUMBER         ) result = genParseTextToNumber     (parse);
     else if (parse.next == TEXT_REPLACE           ) result = genParseTextReplace      (parse);
     else if (parse.next == TEXT_JOIN              ) result = genParseTextJoin         (parse);
+    else if (parse.next == TEXT_PAD               ) result = genParseTextPad          (parse);
     else if (parse.next == TEXT_CSV               ) result = genParseTextCSV          (parse);
     else if (parse.next == TEXT_JSON              ) result = genParseTextJson         (parse);
     else if (parse.next == TEXT_FETCH             ) result = genParseTextFetch        (parse);

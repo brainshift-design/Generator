@@ -14,7 +14,7 @@ extends OperatorWithValue
         this.iconOffsetY = 1;
         
 
-        this.addInput (new Input (TEXT_TYPES));
+        this.addInput (new Input ([TEXT_VALUE]));
         this.addOutput(new Output([TEXT_VALUE], this.output_genRequest));
 
         this.addParam(this.paramValue);
