@@ -1058,7 +1058,7 @@ var curZoom = figma.viewport.zoom;
 setInterval(() => {
     updatePointSizes();
     updateEmptyObjects();
-}, 100);
+}, 250);
 var showIds = false;
 // figma.currentPage
 //     .getPluginDataKeys()
@@ -1113,7 +1113,8 @@ function figDeleteObjectsFromNodeIds(nodeIds) {
         if (nodeIds.includes(figPoints[i].getPluginData('nodeId')))
             figPoints.splice(i, 1);
     for (let i = figEmptyObjects.length - 1; i >= 0; i--)
-        if (nodeIds.includes(figEmptyObjects[i].getPluginData('nodeId')))
+        if (figEmptyObjects[i].removed
+            || nodeIds.includes(figEmptyObjects[i].getPluginData('nodeId')))
             figEmptyObjects.splice(i, 1);
     figma.currentPage
         .findAll(o => nodeIds.includes(o.getPluginData('nodeId')))
@@ -2278,8 +2279,12 @@ function setObjectEffects(figObj, genObj) {
         figObj.effects = [];
 }
 function updateEmptyObjects() {
-    for (const obj of figEmptyObjects)
-        setEmptyObjectStroke(obj);
+    for (const obj of figEmptyObjects) {
+        if (obj.removed)
+            removeFromArray(figEmptyObjects, obj);
+        else
+            setEmptyObjectStroke(obj);
+    }
 }
 function setEmptyObjectStroke(obj) {
     const back = figma.currentPage.backgrounds.find(b => b.type == 'SOLID');

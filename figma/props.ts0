@@ -279,8 +279,9 @@ function setObjectStroke_(figObj, fills, weight, align, join, miterLimit, dashes
     figObj.strokeAlign      = align;
     figObj.strokeJoin       = join;
     
-    const  miterAngle = miterLimit/360*Tau;
-    const _miterLimit = 1 / Math.sin(miterAngle/2);
+
+    const  miterAngle       = miterLimit/360*Tau;
+    const _miterLimit       = 1 / Math.sin(miterAngle/2);
     
     figObj.strokeMiterLimit = Math.min(Math.max(0, _miterLimit), 16);
 
@@ -303,7 +304,12 @@ function setObjectEffects(figObj, genObj)
 function updateEmptyObjects()
 {
     for (const obj of figEmptyObjects)
-        setEmptyObjectStroke(obj);
+    {
+        if (obj.removed)
+            removeFromArray(figEmptyObjects, obj);
+        else
+            setEmptyObjectStroke(obj);
+    }
 }
 
 

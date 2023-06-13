@@ -45,12 +45,15 @@ extends GOperator
         if (this.input)
         {
             const input = (await this.input.eval(parse)).toValue();
-            console.assert(input.type == TEXT_VALUE, 'input must be TEXT_VALUE');
+            
+            if (input)
+            {
+                console.assert(input.type == TEXT_VALUE, 'input must be TEXT_VALUE');
+                const items = input.value.split(unescapeString(separator.value));
 
-            const items = input.value.split(unescapeString(separator.value));
-
-            for (const item of items)
-                this.value.items.push(new TextValue(item));
+                for (const item of items)
+                    this.value.items.push(new TextValue(item));
+            }
         }
     
 

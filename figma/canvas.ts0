@@ -10,7 +10,8 @@ function figDeleteObjectsFromNodeIds(nodeIds)
             figPoints.splice(i, 1);
 
     for (let i = figEmptyObjects.length-1; i >= 0; i--)
-        if (nodeIds.includes(figEmptyObjects[i].getPluginData('nodeId')))
+        if (   figEmptyObjects[i].removed
+            || nodeIds.includes(figEmptyObjects[i].getPluginData('nodeId')))
             figEmptyObjects.splice(i, 1);
 
     figma.currentPage

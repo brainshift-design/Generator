@@ -62,7 +62,7 @@ extends GOperator
                     && index.value >= 0
                     && index.value <  input.items.length
                     ? new NumberValue(Math.round(index.value))
-                    : NumberValue.NaN;//null;//new NumberValue(0);
+                    : new NumberValue(0);
 
 
                 if (index.isValid())
@@ -87,20 +87,22 @@ extends GOperator
                     }
                 }
                 else
+                {
                     this.value = null;//NullValue;
-                    
+                    index      = NumberValue.NaN;
+                }                    
                 //console.log('GSelect.value =', this.value);
             }
             else
             {
-                this.value = NullValue;
-                index      = null;//NumberValue.NaN;
+                this.value = null;//NullValue;
+                index      = NumberValue.NaN;
             }
         }
         else
         {
-            this.value = NullValue;
-            index      = null;//NumberValue.NaN;
+            this.value = null;//NullValue;
+            index      = NumberValue.NaN;
         }
 
 

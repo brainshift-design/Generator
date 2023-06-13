@@ -10427,7 +10427,7 @@ extends GOperator
                     && index.value >= 0
                     && index.value <  input.items.length
                     ? new NumberValue(Math.round(index.value))
-                    : NumberValue.NaN;//null;//new NumberValue(0);
+                    : new NumberValue(0);
 
 
                 if (index.isValid())
@@ -10452,20 +10452,22 @@ extends GOperator
                     }
                 }
                 else
+                {
                     this.value = null;//NullValue;
-                    
+                    index      = NumberValue.NaN;
+                }                    
                 //console.log('GSelect.value =', this.value);
             }
             else
             {
-                this.value = NullValue;
-                index      = null;//NumberValue.NaN;
+                this.value = null;//NullValue;
+                index      = NumberValue.NaN;
             }
         }
         else
         {
-            this.value = NullValue;
-            index      = null;//NumberValue.NaN;
+            this.value = null;//NullValue;
+            index      = NumberValue.NaN;
         }
 
 
@@ -15982,12 +15984,15 @@ extends GOperator
         if (this.input)
         {
             const input = (await this.input.eval(parse)).toValue();
-            console.assert(input.type == TEXT_VALUE, 'input must be TEXT_VALUE');
+            
+            if (input)
+            {
+                console.assert(input.type == TEXT_VALUE, 'input must be TEXT_VALUE');
+                const items = input.value.split(unescapeString(separator.value));
 
-            const items = input.value.split(unescapeString(separator.value));
-
-            for (const item of items)
-                this.value.items.push(new TextValue(item));
+                for (const item of items)
+                    this.value.items.push(new TextValue(item));
+            }
         }
     
 

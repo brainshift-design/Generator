@@ -15146,7 +15146,7 @@ extends GOperator
                     && index.value >= 0
                     && index.value <  input.items.length
                     ? new NumberValue(Math.round(index.value))
-                    : NumberValue.NaN;//null;//new NumberValue(0);
+                    : new NumberValue(0);
 
 
                 if (index.isValid())
@@ -15171,20 +15171,22 @@ extends GOperator
                     }
                 }
                 else
+                {
                     this.value = null;//NullValue;
-                    
+                    index      = NumberValue.NaN;
+                }                    
                 //console.log('GSelect.value =', this.value);
             }
             else
             {
-                this.value = NullValue;
-                index      = null;//NumberValue.NaN;
+                this.value = null;//NullValue;
+                index      = NumberValue.NaN;
             }
         }
         else
         {
-            this.value = NullValue;
-            index      = null;//NumberValue.NaN;
+            this.value = null;//NullValue;
+            index      = NumberValue.NaN;
         }
 
 
@@ -20701,12 +20703,15 @@ extends GOperator
         if (this.input)
         {
             const input = (await this.input.eval(parse)).toValue();
-            console.assert(input.type == TEXT_VALUE, 'input must be TEXT_VALUE');
+            
+            if (input)
+            {
+                console.assert(input.type == TEXT_VALUE, 'input must be TEXT_VALUE');
+                const items = input.value.split(unescapeString(separator.value));
 
-            const items = input.value.split(unescapeString(separator.value));
-
-            for (const item of items)
-                this.value.items.push(new TextValue(item));
+                for (const item of items)
+                    this.value.items.push(new TextValue(item));
+            }
         }
     
 
@@ -50441,7 +50446,7 @@ extends GOperator
                     && index.value >= 0
                     && index.value <  input.items.length
                     ? new NumberValue(Math.round(index.value))
-                    : NumberValue.NaN;//null;//new NumberValue(0);
+                    : new NumberValue(0);
 
 
                 if (index.isValid())
@@ -50466,20 +50471,22 @@ extends GOperator
                     }
                 }
                 else
+                {
                     this.value = null;//NullValue;
-                    
+                    index      = NumberValue.NaN;
+                }                    
                 //console.log('GSelect.value =', this.value);
             }
             else
             {
-                this.value = NullValue;
-                index      = null;//NumberValue.NaN;
+                this.value = null;//NullValue;
+                index      = NumberValue.NaN;
             }
         }
         else
         {
-            this.value = NullValue;
-            index      = null;//NumberValue.NaN;
+            this.value = null;//NullValue;
+            index      = NumberValue.NaN;
         }
 
 
@@ -55996,12 +56003,15 @@ extends GOperator
         if (this.input)
         {
             const input = (await this.input.eval(parse)).toValue();
-            console.assert(input.type == TEXT_VALUE, 'input must be TEXT_VALUE');
+            
+            if (input)
+            {
+                console.assert(input.type == TEXT_VALUE, 'input must be TEXT_VALUE');
+                const items = input.value.split(unescapeString(separator.value));
 
-            const items = input.value.split(unescapeString(separator.value));
-
-            for (const item of items)
-                this.value.items.push(new TextValue(item));
+                for (const item of items)
+                    this.value.items.push(new TextValue(item));
+            }
         }
     
 
@@ -83887,6 +83897,7 @@ extends OperatorBase
     {
         // super.updateParams();
         
+        this.paramIndex.enableControlText(true);
         this.paramIndex.controls[0].setMax(Math.max(0, this.length.value - 1));
 
         this.updateParamControls();
@@ -83906,12 +83917,12 @@ extends OperatorBase
             : this.type;
 
            
-        const col = rgb_a(rgbFromType(type, this.active), 0.95);
+        //const col = rgb_a(rgbFromType(type, this.active), 0.95);
             
         // colors.back = col;
 
 
-        colors.text   = isDark(col) ? [1, 1, 1, 1] : [0, 0, 0, 1]; 
+        colors.text   = isDark(colors.back) ? [1, 1, 1, 1] : [0, 0, 0, 1]; 
 
         colors.input  = this.active ? rgb_a(colors.text, 0.4)  : rgb_a(rgbSaturateHsv(rgbFromType(type, true), 0.5), 0.8);
         colors.output = this.active ? rgb_a(colors.text, 0.35) : rgb_a(rgbSaturateHsv(rgbFromType(type, true), 0.5), 0.7);

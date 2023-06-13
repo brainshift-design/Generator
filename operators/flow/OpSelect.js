@@ -87,6 +87,7 @@ extends OperatorBase
     {
         // super.updateParams();
         
+        this.paramIndex.enableControlText(true);
         this.paramIndex.controls[0].setMax(Math.max(0, this.length.value - 1));
 
         this.updateParamControls();
@@ -106,12 +107,12 @@ extends OperatorBase
             : this.type;
 
            
-        const col = rgb_a(rgbFromType(type, this.active), 0.95);
+        //const col = rgb_a(rgbFromType(type, this.active), 0.95);
             
         // colors.back = col;
 
 
-        colors.text   = isDark(col) ? [1, 1, 1, 1] : [0, 0, 0, 1]; 
+        colors.text   = isDark(colors.back) ? [1, 1, 1, 1] : [0, 0, 0, 1]; 
 
         colors.input  = this.active ? rgb_a(colors.text, 0.4)  : rgb_a(rgbSaturateHsv(rgbFromType(type, true), 0.5), 0.8);
         colors.output = this.active ? rgb_a(colors.text, 0.35) : rgb_a(rgbSaturateHsv(rgbFromType(type, true), 0.5), 0.7);

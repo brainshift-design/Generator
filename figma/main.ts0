@@ -33,7 +33,7 @@ setInterval(() =>
     updatePointSizes();
     updateEmptyObjects();
 }, 
-100);
+250);
 
 
 var showIds = false;

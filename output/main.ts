@@ -1750,7 +1750,7 @@ setInterval(() =>
     updatePointSizes();
     updateEmptyObjects();
 }, 
-100);
+250);
 
 
 var showIds = false;
@@ -1829,7 +1829,8 @@ function figDeleteObjectsFromNodeIds(nodeIds)
             figPoints.splice(i, 1);
 
     for (let i = figEmptyObjects.length-1; i >= 0; i--)
-        if (nodeIds.includes(figEmptyObjects[i].getPluginData('nodeId')))
+        if (   figEmptyObjects[i].removed
+            || nodeIds.includes(figEmptyObjects[i].getPluginData('nodeId')))
             figEmptyObjects.splice(i, 1);
 
     figma.currentPage
@@ -3430,8 +3431,9 @@ function setObjectStroke_(figObj, fills, weight, align, join, miterLimit, dashes
     figObj.strokeAlign      = align;
     figObj.strokeJoin       = join;
     
-    const  miterAngle = miterLimit/360*Tau;
-    const _miterLimit = 1 / Math.sin(miterAngle/2);
+
+    const  miterAngle       = miterLimit/360*Tau;
+    const _miterLimit       = 1 / Math.sin(miterAngle/2);
     
     figObj.strokeMiterLimit = Math.min(Math.max(0, _miterLimit), 16);
 
@@ -3454,7 +3456,12 @@ function setObjectEffects(figObj, genObj)
 function updateEmptyObjects()
 {
     for (const obj of figEmptyObjects)
-        setEmptyObjectStroke(obj);
+    {
+        if (obj.removed)
+            removeFromArray(figEmptyObjects, obj);
+        else
+            setEmptyObjectStroke(obj);
+    }
 }
 
 
