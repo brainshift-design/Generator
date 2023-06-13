@@ -801,9 +801,9 @@ const MATH_OPS = [
     [NUMBER_EXPONENT, 'e<sup>x</sup>']
 ];
 const BOOLEAN_NOT = 0;
-const BOOLEAN_AND = 1;
+const BOOLEAN_XOR = 1;
 const BOOLEAN_OR = 2;
-const BOOLEAN_XOR = 3;
+const BOOLEAN_AND = 3;
 const BOOLEAN_OPS = [
     [BOOLEAN_NOT, 'not'],
     [BOOLEAN_XOR, 'xor'],

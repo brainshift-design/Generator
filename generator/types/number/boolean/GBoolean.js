@@ -40,9 +40,9 @@ extends GArithmetic
         switch (op.value)
         {
             case BOOLEAN_NOT: this.value = await evalNandInputs(this.inputs, parse); break;
-            case BOOLEAN_AND: this.value = await evalAndInputs (this.inputs, parse); break;
-            case BOOLEAN_OR:  this.value = await evalOrInputs  (this.inputs, parse); break;
             case BOOLEAN_XOR: this.value = await evalXorInputs (this.inputs, parse); break;
+            case BOOLEAN_OR:  this.value = await evalOrInputs  (this.inputs, parse); break;
+            case BOOLEAN_AND: this.value = await evalAndInputs (this.inputs, parse); break;
         }
 
         

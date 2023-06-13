@@ -85,6 +85,9 @@ extends GOperator
         {
             if (this.input)
             {
+                genInitNodeProgress(this.nodeId);
+
+
                 const nItems = 
                     this.options.enabled 
                     ? count.value 
@@ -133,6 +136,9 @@ extends GOperator
                             this.value.objects.push(obj);
                         }
                     }
+
+
+                    genUpdateNodeProgress(this.nodeId, i / nItems);
                 }
 
 

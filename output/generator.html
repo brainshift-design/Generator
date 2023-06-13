@@ -4269,9 +4269,9 @@ const MATH_OPS =
 
 
 const BOOLEAN_NOT = 0;
-const BOOLEAN_AND = 1;
+const BOOLEAN_XOR = 1;
 const BOOLEAN_OR  = 2;
-const BOOLEAN_XOR = 3;
+const BOOLEAN_AND = 3;
 
 
 const BOOLEAN_OPS = 
@@ -10921,6 +10921,9 @@ extends GOperator
         {
             if (this.input)
             {
+                genInitNodeProgress(this.nodeId);
+
+
                 const nItems = 
                     this.options.enabled 
                     ? count.value 
@@ -10969,6 +10972,9 @@ extends GOperator
                             this.value.objects.push(obj);
                         }
                     }
+
+
+                    genUpdateNodeProgress(this.nodeId, i / nItems);
                 }
 
 
@@ -13673,9 +13679,9 @@ extends GArithmetic
         switch (op.value)
         {
             case BOOLEAN_NOT: this.value = await evalNandInputs(this.inputs, parse); break;
-            case BOOLEAN_AND: this.value = await evalAndInputs (this.inputs, parse); break;
-            case BOOLEAN_OR:  this.value = await evalOrInputs  (this.inputs, parse); break;
             case BOOLEAN_XOR: this.value = await evalXorInputs (this.inputs, parse); break;
+            case BOOLEAN_OR:  this.value = await evalOrInputs  (this.inputs, parse); break;
+            case BOOLEAN_AND: this.value = await evalAndInputs (this.inputs, parse); break;
         }
 
         

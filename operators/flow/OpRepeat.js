@@ -8,7 +8,7 @@ extends OperatorBase
 
     constructor()
     {
-        super(REPEAT, 'repeat', 'repeat', iconRepeat);
+        super(REPEAT, 'repeat', 'repeat', iconRepeat, defNodeWidth, true);
 
         this.canDisable = true;
 
@@ -84,6 +84,8 @@ extends OperatorBase
             value
             ? [finalListTypeFromItems(value.items)]
             : [LIST_VALUE];
+
+        this.endNodeProgress();
     }
 
 

@@ -4386,6 +4386,8 @@ a
 
                     <li><span class='bold'>Disclaimer of Warranty:</span> Generator is provided "as is" without any warranties.</li>
 
+                    <li><span class='bold'>Disclaimer Regarding Software Stability:</span> Please note that Generator is considered early software and may contain bugs or experience breaking changes during its development. These issues could potentially render your work or the software itself temporarily or permanently unusable. By installing and using Generator, you acknowledge and accept this risk.</li>
+
                     <li><span class='bold'>Limitation of Liability:</span> Brainshift is not liable for any damages arising from the use of Generator.</li>
 
                     <li><span class='bold'>Termination:</span> This agreement may be terminated if you fail to comply with its terms.</li>
@@ -8988,9 +8990,9 @@ const MATH_OPS =
 
 
 const BOOLEAN_NOT = 0;
-const BOOLEAN_AND = 1;
+const BOOLEAN_XOR = 1;
 const BOOLEAN_OR  = 2;
-const BOOLEAN_XOR = 3;
+const BOOLEAN_AND = 3;
 
 
 const BOOLEAN_OPS = 
@@ -15640,6 +15642,9 @@ extends GOperator
         {
             if (this.input)
             {
+                genInitNodeProgress(this.nodeId);
+
+
                 const nItems = 
                     this.options.enabled 
                     ? count.value 
@@ -15688,6 +15693,9 @@ extends GOperator
                             this.value.objects.push(obj);
                         }
                     }
+
+
+                    genUpdateNodeProgress(this.nodeId, i / nItems);
                 }
 
 
@@ -18392,9 +18400,9 @@ extends GArithmetic
         switch (op.value)
         {
             case BOOLEAN_NOT: this.value = await evalNandInputs(this.inputs, parse); break;
-            case BOOLEAN_AND: this.value = await evalAndInputs (this.inputs, parse); break;
-            case BOOLEAN_OR:  this.value = await evalOrInputs  (this.inputs, parse); break;
             case BOOLEAN_XOR: this.value = await evalXorInputs (this.inputs, parse); break;
+            case BOOLEAN_OR:  this.value = await evalOrInputs  (this.inputs, parse); break;
+            case BOOLEAN_AND: this.value = await evalAndInputs (this.inputs, parse); break;
         }
 
         
@@ -44288,9 +44296,9 @@ const MATH_OPS =
 
 
 const BOOLEAN_NOT = 0;
-const BOOLEAN_AND = 1;
+const BOOLEAN_XOR = 1;
 const BOOLEAN_OR  = 2;
-const BOOLEAN_XOR = 3;
+const BOOLEAN_AND = 3;
 
 
 const BOOLEAN_OPS = 
@@ -50940,6 +50948,9 @@ extends GOperator
         {
             if (this.input)
             {
+                genInitNodeProgress(this.nodeId);
+
+
                 const nItems = 
                     this.options.enabled 
                     ? count.value 
@@ -50988,6 +50999,9 @@ extends GOperator
                             this.value.objects.push(obj);
                         }
                     }
+
+
+                    genUpdateNodeProgress(this.nodeId, i / nItems);
                 }
 
 
@@ -53692,9 +53706,9 @@ extends GArithmetic
         switch (op.value)
         {
             case BOOLEAN_NOT: this.value = await evalNandInputs(this.inputs, parse); break;
-            case BOOLEAN_AND: this.value = await evalAndInputs (this.inputs, parse); break;
-            case BOOLEAN_OR:  this.value = await evalOrInputs  (this.inputs, parse); break;
             case BOOLEAN_XOR: this.value = await evalXorInputs (this.inputs, parse); break;
+            case BOOLEAN_OR:  this.value = await evalOrInputs  (this.inputs, parse); break;
+            case BOOLEAN_AND: this.value = await evalAndInputs (this.inputs, parse); break;
         }
 
         
@@ -84456,7 +84470,7 @@ extends OperatorBase
 
     constructor()
     {
-        super(REPEAT, 'repeat', 'repeat', iconRepeat);
+        super(REPEAT, 'repeat', 'repeat', iconRepeat, defNodeWidth, true);
 
         this.canDisable = true;
 
@@ -84532,6 +84546,8 @@ extends OperatorBase
             value
             ? [finalListTypeFromItems(value.items)]
             : [LIST_VALUE];
+
+        this.endNodeProgress();
     }
 
 
@@ -102120,7 +102136,7 @@ function uiReturnFigStartGenerator(msg)
     uiGetLocalData('showWhatsNew');
 
 
-    //showEulaDialog();
+    showEulaDialog();
 
 
     currentUser  = msg.currentUser;
