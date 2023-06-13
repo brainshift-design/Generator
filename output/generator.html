@@ -9216,7 +9216,7 @@ extends ShapeValue
 
     toString()
     {
-        return      this.text         .toString()
+        return      this.text         .toJson() // otherwise the string can't contain another string
             + ' ' + this.x            .toString()
             + ' ' + this.y            .toString()
             + ' ' + this.width        .toString()

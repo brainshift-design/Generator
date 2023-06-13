@@ -1747,10 +1747,15 @@ var curZoom = figma.viewport.zoom;
 
 setInterval(() => 
 {
+    if (figma.viewport.zoom == curZoom)
+        return;
+
     updatePointSizes();
     updateEmptyObjects();
+    
+    curZoom = figma.viewport.zoom;
 }, 
-250);
+100);
 
 
 var showIds = false;
@@ -4269,20 +4274,14 @@ function figUpdatePoint(figPoint, genPoint)
 
 function updatePointSizes()
 {
-    if (figma.viewport.zoom != curZoom)
+    figPostMessageToUi(
     {
-        figPostMessageToUi(
-        {
-            cmd: 'uiUpdateZoom', 
-            zoom: figma.viewport.zoom 
-        });
-        
-        
-        curZoom = figma.viewport.zoom;
-
-        for (const point of figPoints)
-            updatePointSize(point);
-    }
+        cmd: 'uiUpdateZoom', 
+        zoom: figma.viewport.zoom 
+    });
+    
+    for (const point of figPoints)
+        updatePointSize(point);
 }
 
 

@@ -1056,9 +1056,12 @@ figma.showUI(__html__, {
 });
 var curZoom = figma.viewport.zoom;
 setInterval(() => {
+    if (figma.viewport.zoom == curZoom)
+        return;
     updatePointSizes();
     updateEmptyObjects();
-}, 250);
+    curZoom = figma.viewport.zoom;
+}, 100);
 var showIds = false;
 // figma.currentPage
 //     .getPluginDataKeys()
@@ -2744,15 +2747,12 @@ function figUpdatePoint(figPoint, genPoint) {
     updatePointStyles(figPoint);
 }
 function updatePointSizes() {
-    if (figma.viewport.zoom != curZoom) {
-        figPostMessageToUi({
-            cmd: 'uiUpdateZoom',
-            zoom: figma.viewport.zoom
-        });
-        curZoom = figma.viewport.zoom;
-        for (const point of figPoints)
-            updatePointSize(point);
-    }
+    figPostMessageToUi({
+        cmd: 'uiUpdateZoom',
+        zoom: figma.viewport.zoom
+    });
+    for (const point of figPoints)
+        updatePointSize(point);
 }
 function updatePointSize(figPoint) {
     updateExistingPointTransform(figPoint);
