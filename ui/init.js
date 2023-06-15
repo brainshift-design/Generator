@@ -65,6 +65,7 @@ initUtilContext();
 
 initLoadingOverlay();
 initDataMode();
+initEulaDialog();
 initWhatsNewDialog();
 initAboutDialog();
 
@@ -102,7 +103,7 @@ function uiReturnFigStartGenerator(msg)
     uiGetLocalData('showWhatsNew');
 
 
-    //showEulaDialog();
+    showEulaDialog();
 
 
     currentUser  = msg.currentUser;

@@ -226,20 +226,6 @@
 }
 
 
-#licenseWatermark
-{
-    position:         absolute;
-    left:             50%;
-    top:              58px;
-    transform:        translateX(-50%);
-    width:            200px;
-    height:           58px;
-    overflow:         hidden;
-    pointer-events:   none;
-    z-index:          100;
-}
-
-
 #licenseInfo
 {
     font-family:   'Inter';
@@ -675,7 +661,6 @@
 {
     display:          none;
 
-    z-index:          1;
     
     position:         fixed;
     left:             0;
@@ -683,7 +668,8 @@
     width:            100%;
     height:           100%;
     overflow:         auto;
-    pointer-events:   all;
+    z-index:          100;
+    pointer-events:   none;
 
     background-color: #0005;
 }
@@ -696,7 +682,7 @@
 
     font-family:   Inter;
 
-    z-index:       2;
+    z-index:       200;
     position:      absolute;
     top:           58px;
     left:          calc(50%);
@@ -840,9 +826,9 @@
 
 
 
-#chkHideEula
+#btnStartTrial
 {
-    display:  inline-block;
+    
 }
 
 
@@ -850,7 +836,7 @@
 #eulaScrollbarY
 {
     width:   6px;
-    z-index: 1;
+    z-index: 300;
     margin:  6px 0 18px 0;
     display: none;
 }
@@ -1201,4 +1187,13 @@
     z-index:          100000;
     /* background-color: blue; */
     pointer-events:   none;
+}
+
+
+#btnStartTrial
+{
+    width:      120px;
+    height:     14px;
+    margin:     auto auto 25px auto;
+    background: transparent;
 }

@@ -1,12 +1,5 @@
 function initEulaDialog()
 {
-    //eula0.innerHTML = eula0.innerHTML.replace('%Ctrl%', osCtrl());
-
-
-    initCheckbox(chkHideEula, 'Don\'t show again', false);
-    chkHideEula.addEventListener('change', () => uiSetLocalData('showEula', generatorVersion));
-
-
     eulaBack.addEventListener('pointerdown', e => { e.preventDefault(); });
 
 
@@ -84,9 +77,6 @@ function initEulaDialog()
         if (eulaScrollbarY.moving)
             updateEulaScrollbar(e.clientY);
     });
-
-
-    eulaTitleText.innerHTML = 'Version ' + generatorVersion;
 }
 
 
@@ -114,13 +104,6 @@ function hideEulaDialog()
 
 
 // eulaClose.addEventListener('pointerdown', e => e.stopPropagation());
-
-
-
-eulaBack.addEventListener('pointerdown', () =>
-{
-    hideEulaDialog();
-});
 
 
 
@@ -173,8 +156,8 @@ function updateEulaScroll()
 
 function updateEulaScrollY(x, w, h, bounds, yOffset)
 {
-    if (   eulaDialog.mouseOver
-        && bounds.bottom - bounds.top > h)
+    if (   /*eulaDialog.mouseOver
+        &&*/ bounds.bottom - bounds.top > h)
     {
         const height = sqr(h) / bounds.height - 2*smallScrollGap;
 

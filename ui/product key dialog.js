@@ -18,7 +18,6 @@ function onValidateClick(key)
         productKeyInput.focus();
         productKeyInput.select();
 
-        licenseWatermark.style.display = 'none';
         licenseInfo.innerHTML = '';
     }
     else
@@ -229,20 +228,12 @@ function updateLicenseInfo(license)
         const date    = new Date(Date.parse(strPrep));
         const strDate = date.toLocaleString('en-UK', {dateStyle: 'medium'});
 
-        licenseWatermark    .style.display    = 'none';//'block';
-        licenseWatermark    .style.outline    = '2px dashed var(--figma-color-text-disabled)';
-        licenseWatermark    .style.background = 'transparent';//darkMode ? '#ffffff0f' : '#0000000a';
-        licenseWatermarkPath.style.fill       = 'transparent';//darkMode ? '#2e2e2e50' : '#ffffff80';
-
-        licenseInfo.innerHTML = '<span style="user-select: one; color: ' + (darkMode ? '#fffa' : '#000c') + ';">License valid until:&nbsp;&thinsp;</span><span style="font-weight: 700">' + strDate.replaceAll('/', '&hairsp;/&hairsp;') + '</span>';
-
+        licenseInfo     .innerHTML     = '<span style="user-select: one; color: ' + (darkMode ? '#fffa' : '#000c') + ';">License valid until:&nbsp;&thinsp;</span><span style="font-weight: 700">' + strDate.replaceAll('/', '&hairsp;/&hairsp;') + '</span>';
         subscribeWebsite.style.display = 'none';
     }
     else
     {
-        licenseWatermark.style.display = 'none';
-        licenseInfo.innerHTML = '';
-
+        licenseInfo     .innerHTML     = '';
         subscribeWebsite.style.display = 'inline-block';
     }
 }

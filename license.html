@@ -14,7 +14,11 @@
     <body>
         <div>User ID  <input type='text' id='txtUserId' spellcheck='false' /></div>
         <div>Tier  <input type='text' id='txtTier' spellcheck='false' /></div>
-        <div>Last date (ddmmyyyy) <input type='text' id='txtLastDate' spellcheck='false' /></div>
+        <div>Type  <input type='text' id='txtType' spellcheck='false' /></div>
+        <div>Subscription start (ddmmyyyy) <input type='text' id='txtSubStart' spellcheck='false' /></div>
+        <div>Subscription end   (ddmmyyyy) <input type='text' id='txtSubEnd' spellcheck='false' /></div>
+        <div>License start      (ddmmyyyy) <input type='text' id='txtLicStart' spellcheck='false' /></div>
+        <div>License end        (ddmmyyyy) <input type='text' id='txtLicEnd' spellcheck='false' /></div>
         <input type='button' onclick='generateLicenseKey()' value='Generate license key' />
         <p id='text' style="margin-top: 30px"></p>
     </body>
@@ -36,9 +40,13 @@
             let txt = '';
 
 
-            let userId  = getQueryVariable('userId');
-            let tier    = getQueryVariable('tier');
-            let date    = getQueryVariable('date'); // DDMMYYYY
+            let userId   = getQueryVariable('userId'  );
+            let tier     = getQueryVariable('tier'    );
+            let type     = getQueryVariable('type'    );
+            let subStart = getQueryVariable('subStart'); // DDMMYYYY (UTC)
+            let subEnd   = getQueryVariable('subEnd'  ); // DDMMYYYY (UTC)
+            let licStart = getQueryVariable('licStart'); // DDMMYYYY (UTC)
+            let licEnd   = getQueryVariable('licEnd'  ); // DDMMYYYY (UTC)
 
 
             if (userId == '') userId = txtUserId  .value;
