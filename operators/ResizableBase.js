@@ -1,4 +1,5 @@
-const sizeBorderWidth = 4;
+const windowBorderWidth = 8;
+const sizeBorderWidth   = 4;
 
 
 
@@ -21,22 +22,22 @@ extends OperatorBase
     {
         super(type, id, name, icon, defWidth, progressBar);
 
-        this.initSizer();
+        this.initSizers();
     }
 
 
 
-    initSizer()
+    initSizers()
     {
-        this.sizerL   = createDiv('sizerEdge sizerH sizerL');
-        this.sizerR   = createDiv('sizerEdge sizerH sizerR');
-        this.sizerT   = createDiv('sizerEdge sizerV sizerT');
-        this.sizerB   = createDiv('sizerEdge sizerV sizerB');
+        this.sizerL  = createDiv('sizerEdge sizerH sizerL');
+        this.sizerR  = createDiv('sizerEdge sizerH sizerR');
+        this.sizerT  = createDiv('sizerEdge sizerV sizerT');
+        this.sizerB  = createDiv('sizerEdge sizerV sizerB');
 
-        this.sizerTL  = createDiv('sizerCorner sizerTL');
-        this.sizerTR  = createDiv('sizerCorner sizerTR');
-        this.sizerBL  = createDiv('sizerCorner sizerBL');
-        this.sizerBR  = createDiv('sizerCorner sizerBR');
+        this.sizerTL = createDiv('sizerCorner sizerTL');
+        this.sizerTR = createDiv('sizerCorner sizerTR');
+        this.sizerBL = createDiv('sizerCorner sizerBL');
+        this.sizerBR = createDiv('sizerCorner sizerBR');
 
 
         this.div.appendChild(this.sizerL);
@@ -274,7 +275,7 @@ extends OperatorBase
     updateSizers()
     {
         const edge   = Math.ceil(sizeBorderWidth / graph.currentPage.zoom);
-        const corner = Math.max(4, edge);
+        const corner = Math.max(sizeBorderWidth, edge);
 
         this.sizerL .style.width  = edge; 
         this.sizerR .style.width  = edge; 

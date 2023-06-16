@@ -21,18 +21,18 @@ GraphView.prototype.createEvents = function()
 
 
 
-    this.div.addEventListener('pointerdown', e =>
-    {
-        if (   e.button == 0
-            && (   document.canResizeL
-                || document.canResizeR
-                || document.canResizeB))
-        {
-            e.stopPropagation();
-            forwardEvent(e, document);
-        }
-    }, 
-    true);
+    // this.div.addEventListener('pointerdown', e =>
+    // {
+    //     if (   e.button == 0)
+    //         // && (   document.canResizeL
+    //         //     || document.canResizeR
+    //         //     || document.canResizeB))
+    //     {
+    //         e.stopPropagation();
+    //         forwardEvent(e, document);
+    //     }
+    // }, 
+    // true);
 
 
 

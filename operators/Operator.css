@@ -1,11 +1,12 @@
 :root 
 {
-    --sizeBorderWidth: 4px;
-    --defHeaderHeight: 25px;
-    /* --cornerBack:      #0f08;
-    --edgeBack:        #08f8; */
-    --cornerBack:      none;
-    --edgeBack:        none;
+    --windowBorderWidth: 8px;
+    --sizeBorderWidth:   4px;
+    --defHeaderHeight:   25px;
+    /* --cornerBack:     #0f08;
+    --edgeBack:          #08f8; */
+    --cornerBack:        none;
+    --edgeBack:          none;
 }
 
 
@@ -470,19 +471,6 @@
     top:       50%;
     transform: translateX(-50%)
                translateY(-50%);
-}
-
-
-.sizerBox
-{
-    position:       absolute;
-    left:           0;
-    top:            0;
-    width:          100%;
-    height:         100%;    
-    /* box-shadow:     0 0 0 1px red inset; */
-    z-index:        10000;
-    pointer-events: none;
 }
 
 

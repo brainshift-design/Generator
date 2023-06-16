@@ -669,7 +669,7 @@
     height:           100%;
     overflow:         auto;
     z-index:          100;
-    pointer-events:   none;
+    pointer-events:   all;
 
     background-color: #0005;
 }
@@ -1192,8 +1192,9 @@
 
 #btnStartTrial
 {
-    width:      120px;
-    height:     14px;
-    margin:     auto auto 25px auto;
-    background: transparent;
+    width:       120px;
+    height:      14px;
+    user-select: none;
+    margin:      35px auto 30px auto;
+    background:  transparent;
 }

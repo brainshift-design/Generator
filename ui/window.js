@@ -1,10 +1,10 @@
-document.canResizeL = false;
-document.canResizeR = false;
-document.canResizeB = false;
+// document.canResizeL = false;
+// document.canResizeR = false;
+// document.canResizeB = false;
    
-document.resizingL  = false;
-document.resizingR  = false;
-document.resizingB  = false;
+// document.resizingL  = false;
+// document.resizingR  = false;
+// document.resizingB  = false;
 
 document.startRect  = new Rect();
 
@@ -34,19 +34,19 @@ function checkResize(x, y)
     }
 
 
-    document.canResizeL = false;//!dialogShown &&                      x <= resizeEdgeWidth;
-    document.canResizeR = !dialogShown && window.innerWidth  - x <= resizeEdgeWidth;
-    document.canResizeB = !dialogShown && window.innerHeight - y <= resizeEdgeWidth;
+    // document.canResizeL = false;//!dialogShown &&                      x <= resizeEdgeWidth;
+    // document.canResizeR = !dialogShown && window.innerWidth  - x <= resizeEdgeWidth;
+    // document.canResizeB = !dialogShown && window.innerHeight - y <= resizeEdgeWidth;
 
     
-    if (     document.canResizeR
-          && document.canResizeB) setCursor('nwse-resize', false); 
-    else if (document.canResizeL
-          && document.canResizeB) setCursor('nesw-resize', false); 
-    else if (document.canResizeL
-          || document.canResizeR) setCursor('ew-resize',   false);   
-    else if (document.canResizeB) setCursor('ns-resize',   false);   
-    else                          setAutoCursor();
+    // if (     document.canResizeR
+    //       && document.canResizeB) setCursor('nwse-resize', false); 
+    // else if (document.canResizeL
+    //       && document.canResizeB) setCursor('nesw-resize', false); 
+    // else if (document.canResizeL
+    //       || document.canResizeR) setCursor('ew-resize',   false);   
+    // else if (document.canResizeB) setCursor('ns-resize',   false);   
+    // else                          setAutoCursor();
 }
 
 

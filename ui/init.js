@@ -100,10 +100,13 @@ function uiReturnFigStartGenerator(msg)
     viewportZoom = msg.viewportZoom;
 
     
-    uiGetLocalData('showWhatsNew');
+    initWindowSizers();
 
-
+    
     showEulaDialog();
+
+
+    uiGetLocalData('showWhatsNew');
 
 
     currentUser  = msg.currentUser;

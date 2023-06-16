@@ -874,7 +874,7 @@
     height:           100%;
     overflow:         auto;
     z-index:          100;
-    pointer-events:   none;
+    pointer-events:   all;
 
     background-color: #0005;
 }
@@ -1397,10 +1397,11 @@
 
 #btnStartTrial
 {
-    width:      120px;
-    height:     14px;
-    margin:     auto auto 25px auto;
-    background: transparent;
+    width:       120px;
+    height:      14px;
+    user-select: none;
+    margin:      35px auto 30px auto;
+    background:  transparent;
 }
 
 
@@ -1639,6 +1640,68 @@ div
     padding: 0;
 }
 
+
+.windowSizerEdge
+{
+    position:   absolute;
+    background: var(--edgeBack);
+    z-index:    10001;
+    /* box-shadow: 0 0 0 1px blue inset; */
+}
+
+
+.windowSizerH
+{
+    top:    var(--defHeaderHeight);
+    /* top:    var(--sizeBorderWidth); */
+    /* height: calc(100% - calc(2 * var(--sizeBorderWidth))); */
+    width:  var(--windowBorderWidth);
+    height: calc(100% - calc(25px + var(--windowBorderWidth)));
+    cursor: ew-resize;
+}
+
+
+#windowSizerL { left:  0; }
+#windowSizerR { right: 0; }
+
+
+.windowSizerV
+{
+    left:   var(--windowBorderWidth);
+    width:  calc(100% - calc(2 * var(--windowBorderWidth)));
+    height: var(--windowBorderWidth);
+    cursor: ns-resize;
+}
+
+
+#windowSizerB { bottom: 0; }
+
+
+.windowSizerCorner
+{
+    position:   absolute;
+    width:      var(--windowBorderWidth);
+    height:     var(--windowBorderWidth);
+    background: var(--cornerBack);
+    z-index:    10001;
+    /* box-shadow: 0 0 0 1px yellow inset; */
+}
+
+
+#windowSizerBL
+{
+    left:   0;
+    bottom: 0;
+    cursor: nesw-resize;
+}
+
+
+#windowSizerBR
+{
+    right:  0;
+    bottom: 0;
+    cursor: nwse-resize;
+}
 
 
 #keyboardPanel
@@ -3410,12 +3473,13 @@ a
 
 :root 
 {
-    --sizeBorderWidth: 4px;
-    --defHeaderHeight: 25px;
-    /* --cornerBack:      #0f08;
-    --edgeBack:        #08f8; */
-    --cornerBack:      none;
-    --edgeBack:        none;
+    --windowBorderWidth: 8px;
+    --sizeBorderWidth:   4px;
+    --defHeaderHeight:   25px;
+    /* --cornerBack:     #0f08;
+    --edgeBack:          #08f8; */
+    --cornerBack:        none;
+    --edgeBack:          none;
 }
 
 
@@ -3883,19 +3947,6 @@ a
 }
 
 
-.sizerBox
-{
-    position:       absolute;
-    left:           0;
-    top:            0;
-    width:          100%;
-    height:         100%;    
-    /* box-shadow:     0 0 0 1px red inset; */
-    z-index:        10000;
-    pointer-events: none;
-}
-
-
 .sizerEdge
 {
     position:   absolute;
@@ -4151,6 +4202,14 @@ a
 
 
 <div id='debugInfo'></div>
+
+
+<div class='windowSizerEdge windowSizerH' id='windowSizerL'></div>
+<div class='windowSizerEdge windowSizerH' id='windowSizerR'></div>
+<div class='windowSizerEdge windowSizerV' id='windowSizerB'></div>
+
+<div class='windowSizerCorner' id='windowSizerBL'></div>
+<div class='windowSizerCorner' id='windowSizerBR'></div>
 
 
 <div id='productKeyBack'></div>
@@ -72204,18 +72263,18 @@ GraphView.prototype.createEvents = function()
 
 
 
-    this.div.addEventListener('pointerdown', e =>
-    {
-        if (   e.button == 0
-            && (   document.canResizeL
-                || document.canResizeR
-                || document.canResizeB))
-        {
-            e.stopPropagation();
-            forwardEvent(e, document);
-        }
-    }, 
-    true);
+    // this.div.addEventListener('pointerdown', e =>
+    // {
+    //     if (   e.button == 0)
+    //         // && (   document.canResizeL
+    //         //     || document.canResizeR
+    //         //     || document.canResizeB))
+    //     {
+    //         e.stopPropagation();
+    //         forwardEvent(e, document);
+    //     }
+    // }, 
+    // true);
 
 
 
@@ -82980,7 +83039,8 @@ extends OperatorBase
 }
 
 
-const sizeBorderWidth = 4;
+const windowBorderWidth = 8;
+const sizeBorderWidth   = 4;
 
 
 
@@ -83003,22 +83063,22 @@ extends OperatorBase
     {
         super(type, id, name, icon, defWidth, progressBar);
 
-        this.initSizer();
+        this.initSizers();
     }
 
 
 
-    initSizer()
+    initSizers()
     {
-        this.sizerL   = createDiv('sizerEdge sizerH sizerL');
-        this.sizerR   = createDiv('sizerEdge sizerH sizerR');
-        this.sizerT   = createDiv('sizerEdge sizerV sizerT');
-        this.sizerB   = createDiv('sizerEdge sizerV sizerB');
+        this.sizerL  = createDiv('sizerEdge sizerH sizerL');
+        this.sizerR  = createDiv('sizerEdge sizerH sizerR');
+        this.sizerT  = createDiv('sizerEdge sizerV sizerT');
+        this.sizerB  = createDiv('sizerEdge sizerV sizerB');
 
-        this.sizerTL  = createDiv('sizerCorner sizerTL');
-        this.sizerTR  = createDiv('sizerCorner sizerTR');
-        this.sizerBL  = createDiv('sizerCorner sizerBL');
-        this.sizerBR  = createDiv('sizerCorner sizerBR');
+        this.sizerTL = createDiv('sizerCorner sizerTL');
+        this.sizerTR = createDiv('sizerCorner sizerTR');
+        this.sizerBL = createDiv('sizerCorner sizerBL');
+        this.sizerBR = createDiv('sizerCorner sizerBR');
 
 
         this.div.appendChild(this.sizerL);
@@ -83256,7 +83316,7 @@ extends OperatorBase
     updateSizers()
     {
         const edge   = Math.ceil(sizeBorderWidth / graph.currentPage.zoom);
-        const corner = Math.max(4, edge);
+        const corner = Math.max(sizeBorderWidth, edge);
 
         this.sizerL .style.width  = edge; 
         this.sizerR .style.width  = edge; 
@@ -101611,44 +101671,6 @@ var enteredDragging    = false;
 document.button0 = false;
 
 
-// document.addEventListener('dragenter', function(e)
-// {
-//     console.log('dragenter');
-//     e.preventDefault();
-//     // e.stopImmediatePropagation();
-//     return false;
-//     // return false;
-//     // if (   e.buttons[0] 
-//     //     || e.buttons[1] 
-//     //     || e.buttons[2])
-//     //     enteredDragging = true;
-// });
-
-
-
-// document.addEventListener('drag', function(e)
-// {
-//     e.preventDefault();
-//     // e.stopImmediatePropagation();
-//     return false;
-//     // return false;
-//     // if (   e.buttons[0] 
-//     //     || e.buttons[1] 
-//     //     || e.buttons[2])
-//     //     enteredDragging = true;
-// });
-
-
-
-// document.addEventListener('pointerenter', function(e)
-// {
-//     if (   e.buttons[0] 
-//         || e.buttons[1] 
-//         || e.buttons[2])
-//         enteredDragging = true;
-// });
-
-
 
 document.addEventListener('pointerdown', function(e)
 {
@@ -101659,104 +101681,12 @@ true);
 
 
 
-document.addEventListener('pointerdown', function(e)
-{
-    if (   document.      pointerLockElement
-        || document.   mozPointerLockElement
-        || document.webkitPointerLockElement)
-        return;
-        
-
-    if (e.button == 0)
-    {
-        if (   document.canResizeL
-            || document.canResizeR
-            || document.canResizeB)
-        {
-            document.sx = e.clientX;
-            document.sy = e.clientY;
-
-            document.startPan = graph.currentPage.pan;
-
-
-            uiPostMessageToFigma({
-                cmd:           'figGetMousePosition',
-                clientPosition: point(e.clientX, e.clientY)});
-
-
-            document.body.setPointerCapture(e.pointerId);
-
-            document.resizingL = document.canResizeL;
-            document.resizingR = document.canResizeR;
-            document.resizingB = document.canResizeB;
-
-
-            document.startRectIsValid = false;
-        }
-    }
-
-
-    hideAllMenus();
-});
-
-
-
 document.addEventListener('pointermove', function(e)
 {
     if (enteredDragging)
     {
         e.preventDefault();
         return false;
-    }
-
-
-    if (   document.resizingR
-        && document.resizingB
-        && document.startRectIsValid)
-    {
-        uiResizeWindow(
-            document.startRect.w + e.clientX - document.sx,
-            document.startRect.h + e.clientY - document.sy);
-    }
-    else if (document.resizingL
-          && document.resizingB
-          && document.startRectIsValid)
-    {
-        uiSetWindowRect(
-            e.clientX,
-            e.clientY,
-            document.startRect.w - e.clientX + document.startRect.x,
-            document.startRect.h + e.clientY - document.startRect.y);
-    }
-    else if (document.resizingL
-          && document.startRectIsValid)
-    {
-        uiSetWindowRect(
-            document.startRect.x + (e.clientX - document.sx) / viewportZoom,
-            document.startRect.y,
-            document.startRect.width - e.clientX + document.sx,
-            document.startRect.height);
-
-        //graph.currentPage.pan = point(document.startPan.x - e.clientX, document.startPan.y);
-    }
-    else if (document.resizingR
-          && document.startRectIsValid)
-    {
-        uiResizeWindow(
-            document.startRect.w + e.clientX - document.sx,
-            window.innerHeight);
-    }
-    else if (document.resizingB
-          && document.startRectIsValid)
-    {
-        uiResizeWindow(
-            window.innerWidth,
-            document.startRect.h + e.clientY - document.sy);
-    }
-    else if (!graphView.selecting)
-    {
-        checkResize(e.clientX, e.clientY);
-        //e.stopPropagation();
     }
 });
 
@@ -101775,20 +101705,8 @@ document.addEventListener('pointerup', function(e)
 {
     enteredDragging = false;
 
-     if (   document.resizingL
-         || document.resizingR
-         || document.resizingB)
-    {
-        checkResize(e.clientX, e.clientY);
-        document.body.releasePointerCapture(e.pointerId);
-    }
-
-    document.resizingL = false;
-    document.resizingR = false;
-    document.resizingB = false;
-
-    graphView.scrollbarX.moving  = false;
-    graphView.scrollbarY.moving  = false;
+    graphView.scrollbarX.moving = false;
+    graphView.scrollbarY.moving = false;
 });
 
 
@@ -101801,7 +101719,7 @@ document.addEventListener('contextmenu', e => e.preventDefault());
 
 function initEulaDialog()
 {
-    eulaBack.addEventListener('pointerdown', e => { e.preventDefault(); });
+    //eulaBack.addEventListener('pointerdown', e => { e.preventDefault(); });
 
 
     eulaDialog.mouseOver = false;
@@ -102074,10 +101992,13 @@ function uiReturnFigStartGenerator(msg)
     viewportZoom = msg.viewportZoom;
 
     
-    uiGetLocalData('showWhatsNew');
+    initWindowSizers();
 
-
+    
     showEulaDialog();
+
+
+    uiGetLocalData('showWhatsNew');
 
 
     currentUser  = msg.currentUser;
@@ -106196,13 +106117,195 @@ function updateWhatsNewScrollY(x, w, h, bounds, yOffset)
 }
 
 
-document.canResizeL = false;
-document.canResizeR = false;
-document.canResizeB = false;
+function initWindowSizers()
+{
+    initWindowSizerEvents(windowSizerL,  setWindowSizerRectL);
+    initWindowSizerEvents(windowSizerR,  setWindowSizerRectR);
+    initWindowSizerEvents(windowSizerB,  setWindowSizerRectB);
+
+    initWindowSizerEvents(windowSizerBL, setWindowSizerRectBL);
+    initWindowSizerEvents(windowSizerBR, setWindowSizerRectBR);
+}
+
+
+
+function initWindowSizerEvents(sizer, setRect)
+{
+    sizer.resizing = false;
+
+
+    sizer.addEventListener('pointerdown', e =>
+    {
+        if (e.button == 0)
+        {
+            if (document.activeElement)
+                document.activeElement.blur();
+
+
+            hideAllMenus();
+               
+            sizer.setPointerCapture(e.pointerId);
+
+
+            e.stopPropagation();
+
+
+            sizer.startRect = new Rect(0, 0, window.innerWidth, window.innerHeight);
+            sizer.resizing  = true;
+            
+
+            sizer.sx = e.clientX;
+            sizer.sy = e.clientY;
+        }        
+    });
+
+
+
+    sizer.addEventListener('pointermove', e =>
+    {
+        if (!sizer.resizing)
+            return;
+
+
+        const dx = e.clientX - sizer.sx;
+        const dy = e.clientY - sizer.sy;
+    
+        setRect(sizer, dx, dy);
+            
+
+        e.preventDefault();
+        e.stopPropagation();
+    });
+    
+
+    
+    sizer.addEventListener('pointerup', e =>
+    {
+        if (e.button == 0)
+        {
+            if (sizer.resizing)
+                sizer.resizing = false;
+
+            if (sizer.hasPointerCapture(e.pointerId))
+                sizer.releasePointerCapture(e.pointerId);
+        }
+    });
+}
+
+
+
+function setWindowSizerRectL(sizer, dx, dy) // these have to be lambdas for 'this'
+{
+    setWindowSizerRect(
+        sizer.startRect.x + dx,
+        sizer.startRect.y, 
+        sizer.startRect.w - dx, 
+        sizer.startRect.h);
+}
+
+
+
+function setWindowSizerRectR(sizer, dx, dy)
+{
+    uiResizeWindow(
+        sizer.startRect.w + Math.round(dx),
+        sizer.startRect.h);
+
+    setWindowSizerRect(
+        sizer.startRect.x, 
+        sizer.startRect.y, 
+        sizer.startRect.w + dx, 
+        sizer.startRect.h);
+}
+
+
+
+function setWindowSizerRectB(sizer, dx, dy)
+{
+    uiResizeWindow(
+        sizer.startRect.w,
+        sizer.startRect.h + Math.round(dy));
+
+    setWindowSizerRect(
+        sizer.startRect.x, 
+        sizer.startRect.y, 
+        sizer.startRect.w, 
+        sizer.startRect.h + dy);
+}
+
+
+
+function setWindowSizerRectBL(sizer, dx, dy)
+{
+    setWindowSizerRect(
+        sizer.startRect.x + dx, 
+        sizer.startRect.y, 
+        sizer.startRect.w - dx, 
+        sizer.startRect.h + dy);
+}
+
+
+
+function setWindowSizerRectBR(sizer, dx, dy)
+{
+    uiResizeWindow(
+        sizer.startRect.w + Math.round(dx),
+        sizer.startRect.h + Math.round(dy));
+
+    setWindowSizerRect(
+        sizer.startRect.x, 
+        sizer.startRect.y, 
+        sizer.startRect.w + dx, 
+        sizer.startRect.h + dy);
+}
+
+
+function setWindowSizerSize(w, h, updateTransform = true)
+{
+    updateWindowSizers();
+}
+
+
+
+function setWindowSizerRect(x, y, w, h, updateTransform = true)
+{
+    updateWindowSizers();
+}
+
+
+
+function updateWindowSizers()
+{
+    const edge   = Math.ceil(windowBorderWidth);
+    const corner = Math.max(windowBorderWidth, edge);
+
+    windowSizerL .style.width  = edge; 
+    windowSizerR .style.width  = edge; 
+    windowSizerB .style.height = edge; 
+
+    windowSizerBL.style.width  = corner; 
+    windowSizerBL.style.height = corner; 
+
+    windowSizerBR.style.width  = corner; 
+    windowSizerBR.style.height = corner; 
+
+
+    windowSizerL.style.cursor  = 'ew-resize';
+    windowSizerR.style.cursor  = 'ew-resize';
+    windowSizerB.style.cursor  = 'ns-resize';
+    
+    windowSizerBL.style.cursor = 'nesw-resize';
+    windowSizerBR.style.cursor = 'nwse-resize';
+}
+
+
+// document.canResizeL = false;
+// document.canResizeR = false;
+// document.canResizeB = false;
    
-document.resizingL  = false;
-document.resizingR  = false;
-document.resizingB  = false;
+// document.resizingL  = false;
+// document.resizingR  = false;
+// document.resizingB  = false;
 
 document.startRect  = new Rect();
 
@@ -106232,19 +106335,19 @@ function checkResize(x, y)
     }
 
 
-    document.canResizeL = false;//!dialogShown &&                      x <= resizeEdgeWidth;
-    document.canResizeR = !dialogShown && window.innerWidth  - x <= resizeEdgeWidth;
-    document.canResizeB = !dialogShown && window.innerHeight - y <= resizeEdgeWidth;
+    // document.canResizeL = false;//!dialogShown &&                      x <= resizeEdgeWidth;
+    // document.canResizeR = !dialogShown && window.innerWidth  - x <= resizeEdgeWidth;
+    // document.canResizeB = !dialogShown && window.innerHeight - y <= resizeEdgeWidth;
 
     
-    if (     document.canResizeR
-          && document.canResizeB) setCursor('nwse-resize', false); 
-    else if (document.canResizeL
-          && document.canResizeB) setCursor('nesw-resize', false); 
-    else if (document.canResizeL
-          || document.canResizeR) setCursor('ew-resize',   false);   
-    else if (document.canResizeB) setCursor('ns-resize',   false);   
-    else                          setAutoCursor();
+    // if (     document.canResizeR
+    //       && document.canResizeB) setCursor('nwse-resize', false); 
+    // else if (document.canResizeL
+    //       && document.canResizeB) setCursor('nesw-resize', false); 
+    // else if (document.canResizeL
+    //       || document.canResizeR) setCursor('ew-resize',   false);   
+    // else if (document.canResizeB) setCursor('ns-resize',   false);   
+    // else                          setAutoCursor();
 }
 
 
@@ -106340,6 +106443,7 @@ function dockWindowTop     () { uiQueueMessageToFigma({cmd: 'figDockWindowTop'  
 function dockWindowLeft    () { uiQueueMessageToFigma({cmd: 'figDockWindowLeft'    }); }
 function dockWindowRight   () { uiQueueMessageToFigma({cmd: 'figDockWindowRight'   }); }
 function dockWindowBottom  () { uiQueueMessageToFigma({cmd: 'figDockWindowBottom'  }); }
+
 
 
 

@@ -39,3 +39,66 @@ div
     margin:  0;
     padding: 0;
 }
+
+
+.windowSizerEdge
+{
+    position:   absolute;
+    background: var(--edgeBack);
+    z-index:    10001;
+    /* box-shadow: 0 0 0 1px blue inset; */
+}
+
+
+.windowSizerH
+{
+    top:    var(--defHeaderHeight);
+    /* top:    var(--sizeBorderWidth); */
+    /* height: calc(100% - calc(2 * var(--sizeBorderWidth))); */
+    width:  var(--windowBorderWidth);
+    height: calc(100% - calc(25px + var(--windowBorderWidth)));
+    cursor: ew-resize;
+}
+
+
+#windowSizerL { left:  0; }
+#windowSizerR { right: 0; }
+
+
+.windowSizerV
+{
+    left:   var(--windowBorderWidth);
+    width:  calc(100% - calc(2 * var(--windowBorderWidth)));
+    height: var(--windowBorderWidth);
+    cursor: ns-resize;
+}
+
+
+#windowSizerB { bottom: 0; }
+
+
+.windowSizerCorner
+{
+    position:   absolute;
+    width:      var(--windowBorderWidth);
+    height:     var(--windowBorderWidth);
+    background: var(--cornerBack);
+    z-index:    10001;
+    /* box-shadow: 0 0 0 1px yellow inset; */
+}
+
+
+#windowSizerBL
+{
+    left:   0;
+    bottom: 0;
+    cursor: nesw-resize;
+}
+
+
+#windowSizerBR
+{
+    right:  0;
+    bottom: 0;
+    cursor: nwse-resize;
+}

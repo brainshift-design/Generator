@@ -1,6 +1,6 @@
 function initEulaDialog()
 {
-    eulaBack.addEventListener('pointerdown', e => { e.preventDefault(); });
+    //eulaBack.addEventListener('pointerdown', e => { e.preventDefault(); });
 
 
     eulaDialog.mouseOver = false;
