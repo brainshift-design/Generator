@@ -37,7 +37,7 @@ function removeLicense()
     productKeyInput.value         = '';
 
     updateLicenseInfo();
-    enableFeatures(false, settings.enableBetaFeatures);
+    //enableFeatures(false, settings.enableBetaFeatures);
 }
 
 
@@ -195,7 +195,7 @@ function tryValidateLicense(key)
         productKey = key;
         uiSetLocalData('productKey', key);
 
-        enableFeatures(productKey != NULL, settings.enableBetaFeatures);
+        //enableFeatures(productKey != NULL, settings.enableBetaFeatures);
         
         setDisabledProductKeyInput();
         updateLicenseInfo(license);

@@ -23864,7 +23864,7 @@ const settings =
     showTooltipColorBlindness:     true,
     showTooltipColorContrast:      true,
 
-    enableBetaFeatures:            false,
+    //enableBetaFeatures:            false,
             
     logMessages:                   false,
     logActions:                    false, 
@@ -23914,7 +23914,7 @@ function updateSetting(settingName, value)
         case 'showTooltipColorBlindness':     settings.showTooltipColorBlindness     = value;  break;
         case 'showTooltipColorContrast':      settings.showTooltipColorContrast      = value;  break;
 
-        case 'enableBetaFeatures':            settings.enableBetaFeatures            = value;  break;
+        //case 'enableBetaFeatures':            settings.enableBetaFeatures            = value;  break;
                    
         case 'logMessages':                   settings.logMessages                   = value;  break;
         case 'logActions':                    settings.logActions                    = value;  break;
@@ -23963,7 +23963,7 @@ function updateSettingAndMenu(settingName, valid, value, save = true)
         case 'showTooltipColorInterpolation': updateSettingAndMenu_(valid, settingName, value, menuItemShowTooltipColorInterpolation); break;
         case 'showTooltipColorBlindness':     updateSettingAndMenu_(valid, settingName, value, menuItemShowTooltipColorBlindness    ); break;
 
-        case 'enableBetaFeatures':            updateSettingAndMenu_(valid, settingName, value, menuItemEnableBetaFeatures           ); break;
+        //case 'enableBetaFeatures':            //updateSettingAndMenu_(valid, settingName, value, menuItemEnableBetaFeatures           ); break;
                       
         case 'logMessages':                   updateSettingAndMenu_(valid, settingName, value, menuItemLogMessages                  ); break;
         case 'logActions':                    updateSettingAndMenu_(valid, settingName, value, menuItemLogActions                   ); break;
@@ -24037,7 +24037,7 @@ function updateSettingsMenus()
     menuItemShowTooltipColorBlindness    .setChecked(settings.showTooltipColorBlindness    );
     menuItemShowTooltipColorContrast     .setChecked(settings.showTooltipColorContrast     );
 
-    menuItemEnableBetaFeatures           .setChecked(settings.enableBetaFeatures           );
+    //menuItemEnableBetaFeatures           .setChecked(settings.enableBetaFeatures           );
                   
     menuItemLogMessages                  .setChecked(settings.logMessages                  );
     menuItemLogActions                   .setChecked(settings.logActions                   );
@@ -24118,54 +24118,54 @@ function updateMenuItemShowOperationResults()
 
 
 
-function enableFeatures(subscription, beta)
-{
-    updateElementDisplay(menuItemShowPages           .div, subscription);
-    updateElementDisplay(menuPrefSep1                .div, subscription);
-    updateElementDisplay(menuPrefSep2                .div, subscription);
-    updateElementDisplay(menuItemEnableBetaFeatures  .div, subscription);
+// function enableFeatures(subscription, beta)
+// {
+//     updateElementDisplay(menuItemShowPages           .div, subscription);
+//     updateElementDisplay(menuPrefSep1                .div, subscription);
+//     updateElementDisplay(menuPrefSep2                .div, subscription);
+//     updateElementDisplay(menuItemEnableBetaFeatures  .div, subscription);
 
-    updateElementDisplay(btnFlow                     .div, subscription);
-    updateElementDisplay(btnText                     .div, subscription && beta);
-    updateElementDisplay(btnShape                    .div, subscription && beta);
-    //updateElementDisplay(btnGroup                    .div, subscription && beta);
+//     updateElementDisplay(btnFlow                     .div, subscription);
+//     updateElementDisplay(btnText                     .div, subscription && beta);
+//     updateElementDisplay(btnShape                    .div, subscription && beta);
+//     //updateElementDisplay(btnGroup                    .div, subscription && beta);
 
-    updateElementDisplay(menuItemLogObjectUpdates    .div, subscription && beta);
+//     updateElementDisplay(menuItemLogObjectUpdates    .div, subscription && beta);
     
-    //updateElementDisplay(menuItemList                .div, subscription && beta);
-    updateElementDisplay(menuFlowSep1                .div, subscription && beta);
-    updateElementDisplay(menuItemItems               .div, subscription);
-    updateElementDisplay(menuFlowSep2                .div, subscription);
-    //updateElementDisplay(menuItemSelect              .div, subscription);
-    updateElementDisplay(menuItemCount               .div, subscription);
-    //updateElementDisplay(menuFlowSep3                .div, subscription && beta);
-    //updateElementDisplay(menuItemStart               .div, subscription && beta);
-    updateElementDisplay(menuItemRepeat              .div, subscription && beta);
-    // updateElementDisplay(menuItemCache               .div, subscription && beta);
-    updateElementDisplay(menuItemCopy                .div, subscription && beta);
+//     //updateElementDisplay(menuItemList                .div, subscription && beta);
+//     updateElementDisplay(menuFlowSep1                .div, subscription && beta);
+//     updateElementDisplay(menuItemItems               .div, subscription);
+//     updateElementDisplay(menuFlowSep2                .div, subscription);
+//     //updateElementDisplay(menuItemSelect              .div, subscription);
+//     updateElementDisplay(menuItemCount               .div, subscription);
+//     //updateElementDisplay(menuFlowSep3                .div, subscription && beta);
+//     //updateElementDisplay(menuItemStart               .div, subscription && beta);
+//     updateElementDisplay(menuItemRepeat              .div, subscription && beta);
+//     // updateElementDisplay(menuItemCache               .div, subscription && beta);
+//     updateElementDisplay(menuItemCopy                .div, subscription && beta);
     
-    updateElementDisplay(menuItemSequence              .div, subscription && beta);    
-    updateElementDisplay(menuItemSolve               .div, subscription && beta);    
-    updateElementDisplay(menuItemNumberSep1          .div, subscription && beta);
-    updateElementDisplay(menuItemAnimate             .div, subscription && beta);    
+//     updateElementDisplay(menuItemSequence              .div, subscription && beta);    
+//     updateElementDisplay(menuItemSolve               .div, subscription && beta);    
+//     updateElementDisplay(menuItemNumberSep1          .div, subscription && beta);
+//     updateElementDisplay(menuItemAnimate             .div, subscription && beta);    
     
-    updateElementDisplay(menuItemCorrectColor        .div, subscription);
-    updateElementDisplay(menuItemColorSep1           .div, subscription);
-    updateElementDisplay(menuItemColorblind          .div, subscription);
-    //updateMenuItemDisplay(menuItemColorBlend        .div, beta);
+//     updateElementDisplay(menuItemCorrectColor        .div, subscription);
+//     updateElementDisplay(menuItemColorSep1           .div, subscription);
+//     updateElementDisplay(menuItemColorblind          .div, subscription);
+//     //updateMenuItemDisplay(menuItemColorBlend        .div, beta);
 
-    //updateMenuItemDisplay(menuItemStyleFill         .div, subscription && beta);
-    updateElementDisplay(menuItemLayerStroke         .div, subscription && beta);
-    //updateMenuItemDisplay(menuItemStyleSep1         .div, subscription && beta);
+//     //updateMenuItemDisplay(menuItemStyleFill         .div, subscription && beta);
+//     updateElementDisplay(menuItemLayerStroke         .div, subscription && beta);
+//     //updateMenuItemDisplay(menuItemStyleSep1         .div, subscription && beta);
     
-    //updateMenuItemDisplay(menuItemNodeCopyAsJsCode    .div, subscription && beta);
-    updateElementDisplay(menuItemNodeCopyAsJsFunction.div, subscription && beta);
+//     //updateMenuItemDisplay(menuItemNodeCopyAsJsCode    .div, subscription && beta);
+//     updateElementDisplay(menuItemNodeCopyAsJsFunction.div, subscription && beta);
 
-    // updateElementDisplay(shortcutCopyAsJavascript        , subscription && beta);
+//     // updateElementDisplay(shortcutCopyAsJavascript        , subscription && beta);
 
 
-    graph.nodes.forEach(n => n.updateSubscribeStatus(subscription));
-}
+//     graph.nodes.forEach(n => n.updateSubscribeStatus(subscription));
+// }
 
 
 
@@ -24210,7 +24210,7 @@ function loadLocalSettings()
     uiGetLocalData('showTooltipColorBlindness'    );
     uiGetLocalData('showTooltipColorContrast'     );
 
-    uiGetLocalData('enableBetaFeatures'           );
+    //uiGetLocalData('enableBetaFeatures'           );
             
     uiGetLocalData('logMessages'                  );
     uiGetLocalData('logActions'                   );

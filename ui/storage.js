@@ -57,7 +57,7 @@ function uiReturnFigGetLocalData(msg)
         case 'showTooltipColorBlindness':
         case 'showTooltipColorContrast':
 
-        case 'enableBetaFeatures':       
+        //case 'enableBetaFeatures':       
 
         case 'logMessages':      
         case 'logActions':       
@@ -129,8 +129,8 @@ function uiReturnFigGetLocalData(msg)
 
     if (!settings.dataMode)
     {
-        if (msg.key == 'enableBetaFeatures')
-            enableFeatures(true, settings.enableBetaFeatures); 
+        // if (msg.key == 'enableBetaFeatures')
+        //     enableFeatures(true, settings.enableBetaFeatures); 
 
         if (msg.key == 'showDebugMenu')
             updateMenuItemShowDebugMenu();
@@ -442,7 +442,7 @@ function finishLoading(_nodes)
     generatorStarted = true;
 
 
-    enableFeatures(productKey != NULL, settings.enableBetaFeatures); 
+    //enableFeatures(productKey != NULL, settings.enableBetaFeatures); 
     
     graphView.update();
 

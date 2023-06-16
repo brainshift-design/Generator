@@ -105,7 +105,7 @@ var menuItemDebugLog;
 var menuItemHelp;
 
 
-var menuItemEnableBetaFeatures;
+//var menuItemEnableBetaFeatures;
 
 
 var menuItemList;  
@@ -241,8 +241,8 @@ function initGeneratorMenus()
         menuItemShowClearUndoWarning = new MenuItem('Show clear undo warning',       {checkCallback: () => settings.showClearUndoWarning,  callback: () => { updateSettingAndMenu('showClearUndoWarning', true, !settings.showClearUndoWarning);                                        }}),
         menuItemShowDebugMenu        = new MenuItem('Show debug menu',               {checkCallback: () => settings.showDebugMenu,         callback: () => { updateSettingAndMenu('showDebugMenu',        true, !settings.showDebugMenu);         updateMenuItemShowDebugMenu();        }}),
         menuPrefSep2                 = new MenuItem('',                              {separator: true}),    
-        menuItemEnableBetaFeatures   = new MenuItem('Enable beta features',          {checkCallback: () => settings.enableBetaFeatures,    callback: () => { updateSettingAndMenu('enableBetaFeatures',   true, !settings.enableBetaFeatures);    enableFeatures(true, settings.enableBetaFeatures); }}),
-                                       new MenuItem('',                              {separator: true}),    
+        // menuItemEnableBetaFeatures   = new MenuItem('Enable beta features',          {checkCallback: () => settings.enableBetaFeatures,    callback: () => { updateSettingAndMenu('enableBetaFeatures',   true, !settings.enableBetaFeatures);    enableFeatures(true, settings.enableBetaFeatures); }}),
+        //                                new MenuItem('',                              {separator: true}),    
                                        new MenuItem('Keyboard layout...',            {callback: () => showKeyboardPanel()}),
         menuItemMinZoomForParams     = new MenuItem('Zoom level for values...',      {callback: () => showMinZoomDialog()})]);
         
@@ -553,13 +553,13 @@ function initGeneratorMenus()
 
     menuShape = new Menu('Shapes', true, false);
     menuShape.addItems([
-        menuItemShapeSelected = new MenuItem('Selected objects...', {icon: iconSelected,   enabled: false}),
+        // menuItemShapeSelected = new MenuItem('Selected objects...', {icon: iconSelected,   enabled: false}),
                                 new MenuItem('',                    {separator: true}),
                                 new MenuItem('Shapes',              {/*icon: iconShapes,*/ childMenu: menuShapes}),
                                 new MenuItem('',                    {separator: true}),
                                 new MenuItem('Frame',               {icon: iconFrame,      callback: e => actionManager.do(getCreateNodeAction(FRAME,       btnShape.div, getCreateOptions(e)))}),
                                 new MenuItem('Group',               {icon: iconShapeGroup, callback: e => actionManager.do(getCreateNodeAction(SHAPE_GROUP, btnShape.div, getCreateOptions(e)))}),
-                                new MenuItem('Boolean',             {enabled: false, icon: iconBoolUnion,  callback: e => actionManager.do(getCreateNodeAction(BOOLEAN,     btnShape.div, getCreateOptions(e)))}),
+                                // new MenuItem('Boolean',             {enabled: false, icon: iconBoolUnion,  callback: e => actionManager.do(getCreateNodeAction(BOOLEAN,     btnShape.div, getCreateOptions(e)))}),
         menuItemShapeSep1     = new MenuItem('',                    {separator: true}),
                                 new MenuItem('Place',               {icon: iconPlace, callback: e => actionManager.do(getCreateNodeAction(PLACE, btnShape.div, getCreateOptions(e)))}),
                                 new MenuItem('',                    {separator: true}),
