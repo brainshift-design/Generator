@@ -1,4 +1,4 @@
-const cryptoModulusSize     = 64; // to keep the keys short
+const cryptoModulusSize     = 2048; // to keep the keys short
 const millerRabinIterations = 40;
 
 const cryptoBufferSize      = cryptoModulusSize/8;
@@ -66,8 +66,13 @@ function createCryptoPrimePair(e)
 
 function createCryptoKeys(e = 65537n) 
 {
-    const  p   = 4177474087n,
-           q   = 3438374081n; // for a 64-bit modulus
+    // for a 64-bit modulus
+    // const p   = 4177474087n,
+    // const q   = 3438374081n;
+    
+    // for a 2048-bit modulus
+    const p = 175174222516298387167194272697585437036810021236416760552899966284752011252198594013507417602600201436392264584002280023410776413073587129726141185393623449028440388452751264699475754683756720892485898644561628374159554994706803903659838117562670498436083060507993966358733361521299548446230454315603662036469n;
+    const q = 137903165485589693700981982313430857945541993940503493680067557312840527561097051166704349879274851836049344355243285831485925505832584105624064061259858226754867264793670708366732221684041373398786004227019387898423254675498301526584324375120659877872268262270523914099357199684086439264688977237417227910807n;
     
     const  n   = p * q;
     const _phi = (p-1n) * (q-1n);
@@ -96,10 +101,6 @@ function verify (data, key) { return decryptData(data, key, true); } // but I pr
 
 function encryptData(data, key, sign)
 {
-    console.log('data =', data);
-    console.log('key =',  key );
-    console.log('sign =', sign);
-
     // prep array should be a multiple of cryptoBufferSize
     const prep   = new Uint8Array(Math.ceil((data.length) / cryptoBufferSize) * cryptoBufferSize); 
     const cipher = new Uint8Array(prep.length);

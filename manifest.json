@@ -8,6 +8,6 @@
   "permissions":   [ "currentuser", "activeusers" ],
   "networkAccess": {
     "allowedDomains": ["*"],
-    "reasoning":      "Generator lets the user request data from web APIs."
+    "reasoning":      "Generator lets the user fetch data from web APIs."
   }
 }

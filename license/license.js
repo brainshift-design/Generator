@@ -15,24 +15,23 @@ function createLicenseKey(license)
 
 
 
-function createLicenseFromDate(userId, strDate, tier) // DDMMYYYY
+function createLicenseFromData(userId, tier, lastDate) // DDMMYYYY
 {
     return createLicense(
         userId,
-        parseInt(strDate.substring(0, 2)),
-        parseInt(strDate.substring(2, 4)),
-        parseInt(strDate.substring(4)),
-        tier);
-
+        tier,
+        parseInt(lastDate.substring(0, 2)),
+        parseInt(lastDate.substring(2, 4)),
+        parseInt(lastDate.substring(4   )));
 }
 
 
 
-function createLicense(userId, lastDay, lastMonth, lastYear, tier)
+function createLicense(userId, tier, lastDay, lastMonth, lastYear)
 {
     return {
         userId:    userId,
-        tier:      tier, // 0 = free, 1+ = subscription
+        tier:      tier, // 0 = free trial, 1+ = subscription
         lastDay:   lastDay,
         lastMonth: lastMonth,
         lastYear:  lastYear,
@@ -155,10 +154,10 @@ function validateLicense(userId, licenseKey)
     {
         const license = createLicense(
             userId,
+            tier,
             now.getDate(),
             now.getMonth()+1, // months start at 0
-            now.getFullYear(),
-            tier);
+            now.getFullYear());
 
 
         let   curCheck  = 0;

@@ -1,9 +1,0 @@
-License structure:
-
-    Figma user ID
-    Tier               (0 = free trial, 1 = standard subscription)
-    Type               (0 = monthly, 1 = yearly, etc)
-    Subscription start
-    Subscription end   (excluded)
-    License start
-    License end        (excluded)

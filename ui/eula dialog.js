@@ -103,6 +103,28 @@ function hideEulaDialog()
 
 
 
+async function startFreeTrial()
+{
+    const request =
+    {
+        action: 'startTrial',
+        userId:  currentUser.id
+    };
+
+    await fetch(
+        'https://brainshift.design/generator/license/',
+        {
+            method:  'POST',
+            headers: { 'Content-Type': 'application/json' },
+            body:    JSON.stringify(request)
+        })
+        .then(response => response.text())
+        .then(json => console.log('json =', json))
+        .catch(error => console.log('error =', error));
+}
+
+
+
 // eulaClose.addEventListener('pointerdown', e => e.stopPropagation());
 
 

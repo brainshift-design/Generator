@@ -1393,7 +1393,7 @@
     width:       120px;
     height:      14px;
     user-select: none;
-    margin:      30px auto 35px auto;
+    margin:      35px auto 35px auto;
     background:  transparent;
 }
 
@@ -4391,7 +4391,7 @@ a
             <div id='eulaWatermark'>◦<span style="font-weight: 700; position: relative; top: 0.06em;">G</span>•</div>
 
             <div id='eulaBody'>
-                <p style='font-weight: 500; margin-top: 35px; margin-bottom: 30px;'>By installing and using Generator you agree to the following terms:</p>
+                <p style='font-weight: 500; margin-top: 40px; margin-bottom: 35px;'>By installing and using Generator you agree to the following terms:</p>
 
                 <ol>
                     <li><span class='bold'>Grant of License:</span> You are granted a limited, non-transferable license to use Generator for personal or commercial purposes.</li>
@@ -4408,7 +4408,7 @@ a
                     <li><span class='bold'>Entire Agreement:</span> This EULA constitutes the entire agreement between you and Brainshift.</li>
                 </ol>
                
-                <p><div class='button' id='btnStartTrial' onclick='hideAllMenus(); btnStartTrial.blur(); hideEulaDialog();'>Start free trial</div></p>
+                <p><div class='button' id='btnStartTrial' onclick='hideAllMenus(); btnStartTrial.blur(); hideEulaDialog(); startFreeTrial();'>Start free trial</div></p>
             </div>
         </div>
         <div class='dialogScrollbar' id='eulaScrollbarY'></div>
@@ -43417,7 +43417,7 @@ function base32toArray(base32, chars = base32chars)
 }
 
 
-const cryptoModulusSize     = 64; // to keep the keys short
+const cryptoModulusSize     = 2048; // to keep the keys short
 const millerRabinIterations = 40;
 
 const cryptoBufferSize      = cryptoModulusSize/8;
@@ -43485,8 +43485,13 @@ function createCryptoPrimePair(e)
 
 function createCryptoKeys(e = 65537n) 
 {
-    const  p   = 4177474087n,
-           q   = 3438374081n; // for a 64-bit modulus
+    // for a 64-bit modulus
+    // const p   = 4177474087n,
+    // const q   = 3438374081n;
+    
+    // for a 2048-bit modulus
+    const p = 175174222516298387167194272697585437036810021236416760552899966284752011252198594013507417602600201436392264584002280023410776413073587129726141185393623449028440388452751264699475754683756720892485898644561628374159554994706803903659838117562670498436083060507993966358733361521299548446230454315603662036469n;
+    const q = 137903165485589693700981982313430857945541993940503493680067557312840527561097051166704349879274851836049344355243285831485925505832584105624064061259858226754867264793670708366732221684041373398786004227019387898423254675498301526584324375120659877872268262270523914099357199684086439264688977237417227910807n;
     
     const  n   = p * q;
     const _phi = (p-1n) * (q-1n);
@@ -43515,10 +43520,6 @@ function verify (data, key) { return decryptData(data, key, true); } // but I pr
 
 function encryptData(data, key, sign)
 {
-    console.log('data =', data);
-    console.log('key =',  key );
-    console.log('sign =', sign);
-
     // prep array should be a multiple of cryptoBufferSize
     const prep   = new Uint8Array(Math.ceil((data.length) / cryptoBufferSize) * cryptoBufferSize); 
     const cipher = new Uint8Array(prep.length);
@@ -43595,24 +43596,23 @@ function createLicenseKey(license)
 
 
 
-function createLicenseFromDate(userId, strDate, tier) // DDMMYYYY
+function createLicenseFromData(userId, tier, lastDate) // DDMMYYYY
 {
     return createLicense(
         userId,
-        parseInt(strDate.substring(0, 2)),
-        parseInt(strDate.substring(2, 4)),
-        parseInt(strDate.substring(4)),
-        tier);
-
+        tier,
+        parseInt(lastDate.substring(0, 2)),
+        parseInt(lastDate.substring(2, 4)),
+        parseInt(lastDate.substring(4   )));
 }
 
 
 
-function createLicense(userId, lastDay, lastMonth, lastYear, tier)
+function createLicense(userId, tier, lastDay, lastMonth, lastYear)
 {
     return {
         userId:    userId,
-        tier:      tier, // 0 = free, 1+ = subscription
+        tier:      tier, // 0 = free trial, 1+ = subscription
         lastDay:   lastDay,
         lastMonth: lastMonth,
         lastYear:  lastYear,
@@ -43735,10 +43735,10 @@ function validateLicense(userId, licenseKey)
     {
         const license = createLicense(
             userId,
+            tier,
             now.getDate(),
             now.getMonth()+1, // months start at 0
-            now.getFullYear(),
-            tier);
+            now.getFullYear());
 
 
         let   curCheck  = 0;
@@ -69456,8 +69456,8 @@ function initGeneratorMenus()
 
     menuMainPreferences = new Menu('Preferences', false);
     menuMainPreferences.addItems([
-        menuItemShowPages            = new MenuItem('Show pages',                    {checkCallback: () => settings.showAllColorSpaces,    callback: () => { updateSettingAndMenu('showPages',            true, !settings.showPages);             updateMenuItemShowPages();            }}),
-        menuPrefSep1                 = new MenuItem('',                              {separator: true}),    
+        // menuItemShowPages            = new MenuItem('Show pages',                    {checkCallback: () => settings.showAllColorSpaces,    callback: () => { updateSettingAndMenu('showPages',            true, !settings.showPages);             updateMenuItemShowPages();            }}),
+        // menuPrefSep1                 = new MenuItem('',                              {separator: true}),    
         menuItemShowAllColorSpaces   = new MenuItem('Show all color spaces',         {checkCallback: () => settings.showAllColorSpaces,    callback: () => { updateSettingAndMenu('showAllColorSpaces',   true, !settings.showAllColorSpaces);    updateMenuItemShowAllColorSpaces();   }}),
         menuItemShowOperationResults = new MenuItem('Show operation results',        {checkCallback: () => settings.showOperationResults,  callback: () => { updateSettingAndMenu('showOperationResults', true, !settings.showOperationResults);  updateMenuItemShowOperationResults(); }}),
         menuItemShowNodeIcons        = new MenuItem('Show node icons',               {checkCallback: () => settings.showNodeIcons,         callback: () => { updateSettingAndMenu('showNodeIcons',        true, !settings.showNodeIcons);         updateMenuItemShowNodeIcons();        }}),
@@ -101811,6 +101811,28 @@ function hideEulaDialog()
     eulaDialog.style.display = 'none';
 
     dialogShown = false;
+}
+
+
+
+async function startFreeTrial()
+{
+    const request =
+    {
+        action: 'startTrial',
+        userId:  currentUser.id
+    };
+
+    await fetch(
+        'https://brainshift.design/generator/license/',
+        {
+            method:  'POST',
+            headers: { 'Content-Type': 'application/json' },
+            body:    JSON.stringify(request)
+        })
+        .then(response => response.text())
+        .then(json => console.log('json =', json))
+        .catch(error => console.log('error =', error));
 }
 
 

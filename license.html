@@ -13,12 +13,8 @@
 
     <body>
         <div>User ID  <input type='text' id='txtUserId' spellcheck='false' /></div>
-        <div>Tier  <input type='text' id='txtTier' spellcheck='false' /></div>
-        <div>Type  <input type='text' id='txtType' spellcheck='false' /></div>
-        <div>Subscription start (ddmmyyyy) <input type='text' id='txtSubStart' spellcheck='false' /></div>
-        <div>Subscription end   (ddmmyyyy) <input type='text' id='txtSubEnd' spellcheck='false' /></div>
-        <div>License start      (ddmmyyyy) <input type='text' id='txtLicStart' spellcheck='false' /></div>
-        <div>License end        (ddmmyyyy) <input type='text' id='txtLicEnd' spellcheck='false' /></div>
+        <div>Tier (0 = free, 1 = std) <input type='text' id='txtTier' spellcheck='false' /></div>
+        <div>Last date (ddmmyyyy) <input type='text' id='txtLastDate' spellcheck='false' /></div>
         <input type='button' onclick='generateLicenseKey()' value='Generate license key' />
         <p id='text' style="margin-top: 30px"></p>
     </body>
@@ -40,21 +36,17 @@
             let txt = '';
 
 
-            let userId   = getQueryVariable('userId'  );
-            let tier     = getQueryVariable('tier'    );
-            let type     = getQueryVariable('type'    );
-            let subStart = getQueryVariable('subStart'); // DDMMYYYY (UTC)
-            let subEnd   = getQueryVariable('subEnd'  ); // DDMMYYYY (UTC)
-            let licStart = getQueryVariable('licStart'); // DDMMYYYY (UTC)
-            let licEnd   = getQueryVariable('licEnd'  ); // DDMMYYYY (UTC)
+            let userId   = getQueryVariable('userId' );
+            let tier     = getQueryVariable('tier'   );
+            let lastDate = getQueryVariable('lastDate'); // DDMMYYYY (UTC)
 
 
-            if (userId == '') userId = txtUserId  .value;
-            if (tier   == '') tier   = txtTier    .value;
-            if (date   == '') date   = txtLastDate.value;
+            if (userId   == '') userId   = txtUserId .value;
+            if (tier     == '') tier     = txtTier   .value;
+            if (lastDate == '') lastDate = txtLastDate.value;
 
 
-            let   license = createLicenseFromDate(userId, date, tier);
+            let   license = createLicenseFromData(userId, tier, lastDate);
             const key     = createLicenseKey(license);
             
 
@@ -63,14 +55,15 @@
             // txt += 'p: ' + p + '<br/>';
             // txt += 'q: ' + q + '<br/><br/>';
 
-            txt += 'Request ID:&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; ' + userId + '<br/>';
-            txt += 'Request tier:&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; ' + license.tier + '<br/>';
-            txt += 'Request last date: ' + date     + '<br/><br/>';
+            txt += 'Request user ID:&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; ' + userId + '<br/>';
+            txt += 'Request tier:&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; ' + license.tier + '<br/>';
+            txt += 'Request last date (included): ' + lastDate + '<br/><br/>';
 
             txt += 'Request string:&nbsp;&nbsp;&nbsp;&nbsp;' + createLicenseString(license) + '<br/><br/>';
 
-            if (   userId != 'false'
-                && date   != 'false')
+            if (   userId   != 'false'
+                && tier     != 'false'
+                && lastDate != 'false')
                 txt += 'License key:&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; ' + key + ' ' + getValidSign(license, key) + '<br/>';
 
 
@@ -79,7 +72,11 @@
             if (license)
             {
                 txt += 'License tier:&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; ' + license.tier + '<br/>';
-                txt += 'License last date: ' + license.lastDay.toString().padStart(2, '0') + '/' + license.lastMonth.toString().padStart(2, '0') + '/' + license.lastYear.toString() + '<br/><br/>';
+
+                txt += 'License last date: ' 
+                           + license.lastDay  .toString().padStart(2, '0') 
+                     + '/' + license.lastMonth.toString().padStart(2, '0')
+                     + '/' + license.lastYear .toString() + '<br/><br/>';
             }
 
 

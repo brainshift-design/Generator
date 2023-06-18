@@ -230,8 +230,8 @@ function initGeneratorMenus()
 
     menuMainPreferences = new Menu('Preferences', false);
     menuMainPreferences.addItems([
-        menuItemShowPages            = new MenuItem('Show pages',                    {checkCallback: () => settings.showAllColorSpaces,    callback: () => { updateSettingAndMenu('showPages',            true, !settings.showPages);             updateMenuItemShowPages();            }}),
-        menuPrefSep1                 = new MenuItem('',                              {separator: true}),    
+        // menuItemShowPages            = new MenuItem('Show pages',                    {checkCallback: () => settings.showAllColorSpaces,    callback: () => { updateSettingAndMenu('showPages',            true, !settings.showPages);             updateMenuItemShowPages();            }}),
+        // menuPrefSep1                 = new MenuItem('',                              {separator: true}),    
         menuItemShowAllColorSpaces   = new MenuItem('Show all color spaces',         {checkCallback: () => settings.showAllColorSpaces,    callback: () => { updateSettingAndMenu('showAllColorSpaces',   true, !settings.showAllColorSpaces);    updateMenuItemShowAllColorSpaces();   }}),
         menuItemShowOperationResults = new MenuItem('Show operation results',        {checkCallback: () => settings.showOperationResults,  callback: () => { updateSettingAndMenu('showOperationResults', true, !settings.showOperationResults);  updateMenuItemShowOperationResults(); }}),
         menuItemShowNodeIcons        = new MenuItem('Show node icons',               {checkCallback: () => settings.showNodeIcons,         callback: () => { updateSettingAndMenu('showNodeIcons',        true, !settings.showNodeIcons);         updateMenuItemShowNodeIcons();        }}),
