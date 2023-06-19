@@ -798,7 +798,7 @@
 
 
 .figma-dark  #eulaBody { font-weight: 200; }
-.figma-light #eulaBody { font-weight: 300; }
+.figma-light #eulaBody { font-weight: 400; }
 
 
 #eulaBody ol
@@ -819,10 +819,8 @@
     content: counter(list-item) ".  ";
 }
 
-#eulaBody .bold
-{
-    font-weight: 500;
-}
+.figma-light #eulaBody .bold { font-weight: 700; }
+.figma-dark  #eulaBody .bold { font-weight: 500; }
 
 
 
@@ -833,6 +831,9 @@
     margin:  6px 0 18px 0;
     display: none;
 }
+
+.figma-light #eulaScrollbarY { background: #0002; }
+.figma-dark  #eulaScrollbarY { background: #fff2; }
 
 
 
@@ -1188,6 +1189,12 @@
     width:       120px;
     height:      14px;
     user-select: none;
-    margin:      35px auto 35px auto;
+    margin:      45px auto 42px auto;
+    position:    relative;
+    left:        -5px;
     background:  transparent;
 }
+
+
+.figma-light #btnStartTrial { font-weight: 600; }
+.figma-dark  #btnStartTrial { font-weight: 300; }

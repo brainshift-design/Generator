@@ -74,12 +74,14 @@ uiQueueMessageToFigma({cmd: 'figStartGenerator'});
 
 
 
-function uiReturnFigStartGenerator(msg)
+async function uiReturnFigStartGenerator(msg)
 {
+    currentUser = msg.currentUser;
+    //productKey  = msg.productKey;
+
+
     initThemeColors();
     loadLocalSettings();
-
-    initKeyboardPanel();
 
  
     figFonts           = [...msg.fonts];
@@ -100,20 +102,25 @@ function uiReturnFigStartGenerator(msg)
     viewportZoom = msg.viewportZoom;
 
     
+    
     initWindowSizers();
 
-    
-    showEulaDialog();
+
+    if (!(await checkTrialActive()))
+    {
+        if (!(await checkTrialExists()))
+            showEulaDialog();
+    }
 
 
     uiGetLocalData('showWhatsNew');
 
 
-    currentUser  = msg.currentUser;
-    productKey   = msg.productKey;
-
     startupValidateLicense();
     // enableFeatures() is called when loading is done
+
+
+    initKeyboardPanel();
 
 
     setTimeout(() => loadingGraphic.style.display = 'block', 300);

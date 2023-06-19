@@ -1003,7 +1003,7 @@
 
 
 .figma-dark  #eulaBody { font-weight: 200; }
-.figma-light #eulaBody { font-weight: 300; }
+.figma-light #eulaBody { font-weight: 400; }
 
 
 #eulaBody ol
@@ -1024,10 +1024,8 @@
     content: counter(list-item) ".  ";
 }
 
-#eulaBody .bold
-{
-    font-weight: 500;
-}
+.figma-light #eulaBody .bold { font-weight: 700; }
+.figma-dark  #eulaBody .bold { font-weight: 500; }
 
 
 
@@ -1038,6 +1036,9 @@
     margin:  6px 0 18px 0;
     display: none;
 }
+
+.figma-light #eulaScrollbarY { background: #0002; }
+.figma-dark  #eulaScrollbarY { background: #fff2; }
 
 
 
@@ -1393,10 +1394,15 @@
     width:       120px;
     height:      14px;
     user-select: none;
-    margin:      35px auto 35px auto;
+    margin:      45px auto 42px auto;
+    position:    relative;
+    left:        -5px;
     background:  transparent;
 }
 
+
+.figma-light #btnStartTrial { font-weight: 600; }
+.figma-dark  #btnStartTrial { font-weight: 300; }
 
 
 #loadingOverlay
@@ -4391,7 +4397,7 @@ a
             <div id='eulaWatermark'>◦<span style="font-weight: 700; position: relative; top: 0.06em;">G</span>•</div>
 
             <div id='eulaBody'>
-                <p style='font-weight: 500; margin-top: 40px; margin-bottom: 35px;'>By installing and using Generator you agree to the following terms:</p>
+                <p style='margin-top: 40px; margin-bottom: 35px;'><span class='bold'>By installing and using Generator you agree to the following terms:</span></p>
 
                 <ol>
                     <li><span class='bold'>Grant of License:</span> You are granted a limited, non-transferable license to use Generator for personal or commercial purposes.</li>
@@ -4408,7 +4414,7 @@ a
                     <li><span class='bold'>Entire Agreement:</span> This EULA constitutes the entire agreement between you and Brainshift.</li>
                 </ol>
                
-                <p><div class='button' id='btnStartTrial' onclick='hideAllMenus(); btnStartTrial.blur(); hideEulaDialog(); startFreeTrial();'>Start free trial</div></p>
+                <p><div class='button' id='btnStartTrial' onclick='hideAllMenus(); btnStartTrial.blur(); hideEulaDialog(); await startFreeTrial();'>Start free trial</div></p>
             </div>
         </div>
         <div class='dialogScrollbar' id='eulaScrollbarY'></div>
@@ -101815,26 +101821,71 @@ function hideEulaDialog()
 
 
 
+async function checkTrialExists()
+{
+    const response = await postToServer(
+    {
+        action: 'getTrialExists',
+        userId:  currentUser.id
+    }); 
+    
+
+    console.assert(response, 'invalid response from server @ checkTrialExists()');
+    return response ?? response.result;
+}
+
+
+
+async function checkTrialActive()
+{
+    const response = await postToServer(
+    {
+        action: 'getTrialActive',
+        userId:  currentUser.id
+    }); 
+
+    
+    console.assert(response, 'invalid response from server @ checkTrialActive()');
+    return response ?? response.result;
+}
+
+
+
 async function startFreeTrial()
 {
-    const request =
+    const response = await postToServer(
     {
-        action: 'startTrial',
+        action: 'createTrial',
         userId:  currentUser.id
-    };
+    }); 
 
-    await fetch(
+    
+    console.assert(response, 'invalid response from server @ createTrial()');
+    return response ?? response.result;
+}
+
+
+
+async function postToServer(cmd, success)
+{
+    const response = await fetch(
         'https://brainshift.design/generator/license/',
         {
             method:  'POST',
             headers: { 'Content-Type': 'application/json' },
-            body:    JSON.stringify(request)
-        })
-        .then(response => response.text())
-        .then(json => console.log('json =', json))
-        .catch(error => console.log('error =', error));
-}
+            body:    JSON.stringify(cmd),
+        });
 
+
+    if (response.ok)
+        return response.json();
+
+    else
+    {
+        uiNotify(response.status, {error: true});
+        return null;
+    }
+}
 
 
 // eulaClose.addEventListener('pointerdown', e => e.stopPropagation());
@@ -101981,12 +102032,14 @@ uiQueueMessageToFigma({cmd: 'figStartGenerator'});
 
 
 
-function uiReturnFigStartGenerator(msg)
+async function uiReturnFigStartGenerator(msg)
 {
+    currentUser = msg.currentUser;
+    //productKey  = msg.productKey;
+
+
     initThemeColors();
     loadLocalSettings();
-
-    initKeyboardPanel();
 
  
     figFonts           = [...msg.fonts];
@@ -102007,20 +102060,25 @@ function uiReturnFigStartGenerator(msg)
     viewportZoom = msg.viewportZoom;
 
     
+    
     initWindowSizers();
 
-    
-    showEulaDialog();
+
+    if (!(await checkTrialActive()))
+    {
+        if (!(await checkTrialExists()))
+            showEulaDialog();
+    }
 
 
     uiGetLocalData('showWhatsNew');
 
 
-    currentUser  = msg.currentUser;
-    productKey   = msg.productKey;
-
     startupValidateLicense();
     // enableFeatures() is called when loading is done
+
+
+    initKeyboardPanel();
 
 
     setTimeout(() => loadingGraphic.style.display = 'block', 300);

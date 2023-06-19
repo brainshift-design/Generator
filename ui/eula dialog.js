@@ -103,26 +103,71 @@ function hideEulaDialog()
 
 
 
+async function checkTrialExists()
+{
+    const response = await postToServer(
+    {
+        action: 'getTrialExists',
+        userId:  currentUser.id
+    }); 
+    
+
+    console.assert(response, 'invalid response from server @ checkTrialExists()');
+    return response ?? response.result;
+}
+
+
+
+async function checkTrialActive()
+{
+    const response = await postToServer(
+    {
+        action: 'getTrialActive',
+        userId:  currentUser.id
+    }); 
+
+    
+    console.assert(response, 'invalid response from server @ checkTrialActive()');
+    return response ?? response.result;
+}
+
+
+
 async function startFreeTrial()
 {
-    const request =
+    const response = await postToServer(
     {
-        action: 'startTrial',
+        action: 'createTrial',
         userId:  currentUser.id
-    };
+    }); 
 
-    await fetch(
+    
+    console.assert(response, 'invalid response from server @ createTrial()');
+    return response ?? response.result;
+}
+
+
+
+async function postToServer(cmd, success)
+{
+    const response = await fetch(
         'https://brainshift.design/generator/license/',
         {
             method:  'POST',
             headers: { 'Content-Type': 'application/json' },
-            body:    JSON.stringify(request)
-        })
-        .then(response => response.text())
-        .then(json => console.log('json =', json))
-        .catch(error => console.log('error =', error));
-}
+            body:    JSON.stringify(cmd),
+        });
 
+
+    if (response.ok)
+        return response.json();
+
+    else
+    {
+        uiNotify(response.status, {error: true});
+        return null;
+    }
+}
 
 
 // eulaClose.addEventListener('pointerdown', e => e.stopPropagation());
