@@ -170,9 +170,6 @@ async function postToServer(cmd, success)
 }
 
 
-// eulaClose.addEventListener('pointerdown', e => e.stopPropagation());
-
-
 
 /////////////////////////////////////////////////////////////////////////////////////
 

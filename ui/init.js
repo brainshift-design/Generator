@@ -80,10 +80,9 @@ async function uiReturnFigStartGenerator(msg)
     //productKey  = msg.productKey;
 
 
-    initThemeColors();
     loadLocalSettings();
 
- 
+    
     figFonts           = [...msg.fonts];
     figUniqueFontNames = [...new Set(msg.fonts.map(f => f.fontName.family))];
 
@@ -102,25 +101,24 @@ async function uiReturnFigStartGenerator(msg)
     viewportZoom = msg.viewportZoom;
 
     
-    
+    initThemeColors();
+    initKeyboardPanel();
     initWindowSizers();
 
 
-    if (!(await checkTrialActive()))
-    {
-        if (!(await checkTrialExists()))
-            showEulaDialog();
-    }
+    // if (!(await checkTrialActive()))
+    // {
+    //     if (!(await checkTrialExists()))
+    //         showEulaDialog();
+    // }
 
 
     uiGetLocalData('showWhatsNew');
 
 
-    startupValidateLicense();
+    //startupValidateLicense();
     // enableFeatures() is called when loading is done
 
-
-    initKeyboardPanel();
 
 
     setTimeout(() => loadingGraphic.style.display = 'block', 300);

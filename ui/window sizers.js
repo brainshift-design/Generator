@@ -1,10 +1,10 @@
 function initWindowSizers()
 {
-    initWindowSizerEvents(windowSizerL,  setWindowSizerRectL);
+    //initWindowSizerEvents(windowSizerL,  setWindowSizerRectL);
     initWindowSizerEvents(windowSizerR,  setWindowSizerRectR);
     initWindowSizerEvents(windowSizerB,  setWindowSizerRectB);
 
-    initWindowSizerEvents(windowSizerBL, setWindowSizerRectBL);
+    //initWindowSizerEvents(windowSizerBL, setWindowSizerRectBL);
     initWindowSizerEvents(windowSizerBR, setWindowSizerRectBR);
 }
 
@@ -160,21 +160,21 @@ function updateWindowSizers()
     const edge   = Math.ceil(windowBorderWidth);
     const corner = Math.max(windowBorderWidth, edge);
 
-    windowSizerL .style.width  = edge; 
+    //windowSizerL .style.width  = edge; 
     windowSizerR .style.width  = edge; 
     windowSizerB .style.height = edge; 
 
-    windowSizerBL.style.width  = corner; 
-    windowSizerBL.style.height = corner; 
+    //windowSizerBL.style.width  = corner; 
+    //windowSizerBL.style.height = corner; 
 
     windowSizerBR.style.width  = corner; 
     windowSizerBR.style.height = corner; 
 
 
-    windowSizerL.style.cursor  = 'ew-resize';
+    //windowSizerL.style.cursor  = 'ew-resize';
     windowSizerR.style.cursor  = 'ew-resize';
     windowSizerB.style.cursor  = 'ns-resize';
     
-    windowSizerBL.style.cursor = 'nesw-resize';
+    //windowSizerBL.style.cursor = 'nesw-resize';
     windowSizerBR.style.cursor = 'nwse-resize';
 }

@@ -61,7 +61,7 @@ div
 }
 
 
-#windowSizerL { left:  0; }
+/* #windowSizerL { left:  0; } */
 #windowSizerR { right: 0; }
 
 
@@ -88,12 +88,12 @@ div
 }
 
 
-#windowSizerBL
+/* #windowSizerBL
 {
     left:   0;
     bottom: 0;
     cursor: nesw-resize;
-}
+} */
 
 
 #windowSizerBR

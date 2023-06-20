@@ -62,7 +62,7 @@
     overflow-y:       hidden;
     color:            #eee;
     background-color: #1e1e1e;
-    z-index:          10000;
+    z-index:          100000;
 }
 
 

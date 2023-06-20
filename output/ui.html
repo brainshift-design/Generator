@@ -1660,7 +1660,7 @@ div
 }
 
 
-#windowSizerL { left:  0; }
+/* #windowSizerL { left:  0; } */
 #windowSizerR { right: 0; }
 
 
@@ -1687,12 +1687,12 @@ div
 }
 
 
-#windowSizerBL
+/* #windowSizerBL
 {
     left:   0;
     bottom: 0;
     cursor: nesw-resize;
-}
+} */
 
 
 #windowSizerBR
@@ -2368,7 +2368,7 @@ a
     overflow:   hidden;
     height:     calc(100% - 40px);
     position:   relative;
-    z-index:    2;
+    z-index:    5000;
     box-shadow: 0 1px 0 0 inset #383838;
     /* box-shadow: 0 0 0 1px red inset; */
 }
@@ -2379,7 +2379,7 @@ a
     position:       absolute;
     width:          100%;
     height:         calc(100% - 1px);
-    z-index:        1;
+    z-index:        5001;
     pointer-events: none;
     overflow:       hidden;
 }
@@ -2449,7 +2449,7 @@ a
     overflow-y:       hidden;
     color:            #eee;
     background-color: #1e1e1e;
-    z-index:          10000;
+    z-index:          100000;
 }
 
 
@@ -4203,11 +4203,11 @@ a
 <div id='debugInfo'></div>
 
 
-<div class='windowSizerEdge windowSizerH' id='windowSizerL'></div>
+<!-- <div class='windowSizerEdge windowSizerH' id='windowSizerL'></div> -->
 <div class='windowSizerEdge windowSizerH' id='windowSizerR'></div>
 <div class='windowSizerEdge windowSizerV' id='windowSizerB'></div>
 
-<div class='windowSizerCorner' id='windowSizerBL'></div>
+<!-- <div class='windowSizerCorner' id='windowSizerBL'></div> -->
 <div class='windowSizerCorner' id='windowSizerBR'></div>
 
 
@@ -72284,14 +72284,18 @@ GraphView.prototype.createEvents = function()
         const sx = e.clientX;
         const sy = e.clientY;
 
+
+        hideAllMenus();
+
+
         if (   e.button == 0
             && !this.panning
             && !this.tempConn
             && !this.scrollbarX.moving
-            && !this.scrollbarY.moving
-            && !document.canResizeL
-            && !document.canResizeR
-            && !document.canResizeB)
+            && !this.scrollbarY.moving)
+            // && !document.canResizeL
+            // && !document.canResizeR
+            // && !document.canResizeB)
         {
             if (   this.spaceDown
                 || panMode)
@@ -97407,7 +97411,9 @@ Graph.prototype.updatePages = function()
     pagesBar.style.display    = settings.showPages ? 'inline-block' : 'none';
     
     this.pages.forEach(p => p.update());
-    this.pages[0].button.style.display = 'none';    
+
+    if (this.pages.length > 0)
+        this.pages[0].button.style.display = 'none';    
 
     
     updateAddButton(false);
@@ -101888,9 +101894,6 @@ async function postToServer(cmd, success)
 }
 
 
-// eulaClose.addEventListener('pointerdown', e => e.stopPropagation());
-
-
 
 /////////////////////////////////////////////////////////////////////////////////////
 
@@ -102038,10 +102041,9 @@ async function uiReturnFigStartGenerator(msg)
     //productKey  = msg.productKey;
 
 
-    initThemeColors();
     loadLocalSettings();
 
- 
+    
     figFonts           = [...msg.fonts];
     figUniqueFontNames = [...new Set(msg.fonts.map(f => f.fontName.family))];
 
@@ -102060,25 +102062,24 @@ async function uiReturnFigStartGenerator(msg)
     viewportZoom = msg.viewportZoom;
 
     
-    
+    initThemeColors();
+    initKeyboardPanel();
     initWindowSizers();
 
 
-    if (!(await checkTrialActive()))
-    {
-        if (!(await checkTrialExists()))
-            showEulaDialog();
-    }
+    // if (!(await checkTrialActive()))
+    // {
+    //     if (!(await checkTrialExists()))
+    //         showEulaDialog();
+    // }
 
 
     uiGetLocalData('showWhatsNew');
 
 
-    startupValidateLicense();
+    //startupValidateLicense();
     // enableFeatures() is called when loading is done
 
-
-    initKeyboardPanel();
 
 
     setTimeout(() => loadingGraphic.style.display = 'block', 300);
@@ -106192,11 +106193,11 @@ function updateWhatsNewScrollY(x, w, h, bounds, yOffset)
 
 function initWindowSizers()
 {
-    initWindowSizerEvents(windowSizerL,  setWindowSizerRectL);
+    //initWindowSizerEvents(windowSizerL,  setWindowSizerRectL);
     initWindowSizerEvents(windowSizerR,  setWindowSizerRectR);
     initWindowSizerEvents(windowSizerB,  setWindowSizerRectB);
 
-    initWindowSizerEvents(windowSizerBL, setWindowSizerRectBL);
+    //initWindowSizerEvents(windowSizerBL, setWindowSizerRectBL);
     initWindowSizerEvents(windowSizerBR, setWindowSizerRectBR);
 }
 
@@ -106352,22 +106353,22 @@ function updateWindowSizers()
     const edge   = Math.ceil(windowBorderWidth);
     const corner = Math.max(windowBorderWidth, edge);
 
-    windowSizerL .style.width  = edge; 
+    //windowSizerL .style.width  = edge; 
     windowSizerR .style.width  = edge; 
     windowSizerB .style.height = edge; 
 
-    windowSizerBL.style.width  = corner; 
-    windowSizerBL.style.height = corner; 
+    //windowSizerBL.style.width  = corner; 
+    //windowSizerBL.style.height = corner; 
 
     windowSizerBR.style.width  = corner; 
     windowSizerBR.style.height = corner; 
 
 
-    windowSizerL.style.cursor  = 'ew-resize';
+    //windowSizerL.style.cursor  = 'ew-resize';
     windowSizerR.style.cursor  = 'ew-resize';
     windowSizerB.style.cursor  = 'ns-resize';
     
-    windowSizerBL.style.cursor = 'nesw-resize';
+    //windowSizerBL.style.cursor = 'nesw-resize';
     windowSizerBR.style.cursor = 'nwse-resize';
 }
 

@@ -60,7 +60,9 @@ Graph.prototype.updatePages = function()
     pagesBar.style.display    = settings.showPages ? 'inline-block' : 'none';
     
     this.pages.forEach(p => p.update());
-    this.pages[0].button.style.display = 'none';    
+
+    if (this.pages.length > 0)
+        this.pages[0].button.style.display = 'none';    
 
     
     updateAddButton(false);

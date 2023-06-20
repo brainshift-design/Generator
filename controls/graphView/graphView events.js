@@ -43,14 +43,18 @@ GraphView.prototype.createEvents = function()
         const sx = e.clientX;
         const sy = e.clientY;
 
+
+        hideAllMenus();
+
+
         if (   e.button == 0
             && !this.panning
             && !this.tempConn
             && !this.scrollbarX.moving
-            && !this.scrollbarY.moving
-            && !document.canResizeL
-            && !document.canResizeR
-            && !document.canResizeB)
+            && !this.scrollbarY.moving)
+            // && !document.canResizeL
+            // && !document.canResizeR
+            // && !document.canResizeB)
         {
             if (   this.spaceDown
                 || panMode)

@@ -10,7 +10,7 @@
     overflow:   hidden;
     height:     calc(100% - 40px);
     position:   relative;
-    z-index:    2;
+    z-index:    5000;
     box-shadow: 0 1px 0 0 inset #383838;
     /* box-shadow: 0 0 0 1px red inset; */
 }
@@ -21,7 +21,7 @@
     position:       absolute;
     width:          100%;
     height:         calc(100% - 1px);
-    z-index:        1;
+    z-index:        5001;
     pointer-events: none;
     overflow:       hidden;
 }
