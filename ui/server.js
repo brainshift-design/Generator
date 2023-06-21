@@ -52,7 +52,7 @@ async function checkRemainingTrialDays()
 
     
     console.assert(response, 'invalid response from server @ checkRemainingTrialDays()');
-    return response ? Math.max(0, response.result) : -1;
+    return response ? response.result : -1;
 }
 
 

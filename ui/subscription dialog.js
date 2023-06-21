@@ -60,7 +60,7 @@ async function updateLicenseInfo()
             ? 'Last day'
             : trialDaysLeft + ' ' + countString(trialDaysLeft, 'day') + ' left';
 
-        licenseInfo.innerHTML  = daysLeft + ' of your free trial.';
+        licenseInfo.innerHTML            = daysLeft + ' of your free trial.';
      
         licenseInfo.style.top            = '55%';
         licenseInfo.style.transform      = 'translateX(-50%) translateY(-50%)';
@@ -72,7 +72,21 @@ async function updateLicenseInfo()
     }
     else     
     {
-        licenseInfo.innerHTML  = 'Your free trial has expired.<br/><br/>Please subscribe to continue using Generator.';
+        const expDays   = Math.abs  (trialDaysLeft);
+        const expWeeks  = Math.round(expDays / 7);
+        const expMonths = Math.round(expDays / 30.5);
+        const expYears  = Math.round(expDays / 365)
+
+        let expired;
+
+             if (expYears  > 0) expired = 'expired ' + expYears  + ' ' + countString(expYears,  'year' ) + ' ago';
+        else if (expMonths > 0) expired = 'expired ' + expMonths + ' ' + countString(expMonths, 'month') + ' ago';
+        else if (expWeeks  > 0) expired = 'expired ' + expWeeks  + ' ' + countString(expWeeks,  'week' ) + ' ago';
+        else if (expDays   > 1) expired = 'expired ' + expDays   + ' ' + countString(expDays,   'day'  ) + ' ago';
+        else                    expired = 'has expired';
+
+
+        licenseInfo.innerHTML            = 'Your free trial ' + expired + '.<br/><br/>Please subscribe to continue using Generator.';
 
         licenseInfo.style.top            = '60px';
         licenseInfo.style.transform      = 'translateX(-50%)';
