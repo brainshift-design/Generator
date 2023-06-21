@@ -103,6 +103,21 @@ function hideEulaDialog()
 
 
 
+async function checkSubActive()
+{
+    const response = await postToServer(
+    {
+        action: 'getSubActive',
+        userId:  currentUser.id
+    }); 
+
+    
+    console.assert(response, 'invalid response from server @ checkSubActive()');
+    return response ? response.result : false;
+}
+
+
+
 async function checkTrialExists()
 {
     const response = await postToServer(
@@ -111,9 +126,8 @@ async function checkTrialExists()
         userId:  currentUser.id
     }); 
     
-
     console.assert(response, 'invalid response from server @ checkTrialExists()');
-    return response ?? response.result;
+    return response ? response.result : false;
 }
 
 
@@ -128,7 +142,7 @@ async function checkTrialActive()
 
     
     console.assert(response, 'invalid response from server @ checkTrialActive()');
-    return response ?? response.result;
+    return response ? response.result : false;
 }
 
 
@@ -143,7 +157,7 @@ async function startFreeTrial()
 
     
     console.assert(response, 'invalid response from server @ createTrial()');
-    return response ?? response.result;
+    return response ? response.result : false;
 }
 
 

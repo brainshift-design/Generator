@@ -223,7 +223,7 @@
 {
     display:          none;
 
-    z-index:          10;
+    z-index:          1000;
     
     position:         fixed;
     left:             0;
@@ -242,7 +242,7 @@
 
     font-family:   Inter;
 
-    z-index:       20;
+    z-index:       2000;
     position:      absolute;
     top:           50%;
     left:          50%;
@@ -1224,7 +1224,7 @@
 {
     display:          none;
 
-    z-index:          10;
+    z-index:          10000;
     
     position:         fixed;
     left:             0;
@@ -1245,7 +1245,7 @@
 
     font-family:   Inter;
 
-    z-index:       20;
+    z-index:       10001;
     position:      absolute;
     top:           50%;
     left:          50%;
@@ -2368,7 +2368,7 @@ a
     overflow:   hidden;
     height:     calc(100% - 40px);
     position:   relative;
-    z-index:    5000;
+    z-index:    2;
     box-shadow: 0 1px 0 0 inset #383838;
     /* box-shadow: 0 0 0 1px red inset; */
 }
@@ -2379,7 +2379,7 @@ a
     position:       absolute;
     width:          100%;
     height:         calc(100% - 1px);
-    z-index:        5001;
+    z-index:        1;
     pointer-events: none;
     overflow:       hidden;
 }
@@ -72885,21 +72885,26 @@ function updateZoomIcon()
     if (settings.dataMode)
         return;
 
+    
+    const zoom =
+        graph.currentPage
+        ? graph.currentPage.zoom
+        : 1;
 
-    btnZoom.divIcon.innerHTML       =  Math.round(graph.currentPage.zoom * 100) + '%';
+    btnZoom.divIcon.innerHTML       =  Math.round(zoom * 100) + '%';
     btnZoom.divIcon.style.transform = 'translateX(2px) translateY(-15px)';
 
 
-    if (   graph.currentPage.zoom < settings.minZoomForParams
-        && graph.currentPage.zoom < 1)
+    if (   zoom < settings.minZoomForParams
+        && zoom < 1)
     {
         zoomIconOverlay.style.left       = '14px';
         zoomIconOverlay.style.top        = '11px';
         zoomIconOverlay.style.width      = '28';
         zoomIconOverlay.style.background = 'url(\'data:image/svg+xml;utf8,<svg width="28" height="20" viewBox="0 0 28 20" fill="none" xmlns="http://www.w3.org/2000/svg"><path d="M4 0.5H24C25.933 0.5 27.5 2.067 27.5 4V19.5H0.5V4C0.5 2.067 2.067 0.5 4 0.5Z" stroke="white"/></svg>\')';
     }
-    else if (graph.currentPage.zoom < settings.minZoomForParams
-          && graph.currentPage.zoom < 10)
+    else if (zoom < settings.minZoomForParams
+          && zoom < 10)
     {
         zoomIconOverlay.style.left       = '12px';
         zoomIconOverlay.style.top        = '11px';
@@ -101827,6 +101832,21 @@ function hideEulaDialog()
 
 
 
+async function checkSubActive()
+{
+    const response = await postToServer(
+    {
+        action: 'getSubActive',
+        userId:  currentUser.id
+    }); 
+
+    
+    console.assert(response, 'invalid response from server @ checkSubActive()');
+    return response ? response.result : false;
+}
+
+
+
 async function checkTrialExists()
 {
     const response = await postToServer(
@@ -101835,9 +101855,8 @@ async function checkTrialExists()
         userId:  currentUser.id
     }); 
     
-
     console.assert(response, 'invalid response from server @ checkTrialExists()');
-    return response ?? response.result;
+    return response ? response.result : false;
 }
 
 
@@ -101852,7 +101871,7 @@ async function checkTrialActive()
 
     
     console.assert(response, 'invalid response from server @ checkTrialActive()');
-    return response ?? response.result;
+    return response ? response.result : false;
 }
 
 
@@ -101867,7 +101886,7 @@ async function startFreeTrial()
 
     
     console.assert(response, 'invalid response from server @ createTrial()');
-    return response ?? response.result;
+    return response ? response.result : false;
 }
 
 
@@ -102067,11 +102086,25 @@ async function uiReturnFigStartGenerator(msg)
     initWindowSizers();
 
 
-    // if (!(await checkTrialActive()))
-    // {
-    //     if (!(await checkTrialExists()))
-    //         showEulaDialog();
-    // }
+    /*
+        check sub
+            if yes, start
+
+        if no, check trial
+            if yes, show sub dialog (when last sub expired)
+
+        if no, show eula, start trial
+    */
+
+
+    if (await checkTrialExists())
+    {
+        if (   !(await checkTrialActive())
+            && !(await checkSubActive()))
+            showProductKeyDialog();
+    }
+    else
+        showEulaDialog();
 
 
     uiGetLocalData('showWhatsNew');

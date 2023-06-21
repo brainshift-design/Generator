@@ -106,11 +106,25 @@ async function uiReturnFigStartGenerator(msg)
     initWindowSizers();
 
 
-    // if (!(await checkTrialActive()))
-    // {
-    //     if (!(await checkTrialExists()))
-    //         showEulaDialog();
-    // }
+    /*
+        check sub
+            if yes, start
+
+        if no, check trial
+            if yes, show sub dialog (when last sub expired)
+
+        if no, show eula, start trial
+    */
+
+
+    if (await checkTrialExists())
+    {
+        if (   !(await checkTrialActive())
+            && !(await checkSubActive()))
+            showProductKeyDialog();
+    }
+    else
+        showEulaDialog();
 
 
     uiGetLocalData('showWhatsNew');
