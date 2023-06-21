@@ -210,6 +210,7 @@
     position:   absolute;
     left:       calc(100% - 36px);
     top:        4px;
+    display:    none;
 }
 
 
@@ -219,7 +220,7 @@
 }
 
 
-#productKeyBack
+#subscriptionBack
 {
     display:          none;
 
@@ -236,7 +237,7 @@
 }
 
 
-#productKeyDialog
+#subscriptionDialog
 {
     display:       none;
 
@@ -249,8 +250,8 @@
     transform:     translateX(-50%)
                    translateY(-50%);
 
-    width:         250px;
-    height:        250px;
+    width:         400px;
+    height:        226px;
     
     color:         var(--figma-color-text);
     background:    var(--figma-color-bg);
@@ -263,14 +264,14 @@
 }
 
 
-.figma-light #productKeyDialog
+.figma-light #subscriptionDialog
 {
     box-shadow: 0px 2px  7px rgba(0, 0, 0, 0.15),
                 0px 5px 17px rgba(0, 0, 0, 0.15);
 }
 
 
-.figma-dark #productKeyDialog
+.figma-dark #subscriptionDialog
 {
     box-shadow: 0px 2px  7px rgba(0, 0, 0, 0.45),
                 0px 5px 25px rgba(0, 0, 0, 0.45),
@@ -278,7 +279,7 @@
 }
 
 
-#productKeyTitle
+#subscriptionTitle
 {
     height:         40px;
     border-bottom:  1px solid rgb(0, 0, 0, 0.15);
@@ -287,7 +288,7 @@
 }
 
 
-#productKeyTitleText
+#subscriptionTitleText
 {
     position:       absolute;
     left:           16px;
@@ -309,7 +310,7 @@
 }
 
 
-#productKeyUserName
+#subscriptionUserName
 {
     font-size:      11px;
     font-weight:    bold;
@@ -334,8 +335,10 @@
 }
 
 
-#productKeyUserId
+#subscriptionUserId
 {
+    display:        none;
+    
     font-size:      11px;
     text-align:     center;
 
@@ -347,11 +350,12 @@
     left:           50%;
     transform:      translateX(-50%);
 
-    top:            70px;
+    top:            121px;
 
-    width:          180px;
+    width:          300px;
 
     user-select:    text;
+    line-height:    1.4em;
 
     overflow:       visible;
 
@@ -359,7 +363,50 @@
 }
 
 
-#productKeyTextBack
+#licenseInfo
+{
+    font-family:   'Inter';
+    font-size:      11px;
+    font-weight:    300;
+
+    width:          350px;
+    height:         auto;
+    padding-top:    4px;
+    padding-bottom: 0;
+
+    margin-bottom:  -3px;
+
+    background:     transparent;
+
+    position:       absolute;
+    left:           50%;
+    transform:      translateX(-50%);
+    top:            60px;
+
+
+    pointer-events: none;
+
+    text-align:     center;
+
+    /* box-shadow:     0 0 0 1px red inset; */
+}
+
+
+#btnSubscribe
+{
+    display:        none;
+
+    width:          138px;
+
+    position:       absolute;
+    left:           50%;
+    transform:      translateX(-50%);
+
+    top:            172px;
+}
+
+
+#subscriptionTextBack
 {
     display:        none;
     
@@ -382,7 +429,7 @@
 
 
 
-#productKeyInputBack
+/* #subscriptionInputBack
 {
     font-family:   'Roboto Mono';
     font-size:      16px;
@@ -402,12 +449,12 @@
 
     pointer-events: none;
 
-    /* box-shadow:  0 0 0 1px red inset; */
-}
+    box-shadow:  0 0 0 1px red inset; 
+} */
 
 
 
-#productKeyInput
+/* #subscriptionInput
 {
     font-family:   'Roboto Mono';
     font-size:      16px;
@@ -428,55 +475,13 @@
     top:            114px;
 
     transform:      translateX(-50%);
-}
+} */
 
 
-#licenseInfo
-{
-    font-family:   'Inter';
-    font-size:      11px;
-    font-weight:    300;
-
-    width:          max-content;
-    height:         24px;
-    padding-top:    4px;
-    padding-bottom: 0;
-
-    margin-bottom:  -3px;
-
-    background:     transparent;
-
-    position:       absolute;
-    left:           calc(50%);
-    transform:      translateX(-50%);
-    top:            86px;
-
-
-    pointer-events: none;
-
-    text-align:     center;
-
-    /* box-shadow:     0 0 0 1px red inset; */
-}
-
-
-#productKeyInput:disabled
+#subscriptionInput:disabled
 {
     color: var(--figma-color-bg-disabled);
 }
-
-
-#validateProductKeyButton
-{
-    width:          138px;
-
-    position:       absolute;
-    left:           50%;
-    transform:      translateX(-50%);
-
-    top:            147px;
-}
-
 
 
 #subscribeWebsite
@@ -4211,28 +4216,23 @@ a
 <div class='windowSizerCorner' id='windowSizerBR'></div>
 
 
-<div id='productKeyBack'></div>
+<div id='subscriptionBack'></div>
 
-<div id='productKeyDialog'>
+<div id='subscriptionDialog'>
 
-    <div id='productKeyTitle'>
-        <div id='productKeyTitleText'>Subscription</div>
-        <div class='panelButton dialogButtonClose' id='productKeyClose' onclick='hideAllMenus(); productKeyClose.blur(); hideProductKeyDialog();'>
+    <div id='subscriptionTitle'>
+        <div id='subscriptionTitleText'>Subscription</div>
+        <div class='panelButton dialogButtonClose' id='subscriptionClose' onclick='hideAllMenus(); subscriptionClose.blur(); hideSubscriptionDialog();'>
             <svg width="30" height="30" viewBox="0 0 30 30" fill="none" xmlns="http://www.w3.org/2000/svg">
                 <path fill-rule="evenodd" clip-rule="evenodd" d="M16 15.293L20.6465 10.6465L21.3536 11.3536L16.7071 16.0001L21.3536 20.6465L20.6465 21.3536L16 16.7072L11.3536 21.3536L10.6465 20.6465L15.2929 16.0001L10.6465 11.3537L11.3536 10.6466L16 15.293Z" fill="var(--figma-color-text)" fill-opacity="0.8"/>
             </svg>
         </div>
     </div>
     
-    <div id='productKeyBody'>
-        <!-- <div id='productKeyUserName'></div> -->
-        <div id='productKeyUserId' ondblclick='copyUserId()'></div>
-        <div id='productKeyTextBack'></div>
-        <div id='productKeyInputBack'></div>
-        <input type='text' spellcheck='false' id='productKeyInput' />
+    <div id='subscriptionBody'>
         <div id='licenseInfo'></div>
-        <div class='button' id='validateProductKeyButton' onclick='onValidateClick(productKeyInput.value);'>Validate</div>
-        <div id='subscribeWebsite'><!--<a href='http://www.bourt.com/generator/subscribe' target='_blank'>-->Buy subscription<!--</a>--></div>
+        <div id='subscriptionUserId' ondblclick='copyUserId()'></div>
+        <div class='button' id='btnSubscribe' onclick='onSubscribeClick();'>Subscribe</div>
     </div>
 
 </div>
@@ -4414,7 +4414,7 @@ a
                     <li><span class='bold'>Entire Agreement:</span> This EULA constitutes the entire agreement between you and Brainshift.</li>
                 </ol>
                
-                <p><div class='button' id='btnStartTrial' onclick='hideAllMenus(); btnStartTrial.blur(); hideEulaDialog(); await startFreeTrial();'>Start free trial</div></p>
+                <p><div class='button' id='btnStartTrial' onclick='hideAllMenus(); btnStartTrial.blur(); hideEulaDialog(); startFreeTrial();'>Start free trial</div></p>
             </div>
         </div>
         <div class='dialogScrollbar' id='eulaScrollbarY'></div>
@@ -69573,7 +69573,7 @@ function initGeneratorMenus()
     menuMainHelp.addItems([
       // new MenuItem('Help page',   {callback:  () => window.open('http://www.bourt.com/generator/help', '_blank')}),
       //new MenuItem('',             {separator: true}),
-        new MenuItem('Subscription', {callback:  () => showProductKeyDialog()}),
+        new MenuItem('Subscription', {callback:  () => showSubscriptionDialog()}),
       //new MenuItem('',             {separator: true}),
         new MenuItem('About',        {callback:  () => showAboutDialog()})]);
 
@@ -69912,13 +69912,13 @@ function initGeneratorMenus()
 
 
 
-    menuRemoveLicense = new Menu('Remove license', false, false);
-    menuRemoveLicense.addItems([
-                                new MenuItem('Cut',   {callback: () => { hideAllMenus(); document.execCommand('copy' ); clearSelectedText(productKeyInput); updateProductKeyDots(); }}),
-                                new MenuItem('Copy',  {callback: () => { hideAllMenus(); document.execCommand('copy' ); }}),
-                                new MenuItem('Paste', {callback: () => { hideAllMenus(); document.execCommand('paste'); }}),
-        menuItemLicenseSep1   = new MenuItem('', {separator: true}),
-        menuItemLicenseRemove = new MenuItem('Remove from this computer', {callback: () => { hideAllMenus(); removeLicense(); }})]);
+    // menuRemoveLicense = new Menu('Remove license', false, false);
+    // menuRemoveLicense.addItems([
+    //                             new MenuItem('Cut',   {callback: () => { hideAllMenus(); document.execCommand('copy' ); clearSelectedText(subscriptionInput); updateSubscriptionDots(); }}),
+    //                             new MenuItem('Copy',  {callback: () => { hideAllMenus(); document.execCommand('copy' ); }}),
+    //                             new MenuItem('Paste', {callback: () => { hideAllMenus(); document.execCommand('paste'); }}),
+    //     menuItemLicenseSep1   = new MenuItem('', {separator: true}),
+    //     menuItemLicenseRemove = new MenuItem('Remove from this computer', {callback: () => { hideAllMenus(); removeLicense(); }})]);
 
 
     menuText    = new Menu('Text menu',    false, false);
@@ -101832,88 +101832,6 @@ function hideEulaDialog()
 
 
 
-async function checkSubActive()
-{
-    const response = await postToServer(
-    {
-        action: 'getSubActive',
-        userId:  currentUser.id
-    }); 
-
-    
-    console.assert(response, 'invalid response from server @ checkSubActive()');
-    return response ? response.result : false;
-}
-
-
-
-async function checkTrialExists()
-{
-    const response = await postToServer(
-    {
-        action: 'getTrialExists',
-        userId:  currentUser.id
-    }); 
-    
-    console.assert(response, 'invalid response from server @ checkTrialExists()');
-    return response ? response.result : false;
-}
-
-
-
-async function checkTrialActive()
-{
-    const response = await postToServer(
-    {
-        action: 'getTrialActive',
-        userId:  currentUser.id
-    }); 
-
-    
-    console.assert(response, 'invalid response from server @ checkTrialActive()');
-    return response ? response.result : false;
-}
-
-
-
-async function startFreeTrial()
-{
-    const response = await postToServer(
-    {
-        action: 'createTrial',
-        userId:  currentUser.id
-    }); 
-
-    
-    console.assert(response, 'invalid response from server @ createTrial()');
-    return response ? response.result : false;
-}
-
-
-
-async function postToServer(cmd, success)
-{
-    const response = await fetch(
-        'https://brainshift.design/generator/license/',
-        {
-            method:  'POST',
-            headers: { 'Content-Type': 'application/json' },
-            body:    JSON.stringify(cmd),
-        });
-
-
-    if (response.ok)
-        return response.json();
-
-    else
-    {
-        uiNotify(response.status, {error: true});
-        return null;
-    }
-}
-
-
-
 /////////////////////////////////////////////////////////////////////////////////////
 
 
@@ -101997,7 +101915,7 @@ var allUpdateNodes   = [];
 
 // uiClearLocalData('windowWidth');
 // uiClearLocalData('windowHeight');
-//uiClearLocalData('productKey');
+//uiClearLocalData('subscription');
 
 // uiClearLocalData('showRequests');
 // uiClearLocalData('showWhatsNew');
@@ -102019,15 +101937,15 @@ var allUpdateNodes   = [];
 
 
 var currentUser = null;
-var productKey  = NULL;
+var subscription  = NULL;
 
 
 const generator = new Worker(
     window.URL.createObjectURL(
         new Blob([generatorScript.textContent])));
-        
 
-var panMode             = false;        
+
+var panMode             = false;
 
 var     copiedNodesJson = '';
 var duplicatedNodesJson = '';
@@ -102057,63 +101975,52 @@ uiQueueMessageToFigma({cmd: 'figStartGenerator'});
 async function uiReturnFigStartGenerator(msg)
 {
     currentUser = msg.currentUser;
-    //productKey  = msg.productKey;
+    //subscription  = msg.subscription;
 
 
     loadLocalSettings();
 
-    
+
     figFonts           = [...msg.fonts];
     figUniqueFontNames = [...new Set(msg.fonts.map(f => f.fontName.family))];
 
-    
+
     uiQueueMessageToGenerator(
     {
-        cmd:            'initFonts', 
+        cmd:            'initFonts',
         fonts:           figFonts,
         uniqueFontNames: figUniqueFontNames
     });
-    
+
 
     graphView.updateMeasureData();
 
     viewportRect = msg.viewportRect;
     viewportZoom = msg.viewportZoom;
 
-    
+
     initThemeColors();
     initKeyboardPanel();
     initWindowSizers();
 
 
-    /*
-        check sub
-            if yes, start
-
-        if no, check trial
-            if yes, show sub dialog (when last sub expired)
-
-        if no, show eula, start trial
-    */
-
-
     if (await checkTrialExists())
     {
-        if (   !(await checkTrialActive())
-            && !(await checkSubActive()))
-            showProductKeyDialog();
+        if (   (await checkTrialActive())
+            || (await checkSubActive()))
+            initGenerator();
+        else
+            showSubscriptionDialog();
     }
     else
         showEulaDialog();
+}
 
 
+
+function initGenerator()
+{
     uiGetLocalData('showWhatsNew');
-
-
-    //startupValidateLicense();
-    // enableFeatures() is called when loading is done
-
-
 
     setTimeout(() => loadingGraphic.style.display = 'block', 300);
 
@@ -102308,7 +102215,7 @@ document.addEventListener('keydown', e =>
 
         else if (isVisible(whatsNewDialog         )) hideWhatsNewDialog();
         else if (isVisible(minZoomDialog          )) hideMinZoomDialog();
-        else if (isVisible(productKeyDialog       )) hideProductKeyDialog();
+        else if (isVisible(subscriptionDialog       )) hideSubscriptionDialog();
         else if (isVisible(aboutDialog            )) hideAboutDialog();
         else if (isVisible(deleteConnectionsDialog)) hideDeleteConnectionsDialog();
 
@@ -103009,259 +102916,6 @@ function setAutoCursor()
 };
 
 
-var productKey = NULL;
-
-
-
-function onValidateClick(key)
-{
-    if (productKeyInput.disabled)
-    {
-        licenseInfo.innerHTML = '';
-
-        validateProductKeyButton.innerHTML = 'Validate';
-
-        productKeyInput.disabled = false
-        productKeyInput.style.display = 'inline-block';
-
-        setDefaultProductKeyInput();
-
-        productKeyInput.focus();
-        productKeyInput.select();
-
-        licenseInfo.innerHTML = '';
-    }
-    else
-    {
-        tryValidateLicense(key);
-    }
-}
-
-
-
-function removeLicense()
-{
-    productKey = NULL;
-    uiSetLocalData('productKey', NULL);
-
-    productKeyInputBack.innerHTML = '•'.repeat(13);
-    productKeyInput.value         = '';
-
-    updateLicenseInfo();
-    //enableFeatures(false, settings.enableBetaFeatures);
-}
-
-
-
-function showProductKeyDialog()
-{
-    productKeyBack  .style.display = 'block';
-    productKeyDialog.style.display = 'block';
-
-
-    productKeyUserId.innerHTML = '<span style="user-select: none; color: var(--figma-color-bg-disabled-secondary);">User ID:&nbsp;&nbsp;</span>' + currentUser.id;
-    
-    
-    const license = 
-        productKey != NULL
-        ? validateLicense(currentUser.id, productKey)
-        : null;
-
-    
-    productKeyInputBack.innerHTML = license ? '' : '•'.repeat(13);
-    
-    productKeyInput.value         = productKey;
-    productKeyInput.disabled      = license;
-    
-    productKeyInput.style.display = license ? 'none' : 'inline'
-
-    updateLicenseInfo(license);
-    
-    productKeyTextBack.style.display   = license ? 'none' : 'inline';
-    validateProductKeyButton.innerHTML = license ? 'Edit' : 'Validate';
-
-
-    if (license) setDisabledProductKeyInput();
-    else         setDefaultProductKeyInput();
-    
-    window.setTimeout(() => document.getElementById('productKeyInput').focus(), 0);
-
-    dialogShown = true;
-}
-
-
-
-function copyUserId()
-{
-    writeTextToClipboard(currentUser.id);
-    selectElementText('productKeyUserId');
-    uiNotify('Copied user ID');
-}
-
-
-
-function hideProductKeyDialog()
-{
-    productKeyBack  .style.display = 'none';
-    productKeyDialog.style.display = 'none';
-
-    dialogShown = false;
-}
-
-
-
-productKeyClose.addEventListener('pointerdown', e => e.stopPropagation());
-productKeyBack.addEventListener('pointerdown', () => { hideProductKeyDialog(); });
-
-productKeyInput.addEventListener('pointerdown', e => 
-{ 
-    if (!productKeyInput.disabled)
-    {
-        setDefaultProductKeyInput(); 
-
-        const subscribed = 
-               productKey != NULL
-            && (      productKeyInput.selectionStart == productKeyInput.selectionEnd
-                   && productKeyInput.value == productKey
-                || getSelectedText(productKeyInput) == productKey);
-
-        if (e.button == 2)
-        {
-            e.preventDefault();
-            e.stopPropagation();
-
-            updateElementDisplay(menuItemLicenseSep1  .div, subscribed);
-            updateElementDisplay(menuItemLicenseRemove.div, subscribed);
-
-            menuRemoveLicense.showAt(e.clientX, e.clientY, false, false);
-        }
-    }
-});
-
-
-
-productKeyInput.addEventListener('keydown', e =>
-{
-    if (e.code == 'Escape')
-        productKeyInput.blur();
-
-    e.stopPropagation();
-});
-
-
-
-productKeyInput.addEventListener('input', () =>
-{
-    let val = productKeyInput.value;
-    
-    val = val.toUpperCase();
-    val = val.replace(/[^12345679ABCDEFGHJKLMNPQRSTUVWXYZ]/g, '');
-    val = val.substring(0, Math.min(val.length, 13));
-    
-    productKeyInput.value = val;
-
-    updateProductKeyDots();
-});
-
-
-
-function updateProductKeyDots()
-{
-    productKeyInputBack.innerHTML = 
-          '&nbsp;'.repeat(productKeyInput.value.length)
-        + '•'.repeat(13 - productKeyInput.value.length);
-}
-
-
-
-function setBadProductKeyInput()
-{
-    productKeyInput.style.outline   = '2px dashed #e00';        
-    productKeyTextBack.style.display = 'none';
-}
-
-
-
-function setDefaultProductKeyInput()
-{
-    productKeyInput.style.outline    = 'none';
-    productKeyTextBack.style.display = 'inline';
-}
-
-
-
-function setDisabledProductKeyInput()
-{
-    productKeyInput.style.outline   = 'none';
-}
-
-
-
-function tryValidateLicense(key)
-{
-    let license;
-
-    if (license = validateLicense(currentUser.id, key))
-    {
-        productKey = key;
-        uiSetLocalData('productKey', key);
-
-        //enableFeatures(productKey != NULL, settings.enableBetaFeatures);
-        
-        setDisabledProductKeyInput();
-        updateLicenseInfo(license);
-
-        productKeyInput.disabled           = true;
-        productKeyTextBack.style.display   = 'none';
-        productKeyInput   .style.display   = 'none';
-
-        validateProductKeyButton.innerHTML = 'Edit';
-
-        uiNotify('✨   Thank you for subscribing to Generator !   ✨', {delay: 6000});
-    }
-    else
-    {
-        setBadProductKeyInput();
-    }
-}
-
-
-
-function updateLicenseInfo(license)
-{
-    if (license)
-    {
-        const strPrep =
-                    license.lastYear
-            + '-' + license.lastMonth.toString().padStart(2, '0')
-            + '-' + license.lastDay  .toString().padStart(2, '0');
-
-        const date    = new Date(Date.parse(strPrep));
-        const strDate = date.toLocaleString('en-UK', {dateStyle: 'medium'});
-
-        licenseInfo     .innerHTML     = '<span style="user-select: one; color: ' + (darkMode ? '#fffa' : '#000c') + ';">License valid until:&nbsp;&thinsp;</span><span style="font-weight: 700">' + strDate.replaceAll('/', '&hairsp;/&hairsp;') + '</span>';
-        subscribeWebsite.style.display = 'none';
-    }
-    else
-    {
-        licenseInfo     .innerHTML     = '';
-        subscribeWebsite.style.display = 'inline-block';
-    }
-}
-
-
-
-function startupValidateLicense()
-{
-    if (!validateLicense(currentUser.id, productKey))
-    {
-        productKey = NULL;
-        uiSetLocalData('productKey', NULL);
-    }
-}
-
-
-
 var nextRequestId   =  0;
 var lastRequestedId = -1;
 
@@ -103434,6 +103088,106 @@ function getNodeRequest(node, gen)
 }
 
 
+async function checkSubActive()
+{
+    const response = await postToServer(
+    {
+        action: 'getSubActive',
+        userId:  currentUser.id
+    }); 
+
+    
+    console.assert(response, 'invalid response from server @ checkSubActive()');
+    return response ? response.result : false;
+}
+
+
+
+async function checkTrialExists()
+{
+    const response = await postToServer(
+    {
+        action: 'getTrialExists',
+        userId:  currentUser.id
+    }); 
+    
+    console.assert(response, 'invalid response from server @ checkTrialExists()');
+    return response ? response.result : false;
+}
+
+
+
+async function checkTrialActive()
+{
+    const response = await postToServer(
+    {
+        action: 'getTrialActive',
+        userId:  currentUser.id
+    }); 
+
+    
+    console.assert(response, 'invalid response from server @ checkTrialActive()');
+    return response ? response.result : false;
+}
+
+
+
+async function checkRemainingTrialDays()
+{
+    const response = await postToServer(
+    {
+        action: 'getRemainingTrialDays',
+        userId:  currentUser.id
+    }); 
+
+    
+    console.assert(response, 'invalid response from server @ checkRemainingTrialDays()');
+    return response ? Math.max(0, response.result) : -1;
+}
+
+
+
+async function startFreeTrial()
+{
+    const response = await postToServer(
+    {
+        action: 'createTrial',
+        userId:  currentUser.id
+    }); 
+
+    
+    console.assert(response, 'invalid response from server @ createTrial()');
+
+
+    if (response.result)
+        initGenerator();
+}
+
+
+
+async function postToServer(cmd, success)
+{
+    const response = await fetch(
+        'https://brainshift.design/generator/license/',
+        {
+            method:  'POST',
+            headers: { 'Content-Type': 'application/json' },
+            body:    JSON.stringify(cmd),
+        });
+
+
+    if (response.ok)
+        return response.json();
+
+    else
+    {
+        uiNotify(response.status, {error: true});
+        return null;
+    }
+}
+
+
+
 
 
 
@@ -103553,8 +103307,8 @@ function uiReturnFigGetLocalData(msg)
             initThemeColors();
 
             updateLicenseInfo(
-                productKey != NULL
-                ? validateLicense(currentUser.id, productKey)
+                subscription != NULL
+                ? validateLicense(currentUser.id, subscription)
                 : null);
            
             if (!settings.dataMode)
@@ -103881,7 +103635,7 @@ function finishLoading(_nodes)
     generatorStarted = true;
 
 
-    //enableFeatures(productKey != NULL, settings.enableBetaFeatures); 
+    //enableFeatures(subscription != NULL, settings.enableBetaFeatures); 
     
     graphView.update();
 
@@ -104067,6 +103821,92 @@ function dataColorToJson(color, nTab)
 
     return json;
 }
+
+
+var subscription = NULL;
+
+
+
+function onSubscribeClick()
+{
+
+}
+
+
+
+function showSubscriptionDialog()
+{
+    subscriptionBack  .style.display = 'block';
+    subscriptionDialog.style.display = 'block';
+
+
+    subscriptionUserId.innerHTML = '<span style="user-select: none; color: var(--figma-color-bg-disabled-secondary);">Your Figma user ID:</span><br/>' + currentUser.id;// + '<br/><span style="user-select: none; color: var(--figma-color-bg-disabled-secondary);">(You need it to subscribe. Double-click to copy.)</span>';    
+    
+    updateLicenseInfo();
+    
+
+    dialogShown = true;
+}
+
+
+
+function copyUserId()
+{
+    writeTextToClipboard(currentUser.id);
+    selectElementText('subscriptionUserId');
+    uiNotify('Copied user ID');
+}
+
+
+
+function hideSubscriptionDialog()
+{
+    subscriptionBack  .style.display = 'none';
+    subscriptionDialog.style.display = 'none';
+
+    dialogShown = false;
+}
+
+
+
+subscriptionClose.addEventListener('pointerdown', e => e.stopPropagation());
+
+
+
+async function updateLicenseInfo()
+{
+    const trialDaysLeft = await checkRemainingTrialDays();
+
+
+    if (trialDaysLeft > 0)
+    {
+        const daysLeft = 
+            trialDaysLeft == 1
+            ? 'Last day'
+            : trialDaysLeft + ' ' + countString(trialDaysLeft, 'day') + ' left';
+
+        licenseInfo.innerHTML  = daysLeft + ' of your free trial.';
+     
+        licenseInfo.style.top            = '55%';
+        licenseInfo.style.transform      = 'translateX(-50%) translateY(-50%)';
+
+        subscriptionUserId.style.display = 'none';
+        btnSubscribe      .style.display = 'none';
+
+        subscriptionClose .style.display = 'inline-block';        
+    }
+    else     
+    {
+        licenseInfo.innerHTML  = 'Your free trial has expired.<br/><br/>Please subscribe to continue using Generator.';
+
+        licenseInfo.style.top            = '60px';
+        licenseInfo.style.transform      = 'translateX(-50%)';
+
+        subscriptionUserId.style.display = 'block';
+        btnSubscribe      .style.display = 'block';
+    }
+}
+
 
 
 var tooltipTimer    = -1;
@@ -104356,15 +104196,15 @@ createTooltipPointerTrap(ttColorblind);
 //         case 'saveLocal':  saveToLocalFile('graph.json'); break;
 //         case 'loadLocal':  loadFromLocalFile();           break;
 //         case 'duplicate':  console.log(graph.toJson());     break;
-//         case 'productKey': showProductKeyDialog();        break;
+//         case 'subscription': showSubscriptionDialog();        break;
 //     }
 // });
 
 
 
-productKeyClose.addEventListener('click', e =>
+subscriptionClose.addEventListener('click', e =>
 {
-    hideProductKeyDialog();
+    hideSubscriptionDialog();
 });
 
 

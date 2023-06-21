@@ -341,7 +341,7 @@ function initGeneratorMenus()
     menuMainHelp.addItems([
       // new MenuItem('Help page',   {callback:  () => window.open('http://www.bourt.com/generator/help', '_blank')}),
       //new MenuItem('',             {separator: true}),
-        new MenuItem('Subscription', {callback:  () => showProductKeyDialog()}),
+        new MenuItem('Subscription', {callback:  () => showSubscriptionDialog()}),
       //new MenuItem('',             {separator: true}),
         new MenuItem('About',        {callback:  () => showAboutDialog()})]);
 
@@ -680,13 +680,13 @@ function initGeneratorMenus()
 
 
 
-    menuRemoveLicense = new Menu('Remove license', false, false);
-    menuRemoveLicense.addItems([
-                                new MenuItem('Cut',   {callback: () => { hideAllMenus(); document.execCommand('copy' ); clearSelectedText(productKeyInput); updateProductKeyDots(); }}),
-                                new MenuItem('Copy',  {callback: () => { hideAllMenus(); document.execCommand('copy' ); }}),
-                                new MenuItem('Paste', {callback: () => { hideAllMenus(); document.execCommand('paste'); }}),
-        menuItemLicenseSep1   = new MenuItem('', {separator: true}),
-        menuItemLicenseRemove = new MenuItem('Remove from this computer', {callback: () => { hideAllMenus(); removeLicense(); }})]);
+    // menuRemoveLicense = new Menu('Remove license', false, false);
+    // menuRemoveLicense.addItems([
+    //                             new MenuItem('Cut',   {callback: () => { hideAllMenus(); document.execCommand('copy' ); clearSelectedText(subscriptionInput); updateSubscriptionDots(); }}),
+    //                             new MenuItem('Copy',  {callback: () => { hideAllMenus(); document.execCommand('copy' ); }}),
+    //                             new MenuItem('Paste', {callback: () => { hideAllMenus(); document.execCommand('paste'); }}),
+    //     menuItemLicenseSep1   = new MenuItem('', {separator: true}),
+    //     menuItemLicenseRemove = new MenuItem('Remove from this computer', {callback: () => { hideAllMenus(); removeLicense(); }})]);
 
 
     menuText    = new Menu('Text menu',    false, false);

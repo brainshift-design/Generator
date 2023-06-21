@@ -183,7 +183,7 @@ document.addEventListener('keydown', e =>
 
         else if (isVisible(whatsNewDialog         )) hideWhatsNewDialog();
         else if (isVisible(minZoomDialog          )) hideMinZoomDialog();
-        else if (isVisible(productKeyDialog       )) hideProductKeyDialog();
+        else if (isVisible(subscriptionDialog       )) hideSubscriptionDialog();
         else if (isVisible(aboutDialog            )) hideAboutDialog();
         else if (isVisible(deleteConnectionsDialog)) hideDeleteConnectionsDialog();
 

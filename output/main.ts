@@ -1771,8 +1771,8 @@ function figStartGenerator()
 {
     (async function()
     {
-        let productKey = await figLoadLocal('productKey');
-        if (productKey == null) productKey = '';
+        let subscription = await figLoadLocal('subscription');
+        if (subscription == null) subscription = '';
 
         
         let _wndWidth  = await figma.currentPage.getPluginData(figma.currentUser.id+',windowWidth');
@@ -1799,7 +1799,7 @@ function figStartGenerator()
         figPostMessageToUi({
             cmd:         'uiReturnFigStartGenerator',
             currentUser:  figma.currentUser,
-            productKey:   productKey,
+            subscription:   subscription,
             viewportRect: figma.viewport.bounds,
             viewportZoom: figma.viewport.zoom,
             fonts:        fonts });

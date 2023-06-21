@@ -17,7 +17,7 @@ var allUpdateNodes   = [];
 
 // uiClearLocalData('windowWidth');
 // uiClearLocalData('windowHeight');
-//uiClearLocalData('productKey');
+//uiClearLocalData('subscription');
 
 // uiClearLocalData('showRequests');
 // uiClearLocalData('showWhatsNew');
@@ -39,15 +39,15 @@ var allUpdateNodes   = [];
 
 
 var currentUser = null;
-var productKey  = NULL;
+var subscription  = NULL;
 
 
 const generator = new Worker(
     window.URL.createObjectURL(
         new Blob([generatorScript.textContent])));
-        
 
-var panMode             = false;        
+
+var panMode             = false;
 
 var     copiedNodesJson = '';
 var duplicatedNodesJson = '';
@@ -77,63 +77,52 @@ uiQueueMessageToFigma({cmd: 'figStartGenerator'});
 async function uiReturnFigStartGenerator(msg)
 {
     currentUser = msg.currentUser;
-    //productKey  = msg.productKey;
+    //subscription  = msg.subscription;
 
 
     loadLocalSettings();
 
-    
+
     figFonts           = [...msg.fonts];
     figUniqueFontNames = [...new Set(msg.fonts.map(f => f.fontName.family))];
 
-    
+
     uiQueueMessageToGenerator(
     {
-        cmd:            'initFonts', 
+        cmd:            'initFonts',
         fonts:           figFonts,
         uniqueFontNames: figUniqueFontNames
     });
-    
+
 
     graphView.updateMeasureData();
 
     viewportRect = msg.viewportRect;
     viewportZoom = msg.viewportZoom;
 
-    
+
     initThemeColors();
     initKeyboardPanel();
     initWindowSizers();
 
 
-    /*
-        check sub
-            if yes, start
-
-        if no, check trial
-            if yes, show sub dialog (when last sub expired)
-
-        if no, show eula, start trial
-    */
-
-
     if (await checkTrialExists())
     {
-        if (   !(await checkTrialActive())
-            && !(await checkSubActive()))
-            showProductKeyDialog();
+        if (   (await checkTrialActive())
+            || (await checkSubActive()))
+            initGenerator();
+        else
+            showSubscriptionDialog();
     }
     else
         showEulaDialog();
+}
 
 
+
+function initGenerator()
+{
     uiGetLocalData('showWhatsNew');
-
-
-    //startupValidateLicense();
-    // enableFeatures() is called when loading is done
-
-
 
     setTimeout(() => loadingGraphic.style.display = 'block', 300);
 

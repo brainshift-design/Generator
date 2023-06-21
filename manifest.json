@@ -5,8 +5,9 @@
   "main":          "output/main.js",
   "ui":            "output/ui.html",
   "editorType":    [ "figma" ],
-  "permissions":   [ "currentuser", "activeusers" ],
-  "networkAccess": {
+  "permissions":   [ "currentuser", "activeusers", "payments" ],
+  "networkAccess": 
+  {
     "allowedDomains": ["*"],
     "reasoning":      "Generator lets the user fetch data from web APIs."
   }

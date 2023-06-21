@@ -1069,9 +1069,9 @@ var showIds = false;
 function figStartGenerator() {
     (function () {
         return __awaiter(this, void 0, void 0, function* () {
-            let productKey = yield figLoadLocal('productKey');
-            if (productKey == null)
-                productKey = '';
+            let subscription = yield figLoadLocal('subscription');
+            if (subscription == null)
+                subscription = '';
             let _wndWidth = yield figma.currentPage.getPluginData(figma.currentUser.id + ',windowWidth');
             let _wndHeight = yield figma.currentPage.getPluginData(figma.currentUser.id + ',windowHeight');
             let wndWidth;
@@ -1095,7 +1095,7 @@ function figStartGenerator() {
             figPostMessageToUi({
                 cmd: 'uiReturnFigStartGenerator',
                 currentUser: figma.currentUser,
-                productKey: productKey,
+                subscription: subscription,
                 viewportRect: figma.viewport.bounds,
                 viewportZoom: figma.viewport.zoom,
                 fonts: fonts

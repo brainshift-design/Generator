@@ -5,15 +5,15 @@
 //         case 'saveLocal':  saveToLocalFile('graph.json'); break;
 //         case 'loadLocal':  loadFromLocalFile();           break;
 //         case 'duplicate':  console.log(graph.toJson());     break;
-//         case 'productKey': showProductKeyDialog();        break;
+//         case 'subscription': showSubscriptionDialog();        break;
 //     }
 // });
 
 
 
-productKeyClose.addEventListener('click', e =>
+subscriptionClose.addEventListener('click', e =>
 {
-    hideProductKeyDialog();
+    hideSubscriptionDialog();
 });
 
 

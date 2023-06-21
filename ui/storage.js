@@ -114,8 +114,8 @@ function uiReturnFigGetLocalData(msg)
             initThemeColors();
 
             updateLicenseInfo(
-                productKey != NULL
-                ? validateLicense(currentUser.id, productKey)
+                subscription != NULL
+                ? validateLicense(currentUser.id, subscription)
                 : null);
            
             if (!settings.dataMode)
@@ -442,7 +442,7 @@ function finishLoading(_nodes)
     generatorStarted = true;
 
 
-    //enableFeatures(productKey != NULL, settings.enableBetaFeatures); 
+    //enableFeatures(subscription != NULL, settings.enableBetaFeatures); 
     
     graphView.update();
 

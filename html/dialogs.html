@@ -1,25 +1,20 @@
-<div id='productKeyBack'></div>
+<div id='subscriptionBack'></div>
 
-<div id='productKeyDialog'>
+<div id='subscriptionDialog'>
 
-    <div id='productKeyTitle'>
-        <div id='productKeyTitleText'>Subscription</div>
-        <div class='panelButton dialogButtonClose' id='productKeyClose' onclick='hideAllMenus(); productKeyClose.blur(); hideProductKeyDialog();'>
+    <div id='subscriptionTitle'>
+        <div id='subscriptionTitleText'>Subscription</div>
+        <div class='panelButton dialogButtonClose' id='subscriptionClose' onclick='hideAllMenus(); subscriptionClose.blur(); hideSubscriptionDialog();'>
             <svg width="30" height="30" viewBox="0 0 30 30" fill="none" xmlns="http://www.w3.org/2000/svg">
                 <path fill-rule="evenodd" clip-rule="evenodd" d="M16 15.293L20.6465 10.6465L21.3536 11.3536L16.7071 16.0001L21.3536 20.6465L20.6465 21.3536L16 16.7072L11.3536 21.3536L10.6465 20.6465L15.2929 16.0001L10.6465 11.3537L11.3536 10.6466L16 15.293Z" fill="var(--figma-color-text)" fill-opacity="0.8"/>
             </svg>
         </div>
     </div>
     
-    <div id='productKeyBody'>
-        <!-- <div id='productKeyUserName'></div> -->
-        <div id='productKeyUserId' ondblclick='copyUserId()'></div>
-        <div id='productKeyTextBack'></div>
-        <div id='productKeyInputBack'></div>
-        <input type='text' spellcheck='false' id='productKeyInput' />
+    <div id='subscriptionBody'>
         <div id='licenseInfo'></div>
-        <div class='button' id='validateProductKeyButton' onclick='onValidateClick(productKeyInput.value);'>Validate</div>
-        <div id='subscribeWebsite'><!--<a href='http://www.bourt.com/generator/subscribe' target='_blank'>-->Buy subscription<!--</a>--></div>
+        <div id='subscriptionUserId' ondblclick='copyUserId()'></div>
+        <div class='button' id='btnSubscribe' onclick='onSubscribeClick();'>Subscribe</div>
     </div>
 
 </div>
@@ -201,7 +196,7 @@
                     <li><span class='bold'>Entire Agreement:</span> This EULA constitutes the entire agreement between you and Brainshift.</li>
                 </ol>
                
-                <p><div class='button' id='btnStartTrial' onclick='hideAllMenus(); btnStartTrial.blur(); hideEulaDialog(); await startFreeTrial();'>Start free trial</div></p>
+                <p><div class='button' id='btnStartTrial' onclick='hideAllMenus(); btnStartTrial.blur(); hideEulaDialog(); startFreeTrial();'>Start free trial</div></p>
             </div>
         </div>
         <div class='dialogScrollbar' id='eulaScrollbarY'></div>
