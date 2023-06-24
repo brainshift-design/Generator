@@ -20,7 +20,7 @@ var allUpdateNodes   = [];
 //uiClearLocalData('subscription');
 
 // uiClearLocalData('showRequests');
-uiClearLocalData('showWhatsNew');
+//uiClearLocalData('showWhatsNew');
 
 //uiSetLocalData('enableBetaFeatures', 'true');
 //uiSetLocalData('logLoading', 'true');

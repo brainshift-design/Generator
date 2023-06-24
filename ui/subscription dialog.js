@@ -116,11 +116,12 @@ async function updateLicenseInfo()
 
         licenseInfo.innerHTML            = daysLeft + ' of your free trial.';
      
-        licenseInfo.style.top            = '55%';
+        licenseInfo.style.top            = '40%';
         licenseInfo.style.transform      = 'translateX(-50%) translateY(-50%)';
 
         // subscriptionUserId.style.display = 'none';
-        btnSubscribe      .style.display = 'none';
+        btnSubscribe      .style.display = 'block';
+        btnSubscribe      .style.top     = '148px';
 
         subscriptionClose.style.display  = 'inline-block';
 

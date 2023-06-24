@@ -4356,7 +4356,6 @@ a
                 <p>•  added more data flow nodes like List, Select and Repeat (subscription only for now)</p>
                 <p>•  more number nodes, like Constant, Distribute and Animate</p>
                 <p>•  node icons are now shown on all nodes (can be hidden)</p>
-                <p>•  lists can be connected to some variable inputs to perform the operation on all list items (ex. connecting a list of numbers to an add node will add all the numbers in that list together)</p>
                 <p>•  added a right-click copy menu to the crash dialog</p>
                 <p>•  replaced restart checkboxes with buttons</p>
                 <p>•  added 'Import from file' and 'Save selected to file' for nodes</p>
@@ -101920,7 +101919,7 @@ var allUpdateNodes   = [];
 //uiClearLocalData('subscription');
 
 // uiClearLocalData('showRequests');
-uiClearLocalData('showWhatsNew');
+//uiClearLocalData('showWhatsNew');
 
 //uiSetLocalData('enableBetaFeatures', 'true');
 //uiSetLocalData('logLoading', 'true');
@@ -103977,11 +103976,12 @@ async function updateLicenseInfo()
 
         licenseInfo.innerHTML            = daysLeft + ' of your free trial.';
      
-        licenseInfo.style.top            = '55%';
+        licenseInfo.style.top            = '40%';
         licenseInfo.style.transform      = 'translateX(-50%) translateY(-50%)';
 
         // subscriptionUserId.style.display = 'none';
-        btnSubscribe      .style.display = 'none';
+        btnSubscribe      .style.display = 'block';
+        btnSubscribe      .style.top     = '148px';
 
         subscriptionClose.style.display  = 'inline-block';
 
