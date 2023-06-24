@@ -1,24 +1,59 @@
-var subscription = NULL;
+var subscription  = NULL;
+var checkoutTimer = -1;
 
 
 
-function onSubscribeClick()
+async function onSubscribeClick()
 {
+    let checkoutSession = arrayToBase32(sign(hashLicenseString(
+        currentUser.id + (new Date().getTime()).toString(),
+        30), licenseKeys.private));
 
+
+    const response = await postToServer(
+    {
+        action: 'createCheckout',
+        userId:  currentUser.id,
+        session: checkoutSession
+    }); 
+    
+
+    if (   response
+        && response.result)
+    {
+        window.open('https://brainshift.design/generator/checkout.html?' + checkoutSession, '_blank');
+
+        checkoutTimer = setInterval(() => 
+        {
+            checkLastSub().then(lastSub =>
+            {
+                if (   lastSub
+                    && lastSub.daysLeft > 0)
+                    uiRestartGenerator(false);
+            });
+        }, 
+        4000);
+    }
+    else
+    {
+        console.error('Could not create create Generator checkout session.')
+    }
 }
 
 
 
-function showSubscriptionDialog()
+function showSubscriptionDialog(showBack = true)
 {
     subscriptionBack  .style.display = 'block';
     subscriptionDialog.style.display = 'block';
 
+    subscriptionBack.style.backgroundColor = showBack ? '#0005' : 'transparent';
 
-    subscriptionUserId.innerHTML = '<span style="user-select: none; color: var(--figma-color-bg-disabled-secondary);">Your Figma user ID:</span><br/>' + currentUser.id;// + '<br/><span style="user-select: none; color: var(--figma-color-bg-disabled-secondary);">(You need it to subscribe. Double-click to copy.)</span>';    
+    //subscriptionUserId.innerHTML = '<span style="user-select: none; color: var(--figma-color-bg-disabled-secondary);">Your Figma user ID:<br/></span>' + currentUser.id;// + '<br/><span style="user-select: none; color: var(--figma-color-bg-disabled-secondary);">(You need it to subscribe. Double-click to copy.)</span>';    
+
     
     updateLicenseInfo();
-    
+   
 
     dialogShown = true;
 }
@@ -36,6 +71,9 @@ function copyUserId()
 
 function hideSubscriptionDialog()
 {
+    if (checkoutTimer >= 0)
+        clearInterval(checkoutTimer);
+
     subscriptionBack  .style.display = 'none';
     subscriptionDialog.style.display = 'none';
 
@@ -50,29 +88,53 @@ subscriptionClose.addEventListener('pointerdown', e => e.stopPropagation());
 
 async function updateLicenseInfo()
 {
+    const lastSub       = await checkLastSub();
     const trialDaysLeft = await checkRemainingTrialDays();
 
 
-    if (trialDaysLeft > 0)
+    if (   lastSub
+        && lastSub.daysLeft > 0)
     {
-        const daysLeft = 
-            trialDaysLeft == 1
-            ? 'Last day'
-            : trialDaysLeft + ' ' + countString(trialDaysLeft, 'day') + ' left';
+        const daysLeft = formatDaysLeft(lastSub.daysLeft);
+
+        licenseInfo.innerHTML            = daysLeft + ' of your subscription.';
+     
+        licenseInfo.style.top            = '55%';
+        licenseInfo.style.transform      = 'translateX(-50%) translateY(-50%)';
+
+        // subscriptionUserId.style.display = 'none';
+        btnSubscribe      .style.display = 'none';
+
+        subscriptionClose.style.display  = 'inline-block';
+
+        if (checkoutTimer >= 0)
+            clearInterval(checkoutTimer);
+    }
+    else if (trialDaysLeft > 0)
+    {
+        const daysLeft = formatDaysLeft(trialDaysLeft);
 
         licenseInfo.innerHTML            = daysLeft + ' of your free trial.';
      
         licenseInfo.style.top            = '55%';
         licenseInfo.style.transform      = 'translateX(-50%) translateY(-50%)';
 
-        subscriptionUserId.style.display = 'none';
+        // subscriptionUserId.style.display = 'none';
         btnSubscribe      .style.display = 'none';
 
-        subscriptionClose .style.display = 'inline-block';        
+        subscriptionClose.style.display  = 'inline-block';
+
+        if (checkoutTimer >= 0)
+            clearInterval(checkoutTimer);
     }
     else     
     {
-        const expDays   = Math.abs  (trialDaysLeft);
+        const daysLeft =
+            lastSub
+            ? formatDaysLeft(lastSub.daysLeft)
+            : trialDaysLeft;
+
+        const expDays   = Math.abs  (daysLeft);
         const expWeeks  = Math.round(expDays / 7);
         const expMonths = Math.round(expDays / 30.5);
         const expYears  = Math.round(expDays / 365)
@@ -86,12 +148,26 @@ async function updateLicenseInfo()
         else                    expired = 'has expired';
 
 
-        licenseInfo.innerHTML            = 'Your free trial ' + expired + '.<br/><br/>Please subscribe to continue using Generator.';
+        const subOrTrial = lastSub ? 'subscription' : 'free trial';
 
-        licenseInfo.style.top            = '60px';
+        licenseInfo.innerHTML            = 'Your ' + subOrTrial + ' ' + expired + '.<br/><br/>Please subscribe to continue using Generator.';
+
+        licenseInfo.style.top            = '70px';
         licenseInfo.style.transform      = 'translateX(-50%)';
 
-        subscriptionUserId.style.display = 'block';
+        // subscriptionUserId.style.display = 'none';
         btnSubscribe      .style.display = 'block';
+
+        subscriptionClose.style.display  = 'none';
     }
+}
+
+
+
+function formatDaysLeft(daysLeft)
+{
+    return daysLeft == 1
+        ? 'Last day'
+        :  daysLeft + ' ' + countString(daysLeft, 'day') + ' left';
+
 }

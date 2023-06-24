@@ -1,18 +1,3 @@
-async function checkSubActive()
-{
-    const response = await postToServer(
-    {
-        action: 'getSubActive',
-        userId:  currentUser.id
-    }); 
-
-    
-    console.assert(response, 'invalid response from server @ checkSubActive()');
-    return response ? response.result : false;
-}
-
-
-
 async function checkTrialExists()
 {
     const response = await postToServer(
@@ -20,23 +5,53 @@ async function checkTrialExists()
         action: 'getTrialExists',
         userId:  currentUser.id
     }); 
-    
+
     console.assert(response, 'invalid response from server @ checkTrialExists()');
     return response ? response.result : false;
 }
 
 
 
-async function checkTrialActive()
+// async function checkTrialActive()
+// {
+//     const response = await postToServer(
+//     {
+//         action: 'getTrialActive',
+//         userId:  currentUser.id
+//     }); 
+
+    
+//     console.assert(response, 'invalid response from server @ checkTrialActive()');
+//     return response ? response.result : false;
+// }
+
+
+
+// async function checkSubActive()
+// {
+//     const response = await postToServer(
+//     {
+//         action: 'getSubActive',
+//         userId:  currentUser.id
+//     }); 
+
+    
+//     console.assert(response, 'invalid response from server @ checkSubActive()');
+//     return response ? response.result : false;
+// }
+
+
+
+async function checkSubOrTrialActive()
 {
     const response = await postToServer(
     {
-        action: 'getTrialActive',
+        action: 'getSubOrTrialActive',
         userId:  currentUser.id
     }); 
 
     
-    console.assert(response, 'invalid response from server @ checkTrialActive()');
+    console.assert(response, 'invalid response from server @ checkTrialOrSubActive()');
     return response ? response.result : false;
 }
 
@@ -53,6 +68,24 @@ async function checkRemainingTrialDays()
     
     console.assert(response, 'invalid response from server @ checkRemainingTrialDays()');
     return response ? response.result : -1;
+}
+
+
+
+async function checkLastSub()
+{
+    const response = await postToServer(
+    {
+        action: 'getLastSub',
+        userId:  currentUser.id
+    });
+
+    
+    if (   response.daysLeft != undefined
+        && response.tier     != undefined)
+        return response;
+    else
+        return null;
 }
 
 
@@ -75,7 +108,7 @@ async function startFreeTrial()
 
 
 
-async function postToServer(cmd, success)
+async function postToServer(cmd)
 {
     const response = await fetch(
         'https://brainshift.design/generator/license/',

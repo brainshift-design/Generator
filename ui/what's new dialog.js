@@ -95,6 +95,7 @@ function showWhatsNewDialog()
 {
     whatsNewBack  .style.display = 'block';
     whatsNewDialog.style.display = 'block';
+    //whatsNewClose .style.display = 'block';
 
     updateWhatsNewScroll();
 

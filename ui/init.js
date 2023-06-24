@@ -20,7 +20,7 @@ var allUpdateNodes   = [];
 //uiClearLocalData('subscription');
 
 // uiClearLocalData('showRequests');
-// uiClearLocalData('showWhatsNew');
+uiClearLocalData('showWhatsNew');
 
 //uiSetLocalData('enableBetaFeatures', 'true');
 //uiSetLocalData('logLoading', 'true');
@@ -108,14 +108,15 @@ async function uiReturnFigStartGenerator(msg)
 
     if (await checkTrialExists())
     {
-        if (   (await checkTrialActive())
-            || (await checkSubActive()))
+        if (await checkSubOrTrialActive()) 
             initGenerator();
         else
-            showSubscriptionDialog();
+            showSubscriptionDialog(false);
     }
     else
+    {
         showEulaDialog();
+    }
 }
 
 
