@@ -128,10 +128,8 @@
 }
 
 
-#subscriptionUserId
+#aboutUserId
 {
-    display:        none;
-    
     font-size:      11px;
     text-align:     center;
 
@@ -143,7 +141,7 @@
     left:           50%;
     transform:      translateX(-50%);
 
-    top:            121px;
+    top:            94px;
 
     width:          300px;
 
@@ -183,6 +181,9 @@
 
     /* box-shadow:     0 0 0 1px red inset; */
 }
+
+.figma-dark  #licenseInfo { font-weight: 200; }
+.figma-light #licenseInfo { font-weight: 400; }
 
 
 #btnSubscribe
@@ -872,7 +873,7 @@
     transform:     translateX(-50%)
                    translateY(-50%);
     width:         280px;
-    height:        118px;
+    height:        168px;
 
     overflow:      hidden;
     
@@ -1016,6 +1017,13 @@
     left:        99px;
     top:         40px;
 }
+
+
+.figma-dark  #aboutVersion   { font-weight: 200; }
+.figma-dark  #aboutCopyright { font-weight: 200; }
+
+.figma-light #aboutVersion   { font-weight: 400; }
+.figma-light #aboutCopyright { font-weight: 400; }
 
 
 #crashBack

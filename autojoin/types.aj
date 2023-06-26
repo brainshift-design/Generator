@@ -145,16 +145,16 @@
 ../generator/types/color/GColorBlend modes.js
 
 
-../generator/types/style/GColorStyle.js
-../generator/types/style/GFill.js
-../generator/types/style/GColorStop.js
-../generator/types/style/GGradient.js
-../generator/types/style/GStroke.js
-../generator/types/style/GDropShadow.js
-../generator/types/style/GInnerShadow.js
-../generator/types/style/GLayerBlur.js
-../generator/types/style/GBackBlur.js
-../generator/types/style/GLayerMask.js
+../generator/types/layer/GColorStyle.js
+../generator/types/layer/GFill.js
+../generator/types/layer/GColorStop.js
+../generator/types/layer/GGradient.js
+../generator/types/layer/GStroke.js
+../generator/types/layer/GDropShadow.js
+../generator/types/layer/GInnerShadow.js
+../generator/types/layer/GLayerBlur.js
+../generator/types/layer/GBackBlur.js
+../generator/types/layer/GLayerMask.js
 
 
 ../generator/types/shape/GShapeBase.js

@@ -35,6 +35,7 @@ var menuColorStyle;
 var menuLayer;
 var menuEffects;
 var menuStyles;
+var menuVariables;
 var menuShape;
 var menuGroup;
 
@@ -243,7 +244,6 @@ function initGeneratorMenus()
         menuPrefSep2                 = new MenuItem('',                              {separator: true}),    
         // menuItemEnableBetaFeatures   = new MenuItem('Enable beta features',          {checkCallback: () => settings.enableBetaFeatures,    callback: () => { updateSettingAndMenu('enableBetaFeatures',   true, !settings.enableBetaFeatures);    enableFeatures(true, settings.enableBetaFeatures); }}),
         //                                new MenuItem('',                              {separator: true}),    
-                                       new MenuItem('Keyboard layout...',            {callback: () => showKeyboardPanel()}),
         menuItemMinZoomForParams     = new MenuItem('Zoom level for values...',      {callback: () => showMinZoomDialog()})]);
         
 
@@ -303,44 +303,45 @@ function initGeneratorMenus()
 
     menuMainDebug = new Menu('Debug', false);
     menuMainDebug.addItems([
-        menuItemShowNodeId = new MenuItem('Show IDs',
+    menuItemShowNodeId = new MenuItem('Show IDs',
+                        {
+                            checkCallback: () => settings.showNodeId, 
+                            callback:      () => 
                             {
-                                checkCallback: () => settings.showNodeId, 
-                                callback:      () => 
-                                {
-                                    updateSettingAndMenu('showNodeId', true, !settings.showNodeId);
-                                     
-                                    graph.nodes.forEach(n => n.updateNode());
-                                    graph.nodes.forEach(n => n.updateMeasureData());
-                                    graph.nodes.forEach(n => n.updateHeaderLabelOffsetX());
+                                updateSettingAndMenu('showNodeId', true, !settings.showNodeId);
+                                    
+                                graph.nodes.forEach(n => n.updateNode());
+                                graph.nodes.forEach(n => n.updateMeasureData());
+                                graph.nodes.forEach(n => n.updateHeaderLabelOffsetX());
 
-                                    graph.updatePages();
+                                graph.updatePages();
 
-                                    pushUpdate(null, graph.nodes.filter(n => n.active));
-                                }
-                            }),
-        menuItemShowTransformPoints = new MenuItem('Show transform points', 
+                                pushUpdate(null, graph.nodes.filter(n => n.active));
+                            }
+                        }),
+    menuItemShowTransformPoints = new MenuItem('Show transform points', 
+                        {
+                            checkCallback: () => settings.showTransformPoints, 
+                            callback:      () => 
                             {
-                                checkCallback: () => settings.showTransformPoints, 
-                                callback:      () => 
-                                {
-                                    updateSettingAndMenu('showTransformPoints', true, !settings.showTransformPoints);
-                                    pushUpdate(null, graph.nodes.filter(n => n.active));
-                                }
-                            }),
-                            new MenuItem('',                      {separator: true}),
-                            new MenuItem('Log generator',         {childMenu: menuDebugGenerator}),
-                            new MenuItem('Log storage',           {childMenu: menuDebugStorage}),
-                            new MenuItem('',                      {separator: true}),   
-                            new MenuItem('Delete',                {childMenu: menuDebugDelete}),
-                            new MenuItem('',                      {separator: true}),   
-        menuItemDataMode  = new MenuItem('Restart in debug mode', {checkCallback: () => settings.dataMode, callback: () => uiRestartGenerator(true)})]);
+                                updateSettingAndMenu('showTransformPoints', true, !settings.showTransformPoints);
+                                pushUpdate(null, graph.nodes.filter(n => n.active));
+                            }
+                        }),
+                        new MenuItem('',                      {separator: true}),
+                        new MenuItem('Log generator',         {childMenu: menuDebugGenerator}),
+                        new MenuItem('Log storage',           {childMenu: menuDebugStorage}),
+                        new MenuItem('',                      {separator: true}),   
+                        new MenuItem('Delete',                {childMenu: menuDebugDelete}),
+                        new MenuItem('',                      {separator: true}),   
+    menuItemDataMode  = new MenuItem('Restart in debug mode', {checkCallback: () => settings.dataMode, callback: () => uiRestartGenerator(true)})]);
                      
 
     menuMainHelp = new Menu('Help and subscription', false);
     menuMainHelp.addItems([
-      // new MenuItem('Help page',   {callback:  () => window.open('http://www.bourt.com/generator/help', '_blank')}),
-      //new MenuItem('',             {separator: true}),
+        new MenuItem('Keyboard shortcuts', {shortcut: osCtrlShift() + '?', callback: () => showKeyboardPanel()}),
+        // new MenuItem('Help page',   {callback:  () => window.open('http://www.bourt.com/generator/help', '_blank')}),
+        new MenuItem('',             {separator: true}),
         new MenuItem('Subscription', {callback:  () => showSubscriptionDialog()}),
       //new MenuItem('',             {separator: true}),
         new MenuItem('About',        {callback:  () => showAboutDialog()})]);
@@ -514,6 +515,11 @@ function initGeneratorMenus()
         new MenuItem('Color style', {icon: iconColorStyle, callback: e => actionManager.do(getCreateNodeAction(COLOR_STYLE, btnLayer.div, getCreateOptions(e, {existing: true})))})]);
     
     
+    menuVariables = new Menu('Variables', true, false);
+    menuVariables.addItems([
+        new MenuItem('Number', {icon: iconVarNumber, callback: e => actionManager.do(getCreateNodeAction(VAR_NUMBER, btnLayer.div, getCreateOptions(e, {existing: true})))})]);
+    
+    
     menuLayer = new Menu('Layer', true, false);
     menuLayer.addItems([
         menuItemLayerFill        = new MenuItem('Fill',            {icon: iconFill,        callback: e => actionManager.do(getCreateNodeAction(FILL,         btnLayer.div, getCreateOptions(e)))}),
@@ -525,6 +531,7 @@ function initGeneratorMenus()
                                    new MenuItem('Effects',         {childMenu: menuEffects}),
                                    new MenuItem('',                {separator: true}),
                                    new MenuItem('Styles',          {childMenu: menuStyles}),
+                                   new MenuItem('Variables',       {childMenu: menuVariables}),
                                    new MenuItem('',                {separator: true}),
                                    new MenuItem('Mask',            {icon: iconMask,        callback: e => actionManager.do(getCreateNodeAction(LAYER_MASK,   btnLayer.div, getCreateOptions(e)))})]);
                                  //new MenuItem('Color style',     {icon: iconColorStyle,  childMenu: menuColorStyle, callback: e => actionManager.do(getCreateNodeAction(COLOR_STYLE,  btnColor.div, getCreateOptions(e)))})]);
@@ -554,7 +561,7 @@ function initGeneratorMenus()
     menuShape = new Menu('Shapes', true, false);
     menuShape.addItems([
         // menuItemShapeSelected = new MenuItem('Selected objects...', {icon: iconSelected,   enabled: false}),
-                                new MenuItem('',                    {separator: true}),
+                                // new MenuItem('',                    {separator: true}),
                                 new MenuItem('Shapes',              {/*icon: iconShapes,*/ childMenu: menuShapes}),
                                 new MenuItem('',                    {separator: true}),
                                 new MenuItem('Frame',               {icon: iconFrame,      callback: e => actionManager.do(getCreateNodeAction(FRAME,       btnShape.div, getCreateOptions(e)))}),

@@ -270,6 +270,11 @@ const LAYER_MASK_VALUE   = 'MASK#';
 const LAYER_MASK         = 'MASK';
 const LAYER_MASK_TYPES   = [LAYER_MASK_VALUE, LAYER_MASK];
 
+const VAR_COLOR          = 'CVAR';
+const VAR_NUMBER         = 'NVAR';
+const VAR_TEXT           = 'TVAR';
+const VAR_BOOLEAN        = 'BVAR';
+
 
 const EFFECT_TYPES =
 [
@@ -278,6 +283,15 @@ const EFFECT_TYPES =
     ...LAYER_BLUR_TYPES,
     ...BACK_BLUR_TYPES,
     ...LAYER_MASK_TYPES
+];
+
+
+const VARIABLE_TYPES =
+[
+    VAR_COLOR,
+    VAR_NUMBER,
+    VAR_TEXT,
+    VAR_BOOLEAN
 ];
 
 

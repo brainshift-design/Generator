@@ -23,7 +23,7 @@ function noNodeTag(key) { return noTag(key, nodeTag); }
 function noConnTag(key) { return noTag(key, connTag); }
 
 
-const generatorVersion = 132;
+const generatorVersion = 134;
 
 
 const MAX_INT32        = 2147483647;
@@ -1087,6 +1087,11 @@ const LAYER_MASK_VALUE   = 'MASK#';
 const LAYER_MASK         = 'MASK';
 const LAYER_MASK_TYPES   = [LAYER_MASK_VALUE, LAYER_MASK];
 
+const VAR_COLOR          = 'CVAR';
+const VAR_NUMBER         = 'NVAR';
+const VAR_TEXT           = 'TVAR';
+const VAR_BOOLEAN        = 'BVAR';
+
 
 const EFFECT_TYPES =
 [
@@ -1095,6 +1100,15 @@ const EFFECT_TYPES =
     ...LAYER_BLUR_TYPES,
     ...BACK_BLUR_TYPES,
     ...LAYER_MASK_TYPES
+];
+
+
+const VARIABLE_TYPES =
+[
+    VAR_COLOR,
+    VAR_NUMBER,
+    VAR_TEXT,
+    VAR_BOOLEAN
 ];
 
 

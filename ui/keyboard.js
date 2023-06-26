@@ -130,6 +130,16 @@ document.addEventListener('keydown', e =>
     //       && getCtrlKey(e))
     //     layoutSelectedNodes();
 
+    else if (e.code == 'Slash'
+          && getCtrlKey(e)
+          && e.shiftKey)
+    {
+        e.preventDefault();
+        e.stopPropagation();
+
+        showKeyboardPanel();
+    }
+
     // toggle node icons
     else if (e.code == 'KeyI'
           && getCtrlKey(e)

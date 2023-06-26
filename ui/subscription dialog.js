@@ -49,22 +49,11 @@ function showSubscriptionDialog(showBack = true)
 
     subscriptionBack.style.backgroundColor = showBack ? '#0005' : 'transparent';
 
-    //subscriptionUserId.innerHTML = '<span style="user-select: none; color: var(--figma-color-bg-disabled-secondary);">Your Figma user ID:<br/></span>' + currentUser.id;// + '<br/><span style="user-select: none; color: var(--figma-color-bg-disabled-secondary);">(You need it to subscribe. Double-click to copy.)</span>';    
-
     
     updateLicenseInfo();
    
 
     dialogShown = true;
-}
-
-
-
-function copyUserId()
-{
-    writeTextToClipboard(currentUser.id);
-    selectElementText('subscriptionUserId');
-    uiNotify('Copied user ID');
 }
 
 
@@ -102,7 +91,7 @@ async function updateLicenseInfo()
         licenseInfo.style.top            = '55%';
         licenseInfo.style.transform      = 'translateX(-50%) translateY(-50%)';
 
-        // subscriptionUserId.style.display = 'none';
+        // aboutUserId.style.display = 'none';
         btnSubscribe      .style.display = 'none';
 
         subscriptionClose.style.display  = 'inline-block';
@@ -119,7 +108,7 @@ async function updateLicenseInfo()
         licenseInfo.style.top            = '40%';
         licenseInfo.style.transform      = 'translateX(-50%) translateY(-50%)';
 
-        // subscriptionUserId.style.display = 'none';
+        // aboutUserId.style.display = 'none';
         btnSubscribe      .style.display = 'block';
         btnSubscribe      .style.top     = '148px';
 
@@ -156,7 +145,7 @@ async function updateLicenseInfo()
         licenseInfo.style.top            = '70px';
         licenseInfo.style.transform      = 'translateX(-50%)';
 
-        // subscriptionUserId.style.display = 'none';
+        // aboutUserId.style.display = 'none';
         btnSubscribe      .style.display = 'block';
 
         subscriptionClose.style.display  = 'none';

@@ -333,10 +333,8 @@
 }
 
 
-#subscriptionUserId
+#aboutUserId
 {
-    display:        none;
-    
     font-size:      11px;
     text-align:     center;
 
@@ -348,7 +346,7 @@
     left:           50%;
     transform:      translateX(-50%);
 
-    top:            121px;
+    top:            94px;
 
     width:          300px;
 
@@ -388,6 +386,9 @@
 
     /* box-shadow:     0 0 0 1px red inset; */
 }
+
+.figma-dark  #licenseInfo { font-weight: 200; }
+.figma-light #licenseInfo { font-weight: 400; }
 
 
 #btnSubscribe
@@ -1077,7 +1078,7 @@
     transform:     translateX(-50%)
                    translateY(-50%);
     width:         280px;
-    height:        118px;
+    height:        168px;
 
     overflow:      hidden;
     
@@ -1221,6 +1222,13 @@
     left:        99px;
     top:         40px;
 }
+
+
+.figma-dark  #aboutVersion   { font-weight: 200; }
+.figma-dark  #aboutCopyright { font-weight: 200; }
+
+.figma-light #aboutVersion   { font-weight: 400; }
+.figma-light #aboutCopyright { font-weight: 400; }
 
 
 #crashBack
@@ -4214,27 +4222,56 @@ a
 <div class='windowSizerCorner' id='windowSizerBR'></div>
 
 
-<div id='subscriptionBack'></div>
+<div id='crashBack'></div>
 
-<div id='subscriptionDialog'>
+<div id='crashDialog'>
+    
+    <div id='crashDialogContainer'>
+        <div id='crashDialogContent'>
+            <div id='crashDialogBody'>
+                <p id='crashTitle'>Generator has experienced an error</p>
+                <p id='crashDetails'></p>
+            </div>
+        </div>
+        <div class='btnRestart' id='btnCrashRestart'>Restart in debug mode</div>
+    </div>
 
-    <div id='subscriptionTitle'>
-        <div id='subscriptionTitleText'>Subscription</div>
-        <div class='panelButton dialogButtonClose' id='subscriptionClose' onclick='hideAllMenus(); subscriptionClose.blur(); hideSubscriptionDialog();'>
+</div>
+
+
+<div id='aboutBack'></div>
+
+<div id='aboutDialog'>
+    
+    <div id='aboutTitle'>
+        <div id='aboutTitleText'>About</div>
+        <div class='panelButton dialogButtonClose' id='aboutClose' onclick='aboutClose.blur(); hideAboutDialog();'>
             <svg width="30" height="30" viewBox="0 0 30 30" fill="none" xmlns="http://www.w3.org/2000/svg">
                 <path fill-rule="evenodd" clip-rule="evenodd" d="M16 15.293L20.6465 10.6465L21.3536 11.3536L16.7071 16.0001L21.3536 20.6465L20.6465 21.3536L16 16.7072L11.3536 21.3536L10.6465 20.6465L15.2929 16.0001L10.6465 11.3537L11.3536 10.6466L16 15.293Z" fill="var(--figma-color-text)" fill-opacity="0.8"/>
             </svg>
         </div>
     </div>
     
-    <div id='subscriptionBody'>
-        <div id='licenseInfo'></div>
-        <div id='subscriptionUserId' ondblclick='copyUserId()'></div>
-        <div class='button' id='btnSubscribe' onclick='onSubscribeClick();'>Subscribe</div>
+    <div id='aboutDialogContainer'>
+        <div id='aboutDialogContent'>
+            <div id='aboutDialogBody'>
+                <div id='aboutGeneratorLogo'>
+                    <svg width="50" height="25" viewBox="0 0 50 25" fill="none" xmlns="http://www.w3.org/2000/svg" id="svgGeneratorLogo">
+                        <path d="M31.7883 8.10361C31.5684 7.46198 31.265 6.88767 30.878 6.3807C30.4997 5.86581 30.0423 5.42617 29.5058 5.06179C28.978 4.6974 28.3711 4.42411 27.685 4.24192C26.9989 4.05181 26.2512 3.95675 25.442 3.95675C23.9907 3.95675 22.6976 4.28549 21.5629 4.94297C20.4283 5.60044 19.5355 6.56686 18.8846 7.8422C18.2424 9.10963 17.9214 10.6543 17.9214 12.4762C17.9214 14.314 18.2424 15.8706 18.8846 17.1459C19.5267 18.4213 20.4195 19.3916 21.5629 20.057C22.7064 20.7145 24.0346 21.0433 25.5476 21.0433C26.9197 21.0433 28.1072 20.8056 29.11 20.3303C30.1215 19.855 30.8999 19.1817 31.4453 18.3104C31.9907 17.4311 32.2633 16.4013 32.2633 15.221L33.3716 15.3755H26.0357V11.9297H37V14.8527C37 16.936 36.5074 18.7381 35.5223 20.259C34.5371 21.7799 33.1825 22.9523 31.4585 23.7761C29.7345 24.592 27.7554 25 25.5212 25C23.0319 25 20.8461 24.497 18.9637 23.491C17.0902 22.477 15.6256 21.0393 14.5701 19.1778C13.5234 17.3083 13 15.0903 13 12.5238C13 10.5593 13.3079 8.80466 13.9236 7.25998C14.5481 5.71531 15.4189 4.40431 16.536 3.327C17.6531 2.24176 18.9637 1.41793 20.4678 0.855513C21.972 0.285171 23.608 0 25.376 0C26.8714 0 28.2655 0.198035 29.5586 0.594106C30.8516 0.982256 31.9995 1.53676 33.0022 2.25761C34.0137 2.97845 34.845 3.83397 35.4959 4.82414C36.1468 5.81432 36.5734 6.90748 36.7757 8.10361H31.7883Z" fill="var(--figma-color-text)"/>
+                        <path d="M50 12.5C50 14.9853 47.9853 17 45.5 17C43.0147 17 41 14.9853 41 12.5C41 10.0147 43.0147 8 45.5 8C47.9853 8 50 10.0147 50 12.5Z" fill="var(--figma-color-text)"/>
+                        <path fill-rule="evenodd" clip-rule="evenodd" d="M4.5 16C6.433 16 8 14.433 8 12.5C8 10.567 6.433 9 4.5 9C2.567 9 1 10.567 1 12.5C1 14.433 2.567 16 4.5 16ZM4.5 17C6.98528 17 9 14.9853 9 12.5C9 10.0147 6.98528 8 4.5 8C2.01472 8 0 10.0147 0 12.5C0 14.9853 2.01472 17 4.5 17Z" fill="var(--figma-color-text)"/>
+                    </svg>
+                </div>
+
+                <div id='aboutVersion'>version  _</div>
+
+                <p id='aboutLine'><div id='aboutCopyright'>Copyright © 2023&nbsp;&hairsp;Brainshift</div></p>
+                <div id='aboutUserId' ondblclick='copyUserId()'></div>
+            </div>
+        </div>
     </div>
 
 </div>
-
 
 
 <div id='deleteConnectionsDialog'>
@@ -4257,123 +4294,25 @@ a
 </div>
 
 
+<div id='subscriptionBack'></div>
 
-<div id='minZoomDialog'>
+<div id='subscriptionDialog'>
 
-    <div id='minZoomTitle'>
-        <div id='minZoomTitleText'>Zoom level for values</div>
-        <div class='panelButton dialogButtonClose' id='minZoomClose' onclick='hideAllMenus(); minZoomClose.blur(); hideMinZoomDialog();'>
+    <div id='subscriptionTitle'>
+        <div id='subscriptionTitleText'>Subscription</div>
+        <div class='panelButton dialogButtonClose' id='subscriptionClose' onclick='hideAllMenus(); subscriptionClose.blur(); hideSubscriptionDialog();'>
             <svg width="30" height="30" viewBox="0 0 30 30" fill="none" xmlns="http://www.w3.org/2000/svg">
                 <path fill-rule="evenodd" clip-rule="evenodd" d="M16 15.293L20.6465 10.6465L21.3536 11.3536L16.7071 16.0001L21.3536 20.6465L20.6465 21.3536L16 16.7072L11.3536 21.3536L10.6465 20.6465L15.2929 16.0001L10.6465 11.3537L11.3536 10.6466L16 15.293Z" fill="var(--figma-color-text)" fill-opacity="0.8"/>
             </svg>
         </div>
     </div>
     
-    <div id='minZoomBody'>
-        <input type='text' spellcheck='false' id='minZoomInput' />
+    <div id='subscriptionBody'>
+        <div id='licenseInfo'></div>
+        <div class='button' id='btnSubscribe' onclick='onSubscribeClick();'>Subscribe</div>
     </div>
 
 </div>
-
-
-
-<div id='aboutBack'></div>
-
-<div id='aboutDialog'>
-    
-    <div id='aboutTitle'>
-        <div id='aboutTitleText'>About</div>
-        <div class='panelButton dialogButtonClose' id='aboutClose' onclick='aboutClose.blur(); hideAboutDialog();'>
-            <svg width="30" height="30" viewBox="0 0 30 30" fill="none" xmlns="http://www.w3.org/2000/svg">
-                <path fill-rule="evenodd" clip-rule="evenodd" d="M16 15.293L20.6465 10.6465L21.3536 11.3536L16.7071 16.0001L21.3536 20.6465L20.6465 21.3536L16 16.7072L11.3536 21.3536L10.6465 20.6465L15.2929 16.0001L10.6465 11.3537L11.3536 10.6466L16 15.293Z" fill="var(--figma-color-text)" fill-opacity="0.8"/>
-            </svg>
-        </div>
-    </div>
-    
-    <div id='aboutDialogContainer'>
-        <div id='aboutDialogContent'>
-            <div id='aboutDialogBody'>
-
-                <div id='aboutGeneratorLogo'>
-                    <svg width="50" height="25" viewBox="0 0 50 25" fill="none" xmlns="http://www.w3.org/2000/svg">
-                        <path d="M31.7883 8.10361C31.5684 7.46198 31.265 6.88767 30.878 6.3807C30.4997 5.86581 30.0423 5.42617 29.5058 5.06179C28.978 4.6974 28.3711 4.42411 27.685 4.24192C26.9989 4.05181 26.2512 3.95675 25.442 3.95675C23.9907 3.95675 22.6976 4.28549 21.5629 4.94297C20.4283 5.60044 19.5355 6.56686 18.8846 7.8422C18.2424 9.10963 17.9214 10.6543 17.9214 12.4762C17.9214 14.314 18.2424 15.8706 18.8846 17.1459C19.5267 18.4213 20.4195 19.3916 21.5629 20.057C22.7064 20.7145 24.0346 21.0433 25.5476 21.0433C26.9197 21.0433 28.1072 20.8056 29.11 20.3303C30.1215 19.855 30.8999 19.1817 31.4453 18.3104C31.9907 17.4311 32.2633 16.4013 32.2633 15.221L33.3716 15.3755H26.0357V11.9297H37V14.8527C37 16.936 36.5074 18.7381 35.5223 20.259C34.5371 21.7799 33.1825 22.9523 31.4585 23.7761C29.7345 24.592 27.7554 25 25.5212 25C23.0319 25 20.8461 24.497 18.9637 23.491C17.0902 22.477 15.6256 21.0393 14.5701 19.1778C13.5234 17.3083 13 15.0903 13 12.5238C13 10.5593 13.3079 8.80466 13.9236 7.25998C14.5481 5.71531 15.4189 4.40431 16.536 3.327C17.6531 2.24176 18.9637 1.41793 20.4678 0.855513C21.972 0.285171 23.608 0 25.376 0C26.8714 0 28.2655 0.198035 29.5586 0.594106C30.8516 0.982256 31.9995 1.53676 33.0022 2.25761C34.0137 2.97845 34.845 3.83397 35.4959 4.82414C36.1468 5.81432 36.5734 6.90748 36.7757 8.10361H31.7883Z" fill="white"/>
-                        <path d="M50 12.5C50 14.9853 47.9853 17 45.5 17C43.0147 17 41 14.9853 41 12.5C41 10.0147 43.0147 8 45.5 8C47.9853 8 50 10.0147 50 12.5Z" fill="white"/>
-                        <path fill-rule="evenodd" clip-rule="evenodd" d="M4.5 16C6.433 16 8 14.433 8 12.5C8 10.567 6.433 9 4.5 9C2.567 9 1 10.567 1 12.5C1 14.433 2.567 16 4.5 16ZM4.5 17C6.98528 17 9 14.9853 9 12.5C9 10.0147 6.98528 8 4.5 8C2.01472 8 0 10.0147 0 12.5C0 14.9853 2.01472 17 4.5 17Z" fill="white"/>
-                    </svg>
-                </div>
-
-                <div id='aboutVersion'>version  _</div>
-
-                <p id='aboutLine'><div id='aboutCopyright'>Copyright © 2023&nbsp;&hairsp;Brainshift</div></p>
-            </div>
-        </div>
-    </div>
-
-</div>
-
-
-
-<div id='crashBack'></div>
-
-<div id='crashDialog'>
-    
-    <div id='crashDialogContainer'>
-        <div id='crashDialogContent'>
-            <div id='crashDialogBody'>
-                <p id='crashTitle'>Generator has experienced an error</p>
-                <p id='crashDetails'></p>
-            </div>
-        </div>
-        <div class='btnRestart' id='btnCrashRestart'>Restart in debug mode</div>
-    </div>
-
-</div>
-
-
-
-<div id='whatsNewBack'></div>
-
-<div id='whatsNewDialog'>
-    
-    <div id='whatsNewTitle'>
-        <div id='whatsNewTitleText'>Version _</div>
-        <div class='panelButton dialogButtonClose' id='whatsNewClose' onclick='hideAllMenus(); whatsNewClose.blur(); hideWhatsNewDialog();'>
-            <svg width="30" height="31" viewBox="0 0 30 30" fill="none" xmlns="http://www.w3.org/2000/svg" style="position: relative; top: -1px; left: -1px;">
-                <path fill-rule="evenodd" clip-rule="evenodd" d="M16 15.293L20.6465 10.6465L21.3536 11.3536L16.7071 16.0001L21.3536 20.6465L20.6465 21.3536L16 16.7072L11.3536 21.3536L10.6465 20.6465L15.2929 16.0001L10.6465 11.3537L11.3536 10.6466L16 15.293Z" fill="var(--figma-color-text)" fill-opacity="0.8"/>
-            </svg>
-        </div>
-    </div>
-    
-    <div id='whatsNewDialogContainer'>
-        <div id='whatsNewDialogContent'>
-            <div id='whatsNewWatermark'>◦<span style="font-weight: 700; position: relative; top: 0.06em;">G</span>•</div>
-
-            <div id='whatsNewBody'>
-                <h1 style='margin-top: 20px;'>What's new in Generator</h1>
-
-                <p>•  added basic text nodes (subscription only for now)</p>
-                <p>•  added basic shape nodes (subscription only for now)</p>
-                <p>•  added more data flow nodes like List, Select and Repeat (subscription only for now)</p>
-                <p>•  more number nodes, like Constant, Distribute and Animate</p>
-                <p>•  node icons are now shown on all nodes (can be hidden)</p>
-                <p>•  added a right-click copy menu to the crash dialog</p>
-                <p>•  replaced restart checkboxes with buttons</p>
-                <p>•  added 'Import from file' and 'Save selected to file' for nodes</p>
-                <p>•  adjusting color controls with arrow keys now supports undo</p>
-                <p>•  unsupported inputs/outputs are now hidden while connecting</p>
-                <p>•  wires are not colored according to the type they carry</p>
-                <p>•  fixed wrong invalid colors assigned to styles</p>
-                <p>•  fixed Mac shortcuts</p>
-                <p>•  fixed many UI issues</p>
-                
-                <p><br/><br/><div id='chkHideWhatsNew'></div></p>
-            </div>
-        </div>
-        <div class='dialogScrollbar' id='whatsNewScrollbarY'></div>
-    </div>
-
-</div>
-
 
 
 <div id='eulaBack'></div>
@@ -4415,6 +4354,55 @@ a
             </div>
         </div>
         <div class='dialogScrollbar' id='eulaScrollbarY'></div>
+    </div>
+
+</div>
+
+
+<div id='minZoomDialog'>
+
+    <div id='minZoomTitle'>
+        <div id='minZoomTitleText'>Zoom level for values</div>
+        <div class='panelButton dialogButtonClose' id='minZoomClose' onclick='hideAllMenus(); minZoomClose.blur(); hideMinZoomDialog();'>
+            <svg width="30" height="30" viewBox="0 0 30 30" fill="none" xmlns="http://www.w3.org/2000/svg">
+                <path fill-rule="evenodd" clip-rule="evenodd" d="M16 15.293L20.6465 10.6465L21.3536 11.3536L16.7071 16.0001L21.3536 20.6465L20.6465 21.3536L16 16.7072L11.3536 21.3536L10.6465 20.6465L15.2929 16.0001L10.6465 11.3537L11.3536 10.6466L16 15.293Z" fill="var(--figma-color-text)" fill-opacity="0.8"/>
+            </svg>
+        </div>
+    </div>
+    
+    <div id='minZoomBody'>
+        <input type='text' spellcheck='false' id='minZoomInput' />
+    </div>
+
+</div>
+
+
+<div id='whatsNewBack'></div>
+
+<div id='whatsNewDialog'>
+    
+    <div id='whatsNewTitle'>
+        <div id='whatsNewTitleText'>Version _</div>
+        <div class='panelButton dialogButtonClose' id='whatsNewClose' onclick='hideAllMenus(); whatsNewClose.blur(); hideWhatsNewDialog();'>
+            <svg width="30" height="31" viewBox="0 0 30 30" fill="none" xmlns="http://www.w3.org/2000/svg" style="position: relative; top: -1px; left: -1px;">
+                <path fill-rule="evenodd" clip-rule="evenodd" d="M16 15.293L20.6465 10.6465L21.3536 11.3536L16.7071 16.0001L21.3536 20.6465L20.6465 21.3536L16 16.7072L11.3536 21.3536L10.6465 20.6465L15.2929 16.0001L10.6465 11.3537L11.3536 10.6466L16 15.293Z" fill="var(--figma-color-text)" fill-opacity="0.8"/>
+            </svg>
+        </div>
+    </div>
+    
+    <div id='whatsNewDialogContainer'>
+        <div id='whatsNewDialogContent'>
+            <div id='whatsNewWatermark'>◦<span style="font-weight: 700; position: relative; top: 0.06em;">G</span>•</div>
+
+            <div id='whatsNewBody'>
+                <h1 style='margin-top: 20px;'>What's new in Generator</h1>
+
+                <p>•  added Ctrl/Cmd+Shift+? to open keyboard shortcuts panel</p>
+                
+                <p><br/><br/><div id='chkHideWhatsNew'></div></p>
+            </div>
+        </div>
+        <div class='dialogScrollbar' id='whatsNewScrollbarY'></div>
     </div>
 
 </div>
@@ -4737,7 +4725,7 @@ a
 
 
 
-const generatorVersion = 132;
+const generatorVersion = 134;
 
 
 const MAX_INT32        = 2147483647;
@@ -8769,6 +8757,11 @@ const LAYER_MASK_VALUE   = 'MASK#';
 const LAYER_MASK         = 'MASK';
 const LAYER_MASK_TYPES   = [LAYER_MASK_VALUE, LAYER_MASK];
 
+const VAR_COLOR          = 'CVAR';
+const VAR_NUMBER         = 'NVAR';
+const VAR_TEXT           = 'TVAR';
+const VAR_BOOLEAN        = 'BVAR';
+
 
 const EFFECT_TYPES =
 [
@@ -8777,6 +8770,15 @@ const EFFECT_TYPES =
     ...LAYER_BLUR_TYPES,
     ...BACK_BLUR_TYPES,
     ...LAYER_MASK_TYPES
+];
+
+
+const VARIABLE_TYPES =
+[
+    VAR_COLOR,
+    VAR_NUMBER,
+    VAR_TEXT,
+    VAR_BOOLEAN
 ];
 
 
@@ -37443,7 +37445,7 @@ onerror = (event, source, line, pos, error) =>
 };
 
 
-const generatorVersion = 132;
+const generatorVersion = 134;
 
 
 const MAX_INT32        = 2147483647;
@@ -44079,6 +44081,11 @@ const LAYER_MASK_VALUE   = 'MASK#';
 const LAYER_MASK         = 'MASK';
 const LAYER_MASK_TYPES   = [LAYER_MASK_VALUE, LAYER_MASK];
 
+const VAR_COLOR          = 'CVAR';
+const VAR_NUMBER         = 'NVAR';
+const VAR_TEXT           = 'TVAR';
+const VAR_BOOLEAN        = 'BVAR';
+
 
 const EFFECT_TYPES =
 [
@@ -44087,6 +44094,15 @@ const EFFECT_TYPES =
     ...LAYER_BLUR_TYPES,
     ...BACK_BLUR_TYPES,
     ...LAYER_MASK_TYPES
+];
+
+
+const VARIABLE_TYPES =
+[
+    VAR_COLOR,
+    VAR_NUMBER,
+    VAR_TEXT,
+    VAR_BOOLEAN
 ];
 
 
@@ -68179,6 +68195,11 @@ const iconInnerShadow       = '<svg width="17" height="13" viewBox="0 0 17 13" f
 const iconLayerBlur         = '<svg width="15" height="12" viewBox="0 0 15 12" fill="none" xmlns="http://www.w3.org/2000/svg"><path fill-rule="evenodd" clip-rule="evenodd" d="M0.00242553 9.06282L8.06639 0.9988L9.48059 0.998779L0.256423 10.2229L0.00242553 9.06282Z" fill="white"/><path fill-rule="evenodd" clip-rule="evenodd" d="M0.452312 4.37771L3.45318 1.37684L5.24118 1.00305L0.00200153 6.24223L0.452312 4.37771Z" fill="white"/><path fill-rule="evenodd" clip-rule="evenodd" d="M1.64012 11.6677L12.2897 1.01819L13.3811 1.34094L2.73919 11.9829L1.64012 11.6677Z" fill="white"/><path fill-rule="evenodd" clip-rule="evenodd" d="M5.55088 11.9998L14.747 2.80362L14.9934 3.97146L6.965 11.9998L5.55088 11.9998Z" fill="white"/><path fill-rule="evenodd" clip-rule="evenodd" d="M9.79585 11.9974L15.0001 6.79314L14.6124 8.59506L11.569 11.6384L9.79585 11.9974Z" fill="white"/></svg>';
 const iconBackBlur          = '<svg width="15" height="11" viewBox="0 0 15 11" fill="none" xmlns="http://www.w3.org/2000/svg"><line x1="6.21326" y1="0.433143" x2="0.447288" y2="6.19912" stroke="white"/><line x1="10.2787" y1="0.610389" x2="1.25317" y2="9.63592" stroke="white"/><line x1="13.6388" y1="1.49308" x2="4.56403" y2="10.5678" stroke="white"/><line x1="14.5184" y1="4.85624" x2="8.86875" y2="10.5059" stroke="white"/><path d="M4 0.5H12C13.3807 0.5 14.5 1.61929 14.5 3V7C14.5 8.933 12.933 10.5 11 10.5H3C1.61929 10.5 0.5 9.38071 0.5 8V4C0.5 2.067 2.067 0.5 4 0.5Z" stroke="white"/></svg>';
 
+const iconVarColor          = '<svg width="17" height="17" viewBox="0 0 17 17" fill="none" xmlns="http://www.w3.org/2000/svg"><path d="M16.4198 7.57435C16.3504 8.02738 16.2074 8.33817 16.0231 8.57091C15.8364 8.80662 15.5835 8.99224 15.2491 9.15882C14.9095 9.32803 14.5097 9.46646 14.0368 9.62193C13.9807 9.64037 13.9237 9.65902 13.8658 9.67795C13.4455 9.81544 12.98 9.9677 12.499 10.1611C11.7091 10.4787 11.4564 11.2283 11.3641 11.9129C11.3168 12.2639 11.3052 12.6417 11.301 13.01C11.2997 13.1308 11.2991 13.2498 11.2985 13.3675C11.2973 13.6191 11.2961 13.8653 11.2873 14.1135C11.2611 14.8514 11.1676 15.4428 10.9004 15.8483C10.6656 16.2044 10.2381 16.5 9.30271 16.5C4.45892 16.5 0.5 12.8747 0.5 8.5C0.5 4.1021 4.23097 0.5 8.87986 0.5C11.2376 0.5 13.2971 1.2157 14.671 2.44456C16.0303 3.66025 16.752 5.4042 16.4198 7.57435Z" stroke="white"/><circle cx="8.50001" cy="4.2746" r="1.27473" fill="white"/><circle cx="12.7744" cy="5.54939" r="1.27473" fill="white"/><circle cx="4.52192" cy="6.82404" r="1.27473" fill="white"/></svg>';
+const iconVarNumber         = '<svg width="15" height="15" viewBox="0 0 15 15" fill="none" xmlns="http://www.w3.org/2000/svg"><rect x="4.43979" y="0.8703" width="1.34691" height="13.1692" transform="rotate(5.12323 4.43979 0.8703)" fill="white"/><rect x="10.4445" y="0.950623" width="1.34691" height="13.147" transform="rotate(5.12323 10.4445 0.950623)" fill="white"/><rect x="14.1184" y="4.19745" width="1.34691" height="13.2367" transform="rotate(90 14.1184 4.19745)" fill="white"/><rect x="14.1184" y="9.67902" width="1.34691" height="13.2367" transform="rotate(90 14.1184 9.67902)" fill="white"/></svg>';
+const iconVarText           = '<svg width="11" height="11" viewBox="0 0 11 11" fill="none" xmlns="http://www.w3.org/2000/svg"><path fill-rule="evenodd" clip-rule="evenodd" d="M0 0H0.5H5.00247H9.50494H10.0049V0.5V3.27642H9.00494V1H5.50247V9.99513L7.00021 9.99512L7.00021 10.9951L5.00247 10.9951L3.00021 10.9951L3.00021 9.99512L4.50247 9.99513V1H1V3.27642H0V0.5V0Z" fill="white"/></svg>';
+const iconVarBoolean        = '<svg width="12" height="12" viewBox="0 0 12 12" fill="none" xmlns="http://www.w3.org/2000/svg"><rect x="0.5" y="0.5" width="11" height="11" stroke="white"/><circle cx="6" cy="6" r="2.5" stroke="white"/></svg>';
+
 const iconStyle             = '<svg width="12" height="9"  viewBox="0 0 12 9"  fill="none" xmlns="http://www.w3.org/2000/svg"><circle cx="7.5" cy="1.5" r="1.5" transform="rotate(90 7.5 1.5)" fill="white"/><circle cx="1.5" cy="1.5" r="1.5" transform="rotate(90 1.5 1.5)" fill="white"/><circle cx="7.5" cy="7.5" r="1.5" transform="rotate(90 7.5 7.5)" fill="white"/><circle cx="1.5" cy="7.5" r="1.5" transform="rotate(90 1.5 7.5)" fill="white"/></svg>';
 const iconColorStyle        = '<svg width="12" height="12" viewBox="0 0 12 12" fill="none" xmlns="http://www.w3.org/2000/svg"><path fill-rule="evenodd" clip-rule="evenodd" d="M9.53553 9.53552C8.63071 10.4403 7.38071 11 6 11C3.23858 11 1 8.76141 1 6C1 4.61929 1.55965 3.36929 2.46447 2.46448L6 6L9.53553 9.53552ZM12 6C12 9.31372 9.31371 12 6 12C2.68629 12 0 9.31372 0 6C0 4.34314 0.67157 2.84314 1.75735 1.75735C1.77346 1.74124 1.78965 1.72525 1.80592 1.70935C2.88722 0.652252 4.36652 0.000518799 5.99803 0C5.99869 0 5.99934 0 6 0C9.31305 0 11.9989 2.68521 12 5.99802C12 5.99869 12 5.99933 12 6Z" fill="white"/></svg>';
 const iconColorStyleReplace = '<svg width="15" height="15" viewBox="0 0 15 15" fill="none" xmlns="http://www.w3.org/2000/svg"><path fill-rule="evenodd" clip-rule="evenodd" d="M5.18718 13.3189L7.83883 10.6673L8.54594 11.3744L5.89429 14.026C4.62509 15.2952 2.5673 15.2952 1.2981 14.026C0.0288918 12.7568 0.0288916 10.699 1.2981 9.42982L3.94975 6.77817L4.65685 7.48528L2.0052 10.1369C1.12652 11.0156 1.12652 12.4402 2.0052 13.3189C2.88388 14.1976 4.3085 14.1976 5.18718 13.3189ZM11.3744 8.54594L10.6673 7.83883L13.3189 5.18718C14.1976 4.3085 14.1976 2.88388 13.3189 2.0052C12.4402 1.12652 11.0156 1.12652 10.1369 2.0052L7.48528 4.65685L6.77817 3.94975L9.42982 1.2981C10.699 0.0288935 12.7568 0.0288931 14.026 1.2981C15.2952 2.5673 15.2952 4.62509 14.026 5.89429L11.3744 8.54594ZM5.92375 10.1664L10.1664 5.92375L9.40036 5.15772L5.15772 9.40036L5.92375 10.1664Z" fill="white"/></svg>';
@@ -69268,6 +69289,7 @@ var menuColorStyle;
 var menuLayer;
 var menuEffects;
 var menuStyles;
+var menuVariables;
 var menuShape;
 var menuGroup;
 
@@ -69476,7 +69498,6 @@ function initGeneratorMenus()
         menuPrefSep2                 = new MenuItem('',                              {separator: true}),    
         // menuItemEnableBetaFeatures   = new MenuItem('Enable beta features',          {checkCallback: () => settings.enableBetaFeatures,    callback: () => { updateSettingAndMenu('enableBetaFeatures',   true, !settings.enableBetaFeatures);    enableFeatures(true, settings.enableBetaFeatures); }}),
         //                                new MenuItem('',                              {separator: true}),    
-                                       new MenuItem('Keyboard layout...',            {callback: () => showKeyboardPanel()}),
         menuItemMinZoomForParams     = new MenuItem('Zoom level for values...',      {callback: () => showMinZoomDialog()})]);
         
 
@@ -69536,44 +69557,45 @@ function initGeneratorMenus()
 
     menuMainDebug = new Menu('Debug', false);
     menuMainDebug.addItems([
-        menuItemShowNodeId = new MenuItem('Show IDs',
+    menuItemShowNodeId = new MenuItem('Show IDs',
+                        {
+                            checkCallback: () => settings.showNodeId, 
+                            callback:      () => 
                             {
-                                checkCallback: () => settings.showNodeId, 
-                                callback:      () => 
-                                {
-                                    updateSettingAndMenu('showNodeId', true, !settings.showNodeId);
-                                     
-                                    graph.nodes.forEach(n => n.updateNode());
-                                    graph.nodes.forEach(n => n.updateMeasureData());
-                                    graph.nodes.forEach(n => n.updateHeaderLabelOffsetX());
+                                updateSettingAndMenu('showNodeId', true, !settings.showNodeId);
+                                    
+                                graph.nodes.forEach(n => n.updateNode());
+                                graph.nodes.forEach(n => n.updateMeasureData());
+                                graph.nodes.forEach(n => n.updateHeaderLabelOffsetX());
 
-                                    graph.updatePages();
+                                graph.updatePages();
 
-                                    pushUpdate(null, graph.nodes.filter(n => n.active));
-                                }
-                            }),
-        menuItemShowTransformPoints = new MenuItem('Show transform points', 
+                                pushUpdate(null, graph.nodes.filter(n => n.active));
+                            }
+                        }),
+    menuItemShowTransformPoints = new MenuItem('Show transform points', 
+                        {
+                            checkCallback: () => settings.showTransformPoints, 
+                            callback:      () => 
                             {
-                                checkCallback: () => settings.showTransformPoints, 
-                                callback:      () => 
-                                {
-                                    updateSettingAndMenu('showTransformPoints', true, !settings.showTransformPoints);
-                                    pushUpdate(null, graph.nodes.filter(n => n.active));
-                                }
-                            }),
-                            new MenuItem('',                      {separator: true}),
-                            new MenuItem('Log generator',         {childMenu: menuDebugGenerator}),
-                            new MenuItem('Log storage',           {childMenu: menuDebugStorage}),
-                            new MenuItem('',                      {separator: true}),   
-                            new MenuItem('Delete',                {childMenu: menuDebugDelete}),
-                            new MenuItem('',                      {separator: true}),   
-        menuItemDataMode  = new MenuItem('Restart in debug mode', {checkCallback: () => settings.dataMode, callback: () => uiRestartGenerator(true)})]);
+                                updateSettingAndMenu('showTransformPoints', true, !settings.showTransformPoints);
+                                pushUpdate(null, graph.nodes.filter(n => n.active));
+                            }
+                        }),
+                        new MenuItem('',                      {separator: true}),
+                        new MenuItem('Log generator',         {childMenu: menuDebugGenerator}),
+                        new MenuItem('Log storage',           {childMenu: menuDebugStorage}),
+                        new MenuItem('',                      {separator: true}),   
+                        new MenuItem('Delete',                {childMenu: menuDebugDelete}),
+                        new MenuItem('',                      {separator: true}),   
+    menuItemDataMode  = new MenuItem('Restart in debug mode', {checkCallback: () => settings.dataMode, callback: () => uiRestartGenerator(true)})]);
                      
 
     menuMainHelp = new Menu('Help and subscription', false);
     menuMainHelp.addItems([
-      // new MenuItem('Help page',   {callback:  () => window.open('http://www.bourt.com/generator/help', '_blank')}),
-      //new MenuItem('',             {separator: true}),
+        new MenuItem('Keyboard shortcuts', {shortcut: osCtrlShift() + '?', callback: () => showKeyboardPanel()}),
+        // new MenuItem('Help page',   {callback:  () => window.open('http://www.bourt.com/generator/help', '_blank')}),
+        new MenuItem('',             {separator: true}),
         new MenuItem('Subscription', {callback:  () => showSubscriptionDialog()}),
       //new MenuItem('',             {separator: true}),
         new MenuItem('About',        {callback:  () => showAboutDialog()})]);
@@ -69747,6 +69769,11 @@ function initGeneratorMenus()
         new MenuItem('Color style', {icon: iconColorStyle, callback: e => actionManager.do(getCreateNodeAction(COLOR_STYLE, btnLayer.div, getCreateOptions(e, {existing: true})))})]);
     
     
+    menuVariables = new Menu('Variables', true, false);
+    menuVariables.addItems([
+        new MenuItem('Number', {icon: iconVarNumber, callback: e => actionManager.do(getCreateNodeAction(VAR_NUMBER, btnLayer.div, getCreateOptions(e, {existing: true})))})]);
+    
+    
     menuLayer = new Menu('Layer', true, false);
     menuLayer.addItems([
         menuItemLayerFill        = new MenuItem('Fill',            {icon: iconFill,        callback: e => actionManager.do(getCreateNodeAction(FILL,         btnLayer.div, getCreateOptions(e)))}),
@@ -69758,6 +69785,7 @@ function initGeneratorMenus()
                                    new MenuItem('Effects',         {childMenu: menuEffects}),
                                    new MenuItem('',                {separator: true}),
                                    new MenuItem('Styles',          {childMenu: menuStyles}),
+                                   new MenuItem('Variables',       {childMenu: menuVariables}),
                                    new MenuItem('',                {separator: true}),
                                    new MenuItem('Mask',            {icon: iconMask,        callback: e => actionManager.do(getCreateNodeAction(LAYER_MASK,   btnLayer.div, getCreateOptions(e)))})]);
                                  //new MenuItem('Color style',     {icon: iconColorStyle,  childMenu: menuColorStyle, callback: e => actionManager.do(getCreateNodeAction(COLOR_STYLE,  btnColor.div, getCreateOptions(e)))})]);
@@ -69787,7 +69815,7 @@ function initGeneratorMenus()
     menuShape = new Menu('Shapes', true, false);
     menuShape.addItems([
         // menuItemShapeSelected = new MenuItem('Selected objects...', {icon: iconSelected,   enabled: false}),
-                                new MenuItem('',                    {separator: true}),
+                                // new MenuItem('',                    {separator: true}),
                                 new MenuItem('Shapes',              {/*icon: iconShapes,*/ childMenu: menuShapes}),
                                 new MenuItem('',                    {separator: true}),
                                 new MenuItem('Frame',               {icon: iconFrame,      callback: e => actionManager.do(getCreateNodeAction(FRAME,       btnShape.div, getCreateOptions(e)))}),
@@ -100686,6 +100714,8 @@ function showAboutDialog()
     aboutBack  .style.display = 'block';
     aboutDialog.style.display = 'block';
 
+    aboutUserId.innerHTML = '<span style="user-select: none; color: var(--figma-color-bg-disabled-secondary);">Your Figma user ID:&nbsp;&nbsp;</span>' + currentUser.id;
+
     dialogShown = true;
 }
 
@@ -100697,6 +100727,15 @@ function hideAboutDialog()
     aboutDialog.style.display = 'none';
 
     dialogShown = false;
+}
+
+
+
+function copyUserId()
+{
+    writeTextToClipboard(currentUser.id);
+    selectElementText('aboutUserId');
+    uiNotify('Copied user ID');
 }
 
 
@@ -101919,7 +101958,7 @@ var allUpdateNodes   = [];
 //uiClearLocalData('subscription');
 
 // uiClearLocalData('showRequests');
-//uiClearLocalData('showWhatsNew');
+// uiClearLocalData('showWhatsNew');
 
 //uiSetLocalData('enableBetaFeatures', 'true');
 //uiSetLocalData('logLoading', 'true');
@@ -102163,6 +102202,16 @@ document.addEventListener('keydown', e =>
     // else if (e.code == 'KeyL'
     //       && getCtrlKey(e))
     //     layoutSelectedNodes();
+
+    else if (e.code == 'Slash'
+          && getCtrlKey(e)
+          && e.shiftKey)
+    {
+        e.preventDefault();
+        e.stopPropagation();
+
+        showKeyboardPanel();
+    }
 
     // toggle node icons
     else if (e.code == 'KeyI'
@@ -102492,7 +102541,11 @@ function initKeyboardPanel()
 function showKeyboardPanel()
 {
     setCurrentKeyboardTab(0);
-    keyboardPanel.style.display = 'block';
+
+    keyboardPanel.style.display = 
+        keyboardPanel.style.display != 'block'
+        ? 'block'
+        : 'none';
 }
 
 
@@ -103909,22 +103962,11 @@ function showSubscriptionDialog(showBack = true)
 
     subscriptionBack.style.backgroundColor = showBack ? '#0005' : 'transparent';
 
-    //subscriptionUserId.innerHTML = '<span style="user-select: none; color: var(--figma-color-bg-disabled-secondary);">Your Figma user ID:<br/></span>' + currentUser.id;// + '<br/><span style="user-select: none; color: var(--figma-color-bg-disabled-secondary);">(You need it to subscribe. Double-click to copy.)</span>';    
-
     
     updateLicenseInfo();
    
 
     dialogShown = true;
-}
-
-
-
-function copyUserId()
-{
-    writeTextToClipboard(currentUser.id);
-    selectElementText('subscriptionUserId');
-    uiNotify('Copied user ID');
 }
 
 
@@ -103962,7 +104004,7 @@ async function updateLicenseInfo()
         licenseInfo.style.top            = '55%';
         licenseInfo.style.transform      = 'translateX(-50%) translateY(-50%)';
 
-        // subscriptionUserId.style.display = 'none';
+        // aboutUserId.style.display = 'none';
         btnSubscribe      .style.display = 'none';
 
         subscriptionClose.style.display  = 'inline-block';
@@ -103979,7 +104021,7 @@ async function updateLicenseInfo()
         licenseInfo.style.top            = '40%';
         licenseInfo.style.transform      = 'translateX(-50%) translateY(-50%)';
 
-        // subscriptionUserId.style.display = 'none';
+        // aboutUserId.style.display = 'none';
         btnSubscribe      .style.display = 'block';
         btnSubscribe      .style.top     = '148px';
 
@@ -104016,7 +104058,7 @@ async function updateLicenseInfo()
         licenseInfo.style.top            = '70px';
         licenseInfo.style.transform      = 'translateX(-50%)';
 
-        // subscriptionUserId.style.display = 'none';
+        // aboutUserId.style.display = 'none';
         btnSubscribe      .style.display = 'block';
 
         subscriptionClose.style.display  = 'none';

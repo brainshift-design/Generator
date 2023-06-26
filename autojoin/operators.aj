@@ -132,16 +132,16 @@
 ../operators/color/OpColorBlend.js
 
 
-../operators/style/OpColorStyle.js
-../operators/style/OpFill.js
-../operators/style/OpColorStop.js
-../operators/style/OpGradient.js
-../operators/style/OpStroke.js
-../operators/style/OpDropShadow.js
-../operators/style/OpInnerShadow.js
-../operators/style/OpLayerBlur.js
-../operators/style/OpBackBlur.js
-../operators/style/OpLayerMask.js
+../operators/layer/OpColorStyle.js
+../operators/layer/OpFill.js
+../operators/layer/OpColorStop.js
+../operators/layer/OpGradient.js
+../operators/layer/OpStroke.js
+../operators/layer/OpDropShadow.js
+../operators/layer/OpInnerShadow.js
+../operators/layer/OpLayerBlur.js
+../operators/layer/OpBackBlur.js
+../operators/layer/OpLayerMask.js
 
 
 ../operators/shape/OpShapeBase.js

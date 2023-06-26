@@ -43,7 +43,11 @@ function initKeyboardPanel()
 function showKeyboardPanel()
 {
     setCurrentKeyboardTab(0);
-    keyboardPanel.style.display = 'block';
+
+    keyboardPanel.style.display = 
+        keyboardPanel.style.display != 'block'
+        ? 'block'
+        : 'none';
 }
 
 

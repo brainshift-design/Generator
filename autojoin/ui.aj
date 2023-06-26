@@ -20,11 +20,22 @@
 
 ../html/ui_1.html
 
-../html/dialogs.html
+
+../html/crash.html
+../html/about.html
+../html/deleteConnections.html
+../html/subscription.html
+../html/eula.html
+../html/minZoom.html
+../html/whatsNew.html
+
+
 ../html/keyboardPanel.html
 ../html/tooltips.html
 
-    ../output/generator.html
+
+../output/generator.html
+
 
 ../html/ui_2.html
 

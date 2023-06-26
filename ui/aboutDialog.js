@@ -15,6 +15,8 @@ function showAboutDialog()
     aboutBack  .style.display = 'block';
     aboutDialog.style.display = 'block';
 
+    aboutUserId.innerHTML = '<span style="user-select: none; color: var(--figma-color-bg-disabled-secondary);">Your Figma user ID:&nbsp;&nbsp;</span>' + currentUser.id;
+
     dialogShown = true;
 }
 
@@ -26,6 +28,15 @@ function hideAboutDialog()
     aboutDialog.style.display = 'none';
 
     dialogShown = false;
+}
+
+
+
+function copyUserId()
+{
+    writeTextToClipboard(currentUser.id);
+    selectElementText('aboutUserId');
+    uiNotify('Copied user ID');
 }
 
 
