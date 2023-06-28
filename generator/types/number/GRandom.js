@@ -4,6 +4,9 @@ extends GNumberType
     seed;
     min;
     max;
+    scale;
+    offset;
+    detail;
 
     random = null;
 
@@ -28,6 +31,9 @@ extends GNumberType
         if (this.seed  ) copy.seed   = this.seed  .copy();
         if (this.min   ) copy.min    = this.min   .copy();
         if (this.max   ) copy.max    = this.max   .copy();
+        if (this.scale ) copy.scale  = this.scale .copy();
+        if (this.offset) copy.offset = this.offset.copy();
+        if (this.detail) copy.detail = this.detail.copy();
 
         if (this.random) copy.random = this.random.copy();
 
@@ -42,9 +48,12 @@ extends GNumberType
             return this;
 
 
-        const seed = (await this.seed.eval(parse)).toValue();
-        const min  = (await this.min .eval(parse)).toValue();
-        const max  = (await this.max .eval(parse)).toValue();
+        const seed   = (await this.seed  .eval(parse)).toValue();
+        const min    = (await this.min   .eval(parse)).toValue();
+        const max    = (await this.max   .eval(parse)).toValue();
+        const scale  = (await this.scale .eval(parse)).toValue();
+        const offset = (await this.offset.eval(parse)).toValue();
+        const detail = (await this.detail.eval(parse)).toValue();
     
 
         if (  !this.random
@@ -63,9 +72,12 @@ extends GNumberType
 
         this.updateValues =
         [
-            ['seed', seed],
-            ['min',  min ],
-            ['max',  max ]
+            ['seed',   seed  ],
+            ['min',    min   ],
+            ['max',    max   ],
+            ['scale',  scale ],
+            ['offset', offset],
+            ['detail', detail]
         ];
         
 
@@ -80,9 +92,12 @@ extends GNumberType
     {
         super.pushUpdateValues(parse);
 
-        if (this.seed) this.seed.pushUpdateValues(parse);
-        if (this.min ) this.min .pushUpdateValues(parse);
-        if (this.max ) this.max .pushUpdateValues(parse);
+        if (this.seed  ) this.seed  .pushUpdateValues(parse);
+        if (this.min   ) this.min   .pushUpdateValues(parse);
+        if (this.max   ) this.max   .pushUpdateValues(parse);
+        if (this.scale ) this.scale .pushUpdateValues(parse);
+        if (this.offset) this.offset.pushUpdateValues(parse);
+        if (this.detail) this.detail.pushUpdateValues(parse);
     }
 
 
@@ -91,8 +106,11 @@ extends GNumberType
     {
         super.invalidateInputs(from);
 
-        if (this.seed) this.seed.invalidateInputs(from);
-        if (this.min ) this.min .invalidateInputs(from);
-        if (this.max ) this.max .invalidateInputs(from);
+        if (this.seed  ) this.seed  .invalidateInputs(from);
+        if (this.min   ) this.min   .invalidateInputs(from);
+        if (this.max   ) this.max   .invalidateInputs(from);
+        if (this.scale ) this.scale .invalidateInputs(from);
+        if (this.offset) this.offset.invalidateInputs(from);
+        if (this.detail) this.detail.invalidateInputs(from);
     }
 }

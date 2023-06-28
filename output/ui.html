@@ -4399,6 +4399,7 @@ a
 
                 <p>•  Sequence, Distribute and Random can now be disabled</p>
                 <p>•  added spread and bias to Distribute node</p>
+                <p>•  Arithmetic in subtrast mode with only one input now acts like Negative</p>
                 <p>•  fixed pointer capture bug</p>
                 <p>•  fixed UI bugs</p>
                 
@@ -17080,6 +17081,9 @@ extends GNumberType
     seed;
     min;
     max;
+    scale;
+    offset;
+    detail;
 
     random = null;
 
@@ -17104,6 +17108,9 @@ extends GNumberType
         if (this.seed  ) copy.seed   = this.seed  .copy();
         if (this.min   ) copy.min    = this.min   .copy();
         if (this.max   ) copy.max    = this.max   .copy();
+        if (this.scale ) copy.scale  = this.scale .copy();
+        if (this.offset) copy.offset = this.offset.copy();
+        if (this.detail) copy.detail = this.detail.copy();
 
         if (this.random) copy.random = this.random.copy();
 
@@ -17118,9 +17125,12 @@ extends GNumberType
             return this;
 
 
-        const seed = (await this.seed.eval(parse)).toValue();
-        const min  = (await this.min .eval(parse)).toValue();
-        const max  = (await this.max .eval(parse)).toValue();
+        const seed   = (await this.seed  .eval(parse)).toValue();
+        const min    = (await this.min   .eval(parse)).toValue();
+        const max    = (await this.max   .eval(parse)).toValue();
+        const scale  = (await this.scale .eval(parse)).toValue();
+        const offset = (await this.offset.eval(parse)).toValue();
+        const detail = (await this.detail.eval(parse)).toValue();
     
 
         if (  !this.random
@@ -17139,9 +17149,12 @@ extends GNumberType
 
         this.updateValues =
         [
-            ['seed', seed],
-            ['min',  min ],
-            ['max',  max ]
+            ['seed',   seed  ],
+            ['min',    min   ],
+            ['max',    max   ],
+            ['scale',  scale ],
+            ['offset', offset],
+            ['detail', detail]
         ];
         
 
@@ -17156,9 +17169,12 @@ extends GNumberType
     {
         super.pushUpdateValues(parse);
 
-        if (this.seed) this.seed.pushUpdateValues(parse);
-        if (this.min ) this.min .pushUpdateValues(parse);
-        if (this.max ) this.max .pushUpdateValues(parse);
+        if (this.seed  ) this.seed  .pushUpdateValues(parse);
+        if (this.min   ) this.min   .pushUpdateValues(parse);
+        if (this.max   ) this.max   .pushUpdateValues(parse);
+        if (this.scale ) this.scale .pushUpdateValues(parse);
+        if (this.offset) this.offset.pushUpdateValues(parse);
+        if (this.detail) this.detail.pushUpdateValues(parse);
     }
 
 
@@ -17167,9 +17183,12 @@ extends GNumberType
     {
         super.invalidateInputs(from);
 
-        if (this.seed) this.seed.invalidateInputs(from);
-        if (this.min ) this.min .invalidateInputs(from);
-        if (this.max ) this.max .invalidateInputs(from);
+        if (this.seed  ) this.seed  .invalidateInputs(from);
+        if (this.min   ) this.min   .invalidateInputs(from);
+        if (this.max   ) this.max   .invalidateInputs(from);
+        if (this.scale ) this.scale .invalidateInputs(from);
+        if (this.offset) this.offset.invalidateInputs(from);
+        if (this.detail) this.detail.invalidateInputs(from);
     }
 }
 
@@ -17874,15 +17893,20 @@ async function evalSubtractInputs(inputs, parse)
         return NumberValue.NaN;
 
 
-    const value = new NumberValue(0);
+    let value = new NumberValue(0);
 
 
     if (!isEmpty(inputs))
     {
         const val0 = (await inputs[0].eval(parse)).toValue();
 
-        if (    LIST_VALUES.includes(val0.type)
-            && !isEmpty(val0.items))
+        if (   inputs.length == 1
+            && val0.type == NUMBER_VALUE)
+        {
+            value = new NumberValue(-val0.value, val0.decimals);
+        }
+        else if (LIST_VALUES.includes(val0.type)
+             && !isEmpty(val0.items))
         {
             const item0 = val0.items[0];
 
@@ -31808,9 +31832,12 @@ function genParseRandom(parse)
     parse.nTab++;
 
 
-    rnd.seed = genParse(parse);
-    rnd.min  = genParse(parse);
-    rnd.max  = genParse(parse);
+    rnd.seed   = genParse(parse);
+    rnd.min    = genParse(parse);
+    rnd.max    = genParse(parse);
+    rnd.scale  = genParse(parse);
+    rnd.offset = genParse(parse);
+    rnd.detail = genParse(parse);
 
 
     parse.nTab--;
@@ -52452,6 +52479,9 @@ extends GNumberType
     seed;
     min;
     max;
+    scale;
+    offset;
+    detail;
 
     random = null;
 
@@ -52476,6 +52506,9 @@ extends GNumberType
         if (this.seed  ) copy.seed   = this.seed  .copy();
         if (this.min   ) copy.min    = this.min   .copy();
         if (this.max   ) copy.max    = this.max   .copy();
+        if (this.scale ) copy.scale  = this.scale .copy();
+        if (this.offset) copy.offset = this.offset.copy();
+        if (this.detail) copy.detail = this.detail.copy();
 
         if (this.random) copy.random = this.random.copy();
 
@@ -52490,9 +52523,12 @@ extends GNumberType
             return this;
 
 
-        const seed = (await this.seed.eval(parse)).toValue();
-        const min  = (await this.min .eval(parse)).toValue();
-        const max  = (await this.max .eval(parse)).toValue();
+        const seed   = (await this.seed  .eval(parse)).toValue();
+        const min    = (await this.min   .eval(parse)).toValue();
+        const max    = (await this.max   .eval(parse)).toValue();
+        const scale  = (await this.scale .eval(parse)).toValue();
+        const offset = (await this.offset.eval(parse)).toValue();
+        const detail = (await this.detail.eval(parse)).toValue();
     
 
         if (  !this.random
@@ -52511,9 +52547,12 @@ extends GNumberType
 
         this.updateValues =
         [
-            ['seed', seed],
-            ['min',  min ],
-            ['max',  max ]
+            ['seed',   seed  ],
+            ['min',    min   ],
+            ['max',    max   ],
+            ['scale',  scale ],
+            ['offset', offset],
+            ['detail', detail]
         ];
         
 
@@ -52528,9 +52567,12 @@ extends GNumberType
     {
         super.pushUpdateValues(parse);
 
-        if (this.seed) this.seed.pushUpdateValues(parse);
-        if (this.min ) this.min .pushUpdateValues(parse);
-        if (this.max ) this.max .pushUpdateValues(parse);
+        if (this.seed  ) this.seed  .pushUpdateValues(parse);
+        if (this.min   ) this.min   .pushUpdateValues(parse);
+        if (this.max   ) this.max   .pushUpdateValues(parse);
+        if (this.scale ) this.scale .pushUpdateValues(parse);
+        if (this.offset) this.offset.pushUpdateValues(parse);
+        if (this.detail) this.detail.pushUpdateValues(parse);
     }
 
 
@@ -52539,9 +52581,12 @@ extends GNumberType
     {
         super.invalidateInputs(from);
 
-        if (this.seed) this.seed.invalidateInputs(from);
-        if (this.min ) this.min .invalidateInputs(from);
-        if (this.max ) this.max .invalidateInputs(from);
+        if (this.seed  ) this.seed  .invalidateInputs(from);
+        if (this.min   ) this.min   .invalidateInputs(from);
+        if (this.max   ) this.max   .invalidateInputs(from);
+        if (this.scale ) this.scale .invalidateInputs(from);
+        if (this.offset) this.offset.invalidateInputs(from);
+        if (this.detail) this.detail.invalidateInputs(from);
     }
 }
 
@@ -53246,15 +53291,20 @@ async function evalSubtractInputs(inputs, parse)
         return NumberValue.NaN;
 
 
-    const value = new NumberValue(0);
+    let value = new NumberValue(0);
 
 
     if (!isEmpty(inputs))
     {
         const val0 = (await inputs[0].eval(parse)).toValue();
 
-        if (    LIST_VALUES.includes(val0.type)
-            && !isEmpty(val0.items))
+        if (   inputs.length == 1
+            && val0.type == NUMBER_VALUE)
+        {
+            value = new NumberValue(-val0.value, val0.decimals);
+        }
+        else if (LIST_VALUES.includes(val0.type)
+             && !isEmpty(val0.items))
         {
             const item0 = val0.items[0];
 
@@ -86164,6 +86214,9 @@ extends OperatorBase
     paramSeed;
     paramMin;
     paramMax;
+    paramScale;
+    paramOffset;
+    paramDetail;
 
 
 
@@ -86178,9 +86231,12 @@ extends OperatorBase
         
         this.addOutput(new Output([NUMBER_VALUE], this.output_genRequest));
 
-        this.addParam(this.paramSeed = new NumberParam('seed', 'seed', true, true, true, Math.floor(Math.random() * 10000), 0, 0x7fffffff));
-        this.addParam(this.paramMin  = new NumberParam('min',  'min',  true, true, true,   0));
-        this.addParam(this.paramMax  = new NumberParam('max',  'max',  true, true, true, 255));
+        this.addParam(this.paramSeed   = new NumberParam('seed',   'seed',   true, true, true, Math.floor(Math.random() * 10000), 0, 0x7fffffff));
+        this.addParam(this.paramMin    = new NumberParam('min',    'min',    true, true, true,   0));
+        this.addParam(this.paramMax    = new NumberParam('max',    'max',    true, true, true, 255));
+        this.addParam(this.paramScale  = new NumberParam('scale',  'scale',  true, true, true, 1, 1));
+        this.addParam(this.paramOffset = new NumberParam('offset', 'offset', true, true, true, 0));
+        this.addParam(this.paramDetail = new NumberParam('detail', 'detail', true, true, true, 1, 1));
 
         this.paramSeed.controls[0].allowEditDecimals = false;
         this.paramSeed.isDefault = () => false;
@@ -86200,9 +86256,12 @@ extends OperatorBase
         if (ignore) return request;
 
         
-        request.push(...this.node.paramSeed.genRequest(gen));
-        request.push(...this.node.paramMin .genRequest(gen));
-        request.push(...this.node.paramMax .genRequest(gen));
+        request.push(...this.node.paramSeed  .genRequest(gen));
+        request.push(...this.node.paramMin   .genRequest(gen));
+        request.push(...this.node.paramMax   .genRequest(gen));
+        request.push(...this.node.paramScale .genRequest(gen));
+        request.push(...this.node.paramOffset.genRequest(gen));
+        request.push(...this.node.paramDetail.genRequest(gen));
 
 
         gen.scope.pop();
@@ -98768,7 +98827,7 @@ extends Action
         deleteNodesAction_getUpdateNodes(this, updateNodes);
         deleteNodesAction_deleteNodes(this);
 
-        DisconnectAction_activateNewNodes(this);
+        //DisconnectAction_activateNewNodes(this);
 
         uiSaveNodes(this.newActiveNodeIds);
     }
@@ -98779,8 +98838,8 @@ extends Action
     {
         deleteNodesAction_restoreNodes(this);
         
-        this.deactivateNewActiveNodes();
-        deleteNodesAction_activateOldActiveNodes(this, updateNodes);
+        //this.deactivateNewActiveNodes();
+        //deleteNodesAction_activateOldActiveNodes(this, updateNodes);
 
         uiSaveNodes(
             [...this.nodeIds,
@@ -98895,18 +98954,18 @@ function deleteNodesAction_disconnect(act, input, ignoreNodeIds = [])
     }
 
 
-    if (!activeRightHeader)
-    {
-        const _activeLeft = getActiveBeforeNode(input.node, [input.node]);
+    // if (!activeRightHeader)
+    // {
+    //     const _activeLeft = getActiveBeforeNode(input.node, [input.node]);
 
-        if (   !ignoreNodeIds.includes(input.node.id)
-            && !_activeLeft)
-        {
-            uiMakeNodeActive(input.node);
-            pushUnique(act.newActiveNodeIds, input.node.id);
-            pushUnique(updateNodes, input.node);
-        }
-    }
+    //     if (   !ignoreNodeIds.includes(input.node.id)
+    //         && !_activeLeft)
+    //     {
+    //         uiMakeNodeActive(input.node);
+    //         pushUnique(act.newActiveNodeIds, input.node.id);
+    //         pushUnique(updateNodes, input.node);
+    //     }
+    // }
 
 
     pushUnique(updateNodes, terminalsRight);

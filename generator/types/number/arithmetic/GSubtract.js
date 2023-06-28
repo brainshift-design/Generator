@@ -44,15 +44,20 @@ async function evalSubtractInputs(inputs, parse)
         return NumberValue.NaN;
 
 
-    const value = new NumberValue(0);
+    let value = new NumberValue(0);
 
 
     if (!isEmpty(inputs))
     {
         const val0 = (await inputs[0].eval(parse)).toValue();
 
-        if (    LIST_VALUES.includes(val0.type)
-            && !isEmpty(val0.items))
+        if (   inputs.length == 1
+            && val0.type == NUMBER_VALUE)
+        {
+            value = new NumberValue(-val0.value, val0.decimals);
+        }
+        else if (LIST_VALUES.includes(val0.type)
+             && !isEmpty(val0.items))
         {
             const item0 = val0.items[0];
 

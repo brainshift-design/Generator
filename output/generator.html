@@ -12356,6 +12356,9 @@ extends GNumberType
     seed;
     min;
     max;
+    scale;
+    offset;
+    detail;
 
     random = null;
 
@@ -12380,6 +12383,9 @@ extends GNumberType
         if (this.seed  ) copy.seed   = this.seed  .copy();
         if (this.min   ) copy.min    = this.min   .copy();
         if (this.max   ) copy.max    = this.max   .copy();
+        if (this.scale ) copy.scale  = this.scale .copy();
+        if (this.offset) copy.offset = this.offset.copy();
+        if (this.detail) copy.detail = this.detail.copy();
 
         if (this.random) copy.random = this.random.copy();
 
@@ -12394,9 +12400,12 @@ extends GNumberType
             return this;
 
 
-        const seed = (await this.seed.eval(parse)).toValue();
-        const min  = (await this.min .eval(parse)).toValue();
-        const max  = (await this.max .eval(parse)).toValue();
+        const seed   = (await this.seed  .eval(parse)).toValue();
+        const min    = (await this.min   .eval(parse)).toValue();
+        const max    = (await this.max   .eval(parse)).toValue();
+        const scale  = (await this.scale .eval(parse)).toValue();
+        const offset = (await this.offset.eval(parse)).toValue();
+        const detail = (await this.detail.eval(parse)).toValue();
     
 
         if (  !this.random
@@ -12415,9 +12424,12 @@ extends GNumberType
 
         this.updateValues =
         [
-            ['seed', seed],
-            ['min',  min ],
-            ['max',  max ]
+            ['seed',   seed  ],
+            ['min',    min   ],
+            ['max',    max   ],
+            ['scale',  scale ],
+            ['offset', offset],
+            ['detail', detail]
         ];
         
 
@@ -12432,9 +12444,12 @@ extends GNumberType
     {
         super.pushUpdateValues(parse);
 
-        if (this.seed) this.seed.pushUpdateValues(parse);
-        if (this.min ) this.min .pushUpdateValues(parse);
-        if (this.max ) this.max .pushUpdateValues(parse);
+        if (this.seed  ) this.seed  .pushUpdateValues(parse);
+        if (this.min   ) this.min   .pushUpdateValues(parse);
+        if (this.max   ) this.max   .pushUpdateValues(parse);
+        if (this.scale ) this.scale .pushUpdateValues(parse);
+        if (this.offset) this.offset.pushUpdateValues(parse);
+        if (this.detail) this.detail.pushUpdateValues(parse);
     }
 
 
@@ -12443,9 +12458,12 @@ extends GNumberType
     {
         super.invalidateInputs(from);
 
-        if (this.seed) this.seed.invalidateInputs(from);
-        if (this.min ) this.min .invalidateInputs(from);
-        if (this.max ) this.max .invalidateInputs(from);
+        if (this.seed  ) this.seed  .invalidateInputs(from);
+        if (this.min   ) this.min   .invalidateInputs(from);
+        if (this.max   ) this.max   .invalidateInputs(from);
+        if (this.scale ) this.scale .invalidateInputs(from);
+        if (this.offset) this.offset.invalidateInputs(from);
+        if (this.detail) this.detail.invalidateInputs(from);
     }
 }
 
@@ -13150,15 +13168,20 @@ async function evalSubtractInputs(inputs, parse)
         return NumberValue.NaN;
 
 
-    const value = new NumberValue(0);
+    let value = new NumberValue(0);
 
 
     if (!isEmpty(inputs))
     {
         const val0 = (await inputs[0].eval(parse)).toValue();
 
-        if (    LIST_VALUES.includes(val0.type)
-            && !isEmpty(val0.items))
+        if (   inputs.length == 1
+            && val0.type == NUMBER_VALUE)
+        {
+            value = new NumberValue(-val0.value, val0.decimals);
+        }
+        else if (LIST_VALUES.includes(val0.type)
+             && !isEmpty(val0.items))
         {
             const item0 = val0.items[0];
 
@@ -27084,9 +27107,12 @@ function genParseRandom(parse)
     parse.nTab++;
 
 
-    rnd.seed = genParse(parse);
-    rnd.min  = genParse(parse);
-    rnd.max  = genParse(parse);
+    rnd.seed   = genParse(parse);
+    rnd.min    = genParse(parse);
+    rnd.max    = genParse(parse);
+    rnd.scale  = genParse(parse);
+    rnd.offset = genParse(parse);
+    rnd.detail = genParse(parse);
 
 
     parse.nTab--;

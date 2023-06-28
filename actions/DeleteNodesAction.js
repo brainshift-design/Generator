@@ -36,7 +36,7 @@ extends Action
         deleteNodesAction_getUpdateNodes(this, updateNodes);
         deleteNodesAction_deleteNodes(this);
 
-        DisconnectAction_activateNewNodes(this);
+        //DisconnectAction_activateNewNodes(this);
 
         uiSaveNodes(this.newActiveNodeIds);
     }
@@ -47,8 +47,8 @@ extends Action
     {
         deleteNodesAction_restoreNodes(this);
         
-        this.deactivateNewActiveNodes();
-        deleteNodesAction_activateOldActiveNodes(this, updateNodes);
+        //this.deactivateNewActiveNodes();
+        //deleteNodesAction_activateOldActiveNodes(this, updateNodes);
 
         uiSaveNodes(
             [...this.nodeIds,
@@ -163,18 +163,18 @@ function deleteNodesAction_disconnect(act, input, ignoreNodeIds = [])
     }
 
 
-    if (!activeRightHeader)
-    {
-        const _activeLeft = getActiveBeforeNode(input.node, [input.node]);
+    // if (!activeRightHeader)
+    // {
+    //     const _activeLeft = getActiveBeforeNode(input.node, [input.node]);
 
-        if (   !ignoreNodeIds.includes(input.node.id)
-            && !_activeLeft)
-        {
-            uiMakeNodeActive(input.node);
-            pushUnique(act.newActiveNodeIds, input.node.id);
-            pushUnique(updateNodes, input.node);
-        }
-    }
+    //     if (   !ignoreNodeIds.includes(input.node.id)
+    //         && !_activeLeft)
+    //     {
+    //         uiMakeNodeActive(input.node);
+    //         pushUnique(act.newActiveNodeIds, input.node.id);
+    //         pushUnique(updateNodes, input.node);
+    //     }
+    // }
 
 
     pushUnique(updateNodes, terminalsRight);
