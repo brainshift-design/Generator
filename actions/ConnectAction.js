@@ -82,7 +82,7 @@ extends Action
         connectAction_makeNewConnection(this);
 
         connectAction_updateOldOutput(this, updateNodes);
-        connectAction_updateInputActiveNodes(this, updateNodes);
+        //connectAction_updateInputActiveNodes(this, updateNodes);
 
         connectAction_updateNodes(this, updateNodes);
         connectAction_cleanup(this);
@@ -96,7 +96,7 @@ extends Action
         connectAction_restoreOutputValues(this);
 
         this.deactivateNewActiveNodes();
-        connectAction_activateOldActiveNodes(this, updateNodes); 
+        //connectAction_activateOldActiveNodes(this, updateNodes); 
 
         connectAction_restoreCleanup(this);
     }
