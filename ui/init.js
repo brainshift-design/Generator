@@ -23,6 +23,7 @@ var allUpdateNodes   = [];
 // uiClearLocalData('showWhatsNew');
 
 //uiSetLocalData('enableBetaFeatures', 'true');
+//uiSetLocalData('lastValidCheck', '');
 //uiSetLocalData('logLoading', 'true');
 
 //uiRemoveConnsToNodes(['num3']);
@@ -104,19 +105,6 @@ async function uiReturnFigStartGenerator(msg)
     initThemeColors();
     initKeyboardPanel();
     initWindowSizers();
-
-
-    if (await checkTrialExists())
-    {
-        if (await checkSubOrTrialActive()) 
-            initGenerator();
-        else
-            showSubscriptionDialog(false);
-    }
-    else
-    {
-        showEulaDialog();
-    }
 }
 
 
@@ -130,4 +118,50 @@ function initGenerator()
     uiQueueMessageToFigma({
         cmd:     'figLoadNodesAndConns',
         dataMode: settings.dataMode });
+}
+
+
+
+async function validateInit(lastValidCheck)
+{
+    const date  = getCurrentDateString();
+    const hash  = hashLicenseString(date, licenseHashSize);
+    const enc   = sign(hash, licenseKeys.private);
+    const today = arrayToBase32(enc);
+
+
+    if (lastValidCheck == today)
+    {
+        initGenerator();
+        return;
+    }
+
+
+    if (await checkTrialExists())
+    {
+        if (await checkSubOrTrialActive())
+        {
+            uiSetLocalData('lastValidCheck', today);
+            initGenerator();
+        }
+        else
+            showSubscriptionDialog(false);
+    }
+    else
+    {
+        showEulaDialog();
+    }
+}
+
+
+
+function getCurrentDateString()
+{
+    const today = new Date();
+
+    const year  = today.getFullYear();
+    const month = String(today.getMonth() + 1).padStart(2, '0');
+    const day   = String(today.getDate()).padStart(2, '0');
+
+    return `${year}-${month}-${day}`;
 }

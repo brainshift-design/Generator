@@ -82,8 +82,7 @@ extends GShape
 
         await this.evalShapeBase(parse, input);
 
-
-        this.evalObjects(parse);
+        await this.evalObjects(parse);
 
 
         this.validate();
@@ -93,7 +92,7 @@ extends GShape
 
 
 
-    evalObjects(parse, options = {})
+    async evalObjects(parse, options = {})
     {
         if (!this.options.enabled)
             return;
@@ -167,7 +166,7 @@ extends GShape
         }
 
 
-        super.evalObjects(parse);
+        await super.evalObjects(parse);
     }
 
 

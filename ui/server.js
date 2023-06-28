@@ -115,7 +115,7 @@ async function postToServer(cmd)
         {
             method:  'POST',
             headers: { 'Content-Type': 'application/json' },
-            body:    JSON.stringify(cmd),
+            body:    JSON.stringify(cmd)
         });
 
 

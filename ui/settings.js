@@ -41,7 +41,9 @@ const settings =
     logRawSaveConnections:         false, 
         
     logRawRequests:                false, 
-    logRawValues:                  false    
+    logRawValues:                  false,
+
+    lastValidCheck:                ''
 };
 
 
@@ -91,6 +93,8 @@ function updateSetting(settingName, value)
                 
         case 'logRawRequests':                settings.logRawRequests                = value;  break;
         case 'logRawValues':                  settings.logRawValues                  = value;  break;
+
+        case 'lastValidCheck':                settings.lastValidCheck                = value;  break;
     } 
 }
 
@@ -388,4 +392,6 @@ function loadLocalSettings()
         
     uiGetLocalData('logRawRequests'               );
     uiGetLocalData('logRawValues'                 );
+
+    uiGetLocalData('lastValidCheck'               );
 }

@@ -50,7 +50,7 @@ extends GNumberType
 
         
         this.value = new NumberValue(
-            start.toNumber() + step.toNumber() * iteration,
+            start.toNumber() + (this.options.enabled ? step.toNumber() * iteration : 0),
             Math.max(start.decimals, step.decimals));
 
 

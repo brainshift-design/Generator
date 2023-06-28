@@ -57,7 +57,7 @@ extends GNumberType
 
         
         this.value = new NumberValue(
-            min.value + this.random.get(iteration) * (max.value - min.value),
+            min.value + (this.options.enabled ? this.random.get(iteration) * (max.value - min.value) : 0),
             Math.max(min.decimals, max.decimals));
 
 

@@ -50,7 +50,7 @@ onmessage = e =>
 
         case 'uiUpdateGroupBounds':               uiUpdateGroupBounds              (msg);          break;
     }
-}    
+};
 
 ///////////////////////////////////////////////////////////////////////////////////////////////////
 

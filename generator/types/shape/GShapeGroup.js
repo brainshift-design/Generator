@@ -89,7 +89,7 @@ extends GShapeBase
         //await this.evalShapeBase(parse, input);
 
 
-        this.evalObjects(parse);
+        await this.evalObjects(parse);
 
 
         this.updateValues = [['value', this.value]];

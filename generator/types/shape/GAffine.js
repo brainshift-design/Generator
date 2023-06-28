@@ -52,8 +52,10 @@ extends GOperator
 
     async evalAffineObjects(parse, options, getXform)
     {
-        this.objects = this.input ? this.input.objects.map(o => o.copy()) : [];
-        //this.value.objects = this.input ? this.input.objects.map(o => o.copy()) : [];
+        this.objects = 
+            this.input 
+            ? this.input.objects.map(o => o.copy()) 
+            : [];
 
 
         const bounds = getObjBounds(this.objects);

@@ -33,7 +33,7 @@ extends GShapeBase
             return this;
 
 
-        // this.value = new ShapeGroupValue(this.nodeId);
+        //this.value = new ShapeGroupValue(this.nodeId);
 
         //this.objects = [];
 
@@ -70,7 +70,7 @@ extends GShapeBase
         //await this.evalShapeBase(parse, input);
 
 
-        // this.evalObjects(parse);
+        //await this.evalObjects(parse);
 
 
         this.updateValues = [['', NullValue]];

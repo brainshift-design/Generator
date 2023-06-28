@@ -52,7 +52,7 @@ extends GAffine
         }
 
        
-        const _bounds = this.evalObjects(
+        const _bounds = await this.evalObjects(
             parse, 
             {
                 scaleX:      scaleX, 
@@ -98,7 +98,7 @@ extends GAffine
         const sx = options.scaleX.toNumber() / 100;
         const sy = options.scaleY.toNumber() / 100;
 
-        return this.evalAffineObjects(parse, options,
+        return await this.evalAffineObjects(parse, options,
             () => [[sx, 0,  0],
                    [0,  sy, 0],
                    [0,  0,  1]]);

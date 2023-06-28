@@ -28,7 +28,7 @@ function     uiClearPageData(key)        { uiQueueMessageToFigma({ cmd:       'f
    
 
 
-function uiReturnFigGetLocalData(msg)
+async function uiReturnFigGetLocalData(msg)
 {
     switch (msg.key)
     {
@@ -140,6 +140,10 @@ function uiReturnFigGetLocalData(msg)
     if (   msg.key == 'logLoading'
         && settings.logLoading)
         uiLogAllSavedNodesAndConns();
+
+
+    if (msg.key == 'lastValidCheck')
+        await validateInit(msg.value);
 }
 
 

@@ -90,7 +90,7 @@ extends GOperator
         ];
 
 
-        this.evalObjects(parse, {points: points});
+        await this.evalObjects(parse, {points: points});
 
 
         this.validate();
@@ -100,7 +100,7 @@ extends GOperator
 
 
 
-    // evalObjects(parse, options = {})
+    // async evalObjects(parse, options = {})
     // {
     //     this.objects = this.input ? this.input.objects.map(o => o.copy()) : [];
     //     //this.value.objects = this.input ? this.input.objects.map(o => o.copy()) : [];
@@ -127,7 +127,7 @@ extends GOperator
     //     // }
 
         
-    //     super.evalObjects(parse);
+    //     await super.evalObjects(parse);
     // }
 
 

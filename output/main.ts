@@ -23,7 +23,7 @@ function noNodeTag(key) { return noTag(key, nodeTag); }
 function noConnTag(key) { return noTag(key, connTag); }
 
 
-const generatorVersion = 134;
+const generatorVersion = 139;
 
 
 const MAX_INT32        = 2147483647;
@@ -3864,7 +3864,7 @@ function setObjectTransform(figObj, genObj, setSize = true, noHeight = 0.01)
 
         figObj.resizeWithoutConstraints(
                             Math.max(0.01, scaleX),
-            genObj.height ? Math.max(0.01, scaleY) : 0.01);
+            genObj.height ? Math.max(0.01, scaleY) : noHeight);
     }
 }
 
@@ -4000,7 +4000,7 @@ function figCreateEllipse(genEllipse)
     {
         startingAngle: genEllipse.from /360*(Math.PI*2),
         endingAngle:   genEllipse.to   /360*(Math.PI*2),
-        innerRadius:   genEllipse.inner/100
+        innerRadius:   Math.min(Math.max(0, genEllipse.inner/100), 1)
     };
 
 
@@ -4032,7 +4032,7 @@ function figUpdateEllipse(figEllipse, genEllipse)
     {
         startingAngle: genEllipse.from /360*(Math.PI*2),
         endingAngle:   genEllipse.to   /360*(Math.PI*2),
-        innerRadius:   genEllipse.inner/100
+        innerRadius:   Math.min(Math.max(0, genEllipse.inner/100), 1)
     };
 
 
@@ -4185,7 +4185,6 @@ function genLineIsValid(genLine)
     return genLine.x     != null && !isNaN(genLine.x    )
         && genLine.y     != null && !isNaN(genLine.y    )
         && genLine.width != null && !isNaN(genLine.width);
-        //&& genLine.angle != null && !isNaN(genLine.angle);
 }
 
 
@@ -4199,7 +4198,6 @@ function figCreateLine(genLine)
 
     if (!genLineIsValid(genLine))
         return figLine;
-
 
     setObjectTransform(figLine, genLine, true, 0);
     setObjectProps    (figLine, genLine);
@@ -4372,7 +4370,7 @@ function figCreatePolygon(genPoly)
 
 
     figPoly.cornerRadius = genPoly.round;
-    figPoly.pointCount   = genPoly.corners;
+    figPoly.pointCount   = Math.max(3, genPoly.corners);
 
 
     setObjectTransform(figPoly, genPoly);
@@ -4394,7 +4392,7 @@ function figUpdatePolygon(figPoly, genPoly)
 
 
     figPoly.cornerRadius = genPoly.round;
-    figPoly.pointCount   = genPoly.corners;
+    figPoly.pointCount   = Math.max(3, genPoly.corners);
 
 
     setObjectTransform(figPoly, genPoly);
@@ -4480,7 +4478,7 @@ function figCreateStar(genStar)
 
     figStar.cornerRadius = genStar.round;
     figStar.pointCount   = genStar.points;
-    figStar.innerRadius  = genStar.convex / 100;
+    figStar.innerRadius  = Math.min(Math.max(0, genStar.convex / 100), 1);
 
 
     setObjectTransform(figStar, genStar);
@@ -4503,7 +4501,7 @@ function figUpdateStar(figStar, genStar)
 
     figStar.cornerRadius = genStar.round;
     figStar.pointCount   = genStar.points;
-    figStar.innerRadius  = genStar.convex / 100;
+    figStar.innerRadius  = Math.min(Math.max(0, genStar.convex / 100), 1);
 
 
     setObjectTransform(figStar, genStar);

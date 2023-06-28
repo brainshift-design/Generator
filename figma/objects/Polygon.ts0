@@ -22,7 +22,7 @@ function figCreatePolygon(genPoly)
 
 
     figPoly.cornerRadius = genPoly.round;
-    figPoly.pointCount   = genPoly.corners;
+    figPoly.pointCount   = Math.max(3, genPoly.corners);
 
 
     setObjectTransform(figPoly, genPoly);
@@ -44,7 +44,7 @@ function figUpdatePolygon(figPoly, genPoly)
 
 
     figPoly.cornerRadius = genPoly.round;
-    figPoly.pointCount   = genPoly.corners;
+    figPoly.pointCount   = Math.max(3, genPoly.corners);
 
 
     setObjectTransform(figPoly, genPoly);

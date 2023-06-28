@@ -4395,9 +4395,9 @@ a
             <div id='whatsNewWatermark'>◦<span style="font-weight: 700; position: relative; top: 0.06em;">G</span>•</div>
 
             <div id='whatsNewBody'>
-                <h1 style='margin-top: 20px;'>What's new in Generator</h1>
+                <h1 style='margin-top: 20px;'>What's new</h1>
 
-                <p>•  added Ctrl/Cmd+Shift+? to open keyboard shortcuts panel</p>
+                <p>•  Sequence, Distribute and Random can now be disabled</p>
                 
                 <p><br/><br/><div id='chkHideWhatsNew'></div></p>
             </div>
@@ -4725,7 +4725,7 @@ a
 
 
 
-const generatorVersion = 134;
+const generatorVersion = 139;
 
 
 const MAX_INT32        = 2147483647;
@@ -9151,9 +9151,8 @@ class FigmaObject
 
     xform;
 
-    xc  = null;
     xp0 = null; //  xp0 ------- xp1 
-    xp1 = null; //   |     xc
+    xp1 = null; //   |     
     xp2 = null; //  xp2
 
     cp0 = null; //  cp0 ------- cp1 
@@ -9188,7 +9187,6 @@ class FigmaObject
         
         this.xform      = clone(base.xform);
 
-        //this.xc         = !!base.xc  ? base.xc .copy() : null;
         this.xp0        = !!base.xp0 ? base.xp0.copy() : null;
         this.xp1        = !!base.xp1 ? base.xp1.copy() : null;
         this.xp2        = !!base.xp2 ? base.xp2.copy() : null;
@@ -9279,14 +9277,10 @@ class FigmaObject
         }
         else
         {
-            //const xc  = transformPoint(point(this.xc .x, this.xc .y), xform, coords);
             const xp0 = transformPoint(point(this.xp0.x, this.xp0.y), xform, coords);
             const xp1 = transformPoint(point(this.xp1.x, this.xp1.y), xform, coords);
             const xp2 = transformPoint(point(this.xp2.x, this.xp2.y), xform, coords);
 
-
-            //this.xc .x = xc .x;
-            //this.xc .y = xc .y;
 
             this.xp0.x = xp0.x;
             this.xp0.y = xp0.y;
@@ -9338,7 +9332,7 @@ function copyFigmaObject(obj)
         case ELLIPSE:     return FigmaEllipse   .prototype.copy.call(obj);
         case POLYGON:     return FigmaPolygon   .prototype.copy.call(obj);
         case STAR:        return FigmaStar      .prototype.copy.call(obj);
-        case TEXT_SHAPE:   return FigmaText      .prototype.copy.call(obj);
+        case TEXT_SHAPE:  return FigmaText      .prototype.copy.call(obj);
         case POINT:       return FigmaPoint     .prototype.copy.call(obj);
         case VECTOR_PATH: return FigmaVectorPath.prototype.copy.call(obj);
         case BOOLEAN:     return FigmaBoolean   .prototype.copy.call(obj);
@@ -10628,10 +10622,10 @@ function getObjBounds(objects)
  
         else if (obj.type == POINT
              && !obj.isDeco)
-            bounds = expandRect_(bounds, 
-                point(
-                    obj.x, //xform[0][2], 
-                    obj.y));//xform[1][2]));
+            bounds = expandRect_(bounds, point(obj.x, obj.y));
+
+        else if (obj.type == LINE)
+            bounds = expandRect(bounds, new Rect(obj.x, obj.y, obj.width, 0));
 
         else
             bounds = expandRect(bounds, new Rect(obj.x, obj.y, obj.width, obj.height));
@@ -13255,7 +13249,6 @@ extends ShapeValue
         '',
         NumberValue.NaN,
         NumberValue.NaN,
-        NumberValue.NaN,
         NumberValue.NaN);
 }
 
@@ -15496,7 +15489,7 @@ extends GOperator
         this.updateValues = [['', NullValue]];
 
 
-        this.evalObjects(parse);
+        await this.evalObjects(parse);
 
         
         this.validate();
@@ -15506,7 +15499,7 @@ extends GOperator
 
 
 
-    evalObjects(parse, options = {})
+    async evalObjects(parse, options = {})
     {
         const repeat = parse.repeats.find(r => r.repeatId == this.loopId);
 
@@ -15523,7 +15516,7 @@ extends GOperator
         this.feedback = null;
 
         
-        super.evalObjects(parse);
+        await super.evalObjects(parse);
     }
 
 
@@ -16881,7 +16874,8 @@ extends GNumberType
         const iteration = repeat ? repeat.iteration : this.iteration;
 
         const step = 
-            repeat
+               repeat
+            && this.options.enabled
             ? (end.toNumber() - start.toNumber()) / Math.max(1, repeat.total - (from.value == 1 ? 1 : 0))
             : 0;
 
@@ -16990,7 +16984,7 @@ extends GNumberType
 
         
         this.value = new NumberValue(
-            start.toNumber() + step.toNumber() * iteration,
+            start.toNumber() + (this.options.enabled ? step.toNumber() * iteration : 0),
             Math.max(start.decimals, step.decimals));
 
 
@@ -17092,7 +17086,7 @@ extends GNumberType
 
         
         this.value = new NumberValue(
-            min.value + this.random.get(iteration) * (max.value - min.value),
+            min.value + (this.options.enabled ? this.random.get(iteration) * (max.value - min.value) : 0),
             Math.max(min.decimals, max.decimals));
 
 
@@ -25156,8 +25150,7 @@ extends GShape
 
         await this.evalShapeBase(parse, input);
 
-
-        this.evalObjects(parse);
+        await this.evalObjects(parse);
 
 
         this.validate();
@@ -25167,7 +25160,7 @@ extends GShape
 
 
 
-    evalObjects(parse, options = {})
+    async evalObjects(parse, options = {})
     {
         if (!this.options.enabled)
             return;
@@ -25214,7 +25207,7 @@ extends GShape
         this.value.objects = [...objects];
 
 
-        super.evalObjects(parse);
+        await super.evalObjects(parse);
     }
 
 
@@ -25326,7 +25319,7 @@ extends GShape
         await this.evalShapeBase(parse, input, false);
 
 
-        this.evalObjects(parse);
+        await this.evalObjects(parse);
 
 
         this.validate();
@@ -25336,7 +25329,7 @@ extends GShape
 
 
 
-    evalObjects(parse, options = {})
+    async evalObjects(parse, options = {})
     {
         if (!this.options.enabled)
             return;
@@ -25378,7 +25371,7 @@ extends GShape
         this.value.objects = [...objects];
 
 
-        super.evalObjects(parse);
+        await super.evalObjects(parse);
     }
 
 
@@ -25511,7 +25504,7 @@ extends GShape
 
 
 
-    evalObjects(parse, options = {})
+    async evalObjects(parse, options = {})
     {
        if (!this.options.enabled)
            return;
@@ -25559,7 +25552,7 @@ extends GShape
         this.value.objects = [...objects];
 
 
-        super.evalObjects(parse);
+        await super.evalObjects(parse);
     }
    
     
@@ -25681,8 +25674,7 @@ extends GShape
 
         await this.evalShapeBase(parse, input);
 
-
-        this.evalObjects(parse);
+        await this.evalObjects(parse);
 
 
         this.validate();
@@ -25692,7 +25684,7 @@ extends GShape
 
 
 
-    evalObjects(parse, options = {})
+    async evalObjects(parse, options = {})
     {
         if (!this.options.enabled)
             return;
@@ -25737,7 +25729,7 @@ extends GShape
         this.value.objects = [...objects];
 
 
-        super.evalObjects(parse);
+        await super.evalObjects(parse);
     }
 
 
@@ -25877,8 +25869,7 @@ extends GShape
 
         await this.evalShapeBase(parse, input);
 
-
-        this.evalObjects(parse);
+        await this.evalObjects(parse);
 
 
         this.validate();
@@ -26107,8 +26098,7 @@ extends GShape
 
         await this.evalShapeBase(parse, input);
 
-
-        this.evalObjects(parse);
+        await this.evalObjects(parse);
 
 
         this.validate();
@@ -26330,7 +26320,7 @@ extends GOperator
         this.updateValues = [['value', this.value]];
 
 
-        this.evalObjects(parse);
+        await this.evalObjects(parse);
 
 
         this.validate();
@@ -26340,7 +26330,7 @@ extends GOperator
 
 
 
-    evalObjects(parse, options = {})
+    async evalObjects(parse, options = {})
     {
         if (!this.options.enabled)
             return;
@@ -26367,7 +26357,7 @@ extends GOperator
         this.value.objects = [...objects];
 
 
-        super.evalObjects(parse);
+        await super.evalObjects(parse);
     }
 
 
@@ -26486,7 +26476,13 @@ extends GShape
         }
         else
         {
-            this.value = new VectorPathValue(this.nodeId, points, closed, degree, winding, round);
+            this.value = new VectorPathValue(
+                this.nodeId, 
+                points, 
+                closed, 
+                degree, 
+                winding, 
+                round);
         }
 
 
@@ -26496,7 +26492,7 @@ extends GShape
         await this.evalShapeBase(parse, input);
 
 
-        this.evalObjects(parse);
+        await this.evalObjects(parse);
 
 
         this.validate();
@@ -26716,7 +26712,7 @@ extends GShapeBase
         //await this.evalShapeBase(parse, input);
 
 
-        this.evalObjects(parse);
+        await this.evalObjects(parse);
 
 
         this.updateValues = [['value', this.value]];
@@ -26923,8 +26919,7 @@ extends GShape
 
         await this.evalShapeBase(parse, input);
 
-
-        this.evalObjects(parse);
+        await this.evalObjects(parse);
 
 
         this.validate();
@@ -26934,7 +26929,7 @@ extends GShape
 
 
 
-    evalObjects(parse, options = {})
+    async evalObjects(parse, options = {})
     {
         if (!this.options.enabled)
             return;
@@ -27008,7 +27003,7 @@ extends GShape
         }
 
 
-        super.evalObjects(parse);
+        await super.evalObjects(parse);
     }
 
 
@@ -27133,8 +27128,7 @@ extends GShapeBase
 
         await this.evalShapeBase(parse, input);
 
-
-        this.evalObjects(parse);
+        await this.evalObjects(parse);
 
 
         this.validate();
@@ -27273,7 +27267,7 @@ extends GShapeBase
             return this;
 
 
-        // this.value = new ShapeGroupValue(this.nodeId);
+        //this.value = new ShapeGroupValue(this.nodeId);
 
         //this.objects = [];
 
@@ -27310,7 +27304,7 @@ extends GShapeBase
         //await this.evalShapeBase(parse, input);
 
 
-        // this.evalObjects(parse);
+        //await this.evalObjects(parse);
 
 
         this.updateValues = [['', NullValue]];
@@ -27499,7 +27493,7 @@ extends GOperator
         }
 
         
-        this.evalObjects(
+        await this.evalObjects(
             parse, 
             {
                 x:           x, 
@@ -27524,7 +27518,7 @@ extends GOperator
 
 
 
-    evalObjects(parse, options = {})
+    async evalObjects(parse, options = {})
     {
         this.objects = this.input ? this.input.objects.map(o => o.copy()) : [];
         //this.value.objects = this.input ? this.input.objects.map(o => o.copy()) : [];
@@ -27551,7 +27545,7 @@ extends GOperator
         }
 
         
-        super.evalObjects(parse);
+        await super.evalObjects(parse);
     }
 
 
@@ -27651,8 +27645,10 @@ extends GOperator
 
     async evalAffineObjects(parse, options, getXform)
     {
-        this.objects = this.input ? this.input.objects.map(o => o.copy()) : [];
-        //this.value.objects = this.input ? this.input.objects.map(o => o.copy()) : [];
+        this.objects = 
+            this.input 
+            ? this.input.objects.map(o => o.copy()) 
+            : [];
 
 
         const bounds = getObjBounds(this.objects);
@@ -27811,7 +27807,7 @@ extends GAffine
         }
 
        
-        const _bounds = this.evalObjects(
+        const _bounds = await this.evalObjects(
             parse, 
             {
                 angle:       angle, 
@@ -27821,7 +27817,7 @@ extends GAffine
                 affectSpace: affectSpace
             });
 
-
+        
         const bounds = new RectangleValue(
             this.nodeId,
             new NumberValue(_bounds.x     ), 
@@ -27854,7 +27850,7 @@ extends GAffine
     {
         const a = options.angle.toNumber()/360*Tau;
 
-        return this.evalAffineObjects(parse, options,
+        return await this.evalAffineObjects(parse, options,
             () => [[ Math.cos(a), Math.sin(a), 0],
                    [-Math.sin(a), Math.cos(a), 0],
                    [ 0,           0,           1]]);
@@ -27949,7 +27945,7 @@ extends GAffine
         }
 
        
-        const _bounds = this.evalObjects(
+        const _bounds = await this.evalObjects(
             parse, 
             {
                 scaleX:      scaleX, 
@@ -27995,7 +27991,7 @@ extends GAffine
         const sx = options.scaleX.toNumber() / 100;
         const sy = options.scaleY.toNumber() / 100;
 
-        return this.evalAffineObjects(parse, options,
+        return await this.evalAffineObjects(parse, options,
             () => [[sx, 0,  0],
                    [0,  sy, 0],
                    [0,  0,  1]]);
@@ -28093,7 +28089,7 @@ extends GAffine
         }
 
         
-        const _bounds = this.evalObjects(
+        const _bounds = await this.evalObjects(
             parse, 
             {
                 skewX:       skewX, 
@@ -28134,12 +28130,12 @@ extends GAffine
 
 
 
-    evalObjects(parse, options)
+    async evalObjects(parse, options)
     {
         const sx = options.skewX.toNumber() / 100;
         const sy = options.skewY.toNumber() / 100;
 
-        return this.evalAffineObjects(parse, options,
+        return await this.evalAffineObjects(parse, options,
             () => [[1,  sx, 0],
                    [sy, 1,  0],
                    [0,  0,  1]]);
@@ -28275,7 +28271,7 @@ extends GOperator
         ];
 
 
-        this.evalObjects(parse, {points: points});
+        await this.evalObjects(parse, {points: points});
 
 
         this.validate();
@@ -28285,7 +28281,7 @@ extends GOperator
 
 
 
-    // evalObjects(parse, options = {})
+    // async evalObjects(parse, options = {})
     // {
     //     this.objects = this.input ? this.input.objects.map(o => o.copy()) : [];
     //     //this.value.objects = this.input ? this.input.objects.map(o => o.copy()) : [];
@@ -28312,7 +28308,7 @@ extends GOperator
     //     // }
 
         
-    //     super.evalObjects(parse);
+    //     await super.evalObjects(parse);
     // }
 
 
@@ -28619,7 +28615,9 @@ const settings =
     logRawSaveConnections:         false, 
         
     logRawRequests:                false, 
-    logRawValues:                  false    
+    logRawValues:                  false,
+
+    lastValidCheck:                ''
 };
 
 
@@ -28669,6 +28667,8 @@ function updateSetting(settingName, value)
                 
         case 'logRawRequests':                settings.logRawRequests                = value;  break;
         case 'logRawValues':                  settings.logRawValues                  = value;  break;
+
+        case 'lastValidCheck':                settings.lastValidCheck                = value;  break;
     } 
 }
 
@@ -28966,6 +28966,8 @@ function loadLocalSettings()
         
     uiGetLocalData('logRawRequests'               );
     uiGetLocalData('logRawValues'                 );
+
+    uiGetLocalData('lastValidCheck'               );
 }
 
 
@@ -37445,7 +37447,7 @@ onerror = (event, source, line, pos, error) =>
 };
 
 
-const generatorVersion = 134;
+const generatorVersion = 139;
 
 
 const MAX_INT32        = 2147483647;
@@ -44475,9 +44477,8 @@ class FigmaObject
 
     xform;
 
-    xc  = null;
     xp0 = null; //  xp0 ------- xp1 
-    xp1 = null; //   |     xc
+    xp1 = null; //   |     
     xp2 = null; //  xp2
 
     cp0 = null; //  cp0 ------- cp1 
@@ -44512,7 +44513,6 @@ class FigmaObject
         
         this.xform      = clone(base.xform);
 
-        //this.xc         = !!base.xc  ? base.xc .copy() : null;
         this.xp0        = !!base.xp0 ? base.xp0.copy() : null;
         this.xp1        = !!base.xp1 ? base.xp1.copy() : null;
         this.xp2        = !!base.xp2 ? base.xp2.copy() : null;
@@ -44603,14 +44603,10 @@ class FigmaObject
         }
         else
         {
-            //const xc  = transformPoint(point(this.xc .x, this.xc .y), xform, coords);
             const xp0 = transformPoint(point(this.xp0.x, this.xp0.y), xform, coords);
             const xp1 = transformPoint(point(this.xp1.x, this.xp1.y), xform, coords);
             const xp2 = transformPoint(point(this.xp2.x, this.xp2.y), xform, coords);
 
-
-            //this.xc .x = xc .x;
-            //this.xc .y = xc .y;
 
             this.xp0.x = xp0.x;
             this.xp0.y = xp0.y;
@@ -44662,7 +44658,7 @@ function copyFigmaObject(obj)
         case ELLIPSE:     return FigmaEllipse   .prototype.copy.call(obj);
         case POLYGON:     return FigmaPolygon   .prototype.copy.call(obj);
         case STAR:        return FigmaStar      .prototype.copy.call(obj);
-        case TEXT_SHAPE:   return FigmaText      .prototype.copy.call(obj);
+        case TEXT_SHAPE:  return FigmaText      .prototype.copy.call(obj);
         case POINT:       return FigmaPoint     .prototype.copy.call(obj);
         case VECTOR_PATH: return FigmaVectorPath.prototype.copy.call(obj);
         case BOOLEAN:     return FigmaBoolean   .prototype.copy.call(obj);
@@ -45952,10 +45948,10 @@ function getObjBounds(objects)
  
         else if (obj.type == POINT
              && !obj.isDeco)
-            bounds = expandRect_(bounds, 
-                point(
-                    obj.x, //xform[0][2], 
-                    obj.y));//xform[1][2]));
+            bounds = expandRect_(bounds, point(obj.x, obj.y));
+
+        else if (obj.type == LINE)
+            bounds = expandRect(bounds, new Rect(obj.x, obj.y, obj.width, 0));
 
         else
             bounds = expandRect(bounds, new Rect(obj.x, obj.y, obj.width, obj.height));
@@ -48579,7 +48575,6 @@ extends ShapeValue
         '',
         NumberValue.NaN,
         NumberValue.NaN,
-        NumberValue.NaN,
         NumberValue.NaN);
 }
 
@@ -50820,7 +50815,7 @@ extends GOperator
         this.updateValues = [['', NullValue]];
 
 
-        this.evalObjects(parse);
+        await this.evalObjects(parse);
 
         
         this.validate();
@@ -50830,7 +50825,7 @@ extends GOperator
 
 
 
-    evalObjects(parse, options = {})
+    async evalObjects(parse, options = {})
     {
         const repeat = parse.repeats.find(r => r.repeatId == this.loopId);
 
@@ -50847,7 +50842,7 @@ extends GOperator
         this.feedback = null;
 
         
-        super.evalObjects(parse);
+        await super.evalObjects(parse);
     }
 
 
@@ -52205,7 +52200,8 @@ extends GNumberType
         const iteration = repeat ? repeat.iteration : this.iteration;
 
         const step = 
-            repeat
+               repeat
+            && this.options.enabled
             ? (end.toNumber() - start.toNumber()) / Math.max(1, repeat.total - (from.value == 1 ? 1 : 0))
             : 0;
 
@@ -52314,7 +52310,7 @@ extends GNumberType
 
         
         this.value = new NumberValue(
-            start.toNumber() + step.toNumber() * iteration,
+            start.toNumber() + (this.options.enabled ? step.toNumber() * iteration : 0),
             Math.max(start.decimals, step.decimals));
 
 
@@ -52416,7 +52412,7 @@ extends GNumberType
 
         
         this.value = new NumberValue(
-            min.value + this.random.get(iteration) * (max.value - min.value),
+            min.value + (this.options.enabled ? this.random.get(iteration) * (max.value - min.value) : 0),
             Math.max(min.decimals, max.decimals));
 
 
@@ -60480,8 +60476,7 @@ extends GShape
 
         await this.evalShapeBase(parse, input);
 
-
-        this.evalObjects(parse);
+        await this.evalObjects(parse);
 
 
         this.validate();
@@ -60491,7 +60486,7 @@ extends GShape
 
 
 
-    evalObjects(parse, options = {})
+    async evalObjects(parse, options = {})
     {
         if (!this.options.enabled)
             return;
@@ -60538,7 +60533,7 @@ extends GShape
         this.value.objects = [...objects];
 
 
-        super.evalObjects(parse);
+        await super.evalObjects(parse);
     }
 
 
@@ -60650,7 +60645,7 @@ extends GShape
         await this.evalShapeBase(parse, input, false);
 
 
-        this.evalObjects(parse);
+        await this.evalObjects(parse);
 
 
         this.validate();
@@ -60660,7 +60655,7 @@ extends GShape
 
 
 
-    evalObjects(parse, options = {})
+    async evalObjects(parse, options = {})
     {
         if (!this.options.enabled)
             return;
@@ -60702,7 +60697,7 @@ extends GShape
         this.value.objects = [...objects];
 
 
-        super.evalObjects(parse);
+        await super.evalObjects(parse);
     }
 
 
@@ -60835,7 +60830,7 @@ extends GShape
 
 
 
-    evalObjects(parse, options = {})
+    async evalObjects(parse, options = {})
     {
        if (!this.options.enabled)
            return;
@@ -60883,7 +60878,7 @@ extends GShape
         this.value.objects = [...objects];
 
 
-        super.evalObjects(parse);
+        await super.evalObjects(parse);
     }
    
     
@@ -61005,8 +61000,7 @@ extends GShape
 
         await this.evalShapeBase(parse, input);
 
-
-        this.evalObjects(parse);
+        await this.evalObjects(parse);
 
 
         this.validate();
@@ -61016,7 +61010,7 @@ extends GShape
 
 
 
-    evalObjects(parse, options = {})
+    async evalObjects(parse, options = {})
     {
         if (!this.options.enabled)
             return;
@@ -61061,7 +61055,7 @@ extends GShape
         this.value.objects = [...objects];
 
 
-        super.evalObjects(parse);
+        await super.evalObjects(parse);
     }
 
 
@@ -61201,8 +61195,7 @@ extends GShape
 
         await this.evalShapeBase(parse, input);
 
-
-        this.evalObjects(parse);
+        await this.evalObjects(parse);
 
 
         this.validate();
@@ -61431,8 +61424,7 @@ extends GShape
 
         await this.evalShapeBase(parse, input);
 
-
-        this.evalObjects(parse);
+        await this.evalObjects(parse);
 
 
         this.validate();
@@ -61654,7 +61646,7 @@ extends GOperator
         this.updateValues = [['value', this.value]];
 
 
-        this.evalObjects(parse);
+        await this.evalObjects(parse);
 
 
         this.validate();
@@ -61664,7 +61656,7 @@ extends GOperator
 
 
 
-    evalObjects(parse, options = {})
+    async evalObjects(parse, options = {})
     {
         if (!this.options.enabled)
             return;
@@ -61691,7 +61683,7 @@ extends GOperator
         this.value.objects = [...objects];
 
 
-        super.evalObjects(parse);
+        await super.evalObjects(parse);
     }
 
 
@@ -61810,7 +61802,13 @@ extends GShape
         }
         else
         {
-            this.value = new VectorPathValue(this.nodeId, points, closed, degree, winding, round);
+            this.value = new VectorPathValue(
+                this.nodeId, 
+                points, 
+                closed, 
+                degree, 
+                winding, 
+                round);
         }
 
 
@@ -61820,7 +61818,7 @@ extends GShape
         await this.evalShapeBase(parse, input);
 
 
-        this.evalObjects(parse);
+        await this.evalObjects(parse);
 
 
         this.validate();
@@ -62040,7 +62038,7 @@ extends GShapeBase
         //await this.evalShapeBase(parse, input);
 
 
-        this.evalObjects(parse);
+        await this.evalObjects(parse);
 
 
         this.updateValues = [['value', this.value]];
@@ -62247,8 +62245,7 @@ extends GShape
 
         await this.evalShapeBase(parse, input);
 
-
-        this.evalObjects(parse);
+        await this.evalObjects(parse);
 
 
         this.validate();
@@ -62258,7 +62255,7 @@ extends GShape
 
 
 
-    evalObjects(parse, options = {})
+    async evalObjects(parse, options = {})
     {
         if (!this.options.enabled)
             return;
@@ -62332,7 +62329,7 @@ extends GShape
         }
 
 
-        super.evalObjects(parse);
+        await super.evalObjects(parse);
     }
 
 
@@ -62457,8 +62454,7 @@ extends GShapeBase
 
         await this.evalShapeBase(parse, input);
 
-
-        this.evalObjects(parse);
+        await this.evalObjects(parse);
 
 
         this.validate();
@@ -62597,7 +62593,7 @@ extends GShapeBase
             return this;
 
 
-        // this.value = new ShapeGroupValue(this.nodeId);
+        //this.value = new ShapeGroupValue(this.nodeId);
 
         //this.objects = [];
 
@@ -62634,7 +62630,7 @@ extends GShapeBase
         //await this.evalShapeBase(parse, input);
 
 
-        // this.evalObjects(parse);
+        //await this.evalObjects(parse);
 
 
         this.updateValues = [['', NullValue]];
@@ -62823,7 +62819,7 @@ extends GOperator
         }
 
         
-        this.evalObjects(
+        await this.evalObjects(
             parse, 
             {
                 x:           x, 
@@ -62848,7 +62844,7 @@ extends GOperator
 
 
 
-    evalObjects(parse, options = {})
+    async evalObjects(parse, options = {})
     {
         this.objects = this.input ? this.input.objects.map(o => o.copy()) : [];
         //this.value.objects = this.input ? this.input.objects.map(o => o.copy()) : [];
@@ -62875,7 +62871,7 @@ extends GOperator
         }
 
         
-        super.evalObjects(parse);
+        await super.evalObjects(parse);
     }
 
 
@@ -62975,8 +62971,10 @@ extends GOperator
 
     async evalAffineObjects(parse, options, getXform)
     {
-        this.objects = this.input ? this.input.objects.map(o => o.copy()) : [];
-        //this.value.objects = this.input ? this.input.objects.map(o => o.copy()) : [];
+        this.objects = 
+            this.input 
+            ? this.input.objects.map(o => o.copy()) 
+            : [];
 
 
         const bounds = getObjBounds(this.objects);
@@ -63135,7 +63133,7 @@ extends GAffine
         }
 
        
-        const _bounds = this.evalObjects(
+        const _bounds = await this.evalObjects(
             parse, 
             {
                 angle:       angle, 
@@ -63145,7 +63143,7 @@ extends GAffine
                 affectSpace: affectSpace
             });
 
-
+        
         const bounds = new RectangleValue(
             this.nodeId,
             new NumberValue(_bounds.x     ), 
@@ -63178,7 +63176,7 @@ extends GAffine
     {
         const a = options.angle.toNumber()/360*Tau;
 
-        return this.evalAffineObjects(parse, options,
+        return await this.evalAffineObjects(parse, options,
             () => [[ Math.cos(a), Math.sin(a), 0],
                    [-Math.sin(a), Math.cos(a), 0],
                    [ 0,           0,           1]]);
@@ -63273,7 +63271,7 @@ extends GAffine
         }
 
        
-        const _bounds = this.evalObjects(
+        const _bounds = await this.evalObjects(
             parse, 
             {
                 scaleX:      scaleX, 
@@ -63319,7 +63317,7 @@ extends GAffine
         const sx = options.scaleX.toNumber() / 100;
         const sy = options.scaleY.toNumber() / 100;
 
-        return this.evalAffineObjects(parse, options,
+        return await this.evalAffineObjects(parse, options,
             () => [[sx, 0,  0],
                    [0,  sy, 0],
                    [0,  0,  1]]);
@@ -63417,7 +63415,7 @@ extends GAffine
         }
 
         
-        const _bounds = this.evalObjects(
+        const _bounds = await this.evalObjects(
             parse, 
             {
                 skewX:       skewX, 
@@ -63458,12 +63456,12 @@ extends GAffine
 
 
 
-    evalObjects(parse, options)
+    async evalObjects(parse, options)
     {
         const sx = options.skewX.toNumber() / 100;
         const sy = options.skewY.toNumber() / 100;
 
-        return this.evalAffineObjects(parse, options,
+        return await this.evalAffineObjects(parse, options,
             () => [[1,  sx, 0],
                    [sy, 1,  0],
                    [0,  0,  1]]);
@@ -63599,7 +63597,7 @@ extends GOperator
         ];
 
 
-        this.evalObjects(parse, {points: points});
+        await this.evalObjects(parse, {points: points});
 
 
         this.validate();
@@ -63609,7 +63607,7 @@ extends GOperator
 
 
 
-    // evalObjects(parse, options = {})
+    // async evalObjects(parse, options = {})
     // {
     //     this.objects = this.input ? this.input.objects.map(o => o.copy()) : [];
     //     //this.value.objects = this.input ? this.input.objects.map(o => o.copy()) : [];
@@ -63636,7 +63634,7 @@ extends GOperator
     //     // }
 
         
-    //     super.evalObjects(parse);
+    //     await super.evalObjects(parse);
     // }
 
 
@@ -63943,7 +63941,9 @@ const settings =
     logRawSaveConnections:         false, 
         
     logRawRequests:                false, 
-    logRawValues:                  false    
+    logRawValues:                  false,
+
+    lastValidCheck:                ''
 };
 
 
@@ -63993,6 +63993,8 @@ function updateSetting(settingName, value)
                 
         case 'logRawRequests':                settings.logRawRequests                = value;  break;
         case 'logRawValues':                  settings.logRawValues                  = value;  break;
+
+        case 'lastValidCheck':                settings.lastValidCheck                = value;  break;
     } 
 }
 
@@ -64290,6 +64292,8 @@ function loadLocalSettings()
         
     uiGetLocalData('logRawRequests'               );
     uiGetLocalData('logRawValues'                 );
+
+    uiGetLocalData('lastValidCheck'               );
 }
 
 
@@ -69785,7 +69789,7 @@ function initGeneratorMenus()
                                    new MenuItem('Effects',         {childMenu: menuEffects}),
                                    new MenuItem('',                {separator: true}),
                                    new MenuItem('Styles',          {childMenu: menuStyles}),
-                                   new MenuItem('Variables',       {childMenu: menuVariables}),
+                                   //new MenuItem('Variables',       {childMenu: menuVariables}),
                                    new MenuItem('',                {separator: true}),
                                    new MenuItem('Mask',            {icon: iconMask,        callback: e => actionManager.do(getCreateNodeAction(LAYER_MASK,   btnLayer.div, getCreateOptions(e)))})]);
                                  //new MenuItem('Color style',     {icon: iconColorStyle,  childMenu: menuColorStyle, callback: e => actionManager.do(getCreateNodeAction(COLOR_STYLE,  btnColor.div, getCreateOptions(e)))})]);
@@ -69822,8 +69826,8 @@ function initGeneratorMenus()
                                 new MenuItem('Group',               {icon: iconShapeGroup, callback: e => actionManager.do(getCreateNodeAction(SHAPE_GROUP, btnShape.div, getCreateOptions(e)))}),
                                 // new MenuItem('Boolean',             {enabled: false, icon: iconBoolUnion,  callback: e => actionManager.do(getCreateNodeAction(BOOLEAN,     btnShape.div, getCreateOptions(e)))}),
         menuItemShapeSep1     = new MenuItem('',                    {separator: true}),
-                                new MenuItem('Place',               {icon: iconPlace, callback: e => actionManager.do(getCreateNodeAction(PLACE, btnShape.div, getCreateOptions(e)))}),
-                                new MenuItem('',                    {separator: true}),
+                                //new MenuItem('Place',               {icon: iconPlace, callback: e => actionManager.do(getCreateNodeAction(PLACE, btnShape.div, getCreateOptions(e)))}),
+                                //new MenuItem('',                    {separator: true}),
                                 new MenuItem('Transform',           {/*icon: iconMove,*/ childMenu: menuTransform}),
                                 new MenuItem('',                    {separator: true}),
                                 new MenuItem('Render',              {icon: iconRenderDown, callback: e => actionManager.do(getCreateNodeAction(RENDER,       btnShape.div, getCreateOptions(e)))})]);
@@ -85964,7 +85968,8 @@ extends OperatorBase
     {
         super(NUMBER_DISTRIBUTE, 'distribute', 'distribute', iconDistribute);
 
-        this.cached = false;
+        this.cached     = false;
+        this.canDisable = true;
         
 
         this.addOutput(new Output([NUMBER_VALUE], this.output_genRequest));
@@ -86016,6 +86021,7 @@ extends OperatorBase
 
         this.cached      = false;
         this.iconOffsetY = 1;
+        this.canDisable  = true;
         
 
         this.addOutput(new Output([NUMBER_VALUE], this.output_genRequest));
@@ -86065,6 +86071,7 @@ extends OperatorBase
 
         this.cached      = false;
         this.iconOffsetY = 1;
+        this.canDisable  = true;
 
         
         this.addOutput(new Output([NUMBER_VALUE], this.output_genRequest));
@@ -94540,11 +94547,11 @@ extends OpShape
     {
         const value = values[paramIds.findIndex(id => id == 'value')];
 
-        this.paramPoints .setValue(value.paramPoints,  false, true, false);
-        this.paramClosed .setValue(value.paramClosed,  false, true, false);
-        this.paramDegree .setValue(value.paramDegree,  false, true, false);
-        this.paramWinding.setValue(value.paramWinding, false, true, false);
-        this.paramRound  .setValue(value.paramRound,   false, true, false);
+        this.paramPoints .setValue(value.points,  false, true, false);
+        this.paramClosed .setValue(value.closed,  false, true, false);
+        this.paramDegree .setValue(value.degree,  false, true, false);
+        this.paramWinding.setValue(value.winding, false, true, false);
+        this.paramRound  .setValue(value.round,   false, true, false);
     }
 }
 
@@ -101961,6 +101968,7 @@ var allUpdateNodes   = [];
 // uiClearLocalData('showWhatsNew');
 
 //uiSetLocalData('enableBetaFeatures', 'true');
+//uiSetLocalData('lastValidCheck', '');
 //uiSetLocalData('logLoading', 'true');
 
 //uiRemoveConnsToNodes(['num3']);
@@ -102042,19 +102050,6 @@ async function uiReturnFigStartGenerator(msg)
     initThemeColors();
     initKeyboardPanel();
     initWindowSizers();
-
-
-    if (await checkTrialExists())
-    {
-        if (await checkSubOrTrialActive()) 
-            initGenerator();
-        else
-            showSubscriptionDialog(false);
-    }
-    else
-    {
-        showEulaDialog();
-    }
 }
 
 
@@ -102068,6 +102063,52 @@ function initGenerator()
     uiQueueMessageToFigma({
         cmd:     'figLoadNodesAndConns',
         dataMode: settings.dataMode });
+}
+
+
+
+async function validateInit(lastValidCheck)
+{
+    const date  = getCurrentDateString();
+    const hash  = hashLicenseString(date, licenseHashSize);
+    const enc   = sign(hash, licenseKeys.private);
+    const today = arrayToBase32(enc);
+
+
+    if (lastValidCheck == today)
+    {
+        initGenerator();
+        return;
+    }
+
+
+    if (await checkTrialExists())
+    {
+        if (await checkSubOrTrialActive())
+        {
+            uiSetLocalData('lastValidCheck', today);
+            initGenerator();
+        }
+        else
+            showSubscriptionDialog(false);
+    }
+    else
+    {
+        showEulaDialog();
+    }
+}
+
+
+
+function getCurrentDateString()
+{
+    const today = new Date();
+
+    const year  = today.getFullYear();
+    const month = String(today.getMonth() + 1).padStart(2, '0');
+    const day   = String(today.getDate()).padStart(2, '0');
+
+    return `${year}-${month}-${day}`;
 }
 
 
@@ -102649,7 +102690,7 @@ onmessage = e =>
 
         case 'uiUpdateGroupBounds':               uiUpdateGroupBounds              (msg);          break;
     }
-}    
+};
 
 ///////////////////////////////////////////////////////////////////////////////////////////////////
 
@@ -103260,7 +103301,7 @@ async function postToServer(cmd)
         {
             method:  'POST',
             headers: { 'Content-Type': 'application/json' },
-            body:    JSON.stringify(cmd),
+            body:    JSON.stringify(cmd)
         });
 
 
@@ -103309,7 +103350,7 @@ function     uiClearPageData(key)        { uiQueueMessageToFigma({ cmd:       'f
    
 
 
-function uiReturnFigGetLocalData(msg)
+async function uiReturnFigGetLocalData(msg)
 {
     switch (msg.key)
     {
@@ -103421,6 +103462,10 @@ function uiReturnFigGetLocalData(msg)
     if (   msg.key == 'logLoading'
         && settings.logLoading)
         uiLogAllSavedNodesAndConns();
+
+
+    if (msg.key == 'lastValidCheck')
+        await validateInit(msg.value);
 }
 
 
@@ -105649,6 +105694,9 @@ function uiImportFromLocalFile()
 
 function uiSaveSelectionToLocalFile()
 {
+    if (isEmpty(graphView.selectedNodes))
+        return;
+        
     const json = uiCopyNodes(graphView.selectedNodes.map(n => n.id));
 
     saveToLocalFile(json, 'selection.gen', 'text/plain');

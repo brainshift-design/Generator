@@ -83,8 +83,7 @@ extends GShape
 
         await this.evalShapeBase(parse, input);
 
-
-        this.evalObjects(parse);
+        await this.evalObjects(parse);
 
 
         this.validate();

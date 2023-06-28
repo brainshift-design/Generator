@@ -13,6 +13,7 @@ extends OperatorBase
 
         this.cached      = false;
         this.iconOffsetY = 1;
+        this.canDisable  = true;
 
         
         this.addOutput(new Output([NUMBER_VALUE], this.output_genRequest));

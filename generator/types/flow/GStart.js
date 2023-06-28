@@ -45,7 +45,7 @@ extends GOperator
         this.updateValues = [['', NullValue]];
 
 
-        this.evalObjects(parse);
+        await this.evalObjects(parse);
 
         
         this.validate();
@@ -55,7 +55,7 @@ extends GOperator
 
 
 
-    evalObjects(parse, options = {})
+    async evalObjects(parse, options = {})
     {
         const repeat = parse.repeats.find(r => r.repeatId == this.loopId);
 
@@ -72,7 +72,7 @@ extends GOperator
         this.feedback = null;
 
         
-        super.evalObjects(parse);
+        await super.evalObjects(parse);
     }
 
 

@@ -19,7 +19,7 @@ function isConnKey(key) { return isTagKey(key, connTag); }
 function noPageTag(key) { return noTag(key, pageTag); }
 function noNodeTag(key) { return noTag(key, nodeTag); }
 function noConnTag(key) { return noTag(key, connTag); }
-const generatorVersion = 134;
+const generatorVersion = 139;
 const MAX_INT32 = 2147483647;
 const NULL = '';
 const HTAB = '  '; // half-tab
@@ -2530,7 +2530,7 @@ function setObjectTransform(figObj, genObj, setSize = true, noHeight = 0.01) {
     if (setSize) {
         const scaleX = distance(xp0, xp1);
         const scaleY = distance(xp0, xp2);
-        figObj.resizeWithoutConstraints(Math.max(0.01, scaleX), genObj.height ? Math.max(0.01, scaleY) : 0.01);
+        figObj.resizeWithoutConstraints(Math.max(0.01, scaleX), genObj.height ? Math.max(0.01, scaleY) : noHeight);
     }
 }
 function setPointTransform(figPoint, genPoint) {
@@ -2612,7 +2612,7 @@ function figCreateEllipse(genEllipse) {
         {
             startingAngle: genEllipse.from / 360 * (Math.PI * 2),
             endingAngle: genEllipse.to / 360 * (Math.PI * 2),
-            innerRadius: genEllipse.inner / 100
+            innerRadius: Math.min(Math.max(0, genEllipse.inner / 100), 1)
         };
     setObjectTransform(figEllipse, genEllipse);
     if (figPoints.includes(figEllipse))
@@ -2629,7 +2629,7 @@ function figUpdateEllipse(figEllipse, genEllipse) {
         {
             startingAngle: genEllipse.from / 360 * (Math.PI * 2),
             endingAngle: genEllipse.to / 360 * (Math.PI * 2),
-            innerRadius: genEllipse.inner / 100
+            innerRadius: Math.min(Math.max(0, genEllipse.inner / 100), 1)
         };
     setObjectTransform(figEllipse, genEllipse);
     setObjectProps(figEllipse, genEllipse);
@@ -2709,7 +2709,6 @@ function genLineIsValid(genLine) {
     return genLine.x != null && !isNaN(genLine.x)
         && genLine.y != null && !isNaN(genLine.y)
         && genLine.width != null && !isNaN(genLine.width);
-    //&& genLine.angle != null && !isNaN(genLine.angle);
 }
 function figCreateLine(genLine) {
     const figLine = figma.createLine();
@@ -2801,7 +2800,7 @@ function figCreatePolygon(genPoly) {
     if (!genPolyIsValid(genPoly))
         return figPoly;
     figPoly.cornerRadius = genPoly.round;
-    figPoly.pointCount = genPoly.corners;
+    figPoly.pointCount = Math.max(3, genPoly.corners);
     setObjectTransform(figPoly, genPoly);
     setObjectProps(figPoly, genPoly);
     return figPoly;
@@ -2811,7 +2810,7 @@ function figUpdatePolygon(figPoly, genPoly) {
         return;
     figPoly.name = makeObjectName(genPoly);
     figPoly.cornerRadius = genPoly.round;
-    figPoly.pointCount = genPoly.corners;
+    figPoly.pointCount = Math.max(3, genPoly.corners);
     setObjectTransform(figPoly, genPoly);
     setObjectProps(figPoly, genPoly);
 }
@@ -2858,7 +2857,7 @@ function figCreateStar(genStar) {
         return figStar;
     figStar.cornerRadius = genStar.round;
     figStar.pointCount = genStar.points;
-    figStar.innerRadius = genStar.convex / 100;
+    figStar.innerRadius = Math.min(Math.max(0, genStar.convex / 100), 1);
     setObjectTransform(figStar, genStar);
     setObjectProps(figStar, genStar);
     return figStar;
@@ -2869,7 +2868,7 @@ function figUpdateStar(figStar, genStar) {
     figStar.name = makeObjectName(genStar);
     figStar.cornerRadius = genStar.round;
     figStar.pointCount = genStar.points;
-    figStar.innerRadius = genStar.convex / 100;
+    figStar.innerRadius = Math.min(Math.max(0, genStar.convex / 100), 1);
     setObjectTransform(figStar, genStar);
     setObjectProps(figStar, genStar);
 }

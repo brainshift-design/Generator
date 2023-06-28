@@ -52,7 +52,7 @@ extends GAffine
         }
 
         
-        const _bounds = this.evalObjects(
+        const _bounds = await this.evalObjects(
             parse, 
             {
                 skewX:       skewX, 
@@ -93,12 +93,12 @@ extends GAffine
 
 
 
-    evalObjects(parse, options)
+    async evalObjects(parse, options)
     {
         const sx = options.skewX.toNumber() / 100;
         const sy = options.skewY.toNumber() / 100;
 
-        return this.evalAffineObjects(parse, options,
+        return await this.evalAffineObjects(parse, options,
             () => [[1,  sx, 0],
                    [sy, 1,  0],
                    [0,  0,  1]]);

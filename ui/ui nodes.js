@@ -1267,6 +1267,9 @@ function uiImportFromLocalFile()
 
 function uiSaveSelectionToLocalFile()
 {
+    if (isEmpty(graphView.selectedNodes))
+        return;
+        
     const json = uiCopyNodes(graphView.selectedNodes.map(n => n.id));
 
     saveToLocalFile(json, 'selection.gen', 'text/plain');

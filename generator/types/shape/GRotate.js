@@ -49,7 +49,7 @@ extends GAffine
         }
 
        
-        const _bounds = this.evalObjects(
+        const _bounds = await this.evalObjects(
             parse, 
             {
                 angle:       angle, 
@@ -59,7 +59,7 @@ extends GAffine
                 affectSpace: affectSpace
             });
 
-
+        
         const bounds = new RectangleValue(
             this.nodeId,
             new NumberValue(_bounds.x     ), 
@@ -92,7 +92,7 @@ extends GAffine
     {
         const a = options.angle.toNumber()/360*Tau;
 
-        return this.evalAffineObjects(parse, options,
+        return await this.evalAffineObjects(parse, options,
             () => [[ Math.cos(a), Math.sin(a), 0],
                    [-Math.sin(a), Math.cos(a), 0],
                    [ 0,           0,           1]]);

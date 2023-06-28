@@ -13,9 +13,8 @@ class FigmaObject
 
     xform;
 
-    xc  = null;
     xp0 = null; //  xp0 ------- xp1 
-    xp1 = null; //   |     xc
+    xp1 = null; //   |     
     xp2 = null; //  xp2
 
     cp0 = null; //  cp0 ------- cp1 
@@ -50,7 +49,6 @@ class FigmaObject
         
         this.xform      = clone(base.xform);
 
-        //this.xc         = !!base.xc  ? base.xc .copy() : null;
         this.xp0        = !!base.xp0 ? base.xp0.copy() : null;
         this.xp1        = !!base.xp1 ? base.xp1.copy() : null;
         this.xp2        = !!base.xp2 ? base.xp2.copy() : null;
@@ -141,14 +139,10 @@ class FigmaObject
         }
         else
         {
-            //const xc  = transformPoint(point(this.xc .x, this.xc .y), xform, coords);
             const xp0 = transformPoint(point(this.xp0.x, this.xp0.y), xform, coords);
             const xp1 = transformPoint(point(this.xp1.x, this.xp1.y), xform, coords);
             const xp2 = transformPoint(point(this.xp2.x, this.xp2.y), xform, coords);
 
-
-            //this.xc .x = xc .x;
-            //this.xc .y = xc .y;
 
             this.xp0.x = xp0.x;
             this.xp0.y = xp0.y;
@@ -200,7 +194,7 @@ function copyFigmaObject(obj)
         case ELLIPSE:     return FigmaEllipse   .prototype.copy.call(obj);
         case POLYGON:     return FigmaPolygon   .prototype.copy.call(obj);
         case STAR:        return FigmaStar      .prototype.copy.call(obj);
-        case TEXT_SHAPE:   return FigmaText      .prototype.copy.call(obj);
+        case TEXT_SHAPE:  return FigmaText      .prototype.copy.call(obj);
         case POINT:       return FigmaPoint     .prototype.copy.call(obj);
         case VECTOR_PATH: return FigmaVectorPath.prototype.copy.call(obj);
         case BOOLEAN:     return FigmaBoolean   .prototype.copy.call(obj);

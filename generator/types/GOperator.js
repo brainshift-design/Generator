@@ -104,10 +104,10 @@ function getObjBounds(objects)
  
         else if (obj.type == POINT
              && !obj.isDeco)
-            bounds = expandRect_(bounds, 
-                point(
-                    obj.x, //xform[0][2], 
-                    obj.y));//xform[1][2]));
+            bounds = expandRect_(bounds, point(obj.x, obj.y));
+
+        else if (obj.type == LINE)
+            bounds = expandRect(bounds, new Rect(obj.x, obj.y, obj.width, 0));
 
         else
             bounds = expandRect(bounds, new Rect(obj.x, obj.y, obj.width, obj.height));

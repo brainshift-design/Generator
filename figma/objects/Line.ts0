@@ -3,7 +3,6 @@ function genLineIsValid(genLine)
     return genLine.x     != null && !isNaN(genLine.x    )
         && genLine.y     != null && !isNaN(genLine.y    )
         && genLine.width != null && !isNaN(genLine.width);
-        //&& genLine.angle != null && !isNaN(genLine.angle);
 }
 
 
@@ -17,7 +16,6 @@ function figCreateLine(genLine)
 
     if (!genLineIsValid(genLine))
         return figLine;
-
 
     setObjectTransform(figLine, genLine, true, 0);
     setObjectProps    (figLine, genLine);

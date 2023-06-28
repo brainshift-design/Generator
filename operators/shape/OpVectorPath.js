@@ -48,10 +48,10 @@ extends OpShape
     {
         const value = values[paramIds.findIndex(id => id == 'value')];
 
-        this.paramPoints .setValue(value.paramPoints,  false, true, false);
-        this.paramClosed .setValue(value.paramClosed,  false, true, false);
-        this.paramDegree .setValue(value.paramDegree,  false, true, false);
-        this.paramWinding.setValue(value.paramWinding, false, true, false);
-        this.paramRound  .setValue(value.paramRound,   false, true, false);
+        this.paramPoints .setValue(value.points,  false, true, false);
+        this.paramClosed .setValue(value.closed,  false, true, false);
+        this.paramDegree .setValue(value.degree,  false, true, false);
+        this.paramWinding.setValue(value.winding, false, true, false);
+        this.paramRound  .setValue(value.round,   false, true, false);
     }
 }

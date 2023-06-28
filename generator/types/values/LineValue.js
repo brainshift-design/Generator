@@ -92,7 +92,6 @@ extends ShapeValue
         '',
         NumberValue.NaN,
         NumberValue.NaN,
-        NumberValue.NaN,
         NumberValue.NaN);
 }
 

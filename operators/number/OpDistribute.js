@@ -11,7 +11,8 @@ extends OperatorBase
     {
         super(NUMBER_DISTRIBUTE, 'distribute', 'distribute', iconDistribute);
 
-        this.cached = false;
+        this.cached     = false;
+        this.canDisable = true;
         
 
         this.addOutput(new Output([NUMBER_VALUE], this.output_genRequest));

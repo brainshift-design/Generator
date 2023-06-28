@@ -67,7 +67,13 @@ extends GShape
         }
         else
         {
-            this.value = new VectorPathValue(this.nodeId, points, closed, degree, winding, round);
+            this.value = new VectorPathValue(
+                this.nodeId, 
+                points, 
+                closed, 
+                degree, 
+                winding, 
+                round);
         }
 
 
@@ -77,7 +83,7 @@ extends GShape
         await this.evalShapeBase(parse, input);
 
 
-        this.evalObjects(parse);
+        await this.evalObjects(parse);
 
 
         this.validate();

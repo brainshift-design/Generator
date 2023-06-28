@@ -27,7 +27,7 @@ function figCreateEllipse(genEllipse)
     {
         startingAngle: genEllipse.from /360*(Math.PI*2),
         endingAngle:   genEllipse.to   /360*(Math.PI*2),
-        innerRadius:   genEllipse.inner/100
+        innerRadius:   Math.min(Math.max(0, genEllipse.inner/100), 1)
     };
 
 
@@ -59,7 +59,7 @@ function figUpdateEllipse(figEllipse, genEllipse)
     {
         startingAngle: genEllipse.from /360*(Math.PI*2),
         endingAngle:   genEllipse.to   /360*(Math.PI*2),
-        innerRadius:   genEllipse.inner/100
+        innerRadius:   Math.min(Math.max(0, genEllipse.inner/100), 1)
     };
 
 

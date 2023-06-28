@@ -52,7 +52,8 @@ extends GNumberType
         const iteration = repeat ? repeat.iteration : this.iteration;
 
         const step = 
-            repeat
+               repeat
+            && this.options.enabled
             ? (end.toNumber() - start.toNumber()) / Math.max(1, repeat.total - (from.value == 1 ? 1 : 0))
             : 0;
 
