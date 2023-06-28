@@ -13,9 +13,9 @@ GraphView.prototype.createEvents = function()
     {
         //try
         //{
-            if (this.tempConn);
+            if (this.tempConn)
                 this.div.setPointerCapture(e.pointerId);
-        //}
+                //}
         //catch (e) {}
     });
 

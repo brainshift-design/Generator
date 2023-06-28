@@ -4398,7 +4398,8 @@ a
                 <h1 style='margin-top: 20px;'>What's new</h1>
 
                 <p>•  Sequence, Distribute and Random can now be disabled</p>
-                <p>•  Added spread and bias to Distribute node</p>
+                <p>•  added spread and bias to Distribute node</p>
+                <p>•  fixed pointer capture bug</p>
                 
                 <p><br/><br/><div id='chkHideWhatsNew'></div></p>
             </div>
@@ -72378,9 +72379,9 @@ GraphView.prototype.createEvents = function()
     {
         //try
         //{
-            if (this.tempConn);
+            if (this.tempConn)
                 this.div.setPointerCapture(e.pointerId);
-        //}
+                //}
         //catch (e) {}
     });
 
