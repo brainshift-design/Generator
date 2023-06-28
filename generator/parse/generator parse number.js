@@ -444,9 +444,11 @@ function genParseDistribute(parse)
     parse.nTab++;
 
 
-    dist.from  = genParse(parse);
-    dist.start = genParse(parse);
-    dist.end   = genParse(parse);
+    dist.from   = genParse(parse);
+    dist.start  = genParse(parse);
+    dist.end    = genParse(parse);
+    dist.spread = genParse(parse);
+    dist.bias   = genParse(parse);
 
 
     parse.nTab--;

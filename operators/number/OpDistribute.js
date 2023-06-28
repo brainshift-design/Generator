@@ -4,6 +4,8 @@ extends OperatorBase
     paramFrom;
     paramStart;
     paramEnd;
+    paramSpread;
+    paramBias;
 
 
 
@@ -18,9 +20,14 @@ extends OperatorBase
         this.addOutput(new Output([NUMBER_VALUE], this.output_genRequest));
 
 
-        this.addParam(this.paramFrom  = new SelectParam('from',  'from',  true, true, true, ['start', 'middle', 'end'], 1));
-        this.addParam(this.paramStart = new NumberParam('start', 'start', true, true, true, 0));
-        this.addParam(this.paramEnd   = new NumberParam('end',   'end',   true, true, true, 0));
+        this.addParam(this.paramFrom   = new SelectParam('from',   'from',   true, true, true, ['start', 'middle', 'end'], 1));
+        this.addParam(this.paramStart  = new NumberParam('start',  'start',  true, true, true, 0));
+        this.addParam(this.paramEnd    = new NumberParam('end',    'end',    true, true, true, 0));
+        this.addParam(this.paramSpread = new SelectParam('spread', 'spread', true, true, true, ['equal', 'curve', 'spread']));
+        this.addParam(this.paramBias   = new NumberParam('bias',   'bias',   true, true, true, 0, -100, 100));
+
+
+        this.paramBias.controls[0].suffix = '%';
     }
 
 
@@ -37,9 +44,11 @@ extends OperatorBase
         if (ignore) return request;
 
         
-        request.push(...this.node.paramFrom .genRequest(gen));
-        request.push(...this.node.paramStart.genRequest(gen));
-        request.push(...this.node.paramEnd  .genRequest(gen));
+        request.push(...this.node.paramFrom  .genRequest(gen));
+        request.push(...this.node.paramStart .genRequest(gen));
+        request.push(...this.node.paramEnd   .genRequest(gen));
+        request.push(...this.node.paramSpread.genRequest(gen));
+        request.push(...this.node.paramBias  .genRequest(gen));
 
 
         gen.scope.pop();
