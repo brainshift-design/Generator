@@ -102171,7 +102171,7 @@ function initGenerator()
 async function validateInit(lastValidCheck)
 {
     const date  = getCurrentDateString();
-    const hash  = hashLicenseString(date, licenseHashSize);
+    const hash  = hashLicenseString(currentUser.id + date, licenseHashSize);
     const enc   = sign(hash, licenseKeys.private);
     const today = arrayToBase32(enc);
 
