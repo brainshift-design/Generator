@@ -4397,12 +4397,7 @@ a
             <div id='whatsNewBody'>
                 <h1 style='margin-top: 20px;'>What's new</h1>
 
-                <p>•  Sequence, Distribute and Random can now be disabled</p>
-                <p>•  added spread and bias to Distribute</p>
-                <p>•  Arithmetic subtract with only one input now acts like Negate</p>
-                <p>•  added noise parameters to Random</p>
-                <p>•  fixed pointer capture bug</p>
-                <p>•  fixed UI bugs</p>
+                <p>fixed UI crash</p>
                 
                 <p><br/><br/><div id='chkHideWhatsNew'></div></p>
             </div>
@@ -4730,7 +4725,7 @@ a
 
 
 
-const generatorVersion = 139;
+const generatorVersion = 140;
 
 
 const MAX_INT32        = 2147483647;
@@ -37591,7 +37586,7 @@ onerror = (event, source, line, pos, error) =>
 };
 
 
-const generatorVersion = 139;
+const generatorVersion = 140;
 
 
 const MAX_INT32        = 2147483647;
@@ -75107,6 +75102,12 @@ extends Parameter
 
     updateControls()
     {
+        const noColor = 
+            darkMode
+            ? rgbNoColorDark
+            : rgbNoColorLight;
+
+
         const rgb       = this.value.toRgb();
 
         const rgbStripe = getStripeBackColor(rgb);
