@@ -58,10 +58,12 @@ extends GNumberType
         const iteration = repeat ? repeat.iteration : this.iteration;
 
 
+        let delta = end.toNumber() - start.toNumber();
+
         let step = 
                repeat
             && this.options.enabled
-            ? (end.toNumber() - start.toNumber()) / Math.max(1, repeat.total - (from.value == 1 ? 1 : 0))
+            ? delta / Math.max(1, repeat.total - (from.value == 1 ? 1 : 0))
             : 0;
 
             
@@ -70,11 +72,21 @@ extends GNumberType
              if (from  .value == 2) startOffset = step;
         else if (from  .value == 1
               && repeat
-              && repeat.total == 1) startOffset = (end.toNumber() - start.toNumber()) / 2;
+              && repeat.total == 1) startOffset = delta/2;
         else                        startOffset = 0;
 
 
-        let f = iteration / (repeat.total - (from.value == 1 ? 1 : 0));
+        let f;
+        
+        if (repeat)
+        {
+                 if (from.value == 2) f = startOffset/delta + iteration /  repeat.total;
+            else if (from.value == 1) f = startOffset/delta + iteration / (repeat.total-1);
+            else if (from.value == 0) f = startOffset/delta + iteration /  repeat.total;
+        }
+        else
+            f = 0;
+
 
         switch(spread.value)
         {
@@ -94,19 +106,19 @@ extends GNumberType
             }
             case 2:
             {
-                const b = bias.toNumber() / 25;
+                const b = bias.toNumber() / 50;
 
                      if (b >= 0 && f >= 0.5) f = 1 - Math.pow((1-f)*2, 1+b) / 2;
                 else if (b >= 0 && f <  0.5) f = Math.pow(f*2, 1+b) / 2;
-                else if (b < 0)              f = lerp3(0, -b/4, 1+b/4, 1, f);
+                else if (b < 0)              f = lerp3(0, -b/2, 1+b/2, 1, f);
 
                 break;
             }
         }
 
-        
+
         this.value = new NumberValue(
-            startOffset + start.toNumber() + (end.toNumber() - start.toNumber()) * f, //step * iteration + startOffset,
+            start.toNumber() + delta * f,
             Math.max(start.decimals, end.decimals));
 
             

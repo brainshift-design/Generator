@@ -23,7 +23,7 @@ extends OperatorBase
         this.addParam(this.paramFrom   = new SelectParam('from',   'from',   true, true, true, ['start', 'middle', 'end'], 1));
         this.addParam(this.paramStart  = new NumberParam('start',  'start',  true, true, true, 0));
         this.addParam(this.paramEnd    = new NumberParam('end',    'end',    true, true, true, 0));
-        this.addParam(this.paramSpread = new SelectParam('spread', 'spread', true, true, true, ['equal', 'curve', 'spread']));
+        this.addParam(this.paramSpread = new SelectParam('spread', 'spread', true, true, true, ['even', 'curve', 'spread']));
         this.addParam(this.paramBias   = new NumberParam('bias',   'bias',   true, true, true, 0, -100, 100));
 
 
