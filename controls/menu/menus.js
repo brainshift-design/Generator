@@ -796,7 +796,7 @@ function initGeneratorMenus()
     btnMain   .setIcon(iconGenerator);
     btnShape  .setIcon(iconShapes);
     btnLayer  .setIcon(iconGradient);
-    btnColor  .setIcon(iconColorInterpolate);
+    btnColor  .setIcon(iconColor);
     //btnStyle  .setIcon(iconStyle);
     //btnGroup  .setIcon(iconGroup);
     btnHand   .setIcon(iconHand);

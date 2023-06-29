@@ -4397,7 +4397,7 @@ a
             <div id='whatsNewBody'>
                 <h1 style='margin-top: 20px;'>What's new</h1>
 
-                <p>fixed UI crash</p>
+                <p>•  fixed UI crash</p>
                 
                 <p><br/><br/><div id='chkHideWhatsNew'></div></p>
             </div>
@@ -70326,7 +70326,7 @@ function initGeneratorMenus()
     btnMain   .setIcon(iconGenerator);
     btnShape  .setIcon(iconShapes);
     btnLayer  .setIcon(iconGradient);
-    btnColor  .setIcon(iconColorInterpolate);
+    btnColor  .setIcon(iconColor);
     //btnStyle  .setIcon(iconStyle);
     //btnGroup  .setIcon(iconGroup);
     btnHand   .setIcon(iconHand);
@@ -83168,9 +83168,9 @@ Operator.prototype.updateHeaderLabelText = function()
     let suffix;
     
     if (this.type == LIST)
-        suffix = ' (' + this.inputs.filter(i => !i.isNew).length  + ')';
+        suffix = '  :  ' + this.inputs.filter(i => !i.isNew).length;
     else if (this.type == ITEMS)
-        suffix = ' (' + this.params.length  + ')';
+        suffix = '  :  ' + this.params.length;
     else 
         suffix = this.cached ? '' : '...';
 
@@ -86368,8 +86368,8 @@ extends OperatorBase
         this.addOutput(new Output([NUMBER_VALUE], this.output_genRequest));
 
         this.addParam(this.paramSeed        = new NumberParam('seed',        'seed',         true,  true, true, Math.floor(Math.random() * 10000), 0, 0x7fffffff));
-        this.addParam(this.paramMax         = new NumberParam('max',         'max',          true,  true, true, 255));
         this.addParam(this.paramMin         = new NumberParam('min',         'min',          true,  true, true,   0));
+        this.addParam(this.paramMax         = new NumberParam('max',         'max',          true,  true, true, 255));
         this.addParam(this.paramScale       = new NumberParam('scale',       'scale',        true,  true, true, 1, 1));
         this.addParam(this.paramOffset      = new NumberParam('offset',      'offset',       true,  true, true, 0, 0));
         this.addParam(this.paramInterpolate = new SelectParam('interpolate', 'interpolate',  false, true, true, ['step', 'linear', 'cosine'], 2));

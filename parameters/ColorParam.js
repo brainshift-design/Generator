@@ -286,6 +286,12 @@ extends Parameter
 
     updateControls()
     {
+        const noColor = 
+            darkMode
+            ? rgbNoColorDark
+            : rgbNoColorLight;
+
+
         const rgb       = this.value.toRgb();
 
         const rgbStripe = getStripeBackColor(rgb);
