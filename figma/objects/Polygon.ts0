@@ -15,8 +15,6 @@ function figCreatePolygon(genPoly)
 {
     const figPoly = figma.createPolygon();
 
-    figPoly.name = makeObjectName(genPoly);
-
     if (!genPolyIsValid(genPoly))
         return figPoly;
 
@@ -38,9 +36,6 @@ function figUpdatePolygon(figPoly, genPoly)
 {
     if (!genPolyIsValid(genPoly))
         return;
-
-
-    figPoly.name = makeObjectName(genPoly);
 
 
     figPoly.cornerRadius = genPoly.round;

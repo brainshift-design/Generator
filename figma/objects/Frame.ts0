@@ -14,8 +14,6 @@ function figCreateFrame(genFrame)
 {
     const figFrame = figma.createFrame();
 
-    figFrame.name = makeObjectName(genFrame);
-
     if (!genFrameIsValid(genFrame))
         return figFrame;
 
@@ -52,9 +50,6 @@ function figUpdateFrame(figFrame, genFrame)
 {
     if (!genFrameIsValid(genFrame))
         return;
-
-
-    figFrame.name = makeObjectName(genFrame);
 
 
     figFrame.cornerRadius = genFrame.round;

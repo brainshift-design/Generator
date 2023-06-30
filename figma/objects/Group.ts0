@@ -20,8 +20,6 @@ function figCreateShapeGroup(genGroup)
 
     if (figGroup)
     {
-        figGroup.name = makeObjectName(genGroup);
-
         //setObjectTransform(figGroup, genGroup);
 
         if (!genShapeGroupIsValid(genGroup))
@@ -41,9 +39,6 @@ function figUpdateShapeGroup(figGroup, genGroup)
         figGroup.remove();
         return;
     }
-
-
-    figGroup.name = makeObjectName(genGroup);
 
 
     //setObjectTransform(figGroup, genGroup);

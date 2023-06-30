@@ -14,8 +14,6 @@ function figCreateRect(genRect)
 {
     const figRect = figma.createRectangle();
 
-    figRect.name = makeObjectName(genRect);
-
     if (!genRectIsValid(genRect))
         return figRect;
 
@@ -36,9 +34,6 @@ function figUpdateRect(figRect, genRect)
 {
     if (!genRectIsValid(genRect))
         return;
-
-
-    figRect.name = makeObjectName(genRect);
 
 
     figRect.cornerRadius = genRect.round;

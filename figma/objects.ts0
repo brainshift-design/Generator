@@ -26,6 +26,9 @@ function figCreateObject(genObj, addObject)
     }
 
     
+    figObj.name = makeObjectName(genObj);
+
+
     console.assert(
            genObj.type == SHAPE_GROUP // cannot exist without children
         || !!figObj, 
@@ -34,7 +37,6 @@ function figCreateObject(genObj, addObject)
     if (  !genObj.final
         && figObj)
     {
-        figObj.setPluginData('id',       genObj.objectId);
         figObj.setPluginData('type',     genObj.type    );
         figObj.setPluginData('nodeId',   genObj.nodeId  );
         figObj.setPluginData('objectId', genObj.objectId);
@@ -46,6 +48,29 @@ function figCreateObject(genObj, addObject)
 
 
         addObject(figObj);
+    }
+}
+
+
+
+function figUpdateObject(figObj, genObj)
+{
+    figObj.name = makeObjectName(genObj);
+
+    
+    switch (genObj.type)
+    {
+        case RECTANGLE:   figUpdateRect      (figObj, genObj);  break;
+        case LINE:        figUpdateLine      (figObj, genObj);  break;
+        case ELLIPSE:     figUpdateEllipse   (figObj, genObj);  break;
+        case POLYGON:     figUpdatePolygon   (figObj, genObj);  break;
+        case STAR:        figUpdateStar      (figObj, genObj);  break;
+        case TEXT_SHAPE:  figUpdateText      (figObj, genObj);  break;
+        case POINT:       figUpdatePoint     (figObj, genObj);  break;
+        case VECTOR_PATH: figUpdateVectorPath(figObj, genObj);  break;
+        case BOOLEAN:     figUpdateBoolean   (figObj, genObj);  break;
+        case SHAPE_GROUP: figUpdateShapeGroup(figObj, genObj);  break;
+        case FRAME:       figUpdateFrame     (figObj, genObj);  break;
     }
 }
 
@@ -150,24 +175,4 @@ function figUpdateObjects(figParent, genObjects)
     
     for (const point of figPoints)
         point.parent.appendChild(point);
-}
-
-
-
-function figUpdateObject(figObj, genObj)
-{
-    switch (genObj.type)
-    {
-        case RECTANGLE:   figUpdateRect      (figObj, genObj);  break;
-        case LINE:        figUpdateLine      (figObj, genObj);  break;
-        case ELLIPSE:     figUpdateEllipse   (figObj, genObj);  break;
-        case POLYGON:     figUpdatePolygon   (figObj, genObj);  break;
-        case STAR:        figUpdateStar      (figObj, genObj);  break;
-        case TEXT_SHAPE:   figUpdateText      (figObj, genObj);  break;
-        case POINT:       figUpdatePoint     (figObj, genObj);  break;
-        case VECTOR_PATH: figUpdateVectorPath(figObj, genObj);  break;
-        case BOOLEAN:     figUpdateBoolean   (figObj, genObj);  break;
-        case SHAPE_GROUP: figUpdateShapeGroup(figObj, genObj);  break;
-        case FRAME:       figUpdateFrame     (figObj, genObj);  break;
-    }
 }

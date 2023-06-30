@@ -29,8 +29,6 @@ function figCreateBoolean(genBool)
 
     if (figBool)
     {
-        figBool.name = makeObjectName(genBool);
-
         setObjectTransform(figBool, genBool);
 
         if (!genBooleanIsValid(genBool))
@@ -52,11 +50,7 @@ function figUpdateBoolean(figBool, genBool)
     }
 
 
-    figBool.name = makeObjectName(genBool);
-
-
     setObjectTransform(figBool, genBool);
-
 
     figUpdateObjects(figBool, genBool.children);
 

@@ -17,8 +17,6 @@ function figCreatePoint(genPoint)
         ? figma.createRectangle()
         : figma.createEllipse();
 
-    figPoint.name = makeObjectName(genPoint);
-
     figPoint.setPluginData('isCenter', boolToString(genPoint.isCenter));
 
 
@@ -48,9 +46,6 @@ function figUpdatePoint(figPoint, genPoint)
 {
     if (!genPointIsValid(genPoint))
         return;
-
-
-    figPoint.name = makeObjectName(genPoint);
 
 
     setPointTransform(figPoint, genPoint);

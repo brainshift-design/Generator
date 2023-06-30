@@ -11,11 +11,9 @@ function figCreateLine(genLine)
 {
     const figLine = figma.createLine();
 
-    figLine.name = makeObjectName(genLine);
-
-
     if (!genLineIsValid(genLine))
         return figLine;
+
 
     setObjectTransform(figLine, genLine, true, 0);
     setObjectProps    (figLine, genLine);
@@ -30,9 +28,6 @@ function figUpdateLine(figLine, genLine)
 {
     if (!genLineIsValid(genLine))
         return;
-
-
-    figLine.name = makeObjectName(genLine);
 
 
     setObjectTransform(figLine, genLine, true, 0);

@@ -16,8 +16,6 @@ function figCreateStar(genStar)
 {
     const figStar = figma.createStar();
 
-    figStar.name = makeObjectName(genStar);
-
     if (!genStarIsValid(genStar))
         return figStar;
 
@@ -40,9 +38,6 @@ function figUpdateStar(figStar, genStar)
 {
     if (!genStarIsValid(genStar))
         return;
-
-
-    figStar.name = makeObjectName(genStar);
 
 
     figStar.cornerRadius = genStar.round;

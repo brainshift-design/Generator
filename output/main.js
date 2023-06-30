@@ -1217,7 +1217,7 @@ var styleChangingFromGenerator = false;
 //     for (let j = 0; j < objNodes[i].length; j++)
 //     {
 //         if (!objNodes[i][j]) continue;
-//         const exists = figma.currentPage.children.findIndex(obj => parseInt(obj.getPluginData('id')) == i);
+//         const exists = figma.currentPage.children.findIndex(obj => parseInt(obj.getPluginData('objectId')) == i);
 //         if (!exists) objNodes[i][j] = null;
 //     }
 // }
@@ -1965,11 +1965,11 @@ function figCreateObject(genObj, addObject) {
             figObj = figCreateFrame(genObj);
             break;
     }
+    figObj.name = makeObjectName(genObj);
     console.assert(genObj.type == SHAPE_GROUP // cannot exist without children
         || !!figObj, 'no Figma object created');
     if (!genObj.final
         && figObj) {
-        figObj.setPluginData('id', genObj.objectId);
         figObj.setPluginData('type', genObj.type);
         figObj.setPluginData('nodeId', genObj.nodeId);
         figObj.setPluginData('objectId', genObj.objectId);
@@ -1977,6 +1977,44 @@ function figCreateObject(genObj, addObject) {
         if (genObj.type == POINT)
             figPoints.push(figObj);
         addObject(figObj);
+    }
+}
+function figUpdateObject(figObj, genObj) {
+    figObj.name = makeObjectName(genObj);
+    switch (genObj.type) {
+        case RECTANGLE:
+            figUpdateRect(figObj, genObj);
+            break;
+        case LINE:
+            figUpdateLine(figObj, genObj);
+            break;
+        case ELLIPSE:
+            figUpdateEllipse(figObj, genObj);
+            break;
+        case POLYGON:
+            figUpdatePolygon(figObj, genObj);
+            break;
+        case STAR:
+            figUpdateStar(figObj, genObj);
+            break;
+        case TEXT_SHAPE:
+            figUpdateText(figObj, genObj);
+            break;
+        case POINT:
+            figUpdatePoint(figObj, genObj);
+            break;
+        case VECTOR_PATH:
+            figUpdateVectorPath(figObj, genObj);
+            break;
+        case BOOLEAN:
+            figUpdateBoolean(figObj, genObj);
+            break;
+        case SHAPE_GROUP:
+            figUpdateShapeGroup(figObj, genObj);
+            break;
+        case FRAME:
+            figUpdateFrame(figObj, genObj);
+            break;
     }
 }
 function figUpdateObjects(figParent, genObjects) {
@@ -2044,43 +2082,6 @@ function figUpdateObjects(figParent, genObjects) {
     // put points on top
     for (const point of figPoints)
         point.parent.appendChild(point);
-}
-function figUpdateObject(figObj, genObj) {
-    switch (genObj.type) {
-        case RECTANGLE:
-            figUpdateRect(figObj, genObj);
-            break;
-        case LINE:
-            figUpdateLine(figObj, genObj);
-            break;
-        case ELLIPSE:
-            figUpdateEllipse(figObj, genObj);
-            break;
-        case POLYGON:
-            figUpdatePolygon(figObj, genObj);
-            break;
-        case STAR:
-            figUpdateStar(figObj, genObj);
-            break;
-        case TEXT_SHAPE:
-            figUpdateText(figObj, genObj);
-            break;
-        case POINT:
-            figUpdatePoint(figObj, genObj);
-            break;
-        case VECTOR_PATH:
-            figUpdateVectorPath(figObj, genObj);
-            break;
-        case BOOLEAN:
-            figUpdateBoolean(figObj, genObj);
-            break;
-        case SHAPE_GROUP:
-            figUpdateShapeGroup(figObj, genObj);
-            break;
-        case FRAME:
-            figUpdateFrame(figObj, genObj);
-            break;
-    }
 }
 const figEmptyObjects = [];
 function getObjectFills(genObjFills) {
@@ -2569,7 +2570,6 @@ function figCreateBoolean(genBool) {
         }
     }
     if (figBool) {
-        figBool.name = makeObjectName(genBool);
         setObjectTransform(figBool, genBool);
         if (!genBooleanIsValid(genBool))
             return figBool;
@@ -2581,7 +2581,6 @@ function figUpdateBoolean(figBool, genBool) {
         figBool.remove();
         return;
     }
-    figBool.name = makeObjectName(genBool);
     setObjectTransform(figBool, genBool);
     figUpdateObjects(figBool, genBool.children);
     // figPostMessageToUi({
@@ -2598,14 +2597,12 @@ function genEllipseIsValid(genEllipse) {
         && genEllipse.y != null && !isNaN(genEllipse.y)
         && genEllipse.width != null && !isNaN(genEllipse.width)
         && genEllipse.height != null && !isNaN(genEllipse.height)
-        //&& genEllipse.angle  != null && !isNaN(genEllipse.angle )
         && genEllipse.from != null && !isNaN(genEllipse.from)
         && genEllipse.to != null && !isNaN(genEllipse.to)
         && genEllipse.inner != null && !isNaN(genEllipse.inner);
 }
 function figCreateEllipse(genEllipse) {
     const figEllipse = figma.createEllipse();
-    figEllipse.name = makeObjectName(genEllipse);
     if (!genEllipseIsValid(genEllipse))
         return figEllipse;
     figEllipse.arcData =
@@ -2624,7 +2621,6 @@ function figCreateEllipse(genEllipse) {
 function figUpdateEllipse(figEllipse, genEllipse) {
     if (!genEllipseIsValid(genEllipse))
         return;
-    figEllipse.name = makeObjectName(genEllipse);
     figEllipse.arcData =
         {
             startingAngle: genEllipse.from / 360 * (Math.PI * 2),
@@ -2644,7 +2640,6 @@ function genFrameIsValid(genGroup) {
 }
 function figCreateFrame(genFrame) {
     const figFrame = figma.createFrame();
-    figFrame.name = makeObjectName(genFrame);
     if (!genFrameIsValid(genFrame))
         return figFrame;
     if (figFrame) {
@@ -2664,7 +2659,6 @@ function figCreateFrame(genFrame) {
 function figUpdateFrame(figFrame, genFrame) {
     if (!genFrameIsValid(genFrame))
         return;
-    figFrame.name = makeObjectName(genFrame);
     figFrame.cornerRadius = genFrame.round;
     setObjectTransform(figFrame, genFrame);
     setObjectProps(figFrame, genFrame, genFrame.children.length == 0);
@@ -2681,7 +2675,6 @@ function figCreateShapeGroup(genGroup) {
         ? figma.group(objects, figma.currentPage)
         : null;
     if (figGroup) {
-        figGroup.name = makeObjectName(genGroup);
         //setObjectTransform(figGroup, genGroup);
         if (!genShapeGroupIsValid(genGroup))
             return figGroup;
@@ -2693,7 +2686,6 @@ function figUpdateShapeGroup(figGroup, genGroup) {
         figGroup.remove();
         return;
     }
-    figGroup.name = makeObjectName(genGroup);
     //setObjectTransform(figGroup, genGroup);
     figUpdateObjects(figGroup, genGroup.children);
     // figPostMessageToUi({
@@ -2712,7 +2704,6 @@ function genLineIsValid(genLine) {
 }
 function figCreateLine(genLine) {
     const figLine = figma.createLine();
-    figLine.name = makeObjectName(genLine);
     if (!genLineIsValid(genLine))
         return figLine;
     setObjectTransform(figLine, genLine, true, 0);
@@ -2722,7 +2713,6 @@ function figCreateLine(genLine) {
 function figUpdateLine(figLine, genLine) {
     if (!genLineIsValid(genLine))
         return;
-    figLine.name = makeObjectName(genLine);
     setObjectTransform(figLine, genLine, true, 0);
     setObjectProps(figLine, genLine);
 }
@@ -2735,7 +2725,6 @@ function figCreatePoint(genPoint) {
     const figPoint = genPoint.isCenter
         ? figma.createRectangle()
         : figma.createEllipse();
-    figPoint.name = makeObjectName(genPoint);
     figPoint.setPluginData('isCenter', boolToString(genPoint.isCenter));
     if (!genPointIsValid(genPoint))
         return figPoint;
@@ -2751,7 +2740,6 @@ function figCreatePoint(genPoint) {
 function figUpdatePoint(figPoint, genPoint) {
     if (!genPointIsValid(genPoint))
         return;
-    figPoint.name = makeObjectName(genPoint);
     setPointTransform(figPoint, genPoint);
     updatePointStyles(figPoint);
 }
@@ -2796,7 +2784,6 @@ function genPolyIsValid(genPoly) {
 }
 function figCreatePolygon(genPoly) {
     const figPoly = figma.createPolygon();
-    figPoly.name = makeObjectName(genPoly);
     if (!genPolyIsValid(genPoly))
         return figPoly;
     figPoly.cornerRadius = genPoly.round;
@@ -2808,7 +2795,6 @@ function figCreatePolygon(genPoly) {
 function figUpdatePolygon(figPoly, genPoly) {
     if (!genPolyIsValid(genPoly))
         return;
-    figPoly.name = makeObjectName(genPoly);
     figPoly.cornerRadius = genPoly.round;
     figPoly.pointCount = Math.max(3, genPoly.corners);
     setObjectTransform(figPoly, genPoly);
@@ -2824,7 +2810,6 @@ function genRectIsValid(genRect) {
 }
 function figCreateRect(genRect) {
     const figRect = figma.createRectangle();
-    figRect.name = makeObjectName(genRect);
     if (!genRectIsValid(genRect))
         return figRect;
     figRect.cornerRadius = genRect.round;
@@ -2835,7 +2820,6 @@ function figCreateRect(genRect) {
 function figUpdateRect(figRect, genRect) {
     if (!genRectIsValid(genRect))
         return;
-    figRect.name = makeObjectName(genRect);
     figRect.cornerRadius = genRect.round;
     setObjectTransform(figRect, genRect);
     setObjectProps(figRect, genRect);
@@ -2852,7 +2836,6 @@ function genStarIsValid(genStar) {
 }
 function figCreateStar(genStar) {
     const figStar = figma.createStar();
-    figStar.name = makeObjectName(genStar);
     if (!genStarIsValid(genStar))
         return figStar;
     figStar.cornerRadius = genStar.round;
@@ -2865,7 +2848,6 @@ function figCreateStar(genStar) {
 function figUpdateStar(figStar, genStar) {
     if (!genStarIsValid(genStar))
         return;
-    figStar.name = makeObjectName(genStar);
     figStar.cornerRadius = genStar.round;
     figStar.pointCount = genStar.points;
     figStar.innerRadius = Math.min(Math.max(0, genStar.convex / 100), 1);
@@ -2884,7 +2866,6 @@ function genTextIsValid(genText) {
 }
 function figCreateText(genText) {
     const figText = figma.createText();
-    figText.name = makeObjectName(genText);
     if (!genTextIsValid(genText))
         return figText;
     (function () {
@@ -2927,7 +2908,6 @@ function figCreateText(genText) {
     return figText;
 }
 function figUpdateText(figText, genText) {
-    figText.name = makeObjectName(genText);
     if (!genTextIsValid(genText))
         return;
     (function () {
@@ -2979,7 +2959,6 @@ function genVectorPathIsValid(genPath) {
 }
 function figCreateVectorPath(genPath) {
     const figPath = figma.createVector();
-    figPath.name = makeObjectName(genPath);
     if (!genVectorPathIsValid(genPath))
         return figPath;
     figPath.vectorPaths = [{
@@ -2994,7 +2973,6 @@ function figCreateVectorPath(genPath) {
 function figUpdateVectorPath(figPath, genPath) {
     if (!genVectorPathIsValid(genPath))
         return;
-    figPath.name = makeObjectName(genPath);
     figPath.vectorPaths = [{
             windingRule: genPath.winding == 1 ? 'NONZERO' : 'EVENODD',
             data: genPath.pathData

@@ -16,8 +16,6 @@ function figCreateText(genText)
 {
     const figText = figma.createText();
     
-    figText.name = makeObjectName(genText);
-
     if (!genTextIsValid(genText))
         return figText;
 
@@ -70,8 +68,6 @@ function figCreateText(genText)
 
 function figUpdateText(figText, genText)
 {
-    figText.name = makeObjectName(genText);
-
     if (!genTextIsValid(genText))
         return;
 

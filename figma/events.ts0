@@ -19,7 +19,7 @@ var styleChangingFromGenerator = false;
     //     {
     //         if (!objNodes[i][j]) continue;
 
-    //         const exists = figma.currentPage.children.findIndex(obj => parseInt(obj.getPluginData('id')) == i);
+    //         const exists = figma.currentPage.children.findIndex(obj => parseInt(obj.getPluginData('objectId')) == i);
     //         if (!exists) objNodes[i][j] = null;
     //     }
     // }
