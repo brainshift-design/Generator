@@ -4398,6 +4398,7 @@ a
                 <h1 style='margin-top: 20px;'>What's new</h1>
 
                 <p>•  fixed UI crash</p>
+                <p>•  small UI updates</p>
                 
                 <p><br/><br/><div id='chkHideWhatsNew'></div></p>
             </div>
@@ -29427,7 +29428,7 @@ function genUpdateValuesAndObjects(requestId, actionId, updateNodeId, updatePara
     // send updates in chunks
 
     const approxNodeChunkSize = 20;
-    const objChunkSize        = 100;
+    const objChunkSize        = 10000;
     const styleChunkSize      = 20;
 
     
@@ -84773,7 +84774,10 @@ extends OperatorBase
     updateParams()
     {
         this.paramFeedback.enableControlText(false);
-        this.paramFeedback.controls[0].valueText = '<svg width="14" height="9" viewBox="0 0 14 9" fill="none" xmlns="http://www.w3.org/2000/svg"><path d="M3.53553 0L0 3.53553L0.707107 4.24264L3.00001 1.94974V4C3.00001 6.76142 5.23859 9 8.00001 9H14V8H8.00001C5.79087 8 4.00001 6.20914 4.00001 4L4.00001 1.85242L6.37717 4.22958L7.08428 3.52247L3.56735 0.00553989L3.55421 0.0186768L3.53553 0Z" fill="white"/></svg>';
+
+        const arrowStyle = darkMode ? 'white' : 'black';
+
+        this.paramFeedback.controls[0].valueText = '<svg width="14" height="9" viewBox="0 0 14 9" fill="none" xmlns="http://www.w3.org/2000/svg"><path d="M3.53553 0L0 3.53553L0.707107 4.24264L3.00001 1.94974V4C3.00001 6.76142 5.23859 9 8.00001 9H14V8H8.00001C5.79087 8 4.00001 6.20914 4.00001 4L4.00001 1.85242L6.37717 4.22958L7.08428 3.52247L3.56735 0.00553989L3.55421 0.0186768L3.53553 0Z" fill="' + arrowStyle + '"/></svg>';
 
         this.updateParamControls();
     }
@@ -84893,7 +84897,10 @@ extends OperatorBase
         this.paramCount.enableControlText(true);
 
         this.paramLoop.enableControlText(false);
-        this.paramLoop.controls[0].valueText = '<svg width="14" height="12" viewBox="0 -1 14 12" fill="none" xmlns="http://www.w3.org/2000/svg"><path fill-rule="evenodd" clip-rule="evenodd" d="M13 0H14L14 2C14 4.76142 11.7614 7 8.99999 7H1V6H8.99999C11.2091 6 13 4.20914 13 2L13 0Z" fill="white"/><rect width="4.97369" height="1" transform="matrix(0.707107 -0.707107 -0.707107 -0.707107 0.712646 7.224)" fill="white"/><rect width="5" height="1" transform="matrix(0.707107 0.707107 0.707107 -0.707107 0 6.54858)" fill="white"/></svg>';
+
+        const arrowStyle = darkMode ? 'white' : 'black';
+
+        this.paramLoop.controls[0].valueText = '<svg width="14" height="12" viewBox="0 -1 14 12" fill="none" xmlns="http://www.w3.org/2000/svg"><path fill-rule="evenodd" clip-rule="evenodd" d="M13 0H14L14 2C14 4.76142 11.7614 7 8.99999 7H1V6H8.99999C11.2091 6 13 4.20914 13 2L13 0Z" fill="' + arrowStyle + '"/><rect width="4.97369" height="1" transform="matrix(0.707107 -0.707107 -0.707107 -0.707107 0.712646 7.224)" fill="' + arrowStyle + '"/><rect width="5" height="1" transform="matrix(0.707107 0.707107 0.707107 -0.707107 0 6.54858)" fill="' + arrowStyle + '"/></svg>';
 
         this.updateParamControls();
     }
