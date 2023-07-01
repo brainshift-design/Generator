@@ -38,6 +38,9 @@ const Tau = Math.PI * 2;
 function nozero(x) {
     return x != 0 ? x : Epsilon;
 }
+function nozerov(v) {
+    return point(nozero(v.x), nozero(v.y));
+}
 function sqr(x) { return x * x; }
 ;
 function cube(x) { return x * x * x; }
@@ -179,6 +182,9 @@ function mulv(v1, v2) {
 }
 function mulvs(v, s) {
     return point(v.x * s, v.y * s);
+}
+function divv(v1, v2) {
+    return point(v1.x / v2.x, v1.y / v2.y);
 }
 function divvs(v, s) {
     return point(v.x / s, v.y / s);

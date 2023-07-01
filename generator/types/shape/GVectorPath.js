@@ -134,10 +134,10 @@ extends GShape
 
             const bounds = getObjBounds([path]);
 
-            let  x = bounds.x;
-            let  y = bounds.y;
-            let  w = bounds.w;
-            let  h = bounds.h;
+            let x = bounds.x;
+            let y = bounds.y;
+            let w = bounds.w;
+            let h = bounds.h;
 
             path.createDefaultTransform(x, y);
 

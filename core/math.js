@@ -383,6 +383,16 @@ function lerp(a, b, t)
 
 
 
+function lerp2(f0, f1, f2, t)
+{
+    const c0 = lerp(f0, f1, t);
+    const c1 = lerp(f1, f2, t);
+
+    return lerp(c0, c1, t);
+}
+
+
+
 function lerp3(f0, f1, f2, f3, t)
 {
     const c0  = lerp(f0, f1, t);

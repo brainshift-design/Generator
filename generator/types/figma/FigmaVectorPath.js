@@ -8,6 +8,7 @@ extends FigmaShape
     closed;
     degree;
 
+    pathPoints;
     pathData;
     winding;
     round;
@@ -22,10 +23,11 @@ extends FigmaShape
         this.closed = closed;
         this.degree = degree;
 
-        this.updatePathData();
-        
         this.winding = winding;
         this.round   = round;
+
+        this.updatePathPoints();
+        this.updatePathData();
     }
 
 
@@ -36,22 +38,33 @@ extends FigmaShape
             this.nodeId,
             this.objectId,
             this.objectName,
-            [], 0, 0,
+            this.points, 
+            this.closed, 
+            this.degree,
             this.winding,
             this.round);
 
-        copy.x        = this.x;
-        copy.y        = this.y;
-
-        copy.points   = this.points.map(p => p.copy());
-        copy.closed   = this.closed;
-        copy.degree   = this.degree;
-
-        copy.pathData = this.pathData;
+        copy.x = this.x;
+        copy.y = this.y;
 
         copy.copyBase(this);
 
         return copy;
+    }
+
+
+
+    updatePathPoints()
+    {
+        switch (this.degree)
+        {
+        case 0: this.pathPoints = this.points.map(p => p.toPoint()); break;
+        case 1: this.pathPoints = this.points.map(p => p.toPoint()); break;
+        case 2: this.pathPoints = this.points.map(p => p.toPoint()); break;
+        case 3: this.pathPoints = getSmoothPoints(this.points, this.closed, getSmoothSegment);     break;
+        case 4: this.pathPoints = getSmoothPoints(this.points, this.closed, getSineXSegment );      break;
+        case 5: this.pathPoints = getSmoothPoints(this.points, this.closed, getSineYSegment );      break;
+        }
     }
 
 
@@ -71,7 +84,7 @@ extends FigmaShape
         this.x = minX;
         this.y = minY;
 
-        this.pathData = getPathDataFromPoints(this.points, this.closed, this.degree);
+        this.pathData = getPathDataFromPoints(this.pathPoints, this.closed, this.degree);
     }
 }
 
@@ -84,12 +97,12 @@ function getPathDataFromPoints(points, closed, degree)
 
     switch (degree)
     {
-    case 0: pathData = getLinearPathData   (points.map(p => p.toPoint()));         break;
-    case 1: pathData = getQuadraticPathData(points.map(p => p.toPoint()), closed); break;
-    case 2: pathData = getCubicPathData    (points.map(p => p.toPoint()), closed); break;
-    case 3: pathData = getSmoothPathData   (points, closed, getSmoothSegment);     break;
-    case 4: pathData = getSmoothPathData   (points, closed, getSineXSegment);      break;
-    case 5: pathData = getSmoothPathData   (points, closed, getSineYSegment);      break;
+    case 0: pathData = getLinearPathData   (points);         break;
+    case 1: pathData = getQuadraticPathData(points, closed); break;
+    case 2: 
+    case 3: 
+    case 4: 
+    case 5: pathData = getCubicPathData    (points, closed); break;
     }
 
 
@@ -104,7 +117,7 @@ function getPathDataFromPoints(points, closed, degree)
 
     if (   pointsAreValid
         && (   closed
-            || points[0].equals(points.at(-1))))
+            || equalv(points[0], points.at(-1))))
         pathData += ' Z';
 
 
@@ -201,7 +214,7 @@ function getCubicPathData(points, closed)
 
 
 
-function getSmoothPathData(points, closed, getSegment)
+function getSmoothPoints(points, closed, getSegment)
 {
     if (points.length < 2)
         return '';
@@ -276,7 +289,7 @@ function getSmoothPathData(points, closed, getSegment)
     }
 
 
-    return getCubicPathData(bp);
+    return bp;
 }
 
 

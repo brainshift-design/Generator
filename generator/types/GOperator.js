@@ -80,39 +80,3 @@ extends GNode
         return null;
     }
 }
-
-
-
-function getObjBounds(objects)
-{
-    let bounds = Rect.NaN;
-
-
-    for (const obj of objects)
-    {
-        if (obj.type == VECTOR_PATH)
-        {
-            for (const p of obj.points)
-            {
-                bounds = expandRect_(
-                    bounds, 
-                    point(
-                        NumberValue.prototype.toNumber.call(p.x), 
-                        NumberValue.prototype.toNumber.call(p.y)));
-            }
-        }
- 
-        else if (obj.type == POINT
-             && !obj.isDeco)
-            bounds = expandRect_(bounds, point(obj.x, obj.y));
-
-        else if (obj.type == LINE)
-            bounds = expandRect(bounds, new Rect(obj.x, obj.y, obj.width, 0));
-
-        else
-            bounds = expandRect(bounds, new Rect(obj.x, obj.y, obj.width, obj.height));
-    }
-
-
-    return bounds;
-}
