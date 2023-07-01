@@ -10,6 +10,8 @@ class FigmaObject
 
     inputIndex = -1; // for unique object IDs
 
+    feedback   = false;
+
 
     xform;
 
