@@ -770,40 +770,7 @@ function uiUpdateValuesAndObjects(requestId, actionId, updateNodeId, updateParam
 
                 _ids.push(id);
 
-                let value;
-
-                switch (type)
-                {
-                    case         LIST_VALUE: value = parseListValue        (values[i++])[0];  break;
-  
-                    case       NUMBER_VALUE: value = parseNumberValue      (values[i++])[0];  break;
-                    case         TEXT_VALUE: value = parseTextValue        (values[i++])[0];  break;
-                    case        COLOR_VALUE: value = parseColorValue       (values[i++])[0];  break;
-  
-                    case         FILL_VALUE: value = parseFillValue        (values[i++])[0];  break;
-                    case   COLOR_STOP_VALUE: value = parseColorStopValue   (values[i++])[0];  break;
-                    case     GRADIENT_VALUE: value = parseGradientValue    (values[i++])[0];  break;
-                    case       STROKE_VALUE: value = parseStrokeValue      (values[i++])[0];  break;
-                    case  DROP_SHADOW_VALUE: value = parseDropShadowValue  (values[i++])[0];  break;
-                    case INNER_SHADOW_VALUE: value = parseInnerShadowValue (values[i++])[0];  break;
-                    case   LAYER_BLUR_VALUE: value = parseLayerBlurValue   (values[i++])[0];  break;
-                    case    BACK_BLUR_VALUE: value = parseBackBlurValue    (values[i++])[0];  break;
-                    case   LAYER_MASK_VALUE: value = parseLayerMaskValue   (values[i++])[0];  break;
-  
-                    case    RECTANGLE_VALUE: value = parseRectangleValue   (values[i++])[0];  break;
-                    case         LINE_VALUE: value = parseLineValue        (values[i++])[0];  break;
-                    case      ELLIPSE_VALUE: value = parseEllipseValue     (values[i++])[0];  break;
-                    case      POLYGON_VALUE: value = parsePolygonValue     (values[i++])[0];  break;
-                    case         STAR_VALUE: value = parseStarValue        (values[i++])[0];  break;
-                    case   TEXT_SHAPE_VALUE: value = parseTextShapeValue   (values[i++])[0];  break;
-                    case        POINT_VALUE: value = parsePointValue       (values[i++])[0];  break;
-                    case  VECTOR_PATH_VALUE: value = parseVectorPathValue  (values[i++])[0];  break;
-                    case      BOOLEAN_VALUE: value = parseShapeBooleanValue(values[i++])[0];  break;
-                    case  SHAPE_GROUP_VALUE: value = parseShapeGroupValue  (values[i++])[0];  break;
-                    case        FRAME_VALUE: value = parseFrameValue       (values[i++])[0];  break;
-                    
-                    default: console.assert(false, 'unknown type \'' + type + '\'');
-                }
+                let value = parseValueFromType(type, values[i++]);
 
                 if (value.nodeId)
                     value.nodeId = nodeId;
