@@ -4397,6 +4397,8 @@ a
             <div id='whatsNewBody'>
                 <h1 style='margin-top: 20px;'>What's new</h1>
 
+                <p>•  fixed incorrect Vector path bounds</p>
+                <p>•  fixed bug in Distribute</p>
                 <p>•  fixed UI crash</p>
                 <p>•  small UI updates</p>
                 
@@ -17507,9 +17509,11 @@ extends GNumberType
         
         if (repeat)
         {
-                 if (from.value == 2) f = startOffset/delta + iteration /  repeat.total;
-            else if (from.value == 1) f = startOffset/delta + iteration / (repeat.total-1);
-            else if (from.value == 0) f = startOffset/delta + iteration /  repeat.total;
+            const sd = delta ? start/delta : 0;
+
+                 if (from.value == 2) f = sd + iteration/repeat.total;
+            else if (from.value == 1) f = sd + (repeat > 1 ? iteration/(repeat.total-1) : 0);
+            else if (from.value == 0) f = sd + iteration/repeat.total;
         }
         else
             f = 0;
@@ -53277,9 +53281,11 @@ extends GNumberType
         
         if (repeat)
         {
-                 if (from.value == 2) f = startOffset/delta + iteration /  repeat.total;
-            else if (from.value == 1) f = startOffset/delta + iteration / (repeat.total-1);
-            else if (from.value == 0) f = startOffset/delta + iteration /  repeat.total;
+            const sd = delta ? start/delta : 0;
+
+                 if (from.value == 2) f = sd + iteration/repeat.total;
+            else if (from.value == 1) f = sd + (repeat > 1 ? iteration/(repeat.total-1) : 0);
+            else if (from.value == 0) f = sd + iteration/repeat.total;
         }
         else
             f = 0;
