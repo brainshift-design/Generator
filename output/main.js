@@ -1120,6 +1120,7 @@ function figStartGenerator() {
     })();
 }
 function figRestartGenerator() {
+    figDeleteAllObjects();
     figma.showUI(__html__, {
         visible: false,
         themeColors: true

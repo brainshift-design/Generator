@@ -22,7 +22,6 @@ extends OpShape
 
         this.canDisable  = true;
         this.iconOffsetY = -1;
-        
 
         this.addInput (this.createInputForObjects([TEXT_SHAPE_VALUE], getNodeInputValuesForUndo));
         this.addOutput(new Output([TEXT_SHAPE_VALUE], this.output_genRequest));
@@ -49,7 +48,11 @@ extends OpShape
 
         this.paramLineHeight   .controls[0].setSuffix('%', true);
         this.paramLetterSpacing.controls[0].setSuffix('%', true);
+     
+        this.paramFont .saveAsText = true;
+        this.paramStyle.saveAsText = true;
 
+        
         this.addBaseParams();
     }
 
@@ -99,13 +102,54 @@ extends OpShape
             : '';
 
 
+        this.updateStyleParam();
+
+        this.updateParamControls();
+    }
+
+
+
+    updateStyleParam()
+    {
         const fontName   = figUniqueFontNames[this.paramFont.value.toNumber()];
         const fontStyles = getFontStyles(fontName);
         
         this.paramStyle.setOptions(fontStyles);
         this.paramStyle.controls[0].setMax(this.paramStyle.options.length-1);
+    }
 
 
-        this.updateParamControls();
+
+    loadParams(_node, pasting)
+    {
+        if (!_node.params)
+            return;
+        
+            
+        for (const _param of _node.params)
+        {
+            let index = this.params.findIndex(p => p.id == _param[1]);
+
+            if (index < 0)
+            {
+                this.createAndAddParamByType(_param[0], _param[1], true, false, true, true);
+                index = this.params.length-1;
+            }
+        }
+
+
+        this.paramFont.loadParam(
+            _node.params.find(p => p[1] == 'font'));
+
+        this.updateStyleParam();
+
+
+        for (const _param of _node.params)
+        {
+            let index = this.params.findIndex(p => p.id == _param[1]);
+
+            if (_param.id != 'font')
+                this.params[index].loadParam(_param);
+        }
     }
 }

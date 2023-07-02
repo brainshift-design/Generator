@@ -4403,6 +4403,7 @@ a
                 <p>•  fixed Distribute not working</p>
                 <p>•  fixed bug in Distribute</p>
                 <p>•  fixed If/Else not passing objects</p>
+                <p>•  fixed font styles not being saved</p>
                 <p>•  fixed UI crash</p>
                 <p>•  small UI updates</p>
                 
@@ -75571,6 +75572,7 @@ extends NumberParamBase
     excludeFromMenu   = []; // indices
     separatorsBefore  = [];
     
+    saveAsText        = false;
     
     reverseMenu       = false;
 
@@ -75724,7 +75726,28 @@ extends NumberParamBase
         if (id == '')
             id = this.id;
 
-        return pos + '["' + this.type  + '", "' + id  + '", "' + this.value.toJson() + '"]';
+        const type =
+            this.saveAsText
+            ? TEXT_VALUE
+            : NUMBER_VALUE;
+
+        const value = 
+            this.saveAsText
+            ? new TextValue(this.options[this.value.value]).toJson()
+            : this.value.toJson();
+
+        return pos + '["' + type  + '", "' + id  + '", "' + value + '"]';
+    }
+
+
+
+    loadParam(_param)
+    {
+        const str   = parseTextValue(_param[2])[0].toString();
+        const index = this.options.indexOf(str);
+
+        if (this.saveAsText) this.setValue(new NumberValue(index), true, true, false);
+        else                 this.setValue(parseNumberValue(_param[2])[0], true, true, false);
     }
 }
 
@@ -95771,7 +95794,6 @@ extends OpShape
 
         this.canDisable  = true;
         this.iconOffsetY = -1;
-        
 
         this.addInput (this.createInputForObjects([TEXT_SHAPE_VALUE], getNodeInputValuesForUndo));
         this.addOutput(new Output([TEXT_SHAPE_VALUE], this.output_genRequest));
@@ -95798,7 +95820,11 @@ extends OpShape
 
         this.paramLineHeight   .controls[0].setSuffix('%', true);
         this.paramLetterSpacing.controls[0].setSuffix('%', true);
+     
+        this.paramFont .saveAsText = true;
+        this.paramStyle.saveAsText = true;
 
+        
         this.addBaseParams();
     }
 
@@ -95848,14 +95874,55 @@ extends OpShape
             : '';
 
 
+        this.updateStyleParam();
+
+        this.updateParamControls();
+    }
+
+
+
+    updateStyleParam()
+    {
         const fontName   = figUniqueFontNames[this.paramFont.value.toNumber()];
         const fontStyles = getFontStyles(fontName);
         
         this.paramStyle.setOptions(fontStyles);
         this.paramStyle.controls[0].setMax(this.paramStyle.options.length-1);
+    }
 
 
-        this.updateParamControls();
+
+    loadParams(_node, pasting)
+    {
+        if (!_node.params)
+            return;
+        
+            
+        for (const _param of _node.params)
+        {
+            let index = this.params.findIndex(p => p.id == _param[1]);
+
+            if (index < 0)
+            {
+                this.createAndAddParamByType(_param[0], _param[1], true, false, true, true);
+                index = this.params.length-1;
+            }
+        }
+
+
+        this.paramFont.loadParam(
+            _node.params.find(p => p[1] == 'font'));
+
+        this.updateStyleParam();
+
+
+        for (const _param of _node.params)
+        {
+            let index = this.params.findIndex(p => p.id == _param[1]);
+
+            if (_param.id != 'font')
+                this.params[index].loadParam(_param);
+        }
     }
 }
 

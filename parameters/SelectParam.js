@@ -5,6 +5,7 @@ extends NumberParamBase
     excludeFromMenu   = []; // indices
     separatorsBefore  = [];
     
+    saveAsText        = false;
     
     reverseMenu       = false;
 
@@ -158,7 +159,28 @@ extends NumberParamBase
         if (id == '')
             id = this.id;
 
-        return pos + '["' + this.type  + '", "' + id  + '", "' + this.value.toJson() + '"]';
+        const type =
+            this.saveAsText
+            ? TEXT_VALUE
+            : NUMBER_VALUE;
+
+        const value = 
+            this.saveAsText
+            ? new TextValue(this.options[this.value.value]).toJson()
+            : this.value.toJson();
+
+        return pos + '["' + type  + '", "' + id  + '", "' + value + '"]';
+    }
+
+
+
+    loadParam(_param)
+    {
+        const str   = parseTextValue(_param[2])[0].toString();
+        const index = this.options.indexOf(str);
+
+        if (this.saveAsText) this.setValue(new NumberValue(index), true, true, false);
+        else                 this.setValue(parseNumberValue(_param[2])[0], true, true, false);
     }
 }
 

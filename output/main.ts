@@ -1828,7 +1828,7 @@ function figStartGenerator()
         figPostMessageToUi({
             cmd:         'uiReturnFigStartGenerator',
             currentUser:  figma.currentUser,
-            subscription:   subscription,
+            subscription: subscription,
             viewportRect: figma.viewport.bounds,
             viewportZoom: figma.viewport.zoom,
             fonts:        fonts });
@@ -1839,6 +1839,8 @@ function figStartGenerator()
 
 function figRestartGenerator()
 {
+    figDeleteAllObjects();
+
     figma.showUI(
         __html__,
         {
