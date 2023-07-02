@@ -1,8 +1,8 @@
 class FigmaColorStyle
 extends FigmaObject
 {
-    id;
-    name;
+    styleId;
+    styleName;
 
     existing;
 
@@ -12,20 +12,32 @@ extends FigmaObject
     {
         super(COLOR_STYLE, nodeId);
 
-        this.id   = styleId;
-        this.name = styleName;
+        this.styleId   = styleId;
+        this.styleName = styleName;
     }
 
 
 
     copy()
     {
-        const copy = new FigmaColorStyle(this.nodeId, this.id, this.name);
+        const copy = new FigmaColorStyle(this.nodeId, this.styleId, this.styleName);
 
         copy.copyBase(this);
 
         copy.existing = this.existing;
 
         return copy;
+    }
+
+
+
+    toJsonObject()
+    {
+        return {
+            ...super.toJsonObject(),
+   
+            styleId:   this.styleId,
+            styleName: this.styleName
+        };
     }
 }

@@ -66,4 +66,30 @@ extends FigmaShape
 
         return copy;
     }
+
+
+
+    toJsonObject()
+    {
+        return {
+            ...super.toJsonObject(),
+   
+            text:          this.text,
+
+            x:             this.x,
+            y:             this.y,
+            width:         this.width,
+            height:        this.height,
+
+            font:          this.font,
+            size:          this.size,
+            style:         this.style,
+
+            alignH:        this.alignH,
+            alignV:        this.alignV,
+            
+            lineHeight:    this.lineHeight,
+            letterSpacing: this.letterSpacing
+        };
+    }
 }

@@ -187,12 +187,12 @@ extends GOperator
 
 
 
-    invalidateInputs(src)
+    invalidateInputs(from)
     {
-        super.invalidateInputs(src);
+        super.invalidateInputs(from);
 
-        if (this.input) this.input.invalidateInputs(src);
-        if (this.count) this.count.invalidateInputs(src);
+        if (this.input) this.input.invalidateInputs(from);
+        if (this.count) this.count.invalidateInputs(from);
     }
 
 

@@ -172,6 +172,25 @@ class FigmaObject
             this.cp2 = mulv2m3(this.cp2, coords);
         }
     }
+
+
+    toJsonObject()
+    {
+        return {
+            type:       this.type,
+            nodeId:     this.nodeId,
+
+            uniqueId:   this.uniqueId,
+            objectId:   this.objectId,
+            objectName: this.objectName,
+            
+            feedback:   this.feedback,
+
+            xp0:        point(this.xp0.x, this.xp0.y),
+            xp1:        point(this.xp1.x, this.xp1.y),
+            xp2:        point(this.xp2.x, this.xp2.y)
+        };
+    }
 }
 
 

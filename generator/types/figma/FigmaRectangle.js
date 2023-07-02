@@ -39,4 +39,19 @@ extends FigmaShape
 
         return copy;
     }
+
+
+
+    toJsonObject()
+    {
+        return {
+            ...super.toJsonObject(),
+   
+            x:      this.x,
+            y:      this.y,
+            width:  this.width,
+            height: this.height,
+            round:  this.round
+        };
+    }
 }

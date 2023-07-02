@@ -9,6 +9,7 @@ extends FigmaShape
     degree;
 
     pathPoints;
+
     pathData;
     winding;
     round;
@@ -85,6 +86,19 @@ extends FigmaShape
         this.y = minY;
 
         this.pathData = getPathDataFromPoints(this.pathPoints, this.closed, this.degree);
+    }
+
+
+
+    toJsonObject()
+    {
+        return {
+            ...super.toJsonObject(),
+   
+            pathData: this.pathData,
+            winding:  this.winding,
+            round:    this.round
+        };
     }
 }
 

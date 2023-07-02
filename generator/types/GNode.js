@@ -7,10 +7,11 @@ class GNode
 
     listId       = -1;
 
-    iteration    = 0;
+    //iteration    = 0;
 
     options      = {};
     data         = {}; // for type conversion info
+
 
     updateValues = [];
 
@@ -91,7 +92,7 @@ class GNode
     validate()
     {
         this.valid = true;
-        this.iteration++;
+        //this.iteration++;
     }
 
 
@@ -99,5 +100,7 @@ class GNode
     invalidateInputs(from)
     {
         this.valid = false;
+
+        return true;
     }
 }

@@ -237,7 +237,7 @@ function genUpdateValuesAndObjects(requestId, actionId, updateNodeId, updatePara
 
         if (o < updateObjects.length)
         {
-            objChunk.push(updateObjects[o]);
+            objChunk.push(updateObjects[o].toJsonObject());
             o++, oc++;
         }
 

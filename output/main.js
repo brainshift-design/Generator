@@ -2862,7 +2862,6 @@ function genRectIsValid(genRect) {
         && genRect.y != null && !isNaN(genRect.y)
         && genRect.width != null && !isNaN(genRect.width)
         && genRect.height != null && !isNaN(genRect.height)
-        //&& genRect.angle  != null && !isNaN(genRect.angle )
         && genRect.round != null && !isNaN(genRect.round);
 }
 function figCreateRect(genRect) {

@@ -50,4 +50,27 @@ extends FigmaObject
 
         this.isDeco           = base.isDeco;
     }
+
+
+
+    toJsonObject()
+    {
+        return {
+            ...super.toJsonObject(),
+   
+            fills:            this.fills,
+            strokes:          this.strokes,
+
+            strokeWeight:     this.strokeWeight,
+            strokeAlign:      this.strokeAlign,
+            strokeJoin:       this.strokeJoin,
+            strokeMiterLimit: this.strokeMiterLimit,
+
+            effects:          this.effects,
+
+            isDeco:           this.isDeco,
+
+            isMask:           this.isMask
+        };
+    }
 }

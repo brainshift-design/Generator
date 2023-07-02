@@ -4803,6 +4803,25 @@ class FigmaObject
             this.cp2 = mulv2m3(this.cp2, coords);
         }
     }
+
+
+    toJsonObject()
+    {
+        return {
+            type:       this.type,
+            nodeId:     this.nodeId,
+
+            uniqueId:   this.uniqueId,
+            objectId:   this.objectId,
+            objectName: this.objectName,
+            
+            feedback:   this.feedback,
+
+            xp0:        point(this.xp0.x, this.xp0.y),
+            xp1:        point(this.xp1.x, this.xp1.y),
+            xp2:        point(this.xp2.x, this.xp2.y)
+        };
+    }
 }
 
 
@@ -5259,6 +5278,29 @@ extends FigmaObject
 
         this.isDeco           = base.isDeco;
     }
+
+
+
+    toJsonObject()
+    {
+        return {
+            ...super.toJsonObject(),
+   
+            fills:            this.fills,
+            strokes:          this.strokes,
+
+            strokeWeight:     this.strokeWeight,
+            strokeAlign:      this.strokeAlign,
+            strokeJoin:       this.strokeJoin,
+            strokeMiterLimit: this.strokeMiterLimit,
+
+            effects:          this.effects,
+
+            isDeco:           this.isDeco,
+
+            isMask:           this.isMask
+        };
+    }
 }
 
 
@@ -5303,6 +5345,21 @@ extends FigmaShape
 
         return copy;
     }
+
+
+
+    toJsonObject()
+    {
+        return {
+            ...super.toJsonObject(),
+   
+            x:      this.x,
+            y:      this.y,
+            width:  this.width,
+            height: this.height,
+            round:  this.round
+        };
+    }
 }
 
 
@@ -5339,6 +5396,19 @@ extends FigmaShape
         copy.copyBase(this);
 
         return copy;
+    }
+
+
+
+    toJsonObject()
+    {
+        return {
+            ...super.toJsonObject(),
+   
+            x:       this.x,
+            y:       this.y,
+            width:   this.width
+        };
     }
 }
 
@@ -5389,6 +5459,23 @@ extends FigmaShape
 
         return copy;
     }
+
+
+
+    toJsonObject()
+    {
+        return {
+            ...super.toJsonObject(),
+   
+            x:      this.x,
+            y:      this.y,
+            width:  this.width,
+            height: this.height,
+            from:   this.from,
+            to:     this.to,
+            inner:  this.corners
+        };
+    }
 }
 
 
@@ -5434,6 +5521,22 @@ extends FigmaShape
         copy.copyBase(this);
 
         return copy;
+    }
+
+
+
+    toJsonObject()
+    {
+        return {
+            ...super.toJsonObject(),
+   
+            x:       this.x,
+            y:       this.y,
+            width:   this.width,
+            height:  this.height,
+            round:   this.round,
+            corners: this.corners
+        };
     }
 }
 
@@ -5483,6 +5586,22 @@ extends FigmaShape
         copy.copyBase(this);
 
         return copy;
+    }
+
+
+    toJsonObject()
+    {
+        return {
+            ...super.toJsonObject(),
+   
+            x:      this.x,
+            y:      this.y,
+            width:  this.width,
+            height: this.height,
+
+            points: this.points,
+            convex: this.convex
+        };
     }
 }
 
@@ -5555,6 +5674,32 @@ extends FigmaShape
 
         return copy;
     }
+
+
+
+    toJsonObject()
+    {
+        return {
+            ...super.toJsonObject(),
+   
+            text:          this.text,
+
+            x:             this.x,
+            y:             this.y,
+            width:         this.width,
+            height:        this.height,
+
+            font:          this.font,
+            size:          this.size,
+            style:         this.style,
+
+            alignH:        this.alignH,
+            alignV:        this.alignV,
+            
+            lineHeight:    this.lineHeight,
+            letterSpacing: this.letterSpacing
+        };
+    }
 }
 
 
@@ -5595,6 +5740,19 @@ extends FigmaShape
 
         return copy;
     }
+
+
+
+    toJsonObject()
+    {
+        return {
+            ...super.toJsonObject(),
+   
+            x:        this.x,
+            y:        this.y,
+            isCenter: this.isCenter
+        };
+    }
 }
 
 
@@ -5609,6 +5767,7 @@ extends FigmaShape
     degree;
 
     pathPoints;
+
     pathData;
     winding;
     round;
@@ -5685,6 +5844,19 @@ extends FigmaShape
         this.y = minY;
 
         this.pathData = getPathDataFromPoints(this.pathPoints, this.closed, this.degree);
+    }
+
+
+
+    toJsonObject()
+    {
+        return {
+            ...super.toJsonObject(),
+   
+            pathData: this.pathData,
+            winding:  this.winding,
+            round:    this.round
+        };
     }
 }
 
@@ -6014,6 +6186,18 @@ extends FigmaShape
 
         return copy;
     }
+
+
+
+    toJsonObject()
+    {
+        return {
+            ...super.toJsonObject(),
+   
+            operation: this.operation,
+            children:  this.children
+        };
+    }
 }
 
 
@@ -6044,6 +6228,17 @@ extends FigmaShape
         copy.copyBase(this);
 
         return copy;
+    }
+
+
+
+    toJsonObject()
+    {
+        return {
+            ...super.toJsonObject(),
+   
+            children: this.children
+        };
     }
 }
 
@@ -6091,14 +6286,30 @@ extends FigmaShape
 
         return copy;
     }
+
+
+
+    toJsonObject()
+    {
+        return {
+            ...super.toJsonObject(),
+   
+            x:        this.x,
+            y:        this.y,
+            width:    this.width,
+            height:   this.height,
+            round:    this.round,
+            children: this.children
+        };
+    }
 }
 
 
 class FigmaColorStyle
 extends FigmaObject
 {
-    id;
-    name;
+    styleId;
+    styleName;
 
     existing;
 
@@ -6108,21 +6319,33 @@ extends FigmaObject
     {
         super(COLOR_STYLE, nodeId);
 
-        this.id   = styleId;
-        this.name = styleName;
+        this.styleId   = styleId;
+        this.styleName = styleName;
     }
 
 
 
     copy()
     {
-        const copy = new FigmaColorStyle(this.nodeId, this.id, this.name);
+        const copy = new FigmaColorStyle(this.nodeId, this.styleId, this.styleName);
 
         copy.copyBase(this);
 
         copy.existing = this.existing;
 
         return copy;
+    }
+
+
+
+    toJsonObject()
+    {
+        return {
+            ...super.toJsonObject(),
+   
+            styleId:   this.styleId,
+            styleName: this.styleName
+        };
     }
 }
 
@@ -6136,10 +6359,11 @@ class GNode
 
     listId       = -1;
 
-    iteration    = 0;
+    //iteration    = 0;
 
     options      = {};
     data         = {}; // for type conversion info
+
 
     updateValues = [];
 
@@ -6220,7 +6444,7 @@ class GNode
     validate()
     {
         this.valid = true;
-        this.iteration++;
+        //this.iteration++;
     }
 
 
@@ -6228,6 +6452,8 @@ class GNode
     invalidateInputs(from)
     {
         this.valid = false;
+
+        return true;
     }
 }
 
@@ -11643,12 +11869,12 @@ extends GOperator
 
 
 
-    invalidateInputs(src)
+    invalidateInputs(from)
     {
-        super.invalidateInputs(src);
+        super.invalidateInputs(from);
 
-        if (this.input) this.input.invalidateInputs(src);
-        if (this.count) this.count.invalidateInputs(src);
+        if (this.input) this.input.invalidateInputs(from);
+        if (this.count) this.count.invalidateInputs(from);
     }
 
 
@@ -20606,13 +20832,7 @@ extends GOperator
 
     async evalShapeBase(parse, input, evalHeight = true)
     {
-        // if (this.value.x     != undefined) this.updateValues.push(['x',     this.value.x    ]);
-        // if (this.value.y     != undefined) this.updateValues.push(['y',     this.value.y    ]);
-        // if (this.value.width != undefined) this.updateValues.push(['width', this.value.width]);
 
-        // if (   evalHeight // lines don't have height
-        //     && this.value.height != undefined)
-        //     this.updateValues.push(['height', this.value.height]);
     }
 
 
@@ -21883,6 +22103,7 @@ extends GShape
 
             text.createDefaultTransform(x, y);
  
+            console.log('text');
             if (   text.width  == 0
                 && text.height == 0)
             {
@@ -23617,7 +23838,7 @@ extends GAffine
 
     invalidateInputs(from)
     {
-        super.invalidateInputs(from);
+        super.invalidateInputs(from)
 
         if (this.angle) this.angle.invalidateInputs(from);
     }
@@ -25075,7 +25296,7 @@ function genUpdateValuesAndObjects(requestId, actionId, updateNodeId, updatePara
 
         if (o < updateObjects.length)
         {
-            objChunk.push(updateObjects[o]);
+            objChunk.push(updateObjects[o].toJsonObject());
             o++, oc++;
         }
 
@@ -30024,6 +30245,7 @@ function genParseNodeOptions(parse)
         beforeActive: ((opt >>  1) & 1) != 0,
         enabled:      ((opt >>  2) & 1) != 0,
         cached:       ((opt >>  3) & 1) != 0,
+        //unknown:      ((opt >>  4) & 1) != 0,
         hasInputs:    ((opt >> 20) & 1) != 0,
         existing:     ((opt >> 21) & 1) != 0
     };

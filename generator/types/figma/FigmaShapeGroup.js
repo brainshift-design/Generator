@@ -26,4 +26,15 @@ extends FigmaShape
 
         return copy;
     }
+
+
+
+    toJsonObject()
+    {
+        return {
+            ...super.toJsonObject(),
+   
+            children: this.children
+        };
+    }
 }

@@ -961,11 +961,11 @@ class Operator
             const beforeActive = nextActive && nextActive.follows(this);
 
             const options =
-                  ((this.active  ? 1 : 0) << 0)
-                | ((beforeActive ? 1 : 0) << 1)
-                | ((this.enabled ? 1 : 0) << 2)
-                | ((this.cached  ? 1 : 0) << 3)
-                //| ((this.isCached() ? 1 : 0) << 3)
+                  ((this.active      ? 1 : 0) << 0)
+                | ((beforeActive     ? 1 : 0) << 1)
+                | ((this.enabled     ? 1 : 0) << 2)
+                | ((this.cached      ? 1 : 0) << 3)
+                //| ((this.isUnknown() ? 1 : 0) << 4)
                 | nodeOptions;
 
             request.push(options);
