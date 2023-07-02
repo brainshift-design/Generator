@@ -13,21 +13,14 @@ function genEllipseIsValid(genEllipse)
 
 function figCreateEllipse(genEllipse)
 {
+    if (!genEllipseIsValid(genEllipse))
+        return null;
+    
+    
     const figEllipse = figma.createEllipse();
 
-    if (!genEllipseIsValid(genEllipse))
-        return figEllipse;
 
-
-    figEllipse.arcData =
-    {
-        startingAngle: genEllipse.from /360*(Math.PI*2),
-        endingAngle:   genEllipse.to   /360*(Math.PI*2),
-        innerRadius:   Math.min(Math.max(0, genEllipse.inner/100), 1)
-    };
-
-
-    setObjectTransform(figEllipse, genEllipse);
+    figUpdateEllipseData(figEllipse, genEllipse);
 
     
     if (figPoints.includes(figEllipse))
@@ -44,10 +37,15 @@ function figCreateEllipse(genEllipse)
 
 function figUpdateEllipse(figEllipse, genEllipse)
 {
-    if (!genEllipseIsValid(genEllipse))
-        return;
+    figUpdateEllipseData(figEllipse, genEllipse);
+
+    setObjectProps(figEllipse, genEllipse);
+}
 
 
+
+function figUpdateEllipseData(figEllipse, genEllipse)
+{
     figEllipse.arcData =
     {
         startingAngle: genEllipse.from /360*(Math.PI*2),
@@ -55,7 +53,5 @@ function figUpdateEllipse(figEllipse, genEllipse)
         innerRadius:   Math.min(Math.max(0, genEllipse.inner/100), 1)
     };
 
-
     setObjectTransform(figEllipse, genEllipse);
-    setObjectProps    (figEllipse, genEllipse);
 }

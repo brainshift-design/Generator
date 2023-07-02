@@ -14,20 +14,13 @@ function genStarIsValid(genStar)
 
 function figCreateStar(genStar)
 {
+    if (!genStarIsValid(genStar))
+        return null;
+    
+    
     const figStar = figma.createStar();
 
-    if (!genStarIsValid(genStar))
-        return figStar;
-
-
-    figStar.cornerRadius = genStar.round;
-    figStar.pointCount   = genStar.points;
-    figStar.innerRadius  = Math.min(Math.max(0, genStar.convex / 100), 1);
-
-
-    setObjectTransform(figStar, genStar);
-    setObjectProps    (figStar, genStar);
-
+    figUpdateStar(figStar, genStar);
 
     return figStar;
 }
@@ -36,14 +29,9 @@ function figCreateStar(genStar)
 
 function figUpdateStar(figStar, genStar)
 {
-    if (!genStarIsValid(genStar))
-        return;
-
-
     figStar.cornerRadius = genStar.round;
     figStar.pointCount   = genStar.points;
     figStar.innerRadius  = Math.min(Math.max(0, genStar.convex / 100), 1);
-
 
     setObjectTransform(figStar, genStar);
     setObjectProps    (figStar, genStar);

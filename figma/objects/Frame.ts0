@@ -12,23 +12,16 @@ function genFrameIsValid(genGroup)
 
 function figCreateFrame(genFrame)
 {
+    if (!genFrameIsValid(genFrame))
+        return null;
+        
+        
     const figFrame = figma.createFrame();
 
-    if (!genFrameIsValid(genFrame))
-        return figFrame;
-
-
+    
     if (figFrame)
     {
-        if (!genFrameIsValid(genFrame))
-            return figFrame;
-        
-        
-        figFrame.cornerRadius = genFrame.round;
-
-        
-        setObjectTransform(figFrame, genFrame);
-        setObjectProps    (figFrame, genFrame, genFrame.children.length == 0);
+        figUpdateFrameData(figFrame, genFrame);
 
 
         let objects = [];
@@ -48,17 +41,17 @@ function figCreateFrame(genFrame)
 
 function figUpdateFrame(figFrame, genFrame)
 {
-    if (!genFrameIsValid(genFrame))
-        return;
-
-
-    figFrame.cornerRadius = genFrame.round;
-
-
-    setObjectTransform(figFrame, genFrame);
-    setObjectProps    (figFrame, genFrame, genFrame.children.length == 0);
-        
+    figUpdateFrameData(figFrame, genFrame);
 
     figUpdateObjects(figFrame, genFrame.children);
 }
 
+
+
+function figUpdateFrameData(figFrame, genFrame)
+{
+    figFrame.cornerRadius = genFrame.round;
+
+    setObjectTransform(figFrame, genFrame);
+    setObjectProps    (figFrame, genFrame, genFrame.children.length == 0);
+}

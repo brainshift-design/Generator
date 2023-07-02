@@ -53,16 +53,6 @@ function figUpdateBoolean(figBool, genBool)
     setObjectTransform(figBool, genBool);
 
     figUpdateObjects(figBool, genBool.children);
-
-
-    // figPostMessageToUi({
-    //     cmd:   'uiUpdateGroupBounds',
-    //     nodeId: genBool.nodeId,
-    //     x:      figBool.x,
-    //     y:      figBool.y,
-    //     width:  figBool.width,
-    //     height: figBool.height
-    // });
 }
 
 

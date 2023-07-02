@@ -4038,16 +4038,6 @@ function figUpdateBoolean(figBool, genBool)
     setObjectTransform(figBool, genBool);
 
     figUpdateObjects(figBool, genBool.children);
-
-
-    // figPostMessageToUi({
-    //     cmd:   'uiUpdateGroupBounds',
-    //     nodeId: genBool.nodeId,
-    //     x:      figBool.x,
-    //     y:      figBool.y,
-    //     width:  figBool.width,
-    //     height: figBool.height
-    // });
 }
 
 
@@ -4070,21 +4060,14 @@ function genEllipseIsValid(genEllipse)
 
 function figCreateEllipse(genEllipse)
 {
+    if (!genEllipseIsValid(genEllipse))
+        return null;
+    
+    
     const figEllipse = figma.createEllipse();
 
-    if (!genEllipseIsValid(genEllipse))
-        return figEllipse;
 
-
-    figEllipse.arcData =
-    {
-        startingAngle: genEllipse.from /360*(Math.PI*2),
-        endingAngle:   genEllipse.to   /360*(Math.PI*2),
-        innerRadius:   Math.min(Math.max(0, genEllipse.inner/100), 1)
-    };
-
-
-    setObjectTransform(figEllipse, genEllipse);
+    figUpdateEllipseData(figEllipse, genEllipse);
 
     
     if (figPoints.includes(figEllipse))
@@ -4101,10 +4084,15 @@ function figCreateEllipse(genEllipse)
 
 function figUpdateEllipse(figEllipse, genEllipse)
 {
-    if (!genEllipseIsValid(genEllipse))
-        return;
+    figUpdateEllipseData(figEllipse, genEllipse);
+
+    setObjectProps(figEllipse, genEllipse);
+}
 
 
+
+function figUpdateEllipseData(figEllipse, genEllipse)
+{
     figEllipse.arcData =
     {
         startingAngle: genEllipse.from /360*(Math.PI*2),
@@ -4112,11 +4100,8 @@ function figUpdateEllipse(figEllipse, genEllipse)
         innerRadius:   Math.min(Math.max(0, genEllipse.inner/100), 1)
     };
 
-
     setObjectTransform(figEllipse, genEllipse);
-    setObjectProps    (figEllipse, genEllipse);
 }
-
 
 
 function genFrameIsValid(genGroup)
@@ -4133,23 +4118,16 @@ function genFrameIsValid(genGroup)
 
 function figCreateFrame(genFrame)
 {
+    if (!genFrameIsValid(genFrame))
+        return null;
+        
+        
     const figFrame = figma.createFrame();
 
-    if (!genFrameIsValid(genFrame))
-        return figFrame;
-
-
+    
     if (figFrame)
     {
-        if (!genFrameIsValid(genFrame))
-            return figFrame;
-        
-        
-        figFrame.cornerRadius = genFrame.round;
-
-        
-        setObjectTransform(figFrame, genFrame);
-        setObjectProps    (figFrame, genFrame, genFrame.children.length == 0);
+        figUpdateFrameData(figFrame, genFrame);
 
 
         let objects = [];
@@ -4169,21 +4147,20 @@ function figCreateFrame(genFrame)
 
 function figUpdateFrame(figFrame, genFrame)
 {
-    if (!genFrameIsValid(genFrame))
-        return;
-
-
-    figFrame.cornerRadius = genFrame.round;
-
-
-    setObjectTransform(figFrame, genFrame);
-    setObjectProps    (figFrame, genFrame, genFrame.children.length == 0);
-        
+    figUpdateFrameData(figFrame, genFrame);
 
     figUpdateObjects(figFrame, genFrame.children);
 }
 
 
+
+function figUpdateFrameData(figFrame, genFrame)
+{
+    figFrame.cornerRadius = genFrame.round;
+
+    setObjectTransform(figFrame, genFrame);
+    setObjectProps    (figFrame, genFrame, genFrame.children.length == 0);
+}
 
 
 function genShapeGroupIsValid(genGroup)
@@ -4228,21 +4205,7 @@ function figUpdateShapeGroup(figGroup, genGroup)
         return;
     }
 
-
-    //setObjectTransform(figGroup, genGroup);
-
-
     figUpdateObjects(figGroup, genGroup.children);
-
-
-    // figPostMessageToUi({
-    //     cmd:   'uiUpdateGroupBounds',
-    //     nodeId: genGroup.nodeId,
-    //     x:      figGroup.x,
-    //     y:      figGroup.y,
-    //     width:  figGroup.width,
-    //     height: figGroup.height
-    // });
 }
 
 
@@ -4258,15 +4221,13 @@ function genLineIsValid(genLine)
 
 function figCreateLine(genLine)
 {
+    if (!genLineIsValid(genLine))
+        return null;
+    
+
     const figLine = figma.createLine();
 
-    if (!genLineIsValid(genLine))
-        return figLine;
-
-
-    setObjectTransform(figLine, genLine, true, 0);
-    setObjectProps    (figLine, genLine);
-
+    figUpdateLine(figLine, genLine);
     
     return figLine;
 }
@@ -4275,10 +4236,6 @@ function figCreateLine(genLine)
 
 function figUpdateLine(figLine, genLine)
 {
-    if (!genLineIsValid(genLine))
-        return;
-
-
     setObjectTransform(figLine, genLine, true, 0);
     setObjectProps    (figLine, genLine);
 }
@@ -4304,6 +4261,7 @@ function figCreatePoint(genPoint)
         ? figma.createRectangle()
         : figma.createEllipse();
 
+        
     figPoint.setPluginData('isCenter', boolToString(genPoint.isCenter));
 
 
@@ -4316,12 +4274,8 @@ function figCreatePoint(genPoint)
     
     if (figPoints.includes(figPoint))
         updatePointSize_(figPoint, genPoint);
-
     else
-    {
-        setPointTransform(figPoint, genPoint);
-        updatePointStyles(figPoint);
-    }
+        figUpdatePoint(figPoing, genPoint);
 
     
     return figPoint;
@@ -4331,10 +4285,6 @@ function figCreatePoint(genPoint)
 
 function figUpdatePoint(figPoint, genPoint)
 {
-    if (!genPointIsValid(genPoint))
-        return;
-
-
     setPointTransform(figPoint, genPoint);
     updatePointStyles(figPoint);
 }
@@ -4418,19 +4368,13 @@ function genPolyIsValid(genPoly)
 
 function figCreatePolygon(genPoly)
 {
+    if (!genPolyIsValid(genPoly))
+        return null;
+    
+    
     const figPoly = figma.createPolygon();
 
-    if (!genPolyIsValid(genPoly))
-        return figPoly;
-
-
-    figPoly.cornerRadius = genPoly.round;
-    figPoly.pointCount   = Math.max(3, genPoly.corners);
-
-
-    setObjectTransform(figPoly, genPoly);
-    setObjectProps    (figPoly, genPoly);
-
+    figUpdatePolygon(figPoly, genPoly);
 
     return figPoly;
 }
@@ -4439,13 +4383,8 @@ function figCreatePolygon(genPoly)
 
 function figUpdatePolygon(figPoly, genPoly)
 {
-    if (!genPolyIsValid(genPoly))
-        return;
-
-
     figPoly.cornerRadius = genPoly.round;
     figPoly.pointCount   = Math.max(3, genPoly.corners);
-
 
     setObjectTransform(figPoly, genPoly);
     setObjectProps    (figPoly, genPoly);
@@ -4514,20 +4453,13 @@ function genStarIsValid(genStar)
 
 function figCreateStar(genStar)
 {
+    if (!genStarIsValid(genStar))
+        return null;
+    
+    
     const figStar = figma.createStar();
 
-    if (!genStarIsValid(genStar))
-        return figStar;
-
-
-    figStar.cornerRadius = genStar.round;
-    figStar.pointCount   = genStar.points;
-    figStar.innerRadius  = Math.min(Math.max(0, genStar.convex / 100), 1);
-
-
-    setObjectTransform(figStar, genStar);
-    setObjectProps    (figStar, genStar);
-
+    figUpdateStar(figStar, genStar);
 
     return figStar;
 }
@@ -4536,14 +4468,9 @@ function figCreateStar(genStar)
 
 function figUpdateStar(figStar, genStar)
 {
-    if (!genStarIsValid(genStar))
-        return;
-
-
     figStar.cornerRadius = genStar.round;
     figStar.pointCount   = genStar.points;
     figStar.innerRadius  = Math.min(Math.max(0, genStar.convex / 100), 1);
-
 
     setObjectTransform(figStar, genStar);
     setObjectProps    (figStar, genStar);

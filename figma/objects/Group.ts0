@@ -40,19 +40,5 @@ function figUpdateShapeGroup(figGroup, genGroup)
         return;
     }
 
-
-    //setObjectTransform(figGroup, genGroup);
-
-
     figUpdateObjects(figGroup, genGroup.children);
-
-
-    // figPostMessageToUi({
-    //     cmd:   'uiUpdateGroupBounds',
-    //     nodeId: genGroup.nodeId,
-    //     x:      figGroup.x,
-    //     y:      figGroup.y,
-    //     width:  figGroup.width,
-    //     height: figGroup.height
-    // });
 }

@@ -9,15 +9,13 @@ function genLineIsValid(genLine)
 
 function figCreateLine(genLine)
 {
+    if (!genLineIsValid(genLine))
+        return null;
+    
+
     const figLine = figma.createLine();
 
-    if (!genLineIsValid(genLine))
-        return figLine;
-
-
-    setObjectTransform(figLine, genLine, true, 0);
-    setObjectProps    (figLine, genLine);
-
+    figUpdateLine(figLine, genLine);
     
     return figLine;
 }
@@ -26,10 +24,6 @@ function figCreateLine(genLine)
 
 function figUpdateLine(figLine, genLine)
 {
-    if (!genLineIsValid(genLine))
-        return;
-
-
     setObjectTransform(figLine, genLine, true, 0);
     setObjectProps    (figLine, genLine);
 }

@@ -13,19 +13,13 @@ function genPolyIsValid(genPoly)
 
 function figCreatePolygon(genPoly)
 {
+    if (!genPolyIsValid(genPoly))
+        return null;
+    
+    
     const figPoly = figma.createPolygon();
 
-    if (!genPolyIsValid(genPoly))
-        return figPoly;
-
-
-    figPoly.cornerRadius = genPoly.round;
-    figPoly.pointCount   = Math.max(3, genPoly.corners);
-
-
-    setObjectTransform(figPoly, genPoly);
-    setObjectProps    (figPoly, genPoly);
-
+    figUpdatePolygon(figPoly, genPoly);
 
     return figPoly;
 }
@@ -34,13 +28,8 @@ function figCreatePolygon(genPoly)
 
 function figUpdatePolygon(figPoly, genPoly)
 {
-    if (!genPolyIsValid(genPoly))
-        return;
-
-
     figPoly.cornerRadius = genPoly.round;
     figPoly.pointCount   = Math.max(3, genPoly.corners);
-
 
     setObjectTransform(figPoly, genPoly);
     setObjectProps    (figPoly, genPoly);
