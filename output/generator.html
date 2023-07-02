@@ -6359,7 +6359,7 @@ class GNode
 
     listId       = -1;
 
-    //iteration    = 0;
+    iteration    = 0;
 
     options      = {};
     data         = {}; // for type conversion info
@@ -6444,14 +6444,16 @@ class GNode
     validate()
     {
         this.valid = true;
-        //this.iteration++;
+        this.iteration++;
     }
 
 
 
     invalidateInputs(from)
     {
-        this.valid = false;
+        if (   this.options
+            && this.options.unknown)
+            this.valid = false;
 
         return true;
     }
@@ -22103,7 +22105,6 @@ extends GShape
 
             text.createDefaultTransform(x, y);
  
-            console.log('text');
             if (   text.width  == 0
                 && text.height == 0)
             {
@@ -30245,7 +30246,7 @@ function genParseNodeOptions(parse)
         beforeActive: ((opt >>  1) & 1) != 0,
         enabled:      ((opt >>  2) & 1) != 0,
         cached:       ((opt >>  3) & 1) != 0,
-        //unknown:      ((opt >>  4) & 1) != 0,
+        unknown:      ((opt >>  4) & 1) != 0,
         hasInputs:    ((opt >> 20) & 1) != 0,
         existing:     ((opt >> 21) & 1) != 0
     };

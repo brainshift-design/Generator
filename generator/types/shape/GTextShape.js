@@ -174,7 +174,6 @@ extends GShape
 
             text.createDefaultTransform(x, y);
  
-            console.log('text');
             if (   text.width  == 0
                 && text.height == 0)
             {

@@ -4398,6 +4398,7 @@ a
                 <h1 style='margin-top: 20px;'>What's new</h1>
 
                 <p>•  fixed incorrect Vector path bounds</p>
+                <p>•  improved generation speed</p>
                 <p>•  fixed issue with text size</p>
                 <p>•  fixed Distribute not working</p>
                 <p>•  fixed bug in Distribute</p>
@@ -11085,7 +11086,7 @@ class GNode
 
     listId       = -1;
 
-    //iteration    = 0;
+    iteration    = 0;
 
     options      = {};
     data         = {}; // for type conversion info
@@ -11170,14 +11171,16 @@ class GNode
     validate()
     {
         this.valid = true;
-        //this.iteration++;
+        this.iteration++;
     }
 
 
 
     invalidateInputs(from)
     {
-        this.valid = false;
+        if (   this.options
+            && this.options.unknown)
+            this.valid = false;
 
         return true;
     }
@@ -26829,7 +26832,6 @@ extends GShape
 
             text.createDefaultTransform(x, y);
  
-            console.log('text');
             if (   text.width  == 0
                 && text.height == 0)
             {
@@ -34971,7 +34973,7 @@ function genParseNodeOptions(parse)
         beforeActive: ((opt >>  1) & 1) != 0,
         enabled:      ((opt >>  2) & 1) != 0,
         cached:       ((opt >>  3) & 1) != 0,
-        //unknown:      ((opt >>  4) & 1) != 0,
+        unknown:      ((opt >>  4) & 1) != 0,
         hasInputs:    ((opt >> 20) & 1) != 0,
         existing:     ((opt >> 21) & 1) != 0
     };
@@ -47142,7 +47144,7 @@ class GNode
 
     listId       = -1;
 
-    //iteration    = 0;
+    iteration    = 0;
 
     options      = {};
     data         = {}; // for type conversion info
@@ -47227,14 +47229,16 @@ class GNode
     validate()
     {
         this.valid = true;
-        //this.iteration++;
+        this.iteration++;
     }
 
 
 
     invalidateInputs(from)
     {
-        this.valid = false;
+        if (   this.options
+            && this.options.unknown)
+            this.valid = false;
 
         return true;
     }
@@ -62886,7 +62890,6 @@ extends GShape
 
             text.createDefaultTransform(x, y);
  
-            console.log('text');
             if (   text.width  == 0
                 && text.height == 0)
             {
@@ -82786,7 +82789,7 @@ class Operator
                 | ((beforeActive     ? 1 : 0) << 1)
                 | ((this.enabled     ? 1 : 0) << 2)
                 | ((this.cached      ? 1 : 0) << 3)
-                //| ((this.isUnknown() ? 1 : 0) << 4)
+                | ((this.isUnknown() ? 1 : 0) << 4)
                 | nodeOptions;
 
             request.push(options);
