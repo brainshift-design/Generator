@@ -1,8 +1,6 @@
 class GBackBlur
-extends GOperator
+extends GOperator1
 {
-    input  = null;
-
     radius = null;
 
 
@@ -19,9 +17,6 @@ extends GOperator
         const copy = new GBackBlur(this.nodeId, this.options);
 
         copy.copyBase(this);
-
-        if (this.input) 
-            copy.input = this.input.copy();
 
         if (this.radius) copy.radius = this.radius.copy();
 
@@ -68,15 +63,6 @@ extends GOperator
 
 
 
-    pushValueUpdates(parse)
-    {
-        super.pushValueUpdates(parse);
-
-        if (this.radius) this.radius.pushValueUpdates(parse);
-    }
-    
-    
-    
     toValue()
     {
         return new BackBlurValue(
@@ -93,11 +79,19 @@ extends GOperator
 
 
 
+    pushValueUpdates(parse)
+    {
+        super.pushValueUpdates(parse);
+
+        if (this.radius) this.radius.pushValueUpdates(parse);
+    }
+    
+    
+    
     invalidateInputs(from)
     {
         super.invalidateInputs(from);
 
-        if (this.input ) this.input .invalidateInputs(from);
         if (this.radius) this.radius.invalidateInputs(from);
     }
 }

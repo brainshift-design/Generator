@@ -1,5 +1,5 @@
 class GTangent
-extends GTrigBase
+extends GNumberType1
 {
     constructor(nodeId, options)
     {

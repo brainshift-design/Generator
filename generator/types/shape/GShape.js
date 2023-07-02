@@ -1,7 +1,9 @@
 class GShape
 extends GShapeBase
 {
-    props  = null;
+    input = null;
+
+    props = null;
    
 
 
@@ -16,6 +18,8 @@ extends GShapeBase
     {
         super.copyBase(base);
         
+        if (base.input) this.input = base.input.copy();
+
         this.copyProperties(base.props);
     }
 
@@ -24,6 +28,15 @@ extends GShapeBase
     copyProperties(props)
     {
         this.props = props.copy();
+    }
+
+
+
+    isCached()
+    {
+        return super.isCached()
+            && (  !this.input 
+                || this.input.isCached());
     }
 
 
@@ -84,15 +97,6 @@ extends GShapeBase
 
 
 
-    pushValueUpdates(parse)
-    {
-        super.pushValueUpdates(parse);
-
-        if (this.props) this.props.pushValueUpdates(parse);
-    }
-
-
-    
     evalStyle(options = {})
     {
 
@@ -108,10 +112,21 @@ extends GShapeBase
 
 
 
+    pushValueUpdates(parse)
+    {
+        super.pushValueUpdates(parse);
+
+        if (this.input) this.input.pushValueUpdates(parse);
+        if (this.props) this.props.pushValueUpdates(parse);
+    }
+
+
+    
     invalidateInputs(from)
     {
         super.invalidateInputs(from);
 
+        if (this.input) this.input.invalidateInputs(from);
         if (this.props) this.props.invalidateInputs(from);
     }
 }

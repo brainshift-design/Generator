@@ -1,9 +1,6 @@
 class GTextCompare
-extends GTextType
+extends GTextType2
 {
-    input0 = null;
-    input1 = null;
-
     operation;
 
 
@@ -20,9 +17,6 @@ extends GTextType
         const copy = new GTextCompare(this.nodeId, this.options);
 
         copy.copyBase(this);
-
-        if (this.input0) copy.input0 = this.input0.copy();
-        if (this.input1) copy.input1 = this.input1.copy();
 
         copy.operation = this.operation.copy();
 
@@ -73,8 +67,6 @@ extends GTextType
     {
         super.pushValueUpdates(parse);
 
-        if (this.input0   ) this.input0   .pushValueUpdates(parse);
-        if (this.input1   ) this.input1   .pushValueUpdates(parse);
         if (this.operation) this.operation.pushValueUpdates(parse);
     }
 
@@ -84,8 +76,6 @@ extends GTextType
     {
         super.invalidateInputs(from);
 
-        if (this.input0   ) this.input0   .invalidateInputs(from);
-        if (this.input1   ) this.input1   .invalidateInputs(from);
         if (this.operation) this.operation.invalidateInputs(from);
     }
 }

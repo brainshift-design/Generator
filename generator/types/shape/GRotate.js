@@ -100,6 +100,21 @@ extends GAffine
 
 
 
+    isValid()
+    {
+        return super.isValid()
+            && this.angle.isValid();
+    }
+
+
+
+    toValue()
+    {
+        return this.value.copy();
+    }
+
+
+
     pushValueUpdates(parse)
     {
         super.pushValueUpdates(parse);
@@ -109,25 +124,10 @@ extends GAffine
 
 
 
-    isValid()
-    {
-        return super.isValid()
-            && this.angle.isValid();
-    }
-
-
-
     invalidateInputs(from)
     {
         super.invalidateInputs(from)
 
         if (this.angle) this.angle.invalidateInputs(from);
-    }
-
-
-
-    toValue()
-    {
-        return this.value.copy();
     }
 }

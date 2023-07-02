@@ -82,14 +82,6 @@ extends ResizableOperatorWithValue
         if (ignore) return request;
 
         
-        const input = this.node.inputs[0];
-
-
-        request.push(input.connected ? 1 : 0);
-        
-        if (input.connected)
-            request.push(...pushInputOrParam(input, gen));
-
         request.push(...this.node.paramRequest.genRequest(gen));
         request.push(TEXT_VALUE, encodeURIComponent(this.node.cachedValue));
 

@@ -21,8 +21,11 @@ extends GOperator
 
         copy.copyBase(this);
 
-        if (this.input    ) copy.input     = this.input    .copy();
+        if (this.input0   ) copy.input0    = this.input0   .copy();
+        if (this.input1   ) copy.input1    = this.input1   .copy();
+
         if (this.condition) copy.condition = this.condition.copy();
+
         if (this.value    ) copy.value     = this.value    .copy();
 
         return copy;
@@ -38,7 +41,7 @@ extends GOperator
     }
 
 
-    
+
     async eval(parse)
     {
         if (this.isCached())
@@ -78,18 +81,7 @@ extends GOperator
             this.value = null;
 
 
-        if (this.value)
-        {
-            for (let j = 0; j < this.value.objects.length; j++)
-            {
-                const obj  = this.value.objects[j].copy();
-
-                obj.nodeId = this.nodeId;
-                obj.listId = -1;
-                
-                this.objects.push(obj);
-            }
-        }
+        this.updateValueObjects();
 
 
         this.updateValues =

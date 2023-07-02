@@ -1,8 +1,6 @@
 class GTextSubstring
-extends GTextType
+extends GTextType1
 {
-    input = null;
-
     start;
     end;
 
@@ -20,9 +18,6 @@ extends GTextType
         const copy = new GTextSubstring(this.nodeId, this.options);
 
         copy.copyBase(this);
-
-        if (this.input) 
-            copy.input = this.input.copy();
 
         copy.start = this.start.copy();
         copy.end   = this.end  .copy();
@@ -89,7 +84,6 @@ extends GTextType
     {
         super.pushValueUpdates(parse);
 
-        if (this.input) this.input.pushValueUpdates(parse);
         if (this.start) this.start.pushValueUpdates(parse);
         if (this.end  ) this.end  .pushValueUpdates(parse);
     }
@@ -100,7 +94,6 @@ extends GTextType
     {
         super.invalidateInputs(from);
 
-        if (this.input) this.input.invalidateInputs(from);
         if (this.start) this.start.invalidateInputs(from);
         if (this.end  ) this.end  .invalidateInputs(from);
     }

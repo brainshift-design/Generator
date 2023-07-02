@@ -1,8 +1,6 @@
 class GTextPad
-extends GTextType
+extends GTextType1
 {
-    input = null;
-
     startPad;
     startCount;
     endPad;
@@ -22,9 +20,6 @@ extends GTextType
         const copy = new GTextPad(this.nodeId, this.options);
 
         copy.copyBase(this);
-
-        if (this.input) 
-            copy.input = this.input.copy();
 
         copy.startPad   = this.startPad  .copy();
         copy.startCount = this.startCount.copy();
@@ -95,7 +90,6 @@ extends GTextType
     {
         super.pushValueUpdates(parse);
 
-        if (this.input     ) this.input     .pushValueUpdates(parse);
         if (this.startPad  ) this.startPad  .pushValueUpdates(parse);
         if (this.startCount) this.startCount.pushValueUpdates(parse);
         if (this.endPad    ) this.endPad    .pushValueUpdates(parse);
@@ -108,7 +102,6 @@ extends GTextType
     {
         super.invalidateInputs(from);
 
-        if (this.input     ) this.input     .invalidateInputs(from);
         if (this.startPad  ) this.startPad  .invalidateInputs(from);
         if (this.startCount) this.startCount.invalidateInputs(from);
         if (this.endPad    ) this.endPad    .invalidateInputs(from);

@@ -1,8 +1,6 @@
 class GAffine
-extends GOperator
+extends GOperator1
 {
-    input       = null;
-    
     centerX     = null;
     centerY     = null;
     showCenter  = null;
@@ -24,9 +22,6 @@ extends GOperator
     copyBase(base)
     {
         super.copyBase(base);
-
-        if (base.input) 
-            this.input = base.input.copy();
 
         if (base.centerX    ) this.centerX     = base.centerX    .copy();
         if (base.centerY    ) this.centerY     = base.centerY    .copy();
@@ -126,19 +121,6 @@ extends GOperator
 
 
 
-    pushValueUpdates(parse)
-    {
-        super.pushValueUpdates(parse);
-
-        if (this.input      ) this.input      .pushValueUpdates(parse);
-        if (this.centerX    ) this.centerX    .pushValueUpdates(parse);
-        if (this.centerY    ) this.centerY    .pushValueUpdates(parse);
-        if (this.showCenter ) this.showCenter .pushValueUpdates(parse);
-        if (this.affectSpace) this.affectSpace.pushValueUpdates(parse);
-    }
-
-
-
     isValid()
     {
         return super.isValid()
@@ -150,11 +132,22 @@ extends GOperator
 
 
 
+    pushValueUpdates(parse)
+    {
+        super.pushValueUpdates(parse);
+
+        if (this.centerX    ) this.centerX    .pushValueUpdates(parse);
+        if (this.centerY    ) this.centerY    .pushValueUpdates(parse);
+        if (this.showCenter ) this.showCenter .pushValueUpdates(parse);
+        if (this.affectSpace) this.affectSpace.pushValueUpdates(parse);
+    }
+
+
+
     invalidateInputs(from)
     {
         super.invalidateInputs(from);
 
-        if (this.input      ) this.input      .invalidateInputs(from);
         if (this.centerX    ) this.centerX    .invalidateInputs(from);
         if (this.centerY    ) this.centerY    .invalidateInputs(from);
         if (this.showCenter ) this.showCenter .invalidateInputs(from);

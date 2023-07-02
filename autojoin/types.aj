@@ -21,7 +21,9 @@
 
 ../generator/types/GNode.js
 ../generator/types/GValue.js
+
 ../generator/types/GOperator.js
+../generator/types/GOperator1.js
 
 ../generator/types/GParam.js
 
@@ -67,6 +69,8 @@
 
 
 ../generator/types/number/GNumberType.js
+../generator/types/number/GNumberType1.js
+../generator/types/number/GNumberType2.js
 
 ../generator/types/number/GNumber.js
 ../generator/types/number/GSign.js
@@ -98,7 +102,6 @@
 ../generator/types/number/boolean/GOr.js
 ../generator/types/number/boolean/GXor.js
 
-../generator/types/number/condition/GConditionBase.js
 ../generator/types/number/condition/GCondition.js
 ../generator/types/number/condition/GEqual.js
 ../generator/types/number/condition/GNotEqual.js
@@ -107,7 +110,6 @@
 ../generator/types/number/condition/GGreater.js
 ../generator/types/number/condition/GGreaterOrEqual.js
 
-../generator/types/number/trigonometric/GTrigBase.js
 ../generator/types/number/trigonometric/GTrig.js
 ../generator/types/number/trigonometric/GSine.js
 ../generator/types/number/trigonometric/GCosine.js
@@ -115,6 +117,8 @@
 
 
 ../generator/types/text/GTextType.js
+../generator/types/text/GTextType1.js
+../generator/types/text/GTextType2.js
 
 ../generator/types/text/GText.js
 ../generator/types/text/GTextLength.js
@@ -134,7 +138,11 @@
 
 
 ../generator/types/color/color correction.js
+
 ../generator/types/color/GColorType.js
+../generator/types/color/GColorType1.js
+../generator/types/color/GColorType2.js
+
 ../generator/types/color/GColor.js
 ../generator/types/color/GValidColor.js
 ../generator/types/color/GCorrectColor.js

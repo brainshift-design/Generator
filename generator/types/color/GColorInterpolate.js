@@ -1,9 +1,6 @@
 class GColorInterpolate
-extends GColorType
+extends GColorType2
 {
-    input0 = null;
-    input1 = null;
-
     space;
     amount;
     gamma;
@@ -21,9 +18,6 @@ extends GColorType
         const copy = new GColorInterpolate(this.nodeId, this.options);
 
         copy.copyBase(this);
-
-        if (this.input0) copy.input0 = this.input0.copy();
-        if (this.input1) copy.input1 = this.input1.copy();
 
         copy.space  = this.space .copy();
         copy.amount = this.amount.copy();
@@ -140,8 +134,6 @@ extends GColorType
     {
         super.pushValueUpdates(parse);
 
-        if (this.input0) this.input0.pushValueUpdates(parse);
-        if (this.input1) this.input1.pushValueUpdates(parse);
         if (this.space ) this.space .pushValueUpdates(parse);
         if (this.amount) this.amount.pushValueUpdates(parse);
         if (this.gamma ) this.gamma .pushValueUpdates(parse);
@@ -153,8 +145,6 @@ extends GColorType
     {
         super.invalidateInputs(from);
 
-        if (this.input0) this.input0.invalidateInputs(from);
-        if (this.input1) this.input1.invalidateInputs(from);
         if (this.space ) this.space .invalidateInputs(from);
         if (this.amount) this.amount.invalidateInputs(from);
         if (this.gamma ) this.gamma .invalidateInputs(from);

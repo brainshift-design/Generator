@@ -28,6 +28,15 @@ extends GOperator
 
 
 
+    isCached()
+    {
+        return super.isCached()
+            && (  !this.input 
+                || this.input.isCached());
+    }
+
+
+
     async eval(parse)
     {
         if (this.isCached())
@@ -43,7 +52,7 @@ extends GOperator
             this.value = input ? input : NullValue;
         }
         else
-            this.value = NullValue;
+            this.value = null;//NullValue;
             
 
         this.updateValues = 
@@ -53,6 +62,9 @@ extends GOperator
         ];
 
         
+        this.updateValueObjects();
+
+
         this.validate();
 
         return this;

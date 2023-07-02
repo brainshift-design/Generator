@@ -1,8 +1,6 @@
 class GSolve
-extends GNumberType
+extends GNumberType1
 {
-    input = null;
-
     current;
     target;
 
@@ -23,13 +21,19 @@ extends GNumberType
 
         copy.copyBase(this);
 
-        if (this.input) 
-            copy.input = this.input.copy();
-
         copy.current = this.current.copy();
         copy.target  = this.target .copy();
 
         return copy;
+    }
+
+
+
+    isCached()
+    {
+        return super.isCached()
+            && this.current.isCached()
+            && this.target .isCached();
     }
 
 
@@ -161,7 +165,6 @@ extends GNumberType
     {
         super.pushValueUpdates(parse);
 
-        if (this.input  ) this.input  .pushValueUpdates(parse);
         if (this.current) this.current.pushValueUpdates(parse);
         if (this.target ) this.target .pushValueUpdates(parse);
     }
@@ -172,20 +175,10 @@ extends GNumberType
 
 
 
-    isCached()
-    {
-        return super.isCached()
-            && this.current.isCached()
-            && this.target .isCached();
-    }
-
-
-
     invalidateInputs(from)
     {
         super.invalidateInputs(from);
 
-        if (this.input  ) this.input  .invalidateInputs(from);
         if (this.current) this.current.invalidateInputs(from);
         if (this.target ) this.target .invalidateInputs(from);
     }

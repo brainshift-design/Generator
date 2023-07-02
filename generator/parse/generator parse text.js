@@ -642,17 +642,8 @@ function genParseTextFetch(parse)
     const fetch = new GTextFetch(nodeId, options);
    
 
-    let nInputs = -1;
-    
-    if (!ignore)
-    {
-        nInputs = parseInt(parse.move());
-        console.assert(nInputs == 0 || nInputs == 1, 'nInputs must be [0, 1]');
-    }
-
-    
     if (parse.settings.logRequests) 
-        logReq(fetch, parse, ignore, nInputs);
+        logReq(fetch, parse, ignore);
 
 
     if (ignore) 
@@ -664,9 +655,6 @@ function genParseTextFetch(parse)
 
     parse.nTab++;
 
-
-    if (nInputs == 1)
-        fetch.input = genParse(parse);
 
     fetch.request     = genParse(parse);
     fetch.cachedValue = genParse(parse);

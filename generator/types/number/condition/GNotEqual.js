@@ -1,5 +1,5 @@
 class GNotEqual
-extends GConditionBase
+extends GNumberType2
 {
     constructor(nodeId, options)
     {

@@ -1,10 +1,8 @@
 class GPoint
-extends GOperator
+extends GOperator1
 {
-    input = null;
-
-    x     = null;
-    y     = null;
+    x = null;
+    y = null;
 
 
 
@@ -20,9 +18,6 @@ extends GOperator
         const copy = new GPoint(this.nodeId, this.options);
 
         copy.copyBase(this);
-
-        if (this.input) 
-            copy.input = this.input.copy();
 
         if (this.x) copy.x = this.x.copy();
         if (this.y) copy.y = this.y.copy();
@@ -107,17 +102,6 @@ extends GOperator
 
 
 
-    pushValueUpdates(parse)
-    {
-        super.pushValueUpdates(parse);
-
-        if (this.input) this.input.pushValueUpdates(parse);
-        if (this.x    ) this.x    .pushValueUpdates(parse);
-        if (this.y    ) this.y    .pushValueUpdates(parse);
-    }
-
-
-
     toValue()
     {
         const point = new PointValue(
@@ -141,12 +125,21 @@ extends GOperator
 
 
 
+    pushValueUpdates(parse)
+    {
+        super.pushValueUpdates(parse);
+
+        if (this.x) this.x.pushValueUpdates(parse);
+        if (this.y) this.y.pushValueUpdates(parse);
+    }
+
+
+
     invalidateInputs(from)
     {
         super.invalidateInputs(from);
 
-        if (this.input) this.input.invalidateInputs(from);
-        if (this.x    ) this.x    .invalidateInputs(from);
-        if (this.y    ) this.y    .invalidateInputs(from);
+        if (this.x) this.x.invalidateInputs(from);
+        if (this.y) this.y.invalidateInputs(from);
     }
 }

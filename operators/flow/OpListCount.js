@@ -16,7 +16,7 @@ extends OperatorBase
         this.addInput (new Input(LIST_VALUES));
 
         this.addParam(this.paramValue = new NumberParam('value', 'value', false, false, true, 0, 0));
-        this.addParam(this.paramBase  = new NumberParam('base',  'base',  true,  true,  true, 1, 0, 1));
+        this.addParam(this.paramBase  = new NumberParam('start', 'start', true,  true,  true, 1, 0, 1));
 
 
         this.paramBase.controls[0].allowEditDecimals = false;

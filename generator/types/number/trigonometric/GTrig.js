@@ -1,8 +1,6 @@
 class GTrig
-extends GNumberType
+extends GNumberType1
 {
-    input = null;
-
     function;
 
 
@@ -19,8 +17,6 @@ extends GNumberType
         const copy = new GTrig(this.nodeId, this.options);
 
         copy.copyBase(this);
-
-        if (this.input) copy.input = this.input.copy();
 
         copy.operation = this.operation.copy();
 
@@ -66,7 +62,6 @@ extends GNumberType
     {
         super.pushValueUpdates(parse);
 
-        if (this.input   ) this.input   .pushValueUpdates(parse);
         if (this.function) this.function.pushValueUpdates(parse);
     }
 
@@ -76,7 +71,6 @@ extends GNumberType
     {
         super.invalidateInputs(from);
 
-        if (this.input   ) this.input   .invalidateInputs(from);
         if (this.function) this.function.invalidateInputs(from);
     }
 }

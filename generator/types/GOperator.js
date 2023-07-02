@@ -74,6 +74,25 @@ extends GNode
 
 
 
+    updateValueObjects()
+    {
+        if (!this.value)
+            return;
+
+
+        for (let i = 0; i < this.value.objects.length; i++)
+        {
+            const obj  = this.value.objects[i].copy();
+
+            obj.nodeId = this.nodeId;
+            obj.listId = -1;
+            
+            this.objects.push(obj);
+        }
+    }
+
+
+
     toValue()
     {
         console.assert(false, 'cannot call abstract method GOperator.toValue()');

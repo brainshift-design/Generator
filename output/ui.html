@@ -4407,6 +4407,7 @@ a
                 <p>•  fixed If/Else not passing objects</p>
                 <p>•  fixed font styles not being saved</p>
                 <p>•  fixed UI crash</p>
+                <p>•  fixed various small node bugs</p>
                 <p>•  small UI updates</p>
                 
                 <p><br/><br/><div id='chkHideWhatsNew'></div></p>
@@ -11481,10 +11482,72 @@ extends GNode
 
 
 
+    updateValueObjects()
+    {
+        if (!this.value)
+            return;
+
+
+        for (let i = 0; i < this.value.objects.length; i++)
+        {
+            const obj  = this.value.objects[i].copy();
+
+            obj.nodeId = this.nodeId;
+            obj.listId = -1;
+            
+            this.objects.push(obj);
+        }
+    }
+
+
+
     toValue()
     {
         console.assert(false, 'cannot call abstract method GOperator.toValue()');
         return null;
+    }
+}
+
+
+class GOperator1
+extends GOperator
+{
+    input = null;
+
+
+
+    copyBase(base)
+    {
+        super.copyBase(base);
+
+        if (base.input) this.input = base.input.copy();
+    }
+
+
+
+    isCached()
+    {
+        return super.isCached()
+            && (  !this.input 
+                || this.input.isCached());
+    }
+
+
+
+    pushValueUpdates(parse)
+    {
+        super.pushValueUpdates(parse);
+
+        if (this.input) this.input.pushValueUpdates(parse);
+    }
+
+
+
+    invalidateInputs(from)
+    {
+        super.invalidateInputs(from);
+
+        if (this.input) this.input.invalidateInputs(from);
     }
 }
 
@@ -15723,6 +15786,17 @@ extends GOperator
 
 
 
+    isCached()
+    {
+        for (const input of this.inputs)
+            if (!input.isCached())
+                return false;
+
+        return super.isCached();
+    }
+
+
+
     async eval(parse)
     {
         if (this.isCached())
@@ -16035,7 +16109,7 @@ extends GOperator
 
                         obj.nodeId = this.nodeId;
 
-                        if (obj.objectId != NULL) obj.objectId += ' ';
+                        if (obj.objectId != NULL) obj.objectId += '/';
                         obj.objectId += index.value.toString();
 
                         obj.listId = -1;
@@ -16228,8 +16302,11 @@ extends GOperator
 
         copy.copyBase(this);
 
-        if (this.input    ) copy.input     = this.input    .copy();
+        if (this.input0   ) copy.input0    = this.input0   .copy();
+        if (this.input1   ) copy.input1    = this.input1   .copy();
+
         if (this.condition) copy.condition = this.condition.copy();
+
         if (this.value    ) copy.value     = this.value    .copy();
 
         return copy;
@@ -16245,7 +16322,7 @@ extends GOperator
     }
 
 
-    
+
     async eval(parse)
     {
         if (this.isCached())
@@ -16285,18 +16362,7 @@ extends GOperator
             this.value = null;
 
 
-        if (this.value)
-        {
-            for (let j = 0; j < this.value.objects.length; j++)
-            {
-                const obj  = this.value.objects[j].copy();
-
-                obj.nodeId = this.nodeId;
-                obj.listId = -1;
-                
-                this.objects.push(obj);
-            }
-        }
+        this.updateValueObjects();
 
 
         this.updateValues =
@@ -16372,6 +16438,15 @@ extends GOperator
         if (this.input) copy.input = this.input.copy();
 
         return copy;
+    }
+
+
+
+    isCached()
+    {
+        return super.isCached()
+            && (  !this.input 
+                || this.input.isCached());
     }
 
 
@@ -16825,12 +16900,15 @@ extends GOperator
         this.value = 
             this.input 
             ? (await this.input.eval(parse)).toValue() 
-            : NullValue;
+            : null;//NullValue;
 
 
         this.updateValues = [['value', this.value]];
 
         
+        this.updateValueObjects();
+
+
         this.validate();
 
         return this;
@@ -16885,6 +16963,15 @@ extends GOperator
 
 
 
+    isCached()
+    {
+        return super.isCached()
+            && (  !this.input 
+                || this.input.isCached());
+    }
+
+
+
     async eval(parse)
     {
         if (this.isCached())
@@ -16900,7 +16987,7 @@ extends GOperator
             this.value = input ? input : NullValue;
         }
         else
-            this.value = NullValue;
+            this.value = null;//NullValue;
             
 
         this.updateValues = 
@@ -16910,6 +16997,9 @@ extends GOperator
         ];
 
         
+        this.updateValueObjects();
+
+
         this.validate();
 
         return this;
@@ -16942,11 +17032,11 @@ extends GOperator
     
 
 
-    copyBase(src)
+    copyBase(base)
     {
-        super.copyBase(src);
+        super.copyBase(base);
 
-        if (src.value) this.value = src.value.copy();
+        if (base.value) this.value = base.value.copy();
     }
 
 
@@ -16958,13 +17048,99 @@ extends GOperator
 }
 
 
-class GNumber
+class GNumberType1
 extends GNumberType
 {
     input = null;
-    
 
 
+
+    copyBase(base)
+    {
+        super.copyBase(base);
+
+        if (base.input) this.input = base.input.copy();
+    }
+
+
+
+    isCached()
+    {
+        return super.isCached()
+            && (  !this.input 
+                || this.input.isCached());
+    }
+
+
+
+    pushValueUpdates(parse)
+    {
+        super.pushValueUpdates(parse);
+
+        if (this.input) this.input.pushValueUpdates(parse);
+    }
+
+
+
+    invalidateInputs(from)
+    {
+        super.invalidateInputs(from);
+
+        if (this.input) this.input.invalidateInputs(from);
+    }
+}
+
+
+class GNumberType2
+extends GNumberType
+{
+    input0 = null;
+    input1 = null;
+
+
+
+    copyBase(base)
+    {
+        super.copyBase(base);
+
+        if (base.input0) this.input0 = base.input0.copy();
+        if (base.input1) this.input1 = base.input1.copy();
+    }
+
+
+
+    isCached()
+    {
+        return super.isCached()
+            && (!this.input0 || this.input0.isCached())
+            && (!this.input1 || this.input1.isCached());
+    }
+
+
+
+    pushValueUpdates(parse)
+    {
+        super.pushValueUpdates(parse);
+
+        if (this.input0) this.input0.pushValueUpdates(parse);
+        if (this.input1) this.input1.pushValueUpdates(parse);
+    }
+
+
+
+    invalidateInputs(from)
+    {
+        super.invalidateInputs(from);
+
+        if (this.input0) this.input0.invalidateInputs(from);
+        if (this.input1) this.input1.invalidateInputs(from);
+    }
+}
+
+
+class GNumber
+extends GNumberType1
+{
     constructor(nodeId, options)
     {
         super(NUMBER, nodeId, options);
@@ -16978,21 +17154,9 @@ extends GNumberType
         
         copy.copyBase(this);
 
-        if (this.input) 
-            copy.input = this.input.copy();
-        
         copy.value = this.value;
 
         return copy;
-    }
-
-
-
-    isCached()
-    {
-        return super.isCached()
-            && (  !this.input 
-                || this.input.isCached());
     }
 
 
@@ -17025,39 +17189,17 @@ extends GNumberType
 
 
 
-    pushValueUpdates(parse)
-    {
-        super.pushValueUpdates(parse);
-
-        if (this.input) this.input.pushValueUpdates(parse);
-    }
-
-
-
     isValid()
     {
         return !isNaN(this.value)
             && !isNaN(this.decimals);
     }
-
-
-
-    invalidateInputs(from)
-    {
-        super.invalidateInputs(from);
-
-        if (this.input) this.input.invalidateInputs(from);
-    }
 }
 
 
 class GSign
-extends GNumberType
+extends GNumberType1
 {
-    input = null;
-
-
-
     constructor(nodeId, options)
     {
         super(NUMBER_SIGN, nodeId, options);
@@ -17070,9 +17212,6 @@ extends GNumberType
         const copy = new GSign(this.nodeId, this.options);
 
         copy.copyBase(this);
-
-        if (this.input) 
-            copy.input = this.input.copy();
 
         return copy;
     }
@@ -17107,34 +17246,12 @@ extends GNumberType
 
         return this;
     }
-
-
-
-    pushValueUpdates(parse)
-    {
-        super.pushValueUpdates(parse);
-
-        if (this.input) this.input.pushValueUpdates(parse);
-    }
-
-
-
-    invalidateInputs(from)
-    {
-        super.invalidateInputs(from);
-
-        if (this.input) this.input.invalidateInputs(from);
-    }
 }
 
 
 class GAbsolute
-extends GNumberType
+extends GNumberType1
 {
-    input = null;
-
-
-
     constructor(nodeId, options)
     {
         super(NUMBER_ABSOLUTE, nodeId, options);
@@ -17147,9 +17264,6 @@ extends GNumberType
         const copy = new GAbsolute(this.nodeId, this.options);
 
         copy.copyBase(this);
-
-        if (this.input) 
-            copy.input = this.input.copy();
 
         return copy;
     }
@@ -17184,33 +17298,13 @@ extends GNumberType
 
         return this;
     }
-
-
-
-    pushValueUpdates(parse)
-    {
-        super.pushValueUpdates(parse);
-
-        if (this.input) this.input.pushValueUpdates(parse);
-    }
-
-
-
-    invalidateInputs(from)
-    {
-        super.invalidateInputs(from);
-
-        if (this.input) this.input.invalidateInputs(from);
-    }
 }
 
 
 
 class GRound
-extends GNumberType
+extends GNumberType1
 {
-    input = null;
-
     type;
     decimals;
 
@@ -17228,9 +17322,6 @@ extends GNumberType
         const copy = new GRound(this.nodeId, this.options);
 
         copy.copyBase(this);
-
-        if (this.input) 
-            copy.input = this.input.copy();
 
         copy.type     = this.type    .copy();
         copy.decimals = this.decimals.copy();
@@ -17280,9 +17371,9 @@ extends GNumberType
 
         this.updateValues =
         [
+            ['value',    this.value],
             ['type',     type      ],
-            ['decimals', dec       ],
-            ['value',    this.value]
+            ['decimals', dec       ]
         ];
 
 
@@ -17293,11 +17384,20 @@ extends GNumberType
 
 
 
+    pushValueUpdates(parse)
+    {
+        super.pushValueUpdates(parse);
+
+        if (this.type    ) this.type    .pushValueUpdates(parse);
+        if (this.decimals) this.decimals.pushValueUpdates(parse);
+    }
+
+
+
     invalidateInputs(from)
     {
         super.invalidateInputs(from);
 
-        if (this.input   ) this.input   .invalidateInputs(from);
         if (this.type    ) this.type    .invalidateInputs(from);
         if (this.decimals) this.decimals.invalidateInputs(from);
     }
@@ -17306,10 +17406,8 @@ extends GNumberType
 
 
 class GLimits
-extends GNumberType
+extends GNumberType1
 {
-    input = null;
-
     min;
     max;
 
@@ -17328,13 +17426,19 @@ extends GNumberType
 
         copy.copyBase(this);
 
-        if (this.input) 
-            copy.input = this.input.copy();
-
         copy.min = this.min.copy();
         copy.max = this.max.copy();
 
         return copy;
+    }
+
+
+
+    isCached()
+    {
+        return super.isCached()
+            && (!this.min || this.min.isCached())
+            && (!this.max || this.max.isCached());
     }
 
 
@@ -17394,19 +17498,8 @@ extends GNumberType
     {
         super.pushValueUpdates(parse);
 
-        if (this.input) this.input.pushValueUpdates(parse);
         if (this.min  ) this.min  .pushValueUpdates(parse);
         if (this.max  ) this.max  .pushValueUpdates(parse);
-    }
-
-
-
-    isCached()
-    {
-        return super.isCached()
-            && (!this.input || this.input.isCached())
-            && (!this.min   || this.min  .isCached())
-            && (!this.max   || this.max  .isCached());
     }
 
 
@@ -18201,6 +18294,15 @@ extends GNumberType
 
 
 
+    isCached()
+    {
+        return super.isCached()
+            && (!this.input0 || this.input0.isCached())
+            && (!this.input1 || this.input1.isCached());
+    }
+
+
+
     async eval(parse)
     {
         if (this.isCached())
@@ -18270,10 +18372,8 @@ extends GNumberType
 
 
 class GSolve
-extends GNumberType
+extends GNumberType1
 {
-    input = null;
-
     current;
     target;
 
@@ -18294,13 +18394,19 @@ extends GNumberType
 
         copy.copyBase(this);
 
-        if (this.input) 
-            copy.input = this.input.copy();
-
         copy.current = this.current.copy();
         copy.target  = this.target .copy();
 
         return copy;
+    }
+
+
+
+    isCached()
+    {
+        return super.isCached()
+            && this.current.isCached()
+            && this.target .isCached();
     }
 
 
@@ -18432,7 +18538,6 @@ extends GNumberType
     {
         super.pushValueUpdates(parse);
 
-        if (this.input  ) this.input  .pushValueUpdates(parse);
         if (this.current) this.current.pushValueUpdates(parse);
         if (this.target ) this.target .pushValueUpdates(parse);
     }
@@ -18443,20 +18548,10 @@ extends GNumberType
 
 
 
-    isCached()
-    {
-        return super.isCached()
-            && this.current.isCached()
-            && this.target .isCached();
-    }
-
-
-
     invalidateInputs(from)
     {
         super.invalidateInputs(from);
 
-        if (this.input  ) this.input  .invalidateInputs(from);
         if (this.current) this.current.invalidateInputs(from);
         if (this.target ) this.target .invalidateInputs(from);
     }
@@ -19945,54 +20040,9 @@ async function evalXorInputs(inputs, parse)
 }
 
 
-class GConditionBase
-extends GNumberType
-{
-    input0 = null;
-    input1 = null;
-
-
-
-    pushValueUpdates(parse)
-    {
-        super.pushValueUpdates(parse);
-
-        if (this.input0) this.input0.pushValueUpdates(parse);
-        if (this.input1) this.input1.pushValueUpdates(parse);
-    }
-
-
-
-    invalidateInputs(from)
-    {
-        super.invalidateInputs(from);
-
-        if (this.input0) this.input0.invalidateInputs(from);
-        if (this.input1) this.input1.invalidateInputs(from);
-    }
-}
-
-
-
-async function evalConditionInputs(input0, input1, op, parse) 
-{
-    const val0 = input0 ? (await input0.eval(parse)).toValue() : NumberValue.NaN;
-    const val1 = input1 ? (await input1.eval(parse)).toValue() : NumberValue.NaN;
-
-    if (   val0.isValid() 
-        && val1.isValid())
-        return new NumberValue(op(val0.toNumber(), val1.toNumber()) ? 1 : 0);
-    else                  
-        return NumberValue.NaN;
-}
-
-
 class GCondition
-extends GNumberType
+extends GNumberType2
 {
-    input0 = null;
-    input1 = null;
-
     operation;
 
 
@@ -20009,9 +20059,6 @@ extends GNumberType
         const copy = new GCondition(this.nodeId, this.options);
 
         copy.copyBase(this);
-
-        if (this.input0) copy.input0 = this.input0.copy();
-        if (this.input1) copy.input1 = this.input1.copy();
 
         copy.operation = this.operation.copy();
 
@@ -20060,8 +20107,6 @@ extends GNumberType
     {
         super.pushValueUpdates(parse);
 
-        if (this.input0   ) this.input0   .pushValueUpdates(parse);
-        if (this.input1   ) this.input1   .pushValueUpdates(parse);
         if (this.operation) this.operation.pushValueUpdates(parse);
     }
 
@@ -20071,15 +20116,27 @@ extends GNumberType
     {
         super.invalidateInputs(from);
 
-        if (this.input0   ) this.input0   .invalidateInputs(from);
-        if (this.input1   ) this.input1   .invalidateInputs(from);
         if (this.operation) this.operation.invalidateInputs(from);
     }
 }
 
 
+
+async function evalConditionInputs(input0, input1, op, parse) 
+{
+    const val0 = input0 ? (await input0.eval(parse)).toValue() : NumberValue.NaN;
+    const val1 = input1 ? (await input1.eval(parse)).toValue() : NumberValue.NaN;
+
+    if (   val0.isValid() 
+        && val1.isValid())
+        return new NumberValue(op(val0.toNumber(), val1.toNumber()) ? 1 : 0);
+    else                  
+        return NumberValue.NaN;
+}
+
+
 class GEqual
-extends GConditionBase
+extends GNumberType2
 {
     constructor(nodeId, options)
     {
@@ -20123,7 +20180,7 @@ extends GConditionBase
 
 
 class GNotEqual
-extends GConditionBase
+extends GNumberType2
 {
     constructor(nodeId, options)
     {
@@ -20166,7 +20223,7 @@ extends GConditionBase
 
 
 class GLess
-extends GConditionBase
+extends GNumberType2
 {
     constructor(nodeId, options)
     {
@@ -20209,7 +20266,7 @@ extends GConditionBase
 
 
 class GLessOrEqual
-extends GConditionBase
+extends GNumberType2
 {
     constructor(nodeId, options)
     {
@@ -20253,7 +20310,7 @@ extends GConditionBase
 
 
 class GGreater
-extends GConditionBase
+extends GNumberType2
 {
     constructor(nodeId, options)
     {
@@ -20296,7 +20353,7 @@ extends GConditionBase
 
 
 class GGreaterOrEqual
-extends GConditionBase
+extends GNumberType2
 {
     constructor(nodeId, options)
     {
@@ -20342,37 +20399,9 @@ extends GConditionBase
 
 
 
-class GTrigBase
-extends GNumberType
-{
-    input;
-
-
-
-    pushValueUpdates(parse)
-    {
-        super.pushValueUpdates(parse);
-
-        if (this.input) this.input.pushValueUpdates(parse);
-    }
-
-
-
-    invalidateInputs(from)
-    {
-        super.invalidateInputs(from);
-
-        if (this.input) this.input.invalidateInputs(from);
-    }
-}
-
-
-
 class GTrig
-extends GNumberType
+extends GNumberType1
 {
-    input = null;
-
     function;
 
 
@@ -20389,8 +20418,6 @@ extends GNumberType
         const copy = new GTrig(this.nodeId, this.options);
 
         copy.copyBase(this);
-
-        if (this.input) copy.input = this.input.copy();
 
         copy.operation = this.operation.copy();
 
@@ -20436,7 +20463,6 @@ extends GNumberType
     {
         super.pushValueUpdates(parse);
 
-        if (this.input   ) this.input   .pushValueUpdates(parse);
         if (this.function) this.function.pushValueUpdates(parse);
     }
 
@@ -20446,14 +20472,13 @@ extends GNumberType
     {
         super.invalidateInputs(from);
 
-        if (this.input   ) this.input   .invalidateInputs(from);
         if (this.function) this.function.invalidateInputs(from);
     }
 }
 
 
 class GSine
-extends GTrigBase
+extends GNumberType1
 {
     constructor(nodeId, options)
     {
@@ -20516,7 +20541,7 @@ async function evalSine(input, parse)
 
 
 class GCosine
-extends GTrigBase
+extends GNumberType1
 {
     constructor(nodeId, options)
     {
@@ -20572,7 +20597,7 @@ async function evalCosine(input, parse)
 
 
 class GTangent
-extends GTrigBase
+extends GNumberType1
 {
     constructor(nodeId, options)
     {
@@ -20650,13 +20675,99 @@ extends GOperator
 }
 
 
-class GText
+class GTextType1
 extends GTextType
 {
     input = null;
-    
 
 
+
+    copyBase(base)
+    {
+        super.copyBase(base);
+
+        if (base.input) this.input = base.input.copy();
+    }
+
+
+
+    isCached()
+    {
+        return super.isCached()
+            && (  !this.input 
+                || this.input.isCached());
+    }
+
+
+
+    pushValueUpdates(parse)
+    {
+        super.pushValueUpdates(parse);
+
+        if (this.input) this.input.pushValueUpdates(parse);
+    }
+
+
+
+    invalidateInputs(from)
+    {
+        super.invalidateInputs(from);
+
+        if (this.input) this.input.invalidateInputs(from);
+    }
+}
+
+
+class GTextType2
+extends GTextType
+{
+    input0 = null;
+    input1 = null;
+
+
+
+    copyBase(base)
+    {
+        super.copyBase(base);
+
+        if (base.input0) this.input0 = base.input0.copy();
+        if (base.input1) this.input1 = base.input1.copy();
+    }
+
+
+
+    isCached()
+    {
+        return super.isCached()
+            && (!this.input0 || this.input0.isCached())
+            && (!this.input1 || this.input1.isCached());
+    }
+
+
+
+    pushValueUpdates(parse)
+    {
+        super.pushValueUpdates(parse);
+
+        if (this.input0) this.input0.pushValueUpdates(parse);
+        if (this.input1) this.input1.pushValueUpdates(parse);
+    }
+
+
+
+    invalidateInputs(from)
+    {
+        super.invalidateInputs(from);
+
+        if (this.input0) this.input0.invalidateInputs(from);
+        if (this.input1) this.input1.invalidateInputs(from);
+    }
+}
+
+
+class GText
+extends GTextType1
+{
     constructor(nodeId, options)
     {
         super(TEXT, nodeId, options);
@@ -20670,9 +20781,6 @@ extends GTextType
         
         copy.copyBase(this);
 
-        if (this.input) 
-            copy.input = this.input.copy();
-        
         copy.value = this.value;
         
         return copy;
@@ -20704,38 +20812,16 @@ extends GTextType
 
 
 
-    pushValueUpdates(parse)
-    {
-        super.pushValueUpdates(parse);
-
-        if (this.input) this.input.pushValueUpdates(parse);
-    }
-
-
-
     isValid()
     {
         return this.value != NAN_CHAR;
-    }
-
-
-
-    invalidateInputs(from)
-    {
-        super.invalidateInputs(from);
-
-        if (this.input) this.input.invalidateInputs(from);
     }
 }
 
 
 class GTextLength
-extends GOperator
+extends GOperator1
 {
-    input;
-
-
-
     constructor(nodeId, options)
     {
         super(TEXT_LENGTH, nodeId, options);
@@ -20749,7 +20835,6 @@ extends GOperator
 
         copy.copyBase(this);
 
-        if (this.input ) copy.input  = this.input .copy();
         if (this.length) copy.length = this.length.copy();
 
         return copy;
@@ -20784,33 +20869,13 @@ extends GOperator
 
         return this;
     }
-
-
-
-    pushValueUpdates(parse)
-    {
-        super.pushValueUpdates(parse);
-
-        if (this.input) this.input.pushValueUpdates(parse);
-    }
-
-
-
-    invalidateInputs(from)
-    {
-        super.invalidateInputs(from);
-
-        if (this.input ) this.input .invalidateInputs(from);
-    }
 }
 
 
 
 class GTextTrim
-extends GTextType
+extends GTextType1
 {
-    input = null;
-
     start;
     end;
 
@@ -20828,9 +20893,6 @@ extends GTextType
         const copy = new GTextTrim(this.nodeId, this.options);
 
         copy.copyBase(this);
-
-        if (this.input) 
-            copy.input = this.input.copy();
 
         copy.start = this.start.copy();
         copy.end   = this.end  .copy();
@@ -20888,7 +20950,6 @@ extends GTextType
     {
         super.pushValueUpdates(parse);
 
-        if (this.input) this.input.pushValueUpdates(parse);
         if (this.start) this.start.pushValueUpdates(parse);
         if (this.end  ) this.end  .pushValueUpdates(parse);
     }
@@ -20899,7 +20960,6 @@ extends GTextType
     {
         super.invalidateInputs(from);
 
-        if (this.input) this.input.invalidateInputs(from);
         if (this.start) this.start.invalidateInputs(from);
         if (this.end  ) this.end  .invalidateInputs(from);
     }
@@ -20908,10 +20968,8 @@ extends GTextType
 
 
 class GTextSubstring
-extends GTextType
+extends GTextType1
 {
-    input = null;
-
     start;
     end;
 
@@ -20929,9 +20987,6 @@ extends GTextType
         const copy = new GTextSubstring(this.nodeId, this.options);
 
         copy.copyBase(this);
-
-        if (this.input) 
-            copy.input = this.input.copy();
 
         copy.start = this.start.copy();
         copy.end   = this.end  .copy();
@@ -20998,7 +21053,6 @@ extends GTextType
     {
         super.pushValueUpdates(parse);
 
-        if (this.input) this.input.pushValueUpdates(parse);
         if (this.start) this.start.pushValueUpdates(parse);
         if (this.end  ) this.end  .pushValueUpdates(parse);
     }
@@ -21009,7 +21063,6 @@ extends GTextType
     {
         super.invalidateInputs(from);
 
-        if (this.input) this.input.invalidateInputs(from);
         if (this.start) this.start.invalidateInputs(from);
         if (this.end  ) this.end  .invalidateInputs(from);
     }
@@ -21018,10 +21071,8 @@ extends GTextType
 
 
 class GTextCase
-extends GTextType
+extends GTextType1
 {
-    input = null;
-
     case;
 
 
@@ -21039,21 +21090,9 @@ extends GTextType
 
         copy.copyBase(this);
 
-        if (this.input) 
-            copy.input = this.input.copy();
-
         copy.case = this.case.copy();
 
         return copy;
-    }
-
-
-
-    isCached()
-    {
-        return super.isCached()
-            && (  !this.input 
-                || this.input.isCached());
     }
 
 
@@ -21117,7 +21156,6 @@ extends GTextType
     {
         super.pushValueUpdates(parse);
 
-        if (this.input) this.input.pushValueUpdates(parse);
         if (this.case ) this.case .pushValueUpdates(parse);
     }
 
@@ -21127,7 +21165,6 @@ extends GTextType
     {
         super.invalidateInputs(from);
 
-        if (this.input) this.input.invalidateInputs(from);
         if (this.case ) this.case .invalidateInputs(from);
     }
 }
@@ -21323,10 +21360,8 @@ extends GNumberType
 
 
 class GTextCharacter
-extends GTextType
+extends GTextType1
 {
-    input = null;
-
     code;
 
 
@@ -21343,9 +21378,6 @@ extends GTextType
         const copy = new GTextCharacter(this.nodeId, this.options);
 
         copy.copyBase(this);
-
-        if (this.input) 
-            copy.input = this.input.copy();
 
         copy.code = this.code.copy();
 
@@ -21384,8 +21416,7 @@ extends GTextType
     {
         super.pushValueUpdates(parse);
 
-        if (this.input) this.input.pushValueUpdates(parse);
-        if (this.code ) this.code .pushValueUpdates(parse);
+        if (this.code) this.code.pushValueUpdates(parse);
     }
 
 
@@ -21394,18 +21425,15 @@ extends GTextType
     {
         super.invalidateInputs(from);
 
-        if (this.input) this.input.invalidateInputs(from);
-        if (this.code ) this.code .invalidateInputs(from);
+        if (this.code) this.code.invalidateInputs(from);
     }
 }
 
 
 
 class GTextReplace
-extends GTextType
+extends GTextType1
 {
-    input = null;
-
     what;
     with;
 
@@ -21423,9 +21451,6 @@ extends GTextType
         const copy = new GTextReplace(this.nodeId, this.options);
 
         copy.copyBase(this);
-
-        if (this.input) 
-            copy.input = this.input.copy();
 
         copy.what  = this.what .copy();
         copy.with  = this.with .copy();
@@ -21482,7 +21507,6 @@ extends GTextType
     {
         super.pushValueUpdates(parse);
 
-        if (this.input) this.input.pushValueUpdates(parse);
         if (this.what ) this.what .pushValueUpdates(parse);
         if (this.with ) this.with .pushValueUpdates(parse);
     }
@@ -21493,7 +21517,6 @@ extends GTextType
     {
         super.invalidateInputs(from);
 
-        if (this.input) this.input.invalidateInputs(from);
         if (this.what ) this.what .invalidateInputs(from);
         if (this.with ) this.with .invalidateInputs(from);
     }
@@ -21634,10 +21657,8 @@ async function evalJoinInputs(inputs, _with, parse)
 
 
 class GTextPad
-extends GTextType
+extends GTextType1
 {
-    input = null;
-
     startPad;
     startCount;
     endPad;
@@ -21657,9 +21678,6 @@ extends GTextType
         const copy = new GTextPad(this.nodeId, this.options);
 
         copy.copyBase(this);
-
-        if (this.input) 
-            copy.input = this.input.copy();
 
         copy.startPad   = this.startPad  .copy();
         copy.startCount = this.startCount.copy();
@@ -21730,7 +21748,6 @@ extends GTextType
     {
         super.pushValueUpdates(parse);
 
-        if (this.input     ) this.input     .pushValueUpdates(parse);
         if (this.startPad  ) this.startPad  .pushValueUpdates(parse);
         if (this.startCount) this.startCount.pushValueUpdates(parse);
         if (this.endPad    ) this.endPad    .pushValueUpdates(parse);
@@ -21743,7 +21760,6 @@ extends GTextType
     {
         super.invalidateInputs(from);
 
-        if (this.input     ) this.input     .invalidateInputs(from);
         if (this.startPad  ) this.startPad  .invalidateInputs(from);
         if (this.startCount) this.startCount.invalidateInputs(from);
         if (this.endPad    ) this.endPad    .invalidateInputs(from);
@@ -21754,10 +21770,8 @@ extends GTextType
 
 
 class GTextCSV
-extends GOperator
+extends GOperator1
 {
-    input;
-
     value;
     separator;
 
@@ -21776,7 +21790,6 @@ extends GOperator
 
         copy.copyBase(this);
 
-        if (this.input    ) copy.input     = this.input    .copy();
         if (this.value    ) copy.value     = this.value    .copy();
         if (this.separator) copy.separator = this.separator.copy();
 
@@ -21830,17 +21843,9 @@ extends GOperator
     {
         super.pushValueUpdates(parse);
 
-        if (this.input    ) this.input    .pushValueUpdates(parse);
         if (this.value    ) this.value    .pushValueUpdates(parse);
         if (this.separator) this.separator.pushValueUpdates(parse);
     }
-
-
-
-    // toValue()
-    // {
-    //     return this.value.copy();
-    // }
 
 
 
@@ -21848,7 +21853,6 @@ extends GOperator
     {
         super.invalidateInputs(from);
 
-        if (this.input    ) this.input    .invalidateInputs(from);
         if (this.value    ) this.value    .invalidateInputs(from);
         if (this.separator) this.separator.invalidateInputs(from);
     }
@@ -21857,11 +21861,8 @@ extends GOperator
 
 
 class GTextCompare
-extends GTextType
+extends GTextType2
 {
-    input0 = null;
-    input1 = null;
-
     operation;
 
 
@@ -21878,9 +21879,6 @@ extends GTextType
         const copy = new GTextCompare(this.nodeId, this.options);
 
         copy.copyBase(this);
-
-        if (this.input0) copy.input0 = this.input0.copy();
-        if (this.input1) copy.input1 = this.input1.copy();
 
         copy.operation = this.operation.copy();
 
@@ -21931,8 +21929,6 @@ extends GTextType
     {
         super.pushValueUpdates(parse);
 
-        if (this.input0   ) this.input0   .pushValueUpdates(parse);
-        if (this.input1   ) this.input1   .pushValueUpdates(parse);
         if (this.operation) this.operation.pushValueUpdates(parse);
     }
 
@@ -21942,8 +21938,6 @@ extends GTextType
     {
         super.invalidateInputs(from);
 
-        if (this.input0   ) this.input0   .invalidateInputs(from);
-        if (this.input1   ) this.input1   .invalidateInputs(from);
         if (this.operation) this.operation.invalidateInputs(from);
     }
 }
@@ -21964,14 +21958,8 @@ async function evalCompareInputs(input0, input1, op, parse)
 
 
 class GTextJson
-extends GOperator
+extends GOperator1
 {
-    input;
-
-    //value;
-
-
-
     constructor(nodeId, options)
     {
         super(TEXT_JSON, nodeId, options);
@@ -21984,9 +21972,6 @@ extends GOperator
         const copy = new GTextJson(this.nodeId, this.options);
 
         copy.copyBase(this);
-
-        if (this.input) copy.input = this.input.copy();
-        //if (this.value) copy.value = this.value.copy();
 
         return copy;
     }
@@ -22070,35 +22055,6 @@ extends GOperator
         
         return list;
     }
-
-
-
-    pushValueUpdates(parse)
-    {
-        super.pushValueUpdates(parse);
-
-        if (this.input    ) this.input    .pushValueUpdates(parse);
-        //if (this.value    ) this.value    .pushValueUpdates(parse);
-        //if (this.separator) this.separator.pushValueUpdates(parse);
-    }
-
-
-
-    // toValue()
-    // {
-    //     return this.value.copy();
-    // }
-
-
-
-    invalidateInputs(from)
-    {
-        super.invalidateInputs(from);
-
-        if (this.input    ) this.input    .invalidateInputs(from);
-        //if (this.value    ) this.value    .invalidateInputs(from);
-        //if (this.separator) this.separator.invalidateInputs(from);
-    }
 }
 
 
@@ -22106,8 +22062,6 @@ extends GOperator
 class GTextFetch
 extends GTextType
 {
-    input = null;
-    
     request;
     cachedValue;
 
@@ -22125,9 +22079,6 @@ extends GTextType
         const copy = new GTextFetch(this.nodeId, this.options);
 
         copy.copyBase(this);
-
-        if (this.input) 
-            copy.input = this.input.copy();
 
         copy.request     = this.request    .copy();
         copy.cachedValue = this.cachedValue.copy();
@@ -22192,7 +22143,6 @@ extends GTextType
     {
         super.pushValueUpdates(parse);
 
-        if (this.input  ) this.input  .pushValueUpdates(parse);
         if (this.request) this.request.pushValueUpdates(parse);
     }
 
@@ -22202,7 +22152,6 @@ extends GTextType
     {
         super.invalidateInputs(from);
 
-        if (this.input  ) this.input  .invalidateInputs(from);
         if (this.request) this.request.invalidateInputs(from);
 
         this.cachedValue = new TextValue();
@@ -22766,11 +22715,99 @@ extends GOperator
 }
 
 
-class GColor
+class GColorType1
 extends GColorType
 {
-    input   = null;
+    input = null;
 
+
+
+    copyBase(base)
+    {
+        super.copyBase(base);
+
+        if (base.input) this.input = base.input.copy();
+    }
+
+
+
+    isCached()
+    {
+        return super.isCached()
+            && (  !this.input 
+                || this.input.isCached());
+    }
+
+
+
+    pushValueUpdates(parse)
+    {
+        super.pushValueUpdates(parse);
+
+        if (this.input) this.input.pushValueUpdates(parse);
+    }
+
+
+
+    invalidateInputs(from)
+    {
+        super.invalidateInputs(from);
+
+        if (this.input) this.input.invalidateInputs(from);
+    }
+}
+
+
+class GColorType2
+extends GColorType
+{
+    input0 = null;
+    input1 = null;
+
+
+
+    copyBase(base)
+    {
+        super.copyBase(base);
+
+        if (base.input0) this.input0 = base.input0.copy();
+        if (base.input1) this.input1 = base.input1.copy();
+    }
+
+
+
+    isCached()
+    {
+        return super.isCached()
+            && (!this.input0 || this.input0.isCached())
+            && (!this.input1 || this.input1.isCached());
+    }
+
+
+
+    pushValueUpdates(parse)
+    {
+        super.pushValueUpdates(parse);
+
+        if (this.input0) this.input0.pushValueUpdates(parse);
+        if (this.input1) this.input1.pushValueUpdates(parse);
+    }
+
+
+
+    invalidateInputs(from)
+    {
+        super.invalidateInputs(from);
+
+        if (this.input0) this.input0.invalidateInputs(from);
+        if (this.input1) this.input1.invalidateInputs(from);
+    }
+}
+
+
+class GColor
+extends GColorType1
+{
     space   = null;
     c1      = null;
     c2      = null;
@@ -22794,9 +22831,6 @@ extends GColorType
         const copy = new GColor(this.nodeId, this.options);
 
         copy.copyBase(this);
-
-        if (this.input) 
-            copy.input = this.input.copy();
 
         copy.space = this.space.copy();
 
@@ -22932,19 +22966,6 @@ extends GColorType
 
 
 
-    pushValueUpdates(parse)
-    {
-        super.pushValueUpdates(parse);
-
-        if (this.input) this.input.pushValueUpdates(parse);
-        if (this.space) this.space.pushValueUpdates(parse);
-        if (this.c1   ) this.c1   .pushValueUpdates(parse);
-        if (this.c2   ) this.c2   .pushValueUpdates(parse);
-        if (this.c3   ) this.c3   .pushValueUpdates(parse);
-    }
-
-
-
     convertColor(color, fromSpace, toSpace)
     {
         let col = [
@@ -22981,11 +23002,22 @@ extends GColorType
 
 
 
+    pushValueUpdates(parse)
+    {
+        super.pushValueUpdates(parse);
+
+        if (this.space) this.space.pushValueUpdates(parse);
+        if (this.c1   ) this.c1   .pushValueUpdates(parse);
+        if (this.c2   ) this.c2   .pushValueUpdates(parse);
+        if (this.c3   ) this.c3   .pushValueUpdates(parse);
+    }
+
+
+
     invalidateInputs(from)
     {
         super.invalidateInputs(from);
 
-        if (this.input) this.input.invalidateInputs(from);
         if (this.space) this.space.invalidateInputs(from);
         if (this.c1   ) this.c1   .invalidateInputs(from);
         if (this.c2   ) this.c2   .invalidateInputs(from);
@@ -22995,10 +23027,8 @@ extends GColorType
 
 
 class GValidColor
-extends GColorType
+extends GColorType1
 {
-    input        = null;
-     
     quality      = null;
 
     corrections  = [];
@@ -23017,9 +23047,6 @@ extends GColorType
         const copy = new GValidColor(this.nodeId, this.options);
 
         copy.copyBase(this);
-
-        if (this.input) 
-            copy.input = this.input.copy();
 
         if (this.value  ) copy.value   = this.value  .copy();
         if (this.quality) copy.quality = this.quality.copy();
@@ -23135,7 +23162,6 @@ extends GColorType
     {
         super.pushValueUpdates(parse);
 
-        if (this.input  ) this.input  .pushValueUpdates(parse);
         if (this.quality) this.quality.pushValueUpdates(parse);
     }
 
@@ -23145,7 +23171,6 @@ extends GColorType
     {
         super.invalidateInputs(from);
 
-        if (this.input  ) this.input  .invalidateInputs(from);
         if (this.quality) this.quality.invalidateInputs(from);
     }
 }
@@ -23153,10 +23178,8 @@ extends GColorType
 
 
 class GCorrectColor
-extends GColorType
+extends GColorType1
 {
-    input        = null;
-     
     order        = null;
     margin1      = null;
     margin2      = null;
@@ -23178,9 +23201,6 @@ extends GColorType
         const copy = new GCorrectColor(this.nodeId, this.options);
 
         copy.copyBase(this);
-
-        if (this.input) 
-            copy.input = this.input.copy();
 
         if (this.order  ) copy.order   = this.order  .copy();
         if (this.margin1) copy.margin1 = this.margin1.copy();
@@ -23349,7 +23369,6 @@ extends GColorType
     {
         super.pushValueUpdates(parse);
 
-        if (this.input  ) this.input  .pushValueUpdates(parse);
         if (this.order  ) this.order  .pushValueUpdates(parse);
         if (this.margin1) this.margin1.pushValueUpdates(parse);
         if (this.margin2) this.margin2.pushValueUpdates(parse);
@@ -23362,7 +23381,6 @@ extends GColorType
     {
         super.invalidateInputs(from);
 
-        if (this.input  ) this.input  .invalidateInputs(from);
         if (this.order  ) this.order  .invalidateInputs(from);
         if (this.margin1) this.margin1.invalidateInputs(from);
         if (this.margin2) this.margin2.invalidateInputs(from);
@@ -23373,11 +23391,8 @@ extends GColorType
 
 
 class GColorContrast
-extends GColorType
+extends GColorType2
 {
-    input0 = null;
-    input1 = null;
-
     standard;
     contrast;
 
@@ -23394,9 +23409,6 @@ extends GColorType
         const copy = new GColorContrast(this.nodeId, this.options);
 
         copy.copyBase(this);
-
-        if (this.input0) copy.input0 = this.input0.copy();
-        if (this.input1) copy.input1 = this.input1.copy();
 
         copy.standard = this.standard.copy();
         copy.contrast = this.contrast.copy();
@@ -23520,8 +23532,6 @@ extends GColorType
     {
         super.pushValueUpdates(parse);
 
-        if (this.input0  ) this.input0  .pushValueUpdates(parse);
-        if (this.input1  ) this.input1  .pushValueUpdates(parse);
         if (this.standard) this.standard.pushValueUpdates(parse);
         if (this.contrast) this.contrast.pushValueUpdates(parse);
     }
@@ -23532,8 +23542,6 @@ extends GColorType
     {
         super.invalidateInputs(from);
 
-        if (this.input0  ) this.input0  .invalidateInputs(from);
-        if (this.input1  ) this.input1  .invalidateInputs(from);
         if (this.standard) this.standard.invalidateInputs(from);
         if (this.contrast) this.contrast.invalidateInputs(from);
     }
@@ -23542,10 +23550,8 @@ extends GColorType
 
 
 class GColorBlind
-extends GColorType
+extends GColorType1
 {
-    input = null;
-
     l;
     m;
     s;
@@ -23563,9 +23569,6 @@ extends GColorType
         const copy = new GColorBlind(this.nodeId, this.options);
 
         copy.copyBase(this);
-
-        if (this.input) 
-            copy.input = this.input.copy();
 
         copy.l = this.l.copy();
         copy.m = this.m.copy();
@@ -23641,10 +23644,9 @@ extends GColorType
     {
         super.pushValueUpdates(parse);
 
-        if (this.input ) this.input.pushValueUpdates(parse);
-        if (this.l     ) this.l    .pushValueUpdates(parse);
-        if (this.m     ) this.m    .pushValueUpdates(parse);
-        if (this.s     ) this.s    .pushValueUpdates(parse);
+        if (this.l) this.l.pushValueUpdates(parse);
+        if (this.m) this.m.pushValueUpdates(parse);
+        if (this.s) this.s.pushValueUpdates(parse);
     }
 
 
@@ -23653,21 +23655,17 @@ extends GColorType
     {
         super.invalidateInputs(from);
 
-        if (this.input ) this.input.invalidateInputs(from);
-        if (this.l     ) this.l    .invalidateInputs(from);
-        if (this.m     ) this.m    .invalidateInputs(from);
-        if (this.s     ) this.s    .invalidateInputs(from);
+        if (this.l) this.l.invalidateInputs(from);
+        if (this.m) this.m.invalidateInputs(from);
+        if (this.s) this.s.invalidateInputs(from);
     }
 }
 
 
 
 class GColorInterpolate
-extends GColorType
+extends GColorType2
 {
-    input0 = null;
-    input1 = null;
-
     space;
     amount;
     gamma;
@@ -23685,9 +23683,6 @@ extends GColorType
         const copy = new GColorInterpolate(this.nodeId, this.options);
 
         copy.copyBase(this);
-
-        if (this.input0) copy.input0 = this.input0.copy();
-        if (this.input1) copy.input1 = this.input1.copy();
 
         copy.space  = this.space .copy();
         copy.amount = this.amount.copy();
@@ -23804,8 +23799,6 @@ extends GColorType
     {
         super.pushValueUpdates(parse);
 
-        if (this.input0) this.input0.pushValueUpdates(parse);
-        if (this.input1) this.input1.pushValueUpdates(parse);
         if (this.space ) this.space .pushValueUpdates(parse);
         if (this.amount) this.amount.pushValueUpdates(parse);
         if (this.gamma ) this.gamma .pushValueUpdates(parse);
@@ -23817,8 +23810,6 @@ extends GColorType
     {
         super.invalidateInputs(from);
 
-        if (this.input0) this.input0.invalidateInputs(from);
-        if (this.input1) this.input1.invalidateInputs(from);
         if (this.space ) this.space .invalidateInputs(from);
         if (this.amount) this.amount.invalidateInputs(from);
         if (this.gamma ) this.gamma .invalidateInputs(from);
@@ -23828,11 +23819,8 @@ extends GColorType
 
 
 class GColorBlend
-extends GColorType
+extends GColorType2
 {
-    input0 = null;
-    input1 = null;
-
     mode;
     opacity;
     
@@ -23849,9 +23837,6 @@ extends GColorType
         const copy = new GColorBlend(this.nodeId, this.options);
 
         copy.copyBase(this);
-
-        if (this.input0) copy.input0 = this.input0.copy();
-        if (this.input1) copy.input1 = this.input1.copy();
 
         copy.mode    = this.mode   .copy();
         copy.opacity = this.opacity.copy();
@@ -23920,18 +23905,6 @@ extends GColorType
 
 
 
-    pushValueUpdates(parse)
-    {
-        super.pushValueUpdates(parse);
-
-        if (this.input0 ) this.input0 .pushValueUpdates(parse);
-        if (this.input1 ) this.input1 .pushValueUpdates(parse);
-        if (this.mode   ) this.mode   .pushValueUpdates(parse);
-        if (this.opacity) this.opacity.pushValueUpdates(parse);
-    }
-
-
-
     blend(mode, col0, col1, opacity)
     {
         switch (mode)
@@ -23962,12 +23935,20 @@ extends GColorType
 
 
 
+    pushValueUpdates(parse)
+    {
+        super.pushValueUpdates(parse);
+
+        if (this.mode   ) this.mode   .pushValueUpdates(parse);
+        if (this.opacity) this.opacity.pushValueUpdates(parse);
+    }
+
+
+
     invalidateInputs(from)
     {
         super.invalidateInputs(from);
 
-        if (this.input0 ) this.input0 .invalidateInputs(from);
-        if (this.input1 ) this.input1 .invalidateInputs(from);
         if (this.mode   ) this.mode   .invalidateInputs(from);
         if (this.opacity) this.opacity.invalidateInputs(from);
     }
@@ -24460,10 +24441,8 @@ extends GOperator
 
 
 class GFill
-extends GOperator
+extends GOperator1
 {
-    input   = null;
-
     color   = null;
     opacity = null;
     blend   = null;
@@ -24482,9 +24461,6 @@ extends GOperator
         const copy = new GFill(this.nodeId, this.options);
 
         copy.copyBase(this);
-
-        if (this.input) 
-            copy.input = this.input.copy();
 
         if (this.color  ) copy.color   = this.color  .copy();
         if (this.opacity) copy.opacity = this.opacity.copy();
@@ -24534,18 +24510,6 @@ extends GOperator
 
 
 
-    pushValueUpdates(parse)
-    {
-        super.pushValueUpdates(parse);
-
-        if (this.input  ) this.input  .pushValueUpdates(parse);
-        if (this.color  ) this.color  .pushValueUpdates(parse);
-        if (this.opacity) this.opacity.pushValueUpdates(parse);
-        if (this.blend  ) this.blend  .pushValueUpdates(parse);
-    }
-    
-    
-    
     toValue()
     {
         return this.options.enabled
@@ -24567,11 +24531,21 @@ extends GOperator
 
 
 
+    pushValueUpdates(parse)
+    {
+        super.pushValueUpdates(parse);
+
+        if (this.color  ) this.color  .pushValueUpdates(parse);
+        if (this.opacity) this.opacity.pushValueUpdates(parse);
+        if (this.blend  ) this.blend  .pushValueUpdates(parse);
+    }
+    
+    
+    
     invalidateInputs(from)
     {
         super.invalidateInputs(from);
 
-        if (this.input  ) this.input  .invalidateInputs(from);
         if (this.color  ) this.color  .invalidateInputs(from);
         if (this.opacity) this.opacity.invalidateInputs(from);
         if (this.blend  ) this.blend  .invalidateInputs(from);
@@ -24580,10 +24554,8 @@ extends GOperator
 
 
 class GColorStop
-extends GOperator
+extends GOperator1
 {
-    input    = null;
-
     fill     = null;
     position = null;
 
@@ -24601,9 +24573,6 @@ extends GOperator
         const copy = new GColorStop(this.nodeId, this.options);
 
         copy.copyBase(this);
-
-        if (this.input) 
-            copy.input = this.input.copy();
 
         if (this.fill    ) copy.fill     = this.fill    .copy();
         if (this.position) copy.position = this.position.copy();
@@ -24666,16 +24635,6 @@ extends GOperator
 
 
 
-    pushValueUpdates(parse)
-    {
-        super.pushValueUpdates(parse);
-
-        if (this.input   ) this.input   .pushValueUpdates(parse);
-        if (this.fill    ) this.fill    .pushValueUpdates(parse);
-        if (this.position) this.position.pushValueUpdates(parse);
-    }    
-    
-    
     toValue()
     {
         return new ColorStopValue(
@@ -24695,11 +24654,20 @@ extends GOperator
 
 
 
+    pushValueUpdates(parse)
+    {
+        super.pushValueUpdates(parse);
+
+        if (this.fill    ) this.fill    .pushValueUpdates(parse);
+        if (this.position) this.position.pushValueUpdates(parse);
+    }    
+
+    
+    
     invalidateInputs(from)
     {
         super.invalidateInputs(from);
 
-        if (this.input   ) this.input   .invalidateInputs(from);
         if (this.fill    ) this.fill    .invalidateInputs(from);
         if (this.position) this.position.invalidateInputs(from);
     }
@@ -24869,10 +24837,8 @@ extends GOperator
 
 
 class GStroke
-extends GOperator
+extends GOperator1
 {
-    input  = null;
-
     fills  = null;
     weight = null;
     fit    = null;
@@ -24893,9 +24859,6 @@ extends GOperator
         const copy = new GStroke(this.nodeId, this.options);
 
         copy.copyBase(this);
-
-        if (this.input) 
-            copy.input = this.input.copy();
 
         if (this.fills ) copy.fills  = this.fills .copy();
         if (this.weight) copy.weight = this.weight.copy();
@@ -24984,19 +24947,6 @@ extends GOperator
 
 
 
-    pushValueUpdates(parse)
-    {
-        super.pushValueUpdates(parse);
-
-        if (this.input ) this.input .pushValueUpdates(parse);
-        if (this.fills ) this.fills .pushValueUpdates(parse);
-        if (this.weight) this.weight.pushValueUpdates(parse);
-        if (this.fit   ) this.fit   .pushValueUpdates(parse);
-        if (this.join  ) this.join  .pushValueUpdates(parse);
-        if (this.miter ) this.miter .pushValueUpdates(parse);
-    }    
-    
-    
     toValue()
     {
         return new StrokeValue(
@@ -25022,11 +24972,23 @@ extends GOperator
 
 
 
+    pushValueUpdates(parse)
+    {
+        super.pushValueUpdates(parse);
+
+        if (this.fills ) this.fills .pushValueUpdates(parse);
+        if (this.weight) this.weight.pushValueUpdates(parse);
+        if (this.fit   ) this.fit   .pushValueUpdates(parse);
+        if (this.join  ) this.join  .pushValueUpdates(parse);
+        if (this.miter ) this.miter .pushValueUpdates(parse);
+    }    
+    
+    
+
     invalidateInputs(from)
     {
         super.invalidateInputs(from);
 
-        if (this.input ) this.input .invalidateInputs(from);
         if (this.fills ) this.fills .invalidateInputs(from);
         if (this.weight) this.weight.invalidateInputs(from);
         if (this.fit   ) this.fit   .invalidateInputs(from);
@@ -25037,10 +24999,8 @@ extends GOperator
 
 
 class GDropShadow
-extends GOperator
+extends GOperator1
 {
-    input  = null;
-
     x      = null;
     y      = null;
     blur   = null;
@@ -25063,9 +25023,6 @@ extends GOperator
         const copy = new GDropShadow(this.nodeId, this.options);
 
         copy.copyBase(this);
-
-        if (this.input) 
-            copy.input = this.input.copy();
 
         if (this.x     ) copy.x      = this.x     .copy();
         if (this.y     ) copy.y      = this.y     .copy();
@@ -25142,22 +25099,6 @@ extends GOperator
 
 
 
-    pushValueUpdates(parse)
-    {
-        super.pushValueUpdates(parse);
-
-        if (this.input ) this.input .pushValueUpdates(parse);
-        if (this.x     ) this.x     .pushValueUpdates(parse);
-        if (this.y     ) this.y     .pushValueUpdates(parse);
-        if (this.blur  ) this.blur  .pushValueUpdates(parse);
-        if (this.spread) this.spread.pushValueUpdates(parse);
-        if (this.fill  ) this.fill  .pushValueUpdates(parse);
-        if (this.blend ) this.blend .pushValueUpdates(parse);
-        if (this.behind) this.behind.pushValueUpdates(parse);
-    }
-    
-    
-    
     toValue()
     {
         return new DropShadowValue(
@@ -25186,11 +25127,25 @@ extends GOperator
 
 
 
-    invalidateInputs(from)
+    pushValueUpdates(parse)
+    {
+        super.pushValueUpdates(parse);
+
+        if (this.x     ) this.x     .pushValueUpdates(parse);
+        if (this.y     ) this.y     .pushValueUpdates(parse);
+        if (this.blur  ) this.blur  .pushValueUpdates(parse);
+        if (this.spread) this.spread.pushValueUpdates(parse);
+        if (this.fill  ) this.fill  .pushValueUpdates(parse);
+        if (this.blend ) this.blend .pushValueUpdates(parse);
+        if (this.behind) this.behind.pushValueUpdates(parse);
+    }
+    
+    
+    
+   invalidateInputs(from)
     {
         super.invalidateInputs(from);
 
-        if (this.input ) this.input .invalidateInputs(from);
         if (this.x     ) this.x     .invalidateInputs(from);
         if (this.y     ) this.y     .invalidateInputs(from);
         if (this.blur  ) this.blur  .invalidateInputs(from);
@@ -25203,10 +25158,8 @@ extends GOperator
 
 
 class GInnerShadow
-extends GOperator
+extends GOperator1
 {
-    input  = null;
-
     x      = null;
     y      = null;
     blur   = null;
@@ -25228,9 +25181,6 @@ extends GOperator
         const copy = new GInnerShadow(this.nodeId, this.options);
 
         copy.copyBase(this);
-
-        if (this.input) 
-            copy.input = this.input.copy();
 
         if (this.x     ) copy.x      = this.x     .copy();
         if (this.y     ) copy.y      = this.y     .copy();
@@ -25302,21 +25252,6 @@ extends GOperator
 
 
 
-    pushValueUpdates(parse)
-    {
-        super.pushValueUpdates(parse);
-
-        if (this.input ) this.input .pushValueUpdates(parse);
-        if (this.x     ) this.x     .pushValueUpdates(parse);
-        if (this.y     ) this.y     .pushValueUpdates(parse);
-        if (this.blur  ) this.blur  .pushValueUpdates(parse);
-        if (this.spread) this.spread.pushValueUpdates(parse);
-        if (this.fill  ) this.fill  .pushValueUpdates(parse);
-        if (this.blend ) this.blend .pushValueUpdates(parse);
-    }
-    
-    
-    
     toValue()
     {
         return new InnerShadowValue(
@@ -25343,11 +25278,24 @@ extends GOperator
 
 
 
+    pushValueUpdates(parse)
+    {
+        super.pushValueUpdates(parse);
+
+        if (this.x     ) this.x     .pushValueUpdates(parse);
+        if (this.y     ) this.y     .pushValueUpdates(parse);
+        if (this.blur  ) this.blur  .pushValueUpdates(parse);
+        if (this.spread) this.spread.pushValueUpdates(parse);
+        if (this.fill  ) this.fill  .pushValueUpdates(parse);
+        if (this.blend ) this.blend .pushValueUpdates(parse);
+    }
+    
+    
+    
     invalidateInputs(from)
     {
         super.invalidateInputs(from);
 
-        if (this.input ) this.input .invalidateInputs(from);
         if (this.x     ) this.x     .invalidateInputs(from);
         if (this.y     ) this.y     .invalidateInputs(from);
         if (this.blur  ) this.blur  .invalidateInputs(from);
@@ -25359,10 +25307,8 @@ extends GOperator
 
 
 class GLayerBlur
-extends GOperator
+extends GOperator1
 {
-    input  = null;
-
     radius = null;
 
 
@@ -25380,9 +25326,6 @@ extends GOperator
 
         copy.copyBase(this);
 
-        if (this.input) 
-            copy.input = this.input.copy();
-
         if (this.radius) copy.radius = this.radius.copy();
 
         return copy;
@@ -25428,15 +25371,6 @@ extends GOperator
 
 
 
-    pushValueUpdates(parse)
-    {
-        super.pushValueUpdates(parse);
-
-        if (this.radius) this.radius.pushValueUpdates(parse);
-    }
-    
-    
-    
     toValue()
     {
         return new LayerBlurValue(
@@ -25453,21 +25387,27 @@ extends GOperator
 
 
 
+    pushValueUpdates(parse)
+    {
+        super.pushValueUpdates(parse);
+
+        if (this.radius) this.radius.pushValueUpdates(parse);
+    }
+    
+    
+    
     invalidateInputs(from)
     {
         super.invalidateInputs(from);
 
-        if (this.input ) this.input .invalidateInputs(from);
         if (this.radius) this.radius.invalidateInputs(from);
     }
 }
 
 
 class GBackBlur
-extends GOperator
+extends GOperator1
 {
-    input  = null;
-
     radius = null;
 
 
@@ -25485,9 +25425,6 @@ extends GOperator
 
         copy.copyBase(this);
 
-        if (this.input) 
-            copy.input = this.input.copy();
-
         if (this.radius) copy.radius = this.radius.copy();
 
         return copy;
@@ -25533,15 +25470,6 @@ extends GOperator
 
 
 
-    pushValueUpdates(parse)
-    {
-        super.pushValueUpdates(parse);
-
-        if (this.radius) this.radius.pushValueUpdates(parse);
-    }
-    
-    
-    
     toValue()
     {
         return new BackBlurValue(
@@ -25558,11 +25486,19 @@ extends GOperator
 
 
 
+    pushValueUpdates(parse)
+    {
+        super.pushValueUpdates(parse);
+
+        if (this.radius) this.radius.pushValueUpdates(parse);
+    }
+    
+    
+    
     invalidateInputs(from)
     {
         super.invalidateInputs(from);
 
-        if (this.input ) this.input .invalidateInputs(from);
         if (this.radius) this.radius.invalidateInputs(from);
     }
 }
@@ -25735,7 +25671,9 @@ function validateObjectRect(x, y, w, h, a, _a)
 class GShape
 extends GShapeBase
 {
-    props  = null;
+    input = null;
+
+    props = null;
    
 
 
@@ -25750,6 +25688,8 @@ extends GShapeBase
     {
         super.copyBase(base);
         
+        if (base.input) this.input = base.input.copy();
+
         this.copyProperties(base.props);
     }
 
@@ -25758,6 +25698,15 @@ extends GShapeBase
     copyProperties(props)
     {
         this.props = props.copy();
+    }
+
+
+
+    isCached()
+    {
+        return super.isCached()
+            && (  !this.input 
+                || this.input.isCached());
     }
 
 
@@ -25818,15 +25767,6 @@ extends GShapeBase
 
 
 
-    pushValueUpdates(parse)
-    {
-        super.pushValueUpdates(parse);
-
-        if (this.props) this.props.pushValueUpdates(parse);
-    }
-
-
-    
     evalStyle(options = {})
     {
 
@@ -25842,10 +25782,21 @@ extends GShapeBase
 
 
 
+    pushValueUpdates(parse)
+    {
+        super.pushValueUpdates(parse);
+
+        if (this.input) this.input.pushValueUpdates(parse);
+        if (this.props) this.props.pushValueUpdates(parse);
+    }
+
+
+    
     invalidateInputs(from)
     {
         super.invalidateInputs(from);
 
+        if (this.input) this.input.invalidateInputs(from);
         if (this.props) this.props.invalidateInputs(from);
     }
 }
@@ -25855,8 +25806,6 @@ extends GShapeBase
 class GRectangle
 extends GShape
 {
-    input = null;
-
     round = null;
 
 
@@ -25873,9 +25822,6 @@ extends GShape
         const copy = new GRectangle(this.nodeId, this.options);
 
         copy.copyBase(this);
-
-        if (this.input) 
-            copy.input = this.input.copy();
 
         if (this.round) copy.round = this.round.copy();
 
@@ -26018,7 +25964,6 @@ extends GShape
     {
         super.pushValueUpdates(parse);
 
-        if (this.input) this.input.pushValueUpdates(parse);
         if (this.round) this.round.pushValueUpdates(parse);
     }
 
@@ -26028,7 +25973,6 @@ extends GShape
     {
         super.invalidateInputs(from);
 
-        if (this.input) this.input.invalidateInputs(from);
         if (this.round) this.round.invalidateInputs(from);
     }
 }
@@ -26037,10 +25981,6 @@ extends GShape
 class GLine
 extends GShape
 {
-    input = null;
-
-
-
     constructor(nodeId, options)
     {
         super(LINE, nodeId, options);
@@ -26053,9 +25993,6 @@ extends GShape
         const copy = new GLine(this.nodeId, this.options);
 
         copy.copyBase(this);
-
-        if (this.input) 
-            copy.input = this.input.copy();
 
         return copy;
     }
@@ -26152,15 +26089,6 @@ extends GShape
 
 
 
-    pushValueUpdates(parse)
-    {
-        super.pushValueUpdates(parse);
-
-        if (this.input) this.input.pushValueUpdates(parse);
-    }
-
-
-
     toValue()
     {
         const line = new LineValue(
@@ -26174,23 +26102,12 @@ extends GShape
 
         return line;
     }
-
-
-
-    invalidateInputs(from)
-    {
-        super.invalidateInputs(from);
-
-        if (this.input) this.input.invalidateInputs(from);
-    }
 }
 
 
 class GEllipse
 extends GShape
 {
-    input = null;
-
     from  = null;
     to    = null;
     inner = null;
@@ -26209,9 +26126,6 @@ extends GShape
         const copy = new GEllipse(this.nodeId, this.options);
 
         copy.copyBase(this);
-
-        if (this.input) 
-            copy.input = this.input.copy();
 
         if (this.from ) copy.from  = this.from .copy();
         if (this.to   ) copy.to    = this.to   .copy();
@@ -26333,15 +26247,6 @@ extends GShape
    
     
         
-    pushValueUpdates(parse)
-    {
-        super.pushValueUpdates(parse);
- 
-        if (this.input) this.input.pushValueUpdates(prase);
-    }
-
-   
-
     toValue()
     {
         const ellipse = new EllipseValue(
@@ -26360,13 +26265,26 @@ extends GShape
         return ellipse;
     }
     
+
     
+    pushValueUpdates(parse)
+    {
+        super.pushValueUpdates(parse);
+ 
+        if (this.from ) this.from .pushValueUpdates(prase);
+        if (this.to   ) this.to   .pushValueUpdates(prase);
+        if (this.inner) this.inner.pushValueUpdates(prase);
+    }
+
+   
         
     invalidateInputs(from)
     {
         super.invalidateInputs(from);
 
-        if (this.input) this.input.invalidateInputs(from);
+        if (this.from ) this.from .invalidateInputs(from);
+        if (this.to   ) this.to   .invalidateInputs(from);
+        if (this.inner) this.inner.invalidateInputs(from);
     }
 }
 
@@ -26374,8 +26292,6 @@ extends GShape
 class GPolygon
 extends GShape
 {
-    input   = null;
-
     round   = null;
     corners = null;
 
@@ -26393,9 +26309,6 @@ extends GShape
         const copy = new GPolygon(this.nodeId, this.options);
 
         copy.copyBase(this);
-
-        if (this.input) 
-            copy.input = this.input.copy();
 
         if (this.round  ) copy.round   = this.round  .copy();
         if (this.corners) copy.corners = this.corners.copy();
@@ -26510,17 +26423,6 @@ extends GShape
 
 
 
-    pushValueUpdates(parse)
-    {
-        super.pushValueUpdates(parse);
-
-        if (this.input  ) this.input  .pushValueUpdates(parse);
-        if (this.round  ) this.round  .pushValueUpdates(parse);
-        if (this.corners) this.corners.pushValueUpdates(parse);
-    }
-
-
-
     toValue()
     {
         const poly = new PolygonValue(
@@ -26549,11 +26451,20 @@ extends GShape
 
 
 
+    pushValueUpdates(parse)
+    {
+        super.pushValueUpdates(parse);
+
+        if (this.round  ) this.round  .pushValueUpdates(parse);
+        if (this.corners) this.corners.pushValueUpdates(parse);
+    }
+
+
+
     invalidateInputs(from)
     {
         super.invalidateInputs(from);
 
-        if (this.input  ) this.input  .invalidateInputs(from);
         if (this.round  ) this.round  .invalidateInputs(from);
         if (this.corners) this.corners.invalidateInputs(from);
     }
@@ -26564,8 +26475,6 @@ extends GShape
 class GStar
 extends GShape
 {
-    input  = null;
-
     round  = null;
     points = null;
     convex = null;
@@ -26584,9 +26493,6 @@ extends GShape
         const copy = new GStar(this.nodeId, this.options);
 
         copy.copyBase(this);
-
-        if (this.input) 
-            copy.input = this.input.copy();
 
         if (this.round ) copy.round  = this.round .copy();
         if (this.points) copy.points = this.points.copy();
@@ -26701,18 +26607,6 @@ extends GShape
 
 
 
-    pushValueUpdates(parse)
-    {
-        super.pushValueUpdates(parse);
-
-        if (this.input ) this.input .pushValueUpdates(parse);
-        if (this.round ) this.round .pushValueUpdates(parse);
-        if (this.points) this.points.pushValueUpdates(parse);
-        if (this.convex) this.convex.pushValueUpdates(parse);
-    }
-
-
-
     toValue()
     {
         const star = new StarValue(
@@ -26743,23 +26637,31 @@ extends GShape
 
 
 
-   invalidateInputs(from)
-   {
-      super.invalidateInputs(from);
+    pushValueUpdates(parse)
+    {
+        super.pushValueUpdates(parse);
 
-      if (this.input ) this.input .invalidateInputs(from);
-      if (this.round ) this.round .invalidateInputs(from);
-      if (this.points) this.points.invalidateInputs(from);
-      if (this.convex) this.convex.invalidateInputs(from);
-   }
+        if (this.round ) this.round .pushValueUpdates(parse);
+        if (this.points) this.points.pushValueUpdates(parse);
+        if (this.convex) this.convex.pushValueUpdates(parse);
+    }
+
+
+
+    invalidateInputs(from)
+    {
+        super.invalidateInputs(from);
+
+        if (this.round ) this.round .invalidateInputs(from);
+        if (this.points) this.points.invalidateInputs(from);
+        if (this.convex) this.convex.invalidateInputs(from);
+    }
 }
 
 
 class GTextShape
 extends GShape
 {
-    input         = null;
-
     text          = null;
     x             = null;
     y             = null;
@@ -26787,9 +26689,6 @@ extends GShape
         const copy = new GTextShape(this.nodeId, this.options);
 
         copy.copyBase(this);
-
-        if (this.input) 
-            copy.input = this.input.copy();
 
         if (this.text         ) copy.text          = this.text         .copy();
         if (this.x            ) copy.x             = this.x            .copy();
@@ -26958,27 +26857,6 @@ extends GShape
 
 
 
-    pushValueUpdates(parse)
-    {
-        super.pushValueUpdates(parse);
-        
-        if (this.input        ) this.input        .pushValueUpdates(parse);
-        if (this.text         ) this.text         .pushValueUpdates(parse);
-        if (this.x            ) this.x            .pushValueUpdates(parse);
-        if (this.y            ) this.y            .pushValueUpdates(parse);
-        if (this.width        ) this.width        .pushValueUpdates(parse);
-        if (this.height       ) this.height       .pushValueUpdates(parse);
-        if (this.font         ) this.font         .pushValueUpdates(parse);
-        if (this.style        ) this.style        .pushValueUpdates(parse);
-        if (this.size         ) this.size         .pushValueUpdates(parse);
-        if (this.alignH       ) this.alignH       .pushValueUpdates(parse);
-        if (this.alignV       ) this.alignV       .pushValueUpdates(parse);
-        if (this.lineHeight   ) this.lineHeight   .pushValueUpdates(parse);
-        if (this.letterSpacing) this.letterSpacing.pushValueUpdates(parse);
-    }
-
-
-
     isValid()
     {
         return this.text         .isValid()
@@ -27023,11 +26901,30 @@ extends GShape
 
 
 
+    pushValueUpdates(parse)
+    {
+        super.pushValueUpdates(parse);
+        
+        if (this.text         ) this.text         .pushValueUpdates(parse);
+        if (this.x            ) this.x            .pushValueUpdates(parse);
+        if (this.y            ) this.y            .pushValueUpdates(parse);
+        if (this.width        ) this.width        .pushValueUpdates(parse);
+        if (this.height       ) this.height       .pushValueUpdates(parse);
+        if (this.font         ) this.font         .pushValueUpdates(parse);
+        if (this.style        ) this.style        .pushValueUpdates(parse);
+        if (this.size         ) this.size         .pushValueUpdates(parse);
+        if (this.alignH       ) this.alignH       .pushValueUpdates(parse);
+        if (this.alignV       ) this.alignV       .pushValueUpdates(parse);
+        if (this.lineHeight   ) this.lineHeight   .pushValueUpdates(parse);
+        if (this.letterSpacing) this.letterSpacing.pushValueUpdates(parse);
+    }
+
+
+
     invalidateInputs(from)
     {
         super.invalidateInputs(from);
         
-        if (this.input        ) this.input        .invalidateInputs(from);
         if (this.text         ) this.text         .invalidateInputs(from);
         if (this.x            ) this.x            .invalidateInputs(from);
         if (this.y            ) this.y            .invalidateInputs(from);
@@ -27045,12 +26942,10 @@ extends GShape
 
 
 class GPoint
-extends GOperator
+extends GOperator1
 {
-    input = null;
-
-    x     = null;
-    y     = null;
+    x = null;
+    y = null;
 
 
 
@@ -27066,9 +26961,6 @@ extends GOperator
         const copy = new GPoint(this.nodeId, this.options);
 
         copy.copyBase(this);
-
-        if (this.input) 
-            copy.input = this.input.copy();
 
         if (this.x) copy.x = this.x.copy();
         if (this.y) copy.y = this.y.copy();
@@ -27153,17 +27045,6 @@ extends GOperator
 
 
 
-    pushValueUpdates(parse)
-    {
-        super.pushValueUpdates(parse);
-
-        if (this.input) this.input.pushValueUpdates(parse);
-        if (this.x    ) this.x    .pushValueUpdates(parse);
-        if (this.y    ) this.y    .pushValueUpdates(parse);
-    }
-
-
-
     toValue()
     {
         const point = new PointValue(
@@ -27187,13 +27068,22 @@ extends GOperator
 
 
 
+    pushValueUpdates(parse)
+    {
+        super.pushValueUpdates(parse);
+
+        if (this.x) this.x.pushValueUpdates(parse);
+        if (this.y) this.y.pushValueUpdates(parse);
+    }
+
+
+
     invalidateInputs(from)
     {
         super.invalidateInputs(from);
 
-        if (this.input) this.input.invalidateInputs(from);
-        if (this.x    ) this.x    .invalidateInputs(from);
-        if (this.y    ) this.y    .invalidateInputs(from);
+        if (this.x) this.x.invalidateInputs(from);
+        if (this.y) this.y.invalidateInputs(from);
     }
 }
 
@@ -27201,8 +27091,6 @@ extends GOperator
 class GVectorPath
 extends GShape
 {
-    input   = null;
-
     points  = null;
     closed  = null;
     degree  = null;
@@ -27223,9 +27111,6 @@ extends GShape
         const copy = new GVectorPath(this.nodeId, this.options);
 
         copy.copyBase(this);
-
-        if (this.input) 
-            copy.input = this.input.copy();
 
         if (this.points ) copy.points  = this.points .copy();
         if (this.closed ) copy.closed  = this.closed .copy();
@@ -27354,20 +27239,6 @@ extends GShape
 
 
 
-    pushValueUpdates(parse)
-    {
-        super.pushValueUpdates(parse);
-
-        if (this.input  ) this.input  .pushValueUpdates(parse);
-        if (this.points ) this.points .pushValueUpdates(parse);
-        if (this.closed ) this.closed .pushValueUpdates(parse);
-        if (this.degree ) this.degree .pushValueUpdates(parse);
-        if (this.winding) this.winding.pushValueUpdates(parse);
-        if (this.round  ) this.round  .pushValueUpdates(parse);
-    }
-
-
-
     toValue()
     {
         const path = new VectorPathValue(
@@ -27398,11 +27269,23 @@ extends GShape
 
 
 
+    pushValueUpdates(parse)
+    {
+        super.pushValueUpdates(parse);
+
+        if (this.points ) this.points .pushValueUpdates(parse);
+        if (this.closed ) this.closed .pushValueUpdates(parse);
+        if (this.degree ) this.degree .pushValueUpdates(parse);
+        if (this.winding) this.winding.pushValueUpdates(parse);
+        if (this.round  ) this.round  .pushValueUpdates(parse);
+    }
+
+
+
     invalidateInputs(from)
     {
         super.invalidateInputs(from);
 
-        if (this.input  ) this.input  .invalidateInputs(from);
         if (this.points ) this.points .invalidateInputs(from);
         if (this.closed ) this.closed .invalidateInputs(from);
         if (this.degree ) this.degree .invalidateInputs(from);
@@ -27629,8 +27512,6 @@ extends GShapeBase
 class GFrame
 extends GShape
 {
-    input    = null;
-
     round    = null;
     children = null;
 
@@ -27648,9 +27529,6 @@ extends GShape
         const copy = new GFrame(this.nodeId, this.options);
 
         copy.copyBase(this);
-
-        if (this.input) 
-            copy.input = this.input.copy();
 
         if (this.round   ) copy.round    = this.round   .copy();
         if (this.children) copy.children = this.children.copy();
@@ -27799,17 +27677,6 @@ extends GShape
 
 
 
-    pushValueUpdates(parse)
-    {
-        super.pushValueUpdates(parse);
-
-        if (this.input   ) this.input   .pushValueUpdates(parse);
-        if (this.round   ) this.round   .pushValueUpdates(parse);
-        if (this.children) this.children.pushValueUpdates(parse);
-    }
-
-
-
     toValue()
     {
         return this.value.copy();
@@ -27821,7 +27688,17 @@ extends GShape
     {
         return super.isValid()
             && this.round   .isValid()
-            && this.children.isValid();
+        && this.children.isValid();
+    }
+
+
+
+    pushValueUpdates(parse)
+    {
+        super.pushValueUpdates(parse);
+
+        if (this.round   ) this.round   .pushValueUpdates(parse);
+        if (this.children) this.children.pushValueUpdates(parse);
     }
 
 
@@ -27830,7 +27707,6 @@ extends GShape
     {
         super.invalidateInputs(from);
 
-        if (this.input   ) this.input   .invalidateInputs(from);
         if (this.round   ) this.round   .invalidateInputs(from);
         if (this.children) this.children.invalidateInputs(from);
     }
@@ -28219,10 +28095,8 @@ extends GShapeBase
 
 
 class GMove
-extends GOperator
+extends GOperator1
 {
-    input       = null;
-
     x           = null;
     y           = null;
     affectSpace = null;
@@ -28245,9 +28119,6 @@ extends GOperator
         const copy = new GMove(this.nodeId, this.options);
 
         copy.copyBase(this);
-
-        if (this.input) 
-            copy.input = this.input.copy();
 
         if (this.x          ) copy.x           = this.x          .copy();
         if (this.y          ) copy.y           = this.y          .copy();
@@ -28341,18 +28212,6 @@ extends GOperator
 
 
 
-    pushValueUpdates(parse)
-    {
-        super.pushValueUpdates(parse);
-
-        if (this.input      ) this.input      .pushValueUpdates(parse);
-        if (this.x          ) this.x          .pushValueUpdates(parse);
-        if (this.y          ) this.y          .pushValueUpdates(parse);
-        if (this.affectSpace) this.affectSpace.pushValueUpdates(parse);
-    }
-
-
-
     isValid()
     {
         return super.isValid()
@@ -28363,30 +28222,38 @@ extends GOperator
 
 
 
-    invalidateInputs(from)
+    toValue()
     {
-        super.invalidateInputs(from);
-
-        if (this.input      ) this.input      .invalidateInputs(from);
-        if (this.x          ) this.x          .invalidateInputs(from);
-        if (this.y          ) this.y          .invalidateInputs(from);
-        if (this.affectSpace) this.affectSpace.invalidateInputs(from);
+        return this.value.copy();
     }
 
 
 
-    toValue()
+    pushValueUpdates(parse)
     {
-        return this.value.copy();
+        super.pushValueUpdates(parse);
+
+        if (this.x          ) this.x          .pushValueUpdates(parse);
+        if (this.y          ) this.y          .pushValueUpdates(parse);
+        if (this.affectSpace) this.affectSpace.pushValueUpdates(parse);
+    }
+
+
+
+   invalidateInputs(from)
+    {
+        super.invalidateInputs(from);
+
+        if (this.x          ) this.x          .invalidateInputs(from);
+        if (this.y          ) this.y          .invalidateInputs(from);
+        if (this.affectSpace) this.affectSpace.invalidateInputs(from);
     }
 }
 
 
 class GAffine
-extends GOperator
+extends GOperator1
 {
-    input       = null;
-    
     centerX     = null;
     centerY     = null;
     showCenter  = null;
@@ -28408,9 +28275,6 @@ extends GOperator
     copyBase(base)
     {
         super.copyBase(base);
-
-        if (base.input) 
-            this.input = base.input.copy();
 
         if (base.centerX    ) this.centerX     = base.centerX    .copy();
         if (base.centerY    ) this.centerY     = base.centerY    .copy();
@@ -28510,19 +28374,6 @@ extends GOperator
 
 
 
-    pushValueUpdates(parse)
-    {
-        super.pushValueUpdates(parse);
-
-        if (this.input      ) this.input      .pushValueUpdates(parse);
-        if (this.centerX    ) this.centerX    .pushValueUpdates(parse);
-        if (this.centerY    ) this.centerY    .pushValueUpdates(parse);
-        if (this.showCenter ) this.showCenter .pushValueUpdates(parse);
-        if (this.affectSpace) this.affectSpace.pushValueUpdates(parse);
-    }
-
-
-
     isValid()
     {
         return super.isValid()
@@ -28534,11 +28385,22 @@ extends GOperator
 
 
 
+    pushValueUpdates(parse)
+    {
+        super.pushValueUpdates(parse);
+
+        if (this.centerX    ) this.centerX    .pushValueUpdates(parse);
+        if (this.centerY    ) this.centerY    .pushValueUpdates(parse);
+        if (this.showCenter ) this.showCenter .pushValueUpdates(parse);
+        if (this.affectSpace) this.affectSpace.pushValueUpdates(parse);
+    }
+
+
+
     invalidateInputs(from)
     {
         super.invalidateInputs(from);
 
-        if (this.input      ) this.input      .invalidateInputs(from);
         if (this.centerX    ) this.centerX    .invalidateInputs(from);
         if (this.centerY    ) this.centerY    .invalidateInputs(from);
         if (this.showCenter ) this.showCenter .invalidateInputs(from);
@@ -28649,6 +28511,21 @@ extends GAffine
 
 
 
+    isValid()
+    {
+        return super.isValid()
+            && this.angle.isValid();
+    }
+
+
+
+    toValue()
+    {
+        return this.value.copy();
+    }
+
+
+
     pushValueUpdates(parse)
     {
         super.pushValueUpdates(parse);
@@ -28658,26 +28535,11 @@ extends GAffine
 
 
 
-    isValid()
-    {
-        return super.isValid()
-            && this.angle.isValid();
-    }
-
-
-
     invalidateInputs(from)
     {
         super.invalidateInputs(from)
 
         if (this.angle) this.angle.invalidateInputs(from);
-    }
-
-
-
-    toValue()
-    {
-        return this.value.copy();
     }
 }
 
@@ -34719,17 +34581,8 @@ function genParseTextFetch(parse)
     const fetch = new GTextFetch(nodeId, options);
    
 
-    let nInputs = -1;
-    
-    if (!ignore)
-    {
-        nInputs = parseInt(parse.move());
-        console.assert(nInputs == 0 || nInputs == 1, 'nInputs must be [0, 1]');
-    }
-
-    
     if (parse.settings.logRequests) 
-        logReq(fetch, parse, ignore, nInputs);
+        logReq(fetch, parse, ignore);
 
 
     if (ignore) 
@@ -34741,9 +34594,6 @@ function genParseTextFetch(parse)
 
     parse.nTab++;
 
-
-    if (nInputs == 1)
-        fetch.input = genParse(parse);
 
     fetch.request     = genParse(parse);
     fetch.cachedValue = genParse(parse);
@@ -47639,10 +47489,72 @@ extends GNode
 
 
 
+    updateValueObjects()
+    {
+        if (!this.value)
+            return;
+
+
+        for (let i = 0; i < this.value.objects.length; i++)
+        {
+            const obj  = this.value.objects[i].copy();
+
+            obj.nodeId = this.nodeId;
+            obj.listId = -1;
+            
+            this.objects.push(obj);
+        }
+    }
+
+
+
     toValue()
     {
         console.assert(false, 'cannot call abstract method GOperator.toValue()');
         return null;
+    }
+}
+
+
+class GOperator1
+extends GOperator
+{
+    input = null;
+
+
+
+    copyBase(base)
+    {
+        super.copyBase(base);
+
+        if (base.input) this.input = base.input.copy();
+    }
+
+
+
+    isCached()
+    {
+        return super.isCached()
+            && (  !this.input 
+                || this.input.isCached());
+    }
+
+
+
+    pushValueUpdates(parse)
+    {
+        super.pushValueUpdates(parse);
+
+        if (this.input) this.input.pushValueUpdates(parse);
+    }
+
+
+
+    invalidateInputs(from)
+    {
+        super.invalidateInputs(from);
+
+        if (this.input) this.input.invalidateInputs(from);
     }
 }
 
@@ -51881,6 +51793,17 @@ extends GOperator
 
 
 
+    isCached()
+    {
+        for (const input of this.inputs)
+            if (!input.isCached())
+                return false;
+
+        return super.isCached();
+    }
+
+
+
     async eval(parse)
     {
         if (this.isCached())
@@ -52193,7 +52116,7 @@ extends GOperator
 
                         obj.nodeId = this.nodeId;
 
-                        if (obj.objectId != NULL) obj.objectId += ' ';
+                        if (obj.objectId != NULL) obj.objectId += '/';
                         obj.objectId += index.value.toString();
 
                         obj.listId = -1;
@@ -52386,8 +52309,11 @@ extends GOperator
 
         copy.copyBase(this);
 
-        if (this.input    ) copy.input     = this.input    .copy();
+        if (this.input0   ) copy.input0    = this.input0   .copy();
+        if (this.input1   ) copy.input1    = this.input1   .copy();
+
         if (this.condition) copy.condition = this.condition.copy();
+
         if (this.value    ) copy.value     = this.value    .copy();
 
         return copy;
@@ -52403,7 +52329,7 @@ extends GOperator
     }
 
 
-    
+
     async eval(parse)
     {
         if (this.isCached())
@@ -52443,18 +52369,7 @@ extends GOperator
             this.value = null;
 
 
-        if (this.value)
-        {
-            for (let j = 0; j < this.value.objects.length; j++)
-            {
-                const obj  = this.value.objects[j].copy();
-
-                obj.nodeId = this.nodeId;
-                obj.listId = -1;
-                
-                this.objects.push(obj);
-            }
-        }
+        this.updateValueObjects();
 
 
         this.updateValues =
@@ -52530,6 +52445,15 @@ extends GOperator
         if (this.input) copy.input = this.input.copy();
 
         return copy;
+    }
+
+
+
+    isCached()
+    {
+        return super.isCached()
+            && (  !this.input 
+                || this.input.isCached());
     }
 
 
@@ -52983,12 +52907,15 @@ extends GOperator
         this.value = 
             this.input 
             ? (await this.input.eval(parse)).toValue() 
-            : NullValue;
+            : null;//NullValue;
 
 
         this.updateValues = [['value', this.value]];
 
         
+        this.updateValueObjects();
+
+
         this.validate();
 
         return this;
@@ -53043,6 +52970,15 @@ extends GOperator
 
 
 
+    isCached()
+    {
+        return super.isCached()
+            && (  !this.input 
+                || this.input.isCached());
+    }
+
+
+
     async eval(parse)
     {
         if (this.isCached())
@@ -53058,7 +52994,7 @@ extends GOperator
             this.value = input ? input : NullValue;
         }
         else
-            this.value = NullValue;
+            this.value = null;//NullValue;
             
 
         this.updateValues = 
@@ -53068,6 +53004,9 @@ extends GOperator
         ];
 
         
+        this.updateValueObjects();
+
+
         this.validate();
 
         return this;
@@ -53100,11 +53039,11 @@ extends GOperator
     
 
 
-    copyBase(src)
+    copyBase(base)
     {
-        super.copyBase(src);
+        super.copyBase(base);
 
-        if (src.value) this.value = src.value.copy();
+        if (base.value) this.value = base.value.copy();
     }
 
 
@@ -53116,13 +53055,99 @@ extends GOperator
 }
 
 
-class GNumber
+class GNumberType1
 extends GNumberType
 {
     input = null;
-    
 
 
+
+    copyBase(base)
+    {
+        super.copyBase(base);
+
+        if (base.input) this.input = base.input.copy();
+    }
+
+
+
+    isCached()
+    {
+        return super.isCached()
+            && (  !this.input 
+                || this.input.isCached());
+    }
+
+
+
+    pushValueUpdates(parse)
+    {
+        super.pushValueUpdates(parse);
+
+        if (this.input) this.input.pushValueUpdates(parse);
+    }
+
+
+
+    invalidateInputs(from)
+    {
+        super.invalidateInputs(from);
+
+        if (this.input) this.input.invalidateInputs(from);
+    }
+}
+
+
+class GNumberType2
+extends GNumberType
+{
+    input0 = null;
+    input1 = null;
+
+
+
+    copyBase(base)
+    {
+        super.copyBase(base);
+
+        if (base.input0) this.input0 = base.input0.copy();
+        if (base.input1) this.input1 = base.input1.copy();
+    }
+
+
+
+    isCached()
+    {
+        return super.isCached()
+            && (!this.input0 || this.input0.isCached())
+            && (!this.input1 || this.input1.isCached());
+    }
+
+
+
+    pushValueUpdates(parse)
+    {
+        super.pushValueUpdates(parse);
+
+        if (this.input0) this.input0.pushValueUpdates(parse);
+        if (this.input1) this.input1.pushValueUpdates(parse);
+    }
+
+
+
+    invalidateInputs(from)
+    {
+        super.invalidateInputs(from);
+
+        if (this.input0) this.input0.invalidateInputs(from);
+        if (this.input1) this.input1.invalidateInputs(from);
+    }
+}
+
+
+class GNumber
+extends GNumberType1
+{
     constructor(nodeId, options)
     {
         super(NUMBER, nodeId, options);
@@ -53136,21 +53161,9 @@ extends GNumberType
         
         copy.copyBase(this);
 
-        if (this.input) 
-            copy.input = this.input.copy();
-        
         copy.value = this.value;
 
         return copy;
-    }
-
-
-
-    isCached()
-    {
-        return super.isCached()
-            && (  !this.input 
-                || this.input.isCached());
     }
 
 
@@ -53183,39 +53196,17 @@ extends GNumberType
 
 
 
-    pushValueUpdates(parse)
-    {
-        super.pushValueUpdates(parse);
-
-        if (this.input) this.input.pushValueUpdates(parse);
-    }
-
-
-
     isValid()
     {
         return !isNaN(this.value)
             && !isNaN(this.decimals);
     }
-
-
-
-    invalidateInputs(from)
-    {
-        super.invalidateInputs(from);
-
-        if (this.input) this.input.invalidateInputs(from);
-    }
 }
 
 
 class GSign
-extends GNumberType
+extends GNumberType1
 {
-    input = null;
-
-
-
     constructor(nodeId, options)
     {
         super(NUMBER_SIGN, nodeId, options);
@@ -53228,9 +53219,6 @@ extends GNumberType
         const copy = new GSign(this.nodeId, this.options);
 
         copy.copyBase(this);
-
-        if (this.input) 
-            copy.input = this.input.copy();
 
         return copy;
     }
@@ -53265,34 +53253,12 @@ extends GNumberType
 
         return this;
     }
-
-
-
-    pushValueUpdates(parse)
-    {
-        super.pushValueUpdates(parse);
-
-        if (this.input) this.input.pushValueUpdates(parse);
-    }
-
-
-
-    invalidateInputs(from)
-    {
-        super.invalidateInputs(from);
-
-        if (this.input) this.input.invalidateInputs(from);
-    }
 }
 
 
 class GAbsolute
-extends GNumberType
+extends GNumberType1
 {
-    input = null;
-
-
-
     constructor(nodeId, options)
     {
         super(NUMBER_ABSOLUTE, nodeId, options);
@@ -53305,9 +53271,6 @@ extends GNumberType
         const copy = new GAbsolute(this.nodeId, this.options);
 
         copy.copyBase(this);
-
-        if (this.input) 
-            copy.input = this.input.copy();
 
         return copy;
     }
@@ -53342,33 +53305,13 @@ extends GNumberType
 
         return this;
     }
-
-
-
-    pushValueUpdates(parse)
-    {
-        super.pushValueUpdates(parse);
-
-        if (this.input) this.input.pushValueUpdates(parse);
-    }
-
-
-
-    invalidateInputs(from)
-    {
-        super.invalidateInputs(from);
-
-        if (this.input) this.input.invalidateInputs(from);
-    }
 }
 
 
 
 class GRound
-extends GNumberType
+extends GNumberType1
 {
-    input = null;
-
     type;
     decimals;
 
@@ -53386,9 +53329,6 @@ extends GNumberType
         const copy = new GRound(this.nodeId, this.options);
 
         copy.copyBase(this);
-
-        if (this.input) 
-            copy.input = this.input.copy();
 
         copy.type     = this.type    .copy();
         copy.decimals = this.decimals.copy();
@@ -53438,9 +53378,9 @@ extends GNumberType
 
         this.updateValues =
         [
+            ['value',    this.value],
             ['type',     type      ],
-            ['decimals', dec       ],
-            ['value',    this.value]
+            ['decimals', dec       ]
         ];
 
 
@@ -53451,11 +53391,20 @@ extends GNumberType
 
 
 
+    pushValueUpdates(parse)
+    {
+        super.pushValueUpdates(parse);
+
+        if (this.type    ) this.type    .pushValueUpdates(parse);
+        if (this.decimals) this.decimals.pushValueUpdates(parse);
+    }
+
+
+
     invalidateInputs(from)
     {
         super.invalidateInputs(from);
 
-        if (this.input   ) this.input   .invalidateInputs(from);
         if (this.type    ) this.type    .invalidateInputs(from);
         if (this.decimals) this.decimals.invalidateInputs(from);
     }
@@ -53464,10 +53413,8 @@ extends GNumberType
 
 
 class GLimits
-extends GNumberType
+extends GNumberType1
 {
-    input = null;
-
     min;
     max;
 
@@ -53486,13 +53433,19 @@ extends GNumberType
 
         copy.copyBase(this);
 
-        if (this.input) 
-            copy.input = this.input.copy();
-
         copy.min = this.min.copy();
         copy.max = this.max.copy();
 
         return copy;
+    }
+
+
+
+    isCached()
+    {
+        return super.isCached()
+            && (!this.min || this.min.isCached())
+            && (!this.max || this.max.isCached());
     }
 
 
@@ -53552,19 +53505,8 @@ extends GNumberType
     {
         super.pushValueUpdates(parse);
 
-        if (this.input) this.input.pushValueUpdates(parse);
         if (this.min  ) this.min  .pushValueUpdates(parse);
         if (this.max  ) this.max  .pushValueUpdates(parse);
-    }
-
-
-
-    isCached()
-    {
-        return super.isCached()
-            && (!this.input || this.input.isCached())
-            && (!this.min   || this.min  .isCached())
-            && (!this.max   || this.max  .isCached());
     }
 
 
@@ -54359,6 +54301,15 @@ extends GNumberType
 
 
 
+    isCached()
+    {
+        return super.isCached()
+            && (!this.input0 || this.input0.isCached())
+            && (!this.input1 || this.input1.isCached());
+    }
+
+
+
     async eval(parse)
     {
         if (this.isCached())
@@ -54428,10 +54379,8 @@ extends GNumberType
 
 
 class GSolve
-extends GNumberType
+extends GNumberType1
 {
-    input = null;
-
     current;
     target;
 
@@ -54452,13 +54401,19 @@ extends GNumberType
 
         copy.copyBase(this);
 
-        if (this.input) 
-            copy.input = this.input.copy();
-
         copy.current = this.current.copy();
         copy.target  = this.target .copy();
 
         return copy;
+    }
+
+
+
+    isCached()
+    {
+        return super.isCached()
+            && this.current.isCached()
+            && this.target .isCached();
     }
 
 
@@ -54590,7 +54545,6 @@ extends GNumberType
     {
         super.pushValueUpdates(parse);
 
-        if (this.input  ) this.input  .pushValueUpdates(parse);
         if (this.current) this.current.pushValueUpdates(parse);
         if (this.target ) this.target .pushValueUpdates(parse);
     }
@@ -54601,20 +54555,10 @@ extends GNumberType
 
 
 
-    isCached()
-    {
-        return super.isCached()
-            && this.current.isCached()
-            && this.target .isCached();
-    }
-
-
-
     invalidateInputs(from)
     {
         super.invalidateInputs(from);
 
-        if (this.input  ) this.input  .invalidateInputs(from);
         if (this.current) this.current.invalidateInputs(from);
         if (this.target ) this.target .invalidateInputs(from);
     }
@@ -56103,54 +56047,9 @@ async function evalXorInputs(inputs, parse)
 }
 
 
-class GConditionBase
-extends GNumberType
-{
-    input0 = null;
-    input1 = null;
-
-
-
-    pushValueUpdates(parse)
-    {
-        super.pushValueUpdates(parse);
-
-        if (this.input0) this.input0.pushValueUpdates(parse);
-        if (this.input1) this.input1.pushValueUpdates(parse);
-    }
-
-
-
-    invalidateInputs(from)
-    {
-        super.invalidateInputs(from);
-
-        if (this.input0) this.input0.invalidateInputs(from);
-        if (this.input1) this.input1.invalidateInputs(from);
-    }
-}
-
-
-
-async function evalConditionInputs(input0, input1, op, parse) 
-{
-    const val0 = input0 ? (await input0.eval(parse)).toValue() : NumberValue.NaN;
-    const val1 = input1 ? (await input1.eval(parse)).toValue() : NumberValue.NaN;
-
-    if (   val0.isValid() 
-        && val1.isValid())
-        return new NumberValue(op(val0.toNumber(), val1.toNumber()) ? 1 : 0);
-    else                  
-        return NumberValue.NaN;
-}
-
-
 class GCondition
-extends GNumberType
+extends GNumberType2
 {
-    input0 = null;
-    input1 = null;
-
     operation;
 
 
@@ -56167,9 +56066,6 @@ extends GNumberType
         const copy = new GCondition(this.nodeId, this.options);
 
         copy.copyBase(this);
-
-        if (this.input0) copy.input0 = this.input0.copy();
-        if (this.input1) copy.input1 = this.input1.copy();
 
         copy.operation = this.operation.copy();
 
@@ -56218,8 +56114,6 @@ extends GNumberType
     {
         super.pushValueUpdates(parse);
 
-        if (this.input0   ) this.input0   .pushValueUpdates(parse);
-        if (this.input1   ) this.input1   .pushValueUpdates(parse);
         if (this.operation) this.operation.pushValueUpdates(parse);
     }
 
@@ -56229,15 +56123,27 @@ extends GNumberType
     {
         super.invalidateInputs(from);
 
-        if (this.input0   ) this.input0   .invalidateInputs(from);
-        if (this.input1   ) this.input1   .invalidateInputs(from);
         if (this.operation) this.operation.invalidateInputs(from);
     }
 }
 
 
+
+async function evalConditionInputs(input0, input1, op, parse) 
+{
+    const val0 = input0 ? (await input0.eval(parse)).toValue() : NumberValue.NaN;
+    const val1 = input1 ? (await input1.eval(parse)).toValue() : NumberValue.NaN;
+
+    if (   val0.isValid() 
+        && val1.isValid())
+        return new NumberValue(op(val0.toNumber(), val1.toNumber()) ? 1 : 0);
+    else                  
+        return NumberValue.NaN;
+}
+
+
 class GEqual
-extends GConditionBase
+extends GNumberType2
 {
     constructor(nodeId, options)
     {
@@ -56281,7 +56187,7 @@ extends GConditionBase
 
 
 class GNotEqual
-extends GConditionBase
+extends GNumberType2
 {
     constructor(nodeId, options)
     {
@@ -56324,7 +56230,7 @@ extends GConditionBase
 
 
 class GLess
-extends GConditionBase
+extends GNumberType2
 {
     constructor(nodeId, options)
     {
@@ -56367,7 +56273,7 @@ extends GConditionBase
 
 
 class GLessOrEqual
-extends GConditionBase
+extends GNumberType2
 {
     constructor(nodeId, options)
     {
@@ -56411,7 +56317,7 @@ extends GConditionBase
 
 
 class GGreater
-extends GConditionBase
+extends GNumberType2
 {
     constructor(nodeId, options)
     {
@@ -56454,7 +56360,7 @@ extends GConditionBase
 
 
 class GGreaterOrEqual
-extends GConditionBase
+extends GNumberType2
 {
     constructor(nodeId, options)
     {
@@ -56500,37 +56406,9 @@ extends GConditionBase
 
 
 
-class GTrigBase
-extends GNumberType
-{
-    input;
-
-
-
-    pushValueUpdates(parse)
-    {
-        super.pushValueUpdates(parse);
-
-        if (this.input) this.input.pushValueUpdates(parse);
-    }
-
-
-
-    invalidateInputs(from)
-    {
-        super.invalidateInputs(from);
-
-        if (this.input) this.input.invalidateInputs(from);
-    }
-}
-
-
-
 class GTrig
-extends GNumberType
+extends GNumberType1
 {
-    input = null;
-
     function;
 
 
@@ -56547,8 +56425,6 @@ extends GNumberType
         const copy = new GTrig(this.nodeId, this.options);
 
         copy.copyBase(this);
-
-        if (this.input) copy.input = this.input.copy();
 
         copy.operation = this.operation.copy();
 
@@ -56594,7 +56470,6 @@ extends GNumberType
     {
         super.pushValueUpdates(parse);
 
-        if (this.input   ) this.input   .pushValueUpdates(parse);
         if (this.function) this.function.pushValueUpdates(parse);
     }
 
@@ -56604,14 +56479,13 @@ extends GNumberType
     {
         super.invalidateInputs(from);
 
-        if (this.input   ) this.input   .invalidateInputs(from);
         if (this.function) this.function.invalidateInputs(from);
     }
 }
 
 
 class GSine
-extends GTrigBase
+extends GNumberType1
 {
     constructor(nodeId, options)
     {
@@ -56674,7 +56548,7 @@ async function evalSine(input, parse)
 
 
 class GCosine
-extends GTrigBase
+extends GNumberType1
 {
     constructor(nodeId, options)
     {
@@ -56730,7 +56604,7 @@ async function evalCosine(input, parse)
 
 
 class GTangent
-extends GTrigBase
+extends GNumberType1
 {
     constructor(nodeId, options)
     {
@@ -56808,13 +56682,99 @@ extends GOperator
 }
 
 
-class GText
+class GTextType1
 extends GTextType
 {
     input = null;
-    
 
 
+
+    copyBase(base)
+    {
+        super.copyBase(base);
+
+        if (base.input) this.input = base.input.copy();
+    }
+
+
+
+    isCached()
+    {
+        return super.isCached()
+            && (  !this.input 
+                || this.input.isCached());
+    }
+
+
+
+    pushValueUpdates(parse)
+    {
+        super.pushValueUpdates(parse);
+
+        if (this.input) this.input.pushValueUpdates(parse);
+    }
+
+
+
+    invalidateInputs(from)
+    {
+        super.invalidateInputs(from);
+
+        if (this.input) this.input.invalidateInputs(from);
+    }
+}
+
+
+class GTextType2
+extends GTextType
+{
+    input0 = null;
+    input1 = null;
+
+
+
+    copyBase(base)
+    {
+        super.copyBase(base);
+
+        if (base.input0) this.input0 = base.input0.copy();
+        if (base.input1) this.input1 = base.input1.copy();
+    }
+
+
+
+    isCached()
+    {
+        return super.isCached()
+            && (!this.input0 || this.input0.isCached())
+            && (!this.input1 || this.input1.isCached());
+    }
+
+
+
+    pushValueUpdates(parse)
+    {
+        super.pushValueUpdates(parse);
+
+        if (this.input0) this.input0.pushValueUpdates(parse);
+        if (this.input1) this.input1.pushValueUpdates(parse);
+    }
+
+
+
+    invalidateInputs(from)
+    {
+        super.invalidateInputs(from);
+
+        if (this.input0) this.input0.invalidateInputs(from);
+        if (this.input1) this.input1.invalidateInputs(from);
+    }
+}
+
+
+class GText
+extends GTextType1
+{
     constructor(nodeId, options)
     {
         super(TEXT, nodeId, options);
@@ -56828,9 +56788,6 @@ extends GTextType
         
         copy.copyBase(this);
 
-        if (this.input) 
-            copy.input = this.input.copy();
-        
         copy.value = this.value;
         
         return copy;
@@ -56862,38 +56819,16 @@ extends GTextType
 
 
 
-    pushValueUpdates(parse)
-    {
-        super.pushValueUpdates(parse);
-
-        if (this.input) this.input.pushValueUpdates(parse);
-    }
-
-
-
     isValid()
     {
         return this.value != NAN_CHAR;
-    }
-
-
-
-    invalidateInputs(from)
-    {
-        super.invalidateInputs(from);
-
-        if (this.input) this.input.invalidateInputs(from);
     }
 }
 
 
 class GTextLength
-extends GOperator
+extends GOperator1
 {
-    input;
-
-
-
     constructor(nodeId, options)
     {
         super(TEXT_LENGTH, nodeId, options);
@@ -56907,7 +56842,6 @@ extends GOperator
 
         copy.copyBase(this);
 
-        if (this.input ) copy.input  = this.input .copy();
         if (this.length) copy.length = this.length.copy();
 
         return copy;
@@ -56942,33 +56876,13 @@ extends GOperator
 
         return this;
     }
-
-
-
-    pushValueUpdates(parse)
-    {
-        super.pushValueUpdates(parse);
-
-        if (this.input) this.input.pushValueUpdates(parse);
-    }
-
-
-
-    invalidateInputs(from)
-    {
-        super.invalidateInputs(from);
-
-        if (this.input ) this.input .invalidateInputs(from);
-    }
 }
 
 
 
 class GTextTrim
-extends GTextType
+extends GTextType1
 {
-    input = null;
-
     start;
     end;
 
@@ -56986,9 +56900,6 @@ extends GTextType
         const copy = new GTextTrim(this.nodeId, this.options);
 
         copy.copyBase(this);
-
-        if (this.input) 
-            copy.input = this.input.copy();
 
         copy.start = this.start.copy();
         copy.end   = this.end  .copy();
@@ -57046,7 +56957,6 @@ extends GTextType
     {
         super.pushValueUpdates(parse);
 
-        if (this.input) this.input.pushValueUpdates(parse);
         if (this.start) this.start.pushValueUpdates(parse);
         if (this.end  ) this.end  .pushValueUpdates(parse);
     }
@@ -57057,7 +56967,6 @@ extends GTextType
     {
         super.invalidateInputs(from);
 
-        if (this.input) this.input.invalidateInputs(from);
         if (this.start) this.start.invalidateInputs(from);
         if (this.end  ) this.end  .invalidateInputs(from);
     }
@@ -57066,10 +56975,8 @@ extends GTextType
 
 
 class GTextSubstring
-extends GTextType
+extends GTextType1
 {
-    input = null;
-
     start;
     end;
 
@@ -57087,9 +56994,6 @@ extends GTextType
         const copy = new GTextSubstring(this.nodeId, this.options);
 
         copy.copyBase(this);
-
-        if (this.input) 
-            copy.input = this.input.copy();
 
         copy.start = this.start.copy();
         copy.end   = this.end  .copy();
@@ -57156,7 +57060,6 @@ extends GTextType
     {
         super.pushValueUpdates(parse);
 
-        if (this.input) this.input.pushValueUpdates(parse);
         if (this.start) this.start.pushValueUpdates(parse);
         if (this.end  ) this.end  .pushValueUpdates(parse);
     }
@@ -57167,7 +57070,6 @@ extends GTextType
     {
         super.invalidateInputs(from);
 
-        if (this.input) this.input.invalidateInputs(from);
         if (this.start) this.start.invalidateInputs(from);
         if (this.end  ) this.end  .invalidateInputs(from);
     }
@@ -57176,10 +57078,8 @@ extends GTextType
 
 
 class GTextCase
-extends GTextType
+extends GTextType1
 {
-    input = null;
-
     case;
 
 
@@ -57197,21 +57097,9 @@ extends GTextType
 
         copy.copyBase(this);
 
-        if (this.input) 
-            copy.input = this.input.copy();
-
         copy.case = this.case.copy();
 
         return copy;
-    }
-
-
-
-    isCached()
-    {
-        return super.isCached()
-            && (  !this.input 
-                || this.input.isCached());
     }
 
 
@@ -57275,7 +57163,6 @@ extends GTextType
     {
         super.pushValueUpdates(parse);
 
-        if (this.input) this.input.pushValueUpdates(parse);
         if (this.case ) this.case .pushValueUpdates(parse);
     }
 
@@ -57285,7 +57172,6 @@ extends GTextType
     {
         super.invalidateInputs(from);
 
-        if (this.input) this.input.invalidateInputs(from);
         if (this.case ) this.case .invalidateInputs(from);
     }
 }
@@ -57481,10 +57367,8 @@ extends GNumberType
 
 
 class GTextCharacter
-extends GTextType
+extends GTextType1
 {
-    input = null;
-
     code;
 
 
@@ -57501,9 +57385,6 @@ extends GTextType
         const copy = new GTextCharacter(this.nodeId, this.options);
 
         copy.copyBase(this);
-
-        if (this.input) 
-            copy.input = this.input.copy();
 
         copy.code = this.code.copy();
 
@@ -57542,8 +57423,7 @@ extends GTextType
     {
         super.pushValueUpdates(parse);
 
-        if (this.input) this.input.pushValueUpdates(parse);
-        if (this.code ) this.code .pushValueUpdates(parse);
+        if (this.code) this.code.pushValueUpdates(parse);
     }
 
 
@@ -57552,18 +57432,15 @@ extends GTextType
     {
         super.invalidateInputs(from);
 
-        if (this.input) this.input.invalidateInputs(from);
-        if (this.code ) this.code .invalidateInputs(from);
+        if (this.code) this.code.invalidateInputs(from);
     }
 }
 
 
 
 class GTextReplace
-extends GTextType
+extends GTextType1
 {
-    input = null;
-
     what;
     with;
 
@@ -57581,9 +57458,6 @@ extends GTextType
         const copy = new GTextReplace(this.nodeId, this.options);
 
         copy.copyBase(this);
-
-        if (this.input) 
-            copy.input = this.input.copy();
 
         copy.what  = this.what .copy();
         copy.with  = this.with .copy();
@@ -57640,7 +57514,6 @@ extends GTextType
     {
         super.pushValueUpdates(parse);
 
-        if (this.input) this.input.pushValueUpdates(parse);
         if (this.what ) this.what .pushValueUpdates(parse);
         if (this.with ) this.with .pushValueUpdates(parse);
     }
@@ -57651,7 +57524,6 @@ extends GTextType
     {
         super.invalidateInputs(from);
 
-        if (this.input) this.input.invalidateInputs(from);
         if (this.what ) this.what .invalidateInputs(from);
         if (this.with ) this.with .invalidateInputs(from);
     }
@@ -57792,10 +57664,8 @@ async function evalJoinInputs(inputs, _with, parse)
 
 
 class GTextPad
-extends GTextType
+extends GTextType1
 {
-    input = null;
-
     startPad;
     startCount;
     endPad;
@@ -57815,9 +57685,6 @@ extends GTextType
         const copy = new GTextPad(this.nodeId, this.options);
 
         copy.copyBase(this);
-
-        if (this.input) 
-            copy.input = this.input.copy();
 
         copy.startPad   = this.startPad  .copy();
         copy.startCount = this.startCount.copy();
@@ -57888,7 +57755,6 @@ extends GTextType
     {
         super.pushValueUpdates(parse);
 
-        if (this.input     ) this.input     .pushValueUpdates(parse);
         if (this.startPad  ) this.startPad  .pushValueUpdates(parse);
         if (this.startCount) this.startCount.pushValueUpdates(parse);
         if (this.endPad    ) this.endPad    .pushValueUpdates(parse);
@@ -57901,7 +57767,6 @@ extends GTextType
     {
         super.invalidateInputs(from);
 
-        if (this.input     ) this.input     .invalidateInputs(from);
         if (this.startPad  ) this.startPad  .invalidateInputs(from);
         if (this.startCount) this.startCount.invalidateInputs(from);
         if (this.endPad    ) this.endPad    .invalidateInputs(from);
@@ -57912,10 +57777,8 @@ extends GTextType
 
 
 class GTextCSV
-extends GOperator
+extends GOperator1
 {
-    input;
-
     value;
     separator;
 
@@ -57934,7 +57797,6 @@ extends GOperator
 
         copy.copyBase(this);
 
-        if (this.input    ) copy.input     = this.input    .copy();
         if (this.value    ) copy.value     = this.value    .copy();
         if (this.separator) copy.separator = this.separator.copy();
 
@@ -57988,17 +57850,9 @@ extends GOperator
     {
         super.pushValueUpdates(parse);
 
-        if (this.input    ) this.input    .pushValueUpdates(parse);
         if (this.value    ) this.value    .pushValueUpdates(parse);
         if (this.separator) this.separator.pushValueUpdates(parse);
     }
-
-
-
-    // toValue()
-    // {
-    //     return this.value.copy();
-    // }
 
 
 
@@ -58006,7 +57860,6 @@ extends GOperator
     {
         super.invalidateInputs(from);
 
-        if (this.input    ) this.input    .invalidateInputs(from);
         if (this.value    ) this.value    .invalidateInputs(from);
         if (this.separator) this.separator.invalidateInputs(from);
     }
@@ -58015,11 +57868,8 @@ extends GOperator
 
 
 class GTextCompare
-extends GTextType
+extends GTextType2
 {
-    input0 = null;
-    input1 = null;
-
     operation;
 
 
@@ -58036,9 +57886,6 @@ extends GTextType
         const copy = new GTextCompare(this.nodeId, this.options);
 
         copy.copyBase(this);
-
-        if (this.input0) copy.input0 = this.input0.copy();
-        if (this.input1) copy.input1 = this.input1.copy();
 
         copy.operation = this.operation.copy();
 
@@ -58089,8 +57936,6 @@ extends GTextType
     {
         super.pushValueUpdates(parse);
 
-        if (this.input0   ) this.input0   .pushValueUpdates(parse);
-        if (this.input1   ) this.input1   .pushValueUpdates(parse);
         if (this.operation) this.operation.pushValueUpdates(parse);
     }
 
@@ -58100,8 +57945,6 @@ extends GTextType
     {
         super.invalidateInputs(from);
 
-        if (this.input0   ) this.input0   .invalidateInputs(from);
-        if (this.input1   ) this.input1   .invalidateInputs(from);
         if (this.operation) this.operation.invalidateInputs(from);
     }
 }
@@ -58122,14 +57965,8 @@ async function evalCompareInputs(input0, input1, op, parse)
 
 
 class GTextJson
-extends GOperator
+extends GOperator1
 {
-    input;
-
-    //value;
-
-
-
     constructor(nodeId, options)
     {
         super(TEXT_JSON, nodeId, options);
@@ -58142,9 +57979,6 @@ extends GOperator
         const copy = new GTextJson(this.nodeId, this.options);
 
         copy.copyBase(this);
-
-        if (this.input) copy.input = this.input.copy();
-        //if (this.value) copy.value = this.value.copy();
 
         return copy;
     }
@@ -58228,35 +58062,6 @@ extends GOperator
         
         return list;
     }
-
-
-
-    pushValueUpdates(parse)
-    {
-        super.pushValueUpdates(parse);
-
-        if (this.input    ) this.input    .pushValueUpdates(parse);
-        //if (this.value    ) this.value    .pushValueUpdates(parse);
-        //if (this.separator) this.separator.pushValueUpdates(parse);
-    }
-
-
-
-    // toValue()
-    // {
-    //     return this.value.copy();
-    // }
-
-
-
-    invalidateInputs(from)
-    {
-        super.invalidateInputs(from);
-
-        if (this.input    ) this.input    .invalidateInputs(from);
-        //if (this.value    ) this.value    .invalidateInputs(from);
-        //if (this.separator) this.separator.invalidateInputs(from);
-    }
 }
 
 
@@ -58264,8 +58069,6 @@ extends GOperator
 class GTextFetch
 extends GTextType
 {
-    input = null;
-    
     request;
     cachedValue;
 
@@ -58283,9 +58086,6 @@ extends GTextType
         const copy = new GTextFetch(this.nodeId, this.options);
 
         copy.copyBase(this);
-
-        if (this.input) 
-            copy.input = this.input.copy();
 
         copy.request     = this.request    .copy();
         copy.cachedValue = this.cachedValue.copy();
@@ -58350,7 +58150,6 @@ extends GTextType
     {
         super.pushValueUpdates(parse);
 
-        if (this.input  ) this.input  .pushValueUpdates(parse);
         if (this.request) this.request.pushValueUpdates(parse);
     }
 
@@ -58360,7 +58159,6 @@ extends GTextType
     {
         super.invalidateInputs(from);
 
-        if (this.input  ) this.input  .invalidateInputs(from);
         if (this.request) this.request.invalidateInputs(from);
 
         this.cachedValue = new TextValue();
@@ -58924,11 +58722,99 @@ extends GOperator
 }
 
 
-class GColor
+class GColorType1
 extends GColorType
 {
-    input   = null;
+    input = null;
 
+
+
+    copyBase(base)
+    {
+        super.copyBase(base);
+
+        if (base.input) this.input = base.input.copy();
+    }
+
+
+
+    isCached()
+    {
+        return super.isCached()
+            && (  !this.input 
+                || this.input.isCached());
+    }
+
+
+
+    pushValueUpdates(parse)
+    {
+        super.pushValueUpdates(parse);
+
+        if (this.input) this.input.pushValueUpdates(parse);
+    }
+
+
+
+    invalidateInputs(from)
+    {
+        super.invalidateInputs(from);
+
+        if (this.input) this.input.invalidateInputs(from);
+    }
+}
+
+
+class GColorType2
+extends GColorType
+{
+    input0 = null;
+    input1 = null;
+
+
+
+    copyBase(base)
+    {
+        super.copyBase(base);
+
+        if (base.input0) this.input0 = base.input0.copy();
+        if (base.input1) this.input1 = base.input1.copy();
+    }
+
+
+
+    isCached()
+    {
+        return super.isCached()
+            && (!this.input0 || this.input0.isCached())
+            && (!this.input1 || this.input1.isCached());
+    }
+
+
+
+    pushValueUpdates(parse)
+    {
+        super.pushValueUpdates(parse);
+
+        if (this.input0) this.input0.pushValueUpdates(parse);
+        if (this.input1) this.input1.pushValueUpdates(parse);
+    }
+
+
+
+    invalidateInputs(from)
+    {
+        super.invalidateInputs(from);
+
+        if (this.input0) this.input0.invalidateInputs(from);
+        if (this.input1) this.input1.invalidateInputs(from);
+    }
+}
+
+
+class GColor
+extends GColorType1
+{
     space   = null;
     c1      = null;
     c2      = null;
@@ -58952,9 +58838,6 @@ extends GColorType
         const copy = new GColor(this.nodeId, this.options);
 
         copy.copyBase(this);
-
-        if (this.input) 
-            copy.input = this.input.copy();
 
         copy.space = this.space.copy();
 
@@ -59090,19 +58973,6 @@ extends GColorType
 
 
 
-    pushValueUpdates(parse)
-    {
-        super.pushValueUpdates(parse);
-
-        if (this.input) this.input.pushValueUpdates(parse);
-        if (this.space) this.space.pushValueUpdates(parse);
-        if (this.c1   ) this.c1   .pushValueUpdates(parse);
-        if (this.c2   ) this.c2   .pushValueUpdates(parse);
-        if (this.c3   ) this.c3   .pushValueUpdates(parse);
-    }
-
-
-
     convertColor(color, fromSpace, toSpace)
     {
         let col = [
@@ -59139,11 +59009,22 @@ extends GColorType
 
 
 
+    pushValueUpdates(parse)
+    {
+        super.pushValueUpdates(parse);
+
+        if (this.space) this.space.pushValueUpdates(parse);
+        if (this.c1   ) this.c1   .pushValueUpdates(parse);
+        if (this.c2   ) this.c2   .pushValueUpdates(parse);
+        if (this.c3   ) this.c3   .pushValueUpdates(parse);
+    }
+
+
+
     invalidateInputs(from)
     {
         super.invalidateInputs(from);
 
-        if (this.input) this.input.invalidateInputs(from);
         if (this.space) this.space.invalidateInputs(from);
         if (this.c1   ) this.c1   .invalidateInputs(from);
         if (this.c2   ) this.c2   .invalidateInputs(from);
@@ -59153,10 +59034,8 @@ extends GColorType
 
 
 class GValidColor
-extends GColorType
+extends GColorType1
 {
-    input        = null;
-     
     quality      = null;
 
     corrections  = [];
@@ -59175,9 +59054,6 @@ extends GColorType
         const copy = new GValidColor(this.nodeId, this.options);
 
         copy.copyBase(this);
-
-        if (this.input) 
-            copy.input = this.input.copy();
 
         if (this.value  ) copy.value   = this.value  .copy();
         if (this.quality) copy.quality = this.quality.copy();
@@ -59293,7 +59169,6 @@ extends GColorType
     {
         super.pushValueUpdates(parse);
 
-        if (this.input  ) this.input  .pushValueUpdates(parse);
         if (this.quality) this.quality.pushValueUpdates(parse);
     }
 
@@ -59303,7 +59178,6 @@ extends GColorType
     {
         super.invalidateInputs(from);
 
-        if (this.input  ) this.input  .invalidateInputs(from);
         if (this.quality) this.quality.invalidateInputs(from);
     }
 }
@@ -59311,10 +59185,8 @@ extends GColorType
 
 
 class GCorrectColor
-extends GColorType
+extends GColorType1
 {
-    input        = null;
-     
     order        = null;
     margin1      = null;
     margin2      = null;
@@ -59336,9 +59208,6 @@ extends GColorType
         const copy = new GCorrectColor(this.nodeId, this.options);
 
         copy.copyBase(this);
-
-        if (this.input) 
-            copy.input = this.input.copy();
 
         if (this.order  ) copy.order   = this.order  .copy();
         if (this.margin1) copy.margin1 = this.margin1.copy();
@@ -59507,7 +59376,6 @@ extends GColorType
     {
         super.pushValueUpdates(parse);
 
-        if (this.input  ) this.input  .pushValueUpdates(parse);
         if (this.order  ) this.order  .pushValueUpdates(parse);
         if (this.margin1) this.margin1.pushValueUpdates(parse);
         if (this.margin2) this.margin2.pushValueUpdates(parse);
@@ -59520,7 +59388,6 @@ extends GColorType
     {
         super.invalidateInputs(from);
 
-        if (this.input  ) this.input  .invalidateInputs(from);
         if (this.order  ) this.order  .invalidateInputs(from);
         if (this.margin1) this.margin1.invalidateInputs(from);
         if (this.margin2) this.margin2.invalidateInputs(from);
@@ -59531,11 +59398,8 @@ extends GColorType
 
 
 class GColorContrast
-extends GColorType
+extends GColorType2
 {
-    input0 = null;
-    input1 = null;
-
     standard;
     contrast;
 
@@ -59552,9 +59416,6 @@ extends GColorType
         const copy = new GColorContrast(this.nodeId, this.options);
 
         copy.copyBase(this);
-
-        if (this.input0) copy.input0 = this.input0.copy();
-        if (this.input1) copy.input1 = this.input1.copy();
 
         copy.standard = this.standard.copy();
         copy.contrast = this.contrast.copy();
@@ -59678,8 +59539,6 @@ extends GColorType
     {
         super.pushValueUpdates(parse);
 
-        if (this.input0  ) this.input0  .pushValueUpdates(parse);
-        if (this.input1  ) this.input1  .pushValueUpdates(parse);
         if (this.standard) this.standard.pushValueUpdates(parse);
         if (this.contrast) this.contrast.pushValueUpdates(parse);
     }
@@ -59690,8 +59549,6 @@ extends GColorType
     {
         super.invalidateInputs(from);
 
-        if (this.input0  ) this.input0  .invalidateInputs(from);
-        if (this.input1  ) this.input1  .invalidateInputs(from);
         if (this.standard) this.standard.invalidateInputs(from);
         if (this.contrast) this.contrast.invalidateInputs(from);
     }
@@ -59700,10 +59557,8 @@ extends GColorType
 
 
 class GColorBlind
-extends GColorType
+extends GColorType1
 {
-    input = null;
-
     l;
     m;
     s;
@@ -59721,9 +59576,6 @@ extends GColorType
         const copy = new GColorBlind(this.nodeId, this.options);
 
         copy.copyBase(this);
-
-        if (this.input) 
-            copy.input = this.input.copy();
 
         copy.l = this.l.copy();
         copy.m = this.m.copy();
@@ -59799,10 +59651,9 @@ extends GColorType
     {
         super.pushValueUpdates(parse);
 
-        if (this.input ) this.input.pushValueUpdates(parse);
-        if (this.l     ) this.l    .pushValueUpdates(parse);
-        if (this.m     ) this.m    .pushValueUpdates(parse);
-        if (this.s     ) this.s    .pushValueUpdates(parse);
+        if (this.l) this.l.pushValueUpdates(parse);
+        if (this.m) this.m.pushValueUpdates(parse);
+        if (this.s) this.s.pushValueUpdates(parse);
     }
 
 
@@ -59811,21 +59662,17 @@ extends GColorType
     {
         super.invalidateInputs(from);
 
-        if (this.input ) this.input.invalidateInputs(from);
-        if (this.l     ) this.l    .invalidateInputs(from);
-        if (this.m     ) this.m    .invalidateInputs(from);
-        if (this.s     ) this.s    .invalidateInputs(from);
+        if (this.l) this.l.invalidateInputs(from);
+        if (this.m) this.m.invalidateInputs(from);
+        if (this.s) this.s.invalidateInputs(from);
     }
 }
 
 
 
 class GColorInterpolate
-extends GColorType
+extends GColorType2
 {
-    input0 = null;
-    input1 = null;
-
     space;
     amount;
     gamma;
@@ -59843,9 +59690,6 @@ extends GColorType
         const copy = new GColorInterpolate(this.nodeId, this.options);
 
         copy.copyBase(this);
-
-        if (this.input0) copy.input0 = this.input0.copy();
-        if (this.input1) copy.input1 = this.input1.copy();
 
         copy.space  = this.space .copy();
         copy.amount = this.amount.copy();
@@ -59962,8 +59806,6 @@ extends GColorType
     {
         super.pushValueUpdates(parse);
 
-        if (this.input0) this.input0.pushValueUpdates(parse);
-        if (this.input1) this.input1.pushValueUpdates(parse);
         if (this.space ) this.space .pushValueUpdates(parse);
         if (this.amount) this.amount.pushValueUpdates(parse);
         if (this.gamma ) this.gamma .pushValueUpdates(parse);
@@ -59975,8 +59817,6 @@ extends GColorType
     {
         super.invalidateInputs(from);
 
-        if (this.input0) this.input0.invalidateInputs(from);
-        if (this.input1) this.input1.invalidateInputs(from);
         if (this.space ) this.space .invalidateInputs(from);
         if (this.amount) this.amount.invalidateInputs(from);
         if (this.gamma ) this.gamma .invalidateInputs(from);
@@ -59986,11 +59826,8 @@ extends GColorType
 
 
 class GColorBlend
-extends GColorType
+extends GColorType2
 {
-    input0 = null;
-    input1 = null;
-
     mode;
     opacity;
     
@@ -60007,9 +59844,6 @@ extends GColorType
         const copy = new GColorBlend(this.nodeId, this.options);
 
         copy.copyBase(this);
-
-        if (this.input0) copy.input0 = this.input0.copy();
-        if (this.input1) copy.input1 = this.input1.copy();
 
         copy.mode    = this.mode   .copy();
         copy.opacity = this.opacity.copy();
@@ -60078,18 +59912,6 @@ extends GColorType
 
 
 
-    pushValueUpdates(parse)
-    {
-        super.pushValueUpdates(parse);
-
-        if (this.input0 ) this.input0 .pushValueUpdates(parse);
-        if (this.input1 ) this.input1 .pushValueUpdates(parse);
-        if (this.mode   ) this.mode   .pushValueUpdates(parse);
-        if (this.opacity) this.opacity.pushValueUpdates(parse);
-    }
-
-
-
     blend(mode, col0, col1, opacity)
     {
         switch (mode)
@@ -60120,12 +59942,20 @@ extends GColorType
 
 
 
+    pushValueUpdates(parse)
+    {
+        super.pushValueUpdates(parse);
+
+        if (this.mode   ) this.mode   .pushValueUpdates(parse);
+        if (this.opacity) this.opacity.pushValueUpdates(parse);
+    }
+
+
+
     invalidateInputs(from)
     {
         super.invalidateInputs(from);
 
-        if (this.input0 ) this.input0 .invalidateInputs(from);
-        if (this.input1 ) this.input1 .invalidateInputs(from);
         if (this.mode   ) this.mode   .invalidateInputs(from);
         if (this.opacity) this.opacity.invalidateInputs(from);
     }
@@ -60618,10 +60448,8 @@ extends GOperator
 
 
 class GFill
-extends GOperator
+extends GOperator1
 {
-    input   = null;
-
     color   = null;
     opacity = null;
     blend   = null;
@@ -60640,9 +60468,6 @@ extends GOperator
         const copy = new GFill(this.nodeId, this.options);
 
         copy.copyBase(this);
-
-        if (this.input) 
-            copy.input = this.input.copy();
 
         if (this.color  ) copy.color   = this.color  .copy();
         if (this.opacity) copy.opacity = this.opacity.copy();
@@ -60692,18 +60517,6 @@ extends GOperator
 
 
 
-    pushValueUpdates(parse)
-    {
-        super.pushValueUpdates(parse);
-
-        if (this.input  ) this.input  .pushValueUpdates(parse);
-        if (this.color  ) this.color  .pushValueUpdates(parse);
-        if (this.opacity) this.opacity.pushValueUpdates(parse);
-        if (this.blend  ) this.blend  .pushValueUpdates(parse);
-    }
-    
-    
-    
     toValue()
     {
         return this.options.enabled
@@ -60725,11 +60538,21 @@ extends GOperator
 
 
 
+    pushValueUpdates(parse)
+    {
+        super.pushValueUpdates(parse);
+
+        if (this.color  ) this.color  .pushValueUpdates(parse);
+        if (this.opacity) this.opacity.pushValueUpdates(parse);
+        if (this.blend  ) this.blend  .pushValueUpdates(parse);
+    }
+    
+    
+    
     invalidateInputs(from)
     {
         super.invalidateInputs(from);
 
-        if (this.input  ) this.input  .invalidateInputs(from);
         if (this.color  ) this.color  .invalidateInputs(from);
         if (this.opacity) this.opacity.invalidateInputs(from);
         if (this.blend  ) this.blend  .invalidateInputs(from);
@@ -60738,10 +60561,8 @@ extends GOperator
 
 
 class GColorStop
-extends GOperator
+extends GOperator1
 {
-    input    = null;
-
     fill     = null;
     position = null;
 
@@ -60759,9 +60580,6 @@ extends GOperator
         const copy = new GColorStop(this.nodeId, this.options);
 
         copy.copyBase(this);
-
-        if (this.input) 
-            copy.input = this.input.copy();
 
         if (this.fill    ) copy.fill     = this.fill    .copy();
         if (this.position) copy.position = this.position.copy();
@@ -60824,16 +60642,6 @@ extends GOperator
 
 
 
-    pushValueUpdates(parse)
-    {
-        super.pushValueUpdates(parse);
-
-        if (this.input   ) this.input   .pushValueUpdates(parse);
-        if (this.fill    ) this.fill    .pushValueUpdates(parse);
-        if (this.position) this.position.pushValueUpdates(parse);
-    }    
-    
-    
     toValue()
     {
         return new ColorStopValue(
@@ -60853,11 +60661,20 @@ extends GOperator
 
 
 
+    pushValueUpdates(parse)
+    {
+        super.pushValueUpdates(parse);
+
+        if (this.fill    ) this.fill    .pushValueUpdates(parse);
+        if (this.position) this.position.pushValueUpdates(parse);
+    }    
+
+    
+    
     invalidateInputs(from)
     {
         super.invalidateInputs(from);
 
-        if (this.input   ) this.input   .invalidateInputs(from);
         if (this.fill    ) this.fill    .invalidateInputs(from);
         if (this.position) this.position.invalidateInputs(from);
     }
@@ -61027,10 +60844,8 @@ extends GOperator
 
 
 class GStroke
-extends GOperator
+extends GOperator1
 {
-    input  = null;
-
     fills  = null;
     weight = null;
     fit    = null;
@@ -61051,9 +60866,6 @@ extends GOperator
         const copy = new GStroke(this.nodeId, this.options);
 
         copy.copyBase(this);
-
-        if (this.input) 
-            copy.input = this.input.copy();
 
         if (this.fills ) copy.fills  = this.fills .copy();
         if (this.weight) copy.weight = this.weight.copy();
@@ -61142,19 +60954,6 @@ extends GOperator
 
 
 
-    pushValueUpdates(parse)
-    {
-        super.pushValueUpdates(parse);
-
-        if (this.input ) this.input .pushValueUpdates(parse);
-        if (this.fills ) this.fills .pushValueUpdates(parse);
-        if (this.weight) this.weight.pushValueUpdates(parse);
-        if (this.fit   ) this.fit   .pushValueUpdates(parse);
-        if (this.join  ) this.join  .pushValueUpdates(parse);
-        if (this.miter ) this.miter .pushValueUpdates(parse);
-    }    
-    
-    
     toValue()
     {
         return new StrokeValue(
@@ -61180,11 +60979,23 @@ extends GOperator
 
 
 
+    pushValueUpdates(parse)
+    {
+        super.pushValueUpdates(parse);
+
+        if (this.fills ) this.fills .pushValueUpdates(parse);
+        if (this.weight) this.weight.pushValueUpdates(parse);
+        if (this.fit   ) this.fit   .pushValueUpdates(parse);
+        if (this.join  ) this.join  .pushValueUpdates(parse);
+        if (this.miter ) this.miter .pushValueUpdates(parse);
+    }    
+    
+    
+
     invalidateInputs(from)
     {
         super.invalidateInputs(from);
 
-        if (this.input ) this.input .invalidateInputs(from);
         if (this.fills ) this.fills .invalidateInputs(from);
         if (this.weight) this.weight.invalidateInputs(from);
         if (this.fit   ) this.fit   .invalidateInputs(from);
@@ -61195,10 +61006,8 @@ extends GOperator
 
 
 class GDropShadow
-extends GOperator
+extends GOperator1
 {
-    input  = null;
-
     x      = null;
     y      = null;
     blur   = null;
@@ -61221,9 +61030,6 @@ extends GOperator
         const copy = new GDropShadow(this.nodeId, this.options);
 
         copy.copyBase(this);
-
-        if (this.input) 
-            copy.input = this.input.copy();
 
         if (this.x     ) copy.x      = this.x     .copy();
         if (this.y     ) copy.y      = this.y     .copy();
@@ -61300,22 +61106,6 @@ extends GOperator
 
 
 
-    pushValueUpdates(parse)
-    {
-        super.pushValueUpdates(parse);
-
-        if (this.input ) this.input .pushValueUpdates(parse);
-        if (this.x     ) this.x     .pushValueUpdates(parse);
-        if (this.y     ) this.y     .pushValueUpdates(parse);
-        if (this.blur  ) this.blur  .pushValueUpdates(parse);
-        if (this.spread) this.spread.pushValueUpdates(parse);
-        if (this.fill  ) this.fill  .pushValueUpdates(parse);
-        if (this.blend ) this.blend .pushValueUpdates(parse);
-        if (this.behind) this.behind.pushValueUpdates(parse);
-    }
-    
-    
-    
     toValue()
     {
         return new DropShadowValue(
@@ -61344,11 +61134,25 @@ extends GOperator
 
 
 
-    invalidateInputs(from)
+    pushValueUpdates(parse)
+    {
+        super.pushValueUpdates(parse);
+
+        if (this.x     ) this.x     .pushValueUpdates(parse);
+        if (this.y     ) this.y     .pushValueUpdates(parse);
+        if (this.blur  ) this.blur  .pushValueUpdates(parse);
+        if (this.spread) this.spread.pushValueUpdates(parse);
+        if (this.fill  ) this.fill  .pushValueUpdates(parse);
+        if (this.blend ) this.blend .pushValueUpdates(parse);
+        if (this.behind) this.behind.pushValueUpdates(parse);
+    }
+    
+    
+    
+   invalidateInputs(from)
     {
         super.invalidateInputs(from);
 
-        if (this.input ) this.input .invalidateInputs(from);
         if (this.x     ) this.x     .invalidateInputs(from);
         if (this.y     ) this.y     .invalidateInputs(from);
         if (this.blur  ) this.blur  .invalidateInputs(from);
@@ -61361,10 +61165,8 @@ extends GOperator
 
 
 class GInnerShadow
-extends GOperator
+extends GOperator1
 {
-    input  = null;
-
     x      = null;
     y      = null;
     blur   = null;
@@ -61386,9 +61188,6 @@ extends GOperator
         const copy = new GInnerShadow(this.nodeId, this.options);
 
         copy.copyBase(this);
-
-        if (this.input) 
-            copy.input = this.input.copy();
 
         if (this.x     ) copy.x      = this.x     .copy();
         if (this.y     ) copy.y      = this.y     .copy();
@@ -61460,21 +61259,6 @@ extends GOperator
 
 
 
-    pushValueUpdates(parse)
-    {
-        super.pushValueUpdates(parse);
-
-        if (this.input ) this.input .pushValueUpdates(parse);
-        if (this.x     ) this.x     .pushValueUpdates(parse);
-        if (this.y     ) this.y     .pushValueUpdates(parse);
-        if (this.blur  ) this.blur  .pushValueUpdates(parse);
-        if (this.spread) this.spread.pushValueUpdates(parse);
-        if (this.fill  ) this.fill  .pushValueUpdates(parse);
-        if (this.blend ) this.blend .pushValueUpdates(parse);
-    }
-    
-    
-    
     toValue()
     {
         return new InnerShadowValue(
@@ -61501,11 +61285,24 @@ extends GOperator
 
 
 
+    pushValueUpdates(parse)
+    {
+        super.pushValueUpdates(parse);
+
+        if (this.x     ) this.x     .pushValueUpdates(parse);
+        if (this.y     ) this.y     .pushValueUpdates(parse);
+        if (this.blur  ) this.blur  .pushValueUpdates(parse);
+        if (this.spread) this.spread.pushValueUpdates(parse);
+        if (this.fill  ) this.fill  .pushValueUpdates(parse);
+        if (this.blend ) this.blend .pushValueUpdates(parse);
+    }
+    
+    
+    
     invalidateInputs(from)
     {
         super.invalidateInputs(from);
 
-        if (this.input ) this.input .invalidateInputs(from);
         if (this.x     ) this.x     .invalidateInputs(from);
         if (this.y     ) this.y     .invalidateInputs(from);
         if (this.blur  ) this.blur  .invalidateInputs(from);
@@ -61517,10 +61314,8 @@ extends GOperator
 
 
 class GLayerBlur
-extends GOperator
+extends GOperator1
 {
-    input  = null;
-
     radius = null;
 
 
@@ -61538,9 +61333,6 @@ extends GOperator
 
         copy.copyBase(this);
 
-        if (this.input) 
-            copy.input = this.input.copy();
-
         if (this.radius) copy.radius = this.radius.copy();
 
         return copy;
@@ -61586,15 +61378,6 @@ extends GOperator
 
 
 
-    pushValueUpdates(parse)
-    {
-        super.pushValueUpdates(parse);
-
-        if (this.radius) this.radius.pushValueUpdates(parse);
-    }
-    
-    
-    
     toValue()
     {
         return new LayerBlurValue(
@@ -61611,21 +61394,27 @@ extends GOperator
 
 
 
+    pushValueUpdates(parse)
+    {
+        super.pushValueUpdates(parse);
+
+        if (this.radius) this.radius.pushValueUpdates(parse);
+    }
+    
+    
+    
     invalidateInputs(from)
     {
         super.invalidateInputs(from);
 
-        if (this.input ) this.input .invalidateInputs(from);
         if (this.radius) this.radius.invalidateInputs(from);
     }
 }
 
 
 class GBackBlur
-extends GOperator
+extends GOperator1
 {
-    input  = null;
-
     radius = null;
 
 
@@ -61643,9 +61432,6 @@ extends GOperator
 
         copy.copyBase(this);
 
-        if (this.input) 
-            copy.input = this.input.copy();
-
         if (this.radius) copy.radius = this.radius.copy();
 
         return copy;
@@ -61691,15 +61477,6 @@ extends GOperator
 
 
 
-    pushValueUpdates(parse)
-    {
-        super.pushValueUpdates(parse);
-
-        if (this.radius) this.radius.pushValueUpdates(parse);
-    }
-    
-    
-    
     toValue()
     {
         return new BackBlurValue(
@@ -61716,11 +61493,19 @@ extends GOperator
 
 
 
+    pushValueUpdates(parse)
+    {
+        super.pushValueUpdates(parse);
+
+        if (this.radius) this.radius.pushValueUpdates(parse);
+    }
+    
+    
+    
     invalidateInputs(from)
     {
         super.invalidateInputs(from);
 
-        if (this.input ) this.input .invalidateInputs(from);
         if (this.radius) this.radius.invalidateInputs(from);
     }
 }
@@ -61893,7 +61678,9 @@ function validateObjectRect(x, y, w, h, a, _a)
 class GShape
 extends GShapeBase
 {
-    props  = null;
+    input = null;
+
+    props = null;
    
 
 
@@ -61908,6 +61695,8 @@ extends GShapeBase
     {
         super.copyBase(base);
         
+        if (base.input) this.input = base.input.copy();
+
         this.copyProperties(base.props);
     }
 
@@ -61916,6 +61705,15 @@ extends GShapeBase
     copyProperties(props)
     {
         this.props = props.copy();
+    }
+
+
+
+    isCached()
+    {
+        return super.isCached()
+            && (  !this.input 
+                || this.input.isCached());
     }
 
 
@@ -61976,15 +61774,6 @@ extends GShapeBase
 
 
 
-    pushValueUpdates(parse)
-    {
-        super.pushValueUpdates(parse);
-
-        if (this.props) this.props.pushValueUpdates(parse);
-    }
-
-
-    
     evalStyle(options = {})
     {
 
@@ -62000,10 +61789,21 @@ extends GShapeBase
 
 
 
+    pushValueUpdates(parse)
+    {
+        super.pushValueUpdates(parse);
+
+        if (this.input) this.input.pushValueUpdates(parse);
+        if (this.props) this.props.pushValueUpdates(parse);
+    }
+
+
+    
     invalidateInputs(from)
     {
         super.invalidateInputs(from);
 
+        if (this.input) this.input.invalidateInputs(from);
         if (this.props) this.props.invalidateInputs(from);
     }
 }
@@ -62013,8 +61813,6 @@ extends GShapeBase
 class GRectangle
 extends GShape
 {
-    input = null;
-
     round = null;
 
 
@@ -62031,9 +61829,6 @@ extends GShape
         const copy = new GRectangle(this.nodeId, this.options);
 
         copy.copyBase(this);
-
-        if (this.input) 
-            copy.input = this.input.copy();
 
         if (this.round) copy.round = this.round.copy();
 
@@ -62176,7 +61971,6 @@ extends GShape
     {
         super.pushValueUpdates(parse);
 
-        if (this.input) this.input.pushValueUpdates(parse);
         if (this.round) this.round.pushValueUpdates(parse);
     }
 
@@ -62186,7 +61980,6 @@ extends GShape
     {
         super.invalidateInputs(from);
 
-        if (this.input) this.input.invalidateInputs(from);
         if (this.round) this.round.invalidateInputs(from);
     }
 }
@@ -62195,10 +61988,6 @@ extends GShape
 class GLine
 extends GShape
 {
-    input = null;
-
-
-
     constructor(nodeId, options)
     {
         super(LINE, nodeId, options);
@@ -62211,9 +62000,6 @@ extends GShape
         const copy = new GLine(this.nodeId, this.options);
 
         copy.copyBase(this);
-
-        if (this.input) 
-            copy.input = this.input.copy();
 
         return copy;
     }
@@ -62310,15 +62096,6 @@ extends GShape
 
 
 
-    pushValueUpdates(parse)
-    {
-        super.pushValueUpdates(parse);
-
-        if (this.input) this.input.pushValueUpdates(parse);
-    }
-
-
-
     toValue()
     {
         const line = new LineValue(
@@ -62332,23 +62109,12 @@ extends GShape
 
         return line;
     }
-
-
-
-    invalidateInputs(from)
-    {
-        super.invalidateInputs(from);
-
-        if (this.input) this.input.invalidateInputs(from);
-    }
 }
 
 
 class GEllipse
 extends GShape
 {
-    input = null;
-
     from  = null;
     to    = null;
     inner = null;
@@ -62367,9 +62133,6 @@ extends GShape
         const copy = new GEllipse(this.nodeId, this.options);
 
         copy.copyBase(this);
-
-        if (this.input) 
-            copy.input = this.input.copy();
 
         if (this.from ) copy.from  = this.from .copy();
         if (this.to   ) copy.to    = this.to   .copy();
@@ -62491,15 +62254,6 @@ extends GShape
    
     
         
-    pushValueUpdates(parse)
-    {
-        super.pushValueUpdates(parse);
- 
-        if (this.input) this.input.pushValueUpdates(prase);
-    }
-
-   
-
     toValue()
     {
         const ellipse = new EllipseValue(
@@ -62518,13 +62272,26 @@ extends GShape
         return ellipse;
     }
     
+
     
+    pushValueUpdates(parse)
+    {
+        super.pushValueUpdates(parse);
+ 
+        if (this.from ) this.from .pushValueUpdates(prase);
+        if (this.to   ) this.to   .pushValueUpdates(prase);
+        if (this.inner) this.inner.pushValueUpdates(prase);
+    }
+
+   
         
     invalidateInputs(from)
     {
         super.invalidateInputs(from);
 
-        if (this.input) this.input.invalidateInputs(from);
+        if (this.from ) this.from .invalidateInputs(from);
+        if (this.to   ) this.to   .invalidateInputs(from);
+        if (this.inner) this.inner.invalidateInputs(from);
     }
 }
 
@@ -62532,8 +62299,6 @@ extends GShape
 class GPolygon
 extends GShape
 {
-    input   = null;
-
     round   = null;
     corners = null;
 
@@ -62551,9 +62316,6 @@ extends GShape
         const copy = new GPolygon(this.nodeId, this.options);
 
         copy.copyBase(this);
-
-        if (this.input) 
-            copy.input = this.input.copy();
 
         if (this.round  ) copy.round   = this.round  .copy();
         if (this.corners) copy.corners = this.corners.copy();
@@ -62668,17 +62430,6 @@ extends GShape
 
 
 
-    pushValueUpdates(parse)
-    {
-        super.pushValueUpdates(parse);
-
-        if (this.input  ) this.input  .pushValueUpdates(parse);
-        if (this.round  ) this.round  .pushValueUpdates(parse);
-        if (this.corners) this.corners.pushValueUpdates(parse);
-    }
-
-
-
     toValue()
     {
         const poly = new PolygonValue(
@@ -62707,11 +62458,20 @@ extends GShape
 
 
 
+    pushValueUpdates(parse)
+    {
+        super.pushValueUpdates(parse);
+
+        if (this.round  ) this.round  .pushValueUpdates(parse);
+        if (this.corners) this.corners.pushValueUpdates(parse);
+    }
+
+
+
     invalidateInputs(from)
     {
         super.invalidateInputs(from);
 
-        if (this.input  ) this.input  .invalidateInputs(from);
         if (this.round  ) this.round  .invalidateInputs(from);
         if (this.corners) this.corners.invalidateInputs(from);
     }
@@ -62722,8 +62482,6 @@ extends GShape
 class GStar
 extends GShape
 {
-    input  = null;
-
     round  = null;
     points = null;
     convex = null;
@@ -62742,9 +62500,6 @@ extends GShape
         const copy = new GStar(this.nodeId, this.options);
 
         copy.copyBase(this);
-
-        if (this.input) 
-            copy.input = this.input.copy();
 
         if (this.round ) copy.round  = this.round .copy();
         if (this.points) copy.points = this.points.copy();
@@ -62859,18 +62614,6 @@ extends GShape
 
 
 
-    pushValueUpdates(parse)
-    {
-        super.pushValueUpdates(parse);
-
-        if (this.input ) this.input .pushValueUpdates(parse);
-        if (this.round ) this.round .pushValueUpdates(parse);
-        if (this.points) this.points.pushValueUpdates(parse);
-        if (this.convex) this.convex.pushValueUpdates(parse);
-    }
-
-
-
     toValue()
     {
         const star = new StarValue(
@@ -62901,23 +62644,31 @@ extends GShape
 
 
 
-   invalidateInputs(from)
-   {
-      super.invalidateInputs(from);
+    pushValueUpdates(parse)
+    {
+        super.pushValueUpdates(parse);
 
-      if (this.input ) this.input .invalidateInputs(from);
-      if (this.round ) this.round .invalidateInputs(from);
-      if (this.points) this.points.invalidateInputs(from);
-      if (this.convex) this.convex.invalidateInputs(from);
-   }
+        if (this.round ) this.round .pushValueUpdates(parse);
+        if (this.points) this.points.pushValueUpdates(parse);
+        if (this.convex) this.convex.pushValueUpdates(parse);
+    }
+
+
+
+    invalidateInputs(from)
+    {
+        super.invalidateInputs(from);
+
+        if (this.round ) this.round .invalidateInputs(from);
+        if (this.points) this.points.invalidateInputs(from);
+        if (this.convex) this.convex.invalidateInputs(from);
+    }
 }
 
 
 class GTextShape
 extends GShape
 {
-    input         = null;
-
     text          = null;
     x             = null;
     y             = null;
@@ -62945,9 +62696,6 @@ extends GShape
         const copy = new GTextShape(this.nodeId, this.options);
 
         copy.copyBase(this);
-
-        if (this.input) 
-            copy.input = this.input.copy();
 
         if (this.text         ) copy.text          = this.text         .copy();
         if (this.x            ) copy.x             = this.x            .copy();
@@ -63116,27 +62864,6 @@ extends GShape
 
 
 
-    pushValueUpdates(parse)
-    {
-        super.pushValueUpdates(parse);
-        
-        if (this.input        ) this.input        .pushValueUpdates(parse);
-        if (this.text         ) this.text         .pushValueUpdates(parse);
-        if (this.x            ) this.x            .pushValueUpdates(parse);
-        if (this.y            ) this.y            .pushValueUpdates(parse);
-        if (this.width        ) this.width        .pushValueUpdates(parse);
-        if (this.height       ) this.height       .pushValueUpdates(parse);
-        if (this.font         ) this.font         .pushValueUpdates(parse);
-        if (this.style        ) this.style        .pushValueUpdates(parse);
-        if (this.size         ) this.size         .pushValueUpdates(parse);
-        if (this.alignH       ) this.alignH       .pushValueUpdates(parse);
-        if (this.alignV       ) this.alignV       .pushValueUpdates(parse);
-        if (this.lineHeight   ) this.lineHeight   .pushValueUpdates(parse);
-        if (this.letterSpacing) this.letterSpacing.pushValueUpdates(parse);
-    }
-
-
-
     isValid()
     {
         return this.text         .isValid()
@@ -63181,11 +62908,30 @@ extends GShape
 
 
 
+    pushValueUpdates(parse)
+    {
+        super.pushValueUpdates(parse);
+        
+        if (this.text         ) this.text         .pushValueUpdates(parse);
+        if (this.x            ) this.x            .pushValueUpdates(parse);
+        if (this.y            ) this.y            .pushValueUpdates(parse);
+        if (this.width        ) this.width        .pushValueUpdates(parse);
+        if (this.height       ) this.height       .pushValueUpdates(parse);
+        if (this.font         ) this.font         .pushValueUpdates(parse);
+        if (this.style        ) this.style        .pushValueUpdates(parse);
+        if (this.size         ) this.size         .pushValueUpdates(parse);
+        if (this.alignH       ) this.alignH       .pushValueUpdates(parse);
+        if (this.alignV       ) this.alignV       .pushValueUpdates(parse);
+        if (this.lineHeight   ) this.lineHeight   .pushValueUpdates(parse);
+        if (this.letterSpacing) this.letterSpacing.pushValueUpdates(parse);
+    }
+
+
+
     invalidateInputs(from)
     {
         super.invalidateInputs(from);
         
-        if (this.input        ) this.input        .invalidateInputs(from);
         if (this.text         ) this.text         .invalidateInputs(from);
         if (this.x            ) this.x            .invalidateInputs(from);
         if (this.y            ) this.y            .invalidateInputs(from);
@@ -63203,12 +62949,10 @@ extends GShape
 
 
 class GPoint
-extends GOperator
+extends GOperator1
 {
-    input = null;
-
-    x     = null;
-    y     = null;
+    x = null;
+    y = null;
 
 
 
@@ -63224,9 +62968,6 @@ extends GOperator
         const copy = new GPoint(this.nodeId, this.options);
 
         copy.copyBase(this);
-
-        if (this.input) 
-            copy.input = this.input.copy();
 
         if (this.x) copy.x = this.x.copy();
         if (this.y) copy.y = this.y.copy();
@@ -63311,17 +63052,6 @@ extends GOperator
 
 
 
-    pushValueUpdates(parse)
-    {
-        super.pushValueUpdates(parse);
-
-        if (this.input) this.input.pushValueUpdates(parse);
-        if (this.x    ) this.x    .pushValueUpdates(parse);
-        if (this.y    ) this.y    .pushValueUpdates(parse);
-    }
-
-
-
     toValue()
     {
         const point = new PointValue(
@@ -63345,13 +63075,22 @@ extends GOperator
 
 
 
+    pushValueUpdates(parse)
+    {
+        super.pushValueUpdates(parse);
+
+        if (this.x) this.x.pushValueUpdates(parse);
+        if (this.y) this.y.pushValueUpdates(parse);
+    }
+
+
+
     invalidateInputs(from)
     {
         super.invalidateInputs(from);
 
-        if (this.input) this.input.invalidateInputs(from);
-        if (this.x    ) this.x    .invalidateInputs(from);
-        if (this.y    ) this.y    .invalidateInputs(from);
+        if (this.x) this.x.invalidateInputs(from);
+        if (this.y) this.y.invalidateInputs(from);
     }
 }
 
@@ -63359,8 +63098,6 @@ extends GOperator
 class GVectorPath
 extends GShape
 {
-    input   = null;
-
     points  = null;
     closed  = null;
     degree  = null;
@@ -63381,9 +63118,6 @@ extends GShape
         const copy = new GVectorPath(this.nodeId, this.options);
 
         copy.copyBase(this);
-
-        if (this.input) 
-            copy.input = this.input.copy();
 
         if (this.points ) copy.points  = this.points .copy();
         if (this.closed ) copy.closed  = this.closed .copy();
@@ -63512,20 +63246,6 @@ extends GShape
 
 
 
-    pushValueUpdates(parse)
-    {
-        super.pushValueUpdates(parse);
-
-        if (this.input  ) this.input  .pushValueUpdates(parse);
-        if (this.points ) this.points .pushValueUpdates(parse);
-        if (this.closed ) this.closed .pushValueUpdates(parse);
-        if (this.degree ) this.degree .pushValueUpdates(parse);
-        if (this.winding) this.winding.pushValueUpdates(parse);
-        if (this.round  ) this.round  .pushValueUpdates(parse);
-    }
-
-
-
     toValue()
     {
         const path = new VectorPathValue(
@@ -63556,11 +63276,23 @@ extends GShape
 
 
 
+    pushValueUpdates(parse)
+    {
+        super.pushValueUpdates(parse);
+
+        if (this.points ) this.points .pushValueUpdates(parse);
+        if (this.closed ) this.closed .pushValueUpdates(parse);
+        if (this.degree ) this.degree .pushValueUpdates(parse);
+        if (this.winding) this.winding.pushValueUpdates(parse);
+        if (this.round  ) this.round  .pushValueUpdates(parse);
+    }
+
+
+
     invalidateInputs(from)
     {
         super.invalidateInputs(from);
 
-        if (this.input  ) this.input  .invalidateInputs(from);
         if (this.points ) this.points .invalidateInputs(from);
         if (this.closed ) this.closed .invalidateInputs(from);
         if (this.degree ) this.degree .invalidateInputs(from);
@@ -63787,8 +63519,6 @@ extends GShapeBase
 class GFrame
 extends GShape
 {
-    input    = null;
-
     round    = null;
     children = null;
 
@@ -63806,9 +63536,6 @@ extends GShape
         const copy = new GFrame(this.nodeId, this.options);
 
         copy.copyBase(this);
-
-        if (this.input) 
-            copy.input = this.input.copy();
 
         if (this.round   ) copy.round    = this.round   .copy();
         if (this.children) copy.children = this.children.copy();
@@ -63957,17 +63684,6 @@ extends GShape
 
 
 
-    pushValueUpdates(parse)
-    {
-        super.pushValueUpdates(parse);
-
-        if (this.input   ) this.input   .pushValueUpdates(parse);
-        if (this.round   ) this.round   .pushValueUpdates(parse);
-        if (this.children) this.children.pushValueUpdates(parse);
-    }
-
-
-
     toValue()
     {
         return this.value.copy();
@@ -63979,7 +63695,17 @@ extends GShape
     {
         return super.isValid()
             && this.round   .isValid()
-            && this.children.isValid();
+        && this.children.isValid();
+    }
+
+
+
+    pushValueUpdates(parse)
+    {
+        super.pushValueUpdates(parse);
+
+        if (this.round   ) this.round   .pushValueUpdates(parse);
+        if (this.children) this.children.pushValueUpdates(parse);
     }
 
 
@@ -63988,7 +63714,6 @@ extends GShape
     {
         super.invalidateInputs(from);
 
-        if (this.input   ) this.input   .invalidateInputs(from);
         if (this.round   ) this.round   .invalidateInputs(from);
         if (this.children) this.children.invalidateInputs(from);
     }
@@ -64377,10 +64102,8 @@ extends GShapeBase
 
 
 class GMove
-extends GOperator
+extends GOperator1
 {
-    input       = null;
-
     x           = null;
     y           = null;
     affectSpace = null;
@@ -64403,9 +64126,6 @@ extends GOperator
         const copy = new GMove(this.nodeId, this.options);
 
         copy.copyBase(this);
-
-        if (this.input) 
-            copy.input = this.input.copy();
 
         if (this.x          ) copy.x           = this.x          .copy();
         if (this.y          ) copy.y           = this.y          .copy();
@@ -64499,18 +64219,6 @@ extends GOperator
 
 
 
-    pushValueUpdates(parse)
-    {
-        super.pushValueUpdates(parse);
-
-        if (this.input      ) this.input      .pushValueUpdates(parse);
-        if (this.x          ) this.x          .pushValueUpdates(parse);
-        if (this.y          ) this.y          .pushValueUpdates(parse);
-        if (this.affectSpace) this.affectSpace.pushValueUpdates(parse);
-    }
-
-
-
     isValid()
     {
         return super.isValid()
@@ -64521,30 +64229,38 @@ extends GOperator
 
 
 
-    invalidateInputs(from)
+    toValue()
     {
-        super.invalidateInputs(from);
-
-        if (this.input      ) this.input      .invalidateInputs(from);
-        if (this.x          ) this.x          .invalidateInputs(from);
-        if (this.y          ) this.y          .invalidateInputs(from);
-        if (this.affectSpace) this.affectSpace.invalidateInputs(from);
+        return this.value.copy();
     }
 
 
 
-    toValue()
+    pushValueUpdates(parse)
     {
-        return this.value.copy();
+        super.pushValueUpdates(parse);
+
+        if (this.x          ) this.x          .pushValueUpdates(parse);
+        if (this.y          ) this.y          .pushValueUpdates(parse);
+        if (this.affectSpace) this.affectSpace.pushValueUpdates(parse);
+    }
+
+
+
+   invalidateInputs(from)
+    {
+        super.invalidateInputs(from);
+
+        if (this.x          ) this.x          .invalidateInputs(from);
+        if (this.y          ) this.y          .invalidateInputs(from);
+        if (this.affectSpace) this.affectSpace.invalidateInputs(from);
     }
 }
 
 
 class GAffine
-extends GOperator
+extends GOperator1
 {
-    input       = null;
-    
     centerX     = null;
     centerY     = null;
     showCenter  = null;
@@ -64566,9 +64282,6 @@ extends GOperator
     copyBase(base)
     {
         super.copyBase(base);
-
-        if (base.input) 
-            this.input = base.input.copy();
 
         if (base.centerX    ) this.centerX     = base.centerX    .copy();
         if (base.centerY    ) this.centerY     = base.centerY    .copy();
@@ -64668,19 +64381,6 @@ extends GOperator
 
 
 
-    pushValueUpdates(parse)
-    {
-        super.pushValueUpdates(parse);
-
-        if (this.input      ) this.input      .pushValueUpdates(parse);
-        if (this.centerX    ) this.centerX    .pushValueUpdates(parse);
-        if (this.centerY    ) this.centerY    .pushValueUpdates(parse);
-        if (this.showCenter ) this.showCenter .pushValueUpdates(parse);
-        if (this.affectSpace) this.affectSpace.pushValueUpdates(parse);
-    }
-
-
-
     isValid()
     {
         return super.isValid()
@@ -64692,11 +64392,22 @@ extends GOperator
 
 
 
+    pushValueUpdates(parse)
+    {
+        super.pushValueUpdates(parse);
+
+        if (this.centerX    ) this.centerX    .pushValueUpdates(parse);
+        if (this.centerY    ) this.centerY    .pushValueUpdates(parse);
+        if (this.showCenter ) this.showCenter .pushValueUpdates(parse);
+        if (this.affectSpace) this.affectSpace.pushValueUpdates(parse);
+    }
+
+
+
     invalidateInputs(from)
     {
         super.invalidateInputs(from);
 
-        if (this.input      ) this.input      .invalidateInputs(from);
         if (this.centerX    ) this.centerX    .invalidateInputs(from);
         if (this.centerY    ) this.centerY    .invalidateInputs(from);
         if (this.showCenter ) this.showCenter .invalidateInputs(from);
@@ -64807,6 +64518,21 @@ extends GAffine
 
 
 
+    isValid()
+    {
+        return super.isValid()
+            && this.angle.isValid();
+    }
+
+
+
+    toValue()
+    {
+        return this.value.copy();
+    }
+
+
+
     pushValueUpdates(parse)
     {
         super.pushValueUpdates(parse);
@@ -64816,26 +64542,11 @@ extends GAffine
 
 
 
-    isValid()
-    {
-        return super.isValid()
-            && this.angle.isValid();
-    }
-
-
-
     invalidateInputs(from)
     {
         super.invalidateInputs(from)
 
         if (this.angle) this.angle.invalidateInputs(from);
-    }
-
-
-
-    toValue()
-    {
-        return this.value.copy();
     }
 }
 
@@ -85687,7 +85398,7 @@ extends OperatorBase
         this.addInput (new Input(LIST_VALUES));
 
         this.addParam(this.paramValue = new NumberParam('value', 'value', false, false, true, 0, 0));
-        this.addParam(this.paramBase  = new NumberParam('base',  'base',  true,  true,  true, 1, 0, 1));
+        this.addParam(this.paramBase  = new NumberParam('start', 'start', true,  true,  true, 1, 0, 1));
 
 
         this.paramBase.controls[0].allowEditDecimals = false;
@@ -90522,14 +90233,6 @@ extends ResizableOperatorWithValue
         if (ignore) return request;
 
         
-        const input = this.node.inputs[0];
-
-
-        request.push(input.connected ? 1 : 0);
-        
-        if (input.connected)
-            request.push(...pushInputOrParam(input, gen));
-
         request.push(...this.node.paramRequest.genRequest(gen));
         request.push(TEXT_VALUE, encodeURIComponent(this.node.cachedValue));
 

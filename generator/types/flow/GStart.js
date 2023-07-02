@@ -29,6 +29,15 @@ extends GOperator
 
 
 
+    isCached()
+    {
+        return super.isCached()
+            && (  !this.input 
+                || this.input.isCached());
+    }
+
+
+
     async eval(parse)
     {
         if (this.isCached())

@@ -1,5 +1,5 @@
 class GSine
-extends GTrigBase
+extends GNumberType1
 {
     constructor(nodeId, options)
     {

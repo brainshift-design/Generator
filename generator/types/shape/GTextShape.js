@@ -1,8 +1,6 @@
 class GTextShape
 extends GShape
 {
-    input         = null;
-
     text          = null;
     x             = null;
     y             = null;
@@ -30,9 +28,6 @@ extends GShape
         const copy = new GTextShape(this.nodeId, this.options);
 
         copy.copyBase(this);
-
-        if (this.input) 
-            copy.input = this.input.copy();
 
         if (this.text         ) copy.text          = this.text         .copy();
         if (this.x            ) copy.x             = this.x            .copy();
@@ -201,27 +196,6 @@ extends GShape
 
 
 
-    pushValueUpdates(parse)
-    {
-        super.pushValueUpdates(parse);
-        
-        if (this.input        ) this.input        .pushValueUpdates(parse);
-        if (this.text         ) this.text         .pushValueUpdates(parse);
-        if (this.x            ) this.x            .pushValueUpdates(parse);
-        if (this.y            ) this.y            .pushValueUpdates(parse);
-        if (this.width        ) this.width        .pushValueUpdates(parse);
-        if (this.height       ) this.height       .pushValueUpdates(parse);
-        if (this.font         ) this.font         .pushValueUpdates(parse);
-        if (this.style        ) this.style        .pushValueUpdates(parse);
-        if (this.size         ) this.size         .pushValueUpdates(parse);
-        if (this.alignH       ) this.alignH       .pushValueUpdates(parse);
-        if (this.alignV       ) this.alignV       .pushValueUpdates(parse);
-        if (this.lineHeight   ) this.lineHeight   .pushValueUpdates(parse);
-        if (this.letterSpacing) this.letterSpacing.pushValueUpdates(parse);
-    }
-
-
-
     isValid()
     {
         return this.text         .isValid()
@@ -266,11 +240,30 @@ extends GShape
 
 
 
+    pushValueUpdates(parse)
+    {
+        super.pushValueUpdates(parse);
+        
+        if (this.text         ) this.text         .pushValueUpdates(parse);
+        if (this.x            ) this.x            .pushValueUpdates(parse);
+        if (this.y            ) this.y            .pushValueUpdates(parse);
+        if (this.width        ) this.width        .pushValueUpdates(parse);
+        if (this.height       ) this.height       .pushValueUpdates(parse);
+        if (this.font         ) this.font         .pushValueUpdates(parse);
+        if (this.style        ) this.style        .pushValueUpdates(parse);
+        if (this.size         ) this.size         .pushValueUpdates(parse);
+        if (this.alignH       ) this.alignH       .pushValueUpdates(parse);
+        if (this.alignV       ) this.alignV       .pushValueUpdates(parse);
+        if (this.lineHeight   ) this.lineHeight   .pushValueUpdates(parse);
+        if (this.letterSpacing) this.letterSpacing.pushValueUpdates(parse);
+    }
+
+
+
     invalidateInputs(from)
     {
         super.invalidateInputs(from);
         
-        if (this.input        ) this.input        .invalidateInputs(from);
         if (this.text         ) this.text         .invalidateInputs(from);
         if (this.x            ) this.x            .invalidateInputs(from);
         if (this.y            ) this.y            .invalidateInputs(from);

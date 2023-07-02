@@ -1,8 +1,6 @@
 class GTextCase
-extends GTextType
+extends GTextType1
 {
-    input = null;
-
     case;
 
 
@@ -20,21 +18,9 @@ extends GTextType
 
         copy.copyBase(this);
 
-        if (this.input) 
-            copy.input = this.input.copy();
-
         copy.case = this.case.copy();
 
         return copy;
-    }
-
-
-
-    isCached()
-    {
-        return super.isCached()
-            && (  !this.input 
-                || this.input.isCached());
     }
 
 
@@ -98,7 +84,6 @@ extends GTextType
     {
         super.pushValueUpdates(parse);
 
-        if (this.input) this.input.pushValueUpdates(parse);
         if (this.case ) this.case .pushValueUpdates(parse);
     }
 
@@ -108,7 +93,6 @@ extends GTextType
     {
         super.invalidateInputs(from);
 
-        if (this.input) this.input.invalidateInputs(from);
         if (this.case ) this.case .invalidateInputs(from);
     }
 }

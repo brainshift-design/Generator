@@ -1,8 +1,6 @@
 class GTextFetch
 extends GTextType
 {
-    input = null;
-    
     request;
     cachedValue;
 
@@ -20,9 +18,6 @@ extends GTextType
         const copy = new GTextFetch(this.nodeId, this.options);
 
         copy.copyBase(this);
-
-        if (this.input) 
-            copy.input = this.input.copy();
 
         copy.request     = this.request    .copy();
         copy.cachedValue = this.cachedValue.copy();
@@ -87,7 +82,6 @@ extends GTextType
     {
         super.pushValueUpdates(parse);
 
-        if (this.input  ) this.input  .pushValueUpdates(parse);
         if (this.request) this.request.pushValueUpdates(parse);
     }
 
@@ -97,7 +91,6 @@ extends GTextType
     {
         super.invalidateInputs(from);
 
-        if (this.input  ) this.input  .invalidateInputs(from);
         if (this.request) this.request.invalidateInputs(from);
 
         this.cachedValue = new TextValue();

@@ -1,8 +1,6 @@
 class GLimits
-extends GNumberType
+extends GNumberType1
 {
-    input = null;
-
     min;
     max;
 
@@ -21,13 +19,19 @@ extends GNumberType
 
         copy.copyBase(this);
 
-        if (this.input) 
-            copy.input = this.input.copy();
-
         copy.min = this.min.copy();
         copy.max = this.max.copy();
 
         return copy;
+    }
+
+
+
+    isCached()
+    {
+        return super.isCached()
+            && (!this.min || this.min.isCached())
+            && (!this.max || this.max.isCached());
     }
 
 
@@ -87,19 +91,8 @@ extends GNumberType
     {
         super.pushValueUpdates(parse);
 
-        if (this.input) this.input.pushValueUpdates(parse);
         if (this.min  ) this.min  .pushValueUpdates(parse);
         if (this.max  ) this.max  .pushValueUpdates(parse);
-    }
-
-
-
-    isCached()
-    {
-        return super.isCached()
-            && (!this.input || this.input.isCached())
-            && (!this.min   || this.min  .isCached())
-            && (!this.max   || this.max  .isCached());
     }
 
 

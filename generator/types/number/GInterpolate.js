@@ -30,6 +30,15 @@ extends GNumberType
 
 
 
+    isCached()
+    {
+        return super.isCached()
+            && (!this.input0 || this.input0.isCached())
+            && (!this.input1 || this.input1.isCached());
+    }
+
+
+
     async eval(parse)
     {
         if (this.isCached())

@@ -1,8 +1,6 @@
 class GTextCSV
-extends GOperator
+extends GOperator1
 {
-    input;
-
     value;
     separator;
 
@@ -21,7 +19,6 @@ extends GOperator
 
         copy.copyBase(this);
 
-        if (this.input    ) copy.input     = this.input    .copy();
         if (this.value    ) copy.value     = this.value    .copy();
         if (this.separator) copy.separator = this.separator.copy();
 
@@ -75,17 +72,9 @@ extends GOperator
     {
         super.pushValueUpdates(parse);
 
-        if (this.input    ) this.input    .pushValueUpdates(parse);
         if (this.value    ) this.value    .pushValueUpdates(parse);
         if (this.separator) this.separator.pushValueUpdates(parse);
     }
-
-
-
-    // toValue()
-    // {
-    //     return this.value.copy();
-    // }
 
 
 
@@ -93,7 +82,6 @@ extends GOperator
     {
         super.invalidateInputs(from);
 
-        if (this.input    ) this.input    .invalidateInputs(from);
         if (this.value    ) this.value    .invalidateInputs(from);
         if (this.separator) this.separator.invalidateInputs(from);
     }

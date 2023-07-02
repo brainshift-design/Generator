@@ -1,8 +1,6 @@
 class GTextCharacter
-extends GTextType
+extends GTextType1
 {
-    input = null;
-
     code;
 
 
@@ -19,9 +17,6 @@ extends GTextType
         const copy = new GTextCharacter(this.nodeId, this.options);
 
         copy.copyBase(this);
-
-        if (this.input) 
-            copy.input = this.input.copy();
 
         copy.code = this.code.copy();
 
@@ -60,8 +55,7 @@ extends GTextType
     {
         super.pushValueUpdates(parse);
 
-        if (this.input) this.input.pushValueUpdates(parse);
-        if (this.code ) this.code .pushValueUpdates(parse);
+        if (this.code) this.code.pushValueUpdates(parse);
     }
 
 
@@ -70,7 +64,6 @@ extends GTextType
     {
         super.invalidateInputs(from);
 
-        if (this.input) this.input.invalidateInputs(from);
-        if (this.code ) this.code .invalidateInputs(from);
+        if (this.code) this.code.invalidateInputs(from);
     }
 }

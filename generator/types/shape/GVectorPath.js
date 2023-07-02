@@ -1,8 +1,6 @@
 class GVectorPath
 extends GShape
 {
-    input   = null;
-
     points  = null;
     closed  = null;
     degree  = null;
@@ -23,9 +21,6 @@ extends GShape
         const copy = new GVectorPath(this.nodeId, this.options);
 
         copy.copyBase(this);
-
-        if (this.input) 
-            copy.input = this.input.copy();
 
         if (this.points ) copy.points  = this.points .copy();
         if (this.closed ) copy.closed  = this.closed .copy();
@@ -154,20 +149,6 @@ extends GShape
 
 
 
-    pushValueUpdates(parse)
-    {
-        super.pushValueUpdates(parse);
-
-        if (this.input  ) this.input  .pushValueUpdates(parse);
-        if (this.points ) this.points .pushValueUpdates(parse);
-        if (this.closed ) this.closed .pushValueUpdates(parse);
-        if (this.degree ) this.degree .pushValueUpdates(parse);
-        if (this.winding) this.winding.pushValueUpdates(parse);
-        if (this.round  ) this.round  .pushValueUpdates(parse);
-    }
-
-
-
     toValue()
     {
         const path = new VectorPathValue(
@@ -198,11 +179,23 @@ extends GShape
 
 
 
+    pushValueUpdates(parse)
+    {
+        super.pushValueUpdates(parse);
+
+        if (this.points ) this.points .pushValueUpdates(parse);
+        if (this.closed ) this.closed .pushValueUpdates(parse);
+        if (this.degree ) this.degree .pushValueUpdates(parse);
+        if (this.winding) this.winding.pushValueUpdates(parse);
+        if (this.round  ) this.round  .pushValueUpdates(parse);
+    }
+
+
+
     invalidateInputs(from)
     {
         super.invalidateInputs(from);
 
-        if (this.input  ) this.input  .invalidateInputs(from);
         if (this.points ) this.points .invalidateInputs(from);
         if (this.closed ) this.closed .invalidateInputs(from);
         if (this.degree ) this.degree .invalidateInputs(from);

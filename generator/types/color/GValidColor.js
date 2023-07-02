@@ -1,8 +1,6 @@
 class GValidColor
-extends GColorType
+extends GColorType1
 {
-    input        = null;
-     
     quality      = null;
 
     corrections  = [];
@@ -21,9 +19,6 @@ extends GColorType
         const copy = new GValidColor(this.nodeId, this.options);
 
         copy.copyBase(this);
-
-        if (this.input) 
-            copy.input = this.input.copy();
 
         if (this.value  ) copy.value   = this.value  .copy();
         if (this.quality) copy.quality = this.quality.copy();
@@ -139,7 +134,6 @@ extends GColorType
     {
         super.pushValueUpdates(parse);
 
-        if (this.input  ) this.input  .pushValueUpdates(parse);
         if (this.quality) this.quality.pushValueUpdates(parse);
     }
 
@@ -149,7 +143,6 @@ extends GColorType
     {
         super.invalidateInputs(from);
 
-        if (this.input  ) this.input  .invalidateInputs(from);
         if (this.quality) this.quality.invalidateInputs(from);
     }
 }

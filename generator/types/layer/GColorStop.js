@@ -1,8 +1,6 @@
 class GColorStop
-extends GOperator
+extends GOperator1
 {
-    input    = null;
-
     fill     = null;
     position = null;
 
@@ -20,9 +18,6 @@ extends GOperator
         const copy = new GColorStop(this.nodeId, this.options);
 
         copy.copyBase(this);
-
-        if (this.input) 
-            copy.input = this.input.copy();
 
         if (this.fill    ) copy.fill     = this.fill    .copy();
         if (this.position) copy.position = this.position.copy();
@@ -85,16 +80,6 @@ extends GOperator
 
 
 
-    pushValueUpdates(parse)
-    {
-        super.pushValueUpdates(parse);
-
-        if (this.input   ) this.input   .pushValueUpdates(parse);
-        if (this.fill    ) this.fill    .pushValueUpdates(parse);
-        if (this.position) this.position.pushValueUpdates(parse);
-    }    
-    
-    
     toValue()
     {
         return new ColorStopValue(
@@ -114,11 +99,20 @@ extends GOperator
 
 
 
+    pushValueUpdates(parse)
+    {
+        super.pushValueUpdates(parse);
+
+        if (this.fill    ) this.fill    .pushValueUpdates(parse);
+        if (this.position) this.position.pushValueUpdates(parse);
+    }    
+
+    
+    
     invalidateInputs(from)
     {
         super.invalidateInputs(from);
 
-        if (this.input   ) this.input   .invalidateInputs(from);
         if (this.fill    ) this.fill    .invalidateInputs(from);
         if (this.position) this.position.invalidateInputs(from);
     }

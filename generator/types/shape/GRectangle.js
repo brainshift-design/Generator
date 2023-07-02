@@ -1,8 +1,6 @@
 class GRectangle
 extends GShape
 {
-    input = null;
-
     round = null;
 
 
@@ -19,9 +17,6 @@ extends GShape
         const copy = new GRectangle(this.nodeId, this.options);
 
         copy.copyBase(this);
-
-        if (this.input) 
-            copy.input = this.input.copy();
 
         if (this.round) copy.round = this.round.copy();
 
@@ -164,7 +159,6 @@ extends GShape
     {
         super.pushValueUpdates(parse);
 
-        if (this.input) this.input.pushValueUpdates(parse);
         if (this.round) this.round.pushValueUpdates(parse);
     }
 
@@ -174,7 +168,6 @@ extends GShape
     {
         super.invalidateInputs(from);
 
-        if (this.input) this.input.invalidateInputs(from);
         if (this.round) this.round.invalidateInputs(from);
     }
 }

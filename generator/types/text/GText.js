@@ -1,10 +1,6 @@
 class GText
-extends GTextType
+extends GTextType1
 {
-    input = null;
-    
-
-
     constructor(nodeId, options)
     {
         super(TEXT, nodeId, options);
@@ -18,9 +14,6 @@ extends GTextType
         
         copy.copyBase(this);
 
-        if (this.input) 
-            copy.input = this.input.copy();
-        
         copy.value = this.value;
         
         return copy;
@@ -52,26 +45,8 @@ extends GTextType
 
 
 
-    pushValueUpdates(parse)
-    {
-        super.pushValueUpdates(parse);
-
-        if (this.input) this.input.pushValueUpdates(parse);
-    }
-
-
-
     isValid()
     {
         return this.value != NAN_CHAR;
-    }
-
-
-
-    invalidateInputs(from)
-    {
-        super.invalidateInputs(from);
-
-        if (this.input) this.input.invalidateInputs(from);
     }
 }

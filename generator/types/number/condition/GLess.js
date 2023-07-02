@@ -1,5 +1,5 @@
 class GLess
-extends GConditionBase
+extends GNumberType2
 {
     constructor(nodeId, options)
     {

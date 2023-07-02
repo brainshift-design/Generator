@@ -1,5 +1,5 @@
 class GLessOrEqual
-extends GConditionBase
+extends GNumberType2
 {
     constructor(nodeId, options)
     {

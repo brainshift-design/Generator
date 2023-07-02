@@ -1,8 +1,6 @@
 class GTextReplace
-extends GTextType
+extends GTextType1
 {
-    input = null;
-
     what;
     with;
 
@@ -20,9 +18,6 @@ extends GTextType
         const copy = new GTextReplace(this.nodeId, this.options);
 
         copy.copyBase(this);
-
-        if (this.input) 
-            copy.input = this.input.copy();
 
         copy.what  = this.what .copy();
         copy.with  = this.with .copy();
@@ -79,7 +74,6 @@ extends GTextType
     {
         super.pushValueUpdates(parse);
 
-        if (this.input) this.input.pushValueUpdates(parse);
         if (this.what ) this.what .pushValueUpdates(parse);
         if (this.with ) this.with .pushValueUpdates(parse);
     }
@@ -90,7 +84,6 @@ extends GTextType
     {
         super.invalidateInputs(from);
 
-        if (this.input) this.input.invalidateInputs(from);
         if (this.what ) this.what .invalidateInputs(from);
         if (this.with ) this.with .invalidateInputs(from);
     }

@@ -1,10 +1,6 @@
 class GNumber
-extends GNumberType
+extends GNumberType1
 {
-    input = null;
-    
-
-
     constructor(nodeId, options)
     {
         super(NUMBER, nodeId, options);
@@ -18,21 +14,9 @@ extends GNumberType
         
         copy.copyBase(this);
 
-        if (this.input) 
-            copy.input = this.input.copy();
-        
         copy.value = this.value;
 
         return copy;
-    }
-
-
-
-    isCached()
-    {
-        return super.isCached()
-            && (  !this.input 
-                || this.input.isCached());
     }
 
 
@@ -65,27 +49,9 @@ extends GNumberType
 
 
 
-    pushValueUpdates(parse)
-    {
-        super.pushValueUpdates(parse);
-
-        if (this.input) this.input.pushValueUpdates(parse);
-    }
-
-
-
     isValid()
     {
         return !isNaN(this.value)
             && !isNaN(this.decimals);
-    }
-
-
-
-    invalidateInputs(from)
-    {
-        super.invalidateInputs(from);
-
-        if (this.input) this.input.invalidateInputs(from);
     }
 }

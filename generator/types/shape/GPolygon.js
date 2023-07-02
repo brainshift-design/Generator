@@ -1,8 +1,6 @@
 class GPolygon
 extends GShape
 {
-    input   = null;
-
     round   = null;
     corners = null;
 
@@ -20,9 +18,6 @@ extends GShape
         const copy = new GPolygon(this.nodeId, this.options);
 
         copy.copyBase(this);
-
-        if (this.input) 
-            copy.input = this.input.copy();
 
         if (this.round  ) copy.round   = this.round  .copy();
         if (this.corners) copy.corners = this.corners.copy();
@@ -137,17 +132,6 @@ extends GShape
 
 
 
-    pushValueUpdates(parse)
-    {
-        super.pushValueUpdates(parse);
-
-        if (this.input  ) this.input  .pushValueUpdates(parse);
-        if (this.round  ) this.round  .pushValueUpdates(parse);
-        if (this.corners) this.corners.pushValueUpdates(parse);
-    }
-
-
-
     toValue()
     {
         const poly = new PolygonValue(
@@ -176,11 +160,20 @@ extends GShape
 
 
 
+    pushValueUpdates(parse)
+    {
+        super.pushValueUpdates(parse);
+
+        if (this.round  ) this.round  .pushValueUpdates(parse);
+        if (this.corners) this.corners.pushValueUpdates(parse);
+    }
+
+
+
     invalidateInputs(from)
     {
         super.invalidateInputs(from);
 
-        if (this.input  ) this.input  .invalidateInputs(from);
         if (this.round  ) this.round  .invalidateInputs(from);
         if (this.corners) this.corners.invalidateInputs(from);
     }

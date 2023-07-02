@@ -1,9 +1,6 @@
 class GColorBlend
-extends GColorType
+extends GColorType2
 {
-    input0 = null;
-    input1 = null;
-
     mode;
     opacity;
     
@@ -20,9 +17,6 @@ extends GColorType
         const copy = new GColorBlend(this.nodeId, this.options);
 
         copy.copyBase(this);
-
-        if (this.input0) copy.input0 = this.input0.copy();
-        if (this.input1) copy.input1 = this.input1.copy();
 
         copy.mode    = this.mode   .copy();
         copy.opacity = this.opacity.copy();
@@ -91,18 +85,6 @@ extends GColorType
 
 
 
-    pushValueUpdates(parse)
-    {
-        super.pushValueUpdates(parse);
-
-        if (this.input0 ) this.input0 .pushValueUpdates(parse);
-        if (this.input1 ) this.input1 .pushValueUpdates(parse);
-        if (this.mode   ) this.mode   .pushValueUpdates(parse);
-        if (this.opacity) this.opacity.pushValueUpdates(parse);
-    }
-
-
-
     blend(mode, col0, col1, opacity)
     {
         switch (mode)
@@ -133,12 +115,20 @@ extends GColorType
 
 
 
+    pushValueUpdates(parse)
+    {
+        super.pushValueUpdates(parse);
+
+        if (this.mode   ) this.mode   .pushValueUpdates(parse);
+        if (this.opacity) this.opacity.pushValueUpdates(parse);
+    }
+
+
+
     invalidateInputs(from)
     {
         super.invalidateInputs(from);
 
-        if (this.input0 ) this.input0 .invalidateInputs(from);
-        if (this.input1 ) this.input1 .invalidateInputs(from);
         if (this.mode   ) this.mode   .invalidateInputs(from);
         if (this.opacity) this.opacity.invalidateInputs(from);
     }

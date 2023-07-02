@@ -1,10 +1,6 @@
 class GLine
 extends GShape
 {
-    input = null;
-
-
-
     constructor(nodeId, options)
     {
         super(LINE, nodeId, options);
@@ -17,9 +13,6 @@ extends GShape
         const copy = new GLine(this.nodeId, this.options);
 
         copy.copyBase(this);
-
-        if (this.input) 
-            copy.input = this.input.copy();
 
         return copy;
     }
@@ -116,15 +109,6 @@ extends GShape
 
 
 
-    pushValueUpdates(parse)
-    {
-        super.pushValueUpdates(parse);
-
-        if (this.input) this.input.pushValueUpdates(parse);
-    }
-
-
-
     toValue()
     {
         const line = new LineValue(
@@ -137,14 +121,5 @@ extends GShape
         line.objects = this.objects.map(o => o.copy());
 
         return line;
-    }
-
-
-
-    invalidateInputs(from)
-    {
-        super.invalidateInputs(from);
-
-        if (this.input) this.input.invalidateInputs(from);
     }
 }

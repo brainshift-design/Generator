@@ -1,8 +1,6 @@
 class GEllipse
 extends GShape
 {
-    input = null;
-
     from  = null;
     to    = null;
     inner = null;
@@ -21,9 +19,6 @@ extends GShape
         const copy = new GEllipse(this.nodeId, this.options);
 
         copy.copyBase(this);
-
-        if (this.input) 
-            copy.input = this.input.copy();
 
         if (this.from ) copy.from  = this.from .copy();
         if (this.to   ) copy.to    = this.to   .copy();
@@ -145,15 +140,6 @@ extends GShape
    
     
         
-    pushValueUpdates(parse)
-    {
-        super.pushValueUpdates(parse);
- 
-        if (this.input) this.input.pushValueUpdates(prase);
-    }
-
-   
-
     toValue()
     {
         const ellipse = new EllipseValue(
@@ -172,12 +158,25 @@ extends GShape
         return ellipse;
     }
     
+
     
+    pushValueUpdates(parse)
+    {
+        super.pushValueUpdates(parse);
+ 
+        if (this.from ) this.from .pushValueUpdates(prase);
+        if (this.to   ) this.to   .pushValueUpdates(prase);
+        if (this.inner) this.inner.pushValueUpdates(prase);
+    }
+
+   
         
     invalidateInputs(from)
     {
         super.invalidateInputs(from);
 
-        if (this.input) this.input.invalidateInputs(from);
+        if (this.from ) this.from .invalidateInputs(from);
+        if (this.to   ) this.to   .invalidateInputs(from);
+        if (this.inner) this.inner.invalidateInputs(from);
     }
 }

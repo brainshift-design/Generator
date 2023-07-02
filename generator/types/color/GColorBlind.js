@@ -1,8 +1,6 @@
 class GColorBlind
-extends GColorType
+extends GColorType1
 {
-    input = null;
-
     l;
     m;
     s;
@@ -20,9 +18,6 @@ extends GColorType
         const copy = new GColorBlind(this.nodeId, this.options);
 
         copy.copyBase(this);
-
-        if (this.input) 
-            copy.input = this.input.copy();
 
         copy.l = this.l.copy();
         copy.m = this.m.copy();
@@ -98,10 +93,9 @@ extends GColorType
     {
         super.pushValueUpdates(parse);
 
-        if (this.input ) this.input.pushValueUpdates(parse);
-        if (this.l     ) this.l    .pushValueUpdates(parse);
-        if (this.m     ) this.m    .pushValueUpdates(parse);
-        if (this.s     ) this.s    .pushValueUpdates(parse);
+        if (this.l) this.l.pushValueUpdates(parse);
+        if (this.m) this.m.pushValueUpdates(parse);
+        if (this.s) this.s.pushValueUpdates(parse);
     }
 
 
@@ -110,9 +104,8 @@ extends GColorType
     {
         super.invalidateInputs(from);
 
-        if (this.input ) this.input.invalidateInputs(from);
-        if (this.l     ) this.l    .invalidateInputs(from);
-        if (this.m     ) this.m    .invalidateInputs(from);
-        if (this.s     ) this.s    .invalidateInputs(from);
+        if (this.l) this.l.invalidateInputs(from);
+        if (this.m) this.m.invalidateInputs(from);
+        if (this.s) this.s.invalidateInputs(from);
     }
 }

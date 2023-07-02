@@ -1,8 +1,6 @@
 class GRound
-extends GNumberType
+extends GNumberType1
 {
-    input = null;
-
     type;
     decimals;
 
@@ -20,9 +18,6 @@ extends GNumberType
         const copy = new GRound(this.nodeId, this.options);
 
         copy.copyBase(this);
-
-        if (this.input) 
-            copy.input = this.input.copy();
 
         copy.type     = this.type    .copy();
         copy.decimals = this.decimals.copy();
@@ -72,9 +67,9 @@ extends GNumberType
 
         this.updateValues =
         [
+            ['value',    this.value],
             ['type',     type      ],
-            ['decimals', dec       ],
-            ['value',    this.value]
+            ['decimals', dec       ]
         ];
 
 
@@ -85,11 +80,20 @@ extends GNumberType
 
 
 
+    pushValueUpdates(parse)
+    {
+        super.pushValueUpdates(parse);
+
+        if (this.type    ) this.type    .pushValueUpdates(parse);
+        if (this.decimals) this.decimals.pushValueUpdates(parse);
+    }
+
+
+
     invalidateInputs(from)
     {
         super.invalidateInputs(from);
 
-        if (this.input   ) this.input   .invalidateInputs(from);
         if (this.type    ) this.type    .invalidateInputs(from);
         if (this.decimals) this.decimals.invalidateInputs(from);
     }

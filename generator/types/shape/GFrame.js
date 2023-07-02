@@ -1,8 +1,6 @@
 class GFrame
 extends GShape
 {
-    input    = null;
-
     round    = null;
     children = null;
 
@@ -20,9 +18,6 @@ extends GShape
         const copy = new GFrame(this.nodeId, this.options);
 
         copy.copyBase(this);
-
-        if (this.input) 
-            copy.input = this.input.copy();
 
         if (this.round   ) copy.round    = this.round   .copy();
         if (this.children) copy.children = this.children.copy();
@@ -171,17 +166,6 @@ extends GShape
 
 
 
-    pushValueUpdates(parse)
-    {
-        super.pushValueUpdates(parse);
-
-        if (this.input   ) this.input   .pushValueUpdates(parse);
-        if (this.round   ) this.round   .pushValueUpdates(parse);
-        if (this.children) this.children.pushValueUpdates(parse);
-    }
-
-
-
     toValue()
     {
         return this.value.copy();
@@ -193,7 +177,17 @@ extends GShape
     {
         return super.isValid()
             && this.round   .isValid()
-            && this.children.isValid();
+        && this.children.isValid();
+    }
+
+
+
+    pushValueUpdates(parse)
+    {
+        super.pushValueUpdates(parse);
+
+        if (this.round   ) this.round   .pushValueUpdates(parse);
+        if (this.children) this.children.pushValueUpdates(parse);
     }
 
 
@@ -202,7 +196,6 @@ extends GShape
     {
         super.invalidateInputs(from);
 
-        if (this.input   ) this.input   .invalidateInputs(from);
         if (this.round   ) this.round   .invalidateInputs(from);
         if (this.children) this.children.invalidateInputs(from);
     }

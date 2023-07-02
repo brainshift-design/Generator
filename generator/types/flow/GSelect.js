@@ -89,7 +89,7 @@ extends GOperator
 
                         obj.nodeId = this.nodeId;
 
-                        if (obj.objectId != NULL) obj.objectId += ' ';
+                        if (obj.objectId != NULL) obj.objectId += '/';
                         obj.objectId += index.value.toString();
 
                         obj.listId = -1;

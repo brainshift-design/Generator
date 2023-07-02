@@ -1,10 +1,6 @@
 class GSign
-extends GNumberType
+extends GNumberType1
 {
-    input = null;
-
-
-
     constructor(nodeId, options)
     {
         super(NUMBER_SIGN, nodeId, options);
@@ -17,9 +13,6 @@ extends GNumberType
         const copy = new GSign(this.nodeId, this.options);
 
         copy.copyBase(this);
-
-        if (this.input) 
-            copy.input = this.input.copy();
 
         return copy;
     }
@@ -53,23 +46,5 @@ extends GNumberType
         this.validate();
 
         return this;
-    }
-
-
-
-    pushValueUpdates(parse)
-    {
-        super.pushValueUpdates(parse);
-
-        if (this.input) this.input.pushValueUpdates(parse);
-    }
-
-
-
-    invalidateInputs(from)
-    {
-        super.invalidateInputs(from);
-
-        if (this.input) this.input.invalidateInputs(from);
     }
 }

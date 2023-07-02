@@ -1,7 +1,25 @@
-class GTrigBase
+class GNumberType1
 extends GNumberType
 {
-    input;
+    input = null;
+
+
+
+    copyBase(base)
+    {
+        super.copyBase(base);
+
+        if (base.input) this.input = base.input.copy();
+    }
+
+
+
+    isCached()
+    {
+        return super.isCached()
+            && (  !this.input 
+                || this.input.isCached());
+    }
 
 
 

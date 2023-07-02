@@ -1,8 +1,6 @@
 class GCorrectColor
-extends GColorType
+extends GColorType1
 {
-    input        = null;
-     
     order        = null;
     margin1      = null;
     margin2      = null;
@@ -24,9 +22,6 @@ extends GColorType
         const copy = new GCorrectColor(this.nodeId, this.options);
 
         copy.copyBase(this);
-
-        if (this.input) 
-            copy.input = this.input.copy();
 
         if (this.order  ) copy.order   = this.order  .copy();
         if (this.margin1) copy.margin1 = this.margin1.copy();
@@ -195,7 +190,6 @@ extends GColorType
     {
         super.pushValueUpdates(parse);
 
-        if (this.input  ) this.input  .pushValueUpdates(parse);
         if (this.order  ) this.order  .pushValueUpdates(parse);
         if (this.margin1) this.margin1.pushValueUpdates(parse);
         if (this.margin2) this.margin2.pushValueUpdates(parse);
@@ -208,7 +202,6 @@ extends GColorType
     {
         super.invalidateInputs(from);
 
-        if (this.input  ) this.input  .invalidateInputs(from);
         if (this.order  ) this.order  .invalidateInputs(from);
         if (this.margin1) this.margin1.invalidateInputs(from);
         if (this.margin2) this.margin2.invalidateInputs(from);

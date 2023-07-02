@@ -1,12 +1,6 @@
 class GTextJson
-extends GOperator
+extends GOperator1
 {
-    input;
-
-    //value;
-
-
-
     constructor(nodeId, options)
     {
         super(TEXT_JSON, nodeId, options);
@@ -19,9 +13,6 @@ extends GOperator
         const copy = new GTextJson(this.nodeId, this.options);
 
         copy.copyBase(this);
-
-        if (this.input) copy.input = this.input.copy();
-        //if (this.value) copy.value = this.value.copy();
 
         return copy;
     }
@@ -104,34 +95,5 @@ extends GOperator
 
         
         return list;
-    }
-
-
-
-    pushValueUpdates(parse)
-    {
-        super.pushValueUpdates(parse);
-
-        if (this.input    ) this.input    .pushValueUpdates(parse);
-        //if (this.value    ) this.value    .pushValueUpdates(parse);
-        //if (this.separator) this.separator.pushValueUpdates(parse);
-    }
-
-
-
-    // toValue()
-    // {
-    //     return this.value.copy();
-    // }
-
-
-
-    invalidateInputs(from)
-    {
-        super.invalidateInputs(from);
-
-        if (this.input    ) this.input    .invalidateInputs(from);
-        //if (this.value    ) this.value    .invalidateInputs(from);
-        //if (this.separator) this.separator.invalidateInputs(from);
     }
 }

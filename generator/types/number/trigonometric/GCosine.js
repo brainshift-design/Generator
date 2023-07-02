@@ -1,5 +1,5 @@
 class GCosine
-extends GTrigBase
+extends GNumberType1
 {
     constructor(nodeId, options)
     {

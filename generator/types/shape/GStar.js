@@ -2,8 +2,6 @@
 class GStar
 extends GShape
 {
-    input  = null;
-
     round  = null;
     points = null;
     convex = null;
@@ -22,9 +20,6 @@ extends GShape
         const copy = new GStar(this.nodeId, this.options);
 
         copy.copyBase(this);
-
-        if (this.input) 
-            copy.input = this.input.copy();
 
         if (this.round ) copy.round  = this.round .copy();
         if (this.points) copy.points = this.points.copy();
@@ -139,18 +134,6 @@ extends GShape
 
 
 
-    pushValueUpdates(parse)
-    {
-        super.pushValueUpdates(parse);
-
-        if (this.input ) this.input .pushValueUpdates(parse);
-        if (this.round ) this.round .pushValueUpdates(parse);
-        if (this.points) this.points.pushValueUpdates(parse);
-        if (this.convex) this.convex.pushValueUpdates(parse);
-    }
-
-
-
     toValue()
     {
         const star = new StarValue(
@@ -181,13 +164,23 @@ extends GShape
 
 
 
-   invalidateInputs(from)
-   {
-      super.invalidateInputs(from);
+    pushValueUpdates(parse)
+    {
+        super.pushValueUpdates(parse);
 
-      if (this.input ) this.input .invalidateInputs(from);
-      if (this.round ) this.round .invalidateInputs(from);
-      if (this.points) this.points.invalidateInputs(from);
-      if (this.convex) this.convex.invalidateInputs(from);
-   }
+        if (this.round ) this.round .pushValueUpdates(parse);
+        if (this.points) this.points.pushValueUpdates(parse);
+        if (this.convex) this.convex.pushValueUpdates(parse);
+    }
+
+
+
+    invalidateInputs(from)
+    {
+        super.invalidateInputs(from);
+
+        if (this.round ) this.round .invalidateInputs(from);
+        if (this.points) this.points.invalidateInputs(from);
+        if (this.convex) this.convex.invalidateInputs(from);
+    }
 }

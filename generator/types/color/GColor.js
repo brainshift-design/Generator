@@ -1,8 +1,6 @@
 class GColor
-extends GColorType
+extends GColorType1
 {
-    input   = null;
-
     space   = null;
     c1      = null;
     c2      = null;
@@ -26,9 +24,6 @@ extends GColorType
         const copy = new GColor(this.nodeId, this.options);
 
         copy.copyBase(this);
-
-        if (this.input) 
-            copy.input = this.input.copy();
 
         copy.space = this.space.copy();
 
@@ -164,19 +159,6 @@ extends GColorType
 
 
 
-    pushValueUpdates(parse)
-    {
-        super.pushValueUpdates(parse);
-
-        if (this.input) this.input.pushValueUpdates(parse);
-        if (this.space) this.space.pushValueUpdates(parse);
-        if (this.c1   ) this.c1   .pushValueUpdates(parse);
-        if (this.c2   ) this.c2   .pushValueUpdates(parse);
-        if (this.c3   ) this.c3   .pushValueUpdates(parse);
-    }
-
-
-
     convertColor(color, fromSpace, toSpace)
     {
         let col = [
@@ -213,11 +195,22 @@ extends GColorType
 
 
 
+    pushValueUpdates(parse)
+    {
+        super.pushValueUpdates(parse);
+
+        if (this.space) this.space.pushValueUpdates(parse);
+        if (this.c1   ) this.c1   .pushValueUpdates(parse);
+        if (this.c2   ) this.c2   .pushValueUpdates(parse);
+        if (this.c3   ) this.c3   .pushValueUpdates(parse);
+    }
+
+
+
     invalidateInputs(from)
     {
         super.invalidateInputs(from);
 
-        if (this.input) this.input.invalidateInputs(from);
         if (this.space) this.space.invalidateInputs(from);
         if (this.c1   ) this.c1   .invalidateInputs(from);
         if (this.c2   ) this.c2   .invalidateInputs(from);

@@ -1,8 +1,6 @@
 class GInnerShadow
-extends GOperator
+extends GOperator1
 {
-    input  = null;
-
     x      = null;
     y      = null;
     blur   = null;
@@ -24,9 +22,6 @@ extends GOperator
         const copy = new GInnerShadow(this.nodeId, this.options);
 
         copy.copyBase(this);
-
-        if (this.input) 
-            copy.input = this.input.copy();
 
         if (this.x     ) copy.x      = this.x     .copy();
         if (this.y     ) copy.y      = this.y     .copy();
@@ -98,21 +93,6 @@ extends GOperator
 
 
 
-    pushValueUpdates(parse)
-    {
-        super.pushValueUpdates(parse);
-
-        if (this.input ) this.input .pushValueUpdates(parse);
-        if (this.x     ) this.x     .pushValueUpdates(parse);
-        if (this.y     ) this.y     .pushValueUpdates(parse);
-        if (this.blur  ) this.blur  .pushValueUpdates(parse);
-        if (this.spread) this.spread.pushValueUpdates(parse);
-        if (this.fill  ) this.fill  .pushValueUpdates(parse);
-        if (this.blend ) this.blend .pushValueUpdates(parse);
-    }
-    
-    
-    
     toValue()
     {
         return new InnerShadowValue(
@@ -139,11 +119,24 @@ extends GOperator
 
 
 
+    pushValueUpdates(parse)
+    {
+        super.pushValueUpdates(parse);
+
+        if (this.x     ) this.x     .pushValueUpdates(parse);
+        if (this.y     ) this.y     .pushValueUpdates(parse);
+        if (this.blur  ) this.blur  .pushValueUpdates(parse);
+        if (this.spread) this.spread.pushValueUpdates(parse);
+        if (this.fill  ) this.fill  .pushValueUpdates(parse);
+        if (this.blend ) this.blend .pushValueUpdates(parse);
+    }
+    
+    
+    
     invalidateInputs(from)
     {
         super.invalidateInputs(from);
 
-        if (this.input ) this.input .invalidateInputs(from);
         if (this.x     ) this.x     .invalidateInputs(from);
         if (this.y     ) this.y     .invalidateInputs(from);
         if (this.blur  ) this.blur  .invalidateInputs(from);

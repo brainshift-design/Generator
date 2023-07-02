@@ -1,9 +1,6 @@
 class GColorContrast
-extends GColorType
+extends GColorType2
 {
-    input0 = null;
-    input1 = null;
-
     standard;
     contrast;
 
@@ -20,9 +17,6 @@ extends GColorType
         const copy = new GColorContrast(this.nodeId, this.options);
 
         copy.copyBase(this);
-
-        if (this.input0) copy.input0 = this.input0.copy();
-        if (this.input1) copy.input1 = this.input1.copy();
 
         copy.standard = this.standard.copy();
         copy.contrast = this.contrast.copy();
@@ -146,8 +140,6 @@ extends GColorType
     {
         super.pushValueUpdates(parse);
 
-        if (this.input0  ) this.input0  .pushValueUpdates(parse);
-        if (this.input1  ) this.input1  .pushValueUpdates(parse);
         if (this.standard) this.standard.pushValueUpdates(parse);
         if (this.contrast) this.contrast.pushValueUpdates(parse);
     }
@@ -158,8 +150,6 @@ extends GColorType
     {
         super.invalidateInputs(from);
 
-        if (this.input0  ) this.input0  .invalidateInputs(from);
-        if (this.input1  ) this.input1  .invalidateInputs(from);
         if (this.standard) this.standard.invalidateInputs(from);
         if (this.contrast) this.contrast.invalidateInputs(from);
     }
