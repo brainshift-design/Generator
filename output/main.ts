@@ -4571,7 +4571,6 @@ async function figCreateText(genText)
         return null;
     
 
-    console.log('genText =', genText);
     const figText = figma.createText();
 
     await figUpdateText(figText, genText);
@@ -4584,7 +4583,6 @@ async function figCreateText(genText)
 
 async function figUpdateText(figText, genText)
 {
-    console.log('genText =', genText);
     const fontName = 
     { 
         family: genText.font, 

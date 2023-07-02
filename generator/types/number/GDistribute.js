@@ -80,10 +80,10 @@ extends GNumberType
         
         if (repeat)
         {
-            const sd = delta ? start/delta : 0;
+            const sd = delta ? start.value/delta : 0;
 
                  if (from.value == 2) f = sd + iteration/repeat.total;
-            else if (from.value == 1) f = sd + (repeat > 1 ? iteration/(repeat.total-1) : 0);
+            else if (from.value == 1) f = sd + (repeat.total > 1 ? iteration/(repeat.total-1) : 0);
             else if (from.value == 0) f = sd + iteration/repeat.total;
         }
         else

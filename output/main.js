@@ -2924,7 +2924,6 @@ function figCreateText(genText) {
     return __awaiter(this, void 0, void 0, function* () {
         if (!genTextIsValid(genText))
             return null;
-        console.log('genText =', genText);
         const figText = figma.createText();
         yield figUpdateText(figText, genText);
         return figText;
@@ -2932,7 +2931,6 @@ function figCreateText(genText) {
 }
 function figUpdateText(figText, genText) {
     return __awaiter(this, void 0, void 0, function* () {
-        console.log('genText =', genText);
         const fontName = {
             family: genText.font,
             style: genText.style
