@@ -6,77 +6,91 @@ function makeObjectName(obj)
 
 
 
-function figCreateObject(genObj, addObject)
+async function figCreateObject(genObj, addObject = null)
 {
+    if (!genObjectIsValid(genObj))
+        return;
+
+
     let figObj;
 
     switch (genObj.type)
     {
-        case RECTANGLE:   figObj = figCreateRect      (genObj);  break;
-        case LINE:        figObj = figCreateLine      (genObj);  break;
-        case ELLIPSE:     figObj = figCreateEllipse   (genObj);  break;
-        case POLYGON:     figObj = figCreatePolygon   (genObj);  break;
-        case STAR:        figObj = figCreateStar      (genObj);  break;
-        case TEXT_SHAPE:  figObj = figCreateText      (genObj);  break;
-        case POINT:       figObj = figCreatePoint     (genObj);  break;
-        case VECTOR_PATH: figObj = figCreateVectorPath(genObj);  break;
-        case BOOLEAN:     figObj = figCreateBoolean   (genObj);  break;
-        case SHAPE_GROUP: figObj = figCreateShapeGroup(genObj);  break;
-        case FRAME:       figObj = figCreateFrame     (genObj);  break;
+        case RECTANGLE:   figObj =       figCreateRect      (genObj);  break;
+        case LINE:        figObj =       figCreateLine      (genObj);  break;
+        case ELLIPSE:     figObj =       figCreateEllipse   (genObj);  break;
+        case POLYGON:     figObj =       figCreatePolygon   (genObj);  break;
+        case STAR:        figObj =       figCreateStar      (genObj);  break;
+        case TEXT_SHAPE:  figObj = await figCreateText      (genObj);  break;
+        case POINT:       figObj =       figCreatePoint     (genObj);  break;
+        case VECTOR_PATH: figObj =       figCreateVectorPath(genObj);  break;
+        case BOOLEAN:     figObj =       figCreateBoolean   (genObj);  break;
+        case SHAPE_GROUP: figObj =       figCreateShapeGroup(genObj);  break;
+        case FRAME:       figObj =       figCreateFrame     (genObj);  break;
     }
 
-    
-    figObj.name = makeObjectName(genObj);
 
-
-    console.assert(
-           genObj.type == SHAPE_GROUP // cannot exist without children
-        || !!figObj, 
-        'no Figma object created');
-
-    if (  !genObj.final
-        && figObj)
+    if (addObject)
     {
-        figObj.setPluginData('type',     genObj.type    );
-        figObj.setPluginData('nodeId',   genObj.nodeId  );
-        figObj.setPluginData('objectId', genObj.objectId);
-        figObj.setPluginData('final',    boolToString(genObj.final));
-
-        
-        if (genObj.type == POINT)
-            figPoints.push(figObj);
+        figObj.name = makeObjectName(genObj);
 
 
-        addObject(figObj);
+        console.assert(
+               genObj.type == SHAPE_GROUP // cannot exist without children
+            || !!figObj, 
+            'no Figma object created');
+
+        if (  !genObj.final
+            && figObj)
+        {
+            figObj.setPluginData('type',     genObj.type    );
+            figObj.setPluginData('nodeId',   genObj.nodeId  );
+            figObj.setPluginData('objectId', genObj.objectId);
+            figObj.setPluginData('final',    boolToString(genObj.final));
+
+            
+            if (genObj.type == POINT)
+                figPoints.push(figObj);
+
+
+            addObject(figObj);
+        }
     }
+        
+
+    return figObj;
 }
 
 
 
-function figUpdateObject(figObj, genObj)
+async function figUpdateObject(figObj, genObj)
 {
+    if (!genObjectIsValid(genObj))
+        return;
+
+        
     figObj.name = makeObjectName(genObj);
 
     
     switch (genObj.type)
     {
-        case RECTANGLE:   figUpdateRect      (figObj, genObj);  break;
-        case LINE:        figUpdateLine      (figObj, genObj);  break;
-        case ELLIPSE:     figUpdateEllipse   (figObj, genObj);  break;
-        case POLYGON:     figUpdatePolygon   (figObj, genObj);  break;
-        case STAR:        figUpdateStar      (figObj, genObj);  break;
-        case TEXT_SHAPE:  figUpdateText      (figObj, genObj);  break;
-        case POINT:       figUpdatePoint     (figObj, genObj);  break;
-        case VECTOR_PATH: figUpdateVectorPath(figObj, genObj);  break;
-        case BOOLEAN:     figUpdateBoolean   (figObj, genObj);  break;
-        case SHAPE_GROUP: figUpdateShapeGroup(figObj, genObj);  break;
-        case FRAME:       figUpdateFrame     (figObj, genObj);  break;
+        case RECTANGLE:         figUpdateRect      (figObj, genObj);  break;
+        case LINE:              figUpdateLine      (figObj, genObj);  break;
+        case ELLIPSE:           figUpdateEllipse   (figObj, genObj);  break;
+        case POLYGON:           figUpdatePolygon   (figObj, genObj);  break;
+        case STAR:              figUpdateStar      (figObj, genObj);  break;
+        case TEXT_SHAPE:  await figUpdateText      (figObj, genObj);  break;
+        case POINT:             figUpdatePoint     (figObj, genObj);  break;
+        case VECTOR_PATH:       figUpdateVectorPath(figObj, genObj);  break;
+        case BOOLEAN:           figUpdateBoolean   (figObj, genObj);  break;
+        case SHAPE_GROUP:       figUpdateShapeGroup(figObj, genObj);  break;
+        case FRAME:             figUpdateFrame     (figObj, genObj);  break;
     }
 }
 
 
 
-function figUpdateObjects(figParent, genObjects)
+async function figUpdateObjects(figParent, genObjects)
 {
     let curNodeId  = NULL;
     let figObjects = null;
@@ -103,17 +117,17 @@ function figUpdateObjects(figParent, genObjects)
         }
 
 
-        let objects =
-            figParent
-            ? figParent.children
-            : figObjects.objects;
-
         const addObject = obj =>
         {
             if (figParent) figParent.appendChild(obj);
             else           figObjects.objects.push(obj);
         };
 
+
+        let objects =
+            figParent
+            ? figParent.children
+            : figObjects.objects;
 
         let figObj = objects.find(o => 
                o.removed
@@ -137,14 +151,10 @@ function figUpdateObjects(figParent, genObjects)
         if (   figObj == undefined
             || figObj == null
             || figObj.removed) // no existing object, create new object
-        {
-            figCreateObject(genObj, addObject);
-        }
+            await figCreateObject(genObj, addObject);
 
         else if (figObj.getPluginData('type') == genObj.type.toString()) // update existing object
-        {
-            figUpdateObject(figObj, genObj);
-        }
+            await figUpdateObject(figObj, genObj);
     
         else // delete existing object, create new object
         {
@@ -156,7 +166,7 @@ function figUpdateObjects(figParent, genObjects)
             if (figEmptyObjects.includes(figObj))
                 removeFromArray(figEmptyObjects, figObj);
 
-            figCreateObject(genObj, addObject);
+            await figCreateObject(genObj, addObject);
         }
     }
 
@@ -175,4 +185,52 @@ function figUpdateObjects(figParent, genObjects)
     
     for (const point of figPoints)
         point.parent.appendChild(point);
+}
+
+
+
+function genObjectIsValid(genObj)
+{
+    switch (genObj.type)
+    {
+        case RECTANGLE:   return genRectIsValid      (genObj);
+        case LINE:        return genLineIsValid      (genObj);
+        case ELLIPSE:     return genEllipseIsValid   (genObj);
+        case POLYGON:     return genPolygonIsValid   (genObj);
+        case STAR:        return genStarIsValid      (genObj);
+        case TEXT_SHAPE:  return genTextIsValid      (genObj);
+        case POINT:       return genPointIsValid     (genObj);
+        case VECTOR_PATH: return genVectorPathIsValid(genObj);
+        case BOOLEAN:     return genBooleanIsValid   (genObj);
+        case SHAPE_GROUP: return genShapeGroupIsValid(genObj);
+        case FRAME:       return genFrameIsValid     (genObj);
+    }
+}
+
+
+
+function figGetObjectSize(genObj)
+{
+    (async () =>
+    {
+        const figObj = await figCreateObject(genObj);
+        
+        const width  = figObj.width;
+        const height = figObj.height;
+
+        figObj.remove();
+
+
+        figPostMessageToUi(
+        {
+            cmd: 'uiForwardToGenerator',
+            msg: 
+            {
+                cmd:     'returnFigGetObjectSize',
+                objectId: genObj.objectId,
+                width:    width,
+                height:   height
+            }
+        });
+    })();
 }

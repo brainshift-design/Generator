@@ -19,16 +19,18 @@ onmessage = function(e)
     // processMessage(msg).next();
     switch (msg.cmd)
     {
-        case 'initFonts':        initFonts(msg.fonts, msg.uniqueFontNames); break;
+        case 'initFonts':              initFonts(msg.fonts, msg.uniqueFontNames); break;
      
-        case 'genRequest':       genRequest(msg.request);      break;
+        case 'genRequest':             genRequest(msg.request);      break;
 
-        //case 'genFetchResponse': genFetchResponse(msg.result, msg.response); break;
+        //case 'genFetchResponse':     genFetchResponse(msg.result, msg.response); break;
 
-        //case 'genStopGenerate': genStopGenerate (msg); break;
+        //case 'genStopGenerate':      genStopGenerate (msg); break;
         
-        case 'genEndUiMessage':  genEndUiMessage (msg.msgCmd); break;
-        case 'genEndFigMessage': genEndFigMessage();           break;
+        case 'genEndUiMessage':        genEndUiMessage (msg.msgCmd); break;
+        case 'genEndFigMessage':       genEndFigMessage();           break;
+
+        // case 'returnFigGetObjectSize': genReturnFigGetObjectSize(msg.objectId, msg.width, msg.height); break;
     }
 
 

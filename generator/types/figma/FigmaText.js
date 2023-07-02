@@ -6,6 +6,8 @@ extends FigmaShape
     y;
     width;
     height;
+    figWidth;
+    figHeight;
     font;
     size;
     style;
@@ -25,6 +27,8 @@ extends FigmaShape
         this.y             = y;
         this.width         = width;
         this.height        = height;
+        this.figWidth      = width;
+        this.figHeight     = height;
         this.font          = font;
         this.size          = size;
         this.style         = style;
@@ -54,6 +58,9 @@ extends FigmaShape
             this.alignV,
             this.lineHeight,
             this.letterSpacing);
+
+        copy.figWidth  = this.figWidth;
+        copy.figHeight = this.figHeight;
 
         copy.copyBase(this);
 

@@ -53,6 +53,12 @@ function applyFigmaTransform(figObj, tl, tr, bl)
 
 function setObjectTransform(figObj, genObj, setSize = true, noHeight = 0.01)
 {
+    if (   !genObj.xp0
+        || !genObj.xp1
+        || !genObj.xp2)
+        return;
+
+
     const xp0 = point(genObj.xp0.x, genObj.xp0.y);
     const xp1 = point(genObj.xp1.x, genObj.xp1.y);
     const xp2 = point(genObj.xp2.x, genObj.xp2.y);
@@ -65,9 +71,14 @@ function setObjectTransform(figObj, genObj, setSize = true, noHeight = 0.01)
         const scaleX = distance(xp0, xp1);
         const scaleY = distance(xp0, xp2);
 
+        const height =
+            genObj.type == TEXT_SHAPE
+            ? genObj.figHeight
+            : genObj.height;
+
         figObj.resizeWithoutConstraints(
-                            Math.max(0.01, scaleX),
-            genObj.height ? Math.max(0.01, scaleY) : noHeight);
+                     Math.max(0.01, scaleX),
+            height ? Math.max(0.01, scaleY) : noHeight);
     }
 }
 

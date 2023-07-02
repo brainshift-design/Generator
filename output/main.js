@@ -1414,6 +1414,9 @@ figma.ui.onmessage = function (msg) {
             figLinkNodeToExistingColorStyle(msg.nodeId, msg.styleId);
             break;
         // case 'figUpdateViewportRect':                 figPostMessageToUi({cmd: 'uiReturnUpdateViewportRect', viewportRect: figma.viewport.bounds }); break;
+        case 'figGetObjectSize':
+            figGetObjectSize(msg.object);
+            break;
         case 'figUpdateShowIds':
             showIds = msg.showIds;
             break;
@@ -1934,160 +1937,201 @@ function makeObjectName(obj) {
     return (obj.final ? '' : OBJECT_PREFIX)
         + (showIds ? obj.objectId : obj.objectName);
 }
-function figCreateObject(genObj, addObject) {
-    let figObj;
-    switch (genObj.type) {
-        case RECTANGLE:
-            figObj = figCreateRect(genObj);
-            break;
-        case LINE:
-            figObj = figCreateLine(genObj);
-            break;
-        case ELLIPSE:
-            figObj = figCreateEllipse(genObj);
-            break;
-        case POLYGON:
-            figObj = figCreatePolygon(genObj);
-            break;
-        case STAR:
-            figObj = figCreateStar(genObj);
-            break;
-        case TEXT_SHAPE:
-            figObj = figCreateText(genObj);
-            break;
-        case POINT:
-            figObj = figCreatePoint(genObj);
-            break;
-        case VECTOR_PATH:
-            figObj = figCreateVectorPath(genObj);
-            break;
-        case BOOLEAN:
-            figObj = figCreateBoolean(genObj);
-            break;
-        case SHAPE_GROUP:
-            figObj = figCreateShapeGroup(genObj);
-            break;
-        case FRAME:
-            figObj = figCreateFrame(genObj);
-            break;
-    }
-    figObj.name = makeObjectName(genObj);
-    console.assert(genObj.type == SHAPE_GROUP // cannot exist without children
-        || !!figObj, 'no Figma object created');
-    if (!genObj.final
-        && figObj) {
-        figObj.setPluginData('type', genObj.type);
-        figObj.setPluginData('nodeId', genObj.nodeId);
-        figObj.setPluginData('objectId', genObj.objectId);
-        figObj.setPluginData('final', boolToString(genObj.final));
-        if (genObj.type == POINT)
-            figPoints.push(figObj);
-        addObject(figObj);
-    }
-}
-function figUpdateObject(figObj, genObj) {
-    figObj.name = makeObjectName(genObj);
-    switch (genObj.type) {
-        case RECTANGLE:
-            figUpdateRect(figObj, genObj);
-            break;
-        case LINE:
-            figUpdateLine(figObj, genObj);
-            break;
-        case ELLIPSE:
-            figUpdateEllipse(figObj, genObj);
-            break;
-        case POLYGON:
-            figUpdatePolygon(figObj, genObj);
-            break;
-        case STAR:
-            figUpdateStar(figObj, genObj);
-            break;
-        case TEXT_SHAPE:
-            figUpdateText(figObj, genObj);
-            break;
-        case POINT:
-            figUpdatePoint(figObj, genObj);
-            break;
-        case VECTOR_PATH:
-            figUpdateVectorPath(figObj, genObj);
-            break;
-        case BOOLEAN:
-            figUpdateBoolean(figObj, genObj);
-            break;
-        case SHAPE_GROUP:
-            figUpdateShapeGroup(figObj, genObj);
-            break;
-        case FRAME:
-            figUpdateFrame(figObj, genObj);
-            break;
-    }
-}
-function figUpdateObjects(figParent, genObjects) {
-    let curNodeId = NULL;
-    let figObjects = null;
-    for (const genObj of genObjects) {
-        if (genObj.nodeId != curNodeId) {
-            curNodeId = genObj.nodeId;
-            figObjects = figObjectArrays.find(a => a.nodeId == genObj.nodeId);
-            if (!figObjects) {
-                figObjectArrays.push(figObjects =
-                    {
-                        nodeId: genObj.nodeId,
-                        existing: genObj.existing,
-                        objects: []
-                    });
+function figCreateObject(genObj, addObject = null) {
+    return __awaiter(this, void 0, void 0, function* () {
+        if (!genObjectIsValid(genObj))
+            return;
+        let figObj;
+        switch (genObj.type) {
+            case RECTANGLE:
+                figObj = figCreateRect(genObj);
+                break;
+            case LINE:
+                figObj = figCreateLine(genObj);
+                break;
+            case ELLIPSE:
+                figObj = figCreateEllipse(genObj);
+                break;
+            case POLYGON:
+                figObj = figCreatePolygon(genObj);
+                break;
+            case STAR:
+                figObj = figCreateStar(genObj);
+                break;
+            case TEXT_SHAPE:
+                figObj = yield figCreateText(genObj);
+                break;
+            case POINT:
+                figObj = figCreatePoint(genObj);
+                break;
+            case VECTOR_PATH:
+                figObj = figCreateVectorPath(genObj);
+                break;
+            case BOOLEAN:
+                figObj = figCreateBoolean(genObj);
+                break;
+            case SHAPE_GROUP:
+                figObj = figCreateShapeGroup(genObj);
+                break;
+            case FRAME:
+                figObj = figCreateFrame(genObj);
+                break;
+        }
+        if (addObject) {
+            figObj.name = makeObjectName(genObj);
+            console.assert(genObj.type == SHAPE_GROUP // cannot exist without children
+                || !!figObj, 'no Figma object created');
+            if (!genObj.final
+                && figObj) {
+                figObj.setPluginData('type', genObj.type);
+                figObj.setPluginData('nodeId', genObj.nodeId);
+                figObj.setPluginData('objectId', genObj.objectId);
+                figObj.setPluginData('final', boolToString(genObj.final));
+                if (genObj.type == POINT)
+                    figPoints.push(figObj);
+                addObject(figObj);
             }
         }
-        let objects = figParent
-            ? figParent.children
-            : figObjects.objects;
-        const addObject = obj => {
-            if (figParent)
-                figParent.appendChild(obj);
-            else
-                figObjects.objects.push(obj);
-        };
-        let figObj = objects.find(o => o.removed
-            || o.getPluginData('objectId') == genObj.objectId);
-        if (figObj != undefined
-            && figObj != null
-            && figObj.removed) {
-            removeFrom(objects, figObj);
-            if (figPoints.includes(figObj))
-                removeFromArray(figPoints, figObj);
-            if (figEmptyObjects.includes(figObj))
-                removeFromArray(figEmptyObjects, figObj);
+        return figObj;
+    });
+}
+function figUpdateObject(figObj, genObj) {
+    return __awaiter(this, void 0, void 0, function* () {
+        if (!genObjectIsValid(genObj))
+            return;
+        figObj.name = makeObjectName(genObj);
+        switch (genObj.type) {
+            case RECTANGLE:
+                figUpdateRect(figObj, genObj);
+                break;
+            case LINE:
+                figUpdateLine(figObj, genObj);
+                break;
+            case ELLIPSE:
+                figUpdateEllipse(figObj, genObj);
+                break;
+            case POLYGON:
+                figUpdatePolygon(figObj, genObj);
+                break;
+            case STAR:
+                figUpdateStar(figObj, genObj);
+                break;
+            case TEXT_SHAPE:
+                yield figUpdateText(figObj, genObj);
+                break;
+            case POINT:
+                figUpdatePoint(figObj, genObj);
+                break;
+            case VECTOR_PATH:
+                figUpdateVectorPath(figObj, genObj);
+                break;
+            case BOOLEAN:
+                figUpdateBoolean(figObj, genObj);
+                break;
+            case SHAPE_GROUP:
+                figUpdateShapeGroup(figObj, genObj);
+                break;
+            case FRAME:
+                figUpdateFrame(figObj, genObj);
+                break;
         }
-        if (figObj == undefined
-            || figObj == null
-            || figObj.removed) // no existing object, create new object
-         {
-            figCreateObject(genObj, addObject);
-        }
-        else if (figObj.getPluginData('type') == genObj.type.toString()) // update existing object
-         {
-            figUpdateObject(figObj, genObj);
-        }
-        else // delete existing object, create new object
-         {
-            figObj.remove();
-            if (figPoints.includes(figObj))
-                removeFromArray(figPoints, figObj);
-            if (figEmptyObjects.includes(figObj))
-                removeFromArray(figEmptyObjects, figObj);
-            figCreateObject(genObj, addObject);
-        }
-    }
-    // delete removed objects from parent
-    if (figParent) {
-        for (const figObj of figParent.children)
-            if (!genObjects.find(o => o.objectId == figObj.getPluginData('objectId')))
+    });
+}
+function figUpdateObjects(figParent, genObjects) {
+    return __awaiter(this, void 0, void 0, function* () {
+        let curNodeId = NULL;
+        let figObjects = null;
+        for (const genObj of genObjects) {
+            if (genObj.nodeId != curNodeId) {
+                curNodeId = genObj.nodeId;
+                figObjects = figObjectArrays.find(a => a.nodeId == genObj.nodeId);
+                if (!figObjects) {
+                    figObjectArrays.push(figObjects =
+                        {
+                            nodeId: genObj.nodeId,
+                            existing: genObj.existing,
+                            objects: []
+                        });
+                }
+            }
+            const addObject = obj => {
+                if (figParent)
+                    figParent.appendChild(obj);
+                else
+                    figObjects.objects.push(obj);
+            };
+            let objects = figParent
+                ? figParent.children
+                : figObjects.objects;
+            let figObj = objects.find(o => o.removed
+                || o.getPluginData('objectId') == genObj.objectId);
+            if (figObj != undefined
+                && figObj != null
+                && figObj.removed) {
+                removeFrom(objects, figObj);
+                if (figPoints.includes(figObj))
+                    removeFromArray(figPoints, figObj);
+                if (figEmptyObjects.includes(figObj))
+                    removeFromArray(figEmptyObjects, figObj);
+            }
+            if (figObj == undefined
+                || figObj == null
+                || figObj.removed) // no existing object, create new object
+                yield figCreateObject(genObj, addObject);
+            else if (figObj.getPluginData('type') == genObj.type.toString()) // update existing object
+                yield figUpdateObject(figObj, genObj);
+            else // delete existing object, create new object
+             {
                 figObj.remove();
+                if (figPoints.includes(figObj))
+                    removeFromArray(figPoints, figObj);
+                if (figEmptyObjects.includes(figObj))
+                    removeFromArray(figEmptyObjects, figObj);
+                yield figCreateObject(genObj, addObject);
+            }
+        }
+        // delete removed objects from parent
+        if (figParent) {
+            for (const figObj of figParent.children)
+                if (!genObjects.find(o => o.objectId == figObj.getPluginData('objectId')))
+                    figObj.remove();
+        }
+        // put points on top
+        for (const point of figPoints)
+            point.parent.appendChild(point);
+    });
+}
+function genObjectIsValid(genObj) {
+    switch (genObj.type) {
+        case RECTANGLE: return genRectIsValid(genObj);
+        case LINE: return genLineIsValid(genObj);
+        case ELLIPSE: return genEllipseIsValid(genObj);
+        case POLYGON: return genPolygonIsValid(genObj);
+        case STAR: return genStarIsValid(genObj);
+        case TEXT_SHAPE: return genTextIsValid(genObj);
+        case POINT: return genPointIsValid(genObj);
+        case VECTOR_PATH: return genVectorPathIsValid(genObj);
+        case BOOLEAN: return genBooleanIsValid(genObj);
+        case SHAPE_GROUP: return genShapeGroupIsValid(genObj);
+        case FRAME: return genFrameIsValid(genObj);
     }
-    // put points on top
-    for (const point of figPoints)
-        point.parent.appendChild(point);
+}
+function figGetObjectSize(genObj) {
+    (() => __awaiter(this, void 0, void 0, function* () {
+        const figObj = yield figCreateObject(genObj);
+        const width = figObj.width;
+        const height = figObj.height;
+        figObj.remove();
+        figPostMessageToUi({
+            cmd: 'uiForwardToGenerator',
+            msg: {
+                cmd: 'returnFigGetObjectSize',
+                objectId: genObj.objectId,
+                width: width,
+                height: height
+            }
+        });
+    }))();
 }
 const figEmptyObjects = [];
 function getObjectFills(genObjFills) {
@@ -2530,6 +2574,10 @@ function applyFigmaTransform(figObj, tl, tr, bl) {
         ];
 }
 function setObjectTransform(figObj, genObj, setSize = true, noHeight = 0.01) {
+    if (!genObj.xp0
+        || !genObj.xp1
+        || !genObj.xp2)
+        return;
     const xp0 = point(genObj.xp0.x, genObj.xp0.y);
     const xp1 = point(genObj.xp1.x, genObj.xp1.y);
     const xp2 = point(genObj.xp2.x, genObj.xp2.y);
@@ -2537,7 +2585,10 @@ function setObjectTransform(figObj, genObj, setSize = true, noHeight = 0.01) {
     if (setSize) {
         const scaleX = distance(xp0, xp1);
         const scaleY = distance(xp0, xp2);
-        figObj.resizeWithoutConstraints(Math.max(0.01, scaleX), genObj.height ? Math.max(0.01, scaleY) : noHeight);
+        const height = genObj.type == TEXT_SHAPE
+            ? genObj.figHeight
+            : genObj.height;
+        figObj.resizeWithoutConstraints(Math.max(0.01, scaleX), height ? Math.max(0.01, scaleY) : noHeight);
     }
 }
 function setPointTransform(figPoint, genPoint) {
@@ -2866,98 +2917,56 @@ function genTextIsValid(genText) {
         && genText.y != null && !isNaN(genText.y)
         && genText.width != null && !isNaN(genText.width)
         && genText.height != null && !isNaN(genText.height)
-        //&& genText.angle  != null && !isNaN(genText.angle )
         && genText.font != null && genText.font != NULL
         && genText.size != null && !isNaN(genText.size);
 }
 function figCreateText(genText) {
-    const figText = figma.createText();
-    if (!genTextIsValid(genText))
+    return __awaiter(this, void 0, void 0, function* () {
+        if (!genTextIsValid(genText))
+            return null;
+        console.log('genText =', genText);
+        const figText = figma.createText();
+        yield figUpdateText(figText, genText);
         return figText;
-    (function () {
-        return __awaiter(this, void 0, void 0, function* () {
-            const fontName = {
-                family: genText.font,
-                style: genText.style
-            };
-            yield figma.loadFontAsync(fontName);
-            figText.fontName = fontName;
-            figText.fontSize = Math.max(1, genText.size);
-            figText.characters = genText.text;
-            figText.lineHeight = { unit: 'PERCENT', value: genText.lineHeight };
-            figText.letterSpacing = { unit: 'PERCENT', value: genText.letterSpacing };
-            if (genText.alignH == 0)
-                figText.textAlignHorizontal = 'LEFT';
-            else if (genText.alignH == 1)
-                figText.textAlignHorizontal = 'CENTER';
-            else if (genText.alignH == 2)
-                figText.textAlignHorizontal = 'RIGHT';
-            else if (genText.alignH == 3)
-                figText.textAlignHorizontal = 'JUSTIFIED';
-            if (genText.alignV == 0)
-                figText.textAlignVertical = 'TOP';
-            else if (genText.alignV == 1)
-                figText.textAlignVertical = 'CENTER';
-            else if (genText.alignV == 2)
-                figText.textAlignVertical = 'BOTTOM';
-            setObjectTransform(figText, genText);
-            setObjectProps(figText, genText);
-            if (genText.width == 0
-                && genText.height == 0)
-                figText.textAutoResize = 'WIDTH_AND_HEIGHT';
-            else if (genText.width == 0)
-                figText.textAutoResize = 'HEIGHT';
-            else
-                figText.textAutoResize = 'NONE';
-        });
-    })();
-    return figText;
+    });
 }
 function figUpdateText(figText, genText) {
-    if (!genTextIsValid(genText))
-        return;
-    (function () {
-        return __awaiter(this, void 0, void 0, function* () {
-            const fontName = {
-                family: genText.font,
-                style: genText.style
-            };
-            yield figma.loadFontAsync(fontName);
-            figText.fontName = fontName;
-            figText.fontSize = Math.max(1, genText.size);
-            figText.characters = genText.text;
-            figText.lineHeight = { unit: 'PERCENT', value: genText.lineHeight };
-            figText.letterSpacing = { unit: 'PERCENT', value: genText.letterSpacing };
-            if (genText.alignH == 0)
-                figText.textAlignHorizontal = 'LEFT';
-            else if (genText.alignH == 1)
-                figText.textAlignHorizontal = 'CENTER';
-            else if (genText.alignH == 2)
-                figText.textAlignHorizontal = 'RIGHT';
-            else if (genText.alignH == 3)
-                figText.textAlignHorizontal = 'JUSTIFIED';
-            if (genText.alignV == 0)
-                figText.textAlignVertical = 'TOP';
-            else if (genText.alignV == 1)
-                figText.textAlignVertical = 'CENTER';
-            else if (genText.alignV == 2)
-                figText.textAlignVertical = 'BOTTOM';
-            setObjectTransform(figText, genText);
-            setObjectProps(figText, genText);
-            if (genText.width == 0
-                && genText.height == 0)
-                figText.textAutoResize = 'WIDTH_AND_HEIGHT';
-            else if (genText.width == 0)
-                figText.textAutoResize = 'HEIGHT';
-            else
-                figText.textAutoResize = 'NONE';
-        });
-    })();
-}
-function setTextStyle(figText, genText) {
-    //switch (genText.style)
-    //{
-    //}
+    return __awaiter(this, void 0, void 0, function* () {
+        console.log('genText =', genText);
+        const fontName = {
+            family: genText.font,
+            style: genText.style
+        };
+        yield figma.loadFontAsync(fontName);
+        figText.fontName = fontName;
+        figText.fontSize = Math.max(1, genText.size);
+        figText.characters = genText.text;
+        figText.lineHeight = { unit: 'PERCENT', value: genText.lineHeight };
+        figText.letterSpacing = { unit: 'PERCENT', value: genText.letterSpacing };
+        if (genText.alignH == 0)
+            figText.textAlignHorizontal = 'LEFT';
+        else if (genText.alignH == 1)
+            figText.textAlignHorizontal = 'CENTER';
+        else if (genText.alignH == 2)
+            figText.textAlignHorizontal = 'RIGHT';
+        else if (genText.alignH == 3)
+            figText.textAlignHorizontal = 'JUSTIFIED';
+        if (genText.alignV == 0)
+            figText.textAlignVertical = 'TOP';
+        else if (genText.alignV == 1)
+            figText.textAlignVertical = 'CENTER';
+        else if (genText.alignV == 2)
+            figText.textAlignVertical = 'BOTTOM';
+        setObjectTransform(figText, genText);
+        setObjectProps(figText, genText);
+        if (genText.figWidth == 0
+            && genText.figHeight == 0)
+            figText.textAutoResize = 'WIDTH_AND_HEIGHT';
+        else if (genText.figWidth == 0)
+            figText.textAutoResize = 'HEIGHT';
+        else
+            figText.textAutoResize = 'NONE';
+    });
 }
 function genVectorPathIsValid(genPath) {
     return genPath.winding != null && !isNaN(genPath.winding)

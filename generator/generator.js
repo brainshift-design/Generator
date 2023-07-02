@@ -88,8 +88,7 @@ function genRequest(request)
             parse.updateValues,
             parse.updateObjects,
             parse.updateStyles);
-    })
-    ();
+    })();
 
     //stopGenerate = false;
 }
@@ -360,5 +359,47 @@ function genUpdateNodeProgress(nodeId, progress)
         cmd:     'uiUpdateNodeProgress',
         nodeId:   nodeId,
         progress: progress
+    });
+}
+
+
+
+                
+async function genGetObjectSizeFromFigma(obj) 
+{
+    return new Promise((resolve, reject) => 
+    {
+        const timeout = 1000;
+
+        genPostMessageToUi(
+        {
+            cmd: 'uiForwardToFigma',
+            msg:  
+            {
+                cmd:   'figGetObjectSize',
+                object: obj
+            }
+        });
+
+        const timeoutId = setTimeout(() => 
+            reject(new Error('Timeout: Result not received within the specified time')),
+            timeout);
+
+        function handleMessage(event) 
+        {
+            const msg = JSON.parse(event.data);
+
+            if (msg.cmd === 'returnFigGetObjectSize') 
+            {
+                clearTimeout(timeoutId);
+                
+                const { objectId, width, height } = msg;
+                resolve({ objectId, width, height });
+
+                self.removeEventListener('message', handleMessage);
+            }
+        }
+
+        self.addEventListener('message', handleMessage);
     });
 }

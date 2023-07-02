@@ -5495,6 +5495,8 @@ extends FigmaShape
     y;
     width;
     height;
+    figWidth;
+    figHeight;
     font;
     size;
     style;
@@ -5514,6 +5516,8 @@ extends FigmaShape
         this.y             = y;
         this.width         = width;
         this.height        = height;
+        this.figWidth      = width;
+        this.figHeight     = height;
         this.font          = font;
         this.size          = size;
         this.style         = style;
@@ -5543,6 +5547,9 @@ extends FigmaShape
             this.alignV,
             this.lineHeight,
             this.letterSpacing);
+
+        copy.figWidth  = this.figWidth;
+        copy.figHeight = this.figHeight;
 
         copy.copyBase(this);
 
@@ -21873,9 +21880,21 @@ extends GShape
                 this.value.lineHeight   .value,
                 this.value.letterSpacing.value);
 
-            text.createDefaultTransform(x, y);
 
-            objects.push(text, ...text.createTransformPoints(parse, x, y, w, h));
+            text.createDefaultTransform(x, y);
+ 
+            if (   text.width  == 0
+                && text.height == 0)
+            {
+                const {objectId, width, height} = await genGetObjectSizeFromFigma(text);
+
+                text.width  = width;
+                text.height = height;
+
+                objects.push(text, ...text.createTransformPoints(parse, x, y, width, height));
+            }
+            else
+                objects.push(text, ...text.createTransformPoints(parse, x, y, w, h));
         }
 
         
@@ -24713,16 +24732,18 @@ onmessage = function(e)
     // processMessage(msg).next();
     switch (msg.cmd)
     {
-        case 'initFonts':        initFonts(msg.fonts, msg.uniqueFontNames); break;
+        case 'initFonts':              initFonts(msg.fonts, msg.uniqueFontNames); break;
      
-        case 'genRequest':       genRequest(msg.request);      break;
+        case 'genRequest':             genRequest(msg.request);      break;
 
-        //case 'genFetchResponse': genFetchResponse(msg.result, msg.response); break;
+        //case 'genFetchResponse':     genFetchResponse(msg.result, msg.response); break;
 
-        //case 'genStopGenerate': genStopGenerate (msg); break;
+        //case 'genStopGenerate':      genStopGenerate (msg); break;
         
-        case 'genEndUiMessage':  genEndUiMessage (msg.msgCmd); break;
-        case 'genEndFigMessage': genEndFigMessage();           break;
+        case 'genEndUiMessage':        genEndUiMessage (msg.msgCmd); break;
+        case 'genEndFigMessage':       genEndFigMessage();           break;
+
+        // case 'returnFigGetObjectSize': genReturnFigGetObjectSize(msg.objectId, msg.width, msg.height); break;
     }
 
 
@@ -24905,8 +24926,7 @@ function genRequest(request)
             parse.updateValues,
             parse.updateObjects,
             parse.updateStyles);
-    })
-    ();
+    })();
 
     //stopGenerate = false;
 }
@@ -25180,6 +25200,47 @@ function genUpdateNodeProgress(nodeId, progress)
     });
 }
 
+
+
+                
+async function genGetObjectSizeFromFigma(obj) 
+{
+    return new Promise((resolve, reject) => 
+    {
+        const timeout = 1000;
+
+        genPostMessageToUi(
+        {
+            cmd: 'uiForwardToFigma',
+            msg:  
+            {
+                cmd:   'figGetObjectSize',
+                object: obj
+            }
+        });
+
+        const timeoutId = setTimeout(() => 
+            reject(new Error('Timeout: Result not received within the specified time')),
+            timeout);
+
+        function handleMessage(event) 
+        {
+            const msg = JSON.parse(event.data);
+
+            if (msg.cmd === 'returnFigGetObjectSize') 
+            {
+                clearTimeout(timeoutId);
+                
+                const { objectId, width, height } = msg;
+                resolve({ objectId, width, height });
+
+                self.removeEventListener('message', handleMessage);
+            }
+        }
+
+        self.addEventListener('message', handleMessage);
+    });
+}
 
 
 function genParseColorValue(parse)

@@ -171,9 +171,21 @@ extends GShape
                 this.value.lineHeight   .value,
                 this.value.letterSpacing.value);
 
-            text.createDefaultTransform(x, y);
 
-            objects.push(text, ...text.createTransformPoints(parse, x, y, w, h));
+            text.createDefaultTransform(x, y);
+ 
+            if (   text.width  == 0
+                && text.height == 0)
+            {
+                const {objectId, width, height} = await genGetObjectSizeFromFigma(text);
+
+                text.width  = width;
+                text.height = height;
+
+                objects.push(text, ...text.createTransformPoints(parse, x, y, width, height));
+            }
+            else
+                objects.push(text, ...text.createTransformPoints(parse, x, y, w, h));
         }
 
         
