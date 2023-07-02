@@ -31,7 +31,8 @@ extends GNumberType
     isCached()
     {
         return super.isCached()
-            && (!this.input || this.input.isCached());
+            && (  !this.input 
+                || this.input.isCached());
     }
 
 

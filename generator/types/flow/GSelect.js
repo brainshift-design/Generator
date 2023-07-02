@@ -29,6 +29,15 @@ extends GOperator
 
 
 
+    isCached()
+    {
+        return super.isCached()
+            && (  !this.input 
+                || this.input.isCached());
+    }
+
+
+
     async eval(parse)
     {
         if (this.isCached())
@@ -65,7 +74,9 @@ extends GOperator
                     : new NumberValue(0);
 
 
-                if (index.isValid())
+                if (   index.isValid()
+                    && index.value >= 0
+                    && index.value < input.items.length)
                 {
                     this.value = input.items[index.value];
 

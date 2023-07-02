@@ -27,6 +27,17 @@ extends GTextType
 
 
 
+    isCached()
+    {
+        for (const input of this.inputs)
+            if (!input.isCached())
+                return false;
+
+        return super.isCached();
+    }
+
+
+
     async eval(parse)
     {
         if (this.isCached())
@@ -82,11 +93,13 @@ async function evalJoinInputs(inputs, _with, parse)
 
     for (let i = 0; i < inputs.length; i++)
     {
+        const val = (await inputs[i].eval(parse)).toValue();
+        if (!val) continue;
+
+
         if (i > 0)
             value.value += w;
 
-            
-        const val = (await inputs[i].eval(parse)).toValue();
 
         if (LIST_VALUES.includes(val.type))
         {

@@ -86,20 +86,20 @@ extends OpShape
         this.paramWidth .enableControlText(false);
         this.paramHeight.enableControlText(false);
 
-        if (!this.paramWidth .input.connected) this.paramWidth .setValue(new NumberValue(0), false, true, true);
-        if (!this.paramHeight.input.connected) this.paramHeight.setValue(new NumberValue(0), false, true, true);
+        // if (!this.paramWidth .input.connected) this.paramWidth .setValue(new NumberValue(0), false, true, true);
+        // if (!this.paramHeight.input.connected) this.paramHeight.setValue(new NumberValue(0), false, true, true);
 
 
-        this.paramWidth .controls[0].valueText = 
-               this.paramWidth .value.value == 0 
-            && this.paramHeight.value.value == 0 
-            ? UNKNOWN_DISPLAY 
-            : '';
+        // this.paramWidth .controls[0].valueText = 
+        //        this.paramWidth .value.value == 0 
+        //     && this.paramHeight.value.value == 0 
+        //     ? UNKNOWN_DISPLAY 
+        //     : '';
 
-        this.paramHeight.controls[0].valueText = 
-            this.paramHeight.value.value == 0 
-            ? UNKNOWN_DISPLAY 
-            : '';
+        // this.paramHeight.controls[0].valueText = 
+        //     this.paramHeight.value.value == 0 
+        //     ? UNKNOWN_DISPLAY 
+        //     : '';
 
 
         this.updateStyleParam();

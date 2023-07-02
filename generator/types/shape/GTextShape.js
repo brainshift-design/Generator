@@ -112,12 +112,12 @@ extends GShape
         }
 
        
-        this.updateValues = [['value', this.value]];
-        
-
         await this.evalShapeBase(parse, input);
 
         await this.evalObjects(parse);
+
+
+        this.updateValues = [['value', this.value]];
 
 
         this.validate();
@@ -181,6 +181,9 @@ extends GShape
 
                 text.width  = width;
                 text.height = height;
+
+                this.value.width.value  = width;
+                this.value.height.value = height;
 
                 objects.push(text, ...text.createTransformPoints(parse, x, y, width, height));
             }

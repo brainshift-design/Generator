@@ -4397,6 +4397,8 @@ a
             <div id='whatsNewBody'>
                 <h1 style='margin-top: 20px;'>What's new</h1>
 
+                <p>•  added Capital casing to Text case</p>
+                <p>•  added base to List count</p>
                 <p>•  improved generation speed</p>
                 <p>•  fixed incorrect Vector path bounds</p>
                 <p>•  fixed issue with text size</p>
@@ -15973,6 +15975,15 @@ extends GOperator
 
 
 
+    isCached()
+    {
+        return super.isCached()
+            && (  !this.input 
+                || this.input.isCached());
+    }
+
+
+
     async eval(parse)
     {
         if (this.isCached())
@@ -16009,7 +16020,9 @@ extends GOperator
                     : new NumberValue(0);
 
 
-                if (index.isValid())
+                if (   index.isValid()
+                    && index.value >= 0
+                    && index.value < input.items.length)
                 {
                     this.value = input.items[index.value];
 
@@ -16098,6 +16111,7 @@ class GListCount
 extends GOperator
 {
     input = null;
+    base  = null;
 
     value = null;
 
@@ -16116,12 +16130,21 @@ extends GOperator
         
         copy.copyBase(this);
 
-        if (this.input) 
-            copy.input = this.input.copy();
-
+        if (this.input) copy.input = this.input.copy();
+        if (this.base)  copy.base  = this.base .copy();
+        
         if (this.count) copy.count = this.count.copy();
 
         return copy;
+    }
+
+
+
+    isCached()
+    {
+        return super.isCached()
+            && (  !this.input 
+                || this.input.isCached());
     }
 
 
@@ -16134,14 +16157,20 @@ extends GOperator
 
         if (this.input)
         {
-            await this.input.eval(parse);
-            this.value = new NumberValue(this.input.toValue().items.length);
+            const input = (await this.input.eval(parse)).toValue();
+            const base  = (await this.base .eval(parse)).toValue();
+
+            this.value = new NumberValue(input.items.length - (base.value == 0 ? 1 : 0));
         }
         else
             this.value = NumberValue.NaN;
 
 
-        this.updateValues = [['value', this.value]];
+        this.updateValues = 
+        [
+            ['value', this.value],
+            ['base',  this.base ]
+        ];
 
 
         this.validate();
@@ -16208,6 +16237,15 @@ extends GOperator
 
 
 
+    isCached()
+    {
+        return super.isCached()
+            && (!this.input0 || this.input0.isCached())
+            && (!this.input1 || this.input1.isCached());
+    }
+
+
+    
     async eval(parse)
     {
         if (this.isCached())
@@ -16463,12 +16501,19 @@ extends GOperator
 
 
 
+    // isCached()
+    // {
+    //     return this.valid;
+    // }
+
     isCached()
     {
-        return this.valid;
+        return super.isCached()
+            && (  !this.input 
+                || this.input.isCached());
     }
 
-
+    
 
     async eval(parse)
     {
@@ -16946,7 +16991,8 @@ extends GNumberType
     isCached()
     {
         return super.isCached()
-            && (!this.input || this.input.isCached());
+            && (  !this.input 
+                || this.input.isCached());
     }
 
 
@@ -21003,6 +21049,15 @@ extends GTextType
 
 
 
+    isCached()
+    {
+        return super.isCached()
+            && (  !this.input 
+                || this.input.isCached());
+    }
+
+
+
     async eval(parse)
     {
         if (this.isCached())
@@ -21023,8 +21078,21 @@ extends GTextType
                 
             if (this.options.enabled)
             {
-                     if (_case.value == 0) this.value.value = this.value.value.toLowerCase();
-                else if (_case.value == 1) this.value.value = this.value.value.toUpperCase();
+                const val = this.value.value;
+
+                if (_case.value == 0) 
+                     this.value.value = val.toLowerCase();
+
+                else if (_case.value == 1)
+                {
+                    this.value.value = '';
+
+                    if (val.length > 0) this.value.value += val.substring(0, 1).toUpperCase();
+                    if (val.length > 1) this.value.value += val.substring(1)   .toLowerCase();
+                }
+
+                else if (_case.value == 2) 
+                    this.value.value = val.toUpperCase();
             }
         }
         else
@@ -21462,6 +21530,17 @@ extends GTextType
 
 
 
+    isCached()
+    {
+        for (const input of this.inputs)
+            if (!input.isCached())
+                return false;
+
+        return super.isCached();
+    }
+
+
+
     async eval(parse)
     {
         if (this.isCached())
@@ -21517,11 +21596,13 @@ async function evalJoinInputs(inputs, _with, parse)
 
     for (let i = 0; i < inputs.length; i++)
     {
+        const val = (await inputs[i].eval(parse)).toValue();
+        if (!val) continue;
+
+
         if (i > 0)
             value.value += w;
 
-            
-        const val = (await inputs[i].eval(parse)).toValue();
 
         if (LIST_VALUES.includes(val.type))
         {
@@ -26788,12 +26869,12 @@ extends GShape
         }
 
        
-        this.updateValues = [['value', this.value]];
-        
-
         await this.evalShapeBase(parse, input);
 
         await this.evalObjects(parse);
+
+
+        this.updateValues = [['value', this.value]];
 
 
         this.validate();
@@ -26857,6 +26938,9 @@ extends GShape
 
                 text.width  = width;
                 text.height = height;
+
+                this.value.width.value  = width;
+                this.value.height.value = height;
 
                 objects.push(text, ...text.createTransformPoints(parse, x, y, width, height));
             }
@@ -30833,6 +30917,8 @@ function genParseListCount(parse)
 
     if (nInputs == 1)
         count.input = genParse(parse);
+
+    count.base = genParse(parse);
 
 
     parse.nTab--;
@@ -52047,6 +52133,15 @@ extends GOperator
 
 
 
+    isCached()
+    {
+        return super.isCached()
+            && (  !this.input 
+                || this.input.isCached());
+    }
+
+
+
     async eval(parse)
     {
         if (this.isCached())
@@ -52083,7 +52178,9 @@ extends GOperator
                     : new NumberValue(0);
 
 
-                if (index.isValid())
+                if (   index.isValid()
+                    && index.value >= 0
+                    && index.value < input.items.length)
                 {
                     this.value = input.items[index.value];
 
@@ -52172,6 +52269,7 @@ class GListCount
 extends GOperator
 {
     input = null;
+    base  = null;
 
     value = null;
 
@@ -52190,12 +52288,21 @@ extends GOperator
         
         copy.copyBase(this);
 
-        if (this.input) 
-            copy.input = this.input.copy();
-
+        if (this.input) copy.input = this.input.copy();
+        if (this.base)  copy.base  = this.base .copy();
+        
         if (this.count) copy.count = this.count.copy();
 
         return copy;
+    }
+
+
+
+    isCached()
+    {
+        return super.isCached()
+            && (  !this.input 
+                || this.input.isCached());
     }
 
 
@@ -52208,14 +52315,20 @@ extends GOperator
 
         if (this.input)
         {
-            await this.input.eval(parse);
-            this.value = new NumberValue(this.input.toValue().items.length);
+            const input = (await this.input.eval(parse)).toValue();
+            const base  = (await this.base .eval(parse)).toValue();
+
+            this.value = new NumberValue(input.items.length - (base.value == 0 ? 1 : 0));
         }
         else
             this.value = NumberValue.NaN;
 
 
-        this.updateValues = [['value', this.value]];
+        this.updateValues = 
+        [
+            ['value', this.value],
+            ['base',  this.base ]
+        ];
 
 
         this.validate();
@@ -52282,6 +52395,15 @@ extends GOperator
 
 
 
+    isCached()
+    {
+        return super.isCached()
+            && (!this.input0 || this.input0.isCached())
+            && (!this.input1 || this.input1.isCached());
+    }
+
+
+    
     async eval(parse)
     {
         if (this.isCached())
@@ -52537,12 +52659,19 @@ extends GOperator
 
 
 
+    // isCached()
+    // {
+    //     return this.valid;
+    // }
+
     isCached()
     {
-        return this.valid;
+        return super.isCached()
+            && (  !this.input 
+                || this.input.isCached());
     }
 
-
+    
 
     async eval(parse)
     {
@@ -53020,7 +53149,8 @@ extends GNumberType
     isCached()
     {
         return super.isCached()
-            && (!this.input || this.input.isCached());
+            && (  !this.input 
+                || this.input.isCached());
     }
 
 
@@ -57077,6 +57207,15 @@ extends GTextType
 
 
 
+    isCached()
+    {
+        return super.isCached()
+            && (  !this.input 
+                || this.input.isCached());
+    }
+
+
+
     async eval(parse)
     {
         if (this.isCached())
@@ -57097,8 +57236,21 @@ extends GTextType
                 
             if (this.options.enabled)
             {
-                     if (_case.value == 0) this.value.value = this.value.value.toLowerCase();
-                else if (_case.value == 1) this.value.value = this.value.value.toUpperCase();
+                const val = this.value.value;
+
+                if (_case.value == 0) 
+                     this.value.value = val.toLowerCase();
+
+                else if (_case.value == 1)
+                {
+                    this.value.value = '';
+
+                    if (val.length > 0) this.value.value += val.substring(0, 1).toUpperCase();
+                    if (val.length > 1) this.value.value += val.substring(1)   .toLowerCase();
+                }
+
+                else if (_case.value == 2) 
+                    this.value.value = val.toUpperCase();
             }
         }
         else
@@ -57536,6 +57688,17 @@ extends GTextType
 
 
 
+    isCached()
+    {
+        for (const input of this.inputs)
+            if (!input.isCached())
+                return false;
+
+        return super.isCached();
+    }
+
+
+
     async eval(parse)
     {
         if (this.isCached())
@@ -57591,11 +57754,13 @@ async function evalJoinInputs(inputs, _with, parse)
 
     for (let i = 0; i < inputs.length; i++)
     {
+        const val = (await inputs[i].eval(parse)).toValue();
+        if (!val) continue;
+
+
         if (i > 0)
             value.value += w;
 
-            
-        const val = (await inputs[i].eval(parse)).toValue();
 
         if (LIST_VALUES.includes(val.type))
         {
@@ -62862,12 +63027,12 @@ extends GShape
         }
 
        
-        this.updateValues = [['value', this.value]];
-        
-
         await this.evalShapeBase(parse, input);
 
         await this.evalObjects(parse);
+
+
+        this.updateValues = [['value', this.value]];
 
 
         this.validate();
@@ -62931,6 +63096,9 @@ extends GShape
 
                 text.width  = width;
                 text.height = height;
+
+                this.value.width.value  = width;
+                this.value.height.value = height;
 
                 objects.push(text, ...text.createTransformPoints(parse, x, y, width, height));
             }
@@ -85505,6 +85673,7 @@ class   OpListCount
 extends OperatorBase
 {
     paramValue;
+    paramBase;
 
 
     
@@ -85518,6 +85687,10 @@ extends OperatorBase
         this.addInput (new Input(LIST_VALUES));
 
         this.addParam(this.paramValue = new NumberParam('value', 'value', false, false, true, 0, 0));
+        this.addParam(this.paramBase  = new NumberParam('base',  'base',  true,  true,  true, 1, 0, 1));
+
+
+        this.paramBase.controls[0].allowEditDecimals = false;
     }
 
 
@@ -85552,6 +85725,8 @@ extends OperatorBase
         if (input.connected) 
             request.push(...pushInputOrParam(input, gen));
 
+        request.push(...this.paramBase.genRequest(gen));
+
 
         gen.scope.pop();
         pushUnique(gen.passedNodes, this);
@@ -85564,6 +85739,7 @@ extends OperatorBase
     updateParams()
     {
         this.paramValue.enableControlText(false);
+        this.paramBase .enableControlText(true);
 
         this.updateParamControls();
     }
@@ -89607,7 +89783,7 @@ extends OperatorWithValue
         this.addOutput(new Output([TEXT_VALUE], this.output_genRequest));
 
         this.addParam(this.paramValue);
-        this.addParam(this.paramCase = new SelectParam('case', 'case', false, true, true, ['lower', 'UPPER']));
+        this.addParam(this.paramCase = new SelectParam('case', 'case', false, true, true, ['lower', 'Capital', 'UPPER']));
     }
 
 
@@ -90056,7 +90232,7 @@ extends OperatorBase
         this.addInput(new Input([TEXT_VALUE]));
 
         this.addParam(this.paramValue     = new ListParam('value',     '',          false, false, true));
-        this.addParam(this.paramSeparator = new TextParam('separator', 'separator', false, true,  true, ','));
+        this.addParam(this.paramSeparator = new TextParam('separator', 'separator', false, true,  true, ''));
 
 
         this.paramValue.itemName = 'value';
@@ -95858,20 +96034,20 @@ extends OpShape
         this.paramWidth .enableControlText(false);
         this.paramHeight.enableControlText(false);
 
-        if (!this.paramWidth .input.connected) this.paramWidth .setValue(new NumberValue(0), false, true, true);
-        if (!this.paramHeight.input.connected) this.paramHeight.setValue(new NumberValue(0), false, true, true);
+        // if (!this.paramWidth .input.connected) this.paramWidth .setValue(new NumberValue(0), false, true, true);
+        // if (!this.paramHeight.input.connected) this.paramHeight.setValue(new NumberValue(0), false, true, true);
 
 
-        this.paramWidth .controls[0].valueText = 
-               this.paramWidth .value.value == 0 
-            && this.paramHeight.value.value == 0 
-            ? UNKNOWN_DISPLAY 
-            : '';
+        // this.paramWidth .controls[0].valueText = 
+        //        this.paramWidth .value.value == 0 
+        //     && this.paramHeight.value.value == 0 
+        //     ? UNKNOWN_DISPLAY 
+        //     : '';
 
-        this.paramHeight.controls[0].valueText = 
-            this.paramHeight.value.value == 0 
-            ? UNKNOWN_DISPLAY 
-            : '';
+        // this.paramHeight.controls[0].valueText = 
+        //     this.paramHeight.value.value == 0 
+        //     ? UNKNOWN_DISPLAY 
+        //     : '';
 
 
         this.updateStyleParam();

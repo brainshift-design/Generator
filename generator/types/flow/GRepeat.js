@@ -34,12 +34,19 @@ extends GOperator
 
 
 
+    // isCached()
+    // {
+    //     return this.valid;
+    // }
+
     isCached()
     {
-        return this.valid;
+        return super.isCached()
+            && (  !this.input 
+                || this.input.isCached());
     }
 
-
+    
 
     async eval(parse)
     {

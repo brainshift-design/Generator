@@ -16,7 +16,7 @@ extends OperatorWithValue
         this.addOutput(new Output([TEXT_VALUE], this.output_genRequest));
 
         this.addParam(this.paramValue);
-        this.addParam(this.paramCase = new SelectParam('case', 'case', false, true, true, ['lower', 'UPPER']));
+        this.addParam(this.paramCase = new SelectParam('case', 'case', false, true, true, ['lower', 'Capital', 'UPPER']));
     }
 
 

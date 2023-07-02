@@ -2,6 +2,7 @@ class GListCount
 extends GOperator
 {
     input = null;
+    base  = null;
 
     value = null;
 
@@ -20,12 +21,21 @@ extends GOperator
         
         copy.copyBase(this);
 
-        if (this.input) 
-            copy.input = this.input.copy();
-
+        if (this.input) copy.input = this.input.copy();
+        if (this.base)  copy.base  = this.base .copy();
+        
         if (this.count) copy.count = this.count.copy();
 
         return copy;
+    }
+
+
+
+    isCached()
+    {
+        return super.isCached()
+            && (  !this.input 
+                || this.input.isCached());
     }
 
 
@@ -38,14 +48,20 @@ extends GOperator
 
         if (this.input)
         {
-            await this.input.eval(parse);
-            this.value = new NumberValue(this.input.toValue().items.length);
+            const input = (await this.input.eval(parse)).toValue();
+            const base  = (await this.base .eval(parse)).toValue();
+
+            this.value = new NumberValue(input.items.length - (base.value == 0 ? 1 : 0));
         }
         else
             this.value = NumberValue.NaN;
 
 
-        this.updateValues = [['value', this.value]];
+        this.updateValues = 
+        [
+            ['value', this.value],
+            ['base',  this.base ]
+        ];
 
 
         this.validate();

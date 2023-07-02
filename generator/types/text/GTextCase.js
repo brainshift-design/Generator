@@ -30,6 +30,15 @@ extends GTextType
 
 
 
+    isCached()
+    {
+        return super.isCached()
+            && (  !this.input 
+                || this.input.isCached());
+    }
+
+
+
     async eval(parse)
     {
         if (this.isCached())
@@ -50,8 +59,21 @@ extends GTextType
                 
             if (this.options.enabled)
             {
-                     if (_case.value == 0) this.value.value = this.value.value.toLowerCase();
-                else if (_case.value == 1) this.value.value = this.value.value.toUpperCase();
+                const val = this.value.value;
+
+                if (_case.value == 0) 
+                     this.value.value = val.toLowerCase();
+
+                else if (_case.value == 1)
+                {
+                    this.value.value = '';
+
+                    if (val.length > 0) this.value.value += val.substring(0, 1).toUpperCase();
+                    if (val.length > 1) this.value.value += val.substring(1)   .toLowerCase();
+                }
+
+                else if (_case.value == 2) 
+                    this.value.value = val.toUpperCase();
             }
         }
         else
