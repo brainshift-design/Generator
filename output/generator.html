@@ -11489,10 +11489,10 @@ extends GOperator
         if (   this.input0 
             && this.input1)
         {
-            const val0 = (await this.input0.eval(parse)).toValue();
-            const val1 = (await this.input1.eval(parse)).toValue();
+            const input0 = (await this.input0.eval(parse)).toValue();
+            const input1 = (await this.input1.eval(parse)).toValue();
 
-            this.value = cond.value != 0 ? val0 : val1;
+            this.value = cond.value != 0 ? input0 : input1;
         }
         else if (this.input0)
         {
@@ -11501,7 +11501,7 @@ extends GOperator
             this.value = 
                 cond.value != 0
                 ? input0
-                : null;//input0.getNaN()
+                : null;
         }
         else if (this.input1)
         {
@@ -11510,10 +11510,10 @@ extends GOperator
             this.value = 
                 cond.value == 0
                 ? input1
-                : null;//input1.getNaN();
+                : null;
         }
         else                  
-            this.value = null;//NullValue;
+            this.value = null;
 
 
         this.updateValues =

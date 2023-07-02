@@ -146,6 +146,7 @@ extends Parameter
                !this.input 
             || !this.input.connected;
             
+        enableElementText(this.divName,         enable);
         enableElementText(this.controls[0].div, enable);
 
         this.controls[0].readOnly = !enable;
