@@ -4397,11 +4397,12 @@ a
             <div id='whatsNewBody'>
                 <h1 style='margin-top: 20px;'>What's new</h1>
 
-                <p>•  fixed incorrect Vector path bounds</p>
                 <p>•  improved generation speed</p>
+                <p>•  fixed incorrect Vector path bounds</p>
                 <p>•  fixed issue with text size</p>
                 <p>•  fixed Distribute not working</p>
                 <p>•  fixed bug in Distribute</p>
+                <p>•  fixed If/Else not passing objects</p>
                 <p>•  fixed UI crash</p>
                 <p>•  small UI updates</p>
                 
@@ -7969,10 +7970,12 @@ function createTextarea(className = '')
 
 
 
-function enableElementText(elem, enable)
+function enableElementText(elem, enable, bold = true)
 {
     elem.style.fontStyle  = enable ? 'normal' : 'italic'; 
-    elem.style.fontWeight = enable ? 'normal' : 'bold';
+
+    if (bold)
+        elem.style.fontWeight = enable ? 'normal' : 'bold';
 }
 
 
@@ -16241,6 +16244,20 @@ extends GOperator
         }
         else                  
             this.value = null;
+
+
+        if (this.value)
+        {
+            for (let j = 0; j < this.value.objects.length; j++)
+            {
+                const obj  = this.value.objects[j].copy();
+
+                obj.nodeId = this.nodeId;
+                obj.listId = -1;
+                
+                this.objects.push(obj);
+            }
+        }
 
 
         this.updateValues =
@@ -41423,10 +41440,12 @@ function createTextarea(className = '')
 
 
 
-function enableElementText(elem, enable)
+function enableElementText(elem, enable, bold = true)
 {
     elem.style.fontStyle  = enable ? 'normal' : 'italic'; 
-    elem.style.fontWeight = enable ? 'normal' : 'bold';
+
+    if (bold)
+        elem.style.fontWeight = enable ? 'normal' : 'bold';
 }
 
 
@@ -52299,6 +52318,20 @@ extends GOperator
         }
         else                  
             this.value = null;
+
+
+        if (this.value)
+        {
+            for (let j = 0; j < this.value.objects.length; j++)
+            {
+                const obj  = this.value.objects[j].copy();
+
+                obj.nodeId = this.nodeId;
+                obj.listId = -1;
+                
+                this.objects.push(obj);
+            }
+        }
 
 
         this.updateValues =
@@ -75334,7 +75367,7 @@ extends Parameter
                !this.input 
             || !this.input.connected;
             
-        enableElementText(this.divName,         enable);
+        enableElementText(this.divName, enable, false);
         enableElementText(this.controls[0].div, enable);
 
         this.controls[0].readOnly = !enable;

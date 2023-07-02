@@ -69,6 +69,20 @@ extends GOperator
             this.value = null;
 
 
+        if (this.value)
+        {
+            for (let j = 0; j < this.value.objects.length; j++)
+            {
+                const obj  = this.value.objects[j].copy();
+
+                obj.nodeId = this.nodeId;
+                obj.listId = -1;
+                
+                this.objects.push(obj);
+            }
+        }
+
+
         this.updateValues =
         [
             ['value',     this.value],

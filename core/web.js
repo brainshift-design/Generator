@@ -85,10 +85,12 @@ function createTextarea(className = '')
 
 
 
-function enableElementText(elem, enable)
+function enableElementText(elem, enable, bold = true)
 {
     elem.style.fontStyle  = enable ? 'normal' : 'italic'; 
-    elem.style.fontWeight = enable ? 'normal' : 'bold';
+
+    if (bold)
+        elem.style.fontWeight = enable ? 'normal' : 'bold';
 }
 
 
