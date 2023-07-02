@@ -4261,7 +4261,7 @@ function figCreatePoint(genPoint)
         ? figma.createRectangle()
         : figma.createEllipse();
 
-        
+
     figPoint.setPluginData('isCenter', boolToString(genPoint.isCenter));
 
 
@@ -4275,7 +4275,7 @@ function figCreatePoint(genPoint)
     if (figPoints.includes(figPoint))
         updatePointSize_(figPoint, genPoint);
     else
-        figUpdatePoint(figPoing, genPoint);
+        figUpdatePoint(figPoint, genPoint);
 
     
     return figPoint;

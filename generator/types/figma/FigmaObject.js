@@ -186,9 +186,9 @@ class FigmaObject
             
             feedback:   this.feedback,
 
-            xp0:        point(this.xp0.x, this.xp0.y),
-            xp1:        point(this.xp1.x, this.xp1.y),
-            xp2:        point(this.xp2.x, this.xp2.y)
+            xp0:        this.xp0 ? point(this.xp0.x, this.xp0.y) : null,
+            xp1:        this.xp1 ? point(this.xp1.x, this.xp1.y) : null,
+            xp2:        this.xp2 ? point(this.xp2.x, this.xp2.y) : null
         };
     }
 }

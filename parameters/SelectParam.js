@@ -148,6 +148,18 @@ extends NumberParamBase
                 this.value.toString(), 
                 this.controls[0].displayDec.toString() ];
     }
+
+
+
+    toJson(nTab = 0, id = '')
+    {
+        let pos = ' '.repeat(nTab);
+        
+        if (id == '')
+            id = this.id;
+
+        return pos + '["' + this.type  + '", "' + id  + '", "' + this.value.toJson() + '"]';
+    }
 }
 
 
