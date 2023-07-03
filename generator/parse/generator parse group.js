@@ -11,7 +11,7 @@ function genParseGroupNode(parse)
     if (!ignore)
     {
         nParams = parseInt(parse.move());
-        //console.assert(nInputs == 0 || nInputs == 1, 'nInputs must be [0, 1]');
+        consoleAssert(nInputs == 0 || nInputs == 1, 'nInputs must be [0, 1]');
     }
 
 
@@ -63,8 +63,8 @@ function genParseGroupParam(parse)
         nInputs  = parseInt(parse.move());
         nOutputs = parseInt(parse.move());
 
-        console.assert(nInputs  == 0 || nInputs  == 1,  'nInputs must be [0, 1]');
-        console.assert(nOutputs == 0 || nOutputs == 1, 'nOutputs must be [0, 1]');
+        consoleAssert(nInputs  == 0 || nInputs  == 1,  'nInputs must be [0, 1]');
+        consoleAssert(nOutputs == 0 || nOutputs == 1, 'nOutputs must be [0, 1]');
     }
 
 

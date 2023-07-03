@@ -53,7 +53,7 @@ extends Parameter
     {
         // 'this' is the output
 
-        console.assert(value.type == STAR_VALUE, 'expected STAR_VALUE in backInit()');
+        consoleAssert(value.type == STAR_VALUE, 'expected STAR_VALUE in backInit()');
         
         this.param.setValue(value, false, true, false);
     }
@@ -63,9 +63,9 @@ extends Parameter
     setValue(value, createAction, updateControl = true, dispatchEvents = true) 
     {
         if (!(value instanceof StarValue))
-            console.assert(false, 'StarParam.setValue(value) is ' + typeof value + ', must be a StarValue');
+            consoleError('StarParam.setValue(value) is ' + typeof value + ', must be a StarValue');
 
-        console.assert(
+        consoleAssert(
                value.type 
             && value.type == STAR_VALUE, 
             'StarParam value.type must be STAR_VALUE');
@@ -113,7 +113,7 @@ extends Parameter
             if (this.input.connectedOutput.supportsTypes([STAR_VALUE]))
                 request.push(...pushInputOrParam(this.input, gen));
             else
-                console.assert(false, 'invalid input for StarParam (' + this.node.id + ')');
+                consoleError('invalid input for StarParam (' + this.node.id + ')');
         }
 
         else request.push( 

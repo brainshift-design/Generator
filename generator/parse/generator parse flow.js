@@ -91,7 +91,7 @@ function genParseItems(parse)
     if (!ignore)
     {
         nInputs = parseInt(parse.move());
-        console.assert(nInputs == 0 || nInputs == 1, 'nInputs must be [0, 1]');
+        consoleAssert(nInputs == 0 || nInputs == 1, 'nInputs must be [0, 1]');
     }
 
 
@@ -135,7 +135,7 @@ function genParseSelect(parse)
     if (!ignore)
     {
         nInputs = parseInt(parse.move());
-        console.assert(nInputs == 0 || nInputs == 1, 'nInputs must be [0, 1]');
+        consoleAssert(nInputs == 0 || nInputs == 1, 'nInputs must be [0, 1]');
     }
 
 
@@ -181,7 +181,7 @@ function genParseListCount(parse)
     if (!ignore)
     {
         nInputs = parseInt(parse.move());
-        console.assert(nInputs == 0 || nInputs == 1, 'nInputs must be [0, 1]');
+        consoleAssert(nInputs == 0 || nInputs == 1, 'nInputs must be [0, 1]');
     }
 
 
@@ -227,7 +227,7 @@ function genParseIfElse(parse)
     if (!ignore)
     {
         nInputs = parseInt(parse.move());
-        console.assert(nInputs => 0 && nInputs <= 2, 'nInputs must be [0, 2]');
+        consoleAssert(nInputs => 0 && nInputs <= 2, 'nInputs must be [0, 2]');
     }
 
 
@@ -290,7 +290,7 @@ function genParseStart(parse)
     if (!ignore)
     {
         nInputs = parseInt(parse.move());
-        console.assert(nInputs == 0 || nInputs == 1, 'nInputs must be [0, 1]');
+        consoleAssert(nInputs == 0 || nInputs == 1, 'nInputs must be [0, 1]');
     }
 
 
@@ -338,7 +338,7 @@ function genParseStart(parse)
     if (!ignore)
     {
         nInputs = parseInt(parse.move());
-        console.assert(nInputs == 0 || nInputs == 1, 'nInputs must be [0, 1]');
+        consoleAssert(nInputs == 0 || nInputs == 1, 'nInputs must be [0, 1]');
     }
 
 
@@ -382,7 +382,7 @@ function genParseRepeat(parse)
     if (!ignore)
     {
         nInputs = parseInt(parse.move());
-        console.assert(nInputs == 0 || nInputs == 1, 'nInputs must be [0, 1]');
+        consoleAssert(nInputs == 0 || nInputs == 1, 'nInputs must be [0, 1]');
     }
 
 
@@ -429,7 +429,7 @@ function genParseCache(parse)
     if (!ignore)
     {
         nInputs = parseInt(parse.move());
-        console.assert(nInputs == 0 || nInputs == 1, 'nInputs must be [0, 1]');
+        consoleAssert(nInputs == 0 || nInputs == 1, 'nInputs must be [0, 1]');
     }
 
 
@@ -473,7 +473,7 @@ function genParseCopy(parse)
     if (!ignore)
     {
         nInputs = parseInt(parse.move());
-        console.assert(nInputs == 0 || nInputs == 1, 'nInputs must be [0, 1]');
+        consoleAssert(nInputs == 0 || nInputs == 1, 'nInputs must be [0, 1]');
     }
 
 
@@ -520,7 +520,7 @@ function genParseTimer(parse)
     if (!ignore)
     {
         nInputs = parseInt(parse.move());
-        console.assert(nInputs == 0 || nInputs == 1, 'nInputs must be [0, 1]');
+        consoleAssert(nInputs == 0 || nInputs == 1, 'nInputs must be [0, 1]');
     }
 
 

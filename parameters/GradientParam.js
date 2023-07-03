@@ -52,7 +52,7 @@ extends Parameter
     {
         // 'this' is the output
 
-        console.assert(GRADIENT_VALUES.includes(value.type), 'expected GRADIENT_VALUE in backInit()');
+        consoleAssert(GRADIENT_VALUES.includes(value.type), 'expected GRADIENT_VALUE in backInit()');
         
         this.param.setValue(value, false, true, false);
     }
@@ -64,10 +64,10 @@ extends Parameter
         if (!(value instanceof GradientValue))
         {
             //console.log('value =', value);
-            console.assert(false, 'GradientParam.setValue(): value is ' + typeof value + ', must be a GradientValue');
+            consoleError('GradientParam.setValue(): value is ' + typeof value + ', must be a GradientValue');
         }
 
-        console.assert(
+        consoleAssert(
                value.type 
             && value.type == GRADIENT_VALUE, 
             'GradientParam value.type must be GRADIENT_VALUE');
@@ -115,7 +115,7 @@ extends Parameter
             if (this.input.supportsTypes(this.input.connectedOutput.types))
                 request.push(...pushInputOrParam(this.input, gen));
             else
-                console.assert(false, 'invalid input for GradientParam (' + this.node.id + ')');
+                consoleError('invalid input for GradientParam (' + this.node.id + ')');
         }
 
         else request.push( 

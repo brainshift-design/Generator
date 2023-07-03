@@ -95,7 +95,7 @@ extends GNode
 
     toValue()
     {
-        console.assert(false, 'cannot call abstract method GOperator.toValue()');
+        consoleError('cannot call abstract method GOperator.toValue()');
         return null;
     }
 }

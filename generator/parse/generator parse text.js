@@ -62,7 +62,7 @@ function genParseTextLength(parse)
     if (!ignore)
     {
         nInputs = parseInt(parse.move());
-        console.assert(nInputs == 0 || nInputs == 1, 'nInputs must be [0, 1]');
+        consoleAssert(nInputs == 0 || nInputs == 1, 'nInputs must be [0, 1]');
     }
 
     
@@ -106,7 +106,7 @@ function genParseTextTrim(parse)
     if (!ignore)
     {
         nInputs = parseInt(parse.move());
-        console.assert(nInputs == 0 || nInputs == 1, 'nInputs must be [0, 1]');
+        consoleAssert(nInputs == 0 || nInputs == 1, 'nInputs must be [0, 1]');
     }
 
     
@@ -153,7 +153,7 @@ function genParseTextSubstring(parse)
     if (!ignore)
     {
         nInputs = parseInt(parse.move());
-        console.assert(nInputs == 0 || nInputs == 1, 'nInputs must be [0, 1]');
+        consoleAssert(nInputs == 0 || nInputs == 1, 'nInputs must be [0, 1]');
     }
 
     
@@ -200,7 +200,7 @@ function genParseTextCase(parse)
     if (!ignore)
     {
         nInputs = parseInt(parse.move());
-        console.assert(nInputs == 0 || nInputs == 1, 'nInputs must be [0, 1]');
+        consoleAssert(nInputs == 0 || nInputs == 1, 'nInputs must be [0, 1]');
     }
 
     
@@ -246,7 +246,7 @@ function genParseTextReplace(parse)
     if (!ignore)
     {
         nInputs = parseInt(parse.move());
-        console.assert(nInputs == 0 || nInputs == 1, 'nInputs must be [0, 1]');
+        consoleAssert(nInputs == 0 || nInputs == 1, 'nInputs must be [0, 1]');
     }
 
     
@@ -338,7 +338,7 @@ function genParseTextPad(parse)
     if (!ignore)
     {
         nInputs = parseInt(parse.move());
-        console.assert(nInputs == 0 || nInputs == 1, 'nInputs must be [0, 1]');
+        consoleAssert(nInputs == 0 || nInputs == 1, 'nInputs must be [0, 1]');
     }
 
     
@@ -387,7 +387,7 @@ function genParseTextCompare(parse)
     if (!ignore)
     {
         nInputs = parseInt(parse.move());
-        console.assert(nInputs => 0 && nInputs <= 2, 'nInputs must be [0, 2]');
+        consoleAssert(nInputs => 0 && nInputs <= 2, 'nInputs must be [0, 2]');
     }
 
     
@@ -441,7 +441,7 @@ function genParseTextCharacter(parse)
     if (!ignore)
     {
         nInputs = parseInt(parse.move());
-        console.assert(nInputs == 0 || nInputs == 1, 'nInputs must be [0, 1]');
+        consoleAssert(nInputs == 0 || nInputs == 1, 'nInputs must be [0, 1]');
     }
 
     
@@ -557,7 +557,7 @@ function genParseTextCSV(parse)
     if (!ignore)
     {
         nInputs = parseInt(parse.move());
-        console.assert(nInputs == 0 || nInputs == 1, 'nInputs must be [0, 1]');
+        consoleAssert(nInputs == 0 || nInputs == 1, 'nInputs must be [0, 1]');
     }
 
     
@@ -603,7 +603,7 @@ function genParseTextJson(parse)
     if (!ignore)
     {
         nInputs = parseInt(parse.move());
-        console.assert(nInputs == 0 || nInputs == 1, 'nInputs must be [0, 1]');
+        consoleAssert(nInputs == 0 || nInputs == 1, 'nInputs must be [0, 1]');
     }
 
     

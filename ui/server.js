@@ -6,7 +6,7 @@ async function checkTrialExists()
         userId:  currentUser.id
     }); 
 
-    console.assert(response, 'invalid response from server @ checkTrialExists()');
+    consoleAssert(response, 'invalid response from server @ checkTrialExists()');
     return response ? response.result : false;
 }
 
@@ -21,7 +21,7 @@ async function checkTrialExists()
 //     }); 
 
     
-//     console.assert(response, 'invalid response from server @ checkTrialActive()');
+//     consoleAssert(response, 'invalid response from server @ checkTrialActive()');
 //     return response ? response.result : false;
 // }
 
@@ -36,7 +36,7 @@ async function checkTrialExists()
 //     }); 
 
     
-//     console.assert(response, 'invalid response from server @ checkSubActive()');
+//     consoleAssert(response, 'invalid response from server @ checkSubActive()');
 //     return response ? response.result : false;
 // }
 
@@ -51,7 +51,7 @@ async function checkSubOrTrialActive()
     }); 
 
     
-    console.assert(response, 'invalid response from server @ checkTrialOrSubActive()');
+    consoleAssert(response, 'invalid response from server @ checkTrialOrSubActive()');
     return response ? response.result : false;
 }
 
@@ -66,7 +66,7 @@ async function checkRemainingTrialDays()
     }); 
 
     
-    console.assert(response, 'invalid response from server @ checkRemainingTrialDays()');
+    consoleAssert(response, 'invalid response from server @ checkRemainingTrialDays()');
     return response ? response.result : -1;
 }
 
@@ -99,7 +99,7 @@ async function startFreeTrial()
     }); 
 
     
-    console.assert(response, 'invalid response from server @ createTrial()');
+    consoleAssert(response, 'invalid response from server @ createTrial()');
 
 
     if (response.result)

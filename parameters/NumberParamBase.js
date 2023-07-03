@@ -30,7 +30,7 @@ extends Parameter
 
     setValue(value, createAction, updateControl = true, dispatchEvents = true) 
     {
-        console.assert(
+        consoleAssert(
             value instanceof NumberValue,
             'value must be a NumberValue');
 

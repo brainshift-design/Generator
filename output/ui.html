@@ -4744,6 +4744,9 @@ const connTag          = 'G_CONN';
 const pageTag          = 'G_PAGE';
 
 
+var   enableAsserts    = false;
+
+
 
 const identity = Object.freeze(
     [[1, 0, 0],
@@ -4900,7 +4903,7 @@ function mulv2m3(v, m)
 
 function mulm3m3(...mm)
 {
-    console.assert(mm.length > 0, 'mulm3m3() must take at least one argument');
+    consoleAssert(mm.length > 0, 'mulm3m3() must take at least one argument');
 
     let result = clone(mm[0]);
 
@@ -5541,6 +5544,22 @@ function pushUniqueExcept(array, item, except)
         item.forEach(i => pushUniqueExcept(array, i, except));
     else if (!array.find(except))
         array.push(item);
+}
+
+
+
+function consoleAssert(...params)
+{
+    if (enableAsserts)
+        console.assert(...params);
+}
+
+
+
+function consoleError(...params)
+{
+    if (enableAsserts)
+        console.error(...params);
 }
 
 
@@ -9430,7 +9449,7 @@ class FigmaObject
 
     copy()
     {
-        console.assert(false, 'invalid use of abstract class FigmaObject');
+        consoleError('invalid use of abstract class FigmaObject');
         return null;
     }
 
@@ -9589,7 +9608,7 @@ function copyFigmaObject(obj)
         case FRAME:       return FigmaFrame     .prototype.copy.call(obj);
     }
 
-    console.assert(false, 'invalid Figma object type \'' + obj.type + '\'');
+    consoleError('invalid Figma object type \'' + obj.type + '\'');
     return null;
 }
 
@@ -11117,7 +11136,7 @@ class GNode
 
     copy()
     {
-        console.assert(false, 'abstract type GNode cannot be copied');
+        consoleError('abstract type GNode cannot be copied');
         return null;
     }
 
@@ -11214,7 +11233,7 @@ extends GNode
 
     copy()
     {
-        console.assert(false, 'abstract class GValue cannot be copied');
+        consoleError('abstract class GValue cannot be copied');
         return null;
     }
 
@@ -11266,7 +11285,7 @@ extends GNode
 
     toJsCode(gen)
     {
-        console.assert(false, 'invalid abstract method');
+        consoleError('invalid abstract method');
         return '';
     }
 
@@ -11274,7 +11293,7 @@ extends GNode
 
     getNaN()
     {
-        console.assert(false, 'invalid abstract method');
+        consoleError('invalid abstract method');
         return null;
     }
 
@@ -11366,7 +11385,7 @@ function displayValue(type, value)
     }
 
 
-    console.assert(false, 'cannot display value of type \'' + type + '\'');
+    consoleError('cannot display value of type \'' + type + '\'');
 }
 
 
@@ -11403,7 +11422,7 @@ function nullFromType(type)
         case        FRAME_VALUE: return        FrameValue.NaN;
     }
 
-    console.assert(false, 'cannot determine null value from type \'' + type + '\'');
+    consoleError('cannot determine null value from type \'' + type + '\'');
 }
 
 
@@ -11504,7 +11523,7 @@ extends GNode
 
     toValue()
     {
-        console.assert(false, 'cannot call abstract method GOperator.toValue()');
+        consoleError('cannot call abstract method GOperator.toValue()');
         return null;
     }
 }
@@ -11588,7 +11607,7 @@ extends GOperator
     async eval(parse)
     {
         this.node = parse.parsedNodes.find(v => v.nodeId == this.nodeId);
-        console.assert(this.node, 'can\'t find parameter node \'' + this.nodeId + '\'');
+        consoleAssert(this.node, 'can\'t find parameter node \'' + this.nodeId + '\'');
 
 
         //this.param.feedbackValue = this.feedbackValue;
@@ -11940,7 +11959,7 @@ extends GValue
         super(NUMBER_VALUE);
 
         if (typeof val !== 'number')
-            console.assert(false, 'NumberValue(value) is ' + typeof val + ', must be a number');
+            consoleError('NumberValue(value) is ' + typeof val + ', must be a number');
 
 
         this.value    = val;
@@ -12065,7 +12084,7 @@ function parseNumberValue(str)
     if (str.indexOf(',') < 0)
     {
         console.trace();
-        console.assert(false, 'number value \'' + str + '\' missing \',\'');
+        consoleError('number value \'' + str + '\' missing \',\'');
     }
 
     
@@ -12106,7 +12125,7 @@ extends GValue
         if (typeof val !== 'string')
         {
             console.trace();
-            console.assert(false, 'TextValue(value) is ' + typeof val + ', must be a string');
+            consoleError('TextValue(value) is ' + typeof val + ', must be a string');
         }
 
         
@@ -12227,10 +12246,10 @@ extends GValue
 
     static create(space, c1, c2, c3)
     {
-        console.assert(typeof space == 'number', 'ColorValue.create() space must be a number');
-        console.assert(typeof c1    == 'number', 'ColorValue.create() c1 must be a number');
-        console.assert(typeof c2    == 'number', 'ColorValue.create() c2 must be a number');
-        console.assert(typeof c3    == 'number', 'ColorValue.create() c3 must be a number');
+        consoleAssert(typeof space == 'number', 'ColorValue.create() space must be a number');
+        consoleAssert(typeof c1    == 'number', 'ColorValue.create() c1 must be a number');
+        consoleAssert(typeof c2    == 'number', 'ColorValue.create() c2 must be a number');
+        consoleAssert(typeof c3    == 'number', 'ColorValue.create() c3 must be a number');
 
         return new ColorValue(
             new NumberValue(space),
@@ -12432,7 +12451,7 @@ extends GValue
     
     static create(r, g, b, opacity, blend = 0)
     {
-        console.assert(
+        consoleAssert(
             typeof opacity == 'number',
             'opacity must be a number');
 
@@ -12446,7 +12465,7 @@ extends GValue
 
     static fromRgb(rgb, opacity, blend = 0)
     {
-        console.assert(
+        consoleAssert(
             typeof opacity == 'number',
             'opacity must be a number');
 
@@ -12595,7 +12614,7 @@ function parseFillValue(str, i = -1)
 //          if ( FILL_TYPES.includes(fillValue.type)) return fill;
 //     else if (COLOR_TYPES.includes(fillValue.type)) return new FillValue(fill, fillValue.data.opacity);
 
-//     else console.assert(false, 'fill must have type');
+//     else consoleError('fill must have type');
 // }
 
 
@@ -12611,7 +12630,7 @@ extends GValue
                 position = new NumberValue(1))
     {
         if (fill.type != FILL_VALUE)
-            console.assert(false, 'fill.type is ' + fill.type + ', must be FILL_VALUE');
+            consoleError('fill.type is ' + fill.type + ', must be FILL_VALUE');
 
 
         super(COLOR_STOP_VALUE);
@@ -12942,7 +12961,7 @@ extends GValue
                 miter  = new NumberValue(28.96, 2))
     {
         if (fills.type != LIST_VALUE)
-            console.assert(false, 'fill.type is ' + fills.type + ', must be LIST_VALUE');
+            consoleError('fill.type is ' + fills.type + ', must be LIST_VALUE');
 
 
         super(STROKE_VALUE);
@@ -13097,7 +13116,7 @@ function parseStrokeValue(str, i = -1)
 //     else if (  FILL_TYPES.includes(stroke.type)) return new StrokeValue(stroke, value.data.weight);
 //     else if ( COLOR_TYPES.includes(stroke.type)) return new StrokeValue(new FillValue(stroke), value.data.weight);
 
-//     else console.assert(false, 'stroke must have type');
+//     else consoleError('stroke must have type');
 // }
 
 
@@ -16605,7 +16624,7 @@ extends GOperator
 
         if (this.loop.type != NUMBER_VALUE)
         {
-            console.assert(
+            consoleAssert(
                    this.loop.type == NUMBER_DEFINE
                 || this.loop.type == NUMBER_DISTRIBUTE
                 || this.loop.type == NUMBER_SEQUENCE
@@ -16692,7 +16711,7 @@ extends GOperator
                 }
 
 
-                console.assert(parse.repeats.at(-1) == repeat, 'invalid nested repeat');
+                consoleAssert(parse.repeats.at(-1) == repeat, 'invalid nested repeat');
                 parse.repeats.pop();
             }
 
@@ -17229,7 +17248,7 @@ extends GNumberType1
         {
             this.value = (await this.input.eval(parse)).toValue();
 
-            console.assert(
+            consoleAssert(
                 this.value.type == NUMBER_VALUE, 
                 'this.value.type must be NUMBER_VALUE');
 
@@ -17281,7 +17300,7 @@ extends GNumberType1
         {
             this.value = (await this.input.eval(parse)).toValue();
 
-            console.assert(
+            consoleAssert(
                 this.value.type == NUMBER_VALUE, 
                 'this.value.type must be NUMBER_VALUE');
 
@@ -17349,7 +17368,7 @@ extends GNumberType1
         {
             this.value = (await this.input.eval(parse)).toValue();
 
-            console.assert(
+            consoleAssert(
                 this.value.type == NUMBER_VALUE, 
                 'this.value.type must be NUMBER_VALUE');
 
@@ -17459,7 +17478,7 @@ extends GNumberType1
             this.value = (await this.input.eval(parse)).toValue();
             //console.log('this.value =', this.value);
 
-            console.assert(
+            consoleAssert(
                 this.value.type == NUMBER_VALUE, 
                 'this.value.type must be NUMBER_VALUE');
 
@@ -18429,7 +18448,7 @@ extends GNumberType1
         {
             let input = (await this.input.eval(parse)).toValue();
 
-            console.assert(
+            consoleAssert(
                 input.type == NUMBER_VALUE, 
                 'input.type must be NUMBER_VALUE');
 
@@ -18904,7 +18923,7 @@ async function evalAddInputs(inputs, parse)
         }
         else
         {
-            console.assert(
+            consoleAssert(
                 val.type == NUMBER_VALUE, 
                 'val.type must be NUMBER_VALUE');
 
@@ -19022,7 +19041,7 @@ async function evalSubtractInputs(inputs, parse)
             }
             else
             {
-                console.assert(
+                consoleAssert(
                     val.type == NUMBER_VALUE, 
                     'val.type must be NUMBER_VALUE');
                     
@@ -19108,7 +19127,7 @@ async function evalMultiplyInputs(inputs, parse)
             }
             else
             {
-                console.assert(
+                consoleAssert(
                     val.type == NUMBER_VALUE, 
                     'val.type must be NUMBER_VALUE');
 
@@ -19237,7 +19256,7 @@ async function evalDivideInputs(inputs, parse)
             }
             else
             {
-                console.assert(
+                consoleAssert(
                     val.type == NUMBER_VALUE, 
                     'val.type must be NUMBER_VALUE');
 
@@ -19372,7 +19391,7 @@ async function evalModuloInputs(inputs, parse)
             }
             else
             {
-                console.assert(
+                consoleAssert(
                     val.type == NUMBER_VALUE, 
                     'val.type must be NUMBER_VALUE');
 
@@ -19493,7 +19512,7 @@ async function evalExponentInputs(inputs, parse)
             }
             else
             {
-                console.assert(
+                consoleAssert(
                     val.type == NUMBER_VALUE, 
                     'val.type must be NUMBER_VALUE');
 
@@ -19685,7 +19704,7 @@ async function evalNandInputs(inputs, parse)
             }
             else
             {
-                console.assert(
+                consoleAssert(
                     val.type == NUMBER_VALUE, 
                     'val.type must be NUMBER_VALUE');
 
@@ -19794,7 +19813,7 @@ async function evalAndInputs(inputs, parse)
             }
             else
             {
-                console.assert(
+                consoleAssert(
                     val.type == NUMBER_VALUE, 
                     'val.type must be NUMBER_VALUE');
 
@@ -19908,7 +19927,7 @@ async function evalOrInputs(inputs, parse)
             }
             else
             {
-                console.assert(
+                consoleAssert(
                     val.type == NUMBER_VALUE, 
                     'val.type must be NUMBER_VALUE');
                     
@@ -20023,7 +20042,7 @@ async function evalXorInputs(inputs, parse)
             }
             else
             {
-                console.assert(
+                consoleAssert(
                     val.type == NUMBER_VALUE, 
                     'val.type must be NUMBER_VALUE');
                     
@@ -20855,7 +20874,7 @@ extends GOperator1
         if (this.input)
         {
             const input = (await this.input.eval(parse)).toValue();
-            console.assert(input.type == TEXT_VALUE, 'input must be TEXT_VALUE');
+            consoleAssert(input.type == TEXT_VALUE, 'input must be TEXT_VALUE');
 
             length = new NumberValue(input.value.length);
         }
@@ -20917,9 +20936,7 @@ extends GTextType1
         {
             this.value = (await this.input.eval(parse)).toValue();
             
-            console.assert(
-                this.value.type == TEXT_VALUE, 
-                'this.value.type must be TEXT_VALUE');
+            consoleAssert(this.value.type == TEXT_VALUE, 'this.value.type must be TEXT_VALUE');
                 
                 
             if (this.options.enabled)
@@ -21017,9 +21034,7 @@ extends GTextType1
             
             this.value = input.copy();
             
-            console.assert(
-                this.value.type == TEXT_VALUE, 
-                'this.value.type must be TEXT_VALUE');
+            consoleAssert(this.value.type == TEXT_VALUE, 'this.value.type must be TEXT_VALUE');
                 
                 
             if(start.value <= end.value)
@@ -21111,9 +21126,7 @@ extends GTextType1
         {
             this.value = (await this.input.eval(parse)).toValue();
             
-            console.assert(
-                this.value.type == TEXT_VALUE, 
-                'this.value.type must be TEXT_VALUE');
+            consoleAssert(this.value.type == TEXT_VALUE, 'this.value.type must be TEXT_VALUE');
                 
                 
             if (this.options.enabled)
@@ -21477,9 +21490,7 @@ extends GTextType1
         {
             this.value = (await this.input.eval(parse)).toValue();
 
-            console.assert(
-                this.value.type == TEXT_VALUE, 
-                'this.value.type must be TEXT_VALUE');
+            consoleAssert(this.value.type == TEXT_VALUE, 'this.value.type must be TEXT_VALUE');
 
             this.value.value = this.value.value.replaceAll(
                 unescapeString(_what.value),
@@ -21644,9 +21655,7 @@ async function evalJoinInputs(inputs, _with, parse)
         }
         else
         {
-            console.assert(
-                val.type == TEXT_VALUE, 
-                'val.type must be TEXT_VALUE');
+            consoleAssert(val.type == TEXT_VALUE, 'val.type must be TEXT_VALUE');
 
             value.value += val.value;
         }
@@ -21713,9 +21722,7 @@ extends GTextType1
             
             this.value = input.copy();
             
-            console.assert(
-                this.value.type == TEXT_VALUE, 
-                'this.value.type must be TEXT_VALUE');
+            consoleAssert(this.value.type == TEXT_VALUE, 'this.value.type must be TEXT_VALUE');
                 
                 
             if (this.options.enabled)
@@ -21817,7 +21824,7 @@ extends GOperator1
             
             if (input)
             {
-                console.assert(input.type == TEXT_VALUE, 'input must be TEXT_VALUE');
+                consoleAssert(input.type == TEXT_VALUE, 'input must be TEXT_VALUE');
                 const items = input.value.split(unescapeString(separator.value));
 
                 for (const item of items)
@@ -22496,7 +22503,7 @@ function getCorrectionsInOrder(order)
     }
 
     // should never get here
-    console.assert(false, 'invalid correction order ' + order);
+    consoleError('invalid correction order ' + order);
     return [0, 0, 0];
 }
 
@@ -22526,7 +22533,7 @@ function getMinCorrections(space, order)
         
         default:
             // should never get here
-            console.assert(false, 'invalid validation order ' + order);
+            consoleError('invalid validation order ' + order);
             return [0, 0, 0];
     }
 
@@ -22559,7 +22566,7 @@ function getMaxCorrections(space, order)
         
         default:
             // should never get here
-            console.assert(false, 'invalid validation order ' + order);
+            consoleError('invalid validation order ' + order);
             return [0, 0, 0];
     }
 
@@ -22685,7 +22692,7 @@ function getColorCorrections(colorSpace)
     }
 
 
-    console.assert(false, 'invalid color space ' + colorSpace);
+    consoleError('invalid color space ' + colorSpace);
     return [
         new ColorCorrection(),
         new ColorCorrection(),
@@ -23711,7 +23718,7 @@ extends GColorType2
             const input0 = (await this.input0.eval(parse)).toValue();
             const input1 = (await this.input1.eval(parse)).toValue();
 
-            console.assert(
+            consoleAssert(
                 amount.type == NUMBER_VALUE, 
                 'this.result.type must be NUMBER_VALUE');
 
@@ -23863,7 +23870,7 @@ extends GColorType2
             const input0 = (await this.input0.eval(parse)).toValue();
             const input1 = (await this.input1.eval(parse)).toValue();
 
-            console.assert(
+            consoleAssert(
                 opacity.type == NUMBER_VALUE, 
                 'this.result.type must be NUMBER_VALUE');
 
@@ -24941,7 +24948,7 @@ extends GOperator1
             return new ListValue([fills]);
         else
         {
-            console.assert(fills.type == LIST_VALUE, 'stroke.fills must be a LIST_VALUE');
+            consoleAssert(fills.type == LIST_VALUE, 'stroke.fills must be a LIST_VALUE');
             return fills;
         }
     }
@@ -25740,9 +25747,9 @@ extends GShapeBase
     {
         for (const obj of this.objects)
         {
-            console.assert(obj.fills,   'obj.fills must not be null'  );
-            console.assert(obj.strokes, 'obj.strokes must not be null');
-            console.assert(obj.effects, 'obj.effects must not be null');
+            consoleAssert(obj.fills,   'obj.fills must not be null'  );
+            consoleAssert(obj.strokes, 'obj.strokes must not be null');
+            consoleAssert(obj.effects, 'obj.effects must not be null');
 
             for (let i = this.value.props.items.length-1; i >= 0; i--)
             {
@@ -28198,8 +28205,6 @@ extends GOperator1
             return bounds;
             
 
-        console.log('options =', options);
-
         const x           = options.x.toNumber();
         const y           = options.y.toNumber();
         const moveType    = options.moveType.value;
@@ -30229,7 +30234,7 @@ function genParseColor(parse)
     if (!ignore)
     {
         nInputs = parseInt(parse.move());
-        console.assert(nInputs => 0 && nInputs <= 1, 'nInputs must be [0, 1]');
+        consoleAssert(nInputs => 0 && nInputs <= 1, 'nInputs must be [0, 1]');
     }
 
 
@@ -30295,7 +30300,7 @@ function genParseValidColor(parse)
     if (!ignore)
     {
         nInputs = parseInt(parse.move());
-        console.assert(nInputs => 0 && nInputs <= 1, 'nInputs must be [0, 1]');
+        consoleAssert(nInputs => 0 && nInputs <= 1, 'nInputs must be [0, 1]');
     }
 
 
@@ -30345,7 +30350,7 @@ function genParseCorrectColor(parse)
     if (!ignore)
     {
         nInputs = parseInt(parse.move());
-        console.assert(nInputs => 0 && nInputs <= 1, 'nInputs must be [0, 1]');
+        consoleAssert(nInputs => 0 && nInputs <= 1, 'nInputs must be [0, 1]');
     }
 
 
@@ -30408,7 +30413,7 @@ function genParseColorContrast(parse)
     if (!ignore)
     {
         nInputs = parseInt(parse.move());
-        console.assert(nInputs => 0 && nInputs <= 2, 'nInputs must be [0, 2]');
+        consoleAssert(nInputs => 0 && nInputs <= 2, 'nInputs must be [0, 2]');
     }
 
 
@@ -30471,7 +30476,7 @@ function genParseColorBlind(parse)
     if (!ignore)
     {
         nInputs = parseInt(parse.move());
-        console.assert(nInputs => 0 && nInputs <= 1, 'nInputs must be [0, 1]');
+        consoleAssert(nInputs => 0 && nInputs <= 1, 'nInputs must be [0, 1]');
     }
 
 
@@ -30519,7 +30524,7 @@ function genParseColorInterpolate(parse)
     if (!ignore)
     {
         nInputs = parseInt(parse.move());
-        console.assert(nInputs => 0 && nInputs <= 2, 'nInputs must be [0, 2]');
+        consoleAssert(nInputs => 0 && nInputs <= 2, 'nInputs must be [0, 2]');
     }
 
     
@@ -30547,7 +30552,7 @@ function genParseColorInterpolate(parse)
         lerp.input0 = genParse(parse); // doesn't matter if it's input0 or input1, the eval() result will be the same
 
     else if (nInputs != 0)
-        console.assert(false, 'nInputs must be [0, 2]');
+        consoleError('nInputs must be [0, 2]');
 
 
     lerp.space  = genParse(parse);
@@ -30577,7 +30582,7 @@ function genParseColorBlend(parse)
     if (!ignore)
     {
         nInputs = parseInt(parse.move());
-        console.assert(nInputs => 0 && nInputs <= 2, 'nInputs must be [0, 2]');
+        consoleAssert(nInputs => 0 && nInputs <= 2, 'nInputs must be [0, 2]');
     }
 
     
@@ -30605,7 +30610,7 @@ function genParseColorBlend(parse)
         blend.input0 = genParse(parse); // doesn't matter if it's input0 or input1, the eval() result will be the same
 
     else if (nInputs != 0)
-        console.assert(false, 'nInputs must be [0, 2]');
+        consoleError('nInputs must be [0, 2]');
 
 
     blend.mode    = genParse(parse);
@@ -30713,7 +30718,7 @@ function genParseItems(parse)
     if (!ignore)
     {
         nInputs = parseInt(parse.move());
-        console.assert(nInputs == 0 || nInputs == 1, 'nInputs must be [0, 1]');
+        consoleAssert(nInputs == 0 || nInputs == 1, 'nInputs must be [0, 1]');
     }
 
 
@@ -30757,7 +30762,7 @@ function genParseSelect(parse)
     if (!ignore)
     {
         nInputs = parseInt(parse.move());
-        console.assert(nInputs == 0 || nInputs == 1, 'nInputs must be [0, 1]');
+        consoleAssert(nInputs == 0 || nInputs == 1, 'nInputs must be [0, 1]');
     }
 
 
@@ -30803,7 +30808,7 @@ function genParseListCount(parse)
     if (!ignore)
     {
         nInputs = parseInt(parse.move());
-        console.assert(nInputs == 0 || nInputs == 1, 'nInputs must be [0, 1]');
+        consoleAssert(nInputs == 0 || nInputs == 1, 'nInputs must be [0, 1]');
     }
 
 
@@ -30849,7 +30854,7 @@ function genParseIfElse(parse)
     if (!ignore)
     {
         nInputs = parseInt(parse.move());
-        console.assert(nInputs => 0 && nInputs <= 2, 'nInputs must be [0, 2]');
+        consoleAssert(nInputs => 0 && nInputs <= 2, 'nInputs must be [0, 2]');
     }
 
 
@@ -30912,7 +30917,7 @@ function genParseStart(parse)
     if (!ignore)
     {
         nInputs = parseInt(parse.move());
-        console.assert(nInputs == 0 || nInputs == 1, 'nInputs must be [0, 1]');
+        consoleAssert(nInputs == 0 || nInputs == 1, 'nInputs must be [0, 1]');
     }
 
 
@@ -30960,7 +30965,7 @@ function genParseStart(parse)
     if (!ignore)
     {
         nInputs = parseInt(parse.move());
-        console.assert(nInputs == 0 || nInputs == 1, 'nInputs must be [0, 1]');
+        consoleAssert(nInputs == 0 || nInputs == 1, 'nInputs must be [0, 1]');
     }
 
 
@@ -31004,7 +31009,7 @@ function genParseRepeat(parse)
     if (!ignore)
     {
         nInputs = parseInt(parse.move());
-        console.assert(nInputs == 0 || nInputs == 1, 'nInputs must be [0, 1]');
+        consoleAssert(nInputs == 0 || nInputs == 1, 'nInputs must be [0, 1]');
     }
 
 
@@ -31051,7 +31056,7 @@ function genParseCache(parse)
     if (!ignore)
     {
         nInputs = parseInt(parse.move());
-        console.assert(nInputs == 0 || nInputs == 1, 'nInputs must be [0, 1]');
+        consoleAssert(nInputs == 0 || nInputs == 1, 'nInputs must be [0, 1]');
     }
 
 
@@ -31095,7 +31100,7 @@ function genParseCopy(parse)
     if (!ignore)
     {
         nInputs = parseInt(parse.move());
-        console.assert(nInputs == 0 || nInputs == 1, 'nInputs must be [0, 1]');
+        consoleAssert(nInputs == 0 || nInputs == 1, 'nInputs must be [0, 1]');
     }
 
 
@@ -31142,7 +31147,7 @@ function genParseTimer(parse)
     if (!ignore)
     {
         nInputs = parseInt(parse.move());
-        console.assert(nInputs == 0 || nInputs == 1, 'nInputs must be [0, 1]');
+        consoleAssert(nInputs == 0 || nInputs == 1, 'nInputs must be [0, 1]');
     }
 
 
@@ -31188,7 +31193,7 @@ function genParseGroupNode(parse)
     if (!ignore)
     {
         nParams = parseInt(parse.move());
-        //console.assert(nInputs == 0 || nInputs == 1, 'nInputs must be [0, 1]');
+        consoleAssert(nInputs == 0 || nInputs == 1, 'nInputs must be [0, 1]');
     }
 
 
@@ -31240,8 +31245,8 @@ function genParseGroupParam(parse)
         nInputs  = parseInt(parse.move());
         nOutputs = parseInt(parse.move());
 
-        console.assert(nInputs  == 0 || nInputs  == 1,  'nInputs must be [0, 1]');
-        console.assert(nOutputs == 0 || nOutputs == 1, 'nOutputs must be [0, 1]');
+        consoleAssert(nInputs  == 0 || nInputs  == 1,  'nInputs must be [0, 1]');
+        consoleAssert(nOutputs == 0 || nOutputs == 1, 'nOutputs must be [0, 1]');
     }
 
 
@@ -31306,7 +31311,7 @@ function genParseFill(parse)
     if (!ignore)
     {
         nInputs = parseInt(parse.move());
-        console.assert(nInputs => 0 && nInputs <= 1, 'nInputs must be [0, 1]');
+        consoleAssert(nInputs => 0 && nInputs <= 1, 'nInputs must be [0, 1]');
     }
 
 
@@ -31477,7 +31482,7 @@ function genParseColorStop(parse)
     if (!ignore)
     {
         nInputs = parseInt(parse.move());
-        console.assert(nInputs => 0 && nInputs <= 1, 'nInputs must be [0, 1]');
+        consoleAssert(nInputs => 0 && nInputs <= 1, 'nInputs must be [0, 1]');
     }
 
 
@@ -31556,7 +31561,7 @@ function genParseStroke(parse)
     if (!ignore)
     {
         nInputs = parseInt(parse.move());
-        console.assert(nInputs => 0 && nInputs <= 1, 'nInputs must be [0, 1]');
+        consoleAssert(nInputs => 0 && nInputs <= 1, 'nInputs must be [0, 1]');
     }
 
 
@@ -31651,7 +31656,7 @@ function genParseDropShadow(parse)
     if (!ignore)
     {
         nInputs = parseInt(parse.move());
-        console.assert(nInputs => 0 && nInputs <= 1, 'nInputs must be [0, 1]');
+        consoleAssert(nInputs => 0 && nInputs <= 1, 'nInputs must be [0, 1]');
     }
 
 
@@ -31735,7 +31740,7 @@ function genParseInnerShadow(parse)
     if (!ignore)
     {
         nInputs = parseInt(parse.move());
-        console.assert(nInputs => 0 && nInputs <= 1, 'nInputs must be [0, 1]');
+        consoleAssert(nInputs => 0 && nInputs <= 1, 'nInputs must be [0, 1]');
     }
 
 
@@ -31818,7 +31823,7 @@ function genParseLayerBlur(parse)
     if (!ignore)
     {
         nInputs = parseInt(parse.move());
-        console.assert(nInputs => 0 && nInputs <= 1, 'nInputs must be [0, 1]');
+        consoleAssert(nInputs => 0 && nInputs <= 1, 'nInputs must be [0, 1]');
     }
 
 
@@ -31896,7 +31901,7 @@ function genParseBackBlur(parse)
     if (!ignore)
     {
         nInputs = parseInt(parse.move());
-        console.assert(nInputs => 0 && nInputs <= 1, 'nInputs must be [0, 1]');
+        consoleAssert(nInputs => 0 && nInputs <= 1, 'nInputs must be [0, 1]');
     }
 
 
@@ -32122,7 +32127,7 @@ function genParseSign(parse)
     if (!ignore)
     {
         nInputs = parseInt(parse.move());
-        console.assert(nInputs == 0 || nInputs == 1, 'nInputs must be [0, 1]');
+        consoleAssert(nInputs == 0 || nInputs == 1, 'nInputs must be [0, 1]');
     }
 
     
@@ -32166,7 +32171,7 @@ function genParseAbsolute(parse)
     if (!ignore)
     {
         nInputs = parseInt(parse.move());
-        console.assert(nInputs == 0 || nInputs == 1, 'nInputs must be [0, 1]');
+        consoleAssert(nInputs == 0 || nInputs == 1, 'nInputs must be [0, 1]');
     }
 
     
@@ -32210,7 +32215,7 @@ function genParseRound(parse)
     if (!ignore)
     {
         nInputs = parseInt(parse.move());
-        console.assert(nInputs == 0 || nInputs == 1, 'nInputs must be [0, 1]');
+        consoleAssert(nInputs == 0 || nInputs == 1, 'nInputs must be [0, 1]');
     }
 
     
@@ -32257,7 +32262,7 @@ function genParseLimits(parse)
     if (!ignore)
     {
         nInputs = parseInt(parse.move());
-        console.assert(nInputs == 0 || nInputs == 1, 'nInputs must be [0, 1]');
+        consoleAssert(nInputs == 0 || nInputs == 1, 'nInputs must be [0, 1]');
     }
 
     
@@ -32533,7 +32538,7 @@ function genParseInterpolate(parse)
     if (!ignore)
     {
         nInputs = parseInt(parse.move());
-        console.assert(nInputs => 0 && nInputs <= 2, 'nInputs must be [0, 2]');
+        consoleAssert(nInputs => 0 && nInputs <= 2, 'nInputs must be [0, 2]');
     }
 
     
@@ -32631,7 +32636,7 @@ function genParseCondition(parse)
     if (!ignore)
     {
         nInputs = parseInt(parse.move());
-        console.assert(nInputs => 0 && nInputs <= 2, 'nInputs must be [0, 2]');
+        consoleAssert(nInputs => 0 && nInputs <= 2, 'nInputs must be [0, 2]');
     }
 
     
@@ -32685,7 +32690,7 @@ function genParseConditionBase(parse, newNode)
     if (!ignore)
     {
         nInputs = parseInt(parse.move());
-        console.assert(nInputs => 0 && nInputs <= 2, 'nInputs must be [0, 2]');
+        consoleAssert(nInputs => 0 && nInputs <= 2, 'nInputs must be [0, 2]');
     }
 
     
@@ -32734,7 +32739,7 @@ function genParseTrigonometric(parse)
     if (!ignore)
     {
         nInputs = parseInt(parse.move());
-        console.assert(nInputs == 0 || nInputs == 1, 'nInputs must be [0, 1]');
+        consoleAssert(nInputs == 0 || nInputs == 1, 'nInputs must be [0, 1]');
     }
 
     
@@ -32779,7 +32784,7 @@ function genParseTrigBase(parse, newNode)
     if (!ignore)
     {
         nInputs = parseInt(parse.move());
-        console.assert(nInputs == 0 || nInputs == 1, 'nInputs must be [0, 1]');
+        consoleAssert(nInputs == 0 || nInputs == 1, 'nInputs must be [0, 1]');
     }
 
     
@@ -32823,7 +32828,7 @@ function genParseSolve(parse)
     if (!ignore)
     {
         nInputs = parseInt(parse.move());
-        console.assert(nInputs == 0 || nInputs == 1, 'nInputs must be [0, 1]');
+        consoleAssert(nInputs == 0 || nInputs == 1, 'nInputs must be [0, 1]');
     }
 
     
@@ -32909,7 +32914,7 @@ function genParseRectangle(parse)
     if (!ignore)
     {
         nInputs = parseInt(parse.move());
-        console.assert(nInputs => 0 && nInputs <= 1, 'nInputs must be [0, 1]');
+        consoleAssert(nInputs => 0 && nInputs <= 1, 'nInputs must be [0, 1]');
     }
 
 
@@ -32974,7 +32979,7 @@ function genParseLine(parse)
     if (!ignore)
     {
         nInputs = parseInt(parse.move());
-        console.assert(nInputs => 0 && nInputs <= 1, 'nInputs must be [0, 1]');
+        consoleAssert(nInputs => 0 && nInputs <= 1, 'nInputs must be [0, 1]');
     }
 
 
@@ -33037,7 +33042,7 @@ function genParseEllipse(parse)
     if (!ignore)
     {
         nInputs = parseInt(parse.move());
-        console.assert(nInputs => 0 && nInputs <= 1, 'nInputs must be [0, 1]');
+        consoleAssert(nInputs => 0 && nInputs <= 1, 'nInputs must be [0, 1]');
     }
 
 
@@ -33104,7 +33109,7 @@ function genParsePolygon(parse)
     if (!ignore)
     {
         nInputs = parseInt(parse.move());
-        console.assert(nInputs => 0 && nInputs <= 1, 'nInputs must be [0, 1]');
+        consoleAssert(nInputs => 0 && nInputs <= 1, 'nInputs must be [0, 1]');
     }
 
 
@@ -33170,7 +33175,7 @@ function genParseStar(parse)
     if (!ignore)
     {
         nInputs = parseInt(parse.move());
-        console.assert(nInputs => 0 && nInputs <= 1, 'nInputs must be [0, 1]');
+        consoleAssert(nInputs => 0 && nInputs <= 1, 'nInputs must be [0, 1]');
     }
 
 
@@ -33237,7 +33242,7 @@ function genParseTextShape(parse)
     if (!ignore)
     {
         nInputs = parseInt(parse.move());
-        console.assert(nInputs => 0 && nInputs <= 1, 'nInputs must be [0, 1]');
+        consoleAssert(nInputs => 0 && nInputs <= 1, 'nInputs must be [0, 1]');
     }
 
 
@@ -33323,7 +33328,7 @@ function genParsePoint(parse)
     if (!ignore)
     {
         nInputs = parseInt(parse.move());
-        console.assert(nInputs => 0 && nInputs <= 1, 'nInputs must be [0, 1]');
+        consoleAssert(nInputs => 0 && nInputs <= 1, 'nInputs must be [0, 1]');
     }
 
 
@@ -33398,7 +33403,7 @@ function genParseVectorPath(parse)
     if (!ignore)
     {
         nInputs = parseInt(parse.move());
-        console.assert(nInputs => 0 && nInputs <= 1, 'nInputs must be [0, 1]');
+        consoleAssert(nInputs => 0 && nInputs <= 1, 'nInputs must be [0, 1]');
     }
 
 
@@ -33463,7 +33468,7 @@ function genParseShapeBoolean(parse)
     if (!ignore)
     {
         nInputs = parseInt(parse.move());
-        console.assert(nInputs => 0 && nInputs <= 1, 'nInputs must be [0, 1]');
+        consoleAssert(nInputs => 0 && nInputs <= 1, 'nInputs must be [0, 1]');
     }
 
 
@@ -33565,7 +33570,7 @@ function genParseFrame(parse)
     if (!ignore)
     {
         nInputs = parseInt(parse.move());
-        console.assert(nInputs => 0 && nInputs <= 1, 'nInputs must be [0, 1]');
+        consoleAssert(nInputs => 0 && nInputs <= 1, 'nInputs must be [0, 1]');
     }
 
 
@@ -33632,7 +33637,7 @@ function genParseMove(parse)
     if (!ignore)
     {
         nInputs = parseInt(parse.move());
-        console.assert(nInputs => 0 && nInputs <= 1, 'nInputs must be [0, 1]');
+        consoleAssert(nInputs => 0 && nInputs <= 1, 'nInputs must be [0, 1]');
     }
 
 
@@ -33682,7 +33687,7 @@ function genParseRotate(parse)
     if (!ignore)
     {
         nInputs = parseInt(parse.move());
-        console.assert(nInputs => 0 && nInputs <= 1, 'nInputs must be [0, 1]');
+        consoleAssert(nInputs => 0 && nInputs <= 1, 'nInputs must be [0, 1]');
     }
 
 
@@ -33733,7 +33738,7 @@ function genParseScale(parse)
     if (!ignore)
     {
         nInputs = parseInt(parse.move());
-        console.assert(nInputs => 0 && nInputs <= 1, 'nInputs must be [0, 1]');
+        consoleAssert(nInputs => 0 && nInputs <= 1, 'nInputs must be [0, 1]');
     }
 
 
@@ -33785,7 +33790,7 @@ function genParseSkew(parse)
     if (!ignore)
     {
         nInputs = parseInt(parse.move());
-        console.assert(nInputs => 0 && nInputs <= 1, 'nInputs must be [0, 1]');
+        consoleAssert(nInputs => 0 && nInputs <= 1, 'nInputs must be [0, 1]');
     }
 
 
@@ -33837,7 +33842,7 @@ function genParsePlace(parse)
     if (!ignore)
     {
         nInputs = parseInt(parse.move());
-        console.assert(nInputs => 0 && nInputs <= 1, 'nInputs must be [0, 1]');
+        consoleAssert(nInputs => 0 && nInputs <= 1, 'nInputs must be [0, 1]');
     }
 
 
@@ -34046,7 +34051,7 @@ function genParseTextLength(parse)
     if (!ignore)
     {
         nInputs = parseInt(parse.move());
-        console.assert(nInputs == 0 || nInputs == 1, 'nInputs must be [0, 1]');
+        consoleAssert(nInputs == 0 || nInputs == 1, 'nInputs must be [0, 1]');
     }
 
     
@@ -34090,7 +34095,7 @@ function genParseTextTrim(parse)
     if (!ignore)
     {
         nInputs = parseInt(parse.move());
-        console.assert(nInputs == 0 || nInputs == 1, 'nInputs must be [0, 1]');
+        consoleAssert(nInputs == 0 || nInputs == 1, 'nInputs must be [0, 1]');
     }
 
     
@@ -34137,7 +34142,7 @@ function genParseTextSubstring(parse)
     if (!ignore)
     {
         nInputs = parseInt(parse.move());
-        console.assert(nInputs == 0 || nInputs == 1, 'nInputs must be [0, 1]');
+        consoleAssert(nInputs == 0 || nInputs == 1, 'nInputs must be [0, 1]');
     }
 
     
@@ -34184,7 +34189,7 @@ function genParseTextCase(parse)
     if (!ignore)
     {
         nInputs = parseInt(parse.move());
-        console.assert(nInputs == 0 || nInputs == 1, 'nInputs must be [0, 1]');
+        consoleAssert(nInputs == 0 || nInputs == 1, 'nInputs must be [0, 1]');
     }
 
     
@@ -34230,7 +34235,7 @@ function genParseTextReplace(parse)
     if (!ignore)
     {
         nInputs = parseInt(parse.move());
-        console.assert(nInputs == 0 || nInputs == 1, 'nInputs must be [0, 1]');
+        consoleAssert(nInputs == 0 || nInputs == 1, 'nInputs must be [0, 1]');
     }
 
     
@@ -34322,7 +34327,7 @@ function genParseTextPad(parse)
     if (!ignore)
     {
         nInputs = parseInt(parse.move());
-        console.assert(nInputs == 0 || nInputs == 1, 'nInputs must be [0, 1]');
+        consoleAssert(nInputs == 0 || nInputs == 1, 'nInputs must be [0, 1]');
     }
 
     
@@ -34371,7 +34376,7 @@ function genParseTextCompare(parse)
     if (!ignore)
     {
         nInputs = parseInt(parse.move());
-        console.assert(nInputs => 0 && nInputs <= 2, 'nInputs must be [0, 2]');
+        consoleAssert(nInputs => 0 && nInputs <= 2, 'nInputs must be [0, 2]');
     }
 
     
@@ -34425,7 +34430,7 @@ function genParseTextCharacter(parse)
     if (!ignore)
     {
         nInputs = parseInt(parse.move());
-        console.assert(nInputs == 0 || nInputs == 1, 'nInputs must be [0, 1]');
+        consoleAssert(nInputs == 0 || nInputs == 1, 'nInputs must be [0, 1]');
     }
 
     
@@ -34541,7 +34546,7 @@ function genParseTextCSV(parse)
     if (!ignore)
     {
         nInputs = parseInt(parse.move());
-        console.assert(nInputs == 0 || nInputs == 1, 'nInputs must be [0, 1]');
+        consoleAssert(nInputs == 0 || nInputs == 1, 'nInputs must be [0, 1]');
     }
 
     
@@ -34587,7 +34592,7 @@ function genParseTextJson(parse)
     if (!ignore)
     {
         nInputs = parseInt(parse.move());
-        console.assert(nInputs == 0 || nInputs == 1, 'nInputs must be [0, 1]');
+        consoleAssert(nInputs == 0 || nInputs == 1, 'nInputs must be [0, 1]');
     }
 
     
@@ -34906,7 +34911,7 @@ function genParse(parse, inParam = true)
  
     else if (parse.next == COMMENT                ) result = genParseComment          (parse);
 
-    else console.assert(false, 'unknown parse token \'' + parse.next + '\' @ ' + parse.pos);
+    else consoleError('unknown parse token \'' + parse.next + '\' @ ' + parse.pos);
 
 
     parse.inParam = false;
@@ -37305,7 +37310,7 @@ function colorFactor(space)
         case 'lab':      
         case 'luv':   return oppFactor;   
         
-        default:      console.assert(false, 'invalid color factor from space \''+space+'\''); break;
+        default:      consoleError('invalid color factor from space \''+space+'\''); break;
     }
 }
 
@@ -38203,6 +38208,9 @@ const connTag          = 'G_CONN';
 const pageTag          = 'G_PAGE';
 
 
+var   enableAsserts    = false;
+
+
 
 const identity = Object.freeze(
     [[1, 0, 0],
@@ -38359,7 +38367,7 @@ function mulv2m3(v, m)
 
 function mulm3m3(...mm)
 {
-    console.assert(mm.length > 0, 'mulm3m3() must take at least one argument');
+    consoleAssert(mm.length > 0, 'mulm3m3() must take at least one argument');
 
     let result = clone(mm[0]);
 
@@ -39000,6 +39008,22 @@ function pushUniqueExcept(array, item, except)
         item.forEach(i => pushUniqueExcept(array, i, except));
     else if (!array.find(except))
         array.push(item);
+}
+
+
+
+function consoleAssert(...params)
+{
+    if (enableAsserts)
+        console.assert(...params);
+}
+
+
+
+function consoleError(...params)
+{
+    if (enableAsserts)
+        console.error(...params);
 }
 
 
@@ -45493,7 +45517,7 @@ class FigmaObject
 
     copy()
     {
-        console.assert(false, 'invalid use of abstract class FigmaObject');
+        consoleError('invalid use of abstract class FigmaObject');
         return null;
     }
 
@@ -45652,7 +45676,7 @@ function copyFigmaObject(obj)
         case FRAME:       return FigmaFrame     .prototype.copy.call(obj);
     }
 
-    console.assert(false, 'invalid Figma object type \'' + obj.type + '\'');
+    consoleError('invalid Figma object type \'' + obj.type + '\'');
     return null;
 }
 
@@ -47180,7 +47204,7 @@ class GNode
 
     copy()
     {
-        console.assert(false, 'abstract type GNode cannot be copied');
+        consoleError('abstract type GNode cannot be copied');
         return null;
     }
 
@@ -47277,7 +47301,7 @@ extends GNode
 
     copy()
     {
-        console.assert(false, 'abstract class GValue cannot be copied');
+        consoleError('abstract class GValue cannot be copied');
         return null;
     }
 
@@ -47329,7 +47353,7 @@ extends GNode
 
     toJsCode(gen)
     {
-        console.assert(false, 'invalid abstract method');
+        consoleError('invalid abstract method');
         return '';
     }
 
@@ -47337,7 +47361,7 @@ extends GNode
 
     getNaN()
     {
-        console.assert(false, 'invalid abstract method');
+        consoleError('invalid abstract method');
         return null;
     }
 
@@ -47429,7 +47453,7 @@ function displayValue(type, value)
     }
 
 
-    console.assert(false, 'cannot display value of type \'' + type + '\'');
+    consoleError('cannot display value of type \'' + type + '\'');
 }
 
 
@@ -47466,7 +47490,7 @@ function nullFromType(type)
         case        FRAME_VALUE: return        FrameValue.NaN;
     }
 
-    console.assert(false, 'cannot determine null value from type \'' + type + '\'');
+    consoleError('cannot determine null value from type \'' + type + '\'');
 }
 
 
@@ -47567,7 +47591,7 @@ extends GNode
 
     toValue()
     {
-        console.assert(false, 'cannot call abstract method GOperator.toValue()');
+        consoleError('cannot call abstract method GOperator.toValue()');
         return null;
     }
 }
@@ -47651,7 +47675,7 @@ extends GOperator
     async eval(parse)
     {
         this.node = parse.parsedNodes.find(v => v.nodeId == this.nodeId);
-        console.assert(this.node, 'can\'t find parameter node \'' + this.nodeId + '\'');
+        consoleAssert(this.node, 'can\'t find parameter node \'' + this.nodeId + '\'');
 
 
         //this.param.feedbackValue = this.feedbackValue;
@@ -48003,7 +48027,7 @@ extends GValue
         super(NUMBER_VALUE);
 
         if (typeof val !== 'number')
-            console.assert(false, 'NumberValue(value) is ' + typeof val + ', must be a number');
+            consoleError('NumberValue(value) is ' + typeof val + ', must be a number');
 
 
         this.value    = val;
@@ -48128,7 +48152,7 @@ function parseNumberValue(str)
     if (str.indexOf(',') < 0)
     {
         console.trace();
-        console.assert(false, 'number value \'' + str + '\' missing \',\'');
+        consoleError('number value \'' + str + '\' missing \',\'');
     }
 
     
@@ -48169,7 +48193,7 @@ extends GValue
         if (typeof val !== 'string')
         {
             console.trace();
-            console.assert(false, 'TextValue(value) is ' + typeof val + ', must be a string');
+            consoleError('TextValue(value) is ' + typeof val + ', must be a string');
         }
 
         
@@ -48290,10 +48314,10 @@ extends GValue
 
     static create(space, c1, c2, c3)
     {
-        console.assert(typeof space == 'number', 'ColorValue.create() space must be a number');
-        console.assert(typeof c1    == 'number', 'ColorValue.create() c1 must be a number');
-        console.assert(typeof c2    == 'number', 'ColorValue.create() c2 must be a number');
-        console.assert(typeof c3    == 'number', 'ColorValue.create() c3 must be a number');
+        consoleAssert(typeof space == 'number', 'ColorValue.create() space must be a number');
+        consoleAssert(typeof c1    == 'number', 'ColorValue.create() c1 must be a number');
+        consoleAssert(typeof c2    == 'number', 'ColorValue.create() c2 must be a number');
+        consoleAssert(typeof c3    == 'number', 'ColorValue.create() c3 must be a number');
 
         return new ColorValue(
             new NumberValue(space),
@@ -48495,7 +48519,7 @@ extends GValue
     
     static create(r, g, b, opacity, blend = 0)
     {
-        console.assert(
+        consoleAssert(
             typeof opacity == 'number',
             'opacity must be a number');
 
@@ -48509,7 +48533,7 @@ extends GValue
 
     static fromRgb(rgb, opacity, blend = 0)
     {
-        console.assert(
+        consoleAssert(
             typeof opacity == 'number',
             'opacity must be a number');
 
@@ -48658,7 +48682,7 @@ function parseFillValue(str, i = -1)
 //          if ( FILL_TYPES.includes(fillValue.type)) return fill;
 //     else if (COLOR_TYPES.includes(fillValue.type)) return new FillValue(fill, fillValue.data.opacity);
 
-//     else console.assert(false, 'fill must have type');
+//     else consoleError('fill must have type');
 // }
 
 
@@ -48674,7 +48698,7 @@ extends GValue
                 position = new NumberValue(1))
     {
         if (fill.type != FILL_VALUE)
-            console.assert(false, 'fill.type is ' + fill.type + ', must be FILL_VALUE');
+            consoleError('fill.type is ' + fill.type + ', must be FILL_VALUE');
 
 
         super(COLOR_STOP_VALUE);
@@ -49005,7 +49029,7 @@ extends GValue
                 miter  = new NumberValue(28.96, 2))
     {
         if (fills.type != LIST_VALUE)
-            console.assert(false, 'fill.type is ' + fills.type + ', must be LIST_VALUE');
+            consoleError('fill.type is ' + fills.type + ', must be LIST_VALUE');
 
 
         super(STROKE_VALUE);
@@ -49160,7 +49184,7 @@ function parseStrokeValue(str, i = -1)
 //     else if (  FILL_TYPES.includes(stroke.type)) return new StrokeValue(stroke, value.data.weight);
 //     else if ( COLOR_TYPES.includes(stroke.type)) return new StrokeValue(new FillValue(stroke), value.data.weight);
 
-//     else console.assert(false, 'stroke must have type');
+//     else consoleError('stroke must have type');
 // }
 
 
@@ -52668,7 +52692,7 @@ extends GOperator
 
         if (this.loop.type != NUMBER_VALUE)
         {
-            console.assert(
+            consoleAssert(
                    this.loop.type == NUMBER_DEFINE
                 || this.loop.type == NUMBER_DISTRIBUTE
                 || this.loop.type == NUMBER_SEQUENCE
@@ -52755,7 +52779,7 @@ extends GOperator
                 }
 
 
-                console.assert(parse.repeats.at(-1) == repeat, 'invalid nested repeat');
+                consoleAssert(parse.repeats.at(-1) == repeat, 'invalid nested repeat');
                 parse.repeats.pop();
             }
 
@@ -53292,7 +53316,7 @@ extends GNumberType1
         {
             this.value = (await this.input.eval(parse)).toValue();
 
-            console.assert(
+            consoleAssert(
                 this.value.type == NUMBER_VALUE, 
                 'this.value.type must be NUMBER_VALUE');
 
@@ -53344,7 +53368,7 @@ extends GNumberType1
         {
             this.value = (await this.input.eval(parse)).toValue();
 
-            console.assert(
+            consoleAssert(
                 this.value.type == NUMBER_VALUE, 
                 'this.value.type must be NUMBER_VALUE');
 
@@ -53412,7 +53436,7 @@ extends GNumberType1
         {
             this.value = (await this.input.eval(parse)).toValue();
 
-            console.assert(
+            consoleAssert(
                 this.value.type == NUMBER_VALUE, 
                 'this.value.type must be NUMBER_VALUE');
 
@@ -53522,7 +53546,7 @@ extends GNumberType1
             this.value = (await this.input.eval(parse)).toValue();
             //console.log('this.value =', this.value);
 
-            console.assert(
+            consoleAssert(
                 this.value.type == NUMBER_VALUE, 
                 'this.value.type must be NUMBER_VALUE');
 
@@ -54492,7 +54516,7 @@ extends GNumberType1
         {
             let input = (await this.input.eval(parse)).toValue();
 
-            console.assert(
+            consoleAssert(
                 input.type == NUMBER_VALUE, 
                 'input.type must be NUMBER_VALUE');
 
@@ -54967,7 +54991,7 @@ async function evalAddInputs(inputs, parse)
         }
         else
         {
-            console.assert(
+            consoleAssert(
                 val.type == NUMBER_VALUE, 
                 'val.type must be NUMBER_VALUE');
 
@@ -55085,7 +55109,7 @@ async function evalSubtractInputs(inputs, parse)
             }
             else
             {
-                console.assert(
+                consoleAssert(
                     val.type == NUMBER_VALUE, 
                     'val.type must be NUMBER_VALUE');
                     
@@ -55171,7 +55195,7 @@ async function evalMultiplyInputs(inputs, parse)
             }
             else
             {
-                console.assert(
+                consoleAssert(
                     val.type == NUMBER_VALUE, 
                     'val.type must be NUMBER_VALUE');
 
@@ -55300,7 +55324,7 @@ async function evalDivideInputs(inputs, parse)
             }
             else
             {
-                console.assert(
+                consoleAssert(
                     val.type == NUMBER_VALUE, 
                     'val.type must be NUMBER_VALUE');
 
@@ -55435,7 +55459,7 @@ async function evalModuloInputs(inputs, parse)
             }
             else
             {
-                console.assert(
+                consoleAssert(
                     val.type == NUMBER_VALUE, 
                     'val.type must be NUMBER_VALUE');
 
@@ -55556,7 +55580,7 @@ async function evalExponentInputs(inputs, parse)
             }
             else
             {
-                console.assert(
+                consoleAssert(
                     val.type == NUMBER_VALUE, 
                     'val.type must be NUMBER_VALUE');
 
@@ -55748,7 +55772,7 @@ async function evalNandInputs(inputs, parse)
             }
             else
             {
-                console.assert(
+                consoleAssert(
                     val.type == NUMBER_VALUE, 
                     'val.type must be NUMBER_VALUE');
 
@@ -55857,7 +55881,7 @@ async function evalAndInputs(inputs, parse)
             }
             else
             {
-                console.assert(
+                consoleAssert(
                     val.type == NUMBER_VALUE, 
                     'val.type must be NUMBER_VALUE');
 
@@ -55971,7 +55995,7 @@ async function evalOrInputs(inputs, parse)
             }
             else
             {
-                console.assert(
+                consoleAssert(
                     val.type == NUMBER_VALUE, 
                     'val.type must be NUMBER_VALUE');
                     
@@ -56086,7 +56110,7 @@ async function evalXorInputs(inputs, parse)
             }
             else
             {
-                console.assert(
+                consoleAssert(
                     val.type == NUMBER_VALUE, 
                     'val.type must be NUMBER_VALUE');
                     
@@ -56918,7 +56942,7 @@ extends GOperator1
         if (this.input)
         {
             const input = (await this.input.eval(parse)).toValue();
-            console.assert(input.type == TEXT_VALUE, 'input must be TEXT_VALUE');
+            consoleAssert(input.type == TEXT_VALUE, 'input must be TEXT_VALUE');
 
             length = new NumberValue(input.value.length);
         }
@@ -56980,9 +57004,7 @@ extends GTextType1
         {
             this.value = (await this.input.eval(parse)).toValue();
             
-            console.assert(
-                this.value.type == TEXT_VALUE, 
-                'this.value.type must be TEXT_VALUE');
+            consoleAssert(this.value.type == TEXT_VALUE, 'this.value.type must be TEXT_VALUE');
                 
                 
             if (this.options.enabled)
@@ -57080,9 +57102,7 @@ extends GTextType1
             
             this.value = input.copy();
             
-            console.assert(
-                this.value.type == TEXT_VALUE, 
-                'this.value.type must be TEXT_VALUE');
+            consoleAssert(this.value.type == TEXT_VALUE, 'this.value.type must be TEXT_VALUE');
                 
                 
             if(start.value <= end.value)
@@ -57174,9 +57194,7 @@ extends GTextType1
         {
             this.value = (await this.input.eval(parse)).toValue();
             
-            console.assert(
-                this.value.type == TEXT_VALUE, 
-                'this.value.type must be TEXT_VALUE');
+            consoleAssert(this.value.type == TEXT_VALUE, 'this.value.type must be TEXT_VALUE');
                 
                 
             if (this.options.enabled)
@@ -57540,9 +57558,7 @@ extends GTextType1
         {
             this.value = (await this.input.eval(parse)).toValue();
 
-            console.assert(
-                this.value.type == TEXT_VALUE, 
-                'this.value.type must be TEXT_VALUE');
+            consoleAssert(this.value.type == TEXT_VALUE, 'this.value.type must be TEXT_VALUE');
 
             this.value.value = this.value.value.replaceAll(
                 unescapeString(_what.value),
@@ -57707,9 +57723,7 @@ async function evalJoinInputs(inputs, _with, parse)
         }
         else
         {
-            console.assert(
-                val.type == TEXT_VALUE, 
-                'val.type must be TEXT_VALUE');
+            consoleAssert(val.type == TEXT_VALUE, 'val.type must be TEXT_VALUE');
 
             value.value += val.value;
         }
@@ -57776,9 +57790,7 @@ extends GTextType1
             
             this.value = input.copy();
             
-            console.assert(
-                this.value.type == TEXT_VALUE, 
-                'this.value.type must be TEXT_VALUE');
+            consoleAssert(this.value.type == TEXT_VALUE, 'this.value.type must be TEXT_VALUE');
                 
                 
             if (this.options.enabled)
@@ -57880,7 +57892,7 @@ extends GOperator1
             
             if (input)
             {
-                console.assert(input.type == TEXT_VALUE, 'input must be TEXT_VALUE');
+                consoleAssert(input.type == TEXT_VALUE, 'input must be TEXT_VALUE');
                 const items = input.value.split(unescapeString(separator.value));
 
                 for (const item of items)
@@ -58559,7 +58571,7 @@ function getCorrectionsInOrder(order)
     }
 
     // should never get here
-    console.assert(false, 'invalid correction order ' + order);
+    consoleError('invalid correction order ' + order);
     return [0, 0, 0];
 }
 
@@ -58589,7 +58601,7 @@ function getMinCorrections(space, order)
         
         default:
             // should never get here
-            console.assert(false, 'invalid validation order ' + order);
+            consoleError('invalid validation order ' + order);
             return [0, 0, 0];
     }
 
@@ -58622,7 +58634,7 @@ function getMaxCorrections(space, order)
         
         default:
             // should never get here
-            console.assert(false, 'invalid validation order ' + order);
+            consoleError('invalid validation order ' + order);
             return [0, 0, 0];
     }
 
@@ -58748,7 +58760,7 @@ function getColorCorrections(colorSpace)
     }
 
 
-    console.assert(false, 'invalid color space ' + colorSpace);
+    consoleError('invalid color space ' + colorSpace);
     return [
         new ColorCorrection(),
         new ColorCorrection(),
@@ -59774,7 +59786,7 @@ extends GColorType2
             const input0 = (await this.input0.eval(parse)).toValue();
             const input1 = (await this.input1.eval(parse)).toValue();
 
-            console.assert(
+            consoleAssert(
                 amount.type == NUMBER_VALUE, 
                 'this.result.type must be NUMBER_VALUE');
 
@@ -59926,7 +59938,7 @@ extends GColorType2
             const input0 = (await this.input0.eval(parse)).toValue();
             const input1 = (await this.input1.eval(parse)).toValue();
 
-            console.assert(
+            consoleAssert(
                 opacity.type == NUMBER_VALUE, 
                 'this.result.type must be NUMBER_VALUE');
 
@@ -61004,7 +61016,7 @@ extends GOperator1
             return new ListValue([fills]);
         else
         {
-            console.assert(fills.type == LIST_VALUE, 'stroke.fills must be a LIST_VALUE');
+            consoleAssert(fills.type == LIST_VALUE, 'stroke.fills must be a LIST_VALUE');
             return fills;
         }
     }
@@ -61803,9 +61815,9 @@ extends GShapeBase
     {
         for (const obj of this.objects)
         {
-            console.assert(obj.fills,   'obj.fills must not be null'  );
-            console.assert(obj.strokes, 'obj.strokes must not be null');
-            console.assert(obj.effects, 'obj.effects must not be null');
+            consoleAssert(obj.fills,   'obj.fills must not be null'  );
+            consoleAssert(obj.strokes, 'obj.strokes must not be null');
+            consoleAssert(obj.effects, 'obj.effects must not be null');
 
             for (let i = this.value.props.items.length-1; i >= 0; i--)
             {
@@ -64261,8 +64273,6 @@ extends GOperator1
             return bounds;
             
 
-        console.log('options =', options);
-
         const x           = options.x.toNumber();
         const y           = options.y.toNumber();
         const moveType    = options.moveType.value;
@@ -65738,7 +65748,7 @@ function crashAssert(condition, error)
     initCrashDialog(error, null);
     showCrashDialog();
 
-    console.assert(false, error);
+    consoleError(error);
 }
 
 
@@ -66229,8 +66239,8 @@ extends Control
 
     setValue(value, fireChangeEvent = true, confirm = true, fullRange = true)
     {
-        if (typeof value != 'number')
-            console.assert(false, 'NumberControl.setValue(value) is ' + typeof value + ', must be a number');
+        //if (typeof value != 'number')
+            //console.error('NumberControl.setValue(value) is ' + typeof value + ', must be a number');
 
             
         const oldValue = this.value;
@@ -66326,7 +66336,7 @@ extends Control
 
 
         if (typeof this.value !== 'number')
-            console.assert(false, 'NumberControl.update() value is ' + typeof this.value + ', must be a number');
+            consoleError('NumberControl.update() value is ' + typeof this.value + ', must be a number');
 
         if (!this.measureData.offsetRect)
             return;
@@ -67882,7 +67892,7 @@ extends Control
     setValue(value, fireChangeEvent = true, updateControl = true)
     {
         if (typeof value != 'string')
-            console.assert(false, 'TextControl.setValue(value) is ' + typeof value + ', must be a string');
+            consoleError('TextControl.setValue(value) is ' + typeof value + ', must be a string');
 
             
         this.value = value;
@@ -67910,7 +67920,7 @@ extends Control
         if (typeof this.textbox.value !== 'string')
         {
             //console.trace();
-            console.assert(false, 'TextControl.update() value is ' + typeof this.textbox.value + ', must be a string');
+            consoleError('TextControl.update() value is ' + typeof this.textbox.value + ', must be a string');
         }
 
 
@@ -68588,8 +68598,8 @@ extends Control
 
     setValue(value, fireChangeEvent = true, confirm = true)
     {
-        if (!(value instanceof ColorValue))
-            console.assert(false, 'ColorControl.setValue(value) is ' + typeof value + ', must be a ColorValue');
+        //if (!(value instanceof ColorValue))
+            //console.error('ColorControl.setValue(value) is ' + typeof value + ', must be a ColorValue');
 
 
         const oldValue = this.value.copy();
@@ -75231,7 +75241,7 @@ extends Parameter
 
     setValue(value, createAction, updateControl = true, dispatchEvents = true) 
     {
-        console.assert(
+        consoleAssert(
             value instanceof NumberValue,
             'value must be a NumberValue');
 
@@ -75524,7 +75534,7 @@ extends NumberParamBase
     {
         // 'this' is the output
 
-        console.assert(value.type == NUMBER_VALUE, 'expected NUMBER_VALUE in backInit()');
+        consoleAssert(value.type == NUMBER_VALUE, 'expected NUMBER_VALUE in backInit()');
         
         this.param.setValue(value, false, true, false);
     }
@@ -75677,7 +75687,7 @@ extends NumberParamBase
     {
         // 'this' is the output
 
-        console.assert(value.type == NUMBER_VALUE, 'expected NUMBER_VALUE in backInit()');
+        consoleAssert(value.type == NUMBER_VALUE, 'expected NUMBER_VALUE in backInit()');
         
         this.param.setValue(value, false, true, false);
     }
@@ -75846,7 +75856,7 @@ extends Parameter
     {
         // 'this' is the output
 
-        console.assert(value.type == TEXT_VALUE, 'expected TEXT_VALUE in backInit()');
+        consoleAssert(value.type == TEXT_VALUE, 'expected TEXT_VALUE in backInit()');
         
         this.param.setValue(value, false, true, false);
     }
@@ -75879,7 +75889,7 @@ extends Parameter
         if (   !value.type 
             || !value.type == TEXT_VALUE)
         { 
-            console.assert(false, 'value.type must be TEXT_VALUE');
+            consoleError('value.type must be TEXT_VALUE');
             console.trace();
         }
 
@@ -76173,7 +76183,7 @@ extends Parameter
 
     setValue(value, createAction, updateControl = true, dispatchEvents = true) 
     {
-        console.assert(
+        consoleAssert(
                value.type 
             && value.type == COLOR_VALUE, 
             'value.type must be COLOR_VALUE');
@@ -76607,7 +76617,7 @@ extends Parameter
     {
         // 'this' is the output
 
-        console.assert(value.type == FILL_VALUE, 'expected FILL_VALUE in backInit()');
+        consoleAssert(value.type == FILL_VALUE, 'expected FILL_VALUE in backInit()');
         
         this.param.setValue(value, false, true, false);
     }
@@ -76618,9 +76628,9 @@ extends Parameter
     {
         //console.log('FillParam.setValue value =', value);
         if (!(value instanceof FillValue))
-            console.assert(false, 'FillParam.setValue(value) is ' + typeof value + ', must be a FillValue');
+            consoleError('FillParam.setValue(value) is ' + typeof value + ', must be a FillValue');
 
-        console.assert(
+        consoleAssert(
                value.type 
             && value.type == FILL_VALUE, 
             'FillParam value.type must be FILL_VALUE');
@@ -76687,7 +76697,7 @@ extends Parameter
             if (this.input.connectedOutput.supportsTypes([FILL_VALUE, COLOR_VALUE]))
                 request.push(...pushInputOrParam(this.input, gen));
             else
-                console.assert(false, 'invalid input for FillParam (' + this.node.id + ')');
+                consoleError('invalid input for FillParam (' + this.node.id + ')');
         }
 
         else request.push( 
@@ -76972,7 +76982,7 @@ extends Parameter
     {
         // 'this' is the output
 
-        console.assert(COLOR_STOP_VALUES.includes(value.type), 'expected COLOR_STOP_VALUE in backInit()');
+        consoleAssert(COLOR_STOP_VALUES.includes(value.type), 'expected COLOR_STOP_VALUE in backInit()');
         
         this.param.setValue(value, false, true, false);
     }
@@ -76984,10 +76994,10 @@ extends Parameter
         if (!(value instanceof ColorStopValue))
         {
             //console.log('value =', value);
-            console.assert(false, 'ColorStopParam.setValue(): value is ' + typeof value + ', must be a ColorStopValue');
+            consoleError('ColorStopParam.setValue(): value is ' + typeof value + ', must be a ColorStopValue');
         }
 
-        console.assert(
+        consoleAssert(
                value.type 
             && value.type == COLOR_STOP_VALUE, 
             'ColorStopParam value.type must be COLOR_STOP_VALUE');
@@ -77035,7 +77045,7 @@ extends Parameter
             if (this.input.supportsTypes(this.input.connectedOutput.types))
                 request.push(...pushInputOrParam(this.input, gen));
             else
-                console.assert(false, 'invalid input for ColorStopParam (' + this.node.id + ')');
+                consoleError('invalid input for ColorStopParam (' + this.node.id + ')');
         }
 
         else request.push( 
@@ -77168,7 +77178,7 @@ extends Parameter
     {
         // 'this' is the output
 
-        console.assert(GRADIENT_VALUES.includes(value.type), 'expected GRADIENT_VALUE in backInit()');
+        consoleAssert(GRADIENT_VALUES.includes(value.type), 'expected GRADIENT_VALUE in backInit()');
         
         this.param.setValue(value, false, true, false);
     }
@@ -77180,10 +77190,10 @@ extends Parameter
         if (!(value instanceof GradientValue))
         {
             //console.log('value =', value);
-            console.assert(false, 'GradientParam.setValue(): value is ' + typeof value + ', must be a GradientValue');
+            consoleError('GradientParam.setValue(): value is ' + typeof value + ', must be a GradientValue');
         }
 
-        console.assert(
+        consoleAssert(
                value.type 
             && value.type == GRADIENT_VALUE, 
             'GradientParam value.type must be GRADIENT_VALUE');
@@ -77231,7 +77241,7 @@ extends Parameter
             if (this.input.supportsTypes(this.input.connectedOutput.types))
                 request.push(...pushInputOrParam(this.input, gen));
             else
-                console.assert(false, 'invalid input for GradientParam (' + this.node.id + ')');
+                consoleError('invalid input for GradientParam (' + this.node.id + ')');
         }
 
         else request.push( 
@@ -77338,7 +77348,7 @@ extends Parameter
     {
         // 'this' is the output
 
-        console.assert(STROKE_VALUES.includes(value.type), 'expected STROKE_VALUE in backInit()');
+        consoleAssert(STROKE_VALUES.includes(value.type), 'expected STROKE_VALUE in backInit()');
         
         this.param.setValue(value, false, true, false);
     }
@@ -77350,10 +77360,10 @@ extends Parameter
         if (!(value instanceof StrokeValue))
         {
             //console.log('value =', value);
-            console.assert(false, 'StrokeParam.setValue(): value is ' + typeof value + ', must be a StrokeValue');
+            consoleError('StrokeParam.setValue(): value is ' + typeof value + ', must be a StrokeValue');
         }
 
-        console.assert(
+        consoleAssert(
                value.type 
             && value.type == STROKE_VALUE, 
             'StrokeParam value.type must be STROKE_VALUE');
@@ -77401,7 +77411,7 @@ extends Parameter
             if (this.input.supportsTypes(this.input.connectedOutput.types))
                 request.push(...pushInputOrParam(this.input, gen));
             else
-                console.assert(false, 'invalid input for StrokeParam (' + this.node.id + ')');
+                consoleError('invalid input for StrokeParam (' + this.node.id + ')');
         }
 
         else request.push( 
@@ -77541,7 +77551,7 @@ extends Parameter
     {
         // 'this' is the output
 
-        console.assert(LIST_VALUES.includes(value.type), 'expected LIST_VALUE in backInit()');
+        consoleAssert(LIST_VALUES.includes(value.type), 'expected LIST_VALUE in backInit()');
         
         this.param.setValue(value, false, true, false);
     }
@@ -77553,10 +77563,10 @@ extends Parameter
         if (!(value instanceof ListValue))
         {
             //console.log('value =', value);
-            console.assert(false, 'ListParam.setValue(): value is ' + typeof value + ', must be a ListValue');
+            consoleError('ListParam.setValue(): value is ' + typeof value + ', must be a ListValue');
         }
 
-        console.assert(
+        consoleAssert(
                value.type 
             && LIST_VALUES.includes(value.type), 
             'ListParam value.type must be LIST_VALUE');
@@ -77607,7 +77617,7 @@ extends Parameter
             if (this.input.supportsTypes(this.input.connectedOutput.types))
                 request.push(...pushInputOrParam(this.input, gen));
             else
-                console.assert(false, 'invalid input for ListParam (' + this.node.id + ')');
+                consoleError('invalid input for ListParam (' + this.node.id + ')');
         }
 
         else request.push( 
@@ -77725,7 +77735,7 @@ extends Parameter
     {
         // 'this' is the output
 
-        console.assert(value.type == RECTANGLE_VALUE, 'expected ' + RECTANGLE_VALUE + 'in backInit()');
+        consoleAssert(value.type == RECTANGLE_VALUE, 'expected ' + RECTANGLE_VALUE + 'in backInit()');
         
         this.param.setValue(value, false, true, false);
     }
@@ -77735,9 +77745,9 @@ extends Parameter
     setValue(value, createAction, updateControl = true, dispatchEvents = true) 
     {
         if (!(value instanceof RectangleValue))
-            console.assert(false, 'RectangleParam.setValue(value) is ' + typeof value + ', must be a RectangleValue');
+            consoleError('RectangleParam.setValue(value) is ' + typeof value + ', must be a RectangleValue');
 
-        console.assert(
+        consoleAssert(
                value.type 
             && value.type == RECTANGLE_VALUE, 
             'RectangleParam value.type must be RECTANGLE_VALUE');
@@ -77785,7 +77795,7 @@ extends Parameter
             if (this.input.connectedOutput.supportsTypes([RECTANGLE_VALUE]))
                 request.push(...pushInputOrParam(this.input, gen));
             else
-                console.assert(false, 'invalid input for RectangleParam (' + this.node.id + ')');
+                consoleError('invalid input for RectangleParam (' + this.node.id + ')');
         }
 
         else request.push( 
@@ -77893,7 +77903,7 @@ extends Parameter
     {
         // 'this' is the output
 
-        console.assert(value.type == LINE_VALUE, 'expected LINE_VALUE in backInit()');
+        consoleAssert(value.type == LINE_VALUE, 'expected LINE_VALUE in backInit()');
         
         this.param.setValue(value, false, true, false);
     }
@@ -77903,9 +77913,9 @@ extends Parameter
     setValue(value, createAction, updateControl = true, dispatchEvents = true) 
     {
         if (!(value instanceof LineValue))
-            console.assert(false, 'LineParam.setValue(value) is ' + typeof value + ', must be a LineValue');
+            consoleError('LineParam.setValue(value) is ' + typeof value + ', must be a LineValue');
 
-        console.assert(
+        consoleAssert(
                value.type 
             && value.type == LINE_VALUE, 
             'LineParam value.type must be LINE_VALUE');
@@ -77953,7 +77963,7 @@ extends Parameter
             if (this.input.connectedOutput.supportsTypes([LINE_VALUE]))
                 request.push(...pushInputOrParam(this.input, gen));
             else
-                console.assert(false, 'invalid input for LineParam (' + this.node.id + ')');
+                consoleError('invalid input for LineParam (' + this.node.id + ')');
         }
 
         else request.push( 
@@ -78061,7 +78071,7 @@ extends Parameter
     {
         // 'this' is the output
 
-        console.assert(value.type == ELLIPSE_VALUE, 'expected ELLIPSE_VALUE in backInit()');
+        consoleAssert(value.type == ELLIPSE_VALUE, 'expected ELLIPSE_VALUE in backInit()');
         
         this.param.setValue(value, false, true, false);
     }
@@ -78071,9 +78081,9 @@ extends Parameter
     setValue(value, createAction, updateControl = true, dispatchEvents = true) 
     {
         if (!(value instanceof EllipseValue))
-            console.assert(false, 'EllipseParam.setValue(value) is ' + typeof value + ', must be a EllipseValue');
+            consoleError('EllipseParam.setValue(value) is ' + typeof value + ', must be a EllipseValue');
 
-        console.assert(
+        consoleAssert(
                value.type 
             && value.type == ELLIPSE_VALUE, 
             'EllipseParam value.type must be ELLIPSE_VALUE');
@@ -78121,7 +78131,7 @@ extends Parameter
             if (this.input.connectedOutput.supportsTypes([ELLIPSE_VALUE]))
                 request.push(...pushInputOrParam(this.input, gen));
             else
-                console.assert(false, 'invalid input for EllipseParam (' + this.node.id + ')');
+                consoleError('invalid input for EllipseParam (' + this.node.id + ')');
         }
 
         else request.push( 
@@ -78229,7 +78239,7 @@ extends Parameter
     {
         // 'this' is the output
 
-        console.assert(value.type == POLYGON_VALUE, 'expected POLYGON_VALUE in backInit()');
+        consoleAssert(value.type == POLYGON_VALUE, 'expected POLYGON_VALUE in backInit()');
         
         this.param.setValue(value, false, true, false);
     }
@@ -78239,9 +78249,9 @@ extends Parameter
     setValue(value, createAction, updateControl = true, dispatchEvents = true) 
     {
         if (!(value instanceof PolygonValue))
-            console.assert(false, 'PolygonParam.setValue(value) is ' + typeof value + ', must be a PolygonValue');
+            consoleError('PolygonParam.setValue(value) is ' + typeof value + ', must be a PolygonValue');
 
-        console.assert(
+        consoleAssert(
                value.type 
             && value.type == POLYGON_VALUE, 
             'PolygonParam value.type must be POLYGON_VALUE');
@@ -78289,7 +78299,7 @@ extends Parameter
             if (this.input.connectedOutput.supportsTypes([POLYGON_VALUE]))
                 request.push(...pushInputOrParam(this.input, gen));
             else
-                console.assert(false, 'invalid input for PolygonParam (' + this.node.id + ')');
+                consoleError('invalid input for PolygonParam (' + this.node.id + ')');
         }
 
         else request.push( 
@@ -78397,7 +78407,7 @@ extends Parameter
     {
         // 'this' is the output
 
-        console.assert(value.type == STAR_VALUE, 'expected STAR_VALUE in backInit()');
+        consoleAssert(value.type == STAR_VALUE, 'expected STAR_VALUE in backInit()');
         
         this.param.setValue(value, false, true, false);
     }
@@ -78407,9 +78417,9 @@ extends Parameter
     setValue(value, createAction, updateControl = true, dispatchEvents = true) 
     {
         if (!(value instanceof StarValue))
-            console.assert(false, 'StarParam.setValue(value) is ' + typeof value + ', must be a StarValue');
+            consoleError('StarParam.setValue(value) is ' + typeof value + ', must be a StarValue');
 
-        console.assert(
+        consoleAssert(
                value.type 
             && value.type == STAR_VALUE, 
             'StarParam value.type must be STAR_VALUE');
@@ -78457,7 +78467,7 @@ extends Parameter
             if (this.input.connectedOutput.supportsTypes([STAR_VALUE]))
                 request.push(...pushInputOrParam(this.input, gen));
             else
-                console.assert(false, 'invalid input for StarParam (' + this.node.id + ')');
+                consoleError('invalid input for StarParam (' + this.node.id + ')');
         }
 
         else request.push( 
@@ -78565,7 +78575,7 @@ extends Parameter
     {
         // 'this' is the output
 
-        console.assert(value.type == TEXT_SHAPE_VALUE, 'expected TEXT_SHAPE_VALUE in backInit()');
+        consoleAssert(value.type == TEXT_SHAPE_VALUE, 'expected TEXT_SHAPE_VALUE in backInit()');
         
         this.param.setValue(value, false, true, false);
     }
@@ -78575,9 +78585,9 @@ extends Parameter
     setValue(value, createAction, updateControl = true, dispatchEvents = true) 
     {
         if (!(value instanceof TextShapeValue))
-            console.assert(false, 'TextShapeParam.setValue(value) is ' + typeof value + ', must be a TextShapeValue');
+            consoleError('TextShapeParam.setValue(value) is ' + typeof value + ', must be a TextShapeValue');
 
-        console.assert(
+        consoleAssert(
                value.type 
             && value.type == TEXT_SHAPE_VALUE, 
             'TextShapeParam value.type must be TEXT_SHAPE_VALUE');
@@ -78625,7 +78635,7 @@ extends Parameter
             if (this.input.connectedOutput.supportsTypes([TEXT_SHAPE_VALUE]))
                 request.push(...pushInputOrParam(this.input, gen));
             else
-                console.assert(false, 'invalid input for TextShapeParam (' + this.node.id + ')');
+                consoleError('invalid input for TextShapeParam (' + this.node.id + ')');
         }
 
         else request.push( 
@@ -78736,7 +78746,7 @@ extends Parameter
     {
         // 'this' is the output
 
-        console.assert(value.type == POINT_VALUE, 'expected POINT_VALUE in backInit()');
+        consoleAssert(value.type == POINT_VALUE, 'expected POINT_VALUE in backInit()');
         
         this.param.setValue(value, false, true, false);
     }
@@ -78746,9 +78756,9 @@ extends Parameter
     setValue(value, createAction, updateControl = true, dispatchEvents = true) 
     {
         if (!(value instanceof PointValue))
-            console.assert(false, 'PointParam.setValue(value) is ' + typeof value + ', must be a PointValue');
+            consoleError('PointParam.setValue(value) is ' + typeof value + ', must be a PointValue');
 
-        console.assert(
+        consoleAssert(
                value.type 
             && value.type == POINT_VALUE, 
             'PointParam value.type must be POINT_VALUE');
@@ -78796,7 +78806,7 @@ extends Parameter
             if (this.input.connectedOutput.supportsTypes(this.input.types))
                 request.push(...pushInputOrParam(this.input, gen));
             else
-                console.assert(false, 'invalid input for PointParam (' + this.node.id + ')');
+                consoleError('invalid input for PointParam (' + this.node.id + ')');
         }
 
         else request.push( 
@@ -78908,7 +78918,7 @@ extends Parameter
     {
         // 'this' is the output
 
-        console.assert(value.type == VECTOR_PATH_VALUE, 'expected VECTOR_PATH_VALUE in backInit()');
+        consoleAssert(value.type == VECTOR_PATH_VALUE, 'expected VECTOR_PATH_VALUE in backInit()');
         
         this.param.setValue(value, false, true, false);
     }
@@ -78918,9 +78928,9 @@ extends Parameter
     setValue(value, createAction, updateControl = true, dispatchEvents = true) 
     {
         if (!(value instanceof VectorPathValue))
-            console.assert(false, 'VectorPathParam.setValue(value) is ' + typeof value + ', must be a VectorPathValue');
+            consoleError('VectorPathParam.setValue(value) is ' + typeof value + ', must be a VectorPathValue');
 
-        console.assert(
+        consoleAssert(
                value.type 
             && value.type == VECTOR_PATH_VALUE, 
             'VectorPathParam value.type must be VECTOR_PATH_VALUE');
@@ -78968,7 +78978,7 @@ extends Parameter
             if (this.input.connectedOutput.supportsTypes([VECTOR_PATH_VALUE]))
                 request.push(...pushInputOrParam(this.input, gen));
             else
-                console.assert(false, 'invalid input for VectorPathParam (' + this.node.id + ')');
+                consoleError('invalid input for VectorPathParam (' + this.node.id + ')');
         }
 
         else request.push( 
@@ -79076,7 +79086,7 @@ extends Parameter
     {
         // 'this' is the output
 
-        console.assert(value.type == SHAPE_GROUP_VALUE, 'expected SHAPE_GROUP_VALUE in backInit()');
+        consoleAssert(value.type == SHAPE_GROUP_VALUE, 'expected SHAPE_GROUP_VALUE in backInit()');
         
         this.param.setValue(value, false, true, false);
     }
@@ -79086,9 +79096,9 @@ extends Parameter
     setValue(value, createAction, updateControl = true, dispatchEvents = true) 
     {
         if (!(value instanceof ShapeGroupValue))
-            console.assert(false, 'ShapeGroupParam.setValue(value) is ' + typeof value + ', must be a ShapeGroupValue');
+            consoleError('ShapeGroupParam.setValue(value) is ' + typeof value + ', must be a ShapeGroupValue');
 
-        console.assert(
+        consoleAssert(
                value.type 
             && value.type == SHAPE_GROUP_VALUE, 
             'ShapeGroupParam value.type must be SHAPE_GROUP_VALUE');
@@ -79136,7 +79146,7 @@ extends Parameter
             if (this.input.connectedOutput.supportsTypes([SHAPE_GROUP_VALUE]))
                 request.push(...pushInputOrParam(this.input, gen));
             else
-                console.assert(false, 'invalid input for ShapeGroupParam (' + this.node.id + ')');
+                consoleError('invalid input for ShapeGroupParam (' + this.node.id + ')');
         }
 
         else request.push( 
@@ -79239,7 +79249,7 @@ extends Parameter
     {
         // 'this' is the output
 
-        console.assert(value.type == FRAME_VALUE, 'expected FRAME_VALUE in backInit()');
+        consoleAssert(value.type == FRAME_VALUE, 'expected FRAME_VALUE in backInit()');
         
         this.param.setValue(value, false, true, false);
     }
@@ -79248,13 +79258,10 @@ extends Parameter
 
     setValue(value, createAction, updateControl = true, dispatchEvents = true) 
     {
-        if (!(value instanceof FrameValue))
-            console.assert(false, 'FrameParam.setValue(value) is ' + typeof value + ', must be a FrameValue');
+        //if (!(value instanceof FrameValue))
+            consoleError('FrameParam.setValue(value) is ' + typeof value + ', must be a FrameValue');
 
-        console.assert(
-               value.type 
-            && value.type == FRAME_VALUE, 
-            'FrameParam value.type must be FRAME_VALUE');
+        consoleAssert(value.type && value.type == FRAME_VALUE, 'FrameParam value.type must be FRAME_VALUE');
 
 
         this.preSetValue(value, createAction, dispatchEvents);
@@ -79298,8 +79305,8 @@ extends Parameter
         {
             if (this.input.connectedOutput.supportsTypes([FRAME_VALUE]))
                 request.push(...pushInputOrParam(this.input, gen));
-            else
-                console.assert(false, 'invalid input for FrameParam (' + this.node.id + ')');
+            //else
+                consoleError('invalid input for FrameParam (' + this.node.id + ')');
         }
 
         else request.push( 
@@ -79404,7 +79411,7 @@ extends Parameter
     {
         // 'this' is the output
 
-        console.assert(DROP_SHADOW_VALUES.includes(value.type), 'expected DROP_SHADOW_VALUE in backInit()');
+        consoleAssert(DROP_SHADOW_VALUES.includes(value.type), 'expected DROP_SHADOW_VALUE in backInit()');
         
         this.param.setValue(value, false, true, false);
     }
@@ -79416,10 +79423,10 @@ extends Parameter
         if (!(value instanceof DropShadowValue))
         {
             //console.log('value =', value);
-            console.assert(false, 'DropShadowParam.setValue(): value is ' + typeof value + ', must be a DropShadowValue');
+            consoleError('DropShadowParam.setValue(): value is ' + typeof value + ', must be a DropShadowValue');
         }
 
-        console.assert(
+        consoleAssert(
                value.type 
             && value.type == DROP_SHADOW_VALUE, 
             'DropShadowParam value.type must be DROP_SHADOW_VALUE');
@@ -79467,7 +79474,7 @@ extends Parameter
             if (this.input.supportsTypes(this.input.connectedOutput.types))
                 request.push(...pushInputOrParam(this.input, gen));
             else
-                console.assert(false, 'invalid input for DropShadowParam (' + this.node.id + ')');
+                consoleError('invalid input for DropShadowParam (' + this.node.id + ')');
         }
 
         else request.push( 
@@ -79584,7 +79591,7 @@ extends Parameter
     {
         // 'this' is the output
 
-        console.assert(INNER_SHADOW_VALUES.includes(value.type), 'expected INNER_SHADOW_VALUE in backInit()');
+        consoleAssert(INNER_SHADOW_VALUES.includes(value.type), 'expected INNER_SHADOW_VALUE in backInit()');
         
         this.param.setValue(value, false, true, false);
     }
@@ -79596,10 +79603,10 @@ extends Parameter
         if (!(value instanceof InnerShadowValue))
         {
             //console.log('value =', value);
-            console.assert(false, 'InnerShadowParam.setValue(): value is ' + typeof value + ', must be a InnerShadowValue');
+            consoleError('InnerShadowParam.setValue(): value is ' + typeof value + ', must be a InnerShadowValue');
         }
 
-        console.assert(
+        consoleAssert(
                value.type 
             && value.type == INNER_SHADOW_VALUE, 
             'InnerShadowParam value.type must be INNER_SHADOW_VALUE');
@@ -79647,7 +79654,7 @@ extends Parameter
             if (this.input.supportsTypes(this.input.connectedOutput.types))
                 request.push(...pushInputOrParam(this.input, gen));
             else
-                console.assert(false, 'invalid input for InnerShadowParam (' + this.node.id + ')');
+                consoleError('invalid input for InnerShadowParam (' + this.node.id + ')');
         }
 
         else request.push( 
@@ -79761,7 +79768,7 @@ extends Parameter
     {
         // 'this' is the output
 
-        console.assert(LAYER_BLUR_VALUES.includes(value.type), 'expected LAYER_BLUR_VALUE in backInit()');
+        consoleAssert(LAYER_BLUR_VALUES.includes(value.type), 'expected LAYER_BLUR_VALUE in backInit()');
         
         this.param.setValue(value, false, true, false);
     }
@@ -79773,10 +79780,10 @@ extends Parameter
         if (!(value instanceof LayerBlurValue))
         {
             //console.log('value =', value);
-            console.assert(false, 'LayerBlurParam.setValue(): value is ' + typeof value + ', must be a LayerBlurValue');
+            consoleError('LayerBlurParam.setValue(): value is ' + typeof value + ', must be a LayerBlurValue');
         }
 
-        console.assert(
+        consoleAssert(
                value.type 
             && value.type == LAYER_BLUR_VALUE, 
             'LayerBlurParam value.type must be LAYER_BLUR_VALUE');
@@ -79824,7 +79831,7 @@ extends Parameter
             if (this.input.supportsTypes(this.input.connectedOutput.types))
                 request.push(...pushInputOrParam(this.input, gen));
             else
-                console.assert(false, 'invalid input for LayerBlurParam (' + this.node.id + ')');
+                consoleError('invalid input for LayerBlurParam (' + this.node.id + ')');
         }
 
         else request.push( 
@@ -79938,7 +79945,7 @@ extends Parameter
     {
         // 'this' is the output
 
-        console.assert(BACK_BLUR_VALUES.includes(value.type), 'expected BACK_BLUR_VALUE in backInit()');
+        consoleAssert(BACK_BLUR_VALUES.includes(value.type), 'expected BACK_BLUR_VALUE in backInit()');
         
         this.param.setValue(value, false, true, false);
     }
@@ -79950,10 +79957,10 @@ extends Parameter
         if (!(value instanceof BackBlurValue))
         {
             //console.log('value =', value);
-            console.assert(false, 'BackBlurParam.setValue(): value is ' + typeof value + ', must be a BackBlurValue');
+            consoleError('BackBlurParam.setValue(): value is ' + typeof value + ', must be a BackBlurValue');
         }
 
-        console.assert(
+        consoleAssert(
                value.type 
             && value.type == BACK_BLUR_VALUE, 
             'BackBlurParam value.type must be BACK_BLUR_VALUE');
@@ -80001,7 +80008,7 @@ extends Parameter
             if (this.input.supportsTypes(this.input.connectedOutput.types))
                 request.push(...pushInputOrParam(this.input, gen));
             else
-                console.assert(false, 'invalid input for BackBlurParam (' + this.node.id + ')');
+                consoleError('invalid input for BackBlurParam (' + this.node.id + ')');
         }
 
         else request.push( 
@@ -82295,7 +82302,7 @@ class Operator
         else if (type ==   LAYER_BLUR_VALUE) return this.addParam(new   LayerBlurParam(id, id, showName, hasInput, hasOutput), volatile);
         else if (type ==    BACK_BLUR_VALUE) return this.addParam(new    BackBlurParam(id, id, showName, hasInput, hasOutput), volatile);
 
-        else console.assert(false, 'cannot add parameter of type \'' + type + '\'');
+        else consoleError('cannot add parameter of type \'' + type + '\'');
 
         return null;
     }
@@ -82325,7 +82332,7 @@ class Operator
         else if (type ==   LAYER_BLUR_VALUE) return this.insertParam(index, new   LayerBlurParam(id, id, showName, hasInput, hasOutput), volatile);
         else if (type ==    BACK_BLUR_VALUE) return this.insertParam(index, new    BackBlurParam(id, id, showName, hasInput, hasOutput), volatile);
 
-        else console.assert(false, 'cannot insert parameter of type \'' + type + '\'');
+        else consoleError('cannot insert parameter of type \'' + type + '\'');
 
         return null;
     }
@@ -82925,7 +82932,7 @@ class Operator
 
     connectToSelected(selected)
     {
-        console.assert(!isEmpty(selected));
+        consoleAssert(!isEmpty(selected));
 
         const node   = selected[0];
         const inputs = this.inputs.filter(i => i.types.includes(node.type));
@@ -85018,7 +85025,7 @@ extends OperatorBase
         super.updateValues(requestId, actionId, updateParamId, paramIds, values);
 
         const value = values[paramIds.findIndex(id => id == 'value')];
-        console.assert(LIST_VALUES.includes(value.type));
+        consoleAssert(LIST_VALUES.includes(value.type));
 
 
         this.outputs[0].types = [finalListTypeFromItems(value.items)];
@@ -86547,7 +86554,7 @@ extends OperatorBase
     {
         // 'this' is the output
 
-        console.assert(value.type == NUMBER_VALUE, 'expected NUMBER_VALUE in backInit()');
+        consoleAssert(value.type == NUMBER_VALUE, 'expected NUMBER_VALUE in backInit()');
         
         this.node.paramValue.setValue(value, false, true, false);
     }
@@ -89282,7 +89289,7 @@ extends ResizableBase
     {
         // 'this' is the output
 
-        console.assert(value.type == TEXT_VALUE, 'expected TEXT_VALUE in backInit()');
+        consoleAssert(value.type == TEXT_VALUE, 'expected TEXT_VALUE in backInit()');
         
         this.node.paramValue.setValue(value, false, true, false);
     }
@@ -90750,7 +90757,7 @@ extends OpColorBase
             value = value.color;
 
 
-        console.assert(value.type == COLOR_VALUE, 'expected COLOR_VALUE in backInit()');
+        consoleAssert(value.type == COLOR_VALUE, 'expected COLOR_VALUE in backInit()');
 
         const _color = convertDataColorToSpace(
             value.toDataColor(), 
@@ -91398,7 +91405,7 @@ function colorFactor(space)
         case 'lab':      
         case 'luv':   return oppFactor;   
         
-        default:      console.assert(false, 'invalid color factor from space \''+space+'\''); break;
+        default:      consoleError('invalid color factor from space \''+space+'\''); break;
     }
 }
 
@@ -92878,7 +92885,7 @@ extends OpColorBase
 
     updateValues(requestId, actionId, updateParamId, paramIds, values)
     {
-        console.assert(
+        consoleAssert(
             paramIds.length == values.length,
             'paramIds.length must equal values.length');
 
@@ -92890,11 +92897,11 @@ extends OpColorBase
         const standard = values[paramIds.findIndex(id => id == 'standard')];
         const contrast = values[paramIds.findIndex(id => id == 'contrast')];
 
-        console.assert(isValid(colText), 'colText is not valid');
-        console.assert(isValid(colBack), 'colBack is not valid');
+        consoleAssert(isValid(colText), 'colText is not valid');
+        consoleAssert(isValid(colBack), 'colBack is not valid');
 
-        console.assert(colText.type == COLOR_VALUE, 'colText.type = ' + colText.type);
-        console.assert(colBack.type == COLOR_VALUE, 'colBack.type = ' + colBack.type);
+        consoleAssert(colText.type == COLOR_VALUE, 'colText.type = ' + colText.type);
+        consoleAssert(colBack.type == COLOR_VALUE, 'colBack.type = ' + colBack.type);
 
 
         this.labelColor = 
@@ -93892,7 +93899,7 @@ extends OpColorBase
     {
         // 'this' is the output
 
-        console.assert(value.type == FILL_VALUE, 'expected FILL_VALUE in backInit()');
+        consoleAssert(value.type == FILL_VALUE, 'expected FILL_VALUE in backInit()');
 
         this.node.paramColor  .setValue(value.color,   false, true, false);
         this.node.paramOpacity.setValue(value.opacity, false, true, false);
@@ -94874,7 +94881,7 @@ extends OperatorBase
     {
         // 'this' is the output
 
-        console.assert(value.type == DROP_SHADOW_VALUE, 'expected DROP_SHADOW_VALUE in backInit()');
+        consoleAssert(value.type == DROP_SHADOW_VALUE, 'expected DROP_SHADOW_VALUE in backInit()');
 
         this.node.paramX     .setValue(value.x,      false, true, false);
         this.node.paramY     .setValue(value.y,      false, true, false);
@@ -95018,7 +95025,7 @@ extends OperatorBase
     {
         // 'this' is the output
 
-        console.assert(value.type == INNER_SHADOW_VALUE, 'expected INNER_SHADOW_VALUE in backInit()');
+        consoleAssert(value.type == INNER_SHADOW_VALUE, 'expected INNER_SHADOW_VALUE in backInit()');
 
         this.node.paramX     .setValue(value.x,      false, true, false);
         this.node.paramY     .setValue(value.y,      false, true, false);
@@ -95133,7 +95140,7 @@ extends OperatorBase
     {
         // 'this' is the output
 
-        console.assert(value.type == LAYER_BLUR_VALUE, 'expected LAYER_BLUR_VALUE in backInit()');
+        consoleAssert(value.type == LAYER_BLUR_VALUE, 'expected LAYER_BLUR_VALUE in backInit()');
 
         this.node.paramRadius.setValue(value.radius, false, true, false);
     }
@@ -95238,7 +95245,7 @@ extends OperatorBase
     {
         // 'this' is the output
 
-        console.assert(value.type == BACK_BLUR_VALUE, 'expected BACK_BLUR_VALUE in backInit()');
+        consoleAssert(value.type == BACK_BLUR_VALUE, 'expected BACK_BLUR_VALUE in backInit()');
 
         this.node.paramRadius.setValue(value.radius, false, true, false);
     }
@@ -95952,7 +95959,7 @@ extends OpShapeBase
     {
         // 'this' is the output
 
-        console.assert(value.type == POINT_VALUE, 'expected POINT_VALUE in backInit()');
+        consoleAssert(value.type == POINT_VALUE, 'expected POINT_VALUE in backInit()');
         
         this.node.paramX.setValue(value.x, false, true, false);
         this.node.paramY.setValue(value.y, false, true, false);
@@ -99151,7 +99158,7 @@ class Action
         this.type  = type;
         this.name  = name;
 
-        console.assert(
+        consoleAssert(
                this.name != undefined
             && this.name != null
             && this.name != '',
@@ -99256,7 +99263,7 @@ class Action
                 output._node = node; 
             }
 
-            console.assert(isValid(output), 'output should be found at this point');
+            consoleAssert(isValid(output), 'output should be found at this point');
 
 
             output.updateSavedConnectionOrder(_conn.outputOrder, +1);
@@ -99831,7 +99838,7 @@ function connectAction_activateOldActiveNodes(act, updateNodes)
     if (    act.oldOutputActiveNodeId != NULL
         && !act.inputActiveNodeIds.includes(act.oldOutputActiveNodeId))
     {
-        console.assert(act.oldOutputActiveNodeId != NULL, 'there should be an old output active node ID at this point')
+        consoleAssert(act.oldOutputActiveNodeId != NULL, 'there should be an old output active node ID at this point')
 
         const oldOutputActiveNode = nodeFromId(act.oldOutputActiveNodeId);
 
@@ -104758,7 +104765,7 @@ async function checkTrialExists()
         userId:  currentUser.id
     }); 
 
-    console.assert(response, 'invalid response from server @ checkTrialExists()');
+    consoleAssert(response, 'invalid response from server @ checkTrialExists()');
     return response ? response.result : false;
 }
 
@@ -104773,7 +104780,7 @@ async function checkTrialExists()
 //     }); 
 
     
-//     console.assert(response, 'invalid response from server @ checkTrialActive()');
+//     consoleAssert(response, 'invalid response from server @ checkTrialActive()');
 //     return response ? response.result : false;
 // }
 
@@ -104788,7 +104795,7 @@ async function checkTrialExists()
 //     }); 
 
     
-//     console.assert(response, 'invalid response from server @ checkSubActive()');
+//     consoleAssert(response, 'invalid response from server @ checkSubActive()');
 //     return response ? response.result : false;
 // }
 
@@ -104803,7 +104810,7 @@ async function checkSubOrTrialActive()
     }); 
 
     
-    console.assert(response, 'invalid response from server @ checkTrialOrSubActive()');
+    consoleAssert(response, 'invalid response from server @ checkTrialOrSubActive()');
     return response ? response.result : false;
 }
 
@@ -104818,7 +104825,7 @@ async function checkRemainingTrialDays()
     }); 
 
     
-    console.assert(response, 'invalid response from server @ checkRemainingTrialDays()');
+    consoleAssert(response, 'invalid response from server @ checkRemainingTrialDays()');
     return response ? response.result : -1;
 }
 
@@ -104851,7 +104858,7 @@ async function startFreeTrial()
     }); 
 
     
-    console.assert(response, 'invalid response from server @ createTrial()');
+    consoleAssert(response, 'invalid response from server @ createTrial()');
 
 
     if (response.result)
@@ -106120,7 +106127,7 @@ function createNode(nodeType, creatingButton = null, createdNodeId = -1, options
 
         case COMMENT:                 node = new OpComment();           break;
 
-        default:                      console.assert(false, 'Graph.js/createNode() cannot create type ' + nodeType);
+        default:                      consoleError('Graph.js/createNode() cannot create type ' + nodeType);
     }
     
     node._creatingButton = creatingButton;
@@ -107415,7 +107422,7 @@ function uiSetStyleId(msg)
 function initLocalStylesMenu(styles, nodeId)
 {
     const node = nodeFromId(nodeId);
-    console.assert(node.type == COLOR_STYLE, 'node must be COLOR_STYLE');
+    consoleAssert(node.type == COLOR_STYLE, 'node must be COLOR_STYLE');
 
 
     menuLocalStyles.clearItems();
@@ -107610,7 +107617,7 @@ function uiUpdateZoom(zoom)
 
 // function setCurrentGraph(graph)
 // {
-//     console.assert(graphView, 'there should be a valid graphView');
+//     consoleAssert(graphView, 'there should be a valid graphView');
 
 //     const elements = Array.prototype.slice.call(document.children);
 //     const index    = elements.indexOf(graphView.div);

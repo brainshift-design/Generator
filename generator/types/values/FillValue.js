@@ -24,7 +24,7 @@ extends GValue
     
     static create(r, g, b, opacity, blend = 0)
     {
-        console.assert(
+        consoleAssert(
             typeof opacity == 'number',
             'opacity must be a number');
 
@@ -38,7 +38,7 @@ extends GValue
 
     static fromRgb(rgb, opacity, blend = 0)
     {
-        console.assert(
+        consoleAssert(
             typeof opacity == 'number',
             'opacity must be a number');
 
@@ -187,5 +187,5 @@ function parseFillValue(str, i = -1)
 //          if ( FILL_TYPES.includes(fillValue.type)) return fill;
 //     else if (COLOR_TYPES.includes(fillValue.type)) return new FillValue(fill, fillValue.data.opacity);
 
-//     else console.assert(false, 'fill must have type');
+//     else consoleError('fill must have type');
 // }

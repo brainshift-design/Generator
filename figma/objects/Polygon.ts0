@@ -1,10 +1,9 @@
-function genPolyIsValid(genPoly)
+function genPolygonIsValid(genPoly)
 {
     return genPoly.x       != null && !isNaN(genPoly.x      )
         && genPoly.y       != null && !isNaN(genPoly.y      )
         && genPoly.width   != null && !isNaN(genPoly.width  )
         && genPoly.height  != null && !isNaN(genPoly.height )
-        //&& genPoly.angle   != null && !isNaN(genPoly.angle  )
         && genPoly.round   != null && !isNaN(genPoly.round  )
         && genPoly.corners != null && !isNaN(genPoly.corners);
 }
@@ -13,7 +12,7 @@ function genPolyIsValid(genPoly)
 
 function figCreatePolygon(genPoly)
 {
-    if (!genPolyIsValid(genPoly))
+    if (!genPolygonIsValid(genPoly))
         return null;
     
     

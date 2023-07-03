@@ -42,6 +42,9 @@ const connTag          = 'G_CONN';
 const pageTag          = 'G_PAGE';
 
 
+var   enableAsserts    = false;
+
+
 
 const identity = Object.freeze(
     [[1, 0, 0],
@@ -198,7 +201,7 @@ function mulv2m3(v, m)
 
 function mulm3m3(...mm)
 {
-    console.assert(mm.length > 0, 'mulm3m3() must take at least one argument');
+    consoleAssert(mm.length > 0, 'mulm3m3() must take at least one argument');
 
     let result = clone(mm[0]);
 
@@ -839,6 +842,22 @@ function pushUniqueExcept(array, item, except)
         item.forEach(i => pushUniqueExcept(array, i, except));
     else if (!array.find(except))
         array.push(item);
+}
+
+
+
+function consoleAssert(...params)
+{
+    if (enableAsserts)
+        console.assert(...params);
+}
+
+
+
+function consoleError(...params)
+{
+    if (enableAsserts)
+        console.error(...params);
 }
 
 
@@ -3061,7 +3080,7 @@ async function figCreateObject(genObj, addObject = null)
         figObj.name = makeObjectName(genObj);
 
 
-        console.assert(
+        consoleAssert(
                genObj.type == SHAPE_GROUP // cannot exist without children
             || !!figObj, 
             'no Figma object created');
@@ -3694,7 +3713,7 @@ function figLinkColorStyle(localStyles, nodeId, styleId, clearExisting = true)
 
 
     const figStyle = localStyles.find(s => s.id == styleId);
-    console.assert(!!figStyle, 'figStyle should be found here');
+    consoleAssert(!!figStyle, 'figStyle should be found here');
 
 
     figStyle.setPluginData('type',     COLOR_STYLE);
@@ -3716,7 +3735,7 @@ function figLinkColorStyle(localStyles, nodeId, styleId, clearExisting = true)
 function figClearColorStyle(localStyles, nodeId)
 {
     const figStyle = localStyles.find(s => s.getPluginData('nodeId') == nodeId);
-    //console.assert(!!figStyle, 'figStyle should be found here');
+    consoleAssert(!!figStyle, 'figStyle should be found here');
 
     if (figStyle) // could have been deleted
     {
@@ -4367,13 +4386,12 @@ function updatePointStyles(figPoint)
 
 
 
-function genPolyIsValid(genPoly)
+function genPolygonIsValid(genPoly)
 {
     return genPoly.x       != null && !isNaN(genPoly.x      )
         && genPoly.y       != null && !isNaN(genPoly.y      )
         && genPoly.width   != null && !isNaN(genPoly.width  )
         && genPoly.height  != null && !isNaN(genPoly.height )
-        //&& genPoly.angle   != null && !isNaN(genPoly.angle  )
         && genPoly.round   != null && !isNaN(genPoly.round  )
         && genPoly.corners != null && !isNaN(genPoly.corners);
 }
@@ -4382,7 +4400,7 @@ function genPolyIsValid(genPoly)
 
 function figCreatePolygon(genPoly)
 {
-    if (!genPolyIsValid(genPoly))
+    if (!genPolygonIsValid(genPoly))
         return null;
     
     

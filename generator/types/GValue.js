@@ -16,7 +16,7 @@ extends GNode
 
     copy()
     {
-        console.assert(false, 'abstract class GValue cannot be copied');
+        consoleError('abstract class GValue cannot be copied');
         return null;
     }
 
@@ -68,7 +68,7 @@ extends GNode
 
     toJsCode(gen)
     {
-        console.assert(false, 'invalid abstract method');
+        consoleError('invalid abstract method');
         return '';
     }
 
@@ -76,7 +76,7 @@ extends GNode
 
     getNaN()
     {
-        console.assert(false, 'invalid abstract method');
+        consoleError('invalid abstract method');
         return null;
     }
 
@@ -168,7 +168,7 @@ function displayValue(type, value)
     }
 
 
-    console.assert(false, 'cannot display value of type \'' + type + '\'');
+    consoleError('cannot display value of type \'' + type + '\'');
 }
 
 
@@ -205,5 +205,5 @@ function nullFromType(type)
         case        FRAME_VALUE: return        FrameValue.NaN;
     }
 
-    console.assert(false, 'cannot determine null value from type \'' + type + '\'');
+    consoleError('cannot determine null value from type \'' + type + '\'');
 }

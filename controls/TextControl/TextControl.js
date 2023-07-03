@@ -122,7 +122,7 @@ extends Control
     setValue(value, fireChangeEvent = true, updateControl = true)
     {
         if (typeof value != 'string')
-            console.assert(false, 'TextControl.setValue(value) is ' + typeof value + ', must be a string');
+            consoleError('TextControl.setValue(value) is ' + typeof value + ', must be a string');
 
             
         this.value = value;
@@ -150,7 +150,7 @@ extends Control
         if (typeof this.textbox.value !== 'string')
         {
             //console.trace();
-            console.assert(false, 'TextControl.update() value is ' + typeof this.textbox.value + ', must be a string');
+            consoleError('TextControl.update() value is ' + typeof this.textbox.value + ', must be a string');
         }
 
 

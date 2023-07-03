@@ -35,7 +35,7 @@ async function figCreateObject(genObj, addObject = null)
         figObj.name = makeObjectName(genObj);
 
 
-        console.assert(
+        consoleAssert(
                genObj.type == SHAPE_GROUP // cannot exist without children
             || !!figObj, 
             'no Figma object created');

@@ -214,8 +214,8 @@ extends Control
 
     setValue(value, fireChangeEvent = true, confirm = true, fullRange = true)
     {
-        if (typeof value != 'number')
-            console.assert(false, 'NumberControl.setValue(value) is ' + typeof value + ', must be a number');
+        //if (typeof value != 'number')
+            //console.error('NumberControl.setValue(value) is ' + typeof value + ', must be a number');
 
             
         const oldValue = this.value;
@@ -311,7 +311,7 @@ extends Control
 
 
         if (typeof this.value !== 'number')
-            console.assert(false, 'NumberControl.update() value is ' + typeof this.value + ', must be a number');
+            consoleError('NumberControl.update() value is ' + typeof this.value + ', must be a number');
 
         if (!this.measureData.offsetRect)
             return;

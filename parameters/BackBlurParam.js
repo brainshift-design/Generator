@@ -52,7 +52,7 @@ extends Parameter
     {
         // 'this' is the output
 
-        console.assert(BACK_BLUR_VALUES.includes(value.type), 'expected BACK_BLUR_VALUE in backInit()');
+        consoleAssert(BACK_BLUR_VALUES.includes(value.type), 'expected BACK_BLUR_VALUE in backInit()');
         
         this.param.setValue(value, false, true, false);
     }
@@ -64,10 +64,10 @@ extends Parameter
         if (!(value instanceof BackBlurValue))
         {
             //console.log('value =', value);
-            console.assert(false, 'BackBlurParam.setValue(): value is ' + typeof value + ', must be a BackBlurValue');
+            consoleError('BackBlurParam.setValue(): value is ' + typeof value + ', must be a BackBlurValue');
         }
 
-        console.assert(
+        consoleAssert(
                value.type 
             && value.type == BACK_BLUR_VALUE, 
             'BackBlurParam value.type must be BACK_BLUR_VALUE');
@@ -115,7 +115,7 @@ extends Parameter
             if (this.input.supportsTypes(this.input.connectedOutput.types))
                 request.push(...pushInputOrParam(this.input, gen));
             else
-                console.assert(false, 'invalid input for BackBlurParam (' + this.node.id + ')');
+                consoleError('invalid input for BackBlurParam (' + this.node.id + ')');
         }
 
         else request.push( 

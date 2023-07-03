@@ -33,7 +33,7 @@ extends GOperator
     async eval(parse)
     {
         this.node = parse.parsedNodes.find(v => v.nodeId == this.nodeId);
-        console.assert(this.node, 'can\'t find parameter node \'' + this.nodeId + '\'');
+        consoleAssert(this.node, 'can\'t find parameter node \'' + this.nodeId + '\'');
 
 
         //this.param.feedbackValue = this.feedbackValue;

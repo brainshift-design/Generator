@@ -423,7 +423,7 @@ class Operator
         else if (type ==   LAYER_BLUR_VALUE) return this.addParam(new   LayerBlurParam(id, id, showName, hasInput, hasOutput), volatile);
         else if (type ==    BACK_BLUR_VALUE) return this.addParam(new    BackBlurParam(id, id, showName, hasInput, hasOutput), volatile);
 
-        else console.assert(false, 'cannot add parameter of type \'' + type + '\'');
+        else consoleError('cannot add parameter of type \'' + type + '\'');
 
         return null;
     }
@@ -453,7 +453,7 @@ class Operator
         else if (type ==   LAYER_BLUR_VALUE) return this.insertParam(index, new   LayerBlurParam(id, id, showName, hasInput, hasOutput), volatile);
         else if (type ==    BACK_BLUR_VALUE) return this.insertParam(index, new    BackBlurParam(id, id, showName, hasInput, hasOutput), volatile);
 
-        else console.assert(false, 'cannot insert parameter of type \'' + type + '\'');
+        else consoleError('cannot insert parameter of type \'' + type + '\'');
 
         return null;
     }
@@ -1053,7 +1053,7 @@ class Operator
 
     connectToSelected(selected)
     {
-        console.assert(!isEmpty(selected));
+        consoleAssert(!isEmpty(selected));
 
         const node   = selected[0];
         const inputs = this.inputs.filter(i => i.types.includes(node.type));

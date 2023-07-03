@@ -69,9 +69,9 @@ extends GShapeBase
     {
         for (const obj of this.objects)
         {
-            console.assert(obj.fills,   'obj.fills must not be null'  );
-            console.assert(obj.strokes, 'obj.strokes must not be null');
-            console.assert(obj.effects, 'obj.effects must not be null');
+            consoleAssert(obj.fills,   'obj.fills must not be null'  );
+            consoleAssert(obj.strokes, 'obj.strokes must not be null');
+            consoleAssert(obj.effects, 'obj.effects must not be null');
 
             for (let i = this.value.props.items.length-1; i >= 0; i--)
             {

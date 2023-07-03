@@ -64,7 +64,7 @@ extends OperatorBase
         super.updateValues(requestId, actionId, updateParamId, paramIds, values);
 
         const value = values[paramIds.findIndex(id => id == 'value')];
-        console.assert(LIST_VALUES.includes(value.type));
+        consoleAssert(LIST_VALUES.includes(value.type));
 
 
         this.outputs[0].types = [finalListTypeFromItems(value.items)];

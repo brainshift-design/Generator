@@ -52,7 +52,7 @@ extends Parameter
     {
         // 'this' is the output
 
-        console.assert(INNER_SHADOW_VALUES.includes(value.type), 'expected INNER_SHADOW_VALUE in backInit()');
+        consoleAssert(INNER_SHADOW_VALUES.includes(value.type), 'expected INNER_SHADOW_VALUE in backInit()');
         
         this.param.setValue(value, false, true, false);
     }
@@ -64,10 +64,10 @@ extends Parameter
         if (!(value instanceof InnerShadowValue))
         {
             //console.log('value =', value);
-            console.assert(false, 'InnerShadowParam.setValue(): value is ' + typeof value + ', must be a InnerShadowValue');
+            consoleError('InnerShadowParam.setValue(): value is ' + typeof value + ', must be a InnerShadowValue');
         }
 
-        console.assert(
+        consoleAssert(
                value.type 
             && value.type == INNER_SHADOW_VALUE, 
             'InnerShadowParam value.type must be INNER_SHADOW_VALUE');
@@ -115,7 +115,7 @@ extends Parameter
             if (this.input.supportsTypes(this.input.connectedOutput.types))
                 request.push(...pushInputOrParam(this.input, gen));
             else
-                console.assert(false, 'invalid input for InnerShadowParam (' + this.node.id + ')');
+                consoleError('invalid input for InnerShadowParam (' + this.node.id + ')');
         }
 
         else request.push( 

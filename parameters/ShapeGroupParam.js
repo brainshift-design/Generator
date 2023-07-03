@@ -53,7 +53,7 @@ extends Parameter
     {
         // 'this' is the output
 
-        console.assert(value.type == SHAPE_GROUP_VALUE, 'expected SHAPE_GROUP_VALUE in backInit()');
+        consoleAssert(value.type == SHAPE_GROUP_VALUE, 'expected SHAPE_GROUP_VALUE in backInit()');
         
         this.param.setValue(value, false, true, false);
     }
@@ -63,9 +63,9 @@ extends Parameter
     setValue(value, createAction, updateControl = true, dispatchEvents = true) 
     {
         if (!(value instanceof ShapeGroupValue))
-            console.assert(false, 'ShapeGroupParam.setValue(value) is ' + typeof value + ', must be a ShapeGroupValue');
+            consoleError('ShapeGroupParam.setValue(value) is ' + typeof value + ', must be a ShapeGroupValue');
 
-        console.assert(
+        consoleAssert(
                value.type 
             && value.type == SHAPE_GROUP_VALUE, 
             'ShapeGroupParam value.type must be SHAPE_GROUP_VALUE');
@@ -113,7 +113,7 @@ extends Parameter
             if (this.input.connectedOutput.supportsTypes([SHAPE_GROUP_VALUE]))
                 request.push(...pushInputOrParam(this.input, gen));
             else
-                console.assert(false, 'invalid input for ShapeGroupParam (' + this.node.id + ')');
+                consoleError('invalid input for ShapeGroupParam (' + this.node.id + ')');
         }
 
         else request.push( 

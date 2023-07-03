@@ -62,7 +62,7 @@ extends GOperator
 
         if (this.loop.type != NUMBER_VALUE)
         {
-            console.assert(
+            consoleAssert(
                    this.loop.type == NUMBER_DEFINE
                 || this.loop.type == NUMBER_DISTRIBUTE
                 || this.loop.type == NUMBER_SEQUENCE
@@ -149,7 +149,7 @@ extends GOperator
                 }
 
 
-                console.assert(parse.repeats.at(-1) == repeat, 'invalid nested repeat');
+                consoleAssert(parse.repeats.at(-1) == repeat, 'invalid nested repeat');
                 parse.repeats.pop();
             }
 

@@ -93,7 +93,7 @@ async function evalNandInputs(inputs, parse)
             }
             else
             {
-                console.assert(
+                consoleAssert(
                     val.type == NUMBER_VALUE, 
                     'val.type must be NUMBER_VALUE');
 

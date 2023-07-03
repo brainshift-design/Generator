@@ -51,7 +51,7 @@ function colorFactor(space)
         case 'lab':      
         case 'luv':   return oppFactor;   
         
-        default:      console.assert(false, 'invalid color factor from space \''+space+'\''); break;
+        default:      consoleError('invalid color factor from space \''+space+'\''); break;
     }
 }
 

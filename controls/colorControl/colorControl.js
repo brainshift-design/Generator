@@ -104,8 +104,8 @@ extends Control
 
     setValue(value, fireChangeEvent = true, confirm = true)
     {
-        if (!(value instanceof ColorValue))
-            console.assert(false, 'ColorControl.setValue(value) is ' + typeof value + ', must be a ColorValue');
+        //if (!(value instanceof ColorValue))
+            //console.error('ColorControl.setValue(value) is ' + typeof value + ', must be a ColorValue');
 
 
         const oldValue = this.value.copy();

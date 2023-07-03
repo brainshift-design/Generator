@@ -53,7 +53,7 @@ extends Parameter
     {
         // 'this' is the output
 
-        console.assert(value.type == POLYGON_VALUE, 'expected POLYGON_VALUE in backInit()');
+        consoleAssert(value.type == POLYGON_VALUE, 'expected POLYGON_VALUE in backInit()');
         
         this.param.setValue(value, false, true, false);
     }
@@ -63,9 +63,9 @@ extends Parameter
     setValue(value, createAction, updateControl = true, dispatchEvents = true) 
     {
         if (!(value instanceof PolygonValue))
-            console.assert(false, 'PolygonParam.setValue(value) is ' + typeof value + ', must be a PolygonValue');
+            consoleError('PolygonParam.setValue(value) is ' + typeof value + ', must be a PolygonValue');
 
-        console.assert(
+        consoleAssert(
                value.type 
             && value.type == POLYGON_VALUE, 
             'PolygonParam value.type must be POLYGON_VALUE');
@@ -113,7 +113,7 @@ extends Parameter
             if (this.input.connectedOutput.supportsTypes([POLYGON_VALUE]))
                 request.push(...pushInputOrParam(this.input, gen));
             else
-                console.assert(false, 'invalid input for PolygonParam (' + this.node.id + ')');
+                consoleError('invalid input for PolygonParam (' + this.node.id + ')');
         }
 
         else request.push( 

@@ -69,7 +69,7 @@ extends Parameter
     {
         // 'this' is the output
 
-        console.assert(value.type == TEXT_VALUE, 'expected TEXT_VALUE in backInit()');
+        consoleAssert(value.type == TEXT_VALUE, 'expected TEXT_VALUE in backInit()');
         
         this.param.setValue(value, false, true, false);
     }
@@ -102,7 +102,7 @@ extends Parameter
         if (   !value.type 
             || !value.type == TEXT_VALUE)
         { 
-            console.assert(false, 'value.type must be TEXT_VALUE');
+            consoleError('value.type must be TEXT_VALUE');
             console.trace();
         }
 

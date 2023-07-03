@@ -52,7 +52,7 @@ extends Parameter
     {
         // 'this' is the output
 
-        console.assert(COLOR_STOP_VALUES.includes(value.type), 'expected COLOR_STOP_VALUE in backInit()');
+        consoleAssert(COLOR_STOP_VALUES.includes(value.type), 'expected COLOR_STOP_VALUE in backInit()');
         
         this.param.setValue(value, false, true, false);
     }
@@ -64,10 +64,10 @@ extends Parameter
         if (!(value instanceof ColorStopValue))
         {
             //console.log('value =', value);
-            console.assert(false, 'ColorStopParam.setValue(): value is ' + typeof value + ', must be a ColorStopValue');
+            consoleError('ColorStopParam.setValue(): value is ' + typeof value + ', must be a ColorStopValue');
         }
 
-        console.assert(
+        consoleAssert(
                value.type 
             && value.type == COLOR_STOP_VALUE, 
             'ColorStopParam value.type must be COLOR_STOP_VALUE');
@@ -115,7 +115,7 @@ extends Parameter
             if (this.input.supportsTypes(this.input.connectedOutput.types))
                 request.push(...pushInputOrParam(this.input, gen));
             else
-                console.assert(false, 'invalid input for ColorStopParam (' + this.node.id + ')');
+                consoleError('invalid input for ColorStopParam (' + this.node.id + ')');
         }
 
         else request.push( 

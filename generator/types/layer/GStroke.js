@@ -102,7 +102,7 @@ extends GOperator1
             return new ListValue([fills]);
         else
         {
-            console.assert(fills.type == LIST_VALUE, 'stroke.fills must be a LIST_VALUE');
+            consoleAssert(fills.type == LIST_VALUE, 'stroke.fills must be a LIST_VALUE');
             return fills;
         }
     }

@@ -44,7 +44,7 @@ extends GNumberType1
         {
             this.value = (await this.input.eval(parse)).toValue();
 
-            console.assert(
+            consoleAssert(
                 this.value.type == NUMBER_VALUE, 
                 'this.value.type must be NUMBER_VALUE');
 

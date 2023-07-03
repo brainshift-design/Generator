@@ -62,7 +62,7 @@ extends OpColorBase
     {
         // 'this' is the output
 
-        console.assert(value.type == FILL_VALUE, 'expected FILL_VALUE in backInit()');
+        consoleAssert(value.type == FILL_VALUE, 'expected FILL_VALUE in backInit()');
 
         this.node.paramColor  .setValue(value.color,   false, true, false);
         this.node.paramOpacity.setValue(value.opacity, false, true, false);

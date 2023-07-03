@@ -39,7 +39,7 @@ extends OperatorBase
     {
         // 'this' is the output
 
-        console.assert(value.type == BACK_BLUR_VALUE, 'expected BACK_BLUR_VALUE in backInit()');
+        consoleAssert(value.type == BACK_BLUR_VALUE, 'expected BACK_BLUR_VALUE in backInit()');
 
         this.node.paramRadius.setValue(value.radius, false, true, false);
     }

@@ -53,7 +53,7 @@ extends Parameter
     {
         // 'this' is the output
 
-        console.assert(value.type == LINE_VALUE, 'expected LINE_VALUE in backInit()');
+        consoleAssert(value.type == LINE_VALUE, 'expected LINE_VALUE in backInit()');
         
         this.param.setValue(value, false, true, false);
     }
@@ -63,9 +63,9 @@ extends Parameter
     setValue(value, createAction, updateControl = true, dispatchEvents = true) 
     {
         if (!(value instanceof LineValue))
-            console.assert(false, 'LineParam.setValue(value) is ' + typeof value + ', must be a LineValue');
+            consoleError('LineParam.setValue(value) is ' + typeof value + ', must be a LineValue');
 
-        console.assert(
+        consoleAssert(
                value.type 
             && value.type == LINE_VALUE, 
             'LineParam value.type must be LINE_VALUE');
@@ -113,7 +113,7 @@ extends Parameter
             if (this.input.connectedOutput.supportsTypes([LINE_VALUE]))
                 request.push(...pushInputOrParam(this.input, gen));
             else
-                console.assert(false, 'invalid input for LineParam (' + this.node.id + ')');
+                consoleError('invalid input for LineParam (' + this.node.id + ')');
         }
 
         else request.push( 

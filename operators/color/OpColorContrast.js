@@ -122,7 +122,7 @@ extends OpColorBase
 
     updateValues(requestId, actionId, updateParamId, paramIds, values)
     {
-        console.assert(
+        consoleAssert(
             paramIds.length == values.length,
             'paramIds.length must equal values.length');
 
@@ -134,11 +134,11 @@ extends OpColorBase
         const standard = values[paramIds.findIndex(id => id == 'standard')];
         const contrast = values[paramIds.findIndex(id => id == 'contrast')];
 
-        console.assert(isValid(colText), 'colText is not valid');
-        console.assert(isValid(colBack), 'colBack is not valid');
+        consoleAssert(isValid(colText), 'colText is not valid');
+        consoleAssert(isValid(colBack), 'colBack is not valid');
 
-        console.assert(colText.type == COLOR_VALUE, 'colText.type = ' + colText.type);
-        console.assert(colBack.type == COLOR_VALUE, 'colBack.type = ' + colBack.type);
+        consoleAssert(colText.type == COLOR_VALUE, 'colText.type = ' + colText.type);
+        consoleAssert(colBack.type == COLOR_VALUE, 'colBack.type = ' + colBack.type);
 
 
         this.labelColor = 

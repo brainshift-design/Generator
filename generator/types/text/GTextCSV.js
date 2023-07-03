@@ -45,7 +45,7 @@ extends GOperator1
             
             if (input)
             {
-                console.assert(input.type == TEXT_VALUE, 'input must be TEXT_VALUE');
+                consoleAssert(input.type == TEXT_VALUE, 'input must be TEXT_VALUE');
                 const items = input.value.split(unescapeString(separator.value));
 
                 for (const item of items)

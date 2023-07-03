@@ -56,7 +56,7 @@ extends ResizableBase
     {
         // 'this' is the output
 
-        console.assert(value.type == TEXT_VALUE, 'expected TEXT_VALUE in backInit()');
+        consoleAssert(value.type == TEXT_VALUE, 'expected TEXT_VALUE in backInit()');
         
         this.node.paramValue.setValue(value, false, true, false);
     }

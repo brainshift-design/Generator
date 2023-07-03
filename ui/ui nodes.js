@@ -127,7 +127,7 @@ function createNode(nodeType, creatingButton = null, createdNodeId = -1, options
 
         case COMMENT:                 node = new OpComment();           break;
 
-        default:                      console.assert(false, 'Graph.js/createNode() cannot create type ' + nodeType);
+        default:                      consoleError('Graph.js/createNode() cannot create type ' + nodeType);
     }
     
     node._creatingButton = creatingButton;

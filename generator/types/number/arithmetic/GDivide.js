@@ -112,7 +112,7 @@ async function evalDivideInputs(inputs, parse)
             }
             else
             {
-                console.assert(
+                consoleAssert(
                     val.type == NUMBER_VALUE, 
                     'val.type must be NUMBER_VALUE');
 

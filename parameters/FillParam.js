@@ -171,7 +171,7 @@ extends Parameter
     {
         // 'this' is the output
 
-        console.assert(value.type == FILL_VALUE, 'expected FILL_VALUE in backInit()');
+        consoleAssert(value.type == FILL_VALUE, 'expected FILL_VALUE in backInit()');
         
         this.param.setValue(value, false, true, false);
     }
@@ -182,9 +182,9 @@ extends Parameter
     {
         //console.log('FillParam.setValue value =', value);
         if (!(value instanceof FillValue))
-            console.assert(false, 'FillParam.setValue(value) is ' + typeof value + ', must be a FillValue');
+            consoleError('FillParam.setValue(value) is ' + typeof value + ', must be a FillValue');
 
-        console.assert(
+        consoleAssert(
                value.type 
             && value.type == FILL_VALUE, 
             'FillParam value.type must be FILL_VALUE');
@@ -251,7 +251,7 @@ extends Parameter
             if (this.input.connectedOutput.supportsTypes([FILL_VALUE, COLOR_VALUE]))
                 request.push(...pushInputOrParam(this.input, gen));
             else
-                console.assert(false, 'invalid input for FillParam (' + this.node.id + ')');
+                consoleError('invalid input for FillParam (' + this.node.id + ')');
         }
 
         else request.push( 

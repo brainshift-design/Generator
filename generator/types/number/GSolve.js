@@ -55,7 +55,7 @@ extends GNumberType1
         {
             let input = (await this.input.eval(parse)).toValue();
 
-            console.assert(
+            consoleAssert(
                 input.type == NUMBER_VALUE, 
                 'input.type must be NUMBER_VALUE');
 

@@ -30,6 +30,7 @@ const OBJECT_PREFIX = GENERATOR_LOGO + ' '; //'G ';
 const nodeTag = 'G_NODE';
 const connTag = 'G_CONN';
 const pageTag = 'G_PAGE';
+var enableAsserts = false;
 const identity = Object.freeze([[1, 0, 0],
     [0, 1, 0],
     [0, 0, 1]]);
@@ -112,7 +113,7 @@ function mulv2m3(v, m) {
     return point(r[0], r[1]);
 }
 function mulm3m3(...mm) {
-    console.assert(mm.length > 0, 'mulm3m3() must take at least one argument');
+    consoleAssert(mm.length > 0, 'mulm3m3() must take at least one argument');
     let result = clone(mm[0]);
     for (let a = 1; a < mm.length; a++) {
         const m1 = result;
@@ -438,6 +439,14 @@ function pushUniqueExcept(array, item, except) {
         item.forEach(i => pushUniqueExcept(array, i, except));
     else if (!array.find(except))
         array.push(item);
+}
+function consoleAssert(...params) {
+    if (enableAsserts)
+        console.assert(...params);
+}
+function consoleError(...params) {
+    if (enableAsserts)
+        console.error(...params);
 }
 const LIST_VALUE = 'LIST#';
 const NUMBER_LIST_VALUE = 'NLIST#';
@@ -1987,7 +1996,7 @@ function figCreateObject(genObj, addObject = null) {
         }
         if (addObject) {
             figObj.name = makeObjectName(genObj);
-            console.assert(genObj.type == SHAPE_GROUP // cannot exist without children
+            consoleAssert(genObj.type == SHAPE_GROUP // cannot exist without children
                 || !!figObj, 'no Figma object created');
             if (!genObj.final
                 && figObj) {
@@ -2430,7 +2439,7 @@ function figLinkColorStyle(localStyles, nodeId, styleId, clearExisting = true) {
         && clearExisting)
         figClearColorStyle(localStyles, nodeId);
     const figStyle = localStyles.find(s => s.id == styleId);
-    console.assert(!!figStyle, 'figStyle should be found here');
+    consoleAssert(!!figStyle, 'figStyle should be found here');
     figStyle.setPluginData('type', COLOR_STYLE);
     figStyle.setPluginData('nodeId', nodeId);
     figStyle.setPluginData('existing', boolToString(true));
@@ -2443,7 +2452,7 @@ function figLinkColorStyle(localStyles, nodeId, styleId, clearExisting = true) {
 }
 function figClearColorStyle(localStyles, nodeId) {
     const figStyle = localStyles.find(s => s.getPluginData('nodeId') == nodeId);
-    //console.assert(!!figStyle, 'figStyle should be found here');
+    consoleAssert(!!figStyle, 'figStyle should be found here');
     if (figStyle) // could have been deleted
      {
         figStyle.setPluginData('type', NULL);
@@ -2806,17 +2815,16 @@ function updatePointStyles(figPoint) {
     effects.push(...getObjectEffects([['DROP_SHADOW', color[0] / 255, color[1] / 255, color[2] / 255, 1, 0, 0, 0, 2.4 / curZoom, 'NORMAL', true, true]]));
     figPoint.effects = effects;
 }
-function genPolyIsValid(genPoly) {
+function genPolygonIsValid(genPoly) {
     return genPoly.x != null && !isNaN(genPoly.x)
         && genPoly.y != null && !isNaN(genPoly.y)
         && genPoly.width != null && !isNaN(genPoly.width)
         && genPoly.height != null && !isNaN(genPoly.height)
-        //&& genPoly.angle   != null && !isNaN(genPoly.angle  )
         && genPoly.round != null && !isNaN(genPoly.round)
         && genPoly.corners != null && !isNaN(genPoly.corners);
 }
 function figCreatePolygon(genPoly) {
-    if (!genPolyIsValid(genPoly))
+    if (!genPolygonIsValid(genPoly))
         return null;
     const figPoly = figma.createPolygon();
     figUpdatePolygon(figPoly, genPoly);

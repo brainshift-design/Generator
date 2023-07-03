@@ -47,9 +47,7 @@ extends GTextType1
             
             this.value = input.copy();
             
-            console.assert(
-                this.value.type == TEXT_VALUE, 
-                'this.value.type must be TEXT_VALUE');
+            consoleAssert(this.value.type == TEXT_VALUE, 'this.value.type must be TEXT_VALUE');
                 
                 
             if(start.value <= end.value)

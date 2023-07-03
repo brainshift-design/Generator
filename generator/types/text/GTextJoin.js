@@ -117,9 +117,7 @@ async function evalJoinInputs(inputs, _with, parse)
         }
         else
         {
-            console.assert(
-                val.type == TEXT_VALUE, 
-                'val.type must be TEXT_VALUE');
+            consoleAssert(val.type == TEXT_VALUE, 'val.type must be TEXT_VALUE');
 
             value.value += val.value;
         }

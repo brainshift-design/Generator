@@ -53,10 +53,10 @@
 //         //console.log('value =', value);
         
 //         if (!(value instanceof ListValue))
-//             console.assert(false, 'StyleParam.setValue(value) is ' + typeof value + ', must be a ListValue');
+//             consoleError('StyleParam.setValue(value) is ' + typeof value + ', must be a ListValue');
 
 
-//         console.assert(
+//         consoleAssert(
 //                value.type 
 //             && LIST_VALUES(value.type), 
 //             'StyleParam value.type must be STYLE_VALUE');

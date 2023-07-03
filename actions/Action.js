@@ -38,7 +38,7 @@ class Action
         this.type  = type;
         this.name  = name;
 
-        console.assert(
+        consoleAssert(
                this.name != undefined
             && this.name != null
             && this.name != '',
@@ -143,7 +143,7 @@ class Action
                 output._node = node; 
             }
 
-            console.assert(isValid(output), 'output should be found at this point');
+            consoleAssert(isValid(output), 'output should be found at this point');
 
 
             output.updateSavedConnectionOrder(_conn.outputOrder, +1);

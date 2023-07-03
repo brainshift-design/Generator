@@ -109,7 +109,7 @@ extends NumberParamBase
     {
         // 'this' is the output
 
-        console.assert(value.type == NUMBER_VALUE, 'expected NUMBER_VALUE in backInit()');
+        consoleAssert(value.type == NUMBER_VALUE, 'expected NUMBER_VALUE in backInit()');
         
         this.param.setValue(value, false, true, false);
     }

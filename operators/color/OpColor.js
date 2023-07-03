@@ -141,7 +141,7 @@ extends OpColorBase
             value = value.color;
 
 
-        console.assert(value.type == COLOR_VALUE, 'expected COLOR_VALUE in backInit()');
+        consoleAssert(value.type == COLOR_VALUE, 'expected COLOR_VALUE in backInit()');
 
         const _color = convertDataColorToSpace(
             value.toDataColor(), 

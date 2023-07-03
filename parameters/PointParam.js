@@ -56,7 +56,7 @@ extends Parameter
     {
         // 'this' is the output
 
-        console.assert(value.type == POINT_VALUE, 'expected POINT_VALUE in backInit()');
+        consoleAssert(value.type == POINT_VALUE, 'expected POINT_VALUE in backInit()');
         
         this.param.setValue(value, false, true, false);
     }
@@ -66,9 +66,9 @@ extends Parameter
     setValue(value, createAction, updateControl = true, dispatchEvents = true) 
     {
         if (!(value instanceof PointValue))
-            console.assert(false, 'PointParam.setValue(value) is ' + typeof value + ', must be a PointValue');
+            consoleError('PointParam.setValue(value) is ' + typeof value + ', must be a PointValue');
 
-        console.assert(
+        consoleAssert(
                value.type 
             && value.type == POINT_VALUE, 
             'PointParam value.type must be POINT_VALUE');
@@ -116,7 +116,7 @@ extends Parameter
             if (this.input.connectedOutput.supportsTypes(this.input.types))
                 request.push(...pushInputOrParam(this.input, gen));
             else
-                console.assert(false, 'invalid input for PointParam (' + this.node.id + ')');
+                consoleError('invalid input for PointParam (' + this.node.id + ')');
         }
 
         else request.push( 

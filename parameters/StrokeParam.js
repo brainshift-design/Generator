@@ -52,7 +52,7 @@ extends Parameter
     {
         // 'this' is the output
 
-        console.assert(STROKE_VALUES.includes(value.type), 'expected STROKE_VALUE in backInit()');
+        consoleAssert(STROKE_VALUES.includes(value.type), 'expected STROKE_VALUE in backInit()');
         
         this.param.setValue(value, false, true, false);
     }
@@ -64,10 +64,10 @@ extends Parameter
         if (!(value instanceof StrokeValue))
         {
             //console.log('value =', value);
-            console.assert(false, 'StrokeParam.setValue(): value is ' + typeof value + ', must be a StrokeValue');
+            consoleError('StrokeParam.setValue(): value is ' + typeof value + ', must be a StrokeValue');
         }
 
-        console.assert(
+        consoleAssert(
                value.type 
             && value.type == STROKE_VALUE, 
             'StrokeParam value.type must be STROKE_VALUE');
@@ -115,7 +115,7 @@ extends Parameter
             if (this.input.supportsTypes(this.input.connectedOutput.types))
                 request.push(...pushInputOrParam(this.input, gen));
             else
-                console.assert(false, 'invalid input for StrokeParam (' + this.node.id + ')');
+                consoleError('invalid input for StrokeParam (' + this.node.id + ')');
         }
 
         else request.push( 

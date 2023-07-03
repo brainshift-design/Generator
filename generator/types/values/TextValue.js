@@ -13,7 +13,7 @@ extends GValue
         if (typeof val !== 'string')
         {
             console.trace();
-            console.assert(false, 'TextValue(value) is ' + typeof val + ', must be a string');
+            consoleError('TextValue(value) is ' + typeof val + ', must be a string');
         }
 
         

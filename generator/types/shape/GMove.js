@@ -101,8 +101,6 @@ extends GOperator1
             return bounds;
             
 
-        console.log('options =', options);
-
         const x           = options.x.toNumber();
         const y           = options.y.toNumber();
         const moveType    = options.moveType.value;

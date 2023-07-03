@@ -52,7 +52,7 @@ extends Parameter
     {
         // 'this' is the output
 
-        console.assert(LAYER_BLUR_VALUES.includes(value.type), 'expected LAYER_BLUR_VALUE in backInit()');
+        consoleAssert(LAYER_BLUR_VALUES.includes(value.type), 'expected LAYER_BLUR_VALUE in backInit()');
         
         this.param.setValue(value, false, true, false);
     }
@@ -64,10 +64,10 @@ extends Parameter
         if (!(value instanceof LayerBlurValue))
         {
             //console.log('value =', value);
-            console.assert(false, 'LayerBlurParam.setValue(): value is ' + typeof value + ', must be a LayerBlurValue');
+            consoleError('LayerBlurParam.setValue(): value is ' + typeof value + ', must be a LayerBlurValue');
         }
 
-        console.assert(
+        consoleAssert(
                value.type 
             && value.type == LAYER_BLUR_VALUE, 
             'LayerBlurParam value.type must be LAYER_BLUR_VALUE');
@@ -115,7 +115,7 @@ extends Parameter
             if (this.input.supportsTypes(this.input.connectedOutput.types))
                 request.push(...pushInputOrParam(this.input, gen));
             else
-                console.assert(false, 'invalid input for LayerBlurParam (' + this.node.id + ')');
+                consoleError('invalid input for LayerBlurParam (' + this.node.id + ')');
         }
 
         else request.push( 

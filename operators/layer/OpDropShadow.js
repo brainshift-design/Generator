@@ -57,7 +57,7 @@ extends OperatorBase
     {
         // 'this' is the output
 
-        console.assert(value.type == DROP_SHADOW_VALUE, 'expected DROP_SHADOW_VALUE in backInit()');
+        consoleAssert(value.type == DROP_SHADOW_VALUE, 'expected DROP_SHADOW_VALUE in backInit()');
 
         this.node.paramX     .setValue(value.x,      false, true, false);
         this.node.paramY     .setValue(value.y,      false, true, false);

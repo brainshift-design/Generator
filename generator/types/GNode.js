@@ -30,7 +30,7 @@ class GNode
 
     copy()
     {
-        console.assert(false, 'abstract type GNode cannot be copied');
+        consoleError('abstract type GNode cannot be copied');
         return null;
     }
 

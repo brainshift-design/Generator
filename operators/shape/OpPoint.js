@@ -44,7 +44,7 @@ extends OpShapeBase
     {
         // 'this' is the output
 
-        console.assert(value.type == POINT_VALUE, 'expected POINT_VALUE in backInit()');
+        consoleAssert(value.type == POINT_VALUE, 'expected POINT_VALUE in backInit()');
         
         this.node.paramX.setValue(value.x, false, true, false);
         this.node.paramY.setValue(value.y, false, true, false);

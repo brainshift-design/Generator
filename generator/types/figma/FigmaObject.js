@@ -64,7 +64,7 @@ class FigmaObject
 
     copy()
     {
-        console.assert(false, 'invalid use of abstract class FigmaObject');
+        consoleError('invalid use of abstract class FigmaObject');
         return null;
     }
 
@@ -223,7 +223,7 @@ function copyFigmaObject(obj)
         case FRAME:       return FigmaFrame     .prototype.copy.call(obj);
     }
 
-    console.assert(false, 'invalid Figma object type \'' + obj.type + '\'');
+    consoleError('invalid Figma object type \'' + obj.type + '\'');
     return null;
 }
 

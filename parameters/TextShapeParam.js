@@ -53,7 +53,7 @@ extends Parameter
     {
         // 'this' is the output
 
-        console.assert(value.type == TEXT_SHAPE_VALUE, 'expected TEXT_SHAPE_VALUE in backInit()');
+        consoleAssert(value.type == TEXT_SHAPE_VALUE, 'expected TEXT_SHAPE_VALUE in backInit()');
         
         this.param.setValue(value, false, true, false);
     }
@@ -63,9 +63,9 @@ extends Parameter
     setValue(value, createAction, updateControl = true, dispatchEvents = true) 
     {
         if (!(value instanceof TextShapeValue))
-            console.assert(false, 'TextShapeParam.setValue(value) is ' + typeof value + ', must be a TextShapeValue');
+            consoleError('TextShapeParam.setValue(value) is ' + typeof value + ', must be a TextShapeValue');
 
-        console.assert(
+        consoleAssert(
                value.type 
             && value.type == TEXT_SHAPE_VALUE, 
             'TextShapeParam value.type must be TEXT_SHAPE_VALUE');
@@ -113,7 +113,7 @@ extends Parameter
             if (this.input.connectedOutput.supportsTypes([TEXT_SHAPE_VALUE]))
                 request.push(...pushInputOrParam(this.input, gen));
             else
-                console.assert(false, 'invalid input for TextShapeParam (' + this.node.id + ')');
+                consoleError('invalid input for TextShapeParam (' + this.node.id + ')');
         }
 
         else request.push( 

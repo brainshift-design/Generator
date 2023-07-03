@@ -66,7 +66,7 @@ extends Parameter
     {
         // 'this' is the output
 
-        console.assert(LIST_VALUES.includes(value.type), 'expected LIST_VALUE in backInit()');
+        consoleAssert(LIST_VALUES.includes(value.type), 'expected LIST_VALUE in backInit()');
         
         this.param.setValue(value, false, true, false);
     }
@@ -78,10 +78,10 @@ extends Parameter
         if (!(value instanceof ListValue))
         {
             //console.log('value =', value);
-            console.assert(false, 'ListParam.setValue(): value is ' + typeof value + ', must be a ListValue');
+            consoleError('ListParam.setValue(): value is ' + typeof value + ', must be a ListValue');
         }
 
-        console.assert(
+        consoleAssert(
                value.type 
             && LIST_VALUES.includes(value.type), 
             'ListParam value.type must be LIST_VALUE');
@@ -132,7 +132,7 @@ extends Parameter
             if (this.input.supportsTypes(this.input.connectedOutput.types))
                 request.push(...pushInputOrParam(this.input, gen));
             else
-                console.assert(false, 'invalid input for ListParam (' + this.node.id + ')');
+                consoleError('invalid input for ListParam (' + this.node.id + ')');
         }
 
         else request.push( 

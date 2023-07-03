@@ -52,7 +52,7 @@ extends Parameter
     {
         // 'this' is the output
 
-        console.assert(DROP_SHADOW_VALUES.includes(value.type), 'expected DROP_SHADOW_VALUE in backInit()');
+        consoleAssert(DROP_SHADOW_VALUES.includes(value.type), 'expected DROP_SHADOW_VALUE in backInit()');
         
         this.param.setValue(value, false, true, false);
     }
@@ -64,10 +64,10 @@ extends Parameter
         if (!(value instanceof DropShadowValue))
         {
             //console.log('value =', value);
-            console.assert(false, 'DropShadowParam.setValue(): value is ' + typeof value + ', must be a DropShadowValue');
+            consoleError('DropShadowParam.setValue(): value is ' + typeof value + ', must be a DropShadowValue');
         }
 
-        console.assert(
+        consoleAssert(
                value.type 
             && value.type == DROP_SHADOW_VALUE, 
             'DropShadowParam value.type must be DROP_SHADOW_VALUE');
@@ -115,7 +115,7 @@ extends Parameter
             if (this.input.supportsTypes(this.input.connectedOutput.types))
                 request.push(...pushInputOrParam(this.input, gen));
             else
-                console.assert(false, 'invalid input for DropShadowParam (' + this.node.id + ')');
+                consoleError('invalid input for DropShadowParam (' + this.node.id + ')');
         }
 
         else request.push( 

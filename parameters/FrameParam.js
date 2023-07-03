@@ -53,7 +53,7 @@ extends Parameter
     {
         // 'this' is the output
 
-        console.assert(value.type == FRAME_VALUE, 'expected FRAME_VALUE in backInit()');
+        consoleAssert(value.type == FRAME_VALUE, 'expected FRAME_VALUE in backInit()');
         
         this.param.setValue(value, false, true, false);
     }
@@ -62,13 +62,10 @@ extends Parameter
 
     setValue(value, createAction, updateControl = true, dispatchEvents = true) 
     {
-        if (!(value instanceof FrameValue))
-            console.assert(false, 'FrameParam.setValue(value) is ' + typeof value + ', must be a FrameValue');
+        //if (!(value instanceof FrameValue))
+            consoleError('FrameParam.setValue(value) is ' + typeof value + ', must be a FrameValue');
 
-        console.assert(
-               value.type 
-            && value.type == FRAME_VALUE, 
-            'FrameParam value.type must be FRAME_VALUE');
+        consoleAssert(value.type && value.type == FRAME_VALUE, 'FrameParam value.type must be FRAME_VALUE');
 
 
         this.preSetValue(value, createAction, dispatchEvents);
@@ -112,8 +109,8 @@ extends Parameter
         {
             if (this.input.connectedOutput.supportsTypes([FRAME_VALUE]))
                 request.push(...pushInputOrParam(this.input, gen));
-            else
-                console.assert(false, 'invalid input for FrameParam (' + this.node.id + ')');
+            //else
+                consoleError('invalid input for FrameParam (' + this.node.id + ')');
         }
 
         else request.push( 

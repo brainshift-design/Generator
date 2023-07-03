@@ -76,7 +76,7 @@ function figLinkColorStyle(localStyles, nodeId, styleId, clearExisting = true)
 
 
     const figStyle = localStyles.find(s => s.id == styleId);
-    console.assert(!!figStyle, 'figStyle should be found here');
+    consoleAssert(!!figStyle, 'figStyle should be found here');
 
 
     figStyle.setPluginData('type',     COLOR_STYLE);
@@ -98,7 +98,7 @@ function figLinkColorStyle(localStyles, nodeId, styleId, clearExisting = true)
 function figClearColorStyle(localStyles, nodeId)
 {
     const figStyle = localStyles.find(s => s.getPluginData('nodeId') == nodeId);
-    //console.assert(!!figStyle, 'figStyle should be found here');
+    consoleAssert(!!figStyle, 'figStyle should be found here');
 
     if (figStyle) // could have been deleted
     {

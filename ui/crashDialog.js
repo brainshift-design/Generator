@@ -5,7 +5,7 @@ function crashAssert(condition, error)
     initCrashDialog(error, null);
     showCrashDialog();
 
-    console.assert(false, error);
+    consoleError(error);
 }
 
 

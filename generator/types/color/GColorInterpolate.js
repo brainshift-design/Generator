@@ -45,7 +45,7 @@ extends GColorType2
             const input0 = (await this.input0.eval(parse)).toValue();
             const input1 = (await this.input1.eval(parse)).toValue();
 
-            console.assert(
+            consoleAssert(
                 amount.type == NUMBER_VALUE, 
                 'this.result.type must be NUMBER_VALUE');
 

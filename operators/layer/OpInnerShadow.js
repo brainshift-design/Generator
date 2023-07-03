@@ -53,7 +53,7 @@ extends OperatorBase
     {
         // 'this' is the output
 
-        console.assert(value.type == INNER_SHADOW_VALUE, 'expected INNER_SHADOW_VALUE in backInit()');
+        consoleAssert(value.type == INNER_SHADOW_VALUE, 'expected INNER_SHADOW_VALUE in backInit()');
 
         this.node.paramX     .setValue(value.x,      false, true, false);
         this.node.paramY     .setValue(value.y,      false, true, false);

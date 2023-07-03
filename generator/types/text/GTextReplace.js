@@ -43,9 +43,7 @@ extends GTextType1
         {
             this.value = (await this.input.eval(parse)).toValue();
 
-            console.assert(
-                this.value.type == TEXT_VALUE, 
-                'this.value.type must be TEXT_VALUE');
+            consoleAssert(this.value.type == TEXT_VALUE, 'this.value.type must be TEXT_VALUE');
 
             this.value.value = this.value.value.replaceAll(
                 unescapeString(_what.value),

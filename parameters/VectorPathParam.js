@@ -53,7 +53,7 @@ extends Parameter
     {
         // 'this' is the output
 
-        console.assert(value.type == VECTOR_PATH_VALUE, 'expected VECTOR_PATH_VALUE in backInit()');
+        consoleAssert(value.type == VECTOR_PATH_VALUE, 'expected VECTOR_PATH_VALUE in backInit()');
         
         this.param.setValue(value, false, true, false);
     }
@@ -63,9 +63,9 @@ extends Parameter
     setValue(value, createAction, updateControl = true, dispatchEvents = true) 
     {
         if (!(value instanceof VectorPathValue))
-            console.assert(false, 'VectorPathParam.setValue(value) is ' + typeof value + ', must be a VectorPathValue');
+            consoleError('VectorPathParam.setValue(value) is ' + typeof value + ', must be a VectorPathValue');
 
-        console.assert(
+        consoleAssert(
                value.type 
             && value.type == VECTOR_PATH_VALUE, 
             'VectorPathParam value.type must be VECTOR_PATH_VALUE');
@@ -113,7 +113,7 @@ extends Parameter
             if (this.input.connectedOutput.supportsTypes([VECTOR_PATH_VALUE]))
                 request.push(...pushInputOrParam(this.input, gen));
             else
-                console.assert(false, 'invalid input for VectorPathParam (' + this.node.id + ')');
+                consoleError('invalid input for VectorPathParam (' + this.node.id + ')');
         }
 
         else request.push( 

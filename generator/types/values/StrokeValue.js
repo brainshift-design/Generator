@@ -16,7 +16,7 @@ extends GValue
                 miter  = new NumberValue(28.96, 2))
     {
         if (fills.type != LIST_VALUE)
-            console.assert(false, 'fill.type is ' + fills.type + ', must be LIST_VALUE');
+            consoleError('fill.type is ' + fills.type + ', must be LIST_VALUE');
 
 
         super(STROKE_VALUE);
@@ -171,5 +171,5 @@ function parseStrokeValue(str, i = -1)
 //     else if (  FILL_TYPES.includes(stroke.type)) return new StrokeValue(stroke, value.data.weight);
 //     else if ( COLOR_TYPES.includes(stroke.type)) return new StrokeValue(new FillValue(stroke), value.data.weight);
 
-//     else console.assert(false, 'stroke must have type');
+//     else consoleError('stroke must have type');
 // }

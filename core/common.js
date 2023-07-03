@@ -17,6 +17,9 @@ const connTag          = 'G_CONN';
 const pageTag          = 'G_PAGE';
 
 
+var   enableAsserts    = false;
+
+
 
 const identity = Object.freeze(
     [[1, 0, 0],
@@ -173,7 +176,7 @@ function mulv2m3(v, m)
 
 function mulm3m3(...mm)
 {
-    console.assert(mm.length > 0, 'mulm3m3() must take at least one argument');
+    consoleAssert(mm.length > 0, 'mulm3m3() must take at least one argument');
 
     let result = clone(mm[0]);
 
@@ -814,4 +817,20 @@ function pushUniqueExcept(array, item, except)
         item.forEach(i => pushUniqueExcept(array, i, except));
     else if (!array.find(except))
         array.push(item);
+}
+
+
+
+function consoleAssert(...params)
+{
+    if (enableAsserts)
+        console.assert(...params);
+}
+
+
+
+function consoleError(...params)
+{
+    if (enableAsserts)
+        console.error(...params);
 }

@@ -299,7 +299,7 @@ function connectAction_activateOldActiveNodes(act, updateNodes)
     if (    act.oldOutputActiveNodeId != NULL
         && !act.inputActiveNodeIds.includes(act.oldOutputActiveNodeId))
     {
-        console.assert(act.oldOutputActiveNodeId != NULL, 'there should be an old output active node ID at this point')
+        consoleAssert(act.oldOutputActiveNodeId != NULL, 'there should be an old output active node ID at this point')
 
         const oldOutputActiveNode = nodeFromId(act.oldOutputActiveNodeId);
 

@@ -53,7 +53,7 @@ extends Parameter
     {
         // 'this' is the output
 
-        console.assert(value.type == RECTANGLE_VALUE, 'expected ' + RECTANGLE_VALUE + 'in backInit()');
+        consoleAssert(value.type == RECTANGLE_VALUE, 'expected ' + RECTANGLE_VALUE + 'in backInit()');
         
         this.param.setValue(value, false, true, false);
     }
@@ -63,9 +63,9 @@ extends Parameter
     setValue(value, createAction, updateControl = true, dispatchEvents = true) 
     {
         if (!(value instanceof RectangleValue))
-            console.assert(false, 'RectangleParam.setValue(value) is ' + typeof value + ', must be a RectangleValue');
+            consoleError('RectangleParam.setValue(value) is ' + typeof value + ', must be a RectangleValue');
 
-        console.assert(
+        consoleAssert(
                value.type 
             && value.type == RECTANGLE_VALUE, 
             'RectangleParam value.type must be RECTANGLE_VALUE');
@@ -113,7 +113,7 @@ extends Parameter
             if (this.input.connectedOutput.supportsTypes([RECTANGLE_VALUE]))
                 request.push(...pushInputOrParam(this.input, gen));
             else
-                console.assert(false, 'invalid input for RectangleParam (' + this.node.id + ')');
+                consoleError('invalid input for RectangleParam (' + this.node.id + ')');
         }
 
         else request.push( 

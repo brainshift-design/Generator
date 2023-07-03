@@ -33,7 +33,7 @@ extends GOperator1
         if (this.input)
         {
             const input = (await this.input.eval(parse)).toValue();
-            console.assert(input.type == TEXT_VALUE, 'input must be TEXT_VALUE');
+            consoleAssert(input.type == TEXT_VALUE, 'input must be TEXT_VALUE');
 
             length = new NumberValue(input.value.length);
         }
