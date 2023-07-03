@@ -23368,10 +23368,6 @@ extends GShape
 
             frame.children = objects;
 
-            
-            frame.createDefaultTransform(
-                this.value.x.value,
-                this.value.y.value);
 
             frame.createDefaultTransform(x, y);
 
@@ -23940,7 +23936,9 @@ extends GOperator1
         const cy = singlePoint ? this.objects[0].y + _cy : bounds.y + bounds.height * _cy;
 
         const xform = 
-            mulm3m3(
+            moveType == 0
+            ? createTransform(_x, _y)
+            : mulm3m3(
                 createTransform(cx, cy),
                 createTransform(_x, _y),
                 createRotateTransform(-_a),

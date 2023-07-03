@@ -146,10 +146,6 @@ extends GShape
 
             frame.children = objects;
 
-            
-            frame.createDefaultTransform(
-                this.value.x.value,
-                this.value.y.value);
 
             frame.createDefaultTransform(x, y);
 
