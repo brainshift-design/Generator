@@ -407,5 +407,4 @@ function unescapeString(str)
       
         return replacements[char] || match;
     });
-  }
-  
+}

@@ -51,6 +51,7 @@ async function uiReturnFigGetLocalData(msg)
 
         case 'showNodeId':       
         case 'showTransformPoints':       
+        case 'enableAsserts':       
 
         case 'showTooltipLongText':
         case 'showTooltipColorInterpolation':

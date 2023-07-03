@@ -15,6 +15,7 @@ const settings =
         
     showNodeId:                    false, // instead of name
     showTransformPoints:           false,
+    enableAsserts:                 false,
 
     showTooltipLongText:           true,
     showTooltipColorInterpolation: true,
@@ -67,6 +68,7 @@ function updateSetting(settingName, value)
                         
         case 'showNodeId':                    settings.showNodeId                    = value;  break;
         case 'showTransformPoints':           settings.showTransformPoints           = value;  break;
+        case 'enableAsserts':                 settings.enableAsserts                 = value;  break;
 
         case 'showTooltipLongText':           settings.showTooltipLongText           = value;  break;
         case 'showTooltipColorInterpolation': settings.showTooltipColorInterpolation = value;  break;
@@ -118,6 +120,7 @@ function updateSettingAndMenu(settingName, valid, value, save = true)
                       
         case 'showNodeId':                    updateSettingAndMenu_(valid, settingName, value, menuItemShowNodeId                   ); break;
         case 'showTransformPoints':           updateSettingAndMenu_(valid, settingName, value, menuItemShowTransformPoints          ); break;
+        case 'enableAsserts':                 updateSettingAndMenu_(valid, settingName, value, menuItemEnableAsserts                ); enableAsserts = value; break;
         
         case 'showTooltipLongText':           updateSettingAndMenu_(valid, settingName, value, menuItemShowTooltipLongText          ); break;
         case 'showTooltipColorContrast':      updateSettingAndMenu_(valid, settingName, value, menuItemShowTooltipColorContrast     ); break;
@@ -192,6 +195,7 @@ function updateSettingsMenus()
                 
     menuItemShowNodeId                   .setChecked(settings.showNodeId                   );
     menuItemShowTransformPoints          .setChecked(settings.showTransformPoints          );
+    menuItemEnableAsserts                .setChecked(settings.enableAsserts                );
 
     menuItemShowTooltipLongText          .setChecked(settings.showTooltipLongText          );
     menuItemShowTooltipColorInterpolation.setChecked(settings.showTooltipColorInterpolation);
@@ -365,6 +369,7 @@ function loadLocalSettings()
         
     uiGetLocalData('showNodeId'                   );
     uiGetLocalData('showTransformPoints'          );
+    uiGetLocalData('enableAsserts'                );
 
     uiGetLocalData('showTooltipLongText'          );
     uiGetLocalData('showTooltipColorInterpolation');

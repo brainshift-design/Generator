@@ -30,12 +30,12 @@ const OBJECT_PREFIX = GENERATOR_LOGO + ' '; //'G ';
 const nodeTag = 'G_NODE';
 const connTag = 'G_CONN';
 const pageTag = 'G_PAGE';
-var enableAsserts = false;
 const identity = Object.freeze([[1, 0, 0],
     [0, 1, 0],
     [0, 0, 1]]);
 const Epsilon = 0.0000001;
 const Tau = Math.PI * 2;
+var enableAsserts = false;
 function nozero(x) {
     return x != 0 ? x : Epsilon;
 }
@@ -440,13 +440,17 @@ function pushUniqueExcept(array, item, except) {
     else if (!array.find(except))
         array.push(item);
 }
-function consoleAssert(...params) {
+function consoleAssert(...args) {
+    // if (  !settings 
+    //     || settings.enableAsserts)
     if (enableAsserts)
-        console.assert(...params);
+        console.assert(...args);
 }
-function consoleError(...params) {
+function consoleError(...args) {
+    // if (  !settings
+    //     || settings.enableAsserts)
     if (enableAsserts)
-        console.error(...params);
+        console.error(...args);
 }
 const LIST_VALUE = 'LIST#';
 const NUMBER_LIST_VALUE = 'NLIST#';

@@ -4,10 +4,10 @@
     
     ../core/Noise.js
     
-    [../autojoin/types.aj]
-    
     ../ui/settings.js
 
+    [../autojoin/types.aj]
+    
     ../generator/*.js
     ../generator/parse/*.js
 

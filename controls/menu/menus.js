@@ -99,6 +99,7 @@ var menuPrefSep2;
 
 var menuItemShowNodeId;
 var menuItemShowTransformPoints;
+var menuItemEnableAsserts;
 
 var menuItemDebug;
 var menuItemDebugLog;
@@ -327,6 +328,11 @@ function initGeneratorMenus()
                                 updateSettingAndMenu('showTransformPoints', true, !settings.showTransformPoints);
                                 pushUpdate(null, graph.nodes.filter(n => n.active));
                             }
+                        }),
+    menuItemEnableAsserts = new MenuItem('Enable asserts', 
+                        {
+                            checkCallback: () => settings.enableAsserts, 
+                            callback:      () => updateSettingAndMenu('enableAsserts', true, !settings.enableAsserts)
                         }),
                         new MenuItem('',                      {separator: true}),
                         new MenuItem('Log generator',         {childMenu: menuDebugGenerator}),
