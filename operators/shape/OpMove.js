@@ -3,6 +3,7 @@ extends OperatorBase
 {
     paramX;
     paramY;
+    paramMoveType;
     paramAffectSpace;
 
 
@@ -24,11 +25,9 @@ extends OperatorBase
 
         this.addParam(this.paramX           = new NumberParam('x',           'X',            true, true, true));
         this.addParam(this.paramY           = new NumberParam('y',           'Y',            true, true, true));
+        this.addParam(this.paramMoveType    = new SelectParam('moveType',    'type',         true, true, true, ['position', 'vector'], 0));
         this.addParam(this.paramAffectSpace = new NumberParam('affectSpace', 'affect space', true, true, true,   0, 0,   1));
 
-
-        this.paramX.divider                                 = 0.45;
-        this.paramY.divider                                 = 0.45;
 
         this.paramAffectSpace.controls[0].allowEditDecimals = false;
         this.paramAffectSpace.divider                       = 0.71;
@@ -64,6 +63,7 @@ extends OperatorBase
 
         request.push(...this.node.paramX          .genRequest(gen));
         request.push(...this.node.paramY          .genRequest(gen));
+        request.push(...this.node.paramMoveType   .genRequest(gen));
         request.push(...this.node.paramAffectSpace.genRequest(gen));
 
         
@@ -81,6 +81,22 @@ extends OperatorBase
         super.updateParams();
 
         updateParamConditionText(this.paramAffectSpace, false /*this.isUnknown()*/, false, 1);
+
+
+        const vector = this.paramMoveType.value.value == 1;
+       
+        this.paramX.setName(vector ? 'distance' : 'X');
+        this.paramX.divider = vector ? 0.55 : 0.45;
+
+        this.paramY.setName(vector ? 'angle' : 'Y');
+        this.paramY.divider = vector ? 0.55 : 0.45;
+
+        this.paramY.controls[0].suffix    = vector ? '°' : '';
+        this.paramY.controls[0].wrapValue = vector;
+
+        this.paramY.controls[0].setMin(vector ?   0 : Number.MIN_SAFE_INTEGER);
+        this.paramY.controls[0].setMax(vector ? 360 : Number.MAX_SAFE_INTEGER);
+
 
         this.updateParamControls();
     }

@@ -3,6 +3,7 @@ extends GOperator1
 {
     x           = null;
     y           = null;
+    moveType    = null;
     affectSpace = null;
 
     coords;
@@ -26,6 +27,7 @@ extends GOperator1
 
         if (this.x          ) copy.x           = this.x          .copy();
         if (this.y          ) copy.y           = this.y          .copy();
+        if (this.moveType   ) copy.moveType    = this.moveType   .copy();
         if (this.affectSpace) copy.affectSpace = this.affectSpace.copy();
 
         copy.coords = clone(this.coords);
@@ -43,6 +45,7 @@ extends GOperator1
             
         const x           = this.x           ? (await this.x          .eval(parse)).toValue() : null;
         const y           = this.y           ? (await this.y          .eval(parse)).toValue() : null;
+        const moveType    = this.moveType    ? (await this.moveType   .eval(parse)).toValue() : null;
         const affectSpace = this.affectSpace ? (await this.affectSpace.eval(parse)).toValue() : null;
 
 
@@ -64,6 +67,7 @@ extends GOperator1
             {
                 x:           x, 
                 y:           y,
+                moveType:    moveType,
                 affectSpace: affectSpace
             });
 
@@ -73,6 +77,7 @@ extends GOperator1
             ['value',       this.value ],
             ['x',           x          ],
             ['y',           y          ],
+            ['moveType',    moveType   ],
             ['affectSpace', affectSpace]
         ];
 
@@ -94,10 +99,17 @@ extends GOperator1
             return;
             
 
-        const x     = options.x.toNumber();
-        const y     = options.y.toNumber();
+        const x           = options.x.toNumber();
+        const y           = options.y.toNumber();
+        const moveType    = options.moveType.value;
+        const affectSpace = options.affectSpace.value;
 
-        const xform = createTransform(x, y);
+        const _v = vector(y/360*Tau, x);
+        
+        const _x = moveType == 0 ? x : _v.x;
+        const _y = moveType == 0 ? y : _v.y;
+
+        const xform = createTransform(_x, _y);
 
              
         for (const obj of this.objects)
@@ -105,7 +117,7 @@ extends GOperator1
             obj.nodeId   = this.nodeId;
             obj.objectId = obj.objectId + OBJECT_SEPARATOR + this.nodeId;
 
-            obj.applyTransform(xform, options.affectSpace.value > 0);
+            obj.applyTransform(xform, affectSpace > 0);
 
             this.coords  = mulm3m3(this.coords, xform);
         }
@@ -121,6 +133,7 @@ extends GOperator1
         return super.isValid()
             && this.x          .isValid()
             && this.y          .isValid()
+            && this.moveType   .isValid()
             && this.affectSpace.isValid();
     }
 
@@ -139,6 +152,7 @@ extends GOperator1
 
         if (this.x          ) this.x          .pushValueUpdates(parse);
         if (this.y          ) this.y          .pushValueUpdates(parse);
+        if (this.moveType   ) this.moveType   .pushValueUpdates(parse);
         if (this.affectSpace) this.affectSpace.pushValueUpdates(parse);
     }
 
@@ -150,6 +164,7 @@ extends GOperator1
 
         if (this.x          ) this.x          .invalidateInputs(from);
         if (this.y          ) this.y          .invalidateInputs(from);
+        if (this.moveType   ) this.moveType   .invalidateInputs(from);
         if (this.affectSpace) this.affectSpace.invalidateInputs(from);
     }
 }
