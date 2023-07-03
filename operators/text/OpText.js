@@ -9,8 +9,8 @@ extends ResizableBase
     {
         super(TEXT, 'text', 'text', '');
 
-        this.alwaysSaveParams = true;
-        this.alwaysLoadParams = true;
+        // this.alwaysSaveParams = true;
+        // this.alwaysLoadParams = true;
 
 
         this.addInput (new Input (TEXT_TYPES, getNodeInputValuesForUndo, this.input_getBackInitValue));

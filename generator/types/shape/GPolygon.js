@@ -91,12 +91,12 @@ extends GShape
         const objects = [];
 
 
-        if (   this.x 
-            && this.y 
-            && this.width 
-            && this.height 
-            && this.round
-            && this.corners)
+        if (   this.value.x 
+            && this.value.y 
+            && this.value.width 
+            && this.value.height 
+            && this.value.round
+            && this.value.corners)
         {
             let    x = this.value.x      .value;
             let    y = this.value.y      .value;
@@ -111,15 +111,19 @@ extends GShape
             [x, y, w, h, a, _a] = validateObjectRect(x, y, w, h, a, _a);
 
 
-            const poly = new FigmaPolygon(
-                this.nodeId,
-                this.nodeId,
-                this.nodeName,
-                x, y, w, h, r, c);
+            if (   w != 0 
+                && h != 0)
+            {
+                const poly = new FigmaPolygon(
+                    this.nodeId,
+                    this.nodeId,
+                    this.nodeName,
+                    x, y, w, h, r, c);
 
-            poly.createDefaultTransform(x, y);
+                poly.createDefaultTransform(x, y);
 
-            objects.push(poly, ...poly.createTransformPoints(parse, x, y, w, h));
+                objects.push(poly, ...poly.createTransformPoints(parse, x, y, w, h));
+            }
         }
 
         

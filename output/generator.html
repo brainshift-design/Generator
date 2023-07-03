@@ -21455,11 +21455,15 @@ extends GShapeBase
             consoleAssert(obj.strokes, 'obj.strokes must not be null');
             consoleAssert(obj.effects, 'obj.effects must not be null');
 
+            
+            if (this.value.props.items == undefined) 
+                continue;
+
+
             for (let i = this.value.props.items.length-1; i >= 0; i--)
             {
                 const prop = this.value.props.items[i];
                 
-
                      if (prop.type ==        COLOR_VALUE)  addColorProp      (obj, prop);
                 else if (prop.type ==         FILL_VALUE)  addFillProp       (obj, prop);
                 else if (prop.type ==     GRADIENT_VALUE)  addGradientProp   (obj, prop);
@@ -21763,9 +21767,9 @@ extends GShape
         const objects = [];
 
 
-        if (   this.x 
-            && this.y 
-            && this.width) 
+        if (   this.value.x 
+            && this.value.y 
+            && this.value.width) 
         {
             let  x = this.value.x     .value;
             let  y = this.value.y     .value;
@@ -21914,10 +21918,10 @@ extends GShape
         const objects = [];
 
 
-        if (   this.x 
-            && this.y 
-            && this.width 
-            && this.height) 
+        if (   this.value.x 
+            && this.value.y 
+            && this.value.width 
+            && this.value.height) 
         {
             let    x = this.value.x     .value;
             let    y = this.value.y     .value;
@@ -22093,12 +22097,12 @@ extends GShape
         const objects = [];
 
 
-        if (   this.x 
-            && this.y 
-            && this.width 
-            && this.height 
-            && this.round
-            && this.corners)
+        if (   this.value.x 
+            && this.value.y 
+            && this.value.width 
+            && this.value.height 
+            && this.value.round
+            && this.value.corners)
         {
             let    x = this.value.x      .value;
             let    y = this.value.y      .value;
@@ -22113,15 +22117,19 @@ extends GShape
             [x, y, w, h, a, _a] = validateObjectRect(x, y, w, h, a, _a);
 
 
-            const poly = new FigmaPolygon(
-                this.nodeId,
-                this.nodeId,
-                this.nodeName,
-                x, y, w, h, r, c);
+            if (   w != 0 
+                && h != 0)
+            {
+                const poly = new FigmaPolygon(
+                    this.nodeId,
+                    this.nodeId,
+                    this.nodeName,
+                    x, y, w, h, r, c);
 
-            poly.createDefaultTransform(x, y);
+                poly.createDefaultTransform(x, y);
 
-            objects.push(poly, ...poly.createTransformPoints(parse, x, y, w, h));
+                objects.push(poly, ...poly.createTransformPoints(parse, x, y, w, h));
+            }
         }
 
         
@@ -22281,31 +22289,36 @@ extends GShape
         const objects = [];
 
 
-        if (   this.x 
-            && this.y 
-            && this.width 
-            && this.height 
-            && this.round
-            && this.points
-            && this.convex)
+        if (   this.value.x 
+            && this.value.y 
+            && this.value.width 
+            && this.value.height 
+            && this.value.round
+            && this.value.points
+            && this.value.convex)
         {
-            let    x = this.value.x     .value;
-            let    y = this.value.y     .value;
-            let    w = this.value.width .value;
-            let    h = this.value.height.value;
-            const  r = Math.max(0, this.value.round .value);
-            const  p = this.value.points.value;
-            const  c = this.value.convex.value;
+            let   x = this.value.x     .value;
+            let   y = this.value.y     .value;
+            let   w = this.value.width .value;
+            let   h = this.value.height.value;
+            const r = Math.max(0, this.value.round.value);
+            const p = this.value.points.value;
+            const c = this.value.convex.value;
 
-            const star = new FigmaStar(
-                this.nodeId,
-                this.nodeId,
-                this.nodeName,
-                x, y, w, h, r, p, c);
 
-            star.createDefaultTransform(x, y);
+            if (   w != 0
+                && h != 0)
+            {
+                const star = new FigmaStar(
+                    this.nodeId,
+                    this.nodeId,
+                    this.nodeName,
+                    x, y, w, h, r, p, c);
 
-            objects.push(star, ...star.createTransformPoints(parse, x, y, w, h));
+                star.createDefaultTransform(x, y);
+
+                objects.push(star, ...star.createTransformPoints(parse, x, y, w, h));
+            }
         }
 
        

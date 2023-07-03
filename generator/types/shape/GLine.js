@@ -71,9 +71,9 @@ extends GShape
         const objects = [];
 
 
-        if (   this.x 
-            && this.y 
-            && this.width) 
+        if (   this.value.x 
+            && this.value.y 
+            && this.value.width) 
         {
             let  x = this.value.x     .value;
             let  y = this.value.y     .value;

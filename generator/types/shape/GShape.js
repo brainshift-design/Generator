@@ -73,11 +73,15 @@ extends GShapeBase
             consoleAssert(obj.strokes, 'obj.strokes must not be null');
             consoleAssert(obj.effects, 'obj.effects must not be null');
 
+            
+            if (this.value.props.items == undefined) 
+                continue;
+
+
             for (let i = this.value.props.items.length-1; i >= 0; i--)
             {
                 const prop = this.value.props.items[i];
                 
-
                      if (prop.type ==        COLOR_VALUE)  addColorProp      (obj, prop);
                 else if (prop.type ==         FILL_VALUE)  addFillProp       (obj, prop);
                 else if (prop.type ==     GRADIENT_VALUE)  addGradientProp   (obj, prop);

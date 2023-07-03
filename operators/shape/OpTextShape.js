@@ -126,6 +126,7 @@ extends OpShape
             return;
         
             
+        console.log('_node.params =', _node.params);
         for (const _param of _node.params)
         {
             let index = this.params.findIndex(p => p.id == _param[1]);
@@ -138,8 +139,11 @@ extends OpShape
         }
 
 
-        this.paramFont.loadParam(
-            _node.params.find(p => p[1] == 'font'));
+        const _fontParam = _node.params.find(p => p[1] == 'font');
+
+        if (_fontParam)
+            this.paramFont.loadParam(_fontParam);
+
 
         this.updateStyleParam();
 

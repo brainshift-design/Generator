@@ -97,31 +97,36 @@ extends GShape
         const objects = [];
 
 
-        if (   this.x 
-            && this.y 
-            && this.width 
-            && this.height 
-            && this.round
-            && this.points
-            && this.convex)
+        if (   this.value.x 
+            && this.value.y 
+            && this.value.width 
+            && this.value.height 
+            && this.value.round
+            && this.value.points
+            && this.value.convex)
         {
-            let    x = this.value.x     .value;
-            let    y = this.value.y     .value;
-            let    w = this.value.width .value;
-            let    h = this.value.height.value;
-            const  r = Math.max(0, this.value.round .value);
-            const  p = this.value.points.value;
-            const  c = this.value.convex.value;
+            let   x = this.value.x     .value;
+            let   y = this.value.y     .value;
+            let   w = this.value.width .value;
+            let   h = this.value.height.value;
+            const r = Math.max(0, this.value.round.value);
+            const p = this.value.points.value;
+            const c = this.value.convex.value;
 
-            const star = new FigmaStar(
-                this.nodeId,
-                this.nodeId,
-                this.nodeName,
-                x, y, w, h, r, p, c);
 
-            star.createDefaultTransform(x, y);
+            if (   w != 0
+                && h != 0)
+            {
+                const star = new FigmaStar(
+                    this.nodeId,
+                    this.nodeId,
+                    this.nodeName,
+                    x, y, w, h, r, p, c);
 
-            objects.push(star, ...star.createTransformPoints(parse, x, y, w, h));
+                star.createDefaultTransform(x, y);
+
+                objects.push(star, ...star.createTransformPoints(parse, x, y, w, h));
+            }
         }
 
        

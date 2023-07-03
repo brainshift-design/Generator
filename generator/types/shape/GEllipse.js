@@ -95,10 +95,10 @@ extends GShape
         const objects = [];
 
 
-        if (   this.x 
-            && this.y 
-            && this.width 
-            && this.height) 
+        if (   this.value.x 
+            && this.value.y 
+            && this.value.width 
+            && this.value.height) 
         {
             let    x = this.value.x     .value;
             let    y = this.value.y     .value;
