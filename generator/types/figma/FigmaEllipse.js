@@ -5,6 +5,7 @@ extends FigmaShape
     y;
     width;
     height;
+
     from;
     to;
     inner;
@@ -19,6 +20,7 @@ extends FigmaShape
         this.y      = y;
         this.width  = width;
         this.height = height;
+
         this.from   = from;
         this.to     = to;
         this.inner  = inner;
@@ -32,10 +34,12 @@ extends FigmaShape
             this.nodeId,
             this.objectId,
             this.objectName,
+
             this.x,
             this.y,
             this.width,
             this.height,
+            
             this.from,
             this.to,
             this.inner);
@@ -56,9 +60,10 @@ extends FigmaShape
             y:      this.y,
             width:  this.width,
             height: this.height,
+
             from:   this.from,
             to:     this.to,
-            inner:  this.corners
+            inner:  this.inner
         };
     }
 }

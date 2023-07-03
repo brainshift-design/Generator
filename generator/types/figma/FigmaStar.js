@@ -5,6 +5,7 @@ extends FigmaShape
     y;
     width;
     height;
+
     round;
     points;
     convex;
@@ -19,6 +20,7 @@ extends FigmaShape
         this.y      = y;
         this.width  = width;
         this.height = height;
+
         this.round  = round;
         this.points = points;
         this.convex = convex;
@@ -32,10 +34,12 @@ extends FigmaShape
             this.nodeId,
             this.objectId,
             this.objectName,
+
             this.x,
             this.y,
             this.width,
             this.height,
+
             this.round,
             this.points,
             this.convex);
@@ -56,6 +60,7 @@ extends FigmaShape
             width:  this.width,
             height: this.height,
 
+            round:  this.round,
             points: this.points,
             convex: this.convex
         };

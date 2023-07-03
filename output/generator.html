@@ -5752,6 +5752,7 @@ extends FigmaShape
     y;
     width;
     height;
+
     round;
 
 
@@ -5763,6 +5764,7 @@ extends FigmaShape
         this.y      = y;
         this.width  = width;
         this.height = height;
+
         this.round  = round;
 
         this.createDefaultTransform(x, y);
@@ -5776,10 +5778,12 @@ extends FigmaShape
             this.nodeId,
             this.objectId,
             this.objectName,
+
             this.x,
             this.y,
             this.width,
             this.height,
+            
             this.round);
 
         copy.copyBase(this);
@@ -5798,6 +5802,7 @@ extends FigmaShape
             y:      this.y,
             width:  this.width,
             height: this.height,
+
             round:  this.round
         };
     }
@@ -5861,6 +5866,7 @@ extends FigmaShape
     y;
     width;
     height;
+
     from;
     to;
     inner;
@@ -5875,6 +5881,7 @@ extends FigmaShape
         this.y      = y;
         this.width  = width;
         this.height = height;
+
         this.from   = from;
         this.to     = to;
         this.inner  = inner;
@@ -5888,10 +5895,12 @@ extends FigmaShape
             this.nodeId,
             this.objectId,
             this.objectName,
+
             this.x,
             this.y,
             this.width,
             this.height,
+            
             this.from,
             this.to,
             this.inner);
@@ -5912,9 +5921,10 @@ extends FigmaShape
             y:      this.y,
             width:  this.width,
             height: this.height,
+
             from:   this.from,
             to:     this.to,
-            inner:  this.corners
+            inner:  this.inner
         };
     }
 }
@@ -5989,6 +5999,7 @@ extends FigmaShape
     y;
     width;
     height;
+
     round;
     points;
     convex;
@@ -6003,6 +6014,7 @@ extends FigmaShape
         this.y      = y;
         this.width  = width;
         this.height = height;
+
         this.round  = round;
         this.points = points;
         this.convex = convex;
@@ -6016,10 +6028,12 @@ extends FigmaShape
             this.nodeId,
             this.objectId,
             this.objectName,
+
             this.x,
             this.y,
             this.width,
             this.height,
+
             this.round,
             this.points,
             this.convex);
@@ -6040,6 +6054,7 @@ extends FigmaShape
             width:  this.width,
             height: this.height,
 
+            round:  this.round,
             points: this.points,
             convex: this.convex
         };
@@ -21878,8 +21893,7 @@ extends GShape
 
         await this.evalShapeBase(parse, input);
 
-
-        this.evalObjects(parse);
+        await this.evalObjects(parse);
 
 
         this.validate();
@@ -21966,9 +21980,9 @@ extends GShape
     {
         super.pushValueUpdates(parse);
  
-        if (this.from ) this.from .pushValueUpdates(prase);
-        if (this.to   ) this.to   .pushValueUpdates(prase);
-        if (this.inner) this.inner.pushValueUpdates(prase);
+        if (this.from ) this.from .pushValueUpdates(parse);
+        if (this.to   ) this.to   .pushValueUpdates(parse);
+        if (this.inner) this.inner.pushValueUpdates(parse);
     }
 
    

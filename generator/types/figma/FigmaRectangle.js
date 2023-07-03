@@ -5,6 +5,7 @@ extends FigmaShape
     y;
     width;
     height;
+
     round;
 
 
@@ -16,6 +17,7 @@ extends FigmaShape
         this.y      = y;
         this.width  = width;
         this.height = height;
+
         this.round  = round;
 
         this.createDefaultTransform(x, y);
@@ -29,10 +31,12 @@ extends FigmaShape
             this.nodeId,
             this.objectId,
             this.objectName,
+
             this.x,
             this.y,
             this.width,
             this.height,
+            
             this.round);
 
         copy.copyBase(this);
@@ -51,6 +55,7 @@ extends FigmaShape
             y:      this.y,
             width:  this.width,
             height: this.height,
+
             round:  this.round
         };
     }
