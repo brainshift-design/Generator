@@ -94,13 +94,31 @@ extends Parameter
             if (!e.detail.success)
                 return;
 
+            
+            let rgb;
+
             if (   e.detail.value.trim() != ''
                 && e.detail.value != e.detail.oldValue)
             {
-                const webColor = webColors.find(wc => wc.name.toLowerCase() == e.detail.value.toLowerCase());
-                if (webColor) e.detail.value = webColor.color;
+                const colorName = e.detail.value.toLowerCase();
 
-                const rgb = validHex2rgb(e.detail.value);
+                if (   colorName == 'rnd'
+                    || colorName == 'random')
+                {
+                    rgb = [
+                        Math.random(), 
+                        Math.random(), 
+                        Math.random()];
+                }
+                else
+                {
+                    const webColor = webColors.find(wc => wc.name.toLowerCase() == colorName);
+                    if (webColor) e.detail.value = webColor.color;
+
+                    rgb = validHex2rgb(e.detail.value);
+                }
+
+
                 const val = ColorValue.fromRgb(scaleRgb(rgb));
 
                 this.setValue(val, true);

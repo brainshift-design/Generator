@@ -102,11 +102,11 @@ extends GShape
             && this.value.height
             && this.value.round)
         {
-            let    x = this.value.x     .value;
-            let    y = this.value.y     .value;
-            let    w = this.value.width .value;
-            let    h = this.value.height.value;
-            const  r = Math.max(0, this.value.round.value);
+            let   x = this.value.x     .value;
+            let   y = this.value.y     .value;
+            let   w = this.value.width .value;
+            let   h = this.value.height.value;
+            const r = Math.max(0, this.value.round.value);
 
 
             const frame = new FigmaFrame(
@@ -175,8 +175,8 @@ extends GShape
 
     isValid()
     {
-        return super.isValid()
-            && this.round   .isValid()
+        return super     .isValid()
+            && this.round.isValid()
         && this.children.isValid();
     }
 
