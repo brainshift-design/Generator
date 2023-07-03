@@ -159,6 +159,13 @@ function determinant(m) {
 function inversem3(m) {
     return divm3s(adjugate(m), determinant(m));
 }
+function createRotateTransform(angle) {
+    const cosA = Math.cos(angle);
+    const sinA = Math.sin(angle);
+    return [[cosA, sinA, 0],
+        [-sinA, cosA, 0],
+        [0, 0, 1]];
+}
 function createTransform(x = 0, y = 0, scaleX = 1, scaleY = 1, angle = 0, skewX = 0, skewY = 0) {
     const cosA = Math.cos(angle);
     const sinA = Math.sin(angle);

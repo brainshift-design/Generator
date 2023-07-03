@@ -27,7 +27,7 @@ function createNode(nodeType, creatingButton = null, createdNodeId = -1, options
         case NUMBER_RANDOM:           node = new OpRandom();            break;
         case NUMBER_CONSTANT:         node = new OpConstant();          break;
         case NUMBER_DATETIME:         node = new OpDateTime();          break;
-        case NUMBER_DEFINE:            node = new OpDefine();             break;
+        case NUMBER_DEFINE:           node = new OpDefine();             break;
         case NUMBER_DISTRIBUTE:       node = new OpDistribute();        break;
         case NUMBER_SEQUENCE:         node = new OpSequence();          break;
         case NUMBER_INTERPOLATE:      node = new OpInterpolate();       break;
@@ -106,7 +106,7 @@ function createNode(nodeType, creatingButton = null, createdNodeId = -1, options
         case ELLIPSE:                 node = new OpEllipse();           break;
         case POLYGON:                 node = new OpPolygon();           break;
         case STAR:                    node = new OpStar();              break;
-        case TEXT_SHAPE:               node = new OpTextShape();         break;
+        case TEXT_SHAPE:              node = new OpTextShape();         break;
         case POINT:                   node = new OpPoint();             break;
         case VECTOR_PATH:             node = new OpVectorPath();        break;
         case BOOLEAN:                 node = new OpShapeBoolean();      break;

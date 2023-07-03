@@ -4984,6 +4984,18 @@ function inversem3(m)
 
 
 
+function createRotateTransform(angle)
+{
+    const cosA = Math.cos(angle);
+    const sinA = Math.sin(angle);
+
+    return [[ cosA, sinA, 0],
+            [-sinA, cosA, 0],
+            [ 0,    0,    1]];
+}
+
+
+
 function createTransform(x = 0, y = 0, scaleX = 1, scaleY = 1, angle = 0, skewX = 0, skewY = 0)
 {
     const cosA = Math.cos(angle);
@@ -28143,7 +28155,7 @@ extends GOperator1
         }
         else
         {
-            this.value = NullValue;
+            this.value = null;//NullValue;
         }
 
         
@@ -28180,21 +28192,51 @@ extends GOperator1
         //this.value.objects = this.input ? this.input.objects.map(o => o.copy()) : [];
 
             
+        const bounds = getObjBounds(this.objects);
+
         if (!this.options.enabled)
-            return;
+            return bounds;
             
+
+        console.log('options =', options);
 
         const x           = options.x.toNumber();
         const y           = options.y.toNumber();
         const moveType    = options.moveType.value;
         const affectSpace = options.affectSpace.value;
 
-        const _v = vector(y/360*Tau, x);
+
+        const _a = y/360*Tau;
+        const _v = vector(_a, x);
         
         const _x = moveType == 0 ? x : _v.x;
         const _y = moveType == 0 ? y : _v.y;
 
-        const xform = createTransform(_x, _y);
+
+        const singlePoint = 
+               this.objects.length == 1 
+            && this.objects[0].type == POINT;
+
+
+        let _cx = 50;
+        let _cy = 50;
+
+        if (!singlePoint)
+        {
+            _cx /= 100;
+            _cy /= 100;
+        }
+
+
+        const cx = singlePoint ? this.objects[0].x + _cx : bounds.x + bounds.width  * _cx;
+        const cy = singlePoint ? this.objects[0].y + _cy : bounds.y + bounds.height * _cy;
+
+        const xform = 
+            mulm3m3(
+                createTransform(cx, cy),
+                createTransform(_x, _y),
+                createRotateTransform(-_a),
+                createTransform(-cx, -cy));
 
              
         for (const obj of this.objects)
@@ -28508,9 +28550,7 @@ extends GAffine
         const a = options.angle.toNumber()/360*Tau;
 
         return await this.evalAffineObjects(parse, options,
-            () => [[ Math.cos(a), Math.sin(a), 0],
-                   [-Math.sin(a), Math.cos(a), 0],
-                   [ 0,           0,           1]]);
+            () => createRotateTransform(a));
     }
 
 
@@ -29952,7 +29992,7 @@ function genUpdateValuesAndObjects(requestId, actionId, updateNodeId, updatePara
     // send updates in chunks
 
     const approxNodeChunkSize = 20;
-    const objChunkSize        = 200;
+    const objChunkSize        = 100;
     const styleChunkSize      = 20;
 
     
@@ -38399,6 +38439,18 @@ function determinant(m)
 function inversem3(m)
 {
     return divm3s(adjugate(m), determinant(m));
+}
+
+
+
+function createRotateTransform(angle)
+{
+    const cosA = Math.cos(angle);
+    const sinA = Math.sin(angle);
+
+    return [[ cosA, sinA, 0],
+            [-sinA, cosA, 0],
+            [ 0,    0,    1]];
 }
 
 
@@ -64166,7 +64218,7 @@ extends GOperator1
         }
         else
         {
-            this.value = NullValue;
+            this.value = null;//NullValue;
         }
 
         
@@ -64203,21 +64255,51 @@ extends GOperator1
         //this.value.objects = this.input ? this.input.objects.map(o => o.copy()) : [];
 
             
+        const bounds = getObjBounds(this.objects);
+
         if (!this.options.enabled)
-            return;
+            return bounds;
             
+
+        console.log('options =', options);
 
         const x           = options.x.toNumber();
         const y           = options.y.toNumber();
         const moveType    = options.moveType.value;
         const affectSpace = options.affectSpace.value;
 
-        const _v = vector(y/360*Tau, x);
+
+        const _a = y/360*Tau;
+        const _v = vector(_a, x);
         
         const _x = moveType == 0 ? x : _v.x;
         const _y = moveType == 0 ? y : _v.y;
 
-        const xform = createTransform(_x, _y);
+
+        const singlePoint = 
+               this.objects.length == 1 
+            && this.objects[0].type == POINT;
+
+
+        let _cx = 50;
+        let _cy = 50;
+
+        if (!singlePoint)
+        {
+            _cx /= 100;
+            _cy /= 100;
+        }
+
+
+        const cx = singlePoint ? this.objects[0].x + _cx : bounds.x + bounds.width  * _cx;
+        const cy = singlePoint ? this.objects[0].y + _cy : bounds.y + bounds.height * _cy;
+
+        const xform = 
+            mulm3m3(
+                createTransform(cx, cy),
+                createTransform(_x, _y),
+                createRotateTransform(-_a),
+                createTransform(-cx, -cy));
 
              
         for (const obj of this.objects)
@@ -64531,9 +64613,7 @@ extends GAffine
         const a = options.angle.toNumber()/360*Tau;
 
         return await this.evalAffineObjects(parse, options,
-            () => [[ Math.cos(a), Math.sin(a), 0],
-                   [-Math.sin(a), Math.cos(a), 0],
-                   [ 0,           0,           1]]);
+            () => createRotateTransform(a));
     }
 
 
@@ -105940,7 +106020,7 @@ function createNode(nodeType, creatingButton = null, createdNodeId = -1, options
         case NUMBER_RANDOM:           node = new OpRandom();            break;
         case NUMBER_CONSTANT:         node = new OpConstant();          break;
         case NUMBER_DATETIME:         node = new OpDateTime();          break;
-        case NUMBER_DEFINE:            node = new OpDefine();             break;
+        case NUMBER_DEFINE:           node = new OpDefine();             break;
         case NUMBER_DISTRIBUTE:       node = new OpDistribute();        break;
         case NUMBER_SEQUENCE:         node = new OpSequence();          break;
         case NUMBER_INTERPOLATE:      node = new OpInterpolate();       break;
@@ -106019,7 +106099,7 @@ function createNode(nodeType, creatingButton = null, createdNodeId = -1, options
         case ELLIPSE:                 node = new OpEllipse();           break;
         case POLYGON:                 node = new OpPolygon();           break;
         case STAR:                    node = new OpStar();              break;
-        case TEXT_SHAPE:               node = new OpTextShape();         break;
+        case TEXT_SHAPE:              node = new OpTextShape();         break;
         case POINT:                   node = new OpPoint();             break;
         case VECTOR_PATH:             node = new OpVectorPath();        break;
         case BOOLEAN:                 node = new OpShapeBoolean();      break;

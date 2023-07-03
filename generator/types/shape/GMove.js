@@ -58,7 +58,7 @@ extends GOperator1
         }
         else
         {
-            this.value = NullValue;
+            this.value = null;//NullValue;
         }
 
         
@@ -95,21 +95,51 @@ extends GOperator1
         //this.value.objects = this.input ? this.input.objects.map(o => o.copy()) : [];
 
             
+        const bounds = getObjBounds(this.objects);
+
         if (!this.options.enabled)
-            return;
+            return bounds;
             
+
+        console.log('options =', options);
 
         const x           = options.x.toNumber();
         const y           = options.y.toNumber();
         const moveType    = options.moveType.value;
         const affectSpace = options.affectSpace.value;
 
-        const _v = vector(y/360*Tau, x);
+
+        const _a = y/360*Tau;
+        const _v = vector(_a, x);
         
         const _x = moveType == 0 ? x : _v.x;
         const _y = moveType == 0 ? y : _v.y;
 
-        const xform = createTransform(_x, _y);
+
+        const singlePoint = 
+               this.objects.length == 1 
+            && this.objects[0].type == POINT;
+
+
+        let _cx = 50;
+        let _cy = 50;
+
+        if (!singlePoint)
+        {
+            _cx /= 100;
+            _cy /= 100;
+        }
+
+
+        const cx = singlePoint ? this.objects[0].x + _cx : bounds.x + bounds.width  * _cx;
+        const cy = singlePoint ? this.objects[0].y + _cy : bounds.y + bounds.height * _cy;
+
+        const xform = 
+            mulm3m3(
+                createTransform(cx, cy),
+                createTransform(_x, _y),
+                createRotateTransform(-_a),
+                createTransform(-cx, -cy));
 
              
         for (const obj of this.objects)
