@@ -535,6 +535,41 @@ function genParseRandom(parse)
 
 
 
+function genParseProbability(parse)
+{
+    const [, nodeId, options, ignore] = genParseNodeStart(parse);
+
+
+    const prob = new GProbability(nodeId, options);
+
+
+    if (parse.settings.logRequests) 
+        logReq(prob, parse, ignore);
+
+
+    if (ignore) 
+    {
+        genParseNodeEnd(parse, prob);
+        return parse.parsedNodes.find(n => n.nodeId == nodeId);
+    }
+
+
+    parse.nTab++;
+
+
+    prob.seed   = genParse(parse);
+    prob.chance = genParse(parse);
+
+
+    parse.nTab--;
+
+
+    genParseNodeEnd(parse, prob);
+    return prob;
+}
+
+
+
 function genParseInterpolate(parse)
 {
     const [, nodeId, options, ignore] = genParseNodeStart(parse);

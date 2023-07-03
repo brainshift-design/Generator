@@ -19,15 +19,7 @@ extends GShapeBase
         super.copyBase(base);
         
         if (base.input) this.input = base.input.copy();
-
-        this.copyProperties(base.props);
-    }
-
-
-
-    copyProperties(props)
-    {
-        this.props = props.copy();
+        if (base.props) this.props = base.props.copy();
     }
 
 
@@ -52,9 +44,9 @@ extends GShapeBase
             && STYLE_VALUES.includes(props.type))
             props = new ListValue([props]);
 
-
+            
         if (this.input)
-            this.value.props = props ?? input.props;
+            this.value.props = props ?? this.input.value.props;
         else
             this.value.props = props;
 
@@ -67,13 +59,17 @@ extends GShapeBase
 
     async evalObjects(parse)
     {
-        for (const obj of this.objects)
+        if (!this.value)
+            return;
+
+
+        for (const obj of this.value.objects)
         {
             consoleAssert(obj.fills,   'obj.fills must not be null'  );
             consoleAssert(obj.strokes, 'obj.strokes must not be null');
             consoleAssert(obj.effects, 'obj.effects must not be null');
 
-            
+
             if (this.value.props.items == undefined) 
                 continue;
 
@@ -95,8 +91,8 @@ extends GShapeBase
         }
 
 
-        if (this.value)
-            this.value.objects = this.objects.map(o => o.copy());
+        // if (this.value)
+        //     this.value.objects = this.objects.map(o => o.copy());
     }
 
 

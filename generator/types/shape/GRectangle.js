@@ -83,7 +83,7 @@ extends GShape
             return;
      
         
-        const objects = [];
+        this.value.objects = [];
 
             
         if (   this.value.x
@@ -92,16 +92,14 @@ extends GShape
             && this.value.height
             && this.value.round)
         {
-            let    x = this.value.x     .value;
-            let    y = this.value.y     .value;
-            let    w = this.value.width .value;
-            let    h = this.value.height.value;
-            let    a = 0;
-            let   _a = a/360*Tau;
-            const  r = Math.max(0, this.value.round.value);
+            let   x = this.value.x     .value;
+            let   y = this.value.y     .value;
+            let   w = this.value.width .value;
+            let   h = this.value.height.value;
+            const r = Math.max(0, this.value.round.value);
 
 
-            [x, y, w, h, a, _a] = validateObjectRect(x, y, w, h, a, _a);
+            [x, y, w, h, , ] = validateObjectRect(x, y, w, h);
 
 
             if (   w != 0 
@@ -115,13 +113,9 @@ extends GShape
 
                 rect.createDefaultTransform(x, y);
 
-                objects.push(rect, ...rect.createTransformPoints(parse, x, y, w, h));
+                this.value.objects.push(rect, ...rect.createTransformPoints(parse, x, y, w, h));
             }
         }
-
-
-        this      .objects = [...objects];
-        this.value.objects = [...objects];
 
 
         await super.evalObjects(parse);
@@ -140,7 +134,7 @@ extends GShape
             this.round .toValue());
 
         rect.props   = this.props.toValue();
-        rect.objects = this.objects.map(o => o.copy());
+        rect.objects = this.value.objects.map(o => o.copy());
 
         return rect;
     }

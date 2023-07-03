@@ -47,7 +47,7 @@ extends GOperator
         let index = (await this.index.eval(parse)).toValue();
 
 
-        this.objects = [];
+        //this.objects = [];
 
         let length   = 0;
 
@@ -94,25 +94,25 @@ extends GOperator
 
                         obj.listId = -1;
                         
-                        this.objects.push(obj);
+                        this.value.objects.push(obj);
                     }
                 }
                 else
                 {
-                    this.value = null;//NullValue;
+                    this.value = NullValue;
                     index      = NumberValue.NaN;
                 }                    
                 //console.log('GSelect.value =', this.value);
             }
             else
             {
-                this.value = null;//NullValue;
+                this.value = NullValue;
                 index      = NumberValue.NaN;
             }
         }
         else
         {
-            this.value = null;//NullValue;
+            this.value = NullValue;
             index      = NumberValue.NaN;
         }
 

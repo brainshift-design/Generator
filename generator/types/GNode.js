@@ -16,9 +16,6 @@ class GNode
     updateValues = [];
 
 
-    objects      = []; 
-
-
 
     constructor(type, options) 
     {
@@ -40,15 +37,6 @@ class GNode
     {
         this.options = clone(base.options);
         this.data    = clone(base.data   );
-
-        this.copyObjects(base.objects);
-    }
-
-
-
-    copyObjects(objects)
-    {
-        this.objects = objects.map(o => o.copy());
     }
 
 

@@ -35,7 +35,7 @@ extends GOperator
         this.value = 
             this.input 
             ? (await this.input.eval(parse)).toValue() 
-            : null;//NullValue;
+            : NullValue;
 
 
         this.updateValues = [['value', this.value]];

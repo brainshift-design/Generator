@@ -70,11 +70,10 @@ extends GNumberType
 
 
         
-        let   size  = 1;
-        let   power = 1;
+        let size  = 1;
+        let power = 1;
         
-        
-        const avg   = (min.value + max.value) / 2;
+        const avg = (min.value + max.value) / 2;
         let   r;
 
         
@@ -88,7 +87,6 @@ extends GNumberType
                 
                 const i0 = Math.floor(i);
                 const i1 = Math.ceil (i);
-
 
                 const r0 = this.random.get(i0);
                 const r1 = this.random.get(i1);
@@ -114,7 +112,7 @@ extends GNumberType
         }
         else
         {
-            r = min.avlue;
+            r = min.value;
         }
 
 

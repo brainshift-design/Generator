@@ -21,7 +21,7 @@ extends ShapeValue
         this.round    = round;
         this.children = children;
 
-        this.objects  = children.objects.map(o => o.copy());
+        this.objects  = children ? children.objects.map(o => o.copy()) : [];
     }
 
 

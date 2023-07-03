@@ -92,7 +92,7 @@ extends GOperator
 
 
 
-function validateObjectRect(x, y, w, h, a, _a)
+function validateObjectRect(x, y, w, h, a = 0, _a = 0)
 {
     if (w < 0)
     {

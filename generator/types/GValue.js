@@ -3,6 +3,8 @@ extends GNode
 {
     valueId;
 
+    objects = [];
+
 
 
     constructor(type, options) 
@@ -24,9 +26,18 @@ extends GNode
 
     copyBase(base)
     {
+        super.copyBase(base);
+        
         this.valueId = base.valueId;
 
-        super.copyBase(base);
+        this.copyObjects(base.objects);
+    }
+
+
+
+    copyObjects(objects)
+    {
+        this.objects = objects.map(o => o.copy());
     }
 
 

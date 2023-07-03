@@ -58,7 +58,7 @@ extends GOperator1
         }
         else
         {
-            this.value = null;//NullValue;
+            this.value = NullValue;
         }
 
         
@@ -91,11 +91,13 @@ extends GOperator1
 
     async evalObjects(parse, options = {})
     {
-        this.objects = this.input ? this.input.objects.map(o => o.copy()) : [];
-        //this.value.objects = this.input ? this.input.objects.map(o => o.copy()) : [];
+        this.value.objects = 
+            this.input 
+            ? this.input.objects.map(o => o.copy()) 
+            : [];
 
             
-        const bounds = getObjBounds(this.objects);
+        const bounds = getObjBounds(this.value.objects);
 
         if (!this.options.enabled)
             return bounds;
@@ -115,8 +117,8 @@ extends GOperator1
 
 
         const singlePoint = 
-               this.objects.length == 1 
-            && this.objects[0].type == POINT;
+               this.value.objects.length == 1 
+            && this.value.objects[0].type == POINT;
 
 
         let _cx = 50;
@@ -129,8 +131,8 @@ extends GOperator1
         }
 
 
-        const cx = singlePoint ? this.objects[0].x + _cx : bounds.x + bounds.width  * _cx;
-        const cy = singlePoint ? this.objects[0].y + _cy : bounds.y + bounds.height * _cy;
+        const cx = singlePoint ? this.value.objects[0].x + _cx : bounds.x + bounds.width  * _cx;
+        const cy = singlePoint ? this.value.objects[0].y + _cy : bounds.y + bounds.height * _cy;
 
         const xform = 
             moveType == 0
@@ -142,14 +144,14 @@ extends GOperator1
                 createTransform(-cx, -cy));
 
              
-        for (const obj of this.objects)
+        for (const obj of this.value.objects)
         {
             obj.nodeId   = this.nodeId;
             obj.objectId = obj.objectId + OBJECT_SEPARATOR + this.nodeId;
 
             obj.applyTransform(xform, affectSpace > 0);
 
-            this.coords  = mulm3m3(this.coords, xform);
+            this.coords = mulm3m3(this.coords, xform);
         }
 
         
@@ -171,7 +173,9 @@ extends GOperator1
 
     toValue()
     {
-        return this.value.copy();
+        return this.value
+             ? this.value.copy()
+             : null;
     }
 
 

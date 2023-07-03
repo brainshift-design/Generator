@@ -87,7 +87,7 @@ extends GNode
             obj.nodeId = this.nodeId;
             obj.listId = -1;
             
-            this.objects.push(obj);
+            this.value.objects.push(obj);
         }
     }
 

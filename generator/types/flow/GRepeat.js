@@ -77,7 +77,7 @@ extends GOperator
 
         this.value = new ListValue();
 
-        this.objects = [];
+        //this.objects = [];
 
 
         let repeat =
@@ -127,7 +127,7 @@ extends GOperator
 
                         this.iterationObjects = [];
                     
-                        for (let j = 0; j < this.input.objects.length; j++, o++)
+                        for (let j = 0; j < this.input.value.objects.length; j++, o++)
                         {
                             const obj = copyFigmaObject(this.input.objects[j]);
 

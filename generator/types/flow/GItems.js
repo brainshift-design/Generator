@@ -45,12 +45,12 @@ extends GOperator
             await this.input.eval(parse);
 
             this.value   = this.input.toValue();
-            this.objects = this.input.objects.map(o => o.copy());
+            //this.objects = this.input.objects.map(o => o.copy());
         }
         else
         {
             this.value   = ListValue.NaN;
-            this.objects = [];
+            //this.objects = [];
         }
 
 
@@ -80,8 +80,8 @@ extends GOperator
         this.updateValues.push(['value', this.value]); // first so it can be separated out in OpItems
 
 
-        for (let j = 0; j < this.objects.length; j++)
-            this.objects[j].nodeId = this.nodeId;
+        for (let j = 0; j < this.value.objects.length; j++)
+            this.value.objects[j].nodeId = this.nodeId;
 
 
         this.validate();

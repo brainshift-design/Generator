@@ -24,12 +24,15 @@ function createNode(nodeType, creatingButton = null, createdNodeId = -1, options
         case NUMBER_ABSOLUTE:         node = new OpAbsolute();          break;
         case NUMBER_ROUND:            node = new OpRound();             break;
         case NUMBER_LIMITS:           node = new OpLimits();            break;
-        case NUMBER_RANDOM:           node = new OpRandom();            break;
         case NUMBER_CONSTANT:         node = new OpConstant();          break;
         case NUMBER_DATETIME:         node = new OpDateTime();          break;
-        case NUMBER_DEFINE:           node = new OpDefine();             break;
+        
+        case NUMBER_DEFINE:           node = new OpDefine();            break;
         case NUMBER_DISTRIBUTE:       node = new OpDistribute();        break;
         case NUMBER_SEQUENCE:         node = new OpSequence();          break;
+        case NUMBER_RANDOM:           node = new OpRandom();            break;
+        case NUMBER_PROBABILITY:      node = new OpProbability();       break;
+
         case NUMBER_INTERPOLATE:      node = new OpInterpolate();       break;
         case NUMBER_TO_TEXT:          node = new OpNumberToText();      break;
         case NUMBER_SOLVE:            node = new OpSolve();             break;

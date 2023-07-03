@@ -26,7 +26,7 @@ const HTAB = '  '; // half-tab
 const TAB = '    ';
 const NL = '\n';
 const GENERATOR_LOGO = '◦ G •';
-const OBJECT_PREFIX = GENERATOR_LOGO + ' '; //'G ';
+const OBJECT_PREFIX = GENERATOR_LOGO + ' ';
 const nodeTag = 'G_NODE';
 const connTag = 'G_CONN';
 const pageTag = 'G_PAGE';
@@ -508,6 +508,7 @@ const NUMBER_DEFINE = 'ARRAY';
 const NUMBER_DISTRIBUTE = 'DISTR';
 const NUMBER_SEQUENCE = 'SEQ';
 const NUMBER_RANDOM = 'RAND';
+const NUMBER_PROBABILITY = 'PROB';
 const NUMBER_INTERPOLATE = 'LERP';
 const NUMBER_SOLVE = 'SOLVE';
 const NUMBER_ANIMATE = 'ANIM';
@@ -595,6 +596,7 @@ const NUMBER_TYPES = [
     NUMBER_DISTRIBUTE,
     NUMBER_SEQUENCE,
     NUMBER_RANDOM,
+    NUMBER_PROBABILITY,
     NUMBER_INTERPOLATE,
     NUMBER_SOLVE,
     NUMBER_ANIMATE,

@@ -39,16 +39,19 @@ extends FigmaObject
         this.skewX            = base.skewX;
         this.skewY            = base.skewY;
 
-        this.fills            = clone(base.fills  );
+        this.fills            = clone(base.fills);
         this.strokes          = clone(base.strokes);
-        this.effects          = clone(base.effects);
 
         this.strokeWeight     = base.strokeWeight;
         this.strokeAlign      = base.strokeAlign;
         this.strokeJoin       = base.strokeJoin;
         this.strokeMiterLimit = base.strokeMiterLimit;
 
+        this.effects          = clone(base.effects);
+
         this.isDeco           = base.isDeco;
+
+        this.isMask           = base.isMask;
     }
 
 

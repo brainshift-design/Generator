@@ -16,7 +16,7 @@ const TAB              = '    ';
 const NL               = '\n';
   
 const GENERATOR_LOGO   = '◦ G •';
-const OBJECT_PREFIX    = GENERATOR_LOGO + ' ';//'G ';
+const OBJECT_PREFIX    = GENERATOR_LOGO + ' ';
   
 const nodeTag          = 'G_NODE';
 const connTag          = 'G_CONN';
@@ -4492,6 +4492,7 @@ const NUMBER_DEFINE            = 'ARRAY';
 const NUMBER_DISTRIBUTE       = 'DISTR';  
 const NUMBER_SEQUENCE         = 'SEQ';  
 const NUMBER_RANDOM           = 'RAND';  
+const NUMBER_PROBABILITY      = 'PROB';  
 const NUMBER_INTERPOLATE      = 'LERP'; 
 const NUMBER_SOLVE            = 'SOLVE';
 const NUMBER_ANIMATE          = 'ANIM';
@@ -4600,6 +4601,7 @@ const NUMBER_TYPES =
     NUMBER_DISTRIBUTE,
     NUMBER_SEQUENCE,
     NUMBER_RANDOM,
+    NUMBER_PROBABILITY,
     NUMBER_INTERPOLATE,
     NUMBER_SOLVE,
     NUMBER_ANIMATE,
@@ -5708,16 +5710,19 @@ extends FigmaObject
         this.skewX            = base.skewX;
         this.skewY            = base.skewY;
 
-        this.fills            = clone(base.fills  );
+        this.fills            = clone(base.fills);
         this.strokes          = clone(base.strokes);
-        this.effects          = clone(base.effects);
 
         this.strokeWeight     = base.strokeWeight;
         this.strokeAlign      = base.strokeAlign;
         this.strokeJoin       = base.strokeJoin;
         this.strokeMiterLimit = base.strokeMiterLimit;
 
+        this.effects          = clone(base.effects);
+
         this.isDeco           = base.isDeco;
+
+        this.isMask           = base.isMask;
     }
 
 
@@ -6824,9 +6829,6 @@ class GNode
     updateValues = [];
 
 
-    objects      = []; 
-
-
 
     constructor(type, options) 
     {
@@ -6848,15 +6850,6 @@ class GNode
     {
         this.options = clone(base.options);
         this.data    = clone(base.data   );
-
-        this.copyObjects(base.objects);
-    }
-
-
-
-    copyObjects(objects)
-    {
-        this.objects = objects.map(o => o.copy());
     }
 
 
@@ -6922,6 +6915,8 @@ extends GNode
 {
     valueId;
 
+    objects = [];
+
 
 
     constructor(type, options) 
@@ -6943,9 +6938,18 @@ extends GNode
 
     copyBase(base)
     {
+        super.copyBase(base);
+        
         this.valueId = base.valueId;
 
-        super.copyBase(base);
+        this.copyObjects(base.objects);
+    }
+
+
+
+    copyObjects(objects)
+    {
+        this.objects = objects.map(o => o.copy());
     }
 
 
@@ -7217,7 +7221,7 @@ extends GNode
             obj.nodeId = this.nodeId;
             obj.listId = -1;
             
-            this.objects.push(obj);
+            this.value.objects.push(obj);
         }
     }
 
@@ -11338,7 +11342,7 @@ extends ShapeValue
         this.round    = round;
         this.children = children;
 
-        this.objects  = children.objects.map(o => o.copy());
+        this.objects  = children ? children.objects.map(o => o.copy()) : [];
     }
 
 
@@ -11527,7 +11531,7 @@ extends GOperator
 
         this.value = new ListValue();
 
-        this.objects = [];
+        this.value.objects = [];
 
 
         for (let i = 0, o = 0; i < this.inputs.length; i++)
@@ -11548,7 +11552,7 @@ extends GOperator
                     obj.objectId = obj.objectId + OBJECT_SEPARATOR + this.nodeId;
                     obj.listId   = i;
 
-                    this.objects.push(obj);
+                    this.value.objects.push(obj);
                 }
             }
 
@@ -11660,12 +11664,12 @@ extends GOperator
             await this.input.eval(parse);
 
             this.value   = this.input.toValue();
-            this.objects = this.input.objects.map(o => o.copy());
+            //this.objects = this.input.objects.map(o => o.copy());
         }
         else
         {
             this.value   = ListValue.NaN;
-            this.objects = [];
+            //this.objects = [];
         }
 
 
@@ -11695,8 +11699,8 @@ extends GOperator
         this.updateValues.push(['value', this.value]); // first so it can be separated out in OpItems
 
 
-        for (let j = 0; j < this.objects.length; j++)
-            this.objects[j].nodeId = this.nodeId;
+        for (let j = 0; j < this.value.objects.length; j++)
+            this.value.objects[j].nodeId = this.nodeId;
 
 
         this.validate();
@@ -11789,7 +11793,7 @@ extends GOperator
         let index = (await this.index.eval(parse)).toValue();
 
 
-        this.objects = [];
+        //this.objects = [];
 
         let length   = 0;
 
@@ -11836,25 +11840,25 @@ extends GOperator
 
                         obj.listId = -1;
                         
-                        this.objects.push(obj);
+                        this.value.objects.push(obj);
                     }
                 }
                 else
                 {
-                    this.value = null;//NullValue;
+                    this.value = NullValue;
                     index      = NumberValue.NaN;
                 }                    
                 //console.log('GSelect.value =', this.value);
             }
             else
             {
-                this.value = null;//NullValue;
+                this.value = NullValue;
                 index      = NumberValue.NaN;
             }
         }
         else
         {
-            this.value = null;//NullValue;
+            this.value = NullValue;
             index      = NumberValue.NaN;
         }
 
@@ -12341,7 +12345,7 @@ extends GOperator
 
         this.value = new ListValue();
 
-        this.objects = [];
+        //this.objects = [];
 
 
         let repeat =
@@ -12391,7 +12395,7 @@ extends GOperator
 
                         this.iterationObjects = [];
                     
-                        for (let j = 0; j < this.input.objects.length; j++, o++)
+                        for (let j = 0; j < this.input.value.objects.length; j++, o++)
                         {
                             const obj = copyFigmaObject(this.input.objects[j]);
 
@@ -12622,7 +12626,7 @@ extends GOperator
         this.value = 
             this.input 
             ? (await this.input.eval(parse)).toValue() 
-            : null;//NullValue;
+            : NullValue;
 
 
         this.updateValues = [['value', this.value]];
@@ -12711,7 +12715,7 @@ extends GOperator
             this.value = input ? input : NullValue;
         }
         else
-            this.value = null;//NullValue;
+            this.value = NullValue;
             
 
         this.updateValues = 
@@ -13885,11 +13889,10 @@ extends GNumberType
 
 
         
-        let   size  = 1;
-        let   power = 1;
+        let size  = 1;
+        let power = 1;
         
-        
-        const avg   = (min.value + max.value) / 2;
+        const avg = (min.value + max.value) / 2;
         let   r;
 
         
@@ -13903,7 +13906,6 @@ extends GNumberType
                 
                 const i0 = Math.floor(i);
                 const i1 = Math.ceil (i);
-
 
                 const r0 = this.random.get(i0);
                 const r1 = this.random.get(i1);
@@ -13929,7 +13931,7 @@ extends GNumberType
         }
         else
         {
-            r = min.avlue;
+            r = min.value;
         }
 
 
@@ -13976,6 +13978,116 @@ extends GNumberType
 
         if (this.seed       ) this.seed       .invalidateInputs(from);
         if (this.min        ) this.min        .invalidateInputs(from);
+        if (this.max        ) this.max        .invalidateInputs(from);
+        if (this.scale      ) this.scale      .invalidateInputs(from);
+        if (this.interpolate) this.interpolate.invalidateInputs(from);
+        if (this.offset     ) this.offset     .invalidateInputs(from);
+        if (this.detail     ) this.detail     .invalidateInputs(from);
+    }
+}
+
+
+
+class GProbability
+extends GNumberType
+{
+    seed;
+    chance;
+
+    random = null;
+
+
+    loopId = NULL;
+
+
+
+    constructor(nodeId, options)
+    {
+        super(NUMBER_PROBABILITY, nodeId, options);
+    }
+
+
+    
+    copy()
+    {
+        const copy = new GRandom(this.nodeId, this.options);
+
+        copy.copyBase(this);
+
+        if (this.seed  ) copy.seed   = this.seed  .copy();
+        if (this.chance) copy.chance = this.chance.copy();
+
+        if (this.random) copy.random = this.random.copy();
+
+        return copy;
+    }
+
+
+
+    async eval(parse)
+    {
+        if (this.isCached())
+            return this;
+
+
+        const seed   = (await this.seed  .eval(parse)).toValue();
+        const chance = (await this.chance.eval(parse)).toValue();
+    
+
+        if (  !this.random
+            || this.random.seed != seed.value)
+            this.random = new Random(seed.value);
+
+
+        
+        const repeat    = parse.repeats.find(r => r.repeatId == this.loopId);
+        const iteration = repeat ? repeat.iteration : this.iteration;
+
+
+        const r = 
+            this.options.enabled
+            ? (this.random.get(iteration) > 1 - chance.value/100 ? 1 : 0)
+            : 0;
+
+
+        this.value = new NumberValue(r);
+
+
+        this.updateValues =
+        [
+            ['seed', seed  ],
+            ['min',  chance],
+        ];
+        
+
+        this.validate();
+
+        return this;
+    }
+
+
+
+    pushUpdateValues(parse)
+    {
+        super.pushUpdateValues(parse);
+
+        if (this.seed       ) this.seed       .pushUpdateValues(parse);
+        if (this.chance        ) this.chance        .pushUpdateValues(parse);
+        if (this.max        ) this.max        .pushUpdateValues(parse);
+        if (this.scale      ) this.scale      .pushUpdateValues(parse);
+        if (this.interpolate) this.interpolate.pushUpdateValues(parse);
+        if (this.offset     ) this.offset     .pushUpdateValues(parse);
+        if (this.detail     ) this.detail     .pushUpdateValues(parse);
+    }
+
+
+
+    invalidateInputs(from)
+    {
+        super.invalidateInputs(from);
+
+        if (this.seed       ) this.seed       .invalidateInputs(from);
+        if (this.chance        ) this.chance        .invalidateInputs(from);
         if (this.max        ) this.max        .invalidateInputs(from);
         if (this.scale      ) this.scale      .invalidateInputs(from);
         if (this.interpolate) this.interpolate.invalidateInputs(from);
@@ -21357,7 +21469,7 @@ extends GOperator
 
 
 
-function validateObjectRect(x, y, w, h, a, _a)
+function validateObjectRect(x, y, w, h, a = 0, _a = 0)
 {
     if (w < 0)
     {
@@ -21401,15 +21513,7 @@ extends GShapeBase
         super.copyBase(base);
         
         if (base.input) this.input = base.input.copy();
-
-        this.copyProperties(base.props);
-    }
-
-
-
-    copyProperties(props)
-    {
-        this.props = props.copy();
+        if (base.props) this.props = base.props.copy();
     }
 
 
@@ -21434,9 +21538,9 @@ extends GShapeBase
             && STYLE_VALUES.includes(props.type))
             props = new ListValue([props]);
 
-
+            
         if (this.input)
-            this.value.props = props ?? input.props;
+            this.value.props = props ?? this.input.value.props;
         else
             this.value.props = props;
 
@@ -21449,13 +21553,17 @@ extends GShapeBase
 
     async evalObjects(parse)
     {
-        for (const obj of this.objects)
+        if (!this.value)
+            return;
+
+
+        for (const obj of this.value.objects)
         {
             consoleAssert(obj.fills,   'obj.fills must not be null'  );
             consoleAssert(obj.strokes, 'obj.strokes must not be null');
             consoleAssert(obj.effects, 'obj.effects must not be null');
 
-            
+
             if (this.value.props.items == undefined) 
                 continue;
 
@@ -21477,8 +21585,8 @@ extends GShapeBase
         }
 
 
-        if (this.value)
-            this.value.objects = this.objects.map(o => o.copy());
+        // if (this.value)
+        //     this.value.objects = this.objects.map(o => o.copy());
     }
 
 
@@ -21516,7 +21624,6 @@ extends GShapeBase
         if (this.props) this.props.invalidateInputs(from);
     }
 }
-
 
 
 class GRectangle
@@ -21604,7 +21711,7 @@ extends GShape
             return;
      
         
-        const objects = [];
+        this.value.objects = [];
 
             
         if (   this.value.x
@@ -21613,16 +21720,14 @@ extends GShape
             && this.value.height
             && this.value.round)
         {
-            let    x = this.value.x     .value;
-            let    y = this.value.y     .value;
-            let    w = this.value.width .value;
-            let    h = this.value.height.value;
-            let    a = 0;
-            let   _a = a/360*Tau;
-            const  r = Math.max(0, this.value.round.value);
+            let   x = this.value.x     .value;
+            let   y = this.value.y     .value;
+            let   w = this.value.width .value;
+            let   h = this.value.height.value;
+            const r = Math.max(0, this.value.round.value);
 
 
-            [x, y, w, h, a, _a] = validateObjectRect(x, y, w, h, a, _a);
+            [x, y, w, h, , ] = validateObjectRect(x, y, w, h);
 
 
             if (   w != 0 
@@ -21636,13 +21741,9 @@ extends GShape
 
                 rect.createDefaultTransform(x, y);
 
-                objects.push(rect, ...rect.createTransformPoints(parse, x, y, w, h));
+                this.value.objects.push(rect, ...rect.createTransformPoints(parse, x, y, w, h));
             }
         }
-
-
-        this      .objects = [...objects];
-        this.value.objects = [...objects];
 
 
         await super.evalObjects(parse);
@@ -21661,7 +21762,7 @@ extends GShape
             this.round .toValue());
 
         rect.props   = this.props.toValue();
-        rect.objects = this.objects.map(o => o.copy());
+        rect.objects = this.value.objects.map(o => o.copy());
 
         return rect;
     }
@@ -23874,7 +23975,7 @@ extends GOperator1
         }
         else
         {
-            this.value = null;//NullValue;
+            this.value = NullValue;
         }
 
         
@@ -23907,11 +24008,13 @@ extends GOperator1
 
     async evalObjects(parse, options = {})
     {
-        this.objects = this.input ? this.input.objects.map(o => o.copy()) : [];
-        //this.value.objects = this.input ? this.input.objects.map(o => o.copy()) : [];
+        this.value.objects = 
+            this.input 
+            ? this.input.objects.map(o => o.copy()) 
+            : [];
 
             
-        const bounds = getObjBounds(this.objects);
+        const bounds = getObjBounds(this.value.objects);
 
         if (!this.options.enabled)
             return bounds;
@@ -23931,8 +24034,8 @@ extends GOperator1
 
 
         const singlePoint = 
-               this.objects.length == 1 
-            && this.objects[0].type == POINT;
+               this.value.objects.length == 1 
+            && this.value.objects[0].type == POINT;
 
 
         let _cx = 50;
@@ -23945,8 +24048,8 @@ extends GOperator1
         }
 
 
-        const cx = singlePoint ? this.objects[0].x + _cx : bounds.x + bounds.width  * _cx;
-        const cy = singlePoint ? this.objects[0].y + _cy : bounds.y + bounds.height * _cy;
+        const cx = singlePoint ? this.value.objects[0].x + _cx : bounds.x + bounds.width  * _cx;
+        const cy = singlePoint ? this.value.objects[0].y + _cy : bounds.y + bounds.height * _cy;
 
         const xform = 
             moveType == 0
@@ -23958,14 +24061,14 @@ extends GOperator1
                 createTransform(-cx, -cy));
 
              
-        for (const obj of this.objects)
+        for (const obj of this.value.objects)
         {
             obj.nodeId   = this.nodeId;
             obj.objectId = obj.objectId + OBJECT_SEPARATOR + this.nodeId;
 
             obj.applyTransform(xform, affectSpace > 0);
 
-            this.coords  = mulm3m3(this.coords, xform);
+            this.coords = mulm3m3(this.coords, xform);
         }
 
         
@@ -23987,7 +24090,9 @@ extends GOperator1
 
     toValue()
     {
-        return this.value.copy();
+        return this.value
+             ? this.value.copy()
+             : null;
     }
 
 
@@ -24065,21 +24170,22 @@ extends GOperator1
 
     async evalAffineObjects(parse, options, getXform)
     {
-        this.objects = 
-            this.input 
-            ? this.input.objects.map(o => o.copy()) 
+        this.value.objects = 
+               this.input 
+            && this.input.value
+            ? this.input.value.objects.map(o => o.copy()) 
             : [];
 
 
-        const bounds = getObjBounds(this.objects);
+        const bounds = getObjBounds(this.value.objects);
 
         if (!this.options.enabled)
             return bounds;
 
 
         const singlePoint = 
-               this.objects.length == 1 
-            && this.objects[0].type == POINT;
+               this.value.objects.length == 1 
+            && this.value.objects[0].type == POINT;
 
 
         let _cx = options.centerX.toNumber();
@@ -24092,8 +24198,8 @@ extends GOperator1
         }
 
 
-        const cx = singlePoint ? this.objects[0].x + _cx : bounds.x + bounds.width  * _cx;
-        const cy = singlePoint ? this.objects[0].y + _cy : bounds.y + bounds.height * _cy;
+        const cx = singlePoint ? this.value.objects[0].x + _cx : bounds.x + bounds.width  * _cx;
+        const cy = singlePoint ? this.value.objects[0].y + _cy : bounds.y + bounds.height * _cy;
 
 
         const xform = mulm3m3(
@@ -24102,7 +24208,7 @@ extends GOperator1
             createTransform(-cx, -cy));
 
         
-        for (const obj of this.objects)
+        for (const obj of this.value.objects)
         {
             obj.nodeId   = this.nodeId;
             obj.objectId = obj.objectId + OBJECT_SEPARATOR + this.nodeId;
@@ -24127,7 +24233,7 @@ extends GOperator1
 
             center.createDefaultTransform(cx, cy);
 
-            this.objects.push(center);
+            this.value.objects.push(center);
         };
 
 
@@ -25187,7 +25293,7 @@ function genRequest(request)
         {
             if (node.options.active === true)
             {
-                node.objects.forEach(o => genPushUpdateObject(parse, o));
+                node.value.objects.forEach(o => genPushUpdateObject(parse, o));
 
                 if (node.colorStyle) 
                     genPushUpdateColorStyle(parse, node.colorStyle);
@@ -27841,6 +27947,41 @@ function genParseRandom(parse)
 
 
 
+function genParseProbability(parse)
+{
+    const [, nodeId, options, ignore] = genParseNodeStart(parse);
+
+
+    const prob = new GProbability(nodeId, options);
+
+
+    if (parse.settings.logRequests) 
+        logReq(prob, parse, ignore);
+
+
+    if (ignore) 
+    {
+        genParseNodeEnd(parse, prob);
+        return parse.parsedNodes.find(n => n.nodeId == nodeId);
+    }
+
+
+    parse.nTab++;
+
+
+    prob.seed   = genParse(parse);
+    prob.chance = genParse(parse);
+
+
+    parse.nTab--;
+
+
+    genParseNodeEnd(parse, prob);
+    return prob;
+}
+
+
+
 function genParseInterpolate(parse)
 {
     const [, nodeId, options, ignore] = genParseNodeStart(parse);
@@ -30101,9 +30242,10 @@ function genParse(parse, inParam = true)
     else if (parse.next == NUMBER_ROUND           ) result = genParseRound            (parse);
     else if (parse.next == NUMBER_LIMITS          ) result = genParseLimits           (parse);
     else if (parse.next == NUMBER_RANDOM          ) result = genParseRandom           (parse);
+    else if (parse.next == NUMBER_PROBABILITY     ) result = genParseProbability      (parse);
     else if (parse.next == NUMBER_CONSTANT        ) result = genParseConstant         (parse);
     else if (parse.next == NUMBER_DATETIME        ) result = genParseDateTime         (parse);
-    else if (parse.next == NUMBER_DEFINE           ) result = genParseArray            (parse);
+    else if (parse.next == NUMBER_DEFINE          ) result = genParseArray            (parse);
     else if (parse.next == NUMBER_DISTRIBUTE      ) result = genParseDistribute       (parse);
     else if (parse.next == NUMBER_SEQUENCE        ) result = genParseSequence         (parse);
     else if (parse.next == NUMBER_INTERPOLATE     ) result = genParseInterpolate      (parse);

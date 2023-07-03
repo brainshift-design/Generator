@@ -47,7 +47,7 @@ extends GOperator
 
         this.value = new ListValue();
 
-        this.objects = [];
+        this.value.objects = [];
 
 
         for (let i = 0, o = 0; i < this.inputs.length; i++)
@@ -68,7 +68,7 @@ extends GOperator
                     obj.objectId = obj.objectId + OBJECT_SEPARATOR + this.nodeId;
                     obj.listId   = i;
 
-                    this.objects.push(obj);
+                    this.value.objects.push(obj);
                 }
             }
 

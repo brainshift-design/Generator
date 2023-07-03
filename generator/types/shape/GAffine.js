@@ -47,21 +47,22 @@ extends GOperator1
 
     async evalAffineObjects(parse, options, getXform)
     {
-        this.objects = 
-            this.input 
-            ? this.input.objects.map(o => o.copy()) 
+        this.value.objects = 
+               this.input 
+            && this.input.value
+            ? this.input.value.objects.map(o => o.copy()) 
             : [];
 
 
-        const bounds = getObjBounds(this.objects);
+        const bounds = getObjBounds(this.value.objects);
 
         if (!this.options.enabled)
             return bounds;
 
 
         const singlePoint = 
-               this.objects.length == 1 
-            && this.objects[0].type == POINT;
+               this.value.objects.length == 1 
+            && this.value.objects[0].type == POINT;
 
 
         let _cx = options.centerX.toNumber();
@@ -74,8 +75,8 @@ extends GOperator1
         }
 
 
-        const cx = singlePoint ? this.objects[0].x + _cx : bounds.x + bounds.width  * _cx;
-        const cy = singlePoint ? this.objects[0].y + _cy : bounds.y + bounds.height * _cy;
+        const cx = singlePoint ? this.value.objects[0].x + _cx : bounds.x + bounds.width  * _cx;
+        const cy = singlePoint ? this.value.objects[0].y + _cy : bounds.y + bounds.height * _cy;
 
 
         const xform = mulm3m3(
@@ -84,7 +85,7 @@ extends GOperator1
             createTransform(-cx, -cy));
 
         
-        for (const obj of this.objects)
+        for (const obj of this.value.objects)
         {
             obj.nodeId   = this.nodeId;
             obj.objectId = obj.objectId + OBJECT_SEPARATOR + this.nodeId;
@@ -109,7 +110,7 @@ extends GOperator1
 
             center.createDefaultTransform(cx, cy);
 
-            this.objects.push(center);
+            this.value.objects.push(center);
         };
 
 
