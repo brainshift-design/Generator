@@ -90,5 +90,3 @@ extends FigmaShape
 
 
 
-const FO_FRAME_ROUND    = 22;
-const FO_FRAME_CHILDREN = 23;

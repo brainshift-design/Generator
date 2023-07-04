@@ -100,24 +100,3 @@ extends FigmaObject
         ];
     }
 }
-
-
-
-const FO_FILLS          =  9;
-const FO_STROKES        = 10;
-
-const FO_STROKE_WEIGHT  = 11;
-const FO_STROKE_ALIGN   = 12;
-const FO_STROKE_JOIN    = 13;
-const FO_STROKE_MITER   = 14;
-
-const FO_EFFECTS        = 15;
-
-const FO_DECO           = 16;
-
-const FO_MASK           = 17;
-
-const FO_X              = 18;
-const FO_Y              = 19;
-const FO_WIDTH          = 20;
-const FO_HEIGHT         = 21;

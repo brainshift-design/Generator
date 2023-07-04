@@ -7,13 +7,11 @@
 //../logging/log request.js
 
 ../figma/main.ts0
-../figma/debug.ts0
 ../figma/canvas.ts0
 ../figma/events.ts0
 ../figma/messages.ts0
 ../figma/storage.ts0
 ../figma/ui.ts0
-../figma/util.ts0
 
 ../figma/objects.ts0
 ../figma/props.ts0

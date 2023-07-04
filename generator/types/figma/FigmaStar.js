@@ -84,9 +84,3 @@ extends FigmaShape
         ];
     }
 }
-
-
-
-const FO_STAR_ROUND  = 22;
-const FO_STAR_POINTS = 23;
-const FO_STAR_CONVEX = 24;

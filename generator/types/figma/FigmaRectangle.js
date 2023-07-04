@@ -76,7 +76,3 @@ extends FigmaShape
         ];
     }
 }
-
-
-
-const FO_RECT_ROUND = 22;

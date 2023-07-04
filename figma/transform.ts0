@@ -89,8 +89,8 @@ function setPointTransform(figPoint, genPoint)
     figPoint.resizeWithoutConstraints(0.01, 0.01);
 
 
-    figPoint.setPluginData('actualX', genPoint.x.toString());
-    figPoint.setPluginData('actualY', genPoint.y.toString());
+    figPoint.setPluginData('actualX', genPoint[FO_X].toString());
+    figPoint.setPluginData('actualY', genPoint[FO_Y].toString());
 
 
     figPoint.x        = genPoint[FO_X];

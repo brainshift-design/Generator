@@ -122,12 +122,6 @@ extends FigmaShape
 
 
 
-const FO_VECTOR_PATH_DATA    = 18;
-const FO_VECTOR_PATH_WINDING = 19;
-const FO_VECTOR_PATH_ROUND   = 20;
-
-
-
 function getPathDataFromPoints(points, closed, degree)
 {
     let pathData = '';

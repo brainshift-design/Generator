@@ -62,7 +62,3 @@ extends FigmaShape
         ];
     }
 }
-
-
-
-const FO_POINT_IS_CENTER = 20;

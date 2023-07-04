@@ -49,7 +49,3 @@ extends FigmaShape
         ];
     }
 }
-
-
-
-const FO_GROUP_CHILDREN = 18;

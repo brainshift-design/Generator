@@ -1,12 +1,12 @@
 function genTextIsValid(genText)
 {
-    return genText.text   != null
-        && genText.x      != null && !isNaN(genText.x     )
-        && genText.y      != null && !isNaN(genText.y     )
-        && genText.width  != null && !isNaN(genText.width )
-        && genText.height != null && !isNaN(genText.height)
-        && genText.font   != null && genText.font != NULL
-        && genText.size   != null && !isNaN(genText.size  );
+    return genText[FO_TEXT     ] != null
+        && genText[FO_X        ] != null && !isNaN(genText[FO_X     ])
+        && genText[FO_Y        ] != null && !isNaN(genText[FO_Y     ])
+        && genText[FO_WIDTH    ] != null && !isNaN(genText[FO_WIDTH ])
+        && genText[FO_HEIGHT   ] != null && !isNaN(genText[FO_HEIGHT])
+        && genText[FO_FONT     ] != null && genText[FO_FONT] != NULL
+        && genText[FO_FONT_SIZE] != null && !isNaN(genText[FO_FONT_SIZE]);
 }
 
 
@@ -31,8 +31,8 @@ async function figUpdateText(figText, genText)
 {
     const fontName = 
     { 
-        family: genText.font, 
-        style:  genText.style
+        family: genText[FO_FONT      ], 
+        style:  genText[FO_FONT_STYLE]
     };
 
     await figma.loadFontAsync(fontName); 
@@ -40,30 +40,30 @@ async function figUpdateText(figText, genText)
     
     figText.fontName      = fontName;
 
-    figText.fontSize      = Math.max(1, genText.size);
+    figText.fontSize      = Math.max(1, genText[FO_FONT_SIZE]);
 
-    figText.characters    = genText.text;
+    figText.characters    = genText[FO_TEXT];
 
-    figText.lineHeight    = {unit: 'PERCENT', value: genText.lineHeight   };
-    figText.letterSpacing = {unit: 'PERCENT', value: genText.letterSpacing};
+    figText.lineHeight    = {unit: 'PERCENT', value: genText[FO_LINE_HEIGHT   ]};
+    figText.letterSpacing = {unit: 'PERCENT', value: genText[FO_LETTER_SPACING]};
 
 
-         if (genText.alignH == 0) figText.textAlignHorizontal = 'LEFT';
-    else if (genText.alignH == 1) figText.textAlignHorizontal = 'CENTER';
-    else if (genText.alignH == 2) figText.textAlignHorizontal = 'RIGHT';
-    else if (genText.alignH == 3) figText.textAlignHorizontal = 'JUSTIFIED';
+         if (genText[FO_ALIGN_H] == 0) figText.textAlignHorizontal = 'LEFT';
+    else if (genText[FO_ALIGN_H] == 1) figText.textAlignHorizontal = 'CENTER';
+    else if (genText[FO_ALIGN_H] == 2) figText.textAlignHorizontal = 'RIGHT';
+    else if (genText[FO_ALIGN_H] == 3) figText.textAlignHorizontal = 'JUSTIFIED';
 
-         if (genText.alignV == 0) figText.textAlignVertical   = 'TOP';
-    else if (genText.alignV == 1) figText.textAlignVertical   = 'CENTER';
-    else if (genText.alignV == 2) figText.textAlignVertical   = 'BOTTOM';
+         if (genText[FO_ALIGN_V] == 0) figText.textAlignVertical   = 'TOP';
+    else if (genText[FO_ALIGN_V] == 1) figText.textAlignVertical   = 'CENTER';
+    else if (genText[FO_ALIGN_V] == 2) figText.textAlignVertical   = 'BOTTOM';
 
 
     setObjectTransform(figText, genText);
     setObjectProps    (figText, genText);
 
 
-      if (   genText.figWidth  == 0
-          && genText.figHeight == 0) figText.textAutoResize = 'WIDTH_AND_HEIGHT';
-    else if (genText.figWidth  == 0) figText.textAutoResize = 'HEIGHT';
-    else                             figText.textAutoResize = 'NONE';
+      if (   genText[FO_FIG_WIDTH ] == 0
+          && genText[FO_FIG_HEIGHT] == 0) figText.textAutoResize = 'WIDTH_AND_HEIGHT';
+    else if (genText[FO_FIG_WIDTH ] == 0) figText.textAutoResize = 'HEIGHT';
+    else                                  figText.textAutoResize = 'NONE';
 }

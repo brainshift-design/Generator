@@ -942,6 +942,54 @@ const FONT_WEIGHTS = [
     ['extra bold', 800],
     ['black', 900]
 ];
+const FO_TYPE = 0;
+const FO_NODE_ID = 1;
+const FO_UNIQUE_ID = 2;
+const FO_OBJECT_ID = 3;
+const FO_OBJECT_NAME = 4;
+const FO_FEEDBACK = 5;
+const FO_XP0 = 6;
+const FO_XP1 = 7;
+const FO_XP2 = 8;
+const FO_FILLS = 9;
+const FO_STROKES = 10;
+const FO_STROKE_WEIGHT = 11;
+const FO_STROKE_ALIGN = 12;
+const FO_STROKE_JOIN = 13;
+const FO_STROKE_MITER = 14;
+const FO_EFFECTS = 15;
+const FO_DECO = 16;
+const FO_MASK = 17;
+const FO_X = 18;
+const FO_VECTOR_PATH_DATA = 18;
+const FO_GROUP_CHILDREN = 18;
+const FO_Y = 19;
+const FO_VECTOR_PATH_WINDING = 19;
+const FO_WIDTH = 20;
+const FO_POINT_IS_CENTER = 20;
+const FO_VECTOR_PATH_ROUND = 20;
+const FO_HEIGHT = 21;
+const FO_RECT_ROUND = 22;
+const FO_ELLIPSE_FROM = 22;
+const FO_POLY_ROUND = 22;
+const FO_STAR_ROUND = 22;
+const FO_FIG_WIDTH = 22;
+const FO_FRAME_ROUND = 22;
+const FO_ELLIPSE_TO = 23;
+const FO_POLY_CORNERS = 23;
+const FO_STAR_POINTS = 23;
+const FO_FIG_HEIGHT = 23;
+const FO_FRAME_CHILDREN = 23;
+const FO_ELLIPSE_INNER = 24;
+const FO_STAR_CONVEX = 24;
+const FO_TEXT = 24;
+const FO_FONT = 25;
+const FO_FONT_SIZE = 26;
+const FO_FONT_STYLE = 27;
+const FO_ALIGN_H = 28;
+const FO_ALIGN_V = 29;
+const FO_LINE_HEIGHT = 30;
+const FO_LETTER_SPACING = 31;
 const base32chars = '12345679ABCDEFGHJKLMNPQRSTUVWXYZ';
 function arrayToBase32(array, chars = base32chars) {
     let base32 = '';
@@ -1197,7 +1245,7 @@ function findObject(obj, ignoreObjects) {
         }
     }
     else {
-        const found = ignoreObjects.find(o => o.objectId == obj.getPluginData('objectId'));
+        const found = ignoreObjects.find(o => o[FO_OBJECT_ID] == obj.getPluginData('objectId'));
         if (found)
             return found;
     }
@@ -1475,20 +1523,6 @@ figma.ui.onmessage = function (msg) {
 function figPostMessageToUi(msg) {
     figma.ui.postMessage(JSON.stringify(msg));
 }
-///////////////////////////////////////////////////////////////////////////////////////////////////
-// to Generator -->
-///////////////////////////////////////////////////////////////////////////////////////////////////
-// function figPostMessageToGenerator(msg)
-// {
-//     figPostMessageToUi({
-//         cmd: 'uiForwardToGen',
-//         msg:  msg
-//     });
-// }
-// function figEndGeneratorMessage()
-// {
-//     figPostMessageToGenerator({cmd: 'genEndFigMessage'}); 
-// }
 ///////////////////////////////////////////////////////////////////////////////////////////////////
 function figLoadLocal(key) {
     return __awaiter(this, void 0, void 0, function* () {
@@ -1941,24 +1975,9 @@ function figNotify(text, prefix = 'Generator ', delay = 400, error = false, butt
         notifyNotificationHandler.cancel();
     notifyNotificationHandler = figma.notify(prefix + text, options);
 }
-// function objTypeString(type)
-// {
-//     switch (type)
-//     {
-//         case RECTANGLE: return 'RECTANGLE';
-//         // case 'VECTOR':
-//         // case 'LINE':
-//         // case 'ELLIPSE':
-//         // case 'POLYGON':
-//         // case 'STAR':
-//         // case 'TEXT':
-//         // case 'BOOLEAN_OPERATION':
-//     }
-//     return 'ERROR_TYPE';
-// }
 function makeObjectName(obj) {
     return OBJECT_PREFIX //(obj.final ? ''           : OBJECT_PREFIX )
-        + (showIds ? obj.objectId : obj.objectName);
+        + (showIds ? obj[FO_OBJECT_ID] : obj[FO_OBJECT_NAME]);
 }
 function figCreateObject(genObj, addObject = null) {
     return __awaiter(this, void 0, void 0, function* () {
@@ -2074,7 +2093,7 @@ function figUpdateObjects(figParent, genObjects) {
                     figObjectArrays.push(figObjects =
                         {
                             nodeId: genObj[FO_NODE_ID],
-                            existing: genObj.existing,
+                            //existing: genObj.existing,
                             objects: []
                         });
                 }
@@ -2151,7 +2170,7 @@ function figGetObjectSize(genObj) {
             cmd: 'uiForwardToGenerator',
             msg: {
                 cmd: 'returnFigGetObjectSize',
-                objectId: genObj[3],
+                objectId: genObj[FO_OBJECT_ID],
                 width: width,
                 height: height
             }
@@ -2618,8 +2637,8 @@ function setObjectTransform(figObj, genObj, setSize = true, noHeight = 0.01) {
 }
 function setPointTransform(figPoint, genPoint) {
     figPoint.resizeWithoutConstraints(0.01, 0.01);
-    figPoint.setPluginData('actualX', genPoint.x.toString());
-    figPoint.setPluginData('actualY', genPoint.y.toString());
+    figPoint.setPluginData('actualX', genPoint[FO_X].toString());
+    figPoint.setPluginData('actualY', genPoint[FO_Y].toString());
     figPoint.x = genPoint[FO_X];
     figPoint.y = genPoint[FO_Y];
     figPoint.rotation = genPoint[FO_POINT_IS_CENTER] ? 45 : 0;
@@ -2714,7 +2733,7 @@ function figCreateFrame(genFrame) {
     if (figFrame) {
         figUpdateFrameData(figFrame, genFrame);
         let objects = [];
-        for (const obj of genFrame.children)
+        for (const obj of genFrame[FO_FRAME_CHILDREN])
             figCreateObject(obj, o => objects = [...objects, o]);
         for (const obj of objects)
             figFrame.appendChild(obj);
@@ -2723,19 +2742,19 @@ function figCreateFrame(genFrame) {
 }
 function figUpdateFrame(figFrame, genFrame) {
     figUpdateFrameData(figFrame, genFrame);
-    figUpdateObjects(figFrame, genFrame.children);
+    figUpdateObjects(figFrame, genFrame[FO_FRAME_CHILDREN]);
 }
 function figUpdateFrameData(figFrame, genFrame) {
-    figFrame.cornerRadius = genFrame.round;
+    figFrame.cornerRadius = genFrame[FO_FRAME_ROUND];
     setObjectTransform(figFrame, genFrame);
-    setObjectProps(figFrame, genFrame, genFrame.children.length == 0);
+    setObjectProps(figFrame, genFrame, genFrame[FO_FRAME_CHILDREN].length == 0);
 }
 function genShapeGroupIsValid(genGroup) {
-    return genGroup.children.length > 0;
+    return genGroup[FO_GROUP_CHILDREN].length > 0;
 }
 function figCreateShapeGroup(genGroup) {
     let objects = [];
-    for (const obj of genGroup.children)
+    for (const obj of genGroup[FO_GROUP_CHILDREN])
         figCreateObject(obj, o => objects = [...objects, o]);
     const figGroup = !isEmpty(objects)
         ? figma.group(objects, figma.currentPage)
@@ -2752,12 +2771,12 @@ function figUpdateShapeGroup(figGroup, genGroup) {
         figGroup.remove();
         return;
     }
-    figUpdateObjects(figGroup, genGroup.children);
+    figUpdateObjects(figGroup, genGroup[FO_GROUP_CHILDREN]);
 }
 function genLineIsValid(genLine) {
-    return genLine.x != null && !isNaN(genLine.x)
-        && genLine.y != null && !isNaN(genLine.y)
-        && genLine.width != null && !isNaN(genLine.width);
+    return genLine[FO_X] != null && !isNaN(genLine[FO_X])
+        && genLine[FO_Y] != null && !isNaN(genLine[FO_Y])
+        && genLine[FO_WIDTH] != null && !isNaN(genLine[FO_WIDTH]);
 }
 function figCreateLine(genLine) {
     if (!genLineIsValid(genLine))
@@ -2824,12 +2843,12 @@ function updatePointStyles(figPoint) {
     figPoint.effects = effects;
 }
 function genPolygonIsValid(genPoly) {
-    return genPoly.x != null && !isNaN(genPoly.x)
-        && genPoly.y != null && !isNaN(genPoly.y)
-        && genPoly.width != null && !isNaN(genPoly.width)
-        && genPoly.height != null && !isNaN(genPoly.height)
-        && genPoly.round != null && !isNaN(genPoly.round)
-        && genPoly.corners != null && !isNaN(genPoly.corners);
+    return genPoly[FO_X] != null && !isNaN(genPoly[FO_X])
+        && genPoly[FO_Y] != null && !isNaN(genPoly[FO_Y])
+        && genPoly[FO_WIDTH] != null && !isNaN(genPoly[FO_WIDTH])
+        && genPoly[FO_HEIGHT] != null && !isNaN(genPoly[FO_HEIGHT])
+        && genPoly[FO_POLY_ROUND] != null && !isNaN(genPoly[FO_POLY_ROUND])
+        && genPoly[FO_POLY_CORNERS] != null && !isNaN(genPoly[FO_POLY_CORNERS]);
 }
 function figCreatePolygon(genPoly) {
     if (!genPolygonIsValid(genPoly))
@@ -2839,8 +2858,8 @@ function figCreatePolygon(genPoly) {
     return figPoly;
 }
 function figUpdatePolygon(figPoly, genPoly) {
-    figPoly.cornerRadius = genPoly.round;
-    figPoly.pointCount = Math.max(3, genPoly.corners);
+    figPoly.cornerRadius = genPoly[FO_POLY_ROUND];
+    figPoly.pointCount = Math.max(3, genPoly[FO_POLY_CORNERS]);
     setObjectTransform(figPoly, genPoly);
     setObjectProps(figPoly, genPoly);
 }
@@ -2868,14 +2887,13 @@ function figUpdateRect(figRect, genRect) {
     setObjectProps(figRect, genRect);
 }
 function genStarIsValid(genStar) {
-    return genStar.x != null && !isNaN(genStar.x)
-        && genStar.y != null && !isNaN(genStar.y)
-        && genStar.width != null && !isNaN(genStar.width)
-        && genStar.height != null && !isNaN(genStar.height)
-        //&& genStar.angle  != null && !isNaN(genStar.angle )
-        && genStar.round != null && !isNaN(genStar.round)
-        && genStar.points != null && !isNaN(genStar.points)
-        && genStar.convex != null && !isNaN(genStar.convex);
+    return genStar[FO_X] != null && !isNaN(genStar[FO_X])
+        && genStar[FO_Y] != null && !isNaN(genStar[FO_Y])
+        && genStar[FO_WIDTH] != null && !isNaN(genStar[FO_WIDTH])
+        && genStar[FO_HEIGHT] != null && !isNaN(genStar[FO_HEIGHT])
+        && genStar[FO_STAR_ROUND] != null && !isNaN(genStar[FO_STAR_ROUND])
+        && genStar[FO_STAR_POINTS] != null && !isNaN(genStar[FO_STAR_POINTS])
+        && genStar[FO_STAR_CONVEX] != null && !isNaN(genStar[FO_STAR_CONVEX]);
 }
 function figCreateStar(genStar) {
     if (!genStarIsValid(genStar))
@@ -2885,20 +2903,20 @@ function figCreateStar(genStar) {
     return figStar;
 }
 function figUpdateStar(figStar, genStar) {
-    figStar.cornerRadius = genStar.round;
-    figStar.pointCount = genStar.points;
-    figStar.innerRadius = Math.min(Math.max(0, genStar.convex / 100), 1);
+    figStar.cornerRadius = genStar[FO_STAR_ROUND];
+    figStar.pointCount = genStar[FO_STAR_POINTS];
+    figStar.innerRadius = Math.min(Math.max(0, genStar[FO_STAR_CONVEX] / 100), 1);
     setObjectTransform(figStar, genStar);
     setObjectProps(figStar, genStar);
 }
 function genTextIsValid(genText) {
-    return genText.text != null
-        && genText.x != null && !isNaN(genText.x)
-        && genText.y != null && !isNaN(genText.y)
-        && genText.width != null && !isNaN(genText.width)
-        && genText.height != null && !isNaN(genText.height)
-        && genText.font != null && genText.font != NULL
-        && genText.size != null && !isNaN(genText.size);
+    return genText[FO_TEXT] != null
+        && genText[FO_X] != null && !isNaN(genText[FO_X])
+        && genText[FO_Y] != null && !isNaN(genText[FO_Y])
+        && genText[FO_WIDTH] != null && !isNaN(genText[FO_WIDTH])
+        && genText[FO_HEIGHT] != null && !isNaN(genText[FO_HEIGHT])
+        && genText[FO_FONT] != null && genText[FO_FONT] != NULL
+        && genText[FO_FONT_SIZE] != null && !isNaN(genText[FO_FONT_SIZE]);
 }
 function figCreateText(genText) {
     return __awaiter(this, void 0, void 0, function* () {
@@ -2912,35 +2930,35 @@ function figCreateText(genText) {
 function figUpdateText(figText, genText) {
     return __awaiter(this, void 0, void 0, function* () {
         const fontName = {
-            family: genText.font,
-            style: genText.style
+            family: genText[FO_FONT],
+            style: genText[FO_FONT_STYLE]
         };
         yield figma.loadFontAsync(fontName);
         figText.fontName = fontName;
-        figText.fontSize = Math.max(1, genText.size);
-        figText.characters = genText.text;
-        figText.lineHeight = { unit: 'PERCENT', value: genText.lineHeight };
-        figText.letterSpacing = { unit: 'PERCENT', value: genText.letterSpacing };
-        if (genText.alignH == 0)
+        figText.fontSize = Math.max(1, genText[FO_FONT_SIZE]);
+        figText.characters = genText[FO_TEXT];
+        figText.lineHeight = { unit: 'PERCENT', value: genText[FO_LINE_HEIGHT] };
+        figText.letterSpacing = { unit: 'PERCENT', value: genText[FO_LETTER_SPACING] };
+        if (genText[FO_ALIGN_H] == 0)
             figText.textAlignHorizontal = 'LEFT';
-        else if (genText.alignH == 1)
+        else if (genText[FO_ALIGN_H] == 1)
             figText.textAlignHorizontal = 'CENTER';
-        else if (genText.alignH == 2)
+        else if (genText[FO_ALIGN_H] == 2)
             figText.textAlignHorizontal = 'RIGHT';
-        else if (genText.alignH == 3)
+        else if (genText[FO_ALIGN_H] == 3)
             figText.textAlignHorizontal = 'JUSTIFIED';
-        if (genText.alignV == 0)
+        if (genText[FO_ALIGN_V] == 0)
             figText.textAlignVertical = 'TOP';
-        else if (genText.alignV == 1)
+        else if (genText[FO_ALIGN_V] == 1)
             figText.textAlignVertical = 'CENTER';
-        else if (genText.alignV == 2)
+        else if (genText[FO_ALIGN_V] == 2)
             figText.textAlignVertical = 'BOTTOM';
         setObjectTransform(figText, genText);
         setObjectProps(figText, genText);
-        if (genText.figWidth == 0
-            && genText.figHeight == 0)
+        if (genText[FO_FIG_WIDTH] == 0
+            && genText[FO_FIG_HEIGHT] == 0)
             figText.textAutoResize = 'WIDTH_AND_HEIGHT';
-        else if (genText.figWidth == 0)
+        else if (genText[FO_FIG_WIDTH] == 0)
             figText.textAutoResize = 'HEIGHT';
         else
             figText.textAutoResize = 'NONE';

@@ -1,13 +1,12 @@
 function genStarIsValid(genStar)
 {
-    return genStar.x      != null && !isNaN(genStar.x     )
-        && genStar.y      != null && !isNaN(genStar.y     )
-        && genStar.width  != null && !isNaN(genStar.width )
-        && genStar.height != null && !isNaN(genStar.height)
-        //&& genStar.angle  != null && !isNaN(genStar.angle )
-        && genStar.round  != null && !isNaN(genStar.round )
-        && genStar.points != null && !isNaN(genStar.points)
-        && genStar.convex != null && !isNaN(genStar.convex);
+    return genStar[FO_X          ] != null && !isNaN(genStar[FO_X          ])
+        && genStar[FO_Y          ] != null && !isNaN(genStar[FO_Y          ])
+        && genStar[FO_WIDTH      ] != null && !isNaN(genStar[FO_WIDTH      ])
+        && genStar[FO_HEIGHT     ] != null && !isNaN(genStar[FO_HEIGHT     ])
+        && genStar[FO_STAR_ROUND ] != null && !isNaN(genStar[FO_STAR_ROUND ])
+        && genStar[FO_STAR_POINTS] != null && !isNaN(genStar[FO_STAR_POINTS])
+        && genStar[FO_STAR_CONVEX] != null && !isNaN(genStar[FO_STAR_CONVEX]);
 }
 
 
@@ -29,9 +28,9 @@ function figCreateStar(genStar)
 
 function figUpdateStar(figStar, genStar)
 {
-    figStar.cornerRadius = genStar.round;
-    figStar.pointCount   = genStar.points;
-    figStar.innerRadius  = Math.min(Math.max(0, genStar.convex / 100), 1);
+    figStar.cornerRadius = genStar[FO_STAR_ROUND ];
+    figStar.pointCount   = genStar[FO_STAR_POINTS];
+    figStar.innerRadius  = Math.min(Math.max(0, genStar[FO_STAR_CONVEX] / 100), 1);
 
     setObjectTransform(figStar, genStar);
     setObjectProps    (figStar, genStar);

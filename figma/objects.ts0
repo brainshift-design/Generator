@@ -1,7 +1,7 @@
 function makeObjectName(obj)
 {
     return OBJECT_PREFIX //(obj.final ? ''           : OBJECT_PREFIX )
-         + (showIds   ? obj.objectId : obj.objectName);
+         + (showIds   ? obj[FO_OBJECT_ID] : obj[FO_OBJECT_NAME]);
 }
 
 
@@ -111,7 +111,7 @@ async function figUpdateObjects(figParent, genObjects)
                 figObjectArrays.push(figObjects = 
                 {
                     nodeId:   genObj[FO_NODE_ID], 
-                    existing: genObj.existing,
+                    //existing: genObj.existing,
                     objects:  []
                 });
             }
@@ -228,7 +228,7 @@ function figGetObjectSize(genObj)
             msg: 
             {
                 cmd:     'returnFigGetObjectSize',
-                objectId: genObj[3],
+                objectId: genObj[FO_OBJECT_ID],
                 width:    width,
                 height:   height
             }

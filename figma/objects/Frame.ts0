@@ -26,7 +26,7 @@ function figCreateFrame(genFrame)
 
         let objects = [];
 
-        for (const obj of genFrame.children)
+        for (const obj of genFrame[FO_FRAME_CHILDREN])
             figCreateObject(obj, o => objects = [...objects, o]);
 
         for (const obj of objects)
@@ -43,15 +43,15 @@ function figUpdateFrame(figFrame, genFrame)
 {
     figUpdateFrameData(figFrame, genFrame);
 
-    figUpdateObjects(figFrame, genFrame.children);
+    figUpdateObjects(figFrame, genFrame[FO_FRAME_CHILDREN]);
 }
 
 
 
 function figUpdateFrameData(figFrame, genFrame)
 {
-    figFrame.cornerRadius = genFrame.round;
+    figFrame.cornerRadius = genFrame[FO_FRAME_ROUND];
 
     setObjectTransform(figFrame, genFrame);
-    setObjectProps    (figFrame, genFrame, genFrame.children.length == 0);
+    setObjectProps    (figFrame, genFrame, genFrame[FO_FRAME_CHILDREN].length == 0);
 }

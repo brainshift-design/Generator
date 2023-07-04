@@ -75,7 +75,7 @@ function findObject(obj, ignoreObjects)
     }
     else
     {
-        const found = ignoreObjects.find(o => o.objectId == obj.getPluginData('objectId'));
+        const found = ignoreObjects.find(o => o[FO_OBJECT_ID] == obj.getPluginData('objectId'));
         if (found) return found;
     }
 

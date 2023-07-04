@@ -81,8 +81,3 @@ extends FigmaShape
         ];
     }
 }
-
-
-
-const FO_POLY_ROUND   = 22;
-const FO_POLY_CORNERS = 23;

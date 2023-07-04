@@ -143,20 +143,3 @@ extends FigmaShape
         ];
     }
 }
-
-
-
-const FO_FIG_WIDTH      = 22;
-const FO_FIG_HEIGHT     = 23;
-                                                                                
-const FO_TEXT           = 24;
-                                                                                                   
-const FO_FONT           = 25;
-const FO_FONT_SIZE      = 26;
-const FO_FONT_STYLE     = 27;
-                                                                                                   
-const FO_ALIGN_H        = 28;
-const FO_ALIGN_V        = 29;
-                                                                                                   
-const FO_LINE_HEIGHT    = 30;
-const FO_LETTER_SPACING = 31;

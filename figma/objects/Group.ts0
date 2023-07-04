@@ -1,6 +1,6 @@
 function genShapeGroupIsValid(genGroup)
 {
-    return genGroup.children.length > 0;
+    return genGroup[FO_GROUP_CHILDREN].length > 0;
 }
 
 
@@ -9,7 +9,7 @@ function figCreateShapeGroup(genGroup)
 {
     let objects = [];
 
-    for (const obj of genGroup.children)
+    for (const obj of genGroup[FO_GROUP_CHILDREN])
         figCreateObject(obj, o => objects = [...objects, o]);
 
 
@@ -40,5 +40,5 @@ function figUpdateShapeGroup(figGroup, genGroup)
         return;
     }
 
-    figUpdateObjects(figGroup, genGroup.children);
+    figUpdateObjects(figGroup, genGroup[FO_GROUP_CHILDREN]);
 }

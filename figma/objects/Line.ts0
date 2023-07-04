@@ -1,8 +1,8 @@
 function genLineIsValid(genLine)
 {
-    return genLine.x     != null && !isNaN(genLine.x    )
-        && genLine.y     != null && !isNaN(genLine.y    )
-        && genLine.width != null && !isNaN(genLine.width);
+    return genLine[FO_X    ] != null && !isNaN(genLine[FO_X    ])
+        && genLine[FO_Y    ] != null && !isNaN(genLine[FO_Y    ])
+        && genLine[FO_WIDTH] != null && !isNaN(genLine[FO_WIDTH]);
 }
 
 

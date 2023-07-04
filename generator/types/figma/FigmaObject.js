@@ -216,21 +216,6 @@ class FigmaObject
 
 
 
-const FO_TYPE        = 0;
-const FO_NODE_ID     = 1;
-
-const FO_UNIQUE_ID   = 2;
-const FO_OBJECT_ID   = 3;
-const FO_OBJECT_NAME = 4;
-
-const FO_FEEDBACK    = 5;
-
-const FO_XP0         = 6;
-const FO_XP1         = 7;
-const FO_XP2         = 8;
-
-
-
 function transformPoint(p, xform, coords)
 {
     p = mulv2m3(p, inversem3(coords));

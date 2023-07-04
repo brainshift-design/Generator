@@ -1,11 +1,11 @@
 function genPolygonIsValid(genPoly)
 {
-    return genPoly.x       != null && !isNaN(genPoly.x      )
-        && genPoly.y       != null && !isNaN(genPoly.y      )
-        && genPoly.width   != null && !isNaN(genPoly.width  )
-        && genPoly.height  != null && !isNaN(genPoly.height )
-        && genPoly.round   != null && !isNaN(genPoly.round  )
-        && genPoly.corners != null && !isNaN(genPoly.corners);
+    return genPoly[FO_X           ] != null && !isNaN(genPoly[FO_X           ])
+        && genPoly[FO_Y           ] != null && !isNaN(genPoly[FO_Y           ])
+        && genPoly[FO_WIDTH       ] != null && !isNaN(genPoly[FO_WIDTH       ])
+        && genPoly[FO_HEIGHT      ] != null && !isNaN(genPoly[FO_HEIGHT      ])
+        && genPoly[FO_POLY_ROUND  ] != null && !isNaN(genPoly[FO_POLY_ROUND  ])
+        && genPoly[FO_POLY_CORNERS] != null && !isNaN(genPoly[FO_POLY_CORNERS]);
 }
 
 
@@ -27,8 +27,8 @@ function figCreatePolygon(genPoly)
 
 function figUpdatePolygon(figPoly, genPoly)
 {
-    figPoly.cornerRadius = genPoly.round;
-    figPoly.pointCount   = Math.max(3, genPoly.corners);
+    figPoly.cornerRadius = genPoly[FO_POLY_ROUND];
+    figPoly.pointCount   = Math.max(3, genPoly[FO_POLY_CORNERS]);
 
     setObjectTransform(figPoly, genPoly);
     setObjectProps    (figPoly, genPoly);
