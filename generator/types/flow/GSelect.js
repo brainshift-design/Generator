@@ -47,8 +47,6 @@ extends GOperator
         let index = (await this.index.eval(parse)).toValue();
 
 
-        //this.objects = [];
-
         let length   = 0;
 
 

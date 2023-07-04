@@ -25,7 +25,7 @@ extends GShape
             return this;
 
 
-        const [x, y, width, height] = await this.evalBaseParams(parse, false);
+        const [x, y, width, ] = await this.evalBaseParams(parse, false);
 
             
         let input = null;
@@ -42,7 +42,11 @@ extends GShape
         }
         else
         {
-            this.value = new LineValue(this.nodeId, x, y, width);
+            this.value = new LineValue(
+                this.nodeId, 
+                x, 
+                y, 
+                width);
         }
 
 
@@ -68,21 +72,19 @@ extends GShape
             return;
             
 
-        const objects = [];
+        this.value.objects = [];
 
 
         if (   this.value.x 
             && this.value.y 
             && this.value.width) 
         {
-            let  x = this.value.x     .value;
-            let  y = this.value.y     .value;
-            let  w = this.value.width .value;
-            let  a = 0;
-            let _a = a/360*Tau;
+            let x = this.value.x    .value;
+            let y = this.value.y    .value;
+            let w = this.value.width.value;
 
 
-            [x, y, w, , a, _a] = validateObjectRect(x, y, w, 0, a, _a);
+            [x, y, w, , , ] = validateObjectRect(x, y, w, 0);
 
 
             if (w != 0)
@@ -91,19 +93,15 @@ extends GShape
                     this.nodeId,
                     this.nodeId,
                     this.nodeName,
-                    x, y, w, a);
+                    x, y, w);
 
                 line.createDefaultTransform(x, y);
                 
-                objects.push(line, ...line.createTransformPoints(parse, x, y, w, 0.01));
+                this.value.objects.push(line, ...line.createTransformPoints(parse, x, y, w, 0.01));
             }
         }
 
         
-        this      .objects = [...objects];
-        this.value.objects = [...objects];
-
-
         await super.evalObjects(parse);
     }
 
@@ -118,7 +116,7 @@ extends GShape
             this.width .toValue());
 
         line.props   = this.props.toValue();
-        line.objects = this.objects.map(o => o.copy());
+        line.objects = this.value.objects.map(o => o.copy());
 
         return line;
     }

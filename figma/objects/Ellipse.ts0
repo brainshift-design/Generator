@@ -1,12 +1,12 @@
 function genEllipseIsValid(genEllipse)
 {
-    return genEllipse.x      != null && !isNaN(genEllipse.x     )
-        && genEllipse.y      != null && !isNaN(genEllipse.y     )
-        && genEllipse.width  != null && !isNaN(genEllipse.width )
-        && genEllipse.height != null && !isNaN(genEllipse.height)
-        && genEllipse.from   != null && !isNaN(genEllipse.from  )
-        && genEllipse.to     != null && !isNaN(genEllipse.to    )
-        && genEllipse.inner  != null && !isNaN(genEllipse.inner );
+    return genEllipse[FO_X            ] != null && !isNaN(genEllipse[FO_X            ])
+        && genEllipse[FO_Y            ] != null && !isNaN(genEllipse[FO_Y            ])
+        && genEllipse[FO_WIDTH        ] != null && !isNaN(genEllipse[FO_WIDTH        ])
+        && genEllipse[FO_HEIGHT       ] != null && !isNaN(genEllipse[FO_HEIGHT       ])
+        && genEllipse[FO_ELLIPSE_FROM ] != null && !isNaN(genEllipse[FO_ELLIPSE_FROM ])
+        && genEllipse[FO_ELLIPSE_TO   ] != null && !isNaN(genEllipse[FO_ELLIPSE_TO   ])
+        && genEllipse[FO_ELLIPSE_INNER] != null && !isNaN(genEllipse[FO_ELLIPSE_INNER]);
 }
 
 
@@ -48,9 +48,9 @@ function figUpdateEllipseData(figEllipse, genEllipse)
 {
     figEllipse.arcData =
     {
-        startingAngle: genEllipse.from /360*(Math.PI*2),
-        endingAngle:   genEllipse.to   /360*(Math.PI*2),
-        innerRadius:   Math.min(Math.max(0, genEllipse.inner/100), 1)
+        startingAngle: genEllipse[FO_ELLIPSE_FROM] /360*(Math.PI*2),
+        endingAngle:   genEllipse[FO_ELLIPSE_TO  ] /360*(Math.PI*2),
+        innerRadius:   Math.min(Math.max(0, genEllipse[FO_ELLIPSE_INNER]/100), 1)
     };
 
     setObjectTransform(figEllipse, genEllipse);

@@ -47,12 +47,15 @@ extends GOperator1
 
     async evalAffineObjects(parse, options, getXform)
     {
-        this.value.objects = 
-               this.input 
-            && this.input.value
-            ? this.input.value.objects.map(o => o.copy()) 
-            : [];
-
+        if (this.value.isValid())
+        {
+            this.value.objects = 
+                   this.input 
+                && this.input.value
+                ? this.input.value.objects.map(o => o.copy()) 
+                : [];
+        }
+        
 
         const bounds = getObjBounds(this.value.objects);
 
@@ -93,31 +96,36 @@ extends GOperator1
             obj.applyTransform(xform, options.affectSpace.value > 0);
 
             this.coords = mulm3m3(this.coords, xform);
-         }
+        }
 
         
-        if (  !isEmpty(this.objects)
+        if (  !isEmpty(this.value.objects)
             && this.showCenter.toValue().value > 0)
-        {
-            const center = new FigmaPoint(
-                this.nodeId,
-                this.nodeId   + '.center',
-                this.nodeName + ' • center',
-                cx,
-                cy,
-                true,
-                true);
-
-            center.createDefaultTransform(cx, cy);
-
-            this.value.objects.push(center);
-        };
+            this.addCenterObject(cx, cy);
 
 
-        await super.evalObjects(parse);
+        //await super.evalObjects(parse);
 
 
         return bounds;
+    }
+
+
+
+    addCenterObject(cx, cy)
+    {
+        const center = new FigmaPoint(
+            this.nodeId,
+            this.nodeId   + '.center',
+            this.nodeName + ' • center',
+            cx,
+            cy,
+            true,
+            true);
+
+        center.createDefaultTransform(cx, cy);
+
+        this.value.objects.push(center);
     }
 
 

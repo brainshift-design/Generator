@@ -77,8 +77,6 @@ extends GOperator
 
         this.value = new ListValue();
 
-        //this.objects = [];
-
 
         let repeat =
         {
@@ -129,7 +127,7 @@ extends GOperator
                     
                         for (let j = 0; j < this.input.value.objects.length; j++, o++)
                         {
-                            const obj = copyFigmaObject(this.input.objects[j]);
+                            const obj = copyFigmaObject(this.input.value.objects[j]);
 
                             this.iterationObjects.push(obj.copy());
 
@@ -139,7 +137,6 @@ extends GOperator
                             obj.objectId    = obj.objectId + OBJECT_SEPARATOR + this.nodeId + ':' + (o+1).toString();
                             obj.objectName += ' ' + (o+1).toString();
 
-                            this      .objects.push(obj);
                             this.value.objects.push(obj);
                         }
                     }

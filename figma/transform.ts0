@@ -53,15 +53,15 @@ function applyFigmaTransform(figObj, tl, tr, bl)
 
 function setObjectTransform(figObj, genObj, setSize = true, noHeight = 0.01)
 {
-    if (   !genObj.xp0
-        || !genObj.xp1
-        || !genObj.xp2)
+    if (   !genObj[FO_XP0]
+        || !genObj[FO_XP1]
+        || !genObj[FO_XP2])
         return;
 
 
-    const xp0 = point(genObj.xp0.x, genObj.xp0.y);
-    const xp1 = point(genObj.xp1.x, genObj.xp1.y);
-    const xp2 = point(genObj.xp2.x, genObj.xp2.y);
+    const xp0 = point(genObj[FO_XP0].x, genObj[FO_XP0].y);
+    const xp1 = point(genObj[FO_XP1].x, genObj[FO_XP1].y);
+    const xp2 = point(genObj[FO_XP2].x, genObj[FO_XP2].y);
 
     applyFigmaTransform(figObj, xp0, xp1, xp2);
 
@@ -72,9 +72,9 @@ function setObjectTransform(figObj, genObj, setSize = true, noHeight = 0.01)
         const scaleY = distance(xp0, xp2);
 
         const height =
-            genObj.type == TEXT_SHAPE
-            ? genObj.figHeight
-            : genObj.height;
+            genObj[FO_TYPE] == TEXT_SHAPE
+            ? genObj[FO_FIG_HEIGHT]
+            : genObj[FO_HEIGHT]
 
         figObj.resizeWithoutConstraints(
                      Math.max(0.01, scaleX),
@@ -93,10 +93,10 @@ function setPointTransform(figPoint, genPoint)
     figPoint.setPluginData('actualY', genPoint.y.toString());
 
 
-    figPoint.x        = genPoint.x;
-    figPoint.y        = genPoint.y;
+    figPoint.x        = genPoint[FO_X];
+    figPoint.y        = genPoint[FO_Y];
 
-    figPoint.rotation = genPoint.isCenter ? 45 : 0;
+    figPoint.rotation = genPoint[FO_POINT_IS_CENTER] ? 45 : 0;
 }
 
 

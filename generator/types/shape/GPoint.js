@@ -57,10 +57,10 @@ extends GOperator1
         }
 
        
-        this.updateValues = [['value', this.value]];
-
-
         await this.evalObjects(parse);
+
+
+        this.updateValues = [['value', this.value]];
 
 
         this.validate();
@@ -76,7 +76,7 @@ extends GOperator1
             return;
             
             
-        let objects = [];
+        this.value.objects = [];
 
 
         if (   this.value.x
@@ -89,12 +89,8 @@ extends GOperator1
 
             point.createDefaultTransform(x, y);
 
-            objects = [point];
+            this.value.objects = [point];
         }
-
-        
-        this      .objects = [...objects];
-        this.value.objects = [...objects];
 
 
         await super.evalObjects(parse);
@@ -109,7 +105,7 @@ extends GOperator1
             this.x.toValue(),
             this.y.toValue());
 
-        point.objects = this.objects.map(o => o.copy());
+        point.objects = this.value.objects.map(o => o.copy());
 
         return point;
     }

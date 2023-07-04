@@ -89,10 +89,6 @@ extends GShapeBase
                 else if (prop.type ==   LAYER_MASK_VALUE)  addLayerMaskProp  (obj);
             }
         }
-
-
-        // if (this.value)
-        //     this.value.objects = this.objects.map(o => o.copy());
     }
 
 

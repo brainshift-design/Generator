@@ -65,4 +65,28 @@ extends FigmaShape
             convex: this.convex
         };
     }
+
+
+
+    toData()
+    {
+        return [
+            ...super.toData(),
+   
+            /* 18 */ this.x,
+            /* 19 */ this.y,
+            /* 20 */ this.width,
+            /* 21 */ this.height,
+
+            /* 22 */ this.round,
+            /* 23 */ this.points,
+            /* 24 */ this.convex
+        ];
+    }
 }
+
+
+
+const FO_STAR_ROUND  = 22;
+const FO_STAR_POINTS = 23;
+const FO_STAR_CONVEX = 24;

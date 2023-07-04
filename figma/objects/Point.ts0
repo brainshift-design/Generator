@@ -4,8 +4,8 @@ var figPoints = [];
 
 function genPointIsValid(genPoint)
 {
-    return genPoint.x != null && !isNaN(genPoint.x)
-        && genPoint.y != null && !isNaN(genPoint.y);
+    return genPoint[FO_X] != null && !isNaN(genPoint[FO_X])
+        && genPoint[FO_Y] != null && !isNaN(genPoint[FO_Y]);
 }
 
 
@@ -13,12 +13,12 @@ function genPointIsValid(genPoint)
 function figCreatePoint(genPoint)
 {    
     const figPoint = 
-        genPoint.isCenter
+        genPoint[FO_POINT_IS_CENTER]
         ? figma.createRectangle()
         : figma.createEllipse();
 
 
-    figPoint.setPluginData('isCenter', boolToString(genPoint.isCenter));
+    figPoint.setPluginData('isCenter', boolToString(genPoint[FO_POINT_IS_CENTER]));
 
 
     if (!genPointIsValid(genPoint))

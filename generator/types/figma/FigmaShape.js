@@ -76,4 +76,48 @@ extends FigmaObject
             isMask:           this.isMask
         };
     }
+
+
+
+    toData()
+    {
+        return [
+            ...super.toData(),
+   
+            /*  9 */ this.fills,
+            /* 10 */ this.strokes,
+
+            /* 11 */ this.strokeWeight,
+            /* 12 */ this.strokeAlign,
+            /* 13 */ this.strokeJoin,
+            /* 14 */ this.strokeMiterLimit,
+
+            /* 15 */ this.effects,
+
+            /* 16 */ this.isDeco,
+
+            /* 17 */ this.isMask
+        ];
+    }
 }
+
+
+
+const FO_FILLS          =  9;
+const FO_STROKES        = 10;
+
+const FO_STROKE_WEIGHT  = 11;
+const FO_STROKE_ALIGN   = 12;
+const FO_STROKE_JOIN    = 13;
+const FO_STROKE_MITER   = 14;
+
+const FO_EFFECTS        = 15;
+
+const FO_DECO           = 16;
+
+const FO_MASK           = 17;
+
+const FO_X              = 18;
+const FO_Y              = 19;
+const FO_WIDTH          = 20;
+const FO_HEIGHT         = 21;

@@ -1,8 +1,8 @@
 
 function genVectorPathIsValid(genPath)
 {
-    return genPath.winding != null && !isNaN(genPath.winding)
-        && genPath.round   != null && !isNaN(genPath.round  );
+    return genPath[FO_VECTOR_PATH_WINDING] != null && !isNaN(genPath[FO_VECTOR_PATH_WINDING])
+        && genPath[FO_VECTOR_PATH_ROUND  ] != null && !isNaN(genPath[FO_VECTOR_PATH_ROUND  ]);
 }
 
 
@@ -16,12 +16,12 @@ function figCreateVectorPath(genPath)
 
     
     figPath.vectorPaths = [{
-        windingRule: genPath.winding == 1 ? 'NONZERO' : 'EVENODD',
-        data:        genPath.pathData
+        windingRule: genPath[FO_VECTOR_PATH_WINDING] == 1 ? 'NONZERO' : 'EVENODD',
+        data:        genPath[FO_VECTOR_PATH_DATA   ]
     }];
 
 
-    figPath.cornerRadius = genPath.round;
+    figPath.cornerRadius = genPath[FO_VECTOR_PATH_ROUND];
 
 
     setObjectTransform(figPath, genPath, false);
@@ -40,12 +40,12 @@ function figUpdateVectorPath(figPath, genPath)
 
 
     figPath.vectorPaths = [{
-        windingRule: genPath.winding == 1 ? 'NONZERO' : 'EVENODD',
-        data:        genPath.pathData
+        windingRule: genPath[FO_VECTOR_PATH_WINDING] == 1 ? 'NONZERO' : 'EVENODD',
+        data:        genPath[FO_VECTOR_PATH_DATA   ]
     }];
 
 
-    figPath.cornerRadius = genPath.round;
+    figPath.cornerRadius = genPath[FO_VECTOR_PATH_ROUND];
     
 
     setObjectTransform(figPath, genPath, false);

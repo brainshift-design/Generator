@@ -20,9 +20,9 @@ extends FigmaShape
     {
         super(VECTOR_PATH, nodeId, objectId, objectName);
         
-        this.points = points.map(p => p.copy());
-        this.closed = closed;
-        this.degree = degree;
+        this.points  = points.map(p => p.copy());
+        this.closed  = closed;
+        this.degree  = degree;
 
         this.winding = winding;
         this.round   = round;
@@ -39,16 +39,21 @@ extends FigmaShape
             this.nodeId,
             this.objectId,
             this.objectName,
+
             this.points, 
             this.closed, 
             this.degree,
             this.winding,
+
             this.round);
+
 
         copy.x = this.x;
         copy.y = this.y;
 
+
         copy.copyBase(this);
+
 
         return copy;
     }
@@ -59,12 +64,12 @@ extends FigmaShape
     {
         switch (this.degree)
         {
-        case 0: this.pathPoints = this.points.map(p => p.toPoint()); break;
-        case 1: this.pathPoints = this.points.map(p => p.toPoint()); break;
-        case 2: this.pathPoints = this.points.map(p => p.toPoint()); break;
-        case 3: this.pathPoints = getSmoothPoints(this.points, this.closed, getSmoothSegment);     break;
-        case 4: this.pathPoints = getSmoothPoints(this.points, this.closed, getSineXSegment );      break;
-        case 5: this.pathPoints = getSmoothPoints(this.points, this.closed, getSineYSegment );      break;
+        case 0: this.pathPoints = this.points.map(p => p.toPoint());                           break;
+        case 1: this.pathPoints = this.points.map(p => p.toPoint());                           break;
+        case 2: this.pathPoints = this.points.map(p => p.toPoint());                           break;
+        case 3: this.pathPoints = getSmoothPoints(this.points, this.closed, getSmoothSegment); break;
+        case 4: this.pathPoints = getSmoothPoints(this.points, this.closed, getSineXSegment ); break;
+        case 5: this.pathPoints = getSmoothPoints(this.points, this.closed, getSineYSegment ); break;
         }
     }
 
@@ -100,7 +105,26 @@ extends FigmaShape
             round:    this.round
         };
     }
+
+
+
+    toData()
+    {
+        return [
+            ...super.toData(),
+   
+            /* 18 */ this.pathData,
+            /* 19 */ this.winding,
+            /* 20 */ this.round
+        ];
+    }
 }
+
+
+
+const FO_VECTOR_PATH_DATA    = 18;
+const FO_VECTOR_PATH_WINDING = 19;
+const FO_VECTOR_PATH_ROUND   = 20;
 
 
 

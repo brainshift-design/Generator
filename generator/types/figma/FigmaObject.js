@@ -32,7 +32,7 @@ class FigmaObject
         this.objectId   = objectId;
         this.objectName = objectName;
         this.uniqueId   = Math.round(Math.random() * 10000);
-        this.final      = false;
+        //this.final      = false;
 
         this.xform      = clone(identity);
 
@@ -47,7 +47,7 @@ class FigmaObject
     {
         this.inputIndex = base.inputIndex;
         this.uniqueId   = base.uniqueId;
-        this.final      = base.final;
+        //this.final      = base.final;
         
         this.xform      = clone(base.xform);
 
@@ -174,6 +174,7 @@ class FigmaObject
     }
 
 
+
     toJsonObject()
     {
         return {
@@ -191,7 +192,42 @@ class FigmaObject
             xp2:        this.xp2 ? point(this.xp2.x, this.xp2.y) : null
         };
     }
+
+
+
+    toData()
+    {
+        return [
+        /* 0 */ this.type,
+        /* 1 */ this.nodeId,
+
+        /* 2 */ this.uniqueId,
+        /* 3 */ this.objectId,
+        /* 4 */ this.objectName,
+            
+        /* 5 */ this.feedback,
+
+        /* 6 */ this.xp0 ? point(this.xp0.x, this.xp0.y) : null,
+        /* 7 */ this.xp1 ? point(this.xp1.x, this.xp1.y) : null,
+        /* 8 */ this.xp2 ? point(this.xp2.x, this.xp2.y) : null
+        ];
+    }
 }
+
+
+
+const FO_TYPE        = 0;
+const FO_NODE_ID     = 1;
+
+const FO_UNIQUE_ID   = 2;
+const FO_OBJECT_ID   = 3;
+const FO_OBJECT_NAME = 4;
+
+const FO_FEEDBACK    = 5;
+
+const FO_XP0         = 6;
+const FO_XP1         = 7;
+const FO_XP2         = 8;
 
 
 

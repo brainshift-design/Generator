@@ -1,10 +1,10 @@
 function genRectIsValid(genRect)
 {
-    return genRect.x      != null && !isNaN(genRect.x     )
-        && genRect.y      != null && !isNaN(genRect.y     )
-        && genRect.width  != null && !isNaN(genRect.width )
-        && genRect.height != null && !isNaN(genRect.height)
-        && genRect.round  != null && !isNaN(genRect.round );
+    return genRect[FO_X         ] != null && !isNaN(genRect[FO_X         ])
+        && genRect[FO_Y         ] != null && !isNaN(genRect[FO_Y         ])
+        && genRect[FO_WIDTH     ] != null && !isNaN(genRect[FO_WIDTH     ])
+        && genRect[FO_HEIGHT    ] != null && !isNaN(genRect[FO_HEIGHT    ])
+        && genRect[FO_RECT_ROUND] != null && !isNaN(genRect[FO_RECT_ROUND]);
 }
 
 
@@ -17,7 +17,7 @@ function figCreateRect(genRect)
         return figRect;
 
 
-    figRect.cornerRadius = genRect.round;
+    figRect.cornerRadius = genRect[FO_RECT_ROUND];
 
 
     setObjectTransform(figRect, genRect);
@@ -35,7 +35,7 @@ function figUpdateRect(figRect, genRect)
         return;
 
 
-    figRect.cornerRadius = genRect.round;
+    figRect.cornerRadius = genRect[FO_RECT_ROUND];
 
     setObjectTransform(figRect, genRect);
     setObjectProps    (figRect, genRect);

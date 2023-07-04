@@ -38,10 +38,12 @@ extends GOperator
             : NullValue;
 
 
-        this.updateValues = [['value', this.value]];
-
-        
         this.updateValueObjects();
+
+        //await super.evalObjects(parse);
+
+
+        this.updateValues = [['value', this.value]];
 
 
         this.validate();

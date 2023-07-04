@@ -68,9 +68,10 @@ extends GShape
 
         
         this.updateValues = [['value', this.value]];
-        
+
 
         await this.evalShapeBase(parse, input);
+
 
         await this.evalObjects(parse);
 
@@ -88,7 +89,7 @@ extends GShape
             return;
             
             
-        const objects = [];
+        this.value.objects = [];
 
 
         if (   this.value.x 
@@ -98,17 +99,15 @@ extends GShape
             && this.value.round
             && this.value.corners)
         {
-            let    x = this.value.x      .value;
-            let    y = this.value.y      .value;
-            let    w = this.value.width  .value;
-            let    h = this.value.height .value;
-            let    a = 0;
-            let   _a = a/360*Tau;
-            const  r = Math.max(0, this.value.round.value);
-            const  c = this.value.corners.value;
+            let   x = this.value.x      .value;
+            let   y = this.value.y      .value;
+            let   w = this.value.width  .value;
+            let   h = this.value.height .value;
+            const r = Math.max(0, this.value.round.value);
+            const c = this.value.corners.value;
 
 
-            [x, y, w, h, a, _a] = validateObjectRect(x, y, w, h, a, _a);
+            [x, y, w, h, , ] = validateObjectRect(x, y, w, h);
 
 
             if (   w != 0 
@@ -122,15 +121,11 @@ extends GShape
 
                 poly.createDefaultTransform(x, y);
 
-                objects.push(poly, ...poly.createTransformPoints(parse, x, y, w, h));
+                this.value.objects.push(poly, ...poly.createTransformPoints(parse, x, y, w, h));
             }
         }
 
         
-        this      .objects = [...objects];
-        this.value.objects = [...objects];
-
-
         await super.evalObjects(parse);
     }
 
@@ -148,7 +143,7 @@ extends GShape
             this.corners.toValue());
 
         poly.props   = this.props.toValue();
-        poly.objects = this.objects.map(o => o.copy());
+        poly.objects = this.value.objects.map(o => o.copy());
 
         return poly;
     }

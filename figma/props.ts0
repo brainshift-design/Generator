@@ -221,17 +221,17 @@ function setObjectProps(figObj, genObj, phantom = true)
     setObjectStrokes(figObj, genObj, phantom);
     setObjectEffects(figObj, genObj);
 
-    figObj.isMask = genObj.isMask;
+    figObj.isMask = genObj[FO_MASK];
 }
 
 
 
 function setObjectFills(figObj, genObj)
 {
-    if (   !!genObj.fills
-        &&  !isEmpty(genObj.fills))
+    if (   !!genObj[FO_FILLS]
+        &&  !isEmpty(genObj[FO_FILLS]))
     {
-        figObj.fills = getObjectFills(genObj.fills);
+        figObj.fills = getObjectFills(genObj[FO_FILLS]);
 
         if (figEmptyObjects.includes(figObj))
             removeFromArray(figEmptyObjects, figObj);
@@ -244,22 +244,22 @@ function setObjectFills(figObj, genObj)
 
 function setObjectStrokes(figObj, genObj, phantom = true)
 {
-    if (    genObj.strokes != null
-        && !isEmpty(genObj.strokes))
+    if (    genObj[FO_STROKES] != null
+        && !isEmpty(genObj[FO_STROKES]))
     {
         setObjectStroke_(
             figObj,
-            getObjectFills(genObj.strokes),
-            genObj.strokeWeight,
-            genObj.strokeAlign,
-            genObj.strokeJoin,
-            genObj.strokeMiterLimit);
+            getObjectFills(genObj[FO_STROKES]),
+            genObj[FO_STROKE_WEIGHT],
+            genObj[FO_STROKE_ALIGN ],
+            genObj[FO_STROKE_JOIN  ],
+            genObj[FO_STROKE_MITER ]);
 
         if (figEmptyObjects.includes(figObj))
             removeFromArray(figEmptyObjects, figObj);
     }
-    else if (isEmpty(genObj.fills  )
-          && isEmpty(genObj.strokes)
+    else if (isEmpty(genObj[FO_FILLS  ])
+          && isEmpty(genObj[FO_STROKES])
           && phantom)
     {
         setEmptyObjectStroke(figObj);
@@ -292,9 +292,9 @@ function setObjectStroke_(figObj, fills, weight, align, join, miterLimit, dashes
 
 function setObjectEffects(figObj, genObj)
 {
-    if (  !!genObj.effects
-        && !isEmpty(genObj.effects))
-        figObj.effects = getObjectEffects(genObj.effects);
+    if (  !!genObj[FO_EFFECTS]
+        && !isEmpty(genObj[FO_EFFECTS]))
+        figObj.effects = getObjectEffects(genObj[FO_EFFECTS]);
     else
         figObj.effects = [];
 }

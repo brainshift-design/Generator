@@ -91,10 +91,14 @@ extends GOperator1
 
     async evalObjects(parse, options = {})
     {
-        this.value.objects = 
-            this.input 
-            ? this.input.objects.map(o => o.copy()) 
-            : [];
+        if (this.value.isValid())
+        {
+            this.value.objects = 
+                   this.input 
+                && this.input.value
+                ? this.input.value.objects.map(o => o.copy()) 
+                : [];
+        }
 
             
         const bounds = getObjBounds(this.value.objects);

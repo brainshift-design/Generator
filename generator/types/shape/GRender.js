@@ -33,9 +33,7 @@ extends GShapeBase
             return this;
 
 
-        //this.value = new ShapeGroupValue(this.nodeId);
-
-        //this.objects = [];
+        //this.value = new ListValue(this.nodeId);
 
 
         for (let i = 0, o = 0; i < this.inputs.length; i++)
@@ -46,34 +44,34 @@ extends GShapeBase
             if (   this.options.enabled
                 && this.finalize.value > 0)
             {
-                for (let j = 0; j < this.inputs[i].objects.length; j++, o++)
+                for (let j = 0; j < this.inputs[i].value.objects.length; j++, o++)
                 {
-                    let obj = this.inputs[i].objects[j];
+                    let obj = this.inputs[i].value.objects[j];
 
-                    obj = copyFigmaObject(obj);
+                    //obj = copyFigmaObject(obj);
 
                     obj.nodeId   = this.nodeId;
                     obj.objectId = obj.objectId + OBJECT_SEPARATOR + this.nodeId;
                     obj.listId   = -1;
 
-                    if (  (   !isEmpty(obj.fills)
-                           || !isEmpty(obj.strokes))
-                        && !obj.isDeco)
-                        obj.final = true;
+                    // if (  (   !isEmpty(obj.fills)
+                    //        || !isEmpty(obj.strokes))
+                    //     && !obj.isDeco)
+                    //     obj.final = true;
 
-                    this.objects.push(obj);
+                    this.value.objects.push(obj);
                 }
             }
         }
+
+
+        this.updateValues = [['', NullValue]];
 
 
         //await this.evalShapeBase(parse, input);
 
 
         //await this.evalObjects(parse);
-
-
-        this.updateValues = [['', NullValue]];
 
 
         this.validate();
@@ -135,7 +133,7 @@ extends GShapeBase
     //         }
             
 
-    //         this.objects = [group];
+    //         this.value.objects = [group];
 
     //         // this.updateValues.push(['nObjects', new NumberValue(
     //         //     this.items.objects 
@@ -144,7 +142,6 @@ extends GShapeBase
     //     }
     //     else
     //     {
-    //         this.objects = [];
     //         // this.updateValues.push(['nObjects', new NumberValue(0)]);
     //     }
 

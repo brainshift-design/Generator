@@ -11,7 +11,7 @@ extends GValue
 
         this.items = items;
 
-        //this.objects  = children.objects.map(o => o.copy());
+        //this.objects = children.objects.map(o => o.copy());
     }
 
 

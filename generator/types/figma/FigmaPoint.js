@@ -48,4 +48,21 @@ extends FigmaShape
             isCenter: this.isCenter
         };
     }
+
+
+
+    toData()
+    {
+        return [
+            ...super.toData(),
+   
+            /* 18 */ this.x,
+            /* 19 */ this.y,
+            /* 20 */ this.isCenter
+        ];
+    }
 }
+
+
+
+const FO_POINT_IS_CENTER = 20;

@@ -37,4 +37,19 @@ extends FigmaShape
             children: this.children
         };
     }
+
+
+
+    toData()
+    {
+        return [
+            ...super.toData(),
+   
+            /* 18 */ this.children
+        ];
+    }
 }
+
+
+
+const FO_GROUP_CHILDREN = 18;

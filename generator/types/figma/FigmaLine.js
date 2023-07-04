@@ -24,12 +24,15 @@ extends FigmaShape
             this.nodeId,
             this.objectId,
             this.objectName,
+
             this.x,
             this.y,
             this.width);
 
+
         copy.copyBase(this);
 
+        
         return copy;
     }
 
@@ -40,9 +43,22 @@ extends FigmaShape
         return {
             ...super.toJsonObject(),
    
-            x:       this.x,
-            y:       this.y,
-            width:   this.width
+            x:     this.x,
+            y:     this.y,
+            width: this.width
         };
+    }
+
+
+
+    toData()
+    {
+        return [
+            ...super.toData(),
+   
+            /* 18 */ this.x,
+            /* 19 */ this.y,
+            /* 20 */ this.width
+        ];
     }
 }

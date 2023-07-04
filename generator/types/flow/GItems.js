@@ -43,14 +43,11 @@ extends GOperator
         if (this.input)
         {
             await this.input.eval(parse);
-
-            this.value   = this.input.toValue();
-            //this.objects = this.input.objects.map(o => o.copy());
+            this.value = this.input.toValue();
         }
         else
         {
-            this.value   = ListValue.NaN;
-            //this.objects = [];
+            this.value = ListValue.NaN;
         }
 
 

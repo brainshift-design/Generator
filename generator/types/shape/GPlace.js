@@ -43,9 +43,7 @@ extends GOperator
             points = new ListValue([points]);
 
 
-        this.value   = new ListValue();
-
-        this.objects = [];
+        this.value = new ListValue();
 
 
         if (this.input)
@@ -77,7 +75,7 @@ extends GOperator
                         -obj.xp0.y + points.items[i].y));
 
 
-                    this.objects.push(obj);
+                    this.value.objects.push(obj);
                 }
             }
         }
@@ -102,7 +100,7 @@ extends GOperator
 
     // async evalObjects(parse, options = {})
     // {
-    //     this.objects = this.input ? this.input.objects.map(o => o.copy()) : [];
+    //     this.value.objects = this.input ? this.input.objects.map(o => o.copy()) : [];
     //     //this.value.objects = this.input ? this.input.objects.map(o => o.copy()) : [];
 
             
@@ -118,7 +116,7 @@ extends GOperator
 
     //     // let i = 0;
         
-    //     // for (const obj of this.objects)
+    //     // for (const obj of this.value.objects)
     //     // {
     //     //     obj.nodeId   = this.nodeId;
     //     //     obj.objectId = obj.objectId + OBJECT_SEPARATOR + this.nodeId;

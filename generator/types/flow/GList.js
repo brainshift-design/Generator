@@ -60,9 +60,9 @@ extends GOperator
 
             if (this.options.enabled)
             {
-                for (let j = 0; j < this.inputs[i].objects.length; j++, o++)
+                for (let j = 0; j < this.inputs[i].value.objects.length; j++, o++)
                 {
-                    const obj = copyFigmaObject(this.inputs[i].objects[j]);
+                    const obj = copyFigmaObject(this.inputs[i].value.objects[j]);
 
                     obj.nodeId   = this.nodeId;
                     obj.objectId = obj.objectId + OBJECT_SEPARATOR + this.nodeId;

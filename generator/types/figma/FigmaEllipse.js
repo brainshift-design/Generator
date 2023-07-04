@@ -44,7 +44,9 @@ extends FigmaShape
             this.to,
             this.inner);
 
+
         copy.copyBase(this);
+
 
         return copy;
     }
@@ -66,4 +68,28 @@ extends FigmaShape
             inner:  this.inner
         };
     }
+
+
+
+    toData()
+    {
+        return [
+            ...super.toData(),
+   
+            /* 18 */ this.x,
+            /* 19 */ this.y,
+            /* 20 */ this.width,
+            /* 21 */ this.height,
+
+            /* 22 */  this.from,
+            /* 23 */  this.to,
+            /* 24 */  this.inner
+        ];
+    }
 }
+
+
+
+const FO_ELLIPSE_FROM  = 22;
+const FO_ELLIPSE_TO    = 23;
+const FO_ELLIPSE_INNER = 24;

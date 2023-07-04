@@ -72,9 +72,9 @@ extends OpShape
         this.paramRound .setValue(value.round,  false, true, false);
 
 
-        const nObjects = values[paramIds.findIndex(id => id == 'nObjects')];
+        const nChildren = values[paramIds.findIndex(id => id == 'nChildren')];
 
-        this.paramChildren.getItemCount = () => nObjects.value;
+        this.paramChildren.getItemCount = () => nChildren.value;
         this.paramChildren.output.types = [finalListTypeFromItems(value.children.items)];
     }
 }

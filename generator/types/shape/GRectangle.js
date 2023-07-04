@@ -62,12 +62,13 @@ extends GShape
         }
 
        
-        this.updateValues = [['value', this.value]];
-
-
         await this.evalShapeBase(parse, input);
 
+
         await this.evalObjects(parse);
+
+
+        this.updateValues = [['value', this.value]];
 
 
         this.validate();

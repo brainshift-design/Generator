@@ -33,8 +33,6 @@ extends GShapeBase
 
         this.value = new ShapeGroupValue(this.nodeId);
 
-        //this.objects = [];
-
 
         for (let i = 0, o = 0; i < this.inputs.length; i++)
         {
@@ -53,7 +51,7 @@ extends GShapeBase
             //         obj.objectId = obj.objectId + OBJECT_SEPARATOR + this.nodeId;
             //         obj.listId   = -1;
 
-            //         this.objects.push(obj);
+            //         this.value.objects.push(obj);
             //     }
             // }
 
@@ -74,19 +72,19 @@ extends GShapeBase
                             continue;
 
                         this.value.items.push(item.copy());   
-                        //this.value.objects.push(...item.objects.map(o => this.copyObject(o, i)));
+                        this.value.objects.push(...item.objects.map(o => this.copyObject(o, i)));
                     }
                 }
                 else
                 {
                     this.value.items.push(input.copy());
-                    //this.value.objects.push(...input.objects.map(o => this.copyObject(o, i)));
+                    this.value.objects.push(...input.objects.map(o => this.copyObject(o, i)));
                 }
             }
         }
 
 
-        //await this.evalShapeBase(parse, input);
+        await this.evalShapeBase(parse, input);
 
 
         await this.evalObjects(parse);
@@ -139,22 +137,17 @@ extends GShapeBase
                 for (let i = 0; i < item.objects.length; i++)
                 {
                     const obj  = item.objects[i].copy();
-                    obj.nodeId = this.nodeId;
 
-                    obj.objectId = 
-                          obj.objectId 
-                        + OBJECT_SEPARATOR 
-                        //+ (obj.inputIndex >= 0 ? obj.inputIndex + INPUT_SEPARATOR : '')
-                        + this.nodeId;
-
-                    obj.listId = -1;
+                    obj.nodeId   = this.nodeId;
+                    obj.objectId = obj.objectId + OBJECT_SEPARATOR + this.nodeId;
+                    obj.listId   = -1;
 
                     group.children.push(obj);
                 }
             }
-            
 
-            this.objects = [group];
+            this.value.objects = [group];
+
 
             // this.updateValues.push(['nObjects', new NumberValue(
             //     this.items.objects 
@@ -163,7 +156,7 @@ extends GShapeBase
         }
         else
         {
-            this.objects = [];
+            this.value.objects = [];
             // this.updateValues.push(['nObjects', new NumberValue(0)]);
         }
 

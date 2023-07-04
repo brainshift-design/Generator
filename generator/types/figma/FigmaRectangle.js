@@ -19,8 +19,6 @@ extends FigmaShape
         this.height = height;
 
         this.round  = round;
-
-        this.createDefaultTransform(x, y);
     }
 
 
@@ -39,8 +37,10 @@ extends FigmaShape
             
             this.round);
 
+
         copy.copyBase(this);
 
+        
         return copy;
     }
 
@@ -59,4 +59,24 @@ extends FigmaShape
             round:  this.round
         };
     }
+
+
+
+    toData()
+    {
+        return [
+            ...super.toData(),
+   
+            /* 18 */ this.x,
+            /* 19 */ this.y,
+            /* 20 */ this.width,
+            /* 21 */ this.height,
+
+            /* 22 */ this.round
+        ];
+    }
 }
+
+
+
+const FO_RECT_ROUND = 22;

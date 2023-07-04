@@ -72,7 +72,8 @@ function genRequest(request)
         {
             if (node.options.active === true)
             {
-                node.value.objects.forEach(o => genPushUpdateObject(parse, o));
+                if (node.value)
+                    node.value.objects.forEach(o => genPushUpdateObject(parse, o));
 
                 if (node.colorStyle) 
                     genPushUpdateColorStyle(parse, node.colorStyle);
@@ -237,7 +238,7 @@ function genUpdateValuesAndObjects(requestId, actionId, updateNodeId, updatePara
 
         if (o < updateObjects.length)
         {
-            objChunk.push(updateObjects[o].toJsonObject());
+            objChunk.push(updateObjects[o].toData());//toJsonObject());
             o++, oc++;
         }
 

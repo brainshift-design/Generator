@@ -82,12 +82,11 @@ extends GNode
 
         for (let i = 0; i < this.value.objects.length; i++)
         {
-            const obj  = this.value.objects[i].copy();
+            const obj    = this.value.objects[i];
 
-            obj.nodeId = this.nodeId;
-            obj.listId = -1;
-            
-            this.value.objects.push(obj);
+            obj.nodeId   = this.nodeId;
+            obj.objectId = obj.objectId + OBJECT_SEPARATOR + this.nodeId;
+            obj.listId   = -1;
         }
     }
 

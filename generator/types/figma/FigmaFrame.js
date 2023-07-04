@@ -5,7 +5,9 @@ extends FigmaShape
     y;
     width;
     height;
+
     round;
+    
     children;
 
 
@@ -18,7 +20,9 @@ extends FigmaShape
         this.y        = y;
         this.width    = width;
         this.height   = height;
+    
         this.round    = round;
+    
         this.children = children.map(c => c.copy());
     }
 
@@ -30,14 +34,19 @@ extends FigmaShape
             this.nodeId,
             this.objectId,
             this.objectName,
+    
             this.x,
             this.y,
             this.width,
             this.height,
+    
             this.round,
+    
             this.children);
 
+
         copy.copyBase(this);
+
 
         return copy;
     }
@@ -53,8 +62,33 @@ extends FigmaShape
             y:        this.y,
             width:    this.width,
             height:   this.height,
+        
             round:    this.round,
+        
             children: this.children
         };
     }
+
+
+
+    toData()
+    {
+        return [
+            ...super.toData(),
+   
+            /* 18 */ this.x,
+            /* 19 */ this.y,
+            /* 20 */ this.width,
+            /* 21 */ this.height,
+
+            /* 22 */ this.round,
+
+            /* 23 */ this.children
+        ];
+    }
 }
+
+
+
+const FO_FRAME_ROUND    = 22;
+const FO_FRAME_CHILDREN = 23;

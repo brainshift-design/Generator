@@ -77,6 +77,7 @@ extends GShape
 
         await this.evalShapeBase(parse, input);
 
+
         await this.evalObjects(parse);
 
 
@@ -93,9 +94,6 @@ extends GShape
             return;
             
 
-        const objects = [];
-        
-        
         if (   this.value.x
             && this.value.y
             && this.value.width
@@ -116,48 +114,41 @@ extends GShape
                 x, y, w, h, r);
 
 
-            if (LIST_VALUES.includes(this.value.type))
-            {
-                for (let i = 0; i < this.value.children.objects.length; i++)
-                {
-                    const obj    = this.value.children.objects[i].copy();
-
-                    obj.nodeId   = this.nodeId;
-                    obj.objectId = obj.objectId + OBJECT_SEPARATOR + this.nodeId;
-                    obj.listId   = -1;
-                    
-                    objects.push(obj);
-                }
-            }
-            else
-            {
+            // if (LIST_VALUES.includes(this.value.type))
+            // {
+            //     for (let i = 0; i < this.value.children.objects.length; i++)
+            //         this.addChildObject(frame.children, this.value.children.objects[i]);
+            // }
+            // else
+            // {
                 for (let i = 0; i < this.value.objects.length; i++)
-                {
-                    const obj    = this.value.objects[i].copy();
-                    
-                    obj.nodeId   = this.nodeId;
-                    obj.objectId = obj.objectId + OBJECT_SEPARATOR + this.nodeId;
-                    obj.listId   = -1;
-                    
-                    objects.push(obj);
-                }
-            }
-
-
-            frame.children = objects;
+                    this.addChildObject(frame.children, this.value.objects[i]);
+            //}
 
 
             frame.createDefaultTransform(x, y);
 
         
-            this      .objects = [frame, ...frame.createTransformPoints(parse, x, y, w, h)];
             this.value.objects = [frame, ...frame.createTransformPoints(parse, x, y, w, h)];
 
-            this.updateValues.push(['nObjects', new NumberValue(objects.length)]);
+            this.updateValues.push(['nChildren', new NumberValue(frame.children.length)]);
         }
 
 
         await super.evalObjects(parse);
+    }
+
+
+
+    addChildObject(objects, _obj)
+    {
+        const obj = _obj.copy();
+                    
+        obj.nodeId   = this.nodeId;
+        obj.objectId = obj.objectId + OBJECT_SEPARATOR + this.nodeId;
+        obj.listId   = -1;
+        
+        objects.push(obj);
     }
 
 

@@ -50,7 +50,6 @@ extends GOperator
             : NullValue;
 
 
-        //this.updateValues = [['value', this.value]];
         this.updateValues = [['', NullValue]];
 
 
@@ -88,9 +87,9 @@ extends GOperator
 
     updateObjects(objects, iteration)
     {
-        this.objects = objects.map(o => o.copy());
+        this.value.objects = objects.map(o => o.copy());
 
-        for (const obj of this.objects)
+        for (const obj of this.value.objects)
         {
             obj.nodeId   = this.nodeId;
             obj.objectId = obj.objectId + OBJECT_SEPARATOR + this.nodeId;// + (iteration != '' ? ':' + iteration : '');

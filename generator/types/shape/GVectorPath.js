@@ -96,9 +96,9 @@ extends GShape
 
         const points = [];
 
-        if (this.points.objects)
+        if (this.points.value.objects)
         {
-            const objPoints = this.points.objects.filter(o => o.type == POINT);
+            const objPoints = this.points.value.objects.filter(o => o.type == POINT);
 
             for (const pt of objPoints)
                 points.push(new PointValue(
@@ -108,7 +108,7 @@ extends GShape
         }
 
 
-        const objects = [];
+        this.value.objects = [];
 
 
         if (   points.length >= 2
@@ -136,14 +136,10 @@ extends GShape
 
             path.createDefaultTransform(x, y);
 
-            objects.push(path, ...path.createTransformPoints(parse, x, y, w, h));
+            this.value.objects.push(path, ...path.createTransformPoints(parse, x, y, w, h));
         }
 
 
-        this      .objects = [...objects];
-        this.value.objects = [...objects];
-
-        
         await super.evalObjects(parse);
     }
 
@@ -160,7 +156,7 @@ extends GShape
             this.round  .toValue());
 
         path.props   = this.props.toValue();
-        path.objects = this.objects.map(o => o.copy());
+        path.objects = this.value.objects.map(o => o.copy());
 
         return path;
     }

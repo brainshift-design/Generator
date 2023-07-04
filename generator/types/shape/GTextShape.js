@@ -109,6 +109,7 @@ extends GShape
        
         await this.evalShapeBase(parse, input);
 
+
         await this.evalObjects(parse);
 
 
@@ -128,7 +129,7 @@ extends GShape
             return;
 
         
-        const objects = [];
+        this.value.objects = [];
 
 
         if (   this.value.text
@@ -180,15 +181,11 @@ extends GShape
                 this.value.width.value  = width;
                 this.value.height.value = height;
 
-                objects.push(text, ...text.createTransformPoints(parse, x, y, width, height));
+                this.value.objects.push(text, ...text.createTransformPoints(parse, x, y, width, height));
             }
             else
-                objects.push(text, ...text.createTransformPoints(parse, x, y, w, h));
+                this.value.objects.push(text, ...text.createTransformPoints(parse, x, y, w, h));
         }
-
-        
-        this      .objects = [...objects];
-        this.value.objects = [...objects];
 
         
         await super.evalObjects(parse);
@@ -198,19 +195,23 @@ extends GShape
 
     isValid()
     {
-        return this.text         .isValid()
+        return super.isValid()
+            && this.text         .isValid()
+
             && this.x            .isValid()
             && this.y            .isValid()
             && this.width        .isValid()
             && this.height       .isValid()
+            
             && this.font         .isValid()
             && this.style        .isValid()
             && this.size         .isValid()
+            
             && this.alignH       .isValid()
             && this.alignV       .isValid()
+            
             && this.lineHeight   .isValid()
-            && this.letterSpacing.isValid()
-            && super.isValid();
+            && this.letterSpacing.isValid();
     }
 
 
@@ -219,22 +220,30 @@ extends GShape
     {
         const text = new TextShapeValue(
             this.nodeId,
+            
             this.text         .toValue(),
+            
             this.x            .toValue(),
             this.y            .toValue(),
+            
             this.width        .toValue(),
             this.height       .toValue(),
+            
             this.font         .toValue(),
             this.style        .toValue(),
             this.size         .toValue(),
+            
             this.alignH       .toValue(),
             this.alignV       .toValue(),
+            
             this.lineHeight   .toValue(),
             this.letterSpacing.toValue());
 
+            
         text.props   = this.props.toValue();
-        text.objects = this.objects.map(o => o.copy());
+        text.objects = this.value.objects.map(o => o.copy());
 
+        
         return text;
     }
 

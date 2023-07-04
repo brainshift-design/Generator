@@ -78,6 +78,7 @@ extends GShape
 
         await this.evalShapeBase(parse, input);
 
+
         await this.evalObjects(parse);
 
 
@@ -94,7 +95,7 @@ extends GShape
            return;
            
            
-        const objects = [];
+        this.value.objects = [];
 
 
         if (   this.value.x 
@@ -125,15 +126,11 @@ extends GShape
 
                 star.createDefaultTransform(x, y);
 
-                objects.push(star, ...star.createTransformPoints(parse, x, y, w, h));
+                this.value.objects.push(star, ...star.createTransformPoints(parse, x, y, w, h));
             }
         }
 
        
-        this      .objects = [...objects];
-        this.value.objects = [...objects];
-
-
         await super.evalObjects(parse);
     }
 
@@ -152,7 +149,7 @@ extends GShape
             this.convex.toValue());
  
         star.props   = this.props.toValue();
-        star.objects = this.objects.map(o => o.copy());
+        star.objects = this.value.objects.map(o => o.copy());
  
         return star;
     }

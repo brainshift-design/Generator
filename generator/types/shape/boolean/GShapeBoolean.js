@@ -118,7 +118,7 @@ extends GShapeBase
             }
 
 
-            this.objects = [bool];
+            this.value.objects = [bool];
 
             this.updateValues.push(['nObjects', new NumberValue(
                 this.children.objects 
@@ -127,7 +127,7 @@ extends GShapeBase
         }
         else
         {
-            this.objects = [];
+            this.value.objects = [];
             this.updateValues.push(['nObjects', new NumberValue(0)]);
         }
 
