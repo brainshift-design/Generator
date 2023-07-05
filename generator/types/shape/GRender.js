@@ -3,6 +3,8 @@ extends GShapeBase
 {
     inputs = [];
 
+    retain;
+
     finalize;
 
 
@@ -33,7 +35,11 @@ extends GShapeBase
             return this;
 
 
-        //this.value = new ListValue(this.nodeId);
+        const retain   = (await this.retain.eval(parse)).toValue();
+        const finalize = this.finalize.value > 0;
+
+
+        this.value = new ListValue();
 
 
         for (let i = 0, o = 0; i < this.inputs.length; i++)
@@ -42,22 +48,25 @@ extends GShapeBase
 
         
             if (   this.options.enabled
-                && this.finalize.value > 0)
+                && (   finalize
+                    || retain.value > 0))
             {
                 for (let j = 0; j < this.inputs[i].value.objects.length; j++, o++)
                 {
                     let obj = this.inputs[i].value.objects[j];
 
-                    //obj = copyFigmaObject(obj);
+                    obj = copyFigmaObject(obj);
 
                     obj.nodeId   = this.nodeId;
                     obj.objectId = obj.objectId + OBJECT_SEPARATOR + this.nodeId;
                     obj.listId   = -1;
 
-                    // if (  (   !isEmpty(obj.fills)
-                    //        || !isEmpty(obj.strokes))
-                    //     && !obj.isDeco)
-                    //     obj.final = true;
+                    if (  (   !isEmpty(obj.fills  )
+                           || !isEmpty(obj.strokes))
+                        && !obj.isDeco
+                        && (   finalize
+                            || retain.value > 0))
+                            obj.retain = finalize ? 2 : 1;
 
                     this.value.objects.push(obj);
                 }
@@ -151,19 +160,12 @@ extends GShapeBase
 
 
 
-    pushValueUpdates(parse)
+    toValue()
     {
-        super.pushValueUpdates(parse);
-
-        this.inputs.forEach(i => i.pushValueUpdates(parse));
+        return this.value
+             ? this.value.copy()
+             : null;
     }
-
-
-
-    // toValue()
-    // {
-    //     return this.value.copy();
-    // }
 
 
 
@@ -181,10 +183,23 @@ extends GShapeBase
 
 
 
+    pushValueUpdates(parse)
+    {
+        super.pushValueUpdates(parse);
+
+        this.inputs.forEach(i => i.pushValueUpdates(parse));
+
+        if (this.retain) this.retain.pushValueUpdates(parse);
+    }
+
+
+
     invalidateInputs(from)
     {
         super.invalidateInputs(from);
 
         this.inputs.forEach(i => i.invalidateInputs(from));
+
+        if (this.retain) this.retain.invalidateInputs(from);
     }
 }

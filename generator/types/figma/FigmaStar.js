@@ -73,14 +73,14 @@ extends FigmaShape
         return [
             ...super.toData(),
    
-            /* 18 */ this.x,
-            /* 19 */ this.y,
-            /* 20 */ this.width,
-            /* 21 */ this.height,
+            /* 19 */ this.x,
+            /* 20 */ this.y,
+            /* 21 */ this.width,
+            /* 22 */ this.height,
 
-            /* 22 */ this.round,
-            /* 23 */ this.points,
-            /* 24 */ this.convex
+            /* 23 */ this.round,
+            /* 24 */ this.points,
+            /* 25 */ this.convex
         ];
     }
 }

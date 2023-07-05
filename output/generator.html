@@ -5073,53 +5073,54 @@ const FONT_WEIGHTS =
 
 
 
-const FO_TYPE           = 0;
-const FO_NODE_ID        = 1;
+const FO_TYPE           =  0;
+const FO_NODE_ID        =  1;
 
-const FO_UNIQUE_ID      = 2;
-const FO_OBJECT_ID      = 3;
-const FO_OBJECT_NAME    = 4;
+const FO_UNIQUE_ID      =  2;
+const FO_OBJECT_ID      =  3;
+const FO_OBJECT_NAME    =  4;
 
-const FO_FEEDBACK       = 5;
-
-
-const FO_XP0            = 6;
-const FO_XP1            = 7;
-const FO_XP2            = 8;
-
-const FO_FILLS          =  9;
-const FO_STROKES        = 10;
+const FO_FEEDBACK       =  5;
+const FO_RETAIN         =  6;
 
 
-const FO_STROKE_WEIGHT  = 11;
-const FO_STROKE_ALIGN   = 12;
-const FO_STROKE_JOIN    = 13;
-const FO_STROKE_MITER   = 14;
+const FO_XP0            =  7;
+const FO_XP1            =  8;
+const FO_XP2            =  9;
 
-const FO_EFFECTS        = 15;
+const FO_FILLS          = 10;
+const FO_STROKES        = 11;
 
-const FO_DECO           = 16;
 
-const FO_MASK           = 17;
+const FO_STROKE_WEIGHT  = 12;
+const FO_STROKE_ALIGN   = 13;
+const FO_STROKE_JOIN    = 14;
+const FO_STROKE_MITER   = 15;
 
-const FO_X              = 18;                                    const FO_VECTOR_PATH_DATA    = 18;                                                                const FO_GROUP_CHILDREN = 18;
-const FO_Y              = 19;                                    const FO_VECTOR_PATH_WINDING = 19;
-const FO_WIDTH          = 20;   const FO_POINT_IS_CENTER = 20;   const FO_VECTOR_PATH_ROUND   = 20;
-const FO_HEIGHT         = 21;
+const FO_EFFECTS        = 16;
 
-const FO_RECT_ROUND     = 22;   const FO_ELLIPSE_FROM    = 22;   const FO_POLY_ROUND          = 22;   const FO_STAR_ROUND  = 22;   const FO_FIG_WIDTH      = 22;   const FO_FRAME_ROUND    = 22;
-                                const FO_ELLIPSE_TO      = 23;   const FO_POLY_CORNERS        = 23;   const FO_STAR_POINTS = 23;   const FO_FIG_HEIGHT     = 23;   const FO_FRAME_CHILDREN = 23;
-                                const FO_ELLIPSE_INNER   = 24;                                        const FO_STAR_CONVEX = 24;   const FO_TEXT           = 24; 
+const FO_DECO           = 17;
+
+const FO_MASK           = 18;
+
+const FO_X              = 19;                                    const FO_VECTOR_PATH_DATA    = 19;                                                                const FO_GROUP_CHILDREN = 19;
+const FO_Y              = 20;                                    const FO_VECTOR_PATH_WINDING = 20;
+const FO_WIDTH          = 21;   const FO_POINT_IS_CENTER = 21;   const FO_VECTOR_PATH_ROUND   = 21;
+const FO_HEIGHT         = 22;
+
+const FO_RECT_ROUND     = 23;   const FO_ELLIPSE_FROM    = 23;   const FO_POLY_ROUND          = 23;   const FO_STAR_ROUND  = 23;   const FO_FIG_WIDTH      = 23;   const FO_FRAME_ROUND    = 23;
+                                const FO_ELLIPSE_TO      = 24;   const FO_POLY_CORNERS        = 24;   const FO_STAR_POINTS = 24;   const FO_FIG_HEIGHT     = 24;   const FO_FRAME_CHILDREN = 24;
+                                const FO_ELLIPSE_INNER   = 25;                                        const FO_STAR_CONVEX = 25;   const FO_TEXT           = 25; 
                                                              
-                                                                                                                                   const FO_FONT           = 25;
-                                                                                                                                   const FO_FONT_SIZE      = 26;
-                                                                                                                                   const FO_FONT_STYLE     = 27;
+                                                                                                                                   const FO_FONT           = 26;
+                                                                                                                                   const FO_FONT_SIZE      = 27;
+                                                                                                                                   const FO_FONT_STYLE     = 28;
                                                                                                                                                                 
-                                                                                                                                   const FO_ALIGN_H        = 28;
-                                                                                                                                   const FO_ALIGN_V        = 29;
+                                                                                                                                   const FO_ALIGN_H        = 29;
+                                                                                                                                   const FO_ALIGN_V        = 30;
                                                                                                                                                                 
-                                                                                                                                   const FO_LINE_HEIGHT    = 30;
-                                                                                                                                   const FO_LETTER_SPACING = 31;                                
+                                                                                                                                   const FO_LINE_HEIGHT    = 31;
+                                                                                                                                   const FO_LETTER_SPACING = 32;                                
 
 
 class FigmaObject
@@ -5134,6 +5135,7 @@ class FigmaObject
 
     inputIndex = -1; // for unique object IDs
 
+    retain     = false;
     feedback   = false;
 
 
@@ -5156,7 +5158,6 @@ class FigmaObject
         this.objectId   = objectId;
         this.objectName = objectName;
         this.uniqueId   = Math.round(Math.random() * 10000);
-        //this.final      = false;
 
         this.xform      = clone(identity);
 
@@ -5171,7 +5172,9 @@ class FigmaObject
     {
         this.inputIndex = base.inputIndex;
         this.uniqueId   = base.uniqueId;
-        //this.final      = base.final;
+        
+        this.feedback   = base.feedback;
+        this.retain     = base.retain;
         
         this.xform      = clone(base.xform);
 
@@ -5330,10 +5333,11 @@ class FigmaObject
         /* 4 */ this.objectName,
             
         /* 5 */ this.feedback,
+        /* 6 */ this.retain,
 
-        /* 6 */ this.xp0 ? point(this.xp0.x, this.xp0.y) : null,
-        /* 7 */ this.xp1 ? point(this.xp1.x, this.xp1.y) : null,
-        /* 8 */ this.xp2 ? point(this.xp2.x, this.xp2.y) : null
+        /* 7 */ this.xp0 ? point(this.xp0.x, this.xp0.y) : null,
+        /* 8 */ this.xp1 ? point(this.xp1.x, this.xp1.y) : null,
+        /* 9 */ this.xp2 ? point(this.xp2.x, this.xp2.y) : null
         ];
     }
 }
@@ -5827,19 +5831,19 @@ extends FigmaObject
         return [
             ...super.toData(),
    
-            /*  9 */ this.fills,
-            /* 10 */ this.strokes,
+            /* 10 */ this.fills,
+            /* 11 */ this.strokes,
 
-            /* 11 */ this.strokeWeight,
-            /* 12 */ this.strokeAlign,
-            /* 13 */ this.strokeJoin,
-            /* 14 */ this.strokeMiterLimit,
+            /* 12 */ this.strokeWeight,
+            /* 13 */ this.strokeAlign,
+            /* 14 */ this.strokeJoin,
+            /* 15 */ this.strokeMiterLimit,
 
-            /* 15 */ this.effects,
+            /* 16 */ this.effects,
 
-            /* 16 */ this.isDeco,
+            /* 17 */ this.isDeco,
 
-            /* 17 */ this.isMask
+            /* 18 */ this.isMask
         ];
     }
 }
@@ -5915,12 +5919,12 @@ extends FigmaShape
         return [
             ...super.toData(),
    
-            /* 18 */ this.x,
-            /* 19 */ this.y,
-            /* 20 */ this.width,
-            /* 21 */ this.height,
+            /* 19 */ this.x,
+            /* 20 */ this.y,
+            /* 21 */ this.width,
+            /* 22 */ this.height,
 
-            /* 22 */ this.round
+            /* 23 */ this.round
         ];
     }
 }
@@ -5961,7 +5965,7 @@ extends FigmaShape
 
         copy.copyBase(this);
 
-        
+
         return copy;
     }
 
@@ -5985,9 +5989,9 @@ extends FigmaShape
         return [
             ...super.toData(),
    
-            /* 18 */ this.x,
-            /* 19 */ this.y,
-            /* 20 */ this.width
+            /* 19 */ this.x,
+            /* 20 */ this.y,
+            /* 21 */ this.width
         ];
     }
 }
@@ -6071,14 +6075,14 @@ extends FigmaShape
         return [
             ...super.toData(),
    
-            /* 18 */ this.x,
-            /* 19 */ this.y,
-            /* 20 */ this.width,
-            /* 21 */ this.height,
+            /* 19 */ this.x,
+            /* 20 */ this.y,
+            /* 21 */ this.width,
+            /* 22 */ this.height,
 
-            /* 22 */ this.from,
-            /* 23 */ this.to,
-            /* 24 */ this.inner
+            /* 23 */ this.from,
+            /* 24 */ this.to,
+            /* 25 */ this.inner
         ];
     }
 }
@@ -6157,13 +6161,13 @@ extends FigmaShape
         return [
             ...super.toData(),
    
-            /* 18 */ this.x,
-            /* 19 */ this.y,
-            /* 20 */ this.width,
-            /* 21 */ this.height,
+            /* 19 */ this.x,
+            /* 20 */ this.y,
+            /* 21 */ this.width,
+            /* 22 */ this.height,
 
-            /* 22 */ this.round,
-            /* 23 */ this.corners
+            /* 23 */ this.round,
+            /* 24 */ this.corners
         ];
     }
 }
@@ -6245,14 +6249,14 @@ extends FigmaShape
         return [
             ...super.toData(),
    
-            /* 18 */ this.x,
-            /* 19 */ this.y,
-            /* 20 */ this.width,
-            /* 21 */ this.height,
+            /* 19 */ this.x,
+            /* 20 */ this.y,
+            /* 21 */ this.width,
+            /* 22 */ this.height,
 
-            /* 22 */ this.round,
-            /* 23 */ this.points,
-            /* 24 */ this.convex
+            /* 23 */ this.round,
+            /* 24 */ this.points,
+            /* 25 */ this.convex
         ];
     }
 }
@@ -6382,25 +6386,25 @@ extends FigmaShape
         return [
             ...super.toData(),
    
-            /* 18 */ this.x,
-            /* 19 */ this.y,
-            /* 20 */ this.width,
-            /* 21 */ this.height,
+            /* 19 */ this.x,
+            /* 20 */ this.y,
+            /* 21 */ this.width,
+            /* 22 */ this.height,
             
-            /* 22 */ this.figWidth,
-            /* 23 */ this.figHeight,
+            /* 23 */ this.figWidth,
+            /* 24 */ this.figHeight,
             
-            /* 24 */ this.text,
+            /* 25 */ this.text,
 
-            /* 25 */ this.font,
-            /* 26 */ this.size,
-            /* 27 */ this.style,
+            /* 26 */ this.font,
+            /* 27 */ this.size,
+            /* 28 */ this.style,
             
-            /* 28 */ this.alignH,
-            /* 29 */ this.alignV,
+            /* 29 */ this.alignH,
+            /* 30 */ this.alignV,
             
-            /* 30 */ this.lineHeight,
-            /* 31 */ this.letterSpacing
+            /* 31 */ this.lineHeight,
+            /* 32 */ this.letterSpacing
         ];
     }
 }
@@ -6465,9 +6469,9 @@ extends FigmaShape
         return [
             ...super.toData(),
    
-            /* 18 */ this.x,
-            /* 19 */ this.y,
-            /* 20 */ this.isCenter
+            /* 19 */ this.x,
+            /* 20 */ this.y,
+            /* 21 */ this.isCenter
         ];
     }
 }
@@ -6589,9 +6593,9 @@ extends FigmaShape
         return [
             ...super.toData(),
    
-            /* 18 */ this.pathData,
-            /* 19 */ this.winding,
-            /* 20 */ this.round
+            /* 19 */ this.pathData,
+            /* 20 */ this.winding,
+            /* 21 */ this.round
         ];
     }
 }
@@ -6984,7 +6988,7 @@ extends FigmaShape
         return [
             ...super.toData(),
    
-            /* 18 */ this.children
+            /* 19 */ this.children
         ];
     }
 }
@@ -7068,14 +7072,14 @@ extends FigmaShape
         return [
             ...super.toData(),
    
-            /* 18 */ this.x,
-            /* 19 */ this.y,
-            /* 20 */ this.width,
-            /* 21 */ this.height,
+            /* 19 */ this.x,
+            /* 20 */ this.y,
+            /* 21 */ this.width,
+            /* 22 */ this.height,
 
-            /* 22 */ this.round,
+            /* 23 */ this.round,
 
-            /* 23 */ this.children
+            /* 24 */ this.children
         ];
     }
 }
@@ -24003,6 +24007,8 @@ extends GShapeBase
 {
     inputs = [];
 
+    retain;
+
     finalize;
 
 
@@ -24033,7 +24039,11 @@ extends GShapeBase
             return this;
 
 
-        //this.value = new ListValue(this.nodeId);
+        const retain   = (await this.retain.eval(parse)).toValue();
+        const finalize = this.finalize.value > 0;
+
+
+        this.value = new ListValue();
 
 
         for (let i = 0, o = 0; i < this.inputs.length; i++)
@@ -24042,22 +24052,25 @@ extends GShapeBase
 
         
             if (   this.options.enabled
-                && this.finalize.value > 0)
+                && (   finalize
+                    || retain.value > 0))
             {
                 for (let j = 0; j < this.inputs[i].value.objects.length; j++, o++)
                 {
                     let obj = this.inputs[i].value.objects[j];
 
-                    //obj = copyFigmaObject(obj);
+                    obj = copyFigmaObject(obj);
 
                     obj.nodeId   = this.nodeId;
                     obj.objectId = obj.objectId + OBJECT_SEPARATOR + this.nodeId;
                     obj.listId   = -1;
 
-                    // if (  (   !isEmpty(obj.fills)
-                    //        || !isEmpty(obj.strokes))
-                    //     && !obj.isDeco)
-                    //     obj.final = true;
+                    if (  (   !isEmpty(obj.fills  )
+                           || !isEmpty(obj.strokes))
+                        && !obj.isDeco
+                        && (   finalize
+                            || retain.value > 0))
+                            obj.retain = finalize ? 2 : 1;
 
                     this.value.objects.push(obj);
                 }
@@ -24151,19 +24164,12 @@ extends GShapeBase
 
 
 
-    pushValueUpdates(parse)
+    toValue()
     {
-        super.pushValueUpdates(parse);
-
-        this.inputs.forEach(i => i.pushValueUpdates(parse));
+        return this.value
+             ? this.value.copy()
+             : null;
     }
-
-
-
-    // toValue()
-    // {
-    //     return this.value.copy();
-    // }
 
 
 
@@ -24181,11 +24187,24 @@ extends GShapeBase
 
 
 
+    pushValueUpdates(parse)
+    {
+        super.pushValueUpdates(parse);
+
+        this.inputs.forEach(i => i.pushValueUpdates(parse));
+
+        if (this.retain) this.retain.pushValueUpdates(parse);
+    }
+
+
+
     invalidateInputs(from)
     {
         super.invalidateInputs(from);
 
         this.inputs.forEach(i => i.invalidateInputs(from));
+
+        if (this.retain) this.retain.invalidateInputs(from);
     }
 }
 
@@ -25744,7 +25763,7 @@ function genUpdateValuesAndObjects(requestId, actionId, updateNodeId, updatePara
 
         if (o < updateObjects.length)
         {
-            objChunk.push(updateObjects[o].toData());//toJsonObject());
+            objChunk.push(updateObjects[o].toData());
             o++, oc++;
         }
 
@@ -29650,6 +29669,7 @@ function genParseRender(parse)
     for (let i = 0; i < nInputs; i++)
         render.inputs.push(genParse(parse));
 
+    render.retain   = genParse(parse);
     render.finalize = genParse(parse);
 
 

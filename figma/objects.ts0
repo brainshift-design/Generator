@@ -1,7 +1,7 @@
 function makeObjectName(obj)
 {
-    return OBJECT_PREFIX //(obj.final ? ''           : OBJECT_PREFIX )
-         + (showIds   ? obj[FO_OBJECT_ID] : obj[FO_OBJECT_NAME]);
+    return (obj[FO_RETAIN] == 2 ? '' : OBJECT_PREFIX)
+         + (showIds ? obj[FO_OBJECT_ID] : obj[FO_OBJECT_NAME]);
 }
 
 
@@ -47,7 +47,7 @@ async function figCreateObject(genObj, addObject = null)
             figObj.setPluginData('type',     genObj[FO_TYPE     ]);
             figObj.setPluginData('nodeId',   genObj[FO_NODE_ID  ]);
             figObj.setPluginData('objectId', genObj[FO_OBJECT_ID]);
-            //figObj.setPluginData('final',    boolToString(genObj.final));
+            figObj.setPluginData('retain',   genObj[FO_RETAIN   ].toString());
 
             
             if (genObj[FO_TYPE] == POINT)
@@ -234,4 +234,14 @@ function figGetObjectSize(genObj)
             }
         });
     })();
+}
+
+
+
+function clearObjectData(figObj)
+{
+    figObj.setPluginData('type',     '');
+    figObj.setPluginData('nodeId',   '');
+    figObj.setPluginData('objectId', '');
+    figObj.setPluginData('retain',   '');
 }

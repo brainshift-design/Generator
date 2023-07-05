@@ -948,48 +948,49 @@ const FO_UNIQUE_ID = 2;
 const FO_OBJECT_ID = 3;
 const FO_OBJECT_NAME = 4;
 const FO_FEEDBACK = 5;
-const FO_XP0 = 6;
-const FO_XP1 = 7;
-const FO_XP2 = 8;
-const FO_FILLS = 9;
-const FO_STROKES = 10;
-const FO_STROKE_WEIGHT = 11;
-const FO_STROKE_ALIGN = 12;
-const FO_STROKE_JOIN = 13;
-const FO_STROKE_MITER = 14;
-const FO_EFFECTS = 15;
-const FO_DECO = 16;
-const FO_MASK = 17;
-const FO_X = 18;
-const FO_VECTOR_PATH_DATA = 18;
-const FO_GROUP_CHILDREN = 18;
-const FO_Y = 19;
-const FO_VECTOR_PATH_WINDING = 19;
-const FO_WIDTH = 20;
-const FO_POINT_IS_CENTER = 20;
-const FO_VECTOR_PATH_ROUND = 20;
-const FO_HEIGHT = 21;
-const FO_RECT_ROUND = 22;
-const FO_ELLIPSE_FROM = 22;
-const FO_POLY_ROUND = 22;
-const FO_STAR_ROUND = 22;
-const FO_FIG_WIDTH = 22;
-const FO_FRAME_ROUND = 22;
-const FO_ELLIPSE_TO = 23;
-const FO_POLY_CORNERS = 23;
-const FO_STAR_POINTS = 23;
-const FO_FIG_HEIGHT = 23;
-const FO_FRAME_CHILDREN = 23;
-const FO_ELLIPSE_INNER = 24;
-const FO_STAR_CONVEX = 24;
-const FO_TEXT = 24;
-const FO_FONT = 25;
-const FO_FONT_SIZE = 26;
-const FO_FONT_STYLE = 27;
-const FO_ALIGN_H = 28;
-const FO_ALIGN_V = 29;
-const FO_LINE_HEIGHT = 30;
-const FO_LETTER_SPACING = 31;
+const FO_RETAIN = 6;
+const FO_XP0 = 7;
+const FO_XP1 = 8;
+const FO_XP2 = 9;
+const FO_FILLS = 10;
+const FO_STROKES = 11;
+const FO_STROKE_WEIGHT = 12;
+const FO_STROKE_ALIGN = 13;
+const FO_STROKE_JOIN = 14;
+const FO_STROKE_MITER = 15;
+const FO_EFFECTS = 16;
+const FO_DECO = 17;
+const FO_MASK = 18;
+const FO_X = 19;
+const FO_VECTOR_PATH_DATA = 19;
+const FO_GROUP_CHILDREN = 19;
+const FO_Y = 20;
+const FO_VECTOR_PATH_WINDING = 20;
+const FO_WIDTH = 21;
+const FO_POINT_IS_CENTER = 21;
+const FO_VECTOR_PATH_ROUND = 21;
+const FO_HEIGHT = 22;
+const FO_RECT_ROUND = 23;
+const FO_ELLIPSE_FROM = 23;
+const FO_POLY_ROUND = 23;
+const FO_STAR_ROUND = 23;
+const FO_FIG_WIDTH = 23;
+const FO_FRAME_ROUND = 23;
+const FO_ELLIPSE_TO = 24;
+const FO_POLY_CORNERS = 24;
+const FO_STAR_POINTS = 24;
+const FO_FIG_HEIGHT = 24;
+const FO_FRAME_CHILDREN = 24;
+const FO_ELLIPSE_INNER = 25;
+const FO_STAR_CONVEX = 25;
+const FO_TEXT = 25;
+const FO_FONT = 26;
+const FO_FONT_SIZE = 27;
+const FO_FONT_STYLE = 28;
+const FO_ALIGN_H = 29;
+const FO_ALIGN_V = 30;
+const FO_LINE_HEIGHT = 31;
+const FO_LETTER_SPACING = 32;
 const base32chars = '12345679ABCDEFGHJKLMNPQRSTUVWXYZ';
 function arrayToBase32(array, chars = base32chars) {
     let base32 = '';
@@ -1135,7 +1136,7 @@ function logSavedConn(conn, darkMode) {
 //figma.on('selectionchange', figOnSelectionChange);
 figma.on('documentchange', figOnDocumentChange);
 figma.on('close', figOnPluginClose);
-figDeleteAllObjects();
+figDeleteAllObjects(true);
 figma.showUI(__html__, {
     visible: false,
     themeColors: true
@@ -1220,8 +1221,7 @@ function figDeleteObjectsExcept(nodeIds, ignoreObjects) {
         for (let j = figObjArray.objects.length - 1; j >= 0; j--) {
             const obj = figObjArray.objects[j];
             if (obj.removed
-                || !findObject(obj, ignoreObjects)) //ignoreObjects.find(o => obj.name == makeObjectName(o)))
-             {
+                || !findObject(obj, ignoreObjects)) {
                 if (!obj.removed)
                     obj.remove();
                 removeFromArray(figObjArray.objects, obj);
@@ -1230,6 +1230,9 @@ function figDeleteObjectsExcept(nodeIds, ignoreObjects) {
                 if (figEmptyObjects.includes(obj))
                     removeFromArray(figEmptyObjects, obj);
             }
+            if (!obj.removed
+                && parseInt(obj.getPluginData('retain')) == 2)
+                clearObjectData(obj);
         }
         if (isEmpty(figObjArray.objects))
             removeFromArray(figObjectArrays, figObjArray);
@@ -1245,15 +1248,18 @@ function findObject(obj, ignoreObjects) {
         }
     }
     else {
-        const found = ignoreObjects.find(o => o[FO_OBJECT_ID] == obj.getPluginData('objectId'));
+        const found = ignoreObjects.find(o => o[FO_OBJECT_ID] == obj.getPluginData('objectId')
+            || o[FO_OBJECT_ID] == obj.getPluginData('retain'));
         if (found)
             return found;
     }
     return null;
 }
-function figDeleteAllObjects() {
+function figDeleteAllObjects(forceDelete = false) {
     for (const obj of figma.currentPage.children) {
         if (obj.getPluginData('objectId') != ''
+            && (parseInt(obj.getPluginData('retain')) == 0
+                || forceDelete)
             && !obj.removed)
             obj.remove();
     }
@@ -1976,7 +1982,7 @@ function figNotify(text, prefix = 'Generator ', delay = 400, error = false, butt
     notifyNotificationHandler = figma.notify(prefix + text, options);
 }
 function makeObjectName(obj) {
-    return OBJECT_PREFIX //(obj.final ? ''           : OBJECT_PREFIX )
+    return (obj[FO_RETAIN] == 2 ? '' : OBJECT_PREFIX)
         + (showIds ? obj[FO_OBJECT_ID] : obj[FO_OBJECT_NAME]);
 }
 function figCreateObject(genObj, addObject = null) {
@@ -2029,7 +2035,7 @@ function figCreateObject(genObj, addObject = null) {
                 figObj.setPluginData('type', genObj[FO_TYPE]);
                 figObj.setPluginData('nodeId', genObj[FO_NODE_ID]);
                 figObj.setPluginData('objectId', genObj[FO_OBJECT_ID]);
-                //figObj.setPluginData('final',    boolToString(genObj.final));
+                figObj.setPluginData('retain', genObj[FO_RETAIN].toString());
                 if (genObj[FO_TYPE] == POINT)
                     figPoints.push(figObj);
                 addObject(figObj);
@@ -2176,6 +2182,12 @@ function figGetObjectSize(genObj) {
             }
         });
     }))();
+}
+function clearObjectData(figObj) {
+    figObj.setPluginData('type', '');
+    figObj.setPluginData('nodeId', '');
+    figObj.setPluginData('objectId', '');
+    figObj.setPluginData('retain', '');
 }
 const figEmptyObjects = [];
 function getObjectFills(genObjFills) {

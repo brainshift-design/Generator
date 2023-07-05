@@ -56,9 +56,9 @@ extends FigmaShape
         return [
             ...super.toData(),
    
-            /* 18 */ this.x,
-            /* 19 */ this.y,
-            /* 20 */ this.isCenter
+            /* 19 */ this.x,
+            /* 20 */ this.y,
+            /* 21 */ this.isCenter
         ];
     }
 }

@@ -84,19 +84,19 @@ extends FigmaObject
         return [
             ...super.toData(),
    
-            /*  9 */ this.fills,
-            /* 10 */ this.strokes,
+            /* 10 */ this.fills,
+            /* 11 */ this.strokes,
 
-            /* 11 */ this.strokeWeight,
-            /* 12 */ this.strokeAlign,
-            /* 13 */ this.strokeJoin,
-            /* 14 */ this.strokeMiterLimit,
+            /* 12 */ this.strokeWeight,
+            /* 13 */ this.strokeAlign,
+            /* 14 */ this.strokeJoin,
+            /* 15 */ this.strokeMiterLimit,
 
-            /* 15 */ this.effects,
+            /* 16 */ this.effects,
 
-            /* 16 */ this.isDeco,
+            /* 17 */ this.isDeco,
 
-            /* 17 */ this.isMask
+            /* 18 */ this.isMask
         ];
     }
 }

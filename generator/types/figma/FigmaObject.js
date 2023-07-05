@@ -10,6 +10,7 @@ class FigmaObject
 
     inputIndex = -1; // for unique object IDs
 
+    retain     = false;
     feedback   = false;
 
 
@@ -32,7 +33,6 @@ class FigmaObject
         this.objectId   = objectId;
         this.objectName = objectName;
         this.uniqueId   = Math.round(Math.random() * 10000);
-        //this.final      = false;
 
         this.xform      = clone(identity);
 
@@ -47,7 +47,9 @@ class FigmaObject
     {
         this.inputIndex = base.inputIndex;
         this.uniqueId   = base.uniqueId;
-        //this.final      = base.final;
+        
+        this.feedback   = base.feedback;
+        this.retain     = base.retain;
         
         this.xform      = clone(base.xform);
 
@@ -206,10 +208,11 @@ class FigmaObject
         /* 4 */ this.objectName,
             
         /* 5 */ this.feedback,
+        /* 6 */ this.retain,
 
-        /* 6 */ this.xp0 ? point(this.xp0.x, this.xp0.y) : null,
-        /* 7 */ this.xp1 ? point(this.xp1.x, this.xp1.y) : null,
-        /* 8 */ this.xp2 ? point(this.xp2.x, this.xp2.y) : null
+        /* 7 */ this.xp0 ? point(this.xp0.x, this.xp0.y) : null,
+        /* 8 */ this.xp1 ? point(this.xp1.x, this.xp1.y) : null,
+        /* 9 */ this.xp2 ? point(this.xp2.x, this.xp2.y) : null
         ];
     }
 }

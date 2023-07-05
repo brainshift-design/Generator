@@ -32,7 +32,7 @@ extends FigmaShape
 
         copy.copyBase(this);
 
-        
+
         return copy;
     }
 
@@ -56,9 +56,9 @@ extends FigmaShape
         return [
             ...super.toData(),
    
-            /* 18 */ this.x,
-            /* 19 */ this.y,
-            /* 20 */ this.width
+            /* 19 */ this.x,
+            /* 20 */ this.y,
+            /* 21 */ this.width
         ];
     }
 }

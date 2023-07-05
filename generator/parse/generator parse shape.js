@@ -1004,6 +1004,7 @@ function genParseRender(parse)
     for (let i = 0; i < nInputs; i++)
         render.inputs.push(genParse(parse));
 
+    render.retain   = genParse(parse);
     render.finalize = genParse(parse);
 
 

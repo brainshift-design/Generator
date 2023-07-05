@@ -113,9 +113,9 @@ extends FigmaShape
         return [
             ...super.toData(),
    
-            /* 18 */ this.pathData,
-            /* 19 */ this.winding,
-            /* 20 */ this.round
+            /* 19 */ this.pathData,
+            /* 20 */ this.winding,
+            /* 21 */ this.round
         ];
     }
 }

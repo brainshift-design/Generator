@@ -2,7 +2,11 @@ class OpRender
 extends OpShapeBase
 {
     btnFinal;
+    
     finalize = false;
+    
+
+    paramRetain;
 
 
 
@@ -16,6 +20,11 @@ extends OpShapeBase
 
 
         this.addNewInput();
+
+
+        this.addParam(this.paramRetain = new NumberParam('retain', 'keep', true, true, true, 1, 0, 1));
+
+        this.paramRetain.divider = 0.53;
 
 
         this.addBaseParams();
@@ -64,10 +73,10 @@ extends OpShapeBase
             200);
 
 
-            if (this.enabled)
-            {
+            // if (this.enabled)
+            // {
 
-            }
+            // }
         });
 
 
@@ -119,7 +128,9 @@ extends OpShapeBase
         for (const input of connectedInputs)
             request.push(...pushInputOrParam(input, gen));
 
+        request.push(...this.paramRetain.genRequest(gen));
 
+        
         request.push(
             NUMBER_VALUE,
             new NumberValue(this.finalize ? 1 : 0).toString());
@@ -140,6 +151,18 @@ extends OpShapeBase
         super.updateHeader();
 
         this.updateFinalIcon();
+    }
+
+
+
+    updateParams()
+    {
+        this.paramRetain.enableControlText(true);
+
+        updateParamConditionText(this.paramRetain, this.isUnknown(), true, 1);
+        
+
+        this.updateParamControls();
     }
 
 
