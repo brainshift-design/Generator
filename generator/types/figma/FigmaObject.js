@@ -140,39 +140,60 @@ class FigmaObject
 
             this.x = p.x;
             this.y = p.y;
+
+            this.applySpaceTransform(xform, coords, affectSpace);
+        }
+        else if (this.type == SHAPE_GROUP)
+        {
+            for (const obj of this.children)
+            {
+                obj.applyObjectTransform(xform, coords);
+                obj.applySpaceTransform (xform, coords, affectSpace);
+            }                
         }
         else
         {
-            const xp0 = transformPoint(point(this.xp0.x, this.xp0.y), xform, coords);
-            const xp1 = transformPoint(point(this.xp1.x, this.xp1.y), xform, coords);
-            const xp2 = transformPoint(point(this.xp2.x, this.xp2.y), xform, coords);
-
-
-            this.xp0.x = xp0.x;
-            this.xp0.y = xp0.y;
-
-            this.xp1.x = xp1.x;
-            this.xp1.y = xp1.y;
-
-            this.xp2.x = xp2.x;
-            this.xp2.y = xp2.y;
+            this.applyObjectTransform(xform, coords);
+            this.applySpaceTransform (xform, coords, affectSpace);
         }
+    }
 
 
-        if (affectSpace)
-        {
-            this.cp0 = mulv2m3(this.cp0, inversem3(coords));
-            this.cp0 = mulv2m3(this.cp0, xform);
-            this.cp0 = mulv2m3(this.cp0, coords);
 
-            this.cp1 = mulv2m3(this.cp1, inversem3(coords));
-            this.cp1 = mulv2m3(this.cp1, xform);
-            this.cp1 = mulv2m3(this.cp1, coords);
+    applyObjectTransform(xform, coords)
+    {
+        const xp0 = transformPoint(point(this.xp0.x, this.xp0.y), xform, coords);
+        const xp1 = transformPoint(point(this.xp1.x, this.xp1.y), xform, coords);
+        const xp2 = transformPoint(point(this.xp2.x, this.xp2.y), xform, coords);
 
-            this.cp2 = mulv2m3(this.cp2, inversem3(coords));
-            this.cp2 = mulv2m3(this.cp2, xform);
-            this.cp2 = mulv2m3(this.cp2, coords);
-        }
+        this.xp0.x = xp0.x;
+        this.xp0.y = xp0.y;
+
+        this.xp1.x = xp1.x;
+        this.xp1.y = xp1.y;
+
+        this.xp2.x = xp2.x;
+        this.xp2.y = xp2.y;
+    }
+
+
+
+    applySpaceTransform(xform, coords, affectSpace)
+    {
+        if (!affectSpace)
+            return;
+            
+        this.cp0 = mulv2m3(this.cp0, inversem3(coords));
+        this.cp0 = mulv2m3(this.cp0, xform);
+        this.cp0 = mulv2m3(this.cp0, coords);
+
+        this.cp1 = mulv2m3(this.cp1, inversem3(coords));
+        this.cp1 = mulv2m3(this.cp1, xform);
+        this.cp1 = mulv2m3(this.cp1, coords);
+
+        this.cp2 = mulv2m3(this.cp2, inversem3(coords));
+        this.cp2 = mulv2m3(this.cp2, xform);
+        this.cp2 = mulv2m3(this.cp2, coords);
     }
 
 

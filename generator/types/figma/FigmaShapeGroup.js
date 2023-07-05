@@ -20,6 +20,7 @@ extends FigmaShape
             this.nodeId,
             this.objectId,
             this.objectName,
+            
             this.children);
 
         copy.copyBase(this);
