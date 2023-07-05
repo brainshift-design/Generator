@@ -327,7 +327,9 @@ const LINE_TYPES         = [LINE_VALUE, LINE];
 const ELLIPSE_VALUE      = 'ELPS#';
 const ELLIPSE            = 'ELPS'; 
 const ELLIPSE_TYPES      = [ELLIPSE_VALUE, ELLIPSE];
-  
+
+const TRAPEZE            = 'TRPZ';
+
 const POLYGON_VALUE      = 'POLY#';
 const POLYGON            = 'POLY'; 
 const POLYGON_TYPES      = [POLYGON_VALUE, POLYGON];
@@ -422,6 +424,7 @@ const SHAPE_TYPES =
     ...RECTANGLE_TYPES,
     ...LINE_TYPES,
     ...ELLIPSE_TYPES,
+    TRAPEZE,
     ...POLYGON_TYPES,
     ...STAR_TYPES,
     ...TEXT_SHAPE_TYPES,

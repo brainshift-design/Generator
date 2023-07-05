@@ -718,6 +718,7 @@ const LINE_TYPES = [LINE_VALUE, LINE];
 const ELLIPSE_VALUE = 'ELPS#';
 const ELLIPSE = 'ELPS';
 const ELLIPSE_TYPES = [ELLIPSE_VALUE, ELLIPSE];
+const TRAPEZE = 'TRPZ';
 const POLYGON_VALUE = 'POLY#';
 const POLYGON = 'POLY';
 const POLYGON_TYPES = [POLYGON_VALUE, POLYGON];
@@ -785,6 +786,7 @@ const SHAPE_TYPES = [
     ...RECTANGLE_TYPES,
     ...LINE_TYPES,
     ...ELLIPSE_TYPES,
+    TRAPEZE,
     ...POLYGON_TYPES,
     ...STAR_TYPES,
     ...TEXT_SHAPE_TYPES,
@@ -2380,13 +2382,7 @@ function setObjectFills(figObj, genObj) {
 function setObjectStrokes(figObj, genObj, phantom = true) {
     if (genObj[FO_STROKES] != null
         && !isEmpty(genObj[FO_STROKES])) {
-        let _dashes = genObj[FO_STROKE_DASHES];
-        _dashes = trimCharFromStart(_dashes, ',');
-        _dashes = trimCharFromEnd(_dashes, ',');
-        _dashes = _dashes.trim();
-        setObjectStroke_(figObj, getObjectFills(genObj[FO_STROKES]), genObj[FO_STROKE_WEIGHT], genObj[FO_STROKE_ALIGN], genObj[FO_STROKE_JOIN], genObj[FO_STROKE_MITER], genObj[FO_STROKE_CAP], _dashes == ''
-            ? []
-            : _dashes.split(',').map(s => Math.max(0, parseInt(s))));
+        setObjectStroke_(figObj, getObjectFills(genObj[FO_STROKES]), genObj[FO_STROKE_WEIGHT], genObj[FO_STROKE_ALIGN], genObj[FO_STROKE_JOIN], genObj[FO_STROKE_MITER], genObj[FO_STROKE_CAP], parseStrokeDashes(genObj[FO_STROKE_DASHES]));
         if (figEmptyObjects.includes(figObj))
             removeFromArray(figEmptyObjects, figObj);
     }
@@ -2398,6 +2394,15 @@ function setObjectStrokes(figObj, genObj, phantom = true) {
     }
     else
         figObj.strokes = [];
+}
+function parseStrokeDashes(_dashes) {
+    _dashes = _dashes;
+    _dashes = trimCharFromStart(_dashes, ',');
+    _dashes = trimCharFromEnd(_dashes, ',');
+    _dashes = _dashes.trim();
+    return _dashes == ''
+        ? []
+        : _dashes.split(',').map(s => Math.max(0, parseInt(s)));
 }
 function setObjectStroke_(figObj, fills, weight, align, join, miterLimit, cap, dashes = []) {
     figObj.strokes = fills;

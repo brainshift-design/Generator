@@ -79,7 +79,7 @@ extends GOperator
                     this.value = input.items[index.value];
 
                 
-                    const _objects = this.input.objects.filter(o => o.listId == index.value);
+                    const _objects = this.input.value.objects.filter(o => o.listId == index.value);
 
                     for (let j = 0; j < _objects.length; j++)
                     {
