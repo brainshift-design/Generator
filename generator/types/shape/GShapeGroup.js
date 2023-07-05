@@ -36,7 +36,7 @@ extends GShapeBase
 
         for (let i = 0, o = 0; i < this.inputs.length; i++)
         {
-            await this.inputs[i].eval(parse);
+            const input = (await this.inputs[i].eval(parse)).toValue();
 
             
             // first copy the input objects
@@ -58,8 +58,6 @@ extends GShapeBase
 
             // now create the output value
 
-            const input = this.inputs[i].toValue();
-
             if (   input
                 && this.options.enabled)            
             {
@@ -72,19 +70,19 @@ extends GShapeBase
                             continue;
 
                         this.value.items.push(item.copy());   
-                        this.value.objects.push(...item.objects.map(o => this.copyObject(o, i)));
+                        //this.value.objects.push(...item.objects.map(o => this.copyObject(o, i)));
                     }
                 }
                 else
                 {
                     this.value.items.push(input.copy());
-                    this.value.objects.push(...input.objects.map(o => this.copyObject(o, i)));
+                    //this.value.objects.push(...input.objects.map(o => this.copyObject(o, i)));
                 }
             }
         }
 
 
-        await this.evalShapeBase(parse, input);
+        //await this.evalShapeBase(parse, input);
 
 
         await this.evalObjects(parse);
@@ -100,15 +98,15 @@ extends GShapeBase
 
 
 
-    copyObject(obj, inputIndex)
-    {
-        const copy = obj.copy(); 
+    // copyObject(obj, inputIndex)
+    // {
+    //     const copy = obj.copy(); 
     
-        if (this.inputs.length > 1)
-            copy.inputIndex = inputIndex; 
+    //     if (this.inputs.length > 1)
+    //         copy.inputIndex = inputIndex; 
     
-        return copy;
-    }
+    //     return copy;
+    // }
     
 
     

@@ -45,7 +45,7 @@ extends FigmaShape
         return [
             ...super.toData(),
    
-            /* 19 */ this.children
+            /* 19 */ this.children.map(o => o.toData())
         ];
     }
 }

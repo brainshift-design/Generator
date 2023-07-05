@@ -2730,13 +2730,12 @@ function figUpdateEllipseData(figEllipse, genEllipse) {
         };
     setObjectTransform(figEllipse, genEllipse);
 }
-function genFrameIsValid(genGroup) {
-    return genGroup.x != null && !isNaN(genGroup.x)
-        && genGroup.y != null && !isNaN(genGroup.y)
-        && genGroup.width != null && !isNaN(genGroup.width)
-        && genGroup.height != null && !isNaN(genGroup.height)
-        && genGroup.round != null && !isNaN(genGroup.round);
-    //&& genGroup.angle  != null && !isNaN(genGroup.angle );
+function genFrameIsValid(genFrame) {
+    return genFrame[FO_X] != null && !isNaN(genFrame[FO_X])
+        && genFrame[FO_Y] != null && !isNaN(genFrame[FO_Y])
+        && genFrame[FO_WIDTH] != null && !isNaN(genFrame[FO_WIDTH])
+        && genFrame[FO_HEIGHT] != null && !isNaN(genFrame[FO_HEIGHT])
+        && genFrame[FO_FRAME_ROUND] != null && !isNaN(genFrame[FO_FRAME_ROUND]);
 }
 function figCreateFrame(genFrame) {
     if (!genFrameIsValid(genFrame))

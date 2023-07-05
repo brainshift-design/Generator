@@ -83,7 +83,7 @@ extends FigmaShape
 
             /* 23 */ this.round,
 
-            /* 24 */ this.children
+            /* 24 */ this.children.map(o => o.toData())
         ];
     }
 }

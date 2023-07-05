@@ -11715,7 +11715,7 @@ extends FigmaShape
         return [
             ...super.toData(),
    
-            /* 19 */ this.children
+            /* 19 */ this.children.map(o => o.toData())
         ];
     }
 }
@@ -11806,7 +11806,7 @@ extends FigmaShape
 
             /* 23 */ this.round,
 
-            /* 24 */ this.children
+            /* 24 */ this.children.map(o => o.toData())
         ];
     }
 }
@@ -16616,16 +16616,10 @@ extends GOperator
                 if (LIST_VALUES.includes(input.type))
                 {
                     for (const item of input.items)
-                    {
-                        this.value.items  .push(item.copy());   
-                        this.value.objects.push(...item.objects.map(o => o.copy()));
-                    }
+                        this.value.items.push(item.copy());   
                 }
                 else
-                {
-                    this.value.items  .push(input.copy());
-                    this.value.objects.push(...input.objects.map(o => o.copy()));
-                }
+                    this.value.items.push(input.copy());
             }
         }
 
@@ -27683,7 +27677,7 @@ extends GShape
             if (   text.width  == 0
                 && text.height == 0)
             {
-                const {objectId, width, height} = await genGetObjectSizeFromFigma(text);
+                const {objectId, width, height} = await genGetObjectSizeFromFigma(text.toData());
 
                 text.width  = width;
                 text.height = height;
@@ -28183,7 +28177,7 @@ extends GShapeBase
 
         for (let i = 0, o = 0; i < this.inputs.length; i++)
         {
-            await this.inputs[i].eval(parse);
+            const input = (await this.inputs[i].eval(parse)).toValue();
 
             
             // first copy the input objects
@@ -28205,8 +28199,6 @@ extends GShapeBase
 
             // now create the output value
 
-            const input = this.inputs[i].toValue();
-
             if (   input
                 && this.options.enabled)            
             {
@@ -28219,19 +28211,19 @@ extends GShapeBase
                             continue;
 
                         this.value.items.push(item.copy());   
-                        this.value.objects.push(...item.objects.map(o => this.copyObject(o, i)));
+                        //this.value.objects.push(...item.objects.map(o => this.copyObject(o, i)));
                     }
                 }
                 else
                 {
                     this.value.items.push(input.copy());
-                    this.value.objects.push(...input.objects.map(o => this.copyObject(o, i)));
+                    //this.value.objects.push(...input.objects.map(o => this.copyObject(o, i)));
                 }
             }
         }
 
 
-        await this.evalShapeBase(parse, input);
+        //await this.evalShapeBase(parse, input);
 
 
         await this.evalObjects(parse);
@@ -28247,15 +28239,15 @@ extends GShapeBase
 
 
 
-    copyObject(obj, inputIndex)
-    {
-        const copy = obj.copy(); 
+    // copyObject(obj, inputIndex)
+    // {
+    //     const copy = obj.copy(); 
     
-        if (this.inputs.length > 1)
-            copy.inputIndex = inputIndex; 
+    //     if (this.inputs.length > 1)
+    //         copy.inputIndex = inputIndex; 
     
-        return copy;
-    }
+    //     return copy;
+    // }
     
 
     
@@ -28470,6 +28462,7 @@ extends GShape
 
             // if (LIST_VALUES.includes(this.value.type))
             // {
+            //     console.log('this.value.children =', this.value.children);
             //     for (let i = 0; i < this.value.children.objects.length; i++)
             //         this.addChildObject(frame.children, this.value.children.objects[i]);
             // }
@@ -28477,7 +28470,7 @@ extends GShape
             // {
                 for (let i = 0; i < this.value.objects.length; i++)
                     this.addChildObject(frame.children, this.value.objects[i]);
-            //}
+            // }
 
 
             frame.createDefaultTransform(x, y);
@@ -28496,7 +28489,7 @@ extends GShape
 
     addChildObject(objects, _obj)
     {
-        const obj = _obj.copy();
+        const obj = copyFigmaObject(_obj);
                     
         obj.nodeId   = this.nodeId;
         obj.objectId = obj.objectId + OBJECT_SEPARATOR + this.nodeId;
@@ -28516,9 +28509,9 @@ extends GShape
 
     isValid()
     {
-        return super     .isValid()
-            && this.round.isValid()
-        && this.children.isValid();
+        return super        .isValid()
+            && this.round   .isValid()
+            && this.children.isValid();
     }
 
 
@@ -47864,7 +47857,7 @@ extends FigmaShape
         return [
             ...super.toData(),
    
-            /* 19 */ this.children
+            /* 19 */ this.children.map(o => o.toData())
         ];
     }
 }
@@ -47955,7 +47948,7 @@ extends FigmaShape
 
             /* 23 */ this.round,
 
-            /* 24 */ this.children
+            /* 24 */ this.children.map(o => o.toData())
         ];
     }
 }
@@ -52765,16 +52758,10 @@ extends GOperator
                 if (LIST_VALUES.includes(input.type))
                 {
                     for (const item of input.items)
-                    {
-                        this.value.items  .push(item.copy());   
-                        this.value.objects.push(...item.objects.map(o => o.copy()));
-                    }
+                        this.value.items.push(item.copy());   
                 }
                 else
-                {
-                    this.value.items  .push(input.copy());
-                    this.value.objects.push(...input.objects.map(o => o.copy()));
-                }
+                    this.value.items.push(input.copy());
             }
         }
 
@@ -63832,7 +63819,7 @@ extends GShape
             if (   text.width  == 0
                 && text.height == 0)
             {
-                const {objectId, width, height} = await genGetObjectSizeFromFigma(text);
+                const {objectId, width, height} = await genGetObjectSizeFromFigma(text.toData());
 
                 text.width  = width;
                 text.height = height;
@@ -64332,7 +64319,7 @@ extends GShapeBase
 
         for (let i = 0, o = 0; i < this.inputs.length; i++)
         {
-            await this.inputs[i].eval(parse);
+            const input = (await this.inputs[i].eval(parse)).toValue();
 
             
             // first copy the input objects
@@ -64354,8 +64341,6 @@ extends GShapeBase
 
             // now create the output value
 
-            const input = this.inputs[i].toValue();
-
             if (   input
                 && this.options.enabled)            
             {
@@ -64368,19 +64353,19 @@ extends GShapeBase
                             continue;
 
                         this.value.items.push(item.copy());   
-                        this.value.objects.push(...item.objects.map(o => this.copyObject(o, i)));
+                        //this.value.objects.push(...item.objects.map(o => this.copyObject(o, i)));
                     }
                 }
                 else
                 {
                     this.value.items.push(input.copy());
-                    this.value.objects.push(...input.objects.map(o => this.copyObject(o, i)));
+                    //this.value.objects.push(...input.objects.map(o => this.copyObject(o, i)));
                 }
             }
         }
 
 
-        await this.evalShapeBase(parse, input);
+        //await this.evalShapeBase(parse, input);
 
 
         await this.evalObjects(parse);
@@ -64396,15 +64381,15 @@ extends GShapeBase
 
 
 
-    copyObject(obj, inputIndex)
-    {
-        const copy = obj.copy(); 
+    // copyObject(obj, inputIndex)
+    // {
+    //     const copy = obj.copy(); 
     
-        if (this.inputs.length > 1)
-            copy.inputIndex = inputIndex; 
+    //     if (this.inputs.length > 1)
+    //         copy.inputIndex = inputIndex; 
     
-        return copy;
-    }
+    //     return copy;
+    // }
     
 
     
@@ -64619,6 +64604,7 @@ extends GShape
 
             // if (LIST_VALUES.includes(this.value.type))
             // {
+            //     console.log('this.value.children =', this.value.children);
             //     for (let i = 0; i < this.value.children.objects.length; i++)
             //         this.addChildObject(frame.children, this.value.children.objects[i]);
             // }
@@ -64626,7 +64612,7 @@ extends GShape
             // {
                 for (let i = 0; i < this.value.objects.length; i++)
                     this.addChildObject(frame.children, this.value.objects[i]);
-            //}
+            // }
 
 
             frame.createDefaultTransform(x, y);
@@ -64645,7 +64631,7 @@ extends GShape
 
     addChildObject(objects, _obj)
     {
-        const obj = _obj.copy();
+        const obj = copyFigmaObject(_obj);
                     
         obj.nodeId   = this.nodeId;
         obj.objectId = obj.objectId + OBJECT_SEPARATOR + this.nodeId;
@@ -64665,9 +64651,9 @@ extends GShape
 
     isValid()
     {
-        return super     .isValid()
-            && this.round.isValid()
-        && this.children.isValid();
+        return super        .isValid()
+            && this.round   .isValid()
+            && this.children.isValid();
     }
 
 

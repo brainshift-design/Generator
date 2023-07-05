@@ -116,6 +116,7 @@ extends GShape
 
             // if (LIST_VALUES.includes(this.value.type))
             // {
+            //     console.log('this.value.children =', this.value.children);
             //     for (let i = 0; i < this.value.children.objects.length; i++)
             //         this.addChildObject(frame.children, this.value.children.objects[i]);
             // }
@@ -123,7 +124,7 @@ extends GShape
             // {
                 for (let i = 0; i < this.value.objects.length; i++)
                     this.addChildObject(frame.children, this.value.objects[i]);
-            //}
+            // }
 
 
             frame.createDefaultTransform(x, y);
@@ -142,7 +143,7 @@ extends GShape
 
     addChildObject(objects, _obj)
     {
-        const obj = _obj.copy();
+        const obj = copyFigmaObject(_obj);
                     
         obj.nodeId   = this.nodeId;
         obj.objectId = obj.objectId + OBJECT_SEPARATOR + this.nodeId;
@@ -162,9 +163,9 @@ extends GShape
 
     isValid()
     {
-        return super     .isValid()
-            && this.round.isValid()
-        && this.children.isValid();
+        return super        .isValid()
+            && this.round   .isValid()
+            && this.children.isValid();
     }
 
 

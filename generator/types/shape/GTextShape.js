@@ -173,7 +173,7 @@ extends GShape
             if (   text.width  == 0
                 && text.height == 0)
             {
-                const {objectId, width, height} = await genGetObjectSizeFromFigma(text);
+                const {objectId, width, height} = await genGetObjectSizeFromFigma(text.toData());
 
                 text.width  = width;
                 text.height = height;
