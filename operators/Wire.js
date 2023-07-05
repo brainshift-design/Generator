@@ -362,7 +362,7 @@ class Wire
             else           t = Math.min(t, 0.5 - (index == 0 ? 0.15 : 0));
         }
         else
-            t = 0.5;
+            t = 0.55;
            
     
         const pt = lerpv3(p0, p1, p2, p3, t);

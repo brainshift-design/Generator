@@ -34,11 +34,6 @@ extends GOperator
 
 
 
-    // isCached()
-    // {
-    //     return this.valid;
-    // }
-
     isCached()
     {
         return super.isCached()
@@ -90,7 +85,8 @@ extends GOperator
         {
             if (this.input)
             {
-                genInitNodeProgress(this.nodeId);
+                const startTime    = Date.now();
+                let   showProgress = false;
 
 
                 const nItems = 
@@ -104,6 +100,14 @@ extends GOperator
 
                 for (let i = 0, o = 0; i < nItems; i++)
                 {
+                    if (  !showProgress
+                        && Date.now() - startTime > 50)
+                    {
+                        genInitNodeProgress(this.nodeId);
+                        showProgress = true;
+                    }
+
+                    
                     if (this.loop.type != NUMBER_VALUE)
                     {
                         this.invalidateRepeat(parse, this.loop, this.nodeId);
@@ -142,7 +146,15 @@ extends GOperator
                     }
 
 
-                    genUpdateNodeProgress(this.nodeId, i / nItems);
+                    if (showProgress)
+                        genUpdateNodeProgress(this.nodeId, i / nItems);
+                }
+
+
+                if (this.startTimer > -1)
+                {
+                    clearTimeout(this.startTimer);
+                    this.startTimer = -1;
                 }
 
 
