@@ -77,6 +77,7 @@ extends GOperator
                     && index.value < input.items.length)
                 {
                     this.value = input.items[index.value];
+                    this.value.objects = [];
 
                 
                     const _objects = this.input.value.objects.filter(o => o.listId == index.value);

@@ -4397,11 +4397,7 @@ a
             <div id='whatsNewBody'>
                 <h1 style='margin-top: 20px;'>What's new</h1>
 
-                <p>•  added stroke caps and dashes</p>
-                <p>•  fixed Select node crash</p>
-                <p>•  fixed wire arrows</p>
-                <p>•  optimized Repeat progress updates</p>
-                <p>•  added Trapeze shape primitive</p>
+                <p>•  added Place node</p>
                 
                 <p><br/><br/><div id='chkHideWhatsNew'></div></p>
             </div>
@@ -4729,7 +4725,7 @@ a
 
 
 
-const generatorVersion = 142;
+const generatorVersion = 143;
 
 
 const MAX_INT32        = 2147483647;
@@ -17191,6 +17187,7 @@ extends GOperator
                     && index.value < input.items.length)
                 {
                     this.value = input.items[index.value];
+                    this.value.objects = [];
 
                 
                     const _objects = this.input.value.objects.filter(o => o.listId == index.value);
@@ -17636,8 +17633,8 @@ extends GOperator
 {
     input = null;
 
-    count;
-    loop;
+    count = null;
+    loop  = null;
 
     iterationObjects = [];
 
@@ -17791,7 +17788,7 @@ extends GOperator
                 }
 
 
-                consoleAssert(parse.repeats.at(-1) == repeat, 'invalid nested repeat');
+                consoleAssert(parse.repeats.at(-1) == repeat, 'invalid nested repeat \'' + this.nodeId + '\'');
                 parse.repeats.pop();
             }
 
@@ -17819,19 +17816,19 @@ extends GOperator
 
 
 
+    toValue()
+    {
+        return this.value.copy();
+    }
+
+
+
     pushValueUpdates(parse)
     {
         super.pushValueUpdates(parse);
 
         if (this.input) this.input.pushValueUpdates(parse);
         if (this.count) this.count.pushValueUpdates(parse);
-    }
-
-
-
-    toValue()
-    {
-        return this.value.copy();
     }
 
 
@@ -30239,9 +30236,12 @@ extends GAffine
 class GPlace
 extends GOperator
 {
-    input = null;
+    input  = null;
 
     points = null;
+    loop   = null;
+
+    iterationObjects = [];
 
 
 
@@ -30261,7 +30261,8 @@ extends GOperator
         if (this.input) 
             copy.input = this.input.copy();
 
-        if (this.points) copy.x = this.points.copy();
+        if (this.points) copy.points = this.points.copy();
+        if (this.loop  ) copy.loop   = this.loop  .copy();
 
         return copy;
     }
@@ -30281,52 +30282,145 @@ extends GOperator
             points = new ListValue([points]);
 
 
+        if (this.loop.type != NUMBER_VALUE)
+        {
+            consoleAssert(
+                   this.loop.type == NUMBER_DEFINE
+                || this.loop.type == NUMBER_DISTRIBUTE
+                || this.loop.type == NUMBER_SEQUENCE
+                || this.loop.type == NUMBER_RANDOM
+                || this.loop.type == LIST
+                || this.loop.type == PARAM, // for OpStart
+                'only volatile types can be repeated');
+
+            this.setRepeatCount(this.loop, count.value);
+        }
+
+
         this.value = new ListValue();
 
 
-        if (this.input)
+        let repeat =
         {
-            for (let i = 0, o = 0; i < points.items.length; i++)
+            repeatId:  this.nodeId,
+            iteration: 0,
+            total:     1
+        };
+
+
+        if (points.items.length > 0)
+        {
+            if (this.input)
             {
-                this.input.invalidateInputs(from);
-                let input = (await this.input.eval(parse)).toValue();
+                const startTime    = Date.now();
+                let   showProgress = false;
 
 
-                if (!LIST_VALUES.includes(input.type))
-                    input = new ListValue([input]);
+                const nItems = 
+                    this.options.enabled 
+                    ? points.items.length
+                    : 1;
 
+
+                this.value.objects = [];
                 
-                for (let j = 0; j < this.input.objects.length; j++, o++)
+
+                parse.repeats.push(repeat);
+
+
+                for (let i = 0, o = 0; i < points.items.length; i++)
                 {
-                    const obj = copyFigmaObject(this.input.objects[o % input.items.length]);
+                    if (  !showProgress
+                        && Date.now() - startTime > 50)
+                    {
+                        genInitNodeProgress(this.nodeId);
+                        showProgress = true;
+                    }
 
-                    obj.nodeId      = this.nodeId;
+                    
+                    if (this.loop.type != NUMBER_VALUE)
+                    {
+                        this.invalidateRepeat(parse, this.loop, this.nodeId);
 
-                    obj.objectId    = this.nodeId + ':' + (o+1).toString() + obj.objectId;
-                    obj.objectName += ' ' + (o+1).toString();
-
-                    obj.listId      = i;
-    
-
-                    obj.applyTransform(createTransform(
-                        -obj.xp0.x + points.items[i].x,
-                        -obj.xp0.y + points.items[i].y));
+                        repeat.iteration = i;
+                        repeat.total     = nItems;
+                    }
+                    
+                    
+                    this.input.invalidateInputs(this);
 
 
-                    this.value.objects.push(obj);
+                    let input = (await this.input.eval(parse)).toValue();
+
+                    if (!LIST_VALUES.includes(input.type))
+                        input = new ListValue([input]);
+
+                    
+                    if (input)
+                    {
+                        this.value.items.push(input.copy());
+
+
+                        this.iterationObjects = [];
+
+
+                        for (let j = 0; j < this.input.value.objects.length; j++, o++)
+                        {
+                            const obj = copyFigmaObject(this.input.value.objects[o % input.items.length]);
+
+                            this.iterationObjects.push(obj.copy());
+
+                            obj.nodeId      = this.nodeId;
+                            obj.listId      = i;
+
+                            obj.objectId    = obj.objectId + OBJECT_SEPARATOR + this.nodeId + ':' + (o+1).toString();
+                            obj.objectName += ' ' + (o+1).toString();
+
+
+                            obj.applyTransform(createTransform(
+                                points.items[i].x.toNumber(),
+                                points.items[i].y.toNumber()));
+
+                                
+                            this.value.objects.push(obj);
+                        }
+                    }
+
+
+                    if (showProgress)
+                        genUpdateNodeProgress(this.nodeId, i / nItems);
                 }
+
+
+                if (this.startTimer > -1)
+                {
+                    clearTimeout(this.startTimer);
+                    this.startTimer = -1;
+                }
+
+
+                consoleAssert(parse.repeats.at(-1) == repeat, 'invalid nested repeat \'' + this.nodeId + '\'');
+                parse.repeats.pop();
             }
+
+            
+            this.updateValues =
+            [
+                ['value',  this.value     ],
+                ['points', points         ],
+                ['loop',   NumberValue.NaN]
+            ];
+        }
+        else
+        {
+            if (this.input)
+                await this.input.eval(parse);
+
+            this.updateValues = [['', NullValue]];
         }
 
-        
-        this.updateValues =
-        [
-            //['value',  this.value],
-            ['points', points    ]
-        ];
 
-
-        await this.evalObjects(parse, {points: points});
+        //await this.evalObjects(parse, {points: points});
 
 
         this.validate();
@@ -30368,22 +30462,29 @@ extends GOperator
 
 
 
-    pushValueUpdates(parse)
-    {
-        super.pushValueUpdates(parse);
-
-        if (this.input) this.input.pushValueUpdates(parse);
-        if (this.points    ) this.points    .pushValueUpdates(parse);
-        if (this.y    ) this.y    .pushValueUpdates(parse);
-    }
-
-
-
     isValid()
     {
         return super.isValid()
             && this.points.isValid()
-            && this.y.isValid();
+            && this.loop  .isValid();
+    }
+
+
+
+    toValue()
+    {
+        return this.value.copy();
+    }
+
+
+
+    pushValueUpdates(parse)
+    {
+        super.pushValueUpdates(parse);
+
+        if (this.input ) this.input .pushValueUpdates(parse);
+        if (this.points) this.points.pushValueUpdates(parse);
+        if (this.loop  ) this.loop  .pushValueUpdates(parse);
     }
 
 
@@ -30393,15 +30494,8 @@ extends GOperator
         super.invalidateInputs(from);
 
         if (this.input ) this.input .invalidateInputs(from);
-        if (this.points     ) this.points     .invalidateInputs(from);
-        if (this.y     ) this.y     .invalidateInputs(from);
-    }
-
-
-
-    toValue()
-    {
-        return this.value.copy();
+        if (this.points) this.points.invalidateInputs(from);
+        if (this.loop  ) this.loop  .invalidateInputs(from);
     }
 }
 
@@ -34923,6 +35017,7 @@ function genParsePlace(parse)
         place.input = genParse(parse);
 
     place.points = genParse(parse);
+    place.loop   = genParse(parse);
 
 
     parse.inParam = false;
@@ -39251,7 +39346,7 @@ onerror = (event, source, line, pos, error) =>
 };
 
 
-const generatorVersion = 142;
+const generatorVersion = 143;
 
 
 const MAX_INT32        = 2147483647;
@@ -53913,6 +54008,7 @@ extends GOperator
                     && index.value < input.items.length)
                 {
                     this.value = input.items[index.value];
+                    this.value.objects = [];
 
                 
                     const _objects = this.input.value.objects.filter(o => o.listId == index.value);
@@ -54358,8 +54454,8 @@ extends GOperator
 {
     input = null;
 
-    count;
-    loop;
+    count = null;
+    loop  = null;
 
     iterationObjects = [];
 
@@ -54513,7 +54609,7 @@ extends GOperator
                 }
 
 
-                consoleAssert(parse.repeats.at(-1) == repeat, 'invalid nested repeat');
+                consoleAssert(parse.repeats.at(-1) == repeat, 'invalid nested repeat \'' + this.nodeId + '\'');
                 parse.repeats.pop();
             }
 
@@ -54541,19 +54637,19 @@ extends GOperator
 
 
 
+    toValue()
+    {
+        return this.value.copy();
+    }
+
+
+
     pushValueUpdates(parse)
     {
         super.pushValueUpdates(parse);
 
         if (this.input) this.input.pushValueUpdates(parse);
         if (this.count) this.count.pushValueUpdates(parse);
-    }
-
-
-
-    toValue()
-    {
-        return this.value.copy();
     }
 
 
@@ -66961,9 +67057,12 @@ extends GAffine
 class GPlace
 extends GOperator
 {
-    input = null;
+    input  = null;
 
     points = null;
+    loop   = null;
+
+    iterationObjects = [];
 
 
 
@@ -66983,7 +67082,8 @@ extends GOperator
         if (this.input) 
             copy.input = this.input.copy();
 
-        if (this.points) copy.x = this.points.copy();
+        if (this.points) copy.points = this.points.copy();
+        if (this.loop  ) copy.loop   = this.loop  .copy();
 
         return copy;
     }
@@ -67003,52 +67103,145 @@ extends GOperator
             points = new ListValue([points]);
 
 
+        if (this.loop.type != NUMBER_VALUE)
+        {
+            consoleAssert(
+                   this.loop.type == NUMBER_DEFINE
+                || this.loop.type == NUMBER_DISTRIBUTE
+                || this.loop.type == NUMBER_SEQUENCE
+                || this.loop.type == NUMBER_RANDOM
+                || this.loop.type == LIST
+                || this.loop.type == PARAM, // for OpStart
+                'only volatile types can be repeated');
+
+            this.setRepeatCount(this.loop, count.value);
+        }
+
+
         this.value = new ListValue();
 
 
-        if (this.input)
+        let repeat =
         {
-            for (let i = 0, o = 0; i < points.items.length; i++)
+            repeatId:  this.nodeId,
+            iteration: 0,
+            total:     1
+        };
+
+
+        if (points.items.length > 0)
+        {
+            if (this.input)
             {
-                this.input.invalidateInputs(from);
-                let input = (await this.input.eval(parse)).toValue();
+                const startTime    = Date.now();
+                let   showProgress = false;
 
 
-                if (!LIST_VALUES.includes(input.type))
-                    input = new ListValue([input]);
+                const nItems = 
+                    this.options.enabled 
+                    ? points.items.length
+                    : 1;
 
+
+                this.value.objects = [];
                 
-                for (let j = 0; j < this.input.objects.length; j++, o++)
+
+                parse.repeats.push(repeat);
+
+
+                for (let i = 0, o = 0; i < points.items.length; i++)
                 {
-                    const obj = copyFigmaObject(this.input.objects[o % input.items.length]);
+                    if (  !showProgress
+                        && Date.now() - startTime > 50)
+                    {
+                        genInitNodeProgress(this.nodeId);
+                        showProgress = true;
+                    }
 
-                    obj.nodeId      = this.nodeId;
+                    
+                    if (this.loop.type != NUMBER_VALUE)
+                    {
+                        this.invalidateRepeat(parse, this.loop, this.nodeId);
 
-                    obj.objectId    = this.nodeId + ':' + (o+1).toString() + obj.objectId;
-                    obj.objectName += ' ' + (o+1).toString();
-
-                    obj.listId      = i;
-    
-
-                    obj.applyTransform(createTransform(
-                        -obj.xp0.x + points.items[i].x,
-                        -obj.xp0.y + points.items[i].y));
+                        repeat.iteration = i;
+                        repeat.total     = nItems;
+                    }
+                    
+                    
+                    this.input.invalidateInputs(this);
 
 
-                    this.value.objects.push(obj);
+                    let input = (await this.input.eval(parse)).toValue();
+
+                    if (!LIST_VALUES.includes(input.type))
+                        input = new ListValue([input]);
+
+                    
+                    if (input)
+                    {
+                        this.value.items.push(input.copy());
+
+
+                        this.iterationObjects = [];
+
+
+                        for (let j = 0; j < this.input.value.objects.length; j++, o++)
+                        {
+                            const obj = copyFigmaObject(this.input.value.objects[o % input.items.length]);
+
+                            this.iterationObjects.push(obj.copy());
+
+                            obj.nodeId      = this.nodeId;
+                            obj.listId      = i;
+
+                            obj.objectId    = obj.objectId + OBJECT_SEPARATOR + this.nodeId + ':' + (o+1).toString();
+                            obj.objectName += ' ' + (o+1).toString();
+
+
+                            obj.applyTransform(createTransform(
+                                points.items[i].x.toNumber(),
+                                points.items[i].y.toNumber()));
+
+                                
+                            this.value.objects.push(obj);
+                        }
+                    }
+
+
+                    if (showProgress)
+                        genUpdateNodeProgress(this.nodeId, i / nItems);
                 }
+
+
+                if (this.startTimer > -1)
+                {
+                    clearTimeout(this.startTimer);
+                    this.startTimer = -1;
+                }
+
+
+                consoleAssert(parse.repeats.at(-1) == repeat, 'invalid nested repeat \'' + this.nodeId + '\'');
+                parse.repeats.pop();
             }
+
+            
+            this.updateValues =
+            [
+                ['value',  this.value     ],
+                ['points', points         ],
+                ['loop',   NumberValue.NaN]
+            ];
+        }
+        else
+        {
+            if (this.input)
+                await this.input.eval(parse);
+
+            this.updateValues = [['', NullValue]];
         }
 
-        
-        this.updateValues =
-        [
-            //['value',  this.value],
-            ['points', points    ]
-        ];
 
-
-        await this.evalObjects(parse, {points: points});
+        //await this.evalObjects(parse, {points: points});
 
 
         this.validate();
@@ -67090,22 +67283,29 @@ extends GOperator
 
 
 
-    pushValueUpdates(parse)
-    {
-        super.pushValueUpdates(parse);
-
-        if (this.input) this.input.pushValueUpdates(parse);
-        if (this.points    ) this.points    .pushValueUpdates(parse);
-        if (this.y    ) this.y    .pushValueUpdates(parse);
-    }
-
-
-
     isValid()
     {
         return super.isValid()
             && this.points.isValid()
-            && this.y.isValid();
+            && this.loop  .isValid();
+    }
+
+
+
+    toValue()
+    {
+        return this.value.copy();
+    }
+
+
+
+    pushValueUpdates(parse)
+    {
+        super.pushValueUpdates(parse);
+
+        if (this.input ) this.input .pushValueUpdates(parse);
+        if (this.points) this.points.pushValueUpdates(parse);
+        if (this.loop  ) this.loop  .pushValueUpdates(parse);
     }
 
 
@@ -67115,15 +67315,8 @@ extends GOperator
         super.invalidateInputs(from);
 
         if (this.input ) this.input .invalidateInputs(from);
-        if (this.points     ) this.points     .invalidateInputs(from);
-        if (this.y     ) this.y     .invalidateInputs(from);
-    }
-
-
-
-    toValue()
-    {
-        return this.value.copy();
+        if (this.points) this.points.invalidateInputs(from);
+        if (this.loop  ) this.loop  .invalidateInputs(from);
     }
 }
 
@@ -71652,8 +71845,8 @@ const iconColorStop         = '<svg width="17" height="16" viewBox="-1 0 17 16" 
 const iconStroke            = '<svg width="15" height="11" viewBox="0 0 15 11" fill="none" xmlns="http://www.w3.org/2000/svg"><rect x="0.5" y="0.5" width="14" height="10" rx="2.5" stroke="white"/></svg>';
 const iconMask              = '<svg width="16" height="16" viewBox="0 0 16 16" fill="none" xmlns="http://www.w3.org/2000/svg"><path fill-rule="evenodd" clip-rule="evenodd" d="M4.5 0.80426C1.83597 2.10266 0 4.83704 0 8C0 11.0375 1.69293 13.6797 4.18674 15.0344C4.28983 15.0905 4.39423 15.1443 4.5 15.1958C5.55719 15.7109 6.74484 16 8 16C12.4183 16 16 12.4183 16 8C16 3.58173 12.4183 0 8 0C6.74469 0 5.55728 0.28894 4.5 0.80426ZM15 8C15 11.866 11.866 15 8 15C7.14575 15 6.32724 14.847 5.57037 14.5668C7.64352 13.1213 9 10.7191 9 8C9 5.28094 7.64349 2.87872 5.57031 1.43317C6.32718 1.15302 7.14572 1 8 1C11.866 1 15 4.13403 15 8Z" fill="white"/></svg>';
 
-const iconEffects           = '<svg width="18" height="14" viewBox="0 0 18 14" fill="none" xmlns="http://www.w3.org/2000/svg"><path fill-rule="evenodd" clip-rule="evenodd" d="M13 13H4.5V14H13C15.7614 14 18 11.7614 18 9V4.5H17V9C17 11.2091 15.2091 13 13 13Z" fill="white"/><line x1="6.21326" y1="0.433143" x2="0.447288" y2="6.19912" stroke="white"/><line x1="10.2787" y1="0.610389" x2="1.25317" y2="9.63592" stroke="white"/><line x1="13.6388" y1="1.49308" x2="4.56403" y2="10.5678" stroke="white"/><line x1="14.5184" y1="4.85624" x2="8.86875" y2="10.5059" stroke="white"/><path d="M4 0.5H12C13.3807 0.5 14.5 1.61929 14.5 3V7C14.5 8.933 12.933 10.5 11 10.5H3C1.61929 10.5 0.5 9.38071 0.5 8V4C0.5 2.067 2.067 0.5 4 0.5Z" stroke="white"/></svg>';
-const iconDropShadow        = '<svg width="19" height="14" viewBox="-1 0 19 14" fill="none" xmlns="http://www.w3.org/2000/svg"><rect x="0.5" y="0.5" width="14" height="10" rx="2.5" stroke="white"/><path fill-rule="evenodd" clip-rule="evenodd" d="M13 13H4.5V14H13C15.7614 14 18 11.7614 18 9V4.5H17V9C17 11.2091 15.2091 13 13 13Z" fill="white"/></svg>';
+const iconEffects           = '<svg width="18" height="15" viewBox="0 -1 18 15" fill="none" xmlns="http://www.w3.org/2000/svg"><path fill-rule="evenodd" clip-rule="evenodd" d="M13 13H4.5V14H13C15.7614 14 18 11.7614 18 9V4.5H17V9C17 11.2091 15.2091 13 13 13Z" fill="white"/><line x1="6.21326" y1="0.433143" x2="0.447288" y2="6.19912" stroke="white"/><line x1="10.2787" y1="0.610389" x2="1.25317" y2="9.63592" stroke="white"/><line x1="13.6388" y1="1.49308" x2="4.56403" y2="10.5678" stroke="white"/><line x1="14.5184" y1="4.85624" x2="8.86875" y2="10.5059" stroke="white"/><path d="M4 0.5H12C13.3807 0.5 14.5 1.61929 14.5 3V7C14.5 8.933 12.933 10.5 11 10.5H3C1.61929 10.5 0.5 9.38071 0.5 8V4C0.5 2.067 2.067 0.5 4 0.5Z" stroke="white"/></svg>';
+const iconDropShadow        = '<svg width="19" height="15" viewBox="-1 -1 19 15" fill="none" xmlns="http://www.w3.org/2000/svg"><rect x="0.5" y="0.5" width="14" height="10" rx="2.5" stroke="white"/><path fill-rule="evenodd" clip-rule="evenodd" d="M13 13H4.5V14H13C15.7614 14 18 11.7614 18 9V4.5H17V9C17 11.2091 15.2091 13 13 13Z" fill="white"/></svg>';
 const iconInnerShadow       = '<svg width="17" height="13" viewBox="0 0 17 13" fill="none" xmlns="http://www.w3.org/2000/svg"><rect x="0.5" y="0.5" width="16" height="12" rx="3.5" stroke="white"/><path fill-rule="evenodd" clip-rule="evenodd" d="M5 4H13V3H5C3.89543 3 3 3.89543 3 5V9H4V5C4 4.44772 4.44772 4 5 4Z" fill="white"/></svg>';
 const iconLayerBlur         = '<svg width="15" height="12" viewBox="0 0 15 12" fill="none" xmlns="http://www.w3.org/2000/svg"><path fill-rule="evenodd" clip-rule="evenodd" d="M0.00242553 9.06282L8.06639 0.9988L9.48059 0.998779L0.256423 10.2229L0.00242553 9.06282Z" fill="white"/><path fill-rule="evenodd" clip-rule="evenodd" d="M0.452312 4.37771L3.45318 1.37684L5.24118 1.00305L0.00200153 6.24223L0.452312 4.37771Z" fill="white"/><path fill-rule="evenodd" clip-rule="evenodd" d="M1.64012 11.6677L12.2897 1.01819L13.3811 1.34094L2.73919 11.9829L1.64012 11.6677Z" fill="white"/><path fill-rule="evenodd" clip-rule="evenodd" d="M5.55088 11.9998L14.747 2.80362L14.9934 3.97146L6.965 11.9998L5.55088 11.9998Z" fill="white"/><path fill-rule="evenodd" clip-rule="evenodd" d="M9.79585 11.9974L15.0001 6.79314L14.6124 8.59506L11.569 11.6384L9.79585 11.9974Z" fill="white"/></svg>';
 const iconBackBlur          = '<svg width="15" height="11" viewBox="0 0 15 11" fill="none" xmlns="http://www.w3.org/2000/svg"><line x1="6.21326" y1="0.433143" x2="0.447288" y2="6.19912" stroke="white"/><line x1="10.2787" y1="0.610389" x2="1.25317" y2="9.63592" stroke="white"/><line x1="13.6388" y1="1.49308" x2="4.56403" y2="10.5678" stroke="white"/><line x1="14.5184" y1="4.85624" x2="8.86875" y2="10.5059" stroke="white"/><path d="M4 0.5H12C13.3807 0.5 14.5 1.61929 14.5 3V7C14.5 8.933 12.933 10.5 11 10.5H3C1.61929 10.5 0.5 9.38071 0.5 8V4C0.5 2.067 2.067 0.5 4 0.5Z" stroke="white"/></svg>';
@@ -71665,7 +71858,7 @@ const iconVarBoolean        = '<svg width="12" height="12" viewBox="0 0 12 12" f
 
 const iconStyle             = '<svg width="12" height="9"  viewBox="0 0 12 9"  fill="none" xmlns="http://www.w3.org/2000/svg"><circle cx="7.5" cy="1.5" r="1.5" transform="rotate(90 7.5 1.5)" fill="white"/><circle cx="1.5" cy="1.5" r="1.5" transform="rotate(90 1.5 1.5)" fill="white"/><circle cx="7.5" cy="7.5" r="1.5" transform="rotate(90 7.5 7.5)" fill="white"/><circle cx="1.5" cy="7.5" r="1.5" transform="rotate(90 1.5 7.5)" fill="white"/></svg>';
 const iconColorStyle        = '<svg width="12" height="12" viewBox="0 0 12 12" fill="none" xmlns="http://www.w3.org/2000/svg"><path fill-rule="evenodd" clip-rule="evenodd" d="M9.53553 9.53552C8.63071 10.4403 7.38071 11 6 11C3.23858 11 1 8.76141 1 6C1 4.61929 1.55965 3.36929 2.46447 2.46448L6 6L9.53553 9.53552ZM12 6C12 9.31372 9.31371 12 6 12C2.68629 12 0 9.31372 0 6C0 4.34314 0.67157 2.84314 1.75735 1.75735C1.77346 1.74124 1.78965 1.72525 1.80592 1.70935C2.88722 0.652252 4.36652 0.000518799 5.99803 0C5.99869 0 5.99934 0 6 0C9.31305 0 11.9989 2.68521 12 5.99802C12 5.99869 12 5.99933 12 6Z" fill="white"/></svg>';
-const iconColorStyleReplace = '<svg width="15" height="15" viewBox="0 0 15 15" fill="none" xmlns="http://www.w3.org/2000/svg"><path fill-rule="evenodd" clip-rule="evenodd" d="M5.18718 13.3189L7.83883 10.6673L8.54594 11.3744L5.89429 14.026C4.62509 15.2952 2.5673 15.2952 1.2981 14.026C0.0288918 12.7568 0.0288916 10.699 1.2981 9.42982L3.94975 6.77817L4.65685 7.48528L2.0052 10.1369C1.12652 11.0156 1.12652 12.4402 2.0052 13.3189C2.88388 14.1976 4.3085 14.1976 5.18718 13.3189ZM11.3744 8.54594L10.6673 7.83883L13.3189 5.18718C14.1976 4.3085 14.1976 2.88388 13.3189 2.0052C12.4402 1.12652 11.0156 1.12652 10.1369 2.0052L7.48528 4.65685L6.77817 3.94975L9.42982 1.2981C10.699 0.0288935 12.7568 0.0288931 14.026 1.2981C15.2952 2.5673 15.2952 4.62509 14.026 5.89429L11.3744 8.54594ZM5.92375 10.1664L10.1664 5.92375L9.40036 5.15772L5.15772 9.40036L5.92375 10.1664Z" fill="white"/></svg>';
+const iconColorStyleReplace = '<svg width="15" height="19" viewBox="0 0 15 19" fill="none" xmlns="http://www.w3.org/2000/svg"><path fill-rule="evenodd" clip-rule="evenodd" d="M5.18718 13.3189L7.83883 10.6673L8.54594 11.3744L5.89429 14.026C4.62509 15.2952 2.5673 15.2952 1.2981 14.026C0.0288918 12.7568 0.0288916 10.699 1.2981 9.42982L3.94975 6.77817L4.65685 7.48528L2.0052 10.1369C1.12652 11.0156 1.12652 12.4402 2.0052 13.3189C2.88388 14.1976 4.3085 14.1976 5.18718 13.3189ZM11.3744 8.54594L10.6673 7.83883L13.3189 5.18718C14.1976 4.3085 14.1976 2.88388 13.3189 2.0052C12.4402 1.12652 11.0156 1.12652 10.1369 2.0052L7.48528 4.65685L6.77817 3.94975L9.42982 1.2981C10.699 0.0288935 12.7568 0.0288931 14.026 1.2981C15.2952 2.5673 15.2952 4.62509 14.026 5.89429L11.3744 8.54594ZM5.92375 10.1664L10.1664 5.92375L9.40036 5.15772L5.15772 9.40036L5.92375 10.1664Z" fill="white"/></svg>';
 
 const iconShapes            = '<svg width="17" height="19" viewBox="0 -1 17 19" fill="none" xmlns="http://www.w3.org/2000/svg"><rect x="1.53844" y="1.49869" width="5" height="5" stroke="white"/><circle cx="12.8668" cy="3.99869" r="3" stroke="white"/><line x1="0.933922" y1="16.7012" x2="7.26322" y2="10.3719" stroke="white"/><path d="M9.61918 15.709L12.8668 10.084L16.1144 15.709H9.61918Z" stroke="white"/></svg>';
 
@@ -73093,7 +73286,7 @@ function initGeneratorMenus()
         menuItemCopy          = new MenuItem('Copy',              {icon: iconCopy,       callback: e => actionManager.do(getCreateNodeAction(COPY,       btnNumber.div, getCreateOptions(e)))}),
         menuFlowSep3          = new MenuItem('',                  {separator: true}),
         menuItemStart         = new MenuItem('Start . . .',       {icon: iconStart,      callback: e => actionManager.do(getCreateNodeAction(START,      btnNumber.div, getCreateOptions(e)))}),
-        menuItemRepeat        = new MenuItem('Repeat',            {icon: iconRepeat,     callback: e => actionManager.do(getCreateNodeAction(REPEAT,     btnNumber.div, getCreateOptions(e)))}),
+        menuItemRepeat        = new MenuItem('. . . Repeat',            {icon: iconRepeat,     callback: e => actionManager.do(getCreateNodeAction(REPEAT,     btnNumber.div, getCreateOptions(e)))}),
         menuFlowSep4          = new MenuItem('',                  {separator: true}),
         menuItemTimer         = new MenuItem('Timer ',            {icon: iconTimer,      callback: e => actionManager.do(getCreateNodeAction(TIMER,      btnNumber.div, getCreateOptions(e)))})]);
      // menuFlowSep3          = new MenuItem('',                  {separator: true}),
@@ -73287,18 +73480,17 @@ function initGeneratorMenus()
     menuShape = new Menu('Shapes', true, false);
     menuShape.addItems([
         // menuItemShapeSelected = new MenuItem('Selected objects...', {icon: iconSelected,   enabled: false}),
-                                // new MenuItem('',                    {separator: true}),
-                                new MenuItem('Shapes',              {icon: iconShapes, childMenu: menuShapes}),
-                                new MenuItem('',                    {separator: true}),
-                                new MenuItem('Frame',               {icon: iconFrame,      callback: e => actionManager.do(getCreateNodeAction(FRAME,       btnShape.div, getCreateOptions(e)))}),
-                                new MenuItem('Group',               {icon: iconShapeGroup, callback: e => actionManager.do(getCreateNodeAction(SHAPE_GROUP, btnShape.div, getCreateOptions(e)))}),
-                                // new MenuItem('Boolean',             {enabled: false, icon: iconBoolUnion,  callback: e => actionManager.do(getCreateNodeAction(BOOLEAN,     btnShape.div, getCreateOptions(e)))}),
-        menuItemShapeSep1     = new MenuItem('',                    {separator: true}),
-                                //new MenuItem('Place',               {icon: iconPlace, callback: e => actionManager.do(getCreateNodeAction(PLACE, btnShape.div, getCreateOptions(e)))}),
-                                //new MenuItem('',                    {separator: true}),
-                                new MenuItem('Transform',           {icon: iconMove, childMenu: menuTransform}),
-                                new MenuItem('',                    {separator: true}),
-                                new MenuItem('Render',              {icon: iconRenderDown, callback: e => actionManager.do(getCreateNodeAction(RENDER,       btnShape.div, getCreateOptions(e)))})]);
+                             // new MenuItem('',            {separator: true}),
+                                new MenuItem('Shapes',      {icon: iconShapes, childMenu: menuShapes}),
+                                new MenuItem('',            {separator: true}),
+                                new MenuItem('Frame',       {icon: iconFrame,      callback: e => actionManager.do(getCreateNodeAction(FRAME,       btnShape.div, getCreateOptions(e)))}),
+                                new MenuItem('Group',       {icon: iconShapeGroup, callback: e => actionManager.do(getCreateNodeAction(SHAPE_GROUP, btnShape.div, getCreateOptions(e)))}),
+                             // new MenuItem('Boolean',     {enabled: false, icon: iconBoolUnion,  callback: e => actionManager.do(getCreateNodeAction(BOOLEAN,     btnShape.div, getCreateOptions(e)))}),
+        menuItemShapeSep1     = new MenuItem('',            {separator: true}),
+                                new MenuItem('Transform',   {icon: iconMove, childMenu: menuTransform}),
+                                new MenuItem('. . . Place', {icon: iconPlace, callback: e => actionManager.do(getCreateNodeAction(PLACE, btnShape.div, getCreateOptions(e)))}),
+                                new MenuItem('',            {separator: true}),
+                                new MenuItem('Render',      {icon: iconRenderDown, callback: e => actionManager.do(getCreateNodeAction(RENDER,       btnShape.div, getCreateOptions(e)))})]);
 
 
     menuGroup = new Menu('Groups', true, false);
@@ -73521,7 +73713,7 @@ function initGeneratorMenus()
 
     btnMain   .setIcon(iconGenerator);
     btnShape  .setIcon(iconShapes);
-    btnLayer  .setIcon(iconGradient);
+    btnLayer  .setIcon(iconDropShadow);
     btnColor  .setIcon(iconColor);
     //btnStyle  .setIcon(iconStyle);
     //btnGroup  .setIcon(iconGroup);
@@ -86421,7 +86613,11 @@ Operator.prototype.updateIcon = function()
 
 Operator.prototype.updateHeaderLabelText = function()
 {
-    const prefix = this.type == REPEAT ? '...' : '';
+    const prefix = 
+           this.type == REPEAT 
+        || this.type == PLACE
+        ? '...' 
+        : '';
     
     let suffix;
     
@@ -88084,7 +88280,7 @@ extends OperatorBase
         this.addOutput(new Output([LIST_VALUE], this.output_genRequest));
 
 
-        this.addParam(this.paramCount = new NumberParam('count', 'count', true, true, true, 1, 0, 1000, 0));
+        this.addParam(this.paramCount = new NumberParam('count', 'count', true,  true, true, 1, 0, 1000, 0));
         this.addParam(this.paramLoop  = new NumberParam('loop',  '',      false, true, false));
 
 
@@ -88160,8 +88356,7 @@ extends OperatorBase
     updateParams()
     {
         this.paramCount.enableControlText(true);
-
-        this.paramLoop.enableControlText(false);
+        this.paramLoop .enableControlText(false);
 
         const arrowStyle = darkMode ? 'white' : 'black';
 
@@ -99100,12 +99295,13 @@ class   OpPlace
 extends OperatorBase
 {
     paramPoints;
+    paramLoop;
 
 
 
     constructor()
     {
-        super(PLACE, 'place', 'place', iconPlace);
+        super(PLACE, 'place', 'place', iconPlace, defNodeWidth, true);
 
         this.canDisable  = true;
         this.iconOffsetY = -2;
@@ -99115,7 +99311,8 @@ extends OperatorBase
         this.addOutput(new Output([SHAPE_LIST_VALUE], this.output_genRequest));
 
 
-        this.addParam(this.paramPoints = new ListParam('points', 'points', false, true, true));
+        this.addParam(this.paramPoints = new   ListParam('points', 'points', false, true, true ));
+        this.addParam(this.paramLoop   = new NumberParam('loop',   '',       false, true, false));
 
 
         this.paramPoints.itemName  = 'point';
@@ -99123,11 +99320,18 @@ extends OperatorBase
         this.paramPoints.listTypes = [POINT_VALUE, SHAPE_LIST_VALUE, LIST_VALUE];
         this.paramPoints.input.types.push(...this.paramPoints.listTypes);
 
-        // this.inputs[0].addEventListener('connect',    e => this.outputs[0].types = [...this.inputs[0].connectedOutput.types]);
-        // this.inputs[0].addEventListener('disconnect', e => this.outputs[0].types = [SHAPE_VALUE]);
+        this.paramLoop.input.types.push(NUMBER_LIST_VALUE);
+        this.paramLoop.input.types.push(START);
     }
     
     
+
+    isMultiplier()
+    {
+        return true;
+    }
+
+
 
     output_genRequest(gen)
     {
@@ -99150,6 +99354,7 @@ extends OperatorBase
             request.push(...pushInputOrParam(input, gen));
 
         request.push(...this.node.paramPoints.genRequest(gen));
+        request.push(...this.node.paramLoop  .genRequest(gen));
 
         
         gen.scope.pop();
@@ -99157,6 +99362,39 @@ extends OperatorBase
 
 
         return request;
+    }
+
+
+
+    updateValues(requestId, actionId, updateParamId, paramIds, values)
+    {
+        const value  = values[paramIds.findIndex(id => id == 'value' )];
+        const points = values[paramIds.findIndex(id => id == 'points')];
+        const loop   = values[paramIds.findIndex(id => id == 'loop'  )];
+
+        if (points) this.paramPoints.setValue(points, false, true, false);
+        if (loop  ) this.paramLoop  .setValue(loop,   false, true, false);
+
+        this.outputs[0].types = 
+            value
+            ? [finalListTypeFromItems(value.items)]
+            : [LIST_VALUE];
+
+        this.endNodeProgress();
+    }
+
+
+
+    updateParams()
+    {
+        this.paramPoints.enableControlText(false);
+        this.paramLoop  .enableControlText(false);
+
+        const arrowStyle = darkMode ? 'white' : 'black';
+
+        this.paramLoop.controls[0].valueText = '<svg width="14" height="12" viewBox="0 -1 14 12" fill="none" xmlns="http://www.w3.org/2000/svg"><path fill-rule="evenodd" clip-rule="evenodd" d="M13 0H14L14 2C14 4.76142 11.7614 7 8.99999 7H1V6H8.99999C11.2091 6 13 4.20914 13 2L13 0Z" fill="' + arrowStyle + '"/><rect width="4.97369" height="1" transform="matrix(0.707107 -0.707107 -0.707107 -0.707107 0.712646 7.224)" fill="' + arrowStyle + '"/><rect width="5" height="1" transform="matrix(0.707107 0.707107 0.707107 -0.707107 0 6.54858)" fill="' + arrowStyle + '"/></svg>';
+
+        this.updateParamControls();
     }
 }
 

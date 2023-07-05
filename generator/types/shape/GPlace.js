@@ -1,9 +1,12 @@
 class GPlace
 extends GOperator
 {
-    input = null;
+    input  = null;
 
     points = null;
+    loop   = null;
+
+    iterationObjects = [];
 
 
 
@@ -23,7 +26,8 @@ extends GOperator
         if (this.input) 
             copy.input = this.input.copy();
 
-        if (this.points) copy.x = this.points.copy();
+        if (this.points) copy.points = this.points.copy();
+        if (this.loop  ) copy.loop   = this.loop  .copy();
 
         return copy;
     }
@@ -43,52 +47,145 @@ extends GOperator
             points = new ListValue([points]);
 
 
+        if (this.loop.type != NUMBER_VALUE)
+        {
+            consoleAssert(
+                   this.loop.type == NUMBER_DEFINE
+                || this.loop.type == NUMBER_DISTRIBUTE
+                || this.loop.type == NUMBER_SEQUENCE
+                || this.loop.type == NUMBER_RANDOM
+                || this.loop.type == LIST
+                || this.loop.type == PARAM, // for OpStart
+                'only volatile types can be repeated');
+
+            this.setRepeatCount(this.loop, count.value);
+        }
+
+
         this.value = new ListValue();
 
 
-        if (this.input)
+        let repeat =
         {
-            for (let i = 0, o = 0; i < points.items.length; i++)
+            repeatId:  this.nodeId,
+            iteration: 0,
+            total:     1
+        };
+
+
+        if (points.items.length > 0)
+        {
+            if (this.input)
             {
-                this.input.invalidateInputs(from);
-                let input = (await this.input.eval(parse)).toValue();
+                const startTime    = Date.now();
+                let   showProgress = false;
 
 
-                if (!LIST_VALUES.includes(input.type))
-                    input = new ListValue([input]);
+                const nItems = 
+                    this.options.enabled 
+                    ? points.items.length
+                    : 1;
 
+
+                this.value.objects = [];
                 
-                for (let j = 0; j < this.input.objects.length; j++, o++)
+
+                parse.repeats.push(repeat);
+
+
+                for (let i = 0, o = 0; i < points.items.length; i++)
                 {
-                    const obj = copyFigmaObject(this.input.objects[o % input.items.length]);
+                    if (  !showProgress
+                        && Date.now() - startTime > 50)
+                    {
+                        genInitNodeProgress(this.nodeId);
+                        showProgress = true;
+                    }
 
-                    obj.nodeId      = this.nodeId;
+                    
+                    if (this.loop.type != NUMBER_VALUE)
+                    {
+                        this.invalidateRepeat(parse, this.loop, this.nodeId);
 
-                    obj.objectId    = this.nodeId + ':' + (o+1).toString() + obj.objectId;
-                    obj.objectName += ' ' + (o+1).toString();
-
-                    obj.listId      = i;
-    
-
-                    obj.applyTransform(createTransform(
-                        -obj.xp0.x + points.items[i].x,
-                        -obj.xp0.y + points.items[i].y));
+                        repeat.iteration = i;
+                        repeat.total     = nItems;
+                    }
+                    
+                    
+                    this.input.invalidateInputs(this);
 
 
-                    this.value.objects.push(obj);
+                    let input = (await this.input.eval(parse)).toValue();
+
+                    if (!LIST_VALUES.includes(input.type))
+                        input = new ListValue([input]);
+
+                    
+                    if (input)
+                    {
+                        this.value.items.push(input.copy());
+
+
+                        this.iterationObjects = [];
+
+
+                        for (let j = 0; j < this.input.value.objects.length; j++, o++)
+                        {
+                            const obj = copyFigmaObject(this.input.value.objects[o % input.items.length]);
+
+                            this.iterationObjects.push(obj.copy());
+
+                            obj.nodeId      = this.nodeId;
+                            obj.listId      = i;
+
+                            obj.objectId    = obj.objectId + OBJECT_SEPARATOR + this.nodeId + ':' + (o+1).toString();
+                            obj.objectName += ' ' + (o+1).toString();
+
+
+                            obj.applyTransform(createTransform(
+                                points.items[i].x.toNumber(),
+                                points.items[i].y.toNumber()));
+
+                                
+                            this.value.objects.push(obj);
+                        }
+                    }
+
+
+                    if (showProgress)
+                        genUpdateNodeProgress(this.nodeId, i / nItems);
                 }
+
+
+                if (this.startTimer > -1)
+                {
+                    clearTimeout(this.startTimer);
+                    this.startTimer = -1;
+                }
+
+
+                consoleAssert(parse.repeats.at(-1) == repeat, 'invalid nested repeat \'' + this.nodeId + '\'');
+                parse.repeats.pop();
             }
+
+            
+            this.updateValues =
+            [
+                ['value',  this.value     ],
+                ['points', points         ],
+                ['loop',   NumberValue.NaN]
+            ];
+        }
+        else
+        {
+            if (this.input)
+                await this.input.eval(parse);
+
+            this.updateValues = [['', NullValue]];
         }
 
-        
-        this.updateValues =
-        [
-            //['value',  this.value],
-            ['points', points    ]
-        ];
 
-
-        await this.evalObjects(parse, {points: points});
+        //await this.evalObjects(parse, {points: points});
 
 
         this.validate();
@@ -130,22 +227,29 @@ extends GOperator
 
 
 
-    pushValueUpdates(parse)
-    {
-        super.pushValueUpdates(parse);
-
-        if (this.input) this.input.pushValueUpdates(parse);
-        if (this.points    ) this.points    .pushValueUpdates(parse);
-        if (this.y    ) this.y    .pushValueUpdates(parse);
-    }
-
-
-
     isValid()
     {
         return super.isValid()
             && this.points.isValid()
-            && this.y.isValid();
+            && this.loop  .isValid();
+    }
+
+
+
+    toValue()
+    {
+        return this.value.copy();
+    }
+
+
+
+    pushValueUpdates(parse)
+    {
+        super.pushValueUpdates(parse);
+
+        if (this.input ) this.input .pushValueUpdates(parse);
+        if (this.points) this.points.pushValueUpdates(parse);
+        if (this.loop  ) this.loop  .pushValueUpdates(parse);
     }
 
 
@@ -155,14 +259,7 @@ extends GOperator
         super.invalidateInputs(from);
 
         if (this.input ) this.input .invalidateInputs(from);
-        if (this.points     ) this.points     .invalidateInputs(from);
-        if (this.y     ) this.y     .invalidateInputs(from);
-    }
-
-
-
-    toValue()
-    {
-        return this.value.copy();
+        if (this.points) this.points.invalidateInputs(from);
+        if (this.loop  ) this.loop  .invalidateInputs(from);
     }
 }

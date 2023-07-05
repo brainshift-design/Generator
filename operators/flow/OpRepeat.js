@@ -17,7 +17,7 @@ extends OperatorBase
         this.addOutput(new Output([LIST_VALUE], this.output_genRequest));
 
 
-        this.addParam(this.paramCount = new NumberParam('count', 'count', true, true, true, 1, 0, 1000, 0));
+        this.addParam(this.paramCount = new NumberParam('count', 'count', true,  true, true, 1, 0, 1000, 0));
         this.addParam(this.paramLoop  = new NumberParam('loop',  '',      false, true, false));
 
 
@@ -93,8 +93,7 @@ extends OperatorBase
     updateParams()
     {
         this.paramCount.enableControlText(true);
-
-        this.paramLoop.enableControlText(false);
+        this.paramLoop .enableControlText(false);
 
         const arrowStyle = darkMode ? 'white' : 'black';
 

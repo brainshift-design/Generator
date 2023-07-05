@@ -3,8 +3,8 @@ extends GOperator
 {
     input = null;
 
-    count;
-    loop;
+    count = null;
+    loop  = null;
 
     iterationObjects = [];
 
@@ -158,7 +158,7 @@ extends GOperator
                 }
 
 
-                consoleAssert(parse.repeats.at(-1) == repeat, 'invalid nested repeat');
+                consoleAssert(parse.repeats.at(-1) == repeat, 'invalid nested repeat \'' + this.nodeId + '\'');
                 parse.repeats.pop();
             }
 
@@ -186,19 +186,19 @@ extends GOperator
 
 
 
+    toValue()
+    {
+        return this.value.copy();
+    }
+
+
+
     pushValueUpdates(parse)
     {
         super.pushValueUpdates(parse);
 
         if (this.input) this.input.pushValueUpdates(parse);
         if (this.count) this.count.pushValueUpdates(parse);
-    }
-
-
-
-    toValue()
-    {
-        return this.value.copy();
     }
 
 

@@ -1027,6 +1027,7 @@ function genParsePlace(parse)
         place.input = genParse(parse);
 
     place.points = genParse(parse);
+    place.loop   = genParse(parse);
 
 
     parse.inParam = false;

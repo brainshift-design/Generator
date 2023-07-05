@@ -2,12 +2,13 @@ class   OpPlace
 extends OperatorBase
 {
     paramPoints;
+    paramLoop;
 
 
 
     constructor()
     {
-        super(PLACE, 'place', 'place', iconPlace);
+        super(PLACE, 'place', 'place', iconPlace, defNodeWidth, true);
 
         this.canDisable  = true;
         this.iconOffsetY = -2;
@@ -17,7 +18,8 @@ extends OperatorBase
         this.addOutput(new Output([SHAPE_LIST_VALUE], this.output_genRequest));
 
 
-        this.addParam(this.paramPoints = new ListParam('points', 'points', false, true, true));
+        this.addParam(this.paramPoints = new   ListParam('points', 'points', false, true, true ));
+        this.addParam(this.paramLoop   = new NumberParam('loop',   '',       false, true, false));
 
 
         this.paramPoints.itemName  = 'point';
@@ -25,11 +27,18 @@ extends OperatorBase
         this.paramPoints.listTypes = [POINT_VALUE, SHAPE_LIST_VALUE, LIST_VALUE];
         this.paramPoints.input.types.push(...this.paramPoints.listTypes);
 
-        // this.inputs[0].addEventListener('connect',    e => this.outputs[0].types = [...this.inputs[0].connectedOutput.types]);
-        // this.inputs[0].addEventListener('disconnect', e => this.outputs[0].types = [SHAPE_VALUE]);
+        this.paramLoop.input.types.push(NUMBER_LIST_VALUE);
+        this.paramLoop.input.types.push(START);
     }
     
     
+
+    isMultiplier()
+    {
+        return true;
+    }
+
+
 
     output_genRequest(gen)
     {
@@ -52,6 +61,7 @@ extends OperatorBase
             request.push(...pushInputOrParam(input, gen));
 
         request.push(...this.node.paramPoints.genRequest(gen));
+        request.push(...this.node.paramLoop  .genRequest(gen));
 
         
         gen.scope.pop();
@@ -59,5 +69,38 @@ extends OperatorBase
 
 
         return request;
+    }
+
+
+
+    updateValues(requestId, actionId, updateParamId, paramIds, values)
+    {
+        const value  = values[paramIds.findIndex(id => id == 'value' )];
+        const points = values[paramIds.findIndex(id => id == 'points')];
+        const loop   = values[paramIds.findIndex(id => id == 'loop'  )];
+
+        if (points) this.paramPoints.setValue(points, false, true, false);
+        if (loop  ) this.paramLoop  .setValue(loop,   false, true, false);
+
+        this.outputs[0].types = 
+            value
+            ? [finalListTypeFromItems(value.items)]
+            : [LIST_VALUE];
+
+        this.endNodeProgress();
+    }
+
+
+
+    updateParams()
+    {
+        this.paramPoints.enableControlText(false);
+        this.paramLoop  .enableControlText(false);
+
+        const arrowStyle = darkMode ? 'white' : 'black';
+
+        this.paramLoop.controls[0].valueText = '<svg width="14" height="12" viewBox="0 -1 14 12" fill="none" xmlns="http://www.w3.org/2000/svg"><path fill-rule="evenodd" clip-rule="evenodd" d="M13 0H14L14 2C14 4.76142 11.7614 7 8.99999 7H1V6H8.99999C11.2091 6 13 4.20914 13 2L13 0Z" fill="' + arrowStyle + '"/><rect width="4.97369" height="1" transform="matrix(0.707107 -0.707107 -0.707107 -0.707107 0.712646 7.224)" fill="' + arrowStyle + '"/><rect width="5" height="1" transform="matrix(0.707107 0.707107 0.707107 -0.707107 0 6.54858)" fill="' + arrowStyle + '"/></svg>';
+
+        this.updateParamControls();
     }
 }
