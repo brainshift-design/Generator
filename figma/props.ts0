@@ -247,13 +247,23 @@ function setObjectStrokes(figObj, genObj, phantom = true)
     if (    genObj[FO_STROKES] != null
         && !isEmpty(genObj[FO_STROKES]))
     {
+        let _dashes = <string><unknown>genObj[FO_STROKE_DASHES];
+    
+        _dashes = trimCharFromStart(_dashes, ',');
+        _dashes = trimCharFromEnd  (_dashes, ',');
+        _dashes = _dashes.trim();
+    
         setObjectStroke_(
             figObj,
             getObjectFills(genObj[FO_STROKES]),
             genObj[FO_STROKE_WEIGHT],
             genObj[FO_STROKE_ALIGN ],
             genObj[FO_STROKE_JOIN  ],
-            genObj[FO_STROKE_MITER ]);
+            genObj[FO_STROKE_MITER ],
+            genObj[FO_STROKE_CAP   ],
+            _dashes == '' 
+            ? [] 
+            : _dashes.split(',').map(s => Math.max(0, parseInt(s))));
 
         if (figEmptyObjects.includes(figObj))
             removeFromArray(figEmptyObjects, figObj);
@@ -271,7 +281,7 @@ function setObjectStrokes(figObj, genObj, phantom = true)
 
 
 
-function setObjectStroke_(figObj, fills, weight, align, join, miterLimit, dashes = [])
+function setObjectStroke_(figObj, fills, weight, align, join, miterLimit, cap, dashes = [])
 {
     figObj.strokes          = fills
     
@@ -284,6 +294,8 @@ function setObjectStroke_(figObj, fills, weight, align, join, miterLimit, dashes
     const _miterLimit       = 1 / Math.sin(miterAngle/2);
     
     figObj.strokeMiterLimit = Math.min(Math.max(0, _miterLimit), 16);
+
+    figObj.strokeCap        = cap;
 
     figObj.dashPattern      = dashes;
 }
@@ -347,6 +359,7 @@ function setEmptyObjectStroke(obj)
         'CENTER',
         'MITER',
         1,
+        'NONE',
         [ 1 / curZoom, 
-          2 / curZoom]);
+          2 / curZoom ]);
 }

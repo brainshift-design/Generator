@@ -6,6 +6,8 @@ extends GOperator1
     fit    = null;
     join   = null;
     miter  = null;
+    cap    = null;
+    dashes = null;
 
 
 
@@ -27,6 +29,8 @@ extends GOperator1
         if (this.fit   ) copy.fit    = this.fit   .copy();
         if (this.join  ) copy.join   = this.join  .copy();
         if (this.miter ) copy.miter  = this.miter .copy();
+        if (this.cap   ) copy.cap    = this.cap   .copy();
+        if (this.dashes) copy.dashes = this.dashes.copy();
 
         return copy;
     }
@@ -47,6 +51,8 @@ extends GOperator1
         const fit    = this.fit    ? (await this.fit   .eval(parse)).toValue() : null;
         const join   = this.join   ? (await this.join  .eval(parse)).toValue() : null;
         const miter  = this.miter  ? (await this.miter .eval(parse)).toValue() : null;
+        const cap    = this.cap    ? (await this.cap   .eval(parse)).toValue() : null;
+        const dashes = this.dashes ? (await this.dashes.eval(parse)).toValue() : null;
 
 
         if (this.input)
@@ -58,7 +64,9 @@ extends GOperator1
                 weight ?? input.weight,
                 fit    ?? input.fit,
                 join   ?? input.join,
-                miter  ?? input.miter);
+                miter  ?? input.miter,
+                cap    ?? input.cap,
+                dashes ?? input.dashes);
         }
         else
         {
@@ -67,17 +75,22 @@ extends GOperator1
                 weight, 
                 fit, 
                 join,
-                miter);
+                miter,
+                cap,
+                dashes);
         }
 
 
         this.updateValues =
         [
-            ['fills',  this.value.fills ],
-            ['weight', this.value.weight],
-            ['fit',    this.value.fit   ],
-            ['join',   this.value.join  ],
-            ['miter',  this.value.miter ]
+            ['value', this.value]
+            // ['fills',  this.value.fills ],
+            // ['weight', this.value.weight],
+            // ['fit',    this.value.fit   ],
+            // ['join',   this.value.join  ],
+            // ['miter',  this.value.miter ],
+            // ['cap',    this.value.cap   ],
+            // ['dashes', this.value.dashes]
         ];
         
 
@@ -118,7 +131,9 @@ extends GOperator1
             this.weight ? this.weight.toValue() : this.input.weight.toValue(),
             this.fit    ? this.fit   .toValue() : this.input.fit   .toValue(),
             this.join   ? this.join  .toValue() : this.input.join  .toValue(),
-            this.miter  ? this.miter .toValue() : this.input.miter .toValue());
+            this.miter  ? this.miter .toValue() : this.input.miter .toValue(),
+            this.cap    ? this.cap   .toValue() : this.input.cap   .toValue(),
+            this.dashes ? this.dashes.toValue() : this.input.dashes.toValue());
     }                 
 
 
@@ -129,7 +144,9 @@ extends GOperator1
             && this.weight.isValid()
             && this.fit   .isValid()
             && this.join  .isValid()
-            && this.miter .isValid();
+            && this.miter .isValid()
+            && this.cap   .isValid()
+            && this.dashes.isValid();
     }
 
 
@@ -143,6 +160,8 @@ extends GOperator1
         if (this.fit   ) this.fit   .pushValueUpdates(parse);
         if (this.join  ) this.join  .pushValueUpdates(parse);
         if (this.miter ) this.miter .pushValueUpdates(parse);
+        if (this.cap   ) this.cap   .pushValueUpdates(parse);
+        if (this.dashes) this.dashes.pushValueUpdates(parse);
     }    
     
     
@@ -156,5 +175,7 @@ extends GOperator1
         if (this.fit   ) this.fit   .invalidateInputs(from);
         if (this.join  ) this.join  .invalidateInputs(from);
         if (this.miter ) this.miter .invalidateInputs(from);
+        if (this.cap   ) this.cap   .invalidateInputs(from);
+        if (this.dashes) this.dashes.invalidateInputs(from);
     }
 }

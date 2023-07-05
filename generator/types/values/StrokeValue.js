@@ -6,6 +6,8 @@ extends GValue
     fit;
     join;
     miter;
+    cap;
+    dashes;
 
 
 
@@ -13,7 +15,9 @@ extends GValue
                 weight = new NumberValue(1),
                 fit    = new NumberValue(0),
                 join   = new NumberValue(0),
-                miter  = new NumberValue(28.96, 2))
+                miter  = new NumberValue(28.96, 2),
+                cap    = new NumberValue(0),
+                dashes = new TextValue())
     {
         if (fills.type != LIST_VALUE)
             consoleError('fill.type is ' + fills.type + ', must be LIST_VALUE');
@@ -26,6 +30,8 @@ extends GValue
         this.fit    = fit   .copy();
         this.join   = join  .copy();
         this.miter  = miter .copy();
+        this.cap    = cap   .copy();
+        this.dashes = dashes.copy();
 
         this.valid  = true;
     }
@@ -39,7 +45,9 @@ extends GValue
             this.weight.copy(),
             this.fit   .copy(),
             this.join  .copy(),
-            this.miter .copy());
+            this.miter .copy(),
+            this.cap   .copy(),
+            this.dashes.copy());
 
         copy.copyBase(this);
 
@@ -54,7 +62,9 @@ extends GValue
             && this.weight.isValid()
             && this.fit   .isValid()
             && this.join  .isValid()
-            && this.miter .isValid();
+            && this.miter .isValid()
+            && this.cap   .isValid()
+            && this.dashes.isValid();
     }
 
 
@@ -66,7 +76,9 @@ extends GValue
             && this.weight.equals(stroke.weight)
             && this.fit   .equals(stroke.fit   )
             && this.join  .equals(stroke.join  )
-            && this.miter .equals(stroke.miter );
+            && this.miter .equals(stroke.miter )
+            && this.cap   .equals(stroke.cap   )
+            && this.dashes.equals(stroke.dashes);
     }
 
 
@@ -91,7 +103,9 @@ extends GValue
             + ' ' + this.weight.toString()
             + ' ' + this.fit   .toString()
             + ' ' + this.join  .toString()
-            + ' ' + this.miter .toString();
+            + ' ' + this.miter .toString()
+            + ' ' + this.cap   .toString()
+            + ' ' + this.dashes.toString();
     }
 
 
@@ -102,7 +116,9 @@ extends GValue
             + ' ' + this.weight.toDisplayString()
             + ' ' + this.fit   .toDisplayString()
             + ' ' + this.join  .toDisplayString()
-            + ' ' + this.miter .toDisplayString();
+            + ' ' + this.miter .toDisplayString()
+            + ' ' + this.cap   .toDisplayString()
+            + ' ' + this.dashes.toDisplayString();
     }
 
 
@@ -119,7 +135,9 @@ extends GValue
         NumberValue.NaN,
         NumberValue.NaN,
         NumberValue.NaN,
-        NumberValue.NaN));
+        NumberValue.NaN,
+        NumberValue.NaN,
+        new TextValue()));
 
 
 
@@ -128,7 +146,9 @@ extends GValue
         new NumberValue(1),
         new NumberValue(0),
         new NumberValue(0),
-        new NumberValue(28.96)));
+        new NumberValue(28.96),
+        new NumberValue(0),
+        new TextValue()));
 }
 
 
@@ -154,22 +174,19 @@ function parseStrokeValue(str, i = -1)
     const fit    = parseNumberValue(str[i]); i += fit   [1];
     const join   = parseNumberValue(str[i]); i += join  [1];
     const miter  = parseNumberValue(str[i]); i += miter [1];
-
+    const cap    = parseNumberValue(str[i]); i += cap   [1];
+    const dashes = parseTextValue  (str[i]); i += dashes[1];
 
     return [
-        new StrokeValue(fills[0], weight[0], fit[0], join[0], miter[0]),
+
+        new StrokeValue(
+            fills [0], 
+            weight[0], 
+            fit   [0], 
+            join  [0], 
+            miter [0], 
+            cap   [0], 
+            dashes[0]),
+        
         i - iStart ];
 }
-
-
-
-// async function evalStrokeValue(value, parse)
-// {
-//     const stroke = (await value.eval(parse)).copy();
-
-//          if (STROKE_TYPES.includes(stroke.type)) return stroke;
-//     else if (  FILL_TYPES.includes(stroke.type)) return new StrokeValue(stroke, value.data.weight);
-//     else if ( COLOR_TYPES.includes(stroke.type)) return new StrokeValue(new FillValue(stroke), value.data.weight);
-
-//     else consoleError('stroke must have type');
-// }

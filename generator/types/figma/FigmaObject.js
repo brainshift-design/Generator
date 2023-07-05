@@ -568,6 +568,15 @@ function addStrokeProp(obj, prop)
         case 2: obj.strokeJoin = 'ROUND'; break;
     }
 
+    switch (prop.cap.toValue().value)
+    {
+        case 0: obj.strokeCap = 'NONE';   break;
+        case 1: obj.strokeCap = 'SQUARE'; break;
+        case 2: obj.strokeCap = 'ROUND';  break;
+    }
+
+    obj.strokeDashes     = prop.dashes.toValue().value;
+    
     obj.strokeMiterLimit = prop.miter.toValue().value;
 }
 

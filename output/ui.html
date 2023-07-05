@@ -4397,13 +4397,7 @@ a
             <div id='whatsNewBody'>
                 <h1 style='margin-top: 20px;'>What's new</h1>
 
-                <p>•  added vector move type</p>
-                <p>•  added Enable asserts to debug menu</p>
-                <p>•  fixed some shapes not showing up</p>
-                <p>•  can now type "random" or "rnd" into hex color parameters</p>
-                <p>•  added Probability... node</p>
-                <p>•  improved geometry performance</p>
-                <p>•  added keep parameter to Render, objects stay on canvas but are updated with Generator is reopened</p>
+                <p>•  added stroke caps and dashes</p>
                 
                 <p><br/><br/><div id='chkHideWhatsNew'></div></p>
             </div>
@@ -4731,7 +4725,7 @@ a
 
 
 
-const generatorVersion = 141;
+const generatorVersion = 142;
 
 
 const MAX_INT32        = 2147483647;
@@ -5570,6 +5564,28 @@ function consoleError(...args)
     //     || settings.enableAsserts)
     if (enableAsserts)
         console.error(...args);
+}
+
+
+
+function trimCharFromStart(str, trim) 
+{
+    while (str.length >= trim.length
+        && str.substring(0, trim.length) == trim) 
+        str = str.substring(trim.length);
+
+    return str;
+}
+
+
+
+function trimCharFromEnd(str, trim) 
+{
+    while (str.length >= trim.length
+        && str.substring(str.length - trim.length) == trim) 
+        str = str.substring(0, str.length - trim.length);
+
+    return str;
 }
 
 
@@ -7590,28 +7606,6 @@ function getNumLength(name)
     }
 
     return numLength;
-}
-
-
-
-function trimCharFromStart(str, trim) 
-{
-    while (str.length >= trim.length
-        && str.substring(0, trim.length) == trim) 
-        str = str.substring(trim.length);
-
-    return str;
-}
-
-
-
-function trimCharFromEnd(str, trim) 
-{
-    while (str.length >= trim.length
-        && str.substring(str.length - trim.length) == trim) 
-        str = str.substring(0, str.length - trim.length);
-
-    return str;
 }
 
 
@@ -9823,31 +9817,33 @@ const FO_STROKE_WEIGHT  = 12;
 const FO_STROKE_ALIGN   = 13;
 const FO_STROKE_JOIN    = 14;
 const FO_STROKE_MITER   = 15;
+const FO_STROKE_CAP     = 16;
+const FO_STROKE_DASHES  = 17;
 
-const FO_EFFECTS        = 16;
+const FO_EFFECTS        = 18;
 
-const FO_DECO           = 17;
+const FO_DECO           = 19;
 
-const FO_MASK           = 18;
+const FO_MASK           = 20;
 
-const FO_X              = 19;                                    const FO_VECTOR_PATH_DATA    = 19;                                                                const FO_GROUP_CHILDREN = 19;
-const FO_Y              = 20;                                    const FO_VECTOR_PATH_WINDING = 20;
-const FO_WIDTH          = 21;   const FO_POINT_IS_CENTER = 21;   const FO_VECTOR_PATH_ROUND   = 21;
-const FO_HEIGHT         = 22;
+const FO_X              = 21;                                    const FO_VECTOR_PATH_DATA    = 21;                                                                const FO_GROUP_CHILDREN = 21;
+const FO_Y              = 22;                                    const FO_VECTOR_PATH_WINDING = 22;
+const FO_WIDTH          = 23;   const FO_POINT_IS_CENTER = 23;   const FO_VECTOR_PATH_ROUND   = 23;
+const FO_HEIGHT         = 24;
 
-const FO_RECT_ROUND     = 23;   const FO_ELLIPSE_FROM    = 23;   const FO_POLY_ROUND          = 23;   const FO_STAR_ROUND  = 23;   const FO_FIG_WIDTH      = 23;   const FO_FRAME_ROUND    = 23;
-                                const FO_ELLIPSE_TO      = 24;   const FO_POLY_CORNERS        = 24;   const FO_STAR_POINTS = 24;   const FO_FIG_HEIGHT     = 24;   const FO_FRAME_CHILDREN = 24;
-                                const FO_ELLIPSE_INNER   = 25;                                        const FO_STAR_CONVEX = 25;   const FO_TEXT           = 25; 
+const FO_RECT_ROUND     = 25;   const FO_ELLIPSE_FROM    = 25;   const FO_POLY_ROUND          = 25;   const FO_STAR_ROUND  = 25;   const FO_FIG_WIDTH      = 25;   const FO_FRAME_ROUND    = 25;
+                                const FO_ELLIPSE_TO      = 26;   const FO_POLY_CORNERS        = 26;   const FO_STAR_POINTS = 26;   const FO_FIG_HEIGHT     = 26;   const FO_FRAME_CHILDREN = 26;
+                                const FO_ELLIPSE_INNER   = 27;                                        const FO_STAR_CONVEX = 27;   const FO_TEXT           = 27; 
                                                              
-                                                                                                                                   const FO_FONT           = 26;
-                                                                                                                                   const FO_FONT_SIZE      = 27;
-                                                                                                                                   const FO_FONT_STYLE     = 28;
+                                                                                                                                   const FO_FONT           = 28;
+                                                                                                                                   const FO_FONT_SIZE      = 29;
+                                                                                                                                   const FO_FONT_STYLE     = 30;
                                                                                                                                                                 
-                                                                                                                                   const FO_ALIGN_H        = 29;
-                                                                                                                                   const FO_ALIGN_V        = 30;
+                                                                                                                                   const FO_ALIGN_H        = 31;
+                                                                                                                                   const FO_ALIGN_V        = 32;
                                                                                                                                                                 
-                                                                                                                                   const FO_LINE_HEIGHT    = 31;
-                                                                                                                                   const FO_LETTER_SPACING = 32;                                
+                                                                                                                                   const FO_LINE_HEIGHT    = 33;
+                                                                                                                                   const FO_LETTER_SPACING = 34;                                
 
 
 class FigmaObject
@@ -10420,6 +10416,15 @@ function addStrokeProp(obj, prop)
         case 2: obj.strokeJoin = 'ROUND'; break;
     }
 
+    switch (prop.cap.toValue().value)
+    {
+        case 0: obj.strokeCap = 'NONE';   break;
+        case 1: obj.strokeCap = 'SQUARE'; break;
+        case 2: obj.strokeCap = 'ROUND';  break;
+    }
+
+    obj.strokeDashes     = prop.dashes.toValue().value;
+    
     obj.strokeMiterLimit = prop.miter.toValue().value;
 }
 
@@ -10506,6 +10511,8 @@ extends FigmaObject
     strokeAlign;
     strokeJoin;
     strokeMiterLimit;
+    strokeCap;
+    strokeDashes;
 
     effects = [];
 
@@ -10541,6 +10548,8 @@ extends FigmaObject
         this.strokeAlign      = base.strokeAlign;
         this.strokeJoin       = base.strokeJoin;
         this.strokeMiterLimit = base.strokeMiterLimit;
+        this.strokeCap        = base.strokeCap;
+        this.strokeDashes     = base.strokeDashes;
 
         this.effects          = clone(base.effects);
 
@@ -10563,6 +10572,8 @@ extends FigmaObject
             strokeAlign:      this.strokeAlign,
             strokeJoin:       this.strokeJoin,
             strokeMiterLimit: this.strokeMiterLimit,
+            strokeCap:        this.strokeCap,
+            strokeDashes:     this.strokeDashes,
 
             effects:          this.effects,
 
@@ -10586,12 +10597,14 @@ extends FigmaObject
             /* 13 */ this.strokeAlign,
             /* 14 */ this.strokeJoin,
             /* 15 */ this.strokeMiterLimit,
+            /* 16 */ this.strokeCap,
+            /* 17 */ this.strokeDashes,
 
-            /* 16 */ this.effects,
+            /* 18 */ this.effects,
 
-            /* 17 */ this.isDeco,
+            /* 19 */ this.isDeco,
 
-            /* 18 */ this.isMask
+            /* 20 */ this.isMask
         ];
     }
 }
@@ -10667,12 +10680,12 @@ extends FigmaShape
         return [
             ...super.toData(),
    
-            /* 19 */ this.x,
-            /* 20 */ this.y,
-            /* 21 */ this.width,
-            /* 22 */ this.height,
+            /* 21 */ this.x,
+            /* 22 */ this.y,
+            /* 23 */ this.width,
+            /* 24 */ this.height,
 
-            /* 23 */ this.round
+            /* 25 */ this.round
         ];
     }
 }
@@ -10737,9 +10750,9 @@ extends FigmaShape
         return [
             ...super.toData(),
    
-            /* 19 */ this.x,
-            /* 20 */ this.y,
-            /* 21 */ this.width
+            /* 21 */ this.x,
+            /* 22 */ this.y,
+            /* 23 */ this.width
         ];
     }
 }
@@ -10823,14 +10836,14 @@ extends FigmaShape
         return [
             ...super.toData(),
    
-            /* 19 */ this.x,
-            /* 20 */ this.y,
-            /* 21 */ this.width,
-            /* 22 */ this.height,
+            /* 21 */ this.x,
+            /* 22 */ this.y,
+            /* 23 */ this.width,
+            /* 24 */ this.height,
 
-            /* 23 */ this.from,
-            /* 24 */ this.to,
-            /* 25 */ this.inner
+            /* 25 */ this.from,
+            /* 26 */ this.to,
+            /* 27 */ this.inner
         ];
     }
 }
@@ -10909,13 +10922,13 @@ extends FigmaShape
         return [
             ...super.toData(),
    
-            /* 19 */ this.x,
-            /* 20 */ this.y,
-            /* 21 */ this.width,
-            /* 22 */ this.height,
+            /* 21 */ this.x,
+            /* 22 */ this.y,
+            /* 23 */ this.width,
+            /* 24 */ this.height,
 
-            /* 23 */ this.round,
-            /* 24 */ this.corners
+            /* 25 */ this.round,
+            /* 26 */ this.corners
         ];
     }
 }
@@ -10997,14 +11010,14 @@ extends FigmaShape
         return [
             ...super.toData(),
    
-            /* 19 */ this.x,
-            /* 20 */ this.y,
-            /* 21 */ this.width,
-            /* 22 */ this.height,
+            /* 21 */ this.x,
+            /* 22 */ this.y,
+            /* 23 */ this.width,
+            /* 24 */ this.height,
 
-            /* 23 */ this.round,
-            /* 24 */ this.points,
-            /* 25 */ this.convex
+            /* 25 */ this.round,
+            /* 26 */ this.points,
+            /* 27 */ this.convex
         ];
     }
 }
@@ -11134,25 +11147,25 @@ extends FigmaShape
         return [
             ...super.toData(),
    
-            /* 19 */ this.x,
-            /* 20 */ this.y,
-            /* 21 */ this.width,
-            /* 22 */ this.height,
+            /* 21 */ this.x,
+            /* 22 */ this.y,
+            /* 23 */ this.width,
+            /* 24 */ this.height,
             
-            /* 23 */ this.figWidth,
-            /* 24 */ this.figHeight,
+            /* 25 */ this.figWidth,
+            /* 26 */ this.figHeight,
             
-            /* 25 */ this.text,
+            /* 27 */ this.text,
 
-            /* 26 */ this.font,
-            /* 27 */ this.size,
-            /* 28 */ this.style,
+            /* 28 */ this.font,
+            /* 29 */ this.size,
+            /* 30 */ this.style,
             
-            /* 29 */ this.alignH,
-            /* 30 */ this.alignV,
+            /* 31 */ this.alignH,
+            /* 32 */ this.alignV,
             
-            /* 31 */ this.lineHeight,
-            /* 32 */ this.letterSpacing
+            /* 33 */ this.lineHeight,
+            /* 34 */ this.letterSpacing
         ];
     }
 }
@@ -11217,9 +11230,9 @@ extends FigmaShape
         return [
             ...super.toData(),
    
-            /* 19 */ this.x,
-            /* 20 */ this.y,
-            /* 21 */ this.isCenter
+            /* 21 */ this.x,
+            /* 22 */ this.y,
+            /* 23 */ this.isCenter
         ];
     }
 }
@@ -11341,9 +11354,9 @@ extends FigmaShape
         return [
             ...super.toData(),
    
-            /* 19 */ this.pathData,
-            /* 20 */ this.winding,
-            /* 21 */ this.round
+            /* 21 */ this.pathData,
+            /* 22 */ this.winding,
+            /* 23 */ this.round
         ];
     }
 }
@@ -11711,7 +11724,7 @@ extends FigmaShape
             this.nodeId,
             this.objectId,
             this.objectName,
-            
+
             this.children);
 
         copy.copyBase(this);
@@ -11737,7 +11750,7 @@ extends FigmaShape
         return [
             ...super.toData(),
    
-            /* 19 */ this.children.map(o => o.toData())
+            /* 21 */ this.children.map(o => o.toData())
         ];
     }
 }
@@ -11821,14 +11834,14 @@ extends FigmaShape
         return [
             ...super.toData(),
    
-            /* 19 */ this.x,
-            /* 20 */ this.y,
-            /* 21 */ this.width,
-            /* 22 */ this.height,
+            /* 21 */ this.x,
+            /* 22 */ this.y,
+            /* 23 */ this.width,
+            /* 24 */ this.height,
 
-            /* 23 */ this.round,
+            /* 25 */ this.round,
 
-            /* 24 */ this.children.map(o => o.toData())
+            /* 26 */ this.children.map(o => o.toData())
         ];
     }
 }
@@ -13728,6 +13741,8 @@ extends GValue
     fit;
     join;
     miter;
+    cap;
+    dashes;
 
 
 
@@ -13735,7 +13750,9 @@ extends GValue
                 weight = new NumberValue(1),
                 fit    = new NumberValue(0),
                 join   = new NumberValue(0),
-                miter  = new NumberValue(28.96, 2))
+                miter  = new NumberValue(28.96, 2),
+                cap    = new NumberValue(0),
+                dashes = new TextValue())
     {
         if (fills.type != LIST_VALUE)
             consoleError('fill.type is ' + fills.type + ', must be LIST_VALUE');
@@ -13748,6 +13765,8 @@ extends GValue
         this.fit    = fit   .copy();
         this.join   = join  .copy();
         this.miter  = miter .copy();
+        this.cap    = cap   .copy();
+        this.dashes = dashes.copy();
 
         this.valid  = true;
     }
@@ -13761,7 +13780,9 @@ extends GValue
             this.weight.copy(),
             this.fit   .copy(),
             this.join  .copy(),
-            this.miter .copy());
+            this.miter .copy(),
+            this.cap   .copy(),
+            this.dashes.copy());
 
         copy.copyBase(this);
 
@@ -13776,7 +13797,9 @@ extends GValue
             && this.weight.isValid()
             && this.fit   .isValid()
             && this.join  .isValid()
-            && this.miter .isValid();
+            && this.miter .isValid()
+            && this.cap   .isValid()
+            && this.dashes.isValid();
     }
 
 
@@ -13788,7 +13811,9 @@ extends GValue
             && this.weight.equals(stroke.weight)
             && this.fit   .equals(stroke.fit   )
             && this.join  .equals(stroke.join  )
-            && this.miter .equals(stroke.miter );
+            && this.miter .equals(stroke.miter )
+            && this.cap   .equals(stroke.cap   )
+            && this.dashes.equals(stroke.dashes);
     }
 
 
@@ -13813,7 +13838,9 @@ extends GValue
             + ' ' + this.weight.toString()
             + ' ' + this.fit   .toString()
             + ' ' + this.join  .toString()
-            + ' ' + this.miter .toString();
+            + ' ' + this.miter .toString()
+            + ' ' + this.cap   .toString()
+            + ' ' + this.dashes.toString();
     }
 
 
@@ -13824,7 +13851,9 @@ extends GValue
             + ' ' + this.weight.toDisplayString()
             + ' ' + this.fit   .toDisplayString()
             + ' ' + this.join  .toDisplayString()
-            + ' ' + this.miter .toDisplayString();
+            + ' ' + this.miter .toDisplayString()
+            + ' ' + this.cap   .toDisplayString()
+            + ' ' + this.dashes.toDisplayString();
     }
 
 
@@ -13841,7 +13870,9 @@ extends GValue
         NumberValue.NaN,
         NumberValue.NaN,
         NumberValue.NaN,
-        NumberValue.NaN));
+        NumberValue.NaN,
+        NumberValue.NaN,
+        new TextValue()));
 
 
 
@@ -13850,7 +13881,9 @@ extends GValue
         new NumberValue(1),
         new NumberValue(0),
         new NumberValue(0),
-        new NumberValue(28.96)));
+        new NumberValue(28.96),
+        new NumberValue(0),
+        new TextValue()));
 }
 
 
@@ -13876,25 +13909,23 @@ function parseStrokeValue(str, i = -1)
     const fit    = parseNumberValue(str[i]); i += fit   [1];
     const join   = parseNumberValue(str[i]); i += join  [1];
     const miter  = parseNumberValue(str[i]); i += miter [1];
-
+    const cap    = parseNumberValue(str[i]); i += cap   [1];
+    const dashes = parseTextValue  (str[i]); i += dashes[1];
 
     return [
-        new StrokeValue(fills[0], weight[0], fit[0], join[0], miter[0]),
+
+        new StrokeValue(
+            fills [0], 
+            weight[0], 
+            fit   [0], 
+            join  [0], 
+            miter [0], 
+            cap   [0], 
+            dashes[0]),
+        
         i - iStart ];
 }
 
-
-
-// async function evalStrokeValue(value, parse)
-// {
-//     const stroke = (await value.eval(parse)).copy();
-
-//          if (STROKE_TYPES.includes(stroke.type)) return stroke;
-//     else if (  FILL_TYPES.includes(stroke.type)) return new StrokeValue(stroke, value.data.weight);
-//     else if ( COLOR_TYPES.includes(stroke.type)) return new StrokeValue(new FillValue(stroke), value.data.weight);
-
-//     else consoleError('stroke must have type');
-// }
 
 
 class DropShadowValue
@@ -21815,8 +21846,8 @@ extends GTextType1
                 
             if (this.options.enabled)
             {
-                if (start.value.length > 0) this.value.value = trimCharFromStart(this.value.value, unescaleString(start.value));
-                if (end  .value.length > 0) this.value.value = trimCharFromEnd  (this.value.value, unescaleString(end  .value));
+                if (start.value.length > 0) this.value.value = trimCharFromStart(this.value.value, unescapeString(start.value));
+                if (end  .value.length > 0) this.value.value = trimCharFromEnd  (this.value.value, unescapeString(end  .value));
             }
         }
         else
@@ -25726,6 +25757,8 @@ extends GOperator1
     fit    = null;
     join   = null;
     miter  = null;
+    cap    = null;
+    dashes = null;
 
 
 
@@ -25747,6 +25780,8 @@ extends GOperator1
         if (this.fit   ) copy.fit    = this.fit   .copy();
         if (this.join  ) copy.join   = this.join  .copy();
         if (this.miter ) copy.miter  = this.miter .copy();
+        if (this.cap   ) copy.cap    = this.cap   .copy();
+        if (this.dashes) copy.dashes = this.dashes.copy();
 
         return copy;
     }
@@ -25767,6 +25802,8 @@ extends GOperator1
         const fit    = this.fit    ? (await this.fit   .eval(parse)).toValue() : null;
         const join   = this.join   ? (await this.join  .eval(parse)).toValue() : null;
         const miter  = this.miter  ? (await this.miter .eval(parse)).toValue() : null;
+        const cap    = this.cap    ? (await this.cap   .eval(parse)).toValue() : null;
+        const dashes = this.dashes ? (await this.dashes.eval(parse)).toValue() : null;
 
 
         if (this.input)
@@ -25778,7 +25815,9 @@ extends GOperator1
                 weight ?? input.weight,
                 fit    ?? input.fit,
                 join   ?? input.join,
-                miter  ?? input.miter);
+                miter  ?? input.miter,
+                cap    ?? input.cap,
+                dashes ?? input.dashes);
         }
         else
         {
@@ -25787,17 +25826,22 @@ extends GOperator1
                 weight, 
                 fit, 
                 join,
-                miter);
+                miter,
+                cap,
+                dashes);
         }
 
 
         this.updateValues =
         [
-            ['fills',  this.value.fills ],
-            ['weight', this.value.weight],
-            ['fit',    this.value.fit   ],
-            ['join',   this.value.join  ],
-            ['miter',  this.value.miter ]
+            ['value', this.value]
+            // ['fills',  this.value.fills ],
+            // ['weight', this.value.weight],
+            // ['fit',    this.value.fit   ],
+            // ['join',   this.value.join  ],
+            // ['miter',  this.value.miter ],
+            // ['cap',    this.value.cap   ],
+            // ['dashes', this.value.dashes]
         ];
         
 
@@ -25838,7 +25882,9 @@ extends GOperator1
             this.weight ? this.weight.toValue() : this.input.weight.toValue(),
             this.fit    ? this.fit   .toValue() : this.input.fit   .toValue(),
             this.join   ? this.join  .toValue() : this.input.join  .toValue(),
-            this.miter  ? this.miter .toValue() : this.input.miter .toValue());
+            this.miter  ? this.miter .toValue() : this.input.miter .toValue(),
+            this.cap    ? this.cap   .toValue() : this.input.cap   .toValue(),
+            this.dashes ? this.dashes.toValue() : this.input.dashes.toValue());
     }                 
 
 
@@ -25849,7 +25895,9 @@ extends GOperator1
             && this.weight.isValid()
             && this.fit   .isValid()
             && this.join  .isValid()
-            && this.miter .isValid();
+            && this.miter .isValid()
+            && this.cap   .isValid()
+            && this.dashes.isValid();
     }
 
 
@@ -25863,6 +25911,8 @@ extends GOperator1
         if (this.fit   ) this.fit   .pushValueUpdates(parse);
         if (this.join  ) this.join  .pushValueUpdates(parse);
         if (this.miter ) this.miter .pushValueUpdates(parse);
+        if (this.cap   ) this.cap   .pushValueUpdates(parse);
+        if (this.dashes) this.dashes.pushValueUpdates(parse);
     }    
     
     
@@ -25876,6 +25926,8 @@ extends GOperator1
         if (this.fit   ) this.fit   .invalidateInputs(from);
         if (this.join  ) this.join  .invalidateInputs(from);
         if (this.miter ) this.miter .invalidateInputs(from);
+        if (this.cap   ) this.cap   .invalidateInputs(from);
+        if (this.dashes) this.dashes.invalidateInputs(from);
     }
 }
 
@@ -32031,7 +32083,7 @@ function genParseStroke(parse)
         paramIds = parse.move().split(',');
     }
     else
-        paramIds = ['fill', 'weight', 'fit', 'join', 'miter'];
+        paramIds = ['fill', 'weight', 'fit', 'join', 'miter', 'cap', 'dashes'];
 
 
     parse.inParam = false;
@@ -32040,11 +32092,13 @@ function genParseStroke(parse)
     {
         switch (id)
         {
-        case 'fill':   stroke.fills   = genParse(parse); break;
+        case 'fill':   stroke.fills  = genParse(parse); break;
         case 'weight': stroke.weight = genParse(parse); break;
         case 'fit':    stroke.fit    = genParse(parse); break;
         case 'join':   stroke.join   = genParse(parse); break;
         case 'miter':  stroke.miter  = genParse(parse); break;
+        case 'cap':    stroke.cap    = genParse(parse); break;
+        case 'dashes': stroke.dashes = genParse(parse); break;
         }
     }
     
@@ -38670,7 +38724,7 @@ onerror = (event, source, line, pos, error) =>
 };
 
 
-const generatorVersion = 141;
+const generatorVersion = 142;
 
 
 const MAX_INT32        = 2147483647;
@@ -39509,6 +39563,28 @@ function consoleError(...args)
     //     || settings.enableAsserts)
     if (enableAsserts)
         console.error(...args);
+}
+
+
+
+function trimCharFromStart(str, trim) 
+{
+    while (str.length >= trim.length
+        && str.substring(0, trim.length) == trim) 
+        str = str.substring(trim.length);
+
+    return str;
+}
+
+
+
+function trimCharFromEnd(str, trim) 
+{
+    while (str.length >= trim.length
+        && str.substring(str.length - trim.length) == trim) 
+        str = str.substring(0, str.length - trim.length);
+
+    return str;
 }
 
 
@@ -41529,28 +41605,6 @@ function getNumLength(name)
     }
 
     return numLength;
-}
-
-
-
-function trimCharFromStart(str, trim) 
-{
-    while (str.length >= trim.length
-        && str.substring(0, trim.length) == trim) 
-        str = str.substring(trim.length);
-
-    return str;
-}
-
-
-
-function trimCharFromEnd(str, trim) 
-{
-    while (str.length >= trim.length
-        && str.substring(str.length - trim.length) == trim) 
-        str = str.substring(0, str.length - trim.length);
-
-    return str;
 }
 
 
@@ -45962,31 +46016,33 @@ const FO_STROKE_WEIGHT  = 12;
 const FO_STROKE_ALIGN   = 13;
 const FO_STROKE_JOIN    = 14;
 const FO_STROKE_MITER   = 15;
+const FO_STROKE_CAP     = 16;
+const FO_STROKE_DASHES  = 17;
 
-const FO_EFFECTS        = 16;
+const FO_EFFECTS        = 18;
 
-const FO_DECO           = 17;
+const FO_DECO           = 19;
 
-const FO_MASK           = 18;
+const FO_MASK           = 20;
 
-const FO_X              = 19;                                    const FO_VECTOR_PATH_DATA    = 19;                                                                const FO_GROUP_CHILDREN = 19;
-const FO_Y              = 20;                                    const FO_VECTOR_PATH_WINDING = 20;
-const FO_WIDTH          = 21;   const FO_POINT_IS_CENTER = 21;   const FO_VECTOR_PATH_ROUND   = 21;
-const FO_HEIGHT         = 22;
+const FO_X              = 21;                                    const FO_VECTOR_PATH_DATA    = 21;                                                                const FO_GROUP_CHILDREN = 21;
+const FO_Y              = 22;                                    const FO_VECTOR_PATH_WINDING = 22;
+const FO_WIDTH          = 23;   const FO_POINT_IS_CENTER = 23;   const FO_VECTOR_PATH_ROUND   = 23;
+const FO_HEIGHT         = 24;
 
-const FO_RECT_ROUND     = 23;   const FO_ELLIPSE_FROM    = 23;   const FO_POLY_ROUND          = 23;   const FO_STAR_ROUND  = 23;   const FO_FIG_WIDTH      = 23;   const FO_FRAME_ROUND    = 23;
-                                const FO_ELLIPSE_TO      = 24;   const FO_POLY_CORNERS        = 24;   const FO_STAR_POINTS = 24;   const FO_FIG_HEIGHT     = 24;   const FO_FRAME_CHILDREN = 24;
-                                const FO_ELLIPSE_INNER   = 25;                                        const FO_STAR_CONVEX = 25;   const FO_TEXT           = 25; 
+const FO_RECT_ROUND     = 25;   const FO_ELLIPSE_FROM    = 25;   const FO_POLY_ROUND          = 25;   const FO_STAR_ROUND  = 25;   const FO_FIG_WIDTH      = 25;   const FO_FRAME_ROUND    = 25;
+                                const FO_ELLIPSE_TO      = 26;   const FO_POLY_CORNERS        = 26;   const FO_STAR_POINTS = 26;   const FO_FIG_HEIGHT     = 26;   const FO_FRAME_CHILDREN = 26;
+                                const FO_ELLIPSE_INNER   = 27;                                        const FO_STAR_CONVEX = 27;   const FO_TEXT           = 27; 
                                                              
-                                                                                                                                   const FO_FONT           = 26;
-                                                                                                                                   const FO_FONT_SIZE      = 27;
-                                                                                                                                   const FO_FONT_STYLE     = 28;
+                                                                                                                                   const FO_FONT           = 28;
+                                                                                                                                   const FO_FONT_SIZE      = 29;
+                                                                                                                                   const FO_FONT_STYLE     = 30;
                                                                                                                                                                 
-                                                                                                                                   const FO_ALIGN_H        = 29;
-                                                                                                                                   const FO_ALIGN_V        = 30;
+                                                                                                                                   const FO_ALIGN_H        = 31;
+                                                                                                                                   const FO_ALIGN_V        = 32;
                                                                                                                                                                 
-                                                                                                                                   const FO_LINE_HEIGHT    = 31;
-                                                                                                                                   const FO_LETTER_SPACING = 32;                                
+                                                                                                                                   const FO_LINE_HEIGHT    = 33;
+                                                                                                                                   const FO_LETTER_SPACING = 34;                                
 
 
 class FigmaObject
@@ -46559,6 +46615,15 @@ function addStrokeProp(obj, prop)
         case 2: obj.strokeJoin = 'ROUND'; break;
     }
 
+    switch (prop.cap.toValue().value)
+    {
+        case 0: obj.strokeCap = 'NONE';   break;
+        case 1: obj.strokeCap = 'SQUARE'; break;
+        case 2: obj.strokeCap = 'ROUND';  break;
+    }
+
+    obj.strokeDashes     = prop.dashes.toValue().value;
+    
     obj.strokeMiterLimit = prop.miter.toValue().value;
 }
 
@@ -46645,6 +46710,8 @@ extends FigmaObject
     strokeAlign;
     strokeJoin;
     strokeMiterLimit;
+    strokeCap;
+    strokeDashes;
 
     effects = [];
 
@@ -46680,6 +46747,8 @@ extends FigmaObject
         this.strokeAlign      = base.strokeAlign;
         this.strokeJoin       = base.strokeJoin;
         this.strokeMiterLimit = base.strokeMiterLimit;
+        this.strokeCap        = base.strokeCap;
+        this.strokeDashes     = base.strokeDashes;
 
         this.effects          = clone(base.effects);
 
@@ -46702,6 +46771,8 @@ extends FigmaObject
             strokeAlign:      this.strokeAlign,
             strokeJoin:       this.strokeJoin,
             strokeMiterLimit: this.strokeMiterLimit,
+            strokeCap:        this.strokeCap,
+            strokeDashes:     this.strokeDashes,
 
             effects:          this.effects,
 
@@ -46725,12 +46796,14 @@ extends FigmaObject
             /* 13 */ this.strokeAlign,
             /* 14 */ this.strokeJoin,
             /* 15 */ this.strokeMiterLimit,
+            /* 16 */ this.strokeCap,
+            /* 17 */ this.strokeDashes,
 
-            /* 16 */ this.effects,
+            /* 18 */ this.effects,
 
-            /* 17 */ this.isDeco,
+            /* 19 */ this.isDeco,
 
-            /* 18 */ this.isMask
+            /* 20 */ this.isMask
         ];
     }
 }
@@ -46806,12 +46879,12 @@ extends FigmaShape
         return [
             ...super.toData(),
    
-            /* 19 */ this.x,
-            /* 20 */ this.y,
-            /* 21 */ this.width,
-            /* 22 */ this.height,
+            /* 21 */ this.x,
+            /* 22 */ this.y,
+            /* 23 */ this.width,
+            /* 24 */ this.height,
 
-            /* 23 */ this.round
+            /* 25 */ this.round
         ];
     }
 }
@@ -46876,9 +46949,9 @@ extends FigmaShape
         return [
             ...super.toData(),
    
-            /* 19 */ this.x,
-            /* 20 */ this.y,
-            /* 21 */ this.width
+            /* 21 */ this.x,
+            /* 22 */ this.y,
+            /* 23 */ this.width
         ];
     }
 }
@@ -46962,14 +47035,14 @@ extends FigmaShape
         return [
             ...super.toData(),
    
-            /* 19 */ this.x,
-            /* 20 */ this.y,
-            /* 21 */ this.width,
-            /* 22 */ this.height,
+            /* 21 */ this.x,
+            /* 22 */ this.y,
+            /* 23 */ this.width,
+            /* 24 */ this.height,
 
-            /* 23 */ this.from,
-            /* 24 */ this.to,
-            /* 25 */ this.inner
+            /* 25 */ this.from,
+            /* 26 */ this.to,
+            /* 27 */ this.inner
         ];
     }
 }
@@ -47048,13 +47121,13 @@ extends FigmaShape
         return [
             ...super.toData(),
    
-            /* 19 */ this.x,
-            /* 20 */ this.y,
-            /* 21 */ this.width,
-            /* 22 */ this.height,
+            /* 21 */ this.x,
+            /* 22 */ this.y,
+            /* 23 */ this.width,
+            /* 24 */ this.height,
 
-            /* 23 */ this.round,
-            /* 24 */ this.corners
+            /* 25 */ this.round,
+            /* 26 */ this.corners
         ];
     }
 }
@@ -47136,14 +47209,14 @@ extends FigmaShape
         return [
             ...super.toData(),
    
-            /* 19 */ this.x,
-            /* 20 */ this.y,
-            /* 21 */ this.width,
-            /* 22 */ this.height,
+            /* 21 */ this.x,
+            /* 22 */ this.y,
+            /* 23 */ this.width,
+            /* 24 */ this.height,
 
-            /* 23 */ this.round,
-            /* 24 */ this.points,
-            /* 25 */ this.convex
+            /* 25 */ this.round,
+            /* 26 */ this.points,
+            /* 27 */ this.convex
         ];
     }
 }
@@ -47273,25 +47346,25 @@ extends FigmaShape
         return [
             ...super.toData(),
    
-            /* 19 */ this.x,
-            /* 20 */ this.y,
-            /* 21 */ this.width,
-            /* 22 */ this.height,
+            /* 21 */ this.x,
+            /* 22 */ this.y,
+            /* 23 */ this.width,
+            /* 24 */ this.height,
             
-            /* 23 */ this.figWidth,
-            /* 24 */ this.figHeight,
+            /* 25 */ this.figWidth,
+            /* 26 */ this.figHeight,
             
-            /* 25 */ this.text,
+            /* 27 */ this.text,
 
-            /* 26 */ this.font,
-            /* 27 */ this.size,
-            /* 28 */ this.style,
+            /* 28 */ this.font,
+            /* 29 */ this.size,
+            /* 30 */ this.style,
             
-            /* 29 */ this.alignH,
-            /* 30 */ this.alignV,
+            /* 31 */ this.alignH,
+            /* 32 */ this.alignV,
             
-            /* 31 */ this.lineHeight,
-            /* 32 */ this.letterSpacing
+            /* 33 */ this.lineHeight,
+            /* 34 */ this.letterSpacing
         ];
     }
 }
@@ -47356,9 +47429,9 @@ extends FigmaShape
         return [
             ...super.toData(),
    
-            /* 19 */ this.x,
-            /* 20 */ this.y,
-            /* 21 */ this.isCenter
+            /* 21 */ this.x,
+            /* 22 */ this.y,
+            /* 23 */ this.isCenter
         ];
     }
 }
@@ -47480,9 +47553,9 @@ extends FigmaShape
         return [
             ...super.toData(),
    
-            /* 19 */ this.pathData,
-            /* 20 */ this.winding,
-            /* 21 */ this.round
+            /* 21 */ this.pathData,
+            /* 22 */ this.winding,
+            /* 23 */ this.round
         ];
     }
 }
@@ -47850,7 +47923,7 @@ extends FigmaShape
             this.nodeId,
             this.objectId,
             this.objectName,
-            
+
             this.children);
 
         copy.copyBase(this);
@@ -47876,7 +47949,7 @@ extends FigmaShape
         return [
             ...super.toData(),
    
-            /* 19 */ this.children.map(o => o.toData())
+            /* 21 */ this.children.map(o => o.toData())
         ];
     }
 }
@@ -47960,14 +48033,14 @@ extends FigmaShape
         return [
             ...super.toData(),
    
-            /* 19 */ this.x,
-            /* 20 */ this.y,
-            /* 21 */ this.width,
-            /* 22 */ this.height,
+            /* 21 */ this.x,
+            /* 22 */ this.y,
+            /* 23 */ this.width,
+            /* 24 */ this.height,
 
-            /* 23 */ this.round,
+            /* 25 */ this.round,
 
-            /* 24 */ this.children.map(o => o.toData())
+            /* 26 */ this.children.map(o => o.toData())
         ];
     }
 }
@@ -49867,6 +49940,8 @@ extends GValue
     fit;
     join;
     miter;
+    cap;
+    dashes;
 
 
 
@@ -49874,7 +49949,9 @@ extends GValue
                 weight = new NumberValue(1),
                 fit    = new NumberValue(0),
                 join   = new NumberValue(0),
-                miter  = new NumberValue(28.96, 2))
+                miter  = new NumberValue(28.96, 2),
+                cap    = new NumberValue(0),
+                dashes = new TextValue())
     {
         if (fills.type != LIST_VALUE)
             consoleError('fill.type is ' + fills.type + ', must be LIST_VALUE');
@@ -49887,6 +49964,8 @@ extends GValue
         this.fit    = fit   .copy();
         this.join   = join  .copy();
         this.miter  = miter .copy();
+        this.cap    = cap   .copy();
+        this.dashes = dashes.copy();
 
         this.valid  = true;
     }
@@ -49900,7 +49979,9 @@ extends GValue
             this.weight.copy(),
             this.fit   .copy(),
             this.join  .copy(),
-            this.miter .copy());
+            this.miter .copy(),
+            this.cap   .copy(),
+            this.dashes.copy());
 
         copy.copyBase(this);
 
@@ -49915,7 +49996,9 @@ extends GValue
             && this.weight.isValid()
             && this.fit   .isValid()
             && this.join  .isValid()
-            && this.miter .isValid();
+            && this.miter .isValid()
+            && this.cap   .isValid()
+            && this.dashes.isValid();
     }
 
 
@@ -49927,7 +50010,9 @@ extends GValue
             && this.weight.equals(stroke.weight)
             && this.fit   .equals(stroke.fit   )
             && this.join  .equals(stroke.join  )
-            && this.miter .equals(stroke.miter );
+            && this.miter .equals(stroke.miter )
+            && this.cap   .equals(stroke.cap   )
+            && this.dashes.equals(stroke.dashes);
     }
 
 
@@ -49952,7 +50037,9 @@ extends GValue
             + ' ' + this.weight.toString()
             + ' ' + this.fit   .toString()
             + ' ' + this.join  .toString()
-            + ' ' + this.miter .toString();
+            + ' ' + this.miter .toString()
+            + ' ' + this.cap   .toString()
+            + ' ' + this.dashes.toString();
     }
 
 
@@ -49963,7 +50050,9 @@ extends GValue
             + ' ' + this.weight.toDisplayString()
             + ' ' + this.fit   .toDisplayString()
             + ' ' + this.join  .toDisplayString()
-            + ' ' + this.miter .toDisplayString();
+            + ' ' + this.miter .toDisplayString()
+            + ' ' + this.cap   .toDisplayString()
+            + ' ' + this.dashes.toDisplayString();
     }
 
 
@@ -49980,7 +50069,9 @@ extends GValue
         NumberValue.NaN,
         NumberValue.NaN,
         NumberValue.NaN,
-        NumberValue.NaN));
+        NumberValue.NaN,
+        NumberValue.NaN,
+        new TextValue()));
 
 
 
@@ -49989,7 +50080,9 @@ extends GValue
         new NumberValue(1),
         new NumberValue(0),
         new NumberValue(0),
-        new NumberValue(28.96)));
+        new NumberValue(28.96),
+        new NumberValue(0),
+        new TextValue()));
 }
 
 
@@ -50015,25 +50108,23 @@ function parseStrokeValue(str, i = -1)
     const fit    = parseNumberValue(str[i]); i += fit   [1];
     const join   = parseNumberValue(str[i]); i += join  [1];
     const miter  = parseNumberValue(str[i]); i += miter [1];
-
+    const cap    = parseNumberValue(str[i]); i += cap   [1];
+    const dashes = parseTextValue  (str[i]); i += dashes[1];
 
     return [
-        new StrokeValue(fills[0], weight[0], fit[0], join[0], miter[0]),
+
+        new StrokeValue(
+            fills [0], 
+            weight[0], 
+            fit   [0], 
+            join  [0], 
+            miter [0], 
+            cap   [0], 
+            dashes[0]),
+        
         i - iStart ];
 }
 
-
-
-// async function evalStrokeValue(value, parse)
-// {
-//     const stroke = (await value.eval(parse)).copy();
-
-//          if (STROKE_TYPES.includes(stroke.type)) return stroke;
-//     else if (  FILL_TYPES.includes(stroke.type)) return new StrokeValue(stroke, value.data.weight);
-//     else if ( COLOR_TYPES.includes(stroke.type)) return new StrokeValue(new FillValue(stroke), value.data.weight);
-
-//     else consoleError('stroke must have type');
-// }
 
 
 class DropShadowValue
@@ -57954,8 +58045,8 @@ extends GTextType1
                 
             if (this.options.enabled)
             {
-                if (start.value.length > 0) this.value.value = trimCharFromStart(this.value.value, unescaleString(start.value));
-                if (end  .value.length > 0) this.value.value = trimCharFromEnd  (this.value.value, unescaleString(end  .value));
+                if (start.value.length > 0) this.value.value = trimCharFromStart(this.value.value, unescapeString(start.value));
+                if (end  .value.length > 0) this.value.value = trimCharFromEnd  (this.value.value, unescapeString(end  .value));
             }
         }
         else
@@ -61865,6 +61956,8 @@ extends GOperator1
     fit    = null;
     join   = null;
     miter  = null;
+    cap    = null;
+    dashes = null;
 
 
 
@@ -61886,6 +61979,8 @@ extends GOperator1
         if (this.fit   ) copy.fit    = this.fit   .copy();
         if (this.join  ) copy.join   = this.join  .copy();
         if (this.miter ) copy.miter  = this.miter .copy();
+        if (this.cap   ) copy.cap    = this.cap   .copy();
+        if (this.dashes) copy.dashes = this.dashes.copy();
 
         return copy;
     }
@@ -61906,6 +62001,8 @@ extends GOperator1
         const fit    = this.fit    ? (await this.fit   .eval(parse)).toValue() : null;
         const join   = this.join   ? (await this.join  .eval(parse)).toValue() : null;
         const miter  = this.miter  ? (await this.miter .eval(parse)).toValue() : null;
+        const cap    = this.cap    ? (await this.cap   .eval(parse)).toValue() : null;
+        const dashes = this.dashes ? (await this.dashes.eval(parse)).toValue() : null;
 
 
         if (this.input)
@@ -61917,7 +62014,9 @@ extends GOperator1
                 weight ?? input.weight,
                 fit    ?? input.fit,
                 join   ?? input.join,
-                miter  ?? input.miter);
+                miter  ?? input.miter,
+                cap    ?? input.cap,
+                dashes ?? input.dashes);
         }
         else
         {
@@ -61926,17 +62025,22 @@ extends GOperator1
                 weight, 
                 fit, 
                 join,
-                miter);
+                miter,
+                cap,
+                dashes);
         }
 
 
         this.updateValues =
         [
-            ['fills',  this.value.fills ],
-            ['weight', this.value.weight],
-            ['fit',    this.value.fit   ],
-            ['join',   this.value.join  ],
-            ['miter',  this.value.miter ]
+            ['value', this.value]
+            // ['fills',  this.value.fills ],
+            // ['weight', this.value.weight],
+            // ['fit',    this.value.fit   ],
+            // ['join',   this.value.join  ],
+            // ['miter',  this.value.miter ],
+            // ['cap',    this.value.cap   ],
+            // ['dashes', this.value.dashes]
         ];
         
 
@@ -61977,7 +62081,9 @@ extends GOperator1
             this.weight ? this.weight.toValue() : this.input.weight.toValue(),
             this.fit    ? this.fit   .toValue() : this.input.fit   .toValue(),
             this.join   ? this.join  .toValue() : this.input.join  .toValue(),
-            this.miter  ? this.miter .toValue() : this.input.miter .toValue());
+            this.miter  ? this.miter .toValue() : this.input.miter .toValue(),
+            this.cap    ? this.cap   .toValue() : this.input.cap   .toValue(),
+            this.dashes ? this.dashes.toValue() : this.input.dashes.toValue());
     }                 
 
 
@@ -61988,7 +62094,9 @@ extends GOperator1
             && this.weight.isValid()
             && this.fit   .isValid()
             && this.join  .isValid()
-            && this.miter .isValid();
+            && this.miter .isValid()
+            && this.cap   .isValid()
+            && this.dashes.isValid();
     }
 
 
@@ -62002,6 +62110,8 @@ extends GOperator1
         if (this.fit   ) this.fit   .pushValueUpdates(parse);
         if (this.join  ) this.join  .pushValueUpdates(parse);
         if (this.miter ) this.miter .pushValueUpdates(parse);
+        if (this.cap   ) this.cap   .pushValueUpdates(parse);
+        if (this.dashes) this.dashes.pushValueUpdates(parse);
     }    
     
     
@@ -62015,6 +62125,8 @@ extends GOperator1
         if (this.fit   ) this.fit   .invalidateInputs(from);
         if (this.join  ) this.join  .invalidateInputs(from);
         if (this.miter ) this.miter .invalidateInputs(from);
+        if (this.cap   ) this.cap   .invalidateInputs(from);
+        if (this.dashes) this.dashes.invalidateInputs(from);
     }
 }
 
@@ -95563,6 +95675,8 @@ extends OpColorBase
     paramFit;
     paramJoin;
     paramMiter;
+    paramCap;
+    paramDashes;
 
     checkers;
     colorBack;
@@ -95596,6 +95710,8 @@ extends OpColorBase
         this.addParam(this.paramFit    = new SelectParam('fit',    'align',  true,  true, true, ['inside', 'center', 'outside'], 0));
         this.addParam(this.paramJoin   = new SelectParam('join',   'join',   true,  true, true, ['miter', 'bevel', 'round'], 0));
         this.addParam(this.paramMiter  = new NumberParam('miter',  'miter',  true,  true, true, 28.96, 0, 180, 2));
+        this.addParam(this.paramCap    = new SelectParam('cap',    'cap',    true,  true, true, ['none', 'square', 'round'], 0));
+        this.addParam(this.paramDashes = new   TextParam('dashes', 'dashes', false, true, true));
 
         this.paramFills.itemName  = 'fill';
         this.paramFills.showZero  = false;
@@ -95607,6 +95723,8 @@ extends OpColorBase
 
         this.paramMiter.controls[0].setSuffix('°', true);
         this.paramMiter.canShow = () => this.paramJoin.value == 0;
+
+        this.paramDashes.controls[0].textbox.defPlaceholder = 'solid';
     }
     
     
@@ -95633,7 +95751,9 @@ extends OpColorBase
             || this.node.paramWeight.input.connected
             || this.node.paramFit   .input.connected
             || this.node.paramJoin  .input.connected
-            || this.node.paramMiter .input.connected;
+            || this.node.paramMiter .input.connected
+            || this.node.paramCap   .input.connected
+            || this.node.paramDashes.input.connected;
 
         const options = (hasInputs ? 1 : 0) << 20;
 
@@ -95683,15 +95803,6 @@ extends OpColorBase
 
     updateValues(requestId, actionId, updateParamId, paramIds, values)
     {
-        // const fill = values[paramIds.findIndex(id => id == 'fill')];
-
-        // this._color = 
-        //        fill
-        //     && fill.isValid()
-        //     ? fill.color.toDataColor()
-        //     : dataColor_NaN;
-
-            
         this.outputs[0].types =
                this.inputs[0].connected
             && this.inputs[0].connectedOutput.supportsTypes(SHAPE_TYPES)
@@ -95699,7 +95810,18 @@ extends OpColorBase
             : [STROKE_VALUE];
 
 
-        super.updateValues(requestId, actionId, updateParamId, paramIds, values);
+            const value = values[paramIds.findIndex(id => id == 'value')];
+
+            this.paramFills .setValue(value.fills,  false, true, false);
+            this.paramWeight.setValue(value.weight, false, true, false);
+            this.paramFit   .setValue(value.fit,    false, true, false);
+            this.paramJoin  .setValue(value.join,   false, true, false);
+            this.paramMiter .setValue(value.miter,  false, true, false);
+            this.paramCap   .setValue(value.cap,    false, true, false);
+            this.paramDashes.setValue(value.dashes, false, true, false);
+
+
+            // super.updateValues(requestId, actionId, updateParamId, paramIds, values);
     }
 
 

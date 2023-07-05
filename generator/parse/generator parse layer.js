@@ -303,7 +303,7 @@ function genParseStroke(parse)
         paramIds = parse.move().split(',');
     }
     else
-        paramIds = ['fill', 'weight', 'fit', 'join', 'miter'];
+        paramIds = ['fill', 'weight', 'fit', 'join', 'miter', 'cap', 'dashes'];
 
 
     parse.inParam = false;
@@ -312,11 +312,13 @@ function genParseStroke(parse)
     {
         switch (id)
         {
-        case 'fill':   stroke.fills   = genParse(parse); break;
+        case 'fill':   stroke.fills  = genParse(parse); break;
         case 'weight': stroke.weight = genParse(parse); break;
         case 'fit':    stroke.fit    = genParse(parse); break;
         case 'join':   stroke.join   = genParse(parse); break;
         case 'miter':  stroke.miter  = genParse(parse); break;
+        case 'cap':    stroke.cap    = genParse(parse); break;
+        case 'dashes': stroke.dashes = genParse(parse); break;
         }
     }
     

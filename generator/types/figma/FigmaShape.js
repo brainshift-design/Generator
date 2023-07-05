@@ -11,6 +11,8 @@ extends FigmaObject
     strokeAlign;
     strokeJoin;
     strokeMiterLimit;
+    strokeCap;
+    strokeDashes;
 
     effects = [];
 
@@ -46,6 +48,8 @@ extends FigmaObject
         this.strokeAlign      = base.strokeAlign;
         this.strokeJoin       = base.strokeJoin;
         this.strokeMiterLimit = base.strokeMiterLimit;
+        this.strokeCap        = base.strokeCap;
+        this.strokeDashes     = base.strokeDashes;
 
         this.effects          = clone(base.effects);
 
@@ -68,6 +72,8 @@ extends FigmaObject
             strokeAlign:      this.strokeAlign,
             strokeJoin:       this.strokeJoin,
             strokeMiterLimit: this.strokeMiterLimit,
+            strokeCap:        this.strokeCap,
+            strokeDashes:     this.strokeDashes,
 
             effects:          this.effects,
 
@@ -91,12 +97,14 @@ extends FigmaObject
             /* 13 */ this.strokeAlign,
             /* 14 */ this.strokeJoin,
             /* 15 */ this.strokeMiterLimit,
+            /* 16 */ this.strokeCap,
+            /* 17 */ this.strokeDashes,
 
-            /* 16 */ this.effects,
+            /* 18 */ this.effects,
 
-            /* 17 */ this.isDeco,
+            /* 19 */ this.isDeco,
 
-            /* 18 */ this.isMask
+            /* 20 */ this.isMask
         ];
     }
 }

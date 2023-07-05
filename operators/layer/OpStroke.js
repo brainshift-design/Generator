@@ -6,6 +6,8 @@ extends OpColorBase
     paramFit;
     paramJoin;
     paramMiter;
+    paramCap;
+    paramDashes;
 
     checkers;
     colorBack;
@@ -39,6 +41,8 @@ extends OpColorBase
         this.addParam(this.paramFit    = new SelectParam('fit',    'align',  true,  true, true, ['inside', 'center', 'outside'], 0));
         this.addParam(this.paramJoin   = new SelectParam('join',   'join',   true,  true, true, ['miter', 'bevel', 'round'], 0));
         this.addParam(this.paramMiter  = new NumberParam('miter',  'miter',  true,  true, true, 28.96, 0, 180, 2));
+        this.addParam(this.paramCap    = new SelectParam('cap',    'cap',    true,  true, true, ['none', 'square', 'round'], 0));
+        this.addParam(this.paramDashes = new   TextParam('dashes', 'dashes', false, true, true));
 
         this.paramFills.itemName  = 'fill';
         this.paramFills.showZero  = false;
@@ -50,6 +54,8 @@ extends OpColorBase
 
         this.paramMiter.controls[0].setSuffix('°', true);
         this.paramMiter.canShow = () => this.paramJoin.value == 0;
+
+        this.paramDashes.controls[0].textbox.defPlaceholder = 'solid';
     }
     
     
@@ -76,7 +82,9 @@ extends OpColorBase
             || this.node.paramWeight.input.connected
             || this.node.paramFit   .input.connected
             || this.node.paramJoin  .input.connected
-            || this.node.paramMiter .input.connected;
+            || this.node.paramMiter .input.connected
+            || this.node.paramCap   .input.connected
+            || this.node.paramDashes.input.connected;
 
         const options = (hasInputs ? 1 : 0) << 20;
 
@@ -126,15 +134,6 @@ extends OpColorBase
 
     updateValues(requestId, actionId, updateParamId, paramIds, values)
     {
-        // const fill = values[paramIds.findIndex(id => id == 'fill')];
-
-        // this._color = 
-        //        fill
-        //     && fill.isValid()
-        //     ? fill.color.toDataColor()
-        //     : dataColor_NaN;
-
-            
         this.outputs[0].types =
                this.inputs[0].connected
             && this.inputs[0].connectedOutput.supportsTypes(SHAPE_TYPES)
@@ -142,7 +141,18 @@ extends OpColorBase
             : [STROKE_VALUE];
 
 
-        super.updateValues(requestId, actionId, updateParamId, paramIds, values);
+            const value = values[paramIds.findIndex(id => id == 'value')];
+
+            this.paramFills .setValue(value.fills,  false, true, false);
+            this.paramWeight.setValue(value.weight, false, true, false);
+            this.paramFit   .setValue(value.fit,    false, true, false);
+            this.paramJoin  .setValue(value.join,   false, true, false);
+            this.paramMiter .setValue(value.miter,  false, true, false);
+            this.paramCap   .setValue(value.cap,    false, true, false);
+            this.paramDashes.setValue(value.dashes, false, true, false);
+
+
+            // super.updateValues(requestId, actionId, updateParamId, paramIds, values);
     }
 
 

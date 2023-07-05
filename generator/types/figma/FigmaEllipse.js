@@ -76,14 +76,14 @@ extends FigmaShape
         return [
             ...super.toData(),
    
-            /* 19 */ this.x,
-            /* 20 */ this.y,
-            /* 21 */ this.width,
-            /* 22 */ this.height,
+            /* 21 */ this.x,
+            /* 22 */ this.y,
+            /* 23 */ this.width,
+            /* 24 */ this.height,
 
-            /* 23 */ this.from,
-            /* 24 */ this.to,
-            /* 25 */ this.inner
+            /* 25 */ this.from,
+            /* 26 */ this.to,
+            /* 27 */ this.inner
         ];
     }
 }

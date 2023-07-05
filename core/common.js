@@ -1,4 +1,4 @@
-const generatorVersion = 141;
+const generatorVersion = 142;
 
 
 const MAX_INT32        = 2147483647;
@@ -837,4 +837,26 @@ function consoleError(...args)
     //     || settings.enableAsserts)
     if (enableAsserts)
         console.error(...args);
+}
+
+
+
+function trimCharFromStart(str, trim) 
+{
+    while (str.length >= trim.length
+        && str.substring(0, trim.length) == trim) 
+        str = str.substring(trim.length);
+
+    return str;
+}
+
+
+
+function trimCharFromEnd(str, trim) 
+{
+    while (str.length >= trim.length
+        && str.substring(str.length - trim.length) == trim) 
+        str = str.substring(0, str.length - trim.length);
+
+    return str;
 }

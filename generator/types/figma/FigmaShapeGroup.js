@@ -20,7 +20,7 @@ extends FigmaShape
             this.nodeId,
             this.objectId,
             this.objectName,
-            
+
             this.children);
 
         copy.copyBase(this);
@@ -46,7 +46,7 @@ extends FigmaShape
         return [
             ...super.toData(),
    
-            /* 19 */ this.children.map(o => o.toData())
+            /* 21 */ this.children.map(o => o.toData())
         ];
     }
 }

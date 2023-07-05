@@ -19,7 +19,7 @@ function isConnKey(key) { return isTagKey(key, connTag); }
 function noPageTag(key) { return noTag(key, pageTag); }
 function noNodeTag(key) { return noTag(key, nodeTag); }
 function noConnTag(key) { return noTag(key, connTag); }
-const generatorVersion = 141;
+const generatorVersion = 142;
 const MAX_INT32 = 2147483647;
 const NULL = '';
 const HTAB = '  '; // half-tab
@@ -451,6 +451,18 @@ function consoleError(...args) {
     //     || settings.enableAsserts)
     if (enableAsserts)
         console.error(...args);
+}
+function trimCharFromStart(str, trim) {
+    while (str.length >= trim.length
+        && str.substring(0, trim.length) == trim)
+        str = str.substring(trim.length);
+    return str;
+}
+function trimCharFromEnd(str, trim) {
+    while (str.length >= trim.length
+        && str.substring(str.length - trim.length) == trim)
+        str = str.substring(0, str.length - trim.length);
+    return str;
 }
 const LIST_VALUE = 'LIST#';
 const NUMBER_LIST_VALUE = 'NLIST#';
@@ -958,39 +970,41 @@ const FO_STROKE_WEIGHT = 12;
 const FO_STROKE_ALIGN = 13;
 const FO_STROKE_JOIN = 14;
 const FO_STROKE_MITER = 15;
-const FO_EFFECTS = 16;
-const FO_DECO = 17;
-const FO_MASK = 18;
-const FO_X = 19;
-const FO_VECTOR_PATH_DATA = 19;
-const FO_GROUP_CHILDREN = 19;
-const FO_Y = 20;
-const FO_VECTOR_PATH_WINDING = 20;
-const FO_WIDTH = 21;
-const FO_POINT_IS_CENTER = 21;
-const FO_VECTOR_PATH_ROUND = 21;
-const FO_HEIGHT = 22;
-const FO_RECT_ROUND = 23;
-const FO_ELLIPSE_FROM = 23;
-const FO_POLY_ROUND = 23;
-const FO_STAR_ROUND = 23;
-const FO_FIG_WIDTH = 23;
-const FO_FRAME_ROUND = 23;
-const FO_ELLIPSE_TO = 24;
-const FO_POLY_CORNERS = 24;
-const FO_STAR_POINTS = 24;
-const FO_FIG_HEIGHT = 24;
-const FO_FRAME_CHILDREN = 24;
-const FO_ELLIPSE_INNER = 25;
-const FO_STAR_CONVEX = 25;
-const FO_TEXT = 25;
-const FO_FONT = 26;
-const FO_FONT_SIZE = 27;
-const FO_FONT_STYLE = 28;
-const FO_ALIGN_H = 29;
-const FO_ALIGN_V = 30;
-const FO_LINE_HEIGHT = 31;
-const FO_LETTER_SPACING = 32;
+const FO_STROKE_CAP = 16;
+const FO_STROKE_DASHES = 17;
+const FO_EFFECTS = 18;
+const FO_DECO = 19;
+const FO_MASK = 20;
+const FO_X = 21;
+const FO_VECTOR_PATH_DATA = 21;
+const FO_GROUP_CHILDREN = 21;
+const FO_Y = 22;
+const FO_VECTOR_PATH_WINDING = 22;
+const FO_WIDTH = 23;
+const FO_POINT_IS_CENTER = 23;
+const FO_VECTOR_PATH_ROUND = 23;
+const FO_HEIGHT = 24;
+const FO_RECT_ROUND = 25;
+const FO_ELLIPSE_FROM = 25;
+const FO_POLY_ROUND = 25;
+const FO_STAR_ROUND = 25;
+const FO_FIG_WIDTH = 25;
+const FO_FRAME_ROUND = 25;
+const FO_ELLIPSE_TO = 26;
+const FO_POLY_CORNERS = 26;
+const FO_STAR_POINTS = 26;
+const FO_FIG_HEIGHT = 26;
+const FO_FRAME_CHILDREN = 26;
+const FO_ELLIPSE_INNER = 27;
+const FO_STAR_CONVEX = 27;
+const FO_TEXT = 27;
+const FO_FONT = 28;
+const FO_FONT_SIZE = 29;
+const FO_FONT_STYLE = 30;
+const FO_ALIGN_H = 31;
+const FO_ALIGN_V = 32;
+const FO_LINE_HEIGHT = 33;
+const FO_LETTER_SPACING = 34;
 const base32chars = '12345679ABCDEFGHJKLMNPQRSTUVWXYZ';
 function arrayToBase32(array, chars = base32chars) {
     let base32 = '';
@@ -2029,8 +2043,6 @@ function figCreateObject(genObj, addObject = null) {
             figObj.name = makeObjectName(genObj);
             consoleAssert(genObj[FO_TYPE] == SHAPE_GROUP // cannot exist without children
                 || !!figObj, 'no Figma object created');
-            // if (  !genObj.final
-            //     && figObj)
             if (figObj) {
                 figObj.setPluginData('type', genObj[FO_TYPE]);
                 figObj.setPluginData('nodeId', genObj[FO_NODE_ID]);
@@ -2368,7 +2380,13 @@ function setObjectFills(figObj, genObj) {
 function setObjectStrokes(figObj, genObj, phantom = true) {
     if (genObj[FO_STROKES] != null
         && !isEmpty(genObj[FO_STROKES])) {
-        setObjectStroke_(figObj, getObjectFills(genObj[FO_STROKES]), genObj[FO_STROKE_WEIGHT], genObj[FO_STROKE_ALIGN], genObj[FO_STROKE_JOIN], genObj[FO_STROKE_MITER]);
+        let _dashes = genObj[FO_STROKE_DASHES];
+        _dashes = trimCharFromStart(_dashes, ',');
+        _dashes = trimCharFromEnd(_dashes, ',');
+        _dashes = _dashes.trim();
+        setObjectStroke_(figObj, getObjectFills(genObj[FO_STROKES]), genObj[FO_STROKE_WEIGHT], genObj[FO_STROKE_ALIGN], genObj[FO_STROKE_JOIN], genObj[FO_STROKE_MITER], genObj[FO_STROKE_CAP], _dashes == ''
+            ? []
+            : _dashes.split(',').map(s => Math.max(0, parseInt(s))));
         if (figEmptyObjects.includes(figObj))
             removeFromArray(figEmptyObjects, figObj);
     }
@@ -2381,7 +2399,7 @@ function setObjectStrokes(figObj, genObj, phantom = true) {
     else
         figObj.strokes = [];
 }
-function setObjectStroke_(figObj, fills, weight, align, join, miterLimit, dashes = []) {
+function setObjectStroke_(figObj, fills, weight, align, join, miterLimit, cap, dashes = []) {
     figObj.strokes = fills;
     figObj.strokeWeight = Math.max(0, weight);
     figObj.strokeAlign = align;
@@ -2389,6 +2407,7 @@ function setObjectStroke_(figObj, fills, weight, align, join, miterLimit, dashes
     const miterAngle = miterLimit / 360 * Tau;
     const _miterLimit = 1 / Math.sin(miterAngle / 2);
     figObj.strokeMiterLimit = Math.min(Math.max(0, _miterLimit), 16);
+    figObj.strokeCap = cap;
     figObj.dashPattern = dashes;
 }
 function setObjectEffects(figObj, genObj) {
@@ -2422,7 +2441,7 @@ function setEmptyObjectStroke(obj) {
         phantomColor = { r: 1, g: 0, b: 1 };
     setObjectStroke_(obj, [{ type: 'SOLID',
             color: phantomColor,
-            opacity: 0.5 }], 1 / curZoom, 'CENTER', 'MITER', 1, [1 / curZoom,
+            opacity: 0.5 }], 1 / curZoom, 'CENTER', 'MITER', 1, 'NONE', [1 / curZoom,
         2 / curZoom]);
 }
 function figGetAllLocalColorStyles(nodeId, px, py) {

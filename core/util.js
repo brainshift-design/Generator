@@ -313,28 +313,6 @@ function getNumLength(name)
 
 
 
-function trimCharFromStart(str, trim) 
-{
-    while (str.length >= trim.length
-        && str.substring(0, trim.length) == trim) 
-        str = str.substring(trim.length);
-
-    return str;
-}
-
-
-
-function trimCharFromEnd(str, trim) 
-{
-    while (str.length >= trim.length
-        && str.substring(str.length - trim.length) == trim) 
-        str = str.substring(0, str.length - trim.length);
-
-    return str;
-}
-
-
-
 function isValidFloatString(str) 
 {
     return /^-?\d*\.?\d*(e-?\d+)?$/.test(str);

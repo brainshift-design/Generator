@@ -40,8 +40,7 @@ async function figCreateObject(genObj, addObject = null)
             || !!figObj, 
             'no Figma object created');
 
-        // if (  !genObj.final
-        //     && figObj)
+            
         if (figObj)
         {
             figObj.setPluginData('type',     genObj[FO_TYPE     ]);
