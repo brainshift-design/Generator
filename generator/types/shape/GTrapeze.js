@@ -1,24 +1,26 @@
-class GRectangle
+class GTrapeze
 extends GShape
 {
     round = null;
+    bias  = null;
 
 
 
     constructor(nodeId, options)
     {
-        super(RECTANGLE, nodeId, options);
+        super(TRAPEZE, nodeId, options);
     }
 
 
 
     copy()
     {
-        const copy = new GRectangle(this.nodeId, this.options);
+        const copy = new GTrapeze(this.nodeId, this.options);
 
         copy.copyBase(this);
 
         if (this.round) copy.round = this.round.copy();
+        if (this.bias ) copy.bias  = this.bias .copy();
 
         return copy;
     }
@@ -34,6 +36,7 @@ extends GShape
         const [x, y, width, height] = await this.evalBaseParams(parse);
 
         const round = this.round ? (await this.round.eval(parse)).toValue() : null;
+        const bias  = this.bias  ? (await this.bias .eval(parse)).toValue() : null;
 
 
         let input = null;
@@ -42,23 +45,25 @@ extends GShape
         {
             input = (await this.input.eval(parse)).toValue();
 
-            this.value = new RectangleValue(
+            this.value = new TrapezeValue(
                 this.nodeId,
                 x      ?? input.x,
                 y      ?? input.y,
                 width  ?? input.width,
                 height ?? input.height,
-                round  ?? input.round);
+                round  ?? input.round,
+                bias   ?? input.bias);
         }
         else
         {
-            this.value = new RectangleValue(
+            this.value = new TrapezeValue(
                 this.nodeId, 
                 x, 
                 y, 
                 width, 
                 height, 
-                round);
+                round,
+                bias);
         }
 
        
@@ -91,13 +96,15 @@ extends GShape
             && this.value.y
             && this.value.width
             && this.value.height
-            && this.value.round)
+            && this.value.round
+            && this.value.bias)
         {
             let   x = this.value.x     .value;
             let   y = this.value.y     .value;
             let   w = this.value.width .value;
             let   h = this.value.height.value;
             const r = Math.max(0, this.value.round.value);
+            let   b = this.value.bias  .value;
 
 
             [x, y, w, h, , ] = validateObjectRect(x, y, w, h);
@@ -106,15 +113,15 @@ extends GShape
             if (   w != 0 
                 && h != 0)
             {
-                const rect = new FigmaRectangle(
+                const trap = new FigmaTrapeze(
                     this.nodeId, 
                     this.nodeId, 
                     this.nodeName, 
-                    x, y, w, h, r);
+                    x, y, w, h, r, b);
 
-                rect.createDefaultTransform(x, y);
+                trap.createDefaultTransform(x, y);
 
-                this.value.objects.push(rect, ...rect.createTransformPoints(parse, x, y, w, h));
+                this.value.objects.push(trap, ...trap.createTransformPoints(parse, x, y, w, h));
             }
         }
 
@@ -126,18 +133,19 @@ extends GShape
 
     toValue()
     {
-        const rect = new RectangleValue(
+        const trap = new TrapezeValue(
             this.nodeId,
             this.x     .toValue(),
             this.y     .toValue(),
             this.width .toValue(),
             this.height.toValue(),
-            this.round .toValue());
+            this.round .toValue(),
+            this.bias  .toValue());
 
-        rect.props   = this.props.toValue();
-        rect.objects = this.value.objects.map(o => o.copy());
+        trap.props   = this.props.toValue();
+        trap.objects = this.value.objects.map(o => o.copy());
 
-        return rect;
+        return trap;
     }
 
 
@@ -145,7 +153,8 @@ extends GShape
     isValid()
     {
         return super.isValid()
-            && this.round.isValid();
+            && this.round.isValid()
+            && this.bias .isValid();
     }
 
 
@@ -155,6 +164,7 @@ extends GShape
         super.pushValueUpdates(parse);
 
         if (this.round) this.round.pushValueUpdates(parse);
+        if (this.bias ) this.bias .pushValueUpdates(parse);
     }
 
 
@@ -164,5 +174,6 @@ extends GShape
         super.invalidateInputs(from);
 
         if (this.round) this.round.invalidateInputs(from);
+        if (this.bias ) this.bias .invalidateInputs(from);
     }
 }

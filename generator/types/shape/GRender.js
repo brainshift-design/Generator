@@ -77,7 +77,7 @@ extends GShapeBase
         this.updateValues = [['', NullValue]];
 
 
-        //await this.evalShapeBase(parse, input);
+        //await this.evalShapeBase(parse);
 
 
         //await this.evalObjects(parse);

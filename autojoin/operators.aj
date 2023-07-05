@@ -150,6 +150,7 @@
 ../operators/shape/OpRectangle.js
 ../operators/shape/OpLine.js
 ../operators/shape/OpEllipse.js
+../operators/shape/OpTrapeze.js
 ../operators/shape/OpPolygon.js
 ../operators/shape/OpStar.js
 ../operators/shape/OpTextShape.js

@@ -258,6 +258,7 @@ function copyFigmaObject(obj)
         case RECTANGLE:   return FigmaRectangle .prototype.copy.call(obj);
         case LINE:        return FigmaLine      .prototype.copy.call(obj);
         case ELLIPSE:     return FigmaEllipse   .prototype.copy.call(obj);
+        case TRAPEZE:     return FigmaTrapeze   .prototype.copy.call(obj);
         case POLYGON:     return FigmaPolygon   .prototype.copy.call(obj);
         case STAR:        return FigmaStar      .prototype.copy.call(obj);
         case TEXT_SHAPE:  return FigmaText      .prototype.copy.call(obj);

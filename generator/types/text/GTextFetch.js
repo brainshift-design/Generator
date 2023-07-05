@@ -44,9 +44,10 @@ extends GTextType
         {
             try 
             {
-                await fetch(request.value)
-                    .then(response => response.text())
-                    .then(text => this.value = new TextValue(text));
+                const response = await fetch(request.value);
+                const content  = await response.text();
+                
+                this.value = new TextValue(content);
             }
             catch (e)
             {

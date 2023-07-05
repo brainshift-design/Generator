@@ -203,6 +203,7 @@ function parseListValue(str, i = -1)
             case    RECTANGLE_VALUE: { const rect    = parseRectangleValue   (str, i);  i += rect   [1];  list.items.push(rect   [0]);  break; }
             case         LINE_VALUE: { const line    = parseLineValue        (str, i);  i += line   [1];  list.items.push(line   [0]);  break; }
             case      ELLIPSE_VALUE: { const ellipse = parseEllipseValue     (str, i);  i += ellipse[1];  list.items.push(ellipse[0]);  break; }
+            case      TRAPEZE_VALUE: { const ellipse = parseTrapezeValue     (str, i);  i += ellipse[1];  list.items.push(ellipse[0]);  break; }
             case      POLYGON_VALUE: { const poly    = parsePolygonValue     (str, i);  i += poly   [1];  list.items.push(poly   [0]);  break; }
             case         STAR_VALUE: { const star    = parseStarValue        (str, i);  i += star   [1];  list.items.push(star   [0]);  break; }
             case   TEXT_SHAPE_VALUE: { const text    = parseTextShapeValue   (str, i);  i += text   [1];  list.items.push(text   [0]);  break; }

@@ -75,7 +75,7 @@ extends GShape
         this.updateValues = [['value', this.value]];
 
 
-        await this.evalShapeBase(parse, input);
+        await this.evalShapeBase(parse);
 
 
         await this.evalObjects(parse);
@@ -96,15 +96,12 @@ extends GShape
 
         const points = [];
 
-        if (this.points.value.objects)
+        if (this.value.points.objects)
         {
-            const objPoints = this.points.value.objects.filter(o => o.type == POINT);
+            const objPoints = this.value.points.objects.filter(o => o.type == POINT);
 
             for (const pt of objPoints)
-                points.push(new PointValue(
-                    this.nodeId,
-                    new NumberValue(pt.x), 
-                    new NumberValue(pt.y)));
+                points.push(PointValue.create(this.nodeId, pt.x, pt.y));
         }
 
 
@@ -127,6 +124,7 @@ extends GShape
                 this.value.winding.value,
                 this.value.round  .value);
 
+            
             const bounds = getObjBounds([path]);
 
             let x = bounds.x;
@@ -134,7 +132,9 @@ extends GShape
             let w = bounds.w;
             let h = bounds.h;
 
+
             path.createDefaultTransform(x, y);
+
 
             this.value.objects.push(path, ...path.createTransformPoints(parse, x, y, w, h));
         }

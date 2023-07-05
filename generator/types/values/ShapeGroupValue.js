@@ -166,9 +166,10 @@ function parseShapeGroupValue(str, i = -1)
             case    RECTANGLE_VALUE: { const rect    = parseRectangleValue   (str, i);  i += rect   [1];  group.items.push(rect   [0]);  break; }
             case         LINE_VALUE: { const line    = parseLineValue        (str, i);  i += line   [1];  group.items.push(line   [0]);  break; }
             case      ELLIPSE_VALUE: { const ellipse = parseEllipseValue     (str, i);  i += ellipse[1];  group.items.push(ellipse[0]);  break; }
+            case      TRAPEZE_VALUE: { const ellipse = parseTrapezeValue     (str, i);  i += ellipse[1];  group.items.push(ellipse[0]);  break; }
             case      POLYGON_VALUE: { const poly    = parsePolygonValue     (str, i);  i += poly   [1];  group.items.push(poly   [0]);  break; }
             case         STAR_VALUE: { const star    = parseStarValue        (str, i);  i += star   [1];  group.items.push(star   [0]);  break; }
-            case    TEXT_SHAPE_VALUE: { const text    = parseTextShapeValue   (str, i);  i += text   [1];  group.items.push(text   [0]);  break; }
+            case   TEXT_SHAPE_VALUE: { const text    = parseTextShapeValue   (str, i);  i += text   [1];  group.items.push(text   [0]);  break; }
             case        POINT_VALUE: { const point   = parsePointValue       (str, i);  i += point  [1];  group.items.push(point  [0]);  break; }
             case  VECTOR_PATH_VALUE: { const path    = parseVectorPathValue  (str, i);  i += path   [1];  group.items.push(path   [0]);  break; }
             case      BOOLEAN_VALUE: { const path    = parseShapeBooleanValue(str, i);  i += path   [1];  group.items.push(path   [0]);  break; }

@@ -552,9 +552,10 @@ function initGeneratorMenus()
         new MenuItem('Rectangle',   {icon: iconRectangle,  callback: e => actionManager.do(getCreateNodeAction(RECTANGLE,   btnShape.div, getCreateOptions(e)))}),
         new MenuItem('Line',        {icon: iconLine,       callback: e => actionManager.do(getCreateNodeAction(LINE,        btnShape.div, getCreateOptions(e)))}),
         new MenuItem('Ellipse',     {icon: iconEllipse,    callback: e => actionManager.do(getCreateNodeAction(ELLIPSE,     btnShape.div, getCreateOptions(e)))}),
+        new MenuItem('Trapeze',     {icon: iconTrapeze,    callback: e => actionManager.do(getCreateNodeAction(TRAPEZE,     btnShape.div, getCreateOptions(e)))}),
         new MenuItem('Polygon',     {icon: iconPolygon,    callback: e => actionManager.do(getCreateNodeAction(POLYGON,     btnShape.div, getCreateOptions(e)))}),
         new MenuItem('Star',        {icon: iconStar,       callback: e => actionManager.do(getCreateNodeAction(STAR,        btnShape.div, getCreateOptions(e)))}),
-        new MenuItem('Text',        {icon: iconTextShape,  callback: e => actionManager.do(getCreateNodeAction(TEXT_SHAPE,   btnShape.div, getCreateOptions(e)))})]);
+        new MenuItem('Text',        {icon: iconTextShape,  callback: e => actionManager.do(getCreateNodeAction(TEXT_SHAPE,  btnShape.div, getCreateOptions(e)))})]);
 
 
     menuTransform = new Menu('Transform', true, false);

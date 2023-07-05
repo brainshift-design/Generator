@@ -124,6 +124,7 @@ function parseValueFromType(type, value)
         case    RECTANGLE_VALUE: return parseRectangleValue   (value)[0];
         case         LINE_VALUE: return parseLineValue        (value)[0];
         case      ELLIPSE_VALUE: return parseEllipseValue     (value)[0];
+        case      TRAPEZE_VALUE: return parseTrapezeValue     (value)[0];
         case      POLYGON_VALUE: return parsePolygonValue     (value)[0];
         case         STAR_VALUE: return parseStarValue        (value)[0];
         case   TEXT_SHAPE_VALUE: return parseTextShapeValue   (value)[0];
@@ -168,6 +169,7 @@ function displayValue(type, value)
         case    RECTANGLE_VALUE: return parseRectangleValue   (value)[0].toDisplayString();
         case         LINE_VALUE: return parseLineValue        (value)[0].toDisplayString();
         case      ELLIPSE_VALUE: return parseEllipseValue     (value)[0].toDisplayString();
+        case      TRAPEZE_VALUE: return parseTrapezeValue     (value)[0].toDisplayString();
         case      POLYGON_VALUE: return parsePolygonValue     (value)[0].toDisplayString();
         case         STAR_VALUE: return parseStarValue        (value)[0].toDisplayString();
         case   TEXT_SHAPE_VALUE: return parseTextShapeValue   (value)[0].toDisplayString();

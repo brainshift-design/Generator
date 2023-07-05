@@ -221,9 +221,10 @@ function genParse(parse, inParam = true)
     else if (parse.next == RECTANGLE              ) result = genParseRectangle        (parse);
     else if (parse.next == LINE                   ) result = genParseLine             (parse);
     else if (parse.next == ELLIPSE                ) result = genParseEllipse          (parse);
+    else if (parse.next == TRAPEZE                ) result = genParseTrapeze          (parse);
     else if (parse.next == POLYGON                ) result = genParsePolygon          (parse);
     else if (parse.next == STAR                   ) result = genParseStar             (parse);
-    else if (parse.next == TEXT_SHAPE              ) result = genParseTextShape        (parse);
+    else if (parse.next == TEXT_SHAPE             ) result = genParseTextShape        (parse);
  
     else if (parse.next == POINT_VALUE            ) result = genParsePointValue       (parse);
     else if (parse.next == POINT                  ) result = genParsePoint            (parse);

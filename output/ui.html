@@ -4401,6 +4401,7 @@ a
                 <p>•  fixed Select node crash</p>
                 <p>•  fixed wire arrows</p>
                 <p>•  optimized Repeat progress updates</p>
+                <p>•  added Trapeze shape primitive</p>
                 
                 <p><br/><br/><div id='chkHideWhatsNew'></div></p>
             </div>
@@ -9473,7 +9474,9 @@ const ELLIPSE_VALUE      = 'ELPS#';
 const ELLIPSE            = 'ELPS'; 
 const ELLIPSE_TYPES      = [ELLIPSE_VALUE, ELLIPSE];
 
+const TRAPEZE_VALUE      = 'TRPZ#';
 const TRAPEZE            = 'TRPZ';
+const TRAPEZE_TYPES      = [TRAPEZE_VALUE, TRAPEZE];
 
 const POLYGON_VALUE      = 'POLY#';
 const POLYGON            = 'POLY'; 
@@ -9483,9 +9486,9 @@ const STAR_VALUE         = 'STAR#';
 const STAR               = 'STAR'; 
 const STAR_TYPES         = [STAR_VALUE, STAR];
   
-const TEXT_SHAPE_VALUE    = 'TXTS#';
-const TEXT_SHAPE          = 'TXTS'; 
-const TEXT_SHAPE_TYPES    = [TEXT_SHAPE_VALUE, TEXT_SHAPE];
+const TEXT_SHAPE_VALUE   = 'TXTS#';
+const TEXT_SHAPE         = 'TXTS'; 
+const TEXT_SHAPE_TYPES   = [TEXT_SHAPE_VALUE, TEXT_SHAPE];
  
 const POINT              = 'PT';
 const POINT_VALUE        = 'PT#';
@@ -9542,6 +9545,7 @@ const SHAPE_VALUES =
     RECTANGLE_VALUE,
     LINE_VALUE,
     ELLIPSE_VALUE,
+    TRAPEZE_VALUE,
     POLYGON_VALUE,
     STAR_VALUE,
     TEXT_SHAPE_VALUE,
@@ -9569,7 +9573,7 @@ const SHAPE_TYPES =
     ...RECTANGLE_TYPES,
     ...LINE_TYPES,
     ...ELLIPSE_TYPES,
-    TRAPEZE,
+    ...TRAPEZE_TYPES,
     ...POLYGON_TYPES,
     ...STAR_TYPES,
     ...TEXT_SHAPE_TYPES,
@@ -10112,6 +10116,7 @@ function copyFigmaObject(obj)
         case RECTANGLE:   return FigmaRectangle .prototype.copy.call(obj);
         case LINE:        return FigmaLine      .prototype.copy.call(obj);
         case ELLIPSE:     return FigmaEllipse   .prototype.copy.call(obj);
+        case TRAPEZE:     return FigmaTrapeze   .prototype.copy.call(obj);
         case POLYGON:     return FigmaPolygon   .prototype.copy.call(obj);
         case STAR:        return FigmaStar      .prototype.copy.call(obj);
         case TEXT_SHAPE:  return FigmaText      .prototype.copy.call(obj);
@@ -10855,6 +10860,505 @@ extends FigmaShape
 }
 
 
+class FigmaVectorPath
+extends FigmaShape
+{
+    x;
+    y;
+    
+    points;
+    closed;
+    degree;
+
+    pathPoints;
+
+    pathData;
+    winding;
+    round;
+
+
+
+    constructor(nodeId, objectId, objectName, points, closed, degree, winding, round)
+    {
+        super(VECTOR_PATH, nodeId, objectId, objectName);
+        
+        this.points  = points.map(p => p.copy());
+
+        this.closed  = closed;
+        this.degree  = degree;
+        this.winding = winding;
+
+        this.round   = round;
+        
+
+        this.updatePathPoints();
+        this.updatePathData();
+    }
+
+
+
+    copy()
+    {
+        const copy = new FigmaVectorPath(
+            this.nodeId,
+            this.objectId,
+            this.objectName,
+
+            this.points, 
+
+            this.closed, 
+            this.degree,
+            this.winding,
+
+            this.round);
+
+
+        copy.x = this.x;
+        copy.y = this.y;
+
+
+        copy.copyBase(this);
+
+
+        return copy;
+    }
+
+
+
+    updatePathPoints()
+    {
+        switch (this.degree)
+        {
+        case 0: this.pathPoints = this.points.map(p => p.toPoint());                           break;
+        case 1: this.pathPoints = this.points.map(p => p.toPoint());                           break;
+        case 2: this.pathPoints = this.points.map(p => p.toPoint());                           break;
+        case 3: this.pathPoints = getSmoothPoints(this.points, this.closed, getSmoothSegment); break;
+        case 4: this.pathPoints = getSmoothPoints(this.points, this.closed, getSineXSegment ); break;
+        case 5: this.pathPoints = getSmoothPoints(this.points, this.closed, getSineYSegment ); break;
+        }
+    }
+
+
+
+    updatePathData()
+    {
+        let minX = Number.MAX_SAFE_INTEGER;
+        let minY = Number.MAX_SAFE_INTEGER;
+
+        for (const p of this.points)
+        {
+            minX = Math.min(minX, NumberValue.prototype.toNumber.call(p.x));
+            minY = Math.min(minY, NumberValue.prototype.toNumber.call(p.y));
+        }
+
+
+        this.x = minX;
+        this.y = minY;
+
+        this.pathData = getPathDataFromPoints(this.pathPoints, this.closed, this.degree);
+    }
+
+
+
+    toJsonObject()
+    {
+        return {
+            ...super.toJsonObject(),
+   
+            pathData: this.pathData,
+            winding:  this.winding,
+            round:    this.round
+        };
+    }
+
+
+
+    toData()
+    {
+        return [
+            ...super.toData(),
+   
+            /* 21 */ this.pathData,
+            /* 22 */ this.winding,
+            /* 23 */ this.round
+        ];
+    }
+}
+
+
+
+function getPathDataFromPoints(points, closed, degree)
+{
+    let pathData = '';
+
+
+    switch (degree)
+    {
+    case 0: pathData = getLinearPathData   (points);         break;
+    case 1: pathData = getQuadraticPathData(points, closed); break;
+    case 2: 
+    case 3: 
+    case 4: 
+    case 5: pathData = getCubicPathData    (points, closed); break;
+    }
+
+
+    const pointsAreValid =
+           degree == 0 && points.length > 2
+        || degree == 1 && points.length > 2
+        || degree == 2 && points.length > 3
+        || degree == 3 && points.length > 2
+        || degree == 4 && points.length > 2
+        || degree == 5 && points.length > 2;
+
+
+    if (   pointsAreValid
+        && (   closed
+            || equalv(points[0], points.at(-1))))
+        pathData += ' Z';
+
+
+    //console.log('pathData =', pathData);
+    return pathData;
+}
+
+
+
+function getQuadraticPathData(points, closed)
+{
+    let pathData = '';
+
+
+    if (points.length < 3)
+        return pathData;
+
+
+    pathData += 'M';
+    pathData += ' ' + points[0].x;
+    pathData += ' ' + points[0].y;
+
+    let i;
+    for (i = 1; i < points.length-1; i += 2)
+    {
+        pathData += 
+              ' Q'
+            + ' ' + points[i  ].x
+            + ' ' + points[i  ].y
+            + ' ' + points[i+1].x
+            + ' ' + points[i+1].y;
+    }
+
+
+    if (   points.length - i == 1
+        && closed)
+    {
+        pathData += 
+              ' Q'
+            + ' ' + points.at(-1).x
+            + ' ' + points.at(-1).y
+            + ' ' + points.at( 0).x
+            + ' ' + points.at( 0).y;
+    }
+
+
+    return pathData;
+}
+
+
+
+function getCubicPathData(points, closed)
+{
+    let pathData = '';
+
+
+    if (points.length < 4)
+        return pathData;
+
+
+    pathData += 'M';
+    pathData += ' ' + points[0].x;
+    pathData += ' ' + points[0].y;
+
+    let i;
+    for (i = 1; i < points.length-2; i += 3)
+    {
+        pathData += 
+              ' C'
+            + ' ' + points[i  ].x
+            + ' ' + points[i  ].y
+            + ' ' + points[i+1].x
+            + ' ' + points[i+1].y
+            + ' ' + points[i+2].x
+            + ' ' + points[i+2].y;
+    }
+
+
+    if (points.length - i == 2)
+    {
+        pathData += 
+              ' C'
+            + ' ' + points.at(-2).x
+            + ' ' + points.at(-2).y
+            + ' ' + points.at(-1).x
+            + ' ' + points.at(-1).y
+            + ' ' + points.at( 0).x
+            + ' ' + points.at( 0).y;
+    }
+
+
+    return pathData;
+}
+
+
+
+function getSmoothPoints(points, closed, getSegment)
+{
+    if (points.length < 2)
+        return '';
+
+
+    const bp = [];
+
+
+    // first point
+    let [pp, p, pn] = getSegment(
+        closed ? points.at(-1) : points[0], 
+        points[0],
+        points[1]);
+
+    bp.push(p);
+
+
+    let _pp = pn;
+
+
+    // middle segments
+    for (let i = 1; i < points.length; i++)
+    {
+        [pp, p, pn] = getSegment(
+            points[i-1], 
+            points[i],
+            i == points.length-1 
+            ? (closed ? points[0] : points[i])
+            : points[i+1]);
+
+        bp.push(_pp, pp, p);
+
+        _pp = pn;
+    }
+
+
+    if (bp.length > 3)
+    {
+        if (closed)
+        {
+            if (   equal(bp[0].x, bp.at(-1).x, 0.01)
+                && equal(bp[0].y, bp.at(-1).y, 0.01))
+            {
+                // last segment
+                [pp, p, pn] = getSegment(
+                    points.at(-2), 
+                    points.at( 0),
+                    points.at( 1));
+
+                bp[1]           = pn;
+                bp[bp.length-2] = pp;
+            }
+            else
+            {
+                // last segment
+                [pp, p, pn] = getSegment(
+                    points.at(-1), 
+                    points.at( 0),
+                    points.at( 1));
+
+                bp.push(_pp, pp, p);
+
+                bp[1]           = pn;
+                bp[bp.length-2] = pp;
+            }
+        }
+        else // open
+        {
+            bp[1]           = addv(bp[0],     mulvs(unitv(subv(bp[2],     bp[0]    )), distance(bp[3],     bp[0]    )/3));
+            bp[bp.length-2] = addv(bp.at(-1), mulvs(unitv(subv(bp.at(-3), bp.at(-1))), distance(bp.at(-4), bp.at(-1))/3));
+        }
+    }
+
+
+    return bp;
+}
+
+
+
+function getSmoothSegment(_pointP, _point, _pointN)
+{
+    const _pp = point(
+        NumberValue.prototype.toNumber.call(_pointP.x),
+        NumberValue.prototype.toNumber.call(_pointP.y));
+
+    const _p = point(
+        NumberValue.prototype.toNumber.call(_point.x),
+        NumberValue.prototype.toNumber.call(_point.y));
+
+    const _pn = point(
+        NumberValue.prototype.toNumber.call(_pointN.x),
+        NumberValue.prototype.toNumber.call(_pointN.y));
+
+
+    const v = subv(_pn, _pp);
+    
+    
+    let a = angleDiff(
+        angle(subv(_p, _pp)), 
+        angle(subv(_pn, _p)));
+       
+    a = Math.abs(a);
+    while (a > Tau/2) a -= Tau;
+    
+
+    const k     = 4 * (Math.sqrt(2) - 1) / 3;        // or use the value 0.55191502449 from http://spencermortensen.com/articles/bezier-circle/
+	const kCorr = 0.9993391093366649465402826439248; // slight improvement (see Bézier Curves p. 13, Gernot Hoffmann);
+
+    let f =
+        a > Tau/4
+        ? 1/3 + (k*kCorr - 1/3) * Math.sin(a)
+        : 1/3 + (k*kCorr - 1/3) * (1 - Math.cos(a));
+    
+
+    const pp = addv(_p, mulvs(unitv(v), -lengthv(v)/2 * f));
+    const pn = addv(_p, mulvs(unitv(v),  lengthv(v)/2 * f));
+
+
+    return [pp, _p, pn];
+}
+
+
+
+function getSineXSegment(_pointP, _point, _pointN)
+{
+    const _pp = point(
+        NumberValue.prototype.toNumber.call(_pointP.x),
+        NumberValue.prototype.toNumber.call(_pointP.y));
+
+    const _p = point(
+        NumberValue.prototype.toNumber.call(_point.x),
+        NumberValue.prototype.toNumber.call(_point.y));
+
+    const _pn = point(
+        NumberValue.prototype.toNumber.call(_pointN.x),
+        NumberValue.prototype.toNumber.call(_pointN.y));
+
+
+    const pp = point(_p.x - (_p.x - _pp.x) * 0.3615, _p.y);
+    const pn = point(_p.x + (_pn.x - _p.x) * 0.3615, _p.y);
+
+    return [pp, _p, pn];
+}
+
+
+
+function getSineYSegment(_pointP, _point, _pointN)
+{
+    const _pp = point(
+        NumberValue.prototype.toNumber.call(_pointP.x),
+        NumberValue.prototype.toNumber.call(_pointP.y));
+
+    const _p = point(
+        NumberValue.prototype.toNumber.call(_point.x),
+        NumberValue.prototype.toNumber.call(_point.y));
+
+    const _pn = point(
+        NumberValue.prototype.toNumber.call(_pointN.x),
+        NumberValue.prototype.toNumber.call(_pointN.y));
+
+
+    const pp = point(_p.x, _p.y - (_p.y - _pp.y) * 0.3615);
+    const pn = point(_p.x, _p.y + (_pn.y - _p.y) * 0.3615);
+
+    return [pp, _p, pn];
+}
+
+
+class FigmaTrapeze
+extends FigmaVectorPath
+{
+    width;
+    height;
+
+    round;
+
+    bias;
+
+
+
+    constructor(nodeId, objectId, objectName, x, y, width, height, round, bias)
+    {
+        const tw = width * (1 + Math.min(0,  bias/100));
+        const bw = width * (1 + Math.min(0, -bias/100));
+        
+        const tx = x + (width - tw) / 2;
+        const bx = x + (width - bw) / 2;
+
+        const points =
+        [
+            PointValue.create(nodeId, tx,      y         ),
+            PointValue.create(nodeId, bx,      y + height),
+            PointValue.create(nodeId, bx + bw, y + height),
+            PointValue.create(nodeId, tx + tw, y         )
+        ];
+
+    
+        super(
+            nodeId, 
+            objectId,
+            objectName, 
+            points,
+            1, // closed
+            0, // linear
+            0, // even-odd winding
+            round);
+
+        this.x      = x;
+        this.y      = y;
+        this.width  = width;
+        this.height = height;
+
+        this.round  = round;
+        this.bias   = bias;
+    }
+
+
+
+    copy()
+    {
+        const copy = new FigmaTrapeze(
+            this.nodeId,
+            this.objectId,
+            this.objectName,
+
+            this.x,
+            this.y,
+            this.width,
+            this.height,
+            
+            this.round,
+            this.bias);
+
+
+        copy.x = this.x;
+        copy.y = this.y;
+
+
+        copy.copyBase(this);
+
+        
+        return copy;
+    }
+}
+
+
+
 class FigmaPolygon
 extends FigmaShape
 {
@@ -11243,423 +11747,6 @@ extends FigmaShape
     }
 }
 
-
-
-class FigmaVectorPath
-extends FigmaShape
-{
-    x;
-    y;
-    
-    points;
-    closed;
-    degree;
-
-    pathPoints;
-
-    pathData;
-    winding;
-    round;
-
-
-
-    constructor(nodeId, objectId, objectName, points, closed, degree, winding, round)
-    {
-        super(VECTOR_PATH, nodeId, objectId, objectName);
-        
-        this.points  = points.map(p => p.copy());
-        this.closed  = closed;
-        this.degree  = degree;
-
-        this.winding = winding;
-        this.round   = round;
-
-        this.updatePathPoints();
-        this.updatePathData();
-    }
-
-
-
-    copy()
-    {
-        const copy = new FigmaVectorPath(
-            this.nodeId,
-            this.objectId,
-            this.objectName,
-
-            this.points, 
-            this.closed, 
-            this.degree,
-            this.winding,
-
-            this.round);
-
-
-        copy.x = this.x;
-        copy.y = this.y;
-
-
-        copy.copyBase(this);
-
-
-        return copy;
-    }
-
-
-
-    updatePathPoints()
-    {
-        switch (this.degree)
-        {
-        case 0: this.pathPoints = this.points.map(p => p.toPoint());                           break;
-        case 1: this.pathPoints = this.points.map(p => p.toPoint());                           break;
-        case 2: this.pathPoints = this.points.map(p => p.toPoint());                           break;
-        case 3: this.pathPoints = getSmoothPoints(this.points, this.closed, getSmoothSegment); break;
-        case 4: this.pathPoints = getSmoothPoints(this.points, this.closed, getSineXSegment ); break;
-        case 5: this.pathPoints = getSmoothPoints(this.points, this.closed, getSineYSegment ); break;
-        }
-    }
-
-
-
-    updatePathData()
-    {
-        let minX = Number.MAX_SAFE_INTEGER;
-        let minY = Number.MAX_SAFE_INTEGER;
-
-        for (const p of this.points)
-        {
-            minX = Math.min(minX, NumberValue.prototype.toNumber.call(p.x));
-            minY = Math.min(minY, NumberValue.prototype.toNumber.call(p.y));
-        }
-
-
-        this.x = minX;
-        this.y = minY;
-
-        this.pathData = getPathDataFromPoints(this.pathPoints, this.closed, this.degree);
-    }
-
-
-
-    toJsonObject()
-    {
-        return {
-            ...super.toJsonObject(),
-   
-            pathData: this.pathData,
-            winding:  this.winding,
-            round:    this.round
-        };
-    }
-
-
-
-    toData()
-    {
-        return [
-            ...super.toData(),
-   
-            /* 21 */ this.pathData,
-            /* 22 */ this.winding,
-            /* 23 */ this.round
-        ];
-    }
-}
-
-
-
-function getPathDataFromPoints(points, closed, degree)
-{
-    let pathData = '';
-
-
-    switch (degree)
-    {
-    case 0: pathData = getLinearPathData   (points);         break;
-    case 1: pathData = getQuadraticPathData(points, closed); break;
-    case 2: 
-    case 3: 
-    case 4: 
-    case 5: pathData = getCubicPathData    (points, closed); break;
-    }
-
-
-    const pointsAreValid =
-           degree == 0 && points.length > 2
-        || degree == 1 && points.length > 2
-        || degree == 2 && points.length > 3
-        || degree == 3 && points.length > 2
-        || degree == 4 && points.length > 2
-        || degree == 5 && points.length > 2;
-
-
-    if (   pointsAreValid
-        && (   closed
-            || equalv(points[0], points.at(-1))))
-        pathData += ' Z';
-
-
-    //console.log('pathData =', pathData);
-    return pathData;
-}
-
-
-
-function getQuadraticPathData(points, closed)
-{
-    let pathData = '';
-
-
-    if (points.length < 3)
-        return pathData;
-
-
-    pathData += 'M';
-    pathData += ' ' + points[0].x;
-    pathData += ' ' + points[0].y;
-
-    let i;
-    for (i = 1; i < points.length-1; i += 2)
-    {
-        pathData += 
-              ' Q'
-            + ' ' + points[i  ].x
-            + ' ' + points[i  ].y
-            + ' ' + points[i+1].x
-            + ' ' + points[i+1].y;
-    }
-
-
-    if (   points.length - i == 1
-        && closed)
-    {
-        pathData += 
-              ' Q'
-            + ' ' + points.at(-1).x
-            + ' ' + points.at(-1).y
-            + ' ' + points.at( 0).x
-            + ' ' + points.at( 0).y;
-    }
-
-
-    return pathData;
-}
-
-
-
-function getCubicPathData(points, closed)
-{
-    let pathData = '';
-
-
-    if (points.length < 4)
-        return pathData;
-
-
-    pathData += 'M';
-    pathData += ' ' + points[0].x;
-    pathData += ' ' + points[0].y;
-
-    let i;
-    for (i = 1; i < points.length-2; i += 3)
-    {
-        pathData += 
-              ' C'
-            + ' ' + points[i  ].x
-            + ' ' + points[i  ].y
-            + ' ' + points[i+1].x
-            + ' ' + points[i+1].y
-            + ' ' + points[i+2].x
-            + ' ' + points[i+2].y;
-    }
-
-
-    if (points.length - i == 2)
-    {
-        pathData += 
-              ' C'
-            + ' ' + points.at(-2).x
-            + ' ' + points.at(-2).y
-            + ' ' + points.at(-1).x
-            + ' ' + points.at(-1).y
-            + ' ' + points.at( 0).x
-            + ' ' + points.at( 0).y;
-    }
-
-
-    return pathData;
-}
-
-
-
-function getSmoothPoints(points, closed, getSegment)
-{
-    if (points.length < 2)
-        return '';
-
-
-    const bp = [];
-
-
-    // first point
-    let [pp, p, pn] = getSegment(
-        closed ? points.at(-1) : points[0], 
-        points[0],
-        points[1]);
-
-    bp.push(p);
-
-
-    let _pp = pn;
-
-
-    // middle segments
-    for (let i = 1; i < points.length; i++)
-    {
-        [pp, p, pn] = getSegment(
-            points[i-1], 
-            points[i],
-            i == points.length-1 
-            ? (closed ? points[0] : points[i])
-            : points[i+1]);
-
-        bp.push(_pp, pp, p);
-
-        _pp = pn;
-    }
-
-
-    if (bp.length > 3)
-    {
-        if (closed)
-        {
-            if (   equal(bp[0].x, bp.at(-1).x, 0.01)
-                && equal(bp[0].y, bp.at(-1).y, 0.01))
-            {
-                // last segment
-                [pp, p, pn] = getSegment(
-                    points.at(-2), 
-                    points.at( 0),
-                    points.at( 1));
-
-                bp[1]           = pn;
-                bp[bp.length-2] = pp;
-            }
-            else
-            {
-                // last segment
-                [pp, p, pn] = getSegment(
-                    points.at(-1), 
-                    points.at( 0),
-                    points.at( 1));
-
-                bp.push(_pp, pp, p);
-
-                bp[1]           = pn;
-                bp[bp.length-2] = pp;
-            }
-        }
-        else // open
-        {
-            bp[1]           = addv(bp[0],     mulvs(unitv(subv(bp[2],     bp[0]    )), distance(bp[3],     bp[0]    )/3));
-            bp[bp.length-2] = addv(bp.at(-1), mulvs(unitv(subv(bp.at(-3), bp.at(-1))), distance(bp.at(-4), bp.at(-1))/3));
-        }
-    }
-
-
-    return bp;
-}
-
-
-
-function getSmoothSegment(_pointP, _point, _pointN)
-{
-    const _pp = point(
-        NumberValue.prototype.toNumber.call(_pointP.x),
-        NumberValue.prototype.toNumber.call(_pointP.y));
-
-    const _p = point(
-        NumberValue.prototype.toNumber.call(_point.x),
-        NumberValue.prototype.toNumber.call(_point.y));
-
-    const _pn = point(
-        NumberValue.prototype.toNumber.call(_pointN.x),
-        NumberValue.prototype.toNumber.call(_pointN.y));
-
-
-    const v = subv(_pn, _pp);
-    
-    
-    let a = angleDiff(
-        angle(subv(_p, _pp)), 
-        angle(subv(_pn, _p)));
-       
-    a = Math.abs(a);
-    while (a > Tau/2) a -= Tau;
-    
-
-    const k     = 4 * (Math.sqrt(2) - 1) / 3;        // or use the value 0.55191502449 from http://spencermortensen.com/articles/bezier-circle/
-	const kCorr = 0.9993391093366649465402826439248; // slight improvement (see Bézier Curves p. 13, Gernot Hoffmann);
-
-    let f =
-        a > Tau/4
-        ? 1/3 + (k*kCorr - 1/3) * Math.sin(a)
-        : 1/3 + (k*kCorr - 1/3) * (1 - Math.cos(a));
-    
-
-    const pp = addv(_p, mulvs(unitv(v), -lengthv(v)/2 * f));
-    const pn = addv(_p, mulvs(unitv(v),  lengthv(v)/2 * f));
-
-
-    return [pp, _p, pn];
-}
-
-
-
-function getSineXSegment(_pointP, _point, _pointN)
-{
-    const _pp = point(
-        NumberValue.prototype.toNumber.call(_pointP.x),
-        NumberValue.prototype.toNumber.call(_pointP.y));
-
-    const _p = point(
-        NumberValue.prototype.toNumber.call(_point.x),
-        NumberValue.prototype.toNumber.call(_point.y));
-
-    const _pn = point(
-        NumberValue.prototype.toNumber.call(_pointN.x),
-        NumberValue.prototype.toNumber.call(_pointN.y));
-
-
-    const pp = point(_p.x - (_p.x - _pp.x) * 0.3615, _p.y);
-    const pn = point(_p.x + (_pn.x - _p.x) * 0.3615, _p.y);
-
-    return [pp, _p, pn];
-}
-
-
-
-function getSineYSegment(_pointP, _point, _pointN)
-{
-    const _pp = point(
-        NumberValue.prototype.toNumber.call(_pointP.x),
-        NumberValue.prototype.toNumber.call(_pointP.y));
-
-    const _p = point(
-        NumberValue.prototype.toNumber.call(_point.x),
-        NumberValue.prototype.toNumber.call(_point.y));
-
-    const _pn = point(
-        NumberValue.prototype.toNumber.call(_pointN.x),
-        NumberValue.prototype.toNumber.call(_pointN.y));
-
-
-    const pp = point(_p.x, _p.y - (_p.y - _pp.y) * 0.3615);
-    const pn = point(_p.x, _p.y + (_pn.y - _p.y) * 0.3615);
-
-    return [pp, _p, pn];
-}
 
 
 class FigmaBoolean
@@ -12127,6 +12214,7 @@ function parseValueFromType(type, value)
         case    RECTANGLE_VALUE: return parseRectangleValue   (value)[0];
         case         LINE_VALUE: return parseLineValue        (value)[0];
         case      ELLIPSE_VALUE: return parseEllipseValue     (value)[0];
+        case      TRAPEZE_VALUE: return parseTrapezeValue     (value)[0];
         case      POLYGON_VALUE: return parsePolygonValue     (value)[0];
         case         STAR_VALUE: return parseStarValue        (value)[0];
         case   TEXT_SHAPE_VALUE: return parseTextShapeValue   (value)[0];
@@ -12171,6 +12259,7 @@ function displayValue(type, value)
         case    RECTANGLE_VALUE: return parseRectangleValue   (value)[0].toDisplayString();
         case         LINE_VALUE: return parseLineValue        (value)[0].toDisplayString();
         case      ELLIPSE_VALUE: return parseEllipseValue     (value)[0].toDisplayString();
+        case      TRAPEZE_VALUE: return parseTrapezeValue     (value)[0].toDisplayString();
         case      POLYGON_VALUE: return parsePolygonValue     (value)[0].toDisplayString();
         case         STAR_VALUE: return parseStarValue        (value)[0].toDisplayString();
         case   TEXT_SHAPE_VALUE: return parseTextShapeValue   (value)[0].toDisplayString();
@@ -12674,6 +12763,7 @@ function parseListValue(str, i = -1)
             case    RECTANGLE_VALUE: { const rect    = parseRectangleValue   (str, i);  i += rect   [1];  list.items.push(rect   [0]);  break; }
             case         LINE_VALUE: { const line    = parseLineValue        (str, i);  i += line   [1];  list.items.push(line   [0]);  break; }
             case      ELLIPSE_VALUE: { const ellipse = parseEllipseValue     (str, i);  i += ellipse[1];  list.items.push(ellipse[0]);  break; }
+            case      TRAPEZE_VALUE: { const ellipse = parseTrapezeValue     (str, i);  i += ellipse[1];  list.items.push(ellipse[0]);  break; }
             case      POLYGON_VALUE: { const poly    = parsePolygonValue     (str, i);  i += poly   [1];  list.items.push(poly   [0]);  break; }
             case         STAR_VALUE: { const star    = parseStarValue        (str, i);  i += star   [1];  list.items.push(star   [0]);  break; }
             case   TEXT_SHAPE_VALUE: { const text    = parseTextShapeValue   (str, i);  i += text   [1];  list.items.push(text   [0]);  break; }
@@ -15219,6 +15309,174 @@ function parseEllipseValue(str, i = -1)
 
 
 
+class TrapezeValue
+extends ShapeValue
+{
+    x;
+    y;
+    width;
+    height;
+    round;
+    bias;
+
+
+
+    constructor(nodeId,
+                x      = new NumberValue(0), 
+                y      = new NumberValue(0), 
+                width  = new NumberValue(0), 
+                height = new NumberValue(0), 
+                round  = new NumberValue(0),
+                bias   = new NumberValue(0))
+    {
+        super(TRAPEZE_VALUE, nodeId);
+
+        this.x      = x;
+        this.y      = y;
+        this.width  = width;
+        this.height = height;
+        this.round  = round;
+        this.bias   = bias;
+    }
+
+
+
+    copy()
+    {
+        const copy = new TrapezeValue(
+            this.nodeId,
+            this.x     .copy(), 
+            this.y     .copy(), 
+            this.width .copy(), 
+            this.height.copy(), 
+            this.round .copy(),
+            this.bias  .copy());
+
+        copy.copyBase(this);
+
+        return copy;
+    }
+
+
+
+    equals(rect)
+    {
+        return rect
+            && this.x     .equals(rect.x     )
+            && this.y     .equals(rect.y     )
+            && this.width .equals(rect.width )
+            && this.height.equals(rect.height)
+            && this.round .equals(rect.round )
+            && this.bias  .equals(rect.bias  );
+    }
+
+
+
+    async eval(parse)
+    {
+        return this;
+    }
+
+
+
+    toString()
+    {
+        return      this.x     .toString()
+            + ' ' + this.y     .toString()
+            + ' ' + this.width .toString()
+            + ' ' + this.height.toString()
+            + ' ' + this.round .toString()
+            + ' ' + this.bias  .toString();
+    }
+
+
+
+    toDisplayString()
+    {
+        return      this.x     .toDisplayString()
+            + ' ' + this.y     .toDisplayString()
+            + ' ' + this.width .toDisplayString()
+            + ' ' + this.height.toDisplayString()
+            + ' ' + this.round .toDisplayString()
+            + ' ' + this.bias  .toDisplayString();
+    }
+
+
+
+    toValue()
+    {
+        return this.copy();
+    }
+
+
+
+    isValid()
+    {
+        return super.isValid()
+            && this.x     .isValid()
+            && this.y     .isValid()
+            && this.width .isValid()
+            && this.height.isValid()
+            && this.round .isValid()
+            && this.bias  .isValid();
+    }
+
+
+    
+    static NaN = new TrapezeValue(
+        '',
+        NumberValue.NaN,
+        NumberValue.NaN,
+        NumberValue.NaN,
+        NumberValue.NaN,
+        NumberValue.NaN,
+        NumberValue.NaN);
+}
+
+
+
+function parseTrapezeValue(str, i = -1)
+{
+    if (   i <  0 && str    == NAN_DISPLAY
+        || i >= 0 && str[i] == NAN_DISPLAY)
+        return [TrapezeValue.NaN, 1];
+
+
+    if (i < 0)
+    {
+        str = str.split(' ');
+        i   = 0;
+    }
+
+
+    const iStart = i;
+
+    const x      = parseNumberValue(str[i]); i += x     [1];
+    const y      = parseNumberValue(str[i]); i += y     [1];
+    const width  = parseNumberValue(str[i]); i += width [1];
+    const height = parseNumberValue(str[i]); i += height[1];
+    const round  = parseNumberValue(str[i]); i += round [1];
+    const bias   = parseNumberValue(str[i]); i += bias  [1];
+
+
+    const rect = new TrapezeValue(
+        '', // set node ID elsewhere
+        x     [0],
+        y     [0],
+        width [0],
+        height[0],
+        round [0],
+        bias  [0]);
+
+
+    i = parseShapeBaseValue(str, i, rect);
+
+    
+    return [rect, i - iStart];
+}
+
+
+
 class PolygonValue
 extends ShapeValue
 {
@@ -15861,6 +16119,16 @@ extends GValue
 
 
 
+    static create(nodeId, x, y)
+    {
+        return new PointValue(
+            nodeId,
+            new NumberValue(x),
+            new NumberValue(y));
+    }
+
+
+
     async eval(parse)
     {
         return this;
@@ -16408,9 +16676,10 @@ function parseShapeGroupValue(str, i = -1)
             case    RECTANGLE_VALUE: { const rect    = parseRectangleValue   (str, i);  i += rect   [1];  group.items.push(rect   [0]);  break; }
             case         LINE_VALUE: { const line    = parseLineValue        (str, i);  i += line   [1];  group.items.push(line   [0]);  break; }
             case      ELLIPSE_VALUE: { const ellipse = parseEllipseValue     (str, i);  i += ellipse[1];  group.items.push(ellipse[0]);  break; }
+            case      TRAPEZE_VALUE: { const ellipse = parseTrapezeValue     (str, i);  i += ellipse[1];  group.items.push(ellipse[0]);  break; }
             case      POLYGON_VALUE: { const poly    = parsePolygonValue     (str, i);  i += poly   [1];  group.items.push(poly   [0]);  break; }
             case         STAR_VALUE: { const star    = parseStarValue        (str, i);  i += star   [1];  group.items.push(star   [0]);  break; }
-            case    TEXT_SHAPE_VALUE: { const text    = parseTextShapeValue   (str, i);  i += text   [1];  group.items.push(text   [0]);  break; }
+            case   TEXT_SHAPE_VALUE: { const text    = parseTextShapeValue   (str, i);  i += text   [1];  group.items.push(text   [0]);  break; }
             case        POINT_VALUE: { const point   = parsePointValue       (str, i);  i += point  [1];  group.items.push(point  [0]);  break; }
             case  VECTOR_PATH_VALUE: { const path    = parseVectorPathValue  (str, i);  i += path   [1];  group.items.push(path   [0]);  break; }
             case      BOOLEAN_VALUE: { const path    = parseShapeBooleanValue(str, i);  i += path   [1];  group.items.push(path   [0]);  break; }
@@ -23036,9 +23305,10 @@ extends GTextType
         {
             try 
             {
-                await fetch(request.value)
-                    .then(response => response.text())
-                    .then(text => this.value = new TextValue(text));
+                const response = await fetch(request.value);
+                const content  = await response.text();
+                
+                this.value = new TextValue(content);
             }
             catch (e)
             {
@@ -26546,13 +26816,6 @@ extends GOperator
 
 
 
-    async evalShapeBase(parse, input, evalHeight = true)
-    {
-
-    }
-
-
-
     pushValueUpdates(parse)
     {
         super.pushValueUpdates(parse);
@@ -26655,11 +26918,8 @@ extends GShapeBase
 
 
 
-    async evalShapeBase(parse, input, evalHeight = true)
+    async evalShapeBase(parse)
     {
-        super.evalShapeBase(parse, input, evalHeight);
-
-
         let props = this.props ? (await this.props.eval(parse)).toValue() : null;
 
         if (   props
@@ -26692,7 +26952,8 @@ extends GShapeBase
             consoleAssert(obj.effects, 'obj.effects must not be null');
 
 
-            if (this.value.props.items == undefined) 
+            if (  !this.value.props
+                || this.value.props.items == undefined) 
                 continue;
 
 
@@ -26814,13 +27075,13 @@ extends GShape
         }
 
        
-        await this.evalShapeBase(parse, input);
+        this.updateValues = [['value', this.value]];
+
+
+        await this.evalShapeBase(parse);
 
 
         await this.evalObjects(parse);
-
-
-        this.updateValues = [['value', this.value]];
 
 
         this.validate();
@@ -26975,7 +27236,7 @@ extends GShape
         this.updateValues = [['value', this.value]];
 
 
-        await this.evalShapeBase(parse, input, false);
+        await this.evalShapeBase(parse);
 
 
         await this.evalObjects(parse);
@@ -27121,7 +27382,7 @@ extends GShape
         this.updateValues = [['value', this.value]];
 
 
-        await this.evalShapeBase(parse, input);
+        await this.evalShapeBase(parse);
 
 
         await this.evalObjects(parse);
@@ -27223,6 +27484,187 @@ extends GShape
 }
 
 
+class GTrapeze
+extends GShape
+{
+    round = null;
+    bias  = null;
+
+
+
+    constructor(nodeId, options)
+    {
+        super(TRAPEZE, nodeId, options);
+    }
+
+
+
+    copy()
+    {
+        const copy = new GTrapeze(this.nodeId, this.options);
+
+        copy.copyBase(this);
+
+        if (this.round) copy.round = this.round.copy();
+        if (this.bias ) copy.bias  = this.bias .copy();
+
+        return copy;
+    }
+
+
+
+    async eval(parse)
+    {
+        if (this.isCached())
+            return this;
+
+        
+        const [x, y, width, height] = await this.evalBaseParams(parse);
+
+        const round = this.round ? (await this.round.eval(parse)).toValue() : null;
+        const bias  = this.bias  ? (await this.bias .eval(parse)).toValue() : null;
+
+
+        let input = null;
+
+        if (this.input)
+        {
+            input = (await this.input.eval(parse)).toValue();
+
+            this.value = new TrapezeValue(
+                this.nodeId,
+                x      ?? input.x,
+                y      ?? input.y,
+                width  ?? input.width,
+                height ?? input.height,
+                round  ?? input.round,
+                bias   ?? input.bias);
+        }
+        else
+        {
+            this.value = new TrapezeValue(
+                this.nodeId, 
+                x, 
+                y, 
+                width, 
+                height, 
+                round,
+                bias);
+        }
+
+       
+        this.updateValues = [['value', this.value]];
+
+
+        await this.evalShapeBase(parse);
+
+
+        await this.evalObjects(parse);
+
+
+        this.validate();
+
+        return this;
+    }
+
+
+
+    async evalObjects(parse, options = {})
+    {
+        if (!this.options.enabled)
+            return;
+     
+        
+        this.value.objects = [];
+
+            
+        if (   this.value.x
+            && this.value.y
+            && this.value.width
+            && this.value.height
+            && this.value.round
+            && this.value.bias)
+        {
+            let   x = this.value.x     .value;
+            let   y = this.value.y     .value;
+            let   w = this.value.width .value;
+            let   h = this.value.height.value;
+            const r = Math.max(0, this.value.round.value);
+            let   b = this.value.bias  .value;
+
+
+            [x, y, w, h, , ] = validateObjectRect(x, y, w, h);
+
+
+            if (   w != 0 
+                && h != 0)
+            {
+                const trap = new FigmaTrapeze(
+                    this.nodeId, 
+                    this.nodeId, 
+                    this.nodeName, 
+                    x, y, w, h, r, b);
+
+                trap.createDefaultTransform(x, y);
+
+                this.value.objects.push(trap, ...trap.createTransformPoints(parse, x, y, w, h));
+            }
+        }
+
+
+        await super.evalObjects(parse);
+    }
+
+
+
+    toValue()
+    {
+        const trap = new TrapezeValue(
+            this.nodeId,
+            this.x     .toValue(),
+            this.y     .toValue(),
+            this.width .toValue(),
+            this.height.toValue(),
+            this.round .toValue(),
+            this.bias  .toValue());
+
+        trap.props   = this.props.toValue();
+        trap.objects = this.value.objects.map(o => o.copy());
+
+        return trap;
+    }
+
+
+
+    isValid()
+    {
+        return super.isValid()
+            && this.round.isValid()
+            && this.bias .isValid();
+    }
+
+
+
+    pushValueUpdates(parse)
+    {
+        super.pushValueUpdates(parse);
+
+        if (this.round) this.round.pushValueUpdates(parse);
+        if (this.bias ) this.bias .pushValueUpdates(parse);
+    }
+
+
+
+    invalidateInputs(from)
+    {
+        super.invalidateInputs(from);
+
+        if (this.round) this.round.invalidateInputs(from);
+        if (this.bias ) this.bias .invalidateInputs(from);
+    }
+}
+
+
 class GPolygon
 extends GShape
 {
@@ -27295,7 +27737,7 @@ extends GShape
         this.updateValues = [['value', this.value]];
 
 
-        await this.evalShapeBase(parse, input);
+        await this.evalShapeBase(parse);
 
 
         await this.evalObjects(parse);
@@ -27482,7 +27924,7 @@ extends GShape
         this.updateValues = [['value', this.value]];
 
 
-        await this.evalShapeBase(parse, input);
+        await this.evalShapeBase(parse);
 
 
         await this.evalObjects(parse);
@@ -27703,7 +28145,7 @@ extends GShape
         }
 
        
-        await this.evalShapeBase(parse, input);
+        await this.evalShapeBase(parse);
 
 
         await this.evalObjects(parse);
@@ -28105,7 +28547,7 @@ extends GShape
         this.updateValues = [['value', this.value]];
 
 
-        await this.evalShapeBase(parse, input);
+        await this.evalShapeBase(parse);
 
 
         await this.evalObjects(parse);
@@ -28126,15 +28568,12 @@ extends GShape
 
         const points = [];
 
-        if (this.points.value.objects)
+        if (this.value.points.objects)
         {
-            const objPoints = this.points.value.objects.filter(o => o.type == POINT);
+            const objPoints = this.value.points.objects.filter(o => o.type == POINT);
 
             for (const pt of objPoints)
-                points.push(new PointValue(
-                    this.nodeId,
-                    new NumberValue(pt.x), 
-                    new NumberValue(pt.y)));
+                points.push(PointValue.create(this.nodeId, pt.x, pt.y));
         }
 
 
@@ -28157,6 +28596,7 @@ extends GShape
                 this.value.winding.value,
                 this.value.round  .value);
 
+            
             const bounds = getObjBounds([path]);
 
             let x = bounds.x;
@@ -28164,7 +28604,9 @@ extends GShape
             let w = bounds.w;
             let h = bounds.h;
 
+
             path.createDefaultTransform(x, y);
+
 
             this.value.objects.push(path, ...path.createTransformPoints(parse, x, y, w, h));
         }
@@ -28315,7 +28757,7 @@ extends GShapeBase
         }
 
 
-        //await this.evalShapeBase(parse, input);
+        //await this.evalShapeBase(parse);
 
 
         await this.evalObjects(parse);
@@ -28488,7 +28930,7 @@ extends GShape
         this.updateValues = [['value', this.value]];
 
 
-        await this.evalShapeBase(parse, input);
+        await this.evalShapeBase(parse);
 
 
         await this.evalObjects(parse);
@@ -28683,7 +29125,7 @@ extends GShapeBase
         ];
 
 
-        await this.evalShapeBase(parse, input);
+        await this.evalShapeBase(parse);
 
         await this.evalObjects(parse);
 
@@ -28868,7 +29310,7 @@ extends GShapeBase
         this.updateValues = [['', NullValue]];
 
 
-        //await this.evalShapeBase(parse, input);
+        //await this.evalShapeBase(parse);
 
 
         //await this.evalObjects(parse);
@@ -33647,6 +34089,72 @@ function genParseEllipse(parse)
 
 
 
+function genParseTrapeze(parse)
+{
+    const [, nodeId, options, ignore] = genParseNodeStart(parse);
+
+
+    const trapeze = new GTrapeze(nodeId, options);
+
+
+    let nInputs = -1;
+
+    if (!ignore)
+    {
+        nInputs = parseInt(parse.move());
+        consoleAssert(nInputs => 0 && nInputs <= 1, 'nInputs must be [0, 1]');
+    }
+
+
+    if (parse.settings.logRequests) 
+        logReq(trapeze, parse, ignore);
+
+
+    if (ignore) 
+    {
+        genParseNodeEnd(parse, trapeze);
+        return parse.parsedNodes.find(n => n.nodeId == nodeId);
+    }
+
+
+    parse.nTab++;
+
+
+    if (nInputs == 1)
+        trapeze.input = genParse(parse);
+
+
+    const nParamIds = genParseParamCount(parse);
+
+    for (let i = 0; i < nParamIds; i++)
+    {
+        const paramId = genParseParamId(parse);
+
+        parse.inParam = true;
+
+        switch (paramId)
+        {
+        case 'x':      trapeze.x      = genParse(parse); break;
+        case 'y':      trapeze.y      = genParse(parse); break;
+        case 'width':  trapeze.width  = genParse(parse); break;
+        case 'height': trapeze.height = genParse(parse); break;
+        case 'round':  trapeze.round  = genParse(parse); break;
+        case 'bias':   trapeze.bias   = genParse(parse); break;
+        case 'props':  trapeze.props  = genParse(parse); break;
+        }
+    }
+    
+    
+    parse.inParam = false;
+    parse.nTab--;
+
+
+    genParseNodeEnd(parse, trapeze);
+    return trapeze;
+}
+
+
+
 function genParsePolygon(parse)
 {
     const [, nodeId, options, ignore] = genParseNodeStart(parse);
@@ -35432,9 +35940,10 @@ function genParse(parse, inParam = true)
     else if (parse.next == RECTANGLE              ) result = genParseRectangle        (parse);
     else if (parse.next == LINE                   ) result = genParseLine             (parse);
     else if (parse.next == ELLIPSE                ) result = genParseEllipse          (parse);
+    else if (parse.next == TRAPEZE                ) result = genParseTrapeze          (parse);
     else if (parse.next == POLYGON                ) result = genParsePolygon          (parse);
     else if (parse.next == STAR                   ) result = genParseStar             (parse);
-    else if (parse.next == TEXT_SHAPE              ) result = genParseTextShape        (parse);
+    else if (parse.next == TEXT_SHAPE             ) result = genParseTextShape        (parse);
  
     else if (parse.next == POINT_VALUE            ) result = genParsePointValue       (parse);
     else if (parse.next == POINT                  ) result = genParsePoint            (parse);
@@ -45687,7 +46196,9 @@ const ELLIPSE_VALUE      = 'ELPS#';
 const ELLIPSE            = 'ELPS'; 
 const ELLIPSE_TYPES      = [ELLIPSE_VALUE, ELLIPSE];
 
+const TRAPEZE_VALUE      = 'TRPZ#';
 const TRAPEZE            = 'TRPZ';
+const TRAPEZE_TYPES      = [TRAPEZE_VALUE, TRAPEZE];
 
 const POLYGON_VALUE      = 'POLY#';
 const POLYGON            = 'POLY'; 
@@ -45697,9 +46208,9 @@ const STAR_VALUE         = 'STAR#';
 const STAR               = 'STAR'; 
 const STAR_TYPES         = [STAR_VALUE, STAR];
   
-const TEXT_SHAPE_VALUE    = 'TXTS#';
-const TEXT_SHAPE          = 'TXTS'; 
-const TEXT_SHAPE_TYPES    = [TEXT_SHAPE_VALUE, TEXT_SHAPE];
+const TEXT_SHAPE_VALUE   = 'TXTS#';
+const TEXT_SHAPE         = 'TXTS'; 
+const TEXT_SHAPE_TYPES   = [TEXT_SHAPE_VALUE, TEXT_SHAPE];
  
 const POINT              = 'PT';
 const POINT_VALUE        = 'PT#';
@@ -45756,6 +46267,7 @@ const SHAPE_VALUES =
     RECTANGLE_VALUE,
     LINE_VALUE,
     ELLIPSE_VALUE,
+    TRAPEZE_VALUE,
     POLYGON_VALUE,
     STAR_VALUE,
     TEXT_SHAPE_VALUE,
@@ -45783,7 +46295,7 @@ const SHAPE_TYPES =
     ...RECTANGLE_TYPES,
     ...LINE_TYPES,
     ...ELLIPSE_TYPES,
-    TRAPEZE,
+    ...TRAPEZE_TYPES,
     ...POLYGON_TYPES,
     ...STAR_TYPES,
     ...TEXT_SHAPE_TYPES,
@@ -46326,6 +46838,7 @@ function copyFigmaObject(obj)
         case RECTANGLE:   return FigmaRectangle .prototype.copy.call(obj);
         case LINE:        return FigmaLine      .prototype.copy.call(obj);
         case ELLIPSE:     return FigmaEllipse   .prototype.copy.call(obj);
+        case TRAPEZE:     return FigmaTrapeze   .prototype.copy.call(obj);
         case POLYGON:     return FigmaPolygon   .prototype.copy.call(obj);
         case STAR:        return FigmaStar      .prototype.copy.call(obj);
         case TEXT_SHAPE:  return FigmaText      .prototype.copy.call(obj);
@@ -47069,6 +47582,505 @@ extends FigmaShape
 }
 
 
+class FigmaVectorPath
+extends FigmaShape
+{
+    x;
+    y;
+    
+    points;
+    closed;
+    degree;
+
+    pathPoints;
+
+    pathData;
+    winding;
+    round;
+
+
+
+    constructor(nodeId, objectId, objectName, points, closed, degree, winding, round)
+    {
+        super(VECTOR_PATH, nodeId, objectId, objectName);
+        
+        this.points  = points.map(p => p.copy());
+
+        this.closed  = closed;
+        this.degree  = degree;
+        this.winding = winding;
+
+        this.round   = round;
+        
+
+        this.updatePathPoints();
+        this.updatePathData();
+    }
+
+
+
+    copy()
+    {
+        const copy = new FigmaVectorPath(
+            this.nodeId,
+            this.objectId,
+            this.objectName,
+
+            this.points, 
+
+            this.closed, 
+            this.degree,
+            this.winding,
+
+            this.round);
+
+
+        copy.x = this.x;
+        copy.y = this.y;
+
+
+        copy.copyBase(this);
+
+
+        return copy;
+    }
+
+
+
+    updatePathPoints()
+    {
+        switch (this.degree)
+        {
+        case 0: this.pathPoints = this.points.map(p => p.toPoint());                           break;
+        case 1: this.pathPoints = this.points.map(p => p.toPoint());                           break;
+        case 2: this.pathPoints = this.points.map(p => p.toPoint());                           break;
+        case 3: this.pathPoints = getSmoothPoints(this.points, this.closed, getSmoothSegment); break;
+        case 4: this.pathPoints = getSmoothPoints(this.points, this.closed, getSineXSegment ); break;
+        case 5: this.pathPoints = getSmoothPoints(this.points, this.closed, getSineYSegment ); break;
+        }
+    }
+
+
+
+    updatePathData()
+    {
+        let minX = Number.MAX_SAFE_INTEGER;
+        let minY = Number.MAX_SAFE_INTEGER;
+
+        for (const p of this.points)
+        {
+            minX = Math.min(minX, NumberValue.prototype.toNumber.call(p.x));
+            minY = Math.min(minY, NumberValue.prototype.toNumber.call(p.y));
+        }
+
+
+        this.x = minX;
+        this.y = minY;
+
+        this.pathData = getPathDataFromPoints(this.pathPoints, this.closed, this.degree);
+    }
+
+
+
+    toJsonObject()
+    {
+        return {
+            ...super.toJsonObject(),
+   
+            pathData: this.pathData,
+            winding:  this.winding,
+            round:    this.round
+        };
+    }
+
+
+
+    toData()
+    {
+        return [
+            ...super.toData(),
+   
+            /* 21 */ this.pathData,
+            /* 22 */ this.winding,
+            /* 23 */ this.round
+        ];
+    }
+}
+
+
+
+function getPathDataFromPoints(points, closed, degree)
+{
+    let pathData = '';
+
+
+    switch (degree)
+    {
+    case 0: pathData = getLinearPathData   (points);         break;
+    case 1: pathData = getQuadraticPathData(points, closed); break;
+    case 2: 
+    case 3: 
+    case 4: 
+    case 5: pathData = getCubicPathData    (points, closed); break;
+    }
+
+
+    const pointsAreValid =
+           degree == 0 && points.length > 2
+        || degree == 1 && points.length > 2
+        || degree == 2 && points.length > 3
+        || degree == 3 && points.length > 2
+        || degree == 4 && points.length > 2
+        || degree == 5 && points.length > 2;
+
+
+    if (   pointsAreValid
+        && (   closed
+            || equalv(points[0], points.at(-1))))
+        pathData += ' Z';
+
+
+    //console.log('pathData =', pathData);
+    return pathData;
+}
+
+
+
+function getQuadraticPathData(points, closed)
+{
+    let pathData = '';
+
+
+    if (points.length < 3)
+        return pathData;
+
+
+    pathData += 'M';
+    pathData += ' ' + points[0].x;
+    pathData += ' ' + points[0].y;
+
+    let i;
+    for (i = 1; i < points.length-1; i += 2)
+    {
+        pathData += 
+              ' Q'
+            + ' ' + points[i  ].x
+            + ' ' + points[i  ].y
+            + ' ' + points[i+1].x
+            + ' ' + points[i+1].y;
+    }
+
+
+    if (   points.length - i == 1
+        && closed)
+    {
+        pathData += 
+              ' Q'
+            + ' ' + points.at(-1).x
+            + ' ' + points.at(-1).y
+            + ' ' + points.at( 0).x
+            + ' ' + points.at( 0).y;
+    }
+
+
+    return pathData;
+}
+
+
+
+function getCubicPathData(points, closed)
+{
+    let pathData = '';
+
+
+    if (points.length < 4)
+        return pathData;
+
+
+    pathData += 'M';
+    pathData += ' ' + points[0].x;
+    pathData += ' ' + points[0].y;
+
+    let i;
+    for (i = 1; i < points.length-2; i += 3)
+    {
+        pathData += 
+              ' C'
+            + ' ' + points[i  ].x
+            + ' ' + points[i  ].y
+            + ' ' + points[i+1].x
+            + ' ' + points[i+1].y
+            + ' ' + points[i+2].x
+            + ' ' + points[i+2].y;
+    }
+
+
+    if (points.length - i == 2)
+    {
+        pathData += 
+              ' C'
+            + ' ' + points.at(-2).x
+            + ' ' + points.at(-2).y
+            + ' ' + points.at(-1).x
+            + ' ' + points.at(-1).y
+            + ' ' + points.at( 0).x
+            + ' ' + points.at( 0).y;
+    }
+
+
+    return pathData;
+}
+
+
+
+function getSmoothPoints(points, closed, getSegment)
+{
+    if (points.length < 2)
+        return '';
+
+
+    const bp = [];
+
+
+    // first point
+    let [pp, p, pn] = getSegment(
+        closed ? points.at(-1) : points[0], 
+        points[0],
+        points[1]);
+
+    bp.push(p);
+
+
+    let _pp = pn;
+
+
+    // middle segments
+    for (let i = 1; i < points.length; i++)
+    {
+        [pp, p, pn] = getSegment(
+            points[i-1], 
+            points[i],
+            i == points.length-1 
+            ? (closed ? points[0] : points[i])
+            : points[i+1]);
+
+        bp.push(_pp, pp, p);
+
+        _pp = pn;
+    }
+
+
+    if (bp.length > 3)
+    {
+        if (closed)
+        {
+            if (   equal(bp[0].x, bp.at(-1).x, 0.01)
+                && equal(bp[0].y, bp.at(-1).y, 0.01))
+            {
+                // last segment
+                [pp, p, pn] = getSegment(
+                    points.at(-2), 
+                    points.at( 0),
+                    points.at( 1));
+
+                bp[1]           = pn;
+                bp[bp.length-2] = pp;
+            }
+            else
+            {
+                // last segment
+                [pp, p, pn] = getSegment(
+                    points.at(-1), 
+                    points.at( 0),
+                    points.at( 1));
+
+                bp.push(_pp, pp, p);
+
+                bp[1]           = pn;
+                bp[bp.length-2] = pp;
+            }
+        }
+        else // open
+        {
+            bp[1]           = addv(bp[0],     mulvs(unitv(subv(bp[2],     bp[0]    )), distance(bp[3],     bp[0]    )/3));
+            bp[bp.length-2] = addv(bp.at(-1), mulvs(unitv(subv(bp.at(-3), bp.at(-1))), distance(bp.at(-4), bp.at(-1))/3));
+        }
+    }
+
+
+    return bp;
+}
+
+
+
+function getSmoothSegment(_pointP, _point, _pointN)
+{
+    const _pp = point(
+        NumberValue.prototype.toNumber.call(_pointP.x),
+        NumberValue.prototype.toNumber.call(_pointP.y));
+
+    const _p = point(
+        NumberValue.prototype.toNumber.call(_point.x),
+        NumberValue.prototype.toNumber.call(_point.y));
+
+    const _pn = point(
+        NumberValue.prototype.toNumber.call(_pointN.x),
+        NumberValue.prototype.toNumber.call(_pointN.y));
+
+
+    const v = subv(_pn, _pp);
+    
+    
+    let a = angleDiff(
+        angle(subv(_p, _pp)), 
+        angle(subv(_pn, _p)));
+       
+    a = Math.abs(a);
+    while (a > Tau/2) a -= Tau;
+    
+
+    const k     = 4 * (Math.sqrt(2) - 1) / 3;        // or use the value 0.55191502449 from http://spencermortensen.com/articles/bezier-circle/
+	const kCorr = 0.9993391093366649465402826439248; // slight improvement (see Bézier Curves p. 13, Gernot Hoffmann);
+
+    let f =
+        a > Tau/4
+        ? 1/3 + (k*kCorr - 1/3) * Math.sin(a)
+        : 1/3 + (k*kCorr - 1/3) * (1 - Math.cos(a));
+    
+
+    const pp = addv(_p, mulvs(unitv(v), -lengthv(v)/2 * f));
+    const pn = addv(_p, mulvs(unitv(v),  lengthv(v)/2 * f));
+
+
+    return [pp, _p, pn];
+}
+
+
+
+function getSineXSegment(_pointP, _point, _pointN)
+{
+    const _pp = point(
+        NumberValue.prototype.toNumber.call(_pointP.x),
+        NumberValue.prototype.toNumber.call(_pointP.y));
+
+    const _p = point(
+        NumberValue.prototype.toNumber.call(_point.x),
+        NumberValue.prototype.toNumber.call(_point.y));
+
+    const _pn = point(
+        NumberValue.prototype.toNumber.call(_pointN.x),
+        NumberValue.prototype.toNumber.call(_pointN.y));
+
+
+    const pp = point(_p.x - (_p.x - _pp.x) * 0.3615, _p.y);
+    const pn = point(_p.x + (_pn.x - _p.x) * 0.3615, _p.y);
+
+    return [pp, _p, pn];
+}
+
+
+
+function getSineYSegment(_pointP, _point, _pointN)
+{
+    const _pp = point(
+        NumberValue.prototype.toNumber.call(_pointP.x),
+        NumberValue.prototype.toNumber.call(_pointP.y));
+
+    const _p = point(
+        NumberValue.prototype.toNumber.call(_point.x),
+        NumberValue.prototype.toNumber.call(_point.y));
+
+    const _pn = point(
+        NumberValue.prototype.toNumber.call(_pointN.x),
+        NumberValue.prototype.toNumber.call(_pointN.y));
+
+
+    const pp = point(_p.x, _p.y - (_p.y - _pp.y) * 0.3615);
+    const pn = point(_p.x, _p.y + (_pn.y - _p.y) * 0.3615);
+
+    return [pp, _p, pn];
+}
+
+
+class FigmaTrapeze
+extends FigmaVectorPath
+{
+    width;
+    height;
+
+    round;
+
+    bias;
+
+
+
+    constructor(nodeId, objectId, objectName, x, y, width, height, round, bias)
+    {
+        const tw = width * (1 + Math.min(0,  bias/100));
+        const bw = width * (1 + Math.min(0, -bias/100));
+        
+        const tx = x + (width - tw) / 2;
+        const bx = x + (width - bw) / 2;
+
+        const points =
+        [
+            PointValue.create(nodeId, tx,      y         ),
+            PointValue.create(nodeId, bx,      y + height),
+            PointValue.create(nodeId, bx + bw, y + height),
+            PointValue.create(nodeId, tx + tw, y         )
+        ];
+
+    
+        super(
+            nodeId, 
+            objectId,
+            objectName, 
+            points,
+            1, // closed
+            0, // linear
+            0, // even-odd winding
+            round);
+
+        this.x      = x;
+        this.y      = y;
+        this.width  = width;
+        this.height = height;
+
+        this.round  = round;
+        this.bias   = bias;
+    }
+
+
+
+    copy()
+    {
+        const copy = new FigmaTrapeze(
+            this.nodeId,
+            this.objectId,
+            this.objectName,
+
+            this.x,
+            this.y,
+            this.width,
+            this.height,
+            
+            this.round,
+            this.bias);
+
+
+        copy.x = this.x;
+        copy.y = this.y;
+
+
+        copy.copyBase(this);
+
+        
+        return copy;
+    }
+}
+
+
+
 class FigmaPolygon
 extends FigmaShape
 {
@@ -47457,423 +48469,6 @@ extends FigmaShape
     }
 }
 
-
-
-class FigmaVectorPath
-extends FigmaShape
-{
-    x;
-    y;
-    
-    points;
-    closed;
-    degree;
-
-    pathPoints;
-
-    pathData;
-    winding;
-    round;
-
-
-
-    constructor(nodeId, objectId, objectName, points, closed, degree, winding, round)
-    {
-        super(VECTOR_PATH, nodeId, objectId, objectName);
-        
-        this.points  = points.map(p => p.copy());
-        this.closed  = closed;
-        this.degree  = degree;
-
-        this.winding = winding;
-        this.round   = round;
-
-        this.updatePathPoints();
-        this.updatePathData();
-    }
-
-
-
-    copy()
-    {
-        const copy = new FigmaVectorPath(
-            this.nodeId,
-            this.objectId,
-            this.objectName,
-
-            this.points, 
-            this.closed, 
-            this.degree,
-            this.winding,
-
-            this.round);
-
-
-        copy.x = this.x;
-        copy.y = this.y;
-
-
-        copy.copyBase(this);
-
-
-        return copy;
-    }
-
-
-
-    updatePathPoints()
-    {
-        switch (this.degree)
-        {
-        case 0: this.pathPoints = this.points.map(p => p.toPoint());                           break;
-        case 1: this.pathPoints = this.points.map(p => p.toPoint());                           break;
-        case 2: this.pathPoints = this.points.map(p => p.toPoint());                           break;
-        case 3: this.pathPoints = getSmoothPoints(this.points, this.closed, getSmoothSegment); break;
-        case 4: this.pathPoints = getSmoothPoints(this.points, this.closed, getSineXSegment ); break;
-        case 5: this.pathPoints = getSmoothPoints(this.points, this.closed, getSineYSegment ); break;
-        }
-    }
-
-
-
-    updatePathData()
-    {
-        let minX = Number.MAX_SAFE_INTEGER;
-        let minY = Number.MAX_SAFE_INTEGER;
-
-        for (const p of this.points)
-        {
-            minX = Math.min(minX, NumberValue.prototype.toNumber.call(p.x));
-            minY = Math.min(minY, NumberValue.prototype.toNumber.call(p.y));
-        }
-
-
-        this.x = minX;
-        this.y = minY;
-
-        this.pathData = getPathDataFromPoints(this.pathPoints, this.closed, this.degree);
-    }
-
-
-
-    toJsonObject()
-    {
-        return {
-            ...super.toJsonObject(),
-   
-            pathData: this.pathData,
-            winding:  this.winding,
-            round:    this.round
-        };
-    }
-
-
-
-    toData()
-    {
-        return [
-            ...super.toData(),
-   
-            /* 21 */ this.pathData,
-            /* 22 */ this.winding,
-            /* 23 */ this.round
-        ];
-    }
-}
-
-
-
-function getPathDataFromPoints(points, closed, degree)
-{
-    let pathData = '';
-
-
-    switch (degree)
-    {
-    case 0: pathData = getLinearPathData   (points);         break;
-    case 1: pathData = getQuadraticPathData(points, closed); break;
-    case 2: 
-    case 3: 
-    case 4: 
-    case 5: pathData = getCubicPathData    (points, closed); break;
-    }
-
-
-    const pointsAreValid =
-           degree == 0 && points.length > 2
-        || degree == 1 && points.length > 2
-        || degree == 2 && points.length > 3
-        || degree == 3 && points.length > 2
-        || degree == 4 && points.length > 2
-        || degree == 5 && points.length > 2;
-
-
-    if (   pointsAreValid
-        && (   closed
-            || equalv(points[0], points.at(-1))))
-        pathData += ' Z';
-
-
-    //console.log('pathData =', pathData);
-    return pathData;
-}
-
-
-
-function getQuadraticPathData(points, closed)
-{
-    let pathData = '';
-
-
-    if (points.length < 3)
-        return pathData;
-
-
-    pathData += 'M';
-    pathData += ' ' + points[0].x;
-    pathData += ' ' + points[0].y;
-
-    let i;
-    for (i = 1; i < points.length-1; i += 2)
-    {
-        pathData += 
-              ' Q'
-            + ' ' + points[i  ].x
-            + ' ' + points[i  ].y
-            + ' ' + points[i+1].x
-            + ' ' + points[i+1].y;
-    }
-
-
-    if (   points.length - i == 1
-        && closed)
-    {
-        pathData += 
-              ' Q'
-            + ' ' + points.at(-1).x
-            + ' ' + points.at(-1).y
-            + ' ' + points.at( 0).x
-            + ' ' + points.at( 0).y;
-    }
-
-
-    return pathData;
-}
-
-
-
-function getCubicPathData(points, closed)
-{
-    let pathData = '';
-
-
-    if (points.length < 4)
-        return pathData;
-
-
-    pathData += 'M';
-    pathData += ' ' + points[0].x;
-    pathData += ' ' + points[0].y;
-
-    let i;
-    for (i = 1; i < points.length-2; i += 3)
-    {
-        pathData += 
-              ' C'
-            + ' ' + points[i  ].x
-            + ' ' + points[i  ].y
-            + ' ' + points[i+1].x
-            + ' ' + points[i+1].y
-            + ' ' + points[i+2].x
-            + ' ' + points[i+2].y;
-    }
-
-
-    if (points.length - i == 2)
-    {
-        pathData += 
-              ' C'
-            + ' ' + points.at(-2).x
-            + ' ' + points.at(-2).y
-            + ' ' + points.at(-1).x
-            + ' ' + points.at(-1).y
-            + ' ' + points.at( 0).x
-            + ' ' + points.at( 0).y;
-    }
-
-
-    return pathData;
-}
-
-
-
-function getSmoothPoints(points, closed, getSegment)
-{
-    if (points.length < 2)
-        return '';
-
-
-    const bp = [];
-
-
-    // first point
-    let [pp, p, pn] = getSegment(
-        closed ? points.at(-1) : points[0], 
-        points[0],
-        points[1]);
-
-    bp.push(p);
-
-
-    let _pp = pn;
-
-
-    // middle segments
-    for (let i = 1; i < points.length; i++)
-    {
-        [pp, p, pn] = getSegment(
-            points[i-1], 
-            points[i],
-            i == points.length-1 
-            ? (closed ? points[0] : points[i])
-            : points[i+1]);
-
-        bp.push(_pp, pp, p);
-
-        _pp = pn;
-    }
-
-
-    if (bp.length > 3)
-    {
-        if (closed)
-        {
-            if (   equal(bp[0].x, bp.at(-1).x, 0.01)
-                && equal(bp[0].y, bp.at(-1).y, 0.01))
-            {
-                // last segment
-                [pp, p, pn] = getSegment(
-                    points.at(-2), 
-                    points.at( 0),
-                    points.at( 1));
-
-                bp[1]           = pn;
-                bp[bp.length-2] = pp;
-            }
-            else
-            {
-                // last segment
-                [pp, p, pn] = getSegment(
-                    points.at(-1), 
-                    points.at( 0),
-                    points.at( 1));
-
-                bp.push(_pp, pp, p);
-
-                bp[1]           = pn;
-                bp[bp.length-2] = pp;
-            }
-        }
-        else // open
-        {
-            bp[1]           = addv(bp[0],     mulvs(unitv(subv(bp[2],     bp[0]    )), distance(bp[3],     bp[0]    )/3));
-            bp[bp.length-2] = addv(bp.at(-1), mulvs(unitv(subv(bp.at(-3), bp.at(-1))), distance(bp.at(-4), bp.at(-1))/3));
-        }
-    }
-
-
-    return bp;
-}
-
-
-
-function getSmoothSegment(_pointP, _point, _pointN)
-{
-    const _pp = point(
-        NumberValue.prototype.toNumber.call(_pointP.x),
-        NumberValue.prototype.toNumber.call(_pointP.y));
-
-    const _p = point(
-        NumberValue.prototype.toNumber.call(_point.x),
-        NumberValue.prototype.toNumber.call(_point.y));
-
-    const _pn = point(
-        NumberValue.prototype.toNumber.call(_pointN.x),
-        NumberValue.prototype.toNumber.call(_pointN.y));
-
-
-    const v = subv(_pn, _pp);
-    
-    
-    let a = angleDiff(
-        angle(subv(_p, _pp)), 
-        angle(subv(_pn, _p)));
-       
-    a = Math.abs(a);
-    while (a > Tau/2) a -= Tau;
-    
-
-    const k     = 4 * (Math.sqrt(2) - 1) / 3;        // or use the value 0.55191502449 from http://spencermortensen.com/articles/bezier-circle/
-	const kCorr = 0.9993391093366649465402826439248; // slight improvement (see Bézier Curves p. 13, Gernot Hoffmann);
-
-    let f =
-        a > Tau/4
-        ? 1/3 + (k*kCorr - 1/3) * Math.sin(a)
-        : 1/3 + (k*kCorr - 1/3) * (1 - Math.cos(a));
-    
-
-    const pp = addv(_p, mulvs(unitv(v), -lengthv(v)/2 * f));
-    const pn = addv(_p, mulvs(unitv(v),  lengthv(v)/2 * f));
-
-
-    return [pp, _p, pn];
-}
-
-
-
-function getSineXSegment(_pointP, _point, _pointN)
-{
-    const _pp = point(
-        NumberValue.prototype.toNumber.call(_pointP.x),
-        NumberValue.prototype.toNumber.call(_pointP.y));
-
-    const _p = point(
-        NumberValue.prototype.toNumber.call(_point.x),
-        NumberValue.prototype.toNumber.call(_point.y));
-
-    const _pn = point(
-        NumberValue.prototype.toNumber.call(_pointN.x),
-        NumberValue.prototype.toNumber.call(_pointN.y));
-
-
-    const pp = point(_p.x - (_p.x - _pp.x) * 0.3615, _p.y);
-    const pn = point(_p.x + (_pn.x - _p.x) * 0.3615, _p.y);
-
-    return [pp, _p, pn];
-}
-
-
-
-function getSineYSegment(_pointP, _point, _pointN)
-{
-    const _pp = point(
-        NumberValue.prototype.toNumber.call(_pointP.x),
-        NumberValue.prototype.toNumber.call(_pointP.y));
-
-    const _p = point(
-        NumberValue.prototype.toNumber.call(_point.x),
-        NumberValue.prototype.toNumber.call(_point.y));
-
-    const _pn = point(
-        NumberValue.prototype.toNumber.call(_pointN.x),
-        NumberValue.prototype.toNumber.call(_pointN.y));
-
-
-    const pp = point(_p.x, _p.y - (_p.y - _pp.y) * 0.3615);
-    const pn = point(_p.x, _p.y + (_pn.y - _p.y) * 0.3615);
-
-    return [pp, _p, pn];
-}
 
 
 class FigmaBoolean
@@ -48341,6 +48936,7 @@ function parseValueFromType(type, value)
         case    RECTANGLE_VALUE: return parseRectangleValue   (value)[0];
         case         LINE_VALUE: return parseLineValue        (value)[0];
         case      ELLIPSE_VALUE: return parseEllipseValue     (value)[0];
+        case      TRAPEZE_VALUE: return parseTrapezeValue     (value)[0];
         case      POLYGON_VALUE: return parsePolygonValue     (value)[0];
         case         STAR_VALUE: return parseStarValue        (value)[0];
         case   TEXT_SHAPE_VALUE: return parseTextShapeValue   (value)[0];
@@ -48385,6 +48981,7 @@ function displayValue(type, value)
         case    RECTANGLE_VALUE: return parseRectangleValue   (value)[0].toDisplayString();
         case         LINE_VALUE: return parseLineValue        (value)[0].toDisplayString();
         case      ELLIPSE_VALUE: return parseEllipseValue     (value)[0].toDisplayString();
+        case      TRAPEZE_VALUE: return parseTrapezeValue     (value)[0].toDisplayString();
         case      POLYGON_VALUE: return parsePolygonValue     (value)[0].toDisplayString();
         case         STAR_VALUE: return parseStarValue        (value)[0].toDisplayString();
         case   TEXT_SHAPE_VALUE: return parseTextShapeValue   (value)[0].toDisplayString();
@@ -48888,6 +49485,7 @@ function parseListValue(str, i = -1)
             case    RECTANGLE_VALUE: { const rect    = parseRectangleValue   (str, i);  i += rect   [1];  list.items.push(rect   [0]);  break; }
             case         LINE_VALUE: { const line    = parseLineValue        (str, i);  i += line   [1];  list.items.push(line   [0]);  break; }
             case      ELLIPSE_VALUE: { const ellipse = parseEllipseValue     (str, i);  i += ellipse[1];  list.items.push(ellipse[0]);  break; }
+            case      TRAPEZE_VALUE: { const ellipse = parseTrapezeValue     (str, i);  i += ellipse[1];  list.items.push(ellipse[0]);  break; }
             case      POLYGON_VALUE: { const poly    = parsePolygonValue     (str, i);  i += poly   [1];  list.items.push(poly   [0]);  break; }
             case         STAR_VALUE: { const star    = parseStarValue        (str, i);  i += star   [1];  list.items.push(star   [0]);  break; }
             case   TEXT_SHAPE_VALUE: { const text    = parseTextShapeValue   (str, i);  i += text   [1];  list.items.push(text   [0]);  break; }
@@ -51433,6 +52031,174 @@ function parseEllipseValue(str, i = -1)
 
 
 
+class TrapezeValue
+extends ShapeValue
+{
+    x;
+    y;
+    width;
+    height;
+    round;
+    bias;
+
+
+
+    constructor(nodeId,
+                x      = new NumberValue(0), 
+                y      = new NumberValue(0), 
+                width  = new NumberValue(0), 
+                height = new NumberValue(0), 
+                round  = new NumberValue(0),
+                bias   = new NumberValue(0))
+    {
+        super(TRAPEZE_VALUE, nodeId);
+
+        this.x      = x;
+        this.y      = y;
+        this.width  = width;
+        this.height = height;
+        this.round  = round;
+        this.bias   = bias;
+    }
+
+
+
+    copy()
+    {
+        const copy = new TrapezeValue(
+            this.nodeId,
+            this.x     .copy(), 
+            this.y     .copy(), 
+            this.width .copy(), 
+            this.height.copy(), 
+            this.round .copy(),
+            this.bias  .copy());
+
+        copy.copyBase(this);
+
+        return copy;
+    }
+
+
+
+    equals(rect)
+    {
+        return rect
+            && this.x     .equals(rect.x     )
+            && this.y     .equals(rect.y     )
+            && this.width .equals(rect.width )
+            && this.height.equals(rect.height)
+            && this.round .equals(rect.round )
+            && this.bias  .equals(rect.bias  );
+    }
+
+
+
+    async eval(parse)
+    {
+        return this;
+    }
+
+
+
+    toString()
+    {
+        return      this.x     .toString()
+            + ' ' + this.y     .toString()
+            + ' ' + this.width .toString()
+            + ' ' + this.height.toString()
+            + ' ' + this.round .toString()
+            + ' ' + this.bias  .toString();
+    }
+
+
+
+    toDisplayString()
+    {
+        return      this.x     .toDisplayString()
+            + ' ' + this.y     .toDisplayString()
+            + ' ' + this.width .toDisplayString()
+            + ' ' + this.height.toDisplayString()
+            + ' ' + this.round .toDisplayString()
+            + ' ' + this.bias  .toDisplayString();
+    }
+
+
+
+    toValue()
+    {
+        return this.copy();
+    }
+
+
+
+    isValid()
+    {
+        return super.isValid()
+            && this.x     .isValid()
+            && this.y     .isValid()
+            && this.width .isValid()
+            && this.height.isValid()
+            && this.round .isValid()
+            && this.bias  .isValid();
+    }
+
+
+    
+    static NaN = new TrapezeValue(
+        '',
+        NumberValue.NaN,
+        NumberValue.NaN,
+        NumberValue.NaN,
+        NumberValue.NaN,
+        NumberValue.NaN,
+        NumberValue.NaN);
+}
+
+
+
+function parseTrapezeValue(str, i = -1)
+{
+    if (   i <  0 && str    == NAN_DISPLAY
+        || i >= 0 && str[i] == NAN_DISPLAY)
+        return [TrapezeValue.NaN, 1];
+
+
+    if (i < 0)
+    {
+        str = str.split(' ');
+        i   = 0;
+    }
+
+
+    const iStart = i;
+
+    const x      = parseNumberValue(str[i]); i += x     [1];
+    const y      = parseNumberValue(str[i]); i += y     [1];
+    const width  = parseNumberValue(str[i]); i += width [1];
+    const height = parseNumberValue(str[i]); i += height[1];
+    const round  = parseNumberValue(str[i]); i += round [1];
+    const bias   = parseNumberValue(str[i]); i += bias  [1];
+
+
+    const rect = new TrapezeValue(
+        '', // set node ID elsewhere
+        x     [0],
+        y     [0],
+        width [0],
+        height[0],
+        round [0],
+        bias  [0]);
+
+
+    i = parseShapeBaseValue(str, i, rect);
+
+    
+    return [rect, i - iStart];
+}
+
+
+
 class PolygonValue
 extends ShapeValue
 {
@@ -52075,6 +52841,16 @@ extends GValue
 
 
 
+    static create(nodeId, x, y)
+    {
+        return new PointValue(
+            nodeId,
+            new NumberValue(x),
+            new NumberValue(y));
+    }
+
+
+
     async eval(parse)
     {
         return this;
@@ -52622,9 +53398,10 @@ function parseShapeGroupValue(str, i = -1)
             case    RECTANGLE_VALUE: { const rect    = parseRectangleValue   (str, i);  i += rect   [1];  group.items.push(rect   [0]);  break; }
             case         LINE_VALUE: { const line    = parseLineValue        (str, i);  i += line   [1];  group.items.push(line   [0]);  break; }
             case      ELLIPSE_VALUE: { const ellipse = parseEllipseValue     (str, i);  i += ellipse[1];  group.items.push(ellipse[0]);  break; }
+            case      TRAPEZE_VALUE: { const ellipse = parseTrapezeValue     (str, i);  i += ellipse[1];  group.items.push(ellipse[0]);  break; }
             case      POLYGON_VALUE: { const poly    = parsePolygonValue     (str, i);  i += poly   [1];  group.items.push(poly   [0]);  break; }
             case         STAR_VALUE: { const star    = parseStarValue        (str, i);  i += star   [1];  group.items.push(star   [0]);  break; }
-            case    TEXT_SHAPE_VALUE: { const text    = parseTextShapeValue   (str, i);  i += text   [1];  group.items.push(text   [0]);  break; }
+            case   TEXT_SHAPE_VALUE: { const text    = parseTextShapeValue   (str, i);  i += text   [1];  group.items.push(text   [0]);  break; }
             case        POINT_VALUE: { const point   = parsePointValue       (str, i);  i += point  [1];  group.items.push(point  [0]);  break; }
             case  VECTOR_PATH_VALUE: { const path    = parseVectorPathValue  (str, i);  i += path   [1];  group.items.push(path   [0]);  break; }
             case      BOOLEAN_VALUE: { const path    = parseShapeBooleanValue(str, i);  i += path   [1];  group.items.push(path   [0]);  break; }
@@ -59250,9 +60027,10 @@ extends GTextType
         {
             try 
             {
-                await fetch(request.value)
-                    .then(response => response.text())
-                    .then(text => this.value = new TextValue(text));
+                const response = await fetch(request.value);
+                const content  = await response.text();
+                
+                this.value = new TextValue(content);
             }
             catch (e)
             {
@@ -62760,13 +63538,6 @@ extends GOperator
 
 
 
-    async evalShapeBase(parse, input, evalHeight = true)
-    {
-
-    }
-
-
-
     pushValueUpdates(parse)
     {
         super.pushValueUpdates(parse);
@@ -62869,11 +63640,8 @@ extends GShapeBase
 
 
 
-    async evalShapeBase(parse, input, evalHeight = true)
+    async evalShapeBase(parse)
     {
-        super.evalShapeBase(parse, input, evalHeight);
-
-
         let props = this.props ? (await this.props.eval(parse)).toValue() : null;
 
         if (   props
@@ -62906,7 +63674,8 @@ extends GShapeBase
             consoleAssert(obj.effects, 'obj.effects must not be null');
 
 
-            if (this.value.props.items == undefined) 
+            if (  !this.value.props
+                || this.value.props.items == undefined) 
                 continue;
 
 
@@ -63028,13 +63797,13 @@ extends GShape
         }
 
        
-        await this.evalShapeBase(parse, input);
+        this.updateValues = [['value', this.value]];
+
+
+        await this.evalShapeBase(parse);
 
 
         await this.evalObjects(parse);
-
-
-        this.updateValues = [['value', this.value]];
 
 
         this.validate();
@@ -63189,7 +63958,7 @@ extends GShape
         this.updateValues = [['value', this.value]];
 
 
-        await this.evalShapeBase(parse, input, false);
+        await this.evalShapeBase(parse);
 
 
         await this.evalObjects(parse);
@@ -63335,7 +64104,7 @@ extends GShape
         this.updateValues = [['value', this.value]];
 
 
-        await this.evalShapeBase(parse, input);
+        await this.evalShapeBase(parse);
 
 
         await this.evalObjects(parse);
@@ -63437,6 +64206,187 @@ extends GShape
 }
 
 
+class GTrapeze
+extends GShape
+{
+    round = null;
+    bias  = null;
+
+
+
+    constructor(nodeId, options)
+    {
+        super(TRAPEZE, nodeId, options);
+    }
+
+
+
+    copy()
+    {
+        const copy = new GTrapeze(this.nodeId, this.options);
+
+        copy.copyBase(this);
+
+        if (this.round) copy.round = this.round.copy();
+        if (this.bias ) copy.bias  = this.bias .copy();
+
+        return copy;
+    }
+
+
+
+    async eval(parse)
+    {
+        if (this.isCached())
+            return this;
+
+        
+        const [x, y, width, height] = await this.evalBaseParams(parse);
+
+        const round = this.round ? (await this.round.eval(parse)).toValue() : null;
+        const bias  = this.bias  ? (await this.bias .eval(parse)).toValue() : null;
+
+
+        let input = null;
+
+        if (this.input)
+        {
+            input = (await this.input.eval(parse)).toValue();
+
+            this.value = new TrapezeValue(
+                this.nodeId,
+                x      ?? input.x,
+                y      ?? input.y,
+                width  ?? input.width,
+                height ?? input.height,
+                round  ?? input.round,
+                bias   ?? input.bias);
+        }
+        else
+        {
+            this.value = new TrapezeValue(
+                this.nodeId, 
+                x, 
+                y, 
+                width, 
+                height, 
+                round,
+                bias);
+        }
+
+       
+        this.updateValues = [['value', this.value]];
+
+
+        await this.evalShapeBase(parse);
+
+
+        await this.evalObjects(parse);
+
+
+        this.validate();
+
+        return this;
+    }
+
+
+
+    async evalObjects(parse, options = {})
+    {
+        if (!this.options.enabled)
+            return;
+     
+        
+        this.value.objects = [];
+
+            
+        if (   this.value.x
+            && this.value.y
+            && this.value.width
+            && this.value.height
+            && this.value.round
+            && this.value.bias)
+        {
+            let   x = this.value.x     .value;
+            let   y = this.value.y     .value;
+            let   w = this.value.width .value;
+            let   h = this.value.height.value;
+            const r = Math.max(0, this.value.round.value);
+            let   b = this.value.bias  .value;
+
+
+            [x, y, w, h, , ] = validateObjectRect(x, y, w, h);
+
+
+            if (   w != 0 
+                && h != 0)
+            {
+                const trap = new FigmaTrapeze(
+                    this.nodeId, 
+                    this.nodeId, 
+                    this.nodeName, 
+                    x, y, w, h, r, b);
+
+                trap.createDefaultTransform(x, y);
+
+                this.value.objects.push(trap, ...trap.createTransformPoints(parse, x, y, w, h));
+            }
+        }
+
+
+        await super.evalObjects(parse);
+    }
+
+
+
+    toValue()
+    {
+        const trap = new TrapezeValue(
+            this.nodeId,
+            this.x     .toValue(),
+            this.y     .toValue(),
+            this.width .toValue(),
+            this.height.toValue(),
+            this.round .toValue(),
+            this.bias  .toValue());
+
+        trap.props   = this.props.toValue();
+        trap.objects = this.value.objects.map(o => o.copy());
+
+        return trap;
+    }
+
+
+
+    isValid()
+    {
+        return super.isValid()
+            && this.round.isValid()
+            && this.bias .isValid();
+    }
+
+
+
+    pushValueUpdates(parse)
+    {
+        super.pushValueUpdates(parse);
+
+        if (this.round) this.round.pushValueUpdates(parse);
+        if (this.bias ) this.bias .pushValueUpdates(parse);
+    }
+
+
+
+    invalidateInputs(from)
+    {
+        super.invalidateInputs(from);
+
+        if (this.round) this.round.invalidateInputs(from);
+        if (this.bias ) this.bias .invalidateInputs(from);
+    }
+}
+
+
 class GPolygon
 extends GShape
 {
@@ -63509,7 +64459,7 @@ extends GShape
         this.updateValues = [['value', this.value]];
 
 
-        await this.evalShapeBase(parse, input);
+        await this.evalShapeBase(parse);
 
 
         await this.evalObjects(parse);
@@ -63696,7 +64646,7 @@ extends GShape
         this.updateValues = [['value', this.value]];
 
 
-        await this.evalShapeBase(parse, input);
+        await this.evalShapeBase(parse);
 
 
         await this.evalObjects(parse);
@@ -63917,7 +64867,7 @@ extends GShape
         }
 
        
-        await this.evalShapeBase(parse, input);
+        await this.evalShapeBase(parse);
 
 
         await this.evalObjects(parse);
@@ -64319,7 +65269,7 @@ extends GShape
         this.updateValues = [['value', this.value]];
 
 
-        await this.evalShapeBase(parse, input);
+        await this.evalShapeBase(parse);
 
 
         await this.evalObjects(parse);
@@ -64340,15 +65290,12 @@ extends GShape
 
         const points = [];
 
-        if (this.points.value.objects)
+        if (this.value.points.objects)
         {
-            const objPoints = this.points.value.objects.filter(o => o.type == POINT);
+            const objPoints = this.value.points.objects.filter(o => o.type == POINT);
 
             for (const pt of objPoints)
-                points.push(new PointValue(
-                    this.nodeId,
-                    new NumberValue(pt.x), 
-                    new NumberValue(pt.y)));
+                points.push(PointValue.create(this.nodeId, pt.x, pt.y));
         }
 
 
@@ -64371,6 +65318,7 @@ extends GShape
                 this.value.winding.value,
                 this.value.round  .value);
 
+            
             const bounds = getObjBounds([path]);
 
             let x = bounds.x;
@@ -64378,7 +65326,9 @@ extends GShape
             let w = bounds.w;
             let h = bounds.h;
 
+
             path.createDefaultTransform(x, y);
+
 
             this.value.objects.push(path, ...path.createTransformPoints(parse, x, y, w, h));
         }
@@ -64529,7 +65479,7 @@ extends GShapeBase
         }
 
 
-        //await this.evalShapeBase(parse, input);
+        //await this.evalShapeBase(parse);
 
 
         await this.evalObjects(parse);
@@ -64702,7 +65652,7 @@ extends GShape
         this.updateValues = [['value', this.value]];
 
 
-        await this.evalShapeBase(parse, input);
+        await this.evalShapeBase(parse);
 
 
         await this.evalObjects(parse);
@@ -64897,7 +65847,7 @@ extends GShapeBase
         ];
 
 
-        await this.evalShapeBase(parse, input);
+        await this.evalShapeBase(parse);
 
         await this.evalObjects(parse);
 
@@ -65082,7 +66032,7 @@ extends GShapeBase
         this.updateValues = [['', NullValue]];
 
 
-        //await this.evalShapeBase(parse, input);
+        //await this.evalShapeBase(parse);
 
 
         //await this.evalObjects(parse);
@@ -70722,6 +71672,7 @@ const iconShapes            = '<svg width="17" height="19" viewBox="0 -1 17 19" 
 const iconRectangle         = '<svg width="16" height="16" viewBox="0 0 16 16" fill="none" xmlns="http://www.w3.org/2000/svg"><rect x="0.5" y="0.5" width="15" height="15" stroke="white"/></svg>';
 const iconLine              = '<svg width="17" height="17" viewBox="0 1 17 18" fill="none" xmlns="http://www.w3.org/2000/svg"><line x1="0.772299" y1="15.9778" x2="15.6598" y2="1.09027" stroke="white" stroke-width="1.3"/></svg>';
 const iconEllipse           = '<svg width="16" height="16" viewBox="0 0 16 16" fill="none" xmlns="http://www.w3.org/2000/svg"><circle cx="8" cy="8" r="7.5" stroke="white"/></svg>';
+const iconTrapeze           = '<svg width="19" height="11" viewBox="0 0 19 11" fill="none" xmlns="http://www.w3.org/2000/svg"><path d="M18.1743 10.5H0.825747C0.921495 10.3156 1.03249 10.101 1.15563 9.86141C1.58638 9.02341 2.16621 7.87943 2.76199 6.6565C3.35739 5.43438 3.97068 4.1294 4.46738 2.97042C4.86993 2.03115 5.20839 1.1597 5.39244 0.500019H13.6076C13.7916 1.1597 14.1301 2.03115 14.5326 2.97041C15.0293 4.12939 15.6426 5.43437 16.238 6.6565C16.8338 7.87942 17.4136 9.0234 17.8444 9.86141C17.9675 10.101 18.0785 10.3156 18.1743 10.5Z" stroke="white"/></svg>';
 const iconPolygon           = '<svg width="20" height="16" viewBox="0 0 20 16" fill="none" xmlns="http://www.w3.org/2000/svg"><path d="M1.82238 15.4885L10.0496 1.23853L18.2769 15.4885H1.82238Z" stroke="white"/></svg>';
 const iconStar              = '<svg width="18" height="18" viewBox="0 0 18 18" fill="none" xmlns="http://www.w3.org/2000/svg"><path d="M8.8156 2.24924L10.4021 7.13198L10.5144 7.47747H10.8776H16.0116L11.8581 10.4952L11.5642 10.7087L11.6765 11.0542L13.263 15.9369L9.10949 12.9192L8.8156 12.7057L8.5217 12.9192L4.3682 15.9369L5.9547 11.0542L6.06695 10.7087L5.77306 10.4952L1.61955 7.47747H6.75357H7.11684L7.2291 7.13198L8.8156 2.24924Z" stroke="white"/></svg>';
 const iconTextShape         = '<svg width="13" height="16" viewBox="0 0 13 16" fill="none" xmlns="http://www.w3.org/2000/svg"><path d="M0 4V0H13V4H12V1H7V15H10V16H3V15H6V1H1V4H0Z" fill="white"/></svg>';
@@ -70742,8 +71693,8 @@ const iconSkew              = '<svg width="19" height="17" viewBox="0 0 19 17" f
 
 const iconPlace             = '<svg width="19" height="17" viewBox="0 0 19 17" fill="none" xmlns="http://www.w3.org/2000/svg"><circle cx="16.5371" cy="15.5" r="1.5" fill="white"/><path fill-rule="evenodd" clip-rule="evenodd" d="M15.711 9.60649L18.1232 6.79155L19.0227 7.56237L16.0318 11.0527L16.0168 11.0398L15.9972 11.0787L11.9998 9.05711L12.5344 8L15.711 9.60649Z" fill="white"/><path d="M4.5 3.60622C6.33275 -0.178262 14.5351 -1.28238 15.8513 10.4285" stroke="white"/><rect x="0.5" y="7.5" width="8" height="8" stroke="white"/></svg>'; 
 
-const iconRender            = '<svg width="19" height="17" viewBox="0 0 19 17" fill="none" xmlns="http://www.w3.org/2000/svg"><rect x="0.5" y="0.5" width="18" height="16" rx="1.5" stroke="white"/><rect x="4.5" y="3.5" width="4" height="4" stroke="white"/><circle cx="12.5" cy="5.5" r="2" stroke="white"/><line x1="4.43646" y1="14.169" x2="8.93646" y2="9.4021" stroke="white"/><path d="M10.3349 13.75L12.5 10L14.6651 13.75H10.3349Z" stroke="white"/></svg>';
-const iconRenderDown        = '<svg width="19" height="17" viewBox="0 0 19 17" fill="none" xmlns="http://www.w3.org/2000/svg"><path d="M7.81467 4.18533H5.18533V6.81467H7.81467V4.18533Z" fill="white"/><path d="M13.8147 5.5C13.8147 6.22607 13.2261 6.81467 12.5 6.81467C11.7739 6.81467 11.1853 6.22607 11.1853 5.5C11.1853 4.77393 11.7739 4.18533 12.5 4.18533C13.2261 4.18533 13.8147 4.77393 13.8147 5.5Z" fill="white"/><path d="M11.5401 13.0542L12.5 11.3917L13.4599 13.0542H11.5401Z" fill="white"/><path fill-rule="evenodd" clip-rule="evenodd" d="M2 0C0.895431 0 0 1.01482 0 2.26667V14.7333C0 15.9852 0.89543 17 2 17H17C18.1046 17 19 15.9852 19 14.7333V2.26667C19 1.01482 18.1046 0 17 0H2ZM3.83533 2.83533V8.16467H9.16467V2.83533H3.83533ZM15.1647 5.5C15.1647 6.97166 13.9717 8.16467 12.5 8.16467C11.0283 8.16467 9.83533 6.97166 9.83533 5.5C9.83533 4.02834 11.0283 2.83533 12.5 2.83533C13.9717 2.83533 15.1647 4.02834 15.1647 5.5ZM9.42297 9.83475L4.92297 14.6016L3.9413 13.6749L8.4413 8.90803L9.42297 9.83475ZM12.5 8.69165L15.7981 14.4042H9.20187L12.5 8.69165Z" fill="white"/></svg>';
+const iconRender            = '<svg width="19" height="17" viewBox="0 0 19 17" fill="none" xmlns="http://www.w3.org/2000/svg"><rect x="0.5" y="0.5" width="18" height="16" rx="1.5" stroke="white"/><rect x="4.5" y="3.5" width="4" height="4" stroke="white"/><circle cx="12.5" cy="5.5" r="2" stroke="white"/><line x1="4.43646" y1="14.6568" x2="8.93646" y2="9.88989" stroke="white"/><path d="M10.3349 13.75L12.5 10L14.6651 13.75H10.3349Z" stroke="white"/></svg>';
+const iconRenderDown        = '<svg width="19" height="17" viewBox="0 0 19 17" fill="none" xmlns="http://www.w3.org/2000/svg"><path d="M7.81467 4.18533H5.18533V6.81467H7.81467V4.18533Z" fill="white"/><path d="M13.8147 5.5C13.8147 6.22607 13.2261 6.81467 12.5 6.81467C11.7739 6.81467 11.1853 6.22607 11.1853 5.5C11.1853 4.77393 11.7739 4.18533 12.5 4.18533C13.2261 4.18533 13.8147 4.77393 13.8147 5.5Z" fill="white"/><path d="M11.5401 13.0542L12.5 11.3917L13.4599 13.0542H11.5401Z" fill="white"/><path fill-rule="evenodd" clip-rule="evenodd" d="M2 0C0.895431 0 0 1.01482 0 2.26667V14.7333C0 15.9852 0.89543 17 2 17H17C18.1046 17 19 15.9852 19 14.7333V2.26667C19 1.01482 18.1046 0 17 0H2ZM3.83533 2.83533V8.16467H9.16467V2.83533H3.83533ZM15.1647 5.5C15.1647 6.97166 13.9717 8.16467 12.5 8.16467C11.0283 8.16467 9.83533 6.97166 9.83533 5.5C9.83533 4.02834 11.0283 2.83533 12.5 2.83533C13.9717 2.83533 15.1647 4.02834 15.1647 5.5ZM9.42297 10.4267L4.92297 15.1936L3.9413 14.2669L8.4413 9.5L9.42297 10.4267ZM12.5 8.69165L15.7981 14.4042H9.20187L12.5 8.69165Z" fill="white"/></svg>';
 
 const iconGroup             = '<svg width="17" height="17" viewBox="0 -1 17 17" fill="none" xmlns="http://www.w3.org/2000/svg"><path d="M3 0.5H14C15.3807 0.5 16.5 1.61929 16.5 3V15.5H0.5V3C0.5 1.61929 1.61929 0.5 3 0.5Z" stroke="white"/><rect width="4" height="1" transform="matrix(-1 0 0 1 14 4)" fill="white"/><rect width="4" height="1" transform="matrix(-1 0 0 1 9 6)" fill="white"/><rect width="4" height="1" transform="matrix(-1 0 0 1 12 9)" fill="white"/><rect width="4" height="1" transform="matrix(-1 0 0 1 7 11)" fill="white"/></svg>';
 const iconGroupNode         = '<svg width="15" height="18" viewBox="0 -3 15 18" fill="none" xmlns="http://www.w3.org/2000/svg"><path d="M3 0.5H12C13.3807 0.5 14.5 1.61929 14.5 3V14.5H0.5V3C0.5 1.61929 1.61929 0.5 3 0.5Z" stroke="white"/><rect width="9" height="1" transform="matrix(-1 0 0 1 12 5)" fill="white"/><rect width="9" height="1" transform="matrix(-1 0 0 1 12 8)" fill="white"/><rect width="9" height="1" transform="matrix(-1 0 0 1 12 11)" fill="white"/></svg>';
@@ -72319,9 +73270,10 @@ function initGeneratorMenus()
         new MenuItem('Rectangle',   {icon: iconRectangle,  callback: e => actionManager.do(getCreateNodeAction(RECTANGLE,   btnShape.div, getCreateOptions(e)))}),
         new MenuItem('Line',        {icon: iconLine,       callback: e => actionManager.do(getCreateNodeAction(LINE,        btnShape.div, getCreateOptions(e)))}),
         new MenuItem('Ellipse',     {icon: iconEllipse,    callback: e => actionManager.do(getCreateNodeAction(ELLIPSE,     btnShape.div, getCreateOptions(e)))}),
+        new MenuItem('Trapeze',     {icon: iconTrapeze,    callback: e => actionManager.do(getCreateNodeAction(TRAPEZE,     btnShape.div, getCreateOptions(e)))}),
         new MenuItem('Polygon',     {icon: iconPolygon,    callback: e => actionManager.do(getCreateNodeAction(POLYGON,     btnShape.div, getCreateOptions(e)))}),
         new MenuItem('Star',        {icon: iconStar,       callback: e => actionManager.do(getCreateNodeAction(STAR,        btnShape.div, getCreateOptions(e)))}),
-        new MenuItem('Text',        {icon: iconTextShape,  callback: e => actionManager.do(getCreateNodeAction(TEXT_SHAPE,   btnShape.div, getCreateOptions(e)))})]);
+        new MenuItem('Text',        {icon: iconTextShape,  callback: e => actionManager.do(getCreateNodeAction(TEXT_SHAPE,  btnShape.div, getCreateOptions(e)))})]);
 
 
     menuTransform = new Menu('Transform', true, false);
@@ -96550,10 +97502,12 @@ extends OperatorBase
         const input = this.node.inputs[0];
 
 
-        request.push(input.connected ? 1 : 0);
+        if (input)
+            request.push(input.connected ? 1 : 0);
 
 
-        if (input.connected)
+        if (   input
+            && input.connected)
         {
             request.push(...pushInputOrParam(input, gen));
 
@@ -96651,7 +97605,7 @@ extends OpShape
         this.addParam(this.paramY      = new NumberParam('y',      'Y',      true, true, true,   0));
         this.addParam(this.paramWidth  = new NumberParam('width',  'width',  true, true, true, 100));
         this.addParam(this.paramHeight = new NumberParam('height', 'height', true, true, true, 100));
-        this.addParam(this.paramRound  = new NumberParam('round',  'round',  true, true, true,   0,    0));
+        this.addParam(this.paramRound  = new NumberParam('round',  'round',  true, true, true,   0, 0));
 
 
         this.paramWidth .addEventListener('change', () => this.updateRound());
@@ -96786,6 +97740,76 @@ extends OpShape
         this.paramFrom  .setValue(value.from,   false, true, false);
         this.paramTo    .setValue(value.to,     false, true, false);
         this.paramInner .setValue(value.inner,  false, true, false);
+    }
+}
+
+
+class   OpTrapeze
+extends OpShape
+{
+    paramX;
+    paramY;
+    paramWidth;
+    paramHeight;
+    paramRound;
+    paramBias;
+
+
+    
+    constructor()
+    {
+        super(TRAPEZE, 'trapeze', 'trapeze', iconTrapeze);
+
+        this.iconOffsetY = 1;
+        this.canDisable  = true;
+        
+
+        this.addInput (this.createInputForObjects([TRAPEZE_VALUE], getNodeInputValuesForUndo));
+        this.addOutput(new Output([TRAPEZE_VALUE], this.output_genRequest));
+
+
+        this.addParam(this.paramX      = new NumberParam('x',      'X',      true, true, true,   0));
+        this.addParam(this.paramY      = new NumberParam('y',      'Y',      true, true, true,   0));
+        this.addParam(this.paramWidth  = new NumberParam('width',  'width',  true, true, true, 100));
+        this.addParam(this.paramHeight = new NumberParam('height', 'height', true, true, true, 100));
+        this.addParam(this.paramRound  = new NumberParam('round',  'round',  true, true, true,   0, 0));
+        this.addParam(this.paramBias   = new NumberParam('bias',   'bias',   true, true, true, 0, -100, 100));
+
+
+        this.paramWidth .addEventListener('change', () => this.updateRound());
+        this.paramHeight.addEventListener('change', () => this.updateRound());
+
+        this.paramBias.controls[0].suffix = '%';
+
+
+        this.addBaseParams();
+        this.setAllParamDividers(0.5);
+    }
+
+
+
+    updateValues(requestId, actionId, updateParamId, paramIds, values)
+    {
+        const value = values[paramIds.findIndex(id => id == 'value')];
+
+        this.paramX     .setValue(value.x,      false, true, false);
+        this.paramY     .setValue(value.y,      false, true, false);
+        this.paramWidth .setValue(value.width,  false, true, false);
+        this.paramHeight.setValue(value.height, false, true, false);
+        this.paramRound .setValue(value.round,  false, true, false);
+        this.paramBias  .setValue(value.bias,   false, true, false);
+    }
+
+
+
+    updateRound()
+    {
+        const min = Math.min(this.paramWidth.value.value, this.paramHeight.value.value);
+
+        this.paramRound.controls[0].displayMin = 0;
+        this.paramRound.controls[0].displayMax = min/2;
+
+        this.paramRound.controls[0].update();
     }
 }
 
@@ -107301,6 +108325,7 @@ function createNode(nodeType, creatingButton = null, createdNodeId = -1, options
         case RECTANGLE:               node = new OpRectangle();         break;
         case LINE:                    node = new OpLine();              break;
         case ELLIPSE:                 node = new OpEllipse();           break;
+        case TRAPEZE:                 node = new OpTrapeze();           break;
         case POLYGON:                 node = new OpPolygon();           break;
         case STAR:                    node = new OpStar();              break;
         case TEXT_SHAPE:              node = new OpTextShape();         break;

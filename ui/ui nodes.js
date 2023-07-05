@@ -107,6 +107,7 @@ function createNode(nodeType, creatingButton = null, createdNodeId = -1, options
         case RECTANGLE:               node = new OpRectangle();         break;
         case LINE:                    node = new OpLine();              break;
         case ELLIPSE:                 node = new OpEllipse();           break;
+        case TRAPEZE:                 node = new OpTrapeze();           break;
         case POLYGON:                 node = new OpPolygon();           break;
         case STAR:                    node = new OpStar();              break;
         case TEXT_SHAPE:              node = new OpTextShape();         break;

@@ -7,11 +7,12 @@
 ../generator/types/figma/FigmaRectangle.js
 ../generator/types/figma/FigmaLine.js
 ../generator/types/figma/FigmaEllipse.js
+../generator/types/figma/FigmaVectorPath.js
+../generator/types/figma/FigmaTrapeze.js
 ../generator/types/figma/FigmaPolygon.js
 ../generator/types/figma/FigmaStar.js
 ../generator/types/figma/FigmaText.js
 ../generator/types/figma/FigmaPoint.js
-../generator/types/figma/FigmaVectorPath.js
 ../generator/types/figma/FigmaBoolean.js
 ../generator/types/figma/FigmaShapeGroup.js
 ../generator/types/figma/FigmaFrame.js
@@ -46,6 +47,7 @@
 ../generator/types/values/RectangleValue.js
 ../generator/types/values/LineValue.js
 ../generator/types/values/EllipseValue.js
+../generator/types/values/TrapezeValue.js
 ../generator/types/values/PolygonValue.js
 ../generator/types/values/StarValue.js
 ../generator/types/values/TextShapeValue.js
@@ -171,6 +173,7 @@
 ../generator/types/shape/GRectangle.js
 ../generator/types/shape/GLine.js
 ../generator/types/shape/GEllipse.js
+../generator/types/shape/GTrapeze.js
 ../generator/types/shape/GPolygon.js
 ../generator/types/shape/GStar.js
 ../generator/types/shape/GTextShape.js

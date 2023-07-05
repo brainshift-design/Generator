@@ -33,11 +33,8 @@ extends GShapeBase
 
 
 
-    async evalShapeBase(parse, input, evalHeight = true)
+    async evalShapeBase(parse)
     {
-        super.evalShapeBase(parse, input, evalHeight);
-
-
         let props = this.props ? (await this.props.eval(parse)).toValue() : null;
 
         if (   props
@@ -70,7 +67,8 @@ extends GShapeBase
             consoleAssert(obj.effects, 'obj.effects must not be null');
 
 
-            if (this.value.props.items == undefined) 
+            if (  !this.value.props
+                || this.value.props.items == undefined) 
                 continue;
 
 

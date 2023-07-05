@@ -41,13 +41,6 @@ extends GOperator
 
 
 
-    async evalShapeBase(parse, input, evalHeight = true)
-    {
-
-    }
-
-
-
     pushValueUpdates(parse)
     {
         super.pushValueUpdates(parse);

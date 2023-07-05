@@ -36,10 +36,12 @@ extends OperatorBase
         const input = this.node.inputs[0];
 
 
-        request.push(input.connected ? 1 : 0);
+        if (input)
+            request.push(input.connected ? 1 : 0);
 
 
-        if (input.connected)
+        if (   input
+            && input.connected)
         {
             request.push(...pushInputOrParam(input, gen));
 

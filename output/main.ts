@@ -1217,7 +1217,9 @@ const ELLIPSE_VALUE      = 'ELPS#';
 const ELLIPSE            = 'ELPS'; 
 const ELLIPSE_TYPES      = [ELLIPSE_VALUE, ELLIPSE];
 
+const TRAPEZE_VALUE      = 'TRPZ#';
 const TRAPEZE            = 'TRPZ';
+const TRAPEZE_TYPES      = [TRAPEZE_VALUE, TRAPEZE];
 
 const POLYGON_VALUE      = 'POLY#';
 const POLYGON            = 'POLY'; 
@@ -1227,9 +1229,9 @@ const STAR_VALUE         = 'STAR#';
 const STAR               = 'STAR'; 
 const STAR_TYPES         = [STAR_VALUE, STAR];
   
-const TEXT_SHAPE_VALUE    = 'TXTS#';
-const TEXT_SHAPE          = 'TXTS'; 
-const TEXT_SHAPE_TYPES    = [TEXT_SHAPE_VALUE, TEXT_SHAPE];
+const TEXT_SHAPE_VALUE   = 'TXTS#';
+const TEXT_SHAPE         = 'TXTS'; 
+const TEXT_SHAPE_TYPES   = [TEXT_SHAPE_VALUE, TEXT_SHAPE];
  
 const POINT              = 'PT';
 const POINT_VALUE        = 'PT#';
@@ -1286,6 +1288,7 @@ const SHAPE_VALUES =
     RECTANGLE_VALUE,
     LINE_VALUE,
     ELLIPSE_VALUE,
+    TRAPEZE_VALUE,
     POLYGON_VALUE,
     STAR_VALUE,
     TEXT_SHAPE_VALUE,
@@ -1313,7 +1316,7 @@ const SHAPE_TYPES =
     ...RECTANGLE_TYPES,
     ...LINE_TYPES,
     ...ELLIPSE_TYPES,
-    TRAPEZE,
+    ...TRAPEZE_TYPES,
     ...POLYGON_TYPES,
     ...STAR_TYPES,
     ...TEXT_SHAPE_TYPES,

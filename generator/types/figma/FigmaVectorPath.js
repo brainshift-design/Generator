@@ -21,11 +21,13 @@ extends FigmaShape
         super(VECTOR_PATH, nodeId, objectId, objectName);
         
         this.points  = points.map(p => p.copy());
+
         this.closed  = closed;
         this.degree  = degree;
-
         this.winding = winding;
+
         this.round   = round;
+        
 
         this.updatePathPoints();
         this.updatePathData();
@@ -41,6 +43,7 @@ extends FigmaShape
             this.objectName,
 
             this.points, 
+
             this.closed, 
             this.degree,
             this.winding,

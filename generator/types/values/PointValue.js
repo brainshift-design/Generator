@@ -43,6 +43,16 @@ extends GValue
 
 
 
+    static create(nodeId, x, y)
+    {
+        return new PointValue(
+            nodeId,
+            new NumberValue(x),
+            new NumberValue(y));
+    }
+
+
+
     async eval(parse)
     {
         return this;
