@@ -330,7 +330,7 @@ function genParseStart(parse)
     const [, nodeId, options, ignore] = genParseNodeStart(parse);
 
 
-    const feedback = new GStart(nodeId, options);
+    const start = new GStart(nodeId, options);
 
 
     let nInputs = -1;
@@ -343,12 +343,12 @@ function genParseStart(parse)
 
 
     if (parse.settings.logRequests) 
-        logReq(feedback, parse, ignore, nInputs);
+        logReq(start, parse, ignore, nInputs);
 
 
     if (ignore) 
     {
-        genParseNodeEnd(parse, feedback);
+        genParseNodeEnd(parse, start);
         return parse.parsedNodes.find(n => n.nodeId == nodeId);
     }
 
@@ -357,14 +357,14 @@ function genParseStart(parse)
 
 
     if (nInputs == 1)
-        feedback.input = genParse(parse);
+        start.input = genParse(parse);
 
 
     parse.nTab--;
 
 
-    genParseNodeEnd(parse, feedback);
-    return feedback;
+    genParseNodeEnd(parse, start);
+    return start;
 }
 
 

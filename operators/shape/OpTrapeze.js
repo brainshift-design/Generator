@@ -27,14 +27,17 @@ extends OpShape
         this.addParam(this.paramWidth  = new NumberParam('width',  'width',  true, true, true, 100));
         this.addParam(this.paramHeight = new NumberParam('height', 'height', true, true, true, 100));
         this.addParam(this.paramRound  = new NumberParam('round',  'round',  true, true, true,   1));
-        this.addParam(this.paramTop    = new NumberParam('top',    'top',    true, true, true,   1));
-        this.addParam(this.paramBottom = new NumberParam('bottom', 'bottom', true, true, true,   1));
+        this.addParam(this.paramTop    = new NumberParam('top',    'top',    true, true, true, 100));
+        this.addParam(this.paramBottom = new NumberParam('bottom', 'bottom', true, true, true, 100));
 
 
         this.paramWidth .addEventListener('change', () => this.updateRound());
         this.paramHeight.addEventListener('change', () => this.updateRound());
 
+        this.paramTop   .controls[0].suffix = '%';
+        this.paramBottom.controls[0].suffix = '%';
 
+        
         this.addBaseParams();
         this.setAllParamDividers(0.5);
     }

@@ -260,7 +260,7 @@ class Wire
                fb 
             || this.connection.backInit
             ||    this.connection.input
-               && this.connection.input.id == 'repeatId';
+               && this.connection.input.id == 'loop';
 
         const display2 = fb || back;
 
@@ -307,27 +307,32 @@ class Wire
         const p3 = point(x3, y3); 
     
     
+        const feedback = 
+               this.connection.input
+            && this.connection.input.feedback;
+
+        const repeat =
+               this.connection.input
+            && this.connection.input.id == 'loop';
+
+
         let fb;
-        
-        if (   this.connection.input
-            && this.connection.input.feedback)
-            fb = -25;
-        else if (this.connection.input
-              && this.connection.input.id == 'repeatId')
-            fb = -45;
-        else
-            fb =  25;
+
+             if (feedback) fb = -25;
+        else if (repeat  ) fb = -45;
+        else               fb =  25;
+
 
         const back = x0 - x3 > defNodeWidth * 1.5;
 
 
-        this.updateArrow(p0, p1, p2, p3, this.arrow1,  fb, 9, 0, fb, back);
-        this.updateArrow(p0, p1, p2, p3, this.arrow2, -35, 9, 1, fb, back);
+        this.updateArrow(p0, p1, p2, p3, this.arrow1,  fb, 9, 0, feedback, back);
+        this.updateArrow(p0, p1, p2, p3, this.arrow2, -35, 9, 1, feedback, back);
     }
     
     
 
-    updateArrow(p0, p1, p2, p3, arrow, dist, size, index, fb, back)
+    updateArrow(p0, p1, p2, p3, arrow, dist, size, index, feedback, back)
     {
         let al = 
             dist >= 0
@@ -351,7 +356,7 @@ class Wire
         
 
         if (  !back
-            || fb)
+            || feedback)
         {
             if (dist >= 0) t = Math.max(this.connection.backInit ? 0 : 0.5, t);
             else           t = Math.min(t, 0.5 - (index == 0 ? 0.15 : 0));
@@ -381,7 +386,7 @@ class Wire
     
         arrow.style.transformBox    = 'fill-box';
         arrow.style.transformOrigin = 'center';
-        arrow.style.transform       = 'rotate(' + (angle(ct) - Tau/4 + (!back || fb ? 0 : Tau/2)) + 'rad)';
+        arrow.style.transform       = 'rotate(' + (angle(ct) - Tau/4 + (!back || feedback ? 0 : Tau/2)) + 'rad)';
     }
 
 
