@@ -434,7 +434,9 @@ function initGeneratorMenus()
         menuItemArray      = new MenuItem('Define . . .',     {icon: iconArray,       callback: e => actionManager.do(getCreateNodeAction(NUMBER_DEFINE,      btnNumber.div, getCreateOptions(e)))}),
         menuItemSequence   = new MenuItem('Sequence . . .',   {icon: iconSequence,    callback: e => actionManager.do(getCreateNodeAction(NUMBER_SEQUENCE,    btnNumber.div, getCreateOptions(e)))}),
         menuItemDistribute = new MenuItem('Distribute . . .', {icon: iconDistribute,  callback: e => actionManager.do(getCreateNodeAction(NUMBER_DISTRIBUTE,  btnNumber.div, getCreateOptions(e)))}),
+                             new MenuItem('',                 {separator: true}),
                              new MenuItem('Random . . .',     {icon: iconRandom,      callback: e => actionManager.do(getCreateNodeAction(NUMBER_RANDOM,      btnNumber.div, getCreateOptions(e)))}),
+                             new MenuItem('Noise . . .',      {icon: iconNoise,       callback: e => actionManager.do(getCreateNodeAction(NUMBER_NOISE,       btnNumber.div, getCreateOptions(e)))}),
                              new MenuItem('Probability. . .', {icon: iconProbability, callback: e => actionManager.do(getCreateNodeAction(NUMBER_PROBABILITY, btnNumber.div, getCreateOptions(e)))})]);
         
     

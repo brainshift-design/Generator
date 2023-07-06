@@ -126,6 +126,7 @@ function genParse(parse, inParam = true)
     else if (parse.next == NUMBER_ROUND           ) result = genParseRound            (parse);
     else if (parse.next == NUMBER_LIMITS          ) result = genParseLimits           (parse);
     else if (parse.next == NUMBER_RANDOM          ) result = genParseRandom           (parse);
+    else if (parse.next == NUMBER_NOISE           ) result = genParseNoise            (parse);
     else if (parse.next == NUMBER_PROBABILITY     ) result = genParseProbability      (parse);
     else if (parse.next == NUMBER_CONSTANT        ) result = genParseConstant         (parse);
     else if (parse.next == NUMBER_DATETIME        ) result = genParseDateTime         (parse);

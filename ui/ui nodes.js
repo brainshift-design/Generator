@@ -31,6 +31,7 @@ function createNode(nodeType, creatingButton = null, createdNodeId = -1, options
         case NUMBER_DISTRIBUTE:       node = new OpDistribute();        break;
         case NUMBER_SEQUENCE:         node = new OpSequence();          break;
         case NUMBER_RANDOM:           node = new OpRandom();            break;
+        case NUMBER_NOISE:            node = new OpNoise();             break;
         case NUMBER_PROBABILITY:      node = new OpProbability();       break;
 
         case NUMBER_INTERPOLATE:      node = new OpInterpolate();       break;

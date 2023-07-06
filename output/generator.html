@@ -4492,6 +4492,7 @@ const NUMBER_DEFINE            = 'ARRAY';
 const NUMBER_DISTRIBUTE       = 'DISTR';  
 const NUMBER_SEQUENCE         = 'SEQ';  
 const NUMBER_RANDOM           = 'RAND';  
+const NUMBER_NOISE            = 'NOISE';  
 const NUMBER_PROBABILITY      = 'PROB';  
 const NUMBER_INTERPOLATE      = 'LERP'; 
 const NUMBER_SOLVE            = 'SOLVE';
@@ -4601,6 +4602,7 @@ const NUMBER_TYPES =
     NUMBER_DISTRIBUTE,
     NUMBER_SEQUENCE,
     NUMBER_RANDOM,
+    NUMBER_NOISE,
     NUMBER_PROBABILITY,
     NUMBER_INTERPOLATE,
     NUMBER_SOLVE,
@@ -14509,10 +14511,6 @@ extends GNumberType
     seed;
     min;
     max;
-    scale;
-    interpolate;
-    offset;
-    detail;
     unique;
 
     random = null;
@@ -14535,6 +14533,127 @@ extends GNumberType
 
         copy.copyBase(this);
 
+        if (this.seed  ) copy.seed   = this.seed  .copy();
+        if (this.min   ) copy.min    = this.min   .copy();
+        if (this.max   ) copy.max    = this.max   .copy();
+        if (this.unique) copy.unique = this.unique.copy();
+
+        if (this.random) copy.random = this.random.copy();
+
+        return copy;
+    }
+
+
+
+    async eval(parse)
+    {
+        if (this.isCached())
+            return this;
+
+
+        const seed   = (await this.seed  .eval(parse)).toValue();
+        const min    = (await this.min   .eval(parse)).toValue();
+        const max    = (await this.max   .eval(parse)).toValue();
+        const unique = (await this.unique.eval(parse)).toValue();
+    
+
+        if (  !this.random
+            || this.random.seed != seed.value)
+            this.random = new Random(seed.value);
+
+        
+        const repeat    = parse.repeats.find(r => r.repeatId == this.loopId);
+        const iteration = repeat ? repeat.iteration : this.iteration;
+
+        
+        let r;
+
+        
+        if (this.options.enabled)
+        {
+            r = this.random.get(iteration);
+        }
+        else
+        {
+            r = min.value;
+        }
+
+
+        this.value = new NumberValue(r, Math.max(min.decimals, max.decimals));
+
+
+        this.updateValues =
+        [
+            ['seed',   seed  ],
+            ['min',    min   ],
+            ['max',    max   ],
+            ['unique', unique]
+        ];
+        
+
+        this.validate();
+
+        return this;
+    }
+
+
+
+    pushUpdateValues(parse)
+    {
+        super.pushUpdateValues(parse);
+
+        if (this.seed  ) this.seed  .pushUpdateValues(parse);
+        if (this.min   ) this.min   .pushUpdateValues(parse);
+        if (this.max   ) this.max   .pushUpdateValues(parse);
+        if (this.unique) this.unique.pushUpdateValues(parse);
+    }
+
+
+
+    invalidateInputs(from)
+    {
+        super.invalidateInputs(from);
+
+        if (this.seed  ) this.seed  .invalidateInputs(from);
+        if (this.min   ) this.min   .invalidateInputs(from);
+        if (this.max   ) this.max   .invalidateInputs(from);
+        if (this.unique) this.unique.invalidateInputs(from);
+    }
+}
+
+
+
+class GNoise
+extends GNumberType
+{
+    seed;
+    min;
+    max;
+    scale;
+    interpolate;
+    offset;
+    detail;
+
+    random = null;
+
+
+    loopId = NULL;
+
+
+
+    constructor(nodeId, options)
+    {
+        super(NUMBER_NOISE, nodeId, options);
+    }
+
+
+    
+    copy()
+    {
+        const copy = new GNoise(this.nodeId, this.options);
+
+        copy.copyBase(this);
+
         if (this.seed       ) copy.seed        = this.seed       .copy();
         if (this.min        ) copy.min         = this.min        .copy();
         if (this.max        ) copy.max         = this.max        .copy();
@@ -14542,7 +14661,6 @@ extends GNumberType
         if (this.interpolate) copy.interpolate = this.interpolate.copy();
         if (this.offset     ) copy.offset      = this.offset     .copy();
         if (this.detail     ) copy.detail      = this.detail     .copy();
-        if (this.unique     ) copy.unique      = this.unique     .copy();
 
         if (this.random     ) copy.random      = this.random     .copy();
 
@@ -14564,7 +14682,6 @@ extends GNumberType
         const interpolate = (await this.interpolate.eval(parse)).toValue();
         const offset      = (await this.offset     .eval(parse)).toValue();
         const detail      = (await this.detail     .eval(parse)).toValue();
-        const unique      = (await this.unique     .eval(parse)).toValue();
     
 
         if (  !this.random
@@ -14635,8 +14752,7 @@ extends GNumberType
             ['scale',       scale      ],
             ['interpolate', interpolate],
             ['offset',      offset     ],
-            ['detail',      detail     ],
-            ['unique',      unique     ]
+            ['detail',      detail     ]
         ];
         
 
@@ -14658,7 +14774,6 @@ extends GNumberType
         if (this.interpolate) this.interpolate.pushUpdateValues(parse);
         if (this.offset     ) this.offset     .pushUpdateValues(parse);
         if (this.detail     ) this.detail     .pushUpdateValues(parse);
-        if (this.unique     ) this.unique     .pushUpdateValues(parse);
     }
 
 
@@ -14674,7 +14789,6 @@ extends GNumberType
         if (this.interpolate) this.interpolate.invalidateInputs(from);
         if (this.offset     ) this.offset     .invalidateInputs(from);
         if (this.detail     ) this.detail     .invalidateInputs(from);
-        if (this.unique     ) this.unique     .invalidateInputs(from);
     }
 }
 
@@ -28885,10 +28999,6 @@ function genParseRandom(parse)
     rnd.seed        = genParse(parse);
     rnd.min         = genParse(parse);
     rnd.max         = genParse(parse);
-    rnd.scale       = genParse(parse);
-    rnd.interpolate = genParse(parse);
-    rnd.offset      = genParse(parse);
-    rnd.detail      = genParse(parse);
     rnd.unique      = genParse(parse);
 
 
@@ -28897,6 +29007,46 @@ function genParseRandom(parse)
 
     genParseNodeEnd(parse, rnd);
     return rnd;
+}
+
+
+
+function genParseNoise(parse)
+{
+    const [, nodeId, options, ignore] = genParseNodeStart(parse);
+
+
+    const noise = new GNoise(nodeId, options);
+
+
+    if (parse.settings.logRequests) 
+        logReq(noise, parse, ignore);
+
+
+    if (ignore) 
+    {
+        genParseNodeEnd(parse, noise);
+        return parse.parsedNodes.find(n => n.nodeId == nodeId);
+    }
+
+
+    parse.nTab++;
+
+
+    noise.seed        = genParse(parse);
+    noise.min         = genParse(parse);
+    noise.max         = genParse(parse);
+    noise.scale       = genParse(parse);
+    noise.interpolate = genParse(parse);
+    noise.offset      = genParse(parse);
+    noise.detail      = genParse(parse);
+
+
+    parse.nTab--;
+
+
+    genParseNodeEnd(parse, noise);
+    return noise;
 }
 
 
@@ -31264,6 +31414,7 @@ function genParse(parse, inParam = true)
     else if (parse.next == NUMBER_ROUND           ) result = genParseRound            (parse);
     else if (parse.next == NUMBER_LIMITS          ) result = genParseLimits           (parse);
     else if (parse.next == NUMBER_RANDOM          ) result = genParseRandom           (parse);
+    else if (parse.next == NUMBER_NOISE           ) result = genParseNoise            (parse);
     else if (parse.next == NUMBER_PROBABILITY     ) result = genParseProbability      (parse);
     else if (parse.next == NUMBER_CONSTANT        ) result = genParseConstant         (parse);
     else if (parse.next == NUMBER_DATETIME        ) result = genParseDateTime         (parse);

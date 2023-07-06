@@ -67,6 +67,7 @@
 ../operators/number/OpDistribute.js
 ../operators/number/OpSequence.js
 ../operators/number/OpRandom.js
+../operators/number/OpNoise.js
 ../operators/number/OpProbability.js
 ../operators/number/OpInterpolate.js
 ../operators/number/OpNumberToText.js

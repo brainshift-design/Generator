@@ -520,10 +520,6 @@ function genParseRandom(parse)
     rnd.seed        = genParse(parse);
     rnd.min         = genParse(parse);
     rnd.max         = genParse(parse);
-    rnd.scale       = genParse(parse);
-    rnd.interpolate = genParse(parse);
-    rnd.offset      = genParse(parse);
-    rnd.detail      = genParse(parse);
     rnd.unique      = genParse(parse);
 
 
@@ -532,6 +528,46 @@ function genParseRandom(parse)
 
     genParseNodeEnd(parse, rnd);
     return rnd;
+}
+
+
+
+function genParseNoise(parse)
+{
+    const [, nodeId, options, ignore] = genParseNodeStart(parse);
+
+
+    const noise = new GNoise(nodeId, options);
+
+
+    if (parse.settings.logRequests) 
+        logReq(noise, parse, ignore);
+
+
+    if (ignore) 
+    {
+        genParseNodeEnd(parse, noise);
+        return parse.parsedNodes.find(n => n.nodeId == nodeId);
+    }
+
+
+    parse.nTab++;
+
+
+    noise.seed        = genParse(parse);
+    noise.min         = genParse(parse);
+    noise.max         = genParse(parse);
+    noise.scale       = genParse(parse);
+    noise.interpolate = genParse(parse);
+    noise.offset      = genParse(parse);
+    noise.detail      = genParse(parse);
+
+
+    parse.nTab--;
+
+
+    genParseNodeEnd(parse, noise);
+    return noise;
 }
 
 

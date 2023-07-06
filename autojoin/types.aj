@@ -85,6 +85,7 @@
 ../generator/types/number/GDistribute.js
 ../generator/types/number/GSequence.js
 ../generator/types/number/GRandom.js
+../generator/types/number/GNoise.js
 ../generator/types/number/GProbability.js
 ../generator/types/number/GInterpolate.js
 ../generator/types/number/GSolve.js
