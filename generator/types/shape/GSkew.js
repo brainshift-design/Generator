@@ -95,8 +95,8 @@ extends GAffine
 
     async evalObjects(parse, options)
     {
-        const sx = options.skewX.toNumber() / 100;
-        const sy = options.skewY.toNumber() / 100;
+        const sx = -options.skewX.toNumber() / 100;
+        const sy = -options.skewY.toNumber() / 100;
 
         return await this.evalAffineObjects(parse, options,
             () => [[1,  sx, 0],

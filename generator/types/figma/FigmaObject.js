@@ -145,12 +145,24 @@ class FigmaObject
         }
         else if (this.type == VECTOR_PATH)
         {
-            this.applyObjectTransform(xform, coords);
+            let minX = Number.MAX_SAFE_INTEGER;
+            let minY = Number.MAX_SAFE_INTEGER;
 
             for (let i = 0; i < this.points.length; i++)
-                this.points[i] = PointValue.fromPoint(this.nodeId, transformPoint(this.points[i].toPoint(), xform, coords));
+            {
+                const p = this.points[i].toPoint();
 
-            this.applySpaceTransform (xform, coords, affectSpace);
+                minX = Math.min(minX, p.x);
+                minY = Math.min(minY, p.y);
+            }
+
+            this.x = minX;
+            this.y = minY;
+
+            this.updatePathPoints();
+            this.updatePathData();
+
+            this.applySpaceTransform(xform, coords, affectSpace);
         }
         else if (this.type == SHAPE_GROUP)
         {

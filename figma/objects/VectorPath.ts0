@@ -35,6 +35,7 @@ function figCreateVectorPath(genPath)
 
 function figUpdateVectorPath(figPath, genPath)
 {
+    console.log('genPath =', genPath);
     if (!genVectorPathIsValid(genPath))
         return;
 

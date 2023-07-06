@@ -93,7 +93,16 @@ extends GOperator1
             obj.nodeId   = this.nodeId;
             obj.objectId = obj.objectId + OBJECT_SEPARATOR + this.nodeId;
 
+            
+            if (obj.type == VECTOR_PATH)
+            {
+                for (let i = 0; i < obj.points.length; i++)
+                    obj.points[i] = PointValue.fromPoint(obj.nodeId, transformPoint(obj.points[i].toPoint(), xform, this.coords));
+            }
+            
+
             obj.applyTransform(xform, options.affectSpace.value > 0);
+
 
             this.coords = mulm3m3(this.coords, xform);
         }

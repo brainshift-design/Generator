@@ -16,7 +16,7 @@ extends OpShapeBase
 
         this.variableInputs = true;
         this.canDisable     = true;
-        this.iconOffsetY    = -2;
+        this.iconOffsetY    = -1;
 
 
         this.addNewInput();

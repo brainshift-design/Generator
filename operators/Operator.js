@@ -983,8 +983,8 @@ class Operator
     {
         this.div.style.transform =
               'translate(' 
-            + (graph.currentPage.pan.x * graph.currentPage.zoom) + 'px, '
-            + (graph.currentPage.pan.y * graph.currentPage.zoom) + 'px) '
+            +     (graph.currentPage.pan.x * graph.currentPage.zoom) + 'px, '
+            +     (graph.currentPage.pan.y * graph.currentPage.zoom) + 'px) '
             + 'scale(' + graph.currentPage.zoom + ')';
 
         this.div.style.transformOrigin = 

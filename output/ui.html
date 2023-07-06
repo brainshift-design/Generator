@@ -9999,12 +9999,24 @@ class FigmaObject
         }
         else if (this.type == VECTOR_PATH)
         {
-            this.applyObjectTransform(xform, coords);
+            let minX = Number.MAX_SAFE_INTEGER;
+            let minY = Number.MAX_SAFE_INTEGER;
 
             for (let i = 0; i < this.points.length; i++)
-                this.points[i] = PointValue.fromPoint(this.nodeId, transformPoint(this.points[i].toPoint(), xform, coords));
+            {
+                const p = this.points[i].toPoint();
 
-            this.applySpaceTransform (xform, coords, affectSpace);
+                minX = Math.min(minX, p.x);
+                minY = Math.min(minY, p.y);
+            }
+
+            this.x = minX;
+            this.y = minY;
+
+            this.updatePathPoints();
+            this.updatePathData();
+
+            this.applySpaceTransform(xform, coords, affectSpace);
         }
         else if (this.type == SHAPE_GROUP)
         {
@@ -29759,7 +29771,16 @@ extends GOperator1
             obj.nodeId   = this.nodeId;
             obj.objectId = obj.objectId + OBJECT_SEPARATOR + this.nodeId;
 
+            
+            if (obj.type == VECTOR_PATH)
+            {
+                for (let i = 0; i < obj.points.length; i++)
+                    obj.points[i] = PointValue.fromPoint(obj.nodeId, transformPoint(obj.points[i].toPoint(), xform, this.coords));
+            }
+            
+
             obj.applyTransform(xform, options.affectSpace.value > 0);
+
 
             this.coords = mulm3m3(this.coords, xform);
         }
@@ -30205,8 +30226,8 @@ extends GAffine
 
     async evalObjects(parse, options)
     {
-        const sx = options.skewX.toNumber() / 100;
-        const sy = options.skewY.toNumber() / 100;
+        const sx = -options.skewX.toNumber() / 100;
+        const sy = -options.skewY.toNumber() / 100;
 
         return await this.evalAffineObjects(parse, options,
             () => [[1,  sx, 0],
@@ -46839,12 +46860,24 @@ class FigmaObject
         }
         else if (this.type == VECTOR_PATH)
         {
-            this.applyObjectTransform(xform, coords);
+            let minX = Number.MAX_SAFE_INTEGER;
+            let minY = Number.MAX_SAFE_INTEGER;
 
             for (let i = 0; i < this.points.length; i++)
-                this.points[i] = PointValue.fromPoint(this.nodeId, transformPoint(this.points[i].toPoint(), xform, coords));
+            {
+                const p = this.points[i].toPoint();
 
-            this.applySpaceTransform (xform, coords, affectSpace);
+                minX = Math.min(minX, p.x);
+                minY = Math.min(minY, p.y);
+            }
+
+            this.x = minX;
+            this.y = minY;
+
+            this.updatePathPoints();
+            this.updatePathData();
+
+            this.applySpaceTransform(xform, coords, affectSpace);
         }
         else if (this.type == SHAPE_GROUP)
         {
@@ -66599,7 +66632,16 @@ extends GOperator1
             obj.nodeId   = this.nodeId;
             obj.objectId = obj.objectId + OBJECT_SEPARATOR + this.nodeId;
 
+            
+            if (obj.type == VECTOR_PATH)
+            {
+                for (let i = 0; i < obj.points.length; i++)
+                    obj.points[i] = PointValue.fromPoint(obj.nodeId, transformPoint(obj.points[i].toPoint(), xform, this.coords));
+            }
+            
+
             obj.applyTransform(xform, options.affectSpace.value > 0);
+
 
             this.coords = mulm3m3(this.coords, xform);
         }
@@ -67045,8 +67087,8 @@ extends GAffine
 
     async evalObjects(parse, options)
     {
-        const sx = options.skewX.toNumber() / 100;
-        const sy = options.skewY.toNumber() / 100;
+        const sx = -options.skewX.toNumber() / 100;
+        const sy = -options.skewY.toNumber() / 100;
 
         return await this.evalAffineObjects(parse, options,
             () => [[1,  sx, 0],
@@ -85146,8 +85188,8 @@ class Operator
     {
         this.div.style.transform =
               'translate(' 
-            + (graph.currentPage.pan.x * graph.currentPage.zoom) + 'px, '
-            + (graph.currentPage.pan.y * graph.currentPage.zoom) + 'px) '
+            +     (graph.currentPage.pan.x * graph.currentPage.zoom) + 'px, '
+            +     (graph.currentPage.pan.y * graph.currentPage.zoom) + 'px) '
             + 'scale(' + graph.currentPage.zoom + ')';
 
         this.div.style.transformOrigin = 
@@ -86662,9 +86704,9 @@ Operator.prototype.updateHeaderLabelText = function()
     let suffix;
     
     if (this.type == LIST)
-        suffix = '  :  ' + this.inputs.filter(i => !i.isNew).length;
+        suffix = '  [ ' + this.inputs.filter(i => !i.isNew).length + ' ]';
     else if (this.type == ITEMS)
-        suffix = '  :  ' + this.params.length;
+        suffix = '  [ ' + this.params.length + ' ]';
     else 
         suffix = this.cached ? '' : '...';
 
@@ -99458,7 +99500,7 @@ extends OpShapeBase
 
         this.variableInputs = true;
         this.canDisable     = true;
-        this.iconOffsetY    = -2;
+        this.iconOffsetY    = -1;
 
 
         this.addNewInput();

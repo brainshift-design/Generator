@@ -2143,11 +2143,11 @@ function figUpdateObjects(figParent, genObjects) {
             }
             if (figObj == undefined
                 || figObj == null
-                || figObj.removed) // no existing object, create new object
+                || figObj.removed) // no existing object, create new one
                 yield figCreateObject(genObj, addObject);
             else if (figObj.getPluginData('type') == genObj[FO_TYPE].toString()) // update existing object
                 yield figUpdateObject(figObj, genObj);
-            else // delete existing object, create new object
+            else // delete existing object, create new one
              {
                 figObj.remove();
                 if (figPoints.includes(figObj))
@@ -2160,7 +2160,7 @@ function figUpdateObjects(figParent, genObjects) {
         // delete removed objects from parent
         if (figParent) {
             for (const figObj of figParent.children)
-                if (!genObjects.find(o => o[FO_OBJECT_ID] == figObj.getPluginData('objectId'))) //.objectId
+                if (!genObjects.find(o => o[FO_OBJECT_ID] == figObj.getPluginData('objectId')))
                     figObj.remove();
         }
         // put points on top
@@ -3020,6 +3020,7 @@ function figCreateVectorPath(genPath) {
     return figPath;
 }
 function figUpdateVectorPath(figPath, genPath) {
+    console.log('genPath =', genPath);
     if (!genVectorPathIsValid(genPath))
         return;
     figPath.vectorPaths = [{

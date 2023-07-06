@@ -3251,13 +3251,13 @@ async function figUpdateObjects(figParent, genObjects)
 
         if (   figObj == undefined
             || figObj == null
-            || figObj.removed) // no existing object, create new object
+            || figObj.removed) // no existing object, create new one
             await figCreateObject(genObj, addObject);
 
         else if (figObj.getPluginData('type') == genObj[FO_TYPE].toString()) // update existing object
             await figUpdateObject(figObj, genObj);
     
-        else // delete existing object, create new object
+        else // delete existing object, create new one
         {
             figObj.remove();
 
@@ -3277,7 +3277,7 @@ async function figUpdateObjects(figParent, genObjects)
     if (figParent)
     {
         for (const figObj of figParent.children)
-            if (!genObjects.find(o => o[FO_OBJECT_ID] == figObj.getPluginData('objectId'))) //.objectId
+            if (!genObjects.find(o => o[FO_OBJECT_ID] == figObj.getPluginData('objectId')))
                 figObj.remove();
     }
 
@@ -4703,6 +4703,7 @@ function figCreateVectorPath(genPath)
 
 function figUpdateVectorPath(figPath, genPath)
 {
+    console.log('genPath =', genPath);
     if (!genVectorPathIsValid(genPath))
         return;
 
