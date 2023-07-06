@@ -23,7 +23,7 @@ function noNodeTag(key) { return noTag(key, nodeTag); }
 function noConnTag(key) { return noTag(key, connTag); }
 
 
-const generatorVersion = 144;
+const generatorVersion = 145;
 
 
 const MAX_INT32        = 2147483647;
@@ -2028,7 +2028,7 @@ function figDeleteObjectsExcept(nodeIds, ignoreObjects)
 
             
             if (  !obj.removed
-                && parseInt(obj.getPluginData('retain')) == 2)
+                && obj.getPluginData('retain') == '2')
                 clearObjectData(obj);
         }
         
@@ -2056,7 +2056,7 @@ function findObject(obj, ignoreObjects)
     {
         const found = ignoreObjects.find(o => 
                o[FO_OBJECT_ID] == obj.getPluginData('objectId')
-            || o[FO_OBJECT_ID] == obj.getPluginData('retain'  ));
+            || o[FO_RETAIN   ] == obj.getPluginData('retain'  ));
 
         if (found) 
             return found;
@@ -2073,8 +2073,8 @@ function figDeleteAllObjects(forceDelete = false)
     for (const obj of figma.currentPage.children)
     {
         if (    obj.getPluginData('objectId') != ''
-            &&  (   parseInt(obj.getPluginData('retain')) == 0
-                 || forceDelete)
+            && (   obj.getPluginData('retain') == ''
+                || forceDelete)
             && !obj.removed) 
             obj.remove();
     }
@@ -3147,10 +3147,15 @@ async function figCreateObject(genObj, addObject = null)
             
         if (figObj)
         {
+            console.log('genObj[FO_RETAIN   ].toString() =', genObj[FO_RETAIN   ].toString());
             figObj.setPluginData('type',     genObj[FO_TYPE     ]);
             figObj.setPluginData('nodeId',   genObj[FO_NODE_ID  ]);
             figObj.setPluginData('objectId', genObj[FO_OBJECT_ID]);
-            figObj.setPluginData('retain',   genObj[FO_RETAIN   ].toString());
+
+            figObj.setPluginData('retain',   
+                genObj[FO_RETAIN] > 0 
+                ? genObj[FO_RETAIN].toString() 
+                : '');
 
             
             if (genObj[FO_TYPE] == POINT)
@@ -3174,8 +3179,13 @@ async function figUpdateObject(figObj, genObj)
 
         
     figObj.name = makeObjectName(genObj);
-
     
+    figObj.setPluginData('retain',   
+        genObj[FO_RETAIN] > 0 
+        ? genObj[FO_RETAIN].toString() 
+        : '');
+
+
     switch (genObj[FO_TYPE])
     {
         case RECTANGLE:         figUpdateRect      (figObj, genObj);  break;

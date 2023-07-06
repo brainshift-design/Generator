@@ -55,7 +55,7 @@ function figDeleteObjectsExcept(nodeIds, ignoreObjects)
 
             
             if (  !obj.removed
-                && parseInt(obj.getPluginData('retain')) == 2)
+                && obj.getPluginData('retain') == '2')
                 clearObjectData(obj);
         }
         
@@ -83,7 +83,7 @@ function findObject(obj, ignoreObjects)
     {
         const found = ignoreObjects.find(o => 
                o[FO_OBJECT_ID] == obj.getPluginData('objectId')
-            || o[FO_OBJECT_ID] == obj.getPluginData('retain'  ));
+            || o[FO_RETAIN   ] == obj.getPluginData('retain'  ));
 
         if (found) 
             return found;
@@ -100,8 +100,8 @@ function figDeleteAllObjects(forceDelete = false)
     for (const obj of figma.currentPage.children)
     {
         if (    obj.getPluginData('objectId') != ''
-            &&  (   parseInt(obj.getPluginData('retain')) == 0
-                 || forceDelete)
+            && (   obj.getPluginData('retain') == ''
+                || forceDelete)
             && !obj.removed) 
             obj.remove();
     }

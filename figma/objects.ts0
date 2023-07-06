@@ -43,10 +43,15 @@ async function figCreateObject(genObj, addObject = null)
             
         if (figObj)
         {
+            console.log('genObj[FO_RETAIN   ].toString() =', genObj[FO_RETAIN   ].toString());
             figObj.setPluginData('type',     genObj[FO_TYPE     ]);
             figObj.setPluginData('nodeId',   genObj[FO_NODE_ID  ]);
             figObj.setPluginData('objectId', genObj[FO_OBJECT_ID]);
-            figObj.setPluginData('retain',   genObj[FO_RETAIN   ].toString());
+
+            figObj.setPluginData('retain',   
+                genObj[FO_RETAIN] > 0 
+                ? genObj[FO_RETAIN].toString() 
+                : '');
 
             
             if (genObj[FO_TYPE] == POINT)
@@ -70,8 +75,13 @@ async function figUpdateObject(figObj, genObj)
 
         
     figObj.name = makeObjectName(genObj);
-
     
+    figObj.setPluginData('retain',   
+        genObj[FO_RETAIN] > 0 
+        ? genObj[FO_RETAIN].toString() 
+        : '');
+
+
     switch (genObj[FO_TYPE])
     {
         case RECTANGLE:         figUpdateRect      (figObj, genObj);  break;

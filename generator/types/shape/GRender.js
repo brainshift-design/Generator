@@ -3,7 +3,7 @@ extends GShapeBase
 {
     inputs = [];
 
-    retain;
+    retain = null;
 
     finalize;
 
@@ -49,7 +49,7 @@ extends GShapeBase
         
             if (   this.options.enabled
                 && (   finalize
-                    || retain.value > 0))
+                    || retain.value == 1))
             {
                 for (let j = 0; j < this.inputs[i].value.objects.length; j++, o++)
                 {
@@ -61,12 +61,14 @@ extends GShapeBase
                     obj.objectId = obj.objectId + OBJECT_SEPARATOR + this.nodeId;
                     obj.listId   = -1;
 
+
                     if (  (   !isEmpty(obj.fills  )
                            || !isEmpty(obj.strokes))
-                        && !obj.isDeco
-                        && (   finalize
-                            || retain.value > 0))
+                        && !obj.isDeco)
+                        // && (   finalize
+                        //     || retain.value == 1))
                             obj.retain = finalize ? 2 : 1;
+                            
 
                     this.value.objects.push(obj);
                 }
@@ -77,86 +79,10 @@ extends GShapeBase
         this.updateValues = [['', NullValue]];
 
 
-        //await this.evalShapeBase(parse);
-
-
-        //await this.evalObjects(parse);
-
-
         this.validate();
 
         return this;
     }
-
-
-
-    // copyObject(obj, inputIndex)
-    // {
-    //     const copy = obj.copy(); 
-    
-    //     if (this.inputs.length > 1)
-    //         copy.inputIndex = inputIndex; 
-    
-    //     return copy;
-    // }
-    
-
-    
-    // async evalObjects(parse, options = {})
-    // {
-    //     if (!this.options.enabled)
-    //         return;
-            
-
-    //     if (this.nodeId == 'group2')
-    //     {
-    //         console.log('this.value =', this.value);
-    //         //console.log('input.objects =', [...input.objects]);
-    //     }
-
-    //     if (this.value.items)
-    //     {
-    //         const group = new FigmaShapeGroup(
-    //             this.nodeId,
-    //             this.nodeId,
-    //             this.nodeName);
-
-
-    //         for (const item of this.value.items)
-    //         {
-    //             for (let i = 0; i < item.objects.length; i++)
-    //             {
-    //                 const obj  = item.objects[i].copy();
-    //                 obj.nodeId = this.nodeId;
-
-    //                 obj.objectId = 
-    //                       obj.objectId 
-    //                     + OBJECT_SEPARATOR 
-    //                     //+ (obj.inputIndex >= 0 ? obj.inputIndex + INPUT_SEPARATOR : '')
-    //                     + this.nodeId;
-
-    //                 obj.listId = -1;
-
-    //                 group.children.push(obj);
-    //             }
-    //         }
-            
-
-    //         this.value.objects = [group];
-
-    //         // this.updateValues.push(['nObjects', new NumberValue(
-    //         //     this.items.objects 
-    //         //     ? this.items.objects.length
-    //         //     : 0)]);
-    //     }
-    //     else
-    //     {
-    //         // this.updateValues.push(['nObjects', new NumberValue(0)]);
-    //     }
-
-        
-    //     await super.evalObjects(parse);
-    // }
 
 
 
