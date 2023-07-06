@@ -49,15 +49,7 @@ extends GOperator
 
         if (this.loop.type != NUMBER_VALUE)
         {
-            consoleAssert(
-                   this.loop.type == NUMBER_DEFINE
-                || this.loop.type == NUMBER_DISTRIBUTE
-                || this.loop.type == NUMBER_SEQUENCE
-                || this.loop.type == NUMBER_RANDOM
-                || this.loop.type == LIST
-                || this.loop.type == PARAM, // for OpStart
-                'only volatile types can be repeated');
-
+            assertVolatile(this);
             this.setRepeatCount(this.loop, count.value);
         }
 
@@ -88,7 +80,7 @@ extends GOperator
 
 
                 this.value.objects = [];
-                
+
 
                 parse.repeats.push(repeat);
 

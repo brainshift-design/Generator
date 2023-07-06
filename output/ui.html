@@ -4398,6 +4398,8 @@ a
                 <h1 style='margin-top: 20px;'>What's new</h1>
 
                 <p>•  fixed vector transform bug</p>
+                <p>•  split Random into Random and Noise</p>
+                <p>•  added uniqueness parameter to Random</p>
                 
                 <p><br/><br/><div id='chkHideWhatsNew'></div></p>
             </div>
@@ -17723,15 +17725,7 @@ extends GOperator
 
         if (this.loop.type != NUMBER_VALUE)
         {
-            consoleAssert(
-                   this.loop.type == NUMBER_DEFINE
-                || this.loop.type == NUMBER_DISTRIBUTE
-                || this.loop.type == NUMBER_SEQUENCE
-                || this.loop.type == NUMBER_RANDOM
-                || this.loop.type == LIST
-                || this.loop.type == PARAM, // for OpStart
-                'only volatile types can be repeated');
-
+            assertVolatile(this);
             this.setRepeatCount(this.loop, count.value);
         }
 
@@ -17915,6 +17909,22 @@ extends GOperator
             loop.repeatCount = count;
         }
     }
+}
+
+
+
+function assertVolatile(node)
+{
+    consoleAssert(
+        node.loop.type == NUMBER_DEFINE
+     || node.loop.type == NUMBER_DISTRIBUTE
+     || node.loop.type == NUMBER_SEQUENCE
+     || node.loop.type == NUMBER_RANDOM
+     || node.loop.type == NUMBER_NOISE
+     || node.loop.type == NUMBER_PROBABILITY
+     || node.loop.type == LIST
+     || node.loop.type == PARAM, // for OpStart
+     'only volatile types can be repeated');
 }
 
 
@@ -19234,10 +19244,13 @@ extends GNumberType
     max;
     unique;
 
-    random = null;
+    random       = null;
+    randomUnique = null;
 
+    lastValue    = -1;
+    randomOffset =  0;
 
-    loopId = NULL;
+    loopId       = NULL;
 
 
 
@@ -19280,27 +19293,27 @@ extends GNumberType
 
         if (  !this.random
             || this.random.seed != seed.value)
-            this.random = new Random(seed.value);
+        {
+            this.random       = new Random(seed.value);
+            this.randomUnique = new Random(seed.value+1);
+        }
 
-        
+
         const repeat    = parse.repeats.find(r => r.repeatId == this.loopId);
         const iteration = repeat ? repeat.iteration : this.iteration;
 
+
+        this.value = new NumberValue(
+            min.value + this.random.get(iteration + this.randomOffset) * (max.value - min.value), 
+            Math.max(min.decimals, max.decimals));
+
+        while (   this.value.toNumber() == this.lastValue
+               && this.randomUnique.get(iteration) < unique.value/100)
+            this.value = new NumberValue(
+                min.value + this.random.get(iteration + ++this.randomOffset) * (max.value - min.value),
+                Math.max(min.decimals, max.decimals));
         
-        let r;
-
-        
-        if (this.options.enabled)
-        {
-            r = this.random.get(iteration);
-        }
-        else
-        {
-            r = min.value;
-        }
-
-
-        this.value = new NumberValue(r, Math.max(min.decimals, max.decimals));
+        this.lastValue = this.value.toNumber();
 
 
         this.updateValues =
@@ -30442,15 +30455,7 @@ extends GOperator
 
         if (this.loop.type != NUMBER_VALUE)
         {
-            consoleAssert(
-                   this.loop.type == NUMBER_DEFINE
-                || this.loop.type == NUMBER_DISTRIBUTE
-                || this.loop.type == NUMBER_SEQUENCE
-                || this.loop.type == NUMBER_RANDOM
-                || this.loop.type == LIST
-                || this.loop.type == PARAM, // for OpStart
-                'only volatile types can be repeated');
-
+            assertVolatile(this);
             this.setRepeatCount(this.loop, count.value);
         }
 
@@ -30481,7 +30486,7 @@ extends GOperator
 
 
                 this.value.objects = [];
-                
+
 
                 parse.repeats.push(repeat);
 
@@ -54740,15 +54745,7 @@ extends GOperator
 
         if (this.loop.type != NUMBER_VALUE)
         {
-            consoleAssert(
-                   this.loop.type == NUMBER_DEFINE
-                || this.loop.type == NUMBER_DISTRIBUTE
-                || this.loop.type == NUMBER_SEQUENCE
-                || this.loop.type == NUMBER_RANDOM
-                || this.loop.type == LIST
-                || this.loop.type == PARAM, // for OpStart
-                'only volatile types can be repeated');
-
+            assertVolatile(this);
             this.setRepeatCount(this.loop, count.value);
         }
 
@@ -54932,6 +54929,22 @@ extends GOperator
             loop.repeatCount = count;
         }
     }
+}
+
+
+
+function assertVolatile(node)
+{
+    consoleAssert(
+        node.loop.type == NUMBER_DEFINE
+     || node.loop.type == NUMBER_DISTRIBUTE
+     || node.loop.type == NUMBER_SEQUENCE
+     || node.loop.type == NUMBER_RANDOM
+     || node.loop.type == NUMBER_NOISE
+     || node.loop.type == NUMBER_PROBABILITY
+     || node.loop.type == LIST
+     || node.loop.type == PARAM, // for OpStart
+     'only volatile types can be repeated');
 }
 
 
@@ -56251,10 +56264,13 @@ extends GNumberType
     max;
     unique;
 
-    random = null;
+    random       = null;
+    randomUnique = null;
 
+    lastValue    = -1;
+    randomOffset =  0;
 
-    loopId = NULL;
+    loopId       = NULL;
 
 
 
@@ -56297,27 +56313,27 @@ extends GNumberType
 
         if (  !this.random
             || this.random.seed != seed.value)
-            this.random = new Random(seed.value);
+        {
+            this.random       = new Random(seed.value);
+            this.randomUnique = new Random(seed.value+1);
+        }
 
-        
+
         const repeat    = parse.repeats.find(r => r.repeatId == this.loopId);
         const iteration = repeat ? repeat.iteration : this.iteration;
 
+
+        this.value = new NumberValue(
+            min.value + this.random.get(iteration + this.randomOffset) * (max.value - min.value), 
+            Math.max(min.decimals, max.decimals));
+
+        while (   this.value.toNumber() == this.lastValue
+               && this.randomUnique.get(iteration) < unique.value/100)
+            this.value = new NumberValue(
+                min.value + this.random.get(iteration + ++this.randomOffset) * (max.value - min.value),
+                Math.max(min.decimals, max.decimals));
         
-        let r;
-
-        
-        if (this.options.enabled)
-        {
-            r = this.random.get(iteration);
-        }
-        else
-        {
-            r = min.value;
-        }
-
-
-        this.value = new NumberValue(r, Math.max(min.decimals, max.decimals));
+        this.lastValue = this.value.toNumber();
 
 
         this.updateValues =
@@ -67459,15 +67475,7 @@ extends GOperator
 
         if (this.loop.type != NUMBER_VALUE)
         {
-            consoleAssert(
-                   this.loop.type == NUMBER_DEFINE
-                || this.loop.type == NUMBER_DISTRIBUTE
-                || this.loop.type == NUMBER_SEQUENCE
-                || this.loop.type == NUMBER_RANDOM
-                || this.loop.type == LIST
-                || this.loop.type == PARAM, // for OpStart
-                'only volatile types can be repeated');
-
+            assertVolatile(this);
             this.setRepeatCount(this.loop, count.value);
         }
 
@@ -67498,7 +67506,7 @@ extends GOperator
 
 
                 this.value.objects = [];
-                
+
 
                 parse.repeats.push(repeat);
 

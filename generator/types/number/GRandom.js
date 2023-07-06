@@ -6,10 +6,13 @@ extends GNumberType
     max;
     unique;
 
-    random = null;
+    random       = null;
+    randomUnique = null;
 
+    lastValue    = -1;
+    randomOffset =  0;
 
-    loopId = NULL;
+    loopId       = NULL;
 
 
 
@@ -52,27 +55,27 @@ extends GNumberType
 
         if (  !this.random
             || this.random.seed != seed.value)
-            this.random = new Random(seed.value);
+        {
+            this.random       = new Random(seed.value);
+            this.randomUnique = new Random(seed.value+1);
+        }
 
-        
+
         const repeat    = parse.repeats.find(r => r.repeatId == this.loopId);
         const iteration = repeat ? repeat.iteration : this.iteration;
 
+
+        this.value = new NumberValue(
+            min.value + this.random.get(iteration + this.randomOffset) * (max.value - min.value), 
+            Math.max(min.decimals, max.decimals));
+
+        while (   this.value.toNumber() == this.lastValue
+               && this.randomUnique.get(iteration) < unique.value/100)
+            this.value = new NumberValue(
+                min.value + this.random.get(iteration + ++this.randomOffset) * (max.value - min.value),
+                Math.max(min.decimals, max.decimals));
         
-        let r;
-
-        
-        if (this.options.enabled)
-        {
-            r = this.random.get(iteration);
-        }
-        else
-        {
-            r = min.value;
-        }
-
-
-        this.value = new NumberValue(r, Math.max(min.decimals, max.decimals));
+        this.lastValue = this.value.toNumber();
 
 
         this.updateValues =

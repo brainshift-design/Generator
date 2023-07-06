@@ -57,15 +57,7 @@ extends GOperator
 
         if (this.loop.type != NUMBER_VALUE)
         {
-            consoleAssert(
-                   this.loop.type == NUMBER_DEFINE
-                || this.loop.type == NUMBER_DISTRIBUTE
-                || this.loop.type == NUMBER_SEQUENCE
-                || this.loop.type == NUMBER_RANDOM
-                || this.loop.type == LIST
-                || this.loop.type == PARAM, // for OpStart
-                'only volatile types can be repeated');
-
+            assertVolatile(this);
             this.setRepeatCount(this.loop, count.value);
         }
 
@@ -249,4 +241,20 @@ extends GOperator
             loop.repeatCount = count;
         }
     }
+}
+
+
+
+function assertVolatile(node)
+{
+    consoleAssert(
+        node.loop.type == NUMBER_DEFINE
+     || node.loop.type == NUMBER_DISTRIBUTE
+     || node.loop.type == NUMBER_SEQUENCE
+     || node.loop.type == NUMBER_RANDOM
+     || node.loop.type == NUMBER_NOISE
+     || node.loop.type == NUMBER_PROBABILITY
+     || node.loop.type == LIST
+     || node.loop.type == PARAM, // for OpStart
+     'only volatile types can be repeated');
 }
