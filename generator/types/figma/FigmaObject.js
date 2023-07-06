@@ -143,6 +143,15 @@ class FigmaObject
 
             this.applySpaceTransform(xform, coords, affectSpace);
         }
+        else if (this.type == VECTOR_PATH)
+        {
+            this.applyObjectTransform(xform, coords);
+
+            for (let i = 0; i < this.points.length; i++)
+                this.points[i] = PointValue.fromPoint(this.nodeId, transformPoint(this.points[i].toPoint(), xform, coords));
+
+            this.applySpaceTransform (xform, coords, affectSpace);
+        }
         else if (this.type == SHAPE_GROUP)
         {
             for (const obj of this.children)

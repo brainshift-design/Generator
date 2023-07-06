@@ -16,7 +16,7 @@ extends OpShapeBase
 
         this.variableInputs = true;
         this.canDisable     = true;
-        this.iconOffsetY    = -1;
+        this.iconOffsetY    = -2;
 
 
         this.addNewInput();
@@ -176,7 +176,7 @@ extends OpShapeBase
 
         const headerStyle = rgba2style(
             rgb_a(
-                rgbFromType(ANY_VALUE) //this.paramValue.value.isValid()
+                rgbFromType(ANY_VALUE)
                 ? (isDark(rgbaStripe) ? [1, 1, 1] : [0, 0, 0])
                 : colors.text, 
                 this.btnFinal.down 
@@ -185,6 +185,8 @@ extends OpShapeBase
                   ? 0.7 
                   : 0.5));
 
+        this.btnFinal.style.position           = 'relative';
+        this.btnFinal.style.top                = '-1px';
         this.btnFinal.style.display            = 'inline-block';
         this.btnFinal.style.background         =  this.btnFinal.down
                                                   ? 'url(\'data:image/svg+xml;utf8,' + iconRender    .replaceAll('white', headerStyle) + '\')'

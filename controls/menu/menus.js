@@ -802,7 +802,7 @@ function initGeneratorMenus()
 
     btnMain   .setIcon(iconGenerator);
     btnShape  .setIcon(iconShapes);
-    btnLayer  .setIcon(iconDropShadow);
+    btnLayer  .setIcon(iconEffects);
     btnColor  .setIcon(iconColor);
     //btnStyle  .setIcon(iconStyle);
     //btnGroup  .setIcon(iconGroup);

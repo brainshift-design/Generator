@@ -5276,6 +5276,15 @@ class FigmaObject
 
             this.applySpaceTransform(xform, coords, affectSpace);
         }
+        else if (this.type == VECTOR_PATH)
+        {
+            this.applyObjectTransform(xform, coords);
+
+            for (let i = 0; i < this.points.length; i++)
+                this.points[i] = PointValue.fromPoint(this.nodeId, transformPoint(this.points[i].toPoint(), xform, coords));
+
+            this.applySpaceTransform (xform, coords, affectSpace);
+        }
         else if (this.type == SHAPE_GROUP)
         {
             for (const obj of this.children)
@@ -11400,6 +11409,16 @@ extends GValue
             nodeId,
             new NumberValue(x),
             new NumberValue(y));
+    }
+
+
+
+    static fromPoint(nodeId, p)
+    {
+        return new PointValue(
+            nodeId,
+            new NumberValue(p.x),
+            new NumberValue(p.y));
     }
 
 
@@ -25371,8 +25390,8 @@ extends GAffine
 class GSkew
 extends GAffine
 {
-    skewX      = null;
-    skewY      = null;
+    skewX = null;
+    skewY = null;
 
 
 
@@ -25478,7 +25497,7 @@ extends GAffine
 
     pushValueUpdates(parse)
     {
-        super.pushValueUpdates(parse);
+        super.pushValueUpdates(parse);GVectorPath
 
         if (this.skewX) this.skewX.pushValueUpdates(parse);
         if (this.skewY) this.skewY.pushValueUpdates(parse);

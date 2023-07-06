@@ -237,7 +237,7 @@ Operator.prototype.updateIcon = function()
     const colors = this.getHeaderColors();
 
     this.divIcon.innerHTML     = this.icon.replaceAll('white', rgba2style(colors.text));
-    this.divIcon.style.top     = (this.iconOffsetY * Math.pow(Math.min(graph.currentPage.zoom, 1), 3)).toString() + 'px';
+    this.divIcon.style.top     = (this.iconOffsetY * Math.min(graph.currentPage.zoom, 1)).toString() + 'px';
     this.divIcon.style.display = 
            this.icon != '' 
         && settings.showNodeIcons

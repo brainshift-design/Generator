@@ -9997,6 +9997,15 @@ class FigmaObject
 
             this.applySpaceTransform(xform, coords, affectSpace);
         }
+        else if (this.type == VECTOR_PATH)
+        {
+            this.applyObjectTransform(xform, coords);
+
+            for (let i = 0; i < this.points.length; i++)
+                this.points[i] = PointValue.fromPoint(this.nodeId, transformPoint(this.points[i].toPoint(), xform, coords));
+
+            this.applySpaceTransform (xform, coords, affectSpace);
+        }
         else if (this.type == SHAPE_GROUP)
         {
             for (const obj of this.children)
@@ -16121,6 +16130,16 @@ extends GValue
             nodeId,
             new NumberValue(x),
             new NumberValue(y));
+    }
+
+
+
+    static fromPoint(nodeId, p)
+    {
+        return new PointValue(
+            nodeId,
+            new NumberValue(p.x),
+            new NumberValue(p.y));
     }
 
 
@@ -30092,8 +30111,8 @@ extends GAffine
 class GSkew
 extends GAffine
 {
-    skewX      = null;
-    skewY      = null;
+    skewX = null;
+    skewY = null;
 
 
 
@@ -30199,7 +30218,7 @@ extends GAffine
 
     pushValueUpdates(parse)
     {
-        super.pushValueUpdates(parse);
+        super.pushValueUpdates(parse);GVectorPath
 
         if (this.skewX) this.skewX.pushValueUpdates(parse);
         if (this.skewY) this.skewY.pushValueUpdates(parse);
@@ -46818,6 +46837,15 @@ class FigmaObject
 
             this.applySpaceTransform(xform, coords, affectSpace);
         }
+        else if (this.type == VECTOR_PATH)
+        {
+            this.applyObjectTransform(xform, coords);
+
+            for (let i = 0; i < this.points.length; i++)
+                this.points[i] = PointValue.fromPoint(this.nodeId, transformPoint(this.points[i].toPoint(), xform, coords));
+
+            this.applySpaceTransform (xform, coords, affectSpace);
+        }
         else if (this.type == SHAPE_GROUP)
         {
             for (const obj of this.children)
@@ -52942,6 +52970,16 @@ extends GValue
             nodeId,
             new NumberValue(x),
             new NumberValue(y));
+    }
+
+
+
+    static fromPoint(nodeId, p)
+    {
+        return new PointValue(
+            nodeId,
+            new NumberValue(p.x),
+            new NumberValue(p.y));
     }
 
 
@@ -66913,8 +66951,8 @@ extends GAffine
 class GSkew
 extends GAffine
 {
-    skewX      = null;
-    skewY      = null;
+    skewX = null;
+    skewY = null;
 
 
 
@@ -67020,7 +67058,7 @@ extends GAffine
 
     pushValueUpdates(parse)
     {
-        super.pushValueUpdates(parse);
+        super.pushValueUpdates(parse);GVectorPath
 
         if (this.skewX) this.skewX.pushValueUpdates(parse);
         if (this.skewY) this.skewY.pushValueUpdates(parse);
@@ -73713,7 +73751,7 @@ function initGeneratorMenus()
 
     btnMain   .setIcon(iconGenerator);
     btnShape  .setIcon(iconShapes);
-    btnLayer  .setIcon(iconDropShadow);
+    btnLayer  .setIcon(iconEffects);
     btnColor  .setIcon(iconColor);
     //btnStyle  .setIcon(iconStyle);
     //btnGroup  .setIcon(iconGroup);
@@ -84538,6 +84576,7 @@ class Operator
         else if (type ==    RECTANGLE_VALUE) return this.addParam(new   RectangleParam(id, id, showName, hasInput, hasOutput), volatile);
         else if (type ==         LINE_VALUE) return this.addParam(new        LineParam(id, id, showName, hasInput, hasOutput), volatile);
         else if (type ==      ELLIPSE_VALUE) return this.addParam(new     EllipseParam(id, id, showName, hasInput, hasOutput), volatile);
+        else if (type ==      TRAPEZE_VALUE) return this.addParam(new     TrapezeParam(id, id, showName, hasInput, hasOutput), volatile);
         else if (type ==      POLYGON_VALUE) return this.addParam(new     PolygonParam(id, id, showName, hasInput, hasOutput), volatile);
         else if (type ==         STAR_VALUE) return this.addParam(new        StarParam(id, id, showName, hasInput, hasOutput), volatile);
         else if (type ==   TEXT_SHAPE_VALUE) return this.addParam(new   TextShapeParam(id, id, showName, hasInput, hasOutput), volatile);
@@ -84568,6 +84607,7 @@ class Operator
         else if (type ==    RECTANGLE_VALUE) return this.insertParam(index, new   RectangleParam(id, id, showName, hasInput, hasOutput), volatile);
         else if (type ==         LINE_VALUE) return this.insertParam(index, new        LineParam(id, id, showName, hasInput, hasOutput), volatile);
         else if (type ==      ELLIPSE_VALUE) return this.insertParam(index, new     EllipseParam(id, id, showName, hasInput, hasOutput), volatile);
+        else if (type ==      TRAPEZE_VALUE) return this.insertParam(index, new     TrapezeParam(id, id, showName, hasInput, hasOutput), volatile);
         else if (type ==      POLYGON_VALUE) return this.insertParam(index, new     PolygonParam(id, id, showName, hasInput, hasOutput), volatile);
         else if (type ==         STAR_VALUE) return this.insertParam(index, new        StarParam(id, id, showName, hasInput, hasOutput), volatile);
         else if (type ==   TEXT_SHAPE_VALUE) return this.insertParam(index, new   TextShapeParam(id, id, showName, hasInput, hasOutput), volatile);
@@ -86601,7 +86641,7 @@ Operator.prototype.updateIcon = function()
     const colors = this.getHeaderColors();
 
     this.divIcon.innerHTML     = this.icon.replaceAll('white', rgba2style(colors.text));
-    this.divIcon.style.top     = (this.iconOffsetY * Math.pow(Math.min(graph.currentPage.zoom, 1), 3)).toString() + 'px';
+    this.divIcon.style.top     = (this.iconOffsetY * Math.min(graph.currentPage.zoom, 1)).toString() + 'px';
     this.divIcon.style.display = 
            this.icon != '' 
         && settings.showNodeIcons
@@ -99418,7 +99458,7 @@ extends OpShapeBase
 
         this.variableInputs = true;
         this.canDisable     = true;
-        this.iconOffsetY    = -1;
+        this.iconOffsetY    = -2;
 
 
         this.addNewInput();
@@ -99578,7 +99618,7 @@ extends OpShapeBase
 
         const headerStyle = rgba2style(
             rgb_a(
-                rgbFromType(ANY_VALUE) //this.paramValue.value.isValid()
+                rgbFromType(ANY_VALUE)
                 ? (isDark(rgbaStripe) ? [1, 1, 1] : [0, 0, 0])
                 : colors.text, 
                 this.btnFinal.down 
@@ -99587,6 +99627,8 @@ extends OpShapeBase
                   ? 0.7 
                   : 0.5));
 
+        this.btnFinal.style.position           = 'relative';
+        this.btnFinal.style.top                = '-1px';
         this.btnFinal.style.display            = 'inline-block';
         this.btnFinal.style.background         =  this.btnFinal.down
                                                   ? 'url(\'data:image/svg+xml;utf8,' + iconRender    .replaceAll('white', headerStyle) + '\')'

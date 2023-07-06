@@ -1,8 +1,8 @@
 class GSkew
 extends GAffine
 {
-    skewX      = null;
-    skewY      = null;
+    skewX = null;
+    skewY = null;
 
 
 
@@ -108,7 +108,7 @@ extends GAffine
 
     pushValueUpdates(parse)
     {
-        super.pushValueUpdates(parse);
+        super.pushValueUpdates(parse);GVectorPath
 
         if (this.skewX) this.skewX.pushValueUpdates(parse);
         if (this.skewY) this.skewY.pushValueUpdates(parse);

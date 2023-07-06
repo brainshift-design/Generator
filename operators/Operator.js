@@ -413,6 +413,7 @@ class Operator
         else if (type ==    RECTANGLE_VALUE) return this.addParam(new   RectangleParam(id, id, showName, hasInput, hasOutput), volatile);
         else if (type ==         LINE_VALUE) return this.addParam(new        LineParam(id, id, showName, hasInput, hasOutput), volatile);
         else if (type ==      ELLIPSE_VALUE) return this.addParam(new     EllipseParam(id, id, showName, hasInput, hasOutput), volatile);
+        else if (type ==      TRAPEZE_VALUE) return this.addParam(new     TrapezeParam(id, id, showName, hasInput, hasOutput), volatile);
         else if (type ==      POLYGON_VALUE) return this.addParam(new     PolygonParam(id, id, showName, hasInput, hasOutput), volatile);
         else if (type ==         STAR_VALUE) return this.addParam(new        StarParam(id, id, showName, hasInput, hasOutput), volatile);
         else if (type ==   TEXT_SHAPE_VALUE) return this.addParam(new   TextShapeParam(id, id, showName, hasInput, hasOutput), volatile);
@@ -443,6 +444,7 @@ class Operator
         else if (type ==    RECTANGLE_VALUE) return this.insertParam(index, new   RectangleParam(id, id, showName, hasInput, hasOutput), volatile);
         else if (type ==         LINE_VALUE) return this.insertParam(index, new        LineParam(id, id, showName, hasInput, hasOutput), volatile);
         else if (type ==      ELLIPSE_VALUE) return this.insertParam(index, new     EllipseParam(id, id, showName, hasInput, hasOutput), volatile);
+        else if (type ==      TRAPEZE_VALUE) return this.insertParam(index, new     TrapezeParam(id, id, showName, hasInput, hasOutput), volatile);
         else if (type ==      POLYGON_VALUE) return this.insertParam(index, new     PolygonParam(id, id, showName, hasInput, hasOutput), volatile);
         else if (type ==         STAR_VALUE) return this.insertParam(index, new        StarParam(id, id, showName, hasInput, hasOutput), volatile);
         else if (type ==   TEXT_SHAPE_VALUE) return this.insertParam(index, new   TextShapeParam(id, id, showName, hasInput, hasOutput), volatile);
