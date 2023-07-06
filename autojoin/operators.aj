@@ -159,6 +159,7 @@
 ../operators/shape/OpVectorPath.js
 ../operators/shape/OpShapeGroup.js
 ../operators/shape/OpFrame.js
+../operators/shape/OpApply.js
 
 ../operators/shape/OpMove.js
 ../operators/shape/OpAffine.js

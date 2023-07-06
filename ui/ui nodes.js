@@ -117,6 +117,7 @@ function createNode(nodeType, creatingButton = null, createdNodeId = -1, options
         case BOOLEAN:                 node = new OpShapeBoolean();      break;
         case SHAPE_GROUP:             node = new OpShapeGroup();        break;
         case FRAME:                   node = new OpFrame();             break;
+        case SHAPE_APPLY:             node = new OpApply();             break;
 
         case MOVE:                    node = new OpMove();              break;
         case ROTATE:                  node = new OpRotate();            break;

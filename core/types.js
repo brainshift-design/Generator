@@ -369,6 +369,7 @@ const SCALE              = 'SCALE';
 const SKEW               = 'SKEW';
 
 const PLACE              = 'PLACE';
+const SHAPE_APPLY        = 'APPLY';
   
 
 const BOOLEAN            = 'BOOL';
@@ -443,6 +444,7 @@ const SHAPE_TYPES =
     ...AFFINE_TYPES,
 
     PLACE,
+    SHAPE_APPLY,
 
     RENDER
 ];

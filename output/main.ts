@@ -23,7 +23,7 @@ function noNodeTag(key) { return noTag(key, nodeTag); }
 function noConnTag(key) { return noTag(key, connTag); }
 
 
-const generatorVersion = 145;
+const generatorVersion = 146;
 
 
 const MAX_INT32        = 2147483647;
@@ -1258,6 +1258,7 @@ const SCALE              = 'SCALE';
 const SKEW               = 'SKEW';
 
 const PLACE              = 'PLACE';
+const SHAPE_APPLY        = 'APPLY';
   
 
 const BOOLEAN            = 'BOOL';
@@ -1332,6 +1333,7 @@ const SHAPE_TYPES =
     ...AFFINE_TYPES,
 
     PLACE,
+    SHAPE_APPLY,
 
     RENDER
 ];
@@ -3147,7 +3149,6 @@ async function figCreateObject(genObj, addObject = null)
             
         if (figObj)
         {
-            console.log('genObj[FO_RETAIN   ].toString() =', genObj[FO_RETAIN   ].toString());
             figObj.setPluginData('type',     genObj[FO_TYPE     ]);
             figObj.setPluginData('nodeId',   genObj[FO_NODE_ID  ]);
             figObj.setPluginData('objectId', genObj[FO_OBJECT_ID]);

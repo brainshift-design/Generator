@@ -198,7 +198,7 @@ function genUpdateValuesAndObjects(requestId, actionId, updateNodeId, updatePara
     // send updates in chunks
 
     const approxNodeChunkSize = 20;
-    const objChunkSize        = 100;
+    const objChunkSize        = 50;
     const styleChunkSize      = 20;
 
     

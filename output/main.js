@@ -19,7 +19,7 @@ function isConnKey(key) { return isTagKey(key, connTag); }
 function noPageTag(key) { return noTag(key, pageTag); }
 function noNodeTag(key) { return noTag(key, nodeTag); }
 function noConnTag(key) { return noTag(key, connTag); }
-const generatorVersion = 145;
+const generatorVersion = 146;
 const MAX_INT32 = 2147483647;
 const NULL = '';
 const HTAB = '  '; // half-tab
@@ -749,6 +749,7 @@ const ROTATE = 'ROT';
 const SCALE = 'SCALE';
 const SKEW = 'SKEW';
 const PLACE = 'PLACE';
+const SHAPE_APPLY = 'APPLY';
 const BOOLEAN = 'BOOL';
 const BOOLEAN_VALUE = 'BOOL#';
 const BOOL_UNION = 'BOOLU';
@@ -803,6 +804,7 @@ const SHAPE_TYPES = [
     MOVE,
     ...AFFINE_TYPES,
     PLACE,
+    SHAPE_APPLY,
     RENDER
 ];
 const ALL_VALUES = [
@@ -2052,7 +2054,6 @@ function figCreateObject(genObj, addObject = null) {
             consoleAssert(genObj[FO_TYPE] == SHAPE_GROUP // cannot exist without children
                 || !!figObj, 'no Figma object created');
             if (figObj) {
-                console.log('genObj[FO_RETAIN   ].toString() =', genObj[FO_RETAIN].toString());
                 figObj.setPluginData('type', genObj[FO_TYPE]);
                 figObj.setPluginData('nodeId', genObj[FO_NODE_ID]);
                 figObj.setPluginData('objectId', genObj[FO_OBJECT_ID]);

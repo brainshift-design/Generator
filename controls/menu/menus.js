@@ -581,6 +581,8 @@ function initGeneratorMenus()
                                 new MenuItem('Transform',   {icon: iconMove, childMenu: menuTransform}),
                                 new MenuItem('. . . Place', {icon: iconPlace, callback: e => actionManager.do(getCreateNodeAction(PLACE, btnShape.div, getCreateOptions(e)))}),
                                 new MenuItem('',            {separator: true}),
+                                new MenuItem('Apply',       {icon: iconApply, callback: e => actionManager.do(getCreateNodeAction(SHAPE_APPLY, btnShape.div, getCreateOptions(e)))}),
+                                new MenuItem('',            {separator: true}),
                                 new MenuItem('Render',      {icon: iconRenderDown, callback: e => actionManager.do(getCreateNodeAction(RENDER,       btnShape.div, getCreateOptions(e)))})]);
 
 

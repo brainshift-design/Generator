@@ -4,7 +4,7 @@
 
 
 
-const generatorVersion = 145;
+const generatorVersion = 146;
 
 
 const MAX_INT32        = 2147483647;
@@ -4790,6 +4790,7 @@ const SCALE              = 'SCALE';
 const SKEW               = 'SKEW';
 
 const PLACE              = 'PLACE';
+const SHAPE_APPLY        = 'APPLY';
   
 
 const BOOLEAN            = 'BOOL';
@@ -4864,6 +4865,7 @@ const SHAPE_TYPES =
     ...AFFINE_TYPES,
 
     PLACE,
+    SHAPE_APPLY,
 
     RENDER
 ];
@@ -24486,6 +24488,100 @@ extends GShape
 }
 
 
+class GApply
+extends GShape
+{
+    constructor(nodeId, options)
+    {
+        super(SHAPE_APPLY, nodeId, options);
+    }
+
+
+
+    copy()
+    {
+        const copy = new GApply(this.nodeId, this.options);
+
+        copy.copyBase(this);
+
+        return copy;
+    }
+
+
+
+    async eval(parse)
+    {
+        if (this.isCached())
+            return this;
+
+        
+        const [, , , ] = await this.evalBaseParams(parse);
+
+
+        if (this.input)
+        {
+            const input = (await this.input.eval(parse)).toValue();
+
+            this.value = input.copy();
+
+            if (this.options.enabled)
+                await this.evalShapeBase(parse);
+
+            await this.evalObjects(parse);
+        }
+        else
+            this.value = NullValue;
+
+       
+        this.updateValues = [['value', this.value]];
+
+
+        this.validate();
+
+        return this;
+    }
+
+
+
+    async evalObjects(parse, options = {})
+    {
+        if (this.value.isValid())
+        {
+            this.value.objects = 
+                   this.input 
+                && this.input.value
+                ? this.input.value.objects.map(o => o.copy()) 
+                : [];
+        }
+
+            
+        for (const obj of this.value.objects)
+        {
+            obj.nodeId   = this.nodeId;
+            obj.objectId = obj.objectId + OBJECT_SEPARATOR + this.nodeId;
+
+            obj.fills   = [];
+            obj.strokes = [];
+            obj.effects = [];
+
+            obj.isMask  = false;
+        }
+
+        
+        await super.evalObjects(parse);
+    }
+
+
+
+    toValue()
+    {
+        return this.value
+             ? this.value.copy()
+             : null;
+    }
+}
+
+
 class GShapeBoolean
 extends GShapeBase
 {
@@ -26412,7 +26508,7 @@ function genUpdateValuesAndObjects(requestId, actionId, updateNodeId, updatePara
     // send updates in chunks
 
     const approxNodeChunkSize = 20;
-    const objChunkSize        = 100;
+    const objChunkSize        = 50;
     const styleChunkSize      = 20;
 
     
@@ -30433,6 +30529,66 @@ function genParsePlace(parse)
 
 
 
+function genParseShapeApply(parse)
+{
+    const [, nodeId, options, ignore] = genParseNodeStart(parse);
+
+
+    const apply = new GApply(nodeId, options);
+
+
+    let nInputs = -1;
+
+    if (!ignore)
+    {
+        nInputs = parseInt(parse.move());
+        consoleAssert(nInputs => 0 && nInputs <= 1, 'nInputs must be [0, 1]');
+    }
+
+
+    if (parse.settings.logRequests) 
+        logReq(apply, parse, ignore);
+
+
+    if (ignore) 
+    {
+        genParseNodeEnd(parse, apply);
+        return parse.parsedNodes.find(n => n.nodeId == nodeId);
+    }
+
+
+    parse.nTab++;
+
+
+    if (nInputs == 1)
+        apply.input = genParse(parse);
+
+
+    const nParamIds = genParseParamCount(parse);
+
+    for (let i = 0; i < nParamIds; i++)
+    {
+        const paramId = genParseParamId(parse);
+
+        parse.inParam = true;
+
+        switch (paramId)
+        {
+        case 'props': apply.props = genParse(parse); break;
+        }
+    }
+
+
+    parse.inParam = false;
+    parse.nTab--;
+
+
+    genParseNodeEnd(parse, apply);
+    return apply;
+}
+
+
+
 function genParseRender(parse)
 {
     const [, nodeId, options, ignore] = genParseNodeStart(parse);
@@ -31464,6 +31620,7 @@ function genParse(parse, inParam = true)
     else if (parse.next == SKEW                   ) result = genParseSkew             (parse);
 
     else if (parse.next == PLACE                  ) result = genParsePlace            (parse);
+    else if (parse.next == SHAPE_APPLY            ) result = genParseShapeApply       (parse);
     
     else if (parse.next == RENDER                 ) result = genParseRender           (parse);
  

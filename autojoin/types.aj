@@ -182,6 +182,7 @@
 ../generator/types/shape/GVectorPath.js
 ../generator/types/shape/GShapeGroup.js
 ../generator/types/shape/GFrame.js
+../generator/types/shape/GApply.js
 
 ../generator/types/shape/boolean/GShapeBoolean.js
 ../generator/types/shape/boolean/GShapeUnion.js
