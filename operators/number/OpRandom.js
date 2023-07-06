@@ -8,6 +8,7 @@ extends OperatorBase
     paramInterpolate;
     paramOffset;
     paramDetail;
+    paramUnique;
 
 
 
@@ -29,6 +30,7 @@ extends OperatorBase
         this.addParam(this.paramOffset      = new NumberParam('offset',      'offset',       true,  true, true, 0, 0));
         this.addParam(this.paramInterpolate = new SelectParam('interpolate', 'interpolate',  false, true, true, ['step', 'linear', 'cosine'], 2));
         this.addParam(this.paramDetail      = new NumberParam('detail',      'detail',       true,  true, true, 1, 1));
+        this.addParam(this.paramUnique      = new NumberParam('unique',      'unique',       true,  true, true, 0, 0, 100));
 
         this.paramSeed.controls[0].allowEditDecimals = false;
         this.paramSeed.isDefault = () => false;
@@ -36,6 +38,8 @@ extends OperatorBase
         this.paramScale .controls[0].setDecimals(1);
         this.paramOffset.controls[0].setDecimals(1);
         this.paramDetail.controls[0].allowEditDecimals = false;
+
+        this.paramUnique.controls[0].suffix = '%';
     }
 
 
@@ -59,6 +63,7 @@ extends OperatorBase
         request.push(...this.node.paramInterpolate.genRequest(gen));
         request.push(...this.node.paramOffset     .genRequest(gen));
         request.push(...this.node.paramDetail     .genRequest(gen));
+        request.push(...this.node.paramUnique     .genRequest(gen));
 
 
         gen.scope.pop();

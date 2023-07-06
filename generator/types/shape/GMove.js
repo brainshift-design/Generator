@@ -153,6 +153,9 @@ extends GOperator1
             obj.nodeId   = this.nodeId;
             obj.objectId = obj.objectId + OBJECT_SEPARATOR + this.nodeId;
 
+            if (obj.type == VECTOR_PATH)
+                obj.updatePoints(xform, this.coords);
+
             obj.applyTransform(xform, affectSpace > 0);
 
             this.coords = mulm3m3(this.coords, xform);

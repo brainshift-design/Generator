@@ -4,7 +4,7 @@
 
 
 
-const generatorVersion = 143;
+const generatorVersion = 144;
 
 
 const MAX_INT32        = 2147483647;
@@ -4890,6 +4890,7 @@ const ALL_VALUES =
        RECTANGLE_VALUE,
             LINE_VALUE,
          ELLIPSE_VALUE,
+         TRAPEZE_VALUE,
          POLYGON_VALUE,
             STAR_VALUE,
        TEXT_SHAPE_VALUE,
@@ -5225,7 +5226,8 @@ class FigmaObject
         this.xp1.createDefaultTransform(x + w, y    );
         this.xp2.createDefaultTransform(x,     y + h);
 
-        return parse.settings.showTransformPoints
+        return parse
+            && parse.settings.showTransformPoints
             ? [this.xp0, this.xp1, this.xp2]
             : [];
     }
@@ -5278,23 +5280,6 @@ class FigmaObject
         }
         else if (this.type == VECTOR_PATH)
         {
-            let minX = Number.MAX_SAFE_INTEGER;
-            let minY = Number.MAX_SAFE_INTEGER;
-
-            for (let i = 0; i < this.points.length; i++)
-            {
-                const p = this.points[i].toPoint();
-
-                minX = Math.min(minX, p.x);
-                minY = Math.min(minY, p.y);
-            }
-
-            this.x = minX;
-            this.y = minY;
-
-            this.updatePathPoints();
-            this.updatePathData();
-
             this.applySpaceTransform(xform, coords, affectSpace);
         }
         else if (this.type == SHAPE_GROUP)
@@ -6221,6 +6206,17 @@ extends FigmaShape
 
 
 
+    updatePoints(xform, coords)
+    {
+        for (let i = 0; i < this.points.length; i++)
+            this.points[i] = PointValue.fromPoint(this.nodeId, transformPoint(this.points[i].toPoint(), xform, coords));
+
+        this.updatePathPoints();
+        this.updatePathData();
+    }
+
+
+
     updatePathPoints()
     {
         switch (this.degree)
@@ -6240,16 +6236,23 @@ extends FigmaShape
     {
         let minX = Number.MAX_SAFE_INTEGER;
         let minY = Number.MAX_SAFE_INTEGER;
+        let maxX = Number.MIN_SAFE_INTEGER;
+        let maxY = Number.MIN_SAFE_INTEGER;
 
         for (const p of this.points)
         {
             minX = Math.min(minX, NumberValue.prototype.toNumber.call(p.x));
             minY = Math.min(minY, NumberValue.prototype.toNumber.call(p.y));
+            maxX = Math.max(maxX, NumberValue.prototype.toNumber.call(p.x));
+            maxY = Math.max(maxY, NumberValue.prototype.toNumber.call(p.y));
         }
 
 
         this.x = minX;
         this.y = minY;
+
+        this.createTransformPoints(null, minX, minY, maxX - minX, maxY - minY);
+
 
         this.pathData = getPathDataFromPoints(this.pathPoints, this.closed, this.degree);
     }
@@ -14510,6 +14513,7 @@ extends GNumberType
     interpolate;
     offset;
     detail;
+    unique;
 
     random = null;
 
@@ -14538,6 +14542,7 @@ extends GNumberType
         if (this.interpolate) copy.interpolate = this.interpolate.copy();
         if (this.offset     ) copy.offset      = this.offset     .copy();
         if (this.detail     ) copy.detail      = this.detail     .copy();
+        if (this.unique     ) copy.unique      = this.unique     .copy();
 
         if (this.random     ) copy.random      = this.random     .copy();
 
@@ -14559,6 +14564,7 @@ extends GNumberType
         const interpolate = (await this.interpolate.eval(parse)).toValue();
         const offset      = (await this.offset     .eval(parse)).toValue();
         const detail      = (await this.detail     .eval(parse)).toValue();
+        const unique      = (await this.unique     .eval(parse)).toValue();
     
 
         if (  !this.random
@@ -14629,7 +14635,8 @@ extends GNumberType
             ['scale',       scale      ],
             ['interpolate', interpolate],
             ['offset',      offset     ],
-            ['detail',      detail     ]
+            ['detail',      detail     ],
+            ['unique',      unique     ]
         ];
         
 
@@ -14651,6 +14658,7 @@ extends GNumberType
         if (this.interpolate) this.interpolate.pushUpdateValues(parse);
         if (this.offset     ) this.offset     .pushUpdateValues(parse);
         if (this.detail     ) this.detail     .pushUpdateValues(parse);
+        if (this.unique     ) this.unique     .pushUpdateValues(parse);
     }
 
 
@@ -14666,6 +14674,7 @@ extends GNumberType
         if (this.interpolate) this.interpolate.invalidateInputs(from);
         if (this.offset     ) this.offset     .invalidateInputs(from);
         if (this.detail     ) this.detail     .invalidateInputs(from);
+        if (this.unique     ) this.unique     .invalidateInputs(from);
     }
 }
 
@@ -24900,6 +24909,9 @@ extends GOperator1
             obj.nodeId   = this.nodeId;
             obj.objectId = obj.objectId + OBJECT_SEPARATOR + this.nodeId;
 
+            if (obj.type == VECTOR_PATH)
+                obj.updatePoints(xform, this.coords);
+
             obj.applyTransform(xform, affectSpace > 0);
 
             this.coords = mulm3m3(this.coords, xform);
@@ -25050,13 +25062,8 @@ extends GOperator1
             obj.nodeId   = this.nodeId;
             obj.objectId = obj.objectId + OBJECT_SEPARATOR + this.nodeId;
 
-            
             if (obj.type == VECTOR_PATH)
-            {
-                for (let i = 0; i < obj.points.length; i++)
-                    obj.points[i] = PointValue.fromPoint(obj.nodeId, transformPoint(obj.points[i].toPoint(), xform, this.coords));
-            }
-            
+                obj.updatePoints(xform, this.coords);
 
             obj.applyTransform(xform, options.affectSpace.value > 0);
 
@@ -25068,9 +25075,6 @@ extends GOperator1
         if (  !isEmpty(this.value.objects)
             && this.showCenter.toValue().value > 0)
             this.addCenterObject(cx, cy);
-
-
-        //await super.evalObjects(parse);
 
 
         return bounds;
@@ -28885,6 +28889,7 @@ function genParseRandom(parse)
     rnd.interpolate = genParse(parse);
     rnd.offset      = genParse(parse);
     rnd.detail      = genParse(parse);
+    rnd.unique      = genParse(parse);
 
 
     parse.nTab--;

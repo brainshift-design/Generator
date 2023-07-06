@@ -23,7 +23,7 @@ function noNodeTag(key) { return noTag(key, nodeTag); }
 function noConnTag(key) { return noTag(key, connTag); }
 
 
-const generatorVersion = 143;
+const generatorVersion = 144;
 
 
 const MAX_INT32        = 2147483647;
@@ -1358,6 +1358,7 @@ const ALL_VALUES =
        RECTANGLE_VALUE,
             LINE_VALUE,
          ELLIPSE_VALUE,
+         TRAPEZE_VALUE,
          POLYGON_VALUE,
             STAR_VALUE,
        TEXT_SHAPE_VALUE,
@@ -4703,7 +4704,6 @@ function figCreateVectorPath(genPath)
 
 function figUpdateVectorPath(figPath, genPath)
 {
-    console.log('genPath =', genPath);
     if (!genVectorPathIsValid(genPath))
         return;
 

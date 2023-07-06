@@ -63,6 +63,17 @@ extends FigmaShape
 
 
 
+    updatePoints(xform, coords)
+    {
+        for (let i = 0; i < this.points.length; i++)
+            this.points[i] = PointValue.fromPoint(this.nodeId, transformPoint(this.points[i].toPoint(), xform, coords));
+
+        this.updatePathPoints();
+        this.updatePathData();
+    }
+
+
+
     updatePathPoints()
     {
         switch (this.degree)
@@ -82,16 +93,23 @@ extends FigmaShape
     {
         let minX = Number.MAX_SAFE_INTEGER;
         let minY = Number.MAX_SAFE_INTEGER;
+        let maxX = Number.MIN_SAFE_INTEGER;
+        let maxY = Number.MIN_SAFE_INTEGER;
 
         for (const p of this.points)
         {
             minX = Math.min(minX, NumberValue.prototype.toNumber.call(p.x));
             minY = Math.min(minY, NumberValue.prototype.toNumber.call(p.y));
+            maxX = Math.max(maxX, NumberValue.prototype.toNumber.call(p.x));
+            maxY = Math.max(maxY, NumberValue.prototype.toNumber.call(p.y));
         }
 
 
         this.x = minX;
         this.y = minY;
+
+        this.createTransformPoints(null, minX, minY, maxX - minX, maxY - minY);
+
 
         this.pathData = getPathDataFromPoints(this.pathPoints, this.closed, this.degree);
     }

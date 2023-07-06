@@ -524,6 +524,7 @@ function genParseRandom(parse)
     rnd.interpolate = genParse(parse);
     rnd.offset      = genParse(parse);
     rnd.detail      = genParse(parse);
+    rnd.unique      = genParse(parse);
 
 
     parse.nTab--;

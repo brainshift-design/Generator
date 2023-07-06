@@ -469,6 +469,7 @@ const ALL_VALUES =
        RECTANGLE_VALUE,
             LINE_VALUE,
          ELLIPSE_VALUE,
+         TRAPEZE_VALUE,
          POLYGON_VALUE,
             STAR_VALUE,
        TEXT_SHAPE_VALUE,

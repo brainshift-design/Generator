@@ -27,8 +27,7 @@ extends OpShape
         this.addParam(this.paramWidth  = new NumberParam('width',  'width',  true, true, true, 100));
         this.addParam(this.paramHeight = new NumberParam('height', 'height', true, true, true, 100));
         this.addParam(this.paramRound  = new NumberParam('round',  'round',  true, true, true,   0, 0));
-        this.addParam(this.paramBias   = new NumberParam('bias',   'bias',   true, true, true, 0, -100, 100));
-
+        this.addParam(this.paramBias   = new NumberParam('bias',   'bias',   true, true, true, -50, -100, 100));
 
         this.paramWidth .addEventListener('change', () => this.updateRound());
         this.paramHeight.addEventListener('change', () => this.updateRound());

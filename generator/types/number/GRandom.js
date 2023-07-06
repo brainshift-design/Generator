@@ -8,6 +8,7 @@ extends GNumberType
     interpolate;
     offset;
     detail;
+    unique;
 
     random = null;
 
@@ -36,6 +37,7 @@ extends GNumberType
         if (this.interpolate) copy.interpolate = this.interpolate.copy();
         if (this.offset     ) copy.offset      = this.offset     .copy();
         if (this.detail     ) copy.detail      = this.detail     .copy();
+        if (this.unique     ) copy.unique      = this.unique     .copy();
 
         if (this.random     ) copy.random      = this.random     .copy();
 
@@ -57,6 +59,7 @@ extends GNumberType
         const interpolate = (await this.interpolate.eval(parse)).toValue();
         const offset      = (await this.offset     .eval(parse)).toValue();
         const detail      = (await this.detail     .eval(parse)).toValue();
+        const unique      = (await this.unique     .eval(parse)).toValue();
     
 
         if (  !this.random
@@ -127,7 +130,8 @@ extends GNumberType
             ['scale',       scale      ],
             ['interpolate', interpolate],
             ['offset',      offset     ],
-            ['detail',      detail     ]
+            ['detail',      detail     ],
+            ['unique',      unique     ]
         ];
         
 
@@ -149,6 +153,7 @@ extends GNumberType
         if (this.interpolate) this.interpolate.pushUpdateValues(parse);
         if (this.offset     ) this.offset     .pushUpdateValues(parse);
         if (this.detail     ) this.detail     .pushUpdateValues(parse);
+        if (this.unique     ) this.unique     .pushUpdateValues(parse);
     }
 
 
@@ -164,5 +169,6 @@ extends GNumberType
         if (this.interpolate) this.interpolate.invalidateInputs(from);
         if (this.offset     ) this.offset     .invalidateInputs(from);
         if (this.detail     ) this.detail     .invalidateInputs(from);
+        if (this.unique     ) this.unique     .invalidateInputs(from);
     }
 }

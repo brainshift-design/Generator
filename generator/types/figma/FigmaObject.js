@@ -92,7 +92,8 @@ class FigmaObject
         this.xp1.createDefaultTransform(x + w, y    );
         this.xp2.createDefaultTransform(x,     y + h);
 
-        return parse.settings.showTransformPoints
+        return parse
+            && parse.settings.showTransformPoints
             ? [this.xp0, this.xp1, this.xp2]
             : [];
     }
@@ -145,23 +146,6 @@ class FigmaObject
         }
         else if (this.type == VECTOR_PATH)
         {
-            let minX = Number.MAX_SAFE_INTEGER;
-            let minY = Number.MAX_SAFE_INTEGER;
-
-            for (let i = 0; i < this.points.length; i++)
-            {
-                const p = this.points[i].toPoint();
-
-                minX = Math.min(minX, p.x);
-                minY = Math.min(minY, p.y);
-            }
-
-            this.x = minX;
-            this.y = minY;
-
-            this.updatePathPoints();
-            this.updatePathData();
-
             this.applySpaceTransform(xform, coords, affectSpace);
         }
         else if (this.type == SHAPE_GROUP)
