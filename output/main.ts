@@ -4039,9 +4039,9 @@ function getFigmaTransform(tl, tr, bl)
 
 
     let xform = mulm3m3(
-        [[1,       ky / sy,  0],
-         [kx / sx, 1,        0],
-         [0,       0,        1]],
+        [[1,     ky/sy, 0],
+         [kx/sx, 1,     0],
+         [0,     0,     1]],
         createTransform(dx, dy));
 
     xform = inversem3(xform);

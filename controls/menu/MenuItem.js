@@ -137,6 +137,7 @@ class MenuItem
             {
                 this.button0   = true;
                 this.dragStart = point(e.clientX, e.clientY);
+                this.div.setPointerCapture(e.pointerId);
             }
         });
 
@@ -163,6 +164,8 @@ class MenuItem
 
                     
                 this.button0 = false;
+
+                this.div.releasePointerCapture(e.pointerId);
             }
         });
 
@@ -207,6 +210,10 @@ class MenuItem
                     node.sly = node.div.offsetTop  - (defHeaderHeight / 2) - (getTopHeight() + graph.currentPage.pan.y) / graph.currentPage.zoom;
 
                     node.div.dragging = true;
+
+                    if (this.div.hasPointerCapture(e.pointerId))
+                        this.div.releasePointerCapture(e.pointerId);
+
                     node.header.setPointerCapture(e.pointerId);
                 }
                 else
