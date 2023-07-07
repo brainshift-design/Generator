@@ -76,8 +76,8 @@ extends GOperator
                     && index.value >= 0
                     && index.value < input.items.length)
                 {
-                    this.value = input.items[index.value];
-                    this.value.objects = [];
+                    this.value = input.items[index.value].copy();
+                    //this.value.objects = [];
 
                 
                     const _objects = this.input.value.objects.filter(o => o.listId == index.value);
@@ -87,11 +87,13 @@ extends GOperator
                         const obj  = _objects[j].copy();
 
                         obj.nodeId = this.nodeId;
+                        obj.listId = -1;
 
-                        if (obj.objectId != NULL) obj.objectId += '/';
+                        if (obj.objectId != NULL) 
+                            obj.objectId += '/';
+
                         obj.objectId += index.value.toString();
 
-                        obj.listId = -1;
                         
                         this.value.objects.push(obj);
                     }

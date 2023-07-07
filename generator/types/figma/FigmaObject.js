@@ -10,7 +10,7 @@ class FigmaObject
 
     inputIndex = -1; // for unique object IDs
 
-    retain     = false;
+    retain     = 0;
     feedback   = false;
 
 

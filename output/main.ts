@@ -2033,7 +2033,7 @@ function figDeleteObjectsExcept(nodeIds, ignoreObjects)
                 && obj.getPluginData('retain') == '2')
                 clearObjectData(obj);
         }
-        
+
 
         if (isEmpty(figObjArray.objects))
             removeFromArray(figObjectArrays, figObjArray);
@@ -2056,6 +2056,8 @@ function findObject(obj, ignoreObjects)
     }
     else
     {
+        // console.log('obj.getPluginData(\'retain\') =', obj.getPluginData('retain'));
+        // console.log('ignoreObjects =', ignoreObjects);
         const found = ignoreObjects.find(o => 
                o[FO_OBJECT_ID] == obj.getPluginData('objectId')
             || o[FO_RETAIN   ] == obj.getPluginData('retain'  ));
@@ -2075,7 +2077,7 @@ function figDeleteAllObjects(forceDelete = false)
     for (const obj of figma.currentPage.children)
     {
         if (    obj.getPluginData('objectId') != ''
-            && (   obj.getPluginData('retain') == ''
+            && (   obj.getPluginData('retain') == '0'
                 || forceDelete)
             && !obj.removed) 
             obj.remove();
@@ -2306,7 +2308,7 @@ figma.ui.onmessage = function(msg)
             break;
      
         case 'figUpdateObjectsAndStyles':
-            figUpdateObjects(null, msg.objects);
+            figUpdateObjects(null, msg.objects, msg.nodeIds, msg.lastChunk);
             figUpdateStyles(msg);
             break;
      
@@ -3104,6 +3106,11 @@ function figNotify(text, prefix = 'Generator ', delay = 400, error = false, butt
 }
 
 
+var ignoreNodeIds = [];
+var ignoreObjects = [];
+
+
+
 function makeObjectName(obj)
 {
     return (obj[FO_RETAIN] == 2 ? '' : OBJECT_PREFIX)
@@ -3140,7 +3147,6 @@ async function figCreateObject(genObj, addObject = null)
     {
         figObj.name = makeObjectName(genObj);
 
-
         consoleAssert(
                genObj[FO_TYPE] == SHAPE_GROUP // cannot exist without children
             || !!figObj, 
@@ -3152,18 +3158,12 @@ async function figCreateObject(genObj, addObject = null)
             figObj.setPluginData('type',     genObj[FO_TYPE     ]);
             figObj.setPluginData('nodeId',   genObj[FO_NODE_ID  ]);
             figObj.setPluginData('objectId', genObj[FO_OBJECT_ID]);
-
-            figObj.setPluginData('retain',   
-                genObj[FO_RETAIN] > 0 
-                ? genObj[FO_RETAIN].toString() 
-                : '');
-
+            figObj.setPluginData('retain',   genObj[FO_RETAIN   ].toString());
             
             if (genObj[FO_TYPE] == POINT)
                 figPoints.push(figObj);
 
-
-            addObject(figObj);
+            addObject(genObj, figObj);
         }
     }
         
@@ -3181,10 +3181,7 @@ async function figUpdateObject(figObj, genObj)
         
     figObj.name = makeObjectName(genObj);
     
-    figObj.setPluginData('retain',   
-        genObj[FO_RETAIN] > 0 
-        ? genObj[FO_RETAIN].toString() 
-        : '');
+    figObj.setPluginData('retain', genObj[FO_RETAIN].toString());
 
 
     switch (genObj[FO_TYPE])
@@ -3205,11 +3202,13 @@ async function figUpdateObject(figObj, genObj)
 
 
 
-async function figUpdateObjects(figParent, genObjects)
+async function figUpdateObjects(figParent, genObjects, nodeIds = [], lastChunk = false)
 {
     let curNodeId  = NULL;
     let figObjects = null;
 
+
+    ignoreNodeIds.push(...nodeIds);
 
 
     for (const genObj of genObjects)
@@ -3232,10 +3231,15 @@ async function figUpdateObjects(figParent, genObjects)
         }
 
 
-        const addObject = obj =>
+        const addObject = (genObj, figObj) =>
         {
-            if (figParent) figParent.appendChild(obj);
-            else           figObjects.objects.push(obj);
+            if (figParent) 
+                figParent.appendChild(figObj);
+            else
+            {
+                figObjects.objects.push(figObj);
+                ignoreObjects.push(genObj);
+            }
         };
 
 
@@ -3300,6 +3304,17 @@ async function figUpdateObjects(figParent, genObjects)
     
     for (const point of figPoints)
         point.parent.appendChild(point);
+
+
+    // delete old content
+    
+    if (lastChunk)
+    {
+        figDeleteObjectsExcept(ignoreNodeIds, ignoreObjects);
+
+        ignoreNodeIds = [];
+        ignoreObjects = [];
+    }
 }
 
 
