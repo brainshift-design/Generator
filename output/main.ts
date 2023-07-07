@@ -1998,7 +1998,21 @@ function figDeleteObjectsFromNodeIds(nodeIds)
 
 
 
-function figDeleteObjectsExcept(nodeIds, ignoreObjects)
+function figDeleteAllObjects(forceDelete = false)
+{
+    for (const obj of figma.currentPage.children)
+    {
+        if (    obj.getPluginData('objectId') != ''
+            && (   obj.getPluginData('retain') == '0'
+                || forceDelete)
+            && !obj.removed) 
+            obj.remove();
+    }
+}
+
+
+
+function figDeleteObjectsExcept(nodeIds, genIgnoreObjects)
 {
     for (let i = figObjectArrays.length-1; i >= 0; i--)
     {
@@ -2010,28 +2024,28 @@ function figDeleteObjectsExcept(nodeIds, ignoreObjects)
 
         for (let j = figObjArray.objects.length-1; j >= 0; j--)
         {
-            const obj = figObjArray.objects[j];
+            const figObj = figObjArray.objects[j];
             
             
-            if (    obj.removed
-                || !findObject(obj, ignoreObjects))
+            if (    figObj.removed
+                || !findObject(figObj, genIgnoreObjects))
             {
-                if (!obj.removed)
-                    obj.remove();
+                if (!figObj.removed)
+                    figObj.remove();
 
-                removeFromArray(figObjArray.objects, obj);
+                removeFromArray(figObjArray.objects, figObj);
 
-                if (figPoints.includes(obj))
-                    removeFromArray(figPoints, obj);
+                if (figPoints.includes(figObj))
+                    removeFromArray(figPoints, figObj);
 
-                if (figEmptyObjects.includes(obj))
-                    removeFromArray(figEmptyObjects, obj);
+                if (figEmptyObjects.includes(figObj))
+                    removeFromArray(figEmptyObjects, figObj);
             }
 
             
-            if (  !obj.removed
-                && obj.getPluginData('retain') == '2')
-                clearObjectData(obj);
+            if (  !figObj.removed
+                && figObj.getPluginData('retain') == '2')
+                clearObjectData(figObj);
         }
 
 
@@ -2043,24 +2057,23 @@ function figDeleteObjectsExcept(nodeIds, ignoreObjects)
 
 
 
-function findObject(obj, ignoreObjects)
+function findObject(figObj, genIgnoreObjects)
 {
-    if (   obj.type == SHAPE_GROUP
-        || obj.type == FRAME)
+    if (   figObj.type == SHAPE_GROUP
+        || figObj.type == FRAME)
     {
-        for (const child of obj.children)
+        for (const child of figObj.children)
         {
-            const found = findObject(child, ignoreObjects);
+            const found = findObject(child, genIgnoreObjects);
             if (found) return found;
         }
     }
     else
     {
-        // console.log('obj.getPluginData(\'retain\') =', obj.getPluginData('retain'));
-        // console.log('ignoreObjects =', ignoreObjects);
-        const found = ignoreObjects.find(o => 
-               o[FO_OBJECT_ID] == obj.getPluginData('objectId')
-            || o[FO_RETAIN   ] == obj.getPluginData('retain'  ));
+        const found = genIgnoreObjects.find(o => 
+               o[FO_OBJECT_ID] == figObj.getPluginData('objectId')
+            ||    o[FO_RETAIN] > 0
+               && o[FO_RETAIN] == figObj.getPluginData('retain'  ));
 
         if (found) 
             return found;
@@ -2068,20 +2081,6 @@ function findObject(obj, ignoreObjects)
 
     
     return null;
-}
-
-
-
-function figDeleteAllObjects(forceDelete = false)
-{
-    for (const obj of figma.currentPage.children)
-    {
-        if (    obj.getPluginData('objectId') != ''
-            && (   obj.getPluginData('retain') == '0'
-                || forceDelete)
-            && !obj.removed) 
-            obj.remove();
-    }
 }
 
 
@@ -3106,8 +3105,8 @@ function figNotify(text, prefix = 'Generator ', delay = 400, error = false, butt
 }
 
 
-var ignoreNodeIds = [];
-var ignoreObjects = [];
+var _genIgnoreNodeIds = [];
+var _genIgnoreObjects = [];
 
 
 
@@ -3163,7 +3162,7 @@ async function figCreateObject(genObj, addObject = null)
             if (genObj[FO_TYPE] == POINT)
                 figPoints.push(figObj);
 
-            addObject(genObj, figObj);
+            addObject(figObj);
         }
     }
         
@@ -3208,11 +3207,14 @@ async function figUpdateObjects(figParent, genObjects, nodeIds = [], lastChunk =
     let figObjects = null;
 
 
-    ignoreNodeIds.push(...nodeIds);
+    _genIgnoreNodeIds.push(...nodeIds);
 
 
     for (const genObj of genObjects)
     {
+        _genIgnoreObjects.push(genObj);
+
+
         if (genObj[FO_NODE_ID] != curNodeId) //.nodeId
         {
             curNodeId  = genObj[FO_NODE_ID];
@@ -3231,15 +3233,12 @@ async function figUpdateObjects(figParent, genObjects, nodeIds = [], lastChunk =
         }
 
 
-        const addObject = (genObj, figObj) =>
+        const addObject = figObj =>
         {
             if (figParent) 
                 figParent.appendChild(figObj);
             else
-            {
                 figObjects.objects.push(figObj);
-                ignoreObjects.push(genObj);
-            }
         };
 
 
@@ -3307,13 +3306,13 @@ async function figUpdateObjects(figParent, genObjects, nodeIds = [], lastChunk =
 
 
     // delete old content
-    
+
     if (lastChunk)
     {
-        figDeleteObjectsExcept(ignoreNodeIds, ignoreObjects);
+        figDeleteObjectsExcept(_genIgnoreNodeIds, _genIgnoreObjects);
 
-        ignoreNodeIds = [];
-        ignoreObjects = [];
+        _genIgnoreNodeIds = [];
+        _genIgnoreObjects = [];
     }
 }
 

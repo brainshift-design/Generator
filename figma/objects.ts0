@@ -1,5 +1,5 @@
-var ignoreNodeIds = [];
-var ignoreObjects = [];
+var _genIgnoreNodeIds = [];
+var _genIgnoreObjects = [];
 
 
 
@@ -55,7 +55,7 @@ async function figCreateObject(genObj, addObject = null)
             if (genObj[FO_TYPE] == POINT)
                 figPoints.push(figObj);
 
-            addObject(genObj, figObj);
+            addObject(figObj);
         }
     }
         
@@ -100,11 +100,14 @@ async function figUpdateObjects(figParent, genObjects, nodeIds = [], lastChunk =
     let figObjects = null;
 
 
-    ignoreNodeIds.push(...nodeIds);
+    _genIgnoreNodeIds.push(...nodeIds);
 
 
     for (const genObj of genObjects)
     {
+        _genIgnoreObjects.push(genObj);
+
+
         if (genObj[FO_NODE_ID] != curNodeId) //.nodeId
         {
             curNodeId  = genObj[FO_NODE_ID];
@@ -123,15 +126,12 @@ async function figUpdateObjects(figParent, genObjects, nodeIds = [], lastChunk =
         }
 
 
-        const addObject = (genObj, figObj) =>
+        const addObject = figObj =>
         {
             if (figParent) 
                 figParent.appendChild(figObj);
             else
-            {
                 figObjects.objects.push(figObj);
-                ignoreObjects.push(genObj);
-            }
         };
 
 
@@ -199,13 +199,13 @@ async function figUpdateObjects(figParent, genObjects, nodeIds = [], lastChunk =
 
 
     // delete old content
-    
+
     if (lastChunk)
     {
-        figDeleteObjectsExcept(ignoreNodeIds, ignoreObjects);
+        figDeleteObjectsExcept(_genIgnoreNodeIds, _genIgnoreObjects);
 
-        ignoreNodeIds = [];
-        ignoreObjects = [];
+        _genIgnoreNodeIds = [];
+        _genIgnoreObjects = [];
     }
 }
 
