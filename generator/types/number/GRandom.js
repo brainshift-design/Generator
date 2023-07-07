@@ -9,7 +9,8 @@ extends GNumberType
     random       = null;
     randomUnique = null;
 
-    lastValue    = -1;
+    lastValue1   = -1;
+    lastValue2   = -1;
     randomOffset =  0;
 
     loopId       = NULL;
@@ -69,13 +70,24 @@ extends GNumberType
             min.value + this.random.get(iteration + this.randomOffset) * (max.value - min.value), 
             Math.max(min.decimals, max.decimals));
 
-        while (   this.value.toNumber() == this.lastValue
-               && this.randomUnique.get(iteration) < unique.value/100)
+        const _unique = unique.value/100;
+        
+
+        while (   this.value.toNumber() == this.lastValue1
+               && this.randomUnique.get(iteration) < _unique)
+            this.value = new NumberValue(
+                min.value + this.random.get(iteration + ++this.randomOffset) * (max.value - min.value),
+                Math.max(min.decimals, max.decimals));
+
+        while ((   this.value.toNumber() == this.lastValue1
+                || this.value.toNumber() == this.lastValue2)
+               && this.randomUnique.get(iteration) < Math.max(_unique - 1))
             this.value = new NumberValue(
                 min.value + this.random.get(iteration + ++this.randomOffset) * (max.value - min.value),
                 Math.max(min.decimals, max.decimals));
         
-        this.lastValue = this.value.toNumber();
+        this.lastValue2 = this.lastValue1;
+        this.lastValue1 = this.value.toNumber();
 
 
         this.updateValues =

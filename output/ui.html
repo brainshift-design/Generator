@@ -4398,7 +4398,9 @@ a
                 <h1 style='margin-top: 20px;'>What's new</h1>
 
                 <p>•  added Apply to change styles of existing shapes</p>
+                <p>•  added 200% unique to Random, feels more "random"</p>
                 <p>•  improved geometry performance</p>
+                <p>•  fixed UI issues</p>
                 
                 <p><br/><br/><div id='chkHideWhatsNew'></div></p>
             </div>
@@ -19250,7 +19252,8 @@ extends GNumberType
     random       = null;
     randomUnique = null;
 
-    lastValue    = -1;
+    lastValue1   = -1;
+    lastValue2   = -1;
     randomOffset =  0;
 
     loopId       = NULL;
@@ -19310,13 +19313,24 @@ extends GNumberType
             min.value + this.random.get(iteration + this.randomOffset) * (max.value - min.value), 
             Math.max(min.decimals, max.decimals));
 
-        while (   this.value.toNumber() == this.lastValue
-               && this.randomUnique.get(iteration) < unique.value/100)
+        const _unique = unique.value/100;
+        
+
+        while (   this.value.toNumber() == this.lastValue1
+               && this.randomUnique.get(iteration) < _unique)
+            this.value = new NumberValue(
+                min.value + this.random.get(iteration + ++this.randomOffset) * (max.value - min.value),
+                Math.max(min.decimals, max.decimals));
+
+        while ((   this.value.toNumber() == this.lastValue1
+                || this.value.toNumber() == this.lastValue2)
+               && this.randomUnique.get(iteration) < Math.max(_unique - 1))
             this.value = new NumberValue(
                 min.value + this.random.get(iteration + ++this.randomOffset) * (max.value - min.value),
                 Math.max(min.decimals, max.decimals));
         
-        this.lastValue = this.value.toNumber();
+        this.lastValue2 = this.lastValue1;
+        this.lastValue1 = this.value.toNumber();
 
 
         this.updateValues =
@@ -56355,7 +56369,8 @@ extends GNumberType
     random       = null;
     randomUnique = null;
 
-    lastValue    = -1;
+    lastValue1   = -1;
+    lastValue2   = -1;
     randomOffset =  0;
 
     loopId       = NULL;
@@ -56415,13 +56430,24 @@ extends GNumberType
             min.value + this.random.get(iteration + this.randomOffset) * (max.value - min.value), 
             Math.max(min.decimals, max.decimals));
 
-        while (   this.value.toNumber() == this.lastValue
-               && this.randomUnique.get(iteration) < unique.value/100)
+        const _unique = unique.value/100;
+        
+
+        while (   this.value.toNumber() == this.lastValue1
+               && this.randomUnique.get(iteration) < _unique)
+            this.value = new NumberValue(
+                min.value + this.random.get(iteration + ++this.randomOffset) * (max.value - min.value),
+                Math.max(min.decimals, max.decimals));
+
+        while ((   this.value.toNumber() == this.lastValue1
+                || this.value.toNumber() == this.lastValue2)
+               && this.randomUnique.get(iteration) < Math.max(_unique - 1))
             this.value = new NumberValue(
                 min.value + this.random.get(iteration + ++this.randomOffset) * (max.value - min.value),
                 Math.max(min.decimals, max.decimals));
         
-        this.lastValue = this.value.toNumber();
+        this.lastValue2 = this.lastValue1;
+        this.lastValue1 = this.value.toNumber();
 
 
         this.updateValues =
@@ -68846,7 +68872,7 @@ extends Control
         this.divValue              = divValue;
         this.divFocus              = createDiv('numberControlFocus');
         this.extLeft               = createDiv('numberControlExt numberControlExtLeft');
-        this.extRight              = createDiv('numberControlExt num    berControlExtRight');
+        this.extRight              = createDiv('numberControlExt numberControlExtRight');
 
 
         this.div.appendChild(this.divPrecision);
@@ -68855,8 +68881,8 @@ extends Control
         this.param.div.appendChild(this.divBar);
         this.param.div.appendChild(this.divFocus);
         
-        this.param.divControls.appendChild(this.extLeft);
-        this.param.divControls.appendChild(this.extRight);
+        this.param.div.appendChild(this.extLeft);
+        this.param.div.appendChild(this.extRight);
         
 
 
@@ -90318,6 +90344,7 @@ extends OperatorBase
         this.paramSeed.isDefault = () => false;
 
         this.paramUnique.controls[0].suffix = '%';
+        this.paramUnique.controls[0].max    = 200;
     }
 
 
@@ -109436,12 +109463,7 @@ function uiMakeNodesActive(nodes, shiftKey = false)
 {
     if (!shiftKey)
     {
-        // const treeNodes = [];
-
-        // for (const node of nodes)
-        //     pushUnique(treeNodes, getAllNodesFromNode(node));
-
-        for (const node of graph.nodes)//treeNodes)
+        for (const node of graph.nodes)
             if (node.active)
                 uiMakeNodePassive(node);
 

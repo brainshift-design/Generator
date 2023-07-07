@@ -146,7 +146,7 @@ extends Control
         this.divValue              = divValue;
         this.divFocus              = createDiv('numberControlFocus');
         this.extLeft               = createDiv('numberControlExt numberControlExtLeft');
-        this.extRight              = createDiv('numberControlExt num    berControlExtRight');
+        this.extRight              = createDiv('numberControlExt numberControlExtRight');
 
 
         this.div.appendChild(this.divPrecision);
@@ -155,8 +155,8 @@ extends Control
         this.param.div.appendChild(this.divBar);
         this.param.div.appendChild(this.divFocus);
         
-        this.param.divControls.appendChild(this.extLeft);
-        this.param.divControls.appendChild(this.extRight);
+        this.param.div.appendChild(this.extLeft);
+        this.param.div.appendChild(this.extRight);
         
 
 

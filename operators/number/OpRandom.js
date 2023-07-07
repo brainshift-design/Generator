@@ -28,6 +28,7 @@ extends OperatorBase
         this.paramSeed.isDefault = () => false;
 
         this.paramUnique.controls[0].suffix = '%';
+        this.paramUnique.controls[0].max    = 200;
     }
 
 

@@ -421,12 +421,7 @@ function uiMakeNodesActive(nodes, shiftKey = false)
 {
     if (!shiftKey)
     {
-        // const treeNodes = [];
-
-        // for (const node of nodes)
-        //     pushUnique(treeNodes, getAllNodesFromNode(node));
-
-        for (const node of graph.nodes)//treeNodes)
+        for (const node of graph.nodes)
             if (node.active)
                 uiMakeNodePassive(node);
 
