@@ -360,7 +360,7 @@ NumberControl.prototype.initTextbox = function()
                 this.setValue(
                        value.trim() != '' 
                     && value.trim() != NAN_DISPLAY
-                    ? val 
+                    ? val
                     : savedVal);
             }
             else

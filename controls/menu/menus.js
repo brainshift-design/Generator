@@ -375,7 +375,7 @@ function initGeneratorMenus()
         menuItemCopy          = new MenuItem('Copy',              {icon: iconCopy,       callback: e => actionManager.do(getCreateNodeAction(COPY,       btnNumber.div, getCreateOptions(e)))}),
         menuFlowSep3          = new MenuItem('',                  {separator: true}),
         menuItemStart         = new MenuItem('Start . . .',       {icon: iconStart,      callback: e => actionManager.do(getCreateNodeAction(START,      btnNumber.div, getCreateOptions(e)))}),
-        menuItemRepeat        = new MenuItem('. . . Repeat',            {icon: iconRepeat,     callback: e => actionManager.do(getCreateNodeAction(REPEAT,     btnNumber.div, getCreateOptions(e)))}),
+        menuItemRepeat        = new MenuItem('. . . Repeat',      {icon: iconRepeat,     callback: e => actionManager.do(getCreateNodeAction(REPEAT,     btnNumber.div, getCreateOptions(e)))}),
         menuFlowSep4          = new MenuItem('',                  {separator: true}),
         menuItemTimer         = new MenuItem('Timer ',            {icon: iconTimer,      callback: e => actionManager.do(getCreateNodeAction(TIMER,      btnNumber.div, getCreateOptions(e)))})]);
      // menuFlowSep3          = new MenuItem('',                  {separator: true}),

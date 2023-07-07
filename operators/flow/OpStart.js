@@ -9,9 +9,8 @@ extends OperatorBase
     {
         super(START, 'start', 'start', iconStart);
 
-        this.cached      = false;
-        this.canDisable  = true;
-        this.iconOffsetY = 1;
+        this.cached     = false;
+        this.canDisable = true;
 
 
         this.addInput (new Input(ALL_VALUES));

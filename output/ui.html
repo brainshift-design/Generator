@@ -4397,10 +4397,7 @@ a
             <div id='whatsNewBody'>
                 <h1 style='margin-top: 20px;'>What's new</h1>
 
-                <p>•  added Apply to change styles of existing shapes</p>
-                <p>•  improved Random uniqueness</p>
-                <p>•  improved geometry performance</p>
-                <p>•  fixed UI issues</p>
+                <p>•  </p>
                 
                 <p><br/><br/><div id='chkHideWhatsNew'></div></p>
             </div>
@@ -4728,7 +4725,7 @@ a
 
 
 
-const generatorVersion = 146;
+const generatorVersion = 147;
 
 
 const MAX_INT32        = 2147483647;
@@ -17632,6 +17629,9 @@ extends GOperator
 
     updateObjects(objects, iteration)
     {
+        if (!this.value.isValid())
+            return;
+            
         this.value.objects = objects.map(o => o.copy());
 
         for (const obj of this.value.objects)
@@ -27766,13 +27766,13 @@ extends GShape
         
         this.value.objects = [];
 
-            
-        if (   this.value.x
-            && this.value.y
-            && this.value.width
-            && this.value.height
-            && this.value.round
-            && this.value.bias)
+
+        if (   this.value.x     .isValid()    
+            && this.value.y     .isValid()    
+            && this.value.width .isValid()
+            && this.value.height.isValid()
+            && this.value.round .isValid()
+            && this.value.bias  .isValid())
         {
             let   x = this.value.x     .value;
             let   y = this.value.y     .value;
@@ -39653,7 +39653,7 @@ onerror = (event, source, line, pos, error) =>
 };
 
 
-const generatorVersion = 146;
+const generatorVersion = 147;
 
 
 const MAX_INT32        = 2147483647;
@@ -54757,6 +54757,9 @@ extends GOperator
 
     updateObjects(objects, iteration)
     {
+        if (!this.value.isValid())
+            return;
+            
         this.value.objects = objects.map(o => o.copy());
 
         for (const obj of this.value.objects)
@@ -64891,13 +64894,13 @@ extends GShape
         
         this.value.objects = [];
 
-            
-        if (   this.value.x
-            && this.value.y
-            && this.value.width
-            && this.value.height
-            && this.value.round
-            && this.value.bias)
+
+        if (   this.value.x     .isValid()    
+            && this.value.y     .isValid()    
+            && this.value.width .isValid()
+            && this.value.height.isValid()
+            && this.value.round .isValid()
+            && this.value.bias  .isValid())
         {
             let   x = this.value.x     .value;
             let   y = this.value.y     .value;
@@ -69657,7 +69660,7 @@ NumberControl.prototype.initTextbox = function()
                 this.setValue(
                        value.trim() != '' 
                     && value.trim() != NAN_DISPLAY
-                    ? val 
+                    ? val
                     : savedVal);
             }
             else
@@ -73807,7 +73810,7 @@ function initGeneratorMenus()
         menuItemCopy          = new MenuItem('Copy',              {icon: iconCopy,       callback: e => actionManager.do(getCreateNodeAction(COPY,       btnNumber.div, getCreateOptions(e)))}),
         menuFlowSep3          = new MenuItem('',                  {separator: true}),
         menuItemStart         = new MenuItem('Start . . .',       {icon: iconStart,      callback: e => actionManager.do(getCreateNodeAction(START,      btnNumber.div, getCreateOptions(e)))}),
-        menuItemRepeat        = new MenuItem('. . . Repeat',            {icon: iconRepeat,     callback: e => actionManager.do(getCreateNodeAction(REPEAT,     btnNumber.div, getCreateOptions(e)))}),
+        menuItemRepeat        = new MenuItem('. . . Repeat',      {icon: iconRepeat,     callback: e => actionManager.do(getCreateNodeAction(REPEAT,     btnNumber.div, getCreateOptions(e)))}),
         menuFlowSep4          = new MenuItem('',                  {separator: true}),
         menuItemTimer         = new MenuItem('Timer ',            {icon: iconTimer,      callback: e => actionManager.do(getCreateNodeAction(TIMER,      btnNumber.div, getCreateOptions(e)))})]);
      // menuFlowSep3          = new MenuItem('',                  {separator: true}),
@@ -77987,6 +77990,11 @@ extends Parameter
             'value must be a NumberValue');
 
 
+        if (  !isNaN(value.value)
+            && isNaN(value.decimals))
+            value.decimals = 0;
+
+            
         this.preSetValue(value, createAction, dispatchEvents);
 
         
@@ -88705,9 +88713,8 @@ extends OperatorBase
     {
         super(START, 'start', 'start', iconStart);
 
-        this.cached      = false;
-        this.canDisable  = true;
-        this.iconOffsetY = 1;
+        this.cached     = false;
+        this.canDisable = true;
 
 
         this.addInput (new Input(ALL_VALUES));

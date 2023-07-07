@@ -87,6 +87,9 @@ extends GOperator
 
     updateObjects(objects, iteration)
     {
+        if (!this.value.isValid())
+            return;
+            
         this.value.objects = objects.map(o => o.copy());
 
         for (const obj of this.value.objects)

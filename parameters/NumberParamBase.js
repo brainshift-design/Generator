@@ -35,6 +35,11 @@ extends Parameter
             'value must be a NumberValue');
 
 
+        if (  !isNaN(value.value)
+            && isNaN(value.decimals))
+            value.decimals = 0;
+
+            
         this.preSetValue(value, createAction, dispatchEvents);
 
         
