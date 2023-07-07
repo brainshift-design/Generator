@@ -1,7 +1,3 @@
-// var requestObjects = [];
-
-
-
 function createNode(nodeType, creatingButton = null, createdNodeId = -1, options = {})
 {
     let node;
@@ -425,12 +421,12 @@ function uiMakeNodesActive(nodes, shiftKey = false)
 {
     if (!shiftKey)
     {
-        const treeNodes = [];
+        // const treeNodes = [];
 
-        for (const node of nodes)
-            pushUnique(treeNodes, getAllNodesFromNode(node));
+        // for (const node of nodes)
+        //     pushUnique(treeNodes, getAllNodesFromNode(node));
 
-        for (const node of treeNodes)
+        for (const node of graph.nodes)//treeNodes)
             if (node.active)
                 uiMakeNodePassive(node);
 

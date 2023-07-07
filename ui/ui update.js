@@ -1,9 +1,5 @@
 function uiUpdateValuesAndObjects(requestId, actionId, updateNodeId, updateParamId, values, objects, styles, updatedNodes, totalNodes, isLastChunk)
 {
-    // console.log('requestId =',       requestId);
-    // console.log('lastRequestedId =', lastRequestedId);
-
-
     if (requestId < lastRequestedId) 
         return;
     
@@ -95,8 +91,6 @@ function uiUpdateValuesAndObjects(requestId, actionId, updateNodeId, updateParam
             styles:        [...styles ],
             lastChunk:     isLastChunk 
         });
-
-        // requestObjects.push(...objects);
     }
 
 
@@ -116,19 +110,6 @@ function uiUpdateValuesAndObjects(requestId, actionId, updateNodeId, updateParam
         node.updateMeasureData();
         node.updateNode();
     }
-
-
-    // if (isLastChunk)
-    // {
-    //     uiQueueMessageToFigma({
-    //         cmd:          'figDeleteObjectsExcept',
-    //         updateNodeId:  updateNodeId,
-    //         updateParamId: updateParamId,
-    //         nodeIds:       nodes.map(n => n.id),
-    //         ignoreObjects: [...requestObjects]});
-
-    //     requestObjects = [];
-    // }
 
 
     graphView.updateNodes(nodes);
