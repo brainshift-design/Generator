@@ -40,7 +40,10 @@ extends GShape
             await this.evalObjects(parse);
         }
         else
+        {
+            await this.evalShapeBase(parse); // to updated anything connected to styles
             this.value = NullValue;
+        }
 
        
         this.updateValues = [['value', this.value]];

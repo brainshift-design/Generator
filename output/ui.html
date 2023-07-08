@@ -4398,6 +4398,7 @@ a
                 <h1 style='margin-top: 20px;'>What's new</h1>
 
                 <p>•  fixed phantom shapes not redrawing correctly</p>
+                <p>•  fixed Apply update bug</p>
                 
                 <p><br/><br/><div id='chkHideWhatsNew'></div></p>
             </div>
@@ -27130,15 +27131,19 @@ extends GShapeBase
             && STYLE_VALUES.includes(props.type))
             props = new ListValue([props]);
 
-            
-        if (this.input)
-            this.value.props = props ?? this.input.value.props;
-        else
-            this.value.props = props;
+        
+        if (   this.value
+            && this.value.isValid())
+        {
+            if (this.input)
+                this.value.props = props ?? this.input.value.props;
+            else
+                this.value.props = props;
 
-            
-        if (this.value.props != undefined) 
-            this.updateValues.push(['props', this.value.props]);
+                
+            if (this.value.props != undefined) 
+                this.updateValues.push(['props', this.value.props]);
+        }
     }
 
 
@@ -29291,7 +29296,10 @@ extends GShape
             await this.evalObjects(parse);
         }
         else
+        {
+            await this.evalShapeBase(parse); // to updated anything connected to styles
             this.value = NullValue;
+        }
 
        
         this.updateValues = [['value', this.value]];
@@ -64258,15 +64266,19 @@ extends GShapeBase
             && STYLE_VALUES.includes(props.type))
             props = new ListValue([props]);
 
-            
-        if (this.input)
-            this.value.props = props ?? this.input.value.props;
-        else
-            this.value.props = props;
+        
+        if (   this.value
+            && this.value.isValid())
+        {
+            if (this.input)
+                this.value.props = props ?? this.input.value.props;
+            else
+                this.value.props = props;
 
-            
-        if (this.value.props != undefined) 
-            this.updateValues.push(['props', this.value.props]);
+                
+            if (this.value.props != undefined) 
+                this.updateValues.push(['props', this.value.props]);
+        }
     }
 
 
@@ -66419,7 +66431,10 @@ extends GShape
             await this.evalObjects(parse);
         }
         else
+        {
+            await this.evalShapeBase(parse); // to updated anything connected to styles
             this.value = NullValue;
+        }
 
        
         this.updateValues = [['value', this.value]];

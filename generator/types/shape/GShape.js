@@ -41,15 +41,19 @@ extends GShapeBase
             && STYLE_VALUES.includes(props.type))
             props = new ListValue([props]);
 
-            
-        if (this.input)
-            this.value.props = props ?? this.input.value.props;
-        else
-            this.value.props = props;
+        
+        if (   this.value
+            && this.value.isValid())
+        {
+            if (this.input)
+                this.value.props = props ?? this.input.value.props;
+            else
+                this.value.props = props;
 
-            
-        if (this.value.props != undefined) 
-            this.updateValues.push(['props', this.value.props]);
+                
+            if (this.value.props != undefined) 
+                this.updateValues.push(['props', this.value.props]);
+        }
     }
 
 
