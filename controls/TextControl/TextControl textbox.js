@@ -55,6 +55,9 @@ TextControl.prototype.initTextarea = function(textbox)
         {
             e.preventDefault();
             e.stopPropagation();
+
+            initTextboxMenu(this.textbox);
+            menuTextbox.showAt(e.clientX, e.clientY, false, false);
         }
         else    
             e.stopPropagation();
@@ -62,25 +65,25 @@ TextControl.prototype.initTextarea = function(textbox)
     
     
     
-    this.textbox.addEventListener('pointermove', e =>
-    {
-        //e.preventDefault();
-        //e.stopPropagation();
-    });
+    // this.textbox.addEventListener('pointermove', e =>
+    // {
+    //     //e.preventDefault();
+    //     //e.stopPropagation();
+    // });
 
 
 
-    this.textbox.addEventListener('pointerup', e =>
-    {
-        // e.stopPropagation();
+    // this.textbox.addEventListener('pointerup', e =>
+    // {
+    //     // e.stopPropagation();
 
 
-        if (e.button == 2)
-        {
-            initTextboxMenu(this.textbox);
-            menuTextbox.showAt(e.clientX, e.clientY, false, false);
-        }
-    });
+    //     if (e.button == 2)
+    //     {
+    //         initTextboxMenu(this.textbox);
+    //         menuTextbox.showAt(e.clientX, e.clientY, false, false);
+    //     }
+    // });
 
 
 

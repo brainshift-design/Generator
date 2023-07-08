@@ -28,6 +28,23 @@ TextControl.prototype.initEvents = function()
 
 
 
+    this.div.addEventListener('pointerdown', e =>
+    {
+        if (e.button == 2)
+        {
+            e.preventDefault();
+            e.stopPropagation();
+
+            if (this.param instanceof TextParam)
+            {
+                initTextboxMenu(this.textbox);
+                menuTextbox.showAt(e.clientX, e.clientY, false, false);
+            }
+        }
+    });
+
+
+
     this.div.addEventListener('pointermove', e =>
     {
         e.stopPropagation();

@@ -70788,6 +70788,9 @@ TextControl.prototype.initTextarea = function(textbox)
         {
             e.preventDefault();
             e.stopPropagation();
+
+            initTextboxMenu(this.textbox);
+            menuTextbox.showAt(e.clientX, e.clientY, false, false);
         }
         else    
             e.stopPropagation();
@@ -70795,25 +70798,25 @@ TextControl.prototype.initTextarea = function(textbox)
     
     
     
-    this.textbox.addEventListener('pointermove', e =>
-    {
-        //e.preventDefault();
-        //e.stopPropagation();
-    });
+    // this.textbox.addEventListener('pointermove', e =>
+    // {
+    //     //e.preventDefault();
+    //     //e.stopPropagation();
+    // });
 
 
 
-    this.textbox.addEventListener('pointerup', e =>
-    {
-        // e.stopPropagation();
+    // this.textbox.addEventListener('pointerup', e =>
+    // {
+    //     // e.stopPropagation();
 
 
-        if (e.button == 2)
-        {
-            initTextboxMenu(this.textbox);
-            menuTextbox.showAt(e.clientX, e.clientY, false, false);
-        }
-    });
+    //     if (e.button == 2)
+    //     {
+    //         initTextboxMenu(this.textbox);
+    //         menuTextbox.showAt(e.clientX, e.clientY, false, false);
+    //     }
+    // });
 
 
 
@@ -71047,6 +71050,23 @@ TextControl.prototype.initEvents = function()
         //else 
         if (!currentTooltip)
             initTextTooltip(this.value);
+    });
+
+
+
+    this.div.addEventListener('pointerdown', e =>
+    {
+        if (e.button == 2)
+        {
+            e.preventDefault();
+            e.stopPropagation();
+
+            if (this.param instanceof TextParam)
+            {
+                initTextboxMenu(this.textbox);
+                menuTextbox.showAt(e.clientX, e.clientY, false, false);
+            }
+        }
     });
 
 
@@ -78778,7 +78798,7 @@ extends Parameter
         enableElementText(this.controls[0].textbox, enable);
         
         this.controls[0].textbox.disabled = !enable;
-        this.controls[0].readOnly = !enable;
+        this.controls[0].readOnly         = !enable;
     }
     
     

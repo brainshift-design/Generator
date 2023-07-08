@@ -186,7 +186,7 @@ extends Parameter
         enableElementText(this.controls[0].textbox, enable);
         
         this.controls[0].textbox.disabled = !enable;
-        this.controls[0].readOnly = !enable;
+        this.controls[0].readOnly         = !enable;
     }
     
     
