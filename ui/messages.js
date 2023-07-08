@@ -10,15 +10,21 @@ onmessage = e =>
     let msg = JSON.parse(e.data.pluginMessage);
 
 
-    if (settings.logMessages)
+    if (   msg.cmd == 'uiForwardToGenerator'
+        || msg.cmd == 'uiEndFigMessage')
     {
-        let _msg = msg.cmd;
-
-        if (msg.cmd == 'uiEndFigMessage')
-            _msg += ': ' + msg.msgCmd;
-
-        console.log('%cFIG '+_msg+' --► UI', 'background: #08f; color: white;');
+        if (settings.logThreadMessages)
+            logFigToUi(msg);
     }
+    else if (msg.cmd == 'uiReturnFigGetLocalData'
+          || msg.cmd == 'uiReturnFigGetPageData')
+    {
+        if (settings.logDataMessages)
+            logFigToUi(msg);
+    }
+    else 
+        if (settings.logMessages)
+            logFigToUi(msg);
 
 
     switch (msg.cmd)
@@ -52,6 +58,18 @@ onmessage = e =>
     }
 };
 
+
+
+function logFigToUi(msg)
+{
+    let _msg = msg.cmd;
+
+    if (msg.cmd == 'uiEndFigMessage')
+        _msg += ': ' + msg.msgCmd;
+
+    console.log('%cFIG '+_msg+' --► UI', 'background: #08f; color: white;');
+}
+
 ///////////////////////////////////////////////////////////////////////////////////////////////////
 
 
@@ -64,8 +82,25 @@ function uiPostMessageToFigma(msg)
     uiFigMessagePosted = true;
     parent.postMessage({pluginMessage: JSON.stringify(msg)}, '*');
 
-    if (settings.logMessages)
-        console.log('%c%s FIG ◄-- UI '+msg.cmd, 'background: #bef; color: black;', '\n            ');
+    
+    if (   msg.cmd == 'figGetLocalData'
+        || msg.cmd == 'figSetLocalData'
+        || msg.cmd == 'figGetPageData'
+        || msg.cmd == 'figSetPageData')
+    {
+        if (settings.logDataMessages)
+            logUiToFig(msg);
+    }
+    else 
+        if (settings.logMessages)
+            logUiToFig(msg);
+}
+
+
+
+function logUiToFig(msg)
+{
+    console.log('%c%s FIG ◄-- UI ' + msg.cmd, 'background: #bef; color: black;', '\n            ');    
 }
 
 
@@ -128,15 +163,17 @@ generator.onmessage = function(e)
     //console.log('e =', e);
     const msg = JSON.parse(e.data);
 
-    if (settings.logMessages)
+
+    if (   msg.cmd == 'uiForwardToFigma'
+        || msg.cmd == 'uiEndGenMessage')
     {
-        let _msg = msg.cmd;
-
-        if (msg.cmd == 'uiEndGenMessage')
-            _msg += ': ' + msg.msgCmd;
-
-        console.log('%c%sUI ◄-- GEN '+_msg, 'background: #ca0; color: white;', '\n                        ');
+        if (settings.logThreadMessages)
+            logGenToUi(msg);
     }
+    else 
+        if (settings.logMessages)
+            logGenToUi(msg);
+
 
     switch (msg.cmd)
     {
@@ -163,6 +200,18 @@ generator.onmessage = function(e)
         case 'uiForwardToFigma':     uiPostMessageToFigma(msg.msg);                                        break;
     }
 };
+
+
+
+function logGenToUi(msg)
+{
+    let _msg = msg.cmd;
+
+    if (msg.cmd == 'uiEndGenMessage')
+        _msg += ': ' + msg.msgCmd;
+
+    console.log('%c%sUI ◄-- GEN '+_msg, 'background: #ca0; color: white;', '\n                        ');
+}
 
 
 
@@ -223,8 +272,14 @@ function uiPostNextMessageToGenerator()
 function uiPostMessageToGenerator(msg)
 {
     generator.postMessage(JSON.stringify(msg));
-
-    if (settings.logMessages)
+    
+    
+    if (      settings.logThreadMessages
+        && msg.cmd == 'genEndUiMessage'
+        && msg.cmd == 'genEndFigMessage'
+     ||    settings.logMessages
+        && msg.cmd != 'genEndUiMessage'
+        && msg.cmd != 'genEndFigMessage')
         console.log('%c%s UI '+msg.cmd+' --► GEN', 'background: #ffb; color: black;', '\n            ');
 }
 

@@ -60,7 +60,10 @@ async function uiReturnFigGetLocalData(msg)
 
         //case 'enableBetaFeatures':       
 
-        case 'logMessages':      
+        case 'logThreadMessages':      
+        case 'logDataMessages':      
+        case 'logMessages':     
+
         case 'logActions':       
 
         case 'logLoading':       
@@ -101,6 +104,7 @@ async function uiReturnFigGetLocalData(msg)
     if (    msg.key == 'dataMode'
         && !generatorStarted)
     {
+        console.log('msg =', msg);
         if (settings.dataMode)
         {
             dataModeView.style.display = 'block';

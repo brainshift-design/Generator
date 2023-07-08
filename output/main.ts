@@ -2290,7 +2290,7 @@ figma.ui.onmessage = function(msg)
         case 'figGetAllLocalColorStyles':             figGetAllLocalColorStyles            (msg.nodeId, msg.px, msg.py);                  break;
         case 'figLinkNodeToExistingColorStyle':       figLinkNodeToExistingColorStyle      (msg.nodeId, msg.styleId);                     break;
      
-        // case 'figUpdateViewportRect':                 figPostMessageToUi({cmd: 'uiReturnUpdateViewportRect', viewportRect: figma.viewport.bounds }); break;
+     // case 'figUpdateViewportRect':                 figPostMessageToUi({cmd: 'uiReturnUpdateViewportRect', viewportRect: figma.viewport.bounds }); break;
      
         case 'figGetObjectSize':                      figGetObjectSize                     (msg.object);                                  break;
 

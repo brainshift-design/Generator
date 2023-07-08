@@ -8763,7 +8763,10 @@ const settings =
 
     //enableBetaFeatures:            false,
             
+    logThreadMessages:             false,
+    logDataMessages:               false,
     logMessages:                   false,
+
     logActions:                    false, 
             
     logLoading:                    false, 
@@ -8816,7 +8819,10 @@ function updateSetting(settingName, value)
 
         //case 'enableBetaFeatures':            settings.enableBetaFeatures            = value;  break;
                    
+        case 'logThreadMessages':             settings.logThreadMessages             = value;  break;
+        case 'logDataMessages':               settings.logDataMessages               = value;  break;
         case 'logMessages':                   settings.logMessages                   = value;  break;
+
         case 'logActions':                    settings.logActions                    = value;  break;
         case 'logLoading':                    settings.logLoading                    = value;  break;
         case 'logRequests':                   settings.logRequests                   = value;  break;
@@ -8868,7 +8874,10 @@ function updateSettingAndMenu(settingName, valid, value, save = true)
 
         //case 'enableBetaFeatures':            //updateSettingAndMenu_(valid, settingName, value, menuItemEnableBetaFeatures           ); break;
                       
+        case 'logThreadMessages':             updateSettingAndMenu_(valid, settingName, value, menuItemLogThreadMessages            ); break;
+        case 'logDataMessages':               updateSettingAndMenu_(valid, settingName, value, menuItemLogDataMessages              ); break;
         case 'logMessages':                   updateSettingAndMenu_(valid, settingName, value, menuItemLogMessages                  ); break;
+
         case 'logActions':                    updateSettingAndMenu_(valid, settingName, value, menuItemLogActions                   ); break;
         case 'logLoading':                    updateSettingAndMenu_(valid, settingName, value, menuItemLogLoading                   ); break;
         case 'logRequests':                   updateSettingAndMenu_(valid, settingName, value, menuItemLogRequests                  ); break;
@@ -8941,9 +8950,12 @@ function updateSettingsMenus()
     menuItemShowTooltipColorBlindness    .setChecked(settings.showTooltipColorBlindness    );
     menuItemShowTooltipColorContrast     .setChecked(settings.showTooltipColorContrast     );
 
-    //menuItemEnableBetaFeatures           .setChecked(settings.enableBetaFeatures           );
+  //menuItemEnableBetaFeatures           .setChecked(settings.enableBetaFeatures           );
                   
+    menuItemLogThreadMessages            .setChecked(settings.logThreadMessages            );
+    menuItemLogDataMessages              .setChecked(settings.logDataMessages              );
     menuItemLogMessages                  .setChecked(settings.logMessages                  );
+
     menuItemLogActions                   .setChecked(settings.logActions                   );
                   
     menuItemLogLoading                   .setChecked(settings.logLoading                   );
@@ -9115,9 +9127,12 @@ function loadLocalSettings()
     uiGetLocalData('showTooltipColorBlindness'    );
     uiGetLocalData('showTooltipColorContrast'     );
 
-    //uiGetLocalData('enableBetaFeatures'           );
+  //uiGetLocalData('enableBetaFeatures'           );
             
+    uiGetLocalData('logThreadMessages'            );
+    uiGetLocalData('logDataMessages'              );
     uiGetLocalData('logMessages'                  );
+
     uiGetLocalData('logActions'                   );
             
     uiGetLocalData('logLoading'                   );
@@ -68084,7 +68099,10 @@ const settings =
 
     //enableBetaFeatures:            false,
             
+    logThreadMessages:             false,
+    logDataMessages:               false,
     logMessages:                   false,
+
     logActions:                    false, 
             
     logLoading:                    false, 
@@ -68137,7 +68155,10 @@ function updateSetting(settingName, value)
 
         //case 'enableBetaFeatures':            settings.enableBetaFeatures            = value;  break;
                    
+        case 'logThreadMessages':             settings.logThreadMessages             = value;  break;
+        case 'logDataMessages':               settings.logDataMessages               = value;  break;
         case 'logMessages':                   settings.logMessages                   = value;  break;
+
         case 'logActions':                    settings.logActions                    = value;  break;
         case 'logLoading':                    settings.logLoading                    = value;  break;
         case 'logRequests':                   settings.logRequests                   = value;  break;
@@ -68189,7 +68210,10 @@ function updateSettingAndMenu(settingName, valid, value, save = true)
 
         //case 'enableBetaFeatures':            //updateSettingAndMenu_(valid, settingName, value, menuItemEnableBetaFeatures           ); break;
                       
+        case 'logThreadMessages':             updateSettingAndMenu_(valid, settingName, value, menuItemLogThreadMessages            ); break;
+        case 'logDataMessages':               updateSettingAndMenu_(valid, settingName, value, menuItemLogDataMessages              ); break;
         case 'logMessages':                   updateSettingAndMenu_(valid, settingName, value, menuItemLogMessages                  ); break;
+
         case 'logActions':                    updateSettingAndMenu_(valid, settingName, value, menuItemLogActions                   ); break;
         case 'logLoading':                    updateSettingAndMenu_(valid, settingName, value, menuItemLogLoading                   ); break;
         case 'logRequests':                   updateSettingAndMenu_(valid, settingName, value, menuItemLogRequests                  ); break;
@@ -68262,9 +68286,12 @@ function updateSettingsMenus()
     menuItemShowTooltipColorBlindness    .setChecked(settings.showTooltipColorBlindness    );
     menuItemShowTooltipColorContrast     .setChecked(settings.showTooltipColorContrast     );
 
-    //menuItemEnableBetaFeatures           .setChecked(settings.enableBetaFeatures           );
+  //menuItemEnableBetaFeatures           .setChecked(settings.enableBetaFeatures           );
                   
+    menuItemLogThreadMessages            .setChecked(settings.logThreadMessages            );
+    menuItemLogDataMessages              .setChecked(settings.logDataMessages              );
     menuItemLogMessages                  .setChecked(settings.logMessages                  );
+
     menuItemLogActions                   .setChecked(settings.logActions                   );
                   
     menuItemLogLoading                   .setChecked(settings.logLoading                   );
@@ -68436,9 +68463,12 @@ function loadLocalSettings()
     uiGetLocalData('showTooltipColorBlindness'    );
     uiGetLocalData('showTooltipColorContrast'     );
 
-    //uiGetLocalData('enableBetaFeatures'           );
+  //uiGetLocalData('enableBetaFeatures'           );
             
+    uiGetLocalData('logThreadMessages'            );
+    uiGetLocalData('logDataMessages'              );
     uiGetLocalData('logMessages'                  );
+
     uiGetLocalData('logActions'                   );
             
     uiGetLocalData('logLoading'                   );
@@ -73594,6 +73624,8 @@ var menuItemShapeSelected;
 
 var menuItemDataMode;
 
+var menuItemLogThreadMessages;
+var menuItemLogDataMessages;
 var menuItemLogMessages;
 var menuItemLogActions;
 var menuItemLogLoading;
@@ -73715,17 +73747,19 @@ function initGeneratorMenus()
 
     menuDebugGenerator = new Menu('Debug generator', false);
     menuDebugGenerator.addItems([
-        menuItemLogRequests           = new MenuItem('Requests',           {checkCallback: () => settings.logRequests     ,      callback: () => updateSettingAndMenu('logRequests',           true, !settings.logRequests          ), setting: true}),
-        menuItemLogValueUpdates       = new MenuItem('Values',             {checkCallback: () => settings.logValueUpdates ,      callback: () => updateSettingAndMenu('logValueUpdates',       true, !settings.logValueUpdates      ), setting: true}),
-        menuItemLogObjectUpdates      = new MenuItem('Objects',            {checkCallback: () => settings.logObjectUpdates,      callback: () => updateSettingAndMenu('logObjectUpdates',      true, !settings.logObjectUpdates     ), setting: true}),
-        menuItemLogStyleUpdates       = new MenuItem('Styles',             {checkCallback: () => settings.logStyleUpdates ,      callback: () => updateSettingAndMenu('logStyleUpdates',       true, !settings.logStyleUpdates      ), setting: true}),
-                                        new MenuItem('',                   {separator: true}),                   
-        menuItemLogRawRequests        = new MenuItem('Raw\u2008requests',  {checkCallback: () => settings.logRawRequests  ,      callback: () => updateSettingAndMenu('logRawRequests',        true, !settings.logRawRequests       ), setting: true}),
-        menuItemLogRawValues          = new MenuItem('Raw\u2008values',    {checkCallback: () => settings.logRawValues    ,      callback: () => updateSettingAndMenu('logRawValues',          true, !settings.logRawValues         ), setting: true}),
-                                        new MenuItem('',                   {separator: true}),                   
-        menuItemLogMessages           = new MenuItem('Messages',           {checkCallback: () => settings.logMessages     ,      callback: () => updateSettingAndMenu('logMessages',           true, !settings.logMessages          ), setting: true}),
-                                        new MenuItem('',                   {separator: true}),                   
-        menuItemLogActions            = new MenuItem('Actions',            {checkCallback: () => settings.logActions      ,      callback: () => updateSettingAndMenu('logActions',            true, !settings.logActions           ), setting: true})]);
+        menuItemLogRequests       = new MenuItem('Requests',          {checkCallback: () => settings.logRequests     ,      callback: () => updateSettingAndMenu('logRequests',           true, !settings.logRequests          ), setting: true}),
+        menuItemLogValueUpdates   = new MenuItem('Values',            {checkCallback: () => settings.logValueUpdates ,      callback: () => updateSettingAndMenu('logValueUpdates',       true, !settings.logValueUpdates      ), setting: true}),
+        menuItemLogObjectUpdates  = new MenuItem('Objects',           {checkCallback: () => settings.logObjectUpdates,      callback: () => updateSettingAndMenu('logObjectUpdates',      true, !settings.logObjectUpdates     ), setting: true}),
+        menuItemLogStyleUpdates   = new MenuItem('Styles',            {checkCallback: () => settings.logStyleUpdates ,      callback: () => updateSettingAndMenu('logStyleUpdates',       true, !settings.logStyleUpdates      ), setting: true}),
+                                    new MenuItem('',                  {separator: true}),                   
+        menuItemLogRawRequests    = new MenuItem('Raw\u2008requests', {checkCallback: () => settings.logRawRequests  ,      callback: () => updateSettingAndMenu('logRawRequests',        true, !settings.logRawRequests       ), setting: true}),
+        menuItemLogRawValues      = new MenuItem('Raw\u2008values',   {checkCallback: () => settings.logRawValues    ,      callback: () => updateSettingAndMenu('logRawValues',          true, !settings.logRawValues         ), setting: true}),
+                                    new MenuItem('',                  {separator: true}),                   
+        menuItemLogThreadMessages = new MenuItem('Thread messages',   {checkCallback: () => settings.logThreadMessages,     callback: () => updateSettingAndMenu('logThreadMessages',     true, !settings.logThreadMessages    ), setting: true}),
+        menuItemLogDataMessages   = new MenuItem('Data messages',     {checkCallback: () => settings.logDataMessages  ,     callback: () => updateSettingAndMenu('logDataMessages',       true, !settings.logDataMessages      ), setting: true}),
+        menuItemLogMessages       = new MenuItem('Other messages',    {checkCallback: () => settings.logMessages     ,      callback: () => updateSettingAndMenu('logMessages',           true, !settings.logMessages          ), setting: true}),
+                                    new MenuItem('',                   {separator: true}),                   
+        menuItemLogActions        = new MenuItem('Actions',           {checkCallback: () => settings.logActions      ,      callback: () => updateSettingAndMenu('logActions',            true, !settings.logActions           ), setting: true})]);
                      
 
     menuDebugDelete = new Menu('Debug generator', false);
@@ -107308,15 +107342,21 @@ onmessage = e =>
     let msg = JSON.parse(e.data.pluginMessage);
 
 
-    if (settings.logMessages)
+    if (   msg.cmd == 'uiForwardToGenerator'
+        || msg.cmd == 'uiEndFigMessage')
     {
-        let _msg = msg.cmd;
-
-        if (msg.cmd == 'uiEndFigMessage')
-            _msg += ': ' + msg.msgCmd;
-
-        console.log('%cFIG '+_msg+' --► UI', 'background: #08f; color: white;');
+        if (settings.logThreadMessages)
+            logFigToUi(msg);
     }
+    else if (msg.cmd == 'uiReturnFigGetLocalData'
+          || msg.cmd == 'uiReturnFigGetPageData')
+    {
+        if (settings.logDataMessages)
+            logFigToUi(msg);
+    }
+    else 
+        if (settings.logMessages)
+            logFigToUi(msg);
 
 
     switch (msg.cmd)
@@ -107350,6 +107390,18 @@ onmessage = e =>
     }
 };
 
+
+
+function logFigToUi(msg)
+{
+    let _msg = msg.cmd;
+
+    if (msg.cmd == 'uiEndFigMessage')
+        _msg += ': ' + msg.msgCmd;
+
+    console.log('%cFIG '+_msg+' --► UI', 'background: #08f; color: white;');
+}
+
 ///////////////////////////////////////////////////////////////////////////////////////////////////
 
 
@@ -107362,8 +107414,25 @@ function uiPostMessageToFigma(msg)
     uiFigMessagePosted = true;
     parent.postMessage({pluginMessage: JSON.stringify(msg)}, '*');
 
-    if (settings.logMessages)
-        console.log('%c%s FIG ◄-- UI '+msg.cmd, 'background: #bef; color: black;', '\n            ');
+    
+    if (   msg.cmd == 'figGetLocalData'
+        || msg.cmd == 'figSetLocalData'
+        || msg.cmd == 'figGetPageData'
+        || msg.cmd == 'figSetPageData')
+    {
+        if (settings.logDataMessages)
+            logUiToFig(msg);
+    }
+    else 
+        if (settings.logMessages)
+            logUiToFig(msg);
+}
+
+
+
+function logUiToFig(msg)
+{
+    console.log('%c%s FIG ◄-- UI ' + msg.cmd, 'background: #bef; color: black;', '\n            ');    
 }
 
 
@@ -107426,15 +107495,17 @@ generator.onmessage = function(e)
     //console.log('e =', e);
     const msg = JSON.parse(e.data);
 
-    if (settings.logMessages)
+
+    if (   msg.cmd == 'uiForwardToFigma'
+        || msg.cmd == 'uiEndGenMessage')
     {
-        let _msg = msg.cmd;
-
-        if (msg.cmd == 'uiEndGenMessage')
-            _msg += ': ' + msg.msgCmd;
-
-        console.log('%c%sUI ◄-- GEN '+_msg, 'background: #ca0; color: white;', '\n                        ');
+        if (settings.logThreadMessages)
+            logGenToUi(msg);
     }
+    else 
+        if (settings.logMessages)
+            logGenToUi(msg);
+
 
     switch (msg.cmd)
     {
@@ -107461,6 +107532,18 @@ generator.onmessage = function(e)
         case 'uiForwardToFigma':     uiPostMessageToFigma(msg.msg);                                        break;
     }
 };
+
+
+
+function logGenToUi(msg)
+{
+    let _msg = msg.cmd;
+
+    if (msg.cmd == 'uiEndGenMessage')
+        _msg += ': ' + msg.msgCmd;
+
+    console.log('%c%sUI ◄-- GEN '+_msg, 'background: #ca0; color: white;', '\n                        ');
+}
 
 
 
@@ -107521,8 +107604,14 @@ function uiPostNextMessageToGenerator()
 function uiPostMessageToGenerator(msg)
 {
     generator.postMessage(JSON.stringify(msg));
-
-    if (settings.logMessages)
+    
+    
+    if (      settings.logThreadMessages
+        && msg.cmd == 'genEndUiMessage'
+        && msg.cmd == 'genEndFigMessage'
+     ||    settings.logMessages
+        && msg.cmd != 'genEndUiMessage'
+        && msg.cmd != 'genEndFigMessage')
         console.log('%c%s UI '+msg.cmd+' --► GEN', 'background: #ffb; color: black;', '\n            ');
 }
 
@@ -108046,7 +108135,10 @@ async function uiReturnFigGetLocalData(msg)
 
         //case 'enableBetaFeatures':       
 
-        case 'logMessages':      
+        case 'logThreadMessages':      
+        case 'logDataMessages':      
+        case 'logMessages':     
+
         case 'logActions':       
 
         case 'logLoading':       
@@ -108087,6 +108179,7 @@ async function uiReturnFigGetLocalData(msg)
     if (    msg.key == 'dataMode'
         && !generatorStarted)
     {
+        console.log('msg =', msg);
         if (settings.dataMode)
         {
             dataModeView.style.display = 'block';

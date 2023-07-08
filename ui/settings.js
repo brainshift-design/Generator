@@ -24,7 +24,10 @@ const settings =
 
     //enableBetaFeatures:            false,
             
+    logThreadMessages:             false,
+    logDataMessages:               false,
     logMessages:                   false,
+
     logActions:                    false, 
             
     logLoading:                    false, 
@@ -77,7 +80,10 @@ function updateSetting(settingName, value)
 
         //case 'enableBetaFeatures':            settings.enableBetaFeatures            = value;  break;
                    
+        case 'logThreadMessages':             settings.logThreadMessages             = value;  break;
+        case 'logDataMessages':               settings.logDataMessages               = value;  break;
         case 'logMessages':                   settings.logMessages                   = value;  break;
+
         case 'logActions':                    settings.logActions                    = value;  break;
         case 'logLoading':                    settings.logLoading                    = value;  break;
         case 'logRequests':                   settings.logRequests                   = value;  break;
@@ -129,7 +135,10 @@ function updateSettingAndMenu(settingName, valid, value, save = true)
 
         //case 'enableBetaFeatures':            //updateSettingAndMenu_(valid, settingName, value, menuItemEnableBetaFeatures           ); break;
                       
+        case 'logThreadMessages':             updateSettingAndMenu_(valid, settingName, value, menuItemLogThreadMessages            ); break;
+        case 'logDataMessages':               updateSettingAndMenu_(valid, settingName, value, menuItemLogDataMessages              ); break;
         case 'logMessages':                   updateSettingAndMenu_(valid, settingName, value, menuItemLogMessages                  ); break;
+
         case 'logActions':                    updateSettingAndMenu_(valid, settingName, value, menuItemLogActions                   ); break;
         case 'logLoading':                    updateSettingAndMenu_(valid, settingName, value, menuItemLogLoading                   ); break;
         case 'logRequests':                   updateSettingAndMenu_(valid, settingName, value, menuItemLogRequests                  ); break;
@@ -202,9 +211,12 @@ function updateSettingsMenus()
     menuItemShowTooltipColorBlindness    .setChecked(settings.showTooltipColorBlindness    );
     menuItemShowTooltipColorContrast     .setChecked(settings.showTooltipColorContrast     );
 
-    //menuItemEnableBetaFeatures           .setChecked(settings.enableBetaFeatures           );
+  //menuItemEnableBetaFeatures           .setChecked(settings.enableBetaFeatures           );
                   
+    menuItemLogThreadMessages            .setChecked(settings.logThreadMessages            );
+    menuItemLogDataMessages              .setChecked(settings.logDataMessages              );
     menuItemLogMessages                  .setChecked(settings.logMessages                  );
+
     menuItemLogActions                   .setChecked(settings.logActions                   );
                   
     menuItemLogLoading                   .setChecked(settings.logLoading                   );
@@ -376,9 +388,12 @@ function loadLocalSettings()
     uiGetLocalData('showTooltipColorBlindness'    );
     uiGetLocalData('showTooltipColorContrast'     );
 
-    //uiGetLocalData('enableBetaFeatures'           );
+  //uiGetLocalData('enableBetaFeatures'           );
             
+    uiGetLocalData('logThreadMessages'            );
+    uiGetLocalData('logDataMessages'              );
     uiGetLocalData('logMessages'                  );
+
     uiGetLocalData('logActions'                   );
             
     uiGetLocalData('logLoading'                   );
