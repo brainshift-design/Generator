@@ -24,6 +24,8 @@ extends OperatorWithValue
         this.addParam(this.paramWhat = new TextParam('what', 'what', false, true, true));
         this.addParam(this.paramWith = new TextParam('with', 'with', false, true, true));
 
+        this.paramWhat.controls[0].textbox.defPlaceholder = 'what';
+        this.paramWith.controls[0].textbox.defPlaceholder = 'with';
 
         setControlFont(this.paramValue.controls[0].textbox, 'Roboto Mono', 10, 'center');
         setControlFont(this.paramWhat .controls[0].textbox, 'Roboto Mono', 10, 'center');

@@ -660,7 +660,7 @@ function initGeneratorMenus()
         //                                 new MenuItem('Copy/Paste as',   {childMenu: menuNodeCopyAs}),
         //new MenuItem('',                {separator: true}),
         //menuItemNodeLayout         = new MenuItem('Layout',          {enabled:   false, shortcut: osCtrl() + 'L', callback: e => { hideAllMenus(); layoutSelectedNodes(); }}),
-        menuItemNodeSepGroup       = new MenuItem('',                {separator: true}),
+        // menuItemNodeSepGroup       = new MenuItem('',                {separator: true}),
         //menuItemNodeGroupSelected  = new MenuItem('Group selected',  {shortcut:  osCtrl() + 'G',       callback: e => { hideAllMenus(); actionManager.do(new   GroupNodesAction(graphView.selectedNodes)); }}),
         //menuItemNodeUngroup        = new MenuItem('Ungroup',         {                                 callback: e => { hideAllMenus(); actionManager.do(new UngroupNodesAction(graphView.selectedNodes)); }}),
         menuItemNodeSep2           = new MenuItem('',                {separator: true}),

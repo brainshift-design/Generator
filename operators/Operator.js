@@ -680,17 +680,17 @@ class Operator
 
 
 
-    setSize(w, h, updateTransform = true)
-    {
-        this.div.style.width  = w + 'px';
-        this.div.style.height = h + 'px';
+    // setSize(w, h, updateTransform = true)
+    // {
+    //     this.div.style.width  = w + 'px';
+    //     this.div.style.height = h + 'px';
 
-        if (updateTransform)
-        {
-            this.div.style.display = 'block';
-            this.updateTransform();
-        }
-    }
+    //     if (updateTransform)
+    //     {
+    //         this.div.style.display = 'block';
+    //         this.updateTransform();
+    //     }
+    // }
 
 
 

@@ -26,26 +26,28 @@ extends ResizableOperatorWithValue
 
         setControlFont(this.paramValue  .controls[0].textbox, 'Roboto Mono', 10, 'center');
         setControlFont(this.paramRequest.controls[0].textbox, 'Roboto Mono', 10, 'center');
+
+        this.paramRequest.controls[0].textbox.defPlaceholder = 'request';
     }
 
 
 
-    setSize(w, h, updateTransform = true)
-    {
-        const headerHeight = boundingRect(this.header).height / graph.currentPage.zoom;
+    // setSize(w, h, updateTransform = true)
+    // {
+    //     const headerHeight = boundingRect(this.header).height / graph.currentPage.zoom;
 
-        const height =
-            settings.showOperationResults
-            ? Math.max(headerHeight + 2 * defParamHeight, h)
-            : headerHeight + 2 * defParamHeight;
+    //     const height =
+    //         settings.showOperationResults
+    //         ? Math.max(headerHeight + 2 * defParamHeight, h)
+    //         : headerHeight + 2 * defParamHeight;
 
-        super.setSize(
-            w, 
-            height, 
-            updateTransform);
+    //     super.setSize(
+    //         w, 
+    //         height, 
+    //         updateTransform);
 
-        this.updateValueParam();
-    }
+    //     this.updateValueParam();
+    // }
 
 
 

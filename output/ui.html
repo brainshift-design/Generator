@@ -4397,9 +4397,7 @@ a
             <div id='whatsNewBody'>
                 <h1 style='margin-top: 20px;'>What's new</h1>
 
-                <p>•  fixed phantom shapes not redrawing correctly</p>
-                <p>•  fixed Apply update bug</p>
-                <p>•  fixed bug in Line</p>
+                <p>•  fixed various UI bugs</p>
                 
                 <p><br/><br/><div id='chkHideWhatsNew'></div></p>
             </div>
@@ -4727,7 +4725,7 @@ a
 
 
 
-const generatorVersion = 149;
+const generatorVersion = 150;
 
 
 const MAX_INT32        = 2147483647;
@@ -9027,7 +9025,9 @@ function updateMenuItemShowOperationResults()
     nodes.forEach(n => 
     {
         const rect = n.measureData.divOffset;
+        // n.setSize(rect.w, rect.h, false);
         n.setRect(rect.x, rect.y, rect.w, rect.h, false);
+        n.updateNode();
     });
 
     graphView.updateNodeTransforms(nodes);
@@ -39678,7 +39678,7 @@ onerror = (event, source, line, pos, error) =>
 };
 
 
-const generatorVersion = 149;
+const generatorVersion = 150;
 
 
 const MAX_INT32        = 2147483647;
@@ -68379,7 +68379,9 @@ function updateMenuItemShowOperationResults()
     nodes.forEach(n => 
     {
         const rect = n.measureData.divOffset;
+        // n.setSize(rect.w, rect.h, false);
         n.setRect(rect.x, rect.y, rect.w, rect.h, false);
+        n.updateNode();
     });
 
     graphView.updateNodeTransforms(nodes);
@@ -74145,7 +74147,7 @@ function initGeneratorMenus()
         //                                 new MenuItem('Copy/Paste as',   {childMenu: menuNodeCopyAs}),
         //new MenuItem('',                {separator: true}),
         //menuItemNodeLayout         = new MenuItem('Layout',          {enabled:   false, shortcut: osCtrl() + 'L', callback: e => { hideAllMenus(); layoutSelectedNodes(); }}),
-        menuItemNodeSepGroup       = new MenuItem('',                {separator: true}),
+        // menuItemNodeSepGroup       = new MenuItem('',                {separator: true}),
         //menuItemNodeGroupSelected  = new MenuItem('Group selected',  {shortcut:  osCtrl() + 'G',       callback: e => { hideAllMenus(); actionManager.do(new   GroupNodesAction(graphView.selectedNodes)); }}),
         //menuItemNodeUngroup        = new MenuItem('Ungroup',         {                                 callback: e => { hideAllMenus(); actionManager.do(new UngroupNodesAction(graphView.selectedNodes)); }}),
         menuItemNodeSep2           = new MenuItem('',                {separator: true}),
@@ -78588,7 +78590,7 @@ function initSelectParamMenu(param)
 
 
 
-class   TextParam
+class TextParam
 extends Parameter
 {
     defaultValue;
@@ -85392,17 +85394,17 @@ class Operator
 
 
 
-    setSize(w, h, updateTransform = true)
-    {
-        this.div.style.width  = w + 'px';
-        this.div.style.height = h + 'px';
+    // setSize(w, h, updateTransform = true)
+    // {
+    //     this.div.style.width  = w + 'px';
+    //     this.div.style.height = h + 'px';
 
-        if (updateTransform)
-        {
-            this.div.style.display = 'block';
-            this.updateTransform();
-        }
-    }
+    //     if (updateTransform)
+    //     {
+    //         this.div.style.display = 'block';
+    //         this.updateTransform();
+    //     }
+    // }
 
 
 
@@ -87638,30 +87640,39 @@ extends OperatorBase
     }
 
 
-    setSize(w, h, updateTransform = true)
-    {
-        let headerHeight = getStyleValue(this.header, 'offset-height');
-        if (typeof headerHeight == 'string') headerHeight = defHeaderHeight;
+    // setSize(w, h, updateTransform = true)
+    // {
+    //     let headerHeight = getStyleValue(this.header, 'offset-height');
+    //     if (typeof headerHeight == 'string') headerHeight = defHeaderHeight;
 
-        const paramHeight  = settings.showOperationResults ? defParamHeight : 0;
+    //     const paramHeight = 
+    //            this instanceof ResizableOperatorWithValue
+    //         && settings.showOperationResults
+    //         ? defParamHeight 
+    //         : 0;
 
 
-        const _w = Math.max(60, w);
-        const _h = Math.max(parseFloat(headerHeight) + paramHeight, h);
+    //     const _w = Math.max(60, w);
+    //     const _h = Math.max(parseFloat(headerHeight) + paramHeight, h);
 
-        super.setSize(_w, _h, updateTransform);
+    //     super.setSize(_w, _h, updateTransform);
 
-        this.updateSizers();
+    //     this.updateSizers();
 
-        this.inner.style.height = _h;
-    }
+    //     this.inner.style.height = _h;
+    // }
 
 
 
     setRect(x, y, w, h, updateTransform = true)
     {
         const headerHeight = getStyleValue(this.header, 'height');
-        const paramHeight  = this.paramValue && settings.showOperationResults ? defParamHeight : 0;
+
+        const paramHeight = 
+               this instanceof ResizableOperatorWithValue
+            && settings.showOperationResults 
+            ? defParamHeight 
+            : 0;
 
         const _w = Math.max(60, w);
         const _h = Math.max(parseFloat(headerHeight) + paramHeight, h);
@@ -87738,10 +87749,16 @@ extends OperatorBase
         if (   _node.width
             && _node.height)
         {
-            this.setSize(
-                parseFloat(_node.width), 
+            this.setRect(
+                parseFloat(_node.x     ), 
+                parseFloat(_node.y     ), 
+                parseFloat(_node.width ), 
                 parseFloat(_node.height),
                 false);
+            // this.setSize(
+            //     parseFloat(_node.width), 
+            //     parseFloat(_node.height),
+            //     false);
         }
     }
 }
@@ -87765,13 +87782,13 @@ extends ResizableBase
 
 
 
-    setSize(w, h, updateTransform = true)
-    {
-        super.setSize(
-            w, 
-            settings.showOperationResults ? h : h - defParamHeight, 
-            updateTransform);
-    }
+    // setSize(w, h, updateTransform = true)
+    // {
+    //     super.setSize(
+    //         w, 
+    //         settings.showOperationResults ? h : h - defParamHeight, 
+    //         updateTransform);
+    // }
 
 
 
@@ -87935,6 +87952,7 @@ extends ResizableBase
         this.div.appendChild(this.scrollbar);
 
 
+
         this.scrollbar.addEventListener('pointerdown', e =>
         {
             if (e.button == 0)
@@ -87949,6 +87967,7 @@ extends ResizableBase
                 this.scrollbar.setPointerCapture(e.pointerId);
             }
         });
+
 
 
         this.scrollbar.addEventListener('pointermove', e =>
@@ -87988,6 +88007,7 @@ extends ResizableBase
         });
 
 
+
         this.scrollbar.addEventListener('pointerup', e =>
         {
             if (e.button == 0)
@@ -88002,16 +88022,16 @@ extends ResizableBase
 
 
 
-    setSize(w, h, updateTransform = true)
-    {
-        super.setSize(
-            w, 
-            Math.min(h, defHeaderHeight + this.params.length * defParamHeight), 
-            updateTransform);
+    // setSize(w, h, updateTransform = true)
+    // {
+    //     super.setSize(
+    //         w, 
+    //         Math.min(h, defHeaderHeight + this.params.length * defParamHeight), 
+    //         updateTransform);
 
-        this.updateScrollbar();
-        this.updateNode();
-    }
+    //     this.updateScrollbar();
+    //     this.updateNode();
+    // }
 
 
 
@@ -88152,8 +88172,9 @@ extends ResizableBase
         const rect = this.measureData.divOffset;
  
         if (this.scrollbar.style.display == 'none')
-            rect.h = defHeaderHeight + this.params.length * defParamHeight;
+            rect.h = this.params.length * defParamHeight;
         
+        //this.setSize(rect.w, rect.h, false);
         this.setRect(rect.x, rect.y, rect.w, rect.h, false);
 
 
@@ -90231,11 +90252,11 @@ extends ResizableBase
 
 
 
-    setSize(w, h, updateTransform = true)
-    {
-        super.setSize(w, h, updateTransform);
-        this.updateValueParam();
-    }
+    // setSize(w, h, updateTransform = true)
+    // {
+    //     super.setSize(w, h, updateTransform);
+    //     this.updateValueParam();
+    // }
 
 
 
@@ -92212,11 +92233,11 @@ extends ResizableBase
 
 
 
-    setSize(w, h, updateTransform = true)
-    {
-        super.setSize(w, h, updateTransform);
-        this.updateValueParam();
-    }
+    // setSize(w, h, updateTransform = true)
+    // {
+    //     super.setSize(w, h, updateTransform);
+    //     this.updateValueParam();
+    // }
 
 
 
@@ -92379,13 +92400,16 @@ extends OperatorWithValue
         this.addOutput(new Output([TEXT_VALUE], this.output_genRequest));
 
         this.addParam(this.paramValue);
-        this.addParam(this.paramStart = new TextParam('start', 'start', false, true, true, ' '));
-        this.addParam(this.paramEnd   = new TextParam('end',   'end',   false, true, true, ' '));
+        this.addParam(this.paramStart = new TextParam('start', 'start', false, true, true, ''));
+        this.addParam(this.paramEnd   = new TextParam('end',   'end',   false, true, true, ''));
 
 
         setControlFont(this.paramValue.controls[0].textbox, 'Roboto Mono', 10, 'center');
         setControlFont(this.paramStart.controls[0].textbox, 'Roboto Mono', 10, 'center');
         setControlFont(this.paramEnd  .controls[0].textbox, 'Roboto Mono', 10, 'center');
+
+        this.paramStart.controls[0].textbox.defPlaceholder = 'start';
+        this.paramEnd  .controls[0].textbox.defPlaceholder = 'end';
     }
 
 
@@ -92700,6 +92724,8 @@ extends OperatorWithValue
         this.addParam(this.paramWhat = new TextParam('what', 'what', false, true, true));
         this.addParam(this.paramWith = new TextParam('with', 'with', false, true, true));
 
+        this.paramWhat.controls[0].textbox.defPlaceholder = 'what';
+        this.paramWith.controls[0].textbox.defPlaceholder = 'with';
 
         setControlFont(this.paramValue.controls[0].textbox, 'Roboto Mono', 10, 'center');
         setControlFont(this.paramWhat .controls[0].textbox, 'Roboto Mono', 10, 'center');
@@ -92773,6 +92799,8 @@ extends ResizableOperatorWithValue
         this.addParam(this.paramValue);
         this.addParam(this.paramWith = new TextParam('with', 'with', false, true, true));
 
+        this.paramWith.controls[0].textbox.defPlaceholder = 'with';
+
 
         setControlFont(this.paramValue.controls[0].textbox, 'Roboto Mono', 10, 'center');
         setControlFont(this.paramWith .controls[0].textbox, 'Roboto Mono', 10, 'center');
@@ -92795,22 +92823,22 @@ extends ResizableOperatorWithValue
 
 
 
-    setSize(w, h, updateTransform = true)
-    {
-        const headerHeight = boundingRect(this.header).height / graph.currentPage.zoom;
+    // setSize(w, h, updateTransform = true)
+    // {
+    //     const headerHeight = boundingRect(this.header).height / graph.currentPage.zoom;
 
-        const height =
-            settings.showOperationResults
-            ? Math.max(headerHeight + 2 * defParamHeight, h)
-            : headerHeight + defParamHeight;
+    //     const height =
+    //         settings.showOperationResults
+    //         ? Math.max(headerHeight + 2 * defParamHeight, h)
+    //         : headerHeight + defParamHeight;
 
-        super.setSize(
-            w, 
-            height,
-            updateTransform);
+    //     super.setSize(
+    //         w, 
+    //         height,
+    //         updateTransform);
 
-        this.updateValueParam();
-    }
+    //     this.updateValueParam();
+    // }
 
 
 
@@ -92881,12 +92909,12 @@ extends ResizableOperatorWithValue
     {
         const headerHeight = boundingRect(this.header).height / graph.currentPage.zoom;
 
-        const totalHeight = 
+        const totalParamHeight = 
               this.div.offsetHeight 
             - Math.max(defHeaderHeight, headerHeight);
 
         const hWith  = defParamHeight;
-        const hValue = totalHeight - hWith;
+        const hValue = Math.max(defParamHeight, totalParamHeight - hWith);
 
         this.paramValue.div.style.width  = this.div.offsetWidth;
         this.paramValue.div.style.height = hValue;    
@@ -93008,6 +93036,8 @@ extends OperatorBase
         this.paramValue.itemName = 'value';
 
         setControlFont(this.paramSeparator.controls[0].textbox, 'Roboto Mono', 10, 'center');
+
+        this.paramSeparator.controls[0].textbox.defPlaceholder = 'with';
     }
 
 
@@ -93236,26 +93266,28 @@ extends ResizableOperatorWithValue
 
         setControlFont(this.paramValue  .controls[0].textbox, 'Roboto Mono', 10, 'center');
         setControlFont(this.paramRequest.controls[0].textbox, 'Roboto Mono', 10, 'center');
+
+        this.paramRequest.controls[0].textbox.defPlaceholder = 'request';
     }
 
 
 
-    setSize(w, h, updateTransform = true)
-    {
-        const headerHeight = boundingRect(this.header).height / graph.currentPage.zoom;
+    // setSize(w, h, updateTransform = true)
+    // {
+    //     const headerHeight = boundingRect(this.header).height / graph.currentPage.zoom;
 
-        const height =
-            settings.showOperationResults
-            ? Math.max(headerHeight + 2 * defParamHeight, h)
-            : headerHeight + 2 * defParamHeight;
+    //     const height =
+    //         settings.showOperationResults
+    //         ? Math.max(headerHeight + 2 * defParamHeight, h)
+    //         : headerHeight + 2 * defParamHeight;
 
-        super.setSize(
-            w, 
-            height, 
-            updateTransform);
+    //     super.setSize(
+    //         w, 
+    //         height, 
+    //         updateTransform);
 
-        this.updateValueParam();
-    }
+    //     this.updateValueParam();
+    // }
 
 
 

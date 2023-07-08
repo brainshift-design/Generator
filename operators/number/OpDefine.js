@@ -20,11 +20,11 @@ extends ResizableBase
 
 
 
-    setSize(w, h, updateTransform = true)
-    {
-        super.setSize(w, h, updateTransform);
-        this.updateValueParam();
-    }
+    // setSize(w, h, updateTransform = true)
+    // {
+    //     super.setSize(w, h, updateTransform);
+    //     this.updateValueParam();
+    // }
 
 
 

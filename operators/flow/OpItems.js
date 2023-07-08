@@ -36,6 +36,7 @@ extends ResizableBase
         this.div.appendChild(this.scrollbar);
 
 
+
         this.scrollbar.addEventListener('pointerdown', e =>
         {
             if (e.button == 0)
@@ -50,6 +51,7 @@ extends ResizableBase
                 this.scrollbar.setPointerCapture(e.pointerId);
             }
         });
+
 
 
         this.scrollbar.addEventListener('pointermove', e =>
@@ -89,6 +91,7 @@ extends ResizableBase
         });
 
 
+
         this.scrollbar.addEventListener('pointerup', e =>
         {
             if (e.button == 0)
@@ -103,16 +106,16 @@ extends ResizableBase
 
 
 
-    setSize(w, h, updateTransform = true)
-    {
-        super.setSize(
-            w, 
-            Math.min(h, defHeaderHeight + this.params.length * defParamHeight), 
-            updateTransform);
+    // setSize(w, h, updateTransform = true)
+    // {
+    //     super.setSize(
+    //         w, 
+    //         Math.min(h, defHeaderHeight + this.params.length * defParamHeight), 
+    //         updateTransform);
 
-        this.updateScrollbar();
-        this.updateNode();
-    }
+    //     this.updateScrollbar();
+    //     this.updateNode();
+    // }
 
 
 
@@ -253,8 +256,9 @@ extends ResizableBase
         const rect = this.measureData.divOffset;
  
         if (this.scrollbar.style.display == 'none')
-            rect.h = defHeaderHeight + this.params.length * defParamHeight;
+            rect.h = this.params.length * defParamHeight;
         
+        //this.setSize(rect.w, rect.h, false);
         this.setRect(rect.x, rect.y, rect.w, rect.h, false);
 
 

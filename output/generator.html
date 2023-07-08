@@ -4,7 +4,7 @@
 
 
 
-const generatorVersion = 149;
+const generatorVersion = 150;
 
 
 const MAX_INT32        = 2147483647;
@@ -4304,7 +4304,9 @@ function updateMenuItemShowOperationResults()
     nodes.forEach(n => 
     {
         const rect = n.measureData.divOffset;
+        // n.setSize(rect.w, rect.h, false);
         n.setRect(rect.x, rect.y, rect.w, rect.h, false);
+        n.updateNode();
     });
 
     graphView.updateNodeTransforms(nodes);

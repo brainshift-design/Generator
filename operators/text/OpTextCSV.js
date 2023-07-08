@@ -22,6 +22,8 @@ extends OperatorBase
         this.paramValue.itemName = 'value';
 
         setControlFont(this.paramSeparator.controls[0].textbox, 'Roboto Mono', 10, 'center');
+
+        this.paramSeparator.controls[0].textbox.defPlaceholder = 'with';
     }
 
 

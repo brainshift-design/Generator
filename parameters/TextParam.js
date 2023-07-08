@@ -1,4 +1,4 @@
-class   TextParam
+class TextParam
 extends Parameter
 {
     defaultValue;

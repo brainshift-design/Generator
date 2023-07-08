@@ -235,30 +235,39 @@ extends OperatorBase
     }
 
 
-    setSize(w, h, updateTransform = true)
-    {
-        let headerHeight = getStyleValue(this.header, 'offset-height');
-        if (typeof headerHeight == 'string') headerHeight = defHeaderHeight;
+    // setSize(w, h, updateTransform = true)
+    // {
+    //     let headerHeight = getStyleValue(this.header, 'offset-height');
+    //     if (typeof headerHeight == 'string') headerHeight = defHeaderHeight;
 
-        const paramHeight  = settings.showOperationResults ? defParamHeight : 0;
+    //     const paramHeight = 
+    //            this instanceof ResizableOperatorWithValue
+    //         && settings.showOperationResults
+    //         ? defParamHeight 
+    //         : 0;
 
 
-        const _w = Math.max(60, w);
-        const _h = Math.max(parseFloat(headerHeight) + paramHeight, h);
+    //     const _w = Math.max(60, w);
+    //     const _h = Math.max(parseFloat(headerHeight) + paramHeight, h);
 
-        super.setSize(_w, _h, updateTransform);
+    //     super.setSize(_w, _h, updateTransform);
 
-        this.updateSizers();
+    //     this.updateSizers();
 
-        this.inner.style.height = _h;
-    }
+    //     this.inner.style.height = _h;
+    // }
 
 
 
     setRect(x, y, w, h, updateTransform = true)
     {
         const headerHeight = getStyleValue(this.header, 'height');
-        const paramHeight  = this.paramValue && settings.showOperationResults ? defParamHeight : 0;
+
+        const paramHeight = 
+               this instanceof ResizableOperatorWithValue
+            && settings.showOperationResults 
+            ? defParamHeight 
+            : 0;
 
         const _w = Math.max(60, w);
         const _h = Math.max(parseFloat(headerHeight) + paramHeight, h);
@@ -335,10 +344,16 @@ extends OperatorBase
         if (   _node.width
             && _node.height)
         {
-            this.setSize(
-                parseFloat(_node.width), 
+            this.setRect(
+                parseFloat(_node.x     ), 
+                parseFloat(_node.y     ), 
+                parseFloat(_node.width ), 
                 parseFloat(_node.height),
                 false);
+            // this.setSize(
+            //     parseFloat(_node.width), 
+            //     parseFloat(_node.height),
+            //     false);
         }
     }
 }

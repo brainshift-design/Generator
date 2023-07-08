@@ -18,6 +18,8 @@ extends ResizableOperatorWithValue
         this.addParam(this.paramValue);
         this.addParam(this.paramWith = new TextParam('with', 'with', false, true, true));
 
+        this.paramWith.controls[0].textbox.defPlaceholder = 'with';
+
 
         setControlFont(this.paramValue.controls[0].textbox, 'Roboto Mono', 10, 'center');
         setControlFont(this.paramWith .controls[0].textbox, 'Roboto Mono', 10, 'center');
@@ -40,22 +42,22 @@ extends ResizableOperatorWithValue
 
 
 
-    setSize(w, h, updateTransform = true)
-    {
-        const headerHeight = boundingRect(this.header).height / graph.currentPage.zoom;
+    // setSize(w, h, updateTransform = true)
+    // {
+    //     const headerHeight = boundingRect(this.header).height / graph.currentPage.zoom;
 
-        const height =
-            settings.showOperationResults
-            ? Math.max(headerHeight + 2 * defParamHeight, h)
-            : headerHeight + defParamHeight;
+    //     const height =
+    //         settings.showOperationResults
+    //         ? Math.max(headerHeight + 2 * defParamHeight, h)
+    //         : headerHeight + defParamHeight;
 
-        super.setSize(
-            w, 
-            height,
-            updateTransform);
+    //     super.setSize(
+    //         w, 
+    //         height,
+    //         updateTransform);
 
-        this.updateValueParam();
-    }
+    //     this.updateValueParam();
+    // }
 
 
 
@@ -126,12 +128,12 @@ extends ResizableOperatorWithValue
     {
         const headerHeight = boundingRect(this.header).height / graph.currentPage.zoom;
 
-        const totalHeight = 
+        const totalParamHeight = 
               this.div.offsetHeight 
             - Math.max(defHeaderHeight, headerHeight);
 
         const hWith  = defParamHeight;
-        const hValue = totalHeight - hWith;
+        const hValue = Math.max(defParamHeight, totalParamHeight - hWith);
 
         this.paramValue.div.style.width  = this.div.offsetWidth;
         this.paramValue.div.style.height = hValue;    

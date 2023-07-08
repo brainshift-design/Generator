@@ -15,13 +15,13 @@ extends ResizableBase
 
 
 
-    setSize(w, h, updateTransform = true)
-    {
-        super.setSize(
-            w, 
-            settings.showOperationResults ? h : h - defParamHeight, 
-            updateTransform);
-    }
+    // setSize(w, h, updateTransform = true)
+    // {
+    //     super.setSize(
+    //         w, 
+    //         settings.showOperationResults ? h : h - defParamHeight, 
+    //         updateTransform);
+    // }
 
 
 
