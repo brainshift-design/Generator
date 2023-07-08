@@ -1,5 +1,6 @@
-var subscription  = NULL;
-var checkoutTimer = -1;
+var subscription            = NULL;
+var checkoutTimer           = -1;
+var subscriptionDialogShown = false;
 
 
 
@@ -44,16 +45,20 @@ function onSubscribeClick()
 
 function showSubscriptionDialog(showBack = true)
 {
-    console.log('showSubscriptionDialog()');
-    
     subscriptionBack  .style.display = 'block';
     subscriptionDialog.style.display = 'block';
 
     subscriptionBack.style.backgroundColor = showBack ? '#0005' : 'transparent';
-
     
-    updateLicenseInfo()
-        .then(() => dialogShown = true);
+    updateLicenseInfo(
+        subscription != NULL
+        ? validateLicense(currentUser.id, subscription)
+        : null)
+    .then(() => 
+    {
+        dialogShown             = true;
+        subscriptionDialogShown = true;
+    });
 }
 
 
@@ -66,7 +71,8 @@ function hideSubscriptionDialog()
     subscriptionBack  .style.display = 'none';
     subscriptionDialog.style.display = 'none';
 
-    dialogShown = false;
+    dialogShown             = false;
+    subscriptionDialogShown = false;
 }
 
 

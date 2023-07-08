@@ -80,7 +80,7 @@ function uiUpdateValuesAndObjects(requestId, actionId, updateNodeId, updateParam
         if (settings.logStyleUpdates)  logStyleUpdates ([...styles ]);
 
         objects = objects.filter(o => nodeFromId(o[FO_NODE_ID]).active);
-console.log(Math.random());
+
         uiQueueMessageToFigma(
         {
             cmd:          'figUpdateObjectsAndStyles',

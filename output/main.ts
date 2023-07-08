@@ -23,7 +23,7 @@ function noNodeTag(key) { return noTag(key, nodeTag); }
 function noConnTag(key) { return noTag(key, connTag); }
 
 
-const generatorVersion = 148;
+const generatorVersion = 149;
 
 
 const MAX_INT32        = 2147483647;
@@ -1894,10 +1894,10 @@ setInterval(() =>
     if (figma.viewport.zoom == curZoom)
         return;
 
+    curZoom = figma.viewport.zoom;
+
     updatePointSizes();
     updateEmptyObjects();
-    
-    curZoom = figma.viewport.zoom;
 }, 
 100);
 
@@ -1915,10 +1915,6 @@ function figStartGenerator()
 {
     (async function()
     {
-        let subscription = await figLoadLocal('subscription');
-        if (subscription == null) subscription = '';
-
-        
         let _wndWidth  = await figma.currentPage.getPluginData(figma.currentUser.id+',windowWidth');
         let _wndHeight = await figma.currentPage.getPluginData(figma.currentUser.id+',windowHeight');
 
@@ -1943,7 +1939,6 @@ function figStartGenerator()
         figPostMessageToUi({
             cmd:         'uiReturnFigStartGenerator',
             currentUser:  figma.currentUser,
-            subscription: subscription,
             viewportRect: figma.viewport.bounds,
             viewportZoom: figma.viewport.zoom,
             fonts:        fonts });

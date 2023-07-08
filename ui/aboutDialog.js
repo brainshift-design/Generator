@@ -15,7 +15,7 @@ function showAboutDialog()
     aboutBack  .style.display = 'block';
     aboutDialog.style.display = 'block';
 
-    aboutUserId.innerHTML = '<span style="user-select: none; color: var(--figma-color-bg-disabled-secondary);">Your Figma user ID:&nbsp;&nbsp;</span>' + currentUser.id;
+    //aboutUserId.innerHTML = '<span style="user-select: none; color: var(--figma-color-bg-disabled-secondary);">Your Figma user ID:&nbsp;&nbsp;</span>' + currentUser.id;
 
     dialogShown = true;
 }

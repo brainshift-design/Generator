@@ -124,7 +124,7 @@ function onClassChange(element, callback)
         mutations.forEach((mutation) => 
         {
             if (   mutation.type          == 'attributes' 
-                && mutation.attributeName == 'class'    ) 
+                && mutation.attributeName == 'class'    )
                 callback(mutation.target);
         });
     });

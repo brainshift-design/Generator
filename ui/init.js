@@ -17,7 +17,6 @@ var allUpdateNodes   = [];
 
 // uiClearLocalData('windowWidth');
 // uiClearLocalData('windowHeight');
-//uiClearLocalData('subscription');
 
 // uiClearLocalData('showRequests');
 // uiClearLocalData('showWhatsNew');
@@ -78,7 +77,6 @@ uiQueueMessageToFigma({cmd: 'figStartGenerator'});
 async function uiReturnFigStartGenerator(msg)
 {
     currentUser = msg.currentUser;
-    //subscription  = msg.subscription;
 
 
     loadLocalSettings();
@@ -124,9 +122,6 @@ function initGenerator()
 
 function validateInit(lastValidCheck)
 {
-    console.log('validateInit()');
-
-    
     const date  = getCurrentDateString();
     const hash  = hashLicenseString(currentUser.id + date, licenseHashSize);
     const enc   = sign(hash, licenseKeys.private);

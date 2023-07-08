@@ -26,9 +26,6 @@ var   figFonts              = [];
 var   figUniqueFontNames    = [];
 
 
-var   viewportZoom          = 1;
-
-
 
 function getTopHeight() 
 { 

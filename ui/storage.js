@@ -104,7 +104,6 @@ async function uiReturnFigGetLocalData(msg)
     if (    msg.key == 'dataMode'
         && !generatorStarted)
     {
-        console.log('msg =', msg);
         if (settings.dataMode)
         {
             dataModeView.style.display = 'block';
@@ -116,15 +115,8 @@ async function uiReturnFigGetLocalData(msg)
         
         onClassChange(document.childNodes[0], () =>
         { 
-            console.log('onClassChange()');
-            
             initThemeColors();
 
-            updateLicenseInfo(
-                subscription != NULL
-                ? validateLicense(currentUser.id, subscription)
-                : null);
-           
             if (!settings.dataMode)
             {
                 graph.nodes.forEach(n => n.updateNode());

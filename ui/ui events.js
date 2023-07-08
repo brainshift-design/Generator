@@ -5,7 +5,6 @@
 //         case 'saveLocal':  saveToLocalFile('graph.json'); break;
 //         case 'loadLocal':  loadFromLocalFile();           break;
 //         case 'duplicate':  console.log(graph.toJson());     break;
-//         case 'subscription': showSubscriptionDialog();        break;
 //     }
 // });
 

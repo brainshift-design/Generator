@@ -1189,7 +1189,7 @@
 {
     position: absolute;
     left:     30px;
-    top:      25px;
+    top:      48px;
 }
 
 
@@ -1208,7 +1208,7 @@
     display:     inline;
     position:    absolute;
     left:        100px;
-    top:         21px;
+    top:         44px;
 }
 
 
@@ -1220,7 +1220,7 @@
     width:       max-content;
     position:    absolute;
     left:        99px;
-    top:         40px;
+    top:         62px;
 }
 
 
@@ -4266,7 +4266,7 @@ a
                 <div id='aboutVersion'>version  _</div>
 
                 <p id='aboutLine'><div id='aboutCopyright'>Copyright © 2023&nbsp;&hairsp;Brainshift</div></p>
-                <div id='aboutUserId' ondblclick='copyUserId()'></div>
+                <!-- <div id='aboutUserId' ondblclick='copyUserId()'></div> -->
             </div>
         </div>
     </div>
@@ -4397,8 +4397,7 @@ a
             <div id='whatsNewBody'>
                 <h1 style='margin-top: 20px;'>What's new</h1>
 
-                <p>•  fixed Select doubling objects</p>
-                <p>•  fixed menu bug</p>
+                <p>•  fixed phantom shapes not redrawing correctly</p>
                 
                 <p><br/><br/><div id='chkHideWhatsNew'></div></p>
             </div>
@@ -4726,7 +4725,7 @@ a
 
 
 
-const generatorVersion = 148;
+const generatorVersion = 149;
 
 
 const MAX_INT32        = 2147483647;
@@ -39669,7 +39668,7 @@ onerror = (event, source, line, pos, error) =>
 };
 
 
-const generatorVersion = 148;
+const generatorVersion = 149;
 
 
 const MAX_INT32        = 2147483647;
@@ -105402,7 +105401,7 @@ function showAboutDialog()
     aboutBack  .style.display = 'block';
     aboutDialog.style.display = 'block';
 
-    aboutUserId.innerHTML = '<span style="user-select: none; color: var(--figma-color-bg-disabled-secondary);">Your Figma user ID:&nbsp;&nbsp;</span>' + currentUser.id;
+    //aboutUserId.innerHTML = '<span style="user-select: none; color: var(--figma-color-bg-disabled-secondary);">Your Figma user ID:&nbsp;&nbsp;</span>' + currentUser.id;
 
     dialogShown = true;
 }
@@ -106643,7 +106642,6 @@ var allUpdateNodes   = [];
 
 // uiClearLocalData('windowWidth');
 // uiClearLocalData('windowHeight');
-//uiClearLocalData('subscription');
 
 // uiClearLocalData('showRequests');
 // uiClearLocalData('showWhatsNew');
@@ -106704,7 +106702,6 @@ uiQueueMessageToFigma({cmd: 'figStartGenerator'});
 async function uiReturnFigStartGenerator(msg)
 {
     currentUser = msg.currentUser;
-    //subscription  = msg.subscription;
 
 
     loadLocalSettings();
@@ -106750,9 +106747,6 @@ function initGenerator()
 
 function validateInit(lastValidCheck)
 {
-    console.log('validateInit()');
-
-    
     const date  = getCurrentDateString();
     const hash  = hashLicenseString(currentUser.id + date, licenseHashSize);
     const enc   = sign(hash, licenseKeys.private);
@@ -108179,7 +108173,6 @@ async function uiReturnFigGetLocalData(msg)
     if (    msg.key == 'dataMode'
         && !generatorStarted)
     {
-        console.log('msg =', msg);
         if (settings.dataMode)
         {
             dataModeView.style.display = 'block';
@@ -108191,15 +108184,8 @@ async function uiReturnFigGetLocalData(msg)
         
         onClassChange(document.childNodes[0], () =>
         { 
-            console.log('onClassChange()');
-            
             initThemeColors();
 
-            updateLicenseInfo(
-                subscription != NULL
-                ? validateLicense(currentUser.id, subscription)
-                : null);
-           
             if (!settings.dataMode)
             {
                 graph.nodes.forEach(n => n.updateNode());
@@ -108716,8 +108702,9 @@ function dataColorToJson(color, nTab)
 }
 
 
-var subscription  = NULL;
-var checkoutTimer = -1;
+var subscription            = NULL;
+var checkoutTimer           = -1;
+var subscriptionDialogShown = false;
 
 
 
@@ -108762,16 +108749,20 @@ function onSubscribeClick()
 
 function showSubscriptionDialog(showBack = true)
 {
-    console.log('showSubscriptionDialog()');
-    
     subscriptionBack  .style.display = 'block';
     subscriptionDialog.style.display = 'block';
 
     subscriptionBack.style.backgroundColor = showBack ? '#0005' : 'transparent';
-
     
-    updateLicenseInfo()
-        .then(() => dialogShown = true);
+    updateLicenseInfo(
+        subscription != NULL
+        ? validateLicense(currentUser.id, subscription)
+        : null)
+    .then(() => 
+    {
+        dialogShown             = true;
+        subscriptionDialogShown = true;
+    });
 }
 
 
@@ -108784,7 +108775,8 @@ function hideSubscriptionDialog()
     subscriptionBack  .style.display = 'none';
     subscriptionDialog.style.display = 'none';
 
-    dialogShown = false;
+    dialogShown             = false;
+    subscriptionDialogShown = false;
 }
 
 
@@ -109168,7 +109160,6 @@ createTooltipPointerTrap(ttColorblind);
 //         case 'saveLocal':  saveToLocalFile('graph.json'); break;
 //         case 'loadLocal':  loadFromLocalFile();           break;
 //         case 'duplicate':  console.log(graph.toJson());     break;
-//         case 'subscription': showSubscriptionDialog();        break;
 //     }
 // });
 
@@ -110602,7 +110593,7 @@ function uiUpdateValuesAndObjects(requestId, actionId, updateNodeId, updateParam
         if (settings.logStyleUpdates)  logStyleUpdates ([...styles ]);
 
         objects = objects.filter(o => nodeFromId(o[FO_NODE_ID]).active);
-console.log(Math.random());
+
         uiQueueMessageToFigma(
         {
             cmd:          'figUpdateObjectsAndStyles',
@@ -110690,9 +110681,6 @@ var   pagesBarHeight        = 36;
 
 var   figFonts              = [];
 var   figUniqueFontNames    = [];
-
-
-var   viewportZoom          = 1;
 
 
 
@@ -111296,7 +111284,7 @@ function onClassChange(element, callback)
         mutations.forEach((mutation) => 
         {
             if (   mutation.type          == 'attributes' 
-                && mutation.attributeName == 'class'    ) 
+                && mutation.attributeName == 'class'    )
                 callback(mutation.target);
         });
     });
