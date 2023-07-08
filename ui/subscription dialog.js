@@ -44,16 +44,16 @@ function onSubscribeClick()
 
 function showSubscriptionDialog(showBack = true)
 {
+    console.log('showSubscriptionDialog()');
+    
     subscriptionBack  .style.display = 'block';
     subscriptionDialog.style.display = 'block';
 
     subscriptionBack.style.backgroundColor = showBack ? '#0005' : 'transparent';
 
     
-    updateLicenseInfo();
-   
-
-    dialogShown = true;
+    updateLicenseInfo()
+        .then(() => dialogShown = true);
 }
 
 

@@ -124,6 +124,9 @@ function initGenerator()
 
 function validateInit(lastValidCheck)
 {
+    console.log('validateInit()');
+
+    
     const date  = getCurrentDateString();
     const hash  = hashLicenseString(currentUser.id + date, licenseHashSize);
     const enc   = sign(hash, licenseKeys.private);

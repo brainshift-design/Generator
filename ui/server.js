@@ -10,7 +10,11 @@ function checkTrialExists()
             consoleAssert(response, 'invalid response from server @ checkTrialExists()');
             return response ? response.result : false;
         })
-        .catch(e => console.error(e));        
+        .catch(e =>
+        {
+            console.error(e);
+            throw e;
+        });
 }
 
 
@@ -27,7 +31,11 @@ function checkSubOrTrialActive()
             consoleAssert(response, 'invalid response from server @ checkSubOrTrialActive()');
             return response ? response.result : false;
         })
-        .catch(e => console.error(e));        
+        .catch(e =>
+        {
+            console.error(e);
+            throw e;
+        });
 }
 
 
@@ -44,7 +52,11 @@ function checkRemainingTrialDays()
             consoleAssert(response, 'invalid response from server @ checkRemainingTrialDays()');
             return response ? response.result : -1;
         })
-        .catch(e => console.error(e));        
+        .catch(e =>
+        {
+            console.error(e);
+            throw e;
+        });
 }
 
 
@@ -52,19 +64,23 @@ function checkRemainingTrialDays()
 function checkLastSub()
 {
     return postToServer(
-    {
-        action: 'getLastSub',
-        userId:  currentUser.id
-    })
-    .then(response =>
-    {
-        if (   response.daysLeft != undefined
-            && response.tier     != undefined)
-            return response;
-        else
-            return null;
-    })
-    .catch(e => console.error(e));        
+        {
+            action: 'getLastSub',
+            userId:  currentUser.id
+        })
+        .then(response =>
+        {
+            if (   response.daysLeft != undefined
+                && response.tier     != undefined)
+                return response;
+            else
+                return null;
+        })
+        .catch(e =>
+        {
+            console.error(e);
+            throw e;
+        });
 }
 
 
@@ -83,7 +99,11 @@ function startFreeTrial()
         if (response.result)
             initGenerator();
     })
-    .catch(e => console.error(e));        
+    .catch(e =>
+    {
+        console.error(e);
+        throw e;
+    });
 }
 
 

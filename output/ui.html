@@ -4397,7 +4397,7 @@ a
             <div id='whatsNewBody'>
                 <h1 style='margin-top: 20px;'>What's new</h1>
 
-                <p>•  </p>
+                <p>•  fixed Select doubling objects</p>
                 
                 <p><br/><br/><div id='chkHideWhatsNew'></div></p>
             </div>
@@ -17225,7 +17225,7 @@ extends GOperator
                     && index.value < input.items.length)
                 {
                     this.value = input.items[index.value].copy();
-                    //this.value.objects = [];
+                    this.value.objects = [];
 
                 
                     const _objects = this.input.value.objects.filter(o => o.listId == index.value);
@@ -54353,7 +54353,7 @@ extends GOperator
                     && index.value < input.items.length)
                 {
                     this.value = input.items[index.value].copy();
-                    //this.value.objects = [];
+                    this.value.objects = [];
 
                 
                     const _objects = this.input.value.objects.filter(o => o.listId == index.value);
@@ -106713,6 +106713,9 @@ function initGenerator()
 
 function validateInit(lastValidCheck)
 {
+    console.log('validateInit()');
+
+    
     const date  = getCurrentDateString();
     const hash  = hashLicenseString(currentUser.id + date, licenseHashSize);
     const enc   = sign(hash, licenseKeys.private);
@@ -107848,7 +107851,11 @@ function checkTrialExists()
             consoleAssert(response, 'invalid response from server @ checkTrialExists()');
             return response ? response.result : false;
         })
-        .catch(e => console.error(e));        
+        .catch(e =>
+        {
+            console.error(e);
+            throw e;
+        });
 }
 
 
@@ -107865,7 +107872,11 @@ function checkSubOrTrialActive()
             consoleAssert(response, 'invalid response from server @ checkSubOrTrialActive()');
             return response ? response.result : false;
         })
-        .catch(e => console.error(e));        
+        .catch(e =>
+        {
+            console.error(e);
+            throw e;
+        });
 }
 
 
@@ -107882,7 +107893,11 @@ function checkRemainingTrialDays()
             consoleAssert(response, 'invalid response from server @ checkRemainingTrialDays()');
             return response ? response.result : -1;
         })
-        .catch(e => console.error(e));        
+        .catch(e =>
+        {
+            console.error(e);
+            throw e;
+        });
 }
 
 
@@ -107890,19 +107905,23 @@ function checkRemainingTrialDays()
 function checkLastSub()
 {
     return postToServer(
-    {
-        action: 'getLastSub',
-        userId:  currentUser.id
-    })
-    .then(response =>
-    {
-        if (   response.daysLeft != undefined
-            && response.tier     != undefined)
-            return response;
-        else
-            return null;
-    })
-    .catch(e => console.error(e));        
+        {
+            action: 'getLastSub',
+            userId:  currentUser.id
+        })
+        .then(response =>
+        {
+            if (   response.daysLeft != undefined
+                && response.tier     != undefined)
+                return response;
+            else
+                return null;
+        })
+        .catch(e =>
+        {
+            console.error(e);
+            throw e;
+        });
 }
 
 
@@ -107921,7 +107940,11 @@ function startFreeTrial()
         if (response.result)
             initGenerator();
     })
-    .catch(e => console.error(e));        
+    .catch(e =>
+    {
+        console.error(e);
+        throw e;
+    });
 }
 
 
@@ -108641,16 +108664,16 @@ function onSubscribeClick()
 
 function showSubscriptionDialog(showBack = true)
 {
+    console.log('showSubscriptionDialog()');
+    
     subscriptionBack  .style.display = 'block';
     subscriptionDialog.style.display = 'block';
 
     subscriptionBack.style.backgroundColor = showBack ? '#0005' : 'transparent';
 
     
-    updateLicenseInfo();
-   
-
-    dialogShown = true;
+    updateLicenseInfo()
+        .then(() => dialogShown = true);
 }
 
 
