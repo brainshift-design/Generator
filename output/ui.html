@@ -4399,6 +4399,7 @@ a
 
                 <p>•  fixed phantom shapes not redrawing correctly</p>
                 <p>•  fixed Apply update bug</p>
+                <p>•  fixed bug in Line</p>
                 
                 <p><br/><br/><div id='chkHideWhatsNew'></div></p>
             </div>
@@ -14862,7 +14863,8 @@ extends GValue
 
     isValid()
     {
-        return this.props.isValid();
+        return this.props
+            && this.props.isValid();
     }
 }
 
@@ -51997,7 +51999,8 @@ extends GValue
 
     isValid()
     {
-        return this.props.isValid();
+        return this.props
+            && this.props.isValid();
     }
 }
 

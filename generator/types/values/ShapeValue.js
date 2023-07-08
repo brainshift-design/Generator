@@ -34,7 +34,8 @@ extends GValue
 
     isValid()
     {
-        return this.props.isValid();
+        return this.props
+            && this.props.isValid();
     }
 }
 
