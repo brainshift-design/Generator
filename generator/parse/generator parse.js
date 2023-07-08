@@ -124,6 +124,7 @@ function genParse(parse, inParam = true)
     else if (parse.next == NUMBER_SIGN            ) result = genParseSign             (parse);
     else if (parse.next == NUMBER_ABSOLUTE        ) result = genParseAbsolute         (parse);
     else if (parse.next == NUMBER_ROUND           ) result = genParseRound            (parse);
+    else if (parse.next == NUMBER_MINMAX          ) result = genParseMinMax           (parse);
     else if (parse.next == NUMBER_LIMITS          ) result = genParseLimits           (parse);
     else if (parse.next == NUMBER_RANDOM          ) result = genParseRandom           (parse);
     else if (parse.next == NUMBER_NOISE           ) result = genParseNoise            (parse);

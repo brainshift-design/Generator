@@ -259,6 +259,49 @@ function genParseRound(parse)
 
 
 
+function genParseMinMax(parse)
+{
+    const [type, nodeId, options, ignore] = genParseNodeStart(parse);
+
+
+    const minmax = new GMinMax(nodeId, options);
+
+    
+    let nInputs = 0;
+    
+    if (!ignore)
+        nInputs = parseInt(parse.move());
+
+
+    if (parse.settings.logRequests) 
+        logReq(minmax, parse, ignore, nInputs);
+
+
+    if (ignore) 
+    {
+        genParseNodeEnd(parse, minmax);
+        return parse.parsedNodes.find(n => n.nodeId == nodeId);
+    }
+
+
+    parse.nTab++;
+
+    for (let i = 0; i < nInputs; i++)
+        minmax.inputs.push(genParse(parse));
+
+
+    minmax.operation = genParse(parse);
+
+
+    parse.nTab--;
+
+        
+    genParseNodeEnd(parse, minmax);
+    return minmax;
+}
+
+
+
 function genParseLimits(parse)
 {
     const [, nodeId, options, ignore] = genParseNodeStart(parse);

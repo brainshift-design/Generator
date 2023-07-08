@@ -428,6 +428,7 @@ function initGeneratorMenus()
         new MenuItem('Sign',        {icon: iconSign,        callback: e => actionManager.do(getCreateNodeAction(NUMBER_SIGN,        btnNumber.div, getCreateOptions(e)))}),
         new MenuItem('Absolute',    {icon: iconAbsolute,    callback: e => actionManager.do(getCreateNodeAction(NUMBER_ABSOLUTE,    btnNumber.div, getCreateOptions(e)))}),
         new MenuItem('Round',       {icon: iconRound,       callback: e => actionManager.do(getCreateNodeAction(NUMBER_ROUND,       btnNumber.div, getCreateOptions(e)))}),
+        new MenuItem('Min/max',     {icon: iconMinMax,      callback: e => actionManager.do(getCreateNodeAction(NUMBER_MINMAX,      btnNumber.div, getCreateOptions(e)))}),
         new MenuItem('Limits',      {icon: iconLimits,      callback: e => actionManager.do(getCreateNodeAction(NUMBER_LIMITS,      btnNumber.div, getCreateOptions(e)))}),
         new MenuItem('',            {separator: true}),
         new MenuItem('Date & time', {icon: iconDateTime,    callback: e => actionManager.do(getCreateNodeAction(NUMBER_DATETIME,    btnNumber.div, getCreateOptions(e)))})]);

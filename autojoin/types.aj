@@ -74,10 +74,13 @@
 ../generator/types/number/GNumberType1.js
 ../generator/types/number/GNumberType2.js
 
+../generator/types/number/arithmetic/GArithmetic.js
+
 ../generator/types/number/GNumber.js
 ../generator/types/number/GSign.js
 ../generator/types/number/GAbsolute.js
 ../generator/types/number/GRound.js
+../generator/types/number/GMinMax.js
 ../generator/types/number/GLimits.js
 ../generator/types/number/GConstant.js
 ../generator/types/number/GDateTime.js
@@ -91,7 +94,6 @@
 ../generator/types/number/GSolve.js
 ../generator/types/number/GAnimate.js
 
-../generator/types/number/arithmetic/GArithmetic.js
 ../generator/types/number/arithmetic/GMath.js
 ../generator/types/number/arithmetic/GAdd.js
 ../generator/types/number/arithmetic/GSubtract.js
