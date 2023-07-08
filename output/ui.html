@@ -4398,6 +4398,7 @@ a
                 <h1 style='margin-top: 20px;'>What's new</h1>
 
                 <p>•  fixed Select doubling objects</p>
+                <p>•  fixed menu bug</p>
                 
                 <p><br/><br/><div id='chkHideWhatsNew'></div></p>
             </div>
@@ -19313,8 +19314,8 @@ extends GNumberType
             min.value + this.random.get(iteration + this.randomOffset) * (max.value - min.value), 
             Math.max(min.decimals, max.decimals));
 
-            
-        const _unique = unique.value/100 * 2;
+
+        const _unique = unique.value/100;
         
 
         if (max.value - min.value >= 1)
@@ -56441,8 +56442,8 @@ extends GNumberType
             min.value + this.random.get(iteration + this.randomOffset) * (max.value - min.value), 
             Math.max(min.decimals, max.decimals));
 
-            
-        const _unique = unique.value/100 * 2;
+
+        const _unique = unique.value/100;
         
 
         if (max.value - min.value >= 1)
@@ -73229,6 +73230,7 @@ class MenuItem
 
 
                 if (   this.button0
+                    && this.callback
                     && distance(this.dragStart, clientPos(e)) > 5)
                 {
                     const rect = boundingRect(this.div);
@@ -90375,6 +90377,7 @@ extends OperatorBase
         this.paramSeed.isDefault = () => false;
 
         this.paramUnique.controls[0].suffix = '%';
+        this.paramUnique.controls[0].max    = 200;
     }
 
 
@@ -108095,6 +108098,8 @@ async function uiReturnFigGetLocalData(msg)
         
         onClassChange(document.childNodes[0], () =>
         { 
+            console.log('onClassChange()');
+            
             initThemeColors();
 
             updateLicenseInfo(
@@ -110504,7 +110509,7 @@ function uiUpdateValuesAndObjects(requestId, actionId, updateNodeId, updateParam
         if (settings.logStyleUpdates)  logStyleUpdates ([...styles ]);
 
         objects = objects.filter(o => nodeFromId(o[FO_NODE_ID]).active);
-
+console.log(Math.random());
         uiQueueMessageToFigma(
         {
             cmd:          'figUpdateObjectsAndStyles',

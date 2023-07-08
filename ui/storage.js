@@ -112,6 +112,8 @@ async function uiReturnFigGetLocalData(msg)
         
         onClassChange(document.childNodes[0], () =>
         { 
+            console.log('onClassChange()');
+            
             initThemeColors();
 
             updateLicenseInfo(
