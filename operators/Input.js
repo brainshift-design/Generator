@@ -333,6 +333,7 @@ extends EventTarget
             return false;
 
         if (output.node.isOrFollows(this.node))
+        if (output.node.follows(this.node))
             return false;
 
 

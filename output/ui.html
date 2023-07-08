@@ -27134,18 +27134,16 @@ extends GShapeBase
             props = new ListValue([props]);
 
         
-        if (   this.value
-            && this.value.isValid())
-        {
-            if (this.input)
-                this.value.props = props ?? this.input.value.props;
-            else
-                this.value.props = props;
+        if (this.input)
+            this.value.props = props ?? this.input.value.props;
+        else
+            this.value.props = props;
 
                 
-            if (this.value.props != undefined) 
-                this.updateValues.push(['props', this.value.props]);
-        }
+        if (   this.value
+            && this.value.isValid()
+            && this.value.props != undefined) 
+            this.updateValues.push(['props', this.value.props]);
     }
 
 
@@ -64270,18 +64268,16 @@ extends GShapeBase
             props = new ListValue([props]);
 
         
-        if (   this.value
-            && this.value.isValid())
-        {
-            if (this.input)
-                this.value.props = props ?? this.input.value.props;
-            else
-                this.value.props = props;
+        if (this.input)
+            this.value.props = props ?? this.input.value.props;
+        else
+            this.value.props = props;
 
                 
-            if (this.value.props != undefined) 
-                this.updateValues.push(['props', this.value.props]);
-        }
+        if (   this.value
+            && this.value.isValid()
+            && this.value.props != undefined) 
+            this.updateValues.push(['props', this.value.props]);
     }
 
 
@@ -83256,6 +83252,7 @@ extends EventTarget
             return false;
 
         if (output.node.isOrFollows(this.node))
+        if (output.node.follows(this.node))
             return false;
 
 
