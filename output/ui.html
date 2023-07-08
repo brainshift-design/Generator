@@ -4725,7 +4725,7 @@ a
 
 
 
-const generatorVersion = 147;
+const generatorVersion = 148;
 
 
 const MAX_INT32        = 2147483647;
@@ -39653,7 +39653,7 @@ onerror = (event, source, line, pos, error) =>
 };
 
 
-const generatorVersion = 147;
+const generatorVersion = 148;
 
 
 const MAX_INT32        = 2147483647;
@@ -68461,11 +68461,11 @@ function loadLocalSettings()
 }
 
 
-function crashAssert(condition, error)
+function crashAssert(condition, error, showDebugButton = true)
 {
     if (condition) return;
 
-    initCrashDialog(error, null);
+    initCrashDialog(error, null, showDebugButton);
     showCrashDialog();
 
     consoleError(error);
@@ -68473,7 +68473,7 @@ function crashAssert(condition, error)
 
 
 
-function initCrashDialog(event, error)
+function initCrashDialog(event, error, showDebugButton = true)
 {
     if (error)
     {
@@ -68497,6 +68497,7 @@ function initCrashDialog(event, error)
         crashBack.addEventListener('pointerdown', e => { e.preventDefault(); });
 
         btnCrashRestart.addEventListener('click', () => uiRestartGenerator(true));
+        btnCrashRestart.style.display = showDebugButton ? 'block' : 'none';
 
         crashDetails.addEventListener('pointerup', e =>
         {
@@ -72283,7 +72284,7 @@ const iconStart             = '<svg width="19" height="8" viewBox="-1 0 19 8" fi
 const iconIfElse            = '<svg width="17" height="7" viewBox="-1 0 17 7" fill="none" xmlns="http://www.w3.org/2000/svg"><rect y="1" width="9" height="1" fill="white"/><rect y="5" width="9" height="1" fill="white"/><path d="M13.157 4.8687V4.75547C13.1591 4.36695 13.1911 4.05725 13.253 3.82636C13.317 3.59546 13.4099 3.40898 13.5318 3.26689C13.6536 3.1248 13.8002 2.99604 13.9715 2.88059C14.0995 2.79179 14.2141 2.69965 14.3153 2.60419C14.4165 2.50872 14.497 2.40327 14.5569 2.28782C14.6167 2.17016 14.6467 2.03917 14.6467 1.89486C14.6467 1.74167 14.6126 1.60736 14.5445 1.49191C14.4763 1.37647 14.3845 1.28766 14.2688 1.2255C14.1553 1.16334 14.0293 1.13225 13.891 1.13225C13.7568 1.13225 13.6298 1.16445 13.5101 1.22883C13.3903 1.29099 13.2922 1.38424 13.2159 1.50856C13.1395 1.63067 13.0982 1.78275 13.092 1.9648H11.8284C11.8387 1.52077 11.9378 1.15446 12.1257 0.865842C12.3136 0.575008 12.5624 0.358548 12.8721 0.21646C13.1818 0.0721535 13.5235 0 13.8972 0C14.3081 0 14.6714 0.0732636 14.9873 0.219791C15.3032 0.364098 15.551 0.573898 15.7306 0.849191C15.9102 1.12448 16.0001 1.45639 16.0001 1.84491C16.0001 2.10466 15.9598 2.33555 15.8793 2.53758C15.8008 2.73739 15.6904 2.915 15.5479 3.07041C15.4054 3.2236 15.2372 3.36235 15.0431 3.48668C14.88 3.59102 14.7458 3.69981 14.6405 3.81304C14.5372 3.92626 14.4598 4.05725 14.4082 4.20599C14.3587 4.35474 14.3328 4.5379 14.3308 4.75547V4.8687H13.157ZM13.7702 6.9C13.5638 6.9 13.3872 6.8223 13.2406 6.66689C13.0961 6.50926 13.0249 6.32055 13.0269 6.10076C13.0249 5.88319 13.0961 5.6967 13.2406 5.54129C13.3872 5.38589 13.5638 5.30818 13.7702 5.30818C13.9664 5.30818 14.1388 5.38589 14.2874 5.54129C14.4361 5.6967 14.5114 5.88319 14.5135 6.10076C14.5114 6.24729 14.4753 6.38161 14.4051 6.50371C14.337 6.6236 14.2472 6.72017 14.1357 6.79344C14.0242 6.86448 13.9024 6.9 13.7702 6.9Z" fill="white"/></svg>';
 const iconTimer             = '<svg width="13" height="17" viewBox="0 0 13 17" fill="none" xmlns="http://www.w3.org/2000/svg"><path fill-rule="evenodd" clip-rule="evenodd" d="M9 0H4L4 2H5.5V4.07645C2.38491 4.55745 0 7.25021 0 10.5C0 14.0899 2.91015 17 6.5 17C10.0899 17 13 14.0899 13 10.5C13 7.25021 10.6151 4.55745 7.5 4.07645V2L9 2V0ZM6.5 5C3.46243 5 1 7.46243 1 10.5C1 13.5376 3.46243 16 6.5 16C9.53757 16 12 13.5376 12 10.5C12 7.46243 9.53757 5 6.5 5Z" fill="white"/><path d="M6.65821 9.51244L9.70667 6.46399L10.6001 7.35747L7.49915 10.4585C7.49972 10.4722 7.5 10.4861 7.5 10.5C7.5 11.0523 7.05229 11.5 6.5 11.5C5.94771 11.5 5.5 11.0523 5.5 10.5C5.5 9.94771 5.94771 9.5 6.5 9.5C6.55384 9.5 6.60668 9.50425 6.65821 9.51244Z" fill="white"/></svg>';
  
-const iconNumber            = '<svg width="17" height="7" viewBox="0 0 17 7" fill="none" xmlns="http://www.w3.org/2000/svg"><path d="M14.4917 7C14.0139 7 13.5892 6.91793 13.2176 6.7538C12.8483 6.58967 12.5563 6.36122 12.3417 6.06844C12.1272 5.77567 12.0133 5.43742 12 5.05371H13.2475C13.2586 5.2378 13.3194 5.39861 13.43 5.53612C13.5406 5.67142 13.6877 5.77677 13.8713 5.85219C14.0548 5.9276 14.2605 5.9653 14.4884 5.9653C14.7317 5.9653 14.9473 5.92316 15.1353 5.83888C15.3234 5.75238 15.4705 5.6326 15.5766 5.47956C15.6828 5.32652 15.7348 5.15019 15.7326 4.95057C15.7348 4.7443 15.6817 4.56242 15.5733 4.40494C15.4649 4.24747 15.3079 4.12437 15.1022 4.03565C14.8987 3.94693 14.6532 3.90257 14.3656 3.90257H13.7651V2.95105H14.3656C14.6023 2.95105 14.8091 2.91001 14.986 2.82795C15.1652 2.74588 15.3057 2.63055 15.4074 2.48194C15.5092 2.33112 15.5589 2.157 15.5567 1.9596C15.5589 1.76664 15.5158 1.59918 15.4273 1.45722C15.3411 1.31305 15.2183 1.20105 15.059 1.1212C14.902 1.04135 14.7173 1.00143 14.505 1.00143C14.297 1.00143 14.1046 1.03913 13.9277 1.11454C13.7507 1.18996 13.608 1.29753 13.4997 1.43726C13.3913 1.57478 13.3338 1.73891 13.3271 1.92966H12.1427C12.1515 1.54816 12.261 1.21324 12.4711 0.924905C12.6835 0.634347 12.9666 0.408112 13.3205 0.246198C13.6744 0.0820661 14.0714 0 14.5116 0C14.965 0 15.3588 0.0853929 15.6927 0.256179C16.029 0.424746 16.2888 0.652091 16.4724 0.938213C16.656 1.22433 16.7478 1.5404 16.7478 1.88641C16.75 2.27012 16.6372 2.59173 16.4094 2.85124C16.1838 3.11074 15.8874 3.28042 15.5202 3.36027V3.4135C15.998 3.48004 16.3641 3.65748 16.6184 3.94582C16.875 4.23194 17.0022 4.58793 17 5.01378C17 5.39528 16.8916 5.73685 16.6748 6.0385C16.4603 6.33793 16.1639 6.57304 15.7856 6.74382C15.4096 6.91461 14.9783 7 14.4917 7Z" fill="white"/><path d="M5.04237 7V6.09634L7.66243 3.75289C7.90254 3.52136 8.10264 3.31567 8.26271 3.13584C8.42279 2.95601 8.54284 2.78179 8.62288 2.6132C8.70292 2.44461 8.74294 2.26477 8.74294 2.0737C8.74294 1.85565 8.69115 1.66908 8.58757 1.51397C8.48399 1.35662 8.34157 1.23523 8.16031 1.14981C7.97905 1.06439 7.66361 1.01493 7.43291 1.01493C7.19515 1.01493 6.98682 1.06214 6.80791 1.15655C6.629 1.24872 6.49011 1.38022 6.39124 1.55106C6.29473 1.7219 6.24647 1.92534 6.24647 2.16137H5C5 1.72302 5.10476 1.342 5.31427 1.0183C5.52378 0.694605 5.81215 0.443963 6.17938 0.266378C6.54896 0.0887927 6.97269 0 7.45056 0C7.9355 0 8.47105 0.0932886 8.83828 0.266378C9.20551 0.439467 9.49035 0.676622 9.6928 0.977842C9.8976 1.27906 10 1.62299 10 2.00963C10 2.26814 9.94821 2.52216 9.84463 2.77168C9.74105 3.02119 9.55862 3.29769 9.29732 3.60116C9.03837 3.90462 8.67467 4.27216 8.20622 4.70376L6.85028 5.90751V5.95472H10V7H5.04237Z" fill="white"/><path d="M3 0V7H1.70882V1.23389H1.66705L0 2.27979V1.11768L1.77146 0H3Z" fill="white"/></svg>';
+const iconNumber            = '<svg width="16" height="7" viewBox="0 0 16 7" fill="none" xmlns="http://www.w3.org/2000/svg"><path d="M13.4917 7C13.0139 7 12.5892 6.91793 12.2176 6.7538C11.8483 6.58967 11.5563 6.36122 11.3417 6.06844C11.1272 5.77567 11.0133 5.43742 11 5.05371H12.2475C12.2586 5.2378 12.3194 5.39861 12.43 5.53612C12.5406 5.67142 12.6877 5.77677 12.8713 5.85219C13.0548 5.9276 13.2605 5.9653 13.4884 5.9653C13.7317 5.9653 13.9473 5.92316 14.1353 5.83888C14.3234 5.75238 14.4705 5.6326 14.5766 5.47956C14.6828 5.32652 14.7348 5.15019 14.7326 4.95057C14.7348 4.7443 14.6817 4.56242 14.5733 4.40494C14.4649 4.24747 14.3079 4.12437 14.1022 4.03565C13.8987 3.94693 13.6532 3.90257 13.3656 3.90257H12.7651V2.95105H13.3656C13.6023 2.95105 13.8091 2.91001 13.986 2.82795C14.1652 2.74588 14.3057 2.63055 14.4074 2.48194C14.5092 2.33112 14.5589 2.157 14.5567 1.9596C14.5589 1.76664 14.5158 1.59918 14.4273 1.45722C14.3411 1.31305 14.2183 1.20105 14.059 1.1212C13.902 1.04135 13.7173 1.00143 13.505 1.00143C13.297 1.00143 13.1046 1.03913 12.9277 1.11454C12.7507 1.18996 12.608 1.29753 12.4997 1.43726C12.3913 1.57478 12.3338 1.73891 12.3271 1.92966H11.1427C11.1515 1.54816 11.261 1.21324 11.4711 0.924905C11.6835 0.634347 11.9666 0.408112 12.3205 0.246198C12.6744 0.0820661 13.0714 0 13.5116 0C13.965 0 14.3588 0.0853929 14.6927 0.256179C15.029 0.424746 15.2888 0.652091 15.4724 0.938213C15.656 1.22433 15.7478 1.5404 15.7478 1.88641C15.75 2.27012 15.6372 2.59173 15.4094 2.85124C15.1838 3.11074 14.8874 3.28042 14.5202 3.36027V3.4135C14.998 3.48004 15.3641 3.65748 15.6184 3.94582C15.875 4.23194 16.0022 4.58793 16 5.01378C16 5.39528 15.8916 5.73685 15.6748 6.0385C15.4603 6.33793 15.1639 6.57304 14.7856 6.74382C14.4096 6.91461 13.9783 7 13.4917 7Z" fill="white"/><path d="M5.04237 7V6.09634L7.66243 3.75289C7.90254 3.52136 8.10264 3.31567 8.26271 3.13584C8.42279 2.95601 8.54284 2.78179 8.62288 2.6132C8.70292 2.44461 8.74294 2.26477 8.74294 2.0737C8.74294 1.85565 8.69115 1.66908 8.58757 1.51397C8.48399 1.35662 8.34157 1.23523 8.16031 1.14981C7.97905 1.06439 7.66361 1.01493 7.43291 1.01493C7.19515 1.01493 6.98682 1.06214 6.80791 1.15655C6.629 1.24872 6.49011 1.38022 6.39124 1.55106C6.29473 1.7219 6.24647 1.92534 6.24647 2.16137H5C5 1.72302 5.10476 1.342 5.31427 1.0183C5.52378 0.694605 5.81215 0.443963 6.17938 0.266378C6.54896 0.0887927 6.97269 0 7.45056 0C7.9355 0 8.47105 0.0932886 8.83828 0.266378C9.20551 0.439467 9.49035 0.676622 9.6928 0.977842C9.8976 1.27906 10 1.62299 10 2.00963C10 2.26814 9.94821 2.52216 9.84463 2.77168C9.74105 3.02119 9.55862 3.29769 9.29732 3.60116C9.03837 3.90462 8.67467 4.27216 8.20622 4.70376L6.85028 5.90751V5.95472H10V7H5.04237Z" fill="white"/><path d="M3 0V7H1.70882V1.23389H1.66705L0 2.27979V1.11768L1.77146 0H3Z" fill="white"/></svg>';
 const iconConstant          = '<svg width="17" height="19" viewBox="0 0 17 19" fill="none" xmlns="http://www.w3.org/2000/svg"><path d="M3.05788 19V12.8733C3.05788 12.4342 3.18522 12.1014 3.43991 11.8749C3.69681 11.646 4.04894 11.5316 4.4963 11.5316C4.95252 11.5316 5.3578 11.6472 5.71215 11.8784C6.06871 12.1073 6.34886 12.426 6.55261 12.8347C6.75857 13.2411 6.86155 13.7105 6.86155 14.2429C6.86155 14.6143 6.80619 14.9704 6.69545 15.3113C6.58472 15.65 6.40533 15.9524 6.15729 16.2186C5.90925 16.4849 5.58037 16.695 5.17066 16.8492C4.76317 17.0033 4.26376 17.0804 3.67245 17.0804C3.07449 17.0804 2.56955 17.001 2.15762 16.8422C1.74791 16.681 1.41792 16.4615 1.16767 16.1836C0.919625 15.9034 0.73913 15.5846 0.626182 15.2273C0.515449 14.8676 0.460083 14.4893 0.460083 14.0923C0.460083 13.7116 0.505484 13.359 0.596285 13.0344C0.687086 12.7098 0.814428 12.4202 0.978313 12.1657C1.1422 11.9111 1.33155 11.6998 1.54637 11.5316L2.33701 12.2392C2.19084 12.3957 2.06571 12.5673 1.96162 12.7542C1.85975 12.9387 1.78113 13.1418 1.72576 13.3637C1.67261 13.5855 1.64382 13.8284 1.63939 14.0923C1.63939 14.4473 1.7014 14.7731 1.82542 15.0696C1.95166 15.3639 2.16205 15.5998 2.4566 15.7772C2.75336 15.9524 3.15864 16.04 3.67245 16.04C4.15967 16.04 4.55056 15.9594 4.84511 15.7983C5.14187 15.6371 5.3578 15.4211 5.4929 15.1502C5.62799 14.877 5.69554 14.5746 5.69554 14.2429C5.69111 13.9253 5.64238 13.6393 5.54937 13.3847C5.45635 13.1301 5.32569 12.9281 5.15737 12.7787C4.99127 12.6292 4.79306 12.5545 4.56274 12.5545C4.44315 12.5545 4.35235 12.5977 4.29034 12.6841C4.22832 12.7682 4.19732 12.8768 4.19732 13.0099V19H3.05788Z" fill="white"/><path d="M13.0339 8V7.22543L15.0424 5.21098C15.2345 5.01252 15.3945 4.83622 15.5226 4.68208C15.6507 4.52794 15.7467 4.37861 15.8107 4.2341C15.8748 4.0896 15.9068 3.93545 15.9068 3.77168C15.9068 3.58478 15.8653 3.42486 15.7825 3.29191C15.6996 3.15703 15.5857 3.05299 15.4407 2.97977C15.2957 2.90655 15.1309 2.86994 14.9463 2.86994C14.7561 2.86994 14.5895 2.9104 14.4463 2.99133C14.3032 3.07033 14.1921 3.18304 14.113 3.32948C14.0358 3.47592 13.9972 3.65029 13.9972 3.8526H13C13 3.47688 13.0838 3.15029 13.2514 2.87283C13.419 2.59538 13.6497 2.38054 13.9435 2.22832C14.2392 2.07611 14.5782 2 14.9605 2C15.3484 2 15.6893 2.07418 15.9831 2.22254C16.2768 2.37091 16.5047 2.57418 16.6667 2.83237C16.8305 3.09056 16.9124 3.38536 16.9124 3.71676C16.9124 3.93834 16.871 4.15607 16.7881 4.36994C16.7053 4.58382 16.5593 4.82081 16.3503 5.08093C16.1431 5.34104 15.8522 5.65607 15.4774 6.02601L14.4802 7.06358V7.10405H17V8H13.0339Z" fill="white"/><path d="M17 2.38419e-07V1L11.9544 1L11 8H10L8 3.3811L8.91932 2.98759L10.2404 6.17006L11.0812 0.0021975L11.0867 0.00294638V0L17 2.38419e-07Z" fill="white"/><path d="M13.6064 17.0714C13.0675 17.0714 12.6022 16.9504 12.2103 16.7082C11.8207 16.4636 11.521 16.1181 11.3111 15.6717C11.1011 15.2227 10.9962 14.6944 10.9962 14.0865C10.9962 13.4888 11.1011 12.9642 11.3111 12.5128C11.5233 12.0588 11.8196 11.7057 12.1998 11.4535C12.58 11.1988 13.0267 11.0714 13.5399 11.0714C13.8711 11.0714 14.1837 11.1294 14.4776 11.2454C14.7739 11.3589 15.0351 11.5355 15.2614 11.7751C15.49 12.0147 15.6696 12.3198 15.8002 12.6906C15.9308 13.0588 15.9962 13.4976 15.9962 14.0071V14.427H11.591V13.5039H14.782C14.7797 13.2417 14.7272 13.0084 14.6246 12.8041C14.5219 12.5973 14.3785 12.4346 14.1942 12.3161C14.0122 12.1975 13.8 12.1382 13.5574 12.1382C13.2985 12.1382 13.071 12.2063 12.8751 12.3425C12.6791 12.4762 12.5264 12.6527 12.4167 12.8722C12.3094 13.0891 12.2546 13.3274 12.2523 13.5872V14.393C12.2523 14.7309 12.3094 15.021 12.4237 15.2631C12.538 15.5027 12.6978 15.6868 12.9031 15.8154C13.1084 15.9415 13.3486 16.0046 13.6239 16.0046C13.8081 16.0046 13.9749 15.9768 14.1242 15.9213C14.2735 15.8633 14.403 15.7789 14.5126 15.6679C14.6222 15.5569 14.705 15.4195 14.761 15.2555L15.9437 15.3993C15.869 15.7372 15.7267 16.0323 15.5168 16.2845C15.3092 16.5342 15.0433 16.7284 14.719 16.8671C14.3948 17.0033 14.0239 17.0714 13.6064 17.0714Z" fill="white"/><path d="M5.94385 2V3.03274H0.460083V2H5.94385ZM2.44478 2V7.62512H1.26397V2H2.44478ZM3.96916 2H5.14664V5.98812C5.14664 6.14682 5.16999 6.26767 5.21668 6.35068C5.26338 6.43369 5.32787 6.49106 5.41015 6.5228C5.49243 6.5521 5.58805 6.56675 5.69701 6.56675C5.77485 6.56675 5.84934 6.56187 5.9205 6.5521C5.99166 6.54233 6.05059 6.53257 6.09729 6.5228V7.5592C5.99722 7.59094 5.88047 7.62024 5.74705 7.64709C5.61585 7.67639 5.46908 7.69104 5.30675 7.69104C4.90202 7.69104 4.57736 7.57019 4.33274 7.32848C4.09036 7.08678 3.96916 6.68028 3.96916 6.10897V2Z" fill="white"/></svg>';
 const iconDateTime          = '<svg width="18" height="21" viewBox="0 -3 18 21" fill="none" xmlns="http://www.w3.org/2000/svg"><rect x="2" y="4" width="2" height="2" fill="white"/><rect x="2" y="7" width="2" height="2" fill="white"/><rect x="2" y="10" width="2" height="2" fill="white"/><rect x="5" y="4" width="2" height="2" fill="white"/><rect x="5" y="7" width="2" height="2" fill="white"/><rect x="5" y="10" width="2" height="2" fill="white"/><rect x="8" y="4" width="2" height="2" fill="white"/><rect x="11" y="4" width="2" height="2" fill="white"/><path d="M13 8H12V13H16V12H13V8Z" fill="white"/><path fill-rule="evenodd" clip-rule="evenodd" d="M3 0H2V1H0V14H7.20703C7.85996 16.3085 9.98245 18 12.5 18C15.5376 18 18 15.5376 18 12.5C18 10.3627 16.7808 8.51007 15 7.59971V1H13V0H12V1H3V0ZM2 2V3H3V2H12V3H13V2H14V7.20703C13.5232 7.07217 13.02 7 12.5 7C11.5998 7 10.7501 7.21628 10 7.59971V7H8V9H8.25716C7.47182 9.95094 7 11.1704 7 12.5C7 12.6685 7.00758 12.8353 7.02242 13H1V2H2ZM12.5 17C14.9853 17 17 14.9853 17 12.5C17 10.0147 14.9853 8 12.5 8C10.0147 8 8 10.0147 8 12.5C8 14.9853 10.0147 17 12.5 17Z" fill="white"/></svg>';
 const iconArray             = '<svg width="17" height="11" viewBox="0 -3 17 11" fill="none" xmlns="http://www.w3.org/2000/svg"><path d="M2.48667 0.0807575V5.98759H1.30863V1.26616H1.27598L0 2.11412V1.00658L1.37937 0.0807575H2.48667Z" fill="white"/><path d="M5.83103 5.98759V5.08772L7.81438 3.14089C7.98306 2.96784 8.12454 2.81209 8.2388 2.67365C8.35489 2.53521 8.44285 2.39965 8.50271 2.26698C8.56256 2.13238 8.59249 1.98721 8.59249 1.83146C8.59249 1.65841 8.55531 1.5094 8.48094 1.38441C8.40658 1.25751 8.30501 1.16041 8.17623 1.09311C8.04745 1.02389 7.90144 0.989279 7.73821 0.989279C7.56771 0.989279 7.41898 1.02581 7.29202 1.09888C7.16505 1.17194 7.06711 1.27674 6.99819 1.41326C6.92927 1.54977 6.8948 1.71225 6.8948 1.90068H5.77662C5.77662 1.5142 5.85914 1.17867 6.0242 0.894101C6.18925 0.609527 6.4205 0.389366 6.71796 0.23362C7.01542 0.0778732 7.35822 0 7.74637 0C8.1454 0 8.49273 0.0749891 8.78838 0.224967C9.08583 0.373023 9.31709 0.578762 9.48214 0.842185C9.64719 1.10561 9.72972 1.40749 9.72972 1.74782C9.72972 1.97087 9.688 2.19103 9.60457 2.4083C9.52295 2.62558 9.37694 2.86689 9.16655 3.13224C8.95615 3.39566 8.6596 3.71196 8.27689 4.08114L7.46342 4.92621V4.96658H9.80318V5.98759H5.83103Z" fill="white"/><path d="M14.8561 6.06835C14.4498 6.06835 14.088 5.99432 13.7706 5.84626C13.455 5.69629 13.2056 5.49055 13.0224 5.22905C12.841 4.96562 12.7476 4.66182 12.7422 4.31764H13.9284C13.9356 4.46185 13.9801 4.58875 14.0617 4.69835C14.1451 4.80603 14.2557 4.88967 14.3936 4.94928C14.5314 5.00889 14.6865 5.03869 14.8588 5.03869C15.0384 5.03869 15.1971 5.00504 15.3349 4.93774C15.4728 4.87044 15.5807 4.77719 15.6587 4.65798C15.7367 4.53876 15.7757 4.40128 15.7757 4.24554C15.7757 4.08787 15.734 3.94846 15.6505 3.82733C15.5689 3.70427 15.451 3.60813 15.2968 3.53891C15.1445 3.46969 14.9631 3.43508 14.7527 3.43508H14.2331V2.5179H14.7527C14.9305 2.5179 15.0874 2.48522 15.2234 2.41984C15.3612 2.35446 15.4682 2.26409 15.5444 2.14873C15.6206 2.03144 15.6587 1.89492 15.6587 1.73917C15.6587 1.59111 15.6251 1.46133 15.558 1.3498C15.4927 1.23636 15.4002 1.14791 15.2805 1.08446C15.1626 1.02101 15.0248 0.989279 14.867 0.989279C14.7074 0.989279 14.5614 1.02004 14.429 1.08157C14.2966 1.14118 14.1905 1.22674 14.1106 1.33827C14.0308 1.44979 13.9882 1.58054 13.9828 1.73052H12.8537C12.8591 1.39018 12.9507 1.09023 13.1285 0.830648C13.3062 0.571071 13.5457 0.368216 13.8467 0.222083C14.1496 0.0740277 14.4915 0 14.8724 0C15.2569 0 15.5934 0.0740277 15.8818 0.222083C16.1702 0.370138 16.3942 0.570109 16.5538 0.821996C16.7152 1.07196 16.795 1.35269 16.7932 1.66418C16.795 1.9949 16.698 2.27082 16.5021 2.49194C16.308 2.71307 16.055 2.85343 15.743 2.91304V2.95918C16.1529 3.01495 16.4649 3.16589 16.6789 3.412C16.8948 3.6562 17.0018 3.96192 17 4.32918C17.0018 4.66567 16.9102 4.96466 16.7252 5.22616C16.542 5.48766 16.289 5.6934 15.9661 5.84338C15.6433 5.99336 15.2733 6.06835 14.8561 6.06835Z" fill="white"/><path d="M4.86855 5.17999L4.8254 5.56683C4.79141 5.8763 4.72604 6.1846 4.62929 6.49173C4.53516 6.8012 4.4358 7.08137 4.33121 7.33223C4.22923 7.58309 4.14686 7.78002 4.08411 7.92303H3.00159C3.04081 7.78471 3.09441 7.59129 3.1624 7.34278C3.23038 7.09661 3.29444 6.81996 3.35458 6.51283C3.41472 6.2057 3.45264 5.89271 3.46833 5.57387L3.48794 5.17999H4.86855Z" fill="white"/><path d="M12.1554 5.17999L12.1123 5.56683C12.0783 5.8763 12.0129 6.1846 11.9162 6.49173C11.822 6.8012 11.7227 7.08137 11.6181 7.33223C11.5161 7.58309 11.4337 7.78002 11.371 7.92303H10.2885C10.3277 7.78471 10.3813 7.59129 10.4493 7.34278C10.5172 7.09661 10.5813 6.81996 10.6414 6.51283C10.7016 6.2057 10.7395 5.89271 10.7552 5.57387L10.7748 5.17999H12.1554Z" fill="white"/></svg>';
@@ -74083,17 +74084,17 @@ function initGeneratorMenus()
 
     menuNode = new Menu('Node menu', false, false);
     menuNode.addItems([
-        menuItemNodeEditGroup      = new MenuItem('Edit group...',   {callback: e => { hideAllMenus(); editSelectedGroup(); }}),
-        menuItemNodeSepGroup       = new MenuItem('',                {separator: true}),
+        //menuItemNodeEditGroup      = new MenuItem('Edit group...',   {callback: e => { hideAllMenus(); editSelectedGroup(); }}),
+        //menuItemNodeSep1           = new MenuItem('',                {separator: true}),
         menuItemNodeCopy           = new MenuItem('Copy',            {shortcut:  osCtrl() + 'C',       callback: () => graphView.copySelectedNodes() }),
         menuItemNodePaste          = new MenuItem('Paste here',      {shortcut:  osCtrl() + 'V',       callback: e => { hideAllMenus(); graphView.pasteCopiedNodes(false); }}),
         menuItemNodePasteConnected = new MenuItem('Paste connected', {shortcut:  osCtrlShift() + 'D',  callback: e => { hideAllMenus(); graphView.pasteCopiedNodes(true ); }}),
-    //                                 new MenuItem('Copy/Paste as',   {childMenu: menuNodeCopyAs}),
-                                   //new MenuItem('',                {separator: true}),
-      //menuItemNodeLayout         = new MenuItem('Layout',          {enabled:   false, shortcut: osCtrl() + 'L', callback: e => { hideAllMenus(); layoutSelectedNodes(); }}),
-        menuItemNodeSep1           = new MenuItem('',                {separator: true}),
-        menuItemNodeGroupSelected  = new MenuItem('Group selected',  {shortcut:  osCtrl() + 'G',       callback: e => { hideAllMenus(); actionManager.do(new   GroupNodesAction(graphView.selectedNodes)); }}),
-        menuItemNodeUngroup        = new MenuItem('Ungroup',         {                                 callback: e => { hideAllMenus(); actionManager.do(new UngroupNodesAction(graphView.selectedNodes)); }}),
+        //                                 new MenuItem('Copy/Paste as',   {childMenu: menuNodeCopyAs}),
+        //new MenuItem('',                {separator: true}),
+        //menuItemNodeLayout         = new MenuItem('Layout',          {enabled:   false, shortcut: osCtrl() + 'L', callback: e => { hideAllMenus(); layoutSelectedNodes(); }}),
+        menuItemNodeSepGroup       = new MenuItem('',                {separator: true}),
+        //menuItemNodeGroupSelected  = new MenuItem('Group selected',  {shortcut:  osCtrl() + 'G',       callback: e => { hideAllMenus(); actionManager.do(new   GroupNodesAction(graphView.selectedNodes)); }}),
+        //menuItemNodeUngroup        = new MenuItem('Ungroup',         {                                 callback: e => { hideAllMenus(); actionManager.do(new UngroupNodesAction(graphView.selectedNodes)); }}),
         menuItemNodeSep2           = new MenuItem('',                {separator: true}),
         menuItemNodeRename         = new MenuItem('Rename',          {shortcut:  osCtrl() + 'R',       callback: e => { hideAllMenus(); graphView.renameSelectedNode(); }}),
         menuItemNodeSelect         = new MenuItem('Select',          {childMenu: menuNodeSelect}),
@@ -74119,9 +74120,9 @@ function initGeneratorMenus()
         const canDisable = !graphView.selectedNodes.find(n => !n.canDisable);
 
 
-        updateElementDisplay(menuItemNodeEditGroup    .div, hasGroups && single);
-        updateElementDisplay(menuItemNodeSepGroup     .div, hasGroups && single);
-        updateElementDisplay(menuItemNodeUngroup      .div, hasGroups);
+        //updateElementDisplay(menuItemNodeEditGroup    .div, hasGroups && single);
+        //updateElementDisplay(menuItemNodeSepGroup     .div, hasGroups && single);
+        //updateElementDisplay(menuItemNodeUngroup      .div, hasGroups);
         //updateElementDisplay(menuItemNodeSep2         .div, single);
         updateElementDisplay(menuItemNodeRename       .div, single);
         //updateElementDisplay(menuItemNodeEdit       .div, single);
@@ -106710,7 +106711,7 @@ function initGenerator()
 
 
 
-async function validateInit(lastValidCheck)
+function validateInit(lastValidCheck)
 {
     const date  = getCurrentDateString();
     const hash  = hashLicenseString(currentUser.id + date, licenseHashSize);
@@ -106725,19 +106726,27 @@ async function validateInit(lastValidCheck)
     }
 
 
-    if (await checkTrialExists())
+    try
     {
-        if (await checkSubOrTrialActive())
+        if (checkTrialExists())
         {
-            uiSetLocalData('lastValidCheck', today);
-            initGenerator();
+            if (checkSubOrTrialActive())
+            {
+                uiSetLocalData('lastValidCheck', today);
+                initGenerator();
+            }
+            else
+                showSubscriptionDialog(false);
         }
         else
-            showSubscriptionDialog(false);
+        {
+            showEulaDialog();
+        }
     }
-    else
+    catch (e)
     {
-        showEulaDialog();
+        crashAssert(false, 'Error connecting to license server...', false);
+        console.error(e);
     }
 }
 
@@ -107827,135 +107836,121 @@ function getNodeRequest(node, gen)
 }
 
 
-async function checkTrialExists()
+function checkTrialExists()
 {
-    const response = await postToServer(
-    {
-        action: 'getTrialExists',
-        userId:  currentUser.id
-    }); 
-
-    consoleAssert(response, 'invalid response from server @ checkTrialExists()');
-    return response ? response.result : false;
+    return postToServer(
+        {
+            action: 'getTrialExists',
+            userId:  currentUser.id
+        })
+        .then(response =>
+        { 
+            consoleAssert(response, 'invalid response from server @ checkTrialExists()');
+            return response ? response.result : false;
+        })
+        .catch(e => console.error(e));        
 }
 
 
 
-// async function checkTrialActive()
-// {
-//     const response = await postToServer(
-//     {
-//         action: 'getTrialActive',
-//         userId:  currentUser.id
-//     }); 
-
-    
-//     consoleAssert(response, 'invalid response from server @ checkTrialActive()');
-//     return response ? response.result : false;
-// }
-
-
-
-// async function checkSubActive()
-// {
-//     const response = await postToServer(
-//     {
-//         action: 'getSubActive',
-//         userId:  currentUser.id
-//     }); 
-
-    
-//     consoleAssert(response, 'invalid response from server @ checkSubActive()');
-//     return response ? response.result : false;
-// }
-
-
-
-async function checkSubOrTrialActive()
+function checkSubOrTrialActive()
 {
-    const response = await postToServer(
-    {
-        action: 'getSubOrTrialActive',
-        userId:  currentUser.id
-    }); 
-
-    
-    consoleAssert(response, 'invalid response from server @ checkTrialOrSubActive()');
-    return response ? response.result : false;
+    return postToServer(
+        {
+            action: 'getSubOrTrialActive',
+            userId:  currentUser.id
+        })
+        .then(response => 
+        {
+            consoleAssert(response, 'invalid response from server @ checkSubOrTrialActive()');
+            return response ? response.result : false;
+        })
+        .catch(e => console.error(e));        
 }
 
 
 
-async function checkRemainingTrialDays()
+function checkRemainingTrialDays()
 {
-    const response = await postToServer(
-    {
-        action: 'getRemainingTrialDays',
-        userId:  currentUser.id
-    }); 
-
-    
-    consoleAssert(response, 'invalid response from server @ checkRemainingTrialDays()');
-    return response ? response.result : -1;
+    return postToServer(
+        {
+            action: 'getRemainingTrialDays',
+            userId:  currentUser.id
+        })
+        .then(response => 
+        {
+            consoleAssert(response, 'invalid response from server @ checkRemainingTrialDays()');
+            return response ? response.result : -1;
+        })
+        .catch(e => console.error(e));        
 }
 
 
 
-async function checkLastSub()
+function checkLastSub()
 {
-    const response = await postToServer(
+    return postToServer(
     {
         action: 'getLastSub',
         userId:  currentUser.id
-    });
-
-    
-    if (   response.daysLeft != undefined
-        && response.tier     != undefined)
-        return response;
-    else
-        return null;
+    })
+    .then(response =>
+    {
+        if (   response.daysLeft != undefined
+            && response.tier     != undefined)
+            return response;
+        else
+            return null;
+    })
+    .catch(e => console.error(e));        
 }
 
 
 
-async function startFreeTrial()
+function startFreeTrial()
 {
-    const response = await postToServer(
+    postToServer(
     {
         action: 'createTrial',
         userId:  currentUser.id
-    }); 
+    })
+    .then(response =>
+    {
+        consoleAssert(response, 'invalid response from server @ createTrial()');
 
-    
-    consoleAssert(response, 'invalid response from server @ createTrial()');
-
-
-    if (response.result)
-        initGenerator();
+        if (response.result)
+            initGenerator();
+    })
+    .catch(e => console.error(e));        
 }
 
 
 
-async function postToServer(cmd)
+function postToServer(cmd)
 {
-    const response = await fetch(
+    return fetch(
         'https://brainshift.design/generator/license/',
         {
             method:  'POST',
             headers: { 'Content-Type': 'application/json' },
             body:    JSON.stringify(cmd)
+        })
+        .then(response => 
+        { 
+            if (!response.ok)
+            {
+                uiNotify(response.status, {error: true});
+                throw new Error('fetch() failed with status ' + response.status);
+            }
+            
+            return response.json();
+        })
+        .then(json => { return json; })
+        .catch(e =>
+        {
+            console.error(e);
+            throw e;
         });
-
-
-    if (response.ok)
-        return response.json();
-
-    else
-    {
-        uiNotify(response.status, {error: true});
-        return null;
-    }
 }
 
 
@@ -108109,7 +108104,7 @@ async function uiReturnFigGetLocalData(msg)
 
 
     if (msg.key == 'lastValidCheck')
-        await validateInit(msg.value);
+        validateInit(msg.value);
 }
 
 
@@ -108605,14 +108600,14 @@ var checkoutTimer = -1;
 
 
 
-async function onSubscribeClick()
+function onSubscribeClick()
 {
     let checkoutSession = arrayToBase32(sign(hashLicenseString(
         currentUser.id + (new Date().getTime()).toString(),
         30), licenseKeys.private));
 
 
-    const response = await postToServer(
+    const response = postToServer(
     {
         action: 'createCheckout',
         userId:  currentUser.id,

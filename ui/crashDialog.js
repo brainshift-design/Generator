@@ -1,8 +1,8 @@
-function crashAssert(condition, error)
+function crashAssert(condition, error, showDebugButton = true)
 {
     if (condition) return;
 
-    initCrashDialog(error, null);
+    initCrashDialog(error, null, showDebugButton);
     showCrashDialog();
 
     consoleError(error);
@@ -10,7 +10,7 @@ function crashAssert(condition, error)
 
 
 
-function initCrashDialog(event, error)
+function initCrashDialog(event, error, showDebugButton = true)
 {
     if (error)
     {
@@ -34,6 +34,7 @@ function initCrashDialog(event, error)
         crashBack.addEventListener('pointerdown', e => { e.preventDefault(); });
 
         btnCrashRestart.addEventListener('click', () => uiRestartGenerator(true));
+        btnCrashRestart.style.display = showDebugButton ? 'block' : 'none';
 
         crashDetails.addEventListener('pointerup', e =>
         {

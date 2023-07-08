@@ -648,17 +648,17 @@ function initGeneratorMenus()
 
     menuNode = new Menu('Node menu', false, false);
     menuNode.addItems([
-        menuItemNodeEditGroup      = new MenuItem('Edit group...',   {callback: e => { hideAllMenus(); editSelectedGroup(); }}),
-        menuItemNodeSepGroup       = new MenuItem('',                {separator: true}),
+        //menuItemNodeEditGroup      = new MenuItem('Edit group...',   {callback: e => { hideAllMenus(); editSelectedGroup(); }}),
+        //menuItemNodeSep1           = new MenuItem('',                {separator: true}),
         menuItemNodeCopy           = new MenuItem('Copy',            {shortcut:  osCtrl() + 'C',       callback: () => graphView.copySelectedNodes() }),
         menuItemNodePaste          = new MenuItem('Paste here',      {shortcut:  osCtrl() + 'V',       callback: e => { hideAllMenus(); graphView.pasteCopiedNodes(false); }}),
         menuItemNodePasteConnected = new MenuItem('Paste connected', {shortcut:  osCtrlShift() + 'D',  callback: e => { hideAllMenus(); graphView.pasteCopiedNodes(true ); }}),
-    //                                 new MenuItem('Copy/Paste as',   {childMenu: menuNodeCopyAs}),
-                                   //new MenuItem('',                {separator: true}),
-      //menuItemNodeLayout         = new MenuItem('Layout',          {enabled:   false, shortcut: osCtrl() + 'L', callback: e => { hideAllMenus(); layoutSelectedNodes(); }}),
-        menuItemNodeSep1           = new MenuItem('',                {separator: true}),
-        menuItemNodeGroupSelected  = new MenuItem('Group selected',  {shortcut:  osCtrl() + 'G',       callback: e => { hideAllMenus(); actionManager.do(new   GroupNodesAction(graphView.selectedNodes)); }}),
-        menuItemNodeUngroup        = new MenuItem('Ungroup',         {                                 callback: e => { hideAllMenus(); actionManager.do(new UngroupNodesAction(graphView.selectedNodes)); }}),
+        //                                 new MenuItem('Copy/Paste as',   {childMenu: menuNodeCopyAs}),
+        //new MenuItem('',                {separator: true}),
+        //menuItemNodeLayout         = new MenuItem('Layout',          {enabled:   false, shortcut: osCtrl() + 'L', callback: e => { hideAllMenus(); layoutSelectedNodes(); }}),
+        menuItemNodeSepGroup       = new MenuItem('',                {separator: true}),
+        //menuItemNodeGroupSelected  = new MenuItem('Group selected',  {shortcut:  osCtrl() + 'G',       callback: e => { hideAllMenus(); actionManager.do(new   GroupNodesAction(graphView.selectedNodes)); }}),
+        //menuItemNodeUngroup        = new MenuItem('Ungroup',         {                                 callback: e => { hideAllMenus(); actionManager.do(new UngroupNodesAction(graphView.selectedNodes)); }}),
         menuItemNodeSep2           = new MenuItem('',                {separator: true}),
         menuItemNodeRename         = new MenuItem('Rename',          {shortcut:  osCtrl() + 'R',       callback: e => { hideAllMenus(); graphView.renameSelectedNode(); }}),
         menuItemNodeSelect         = new MenuItem('Select',          {childMenu: menuNodeSelect}),
@@ -684,9 +684,9 @@ function initGeneratorMenus()
         const canDisable = !graphView.selectedNodes.find(n => !n.canDisable);
 
 
-        updateElementDisplay(menuItemNodeEditGroup    .div, hasGroups && single);
-        updateElementDisplay(menuItemNodeSepGroup     .div, hasGroups && single);
-        updateElementDisplay(menuItemNodeUngroup      .div, hasGroups);
+        //updateElementDisplay(menuItemNodeEditGroup    .div, hasGroups && single);
+        //updateElementDisplay(menuItemNodeSepGroup     .div, hasGroups && single);
+        //updateElementDisplay(menuItemNodeUngroup      .div, hasGroups);
         //updateElementDisplay(menuItemNodeSep2         .div, single);
         updateElementDisplay(menuItemNodeRename       .div, single);
         //updateElementDisplay(menuItemNodeEdit       .div, single);

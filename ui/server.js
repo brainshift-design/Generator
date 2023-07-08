@@ -1,130 +1,116 @@
-async function checkTrialExists()
+function checkTrialExists()
 {
-    const response = await postToServer(
-    {
-        action: 'getTrialExists',
-        userId:  currentUser.id
-    }); 
-
-    consoleAssert(response, 'invalid response from server @ checkTrialExists()');
-    return response ? response.result : false;
+    return postToServer(
+        {
+            action: 'getTrialExists',
+            userId:  currentUser.id
+        })
+        .then(response =>
+        { 
+            consoleAssert(response, 'invalid response from server @ checkTrialExists()');
+            return response ? response.result : false;
+        })
+        .catch(e => console.error(e));        
 }
 
 
 
-// async function checkTrialActive()
-// {
-//     const response = await postToServer(
-//     {
-//         action: 'getTrialActive',
-//         userId:  currentUser.id
-//     }); 
-
-    
-//     consoleAssert(response, 'invalid response from server @ checkTrialActive()');
-//     return response ? response.result : false;
-// }
-
-
-
-// async function checkSubActive()
-// {
-//     const response = await postToServer(
-//     {
-//         action: 'getSubActive',
-//         userId:  currentUser.id
-//     }); 
-
-    
-//     consoleAssert(response, 'invalid response from server @ checkSubActive()');
-//     return response ? response.result : false;
-// }
-
-
-
-async function checkSubOrTrialActive()
+function checkSubOrTrialActive()
 {
-    const response = await postToServer(
-    {
-        action: 'getSubOrTrialActive',
-        userId:  currentUser.id
-    }); 
-
-    
-    consoleAssert(response, 'invalid response from server @ checkTrialOrSubActive()');
-    return response ? response.result : false;
+    return postToServer(
+        {
+            action: 'getSubOrTrialActive',
+            userId:  currentUser.id
+        })
+        .then(response => 
+        {
+            consoleAssert(response, 'invalid response from server @ checkSubOrTrialActive()');
+            return response ? response.result : false;
+        })
+        .catch(e => console.error(e));        
 }
 
 
 
-async function checkRemainingTrialDays()
+function checkRemainingTrialDays()
 {
-    const response = await postToServer(
-    {
-        action: 'getRemainingTrialDays',
-        userId:  currentUser.id
-    }); 
-
-    
-    consoleAssert(response, 'invalid response from server @ checkRemainingTrialDays()');
-    return response ? response.result : -1;
+    return postToServer(
+        {
+            action: 'getRemainingTrialDays',
+            userId:  currentUser.id
+        })
+        .then(response => 
+        {
+            consoleAssert(response, 'invalid response from server @ checkRemainingTrialDays()');
+            return response ? response.result : -1;
+        })
+        .catch(e => console.error(e));        
 }
 
 
 
-async function checkLastSub()
+function checkLastSub()
 {
-    const response = await postToServer(
+    return postToServer(
     {
         action: 'getLastSub',
         userId:  currentUser.id
-    });
-
-    
-    if (   response.daysLeft != undefined
-        && response.tier     != undefined)
-        return response;
-    else
-        return null;
+    })
+    .then(response =>
+    {
+        if (   response.daysLeft != undefined
+            && response.tier     != undefined)
+            return response;
+        else
+            return null;
+    })
+    .catch(e => console.error(e));        
 }
 
 
 
-async function startFreeTrial()
+function startFreeTrial()
 {
-    const response = await postToServer(
+    postToServer(
     {
         action: 'createTrial',
         userId:  currentUser.id
-    }); 
+    })
+    .then(response =>
+    {
+        consoleAssert(response, 'invalid response from server @ createTrial()');
 
-    
-    consoleAssert(response, 'invalid response from server @ createTrial()');
-
-
-    if (response.result)
-        initGenerator();
+        if (response.result)
+            initGenerator();
+    })
+    .catch(e => console.error(e));        
 }
 
 
 
-async function postToServer(cmd)
+function postToServer(cmd)
 {
-    const response = await fetch(
+    return fetch(
         'https://brainshift.design/generator/license/',
         {
             method:  'POST',
             headers: { 'Content-Type': 'application/json' },
             body:    JSON.stringify(cmd)
+        })
+        .then(response => 
+        { 
+            if (!response.ok)
+            {
+                uiNotify(response.status, {error: true});
+                throw new Error('fetch() failed with status ' + response.status);
+            }
+            
+            return response.json();
+        })
+        .then(json => { return json; })
+        .catch(e =>
+        {
+            console.error(e);
+            throw e;
         });
-
-
-    if (response.ok)
-        return response.json();
-
-    else
-    {
-        uiNotify(response.status, {error: true});
-        return null;
-    }
 }

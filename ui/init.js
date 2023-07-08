@@ -122,7 +122,7 @@ function initGenerator()
 
 
 
-async function validateInit(lastValidCheck)
+function validateInit(lastValidCheck)
 {
     const date  = getCurrentDateString();
     const hash  = hashLicenseString(currentUser.id + date, licenseHashSize);
@@ -137,19 +137,27 @@ async function validateInit(lastValidCheck)
     }
 
 
-    if (await checkTrialExists())
+    try
     {
-        if (await checkSubOrTrialActive())
+        if (checkTrialExists())
         {
-            uiSetLocalData('lastValidCheck', today);
-            initGenerator();
+            if (checkSubOrTrialActive())
+            {
+                uiSetLocalData('lastValidCheck', today);
+                initGenerator();
+            }
+            else
+                showSubscriptionDialog(false);
         }
         else
-            showSubscriptionDialog(false);
+        {
+            showEulaDialog();
+        }
     }
-    else
+    catch (e)
     {
-        showEulaDialog();
+        crashAssert(false, 'Error connecting to license server...', false);
+        console.error(e);
     }
 }
 

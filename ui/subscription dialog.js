@@ -3,14 +3,14 @@ var checkoutTimer = -1;
 
 
 
-async function onSubscribeClick()
+function onSubscribeClick()
 {
     let checkoutSession = arrayToBase32(sign(hashLicenseString(
         currentUser.id + (new Date().getTime()).toString(),
         30), licenseKeys.private));
 
 
-    const response = await postToServer(
+    const response = postToServer(
     {
         action: 'createCheckout',
         userId:  currentUser.id,

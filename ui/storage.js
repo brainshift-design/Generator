@@ -144,7 +144,7 @@ async function uiReturnFigGetLocalData(msg)
 
 
     if (msg.key == 'lastValidCheck')
-        await validateInit(msg.value);
+        validateInit(msg.value);
 }
 
 
