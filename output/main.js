@@ -2755,7 +2755,7 @@ function figCreateEllipse(genEllipse) {
     const figEllipse = figma.createEllipse();
     figUpdateEllipseData(figEllipse, genEllipse);
     if (figPoints.includes(figEllipse))
-        updatePointSize(figEllipse);
+        updatePointObject(figEllipse);
     else
         setObjectProps(figEllipse, genEllipse);
     return figEllipse;

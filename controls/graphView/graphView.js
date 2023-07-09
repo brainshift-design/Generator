@@ -37,7 +37,7 @@ class GraphView
 
     connPointerId  = -1;
 
-    _soloNode      = null;
+    //_soloNode      = null;
     
     selecting      = false;
     selectionRect  = Rect.NaN;

@@ -2,6 +2,8 @@ var  newReorderIndex = Number.NaN;
 var prevReorderIndex = Number.NaN;
 var  oldReorderIndex = Number.NaN;
 
+var nodesAltCopied   = false;
+
 
 
 Operator.prototype.createNode = function()
@@ -23,36 +25,39 @@ Operator.prototype.createNode = function()
     this.div.appendChild(this.inner);
 
 
+
     this.div.addEventListener('pointerenter', e =>
     {
         this.div.over      = true;
         graphView.overNode = this;
         
-        if (    e.altKey
-            &&  getCtrlKey(e)
-            && !e.shiftKey
-            &&  graphView._soloNode != this
-            && !altPressedInMenu) 
-            graphView.soloNode(this);
+        // if (    e.altKey
+        //     && !getCtrlKey(e)
+        //     &&  e.shiftKey
+        //     &&  graphView._soloNode != this
+        //     && !altPressedInMenu) 
+        //     graphView.soloNode(this);
         
         this.updateNode();
     });
 
     
+
     this.div.addEventListener('pointerleave', e =>
     {
         this.div.over      = false;
         graphView.overNode = null;
         
-        if (   (   !e.altKey
-                || !getCtrlKey(e)
-                ||  e.shiftKey)
-            && graphView._soloNode == this)
-            graphView.unsoloNode();
+        // if (   (   !e.altKey
+        //         ||  getCtrlKey(e)
+        //         || !e.shiftKey)
+        //     && graphView._soloNode == this)
+        //     graphView.unsoloNode();
 
         this.updateNode();
     });
 
+    
     
     this.paramHolder = createDiv('nodeParamBack');
 
@@ -156,6 +161,7 @@ Operator.prototype.createHeader = function()
 
             graphView.selectFromClick(this, getCtrlKey(e), e.shiftKey, e.altKey);
                         
+
             this.sx = e.clientX;
             this.sy = e.clientY;
 
@@ -164,6 +170,9 @@ Operator.prototype.createHeader = function()
                 n.slx = n.div.offsetLeft;
                 n.sly = n.div.offsetTop;
             }
+
+
+            nodesAltCopied = false;
 
             this.div.dragging = true;
             this.header.setPointerCapture(e.pointerId);
@@ -207,6 +216,13 @@ Operator.prototype.createHeader = function()
             const bounds  = graphView.getAllNodeBounds();
 
             const yOffset = getTopHeight();
+
+
+            if (   !nodesAltCopied
+                &&  e.altKey
+                && !e.shiftKey)
+                altCopyNodes(this, e);
+
 
             graphView.setNodePositions(
                 graphView.selectedNodes,
@@ -515,4 +531,36 @@ Operator.prototype.setPosition = function(x, y, updateTransform = true)
 
     if (updateTransform)
         graphView.updateNodeTransforms([this]);
+}
+
+
+
+function altCopyNodes(_this, e)
+{
+    const prevSelected = [...graphView.selectedNodes];
+    const thisIndex    = graphView.selectedNodes.indexOf(_this);
+
+    pasteOffset = point(0, 0);
+    actionManager.do(new PasteNodesAction(uiCopyNodes(graphView.selectedNodes.map(n => n.id)), getCtrlKey(e), true), false, true);
+
+    consoleAssert(
+        graphView.selectedNodes.length == prevSelected.length,
+        'different quantities of source and copied nodes');
+
+    graphView.selectedNodes[thisIndex].sx = prevSelected[thisIndex].sx;
+    graphView.selectedNodes[thisIndex].sy = prevSelected[thisIndex].sy;
+
+    prevSelected           [thisIndex].div.dragging = false;
+    graphView.selectedNodes[thisIndex].div.dragging = true;
+
+    prevSelected           [thisIndex].header.releasePointerCapture(e.pointerId);
+    graphView.selectedNodes[thisIndex].header.setPointerCapture(e.pointerId);
+
+    for (let i = 0; i < prevSelected.length; i++)
+    {
+        graphView.selectedNodes[i].slx = prevSelected[i].div.offsetLeft;
+        graphView.selectedNodes[i].sly = prevSelected[i].div.offsetTop;
+    }
+
+    nodesAltCopied = true;
 }

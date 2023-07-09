@@ -4398,7 +4398,7 @@ a
                 <h1 style='margin-top: 20px;'>What's new</h1>
 
                 <p>•  fixed vector coordinates improperly snapping to pixels</p>
-                <p>•  Ctrl+Alt now used to solo nodes</p>
+                <p>•  nodes can now be copied by dragging them while holding Alt</p>
                 
                 <p><br/><br/><div id='chkHideWhatsNew'></div></p>
             </div>
@@ -73024,8 +73024,8 @@ class Menu
 
     show(srcDiv, subMenu, right = false)
     {
-        if (graphView._soloNode);
-            graphView.unsoloNode();
+        // if (graphView._soloNode);
+        //     graphView.unsoloNode();
 
 
         this.initMenu();
@@ -73086,8 +73086,8 @@ class Menu
 
     showAt(x, y, subMenu, hidePrev = true)
     {
-        if (graphView._soloNode);
-            graphView.unsoloNode();
+        // if (graphView._soloNode);
+        //     graphView.unsoloNode();
 
 
         if (hidePrev)
@@ -75845,7 +75845,7 @@ class GraphView
 
     connPointerId  = -1;
 
-    _soloNode      = null;
+    //_soloNode      = null;
     
     selecting      = false;
     selectionRect  = Rect.NaN;
@@ -76319,41 +76319,41 @@ GraphView.prototype.updateNodeWireTransforms = function(nodes)
 
 
 
-GraphView.prototype.soloNode = function(node)
-{
-    this._soloNode = node;
+// GraphView.prototype.soloNode = function(node)
+// {
+//     this._soloNode = node;
 
-    graph.pageNodes.forEach(n => 
-        n.div.style.opacity = 
-                n == this._soloNode
-            || n.isConnectedTo(this._soloNode)
-            ? 1 
-            : 0.12);
+//     graph.pageNodes.forEach(n => 
+//         n.div.style.opacity = 
+//                 n == this._soloNode
+//             || n.isConnectedTo(this._soloNode)
+//             ? 1 
+//             : 0.12);
 
-    graph.connections.forEach(c =>
-    { 
-        c.wire.svg.style.opacity = 
-               c.input  && this._soloNode == c.input .node
-            || c.output && this._soloNode == c.output.node
-            ? 1 
-            : 0.09;
-    });
-
-
-    this.updateWires(graph.connections.map(c => c.wire));
-};
+//     graph.connections.forEach(c =>
+//     { 
+//         c.wire.svg.style.opacity = 
+//                c.input  && this._soloNode == c.input .node
+//             || c.output && this._soloNode == c.output.node
+//             ? 1 
+//             : 0.09;
+//     });
 
 
+//     this.updateWires(graph.connections.map(c => c.wire));
+// };
 
-GraphView.prototype.unsoloNode = function()
-{
-    this._soloNode = null;
 
-    graph.pageNodes  .forEach(n => n.div     .style.opacity = 1);
-    graph.connections.forEach(c => c.wire.svg.style.opacity = 1);
 
-    this.updateWires(graph.connections.map(c => c.wire));
-};
+// GraphView.prototype.unsoloNode = function()
+// {
+//     this._soloNode = null;
+
+//     graph.pageNodes  .forEach(n => n.div     .style.opacity = 1);
+//     graph.connections.forEach(c => c.wire.svg.style.opacity = 1);
+
+//     this.updateWires(graph.connections.map(c => c.wire));
+// };
 
 
 
@@ -77745,29 +77745,30 @@ GraphView.prototype.selectFromClick = function(node, ctrl, shift, alt)
     node.div.moved = false;
 
 
-    if (   ctrl
-        && shift
-        && alt)
-    {
-        this.selectedNodes = getAllNodesFromNode(node);
-    }
-    else if (shift
-          && alt)
-    {
-        if (isMac) this.selectedNodes = [node, ...getNodesBeforeNode(node)];
-        else       this.selectedNodes = [node, ...getNodesAfterNode (node)];
-    }
-    else if (ctrl
-          && shift)
-    {
-        if (isMac) this.selectedNodes = [node, ...getNodesAfterNode (node)];
-        else       this.selectedNodes = [node, ...getNodesBeforeNode(node)];
-    }
-    else if (ctrl
-          && alt)
-        this.selectedNodes = [node, ...getNodesAcrossNode(node)];
-
-    else if (!node.selected)
+    //if (   ctrl
+    //    && shift
+    //    && alt)
+    //{
+    //    this.selectedNodes = getAllNodesFromNode(node);
+    //}
+    //else if (shift
+    //      && alt)
+    //{
+    //    if (isMac) this.selectedNodes = [node, ...getNodesBeforeNode(node)];
+    //    else       this.selectedNodes = [node, ...getNodesAfterNode (node)];
+    //}
+    //else if (ctrl
+    //      && shift)
+    //{
+    //    if (isMac) this.selectedNodes = [node, ...getNodesAfterNode (node)];
+    //    else       this.selectedNodes = [node, ...getNodesBeforeNode(node)];
+    //}
+    //else if (ctrl
+    //      && alt)
+    //    this.selectedNodes = [node, ...getNodesAcrossNode(node)];
+//
+    //else 
+    if (!node.selected)
     {
         if (shift) node.selected      = true;
         else       this.selectedNodes = [node];
@@ -86534,6 +86535,8 @@ var  newReorderIndex = Number.NaN;
 var prevReorderIndex = Number.NaN;
 var  oldReorderIndex = Number.NaN;
 
+var nodesAltCopied   = false;
+
 
 
 Operator.prototype.createNode = function()
@@ -86555,36 +86558,39 @@ Operator.prototype.createNode = function()
     this.div.appendChild(this.inner);
 
 
+
     this.div.addEventListener('pointerenter', e =>
     {
         this.div.over      = true;
         graphView.overNode = this;
         
-        if (    e.altKey
-            &&  getCtrlKey(e)
-            && !e.shiftKey
-            &&  graphView._soloNode != this
-            && !altPressedInMenu) 
-            graphView.soloNode(this);
+        // if (    e.altKey
+        //     && !getCtrlKey(e)
+        //     &&  e.shiftKey
+        //     &&  graphView._soloNode != this
+        //     && !altPressedInMenu) 
+        //     graphView.soloNode(this);
         
         this.updateNode();
     });
 
     
+
     this.div.addEventListener('pointerleave', e =>
     {
         this.div.over      = false;
         graphView.overNode = null;
         
-        if (   (   !e.altKey
-                || !getCtrlKey(e)
-                ||  e.shiftKey)
-            && graphView._soloNode == this)
-            graphView.unsoloNode();
+        // if (   (   !e.altKey
+        //         ||  getCtrlKey(e)
+        //         || !e.shiftKey)
+        //     && graphView._soloNode == this)
+        //     graphView.unsoloNode();
 
         this.updateNode();
     });
 
+    
     
     this.paramHolder = createDiv('nodeParamBack');
 
@@ -86688,6 +86694,7 @@ Operator.prototype.createHeader = function()
 
             graphView.selectFromClick(this, getCtrlKey(e), e.shiftKey, e.altKey);
                         
+
             this.sx = e.clientX;
             this.sy = e.clientY;
 
@@ -86696,6 +86703,9 @@ Operator.prototype.createHeader = function()
                 n.slx = n.div.offsetLeft;
                 n.sly = n.div.offsetTop;
             }
+
+
+            nodesAltCopied = false;
 
             this.div.dragging = true;
             this.header.setPointerCapture(e.pointerId);
@@ -86739,6 +86749,13 @@ Operator.prototype.createHeader = function()
             const bounds  = graphView.getAllNodeBounds();
 
             const yOffset = getTopHeight();
+
+
+            if (   !nodesAltCopied
+                &&  e.altKey
+                && !e.shiftKey)
+                altCopyNodes(this, e);
+
 
             graphView.setNodePositions(
                 graphView.selectedNodes,
@@ -87047,6 +87064,38 @@ Operator.prototype.setPosition = function(x, y, updateTransform = true)
 
     if (updateTransform)
         graphView.updateNodeTransforms([this]);
+}
+
+
+
+function altCopyNodes(_this, e)
+{
+    const prevSelected = [...graphView.selectedNodes];
+    const thisIndex    = graphView.selectedNodes.indexOf(_this);
+
+    pasteOffset = point(0, 0);
+    actionManager.do(new PasteNodesAction(uiCopyNodes(graphView.selectedNodes.map(n => n.id)), getCtrlKey(e), true), false, true);
+
+    consoleAssert(
+        graphView.selectedNodes.length == prevSelected.length,
+        'different quantities of source and copied nodes');
+
+    graphView.selectedNodes[thisIndex].sx = prevSelected[thisIndex].sx;
+    graphView.selectedNodes[thisIndex].sy = prevSelected[thisIndex].sy;
+
+    prevSelected           [thisIndex].div.dragging = false;
+    graphView.selectedNodes[thisIndex].div.dragging = true;
+
+    prevSelected           [thisIndex].header.releasePointerCapture(e.pointerId);
+    graphView.selectedNodes[thisIndex].header.setPointerCapture(e.pointerId);
+
+    for (let i = 0; i < prevSelected.length; i++)
+    {
+        graphView.selectedNodes[i].slx = prevSelected[i].div.offsetLeft;
+        graphView.selectedNodes[i].sly = prevSelected[i].div.offsetTop;
+    }
+
+    nodesAltCopied = true;
 }
 
 
@@ -107621,8 +107670,8 @@ document.addEventListener('keydown', e =>
 
     else if (e.key == 'Shift')
     {
-        if (graphView._soloNode)
-            graphView.unsoloNode();
+        // if (graphView._soloNode)
+        //     graphView.unsoloNode();
         
         if (    numberControlChanging
             && !numberControlChanging.shiftDown)
@@ -107636,9 +107685,6 @@ document.addEventListener('keydown', e =>
          && !e.altKey
          && !e.shiftKey)
     {
-        if (graphView._soloNode)
-            graphView.unsoloNode();
-
         if (graphView.spaceDown)
         {
             graphView.zoomSelecting = true;
@@ -107676,31 +107722,32 @@ document.addEventListener('keydown', e =>
     }
 
     else if (    e.key == 'Alt'
-             &&  getCtrlKey(e)
-             && !e.shiftKey)
+             &&  e.shiftKey
+             && !getCtrlKey(e))
     {
-        if ( graphView.overNode
-              &&  isEmpty(currentMenus)
-              && !altPressedInMenu)
-            graphView.soloNode(graphView.overNode);
+        // if ( graphView.overNode
+        //       &&  isEmpty(currentMenus)
+        //       && !altPressedInMenu)
+        //     graphView.soloNode(graphView.overNode);
 
-        else if (currentMenus.length == 1
-              && currentMenus[0] == menuColor)
+        // else 
+        if (   currentMenus.length == 1
+            && currentMenus[0] == menuColor)
         {
               menuItemColor.setIcon(iconRandomColor);
               altPressedInMenu = true;
         }
     }
 
-    else if (    e.key == 'Control'
-             &&  e.altKey
-             && !e.shiftKey)
-    {
-        if ( graphView.overNode
-              &&  isEmpty(currentMenus)
-              && !altPressedInMenu)
-            graphView.soloNode(graphView.overNode);
-    }
+    // else if (    e.key == 'Shift'
+    //          &&  e.altKey
+    //          && !getCtrlKey(e))
+    // {
+    //     if ( graphView.overNode
+    //           &&  isEmpty(currentMenus)
+    //           && !altPressedInMenu)
+    //         graphView.soloNode(graphView.overNode);
+    // }
 
     else if (    e.key == 'Alt'
              && !e.shiftKey
@@ -107753,9 +107800,9 @@ document.addEventListener('keyup', e =>
                 graphView.zoomSelecting = false;
             }
         }
-        else if (graphView._soloNode
-              && isEmpty(currentMenus))
-            graphView.unsoloNode();
+        // else if (graphView._soloNode
+        //       && isEmpty(currentMenus))
+        //     graphView.unsoloNode();
 
         else if (currentMenus.length == 1
             && currentMenus[0] == menuColor)
@@ -107765,13 +107812,13 @@ document.addEventListener('keyup', e =>
         altPressedInMenu = false;
     }
 
-    else if (e.key == 'Control'
-          && e.altKey)
-    {
-        if (   graphView._soloNode
-            && isEmpty(currentMenus))
-            graphView.unsoloNode();
-    }
+    // else if (e.key == 'Shift'
+    //       && e.altKey)
+    // {
+    //     if (   graphView._soloNode
+    //         && isEmpty(currentMenus))
+    //         graphView.unsoloNode();
+    // }
 
     else if (e.key == 'Control')
     {

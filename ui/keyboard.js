@@ -252,8 +252,8 @@ document.addEventListener('keydown', e =>
 
     else if (e.key == 'Shift')
     {
-        if (graphView._soloNode)
-            graphView.unsoloNode();
+        // if (graphView._soloNode)
+        //     graphView.unsoloNode();
         
         if (    numberControlChanging
             && !numberControlChanging.shiftDown)
@@ -267,9 +267,6 @@ document.addEventListener('keydown', e =>
          && !e.altKey
          && !e.shiftKey)
     {
-        if (graphView._soloNode)
-            graphView.unsoloNode();
-
         if (graphView.spaceDown)
         {
             graphView.zoomSelecting = true;
@@ -307,31 +304,32 @@ document.addEventListener('keydown', e =>
     }
 
     else if (    e.key == 'Alt'
-             &&  getCtrlKey(e)
-             && !e.shiftKey)
+             &&  e.shiftKey
+             && !getCtrlKey(e))
     {
-        if ( graphView.overNode
-              &&  isEmpty(currentMenus)
-              && !altPressedInMenu)
-            graphView.soloNode(graphView.overNode);
+        // if ( graphView.overNode
+        //       &&  isEmpty(currentMenus)
+        //       && !altPressedInMenu)
+        //     graphView.soloNode(graphView.overNode);
 
-        else if (currentMenus.length == 1
-              && currentMenus[0] == menuColor)
+        // else 
+        if (   currentMenus.length == 1
+            && currentMenus[0] == menuColor)
         {
               menuItemColor.setIcon(iconRandomColor);
               altPressedInMenu = true;
         }
     }
 
-    else if (    e.key == 'Control'
-             &&  e.altKey
-             && !e.shiftKey)
-    {
-        if ( graphView.overNode
-              &&  isEmpty(currentMenus)
-              && !altPressedInMenu)
-            graphView.soloNode(graphView.overNode);
-    }
+    // else if (    e.key == 'Shift'
+    //          &&  e.altKey
+    //          && !getCtrlKey(e))
+    // {
+    //     if ( graphView.overNode
+    //           &&  isEmpty(currentMenus)
+    //           && !altPressedInMenu)
+    //         graphView.soloNode(graphView.overNode);
+    // }
 
     else if (    e.key == 'Alt'
              && !e.shiftKey
@@ -384,9 +382,9 @@ document.addEventListener('keyup', e =>
                 graphView.zoomSelecting = false;
             }
         }
-        else if (graphView._soloNode
-              && isEmpty(currentMenus))
-            graphView.unsoloNode();
+        // else if (graphView._soloNode
+        //       && isEmpty(currentMenus))
+        //     graphView.unsoloNode();
 
         else if (currentMenus.length == 1
             && currentMenus[0] == menuColor)
@@ -396,13 +394,13 @@ document.addEventListener('keyup', e =>
         altPressedInMenu = false;
     }
 
-    else if (e.key == 'Control'
-          && e.altKey)
-    {
-        if (   graphView._soloNode
-            && isEmpty(currentMenus))
-            graphView.unsoloNode();
-    }
+    // else if (e.key == 'Shift'
+    //       && e.altKey)
+    // {
+    //     if (   graphView._soloNode
+    //         && isEmpty(currentMenus))
+    //         graphView.unsoloNode();
+    // }
 
     else if (e.key == 'Control')
     {

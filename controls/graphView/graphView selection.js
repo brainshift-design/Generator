@@ -144,29 +144,30 @@ GraphView.prototype.selectFromClick = function(node, ctrl, shift, alt)
     node.div.moved = false;
 
 
-    if (   ctrl
-        && shift
-        && alt)
-    {
-        this.selectedNodes = getAllNodesFromNode(node);
-    }
-    else if (shift
-          && alt)
-    {
-        if (isMac) this.selectedNodes = [node, ...getNodesBeforeNode(node)];
-        else       this.selectedNodes = [node, ...getNodesAfterNode (node)];
-    }
-    else if (ctrl
-          && shift)
-    {
-        if (isMac) this.selectedNodes = [node, ...getNodesAfterNode (node)];
-        else       this.selectedNodes = [node, ...getNodesBeforeNode(node)];
-    }
-    else if (ctrl
-          && alt)
-        this.selectedNodes = [node, ...getNodesAcrossNode(node)];
-
-    else if (!node.selected)
+    //if (   ctrl
+    //    && shift
+    //    && alt)
+    //{
+    //    this.selectedNodes = getAllNodesFromNode(node);
+    //}
+    //else if (shift
+    //      && alt)
+    //{
+    //    if (isMac) this.selectedNodes = [node, ...getNodesBeforeNode(node)];
+    //    else       this.selectedNodes = [node, ...getNodesAfterNode (node)];
+    //}
+    //else if (ctrl
+    //      && shift)
+    //{
+    //    if (isMac) this.selectedNodes = [node, ...getNodesAfterNode (node)];
+    //    else       this.selectedNodes = [node, ...getNodesBeforeNode(node)];
+    //}
+    //else if (ctrl
+    //      && alt)
+    //    this.selectedNodes = [node, ...getNodesAcrossNode(node)];
+//
+    //else 
+    if (!node.selected)
     {
         if (shift) node.selected      = true;
         else       this.selectedNodes = [node];

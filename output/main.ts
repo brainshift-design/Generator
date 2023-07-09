@@ -4217,7 +4217,7 @@ function figCreateEllipse(genEllipse)
 
     
     if (figPoints.includes(figEllipse))
-        updatePointSize(figEllipse);
+        updatePointObject(figEllipse);
         
     else
         setObjectProps(figEllipse, genEllipse);
