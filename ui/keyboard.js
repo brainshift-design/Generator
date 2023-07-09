@@ -305,8 +305,8 @@ document.addEventListener('keydown', e =>
     }
 
     else if (    e.key == 'Alt'
-             && !e.shiftKey
-             && !getCtrlKey(e))
+             &&  getCtrlKey(e)
+             && !e.shiftKey)
     {
         if ( graphView.overNode
               &&  isEmpty(currentMenus)

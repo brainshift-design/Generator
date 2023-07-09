@@ -362,6 +362,10 @@ function getSmoothSegment(_pointP, _point, _pointN)
         NumberValue.prototype.toNumber.call(_pointN.y));
 
 
+    console.log('_pp =', _pp);
+    console.log('_p =',  _p );
+    console.log('_pn =', _pn);
+
     const v = subv(_pn, _pp);
     
     

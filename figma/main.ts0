@@ -1,8 +1,8 @@
 //figma.on('selectionchange', figOnSelectionChange);
 
-figma.on('documentchange', figOnDocumentChange);
-figma.on('close',          figOnPluginClose);
-
+figma.on('documentchange',  figOnDocumentChange);
+figma.on('selectionchange', figOnSelectionChange);
+figma.on('close',           figOnPluginClose);
 
 
 figDeleteAllObjects(true);
@@ -19,18 +19,7 @@ figma.showUI(
 
 
 var curZoom = figma.viewport.zoom;
-
-setInterval(() => 
-{
-    if (figma.viewport.zoom == curZoom)
-        return;
-
-    curZoom = figma.viewport.zoom;
-
-    updatePointSizes();
-    updateEmptyObjects();
-}, 
-100);
+setInterval(figOnZoomInterval, 100);
 
 
 var showIds = false;
@@ -88,4 +77,24 @@ function figRestartGenerator()
             visible:     false,
             themeColors: true
         });
+}
+
+
+
+function figOnZoomInterval()
+{
+    if (figma.viewport.zoom == curZoom)
+        return;
+
+    curZoom = figma.viewport.zoom;
+
+    updatePointObjects();
+    updateEmptyObjects();
+}
+
+
+
+function figOnSelectionChange()
+{
+    updatePointObjects();
 }

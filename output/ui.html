@@ -4398,6 +4398,7 @@ a
                 <h1 style='margin-top: 20px;'>What's new</h1>
 
                 <p>•  added Min/max node</p>
+                <p>•  fixed UI issues</p>
                 
                 <p><br/><br/><div id='chkHideWhatsNew'></div></p>
             </div>
@@ -11248,6 +11249,10 @@ function getSmoothSegment(_pointP, _point, _pointN)
         NumberValue.prototype.toNumber.call(_pointN.x),
         NumberValue.prototype.toNumber.call(_pointN.y));
 
+
+    console.log('_pp =', _pp);
+    console.log('_p =',  _p );
+    console.log('_pn =', _pn);
 
     const v = subv(_pn, _pp);
     
@@ -48591,6 +48596,10 @@ function getSmoothSegment(_pointP, _point, _pointN)
         NumberValue.prototype.toNumber.call(_pointN.x),
         NumberValue.prototype.toNumber.call(_pointN.y));
 
+
+    console.log('_pp =', _pp);
+    console.log('_p =',  _p );
+    console.log('_pn =', _pn);
 
     const v = subv(_pn, _pp);
     
@@ -107648,8 +107657,8 @@ document.addEventListener('keydown', e =>
     }
 
     else if (    e.key == 'Alt'
-             && !e.shiftKey
-             && !getCtrlKey(e))
+             &&  getCtrlKey(e)
+             && !e.shiftKey)
     {
         if ( graphView.overNode
               &&  isEmpty(currentMenus)

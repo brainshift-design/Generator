@@ -1871,9 +1871,9 @@ function logSavedConn(conn, darkMode)
 
 //figma.on('selectionchange', figOnSelectionChange);
 
-figma.on('documentchange', figOnDocumentChange);
-figma.on('close',          figOnPluginClose);
-
+figma.on('documentchange',  figOnDocumentChange);
+figma.on('selectionchange', figOnSelectionChange);
+figma.on('close',           figOnPluginClose);
 
 
 figDeleteAllObjects(true);
@@ -1890,18 +1890,7 @@ figma.showUI(
 
 
 var curZoom = figma.viewport.zoom;
-
-setInterval(() => 
-{
-    if (figma.viewport.zoom == curZoom)
-        return;
-
-    curZoom = figma.viewport.zoom;
-
-    updatePointSizes();
-    updateEmptyObjects();
-}, 
-100);
+setInterval(figOnZoomInterval, 100);
 
 
 var showIds = false;
@@ -1959,6 +1948,26 @@ function figRestartGenerator()
             visible:     false,
             themeColors: true
         });
+}
+
+
+
+function figOnZoomInterval()
+{
+    if (figma.viewport.zoom == curZoom)
+        return;
+
+    curZoom = figma.viewport.zoom;
+
+    updatePointObjects();
+    updateEmptyObjects();
+}
+
+
+
+function figOnSelectionChange()
+{
+    updatePointObjects();
 }
 
 
@@ -4409,7 +4418,7 @@ function figCreatePoint(genPoint)
 
     
     if (figPoints.includes(figPoint))
-        updatePointSize_(figPoint, genPoint);
+        updatePointObject_(figPoint, genPoint);
     else
         figUpdatePoint(figPoint, genPoint);
 
@@ -4427,7 +4436,7 @@ function figUpdatePoint(figPoint, genPoint)
 
 
 
-function updatePointSizes()
+function updatePointObjects()
 {
     figPostMessageToUi(
     {
@@ -4436,12 +4445,12 @@ function updatePointSizes()
     });
     
     for (const point of figPoints)
-        updatePointSize(point);
+        updatePointObject(point);
 }
 
 
 
-function updatePointSize(figPoint)
+function updatePointObject(figPoint)
 {
     updateExistingPointTransform(figPoint);
     updatePointStyles(figPoint);
@@ -4449,7 +4458,7 @@ function updatePointSize(figPoint)
 
 
 
-function updatePointSize_(figPoint, genPoint)
+function updatePointObject_(figPoint, genPoint)
 {
     setPointTransform(figPoint, genPoint);
     updatePointStyles(figPoint);
@@ -4459,17 +4468,22 @@ function updatePointSize_(figPoint, genPoint)
 
 function updatePointStyles(figPoint)
 {
-    const isCenter = parseBool(figPoint.getPluginData('isCenter'));
+    const isCenter   = parseBool(figPoint.getPluginData('isCenter'));
+    const isSelected = figma.currentPage.selection.includes(figPoint);
 
     const color =
         isCenter
         ? [0xf2, 0x48, 0x22]
-        : [0xff, 0xff, 0xff];
+        : isSelected
+          ? [ 12, 140, 233]
+          : [255, 255, 255];
 
     const border =
         isCenter
         ? [255, 255, 255]
-        : [ 12, 140, 233];
+        : isSelected
+          ? [255, 255, 255]
+          : [ 12, 140, 233];
 
 
     figPoint.fills = getObjectFills([['SOLID', color[0], color[1], color[2], 100]]);
@@ -4478,10 +4492,10 @@ function updatePointStyles(figPoint)
     const effects = [];
     
     effects.push(...getObjectEffects(
-        [['DROP_SHADOW', border[0]/255, border[1]/255, border[2]/255,  1, 0, 0, 0, (isCenter ? 3 : 3.6)/curZoom, 'NORMAL', true, true]]));
+        [['DROP_SHADOW', border[0]/255, border[1]/255, border[2]/255,  1, 0, 0, 0, (isCenter ? 3 : isSelected ? 5 : 3.6)/curZoom, 'NORMAL', true, true]]));
     
     effects.push(...getObjectEffects(
-        [['DROP_SHADOW', color[0]/255, color[1]/255, color[2]/255, 1, 0, 0, 0, 2.4/curZoom, 'NORMAL', true, true]]));
+        [['DROP_SHADOW', color[0]/255, color[1]/255, color[2]/255, 1, 0, 0, 0, (isSelected ? 4 : 2.4)/curZoom, 'NORMAL', true, true]]));
 
 
     figPoint.effects = effects;
