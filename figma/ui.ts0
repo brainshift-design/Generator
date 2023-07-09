@@ -32,7 +32,7 @@ function figSetWindowRect(x, y, width, height)
     (async function()
     {
         //console.log('figma.viewport.bounds =', figma.viewport.bounds);
-        console.log('_x =',      x);
+        //console.log('_x =',      x);
         //console.log('_y =',      y);
         //console.log('_width =',  width);
         //console.log('_height =', height);

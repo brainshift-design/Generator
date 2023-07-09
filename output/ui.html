@@ -4397,8 +4397,8 @@ a
             <div id='whatsNewBody'>
                 <h1 style='margin-top: 20px;'>What's new</h1>
 
-                <p>•  added Min/max node</p>
-                <p>•  fixed UI issues</p>
+                <p>•  fixed vector coordinates improperly snapping to pixels</p>
+                <p>•  Ctrl+Alt now used to solo nodes</p>
                 
                 <p><br/><br/><div id='chkHideWhatsNew'></div></p>
             </div>
@@ -4726,7 +4726,7 @@ a
 
 
 
-const generatorVersion = 151;
+const generatorVersion = 152;
 
 
 const MAX_INT32        = 2147483647;
@@ -11238,16 +11238,16 @@ function getSmoothPoints(points, closed, getSegment)
 function getSmoothSegment(_pointP, _point, _pointN)
 {
     const _pp = point(
-        NumberValue.prototype.toNumber.call(_pointP.x),
-        NumberValue.prototype.toNumber.call(_pointP.y));
+        _pointP.x.value,
+        _pointP.y.value);
 
     const _p = point(
-        NumberValue.prototype.toNumber.call(_point.x),
-        NumberValue.prototype.toNumber.call(_point.y));
+        _point.x.value,
+        _point.y.value);
 
     const _pn = point(
-        NumberValue.prototype.toNumber.call(_pointN.x),
-        NumberValue.prototype.toNumber.call(_pointN.y));
+        _pointN.x.value,
+        _pointN.y.value);
 
 
     console.log('_pp =', _pp);
@@ -39890,7 +39890,7 @@ onerror = (event, source, line, pos, error) =>
 };
 
 
-const generatorVersion = 151;
+const generatorVersion = 152;
 
 
 const MAX_INT32        = 2147483647;
@@ -48585,16 +48585,16 @@ function getSmoothPoints(points, closed, getSegment)
 function getSmoothSegment(_pointP, _point, _pointN)
 {
     const _pp = point(
-        NumberValue.prototype.toNumber.call(_pointP.x),
-        NumberValue.prototype.toNumber.call(_pointP.y));
+        _pointP.x.value,
+        _pointP.y.value);
 
     const _p = point(
-        NumberValue.prototype.toNumber.call(_point.x),
-        NumberValue.prototype.toNumber.call(_point.y));
+        _point.x.value,
+        _point.y.value);
 
     const _pn = point(
-        NumberValue.prototype.toNumber.call(_pointN.x),
-        NumberValue.prototype.toNumber.call(_pointN.y));
+        _pointN.x.value,
+        _pointN.y.value);
 
 
     console.log('_pp =', _pp);
@@ -84987,22 +84987,30 @@ class Wire
         {
             const hcl = rgb2hclok(color);
     
-            let dl = 0.05;
+            const th  = 0.27;
+            let   dl  = 0.05;
     
             dl /= Math.min(1 - (1 - graph.currentPage.zoom) / 1.75, 1);
     
-            if (hcl[2] > 0.27 - dl && hcl[2] <= 0.27)
-                color = invalid2validRgb(hclok2rgb([hcl[0], hcl[1], 0.27 - dl]));
-            if (hcl[2] > 0.27 && hcl[2] < 0.27 + dl)
-                color = invalid2validRgb(hclok2rgb([hcl[0], hcl[1], 0.27 + dl]));
+            if (hcl[2] > th - dl && hcl[2] <= th)
+                color = invalid2validRgb(hclok2rgb([hcl[0], hcl[1], th - dl]));
+            if (hcl[2] > th && hcl[2] < th + dl)
+                color = invalid2validRgb(hclok2rgb([hcl[0], hcl[1], th + dl]));
         }
         else
         {
             const hcl = rgb2hclok(color);
     
-            if (hcl[2] > 0.97)
-                color = invalid2validRgb(hclok2rgb([hcl[0], hcl[1], 0.97]));
-        }
+            const th  = 0.96;
+            let   dl  = 0.05;
+    
+            dl /= Math.min(1 - (1 - graph.currentPage.zoom) / 1.75, 1);
+    
+            if (hcl[2] > th - dl)// && hcl[2] >= th)
+                color = invalid2validRgb(hclok2rgb([hcl[0], hcl[1], th - dl]));
+            // if (hcl[2] > th && hcl[2] < th - dl)
+            //     color = invalid2validRgb(hclok2rgb([hcl[0], hcl[1], th - dl]));
+         }
     
     
         const wireStyle = rgba2style(color);
@@ -86553,7 +86561,7 @@ Operator.prototype.createNode = function()
         graphView.overNode = this;
         
         if (    e.altKey
-            && !getCtrlKey(e)
+            &&  getCtrlKey(e)
             && !e.shiftKey
             &&  graphView._soloNode != this
             && !altPressedInMenu) 
@@ -86568,9 +86576,9 @@ Operator.prototype.createNode = function()
         this.div.over      = false;
         graphView.overNode = null;
         
-        if (   (  !e.altKey
-                || getCtrlKey(e)
-                || e.shiftKey)
+        if (   (   !e.altKey
+                || !getCtrlKey(e)
+                ||  e.shiftKey)
             && graphView._soloNode == this)
             graphView.unsoloNode();
 
@@ -98291,16 +98299,25 @@ extends OpColorBase
     // {
     //     const colors = super.getHeaderColors();
 
-    //     colors.back       = rgb_a(colors.back, this.paramFills.value.opacity.value/100);
-    //     colors.stripeBack = rgb_a(colors.stripeBack, this.paramFills.value.opacity.value/100);
-    //     colors.text       = getTextColorFromBackColor(colors.stripeBack, this.paramFills.value.opacity.value/100);
-    //     colors.input      = rgb_a(colors.text, 0.2);
-    //     colors.output     = rgb_a(colors.text, 0.2);
+    //     if (this.paramFills.value)
+    //     {
+    //         colors.back       = rgb_a(colors.back, this.paramFills.value.opacity.value/100);
+    //         colors.stripeBack = rgb_a(colors.stripeBack, this.paramFills.value.opacity.value/100);
+    //         colors.text       = getTextColorFromBackColor(colors.stripeBack, this.paramFills.value.opacity.value/100);
+    //         colors.input      = rgb_a(colors.text, 0.2);
+    //         colors.output     = rgb_a(colors.text, 0.2);
 
-    //     colors.wire = 
-    //         !rgbaIsNaN(colors.stripeBack)
-    //         ? colors.stripeBack
-    //         : rgbFromType(ANY_VALUE, false);
+    //         colors.wire = 
+    //             !rgbaIsNaN(colors.stripeBack)
+    //             ? colors.stripeBack
+    //             : rgbFromType(ANY_VALUE, true);
+    //     }
+    //     else
+    //     {
+    //         colors.back = document
+    //     }
+
+        
 
     //     return colors;
     // }
@@ -106032,8 +106049,8 @@ const rgbActiveColor       = hex2rgb('#df2ae2');
 
 
 
-const rgbNoColorLight      = [0.95, 0.95, 0.95];
-const rgbNoColorDark       = [0.3,  0.3,  0.3 ];
+const rgbNoColorLight      = [0.7, 0.7, 0.7];
+const rgbNoColorDark       = [0.4, 0.4, 0.4];
 
 const rgbaNoColorTextLight = [0, 0, 0, 0.6];
 const rgbaNoColorTextDark  = [1, 1, 1, 0.4];
@@ -107615,7 +107632,9 @@ document.addEventListener('keydown', e =>
         }
     }
 
-    else if (e.key == 'Control')
+    else if (e.key == 'Control'
+         && !e.altKey
+         && !e.shiftKey)
     {
         if (graphView._soloNode)
             graphView.unsoloNode();
@@ -107671,6 +107690,16 @@ document.addEventListener('keydown', e =>
               menuItemColor.setIcon(iconRandomColor);
               altPressedInMenu = true;
         }
+    }
+
+    else if (    e.key == 'Control'
+             &&  e.altKey
+             && !e.shiftKey)
+    {
+        if ( graphView.overNode
+              &&  isEmpty(currentMenus)
+              && !altPressedInMenu)
+            graphView.soloNode(graphView.overNode);
     }
 
     else if (    e.key == 'Alt'
@@ -107734,6 +107763,14 @@ document.addEventListener('keyup', e =>
 
 
         altPressedInMenu = false;
+    }
+
+    else if (e.key == 'Control'
+          && e.altKey)
+    {
+        if (   graphView._soloNode
+            && isEmpty(currentMenus))
+            graphView.unsoloNode();
     }
 
     else if (e.key == 'Control')

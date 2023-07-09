@@ -263,7 +263,9 @@ document.addEventListener('keydown', e =>
         }
     }
 
-    else if (e.key == 'Control')
+    else if (e.key == 'Control'
+         && !e.altKey
+         && !e.shiftKey)
     {
         if (graphView._soloNode)
             graphView.unsoloNode();
@@ -319,6 +321,16 @@ document.addEventListener('keydown', e =>
               menuItemColor.setIcon(iconRandomColor);
               altPressedInMenu = true;
         }
+    }
+
+    else if (    e.key == 'Control'
+             &&  e.altKey
+             && !e.shiftKey)
+    {
+        if ( graphView.overNode
+              &&  isEmpty(currentMenus)
+              && !altPressedInMenu)
+            graphView.soloNode(graphView.overNode);
     }
 
     else if (    e.key == 'Alt'
@@ -382,6 +394,14 @@ document.addEventListener('keyup', e =>
 
 
         altPressedInMenu = false;
+    }
+
+    else if (e.key == 'Control'
+          && e.altKey)
+    {
+        if (   graphView._soloNode
+            && isEmpty(currentMenus))
+            graphView.unsoloNode();
     }
 
     else if (e.key == 'Control')

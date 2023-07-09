@@ -448,22 +448,30 @@ class Wire
         {
             const hcl = rgb2hclok(color);
     
-            let dl = 0.05;
+            const th  = 0.27;
+            let   dl  = 0.05;
     
             dl /= Math.min(1 - (1 - graph.currentPage.zoom) / 1.75, 1);
     
-            if (hcl[2] > 0.27 - dl && hcl[2] <= 0.27)
-                color = invalid2validRgb(hclok2rgb([hcl[0], hcl[1], 0.27 - dl]));
-            if (hcl[2] > 0.27 && hcl[2] < 0.27 + dl)
-                color = invalid2validRgb(hclok2rgb([hcl[0], hcl[1], 0.27 + dl]));
+            if (hcl[2] > th - dl && hcl[2] <= th)
+                color = invalid2validRgb(hclok2rgb([hcl[0], hcl[1], th - dl]));
+            if (hcl[2] > th && hcl[2] < th + dl)
+                color = invalid2validRgb(hclok2rgb([hcl[0], hcl[1], th + dl]));
         }
         else
         {
             const hcl = rgb2hclok(color);
     
-            if (hcl[2] > 0.97)
-                color = invalid2validRgb(hclok2rgb([hcl[0], hcl[1], 0.97]));
-        }
+            const th  = 0.96;
+            let   dl  = 0.05;
+    
+            dl /= Math.min(1 - (1 - graph.currentPage.zoom) / 1.75, 1);
+    
+            if (hcl[2] > th - dl)// && hcl[2] >= th)
+                color = invalid2validRgb(hclok2rgb([hcl[0], hcl[1], th - dl]));
+            // if (hcl[2] > th && hcl[2] < th - dl)
+            //     color = invalid2validRgb(hclok2rgb([hcl[0], hcl[1], th - dl]));
+         }
     
     
         const wireStyle = rgba2style(color);

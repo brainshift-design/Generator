@@ -23,7 +23,7 @@ function noNodeTag(key) { return noTag(key, nodeTag); }
 function noConnTag(key) { return noTag(key, connTag); }
 
 
-const generatorVersion = 151;
+const generatorVersion = 152;
 
 
 const MAX_INT32        = 2147483647;
@@ -2828,7 +2828,7 @@ function figSetWindowRect(x, y, width, height)
     (async function()
     {
         //console.log('figma.viewport.bounds =', figma.viewport.bounds);
-        console.log('_x =',      x);
+        //console.log('_x =',      x);
         //console.log('_y =',      y);
         //console.log('_width =',  width);
         //console.log('_height =', height);

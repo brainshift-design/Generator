@@ -29,7 +29,7 @@ Operator.prototype.createNode = function()
         graphView.overNode = this;
         
         if (    e.altKey
-            && !getCtrlKey(e)
+            &&  getCtrlKey(e)
             && !e.shiftKey
             &&  graphView._soloNode != this
             && !altPressedInMenu) 
@@ -44,9 +44,9 @@ Operator.prototype.createNode = function()
         this.div.over      = false;
         graphView.overNode = null;
         
-        if (   (  !e.altKey
-                || getCtrlKey(e)
-                || e.shiftKey)
+        if (   (   !e.altKey
+                || !getCtrlKey(e)
+                ||  e.shiftKey)
             && graphView._soloNode == this)
             graphView.unsoloNode();
 

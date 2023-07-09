@@ -254,16 +254,25 @@ extends OpColorBase
     // {
     //     const colors = super.getHeaderColors();
 
-    //     colors.back       = rgb_a(colors.back, this.paramFills.value.opacity.value/100);
-    //     colors.stripeBack = rgb_a(colors.stripeBack, this.paramFills.value.opacity.value/100);
-    //     colors.text       = getTextColorFromBackColor(colors.stripeBack, this.paramFills.value.opacity.value/100);
-    //     colors.input      = rgb_a(colors.text, 0.2);
-    //     colors.output     = rgb_a(colors.text, 0.2);
+    //     if (this.paramFills.value)
+    //     {
+    //         colors.back       = rgb_a(colors.back, this.paramFills.value.opacity.value/100);
+    //         colors.stripeBack = rgb_a(colors.stripeBack, this.paramFills.value.opacity.value/100);
+    //         colors.text       = getTextColorFromBackColor(colors.stripeBack, this.paramFills.value.opacity.value/100);
+    //         colors.input      = rgb_a(colors.text, 0.2);
+    //         colors.output     = rgb_a(colors.text, 0.2);
 
-    //     colors.wire = 
-    //         !rgbaIsNaN(colors.stripeBack)
-    //         ? colors.stripeBack
-    //         : rgbFromType(ANY_VALUE, false);
+    //         colors.wire = 
+    //             !rgbaIsNaN(colors.stripeBack)
+    //             ? colors.stripeBack
+    //             : rgbFromType(ANY_VALUE, true);
+    //     }
+    //     else
+    //     {
+    //         colors.back = document
+    //     }
+
+        
 
     //     return colors;
     // }

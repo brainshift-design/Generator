@@ -350,16 +350,16 @@ function getSmoothPoints(points, closed, getSegment)
 function getSmoothSegment(_pointP, _point, _pointN)
 {
     const _pp = point(
-        NumberValue.prototype.toNumber.call(_pointP.x),
-        NumberValue.prototype.toNumber.call(_pointP.y));
+        _pointP.x.value,
+        _pointP.y.value);
 
     const _p = point(
-        NumberValue.prototype.toNumber.call(_point.x),
-        NumberValue.prototype.toNumber.call(_point.y));
+        _point.x.value,
+        _point.y.value);
 
     const _pn = point(
-        NumberValue.prototype.toNumber.call(_pointN.x),
-        NumberValue.prototype.toNumber.call(_pointN.y));
+        _pointN.x.value,
+        _pointN.y.value);
 
 
     console.log('_pp =', _pp);

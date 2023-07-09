@@ -19,7 +19,7 @@ function isConnKey(key) { return isTagKey(key, connTag); }
 function noPageTag(key) { return noTag(key, pageTag); }
 function noNodeTag(key) { return noTag(key, nodeTag); }
 function noConnTag(key) { return noTag(key, connTag); }
-const generatorVersion = 151;
+const generatorVersion = 152;
 const MAX_INT32 = 2147483647;
 const NULL = '';
 const HTAB = '  '; // half-tab
@@ -1822,7 +1822,7 @@ function figSetWindowRect(x, y, width, height) {
     (function () {
         return __awaiter(this, void 0, void 0, function* () {
             //console.log('figma.viewport.bounds =', figma.viewport.bounds);
-            console.log('_x =', x);
+            //console.log('_x =',      x);
             //console.log('_y =',      y);
             //console.log('_width =',  width);
             //console.log('_height =', height);
