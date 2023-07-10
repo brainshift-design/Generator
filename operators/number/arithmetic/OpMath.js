@@ -75,7 +75,7 @@ extends OperatorWithValue
 
     updateParams()
     {
-        this.paramValue    .enableControlText(false);
+        this.paramValue    .enableControlText(false, this.isUnknown());
         this.paramOperation.enableControlText(true);
 
         

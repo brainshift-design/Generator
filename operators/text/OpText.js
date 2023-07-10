@@ -91,8 +91,8 @@ extends ResizableBase
 
     updateParams()
     {
-        this.paramValue.enableControlText(!this.inputs[0].connected);
-        this.paramValue.controls[0].valueText = this.isUnknown() ? UNKNOWN_DISPLAY : '';
+        this.paramValue.enableControlText(false, this.isUnknown());
+        // this.paramValue.controls[0].valueText = this.isUnknown() ? UNKNOWN_DISPLAY : '';
 
         this.updateParamControls();
         

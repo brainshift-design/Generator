@@ -7,7 +7,7 @@ extends OperatorWithValue
 
     constructor()
     {
-        super(NUMBER_MINMAX, 'minmax', 'min/max', '');
+        super(NUMBER_MINMAX, 'minmax', 'min/max', iconMinMax);
 
         //this.iconOffsetY      = -1;
 
@@ -75,7 +75,7 @@ extends OperatorWithValue
 
     updateParams()
     {
-        this.paramValue    .enableControlText(false);
+        this.paramValue    .enableControlText(false, this.isUnknown());
         this.paramOperation.enableControlText(true);
 
         

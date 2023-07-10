@@ -39,9 +39,10 @@ class Operator
     icon;
     iconOffsetY = 0;
 
-
-    enabled;
-    cached;
+    
+    enabled            = true;
+    cached             = true;
+    isMultiplier       = false;
     
     inert; // doesn't eval inputs if values exist
     slow;  // takes a while to finish operation, shows a progress bar
@@ -172,8 +173,6 @@ class Operator
         this.defaultWidth      = defWidth;
         this.labelOffsetFactor = 0;
 
-        this.enabled           = true;
-        this.cached            = true;
         this.inert             = false;
         this.slow              = false;
 
@@ -746,10 +745,10 @@ class Operator
 
 
 
-    isConnectedUncached()
-    {
-        return this.inputs.find(i => i.isConnectedUncached());
-    }
+    // isUncached()
+    // {
+    //     return this.inputs.find(i => i.isUncached());
+    // }
 
 
 
@@ -813,35 +812,28 @@ class Operator
 
 
 
-    isMultiplier()
+    isOrPrecededByUncached()
     {
-        return false;
-    }
-
-
-
-    isOrPrecededByMultiplier()
-    {
-        return this.isMultiplier()
+        return !this.cached
              ? true
-             : this.hasMultipliedInputs();
+             : this.hasUncachedInputs();
     }
 
 
 
     isOrFollowedByMultiplier()
     {
-        return this.isMultiplier()
+        return this.isMultiplier
              ? true
              : this.hasMultipliedOutputs();
     }
 
 
 
-    hasMultipliedInputs()
+    hasUncachedInputs()
     {
         for (const input of this.inputs)
-            if (input.isMultiplied())
+            if (input.isUncached())
                 return true;
 
         return false;
@@ -862,7 +854,7 @@ class Operator
 
     isUnknown()
     {
-        return this.isConnectedUncached()
+        return this.hasUncachedInputs()
             && this.hasMultipliedOutputs();
     }
 

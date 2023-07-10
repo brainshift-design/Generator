@@ -33,6 +33,13 @@ extends OperatorBase
 
 
 
+    isSet()
+    {
+        return true;
+    }
+
+
+
     output_genRequest(gen)
     {
         // 'this' is the output

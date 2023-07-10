@@ -1,4 +1,4 @@
-class   OpTextCSV
+class   OpTextSplit
 extends OperatorBase
 {
     paramValue;
@@ -8,7 +8,7 @@ extends OperatorBase
 
     constructor()
     {
-        super(TEXT_CSV, 'split', 'split', iconTextCSV);
+        super(TEXT_SPLIT, 'split', 'split', iconTextSplit);
 
         this.iconOffsetY = 1;
 
@@ -19,7 +19,8 @@ extends OperatorBase
         this.addParam(this.paramSeparator = new TextParam('separator', 'separator', false, true,  true, ''));
 
 
-        this.paramValue.itemName = 'value';
+        this.paramValue.itemName    = 'value';
+        this.paramValue.isNodeValue =  true;
 
         setControlFont(this.paramSeparator.controls[0].textbox, 'Roboto Mono', 10, 'center');
 
@@ -62,7 +63,7 @@ extends OperatorBase
 
     updateParams()
     {
-        this.paramValue    .enableControlText(false);
+        this.paramValue.enableControlText(false, this.isUnknown());
         this.paramSeparator.enableControlText(true);
 
         this.updateParamControls();

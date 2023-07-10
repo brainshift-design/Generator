@@ -31,6 +31,9 @@ extends OpColorBase
     paramStandard;
     paramContrast;
 
+    colorBack;
+
+
     labelColor = [0, 0, 0];
 
 
@@ -43,6 +46,10 @@ extends OpColorBase
         super(COLOR_CONTRAST, 'contrast', 'contrast', '');
 
 
+        this.colorBack = createDiv('colorBack');
+        this.inner.insertBefore(this.colorBack, this.paramHolder);
+
+
         this.addInput(new Input(COLOR_TYPES));
         this.addInput(new Input(COLOR_TYPES));
 
@@ -53,6 +60,8 @@ extends OpColorBase
         this.addParam(this.paramContrast = new NumberParam('contrast', '', false, false, true, 0));
         this.addParam(this.paramStandard = new SelectParam('standard', '', false, true,  true, ['WCAG 2', 'APCA'], 1));
       
+        this.paramContrast.isNodeValue = true;
+        
         this.paramContrast.controls[0].thinMinus     = true;
         this.paramContrast.controls[0].showExtRanges = false;
 
@@ -223,7 +232,7 @@ extends OpColorBase
 
     updateParams()
     {
-        this.paramContrast.enableControlText(false);
+        this.paramContrast.enableControlText(false, this.isUnknown());
         this.paramStandard.enableControlText(true);
 
         this.setRanges(this.paramStandard.value);
@@ -233,18 +242,37 @@ extends OpColorBase
 
 
 
+    // updateHeader()
+    // {
+    //     super.updateHeader();
+
+
+    //     this.outputs[0].lightColor =
+    //     this.outputs[0]. darkColor =
+    //     this.outputs[0]. wireColor = this._rgbText;
+
+    //     // this.outputs[1].lightColor =
+    //     // this.outputs[1]. darkColor =
+    //     // this.outputs[1]. wireColor = this._rgbBack;
+    // }
+
+
+
     updateHeader()
     {
         super.updateHeader();
 
+        
+        const colors = this.getHeaderColors();
+        
+        if (this.isUnknown())
+        {
+            colors.text = darkMode ? hex2rgb('fff8') : hex2rgb('0008');
+            colors.wire = darkMode ? hex2rgb('888f') : hex2rgb('aaaf');
+        }
 
-        this.outputs[0].lightColor =
-        this.outputs[0]. darkColor =
-        this.outputs[0]. wireColor = this._rgbText;
 
-        this.outputs[1].lightColor =
-        this.outputs[1]. darkColor =
-        this.outputs[1]. wireColor = this._rgbBack;
+        updateColorHeader(this, colors);
     }
 
 

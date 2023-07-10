@@ -10,7 +10,8 @@ extends OperatorBase
     {
         super(REPEAT, 'repeat', 'repeat', iconRepeat, defNodeWidth, true);
 
-        this.canDisable = true;
+        this.isMultiplier = true;
+        this.canDisable   = true;
 
         
         this.addInput (new Input([ANY_VALUE]));
@@ -30,13 +31,6 @@ extends OperatorBase
     }
     
     
-
-    isMultiplier()
-    {
-        return true;
-    }
-
-
 
     output_genRequest(gen)
     {
@@ -96,7 +90,6 @@ extends OperatorBase
         this.paramLoop .enableControlText(false);
 
         const arrowStyle = darkMode ? 'white' : 'black';
-
         this.paramLoop.controls[0].valueText = '<svg width="14" height="12" viewBox="0 -1 14 12" fill="none" xmlns="http://www.w3.org/2000/svg"><path fill-rule="evenodd" clip-rule="evenodd" d="M13 0H14L14 2C14 4.76142 11.7614 7 8.99999 7H1V6H8.99999C11.2091 6 13 4.20914 13 2L13 0Z" fill="' + arrowStyle + '"/><rect width="4.97369" height="1" transform="matrix(0.707107 -0.707107 -0.707107 -0.707107 0.712646 7.224)" fill="' + arrowStyle + '"/><rect width="5" height="1" transform="matrix(0.707107 0.707107 0.707107 -0.707107 0 6.54858)" fill="' + arrowStyle + '"/></svg>';
 
         this.updateParamControls();

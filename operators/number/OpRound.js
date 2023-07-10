@@ -61,6 +61,7 @@ extends OperatorWithValue
 
     updateParams()
     {
+        this.paramValue   .enableControlText(false, this.isUnknown());
         this.paramType    .enableControlText(true);
         this.paramDecimals.enableControlText(true);
 

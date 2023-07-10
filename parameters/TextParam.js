@@ -177,7 +177,7 @@ extends Parameter
 
 
 
-    enableControlText(enable)
+    enableControlText(enable, unknown = false)
     {
         enable &= 
                !this.input 
@@ -187,6 +187,14 @@ extends Parameter
         
         this.controls[0].textbox.disabled = !enable;
         this.controls[0].readOnly         = !enable;
+
+
+        this.controls[0].valueText = 
+               unknown
+            ||    this.input  && this.input .isUncached()
+               && this.output && this.output.isMultiplied()
+            ? UNKNOWN_DISPLAY
+            : '';
     }
     
     

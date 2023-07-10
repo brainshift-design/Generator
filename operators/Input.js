@@ -342,25 +342,27 @@ extends EventTarget
 
 
 
-    isConnectedUncached()
+    // isConnectedUncached()
+    // {
+    //     return  this.connected 
+    //         && !this.connectedOutput.node.isCached()
+    //         && !this.connectedOutput.node.isOrPrecededByMultiplier();
+    // }
+
+
+
+
+    isUncached()
     {
-        return  this.connected 
-            && !this.connectedOutput.node.isCached()
-            && !this.connectedOutput.node.isOrPrecededByMultiplier();
-    }
+        if (this.connectedOutput)
+            return this.connectedOutput.node.isOrPrecededByUncached();
+        // if (    this.connectedOutput
+        //     && !this.connectedOutput.node.cached)
+        //     return true;
 
-
-
-
-    isMultiplied()
-    {
-        if (   this.connectedOutput
-            && this.connectedOutput.node.isMultiplier())
-            return true;
-
-        else if (   this.connectedOutput
-                 && this.connectedOutput.node.hasMultipliedInputs())
-            return true;
+        // else if (   this.connectedOutput
+        //          && this.connectedOutput.node.hasUncachedInputs())
+        //     return true;
 
         return false;
     }

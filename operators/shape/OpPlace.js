@@ -10,8 +10,9 @@ extends OperatorBase
     {
         super(PLACE, 'place', 'place', iconPlace, defNodeWidth, true);
 
-        this.canDisable  = true;
-        this.iconOffsetY = -2;
+        this.isMultiplier = true;
+        this.canDisable   = true;
+        this.iconOffsetY  = -2;
 
         
         this.addInput (new Input (SHAPE_VALUES));
@@ -32,13 +33,6 @@ extends OperatorBase
     }
     
     
-
-    isMultiplier()
-    {
-        return true;
-    }
-
-
 
     output_genRequest(gen)
     {

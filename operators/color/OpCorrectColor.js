@@ -10,7 +10,10 @@ extends OpColorBase
     corrections = [];
 
 
+    colorBack;
 
+
+    
     constructor()
     {
         super(CORRECT_COLOR, 'corrected', 'corrected', iconCorrectColor, true);
@@ -22,6 +25,10 @@ extends OpColorBase
         this.alwaysSaveParams = true;
 
         
+        this.colorBack = createDiv('colorBack');
+        this.inner.insertBefore(this.colorBack, this.paramHolder);
+
+
         this.addInput(new Input([COLOR_VALUE]));
         this.addOutput(new Output([COLOR_VALUE], this.output_genRequest));
 
@@ -141,10 +148,10 @@ extends OpColorBase
 
     updateParams()
     {
-        this.paramOrder.enableControlText(false);
-        this.param1    .enableControlText(false);
-        this.param2    .enableControlText(false);
-        this.param3    .enableControlText(false);
+        this.paramOrder.enableControlText(false, this.isUnknown());
+        this.param1    .enableControlText(false, this.isUnknown());
+        this.param2    .enableControlText(false, this.isUnknown());
+        this.param3    .enableControlText(false, this.isUnknown());
 
         this.updateCorrections();
 
@@ -163,6 +170,24 @@ extends OpColorBase
             !rgbIsNaN(colors.back) 
             ? rgb2style_a(colors.text, 0.5) 
             : 'var(--figma-color-bg-brand)';
+
+
+        updateColorHeader(this, colors);
+    }
+
+
+
+    getHeaderColors()
+    {
+        const colors = super.getHeaderColors();
+
+        if (this.isUnknown())
+        {
+            colors.text = darkMode ? hex2rgb('fff8') : hex2rgb('0008');
+            colors.wire = darkMode ? hex2rgb('888f') : hex2rgb('aaaf');
+        }
+
+        return colors;
     }
 
 

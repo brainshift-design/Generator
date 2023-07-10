@@ -17,9 +17,10 @@ extends OperatorBase
         this.addInput (new Input([TEXT_VALUE]));
         this.addInput (new Input([TEXT_VALUE]));
 
-        this.addParam(this.paramResult    = new NumberParam('result',    '', false, true, true));
-        this.addParam(this.paramOperation = new SelectParam('operation', '', false, true, true, CONDITION_OPS.map(s => s[1]), 3));
+        this.addParam(this.paramResult    = new NumberParam('result',    '', false, false, true));
+        this.addParam(this.paramOperation = new SelectParam('operation', '', false, true,  true, CONDITION_OPS.map(s => s[1]), 3));
 
+        this.paramResult   .isNodeValue = true;
         this.paramOperation.reverseMenu = true;
     }
 
@@ -65,9 +66,6 @@ extends OperatorBase
 
     updateParams()
     {
-        updateParamConditionText(this.paramResult, this.isUnknown(), true);
-
-
         switch (this.paramOperation.value.value)
         {
             case 0: this.icon = iconLess;           this.iconOffsetY = 1; break;
@@ -84,7 +82,9 @@ extends OperatorBase
         this.paramResult   .enableControlText(false);
         this.paramOperation.enableControlText(true );
 
+        updateParamConditionText(this.paramResult, this.isUnknown(), true);
 
+        
         this.updateParamControls();
     }
 }

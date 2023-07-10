@@ -76,26 +76,8 @@ extends OperatorWithValue
 
     updateParams()
     {
-        this.paramValue    .enableControlText(false);
+        this.paramValue    .enableControlText(false, this.isUnknown());
         this.paramOperation.enableControlText(true);
-
-        this.paramValue.controls[0].divValue.style.fontStyle = 
-               settings.showBoolValues 
-            && this.paramValue.value.isValid()
-            ? 'normal' 
-            : 'italic';
-
-
-        const v = Math.round(this.paramValue.value.value);
-
-             if (this.isUnknown())        this.paramValue.controls[0].valueText = UNKNOWN_DISPLAY;
-        else if (settings.showBoolValues
-              && !isNaN(v))               this.paramValue.controls[0].valueText = v != 0 ? getTrueDisplay() : getFalseDisplay();
-        else                              this.paramValue.controls[0].valueText = '';
-
-        this.paramValue.controls[0].divValue.style.letterSpacing = settings.showBoolValues ? '0.1em' : 0;
-
-        this.paramValue.controls[0].showBar = !this.isUnknown();
 
 
         switch (this.paramOperation.value.value)

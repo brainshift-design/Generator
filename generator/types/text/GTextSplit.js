@@ -1,4 +1,4 @@
-class GTextCSV
+class GTextSplit
 extends GOperator1
 {
     value;
@@ -8,14 +8,14 @@ extends GOperator1
 
     constructor(nodeId, options)
     {
-        super(TEXT_CSV, nodeId, options);
+        super(TEXT_SPLIT, nodeId, options);
     }
 
 
     
     copy()
     {
-        const copy = new GTextCSV(this.nodeId, this.options);
+        const copy = new GTextSplit(this.nodeId, this.options);
 
         copy.copyBase(this);
 

@@ -2,7 +2,7 @@ class   OpListCount
 extends OperatorBase
 {
     paramValue;
-    paramBase;
+    paramStart;
 
 
     
@@ -16,10 +16,10 @@ extends OperatorBase
         this.addInput (new Input(LIST_VALUES));
 
         this.addParam(this.paramValue = new NumberParam('value', 'value', false, false, true, 0, 0));
-        this.addParam(this.paramBase  = new NumberParam('start', 'start', true,  true,  true, 1, 0, 1));
+        this.addParam(this.paramStart = new NumberParam('start', 'start', true,  true,  true, 1, 0, 1));
 
 
-        this.paramBase.controls[0].allowEditDecimals = false;
+        this.paramStart.controls[0].allowEditDecimals = false;
     }
 
 
@@ -54,7 +54,7 @@ extends OperatorBase
         if (input.connected) 
             request.push(...pushInputOrParam(input, gen));
 
-        request.push(...this.paramBase.genRequest(gen));
+        request.push(...this.paramStart.genRequest(gen));
 
 
         gen.scope.pop();
@@ -67,8 +67,8 @@ extends OperatorBase
 
     updateParams()
     {
-        this.paramValue.enableControlText(false);
-        this.paramBase .enableControlText(true);
+        this.paramValue.enableControlText(false, this.isUnknown());
+        this.paramStart.enableControlText(true);
 
         this.updateParamControls();
     }

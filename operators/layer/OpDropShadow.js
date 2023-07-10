@@ -136,6 +136,12 @@ extends OperatorBase
 
     updateParams()
     {
+        this.paramX     .enableControlText(true);
+        this.paramY     .enableControlText(true);
+        this.paramBlur  .enableControlText(true);
+        this.paramSpread.enableControlText(true);
+        this.paramFill  .enableControlText(true);
+        this.paramBlend .enableControlText(true);
         this.paramBehind.enableControlText(true);
 
         updateParamConditionText(this.paramBehind, this.isUnknown(), false, 1);

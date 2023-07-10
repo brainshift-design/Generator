@@ -117,7 +117,7 @@
 ../operators/text/OpTextReplace.js
 ../operators/text/OpTextJoin.js
 ../operators/text/OpTextPad.js
-../operators/text/OpTextCSV.js
+../operators/text/OpTextSplit.js
 ../operators/text/OpTextCompare.js
 ../operators/text/OpTextJson.js
 ../operators/text/OpTextFetch.js

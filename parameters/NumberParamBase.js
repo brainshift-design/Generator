@@ -145,7 +145,7 @@ extends Parameter
 
 
 
-    enableControlText(enable)
+    enableControlText(enable, unknown = false)
     {
         enable &= 
                !this.input 
@@ -157,6 +157,15 @@ extends Parameter
         this.controls[0].readOnly = !enable;
 
         this.updateValueText();
+
+
+        this.controls[0].valueText = 
+               unknown
+            ||    this.input  && this.input .isUncached()
+               && this.node.hasMultipliedOutputs()
+               //&& this.output && this.output.isMultiplied()
+            ? UNKNOWN_DISPLAY
+            : '';
     }
     
     
@@ -181,7 +190,7 @@ extends Parameter
         if (   this.input
             && this.input.connected)
         {
-            if (   this.input.isConnectedUncached()
+            if (   this.input.isUncached()
                 && this.node.hasMultipliedOutputs())
                 unknown = true;
         }

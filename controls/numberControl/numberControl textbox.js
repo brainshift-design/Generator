@@ -164,50 +164,100 @@ NumberControl.prototype.initTextbox = function()
                 text.length);
 
             const revPos = text.length - pos;
+            const sign   = e.key == 'ArrowUp' ? 1 : -1;
 
-            const val  = parseFloat(text);
-            const sign = e.key == 'ArrowUp' ? 1 : -1;
 
-            let decIndex = text.indexOf('.');
-            if (decIndex < 0) decIndex = text.indexOf(',');
-            
-            if (   text[0] != '-'
-                || pos > 0)
+            if (this.showHex)
             {
-                if (decIndex < 0) // integer
+                const val = parseInt(text, 16);
+
+                let decIndex = text.indexOf('.');
+                if (decIndex < 0) decIndex = text.indexOf(',');
+                
+                if (   text[0] != '-'
+                    || pos > 0)
                 {
-                    let dec = Math.pow(10, revPos);
+                    if (decIndex < 0) // integer
+                    {
+                        let dec = Math.pow(10, revPos);
 
-                    if (e.shiftKey) 
-                        dec *= 10;
+                        if (e.shiftKey) 
+                            dec *= 10;
 
-                    this.setValue((val + sign * dec) / this.valueScale);
-                    this.updateTextbox();
+                        this.setValue((val + sign * dec) / this.valueScale);
+                        this.updateTextbox();
+                    }
+                    else // floating point
+                    {
+                        const _edit = pos - decIndex - 1;
+
+                        let  dec  = 
+                            _edit < 0
+                            ?     Math.pow(10, -_edit - 1)
+                            : 1 / Math.pow(10,  _edit    );
+
+                        if (e.shiftKey) 
+                            dec *= 10;
+
+                        this.displayDec = text.length-1 - decIndex;
+                        this.setValue((val + sign * dec) / this.valueScale);
+                        this.updateTextbox();
+                    }
+
+                    this.textbox.selectionStart =
+                    this.textbox.selectionEnd   = this.textbox.savedValue.length - revPos - this.suffix.length;
+
+
+                    if (this.param) this.param.changing = true;
+                    if (this.confirmTimer) clearTimeout(this.confirmTimer);
+                    this.confirmTimer = setTimeout(() => controlTimer_confirm(this), 400);
                 }
-                else // floating point
+            }
+            else
+            {
+                const val = parseFloat(text);
+
+                let decIndex = text.indexOf('.');
+                if (decIndex < 0) decIndex = text.indexOf(',');
+                
+                if (   text[0] != '-'
+                    || pos > 0)
                 {
-                    const _edit = pos - decIndex - 1;
+                    if (decIndex < 0) // integer
+                    {
+                        let dec = Math.pow(10, revPos);
 
-                    let  dec  = 
-                        _edit < 0
-                        ?     Math.pow(10, -_edit - 1)
-                        : 1 / Math.pow(10,  _edit    );
+                        if (e.shiftKey) 
+                            dec *= 10;
 
-                    if (e.shiftKey) 
-                        dec *= 10;
+                        this.setValue((val + sign * dec) / this.valueScale);
+                        this.updateTextbox();
+                    }
+                    else // floating point
+                    {
+                        const _edit = pos - decIndex - 1;
 
-                    this.displayDec = text.length-1 - decIndex;
-                    this.setValue((val + sign * dec) / this.valueScale);
-                    this.updateTextbox();
+                        let  dec  = 
+                            _edit < 0
+                            ?     Math.pow(10, -_edit - 1)
+                            : 1 / Math.pow(10,  _edit    );
+
+                        if (e.shiftKey) 
+                            dec *= 10;
+
+                        this.displayDec = text.length-1 - decIndex;
+                        this.setValue((val + sign * dec) / this.valueScale);
+                        this.updateTextbox();
+                    }
+
+                    this.textbox.selectionStart =
+                    this.textbox.selectionEnd   = this.textbox.savedValue.length - revPos - this.suffix.length;
+
+
+                    if (this.param) this.param.changing = true;
+                    if (this.confirmTimer) clearTimeout(this.confirmTimer);
+                    this.confirmTimer = setTimeout(() => controlTimer_confirm(this), 400);
                 }
-
-                this.textbox.selectionStart =
-                this.textbox.selectionEnd   = this.textbox.savedValue.length - revPos - this.suffix.length;
-
-
-                if (this.param) this.param.changing = true;
-                if (this.confirmTimer) clearTimeout(this.confirmTimer);
-                this.confirmTimer = setTimeout(() => controlTimer_confirm(this), 400);
             }
         }
         // else if (e.code == 'KeyZ'

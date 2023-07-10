@@ -1,7 +1,8 @@
 class GTextToNumber
 extends GNumberType
 {
-    text;
+    input;
+
     format;
 
 
@@ -22,7 +23,6 @@ extends GNumberType
         if (this.input) 
             copy.input = this.input.copy();
 
-        copy.text   = this.text.copy();
         copy.format = this.format.copy();
 
         return copy;
@@ -36,30 +36,36 @@ extends GNumberType
             return this;
 
 
-        const text   = (await this.text  .eval(parse)).toValue();
         const format = (await this.format.eval(parse)).toValue();
 
 
-        let num = Number.NaN;
-
-        switch (format.value)
+        if (this.input)
         {
-            case 0: // dec
-                num = parseFloat(text.value);
-            break;
+            const input = (await this.input.eval(parse)).toValue();
 
-            case 1: // hex
-                num = parseInt(text.value, 16);
-                break;
+
+            let num = Number.NaN;
+
+            switch (format.value)
+            {
+                case 0: // dec
+                    num = parseFloat(input.value);
+                    break;
+
+                case 1: // hex
+                    num = parseInt(input.value, 16);
+                    break;
+            }
+
+            this.value = new NumberValue(num);
         }
-
-        this.value = new NumberValue(num);
+        else
+            this.value = NumberValue.NaN;
 
 
         this.updateValues =
         [
             ['value',  this.value],
-            ['text',   text      ],
             ['format', format    ]
         ];
 
@@ -75,7 +81,7 @@ extends GNumberType
     {
         super.pushValueUpdates(parse);
 
-        if (this.text  ) this.text  .pushValueUpdates(parse);
+        if (this.input)  this.input .pushValueUpdates(parse);
         if (this.format) this.format.pushValueUpdates(parse);
     }
 
@@ -85,7 +91,7 @@ extends GNumberType
     {
         super.invalidateInputs(from);
 
-        if (this.text  ) this.text  .invalidateInputs(from);
+        if (this.input)  this.input .invalidateInputs(from);
         if (this.format) this.format.invalidateInputs(from);
     }
 }

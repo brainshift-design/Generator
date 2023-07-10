@@ -297,7 +297,7 @@ extends EventTarget
 
         for (const input of this.connectedInputs)
         {
-            if (input.node.isMultiplier())
+            if (input.node.isMultiplier)
                 return true;
 
             else if (input.node.hasMultipliedOutputs())

@@ -17,6 +17,9 @@ extends OpColorBase
     menuS;
 
 
+    colorBack;
+
+
     
     constructor()
     {
@@ -24,6 +27,10 @@ extends OpColorBase
 
         this.canDisable = true;
         
+
+        this.colorBack = createDiv('colorBack');
+        this.inner.insertBefore(this.colorBack, this.paramHolder);
+
 
         this.addInput(new Input(COLOR_TYPES));
         this.addOutput(new Output([COLOR_VALUE], this.output_genRequest));
@@ -43,9 +50,9 @@ extends OpColorBase
 
         this.symbol = createDiv('colorblindSymbol');
         
-        this.ringL = createDiv('colorblindRing');
-        this.ringM = createDiv('colorblindRing');
-        this.ringS = createDiv('colorblindRing');
+        this.ringL  = createDiv('colorblindRing');
+        this.ringM  = createDiv('colorblindRing');
+        this.ringS  = createDiv('colorblindRing');
         
         this.symbol.appendChild(this.ringS);
         this.symbol.appendChild(this.ringM);
@@ -146,8 +153,14 @@ extends OpColorBase
     {
         super.updateHeader();
 
-        const colors    = this.getHeaderColors();
-        const ringStyle = rgba2style(colors.text);
+        const colors = this.getHeaderColors();
+
+        const ringStyle = 
+            !this.isUnknown()
+            ? rgba2style(colors.text)
+            : darkMode 
+            ? '#fffc' 
+            : '#000c';
 
         const valL = Math.round(this.paramL.value.value);
         const valM = Math.round(this.paramM.value.value);
@@ -202,6 +215,24 @@ extends OpColorBase
             this.ringS.style.display      = sDisplay;
             this.ringS.style.borderRadius = sBorderRadius + 'px';
         }
+
+
+        updateColorHeader(this, colors);
+    }
+
+
+
+    getHeaderColors()
+    {
+        const colors = super.getHeaderColors();
+
+        if (this.isUnknown())
+        {
+            colors.text = darkMode ? hex2rgb('fff8') : hex2rgb('0008');
+            colors.wire = darkMode ? hex2rgb('888f') : hex2rgb('aaaf');
+        }
+
+        return colors;
     }
 
 

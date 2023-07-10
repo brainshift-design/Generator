@@ -71,8 +71,8 @@ extends OpAffine
     {
         super.updateParams();
 
-        updateParamConditionText(this.paramShowCenter,  false /*this.isUnknown()*/, false, 1);
-        updateParamConditionText(this.paramAffectSpace, false /*this.isUnknown()*/, true, 1);
+        updateParamConditionText(this.paramShowCenter,  this.isUnknown(), false, 1);
+        updateParamConditionText(this.paramAffectSpace, this.isUnknown(), true,  1);
 
         this.updateParamControls();
     }

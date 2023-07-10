@@ -1,42 +1,51 @@
 class   OpNumberToText
 extends OperatorBase
 {
-    paramNumber;
+    paramValue;
     paramFormat;
 
 
 
     constructor()
     {
-        super(NUMBER_TO_TEXT, 'numToText', 'to text', '');
+        super(NUMBER_TO_TEXT, 'numToText', 'to text', iconNumberToText);
 
 
-        this.addOutput(new Output([TEXT_VALUE], this.output_genRequest));
+        this.addInput(new Input([NUMBER_VALUE]));
 
-        this.addParam(this.paramNumber = new NumberParam('number', 'number', false, true,  true));
+        this.addParam(this.paramValue   = new TextParam ('value',  'value',  false, false, true));
         this.addParam(this.paramFormat = new SelectParam('format', 'format', false, true,  true, ['decimal', 'hexadecimal']));
+
+        this.paramValue.isNodeValue = true;
     }
 
 
 
-    output_genRequest(gen)
+    genRequest(gen)
     {
-        // 'this' is the output
+        // 'this' is the node
 
         gen.scope.push({
-            nodeId:  this.node.id, 
+            nodeId:  this.id, 
             paramId: NULL });
 
-        const [request, ignore] = this.node.genRequestStart(gen);
+        const [request, ignore] = this.genRequestStart(gen);
         if (ignore) return request;
 
         
-        request.push(...this.node.paramNumber.genRequest(gen));
-        request.push(...this.node.paramFormat.genRequest(gen));
+        const input = this.inputs[0];
+
+
+        request.push(input.connected ? 1 : 0);
+        
+        if (input.connected)
+            request.push(...pushInputOrParam(input, gen));
+
+        request.push(...this.paramFormat.genRequest(gen));
 
         
         gen.scope.pop();
-        pushUnique(gen.passedNodes, this.node);
+        pushUnique(gen.passedNodes, this);
 
         return request;
     }
@@ -45,10 +54,10 @@ extends OperatorBase
 
     updateParams()
     {
-        this.paramNumber.enableControlText(true);
-        this.paramFormat.enableControlText(true);
+        this.paramValue .enableControlText(false);
+        this.paramValue.controls[0].valueText = this.isUnknown() ? UNKNOWN_DISPLAY : '';
 
-        this.paramNumber.controls[0].showHex = this.paramFormat.value.value > 0;
+        this.paramFormat.enableControlText(true);
 
         this.updateParamControls();
     }

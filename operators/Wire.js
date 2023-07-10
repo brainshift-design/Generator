@@ -80,10 +80,12 @@ class Wire
 
     getColor()
     {
+        const conn   = this.connection;
+
         const types  = [];
 
-        const output = this.connection.output;
-        const input  = this.connection.input;
+        const output = conn.output;
+        const input  = conn.input;
         
 
         if (output)
@@ -108,7 +110,7 @@ class Wire
 //            && arraysIntersect(output.types, [COLOR_VALUE, FILL_VALUE, COLOR_STOP_VALUE, STROKE_VALUE]))
             return output.wireColor;
 
-        else if (input)
+        else if ( input)
   //            && arraysIntersect(input.types, [COLOR_VALUE, FILL_VALUE, COLOR_STOP_VALUE, STROKE_VALUE]))
             return input.wireColor;
 
@@ -485,29 +487,47 @@ class Wire
                 color[3]));
 
                 
-        const isNotCached = 
-                   conn.output
-               &&  conn.output.node
-               && !conn.output.node.isCached()
-            ||     conn.output
-               &&  conn.output.param
-               &&  conn.output.param._nodeId != undefined
-            &&  nodeFromId(conn.output.param._nodeId)
-               && !nodeFromId(conn.output.param._nodeId).isCached();
+        // const isNotCached = 
+        //            conn.output
+        //        &&  conn.output.node
+        //        && !conn.output.node.isCached()
+        //     ||     conn.output
+        //        &&  conn.output.param
+        //        &&  conn.output.param._nodeId != undefined
+        //     &&  nodeFromId(conn.output.param._nodeId)
+        //        && !nodeFromId(conn.output.param._nodeId).isCached();
         
-        const unknown = false;
-            //     isNotCached
-            // &&  conn.output
-            // && (  !conn.output.node.isOrPrecededByMultiplier()
-            //     ||   (   !conn.output.node.isMultiplier()
-            //           || !conn.output.node.paramRepeatId.input.connected)
-            //        && conn.output.node.inputs.find(i => i.isConnectedUncached()))
-            // &&  conn.input
-            // &&  conn.input.node.isOrFollowedByMultiplier()
-            // && (  !conn.input.param 
-            //     || conn.input.param.affectsHeader);
-    
-    
+        // const unknown = 
+        //         isNotCached
+        //     &&  conn.output
+        //     && (  !conn.output.node.isOrPrecededByMultiplier()
+        //         ||   (   !conn.output.node.isMultiplier
+        //               || !conn.output.node.paramLoop.input.connected)
+        //            && conn.output.node.inputs.find(i => i.isConnectedUncached()))
+        //     &&  conn.input
+        //     &&  conn.input.node.isOrFollowedByMultiplier()
+        //     && (  !conn.input.param 
+        //         || conn.input.param.affectsHeader);
+
+
+        const unknown = 
+               conn.output 
+            && (      conn.output.param
+                   && conn.output.param.isNodeValue
+                   && conn.output.param.node.isOrPrecededByUncached()
+                ||     conn.output.param
+                   && !conn.output.param.isNodeValue
+                   &&  conn.output.param.input
+                   &&  conn.output.param.input.isUncached()
+                ||   !conn.output.param
+                   && conn.output.node.isOrPrecededByUncached())
+            && conn.input  
+            && (      conn.input.param 
+                   && conn.input.node.hasMultipliedOutputs()
+                ||   !conn.input.param
+                   && conn.input.node.isOrFollowedByMultiplier());
+
+                
         this.curve  .style.stroke          = wireStyle;
         this.curve2 .style.stroke          = rgb2style(rgbDocumentBody);
     

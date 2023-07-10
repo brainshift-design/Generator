@@ -86,7 +86,7 @@ extends OperatorBase
     {
         this.paramCondition.enableControlText(true);
 
-        updateParamConditionText(this.paramCondition, this.isUnknown(), true, 1);
+        updateParamConditionText(this.paramCondition, this.paramCondition.isUnknown(), true, 1);
 
 
         if (this.outputs[0].supportsTypes([COLOR_VALUE]))

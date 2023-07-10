@@ -137,7 +137,7 @@
 ../generator/types/text/GTextReplace.js
 ../generator/types/text/GTextJoin.js
 ../generator/types/text/GTextPad.js
-../generator/types/text/GTextCSV.js
+../generator/types/text/GTextSplit.js
 ../generator/types/text/GTextCompare.js
 ../generator/types/text/GTextJson.js
 ../generator/types/text/GTextFetch.js

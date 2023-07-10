@@ -482,8 +482,17 @@ function genParseNumberToText(parse)
     const num2text = new GNumberToText(nodeId, options);
    
 
+    let nInputs = -1;
+    
+    if (!ignore)
+    {
+        nInputs = parseInt(parse.move());
+        consoleAssert(nInputs == 0 || nInputs == 1, 'nInputs must be [0, 1]');
+    }
+
+
     if (parse.settings.logRequests) 
-        logReq(num2text, parse, ignore);
+        logReq(num2text, parse, ignore, nInputs);
 
 
     if (ignore) 
@@ -496,7 +505,9 @@ function genParseNumberToText(parse)
     parse.nTab++;
 
 
-    num2text.number = genParse(parse);
+    if (nInputs == 1)
+        num2text.input = genParse(parse);
+
     num2text.format = genParse(parse);
 
     
@@ -517,6 +528,15 @@ function genParseTextToNumber(parse)
     const text2num = new GTextToNumber(nodeId, options);
    
 
+    let nInputs = -1;
+    
+    if (!ignore)
+    {
+        nInputs = parseInt(parse.move());
+        consoleAssert(nInputs == 0 || nInputs == 1, 'nInputs must be [0, 1]');
+    }
+
+
     if (parse.settings.logRequests) 
         logReq(text2num, parse, ignore);
 
@@ -531,7 +551,9 @@ function genParseTextToNumber(parse)
     parse.nTab++;
 
 
-    text2num.text   = genParse(parse);
+    if (nInputs == 1)
+        text2num.input = genParse(parse);
+
     text2num.format = genParse(parse);
 
     
@@ -544,12 +566,12 @@ function genParseTextToNumber(parse)
 
 
 
-function genParseTextCSV(parse)
+function genParseTextSplit(parse)
 {
     const [, nodeId, options, ignore] = genParseNodeStart(parse);
 
 
-    const csv = new GTextCSV(nodeId, options);
+    const split = new GTextSplit(nodeId, options);
    
 
     let nInputs = -1;
@@ -562,12 +584,12 @@ function genParseTextCSV(parse)
 
     
     if (parse.settings.logRequests) 
-        logReq(csv, parse, ignore, nInputs);
+        logReq(split, parse, ignore, nInputs);
 
 
     if (ignore) 
     {
-        genParseNodeEnd(parse, csv);
+        genParseNodeEnd(parse, split);
         return parse.parsedNodes.find(n => n.nodeId == nodeId);
     }
 
@@ -576,16 +598,16 @@ function genParseTextCSV(parse)
 
 
     if (nInputs == 1)
-        csv.input = genParse(parse);
+        split.input = genParse(parse);
 
-    csv.separator = genParse(parse);
+    split.separator = genParse(parse);
 
     
     parse.nTab--;
 
 
-    genParseNodeEnd(parse, csv);
-    return csv;
+    genParseNodeEnd(parse, split);
+    return split;
 }
 
 

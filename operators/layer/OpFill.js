@@ -265,6 +265,9 @@ extends OpColorBase
 
         this.updateWarningOverlay();
         this.updateWarningOverlayStyle(colors.back);
+
+
+        //updateColorHeader(this, colors);
     }
 
 
@@ -289,17 +292,28 @@ extends OpColorBase
             : Number.NaN;
 
 
-        colors.back       = rgb_a(colors.back,       opacity);
-        colors.stripeBack = rgb_a(colors.stripeBack, opacity);
-        colors.text       = getTextColorFromBackColor(colors.stripeBack, colors.back[3]);
-        colors.input      = rgb_a(colors.text, 0.2);
-        colors.output     = rgb_a(colors.text, 0.2);
+        colors.input  = rgb_a(colors.text, 0.2);
+        colors.output = rgb_a(colors.text, 0.2);
+        
 
-        colors.wire = 
-            !rgbaIsNaN(colors.stripeBack)
-            ? colors.stripeBack
-            : rgb_a(rgbFromType(ANY_VALUE, false));
-
+        if (this.isUnknown())
+        {
+            colors.back       = darkMode ? hex2rgb('444')  : hex2rgb('ccc');
+            colors.stripeBack = darkMode ? hex2rgb('444')  : hex2rgb('ccc');
+            colors.text       = darkMode ? hex2rgb('fff8') : hex2rgb('0008');
+            colors.wire       = darkMode ? hex2rgb('888')  : hex2rgb('aaa');
+        }
+        else
+        {
+            colors.back       = rgb_a(colors.back,       opacity);
+            colors.stripeBack = rgb_a(colors.stripeBack, opacity);
+            colors.text       = getTextColorFromBackColor(colors.stripeBack, colors.back[3]);
+            colors.wire       = 
+                !rgbaIsNaN(colors.stripeBack)
+                ? colors.stripeBack
+                : rgb_a(rgbFromType(ANY_VALUE, false));
+        }
+        
 
         return colors;
     }

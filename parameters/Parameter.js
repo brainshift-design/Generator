@@ -46,6 +46,9 @@ extends EventTarget
     onchangelock   = new Event('changelock');
 
 
+    isNodeValue    = false; // helps figure out if a wire is unknown
+
+
     changing       = false;
 
     volatile       = false;
@@ -146,6 +149,21 @@ extends EventTarget
     isVisible()
     {
         return true;
+    }
+
+
+
+    isFollowedByMultiplier()
+    {
+
+    }
+
+
+
+    isUnknown()
+    {
+        return this.input.isUncached()
+            && this.output.isMultiplied();
     }
 
 

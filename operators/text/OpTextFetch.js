@@ -111,8 +111,8 @@ extends ResizableOperatorWithValue
 
     updateParams()
     {
-        this.paramValue.enableControlText(false);
-        this.paramValue.controls[0].valueText = this.isUnknown() ? UNKNOWN_DISPLAY : '';
+        this.paramValue.enableControlText(false, this.isUnknown());
+        // this.paramValue.controls[0].valueText = this.isUnknown() ? UNKNOWN_DISPLAY : '';
 
         this.paramRequest.enableControlText(true);
 

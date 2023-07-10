@@ -230,16 +230,31 @@ extends OpColorBase
     {
         const colors = super.getHeaderColors();
 
-        colors.back       = rgb_a(colors.back, this.paramFill.value.opacity.value/100);
-        colors.stripeBack = rgb_a(colors.stripeBack, this.paramFill.value.opacity.value/100);
-        colors.text       = getTextColorFromBackColor(colors.stripeBack, this.paramFill.value.opacity.value/100);
         colors.input      = rgb_a(colors.text, 0.2);
         colors.output     = rgb_a(colors.text, 0.2);
 
-        colors.wire = 
-            !rgbaIsNaN(colors.stripeBack)
-            ? colors.stripeBack
-            : rgbFromType(ANY_VALUE, false);
+
+            
+        // if (this.isUnknown())
+        // {
+        //     colors.back       = darkMode ? hex2rgb('444')  : hex2rgb('ccc');
+        //     colors.stripeBack = darkMode ? hex2rgb('444')  : hex2rgb('ccc');
+        //     colors.text       = darkMode ? hex2rgb('fff8') : hex2rgb('0008');
+        //     colors.wire       = darkMode ? hex2rgb('888')  : hex2rgb('aaa');
+        // }
+        // else
+        // {
+            const opacity = this.paramFill.value.opacity.value/100;
+
+            colors.back       = rgb_a(colors.back,       opacity);
+            colors.stripeBack = rgb_a(colors.stripeBack, opacity);
+            colors.text       = getTextColorFromBackColor(colors.stripeBack, opacity);
+            colors.wire       = 
+                !rgbaIsNaN(colors.stripeBack)
+                ? colors.stripeBack
+                : rgbFromType(ANY_VALUE, false);
+        // }
+
 
         return colors;
     }

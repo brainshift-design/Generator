@@ -1,6 +1,8 @@
 class GNumberToText
 extends GNumberType
 {
+    input;
+
     number;
     format;
 
@@ -22,7 +24,6 @@ extends GNumberType
         if (this.input) 
             copy.input = this.input.copy();
 
-        copy.number = this.number.copy();
         copy.format = this.format.copy();
 
         return copy;
@@ -36,30 +37,36 @@ extends GNumberType
             return this;
 
 
-        const number = (await this.number.eval(parse)).toValue();
         const format = (await this.format.eval(parse)).toValue();
 
 
-        let str = NAN_CHAR;
-
-        switch (format.value)
+        if (this.input)
         {
-            case 0: // dec
-                str = numToString(number.value, -number.decimals);
-            break;
+            const input = (await this.input.eval(parse)).toValue();
 
-            case 1: // hex
-                str = numToString(Math.round(number.value), number.decimals, true).toUpperCase();
+
+            let str = NAN_CHAR;
+
+            switch (format.value)
+            {
+                case 0: // dec
+                    str = numToString(input.value, -input.decimals);
                 break;
-        }
 
-        this.value = new TextValue(str);
+                case 1: // hex
+                    str = numToString(Math.round(input.value), input.decimals, true).toUpperCase();
+                    break;
+            }
+
+            this.value = new TextValue(str);
+        }
+        else
+            this.value = TextValue.NaN;
 
 
         this.updateValues =
         [
             ['value',  this.value],
-            ['number', number    ],
             ['format', format    ]
         ];
 
@@ -75,7 +82,7 @@ extends GNumberType
     {
         super.pushValueUpdates(parse);
 
-        if (this.number) this.number.pushValueUpdates(parse);
+        if (this.input ) this.input .pushValueUpdates(parse);
         if (this.format) this.format.pushValueUpdates(parse);
     }
 
@@ -85,7 +92,7 @@ extends GNumberType
     {
         super.invalidateInputs(from);
 
-        if (this.number) this.number.invalidateInputs(from);
+        if (this.input ) this.input .invalidateInputs(from);
         if (this.format) this.format.invalidateInputs(from);
     }
 }

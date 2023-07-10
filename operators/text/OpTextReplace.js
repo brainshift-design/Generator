@@ -68,11 +68,11 @@ extends OperatorWithValue
 
     updateParams()
     {
-        this.paramValue.enableControlText(false);
-        this.paramValue.controls[0].valueText = this.isUnknown() ? UNKNOWN_DISPLAY : '';
+        this.paramValue.enableControlText(false, this.isUnknown());
+        // this.paramValue.controls[0].valueText = this.isUnknown() ? UNKNOWN_DISPLAY : '';
 
-        this.paramWhat .enableControlText(true);
-        this.paramWith .enableControlText(true);
+        this.paramWhat.enableControlText(true);
+        this.paramWith.enableControlText(true);
 
         this.updateParamControls();
     }

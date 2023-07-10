@@ -408,64 +408,11 @@ extends OpColorBase
     {
         super.updateHeader();
 
-        
-        this.header.style.background = 'transparent';
-
-        
         const colors = this.getHeaderColors();
-
-        const unknownBackStyle = darkMode ? '#444' : '#ccc';
-
-
-        this.colorBack.style.background = 
-            this.isUnknown()
-            ? unknownBackStyle
-            : !rgbIsNaN(colors.stripeBack)
-              ? rgba2style(colors.stripeBack)
-              : rgba2style(rgb_a(rgbDocumentBody, 0.95));
-
-        this.colorBack.style.backgroundImage = 
-            this.isUnknown()
-            ? 'url(\'data:image/svg+xml;utf8,<svg width="45" height="65" viewBox="0 0 9 13" fill="none" xmlns="http://www.w3.org/2000/svg"><path opacity="0.1" d="M3.04545 8.51136V8.31818C3.04924 7.6553 3.10795 7.12689 3.22159 6.73295C3.33902 6.33902 3.50947 6.02083 3.73295 5.77841C3.95644 5.53598 4.22538 5.31629 4.53977 5.11932C4.77462 4.9678 4.98485 4.81061 5.17045 4.64773C5.35606 4.48485 5.50379 4.30492 5.61364 4.10795C5.72349 3.9072 5.77841 3.68371 5.77841 3.4375C5.77841 3.17614 5.71591 2.94697 5.59091 2.75C5.46591 2.55303 5.29735 2.40151 5.08523 2.29545C4.87689 2.18939 4.64583 2.13636 4.39205 2.13636C4.14583 2.13636 3.91288 2.19129 3.69318 2.30114C3.47348 2.4072 3.29356 2.56629 3.15341 2.77841C3.01326 2.98674 2.9375 3.24621 2.92614 3.55682H0.607955C0.626894 2.79924 0.808712 2.17424 1.15341 1.68182C1.49811 1.18561 1.95455 0.816288 2.52273 0.573863C3.09091 0.327651 3.7178 0.204545 4.40341 0.204545C5.1572 0.204545 5.82386 0.329545 6.40341 0.579545C6.98295 0.825757 7.4375 1.18371 7.76705 1.65341C8.09659 2.12311 8.26136 2.68939 8.26136 3.35227C8.26136 3.79545 8.1875 4.18939 8.03977 4.53409C7.89583 4.875 7.69318 5.17803 7.43182 5.44318C7.17045 5.70455 6.86174 5.94129 6.50568 6.15341C6.20644 6.33144 5.96023 6.51705 5.76705 6.71023C5.57765 6.90341 5.43561 7.12689 5.34091 7.38068C5.25 7.63447 5.20265 7.94697 5.19886 8.31818V8.51136H3.04545ZM4.17045 12.1477C3.79167 12.1477 3.4678 12.0152 3.19886 11.75C2.93371 11.4811 2.80303 11.1591 2.80682 10.7841C2.80303 10.4129 2.93371 10.0947 3.19886 9.82955C3.4678 9.56439 3.79167 9.43182 4.17045 9.43182C4.5303 9.43182 4.84659 9.56439 5.11932 9.82955C5.39205 10.0947 5.5303 10.4129 5.53409 10.7841C5.5303 11.0341 5.46402 11.2633 5.33523 11.4716C5.21023 11.6761 5.04545 11.8409 4.84091 11.9659C4.63636 12.0871 4.41288 12.1477 4.17045 12.1477Z" fill="' + (darkMode ? 'white' : 'black') + '"/></svg>\')'
-            : 'none';
+        
+        updateColorHeader(this, colors);
 
         this.colorBack.style.height = defHeaderHeight + defParamHeight;
-
-        this.colorBack.style.backgroundPosition = '50% 50%';
-        this.colorBack.style.backgroundRepeat   = 'no-repeat';
-
-
-        this.label.style.color = rgba2style(colors.text);
-
-         
-        this. inputs[0].colorLight =
-        this. inputs[0].colorDark  = colors.input;
-        this. inputs[0].wireColor  = rgb_a(colors.wire);
-
-        this.outputs[0].colorLight =
-        this.outputs[0].colorDark  = colors.output; 
-        this.outputs[0].wireColor  = rgb_a(colors.wire);
-
-
-        if (this.isUnknown())
-            this._warningOverlay.style.display = 'none';
-
-        else
-        {
-            const colWarning = 
-                isDark(colors.back)
-                ? [1, 1, 1, 0.2 ]
-                : [0, 0, 0, 0.12];
-
-            this.warningStyle = 
-                rgbIsValid(colors.back) 
-                ? 'transparent' 
-                :  rgba2style(colWarning);
-
-                
-            this.updateWarningOverlay();
-            this.updateWarningOverlayStyle(colors.back, defHeaderHeight + defParamHeight);
-        }
     }
 
 
@@ -733,4 +680,64 @@ function getColorOutputValuesForUndo(output)
         paramId: 'color', 
         value:   ColorValue.fromDataColor(output.node._color)
     }];
+}
+
+
+
+function updateColorHeader(node, colors)
+{
+    node.header.style.background = 'transparent';
+
+    const unknownBackStyle = darkMode ? '#444' : '#ccc';
+
+
+    node.colorBack.style.background = 
+        node.isUnknown()
+        ? unknownBackStyle
+        : !rgbIsNaN(colors.stripeBack)
+          ? rgba2style(colors.stripeBack)
+          : rgba2style(rgb_a(rgbDocumentBody, 0.95));
+
+    node.colorBack.style.backgroundImage = 
+        node.isUnknown()
+        ? 'url(\'data:image/svg+xml;utf8,<svg width="45" height="65" viewBox="0 0 9 13" fill="none" xmlns="http://www.w3.org/2000/svg"><path opacity="0.1" d="M3.04545 8.51136V8.31818C3.04924 7.6553 3.10795 7.12689 3.22159 6.73295C3.33902 6.33902 3.50947 6.02083 3.73295 5.77841C3.95644 5.53598 4.22538 5.31629 4.53977 5.11932C4.77462 4.9678 4.98485 4.81061 5.17045 4.64773C5.35606 4.48485 5.50379 4.30492 5.61364 4.10795C5.72349 3.9072 5.77841 3.68371 5.77841 3.4375C5.77841 3.17614 5.71591 2.94697 5.59091 2.75C5.46591 2.55303 5.29735 2.40151 5.08523 2.29545C4.87689 2.18939 4.64583 2.13636 4.39205 2.13636C4.14583 2.13636 3.91288 2.19129 3.69318 2.30114C3.47348 2.4072 3.29356 2.56629 3.15341 2.77841C3.01326 2.98674 2.9375 3.24621 2.92614 3.55682H0.607955C0.626894 2.79924 0.808712 2.17424 1.15341 1.68182C1.49811 1.18561 1.95455 0.816288 2.52273 0.573863C3.09091 0.327651 3.7178 0.204545 4.40341 0.204545C5.1572 0.204545 5.82386 0.329545 6.40341 0.579545C6.98295 0.825757 7.4375 1.18371 7.76705 1.65341C8.09659 2.12311 8.26136 2.68939 8.26136 3.35227C8.26136 3.79545 8.1875 4.18939 8.03977 4.53409C7.89583 4.875 7.69318 5.17803 7.43182 5.44318C7.17045 5.70455 6.86174 5.94129 6.50568 6.15341C6.20644 6.33144 5.96023 6.51705 5.76705 6.71023C5.57765 6.90341 5.43561 7.12689 5.34091 7.38068C5.25 7.63447 5.20265 7.94697 5.19886 8.31818V8.51136H3.04545ZM4.17045 12.1477C3.79167 12.1477 3.4678 12.0152 3.19886 11.75C2.93371 11.4811 2.80303 11.1591 2.80682 10.7841C2.80303 10.4129 2.93371 10.0947 3.19886 9.82955C3.4678 9.56439 3.79167 9.43182 4.17045 9.43182C4.5303 9.43182 4.84659 9.56439 5.11932 9.82955C5.39205 10.0947 5.5303 10.4129 5.53409 10.7841C5.5303 11.0341 5.46402 11.2633 5.33523 11.4716C5.21023 11.6761 5.04545 11.8409 4.84091 11.9659C4.63636 12.0871 4.41288 12.1477 4.17045 12.1477Z" fill="' + (darkMode ? 'white' : 'black') + '"/></svg>\')'
+        : 'none';
+
+    node.colorBack.style.height = node.measureData.headerOffset.height;
+
+    node.colorBack.style.backgroundPosition = '50% 50%';
+    node.colorBack.style.backgroundRepeat   = 'no-repeat';
+
+
+    node.label.style.color = rgba2style(colors.text);
+
+     
+    node. inputs[0].colorLight =
+    node. inputs[0].colorDark  = colors.input;
+    node. inputs[0].wireColor  = rgb_a(colors.wire);
+
+    node.outputs[0].colorLight =
+    node.outputs[0].colorDark  = colors.output; 
+    node.outputs[0].wireColor  = rgb_a(colors.wire);
+
+
+    if (node.isUnknown())
+        node._warningOverlay.style.display = 'none';
+
+    else
+    {
+        const colWarning = 
+            isDark(colors.back)
+            ? [1, 1, 1, 0.2 ]
+            : [0, 0, 0, 0.12];
+
+        node.warningStyle = 
+            rgbIsValid(colors.back) 
+            ? 'transparent' 
+            :  rgba2style(colWarning);
+
+            
+        node.updateWarningOverlay();
+        node.updateWarningOverlayStyle(colors.back, defHeaderHeight + defParamHeight);
+    }
 }

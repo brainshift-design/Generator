@@ -81,7 +81,6 @@ extends OperatorBase
 
                 this.updateTimer = setTimeout(() => pushUpdate(null, [this]), delay * 1000);
             } 
-
         }
         else if (this.updateTimer >= 0)
         {

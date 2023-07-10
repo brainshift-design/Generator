@@ -162,7 +162,7 @@ const TEXT_COMPARE   = 'TCMP';
 const TEXT_CHAR      = 'TCHAR';
 const NUMBER_TO_TEXT = 'N2T';
 const TEXT_TO_NUMBER = 'T2N';
-const TEXT_CSV       = 'TCSV';
+const TEXT_SPLIT     = 'TSPLT';
 const TEXT_JSON      = 'TJSON';
 const TEXT_FETCH     = 'FETCH';
 
@@ -188,7 +188,7 @@ const NUMBER_TYPES =
     NUMBER_INTERPOLATE,
     NUMBER_SOLVE,
     NUMBER_ANIMATE,
-    TEXT_TO_NUMBER,
+    NUMBER_TO_TEXT,
 
     ...MATH_TYPES,
     ...NUMBER_BOOLEAN_TYPES,
@@ -211,8 +211,8 @@ const TEXT_TYPES =
     TEXT_REPLACE,
     TEXT_COMPARE,
     TEXT_CHAR,
-    NUMBER_TO_TEXT,
-    TEXT_CSV,
+    TEXT_TO_NUMBER,
+    TEXT_SPLIT,
     TEXT_JSON,
     TEXT_FETCH
 ];

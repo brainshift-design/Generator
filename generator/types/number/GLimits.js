@@ -49,7 +49,6 @@ extends GNumberType1
         if (this.input)
         {
             this.value = (await this.input.eval(parse)).toValue();
-            //console.log('this.value =', this.value);
 
             consoleAssert(
                 this.value.type == NUMBER_VALUE, 
@@ -91,6 +90,7 @@ extends GNumberType1
     {
         super.pushValueUpdates(parse);
 
+        if (this.input) this.input.pushValueUpdates(parse);
         if (this.min  ) this.min  .pushValueUpdates(parse);
         if (this.max  ) this.max  .pushValueUpdates(parse);
     }

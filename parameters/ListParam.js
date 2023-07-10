@@ -172,7 +172,7 @@ extends Parameter
                   .length;
 
         const value =
-              ((nItems != 0 || this.showZero) ? (nItems + ' ') : '') 
+              (this.node.isUnknown() ? '? ' : ((nItems != 0 || this.showZero) ? (nItems + ' ') : ''))
             +  countString(nItems, this.itemName);
 
 

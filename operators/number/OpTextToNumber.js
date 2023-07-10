@@ -1,42 +1,51 @@
 class   OpTextToNumber
 extends OperatorBase
 {
-    paramText;
+    paramValue;
     paramFormat;
 
 
 
     constructor()
     {
-        super(TEXT_TO_NUMBER, 'textToNum', 'to number', '');
+        super(TEXT_TO_NUMBER, 'textToNum', 'to number', iconTextToNumber);
 
 
-        this.addOutput(new Output([NUMBER_VALUE], this.output_genRequest));
+        this.addInput(new Input([TEXT_VALUE]));
 
-        this.addParam(this.paramText   = new TextParam  ('text',   '',       false, true,  true));
+        this.addParam(this.paramValue  = new NumberParam('value',  'value',  false, false, true));
         this.addParam(this.paramFormat = new SelectParam('format', 'format', false, true,  true, ['decimal', 'hexadecimal']));
+
+        this.paramValue.isNodeValue = true;
     }
 
 
 
-    output_genRequest(gen)
+    genRequest(gen)
     {
-        // 'this' is the output
+        // 'this' is the node
 
         gen.scope.push({
-            nodeId:  this.node.id, 
+            nodeId:  this.id, 
             paramId: NULL });
 
-        const [request, ignore] = this.node.genRequestStart(gen);
+        const [request, ignore] = this.genRequestStart(gen);
         if (ignore) return request;
 
         
-        request.push(...this.node.paramText  .genRequest(gen));
-        request.push(...this.node.paramFormat.genRequest(gen));
+        const input = this.inputs[0];
+
+
+        request.push(input.connected ? 1 : 0);
+        
+        if (input.connected)
+            request.push(...pushInputOrParam(input, gen));
+
+        request.push(...this.paramFormat.genRequest(gen));
 
         
         gen.scope.pop();
-        pushUnique(gen.passedNodes, this.node);
+        pushUnique(gen.passedNodes, this);
 
         return request;
     }
@@ -45,8 +54,10 @@ extends OperatorBase
 
     updateParams()
     {
-        this.paramText  .enableControlText(true);
+        this.paramValue .enableControlText(false, this.isUnknown());
         this.paramFormat.enableControlText(true);
+
+        this.paramValue.controls[0].showHex = this.paramFormat.value.value > 0;
 
         this.updateParamControls();
     }

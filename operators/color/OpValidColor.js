@@ -5,7 +5,10 @@ extends OpColorBase
 
     corrections = [];
 
-    
+
+    colorBack;
+
+
 
     constructor()
     {
@@ -16,6 +19,10 @@ extends OpColorBase
         this.iconOffsetY = -1;
 
         
+        this.colorBack = createDiv('colorBack');
+        this.inner.insertBefore(this.colorBack, this.paramHolder);
+
+
         this.addInput(new Input(COLOR_TYPES));
         this.addOutput(new Output([COLOR_VALUE], this.output_genRequest));
 
@@ -98,17 +105,28 @@ extends OpColorBase
 
 
 
-    // updateHeader()
-    // {
-    //     super.updateHeader();
+    updateHeader()
+    {
+        super.updateHeader();
 
-    //     const colors = this.getHeaderColors();
+        const colors = this.getHeaderColors();
+        updateColorHeader(this, colors);
+    }
 
-    //     // this.progressBar.style.background = 
-    //     //     !rgbIsNaN(colors.back) 
-    //     //     ? rgb2style_a(colors.text, 0.5) 
-    //     //     : 'var(--figma-color-bg-brand)';
-    // }
+
+
+    getHeaderColors()
+    {
+        const colors = super.getHeaderColors();
+
+        if (this.isUnknown())
+        {
+            colors.text = darkMode ? hex2rgb('fff8') : hex2rgb('0008');
+            colors.wire = darkMode ? hex2rgb('888f') : hex2rgb('aaaf');
+        }
+                
+        return colors;
+    }
 
 
 

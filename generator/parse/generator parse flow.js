@@ -202,7 +202,7 @@ function genParseListCount(parse)
     if (nInputs == 1)
         count.input = genParse(parse);
 
-    count.base = genParse(parse);
+    count.start = genParse(parse);
 
 
     parse.nTab--;

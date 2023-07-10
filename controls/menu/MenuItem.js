@@ -197,7 +197,8 @@ class MenuItem
                     
                     this.button0 = false;
 
-                    hideAllMenus();
+                    if (!e.shiftKey)
+                        hideAllMenus();
 
 
                     const node = graph.pageNodes.at(-1);

@@ -4600,7 +4600,7 @@ const TEXT_COMPARE   = 'TCMP';
 const TEXT_CHAR      = 'TCHAR';
 const NUMBER_TO_TEXT = 'N2T';
 const TEXT_TO_NUMBER = 'T2N';
-const TEXT_CSV       = 'TCSV';
+const TEXT_SPLIT     = 'TSPLT';
 const TEXT_JSON      = 'TJSON';
 const TEXT_FETCH     = 'FETCH';
 
@@ -4626,7 +4626,7 @@ const NUMBER_TYPES =
     NUMBER_INTERPOLATE,
     NUMBER_SOLVE,
     NUMBER_ANIMATE,
-    TEXT_TO_NUMBER,
+    NUMBER_TO_TEXT,
 
     ...MATH_TYPES,
     ...NUMBER_BOOLEAN_TYPES,
@@ -4649,8 +4649,8 @@ const TEXT_TYPES =
     TEXT_REPLACE,
     TEXT_COMPARE,
     TEXT_CHAR,
-    NUMBER_TO_TEXT,
-    TEXT_CSV,
+    TEXT_TO_NUMBER,
+    TEXT_SPLIT,
     TEXT_JSON,
     TEXT_FETCH
 ];
@@ -7827,7 +7827,7 @@ extends GOperator
 
         this.param = this.node.paramFromId(this.paramId);
 
-
+        
         if (isValid(this.param))
         {
             // if (   this.feedbackValue)
@@ -12496,7 +12496,7 @@ extends GOperator
         let index = (await this.index.eval(parse)).toValue();
 
 
-        let length   = 0;
+        let length = 0;
 
 
         if (this.input)
@@ -12592,15 +12592,6 @@ extends GOperator
 
 
 
-    toValue()
-    {
-        return this.value
-             ? this.value.copy()
-             : null;
-    }
-
-
-
     invalidateInputs(from)
     {
         super.invalidateInputs(from);
@@ -12615,7 +12606,7 @@ class GListCount
 extends GOperator
 {
     input = null;
-    base  = null;
+    start = null;
 
     value = null;
 
@@ -12635,7 +12626,7 @@ extends GOperator
         copy.copyBase(this);
 
         if (this.input) copy.input = this.input.copy();
-        if (this.base)  copy.base  = this.base .copy();
+        if (this.start)  copy.start  = this.start .copy();
         
         if (this.count) copy.count = this.count.copy();
 
@@ -12659,12 +12650,13 @@ extends GOperator
             return this;
 
 
+        const start = (await this.start.eval(parse)).toValue();
+
+        
         if (this.input)
         {
             const input = (await this.input.eval(parse)).toValue();
-            const base  = (await this.base .eval(parse)).toValue();
-
-            this.value = new NumberValue(input.items.length - (base.value == 0 ? 1 : 0));
+            this.value = new NumberValue(input.items.length - (start.value == 0 ? 1 : 0));
         }
         else
             this.value = NumberValue.NaN;
@@ -12673,7 +12665,7 @@ extends GOperator
         this.updateValues = 
         [
             ['value', this.value],
-            ['base',  this.base ]
+            ['start', start     ]
         ];
 
 
@@ -12689,6 +12681,7 @@ extends GOperator
         super.pushValueUpdates(parse);
 
         if (this.input) this.input.pushValueUpdates(parse);
+        if (this.start) this.start.pushValueUpdates(parse);
     }
 
 
@@ -12705,6 +12698,7 @@ extends GOperator
         super.invalidateInputs(from);
 
         if (this.input) this.input.invalidateInputs(from);
+        if (this.start) this.start.invalidateInputs(from);
     }
 }
 
@@ -13127,22 +13121,20 @@ extends GOperator
                 consoleAssert(parse.repeats.at(-1) == repeat, 'invalid nested repeat \'' + this.nodeId + '\'');
                 parse.repeats.pop();
             }
-
-            
-            this.updateValues =
-            [
-                ['value', this.value     ],
-                ['count', count          ],
-                ['loop',  NumberValue.NaN]
-            ];
         }
         else
         {
             if (this.input)
                 await this.input.eval(parse);
-
-            this.updateValues = [['', NullValue]];
         }
+
+
+        this.updateValues =
+        [
+            ['value', this.value     ],
+            ['count', count          ],
+            ['loop',  NumberValue.NaN]
+        ];
 
 
         this.validate();
@@ -13463,6 +13455,16 @@ extends GOperator
     toValue()
     {
         return this.value.copy();
+    }
+
+
+
+    pushValueUpdates(parse)
+    {
+        super.pushValueUpdates(parse);
+
+        if (this.input) this.input.pushValueUpdates(parse);
+        if (this.delay) this.delay.pushValueUpdates(parse);
     }
 
 
@@ -14109,7 +14111,6 @@ extends GNumberType1
         if (this.input)
         {
             this.value = (await this.input.eval(parse)).toValue();
-            //console.log('this.value =', this.value);
 
             consoleAssert(
                 this.value.type == NUMBER_VALUE, 
@@ -14151,6 +14152,7 @@ extends GNumberType1
     {
         super.pushValueUpdates(parse);
 
+        if (this.input) this.input.pushValueUpdates(parse);
         if (this.min  ) this.min  .pushValueUpdates(parse);
         if (this.max  ) this.max  .pushValueUpdates(parse);
     }
@@ -18033,6 +18035,8 @@ extends GTextType1
 class GNumberToText
 extends GNumberType
 {
+    input;
+
     number;
     format;
 
@@ -18054,7 +18058,6 @@ extends GNumberType
         if (this.input) 
             copy.input = this.input.copy();
 
-        copy.number = this.number.copy();
         copy.format = this.format.copy();
 
         return copy;
@@ -18068,30 +18071,36 @@ extends GNumberType
             return this;
 
 
-        const number = (await this.number.eval(parse)).toValue();
         const format = (await this.format.eval(parse)).toValue();
 
 
-        let str = NAN_CHAR;
-
-        switch (format.value)
+        if (this.input)
         {
-            case 0: // dec
-                str = numToString(number.value, -number.decimals);
-            break;
+            const input = (await this.input.eval(parse)).toValue();
 
-            case 1: // hex
-                str = numToString(Math.round(number.value), number.decimals, true).toUpperCase();
+
+            let str = NAN_CHAR;
+
+            switch (format.value)
+            {
+                case 0: // dec
+                    str = numToString(input.value, -input.decimals);
                 break;
-        }
 
-        this.value = new TextValue(str);
+                case 1: // hex
+                    str = numToString(Math.round(input.value), input.decimals, true).toUpperCase();
+                    break;
+            }
+
+            this.value = new TextValue(str);
+        }
+        else
+            this.value = TextValue.NaN;
 
 
         this.updateValues =
         [
             ['value',  this.value],
-            ['number', number    ],
             ['format', format    ]
         ];
 
@@ -18107,7 +18116,7 @@ extends GNumberType
     {
         super.pushValueUpdates(parse);
 
-        if (this.number) this.number.pushValueUpdates(parse);
+        if (this.input ) this.input .pushValueUpdates(parse);
         if (this.format) this.format.pushValueUpdates(parse);
     }
 
@@ -18117,7 +18126,7 @@ extends GNumberType
     {
         super.invalidateInputs(from);
 
-        if (this.number) this.number.invalidateInputs(from);
+        if (this.input ) this.input .invalidateInputs(from);
         if (this.format) this.format.invalidateInputs(from);
     }
 }
@@ -18127,7 +18136,8 @@ extends GNumberType
 class GTextToNumber
 extends GNumberType
 {
-    text;
+    input;
+
     format;
 
 
@@ -18148,7 +18158,6 @@ extends GNumberType
         if (this.input) 
             copy.input = this.input.copy();
 
-        copy.text   = this.text.copy();
         copy.format = this.format.copy();
 
         return copy;
@@ -18162,30 +18171,36 @@ extends GNumberType
             return this;
 
 
-        const text   = (await this.text  .eval(parse)).toValue();
         const format = (await this.format.eval(parse)).toValue();
 
 
-        let num = Number.NaN;
-
-        switch (format.value)
+        if (this.input)
         {
-            case 0: // dec
-                num = parseFloat(text.value);
-            break;
+            const input = (await this.input.eval(parse)).toValue();
 
-            case 1: // hex
-                num = parseInt(text.value, 16);
-                break;
+
+            let num = Number.NaN;
+
+            switch (format.value)
+            {
+                case 0: // dec
+                    num = parseFloat(input.value);
+                    break;
+
+                case 1: // hex
+                    num = parseInt(input.value, 16);
+                    break;
+            }
+
+            this.value = new NumberValue(num);
         }
-
-        this.value = new NumberValue(num);
+        else
+            this.value = NumberValue.NaN;
 
 
         this.updateValues =
         [
             ['value',  this.value],
-            ['text',   text      ],
             ['format', format    ]
         ];
 
@@ -18201,7 +18216,7 @@ extends GNumberType
     {
         super.pushValueUpdates(parse);
 
-        if (this.text  ) this.text  .pushValueUpdates(parse);
+        if (this.input)  this.input .pushValueUpdates(parse);
         if (this.format) this.format.pushValueUpdates(parse);
     }
 
@@ -18211,7 +18226,7 @@ extends GNumberType
     {
         super.invalidateInputs(from);
 
-        if (this.text  ) this.text  .invalidateInputs(from);
+        if (this.input)  this.input .invalidateInputs(from);
         if (this.format) this.format.invalidateInputs(from);
     }
 }
@@ -18622,7 +18637,7 @@ extends GTextType1
 
 
 
-class GTextCSV
+class GTextSplit
 extends GOperator1
 {
     value;
@@ -18632,14 +18647,14 @@ extends GOperator1
 
     constructor(nodeId, options)
     {
-        super(TEXT_CSV, nodeId, options);
+        super(TEXT_SPLIT, nodeId, options);
     }
 
 
     
     copy()
     {
-        const copy = new GTextCSV(this.nodeId, this.options);
+        const copy = new GTextSplit(this.nodeId, this.options);
 
         copy.copyBase(this);
 
@@ -27556,7 +27571,7 @@ function genParseListCount(parse)
     if (nInputs == 1)
         count.input = genParse(parse);
 
-    count.base = genParse(parse);
+    count.start = genParse(parse);
 
 
     parse.nTab--;
@@ -31443,8 +31458,17 @@ function genParseNumberToText(parse)
     const num2text = new GNumberToText(nodeId, options);
    
 
+    let nInputs = -1;
+    
+    if (!ignore)
+    {
+        nInputs = parseInt(parse.move());
+        consoleAssert(nInputs == 0 || nInputs == 1, 'nInputs must be [0, 1]');
+    }
+
+
     if (parse.settings.logRequests) 
-        logReq(num2text, parse, ignore);
+        logReq(num2text, parse, ignore, nInputs);
 
 
     if (ignore) 
@@ -31457,7 +31481,9 @@ function genParseNumberToText(parse)
     parse.nTab++;
 
 
-    num2text.number = genParse(parse);
+    if (nInputs == 1)
+        num2text.input = genParse(parse);
+
     num2text.format = genParse(parse);
 
     
@@ -31478,6 +31504,15 @@ function genParseTextToNumber(parse)
     const text2num = new GTextToNumber(nodeId, options);
    
 
+    let nInputs = -1;
+    
+    if (!ignore)
+    {
+        nInputs = parseInt(parse.move());
+        consoleAssert(nInputs == 0 || nInputs == 1, 'nInputs must be [0, 1]');
+    }
+
+
     if (parse.settings.logRequests) 
         logReq(text2num, parse, ignore);
 
@@ -31492,7 +31527,9 @@ function genParseTextToNumber(parse)
     parse.nTab++;
 
 
-    text2num.text   = genParse(parse);
+    if (nInputs == 1)
+        text2num.input = genParse(parse);
+
     text2num.format = genParse(parse);
 
     
@@ -31505,12 +31542,12 @@ function genParseTextToNumber(parse)
 
 
 
-function genParseTextCSV(parse)
+function genParseTextSplit(parse)
 {
     const [, nodeId, options, ignore] = genParseNodeStart(parse);
 
 
-    const csv = new GTextCSV(nodeId, options);
+    const split = new GTextSplit(nodeId, options);
    
 
     let nInputs = -1;
@@ -31523,12 +31560,12 @@ function genParseTextCSV(parse)
 
     
     if (parse.settings.logRequests) 
-        logReq(csv, parse, ignore, nInputs);
+        logReq(split, parse, ignore, nInputs);
 
 
     if (ignore) 
     {
-        genParseNodeEnd(parse, csv);
+        genParseNodeEnd(parse, split);
         return parse.parsedNodes.find(n => n.nodeId == nodeId);
     }
 
@@ -31537,16 +31574,16 @@ function genParseTextCSV(parse)
 
 
     if (nInputs == 1)
-        csv.input = genParse(parse);
+        split.input = genParse(parse);
 
-    csv.separator = genParse(parse);
+    split.separator = genParse(parse);
 
     
     parse.nTab--;
 
 
-    genParseNodeEnd(parse, csv);
-    return csv;
+    genParseNodeEnd(parse, split);
+    return split;
 }
 
 
@@ -31809,7 +31846,7 @@ function genParse(parse, inParam = true)
     else if (parse.next == TEXT_JOIN              ) result = genParseTextJoin         (parse);
     else if (parse.next == TEXT_PAD               ) result = genParseTextPad          (parse);
     else if (parse.next == TEXT_COMPARE           ) result = genParseTextCompare      (parse);
-    else if (parse.next == TEXT_CSV               ) result = genParseTextCSV          (parse);
+    else if (parse.next == TEXT_SPLIT             ) result = genParseTextSplit        (parse);
     else if (parse.next == TEXT_JSON              ) result = genParseTextJson         (parse);
     else if (parse.next == TEXT_FETCH             ) result = genParseTextFetch        (parse);
  

@@ -6,6 +6,9 @@ extends OpColorBase
     paramGamma;
 
 
+    colorBack;
+
+
 
     constructor()
     {
@@ -14,6 +17,10 @@ extends OpColorBase
         this.iconOffsetY = -3;
 
         
+        this.colorBack = createDiv('colorBack');
+        this.inner.insertBefore(this.colorBack, this.paramHolder);
+
+
         this.addInput(new Input(COLOR_TYPES));
         this.addInput(new Input(COLOR_TYPES));
 
@@ -100,5 +107,30 @@ extends OpColorBase
             : dataColor_NaN;
 
         super.updateValues(requestId, actionId, updateParamId, paramIds, values);
+    }
+
+
+
+    updateHeader()
+    {
+        super.updateHeader();
+        
+        const colors = this.getHeaderColors();
+        updateColorHeader(this, colors);
+    }
+
+
+
+    getHeaderColors()
+    {
+        const colors = super.getHeaderColors();
+
+        if (this.isUnknown())
+        {
+            colors.text = darkMode ? hex2rgb('fff8') : hex2rgb('0008');
+            colors.wire = darkMode ? hex2rgb('888f') : hex2rgb('aaaf');
+        }
+
+        return colors;
     }
 }

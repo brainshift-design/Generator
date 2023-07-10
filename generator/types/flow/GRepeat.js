@@ -153,22 +153,20 @@ extends GOperator
                 consoleAssert(parse.repeats.at(-1) == repeat, 'invalid nested repeat \'' + this.nodeId + '\'');
                 parse.repeats.pop();
             }
-
-            
-            this.updateValues =
-            [
-                ['value', this.value     ],
-                ['count', count          ],
-                ['loop',  NumberValue.NaN]
-            ];
         }
         else
         {
             if (this.input)
                 await this.input.eval(parse);
-
-            this.updateValues = [['', NullValue]];
         }
+
+
+        this.updateValues =
+        [
+            ['value', this.value     ],
+            ['count', count          ],
+            ['loop',  NumberValue.NaN]
+        ];
 
 
         this.validate();

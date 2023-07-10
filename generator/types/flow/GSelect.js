@@ -47,7 +47,7 @@ extends GOperator
         let index = (await this.index.eval(parse)).toValue();
 
 
-        let length   = 0;
+        let length = 0;
 
 
         if (this.input)
@@ -139,15 +139,6 @@ extends GOperator
 
         if (this.input) this.input.pushValueUpdates(parse);
         if (this.index) this.index.pushValueUpdates(parse);
-    }
-
-
-
-    toValue()
-    {
-        return this.value
-             ? this.value.copy()
-             : null;
     }
 
 

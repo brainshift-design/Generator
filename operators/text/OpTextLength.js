@@ -13,6 +13,8 @@ extends OperatorBase
         this.addInput(new Input([TEXT_VALUE]));
 
         this.addParam(this.paramLength = new NumberParam('length', 'length', false, false, true));
+
+        this.paramLength.isNodeValue = true;
     }
 
 
@@ -49,7 +51,7 @@ extends OperatorBase
 
     updateParams()
     {
-        this.paramLength.enableControlText(false);
+        this.paramLength.enableControlText(false, this.isUnknown());
 
         this.updateParamControls();
     }

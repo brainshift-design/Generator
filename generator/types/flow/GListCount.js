@@ -2,7 +2,7 @@ class GListCount
 extends GOperator
 {
     input = null;
-    base  = null;
+    start = null;
 
     value = null;
 
@@ -22,7 +22,7 @@ extends GOperator
         copy.copyBase(this);
 
         if (this.input) copy.input = this.input.copy();
-        if (this.base)  copy.base  = this.base .copy();
+        if (this.start)  copy.start  = this.start .copy();
         
         if (this.count) copy.count = this.count.copy();
 
@@ -46,12 +46,13 @@ extends GOperator
             return this;
 
 
+        const start = (await this.start.eval(parse)).toValue();
+
+        
         if (this.input)
         {
             const input = (await this.input.eval(parse)).toValue();
-            const base  = (await this.base .eval(parse)).toValue();
-
-            this.value = new NumberValue(input.items.length - (base.value == 0 ? 1 : 0));
+            this.value = new NumberValue(input.items.length - (start.value == 0 ? 1 : 0));
         }
         else
             this.value = NumberValue.NaN;
@@ -60,7 +61,7 @@ extends GOperator
         this.updateValues = 
         [
             ['value', this.value],
-            ['base',  this.base ]
+            ['start', start     ]
         ];
 
 
@@ -76,6 +77,7 @@ extends GOperator
         super.pushValueUpdates(parse);
 
         if (this.input) this.input.pushValueUpdates(parse);
+        if (this.start) this.start.pushValueUpdates(parse);
     }
 
 
@@ -92,5 +94,6 @@ extends GOperator
         super.invalidateInputs(from);
 
         if (this.input) this.input.invalidateInputs(from);
+        if (this.start) this.start.invalidateInputs(from);
     }
 }
