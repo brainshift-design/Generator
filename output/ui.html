@@ -4399,6 +4399,7 @@ a
 
                 <p>•  fixed vector coordinates improperly snapping to pixels</p>
                 <p>•  nodes can now be copied by dragging them while holding Alt</p>
+                <p>•  tabbing is now possible across nodes that are directly below each other</p>
                 
                 <p><br/><br/><div id='chkHideWhatsNew'></div></p>
             </div>
@@ -11250,20 +11251,16 @@ function getSmoothSegment(_pointP, _point, _pointN)
         _pointN.y.value);
 
 
-    console.log('_pp =', _pp);
-    console.log('_p =',  _p );
-    console.log('_pn =', _pn);
-
     const v = subv(_pn, _pp);
     
     
     let a = angleDiff(
         angle(subv(_p, _pp)), 
         angle(subv(_pn, _p)));
-       
+
     a = Math.abs(a);
-    while (a > Tau/2) a -= Tau;
-    
+    while (a >= Tau/2) a -= Tau;
+
 
     const k     = 4 * (Math.sqrt(2) - 1) / 3;        // or use the value 0.55191502449 from http://spencermortensen.com/articles/bezier-circle/
 	const kCorr = 0.9993391093366649465402826439248; // slight improvement (see Bézier Curves p. 13, Gernot Hoffmann);
@@ -11276,6 +11273,8 @@ function getSmoothSegment(_pointP, _point, _pointN)
 
     const pp = addv(_p, mulvs(unitv(v), -lengthv(v)/2 * f));
     const pn = addv(_p, mulvs(unitv(v),  lengthv(v)/2 * f));
+    console.log('pp =', pp);
+    console.log('pn =', pn);
 
 
     return [pp, _p, pn];
@@ -48597,20 +48596,16 @@ function getSmoothSegment(_pointP, _point, _pointN)
         _pointN.y.value);
 
 
-    console.log('_pp =', _pp);
-    console.log('_p =',  _p );
-    console.log('_pn =', _pn);
-
     const v = subv(_pn, _pp);
     
     
     let a = angleDiff(
         angle(subv(_p, _pp)), 
         angle(subv(_pn, _p)));
-       
+
     a = Math.abs(a);
-    while (a > Tau/2) a -= Tau;
-    
+    while (a >= Tau/2) a -= Tau;
+
 
     const k     = 4 * (Math.sqrt(2) - 1) / 3;        // or use the value 0.55191502449 from http://spencermortensen.com/articles/bezier-circle/
 	const kCorr = 0.9993391093366649465402826439248; // slight improvement (see Bézier Curves p. 13, Gernot Hoffmann);
@@ -48623,6 +48618,8 @@ function getSmoothSegment(_pointP, _point, _pointN)
 
     const pp = addv(_p, mulvs(unitv(v), -lengthv(v)/2 * f));
     const pn = addv(_p, mulvs(unitv(v),  lengthv(v)/2 * f));
+    console.log('pp =', pp);
+    console.log('pn =', pn);
 
 
     return [pp, _p, pn];
@@ -69830,6 +69827,21 @@ NumberControl.prototype.initTextbox = function()
                     if (params[index].controls[0].showTextbox)
                         params[index].controls[0].showTextbox();
                 }
+                else if (   e.shiftKey 
+                    && index == 0)
+                {
+                    const nodeAbove = findNodeAbove(this.param.node);
+
+                    if (nodeAbove)
+                    {
+                        index = nodeAbove.params.length;
+                        while (index >= 0
+                            && nodeAbove.params[--index].controls[0].readOnly); // ; on purpose
+
+                        if (nodeAbove.params[index].controls[0].showTextbox)
+                            nodeAbove.params[index].controls[0].showTextbox();
+                    }
+                }
                 else if (!e.shiftKey 
                       && index < params.length-1) 
                 {
@@ -69838,6 +69850,21 @@ NumberControl.prototype.initTextbox = function()
 
                     if (params[index].controls[0].showTextbox)
                         params[index].controls[0].showTextbox();
+                }
+                else if (!e.shiftKey 
+                      && index == params.length-1) 
+                {
+                    const nodeBelow = findNodeBelow(this.param.node);
+
+                    if (nodeBelow)
+                    {
+                        index = -1;
+                        while (index < nodeBelow.params.length-1
+                            && nodeBelow.params[++index].controls[0].readOnly); // ; on purpose
+
+                        if (nodeBelow.params[index].controls[0].showTextbox)
+                            nodeBelow.params[index].controls[0].showTextbox();
+                    }
                 }
             }
         }
@@ -77139,7 +77166,7 @@ GraphView.prototype.createEvents = function()
         {
             const activeNodes = [];
 
-            for (const node of graph.currentPage.nodes)
+            for (const node of graph.nodes)
             {
                 if (node.active)
                 {
@@ -79332,10 +79359,7 @@ extends Parameter
             {
                 const colorName = e.detail.value.toLowerCase();
 
-                if (   colorName == 'rd'
-                    || colorName == 'rdo'
-                    || colorName == 'rdom'
-                    || colorName == 'rnd'
+                if (   colorName == 'rnd'
                     || colorName == 'rndo'
                     || colorName == 'rndom'
                     || colorName == 'rand'
@@ -86751,6 +86775,9 @@ Operator.prototype.createHeader = function()
             const yOffset = getTopHeight();
 
 
+            if (altPressedInMenu)
+                nodesAltCopied = true;
+                
             if (   !nodesAltCopied
                 &&  e.altKey
                 && !e.shiftKey)
@@ -107722,7 +107749,7 @@ document.addEventListener('keydown', e =>
     }
 
     else if (    e.key == 'Alt'
-             &&  e.shiftKey
+             && !e.shiftKey
              && !getCtrlKey(e))
     {
         // if ( graphView.overNode
@@ -110935,6 +110962,52 @@ function editSelectedGroup()
 
 
     // show group nodes
+}
+
+
+
+function findNodeAbove(node)
+{
+    const nodesAbove = [];
+
+    for (const n of graph.nodes)
+    {
+        if (n == node) continue;
+
+        if (   n.div.offsetTop < node.div.offsetTop
+            && n.div.offsetLeft < node.div.offsetLeft + node.div.offsetWidth
+            && n.div.offsetLeft + n.div.offsetWidth > node.div.offsetLeft)
+            nodesAbove.push(n);
+    }
+
+    nodesAbove.sort((a, b) => b.div.offsetTop - a.div.offsetTop);
+
+    return nodesAbove.length > 0
+         ? nodesAbove[0]
+         : null;
+}
+
+
+
+function findNodeBelow(node)
+{
+    const nodesBelow = [];
+
+    for (const n of graph.nodes)
+    {
+        if (n == node) continue;
+
+        if (   n.div.offsetTop + n.div.offsetHeight > node.div.offsetTop + node.div.offsetHeight
+            && n.div.offsetLeft < node.div.offsetLeft + node.div.offsetWidth
+            && n.div.offsetLeft + n.div.offsetWidth > node.div.offsetLeft)
+            nodesBelow.push(n);
+    }
+
+    nodesBelow.sort((a, b) => a.div.offsetTop + a.div.offsetHeight - b.div.offsetTop - b.div.offsetHeight);
+
+    return nodesBelow.length > 0
+         ? nodesBelow[0]
+         : null;
 }
 
 

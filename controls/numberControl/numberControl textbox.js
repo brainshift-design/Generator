@@ -100,6 +100,21 @@ NumberControl.prototype.initTextbox = function()
                     if (params[index].controls[0].showTextbox)
                         params[index].controls[0].showTextbox();
                 }
+                else if (   e.shiftKey 
+                    && index == 0)
+                {
+                    const nodeAbove = findNodeAbove(this.param.node);
+
+                    if (nodeAbove)
+                    {
+                        index = nodeAbove.params.length;
+                        while (index >= 0
+                            && nodeAbove.params[--index].controls[0].readOnly); // ; on purpose
+
+                        if (nodeAbove.params[index].controls[0].showTextbox)
+                            nodeAbove.params[index].controls[0].showTextbox();
+                    }
+                }
                 else if (!e.shiftKey 
                       && index < params.length-1) 
                 {
@@ -108,6 +123,21 @@ NumberControl.prototype.initTextbox = function()
 
                     if (params[index].controls[0].showTextbox)
                         params[index].controls[0].showTextbox();
+                }
+                else if (!e.shiftKey 
+                      && index == params.length-1) 
+                {
+                    const nodeBelow = findNodeBelow(this.param.node);
+
+                    if (nodeBelow)
+                    {
+                        index = -1;
+                        while (index < nodeBelow.params.length-1
+                            && nodeBelow.params[++index].controls[0].readOnly); // ; on purpose
+
+                        if (nodeBelow.params[index].controls[0].showTextbox)
+                            nodeBelow.params[index].controls[0].showTextbox();
+                    }
                 }
             }
         }

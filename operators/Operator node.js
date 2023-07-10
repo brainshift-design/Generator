@@ -218,6 +218,9 @@ Operator.prototype.createHeader = function()
             const yOffset = getTopHeight();
 
 
+            if (altPressedInMenu)
+                nodesAltCopied = true;
+                
             if (   !nodesAltCopied
                 &&  e.altKey
                 && !e.shiftKey)

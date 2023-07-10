@@ -1122,3 +1122,49 @@ function editSelectedGroup()
 
     // show group nodes
 }
+
+
+
+function findNodeAbove(node)
+{
+    const nodesAbove = [];
+
+    for (const n of graph.nodes)
+    {
+        if (n == node) continue;
+
+        if (   n.div.offsetTop < node.div.offsetTop
+            && n.div.offsetLeft < node.div.offsetLeft + node.div.offsetWidth
+            && n.div.offsetLeft + n.div.offsetWidth > node.div.offsetLeft)
+            nodesAbove.push(n);
+    }
+
+    nodesAbove.sort((a, b) => b.div.offsetTop - a.div.offsetTop);
+
+    return nodesAbove.length > 0
+         ? nodesAbove[0]
+         : null;
+}
+
+
+
+function findNodeBelow(node)
+{
+    const nodesBelow = [];
+
+    for (const n of graph.nodes)
+    {
+        if (n == node) continue;
+
+        if (   n.div.offsetTop + n.div.offsetHeight > node.div.offsetTop + node.div.offsetHeight
+            && n.div.offsetLeft < node.div.offsetLeft + node.div.offsetWidth
+            && n.div.offsetLeft + n.div.offsetWidth > node.div.offsetLeft)
+            nodesBelow.push(n);
+    }
+
+    nodesBelow.sort((a, b) => a.div.offsetTop + a.div.offsetHeight - b.div.offsetTop - b.div.offsetHeight);
+
+    return nodesBelow.length > 0
+         ? nodesBelow[0]
+         : null;
+}

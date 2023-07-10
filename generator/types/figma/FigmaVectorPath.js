@@ -362,20 +362,16 @@ function getSmoothSegment(_pointP, _point, _pointN)
         _pointN.y.value);
 
 
-    console.log('_pp =', _pp);
-    console.log('_p =',  _p );
-    console.log('_pn =', _pn);
-
     const v = subv(_pn, _pp);
     
     
     let a = angleDiff(
         angle(subv(_p, _pp)), 
         angle(subv(_pn, _p)));
-       
+
     a = Math.abs(a);
-    while (a > Tau/2) a -= Tau;
-    
+    while (a >= Tau/2) a -= Tau;
+
 
     const k     = 4 * (Math.sqrt(2) - 1) / 3;        // or use the value 0.55191502449 from http://spencermortensen.com/articles/bezier-circle/
 	const kCorr = 0.9993391093366649465402826439248; // slight improvement (see Bézier Curves p. 13, Gernot Hoffmann);
@@ -388,6 +384,8 @@ function getSmoothSegment(_pointP, _point, _pointN)
 
     const pp = addv(_p, mulvs(unitv(v), -lengthv(v)/2 * f));
     const pn = addv(_p, mulvs(unitv(v),  lengthv(v)/2 * f));
+    console.log('pp =', pp);
+    console.log('pn =', pn);
 
 
     return [pp, _p, pn];

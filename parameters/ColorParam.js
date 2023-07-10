@@ -102,10 +102,7 @@ extends Parameter
             {
                 const colorName = e.detail.value.toLowerCase();
 
-                if (   colorName == 'rd'
-                    || colorName == 'rdo'
-                    || colorName == 'rdom'
-                    || colorName == 'rnd'
+                if (   colorName == 'rnd'
                     || colorName == 'rndo'
                     || colorName == 'rndom'
                     || colorName == 'rand'

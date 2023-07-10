@@ -220,7 +220,7 @@ GraphView.prototype.createEvents = function()
         {
             const activeNodes = [];
 
-            for (const node of graph.currentPage.nodes)
+            for (const node of graph.nodes)
             {
                 if (node.active)
                 {
