@@ -45,10 +45,10 @@ extends Action
 
     undo(updateNodes)
     {
-        deleteNodesAction_restoreNodes(this);
+        deleteNodesAction_restoreNodes(this, updateNodes);
         
         //this.deactivateNewActiveNodes();
-        //deleteNodesAction_activateOldActiveNodes(this, updateNodes);
+        deleteNodesAction_activateOldActiveNodes(this, updateNodes);
 
         uiSaveNodes(
             [...this.nodeIds,
@@ -193,7 +193,7 @@ function deleteNodesAction_deleteNodes(act)
 
 
 
-function deleteNodesAction_restoreNodes(act)
+function deleteNodesAction_restoreNodes(act, updateNodes)
 {
     // console.log('act.nodes', act.nodes);
 
@@ -216,6 +216,8 @@ function deleteNodesAction_restoreNodes(act)
 
         node.updateMeasureData();
     }
+
+    pushUnique(updateNodes, act.nodes);
 }
 
 

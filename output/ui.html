@@ -4401,7 +4401,8 @@ a
                 <p>•  nodes can now be copied by dragging them while holding Alt</p>
                 <p>•  tabbing is now possible across nodes that are directly below each other</p>
                 <p>•  unknowable values are now indicated with dotted wires</p>
-                <p>•  fixed various bugs
+                <p>•  fixed delete undo not working</p>
+                <p>•  fixed various other bugs
                 
                 <p><br/><br/><div id='chkHideWhatsNew'></div></p>
             </div>
@@ -104358,10 +104359,10 @@ extends Action
 
     undo(updateNodes)
     {
-        deleteNodesAction_restoreNodes(this);
+        deleteNodesAction_restoreNodes(this, updateNodes);
         
         //this.deactivateNewActiveNodes();
-        //deleteNodesAction_activateOldActiveNodes(this, updateNodes);
+        deleteNodesAction_activateOldActiveNodes(this, updateNodes);
 
         uiSaveNodes(
             [...this.nodeIds,
@@ -104506,7 +104507,7 @@ function deleteNodesAction_deleteNodes(act)
 
 
 
-function deleteNodesAction_restoreNodes(act)
+function deleteNodesAction_restoreNodes(act, updateNodes)
 {
     // console.log('act.nodes', act.nodes);
 
@@ -104529,6 +104530,8 @@ function deleteNodesAction_restoreNodes(act)
 
         node.updateMeasureData();
     }
+
+    pushUnique(updateNodes, act.nodes);
 }
 
 
