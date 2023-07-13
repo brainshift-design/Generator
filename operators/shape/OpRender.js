@@ -159,7 +159,7 @@ extends OpShapeBase
     {
         this.paramRetain.enableControlText(true);
 
-        updateParamConditionText(this.paramRetain, this.isUnknown(), true, 1);
+        updateParamConditionText(this.paramRetain, this.paramRetain.isUnknown(), true, 1);
         
 
         this.updateParamControls();

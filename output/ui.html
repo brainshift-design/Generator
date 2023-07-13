@@ -4398,7 +4398,7 @@ a
             <div id='whatsNewBody'>
                 <h1 style='margin-top: 20px;'>What's new</h1>
 
-                <p>•  fixed Scale node not affecting round corners</p>
+                <p>•  fixed issue with unknown values</p>
                 
                 <p><br/><br/><div id='chkHideWhatsNew'></div></p>
             </div>
@@ -4726,7 +4726,7 @@ a
 
 
 
-const generatorVersion = 154;
+const generatorVersion = 156;
 
 
 const MAX_INT32        = 2147483647;
@@ -10608,10 +10608,13 @@ extends FigmaObject
     {
         const weight = this.strokeWeight * Math.abs(this.scaleStyle);
 
-        const dashes = this.strokeDashes
-            .split(',')
-            .map(d => parseFloat(d.trim()) * Math.abs(this.scaleStyle))
-            .join(',');
+        const dashes = 
+            this.strokeDashes
+            ? this.strokeDashes
+                .split(',')
+                .map(d => parseFloat(d.trim()) * Math.abs(this.scaleStyle))
+                .join(',')
+            : '';
 
         
         return [
@@ -39818,7 +39821,7 @@ onerror = (event, source, line, pos, error) =>
 };
 
 
-const generatorVersion = 154;
+const generatorVersion = 156;
 
 
 const MAX_INT32        = 2147483647;
@@ -47884,10 +47887,13 @@ extends FigmaObject
     {
         const weight = this.strokeWeight * Math.abs(this.scaleStyle);
 
-        const dashes = this.strokeDashes
-            .split(',')
-            .map(d => parseFloat(d.trim()) * Math.abs(this.scaleStyle))
-            .join(',');
+        const dashes = 
+            this.strokeDashes
+            ? this.strokeDashes
+                .split(',')
+                .map(d => parseFloat(d.trim()) * Math.abs(this.scaleStyle))
+                .join(',')
+            : '';
 
         
         return [
@@ -92399,7 +92405,7 @@ extends OperatorWithValue
     {
         this.paramOperation.enableControlText(true);
 
-        updateParamConditionText(this.paramValue, this.isUnknown(), true);
+        updateParamConditionText(this.paramValue, this.paramValue.isUnknown(), true);
 
 
         switch (this.paramOperation.value.value)
@@ -93721,7 +93727,7 @@ extends OperatorBase
         this.paramResult   .enableControlText(false);
         this.paramOperation.enableControlText(true );
 
-        updateParamConditionText(this.paramResult, this.isUnknown(), true);
+        updateParamConditionText(this.paramResult, this.paramResult.isUnknown(), true);
 
         
         this.updateParamControls();
@@ -98726,7 +98732,7 @@ extends OperatorBase
         this.paramBlend .enableControlText(true);
         this.paramBehind.enableControlText(true);
 
-        updateParamConditionText(this.paramBehind, this.isUnknown(), false, 1);
+        updateParamConditionText(this.paramBehind, this.paramBehind.isUnknown(), false, 1);
 
         this.updateParamControls();
     }
@@ -100202,7 +100208,7 @@ extends OperatorBase
     {
         super.updateParams();
 
-        updateParamConditionText(this.paramAffectSpace, this.isUnknown(), true, 1);
+        updateParamConditionText(this.paramAffectSpace, this.paramAffectSpace.isUnknown(), true, 1);
 
 
         const vector = this.paramMoveType.value.value == 1;
@@ -100420,8 +100426,8 @@ extends OpAffine
     {
         super.updateParams();
 
-        updateParamConditionText(this.paramShowCenter,  this.isUnknown(), false, 1);
-        updateParamConditionText(this.paramAffectSpace, this.isUnknown(), true, 1);
+        updateParamConditionText(this.paramShowCenter,  this.paramShowCenter .isUnknown(), false, 1);
+        updateParamConditionText(this.paramAffectSpace, this.paramAffectSpace.isUnknown(), true,  1);
 
         this.updateParamControls();
     }
@@ -100519,10 +100525,10 @@ extends OpAffine
     {
         super.updateParams();
 
-        updateParamConditionText(this.paramShowCenter,    this.isUnknown(), false, 1);
-        updateParamConditionText(this.paramAffectSpace,   this.isUnknown(), true,  1);
-        updateParamConditionText(this.paramAffectCorners, this.isUnknown(), false, 1);
-        updateParamConditionText(this.paramAffectStyle,   this.isUnknown(), false, 1);
+        updateParamConditionText(this.paramShowCenter,    this.paramShowCenter   .isUnknown(), false, 1);
+        updateParamConditionText(this.paramAffectSpace,   this.paramAffectSpace  .isUnknown(), true,  1);
+        updateParamConditionText(this.paramAffectCorners, this.paramAffectCorners.isUnknown(), false, 1);
+        updateParamConditionText(this.paramAffectStyle,   this.paramAffectStyle  .isUnknown(), false, 1);
 
         this.updateParamControls();
     }
@@ -100597,8 +100603,8 @@ extends OpAffine
     {
         super.updateParams();
 
-        updateParamConditionText(this.paramShowCenter,  this.isUnknown(), false, 1);
-        updateParamConditionText(this.paramAffectSpace, this.isUnknown(), true,  1);
+        updateParamConditionText(this.paramShowCenter,  this.paramShowCenter .isUnknown(), false, 1);
+        updateParamConditionText(this.paramAffectSpace, this.paramAffectSpace.isUnknown(), true,  1);
 
         this.updateParamControls();
     }
@@ -101045,7 +101051,7 @@ extends OpShapeBase
     {
         this.paramRetain.enableControlText(true);
 
-        updateParamConditionText(this.paramRetain, this.isUnknown(), true, 1);
+        updateParamConditionText(this.paramRetain, this.paramRetain.isUnknown(), true, 1);
         
 
         this.updateParamControls();

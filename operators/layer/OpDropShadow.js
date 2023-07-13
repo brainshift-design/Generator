@@ -144,7 +144,7 @@ extends OperatorBase
         this.paramBlend .enableControlText(true);
         this.paramBehind.enableControlText(true);
 
-        updateParamConditionText(this.paramBehind, this.isUnknown(), false, 1);
+        updateParamConditionText(this.paramBehind, this.paramBehind.isUnknown(), false, 1);
 
         this.updateParamControls();
     }

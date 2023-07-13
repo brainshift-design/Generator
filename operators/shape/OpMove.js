@@ -80,7 +80,7 @@ extends OperatorBase
     {
         super.updateParams();
 
-        updateParamConditionText(this.paramAffectSpace, this.isUnknown(), true, 1);
+        updateParamConditionText(this.paramAffectSpace, this.paramAffectSpace.isUnknown(), true, 1);
 
 
         const vector = this.paramMoveType.value.value == 1;

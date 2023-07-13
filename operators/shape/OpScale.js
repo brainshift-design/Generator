@@ -89,10 +89,10 @@ extends OpAffine
     {
         super.updateParams();
 
-        updateParamConditionText(this.paramShowCenter,    this.isUnknown(), false, 1);
-        updateParamConditionText(this.paramAffectSpace,   this.isUnknown(), true,  1);
-        updateParamConditionText(this.paramAffectCorners, this.isUnknown(), false, 1);
-        updateParamConditionText(this.paramAffectStyle,   this.isUnknown(), false, 1);
+        updateParamConditionText(this.paramShowCenter,    this.paramShowCenter   .isUnknown(), false, 1);
+        updateParamConditionText(this.paramAffectSpace,   this.paramAffectSpace  .isUnknown(), true,  1);
+        updateParamConditionText(this.paramAffectCorners, this.paramAffectCorners.isUnknown(), false, 1);
+        updateParamConditionText(this.paramAffectStyle,   this.paramAffectStyle  .isUnknown(), false, 1);
 
         this.updateParamControls();
     }

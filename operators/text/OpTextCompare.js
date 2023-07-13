@@ -82,7 +82,7 @@ extends OperatorBase
         this.paramResult   .enableControlText(false);
         this.paramOperation.enableControlText(true );
 
-        updateParamConditionText(this.paramResult, this.isUnknown(), true);
+        updateParamConditionText(this.paramResult, this.paramResult.isUnknown(), true);
 
         
         this.updateParamControls();

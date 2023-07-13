@@ -64,10 +64,13 @@ extends FigmaObject
     {
         const weight = this.strokeWeight * Math.abs(this.scaleStyle);
 
-        const dashes = this.strokeDashes
-            .split(',')
-            .map(d => parseFloat(d.trim()) * Math.abs(this.scaleStyle))
-            .join(',');
+        const dashes = 
+            this.strokeDashes
+            ? this.strokeDashes
+                .split(',')
+                .map(d => parseFloat(d.trim()) * Math.abs(this.scaleStyle))
+                .join(',')
+            : '';
 
         
         return [
