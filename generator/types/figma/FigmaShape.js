@@ -62,10 +62,13 @@ extends FigmaObject
 
     toData()
     {
-        const weight = this.strokeWeight * this.scaleStyle;
-        const dashes = this.strokeDashes;
+        const weight = this.strokeWeight * Math.abs(this.scaleStyle);
 
-        console.log('dashes =', dashes);
+        const dashes = this.strokeDashes
+            .split(',')
+            .map(d => parseFloat(d.trim()) * Math.abs(this.scaleStyle))
+            .join(',');
+
         
         return [
             ...super.toData(),
@@ -78,7 +81,7 @@ extends FigmaObject
             /* 14 */ this.strokeJoin,
             /* 15 */ this.strokeMiterLimit,
             /* 16 */ this.strokeCap,
-            /* 17 */ this.strokeDashes,
+            /* 17 */ dashes,
 
             /* 18 */ this.effects,
 

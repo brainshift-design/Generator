@@ -107,9 +107,9 @@ extends GOperator1
             return bounds;
             
 
-        const x           = options.x.toNumber();
-        const y           = options.y.toNumber();
-        const moveType    = options.moveType.value;
+        const x           = options.x          .value;
+        const y           = options.y          .value;
+        const moveType    = options.moveType   .value;
         const affectSpace = options.affectSpace.value;
 
 

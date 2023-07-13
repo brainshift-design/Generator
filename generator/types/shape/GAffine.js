@@ -68,8 +68,8 @@ extends GOperator1
             && this.value.objects[0].type == POINT;
 
 
-        let _cx = options.centerX.toNumber();
-        let _cy = options.centerY.toNumber();
+        let _cx = options.centerX.value;
+        let _cy = options.centerY.value;
 
         if (!singlePoint)
         {
@@ -98,8 +98,8 @@ extends GOperator1
 
             obj.applyTransform(xform, options.affectSpace.value > 0);
 
-            obj.scaleCorners *= scaleCorners;
-            obj.scaleStyle   *= scaleStyle;
+            obj.scaleCorners *= Math.abs(scaleCorners);
+            obj.scaleStyle   *= Math.abs(scaleStyle);
 
             this.coords = mulm3m3(this.coords, xform);
         }

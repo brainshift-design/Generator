@@ -104,8 +104,8 @@ extends GValue
     toPoint()
     {
         return point(
-            this.x.toNumber(),
-            this.y.toNumber());
+            this.x.value,
+            this.y.value);
     }
 
 

@@ -102,10 +102,10 @@ extends FigmaShape
 
         for (const p of this.points)
         {
-            minX = Math.min(minX, NumberValue.prototype.toNumber.call(p.x));
-            minY = Math.min(minY, NumberValue.prototype.toNumber.call(p.y));
-            maxX = Math.max(maxX, NumberValue.prototype.toNumber.call(p.x));
-            maxY = Math.max(maxY, NumberValue.prototype.toNumber.call(p.y));
+            minX = Math.min(minX, p.x.value);
+            minY = Math.min(minY, p.y.value);
+            maxX = Math.max(maxX, p.x.value);
+            maxY = Math.max(maxY, p.y.value);
         }
 
 
@@ -347,17 +347,9 @@ function getSmoothPoints(points, closed, getSegment)
 
 function getSmoothSegment(_pointP, _point, _pointN)
 {
-    const _pp = point(
-        _pointP.x.value,
-        _pointP.y.value);
-
-    const _p = point(
-        _point.x.value,
-        _point.y.value);
-
-    const _pn = point(
-        _pointN.x.value,
-        _pointN.y.value);
+    const _pp = point(_pointP.x.value, _pointP.y.value);
+    const _p  = point(_point .x.value, _point .y.value);
+    const _pn = point(_pointN.x.value, _pointN.y.value);
 
 
     const v = subv(_pn, _pp);
@@ -393,21 +385,12 @@ function getSmoothSegment(_pointP, _point, _pointN)
 
 function getSineXSegment(_pointP, _point, _pointN)
 {
-    const _pp = point(
-        NumberValue.prototype.toNumber.call(_pointP.x),
-        NumberValue.prototype.toNumber.call(_pointP.y));
+    const _pp = point(_pointP.x.value, _pointP.y.value);
+    const _p  = point(_point .x.value, _point .y.value);
+    const _pn = point(_pointN.x.value, _pointN.y.value);
 
-    const _p = point(
-        NumberValue.prototype.toNumber.call(_point.x),
-        NumberValue.prototype.toNumber.call(_point.y));
-
-    const _pn = point(
-        NumberValue.prototype.toNumber.call(_pointN.x),
-        NumberValue.prototype.toNumber.call(_pointN.y));
-
-
-    const pp = point(_p.x - (_p.x - _pp.x) * 0.3615, _p.y);
-    const pn = point(_p.x + (_pn.x - _p.x) * 0.3615, _p.y);
+    const  pp = point(_p.x - (_p.x - _pp.x) * 0.3615, _p.y);
+    const  pn = point(_p.x + (_pn.x - _p.x) * 0.3615, _p.y);
 
     return [pp, _p, pn];
 }
@@ -416,21 +399,12 @@ function getSineXSegment(_pointP, _point, _pointN)
 
 function getSineYSegment(_pointP, _point, _pointN)
 {
-    const _pp = point(
-        NumberValue.prototype.toNumber.call(_pointP.x),
-        NumberValue.prototype.toNumber.call(_pointP.y));
+    const _pp = point(_pointP.x.value, _pointP.y.value);
+    const _p  = point(_point .x.value, _point .y.value);
+    const _pn = point(_pointN.x.value, _pointN.y.value);
 
-    const _p = point(
-        NumberValue.prototype.toNumber.call(_point.x),
-        NumberValue.prototype.toNumber.call(_point.y));
-
-    const _pn = point(
-        NumberValue.prototype.toNumber.call(_pointN.x),
-        NumberValue.prototype.toNumber.call(_pointN.y));
-
-
-    const pp = point(_p.x, _p.y - (_p.y - _pp.y) * 0.3615);
-    const pn = point(_p.x, _p.y + (_pn.y - _p.y) * 0.3615);
+    const  pp = point(_p.x, _p.y - (_p.y - _pp.y) * 0.3615);
+    const  pn = point(_p.x, _p.y + (_pn.y - _p.y) * 0.3615);
 
     return [pp, _p, pn];
 }

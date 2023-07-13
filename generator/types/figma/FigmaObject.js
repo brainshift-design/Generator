@@ -405,12 +405,12 @@ function addGradientProp(obj, prop, target = obj.fills)
     const isLinear = prop.gradType.value == 0;
 
 
-    let   x   = prop.x    .toNumber() / 100;
-    let   y   = prop.y    .toNumber() / 100;
-    const a   = prop.angle.toNumber()/360*Tau;
+    let   x   =        prop.x     .toNumber() / 100;
+    let   y   =        prop.y     .toNumber() / 100;
+    const a   =        prop.angle .toNumber()/360*Tau;
     let   s   = nozero(prop.size  .toNumber() / 100);
     let   asp = nozero(prop.aspect.toNumber() / 100);
-    let   sk  = prop.skew .toNumber() / 100;
+    let   sk  =        prop.skew  .toNumber() / 100;
 
 
     if (!isLinear)
@@ -605,9 +605,9 @@ function addDropShadowProp(obj, prop)
         rgba[1],
         rgba[2],
         rgba[3],
-        prop.x.toNumber(),
-        prop.y.toNumber(),
-        prop.blur.toNumber(),
+        prop.x     .toNumber(),
+        prop.y     .toNumber(),
+        prop.blur  .toNumber(),
         prop.spread.toNumber(),
         BlendModes[prop.blend.value][2],
         prop.behind.value > 0,
@@ -626,9 +626,9 @@ function addInnerShadowProp(obj, prop)
         rgba[1],
         rgba[2],
         rgba[3],
-        prop.x.toNumber(),
-        prop.y.toNumber(),
-        prop.blur.toNumber(),
+        prop.x     .toNumber(),
+        prop.y     .toNumber(),
+        prop.blur  .toNumber(),
         prop.spread.toNumber(),
         BlendModes[prop.blend.value][2],
         prop.visible ]);
