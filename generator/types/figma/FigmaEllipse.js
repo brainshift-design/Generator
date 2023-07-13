@@ -53,24 +53,6 @@ extends FigmaShape
 
 
 
-    toJsonObject()
-    {
-        return {
-            ...super.toJsonObject(),
-   
-            x:      this.x,
-            y:      this.y,
-            width:  this.width,
-            height: this.height,
-
-            from:   this.from,
-            to:     this.to,
-            inner:  this.inner
-        };
-    }
-
-
-
     toData()
     {
         return [

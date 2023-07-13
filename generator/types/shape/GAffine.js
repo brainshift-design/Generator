@@ -45,7 +45,7 @@ extends GOperator1
 
 
 
-    async evalAffineObjects(options, scale, getXform)
+    async evalAffineObjects(options, scaleCorners, scaleStyle, getXform)
     {
         if (this.value.isValid())
         {
@@ -98,8 +98,8 @@ extends GOperator1
 
             obj.applyTransform(xform, options.affectSpace.value > 0);
 
-            obj.scale *= scale;
-
+            obj.scaleCorners *= scaleCorners;
+            obj.scaleStyle   *= scaleStyle;
 
             this.coords = mulm3m3(this.coords, xform);
         }

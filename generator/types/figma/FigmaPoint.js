@@ -38,19 +38,6 @@ extends FigmaShape
 
 
 
-    toJsonObject()
-    {
-        return {
-            ...super.toJsonObject(),
-   
-            x:        this.x,
-            y:        this.y,
-            isCenter: this.isCenter
-        };
-    }
-
-
-
     toData()
     {
         return [

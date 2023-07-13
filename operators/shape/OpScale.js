@@ -4,6 +4,12 @@ extends OpAffine
     paramScaleX;
     paramScaleY;
 
+    paramAffectCorners;
+    paramAffectStyle;
+
+    menuBoolAffectCorners;
+    menuBoolAffectStyle;
+
 
 
     constructor()
@@ -26,6 +32,16 @@ extends OpAffine
 
 
         this.addBaseParams();
+
+    
+        this.addParam(this.paramAffectCorners = new NumberParam('affectCorners', 'affect corners', true, true, true, 1, 0, 1));
+        this.addParam(this.paramAffectStyle   = new NumberParam('affectStyle',   'affect style',   true, true, true, 1, 0, 1));
+
+        this.paramAffectCorners.divider = 0.72;
+        this.paramAffectStyle  .divider = 0.72;
+    
+        this.menuBoolAffectCorners = createBoolMenu(this.paramAffectCorners);
+        this.menuBoolAffectStyle   = createBoolMenu(this.paramAffectStyle  );
     }
     
     
@@ -50,12 +66,14 @@ extends OpAffine
         if (input.connected)
             request.push(...pushInputOrParam(input, gen));
 
-        request.push(...this.node.paramScaleX     .genRequest(gen));
-        request.push(...this.node.paramScaleY     .genRequest(gen));
-        request.push(...this.node.paramCenterX    .genRequest(gen));
-        request.push(...this.node.paramCenterY    .genRequest(gen));
-        request.push(...this.node.paramShowCenter .genRequest(gen));
-        request.push(...this.node.paramAffectSpace.genRequest(gen));
+        request.push(...this.node.paramScaleX       .genRequest(gen));
+        request.push(...this.node.paramScaleY       .genRequest(gen));
+        request.push(...this.node.paramCenterX      .genRequest(gen));
+        request.push(...this.node.paramCenterY      .genRequest(gen));
+        request.push(...this.node.paramShowCenter   .genRequest(gen));
+        request.push(...this.node.paramAffectSpace  .genRequest(gen));
+        request.push(...this.node.paramAffectCorners.genRequest(gen));
+        request.push(...this.node.paramAffectStyle  .genRequest(gen));
 
         
         gen.scope.pop();
@@ -71,8 +89,10 @@ extends OpAffine
     {
         super.updateParams();
 
-        updateParamConditionText(this.paramShowCenter,  this.isUnknown(), false, 1);
-        updateParamConditionText(this.paramAffectSpace, this.isUnknown(), true,  1);
+        updateParamConditionText(this.paramShowCenter,    this.isUnknown(), false, 1);
+        updateParamConditionText(this.paramAffectSpace,   this.isUnknown(), true,  1);
+        updateParamConditionText(this.paramAffectCorners, this.isUnknown(), false, 1);
+        updateParamConditionText(this.paramAffectStyle,   this.isUnknown(), false, 1);
 
         this.updateParamControls();
     }

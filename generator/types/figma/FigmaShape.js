@@ -60,40 +60,20 @@ extends FigmaObject
 
 
 
-    toJsonObject()
-    {
-        return {
-            ...super.toJsonObject(),
-   
-            fills:            this.fills,
-            strokes:          this.strokes,
-
-            strokeWeight:     this.strokeWeight,
-            strokeAlign:      this.strokeAlign,
-            strokeJoin:       this.strokeJoin,
-            strokeMiterLimit: this.strokeMiterLimit,
-            strokeCap:        this.strokeCap,
-            strokeDashes:     this.strokeDashes,
-
-            effects:          this.effects,
-
-            isDeco:           this.isDeco,
-
-            isMask:           this.isMask
-        };
-    }
-
-
-
     toData()
     {
+        const weight = this.strokeWeight * this.scaleStyle;
+        const dashes = this.strokeDashes;
+
+        console.log('dashes =', dashes);
+        
         return [
             ...super.toData(),
    
             /* 10 */ this.fills,
             /* 11 */ this.strokes,
 
-            /* 12 */ this.strokeWeight,
+            /* 12 */ weight,
             /* 13 */ this.strokeAlign,
             /* 14 */ this.strokeJoin,
             /* 15 */ this.strokeMiterLimit,

@@ -52,8 +52,8 @@ extends OperatorBase
 
         this.paramCenterX    .divider = 0.55;
         this.paramCenterY    .divider = 0.55;
-        this.paramShowCenter .divider = 0.71;
-        this.paramAffectSpace.divider = 0.71;
+        this.paramShowCenter .divider = 0.72;
+        this.paramAffectSpace.divider = 0.72;
 
 
         this.menuBoolShowCenter  = createBoolMenu(this.paramShowCenter );

@@ -4128,6 +4128,7 @@ a
     height:                auto;
     position:              absolute;
     top:                   4px;
+    white-space:           nowrap;
     /* margin-right:          3px; */
     /* box-shadow:            0 0 0 1px inset yellow; */
 }
@@ -9902,46 +9903,49 @@ class FigmaObject
     cp2 = null; //  cp2
 
 
-    scale; // for scaling rounded corners and styles
+    scaleCorners;
+    scaleStyle;
 
 
 
     constructor(type, nodeId, objectId, objectName)
     {
-        this.type       = type;
-        this.nodeId     = nodeId;
-        this.objectId   = objectId;
-        this.objectName = objectName;
+        this.type         = type;
+        this.nodeId       = nodeId;
+        this.objectId     = objectId;
+        this.objectName   = objectName;
 
-        this.xform      = clone(identity);
+        this.xform        = clone(identity);
 
-        this.cp0        = point(0, 0);
-        this.cp1        = point(1, 0);
-        this.cp2        = point(0, 1);
+        this.cp0          = point(0, 0);
+        this.cp1          = point(1, 0);
+        this.cp2          = point(0, 1);
 
-        this.scale      = 1;
+        this.scaleCorners = 1;
+        this.scaleStyle   = 1;
     }
 
 
 
     copyBase(base)
     {
-        this.inputIndex = base.inputIndex;
+        this.inputIndex   = base.inputIndex;
         
-        this.feedback   = base.feedback;
-        this.retain     = base.retain;
+        this.feedback     = base.feedback;
+        this.retain       = base.retain;
         
-        this.xform      = clone(base.xform);
+        this.xform        = clone(base.xform);
 
-        this.xp0        = !!base.xp0 ? base.xp0.copy() : null;
-        this.xp1        = !!base.xp1 ? base.xp1.copy() : null;
-        this.xp2        = !!base.xp2 ? base.xp2.copy() : null;
+        this.xp0          = !!base.xp0 ? base.xp0.copy() : null;
+        this.xp1          = !!base.xp1 ? base.xp1.copy() : null;
+        this.xp2          = !!base.xp2 ? base.xp2.copy() : null;
 
-        this.cp0        = base.cp0;
-        this.cp1        = base.cp1;
-        this.cp2        = base.cp2;
+        this.cp0          = base.cp0;
+        this.cp1          = base.cp1;
+        this.cp2          = base.cp2;
 
-        this.scale      = base.scale;
+        this.scaleCorners = base.scaleCorners;
+        this.scaleStyle   = base.scaleStyle;
     }
 
 
@@ -10600,40 +10604,20 @@ extends FigmaObject
 
 
 
-    toJsonObject()
-    {
-        return {
-            ...super.toJsonObject(),
-   
-            fills:            this.fills,
-            strokes:          this.strokes,
-
-            strokeWeight:     this.strokeWeight,
-            strokeAlign:      this.strokeAlign,
-            strokeJoin:       this.strokeJoin,
-            strokeMiterLimit: this.strokeMiterLimit,
-            strokeCap:        this.strokeCap,
-            strokeDashes:     this.strokeDashes,
-
-            effects:          this.effects,
-
-            isDeco:           this.isDeco,
-
-            isMask:           this.isMask
-        };
-    }
-
-
-
     toData()
     {
+        const weight = this.strokeWeight * this.scaleStyle;
+        const dashes = this.strokeDashes;
+
+        console.log('dashes =', dashes);
+        
         return [
             ...super.toData(),
    
             /* 10 */ this.fills,
             /* 11 */ this.strokes,
 
-            /* 12 */ this.strokeWeight,
+            /* 12 */ weight,
             /* 13 */ this.strokeAlign,
             /* 14 */ this.strokeJoin,
             /* 15 */ this.strokeMiterLimit,
@@ -10699,22 +10683,6 @@ extends FigmaShape
 
 
 
-    toJsonObject()
-    {
-        return {
-            ...super.toJsonObject(),
-   
-            x:      this.x,
-            y:      this.y,
-            width:  this.width,
-            height: this.height,
-
-            round:  this.round
-        };
-    }
-
-
-
     toData()
     {
         return [
@@ -10725,7 +10693,7 @@ extends FigmaShape
             /* 23 */ this.width,
             /* 24 */ this.height,
 
-            /* 25 */ this.round * Math.abs(this.scale)
+            /* 25 */ this.round * Math.abs(this.scaleCorners)
         ];
     }
 }
@@ -10768,19 +10736,6 @@ extends FigmaShape
 
 
         return copy;
-    }
-
-
-
-    toJsonObject()
-    {
-        return {
-            ...super.toJsonObject(),
-   
-            x:     this.x,
-            y:     this.y,
-            width: this.width
-        };
     }
 
 
@@ -10849,24 +10804,6 @@ extends FigmaShape
 
 
         return copy;
-    }
-
-
-
-    toJsonObject()
-    {
-        return {
-            ...super.toJsonObject(),
-   
-            x:      this.x,
-            y:      this.y,
-            width:  this.width,
-            height: this.height,
-
-            from:   this.from,
-            to:     this.to,
-            inner:  this.inner
-        };
     }
 
 
@@ -11013,24 +10950,6 @@ extends FigmaShape
 
 
 
-    toJsonObject()
-    {
-        return {
-            ...super.toJsonObject(),
-   
-            x:        this.x,
-            y:        this.y,
-            width:    this.width,
-            height:   this.height,
-
-            pathData: this.pathData,
-            winding:  this.winding,
-            round:    this.round
-        };
-    }
-
-
-
     toData()
     {
         return [
@@ -11043,7 +10962,7 @@ extends FigmaShape
 
             /* 25 */ this.pathData,
             /* 26 */ this.winding,
-            /* 27 */ this.round * Math.abs(this.scale)
+            /* 27 */ this.round * Math.abs(this.scaleCorners)
         ];
     }
 }
@@ -11475,23 +11394,6 @@ extends FigmaShape
 
 
 
-    toJsonObject()
-    {
-        return {
-            ...super.toJsonObject(),
-   
-            x:       this.x,
-            y:       this.y,
-            width:   this.width,
-            height:  this.height,
-
-            round:   this.round,
-            corners: this.corners
-        };
-    }
-
-
-
     toData()
     {
         return [
@@ -11502,7 +11404,7 @@ extends FigmaShape
             /* 23 */ this.width,
             /* 24 */ this.height,
 
-            /* 25 */ this.round * this.scale,
+            /* 25 */ this.round * Math.abs(this.scaleCorners),
             /* 26 */ this.corners
         ];
     }
@@ -11562,24 +11464,6 @@ extends FigmaShape
     }
 
 
-    toJsonObject()
-    {
-        return {
-            ...super.toJsonObject(),
-   
-            x:      this.x,
-            y:      this.y,
-            width:  this.width,
-            height: this.height,
-
-            round:  this.round,
-            points: this.points,
-            convex: this.convex
-        };
-    }
-
-
-
     toData()
     {
         return [
@@ -11590,7 +11474,7 @@ extends FigmaShape
             /* 23 */ this.width,
             /* 24 */ this.height,
 
-            /* 25 */ this.round * this.scale,
+            /* 25 */ this.round * Math.abs(this.scaleCorners),
             /* 26 */ this.points,
             /* 27 */ this.convex
         ];
@@ -11783,19 +11667,6 @@ extends FigmaShape
         copy.copyBase(this);
 
         return copy;
-    }
-
-
-
-    toJsonObject()
-    {
-        return {
-            ...super.toJsonObject(),
-   
-            x:        this.x,
-            y:        this.y,
-            isCenter: this.isCenter
-        };
     }
 
 
@@ -30132,7 +30003,7 @@ extends GOperator1
 
 
 
-    async evalAffineObjects(options, scale, getXform)
+    async evalAffineObjects(options, scaleCorners, scaleStyle, getXform)
     {
         if (this.value.isValid())
         {
@@ -30185,8 +30056,8 @@ extends GOperator1
 
             obj.applyTransform(xform, options.affectSpace.value > 0);
 
-            obj.scale *= scale;
-
+            obj.scaleCorners *= scaleCorners;
+            obj.scaleStyle   *= scaleStyle;
 
             this.coords = mulm3m3(this.coords, xform);
         }
@@ -30349,7 +30220,9 @@ extends GAffine
     {
         const a = options.angle.toNumber()/360*Tau;
 
-        return await this.evalAffineObjects(options, 1,
+        return await this.evalAffineObjects(
+            options, 
+            1, 1,
             () => createRotateTransform(a));
     }
 
@@ -30391,8 +30264,10 @@ extends GAffine
 class GScale
 extends GAffine
 {
-    scaleX = null;
-    scaleY = null;
+    scaleX        = null;
+    scaleY        = null;
+    affectCorners = null;
+    affectStyle   = null;
 
 
 
@@ -30409,8 +30284,10 @@ extends GAffine
 
         copy.copyBase(this);
 
-        if (this.scaleX) copy.scaleX = this.scaleX.copy();
-        if (this.scaleY) copy.scaleY = this.scaleY.copy();
+        if (this.scaleX       ) copy.scaleX        = this.scaleX       .copy();
+        if (this.scaleY       ) copy.scaleY        = this.scaleY       .copy();
+        if (this.affectCorners) copy.affectCorners = this.affectCorners.copy();
+        if (this.affectStyle  ) copy.affectStyle   = this.affectStyle  .copy();
 
         return copy;
     }
@@ -30423,8 +30300,10 @@ extends GAffine
             return this;
 
 
-        const scaleX = this.scaleX ? (await this.scaleX.eval(parse)).toValue() : null;
-        const scaleY = this.scaleY ? (await this.scaleY.eval(parse)).toValue() : null;
+        const scaleX        = this.scaleX        ? (await this.scaleX       .eval(parse)).toValue() : null;
+        const scaleY        = this.scaleY        ? (await this.scaleY       .eval(parse)).toValue() : null;
+        const affectCorners = this.affectCorners ? (await this.affectCorners.eval(parse)).toValue() : null;
+        const affectStyle   = this.affectStyle   ? (await this.affectStyle  .eval(parse)).toValue() : null;
 
         const [centerX, centerY, showCenter, affectSpace] = await this.evalBaseParams(parse);
 
@@ -30445,12 +30324,14 @@ extends GAffine
         const _bounds = await this.evalObjects(
             parse, 
             {
-                scaleX:      scaleX, 
-                scaleY:      scaleY, 
-                centerX:     centerX, 
-                centerY:     centerY,
-                showCenter:  showCenter,
-                affectSpace: affectSpace
+                scaleX:        scaleX, 
+                scaleY:        scaleY, 
+                centerX:       centerX, 
+                centerY:       centerY,
+                showCenter:    showCenter,
+                affectSpace:   affectSpace,
+                affectCorners: affectCorners,
+                affectStyle:   affectStyle
             });
 
 
@@ -30465,14 +30346,16 @@ extends GAffine
 
         this.updateValues =
         [
-            ['value',       this.value ],
-            ['scaleX',      scaleX     ],
-            ['scaleY',      scaleY     ],
-            ['centerX',     centerX    ],
-            ['centerY',     centerY    ],
-            ['showCenter',  showCenter ],
-            ['affectSpace', affectSpace],
-            ['bounds',      bounds     ]
+            ['value',         this.value   ],
+            ['scaleX',        scaleX       ],
+            ['scaleY',        scaleY       ],
+            ['centerX',       centerX      ],
+            ['centerY',       centerY      ],
+            ['showCenter',    showCenter   ],
+            ['affectSpace',   affectSpace  ],
+            ['affectCorners', affectCorners],
+            ['affectStyle',   affectStyle  ],
+            ['bounds',        bounds       ]
         ];
         
 
@@ -30490,11 +30373,30 @@ extends GAffine
 
         const scale = Math.min(sx, sy);
 
-
-        return await this.evalAffineObjects(options, scale,
+        return await this.evalAffineObjects(
+            options, 
+            this.affectCorners.value > 0 ? scale : 1,
+            this.affectStyle  .value > 0 ? scale : 1,
             () => [[sx, 0,  0],
                    [0,  sy, 0],
                    [0,  0,  1]]);
+    }
+
+
+
+    isValid()
+    {
+        return super.isValid()
+            && this.scaleX     .isValid()
+            && this.scaleY     .isValid()
+            && this.affectStyle.isValid();
+    }
+
+
+
+    toValue()
+    {
+        return this.value.copy();
     }
 
 
@@ -30503,17 +30405,9 @@ extends GAffine
     {
         super.pushValueUpdates(parse);
 
-        if (this.scaleX) this.scaleX.pushValueUpdates(parse);
-        if (this.scaleY) this.scaleY.pushValueUpdates(parse);
-    }
-
-
-
-    isValid()
-    {
-        return super.isValid()
-            && this.scaleX.isValid()
-            && this.scaleY.isValid();
+        if (this.scaleX     ) this.scaleX     .pushValueUpdates(parse);
+        if (this.scaleY     ) this.scaleY     .pushValueUpdates(parse);
+        if (this.affectStyle) this.affectStyle.pushValueUpdates(parse);
     }
 
 
@@ -30522,15 +30416,9 @@ extends GAffine
     {
         super.invalidateInputs(from);
 
-        if (this.scaleX) this.scaleX.invalidateInputs(from);
-        if (this.scaleY) this.scaleY.invalidateInputs(from);
-    }
-
-
-
-    toValue()
-    {
-        return this.value.copy();
+        if (this.scaleX     ) this.scaleX     .invalidateInputs(from);
+        if (this.scaleY     ) this.scaleY     .invalidateInputs(from);
+        if (this.affectStyle) this.affectStyle.invalidateInputs(from);
     }
 }
 
@@ -30635,7 +30523,9 @@ extends GAffine
         const sx = -options.skewX.toNumber() / 100;
         const sy = -options.skewY.toNumber() / 100;
 
-        return await this.evalAffineObjects(options, 1,
+        return await this.evalAffineObjects(
+            options, 
+            1, 1,
             () => [[1,  sx, 0],
                    [sy, 1,  0],
                    [0,  0,  1]]);
@@ -35430,12 +35320,14 @@ function genParseScale(parse)
     if (nInputs == 1)
         scale.input = genParse(parse);
 
-    scale.scaleX      = genParse(parse);
-    scale.scaleY      = genParse(parse);
-    scale.centerX     = genParse(parse);
-    scale.centerY     = genParse(parse);
-    scale.showCenter  = genParse(parse);
-    scale.affectSpace = genParse(parse);
+    scale.scaleX        = genParse(parse);
+    scale.scaleY        = genParse(parse);
+    scale.centerX       = genParse(parse);
+    scale.centerY       = genParse(parse);
+    scale.showCenter    = genParse(parse);
+    scale.affectSpace   = genParse(parse);
+    scale.affectCorners = genParse(parse);
+    scale.affectStyle   = genParse(parse);
 
     
     parse.inParam = false;
@@ -47310,46 +47202,49 @@ class FigmaObject
     cp2 = null; //  cp2
 
 
-    scale; // for scaling rounded corners and styles
+    scaleCorners;
+    scaleStyle;
 
 
 
     constructor(type, nodeId, objectId, objectName)
     {
-        this.type       = type;
-        this.nodeId     = nodeId;
-        this.objectId   = objectId;
-        this.objectName = objectName;
+        this.type         = type;
+        this.nodeId       = nodeId;
+        this.objectId     = objectId;
+        this.objectName   = objectName;
 
-        this.xform      = clone(identity);
+        this.xform        = clone(identity);
 
-        this.cp0        = point(0, 0);
-        this.cp1        = point(1, 0);
-        this.cp2        = point(0, 1);
+        this.cp0          = point(0, 0);
+        this.cp1          = point(1, 0);
+        this.cp2          = point(0, 1);
 
-        this.scale      = 1;
+        this.scaleCorners = 1;
+        this.scaleStyle   = 1;
     }
 
 
 
     copyBase(base)
     {
-        this.inputIndex = base.inputIndex;
+        this.inputIndex   = base.inputIndex;
         
-        this.feedback   = base.feedback;
-        this.retain     = base.retain;
+        this.feedback     = base.feedback;
+        this.retain       = base.retain;
         
-        this.xform      = clone(base.xform);
+        this.xform        = clone(base.xform);
 
-        this.xp0        = !!base.xp0 ? base.xp0.copy() : null;
-        this.xp1        = !!base.xp1 ? base.xp1.copy() : null;
-        this.xp2        = !!base.xp2 ? base.xp2.copy() : null;
+        this.xp0          = !!base.xp0 ? base.xp0.copy() : null;
+        this.xp1          = !!base.xp1 ? base.xp1.copy() : null;
+        this.xp2          = !!base.xp2 ? base.xp2.copy() : null;
 
-        this.cp0        = base.cp0;
-        this.cp1        = base.cp1;
-        this.cp2        = base.cp2;
+        this.cp0          = base.cp0;
+        this.cp1          = base.cp1;
+        this.cp2          = base.cp2;
 
-        this.scale      = base.scale;
+        this.scaleCorners = base.scaleCorners;
+        this.scaleStyle   = base.scaleStyle;
     }
 
 
@@ -48008,40 +47903,20 @@ extends FigmaObject
 
 
 
-    toJsonObject()
-    {
-        return {
-            ...super.toJsonObject(),
-   
-            fills:            this.fills,
-            strokes:          this.strokes,
-
-            strokeWeight:     this.strokeWeight,
-            strokeAlign:      this.strokeAlign,
-            strokeJoin:       this.strokeJoin,
-            strokeMiterLimit: this.strokeMiterLimit,
-            strokeCap:        this.strokeCap,
-            strokeDashes:     this.strokeDashes,
-
-            effects:          this.effects,
-
-            isDeco:           this.isDeco,
-
-            isMask:           this.isMask
-        };
-    }
-
-
-
     toData()
     {
+        const weight = this.strokeWeight * this.scaleStyle;
+        const dashes = this.strokeDashes;
+
+        console.log('dashes =', dashes);
+        
         return [
             ...super.toData(),
    
             /* 10 */ this.fills,
             /* 11 */ this.strokes,
 
-            /* 12 */ this.strokeWeight,
+            /* 12 */ weight,
             /* 13 */ this.strokeAlign,
             /* 14 */ this.strokeJoin,
             /* 15 */ this.strokeMiterLimit,
@@ -48107,22 +47982,6 @@ extends FigmaShape
 
 
 
-    toJsonObject()
-    {
-        return {
-            ...super.toJsonObject(),
-   
-            x:      this.x,
-            y:      this.y,
-            width:  this.width,
-            height: this.height,
-
-            round:  this.round
-        };
-    }
-
-
-
     toData()
     {
         return [
@@ -48133,7 +47992,7 @@ extends FigmaShape
             /* 23 */ this.width,
             /* 24 */ this.height,
 
-            /* 25 */ this.round * Math.abs(this.scale)
+            /* 25 */ this.round * Math.abs(this.scaleCorners)
         ];
     }
 }
@@ -48176,19 +48035,6 @@ extends FigmaShape
 
 
         return copy;
-    }
-
-
-
-    toJsonObject()
-    {
-        return {
-            ...super.toJsonObject(),
-   
-            x:     this.x,
-            y:     this.y,
-            width: this.width
-        };
     }
 
 
@@ -48257,24 +48103,6 @@ extends FigmaShape
 
 
         return copy;
-    }
-
-
-
-    toJsonObject()
-    {
-        return {
-            ...super.toJsonObject(),
-   
-            x:      this.x,
-            y:      this.y,
-            width:  this.width,
-            height: this.height,
-
-            from:   this.from,
-            to:     this.to,
-            inner:  this.inner
-        };
     }
 
 
@@ -48421,24 +48249,6 @@ extends FigmaShape
 
 
 
-    toJsonObject()
-    {
-        return {
-            ...super.toJsonObject(),
-   
-            x:        this.x,
-            y:        this.y,
-            width:    this.width,
-            height:   this.height,
-
-            pathData: this.pathData,
-            winding:  this.winding,
-            round:    this.round
-        };
-    }
-
-
-
     toData()
     {
         return [
@@ -48451,7 +48261,7 @@ extends FigmaShape
 
             /* 25 */ this.pathData,
             /* 26 */ this.winding,
-            /* 27 */ this.round * Math.abs(this.scale)
+            /* 27 */ this.round * Math.abs(this.scaleCorners)
         ];
     }
 }
@@ -48883,23 +48693,6 @@ extends FigmaShape
 
 
 
-    toJsonObject()
-    {
-        return {
-            ...super.toJsonObject(),
-   
-            x:       this.x,
-            y:       this.y,
-            width:   this.width,
-            height:  this.height,
-
-            round:   this.round,
-            corners: this.corners
-        };
-    }
-
-
-
     toData()
     {
         return [
@@ -48910,7 +48703,7 @@ extends FigmaShape
             /* 23 */ this.width,
             /* 24 */ this.height,
 
-            /* 25 */ this.round * this.scale,
+            /* 25 */ this.round * Math.abs(this.scaleCorners),
             /* 26 */ this.corners
         ];
     }
@@ -48970,24 +48763,6 @@ extends FigmaShape
     }
 
 
-    toJsonObject()
-    {
-        return {
-            ...super.toJsonObject(),
-   
-            x:      this.x,
-            y:      this.y,
-            width:  this.width,
-            height: this.height,
-
-            round:  this.round,
-            points: this.points,
-            convex: this.convex
-        };
-    }
-
-
-
     toData()
     {
         return [
@@ -48998,7 +48773,7 @@ extends FigmaShape
             /* 23 */ this.width,
             /* 24 */ this.height,
 
-            /* 25 */ this.round * this.scale,
+            /* 25 */ this.round * Math.abs(this.scaleCorners),
             /* 26 */ this.points,
             /* 27 */ this.convex
         ];
@@ -49191,19 +48966,6 @@ extends FigmaShape
         copy.copyBase(this);
 
         return copy;
-    }
-
-
-
-    toJsonObject()
-    {
-        return {
-            ...super.toJsonObject(),
-   
-            x:        this.x,
-            y:        this.y,
-            isCenter: this.isCenter
-        };
     }
 
 
@@ -67540,7 +67302,7 @@ extends GOperator1
 
 
 
-    async evalAffineObjects(options, scale, getXform)
+    async evalAffineObjects(options, scaleCorners, scaleStyle, getXform)
     {
         if (this.value.isValid())
         {
@@ -67593,8 +67355,8 @@ extends GOperator1
 
             obj.applyTransform(xform, options.affectSpace.value > 0);
 
-            obj.scale *= scale;
-
+            obj.scaleCorners *= scaleCorners;
+            obj.scaleStyle   *= scaleStyle;
 
             this.coords = mulm3m3(this.coords, xform);
         }
@@ -67757,7 +67519,9 @@ extends GAffine
     {
         const a = options.angle.toNumber()/360*Tau;
 
-        return await this.evalAffineObjects(options, 1,
+        return await this.evalAffineObjects(
+            options, 
+            1, 1,
             () => createRotateTransform(a));
     }
 
@@ -67799,8 +67563,10 @@ extends GAffine
 class GScale
 extends GAffine
 {
-    scaleX = null;
-    scaleY = null;
+    scaleX        = null;
+    scaleY        = null;
+    affectCorners = null;
+    affectStyle   = null;
 
 
 
@@ -67817,8 +67583,10 @@ extends GAffine
 
         copy.copyBase(this);
 
-        if (this.scaleX) copy.scaleX = this.scaleX.copy();
-        if (this.scaleY) copy.scaleY = this.scaleY.copy();
+        if (this.scaleX       ) copy.scaleX        = this.scaleX       .copy();
+        if (this.scaleY       ) copy.scaleY        = this.scaleY       .copy();
+        if (this.affectCorners) copy.affectCorners = this.affectCorners.copy();
+        if (this.affectStyle  ) copy.affectStyle   = this.affectStyle  .copy();
 
         return copy;
     }
@@ -67831,8 +67599,10 @@ extends GAffine
             return this;
 
 
-        const scaleX = this.scaleX ? (await this.scaleX.eval(parse)).toValue() : null;
-        const scaleY = this.scaleY ? (await this.scaleY.eval(parse)).toValue() : null;
+        const scaleX        = this.scaleX        ? (await this.scaleX       .eval(parse)).toValue() : null;
+        const scaleY        = this.scaleY        ? (await this.scaleY       .eval(parse)).toValue() : null;
+        const affectCorners = this.affectCorners ? (await this.affectCorners.eval(parse)).toValue() : null;
+        const affectStyle   = this.affectStyle   ? (await this.affectStyle  .eval(parse)).toValue() : null;
 
         const [centerX, centerY, showCenter, affectSpace] = await this.evalBaseParams(parse);
 
@@ -67853,12 +67623,14 @@ extends GAffine
         const _bounds = await this.evalObjects(
             parse, 
             {
-                scaleX:      scaleX, 
-                scaleY:      scaleY, 
-                centerX:     centerX, 
-                centerY:     centerY,
-                showCenter:  showCenter,
-                affectSpace: affectSpace
+                scaleX:        scaleX, 
+                scaleY:        scaleY, 
+                centerX:       centerX, 
+                centerY:       centerY,
+                showCenter:    showCenter,
+                affectSpace:   affectSpace,
+                affectCorners: affectCorners,
+                affectStyle:   affectStyle
             });
 
 
@@ -67873,14 +67645,16 @@ extends GAffine
 
         this.updateValues =
         [
-            ['value',       this.value ],
-            ['scaleX',      scaleX     ],
-            ['scaleY',      scaleY     ],
-            ['centerX',     centerX    ],
-            ['centerY',     centerY    ],
-            ['showCenter',  showCenter ],
-            ['affectSpace', affectSpace],
-            ['bounds',      bounds     ]
+            ['value',         this.value   ],
+            ['scaleX',        scaleX       ],
+            ['scaleY',        scaleY       ],
+            ['centerX',       centerX      ],
+            ['centerY',       centerY      ],
+            ['showCenter',    showCenter   ],
+            ['affectSpace',   affectSpace  ],
+            ['affectCorners', affectCorners],
+            ['affectStyle',   affectStyle  ],
+            ['bounds',        bounds       ]
         ];
         
 
@@ -67898,11 +67672,30 @@ extends GAffine
 
         const scale = Math.min(sx, sy);
 
-
-        return await this.evalAffineObjects(options, scale,
+        return await this.evalAffineObjects(
+            options, 
+            this.affectCorners.value > 0 ? scale : 1,
+            this.affectStyle  .value > 0 ? scale : 1,
             () => [[sx, 0,  0],
                    [0,  sy, 0],
                    [0,  0,  1]]);
+    }
+
+
+
+    isValid()
+    {
+        return super.isValid()
+            && this.scaleX     .isValid()
+            && this.scaleY     .isValid()
+            && this.affectStyle.isValid();
+    }
+
+
+
+    toValue()
+    {
+        return this.value.copy();
     }
 
 
@@ -67911,17 +67704,9 @@ extends GAffine
     {
         super.pushValueUpdates(parse);
 
-        if (this.scaleX) this.scaleX.pushValueUpdates(parse);
-        if (this.scaleY) this.scaleY.pushValueUpdates(parse);
-    }
-
-
-
-    isValid()
-    {
-        return super.isValid()
-            && this.scaleX.isValid()
-            && this.scaleY.isValid();
+        if (this.scaleX     ) this.scaleX     .pushValueUpdates(parse);
+        if (this.scaleY     ) this.scaleY     .pushValueUpdates(parse);
+        if (this.affectStyle) this.affectStyle.pushValueUpdates(parse);
     }
 
 
@@ -67930,15 +67715,9 @@ extends GAffine
     {
         super.invalidateInputs(from);
 
-        if (this.scaleX) this.scaleX.invalidateInputs(from);
-        if (this.scaleY) this.scaleY.invalidateInputs(from);
-    }
-
-
-
-    toValue()
-    {
-        return this.value.copy();
+        if (this.scaleX     ) this.scaleX     .invalidateInputs(from);
+        if (this.scaleY     ) this.scaleY     .invalidateInputs(from);
+        if (this.affectStyle) this.affectStyle.invalidateInputs(from);
     }
 }
 
@@ -68043,7 +67822,9 @@ extends GAffine
         const sx = -options.skewX.toNumber() / 100;
         const sy = -options.skewY.toNumber() / 100;
 
-        return await this.evalAffineObjects(options, 1,
+        return await this.evalAffineObjects(
+            options, 
+            1, 1,
             () => [[1,  sx, 0],
                    [sy, 1,  0],
                    [0,  0,  1]]);
@@ -74604,7 +74385,7 @@ function initGeneratorMenus()
         new MenuItem('Number', {icon: iconVarNumber, callback: e => actionManager.do(getCreateNodeAction(VAR_NUMBER, btnLayer.div, getCreateOptions(e, {existing: true})))})]);
     
     
-    menuLayer = new Menu('Layer', true, false);
+    menuLayer = new Menu('Style', true, false);
     menuLayer.addItems([
         menuItemLayerFill        = new MenuItem('Fill',            {icon: iconFill,        callback: e => actionManager.do(getCreateNodeAction(FILL,         btnLayer.div, getCreateOptions(e)))}),
                                    new MenuItem('Gradient',        {icon: iconGradient,    callback: e => actionManager.do(getCreateNodeAction(GRADIENT,     btnLayer.div, getCreateOptions(e)))}),
@@ -88060,7 +87841,7 @@ function createBoolMenu(param)
         new MenuItem('true',  {icon:  TRUE_DISPLAY_MENU, callback: () => { hideAllMenus(); param.setValue(new NumberValue(1), true); }}),
         new MenuItem('false', {icon: FALSE_DISPLAY_MENU, callback: () => { hideAllMenus(); param.setValue(new NumberValue(0), true); }})]);
 
-    param.controls[0].div.addEventListener('pointerdown', e => param.node.showParamMenu(e, param, param.node.menuBool));
+    param.controls[0].div.addEventListener('pointerdown', e => param.node.showParamMenu(e, param, menu));
 
     return menu;
 }
@@ -99480,6 +99261,8 @@ extends OpShapeBase
     {
         this.addParam(this.paramProperties = new ListParam('props', 'styles', false, true, true));
 
+        this.paramProperties.controls[0].valueText = 'style';
+        
         this.paramProperties.itemName  = 'style';
         this.paramProperties.showZero  = false;
         this.paramProperties.listTypes = [...STYLE_VALUES];
@@ -100411,11 +100194,11 @@ extends OperatorBase
         this.addParam(this.paramX           = new NumberParam('x',           'X',            true, true, true));
         this.addParam(this.paramY           = new NumberParam('y',           'Y',            true, true, true));
         this.addParam(this.paramMoveType    = new SelectParam('moveType',    'type',         true, true, true, ['position', 'vector'], 0));
-        this.addParam(this.paramAffectSpace = new NumberParam('affectSpace', 'affect space', true, true, true,   0, 0,   1));
+        this.addParam(this.paramAffectSpace = new NumberParam('affectSpace', 'affect space', true, true, true, 1, 0, 1));
 
 
         this.paramAffectSpace.controls[0].allowEditDecimals = false;
-        this.paramAffectSpace.divider                       = 0.71;
+        this.paramAffectSpace.divider                       = 0.72;
 
         this.menuBoolAffectSpace = createBoolMenu(this.paramAffectSpace);
 
@@ -100543,8 +100326,8 @@ extends OperatorBase
 
         this.paramCenterX    .divider = 0.55;
         this.paramCenterY    .divider = 0.55;
-        this.paramShowCenter .divider = 0.71;
-        this.paramAffectSpace.divider = 0.71;
+        this.paramShowCenter .divider = 0.72;
+        this.paramAffectSpace.divider = 0.72;
 
 
         this.menuBoolShowCenter  = createBoolMenu(this.paramShowCenter );
@@ -100697,6 +100480,12 @@ extends OpAffine
     paramScaleX;
     paramScaleY;
 
+    paramAffectCorners;
+    paramAffectStyle;
+
+    menuBoolAffectCorners;
+    menuBoolAffectStyle;
+
 
 
     constructor()
@@ -100719,6 +100508,16 @@ extends OpAffine
 
 
         this.addBaseParams();
+
+    
+        this.addParam(this.paramAffectCorners = new NumberParam('affectCorners', 'affect corners', true, true, true, 1, 0, 1));
+        this.addParam(this.paramAffectStyle   = new NumberParam('affectStyle',   'affect style',   true, true, true, 1, 0, 1));
+
+        this.paramAffectCorners.divider = 0.72;
+        this.paramAffectStyle  .divider = 0.72;
+    
+        this.menuBoolAffectCorners = createBoolMenu(this.paramAffectCorners);
+        this.menuBoolAffectStyle   = createBoolMenu(this.paramAffectStyle  );
     }
     
     
@@ -100743,12 +100542,14 @@ extends OpAffine
         if (input.connected)
             request.push(...pushInputOrParam(input, gen));
 
-        request.push(...this.node.paramScaleX     .genRequest(gen));
-        request.push(...this.node.paramScaleY     .genRequest(gen));
-        request.push(...this.node.paramCenterX    .genRequest(gen));
-        request.push(...this.node.paramCenterY    .genRequest(gen));
-        request.push(...this.node.paramShowCenter .genRequest(gen));
-        request.push(...this.node.paramAffectSpace.genRequest(gen));
+        request.push(...this.node.paramScaleX       .genRequest(gen));
+        request.push(...this.node.paramScaleY       .genRequest(gen));
+        request.push(...this.node.paramCenterX      .genRequest(gen));
+        request.push(...this.node.paramCenterY      .genRequest(gen));
+        request.push(...this.node.paramShowCenter   .genRequest(gen));
+        request.push(...this.node.paramAffectSpace  .genRequest(gen));
+        request.push(...this.node.paramAffectCorners.genRequest(gen));
+        request.push(...this.node.paramAffectStyle  .genRequest(gen));
 
         
         gen.scope.pop();
@@ -100764,8 +100565,10 @@ extends OpAffine
     {
         super.updateParams();
 
-        updateParamConditionText(this.paramShowCenter,  this.isUnknown(), false, 1);
-        updateParamConditionText(this.paramAffectSpace, this.isUnknown(), true,  1);
+        updateParamConditionText(this.paramShowCenter,    this.isUnknown(), false, 1);
+        updateParamConditionText(this.paramAffectSpace,   this.isUnknown(), true,  1);
+        updateParamConditionText(this.paramAffectCorners, this.isUnknown(), false, 1);
+        updateParamConditionText(this.paramAffectStyle,   this.isUnknown(), false, 1);
 
         this.updateParamControls();
     }

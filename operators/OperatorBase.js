@@ -51,7 +51,7 @@ function createBoolMenu(param)
         new MenuItem('true',  {icon:  TRUE_DISPLAY_MENU, callback: () => { hideAllMenus(); param.setValue(new NumberValue(1), true); }}),
         new MenuItem('false', {icon: FALSE_DISPLAY_MENU, callback: () => { hideAllMenus(); param.setValue(new NumberValue(0), true); }})]);
 
-    param.controls[0].div.addEventListener('pointerdown', e => param.node.showParamMenu(e, param, param.node.menuBool));
+    param.controls[0].div.addEventListener('pointerdown', e => param.node.showParamMenu(e, param, menu));
 
     return menu;
 }

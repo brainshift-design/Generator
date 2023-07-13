@@ -922,12 +922,14 @@ function genParseScale(parse)
     if (nInputs == 1)
         scale.input = genParse(parse);
 
-    scale.scaleX      = genParse(parse);
-    scale.scaleY      = genParse(parse);
-    scale.centerX     = genParse(parse);
-    scale.centerY     = genParse(parse);
-    scale.showCenter  = genParse(parse);
-    scale.affectSpace = genParse(parse);
+    scale.scaleX        = genParse(parse);
+    scale.scaleY        = genParse(parse);
+    scale.centerX       = genParse(parse);
+    scale.centerY       = genParse(parse);
+    scale.showCenter    = genParse(parse);
+    scale.affectSpace   = genParse(parse);
+    scale.affectCorners = genParse(parse);
+    scale.affectStyle   = genParse(parse);
 
     
     parse.inParam = false;

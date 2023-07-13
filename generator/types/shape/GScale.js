@@ -1,8 +1,10 @@
 class GScale
 extends GAffine
 {
-    scaleX = null;
-    scaleY = null;
+    scaleX        = null;
+    scaleY        = null;
+    affectCorners = null;
+    affectStyle   = null;
 
 
 
@@ -19,8 +21,10 @@ extends GAffine
 
         copy.copyBase(this);
 
-        if (this.scaleX) copy.scaleX = this.scaleX.copy();
-        if (this.scaleY) copy.scaleY = this.scaleY.copy();
+        if (this.scaleX       ) copy.scaleX        = this.scaleX       .copy();
+        if (this.scaleY       ) copy.scaleY        = this.scaleY       .copy();
+        if (this.affectCorners) copy.affectCorners = this.affectCorners.copy();
+        if (this.affectStyle  ) copy.affectStyle   = this.affectStyle  .copy();
 
         return copy;
     }
@@ -33,8 +37,10 @@ extends GAffine
             return this;
 
 
-        const scaleX = this.scaleX ? (await this.scaleX.eval(parse)).toValue() : null;
-        const scaleY = this.scaleY ? (await this.scaleY.eval(parse)).toValue() : null;
+        const scaleX        = this.scaleX        ? (await this.scaleX       .eval(parse)).toValue() : null;
+        const scaleY        = this.scaleY        ? (await this.scaleY       .eval(parse)).toValue() : null;
+        const affectCorners = this.affectCorners ? (await this.affectCorners.eval(parse)).toValue() : null;
+        const affectStyle   = this.affectStyle   ? (await this.affectStyle  .eval(parse)).toValue() : null;
 
         const [centerX, centerY, showCenter, affectSpace] = await this.evalBaseParams(parse);
 
@@ -55,12 +61,14 @@ extends GAffine
         const _bounds = await this.evalObjects(
             parse, 
             {
-                scaleX:      scaleX, 
-                scaleY:      scaleY, 
-                centerX:     centerX, 
-                centerY:     centerY,
-                showCenter:  showCenter,
-                affectSpace: affectSpace
+                scaleX:        scaleX, 
+                scaleY:        scaleY, 
+                centerX:       centerX, 
+                centerY:       centerY,
+                showCenter:    showCenter,
+                affectSpace:   affectSpace,
+                affectCorners: affectCorners,
+                affectStyle:   affectStyle
             });
 
 
@@ -75,14 +83,16 @@ extends GAffine
 
         this.updateValues =
         [
-            ['value',       this.value ],
-            ['scaleX',      scaleX     ],
-            ['scaleY',      scaleY     ],
-            ['centerX',     centerX    ],
-            ['centerY',     centerY    ],
-            ['showCenter',  showCenter ],
-            ['affectSpace', affectSpace],
-            ['bounds',      bounds     ]
+            ['value',         this.value   ],
+            ['scaleX',        scaleX       ],
+            ['scaleY',        scaleY       ],
+            ['centerX',       centerX      ],
+            ['centerY',       centerY      ],
+            ['showCenter',    showCenter   ],
+            ['affectSpace',   affectSpace  ],
+            ['affectCorners', affectCorners],
+            ['affectStyle',   affectStyle  ],
+            ['bounds',        bounds       ]
         ];
         
 
@@ -100,11 +110,30 @@ extends GAffine
 
         const scale = Math.min(sx, sy);
 
-
-        return await this.evalAffineObjects(options, scale,
+        return await this.evalAffineObjects(
+            options, 
+            this.affectCorners.value > 0 ? scale : 1,
+            this.affectStyle  .value > 0 ? scale : 1,
             () => [[sx, 0,  0],
                    [0,  sy, 0],
                    [0,  0,  1]]);
+    }
+
+
+
+    isValid()
+    {
+        return super.isValid()
+            && this.scaleX     .isValid()
+            && this.scaleY     .isValid()
+            && this.affectStyle.isValid();
+    }
+
+
+
+    toValue()
+    {
+        return this.value.copy();
     }
 
 
@@ -113,17 +142,9 @@ extends GAffine
     {
         super.pushValueUpdates(parse);
 
-        if (this.scaleX) this.scaleX.pushValueUpdates(parse);
-        if (this.scaleY) this.scaleY.pushValueUpdates(parse);
-    }
-
-
-
-    isValid()
-    {
-        return super.isValid()
-            && this.scaleX.isValid()
-            && this.scaleY.isValid();
+        if (this.scaleX     ) this.scaleX     .pushValueUpdates(parse);
+        if (this.scaleY     ) this.scaleY     .pushValueUpdates(parse);
+        if (this.affectStyle) this.affectStyle.pushValueUpdates(parse);
     }
 
 
@@ -132,14 +153,8 @@ extends GAffine
     {
         super.invalidateInputs(from);
 
-        if (this.scaleX) this.scaleX.invalidateInputs(from);
-        if (this.scaleY) this.scaleY.invalidateInputs(from);
-    }
-
-
-
-    toValue()
-    {
-        return this.value.copy();
+        if (this.scaleX     ) this.scaleX     .invalidateInputs(from);
+        if (this.scaleY     ) this.scaleY     .invalidateInputs(from);
+        if (this.affectStyle) this.affectStyle.invalidateInputs(from);
     }
 }

@@ -122,24 +122,6 @@ extends FigmaShape
 
 
 
-    toJsonObject()
-    {
-        return {
-            ...super.toJsonObject(),
-   
-            x:        this.x,
-            y:        this.y,
-            width:    this.width,
-            height:   this.height,
-
-            pathData: this.pathData,
-            winding:  this.winding,
-            round:    this.round
-        };
-    }
-
-
-
     toData()
     {
         return [
@@ -152,7 +134,7 @@ extends FigmaShape
 
             /* 25 */ this.pathData,
             /* 26 */ this.winding,
-            /* 27 */ this.round * Math.abs(this.scale)
+            /* 27 */ this.round * Math.abs(this.scaleCorners)
         ];
     }
 }

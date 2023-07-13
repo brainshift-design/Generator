@@ -21,6 +21,7 @@
     height:                auto;
     position:              absolute;
     top:                   4px;
+    white-space:           nowrap;
     /* margin-right:          3px; */
     /* box-shadow:            0 0 0 1px inset yellow; */
 }

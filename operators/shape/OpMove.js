@@ -26,11 +26,11 @@ extends OperatorBase
         this.addParam(this.paramX           = new NumberParam('x',           'X',            true, true, true));
         this.addParam(this.paramY           = new NumberParam('y',           'Y',            true, true, true));
         this.addParam(this.paramMoveType    = new SelectParam('moveType',    'type',         true, true, true, ['position', 'vector'], 0));
-        this.addParam(this.paramAffectSpace = new NumberParam('affectSpace', 'affect space', true, true, true,   0, 0,   1));
+        this.addParam(this.paramAffectSpace = new NumberParam('affectSpace', 'affect space', true, true, true, 1, 0, 1));
 
 
         this.paramAffectSpace.controls[0].allowEditDecimals = false;
-        this.paramAffectSpace.divider                       = 0.71;
+        this.paramAffectSpace.divider                       = 0.72;
 
         this.menuBoolAffectSpace = createBoolMenu(this.paramAffectSpace);
 

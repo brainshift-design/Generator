@@ -24,46 +24,49 @@ class FigmaObject
     cp2 = null; //  cp2
 
 
-    scale; // for scaling rounded corners and styles
+    scaleCorners;
+    scaleStyle;
 
 
 
     constructor(type, nodeId, objectId, objectName)
     {
-        this.type       = type;
-        this.nodeId     = nodeId;
-        this.objectId   = objectId;
-        this.objectName = objectName;
+        this.type         = type;
+        this.nodeId       = nodeId;
+        this.objectId     = objectId;
+        this.objectName   = objectName;
 
-        this.xform      = clone(identity);
+        this.xform        = clone(identity);
 
-        this.cp0        = point(0, 0);
-        this.cp1        = point(1, 0);
-        this.cp2        = point(0, 1);
+        this.cp0          = point(0, 0);
+        this.cp1          = point(1, 0);
+        this.cp2          = point(0, 1);
 
-        this.scale      = 1;
+        this.scaleCorners = 1;
+        this.scaleStyle   = 1;
     }
 
 
 
     copyBase(base)
     {
-        this.inputIndex = base.inputIndex;
+        this.inputIndex   = base.inputIndex;
         
-        this.feedback   = base.feedback;
-        this.retain     = base.retain;
+        this.feedback     = base.feedback;
+        this.retain       = base.retain;
         
-        this.xform      = clone(base.xform);
+        this.xform        = clone(base.xform);
 
-        this.xp0        = !!base.xp0 ? base.xp0.copy() : null;
-        this.xp1        = !!base.xp1 ? base.xp1.copy() : null;
-        this.xp2        = !!base.xp2 ? base.xp2.copy() : null;
+        this.xp0          = !!base.xp0 ? base.xp0.copy() : null;
+        this.xp1          = !!base.xp1 ? base.xp1.copy() : null;
+        this.xp2          = !!base.xp2 ? base.xp2.copy() : null;
 
-        this.cp0        = base.cp0;
-        this.cp1        = base.cp1;
-        this.cp2        = base.cp2;
+        this.cp0          = base.cp0;
+        this.cp1          = base.cp1;
+        this.cp2          = base.cp2;
 
-        this.scale      = base.scale;
+        this.scaleCorners = base.scaleCorners;
+        this.scaleStyle   = base.scaleStyle;
     }
 
 

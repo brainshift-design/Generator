@@ -534,7 +534,7 @@ function initGeneratorMenus()
         new MenuItem('Number', {icon: iconVarNumber, callback: e => actionManager.do(getCreateNodeAction(VAR_NUMBER, btnLayer.div, getCreateOptions(e, {existing: true})))})]);
     
     
-    menuLayer = new Menu('Layer', true, false);
+    menuLayer = new Menu('Style', true, false);
     menuLayer.addItems([
         menuItemLayerFill        = new MenuItem('Fill',            {icon: iconFill,        callback: e => actionManager.do(getCreateNodeAction(FILL,         btnLayer.div, getCreateOptions(e)))}),
                                    new MenuItem('Gradient',        {icon: iconGradient,    callback: e => actionManager.do(getCreateNodeAction(GRADIENT,     btnLayer.div, getCreateOptions(e)))}),

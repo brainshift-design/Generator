@@ -15,6 +15,8 @@ extends OpShapeBase
     {
         this.addParam(this.paramProperties = new ListParam('props', 'styles', false, true, true));
 
+        this.paramProperties.controls[0].valueText = 'style';
+        
         this.paramProperties.itemName  = 'style';
         this.paramProperties.showZero  = false;
         this.paramProperties.listTypes = [...STYLE_VALUES];

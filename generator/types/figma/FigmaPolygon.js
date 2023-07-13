@@ -49,23 +49,6 @@ extends FigmaShape
 
 
 
-    toJsonObject()
-    {
-        return {
-            ...super.toJsonObject(),
-   
-            x:       this.x,
-            y:       this.y,
-            width:   this.width,
-            height:  this.height,
-
-            round:   this.round,
-            corners: this.corners
-        };
-    }
-
-
-
     toData()
     {
         return [
@@ -76,7 +59,7 @@ extends FigmaShape
             /* 23 */ this.width,
             /* 24 */ this.height,
 
-            /* 25 */ this.round * this.scale,
+            /* 25 */ this.round * Math.abs(this.scaleCorners),
             /* 26 */ this.corners
         ];
     }
