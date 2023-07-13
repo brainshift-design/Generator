@@ -668,17 +668,18 @@ const FONT_WEIGHTS =
 const FO_TYPE           =  0;
 const FO_NODE_ID        =  1;
 
-const FO_UNIQUE_ID      =  2;
-const FO_OBJECT_ID      =  3;
-const FO_OBJECT_NAME    =  4;
+const FO_OBJECT_ID      =  2;
+const FO_OBJECT_NAME    =  3;
 
-const FO_FEEDBACK       =  5;
-const FO_RETAIN         =  6;
+const FO_FEEDBACK       =  4;
+const FO_RETAIN         =  5;
 
 
-const FO_XP0            =  7;
-const FO_XP1            =  8;
-const FO_XP2            =  9;
+const FO_XP0            =  6;
+const FO_XP1            =  7;
+const FO_XP2            =  8;
+
+const FO_SCALE          =  9;
 
 const FO_FILLS          = 10;
 const FO_STROKES        = 11;
@@ -697,21 +698,21 @@ const FO_DECO           = 19;
 
 const FO_MASK           = 20;
 
-const FO_X              = 21;                                    const FO_VECTOR_PATH_DATA    = 21;                                                                const FO_GROUP_CHILDREN = 21;
-const FO_Y              = 22;                                    const FO_VECTOR_PATH_WINDING = 22;
-const FO_WIDTH          = 23;   const FO_POINT_IS_CENTER = 23;   const FO_VECTOR_PATH_ROUND   = 23;
-const FO_HEIGHT         = 24;
+const FO_X              = 21;                                                                                                                                    const FO_GROUP_CHILDREN = 21;
+const FO_Y              = 22;                                    
+const FO_WIDTH          = 23;   const FO_POINT_IS_CENTER = 23;   
+const FO_HEIGHT         = 24;                                    
 
-const FO_RECT_ROUND     = 25;   const FO_ELLIPSE_FROM    = 25;   const FO_POLY_ROUND          = 25;   const FO_STAR_ROUND  = 25;   const FO_FIG_WIDTH      = 25;   const FO_FRAME_ROUND    = 25;
-                                const FO_ELLIPSE_TO      = 26;   const FO_POLY_CORNERS        = 26;   const FO_STAR_POINTS = 26;   const FO_FIG_HEIGHT     = 26;   const FO_FRAME_CHILDREN = 26;
-                                const FO_ELLIPSE_INNER   = 27;                                        const FO_STAR_CONVEX = 27;   const FO_TEXT           = 27; 
-                                                             
-                                                                                                                                   const FO_FONT           = 28;
-                                                                                                                                   const FO_FONT_SIZE      = 29;
-                                                                                                                                   const FO_FONT_STYLE     = 30;
-                                                                                                                                                                
-                                                                                                                                   const FO_ALIGN_H        = 31;
-                                                                                                                                   const FO_ALIGN_V        = 32;
-                                                                                                                                                                
-                                                                                                                                   const FO_LINE_HEIGHT    = 33;
-                                                                                                                                   const FO_LETTER_SPACING = 34;                                
+const FO_RECT_ROUND     = 25;   const FO_ELLIPSE_FROM    = 25;   const FO_VECTOR_PATH_DATA    = 25;   const FO_POLY_ROUND   = 25;   const FO_STAR_ROUND  = 25;   const FO_FIG_WIDTH      = 25;   const FO_FRAME_ROUND    = 25;
+                                const FO_ELLIPSE_TO      = 26;   const FO_VECTOR_PATH_WINDING = 26;   const FO_POLY_CORNERS = 26;   const FO_STAR_POINTS = 26;   const FO_FIG_HEIGHT     = 26;   const FO_FRAME_CHILDREN = 26;
+                                const FO_ELLIPSE_INNER   = 27;   const FO_VECTOR_PATH_ROUND   = 27;                                 const FO_STAR_CONVEX = 27;   const FO_TEXT           = 27; 
+                                                                                            
+                                                                                                                                                                 const FO_FONT           = 28;
+                                                                                                                                                                 const FO_FONT_SIZE      = 29;
+                                                                                                                                                                 const FO_FONT_STYLE     = 30;
+                                                                                                                                                                                               
+                                                                                                                                                                 const FO_ALIGN_H        = 31;
+                                                                                                                                                                 const FO_ALIGN_V        = 32;
+                                                                                                                                                                                               
+                                                                                                                                                                 const FO_LINE_HEIGHT    = 33;
+                                                                                                                                                                 const FO_LETTER_SPACING = 34;                                

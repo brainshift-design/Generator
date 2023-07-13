@@ -22,7 +22,7 @@ extends OperatorWithValue
         this.addParam(this.paramEnd   = new NumberParam('end',   'end',   true, true, true, 0, 0));
 
 
-        this.paramValue.controls[0].textbox.defPlaceholder = '';
+        ///this.paramValue.controls[0].textbox.defPlaceholder = '';
 
         setControlFont(this.paramValue.controls[0].textbox, 'Roboto Mono', 10, 'center');
 
@@ -87,7 +87,7 @@ extends OperatorWithValue
 
     updateParams()
     {
-        this.paramValue.enableControlText(false, this.isUnknown());
+        this.paramValue.enableControlText(true, this.isUnknown());
         // this.paramValue.controls[0].valueText = this.isUnknown() ? UNKNOWN_DISPLAY : '';
 
         this.paramStart.enableControlText(true);

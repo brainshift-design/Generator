@@ -4,7 +4,7 @@
 
 
 
-const generatorVersion = 152;
+const generatorVersion = 154;
 
 
 const MAX_INT32        = 2147483647;
@@ -4304,7 +4304,6 @@ function updateMenuItemShowOperationResults()
     nodes.forEach(n => 
     {
         const rect = n.measureData.divOffset;
-        // n.setSize(rect.w, rect.h, false);
         n.setRect(rect.x, rect.y, rect.w, rect.h, false);
         n.updateNode();
     });
@@ -5106,17 +5105,18 @@ const FONT_WEIGHTS =
 const FO_TYPE           =  0;
 const FO_NODE_ID        =  1;
 
-const FO_UNIQUE_ID      =  2;
-const FO_OBJECT_ID      =  3;
-const FO_OBJECT_NAME    =  4;
+const FO_OBJECT_ID      =  2;
+const FO_OBJECT_NAME    =  3;
 
-const FO_FEEDBACK       =  5;
-const FO_RETAIN         =  6;
+const FO_FEEDBACK       =  4;
+const FO_RETAIN         =  5;
 
 
-const FO_XP0            =  7;
-const FO_XP1            =  8;
-const FO_XP2            =  9;
+const FO_XP0            =  6;
+const FO_XP1            =  7;
+const FO_XP2            =  8;
+
+const FO_SCALE          =  9;
 
 const FO_FILLS          = 10;
 const FO_STROKES        = 11;
@@ -5135,24 +5135,24 @@ const FO_DECO           = 19;
 
 const FO_MASK           = 20;
 
-const FO_X              = 21;                                    const FO_VECTOR_PATH_DATA    = 21;                                                                const FO_GROUP_CHILDREN = 21;
-const FO_Y              = 22;                                    const FO_VECTOR_PATH_WINDING = 22;
-const FO_WIDTH          = 23;   const FO_POINT_IS_CENTER = 23;   const FO_VECTOR_PATH_ROUND   = 23;
-const FO_HEIGHT         = 24;
+const FO_X              = 21;                                                                                                                                    const FO_GROUP_CHILDREN = 21;
+const FO_Y              = 22;                                    
+const FO_WIDTH          = 23;   const FO_POINT_IS_CENTER = 23;   
+const FO_HEIGHT         = 24;                                    
 
-const FO_RECT_ROUND     = 25;   const FO_ELLIPSE_FROM    = 25;   const FO_POLY_ROUND          = 25;   const FO_STAR_ROUND  = 25;   const FO_FIG_WIDTH      = 25;   const FO_FRAME_ROUND    = 25;
-                                const FO_ELLIPSE_TO      = 26;   const FO_POLY_CORNERS        = 26;   const FO_STAR_POINTS = 26;   const FO_FIG_HEIGHT     = 26;   const FO_FRAME_CHILDREN = 26;
-                                const FO_ELLIPSE_INNER   = 27;                                        const FO_STAR_CONVEX = 27;   const FO_TEXT           = 27; 
-                                                             
-                                                                                                                                   const FO_FONT           = 28;
-                                                                                                                                   const FO_FONT_SIZE      = 29;
-                                                                                                                                   const FO_FONT_STYLE     = 30;
-                                                                                                                                                                
-                                                                                                                                   const FO_ALIGN_H        = 31;
-                                                                                                                                   const FO_ALIGN_V        = 32;
-                                                                                                                                                                
-                                                                                                                                   const FO_LINE_HEIGHT    = 33;
-                                                                                                                                   const FO_LETTER_SPACING = 34;                                
+const FO_RECT_ROUND     = 25;   const FO_ELLIPSE_FROM    = 25;   const FO_VECTOR_PATH_DATA    = 25;   const FO_POLY_ROUND   = 25;   const FO_STAR_ROUND  = 25;   const FO_FIG_WIDTH      = 25;   const FO_FRAME_ROUND    = 25;
+                                const FO_ELLIPSE_TO      = 26;   const FO_VECTOR_PATH_WINDING = 26;   const FO_POLY_CORNERS = 26;   const FO_STAR_POINTS = 26;   const FO_FIG_HEIGHT     = 26;   const FO_FRAME_CHILDREN = 26;
+                                const FO_ELLIPSE_INNER   = 27;   const FO_VECTOR_PATH_ROUND   = 27;                                 const FO_STAR_CONVEX = 27;   const FO_TEXT           = 27; 
+                                                                                            
+                                                                                                                                                                 const FO_FONT           = 28;
+                                                                                                                                                                 const FO_FONT_SIZE      = 29;
+                                                                                                                                                                 const FO_FONT_STYLE     = 30;
+                                                                                                                                                                                               
+                                                                                                                                                                 const FO_ALIGN_H        = 31;
+                                                                                                                                                                 const FO_ALIGN_V        = 32;
+                                                                                                                                                                                               
+                                                                                                                                                                 const FO_LINE_HEIGHT    = 33;
+                                                                                                                                                                 const FO_LETTER_SPACING = 34;                                
 
 
 class FigmaObject
@@ -5160,7 +5160,6 @@ class FigmaObject
     type;
     
     nodeId     = '';
-    uniqueId;
     
     objectId   = NULL;
     objectName = NULL;
@@ -5182,6 +5181,9 @@ class FigmaObject
     cp2 = null; //  cp2
 
 
+    scale; // for scaling rounded corners and styles
+
+
 
     constructor(type, nodeId, objectId, objectName)
     {
@@ -5189,13 +5191,14 @@ class FigmaObject
         this.nodeId     = nodeId;
         this.objectId   = objectId;
         this.objectName = objectName;
-        this.uniqueId   = Math.round(Math.random() * 10000);
 
         this.xform      = clone(identity);
 
         this.cp0        = point(0, 0);
         this.cp1        = point(1, 0);
         this.cp2        = point(0, 1);
+
+        this.scale      = 1;
     }
 
 
@@ -5203,7 +5206,6 @@ class FigmaObject
     copyBase(base)
     {
         this.inputIndex = base.inputIndex;
-        this.uniqueId   = base.uniqueId;
         
         this.feedback   = base.feedback;
         this.retain     = base.retain;
@@ -5217,6 +5219,8 @@ class FigmaObject
         this.cp0        = base.cp0;
         this.cp1        = base.cp1;
         this.cp2        = base.cp2;
+
+        this.scale      = base.scale;
     }
 
 
@@ -5366,7 +5370,6 @@ class FigmaObject
             type:       this.type,
             nodeId:     this.nodeId,
 
-            uniqueId:   this.uniqueId,
             objectId:   this.objectId,
             objectName: this.objectName,
             
@@ -5386,16 +5389,17 @@ class FigmaObject
         /* 0 */ this.type,
         /* 1 */ this.nodeId,
 
-        /* 2 */ this.uniqueId,
-        /* 3 */ this.objectId,
-        /* 4 */ this.objectName,
+        /* 2 */ this.objectId,
+        /* 3 */ this.objectName,
             
-        /* 5 */ this.feedback,
-        /* 6 */ this.retain,
+        /* 4 */ this.feedback,
+        /* 5 */ this.retain,
+        
+        /* 6 */ this.xp0 ? point(this.xp0.x, this.xp0.y) : null,
+        /* 7 */ this.xp1 ? point(this.xp1.x, this.xp1.y) : null,
+        /* 8 */ this.xp2 ? point(this.xp2.x, this.xp2.y) : null,
 
-        /* 7 */ this.xp0 ? point(this.xp0.x, this.xp0.y) : null,
-        /* 8 */ this.xp1 ? point(this.xp1.x, this.xp1.y) : null,
-        /* 9 */ this.xp2 ? point(this.xp2.x, this.xp2.y) : null
+        /* 9 */ 0 // for future use
         ];
     }
 }
@@ -6000,7 +6004,7 @@ extends FigmaShape
             /* 23 */ this.width,
             /* 24 */ this.height,
 
-            /* 25 */ this.round
+            /* 25 */ this.round * Math.abs(this.scale)
         ];
     }
 }
@@ -6169,6 +6173,8 @@ extends FigmaShape
 {
     x;
     y;
+    width;
+    height;
     
     points;
     closed;
@@ -6217,8 +6223,10 @@ extends FigmaShape
             this.round);
 
 
-        copy.x = this.x;
-        copy.y = this.y;
+        copy.x      = this.x;
+        copy.y      = this.y;
+        copy.width  = this.width;
+        copy.height = this.height;
 
 
         copy.copyBase(this);
@@ -6271,10 +6279,12 @@ extends FigmaShape
         }
 
 
-        this.x = minX;
-        this.y = minY;
+        this.x      = minX;
+        this.y      = minY;
+        this.width  = maxX - minX;
+        this.height = maxY - minY;
 
-        this.createTransformPoints(null, minX, minY, maxX - minX, maxY - minY);
+        this.createTransformPoints(null, this.x, this.y, this.width, this.height);
 
 
         this.pathData = getPathDataFromPoints(this.pathPoints, this.closed, this.degree);
@@ -6287,6 +6297,11 @@ extends FigmaShape
         return {
             ...super.toJsonObject(),
    
+            x:        this.x,
+            y:        this.y,
+            width:    this.width,
+            height:   this.height,
+
             pathData: this.pathData,
             winding:  this.winding,
             round:    this.round
@@ -6300,9 +6315,14 @@ extends FigmaShape
         return [
             ...super.toData(),
    
-            /* 21 */ this.pathData,
-            /* 22 */ this.winding,
-            /* 23 */ this.round
+            /* 21 */ this.x,
+            /* 22 */ this.y,
+            /* 23 */ this.width,
+            /* 24 */ this.height,
+
+            /* 25 */ this.pathData,
+            /* 26 */ this.winding,
+            /* 27 */ this.round * Math.abs(this.scale)
         ];
     }
 }
@@ -6550,8 +6570,8 @@ function getSmoothSegment(_pointP, _point, _pointN)
 
     const pp = addv(_p, mulvs(unitv(v), -lengthv(v)/2 * f));
     const pn = addv(_p, mulvs(unitv(v),  lengthv(v)/2 * f));
-    console.log('pp =', pp);
-    console.log('pn =', pn);
+    //console.log('pp =', pp);
+    //console.log('pn =', pn);
 
 
     return [pp, _p, pn];
@@ -6761,7 +6781,7 @@ extends FigmaShape
             /* 23 */ this.width,
             /* 24 */ this.height,
 
-            /* 25 */ this.round,
+            /* 25 */ this.round * this.scale,
             /* 26 */ this.corners
         ];
     }
@@ -6849,7 +6869,7 @@ extends FigmaShape
             /* 23 */ this.width,
             /* 24 */ this.height,
 
-            /* 25 */ this.round,
+            /* 25 */ this.round * this.scale,
             /* 26 */ this.points,
             /* 27 */ this.convex
         ];
@@ -24143,11 +24163,11 @@ extends GOperator1
 class GVectorPath
 extends GShape
 {
-    points  = null;
-    closed  = null;
-    degree  = null;
-    winding = null;
-    round   = null;
+    points      = null;
+    closed      = null;
+    degree      = null;
+    winding     = null;
+    round       = null;
 
 
 
@@ -25391,7 +25411,7 @@ extends GOperator1
 
 
 
-    async evalAffineObjects(parse, options, getXform)
+    async evalAffineObjects(options, scale, getXform)
     {
         if (this.value.isValid())
         {
@@ -25443,6 +25463,8 @@ extends GOperator1
                 obj.updatePoints(xform, this.coords);
 
             obj.applyTransform(xform, options.affectSpace.value > 0);
+
+            obj.scale *= scale;
 
 
             this.coords = mulm3m3(this.coords, xform);
@@ -25606,7 +25628,7 @@ extends GAffine
     {
         const a = options.angle.toNumber()/360*Tau;
 
-        return await this.evalAffineObjects(parse, options,
+        return await this.evalAffineObjects(options, 1,
             () => createRotateTransform(a));
     }
 
@@ -25742,10 +25764,13 @@ extends GAffine
 
     async evalObjects(parse, options)
     {
-        const sx = options.scaleX.toNumber() / 100;
-        const sy = options.scaleY.toNumber() / 100;
+        const sx    = options.scaleX.toNumber() / 100;
+        const sy    = options.scaleY.toNumber() / 100;
 
-        return await this.evalAffineObjects(parse, options,
+        const scale = Math.min(sx, sy);
+
+
+        return await this.evalAffineObjects(options, scale,
             () => [[sx, 0,  0],
                    [0,  sy, 0],
                    [0,  0,  1]]);
@@ -25889,7 +25914,7 @@ extends GAffine
         const sx = -options.skewX.toNumber() / 100;
         const sy = -options.skewY.toNumber() / 100;
 
-        return await this.evalAffineObjects(parse, options,
+        return await this.evalAffineObjects(options, 1,
             () => [[1,  sx, 0],
                    [sy, 1,  0],
                    [0,  0,  1]]);

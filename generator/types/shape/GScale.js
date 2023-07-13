@@ -95,10 +95,13 @@ extends GAffine
 
     async evalObjects(parse, options)
     {
-        const sx = options.scaleX.toNumber() / 100;
-        const sy = options.scaleY.toNumber() / 100;
+        const sx    = options.scaleX.toNumber() / 100;
+        const sy    = options.scaleY.toNumber() / 100;
 
-        return await this.evalAffineObjects(parse, options,
+        const scale = Math.min(sx, sy);
+
+
+        return await this.evalAffineObjects(options, scale,
             () => [[sx, 0,  0],
                    [0,  sy, 0],
                    [0,  0,  1]]);

@@ -76,7 +76,7 @@ extends FigmaShape
             /* 23 */ this.width,
             /* 24 */ this.height,
 
-            /* 25 */ this.round,
+            /* 25 */ this.round * this.scale,
             /* 26 */ this.corners
         ];
     }

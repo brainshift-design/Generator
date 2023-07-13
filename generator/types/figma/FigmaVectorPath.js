@@ -3,6 +3,8 @@ extends FigmaShape
 {
     x;
     y;
+    width;
+    height;
     
     points;
     closed;
@@ -51,8 +53,10 @@ extends FigmaShape
             this.round);
 
 
-        copy.x = this.x;
-        copy.y = this.y;
+        copy.x      = this.x;
+        copy.y      = this.y;
+        copy.width  = this.width;
+        copy.height = this.height;
 
 
         copy.copyBase(this);
@@ -105,10 +109,12 @@ extends FigmaShape
         }
 
 
-        this.x = minX;
-        this.y = minY;
+        this.x      = minX;
+        this.y      = minY;
+        this.width  = maxX - minX;
+        this.height = maxY - minY;
 
-        this.createTransformPoints(null, minX, minY, maxX - minX, maxY - minY);
+        this.createTransformPoints(null, this.x, this.y, this.width, this.height);
 
 
         this.pathData = getPathDataFromPoints(this.pathPoints, this.closed, this.degree);
@@ -121,6 +127,11 @@ extends FigmaShape
         return {
             ...super.toJsonObject(),
    
+            x:        this.x,
+            y:        this.y,
+            width:    this.width,
+            height:   this.height,
+
             pathData: this.pathData,
             winding:  this.winding,
             round:    this.round
@@ -134,9 +145,14 @@ extends FigmaShape
         return [
             ...super.toData(),
    
-            /* 21 */ this.pathData,
-            /* 22 */ this.winding,
-            /* 23 */ this.round
+            /* 21 */ this.x,
+            /* 22 */ this.y,
+            /* 23 */ this.width,
+            /* 24 */ this.height,
+
+            /* 25 */ this.pathData,
+            /* 26 */ this.winding,
+            /* 27 */ this.round * Math.abs(this.scale)
         ];
     }
 }
@@ -384,8 +400,8 @@ function getSmoothSegment(_pointP, _point, _pointN)
 
     const pp = addv(_p, mulvs(unitv(v), -lengthv(v)/2 * f));
     const pn = addv(_p, mulvs(unitv(v),  lengthv(v)/2 * f));
-    console.log('pp =', pp);
-    console.log('pn =', pn);
+    //console.log('pp =', pp);
+    //console.log('pn =', pn);
 
 
     return [pp, _p, pn];

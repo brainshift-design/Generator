@@ -92,7 +92,7 @@ extends GAffine
     {
         const a = options.angle.toNumber()/360*Tau;
 
-        return await this.evalAffineObjects(parse, options,
+        return await this.evalAffineObjects(options, 1,
             () => createRotateTransform(a));
     }
 

@@ -98,7 +98,7 @@ extends GAffine
         const sx = -options.skewX.toNumber() / 100;
         const sy = -options.skewY.toNumber() / 100;
 
-        return await this.evalAffineObjects(parse, options,
+        return await this.evalAffineObjects(options, 1,
             () => [[1,  sx, 0],
                    [sy, 1,  0],
                    [0,  0,  1]]);

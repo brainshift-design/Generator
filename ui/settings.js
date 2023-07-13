@@ -287,7 +287,6 @@ function updateMenuItemShowOperationResults()
     nodes.forEach(n => 
     {
         const rect = n.measureData.divOffset;
-        // n.setSize(rect.w, rect.h, false);
         n.setRect(rect.x, rect.y, rect.w, rect.h, false);
         n.updateNode();
     });

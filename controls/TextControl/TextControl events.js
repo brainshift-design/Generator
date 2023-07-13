@@ -30,7 +30,12 @@ TextControl.prototype.initEvents = function()
 
     this.div.addEventListener('pointerdown', e =>
     {
-        if (e.button == 2)
+        if (e.button == 0)
+        {
+            e.stopPropagation();
+        }
+
+        else if (e.button == 2)
         {
             e.preventDefault();
             e.stopPropagation();

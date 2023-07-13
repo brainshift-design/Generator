@@ -70,12 +70,12 @@ function setObjectTransform(figObj, genObj, setSize = true, noHeight = 0.01)
     {
         const scaleX = distance(xp0, xp1);
         const scaleY = distance(xp0, xp2);
-
+    
         const height =
             genObj[FO_TYPE] == TEXT_SHAPE
             ? genObj[FO_FIG_HEIGHT]
             : genObj[FO_HEIGHT]
-
+    
         figObj.resizeWithoutConstraints(
                      Math.max(0.01, scaleX),
             height ? Math.max(0.01, scaleY) : noHeight);

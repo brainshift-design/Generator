@@ -17,6 +17,8 @@ extends OperatorBase
         this.addParam(this.paramFormat = new SelectParam('format', 'format', false, true,  true, ['decimal', 'hexadecimal']));
 
         this.paramValue.isNodeValue = true;
+
+        setControlFont(this.paramValue.controls[0].textbox, 'Roboto Mono', 10, 'center');
     }
 
 
@@ -54,8 +56,8 @@ extends OperatorBase
 
     updateParams()
     {
-        this.paramValue .enableControlText(false);
-        this.paramValue.controls[0].valueText = this.isUnknown() ? UNKNOWN_DISPLAY : '';
+        this.paramValue.enableControlText(false, this.isUnknown());
+        //this.paramValue.controls[0].valueText = this.isUnknown() ? UNKNOWN_DISPLAY : '';
 
         this.paramFormat.enableControlText(true);
 

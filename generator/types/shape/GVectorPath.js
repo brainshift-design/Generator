@@ -1,11 +1,11 @@
 class GVectorPath
 extends GShape
 {
-    points  = null;
-    closed  = null;
-    degree  = null;
-    winding = null;
-    round   = null;
+    points      = null;
+    closed      = null;
+    degree      = null;
+    winding     = null;
+    round       = null;
 
 
 

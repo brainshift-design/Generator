@@ -25,9 +25,12 @@ extends OperatorWithValue
         this.addParam(this.paramEndCount   = new NumberParam('endCount',   'end',   true,  true, true, 0, 0));
 
 
-        this.paramValue.controls[0].textbox.defPlaceholder = '';
-
-        setControlFont(this.paramValue.controls[0].textbox, 'Roboto Mono', 10, 'center');
+        setControlFont(this.paramValue   .controls[0].textbox, 'Roboto Mono', 10, 'center');
+        setControlFont(this.paramStartPad.controls[0].textbox, 'Roboto Mono', 10, 'center');
+        setControlFont(this.paramEndPad  .controls[0].textbox, 'Roboto Mono', 10, 'center');
+        
+        this.paramStartPad.controls[0].textbox.defPlaceholder = 'start';
+        this.paramEndPad  .controls[0].textbox.defPlaceholder = 'end';
 
         this.paramStartCount.controls[0].allowEditDecimals = false;
         this.paramEndCount  .controls[0].allowEditDecimals = false;
@@ -71,7 +74,7 @@ extends OperatorWithValue
 
     updateParams()
     {
-        this.paramValue.enableControlText(false, this.isUnknown());
+        this.paramValue.enableControlText(true, this.isUnknown());
         // this.paramValue.controls[0].valueText = this.isUnknown() ? UNKNOWN_DISPLAY : '';
 
         this.paramStartPad  .enableControlText(true);

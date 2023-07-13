@@ -3,7 +3,6 @@ class FigmaObject
     type;
     
     nodeId     = '';
-    uniqueId;
     
     objectId   = NULL;
     objectName = NULL;
@@ -25,6 +24,9 @@ class FigmaObject
     cp2 = null; //  cp2
 
 
+    scale; // for scaling rounded corners and styles
+
+
 
     constructor(type, nodeId, objectId, objectName)
     {
@@ -32,13 +34,14 @@ class FigmaObject
         this.nodeId     = nodeId;
         this.objectId   = objectId;
         this.objectName = objectName;
-        this.uniqueId   = Math.round(Math.random() * 10000);
 
         this.xform      = clone(identity);
 
         this.cp0        = point(0, 0);
         this.cp1        = point(1, 0);
         this.cp2        = point(0, 1);
+
+        this.scale      = 1;
     }
 
 
@@ -46,7 +49,6 @@ class FigmaObject
     copyBase(base)
     {
         this.inputIndex = base.inputIndex;
-        this.uniqueId   = base.uniqueId;
         
         this.feedback   = base.feedback;
         this.retain     = base.retain;
@@ -60,6 +62,8 @@ class FigmaObject
         this.cp0        = base.cp0;
         this.cp1        = base.cp1;
         this.cp2        = base.cp2;
+
+        this.scale      = base.scale;
     }
 
 
@@ -209,7 +213,6 @@ class FigmaObject
             type:       this.type,
             nodeId:     this.nodeId,
 
-            uniqueId:   this.uniqueId,
             objectId:   this.objectId,
             objectName: this.objectName,
             
@@ -229,16 +232,17 @@ class FigmaObject
         /* 0 */ this.type,
         /* 1 */ this.nodeId,
 
-        /* 2 */ this.uniqueId,
-        /* 3 */ this.objectId,
-        /* 4 */ this.objectName,
+        /* 2 */ this.objectId,
+        /* 3 */ this.objectName,
             
-        /* 5 */ this.feedback,
-        /* 6 */ this.retain,
+        /* 4 */ this.feedback,
+        /* 5 */ this.retain,
+        
+        /* 6 */ this.xp0 ? point(this.xp0.x, this.xp0.y) : null,
+        /* 7 */ this.xp1 ? point(this.xp1.x, this.xp1.y) : null,
+        /* 8 */ this.xp2 ? point(this.xp2.x, this.xp2.y) : null,
 
-        /* 7 */ this.xp0 ? point(this.xp0.x, this.xp0.y) : null,
-        /* 8 */ this.xp1 ? point(this.xp1.x, this.xp1.y) : null,
-        /* 9 */ this.xp2 ? point(this.xp2.x, this.xp2.y) : null
+        /* 9 */ 0 // for future use
         ];
     }
 }

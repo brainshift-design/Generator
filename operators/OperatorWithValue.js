@@ -9,8 +9,22 @@ extends OperatorBase
     {
         super(type, id, name, icon, defWidth, progressBar);
 
-        this.paramValue          = createParamFromType(type);
-        this.paramValue.isResult = true;
+        this.paramValue = createParamFromType(type);
+
+        this.paramValue.isResult    = true;
+        this.paramValue.isNodeValue = true;
+    }
+
+
+
+    setRect(x, y, w, h, updateTransform = true)
+    {
+        super.setRect(
+            x,
+            y,
+            w, 
+            settings.showOperationResults ? h : h - defParamHeight, 
+            updateTransform);
     }
 
 
