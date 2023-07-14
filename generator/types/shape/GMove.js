@@ -91,76 +91,77 @@ extends GOperator1
 
     async evalObjects(parse, options = {})
     {
-        if (this.value.isValid())
+        if (   this.value
+            && this.value.isValid())
         {
             this.value.objects = 
                    this.input 
                 && this.input.value
                 ? this.input.value.objects.map(o => o.copy()) 
                 : [];
+
+            
+            const bounds = getObjBounds(this.value.objects);
+
+            if (!this.options.enabled)
+                return bounds;
+                
+
+            const x           = options.x          .value;
+            const y           = options.y          .value;
+            const moveType    = options.moveType   .value;
+            const affectSpace = options.affectSpace.value;
+
+
+            const _a = y/360*Tau;
+            const _v = vector(_a, x);
+            
+            const _x = moveType == 0 ? x : _v.x;
+            const _y = moveType == 0 ? y : _v.y;
+
+
+            const singlePoint = 
+                this.value.objects.length == 1 
+                && this.value.objects[0].type == POINT;
+
+
+            let _cx = 50;
+            let _cy = 50;
+
+            if (!singlePoint)
+            {
+                _cx /= 100;
+                _cy /= 100;
+            }
+
+
+            const cx = singlePoint ? this.value.objects[0].x + _cx : bounds.x + bounds.width  * _cx;
+            const cy = singlePoint ? this.value.objects[0].y + _cy : bounds.y + bounds.height * _cy;
+
+            const xform = 
+                moveType == 0
+                ? createTransform(_x, _y)
+                : mulm3m3(
+                    createTransform(cx, cy),
+                    createTransform(_x, _y),
+                    createRotateTransform(-_a),
+                    createTransform(-cx, -cy));
+
+                
+            for (const obj of this.value.objects)
+            {
+                obj.nodeId   = this.nodeId;
+                obj.objectId = obj.objectId + OBJECT_SEPARATOR + this.nodeId;
+
+                if (obj.type == VECTOR_PATH)
+                    obj.updatePoints(xform, this.coords);
+
+                obj.applyTransform(xform, affectSpace > 0);
+
+                this.coords = mulm3m3(this.coords, xform);
+            }
         }
-
-            
-        const bounds = getObjBounds(this.value.objects);
-
-        if (!this.options.enabled)
-            return bounds;
-            
-
-        const x           = options.x          .value;
-        const y           = options.y          .value;
-        const moveType    = options.moveType   .value;
-        const affectSpace = options.affectSpace.value;
-
-
-        const _a = y/360*Tau;
-        const _v = vector(_a, x);
         
-        const _x = moveType == 0 ? x : _v.x;
-        const _y = moveType == 0 ? y : _v.y;
-
-
-        const singlePoint = 
-               this.value.objects.length == 1 
-            && this.value.objects[0].type == POINT;
-
-
-        let _cx = 50;
-        let _cy = 50;
-
-        if (!singlePoint)
-        {
-            _cx /= 100;
-            _cy /= 100;
-        }
-
-
-        const cx = singlePoint ? this.value.objects[0].x + _cx : bounds.x + bounds.width  * _cx;
-        const cy = singlePoint ? this.value.objects[0].y + _cy : bounds.y + bounds.height * _cy;
-
-        const xform = 
-            moveType == 0
-            ? createTransform(_x, _y)
-            : mulm3m3(
-                createTransform(cx, cy),
-                createTransform(_x, _y),
-                createRotateTransform(-_a),
-                createTransform(-cx, -cy));
-
-             
-        for (const obj of this.value.objects)
-        {
-            obj.nodeId   = this.nodeId;
-            obj.objectId = obj.objectId + OBJECT_SEPARATOR + this.nodeId;
-
-            if (obj.type == VECTOR_PATH)
-                obj.updatePoints(xform, this.coords);
-
-            obj.applyTransform(xform, affectSpace > 0);
-
-            this.coords = mulm3m3(this.coords, xform);
-        }
-
         
         await super.evalObjects(parse);
     }

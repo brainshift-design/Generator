@@ -110,7 +110,9 @@ extends GAffine
 
     toValue()
     {
-        return this.value.copy();
+        return this.value
+             ? this.value.copy()
+             : null;
     }
 
 

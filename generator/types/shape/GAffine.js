@@ -47,14 +47,16 @@ extends GOperator1
 
     async evalAffineObjects(options, scaleCorners, scaleStyle, getXform)
     {
-        if (this.value.isValid())
-        {
-            this.value.objects = 
-                   this.input 
-                && this.input.value
-                ? this.input.value.objects.map(o => o.copy()) 
-                : [];
-        }
+        if (   !this.value
+            || !this.value.isValid())
+            return Rect.NaN;
+
+
+        this.value.objects = 
+                this.input 
+            && this.input.value
+            ? this.input.value.objects.map(o => o.copy()) 
+            : [];
         
 
         const bounds = getObjBounds(this.value.objects);
