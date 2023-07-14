@@ -4398,7 +4398,7 @@ a
             <div id='whatsNewBody'>
                 <h1 style='margin-top: 20px;'>What's new</h1>
 
-                <p>•  fixed crash when transforming null objects</p>
+                <p>•  added Freeze node for getting unique values from sets</p>
                 
                 <p><br/><br/><div id='chkHideWhatsNew'></div></p>
             </div>
@@ -4726,7 +4726,7 @@ a
 
 
 
-const generatorVersion = 158;
+const generatorVersion = 159;
 
 
 const MAX_INT32        = 2147483647;
@@ -9172,6 +9172,7 @@ const START                   = 'START';
 const REPEAT                  = 'REPT';
 const CACHE                   = 'CACHE';
 const COPY                    = 'COPY';
+const FREEZE                  = 'FRZ';
 const TIMER                   = 'TIMER';
 
 
@@ -9200,7 +9201,7 @@ const LIST_VALUES =
 ];
 
 
-const FOREACH                 = 'FOR';
+//const FOREACH                 = 'FOR';
 
 
 const FLOW_TYPES =
@@ -9211,9 +9212,10 @@ const FLOW_TYPES =
     IF_ELSE,
     START,
     REPEAT,
-    FOREACH,
+    //FOREACH,
     CACHE,
     COPY,
+    FREEZE,
     TIMER
 ];
 
@@ -17951,7 +17953,103 @@ extends GOperator
 
         this.updateValueObjects();
 
-        //await super.evalObjects(parse);
+
+        this.updateValues = [['value', this.value]];
+
+
+        this.validate();
+
+        return this;
+    }
+
+
+
+    toValue()
+    {
+        return this.value
+             ? this.value.copy()
+             : null;
+    }
+
+
+
+    pushValueUpdates(parse)
+    {
+        super.pushValueUpdates(parse);
+
+        if (this.input) this.input.pushValueUpdates(parse);
+    }
+
+
+
+    invalidateInputs(from)
+    {
+        super.invalidateInputs(from);
+
+        if (this.input) this.input.invalidateInputs(from);
+    }
+}
+
+
+
+class GFreeze
+extends GOperator
+{
+    input  = null;
+    frozen = false;
+
+
+    loopId  = NULL;
+
+
+
+    constructor(nodeId, options)
+    {
+        super(FREEZE, nodeId, options);
+    }
+
+
+    
+    copy()
+    {
+        const copy = new GFreeze(this.nodeId, this.options);
+
+        copy.copyBase(this);
+
+        if (this.value) copy.value = this.value.copy();
+        if (this.input) copy.input = this.input.copy();
+
+        return copy;
+    }
+
+
+
+    async eval(parse)
+    {
+        if (this.isCached())
+            return this;
+
+
+        const repeat = parse.repeats.find(r => r.repeatId == this.loopId);
+
+        if (      repeat
+               && repeat.iteration == 0
+            || !this.options.enabled)
+            this.frozen = false;
+
+
+        if (!this.frozen)
+        {
+            this.value = 
+                this.input 
+                ? (await this.input.eval(parse)).toValue()
+                : NullValue;
+
+            this.frozen = true;
+        }
+
+
+        this.updateValueObjects();
 
 
         this.updateValues = [['value', this.value]];
@@ -17969,6 +18067,15 @@ extends GOperator
         return this.value
              ? this.value.copy()
              : null;
+    }
+
+
+
+    pushValueUpdates(parse)
+    {
+        super.pushValueUpdates(parse);
+
+        if (this.input) this.input.pushValueUpdates(parse);
     }
 
 
@@ -32505,14 +32612,55 @@ function genParseCopy(parse)
         copy.input = genParse(parse);
 
 
-    //copy.count = genParse(parse);
-
-
     parse.nTab--;
 
 
     genParseNodeEnd(parse, copy);
     return copy;
+}
+
+
+
+function genParseFreeze(parse)
+{
+    const [, nodeId, options, ignore] = genParseNodeStart(parse);
+
+
+    const freeze = new GFreeze(nodeId, options);
+
+
+    let nInputs = -1;
+    
+    if (!ignore)
+    {
+        nInputs = parseInt(parse.move());
+        consoleAssert(nInputs == 0 || nInputs == 1, 'nInputs must be [0, 1]');
+    }
+
+
+    if (parse.settings.logRequests) 
+        logReq(freeze, parse, ignore, nInputs);
+
+
+    if (ignore) 
+    {
+        genParseNodeEnd(parse, freeze);
+        return parse.parsedNodes.find(n => n.nodeId == nodeId);
+    }
+
+
+    parse.nTab++;
+
+
+    if (nInputs == 1)
+        freeze.input = genParse(parse);
+
+
+    parse.nTab--;
+
+
+    genParseNodeEnd(parse, freeze);
+    return freeze;
 }
 
 
@@ -36427,6 +36575,7 @@ function genParse(parse, inParam = true)
     else if (parse.next == REPEAT                 ) result = genParseRepeat           (parse);
     else if (parse.next == CACHE                  ) result = genParseCache            (parse);
     else if (parse.next == COPY                   ) result = genParseCopy             (parse);
+    else if (parse.next == FREEZE                 ) result = genParseFreeze           (parse);
     else if (parse.next == TIMER                  ) result = genParseTimer            (parse);
      
     else if (parse.next == NUMBER_VALUE           ) result = genParseNumValue         (parse);
@@ -39846,7 +39995,7 @@ onerror = (event, source, line, pos, error) =>
 };
 
 
-const generatorVersion = 158;
+const generatorVersion = 159;
 
 
 const MAX_INT32        = 2147483647;
@@ -46476,6 +46625,7 @@ const START                   = 'START';
 const REPEAT                  = 'REPT';
 const CACHE                   = 'CACHE';
 const COPY                    = 'COPY';
+const FREEZE                  = 'FRZ';
 const TIMER                   = 'TIMER';
 
 
@@ -46504,7 +46654,7 @@ const LIST_VALUES =
 ];
 
 
-const FOREACH                 = 'FOR';
+//const FOREACH                 = 'FOR';
 
 
 const FLOW_TYPES =
@@ -46515,9 +46665,10 @@ const FLOW_TYPES =
     IF_ELSE,
     START,
     REPEAT,
-    FOREACH,
+    //FOREACH,
     CACHE,
     COPY,
+    FREEZE,
     TIMER
 ];
 
@@ -55255,7 +55406,103 @@ extends GOperator
 
         this.updateValueObjects();
 
-        //await super.evalObjects(parse);
+
+        this.updateValues = [['value', this.value]];
+
+
+        this.validate();
+
+        return this;
+    }
+
+
+
+    toValue()
+    {
+        return this.value
+             ? this.value.copy()
+             : null;
+    }
+
+
+
+    pushValueUpdates(parse)
+    {
+        super.pushValueUpdates(parse);
+
+        if (this.input) this.input.pushValueUpdates(parse);
+    }
+
+
+
+    invalidateInputs(from)
+    {
+        super.invalidateInputs(from);
+
+        if (this.input) this.input.invalidateInputs(from);
+    }
+}
+
+
+
+class GFreeze
+extends GOperator
+{
+    input  = null;
+    frozen = false;
+
+
+    loopId  = NULL;
+
+
+
+    constructor(nodeId, options)
+    {
+        super(FREEZE, nodeId, options);
+    }
+
+
+    
+    copy()
+    {
+        const copy = new GFreeze(this.nodeId, this.options);
+
+        copy.copyBase(this);
+
+        if (this.value) copy.value = this.value.copy();
+        if (this.input) copy.input = this.input.copy();
+
+        return copy;
+    }
+
+
+
+    async eval(parse)
+    {
+        if (this.isCached())
+            return this;
+
+
+        const repeat = parse.repeats.find(r => r.repeatId == this.loopId);
+
+        if (      repeat
+               && repeat.iteration == 0
+            || !this.options.enabled)
+            this.frozen = false;
+
+
+        if (!this.frozen)
+        {
+            this.value = 
+                this.input 
+                ? (await this.input.eval(parse)).toValue()
+                : NullValue;
+
+            this.frozen = true;
+        }
+
+
+        this.updateValueObjects();
 
 
         this.updateValues = [['value', this.value]];
@@ -55273,6 +55520,15 @@ extends GOperator
         return this.value
              ? this.value.copy()
              : null;
+    }
+
+
+
+    pushValueUpdates(parse)
+    {
+        super.pushValueUpdates(parse);
+
+        if (this.input) this.input.pushValueUpdates(parse);
     }
 
 
@@ -72702,6 +72958,7 @@ const iconRepeat            = '<svg width="16" height="16" viewBox="0 0 16 16" f
 const iconForEach           = '<svg width="15" height="11" viewBox="0 0 15 11" fill="none" xmlns="http://www.w3.org/2000/svg"><rect x="6" y="9" width="9" height="1" fill="white"/><circle cx="1.5" cy="9.5" r="1.5" fill="white"/><circle cx="1.5" cy="5.5" r="1.5" fill="white"/><circle cx="1.5" cy="1.5" r="1.5" fill="white"/></svg>';
 const iconCache             = '<svg width="15" height="11" viewBox="0 0 15 11" fill="none" xmlns="http://www.w3.org/2000/svg"><path d="M2.30351 1C1.68386 1.65376 1.20533 2.44219 0.906274 3.31653C0.435594 4.69266 0.437344 6.20022 0.911224 7.59282C1.21856 8.49597 1.71269 9.31613 2.35268 10" stroke="white"/><path d="M12.7415 1C13.3612 1.65376 13.8397 2.44219 14.1387 3.31653C14.6094 4.69266 14.6077 6.20022 14.1338 7.59282C13.8265 8.49597 13.3323 9.31613 12.6923 10" stroke="white"/><circle r="1.5" transform="matrix(-1 0 0 1 7.5 5.5)" fill="white"/></svg>';
 const iconCopy              = '<svg width="17" height="5" viewBox="0 0 17 5" fill="none" xmlns="http://www.w3.org/2000/svg"><path d="M15 0H6V1H15V0Z" fill="white"/><path d="M15 4H6V5H15V4Z" fill="white"/><path d="M1.5 4C2.32843 4 3 3.32843 3 2.5C3 1.67157 2.32843 1 1.5 1C0.671573 1 0 1.67157 0 2.5C0 3.32843 0.671573 4 1.5 4Z" fill="white"/></svg>';
+const iconFreeze            = '<svg width="15" height="11" viewBox="0 0 15 11" fill="none" xmlns="http://www.w3.org/2000/svg"><path d="M2.30354 1C1.68389 1.65376 1.20536 2.44219 0.906305 3.31653C0.435625 4.69266 0.437375 6.20022 0.911255 7.59282C1.21859 8.49597 1.71272 9.31613 2.35271 10" stroke="white"/><path d="M12.7415 1C13.3612 1.65376 13.8397 2.44219 14.1387 3.31653C14.6094 4.69266 14.6077 6.20022 14.1338 7.59282C13.8265 8.49597 13.3323 9.31613 12.6923 10" stroke="white"/><circle cx="1.5" cy="1.5" r="1.5" transform="matrix(-1 0 0 1 9 4)" fill="white"/></svg>';
 const iconStart             = '<svg width="19" height="8" viewBox="-1 0 19 8" fill="none" xmlns="http://www.w3.org/2000/svg"><rect width="4.97369" height="1" transform="matrix(-0.707107 0.707107 0.707107 0.707107 15.53 2.86005)" fill="white"/><rect x="7.00006" y="3" width="8" height="1" fill="white"/><circle cx="1.5" cy="3.5" r="1.5" fill="white"/><rect width="5" height="1" transform="matrix(-0.707107 -0.707107 -0.707107 0.707107 16.2427 3.53552)" fill="white"/></svg>';
 const iconIfElse            = '<svg width="17" height="7" viewBox="-1 0 17 7" fill="none" xmlns="http://www.w3.org/2000/svg"><rect y="1" width="9" height="1" fill="white"/><rect y="5" width="9" height="1" fill="white"/><path d="M13.157 4.8687V4.75547C13.1591 4.36695 13.1911 4.05725 13.253 3.82636C13.317 3.59546 13.4099 3.40898 13.5318 3.26689C13.6536 3.1248 13.8002 2.99604 13.9715 2.88059C14.0995 2.79179 14.2141 2.69965 14.3153 2.60419C14.4165 2.50872 14.497 2.40327 14.5569 2.28782C14.6167 2.17016 14.6467 2.03917 14.6467 1.89486C14.6467 1.74167 14.6126 1.60736 14.5445 1.49191C14.4763 1.37647 14.3845 1.28766 14.2688 1.2255C14.1553 1.16334 14.0293 1.13225 13.891 1.13225C13.7568 1.13225 13.6298 1.16445 13.5101 1.22883C13.3903 1.29099 13.2922 1.38424 13.2159 1.50856C13.1395 1.63067 13.0982 1.78275 13.092 1.9648H11.8284C11.8387 1.52077 11.9378 1.15446 12.1257 0.865842C12.3136 0.575008 12.5624 0.358548 12.8721 0.21646C13.1818 0.0721535 13.5235 0 13.8972 0C14.3081 0 14.6714 0.0732636 14.9873 0.219791C15.3032 0.364098 15.551 0.573898 15.7306 0.849191C15.9102 1.12448 16.0001 1.45639 16.0001 1.84491C16.0001 2.10466 15.9598 2.33555 15.8793 2.53758C15.8008 2.73739 15.6904 2.915 15.5479 3.07041C15.4054 3.2236 15.2372 3.36235 15.0431 3.48668C14.88 3.59102 14.7458 3.69981 14.6405 3.81304C14.5372 3.92626 14.4598 4.05725 14.4082 4.20599C14.3587 4.35474 14.3328 4.5379 14.3308 4.75547V4.8687H13.157ZM13.7702 6.9C13.5638 6.9 13.3872 6.8223 13.2406 6.66689C13.0961 6.50926 13.0249 6.32055 13.0269 6.10076C13.0249 5.88319 13.0961 5.6967 13.2406 5.54129C13.3872 5.38589 13.5638 5.30818 13.7702 5.30818C13.9664 5.30818 14.1388 5.38589 14.2874 5.54129C14.4361 5.6967 14.5114 5.88319 14.5135 6.10076C14.5114 6.24729 14.4753 6.38161 14.4051 6.50371C14.337 6.6236 14.2472 6.72017 14.1357 6.79344C14.0242 6.86448 13.9024 6.9 13.7702 6.9Z" fill="white"/></svg>';
 const iconTimer             = '<svg width="13" height="17" viewBox="0 0 13 17" fill="none" xmlns="http://www.w3.org/2000/svg"><path fill-rule="evenodd" clip-rule="evenodd" d="M9 0H4L4 2H5.5V4.07645C2.38491 4.55745 0 7.25021 0 10.5C0 14.0899 2.91015 17 6.5 17C10.0899 17 13 14.0899 13 10.5C13 7.25021 10.6151 4.55745 7.5 4.07645V2L9 2V0ZM6.5 5C3.46243 5 1 7.46243 1 10.5C1 13.5376 3.46243 16 6.5 16C9.53757 16 12 13.5376 12 10.5C12 7.46243 9.53757 5 6.5 5Z" fill="white"/><path d="M6.65821 9.51244L9.70667 6.46399L10.6001 7.35747L7.49915 10.4585C7.49972 10.4722 7.5 10.4861 7.5 10.5C7.5 11.0523 7.05229 11.5 6.5 11.5C5.94771 11.5 5.5 11.0523 5.5 10.5C5.5 9.94771 5.94771 9.5 6.5 9.5C6.55384 9.5 6.60668 9.50425 6.65821 9.51244Z" fill="white"/></svg>';
@@ -72841,7 +73098,7 @@ const iconComment           = '<svg width="18" height="17" viewBox="0 0 18 17" f
 
 const iconWindowNormal      = '<svg width="15" height="12" viewBox="0 0 15 12" fill="none" xmlns="http://www.w3.org/2000/svg"><rect x="0.5" y="0.5" width="14" height="11" stroke="white"/><rect x="4" y="4" width="7" height="4" fill="white"/></svg>';
 const iconWindowMaximize    = '<svg width="15" height="12" viewBox="0 0 15 12" fill="none" xmlns="http://www.w3.org/2000/svg"><rect width="15" height="12" fill="white"/></svg>';
-const iconWindowDockLeft    = '<svg width="15" height="12" viewBox="0 0 15 12" fill="none" xmlns="http://www.w3.org/2000/svg"><rect x="0.5" y="0.5" width="14" height="11" stroke="white"/><rect width="7" height="12" fill="white"/></svg>';
+const iconWindowDockLeft    = '<svg width="15" height="12" viewBox="fcop7y0 0 15 12" fill="none" xmlns="http://www.w3.org/2000/svg"><rect x="0.5" y="0.5" width="14" height="11" stroke="white"/><rect width="7" height="12" fill="white"/></svg>';
 const iconWindowDockRight   = '<svg width="15" height="12" viewBox="0 0 15 12" fill="none" xmlns="http://www.w3.org/2000/svg"><rect x="0.5" y="0.5" width="14" height="11" stroke="white"/><rect x="8" width="7" height="12" fill="white"/></svg>';
 const iconWindowDockTop     = '<svg width="15" height="12" viewBox="0 0 15 12" fill="none" xmlns="http://www.w3.org/2000/svg"><rect x="0.5" y="0.5" width="14" height="11" stroke="white"/><rect width="15" height="5" fill="white"/></svg>';
 const iconWindowDockBottom  = '<svg width="15" height="12" viewBox="0 0 15 12" fill="none" xmlns="http://www.w3.org/2000/svg"><rect x="0.5" y="0.5" width="14" height="11" stroke="white"/><rect y="7" width="15" height="5" fill="white"/></svg>';
@@ -73986,6 +74243,7 @@ var menuFlowSep4;
 var menuItemTimer;
 var menuItemCache;
 var menuItemCopy;
+var menuItemFreeze;
 
 var menuItemArray;
 var menuItemDistribute;
@@ -74240,8 +74498,10 @@ function initGeneratorMenus()
         menuItemCopy          = new MenuItem('Copy',              {icon: iconCopy,       callback: e => actionManager.do(getCreateNodeAction(COPY,       btnNumber.div, getCreateOptions(e)))}),
         menuFlowSep3          = new MenuItem('',                  {separator: true}),
         menuItemStart         = new MenuItem('Start . . .',       {icon: iconStart,      callback: e => actionManager.do(getCreateNodeAction(START,      btnNumber.div, getCreateOptions(e)))}),
-        menuItemRepeat        = new MenuItem('. . . Repeat',      {icon: iconRepeat,     callback: e => actionManager.do(getCreateNodeAction(REPEAT,     btnNumber.div, getCreateOptions(e)))}),
+        menuItemFreeze        = new MenuItem('Freeze . . .',         {icon: iconFreeze,     callback: e => actionManager.do(getCreateNodeAction(FREEZE,     btnNumber.div, getCreateOptions(e)))}),
         menuFlowSep4          = new MenuItem('',                  {separator: true}),
+        menuItemRepeat        = new MenuItem('. . . Repeat',      {icon: iconRepeat,     callback: e => actionManager.do(getCreateNodeAction(REPEAT,     btnNumber.div, getCreateOptions(e)))}),
+                                new MenuItem('',                  {separator: true}),
         menuItemTimer         = new MenuItem('Timer ',            {icon: iconTimer,      callback: e => actionManager.do(getCreateNodeAction(TIMER,      btnNumber.div, getCreateOptions(e)))})]);
      // menuFlowSep3          = new MenuItem('',                  {separator: true}),
      // menuItemCache         = new MenuItem('Cache',             {icon: iconCache,  callback: e => actionManager.do(getCreateNodeAction(CACHE,        btnNumber.div, getCreateOptions(e)))}),
@@ -89764,6 +90024,106 @@ function OpCopy_onConnectInput(node)
 
 
 function OpCopy_onDisconnectInput(node)
+{
+    node.outputs[0].types = [ANY_VALUE];
+}
+
+
+class   OpFreeze
+extends OperatorBase
+{
+    constructor()
+    {
+        super(FREEZE, 'freeze', 'freeze', iconFreeze);
+
+        this.cached      = false;
+        this.canDisable  = true;
+        this.iconOffsetY = 1;
+
+
+        this.addInput (new Input(ALL_VALUES));
+        this.addOutput(new Output([ANY_VALUE], this.output_genRequest));
+
+
+        this.inputs[0].addEventListener('connect',    () => OpFreeze_onConnectInput(this));
+        this.inputs[0].addEventListener('disconnect', () => OpFreeze_onDisconnectInput(this));
+    }
+
+
+
+    canAutoConnectFrom(output)
+    {
+        return true;
+    }
+
+    
+
+    output_genRequest(gen)
+    {
+        // 'this' is the output
+
+        gen.scope.push({
+            nodeId:  this.node.id, 
+            paramId: NULL });
+
+        const [request, ignore] = this.node.genRequestStart(gen);
+        if (ignore) return request;
+
+
+        const input = this.node.inputs[0];
+
+
+        request.push(input.connected ? 1 : 0);
+
+        if (input.connected)
+            request.push(...pushInputOrParam(input, gen));
+
+        
+        gen.scope.pop();
+        pushUnique(gen.passedNodes, this.node);
+
+        return request;
+    }
+
+
+
+    getHeaderColors(options = {})
+    {
+        const colors = super.getHeaderColors(options);
+
+        const type = 
+            this.inputs[0].connected 
+            ? this.inputs[0].connectedOutput.node.type 
+            : this.type;
+
+        // colors.back = 
+        //     this.headerColor
+        //     ? this.headerColor
+        //     : this.inert
+        //     ? rgb_a(rgbDocumentBody, 0.95)
+        //     : rgb_a(rgbFromType(type, this.active), 0.95);
+
+
+        colors.text   = isDark(colors.back) ? [1, 1, 1, 1] : [0, 0, 0, 1]; 
+
+        colors.input  = this.active ? rgb_a(colors.text, 0.4)  : rgb_a(rgbSaturateHsv(rgbFromType(type, true), 0.5), 0.8);
+        colors.output = this.active ? rgb_a(colors.text, 0.35) : rgb_a(rgbSaturateHsv(rgbFromType(type, true), 0.5), 0.7);
+        colors.wire   = rgbFromType(type, true);
+
+        return colors;
+    }
+}
+
+
+
+function OpFreeze_onConnectInput(node)
+{
+    node.outputs[0].types = [...node.inputs[0].connectedOutput.types];
+}
+
+
+
+function OpFreeze_onDisconnectInput(node)
 {
     node.outputs[0].types = [ANY_VALUE];
 }
@@ -110130,6 +110490,7 @@ function createNode(nodeType, creatingButton = null, createdNodeId = -1, options
         case REPEAT:                  node = new OpRepeat();            break;
         case CACHE:                   node = new OpCache();             break;
         case COPY:                    node = new OpCopy();              break;
+        case FREEZE:                  node = new OpFreeze();            break;
         case TIMER:                   node = new OpTimer();             break;
 
         case NUMBER:                  node = new OpNumber();            break;

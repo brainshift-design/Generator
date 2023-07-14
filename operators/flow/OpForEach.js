@@ -1,52 +1,52 @@
-class   OpForEach
-extends OperatorBase
-{
-    constructor()
-    {
-        super(FOREACH, 'forEach', 'forEach');
+// class   OpForEach
+// extends OperatorBase
+// {
+//     constructor()
+//     {
+//         super(FOREACH, 'forEach', 'forEach');
 
-        this.inert = true;
+//         this.inert = true;
         
-        this.addInput (new Input(LIST_TYPES, getNodeInputValuesForUndo));
-        this.addOutput(new Output([], this.output_genRequest));
-    }
+//         this.addInput (new Input(LIST_TYPES, getNodeInputValuesForUndo));
+//         this.addOutput(new Output([], this.output_genRequest));
+//     }
 
 
 
-    output_genRequest(gen)
-    {
-        // 'this' is the output        
+//     output_genRequest(gen)
+//     {
+//         // 'this' is the output        
 
-        return this.node.genRequest(gen);
-    }
-
-
-
-    genRequest(gen)
-    {
-        // 'this' is the node
-
-        gen.scope.push({
-            nodeId:  this.id, 
-            paramId: NULL });
+//         return this.node.genRequest(gen);
+//     }
 
 
-        const [request, ignore] = this.genRequestStart(gen);
-        if (ignore) return request;
+
+//     genRequest(gen)
+//     {
+//         // 'this' is the node
+
+//         gen.scope.push({
+//             nodeId:  this.id, 
+//             paramId: NULL });
 
 
-        const input = this.inputs[0];
+//         const [request, ignore] = this.genRequestStart(gen);
+//         if (ignore) return request;
 
 
-        // request.push(input.connected ? 1 : 0);
-
-        // if (input.connected) 
-        //     request.push(...pushInputOrParam(input, gen));
+//         const input = this.inputs[0];
 
 
-        gen.scope.pop();
-        pushUnique(gen.passedNodes, this);
+//         // request.push(input.connected ? 1 : 0);
 
-        return request;
-    }
-}
+//         // if (input.connected) 
+//         //     request.push(...pushInputOrParam(input, gen));
+
+
+//         gen.scope.pop();
+//         pushUnique(gen.passedNodes, this);
+
+//         return request;
+//     }
+// }

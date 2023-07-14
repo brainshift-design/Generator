@@ -19,7 +19,7 @@ function isConnKey(key) { return isTagKey(key, connTag); }
 function noPageTag(key) { return noTag(key, pageTag); }
 function noNodeTag(key) { return noTag(key, nodeTag); }
 function noConnTag(key) { return noTag(key, connTag); }
-const generatorVersion = 158;
+const generatorVersion = 159;
 const MAX_INT32 = 2147483647;
 const NULL = '';
 const HTAB = '  '; // half-tab
@@ -477,6 +477,7 @@ const START = 'START';
 const REPEAT = 'REPT';
 const CACHE = 'CACHE';
 const COPY = 'COPY';
+const FREEZE = 'FRZ';
 const TIMER = 'TIMER';
 const ANY_VALUE = 'ANY#';
 const LIST_TYPES = [
@@ -495,7 +496,7 @@ const LIST_VALUES = [
     TEXT_LIST_VALUE,
     SHAPE_LIST_VALUE
 ];
-const FOREACH = 'FOR';
+//const FOREACH                 = 'FOR';
 const FLOW_TYPES = [
     ...LIST_TYPES,
     ITEMS,
@@ -503,9 +504,10 @@ const FLOW_TYPES = [
     IF_ELSE,
     START,
     REPEAT,
-    FOREACH,
+    //FOREACH,
     CACHE,
     COPY,
+    FREEZE,
     TIMER
 ];
 const NUMBER_VALUE = 'NUM#';

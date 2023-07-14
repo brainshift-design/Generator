@@ -13,6 +13,7 @@ const START                   = 'START';
 const REPEAT                  = 'REPT';
 const CACHE                   = 'CACHE';
 const COPY                    = 'COPY';
+const FREEZE                  = 'FRZ';
 const TIMER                   = 'TIMER';
 
 
@@ -41,7 +42,7 @@ const LIST_VALUES =
 ];
 
 
-const FOREACH                 = 'FOR';
+//const FOREACH                 = 'FOR';
 
 
 const FLOW_TYPES =
@@ -52,9 +53,10 @@ const FLOW_TYPES =
     IF_ELSE,
     START,
     REPEAT,
-    FOREACH,
+    //FOREACH,
     CACHE,
     COPY,
+    FREEZE,
     TIMER
 ];
 

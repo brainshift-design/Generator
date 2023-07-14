@@ -67,6 +67,7 @@
 ../generator/types/flow/GRepeat.js
 ../generator/types/flow/GCache.js
 ../generator/types/flow/GCopy.js
+../generator/types/flow/GFreeze.js
 ../generator/types/flow/GTimer.js
 
 

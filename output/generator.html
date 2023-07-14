@@ -4,7 +4,7 @@
 
 
 
-const generatorVersion = 158;
+const generatorVersion = 159;
 
 
 const MAX_INT32        = 2147483647;
@@ -4450,6 +4450,7 @@ const START                   = 'START';
 const REPEAT                  = 'REPT';
 const CACHE                   = 'CACHE';
 const COPY                    = 'COPY';
+const FREEZE                  = 'FRZ';
 const TIMER                   = 'TIMER';
 
 
@@ -4478,7 +4479,7 @@ const LIST_VALUES =
 ];
 
 
-const FOREACH                 = 'FOR';
+//const FOREACH                 = 'FOR';
 
 
 const FLOW_TYPES =
@@ -4489,9 +4490,10 @@ const FLOW_TYPES =
     IF_ELSE,
     START,
     REPEAT,
-    FOREACH,
+    //FOREACH,
     CACHE,
     COPY,
+    FREEZE,
     TIMER
 ];
 
@@ -13229,7 +13231,103 @@ extends GOperator
 
         this.updateValueObjects();
 
-        //await super.evalObjects(parse);
+
+        this.updateValues = [['value', this.value]];
+
+
+        this.validate();
+
+        return this;
+    }
+
+
+
+    toValue()
+    {
+        return this.value
+             ? this.value.copy()
+             : null;
+    }
+
+
+
+    pushValueUpdates(parse)
+    {
+        super.pushValueUpdates(parse);
+
+        if (this.input) this.input.pushValueUpdates(parse);
+    }
+
+
+
+    invalidateInputs(from)
+    {
+        super.invalidateInputs(from);
+
+        if (this.input) this.input.invalidateInputs(from);
+    }
+}
+
+
+
+class GFreeze
+extends GOperator
+{
+    input  = null;
+    frozen = false;
+
+
+    loopId  = NULL;
+
+
+
+    constructor(nodeId, options)
+    {
+        super(FREEZE, nodeId, options);
+    }
+
+
+    
+    copy()
+    {
+        const copy = new GFreeze(this.nodeId, this.options);
+
+        copy.copyBase(this);
+
+        if (this.value) copy.value = this.value.copy();
+        if (this.input) copy.input = this.input.copy();
+
+        return copy;
+    }
+
+
+
+    async eval(parse)
+    {
+        if (this.isCached())
+            return this;
+
+
+        const repeat = parse.repeats.find(r => r.repeatId == this.loopId);
+
+        if (      repeat
+               && repeat.iteration == 0
+            || !this.options.enabled)
+            this.frozen = false;
+
+
+        if (!this.frozen)
+        {
+            this.value = 
+                this.input 
+                ? (await this.input.eval(parse)).toValue()
+                : NullValue;
+
+            this.frozen = true;
+        }
+
+
+        this.updateValueObjects();
 
 
         this.updateValues = [['value', this.value]];
@@ -13247,6 +13345,15 @@ extends GOperator
         return this.value
              ? this.value.copy()
              : null;
+    }
+
+
+
+    pushValueUpdates(parse)
+    {
+        super.pushValueUpdates(parse);
+
+        if (this.input) this.input.pushValueUpdates(parse);
     }
 
 
@@ -27783,14 +27890,55 @@ function genParseCopy(parse)
         copy.input = genParse(parse);
 
 
-    //copy.count = genParse(parse);
-
-
     parse.nTab--;
 
 
     genParseNodeEnd(parse, copy);
     return copy;
+}
+
+
+
+function genParseFreeze(parse)
+{
+    const [, nodeId, options, ignore] = genParseNodeStart(parse);
+
+
+    const freeze = new GFreeze(nodeId, options);
+
+
+    let nInputs = -1;
+    
+    if (!ignore)
+    {
+        nInputs = parseInt(parse.move());
+        consoleAssert(nInputs == 0 || nInputs == 1, 'nInputs must be [0, 1]');
+    }
+
+
+    if (parse.settings.logRequests) 
+        logReq(freeze, parse, ignore, nInputs);
+
+
+    if (ignore) 
+    {
+        genParseNodeEnd(parse, freeze);
+        return parse.parsedNodes.find(n => n.nodeId == nodeId);
+    }
+
+
+    parse.nTab++;
+
+
+    if (nInputs == 1)
+        freeze.input = genParse(parse);
+
+
+    parse.nTab--;
+
+
+    genParseNodeEnd(parse, freeze);
+    return freeze;
 }
 
 
@@ -31705,6 +31853,7 @@ function genParse(parse, inParam = true)
     else if (parse.next == REPEAT                 ) result = genParseRepeat           (parse);
     else if (parse.next == CACHE                  ) result = genParseCache            (parse);
     else if (parse.next == COPY                   ) result = genParseCopy             (parse);
+    else if (parse.next == FREEZE                 ) result = genParseFreeze           (parse);
     else if (parse.next == TIMER                  ) result = genParseTimer            (parse);
      
     else if (parse.next == NUMBER_VALUE           ) result = genParseNumValue         (parse);

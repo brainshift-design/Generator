@@ -13,6 +13,7 @@ function createNode(nodeType, creatingButton = null, createdNodeId = -1, options
         case REPEAT:                  node = new OpRepeat();            break;
         case CACHE:                   node = new OpCache();             break;
         case COPY:                    node = new OpCopy();              break;
+        case FREEZE:                  node = new OpFreeze();            break;
         case TIMER:                   node = new OpTimer();             break;
 
         case NUMBER:                  node = new OpNumber();            break;

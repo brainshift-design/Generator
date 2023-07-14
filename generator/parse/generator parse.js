@@ -116,6 +116,7 @@ function genParse(parse, inParam = true)
     else if (parse.next == REPEAT                 ) result = genParseRepeat           (parse);
     else if (parse.next == CACHE                  ) result = genParseCache            (parse);
     else if (parse.next == COPY                   ) result = genParseCopy             (parse);
+    else if (parse.next == FREEZE                 ) result = genParseFreeze           (parse);
     else if (parse.next == TIMER                  ) result = genParseTimer            (parse);
      
     else if (parse.next == NUMBER_VALUE           ) result = genParseNumValue         (parse);

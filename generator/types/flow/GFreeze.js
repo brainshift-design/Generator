@@ -1,20 +1,24 @@
-class GCopy
+class GFreeze
 extends GOperator
 {
-    input = null;
+    input  = null;
+    frozen = false;
+
+
+    loopId  = NULL;
 
 
 
     constructor(nodeId, options)
     {
-        super(COPY, nodeId, options);
+        super(FREEZE, nodeId, options);
     }
 
 
     
     copy()
     {
-        const copy = new GCopy(this.nodeId, this.options);
+        const copy = new GFreeze(this.nodeId, this.options);
 
         copy.copyBase(this);
 
@@ -32,10 +36,23 @@ extends GOperator
             return this;
 
 
-        this.value = 
-            this.input 
-            ? (await this.input.eval(parse)).toValue() 
-            : NullValue;
+        const repeat = parse.repeats.find(r => r.repeatId == this.loopId);
+
+        if (      repeat
+               && repeat.iteration == 0
+            || !this.options.enabled)
+            this.frozen = false;
+
+
+        if (!this.frozen)
+        {
+            this.value = 
+                this.input 
+                ? (await this.input.eval(parse)).toValue()
+                : NullValue;
+
+            this.frozen = true;
+        }
 
 
         this.updateValueObjects();
