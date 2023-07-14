@@ -176,13 +176,14 @@ extends OpShapeBase
 
         const headerStyle = rgba2style(
             rgb_a(
-                rgbFromType(ANY_VALUE)
-                ? (isDark(rgbaStripe) ? [1, 1, 1] : [0, 0, 0])
-                : colors.text, 
+                //rgbFromType(ANY_VALUE)
+                //? (isDark(rgbaStripe) ? [1, 1, 1] : [0, 0, 0])
+                //: 
+                colors.text, 
                 this.btnFinal.down 
                 ? 1 
                 : this.btnFinal.over
-                  ? 0.7 
+                  ? 1 
                   : 0.5));
 
         this.btnFinal.style.position           = 'relative';

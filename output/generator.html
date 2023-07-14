@@ -4,7 +4,7 @@
 
 
 
-const generatorVersion = 156;
+const generatorVersion = 157;
 
 
 const MAX_INT32        = 2147483647;
@@ -54,7 +54,7 @@ function nozerov(v)
 
 function sqr (x) { return x*x;   };
 function cube(x) { return x*x*x; };
-
+ 
 
 function toInt(f) { return Math.floor(f) | 0; }
 
@@ -4963,7 +4963,7 @@ const MATH_OPS =
     [NUMBER_MODULO,   '%' ],
     [NUMBER_DIVIDE,   '/' ], //'÷' ],
     [NUMBER_MULTIPLY, '×' ],
-    [NUMBER_EXPONENT, 'e<sup>x</sup>'] 
+    [NUMBER_EXPONENT, 'e<sup>x'] 
 ];
 
 
@@ -6255,6 +6255,12 @@ extends FigmaShape
 
 function getPathDataFromPoints(points, closed, degree)
 {
+    for (const p of points)
+        if (   isNaN(p.x)
+            || isNaN(p.y))
+            return '';
+
+            
     let pathData = '';
 
 

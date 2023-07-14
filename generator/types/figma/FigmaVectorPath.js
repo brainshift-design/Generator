@@ -143,6 +143,12 @@ extends FigmaShape
 
 function getPathDataFromPoints(points, closed, degree)
 {
+    for (const p of points)
+        if (   isNaN(p.x)
+            || isNaN(p.y))
+            return '';
+
+            
     let pathData = '';
 
 

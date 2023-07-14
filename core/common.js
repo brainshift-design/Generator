@@ -1,4 +1,4 @@
-const generatorVersion = 156;
+const generatorVersion = 157;
 
 
 const MAX_INT32        = 2147483647;
@@ -48,7 +48,7 @@ function nozerov(v)
 
 function sqr (x) { return x*x;   };
 function cube(x) { return x*x*x; };
-
+ 
 
 function toInt(f) { return Math.floor(f) | 0; }
 

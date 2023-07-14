@@ -23,7 +23,7 @@ function noNodeTag(key) { return noTag(key, nodeTag); }
 function noConnTag(key) { return noTag(key, connTag); }
 
 
-const generatorVersion = 156;
+const generatorVersion = 157;
 
 
 const MAX_INT32        = 2147483647;
@@ -73,7 +73,7 @@ function nozerov(v)
 
 function sqr (x) { return x*x;   };
 function cube(x) { return x*x*x; };
-
+ 
 
 function toInt(f) { return Math.floor(f) | 0; }
 
@@ -1415,7 +1415,7 @@ const MATH_OPS =
     [NUMBER_MODULO,   '%' ],
     [NUMBER_DIVIDE,   '/' ], //'÷' ],
     [NUMBER_MULTIPLY, '×' ],
-    [NUMBER_EXPONENT, 'e<sup>x</sup>'] 
+    [NUMBER_EXPONENT, 'e<sup>x'] 
 ];
 
 

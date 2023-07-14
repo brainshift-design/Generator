@@ -166,13 +166,14 @@ extends OperatorWithValue
 
         const headerStyle = rgba2style(
             rgb_a(
-                rgbFromType(ANY_VALUE) //this.paramValue.value.isValid()
-                ? (isDark(rgbaStripe) ? [1, 1, 1] : [0, 0, 0])
-                : colors.text, 
+                //rgbFromType(ANY_VALUE) //this.paramValue.value.isValid()
+                //? (isDark(rgbaStripe) ? [1, 1, 1] : [0, 0, 0])
+                //: 
+                colors.text, 
                 this.btnPlay.down 
                 ? 1 
                 : this.btnPlay.over
-                  ? 0.7 
+                  ? 1 
                   : 0.5));
 
         this.btnPlay.style.display            = 'inline-block';
