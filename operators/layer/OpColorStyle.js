@@ -125,14 +125,14 @@ extends OperatorBase
 
     updateParams()
     {
-        const enabled =
-              !this.existing 
-            || this.linkedStyleId != NULL;
+        const enabled = this.linkedStyleId != NULL;
+            //   !this.existing 
+            // || this.linkedStyleId != NULL;
 
-        this.paramValue.enableControlText(enabled);
+        this.paramValue.enableControlText(enabled, this.isUnknown());
 
-        this.paramValue.controls[0].valueText =  this.isUnknown() ? UNKNOWN_DISPLAY : '';
-        this.paramValue.controls[0].showBar   = false;//!this.isUnknown();
+        // // this.paramValue.controls[0].valueText =  this.isUnknown() ? UNKNOWN_DISPLAY : '';
+        // this.paramValue.controls[0].showBar   = false;//!this.isUnknown();
 
 
         //const colors   = this.getHeaderColors();

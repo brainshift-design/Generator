@@ -969,8 +969,11 @@ const FONT_WEIGHTS = [
 const FO_TYPE = 0;
 const FO_NODE_ID = 1;
 const FO_OBJECT_ID = 2;
+const FO_STYLE_ID = 2;
 const FO_OBJECT_NAME = 3;
+const FO_STYLE_NAME = 3;
 const FO_FEEDBACK = 4;
+const FO_STYLE_PAINTS = 4;
 const FO_RETAIN = 5;
 const FO_XP0 = 6;
 const FO_XP1 = 7;
@@ -2484,6 +2487,7 @@ function figGetAllLocalColorStyles(nodeId, px, py) {
         };
         let onlyPaint = true;
         for (const _paint of _style.paints) {
+            console.log('_paint =', _paint);
             if (_paint.type == 'SOLID') {
                 style.paints.push([
                     _paint.color.r,
@@ -2546,15 +2550,15 @@ function figClearColorStyle(localStyles, nodeId) {
 }
 function figCreateColorStyle(styles, genStyle) {
     const figStyle = figma.createPaintStyle();
-    figStyle.setPluginData('type', genStyle.type);
-    figStyle.setPluginData('nodeId', genStyle.nodeId);
-    figStyle.setPluginData('existing', boolToString(genStyle.existing));
-    figStyle.name = genStyle.styleName;
+    figStyle.setPluginData('type', genStyle[FO_TYPE]);
+    figStyle.setPluginData('nodeId', genStyle[FO_NODE_ID]);
+    //figStyle.setPluginData('existing', boolToString(genStyle.existing));
+    figStyle.name = genStyle[FO_STYLE_NAME];
     setStylePaints(figStyle, genStyle);
     styles.push(figStyle);
     figPostMessageToUi({
         cmd: 'uiSetStyleId',
-        nodeId: genStyle.nodeId,
+        nodeId: genStyle[FO_NODE_ID],
         styleId: figStyle.id
     });
     return figStyle;
@@ -2563,13 +2567,13 @@ function figUpdateStyles(msg) {
     let curNodeId = NULL;
     let figStyles;
     for (const genStyle of msg.styles) {
-        if (genStyle.nodeId != curNodeId) {
-            curNodeId = genStyle.nodeId;
-            figStyles = figStyleArrays.find(a => a.nodeId == genStyle.nodeId);
+        if (genStyle[FO_NODE_ID] != curNodeId) {
+            curNodeId = genStyle[FO_NODE_ID];
+            figStyles = figStyleArrays.find(a => a.nodeId == genStyle[FO_NODE_ID]);
             if (!figStyles) {
                 figStyles = {
-                    nodeId: genStyle.nodeId,
-                    existing: genStyle.existing,
+                    nodeId: genStyle[FO_NODE_ID],
+                    //existing: genStyle.existing, 
                     styles: []
                 };
                 figStyleArrays.push(figStyles);
@@ -2579,7 +2583,7 @@ function figUpdateStyles(msg) {
             figStyles = null;
         const figStyle = figStyles.styles[0];
         const localStyles = figma.getLocalPaintStyles();
-        const localStyle = localStyles.find(s => s.getPluginData('nodeId') == genStyle.nodeId);
+        const localStyle = localStyles.find(s => s.getPluginData('nodeId') == genStyle[FO_NODE_ID]);
         if (isValid(figStyle)
             && !isValid(localStyle)) // removed
          {
@@ -2593,12 +2597,12 @@ function figUpdateStyles(msg) {
          {
             if (!existing) {
                 styleChangingFromGenerator = true;
-                figLinkNodeToExistingColorStyle(genStyle.nodeId, genStyle.id);
+                figLinkNodeToExistingColorStyle(genStyle[FO_NODE_ID], genStyle[FO_STYLE_ID]);
                 //figCreateColorStyle(figStyles.styles, genStyle);
             }
         }
         else if (isValid(figStyle)
-            && figStyle.getPluginData('type') == genStyle.type) // update existing style
+            && figStyle.getPluginData('type') == genStyle[FO_TYPE]) // update existing style
          {
             styleChangingFromGenerator = true;
             figUpdateColorStyle(localStyle, genStyle);
@@ -2616,7 +2620,7 @@ function figUpdateStyles(msg) {
 }
 function figUpdateColorStyle(figStyle, genStyle) {
     setStylePaints(figStyle, genStyle);
-    figStyle.name = genStyle.name;
+    figStyle.name = genStyle[FO_STYLE_NAME];
 }
 function getStylePaints(stylePaints) {
     const paints = new Array();
@@ -2636,12 +2640,11 @@ function getStylePaints(stylePaints) {
     }
     return paints;
 }
-function setStylePaints(style, src) {
-    if (!!src.paints
-        && !isEmpty(src.paints))
-        style.paints = getStylePaints(src.paints);
+function setStylePaints(figStyle, genStyle) {
+    if (!isEmpty(genStyle[FO_STYLE_PAINTS]))
+        figStyle.paints = getStylePaints(genStyle[FO_STYLE_PAINTS]);
     else
-        style.paints = [];
+        figStyle.paints = [];
 }
 function getFigmaTransform(tl, tr, bl) {
     let vr = point(tr.x - tl.x, tr.y - tl.y);

@@ -4,8 +4,9 @@ extends GOperator
     id;
 
     colorStyle;
+    genValue;
 
-    existing;
+    //existing;
     linked;
 
 
@@ -25,8 +26,9 @@ extends GOperator
 
         copy.id         = this.id;
         copy.colorStyle = this.colorStyle.copy();
+        copy.genValue   = this.genValue  .copy();
         
-        copy.existing   = this.existing;
+        //copy.existing   = this.existing;
         copy.linked     = this.linked;
 
         return copy;
@@ -39,13 +41,14 @@ extends GOperator
         if (this.isCached())
             return this;
 
-            
-        this.value = (await this.value.eval(parse)).toValue();
+        
+        this.value = (await this.genValue.eval(parse)).toValue();
 
 
         if (   this.value.isValid()
-            && (  !this.existing
-                || this.linked))
+            && this.linked)
+            // (  !this.existing
+            //     || this.linked))
         {
             if (this.value.type == COLOR_VALUE)
                 this.value = FillValue.fromRgb(scaleRgb(this.value.toRgb()), 0xff);
@@ -77,7 +80,7 @@ extends GOperator
             
         const colorStyle = new FigmaColorStyle(this.nodeId, this.id, this.name);
 
-        colorStyle.existing = this.existing;
+        //colorStyle.existing = this.existing;
 
 
         colorStyle.paints = 
@@ -95,12 +98,12 @@ extends GOperator
 
 
 
-    // pushValueUpdates(parse)
-    // {
-    //     super.pushValueUpdates(parse);
+    pushValueUpdates(parse)
+    {
+        super.pushValueUpdates(parse);
 
-    //     if (this.colorStyle) this.colorStyle.pushValueUpdates(parse);
-    // }
+        if (this.genValue) this.genValue.pushValueUpdates(parse);
+    }
 
 
 
@@ -108,6 +111,6 @@ extends GOperator
     {
         super.invalidateInputs(from);
 
-        if (this.colorStyle) this.colorStyle.invalidateInputs(from);
+        if (this.genValue) this.genValue.invalidateInputs(from);
     }
 }

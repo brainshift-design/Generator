@@ -37,10 +37,10 @@ function genParseColorStyle(parse)
     parse.inParam = false;
 
 
-    style.id    = parse.move();
-    style.name  = options.nodeName;
+    style.id       = parse.move();
+    style.name     = options.nodeName;
     
-    style.value = genParse(parse);
+    style.genValue = genParse(parse);
 
     
     parse.nTab--;

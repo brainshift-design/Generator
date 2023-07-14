@@ -5105,10 +5105,10 @@ const FONT_WEIGHTS =
 const FO_TYPE           =  0;
 const FO_NODE_ID        =  1;
 
-const FO_OBJECT_ID      =  2;
-const FO_OBJECT_NAME    =  3;
+const FO_OBJECT_ID      =  2;   const FO_STYLE_ID     = 2;
+const FO_OBJECT_NAME    =  3;   const FO_STYLE_NAME   = 3;
 
-const FO_FEEDBACK       =  4;
+const FO_FEEDBACK       =  4;   const FO_STYLE_PAINTS = 4;
 const FO_RETAIN         =  5;
 
 
@@ -7145,18 +7145,24 @@ extends FigmaShape
 
 
 class FigmaColorStyle
-extends FigmaObject
 {
+    type;
+    
+    nodeId = '';
+
     styleId;
     styleName;
 
-    existing;
+    paints = [];
+
+//    existing;
 
 
 
     constructor(nodeId, styleId, styleName)
     {
-        super(COLOR_STYLE, nodeId);
+        this.type      = COLOR_STYLE;
+        this.nodeId    = nodeId;
 
         this.styleId   = styleId;
         this.styleName = styleName;
@@ -7168,23 +7174,24 @@ extends FigmaObject
     {
         const copy = new FigmaColorStyle(this.nodeId, this.styleId, this.styleName);
 
-        copy.copyBase(this);
-
-        copy.existing = this.existing;
+//        copy.existing = this.existing;
 
         return copy;
     }
 
 
 
-    toJsonObject()
+    toData()
     {
-        return {
-            ...super.toJsonObject(),
-   
-            styleId:   this.styleId,
-            styleName: this.styleName
-        };
+        return [
+        /* 0 */ this.type,
+        /* 1 */ this.nodeId,
+
+        /* 2 */ this.styleId,
+        /* 3 */ this.styleName,
+        
+        /* 4 */ this.paints
+        ];
     }
 }
 
@@ -21076,8 +21083,9 @@ extends GOperator
     id;
 
     colorStyle;
+    genValue;
 
-    existing;
+    //existing;
     linked;
 
 
@@ -21097,8 +21105,9 @@ extends GOperator
 
         copy.id         = this.id;
         copy.colorStyle = this.colorStyle.copy();
+        copy.genValue   = this.genValue  .copy();
         
-        copy.existing   = this.existing;
+        //copy.existing   = this.existing;
         copy.linked     = this.linked;
 
         return copy;
@@ -21111,13 +21120,14 @@ extends GOperator
         if (this.isCached())
             return this;
 
-            
-        this.value = (await this.value.eval(parse)).toValue();
+        
+        this.value = (await this.genValue.eval(parse)).toValue();
 
 
         if (   this.value.isValid()
-            && (  !this.existing
-                || this.linked))
+            && this.linked)
+            // (  !this.existing
+            //     || this.linked))
         {
             if (this.value.type == COLOR_VALUE)
                 this.value = FillValue.fromRgb(scaleRgb(this.value.toRgb()), 0xff);
@@ -21149,7 +21159,7 @@ extends GOperator
             
         const colorStyle = new FigmaColorStyle(this.nodeId, this.id, this.name);
 
-        colorStyle.existing = this.existing;
+        //colorStyle.existing = this.existing;
 
 
         colorStyle.paints = 
@@ -21167,12 +21177,12 @@ extends GOperator
 
 
 
-    // pushValueUpdates(parse)
-    // {
-    //     super.pushValueUpdates(parse);
+    pushValueUpdates(parse)
+    {
+        super.pushValueUpdates(parse);
 
-    //     if (this.colorStyle) this.colorStyle.pushValueUpdates(parse);
-    // }
+        if (this.genValue) this.genValue.pushValueUpdates(parse);
+    }
 
 
 
@@ -21180,7 +21190,7 @@ extends GOperator
     {
         super.invalidateInputs(from);
 
-        if (this.colorStyle) this.colorStyle.invalidateInputs(from);
+        if (this.genValue) this.genValue.invalidateInputs(from);
     }
 }
 
@@ -26685,7 +26695,7 @@ function genUpdateValuesAndObjects(requestId, actionId, updateNodeId, updatePara
 
         if (s < updateStyles.length)
         {
-            styleChunk.push(updateStyles[s]);
+            styleChunk.push(updateStyles[s].toData());
             s++, sc++;
         }
 
@@ -30846,10 +30856,10 @@ function genParseColorStyle(parse)
     parse.inParam = false;
 
 
-    style.id    = parse.move();
-    style.name  = options.nodeName;
+    style.id       = parse.move();
+    style.name     = options.nodeName;
     
-    style.value = genParse(parse);
+    style.genValue = genParse(parse);
 
     
     parse.nTab--;

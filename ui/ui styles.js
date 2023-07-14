@@ -153,6 +153,7 @@ function initLocalStylesMenu(styles, nodeId)
             || style.existing)
             options.enabled = false;
 
+
         options.callback = () => actionManager.do(
             new LinkExistingStyleAction(
                 nodeId,

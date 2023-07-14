@@ -245,7 +245,7 @@ function genUpdateValuesAndObjects(requestId, actionId, updateNodeId, updatePara
 
         if (s < updateStyles.length)
         {
-            styleChunk.push(updateStyles[s]);
+            styleChunk.push(updateStyles[s].toData());
             s++, sc++;
         }
 
