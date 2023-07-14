@@ -17507,7 +17507,7 @@ extends GOperator
             && repeat
             && repeat.iteration > 0
             ? this.feedback.iterationObjects 
-            : (this.input ? this.input.objects : []),
+            : (this.input ? this.input.value.objects : []),
             repeat 
             ? repeat.iteration.toString()
             : '');
@@ -54792,7 +54792,7 @@ extends GOperator
             && repeat
             && repeat.iteration > 0
             ? this.feedback.iterationObjects 
-            : (this.input ? this.input.objects : []),
+            : (this.input ? this.input.value.objects : []),
             repeat 
             ? repeat.iteration.toString()
             : '');
@@ -89004,7 +89004,7 @@ extends OperatorBase
         }
         
         else
-            this.outputs[0].wireColor = rgbFromType(ANY_VALUE, true);
+            this.outputs[0].wireColor = rgbFromType(this.outputs[0].types[0], true);
 
 
         this.updateParamControls();
@@ -89168,7 +89168,7 @@ function OpIfElse_onConnectInput(node, inputIndex)
     if (!node.inputs[otherIndex].connected)
     {
         otherInput.types      = [...firstTypes];
-        otherInput.wireColor  = [...firstOut.wireColor];
+        //otherInput.wireColor  = [...firstOut.wireColor];
 
         node.outputs[0].types = 
             firstTypes.includes(ANY_VALUE)
@@ -89676,12 +89676,12 @@ extends OperatorBase
             ? this.inputs[0].connectedOutput.node.type 
             : this.type;
 
-        colors.back = 
-            this.headerColor
-            ? this.headerColor
-            : this.inert
-            ? rgb_a(rgbDocumentBody, 0.95)
-            : rgb_a(rgbFromType(type, this.active), 0.95);
+        // colors.back = 
+        //     this.headerColor
+        //     ? this.headerColor
+        //     : this.inert
+        //     ? rgb_a(rgbDocumentBody, 0.95)
+        //     : rgb_a(rgbFromType(type, this.active), 0.95);
 
 
         colors.text   = isDark(colors.back) ? [1, 1, 1, 1] : [0, 0, 0, 1]; 

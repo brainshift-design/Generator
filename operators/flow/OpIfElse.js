@@ -116,7 +116,7 @@ extends OperatorBase
         }
         
         else
-            this.outputs[0].wireColor = rgbFromType(ANY_VALUE, true);
+            this.outputs[0].wireColor = rgbFromType(this.outputs[0].types[0], true);
 
 
         this.updateParamControls();
@@ -280,7 +280,7 @@ function OpIfElse_onConnectInput(node, inputIndex)
     if (!node.inputs[otherIndex].connected)
     {
         otherInput.types      = [...firstTypes];
-        otherInput.wireColor  = [...firstOut.wireColor];
+        //otherInput.wireColor  = [...firstOut.wireColor];
 
         node.outputs[0].types = 
             firstTypes.includes(ANY_VALUE)
