@@ -77,11 +77,11 @@ extends GOperator
 
 
 
-    pushUpdateValues(parse)
+    pushValueUpdates(parse)
     {
-        super.pushUpdateValues(parse);
+        super.pushValueUpdates(parse);
 
-        if (this.values) this.values.pushUpdateValues(parse);
+        if (this.values) this.values.pushValueUpdates(parse);
     }
 
 

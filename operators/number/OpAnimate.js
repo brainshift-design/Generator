@@ -132,6 +132,7 @@ extends OperatorBase //WithValue
 
     updateParams()
     {
+        console.log('OpAnimate.updateParams()');
         //this.paramValue .enableControlText(false);
         this.paramFrom  .enableControlText(true);
         this.paramTo    .enableControlText(true);

@@ -60,13 +60,13 @@ extends GArithmetic
 
 
 
-    pushUpdateValues(parse)
+    pushValueUpdates(parse)
     {
-        super.pushUpdateValues(parse);
+        super.pushValueUpdates(parse);
 
-        this.input.forEach(i => i.pushUpdateValues(parse));
+        this.input.forEach(i => i.pushValueUpdates(parse));
         
-        if (this.operation) this.operation.pushUpdateValues(parse);
+        if (this.operation) this.operation.pushValueUpdates(parse);
     }
 
 

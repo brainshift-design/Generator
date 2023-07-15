@@ -77,17 +77,17 @@ extends GOperator
 
 
 
-    pushUpdateValues(parse)
+    pushValueUpdates(parse)
     {
-        super.pushUpdateValues(parse);
+        super.pushValueUpdates(parse);
 
-        if (this.seed       ) this.seed       .pushUpdateValues(parse);
-        if (this.chance        ) this.chance        .pushUpdateValues(parse);
-        if (this.max        ) this.max        .pushUpdateValues(parse);
-        if (this.scale      ) this.scale      .pushUpdateValues(parse);
-        if (this.interpolate) this.interpolate.pushUpdateValues(parse);
-        if (this.offset     ) this.offset     .pushUpdateValues(parse);
-        if (this.detail     ) this.detail     .pushUpdateValues(parse);
+        if (this.seed       ) this.seed       .pushValueUpdates(parse);
+        if (this.chance        ) this.chance        .pushValueUpdates(parse);
+        if (this.max        ) this.max        .pushValueUpdates(parse);
+        if (this.scale      ) this.scale      .pushValueUpdates(parse);
+        if (this.interpolate) this.interpolate.pushValueUpdates(parse);
+        if (this.offset     ) this.offset     .pushValueUpdates(parse);
+        if (this.detail     ) this.detail     .pushValueUpdates(parse);
     }
 
 

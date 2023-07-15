@@ -114,14 +114,14 @@ extends GOperator
 
 
 
-    pushUpdateValues(parse)
+    pushValueUpdates(parse)
     {
-        super.pushUpdateValues(parse);
+        super.pushValueUpdates(parse);
 
-        if (this.seed  ) this.seed  .pushUpdateValues(parse);
-        if (this.min   ) this.min   .pushUpdateValues(parse);
-        if (this.max   ) this.max   .pushUpdateValues(parse);
-        if (this.unique) this.unique.pushUpdateValues(parse);
+        if (this.seed  ) this.seed  .pushValueUpdates(parse);
+        if (this.min   ) this.min   .pushValueUpdates(parse);
+        if (this.max   ) this.max   .pushValueUpdates(parse);
+        if (this.unique) this.unique.pushValueUpdates(parse);
     }
 
 

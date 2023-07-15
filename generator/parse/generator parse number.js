@@ -993,7 +993,6 @@ function genParseAnimate(parse)
 
 
     const anim = new GAnimate(nodeId, options);
-    console.log('anim =', anim);
 
 
     if (parse.settings.logRequests) 

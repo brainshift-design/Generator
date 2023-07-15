@@ -40,7 +40,7 @@ extends GOperator
         if (this.isCached())
             return this;
 
-            
+
         const from   = (await this.from  .eval(parse)).toValue();
         const to     = (await this.to    .eval(parse)).toValue();
         const curve  = (await this.curve .eval(parse)).toValue();

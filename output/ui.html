@@ -4399,6 +4399,7 @@ a
                 <h1 style='margin-top: 20px;'>What's new</h1>
 
                 <p>•  added Freeze node for getting unique values from sets</p>
+                <p>•  fixed certain values not updating properly</p>
                 
                 <p><br/><br/><div id='chkHideWhatsNew'></div></p>
             </div>
@@ -19175,11 +19176,11 @@ extends GOperator
 
 
 
-    pushUpdateValues(parse)
+    pushValueUpdates(parse)
     {
-        super.pushUpdateValues(parse);
+        super.pushValueUpdates(parse);
 
-        if (this.values) this.values.pushUpdateValues(parse);
+        if (this.values) this.values.pushValueUpdates(parse);
     }
 
 
@@ -19575,14 +19576,14 @@ extends GOperator
 
 
 
-    pushUpdateValues(parse)
+    pushValueUpdates(parse)
     {
-        super.pushUpdateValues(parse);
+        super.pushValueUpdates(parse);
 
-        if (this.seed  ) this.seed  .pushUpdateValues(parse);
-        if (this.min   ) this.min   .pushUpdateValues(parse);
-        if (this.max   ) this.max   .pushUpdateValues(parse);
-        if (this.unique) this.unique.pushUpdateValues(parse);
+        if (this.seed  ) this.seed  .pushValueUpdates(parse);
+        if (this.min   ) this.min   .pushValueUpdates(parse);
+        if (this.max   ) this.max   .pushValueUpdates(parse);
+        if (this.unique) this.unique.pushValueUpdates(parse);
     }
 
 
@@ -19679,7 +19680,9 @@ extends GOperator
         let   r;
 
         
-        if (this.options.enabled)
+        if (   this.options.enabled
+            && scale
+            && offset)
         {
             r = avg;
             
@@ -19740,17 +19743,17 @@ extends GOperator
 
 
 
-    pushUpdateValues(parse)
+    pushValueUpdates(parse)
     {
-        super.pushUpdateValues(parse);
+        super.pushValueUpdates(parse);
 
-        if (this.seed       ) this.seed       .pushUpdateValues(parse);
-        if (this.min        ) this.min        .pushUpdateValues(parse);
-        if (this.max        ) this.max        .pushUpdateValues(parse);
-        if (this.scale      ) this.scale      .pushUpdateValues(parse);
-        if (this.offset     ) this.offset     .pushUpdateValues(parse);
-        if (this.interpolate) this.interpolate.pushUpdateValues(parse);
-        if (this.detail     ) this.detail     .pushUpdateValues(parse);
+        if (this.seed       ) this.seed       .pushValueUpdates(parse);
+        if (this.min        ) this.min        .pushValueUpdates(parse);
+        if (this.max        ) this.max        .pushValueUpdates(parse);
+        if (this.scale      ) this.scale      .pushValueUpdates(parse);
+        if (this.offset     ) this.offset     .pushValueUpdates(parse);
+        if (this.interpolate) this.interpolate.pushValueUpdates(parse);
+        if (this.detail     ) this.detail     .pushValueUpdates(parse);
     }
 
 
@@ -19850,17 +19853,17 @@ extends GOperator
 
 
 
-    pushUpdateValues(parse)
+    pushValueUpdates(parse)
     {
-        super.pushUpdateValues(parse);
+        super.pushValueUpdates(parse);
 
-        if (this.seed       ) this.seed       .pushUpdateValues(parse);
-        if (this.chance        ) this.chance        .pushUpdateValues(parse);
-        if (this.max        ) this.max        .pushUpdateValues(parse);
-        if (this.scale      ) this.scale      .pushUpdateValues(parse);
-        if (this.interpolate) this.interpolate.pushUpdateValues(parse);
-        if (this.offset     ) this.offset     .pushUpdateValues(parse);
-        if (this.detail     ) this.detail     .pushUpdateValues(parse);
+        if (this.seed       ) this.seed       .pushValueUpdates(parse);
+        if (this.chance        ) this.chance        .pushValueUpdates(parse);
+        if (this.max        ) this.max        .pushValueUpdates(parse);
+        if (this.scale      ) this.scale      .pushValueUpdates(parse);
+        if (this.interpolate) this.interpolate.pushValueUpdates(parse);
+        if (this.offset     ) this.offset     .pushValueUpdates(parse);
+        if (this.detail     ) this.detail     .pushValueUpdates(parse);
     }
 
 
@@ -20220,7 +20223,7 @@ extends GOperator
         if (this.isCached())
             return this;
 
-            
+
         const from   = (await this.from  .eval(parse)).toValue();
         const to     = (await this.to    .eval(parse)).toValue();
         const curve  = (await this.curve .eval(parse)).toValue();
@@ -21151,13 +21154,13 @@ extends GArithmetic
 
 
 
-    pushUpdateValues(parse)
+    pushValueUpdates(parse)
     {
-        super.pushUpdateValues(parse);
+        super.pushValueUpdates(parse);
 
-        this.input.forEach(i => i.pushUpdateValues(parse));
+        this.input.forEach(i => i.pushValueUpdates(parse));
         
-        if (this.operation) this.operation.pushUpdateValues(parse);
+        if (this.operation) this.operation.pushValueUpdates(parse);
     }
 
 
@@ -34511,7 +34514,6 @@ function genParseAnimate(parse)
 
 
     const anim = new GAnimate(nodeId, options);
-    console.log('anim =', anim);
 
 
     if (parse.settings.logRequests) 
@@ -56624,11 +56626,11 @@ extends GOperator
 
 
 
-    pushUpdateValues(parse)
+    pushValueUpdates(parse)
     {
-        super.pushUpdateValues(parse);
+        super.pushValueUpdates(parse);
 
-        if (this.values) this.values.pushUpdateValues(parse);
+        if (this.values) this.values.pushValueUpdates(parse);
     }
 
 
@@ -57024,14 +57026,14 @@ extends GOperator
 
 
 
-    pushUpdateValues(parse)
+    pushValueUpdates(parse)
     {
-        super.pushUpdateValues(parse);
+        super.pushValueUpdates(parse);
 
-        if (this.seed  ) this.seed  .pushUpdateValues(parse);
-        if (this.min   ) this.min   .pushUpdateValues(parse);
-        if (this.max   ) this.max   .pushUpdateValues(parse);
-        if (this.unique) this.unique.pushUpdateValues(parse);
+        if (this.seed  ) this.seed  .pushValueUpdates(parse);
+        if (this.min   ) this.min   .pushValueUpdates(parse);
+        if (this.max   ) this.max   .pushValueUpdates(parse);
+        if (this.unique) this.unique.pushValueUpdates(parse);
     }
 
 
@@ -57128,7 +57130,9 @@ extends GOperator
         let   r;
 
         
-        if (this.options.enabled)
+        if (   this.options.enabled
+            && scale
+            && offset)
         {
             r = avg;
             
@@ -57189,17 +57193,17 @@ extends GOperator
 
 
 
-    pushUpdateValues(parse)
+    pushValueUpdates(parse)
     {
-        super.pushUpdateValues(parse);
+        super.pushValueUpdates(parse);
 
-        if (this.seed       ) this.seed       .pushUpdateValues(parse);
-        if (this.min        ) this.min        .pushUpdateValues(parse);
-        if (this.max        ) this.max        .pushUpdateValues(parse);
-        if (this.scale      ) this.scale      .pushUpdateValues(parse);
-        if (this.offset     ) this.offset     .pushUpdateValues(parse);
-        if (this.interpolate) this.interpolate.pushUpdateValues(parse);
-        if (this.detail     ) this.detail     .pushUpdateValues(parse);
+        if (this.seed       ) this.seed       .pushValueUpdates(parse);
+        if (this.min        ) this.min        .pushValueUpdates(parse);
+        if (this.max        ) this.max        .pushValueUpdates(parse);
+        if (this.scale      ) this.scale      .pushValueUpdates(parse);
+        if (this.offset     ) this.offset     .pushValueUpdates(parse);
+        if (this.interpolate) this.interpolate.pushValueUpdates(parse);
+        if (this.detail     ) this.detail     .pushValueUpdates(parse);
     }
 
 
@@ -57299,17 +57303,17 @@ extends GOperator
 
 
 
-    pushUpdateValues(parse)
+    pushValueUpdates(parse)
     {
-        super.pushUpdateValues(parse);
+        super.pushValueUpdates(parse);
 
-        if (this.seed       ) this.seed       .pushUpdateValues(parse);
-        if (this.chance        ) this.chance        .pushUpdateValues(parse);
-        if (this.max        ) this.max        .pushUpdateValues(parse);
-        if (this.scale      ) this.scale      .pushUpdateValues(parse);
-        if (this.interpolate) this.interpolate.pushUpdateValues(parse);
-        if (this.offset     ) this.offset     .pushUpdateValues(parse);
-        if (this.detail     ) this.detail     .pushUpdateValues(parse);
+        if (this.seed       ) this.seed       .pushValueUpdates(parse);
+        if (this.chance        ) this.chance        .pushValueUpdates(parse);
+        if (this.max        ) this.max        .pushValueUpdates(parse);
+        if (this.scale      ) this.scale      .pushValueUpdates(parse);
+        if (this.interpolate) this.interpolate.pushValueUpdates(parse);
+        if (this.offset     ) this.offset     .pushValueUpdates(parse);
+        if (this.detail     ) this.detail     .pushValueUpdates(parse);
     }
 
 
@@ -57669,7 +57673,7 @@ extends GOperator
         if (this.isCached())
             return this;
 
-            
+
         const from   = (await this.from  .eval(parse)).toValue();
         const to     = (await this.to    .eval(parse)).toValue();
         const curve  = (await this.curve .eval(parse)).toValue();
@@ -58600,13 +58604,13 @@ extends GArithmetic
 
 
 
-    pushUpdateValues(parse)
+    pushValueUpdates(parse)
     {
-        super.pushUpdateValues(parse);
+        super.pushValueUpdates(parse);
 
-        this.input.forEach(i => i.pushUpdateValues(parse));
+        this.input.forEach(i => i.pushValueUpdates(parse));
         
-        if (this.operation) this.operation.pushUpdateValues(parse);
+        if (this.operation) this.operation.pushValueUpdates(parse);
     }
 
 
@@ -92027,6 +92031,7 @@ extends OperatorBase //WithValue
 
     updateParams()
     {
+        console.log('OpAnimate.updateParams()');
         //this.paramValue .enableControlText(false);
         this.paramFrom  .enableControlText(true);
         this.paramTo    .enableControlText(true);

@@ -77,7 +77,9 @@ extends GOperator
         let   r;
 
         
-        if (this.options.enabled)
+        if (   this.options.enabled
+            && scale
+            && offset)
         {
             r = avg;
             
@@ -138,17 +140,17 @@ extends GOperator
 
 
 
-    pushUpdateValues(parse)
+    pushValueUpdates(parse)
     {
-        super.pushUpdateValues(parse);
+        super.pushValueUpdates(parse);
 
-        if (this.seed       ) this.seed       .pushUpdateValues(parse);
-        if (this.min        ) this.min        .pushUpdateValues(parse);
-        if (this.max        ) this.max        .pushUpdateValues(parse);
-        if (this.scale      ) this.scale      .pushUpdateValues(parse);
-        if (this.offset     ) this.offset     .pushUpdateValues(parse);
-        if (this.interpolate) this.interpolate.pushUpdateValues(parse);
-        if (this.detail     ) this.detail     .pushUpdateValues(parse);
+        if (this.seed       ) this.seed       .pushValueUpdates(parse);
+        if (this.min        ) this.min        .pushValueUpdates(parse);
+        if (this.max        ) this.max        .pushValueUpdates(parse);
+        if (this.scale      ) this.scale      .pushValueUpdates(parse);
+        if (this.offset     ) this.offset     .pushValueUpdates(parse);
+        if (this.interpolate) this.interpolate.pushValueUpdates(parse);
+        if (this.detail     ) this.detail     .pushValueUpdates(parse);
     }
 
 
