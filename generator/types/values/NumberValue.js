@@ -2,6 +2,7 @@ class NumberValue
 extends GValue
 {
     value;
+    initValue;
     decimals;
 
 
@@ -14,8 +15,9 @@ extends GValue
             consoleError('NumberValue(value) is ' + typeof val + ', must be a number');
 
 
-        this.value    = val;
-        this.decimals = dec;
+        this.value     = val;
+        this.initValue = val;
+        this.decimals  = dec;
     }
 
 
@@ -34,6 +36,8 @@ extends GValue
         const copy = new NumberValue(
             this.value, 
             this.decimals);
+
+        copy.initValue = this.initValue;
 
         copy.copyBase(this);
 
@@ -54,6 +58,13 @@ extends GValue
     async eval(parse)
     {
         return this;
+    }
+
+
+
+    hasInitValue()
+    {
+        return this.value == this.initValue;
     }
 
 

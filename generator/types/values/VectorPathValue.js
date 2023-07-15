@@ -92,6 +92,18 @@ extends ShapeValue
 
 
 
+    hasInitValue()
+    {
+        return super.hasInitValue()
+            && this.points .hasInitValue()
+            && this.closed .hasInitValue()
+            && this.degree .hasInitValue()
+            && this.winding.hasInitValue()
+            && this.round  .hasInitValue();
+    }
+
+
+    
     isValid()
     {
         return super.isValid()

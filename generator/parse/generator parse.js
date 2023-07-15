@@ -7,6 +7,8 @@ class Parse
 
     settings = {};
 
+    save;
+
 
     log  = '';
     
@@ -51,7 +53,7 @@ class Parse
 
 
 
-    constructor(request, firstPos, updateNodeId, updateParamId, viewportZoom, settings)
+    constructor(request, firstPos, updateNodeId, updateParamId, viewportZoom, settings, save)
     {
         this.request       = request;
           
@@ -64,6 +66,8 @@ class Parse
         this.viewportZoom  = viewportZoom;
 
         this.settings      = settings;
+
+        this.save          = save;
     }
 
 

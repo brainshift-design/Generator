@@ -80,6 +80,16 @@ extends GValue
 
 
 
+    hasInitValue()
+    {
+        return this.space.hasInitValue()
+            && this.c1   .hasInitValue()
+            && this.c2   .hasInitValue()
+            && this.c3   .hasInitValue();
+    }
+
+
+
     isValid()
     {
         return this.space.isValid()

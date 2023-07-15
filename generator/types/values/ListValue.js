@@ -63,6 +63,17 @@ extends GValue
 
 
 
+    hasInitValue()
+    {
+        for (const item of this.items)
+            if (!item.hasInitValue())
+                return false;
+
+        return true;
+    }
+
+
+
     isValid()
     {
         return  this.items

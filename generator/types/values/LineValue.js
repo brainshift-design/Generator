@@ -53,6 +53,16 @@ extends ShapeValue
 
 
 
+    hasInitValue()
+    {
+        return super.hasInitValue()
+            && this.x     .hasInitValue()
+            && this.y     .hasInitValue()
+            && this.width .hasInitValue();
+    }
+
+
+
     isValid()
     {
         return super.isValid()

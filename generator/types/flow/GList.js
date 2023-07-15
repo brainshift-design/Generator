@@ -91,7 +91,7 @@ extends GOperator
         }
 
 
-        this.updateValues = [['value', this.value]];
+        this.updateValues = [];//[['value', this.value]];
 
 
         this.validate();

@@ -43,7 +43,8 @@ function genRequest(request, save)
         updateNodeId, 
         updateParamId, 
         viewportZoom,
-        settings);
+        settings,
+        save);
 
 
     const stackOverflowProtect = 100;
@@ -110,6 +111,11 @@ function genPushUpdateValue(parse, nodeId, paramId, value)
     if (!value)
         return;
     
+
+    if (  !parse.save
+        && value.hasInitValue())
+        return;
+
     
     removeFromArrayWhere(parse.updateValues, v =>
            v.nodeId     == nodeId

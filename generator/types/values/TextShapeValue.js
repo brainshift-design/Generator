@@ -98,6 +98,25 @@ extends ShapeValue
 
 
 
+    hasInitValue()
+    {
+        return super.hasInitValue()
+            && this.text         .hasInitValue()
+            && this.x            .hasInitValue()
+            && this.y            .hasInitValue()
+            && this.width        .hasInitValue()
+            && this.height       .hasInitValue()
+            && this.font         .hasInitValue()
+            && this.style        .hasInitValue()
+            && this.size         .hasInitValue()
+            && this.alignH       .hasInitValue()
+            && this.alignV       .hasInitValue()
+            && this.lineHeight   .hasInitValue()
+            && this.letterSpacing.hasInitValue();
+    }
+
+
+    
     isValid()
     {
         return super.isValid()

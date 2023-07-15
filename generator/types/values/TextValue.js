@@ -2,6 +2,7 @@ class TextValue
 extends GValue
 {
     value;
+    initValue;
 
 
 
@@ -17,7 +18,8 @@ extends GValue
         }
 
         
-        this.value = val;
+        this.value     = val;
+        this.initValue = val;
     }
 
 
@@ -26,6 +28,8 @@ extends GValue
     {
         const copy = new TextValue(this.value);
 
+        copy.initValue = this.initValue;
+        
         copy.copyBase(this);
 
         return copy;
@@ -44,6 +48,13 @@ extends GValue
     async eval(parse)
     {
         return this;
+    }
+
+
+
+    hasInitValue()
+    {
+        this.value == this.initValue;
     }
 
 

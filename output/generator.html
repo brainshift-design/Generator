@@ -7348,6 +7348,13 @@ extends GNode
 
 
 
+    hasInitValue()
+    {
+        return false;
+    }
+
+
+
     toValue()
     {
         return this.copy();
@@ -7841,6 +7848,17 @@ extends GValue
 
 
 
+    hasInitValue()
+    {
+        for (const item of this.items)
+            if (!item.hasInitValue())
+                return false;
+
+        return true;
+    }
+
+
+
     isValid()
     {
         return  this.items
@@ -8054,6 +8072,7 @@ class NumberValue
 extends GValue
 {
     value;
+    initValue;
     decimals;
 
 
@@ -8066,8 +8085,9 @@ extends GValue
             consoleError('NumberValue(value) is ' + typeof val + ', must be a number');
 
 
-        this.value    = val;
-        this.decimals = dec;
+        this.value     = val;
+        this.initValue = val;
+        this.decimals  = dec;
     }
 
 
@@ -8086,6 +8106,8 @@ extends GValue
         const copy = new NumberValue(
             this.value, 
             this.decimals);
+
+        copy.initValue = this.initValue;
 
         copy.copyBase(this);
 
@@ -8106,6 +8128,13 @@ extends GValue
     async eval(parse)
     {
         return this;
+    }
+
+
+
+    hasInitValue()
+    {
+        return this.value == this.initValue;
     }
 
 
@@ -8218,6 +8247,7 @@ class TextValue
 extends GValue
 {
     value;
+    initValue;
 
 
 
@@ -8233,7 +8263,8 @@ extends GValue
         }
 
         
-        this.value = val;
+        this.value     = val;
+        this.initValue = val;
     }
 
 
@@ -8242,6 +8273,8 @@ extends GValue
     {
         const copy = new TextValue(this.value);
 
+        copy.initValue = this.initValue;
+        
         copy.copyBase(this);
 
         return copy;
@@ -8260,6 +8293,13 @@ extends GValue
     async eval(parse)
     {
         return this;
+    }
+
+
+
+    hasInitValue()
+    {
+        this.value == this.initValue;
     }
 
 
@@ -8399,6 +8439,16 @@ extends GValue
         copy.copyBase(this);
 
         return copy;
+    }
+
+
+
+    hasInitValue()
+    {
+        return this.space.hasInitValue()
+            && this.c1   .hasInitValue()
+            && this.c2   .hasInitValue()
+            && this.c3   .hasInitValue();
     }
 
 
@@ -8649,6 +8699,15 @@ extends GValue
               + ' ' + new NumberValue(rgb[2]).toDisplayString()
               + ' ' + this.opacity           .toDisplayString()
               + ' ' + this.blend             .toDisplayString();
+    }
+
+
+
+    hasInitValue()
+    {
+        return this.color  .hasInitValue()
+            && this.opacity.hasInitValue()
+            && this.blend  .hasInitValue();
     }
 
 
@@ -9101,6 +9160,19 @@ extends GValue
         copy.copyBase(this);
 
         return copy;
+    }
+
+
+
+    hasInitValue()
+    {
+        return this.fills .hasInitValue()
+            && this.weight.hasInitValue()
+            && this.fit   .hasInitValue()
+            && this.join  .hasInitValue()
+            && this.miter .hasInitValue()
+            && this.cap   .hasInitValue()
+            && this.dashes.hasInitValue();
     }
 
 
@@ -10038,6 +10110,14 @@ extends GValue
 
 
 
+    hasInitValue()
+    {
+        return !this.props
+             || this.props.hasInitValue();
+    }
+
+
+
     isValid()
     {
         return this.props
@@ -10144,9 +10224,14 @@ extends ShapeValue
 
 
 
-    toValue()
+    hasInitValue()
     {
-        return this.copy();
+        return super.hasInitValue()
+            && this.x     .hasInitValue()
+            && this.y     .hasInitValue()
+            && this.width .hasInitValue()
+            && this.height.hasInitValue()
+            && this.round .hasInitValue();
     }
 
 
@@ -10163,6 +10248,13 @@ extends ShapeValue
 
 
     
+    toValue()
+    {
+        return this.copy();
+    }
+
+
+
     static NaN = new RectangleValue(
         '',
         NumberValue.NaN,
@@ -10265,6 +10357,16 @@ extends ShapeValue
     async eval(parse)
     {
         return this;
+    }
+
+
+
+    hasInitValue()
+    {
+        return super.hasInitValue()
+            && this.x     .hasInitValue()
+            && this.y     .hasInitValue()
+            && this.width .hasInitValue();
     }
 
 
@@ -10424,6 +10526,20 @@ extends ShapeValue
     
     
     
+    hasInitValue()
+    {
+        return super.hasInitValue()
+            && this.x     .hasInitValue()
+            && this.y     .hasInitValue()
+            && this.width .hasInitValue()
+            && this.height.hasInitValue()
+            && this.from  .hasInitValue()
+            && this.to    .hasInitValue()
+            && this.inner .hasInitValue();
+    }
+
+
+
     isValid()
     {
         return super.isValid()
@@ -10629,6 +10745,19 @@ extends ShapeValue
 
 
 
+    hasInitValue()
+    {
+        return super.hasInitValue()
+            && this.x     .hasInitValue()
+            && this.y     .hasInitValue()
+            && this.width .hasInitValue()
+            && this.height.hasInitValue()
+            && this.round .hasInitValue()
+            && this.bias  .hasInitValue();
+    }
+
+
+    
     isValid()
     {
         return super.isValid()
@@ -10762,6 +10891,19 @@ extends ShapeValue
     async eval(parse)
     {
         return this;
+    }
+
+
+
+    hasInitValue()
+    {
+        return super.hasInitValue()
+            && this.x      .hasInitValue()
+            && this.y      .hasInitValue()
+            && this.width  .hasInitValue()
+            && this.height .hasInitValue()
+            && this.round  .hasInitValue()
+            && this.corners.hasInitValue();
     }
 
 
@@ -10939,6 +11081,20 @@ extends ShapeValue
 
 
 
+    hasInitValue()
+    {
+        return super.hasInitValue()
+            && this.x     .hasInitValue()
+            && this.y     .hasInitValue()
+            && this.width .hasInitValue()
+            && this.height.hasInitValue()
+            && this.round .hasInitValue()
+            && this.points.hasInitValue()
+            && this.convex.hasInitValue();
+    }
+
+
+    
     isValid()
     {
         return super.isValid()
@@ -11143,6 +11299,25 @@ extends ShapeValue
 
 
 
+    hasInitValue()
+    {
+        return super.hasInitValue()
+            && this.text         .hasInitValue()
+            && this.x            .hasInitValue()
+            && this.y            .hasInitValue()
+            && this.width        .hasInitValue()
+            && this.height       .hasInitValue()
+            && this.font         .hasInitValue()
+            && this.style        .hasInitValue()
+            && this.size         .hasInitValue()
+            && this.alignH       .hasInitValue()
+            && this.alignV       .hasInitValue()
+            && this.lineHeight   .hasInitValue()
+            && this.letterSpacing.hasInitValue();
+    }
+
+
+    
     isValid()
     {
         return super.isValid()
@@ -11365,6 +11540,14 @@ extends GValue
 
 
 
+    hasInitValue()
+    {
+        return this.x.hasInitValue()
+            && this.y.hasInitValue();
+    }
+
+
+
     isValid()
     {
         return this.x.isValid()
@@ -11552,6 +11735,18 @@ extends ShapeValue
 
 
 
+    hasInitValue()
+    {
+        return super.hasInitValue()
+            && this.points .hasInitValue()
+            && this.closed .hasInitValue()
+            && this.degree .hasInitValue()
+            && this.winding.hasInitValue()
+            && this.round  .hasInitValue();
+    }
+
+
+    
     isValid()
     {
         return super.isValid()
@@ -12181,7 +12376,7 @@ extends GOperator
         }
 
 
-        this.updateValues = [['value', this.value]];
+        this.updateValues = [];//[['value', this.value]];
 
 
         this.validate();
@@ -13027,7 +13222,7 @@ extends GOperator
 
         this.updateValues =
         [
-            ['value', this.value        ],
+            //['value', this.value        ],
             ['count', count             ],
             ['loop',  new NumberValue(0)]
         ];
@@ -13112,15 +13307,15 @@ extends GOperator
 function assertVolatile(node)
 {
     consoleAssert(
-        node.loop.type == NUMBER_DEFINE
-     || node.loop.type == NUMBER_DISTRIBUTE
-     || node.loop.type == NUMBER_SEQUENCE
-     || node.loop.type == NUMBER_RANDOM
-     || node.loop.type == NUMBER_NOISE
-     || node.loop.type == NUMBER_PROBABILITY
-     || node.loop.type == LIST
-     || node.loop.type == PARAM, // for OpStart
-     'only volatile types can be repeated');
+           node.loop.type == NUMBER_DEFINE
+        || node.loop.type == NUMBER_DISTRIBUTE
+        || node.loop.type == NUMBER_SEQUENCE
+        || node.loop.type == NUMBER_RANDOM
+        || node.loop.type == NUMBER_NOISE
+        || node.loop.type == NUMBER_PROBABILITY
+        || node.loop.type == LIST
+        || node.loop.type == PARAM, // for OpStart
+        'only volatile types can be repeated');
 }
 
 
@@ -25257,7 +25452,7 @@ extends GOperator1
 
         this.updateValues =
         [
-            ['value',       this.value ],
+            //['value',       this.value],
             ['x',           x          ],
             ['y',           y          ],
             ['moveType',    moveType   ],
@@ -25640,7 +25835,7 @@ extends GAffine
 
         this.updateValues =
         [
-            ['value',       this.value ],
+            //['value',       this.value ],
             ['angle',       angle      ],
             ['centerX',     centerX    ],
             ['centerY',     centerY    ],
@@ -25789,7 +25984,7 @@ extends GAffine
 
         this.updateValues =
         [
-            ['value',         this.value   ],
+            //['value',         this.value   ],
             ['scaleX',        scaleX       ],
             ['scaleY',        scaleY       ],
             ['centerX',       centerX      ],
@@ -25945,7 +26140,7 @@ extends GAffine
 
         this.updateValues =
         [
-            ['value',       this.value ],
+            //['value',       this.value ],
             ['skewX',       skewX      ],
             ['skewY',       skewY      ],
             ['centerX',     centerX    ],
@@ -26666,7 +26861,8 @@ function genRequest(request, save)
         updateNodeId, 
         updateParamId, 
         viewportZoom,
-        settings);
+        settings,
+        save);
 
 
     const stackOverflowProtect = 100;
@@ -26733,6 +26929,11 @@ function genPushUpdateValue(parse, nodeId, paramId, value)
     if (!value)
         return;
     
+
+    if (  !parse.save
+        && value.hasInitValue())
+        return;
+
     
     removeFromArrayWhere(parse.updateValues, v =>
            v.nodeId     == nodeId
@@ -31805,6 +32006,8 @@ class Parse
 
     settings = {};
 
+    save;
+
 
     log  = '';
     
@@ -31849,7 +32052,7 @@ class Parse
 
 
 
-    constructor(request, firstPos, updateNodeId, updateParamId, viewportZoom, settings)
+    constructor(request, firstPos, updateNodeId, updateParamId, viewportZoom, settings, save)
     {
         this.request       = request;
           
@@ -31862,6 +32065,8 @@ class Parse
         this.viewportZoom  = viewportZoom;
 
         this.settings      = settings;
+
+        this.save          = save;
     }
 
 

@@ -122,6 +122,15 @@ extends GValue
 
 
 
+    hasInitValue()
+    {
+        return this.color  .hasInitValue()
+            && this.opacity.hasInitValue()
+            && this.blend  .hasInitValue();
+    }
+
+
+
     isValid()
     {
         return this.color  .isValid()

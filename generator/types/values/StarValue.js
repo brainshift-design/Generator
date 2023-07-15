@@ -73,6 +73,20 @@ extends ShapeValue
 
 
 
+    hasInitValue()
+    {
+        return super.hasInitValue()
+            && this.x     .hasInitValue()
+            && this.y     .hasInitValue()
+            && this.width .hasInitValue()
+            && this.height.hasInitValue()
+            && this.round .hasInitValue()
+            && this.points.hasInitValue()
+            && this.convex.hasInitValue();
+    }
+
+
+    
     isValid()
     {
         return super.isValid()

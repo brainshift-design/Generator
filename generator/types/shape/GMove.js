@@ -74,7 +74,7 @@ extends GOperator1
 
         this.updateValues =
         [
-            ['value',       this.value ],
+            //['value',       this.value],
             ['x',           x          ],
             ['y',           y          ],
             ['moveType',    moveType   ],

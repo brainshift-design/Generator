@@ -56,6 +56,19 @@ extends GValue
 
 
 
+    hasInitValue()
+    {
+        return this.fills .hasInitValue()
+            && this.weight.hasInitValue()
+            && this.fit   .hasInitValue()
+            && this.join  .hasInitValue()
+            && this.miter .hasInitValue()
+            && this.cap   .hasInitValue()
+            && this.dashes.hasInitValue();
+    }
+
+
+
     isValid()
     {
         return this.fills .isValid()

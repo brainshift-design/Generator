@@ -71,7 +71,7 @@ extends GAffine
 
         this.updateValues =
         [
-            ['value',       this.value ],
+            //['value',       this.value ],
             ['angle',       angle      ],
             ['centerX',     centerX    ],
             ['centerY',     centerY    ],

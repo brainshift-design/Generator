@@ -85,9 +85,14 @@ extends ShapeValue
 
 
 
-    toValue()
+    hasInitValue()
     {
-        return this.copy();
+        return super.hasInitValue()
+            && this.x     .hasInitValue()
+            && this.y     .hasInitValue()
+            && this.width .hasInitValue()
+            && this.height.hasInitValue()
+            && this.round .hasInitValue();
     }
 
 
@@ -104,6 +109,13 @@ extends ShapeValue
 
 
     
+    toValue()
+    {
+        return this.copy();
+    }
+
+
+
     static NaN = new RectangleValue(
         '',
         NumberValue.NaN,

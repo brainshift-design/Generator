@@ -32,6 +32,14 @@ extends GValue
 
 
 
+    hasInitValue()
+    {
+        return !this.props
+             || this.props.hasInitValue();
+    }
+
+
+
     isValid()
     {
         return this.props

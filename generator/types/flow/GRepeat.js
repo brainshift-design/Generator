@@ -165,7 +165,7 @@ extends GOperator
 
         this.updateValues =
         [
-            ['value', this.value        ],
+            //['value', this.value        ],
             ['count', count             ],
             ['loop',  new NumberValue(0)]
         ];
@@ -250,13 +250,13 @@ extends GOperator
 function assertVolatile(node)
 {
     consoleAssert(
-        node.loop.type == NUMBER_DEFINE
-     || node.loop.type == NUMBER_DISTRIBUTE
-     || node.loop.type == NUMBER_SEQUENCE
-     || node.loop.type == NUMBER_RANDOM
-     || node.loop.type == NUMBER_NOISE
-     || node.loop.type == NUMBER_PROBABILITY
-     || node.loop.type == LIST
-     || node.loop.type == PARAM, // for OpStart
-     'only volatile types can be repeated');
+           node.loop.type == NUMBER_DEFINE
+        || node.loop.type == NUMBER_DISTRIBUTE
+        || node.loop.type == NUMBER_SEQUENCE
+        || node.loop.type == NUMBER_RANDOM
+        || node.loop.type == NUMBER_NOISE
+        || node.loop.type == NUMBER_PROBABILITY
+        || node.loop.type == LIST
+        || node.loop.type == PARAM, // for OpStart
+        'only volatile types can be repeated');
 }

@@ -70,6 +70,14 @@ extends GValue
 
 
 
+    hasInitValue()
+    {
+        return this.x.hasInitValue()
+            && this.y.hasInitValue();
+    }
+
+
+
     isValid()
     {
         return this.x.isValid()

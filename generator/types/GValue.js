@@ -49,6 +49,13 @@ extends GNode
 
 
 
+    hasInitValue()
+    {
+        return false;
+    }
+
+
+
     toValue()
     {
         return this.copy();
