@@ -4400,6 +4400,8 @@ a
 
                 <p>•  added Freeze node for getting unique values from sets</p>
                 <p>•  fixed certain values not updating properly</p>
+                <p>•  fixed Animation node stopping when deselected</p>
+                <p>•  improved animation performance a bit</p>
                 
                 <p><br/><br/><div id='chkHideWhatsNew'></div></p>
             </div>
@@ -31242,7 +31244,7 @@ onmessage = function(e)
     {
         case 'initFonts':              initFonts(msg.fonts, msg.uniqueFontNames); break;
      
-        case 'genRequest':             genRequest(msg.request);      break;
+        case 'genRequest':             genRequest(msg.request, msg.save); break;
 
         //case 'genFetchResponse':     genFetchResponse(msg.result, msg.response); break;
 
@@ -31336,7 +31338,7 @@ function genEndFigMessage()
     if (   !isEmpty(lastUpdateValues )
         || !isEmpty(lastUpdateObjects)
         || !isEmpty(lastUpdateStyles ))
-        genUpdateValuesAndObjects(lastRequestId, -1, lastUpdateNodeId, lastUpdateParamId, [], [], []);
+        genUpdateValuesAndObjects(lastRequestId, -1, lastUpdateNodeId, lastUpdateParamId, [], [], [], false);
 
     genPostNextMessageToUi();
 }
@@ -31363,7 +31365,7 @@ function initFonts(fonts, uniqueFontNames)
 
 
 
-function genRequest(request)
+function genRequest(request, save)
 {
     const requestId            = parseInt(request[0]);
     const actionId             = parseInt(request[1]);
@@ -31434,7 +31436,8 @@ function genRequest(request)
             parse.updateParamId,
             parse.updateValues,
             parse.updateObjects,
-            parse.updateStyles);
+            parse.updateStyles,
+            save);
     })();
 
     //stopGenerate = false;
@@ -31507,7 +31510,7 @@ function clearLastUpdate()
 
 
 
-function genUpdateValuesAndObjects(requestId, actionId, updateNodeId, updateParamId, updateValues, updateObjects, updateStyles)
+function genUpdateValuesAndObjects(requestId, actionId, updateNodeId, updateParamId, updateValues, updateObjects, updateStyles, save)
 {
     if (   isEmpty(updateValues )
         && isEmpty(updateObjects)
@@ -31623,7 +31626,8 @@ function genUpdateValuesAndObjects(requestId, actionId, updateNodeId, updatePara
                 styleChunk,
                 n,
                 nodeIds.length,
-                isLastChunk);
+                isLastChunk,
+                save);
 
             nodeValChunk = [];  nc = 0;
             objChunk     = [];  oc = 0;
@@ -31651,7 +31655,8 @@ function genUpdateValuesAndObjects(requestId, actionId, updateNodeId, updatePara
             styleChunk,
             nodeIds.length,
             nodeIds.length,
-            true);
+            true,
+            save);
     }
 
 
@@ -31663,7 +31668,7 @@ function genUpdateValuesAndObjects(requestId, actionId, updateNodeId, updatePara
 
 
 
-function genQueueChunk(requestId, actionId, updateNodeId, updateParamId, nodeValChunkId, nodeValChunk, objChunk, styleChunk, updatedNodes, totalNodes, isLastChunk)
+function genQueueChunk(requestId, actionId, updateNodeId, updateParamId, nodeValChunkId, nodeValChunk, objChunk, styleChunk, updatedNodes, totalNodes, isLastChunk, save)
 {
     genQueueMessageToUi({
         cmd:          'uiUpdateValuesAndObjects',
@@ -31677,7 +31682,8 @@ function genQueueChunk(requestId, actionId, updateNodeId, updateParamId, nodeVal
         styles:        [...styleChunk  ],
         updatedNodes:  updatedNodes,
         totalNodes:    totalNodes,
-        isLastChunk:   isLastChunk
+        isLastChunk:   isLastChunk,
+        save:          save
     });
 
 
@@ -92247,7 +92253,7 @@ extends OperatorBase //WithValue
 
         
         if (update)
-            pushUpdateFromParam(null, [this], this.paramTime);
+            pushUpdate(null, [this], false);
     }
 }
 
@@ -108937,7 +108943,8 @@ generator.onmessage = function(e)
                 msg.styles,
                 msg.updatedNodes,
                 msg.totalNodes,
-                msg.isLastChunk);  
+                msg.isLastChunk,
+                msg.save);  
                 
             break;
         
@@ -109179,14 +109186,14 @@ var lastRequestedId = -1;
 
 
 
-function pushUpdate(action, nodes)
+function pushUpdate(action, nodes, save = true)
 {
-    pushUpdateFromParam(action, nodes, null);
+    pushUpdateFromParam(action, nodes, null, save);
 }
 
 
 
-function pushUpdateFromParam(action, nodes, param)
+function pushUpdateFromParam(action, nodes, param, save = true)
 {
     // first check if any nodes to the left are uncached
     // and replace in update array as necessary
@@ -109296,7 +109303,8 @@ function pushUpdateFromParam(action, nodes, param)
 
     uiQueueMessageToGenerator({
         cmd:     'genRequest',
-        request:  request
+        request:  request,
+        save:     save
     });
 }
 
@@ -111980,7 +111988,7 @@ function createStyleIcon(rgba)
 }
 
 
-function uiUpdateValuesAndObjects(requestId, actionId, updateNodeId, updateParamId, values, objects, styles, updatedNodes, totalNodes, isLastChunk)
+function uiUpdateValuesAndObjects(requestId, actionId, updateNodeId, updateParamId, values, objects, styles, updatedNodes, totalNodes, isLastChunk, save)
 {
     if (requestId < lastRequestedId) 
         return;
@@ -112077,7 +112085,8 @@ function uiUpdateValuesAndObjects(requestId, actionId, updateNodeId, updateParam
 
 
     if (   !graphView.loadingNodes
-        && !numberControlChanging)
+        && !numberControlChanging
+        &&  save)
         uiSaveNodes(nodes.map(n => n.id));
 
 
@@ -112106,7 +112115,9 @@ function uiUpdateValuesAndObjects(requestId, actionId, updateNodeId, updateParam
     {
         if (graphView.loadingNodes)
         {
-            uiSaveNodes(graph.nodes.map(n => n.id));
+            if (save)
+                uiSaveNodes(graph.nodes.map(n => n.id));
+    
             graph.updatePages();
         }
 
@@ -112137,7 +112148,7 @@ function uiUpdateAnimateNodes()
 
     anims.forEach(n => n.updatePlayback(false));
 
-    pushUpdate(null, anims);
+    pushUpdate(null, anims, false);
 }
 
 

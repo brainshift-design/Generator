@@ -21,7 +21,7 @@ onmessage = function(e)
     {
         case 'initFonts':              initFonts(msg.fonts, msg.uniqueFontNames); break;
      
-        case 'genRequest':             genRequest(msg.request);      break;
+        case 'genRequest':             genRequest(msg.request, msg.save); break;
 
         //case 'genFetchResponse':     genFetchResponse(msg.result, msg.response); break;
 
@@ -115,7 +115,7 @@ function genEndFigMessage()
     if (   !isEmpty(lastUpdateValues )
         || !isEmpty(lastUpdateObjects)
         || !isEmpty(lastUpdateStyles ))
-        genUpdateValuesAndObjects(lastRequestId, -1, lastUpdateNodeId, lastUpdateParamId, [], [], []);
+        genUpdateValuesAndObjects(lastRequestId, -1, lastUpdateNodeId, lastUpdateParamId, [], [], [], false);
 
     genPostNextMessageToUi();
 }

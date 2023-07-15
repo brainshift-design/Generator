@@ -1,4 +1,4 @@
-function uiUpdateValuesAndObjects(requestId, actionId, updateNodeId, updateParamId, values, objects, styles, updatedNodes, totalNodes, isLastChunk)
+function uiUpdateValuesAndObjects(requestId, actionId, updateNodeId, updateParamId, values, objects, styles, updatedNodes, totalNodes, isLastChunk, save)
 {
     if (requestId < lastRequestedId) 
         return;
@@ -95,7 +95,8 @@ function uiUpdateValuesAndObjects(requestId, actionId, updateNodeId, updateParam
 
 
     if (   !graphView.loadingNodes
-        && !numberControlChanging)
+        && !numberControlChanging
+        &&  save)
         uiSaveNodes(nodes.map(n => n.id));
 
 
@@ -124,7 +125,9 @@ function uiUpdateValuesAndObjects(requestId, actionId, updateNodeId, updateParam
     {
         if (graphView.loadingNodes)
         {
-            uiSaveNodes(graph.nodes.map(n => n.id));
+            if (save)
+                uiSaveNodes(graph.nodes.map(n => n.id));
+    
             graph.updatePages();
         }
 
@@ -155,5 +158,5 @@ function uiUpdateAnimateNodes()
 
     anims.forEach(n => n.updatePlayback(false));
 
-    pushUpdate(null, anims);
+    pushUpdate(null, anims, false);
 }

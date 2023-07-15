@@ -228,6 +228,6 @@ extends OperatorBase //WithValue
 
         
         if (update)
-            pushUpdateFromParam(null, [this], this.paramTime);
+            pushUpdate(null, [this], false);
     }
 }

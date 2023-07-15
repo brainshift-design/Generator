@@ -3,14 +3,14 @@ var lastRequestedId = -1;
 
 
 
-function pushUpdate(action, nodes)
+function pushUpdate(action, nodes, save = true)
 {
-    pushUpdateFromParam(action, nodes, null);
+    pushUpdateFromParam(action, nodes, null, save);
 }
 
 
 
-function pushUpdateFromParam(action, nodes, param)
+function pushUpdateFromParam(action, nodes, param, save = true)
 {
     // first check if any nodes to the left are uncached
     // and replace in update array as necessary
@@ -120,7 +120,8 @@ function pushUpdateFromParam(action, nodes, param)
 
     uiQueueMessageToGenerator({
         cmd:     'genRequest',
-        request:  request
+        request:  request,
+        save:     save
     });
 }
 

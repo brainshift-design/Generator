@@ -17,7 +17,7 @@ function initFonts(fonts, uniqueFontNames)
 
 
 
-function genRequest(request)
+function genRequest(request, save)
 {
     const requestId            = parseInt(request[0]);
     const actionId             = parseInt(request[1]);
@@ -88,7 +88,8 @@ function genRequest(request)
             parse.updateParamId,
             parse.updateValues,
             parse.updateObjects,
-            parse.updateStyles);
+            parse.updateStyles,
+            save);
     })();
 
     //stopGenerate = false;
@@ -161,7 +162,7 @@ function clearLastUpdate()
 
 
 
-function genUpdateValuesAndObjects(requestId, actionId, updateNodeId, updateParamId, updateValues, updateObjects, updateStyles)
+function genUpdateValuesAndObjects(requestId, actionId, updateNodeId, updateParamId, updateValues, updateObjects, updateStyles, save)
 {
     if (   isEmpty(updateValues )
         && isEmpty(updateObjects)
@@ -277,7 +278,8 @@ function genUpdateValuesAndObjects(requestId, actionId, updateNodeId, updatePara
                 styleChunk,
                 n,
                 nodeIds.length,
-                isLastChunk);
+                isLastChunk,
+                save);
 
             nodeValChunk = [];  nc = 0;
             objChunk     = [];  oc = 0;
@@ -305,7 +307,8 @@ function genUpdateValuesAndObjects(requestId, actionId, updateNodeId, updatePara
             styleChunk,
             nodeIds.length,
             nodeIds.length,
-            true);
+            true,
+            save);
     }
 
 
@@ -317,7 +320,7 @@ function genUpdateValuesAndObjects(requestId, actionId, updateNodeId, updatePara
 
 
 
-function genQueueChunk(requestId, actionId, updateNodeId, updateParamId, nodeValChunkId, nodeValChunk, objChunk, styleChunk, updatedNodes, totalNodes, isLastChunk)
+function genQueueChunk(requestId, actionId, updateNodeId, updateParamId, nodeValChunkId, nodeValChunk, objChunk, styleChunk, updatedNodes, totalNodes, isLastChunk, save)
 {
     genQueueMessageToUi({
         cmd:          'uiUpdateValuesAndObjects',
@@ -331,7 +334,8 @@ function genQueueChunk(requestId, actionId, updateNodeId, updateParamId, nodeVal
         styles:        [...styleChunk  ],
         updatedNodes:  updatedNodes,
         totalNodes:    totalNodes,
-        isLastChunk:   isLastChunk
+        isLastChunk:   isLastChunk,
+        save:          save
     });
 
 
