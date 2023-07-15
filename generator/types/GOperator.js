@@ -97,7 +97,13 @@ extends GNode
 
     toValue()
     {
-        consoleError('cannot call abstract method GOperator.toValue()');
-        return null;
+        return this.value
+             ? this.value.copy()
+             : null;
     }
+    // toValue()
+    // {
+    //     consoleError('cannot call abstract method GOperator.toValue()');
+    //     return null;
+    // }
 }

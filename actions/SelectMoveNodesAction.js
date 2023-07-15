@@ -22,7 +22,7 @@ extends Action
             + ' ' + countString(newSelectedIds.length, 'node'));
 
         this.affectsConnections = false;
-
+        this.selfUpdate         = true;
 
         this.prevSelectedIds    = [...prevSelectedIds];
         this.newSelectedIds     = [...newSelectedIds];

@@ -12343,9 +12343,15 @@ extends GNode
 
     toValue()
     {
-        consoleError('cannot call abstract method GOperator.toValue()');
-        return null;
+        return this.value
+             ? this.value.copy()
+             : null;
     }
+    // toValue()
+    // {
+    //     consoleError('cannot call abstract method GOperator.toValue()');
+    //     return null;
+    // }
 }
 
 
@@ -19176,6 +19182,15 @@ extends GOperator
 
 
 
+    toValue()
+    {
+        return this.value
+             ? this.value.copy()
+             : null;
+    }
+
+
+
     pushValueUpdates(parse)
     {
         super.pushValueUpdates(parse);
@@ -19338,6 +19353,15 @@ extends GOperator
 
 
 
+    toValue()
+    {
+        return this.value
+             ? this.value.copy()
+             : null;
+    }
+
+
+
     pushValueUpdates(parse)
     {
         super.pushValueUpdates(parse);
@@ -19372,7 +19396,7 @@ extends GOperator
     step;
 
 
-    loopId  = NULL;
+    loopId = NULL;
 
 
 
@@ -19435,6 +19459,15 @@ extends GOperator
         this.validate();
 
         return this;
+    }
+
+
+
+    toValue()
+    {
+        return this.value
+             ? this.value.copy()
+             : null;
     }
 
 
@@ -19572,6 +19605,15 @@ extends GOperator
         this.validate();
 
         return this;
+    }
+
+
+
+    toValue()
+    {
+        return this.value
+             ? this.value.copy()
+             : null;
     }
 
 
@@ -19743,6 +19785,15 @@ extends GOperator
 
 
 
+    toValue()
+    {
+        return this.value
+             ? this.value.copy()
+             : null;
+    }
+
+
+
     pushValueUpdates(parse)
     {
         super.pushValueUpdates(parse);
@@ -19853,12 +19904,21 @@ extends GOperator
 
 
 
+    toValue()
+    {
+        return this.value
+             ? this.value.copy()
+             : null;
+    }
+
+
+
     pushValueUpdates(parse)
     {
         super.pushValueUpdates(parse);
 
         if (this.seed       ) this.seed       .pushValueUpdates(parse);
-        if (this.chance        ) this.chance        .pushValueUpdates(parse);
+        if (this.chance     ) this.chance     .pushValueUpdates(parse);
         if (this.max        ) this.max        .pushValueUpdates(parse);
         if (this.scale      ) this.scale      .pushValueUpdates(parse);
         if (this.interpolate) this.interpolate.pushValueUpdates(parse);
@@ -19873,7 +19933,7 @@ extends GOperator
         super.invalidateInputs(from);
 
         if (this.seed       ) this.seed       .invalidateInputs(from);
-        if (this.chance        ) this.chance        .invalidateInputs(from);
+        if (this.chance     ) this.chance     .invalidateInputs(from);
         if (this.max        ) this.max        .invalidateInputs(from);
         if (this.scale      ) this.scale      .invalidateInputs(from);
         if (this.interpolate) this.interpolate.invalidateInputs(from);
@@ -49793,9 +49853,15 @@ extends GNode
 
     toValue()
     {
-        consoleError('cannot call abstract method GOperator.toValue()');
-        return null;
+        return this.value
+             ? this.value.copy()
+             : null;
     }
+    // toValue()
+    // {
+    //     consoleError('cannot call abstract method GOperator.toValue()');
+    //     return null;
+    // }
 }
 
 
@@ -56626,6 +56692,15 @@ extends GOperator
 
 
 
+    toValue()
+    {
+        return this.value
+             ? this.value.copy()
+             : null;
+    }
+
+
+
     pushValueUpdates(parse)
     {
         super.pushValueUpdates(parse);
@@ -56788,6 +56863,15 @@ extends GOperator
 
 
 
+    toValue()
+    {
+        return this.value
+             ? this.value.copy()
+             : null;
+    }
+
+
+
     pushValueUpdates(parse)
     {
         super.pushValueUpdates(parse);
@@ -56822,7 +56906,7 @@ extends GOperator
     step;
 
 
-    loopId  = NULL;
+    loopId = NULL;
 
 
 
@@ -56885,6 +56969,15 @@ extends GOperator
         this.validate();
 
         return this;
+    }
+
+
+
+    toValue()
+    {
+        return this.value
+             ? this.value.copy()
+             : null;
     }
 
 
@@ -57022,6 +57115,15 @@ extends GOperator
         this.validate();
 
         return this;
+    }
+
+
+
+    toValue()
+    {
+        return this.value
+             ? this.value.copy()
+             : null;
     }
 
 
@@ -57193,6 +57295,15 @@ extends GOperator
 
 
 
+    toValue()
+    {
+        return this.value
+             ? this.value.copy()
+             : null;
+    }
+
+
+
     pushValueUpdates(parse)
     {
         super.pushValueUpdates(parse);
@@ -57303,12 +57414,21 @@ extends GOperator
 
 
 
+    toValue()
+    {
+        return this.value
+             ? this.value.copy()
+             : null;
+    }
+
+
+
     pushValueUpdates(parse)
     {
         super.pushValueUpdates(parse);
 
         if (this.seed       ) this.seed       .pushValueUpdates(parse);
-        if (this.chance        ) this.chance        .pushValueUpdates(parse);
+        if (this.chance     ) this.chance     .pushValueUpdates(parse);
         if (this.max        ) this.max        .pushValueUpdates(parse);
         if (this.scale      ) this.scale      .pushValueUpdates(parse);
         if (this.interpolate) this.interpolate.pushValueUpdates(parse);
@@ -57323,7 +57443,7 @@ extends GOperator
         super.invalidateInputs(from);
 
         if (this.seed       ) this.seed       .invalidateInputs(from);
-        if (this.chance        ) this.chance        .invalidateInputs(from);
+        if (this.chance     ) this.chance     .invalidateInputs(from);
         if (this.max        ) this.max        .invalidateInputs(from);
         if (this.scale      ) this.scale      .invalidateInputs(from);
         if (this.interpolate) this.interpolate.invalidateInputs(from);
@@ -86057,8 +86177,8 @@ class Operator
         this.updateBorder();
 
         //if (deleteConnectionsDialogVisible)
-        if (minZoomDialogVisible)
-            hideMinZoomDialog();
+        //if (minZoomDialogVisible)
+        //    hideMinZoomDialog();
     }
     
 
@@ -92031,7 +92151,6 @@ extends OperatorBase //WithValue
 
     updateParams()
     {
-        console.log('OpAnimate.updateParams()');
         //this.paramValue .enableControlText(false);
         this.paramFrom  .enableControlText(true);
         this.paramTo    .enableControlText(true);
@@ -92041,7 +92160,7 @@ extends OperatorBase //WithValue
         this.paramTime  .enableControlText(true);
 
         this.paramTime.controls[0].setMax(this.paramLength.value.value);
-        //this.paramTime.controls[0].setDecimals(2);
+        this.paramTime.controls[0].setDecimals(this.paramLength.controls[0].dec);
 
         this.updateParamControls();
     }
@@ -106107,7 +106226,7 @@ extends Action
             + ' ' + countString(newSelectedIds.length, 'node'));
 
         this.affectsConnections = false;
-
+        this.selfUpdate         = true;
 
         this.prevSelectedIds    = [...prevSelectedIds];
         this.newSelectedIds     = [...newSelectedIds];
@@ -106220,6 +106339,7 @@ extends Action
             + ' ' + countString(selectedIds.length, 'node'));
 
         this.affectsConnections = false;
+        this.selfUpdate         = true;
 
         this.selectedIds        = [...selectedIds];
         this.prevSelectedIds    = [...prevSelectedIds];
@@ -110454,29 +110574,6 @@ createTooltipPointerTrap(ttColorblind);
 
 
 
-// menuSelect.addEventListener('change', async function(e) 
-// {
-//     switch (e.detail.selectedValue)
-//     {
-//         case 'saveLocal':  saveToLocalFile('graph.json'); break;
-//         case 'loadLocal':  loadFromLocalFile();           break;
-//         case 'duplicate':  console.log(graph.toJson());     break;
-//     }
-// });
-
-
-
-subscriptionClose.addEventListener('click', e =>
-{
-    hideSubscriptionDialog();
-});
-
-
-
-// btnToggleWires.addEventListener('pointerenter', () => { btnToggleWires.mouseOver = true;  updateToggleShowWiresButton(); });
-// btnToggleWires.addEventListener('pointerleave', () => { btnToggleWires.mouseOver = false; updateToggleShowWiresButton(); });
-
-
 function createNode(nodeType, creatingButton = null, createdNodeId = -1, options = {})
 {
     let node;
@@ -110618,6 +110715,28 @@ function createNode(nodeType, creatingButton = null, createdNodeId = -1, options
     return node;
 }
 
+
+// menuSelect.addEventListener('change', async function(e) 
+// {
+//     switch (e.detail.selectedValue)
+//     {
+//         case 'saveLocal':  saveToLocalFile('graph.json'); break;
+//         case 'loadLocal':  loadFromLocalFile();           break;
+//         case 'duplicate':  console.log(graph.toJson());     break;
+//     }
+// });
+
+
+
+subscriptionClose.addEventListener('click', e =>
+{
+    hideSubscriptionDialog();
+});
+
+
+
+// btnToggleWires.addEventListener('pointerenter', () => { btnToggleWires.mouseOver = true;  updateToggleShowWiresButton(); });
+// btnToggleWires.addEventListener('pointerleave', () => { btnToggleWires.mouseOver = false; updateToggleShowWiresButton(); });
 
 
 function idFromNode(node)
@@ -112018,7 +112137,7 @@ function uiUpdateAnimateNodes()
 
     anims.forEach(n => n.updatePlayback(false));
 
-    pushUpdateFromParam(null, anims, null);
+    pushUpdate(null, anims);
 }
 
 

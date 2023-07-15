@@ -141,6 +141,15 @@ extends GOperator
 
 
 
+    toValue()
+    {
+        return this.value
+             ? this.value.copy()
+             : null;
+    }
+
+
+
     pushValueUpdates(parse)
     {
         super.pushValueUpdates(parse);

@@ -5,7 +5,7 @@ extends GOperator
     step;
 
 
-    loopId  = NULL;
+    loopId = NULL;
 
 
 
@@ -68,6 +68,15 @@ extends GOperator
         this.validate();
 
         return this;
+    }
+
+
+
+    toValue()
+    {
+        return this.value
+             ? this.value.copy()
+             : null;
     }
 
 

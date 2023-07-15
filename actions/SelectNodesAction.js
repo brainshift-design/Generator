@@ -14,6 +14,7 @@ extends Action
             + ' ' + countString(selectedIds.length, 'node'));
 
         this.affectsConnections = false;
+        this.selfUpdate         = true;
 
         this.selectedIds        = [...selectedIds];
         this.prevSelectedIds    = [...prevSelectedIds];

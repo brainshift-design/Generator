@@ -77,12 +77,21 @@ extends GOperator
 
 
 
+    toValue()
+    {
+        return this.value
+             ? this.value.copy()
+             : null;
+    }
+
+
+
     pushValueUpdates(parse)
     {
         super.pushValueUpdates(parse);
 
         if (this.seed       ) this.seed       .pushValueUpdates(parse);
-        if (this.chance        ) this.chance        .pushValueUpdates(parse);
+        if (this.chance     ) this.chance     .pushValueUpdates(parse);
         if (this.max        ) this.max        .pushValueUpdates(parse);
         if (this.scale      ) this.scale      .pushValueUpdates(parse);
         if (this.interpolate) this.interpolate.pushValueUpdates(parse);
@@ -97,7 +106,7 @@ extends GOperator
         super.invalidateInputs(from);
 
         if (this.seed       ) this.seed       .invalidateInputs(from);
-        if (this.chance        ) this.chance        .invalidateInputs(from);
+        if (this.chance     ) this.chance     .invalidateInputs(from);
         if (this.max        ) this.max        .invalidateInputs(from);
         if (this.scale      ) this.scale      .invalidateInputs(from);
         if (this.interpolate) this.interpolate.invalidateInputs(from);

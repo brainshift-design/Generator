@@ -132,7 +132,6 @@ extends OperatorBase //WithValue
 
     updateParams()
     {
-        console.log('OpAnimate.updateParams()');
         //this.paramValue .enableControlText(false);
         this.paramFrom  .enableControlText(true);
         this.paramTo    .enableControlText(true);
@@ -142,7 +141,7 @@ extends OperatorBase //WithValue
         this.paramTime  .enableControlText(true);
 
         this.paramTime.controls[0].setMax(this.paramLength.value.value);
-        //this.paramTime.controls[0].setDecimals(2);
+        this.paramTime.controls[0].setDecimals(this.paramLength.controls[0].dec);
 
         this.updateParamControls();
     }

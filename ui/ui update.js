@@ -155,5 +155,5 @@ function uiUpdateAnimateNodes()
 
     anims.forEach(n => n.updatePlayback(false));
 
-    pushUpdateFromParam(null, anims, null);
+    pushUpdate(null, anims);
 }
