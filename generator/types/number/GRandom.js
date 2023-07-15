@@ -1,5 +1,5 @@
 class GRandom
-extends GNumberType
+extends GOperator
 {
     seed;
     min;

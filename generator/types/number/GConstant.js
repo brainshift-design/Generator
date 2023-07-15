@@ -1,5 +1,5 @@
 class GConstant
-extends GNumberType
+extends GOperator
 {
     constant;
 

@@ -1,10 +1,10 @@
 class   OpAnimate
-extends OperatorWithValue
+extends OperatorBase //WithValue
 {
     paramFrom;
     paramTo
     paramCurve;
-    paramType;
+    paramRepeat;
     paramLength;
     paramTime;
 
@@ -28,10 +28,10 @@ extends OperatorWithValue
 
         this.addOutput(new Output([NUMBER_VALUE], this.output_genRequest));
 
-        this.addParam(this.paramValue);
+        //this.addParam(this.paramValue);
         this.addParam(this.paramFrom   = new NumberParam('from',   'from',   true,  true, true, 0, Number.MIN_SAFE_INTEGER, Number.MAX_SAFE_INTEGER, 2));
         this.addParam(this.paramTo     = new NumberParam('to',     'to',     true,  true, true, 1, Number.MIN_SAFE_INTEGER, Number.MAX_SAFE_INTEGER, 2));
-        this.addParam(this.paramType   = new SelectParam('type',   'type',   false, true, true, ['once', 'repeat', 'ping-pong']));
+        this.addParam(this.paramRepeat = new SelectParam('repeat', 'repeat', false, true, true, ['once', 'repeat', 'ping-pong']));
         this.addParam(this.paramCurve  = new SelectParam('curve',  'curve',  false, true, true, ['step', 'linear', 'ease in', 'ease out', 'smooth'], 1));
         this.addParam(this.paramLength = new NumberParam('length', 'length', true,  true, true, 1, 0, Number.MAX_SAFE_INTEGER, 1));
         this.addParam(this.paramTime   = new NumberParam('time',   'time',   true,  true, true, 0, 0));
@@ -107,7 +107,7 @@ extends OperatorWithValue
         request.push(...this.node.paramFrom  .genRequest(gen));
         request.push(...this.node.paramTo    .genRequest(gen));
         request.push(...this.node.paramCurve .genRequest(gen));
-        request.push(...this.node.paramType  .genRequest(gen));
+        request.push(...this.node.paramRepeat.genRequest(gen));
         request.push(...this.node.paramLength.genRequest(gen));
         request.push(...this.node.paramTime  .genRequest(gen));
 
@@ -120,28 +120,28 @@ extends OperatorWithValue
 
 
 
-    updateValues(requestId, actionId, updateParamId, paramIds, values)
-    {
-        super.updateValues(requestId, actionId, updateParamId, paramIds, values);
+    // updateValues(requestId, actionId, updateParamId, paramIds, values)
+    // {
+    //     super.updateValues(requestId, actionId, updateParamId, paramIds, values);
 
-        if (this.playing)
-            this.updatePlayback();
-    }
+    //     // if (this.playing)
+    //     //     this.updatePlayback();
+    // }
 
 
 
     updateParams()
     {
-        this.paramValue .enableControlText(false);
+        //this.paramValue .enableControlText(false);
         this.paramFrom  .enableControlText(true);
         this.paramTo    .enableControlText(true);
         this.paramCurve .enableControlText(true);
-        this.paramType  .enableControlText(true);
+        this.paramRepeat.enableControlText(true);
         this.paramLength.enableControlText(true);
         this.paramTime  .enableControlText(true);
 
         this.paramTime.controls[0].setMax(this.paramLength.value.value);
-        this.paramTime.controls[0].setDecimals(2);
+        //this.paramTime.controls[0].setDecimals(2);
 
         this.updateParamControls();
     }
@@ -162,7 +162,7 @@ extends OperatorWithValue
         const colors = this.getHeaderColors();
 
         const rgba       = rgb_a(rgbFromType(ANY_VALUE));
-        const rgbaStripe = rgb_a(getStripeBackColor(rgba), rgba[3]);
+        //const rgbaStripe = rgb_a(getStripeBackColor(rgba), rgba[3]);
 
         const headerStyle = rgba2style(
             rgb_a(
@@ -187,13 +187,13 @@ extends OperatorWithValue
 
 
 
-    updatePlayback()
+    updatePlayback(update = true)
     {
         let   time   = (Date.now() - this.startTime) / 1000;
         const length = this.paramLength.value.value;
 
 
-        switch (this.paramType.value.value)
+        switch (this.paramRepeat.value.value)
         {
             case 0:
                 if (time >= length)
@@ -220,15 +220,14 @@ extends OperatorWithValue
         }
 
 
-        // setTimeout(() =>
-        // {
-            this.paramTime.setValue(
-                new NumberValue(
-                    time, 
-                    this.paramTime.controls[0].decimals),
-                false);
+        this.paramTime.setValue(
+            new NumberValue(
+                time, 
+                this.paramTime.controls[0].decimals),
+            false);
 
+        
+        if (update)
             pushUpdateFromParam(null, [this], this.paramTime);
-        // });
     }
 }

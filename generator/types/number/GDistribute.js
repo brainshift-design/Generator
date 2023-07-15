@@ -1,5 +1,5 @@
 class GDistribute
-extends GNumberType
+extends GOperator
 {
     from;
     start;

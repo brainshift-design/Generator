@@ -1,5 +1,5 @@
 class GNumberToText
-extends GNumberType
+extends GOperator
 {
     input;
 

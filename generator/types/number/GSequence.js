@@ -1,5 +1,5 @@
 class GSequence
-extends GNumberType
+extends GOperator
 {
     start;
     step;

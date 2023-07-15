@@ -1,5 +1,5 @@
 class GProbability
-extends GNumberType
+extends GOperator
 {
     seed;
     chance;

@@ -4515,7 +4515,7 @@ const NUMBER_NOISE            = 'NOISE';
 const NUMBER_PROBABILITY      = 'PROB';  
 const NUMBER_INTERPOLATE      = 'LERP'; 
 const NUMBER_SOLVE            = 'SOLVE';
-const NUMBER_ANIMATE          = 'ANIM';
+const NUMBER_ANIMATE          = 'NANIM';
 
 const NUMBER_MATH             = 'MATH';  
 const NUMBER_ADD              = 'ADD';   
@@ -7560,6 +7560,9 @@ extends GNode
 
         this.valid    = base.valid;
         this.topLevel = base.topLevel;
+
+        if (base.value) 
+            this.value = base.value.copy();
     }
 
 
@@ -12182,18 +12185,18 @@ extends GOperator
 
 
 
+    toValue()
+    {
+        return this.value.copy();
+    }
+
+
+
     pushValueUpdates(parse)
     {
         super.pushValueUpdates(parse);
 
         this.inputs.forEach(i => i.pushValueUpdates(parse));
-    }
-
-
-
-    toValue()
-    {
-        return this.value.copy();
     }
 
 
@@ -12902,7 +12905,8 @@ extends GOperator
             return this;
             
 
-        let count = (await this.count.eval(parse)).toValue();
+        let   count = (await this.count.eval(parse)).toValue();
+        const loop  = (await this.loop .eval(parse)).toValue();
 
 
         count = new NumberValue(Math.round(count.value));
@@ -12964,6 +12968,7 @@ extends GOperator
                     
                     this.input.invalidateInputs(this);
                     
+
                     const input = (await this.input.eval(parse)).toValue();
 
 
@@ -13016,9 +13021,9 @@ extends GOperator
 
         this.updateValues =
         [
-            ['value', this.value     ],
-            ['count', count          ],
-            ['loop',  NumberValue.NaN]
+            ['value', this.value        ],
+            ['count', count             ],
+            ['loop',  new NumberValue(0)]
         ];
 
 
@@ -13042,6 +13047,7 @@ extends GOperator
 
         if (this.input) this.input.pushValueUpdates(parse);
         if (this.count) this.count.pushValueUpdates(parse);
+        if (this.loop ) this.loop .pushValueUpdates(parse);
     }
 
 
@@ -13052,6 +13058,7 @@ extends GOperator
 
         if (this.input) this.input.invalidateInputs(from);
         if (this.count) this.count.invalidateInputs(from);
+        if (this.loop ) this.loop .invalidateInputs(from);
     }
 
 
@@ -13470,31 +13477,27 @@ extends GOperator
 
 
 
-class GNumberType
-extends GOperator
-{
-    value;
-    
+// class GNumberType
+// extends GOperator
+// {
+//     // copyBase(base)
+//     // {
+//     //     super.copyBase(base);
 
-
-    copyBase(base)
-    {
-        super.copyBase(base);
-
-        if (base.value) this.value = base.value.copy();
-    }
+//     //     if (base.value) this.value = base.value.copy();
+//     // }
 
 
 
-    toValue()
-    {
-        return this.value.copy();
-    }
-}
+//     toValue()
+//     {
+//         return this.value.copy();
+//     }
+// }
 
 
 class GNumberType1
-extends GNumberType
+extends GOperator
 {
     input = null;
 
@@ -13537,7 +13540,7 @@ extends GNumberType
 
 
 class GNumberType2
-extends GNumberType
+extends GOperator
 {
     input0 = null;
     input1 = null;
@@ -13584,7 +13587,7 @@ extends GNumberType
 
 
 class GArithmetic
-extends GNumberType
+extends GOperator
 {
     inputs = [];
 
@@ -14162,7 +14165,7 @@ extends GNumberType1
 
 
 class GConstant
-extends GNumberType
+extends GOperator
 {
     constant;
 
@@ -14249,7 +14252,7 @@ extends GNumberType
 
 
 class GDateTime
-extends GNumberType
+extends GOperator
 {
     seconds   = null;
     minutes   = null;
@@ -14372,7 +14375,7 @@ extends GNumberType
 
 
 class GDefine
-extends GNumberType
+extends GOperator
 {
     values;
 
@@ -14470,7 +14473,7 @@ extends GNumberType
 
 
 class GDistribute
-extends GNumberType
+extends GOperator
 {
     from;
     start;
@@ -14640,7 +14643,7 @@ extends GNumberType
 
 
 class GSequence
-extends GNumberType
+extends GOperator
 {
     start;
     step;
@@ -14735,7 +14738,7 @@ extends GNumberType
 
 
 class GRandom
-extends GNumberType
+extends GOperator
 {
     seed;
     min;
@@ -14876,7 +14879,7 @@ extends GNumberType
 
 
 class GNoise
-extends GNumberType
+extends GOperator
 {
     seed;
     min;
@@ -14910,8 +14913,8 @@ extends GNumberType
         if (this.min        ) copy.min         = this.min        .copy();
         if (this.max        ) copy.max         = this.max        .copy();
         if (this.scale      ) copy.scale       = this.scale      .copy();
-        if (this.interpolate) copy.interpolate = this.interpolate.copy();
         if (this.offset     ) copy.offset      = this.offset     .copy();
+        if (this.interpolate) copy.interpolate = this.interpolate.copy();
         if (this.detail     ) copy.detail      = this.detail     .copy();
 
         if (this.random     ) copy.random      = this.random     .copy();
@@ -14931,8 +14934,8 @@ extends GNumberType
         const min         = (await this.min        .eval(parse)).toValue();
         const max         = (await this.max        .eval(parse)).toValue();
         const scale       = (await this.scale      .eval(parse)).toValue();
-        const interpolate = (await this.interpolate.eval(parse)).toValue();
         const offset      = (await this.offset     .eval(parse)).toValue();
+        const interpolate = (await this.interpolate.eval(parse)).toValue();
         const detail      = (await this.detail     .eval(parse)).toValue();
     
 
@@ -15002,8 +15005,8 @@ extends GNumberType
             ['min',         min        ],
             ['max',         max        ],
             ['scale',       scale      ],
-            ['interpolate', interpolate],
             ['offset',      offset     ],
+            ['interpolate', interpolate],
             ['detail',      detail     ]
         ];
         
@@ -15023,8 +15026,8 @@ extends GNumberType
         if (this.min        ) this.min        .pushUpdateValues(parse);
         if (this.max        ) this.max        .pushUpdateValues(parse);
         if (this.scale      ) this.scale      .pushUpdateValues(parse);
-        if (this.interpolate) this.interpolate.pushUpdateValues(parse);
         if (this.offset     ) this.offset     .pushUpdateValues(parse);
+        if (this.interpolate) this.interpolate.pushUpdateValues(parse);
         if (this.detail     ) this.detail     .pushUpdateValues(parse);
     }
 
@@ -15038,8 +15041,8 @@ extends GNumberType
         if (this.min        ) this.min        .invalidateInputs(from);
         if (this.max        ) this.max        .invalidateInputs(from);
         if (this.scale      ) this.scale      .invalidateInputs(from);
-        if (this.interpolate) this.interpolate.invalidateInputs(from);
         if (this.offset     ) this.offset     .invalidateInputs(from);
+        if (this.interpolate) this.interpolate.invalidateInputs(from);
         if (this.detail     ) this.detail     .invalidateInputs(from);
     }
 }
@@ -15047,7 +15050,7 @@ extends GNumberType
 
 
 class GProbability
-extends GNumberType
+extends GOperator
 {
     seed;
     chance;
@@ -15157,7 +15160,7 @@ extends GNumberType
 
 
 class GInterpolate
-extends GNumberType
+extends GOperator
 {
     input0 = null;
     input1 = null;
@@ -15454,12 +15457,12 @@ extends GNumberType1
 
 
 class GAnimate
-extends GNumberType
+extends GOperator
 {
     from;
     to;
     curve;
-    type;
+    repeat;
     length;
     time;
 
@@ -15481,7 +15484,7 @@ extends GNumberType
         if (this.from  ) copy.from   = this.from  .copy();
         if (this.to    ) copy.to     = this.to    .copy();
         if (this.curve ) copy.curve  = this.curve .copy();
-        if (this.type  ) copy.type   = this.type  .copy();
+        if (this.repeat) copy.repeat = this.repeat.copy();
         if (this.length) copy.length = this.length.copy();
         if (this.time  ) copy.time   = this.time  .copy();
 
@@ -15499,7 +15502,7 @@ extends GNumberType
         const from   = (await this.from  .eval(parse)).toValue();
         const to     = (await this.to    .eval(parse)).toValue();
         const curve  = (await this.curve .eval(parse)).toValue();
-        const type   = (await this.type  .eval(parse)).toValue();
+        const repeat = (await this.repeat.eval(parse)).toValue();
         const length = (await this.length.eval(parse)).toValue();
         const time   = (await this.time  .eval(parse)).toValue();
     
@@ -15565,11 +15568,11 @@ extends GNumberType
 
         this.updateValues =
         [
-            ['value',  this.value],
+            //['value',  this.value],
             ['from',   from      ],
             ['to',     to        ],
             ['curve',  curve     ],
-            ['type',   type      ],
+            ['repeat', repeat    ],
             ['length', length    ],
             ['time',   time      ]
         ];
@@ -15589,7 +15592,7 @@ extends GNumberType
         if (this.from  ) this.from  .pushValueUpdates(parse);
         if (this.to    ) this.to    .pushValueUpdates(parse);
         if (this.curve ) this.curve .pushValueUpdates(parse);
-        if (this.type  ) this.type  .pushValueUpdates(parse);
+        if (this.repeat) this.repeat.pushValueUpdates(parse);
         if (this.length) this.length.pushValueUpdates(parse);
         if (this.time  ) this.time  .pushValueUpdates(parse);
     }
@@ -15603,7 +15606,7 @@ extends GNumberType
         if (this.from  ) this.from  .invalidateInputs(from);
         if (this.to    ) this.to    .invalidateInputs(from);
         if (this.curve ) this.curve .invalidateInputs(from);
-        if (this.type  ) this.type  .invalidateInputs(from);
+        if (this.repeat) this.repeat.invalidateInputs(from);
         if (this.length) this.length.invalidateInputs(from);
         if (this.time  ) this.time  .invalidateInputs(from);
     }
@@ -17509,31 +17512,27 @@ async function evalTangent(input, parse)
 }
 
 
-class GTextType
-extends GOperator
-{
-    value = null;
-    
+// class GTextType
+// extends GOperator
+// {
+//     // copyBase(src)
+//     // {
+//     //     super.copyBase(src);
 
-
-    copyBase(src)
-    {
-        super.copyBase(src);
-
-        if (src.value) this.value = src.value.copy();
-    }
+//     //     if (src.value) this.value = src.value.copy();
+//     // }
 
 
 
-    toValue()
-    {
-        return this.value.copy();
-    }
-}
+//     toValue()
+//     {
+//         return this.value.copy();
+//     }
+// }
 
 
 class GTextType1
-extends GTextType
+extends GOperator
 {
     input = null;
 
@@ -17576,7 +17575,7 @@ extends GTextType
 
 
 class GTextType2
-extends GTextType
+extends GOperator
 {
     input0 = null;
     input1 = null;
@@ -18023,7 +18022,7 @@ extends GTextType1
 
 
 class GNumberToText
-extends GNumberType
+extends GOperator
 {
     input;
 
@@ -18124,7 +18123,7 @@ extends GNumberType
 
 
 class GTextToNumber
-extends GNumberType
+extends GOperator
 {
     input;
 
@@ -18387,7 +18386,7 @@ extends GTextType1
 
 
 class GTextJoin
-extends GTextType
+extends GOperator
 {
     inputs = [];
 
@@ -18918,7 +18917,7 @@ extends GOperator1
 
 
 class GTextFetch
-extends GTextType
+extends GOperator
 {
     request;
     cachedValue;
@@ -19551,31 +19550,27 @@ function getColorCorrections(colorSpace)
 }
 
 
-class GColorType
-extends GOperator
-{
-    value;
-    
+// class GColorType
+// extends GOperator
+// {
+//     // copyBase(base)
+//     // {
+//     //     super.copyBase(base);
 
-
-    copyBase(base)
-    {
-        super.copyBase(base);
-
-        if (base.value) this.value = base.value.copy();
-    }
+//     //     if (base.value) this.value = base.value.copy();
+//     // }
 
 
 
-    toValue()
-    {
-        return this.value.copy();
-    }
-}
+//     toValue()
+//     {
+//         return this.value.copy();
+//     }
+// }
 
 
 class GColorType1
-extends GColorType
+extends GOperator
 {
     input = null;
 
@@ -19618,7 +19613,7 @@ extends GColorType
 
 
 class GColorType2
-extends GColorType
+extends GOperator
 {
     input0 = null;
     input1 = null;
@@ -29402,8 +29397,8 @@ function genParseNoise(parse)
     noise.min         = genParse(parse);
     noise.max         = genParse(parse);
     noise.scale       = genParse(parse);
-    noise.interpolate = genParse(parse);
     noise.offset      = genParse(parse);
+    noise.interpolate = genParse(parse);
     noise.detail      = genParse(parse);
 
 
@@ -29794,6 +29789,7 @@ function genParseAnimate(parse)
 
 
     const anim = new GAnimate(nodeId, options);
+    console.log('anim =', anim);
 
 
     if (parse.settings.logRequests) 
@@ -29810,12 +29806,12 @@ function genParseAnimate(parse)
     parse.nTab++;
 
 
-    anim.from     = genParse(parse);
-    anim.to       = genParse(parse);
-    anim.curve    = genParse(parse);
-    anim.type     = genParse(parse);
+    anim.from   = genParse(parse);
+    anim.to     = genParse(parse);
+    anim.curve  = genParse(parse);
+    anim.repeat = genParse(parse);
     anim.length = genParse(parse);
-    anim.time     = genParse(parse);
+    anim.time   = genParse(parse);
 
 
     parse.nTab--;

@@ -1,5 +1,5 @@
 class GNoise
-extends GNumberType
+extends GOperator
 {
     seed;
     min;
@@ -33,8 +33,8 @@ extends GNumberType
         if (this.min        ) copy.min         = this.min        .copy();
         if (this.max        ) copy.max         = this.max        .copy();
         if (this.scale      ) copy.scale       = this.scale      .copy();
-        if (this.interpolate) copy.interpolate = this.interpolate.copy();
         if (this.offset     ) copy.offset      = this.offset     .copy();
+        if (this.interpolate) copy.interpolate = this.interpolate.copy();
         if (this.detail     ) copy.detail      = this.detail     .copy();
 
         if (this.random     ) copy.random      = this.random     .copy();
@@ -54,8 +54,8 @@ extends GNumberType
         const min         = (await this.min        .eval(parse)).toValue();
         const max         = (await this.max        .eval(parse)).toValue();
         const scale       = (await this.scale      .eval(parse)).toValue();
-        const interpolate = (await this.interpolate.eval(parse)).toValue();
         const offset      = (await this.offset     .eval(parse)).toValue();
+        const interpolate = (await this.interpolate.eval(parse)).toValue();
         const detail      = (await this.detail     .eval(parse)).toValue();
     
 
@@ -125,8 +125,8 @@ extends GNumberType
             ['min',         min        ],
             ['max',         max        ],
             ['scale',       scale      ],
-            ['interpolate', interpolate],
             ['offset',      offset     ],
+            ['interpolate', interpolate],
             ['detail',      detail     ]
         ];
         
@@ -146,8 +146,8 @@ extends GNumberType
         if (this.min        ) this.min        .pushUpdateValues(parse);
         if (this.max        ) this.max        .pushUpdateValues(parse);
         if (this.scale      ) this.scale      .pushUpdateValues(parse);
-        if (this.interpolate) this.interpolate.pushUpdateValues(parse);
         if (this.offset     ) this.offset     .pushUpdateValues(parse);
+        if (this.interpolate) this.interpolate.pushUpdateValues(parse);
         if (this.detail     ) this.detail     .pushUpdateValues(parse);
     }
 
@@ -161,8 +161,8 @@ extends GNumberType
         if (this.min        ) this.min        .invalidateInputs(from);
         if (this.max        ) this.max        .invalidateInputs(from);
         if (this.scale      ) this.scale      .invalidateInputs(from);
-        if (this.interpolate) this.interpolate.invalidateInputs(from);
         if (this.offset     ) this.offset     .invalidateInputs(from);
+        if (this.interpolate) this.interpolate.invalidateInputs(from);
         if (this.detail     ) this.detail     .invalidateInputs(from);
     }
 }

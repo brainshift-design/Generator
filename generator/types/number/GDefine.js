@@ -1,5 +1,5 @@
 class GDefine
-extends GNumberType
+extends GOperator
 {
     values;
 

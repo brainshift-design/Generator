@@ -1,5 +1,5 @@
 class GTextType1
-extends GTextType
+extends GOperator
 {
     input = null;
 

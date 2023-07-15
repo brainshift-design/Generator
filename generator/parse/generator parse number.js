@@ -601,8 +601,8 @@ function genParseNoise(parse)
     noise.min         = genParse(parse);
     noise.max         = genParse(parse);
     noise.scale       = genParse(parse);
-    noise.interpolate = genParse(parse);
     noise.offset      = genParse(parse);
+    noise.interpolate = genParse(parse);
     noise.detail      = genParse(parse);
 
 
@@ -993,6 +993,7 @@ function genParseAnimate(parse)
 
 
     const anim = new GAnimate(nodeId, options);
+    console.log('anim =', anim);
 
 
     if (parse.settings.logRequests) 
@@ -1009,12 +1010,12 @@ function genParseAnimate(parse)
     parse.nTab++;
 
 
-    anim.from     = genParse(parse);
-    anim.to       = genParse(parse);
-    anim.curve    = genParse(parse);
-    anim.type     = genParse(parse);
+    anim.from   = genParse(parse);
+    anim.to     = genParse(parse);
+    anim.curve  = genParse(parse);
+    anim.repeat = genParse(parse);
     anim.length = genParse(parse);
-    anim.time     = genParse(parse);
+    anim.time   = genParse(parse);
 
 
     parse.nTab--;

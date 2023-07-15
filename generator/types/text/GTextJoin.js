@@ -1,5 +1,5 @@
 class GTextJoin
-extends GTextType
+extends GOperator
 {
     inputs = [];
 

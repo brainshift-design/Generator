@@ -1,5 +1,5 @@
 class GColorType2
-extends GColorType
+extends GOperator
 {
     input0 = null;
     input1 = null;

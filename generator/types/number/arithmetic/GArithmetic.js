@@ -1,5 +1,5 @@
 class GArithmetic
-extends GNumberType
+extends GOperator
 {
     inputs = [];
 

@@ -1,5 +1,5 @@
 class GTextFetch
-extends GTextType
+extends GOperator
 {
     request;
     cachedValue;

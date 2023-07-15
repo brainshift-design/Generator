@@ -1,5 +1,5 @@
 class GDateTime
-extends GNumberType
+extends GOperator
 {
     seconds   = null;
     minutes   = null;

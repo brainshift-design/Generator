@@ -1,5 +1,5 @@
 class GInterpolate
-extends GNumberType
+extends GOperator
 {
     input0 = null;
     input1 = null;

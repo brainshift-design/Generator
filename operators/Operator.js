@@ -619,7 +619,7 @@ class Operator
 
         //if (deleteConnectionsDialogVisible)
         if (minZoomDialogVisible)
-            hideDeleteConnectionsDialog();
+            hideMinZoomDialog();
     }
     
 

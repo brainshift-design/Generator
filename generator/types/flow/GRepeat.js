@@ -49,7 +49,8 @@ extends GOperator
             return this;
             
 
-        let count = (await this.count.eval(parse)).toValue();
+        let   count = (await this.count.eval(parse)).toValue();
+        const loop  = (await this.loop .eval(parse)).toValue();
 
 
         count = new NumberValue(Math.round(count.value));
@@ -111,6 +112,7 @@ extends GOperator
                     
                     this.input.invalidateInputs(this);
                     
+
                     const input = (await this.input.eval(parse)).toValue();
 
 
@@ -163,9 +165,9 @@ extends GOperator
 
         this.updateValues =
         [
-            ['value', this.value     ],
-            ['count', count          ],
-            ['loop',  NumberValue.NaN]
+            ['value', this.value        ],
+            ['count', count             ],
+            ['loop',  new NumberValue(0)]
         ];
 
 
@@ -189,6 +191,7 @@ extends GOperator
 
         if (this.input) this.input.pushValueUpdates(parse);
         if (this.count) this.count.pushValueUpdates(parse);
+        if (this.loop ) this.loop .pushValueUpdates(parse);
     }
 
 
@@ -199,6 +202,7 @@ extends GOperator
 
         if (this.input) this.input.invalidateInputs(from);
         if (this.count) this.count.invalidateInputs(from);
+        if (this.loop ) this.loop .invalidateInputs(from);
     }
 
 

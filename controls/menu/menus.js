@@ -21,8 +21,10 @@ var menuMainHelp;
 
 var menuShowTooltips;
 
-var menuDebugStorage;
-var menuDebugGenerator;
+var menuLogGenerator;
+var menuLogStorage;
+var menuLogMessages;
+
 var menuDebugDelete;
 
 var menuFlow;
@@ -254,8 +256,20 @@ function initGeneratorMenus()
     menuItemShowBoolValues.divName.innerHTML = 'Show boolean values as   <span style="position: relative; top: 1px;">' + TRUE_DISPLAY_MENU + '</span>  <span>' + FALSE_DISPLAY_MENU + '</span>'
 
 
-    menuDebugStorage = new Menu('Debug storage', false);
-    menuDebugStorage.addItems([
+    menuLogGenerator = new Menu('Log generator', false);
+    menuLogGenerator.addItems([
+        menuItemLogRequests       = new MenuItem('Requests',          {checkCallback: () => settings.logRequests     ,      callback: () => updateSettingAndMenu('logRequests',           true, !settings.logRequests          ), setting: true}),
+        menuItemLogValueUpdates   = new MenuItem('Values',            {checkCallback: () => settings.logValueUpdates ,      callback: () => updateSettingAndMenu('logValueUpdates',       true, !settings.logValueUpdates      ), setting: true}),
+        menuItemLogObjectUpdates  = new MenuItem('Objects',           {checkCallback: () => settings.logObjectUpdates,      callback: () => updateSettingAndMenu('logObjectUpdates',      true, !settings.logObjectUpdates     ), setting: true}),
+        menuItemLogStyleUpdates   = new MenuItem('Styles',            {checkCallback: () => settings.logStyleUpdates ,      callback: () => updateSettingAndMenu('logStyleUpdates',       true, !settings.logStyleUpdates      ), setting: true}),
+                                    new MenuItem('',                  {separator: true}),                   
+        menuItemLogRawRequests    = new MenuItem('Raw\u2008requests', {checkCallback: () => settings.logRawRequests  ,      callback: () => updateSettingAndMenu('logRawRequests',        true, !settings.logRawRequests       ), setting: true}),
+        menuItemLogRawValues      = new MenuItem('Raw\u2008values',   {checkCallback: () => settings.logRawValues    ,      callback: () => updateSettingAndMenu('logRawValues',          true, !settings.logRawValues         ), setting: true})]);
+                     
+
+
+    menuLogStorage = new Menu('Log storage', false);
+    menuLogStorage.addItems([
         menuItemLogLoading            = new MenuItem('Load\u2008at start',  {checkCallback: () => settings.logLoading      ,      callback: () => updateSettingAndMenu('logLoading',            true, !settings.logLoading           ), setting: true}),
                                         new MenuItem('',                    {separator: true}),                   
         menuItemLogRawLoadPages       = new MenuItem('Load pages',          {checkCallback: () => settings.logRawLoadPages ,      callback: () => updateSettingAndMenu('logRawLoadPages',       true, !settings.logRawLoadPages      ), setting: true}),
@@ -278,22 +292,13 @@ function initGeneratorMenus()
                                         new MenuItem('Redo stack',          {callback:      () => { hideAllMenus(); logRedoStack(); }})]);
                      
 
-    menuDebugGenerator = new Menu('Debug generator', false);
-    menuDebugGenerator.addItems([
-        menuItemLogRequests       = new MenuItem('Requests',          {checkCallback: () => settings.logRequests     ,      callback: () => updateSettingAndMenu('logRequests',           true, !settings.logRequests          ), setting: true}),
-        menuItemLogValueUpdates   = new MenuItem('Values',            {checkCallback: () => settings.logValueUpdates ,      callback: () => updateSettingAndMenu('logValueUpdates',       true, !settings.logValueUpdates      ), setting: true}),
-        menuItemLogObjectUpdates  = new MenuItem('Objects',           {checkCallback: () => settings.logObjectUpdates,      callback: () => updateSettingAndMenu('logObjectUpdates',      true, !settings.logObjectUpdates     ), setting: true}),
-        menuItemLogStyleUpdates   = new MenuItem('Styles',            {checkCallback: () => settings.logStyleUpdates ,      callback: () => updateSettingAndMenu('logStyleUpdates',       true, !settings.logStyleUpdates      ), setting: true}),
-                                    new MenuItem('',                  {separator: true}),                   
-        menuItemLogRawRequests    = new MenuItem('Raw\u2008requests', {checkCallback: () => settings.logRawRequests  ,      callback: () => updateSettingAndMenu('logRawRequests',        true, !settings.logRawRequests       ), setting: true}),
-        menuItemLogRawValues      = new MenuItem('Raw\u2008values',   {checkCallback: () => settings.logRawValues    ,      callback: () => updateSettingAndMenu('logRawValues',          true, !settings.logRawValues         ), setting: true}),
-                                    new MenuItem('',                  {separator: true}),                   
+    menuLogMessages = new Menu('Log messages', false);
+    menuLogMessages.addItems([
         menuItemLogThreadMessages = new MenuItem('Thread messages',   {checkCallback: () => settings.logThreadMessages,     callback: () => updateSettingAndMenu('logThreadMessages',     true, !settings.logThreadMessages    ), setting: true}),
         menuItemLogDataMessages   = new MenuItem('Data messages',     {checkCallback: () => settings.logDataMessages  ,     callback: () => updateSettingAndMenu('logDataMessages',       true, !settings.logDataMessages      ), setting: true}),
-        menuItemLogMessages       = new MenuItem('Other messages',    {checkCallback: () => settings.logMessages     ,      callback: () => updateSettingAndMenu('logMessages',           true, !settings.logMessages          ), setting: true}),
-                                    new MenuItem('',                   {separator: true}),                   
-        menuItemLogActions        = new MenuItem('Actions',           {checkCallback: () => settings.logActions      ,      callback: () => updateSettingAndMenu('logActions',            true, !settings.logActions           ), setting: true})]);
+        menuItemLogMessages       = new MenuItem('Other messages',    {checkCallback: () => settings.logMessages     ,      callback: () => updateSettingAndMenu('logMessages',           true, !settings.logMessages          ), setting: true})]);
                      
+
 
     menuDebugDelete = new Menu('Debug generator', false);
     menuDebugDelete.addItems([
@@ -335,17 +340,19 @@ function initGeneratorMenus()
                             }
                         }),
     menuItemEnableAsserts = new MenuItem('Enable asserts', 
-                        {
-                            checkCallback: () => settings.enableAsserts, 
-                            callback:      () => updateSettingAndMenu('enableAsserts', true, !settings.enableAsserts)
-                        }),
-                        new MenuItem('',                      {separator: true}),
-                        new MenuItem('Log generator',         {childMenu: menuDebugGenerator}),
-                        new MenuItem('Log storage',           {childMenu: menuDebugStorage}),
-                        new MenuItem('',                      {separator: true}),   
-                        new MenuItem('Delete',                {childMenu: menuDebugDelete}),
-                        new MenuItem('',                      {separator: true}),   
-    menuItemDataMode  = new MenuItem('Restart in debug mode', {checkCallback: () => settings.dataMode, callback: () => uiRestartGenerator(true)})]);
+                         {
+                             checkCallback: () => settings.enableAsserts, 
+                             callback:      () => updateSettingAndMenu('enableAsserts', true, !settings.enableAsserts)
+                         }),
+                         new MenuItem('',                      {separator: true}),
+    menuItemLogActions = new MenuItem('Log actions',           {checkCallback: () => settings.logActions, callback: () => updateSettingAndMenu('logActions', true, !settings.logActions), setting: true}),
+                         new MenuItem('Log messages',          {childMenu: menuLogMessages}),
+                         new MenuItem('Log storage',           {childMenu: menuLogStorage}),
+                         new MenuItem('Log generator',         {childMenu: menuLogGenerator}),
+                         new MenuItem('',                      {separator: true}),   
+                         new MenuItem('Delete',                {childMenu: menuDebugDelete}),
+                         new MenuItem('',                      {separator: true}),   
+    menuItemDataMode   = new MenuItem('Restart in debug mode', {checkCallback: () => settings.dataMode, callback: () => uiRestartGenerator(true)})]);
                      
 
     menuMainHelp = new Menu('Help and subscription', false);

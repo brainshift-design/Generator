@@ -1,21 +1,17 @@
-class GTextType
-extends GOperator
-{
-    value = null;
-    
+// class GTextType
+// extends GOperator
+// {
+//     // copyBase(src)
+//     // {
+//     //     super.copyBase(src);
 
-
-    copyBase(src)
-    {
-        super.copyBase(src);
-
-        if (src.value) this.value = src.value.copy();
-    }
+//     //     if (src.value) this.value = src.value.copy();
+//     // }
 
 
 
-    toValue()
-    {
-        return this.value.copy();
-    }
-}
+//     toValue()
+//     {
+//         return this.value.copy();
+//     }
+// }

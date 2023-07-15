@@ -1,5 +1,5 @@
 class GNumberType1
-extends GNumberType
+extends GOperator
 {
     input = null;
 

@@ -128,6 +128,7 @@ function uiUpdateValuesAndObjects(requestId, actionId, updateNodeId, updateParam
             graph.updatePages();
         }
 
+
         graphView.creatingNodes  = false;
         graphView.pastingNodes   = false;
         graphView.loadingNodes   = false;
@@ -138,5 +139,21 @@ function uiUpdateValuesAndObjects(requestId, actionId, updateNodeId, updateParam
         
 
         loadingOverlay.style.display = 'none'; // for loading
+
+
+        uiUpdateAnimateNodes();
     }
+}
+
+
+
+function uiUpdateAnimateNodes()
+{
+    const anims = graph.nodes.filter(n => 
+           n.type == NUMBER_ANIMATE 
+        && n.playing);
+
+    anims.forEach(n => n.updatePlayback(false));
+
+    pushUpdateFromParam(null, anims, null);
 }

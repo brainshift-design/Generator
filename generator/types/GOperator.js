@@ -37,6 +37,9 @@ extends GNode
 
         this.valid    = base.valid;
         this.topLevel = base.topLevel;
+
+        if (base.value) 
+            this.value = base.value.copy();
     }
 
 

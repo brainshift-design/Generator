@@ -101,18 +101,18 @@ extends GOperator
 
 
 
+    toValue()
+    {
+        return this.value.copy();
+    }
+
+
+
     pushValueUpdates(parse)
     {
         super.pushValueUpdates(parse);
 
         this.inputs.forEach(i => i.pushValueUpdates(parse));
-    }
-
-
-
-    toValue()
-    {
-        return this.value.copy();
     }
 
 

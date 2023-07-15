@@ -1,10 +1,10 @@
 class GAnimate
-extends GNumberType
+extends GOperator
 {
     from;
     to;
     curve;
-    type;
+    repeat;
     length;
     time;
 
@@ -26,7 +26,7 @@ extends GNumberType
         if (this.from  ) copy.from   = this.from  .copy();
         if (this.to    ) copy.to     = this.to    .copy();
         if (this.curve ) copy.curve  = this.curve .copy();
-        if (this.type  ) copy.type   = this.type  .copy();
+        if (this.repeat) copy.repeat = this.repeat.copy();
         if (this.length) copy.length = this.length.copy();
         if (this.time  ) copy.time   = this.time  .copy();
 
@@ -44,7 +44,7 @@ extends GNumberType
         const from   = (await this.from  .eval(parse)).toValue();
         const to     = (await this.to    .eval(parse)).toValue();
         const curve  = (await this.curve .eval(parse)).toValue();
-        const type   = (await this.type  .eval(parse)).toValue();
+        const repeat = (await this.repeat.eval(parse)).toValue();
         const length = (await this.length.eval(parse)).toValue();
         const time   = (await this.time  .eval(parse)).toValue();
     
@@ -110,11 +110,11 @@ extends GNumberType
 
         this.updateValues =
         [
-            ['value',  this.value],
+            //['value',  this.value],
             ['from',   from      ],
             ['to',     to        ],
             ['curve',  curve     ],
-            ['type',   type      ],
+            ['repeat', repeat    ],
             ['length', length    ],
             ['time',   time      ]
         ];
@@ -134,7 +134,7 @@ extends GNumberType
         if (this.from  ) this.from  .pushValueUpdates(parse);
         if (this.to    ) this.to    .pushValueUpdates(parse);
         if (this.curve ) this.curve .pushValueUpdates(parse);
-        if (this.type  ) this.type  .pushValueUpdates(parse);
+        if (this.repeat) this.repeat.pushValueUpdates(parse);
         if (this.length) this.length.pushValueUpdates(parse);
         if (this.time  ) this.time  .pushValueUpdates(parse);
     }
@@ -148,7 +148,7 @@ extends GNumberType
         if (this.from  ) this.from  .invalidateInputs(from);
         if (this.to    ) this.to    .invalidateInputs(from);
         if (this.curve ) this.curve .invalidateInputs(from);
-        if (this.type  ) this.type  .invalidateInputs(from);
+        if (this.repeat) this.repeat.invalidateInputs(from);
         if (this.length) this.length.invalidateInputs(from);
         if (this.time  ) this.time  .invalidateInputs(from);
     }
