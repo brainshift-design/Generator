@@ -1,7 +1,6 @@
 class   OpVectorRegion
 extends OpShapeBase
 {
-    paramLoops;
     paramWinding;
     paramProps;
 
@@ -15,18 +14,11 @@ extends OpShapeBase
         //this.iconOffsetY = -1;
 
 
-        this.addInput (new Input ([VECTOR_REGION_VALUE], getNodeInputValuesForUndo));//, this.input_getBackInitValue));
+        this.addNewInput();
         this.addOutput(new Output([VECTOR_REGION_VALUE], this.output_genRequest, getNodeOutputValuesForUndo));//, this.output_backInit));
 
-        this.addParam(this.paramLoops   = new   ListParam('loops',   'loops',   false,  true, true, 0));
         this.addParam(this.paramWinding = new SelectParam('winding', 'winding', false, true, true, ['even-odd', 'non-zero']));
         this.addParam(this.paramProps   = new   ListParam('props',   'styles',  false, true, true));
-
-
-        this.paramLoops.itemName  = 'loop';
-        this.paramLoops.showZero  = false;
-        this.paramLoops.listTypes = [TEXT_VALUE];
-        this.paramLoops.input.types.push(...this.paramLoops.listTypes);
 
 
         this.paramProps.controls[0].valueText = 'style';
@@ -38,6 +30,21 @@ extends OpShapeBase
 
 
         this.setAllParamDividers(0.45);
+    }
+
+
+
+    addNewInput()
+    {
+        const newInput = new Input([VECTOR_EDGE_VALUE, LIST_VALUE]);
+        newInput.isNew = true;
+
+        newInput.addEventListener('connect',    e => { onVariableConnectInput(e.detail.input); e.detail.input.isNew = false; });
+        newInput.addEventListener('disconnect', e => onVariableDisconnectInput(e.detail.input));
+
+        this.addInput(newInput);
+
+        return newInput;
     }
 
 
@@ -66,11 +73,44 @@ extends OpShapeBase
 
 
 
+    output_genRequest(gen)
+    {
+        // 'this' is the output
+
+        gen.scope.push({
+            nodeId:  this.node.id,
+            paramId: NULL });
+
+
+        const [request, ignore] = this.node.genRequestStart(gen);
+        if (ignore) return request;
+            
+
+        const connectedInputs = this.node.inputs.filter(i => i.connected);
+
+
+        request.push(connectedInputs.length); // utility values like param count are stored as numbers
+        
+        connectedInputs.forEach(input => 
+            request.push(...pushInputOrParam(input, gen)));
+
+        
+        request.push(...this.node.paramWinding.genRequest(gen));
+        request.push(...this.node.paramProps  .genRequest(gen));
+
+        
+        gen.scope.pop();
+        pushUnique(gen.passedNodes, this.node);
+        
+        return request;
+    }
+
+
+
     updateValues(requestId, actionId, updateParamId, paramIds, values)
     {
         const value = values[paramIds.findIndex(id => id == 'value')];
 
-        this.paramLoops  .setValue(value.loops,   false, true, false);
         this.paramWinding.setValue(value.winding, false, true, false);
         this.paramProps  .setValue(value.props,   false, true, false);
     }

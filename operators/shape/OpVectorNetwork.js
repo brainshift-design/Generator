@@ -1,64 +1,60 @@
 class   OpVectorNetwork
 extends OpShapeBase
 {
-    paramPoints;
-    paramEdges;
-    paramRegions;
-
-
-    
     constructor()
     {
-        super(VECTOR_NETWORK, 'vector', 'vector', iconVectorNetwork);
+        super(VECTOR_NETWORK, 'network', 'network', iconVectorNetwork);
 
         //this.canDisable  = true;
         //this.iconOffsetY = -1;
 
 
-        this.addInput(this.createInputForObjects([VECTOR_NETWORK_VALUE], getNodeInputValuesForUndo));
+        this.addNewInput();
         this.addOutput(new Output([VECTOR_NETWORK_VALUE], this.output_genRequest));
+    }
 
 
-        this.addParam(this.paramPoints  = new ListParam('points',  'points',  false, true, true));
-        this.addParam(this.paramEdges   = new ListParam('edges',   'edges',   false, true, true));
-        this.addParam(this.paramRegions = new ListParam('regions', 'regions', false, true, true));
+
+    addNewInput()
+    {
+        const newInput = new Input([VECTOR_REGION_VALUE]);
+        newInput.isNew = true;
+
+        newInput.addEventListener('connect',    e => { onVariableConnectInput(e.detail.input); e.detail.input.isNew = false; });
+        newInput.addEventListener('disconnect', e => onVariableDisconnectInput(e.detail.input));
+
+        this.addInput(newInput);
+
+        return newInput;
+    }
+
+
+
+    output_genRequest(gen)
+    {
+        // 'this' is the output
+
+        gen.scope.push({
+            nodeId:  this.node.id,
+            paramId: NULL });
+
+
+        const [request, ignore] = this.node.genRequestStart(gen);
+        if (ignore) return request;
+            
+
+        const connectedInputs = this.node.inputs.filter(i => i.connected);
+
+
+        request.push(connectedInputs.length); // utility values like param count are stored as numbers
+        
+        connectedInputs.forEach(input => 
+            request.push(...pushInputOrParam(input, gen)));
 
         
-        // this.paramPoints.input.types.push(SHAPE_LIST_VALUE);
-        // this.paramPoints.listTypes = [POINT_VALUE];
-
-        this.paramPoints .itemName = 'point';
-        this.paramPoints .showZero =  false;
-
-        this.paramEdges  .itemName = 'edge';
-        this.paramEdges  .showZero =  false;
-
-        this.paramRegions.itemName = 'region';
-        this.paramRegions.showZero =  false;
-
-
-        this.addBaseParams();
-    }
-
-
-
-    updateValues(requestId, actionId, updateParamId, paramIds, values)
-    {
-        const value = values[paramIds.findIndex(id => id == 'value')];
-
-        this.paramPoints .setValue(value.points,  false, true, false);
-        this.paramEdges  .setValue(value.edges,   false, true, false);
-        this.paramRegions.setValue(value.regions, false, true, false);
-    }
-
-
-
-    updateParams()
-    {
-        this.paramPoints .enableControlText(true);
-        this.paramEdges  .enableControlText(true);
-        this.paramRegions.enableControlText(true);
-
-        this.updateParamControls();
+        gen.scope.pop();
+        pushUnique(gen.passedNodes, this.node);
+        
+        return request;
     }
 }

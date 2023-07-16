@@ -4398,7 +4398,7 @@ a
             <div id='whatsNewBody'>
                 <h1 style='margin-top: 20px;'>What's new</h1>
 
-                <p>•  </p>
+                <p>•  fixed list node not updating</p>
                 
                 <p><br/><br/><div id='chkHideWhatsNew'></div></p>
             </div>
@@ -16938,25 +16938,25 @@ extends GValue
     nodeId;
 
     start;
-    startTangent;
     end;
+    startTangent;
     endTangent;
 
 
 
     constructor(nodeId,
-                start        = new NumberValue(0), 
-                startTangent = new PointValue (nodeId, 0, 0),
-                end          = new NumberValue(0),
-                endTangent   = new PointValue (nodeId, 0, 0))
+                start, 
+                end,
+                startTangent = PointValue.create(nodeId, 0, 0),
+                endTangent   = PointValue.create(nodeId, 0, 0))
     {
         super(VECTOR_EDGE_VALUE);
 
         this.nodeId = nodeId;
 
         this.start        = start;       
-        this.startTangent = startTangent;
         this.end          = end;         
+        this.startTangent = startTangent;
         this.endTangent   = endTangent;  
     }
 
@@ -16967,8 +16967,8 @@ extends GValue
         const copy = new VectorEdgeValue(
             this.nodeId,
             this.start       .copy(), 
-            this.startTangent.copy(), 
             this.end         .copy(), 
+            this.startTangent.copy(), 
             this.endTangent  .copy());
 
         return copy;
@@ -16980,21 +16980,21 @@ extends GValue
     {
         return edge
             && this.start       .equals(edge.start       )
-            && this.startTangent.equals(edge.startTangent)
             && this.end         .equals(edge.end         )
-            && this.endTangent  .equals(edge.endTangent  );
+            && this.startTangent.equals(edge.startTangent)
+            && this.  endTangent.equals(edge.  endTangent);
     }
 
 
 
-    static create(nodeId, start, startTangent, end, endTangent)
+    static create(nodeId, start, end, startTangent, endTangent)
     {
         return new VectorEdgeValue(
             nodeId,
-            new NumberValue(start),
-            new PointValue (nodeId, startTangent.x, startTangent.y),
-            new NumberValue(end),
-            new PointValue (nodeId, endTangent.x, endTangent.y));
+            start,
+            end,
+            PointValue.create(nodeId, startTangent.x, startTangent.y),
+            PointValue.create(nodeId,   endTangent.x,   endTangent.y));
     }
 
 
@@ -17009,8 +17009,8 @@ extends GValue
     hasInitValue()
     {
         return this.start       .hasInitValue()
-            && this.startTangent.hasInitValue()
             && this.end         .hasInitValue()
+            && this.startTangent.hasInitValue()
             && this.endTangent  .hasInitValue();
     }
 
@@ -17019,8 +17019,8 @@ extends GValue
     isValid()
     {
         return this.start       .isValid()
-            && this.startTangent.isValid()
             && this.end         .isValid()
+            && this.startTangent.isValid()
             && this.endTangent  .isValid();
     }
 
@@ -17029,8 +17029,8 @@ extends GValue
     toString()
     {
         return      this.start       .toString()
-            + ' ' + this.startTangent.toString()
             + ' ' + this.end         .toString()
+            + ' ' + this.startTangent.toString()
             + ' ' + this.endTangent  .toString();
     }
 
@@ -17039,8 +17039,8 @@ extends GValue
     toDisplayString()
     {
         return      this.start       .toDisplayString()
-            + ' ' + this.startTangent.toDisplayString()
             + ' ' + this.end         .toDisplayString()
+            + ' ' + this.startTangent.toDisplayString()
             + ' ' + this.endTangent  .toDisplayString();
     }
 
@@ -17069,10 +17069,10 @@ extends GValue
 
     static NaN = Object.freeze(new VectorEdgeValue(
         '',
-        NumberValue.NaN, 
-        PointValue .NaN, 
-        NumberValue.NaN, 
-        PointValue .NaN));
+        VectorVertexValue.NaN, 
+        VectorVertexValue.NaN, 
+        PointValue.create('', 0, 0), 
+        PointValue.create('', 0, 0)));
 }
 
 
@@ -17093,18 +17093,18 @@ function parseVectorEdgeValue(str, i = -1)
 
     const iStart = i;
 
-    const start        = parseNumberValue(str[i]); i += start       [1];
-    const startTangent = parsePointValue (str, i); i += startTangent[1];
-    const end          = parseNumberValue(str[i]); i += end         [1];
-    const endTangent   = parsePointValue (str, i); i += endTangent  [1];
+    const start        = parseVectorVertexValue(str, i); i += start       [1];
+    const end          = parseVectorVertexValue(str, i); i += end         [1];
+    const startTangent = parsePointValue       (str, i); i += startTangent[1];
+    const endTangent   = parsePointValue       (str, i); i +=   endTangent[1];
 
 
     const edge = new VectorEdgeValue(
         '', // set node ID elsewhere
         start       [0],
-        startTangent[0],
         end         [0],
-        endTangent  [0]);
+        startTangent[0],
+          endTangent[0]);
 
 
     return [edge, i - iStart];
@@ -17283,22 +17283,16 @@ extends GValue
 {
     nodeId;
 
-    points; 
-    edges;  
     regions;
 
 
     constructor(nodeId,
-                points  = new ListValue(), 
-                edges   = new ListValue(),
                 regions = new ListValue())
     {
         super(VECTOR_NETWORK_VALUE);
 
-        this.nodeId = nodeId;
+        this.nodeId  = nodeId;
 
-        this.points  = points;  
-        this.edges   = edges;
         this.regions = regions; 
     }
 
@@ -17308,8 +17302,6 @@ extends GValue
     {
         const copy = new VectorNetworkValue(
             this.nodeId,
-            this.points .copy(), 
-            this.edges  .copy(), 
             this.regions.copy());
 
         return copy;
@@ -17320,20 +17312,16 @@ extends GValue
     equals(region)
     {
         return region
-            && this.points .equals(region.points )
-            && this.edges  .equals(region.edges  )
             && this.regions.equals(region.regions);
     }
 
 
 
-    static create(nodeId, points, edges, regions)
+    static create(nodeId, regions)
     {
         return new VectorNetworkValue(
             nodeId,
-            new ListValue(points ),
-            new ListValue(edges  ),
-            new ListValue(regions));
+            regions);
     }
 
 
@@ -17347,36 +17335,28 @@ extends GValue
 
     hasInitValue()
     {
-        return this.points .hasInitValue()
-            && this.edges  .hasInitValue()
-            && this.regions.hasInitValue();
+        return this.regions.hasInitValue();
     }
 
 
 
     isValid()
     {
-        return this.points .isValid()
-            && this.edges  .isValid()
-            && this.regions.isValid();
+        return this.regions.isValid();
     }
 
 
 
     toString()
     {
-        return      this.points .toString()
-            + ' ' + this.edges  .toString()
-            + ' ' + this.regions.toString();
+        return this.regions.toString();
     }
 
 
 
     toDisplayString()
     {
-        return      this.points .toDisplayString()
-            + ' ' + this.edges  .toDisplayString()
-            + ' ' + this.regions.toDisplayString();
+        return this.regions.toDisplayString();
     }
 
 
@@ -17404,9 +17384,7 @@ extends GValue
 
     static NaN = Object.freeze(new VectorNetworkValue(
         '',
-        new ListValue(), 
-        new ListValue(), 
-        new ListValue()));
+        ListValue.NaN));
 }
 
 
@@ -17427,15 +17405,11 @@ function parseVectorNetworkValue(str, i = -1)
 
     const iStart = i;
 
-    const points  = parseListValue(str, i); i += points [1];
-    const edges   = parseListValue(str, i); i += edges  [1];
     const regions = parseListValue(str, i); i += regions[1];
 
 
     const net = new VectorNetworkValue(
         '', // set node ID elsewhere
-        points [0],
-        edges  [0],
         regions[0]);
 
 
@@ -21526,8 +21500,9 @@ extends GArithmetic
 
         copy.copyBase(this);
 
-        copy.inputs    = this.inputs.map(i => i.copy());
-        copy.operation = this.operation.copy();
+        copy.inputs = this.inputs.map(i => i.copy());
+
+        if (this.operation) copy.operation = this.operation.copy();
 
         return copy;
     }
@@ -21557,8 +21532,8 @@ extends GArithmetic
         
         this.updateValues =
         [
-            ['operation', op        ],
-            ['value',     this.value]
+            ['value',     this.value],
+            ['operation', op        ]
         ];
 
 
@@ -30402,9 +30377,10 @@ extends GOperator1
 class GVectorEdge
 extends GOperator1
 {
-    start        = null;
+    input0       = null;
+    input1       = null;
+
     startTangent = null;
-    end          = null;
     endTangent   = null;
 
 
@@ -30422,9 +30398,9 @@ extends GOperator1
 
         copy.copyBase(this);
 
-        if (this.start       ) copy.start        = this.start       .copy();
+        if (this.input0      ) copy.input0       = this.input0      .copy();
+        if (this.input1      ) copy.input1       = this.input1      .copy();
         if (this.startTangent) copy.startTangent = this.startTangent.copy();
-        if (this.end         ) copy.end          = this.end         .copy();
         if (this.endTangent  ) copy.endTangent   = this.endTangent  .copy();
 
         return copy;
@@ -30438,36 +30414,29 @@ extends GOperator1
             return this;
 
         
-        const start        = this.start        ? (await this.start       .eval(parse)).toValue() : null;
+        const input0       = this.input0       ? (await this.input0      .eval(parse)).toValue() : null;
+        const input1       = this.input1       ? (await this.input1      .eval(parse)).toValue() : null;
         const startTangent = this.startTangent ? (await this.startTangent.eval(parse)).toValue() : null;
-        const end          = this.end          ? (await this.end         .eval(parse)).toValue() : null;
-        const endTangent   = this.endTangent   ? (await this.endTangent  .eval(parse)).toValue() : null;
+        const   endTangent = this.  endTangent ? (await this.  endTangent.eval(parse)).toValue() : null;
 
 
-        let input = null;
 
-        if (this.input)
+        if (   input0
+            && input1
+            && startTangent
+            &&   endTangent)
         {
-            input = (await this.input.eval(parse)).toValue();
-
             this.value = new VectorEdgeValue(
                 this.nodeId,
-                start        ?? input.start,       
-                startTangent ?? input.startTangent,
-                end          ?? input.end,         
-                endTangent   ?? input.endTangent);
+                input0,
+                input1,
+                startTangent,
+                  endTangent);
         }
         else
-        {
-            this.value = new VectorEdgeValue(
-                this.nodeId, 
-                start,       
-                startTangent, 
-                end,         
-                endTangent);
-        }
+            this.value = VectorEdgeValue.NaN;
 
-       
+
         await this.evalObjects(parse);
 
 
@@ -30483,28 +30452,43 @@ extends GOperator1
 
     async evalObjects(parse, options = {})
     {
-        if (!this.options.enabled)
+        if (   !this.options.enabled
+            || !this.value.isValid())
             return;
             
             
         this.value.objects = [];
 
 
-        if (   this.value.start       
+        if (   this.value.start
+            && this.value.end
             && this.value.startTangent
-            && this.value.end         
-            && this.value.endTangent)
+            && this.value.  endTangent)
         {
-            // const start        = this.value.start       .value;
-            // const startTangent = this.value.startTangent.value;
-            // const end          = this.value.end         .value;
-            // const endTangent   = this.value.endTangent  .value;
+            const path = new FigmaVectorPath(
+                this.nodeId,
+                this.nodeId,
+                this.nodeName,
+                [ this.value.start,
+                  this.value.end ],
+                0,
+                0, // linear
+                0,
+                0);
 
-            // const point = new FigmaPoint(this.nodeId, this.nodeId, this.nodeName, x, y);
+            
+            const bounds = getObjBounds([path]);
 
-            // point.createDefaultTransform(x, y);
+            let x = bounds.x;
+            let y = bounds.y;
+            let w = bounds.w;
+            let h = bounds.h;
 
-            // this.value.objects = [point];
+
+            path.createDefaultTransform(x, y);
+
+
+            this.value.objects.push(path, ...path.createTransformPoints(parse, x, y, w, h));
         }
 
 
@@ -30517,9 +30501,9 @@ extends GOperator1
     {
         const point = new VectorEdgeValue(
             this.nodeId,
-            this.start       .toValue(),
+            this.input0 ? this.input0.toValue() : VectorVertexValue.NaN,
+            this.input1 ? this.input1.toValue() : VectorVertexValue.NaN,
             this.startTangent.toValue(),
-            this.end         .toValue(),
             this.endTangent  .toValue());
 
         point.objects = this.value.objects.map(o => o.copy());
@@ -30532,9 +30516,9 @@ extends GOperator1
     isValid()
     {
         return super.isValid()
-            && this.start       .isValid()
+            && this.input0      .isValid()
+            && this.input1      .isValid()
             && this.startTangent.isValid()
-            && this.end         .isValid()
             && this.endTangent  .isValid();
     }
 
@@ -30544,9 +30528,9 @@ extends GOperator1
     {
         super.pushValueUpdates(parse);
 
-        if (this.start       ) this.start       .pushValueUpdates(parse);
+        if (this.input0      ) this.input0      .pushValueUpdates(parse);
+        if (this.input1      ) this.input1      .pushValueUpdates(parse);
         if (this.startTangent) this.startTangent.pushValueUpdates(parse);
-        if (this.end         ) this.end         .pushValueUpdates(parse);
         if (this.endTangent  ) this.endTangent  .pushValueUpdates(parse);
     }
 
@@ -30556,18 +30540,19 @@ extends GOperator1
     {
         super.invalidateInputs(from);
 
-        if (this.start       ) this.start       .invalidateInputs(from);
+        if (this.input0      ) this.input0      .invalidateInputs(from);
+        if (this.input1      ) this.input1      .invalidateInputs(from);
         if (this.startTangent) this.startTangent.invalidateInputs(from);
-        if (this.end         ) this.end         .invalidateInputs(from);
         if (this.endTangent  ) this.endTangent  .invalidateInputs(from);
     }
 }
 
 
 class GVectorRegion
-extends GOperator1
+extends GOperator
 {
-    loops   = null;
+    inputs  = [];
+
     winding = null;
     props   = null;
 
@@ -30586,11 +30571,25 @@ extends GOperator1
 
         copy.copyBase(this);
 
-        if (this.loops  ) copy.loops   = this.loops  .copy();
+        copy.inputs = this.inputs.map(i => i.copy());
+
         if (this.winding) copy.winding = this.winding.copy();
         if (this.props  ) copy.props   = this.props  .copy();
 
         return copy;
+    }
+
+
+
+    isCached()
+    {
+        for (const input of this.inputs)
+            if (!input.isCached())
+                return false;
+
+        return super.isCached()
+            && this.winding.isCached()
+            && this.props  .isCached();
     }
 
 
@@ -30601,33 +30600,57 @@ extends GOperator1
             return this;
 
         
-        const loops   = this.loops   ? (await this.loops  .eval(parse)).toValue() : null;
         const winding = this.winding ? (await this.winding.eval(parse)).toValue() : null;
         const props   = this.props   ? (await this.props  .eval(parse)).toValue() : null;
 
 
-        let input = null;
-
-        if (this.input)
+        if (!isEmpty(this.inputs))
         {
-            input = (await this.input.eval(parse)).toValue();
+            const loops = new ListValue();
+
+            const loop = new ListValue();
+
+            for (let i = 0; i < this.inputs.length; i++)
+            {
+                const input = (await this.inputs[i].eval(parse)).toValue();
+
+                if (LIST_VALUES.includes(input.type))
+                {
+                    const _loop = new ListValue();
+
+                    for (const item of input.items)
+                    {
+                        if (item.type == VECTOR_EDGE_VALUE)
+                            _loop.items.push(item);
+                    }
+
+                    if (!isEmpty(_loop.items))
+                        loops.items.push(_loop);
+                }
+                else
+                {
+                    consoleAssert(
+                        input.type == VECTOR_EDGE_VALUE, 
+                        'input.type must be VECTOR_EDGE_VALUE');
+
+                    loop.items.push(input);
+                }
+            }
+
+
+            if (!isEmpty(loop.items))
+                loops.items.push(loop);
+
 
             this.value = new VectorRegionValue(
-                this.nodeId,
-                loops   ?? input.loops,  
-                winding ?? input.winding,
-                props   ?? input.props);  
-        }
-        else
-        {
-            this.value = new VectorRegionValue(
-                this.nodeId, 
-                loops,       
-                winding, 
+                loops, 
+                winding,
                 props);
         }
+        else
+            this.value = VectorRegionValue.NaN;
 
-       
+
         await this.evalObjects(parse);
 
 
@@ -30643,7 +30666,8 @@ extends GOperator1
 
     async evalObjects(parse, options = {})
     {
-        if (!this.options.enabled)
+        if (   !this.options.enabled
+            || !this.value.isValid())
             return;
             
             
@@ -30675,7 +30699,6 @@ extends GOperator1
     {
         const point = new VectorRegionValue(
             this.nodeId,
-            this.loops  .toValue(),
             this.winding.toValue(),
             this.props  .toValue());
 
@@ -30688,9 +30711,14 @@ extends GOperator1
 
     isValid()
     {
-        return super.isValid()
-            && this.loops  .isValid()
-            && this.winding.isValid()
+        if (!super.isValid())
+            return false;
+            
+        for (const input of this.inputs)
+            if (!input.isCached())
+                return false;
+        
+        return this.winding.isValid()
             && this.props  .isValid();
     }
 
@@ -30700,7 +30728,8 @@ extends GOperator1
     {
         super.pushValueUpdates(parse);
 
-        if (this.loops  ) this.loops  .pushValueUpdates(parse);
+        this.inputs.forEach(i => i.pushValueUpdates(parse));
+
         if (this.winding) this.winding.pushValueUpdates(parse);
         if (this.props  ) this.props  .pushValueUpdates(parse);
     }
@@ -30711,7 +30740,8 @@ extends GOperator1
     {
         super.invalidateInputs(from);
 
-        if (this.loops  ) this.loops  .invalidateInputs(from);
+        this.inputs.forEach(i => i.invalidateInputs(from));
+
         if (this.winding) this.winding.invalidateInputs(from);
         if (this.props  ) this.props  .invalidateInputs(from);
     }
@@ -30719,11 +30749,9 @@ extends GOperator1
 
 
 class GVectorNetwork
-extends GOperator1
+extends GOperator
 {
-    points  = null;
-    edges   = null;
-    regions = null;
+    inputs  = [];
 
 
 
@@ -30740,11 +30768,20 @@ extends GOperator1
 
         copy.copyBase(this);
 
-        if (this.points ) copy.points  = this.points .copy();
-        if (this.edges  ) copy.edges   = this.edges  .copy();
-        if (this.regions) copy.regions = this.regions.copy();
+        copy.inputs = this.inputs.map(i => i.copy());
 
         return copy;
+    }
+
+
+
+    isCached()
+    {
+        for (const input of this.inputs)
+            if (!input.isCached())
+                return false;
+
+        return super.isCached();
     }
 
 
@@ -30755,36 +30792,32 @@ extends GOperator1
             return this;
 
         
-        const points  = this.points  ? (await this.points .eval(parse)).toValue() : null;
-        const edges   = this.edges   ? (await this.edges  .eval(parse)).toValue() : null;
-        const regions = this.regions ? (await this.regions.eval(parse)).toValue() : null;
-
-
-        let input = null;
-
-        if (this.input)
+        if (!isEmpty(this.inputs))
         {
-            input = (await this.input.eval(parse)).toValue();
+            const regions = new ListValue();
 
-            this.value = new VectorNetworkValue(
-                this.nodeId,
-                points  ?? input.points,  
-                edges   ?? input.edges,
-                regions ?? input.regions);
+            for (let i = 0; i < this.inputs.length; i++)
+            {
+                const input = (await this.inputs[i].eval(parse)).toValue();
+
+                consoleAssert(
+                    input.type == VECTOR_REGION_VALUE, 
+                    'input.type must be VECTOR_REGION_VALUE');
+
+                regions.items.push(input);
+            }
+
+
+            this.value = new VectorNetworkValue(regions);
         }
         else
-        {
-            this.value = new VectorNetworkValue(
-                this.nodeId, 
-                points,       
-                edges, 
-                regions);
-        }
+            this.value = VectorNetworkValue.NaN;
 
        
         await this.evalObjects(parse);
 
 
+        console.log('GVectorNetwork.value =', this.value);
         this.updateValues = [['value', this.value]];
 
 
@@ -30797,16 +30830,15 @@ extends GOperator1
 
     async evalObjects(parse, options = {})
     {
-        if (!this.options.enabled)
+        if (   !this.options.enabled
+            || !this.value.isValid())
             return;
             
             
         this.value.objects = [];
 
 
-        if (   this.value.points   
-            && this.value.edges  
-            && this.value.regions)
+        if (this.value.regions)
         {
             // const points  = this.value.points .value;
             // const edges   = this.value.edges  .value;
@@ -30829,8 +30861,6 @@ extends GOperator1
     {
         const point = new VectorNetworkValue(
             this.nodeId,
-            this.points .toValue(),
-            this.edges  .toValue(),
             this.regions.toValue());
 
         point.objects = this.value.objects.map(o => o.copy());
@@ -30843,8 +30873,6 @@ extends GOperator1
     isValid()
     {
         return super.isValid()
-            && this.points .isValid()
-            && this.edges  .isValid()
             && this.regions.isValid();
     }
 
@@ -30854,8 +30882,6 @@ extends GOperator1
     {
         super.pushValueUpdates(parse);
 
-        if (this.points ) this.points .pushValueUpdates(parse);
-        if (this.edges  ) this.edges  .pushValueUpdates(parse);
         if (this.regions) this.regions.pushValueUpdates(parse);
     }
 
@@ -30865,8 +30891,6 @@ extends GOperator1
     {
         super.invalidateInputs(from);
 
-        if (this.points ) this.points .invalidateInputs(from);
-        if (this.edges  ) this.edges  .invalidateInputs(from);
         if (this.regions) this.regions.invalidateInputs(from);
     }
 }
@@ -33027,7 +33051,10 @@ onmessage = function(e)
 function genPostMessageToUi(msg)
 {
     if (msg == undefined)
+    {
+        consoleError('undefined message');
         console.trace();
+    }
 
     postMessage(JSON.stringify(msg));
 }
@@ -37098,12 +37125,12 @@ function genParseVectorEdge(parse)
     if (!ignore)
     {
         nInputs = parseInt(parse.move());
-        consoleAssert(nInputs => 0 && nInputs <= 1, 'nInputs must be [0, 1]');
+        consoleAssert(nInputs => 0 && nInputs <= 2, 'nInputs must be [0, 2]');
     }
 
-
+    
     if (parse.settings.logRequests) 
-        logReq(edge, parse, ignore);
+        logReq(edge, parse, ignore, nInputs);
 
 
     if (ignore) 
@@ -37116,26 +37143,19 @@ function genParseVectorEdge(parse)
     parse.nTab++;
 
 
-    if (nInputs == 1)
-        edge.input = genParse(parse);
-
-
-    const nParamIds = genParseParamCount(parse);
-
-    for (let i = 0; i < nParamIds; i++)
+    if (nInputs == 2)
     {
-        const paramId = genParseParamId(parse);
-
-        parse.inParam = true;
-
-        switch (paramId)
-        {
-        case 'start':        edge.start        = genParse(parse); break;
-        case 'startTangent': edge.startTangent = genParse(parse); break;
-        case 'end':          edge.end          = genParse(parse); break;
-        case 'endTangent':   edge.endTangent   = genParse(parse); break;
-        }
+        edge.input0 = genParse(parse);
+        edge.input1 = genParse(parse);
     }
+    else if (nInputs == 1)
+    {
+        edge.input0 = genParse(parse); // doesn't matter if it's input0 or input1, the eval() result will be the same
+    }
+
+
+    edge.startTangent = genParse(parse);
+    edge.  endTangent = genParse(parse);
 
 
     parse.inParam = false;
@@ -37170,17 +37190,14 @@ function genParseVectorRegion(parse)
     const region = new GVectorRegion(nodeId, options);
 
 
-    let nInputs = -1;
-
+    let nInputs = 0;
+    
     if (!ignore)
-    {
         nInputs = parseInt(parse.move());
-        consoleAssert(nInputs => 0 && nInputs <= 1, 'nInputs must be [0, 1]');
-    }
 
 
     if (parse.settings.logRequests) 
-        logReq(region, parse, ignore);
+        logReq(region, parse, ignore, nInputs);
 
 
     if (ignore) 
@@ -37197,21 +37214,8 @@ function genParseVectorRegion(parse)
         region.input = genParse(parse);
 
 
-    const nParamIds = genParseParamCount(parse);
-
-    for (let i = 0; i < nParamIds; i++)
-    {
-        const paramId = genParseParamId(parse);
-
-        parse.inParam = true;
-
-        switch (paramId)
-        {
-        case 'loops':   region.loops   = genParse(parse); break;
-        case 'winding': region.winding = genParse(parse); break;
-        case 'props':   region.props   = genParse(parse); break;
-        }
-    }
+    region.winding = genParse(parse);
+    region.props   = genParse(parse);
 
 
     parse.inParam = false;
@@ -37243,25 +37247,22 @@ function genParseVectorNetwork(parse)
     const [, nodeId, options, ignore] = genParseNodeStart(parse);
 
 
-    const region = new GVectorNetwork(nodeId, options);
+    const net = new GVectorNetwork(nodeId, options);
 
 
-    let nInputs = -1;
-
+    let nInputs = 0;
+    
     if (!ignore)
-    {
         nInputs = parseInt(parse.move());
-        consoleAssert(nInputs => 0 && nInputs <= 1, 'nInputs must be [0, 1]');
-    }
 
 
     if (parse.settings.logRequests) 
-        logReq(region, parse, ignore);
+        logReq(net, parse, ignore, nInputs);
 
 
     if (ignore) 
     {
-        genParseNodeEnd(parse, region);
+        genParseNodeEnd(parse, net);
         return parse.parsedNodes.find(n => n.nodeId == nodeId);
     }
 
@@ -37270,32 +37271,15 @@ function genParseVectorNetwork(parse)
 
 
     if (nInputs == 1)
-        region.input = genParse(parse);
+    net.input = genParse(parse);
 
 
-    const nParamIds = genParseParamCount(parse);
-
-    for (let i = 0; i < nParamIds; i++)
-    {
-        const paramId = genParseParamId(parse);
-
-        parse.inParam = true;
-
-        switch (paramId)
-        {
-        case 'points':  region.points  = genParse(parse); break;
-        case 'edges':   region.edges   = genParse(parse); break;
-        case 'regions': region.regions = genParse(parse); break;
-        }
-    }
-
-
-    parse.inParam = false;
     parse.nTab--;
 
 
-    genParseNodeEnd(parse, region);
-    return region;
+
+    genParseNodeEnd(parse, net);
+    return net;
 }
 
 
@@ -56535,25 +56519,25 @@ extends GValue
     nodeId;
 
     start;
-    startTangent;
     end;
+    startTangent;
     endTangent;
 
 
 
     constructor(nodeId,
-                start        = new NumberValue(0), 
-                startTangent = new PointValue (nodeId, 0, 0),
-                end          = new NumberValue(0),
-                endTangent   = new PointValue (nodeId, 0, 0))
+                start, 
+                end,
+                startTangent = PointValue.create(nodeId, 0, 0),
+                endTangent   = PointValue.create(nodeId, 0, 0))
     {
         super(VECTOR_EDGE_VALUE);
 
         this.nodeId = nodeId;
 
         this.start        = start;       
-        this.startTangent = startTangent;
         this.end          = end;         
+        this.startTangent = startTangent;
         this.endTangent   = endTangent;  
     }
 
@@ -56564,8 +56548,8 @@ extends GValue
         const copy = new VectorEdgeValue(
             this.nodeId,
             this.start       .copy(), 
-            this.startTangent.copy(), 
             this.end         .copy(), 
+            this.startTangent.copy(), 
             this.endTangent  .copy());
 
         return copy;
@@ -56577,21 +56561,21 @@ extends GValue
     {
         return edge
             && this.start       .equals(edge.start       )
-            && this.startTangent.equals(edge.startTangent)
             && this.end         .equals(edge.end         )
-            && this.endTangent  .equals(edge.endTangent  );
+            && this.startTangent.equals(edge.startTangent)
+            && this.  endTangent.equals(edge.  endTangent);
     }
 
 
 
-    static create(nodeId, start, startTangent, end, endTangent)
+    static create(nodeId, start, end, startTangent, endTangent)
     {
         return new VectorEdgeValue(
             nodeId,
-            new NumberValue(start),
-            new PointValue (nodeId, startTangent.x, startTangent.y),
-            new NumberValue(end),
-            new PointValue (nodeId, endTangent.x, endTangent.y));
+            start,
+            end,
+            PointValue.create(nodeId, startTangent.x, startTangent.y),
+            PointValue.create(nodeId,   endTangent.x,   endTangent.y));
     }
 
 
@@ -56606,8 +56590,8 @@ extends GValue
     hasInitValue()
     {
         return this.start       .hasInitValue()
-            && this.startTangent.hasInitValue()
             && this.end         .hasInitValue()
+            && this.startTangent.hasInitValue()
             && this.endTangent  .hasInitValue();
     }
 
@@ -56616,8 +56600,8 @@ extends GValue
     isValid()
     {
         return this.start       .isValid()
-            && this.startTangent.isValid()
             && this.end         .isValid()
+            && this.startTangent.isValid()
             && this.endTangent  .isValid();
     }
 
@@ -56626,8 +56610,8 @@ extends GValue
     toString()
     {
         return      this.start       .toString()
-            + ' ' + this.startTangent.toString()
             + ' ' + this.end         .toString()
+            + ' ' + this.startTangent.toString()
             + ' ' + this.endTangent  .toString();
     }
 
@@ -56636,8 +56620,8 @@ extends GValue
     toDisplayString()
     {
         return      this.start       .toDisplayString()
-            + ' ' + this.startTangent.toDisplayString()
             + ' ' + this.end         .toDisplayString()
+            + ' ' + this.startTangent.toDisplayString()
             + ' ' + this.endTangent  .toDisplayString();
     }
 
@@ -56666,10 +56650,10 @@ extends GValue
 
     static NaN = Object.freeze(new VectorEdgeValue(
         '',
-        NumberValue.NaN, 
-        PointValue .NaN, 
-        NumberValue.NaN, 
-        PointValue .NaN));
+        VectorVertexValue.NaN, 
+        VectorVertexValue.NaN, 
+        PointValue.create('', 0, 0), 
+        PointValue.create('', 0, 0)));
 }
 
 
@@ -56690,18 +56674,18 @@ function parseVectorEdgeValue(str, i = -1)
 
     const iStart = i;
 
-    const start        = parseNumberValue(str[i]); i += start       [1];
-    const startTangent = parsePointValue (str, i); i += startTangent[1];
-    const end          = parseNumberValue(str[i]); i += end         [1];
-    const endTangent   = parsePointValue (str, i); i += endTangent  [1];
+    const start        = parseVectorVertexValue(str, i); i += start       [1];
+    const end          = parseVectorVertexValue(str, i); i += end         [1];
+    const startTangent = parsePointValue       (str, i); i += startTangent[1];
+    const endTangent   = parsePointValue       (str, i); i +=   endTangent[1];
 
 
     const edge = new VectorEdgeValue(
         '', // set node ID elsewhere
         start       [0],
-        startTangent[0],
         end         [0],
-        endTangent  [0]);
+        startTangent[0],
+          endTangent[0]);
 
 
     return [edge, i - iStart];
@@ -56880,22 +56864,16 @@ extends GValue
 {
     nodeId;
 
-    points; 
-    edges;  
     regions;
 
 
     constructor(nodeId,
-                points  = new ListValue(), 
-                edges   = new ListValue(),
                 regions = new ListValue())
     {
         super(VECTOR_NETWORK_VALUE);
 
-        this.nodeId = nodeId;
+        this.nodeId  = nodeId;
 
-        this.points  = points;  
-        this.edges   = edges;
         this.regions = regions; 
     }
 
@@ -56905,8 +56883,6 @@ extends GValue
     {
         const copy = new VectorNetworkValue(
             this.nodeId,
-            this.points .copy(), 
-            this.edges  .copy(), 
             this.regions.copy());
 
         return copy;
@@ -56917,20 +56893,16 @@ extends GValue
     equals(region)
     {
         return region
-            && this.points .equals(region.points )
-            && this.edges  .equals(region.edges  )
             && this.regions.equals(region.regions);
     }
 
 
 
-    static create(nodeId, points, edges, regions)
+    static create(nodeId, regions)
     {
         return new VectorNetworkValue(
             nodeId,
-            new ListValue(points ),
-            new ListValue(edges  ),
-            new ListValue(regions));
+            regions);
     }
 
 
@@ -56944,36 +56916,28 @@ extends GValue
 
     hasInitValue()
     {
-        return this.points .hasInitValue()
-            && this.edges  .hasInitValue()
-            && this.regions.hasInitValue();
+        return this.regions.hasInitValue();
     }
 
 
 
     isValid()
     {
-        return this.points .isValid()
-            && this.edges  .isValid()
-            && this.regions.isValid();
+        return this.regions.isValid();
     }
 
 
 
     toString()
     {
-        return      this.points .toString()
-            + ' ' + this.edges  .toString()
-            + ' ' + this.regions.toString();
+        return this.regions.toString();
     }
 
 
 
     toDisplayString()
     {
-        return      this.points .toDisplayString()
-            + ' ' + this.edges  .toDisplayString()
-            + ' ' + this.regions.toDisplayString();
+        return this.regions.toDisplayString();
     }
 
 
@@ -57001,9 +56965,7 @@ extends GValue
 
     static NaN = Object.freeze(new VectorNetworkValue(
         '',
-        new ListValue(), 
-        new ListValue(), 
-        new ListValue()));
+        ListValue.NaN));
 }
 
 
@@ -57024,15 +56986,11 @@ function parseVectorNetworkValue(str, i = -1)
 
     const iStart = i;
 
-    const points  = parseListValue(str, i); i += points [1];
-    const edges   = parseListValue(str, i); i += edges  [1];
     const regions = parseListValue(str, i); i += regions[1];
 
 
     const net = new VectorNetworkValue(
         '', // set node ID elsewhere
-        points [0],
-        edges  [0],
         regions[0]);
 
 
@@ -61123,8 +61081,9 @@ extends GArithmetic
 
         copy.copyBase(this);
 
-        copy.inputs    = this.inputs.map(i => i.copy());
-        copy.operation = this.operation.copy();
+        copy.inputs = this.inputs.map(i => i.copy());
+
+        if (this.operation) copy.operation = this.operation.copy();
 
         return copy;
     }
@@ -61154,8 +61113,8 @@ extends GArithmetic
         
         this.updateValues =
         [
-            ['operation', op        ],
-            ['value',     this.value]
+            ['value',     this.value],
+            ['operation', op        ]
         ];
 
 
@@ -69999,9 +69958,10 @@ extends GOperator1
 class GVectorEdge
 extends GOperator1
 {
-    start        = null;
+    input0       = null;
+    input1       = null;
+
     startTangent = null;
-    end          = null;
     endTangent   = null;
 
 
@@ -70019,9 +69979,9 @@ extends GOperator1
 
         copy.copyBase(this);
 
-        if (this.start       ) copy.start        = this.start       .copy();
+        if (this.input0      ) copy.input0       = this.input0      .copy();
+        if (this.input1      ) copy.input1       = this.input1      .copy();
         if (this.startTangent) copy.startTangent = this.startTangent.copy();
-        if (this.end         ) copy.end          = this.end         .copy();
         if (this.endTangent  ) copy.endTangent   = this.endTangent  .copy();
 
         return copy;
@@ -70035,36 +69995,29 @@ extends GOperator1
             return this;
 
         
-        const start        = this.start        ? (await this.start       .eval(parse)).toValue() : null;
+        const input0       = this.input0       ? (await this.input0      .eval(parse)).toValue() : null;
+        const input1       = this.input1       ? (await this.input1      .eval(parse)).toValue() : null;
         const startTangent = this.startTangent ? (await this.startTangent.eval(parse)).toValue() : null;
-        const end          = this.end          ? (await this.end         .eval(parse)).toValue() : null;
-        const endTangent   = this.endTangent   ? (await this.endTangent  .eval(parse)).toValue() : null;
+        const   endTangent = this.  endTangent ? (await this.  endTangent.eval(parse)).toValue() : null;
 
 
-        let input = null;
 
-        if (this.input)
+        if (   input0
+            && input1
+            && startTangent
+            &&   endTangent)
         {
-            input = (await this.input.eval(parse)).toValue();
-
             this.value = new VectorEdgeValue(
                 this.nodeId,
-                start        ?? input.start,       
-                startTangent ?? input.startTangent,
-                end          ?? input.end,         
-                endTangent   ?? input.endTangent);
+                input0,
+                input1,
+                startTangent,
+                  endTangent);
         }
         else
-        {
-            this.value = new VectorEdgeValue(
-                this.nodeId, 
-                start,       
-                startTangent, 
-                end,         
-                endTangent);
-        }
+            this.value = VectorEdgeValue.NaN;
 
-       
+
         await this.evalObjects(parse);
 
 
@@ -70080,28 +70033,43 @@ extends GOperator1
 
     async evalObjects(parse, options = {})
     {
-        if (!this.options.enabled)
+        if (   !this.options.enabled
+            || !this.value.isValid())
             return;
             
             
         this.value.objects = [];
 
 
-        if (   this.value.start       
+        if (   this.value.start
+            && this.value.end
             && this.value.startTangent
-            && this.value.end         
-            && this.value.endTangent)
+            && this.value.  endTangent)
         {
-            // const start        = this.value.start       .value;
-            // const startTangent = this.value.startTangent.value;
-            // const end          = this.value.end         .value;
-            // const endTangent   = this.value.endTangent  .value;
+            const path = new FigmaVectorPath(
+                this.nodeId,
+                this.nodeId,
+                this.nodeName,
+                [ this.value.start,
+                  this.value.end ],
+                0,
+                0, // linear
+                0,
+                0);
 
-            // const point = new FigmaPoint(this.nodeId, this.nodeId, this.nodeName, x, y);
+            
+            const bounds = getObjBounds([path]);
 
-            // point.createDefaultTransform(x, y);
+            let x = bounds.x;
+            let y = bounds.y;
+            let w = bounds.w;
+            let h = bounds.h;
 
-            // this.value.objects = [point];
+
+            path.createDefaultTransform(x, y);
+
+
+            this.value.objects.push(path, ...path.createTransformPoints(parse, x, y, w, h));
         }
 
 
@@ -70114,9 +70082,9 @@ extends GOperator1
     {
         const point = new VectorEdgeValue(
             this.nodeId,
-            this.start       .toValue(),
+            this.input0 ? this.input0.toValue() : VectorVertexValue.NaN,
+            this.input1 ? this.input1.toValue() : VectorVertexValue.NaN,
             this.startTangent.toValue(),
-            this.end         .toValue(),
             this.endTangent  .toValue());
 
         point.objects = this.value.objects.map(o => o.copy());
@@ -70129,9 +70097,9 @@ extends GOperator1
     isValid()
     {
         return super.isValid()
-            && this.start       .isValid()
+            && this.input0      .isValid()
+            && this.input1      .isValid()
             && this.startTangent.isValid()
-            && this.end         .isValid()
             && this.endTangent  .isValid();
     }
 
@@ -70141,9 +70109,9 @@ extends GOperator1
     {
         super.pushValueUpdates(parse);
 
-        if (this.start       ) this.start       .pushValueUpdates(parse);
+        if (this.input0      ) this.input0      .pushValueUpdates(parse);
+        if (this.input1      ) this.input1      .pushValueUpdates(parse);
         if (this.startTangent) this.startTangent.pushValueUpdates(parse);
-        if (this.end         ) this.end         .pushValueUpdates(parse);
         if (this.endTangent  ) this.endTangent  .pushValueUpdates(parse);
     }
 
@@ -70153,18 +70121,19 @@ extends GOperator1
     {
         super.invalidateInputs(from);
 
-        if (this.start       ) this.start       .invalidateInputs(from);
+        if (this.input0      ) this.input0      .invalidateInputs(from);
+        if (this.input1      ) this.input1      .invalidateInputs(from);
         if (this.startTangent) this.startTangent.invalidateInputs(from);
-        if (this.end         ) this.end         .invalidateInputs(from);
         if (this.endTangent  ) this.endTangent  .invalidateInputs(from);
     }
 }
 
 
 class GVectorRegion
-extends GOperator1
+extends GOperator
 {
-    loops   = null;
+    inputs  = [];
+
     winding = null;
     props   = null;
 
@@ -70183,11 +70152,25 @@ extends GOperator1
 
         copy.copyBase(this);
 
-        if (this.loops  ) copy.loops   = this.loops  .copy();
+        copy.inputs = this.inputs.map(i => i.copy());
+
         if (this.winding) copy.winding = this.winding.copy();
         if (this.props  ) copy.props   = this.props  .copy();
 
         return copy;
+    }
+
+
+
+    isCached()
+    {
+        for (const input of this.inputs)
+            if (!input.isCached())
+                return false;
+
+        return super.isCached()
+            && this.winding.isCached()
+            && this.props  .isCached();
     }
 
 
@@ -70198,33 +70181,57 @@ extends GOperator1
             return this;
 
         
-        const loops   = this.loops   ? (await this.loops  .eval(parse)).toValue() : null;
         const winding = this.winding ? (await this.winding.eval(parse)).toValue() : null;
         const props   = this.props   ? (await this.props  .eval(parse)).toValue() : null;
 
 
-        let input = null;
-
-        if (this.input)
+        if (!isEmpty(this.inputs))
         {
-            input = (await this.input.eval(parse)).toValue();
+            const loops = new ListValue();
+
+            const loop = new ListValue();
+
+            for (let i = 0; i < this.inputs.length; i++)
+            {
+                const input = (await this.inputs[i].eval(parse)).toValue();
+
+                if (LIST_VALUES.includes(input.type))
+                {
+                    const _loop = new ListValue();
+
+                    for (const item of input.items)
+                    {
+                        if (item.type == VECTOR_EDGE_VALUE)
+                            _loop.items.push(item);
+                    }
+
+                    if (!isEmpty(_loop.items))
+                        loops.items.push(_loop);
+                }
+                else
+                {
+                    consoleAssert(
+                        input.type == VECTOR_EDGE_VALUE, 
+                        'input.type must be VECTOR_EDGE_VALUE');
+
+                    loop.items.push(input);
+                }
+            }
+
+
+            if (!isEmpty(loop.items))
+                loops.items.push(loop);
+
 
             this.value = new VectorRegionValue(
-                this.nodeId,
-                loops   ?? input.loops,  
-                winding ?? input.winding,
-                props   ?? input.props);  
-        }
-        else
-        {
-            this.value = new VectorRegionValue(
-                this.nodeId, 
-                loops,       
-                winding, 
+                loops, 
+                winding,
                 props);
         }
+        else
+            this.value = VectorRegionValue.NaN;
 
-       
+
         await this.evalObjects(parse);
 
 
@@ -70240,7 +70247,8 @@ extends GOperator1
 
     async evalObjects(parse, options = {})
     {
-        if (!this.options.enabled)
+        if (   !this.options.enabled
+            || !this.value.isValid())
             return;
             
             
@@ -70272,7 +70280,6 @@ extends GOperator1
     {
         const point = new VectorRegionValue(
             this.nodeId,
-            this.loops  .toValue(),
             this.winding.toValue(),
             this.props  .toValue());
 
@@ -70285,9 +70292,14 @@ extends GOperator1
 
     isValid()
     {
-        return super.isValid()
-            && this.loops  .isValid()
-            && this.winding.isValid()
+        if (!super.isValid())
+            return false;
+            
+        for (const input of this.inputs)
+            if (!input.isCached())
+                return false;
+        
+        return this.winding.isValid()
             && this.props  .isValid();
     }
 
@@ -70297,7 +70309,8 @@ extends GOperator1
     {
         super.pushValueUpdates(parse);
 
-        if (this.loops  ) this.loops  .pushValueUpdates(parse);
+        this.inputs.forEach(i => i.pushValueUpdates(parse));
+
         if (this.winding) this.winding.pushValueUpdates(parse);
         if (this.props  ) this.props  .pushValueUpdates(parse);
     }
@@ -70308,7 +70321,8 @@ extends GOperator1
     {
         super.invalidateInputs(from);
 
-        if (this.loops  ) this.loops  .invalidateInputs(from);
+        this.inputs.forEach(i => i.invalidateInputs(from));
+
         if (this.winding) this.winding.invalidateInputs(from);
         if (this.props  ) this.props  .invalidateInputs(from);
     }
@@ -70316,11 +70330,9 @@ extends GOperator1
 
 
 class GVectorNetwork
-extends GOperator1
+extends GOperator
 {
-    points  = null;
-    edges   = null;
-    regions = null;
+    inputs  = [];
 
 
 
@@ -70337,11 +70349,20 @@ extends GOperator1
 
         copy.copyBase(this);
 
-        if (this.points ) copy.points  = this.points .copy();
-        if (this.edges  ) copy.edges   = this.edges  .copy();
-        if (this.regions) copy.regions = this.regions.copy();
+        copy.inputs = this.inputs.map(i => i.copy());
 
         return copy;
+    }
+
+
+
+    isCached()
+    {
+        for (const input of this.inputs)
+            if (!input.isCached())
+                return false;
+
+        return super.isCached();
     }
 
 
@@ -70352,36 +70373,32 @@ extends GOperator1
             return this;
 
         
-        const points  = this.points  ? (await this.points .eval(parse)).toValue() : null;
-        const edges   = this.edges   ? (await this.edges  .eval(parse)).toValue() : null;
-        const regions = this.regions ? (await this.regions.eval(parse)).toValue() : null;
-
-
-        let input = null;
-
-        if (this.input)
+        if (!isEmpty(this.inputs))
         {
-            input = (await this.input.eval(parse)).toValue();
+            const regions = new ListValue();
 
-            this.value = new VectorNetworkValue(
-                this.nodeId,
-                points  ?? input.points,  
-                edges   ?? input.edges,
-                regions ?? input.regions);
+            for (let i = 0; i < this.inputs.length; i++)
+            {
+                const input = (await this.inputs[i].eval(parse)).toValue();
+
+                consoleAssert(
+                    input.type == VECTOR_REGION_VALUE, 
+                    'input.type must be VECTOR_REGION_VALUE');
+
+                regions.items.push(input);
+            }
+
+
+            this.value = new VectorNetworkValue(regions);
         }
         else
-        {
-            this.value = new VectorNetworkValue(
-                this.nodeId, 
-                points,       
-                edges, 
-                regions);
-        }
+            this.value = VectorNetworkValue.NaN;
 
        
         await this.evalObjects(parse);
 
 
+        console.log('GVectorNetwork.value =', this.value);
         this.updateValues = [['value', this.value]];
 
 
@@ -70394,16 +70411,15 @@ extends GOperator1
 
     async evalObjects(parse, options = {})
     {
-        if (!this.options.enabled)
+        if (   !this.options.enabled
+            || !this.value.isValid())
             return;
             
             
         this.value.objects = [];
 
 
-        if (   this.value.points   
-            && this.value.edges  
-            && this.value.regions)
+        if (this.value.regions)
         {
             // const points  = this.value.points .value;
             // const edges   = this.value.edges  .value;
@@ -70426,8 +70442,6 @@ extends GOperator1
     {
         const point = new VectorNetworkValue(
             this.nodeId,
-            this.points .toValue(),
-            this.edges  .toValue(),
             this.regions.toValue());
 
         point.objects = this.value.objects.map(o => o.copy());
@@ -70440,8 +70454,6 @@ extends GOperator1
     isValid()
     {
         return super.isValid()
-            && this.points .isValid()
-            && this.edges  .isValid()
             && this.regions.isValid();
     }
 
@@ -70451,8 +70463,6 @@ extends GOperator1
     {
         super.pushValueUpdates(parse);
 
-        if (this.points ) this.points .pushValueUpdates(parse);
-        if (this.edges  ) this.edges  .pushValueUpdates(parse);
         if (this.regions) this.regions.pushValueUpdates(parse);
     }
 
@@ -70462,8 +70472,6 @@ extends GOperator1
     {
         super.invalidateInputs(from);
 
-        if (this.points ) this.points .invalidateInputs(from);
-        if (this.edges  ) this.edges  .invalidateInputs(from);
         if (this.regions) this.regions.invalidateInputs(from);
     }
 }
@@ -77027,9 +77035,9 @@ const iconTextShape         = '<svg width="13" height="16" viewBox="0 0 13 16" f
 const iconSelected          = '<svg width="17" height="18" viewBox="0 0 17 18" fill="none" xmlns="http://www.w3.org/2000/svg"><rect x="3.5" y="3.5" width="4" height="4" stroke="white"/><circle cx="11.5" cy="5.5" r="2" stroke="white"/><line x1="3.43646" y1="14.8688" x2="7.93646" y2="10.1019" stroke="white"/><path d="M9.33494 14.4498L11.5 10.6998L13.6651 14.4498H9.33494Z" stroke="white"/><path d="M1.78814e-07 4H1L1 1H4V0H0L1.78814e-07 4Z" fill="white"/><path d="M17 14L16 14L16 17L13 17L13 18L17 18L17 14Z" fill="white"/><path d="M4 18L4 17L1 17L1 14L-1.74846e-07 14L0 18L4 18Z" fill="white"/><path d="M13 3.96837e-09L13 1L16 1L16 4L17 4L17 0L13 3.96837e-09Z" fill="white"/></svg>';
 const iconPoint             = '<svg width="5" height="5" viewBox="0 0 5 5" fill="none" xmlns="http://www.w3.org/2000/svg"><circle cx="2.5" cy="2.5" r="2.07507" fill="white"/></svg>';
 const iconVectorPath        = '<svg width="18" height="17" viewBox="0 0 18 17" fill="none" xmlns="http://www.w3.org/2000/svg"><circle cx="2.50012" cy="1" r="0.75" stroke="white" stroke-width="0.5"/><circle cx="15.4999" cy="16.0002" r="0.75" stroke="white" stroke-width="0.5"/><path d="M2.8714 11.9166C9 -13 10 29 15.1694 5.03541" stroke="white" stroke-width="1.5"/><circle cx="15.5001" cy="4" r="1.5" stroke="white"/><circle cx="2.49988" cy="13" r="1.5" stroke="white"/><rect x="2" y="9" width="1" height="1" fill="white"/><rect x="2" y="7" width="1" height="1" fill="white"/><rect x="2" y="5" width="1" height="1" fill="white"/><rect x="2" y="3" width="1" height="1" fill="white"/><rect x="15" y="13" width="1" height="1" fill="white"/><rect x="15" y="11" width="1" height="1" fill="white"/><rect x="15" y="9" width="1" height="1" fill="white"/><rect x="15" y="7" width="1" height="1" fill="white"/></svg>';
-const iconVectorVertex      = '<svg width="6" height="6" viewBox="0 0 6 6" fill="none" xmlns="http://www.w3.org/2000/svg"><circle cx="3" cy="3" r="1.89968" stroke="white" stroke-width="1.3"/></svg>';
-const iconVectorEdge        = '<svg width="17" height="5" viewBox="0 0 17 5" fill="none" xmlns="http://www.w3.org/2000/svg"><rect x="3.98364" y="2" width="8.9873" height="1" fill="white"/><circle cx="14.4824" cy="2.57507" r="1.72135" stroke="white" stroke-width="1.2"/><circle cx="2.51007" cy="2.57507" r="1.72135" stroke="white" stroke-width="1.2"/></svg>';
-const iconVectorRegion      = '<svg width="16" height="12" viewBox="0 -1 16 12" fill="none" xmlns="http://www.w3.org/2000/svg"><circle cx="8" cy="9" r="1.5" stroke="white"/><circle cx="2" cy="2" r="1.5" stroke="white"/><circle cx="14" cy="2" r="1.5" stroke="white"/><path d="M4.0001 2L3.24939 3.77671L7.0001 8.00003L8.0001 7.50003L9.0001 8.00003L12.7473 3.77671L12.0001 2H4.0001Z" fill="white" stroke="white"/></svg>';
+const iconVectorVertex      = '<svg width="7" height="6" viewBox="0 0 7 6" fill="none" xmlns="http://www.w3.org/2000/svg"><circle cx="3" cy="3" r="1.89968" stroke="white" stroke-width="1.3"/></svg>';
+const iconVectorEdge        = '<svg width="18" height="5" viewBox="0 0 18 5" fill="none" xmlns="http://www.w3.org/2000/svg"><rect x="3.98364" y="2" width="8.9873" height="1" fill="white"/><circle cx="14.4824" cy="2.57507" r="1.72135" stroke="white" stroke-width="1.2"/><circle cx="2.51007" cy="2.57507" r="1.72135" stroke="white" stroke-width="1.2"/></svg>';
+const iconVectorRegion      = '<svg width="16" height="12" viewBox="0 0 16 12" fill="none" xmlns="http://www.w3.org/2000/svg"><circle cx="8" cy="9" r="1.5" stroke="white"/><circle cx="2" cy="2" r="1.5" stroke="white"/><circle cx="14" cy="2" r="1.5" stroke="white"/><path d="M4.0001 2L3.24939 3.77671L7.0001 8.00003L8.0001 7.50003L9.0001 8.00003L12.7473 3.77671L12.0001 2H4.0001Z" fill="white" stroke="white"/></svg>';
 const iconVectorNetwork     = '<svg width="18" height="19" viewBox="0 -1 18 19" fill="none" xmlns="http://www.w3.org/2000/svg"><circle cx="9" cy="2" r="1.5" stroke="white"/><circle cx="9" cy="16" r="1.5" stroke="white"/><circle cx="2" cy="9" r="1.5" stroke="white"/><circle cx="16" cy="9" r="1.5" stroke="white"/><path d="M3.50001 9.71348L3.15479 10.1548L8.00001 15L9.00001 14.5L10 15L14.7725 10.2275L14.5 9.71348H3.50001Z" fill="white"/><path d="M3.50001 9.71348H14.5M3.50001 9.71348L3.30592 7.69404L7.78889 3.21112L9.00001 3.54484L10.2111 3.21112L14.6941 7.69404L14.5 9.71348M3.50001 9.71348L3.15479 10.1548L8.00001 15L9.00001 14.5L10 15L14.7725 10.2275L14.5 9.71348" stroke="white"/></svg>';
 const iconBoolUnion         = '<svg width="16" height="16" viewBox="0 0 16 16" fill="none" xmlns="http://www.w3.org/2000/svg"><path d="M11 0H0V11H5V16H16V5H11V0Z" fill="white"/></svg>';
 const iconBoolSubtract      = '<svg width="16" height="16" viewBox="0 0 16 16" fill="none" xmlns="http://www.w3.org/2000/svg"><path fill-rule="evenodd" clip-rule="evenodd" d="M0 11V0H11V5H16V16H5V11H0ZM1 1H10V10H1V1Z" fill="white"/></svg>';
@@ -96928,8 +96936,6 @@ extends OperatorWithValue
             : 'italic';
 
 
-        //this.paramValue.controls[0].text.style.letterSpacing = settings.showBoolValues ? '0.1em' : 0; // this is if "true" and "false" are used
-        
         this.paramValue.controls[0].showBar = !this.isUnknown();
 
 
@@ -104449,9 +104455,7 @@ extends OpShapeBase
 class   OpVectorEdge
 extends OpShapeBase
 {
-    paramStart;
     paramStartTangent;
-    paramEnd;
     paramEndTangent;
 
 
@@ -104464,19 +104468,15 @@ extends OpShapeBase
         this.iconOffsetY = -1;
 
 
-        this.addInput (new Input ([VECTOR_EDGE_VALUE], getNodeInputValuesForUndo));//, this.input_getBackInitValue));
+        this.addInput (new Input ([POINT_VALUE, VECTOR_VERTEX_VALUE], getNodeInputValuesForUndo));//, this.input_getBackInitValue));
+        this.addInput (new Input ([POINT_VALUE, VECTOR_VERTEX_VALUE], getNodeInputValuesForUndo));//, this.input_getBackInitValue));
         this.addOutput(new Output([VECTOR_EDGE_VALUE], this.output_genRequest, getNodeOutputValuesForUndo));//, this.output_backInit));
 
-        this.addParam(this.paramStart        = new NumberParam('start',        'start',         true, true, true, 0));
-        this.addParam(this.paramStartTangent = new  PointParam('startTangent', 'tangent', true, true, true, PointValue.create(this, 0, 0)));
-        this.addParam(this.paramEnd          = new NumberParam('end',          'end',           true, true, true, 0));
-        this.addParam(this.paramEndTangent   = new  PointParam('endTangent',   'tangent',   true, true, true, PointValue.create(this, 0, 0)));
+        this.addParam(this.paramStartTangent = new PointParam('startTangent', 'start', true, true, true, PointValue.create(this, 0, 0)));
+        this.addParam(this.paramEndTangent   = new PointParam('endTangent',   'end',   true, true, true, PointValue.create(this, 0, 0)));
 
-
-        this.paramStart       .divider = 0.5;
-        this.paramEnd         .divider = 0.5;
-        this.paramStartTangent.divider = 0.5;
-        this.paramEndTangent  .divider = 0.5;
+        this.paramStartTangent.divider = 0.45;
+        this.paramEndTangent  .divider = 0.45;
     }
 
 
@@ -104505,13 +104505,50 @@ extends OpShapeBase
 
 
 
+    output_genRequest(gen)
+    {
+        // 'this' is the output
+
+        gen.scope.push({
+            nodeId:  this.node.id, 
+            paramId: NULL });
+
+        const [request, ignore] = this.node.genRequestStart(gen);
+        if (ignore) return request;
+
+        
+        const input0 = this.node.inputs[0];
+        const input1 = this.node.inputs[1];
+
+        
+        if (   input0.connected
+            && input1.connected)   request.push(2,
+                                       ...pushInputOrParam(input0, gen),
+                                       ...pushInputOrParam(input1, gen));
+
+        else if (input0.connected) request.push(1, ...pushInputOrParam(input0, gen));
+        else if (input1.connected) request.push(1, ...pushInputOrParam(input1, gen));
+            
+        else                       request.push(0);
+
+
+        request.push(...this.node.paramStartTangent.genRequest(gen));
+        request.push(...this.node.paramEndTangent  .genRequest(gen));
+
+
+        gen.scope.pop();
+        pushUnique(gen.passedNodes, this.node);
+
+        return request;
+    }
+
+
+
     updateValues(requestId, actionId, updateParamId, paramIds, values)
     {
         const value = values[paramIds.findIndex(id => id == 'value')];
 
-        this.paramStart       .setValue(value.start,        false, true, false);
         this.paramStartTangent.setValue(value.startTangent, false, true, false);
-        this.paramEnd         .setValue(value.end,          false, true, false);
         this.paramEndTangent  .setValue(value.endTangent,   false, true, false);
     }
 }
@@ -104520,7 +104557,6 @@ extends OpShapeBase
 class   OpVectorRegion
 extends OpShapeBase
 {
-    paramLoops;
     paramWinding;
     paramProps;
 
@@ -104534,18 +104570,11 @@ extends OpShapeBase
         //this.iconOffsetY = -1;
 
 
-        this.addInput (new Input ([VECTOR_REGION_VALUE], getNodeInputValuesForUndo));//, this.input_getBackInitValue));
+        this.addNewInput();
         this.addOutput(new Output([VECTOR_REGION_VALUE], this.output_genRequest, getNodeOutputValuesForUndo));//, this.output_backInit));
 
-        this.addParam(this.paramLoops   = new   ListParam('loops',   'loops',   false,  true, true, 0));
         this.addParam(this.paramWinding = new SelectParam('winding', 'winding', false, true, true, ['even-odd', 'non-zero']));
         this.addParam(this.paramProps   = new   ListParam('props',   'styles',  false, true, true));
-
-
-        this.paramLoops.itemName  = 'loop';
-        this.paramLoops.showZero  = false;
-        this.paramLoops.listTypes = [TEXT_VALUE];
-        this.paramLoops.input.types.push(...this.paramLoops.listTypes);
 
 
         this.paramProps.controls[0].valueText = 'style';
@@ -104561,6 +104590,21 @@ extends OpShapeBase
 
 
 
+    addNewInput()
+    {
+        const newInput = new Input([VECTOR_EDGE_VALUE, LIST_VALUE]);
+        newInput.isNew = true;
+
+        newInput.addEventListener('connect',    e => { onVariableConnectInput(e.detail.input); e.detail.input.isNew = false; });
+        newInput.addEventListener('disconnect', e => onVariableDisconnectInput(e.detail.input));
+
+        this.addInput(newInput);
+
+        return newInput;
+    }
+
+
+
     // input_getBackInitValue()
     // {
     //     // 'this' is the input
@@ -104585,11 +104629,44 @@ extends OpShapeBase
 
 
 
+    output_genRequest(gen)
+    {
+        // 'this' is the output
+
+        gen.scope.push({
+            nodeId:  this.node.id,
+            paramId: NULL });
+
+
+        const [request, ignore] = this.node.genRequestStart(gen);
+        if (ignore) return request;
+            
+
+        const connectedInputs = this.node.inputs.filter(i => i.connected);
+
+
+        request.push(connectedInputs.length); // utility values like param count are stored as numbers
+        
+        connectedInputs.forEach(input => 
+            request.push(...pushInputOrParam(input, gen)));
+
+        
+        request.push(...this.node.paramWinding.genRequest(gen));
+        request.push(...this.node.paramProps  .genRequest(gen));
+
+        
+        gen.scope.pop();
+        pushUnique(gen.passedNodes, this.node);
+        
+        return request;
+    }
+
+
+
     updateValues(requestId, actionId, updateParamId, paramIds, values)
     {
         const value = values[paramIds.findIndex(id => id == 'value')];
 
-        this.paramLoops  .setValue(value.loops,   false, true, false);
         this.paramWinding.setValue(value.winding, false, true, false);
         this.paramProps  .setValue(value.props,   false, true, false);
     }
@@ -104599,65 +104676,61 @@ extends OpShapeBase
 class   OpVectorNetwork
 extends OpShapeBase
 {
-    paramPoints;
-    paramEdges;
-    paramRegions;
-
-
-    
     constructor()
     {
-        super(VECTOR_NETWORK, 'vector', 'vector', iconVectorNetwork);
+        super(VECTOR_NETWORK, 'network', 'network', iconVectorNetwork);
 
         //this.canDisable  = true;
         //this.iconOffsetY = -1;
 
 
-        this.addInput(this.createInputForObjects([VECTOR_NETWORK_VALUE], getNodeInputValuesForUndo));
+        this.addNewInput();
         this.addOutput(new Output([VECTOR_NETWORK_VALUE], this.output_genRequest));
+    }
 
 
-        this.addParam(this.paramPoints  = new ListParam('points',  'points',  false, true, true));
-        this.addParam(this.paramEdges   = new ListParam('edges',   'edges',   false, true, true));
-        this.addParam(this.paramRegions = new ListParam('regions', 'regions', false, true, true));
+
+    addNewInput()
+    {
+        const newInput = new Input([VECTOR_REGION_VALUE]);
+        newInput.isNew = true;
+
+        newInput.addEventListener('connect',    e => { onVariableConnectInput(e.detail.input); e.detail.input.isNew = false; });
+        newInput.addEventListener('disconnect', e => onVariableDisconnectInput(e.detail.input));
+
+        this.addInput(newInput);
+
+        return newInput;
+    }
+
+
+
+    output_genRequest(gen)
+    {
+        // 'this' is the output
+
+        gen.scope.push({
+            nodeId:  this.node.id,
+            paramId: NULL });
+
+
+        const [request, ignore] = this.node.genRequestStart(gen);
+        if (ignore) return request;
+            
+
+        const connectedInputs = this.node.inputs.filter(i => i.connected);
+
+
+        request.push(connectedInputs.length); // utility values like param count are stored as numbers
+        
+        connectedInputs.forEach(input => 
+            request.push(...pushInputOrParam(input, gen)));
 
         
-        // this.paramPoints.input.types.push(SHAPE_LIST_VALUE);
-        // this.paramPoints.listTypes = [POINT_VALUE];
-
-        this.paramPoints .itemName = 'point';
-        this.paramPoints .showZero =  false;
-
-        this.paramEdges  .itemName = 'edge';
-        this.paramEdges  .showZero =  false;
-
-        this.paramRegions.itemName = 'region';
-        this.paramRegions.showZero =  false;
-
-
-        this.addBaseParams();
-    }
-
-
-
-    updateValues(requestId, actionId, updateParamId, paramIds, values)
-    {
-        const value = values[paramIds.findIndex(id => id == 'value')];
-
-        this.paramPoints .setValue(value.points,  false, true, false);
-        this.paramEdges  .setValue(value.edges,   false, true, false);
-        this.paramRegions.setValue(value.regions, false, true, false);
-    }
-
-
-
-    updateParams()
-    {
-        this.paramPoints .enableControlText(true);
-        this.paramEdges  .enableControlText(true);
-        this.paramRegions.enableControlText(true);
-
-        this.updateParamControls();
+        gen.scope.pop();
+        pushUnique(gen.passedNodes, this.node);
+        
+        return request;
     }
 }
 

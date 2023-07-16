@@ -1,7 +1,8 @@
 class GVectorRegion
-extends GOperator1
+extends GOperator
 {
-    loops   = null;
+    inputs  = [];
+
     winding = null;
     props   = null;
 
@@ -20,11 +21,25 @@ extends GOperator1
 
         copy.copyBase(this);
 
-        if (this.loops  ) copy.loops   = this.loops  .copy();
+        copy.inputs = this.inputs.map(i => i.copy());
+
         if (this.winding) copy.winding = this.winding.copy();
         if (this.props  ) copy.props   = this.props  .copy();
 
         return copy;
+    }
+
+
+
+    isCached()
+    {
+        for (const input of this.inputs)
+            if (!input.isCached())
+                return false;
+
+        return super.isCached()
+            && this.winding.isCached()
+            && this.props  .isCached();
     }
 
 
@@ -35,33 +50,57 @@ extends GOperator1
             return this;
 
         
-        const loops   = this.loops   ? (await this.loops  .eval(parse)).toValue() : null;
         const winding = this.winding ? (await this.winding.eval(parse)).toValue() : null;
         const props   = this.props   ? (await this.props  .eval(parse)).toValue() : null;
 
 
-        let input = null;
-
-        if (this.input)
+        if (!isEmpty(this.inputs))
         {
-            input = (await this.input.eval(parse)).toValue();
+            const loops = new ListValue();
+
+            const loop = new ListValue();
+
+            for (let i = 0; i < this.inputs.length; i++)
+            {
+                const input = (await this.inputs[i].eval(parse)).toValue();
+
+                if (LIST_VALUES.includes(input.type))
+                {
+                    const _loop = new ListValue();
+
+                    for (const item of input.items)
+                    {
+                        if (item.type == VECTOR_EDGE_VALUE)
+                            _loop.items.push(item);
+                    }
+
+                    if (!isEmpty(_loop.items))
+                        loops.items.push(_loop);
+                }
+                else
+                {
+                    consoleAssert(
+                        input.type == VECTOR_EDGE_VALUE, 
+                        'input.type must be VECTOR_EDGE_VALUE');
+
+                    loop.items.push(input);
+                }
+            }
+
+
+            if (!isEmpty(loop.items))
+                loops.items.push(loop);
+
 
             this.value = new VectorRegionValue(
-                this.nodeId,
-                loops   ?? input.loops,  
-                winding ?? input.winding,
-                props   ?? input.props);  
-        }
-        else
-        {
-            this.value = new VectorRegionValue(
-                this.nodeId, 
-                loops,       
-                winding, 
+                loops, 
+                winding,
                 props);
         }
+        else
+            this.value = VectorRegionValue.NaN;
 
-       
+
         await this.evalObjects(parse);
 
 
@@ -77,7 +116,8 @@ extends GOperator1
 
     async evalObjects(parse, options = {})
     {
-        if (!this.options.enabled)
+        if (   !this.options.enabled
+            || !this.value.isValid())
             return;
             
             
@@ -109,7 +149,6 @@ extends GOperator1
     {
         const point = new VectorRegionValue(
             this.nodeId,
-            this.loops  .toValue(),
             this.winding.toValue(),
             this.props  .toValue());
 
@@ -122,9 +161,14 @@ extends GOperator1
 
     isValid()
     {
-        return super.isValid()
-            && this.loops  .isValid()
-            && this.winding.isValid()
+        if (!super.isValid())
+            return false;
+            
+        for (const input of this.inputs)
+            if (!input.isCached())
+                return false;
+        
+        return this.winding.isValid()
             && this.props  .isValid();
     }
 
@@ -134,7 +178,8 @@ extends GOperator1
     {
         super.pushValueUpdates(parse);
 
-        if (this.loops  ) this.loops  .pushValueUpdates(parse);
+        this.inputs.forEach(i => i.pushValueUpdates(parse));
+
         if (this.winding) this.winding.pushValueUpdates(parse);
         if (this.props  ) this.props  .pushValueUpdates(parse);
     }
@@ -145,7 +190,8 @@ extends GOperator1
     {
         super.invalidateInputs(from);
 
-        if (this.loops  ) this.loops  .invalidateInputs(from);
+        this.inputs.forEach(i => i.invalidateInputs(from));
+
         if (this.winding) this.winding.invalidateInputs(from);
         if (this.props  ) this.props  .invalidateInputs(from);
     }

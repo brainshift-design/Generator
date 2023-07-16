@@ -1,9 +1,7 @@
 class   OpVectorEdge
 extends OpShapeBase
 {
-    paramStart;
     paramStartTangent;
-    paramEnd;
     paramEndTangent;
 
 
@@ -16,19 +14,15 @@ extends OpShapeBase
         this.iconOffsetY = -1;
 
 
-        this.addInput (new Input ([VECTOR_EDGE_VALUE], getNodeInputValuesForUndo));//, this.input_getBackInitValue));
+        this.addInput (new Input ([POINT_VALUE, VECTOR_VERTEX_VALUE], getNodeInputValuesForUndo));//, this.input_getBackInitValue));
+        this.addInput (new Input ([POINT_VALUE, VECTOR_VERTEX_VALUE], getNodeInputValuesForUndo));//, this.input_getBackInitValue));
         this.addOutput(new Output([VECTOR_EDGE_VALUE], this.output_genRequest, getNodeOutputValuesForUndo));//, this.output_backInit));
 
-        this.addParam(this.paramStart        = new NumberParam('start',        'start',         true, true, true, 0));
-        this.addParam(this.paramStartTangent = new  PointParam('startTangent', 'tangent', true, true, true, PointValue.create(this, 0, 0)));
-        this.addParam(this.paramEnd          = new NumberParam('end',          'end',           true, true, true, 0));
-        this.addParam(this.paramEndTangent   = new  PointParam('endTangent',   'tangent',   true, true, true, PointValue.create(this, 0, 0)));
+        this.addParam(this.paramStartTangent = new PointParam('startTangent', 'start', true, true, true, PointValue.create(this, 0, 0)));
+        this.addParam(this.paramEndTangent   = new PointParam('endTangent',   'end',   true, true, true, PointValue.create(this, 0, 0)));
 
-
-        this.paramStart       .divider = 0.5;
-        this.paramEnd         .divider = 0.5;
-        this.paramStartTangent.divider = 0.5;
-        this.paramEndTangent  .divider = 0.5;
+        this.paramStartTangent.divider = 0.45;
+        this.paramEndTangent  .divider = 0.45;
     }
 
 
@@ -57,13 +51,50 @@ extends OpShapeBase
 
 
 
+    output_genRequest(gen)
+    {
+        // 'this' is the output
+
+        gen.scope.push({
+            nodeId:  this.node.id, 
+            paramId: NULL });
+
+        const [request, ignore] = this.node.genRequestStart(gen);
+        if (ignore) return request;
+
+        
+        const input0 = this.node.inputs[0];
+        const input1 = this.node.inputs[1];
+
+        
+        if (   input0.connected
+            && input1.connected)   request.push(2,
+                                       ...pushInputOrParam(input0, gen),
+                                       ...pushInputOrParam(input1, gen));
+
+        else if (input0.connected) request.push(1, ...pushInputOrParam(input0, gen));
+        else if (input1.connected) request.push(1, ...pushInputOrParam(input1, gen));
+            
+        else                       request.push(0);
+
+
+        request.push(...this.node.paramStartTangent.genRequest(gen));
+        request.push(...this.node.paramEndTangent  .genRequest(gen));
+
+
+        gen.scope.pop();
+        pushUnique(gen.passedNodes, this.node);
+
+        return request;
+    }
+
+
+
     updateValues(requestId, actionId, updateParamId, paramIds, values)
     {
         const value = values[paramIds.findIndex(id => id == 'value')];
 
-        this.paramStart       .setValue(value.start,        false, true, false);
         this.paramStartTangent.setValue(value.startTangent, false, true, false);
-        this.paramEnd         .setValue(value.end,          false, true, false);
         this.paramEndTangent  .setValue(value.endTangent,   false, true, false);
     }
 }

@@ -50,7 +50,10 @@ onmessage = function(e)
 function genPostMessageToUi(msg)
 {
     if (msg == undefined)
+    {
+        consoleError('undefined message');
         console.trace();
+    }
 
     postMessage(JSON.stringify(msg));
 }

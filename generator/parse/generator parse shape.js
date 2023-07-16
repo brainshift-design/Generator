@@ -723,12 +723,12 @@ function genParseVectorEdge(parse)
     if (!ignore)
     {
         nInputs = parseInt(parse.move());
-        consoleAssert(nInputs => 0 && nInputs <= 1, 'nInputs must be [0, 1]');
+        consoleAssert(nInputs => 0 && nInputs <= 2, 'nInputs must be [0, 2]');
     }
 
-
+    
     if (parse.settings.logRequests) 
-        logReq(edge, parse, ignore);
+        logReq(edge, parse, ignore, nInputs);
 
 
     if (ignore) 
@@ -741,26 +741,19 @@ function genParseVectorEdge(parse)
     parse.nTab++;
 
 
-    if (nInputs == 1)
-        edge.input = genParse(parse);
-
-
-    const nParamIds = genParseParamCount(parse);
-
-    for (let i = 0; i < nParamIds; i++)
+    if (nInputs == 2)
     {
-        const paramId = genParseParamId(parse);
-
-        parse.inParam = true;
-
-        switch (paramId)
-        {
-        case 'start':        edge.start        = genParse(parse); break;
-        case 'startTangent': edge.startTangent = genParse(parse); break;
-        case 'end':          edge.end          = genParse(parse); break;
-        case 'endTangent':   edge.endTangent   = genParse(parse); break;
-        }
+        edge.input0 = genParse(parse);
+        edge.input1 = genParse(parse);
     }
+    else if (nInputs == 1)
+    {
+        edge.input0 = genParse(parse); // doesn't matter if it's input0 or input1, the eval() result will be the same
+    }
+
+
+    edge.startTangent = genParse(parse);
+    edge.  endTangent = genParse(parse);
 
 
     parse.inParam = false;
@@ -795,17 +788,14 @@ function genParseVectorRegion(parse)
     const region = new GVectorRegion(nodeId, options);
 
 
-    let nInputs = -1;
-
+    let nInputs = 0;
+    
     if (!ignore)
-    {
         nInputs = parseInt(parse.move());
-        consoleAssert(nInputs => 0 && nInputs <= 1, 'nInputs must be [0, 1]');
-    }
 
 
     if (parse.settings.logRequests) 
-        logReq(region, parse, ignore);
+        logReq(region, parse, ignore, nInputs);
 
 
     if (ignore) 
@@ -822,21 +812,8 @@ function genParseVectorRegion(parse)
         region.input = genParse(parse);
 
 
-    const nParamIds = genParseParamCount(parse);
-
-    for (let i = 0; i < nParamIds; i++)
-    {
-        const paramId = genParseParamId(parse);
-
-        parse.inParam = true;
-
-        switch (paramId)
-        {
-        case 'loops':   region.loops   = genParse(parse); break;
-        case 'winding': region.winding = genParse(parse); break;
-        case 'props':   region.props   = genParse(parse); break;
-        }
-    }
+    region.winding = genParse(parse);
+    region.props   = genParse(parse);
 
 
     parse.inParam = false;
@@ -868,25 +845,22 @@ function genParseVectorNetwork(parse)
     const [, nodeId, options, ignore] = genParseNodeStart(parse);
 
 
-    const region = new GVectorNetwork(nodeId, options);
+    const net = new GVectorNetwork(nodeId, options);
 
 
-    let nInputs = -1;
-
+    let nInputs = 0;
+    
     if (!ignore)
-    {
         nInputs = parseInt(parse.move());
-        consoleAssert(nInputs => 0 && nInputs <= 1, 'nInputs must be [0, 1]');
-    }
 
 
     if (parse.settings.logRequests) 
-        logReq(region, parse, ignore);
+        logReq(net, parse, ignore, nInputs);
 
 
     if (ignore) 
     {
-        genParseNodeEnd(parse, region);
+        genParseNodeEnd(parse, net);
         return parse.parsedNodes.find(n => n.nodeId == nodeId);
     }
 
@@ -895,32 +869,15 @@ function genParseVectorNetwork(parse)
 
 
     if (nInputs == 1)
-        region.input = genParse(parse);
+    net.input = genParse(parse);
 
 
-    const nParamIds = genParseParamCount(parse);
-
-    for (let i = 0; i < nParamIds; i++)
-    {
-        const paramId = genParseParamId(parse);
-
-        parse.inParam = true;
-
-        switch (paramId)
-        {
-        case 'points':  region.points  = genParse(parse); break;
-        case 'edges':   region.edges   = genParse(parse); break;
-        case 'regions': region.regions = genParse(parse); break;
-        }
-    }
-
-
-    parse.inParam = false;
     parse.nTab--;
 
 
-    genParseNodeEnd(parse, region);
-    return region;
+
+    genParseNodeEnd(parse, net);
+    return net;
 }
 
 

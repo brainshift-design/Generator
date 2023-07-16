@@ -1,9 +1,7 @@
 class GVectorNetwork
-extends GOperator1
+extends GOperator
 {
-    points  = null;
-    edges   = null;
-    regions = null;
+    inputs  = [];
 
 
 
@@ -20,11 +18,20 @@ extends GOperator1
 
         copy.copyBase(this);
 
-        if (this.points ) copy.points  = this.points .copy();
-        if (this.edges  ) copy.edges   = this.edges  .copy();
-        if (this.regions) copy.regions = this.regions.copy();
+        copy.inputs = this.inputs.map(i => i.copy());
 
         return copy;
+    }
+
+
+
+    isCached()
+    {
+        for (const input of this.inputs)
+            if (!input.isCached())
+                return false;
+
+        return super.isCached();
     }
 
 
@@ -35,36 +42,32 @@ extends GOperator1
             return this;
 
         
-        const points  = this.points  ? (await this.points .eval(parse)).toValue() : null;
-        const edges   = this.edges   ? (await this.edges  .eval(parse)).toValue() : null;
-        const regions = this.regions ? (await this.regions.eval(parse)).toValue() : null;
-
-
-        let input = null;
-
-        if (this.input)
+        if (!isEmpty(this.inputs))
         {
-            input = (await this.input.eval(parse)).toValue();
+            const regions = new ListValue();
 
-            this.value = new VectorNetworkValue(
-                this.nodeId,
-                points  ?? input.points,  
-                edges   ?? input.edges,
-                regions ?? input.regions);
+            for (let i = 0; i < this.inputs.length; i++)
+            {
+                const input = (await this.inputs[i].eval(parse)).toValue();
+
+                consoleAssert(
+                    input.type == VECTOR_REGION_VALUE, 
+                    'input.type must be VECTOR_REGION_VALUE');
+
+                regions.items.push(input);
+            }
+
+
+            this.value = new VectorNetworkValue(regions);
         }
         else
-        {
-            this.value = new VectorNetworkValue(
-                this.nodeId, 
-                points,       
-                edges, 
-                regions);
-        }
+            this.value = VectorNetworkValue.NaN;
 
        
         await this.evalObjects(parse);
 
 
+        console.log('GVectorNetwork.value =', this.value);
         this.updateValues = [['value', this.value]];
 
 
@@ -77,16 +80,15 @@ extends GOperator1
 
     async evalObjects(parse, options = {})
     {
-        if (!this.options.enabled)
+        if (   !this.options.enabled
+            || !this.value.isValid())
             return;
             
             
         this.value.objects = [];
 
 
-        if (   this.value.points   
-            && this.value.edges  
-            && this.value.regions)
+        if (this.value.regions)
         {
             // const points  = this.value.points .value;
             // const edges   = this.value.edges  .value;
@@ -109,8 +111,6 @@ extends GOperator1
     {
         const point = new VectorNetworkValue(
             this.nodeId,
-            this.points .toValue(),
-            this.edges  .toValue(),
             this.regions.toValue());
 
         point.objects = this.value.objects.map(o => o.copy());
@@ -123,8 +123,6 @@ extends GOperator1
     isValid()
     {
         return super.isValid()
-            && this.points .isValid()
-            && this.edges  .isValid()
             && this.regions.isValid();
     }
 
@@ -134,8 +132,6 @@ extends GOperator1
     {
         super.pushValueUpdates(parse);
 
-        if (this.points ) this.points .pushValueUpdates(parse);
-        if (this.edges  ) this.edges  .pushValueUpdates(parse);
         if (this.regions) this.regions.pushValueUpdates(parse);
     }
 
@@ -145,8 +141,6 @@ extends GOperator1
     {
         super.invalidateInputs(from);
 
-        if (this.points ) this.points .invalidateInputs(from);
-        if (this.edges  ) this.edges  .invalidateInputs(from);
         if (this.regions) this.regions.invalidateInputs(from);
     }
 }

@@ -4,25 +4,25 @@ extends GValue
     nodeId;
 
     start;
-    startTangent;
     end;
+    startTangent;
     endTangent;
 
 
 
     constructor(nodeId,
-                start        = new NumberValue(0), 
-                startTangent = new PointValue (nodeId, 0, 0),
-                end          = new NumberValue(0),
-                endTangent   = new PointValue (nodeId, 0, 0))
+                start, 
+                end,
+                startTangent = PointValue.create(nodeId, 0, 0),
+                endTangent   = PointValue.create(nodeId, 0, 0))
     {
         super(VECTOR_EDGE_VALUE);
 
         this.nodeId = nodeId;
 
         this.start        = start;       
-        this.startTangent = startTangent;
         this.end          = end;         
+        this.startTangent = startTangent;
         this.endTangent   = endTangent;  
     }
 
@@ -33,8 +33,8 @@ extends GValue
         const copy = new VectorEdgeValue(
             this.nodeId,
             this.start       .copy(), 
-            this.startTangent.copy(), 
             this.end         .copy(), 
+            this.startTangent.copy(), 
             this.endTangent  .copy());
 
         return copy;
@@ -46,21 +46,21 @@ extends GValue
     {
         return edge
             && this.start       .equals(edge.start       )
-            && this.startTangent.equals(edge.startTangent)
             && this.end         .equals(edge.end         )
-            && this.endTangent  .equals(edge.endTangent  );
+            && this.startTangent.equals(edge.startTangent)
+            && this.  endTangent.equals(edge.  endTangent);
     }
 
 
 
-    static create(nodeId, start, startTangent, end, endTangent)
+    static create(nodeId, start, end, startTangent, endTangent)
     {
         return new VectorEdgeValue(
             nodeId,
-            new NumberValue(start),
-            new PointValue (nodeId, startTangent.x, startTangent.y),
-            new NumberValue(end),
-            new PointValue (nodeId, endTangent.x, endTangent.y));
+            start,
+            end,
+            PointValue.create(nodeId, startTangent.x, startTangent.y),
+            PointValue.create(nodeId,   endTangent.x,   endTangent.y));
     }
 
 
@@ -75,8 +75,8 @@ extends GValue
     hasInitValue()
     {
         return this.start       .hasInitValue()
-            && this.startTangent.hasInitValue()
             && this.end         .hasInitValue()
+            && this.startTangent.hasInitValue()
             && this.endTangent  .hasInitValue();
     }
 
@@ -85,8 +85,8 @@ extends GValue
     isValid()
     {
         return this.start       .isValid()
-            && this.startTangent.isValid()
             && this.end         .isValid()
+            && this.startTangent.isValid()
             && this.endTangent  .isValid();
     }
 
@@ -95,8 +95,8 @@ extends GValue
     toString()
     {
         return      this.start       .toString()
-            + ' ' + this.startTangent.toString()
             + ' ' + this.end         .toString()
+            + ' ' + this.startTangent.toString()
             + ' ' + this.endTangent  .toString();
     }
 
@@ -105,8 +105,8 @@ extends GValue
     toDisplayString()
     {
         return      this.start       .toDisplayString()
-            + ' ' + this.startTangent.toDisplayString()
             + ' ' + this.end         .toDisplayString()
+            + ' ' + this.startTangent.toDisplayString()
             + ' ' + this.endTangent  .toDisplayString();
     }
 
@@ -135,10 +135,10 @@ extends GValue
 
     static NaN = Object.freeze(new VectorEdgeValue(
         '',
-        NumberValue.NaN, 
-        PointValue .NaN, 
-        NumberValue.NaN, 
-        PointValue .NaN));
+        VectorVertexValue.NaN, 
+        VectorVertexValue.NaN, 
+        PointValue.create('', 0, 0), 
+        PointValue.create('', 0, 0)));
 }
 
 
@@ -159,18 +159,18 @@ function parseVectorEdgeValue(str, i = -1)
 
     const iStart = i;
 
-    const start        = parseNumberValue(str[i]); i += start       [1];
-    const startTangent = parsePointValue (str, i); i += startTangent[1];
-    const end          = parseNumberValue(str[i]); i += end         [1];
-    const endTangent   = parsePointValue (str, i); i += endTangent  [1];
+    const start        = parseVectorVertexValue(str, i); i += start       [1];
+    const end          = parseVectorVertexValue(str, i); i += end         [1];
+    const startTangent = parsePointValue       (str, i); i += startTangent[1];
+    const endTangent   = parsePointValue       (str, i); i +=   endTangent[1];
 
 
     const edge = new VectorEdgeValue(
         '', // set node ID elsewhere
         start       [0],
-        startTangent[0],
         end         [0],
-        endTangent  [0]);
+        startTangent[0],
+          endTangent[0]);
 
 
     return [edge, i - iStart];

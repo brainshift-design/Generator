@@ -18,8 +18,9 @@ extends GArithmetic
 
         copy.copyBase(this);
 
-        copy.inputs    = this.inputs.map(i => i.copy());
-        copy.operation = this.operation.copy();
+        copy.inputs = this.inputs.map(i => i.copy());
+
+        if (this.operation) copy.operation = this.operation.copy();
 
         return copy;
     }
@@ -49,8 +50,8 @@ extends GArithmetic
         
         this.updateValues =
         [
-            ['operation', op        ],
-            ['value',     this.value]
+            ['value',     this.value],
+            ['operation', op        ]
         ];
 
 

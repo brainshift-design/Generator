@@ -1,9 +1,10 @@
 class GVectorEdge
 extends GOperator1
 {
-    start        = null;
+    input0       = null;
+    input1       = null;
+
     startTangent = null;
-    end          = null;
     endTangent   = null;
 
 
@@ -21,9 +22,9 @@ extends GOperator1
 
         copy.copyBase(this);
 
-        if (this.start       ) copy.start        = this.start       .copy();
+        if (this.input0      ) copy.input0       = this.input0      .copy();
+        if (this.input1      ) copy.input1       = this.input1      .copy();
         if (this.startTangent) copy.startTangent = this.startTangent.copy();
-        if (this.end         ) copy.end          = this.end         .copy();
         if (this.endTangent  ) copy.endTangent   = this.endTangent  .copy();
 
         return copy;
@@ -37,36 +38,29 @@ extends GOperator1
             return this;
 
         
-        const start        = this.start        ? (await this.start       .eval(parse)).toValue() : null;
+        const input0       = this.input0       ? (await this.input0      .eval(parse)).toValue() : null;
+        const input1       = this.input1       ? (await this.input1      .eval(parse)).toValue() : null;
         const startTangent = this.startTangent ? (await this.startTangent.eval(parse)).toValue() : null;
-        const end          = this.end          ? (await this.end         .eval(parse)).toValue() : null;
-        const endTangent   = this.endTangent   ? (await this.endTangent  .eval(parse)).toValue() : null;
+        const   endTangent = this.  endTangent ? (await this.  endTangent.eval(parse)).toValue() : null;
 
 
-        let input = null;
 
-        if (this.input)
+        if (   input0
+            && input1
+            && startTangent
+            &&   endTangent)
         {
-            input = (await this.input.eval(parse)).toValue();
-
             this.value = new VectorEdgeValue(
                 this.nodeId,
-                start        ?? input.start,       
-                startTangent ?? input.startTangent,
-                end          ?? input.end,         
-                endTangent   ?? input.endTangent);
+                input0,
+                input1,
+                startTangent,
+                  endTangent);
         }
         else
-        {
-            this.value = new VectorEdgeValue(
-                this.nodeId, 
-                start,       
-                startTangent, 
-                end,         
-                endTangent);
-        }
+            this.value = VectorEdgeValue.NaN;
 
-       
+
         await this.evalObjects(parse);
 
 
@@ -82,28 +76,43 @@ extends GOperator1
 
     async evalObjects(parse, options = {})
     {
-        if (!this.options.enabled)
+        if (   !this.options.enabled
+            || !this.value.isValid())
             return;
             
             
         this.value.objects = [];
 
 
-        if (   this.value.start       
+        if (   this.value.start
+            && this.value.end
             && this.value.startTangent
-            && this.value.end         
-            && this.value.endTangent)
+            && this.value.  endTangent)
         {
-            // const start        = this.value.start       .value;
-            // const startTangent = this.value.startTangent.value;
-            // const end          = this.value.end         .value;
-            // const endTangent   = this.value.endTangent  .value;
+            const path = new FigmaVectorPath(
+                this.nodeId,
+                this.nodeId,
+                this.nodeName,
+                [ this.value.start,
+                  this.value.end ],
+                0,
+                0, // linear
+                0,
+                0);
 
-            // const point = new FigmaPoint(this.nodeId, this.nodeId, this.nodeName, x, y);
+            
+            const bounds = getObjBounds([path]);
 
-            // point.createDefaultTransform(x, y);
+            let x = bounds.x;
+            let y = bounds.y;
+            let w = bounds.w;
+            let h = bounds.h;
 
-            // this.value.objects = [point];
+
+            path.createDefaultTransform(x, y);
+
+
+            this.value.objects.push(path, ...path.createTransformPoints(parse, x, y, w, h));
         }
 
 
@@ -116,9 +125,9 @@ extends GOperator1
     {
         const point = new VectorEdgeValue(
             this.nodeId,
-            this.start       .toValue(),
+            this.input0 ? this.input0.toValue() : VectorVertexValue.NaN,
+            this.input1 ? this.input1.toValue() : VectorVertexValue.NaN,
             this.startTangent.toValue(),
-            this.end         .toValue(),
             this.endTangent  .toValue());
 
         point.objects = this.value.objects.map(o => o.copy());
@@ -131,9 +140,9 @@ extends GOperator1
     isValid()
     {
         return super.isValid()
-            && this.start       .isValid()
+            && this.input0      .isValid()
+            && this.input1      .isValid()
             && this.startTangent.isValid()
-            && this.end         .isValid()
             && this.endTangent  .isValid();
     }
 
@@ -143,9 +152,9 @@ extends GOperator1
     {
         super.pushValueUpdates(parse);
 
-        if (this.start       ) this.start       .pushValueUpdates(parse);
+        if (this.input0      ) this.input0      .pushValueUpdates(parse);
+        if (this.input1      ) this.input1      .pushValueUpdates(parse);
         if (this.startTangent) this.startTangent.pushValueUpdates(parse);
-        if (this.end         ) this.end         .pushValueUpdates(parse);
         if (this.endTangent  ) this.endTangent  .pushValueUpdates(parse);
     }
 
@@ -155,9 +164,9 @@ extends GOperator1
     {
         super.invalidateInputs(from);
 
-        if (this.start       ) this.start       .invalidateInputs(from);
+        if (this.input0      ) this.input0      .invalidateInputs(from);
+        if (this.input1      ) this.input1      .invalidateInputs(from);
         if (this.startTangent) this.startTangent.invalidateInputs(from);
-        if (this.end         ) this.end         .invalidateInputs(from);
         if (this.endTangent  ) this.endTangent  .invalidateInputs(from);
     }
 }

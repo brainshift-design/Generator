@@ -3,22 +3,16 @@ extends GValue
 {
     nodeId;
 
-    points; 
-    edges;  
     regions;
 
 
     constructor(nodeId,
-                points  = new ListValue(), 
-                edges   = new ListValue(),
                 regions = new ListValue())
     {
         super(VECTOR_NETWORK_VALUE);
 
-        this.nodeId = nodeId;
+        this.nodeId  = nodeId;
 
-        this.points  = points;  
-        this.edges   = edges;
         this.regions = regions; 
     }
 
@@ -28,8 +22,6 @@ extends GValue
     {
         const copy = new VectorNetworkValue(
             this.nodeId,
-            this.points .copy(), 
-            this.edges  .copy(), 
             this.regions.copy());
 
         return copy;
@@ -40,20 +32,16 @@ extends GValue
     equals(region)
     {
         return region
-            && this.points .equals(region.points )
-            && this.edges  .equals(region.edges  )
             && this.regions.equals(region.regions);
     }
 
 
 
-    static create(nodeId, points, edges, regions)
+    static create(nodeId, regions)
     {
         return new VectorNetworkValue(
             nodeId,
-            new ListValue(points ),
-            new ListValue(edges  ),
-            new ListValue(regions));
+            regions);
     }
 
 
@@ -67,36 +55,28 @@ extends GValue
 
     hasInitValue()
     {
-        return this.points .hasInitValue()
-            && this.edges  .hasInitValue()
-            && this.regions.hasInitValue();
+        return this.regions.hasInitValue();
     }
 
 
 
     isValid()
     {
-        return this.points .isValid()
-            && this.edges  .isValid()
-            && this.regions.isValid();
+        return this.regions.isValid();
     }
 
 
 
     toString()
     {
-        return      this.points .toString()
-            + ' ' + this.edges  .toString()
-            + ' ' + this.regions.toString();
+        return this.regions.toString();
     }
 
 
 
     toDisplayString()
     {
-        return      this.points .toDisplayString()
-            + ' ' + this.edges  .toDisplayString()
-            + ' ' + this.regions.toDisplayString();
+        return this.regions.toDisplayString();
     }
 
 
@@ -124,9 +104,7 @@ extends GValue
 
     static NaN = Object.freeze(new VectorNetworkValue(
         '',
-        new ListValue(), 
-        new ListValue(), 
-        new ListValue()));
+        ListValue.NaN));
 }
 
 
@@ -147,15 +125,11 @@ function parseVectorNetworkValue(str, i = -1)
 
     const iStart = i;
 
-    const points  = parseListValue(str, i); i += points [1];
-    const edges   = parseListValue(str, i); i += edges  [1];
     const regions = parseListValue(str, i); i += regions[1];
 
 
     const net = new VectorNetworkValue(
         '', // set node ID elsewhere
-        points [0],
-        edges  [0],
         regions[0]);
 
 
