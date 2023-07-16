@@ -159,6 +159,10 @@
 ../operators/shape/OpTextShape.js
 ../operators/shape/OpPoint.js
 ../operators/shape/OpVectorPath.js
+../operators/shape/OpVectorVertex.js
+../operators/shape/OpVectorEdge.js
+../operators/shape/OpVectorRegion.js
+../operators/shape/OpVectorNetwork.js
 ../operators/shape/OpShapeGroup.js
 ../operators/shape/OpFrame.js
 ../operators/shape/OpApply.js

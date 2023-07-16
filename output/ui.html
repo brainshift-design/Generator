@@ -4398,10 +4398,7 @@ a
             <div id='whatsNewBody'>
                 <h1 style='margin-top: 20px;'>What's new</h1>
 
-                <p>•  added Freeze node for getting unique values from sets</p>
-                <p>•  fixed certain values not updating properly</p>
-                <p>•  fixed Animation node stopping when deselected</p>
-                <p>•  improved animation performance</p>
+                <p>•  </p>
                 
                 <p><br/><br/><div id='chkHideWhatsNew'></div></p>
             </div>
@@ -4729,7 +4726,7 @@ a
 
 
 
-const generatorVersion = 159;
+const generatorVersion = 160;
 
 
 const MAX_INT32        = 2147483647;
@@ -9479,72 +9476,88 @@ const STYLE_VALUES =
 ];
 
 
-const COLOR_STYLE        = 'CSTL';
+const COLOR_STYLE          = 'CSTL';
  
  
-const SHAPE_VALUE        = 'SHP#'; // abstract placeholder
+const SHAPE_VALUE          = 'SHP#'; // abstract placeholder
  
-const RECTANGLE_VALUE    = 'RECT#';
-const RECTANGLE          = 'RECT'; 
-const RECTANGLE_TYPES    = [RECTANGLE_VALUE, RECTANGLE];
+const RECTANGLE_VALUE      = 'RECT#';
+const RECTANGLE            = 'RECT'; 
+const RECTANGLE_TYPES      = [RECTANGLE_VALUE, RECTANGLE];
  
-const LINE_VALUE         = 'LINE#';
-const LINE               = 'LINE'; 
-const LINE_TYPES         = [LINE_VALUE, LINE];
+const LINE_VALUE           = 'LINE#';
+const LINE                 = 'LINE'; 
+const LINE_TYPES           = [LINE_VALUE, LINE];
+   
+const ELLIPSE_VALUE        = 'ELPS#';
+const ELLIPSE              = 'ELPS'; 
+const ELLIPSE_TYPES        = [ELLIPSE_VALUE, ELLIPSE];
+ 
+const TRAPEZE_VALUE        = 'TRPZ#';
+const TRAPEZE              = 'TRPZ';
+const TRAPEZE_TYPES        = [TRAPEZE_VALUE, TRAPEZE];
+ 
+const POLYGON_VALUE        = 'POLY#';
+const POLYGON              = 'POLY'; 
+const POLYGON_TYPES        = [POLYGON_VALUE, POLYGON];
+   
+const STAR_VALUE           = 'STAR#';
+const STAR                 = 'STAR'; 
+const STAR_TYPES           = [STAR_VALUE, STAR];
+   
+const TEXT_SHAPE_VALUE     = 'TXTS#';
+const TEXT_SHAPE           = 'TXTS'; 
+const TEXT_SHAPE_TYPES     = [TEXT_SHAPE_VALUE, TEXT_SHAPE];
   
-const ELLIPSE_VALUE      = 'ELPS#';
-const ELLIPSE            = 'ELPS'; 
-const ELLIPSE_TYPES      = [ELLIPSE_VALUE, ELLIPSE];
+const POINT                = 'PT';
+const POINT_VALUE          = 'PT#';
+const POINT_TYPES          = [POINT_VALUE, POINT];
 
-const TRAPEZE_VALUE      = 'TRPZ#';
-const TRAPEZE            = 'TRPZ';
-const TRAPEZE_TYPES      = [TRAPEZE_VALUE, TRAPEZE];
-
-const POLYGON_VALUE      = 'POLY#';
-const POLYGON            = 'POLY'; 
-const POLYGON_TYPES      = [POLYGON_VALUE, POLYGON];
-  
-const STAR_VALUE         = 'STAR#';
-const STAR               = 'STAR'; 
-const STAR_TYPES         = [STAR_VALUE, STAR];
-  
-const TEXT_SHAPE_VALUE   = 'TXTS#';
-const TEXT_SHAPE         = 'TXTS'; 
-const TEXT_SHAPE_TYPES   = [TEXT_SHAPE_VALUE, TEXT_SHAPE];
+const VECTOR_PATH_VALUE    = 'VECP#';
+const VECTOR_PATH          = 'VECP'; 
+const VECTOR_PATH_TYPES    = [VECTOR_PATH_VALUE, VECTOR_PATH];
  
-const POINT              = 'PT';
-const POINT_VALUE        = 'PT#';
-const POINT_TYPES        = [POINT_VALUE, POINT];
-
-const VECTOR_PATH_VALUE  = 'VEC#';
-const VECTOR_PATH        = 'VEC'; 
-const VECTOR_PATH_TYPES  = [VECTOR_PATH_VALUE, VECTOR_PATH];
+const VECTOR_VERTEX_VALUE  = 'VECV#';
+const VECTOR_VERTEX        = 'VECV'; 
+const VECTOR_VERTEX_TYPES  = [VECTOR_VERTEX_VALUE, VECTOR_VERTEX];
  
-const SHAPE_GROUP_VALUE  = 'SGRP#';
-const SHAPE_GROUP        = 'SGRP';
-const SHAPE_GROUP_TYPES  = [SHAPE_GROUP_VALUE, SHAPE_GROUP];
+const VECTOR_EDGE_VALUE    = 'VECE#';
+const VECTOR_EDGE          = 'VECE'; 
+const VECTOR_EDGE_TYPES    = [VECTOR_EDGE_VALUE, VECTOR_EDGE];
  
-const FRAME_VALUE        = 'FRM#';
-const FRAME              = 'FRM';
-const FRAME_TYPES        = [FRAME_VALUE, FRAME];
+const VECTOR_REGION_VALUE  = 'VECR#';
+const VECTOR_REGION        = 'VECR'; 
+const VECTOR_REGION_TYPES  = [VECTOR_REGION_VALUE, VECTOR_REGION];
+ 
+const VECTOR_NETWORK_VALUE = 'VECN#';
+const VECTOR_NETWORK       = 'VECN'; 
+const VECTOR_NETWORK_TYPES = [VECTOR_NETWORK_VALUE, VECTOR_NETWORK];
+ 
+const SHAPE_GROUP_VALUE    = 'SGRP#';
+const SHAPE_GROUP          = 'SGRP';
+const SHAPE_GROUP_TYPES    = [SHAPE_GROUP_VALUE, SHAPE_GROUP];
+ 
+const FRAME_VALUE          = 'FRM#';
+const FRAME                = 'FRM';
+const FRAME_TYPES          = [FRAME_VALUE, FRAME];
  
 
-const MOVE               = 'MOVE';
-const ROTATE             = 'ROT';
-const SCALE              = 'SCALE';
-const SKEW               = 'SKEW';
+const MOVE                 = 'MOVE';
+const ROTATE               = 'ROT';
+const SCALE                = 'SCALE';
+const SKEW                 = 'SKEW';
 
-const PLACE              = 'PLACE';
-const SHAPE_APPLY        = 'APPLY';
+const PLACE                = 'PLACE';
+const SHAPE_APPLY          = 'APPLY';
   
 
-const BOOLEAN            = 'BOOL';
-const BOOLEAN_VALUE      = 'BOOL#';
+const BOOLEAN              = 'BOOL';
+const BOOLEAN_VALUE        = 'BOOL#';
 
-const BOOL_UNION         = 'BOOLU';
-const BOOL_SUBTRACT      = 'BOOLS';
-const BOOL_INTERSECT     = 'BOOLI';
-const BOOL_EXCLUDE       = 'BOOLE';
+const BOOL_UNION           = 'BOOLU';
+const BOOL_SUBTRACT        = 'BOOLS';
+const BOOL_INTERSECT       = 'BOOLI';
+const BOOL_EXCLUDE         = 'BOOLE';
 
 
 const BOOLEAN_TYPES =
@@ -9574,6 +9587,10 @@ const SHAPE_VALUES =
     TEXT_SHAPE_VALUE,
     POINT_VALUE,
     VECTOR_PATH_VALUE,
+    VECTOR_VERTEX_VALUE,
+    VECTOR_EDGE_VALUE,
+    VECTOR_REGION_VALUE,
+    VECTOR_NETWORK_VALUE,
     SHAPE_GROUP_VALUE,
     FRAME_VALUE,
     BOOLEAN_VALUE,
@@ -9602,6 +9619,10 @@ const SHAPE_TYPES =
     ...TEXT_SHAPE_TYPES,
     ...POINT_TYPES,
     ...VECTOR_PATH_TYPES,
+    ...VECTOR_VERTEX_TYPES,
+    ...VECTOR_EDGE_TYPES,
+    ...VECTOR_REGION_TYPES,
+    ...VECTOR_NETWORK_TYPES,
     ...SHAPE_GROUP_TYPES,
     ...FRAME_TYPES,
     ...BOOLEAN_TYPES,
@@ -9642,9 +9663,13 @@ const ALL_VALUES =
          TRAPEZE_VALUE,
          POLYGON_VALUE,
             STAR_VALUE,
-       TEXT_SHAPE_VALUE,
+      TEXT_SHAPE_VALUE,
            POINT_VALUE,
      VECTOR_PATH_VALUE,
+   VECTOR_VERTEX_VALUE,
+     VECTOR_EDGE_VALUE,
+   VECTOR_REGION_VALUE,
+  VECTOR_NETWORK_VALUE,
      SHAPE_GROUP_VALUE,
            FRAME_VALUE,
 
@@ -11255,6 +11280,149 @@ function getSineYSegment(_pointP, _point, _pointN)
 }
 
 
+class FigmaVectorNetwork
+extends FigmaObject
+{
+    // x;
+    // y;
+    // width;
+    // height;
+    
+    // points;
+    // closed;
+    // degree;
+
+    // pathPoints;
+
+    // pathData;
+    // winding;
+    // round;
+
+
+
+    // constructor(nodeId, objectId, objectName, points, closed, degree, winding, round)
+    // {
+    //     super(VECTOR_PATH, nodeId, objectId, objectName);
+        
+    //     this.points  = points.map(p => p.copy());
+
+    //     this.closed  = closed;
+    //     this.degree  = degree;
+    //     this.winding = winding;
+
+    //     this.round   = round;
+        
+
+    //     this.updatePathPoints();
+    //     this.updatePathData();
+    // }
+
+
+
+    // copy()
+    // {
+    //     const copy = new FigmaVectorPath(
+    //         this.nodeId,
+    //         this.objectId,
+    //         this.objectName,
+
+    //         this.points, 
+
+    //         this.closed, 
+    //         this.degree,
+    //         this.winding,
+
+    //         this.round);
+
+
+    //     copy.x      = this.x;
+    //     copy.y      = this.y;
+    //     copy.width  = this.width;
+    //     copy.height = this.height;
+
+
+    //     copy.copyBase(this);
+
+
+    //     return copy;
+    // }
+
+
+
+    // updatePoints(xform, coords)
+    // {
+    //     for (let i = 0; i < this.points.length; i++)
+    //         this.points[i] = PointValue.fromPoint(this.nodeId, transformPoint(this.points[i].toPoint(), xform, coords));
+
+    //     this.updatePathPoints();
+    //     this.updatePathData();
+    // }
+
+
+
+    // updatePathPoints()
+    // {
+    //     switch (this.degree)
+    //     {
+    //     case 0: this.pathPoints = this.points.map(p => p.toPoint());                           break;
+    //     case 1: this.pathPoints = this.points.map(p => p.toPoint());                           break;
+    //     case 2: this.pathPoints = this.points.map(p => p.toPoint());                           break;
+    //     case 3: this.pathPoints = getSmoothPoints(this.points, this.closed, getSmoothSegment); break;
+    //     case 4: this.pathPoints = getSmoothPoints(this.points, this.closed, getSineXSegment ); break;
+    //     case 5: this.pathPoints = getSmoothPoints(this.points, this.closed, getSineYSegment ); break;
+    //     }
+    // }
+
+
+
+    // updatePathData()
+    // {
+    //     let minX = Number.MAX_SAFE_INTEGER;
+    //     let minY = Number.MAX_SAFE_INTEGER;
+    //     let maxX = Number.MIN_SAFE_INTEGER;
+    //     let maxY = Number.MIN_SAFE_INTEGER;
+
+    //     for (const p of this.points)
+    //     {
+    //         minX = Math.min(minX, p.x.value);
+    //         minY = Math.min(minY, p.y.value);
+    //         maxX = Math.max(maxX, p.x.value);
+    //         maxY = Math.max(maxY, p.y.value);
+    //     }
+
+
+    //     this.x      = minX;
+    //     this.y      = minY;
+    //     this.width  = maxX - minX;
+    //     this.height = maxY - minY;
+
+    //     this.createTransformPoints(null, this.x, this.y, this.width, this.height);
+
+
+    //     this.pathData = getPathDataFromPoints(this.pathPoints, this.closed, this.degree);
+    // }
+
+
+
+    // toData()
+    // {
+    //     return [
+    //         ...super.toData(),
+   
+    //         /* 21 */ this.x,
+    //         /* 22 */ this.y,
+    //         /* 23 */ this.width,
+    //         /* 24 */ this.height,
+
+    //         /* 25 */ this.pathData,
+    //         /* 26 */ this.winding,
+    //         /* 27 */ this.round * Math.abs(this.scaleCorners)
+    //     ];
+    // }
+}
+
+
+
 class FigmaTrapeze
 extends FigmaVectorPath
 {
@@ -12136,34 +12304,38 @@ function parseValueFromType(type, value)
 {
     switch (type)
     {
-        case         LIST_VALUE: return parseListValue        (value)[0];
+        case           LIST_VALUE: return parseListValue         (value)[0];
 
-        case       NUMBER_VALUE: return parseNumberValue      (value)[0];
-        case         TEXT_VALUE: return parseTextValue        (value)[0];
-        case        COLOR_VALUE: return parseColorValue       (value)[0];
+        case         NUMBER_VALUE: return parseNumberValue       (value)[0];
+        case           TEXT_VALUE: return parseTextValue         (value)[0];
+        case          COLOR_VALUE: return parseColorValue        (value)[0];
 
-        case         FILL_VALUE: return parseFillValue        (value)[0];
-        case   COLOR_STOP_VALUE: return parseColorStopValue   (value)[0];
-        case     GRADIENT_VALUE: return parseGradientValue    (value)[0];
-        case       STROKE_VALUE: return parseStrokeValue      (value)[0];
-        case  DROP_SHADOW_VALUE: return parseDropShadowValue  (value)[0];
-        case INNER_SHADOW_VALUE: return parseInnerShadowValue (value)[0];
-        case   LAYER_BLUR_VALUE: return parseLayerBlurValue   (value)[0];
-        case    BACK_BLUR_VALUE: return parseBackBlurValue    (value)[0];
-        case   LAYER_MASK_VALUE: return parseLayerMaskValue   (value)[0];
+        case           FILL_VALUE: return parseFillValue         (value)[0];
+        case     COLOR_STOP_VALUE: return parseColorStopValue    (value)[0];
+        case       GRADIENT_VALUE: return parseGradientValue     (value)[0];
+        case         STROKE_VALUE: return parseStrokeValue       (value)[0];
+        case    DROP_SHADOW_VALUE: return parseDropShadowValue   (value)[0];
+        case   INNER_SHADOW_VALUE: return parseInnerShadowValue  (value)[0];
+        case     LAYER_BLUR_VALUE: return parseLayerBlurValue    (value)[0];
+        case      BACK_BLUR_VALUE: return parseBackBlurValue     (value)[0];
+        case     LAYER_MASK_VALUE: return parseLayerMaskValue    (value)[0];
 
-        case    RECTANGLE_VALUE: return parseRectangleValue   (value)[0];
-        case         LINE_VALUE: return parseLineValue        (value)[0];
-        case      ELLIPSE_VALUE: return parseEllipseValue     (value)[0];
-        case      TRAPEZE_VALUE: return parseTrapezeValue     (value)[0];
-        case      POLYGON_VALUE: return parsePolygonValue     (value)[0];
-        case         STAR_VALUE: return parseStarValue        (value)[0];
-        case   TEXT_SHAPE_VALUE: return parseTextShapeValue   (value)[0];
-        case        POINT_VALUE: return parsePointValue       (value)[0];
-        case  VECTOR_PATH_VALUE: return parseVectorPathValue  (value)[0];
-        case      BOOLEAN_VALUE: return parseShapeBooleanValue(value)[0];
-        case  SHAPE_GROUP_VALUE: return parseShapeGroupValue  (value)[0];
-        case        FRAME_VALUE: return parseFrameValue       (value)[0];
+        case      RECTANGLE_VALUE: return parseRectangleValue    (value)[0];
+        case           LINE_VALUE: return parseLineValue         (value)[0];
+        case        ELLIPSE_VALUE: return parseEllipseValue      (value)[0];
+        case        TRAPEZE_VALUE: return parseTrapezeValue      (value)[0];
+        case        POLYGON_VALUE: return parsePolygonValue      (value)[0];
+        case           STAR_VALUE: return parseStarValue         (value)[0];
+        case     TEXT_SHAPE_VALUE: return parseTextShapeValue    (value)[0];
+        case          POINT_VALUE: return parsePointValue        (value)[0];
+        case    VECTOR_PATH_VALUE: return parseVectorPathValue   (value)[0];
+        case  VECTOR_VERTEX_VALUE: return parseVectorVertexValue (value)[0];
+        case    VECTOR_EDGE_VALUE: return parseVectorEdgeValue   (value)[0];
+        case  VECTOR_REGION_VALUE: return parseVectorRegionValue (value)[0];
+        case VECTOR_NETWORK_VALUE: return parseVectorNetworkValue(value)[0];
+        case        BOOLEAN_VALUE: return parseShapeBooleanValue (value)[0];
+        case    SHAPE_GROUP_VALUE: return parseShapeGroupValue   (value)[0];
+        case          FRAME_VALUE: return parseFrameValue        (value)[0];
         
         default: 
             console.error('unknown type \'' + type + '\'');
@@ -12182,33 +12354,37 @@ function displayValue(type, value)
 
     switch (type)
     {
-        case         LIST_VALUE: return parseListValue        (value)[0].toDisplayString();
+        case           LIST_VALUE: return parseListValue         (value)[0].toDisplayString();
 
-        case       NUMBER_VALUE: return parseNumberValue      (value)[0].toDisplayString();
-        case         TEXT_VALUE: const val = parseTextValue   (value)[0]; return val == '' ? '\'\'' : val.toDisplayString();
-        case        COLOR_VALUE: return parseColorValue       (value)[0].toDisplayString();
-        case         FILL_VALUE: return parseFillValue        (value)[0].toDisplayString();
-        case   COLOR_STOP_VALUE: return parseColorStopValue   (value)[0].toDisplayString();
-        case     GRADIENT_VALUE: return parseGradientValue    (value)[0].toDisplayString();
-        case       STROKE_VALUE: return parseStrokeValue      (value)[0].toDisplayString();
-        case  DROP_SHADOW_VALUE: return parseDropShadowValue  (value)[0].toDisplayString();
-        case INNER_SHADOW_VALUE: return parseInnerShadowValue (value)[0].toDisplayString();
-        case   LAYER_BLUR_VALUE: return parseLayerBlurValue   (value)[0].toDisplayString();
-        case    BACK_BLUR_VALUE: return parseBackBlurValue    (value)[0].toDisplayString();
-        case   LAYER_MASK_VALUE: return parseLayerMaskValue   (value)[0].toDisplayString();
+        case         NUMBER_VALUE: return parseNumberValue       (value)[0].toDisplayString();
+        case           TEXT_VALUE: const val = parseTextValue    (value)[0]; return val == '' ? '\'\'' : val.toDisplayString();
+        case          COLOR_VALUE: return parseColorValue        (value)[0].toDisplayString();
+        case           FILL_VALUE: return parseFillValue         (value)[0].toDisplayString();
+        case     COLOR_STOP_VALUE: return parseColorStopValue    (value)[0].toDisplayString();
+        case       GRADIENT_VALUE: return parseGradientValue     (value)[0].toDisplayString();
+        case         STROKE_VALUE: return parseStrokeValue       (value)[0].toDisplayString();
+        case    DROP_SHADOW_VALUE: return parseDropShadowValue   (value)[0].toDisplayString();
+        case   INNER_SHADOW_VALUE: return parseInnerShadowValue  (value)[0].toDisplayString();
+        case     LAYER_BLUR_VALUE: return parseLayerBlurValue    (value)[0].toDisplayString();
+        case      BACK_BLUR_VALUE: return parseBackBlurValue     (value)[0].toDisplayString();
+        case     LAYER_MASK_VALUE: return parseLayerMaskValue    (value)[0].toDisplayString();
 
-        case    RECTANGLE_VALUE: return parseRectangleValue   (value)[0].toDisplayString();
-        case         LINE_VALUE: return parseLineValue        (value)[0].toDisplayString();
-        case      ELLIPSE_VALUE: return parseEllipseValue     (value)[0].toDisplayString();
-        case      TRAPEZE_VALUE: return parseTrapezeValue     (value)[0].toDisplayString();
-        case      POLYGON_VALUE: return parsePolygonValue     (value)[0].toDisplayString();
-        case         STAR_VALUE: return parseStarValue        (value)[0].toDisplayString();
-        case   TEXT_SHAPE_VALUE: return parseTextShapeValue   (value)[0].toDisplayString();
-        case        POINT_VALUE: return parsePointValue       (value)[0].toDisplayString();
-        case  VECTOR_PATH_VALUE: return parseVectorPathValue  (value)[0].toDisplayString();
-        case      BOOLEAN_VALUE: return parseShapeBooleanValue(value)[0].toDisplayString();
-        case  SHAPE_GROUP_VALUE: return parseShapeGroupValue  (value)[0].toDisplayString();
-        case        FRAME_VALUE: return parseFrameValue       (value)[0].toDisplayString();
+        case      RECTANGLE_VALUE: return parseRectangleValue    (value)[0].toDisplayString();
+        case           LINE_VALUE: return parseLineValue         (value)[0].toDisplayString();
+        case        ELLIPSE_VALUE: return parseEllipseValue      (value)[0].toDisplayString();
+        case        TRAPEZE_VALUE: return parseTrapezeValue      (value)[0].toDisplayString();
+        case        POLYGON_VALUE: return parsePolygonValue      (value)[0].toDisplayString();
+        case           STAR_VALUE: return parseStarValue         (value)[0].toDisplayString();
+        case     TEXT_SHAPE_VALUE: return parseTextShapeValue    (value)[0].toDisplayString();
+        case          POINT_VALUE: return parsePointValue        (value)[0].toDisplayString();
+        case    VECTOR_PATH_VALUE: return parseVectorPathValue   (value)[0].toDisplayString();
+        case  VECTOR_VERTEX_VALUE: return parseVectorVertexValue (value)[0].toDisplayString();
+        case    VECTOR_EDGE_VALUE: return parseVectorEdgeValue   (value)[0].toDisplayString();
+        case  VECTOR_REGION_VALUE: return parseVectorRegionValue (value)[0].toDisplayString();
+        case VECTOR_NETWORK_VALUE: return parseVectorNetworkValue(value)[0].toDisplayString();
+        case        BOOLEAN_VALUE: return parseShapeBooleanValue (value)[0].toDisplayString();
+        case    SHAPE_GROUP_VALUE: return parseShapeGroupValue   (value)[0].toDisplayString();
+        case          FRAME_VALUE: return parseFrameValue        (value)[0].toDisplayString();
     }
 
 
@@ -12221,32 +12397,36 @@ function nullFromType(type)
 {
     switch (type)
     {
-        case         LIST_VALUE: return         ListValue.NaN;
+        case            LIST_VALUE: return          ListValue.NaN;
 
-        case       NUMBER_VALUE: return       NumberValue.NaN;
-        case         TEXT_VALUE: return       new TextValue();
-        case        COLOR_VALUE: return        ColorValue.NaN;
-        case         FILL_VALUE: return         FillValue.NaN;
-        case   COLOR_STOP_VALUE: return    ColorStopValue.NaN;
-        case     GRADIENT_VALUE: return     GradientValue.NaN;
-        case       STROKE_VALUE: return       StrokeValue.NaN;
-        case  DROP_SHADOW_VALUE: return   DropShadowValue.NaN;
-        case INNER_SHADOW_VALUE: return  InnerShadowValue.NaN;
-        case   LAYER_BLUR_VALUE: return    LayerBlurValue.NaN;
-        case    BACK_BLUR_VALUE: return     BackBlurValue.NaN;
-        case   LAYER_MASK_VALUE: return    LayerMaskValue.NaN;
+        case          NUMBER_VALUE: return        NumberValue.NaN;
+        case            TEXT_VALUE: return        new TextValue();
+        case           COLOR_VALUE: return         ColorValue.NaN;
+        case            FILL_VALUE: return          FillValue.NaN;
+        case      COLOR_STOP_VALUE: return     ColorStopValue.NaN;
+        case        GRADIENT_VALUE: return      GradientValue.NaN;
+        case          STROKE_VALUE: return        StrokeValue.NaN;
+        case     DROP_SHADOW_VALUE: return    DropShadowValue.NaN;
+        case    INNER_SHADOW_VALUE: return   InnerShadowValue.NaN;
+        case      LAYER_BLUR_VALUE: return     LayerBlurValue.NaN;
+        case       BACK_BLUR_VALUE: return      BackBlurValue.NaN;
+        case      LAYER_MASK_VALUE: return     LayerMaskValue.NaN;
 
-        case    RECTANGLE_VALUE: return    RectangleValue.NaN;
-        case         LINE_VALUE: return         LineValue.NaN;
-        case      ELLIPSE_VALUE: return      EllipseValue.NaN;
-        case      POLYGON_VALUE: return      PolygonValue.NaN;
-        case         STAR_VALUE: return         StarValue.NaN;
-        case   TEXT_SHAPE_VALUE: return    TextShapeValue.NaN;
-        case        POINT_VALUE: return        PointValue.NaN;
-        case  VECTOR_PATH_VALUE: return   VectorPathValue.NaN;
-        case      BOOLEAN_VALUE: return ShapeBooleanValue.NaN;
-        case  SHAPE_GROUP_VALUE: return   ShapeGroupValue.NaN;
-        case        FRAME_VALUE: return        FrameValue.NaN;
+        case       RECTANGLE_VALUE: return     RectangleValue.NaN;
+        case            LINE_VALUE: return          LineValue.NaN;
+        case         ELLIPSE_VALUE: return       EllipseValue.NaN;
+        case         POLYGON_VALUE: return       PolygonValue.NaN;
+        case            STAR_VALUE: return          StarValue.NaN;
+        case      TEXT_SHAPE_VALUE: return     TextShapeValue.NaN;
+        case           POINT_VALUE: return         PointValue.NaN;
+        case     VECTOR_PATH_VALUE: return    VectorPathValue.NaN;
+        case   VECTOR_VERTEX_VALUE: return  VectorVertexValue.NaN;
+        case     VECTOR_EDGE_VALUE: return    VectorEdgeValue.NaN;
+        case   VECTOR_REGION_VALUE: return  VectorRegionValue.NaN;
+        case  VECTOR_NETWORK_VALUE: return VectorNetworkValue.NaN;
+        case         BOOLEAN_VALUE: return  ShapeBooleanValue.NaN;
+        case     SHAPE_GROUP_VALUE: return    ShapeGroupValue.NaN;
+        case           FRAME_VALUE: return         FrameValue.NaN;
     }
 
     consoleError('cannot determine null value from type \'' + type + '\'');
@@ -16530,6 +16710,736 @@ function parseVectorPathValue(str, i = -1)
 
     
     return [path, i - iStart];
+}
+
+
+
+class VectorVertexValue
+extends GValue
+{
+    nodeId;
+
+    x;
+    y;
+    join;
+    cap;
+    round;
+
+
+
+    constructor(nodeId,
+                x     = new NumberValue(0), 
+                y     = new NumberValue(0),
+                join  = new NumberValue(0),
+                cap   = new NumberValue(0),
+                round = new NumberValue(0))
+    {
+        super(VECTOR_VERTEX_VALUE);
+
+        this.nodeId = nodeId;
+
+        this.x     = x;
+        this.y     = y;
+        this.join  = join;
+        this.cap   = cap;
+        this.round = round;
+    }
+
+
+
+    copy()
+    {
+        const copy = new VectorVertexValue(
+            this.nodeId,
+            this.x    .copy(), 
+            this.y    .copy(), 
+            this.join .copy(), 
+            this.cap  .copy(), 
+            this.round.copy());
+
+        return copy;
+    }
+
+
+
+    equals(p)
+    {
+        return p
+            && this.x    .equals(p.x    )
+            && this.y    .equals(p.y    )
+            && this.join .equals(p.join )
+            && this.cap  .equals(p.cap  )
+            && this.round.equals(p.round);
+    }
+
+
+
+    static create(nodeId, x, y)
+    {
+        return new VectorVertexValue(
+            nodeId,
+            new NumberValue(x    ),
+            new NumberValue(y    ),
+            new NumberValue(join ),
+            new NumberValue(cap  ),
+            new NumberValue(round));
+    }
+
+
+
+    static fromPoint(nodeId, p)
+    {
+        return new VectorVertexValue(
+            nodeId,
+            new NumberValue(p.x),
+            new NumberValue(p.y),
+            new NumberValue(0),
+            new NumberValue(0),
+            new NumberValue(0));
+    }
+
+
+
+    async eval(parse)
+    {
+        return this;
+    }
+
+
+
+    hasInitValue()
+    {
+        return this.x    .hasInitValue()
+            && this.y    .hasInitValue()
+            && this.join .hasInitValue()
+            && this.cap  .hasInitValue()
+            && this.round.hasInitValue();
+    }
+
+
+
+    isValid()
+    {
+        return this.x    .isValid()
+            && this.y    .isValid()
+            && this.join .isValid()
+            && this.cap  .isValid()
+            && this.round.isValid();
+    }
+
+
+
+    toString()
+    {
+        return      this.x    .toString()
+            + ' ' + this.y    .toString()
+            + ' ' + this.join .toString()
+            + ' ' + this.cap  .toString()
+            + ' ' + this.round.toString();
+    }
+
+
+
+    toDisplayString()
+    {
+        return      this.x    .toDisplayString()
+            + ' ' + this.y    .toDisplayString()
+            + ' ' + this.join .toDisplayString()
+            + ' ' + this.cap  .toDisplayString()
+            + ' ' + this.round.toDisplayString();
+    }
+
+
+
+    toValue()
+    {
+        return this.copy();
+    }
+
+
+
+    toPoint()
+    {
+        return point(
+            this.x    .value,
+            this.y    .value,
+            this.join .value,
+            this.cap  .value,
+            this.round.value);
+    }
+
+
+
+    toJsCode(gen)
+    {
+        return '';//this.toSimpleString();
+    }
+
+
+
+    getNaN()
+    {
+        return VectorVertexValue.NaN;
+    }
+
+
+
+    static NaN = Object.freeze(new VectorVertexValue(
+        '',
+        NumberValue.NaN, 
+        NumberValue.NaN, 
+        NumberValue.NaN, 
+        NumberValue.NaN, 
+        NumberValue.NaN));
+}
+
+
+
+function parseVectorVertexValue(str, i = -1)
+{
+    if (   i <  0 && str    == NAN_DISPLAY
+        || i >= 0 && str[i] == NAN_DISPLAY)
+        return [VectorVertexValue.NaN, 1];
+
+
+    if (i < 0)
+    {
+        str = str.split(' ');
+        i   = 0;
+    }
+
+
+    const iStart = i;
+
+    const x     = parseNumberValue(str[i]); i += x    [1];
+    const y     = parseNumberValue(str[i]); i += y    [1];
+    const join  = parseNumberValue(str[i]); i += join [1];
+    const cap   = parseNumberValue(str[i]); i += cap  [1];
+    const round = parseNumberValue(str[i]); i += round[1];
+
+
+    const point = new VectorVertexValue(
+        '', // set node ID elsewhere
+        x    [0],
+        y    [0],
+        join [0],
+        cap  [0],
+        round[0]);
+
+
+    return [point, i - iStart];
+}
+
+
+
+class VectorEdgeValue
+extends GValue
+{
+    nodeId;
+
+    start;
+    startTangent;
+    end;
+    endTangent;
+
+
+
+    constructor(nodeId,
+                start        = new NumberValue(0), 
+                startTangent = new PointValue (nodeId, 0, 0),
+                end          = new NumberValue(0),
+                endTangent   = new PointValue (nodeId, 0, 0))
+    {
+        super(VECTOR_EDGE_VALUE);
+
+        this.nodeId = nodeId;
+
+        this.start        = start;       
+        this.startTangent = startTangent;
+        this.end          = end;         
+        this.endTangent   = endTangent;  
+    }
+
+
+
+    copy()
+    {
+        const copy = new VectorEdgeValue(
+            this.nodeId,
+            this.start       .copy(), 
+            this.startTangent.copy(), 
+            this.end         .copy(), 
+            this.endTangent  .copy());
+
+        return copy;
+    }
+
+
+
+    equals(edge)
+    {
+        return edge
+            && this.start       .equals(edge.start       )
+            && this.startTangent.equals(edge.startTangent)
+            && this.end         .equals(edge.end         )
+            && this.endTangent  .equals(edge.endTangent  );
+    }
+
+
+
+    static create(nodeId, start, startTangent, end, endTangent)
+    {
+        return new VectorEdgeValue(
+            nodeId,
+            new NumberValue(start),
+            new PointValue (nodeId, startTangent.x, startTangent.y),
+            new NumberValue(end),
+            new PointValue (nodeId, endTangent.x, endTangent.y));
+    }
+
+
+
+    async eval(parse)
+    {
+        return this;
+    }
+
+
+
+    hasInitValue()
+    {
+        return this.start       .hasInitValue()
+            && this.startTangent.hasInitValue()
+            && this.end         .hasInitValue()
+            && this.endTangent  .hasInitValue();
+    }
+
+
+
+    isValid()
+    {
+        return this.start       .isValid()
+            && this.startTangent.isValid()
+            && this.end         .isValid()
+            && this.endTangent  .isValid();
+    }
+
+
+
+    toString()
+    {
+        return      this.start       .toString()
+            + ' ' + this.startTangent.toString()
+            + ' ' + this.end         .toString()
+            + ' ' + this.endTangent  .toString();
+    }
+
+
+
+    toDisplayString()
+    {
+        return      this.start       .toDisplayString()
+            + ' ' + this.startTangent.toDisplayString()
+            + ' ' + this.end         .toDisplayString()
+            + ' ' + this.endTangent  .toDisplayString();
+    }
+
+
+
+    toValue()
+    {
+        return this.copy();
+    }
+
+
+
+    toJsCode(gen)
+    {
+        return '';//this.toSimpleString();
+    }
+
+
+
+    getNaN()
+    {
+        return VectorEdgeValue.NaN;
+    }
+
+
+
+    static NaN = Object.freeze(new VectorEdgeValue(
+        '',
+        NumberValue.NaN, 
+        PointValue .NaN, 
+        NumberValue.NaN, 
+        PointValue .NaN));
+}
+
+
+
+function parseVectorEdgeValue(str, i = -1)
+{
+    if (   i <  0 && str    == NAN_DISPLAY
+        || i >= 0 && str[i] == NAN_DISPLAY)
+        return [VectorEdgeValue.NaN, 1];
+
+
+    if (i < 0)
+    {
+        str = str.split(' ');
+        i   = 0;
+    }
+
+
+    const iStart = i;
+
+    const start        = parseNumberValue(str[i]); i += start       [1];
+    const startTangent = parsePointValue (str, i); i += startTangent[1];
+    const end          = parseNumberValue(str[i]); i += end         [1];
+    const endTangent   = parsePointValue (str, i); i += endTangent  [1];
+
+
+    const edge = new VectorEdgeValue(
+        '', // set node ID elsewhere
+        start       [0],
+        startTangent[0],
+        end         [0],
+        endTangent  [0]);
+
+
+    return [edge, i - iStart];
+}
+
+
+
+class VectorRegionValue
+extends GValue
+{
+    nodeId;
+
+    loops;  
+    winding;
+    props;  
+
+
+    constructor(nodeId,
+                loops   = new ListValue(), 
+                winding = new NumberValue(0),
+                props   = new ListValue())
+    {
+        super(VECTOR_REGION_VALUE);
+
+        this.nodeId = nodeId;
+
+        this.loops   = loops;  
+        this.winding = winding;
+        this.props   = props;  
+    }
+
+
+
+    copy()
+    {
+        const copy = new VectorRegionValue(
+            this.nodeId,
+            this.loops  .copy(), 
+            this.winding.copy(), 
+            this.props  .copy());
+
+        return copy;
+    }
+
+
+
+    equals(region)
+    {
+        return region
+            && this.loops  .equals(region.loops  )
+            && this.winding.equals(region.winding)
+            && this.props  .equals(region.props  );
+    }
+
+
+
+    static create(nodeId, loops, winding, props)
+    {
+        return new VectorRegionValue(
+            nodeId,
+            new   ListValue(loops),
+            new NumberValue(winding),
+            new   ListValue(props));
+    }
+
+
+
+    async eval(parse)
+    {
+        return this;
+    }
+
+
+
+    hasInitValue()
+    {
+        return this.loops  .hasInitValue()
+            && this.winding.hasInitValue()
+            && this.props  .hasInitValue();
+    }
+
+
+
+    isValid()
+    {
+        return this.loops  .isValid()
+            && this.winding.isValid()
+            && this.props  .isValid();
+    }
+
+
+
+    toString()
+    {
+        return      this.loops  .toString()
+            + ' ' + this.winding.toString()
+            + ' ' + this.props  .toString();
+    }
+
+
+
+    toDisplayString()
+    {
+        return      this.loops  .toDisplayString()
+            + ' ' + this.winding.toDisplayString()
+            + ' ' + this.props  .toDisplayString();
+    }
+
+
+
+    toValue()
+    {
+        return this.copy();
+    }
+
+
+
+    toJsCode(gen)
+    {
+        return '';//this.toSimpleString();
+    }
+
+
+
+    getNaN()
+    {
+        return VectorEdgeValue.NaN;
+    }
+
+
+
+    static NaN = Object.freeze(new VectorRegionValue(
+        '',
+        new ListValue(), 
+        NumberValue.NaN, 
+        new ListValue()));
+}
+
+
+
+function parseVectorRegionValue(str, i = -1)
+{
+    if (   i <  0 && str    == NAN_DISPLAY
+        || i >= 0 && str[i] == NAN_DISPLAY)
+        return [VectorRegionValue.NaN, 1];
+
+
+    if (i < 0)
+    {
+        str = str.split(' ');
+        i   = 0;
+    }
+
+
+    const iStart = i;
+
+    const loops   = parseListValue (str, i); i += loops  [1];
+    const winding = parsePointValue(str[i]); i += winding[1];
+    const props   = parsePointValue(str, i); i += props  [1];
+
+
+    const region = new VectorRegionValue(
+        '', // set node ID elsewhere
+        loops  [0],
+        winding[0],
+        props  [0]);
+
+
+    return [region, i - iStart];
+}
+
+
+
+class VectorNetworkValue
+extends GValue
+{
+    nodeId;
+
+    points; 
+    edges;  
+    regions;
+
+
+    constructor(nodeId,
+                points  = new ListValue(), 
+                edges   = new ListValue(),
+                regions = new ListValue())
+    {
+        super(VECTOR_NETWORK_VALUE);
+
+        this.nodeId = nodeId;
+
+        this.points  = points;  
+        this.edges   = edges;
+        this.regions = regions; 
+    }
+
+
+
+    copy()
+    {
+        const copy = new VectorNetworkValue(
+            this.nodeId,
+            this.points .copy(), 
+            this.edges  .copy(), 
+            this.regions.copy());
+
+        return copy;
+    }
+
+
+
+    equals(region)
+    {
+        return region
+            && this.points .equals(region.points )
+            && this.edges  .equals(region.edges  )
+            && this.regions.equals(region.regions);
+    }
+
+
+
+    static create(nodeId, points, edges, regions)
+    {
+        return new VectorNetworkValue(
+            nodeId,
+            new ListValue(points ),
+            new ListValue(edges  ),
+            new ListValue(regions));
+    }
+
+
+
+    async eval(parse)
+    {
+        return this;
+    }
+
+
+
+    hasInitValue()
+    {
+        return this.points .hasInitValue()
+            && this.edges  .hasInitValue()
+            && this.regions.hasInitValue();
+    }
+
+
+
+    isValid()
+    {
+        return this.points .isValid()
+            && this.edges  .isValid()
+            && this.regions.isValid();
+    }
+
+
+
+    toString()
+    {
+        return      this.points .toString()
+            + ' ' + this.edges  .toString()
+            + ' ' + this.regions.toString();
+    }
+
+
+
+    toDisplayString()
+    {
+        return      this.points .toDisplayString()
+            + ' ' + this.edges  .toDisplayString()
+            + ' ' + this.regions.toDisplayString();
+    }
+
+
+
+    toValue()
+    {
+        return this.copy();
+    }
+
+
+
+    toJsCode(gen)
+    {
+        return '';//this.toSimpleString();
+    }
+
+
+
+    getNaN()
+    {
+        return VectorNetworkValue.NaN;
+    }
+
+
+
+    static NaN = Object.freeze(new VectorNetworkValue(
+        '',
+        new ListValue(), 
+        new ListValue(), 
+        new ListValue()));
+}
+
+
+
+function parseVectorNetworkValue(str, i = -1)
+{
+    if (   i <  0 && str    == NAN_DISPLAY
+        || i >= 0 && str[i] == NAN_DISPLAY)
+        return [VectorNetworkValue.NaN, 1];
+
+
+    if (i < 0)
+    {
+        str = str.split(' ');
+        i   = 0;
+    }
+
+
+    const iStart = i;
+
+    const points  = parseListValue(str, i); i += points [1];
+    const edges   = parseListValue(str, i); i += edges  [1];
+    const regions = parseListValue(str, i); i += regions[1];
+
+
+    const net = new VectorNetworkValue(
+        '', // set node ID elsewhere
+        points [0],
+        edges  [0],
+        regions[0]);
+
+
+    return [net, i - iStart];
 }
 
 
@@ -29313,6 +30223,655 @@ extends GShape
 }
 
 
+class GVectorVertex
+extends GOperator1
+{
+    x     = null;
+    y     = null;
+    join  = null;
+    cap   = null;
+    round = null;
+
+
+
+    constructor(nodeId, options)
+    {
+        super(VECTOR_VERTEX, nodeId, options);
+    }
+
+
+
+    copy()
+    {
+        const copy = new GVectorVertex(this.nodeId, this.options);
+
+        copy.copyBase(this);
+
+        if (this.x    ) copy.x     = this.x    .copy();
+        if (this.y    ) copy.y     = this.y    .copy();
+        if (this.join ) copy.join  = this.join .copy();
+        if (this.cap  ) copy.cap   = this.cap  .copy();
+        if (this.round) copy.round = this.round.copy();
+
+        return copy;
+    }
+
+
+
+    async eval(parse)
+    {
+        if (this.isCached())
+            return this;
+
+        
+        const x     = this.x     ? (await this.x    .eval(parse)).toValue() : null;
+        const y     = this.y     ? (await this.y    .eval(parse)).toValue() : null;
+        const join  = this.join  ? (await this.join .eval(parse)).toValue() : null;
+        const cap   = this.cap   ? (await this.cap  .eval(parse)).toValue() : null;
+        const round = this.round ? (await this.round.eval(parse)).toValue() : null;
+
+
+        let input = null;
+
+        if (this.input)
+        {
+            input = (await this.input.eval(parse)).toValue();
+
+            this.value = new VectorVertexValue(
+                this.nodeId,
+                x     ?? input.x,
+                y     ?? input.y,
+                join  ?? input.join,
+                cap   ?? input.cap,
+                round ?? input.round);
+        }
+        else
+        {
+            this.value = new VectorVertexValue(
+                this.nodeId, 
+                x, 
+                y, 
+                join, 
+                cap, 
+                round);
+        }
+
+       
+        await this.evalObjects(parse);
+
+
+        this.updateValues = [['value', this.value]];
+
+
+        this.validate();
+
+        return this;
+    }
+
+
+
+    async evalObjects(parse, options = {})
+    {
+        if (!this.options.enabled)
+            return;
+            
+            
+        this.value.objects = [];
+
+
+        if (   this.value.x    
+            && this.value.y    
+            && this.value.join 
+            && this.value.cap  
+            && this.value.round)
+        {
+            const x     = this.value.x    .value;
+            const y     = this.value.y    .value;
+            const join  = this.value.join .value;
+            const cap   = this.value.cap  .value;
+            const round = this.value.round.value;
+
+            const point = new FigmaPoint(this.nodeId, this.nodeId, this.nodeName, x, y);
+
+            point.createDefaultTransform(x, y);
+
+            this.value.objects = [point];
+        }
+
+
+        await super.evalObjects(parse);
+    }
+
+
+
+    toValue()
+    {
+        const point = new VectorVertexValue(
+            this.nodeId,
+            this.x    .toValue(),
+            this.y    .toValue(),
+            this.join .toValue(),
+            this.cap  .toValue(),
+            this.round.toValue());
+
+        point.objects = this.value.objects.map(o => o.copy());
+
+        return point;
+    }
+
+
+
+    isValid()
+    {
+        return super.isValid()
+            && this.x    .isValid()
+            && this.y    .isValid()
+            && this.join .isValid()
+            && this.cap  .isValid()
+            && this.round.isValid();
+    }
+
+
+
+    pushValueUpdates(parse)
+    {
+        super.pushValueUpdates(parse);
+
+        if (this.x    ) this.x    .pushValueUpdates(parse);
+        if (this.y    ) this.y    .pushValueUpdates(parse);
+        if (this.join ) this.join .pushValueUpdates(parse);
+        if (this.cap  ) this.cap  .pushValueUpdates(parse);
+        if (this.round) this.round.pushValueUpdates(parse);
+    }
+
+
+
+    invalidateInputs(from)
+    {
+        super.invalidateInputs(from);
+
+        if (this.x    ) this.x    .invalidateInputs(from);
+        if (this.y    ) this.y    .invalidateInputs(from);
+        if (this.join ) this.join .invalidateInputs(from);
+        if (this.cap  ) this.cap  .invalidateInputs(from);
+        if (this.round) this.round.invalidateInputs(from);
+    }
+}
+
+
+class GVectorEdge
+extends GOperator1
+{
+    start        = null;
+    startTangent = null;
+    end          = null;
+    endTangent   = null;
+
+
+
+    constructor(nodeId, options)
+    {
+        super(VECTOR_EDGE, nodeId, options);
+    }
+
+
+
+    copy()
+    {
+        const copy = new GVectorEdge(this.nodeId, this.options);
+
+        copy.copyBase(this);
+
+        if (this.start       ) copy.start        = this.start       .copy();
+        if (this.startTangent) copy.startTangent = this.startTangent.copy();
+        if (this.end         ) copy.end          = this.end         .copy();
+        if (this.endTangent  ) copy.endTangent   = this.endTangent  .copy();
+
+        return copy;
+    }
+
+
+
+    async eval(parse)
+    {
+        if (this.isCached())
+            return this;
+
+        
+        const start        = this.start        ? (await this.start       .eval(parse)).toValue() : null;
+        const startTangent = this.startTangent ? (await this.startTangent.eval(parse)).toValue() : null;
+        const end          = this.end          ? (await this.end         .eval(parse)).toValue() : null;
+        const endTangent   = this.endTangent   ? (await this.endTangent  .eval(parse)).toValue() : null;
+
+
+        let input = null;
+
+        if (this.input)
+        {
+            input = (await this.input.eval(parse)).toValue();
+
+            this.value = new VectorEdgeValue(
+                this.nodeId,
+                start        ?? input.start,       
+                startTangent ?? input.startTangent,
+                end          ?? input.end,         
+                endTangent   ?? input.endTangent);
+        }
+        else
+        {
+            this.value = new VectorEdgeValue(
+                this.nodeId, 
+                start,       
+                startTangent, 
+                end,         
+                endTangent);
+        }
+
+       
+        await this.evalObjects(parse);
+
+
+        this.updateValues = [['value', this.value]];
+
+
+        this.validate();
+
+        return this;
+    }
+
+
+
+    async evalObjects(parse, options = {})
+    {
+        if (!this.options.enabled)
+            return;
+            
+            
+        this.value.objects = [];
+
+
+        if (   this.value.start       
+            && this.value.startTangent
+            && this.value.end         
+            && this.value.endTangent)
+        {
+            // const start        = this.value.start       .value;
+            // const startTangent = this.value.startTangent.value;
+            // const end          = this.value.end         .value;
+            // const endTangent   = this.value.endTangent  .value;
+
+            // const point = new FigmaPoint(this.nodeId, this.nodeId, this.nodeName, x, y);
+
+            // point.createDefaultTransform(x, y);
+
+            // this.value.objects = [point];
+        }
+
+
+        await super.evalObjects(parse);
+    }
+
+
+
+    toValue()
+    {
+        const point = new VectorEdgeValue(
+            this.nodeId,
+            this.start       .toValue(),
+            this.startTangent.toValue(),
+            this.end         .toValue(),
+            this.endTangent  .toValue());
+
+        point.objects = this.value.objects.map(o => o.copy());
+
+        return point;
+    }
+
+
+
+    isValid()
+    {
+        return super.isValid()
+            && this.start       .isValid()
+            && this.startTangent.isValid()
+            && this.end         .isValid()
+            && this.endTangent  .isValid();
+    }
+
+
+
+    pushValueUpdates(parse)
+    {
+        super.pushValueUpdates(parse);
+
+        if (this.start       ) this.start       .pushValueUpdates(parse);
+        if (this.startTangent) this.startTangent.pushValueUpdates(parse);
+        if (this.end         ) this.end         .pushValueUpdates(parse);
+        if (this.endTangent  ) this.endTangent  .pushValueUpdates(parse);
+    }
+
+
+
+    invalidateInputs(from)
+    {
+        super.invalidateInputs(from);
+
+        if (this.start       ) this.start       .invalidateInputs(from);
+        if (this.startTangent) this.startTangent.invalidateInputs(from);
+        if (this.end         ) this.end         .invalidateInputs(from);
+        if (this.endTangent  ) this.endTangent  .invalidateInputs(from);
+    }
+}
+
+
+class GVectorRegion
+extends GOperator1
+{
+    loops   = null;
+    winding = null;
+    props   = null;
+
+
+
+    constructor(nodeId, options)
+    {
+        super(VECTOR_REGION, nodeId, options);
+    }
+
+
+
+    copy()
+    {
+        const copy = new GVectorRegion(this.nodeId, this.options);
+
+        copy.copyBase(this);
+
+        if (this.loops  ) copy.loops   = this.loops  .copy();
+        if (this.winding) copy.winding = this.winding.copy();
+        if (this.props  ) copy.props   = this.props  .copy();
+
+        return copy;
+    }
+
+
+
+    async eval(parse)
+    {
+        if (this.isCached())
+            return this;
+
+        
+        const loops   = this.loops   ? (await this.loops  .eval(parse)).toValue() : null;
+        const winding = this.winding ? (await this.winding.eval(parse)).toValue() : null;
+        const props   = this.props   ? (await this.props  .eval(parse)).toValue() : null;
+
+
+        let input = null;
+
+        if (this.input)
+        {
+            input = (await this.input.eval(parse)).toValue();
+
+            this.value = new VectorRegionValue(
+                this.nodeId,
+                loops   ?? input.loops,  
+                winding ?? input.winding,
+                props   ?? input.props);  
+        }
+        else
+        {
+            this.value = new VectorRegionValue(
+                this.nodeId, 
+                loops,       
+                winding, 
+                props);
+        }
+
+       
+        await this.evalObjects(parse);
+
+
+        this.updateValues = [['value', this.value]];
+
+
+        this.validate();
+
+        return this;
+    }
+
+
+
+    async evalObjects(parse, options = {})
+    {
+        if (!this.options.enabled)
+            return;
+            
+            
+        this.value.objects = [];
+
+
+        if (   this.value.loops    
+            && this.value.winding
+            && this.value.props)
+        {
+            // const loops   = this.value.loops  .value;
+            // const winding = this.value.winding.value;
+            // const props   = this.value.props  .value;
+
+            // const point = new FigmaPoint(this.nodeId, this.nodeId, this.nodeName, x, y);
+
+            // point.createDefaultTransform(x, y);
+
+            // this.value.objects = [point];
+        }
+
+
+        await super.evalObjects(parse);
+    }
+
+
+
+    toValue()
+    {
+        const point = new VectorRegionValue(
+            this.nodeId,
+            this.loops  .toValue(),
+            this.winding.toValue(),
+            this.props  .toValue());
+
+        point.objects = this.value.objects.map(o => o.copy());
+
+        return point;
+    }
+
+
+
+    isValid()
+    {
+        return super.isValid()
+            && this.loops  .isValid()
+            && this.winding.isValid()
+            && this.props  .isValid();
+    }
+
+
+
+    pushValueUpdates(parse)
+    {
+        super.pushValueUpdates(parse);
+
+        if (this.loops  ) this.loops  .pushValueUpdates(parse);
+        if (this.winding) this.winding.pushValueUpdates(parse);
+        if (this.props  ) this.props  .pushValueUpdates(parse);
+    }
+
+
+
+    invalidateInputs(from)
+    {
+        super.invalidateInputs(from);
+
+        if (this.loops  ) this.loops  .invalidateInputs(from);
+        if (this.winding) this.winding.invalidateInputs(from);
+        if (this.props  ) this.props  .invalidateInputs(from);
+    }
+}
+
+
+class GVectorNetwork
+extends GOperator1
+{
+    points  = null;
+    edges   = null;
+    regions = null;
+
+
+
+    constructor(nodeId, options)
+    {
+        super(VECTOR_NETWORK, nodeId, options);
+    }
+
+
+
+    copy()
+    {
+        const copy = new GVectorNetwork(this.nodeId, this.options);
+
+        copy.copyBase(this);
+
+        if (this.points ) copy.points  = this.points .copy();
+        if (this.edges  ) copy.edges   = this.edges  .copy();
+        if (this.regions) copy.regions = this.regions.copy();
+
+        return copy;
+    }
+
+
+
+    async eval(parse)
+    {
+        if (this.isCached())
+            return this;
+
+        
+        const points  = this.points  ? (await this.points .eval(parse)).toValue() : null;
+        const edges   = this.edges   ? (await this.edges  .eval(parse)).toValue() : null;
+        const regions = this.regions ? (await this.regions.eval(parse)).toValue() : null;
+
+
+        let input = null;
+
+        if (this.input)
+        {
+            input = (await this.input.eval(parse)).toValue();
+
+            this.value = new VectorNetworkValue(
+                this.nodeId,
+                points  ?? input.points,  
+                edges   ?? input.edges,
+                regions ?? input.regions);
+        }
+        else
+        {
+            this.value = new VectorNetworkValue(
+                this.nodeId, 
+                points,       
+                edges, 
+                regions);
+        }
+
+       
+        await this.evalObjects(parse);
+
+
+        this.updateValues = [['value', this.value]];
+
+
+        this.validate();
+
+        return this;
+    }
+
+
+
+    async evalObjects(parse, options = {})
+    {
+        if (!this.options.enabled)
+            return;
+            
+            
+        this.value.objects = [];
+
+
+        if (   this.value.points   
+            && this.value.edges  
+            && this.value.regions)
+        {
+            // const points  = this.value.points .value;
+            // const edges   = this.value.edges  .value;
+            // const regions = this.value.regions.value;
+
+            // const point = new FigmaVectorNetwork(this.nodeId, this.nodeId, this.nodeName, x, y);
+
+            // point.createDefaultTransform(x, y);
+
+            // this.value.objects = [point];
+        }
+
+
+        await super.evalObjects(parse);
+    }
+
+
+
+    toValue()
+    {
+        const point = new VectorNetworkValue(
+            this.nodeId,
+            this.points .toValue(),
+            this.edges  .toValue(),
+            this.regions.toValue());
+
+        point.objects = this.value.objects.map(o => o.copy());
+
+        return point;
+    }
+
+
+
+    isValid()
+    {
+        return super.isValid()
+            && this.points .isValid()
+            && this.edges  .isValid()
+            && this.regions.isValid();
+    }
+
+
+
+    pushValueUpdates(parse)
+    {
+        super.pushValueUpdates(parse);
+
+        if (this.points ) this.points .pushValueUpdates(parse);
+        if (this.edges  ) this.edges  .pushValueUpdates(parse);
+        if (this.regions) this.regions.pushValueUpdates(parse);
+    }
+
+
+
+    invalidateInputs(from)
+    {
+        super.invalidateInputs(from);
+
+        if (this.points ) this.points .invalidateInputs(from);
+        if (this.edges  ) this.edges  .invalidateInputs(from);
+        if (this.regions) this.regions.invalidateInputs(from);
+    }
+}
+
+
 class GShapeGroup
 extends GShapeBase
 {
@@ -35434,6 +36993,237 @@ function genParseVectorPath(parse)
 
 
 
+function genParseVectorVertexValue(parse)
+{
+    parse.pos++; // VECTOR_POINT_VALUE
+
+    const point = parse.move();
+
+    if (parse.settings.logRequests) 
+        logReqValue(VECTOR_VERTEX_VALUE, point, parse);
+
+    return parseVectorVertexValue(point)[0];
+}
+
+
+
+function genParseVectorVertex(parse)
+{
+    const [, nodeId, options, ignore] = genParseNodeStart(parse);
+
+
+    const point = new GVectorVertex(nodeId, options);
+
+
+    let nInputs = -1;
+
+    if (!ignore)
+    {
+        nInputs = parseInt(parse.move());
+        consoleAssert(nInputs => 0 && nInputs <= 1, 'nInputs must be [0, 1]');
+    }
+
+
+    if (parse.settings.logRequests) 
+        logReq(point, parse, ignore);
+
+
+    if (ignore) 
+    {
+        genParseNodeEnd(parse, point);
+        return parse.parsedNodes.find(n => n.nodeId == nodeId);
+    }
+
+
+    parse.nTab++;
+
+
+    if (nInputs == 1)
+        point.input = genParse(parse);
+
+
+    const nParamIds = genParseParamCount(parse);
+
+    for (let i = 0; i < nParamIds; i++)
+    {
+        const paramId = genParseParamId(parse);
+
+        parse.inParam = true;
+
+        switch (paramId)
+        {
+        case 'x':     point.x     = genParse(parse); break;
+        case 'y':     point.y     = genParse(parse); break;
+        case 'join':  point.join  = genParse(parse); break;
+        case 'cap':   point.cap   = genParse(parse); break;
+        case 'round': point.round = genParse(parse); break;
+        }
+    }
+
+
+    parse.inParam = false;
+    parse.nTab--;
+
+
+    genParseNodeEnd(parse, point);
+    return point;
+}
+
+
+
+function genParseVectorEdgeValue(parse)
+{
+    parse.pos++; // VECTOR_EDGE_VALUE
+
+    const edge = parse.move();
+
+    if (parse.settings.logRequests) 
+        logReqValue(VECTOR_EDGE_VALUE, edge, parse);
+
+    return parseVectorEdgeValue(edge)[0];
+}
+
+
+
+function genParseVectorEdge(parse)
+{
+    const [, nodeId, options, ignore] = genParseNodeStart(parse);
+
+
+    const edge = new GVectorEdge(nodeId, options);
+
+
+    let nInputs = -1;
+
+    if (!ignore)
+    {
+        nInputs = parseInt(parse.move());
+        consoleAssert(nInputs => 0 && nInputs <= 1, 'nInputs must be [0, 1]');
+    }
+
+
+    if (parse.settings.logRequests) 
+        logReq(edge, parse, ignore);
+
+
+    if (ignore) 
+    {
+        genParseNodeEnd(parse, edge);
+        return parse.parsedNodes.find(n => n.nodeId == nodeId);
+    }
+
+
+    parse.nTab++;
+
+
+    if (nInputs == 1)
+        edge.input = genParse(parse);
+
+
+    const nParamIds = genParseParamCount(parse);
+
+    for (let i = 0; i < nParamIds; i++)
+    {
+        const paramId = genParseParamId(parse);
+
+        parse.inParam = true;
+
+        switch (paramId)
+        {
+        case 'start':        edge.start        = genParse(parse); break;
+        case 'startTangent': edge.startTangent = genParse(parse); break;
+        case 'end':          edge.end          = genParse(parse); break;
+        case 'endTangent':   edge.endTangent   = genParse(parse); break;
+        }
+    }
+
+
+    parse.inParam = false;
+    parse.nTab--;
+
+
+    genParseNodeEnd(parse, edge);
+    return edge;
+}
+
+
+
+function genParseVectorRegionValue(parse)
+{
+    parse.pos++; // VECTOR_REGION_VALUE
+
+    const region = parse.move();
+
+    if (parse.settings.logRequests) 
+        logReqValue(VECTOR_REGION_VALUE, region, parse);
+
+    return parseVectorRegionValue(region)[0];
+}
+
+
+
+function genParseVectorRegion(parse)
+{
+    const [, nodeId, options, ignore] = genParseNodeStart(parse);
+
+
+    const region = new GVectorRegion(nodeId, options);
+
+
+    let nInputs = -1;
+
+    if (!ignore)
+    {
+        nInputs = parseInt(parse.move());
+        consoleAssert(nInputs => 0 && nInputs <= 1, 'nInputs must be [0, 1]');
+    }
+
+
+    if (parse.settings.logRequests) 
+        logReq(region, parse, ignore);
+
+
+    if (ignore) 
+    {
+        genParseNodeEnd(parse, region);
+        return parse.parsedNodes.find(n => n.nodeId == nodeId);
+    }
+
+
+    parse.nTab++;
+
+
+    if (nInputs == 1)
+        region.input = genParse(parse);
+
+
+    const nParamIds = genParseParamCount(parse);
+
+    for (let i = 0; i < nParamIds; i++)
+    {
+        const paramId = genParseParamId(parse);
+
+        parse.inParam = true;
+
+        switch (paramId)
+        {
+        case 'loops':   region.loops   = genParse(parse); break;
+        case 'winding': region.winding = genParse(parse); break;
+        case 'props':   region.props   = genParse(parse); break;
+        }
+    }
+
+
+    parse.inParam = false;
+    parse.nTab--;
+
+
+    genParseNodeEnd(parse, region);
+    return region;
+}
+
+
+
 function genParseShapeBoolean(parse)
 {
     const [, nodeId, options, ignore] = genParseNodeStart(parse);
@@ -36961,6 +38751,15 @@ function genParse(parse, inParam = true)
     else if (parse.next == POINT                  ) result = genParsePoint            (parse);
     else if (parse.next == VECTOR_PATH_VALUE      ) result = genParseVectorPathValue  (parse);
     else if (parse.next == VECTOR_PATH            ) result = genParseVectorPath       (parse);
+    
+    else if (parse.next == VECTOR_VERTEX_VALUE     ) result = genParseVectorVertexValue (parse);
+    else if (parse.next == VECTOR_VERTEX           ) result = genParseVectorVertex      (parse);
+    else if (parse.next == VECTOR_EDGE_VALUE      ) result = genParseVectorEdgeValue  (parse);
+    else if (parse.next == VECTOR_EDGE            ) result = genParseVectorEdge       (parse);
+    else if (parse.next == VECTOR_REGION_VALUE    ) result = genParseVectorRegionValue(parse);
+    else if (parse.next == VECTOR_REGION          ) result = genParseVectorRegion     (parse);
+    else if (parse.next == VECTOR_NETWORK_VALUE       ) result = genParseVectorNetworkValue   (parse);
+    else if (parse.next == VECTOR_NETWORK             ) result = genParseVectorNetwork        (parse);
 
     else if (parse.next == BOOLEAN_VALUE          ) result = genParseShapeBooleanValue(parse);
     else if (parse.next == BOOLEAN                ) result = genParseShapeBoolean     (parse);
@@ -40264,7 +42063,7 @@ onerror = (event, source, line, pos, error) =>
 };
 
 
-const generatorVersion = 159;
+const generatorVersion = 160;
 
 
 const MAX_INT32        = 2147483647;
@@ -47198,72 +48997,88 @@ const STYLE_VALUES =
 ];
 
 
-const COLOR_STYLE        = 'CSTL';
+const COLOR_STYLE          = 'CSTL';
  
  
-const SHAPE_VALUE        = 'SHP#'; // abstract placeholder
+const SHAPE_VALUE          = 'SHP#'; // abstract placeholder
  
-const RECTANGLE_VALUE    = 'RECT#';
-const RECTANGLE          = 'RECT'; 
-const RECTANGLE_TYPES    = [RECTANGLE_VALUE, RECTANGLE];
+const RECTANGLE_VALUE      = 'RECT#';
+const RECTANGLE            = 'RECT'; 
+const RECTANGLE_TYPES      = [RECTANGLE_VALUE, RECTANGLE];
  
-const LINE_VALUE         = 'LINE#';
-const LINE               = 'LINE'; 
-const LINE_TYPES         = [LINE_VALUE, LINE];
+const LINE_VALUE           = 'LINE#';
+const LINE                 = 'LINE'; 
+const LINE_TYPES           = [LINE_VALUE, LINE];
+   
+const ELLIPSE_VALUE        = 'ELPS#';
+const ELLIPSE              = 'ELPS'; 
+const ELLIPSE_TYPES        = [ELLIPSE_VALUE, ELLIPSE];
+ 
+const TRAPEZE_VALUE        = 'TRPZ#';
+const TRAPEZE              = 'TRPZ';
+const TRAPEZE_TYPES        = [TRAPEZE_VALUE, TRAPEZE];
+ 
+const POLYGON_VALUE        = 'POLY#';
+const POLYGON              = 'POLY'; 
+const POLYGON_TYPES        = [POLYGON_VALUE, POLYGON];
+   
+const STAR_VALUE           = 'STAR#';
+const STAR                 = 'STAR'; 
+const STAR_TYPES           = [STAR_VALUE, STAR];
+   
+const TEXT_SHAPE_VALUE     = 'TXTS#';
+const TEXT_SHAPE           = 'TXTS'; 
+const TEXT_SHAPE_TYPES     = [TEXT_SHAPE_VALUE, TEXT_SHAPE];
   
-const ELLIPSE_VALUE      = 'ELPS#';
-const ELLIPSE            = 'ELPS'; 
-const ELLIPSE_TYPES      = [ELLIPSE_VALUE, ELLIPSE];
+const POINT                = 'PT';
+const POINT_VALUE          = 'PT#';
+const POINT_TYPES          = [POINT_VALUE, POINT];
 
-const TRAPEZE_VALUE      = 'TRPZ#';
-const TRAPEZE            = 'TRPZ';
-const TRAPEZE_TYPES      = [TRAPEZE_VALUE, TRAPEZE];
-
-const POLYGON_VALUE      = 'POLY#';
-const POLYGON            = 'POLY'; 
-const POLYGON_TYPES      = [POLYGON_VALUE, POLYGON];
-  
-const STAR_VALUE         = 'STAR#';
-const STAR               = 'STAR'; 
-const STAR_TYPES         = [STAR_VALUE, STAR];
-  
-const TEXT_SHAPE_VALUE   = 'TXTS#';
-const TEXT_SHAPE         = 'TXTS'; 
-const TEXT_SHAPE_TYPES   = [TEXT_SHAPE_VALUE, TEXT_SHAPE];
+const VECTOR_PATH_VALUE    = 'VECP#';
+const VECTOR_PATH          = 'VECP'; 
+const VECTOR_PATH_TYPES    = [VECTOR_PATH_VALUE, VECTOR_PATH];
  
-const POINT              = 'PT';
-const POINT_VALUE        = 'PT#';
-const POINT_TYPES        = [POINT_VALUE, POINT];
-
-const VECTOR_PATH_VALUE  = 'VEC#';
-const VECTOR_PATH        = 'VEC'; 
-const VECTOR_PATH_TYPES  = [VECTOR_PATH_VALUE, VECTOR_PATH];
+const VECTOR_VERTEX_VALUE  = 'VECV#';
+const VECTOR_VERTEX        = 'VECV'; 
+const VECTOR_VERTEX_TYPES  = [VECTOR_VERTEX_VALUE, VECTOR_VERTEX];
  
-const SHAPE_GROUP_VALUE  = 'SGRP#';
-const SHAPE_GROUP        = 'SGRP';
-const SHAPE_GROUP_TYPES  = [SHAPE_GROUP_VALUE, SHAPE_GROUP];
+const VECTOR_EDGE_VALUE    = 'VECE#';
+const VECTOR_EDGE          = 'VECE'; 
+const VECTOR_EDGE_TYPES    = [VECTOR_EDGE_VALUE, VECTOR_EDGE];
  
-const FRAME_VALUE        = 'FRM#';
-const FRAME              = 'FRM';
-const FRAME_TYPES        = [FRAME_VALUE, FRAME];
+const VECTOR_REGION_VALUE  = 'VECR#';
+const VECTOR_REGION        = 'VECR'; 
+const VECTOR_REGION_TYPES  = [VECTOR_REGION_VALUE, VECTOR_REGION];
+ 
+const VECTOR_NETWORK_VALUE = 'VECN#';
+const VECTOR_NETWORK       = 'VECN'; 
+const VECTOR_NETWORK_TYPES = [VECTOR_NETWORK_VALUE, VECTOR_NETWORK];
+ 
+const SHAPE_GROUP_VALUE    = 'SGRP#';
+const SHAPE_GROUP          = 'SGRP';
+const SHAPE_GROUP_TYPES    = [SHAPE_GROUP_VALUE, SHAPE_GROUP];
+ 
+const FRAME_VALUE          = 'FRM#';
+const FRAME                = 'FRM';
+const FRAME_TYPES          = [FRAME_VALUE, FRAME];
  
 
-const MOVE               = 'MOVE';
-const ROTATE             = 'ROT';
-const SCALE              = 'SCALE';
-const SKEW               = 'SKEW';
+const MOVE                 = 'MOVE';
+const ROTATE               = 'ROT';
+const SCALE                = 'SCALE';
+const SKEW                 = 'SKEW';
 
-const PLACE              = 'PLACE';
-const SHAPE_APPLY        = 'APPLY';
+const PLACE                = 'PLACE';
+const SHAPE_APPLY          = 'APPLY';
   
 
-const BOOLEAN            = 'BOOL';
-const BOOLEAN_VALUE      = 'BOOL#';
+const BOOLEAN              = 'BOOL';
+const BOOLEAN_VALUE        = 'BOOL#';
 
-const BOOL_UNION         = 'BOOLU';
-const BOOL_SUBTRACT      = 'BOOLS';
-const BOOL_INTERSECT     = 'BOOLI';
-const BOOL_EXCLUDE       = 'BOOLE';
+const BOOL_UNION           = 'BOOLU';
+const BOOL_SUBTRACT        = 'BOOLS';
+const BOOL_INTERSECT       = 'BOOLI';
+const BOOL_EXCLUDE         = 'BOOLE';
 
 
 const BOOLEAN_TYPES =
@@ -47293,6 +49108,10 @@ const SHAPE_VALUES =
     TEXT_SHAPE_VALUE,
     POINT_VALUE,
     VECTOR_PATH_VALUE,
+    VECTOR_VERTEX_VALUE,
+    VECTOR_EDGE_VALUE,
+    VECTOR_REGION_VALUE,
+    VECTOR_NETWORK_VALUE,
     SHAPE_GROUP_VALUE,
     FRAME_VALUE,
     BOOLEAN_VALUE,
@@ -47321,6 +49140,10 @@ const SHAPE_TYPES =
     ...TEXT_SHAPE_TYPES,
     ...POINT_TYPES,
     ...VECTOR_PATH_TYPES,
+    ...VECTOR_VERTEX_TYPES,
+    ...VECTOR_EDGE_TYPES,
+    ...VECTOR_REGION_TYPES,
+    ...VECTOR_NETWORK_TYPES,
     ...SHAPE_GROUP_TYPES,
     ...FRAME_TYPES,
     ...BOOLEAN_TYPES,
@@ -47361,9 +49184,13 @@ const ALL_VALUES =
          TRAPEZE_VALUE,
          POLYGON_VALUE,
             STAR_VALUE,
-       TEXT_SHAPE_VALUE,
+      TEXT_SHAPE_VALUE,
            POINT_VALUE,
      VECTOR_PATH_VALUE,
+   VECTOR_VERTEX_VALUE,
+     VECTOR_EDGE_VALUE,
+   VECTOR_REGION_VALUE,
+  VECTOR_NETWORK_VALUE,
      SHAPE_GROUP_VALUE,
            FRAME_VALUE,
 
@@ -48974,6 +50801,149 @@ function getSineYSegment(_pointP, _point, _pointN)
 }
 
 
+class FigmaVectorNetwork
+extends FigmaObject
+{
+    // x;
+    // y;
+    // width;
+    // height;
+    
+    // points;
+    // closed;
+    // degree;
+
+    // pathPoints;
+
+    // pathData;
+    // winding;
+    // round;
+
+
+
+    // constructor(nodeId, objectId, objectName, points, closed, degree, winding, round)
+    // {
+    //     super(VECTOR_PATH, nodeId, objectId, objectName);
+        
+    //     this.points  = points.map(p => p.copy());
+
+    //     this.closed  = closed;
+    //     this.degree  = degree;
+    //     this.winding = winding;
+
+    //     this.round   = round;
+        
+
+    //     this.updatePathPoints();
+    //     this.updatePathData();
+    // }
+
+
+
+    // copy()
+    // {
+    //     const copy = new FigmaVectorPath(
+    //         this.nodeId,
+    //         this.objectId,
+    //         this.objectName,
+
+    //         this.points, 
+
+    //         this.closed, 
+    //         this.degree,
+    //         this.winding,
+
+    //         this.round);
+
+
+    //     copy.x      = this.x;
+    //     copy.y      = this.y;
+    //     copy.width  = this.width;
+    //     copy.height = this.height;
+
+
+    //     copy.copyBase(this);
+
+
+    //     return copy;
+    // }
+
+
+
+    // updatePoints(xform, coords)
+    // {
+    //     for (let i = 0; i < this.points.length; i++)
+    //         this.points[i] = PointValue.fromPoint(this.nodeId, transformPoint(this.points[i].toPoint(), xform, coords));
+
+    //     this.updatePathPoints();
+    //     this.updatePathData();
+    // }
+
+
+
+    // updatePathPoints()
+    // {
+    //     switch (this.degree)
+    //     {
+    //     case 0: this.pathPoints = this.points.map(p => p.toPoint());                           break;
+    //     case 1: this.pathPoints = this.points.map(p => p.toPoint());                           break;
+    //     case 2: this.pathPoints = this.points.map(p => p.toPoint());                           break;
+    //     case 3: this.pathPoints = getSmoothPoints(this.points, this.closed, getSmoothSegment); break;
+    //     case 4: this.pathPoints = getSmoothPoints(this.points, this.closed, getSineXSegment ); break;
+    //     case 5: this.pathPoints = getSmoothPoints(this.points, this.closed, getSineYSegment ); break;
+    //     }
+    // }
+
+
+
+    // updatePathData()
+    // {
+    //     let minX = Number.MAX_SAFE_INTEGER;
+    //     let minY = Number.MAX_SAFE_INTEGER;
+    //     let maxX = Number.MIN_SAFE_INTEGER;
+    //     let maxY = Number.MIN_SAFE_INTEGER;
+
+    //     for (const p of this.points)
+    //     {
+    //         minX = Math.min(minX, p.x.value);
+    //         minY = Math.min(minY, p.y.value);
+    //         maxX = Math.max(maxX, p.x.value);
+    //         maxY = Math.max(maxY, p.y.value);
+    //     }
+
+
+    //     this.x      = minX;
+    //     this.y      = minY;
+    //     this.width  = maxX - minX;
+    //     this.height = maxY - minY;
+
+    //     this.createTransformPoints(null, this.x, this.y, this.width, this.height);
+
+
+    //     this.pathData = getPathDataFromPoints(this.pathPoints, this.closed, this.degree);
+    // }
+
+
+
+    // toData()
+    // {
+    //     return [
+    //         ...super.toData(),
+   
+    //         /* 21 */ this.x,
+    //         /* 22 */ this.y,
+    //         /* 23 */ this.width,
+    //         /* 24 */ this.height,
+
+    //         /* 25 */ this.pathData,
+    //         /* 26 */ this.winding,
+    //         /* 27 */ this.round * Math.abs(this.scaleCorners)
+    //     ];
+    // }
+}
+
+
+
 class FigmaTrapeze
 extends FigmaVectorPath
 {
@@ -49855,34 +51825,38 @@ function parseValueFromType(type, value)
 {
     switch (type)
     {
-        case         LIST_VALUE: return parseListValue        (value)[0];
+        case           LIST_VALUE: return parseListValue         (value)[0];
 
-        case       NUMBER_VALUE: return parseNumberValue      (value)[0];
-        case         TEXT_VALUE: return parseTextValue        (value)[0];
-        case        COLOR_VALUE: return parseColorValue       (value)[0];
+        case         NUMBER_VALUE: return parseNumberValue       (value)[0];
+        case           TEXT_VALUE: return parseTextValue         (value)[0];
+        case          COLOR_VALUE: return parseColorValue        (value)[0];
 
-        case         FILL_VALUE: return parseFillValue        (value)[0];
-        case   COLOR_STOP_VALUE: return parseColorStopValue   (value)[0];
-        case     GRADIENT_VALUE: return parseGradientValue    (value)[0];
-        case       STROKE_VALUE: return parseStrokeValue      (value)[0];
-        case  DROP_SHADOW_VALUE: return parseDropShadowValue  (value)[0];
-        case INNER_SHADOW_VALUE: return parseInnerShadowValue (value)[0];
-        case   LAYER_BLUR_VALUE: return parseLayerBlurValue   (value)[0];
-        case    BACK_BLUR_VALUE: return parseBackBlurValue    (value)[0];
-        case   LAYER_MASK_VALUE: return parseLayerMaskValue   (value)[0];
+        case           FILL_VALUE: return parseFillValue         (value)[0];
+        case     COLOR_STOP_VALUE: return parseColorStopValue    (value)[0];
+        case       GRADIENT_VALUE: return parseGradientValue     (value)[0];
+        case         STROKE_VALUE: return parseStrokeValue       (value)[0];
+        case    DROP_SHADOW_VALUE: return parseDropShadowValue   (value)[0];
+        case   INNER_SHADOW_VALUE: return parseInnerShadowValue  (value)[0];
+        case     LAYER_BLUR_VALUE: return parseLayerBlurValue    (value)[0];
+        case      BACK_BLUR_VALUE: return parseBackBlurValue     (value)[0];
+        case     LAYER_MASK_VALUE: return parseLayerMaskValue    (value)[0];
 
-        case    RECTANGLE_VALUE: return parseRectangleValue   (value)[0];
-        case         LINE_VALUE: return parseLineValue        (value)[0];
-        case      ELLIPSE_VALUE: return parseEllipseValue     (value)[0];
-        case      TRAPEZE_VALUE: return parseTrapezeValue     (value)[0];
-        case      POLYGON_VALUE: return parsePolygonValue     (value)[0];
-        case         STAR_VALUE: return parseStarValue        (value)[0];
-        case   TEXT_SHAPE_VALUE: return parseTextShapeValue   (value)[0];
-        case        POINT_VALUE: return parsePointValue       (value)[0];
-        case  VECTOR_PATH_VALUE: return parseVectorPathValue  (value)[0];
-        case      BOOLEAN_VALUE: return parseShapeBooleanValue(value)[0];
-        case  SHAPE_GROUP_VALUE: return parseShapeGroupValue  (value)[0];
-        case        FRAME_VALUE: return parseFrameValue       (value)[0];
+        case      RECTANGLE_VALUE: return parseRectangleValue    (value)[0];
+        case           LINE_VALUE: return parseLineValue         (value)[0];
+        case        ELLIPSE_VALUE: return parseEllipseValue      (value)[0];
+        case        TRAPEZE_VALUE: return parseTrapezeValue      (value)[0];
+        case        POLYGON_VALUE: return parsePolygonValue      (value)[0];
+        case           STAR_VALUE: return parseStarValue         (value)[0];
+        case     TEXT_SHAPE_VALUE: return parseTextShapeValue    (value)[0];
+        case          POINT_VALUE: return parsePointValue        (value)[0];
+        case    VECTOR_PATH_VALUE: return parseVectorPathValue   (value)[0];
+        case  VECTOR_VERTEX_VALUE: return parseVectorVertexValue (value)[0];
+        case    VECTOR_EDGE_VALUE: return parseVectorEdgeValue   (value)[0];
+        case  VECTOR_REGION_VALUE: return parseVectorRegionValue (value)[0];
+        case VECTOR_NETWORK_VALUE: return parseVectorNetworkValue(value)[0];
+        case        BOOLEAN_VALUE: return parseShapeBooleanValue (value)[0];
+        case    SHAPE_GROUP_VALUE: return parseShapeGroupValue   (value)[0];
+        case          FRAME_VALUE: return parseFrameValue        (value)[0];
         
         default: 
             console.error('unknown type \'' + type + '\'');
@@ -49901,33 +51875,37 @@ function displayValue(type, value)
 
     switch (type)
     {
-        case         LIST_VALUE: return parseListValue        (value)[0].toDisplayString();
+        case           LIST_VALUE: return parseListValue         (value)[0].toDisplayString();
 
-        case       NUMBER_VALUE: return parseNumberValue      (value)[0].toDisplayString();
-        case         TEXT_VALUE: const val = parseTextValue   (value)[0]; return val == '' ? '\'\'' : val.toDisplayString();
-        case        COLOR_VALUE: return parseColorValue       (value)[0].toDisplayString();
-        case         FILL_VALUE: return parseFillValue        (value)[0].toDisplayString();
-        case   COLOR_STOP_VALUE: return parseColorStopValue   (value)[0].toDisplayString();
-        case     GRADIENT_VALUE: return parseGradientValue    (value)[0].toDisplayString();
-        case       STROKE_VALUE: return parseStrokeValue      (value)[0].toDisplayString();
-        case  DROP_SHADOW_VALUE: return parseDropShadowValue  (value)[0].toDisplayString();
-        case INNER_SHADOW_VALUE: return parseInnerShadowValue (value)[0].toDisplayString();
-        case   LAYER_BLUR_VALUE: return parseLayerBlurValue   (value)[0].toDisplayString();
-        case    BACK_BLUR_VALUE: return parseBackBlurValue    (value)[0].toDisplayString();
-        case   LAYER_MASK_VALUE: return parseLayerMaskValue   (value)[0].toDisplayString();
+        case         NUMBER_VALUE: return parseNumberValue       (value)[0].toDisplayString();
+        case           TEXT_VALUE: const val = parseTextValue    (value)[0]; return val == '' ? '\'\'' : val.toDisplayString();
+        case          COLOR_VALUE: return parseColorValue        (value)[0].toDisplayString();
+        case           FILL_VALUE: return parseFillValue         (value)[0].toDisplayString();
+        case     COLOR_STOP_VALUE: return parseColorStopValue    (value)[0].toDisplayString();
+        case       GRADIENT_VALUE: return parseGradientValue     (value)[0].toDisplayString();
+        case         STROKE_VALUE: return parseStrokeValue       (value)[0].toDisplayString();
+        case    DROP_SHADOW_VALUE: return parseDropShadowValue   (value)[0].toDisplayString();
+        case   INNER_SHADOW_VALUE: return parseInnerShadowValue  (value)[0].toDisplayString();
+        case     LAYER_BLUR_VALUE: return parseLayerBlurValue    (value)[0].toDisplayString();
+        case      BACK_BLUR_VALUE: return parseBackBlurValue     (value)[0].toDisplayString();
+        case     LAYER_MASK_VALUE: return parseLayerMaskValue    (value)[0].toDisplayString();
 
-        case    RECTANGLE_VALUE: return parseRectangleValue   (value)[0].toDisplayString();
-        case         LINE_VALUE: return parseLineValue        (value)[0].toDisplayString();
-        case      ELLIPSE_VALUE: return parseEllipseValue     (value)[0].toDisplayString();
-        case      TRAPEZE_VALUE: return parseTrapezeValue     (value)[0].toDisplayString();
-        case      POLYGON_VALUE: return parsePolygonValue     (value)[0].toDisplayString();
-        case         STAR_VALUE: return parseStarValue        (value)[0].toDisplayString();
-        case   TEXT_SHAPE_VALUE: return parseTextShapeValue   (value)[0].toDisplayString();
-        case        POINT_VALUE: return parsePointValue       (value)[0].toDisplayString();
-        case  VECTOR_PATH_VALUE: return parseVectorPathValue  (value)[0].toDisplayString();
-        case      BOOLEAN_VALUE: return parseShapeBooleanValue(value)[0].toDisplayString();
-        case  SHAPE_GROUP_VALUE: return parseShapeGroupValue  (value)[0].toDisplayString();
-        case        FRAME_VALUE: return parseFrameValue       (value)[0].toDisplayString();
+        case      RECTANGLE_VALUE: return parseRectangleValue    (value)[0].toDisplayString();
+        case           LINE_VALUE: return parseLineValue         (value)[0].toDisplayString();
+        case        ELLIPSE_VALUE: return parseEllipseValue      (value)[0].toDisplayString();
+        case        TRAPEZE_VALUE: return parseTrapezeValue      (value)[0].toDisplayString();
+        case        POLYGON_VALUE: return parsePolygonValue      (value)[0].toDisplayString();
+        case           STAR_VALUE: return parseStarValue         (value)[0].toDisplayString();
+        case     TEXT_SHAPE_VALUE: return parseTextShapeValue    (value)[0].toDisplayString();
+        case          POINT_VALUE: return parsePointValue        (value)[0].toDisplayString();
+        case    VECTOR_PATH_VALUE: return parseVectorPathValue   (value)[0].toDisplayString();
+        case  VECTOR_VERTEX_VALUE: return parseVectorVertexValue (value)[0].toDisplayString();
+        case    VECTOR_EDGE_VALUE: return parseVectorEdgeValue   (value)[0].toDisplayString();
+        case  VECTOR_REGION_VALUE: return parseVectorRegionValue (value)[0].toDisplayString();
+        case VECTOR_NETWORK_VALUE: return parseVectorNetworkValue(value)[0].toDisplayString();
+        case        BOOLEAN_VALUE: return parseShapeBooleanValue (value)[0].toDisplayString();
+        case    SHAPE_GROUP_VALUE: return parseShapeGroupValue   (value)[0].toDisplayString();
+        case          FRAME_VALUE: return parseFrameValue        (value)[0].toDisplayString();
     }
 
 
@@ -49940,32 +51918,36 @@ function nullFromType(type)
 {
     switch (type)
     {
-        case         LIST_VALUE: return         ListValue.NaN;
+        case            LIST_VALUE: return          ListValue.NaN;
 
-        case       NUMBER_VALUE: return       NumberValue.NaN;
-        case         TEXT_VALUE: return       new TextValue();
-        case        COLOR_VALUE: return        ColorValue.NaN;
-        case         FILL_VALUE: return         FillValue.NaN;
-        case   COLOR_STOP_VALUE: return    ColorStopValue.NaN;
-        case     GRADIENT_VALUE: return     GradientValue.NaN;
-        case       STROKE_VALUE: return       StrokeValue.NaN;
-        case  DROP_SHADOW_VALUE: return   DropShadowValue.NaN;
-        case INNER_SHADOW_VALUE: return  InnerShadowValue.NaN;
-        case   LAYER_BLUR_VALUE: return    LayerBlurValue.NaN;
-        case    BACK_BLUR_VALUE: return     BackBlurValue.NaN;
-        case   LAYER_MASK_VALUE: return    LayerMaskValue.NaN;
+        case          NUMBER_VALUE: return        NumberValue.NaN;
+        case            TEXT_VALUE: return        new TextValue();
+        case           COLOR_VALUE: return         ColorValue.NaN;
+        case            FILL_VALUE: return          FillValue.NaN;
+        case      COLOR_STOP_VALUE: return     ColorStopValue.NaN;
+        case        GRADIENT_VALUE: return      GradientValue.NaN;
+        case          STROKE_VALUE: return        StrokeValue.NaN;
+        case     DROP_SHADOW_VALUE: return    DropShadowValue.NaN;
+        case    INNER_SHADOW_VALUE: return   InnerShadowValue.NaN;
+        case      LAYER_BLUR_VALUE: return     LayerBlurValue.NaN;
+        case       BACK_BLUR_VALUE: return      BackBlurValue.NaN;
+        case      LAYER_MASK_VALUE: return     LayerMaskValue.NaN;
 
-        case    RECTANGLE_VALUE: return    RectangleValue.NaN;
-        case         LINE_VALUE: return         LineValue.NaN;
-        case      ELLIPSE_VALUE: return      EllipseValue.NaN;
-        case      POLYGON_VALUE: return      PolygonValue.NaN;
-        case         STAR_VALUE: return         StarValue.NaN;
-        case   TEXT_SHAPE_VALUE: return    TextShapeValue.NaN;
-        case        POINT_VALUE: return        PointValue.NaN;
-        case  VECTOR_PATH_VALUE: return   VectorPathValue.NaN;
-        case      BOOLEAN_VALUE: return ShapeBooleanValue.NaN;
-        case  SHAPE_GROUP_VALUE: return   ShapeGroupValue.NaN;
-        case        FRAME_VALUE: return        FrameValue.NaN;
+        case       RECTANGLE_VALUE: return     RectangleValue.NaN;
+        case            LINE_VALUE: return          LineValue.NaN;
+        case         ELLIPSE_VALUE: return       EllipseValue.NaN;
+        case         POLYGON_VALUE: return       PolygonValue.NaN;
+        case            STAR_VALUE: return          StarValue.NaN;
+        case      TEXT_SHAPE_VALUE: return     TextShapeValue.NaN;
+        case           POINT_VALUE: return         PointValue.NaN;
+        case     VECTOR_PATH_VALUE: return    VectorPathValue.NaN;
+        case   VECTOR_VERTEX_VALUE: return  VectorVertexValue.NaN;
+        case     VECTOR_EDGE_VALUE: return    VectorEdgeValue.NaN;
+        case   VECTOR_REGION_VALUE: return  VectorRegionValue.NaN;
+        case  VECTOR_NETWORK_VALUE: return VectorNetworkValue.NaN;
+        case         BOOLEAN_VALUE: return  ShapeBooleanValue.NaN;
+        case     SHAPE_GROUP_VALUE: return    ShapeGroupValue.NaN;
+        case           FRAME_VALUE: return         FrameValue.NaN;
     }
 
     consoleError('cannot determine null value from type \'' + type + '\'');
@@ -54249,6 +56231,736 @@ function parseVectorPathValue(str, i = -1)
 
     
     return [path, i - iStart];
+}
+
+
+
+class VectorVertexValue
+extends GValue
+{
+    nodeId;
+
+    x;
+    y;
+    join;
+    cap;
+    round;
+
+
+
+    constructor(nodeId,
+                x     = new NumberValue(0), 
+                y     = new NumberValue(0),
+                join  = new NumberValue(0),
+                cap   = new NumberValue(0),
+                round = new NumberValue(0))
+    {
+        super(VECTOR_VERTEX_VALUE);
+
+        this.nodeId = nodeId;
+
+        this.x     = x;
+        this.y     = y;
+        this.join  = join;
+        this.cap   = cap;
+        this.round = round;
+    }
+
+
+
+    copy()
+    {
+        const copy = new VectorVertexValue(
+            this.nodeId,
+            this.x    .copy(), 
+            this.y    .copy(), 
+            this.join .copy(), 
+            this.cap  .copy(), 
+            this.round.copy());
+
+        return copy;
+    }
+
+
+
+    equals(p)
+    {
+        return p
+            && this.x    .equals(p.x    )
+            && this.y    .equals(p.y    )
+            && this.join .equals(p.join )
+            && this.cap  .equals(p.cap  )
+            && this.round.equals(p.round);
+    }
+
+
+
+    static create(nodeId, x, y)
+    {
+        return new VectorVertexValue(
+            nodeId,
+            new NumberValue(x    ),
+            new NumberValue(y    ),
+            new NumberValue(join ),
+            new NumberValue(cap  ),
+            new NumberValue(round));
+    }
+
+
+
+    static fromPoint(nodeId, p)
+    {
+        return new VectorVertexValue(
+            nodeId,
+            new NumberValue(p.x),
+            new NumberValue(p.y),
+            new NumberValue(0),
+            new NumberValue(0),
+            new NumberValue(0));
+    }
+
+
+
+    async eval(parse)
+    {
+        return this;
+    }
+
+
+
+    hasInitValue()
+    {
+        return this.x    .hasInitValue()
+            && this.y    .hasInitValue()
+            && this.join .hasInitValue()
+            && this.cap  .hasInitValue()
+            && this.round.hasInitValue();
+    }
+
+
+
+    isValid()
+    {
+        return this.x    .isValid()
+            && this.y    .isValid()
+            && this.join .isValid()
+            && this.cap  .isValid()
+            && this.round.isValid();
+    }
+
+
+
+    toString()
+    {
+        return      this.x    .toString()
+            + ' ' + this.y    .toString()
+            + ' ' + this.join .toString()
+            + ' ' + this.cap  .toString()
+            + ' ' + this.round.toString();
+    }
+
+
+
+    toDisplayString()
+    {
+        return      this.x    .toDisplayString()
+            + ' ' + this.y    .toDisplayString()
+            + ' ' + this.join .toDisplayString()
+            + ' ' + this.cap  .toDisplayString()
+            + ' ' + this.round.toDisplayString();
+    }
+
+
+
+    toValue()
+    {
+        return this.copy();
+    }
+
+
+
+    toPoint()
+    {
+        return point(
+            this.x    .value,
+            this.y    .value,
+            this.join .value,
+            this.cap  .value,
+            this.round.value);
+    }
+
+
+
+    toJsCode(gen)
+    {
+        return '';//this.toSimpleString();
+    }
+
+
+
+    getNaN()
+    {
+        return VectorVertexValue.NaN;
+    }
+
+
+
+    static NaN = Object.freeze(new VectorVertexValue(
+        '',
+        NumberValue.NaN, 
+        NumberValue.NaN, 
+        NumberValue.NaN, 
+        NumberValue.NaN, 
+        NumberValue.NaN));
+}
+
+
+
+function parseVectorVertexValue(str, i = -1)
+{
+    if (   i <  0 && str    == NAN_DISPLAY
+        || i >= 0 && str[i] == NAN_DISPLAY)
+        return [VectorVertexValue.NaN, 1];
+
+
+    if (i < 0)
+    {
+        str = str.split(' ');
+        i   = 0;
+    }
+
+
+    const iStart = i;
+
+    const x     = parseNumberValue(str[i]); i += x    [1];
+    const y     = parseNumberValue(str[i]); i += y    [1];
+    const join  = parseNumberValue(str[i]); i += join [1];
+    const cap   = parseNumberValue(str[i]); i += cap  [1];
+    const round = parseNumberValue(str[i]); i += round[1];
+
+
+    const point = new VectorVertexValue(
+        '', // set node ID elsewhere
+        x    [0],
+        y    [0],
+        join [0],
+        cap  [0],
+        round[0]);
+
+
+    return [point, i - iStart];
+}
+
+
+
+class VectorEdgeValue
+extends GValue
+{
+    nodeId;
+
+    start;
+    startTangent;
+    end;
+    endTangent;
+
+
+
+    constructor(nodeId,
+                start        = new NumberValue(0), 
+                startTangent = new PointValue (nodeId, 0, 0),
+                end          = new NumberValue(0),
+                endTangent   = new PointValue (nodeId, 0, 0))
+    {
+        super(VECTOR_EDGE_VALUE);
+
+        this.nodeId = nodeId;
+
+        this.start        = start;       
+        this.startTangent = startTangent;
+        this.end          = end;         
+        this.endTangent   = endTangent;  
+    }
+
+
+
+    copy()
+    {
+        const copy = new VectorEdgeValue(
+            this.nodeId,
+            this.start       .copy(), 
+            this.startTangent.copy(), 
+            this.end         .copy(), 
+            this.endTangent  .copy());
+
+        return copy;
+    }
+
+
+
+    equals(edge)
+    {
+        return edge
+            && this.start       .equals(edge.start       )
+            && this.startTangent.equals(edge.startTangent)
+            && this.end         .equals(edge.end         )
+            && this.endTangent  .equals(edge.endTangent  );
+    }
+
+
+
+    static create(nodeId, start, startTangent, end, endTangent)
+    {
+        return new VectorEdgeValue(
+            nodeId,
+            new NumberValue(start),
+            new PointValue (nodeId, startTangent.x, startTangent.y),
+            new NumberValue(end),
+            new PointValue (nodeId, endTangent.x, endTangent.y));
+    }
+
+
+
+    async eval(parse)
+    {
+        return this;
+    }
+
+
+
+    hasInitValue()
+    {
+        return this.start       .hasInitValue()
+            && this.startTangent.hasInitValue()
+            && this.end         .hasInitValue()
+            && this.endTangent  .hasInitValue();
+    }
+
+
+
+    isValid()
+    {
+        return this.start       .isValid()
+            && this.startTangent.isValid()
+            && this.end         .isValid()
+            && this.endTangent  .isValid();
+    }
+
+
+
+    toString()
+    {
+        return      this.start       .toString()
+            + ' ' + this.startTangent.toString()
+            + ' ' + this.end         .toString()
+            + ' ' + this.endTangent  .toString();
+    }
+
+
+
+    toDisplayString()
+    {
+        return      this.start       .toDisplayString()
+            + ' ' + this.startTangent.toDisplayString()
+            + ' ' + this.end         .toDisplayString()
+            + ' ' + this.endTangent  .toDisplayString();
+    }
+
+
+
+    toValue()
+    {
+        return this.copy();
+    }
+
+
+
+    toJsCode(gen)
+    {
+        return '';//this.toSimpleString();
+    }
+
+
+
+    getNaN()
+    {
+        return VectorEdgeValue.NaN;
+    }
+
+
+
+    static NaN = Object.freeze(new VectorEdgeValue(
+        '',
+        NumberValue.NaN, 
+        PointValue .NaN, 
+        NumberValue.NaN, 
+        PointValue .NaN));
+}
+
+
+
+function parseVectorEdgeValue(str, i = -1)
+{
+    if (   i <  0 && str    == NAN_DISPLAY
+        || i >= 0 && str[i] == NAN_DISPLAY)
+        return [VectorEdgeValue.NaN, 1];
+
+
+    if (i < 0)
+    {
+        str = str.split(' ');
+        i   = 0;
+    }
+
+
+    const iStart = i;
+
+    const start        = parseNumberValue(str[i]); i += start       [1];
+    const startTangent = parsePointValue (str, i); i += startTangent[1];
+    const end          = parseNumberValue(str[i]); i += end         [1];
+    const endTangent   = parsePointValue (str, i); i += endTangent  [1];
+
+
+    const edge = new VectorEdgeValue(
+        '', // set node ID elsewhere
+        start       [0],
+        startTangent[0],
+        end         [0],
+        endTangent  [0]);
+
+
+    return [edge, i - iStart];
+}
+
+
+
+class VectorRegionValue
+extends GValue
+{
+    nodeId;
+
+    loops;  
+    winding;
+    props;  
+
+
+    constructor(nodeId,
+                loops   = new ListValue(), 
+                winding = new NumberValue(0),
+                props   = new ListValue())
+    {
+        super(VECTOR_REGION_VALUE);
+
+        this.nodeId = nodeId;
+
+        this.loops   = loops;  
+        this.winding = winding;
+        this.props   = props;  
+    }
+
+
+
+    copy()
+    {
+        const copy = new VectorRegionValue(
+            this.nodeId,
+            this.loops  .copy(), 
+            this.winding.copy(), 
+            this.props  .copy());
+
+        return copy;
+    }
+
+
+
+    equals(region)
+    {
+        return region
+            && this.loops  .equals(region.loops  )
+            && this.winding.equals(region.winding)
+            && this.props  .equals(region.props  );
+    }
+
+
+
+    static create(nodeId, loops, winding, props)
+    {
+        return new VectorRegionValue(
+            nodeId,
+            new   ListValue(loops),
+            new NumberValue(winding),
+            new   ListValue(props));
+    }
+
+
+
+    async eval(parse)
+    {
+        return this;
+    }
+
+
+
+    hasInitValue()
+    {
+        return this.loops  .hasInitValue()
+            && this.winding.hasInitValue()
+            && this.props  .hasInitValue();
+    }
+
+
+
+    isValid()
+    {
+        return this.loops  .isValid()
+            && this.winding.isValid()
+            && this.props  .isValid();
+    }
+
+
+
+    toString()
+    {
+        return      this.loops  .toString()
+            + ' ' + this.winding.toString()
+            + ' ' + this.props  .toString();
+    }
+
+
+
+    toDisplayString()
+    {
+        return      this.loops  .toDisplayString()
+            + ' ' + this.winding.toDisplayString()
+            + ' ' + this.props  .toDisplayString();
+    }
+
+
+
+    toValue()
+    {
+        return this.copy();
+    }
+
+
+
+    toJsCode(gen)
+    {
+        return '';//this.toSimpleString();
+    }
+
+
+
+    getNaN()
+    {
+        return VectorEdgeValue.NaN;
+    }
+
+
+
+    static NaN = Object.freeze(new VectorRegionValue(
+        '',
+        new ListValue(), 
+        NumberValue.NaN, 
+        new ListValue()));
+}
+
+
+
+function parseVectorRegionValue(str, i = -1)
+{
+    if (   i <  0 && str    == NAN_DISPLAY
+        || i >= 0 && str[i] == NAN_DISPLAY)
+        return [VectorRegionValue.NaN, 1];
+
+
+    if (i < 0)
+    {
+        str = str.split(' ');
+        i   = 0;
+    }
+
+
+    const iStart = i;
+
+    const loops   = parseListValue (str, i); i += loops  [1];
+    const winding = parsePointValue(str[i]); i += winding[1];
+    const props   = parsePointValue(str, i); i += props  [1];
+
+
+    const region = new VectorRegionValue(
+        '', // set node ID elsewhere
+        loops  [0],
+        winding[0],
+        props  [0]);
+
+
+    return [region, i - iStart];
+}
+
+
+
+class VectorNetworkValue
+extends GValue
+{
+    nodeId;
+
+    points; 
+    edges;  
+    regions;
+
+
+    constructor(nodeId,
+                points  = new ListValue(), 
+                edges   = new ListValue(),
+                regions = new ListValue())
+    {
+        super(VECTOR_NETWORK_VALUE);
+
+        this.nodeId = nodeId;
+
+        this.points  = points;  
+        this.edges   = edges;
+        this.regions = regions; 
+    }
+
+
+
+    copy()
+    {
+        const copy = new VectorNetworkValue(
+            this.nodeId,
+            this.points .copy(), 
+            this.edges  .copy(), 
+            this.regions.copy());
+
+        return copy;
+    }
+
+
+
+    equals(region)
+    {
+        return region
+            && this.points .equals(region.points )
+            && this.edges  .equals(region.edges  )
+            && this.regions.equals(region.regions);
+    }
+
+
+
+    static create(nodeId, points, edges, regions)
+    {
+        return new VectorNetworkValue(
+            nodeId,
+            new ListValue(points ),
+            new ListValue(edges  ),
+            new ListValue(regions));
+    }
+
+
+
+    async eval(parse)
+    {
+        return this;
+    }
+
+
+
+    hasInitValue()
+    {
+        return this.points .hasInitValue()
+            && this.edges  .hasInitValue()
+            && this.regions.hasInitValue();
+    }
+
+
+
+    isValid()
+    {
+        return this.points .isValid()
+            && this.edges  .isValid()
+            && this.regions.isValid();
+    }
+
+
+
+    toString()
+    {
+        return      this.points .toString()
+            + ' ' + this.edges  .toString()
+            + ' ' + this.regions.toString();
+    }
+
+
+
+    toDisplayString()
+    {
+        return      this.points .toDisplayString()
+            + ' ' + this.edges  .toDisplayString()
+            + ' ' + this.regions.toDisplayString();
+    }
+
+
+
+    toValue()
+    {
+        return this.copy();
+    }
+
+
+
+    toJsCode(gen)
+    {
+        return '';//this.toSimpleString();
+    }
+
+
+
+    getNaN()
+    {
+        return VectorNetworkValue.NaN;
+    }
+
+
+
+    static NaN = Object.freeze(new VectorNetworkValue(
+        '',
+        new ListValue(), 
+        new ListValue(), 
+        new ListValue()));
+}
+
+
+
+function parseVectorNetworkValue(str, i = -1)
+{
+    if (   i <  0 && str    == NAN_DISPLAY
+        || i >= 0 && str[i] == NAN_DISPLAY)
+        return [VectorNetworkValue.NaN, 1];
+
+
+    if (i < 0)
+    {
+        str = str.split(' ');
+        i   = 0;
+    }
+
+
+    const iStart = i;
+
+    const points  = parseListValue(str, i); i += points [1];
+    const edges   = parseListValue(str, i); i += edges  [1];
+    const regions = parseListValue(str, i); i += regions[1];
+
+
+    const net = new VectorNetworkValue(
+        '', // set node ID elsewhere
+        points [0],
+        edges  [0],
+        regions[0]);
+
+
+    return [net, i - iStart];
 }
 
 
@@ -67032,6 +69744,655 @@ extends GShape
 }
 
 
+class GVectorVertex
+extends GOperator1
+{
+    x     = null;
+    y     = null;
+    join  = null;
+    cap   = null;
+    round = null;
+
+
+
+    constructor(nodeId, options)
+    {
+        super(VECTOR_VERTEX, nodeId, options);
+    }
+
+
+
+    copy()
+    {
+        const copy = new GVectorVertex(this.nodeId, this.options);
+
+        copy.copyBase(this);
+
+        if (this.x    ) copy.x     = this.x    .copy();
+        if (this.y    ) copy.y     = this.y    .copy();
+        if (this.join ) copy.join  = this.join .copy();
+        if (this.cap  ) copy.cap   = this.cap  .copy();
+        if (this.round) copy.round = this.round.copy();
+
+        return copy;
+    }
+
+
+
+    async eval(parse)
+    {
+        if (this.isCached())
+            return this;
+
+        
+        const x     = this.x     ? (await this.x    .eval(parse)).toValue() : null;
+        const y     = this.y     ? (await this.y    .eval(parse)).toValue() : null;
+        const join  = this.join  ? (await this.join .eval(parse)).toValue() : null;
+        const cap   = this.cap   ? (await this.cap  .eval(parse)).toValue() : null;
+        const round = this.round ? (await this.round.eval(parse)).toValue() : null;
+
+
+        let input = null;
+
+        if (this.input)
+        {
+            input = (await this.input.eval(parse)).toValue();
+
+            this.value = new VectorVertexValue(
+                this.nodeId,
+                x     ?? input.x,
+                y     ?? input.y,
+                join  ?? input.join,
+                cap   ?? input.cap,
+                round ?? input.round);
+        }
+        else
+        {
+            this.value = new VectorVertexValue(
+                this.nodeId, 
+                x, 
+                y, 
+                join, 
+                cap, 
+                round);
+        }
+
+       
+        await this.evalObjects(parse);
+
+
+        this.updateValues = [['value', this.value]];
+
+
+        this.validate();
+
+        return this;
+    }
+
+
+
+    async evalObjects(parse, options = {})
+    {
+        if (!this.options.enabled)
+            return;
+            
+            
+        this.value.objects = [];
+
+
+        if (   this.value.x    
+            && this.value.y    
+            && this.value.join 
+            && this.value.cap  
+            && this.value.round)
+        {
+            const x     = this.value.x    .value;
+            const y     = this.value.y    .value;
+            const join  = this.value.join .value;
+            const cap   = this.value.cap  .value;
+            const round = this.value.round.value;
+
+            const point = new FigmaPoint(this.nodeId, this.nodeId, this.nodeName, x, y);
+
+            point.createDefaultTransform(x, y);
+
+            this.value.objects = [point];
+        }
+
+
+        await super.evalObjects(parse);
+    }
+
+
+
+    toValue()
+    {
+        const point = new VectorVertexValue(
+            this.nodeId,
+            this.x    .toValue(),
+            this.y    .toValue(),
+            this.join .toValue(),
+            this.cap  .toValue(),
+            this.round.toValue());
+
+        point.objects = this.value.objects.map(o => o.copy());
+
+        return point;
+    }
+
+
+
+    isValid()
+    {
+        return super.isValid()
+            && this.x    .isValid()
+            && this.y    .isValid()
+            && this.join .isValid()
+            && this.cap  .isValid()
+            && this.round.isValid();
+    }
+
+
+
+    pushValueUpdates(parse)
+    {
+        super.pushValueUpdates(parse);
+
+        if (this.x    ) this.x    .pushValueUpdates(parse);
+        if (this.y    ) this.y    .pushValueUpdates(parse);
+        if (this.join ) this.join .pushValueUpdates(parse);
+        if (this.cap  ) this.cap  .pushValueUpdates(parse);
+        if (this.round) this.round.pushValueUpdates(parse);
+    }
+
+
+
+    invalidateInputs(from)
+    {
+        super.invalidateInputs(from);
+
+        if (this.x    ) this.x    .invalidateInputs(from);
+        if (this.y    ) this.y    .invalidateInputs(from);
+        if (this.join ) this.join .invalidateInputs(from);
+        if (this.cap  ) this.cap  .invalidateInputs(from);
+        if (this.round) this.round.invalidateInputs(from);
+    }
+}
+
+
+class GVectorEdge
+extends GOperator1
+{
+    start        = null;
+    startTangent = null;
+    end          = null;
+    endTangent   = null;
+
+
+
+    constructor(nodeId, options)
+    {
+        super(VECTOR_EDGE, nodeId, options);
+    }
+
+
+
+    copy()
+    {
+        const copy = new GVectorEdge(this.nodeId, this.options);
+
+        copy.copyBase(this);
+
+        if (this.start       ) copy.start        = this.start       .copy();
+        if (this.startTangent) copy.startTangent = this.startTangent.copy();
+        if (this.end         ) copy.end          = this.end         .copy();
+        if (this.endTangent  ) copy.endTangent   = this.endTangent  .copy();
+
+        return copy;
+    }
+
+
+
+    async eval(parse)
+    {
+        if (this.isCached())
+            return this;
+
+        
+        const start        = this.start        ? (await this.start       .eval(parse)).toValue() : null;
+        const startTangent = this.startTangent ? (await this.startTangent.eval(parse)).toValue() : null;
+        const end          = this.end          ? (await this.end         .eval(parse)).toValue() : null;
+        const endTangent   = this.endTangent   ? (await this.endTangent  .eval(parse)).toValue() : null;
+
+
+        let input = null;
+
+        if (this.input)
+        {
+            input = (await this.input.eval(parse)).toValue();
+
+            this.value = new VectorEdgeValue(
+                this.nodeId,
+                start        ?? input.start,       
+                startTangent ?? input.startTangent,
+                end          ?? input.end,         
+                endTangent   ?? input.endTangent);
+        }
+        else
+        {
+            this.value = new VectorEdgeValue(
+                this.nodeId, 
+                start,       
+                startTangent, 
+                end,         
+                endTangent);
+        }
+
+       
+        await this.evalObjects(parse);
+
+
+        this.updateValues = [['value', this.value]];
+
+
+        this.validate();
+
+        return this;
+    }
+
+
+
+    async evalObjects(parse, options = {})
+    {
+        if (!this.options.enabled)
+            return;
+            
+            
+        this.value.objects = [];
+
+
+        if (   this.value.start       
+            && this.value.startTangent
+            && this.value.end         
+            && this.value.endTangent)
+        {
+            // const start        = this.value.start       .value;
+            // const startTangent = this.value.startTangent.value;
+            // const end          = this.value.end         .value;
+            // const endTangent   = this.value.endTangent  .value;
+
+            // const point = new FigmaPoint(this.nodeId, this.nodeId, this.nodeName, x, y);
+
+            // point.createDefaultTransform(x, y);
+
+            // this.value.objects = [point];
+        }
+
+
+        await super.evalObjects(parse);
+    }
+
+
+
+    toValue()
+    {
+        const point = new VectorEdgeValue(
+            this.nodeId,
+            this.start       .toValue(),
+            this.startTangent.toValue(),
+            this.end         .toValue(),
+            this.endTangent  .toValue());
+
+        point.objects = this.value.objects.map(o => o.copy());
+
+        return point;
+    }
+
+
+
+    isValid()
+    {
+        return super.isValid()
+            && this.start       .isValid()
+            && this.startTangent.isValid()
+            && this.end         .isValid()
+            && this.endTangent  .isValid();
+    }
+
+
+
+    pushValueUpdates(parse)
+    {
+        super.pushValueUpdates(parse);
+
+        if (this.start       ) this.start       .pushValueUpdates(parse);
+        if (this.startTangent) this.startTangent.pushValueUpdates(parse);
+        if (this.end         ) this.end         .pushValueUpdates(parse);
+        if (this.endTangent  ) this.endTangent  .pushValueUpdates(parse);
+    }
+
+
+
+    invalidateInputs(from)
+    {
+        super.invalidateInputs(from);
+
+        if (this.start       ) this.start       .invalidateInputs(from);
+        if (this.startTangent) this.startTangent.invalidateInputs(from);
+        if (this.end         ) this.end         .invalidateInputs(from);
+        if (this.endTangent  ) this.endTangent  .invalidateInputs(from);
+    }
+}
+
+
+class GVectorRegion
+extends GOperator1
+{
+    loops   = null;
+    winding = null;
+    props   = null;
+
+
+
+    constructor(nodeId, options)
+    {
+        super(VECTOR_REGION, nodeId, options);
+    }
+
+
+
+    copy()
+    {
+        const copy = new GVectorRegion(this.nodeId, this.options);
+
+        copy.copyBase(this);
+
+        if (this.loops  ) copy.loops   = this.loops  .copy();
+        if (this.winding) copy.winding = this.winding.copy();
+        if (this.props  ) copy.props   = this.props  .copy();
+
+        return copy;
+    }
+
+
+
+    async eval(parse)
+    {
+        if (this.isCached())
+            return this;
+
+        
+        const loops   = this.loops   ? (await this.loops  .eval(parse)).toValue() : null;
+        const winding = this.winding ? (await this.winding.eval(parse)).toValue() : null;
+        const props   = this.props   ? (await this.props  .eval(parse)).toValue() : null;
+
+
+        let input = null;
+
+        if (this.input)
+        {
+            input = (await this.input.eval(parse)).toValue();
+
+            this.value = new VectorRegionValue(
+                this.nodeId,
+                loops   ?? input.loops,  
+                winding ?? input.winding,
+                props   ?? input.props);  
+        }
+        else
+        {
+            this.value = new VectorRegionValue(
+                this.nodeId, 
+                loops,       
+                winding, 
+                props);
+        }
+
+       
+        await this.evalObjects(parse);
+
+
+        this.updateValues = [['value', this.value]];
+
+
+        this.validate();
+
+        return this;
+    }
+
+
+
+    async evalObjects(parse, options = {})
+    {
+        if (!this.options.enabled)
+            return;
+            
+            
+        this.value.objects = [];
+
+
+        if (   this.value.loops    
+            && this.value.winding
+            && this.value.props)
+        {
+            // const loops   = this.value.loops  .value;
+            // const winding = this.value.winding.value;
+            // const props   = this.value.props  .value;
+
+            // const point = new FigmaPoint(this.nodeId, this.nodeId, this.nodeName, x, y);
+
+            // point.createDefaultTransform(x, y);
+
+            // this.value.objects = [point];
+        }
+
+
+        await super.evalObjects(parse);
+    }
+
+
+
+    toValue()
+    {
+        const point = new VectorRegionValue(
+            this.nodeId,
+            this.loops  .toValue(),
+            this.winding.toValue(),
+            this.props  .toValue());
+
+        point.objects = this.value.objects.map(o => o.copy());
+
+        return point;
+    }
+
+
+
+    isValid()
+    {
+        return super.isValid()
+            && this.loops  .isValid()
+            && this.winding.isValid()
+            && this.props  .isValid();
+    }
+
+
+
+    pushValueUpdates(parse)
+    {
+        super.pushValueUpdates(parse);
+
+        if (this.loops  ) this.loops  .pushValueUpdates(parse);
+        if (this.winding) this.winding.pushValueUpdates(parse);
+        if (this.props  ) this.props  .pushValueUpdates(parse);
+    }
+
+
+
+    invalidateInputs(from)
+    {
+        super.invalidateInputs(from);
+
+        if (this.loops  ) this.loops  .invalidateInputs(from);
+        if (this.winding) this.winding.invalidateInputs(from);
+        if (this.props  ) this.props  .invalidateInputs(from);
+    }
+}
+
+
+class GVectorNetwork
+extends GOperator1
+{
+    points  = null;
+    edges   = null;
+    regions = null;
+
+
+
+    constructor(nodeId, options)
+    {
+        super(VECTOR_NETWORK, nodeId, options);
+    }
+
+
+
+    copy()
+    {
+        const copy = new GVectorNetwork(this.nodeId, this.options);
+
+        copy.copyBase(this);
+
+        if (this.points ) copy.points  = this.points .copy();
+        if (this.edges  ) copy.edges   = this.edges  .copy();
+        if (this.regions) copy.regions = this.regions.copy();
+
+        return copy;
+    }
+
+
+
+    async eval(parse)
+    {
+        if (this.isCached())
+            return this;
+
+        
+        const points  = this.points  ? (await this.points .eval(parse)).toValue() : null;
+        const edges   = this.edges   ? (await this.edges  .eval(parse)).toValue() : null;
+        const regions = this.regions ? (await this.regions.eval(parse)).toValue() : null;
+
+
+        let input = null;
+
+        if (this.input)
+        {
+            input = (await this.input.eval(parse)).toValue();
+
+            this.value = new VectorNetworkValue(
+                this.nodeId,
+                points  ?? input.points,  
+                edges   ?? input.edges,
+                regions ?? input.regions);
+        }
+        else
+        {
+            this.value = new VectorNetworkValue(
+                this.nodeId, 
+                points,       
+                edges, 
+                regions);
+        }
+
+       
+        await this.evalObjects(parse);
+
+
+        this.updateValues = [['value', this.value]];
+
+
+        this.validate();
+
+        return this;
+    }
+
+
+
+    async evalObjects(parse, options = {})
+    {
+        if (!this.options.enabled)
+            return;
+            
+            
+        this.value.objects = [];
+
+
+        if (   this.value.points   
+            && this.value.edges  
+            && this.value.regions)
+        {
+            // const points  = this.value.points .value;
+            // const edges   = this.value.edges  .value;
+            // const regions = this.value.regions.value;
+
+            // const point = new FigmaVectorNetwork(this.nodeId, this.nodeId, this.nodeName, x, y);
+
+            // point.createDefaultTransform(x, y);
+
+            // this.value.objects = [point];
+        }
+
+
+        await super.evalObjects(parse);
+    }
+
+
+
+    toValue()
+    {
+        const point = new VectorNetworkValue(
+            this.nodeId,
+            this.points .toValue(),
+            this.edges  .toValue(),
+            this.regions.toValue());
+
+        point.objects = this.value.objects.map(o => o.copy());
+
+        return point;
+    }
+
+
+
+    isValid()
+    {
+        return super.isValid()
+            && this.points .isValid()
+            && this.edges  .isValid()
+            && this.regions.isValid();
+    }
+
+
+
+    pushValueUpdates(parse)
+    {
+        super.pushValueUpdates(parse);
+
+        if (this.points ) this.points .pushValueUpdates(parse);
+        if (this.edges  ) this.edges  .pushValueUpdates(parse);
+        if (this.regions) this.regions.pushValueUpdates(parse);
+    }
+
+
+
+    invalidateInputs(from)
+    {
+        super.invalidateInputs(from);
+
+        if (this.points ) this.points .invalidateInputs(from);
+        if (this.edges  ) this.edges  .invalidateInputs(from);
+        if (this.regions) this.regions.invalidateInputs(from);
+    }
+}
+
+
 class GShapeGroup
 extends GShapeBase
 {
@@ -73590,6 +76951,10 @@ const iconTextShape         = '<svg width="13" height="16" viewBox="0 0 13 16" f
 const iconSelected          = '<svg width="17" height="18" viewBox="0 0 17 18" fill="none" xmlns="http://www.w3.org/2000/svg"><rect x="3.5" y="3.5" width="4" height="4" stroke="white"/><circle cx="11.5" cy="5.5" r="2" stroke="white"/><line x1="3.43646" y1="14.8688" x2="7.93646" y2="10.1019" stroke="white"/><path d="M9.33494 14.4498L11.5 10.6998L13.6651 14.4498H9.33494Z" stroke="white"/><path d="M1.78814e-07 4H1L1 1H4V0H0L1.78814e-07 4Z" fill="white"/><path d="M17 14L16 14L16 17L13 17L13 18L17 18L17 14Z" fill="white"/><path d="M4 18L4 17L1 17L1 14L-1.74846e-07 14L0 18L4 18Z" fill="white"/><path d="M13 3.96837e-09L13 1L16 1L16 4L17 4L17 0L13 3.96837e-09Z" fill="white"/></svg>';
 const iconPoint             = '<svg width="5" height="5" viewBox="0 0 5 5" fill="none" xmlns="http://www.w3.org/2000/svg"><circle cx="2.5" cy="2.5" r="2.07507" fill="white"/></svg>';
 const iconVectorPath        = '<svg width="18" height="17" viewBox="0 0 18 17" fill="none" xmlns="http://www.w3.org/2000/svg"><circle cx="2.50012" cy="1" r="0.75" stroke="white" stroke-width="0.5"/><circle cx="15.4999" cy="16.0002" r="0.75" stroke="white" stroke-width="0.5"/><path d="M2.8714 11.9166C9 -13 10 29 15.1694 5.03541" stroke="white" stroke-width="1.5"/><circle cx="15.5001" cy="4" r="1.5" stroke="white"/><circle cx="2.49988" cy="13" r="1.5" stroke="white"/><rect x="2" y="9" width="1" height="1" fill="white"/><rect x="2" y="7" width="1" height="1" fill="white"/><rect x="2" y="5" width="1" height="1" fill="white"/><rect x="2" y="3" width="1" height="1" fill="white"/><rect x="15" y="13" width="1" height="1" fill="white"/><rect x="15" y="11" width="1" height="1" fill="white"/><rect x="15" y="9" width="1" height="1" fill="white"/><rect x="15" y="7" width="1" height="1" fill="white"/></svg>';
+const iconVectorVertex      = '<svg width="6" height="6" viewBox="0 0 6 6" fill="none" xmlns="http://www.w3.org/2000/svg"><circle cx="3" cy="3" r="1.89968" stroke="white" stroke-width="1.3"/></svg>';
+const iconVectorEdge        = '<svg width="17" height="5" viewBox="0 0 17 5" fill="none" xmlns="http://www.w3.org/2000/svg"><rect x="3.98364" y="2" width="8.9873" height="1" fill="white"/><circle cx="14.4824" cy="2.57507" r="1.72135" stroke="white" stroke-width="1.2"/><circle cx="2.51007" cy="2.57507" r="1.72135" stroke="white" stroke-width="1.2"/></svg>';
+const iconVectorRegion      = '<svg width="16" height="11" viewBox="0 0 16 11" fill="none" xmlns="http://www.w3.org/2000/svg"><circle cx="8" cy="9" r="1.5" stroke="white"/><circle cx="2" cy="2" r="1.5" stroke="white"/><circle cx="14" cy="2" r="1.5" stroke="white"/><path d="M4.0001 2L3.24939 3.77671L7.0001 8.00003L8.0001 7.50003L9.0001 8.00003L12.7473 3.77671L12.0001 2H4.0001Z" fill="white" stroke="white"/></svg>';
+const iconVectorNetwork     = '<svg width="18" height="19" viewBox="0 -1 18 19" fill="none" xmlns="http://www.w3.org/2000/svg"><circle cx="9" cy="2" r="1.5" stroke="white"/><circle cx="9" cy="16" r="1.5" stroke="white"/><circle cx="2" cy="9" r="1.5" stroke="white"/><circle cx="16" cy="9" r="1.5" stroke="white"/><path d="M3.50001 9.71348L3.15479 10.1548L8.00001 15L9.00001 14.5L10 15L14.7725 10.2275L14.5 9.71348H3.50001Z" fill="white"/><path d="M3.50001 9.71348H14.5M3.50001 9.71348L3.30592 7.69404L7.78889 3.21112L9.00001 3.54484L10.2111 3.21112L14.6941 7.69404L14.5 9.71348M3.50001 9.71348L3.15479 10.1548L8.00001 15L9.00001 14.5L10 15L14.7725 10.2275L14.5 9.71348" stroke="white"/></svg>';
 const iconBoolUnion         = '<svg width="16" height="16" viewBox="0 0 16 16" fill="none" xmlns="http://www.w3.org/2000/svg"><path d="M11 0H0V11H5V16H16V5H11V0Z" fill="white"/></svg>';
 const iconBoolSubtract      = '<svg width="16" height="16" viewBox="0 0 16 16" fill="none" xmlns="http://www.w3.org/2000/svg"><path fill-rule="evenodd" clip-rule="evenodd" d="M0 11V0H11V5H16V16H5V11H0ZM1 1H10V10H1V1Z" fill="white"/></svg>';
 const iconBoolIntersect     = '<svg width="16" height="16" viewBox="0 0 16 16" fill="none" xmlns="http://www.w3.org/2000/svg"><path fill-rule="evenodd" clip-rule="evenodd" d="M11 5V0H0V11H5V16H16V5H11ZM10 1H1V10H5V5H10V1ZM6 11H11V6H15V15H6V11Z" fill="white"/></svg>';
@@ -74686,6 +78051,7 @@ var menuCondition;
 var menuTrig;
 var menuFunctions;
 
+var menuVector;
 var menuShapes;
 var menuTransform;
 
@@ -75200,18 +78566,26 @@ function initGeneratorMenus()
                                  //new MenuItem('Color style',     {icon: iconColorStyle,  childMenu: menuColorStyle, callback: e => actionManager.do(getCreateNodeAction(COLOR_STYLE,  btnColor.div, getCreateOptions(e)))})]);
     
     
+    menuVector = new Menu('Vector', true, false);
+    menuVector.addItems([
+        new MenuItem('Point',   {icon: iconPoint,         callback: e => actionManager.do(getCreateNodeAction(POINT,          btnShape.div, getCreateOptions(e)))}),
+        new MenuItem('Path',    {icon: iconVectorPath,    callback: e => actionManager.do(getCreateNodeAction(VECTOR_PATH,    btnShape.div, getCreateOptions(e)))}),
+        new MenuItem('',        {separator: true}),
+        new MenuItem('Vertex',  {icon: iconVectorVertex,  callback: e => actionManager.do(getCreateNodeAction(VECTOR_VERTEX,  btnShape.div, getCreateOptions(e)))}),
+        new MenuItem('Edge',    {icon: iconVectorEdge,    callback: e => actionManager.do(getCreateNodeAction(VECTOR_EDGE,    btnShape.div, getCreateOptions(e)))}),
+        new MenuItem('Region',  {icon: iconVectorRegion,  callback: e => actionManager.do(getCreateNodeAction(VECTOR_REGION,  btnShape.div, getCreateOptions(e)))}),
+        new MenuItem('Network', {icon: iconVectorNetwork, callback: e => actionManager.do(getCreateNodeAction(VECTOR_NETWORK, btnShape.div, getCreateOptions(e)))})]);
+
+
     menuShapes = new Menu('Shapes', true, false);
     menuShapes.addItems([
-        new MenuItem('Point',       {icon: iconPoint,      callback: e => actionManager.do(getCreateNodeAction(POINT,       btnShape.div, getCreateOptions(e)))}),
-        new MenuItem('Vector path', {icon: iconVectorPath, callback: e => actionManager.do(getCreateNodeAction(VECTOR_PATH, btnShape.div, getCreateOptions(e)))}),
-        new MenuItem('',            {separator: true}),
-        new MenuItem('Rectangle',   {icon: iconRectangle,  callback: e => actionManager.do(getCreateNodeAction(RECTANGLE,   btnShape.div, getCreateOptions(e)))}),
-        new MenuItem('Line',        {icon: iconLine,       callback: e => actionManager.do(getCreateNodeAction(LINE,        btnShape.div, getCreateOptions(e)))}),
-        new MenuItem('Ellipse',     {icon: iconEllipse,    callback: e => actionManager.do(getCreateNodeAction(ELLIPSE,     btnShape.div, getCreateOptions(e)))}),
-        new MenuItem('Trapeze',     {icon: iconTrapeze,    callback: e => actionManager.do(getCreateNodeAction(TRAPEZE,     btnShape.div, getCreateOptions(e)))}),
-        new MenuItem('Polygon',     {icon: iconPolygon,    callback: e => actionManager.do(getCreateNodeAction(POLYGON,     btnShape.div, getCreateOptions(e)))}),
-        new MenuItem('Star',        {icon: iconStar,       callback: e => actionManager.do(getCreateNodeAction(STAR,        btnShape.div, getCreateOptions(e)))}),
-        new MenuItem('Text',        {icon: iconTextShape,  callback: e => actionManager.do(getCreateNodeAction(TEXT_SHAPE,  btnShape.div, getCreateOptions(e)))})]);
+        new MenuItem('Rectangle', {icon: iconRectangle,  callback: e => actionManager.do(getCreateNodeAction(RECTANGLE,   btnShape.div, getCreateOptions(e)))}),
+        new MenuItem('Line',      {icon: iconLine,       callback: e => actionManager.do(getCreateNodeAction(LINE,        btnShape.div, getCreateOptions(e)))}),
+        new MenuItem('Ellipse',   {icon: iconEllipse,    callback: e => actionManager.do(getCreateNodeAction(ELLIPSE,     btnShape.div, getCreateOptions(e)))}),
+        new MenuItem('Trapeze',   {icon: iconTrapeze,    callback: e => actionManager.do(getCreateNodeAction(TRAPEZE,     btnShape.div, getCreateOptions(e)))}),
+        new MenuItem('Polygon',   {icon: iconPolygon,    callback: e => actionManager.do(getCreateNodeAction(POLYGON,     btnShape.div, getCreateOptions(e)))}),
+        new MenuItem('Star',      {icon: iconStar,       callback: e => actionManager.do(getCreateNodeAction(STAR,        btnShape.div, getCreateOptions(e)))}),
+        new MenuItem('Text',      {icon: iconTextShape,  callback: e => actionManager.do(getCreateNodeAction(TEXT_SHAPE,  btnShape.div, getCreateOptions(e)))})]);
 
 
     menuTransform = new Menu('Transform', true, false);
@@ -75226,7 +78600,8 @@ function initGeneratorMenus()
     menuShape.addItems([
         // menuItemShapeSelected = new MenuItem('Selected objects...', {icon: iconSelected,   enabled: false}),
                              // new MenuItem('',            {separator: true}),
-                                new MenuItem('Shapes',      {icon: iconShapes, childMenu: menuShapes}),
+                                new MenuItem('Shapes',      {icon: iconShapes,        childMenu: menuShapes}),
+                                new MenuItem('Vector',      {icon: iconVectorNetwork, childMenu: menuVector}),
                                 new MenuItem('',            {separator: true}),
                                 new MenuItem('Frame',       {icon: iconFrame,      callback: e => actionManager.do(getCreateNodeAction(FRAME,       btnShape.div, getCreateOptions(e)))}),
                                 new MenuItem('Group',       {icon: iconShapeGroup, callback: e => actionManager.do(getCreateNodeAction(SHAPE_GROUP, btnShape.div, getCreateOptions(e)))}),
@@ -75235,7 +78610,7 @@ function initGeneratorMenus()
                                 new MenuItem('Transform',   {icon: iconMove, childMenu: menuTransform}),
                                 new MenuItem('. . . Place', {icon: iconPlace, callback: e => actionManager.do(getCreateNodeAction(PLACE, btnShape.div, getCreateOptions(e)))}),
                                 new MenuItem('',            {separator: true}),
-                                new MenuItem('Apply',       {icon: iconApply, callback: e => actionManager.do(getCreateNodeAction(SHAPE_APPLY, btnShape.div, getCreateOptions(e)))}),
+                                new MenuItem('Apply style', {icon: iconApply, callback: e => actionManager.do(getCreateNodeAction(SHAPE_APPLY, btnShape.div, getCreateOptions(e)))}),
                                 new MenuItem('',            {separator: true}),
                                 new MenuItem('Render',      {icon: iconRenderDown, callback: e => actionManager.do(getCreateNodeAction(RENDER,       btnShape.div, getCreateOptions(e)))})]);
 
@@ -100169,7 +103544,7 @@ extends OperatorBase
 class   OpShape
 extends OpShapeBase
 {
-    paramProperties;
+    paramProps;
 
 
     constructor(type, id, name, icon, defWidth = defNodeWidth)
@@ -100181,14 +103556,14 @@ extends OpShapeBase
 
     addBaseParams()
     {
-        this.addParam(this.paramProperties = new ListParam('props', 'styles', false, true, true));
+        this.addParam(this.paramProps = new ListParam('props', 'styles', false, true, true));
 
-        this.paramProperties.controls[0].valueText = 'style';
+        this.paramProps.controls[0].valueText = 'style';
         
-        this.paramProperties.itemName  = 'style';
-        this.paramProperties.showZero  = false;
-        this.paramProperties.listTypes = [...STYLE_VALUES];
-        this.paramProperties.input.types.push(...this.paramProperties.listTypes);
+        this.paramProps.itemName  = 'style';
+        this.paramProps.showZero  = false;
+        this.paramProps.listTypes = [...STYLE_VALUES];
+        this.paramProps.input.types.push(...this.paramProps.listTypes);
     }
 }
 
@@ -100872,6 +104247,292 @@ extends OpShape
 
 
         this.addParam(this.paramPoints  = new ListParam  ('points',  'points',  false, true, true));
+        this.addParam(this.paramClosed  = new SelectParam('closed',  'closed',  false, true, true, ['open', 'closed'], 0));
+        this.addParam(this.paramDegree  = new SelectParam('degree',  'degree',  false, true, true, ['linear', 'quadratic', 'cubic', 'smooth', 'sine X', 'sine Y'], 3));
+        this.addParam(this.paramWinding = new SelectParam('winding', 'winding', false, true, true, ['even-odd', 'non-zero']));
+        this.addParam(this.paramRound   = new NumberParam('round',   'round',   true,  true, true, 0, 0));
+
+        
+        this.paramPoints.input.types.push(SHAPE_LIST_VALUE);
+        this.paramPoints.listTypes = [POINT_VALUE];
+
+        this.paramPoints.itemName    = 'point';
+        this.paramPoints.showZero    =  false;
+
+        this.paramDegree.reverseMenu =  true;
+
+        this.paramRound.divider = 0.565;
+
+
+        this.addBaseParams();
+    }
+
+
+
+    updateValues(requestId, actionId, updateParamId, paramIds, values)
+    {
+        const value = values[paramIds.findIndex(id => id == 'value')];
+
+        this.paramPoints .setValue(value.points,  false, true, false);
+        this.paramClosed .setValue(value.closed,  false, true, false);
+        this.paramDegree .setValue(value.degree,  false, true, false);
+        this.paramWinding.setValue(value.winding, false, true, false);
+        this.paramRound  .setValue(value.round,   false, true, false);
+    }
+
+
+
+    updateParams()
+    {
+        this.paramPoints .enableControlText(true);
+        this.paramClosed .enableControlText(true);
+        this.paramDegree .enableControlText(true);
+        this.paramWinding.enableControlText(true);
+        this.paramRound  .enableControlText(true);
+
+        this.updateParamControls();
+    }
+}
+
+
+class   OpVectorVertex
+extends OpShapeBase
+{
+    paramX;
+    paramY;
+    paramJoin;
+    paramCap;
+    paramRound;
+
+    zoom = 1;
+
+
+
+    constructor()
+    {
+        super(VECTOR_VERTEX, 'vertex', 'vertex', iconVectorVertex);
+
+        //this.canDisable  = true;
+        //this.iconOffsetY = -1;
+
+
+        this.addInput (new Input ([VECTOR_VERTEX_VALUE], getNodeInputValuesForUndo));//, this.input_getBackInitValue));
+        this.addOutput(new Output([VECTOR_VERTEX_VALUE], this.output_genRequest, getNodeOutputValuesForUndo));//, this.output_backInit));
+
+        this.addParam(this.paramX     = new NumberParam('x',     'X',     true, true, true, 0));
+        this.addParam(this.paramY     = new NumberParam('y',     'Y',     true, true, true, 0));
+        this.addParam(this.paramJoin  = new SelectParam('join',  'join',  true, true, true, ['miter', 'bevel', 'round'], 0));
+        this.addParam(this.paramCap   = new SelectParam('cap',   'cap',   true, true, true, ['none', 'square', 'round'], 0));
+        this.addParam(this.paramRound = new NumberParam('round', 'round', true, true, true, 0, 0));
+
+
+        this.setAllParamDividers(0.45);
+    }
+
+
+
+    // input_getBackInitValue()
+    // {
+    //     // 'this' is the input
+
+    //     return new PointValue(
+    //         this.nodeId,
+    //         this.node.paramX.value,
+    //         this.node.paramY.value);
+    // }
+
+
+
+    // output_backInit(value)
+    // {
+    //     // 'this' is the output
+
+    //     consoleAssert(value.type == POINT_VALUE, 'expected POINT_VALUE in backInit()');
+        
+    //     this.node.paramX.setValue(value.x, false, true, false);
+    //     this.node.paramY.setValue(value.y, false, true, false);
+    // }
+
+
+
+    updateValues(requestId, actionId, updateParamId, paramIds, values)
+    {
+        const value = values[paramIds.findIndex(id => id == 'value')];
+
+        this.paramX    .setValue(value.x, false, true, false);
+        this.paramY    .setValue(value.y, false, true, false);
+        this.paramJoin .setValue(value.y, false, true, false);
+        this.paramCap  .setValue(value.y, false, true, false);
+        this.paramRound.setValue(value.y, false, true, false);
+    }
+}
+
+
+class   OpVectorEdge
+extends OpShapeBase
+{
+    paramStart;
+    paramStartTangent;
+    paramEnd;
+    paramEndTangent;
+
+
+
+    constructor()
+    {
+        super(VECTOR_EDGE, 'edge', 'edge', iconVectorEdge);
+
+        //this.canDisable  = true;
+        //this.iconOffsetY = -1;
+
+
+        this.addInput (new Input ([VECTOR_EDGE_VALUE], getNodeInputValuesForUndo));//, this.input_getBackInitValue));
+        this.addOutput(new Output([VECTOR_EDGE_VALUE], this.output_genRequest, getNodeOutputValuesForUndo));//, this.output_backInit));
+
+        this.addParam(this.paramStart        = new NumberParam('start',        'start',         true, true, true, 0));
+        this.addParam(this.paramStartTangent = new  PointParam('startTangent', 'start tangent', true, true, true, PointValue.create(this, 0, 0)));
+        this.addParam(this.paramEnd          = new NumberParam('end',          'end',           true, true, true, 0));
+        this.addParam(this.paramEndTangent   = new  PointParam('endTangent',   'end tangent',   true, true, true, PointValue.create(this, 0, 0)));
+
+
+        this.setAllParamDividers(0.45);
+    }
+
+
+
+    // input_getBackInitValue()
+    // {
+    //     // 'this' is the input
+
+    //     return new PointValue(
+    //         this.nodeId,
+    //         this.node.paramX.value,
+    //         this.node.paramY.value);
+    // }
+
+
+
+    // output_backInit(value)
+    // {
+    //     // 'this' is the output
+
+    //     consoleAssert(value.type == POINT_VALUE, 'expected POINT_VALUE in backInit()');
+        
+    //     this.node.paramX.setValue(value.x, false, true, false);
+    //     this.node.paramY.setValue(value.y, false, true, false);
+    // }
+
+
+
+    updateValues(requestId, actionId, updateParamId, paramIds, values)
+    {
+        const value = values[paramIds.findIndex(id => id == 'value')];
+
+        this.paramStart       .setValue(value.paramStart,        false, true, false);
+        this.paramStartTangent.setValue(value.paramStartTangent, false, true, false);
+        this.paramEnd         .setValue(value.paramEnd,          false, true, false);
+        this.paramEndTangent  .setValue(value.paramEndTangent,   false, true, false);
+    }
+}
+
+
+class   OpVectorRegion
+extends OpShapeBase
+{
+    paramLoops;
+    paramWinding;
+    paramProps;
+
+
+
+    constructor()
+    {
+        super(VECTOR_REGION, 'region', 'region', iconVectorRegion);
+
+        //this.canDisable  = true;
+        //this.iconOffsetY = -1;
+
+
+        this.addInput (new Input ([VECTOR_REGION_VALUE], getNodeInputValuesForUndo));//, this.input_getBackInitValue));
+        this.addOutput(new Output([VECTOR_REGION_VALUE], this.output_genRequest, getNodeOutputValuesForUndo));//, this.output_backInit));
+
+        this.addParam(this.paramLoops   = new   ListParam('loops',   'loops',   true,  true, true, 0));
+        this.addParam(this.paramWinding = new SelectParam('winding', 'winding', false, true, true, ['even-odd', 'non-zero']));
+        this.addParam(this.paramProps   = new   ListParam('props',   'styles',  false, true, true));
+
+        this.paramProps.controls[0].valueText = 'style';
+        
+        this.paramProps.itemName  = 'style';
+        this.paramProps.showZero  = false;
+        this.paramProps.listTypes = [...STYLE_VALUES];
+        this.paramProps.input.types.push(...this.paramProps.listTypes);
+
+
+        this.setAllParamDividers(0.45);
+    }
+
+
+
+    // input_getBackInitValue()
+    // {
+    //     // 'this' is the input
+
+    //     return new PointValue(
+    //         this.nodeId,
+    //         this.node.paramX.value,
+    //         this.node.paramY.value);
+    // }
+
+
+
+    // output_backInit(value)
+    // {
+    //     // 'this' is the output
+
+    //     consoleAssert(value.type == POINT_VALUE, 'expected POINT_VALUE in backInit()');
+        
+    //     this.node.paramX.setValue(value.x, false, true, false);
+    //     this.node.paramY.setValue(value.y, false, true, false);
+    // }
+
+
+
+    updateValues(requestId, actionId, updateParamId, paramIds, values)
+    {
+        const value = values[paramIds.findIndex(id => id == 'value')];
+
+        this.paramLoops  .setValue(value.paramLoops,   false, true, false);
+        this.paramWinding.setValue(value.paramWinding, false, true, false);
+        this.paramProps  .setValue(value.paramProps,   false, true, false);
+    }
+}
+
+
+class   OpVectorNetwork
+extends OpShape
+{
+    paramPoints;
+    paramEdges;
+    paramRegions;
+    paramRound;
+
+
+    
+    constructor()
+    {
+        super(VECTOR_NETWORK, 'vector', 'vector', iconVectorNetwork);
+
+        this.canDisable  = true;
+        //this.iconOffsetY = -1;
+
+
+        this.addInput(this.createInputForObjects([VECTOR_NETWORK_VALUE], getNodeInputValuesForUndo));
+        this.addOutput(new Output([VECTOR_NETWORK_VALUE], this.output_genRequest));
+
+
+        this.addParam(this.paramPoints  = new ListParam  ('points',  'points',  false, true, true));
+        this.addParam(this.paramEdges   = new ListParam  ('points',  'points',  false, true, true));
+        this.addParam(this.paramRegions = new ListParam  ('points',  'points',  false, true, true));
         this.addParam(this.paramClosed  = new SelectParam('closed',  'closed',  false, true, true, ['open', 'closed'], 0));
         this.addParam(this.paramDegree  = new SelectParam('degree',  'degree',  false, true, true, ['linear', 'quadratic', 'cubic', 'smooth', 'sine X', 'sine Y'], 3));
         this.addParam(this.paramWinding = new SelectParam('winding', 'winding', false, true, true, ['even-odd', 'non-zero']));
@@ -111096,6 +114757,10 @@ function createNode(nodeType, creatingButton = null, createdNodeId = -1, options
         case TEXT_SHAPE:              node = new OpTextShape();         break;
         case POINT:                   node = new OpPoint();             break;
         case VECTOR_PATH:             node = new OpVectorPath();        break;
+        case VECTOR_VERTEX:            node = new OpVectorVertex();       break;
+        case VECTOR_EDGE:             node = new OpVectorEdge();        break;
+        case VECTOR_REGION:           node = new OpVectorRegion();      break;
+        case VECTOR_NETWORK:              node = new OpVectorNetwork();         break;
         case BOOLEAN:                 node = new OpShapeBoolean();      break;
         case SHAPE_GROUP:             node = new OpShapeGroup();        break;
         case FRAME:                   node = new OpFrame();             break;

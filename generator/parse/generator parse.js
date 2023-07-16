@@ -237,6 +237,15 @@ function genParse(parse, inParam = true)
     else if (parse.next == POINT                  ) result = genParsePoint            (parse);
     else if (parse.next == VECTOR_PATH_VALUE      ) result = genParseVectorPathValue  (parse);
     else if (parse.next == VECTOR_PATH            ) result = genParseVectorPath       (parse);
+    
+    else if (parse.next == VECTOR_VERTEX_VALUE     ) result = genParseVectorVertexValue (parse);
+    else if (parse.next == VECTOR_VERTEX           ) result = genParseVectorVertex      (parse);
+    else if (parse.next == VECTOR_EDGE_VALUE      ) result = genParseVectorEdgeValue  (parse);
+    else if (parse.next == VECTOR_EDGE            ) result = genParseVectorEdge       (parse);
+    else if (parse.next == VECTOR_REGION_VALUE    ) result = genParseVectorRegionValue(parse);
+    else if (parse.next == VECTOR_REGION          ) result = genParseVectorRegion     (parse);
+    else if (parse.next == VECTOR_NETWORK_VALUE       ) result = genParseVectorNetworkValue   (parse);
+    else if (parse.next == VECTOR_NETWORK             ) result = genParseVectorNetwork        (parse);
 
     else if (parse.next == BOOLEAN_VALUE          ) result = genParseShapeBooleanValue(parse);
     else if (parse.next == BOOLEAN                ) result = genParseShapeBoolean     (parse);

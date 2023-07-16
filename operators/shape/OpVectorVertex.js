@@ -1,0 +1,71 @@
+class   OpVectorVertex
+extends OpShapeBase
+{
+    paramX;
+    paramY;
+    paramJoin;
+    paramCap;
+    paramRound;
+
+    zoom = 1;
+
+
+
+    constructor()
+    {
+        super(VECTOR_VERTEX, 'vertex', 'vertex', iconVectorVertex);
+
+        //this.canDisable  = true;
+        //this.iconOffsetY = -1;
+
+
+        this.addInput (new Input ([VECTOR_VERTEX_VALUE], getNodeInputValuesForUndo));//, this.input_getBackInitValue));
+        this.addOutput(new Output([VECTOR_VERTEX_VALUE], this.output_genRequest, getNodeOutputValuesForUndo));//, this.output_backInit));
+
+        this.addParam(this.paramX     = new NumberParam('x',     'X',     true, true, true, 0));
+        this.addParam(this.paramY     = new NumberParam('y',     'Y',     true, true, true, 0));
+        this.addParam(this.paramJoin  = new SelectParam('join',  'join',  true, true, true, ['miter', 'bevel', 'round'], 0));
+        this.addParam(this.paramCap   = new SelectParam('cap',   'cap',   true, true, true, ['none', 'square', 'round'], 0));
+        this.addParam(this.paramRound = new NumberParam('round', 'round', true, true, true, 0, 0));
+
+
+        this.setAllParamDividers(0.45);
+    }
+
+
+
+    // input_getBackInitValue()
+    // {
+    //     // 'this' is the input
+
+    //     return new PointValue(
+    //         this.nodeId,
+    //         this.node.paramX.value,
+    //         this.node.paramY.value);
+    // }
+
+
+
+    // output_backInit(value)
+    // {
+    //     // 'this' is the output
+
+    //     consoleAssert(value.type == POINT_VALUE, 'expected POINT_VALUE in backInit()');
+        
+    //     this.node.paramX.setValue(value.x, false, true, false);
+    //     this.node.paramY.setValue(value.y, false, true, false);
+    // }
+
+
+
+    updateValues(requestId, actionId, updateParamId, paramIds, values)
+    {
+        const value = values[paramIds.findIndex(id => id == 'value')];
+
+        this.paramX    .setValue(value.x, false, true, false);
+        this.paramY    .setValue(value.y, false, true, false);
+        this.paramJoin .setValue(value.y, false, true, false);
+        this.paramCap  .setValue(value.y, false, true, false);
+        this.paramRound.setValue(value.y, false, true, false);
+    }
+}

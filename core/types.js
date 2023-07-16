@@ -317,72 +317,88 @@ const STYLE_VALUES =
 ];
 
 
-const COLOR_STYLE        = 'CSTL';
+const COLOR_STYLE          = 'CSTL';
  
  
-const SHAPE_VALUE        = 'SHP#'; // abstract placeholder
+const SHAPE_VALUE          = 'SHP#'; // abstract placeholder
  
-const RECTANGLE_VALUE    = 'RECT#';
-const RECTANGLE          = 'RECT'; 
-const RECTANGLE_TYPES    = [RECTANGLE_VALUE, RECTANGLE];
+const RECTANGLE_VALUE      = 'RECT#';
+const RECTANGLE            = 'RECT'; 
+const RECTANGLE_TYPES      = [RECTANGLE_VALUE, RECTANGLE];
  
-const LINE_VALUE         = 'LINE#';
-const LINE               = 'LINE'; 
-const LINE_TYPES         = [LINE_VALUE, LINE];
+const LINE_VALUE           = 'LINE#';
+const LINE                 = 'LINE'; 
+const LINE_TYPES           = [LINE_VALUE, LINE];
+   
+const ELLIPSE_VALUE        = 'ELPS#';
+const ELLIPSE              = 'ELPS'; 
+const ELLIPSE_TYPES        = [ELLIPSE_VALUE, ELLIPSE];
+ 
+const TRAPEZE_VALUE        = 'TRPZ#';
+const TRAPEZE              = 'TRPZ';
+const TRAPEZE_TYPES        = [TRAPEZE_VALUE, TRAPEZE];
+ 
+const POLYGON_VALUE        = 'POLY#';
+const POLYGON              = 'POLY'; 
+const POLYGON_TYPES        = [POLYGON_VALUE, POLYGON];
+   
+const STAR_VALUE           = 'STAR#';
+const STAR                 = 'STAR'; 
+const STAR_TYPES           = [STAR_VALUE, STAR];
+   
+const TEXT_SHAPE_VALUE     = 'TXTS#';
+const TEXT_SHAPE           = 'TXTS'; 
+const TEXT_SHAPE_TYPES     = [TEXT_SHAPE_VALUE, TEXT_SHAPE];
   
-const ELLIPSE_VALUE      = 'ELPS#';
-const ELLIPSE            = 'ELPS'; 
-const ELLIPSE_TYPES      = [ELLIPSE_VALUE, ELLIPSE];
+const POINT                = 'PT';
+const POINT_VALUE          = 'PT#';
+const POINT_TYPES          = [POINT_VALUE, POINT];
 
-const TRAPEZE_VALUE      = 'TRPZ#';
-const TRAPEZE            = 'TRPZ';
-const TRAPEZE_TYPES      = [TRAPEZE_VALUE, TRAPEZE];
-
-const POLYGON_VALUE      = 'POLY#';
-const POLYGON            = 'POLY'; 
-const POLYGON_TYPES      = [POLYGON_VALUE, POLYGON];
-  
-const STAR_VALUE         = 'STAR#';
-const STAR               = 'STAR'; 
-const STAR_TYPES         = [STAR_VALUE, STAR];
-  
-const TEXT_SHAPE_VALUE   = 'TXTS#';
-const TEXT_SHAPE         = 'TXTS'; 
-const TEXT_SHAPE_TYPES   = [TEXT_SHAPE_VALUE, TEXT_SHAPE];
+const VECTOR_PATH_VALUE    = 'VECP#';
+const VECTOR_PATH          = 'VECP'; 
+const VECTOR_PATH_TYPES    = [VECTOR_PATH_VALUE, VECTOR_PATH];
  
-const POINT              = 'PT';
-const POINT_VALUE        = 'PT#';
-const POINT_TYPES        = [POINT_VALUE, POINT];
-
-const VECTOR_PATH_VALUE  = 'VEC#';
-const VECTOR_PATH        = 'VEC'; 
-const VECTOR_PATH_TYPES  = [VECTOR_PATH_VALUE, VECTOR_PATH];
+const VECTOR_VERTEX_VALUE  = 'VECV#';
+const VECTOR_VERTEX        = 'VECV'; 
+const VECTOR_VERTEX_TYPES  = [VECTOR_VERTEX_VALUE, VECTOR_VERTEX];
  
-const SHAPE_GROUP_VALUE  = 'SGRP#';
-const SHAPE_GROUP        = 'SGRP';
-const SHAPE_GROUP_TYPES  = [SHAPE_GROUP_VALUE, SHAPE_GROUP];
+const VECTOR_EDGE_VALUE    = 'VECE#';
+const VECTOR_EDGE          = 'VECE'; 
+const VECTOR_EDGE_TYPES    = [VECTOR_EDGE_VALUE, VECTOR_EDGE];
  
-const FRAME_VALUE        = 'FRM#';
-const FRAME              = 'FRM';
-const FRAME_TYPES        = [FRAME_VALUE, FRAME];
+const VECTOR_REGION_VALUE  = 'VECR#';
+const VECTOR_REGION        = 'VECR'; 
+const VECTOR_REGION_TYPES  = [VECTOR_REGION_VALUE, VECTOR_REGION];
+ 
+const VECTOR_NETWORK_VALUE = 'VECN#';
+const VECTOR_NETWORK       = 'VECN'; 
+const VECTOR_NETWORK_TYPES = [VECTOR_NETWORK_VALUE, VECTOR_NETWORK];
+ 
+const SHAPE_GROUP_VALUE    = 'SGRP#';
+const SHAPE_GROUP          = 'SGRP';
+const SHAPE_GROUP_TYPES    = [SHAPE_GROUP_VALUE, SHAPE_GROUP];
+ 
+const FRAME_VALUE          = 'FRM#';
+const FRAME                = 'FRM';
+const FRAME_TYPES          = [FRAME_VALUE, FRAME];
  
 
-const MOVE               = 'MOVE';
-const ROTATE             = 'ROT';
-const SCALE              = 'SCALE';
-const SKEW               = 'SKEW';
+const MOVE                 = 'MOVE';
+const ROTATE               = 'ROT';
+const SCALE                = 'SCALE';
+const SKEW                 = 'SKEW';
 
-const PLACE              = 'PLACE';
-const SHAPE_APPLY        = 'APPLY';
+const PLACE                = 'PLACE';
+const SHAPE_APPLY          = 'APPLY';
   
 
-const BOOLEAN            = 'BOOL';
-const BOOLEAN_VALUE      = 'BOOL#';
+const BOOLEAN              = 'BOOL';
+const BOOLEAN_VALUE        = 'BOOL#';
 
-const BOOL_UNION         = 'BOOLU';
-const BOOL_SUBTRACT      = 'BOOLS';
-const BOOL_INTERSECT     = 'BOOLI';
-const BOOL_EXCLUDE       = 'BOOLE';
+const BOOL_UNION           = 'BOOLU';
+const BOOL_SUBTRACT        = 'BOOLS';
+const BOOL_INTERSECT       = 'BOOLI';
+const BOOL_EXCLUDE         = 'BOOLE';
 
 
 const BOOLEAN_TYPES =
@@ -412,6 +428,10 @@ const SHAPE_VALUES =
     TEXT_SHAPE_VALUE,
     POINT_VALUE,
     VECTOR_PATH_VALUE,
+    VECTOR_VERTEX_VALUE,
+    VECTOR_EDGE_VALUE,
+    VECTOR_REGION_VALUE,
+    VECTOR_NETWORK_VALUE,
     SHAPE_GROUP_VALUE,
     FRAME_VALUE,
     BOOLEAN_VALUE,
@@ -440,6 +460,10 @@ const SHAPE_TYPES =
     ...TEXT_SHAPE_TYPES,
     ...POINT_TYPES,
     ...VECTOR_PATH_TYPES,
+    ...VECTOR_VERTEX_TYPES,
+    ...VECTOR_EDGE_TYPES,
+    ...VECTOR_REGION_TYPES,
+    ...VECTOR_NETWORK_TYPES,
     ...SHAPE_GROUP_TYPES,
     ...FRAME_TYPES,
     ...BOOLEAN_TYPES,
@@ -480,9 +504,13 @@ const ALL_VALUES =
          TRAPEZE_VALUE,
          POLYGON_VALUE,
             STAR_VALUE,
-       TEXT_SHAPE_VALUE,
+      TEXT_SHAPE_VALUE,
            POINT_VALUE,
      VECTOR_PATH_VALUE,
+   VECTOR_VERTEX_VALUE,
+     VECTOR_EDGE_VALUE,
+   VECTOR_REGION_VALUE,
+  VECTOR_NETWORK_VALUE,
      SHAPE_GROUP_VALUE,
            FRAME_VALUE,
 

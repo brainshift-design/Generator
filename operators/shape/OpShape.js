@@ -1,7 +1,7 @@
 class   OpShape
 extends OpShapeBase
 {
-    paramProperties;
+    paramProps;
 
 
     constructor(type, id, name, icon, defWidth = defNodeWidth)
@@ -13,13 +13,13 @@ extends OpShapeBase
 
     addBaseParams()
     {
-        this.addParam(this.paramProperties = new ListParam('props', 'styles', false, true, true));
+        this.addParam(this.paramProps = new ListParam('props', 'styles', false, true, true));
 
-        this.paramProperties.controls[0].valueText = 'style';
+        this.paramProps.controls[0].valueText = 'style';
         
-        this.paramProperties.itemName  = 'style';
-        this.paramProperties.showZero  = false;
-        this.paramProperties.listTypes = [...STYLE_VALUES];
-        this.paramProperties.input.types.push(...this.paramProperties.listTypes);
+        this.paramProps.itemName  = 'style';
+        this.paramProps.showZero  = false;
+        this.paramProps.listTypes = [...STYLE_VALUES];
+        this.paramProps.input.types.push(...this.paramProps.listTypes);
     }
 }

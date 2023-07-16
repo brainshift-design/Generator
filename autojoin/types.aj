@@ -8,6 +8,7 @@
 ../generator/types/figma/FigmaLine.js
 ../generator/types/figma/FigmaEllipse.js
 ../generator/types/figma/FigmaVectorPath.js
+../generator/types/figma/FigmaVectorNetwork.js
 ../generator/types/figma/FigmaTrapeze.js
 ../generator/types/figma/FigmaPolygon.js
 ../generator/types/figma/FigmaStar.js
@@ -53,6 +54,10 @@
 ../generator/types/values/TextShapeValue.js
 ../generator/types/values/PointValue.js
 ../generator/types/values/VectorPathValue.js
+../generator/types/values/VectorVertexValue.js
+../generator/types/values/VectorEdgeValue.js
+../generator/types/values/VectorRegionValue.js
+../generator/types/values/VectorNetworkValue.js
 ../generator/types/values/ShapeBooleanValue.js
 ../generator/types/values/ShapeGroupValue.js
 ../generator/types/values/FrameValue.js
@@ -183,6 +188,10 @@
 ../generator/types/shape/GTextShape.js
 ../generator/types/shape/GPoint.js
 ../generator/types/shape/GVectorPath.js
+../generator/types/shape/GVectorVertex.js
+../generator/types/shape/GVectorEdge.js
+../generator/types/shape/GVectorRegion.js
+../generator/types/shape/GVectorNetwork.js
 ../generator/types/shape/GShapeGroup.js
 ../generator/types/shape/GFrame.js
 ../generator/types/shape/GApply.js
