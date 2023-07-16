@@ -63,11 +63,11 @@ extends OperatorBase
     {
         super.updateValues(requestId, actionId, updateParamId, paramIds, values);
 
-        const value = values[paramIds.findIndex(id => id == 'value')];
-        consoleAssert(LIST_VALUES.includes(value.type));
+        const type = values[paramIds.findIndex(id => id == 'type')];
+        consoleAssert(LIST_VALUES.includes(type.value));
 
 
-        this.outputs[0].types = [finalListTypeFromItems(value.items)];
+        this.outputs[0].types = [type.value];
     }
 
 

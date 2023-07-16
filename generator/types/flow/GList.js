@@ -91,7 +91,7 @@ extends GOperator
         }
 
 
-        this.updateValues = [];//[['value', this.value]];
+        this.updateValues = [['type', new TextValue(finalListTypeFromItems(this.value.items))]];//[['value', this.value]];
 
 
         this.validate();

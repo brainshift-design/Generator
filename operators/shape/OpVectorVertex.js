@@ -16,7 +16,7 @@ extends OpShapeBase
         super(VECTOR_VERTEX, 'vertex', 'vertex', iconVectorVertex);
 
         //this.canDisable  = true;
-        //this.iconOffsetY = -1;
+        this.iconOffsetY = -1;
 
 
         this.addInput (new Input ([VECTOR_VERTEX_VALUE], getNodeInputValuesForUndo));//, this.input_getBackInitValue));
@@ -29,7 +29,9 @@ extends OpShapeBase
         this.addParam(this.paramRound = new NumberParam('round', 'round', true, true, true, 0, 0));
 
 
-        this.setAllParamDividers(0.45);
+        this.paramX    .divider = 0.45;
+        this.paramY    .divider = 0.45;
+        this.paramRound.divider = 0.55;
     }
 
 
@@ -62,10 +64,10 @@ extends OpShapeBase
     {
         const value = values[paramIds.findIndex(id => id == 'value')];
 
-        this.paramX    .setValue(value.x, false, true, false);
-        this.paramY    .setValue(value.y, false, true, false);
-        this.paramJoin .setValue(value.y, false, true, false);
-        this.paramCap  .setValue(value.y, false, true, false);
-        this.paramRound.setValue(value.y, false, true, false);
+        this.paramX    .setValue(value.x,     false, true, false);
+        this.paramY    .setValue(value.y,     false, true, false);
+        this.paramJoin .setValue(value.join,  false, true, false);
+        this.paramCap  .setValue(value.cap,   false, true, false);
+        this.paramRound.setValue(value.round, false, true, false);
     }
 }

@@ -18,9 +18,16 @@ extends OpShapeBase
         this.addInput (new Input ([VECTOR_REGION_VALUE], getNodeInputValuesForUndo));//, this.input_getBackInitValue));
         this.addOutput(new Output([VECTOR_REGION_VALUE], this.output_genRequest, getNodeOutputValuesForUndo));//, this.output_backInit));
 
-        this.addParam(this.paramLoops   = new   ListParam('loops',   'loops',   true,  true, true, 0));
+        this.addParam(this.paramLoops   = new   ListParam('loops',   'loops',   false,  true, true, 0));
         this.addParam(this.paramWinding = new SelectParam('winding', 'winding', false, true, true, ['even-odd', 'non-zero']));
         this.addParam(this.paramProps   = new   ListParam('props',   'styles',  false, true, true));
+
+
+        this.paramLoops.itemName  = 'loop';
+        this.paramLoops.showZero  = false;
+        this.paramLoops.listTypes = [TEXT_VALUE];
+        this.paramLoops.input.types.push(...this.paramLoops.listTypes);
+
 
         this.paramProps.controls[0].valueText = 'style';
         
@@ -63,8 +70,8 @@ extends OpShapeBase
     {
         const value = values[paramIds.findIndex(id => id == 'value')];
 
-        this.paramLoops  .setValue(value.paramLoops,   false, true, false);
-        this.paramWinding.setValue(value.paramWinding, false, true, false);
-        this.paramProps  .setValue(value.paramProps,   false, true, false);
+        this.paramLoops  .setValue(value.loops,   false, true, false);
+        this.paramWinding.setValue(value.winding, false, true, false);
+        this.paramProps  .setValue(value.props,   false, true, false);
     }
 }

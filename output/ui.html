@@ -9513,24 +9513,24 @@ const POINT                = 'PT';
 const POINT_VALUE          = 'PT#';
 const POINT_TYPES          = [POINT_VALUE, POINT];
 
-const VECTOR_PATH_VALUE    = 'VECP#';
-const VECTOR_PATH          = 'VECP'; 
+const VECTOR_PATH_VALUE    = 'VPATH#';
+const VECTOR_PATH          = 'VPATH'; 
 const VECTOR_PATH_TYPES    = [VECTOR_PATH_VALUE, VECTOR_PATH];
  
-const VECTOR_VERTEX_VALUE  = 'VECV#';
-const VECTOR_VERTEX        = 'VECV'; 
+const VECTOR_VERTEX_VALUE  = 'VPT#';
+const VECTOR_VERTEX        = 'VPT'; 
 const VECTOR_VERTEX_TYPES  = [VECTOR_VERTEX_VALUE, VECTOR_VERTEX];
  
-const VECTOR_EDGE_VALUE    = 'VECE#';
-const VECTOR_EDGE          = 'VECE'; 
+const VECTOR_EDGE_VALUE    = 'VEDGE#';
+const VECTOR_EDGE          = 'VEDGE'; 
 const VECTOR_EDGE_TYPES    = [VECTOR_EDGE_VALUE, VECTOR_EDGE];
  
-const VECTOR_REGION_VALUE  = 'VECR#';
-const VECTOR_REGION        = 'VECR'; 
+const VECTOR_REGION_VALUE  = 'VREG#';
+const VECTOR_REGION        = 'VREG'; 
 const VECTOR_REGION_TYPES  = [VECTOR_REGION_VALUE, VECTOR_REGION];
  
-const VECTOR_NETWORK_VALUE = 'VECN#';
-const VECTOR_NETWORK       = 'VECN'; 
+const VECTOR_NETWORK_VALUE = 'VNET#';
+const VECTOR_NETWORK       = 'VNET'; 
 const VECTOR_NETWORK_TYPES = [VECTOR_NETWORK_VALUE, VECTOR_NETWORK];
  
 const SHAPE_GROUP_VALUE    = 'SGRP#';
@@ -17161,14 +17161,14 @@ extends GValue
 
 
 
-    static create(nodeId, loops, winding, props)
-    {
-        return new VectorRegionValue(
-            nodeId,
-            new   ListValue(loops),
-            new NumberValue(winding),
-            new   ListValue(props));
-    }
+    // static create(nodeId, loops, winding, props)
+    // {
+    //     return new VectorRegionValue(
+    //         nodeId,
+    //         loops,
+    //         new NumberValue(winding),
+    //         props);
+    // }
 
 
 
@@ -17261,9 +17261,9 @@ function parseVectorRegionValue(str, i = -1)
 
     const iStart = i;
 
-    const loops   = parseListValue (str, i); i += loops  [1];
-    const winding = parsePointValue(str[i]); i += winding[1];
-    const props   = parsePointValue(str, i); i += props  [1];
+    const loops   = parseListValue  (str, i); i += loops  [1];
+    const winding = parseNumberValue(str[i]); i += winding[1];
+    const props   = parseListValue  (str, i); i += props  [1];
 
 
     const region = new VectorRegionValue(
@@ -18011,7 +18011,7 @@ extends GOperator
         }
 
 
-        this.updateValues = [];//[['value', this.value]];
+        this.updateValues = [['type', new TextValue(finalListTypeFromItems(this.value.items))]];//[['value', this.value]];
 
 
         this.validate();
@@ -37224,6 +37224,82 @@ function genParseVectorRegion(parse)
 
 
 
+function genParseVectorNetworkValue(parse)
+{
+    parse.pos++; // VECTOR_NETWORKO_VALUE
+
+    const region = parse.move();
+
+    if (parse.settings.logRequests) 
+        logReqValue(VECTOR_NETWORK_VALUE, region, parse);
+
+    return parseVectorNetworkValue(region)[0];
+}
+
+
+
+function genParseVectorNetwork(parse)
+{
+    const [, nodeId, options, ignore] = genParseNodeStart(parse);
+
+
+    const region = new GVectorNetwork(nodeId, options);
+
+
+    let nInputs = -1;
+
+    if (!ignore)
+    {
+        nInputs = parseInt(parse.move());
+        consoleAssert(nInputs => 0 && nInputs <= 1, 'nInputs must be [0, 1]');
+    }
+
+
+    if (parse.settings.logRequests) 
+        logReq(region, parse, ignore);
+
+
+    if (ignore) 
+    {
+        genParseNodeEnd(parse, region);
+        return parse.parsedNodes.find(n => n.nodeId == nodeId);
+    }
+
+
+    parse.nTab++;
+
+
+    if (nInputs == 1)
+        region.input = genParse(parse);
+
+
+    const nParamIds = genParseParamCount(parse);
+
+    for (let i = 0; i < nParamIds; i++)
+    {
+        const paramId = genParseParamId(parse);
+
+        parse.inParam = true;
+
+        switch (paramId)
+        {
+        case 'points':  region.points  = genParse(parse); break;
+        case 'edges':   region.edges   = genParse(parse); break;
+        case 'regions': region.regions = genParse(parse); break;
+        }
+    }
+
+
+    parse.inParam = false;
+    parse.nTab--;
+
+
+    genParseNodeEnd(parse, region);
+    return region;
+}
+
+
+
 function genParseShapeBoolean(parse)
 {
     const [, nodeId, options, ignore] = genParseNodeStart(parse);
@@ -49034,24 +49110,24 @@ const POINT                = 'PT';
 const POINT_VALUE          = 'PT#';
 const POINT_TYPES          = [POINT_VALUE, POINT];
 
-const VECTOR_PATH_VALUE    = 'VECP#';
-const VECTOR_PATH          = 'VECP'; 
+const VECTOR_PATH_VALUE    = 'VPATH#';
+const VECTOR_PATH          = 'VPATH'; 
 const VECTOR_PATH_TYPES    = [VECTOR_PATH_VALUE, VECTOR_PATH];
  
-const VECTOR_VERTEX_VALUE  = 'VECV#';
-const VECTOR_VERTEX        = 'VECV'; 
+const VECTOR_VERTEX_VALUE  = 'VPT#';
+const VECTOR_VERTEX        = 'VPT'; 
 const VECTOR_VERTEX_TYPES  = [VECTOR_VERTEX_VALUE, VECTOR_VERTEX];
  
-const VECTOR_EDGE_VALUE    = 'VECE#';
-const VECTOR_EDGE          = 'VECE'; 
+const VECTOR_EDGE_VALUE    = 'VEDGE#';
+const VECTOR_EDGE          = 'VEDGE'; 
 const VECTOR_EDGE_TYPES    = [VECTOR_EDGE_VALUE, VECTOR_EDGE];
  
-const VECTOR_REGION_VALUE  = 'VECR#';
-const VECTOR_REGION        = 'VECR'; 
+const VECTOR_REGION_VALUE  = 'VREG#';
+const VECTOR_REGION        = 'VREG'; 
 const VECTOR_REGION_TYPES  = [VECTOR_REGION_VALUE, VECTOR_REGION];
  
-const VECTOR_NETWORK_VALUE = 'VECN#';
-const VECTOR_NETWORK       = 'VECN'; 
+const VECTOR_NETWORK_VALUE = 'VNET#';
+const VECTOR_NETWORK       = 'VNET'; 
 const VECTOR_NETWORK_TYPES = [VECTOR_NETWORK_VALUE, VECTOR_NETWORK];
  
 const SHAPE_GROUP_VALUE    = 'SGRP#';
@@ -56682,14 +56758,14 @@ extends GValue
 
 
 
-    static create(nodeId, loops, winding, props)
-    {
-        return new VectorRegionValue(
-            nodeId,
-            new   ListValue(loops),
-            new NumberValue(winding),
-            new   ListValue(props));
-    }
+    // static create(nodeId, loops, winding, props)
+    // {
+    //     return new VectorRegionValue(
+    //         nodeId,
+    //         loops,
+    //         new NumberValue(winding),
+    //         props);
+    // }
 
 
 
@@ -56782,9 +56858,9 @@ function parseVectorRegionValue(str, i = -1)
 
     const iStart = i;
 
-    const loops   = parseListValue (str, i); i += loops  [1];
-    const winding = parsePointValue(str[i]); i += winding[1];
-    const props   = parsePointValue(str, i); i += props  [1];
+    const loops   = parseListValue  (str, i); i += loops  [1];
+    const winding = parseNumberValue(str[i]); i += winding[1];
+    const props   = parseListValue  (str, i); i += props  [1];
 
 
     const region = new VectorRegionValue(
@@ -57532,7 +57608,7 @@ extends GOperator
         }
 
 
-        this.updateValues = [];//[['value', this.value]];
+        this.updateValues = [['type', new TextValue(finalListTypeFromItems(this.value.items))]];//[['value', this.value]];
 
 
         this.validate();
@@ -76953,7 +77029,7 @@ const iconPoint             = '<svg width="5" height="5" viewBox="0 0 5 5" fill=
 const iconVectorPath        = '<svg width="18" height="17" viewBox="0 0 18 17" fill="none" xmlns="http://www.w3.org/2000/svg"><circle cx="2.50012" cy="1" r="0.75" stroke="white" stroke-width="0.5"/><circle cx="15.4999" cy="16.0002" r="0.75" stroke="white" stroke-width="0.5"/><path d="M2.8714 11.9166C9 -13 10 29 15.1694 5.03541" stroke="white" stroke-width="1.5"/><circle cx="15.5001" cy="4" r="1.5" stroke="white"/><circle cx="2.49988" cy="13" r="1.5" stroke="white"/><rect x="2" y="9" width="1" height="1" fill="white"/><rect x="2" y="7" width="1" height="1" fill="white"/><rect x="2" y="5" width="1" height="1" fill="white"/><rect x="2" y="3" width="1" height="1" fill="white"/><rect x="15" y="13" width="1" height="1" fill="white"/><rect x="15" y="11" width="1" height="1" fill="white"/><rect x="15" y="9" width="1" height="1" fill="white"/><rect x="15" y="7" width="1" height="1" fill="white"/></svg>';
 const iconVectorVertex      = '<svg width="6" height="6" viewBox="0 0 6 6" fill="none" xmlns="http://www.w3.org/2000/svg"><circle cx="3" cy="3" r="1.89968" stroke="white" stroke-width="1.3"/></svg>';
 const iconVectorEdge        = '<svg width="17" height="5" viewBox="0 0 17 5" fill="none" xmlns="http://www.w3.org/2000/svg"><rect x="3.98364" y="2" width="8.9873" height="1" fill="white"/><circle cx="14.4824" cy="2.57507" r="1.72135" stroke="white" stroke-width="1.2"/><circle cx="2.51007" cy="2.57507" r="1.72135" stroke="white" stroke-width="1.2"/></svg>';
-const iconVectorRegion      = '<svg width="16" height="11" viewBox="0 0 16 11" fill="none" xmlns="http://www.w3.org/2000/svg"><circle cx="8" cy="9" r="1.5" stroke="white"/><circle cx="2" cy="2" r="1.5" stroke="white"/><circle cx="14" cy="2" r="1.5" stroke="white"/><path d="M4.0001 2L3.24939 3.77671L7.0001 8.00003L8.0001 7.50003L9.0001 8.00003L12.7473 3.77671L12.0001 2H4.0001Z" fill="white" stroke="white"/></svg>';
+const iconVectorRegion      = '<svg width="16" height="12" viewBox="0 -1 16 12" fill="none" xmlns="http://www.w3.org/2000/svg"><circle cx="8" cy="9" r="1.5" stroke="white"/><circle cx="2" cy="2" r="1.5" stroke="white"/><circle cx="14" cy="2" r="1.5" stroke="white"/><path d="M4.0001 2L3.24939 3.77671L7.0001 8.00003L8.0001 7.50003L9.0001 8.00003L12.7473 3.77671L12.0001 2H4.0001Z" fill="white" stroke="white"/></svg>';
 const iconVectorNetwork     = '<svg width="18" height="19" viewBox="0 -1 18 19" fill="none" xmlns="http://www.w3.org/2000/svg"><circle cx="9" cy="2" r="1.5" stroke="white"/><circle cx="9" cy="16" r="1.5" stroke="white"/><circle cx="2" cy="9" r="1.5" stroke="white"/><circle cx="16" cy="9" r="1.5" stroke="white"/><path d="M3.50001 9.71348L3.15479 10.1548L8.00001 15L9.00001 14.5L10 15L14.7725 10.2275L14.5 9.71348H3.50001Z" fill="white"/><path d="M3.50001 9.71348H14.5M3.50001 9.71348L3.30592 7.69404L7.78889 3.21112L9.00001 3.54484L10.2111 3.21112L14.6941 7.69404L14.5 9.71348M3.50001 9.71348L3.15479 10.1548L8.00001 15L9.00001 14.5L10 15L14.7725 10.2275L14.5 9.71348" stroke="white"/></svg>';
 const iconBoolUnion         = '<svg width="16" height="16" viewBox="0 0 16 16" fill="none" xmlns="http://www.w3.org/2000/svg"><path d="M11 0H0V11H5V16H16V5H11V0Z" fill="white"/></svg>';
 const iconBoolSubtract      = '<svg width="16" height="16" viewBox="0 0 16 16" fill="none" xmlns="http://www.w3.org/2000/svg"><path fill-rule="evenodd" clip-rule="evenodd" d="M0 11V0H11V5H16V16H5V11H0ZM1 1H10V10H1V1Z" fill="white"/></svg>';
@@ -92565,11 +92641,11 @@ extends OperatorBase
     {
         super.updateValues(requestId, actionId, updateParamId, paramIds, values);
 
-        const value = values[paramIds.findIndex(id => id == 'value')];
-        consoleAssert(LIST_VALUES.includes(value.type));
+        const type = values[paramIds.findIndex(id => id == 'type')];
+        consoleAssert(LIST_VALUES.includes(type.value));
 
 
-        this.outputs[0].types = [finalListTypeFromItems(value.items)];
+        this.outputs[0].types = [type.value];
     }
 
 
@@ -104313,7 +104389,7 @@ extends OpShapeBase
         super(VECTOR_VERTEX, 'vertex', 'vertex', iconVectorVertex);
 
         //this.canDisable  = true;
-        //this.iconOffsetY = -1;
+        this.iconOffsetY = -1;
 
 
         this.addInput (new Input ([VECTOR_VERTEX_VALUE], getNodeInputValuesForUndo));//, this.input_getBackInitValue));
@@ -104326,7 +104402,9 @@ extends OpShapeBase
         this.addParam(this.paramRound = new NumberParam('round', 'round', true, true, true, 0, 0));
 
 
-        this.setAllParamDividers(0.45);
+        this.paramX    .divider = 0.45;
+        this.paramY    .divider = 0.45;
+        this.paramRound.divider = 0.55;
     }
 
 
@@ -104359,11 +104437,11 @@ extends OpShapeBase
     {
         const value = values[paramIds.findIndex(id => id == 'value')];
 
-        this.paramX    .setValue(value.x, false, true, false);
-        this.paramY    .setValue(value.y, false, true, false);
-        this.paramJoin .setValue(value.y, false, true, false);
-        this.paramCap  .setValue(value.y, false, true, false);
-        this.paramRound.setValue(value.y, false, true, false);
+        this.paramX    .setValue(value.x,     false, true, false);
+        this.paramY    .setValue(value.y,     false, true, false);
+        this.paramJoin .setValue(value.join,  false, true, false);
+        this.paramCap  .setValue(value.cap,   false, true, false);
+        this.paramRound.setValue(value.round, false, true, false);
     }
 }
 
@@ -104383,19 +104461,22 @@ extends OpShapeBase
         super(VECTOR_EDGE, 'edge', 'edge', iconVectorEdge);
 
         //this.canDisable  = true;
-        //this.iconOffsetY = -1;
+        this.iconOffsetY = -1;
 
 
         this.addInput (new Input ([VECTOR_EDGE_VALUE], getNodeInputValuesForUndo));//, this.input_getBackInitValue));
         this.addOutput(new Output([VECTOR_EDGE_VALUE], this.output_genRequest, getNodeOutputValuesForUndo));//, this.output_backInit));
 
         this.addParam(this.paramStart        = new NumberParam('start',        'start',         true, true, true, 0));
-        this.addParam(this.paramStartTangent = new  PointParam('startTangent', 'start tangent', true, true, true, PointValue.create(this, 0, 0)));
+        this.addParam(this.paramStartTangent = new  PointParam('startTangent', 'tangent', true, true, true, PointValue.create(this, 0, 0)));
         this.addParam(this.paramEnd          = new NumberParam('end',          'end',           true, true, true, 0));
-        this.addParam(this.paramEndTangent   = new  PointParam('endTangent',   'end tangent',   true, true, true, PointValue.create(this, 0, 0)));
+        this.addParam(this.paramEndTangent   = new  PointParam('endTangent',   'tangent',   true, true, true, PointValue.create(this, 0, 0)));
 
 
-        this.setAllParamDividers(0.45);
+        this.paramStart       .divider = 0.5;
+        this.paramEnd         .divider = 0.5;
+        this.paramStartTangent.divider = 0.5;
+        this.paramEndTangent  .divider = 0.5;
     }
 
 
@@ -104428,10 +104509,10 @@ extends OpShapeBase
     {
         const value = values[paramIds.findIndex(id => id == 'value')];
 
-        this.paramStart       .setValue(value.paramStart,        false, true, false);
-        this.paramStartTangent.setValue(value.paramStartTangent, false, true, false);
-        this.paramEnd         .setValue(value.paramEnd,          false, true, false);
-        this.paramEndTangent  .setValue(value.paramEndTangent,   false, true, false);
+        this.paramStart       .setValue(value.start,        false, true, false);
+        this.paramStartTangent.setValue(value.startTangent, false, true, false);
+        this.paramEnd         .setValue(value.end,          false, true, false);
+        this.paramEndTangent  .setValue(value.endTangent,   false, true, false);
     }
 }
 
@@ -104456,9 +104537,16 @@ extends OpShapeBase
         this.addInput (new Input ([VECTOR_REGION_VALUE], getNodeInputValuesForUndo));//, this.input_getBackInitValue));
         this.addOutput(new Output([VECTOR_REGION_VALUE], this.output_genRequest, getNodeOutputValuesForUndo));//, this.output_backInit));
 
-        this.addParam(this.paramLoops   = new   ListParam('loops',   'loops',   true,  true, true, 0));
+        this.addParam(this.paramLoops   = new   ListParam('loops',   'loops',   false,  true, true, 0));
         this.addParam(this.paramWinding = new SelectParam('winding', 'winding', false, true, true, ['even-odd', 'non-zero']));
         this.addParam(this.paramProps   = new   ListParam('props',   'styles',  false, true, true));
+
+
+        this.paramLoops.itemName  = 'loop';
+        this.paramLoops.showZero  = false;
+        this.paramLoops.listTypes = [TEXT_VALUE];
+        this.paramLoops.input.types.push(...this.paramLoops.listTypes);
+
 
         this.paramProps.controls[0].valueText = 'style';
         
@@ -104501,20 +104589,19 @@ extends OpShapeBase
     {
         const value = values[paramIds.findIndex(id => id == 'value')];
 
-        this.paramLoops  .setValue(value.paramLoops,   false, true, false);
-        this.paramWinding.setValue(value.paramWinding, false, true, false);
-        this.paramProps  .setValue(value.paramProps,   false, true, false);
+        this.paramLoops  .setValue(value.loops,   false, true, false);
+        this.paramWinding.setValue(value.winding, false, true, false);
+        this.paramProps  .setValue(value.props,   false, true, false);
     }
 }
 
 
 class   OpVectorNetwork
-extends OpShape
+extends OpShapeBase
 {
     paramPoints;
     paramEdges;
     paramRegions;
-    paramRound;
 
 
     
@@ -104522,7 +104609,7 @@ extends OpShape
     {
         super(VECTOR_NETWORK, 'vector', 'vector', iconVectorNetwork);
 
-        this.canDisable  = true;
+        //this.canDisable  = true;
         //this.iconOffsetY = -1;
 
 
@@ -104530,24 +104617,22 @@ extends OpShape
         this.addOutput(new Output([VECTOR_NETWORK_VALUE], this.output_genRequest));
 
 
-        this.addParam(this.paramPoints  = new ListParam  ('points',  'points',  false, true, true));
-        this.addParam(this.paramEdges   = new ListParam  ('points',  'points',  false, true, true));
-        this.addParam(this.paramRegions = new ListParam  ('points',  'points',  false, true, true));
-        this.addParam(this.paramClosed  = new SelectParam('closed',  'closed',  false, true, true, ['open', 'closed'], 0));
-        this.addParam(this.paramDegree  = new SelectParam('degree',  'degree',  false, true, true, ['linear', 'quadratic', 'cubic', 'smooth', 'sine X', 'sine Y'], 3));
-        this.addParam(this.paramWinding = new SelectParam('winding', 'winding', false, true, true, ['even-odd', 'non-zero']));
-        this.addParam(this.paramRound   = new NumberParam('round',   'round',   true,  true, true, 0, 0));
+        this.addParam(this.paramPoints  = new ListParam('points',  'points',  false, true, true));
+        this.addParam(this.paramEdges   = new ListParam('edges',   'edges',   false, true, true));
+        this.addParam(this.paramRegions = new ListParam('regions', 'regions', false, true, true));
 
         
-        this.paramPoints.input.types.push(SHAPE_LIST_VALUE);
-        this.paramPoints.listTypes = [POINT_VALUE];
+        // this.paramPoints.input.types.push(SHAPE_LIST_VALUE);
+        // this.paramPoints.listTypes = [POINT_VALUE];
 
-        this.paramPoints.itemName    = 'point';
-        this.paramPoints.showZero    =  false;
+        this.paramPoints .itemName = 'point';
+        this.paramPoints .showZero =  false;
 
-        this.paramDegree.reverseMenu =  true;
+        this.paramEdges  .itemName = 'edge';
+        this.paramEdges  .showZero =  false;
 
-        this.paramRound.divider = 0.565;
+        this.paramRegions.itemName = 'region';
+        this.paramRegions.showZero =  false;
 
 
         this.addBaseParams();
@@ -104560,10 +104645,8 @@ extends OpShape
         const value = values[paramIds.findIndex(id => id == 'value')];
 
         this.paramPoints .setValue(value.points,  false, true, false);
-        this.paramClosed .setValue(value.closed,  false, true, false);
-        this.paramDegree .setValue(value.degree,  false, true, false);
-        this.paramWinding.setValue(value.winding, false, true, false);
-        this.paramRound  .setValue(value.round,   false, true, false);
+        this.paramEdges  .setValue(value.edges,   false, true, false);
+        this.paramRegions.setValue(value.regions, false, true, false);
     }
 
 
@@ -104571,10 +104654,8 @@ extends OpShape
     updateParams()
     {
         this.paramPoints .enableControlText(true);
-        this.paramClosed .enableControlText(true);
-        this.paramDegree .enableControlText(true);
-        this.paramWinding.enableControlText(true);
-        this.paramRound  .enableControlText(true);
+        this.paramEdges  .enableControlText(true);
+        this.paramRegions.enableControlText(true);
 
         this.updateParamControls();
     }

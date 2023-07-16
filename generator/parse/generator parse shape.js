@@ -849,6 +849,82 @@ function genParseVectorRegion(parse)
 
 
 
+function genParseVectorNetworkValue(parse)
+{
+    parse.pos++; // VECTOR_NETWORKO_VALUE
+
+    const region = parse.move();
+
+    if (parse.settings.logRequests) 
+        logReqValue(VECTOR_NETWORK_VALUE, region, parse);
+
+    return parseVectorNetworkValue(region)[0];
+}
+
+
+
+function genParseVectorNetwork(parse)
+{
+    const [, nodeId, options, ignore] = genParseNodeStart(parse);
+
+
+    const region = new GVectorNetwork(nodeId, options);
+
+
+    let nInputs = -1;
+
+    if (!ignore)
+    {
+        nInputs = parseInt(parse.move());
+        consoleAssert(nInputs => 0 && nInputs <= 1, 'nInputs must be [0, 1]');
+    }
+
+
+    if (parse.settings.logRequests) 
+        logReq(region, parse, ignore);
+
+
+    if (ignore) 
+    {
+        genParseNodeEnd(parse, region);
+        return parse.parsedNodes.find(n => n.nodeId == nodeId);
+    }
+
+
+    parse.nTab++;
+
+
+    if (nInputs == 1)
+        region.input = genParse(parse);
+
+
+    const nParamIds = genParseParamCount(parse);
+
+    for (let i = 0; i < nParamIds; i++)
+    {
+        const paramId = genParseParamId(parse);
+
+        parse.inParam = true;
+
+        switch (paramId)
+        {
+        case 'points':  region.points  = genParse(parse); break;
+        case 'edges':   region.edges   = genParse(parse); break;
+        case 'regions': region.regions = genParse(parse); break;
+        }
+    }
+
+
+    parse.inParam = false;
+    parse.nTab--;
+
+
+    genParseNodeEnd(parse, region);
+    return region;
+}
+
+
+
 function genParseShapeBoolean(parse)
 {
     const [, nodeId, options, ignore] = genParseNodeStart(parse);

@@ -47,14 +47,14 @@ extends GValue
 
 
 
-    static create(nodeId, loops, winding, props)
-    {
-        return new VectorRegionValue(
-            nodeId,
-            new   ListValue(loops),
-            new NumberValue(winding),
-            new   ListValue(props));
-    }
+    // static create(nodeId, loops, winding, props)
+    // {
+    //     return new VectorRegionValue(
+    //         nodeId,
+    //         loops,
+    //         new NumberValue(winding),
+    //         props);
+    // }
 
 
 
@@ -147,9 +147,9 @@ function parseVectorRegionValue(str, i = -1)
 
     const iStart = i;
 
-    const loops   = parseListValue (str, i); i += loops  [1];
-    const winding = parsePointValue(str[i]); i += winding[1];
-    const props   = parsePointValue(str, i); i += props  [1];
+    const loops   = parseListValue  (str, i); i += loops  [1];
+    const winding = parseNumberValue(str[i]); i += winding[1];
+    const props   = parseListValue  (str, i); i += props  [1];
 
 
     const region = new VectorRegionValue(
