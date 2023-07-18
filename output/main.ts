@@ -23,7 +23,7 @@ function noNodeTag(key) { return noTag(key, nodeTag); }
 function noConnTag(key) { return noTag(key, connTag); }
 
 
-const generatorVersion = 160;
+const generatorVersion = 161;
 
 
 const MAX_INT32        = 2147483647;
@@ -836,6 +836,16 @@ function pushUnique(array, item)
 
 
 
+function pushUniqueBy(array, item, equal)
+{
+    if (Array.isArray(item))
+        item.forEach(i => pushUniqueBy(array, i, equal));
+    else if (!array.find(equal))
+        array.push(item);
+}
+
+
+
 function pushUniqueExcept(array, item, except)
 {
     if (Array.isArray(item))
@@ -884,6 +894,86 @@ function trimCharFromEnd(str, trim)
         str = str.substring(0, str.length - trim.length);
 
     return str;
+}
+
+
+
+function getObjectFills(genObjFills)
+{
+    const fills = [];
+
+
+    for (const fill of genObjFills)
+    {
+        switch (fill[0])
+        {
+            case 'SOLID':
+            {
+                const color = {
+                    r: Math.min(Math.max(0, fill[1] / 0xff), 1), 
+                    g: Math.min(Math.max(0, fill[2] / 0xff), 1), 
+                    b: Math.min(Math.max(0, fill[3] / 0xff), 1) };
+
+                const opacity = Math.min(Math.max(0, fill[4] / 100), 1);
+
+
+                if (   !isNaN(color.r)
+                    && !isNaN(color.g)
+                    && !isNaN(color.b)
+                    && !isNaN(opacity))
+                    fills.push(
+                    {
+                        type:      fill[0], 
+                        color:     color,
+                        opacity:   opacity,
+                        blendMode: fill[5]
+                    });
+
+
+                break;
+            }
+
+            case 'GRADIENT_LINEAR':
+            case 'GRADIENT_RADIAL':
+            case 'GRADIENT_ANGULAR':
+            case 'GRADIENT_DIAMOND':
+            {
+                const xform = fill[1];
+
+
+                const stops = [];
+
+                for (const stop of fill[2])
+                {
+                    stops.push({
+                        color: 
+                        {
+                            r: Math.min(Math.max(0, stop[0]), 1),
+                            g: Math.min(Math.max(0, stop[1]), 1),
+                            b: Math.min(Math.max(0, stop[2]), 1),
+                            a: Math.min(Math.max(0, stop[3]), 1)
+                        },
+                        position: stop[4]
+                    })    
+                }
+
+
+                fills.push(
+                {
+                    type:              fill[0],
+                    gradientTransform: xform,
+                    gradientStops:     stops,
+                    blendMode:         fill[3]
+                });
+
+
+                break;
+            }
+        }
+    }
+
+
+    return fills;
 }
 
 
@@ -1606,7 +1696,7 @@ const FO_STROKES        = 11;
 
 const FO_STROKE_WEIGHT  = 12;
 const FO_STROKE_ALIGN   = 13;
-const FO_STROKE_JOIN    = 14;
+const FO_STROKE_JOIN    = 14;                                    
 const FO_STROKE_MITER   = 15;
 const FO_STROKE_CAP     = 16;
 const FO_STROKE_DASHES  = 17;
@@ -1617,24 +1707,24 @@ const FO_DECO           = 19;
 
 const FO_MASK           = 20;
 
-const FO_X              = 21;                                                                                                                                    const FO_GROUP_CHILDREN = 21;
+const FO_X              = 21;                                                                                                                                                                                                         const FO_GROUP_CHILDREN = 21;
 const FO_Y              = 22;                                    
 const FO_WIDTH          = 23;   const FO_POINT_IS_CENTER = 23;   
 const FO_HEIGHT         = 24;                                    
 
-const FO_RECT_ROUND     = 25;   const FO_ELLIPSE_FROM    = 25;   const FO_VECTOR_PATH_DATA    = 25;   const FO_POLY_ROUND   = 25;   const FO_STAR_ROUND  = 25;   const FO_FIG_WIDTH      = 25;   const FO_FRAME_ROUND    = 25;
-                                const FO_ELLIPSE_TO      = 26;   const FO_VECTOR_PATH_WINDING = 26;   const FO_POLY_CORNERS = 26;   const FO_STAR_POINTS = 26;   const FO_FIG_HEIGHT     = 26;   const FO_FRAME_CHILDREN = 26;
-                                const FO_ELLIPSE_INNER   = 27;   const FO_VECTOR_PATH_ROUND   = 27;                                 const FO_STAR_CONVEX = 27;   const FO_TEXT           = 27; 
-                                                                                            
-                                                                                                                                                                 const FO_FONT           = 28;
-                                                                                                                                                                 const FO_FONT_SIZE      = 29;
-                                                                                                                                                                 const FO_FONT_STYLE     = 30;
-                                                                                                                                                                                               
-                                                                                                                                                                 const FO_ALIGN_H        = 31;
-                                                                                                                                                                 const FO_ALIGN_V        = 32;
-                                                                                                                                                                                               
-                                                                                                                                                                 const FO_LINE_HEIGHT    = 33;
-                                                                                                                                                                 const FO_LETTER_SPACING = 34;                                
+const FO_RECT_ROUND     = 25;   const FO_ELLIPSE_FROM    = 25;   const FO_VECTOR_NETWORK_DATA = 25;   const FO_VECTOR_PATH_DATA    = 25;   const FO_POLY_ROUND   = 25;   const FO_STAR_ROUND  = 25;   const FO_FIG_WIDTH      = 25;   const FO_FRAME_ROUND    = 25;
+                                const FO_ELLIPSE_TO      = 26;                                        const FO_VECTOR_PATH_WINDING = 26;   const FO_POLY_CORNERS = 26;   const FO_STAR_POINTS = 26;   const FO_FIG_HEIGHT     = 26;   const FO_FRAME_CHILDREN = 26;
+                                const FO_ELLIPSE_INNER   = 27;                                        const FO_VECTOR_PATH_ROUND   = 27;                                 const FO_STAR_CONVEX = 27;   const FO_TEXT           = 27; 
+                                                                                                                                 
+                                                                                                                                                                                                      const FO_FONT           = 28;
+                                                                                                                                                                                                      const FO_FONT_SIZE      = 29;
+                                                                                                                                                                                                      const FO_FONT_STYLE     = 30;
+                                                                                                                                                                                                                                    
+                                                                                                                                                                                                      const FO_ALIGN_H        = 31;
+                                                                                                                                                                                                      const FO_ALIGN_V        = 32;
+                                                                                                                                                                                                                                    
+                                                                                                                                                                                                      const FO_LINE_HEIGHT    = 33;
+                                                                                                                                                                                                      const FO_LETTER_SPACING = 34;                                
 
 
 const base32chars = '12345679ABCDEFGHJKLMNPQRSTUVWXYZ';
@@ -3157,17 +3247,18 @@ async function figCreateObject(genObj, addObject = null)
 
     switch (genObj[FO_TYPE])
     {
-        case RECTANGLE:   figObj =       figCreateRect      (genObj);  break;
-        case LINE:        figObj =       figCreateLine      (genObj);  break;
-        case ELLIPSE:     figObj =       figCreateEllipse   (genObj);  break;
-        case POLYGON:     figObj =       figCreatePolygon   (genObj);  break;
-        case STAR:        figObj =       figCreateStar      (genObj);  break;
-        case TEXT_SHAPE:  figObj = await figCreateText      (genObj);  break;
-        case POINT:       figObj =       figCreatePoint     (genObj);  break;
-        case VECTOR_PATH: figObj =       figCreateVectorPath(genObj);  break;
-        case BOOLEAN:     figObj =       figCreateBoolean   (genObj);  break;
-        case SHAPE_GROUP: figObj =       figCreateShapeGroup(genObj);  break;
-        case FRAME:       figObj =       figCreateFrame     (genObj);  break;
+        case RECTANGLE:      figObj =       figCreateRect         (genObj);  break;
+        case LINE:           figObj =       figCreateLine         (genObj);  break;
+        case ELLIPSE:        figObj =       figCreateEllipse      (genObj);  break;
+        case POLYGON:        figObj =       figCreatePolygon      (genObj);  break;
+        case STAR:           figObj =       figCreateStar         (genObj);  break;
+        case TEXT_SHAPE:     figObj = await figCreateText         (genObj);  break;
+        case POINT:          figObj =       figCreatePoint        (genObj);  break;
+        case VECTOR_PATH:    figObj =       figCreateVectorPath   (genObj);  break;
+        case VECTOR_NETWORK: figObj =       figCreateVectorNetwork(genObj);  break;
+        case BOOLEAN:        figObj =       figCreateBoolean      (genObj);  break;
+        case SHAPE_GROUP:    figObj =       figCreateShapeGroup   (genObj);  break;
+        case FRAME:          figObj =       figCreateFrame        (genObj);  break;
     }
 
 
@@ -3214,17 +3305,18 @@ async function figUpdateObject(figObj, genObj)
 
     switch (genObj[FO_TYPE])
     {
-        case RECTANGLE:         figUpdateRect      (figObj, genObj);  break;
-        case LINE:              figUpdateLine      (figObj, genObj);  break;
-        case ELLIPSE:           figUpdateEllipse   (figObj, genObj);  break;
-        case POLYGON:           figUpdatePolygon   (figObj, genObj);  break;
-        case STAR:              figUpdateStar      (figObj, genObj);  break;
-        case TEXT_SHAPE:  await figUpdateText      (figObj, genObj);  break;
-        case POINT:             figUpdatePoint     (figObj, genObj);  break;
-        case VECTOR_PATH:       figUpdateVectorPath(figObj, genObj);  break;
-        case BOOLEAN:           figUpdateBoolean   (figObj, genObj);  break;
-        case SHAPE_GROUP:       figUpdateShapeGroup(figObj, genObj);  break;
-        case FRAME:             figUpdateFrame     (figObj, genObj);  break;
+        case RECTANGLE:         figUpdateRect         (figObj, genObj);  break;
+        case LINE:              figUpdateLine         (figObj, genObj);  break;
+        case ELLIPSE:           figUpdateEllipse      (figObj, genObj);  break;
+        case POLYGON:           figUpdatePolygon      (figObj, genObj);  break;
+        case STAR:              figUpdateStar         (figObj, genObj);  break;
+        case TEXT_SHAPE:  await figUpdateText         (figObj, genObj);  break;
+        case POINT:             figUpdatePoint        (figObj, genObj);  break;
+        case VECTOR_PATH:       figUpdateVectorPath   (figObj, genObj);  break;
+        case VECTOR_NETWORK:    figUpdateVectorNetwork(figObj, genObj);  break;
+        case BOOLEAN:           figUpdateBoolean      (figObj, genObj);  break;
+        case SHAPE_GROUP:       figUpdateShapeGroup   (figObj, genObj);  break;
+        case FRAME:             figUpdateFrame        (figObj, genObj);  break;
     }
 }
 
@@ -3351,17 +3443,18 @@ function genObjectIsValid(genObj)
 {
     switch (genObj[FO_TYPE])
     {
-        case RECTANGLE:   return genRectIsValid      (genObj);
-        case LINE:        return genLineIsValid      (genObj);
-        case ELLIPSE:     return genEllipseIsValid   (genObj);
-        case POLYGON:     return genPolygonIsValid   (genObj);
-        case STAR:        return genStarIsValid      (genObj);
-        case TEXT_SHAPE:  return genTextIsValid      (genObj);
-        case POINT:       return genPointIsValid     (genObj);
-        case VECTOR_PATH: return genVectorPathIsValid(genObj);
-        case BOOLEAN:     return genBooleanIsValid   (genObj);
-        case SHAPE_GROUP: return genShapeGroupIsValid(genObj);
-        case FRAME:       return genFrameIsValid     (genObj);
+        case RECTANGLE:      return genRectIsValid         (genObj);
+        case LINE:           return genLineIsValid         (genObj);
+        case ELLIPSE:        return genEllipseIsValid      (genObj);
+        case POLYGON:        return genPolygonIsValid      (genObj);
+        case STAR:           return genStarIsValid         (genObj);
+        case TEXT_SHAPE:     return genTextIsValid         (genObj);
+        case POINT:          return genPointIsValid        (genObj);
+        case VECTOR_PATH:    return genVectorPathIsValid   (genObj);
+        case VECTOR_NETWORK: return genVectorNetworkIsValid(genObj);
+        case BOOLEAN:        return genBooleanIsValid      (genObj);
+        case SHAPE_GROUP:    return genShapeGroupIsValid   (genObj);
+        case FRAME:          return genFrameIsValid        (genObj);
     }
 }
 
@@ -3406,86 +3499,6 @@ function clearObjectData(figObj)
 
 
 const figEmptyObjects = [];
-
-
-
-function getObjectFills(genObjFills)
-{
-    const fills = [];
-
-
-    for (const fill of genObjFills)
-    {
-        switch (fill[0])
-        {
-            case 'SOLID':
-            {
-                const color = {
-                    r: Math.min(Math.max(0, fill[1] / 0xff), 1), 
-                    g: Math.min(Math.max(0, fill[2] / 0xff), 1), 
-                    b: Math.min(Math.max(0, fill[3] / 0xff), 1) };
-
-                const opacity = Math.min(Math.max(0, fill[4] / 100), 1);
-
-
-                if (   !isNaN(color.r)
-                    && !isNaN(color.g)
-                    && !isNaN(color.b)
-                    && !isNaN(opacity))
-                    fills.push(
-                    {
-                        type:      fill[0], 
-                        color:     color,
-                        opacity:   opacity,
-                        blendMode: fill[5]
-                    });
-
-
-                break;
-            }
-
-            case 'GRADIENT_LINEAR':
-            case 'GRADIENT_RADIAL':
-            case 'GRADIENT_ANGULAR':
-            case 'GRADIENT_DIAMOND':
-            {
-                const xform = fill[1];
-
-
-                const stops = [];
-
-                for (const stop of fill[2])
-                {
-                    stops.push({
-                        color: 
-                        {
-                            r: Math.min(Math.max(0, stop[0]), 1),
-                            g: Math.min(Math.max(0, stop[1]), 1),
-                            b: Math.min(Math.max(0, stop[2]), 1),
-                            a: Math.min(Math.max(0, stop[3]), 1)
-                        },
-                        position: stop[4]
-                    })    
-                }
-
-
-                fills.push(
-                {
-                    type:              fill[0],
-                    gradientTransform: xform,
-                    gradientStops:     stops,
-                    blendMode:         fill[3]
-                });
-
-
-                break;
-            }
-        }
-    }
-
-
-    return fills;
-}
 
 
 
@@ -4727,6 +4740,48 @@ async function figUpdateText(figText, genText)
           && genText[FO_FIG_HEIGHT] == 0) figText.textAutoResize = 'WIDTH_AND_HEIGHT';
     else if (genText[FO_FIG_WIDTH ] == 0) figText.textAutoResize = 'HEIGHT';
     else                                  figText.textAutoResize = 'NONE';
+}
+
+
+
+function genVectorNetworkIsValid(genNetwork)
+{
+    return true;//genNetwork[FO_VECTOR_NETWORK_DATA] != null && !isNaN(genNetwork[FO_VECTOR_NETWORK_DATA]);
+}
+
+
+
+function figCreateVectorNetwork(genNetwork)
+{
+    const figNetwork = figma.createVector();
+
+    if (!genVectorNetworkIsValid(genNetwork))
+        return figNetwork;
+
+    
+    figNetwork.vectorNetwork = genNetwork[FO_VECTOR_NETWORK_DATA];
+
+    
+    setObjectTransform(figNetwork, genNetwork, false);
+    setObjectProps    (figNetwork, genNetwork);
+
+
+    return figNetwork;
+}
+
+
+
+function figUpdateVectorNetwork(figNetwork, genNetwork)
+{
+    if (!genVectorNetworkIsValid(genNetwork))
+        return;
+
+
+    figNetwork.vectorNetwork = genNetwork[FO_VECTOR_NETWORK_DATA];
+    
+
+    setObjectTransform(figNetwork, genNetwork, false);
+    setObjectProps    (figNetwork, genNetwork);
 }
 
 

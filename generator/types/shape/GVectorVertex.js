@@ -102,9 +102,9 @@ extends GOperator1
         {
             const x     = this.value.x    .value;
             const y     = this.value.y    .value;
-            const join  = this.value.join .value;
-            const cap   = this.value.cap  .value;
-            const round = this.value.round.value;
+            //const join  = this.value.join .value;
+            //const cap   = this.value.cap  .value;
+            //const round = this.value.round.value;
 
             const point = new FigmaPoint(this.nodeId, this.nodeId, this.nodeName, x, y);
 
@@ -129,7 +129,8 @@ extends GOperator1
             this.cap  .toValue(),
             this.round.toValue());
 
-        point.objects = this.value.objects.map(o => o.copy());
+        point.objects  = this.value.objects.map(o => o.copy());
+        point.uniqueId = this.value.uniqueId;
 
         return point;
     }

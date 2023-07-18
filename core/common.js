@@ -1,4 +1,4 @@
-const generatorVersion = 160;
+const generatorVersion = 161;
 
 
 const MAX_INT32        = 2147483647;
@@ -811,6 +811,16 @@ function pushUnique(array, item)
 
 
 
+function pushUniqueBy(array, item, equal)
+{
+    if (Array.isArray(item))
+        item.forEach(i => pushUniqueBy(array, i, equal));
+    else if (!array.find(equal))
+        array.push(item);
+}
+
+
+
 function pushUniqueExcept(array, item, except)
 {
     if (Array.isArray(item))
@@ -859,4 +869,84 @@ function trimCharFromEnd(str, trim)
         str = str.substring(0, str.length - trim.length);
 
     return str;
+}
+
+
+
+function getObjectFills(genObjFills)
+{
+    const fills = [];
+
+
+    for (const fill of genObjFills)
+    {
+        switch (fill[0])
+        {
+            case 'SOLID':
+            {
+                const color = {
+                    r: Math.min(Math.max(0, fill[1] / 0xff), 1), 
+                    g: Math.min(Math.max(0, fill[2] / 0xff), 1), 
+                    b: Math.min(Math.max(0, fill[3] / 0xff), 1) };
+
+                const opacity = Math.min(Math.max(0, fill[4] / 100), 1);
+
+
+                if (   !isNaN(color.r)
+                    && !isNaN(color.g)
+                    && !isNaN(color.b)
+                    && !isNaN(opacity))
+                    fills.push(
+                    {
+                        type:      fill[0], 
+                        color:     color,
+                        opacity:   opacity,
+                        blendMode: fill[5]
+                    });
+
+
+                break;
+            }
+
+            case 'GRADIENT_LINEAR':
+            case 'GRADIENT_RADIAL':
+            case 'GRADIENT_ANGULAR':
+            case 'GRADIENT_DIAMOND':
+            {
+                const xform = fill[1];
+
+
+                const stops = [];
+
+                for (const stop of fill[2])
+                {
+                    stops.push({
+                        color: 
+                        {
+                            r: Math.min(Math.max(0, stop[0]), 1),
+                            g: Math.min(Math.max(0, stop[1]), 1),
+                            b: Math.min(Math.max(0, stop[2]), 1),
+                            a: Math.min(Math.max(0, stop[3]), 1)
+                        },
+                        position: stop[4]
+                    })    
+                }
+
+
+                fills.push(
+                {
+                    type:              fill[0],
+                    gradientTransform: xform,
+                    gradientStops:     stops,
+                    blendMode:         fill[3]
+                });
+
+
+                break;
+            }
+        }
+    }
+
+
+    return fills;
 }

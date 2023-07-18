@@ -1,16 +1,19 @@
 class   OpVectorNetwork
-extends OpShapeBase
+extends OpShape
 {
     constructor()
     {
         super(VECTOR_NETWORK, 'network', 'network', iconVectorNetwork);
 
         //this.canDisable  = true;
-        //this.iconOffsetY = -1;
+        this.iconOffsetY = -3;
 
 
         this.addNewInput();
         this.addOutput(new Output([VECTOR_NETWORK_VALUE], this.output_genRequest));
+
+
+        this.addBaseParams();
     }
 
 
@@ -50,6 +53,9 @@ extends OpShapeBase
         
         connectedInputs.forEach(input => 
             request.push(...pushInputOrParam(input, gen)));
+
+
+        request.push(...this.node.paramProps.genRequest(gen));
 
         
         gen.scope.pop();

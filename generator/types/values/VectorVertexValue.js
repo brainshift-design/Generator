@@ -22,11 +22,11 @@ extends GValue
 
         this.nodeId = nodeId;
 
-        this.x     = x;
-        this.y     = y;
-        this.join  = join;
-        this.cap   = cap;
-        this.round = round;
+        this.x      = x    .copy();
+        this.y      = y    .copy();
+        this.join   = join .copy();
+        this.cap    = cap  .copy();
+        this.round  = round.copy();
     }
 
 
@@ -40,6 +40,8 @@ extends GValue
             this.join .copy(), 
             this.cap  .copy(), 
             this.round.copy());
+
+        copy.copyBase(this);
 
         return copy;
     }
@@ -145,11 +147,8 @@ extends GValue
     toPoint()
     {
         return point(
-            this.x    .value,
-            this.y    .value,
-            this.join .value,
-            this.cap  .value,
-            this.round.value);
+            this.x.value,
+            this.y.value);
     }
 
 

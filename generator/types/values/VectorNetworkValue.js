@@ -6,6 +6,7 @@ extends GValue
     regions;
 
 
+
     constructor(nodeId,
                 regions = new ListValue())
     {
@@ -23,6 +24,8 @@ extends GValue
         const copy = new VectorNetworkValue(
             this.nodeId,
             this.regions.copy());
+
+        copy.copyBase(this);
 
         return copy;
     }

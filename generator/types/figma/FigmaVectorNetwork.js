@@ -1,140 +1,183 @@
 class FigmaVectorNetwork
-extends FigmaObject
+extends FigmaShape
 {
-    // x;
-    // y;
-    // width;
-    // height;
+    x;
+    y;
+    width;
+    height;
     
-    // points;
-    // closed;
-    // degree;
+    points;
+    edges;
+    regions;
 
-    // pathPoints;
-
-    // pathData;
-    // winding;
-    // round;
+    networkData;
 
 
 
-    // constructor(nodeId, objectId, objectName, points, closed, degree, winding, round)
-    // {
-    //     super(VECTOR_PATH, nodeId, objectId, objectName);
+    constructor(nodeId, objectId, objectName, points, edges, regions)
+    {
+        super(VECTOR_NETWORK, nodeId, objectId, objectName);
         
-    //     this.points  = points.map(p => p.copy());
+        this.points  = points .map(p => p.copy());
+        this.edges   = edges  .map(e => e.copy());
+        this.regions = regions.map(r => r.copy());
 
-    //     this.closed  = closed;
-    //     this.degree  = degree;
-    //     this.winding = winding;
 
-    //     this.round   = round;
-        
-
-    //     this.updatePathPoints();
-    //     this.updatePathData();
-    // }
+        this.updateNetworkData();
+    }
 
 
 
-    // copy()
-    // {
-    //     const copy = new FigmaVectorPath(
-    //         this.nodeId,
-    //         this.objectId,
-    //         this.objectName,
+    copy()
+    {
+        const copy = new FigmaVectorNetwork(
+            this.nodeId,
+            this.objectId,
+            this.objectName,
 
-    //         this.points, 
-
-    //         this.closed, 
-    //         this.degree,
-    //         this.winding,
-
-    //         this.round);
+            this.points, 
+            this.edges, 
+            this.regions);
 
 
-    //     copy.x      = this.x;
-    //     copy.y      = this.y;
-    //     copy.width  = this.width;
-    //     copy.height = this.height;
+        copy.x      = this.x;
+        copy.y      = this.y;
+        copy.width  = this.width;
+        copy.height = this.height;
 
 
-    //     copy.copyBase(this);
+        copy.copyBase(this);
 
 
-    //     return copy;
-    // }
+        return copy;
+    }
 
 
 
-    // updatePoints(xform, coords)
-    // {
-    //     for (let i = 0; i < this.points.length; i++)
-    //         this.points[i] = PointValue.fromPoint(this.nodeId, transformPoint(this.points[i].toPoint(), xform, coords));
+    updateNetworkData()
+    {
+        let minX = Number.MAX_SAFE_INTEGER;
+        let minY = Number.MAX_SAFE_INTEGER;
+        let maxX = Number.MIN_SAFE_INTEGER;
+        let maxY = Number.MIN_SAFE_INTEGER;
 
-    //     this.updatePathPoints();
-    //     this.updatePathData();
-    // }
-
-
-
-    // updatePathPoints()
-    // {
-    //     switch (this.degree)
-    //     {
-    //     case 0: this.pathPoints = this.points.map(p => p.toPoint());                           break;
-    //     case 1: this.pathPoints = this.points.map(p => p.toPoint());                           break;
-    //     case 2: this.pathPoints = this.points.map(p => p.toPoint());                           break;
-    //     case 3: this.pathPoints = getSmoothPoints(this.points, this.closed, getSmoothSegment); break;
-    //     case 4: this.pathPoints = getSmoothPoints(this.points, this.closed, getSineXSegment ); break;
-    //     case 5: this.pathPoints = getSmoothPoints(this.points, this.closed, getSineYSegment ); break;
-    //     }
-    // }
+        for (const p of this.points)
+        {
+            minX = Math.min(minX, p.x.value);
+            minY = Math.min(minY, p.y.value);
+            maxX = Math.max(maxX, p.x.value);
+            maxY = Math.max(maxY, p.y.value);
+        }
 
 
+        this.x      = minX;
+        this.y      = minY;
+        this.width  = maxX - minX;
+        this.height = maxY - minY;
 
-    // updatePathData()
-    // {
-    //     let minX = Number.MAX_SAFE_INTEGER;
-    //     let minY = Number.MAX_SAFE_INTEGER;
-    //     let maxX = Number.MIN_SAFE_INTEGER;
-    //     let maxY = Number.MIN_SAFE_INTEGER;
-
-    //     for (const p of this.points)
-    //     {
-    //         minX = Math.min(minX, p.x.value);
-    //         minY = Math.min(minY, p.y.value);
-    //         maxX = Math.max(maxX, p.x.value);
-    //         maxY = Math.max(maxY, p.y.value);
-    //     }
+        this.createTransformPoints(null, this.x, this.y, this.width, this.height);
 
 
-    //     this.x      = minX;
-    //     this.y      = minY;
-    //     this.width  = maxX - minX;
-    //     this.height = maxY - minY;
-
-    //     this.createTransformPoints(null, this.x, this.y, this.width, this.height);
-
-
-    //     this.pathData = getPathDataFromPoints(this.pathPoints, this.closed, this.degree);
-    // }
+        this.networkData = getNetworkData(this.points, this.edges, this.regions);
+    }
 
 
 
-    // toData()
-    // {
-    //     return [
-    //         ...super.toData(),
+    toData()
+    {
+        return [
+            ...super.toData(),
    
-    //         /* 21 */ this.x,
-    //         /* 22 */ this.y,
-    //         /* 23 */ this.width,
-    //         /* 24 */ this.height,
+            /* 21 */ this.x,
+            /* 22 */ this.y,
+            /* 23 */ this.width,
+            /* 24 */ this.height,
 
-    //         /* 25 */ this.pathData,
-    //         /* 26 */ this.winding,
-    //         /* 27 */ this.round * Math.abs(this.scaleCorners)
-    //     ];
-    // }
+            /* 25 */ this.networkData
+        ];
+    }
+}
+
+
+
+function getNetworkData(points, edges, _regions)
+{
+    const vertices = [];
+    const segments = [];
+    const regions  = [];
+
+
+    for (const point of points)
+    {
+        let join;
+        let cap;
+
+        switch (point.join.value)
+        {
+            case 0: join = 'MITER'; break;
+            case 1: join = 'BEVEL'; break;
+            case 2: join = 'ROUND'; break;
+        }
+    
+        switch (point.cap.value)
+        {
+            case 0: cap = 'NONE';   break;
+            case 1: cap = 'SQUARE'; break;
+            case 2: cap = 'ROUND';  break;
+        }
+    
+        vertices.push(
+        {
+            x:            point.x.value,
+            y:            point.y.value,
+            strokeJoin:   join,
+            strokeCap:    cap,
+            cornerRadius: point.round.value
+        });
+    }
+
+
+    for (const edge of edges)
+    {
+        segments.push(
+        {
+            start: points.findIndex(p => p.uniqueId == edge.start.uniqueId),
+            end:   points.findIndex(p => p.uniqueId == edge.end  .uniqueId)
+        });
+    }
+
+
+    for (const region of _regions)
+    {
+        const loops = [];
+
+        for (const _loop of region.loops.items)
+        {
+            const loop = [];
+
+            for (const _edge of _loop.items)
+                loop.push(edges.findIndex(e => e.uniqueId == _edge.uniqueId));
+
+            loops.push(loop);
+        }
+
+
+        regions.push(
+        {
+            windingRule: region.winding.value == 1 ? 'NONZERO' : 'EVENODD',
+            loops:       loops,
+            fills:       getObjectFills(region.fills)
+        });
+    }
+
+
+    let networkData = 
+    {
+        vertices: vertices,
+        segments: segments,
+        regions:  regions
+    };
+
+
+    return networkData;
 }

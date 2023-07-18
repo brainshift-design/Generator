@@ -47,6 +47,7 @@ extends GOperator1
 
     async evalAffineObjects(options, scaleCorners, scaleStyle, getXform)
     {
+        console.log('this.value =', this.value);
         if (   !this.value
             || !this.value.isValid())
             return Rect.NaN;
@@ -121,8 +122,8 @@ extends GOperator1
     {
         const center = new FigmaPoint(
             this.nodeId,
-            this.nodeId   + '.center',
-            this.nodeName + ' • center',
+            this.nodeId + PROP_SEPARATOR + 'center',
+            this.nodeName + CENTER_SEPARATOR + 'center',
             cx,
             cy,
             true,

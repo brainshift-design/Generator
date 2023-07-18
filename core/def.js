@@ -5,6 +5,8 @@ const UNKNOWN_CHAR           = '?';
 const UNKNOWN_DISPLAY        = UNKNOWN_CHAR;//'🤷‍♂️';
 
 const OBJECT_SEPARATOR       = ' > ';
+const   PROP_SEPARATOR       = ' / ';
+const CENTER_SEPARATOR       = ' • ';
 const  INPUT_SEPARATOR       = ':';
     
 

@@ -717,7 +717,7 @@ const FO_STROKES        = 11;
 
 const FO_STROKE_WEIGHT  = 12;
 const FO_STROKE_ALIGN   = 13;
-const FO_STROKE_JOIN    = 14;
+const FO_STROKE_JOIN    = 14;                                    
 const FO_STROKE_MITER   = 15;
 const FO_STROKE_CAP     = 16;
 const FO_STROKE_DASHES  = 17;
@@ -728,21 +728,21 @@ const FO_DECO           = 19;
 
 const FO_MASK           = 20;
 
-const FO_X              = 21;                                                                                                                                    const FO_GROUP_CHILDREN = 21;
+const FO_X              = 21;                                                                                                                                                                                                         const FO_GROUP_CHILDREN = 21;
 const FO_Y              = 22;                                    
 const FO_WIDTH          = 23;   const FO_POINT_IS_CENTER = 23;   
 const FO_HEIGHT         = 24;                                    
 
-const FO_RECT_ROUND     = 25;   const FO_ELLIPSE_FROM    = 25;   const FO_VECTOR_PATH_DATA    = 25;   const FO_POLY_ROUND   = 25;   const FO_STAR_ROUND  = 25;   const FO_FIG_WIDTH      = 25;   const FO_FRAME_ROUND    = 25;
-                                const FO_ELLIPSE_TO      = 26;   const FO_VECTOR_PATH_WINDING = 26;   const FO_POLY_CORNERS = 26;   const FO_STAR_POINTS = 26;   const FO_FIG_HEIGHT     = 26;   const FO_FRAME_CHILDREN = 26;
-                                const FO_ELLIPSE_INNER   = 27;   const FO_VECTOR_PATH_ROUND   = 27;                                 const FO_STAR_CONVEX = 27;   const FO_TEXT           = 27; 
-                                                                                            
-                                                                                                                                                                 const FO_FONT           = 28;
-                                                                                                                                                                 const FO_FONT_SIZE      = 29;
-                                                                                                                                                                 const FO_FONT_STYLE     = 30;
-                                                                                                                                                                                               
-                                                                                                                                                                 const FO_ALIGN_H        = 31;
-                                                                                                                                                                 const FO_ALIGN_V        = 32;
-                                                                                                                                                                                               
-                                                                                                                                                                 const FO_LINE_HEIGHT    = 33;
-                                                                                                                                                                 const FO_LETTER_SPACING = 34;                                
+const FO_RECT_ROUND     = 25;   const FO_ELLIPSE_FROM    = 25;   const FO_VECTOR_NETWORK_DATA = 25;   const FO_VECTOR_PATH_DATA    = 25;   const FO_POLY_ROUND   = 25;   const FO_STAR_ROUND  = 25;   const FO_FIG_WIDTH      = 25;   const FO_FRAME_ROUND    = 25;
+                                const FO_ELLIPSE_TO      = 26;                                        const FO_VECTOR_PATH_WINDING = 26;   const FO_POLY_CORNERS = 26;   const FO_STAR_POINTS = 26;   const FO_FIG_HEIGHT     = 26;   const FO_FRAME_CHILDREN = 26;
+                                const FO_ELLIPSE_INNER   = 27;                                        const FO_VECTOR_PATH_ROUND   = 27;                                 const FO_STAR_CONVEX = 27;   const FO_TEXT           = 27; 
+                                                                                                                                 
+                                                                                                                                                                                                      const FO_FONT           = 28;
+                                                                                                                                                                                                      const FO_FONT_SIZE      = 29;
+                                                                                                                                                                                                      const FO_FONT_STYLE     = 30;
+                                                                                                                                                                                                                                    
+                                                                                                                                                                                                      const FO_ALIGN_H        = 31;
+                                                                                                                                                                                                      const FO_ALIGN_V        = 32;
+                                                                                                                                                                                                                                    
+                                                                                                                                                                                                      const FO_LINE_HEIGHT    = 33;
+                                                                                                                                                                                                      const FO_LETTER_SPACING = 34;                                

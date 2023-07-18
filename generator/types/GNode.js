@@ -1,11 +1,14 @@
 class GNode
 {
+    static nextUniqueId = 0;
+
     type;
 
 
     valid; // has been evaluated
 
     listId       = -1;
+    uniqueId;
 
     iteration    = 0;
 
@@ -19,8 +22,10 @@ class GNode
 
     constructor(type, options) 
     {
-        this.type    = type;
-        this.options = options;
+        this.type     = type;
+        this.options  = options;
+
+        this.uniqueId = GNode.nextUniqueId++;
     }
 
 
@@ -35,8 +40,10 @@ class GNode
 
     copyBase(base)
     {
-        this.options = clone(base.options);
-        this.data    = clone(base.data   );
+        this.options  = clone(base.options);
+        this.data     = clone(base.data   );
+
+        this.uniqueId = base.uniqueId;
     }
 
 

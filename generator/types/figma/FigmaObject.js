@@ -337,6 +337,20 @@ function getObjBounds(objects)
             }
         }
 
+        else if (obj.type == VECTOR_NETWORK)
+        {
+            for (let i = 0; i < obj.edges.length; i++)
+            {
+                bounds = expandRect(
+                    bounds, 
+                    bounds3(
+                        obj.edges[i].start.toPoint(), 
+                        obj.edges[i].start.toPoint(),
+                        obj.edges[i].end  .toPoint(),
+                        obj.edges[i].end  .toPoint()));
+            }
+        }
+
         else if (obj.type == POINT
              && !obj.isDeco)
             bounds = expandRect_(bounds, point(obj.x, obj.y));

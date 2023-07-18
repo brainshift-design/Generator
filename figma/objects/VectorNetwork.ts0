@@ -1,0 +1,40 @@
+
+function genVectorNetworkIsValid(genNetwork)
+{
+    return true;//genNetwork[FO_VECTOR_NETWORK_DATA] != null && !isNaN(genNetwork[FO_VECTOR_NETWORK_DATA]);
+}
+
+
+
+function figCreateVectorNetwork(genNetwork)
+{
+    const figNetwork = figma.createVector();
+
+    if (!genVectorNetworkIsValid(genNetwork))
+        return figNetwork;
+
+    
+    figNetwork.vectorNetwork = genNetwork[FO_VECTOR_NETWORK_DATA];
+
+    
+    setObjectTransform(figNetwork, genNetwork, false);
+    setObjectProps    (figNetwork, genNetwork);
+
+
+    return figNetwork;
+}
+
+
+
+function figUpdateVectorNetwork(figNetwork, genNetwork)
+{
+    if (!genVectorNetworkIsValid(genNetwork))
+        return;
+
+
+    figNetwork.vectorNetwork = genNetwork[FO_VECTOR_NETWORK_DATA];
+    
+
+    setObjectTransform(figNetwork, genNetwork, false);
+    setObjectProps    (figNetwork, genNetwork);
+}

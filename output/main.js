@@ -19,7 +19,7 @@ function isConnKey(key) { return isTagKey(key, connTag); }
 function noPageTag(key) { return noTag(key, pageTag); }
 function noNodeTag(key) { return noTag(key, nodeTag); }
 function noConnTag(key) { return noTag(key, connTag); }
-const generatorVersion = 160;
+const generatorVersion = 161;
 const MAX_INT32 = 2147483647;
 const NULL = '';
 const HTAB = '  '; // half-tab
@@ -434,6 +434,12 @@ function pushUnique(array, item) {
     else if (!array.includes(item))
         array.push(item);
 }
+function pushUniqueBy(array, item, equal) {
+    if (Array.isArray(item))
+        item.forEach(i => pushUniqueBy(array, i, equal));
+    else if (!array.find(equal))
+        array.push(item);
+}
 function pushUniqueExcept(array, item, except) {
     if (Array.isArray(item))
         item.forEach(i => pushUniqueExcept(array, i, except));
@@ -463,6 +469,60 @@ function trimCharFromEnd(str, trim) {
         && str.substring(str.length - trim.length) == trim)
         str = str.substring(0, str.length - trim.length);
     return str;
+}
+function getObjectFills(genObjFills) {
+    const fills = [];
+    for (const fill of genObjFills) {
+        switch (fill[0]) {
+            case 'SOLID':
+                {
+                    const color = {
+                        r: Math.min(Math.max(0, fill[1] / 0xff), 1),
+                        g: Math.min(Math.max(0, fill[2] / 0xff), 1),
+                        b: Math.min(Math.max(0, fill[3] / 0xff), 1)
+                    };
+                    const opacity = Math.min(Math.max(0, fill[4] / 100), 1);
+                    if (!isNaN(color.r)
+                        && !isNaN(color.g)
+                        && !isNaN(color.b)
+                        && !isNaN(opacity))
+                        fills.push({
+                            type: fill[0],
+                            color: color,
+                            opacity: opacity,
+                            blendMode: fill[5]
+                        });
+                    break;
+                }
+            case 'GRADIENT_LINEAR':
+            case 'GRADIENT_RADIAL':
+            case 'GRADIENT_ANGULAR':
+            case 'GRADIENT_DIAMOND':
+                {
+                    const xform = fill[1];
+                    const stops = [];
+                    for (const stop of fill[2]) {
+                        stops.push({
+                            color: {
+                                r: Math.min(Math.max(0, stop[0]), 1),
+                                g: Math.min(Math.max(0, stop[1]), 1),
+                                b: Math.min(Math.max(0, stop[2]), 1),
+                                a: Math.min(Math.max(0, stop[3]), 1)
+                            },
+                            position: stop[4]
+                        });
+                    }
+                    fills.push({
+                        type: fill[0],
+                        gradientTransform: xform,
+                        gradientStops: stops,
+                        blendMode: fill[3]
+                    });
+                    break;
+                }
+        }
+    }
+    return fills;
 }
 const LIST_VALUE = 'LIST#';
 const NUMBER_LIST_VALUE = 'NLIST#';
@@ -1024,6 +1084,7 @@ const FO_POINT_IS_CENTER = 23;
 const FO_HEIGHT = 24;
 const FO_RECT_ROUND = 25;
 const FO_ELLIPSE_FROM = 25;
+const FO_VECTOR_NETWORK_DATA = 25;
 const FO_VECTOR_PATH_DATA = 25;
 const FO_POLY_ROUND = 25;
 const FO_STAR_ROUND = 25;
@@ -2070,6 +2131,9 @@ function figCreateObject(genObj, addObject = null) {
             case VECTOR_PATH:
                 figObj = figCreateVectorPath(genObj);
                 break;
+            case VECTOR_NETWORK:
+                figObj = figCreateVectorNetwork(genObj);
+                break;
             case BOOLEAN:
                 figObj = figCreateBoolean(genObj);
                 break;
@@ -2127,6 +2191,9 @@ function figUpdateObject(figObj, genObj) {
                 break;
             case VECTOR_PATH:
                 figUpdateVectorPath(figObj, genObj);
+                break;
+            case VECTOR_NETWORK:
+                figUpdateVectorNetwork(figObj, genObj);
                 break;
             case BOOLEAN:
                 figUpdateBoolean(figObj, genObj);
@@ -2223,6 +2290,7 @@ function genObjectIsValid(genObj) {
         case TEXT_SHAPE: return genTextIsValid(genObj);
         case POINT: return genPointIsValid(genObj);
         case VECTOR_PATH: return genVectorPathIsValid(genObj);
+        case VECTOR_NETWORK: return genVectorNetworkIsValid(genObj);
         case BOOLEAN: return genBooleanIsValid(genObj);
         case SHAPE_GROUP: return genShapeGroupIsValid(genObj);
         case FRAME: return genFrameIsValid(genObj);
@@ -2252,60 +2320,6 @@ function clearObjectData(figObj) {
     figObj.setPluginData('retain', '');
 }
 const figEmptyObjects = [];
-function getObjectFills(genObjFills) {
-    const fills = [];
-    for (const fill of genObjFills) {
-        switch (fill[0]) {
-            case 'SOLID':
-                {
-                    const color = {
-                        r: Math.min(Math.max(0, fill[1] / 0xff), 1),
-                        g: Math.min(Math.max(0, fill[2] / 0xff), 1),
-                        b: Math.min(Math.max(0, fill[3] / 0xff), 1)
-                    };
-                    const opacity = Math.min(Math.max(0, fill[4] / 100), 1);
-                    if (!isNaN(color.r)
-                        && !isNaN(color.g)
-                        && !isNaN(color.b)
-                        && !isNaN(opacity))
-                        fills.push({
-                            type: fill[0],
-                            color: color,
-                            opacity: opacity,
-                            blendMode: fill[5]
-                        });
-                    break;
-                }
-            case 'GRADIENT_LINEAR':
-            case 'GRADIENT_RADIAL':
-            case 'GRADIENT_ANGULAR':
-            case 'GRADIENT_DIAMOND':
-                {
-                    const xform = fill[1];
-                    const stops = [];
-                    for (const stop of fill[2]) {
-                        stops.push({
-                            color: {
-                                r: Math.min(Math.max(0, stop[0]), 1),
-                                g: Math.min(Math.max(0, stop[1]), 1),
-                                b: Math.min(Math.max(0, stop[2]), 1),
-                                a: Math.min(Math.max(0, stop[3]), 1)
-                            },
-                            position: stop[4]
-                        });
-                    }
-                    fills.push({
-                        type: fill[0],
-                        gradientTransform: xform,
-                        gradientStops: stops,
-                        blendMode: fill[3]
-                    });
-                    break;
-                }
-        }
-    }
-    return fills;
-}
 function getObjectEffects(genObjEffects) {
     const effects = [];
     for (const effect of genObjEffects) {
@@ -3051,6 +3065,25 @@ function figUpdateText(figText, genText) {
         else
             figText.textAutoResize = 'NONE';
     });
+}
+function genVectorNetworkIsValid(genNetwork) {
+    return true; //genNetwork[FO_VECTOR_NETWORK_DATA] != null && !isNaN(genNetwork[FO_VECTOR_NETWORK_DATA]);
+}
+function figCreateVectorNetwork(genNetwork) {
+    const figNetwork = figma.createVector();
+    if (!genVectorNetworkIsValid(genNetwork))
+        return figNetwork;
+    figNetwork.vectorNetwork = genNetwork[FO_VECTOR_NETWORK_DATA];
+    setObjectTransform(figNetwork, genNetwork, false);
+    setObjectProps(figNetwork, genNetwork);
+    return figNetwork;
+}
+function figUpdateVectorNetwork(figNetwork, genNetwork) {
+    if (!genVectorNetworkIsValid(genNetwork))
+        return;
+    figNetwork.vectorNetwork = genNetwork[FO_VECTOR_NETWORK_DATA];
+    setObjectTransform(figNetwork, genNetwork, false);
+    setObjectProps(figNetwork, genNetwork);
 }
 function genVectorPathIsValid(genPath) {
     return genPath[FO_VECTOR_PATH_WINDING] != null && !isNaN(genPath[FO_VECTOR_PATH_WINDING])

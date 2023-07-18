@@ -4,7 +4,7 @@
 
 
 
-const generatorVersion = 160;
+const generatorVersion = 161;
 
 
 const MAX_INT32        = 2147483647;
@@ -817,6 +817,16 @@ function pushUnique(array, item)
 
 
 
+function pushUniqueBy(array, item, equal)
+{
+    if (Array.isArray(item))
+        item.forEach(i => pushUniqueBy(array, i, equal));
+    else if (!array.find(equal))
+        array.push(item);
+}
+
+
+
 function pushUniqueExcept(array, item, except)
 {
     if (Array.isArray(item))
@@ -865,6 +875,86 @@ function trimCharFromEnd(str, trim)
         str = str.substring(0, str.length - trim.length);
 
     return str;
+}
+
+
+
+function getObjectFills(genObjFills)
+{
+    const fills = [];
+
+
+    for (const fill of genObjFills)
+    {
+        switch (fill[0])
+        {
+            case 'SOLID':
+            {
+                const color = {
+                    r: Math.min(Math.max(0, fill[1] / 0xff), 1), 
+                    g: Math.min(Math.max(0, fill[2] / 0xff), 1), 
+                    b: Math.min(Math.max(0, fill[3] / 0xff), 1) };
+
+                const opacity = Math.min(Math.max(0, fill[4] / 100), 1);
+
+
+                if (   !isNaN(color.r)
+                    && !isNaN(color.g)
+                    && !isNaN(color.b)
+                    && !isNaN(opacity))
+                    fills.push(
+                    {
+                        type:      fill[0], 
+                        color:     color,
+                        opacity:   opacity,
+                        blendMode: fill[5]
+                    });
+
+
+                break;
+            }
+
+            case 'GRADIENT_LINEAR':
+            case 'GRADIENT_RADIAL':
+            case 'GRADIENT_ANGULAR':
+            case 'GRADIENT_DIAMOND':
+            {
+                const xform = fill[1];
+
+
+                const stops = [];
+
+                for (const stop of fill[2])
+                {
+                    stops.push({
+                        color: 
+                        {
+                            r: Math.min(Math.max(0, stop[0]), 1),
+                            g: Math.min(Math.max(0, stop[1]), 1),
+                            b: Math.min(Math.max(0, stop[2]), 1),
+                            a: Math.min(Math.max(0, stop[3]), 1)
+                        },
+                        position: stop[4]
+                    })    
+                }
+
+
+                fills.push(
+                {
+                    type:              fill[0],
+                    gradientTransform: xform,
+                    gradientStops:     stops,
+                    blendMode:         fill[3]
+                });
+
+
+                break;
+            }
+        }
+    }
+
+
+    return fills;
 }
 
 
@@ -3775,6 +3865,8 @@ const UNKNOWN_CHAR           = '?';
 const UNKNOWN_DISPLAY        = UNKNOWN_CHAR;//'🤷‍♂️';
 
 const OBJECT_SEPARATOR       = ' > ';
+const   PROP_SEPARATOR       = ' / ';
+const CENTER_SEPARATOR       = ' • ';
 const  INPUT_SEPARATOR       = ':';
     
 
@@ -5154,7 +5246,7 @@ const FO_STROKES        = 11;
 
 const FO_STROKE_WEIGHT  = 12;
 const FO_STROKE_ALIGN   = 13;
-const FO_STROKE_JOIN    = 14;
+const FO_STROKE_JOIN    = 14;                                    
 const FO_STROKE_MITER   = 15;
 const FO_STROKE_CAP     = 16;
 const FO_STROKE_DASHES  = 17;
@@ -5165,24 +5257,24 @@ const FO_DECO           = 19;
 
 const FO_MASK           = 20;
 
-const FO_X              = 21;                                                                                                                                    const FO_GROUP_CHILDREN = 21;
+const FO_X              = 21;                                                                                                                                                                                                         const FO_GROUP_CHILDREN = 21;
 const FO_Y              = 22;                                    
 const FO_WIDTH          = 23;   const FO_POINT_IS_CENTER = 23;   
 const FO_HEIGHT         = 24;                                    
 
-const FO_RECT_ROUND     = 25;   const FO_ELLIPSE_FROM    = 25;   const FO_VECTOR_PATH_DATA    = 25;   const FO_POLY_ROUND   = 25;   const FO_STAR_ROUND  = 25;   const FO_FIG_WIDTH      = 25;   const FO_FRAME_ROUND    = 25;
-                                const FO_ELLIPSE_TO      = 26;   const FO_VECTOR_PATH_WINDING = 26;   const FO_POLY_CORNERS = 26;   const FO_STAR_POINTS = 26;   const FO_FIG_HEIGHT     = 26;   const FO_FRAME_CHILDREN = 26;
-                                const FO_ELLIPSE_INNER   = 27;   const FO_VECTOR_PATH_ROUND   = 27;                                 const FO_STAR_CONVEX = 27;   const FO_TEXT           = 27; 
-                                                                                            
-                                                                                                                                                                 const FO_FONT           = 28;
-                                                                                                                                                                 const FO_FONT_SIZE      = 29;
-                                                                                                                                                                 const FO_FONT_STYLE     = 30;
-                                                                                                                                                                                               
-                                                                                                                                                                 const FO_ALIGN_H        = 31;
-                                                                                                                                                                 const FO_ALIGN_V        = 32;
-                                                                                                                                                                                               
-                                                                                                                                                                 const FO_LINE_HEIGHT    = 33;
-                                                                                                                                                                 const FO_LETTER_SPACING = 34;                                
+const FO_RECT_ROUND     = 25;   const FO_ELLIPSE_FROM    = 25;   const FO_VECTOR_NETWORK_DATA = 25;   const FO_VECTOR_PATH_DATA    = 25;   const FO_POLY_ROUND   = 25;   const FO_STAR_ROUND  = 25;   const FO_FIG_WIDTH      = 25;   const FO_FRAME_ROUND    = 25;
+                                const FO_ELLIPSE_TO      = 26;                                        const FO_VECTOR_PATH_WINDING = 26;   const FO_POLY_CORNERS = 26;   const FO_STAR_POINTS = 26;   const FO_FIG_HEIGHT     = 26;   const FO_FRAME_CHILDREN = 26;
+                                const FO_ELLIPSE_INNER   = 27;                                        const FO_VECTOR_PATH_ROUND   = 27;                                 const FO_STAR_CONVEX = 27;   const FO_TEXT           = 27; 
+                                                                                                                                 
+                                                                                                                                                                                                      const FO_FONT           = 28;
+                                                                                                                                                                                                      const FO_FONT_SIZE      = 29;
+                                                                                                                                                                                                      const FO_FONT_STYLE     = 30;
+                                                                                                                                                                                                                                    
+                                                                                                                                                                                                      const FO_ALIGN_H        = 31;
+                                                                                                                                                                                                      const FO_ALIGN_V        = 32;
+                                                                                                                                                                                                                                    
+                                                                                                                                                                                                      const FO_LINE_HEIGHT    = 33;
+                                                                                                                                                                                                      const FO_LETTER_SPACING = 34;                                
 
 
 class FigmaObject
@@ -5521,6 +5613,20 @@ function getObjBounds(objects)
 
                 default:
                     console.error('invalid curve degree');
+            }
+        }
+
+        else if (obj.type == VECTOR_NETWORK)
+        {
+            for (let i = 0; i < obj.edges.length; i++)
+            {
+                bounds = expandRect(
+                    bounds, 
+                    bounds3(
+                        obj.edges[i].start.toPoint(), 
+                        obj.edges[i].start.toPoint(),
+                        obj.edges[i].end  .toPoint(),
+                        obj.edges[i].end  .toPoint()));
             }
         }
 
@@ -6559,146 +6665,188 @@ function getSineYSegment(_pointP, _point, _pointN)
 
 
 class FigmaVectorNetwork
-extends FigmaObject
+extends FigmaShape
 {
-    // x;
-    // y;
-    // width;
-    // height;
+    x;
+    y;
+    width;
+    height;
     
-    // points;
-    // closed;
-    // degree;
+    points;
+    edges;
+    regions;
 
-    // pathPoints;
-
-    // pathData;
-    // winding;
-    // round;
+    networkData;
 
 
 
-    // constructor(nodeId, objectId, objectName, points, closed, degree, winding, round)
-    // {
-    //     super(VECTOR_PATH, nodeId, objectId, objectName);
+    constructor(nodeId, objectId, objectName, points, edges, regions)
+    {
+        super(VECTOR_NETWORK, nodeId, objectId, objectName);
         
-    //     this.points  = points.map(p => p.copy());
+        this.points  = points .map(p => p.copy());
+        this.edges   = edges  .map(e => e.copy());
+        this.regions = regions.map(r => r.copy());
 
-    //     this.closed  = closed;
-    //     this.degree  = degree;
-    //     this.winding = winding;
 
-    //     this.round   = round;
-        
-
-    //     this.updatePathPoints();
-    //     this.updatePathData();
-    // }
+        this.updateNetworkData();
+    }
 
 
 
-    // copy()
-    // {
-    //     const copy = new FigmaVectorPath(
-    //         this.nodeId,
-    //         this.objectId,
-    //         this.objectName,
+    copy()
+    {
+        const copy = new FigmaVectorNetwork(
+            this.nodeId,
+            this.objectId,
+            this.objectName,
 
-    //         this.points, 
-
-    //         this.closed, 
-    //         this.degree,
-    //         this.winding,
-
-    //         this.round);
+            this.points, 
+            this.edges, 
+            this.regions);
 
 
-    //     copy.x      = this.x;
-    //     copy.y      = this.y;
-    //     copy.width  = this.width;
-    //     copy.height = this.height;
+        copy.x      = this.x;
+        copy.y      = this.y;
+        copy.width  = this.width;
+        copy.height = this.height;
 
 
-    //     copy.copyBase(this);
+        copy.copyBase(this);
 
 
-    //     return copy;
-    // }
+        return copy;
+    }
 
 
 
-    // updatePoints(xform, coords)
-    // {
-    //     for (let i = 0; i < this.points.length; i++)
-    //         this.points[i] = PointValue.fromPoint(this.nodeId, transformPoint(this.points[i].toPoint(), xform, coords));
+    updateNetworkData()
+    {
+        let minX = Number.MAX_SAFE_INTEGER;
+        let minY = Number.MAX_SAFE_INTEGER;
+        let maxX = Number.MIN_SAFE_INTEGER;
+        let maxY = Number.MIN_SAFE_INTEGER;
 
-    //     this.updatePathPoints();
-    //     this.updatePathData();
-    // }
-
-
-
-    // updatePathPoints()
-    // {
-    //     switch (this.degree)
-    //     {
-    //     case 0: this.pathPoints = this.points.map(p => p.toPoint());                           break;
-    //     case 1: this.pathPoints = this.points.map(p => p.toPoint());                           break;
-    //     case 2: this.pathPoints = this.points.map(p => p.toPoint());                           break;
-    //     case 3: this.pathPoints = getSmoothPoints(this.points, this.closed, getSmoothSegment); break;
-    //     case 4: this.pathPoints = getSmoothPoints(this.points, this.closed, getSineXSegment ); break;
-    //     case 5: this.pathPoints = getSmoothPoints(this.points, this.closed, getSineYSegment ); break;
-    //     }
-    // }
+        for (const p of this.points)
+        {
+            minX = Math.min(minX, p.x.value);
+            minY = Math.min(minY, p.y.value);
+            maxX = Math.max(maxX, p.x.value);
+            maxY = Math.max(maxY, p.y.value);
+        }
 
 
+        this.x      = minX;
+        this.y      = minY;
+        this.width  = maxX - minX;
+        this.height = maxY - minY;
 
-    // updatePathData()
-    // {
-    //     let minX = Number.MAX_SAFE_INTEGER;
-    //     let minY = Number.MAX_SAFE_INTEGER;
-    //     let maxX = Number.MIN_SAFE_INTEGER;
-    //     let maxY = Number.MIN_SAFE_INTEGER;
-
-    //     for (const p of this.points)
-    //     {
-    //         minX = Math.min(minX, p.x.value);
-    //         minY = Math.min(minY, p.y.value);
-    //         maxX = Math.max(maxX, p.x.value);
-    //         maxY = Math.max(maxY, p.y.value);
-    //     }
+        this.createTransformPoints(null, this.x, this.y, this.width, this.height);
 
 
-    //     this.x      = minX;
-    //     this.y      = minY;
-    //     this.width  = maxX - minX;
-    //     this.height = maxY - minY;
-
-    //     this.createTransformPoints(null, this.x, this.y, this.width, this.height);
-
-
-    //     this.pathData = getPathDataFromPoints(this.pathPoints, this.closed, this.degree);
-    // }
+        this.networkData = getNetworkData(this.points, this.edges, this.regions);
+    }
 
 
 
-    // toData()
-    // {
-    //     return [
-    //         ...super.toData(),
+    toData()
+    {
+        return [
+            ...super.toData(),
    
-    //         /* 21 */ this.x,
-    //         /* 22 */ this.y,
-    //         /* 23 */ this.width,
-    //         /* 24 */ this.height,
+            /* 21 */ this.x,
+            /* 22 */ this.y,
+            /* 23 */ this.width,
+            /* 24 */ this.height,
 
-    //         /* 25 */ this.pathData,
-    //         /* 26 */ this.winding,
-    //         /* 27 */ this.round * Math.abs(this.scaleCorners)
-    //     ];
-    // }
+            /* 25 */ this.networkData
+        ];
+    }
 }
 
+
+
+function getNetworkData(points, edges, _regions)
+{
+    const vertices = [];
+    const segments = [];
+    const regions  = [];
+
+
+    for (const point of points)
+    {
+        let join;
+        let cap;
+
+        switch (point.join.value)
+        {
+            case 0: join = 'MITER'; break;
+            case 1: join = 'BEVEL'; break;
+            case 2: join = 'ROUND'; break;
+        }
+    
+        switch (point.cap.value)
+        {
+            case 0: cap = 'NONE';   break;
+            case 1: cap = 'SQUARE'; break;
+            case 2: cap = 'ROUND';  break;
+        }
+    
+        vertices.push(
+        {
+            x:            point.x.value,
+            y:            point.y.value,
+            strokeJoin:   join,
+            strokeCap:    cap,
+            cornerRadius: point.round.value
+        });
+    }
+
+
+    for (const edge of edges)
+    {
+        segments.push(
+        {
+            start: points.findIndex(p => p.uniqueId == edge.start.uniqueId),
+            end:   points.findIndex(p => p.uniqueId == edge.end  .uniqueId)
+        });
+    }
+
+
+    for (const region of _regions)
+    {
+        const loops = [];
+
+        for (const _loop of region.loops.items)
+        {
+            const loop = [];
+
+            for (const _edge of _loop.items)
+                loop.push(edges.findIndex(e => e.uniqueId == _edge.uniqueId));
+
+            loops.push(loop);
+        }
+
+
+        regions.push(
+        {
+            windingRule: region.winding.value == 1 ? 'NONZERO' : 'EVENODD',
+            loops:       loops,
+            fills:       getObjectFills(region.fills)
+        });
+    }
+
+
+    let networkData = 
+    {
+        vertices: vertices,
+        segments: segments,
+        regions:  regions
+    };
+
+
+    return networkData;
+}
 
 
 class FigmaTrapeze
@@ -7371,12 +7519,15 @@ class FigmaColorStyle
 
 class GNode
 {
+    static nextUniqueId = 0;
+
     type;
 
 
     valid; // has been evaluated
 
     listId       = -1;
+    uniqueId;
 
     iteration    = 0;
 
@@ -7390,8 +7541,10 @@ class GNode
 
     constructor(type, options) 
     {
-        this.type    = type;
-        this.options = options;
+        this.type     = type;
+        this.options  = options;
+
+        this.uniqueId = GNode.nextUniqueId++;
     }
 
 
@@ -7406,8 +7559,10 @@ class GNode
 
     copyBase(base)
     {
-        this.options = clone(base.options);
-        this.data    = clone(base.data   );
+        this.options  = clone(base.options);
+        this.data     = clone(base.data   );
+
+        this.uniqueId = base.uniqueId;
     }
 
 
@@ -10269,7 +10424,7 @@ extends GValue
 {
     nodeId;
 
-    props;
+    props = null;
 
 
 
@@ -10288,7 +10443,7 @@ extends GValue
         
         this.nodeId = base.nodeId;
 
-        this.props  = base.props.copy();
+        if (base.propss) this.props = base.props.copy();
     }
 
 
@@ -10296,15 +10451,15 @@ extends GValue
     hasInitValue()
     {
         return !this.props
-             || this.props.hasInitValue();
+            ||  this.props.hasInitValue();
     }
 
 
 
     isValid()
     {
-        return this.props
-            && this.props.isValid();
+        return !this.props
+            ||  this.props.isValid();
     }
 }
 
@@ -11667,10 +11822,10 @@ extends GValue
     {
         super(POINT_VALUE);
 
-        this.nodeId = nodeId;
+        this.nodeId   = nodeId;
 
-        this.x      = x;
-        this.y      = y;
+        this.x        = x;
+        this.y        = y;
     }
 
 
@@ -11741,16 +11896,22 @@ extends GValue
 
     toString()
     {
-        return      this.x.toString()
-            + ' ' + this.y.toString();
+        return this.x.isValid()
+            && this.y.isValid()
+            ?         this.x.toString()
+              + ' ' + this.y.toString()
+            : NAN_DISPLAY;
     }
 
 
 
     toDisplayString()
     {
-        return      this.x.toDisplayString()
-            + ' ' + this.y.toDisplayString();
+        return this.x.isValid()
+            && this.y.isValid()
+            ?         this.x.toDisplayString()
+              + ' ' + this.y.toDisplayString()
+            : NAN_DISPLAY;
     }
 
 
@@ -12016,11 +12177,11 @@ extends GValue
 
         this.nodeId = nodeId;
 
-        this.x     = x;
-        this.y     = y;
-        this.join  = join;
-        this.cap   = cap;
-        this.round = round;
+        this.x      = x    .copy();
+        this.y      = y    .copy();
+        this.join   = join .copy();
+        this.cap    = cap  .copy();
+        this.round  = round.copy();
     }
 
 
@@ -12034,6 +12195,8 @@ extends GValue
             this.join .copy(), 
             this.cap  .copy(), 
             this.round.copy());
+
+        copy.copyBase(this);
 
         return copy;
     }
@@ -12139,11 +12302,8 @@ extends GValue
     toPoint()
     {
         return point(
-            this.x    .value,
-            this.y    .value,
-            this.join .value,
-            this.cap  .value,
-            this.round.value);
+            this.x.value,
+            this.y.value);
     }
 
 
@@ -12232,10 +12392,10 @@ extends GValue
 
         this.nodeId = nodeId;
 
-        this.start        = start;       
-        this.end          = end;         
-        this.startTangent = startTangent;
-        this.endTangent   = endTangent;  
+        this.start        = start       .copy();       
+        this.end          = end         .copy();         
+        this.startTangent = startTangent.copy();
+        this.endTangent   = endTangent  .copy();  
     }
 
 
@@ -12248,6 +12408,8 @@ extends GValue
             this.end         .copy(), 
             this.startTangent.copy(), 
             this.endTangent  .copy());
+
+        copy.copyBase(this);
 
         return copy;
     }
@@ -12297,9 +12459,9 @@ extends GValue
     isValid()
     {
         return this.start       .isValid()
-            && this.end         .isValid()
-            && this.startTangent.isValid()
-            && this.endTangent  .isValid();
+            && this.end         .isValid();
+            // && this.startTangent.isValid()
+            // && this.endTangent  .isValid();
     }
 
 
@@ -12349,8 +12511,8 @@ extends GValue
         '',
         VectorVertexValue.NaN, 
         VectorVertexValue.NaN, 
-        PointValue.create('', 0, 0), 
-        PointValue.create('', 0, 0)));
+        PointValue.NaN, 
+        PointValue.NaN));
 }
 
 
@@ -12391,27 +12553,23 @@ function parseVectorEdgeValue(str, i = -1)
 
 
 class VectorRegionValue
-extends GValue
+extends ShapeValue
 {
-    nodeId;
-
     loops;  
     winding;
-    props;  
+
+    fills = [];
+
 
 
     constructor(nodeId,
                 loops   = new ListValue(), 
-                winding = new NumberValue(0),
-                props   = new ListValue())
+                winding = new NumberValue(0))
     {
-        super(VECTOR_REGION_VALUE);
-
-        this.nodeId = nodeId;
+        super(VECTOR_REGION_VALUE, nodeId);
 
         this.loops   = loops;  
         this.winding = winding;
-        this.props   = props;  
     }
 
 
@@ -12421,8 +12579,11 @@ extends GValue
         const copy = new VectorRegionValue(
             this.nodeId,
             this.loops  .copy(), 
-            this.winding.copy(), 
-            this.props  .copy());
+            this.winding.copy());
+
+        copy.fills = clone(this.fills);
+        
+        copy.copyBase(this);
 
         return copy;
     }
@@ -12433,8 +12594,7 @@ extends GValue
     {
         return region
             && this.loops  .equals(region.loops  )
-            && this.winding.equals(region.winding)
-            && this.props  .equals(region.props  );
+            && this.winding.equals(region.winding);
     }
 
 
@@ -12444,8 +12604,7 @@ extends GValue
     //     return new VectorRegionValue(
     //         nodeId,
     //         loops,
-    //         new NumberValue(winding),
-    //         props);
+    //         new NumberValue(winding));
     // }
 
 
@@ -12460,8 +12619,7 @@ extends GValue
     hasInitValue()
     {
         return this.loops  .hasInitValue()
-            && this.winding.hasInitValue()
-            && this.props  .hasInitValue();
+            && this.winding.hasInitValue();
     }
 
 
@@ -12469,8 +12627,7 @@ extends GValue
     isValid()
     {
         return this.loops  .isValid()
-            && this.winding.isValid()
-            && this.props  .isValid();
+            && this.winding.isValid();
     }
 
 
@@ -12478,8 +12635,7 @@ extends GValue
     toString()
     {
         return      this.loops  .toString()
-            + ' ' + this.winding.toString()
-            + ' ' + this.props  .toString();
+            + ' ' + this.winding.toString();
     }
 
 
@@ -12487,8 +12643,7 @@ extends GValue
     toDisplayString()
     {
         return      this.loops  .toDisplayString()
-            + ' ' + this.winding.toDisplayString()
-            + ' ' + this.props  .toDisplayString();
+            + ' ' + this.winding.toDisplayString();
     }
 
 
@@ -12516,9 +12671,8 @@ extends GValue
 
     static NaN = Object.freeze(new VectorRegionValue(
         '',
-        new ListValue(), 
-        NumberValue.NaN, 
-        new ListValue()));
+        ListValue  .NaN, 
+        NumberValue.NaN));
 }
 
 
@@ -12541,14 +12695,15 @@ function parseVectorRegionValue(str, i = -1)
 
     const loops   = parseListValue  (str, i); i += loops  [1];
     const winding = parseNumberValue(str[i]); i += winding[1];
-    const props   = parseListValue  (str, i); i += props  [1];
 
 
     const region = new VectorRegionValue(
         '', // set node ID elsewhere
         loops  [0],
-        winding[0],
-        props  [0]);
+        winding[0]);
+
+
+    i = parseShapeBaseValue(str, i, region);
 
 
     return [region, i - iStart];
@@ -12562,6 +12717,7 @@ extends GValue
     nodeId;
 
     regions;
+
 
 
     constructor(nodeId,
@@ -12581,6 +12737,8 @@ extends GValue
         const copy = new VectorNetworkValue(
             this.nodeId,
             this.regions.copy());
+
+        copy.copyBase(this);
 
         return copy;
     }
@@ -24948,13 +25106,13 @@ extends GShape
         }
 
        
+        this.updateValues = [['value', this.value]];
+
+
         await this.evalShapeBase(parse);
 
 
         await this.evalObjects(parse);
-
-
-        this.updateValues = [['value', this.value]];
 
 
         this.validate();
@@ -25580,9 +25738,9 @@ extends GOperator1
         {
             const x     = this.value.x    .value;
             const y     = this.value.y    .value;
-            const join  = this.value.join .value;
-            const cap   = this.value.cap  .value;
-            const round = this.value.round.value;
+            //const join  = this.value.join .value;
+            //const cap   = this.value.cap  .value;
+            //const round = this.value.round.value;
 
             const point = new FigmaPoint(this.nodeId, this.nodeId, this.nodeName, x, y);
 
@@ -25607,7 +25765,8 @@ extends GOperator1
             this.cap  .toValue(),
             this.round.toValue());
 
-        point.objects = this.value.objects.map(o => o.copy());
+        point.objects  = this.value.objects.map(o => o.copy());
+        point.uniqueId = this.value.uniqueId;
 
         return point;
     }
@@ -25692,27 +25851,18 @@ extends GOperator1
             return this;
 
         
-        const input0       = this.input0       ? (await this.input0      .eval(parse)).toValue() : null;
-        const input1       = this.input1       ? (await this.input1      .eval(parse)).toValue() : null;
-        const startTangent = this.startTangent ? (await this.startTangent.eval(parse)).toValue() : null;
-        const   endTangent = this.  endTangent ? (await this.  endTangent.eval(parse)).toValue() : null;
+        const input0       = this.input0       ? (await this.input0      .eval(parse)).toValue() : VectorVertexValue.NaN;
+        const input1       = this.input1       ? (await this.input1      .eval(parse)).toValue() : VectorVertexValue.NaN;
+        const startTangent = this.startTangent ? (await this.startTangent.eval(parse)).toValue() : PointValue.NaN;
+        const   endTangent = this.  endTangent ? (await this.  endTangent.eval(parse)).toValue() : PointValue.NaN;
 
 
-
-        if (   input0
-            && input1
-            && startTangent
-            &&   endTangent)
-        {
-            this.value = new VectorEdgeValue(
-                this.nodeId,
-                input0,
-                input1,
-                startTangent,
-                  endTangent);
-        }
-        else
-            this.value = VectorEdgeValue.NaN;
+        this.value = new VectorEdgeValue(
+            this.nodeId,
+            input0,
+            input1,
+            startTangent,
+              endTangent);
 
 
         await this.evalObjects(parse);
@@ -25731,26 +25881,27 @@ extends GOperator1
     async evalObjects(parse, options = {})
     {
         if (   !this.options.enabled
-            || !this.value.isValid())
+            || !this.value.start.isValid()
+            || !this.value.end  .isValid())
             return;
             
             
         this.value.objects = [];
 
 
-        if (   this.value.start
-            && this.value.end
-            && this.value.startTangent
-            && this.value.  endTangent)
+        if (   this.value.start.isValid()
+            && this.value.end  .isValid())
         {
             const path = new FigmaVectorPath(
                 this.nodeId,
                 this.nodeId,
                 this.nodeName,
                 [ this.value.start,
+                  this.value.startTangent.isValid() ? this.value.startTangent : this.value.start,
+                  this.value.endTangent  .isValid() ? this.value.  endTangent : this.value.end,
                   this.value.end ],
                 0,
-                0, // linear
+                2, // cubic
                 0,
                 0);
 
@@ -25777,16 +25928,17 @@ extends GOperator1
 
     toValue()
     {
-        const point = new VectorEdgeValue(
+        const edge = new VectorEdgeValue(
             this.nodeId,
             this.input0 ? this.input0.toValue() : VectorVertexValue.NaN,
             this.input1 ? this.input1.toValue() : VectorVertexValue.NaN,
             this.startTangent.toValue(),
             this.endTangent  .toValue());
 
-        point.objects = this.value.objects.map(o => o.copy());
+        edge.uniqueId = this.value.uniqueId;
+        edge.objects  = this.value.objects.map(o => o.copy());
 
-        return point;
+        return edge;
     }
 
 
@@ -25827,12 +25979,12 @@ extends GOperator1
 
 
 class GVectorRegion
-extends GOperator
+extends GShape
 {
     inputs  = [];
 
+    loops   = null;
     winding = null;
-    props   = null;
 
 
 
@@ -25852,7 +26004,6 @@ extends GOperator
         copy.inputs = this.inputs.map(i => i.copy());
 
         if (this.winding) copy.winding = this.winding.copy();
-        if (this.props  ) copy.props   = this.props  .copy();
 
         return copy;
     }
@@ -25866,8 +26017,7 @@ extends GOperator
                 return false;
 
         return super.isCached()
-            && this.winding.isCached()
-            && this.props  .isCached();
+            && this.winding.isCached();
     }
 
 
@@ -25879,60 +26029,62 @@ extends GOperator
 
         
         const winding = this.winding ? (await this.winding.eval(parse)).toValue() : null;
-        const props   = this.props   ? (await this.props  .eval(parse)).toValue() : null;
 
 
-        if (!isEmpty(this.inputs))
+        this.loops = new ListValue();
+
+
+        const loop = new ListValue();
+
+        for (let i = 0; i < this.inputs.length; i++)
         {
-            const loops = new ListValue();
+            const input = (await this.inputs[i].eval(parse)).toValue();
 
-            const loop = new ListValue();
-
-            for (let i = 0; i < this.inputs.length; i++)
+            if (LIST_VALUES.includes(input.type))
             {
-                const input = (await this.inputs[i].eval(parse)).toValue();
+                const _loop = new ListValue();
 
-                if (LIST_VALUES.includes(input.type))
+                for (const item of input.items)
                 {
-                    const _loop = new ListValue();
-
-                    for (const item of input.items)
-                    {
-                        if (item.type == VECTOR_EDGE_VALUE)
-                            _loop.items.push(item);
-                    }
-
-                    if (!isEmpty(_loop.items))
-                        loops.items.push(_loop);
+                    if (item.type == VECTOR_EDGE_VALUE)
+                        _loop.items.push(item);
                 }
-                else
-                {
-                    consoleAssert(
-                        input.type == VECTOR_EDGE_VALUE, 
-                        'input.type must be VECTOR_EDGE_VALUE');
 
-                    loop.items.push(input);
-                }
+                if (!isEmpty(_loop.items))
+                    loops.items.push(_loop);
             }
+            else
+            {
+                consoleAssert(
+                     input.type == VECTOR_EDGE_VALUE, 
+                    'input.type must be VECTOR_EDGE_VALUE');
 
-
-            if (!isEmpty(loop.items))
-                loops.items.push(loop);
-
-
-            this.value = new VectorRegionValue(
-                loops, 
-                winding,
-                props);
+                loop.items.push(input);
+            }
         }
-        else
-            this.value = VectorRegionValue.NaN;
+
+
+        if (!isEmpty(loop.items))
+            this.loops.items.push(loop);
+
+
+        this.value = new VectorRegionValue(
+            this.nodeId,
+            this.loops, 
+            winding);
+
+
+        this.updateValues = 
+        [
+            ['value',   this.value],
+            ['winding', winding   ]
+        ];
+
+
+        await this.evalShapeBase(parse);
 
 
         await this.evalObjects(parse);
-
-
-        this.updateValues = [['value', this.value]];
 
 
         this.validate();
@@ -25951,20 +26103,58 @@ extends GOperator
             
         this.value.objects = [];
 
-
-        if (   this.value.loops    
-            && this.value.winding
-            && this.value.props)
+        
+        if (   this.loops  .isValid()
+            && this.winding.isValid())
         {
-            // const loops   = this.value.loops  .value;
-            // const winding = this.value.winding.value;
-            // const props   = this.value.props  .value;
+            const regions = [];
 
-            // const point = new FigmaPoint(this.nodeId, this.nodeId, this.nodeName, x, y);
 
-            // point.createDefaultTransform(x, y);
+            for (let i = 0; i < this.loops.items.length; i++)
+            {
+                const loop = this.loops.items[i];
 
-            // this.value.objects = [point];
+
+                const points = [];
+    
+                for (let j = 0; j < loop.items.length; j++)
+                {
+                    const edge = loop.items[j  ];
+                    const next = loop.items[j == loop.items.length-1 ? 0 : j+1];
+
+                    points.push(
+                           edge.start.uniqueId == next.start.uniqueId
+                        || edge.start.uniqueId == next.end  .uniqueId
+                        ? edge.end  
+                        : edge.start);
+                }
+
+
+                regions.push(new FigmaVectorPath(
+                    this.nodeId,
+                    this.nodeId + '/' + i,
+                    this.nodeName,
+                    points,
+                    1,
+                    0, // linear
+                    this.winding.value,
+                    0));
+            }
+            
+
+            let bounds = getObjBounds(regions);
+
+            let x = bounds.x;
+            let y = bounds.y;
+            let w = bounds.w;
+            let h = bounds.h;
+
+
+            for (const region of regions)
+            {
+                region.createDefaultTransform(x, y);
+                this.value.objects.push(region, ...region.createTransformPoints(parse, x, y, w, h));
+            }
         }
 
 
@@ -25975,14 +26165,16 @@ extends GOperator
 
     toValue()
     {
-        const point = new VectorRegionValue(
+        const region = new VectorRegionValue(
             this.nodeId,
+            this.loops  .toValue(),
             this.winding.toValue(),
             this.props  .toValue());
 
-        point.objects = this.value.objects.map(o => o.copy());
+        region.uniqueId = this.value.uniqueId;
+        region.objects  = this.value.objects.map(o => o.copy());
 
-        return point;
+        return region;
     }
 
 
@@ -26027,7 +26219,7 @@ extends GOperator
 
 
 class GVectorNetwork
-extends GOperator
+extends GShape
 {
     inputs  = [];
 
@@ -26070,33 +26262,32 @@ extends GOperator
             return this;
 
         
-        if (!isEmpty(this.inputs))
+        const regions = new ListValue();
+
+        for (let i = 0; i < this.inputs.length; i++)
         {
-            const regions = new ListValue();
+            const input = (await this.inputs[i].eval(parse)).toValue();
 
-            for (let i = 0; i < this.inputs.length; i++)
-            {
-                const input = (await this.inputs[i].eval(parse)).toValue();
+            consoleAssert(
+                 input.type == VECTOR_REGION_VALUE, 
+                'input.type must be VECTOR_REGION_VALUE');
 
-                consoleAssert(
-                    input.type == VECTOR_REGION_VALUE, 
-                    'input.type must be VECTOR_REGION_VALUE');
-
-                regions.items.push(input);
-            }
-
-
-            this.value = new VectorNetworkValue(regions);
+            regions.items.push(input);
         }
-        else
-            this.value = VectorNetworkValue.NaN;
-
-       
-        await this.evalObjects(parse);
 
 
-        console.log('GVectorNetwork.value =', this.value);
+        this.value = new VectorNetworkValue(
+            this.nodeId,
+            regions);
+
+
         this.updateValues = [['value', this.value]];
+
+
+        await this.evalShapeBase(parse);
+
+        
+        await this.evalObjects(parse);
 
 
         this.validate();
@@ -26116,17 +26307,58 @@ extends GOperator
         this.value.objects = [];
 
 
-        if (this.value.regions)
+        if (!isEmpty(this.value.regions.items))
         {
-            // const points  = this.value.points .value;
-            // const edges   = this.value.edges  .value;
-            // const regions = this.value.regions.value;
+            let points  = [];
+            let edges   = [];
+            let regions = [];
 
-            // const point = new FigmaVectorNetwork(this.nodeId, this.nodeId, this.nodeName, x, y);
 
-            // point.createDefaultTransform(x, y);
+            for (const region of this.value.regions.items)
+            {
+                if (!isEmpty(region.objects))
+                    region.fills = region.objects[0].fills;
 
-            // this.value.objects = [point];
+
+                if (region.loops)
+                {
+                    for (const loop of region.loops.items)
+                    {
+                        for (const edge of loop.items)
+                        {
+                            pushUniqueBy(points, edge.start, p => p.uniqueId == edge.start.uniqueId);
+                            pushUniqueBy(points, edge.end,   p => p.uniqueId == edge.end  .uniqueId);
+
+                            pushUniqueBy(edges, edge, e => e.uniqueId == edge.uniqueId);
+                        }
+                    }
+
+                    pushUniqueBy(regions, region, r => r.uniqueId == region.uniqueId);
+                }
+            }
+
+            
+            const network = new FigmaVectorNetwork(
+                this.nodeId,
+                this.nodeId,
+                this.nodeName,
+                points,
+                edges,
+                regions);
+
+            
+            const bounds = getObjBounds([network]);
+
+            let x = bounds.x;
+            let y = bounds.y;
+            let w = bounds.w;
+            let h = bounds.h;
+
+
+            network.createDefaultTransform(x, y);
+
+
+            this.value.objects.push(network, ...network.createTransformPoints(parse, x, y, w, h));
         }
 
 
@@ -26137,13 +26369,14 @@ extends GOperator
 
     toValue()
     {
-        const point = new VectorNetworkValue(
+        const network = new VectorNetworkValue(
             this.nodeId,
             this.regions.toValue());
 
-        point.objects = this.value.objects.map(o => o.copy());
+        network.uniqueId = this.value.uniqueId;
+        network.objects  = this.value.objects.map(o => o.copy());
 
-        return point;
+        return network;
     }
 
 
@@ -26160,7 +26393,7 @@ extends GOperator
     {
         super.pushValueUpdates(parse);
 
-        if (this.regions) this.regions.pushValueUpdates(parse);
+        this.inputs.forEach(i => i.pushValueUpdates(parse));
     }
 
 
@@ -26169,7 +26402,7 @@ extends GOperator
     {
         super.invalidateInputs(from);
 
-        if (this.regions) this.regions.invalidateInputs(from);
+        this.inputs.forEach(i => i.pushValueUpdates(parse));
     }
 }
 
@@ -26258,13 +26491,13 @@ extends GShapeBase
         }
 
 
+        this.updateValues = [['value', this.value]];
+
+
         //await this.evalShapeBase(parse);
 
 
         await this.evalObjects(parse);
-
-
-        this.updateValues = [['value', this.value]];
 
 
         this.validate();
@@ -27225,6 +27458,7 @@ extends GOperator1
 
     async evalAffineObjects(options, scaleCorners, scaleStyle, getXform)
     {
+        console.log('this.value =', this.value);
         if (   !this.value
             || !this.value.isValid())
             return Rect.NaN;
@@ -27299,8 +27533,8 @@ extends GOperator1
     {
         const center = new FigmaPoint(
             this.nodeId,
-            this.nodeId   + '.center',
-            this.nodeName + ' • center',
+            this.nodeId + PROP_SEPARATOR + 'center',
+            this.nodeName + CENTER_SEPARATOR + 'center',
             cx,
             cy,
             true,
@@ -32488,8 +32722,8 @@ function genParseVectorRegion(parse)
     parse.nTab++;
 
 
-    if (nInputs == 1)
-        region.input = genParse(parse);
+    for (let i = 0; i < nInputs; i++)
+        region.inputs.push(genParse(parse));
 
 
     region.winding = genParse(parse);
@@ -32525,7 +32759,7 @@ function genParseVectorNetwork(parse)
     const [, nodeId, options, ignore] = genParseNodeStart(parse);
 
 
-    const net = new GVectorNetwork(nodeId, options);
+    const network = new GVectorNetwork(nodeId, options);
 
 
     let nInputs = 0;
@@ -32535,12 +32769,12 @@ function genParseVectorNetwork(parse)
 
 
     if (parse.settings.logRequests) 
-        logReq(net, parse, ignore, nInputs);
+        logReq(network, parse, ignore, nInputs);
 
 
     if (ignore) 
     {
-        genParseNodeEnd(parse, net);
+        genParseNodeEnd(parse, network);
         return parse.parsedNodes.find(n => n.nodeId == nodeId);
     }
 
@@ -32548,16 +32782,18 @@ function genParseVectorNetwork(parse)
     parse.nTab++;
 
 
-    if (nInputs == 1)
-    net.input = genParse(parse);
+    for (let i = 0; i < nInputs; i++)
+        network.inputs.push(genParse(parse));
+
+    network.props = genParse(parse);
 
 
     parse.nTab--;
 
 
 
-    genParseNodeEnd(parse, net);
-    return net;
+    genParseNodeEnd(parse, network);
+    return network;
 }
 
 

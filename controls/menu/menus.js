@@ -547,41 +547,41 @@ function initGeneratorMenus()
     
     menuLayer = new Menu('Style', true, false);
     menuLayer.addItems([
-        menuItemLayerFill        = new MenuItem('Fill',            {icon: iconFill,        callback: e => actionManager.do(getCreateNodeAction(FILL,         btnLayer.div, getCreateOptions(e)))}),
-                                   new MenuItem('Gradient',        {icon: iconGradient,    callback: e => actionManager.do(getCreateNodeAction(GRADIENT,     btnLayer.div, getCreateOptions(e)))}),
-                                   new MenuItem('Color stop',      {icon: iconColorStop,   callback: e => actionManager.do(getCreateNodeAction(COLOR_STOP,   btnLayer.div, getCreateOptions(e)))}),
+        menuItemLayerFill        = new MenuItem('Fill',            {icon: iconFill,        callback: e => actionManager.do(getCreateNodeAction(FILL,       btnLayer.div, getCreateOptions(e)))}),
+                                   new MenuItem('Gradient',        {icon: iconGradient,    callback: e => actionManager.do(getCreateNodeAction(GRADIENT,   btnLayer.div, getCreateOptions(e)))}),
+                                   new MenuItem('Color stop',      {icon: iconColorStop,   callback: e => actionManager.do(getCreateNodeAction(COLOR_STOP, btnLayer.div, getCreateOptions(e)))}),
                                 //    new MenuItem('',                {separator: true}),
-        menuItemLayerStroke      = new MenuItem('Stroke',          {icon: iconStroke,      callback: e => actionManager.do(getCreateNodeAction(STROKE,       btnLayer.div, getCreateOptions(e)))}),
+        menuItemLayerStroke      = new MenuItem('Stroke',          {icon: iconStroke,      callback: e => actionManager.do(getCreateNodeAction(STROKE,     btnLayer.div, getCreateOptions(e)))}),
         menuItemLayerSep1        = new MenuItem('',                {separator: true}),
                                    new MenuItem('Effects',         {icon: iconEffects, childMenu: menuEffects}),
                                    new MenuItem('',                {separator: true}),
                                    new MenuItem('Styles',          {icon: iconStyle, childMenu: menuStyles}),
                                    //new MenuItem('Variables',       {childMenu: menuVariables}),
                                    new MenuItem('',                {separator: true}),
-                                   new MenuItem('Mask',            {icon: iconMask,        callback: e => actionManager.do(getCreateNodeAction(LAYER_MASK,   btnLayer.div, getCreateOptions(e)))})]);
+                                   new MenuItem('Mask',            {icon: iconMask,        callback: e => actionManager.do(getCreateNodeAction(LAYER_MASK, btnLayer.div, getCreateOptions(e)))})]);
                                  //new MenuItem('Color style',     {icon: iconColorStyle,  childMenu: menuColorStyle, callback: e => actionManager.do(getCreateNodeAction(COLOR_STYLE,  btnColor.div, getCreateOptions(e)))})]);
     
     
     menuVector = new Menu('Vector', true, false);
     menuVector.addItems([
         new MenuItem('Point',   {icon: iconPoint,         callback: e => actionManager.do(getCreateNodeAction(POINT,          btnShape.div, getCreateOptions(e)))}),
-        new MenuItem('Path',    {icon: iconVectorPath,    callback: e => actionManager.do(getCreateNodeAction(VECTOR_PATH,    btnShape.div, getCreateOptions(e)))}),
-        new MenuItem('',        {separator: true}),
-        new MenuItem('Vertex',  {icon: iconVectorVertex,  callback: e => actionManager.do(getCreateNodeAction(VECTOR_VERTEX,  btnShape.div, getCreateOptions(e)))}),
-        new MenuItem('Edge',    {icon: iconVectorEdge,    callback: e => actionManager.do(getCreateNodeAction(VECTOR_EDGE,    btnShape.div, getCreateOptions(e)))}),
-        new MenuItem('Region',  {icon: iconVectorRegion,  callback: e => actionManager.do(getCreateNodeAction(VECTOR_REGION,  btnShape.div, getCreateOptions(e)))}),
-        new MenuItem('Network', {icon: iconVectorNetwork, callback: e => actionManager.do(getCreateNodeAction(VECTOR_NETWORK, btnShape.div, getCreateOptions(e)))})]);
+        new MenuItem('Path',    {icon: iconVectorPath,    callback: e => actionManager.do(getCreateNodeAction(VECTOR_PATH,    btnShape.div, getCreateOptions(e)))})]);//,
+        // new MenuItem('',        {separator: true}),
+        // new MenuItem('Vertex',  {icon: iconVectorVertex,  callback: e => actionManager.do(getCreateNodeAction(VECTOR_VERTEX,  btnShape.div, getCreateOptions(e)))}),
+        // new MenuItem('Edge',    {icon: iconVectorEdge,    callback: e => actionManager.do(getCreateNodeAction(VECTOR_EDGE,    btnShape.div, getCreateOptions(e)))}),
+        // new MenuItem('Region',  {icon: iconVectorRegion,  callback: e => actionManager.do(getCreateNodeAction(VECTOR_REGION,  btnShape.div, getCreateOptions(e)))}),
+        // new MenuItem('Network', {icon: iconVectorNetwork, callback: e => actionManager.do(getCreateNodeAction(VECTOR_NETWORK, btnShape.div, getCreateOptions(e)))})]);
 
 
     menuShapes = new Menu('Shapes', true, false);
     menuShapes.addItems([
-        new MenuItem('Rectangle', {icon: iconRectangle,  callback: e => actionManager.do(getCreateNodeAction(RECTANGLE,   btnShape.div, getCreateOptions(e)))}),
-        new MenuItem('Line',      {icon: iconLine,       callback: e => actionManager.do(getCreateNodeAction(LINE,        btnShape.div, getCreateOptions(e)))}),
-        new MenuItem('Ellipse',   {icon: iconEllipse,    callback: e => actionManager.do(getCreateNodeAction(ELLIPSE,     btnShape.div, getCreateOptions(e)))}),
-        new MenuItem('Trapeze',   {icon: iconTrapeze,    callback: e => actionManager.do(getCreateNodeAction(TRAPEZE,     btnShape.div, getCreateOptions(e)))}),
-        new MenuItem('Polygon',   {icon: iconPolygon,    callback: e => actionManager.do(getCreateNodeAction(POLYGON,     btnShape.div, getCreateOptions(e)))}),
-        new MenuItem('Star',      {icon: iconStar,       callback: e => actionManager.do(getCreateNodeAction(STAR,        btnShape.div, getCreateOptions(e)))}),
-        new MenuItem('Text',      {icon: iconTextShape,  callback: e => actionManager.do(getCreateNodeAction(TEXT_SHAPE,  btnShape.div, getCreateOptions(e)))})]);
+        new MenuItem('Rectangle', {icon: iconRectangle,  callback: e => actionManager.do(getCreateNodeAction(RECTANGLE,  btnShape.div, getCreateOptions(e)))}),
+        new MenuItem('Line',      {icon: iconLine,       callback: e => actionManager.do(getCreateNodeAction(LINE,       btnShape.div, getCreateOptions(e)))}),
+        new MenuItem('Ellipse',   {icon: iconEllipse,    callback: e => actionManager.do(getCreateNodeAction(ELLIPSE,    btnShape.div, getCreateOptions(e)))}),
+        new MenuItem('Trapeze',   {icon: iconTrapeze,    callback: e => actionManager.do(getCreateNodeAction(TRAPEZE,    btnShape.div, getCreateOptions(e)))}),
+        new MenuItem('Polygon',   {icon: iconPolygon,    callback: e => actionManager.do(getCreateNodeAction(POLYGON,    btnShape.div, getCreateOptions(e)))}),
+        new MenuItem('Star',      {icon: iconStar,       callback: e => actionManager.do(getCreateNodeAction(STAR,       btnShape.div, getCreateOptions(e)))}),
+        new MenuItem('Text',      {icon: iconTextShape,  callback: e => actionManager.do(getCreateNodeAction(TEXT_SHAPE, btnShape.div, getCreateOptions(e)))})]);
 
 
     menuTransform = new Menu('Transform', true, false);

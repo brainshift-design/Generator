@@ -8,7 +8,7 @@ extends GValue
 {
     nodeId;
 
-    props;
+    props = null;
 
 
 
@@ -27,7 +27,7 @@ extends GValue
         
         this.nodeId = base.nodeId;
 
-        this.props  = base.props.copy();
+        if (base.propss) this.props = base.props.copy();
     }
 
 
@@ -35,15 +35,15 @@ extends GValue
     hasInitValue()
     {
         return !this.props
-             || this.props.hasInitValue();
+            ||  this.props.hasInitValue();
     }
 
 
 
     isValid()
     {
-        return this.props
-            && this.props.isValid();
+        return !this.props
+            ||  this.props.isValid();
     }
 }
 

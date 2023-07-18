@@ -20,10 +20,10 @@ extends GValue
 
         this.nodeId = nodeId;
 
-        this.start        = start;       
-        this.end          = end;         
-        this.startTangent = startTangent;
-        this.endTangent   = endTangent;  
+        this.start        = start       .copy();       
+        this.end          = end         .copy();         
+        this.startTangent = startTangent.copy();
+        this.endTangent   = endTangent  .copy();  
     }
 
 
@@ -36,6 +36,8 @@ extends GValue
             this.end         .copy(), 
             this.startTangent.copy(), 
             this.endTangent  .copy());
+
+        copy.copyBase(this);
 
         return copy;
     }
@@ -85,9 +87,9 @@ extends GValue
     isValid()
     {
         return this.start       .isValid()
-            && this.end         .isValid()
-            && this.startTangent.isValid()
-            && this.endTangent  .isValid();
+            && this.end         .isValid();
+            // && this.startTangent.isValid()
+            // && this.endTangent  .isValid();
     }
 
 
@@ -137,8 +139,8 @@ extends GValue
         '',
         VectorVertexValue.NaN, 
         VectorVertexValue.NaN, 
-        PointValue.create('', 0, 0), 
-        PointValue.create('', 0, 0)));
+        PointValue.NaN, 
+        PointValue.NaN));
 }
 
 

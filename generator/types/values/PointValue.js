@@ -14,10 +14,10 @@ extends GValue
     {
         super(POINT_VALUE);
 
-        this.nodeId = nodeId;
+        this.nodeId   = nodeId;
 
-        this.x      = x;
-        this.y      = y;
+        this.x        = x;
+        this.y        = y;
     }
 
 
@@ -88,16 +88,22 @@ extends GValue
 
     toString()
     {
-        return      this.x.toString()
-            + ' ' + this.y.toString();
+        return this.x.isValid()
+            && this.y.isValid()
+            ?         this.x.toString()
+              + ' ' + this.y.toString()
+            : NAN_DISPLAY;
     }
 
 
 
     toDisplayString()
     {
-        return      this.x.toDisplayString()
-            + ' ' + this.y.toDisplayString();
+        return this.x.isValid()
+            && this.y.isValid()
+            ?         this.x.toDisplayString()
+              + ' ' + this.y.toDisplayString()
+            : NAN_DISPLAY;
     }
 
 

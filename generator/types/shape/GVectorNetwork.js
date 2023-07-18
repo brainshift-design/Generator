@@ -1,5 +1,5 @@
 class GVectorNetwork
-extends GOperator
+extends GShape
 {
     inputs  = [];
 
@@ -42,33 +42,32 @@ extends GOperator
             return this;
 
         
-        if (!isEmpty(this.inputs))
+        const regions = new ListValue();
+
+        for (let i = 0; i < this.inputs.length; i++)
         {
-            const regions = new ListValue();
+            const input = (await this.inputs[i].eval(parse)).toValue();
 
-            for (let i = 0; i < this.inputs.length; i++)
-            {
-                const input = (await this.inputs[i].eval(parse)).toValue();
+            consoleAssert(
+                 input.type == VECTOR_REGION_VALUE, 
+                'input.type must be VECTOR_REGION_VALUE');
 
-                consoleAssert(
-                    input.type == VECTOR_REGION_VALUE, 
-                    'input.type must be VECTOR_REGION_VALUE');
-
-                regions.items.push(input);
-            }
-
-
-            this.value = new VectorNetworkValue(regions);
+            regions.items.push(input);
         }
-        else
-            this.value = VectorNetworkValue.NaN;
-
-       
-        await this.evalObjects(parse);
 
 
-        console.log('GVectorNetwork.value =', this.value);
+        this.value = new VectorNetworkValue(
+            this.nodeId,
+            regions);
+
+
         this.updateValues = [['value', this.value]];
+
+
+        await this.evalShapeBase(parse);
+
+        
+        await this.evalObjects(parse);
 
 
         this.validate();
@@ -88,17 +87,58 @@ extends GOperator
         this.value.objects = [];
 
 
-        if (this.value.regions)
+        if (!isEmpty(this.value.regions.items))
         {
-            // const points  = this.value.points .value;
-            // const edges   = this.value.edges  .value;
-            // const regions = this.value.regions.value;
+            let points  = [];
+            let edges   = [];
+            let regions = [];
 
-            // const point = new FigmaVectorNetwork(this.nodeId, this.nodeId, this.nodeName, x, y);
 
-            // point.createDefaultTransform(x, y);
+            for (const region of this.value.regions.items)
+            {
+                if (!isEmpty(region.objects))
+                    region.fills = region.objects[0].fills;
 
-            // this.value.objects = [point];
+
+                if (region.loops)
+                {
+                    for (const loop of region.loops.items)
+                    {
+                        for (const edge of loop.items)
+                        {
+                            pushUniqueBy(points, edge.start, p => p.uniqueId == edge.start.uniqueId);
+                            pushUniqueBy(points, edge.end,   p => p.uniqueId == edge.end  .uniqueId);
+
+                            pushUniqueBy(edges, edge, e => e.uniqueId == edge.uniqueId);
+                        }
+                    }
+
+                    pushUniqueBy(regions, region, r => r.uniqueId == region.uniqueId);
+                }
+            }
+
+            
+            const network = new FigmaVectorNetwork(
+                this.nodeId,
+                this.nodeId,
+                this.nodeName,
+                points,
+                edges,
+                regions);
+
+            
+            const bounds = getObjBounds([network]);
+
+            let x = bounds.x;
+            let y = bounds.y;
+            let w = bounds.w;
+            let h = bounds.h;
+
+
+            network.createDefaultTransform(x, y);
+
+
+            this.value.objects.push(network, ...network.createTransformPoints(parse, x, y, w, h));
         }
 
 
@@ -109,13 +149,14 @@ extends GOperator
 
     toValue()
     {
-        const point = new VectorNetworkValue(
+        const network = new VectorNetworkValue(
             this.nodeId,
             this.regions.toValue());
 
-        point.objects = this.value.objects.map(o => o.copy());
+        network.uniqueId = this.value.uniqueId;
+        network.objects  = this.value.objects.map(o => o.copy());
 
-        return point;
+        return network;
     }
 
 
@@ -132,7 +173,7 @@ extends GOperator
     {
         super.pushValueUpdates(parse);
 
-        if (this.regions) this.regions.pushValueUpdates(parse);
+        this.inputs.forEach(i => i.pushValueUpdates(parse));
     }
 
 
@@ -141,6 +182,6 @@ extends GOperator
     {
         super.invalidateInputs(from);
 
-        if (this.regions) this.regions.invalidateInputs(from);
+        this.inputs.forEach(i => i.pushValueUpdates(parse));
     }
 }

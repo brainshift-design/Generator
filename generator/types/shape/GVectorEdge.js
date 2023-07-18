@@ -38,27 +38,18 @@ extends GOperator1
             return this;
 
         
-        const input0       = this.input0       ? (await this.input0      .eval(parse)).toValue() : null;
-        const input1       = this.input1       ? (await this.input1      .eval(parse)).toValue() : null;
-        const startTangent = this.startTangent ? (await this.startTangent.eval(parse)).toValue() : null;
-        const   endTangent = this.  endTangent ? (await this.  endTangent.eval(parse)).toValue() : null;
+        const input0       = this.input0       ? (await this.input0      .eval(parse)).toValue() : VectorVertexValue.NaN;
+        const input1       = this.input1       ? (await this.input1      .eval(parse)).toValue() : VectorVertexValue.NaN;
+        const startTangent = this.startTangent ? (await this.startTangent.eval(parse)).toValue() : PointValue.NaN;
+        const   endTangent = this.  endTangent ? (await this.  endTangent.eval(parse)).toValue() : PointValue.NaN;
 
 
-
-        if (   input0
-            && input1
-            && startTangent
-            &&   endTangent)
-        {
-            this.value = new VectorEdgeValue(
-                this.nodeId,
-                input0,
-                input1,
-                startTangent,
-                  endTangent);
-        }
-        else
-            this.value = VectorEdgeValue.NaN;
+        this.value = new VectorEdgeValue(
+            this.nodeId,
+            input0,
+            input1,
+            startTangent,
+              endTangent);
 
 
         await this.evalObjects(parse);
@@ -77,26 +68,27 @@ extends GOperator1
     async evalObjects(parse, options = {})
     {
         if (   !this.options.enabled
-            || !this.value.isValid())
+            || !this.value.start.isValid()
+            || !this.value.end  .isValid())
             return;
             
             
         this.value.objects = [];
 
 
-        if (   this.value.start
-            && this.value.end
-            && this.value.startTangent
-            && this.value.  endTangent)
+        if (   this.value.start.isValid()
+            && this.value.end  .isValid())
         {
             const path = new FigmaVectorPath(
                 this.nodeId,
                 this.nodeId,
                 this.nodeName,
                 [ this.value.start,
+                  this.value.startTangent.isValid() ? this.value.startTangent : this.value.start,
+                  this.value.endTangent  .isValid() ? this.value.  endTangent : this.value.end,
                   this.value.end ],
                 0,
-                0, // linear
+                2, // cubic
                 0,
                 0);
 
@@ -123,16 +115,17 @@ extends GOperator1
 
     toValue()
     {
-        const point = new VectorEdgeValue(
+        const edge = new VectorEdgeValue(
             this.nodeId,
             this.input0 ? this.input0.toValue() : VectorVertexValue.NaN,
             this.input1 ? this.input1.toValue() : VectorVertexValue.NaN,
             this.startTangent.toValue(),
             this.endTangent  .toValue());
 
-        point.objects = this.value.objects.map(o => o.copy());
+        edge.uniqueId = this.value.uniqueId;
+        edge.objects  = this.value.objects.map(o => o.copy());
 
-        return point;
+        return edge;
     }
 
 

@@ -808,8 +808,8 @@ function genParseVectorRegion(parse)
     parse.nTab++;
 
 
-    if (nInputs == 1)
-        region.input = genParse(parse);
+    for (let i = 0; i < nInputs; i++)
+        region.inputs.push(genParse(parse));
 
 
     region.winding = genParse(parse);
@@ -845,7 +845,7 @@ function genParseVectorNetwork(parse)
     const [, nodeId, options, ignore] = genParseNodeStart(parse);
 
 
-    const net = new GVectorNetwork(nodeId, options);
+    const network = new GVectorNetwork(nodeId, options);
 
 
     let nInputs = 0;
@@ -855,12 +855,12 @@ function genParseVectorNetwork(parse)
 
 
     if (parse.settings.logRequests) 
-        logReq(net, parse, ignore, nInputs);
+        logReq(network, parse, ignore, nInputs);
 
 
     if (ignore) 
     {
-        genParseNodeEnd(parse, net);
+        genParseNodeEnd(parse, network);
         return parse.parsedNodes.find(n => n.nodeId == nodeId);
     }
 
@@ -868,16 +868,18 @@ function genParseVectorNetwork(parse)
     parse.nTab++;
 
 
-    if (nInputs == 1)
-    net.input = genParse(parse);
+    for (let i = 0; i < nInputs; i++)
+        network.inputs.push(genParse(parse));
+
+    network.props = genParse(parse);
 
 
     parse.nTab--;
 
 
 
-    genParseNodeEnd(parse, net);
-    return net;
+    genParseNodeEnd(parse, network);
+    return network;
 }
 
 

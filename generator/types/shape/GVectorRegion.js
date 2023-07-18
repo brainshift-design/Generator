@@ -1,10 +1,10 @@
 class GVectorRegion
-extends GOperator
+extends GShape
 {
     inputs  = [];
 
+    loops   = null;
     winding = null;
-    props   = null;
 
 
 
@@ -24,7 +24,6 @@ extends GOperator
         copy.inputs = this.inputs.map(i => i.copy());
 
         if (this.winding) copy.winding = this.winding.copy();
-        if (this.props  ) copy.props   = this.props  .copy();
 
         return copy;
     }
@@ -38,8 +37,7 @@ extends GOperator
                 return false;
 
         return super.isCached()
-            && this.winding.isCached()
-            && this.props  .isCached();
+            && this.winding.isCached();
     }
 
 
@@ -51,60 +49,62 @@ extends GOperator
 
         
         const winding = this.winding ? (await this.winding.eval(parse)).toValue() : null;
-        const props   = this.props   ? (await this.props  .eval(parse)).toValue() : null;
 
 
-        if (!isEmpty(this.inputs))
+        this.loops = new ListValue();
+
+
+        const loop = new ListValue();
+
+        for (let i = 0; i < this.inputs.length; i++)
         {
-            const loops = new ListValue();
+            const input = (await this.inputs[i].eval(parse)).toValue();
 
-            const loop = new ListValue();
-
-            for (let i = 0; i < this.inputs.length; i++)
+            if (LIST_VALUES.includes(input.type))
             {
-                const input = (await this.inputs[i].eval(parse)).toValue();
+                const _loop = new ListValue();
 
-                if (LIST_VALUES.includes(input.type))
+                for (const item of input.items)
                 {
-                    const _loop = new ListValue();
-
-                    for (const item of input.items)
-                    {
-                        if (item.type == VECTOR_EDGE_VALUE)
-                            _loop.items.push(item);
-                    }
-
-                    if (!isEmpty(_loop.items))
-                        loops.items.push(_loop);
+                    if (item.type == VECTOR_EDGE_VALUE)
+                        _loop.items.push(item);
                 }
-                else
-                {
-                    consoleAssert(
-                        input.type == VECTOR_EDGE_VALUE, 
-                        'input.type must be VECTOR_EDGE_VALUE');
 
-                    loop.items.push(input);
-                }
+                if (!isEmpty(_loop.items))
+                    loops.items.push(_loop);
             }
+            else
+            {
+                consoleAssert(
+                     input.type == VECTOR_EDGE_VALUE, 
+                    'input.type must be VECTOR_EDGE_VALUE');
 
-
-            if (!isEmpty(loop.items))
-                loops.items.push(loop);
-
-
-            this.value = new VectorRegionValue(
-                loops, 
-                winding,
-                props);
+                loop.items.push(input);
+            }
         }
-        else
-            this.value = VectorRegionValue.NaN;
+
+
+        if (!isEmpty(loop.items))
+            this.loops.items.push(loop);
+
+
+        this.value = new VectorRegionValue(
+            this.nodeId,
+            this.loops, 
+            winding);
+
+
+        this.updateValues = 
+        [
+            ['value',   this.value],
+            ['winding', winding   ]
+        ];
+
+
+        await this.evalShapeBase(parse);
 
 
         await this.evalObjects(parse);
-
-
-        this.updateValues = [['value', this.value]];
 
 
         this.validate();
@@ -123,20 +123,58 @@ extends GOperator
             
         this.value.objects = [];
 
-
-        if (   this.value.loops    
-            && this.value.winding
-            && this.value.props)
+        
+        if (   this.loops  .isValid()
+            && this.winding.isValid())
         {
-            // const loops   = this.value.loops  .value;
-            // const winding = this.value.winding.value;
-            // const props   = this.value.props  .value;
+            const regions = [];
 
-            // const point = new FigmaPoint(this.nodeId, this.nodeId, this.nodeName, x, y);
 
-            // point.createDefaultTransform(x, y);
+            for (let i = 0; i < this.loops.items.length; i++)
+            {
+                const loop = this.loops.items[i];
 
-            // this.value.objects = [point];
+
+                const points = [];
+    
+                for (let j = 0; j < loop.items.length; j++)
+                {
+                    const edge = loop.items[j  ];
+                    const next = loop.items[j == loop.items.length-1 ? 0 : j+1];
+
+                    points.push(
+                           edge.start.uniqueId == next.start.uniqueId
+                        || edge.start.uniqueId == next.end  .uniqueId
+                        ? edge.end  
+                        : edge.start);
+                }
+
+
+                regions.push(new FigmaVectorPath(
+                    this.nodeId,
+                    this.nodeId + '/' + i,
+                    this.nodeName,
+                    points,
+                    1,
+                    0, // linear
+                    this.winding.value,
+                    0));
+            }
+            
+
+            let bounds = getObjBounds(regions);
+
+            let x = bounds.x;
+            let y = bounds.y;
+            let w = bounds.w;
+            let h = bounds.h;
+
+
+            for (const region of regions)
+            {
+                region.createDefaultTransform(x, y);
+                this.value.objects.push(region, ...region.createTransformPoints(parse, x, y, w, h));
+            }
         }
 
 
@@ -147,14 +185,16 @@ extends GOperator
 
     toValue()
     {
-        const point = new VectorRegionValue(
+        const region = new VectorRegionValue(
             this.nodeId,
+            this.loops  .toValue(),
             this.winding.toValue(),
             this.props  .toValue());
 
-        point.objects = this.value.objects.map(o => o.copy());
+        region.uniqueId = this.value.uniqueId;
+        region.objects  = this.value.objects.map(o => o.copy());
 
-        return point;
+        return region;
     }
 
 

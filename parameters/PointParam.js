@@ -19,11 +19,11 @@ extends Parameter
     {
         super(POINT_VALUE, id, name, showName);
 
-        
+        defaultValue = defaultValue.copy();
         defaultValue.nodeId = this.nodeId;
 
-        this.defaultValue = defaultValue;
-        this.value        = defaultValue;
+        this.defaultValue = defaultValue.copy();
+        this.value        = defaultValue.copy();
 
 
         this.controls.push(new TextControl(
@@ -83,7 +83,7 @@ extends Parameter
         super.setValue(this.value, createAction, updateControl, dispatchEvents);
 
 
-        this.oldValue = this.value;
+        this.oldValue = this.value.copy();
     }    
 
 
@@ -121,7 +121,7 @@ extends Parameter
 
         else request.push( 
             POINT_VALUE, 
-            (new PointValue(this.nodeId)).toString());
+            PointValue.create(this.nodeId, this.value.x.value, this.value.y.value).toString());
 
         return request;
     }
@@ -152,9 +152,10 @@ extends Parameter
         this.controls[0].textbox.style.fontWeight = '500';
 
         this.controls[0].textbox.value = 
-              printNum(this.value.x.value)  
-            + ', ' 
-            + printNum(this.value.y.value);
+            this.value.isValid()
+            ?          printNum(this.value.x.value)  
+              + ', ' + printNum(this.value.y.value)
+            : NAN_DISPLAY;
 
 
         super.updateControls();

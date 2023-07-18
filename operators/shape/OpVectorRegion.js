@@ -1,8 +1,7 @@
 class   OpVectorRegion
-extends OpShapeBase
+extends OpShape
 {
     paramWinding;
-    paramProps;
 
 
 
@@ -10,23 +9,16 @@ extends OpShapeBase
     {
         super(VECTOR_REGION, 'region', 'region', iconVectorRegion);
 
-        //this.canDisable  = true;
-        //this.iconOffsetY = -1;
+        //this.canDisable = true;
+        this.iconOffsetY = 2;
 
 
         this.addNewInput();
         this.addOutput(new Output([VECTOR_REGION_VALUE], this.output_genRequest, getNodeOutputValuesForUndo));//, this.output_backInit));
 
         this.addParam(this.paramWinding = new SelectParam('winding', 'winding', false, true, true, ['even-odd', 'non-zero']));
-        this.addParam(this.paramProps   = new   ListParam('props',   'styles',  false, true, true));
 
-
-        this.paramProps.controls[0].valueText = 'style';
-        
-        this.paramProps.itemName  = 'style';
-        this.paramProps.showZero  = false;
-        this.paramProps.listTypes = [...STYLE_VALUES];
-        this.paramProps.input.types.push(...this.paramProps.listTypes);
+        this.addBaseParams();
 
 
         this.setAllParamDividers(0.45);
@@ -86,7 +78,7 @@ extends OpShapeBase
         if (ignore) return request;
             
 
-        const connectedInputs = this.node.inputs.filter(i => i.connected);
+        const connectedInputs = this.node.inputs.filter(i => !i.param && i.connected);
 
 
         request.push(connectedInputs.length); // utility values like param count are stored as numbers
@@ -109,9 +101,21 @@ extends OpShapeBase
 
     updateValues(requestId, actionId, updateParamId, paramIds, values)
     {
-        const value = values[paramIds.findIndex(id => id == 'value')];
+        //const value   = values[paramIds.findIndex(id => id == 'value'  )];
+        const winding = values[paramIds.findIndex(id => id == 'winding')];
+        //const props   = values[paramIds.findIndex(id => id == 'props'  )];
 
-        this.paramWinding.setValue(value.winding, false, true, false);
-        this.paramProps  .setValue(value.props,   false, true, false);
+        this.paramWinding.setValue(winding, false, true, false);
+        //this.paramProps  .setValue(props,   false, true, false);
+    }
+
+
+
+    updateParams()
+    {
+        this.paramWinding.enableControlText(true);
+        this.paramProps  .enableControlText(false);
+    
+        super.updateParamControls();
     }
 }
