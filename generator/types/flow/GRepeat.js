@@ -166,9 +166,14 @@ extends GOperator
         }
 
 
+        const type = 
+            this.value
+            ? new TextValue(finalListTypeFromItems(this.value.items))
+            : TextValue.NaN;
+
         this.updateValues =
         [
-            //['value', this.value        ],
+            ['type',  type              ],
             ['count', count             ],
             ['loop',  new NumberValue(0)]
         ];

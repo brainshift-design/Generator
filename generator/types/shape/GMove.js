@@ -4,6 +4,7 @@ extends GOperator1
     x           = null;
     y           = null;
     moveType    = null;
+    showCenter  = null;
     affectSpace = null;
 
     coords;
@@ -28,6 +29,7 @@ extends GOperator1
         if (this.x          ) copy.x           = this.x          .copy();
         if (this.y          ) copy.y           = this.y          .copy();
         if (this.moveType   ) copy.moveType    = this.moveType   .copy();
+        if (this.showCenter ) copy.showCenter  = this.showCenter .copy();
         if (this.affectSpace) copy.affectSpace = this.affectSpace.copy();
 
         copy.coords = clone(this.coords);
@@ -46,6 +48,7 @@ extends GOperator1
         const x           = this.x           ? (await this.x          .eval(parse)).toValue() : null;
         const y           = this.y           ? (await this.y          .eval(parse)).toValue() : null;
         const moveType    = this.moveType    ? (await this.moveType   .eval(parse)).toValue() : null;
+        const showCenter  = this.showCenter  ? (await this.showCenter .eval(parse)).toValue() : null;
         const affectSpace = this.affectSpace ? (await this.affectSpace.eval(parse)).toValue() : null;
 
 
@@ -68,6 +71,7 @@ extends GOperator1
                 x:           x, 
                 y:           y,
                 moveType:    moveType,
+                showCenter:  showCenter,
                 affectSpace: affectSpace
             });
 
@@ -78,6 +82,7 @@ extends GOperator1
             ['x',           x          ],
             ['y',           y          ],
             ['moveType',    moveType   ],
+            ['showCenter',  showCenter ],
             ['affectSpace', affectSpace]
         ];
 
@@ -97,7 +102,9 @@ extends GOperator1
             this.value.objects = 
                    this.input 
                 && this.input.value
-                ? this.input.value.objects.map(o => o.copy()) 
+                ? this.input.value.objects
+                    .filter(o => o.isDeco === false)
+                    .map(o => o.copy()) 
                 : [];
 
             
@@ -110,6 +117,7 @@ extends GOperator1
             const x           = options.x          .value;
             const y           = options.y          .value;
             const moveType    = options.moveType   .value;
+            const showCenter  = options.showCenter .value;
             const affectSpace = options.affectSpace.value;
 
 
@@ -121,7 +129,7 @@ extends GOperator1
 
 
             const singlePoint = 
-                this.value.objects.length == 1 
+                   this.value.objects.length  == 1 
                 && this.value.objects[0].type == POINT;
 
 
@@ -153,12 +161,35 @@ extends GOperator1
                 obj.nodeId   = this.nodeId;
                 obj.objectId = obj.objectId + OBJECT_SEPARATOR + this.nodeId;
 
-                if (obj.type == VECTOR_PATH)
-                    obj.updatePoints(xform, this.coords);
+                // if (obj.type == VECTOR_PATH)
+                //     obj.updatePoints(xform, this.coords);
 
                 obj.applyTransform(xform, affectSpace > 0);
 
-                this.coords = mulm3m3(this.coords, xform);
+                // console.log('obj =', obj);
+                // if (showCenter > 0)
+                // {
+                //     addCenterObject(
+                //         this,
+                //         obj.cp0.x.value, 
+                //         obj.cp0.y.value);
+                // }
+            }
+
+
+            // if (affectSpace == 0)
+            //     this.coords = clone(identity);
+
+            this.coords = mulm3m3(this.coords, xform);
+
+
+            if (  !isEmpty(this.value.objects)
+                && showCenter > 0)
+            {
+                addCenterObject(
+                    this,
+                    this.coords[0][2] + _cx * bounds.width, 
+                    this.coords[1][2] + _cy * bounds.height);
             }
         }
         
@@ -174,6 +205,7 @@ extends GOperator1
             && this.x          .isValid()
             && this.y          .isValid()
             && this.moveType   .isValid()
+            && this.showCenter .isValid()
             && this.affectSpace.isValid();
     }
 
@@ -195,6 +227,7 @@ extends GOperator1
         if (this.x          ) this.x          .pushValueUpdates(parse);
         if (this.y          ) this.y          .pushValueUpdates(parse);
         if (this.moveType   ) this.moveType   .pushValueUpdates(parse);
+        if (this.showCenter ) this.showCenter .pushValueUpdates(parse);
         if (this.affectSpace) this.affectSpace.pushValueUpdates(parse);
     }
 
@@ -207,6 +240,7 @@ extends GOperator1
         if (this.x          ) this.x          .invalidateInputs(from);
         if (this.y          ) this.y          .invalidateInputs(from);
         if (this.moveType   ) this.moveType   .invalidateInputs(from);
+        if (this.showCenter ) this.showCenter .invalidateInputs(from);
         if (this.affectSpace) this.affectSpace.invalidateInputs(from);
     }
 }

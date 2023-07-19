@@ -4594,8 +4594,9 @@ a
             <div id='whatsNewBody'>
                 <h1 style='margin-top: 20px;'>What's new</h1>
 
-                <p>•  fixed value propagation through the Color node</p>
                 <p>•  Define now takes in a list of inputs instead of a text value</p>
+                <p>•  fixed value propagation through the Color node</p>
+                <p>•  fixed Repeat output type</p>
                 
                 <p><br/><br/><div id='chkHideWhatsNew'></div></p>
             </div>
@@ -10361,6 +10362,7 @@ class FigmaObject
         }
         else if (this.type == VECTOR_PATH)
         {
+            this.applyObjectTransform(xform, coords);
             this.applySpaceTransform(xform, coords, affectSpace);
         }
         else if (this.type == SHAPE_GROUP)
@@ -10402,7 +10404,10 @@ class FigmaObject
     {
         if (!affectSpace)
             return;
-            
+
+
+        xform = inversem3(xform);
+
         this.cp0 = mulv2m3(this.cp0, inversem3(coords));
         this.cp0 = mulv2m3(this.cp0, xform);
         this.cp0 = mulv2m3(this.cp0, coords);
@@ -10559,8 +10564,8 @@ function getObjBounds(objects)
             }
         }
 
-        else if (obj.type == POINT
-             && !obj.isDeco)
+        else if (obj.type == POINT)
+             //&& !obj.isDeco)
             bounds = expandRect_(bounds, point(obj.x, obj.y));
 
         else
@@ -13534,7 +13539,8 @@ extends GValue
         super(TEXT_VALUE);
 
 
-        if (typeof val !== 'string')
+        if (   val !== null
+            && typeof val !== 'string')
         {
             console.trace();
             consoleError('TextValue(value) is ' + typeof val + ', must be a string');
@@ -13584,7 +13590,7 @@ extends GValue
 
     isValid()
     {
-        return this.value != NAN_CHAR;
+        return this.value !== null;
     }
 
 
@@ -13621,12 +13627,12 @@ extends GValue
 
     getNaN()
     {
-        return new TextValue();//TextValue.NaN;
+        return TextValue.NaN;
     }
 
 
 
-    //static NaN = Object.freeze(new TextValue(NAN_CHAR));
+    static NaN = Object.freeze(new TextValue(null));
 }
 
 
@@ -19209,9 +19215,14 @@ extends GOperator
         }
 
 
+        const type = 
+            this.value
+            ? new TextValue(finalListTypeFromItems(this.value.items))
+            : TextValue.NaN;
+
         this.updateValues =
         [
-            //['value', this.value        ],
+            ['type',  type              ],
             ['count', count             ],
             ['loop',  new NumberValue(0)]
         ];
@@ -32156,6 +32167,7 @@ extends GOperator1
     x           = null;
     y           = null;
     moveType    = null;
+    showCenter  = null;
     affectSpace = null;
 
     coords;
@@ -32180,6 +32192,7 @@ extends GOperator1
         if (this.x          ) copy.x           = this.x          .copy();
         if (this.y          ) copy.y           = this.y          .copy();
         if (this.moveType   ) copy.moveType    = this.moveType   .copy();
+        if (this.showCenter ) copy.showCenter  = this.showCenter .copy();
         if (this.affectSpace) copy.affectSpace = this.affectSpace.copy();
 
         copy.coords = clone(this.coords);
@@ -32198,6 +32211,7 @@ extends GOperator1
         const x           = this.x           ? (await this.x          .eval(parse)).toValue() : null;
         const y           = this.y           ? (await this.y          .eval(parse)).toValue() : null;
         const moveType    = this.moveType    ? (await this.moveType   .eval(parse)).toValue() : null;
+        const showCenter  = this.showCenter  ? (await this.showCenter .eval(parse)).toValue() : null;
         const affectSpace = this.affectSpace ? (await this.affectSpace.eval(parse)).toValue() : null;
 
 
@@ -32220,6 +32234,7 @@ extends GOperator1
                 x:           x, 
                 y:           y,
                 moveType:    moveType,
+                showCenter:  showCenter,
                 affectSpace: affectSpace
             });
 
@@ -32230,6 +32245,7 @@ extends GOperator1
             ['x',           x          ],
             ['y',           y          ],
             ['moveType',    moveType   ],
+            ['showCenter',  showCenter ],
             ['affectSpace', affectSpace]
         ];
 
@@ -32249,7 +32265,9 @@ extends GOperator1
             this.value.objects = 
                    this.input 
                 && this.input.value
-                ? this.input.value.objects.map(o => o.copy()) 
+                ? this.input.value.objects
+                    .filter(o => o.isDeco === false)
+                    .map(o => o.copy()) 
                 : [];
 
             
@@ -32262,6 +32280,7 @@ extends GOperator1
             const x           = options.x          .value;
             const y           = options.y          .value;
             const moveType    = options.moveType   .value;
+            const showCenter  = options.showCenter .value;
             const affectSpace = options.affectSpace.value;
 
 
@@ -32273,7 +32292,7 @@ extends GOperator1
 
 
             const singlePoint = 
-                this.value.objects.length == 1 
+                   this.value.objects.length  == 1 
                 && this.value.objects[0].type == POINT;
 
 
@@ -32305,12 +32324,35 @@ extends GOperator1
                 obj.nodeId   = this.nodeId;
                 obj.objectId = obj.objectId + OBJECT_SEPARATOR + this.nodeId;
 
-                if (obj.type == VECTOR_PATH)
-                    obj.updatePoints(xform, this.coords);
+                // if (obj.type == VECTOR_PATH)
+                //     obj.updatePoints(xform, this.coords);
 
                 obj.applyTransform(xform, affectSpace > 0);
 
-                this.coords = mulm3m3(this.coords, xform);
+                // console.log('obj =', obj);
+                // if (showCenter > 0)
+                // {
+                //     addCenterObject(
+                //         this,
+                //         obj.cp0.x.value, 
+                //         obj.cp0.y.value);
+                // }
+            }
+
+
+            // if (affectSpace == 0)
+            //     this.coords = clone(identity);
+
+            this.coords = mulm3m3(this.coords, xform);
+
+
+            if (  !isEmpty(this.value.objects)
+                && showCenter > 0)
+            {
+                addCenterObject(
+                    this,
+                    this.coords[0][2] + _cx * bounds.width, 
+                    this.coords[1][2] + _cy * bounds.height);
             }
         }
         
@@ -32326,6 +32368,7 @@ extends GOperator1
             && this.x          .isValid()
             && this.y          .isValid()
             && this.moveType   .isValid()
+            && this.showCenter .isValid()
             && this.affectSpace.isValid();
     }
 
@@ -32347,6 +32390,7 @@ extends GOperator1
         if (this.x          ) this.x          .pushValueUpdates(parse);
         if (this.y          ) this.y          .pushValueUpdates(parse);
         if (this.moveType   ) this.moveType   .pushValueUpdates(parse);
+        if (this.showCenter ) this.showCenter .pushValueUpdates(parse);
         if (this.affectSpace) this.affectSpace.pushValueUpdates(parse);
     }
 
@@ -32359,6 +32403,7 @@ extends GOperator1
         if (this.x          ) this.x          .invalidateInputs(from);
         if (this.y          ) this.y          .invalidateInputs(from);
         if (this.moveType   ) this.moveType   .invalidateInputs(from);
+        if (this.showCenter ) this.showCenter .invalidateInputs(from);
         if (this.affectSpace) this.affectSpace.invalidateInputs(from);
     }
 }
@@ -32418,11 +32463,13 @@ extends GOperator1
             return Rect.NaN;
 
 
-        this.value.objects = 
-                this.input 
-            && this.input.value
-            ? this.input.value.objects.map(o => o.copy()) 
-            : [];
+            this.value.objects = 
+                   this.input 
+                && this.input.value
+                ? this.input.value.objects
+                    .filter(o => o.isDeco === false)
+                    .map(o => o.copy()) 
+                : [];
         
 
         const bounds = getObjBounds(this.value.objects);
@@ -32446,8 +32493,8 @@ extends GOperator1
         }
 
 
-        const cx = singlePoint ? this.value.objects[0].x + _cx : bounds.x + bounds.width  * _cx;
-        const cy = singlePoint ? this.value.objects[0].y + _cy : bounds.y + bounds.height * _cy;
+        const cx = singlePoint ? this.value.objects[0].x + _cx : bounds.x + _cx * bounds.width ;
+        const cy = singlePoint ? this.value.objects[0].y + _cy : bounds.y + _cy * bounds.height;
 
 
         const xform = mulm3m3(
@@ -32461,42 +32508,42 @@ extends GOperator1
             obj.nodeId   = this.nodeId;
             obj.objectId = obj.objectId + OBJECT_SEPARATOR + this.nodeId;
 
-            if (obj.type == VECTOR_PATH)
-                obj.updatePoints(xform, this.coords);
+            // if (obj.type == VECTOR_PATH)
+            //     obj.updatePoints(xform, this.coords);
 
             obj.applyTransform(xform, options.affectSpace.value > 0);
 
             obj.scaleCorners *= Math.abs(scaleCorners);
             obj.scaleStyle   *= Math.abs(scaleStyle);
 
-            this.coords = mulm3m3(this.coords, xform);
+            // console.log('obj =', obj);
+            // if (options.showCenter.value > 0)
+            // {
+            //     addCenterObject(
+            //         this,
+            //         obj.cp0.x.value, 
+            //         obj.cp0.y.value);
+            // }
         }
 
         
-        if (  !isEmpty(this.value.objects)
-            && this.showCenter.toValue().value > 0)
-            this.addCenterObject(cx, cy);
+        // if (options.affectSpace.value == 0)
+        //     this.coords = clone(identity);
+
+        this.coords = mulm3m3(this.coords, xform);
+
+
+        // if (  !isEmpty(this.value.objects)
+        //     && options.showCenter.value > 0)
+        // {
+        //     addCenterObject(
+        //         this,
+        //         this.coords[0][2] + _cx * bounds.width, 
+        //         this.coords[1][2] + _cy * bounds.height);
+        // }
 
 
         return bounds;
-    }
-
-
-
-    addCenterObject(cx, cy)
-    {
-        const center = new FigmaPoint(
-            this.nodeId,
-            this.nodeId + PROP_SEPARATOR + 'center',
-            this.nodeName + CENTER_SEPARATOR + 'center',
-            cx,
-            cy,
-            true,
-            true);
-
-        center.createDefaultTransform(cx, cy);
-
-        this.value.objects.push(center);
     }
 
 
@@ -32533,6 +32580,24 @@ extends GOperator1
         if (this.showCenter ) this.showCenter .invalidateInputs(from);
         if (this.affectSpace) this.affectSpace.invalidateInputs(from);
     }
+}
+
+
+
+function addCenterObject(node, cx, cy)
+{
+    const center = new FigmaPoint(
+        node.nodeId,
+        node.nodeId   + PROP_SEPARATOR   + 'center',
+        node.nodeName + CENTER_SEPARATOR + 'center',
+        cx,
+        cy,
+        true,
+        true);
+
+    center.createDefaultTransform(cx, cy);
+
+    node.value.objects.push(center);
 }
 
 
@@ -38057,6 +38122,7 @@ function genParseMove(parse)
     move.x           = genParse(parse);
     move.y           = genParse(parse);
     move.moveType    = genParse(parse);
+    move.showCenter  = genParse(parse);
     move.affectSpace = genParse(parse);
 
 
@@ -50358,6 +50424,7 @@ class FigmaObject
         }
         else if (this.type == VECTOR_PATH)
         {
+            this.applyObjectTransform(xform, coords);
             this.applySpaceTransform(xform, coords, affectSpace);
         }
         else if (this.type == SHAPE_GROUP)
@@ -50399,7 +50466,10 @@ class FigmaObject
     {
         if (!affectSpace)
             return;
-            
+
+
+        xform = inversem3(xform);
+
         this.cp0 = mulv2m3(this.cp0, inversem3(coords));
         this.cp0 = mulv2m3(this.cp0, xform);
         this.cp0 = mulv2m3(this.cp0, coords);
@@ -50556,8 +50626,8 @@ function getObjBounds(objects)
             }
         }
 
-        else if (obj.type == POINT
-             && !obj.isDeco)
+        else if (obj.type == POINT)
+             //&& !obj.isDeco)
             bounds = expandRect_(bounds, point(obj.x, obj.y));
 
         else
@@ -53531,7 +53601,8 @@ extends GValue
         super(TEXT_VALUE);
 
 
-        if (typeof val !== 'string')
+        if (   val !== null
+            && typeof val !== 'string')
         {
             console.trace();
             consoleError('TextValue(value) is ' + typeof val + ', must be a string');
@@ -53581,7 +53652,7 @@ extends GValue
 
     isValid()
     {
-        return this.value != NAN_CHAR;
+        return this.value !== null;
     }
 
 
@@ -53618,12 +53689,12 @@ extends GValue
 
     getNaN()
     {
-        return new TextValue();//TextValue.NaN;
+        return TextValue.NaN;
     }
 
 
 
-    //static NaN = Object.freeze(new TextValue(NAN_CHAR));
+    static NaN = Object.freeze(new TextValue(null));
 }
 
 
@@ -59206,9 +59277,14 @@ extends GOperator
         }
 
 
+        const type = 
+            this.value
+            ? new TextValue(finalListTypeFromItems(this.value.items))
+            : TextValue.NaN;
+
         this.updateValues =
         [
-            //['value', this.value        ],
+            ['type',  type              ],
             ['count', count             ],
             ['loop',  new NumberValue(0)]
         ];
@@ -72153,6 +72229,7 @@ extends GOperator1
     x           = null;
     y           = null;
     moveType    = null;
+    showCenter  = null;
     affectSpace = null;
 
     coords;
@@ -72177,6 +72254,7 @@ extends GOperator1
         if (this.x          ) copy.x           = this.x          .copy();
         if (this.y          ) copy.y           = this.y          .copy();
         if (this.moveType   ) copy.moveType    = this.moveType   .copy();
+        if (this.showCenter ) copy.showCenter  = this.showCenter .copy();
         if (this.affectSpace) copy.affectSpace = this.affectSpace.copy();
 
         copy.coords = clone(this.coords);
@@ -72195,6 +72273,7 @@ extends GOperator1
         const x           = this.x           ? (await this.x          .eval(parse)).toValue() : null;
         const y           = this.y           ? (await this.y          .eval(parse)).toValue() : null;
         const moveType    = this.moveType    ? (await this.moveType   .eval(parse)).toValue() : null;
+        const showCenter  = this.showCenter  ? (await this.showCenter .eval(parse)).toValue() : null;
         const affectSpace = this.affectSpace ? (await this.affectSpace.eval(parse)).toValue() : null;
 
 
@@ -72217,6 +72296,7 @@ extends GOperator1
                 x:           x, 
                 y:           y,
                 moveType:    moveType,
+                showCenter:  showCenter,
                 affectSpace: affectSpace
             });
 
@@ -72227,6 +72307,7 @@ extends GOperator1
             ['x',           x          ],
             ['y',           y          ],
             ['moveType',    moveType   ],
+            ['showCenter',  showCenter ],
             ['affectSpace', affectSpace]
         ];
 
@@ -72246,7 +72327,9 @@ extends GOperator1
             this.value.objects = 
                    this.input 
                 && this.input.value
-                ? this.input.value.objects.map(o => o.copy()) 
+                ? this.input.value.objects
+                    .filter(o => o.isDeco === false)
+                    .map(o => o.copy()) 
                 : [];
 
             
@@ -72259,6 +72342,7 @@ extends GOperator1
             const x           = options.x          .value;
             const y           = options.y          .value;
             const moveType    = options.moveType   .value;
+            const showCenter  = options.showCenter .value;
             const affectSpace = options.affectSpace.value;
 
 
@@ -72270,7 +72354,7 @@ extends GOperator1
 
 
             const singlePoint = 
-                this.value.objects.length == 1 
+                   this.value.objects.length  == 1 
                 && this.value.objects[0].type == POINT;
 
 
@@ -72302,12 +72386,35 @@ extends GOperator1
                 obj.nodeId   = this.nodeId;
                 obj.objectId = obj.objectId + OBJECT_SEPARATOR + this.nodeId;
 
-                if (obj.type == VECTOR_PATH)
-                    obj.updatePoints(xform, this.coords);
+                // if (obj.type == VECTOR_PATH)
+                //     obj.updatePoints(xform, this.coords);
 
                 obj.applyTransform(xform, affectSpace > 0);
 
-                this.coords = mulm3m3(this.coords, xform);
+                // console.log('obj =', obj);
+                // if (showCenter > 0)
+                // {
+                //     addCenterObject(
+                //         this,
+                //         obj.cp0.x.value, 
+                //         obj.cp0.y.value);
+                // }
+            }
+
+
+            // if (affectSpace == 0)
+            //     this.coords = clone(identity);
+
+            this.coords = mulm3m3(this.coords, xform);
+
+
+            if (  !isEmpty(this.value.objects)
+                && showCenter > 0)
+            {
+                addCenterObject(
+                    this,
+                    this.coords[0][2] + _cx * bounds.width, 
+                    this.coords[1][2] + _cy * bounds.height);
             }
         }
         
@@ -72323,6 +72430,7 @@ extends GOperator1
             && this.x          .isValid()
             && this.y          .isValid()
             && this.moveType   .isValid()
+            && this.showCenter .isValid()
             && this.affectSpace.isValid();
     }
 
@@ -72344,6 +72452,7 @@ extends GOperator1
         if (this.x          ) this.x          .pushValueUpdates(parse);
         if (this.y          ) this.y          .pushValueUpdates(parse);
         if (this.moveType   ) this.moveType   .pushValueUpdates(parse);
+        if (this.showCenter ) this.showCenter .pushValueUpdates(parse);
         if (this.affectSpace) this.affectSpace.pushValueUpdates(parse);
     }
 
@@ -72356,6 +72465,7 @@ extends GOperator1
         if (this.x          ) this.x          .invalidateInputs(from);
         if (this.y          ) this.y          .invalidateInputs(from);
         if (this.moveType   ) this.moveType   .invalidateInputs(from);
+        if (this.showCenter ) this.showCenter .invalidateInputs(from);
         if (this.affectSpace) this.affectSpace.invalidateInputs(from);
     }
 }
@@ -72415,11 +72525,13 @@ extends GOperator1
             return Rect.NaN;
 
 
-        this.value.objects = 
-                this.input 
-            && this.input.value
-            ? this.input.value.objects.map(o => o.copy()) 
-            : [];
+            this.value.objects = 
+                   this.input 
+                && this.input.value
+                ? this.input.value.objects
+                    .filter(o => o.isDeco === false)
+                    .map(o => o.copy()) 
+                : [];
         
 
         const bounds = getObjBounds(this.value.objects);
@@ -72443,8 +72555,8 @@ extends GOperator1
         }
 
 
-        const cx = singlePoint ? this.value.objects[0].x + _cx : bounds.x + bounds.width  * _cx;
-        const cy = singlePoint ? this.value.objects[0].y + _cy : bounds.y + bounds.height * _cy;
+        const cx = singlePoint ? this.value.objects[0].x + _cx : bounds.x + _cx * bounds.width ;
+        const cy = singlePoint ? this.value.objects[0].y + _cy : bounds.y + _cy * bounds.height;
 
 
         const xform = mulm3m3(
@@ -72458,42 +72570,42 @@ extends GOperator1
             obj.nodeId   = this.nodeId;
             obj.objectId = obj.objectId + OBJECT_SEPARATOR + this.nodeId;
 
-            if (obj.type == VECTOR_PATH)
-                obj.updatePoints(xform, this.coords);
+            // if (obj.type == VECTOR_PATH)
+            //     obj.updatePoints(xform, this.coords);
 
             obj.applyTransform(xform, options.affectSpace.value > 0);
 
             obj.scaleCorners *= Math.abs(scaleCorners);
             obj.scaleStyle   *= Math.abs(scaleStyle);
 
-            this.coords = mulm3m3(this.coords, xform);
+            // console.log('obj =', obj);
+            // if (options.showCenter.value > 0)
+            // {
+            //     addCenterObject(
+            //         this,
+            //         obj.cp0.x.value, 
+            //         obj.cp0.y.value);
+            // }
         }
 
         
-        if (  !isEmpty(this.value.objects)
-            && this.showCenter.toValue().value > 0)
-            this.addCenterObject(cx, cy);
+        // if (options.affectSpace.value == 0)
+        //     this.coords = clone(identity);
+
+        this.coords = mulm3m3(this.coords, xform);
+
+
+        // if (  !isEmpty(this.value.objects)
+        //     && options.showCenter.value > 0)
+        // {
+        //     addCenterObject(
+        //         this,
+        //         this.coords[0][2] + _cx * bounds.width, 
+        //         this.coords[1][2] + _cy * bounds.height);
+        // }
 
 
         return bounds;
-    }
-
-
-
-    addCenterObject(cx, cy)
-    {
-        const center = new FigmaPoint(
-            this.nodeId,
-            this.nodeId + PROP_SEPARATOR + 'center',
-            this.nodeName + CENTER_SEPARATOR + 'center',
-            cx,
-            cy,
-            true,
-            true);
-
-        center.createDefaultTransform(cx, cy);
-
-        this.value.objects.push(center);
     }
 
 
@@ -72530,6 +72642,24 @@ extends GOperator1
         if (this.showCenter ) this.showCenter .invalidateInputs(from);
         if (this.affectSpace) this.affectSpace.invalidateInputs(from);
     }
+}
+
+
+
+function addCenterObject(node, cx, cy)
+{
+    const center = new FigmaPoint(
+        node.nodeId,
+        node.nodeId   + PROP_SEPARATOR   + 'center',
+        node.nodeName + CENTER_SEPARATOR + 'center',
+        cx,
+        cy,
+        true,
+        true);
+
+    center.createDefaultTransform(cx, cy);
+
+    node.value.objects.push(center);
 }
 
 
@@ -94711,7 +94841,7 @@ extends OperatorBase
 
     updateValues(requestId, actionId, updateParamId, paramIds, values)
     {
-        const value = values[paramIds.findIndex(id => id == 'value')];
+        const type  = values[paramIds.findIndex(id => id == 'type' )];
         const count = values[paramIds.findIndex(id => id == 'count')];
         const loop  = values[paramIds.findIndex(id => id == 'loop' )];
 
@@ -94719,8 +94849,9 @@ extends OperatorBase
         if (loop ) this.paramLoop .setValue(loop,  false, true, false);
 
         this.outputs[0].types = 
-            value
-            ? [finalListTypeFromItems(value.items)]
+               type
+            && type.isValid()
+            ? [type.value]
             : [LIST_VALUE];
 
         this.endNodeProgress();
@@ -105956,8 +106087,12 @@ extends OperatorBase
         this.addParam(this.paramX           = new NumberParam('x',           'X',            true, true, true));
         this.addParam(this.paramY           = new NumberParam('y',           'Y',            true, true, true));
         this.addParam(this.paramMoveType    = new SelectParam('moveType',    'type',         true, true, true, ['position', 'vector'], 0));
+        this.addParam(this.paramShowCenter  = new NumberParam('showCenter',  'show center',  true, true, true,   0, 0,   1));
         this.addParam(this.paramAffectSpace = new NumberParam('affectSpace', 'affect space', true, true, true, 1, 0, 1));
 
+
+        this.paramShowCenter.controls[0].allowEditDecimals = false;
+        this.paramShowCenter.divider = 0.72;
 
         this.paramAffectSpace.controls[0].allowEditDecimals = false;
         this.paramAffectSpace.divider                       = 0.72;
@@ -105994,6 +106129,7 @@ extends OperatorBase
         request.push(...this.node.paramX          .genRequest(gen));
         request.push(...this.node.paramY          .genRequest(gen));
         request.push(...this.node.paramMoveType   .genRequest(gen));
+        request.push(...this.node.paramShowCenter .genRequest(gen));
         request.push(...this.node.paramAffectSpace.genRequest(gen));
 
         
@@ -106010,6 +106146,7 @@ extends OperatorBase
     {
         super.updateParams();
 
+        updateParamConditionText(this.paramShowCenter,  this.paramShowCenter .isUnknown(), false, 1);
         updateParamConditionText(this.paramAffectSpace, this.paramAffectSpace.isUnknown(), true, 1);
 
 

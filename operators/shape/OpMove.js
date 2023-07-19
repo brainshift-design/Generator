@@ -26,8 +26,12 @@ extends OperatorBase
         this.addParam(this.paramX           = new NumberParam('x',           'X',            true, true, true));
         this.addParam(this.paramY           = new NumberParam('y',           'Y',            true, true, true));
         this.addParam(this.paramMoveType    = new SelectParam('moveType',    'type',         true, true, true, ['position', 'vector'], 0));
+        this.addParam(this.paramShowCenter  = new NumberParam('showCenter',  'show center',  true, true, true,   0, 0,   1));
         this.addParam(this.paramAffectSpace = new NumberParam('affectSpace', 'affect space', true, true, true, 1, 0, 1));
 
+
+        this.paramShowCenter.controls[0].allowEditDecimals = false;
+        this.paramShowCenter.divider = 0.72;
 
         this.paramAffectSpace.controls[0].allowEditDecimals = false;
         this.paramAffectSpace.divider                       = 0.72;
@@ -64,6 +68,7 @@ extends OperatorBase
         request.push(...this.node.paramX          .genRequest(gen));
         request.push(...this.node.paramY          .genRequest(gen));
         request.push(...this.node.paramMoveType   .genRequest(gen));
+        request.push(...this.node.paramShowCenter .genRequest(gen));
         request.push(...this.node.paramAffectSpace.genRequest(gen));
 
         
@@ -80,6 +85,7 @@ extends OperatorBase
     {
         super.updateParams();
 
+        updateParamConditionText(this.paramShowCenter,  this.paramShowCenter .isUnknown(), false, 1);
         updateParamConditionText(this.paramAffectSpace, this.paramAffectSpace.isUnknown(), true, 1);
 
 

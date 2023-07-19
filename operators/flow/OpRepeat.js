@@ -67,7 +67,7 @@ extends OperatorBase
 
     updateValues(requestId, actionId, updateParamId, paramIds, values)
     {
-        const value = values[paramIds.findIndex(id => id == 'value')];
+        const type  = values[paramIds.findIndex(id => id == 'type' )];
         const count = values[paramIds.findIndex(id => id == 'count')];
         const loop  = values[paramIds.findIndex(id => id == 'loop' )];
 
@@ -75,8 +75,9 @@ extends OperatorBase
         if (loop ) this.paramLoop .setValue(loop,  false, true, false);
 
         this.outputs[0].types = 
-            value
-            ? [finalListTypeFromItems(value.items)]
+               type
+            && type.isValid()
+            ? [type.value]
             : [LIST_VALUE];
 
         this.endNodeProgress();

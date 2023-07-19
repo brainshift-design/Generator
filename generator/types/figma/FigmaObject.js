@@ -160,6 +160,7 @@ class FigmaObject
         }
         else if (this.type == VECTOR_PATH)
         {
+            this.applyObjectTransform(xform, coords);
             this.applySpaceTransform(xform, coords, affectSpace);
         }
         else if (this.type == SHAPE_GROUP)
@@ -201,7 +202,10 @@ class FigmaObject
     {
         if (!affectSpace)
             return;
-            
+
+
+        xform = inversem3(xform);
+
         this.cp0 = mulv2m3(this.cp0, inversem3(coords));
         this.cp0 = mulv2m3(this.cp0, xform);
         this.cp0 = mulv2m3(this.cp0, coords);
@@ -358,8 +362,8 @@ function getObjBounds(objects)
             }
         }
 
-        else if (obj.type == POINT
-             && !obj.isDeco)
+        else if (obj.type == POINT)
+             //&& !obj.isDeco)
             bounds = expandRect_(bounds, point(obj.x, obj.y));
 
         else

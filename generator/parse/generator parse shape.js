@@ -1090,6 +1090,7 @@ function genParseMove(parse)
     move.x           = genParse(parse);
     move.y           = genParse(parse);
     move.moveType    = genParse(parse);
+    move.showCenter  = genParse(parse);
     move.affectSpace = genParse(parse);
 
 

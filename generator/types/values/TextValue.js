@@ -11,7 +11,8 @@ extends GValue
         super(TEXT_VALUE);
 
 
-        if (typeof val !== 'string')
+        if (   val !== null
+            && typeof val !== 'string')
         {
             console.trace();
             consoleError('TextValue(value) is ' + typeof val + ', must be a string');
@@ -61,7 +62,7 @@ extends GValue
 
     isValid()
     {
-        return this.value != NAN_CHAR;
+        return this.value !== null;
     }
 
 
@@ -98,12 +99,12 @@ extends GValue
 
     getNaN()
     {
-        return new TextValue();//TextValue.NaN;
+        return TextValue.NaN;
     }
 
 
 
-    //static NaN = Object.freeze(new TextValue(NAN_CHAR));
+    static NaN = Object.freeze(new TextValue(null));
 }
 
 

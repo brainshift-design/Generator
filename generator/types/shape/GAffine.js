@@ -52,11 +52,13 @@ extends GOperator1
             return Rect.NaN;
 
 
-        this.value.objects = 
-                this.input 
-            && this.input.value
-            ? this.input.value.objects.map(o => o.copy()) 
-            : [];
+            this.value.objects = 
+                   this.input 
+                && this.input.value
+                ? this.input.value.objects
+                    .filter(o => o.isDeco === false)
+                    .map(o => o.copy()) 
+                : [];
         
 
         const bounds = getObjBounds(this.value.objects);
@@ -80,8 +82,8 @@ extends GOperator1
         }
 
 
-        const cx = singlePoint ? this.value.objects[0].x + _cx : bounds.x + bounds.width  * _cx;
-        const cy = singlePoint ? this.value.objects[0].y + _cy : bounds.y + bounds.height * _cy;
+        const cx = singlePoint ? this.value.objects[0].x + _cx : bounds.x + _cx * bounds.width ;
+        const cy = singlePoint ? this.value.objects[0].y + _cy : bounds.y + _cy * bounds.height;
 
 
         const xform = mulm3m3(
@@ -95,42 +97,42 @@ extends GOperator1
             obj.nodeId   = this.nodeId;
             obj.objectId = obj.objectId + OBJECT_SEPARATOR + this.nodeId;
 
-            if (obj.type == VECTOR_PATH)
-                obj.updatePoints(xform, this.coords);
+            // if (obj.type == VECTOR_PATH)
+            //     obj.updatePoints(xform, this.coords);
 
             obj.applyTransform(xform, options.affectSpace.value > 0);
 
             obj.scaleCorners *= Math.abs(scaleCorners);
             obj.scaleStyle   *= Math.abs(scaleStyle);
 
-            this.coords = mulm3m3(this.coords, xform);
+            // console.log('obj =', obj);
+            // if (options.showCenter.value > 0)
+            // {
+            //     addCenterObject(
+            //         this,
+            //         obj.cp0.x.value, 
+            //         obj.cp0.y.value);
+            // }
         }
 
         
-        if (  !isEmpty(this.value.objects)
-            && this.showCenter.toValue().value > 0)
-            this.addCenterObject(cx, cy);
+        // if (options.affectSpace.value == 0)
+        //     this.coords = clone(identity);
+
+        this.coords = mulm3m3(this.coords, xform);
+
+
+        // if (  !isEmpty(this.value.objects)
+        //     && options.showCenter.value > 0)
+        // {
+        //     addCenterObject(
+        //         this,
+        //         this.coords[0][2] + _cx * bounds.width, 
+        //         this.coords[1][2] + _cy * bounds.height);
+        // }
 
 
         return bounds;
-    }
-
-
-
-    addCenterObject(cx, cy)
-    {
-        const center = new FigmaPoint(
-            this.nodeId,
-            this.nodeId + PROP_SEPARATOR + 'center',
-            this.nodeName + CENTER_SEPARATOR + 'center',
-            cx,
-            cy,
-            true,
-            true);
-
-        center.createDefaultTransform(cx, cy);
-
-        this.value.objects.push(center);
     }
 
 
@@ -167,4 +169,22 @@ extends GOperator1
         if (this.showCenter ) this.showCenter .invalidateInputs(from);
         if (this.affectSpace) this.affectSpace.invalidateInputs(from);
     }
+}
+
+
+
+function addCenterObject(node, cx, cy)
+{
+    const center = new FigmaPoint(
+        node.nodeId,
+        node.nodeId   + PROP_SEPARATOR   + 'center',
+        node.nodeName + CENTER_SEPARATOR + 'center',
+        cx,
+        cy,
+        true,
+        true);
+
+    center.createDefaultTransform(cx, cy);
+
+    node.value.objects.push(center);
 }
