@@ -42,6 +42,7 @@ extends GOperator
         await this.node.eval(parse);
         this.node.feedbackValue = null;
 
+
         this.param = this.node.paramFromId(this.paramId);
 
         
@@ -66,15 +67,6 @@ extends GOperator
 
 
 
-    pushValueUpdates(parse)
-    {
-        super.pushValueUpdates(parse);
-
-        if (this.node) this.node.pushValueUpdates(parse);
-    }
-
-
-    
     isCached()
     {
         return super.isCached();
@@ -90,6 +82,15 @@ extends GOperator
 
 
 
+    pushValueUpdates(parse)
+    {
+        super.pushValueUpdates(parse);
+
+        if (this.node) this.node.pushValueUpdates(parse);
+    }
+
+
+    
     invalidateInputs(from)
     {
         super.invalidateInputs(from);

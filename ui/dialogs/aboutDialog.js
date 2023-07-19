@@ -3,7 +3,9 @@ function initAboutDialog()
     // initCheckbox(chkAboutHideWhatsNew, 'Show what\'s new at startup', settings.showWhatsNew);
     // chkAboutHideWhatsNew.addEventListener('change', () => uiSetLocalData('showWhatsNew', chkAboutHideWhatsNew.checked ? (generatorVersion-1) : (generatorVersion)));
 
-    aboutBack.addEventListener('pointerdown', e => { e.preventDefault(); });
+    aboutBack .addEventListener('pointerdown', e => { e.preventDefault(); });
+    aboutBack .addEventListener('pointerdown', () => { hideAboutDialog(); });
+    aboutClose.addEventListener('pointerdown', e => e.stopPropagation());
 
     aboutVersion.innerHTML = 'Generator&nbsp;&hairsp;version&nbsp;&thinsp;' + generatorVersion;
 }
@@ -38,11 +40,6 @@ function copyUserId()
     selectElementText('aboutUserId');
     uiNotify('Copied user ID');
 }
-
-
-
-aboutClose.addEventListener('pointerdown', e => e.stopPropagation());
-aboutBack.addEventListener('pointerdown', () => { hideAboutDialog(); });
 
 
 

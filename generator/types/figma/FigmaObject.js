@@ -38,9 +38,7 @@ class FigmaObject
 
         this.xform        = clone(identity);
 
-        this.cp0          = point(0, 0);
-        this.cp1          = point(1, 0);
-        this.cp2          = point(0, 1);
+        this.createDefaultSpace();
 
         this.scaleCorners = 1;
         this.scaleStyle   = 1;
@@ -75,6 +73,15 @@ class FigmaObject
     {
         consoleError('invalid use of abstract class FigmaObject');
         return null;
+    }
+
+
+
+    createDefaultSpace()
+    {
+        this.cp0 = point(0, 0);
+        this.cp1 = point(1, 0);
+        this.cp2 = point(0, 1);
     }
 
 
@@ -355,11 +362,21 @@ function getObjBounds(objects)
              && !obj.isDeco)
             bounds = expandRect_(bounds, point(obj.x, obj.y));
 
-        else if (obj.type == LINE)
-            bounds = expandRect(bounds, new Rect(obj.x, obj.y, obj.width, 0));
-
         else
-            bounds = expandRect(bounds, new Rect(obj.x, obj.y, obj.width, obj.height));
+        {
+            const dp = subv(obj.xp1, obj.xp0);
+
+            bounds = expandRect_(bounds, obj.xp0);
+            bounds = expandRect_(bounds, obj.xp1);
+            bounds = expandRect_(bounds, obj.xp2);
+            bounds = expandRect_(bounds, addv(obj.xp2, dp));
+        }
+
+        // else if (obj.type == LINE)
+        //     bounds = expandRect(bounds, new Rect(obj.x, obj.y, obj.width, 0));
+
+        // else
+        //     bounds = expandRect(bounds, new Rect(obj.x, obj.y, obj.width, obj.height));
     }
 
 

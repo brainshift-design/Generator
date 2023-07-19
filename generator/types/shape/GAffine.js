@@ -47,7 +47,6 @@ extends GOperator1
 
     async evalAffineObjects(options, scaleCorners, scaleStyle, getXform)
     {
-        console.log('this.value =', this.value);
         if (   !this.value
             || !this.value.isValid())
             return Rect.NaN;

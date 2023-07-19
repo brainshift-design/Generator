@@ -388,6 +388,8 @@ const ROTATE               = 'ROT';
 const SCALE                = 'SCALE';
 const SKEW                 = 'SKEW';
 
+const RESET_XFORM          = 'RSTX';
+
 const PLACE                = 'PLACE';
 const SHAPE_APPLY          = 'APPLY';
   
@@ -470,6 +472,7 @@ const SHAPE_TYPES =
 
     MOVE,
     ...AFFINE_TYPES,
+    RESET_XFORM,
 
     PLACE,
     SHAPE_APPLY,

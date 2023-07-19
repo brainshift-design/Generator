@@ -103,6 +103,11 @@ extends OpColorBase
         this.param3    .controls[0].wheelScale = 1;
 
 
+        this.param1.isNodeValue = true;
+        this.param2.isNodeValue = true;
+        this.param3.isNodeValue = true;
+
+
         // hex is default, remove default sliders
         this.paramHolder.removeChild(this.param1.div);
         this.paramHolder.removeChild(this.param2.div);
@@ -425,9 +430,9 @@ extends OpColorBase
         const enable = !this.inputs[0].connected;
 
         this.paramSpace.enableControlText(!this.paramSpace.input.connected);
-        this.param1    .enableControlText(enable);
-        this.param2    .enableControlText(enable);
-        this.param3    .enableControlText(enable);
+        this.param1    .enableControlText(enable, this.isUnknown());
+        this.param2    .enableControlText(enable, this.isUnknown());
+        this.param3    .enableControlText(enable, this.isUnknown());
 
 
         enableElementText(this.paramColor.controls[0].div, !this.isConnected());

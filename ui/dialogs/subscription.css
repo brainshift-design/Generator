@@ -1,0 +1,222 @@
+#subscriptionBack
+{
+    display:          none;
+
+    z-index:          1000;
+    
+    position:         fixed;
+    left:             0;
+    top:              0;
+    width:            100%;
+    height:           100%;
+    overflow:         auto;
+}
+
+
+#subscriptionDialog
+{
+    display:       none;
+
+    font-family:   Inter;
+
+    z-index:       2000;
+    position:      absolute;
+    top:           50%;
+    left:          50%;
+    transform:     translateX(-50%)
+                   translateY(-50%);
+
+    width:         400px;
+    height:        226px;
+    
+    color:         var(--figma-color-text);
+    background:    var(--figma-color-bg);
+    
+    border:        0.5px solid rgba(0, 0, 0, 0.2);
+
+    border-radius: 4px;
+
+    overflow:      hidden;
+}
+
+
+.figma-light #subscriptionDialog
+{
+    box-shadow: 0px 2px  7px rgba(0, 0, 0, 0.15),
+                0px 5px 17px rgba(0, 0, 0, 0.15);
+}
+
+
+.figma-dark #subscriptionDialog
+{
+    box-shadow: 0px 2px  7px rgba(0, 0, 0, 0.45),
+                0px 5px 25px rgba(0, 0, 0, 0.45),
+                0 0px 2px 0px #fff3 inset;
+}
+
+
+#subscriptionTitle
+{
+    height:         40px;
+    border-bottom:  1px solid rgb(0, 0, 0, 0.15);
+    border-top:     1px solid var(--figma-color-bg-tertiary);
+    border-bottom:  1px solid var(--figma-color-bg-tertiary);
+}
+
+
+#subscriptionTitleText
+{
+    position:       absolute;
+    left:           16px;
+    top:            12px;
+    
+    font-style:     normal;
+    font-weight:    600;
+    font-size:      11px;
+    line-height:    16px;
+    
+    display:        flex;
+    align-items:    center;
+    letter-spacing: 0.005em;
+    
+    color:          var(--figma-color-text);
+
+    pointer-events: none;
+    user-select:    none;
+}
+
+
+#subscriptionUserName
+{
+    font-size:      11px;
+    font-weight:    bold;
+
+    margin-top:     16px;
+    margin-bottom:  3px;
+
+    padding-bottom: 5px;
+
+    position:       absolute;
+    left:           50%;
+    top:            70px;
+    transform:      translateX(-50%);
+    border-bottom:  1px solid var(--figma-color-bg-disabled);
+    width:          240;
+
+    overflow:       hidden;
+
+    user-select:    text;
+
+    /* box-shadow:  0 0 0 1px red inset; */
+}
+
+
+#btnSubscribe
+{
+    display:        none;
+
+    width:          138px;
+
+    position:       absolute;
+    left:           50%;
+    transform:      translateX(-50%);
+
+    top:            162px;
+}
+
+
+#subscriptionTextBack
+{
+    display:        none;
+    
+    position:       absolute;
+    left:           50%;
+    top:            113px;
+    width:          138px;
+    height:         25px;
+
+    transform:      translateX(-50%);
+
+    z-index:        0;
+
+    pointer-events: none;
+
+    border-bottom:  1px solid var(--figma-color-bg-tertiary);
+
+    /* box-shadow:  0 0 0 1px red inset; */
+}
+
+
+
+/* #subscriptionInputBack
+{
+    font-family:   'Roboto Mono';
+    font-size:      16px;
+    color:          var(--figma-color-bg-disabled);
+    letter-spacing: 1px;
+    
+    width:          10em;
+    padding-left:   3px;
+    padding-top:    -2px;
+    padding-bottom:  2px;
+
+    position:       absolute;
+    left:           calc(calc(50% - 4.5em) + 1px);
+    top:            115px;
+
+    z-index:        1;
+
+    pointer-events: none;
+
+    box-shadow:  0 0 0 1px red inset; 
+} */
+
+
+
+/* #subscriptionInput
+{
+    font-family:   'Roboto Mono';
+    font-size:      16px;
+    letter-spacing:  1px;
+     
+    width:          calc(10em + 2px);
+    height:         24px;
+    padding-left:   13px;
+    padding-top:    -2px;
+    padding-bottom:  2px;
+
+    margin-bottom:  -3px;
+
+    background:     transparent;
+
+    position:       absolute;
+    left:           calc(50%);
+    top:            114px;
+
+    transform:      translateX(-50%);
+} */
+
+
+#subscriptionInput:disabled
+{
+    color: var(--figma-color-bg-disabled);
+}
+
+
+#subscribeWebsite
+{
+    font-size:      11px;
+    text-align:     center;
+
+    margin-top:     16px;
+    margin-bottom:   8px;
+
+    position:       absolute;
+    left:           50%;
+    top:            200px;
+    transform:      translateX(-50%);
+
+    color:          var(--figma-color-bg-disabled);
+}
+
+

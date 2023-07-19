@@ -23,7 +23,7 @@ function noNodeTag(key) { return noTag(key, nodeTag); }
 function noConnTag(key) { return noTag(key, connTag); }
 
 
-const generatorVersion = 161;
+const generatorVersion = 162;
 
 
 const MAX_INT32        = 2147483647;
@@ -1367,6 +1367,8 @@ const ROTATE               = 'ROT';
 const SCALE                = 'SCALE';
 const SKEW                 = 'SKEW';
 
+const RESET_XFORM          = 'RSTX';
+
 const PLACE                = 'PLACE';
 const SHAPE_APPLY          = 'APPLY';
   
@@ -1449,6 +1451,7 @@ const SHAPE_TYPES =
 
     MOVE,
     ...AFFINE_TYPES,
+    RESET_XFORM,
 
     PLACE,
     SHAPE_APPLY,

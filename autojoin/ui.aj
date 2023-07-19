@@ -2,6 +2,7 @@
 
     ../css/*.css
     ../ui/*.css
+    ../ui/dialogs/*.css
 
     ../controls/GraphView/*.css
     ../controls/menu/*.css
@@ -24,6 +25,8 @@
 ../html/crash.html
 ../html/about.html
 ../html/deleteConnections.html
+../html/saveAsTemplate.html
+../html/manageTemplates.html
 ../html/subscription.html
 ../html/eula.html
 ../html/minZoom.html
@@ -50,12 +53,13 @@
     [../autojoin/types.aj]
 
     ../ui/settings.js
-    ../ui/crashDialog.js
+    ../ui/dialogs/crashDialog.js
 
     [../autojoin/controls.aj]
     [../autojoin/operators.aj]
 
     ../actions/*.js
-    ../ui/*!(settings,crashDialog).js
+    ../ui/*!(settings).js
+    ../ui/dialogs/*!(crashDialog).js
 
 ../html/ui_3.html

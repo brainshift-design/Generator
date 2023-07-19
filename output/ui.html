@@ -220,1171 +220,6 @@
 }
 
 
-#subscriptionBack
-{
-    display:          none;
-
-    z-index:          1000;
-    
-    position:         fixed;
-    left:             0;
-    top:              0;
-    width:            100%;
-    height:           100%;
-    overflow:         auto;
-}
-
-
-#subscriptionDialog
-{
-    display:       none;
-
-    font-family:   Inter;
-
-    z-index:       2000;
-    position:      absolute;
-    top:           50%;
-    left:          50%;
-    transform:     translateX(-50%)
-                   translateY(-50%);
-
-    width:         400px;
-    height:        226px;
-    
-    color:         var(--figma-color-text);
-    background:    var(--figma-color-bg);
-    
-    border:        0.5px solid rgba(0, 0, 0, 0.2);
-
-    border-radius: 4px;
-
-    overflow:      hidden;
-}
-
-
-.figma-light #subscriptionDialog
-{
-    box-shadow: 0px 2px  7px rgba(0, 0, 0, 0.15),
-                0px 5px 17px rgba(0, 0, 0, 0.15);
-}
-
-
-.figma-dark #subscriptionDialog
-{
-    box-shadow: 0px 2px  7px rgba(0, 0, 0, 0.45),
-                0px 5px 25px rgba(0, 0, 0, 0.45),
-                0 0px 2px 0px #fff3 inset;
-}
-
-
-#subscriptionTitle
-{
-    height:         40px;
-    border-bottom:  1px solid rgb(0, 0, 0, 0.15);
-    border-top:     1px solid var(--figma-color-bg-tertiary);
-    border-bottom:  1px solid var(--figma-color-bg-tertiary);
-}
-
-
-#subscriptionTitleText
-{
-    position:       absolute;
-    left:           16px;
-    top:            12px;
-    
-    font-style:     normal;
-    font-weight:    600;
-    font-size:      11px;
-    line-height:    16px;
-    
-    display:        flex;
-    align-items:    center;
-    letter-spacing: 0.005em;
-    
-    color:          var(--figma-color-text);
-
-    pointer-events: none;
-    user-select:    none;
-}
-
-
-#subscriptionUserName
-{
-    font-size:      11px;
-    font-weight:    bold;
-
-    margin-top:     16px;
-    margin-bottom:  3px;
-
-    padding-bottom: 5px;
-
-    position:       absolute;
-    left:           50%;
-    top:            70px;
-    transform:      translateX(-50%);
-    border-bottom:  1px solid var(--figma-color-bg-disabled);
-    width:          240;
-
-    overflow:       hidden;
-
-    user-select:    text;
-
-    /* box-shadow:  0 0 0 1px red inset; */
-}
-
-
-#aboutUserId
-{
-    font-size:      11px;
-    text-align:     center;
-
-    margin-top:     0px;
-    margin-bottom:  12px;
-
-    position:       absolute;
-    
-    left:           50%;
-    transform:      translateX(-50%);
-
-    top:            94px;
-
-    width:          300px;
-
-    user-select:    text;
-    line-height:    1.4em;
-
-    overflow:       visible;
-
-    /* box-shadow:  0 0 0 1px green inset; */
-}
-
-
-#licenseInfo
-{
-    font-family:   'Inter';
-    font-size:      11px;
-    font-weight:    300;
-
-    width:          350px;
-    height:         auto;
-    padding-top:    4px;
-    padding-bottom: 0;
-
-    margin-bottom:  -3px;
-
-    background:     transparent;
-
-    position:       absolute;
-    left:           50%;
-    transform:      translateX(-50%);
-    top:            60px;
-
-
-    pointer-events: none;
-
-    text-align:     center;
-
-    /* box-shadow:     0 0 0 1px red inset; */
-}
-
-.figma-dark  #licenseInfo { font-weight: 200; }
-.figma-light #licenseInfo { font-weight: 400; }
-
-
-#btnSubscribe
-{
-    display:        none;
-
-    width:          138px;
-
-    position:       absolute;
-    left:           50%;
-    transform:      translateX(-50%);
-
-    top:            162px;
-}
-
-
-#subscriptionTextBack
-{
-    display:        none;
-    
-    position:       absolute;
-    left:           50%;
-    top:            113px;
-    width:          138px;
-    height:         25px;
-
-    transform:      translateX(-50%);
-
-    z-index:        0;
-
-    pointer-events: none;
-
-    border-bottom:  1px solid var(--figma-color-bg-tertiary);
-
-    /* box-shadow:  0 0 0 1px red inset; */
-}
-
-
-
-/* #subscriptionInputBack
-{
-    font-family:   'Roboto Mono';
-    font-size:      16px;
-    color:          var(--figma-color-bg-disabled);
-    letter-spacing: 1px;
-    
-    width:          10em;
-    padding-left:   3px;
-    padding-top:    -2px;
-    padding-bottom:  2px;
-
-    position:       absolute;
-    left:           calc(calc(50% - 4.5em) + 1px);
-    top:            115px;
-
-    z-index:        1;
-
-    pointer-events: none;
-
-    box-shadow:  0 0 0 1px red inset; 
-} */
-
-
-
-/* #subscriptionInput
-{
-    font-family:   'Roboto Mono';
-    font-size:      16px;
-    letter-spacing:  1px;
-     
-    width:          calc(10em + 2px);
-    height:         24px;
-    padding-left:   13px;
-    padding-top:    -2px;
-    padding-bottom:  2px;
-
-    margin-bottom:  -3px;
-
-    background:     transparent;
-
-    position:       absolute;
-    left:           calc(50%);
-    top:            114px;
-
-    transform:      translateX(-50%);
-} */
-
-
-#subscriptionInput:disabled
-{
-    color: var(--figma-color-bg-disabled);
-}
-
-
-#subscribeWebsite
-{
-    font-size:      11px;
-    text-align:     center;
-
-    margin-top:     16px;
-    margin-bottom:   8px;
-
-    position:       absolute;
-    left:           50%;
-    top:            200px;
-    transform:      translateX(-50%);
-
-    color:          var(--figma-color-bg-disabled);
-}
-
-
-#deleteConnectionsDialog
-{
-    display:       none;
-
-    font-family:   Inter;
-
-    z-index:       2;
-    position:      absolute;
-    width:         400px;
-    height:        92px;
-    
-    color:         var(--figma-color-text);
-    background:    var(--figma-color-bg);
-    
-    border-radius: 4px;
-}
-
-
-.figma-light #deleteConnectionsDialog
-{
-    box-shadow: 0px 2px  7px rgba(0, 0, 0, 0.15),
-                0px 5px 17px rgba(0, 0, 0, 0.15);
-}
-
-
-.figma-dark #deleteConnectionsDialog
-{
-    box-shadow: 0px 2px  7px rgba(0, 0, 0, 0.45),
-                0px 5px 25px rgba(0, 0, 0, 0.45),
-                0 0px 2px 0px #fff3 inset;
-}
-
-
-#deleteConnectionsTitle
-{
-    height:         40px;
-    font-weight:    900;
-    border-top:     1px solid var(--figma-color-bg-tertiary);
-    border-bottom:  1px solid var(--figma-color-bg-tertiary);
-}
-
-
-#deleteConnectionsTitleText
-{
-    position:       absolute;
-    left:           16px;
-    top:            12px;
-    
-    font-style:     normal;
-    font-weight:    600;
-    font-size:      11px;
-    line-height:    16px;
-    
-    display:        flex;
-    align-items:    center;
-    letter-spacing: 0.005em;
-    
-    color:          var(--figma-color-text);
-}
-
-
-#deleteConnectionsLabel
-{
-    font-size:      11px;
-
-    margin-top:     16px;
-    margin-bottom:  12px;
-
-    position:       relative;
-    left:           17px;
-
-    user-select:    text;
-}
-
-
-#deleteConnectionsInputBack
-{
-    font-size:       11px;
-    color:           var(--figma-color-bg-disabled);
-      
-    width:           266px;
-    height:          20px;
- 
-    padding-top:     6px;
-    padding-bottom: -6px;
-
-    margin-top:      12px;
-    margin-bottom:  -3px;
-
-    position:        absolute;
-    left:            18px;
-}
-
-
-#deleteConnectionsInput
-{
-    background:     transparent;
-    font-size:      11px;
-      
-    width:          278px;
-    height:         26px;
- 
-    padding-left:   6px;
-    padding-right:  6px;
-    padding-top:   -2px;
-    padding-bottom: 2px;
-
-    margin-top:     12px;
-    margin-bottom: -3px;
-
-    position:       absolute;
-    left:           12px;
-}
-
-
-#deleteConnectionsButton
-{
-    width:          60px;
-
-    position:       absolute;
-    right:          12px;
-    transform:      translateY(-2px);
-
-    margin-top:     12px;
-}
-
-
-#minZoomDialog
-{
-    display:       none;
-
-    font-family:   Inter;
-
-    z-index:       2;
-    position:      absolute;
-    width:         200px;
-    height:        92px;
-    
-    color:         var(--figma-color-text);
-    background:    var(--figma-color-bg);
-    
-    border-radius: 4px;
-}
-
-
-.figma-light #minZoomDialog
-{
-    box-shadow: 0px 2px  7px rgba(0, 0, 0, 0.15),
-                0px 5px 17px rgba(0, 0, 0, 0.15);
-}
-
-
-.figma-dark #minZoomDialog
-{
-    box-shadow: 0px 2px  7px rgba(0, 0, 0, 0.45),
-                0px 5px 25px rgba(0, 0, 0, 0.45),
-                0 0px 2px 0px #fff3 inset;
-}
-
-
-#minZoomTitle
-{
-    height:         40px;
-    font-weight:    900;
-    border-top:     1px solid var(--figma-color-bg-tertiary);
-    border-bottom:  1px solid var(--figma-color-bg-tertiary);
-}
-
-
-#minZoomTitleText
-{
-    position:       absolute;
-    left:           16px;
-    top:            12px;
-    
-    font-style:     normal;
-    font-weight:    600;
-    font-size:      11px;
-    line-height:    16px;
-    
-    display:        flex;
-    align-items:    center;
-    letter-spacing: 0.005em;
-    
-    color:          var(--figma-color-text);
-}
-
-
-#minZoomInput
-{
-    background:     transparent;
-    font-size:      11px;
-      
-    width:          176px;
-    height:         26px;
- 
-    padding-left:   6px;
-    padding-right:  6px;
-    padding-top:   -2px;
-    padding-bottom: 2px;
-
-    margin-top:     12px;
-    margin-bottom: -3px;
-
-    position:       absolute;
-    left:           12px;
-}
-
-
-#whatsNewBack
-{
-    display:          none;
-
-    z-index:          1000;
-    
-    position:         fixed;
-    left:             0;
-    top:              0;
-    width:            100%;
-    height:           100%;
-    overflow:         auto;
-    pointer-events:   all;
-
-    background-color: #0005;
-}
-
-
-
-#whatsNewDialog
-{
-    display:       none;
-
-    font-family:   Inter;
-
-    z-index:       1002;
-    position:      absolute;
-    top:           58px;
-    left:          calc(50%);
-    transform:     translateX(-50%);
-    width:         600px;
-    height:        calc(100% - 80px);
-
-    overflow:      hidden;
-    
-    color:         var(--figma-color-text);
-    background:    var(--figma-color-bg);
-    
-    border:        0.5px solid rgba(0, 0, 0, 0.2);
-
-    border-radius: 4px;
-}
-
-
-#whatsNewDialogContainer
-{
-    height:   calc(100% - 42px);
-    overflow: hidden;
-    padding:  0;
-    z-index:  1;
-    /* box-shadow: 0 0 0 1px red inset; */
-}
-
-
-#whatsNewDialogContent
-{
-    font-size:      12px;
-    margin:         0;
-    padding:        1px 0 5px 0;
-    position:       absolute;
-    pointer-events: all;
-    user-select:    text;
-    /* box-shadow:  0 0 0 1px blue inset; */
-}
-
-
-.figma-light #whatsNewDialog
-{
-    box-shadow: 0px 2px  7px rgba(0, 0, 0, 0.15),
-                0px 5px 17px rgba(0, 0, 0, 0.15);
-}
-
-
-.figma-dark #whatsNewDialog
-{
-    box-shadow: 0px 2px  7px rgba(0, 0, 0, 0.45),
-                0px 5px 25px rgba(0, 0, 0, 0.45),
-                0 0px 2px 0px #fff3 inset;
-}
-
-
-#whatsNewWatermark
-{
-    position:       absolute;
-    left:           50%;
-    top:            50%;
-    transform:      translateX(-41%)
-                    translateY(-34%);
-    font-size:      800px;
-    font-weight:    600;
-    white-space:    nowrap;
-    color:          var(--figma-color-bg-secondary);
-    z-index:        -1;
-    user-select:    none;
-    pointer-events: none;
-}
-
-
-
-#whatsNewTitle
-{
-    position:       relative;
-    height:         40px;
-    border-bottom:  1px solid rgb(0, 0, 0, 0.15);
-    border-top:     1px solid var(--figma-color-bg-tertiary);
-    border-bottom:  1px solid var(--figma-color-bg-tertiary);
-    background:     var(--figma-color-bg);
-    z-index:        10;
-}
-
-
-#whatsNewTitleText
-{
-    position:       absolute;
-    left:           16px;
-    top:            12px;
-    
-    font-style:     normal;
-    font-weight:    600;
-    font-size:      11px;
-    line-height:    16px;
-    
-    display:        flex;
-    align-items:    center;
-    letter-spacing: 0.005em;
-    
-    color:          var(--figma-color-text);
-
-    pointer-events: none;
-    user-select:    none;
-}
-
-
-#whatsNewBody
-{
-    margin:  0 30px 0 30px;
-}
-
-
-
-#chkHideWhatsNew
-{
-    display:  inline-block;
-}
-
-
-
-#whatsNewScrollbarY
-{
-    width:   6px;
-    z-index: 1;
-    margin:  6px 0 18px 0;
-    display: none;
-}
-
-
-
-#eulaBack
-{
-    display:          none;
-
-    
-    position:         fixed;
-    left:             0;
-    top:              0;
-    width:            100%;
-    height:           100%;
-    overflow:         auto;
-    z-index:          100;
-    pointer-events:   all;
-
-    /* background-color: #0005; */
-}
-
-
-
-#eulaDialog
-{
-    display:       none;
-
-    font-family:   Inter;
-
-    z-index:       200;
-    position:      absolute;
-    top:           58px;
-    left:          calc(50%);
-    transform:     translateX(-50%);
-    width:         540px;
-    height:        calc(100% - 80px);
-
-    overflow:      hidden;
-    
-    color:         var(--figma-color-text);
-    background:    var(--figma-color-bg);
-    
-    border:        0.5px solid rgba(0, 0, 0, 0.2);
-
-    border-radius: 4px;
-}
-
-
-#eulaDialogContainer
-{
-    height:   calc(100% - 42px);
-    overflow: hidden;
-    padding:  0;
-    z-index:  1;
-    /* box-shadow: 0 0 0 1px red inset; */
-}
-
-
-#eulaDialogContent
-{
-    font-size:      12px;
-    margin:         0;
-    padding:        1px 0 5px 0;
-    position:       absolute;
-    pointer-events: all;
-    user-select:    text;
-    /* box-shadow:  0 0 0 1px blue inset; */
-}
-
-
-.figma-light #eulaDialog
-{
-    box-shadow: 0px 2px  7px rgba(0, 0, 0, 0.15),
-                0px 5px 17px rgba(0, 0, 0, 0.15);
-}
-
-
-.figma-dark #eulaDialog
-{
-    box-shadow: 0px 2px  7px rgba(0, 0, 0, 0.45),
-                0px 5px 25px rgba(0, 0, 0, 0.45),
-                0 0px 2px 0px #fff3 inset;
-}
-
-
-#eulaWatermark
-{
-    position:       absolute;
-    left:           50%;
-    top:            50%;
-    transform:      translateX(-41%)
-                    translateY(-34%);
-    font-size:      800px;
-    font-weight:    600;
-    white-space:    nowrap;
-    color:          var(--figma-color-bg-secondary);
-    z-index:        -1;
-    user-select:    none;
-    pointer-events: none;
-}
-
-
-
-#eulaTitle
-{
-    position:       relative;
-    height:         40px;
-    border-bottom:  1px solid rgb(0, 0, 0, 0.15);
-    border-top:     1px solid var(--figma-color-bg-tertiary);
-    border-bottom:  1px solid var(--figma-color-bg-tertiary);
-    background:     var(--figma-color-bg);
-    z-index:        10;
-}
-
-
-#eulaTitleText
-{
-    position:       absolute;
-    left:           16px;
-    top:            12px;
-    
-    font-style:     normal;
-    font-weight:    600;
-    font-size:      11px;
-    line-height:    16px;
-    
-    display:        flex;
-    align-items:    center;
-    letter-spacing: 0.005em;
-    
-    color:          var(--figma-color-text);
-
-    pointer-events: none;
-    user-select:    none;
-}
-
-
-#eulaBody
-{
-    margin:      25px 60px 0 60px;
-    font-weight: 200;
-}
-
-
-.figma-dark  #eulaBody { font-weight: 200; }
-.figma-light #eulaBody { font-weight: 400; }
-
-
-#eulaBody ol
-{
-    margin-left:   16px;
-    margin-top:    30px;
-    margin-bottom: 30px;
-    padding-left:  0;
-}
-
-#eulaBody li
-{
-    margin-bottom: 10px;
-}
-
-#eulaBody li::marker
-{
-    content: counter(list-item) ".  ";
-}
-
-.figma-light #eulaBody .bold { font-weight: 700; }
-.figma-dark  #eulaBody .bold { font-weight: 500; }
-
-
-
-#eulaScrollbarY
-{
-    width:   6px;
-    z-index: 300;
-    margin:  6px 0 18px 0;
-    display: none;
-}
-
-.figma-light #eulaScrollbarY { background: #0002; }
-.figma-dark  #eulaScrollbarY { background: #fff2; }
-
-
-
-#aboutBack
-{
-    display:          none;
-
-    z-index:          10;
-    
-    position:         fixed;
-    left:             0;
-    top:              0;
-    width:            100%;
-    height:           100%;
-    overflow:         auto;
-    pointer-events:   all;
-
-    background-color: #0005;
-}
-
-
-
-#aboutDialog
-{
-    display:       none;
-
-    font-family:   Inter;
-
-    z-index:       20;
-    position:      absolute;
-    top:           50%;
-    left:          50%;
-    transform:     translateX(-50%)
-                   translateY(-50%);
-    width:         280px;
-    height:        168px;
-
-    overflow:      hidden;
-    
-    color:         var(--figma-color-text);
-    background:    var(--figma-color-bg);
-    
-    border:        0.5px solid rgba(0, 0, 0, 0.2);
-
-    border-radius: 4px;
-}
-
-
-#aboutDialogContainer
-{
-    height:   calc(100% - 22px);
-    overflow: hidden;
-    padding:  0;
-    z-index:  1;
-    /* box-shadow: 0 0 0 1px red inset; */
-}
-
-
-#aboutDialogContent
-{
-    font-size: 12px;
-    margin:    0;
-    padding:   1px 0 5px 0;
-    position:  absolute;
-    pointer-events: all;
-    user-select: text;
-    /* box-shadow: 0 0 0 1px blue inset; */
-}
-
-
-.figma-light #aboutDialog
-{
-    box-shadow: 0px 2px  7px rgba(0, 0, 0, 0.15),
-                0px 5px 17px rgba(0, 0, 0, 0.15);
-}
-
-
-.figma-dark #aboutDialog
-{
-    box-shadow: 0px 2px  7px rgba(0, 0, 0, 0.45),
-                0px 5px 25px rgba(0, 0, 0, 0.45),
-                0 0px 2px 0px #fff3 inset;
-}
-
-
-#aboutTitle
-{
-    position:       relative;
-    height:         40px;
-    border-bottom:  1px solid rgb(0, 0, 0, 0.15);
-    border-top:     1px solid var(--figma-color-bg-tertiary);
-    border-bottom:  1px solid var(--figma-color-bg-tertiary);
-    background:     var(--figma-color-bg);
-    z-index:        10;
-}
-
-
-#aboutTitleText
-{
-    position:       absolute;
-    left:           16px;
-    top:            12px;
-    
-    font-style:     normal;
-    font-weight:    600;
-    font-size:      11px;
-    line-height:    16px;
-    
-    display:        flex;
-    align-items:    center;
-    letter-spacing: 0.005em;
-    
-    color:          var(--figma-color-text);
-
-    pointer-events: none;
-    user-select:    none;
-}
-
-
-#aboutDialogBody
-{
-    padding-left: 30px;
-    width:        250px;
-    /* box-shadow:   0 0 0 1px inset yellow; */
-}
-
-
-#chkAboutHideWhatsNew
-{
-    display:  inline-block;
-}
-
-
-#aboutBrainshiftLogo
-{
-    display:   none;
-    position:  absolute;
-    left:      97px;
-    top:       82px;
-}
-
-
-#aboutGeneratorLogo
-{
-    position: absolute;
-    left:     30px;
-    top:      48px;
-}
-
-
-#aboutLine
-{
-    position: absolute;
-    left:     18px;
-    top:      132px;
-}
-
-
-#aboutVersion
-{
-    font-weight: 300;
-    font-size:   11px;
-    display:     inline;
-    position:    absolute;
-    left:        100px;
-    top:         44px;
-}
-
-
-#aboutCopyright
-{
-    font-weight: 300;
-    font-size:   11px;
-    display:     inline-block;
-    width:       max-content;
-    position:    absolute;
-    left:        99px;
-    top:         62px;
-}
-
-
-.figma-dark  #aboutVersion   { font-weight: 200; }
-.figma-dark  #aboutCopyright { font-weight: 200; }
-
-.figma-light #aboutVersion   { font-weight: 400; }
-.figma-light #aboutCopyright { font-weight: 400; }
-
-
-#crashBack
-{
-    display:          none;
-
-    z-index:          10000;
-    
-    position:         fixed;
-    left:             0;
-    top:              0;
-    width:            100%;
-    height:           100%;
-    overflow:         auto;
-    pointer-events:   all;
-
-    background-color: #0005;
-}
-
-
-
-#crashDialog
-{
-    display:       none;
-
-    font-family:   Inter;
-
-    z-index:       10001;
-    position:      absolute;
-    top:           50%;
-    left:          50%;
-    transform:     translateX(-50%)
-                   translateY(-50%);
-    width:         440px;
-    height:        300px;
-
-    overflow:      hidden;
-    
-    color:         var(--figma-color-text);
-    background:    var(--figma-color-bg);
-    
-    border:        0.5px solid rgba(0, 0, 0, 0.2);
-
-    border-radius: 4px;
-
-    /* -webkit-font-smoothing: subpixel-antialiased;
-    -moz-osx-font-smoothing: auto; */
-}
-
-
-#crashDialogContainer
-{
-    height:   calc(100% - 42px);
-    overflow: hidden;
-    padding:  0;
-    z-index:  1;
-    /* box-shadow: 0 0 0 1px red inset; */
-}
-
-
-#crashDialogContent
-{
-    font-size:      12px;
-    margin:         0;
-    padding:        1px 0 5px 0;
-    position:       absolute;
-    pointer-events: all;
-    user-select:    text;
-    width:          100%;
-    /* box-shadow:     0 0 0 1px blue inset; */
-}
-
-
-.figma-light #crashDialog
-{
-    box-shadow: 0px 2px  7px rgba(0, 0, 0, 0.15),
-                0px 5px 17px rgba(0, 0, 0, 0.15);
-}
-
-
-.figma-dark #crashDialog
-{
-    box-shadow: 0px 2px  7px rgba(0, 0, 0, 0.45),
-                0px 5px 25px rgba(0, 0, 0, 0.45),
-                0 0px 2px 0px #fff3 inset;
-}
-
-
-#crashTitle
-{
-    font-size:     14px;
-    font-weight:   500;
-    margin-top:    20px;
-    margin-bottom: 27px;
-}
-
-
-#crashDetails
-{
-    /* font-weight: bold; */
-    height:        165px;
-    margin-bottom: 30px;
-    position:      relative;
-    left:          1px;
-    overflow-y:    scroll;
-    /* box-shadow:    0 0 0 1px red inset; */
-}
-
-
-#crashDetails::-webkit-scrollbar
-{
-    background: transparent;
-    width:      6px;
-}
-
-
-#crashDetails::-webkit-scrollbar-track
-{
-    margin: 6px 6px 6px 0;
-}
-
-
-#crashDetails::-webkit-scrollbar-thumb
-{
-    border-radius: 4px;
-}
-
-
-.figma-dark #crashDetails::-webkit-scrollbar-thumb
-{ 
-    background:    #fff4;
-    /* background-color: #0006;
-    box-shadow:       0 0 0 1px rgba(255, 255, 255, 0.25);  */
-}
-
-
-.figma-light #crashDetails::-webkit-scrollbar-thumb
-{ 
-    background-color: #0004;
-    box-shadow:       0 0 0 1px rgba(255, 255, 255, 0.25); 
-}    
-
-
-#crashDialogBody
-{
-    margin: 0 25px 0 25px;
-}
-
-
-#btnCrashRestart
-{
-    position: absolute;
-    right:    24px;
-    bottom:   21px;
-}
-
 
 #debugInfo
 {
@@ -1400,20 +235,7 @@
 }
 
 
-#btnStartTrial
-{
-    width:       120px;
-    height:      14px;
-    user-select: none;
-    margin:      45px auto 42px auto;
-    position:    relative;
-    left:        -5px;
-    background:  transparent;
-}
 
-
-.figma-light #btnStartTrial { font-weight: 600; }
-.figma-dark  #btnStartTrial { font-weight: 300; }
 
 
 #loadingOverlay
@@ -2365,6 +1187,1355 @@ a
 {
     color: var(--figma-color-text-brand);
 }
+
+
+#whatsNewBack
+{
+    display:          none;
+
+    z-index:          1000;
+    
+    position:         fixed;
+    left:             0;
+    top:              0;
+    width:            100%;
+    height:           100%;
+    overflow:         auto;
+    pointer-events:   all;
+
+    background-color: #0005;
+}
+
+
+
+#whatsNewDialog
+{
+    display:       none;
+
+    font-family:   Inter;
+
+    z-index:       1002;
+    position:      absolute;
+    top:           58px;
+    left:          calc(50%);
+    transform:     translateX(-50%);
+    width:         600px;
+    height:        calc(100% - 80px);
+
+    overflow:      hidden;
+    
+    color:         var(--figma-color-text);
+    background:    var(--figma-color-bg);
+    
+    border:        0.5px solid rgba(0, 0, 0, 0.2);
+
+    border-radius: 4px;
+}
+
+
+#whatsNewDialogContainer
+{
+    height:   calc(100% - 42px);
+    overflow: hidden;
+    padding:  0;
+    z-index:  1;
+    /* box-shadow: 0 0 0 1px red inset; */
+}
+
+
+#whatsNewDialogContent
+{
+    font-size:      12px;
+    margin:         0;
+    padding:        1px 0 5px 0;
+    position:       absolute;
+    pointer-events: all;
+    user-select:    text;
+    /* box-shadow:  0 0 0 1px blue inset; */
+}
+
+
+.figma-light #whatsNewDialog
+{
+    box-shadow: 0px 2px  7px rgba(0, 0, 0, 0.15),
+                0px 5px 17px rgba(0, 0, 0, 0.15);
+}
+
+
+.figma-dark #whatsNewDialog
+{
+    box-shadow: 0px 2px  7px rgba(0, 0, 0, 0.45),
+                0px 5px 25px rgba(0, 0, 0, 0.45),
+                0 0px 2px 0px #fff3 inset;
+}
+
+
+#whatsNewWatermark
+{
+    position:       absolute;
+    left:           50%;
+    top:            50%;
+    transform:      translateX(-41%)
+                    translateY(-34%);
+    font-size:      800px;
+    font-weight:    600;
+    white-space:    nowrap;
+    color:          var(--figma-color-bg-secondary);
+    z-index:        -1;
+    user-select:    none;
+    pointer-events: none;
+}
+
+
+
+#whatsNewTitle
+{
+    position:       relative;
+    height:         40px;
+    border-bottom:  1px solid rgb(0, 0, 0, 0.15);
+    border-top:     1px solid var(--figma-color-bg-tertiary);
+    border-bottom:  1px solid var(--figma-color-bg-tertiary);
+    background:     var(--figma-color-bg);
+    z-index:        10;
+}
+
+
+#whatsNewTitleText
+{
+    position:       absolute;
+    left:           16px;
+    top:            12px;
+    
+    font-style:     normal;
+    font-weight:    600;
+    font-size:      11px;
+    line-height:    16px;
+    
+    display:        flex;
+    align-items:    center;
+    letter-spacing: 0.005em;
+    
+    color:          var(--figma-color-text);
+
+    pointer-events: none;
+    user-select:    none;
+}
+
+
+#whatsNewBody
+{
+    margin:  0 30px 0 30px;
+}
+
+
+
+#chkHideWhatsNew
+{
+    display:  inline-block;
+}
+
+
+
+#whatsNewScrollbarY
+{
+    width:   6px;
+    z-index: 1;
+    margin:  6px 0 18px 0;
+    display: none;
+}
+
+
+
+
+
+
+#aboutBack
+{
+    display:          none;
+
+    z-index:          10;
+    
+    position:         fixed;
+    left:             0;
+    top:              0;
+    width:            100%;
+    height:           100%;
+    overflow:         auto;
+    pointer-events:   all;
+
+    background-color: #0005;
+}
+
+
+
+#aboutDialog
+{
+    display:       none;
+
+    font-family:   Inter;
+
+    z-index:       20;
+    position:      absolute;
+    top:           50%;
+    left:          50%;
+    transform:     translateX(-50%)
+                   translateY(-50%);
+    width:         280px;
+    height:        168px;
+
+    overflow:      hidden;
+    
+    color:         var(--figma-color-text);
+    background:    var(--figma-color-bg);
+    
+    border:        0.5px solid rgba(0, 0, 0, 0.2);
+
+    border-radius: 4px;
+}
+
+
+#aboutDialogContainer
+{
+    height:   calc(100% - 22px);
+    overflow: hidden;
+    padding:  0;
+    z-index:  1;
+    /* box-shadow: 0 0 0 1px red inset; */
+}
+
+
+#aboutDialogContent
+{
+    font-size: 12px;
+    margin:    0;
+    padding:   1px 0 5px 0;
+    position:  absolute;
+    pointer-events: all;
+    user-select: text;
+    /* box-shadow: 0 0 0 1px blue inset; */
+}
+
+
+.figma-light #aboutDialog
+{
+    box-shadow: 0px 2px  7px rgba(0, 0, 0, 0.15),
+                0px 5px 17px rgba(0, 0, 0, 0.15);
+}
+
+
+.figma-dark #aboutDialog
+{
+    box-shadow: 0px 2px  7px rgba(0, 0, 0, 0.45),
+                0px 5px 25px rgba(0, 0, 0, 0.45),
+                0 0px 2px 0px #fff3 inset;
+}
+
+
+#aboutTitle
+{
+    position:       relative;
+    height:         40px;
+    border-bottom:  1px solid rgb(0, 0, 0, 0.15);
+    border-top:     1px solid var(--figma-color-bg-tertiary);
+    border-bottom:  1px solid var(--figma-color-bg-tertiary);
+    background:     var(--figma-color-bg);
+    z-index:        10;
+}
+
+
+#aboutTitleText
+{
+    position:       absolute;
+    left:           16px;
+    top:            12px;
+    
+    font-style:     normal;
+    font-weight:    600;
+    font-size:      11px;
+    line-height:    16px;
+    
+    display:        flex;
+    align-items:    center;
+    letter-spacing: 0.005em;
+    
+    color:          var(--figma-color-text);
+
+    pointer-events: none;
+    user-select:    none;
+}
+
+
+#aboutDialogBody
+{
+    padding-left: 30px;
+    width:        250px;
+    /* box-shadow:   0 0 0 1px inset yellow; */
+}
+
+
+#chkAboutHideWhatsNew
+{
+    display:  inline-block;
+}
+
+
+#aboutBrainshiftLogo
+{
+    display:   none;
+    position:  absolute;
+    left:      97px;
+    top:       82px;
+}
+
+
+#aboutGeneratorLogo
+{
+    position: absolute;
+    left:     30px;
+    top:      48px;
+}
+
+
+#aboutLine
+{
+    position: absolute;
+    left:     18px;
+    top:      132px;
+}
+
+
+#aboutVersion
+{
+    font-weight: 300;
+    font-size:   11px;
+    display:     inline;
+    position:    absolute;
+    left:        100px;
+    top:         44px;
+}
+
+
+#aboutCopyright
+{
+    font-weight: 300;
+    font-size:   11px;
+    display:     inline-block;
+    width:       max-content;
+    position:    absolute;
+    left:        99px;
+    top:         62px;
+}
+
+
+.figma-dark  #aboutVersion   { font-weight: 200; }
+.figma-dark  #aboutCopyright { font-weight: 200; }
+
+.figma-light #aboutVersion   { font-weight: 400; }
+.figma-light #aboutCopyright { font-weight: 400; }
+
+
+#aboutUserId
+{
+    font-size:      11px;
+    text-align:     center;
+
+    margin-top:     0px;
+    margin-bottom:  12px;
+
+    position:       absolute;
+    
+    left:           50%;
+    transform:      translateX(-50%);
+
+    top:            94px;
+
+    width:          300px;
+
+    user-select:    text;
+    line-height:    1.4em;
+
+    overflow:       visible;
+
+    /* box-shadow:  0 0 0 1px green inset; */
+}
+
+
+#licenseInfo
+{
+    font-family:   'Inter';
+    font-size:      11px;
+    font-weight:    300;
+
+    width:          350px;
+    height:         auto;
+    padding-top:    4px;
+    padding-bottom: 0;
+
+    margin-bottom:  -3px;
+
+    background:     transparent;
+
+    position:       absolute;
+    left:           50%;
+    transform:      translateX(-50%);
+    top:            60px;
+
+
+    pointer-events: none;
+
+    text-align:     center;
+
+    /* box-shadow:     0 0 0 1px red inset; */
+}
+
+.figma-dark  #licenseInfo { font-weight: 200; }
+.figma-light #licenseInfo { font-weight: 400; }
+
+
+
+
+
+#crashBack
+{
+    display:          none;
+
+    z-index:          10000;
+    
+    position:         fixed;
+    left:             0;
+    top:              0;
+    width:            100%;
+    height:           100%;
+    overflow:         auto;
+    pointer-events:   all;
+
+    background-color: #0005;
+}
+
+
+
+#crashDialog
+{
+    display:       none;
+
+    font-family:   Inter;
+
+    z-index:       10001;
+    position:      absolute;
+    top:           50%;
+    left:          50%;
+    transform:     translateX(-50%)
+                   translateY(-50%);
+    width:         440px;
+    height:        300px;
+
+    overflow:      hidden;
+    
+    color:         var(--figma-color-text);
+    background:    var(--figma-color-bg);
+    
+    border:        0.5px solid rgba(0, 0, 0, 0.2);
+
+    border-radius: 4px;
+
+    /* -webkit-font-smoothing: subpixel-antialiased;
+    -moz-osx-font-smoothing: auto; */
+}
+
+
+#crashDialogContainer
+{
+    height:   calc(100% - 42px);
+    overflow: hidden;
+    padding:  0;
+    z-index:  1;
+    /* box-shadow: 0 0 0 1px red inset; */
+}
+
+
+#crashDialogContent
+{
+    font-size:      12px;
+    margin:         0;
+    padding:        1px 0 5px 0;
+    position:       absolute;
+    pointer-events: all;
+    user-select:    text;
+    width:          100%;
+    /* box-shadow:     0 0 0 1px blue inset; */
+}
+
+
+.figma-light #crashDialog
+{
+    box-shadow: 0px 2px  7px rgba(0, 0, 0, 0.15),
+                0px 5px 17px rgba(0, 0, 0, 0.15);
+}
+
+
+.figma-dark #crashDialog
+{
+    box-shadow: 0px 2px  7px rgba(0, 0, 0, 0.45),
+                0px 5px 25px rgba(0, 0, 0, 0.45),
+                0 0px 2px 0px #fff3 inset;
+}
+
+
+#crashTitle
+{
+    font-size:     14px;
+    font-weight:   500;
+    margin-top:    20px;
+    margin-bottom: 27px;
+}
+
+
+#crashDetails
+{
+    /* font-weight: bold; */
+    height:        165px;
+    margin-bottom: 30px;
+    position:      relative;
+    left:          1px;
+    overflow-y:    scroll;
+    /* box-shadow:    0 0 0 1px red inset; */
+}
+
+
+#crashDetails::-webkit-scrollbar
+{
+    background: transparent;
+    width:      6px;
+}
+
+
+#crashDetails::-webkit-scrollbar-track
+{
+    margin: 6px 6px 6px 0;
+}
+
+
+#crashDetails::-webkit-scrollbar-thumb
+{
+    border-radius: 4px;
+}
+
+
+.figma-dark #crashDetails::-webkit-scrollbar-thumb
+{ 
+    background:    #fff4;
+    /* background-color: #0006;
+    box-shadow:       0 0 0 1px rgba(255, 255, 255, 0.25);  */
+}
+
+
+.figma-light #crashDetails::-webkit-scrollbar-thumb
+{ 
+    background-color: #0004;
+    box-shadow:       0 0 0 1px rgba(255, 255, 255, 0.25); 
+}    
+
+
+#crashDialogBody
+{
+    margin: 0 25px 0 25px;
+}
+
+
+#btnCrashRestart
+{
+    position: absolute;
+    right:    24px;
+    bottom:   21px;
+}
+
+
+
+
+
+#deleteConnectionsDialog
+{
+    display:       none;
+
+    font-family:   Inter;
+
+    z-index:       2;
+    position:      absolute;
+    width:         400px;
+    height:        92px;
+    
+    color:         var(--figma-color-text);
+    background:    var(--figma-color-bg);
+    
+    border-radius: 4px;
+}
+
+
+.figma-light #deleteConnectionsDialog
+{
+    box-shadow: 0px 2px  7px rgba(0, 0, 0, 0.15),
+                0px 5px 17px rgba(0, 0, 0, 0.15);
+}
+
+
+.figma-dark #deleteConnectionsDialog
+{
+    box-shadow: 0px 2px  7px rgba(0, 0, 0, 0.45),
+                0px 5px 25px rgba(0, 0, 0, 0.45),
+                0 0px 2px 0px #fff3 inset;
+}
+
+
+#deleteConnectionsTitle
+{
+    height:         40px;
+    font-weight:    900;
+    border-top:     1px solid var(--figma-color-bg-tertiary);
+    border-bottom:  1px solid var(--figma-color-bg-tertiary);
+}
+
+
+#deleteConnectionsTitleText
+{
+    position:       absolute;
+    left:           16px;
+    top:            12px;
+    
+    font-style:     normal;
+    font-weight:    600;
+    font-size:      11px;
+    line-height:    16px;
+    
+    display:        flex;
+    align-items:    center;
+    letter-spacing: 0.005em;
+    
+    color:          var(--figma-color-text);
+}
+
+
+#deleteConnectionsLabel
+{
+    font-size:      11px;
+
+    margin-top:     16px;
+    margin-bottom:  12px;
+
+    position:       relative;
+    left:           17px;
+
+    user-select:    text;
+}
+
+
+#deleteConnectionsInputBack
+{
+    font-size:       11px;
+    color:           var(--figma-color-bg-disabled);
+      
+    width:           266px;
+    height:          20px;
+ 
+    padding-top:     6px;
+    padding-bottom: -6px;
+
+    margin-top:      12px;
+    margin-bottom:  -3px;
+
+    position:        absolute;
+    left:            18px;
+}
+
+
+#deleteConnectionsInput
+{
+    background:     transparent;
+    font-size:      11px;
+      
+    width:          278px;
+    height:         26px;
+ 
+    padding-left:   6px;
+    padding-right:  6px;
+    padding-top:   -2px;
+    padding-bottom: 2px;
+
+    margin-top:     12px;
+    margin-bottom: -3px;
+
+    position:       absolute;
+    left:           12px;
+}
+
+
+#deleteConnectionsButton
+{
+    width:          60px;
+
+    position:       absolute;
+    right:          12px;
+    transform:      translateY(-2px);
+
+    margin-top:     12px;
+}
+
+
+
+
+
+#eulaBack
+{
+    display:          none;
+
+    
+    position:         fixed;
+    left:             0;
+    top:              0;
+    width:            100%;
+    height:           100%;
+    overflow:         auto;
+    z-index:          100;
+    pointer-events:   all;
+
+    /* background-color: #0005; */
+}
+
+
+
+#eulaDialog
+{
+    display:       none;
+
+    font-family:   Inter;
+
+    z-index:       200;
+    position:      absolute;
+    top:           58px;
+    left:          calc(50%);
+    transform:     translateX(-50%);
+    width:         540px;
+    height:        calc(100% - 80px);
+
+    overflow:      hidden;
+    
+    color:         var(--figma-color-text);
+    background:    var(--figma-color-bg);
+    
+    border:        0.5px solid rgba(0, 0, 0, 0.2);
+
+    border-radius: 4px;
+}
+
+
+#eulaDialogContainer
+{
+    height:   calc(100% - 42px);
+    overflow: hidden;
+    padding:  0;
+    z-index:  1;
+    /* box-shadow: 0 0 0 1px red inset; */
+}
+
+
+#eulaDialogContent
+{
+    font-size:      12px;
+    margin:         0;
+    padding:        1px 0 5px 0;
+    position:       absolute;
+    pointer-events: all;
+    user-select:    text;
+    /* box-shadow:  0 0 0 1px blue inset; */
+}
+
+
+.figma-light #eulaDialog
+{
+    box-shadow: 0px 2px  7px rgba(0, 0, 0, 0.15),
+                0px 5px 17px rgba(0, 0, 0, 0.15);
+}
+
+
+.figma-dark #eulaDialog
+{
+    box-shadow: 0px 2px  7px rgba(0, 0, 0, 0.45),
+                0px 5px 25px rgba(0, 0, 0, 0.45),
+                0 0px 2px 0px #fff3 inset;
+}
+
+
+#eulaWatermark
+{
+    position:       absolute;
+    left:           50%;
+    top:            50%;
+    transform:      translateX(-41%)
+                    translateY(-34%);
+    font-size:      800px;
+    font-weight:    600;
+    white-space:    nowrap;
+    color:          var(--figma-color-bg-secondary);
+    z-index:        -1;
+    user-select:    none;
+    pointer-events: none;
+}
+
+
+
+#eulaTitle
+{
+    position:       relative;
+    height:         40px;
+    border-bottom:  1px solid rgb(0, 0, 0, 0.15);
+    border-top:     1px solid var(--figma-color-bg-tertiary);
+    border-bottom:  1px solid var(--figma-color-bg-tertiary);
+    background:     var(--figma-color-bg);
+    z-index:        10;
+}
+
+
+#eulaTitleText
+{
+    position:       absolute;
+    left:           16px;
+    top:            12px;
+    
+    font-style:     normal;
+    font-weight:    600;
+    font-size:      11px;
+    line-height:    16px;
+    
+    display:        flex;
+    align-items:    center;
+    letter-spacing: 0.005em;
+    
+    color:          var(--figma-color-text);
+
+    pointer-events: none;
+    user-select:    none;
+}
+
+
+#eulaBody
+{
+    margin:      25px 60px 0 60px;
+    font-weight: 200;
+}
+
+
+.figma-dark  #eulaBody { font-weight: 200; }
+.figma-light #eulaBody { font-weight: 400; }
+
+
+#eulaBody ol
+{
+    margin-left:   16px;
+    margin-top:    30px;
+    margin-bottom: 30px;
+    padding-left:  0;
+}
+
+#eulaBody li
+{
+    margin-bottom: 10px;
+}
+
+#eulaBody li::marker
+{
+    content: counter(list-item) ".  ";
+}
+
+.figma-light #eulaBody .bold { font-weight: 700; }
+.figma-dark  #eulaBody .bold { font-weight: 500; }
+
+
+
+#eulaScrollbarY
+{
+    width:   6px;
+    z-index: 300;
+    margin:  6px 0 18px 0;
+    display: none;
+}
+
+.figma-light #eulaScrollbarY { background: #0002; }
+.figma-dark  #eulaScrollbarY { background: #fff2; }
+
+
+
+#btnStartTrial
+{
+    width:       120px;
+    height:      14px;
+    user-select: none;
+    margin:      45px auto 42px auto;
+    position:    relative;
+    left:        -5px;
+    background:  transparent;
+}
+
+
+.figma-light #btnStartTrial { font-weight: 600; }
+.figma-dark  #btnStartTrial { font-weight: 300; }
+
+
+#minZoomDialog
+{
+    display:       none;
+
+    font-family:   Inter;
+
+    z-index:       2;
+    position:      absolute;
+    width:         200px;
+    height:        92px;
+    
+    color:         var(--figma-color-text);
+    background:    var(--figma-color-bg);
+    
+    border-radius: 4px;
+}
+
+
+.figma-light #minZoomDialog
+{
+    box-shadow: 0px 2px  7px rgba(0, 0, 0, 0.15),
+                0px 5px 17px rgba(0, 0, 0, 0.15);
+}
+
+
+.figma-dark #minZoomDialog
+{
+    box-shadow: 0px 2px  7px rgba(0, 0, 0, 0.45),
+                0px 5px 25px rgba(0, 0, 0, 0.45),
+                0 0px 2px 0px #fff3 inset;
+}
+
+
+#minZoomTitle
+{
+    height:         40px;
+    font-weight:    900;
+    border-top:     1px solid var(--figma-color-bg-tertiary);
+    border-bottom:  1px solid var(--figma-color-bg-tertiary);
+}
+
+
+#minZoomTitleText
+{
+    position:       absolute;
+    left:           16px;
+    top:            12px;
+    
+    font-style:     normal;
+    font-weight:    600;
+    font-size:      11px;
+    line-height:    16px;
+    
+    display:        flex;
+    align-items:    center;
+    letter-spacing: 0.005em;
+    
+    color:          var(--figma-color-text);
+}
+
+
+#minZoomInput
+{
+    background:     transparent;
+    font-size:      11px;
+      
+    width:          176px;
+    height:         26px;
+ 
+    padding-left:   6px;
+    padding-right:  6px;
+    padding-top:   -2px;
+    padding-bottom: 2px;
+
+    margin-top:     12px;
+    margin-bottom: -3px;
+
+    position:       absolute;
+    left:           12px;
+}
+
+
+
+
+
+#saveAsTemplateBack
+{
+    display:          none;
+
+    z-index:          10;
+    
+    position:         fixed;
+    left:             0;
+    top:              0;
+    width:            100%;
+    height:           100%;
+    overflow:         auto;
+    pointer-events:   all;
+
+    background-color: #0005;
+}
+
+
+
+#saveAsTemplateDialog
+{
+    display:       none;
+
+    font-family:   Inter;
+
+    z-index:       20;
+    position:      absolute;
+    width:         400px;
+    height:        92px;
+    
+    color:         var(--figma-color-text);
+    background:    var(--figma-color-bg);
+    
+    border-radius: 4px;
+}
+
+
+.figma-light #saveAsTemplateDialog
+{
+    box-shadow: 0px 2px  7px rgba(0, 0, 0, 0.15),
+                0px 5px 17px rgba(0, 0, 0, 0.15);
+}
+
+
+.figma-dark #saveAsTemplateDialog
+{
+    box-shadow: 0px 2px  7px rgba(0, 0, 0, 0.45),
+                0px 5px 25px rgba(0, 0, 0, 0.45),
+                0 0px 2px 0px #fff3 inset;
+}
+
+
+#saveAsTemplateTitle
+{
+    height:         40px;
+    font-weight:    900;
+    border-top:     1px solid var(--figma-color-bg-tertiary);
+    border-bottom:  1px solid var(--figma-color-bg-tertiary);
+}
+
+
+#saveAsTemplateTitleText
+{
+    position:       absolute;
+    left:           16px;
+    top:            12px;
+    
+    font-style:     normal;
+    font-weight:    600;
+    font-size:      11px;
+    line-height:    16px;
+    
+    display:        flex;
+    align-items:    center;
+    letter-spacing: 0.005em;
+    
+    color:          var(--figma-color-text);
+}
+
+
+#saveAsTemplateLabel
+{
+    font-size:      11px;
+
+    margin-top:     16px;
+    margin-bottom:  12px;
+
+    position:       relative;
+    left:           17px;
+
+    user-select:    text;
+}
+
+
+#saveAsTemplateInputBack
+{
+    font-size:       11px;
+    color:           var(--figma-color-bg-disabled);
+      
+    width:           266px;
+    height:          20px;
+ 
+    padding-top:     6px;
+    padding-bottom: -6px;
+
+    margin-top:      12px;
+    margin-bottom:  -3px;
+
+    position:        absolute;
+    left:            18px;
+}
+
+
+#saveAsTemplateInput
+{
+    background:     transparent;
+    font-size:      11px;
+      
+    width:          278px;
+    height:         26px;
+ 
+    padding-left:   6px;
+    padding-right:  6px;
+    padding-top:   -2px;
+    padding-bottom: 2px;
+
+    margin-top:     12px;
+    margin-bottom: -3px;
+
+    position:       absolute;
+    left:           12px;
+}
+
+
+#saveAsTemplateButton
+{
+    width:          60px;
+
+    position:       absolute;
+    right:          12px;
+    transform:      translateY(-2px);
+
+    margin-top:     12px;
+}
+
+
+
+
+
+#subscriptionBack
+{
+    display:          none;
+
+    z-index:          1000;
+    
+    position:         fixed;
+    left:             0;
+    top:              0;
+    width:            100%;
+    height:           100%;
+    overflow:         auto;
+}
+
+
+#subscriptionDialog
+{
+    display:       none;
+
+    font-family:   Inter;
+
+    z-index:       2000;
+    position:      absolute;
+    top:           50%;
+    left:          50%;
+    transform:     translateX(-50%)
+                   translateY(-50%);
+
+    width:         400px;
+    height:        226px;
+    
+    color:         var(--figma-color-text);
+    background:    var(--figma-color-bg);
+    
+    border:        0.5px solid rgba(0, 0, 0, 0.2);
+
+    border-radius: 4px;
+
+    overflow:      hidden;
+}
+
+
+.figma-light #subscriptionDialog
+{
+    box-shadow: 0px 2px  7px rgba(0, 0, 0, 0.15),
+                0px 5px 17px rgba(0, 0, 0, 0.15);
+}
+
+
+.figma-dark #subscriptionDialog
+{
+    box-shadow: 0px 2px  7px rgba(0, 0, 0, 0.45),
+                0px 5px 25px rgba(0, 0, 0, 0.45),
+                0 0px 2px 0px #fff3 inset;
+}
+
+
+#subscriptionTitle
+{
+    height:         40px;
+    border-bottom:  1px solid rgb(0, 0, 0, 0.15);
+    border-top:     1px solid var(--figma-color-bg-tertiary);
+    border-bottom:  1px solid var(--figma-color-bg-tertiary);
+}
+
+
+#subscriptionTitleText
+{
+    position:       absolute;
+    left:           16px;
+    top:            12px;
+    
+    font-style:     normal;
+    font-weight:    600;
+    font-size:      11px;
+    line-height:    16px;
+    
+    display:        flex;
+    align-items:    center;
+    letter-spacing: 0.005em;
+    
+    color:          var(--figma-color-text);
+
+    pointer-events: none;
+    user-select:    none;
+}
+
+
+#subscriptionUserName
+{
+    font-size:      11px;
+    font-weight:    bold;
+
+    margin-top:     16px;
+    margin-bottom:  3px;
+
+    padding-bottom: 5px;
+
+    position:       absolute;
+    left:           50%;
+    top:            70px;
+    transform:      translateX(-50%);
+    border-bottom:  1px solid var(--figma-color-bg-disabled);
+    width:          240;
+
+    overflow:       hidden;
+
+    user-select:    text;
+
+    /* box-shadow:  0 0 0 1px red inset; */
+}
+
+
+#btnSubscribe
+{
+    display:        none;
+
+    width:          138px;
+
+    position:       absolute;
+    left:           50%;
+    transform:      translateX(-50%);
+
+    top:            162px;
+}
+
+
+#subscriptionTextBack
+{
+    display:        none;
+    
+    position:       absolute;
+    left:           50%;
+    top:            113px;
+    width:          138px;
+    height:         25px;
+
+    transform:      translateX(-50%);
+
+    z-index:        0;
+
+    pointer-events: none;
+
+    border-bottom:  1px solid var(--figma-color-bg-tertiary);
+
+    /* box-shadow:  0 0 0 1px red inset; */
+}
+
+
+
+/* #subscriptionInputBack
+{
+    font-family:   'Roboto Mono';
+    font-size:      16px;
+    color:          var(--figma-color-bg-disabled);
+    letter-spacing: 1px;
+    
+    width:          10em;
+    padding-left:   3px;
+    padding-top:    -2px;
+    padding-bottom:  2px;
+
+    position:       absolute;
+    left:           calc(calc(50% - 4.5em) + 1px);
+    top:            115px;
+
+    z-index:        1;
+
+    pointer-events: none;
+
+    box-shadow:  0 0 0 1px red inset; 
+} */
+
+
+
+/* #subscriptionInput
+{
+    font-family:   'Roboto Mono';
+    font-size:      16px;
+    letter-spacing:  1px;
+     
+    width:          calc(10em + 2px);
+    height:         24px;
+    padding-left:   13px;
+    padding-top:    -2px;
+    padding-bottom:  2px;
+
+    margin-bottom:  -3px;
+
+    background:     transparent;
+
+    position:       absolute;
+    left:           calc(50%);
+    top:            114px;
+
+    transform:      translateX(-50%);
+} */
+
+
+#subscriptionInput:disabled
+{
+    color: var(--figma-color-bg-disabled);
+}
+
+
+#subscribeWebsite
+{
+    font-size:      11px;
+    text-align:     center;
+
+    margin-top:     16px;
+    margin-bottom:   8px;
+
+    position:       absolute;
+    left:           50%;
+    top:            200px;
+    transform:      translateX(-50%);
+
+    color:          var(--figma-color-bg-disabled);
+}
+
+
+
 
 
 :root
@@ -4295,6 +4466,31 @@ a
 </div>
 
 
+<div id='saveAsTemplateBack'></div>
+
+<div id='saveAsTemplateDialog'>
+
+    <div id='saveAsTemplateTitle'>
+        <div id='saveAsTemplateTitleText'>Save as template</div>
+        <div class='panelButton dialogButtonClose' id='saveAsTemplateClose' onclick='saveAsTemplateClose.blur(); hideSaveAsTemplateDialog();'>
+            <svg width="30" height="30" viewBox="0 0 30 30" fill="none" xmlns="http://www.w3.org/2000/svg">
+                <path fill-rule="evenodd" clip-rule="evenodd" d="M16 15.293L20.6465 10.6465L21.3536 11.3536L16.7071 16.0001L21.3536 20.6465L20.6465 21.3536L16 16.7072L11.3536 21.3536L10.6465 20.6465L15.2929 16.0001L10.6465 11.3537L11.3536 10.6466L16 15.293Z" fill="var(--figma-color-text)" fill-opacity="0.8"/>
+            </svg>
+        </div>
+    </div>
+    
+    <div id='saveAsTemplateBody'>
+        <div id='saveAsTemplateInputBack'></div>
+        <input type='text' spellcheck='false' id='saveAsTemplateInput' />
+        <div class='button' id='saveAsTemplateButton' onclick='saveSelectedAsTemplate(saveAsTemplateInput.value); hideSaveAsTemplateDialog();'>Save</div>
+    </div>
+
+</div>
+
+
+
+
+
 <div id='subscriptionBack'></div>
 
 <div id='subscriptionDialog'>
@@ -4398,7 +4594,7 @@ a
             <div id='whatsNewBody'>
                 <h1 style='margin-top: 20px;'>What's new</h1>
 
-                <p>•  fixed objects without styles not propagating through transforms</p>
+                <p>•  fixed value propagation through the Color node</p>
                 
                 <p><br/><br/><div id='chkHideWhatsNew'></div></p>
             </div>
@@ -4726,7 +4922,7 @@ a
 
 
 
-const generatorVersion = 161;
+const generatorVersion = 162;
 
 
 const MAX_INT32        = 2147483647;
@@ -9639,6 +9835,8 @@ const ROTATE               = 'ROT';
 const SCALE                = 'SCALE';
 const SKEW                 = 'SKEW';
 
+const RESET_XFORM          = 'RSTX';
+
 const PLACE                = 'PLACE';
 const SHAPE_APPLY          = 'APPLY';
   
@@ -9721,6 +9919,7 @@ const SHAPE_TYPES =
 
     MOVE,
     ...AFFINE_TYPES,
+    RESET_XFORM,
 
     PLACE,
     SHAPE_APPLY,
@@ -10039,9 +10238,7 @@ class FigmaObject
 
         this.xform        = clone(identity);
 
-        this.cp0          = point(0, 0);
-        this.cp1          = point(1, 0);
-        this.cp2          = point(0, 1);
+        this.createDefaultSpace();
 
         this.scaleCorners = 1;
         this.scaleStyle   = 1;
@@ -10076,6 +10273,15 @@ class FigmaObject
     {
         consoleError('invalid use of abstract class FigmaObject');
         return null;
+    }
+
+
+
+    createDefaultSpace()
+    {
+        this.cp0 = point(0, 0);
+        this.cp1 = point(1, 0);
+        this.cp2 = point(0, 1);
     }
 
 
@@ -10356,11 +10562,21 @@ function getObjBounds(objects)
              && !obj.isDeco)
             bounds = expandRect_(bounds, point(obj.x, obj.y));
 
-        else if (obj.type == LINE)
-            bounds = expandRect(bounds, new Rect(obj.x, obj.y, obj.width, 0));
-
         else
-            bounds = expandRect(bounds, new Rect(obj.x, obj.y, obj.width, obj.height));
+        {
+            const dp = subv(obj.xp1, obj.xp0);
+
+            bounds = expandRect_(bounds, obj.xp0);
+            bounds = expandRect_(bounds, obj.xp1);
+            bounds = expandRect_(bounds, obj.xp2);
+            bounds = expandRect_(bounds, addv(obj.xp2, dp));
+        }
+
+        // else if (obj.type == LINE)
+        //     bounds = expandRect(bounds, new Rect(obj.x, obj.y, obj.width, 0));
+
+        // else
+        //     bounds = expandRect(bounds, new Rect(obj.x, obj.y, obj.width, obj.height));
     }
 
 
@@ -12786,6 +13002,7 @@ extends GOperator
         await this.node.eval(parse);
         this.node.feedbackValue = null;
 
+
         this.param = this.node.paramFromId(this.paramId);
 
         
@@ -12810,15 +13027,6 @@ extends GOperator
 
 
 
-    pushValueUpdates(parse)
-    {
-        super.pushValueUpdates(parse);
-
-        if (this.node) this.node.pushValueUpdates(parse);
-    }
-
-
-    
     isCached()
     {
         return super.isCached();
@@ -12834,6 +13042,15 @@ extends GOperator
 
 
 
+    pushValueUpdates(parse)
+    {
+        super.pushValueUpdates(parse);
+
+        if (this.node) this.node.pushValueUpdates(parse);
+    }
+
+
+    
     invalidateInputs(from)
     {
         super.invalidateInputs(from);
@@ -25746,12 +25963,8 @@ extends GColorType1
             {
                 if (this.options.enabled)
                 {
-                    this.value = new ColorValue(
-                        input.space,
-                        input.c1, 
-                        input.c2, 
-                        input.c3);
-
+                    this.value = input.copy();
+                    
 
                     const fromSpaceIndex = input.space.value;
 
@@ -25761,17 +25974,20 @@ extends GColorType1
                         colorSpaceCount(parse)-1);
 
 
-                    this.convertColor(
-                        this.value,
-                        colorSpace(fromSpaceIndex), 
-                        colorSpace(  toSpaceIndex));
+                    if (toSpaceIndex != fromSpaceIndex)
+                    {
+                        this.convertColor(
+                            this.value,
+                            colorSpace(fromSpaceIndex), 
+                            colorSpace(  toSpaceIndex));
 
-                    this.value.space.value = toSpaceIndex;
+                        this.value.space.value = toSpaceIndex;
+                    }
 
 
-                    if (!this.c1) { this.c1 = this.value.c1.copy(); c1 = this.c1.toValue(); }
-                    if (!this.c2) { this.c2 = this.value.c2.copy(); c2 = this.c2.toValue(); }
-                    if (!this.c3) { this.c3 = this.value.c3.copy(); c3 = this.c3.toValue(); }
+                    if (!c1) c1 = this.value.c1;
+                    if (!c2) c2 = this.value.c2;
+                    if (!c3) c3 = this.value.c3;
                 
                     if (c1) this.value.c1 = c1;
                     if (c2) this.value.c2 = c2;
@@ -28608,16 +28824,19 @@ extends GShapeBase
             props = new ListValue([props]);
 
         
-        if (this.input)
-            this.value.props = props ?? this.input.value.props;
-        else
-            this.value.props = props;
+        if (this.value)
+        {
+            if (this.input)
+                this.value.props = props ?? this.input.value.props;
+            else
+                this.value.props = props;
 
-                
-        if (   this.value
-            && this.value.isValid()
-            && this.value.props != undefined) 
-            this.updateValues.push(['props', this.value.props]);
+                    
+            if (   this.value
+                && this.value.isValid()
+                && this.value.props != undefined) 
+                this.updateValues.push(['props', this.value.props]);
+        }
     }
 
 
@@ -32180,7 +32399,6 @@ extends GOperator1
 
     async evalAffineObjects(options, scaleCorners, scaleStyle, getXform)
     {
-        console.log('this.value =', this.value);
         if (   !this.value
             || !this.value.isValid())
             return Rect.NaN;
@@ -32740,6 +32958,98 @@ extends GAffine
 
         if (this.skewX) this.skewX.invalidateInputs(from);
         if (this.skewY) this.skewY.invalidateInputs(from);
+    }
+
+
+
+    toValue()
+    {
+        return this.value
+             ? this.value.copy()
+             : null;
+    }
+}
+
+
+class GResetTransform
+extends GOperator1
+{
+    constructor(nodeId, options)
+    {
+        super(RESET_XFORM, nodeId, options);
+    }
+
+
+
+    copy()
+    {
+        const copy = new GResetTransform(this.nodeId, this.options);
+
+        copy.copyBase(this);
+
+        return copy;
+    }
+
+
+
+    async eval(parse)
+    {
+        if (this.isCached())
+            return this;
+
+
+        if (this.input)
+        {
+            this.value = (await this.input.eval(parse)).toValue();
+
+            if (this.value)
+                this.value.nodeId = this.nodeId;
+        }
+        else
+        {
+            this.value = NullValue;
+        }
+
+        
+        await this.evalObjects(parse);
+
+
+        this.updateValues = [['', NullValue]];
+
+
+        this.validate();
+
+        return this;
+    }
+
+
+
+    async evalObjects(parse)
+    {
+        if (   this.value
+            && this.value.isValid())
+        {
+            this.value.objects = 
+                   this.input 
+                && this.input.value
+                ? this.input.value.objects.map(o => o.copy()) 
+                : [];
+
+
+            if (this.options.enabled)
+            {
+                for (const obj of this.value.objects)
+                {
+                    obj.nodeId   = this.nodeId;
+                    obj.objectId = obj.objectId + OBJECT_SEPARATOR + this.nodeId;
+
+                    obj.createDefaultSpace();
+                }
+            }
+        }
+        
+        
+        await super.evalObjects(parse);
     }
 
 
@@ -33852,7 +34162,7 @@ function genParseColor(parse)
         }
     }
     
-    
+
     parse.nTab--;
 
 
@@ -37896,6 +38206,50 @@ function genParseSkew(parse)
 
 
 
+function genParseResetTransform(parse)
+{
+    const [, nodeId, options, ignore] = genParseNodeStart(parse);
+
+
+    const reset = new GResetTransform(nodeId, options);
+
+
+    let nInputs = -1;
+
+    if (!ignore)
+    {
+        nInputs = parseInt(parse.move());
+        consoleAssert(nInputs => 0 && nInputs <= 1, 'nInputs must be [0, 1]');
+    }
+
+
+    if (parse.settings.logRequests) 
+        logReq(reset, parse, ignore);
+
+
+    if (ignore) 
+    {
+        genParseNodeEnd(parse, reset);
+        return parse.parsedNodes.find(n => n.nodeId == nodeId);
+    }
+
+
+    parse.nTab++;
+
+
+    if (nInputs == 1)
+        reset.input = genParse(parse);
+
+
+    parse.nTab--;
+
+
+    genParseNodeEnd(parse, reset);
+    return reset;
+}
+
+
+
 function genParsePlace(parse)
 {
     const [, nodeId, options, ignore] = genParseNodeStart(parse);
@@ -39048,14 +39402,14 @@ function genParse(parse, inParam = true)
     else if (parse.next == VECTOR_PATH_VALUE      ) result = genParseVectorPathValue  (parse);
     else if (parse.next == VECTOR_PATH            ) result = genParseVectorPath       (parse);
     
-    else if (parse.next == VECTOR_VERTEX_VALUE     ) result = genParseVectorVertexValue (parse);
-    else if (parse.next == VECTOR_VERTEX           ) result = genParseVectorVertex      (parse);
+    else if (parse.next == VECTOR_VERTEX_VALUE    ) result = genParseVectorVertexValue (parse);
+    else if (parse.next == VECTOR_VERTEX          ) result = genParseVectorVertex      (parse);
     else if (parse.next == VECTOR_EDGE_VALUE      ) result = genParseVectorEdgeValue  (parse);
     else if (parse.next == VECTOR_EDGE            ) result = genParseVectorEdge       (parse);
     else if (parse.next == VECTOR_REGION_VALUE    ) result = genParseVectorRegionValue(parse);
     else if (parse.next == VECTOR_REGION          ) result = genParseVectorRegion     (parse);
-    else if (parse.next == VECTOR_NETWORK_VALUE       ) result = genParseVectorNetworkValue   (parse);
-    else if (parse.next == VECTOR_NETWORK             ) result = genParseVectorNetwork        (parse);
+    else if (parse.next == VECTOR_NETWORK_VALUE   ) result = genParseVectorNetworkValue   (parse);
+    else if (parse.next == VECTOR_NETWORK         ) result = genParseVectorNetwork        (parse);
 
     else if (parse.next == BOOLEAN_VALUE          ) result = genParseShapeBooleanValue(parse);
     else if (parse.next == BOOLEAN                ) result = genParseShapeBoolean     (parse);
@@ -39070,6 +39424,8 @@ function genParse(parse, inParam = true)
     else if (parse.next == ROTATE                 ) result = genParseRotate           (parse);
     else if (parse.next == SCALE                  ) result = genParseScale            (parse);
     else if (parse.next == SKEW                   ) result = genParseSkew             (parse);
+
+    else if (parse.next == RESET_XFORM            ) result = genParseResetTransform   (parse);
 
     else if (parse.next == PLACE                  ) result = genParsePlace            (parse);
     else if (parse.next == SHAPE_APPLY            ) result = genParseShapeApply       (parse);
@@ -42359,7 +42715,7 @@ onerror = (event, source, line, pos, error) =>
 };
 
 
-const generatorVersion = 161;
+const generatorVersion = 162;
 
 
 const MAX_INT32        = 2147483647;
@@ -49456,6 +49812,8 @@ const ROTATE               = 'ROT';
 const SCALE                = 'SCALE';
 const SKEW                 = 'SKEW';
 
+const RESET_XFORM          = 'RSTX';
+
 const PLACE                = 'PLACE';
 const SHAPE_APPLY          = 'APPLY';
   
@@ -49538,6 +49896,7 @@ const SHAPE_TYPES =
 
     MOVE,
     ...AFFINE_TYPES,
+    RESET_XFORM,
 
     PLACE,
     SHAPE_APPLY,
@@ -49856,9 +50215,7 @@ class FigmaObject
 
         this.xform        = clone(identity);
 
-        this.cp0          = point(0, 0);
-        this.cp1          = point(1, 0);
-        this.cp2          = point(0, 1);
+        this.createDefaultSpace();
 
         this.scaleCorners = 1;
         this.scaleStyle   = 1;
@@ -49893,6 +50250,15 @@ class FigmaObject
     {
         consoleError('invalid use of abstract class FigmaObject');
         return null;
+    }
+
+
+
+    createDefaultSpace()
+    {
+        this.cp0 = point(0, 0);
+        this.cp1 = point(1, 0);
+        this.cp2 = point(0, 1);
     }
 
 
@@ -50173,11 +50539,21 @@ function getObjBounds(objects)
              && !obj.isDeco)
             bounds = expandRect_(bounds, point(obj.x, obj.y));
 
-        else if (obj.type == LINE)
-            bounds = expandRect(bounds, new Rect(obj.x, obj.y, obj.width, 0));
-
         else
-            bounds = expandRect(bounds, new Rect(obj.x, obj.y, obj.width, obj.height));
+        {
+            const dp = subv(obj.xp1, obj.xp0);
+
+            bounds = expandRect_(bounds, obj.xp0);
+            bounds = expandRect_(bounds, obj.xp1);
+            bounds = expandRect_(bounds, obj.xp2);
+            bounds = expandRect_(bounds, addv(obj.xp2, dp));
+        }
+
+        // else if (obj.type == LINE)
+        //     bounds = expandRect(bounds, new Rect(obj.x, obj.y, obj.width, 0));
+
+        // else
+        //     bounds = expandRect(bounds, new Rect(obj.x, obj.y, obj.width, obj.height));
     }
 
 
@@ -52603,6 +52979,7 @@ extends GOperator
         await this.node.eval(parse);
         this.node.feedbackValue = null;
 
+
         this.param = this.node.paramFromId(this.paramId);
 
         
@@ -52627,15 +53004,6 @@ extends GOperator
 
 
 
-    pushValueUpdates(parse)
-    {
-        super.pushValueUpdates(parse);
-
-        if (this.node) this.node.pushValueUpdates(parse);
-    }
-
-
-    
     isCached()
     {
         return super.isCached();
@@ -52651,6 +53019,15 @@ extends GOperator
 
 
 
+    pushValueUpdates(parse)
+    {
+        super.pushValueUpdates(parse);
+
+        if (this.node) this.node.pushValueUpdates(parse);
+    }
+
+
+    
     invalidateInputs(from)
     {
         super.invalidateInputs(from);
@@ -65563,12 +65940,8 @@ extends GColorType1
             {
                 if (this.options.enabled)
                 {
-                    this.value = new ColorValue(
-                        input.space,
-                        input.c1, 
-                        input.c2, 
-                        input.c3);
-
+                    this.value = input.copy();
+                    
 
                     const fromSpaceIndex = input.space.value;
 
@@ -65578,17 +65951,20 @@ extends GColorType1
                         colorSpaceCount(parse)-1);
 
 
-                    this.convertColor(
-                        this.value,
-                        colorSpace(fromSpaceIndex), 
-                        colorSpace(  toSpaceIndex));
+                    if (toSpaceIndex != fromSpaceIndex)
+                    {
+                        this.convertColor(
+                            this.value,
+                            colorSpace(fromSpaceIndex), 
+                            colorSpace(  toSpaceIndex));
 
-                    this.value.space.value = toSpaceIndex;
+                        this.value.space.value = toSpaceIndex;
+                    }
 
 
-                    if (!this.c1) { this.c1 = this.value.c1.copy(); c1 = this.c1.toValue(); }
-                    if (!this.c2) { this.c2 = this.value.c2.copy(); c2 = this.c2.toValue(); }
-                    if (!this.c3) { this.c3 = this.value.c3.copy(); c3 = this.c3.toValue(); }
+                    if (!c1) c1 = this.value.c1;
+                    if (!c2) c2 = this.value.c2;
+                    if (!c3) c3 = this.value.c3;
                 
                     if (c1) this.value.c1 = c1;
                     if (c2) this.value.c2 = c2;
@@ -68425,16 +68801,19 @@ extends GShapeBase
             props = new ListValue([props]);
 
         
-        if (this.input)
-            this.value.props = props ?? this.input.value.props;
-        else
-            this.value.props = props;
+        if (this.value)
+        {
+            if (this.input)
+                this.value.props = props ?? this.input.value.props;
+            else
+                this.value.props = props;
 
-                
-        if (   this.value
-            && this.value.isValid()
-            && this.value.props != undefined) 
-            this.updateValues.push(['props', this.value.props]);
+                    
+            if (   this.value
+                && this.value.isValid()
+                && this.value.props != undefined) 
+                this.updateValues.push(['props', this.value.props]);
+        }
     }
 
 
@@ -71997,7 +72376,6 @@ extends GOperator1
 
     async evalAffineObjects(options, scaleCorners, scaleStyle, getXform)
     {
-        console.log('this.value =', this.value);
         if (   !this.value
             || !this.value.isValid())
             return Rect.NaN;
@@ -72557,6 +72935,98 @@ extends GAffine
 
         if (this.skewX) this.skewX.invalidateInputs(from);
         if (this.skewY) this.skewY.invalidateInputs(from);
+    }
+
+
+
+    toValue()
+    {
+        return this.value
+             ? this.value.copy()
+             : null;
+    }
+}
+
+
+class GResetTransform
+extends GOperator1
+{
+    constructor(nodeId, options)
+    {
+        super(RESET_XFORM, nodeId, options);
+    }
+
+
+
+    copy()
+    {
+        const copy = new GResetTransform(this.nodeId, this.options);
+
+        copy.copyBase(this);
+
+        return copy;
+    }
+
+
+
+    async eval(parse)
+    {
+        if (this.isCached())
+            return this;
+
+
+        if (this.input)
+        {
+            this.value = (await this.input.eval(parse)).toValue();
+
+            if (this.value)
+                this.value.nodeId = this.nodeId;
+        }
+        else
+        {
+            this.value = NullValue;
+        }
+
+        
+        await this.evalObjects(parse);
+
+
+        this.updateValues = [['', NullValue]];
+
+
+        this.validate();
+
+        return this;
+    }
+
+
+
+    async evalObjects(parse)
+    {
+        if (   this.value
+            && this.value.isValid())
+        {
+            this.value.objects = 
+                   this.input 
+                && this.input.value
+                ? this.input.value.objects.map(o => o.copy()) 
+                : [];
+
+
+            if (this.options.enabled)
+            {
+                for (const obj of this.value.objects)
+                {
+                    obj.nodeId   = this.nodeId;
+                    obj.objectId = obj.objectId + OBJECT_SEPARATOR + this.nodeId;
+
+                    obj.createDefaultSpace();
+                }
+            }
+        }
+        
+        
+        await super.evalObjects(parse);
     }
 
 
@@ -77494,6 +77964,8 @@ const iconColorStyle        = '<svg width="12" height="12" viewBox="0 0 12 12" f
 const iconColorStyleReplace = '<svg width="15" height="19" viewBox="0 0 15 19" fill="none" xmlns="http://www.w3.org/2000/svg"><path fill-rule="evenodd" clip-rule="evenodd" d="M5.18718 13.3189L7.83883 10.6673L8.54594 11.3744L5.89429 14.026C4.62509 15.2952 2.5673 15.2952 1.2981 14.026C0.0288918 12.7568 0.0288916 10.699 1.2981 9.42982L3.94975 6.77817L4.65685 7.48528L2.0052 10.1369C1.12652 11.0156 1.12652 12.4402 2.0052 13.3189C2.88388 14.1976 4.3085 14.1976 5.18718 13.3189ZM11.3744 8.54594L10.6673 7.83883L13.3189 5.18718C14.1976 4.3085 14.1976 2.88388 13.3189 2.0052C12.4402 1.12652 11.0156 1.12652 10.1369 2.0052L7.48528 4.65685L6.77817 3.94975L9.42982 1.2981C10.699 0.0288935 12.7568 0.0288931 14.026 1.2981C15.2952 2.5673 15.2952 4.62509 14.026 5.89429L11.3744 8.54594ZM5.92375 10.1664L10.1664 5.92375L9.40036 5.15772L5.15772 9.40036L5.92375 10.1664Z" fill="white"/></svg>';
 
 const iconShapes            = '<svg width="17" height="19" viewBox="0 -1 17 19" fill="none" xmlns="http://www.w3.org/2000/svg"><rect x="1.53844" y="1.49869" width="5" height="5" stroke="white"/><circle cx="12.8668" cy="3.99869" r="3" stroke="white"/><line x1="0.933922" y1="16.7012" x2="7.26322" y2="10.3719" stroke="white"/><path d="M9.61918 15.709L12.8668 10.084L16.1144 15.709H9.61918Z" stroke="white"/></svg>';
+const iconTemplate          = '<svg width="17" height="17" viewBox="0 -1 17 17" fill="none" xmlns="http://www.w3.org/2000/svg"><path d="M3 0.5H14C15.3807 0.5 16.5 1.61929 16.5 3V15.5H0.5V3C0.5 1.61929 1.61929 0.5 3 0.5Z" stroke="white"/><rect width="4" height="1" transform="matrix(-1 0 0 1 14 4)" fill="white"/><rect width="4" height="1" transform="matrix(-1 0 0 1 9 6)" fill="white"/><rect width="4" height="1" transform="matrix(-1 0 0 1 12 9)" fill="white"/><rect width="4" height="1" transform="matrix(-1 0 0 1 7 11)" fill="white"/></svg>';
+const iconManageTemplates   = '<svg width="14" height="17" viewBox="0 0 14 17" fill="none" xmlns="http://www.w3.org/2000/svg"><rect width="5.98706" height="1" transform="matrix(-1 0 0 1 13.0066 2.00244)" fill="white"/><path d="M2.02227 2.95511L3.4823 0.42627L4.34833 0.92627L2.23303 4.58008L0.263306 2.61035L0.970412 1.90324L2.02227 2.95511Z" fill="white"/><path d="M2.02227 6.94436L3.4823 4.41553L4.34833 4.91553L2.23303 8.56934L0.263306 6.59961L0.970412 5.8925L2.02227 6.94436Z" fill="white"/><path d="M2.02227 14.9488L3.4823 12.4199L4.34833 12.9199L2.23303 16.5737L0.263306 14.604L0.970412 13.8969L2.02227 14.9488Z" fill="white"/><rect width="5.98706" height="1" transform="matrix(-1 0 0 1 13.0066 6)" fill="white"/><rect width="5.98706" height="1" transform="matrix(-1 0 0 1 13.0066 10.0046)" fill="white"/><rect width="5.98706" height="1" transform="matrix(-1 0 0 1 13.0066 14.0093)" fill="white"/></svg>';
 
 const iconRectangle         = '<svg width="16" height="16" viewBox="0 0 16 16" fill="none" xmlns="http://www.w3.org/2000/svg"><rect x="0.5" y="0.5" width="15" height="15" stroke="white"/></svg>';
 const iconLine              = '<svg width="17" height="17" viewBox="0 1 17 18" fill="none" xmlns="http://www.w3.org/2000/svg"><line x1="0.772299" y1="15.9778" x2="15.6598" y2="1.09027" stroke="white" stroke-width="1.3"/></svg>';
@@ -77521,7 +77993,9 @@ const iconRotate            = '<svg width="14" height="19" viewBox="0 0 14 19" f
 const iconScale             = '<svg width="15" height="15" viewBox="0 0 15 15" fill="none" xmlns="http://www.w3.org/2000/svg"><path d="M0 0V15H15V9H14V14L1 14V1L6 1V0H0Z" fill="white"/><path d="M10 1V2.38419e-07L15 0V5H14V1.70718L6.70718 9H10V10H5V5H6V8.29297L13.293 1L10 1Z" fill="white"/></svg>';
 const iconSkew              = '<svg width="19" height="17" viewBox="0 0 19 17" fill="none" xmlns="http://www.w3.org/2000/svg"><path d="M2.75185 13.0498L4.85299 15.1509L4.04961 16.0462L0.564758 12.5613L4.02604 9.1001L4.85299 9.96779L2.77106 12.0496H8.03782V13.0498H2.75185Z" fill="white"/><path d="M16.2802 3.02754L14.1492 0.896574L14.9986 0.0472195L18.4673 3.516L15.0221 6.9613L14.1492 6.13945L16.261 4.02766L10.9942 4.02766L10.9942 3.02754L16.2802 3.02754Z" fill="white"/><rect x="8.03784" y="12.0476" width="3.98492" height="1" fill="white"/><rect x="10.9941" y="4.02979" width="3.94812" height="1" transform="rotate(-180 10.9941 4.02979)" fill="white"/><path d="M10.9083 12.532L13.0237 9.01649L14.0898 9.62791L12.0117 13.0475L10.9083 12.532Z" fill="white"/><path d="M8.20062 3.47107L6.03195 7.05296L4.94104 6.43312L7.02151 3.02985L8.20062 3.47107Z" fill="white"/></svg>'; 
 
+const iconResetXform        = '<svg width="18" height="18" viewBox="0 0 18 18" fill="none" xmlns="http://www.w3.org/2000/svg"><path d="M3.5 16.6407C3.05477 16.6394 2.67167 16.5539 2.35069 16.3844C2.03144 16.2148 1.78552 15.9692 1.61296 15.6476C1.44211 15.326 1.35755 14.939 1.35928 14.4869C1.35928 14.0361 1.4447 13.6518 1.61554 13.3342C1.78811 13.0167 2.03402 12.7751 2.35328 12.6096C2.67426 12.4427 3.0565 12.3593 3.5 12.3593C3.9435 12.3593 4.32488 12.4427 4.64413 12.6096C4.96511 12.7764 5.21189 13.0187 5.38446 13.3363C5.55703 13.6525 5.64245 14.0361 5.64072 14.4869C5.64072 14.9404 5.55444 15.328 5.38187 15.6496C5.21102 15.9712 4.96598 16.2168 4.64672 16.3864C4.32747 16.556 3.94523 16.6407 3.5 16.6407ZM3.5 15.9161C3.80372 15.9161 4.04618 15.797 4.22738 15.5588C4.40858 15.3206 4.49831 14.9633 4.49659 14.4869C4.49659 14.1733 4.45517 13.9122 4.37234 13.7037C4.29123 13.4951 4.17561 13.3383 4.02547 13.2333C3.87706 13.1283 3.70191 13.0759 3.5 13.0759C3.198 13.0759 2.95641 13.1936 2.77521 13.4291C2.59401 13.6646 2.50255 14.0172 2.50082 14.4869C2.50082 14.8045 2.54138 15.0696 2.62249 15.2822C2.70532 15.4935 2.8218 15.6523 2.97194 15.7586C3.12207 15.8636 3.29809 15.9161 3.5 15.9161Z" fill="white"/><rect x="9" y="2" width="1" height="1" fill="white"/><rect x="12" y="2" width="1" height="1" fill="white"/><rect x="15" y="2" width="1" height="1" fill="white"/><rect x="15" y="5" width="1" height="1" fill="white"/><rect x="15" y="8" width="1" height="1" fill="white"/><path d="M15 13.9803L12.8691 11.8493L13.7184 11L17.1871 14.4688L13.742 17.9141L12.8691 17.0922L14.9808 14.9804L8 14.9804L8.00005 13.9803L15 13.9803Z" fill="white"/><path d="M3.00483 2.99995L0.873869 5.13092L0.0245147 4.28159L3.4933 0.812866L6.9386 4.25802L6.11675 5.13091L4.00496 3.01917L4.00497 9.99995L3.00483 10L3.00483 2.99995Z" fill="white"/></svg>'; 
 const iconPlace             = '<svg width="19" height="17" viewBox="0 0 19 17" fill="none" xmlns="http://www.w3.org/2000/svg"><circle cx="16.5371" cy="15.5" r="1.5" fill="white"/><path fill-rule="evenodd" clip-rule="evenodd" d="M15.711 9.60649L18.1232 6.79155L19.0227 7.56237L16.0318 11.0527L16.0168 11.0398L15.9972 11.0787L11.9998 9.05711L12.5344 8L15.711 9.60649Z" fill="white"/><path d="M4.5 3.60622C6.33275 -0.178262 14.5351 -1.28238 15.8513 10.4285" stroke="white"/><rect x="0.5" y="7.5" width="8" height="8" stroke="white"/></svg>'; 
+
 const iconApply             = '<svg width="18" height="15" viewBox="0 -1 18 15" fill="none" xmlns="http://www.w3.org/2000/svg"><path fill-rule="evenodd" clip-rule="evenodd" d="M1.99634 3.23086C1.99634 1.43758 3.48795 0.00793457 5.2978 0.00793457H13.7022C15.512 0.00793457 17.0037 1.43758 17.0037 3.23086V7.76908C17.0037 9.56236 15.512 10.992 13.7022 10.992H11.5V9.99201H13.7022C14.9868 9.99201 16.0037 8.98346 16.0037 7.76908V3.23086C16.0037 2.01648 14.9868 1.00793 13.7022 1.00793H5.2978C4.01324 1.00793 2.99634 2.01648 2.99634 3.23086V5H1.99634V3.23086Z" fill="white"/><path d="M0 7H9V8H0V7Z" fill="white"/><path d="M0 10H9V11H0V10Z" fill="white"/><path d="M0 13H9V14H0V13Z" fill="white"/></svg>'; 
 
 const iconRender            = '<svg width="18" height="17" viewBox="0 0 18 17" fill="none" xmlns="http://www.w3.org/2000/svg"><rect x="0.5" y="0.5" width="17" height="16" rx="1.5" stroke="white"/><rect x="3.5" y="3.5" width="4" height="4" stroke="white"/><circle cx="12.5" cy="5.5" r="2" stroke="white"/><line x1="3.43646" y1="14.6568" x2="7.93646" y2="9.88989" stroke="white"/><path d="M10.3349 13.75L12.5 10L14.6651 13.75H10.3349Z" stroke="white"/></svg>';
@@ -78564,6 +79038,7 @@ var btnColor;
 var btnLayer;
 //var btnStyle;
 var btnShape;
+var btnTemplate;
 var btnGroup;
 var btnHand;
 var btnComment;
@@ -78597,6 +79072,7 @@ var menuEffects;
 var menuStyles;
 var menuVariables;
 var menuShape;
+var menuTemplate;
 var menuGroup;
 
 var menuMath;
@@ -78715,6 +79191,7 @@ var menuItemStyleSep2;
 var menuItemShapeSep1;
 var menuItemShapeSelected;
 
+var menuItemManageTemplates;
 
 var menuItemDataMode;
 
@@ -78768,6 +79245,7 @@ var menuItemNodeSelect;
 // var menuItemNodeBringToFront;
 // var menuItemNodeSendToBack;
 //var menuItemNodeActivate;
+var menuItemNodeSaveAsTemplate;
 var menuItemNodeSep4;
 var menuItemNodeEnableDisable;
 
@@ -79144,10 +79622,14 @@ function initGeneratorMenus()
 
     menuTransform = new Menu('Transform', true, false);
     menuTransform.addItems([
-        new MenuItem('Move',   {icon: iconMove,   callback: e => actionManager.do(getCreateNodeAction(MOVE,   btnShape.div, getCreateOptions(e)))}),
-        new MenuItem('Rotate', {icon: iconRotate, callback: e => actionManager.do(getCreateNodeAction(ROTATE, btnShape.div, getCreateOptions(e)))}),
-        new MenuItem('Scale',  {icon: iconScale,  callback: e => actionManager.do(getCreateNodeAction(SCALE,  btnShape.div, getCreateOptions(e)))}),
-        new MenuItem('Skew',   {icon: iconSkew,   callback: e => actionManager.do(getCreateNodeAction(SKEW,   btnShape.div, getCreateOptions(e)))})]);
+        new MenuItem('Move',        {icon: iconMove,       callback: e => actionManager.do(getCreateNodeAction(MOVE,        btnShape.div, getCreateOptions(e)))}),
+        new MenuItem('Rotate',      {icon: iconRotate,     callback: e => actionManager.do(getCreateNodeAction(ROTATE,      btnShape.div, getCreateOptions(e)))}),
+        new MenuItem('Scale',       {icon: iconScale,      callback: e => actionManager.do(getCreateNodeAction(SCALE,       btnShape.div, getCreateOptions(e)))}),
+        new MenuItem('Skew',        {icon: iconSkew,       callback: e => actionManager.do(getCreateNodeAction(SKEW,        btnShape.div, getCreateOptions(e)))}),
+        new MenuItem('',            {separator: true}),
+        new MenuItem('Reset',       {icon: iconResetXform, callback: e => actionManager.do(getCreateNodeAction(RESET_XFORM, btnShape.div, getCreateOptions(e)))}),
+        new MenuItem('',            {separator: true}),
+        new MenuItem('. . . Place', {icon: iconPlace,      callback: e => actionManager.do(getCreateNodeAction(PLACE,       btnShape.div, getCreateOptions(e)))})]);
 
 
     menuShape = new Menu('Shapes', true, false);
@@ -79162,11 +79644,16 @@ function initGeneratorMenus()
                              // new MenuItem('Boolean',     {enabled: false, icon: iconBoolUnion,  callback: e => actionManager.do(getCreateNodeAction(BOOLEAN,     btnShape.div, getCreateOptions(e)))}),
         menuItemShapeSep1     = new MenuItem('',            {separator: true}),
                                 new MenuItem('Transform',   {icon: iconMove, childMenu: menuTransform}),
-                                new MenuItem('. . . Place', {icon: iconPlace, callback: e => actionManager.do(getCreateNodeAction(PLACE, btnShape.div, getCreateOptions(e)))}),
                                 new MenuItem('',            {separator: true}),
                                 new MenuItem('Apply style', {icon: iconApply, callback: e => actionManager.do(getCreateNodeAction(SHAPE_APPLY, btnShape.div, getCreateOptions(e)))}),
                                 new MenuItem('',            {separator: true}),
                                 new MenuItem('Render',      {icon: iconRenderDown, callback: e => actionManager.do(getCreateNodeAction(RENDER,       btnShape.div, getCreateOptions(e)))})]);
+
+
+    menuTemplate = new Menu('Templates', true, false);
+    menuTemplate.addItems([
+        //new MenuItem('',            {separator: true}),
+        menuItemManageTemplates = new MenuItem('Manage templates...', {icon: iconManageTemplates})]);
 
 
     menuGroup = new Menu('Groups', true, false);
@@ -79242,16 +79729,18 @@ function initGeneratorMenus()
         // menuItemNodeSepGroup       = new MenuItem('',                {separator: true}),
         //menuItemNodeGroupSelected  = new MenuItem('Group selected',  {shortcut:  osCtrl() + 'G',       callback: e => { hideAllMenus(); actionManager.do(new   GroupNodesAction(graphView.selectedNodes)); }}),
         //menuItemNodeUngroup        = new MenuItem('Ungroup',         {                                 callback: e => { hideAllMenus(); actionManager.do(new UngroupNodesAction(graphView.selectedNodes)); }}),
-        menuItemNodeSep2           = new MenuItem('',                {separator: true}),
-        menuItemNodeRename         = new MenuItem('Rename',          {shortcut:  osCtrl() + 'R',       callback: e => { hideAllMenus(); graphView.renameSelectedNode(); }}),
-        menuItemNodeSelect         = new MenuItem('Select',          {childMenu: menuNodeSelect}),
-        menuItemNodeSep3           = new MenuItem('',                {separator: true}),
-        // menuItemNodeEdit           = new MenuItem('Edit...',      {callback: e => { hideAllMenus(); graphView.editSelectedCustomNode(); }}),
-        //                              new MenuItem('',             {separator: true}),
-        // menuItemNodeActivate    = new MenuItem('Activate',        {callback: () => makeSelectedNodesActive()}),
-        menuItemNodeEnableDisable  = new MenuItem('Enable/Disable',  {shortcut:  osCtrlShift() + 'E',  callback: () => actionManager.do(new ToggleDisableNodesAction(graphView.selectedNodes.map(n => n.id)))}),
-        menuItemNodeSep4           = new MenuItem('',                {separator: true}),
-        menuItemNodeRemove         = new MenuItem('Remove',          {shortcut:  osCtrl() + '⌫',      callback: e => { hideAllMenus(); graphView.removeSelectedNodes(true); }})]);
+        menuItemNodeSep2           = new MenuItem('',                 {separator: true}),
+        menuItemNodeRename         = new MenuItem('Rename',           {shortcut:  osCtrl() + 'R',       callback: e => { hideAllMenus(); graphView.renameSelectedNode(); }}),
+        menuItemNodeSelect         = new MenuItem('Select',           {childMenu: menuNodeSelect}),
+        menuItemNodeSep3           = new MenuItem('',                 {separator: true}),
+        // menuItemNodeEdit           = new MenuItem('Edit...',       {callback: e => { hideAllMenus(); graphView.editSelectedCustomNode(); }}),
+        //                              new MenuItem('',              {separator: true}),
+        // menuItemNodeSaveAsTemplate = new MenuItem('Save as template', {callback: e => { hideAllMenus(); showSaveAsTemplateDialog(); }}),
+        //                              new MenuItem('',                 {separator: true}),
+        // menuItemNodeActivate    = new MenuItem('Activate',         {callback: () => makeSelectedNodesActive()}),
+        menuItemNodeEnableDisable  = new MenuItem('Enable/Disable',   {shortcut:  osCtrlShift() + 'E',  callback: () => actionManager.do(new ToggleDisableNodesAction(graphView.selectedNodes.map(n => n.id)))}),
+        menuItemNodeSep4           = new MenuItem('',                 {separator: true}),
+        menuItemNodeRemove         = new MenuItem('Remove',           {shortcut:  osCtrl() + '⌫',      callback: e => { hideAllMenus(); graphView.removeSelectedNodes(true); }})]);
 
 
 
@@ -79300,14 +79789,15 @@ function initGeneratorMenus()
     menuSelectParam = new Menu('Select options', false, true);
 
     
-    btnMain   = new MenuButton('', menuMain,   {useMenuName: true, highlight: () => currentMenus.includes(menuMain  ), callback: () => updatePanMode(false)});
-    btnFlow   = new MenuButton('', menuFlow,   {useMenuName: true, highlight: () => currentMenus.includes(menuFlow  ), callback: () => updatePanMode(false)});
-    btnNumber = new MenuButton('', menuNumber, {useMenuName: true, highlight: () => currentMenus.includes(menuNumber), callback: () => updatePanMode(false)});
-    btnText   = new MenuButton('', menuString, {useMenuName: true, highlight: () => currentMenus.includes(menuString), callback: () => updatePanMode(false)});
-    btnColor  = new MenuButton('', menuColor,  {useMenuName: true, highlight: () => currentMenus.includes(menuColor ), callback: () => updatePanMode(false)});
-    btnLayer  = new MenuButton('', menuLayer,  {useMenuName: true, highlight: () => currentMenus.includes(menuLayer ), callback: () => updatePanMode(false)});
-    //btnStyle  = new MenuButton('', menuStyle,  {useMenuName: true, highlight: () => currentMenus.includes(menuStyle ), callback: () => updatePanMode(false)});
-    btnShape  = new MenuButton('', menuShape,  {useMenuName: true, highlight: () => currentMenus.includes(menuShape ), callback: () => updatePanMode(false)});
+    btnMain     = new MenuButton('', menuMain,     {useMenuName: true, highlight: () => currentMenus.includes(menuMain  ), callback: () => updatePanMode(false)});
+    btnFlow     = new MenuButton('', menuFlow,     {useMenuName: true, highlight: () => currentMenus.includes(menuFlow  ), callback: () => updatePanMode(false)});
+    btnNumber   = new MenuButton('', menuNumber,   {useMenuName: true, highlight: () => currentMenus.includes(menuNumber), callback: () => updatePanMode(false)});
+    btnText     = new MenuButton('', menuString,   {useMenuName: true, highlight: () => currentMenus.includes(menuString), callback: () => updatePanMode(false)});
+    btnColor    = new MenuButton('', menuColor,    {useMenuName: true, highlight: () => currentMenus.includes(menuColor ), callback: () => updatePanMode(false)});
+    btnLayer    = new MenuButton('', menuLayer,    {useMenuName: true, highlight: () => currentMenus.includes(menuLayer ), callback: () => updatePanMode(false)});
+    //btnStyle  = new MenuButton('', menuStyle,    {useMenuName: true, highlight: () => currentMenus.includes(menuStyle ), callback: () => updatePanMode(false)});
+    btnShape    = new MenuButton('', menuShape,    {useMenuName: true, highlight: () => currentMenus.includes(menuShape ), callback: () => updatePanMode(false)});
+    //btnTemplate = new MenuButton('', menuTemplate, {useMenuName: true, highlight: () => currentMenus.includes(menuShape ), callback: () => updatePanMode(false)});
     //btnGroup  = new MenuButton('', menuGroup,  {useMenuName: true, highlight: () => currentMenus.includes(menuShape ), callback: () => updatePanMode(false)});
 
     // btnGroup  = new MenuButton('Node groups', null, {callback: () => 
@@ -79387,14 +79877,15 @@ function initGeneratorMenus()
     // btnZoom.div.style.boxShadow           = '0 0 0 1px red inset';
 
 
-    btnMain   .setIcon(iconGenerator);
-    btnShape  .setIcon(iconShapes);
-    btnLayer  .setIcon(iconEffects);
-    btnColor  .setIcon(iconColor);
+    btnMain    .setIcon(iconGenerator);
+    btnColor   .setIcon(iconColor);
+    btnLayer   .setIcon(iconEffects);
+    btnShape   .setIcon(iconShapes);
+    //btnTemplate.setIcon(iconTemplate);
     //btnStyle  .setIcon(iconStyle);
     //btnGroup  .setIcon(iconGroup);
-    btnHand   .setIcon(iconHand);
-    btnComment.setIcon(iconComment);
+    btnHand    .setIcon(iconHand);
+    btnComment .setIcon(iconComment);
 }
 
 
@@ -89722,12 +90213,12 @@ class Wire
     
             this.xp1.style.display          = 'inline';
             this.xp1.style.stroke           = rgba2style(rgb_a(darkMode ? [0.067, 0.067, 0.067] : [0.784, 0.784, 0.784], 1 - color[3]));
-            this.xp1.style.strokeDasharray  = 9 * graph.currentPage.zoom;
+            this.xp1.style.strokeDasharray  = 9 * Math.max(1, graph.currentPage.zoom);
     
             this.xp2.style.display          = 'inline';
             this.xp2.style.stroke           = rgba2style(rgb_a(darkMode ? [0.302, 0.302, 0.302] : [1, 1, 1], 1 - color[3]));//darkMode ? '#4d4d4d' : '#fff';
-            this.xp2.style.strokeDasharray  = 9 * graph.currentPage.zoom;
-            this.xp2.style.strokeDashoffset = 9 * graph.currentPage.zoom;
+            this.xp2.style.strokeDasharray  = 9 * Math.max(1, graph.currentPage.zoom);
+            this.xp2.style.strokeDashoffset = 9 * Math.max(1, graph.currentPage.zoom);
         }
         else
         {
@@ -89818,16 +90309,23 @@ class Wire
                    && conn.input.node.isOrFollowedByMultiplier());
 
                 
-        this.curve  .style.stroke          = wireStyle;
-        this.curve2 .style.stroke          = rgb2style(rgbDocumentBody);
+        this.curve .style.stroke = wireStyle;
+        this.curve2.style.stroke = rgb2style(rgbDocumentBody);
     
-        this.curve  .style.strokeDasharray = unknown ? (2.7 * graph.currentPage.zoom) + ' ' + (2.7 * graph.currentPage.zoom) : '0';
-    
-        this. inBall.style.fill            = wireStyle;
-        this.outBall.style.fill            = wireStyle;
 
-        this.arrow1 .style.fill            = arrowStyle;
-        this.arrow2 .style.fill            = arrowStyle;
+        const dash = Math.max(1.5, 2.7 * graph.currentPage.zoom);
+
+        this.curve.style.strokeDasharray = 
+            unknown 
+            ? dash + ' ' + dash 
+            : '0';
+    
+
+        this. inBall.style.fill   = wireStyle;
+        this.outBall.style.fill   = wireStyle;
+
+        this.arrow1 .style.fill   = arrowStyle;
+        this.arrow2 .style.fill   = arrowStyle;
     
     
         if (conn.output) conn.output.wireBall.style.background = wireStyle;
@@ -99152,6 +99650,11 @@ extends OpColorBase
         this.param3    .controls[0].wheelScale = 1;
 
 
+        this.param1.isNodeValue = true;
+        this.param2.isNodeValue = true;
+        this.param3.isNodeValue = true;
+
+
         // hex is default, remove default sliders
         this.paramHolder.removeChild(this.param1.div);
         this.paramHolder.removeChild(this.param2.div);
@@ -99474,9 +99977,9 @@ extends OpColorBase
         const enable = !this.inputs[0].connected;
 
         this.paramSpace.enableControlText(!this.paramSpace.input.connected);
-        this.param1    .enableControlText(enable);
-        this.param2    .enableControlText(enable);
-        this.param3    .enableControlText(enable);
+        this.param1    .enableControlText(enable, this.isUnknown());
+        this.param2    .enableControlText(enable, this.isUnknown());
+        this.param3    .enableControlText(enable, this.isUnknown());
 
 
         enableElementText(this.paramColor.controls[0].div, !this.isConnected());
@@ -105889,6 +106392,105 @@ extends OpAffine
 
 
 
+class   OpResetTransform
+extends OperatorBase
+{
+    constructor()
+    {
+        super(RESET_XFORM, 'reset', 'reset', iconResetXform);
+
+        this.canDisable  = true;
+        this.iconOffsetY = -1;
+
+
+        this.addInput (new Input([...SHAPE_VALUES, LIST_VALUE]));
+        this.addOutput(new Output([SHAPE_VALUE], this.output_genRequest));
+
+
+        // this.inputs[0].addEventListener('connect',    () => OpCopy_onConnectInput(this));
+        // this.inputs[0].addEventListener('disconnect', () => OpCopy_onDisconnectInput(this));
+    }
+
+
+
+    canAutoConnectFrom(output)
+    {
+        return true;
+    }
+
+    
+
+    output_genRequest(gen)
+    {
+        // 'this' is the output
+
+        gen.scope.push({
+            nodeId:  this.node.id, 
+            paramId: NULL });
+
+        const [request, ignore] = this.node.genRequestStart(gen);
+        if (ignore) return request;
+
+
+        const input = this.node.inputs[0];
+
+
+        request.push(input.connected ? 1 : 0);
+
+        if (input.connected)
+            request.push(...pushInputOrParam(input, gen));
+
+        
+        gen.scope.pop();
+        pushUnique(gen.passedNodes, this.node);
+
+        return request;
+    }
+
+
+
+    // getHeaderColors(options = {})
+    // {
+    //     const colors = super.getHeaderColors(options);
+
+    //     const type = 
+    //         this.inputs[0].connected 
+    //         ? this.inputs[0].connectedOutput.node.type 
+    //         : this.type;
+
+    //     // colors.back = 
+    //     //     this.headerColor
+    //     //     ? this.headerColor
+    //     //     : this.inert
+    //     //     ? rgb_a(rgbDocumentBody, 0.95)
+    //     //     : rgb_a(rgbFromType(type, this.active), 0.95);
+
+
+    //     colors.text   = isDark(colors.back) ? [1, 1, 1, 1] : [0, 0, 0, 1]; 
+
+    //     colors.input  = this.active ? rgb_a(colors.text, 0.4)  : rgb_a(rgbSaturateHsv(rgbFromType(type, true), 0.5), 0.8);
+    //     colors.output = this.active ? rgb_a(colors.text, 0.35) : rgb_a(rgbSaturateHsv(rgbFromType(type, true), 0.5), 0.7);
+    //     colors.wire   = rgbFromType(type, true);
+
+    //     return colors;
+    // }
+}
+
+
+
+// function OpCopy_onConnectInput(node)
+// {
+//     node.outputs[0].types = [...node.inputs[0].connectedOutput.types];
+// }
+
+
+
+// function OpCopy_onDisconnectInput(node)
+// {
+//     node.outputs[0].types = [ANY_VALUE];
+// }
+
+
 class OpShapeBooleanBase
 extends OpShapeBase
 {
@@ -111505,61 +112107,6 @@ extends Action
 }
 
 
-function initAboutDialog()
-{
-    // initCheckbox(chkAboutHideWhatsNew, 'Show what\'s new at startup', settings.showWhatsNew);
-    // chkAboutHideWhatsNew.addEventListener('change', () => uiSetLocalData('showWhatsNew', chkAboutHideWhatsNew.checked ? (generatorVersion-1) : (generatorVersion)));
-
-    aboutBack.addEventListener('pointerdown', e => { e.preventDefault(); });
-
-    aboutVersion.innerHTML = 'Generator&nbsp;&hairsp;version&nbsp;&thinsp;' + generatorVersion;
-}
-
-
-
-function showAboutDialog()
-{
-    aboutBack  .style.display = 'block';
-    aboutDialog.style.display = 'block';
-
-    //aboutUserId.innerHTML = '<span style="user-select: none; color: var(--figma-color-bg-disabled-secondary);">Your Figma user ID:&nbsp;&nbsp;</span>' + currentUser.id;
-
-    dialogShown = true;
-}
-
-
-
-function hideAboutDialog()
-{
-    aboutBack  .style.display = 'none';
-    aboutDialog.style.display = 'none';
-
-    dialogShown = false;
-}
-
-
-
-function copyUserId()
-{
-    writeTextToClipboard(currentUser.id);
-    selectElementText('aboutUserId');
-    uiNotify('Copied user ID');
-}
-
-
-
-aboutClose.addEventListener('pointerdown', e => e.stopPropagation());
-aboutBack.addEventListener('pointerdown', () => { hideAboutDialog(); });
-
-
-
-aboutBack.addEventListener('pointerdown', () =>
-{
-    hideAboutDialog();
-});
-
-
-
 const colFigmaBlue         = '#0c8ce9';
 
 
@@ -112417,111 +112964,6 @@ function dataModeDeleteConnection(conn)
 
 
 
-var deleteConnectionsDialogVisible = false;
-
-
-
-function showDeleteConnectionsDialog()
-{
-    deleteConnectionsDialog.style.left      = '50%';
-    deleteConnectionsDialog.style.top       = '50%';
-    deleteConnectionsDialog.style.transform = 'translateX(-50%) translateY(-50%)';
-
-    deleteConnectionsDialog.style.display   = 'block';
-    deleteConnectionsDialogVisible          = true;
-  
-    deleteConnectionsTitle.buttonDown0      = false;
-       
-    deleteConnectionsTitle.moveStart        = point_NaN;
-    deleteConnectionsTitle.pStart           = point_NaN;
-    
-    deleteConnectionsInput.value            = graphView.selectedNodes.map(n => n.id).join(', ');
-
-    updateDeleteConnectionsInputBack();
-
-
-    window.setTimeout(() => document.getElementById('deleteConnectionsInput').focus(), 0);
-}
-
-
-
-function hideDeleteConnectionsDialog()
-{
-    deleteConnectionsDialog.style.display = 'none';
-    deleteConnectionsDialogVisible        = false;
-}
-
-
-
-deleteConnectionsClose.addEventListener('pointerdown', e => e.stopPropagation());
-
-
-
-deleteConnectionsTitle.addEventListener('pointerdown', e => 
-{
-    deleteConnectionsTitle.setPointerCapture(e.pointerId);
-    deleteConnectionsTitle.buttonDown0 = true;
-
-    deleteConnectionsTitle.moveStart = point(deleteConnectionsDialog.offsetLeft, deleteConnectionsDialog.offsetTop);
-    deleteConnectionsTitle.pStart    = point(e.clientX, e.clientY);
-});
-
-
-
-deleteConnectionsTitle.addEventListener('pointermove', e =>
-{
-    if (deleteConnectionsTitle.buttonDown0)
-    {
-        deleteConnectionsDialog.style.left = (deleteConnectionsTitle.moveStart.x + (e.clientX - deleteConnectionsTitle.pStart.x)) + 'px';
-        deleteConnectionsDialog.style.top  = (deleteConnectionsTitle.moveStart.y + (e.clientY - deleteConnectionsTitle.pStart.y)) + 'px';
-    }
-});
-
-
-
-deleteConnectionsTitle.addEventListener('pointerup', e =>
-{
-    deleteConnectionsTitle.buttonDown0 = false;
-    deleteConnectionsTitle.releasePointerCapture(e.pointerId);
-});
-
-
-
-deleteConnectionsInput.addEventListener('input', () =>
-{
-    updateDeleteConnectionsInputBack();
-});
-
-
-
-function updateDeleteConnectionsInputBack()
-{
-    deleteConnectionsInputBack.innerHTML          = deleteConnectionsInput.value == '' ? 'Node IDs' : '';
-    deleteConnectionsInputBack.style.borderBottom = deleteConnectionsInput.value == '' ? '1px solid var(--figma-color-bg-tertiary)' : 'none';
-}
-
-
-
-deleteConnectionsInput.addEventListener('pointerup', () =>
-{
-    deleteConnectionsInput.select();
-});
-
-
-
-function deleteConnectionsToNodes(str)
-{
-    str = str.replace(',', ' ');
-    
-    const nodeIds = str.split(' ').filter(i => i);
-
-    uiRemoveConnsToNodes(nodeIds);
-
-    if (!isEmpty(nodeIds))
-        hideDeleteConnectionsDialog();
-}
-
-
 var documentBodyClient = null;
 var enteredDragging    = false;
 
@@ -112573,175 +113015,6 @@ window.addEventListener('focus', () => graph.updatePages());
 window.addEventListener('blur',  () => graph.updatePages());
 
 document.addEventListener('contextmenu', e => e.preventDefault());
-
-
-function initEulaDialog()
-{
-    //eulaBack.addEventListener('pointerdown', e => { e.preventDefault(); });
-
-
-    eulaDialog.mouseOver = false;
-
-    eulaDialog.addEventListener('pointerenter', e => { eulaDialog.mouseOver = true;  updateEulaScroll(); });
-    eulaDialog.addEventListener('pointerleave', e => { eulaDialog.mouseOver = false; updateEulaScroll(); });
-    
-
-    let r = simpleIntHash(generatorVersion);
-    r = 3*r*r - 2*r*r*r;
-
-    eulaWatermark.style.left = Math.round(r * 100) + '%';
-
-
-    eulaDialogContainer.addEventListener('wheel', e =>
-    {    
-        const bounds = eulaDialogContent.getBoundingClientRect();
-
-        if (bounds.bottom - bounds.top <= eulaDialogContainer.clientHeight)
-            return;
-
-
-        let oy = eulaDialogContent.style.top = eulaDialogContent.offsetTop - e.deltaY / 3;
-
-        oy = Math.max(oy, eulaDialogContainer.clientHeight - eulaDialogContent.clientHeight + eulaTitle.clientHeight);
-        eulaDialogContent.style.top = Math.min(oy, getTopHeight());
-
-        updateEulaScroll();
-    });
-
-
-
-    eulaScrollbarY.addEventListener('pointerdown', e =>
-    {
-        if (e.button == 0)
-        {
-            eulaScrollbarY.moving = true;
-            eulaScrollbarY.yStart = eulaScrollbarY.offsetTop;
-            eulaScrollbarY.hStart = eulaScrollbarY.offsetHeight;
-            eulaScrollbarY.pStart = e.clientY;
-            eulaScrollbarY.setPointerCapture(e.pointerId);
-    
-            for (const node of graph.nodes)
-                node.div.sly = node.div.offsetTop;
-    
-            eulaDialogContent.topStart = eulaDialogContent.offsetTop;
-        }
-    });
-    
-    
-    
-    eulaScrollbarY.addEventListener('pointerup', e =>
-    {
-        if (   e.button == 0
-            && eulaScrollbarY.moving)
-        {
-            eulaScrollbarY.moving = false;
-            eulaScrollbarY.releasePointerCapture(e.pointerId);
- 
-            let bounds = Rect.NaN;
-    
-            for (const node of graph.nodes)
-                bounds = expandRect(bounds, boundingRect(node.div));
-    
-            // if (bounds.t >= 0 && bounds.b < eulaDialog.clientHeight)
-            //     eulaScrollbarY.style.display = 'none';
-        }
-    });
-    
-    
-    
-    eulaScrollbarY.addEventListener('pointermove', e =>
-    {
-        if (eulaScrollbarY.moving)
-            updateEulaScrollbar(e.clientY);
-    });
-}
-
-
-
-function showEulaDialog()
-{
-    eulaBack  .style.display = 'block';
-    eulaDialog.style.display = 'block';
-
-    updateEulaScroll();
-
-    dialogShown = true;
-}
-
-
-
-function hideEulaDialog()
-{
-    eulaBack  .style.display = 'none';
-    eulaDialog.style.display = 'none';
-
-    dialogShown = false;
-}
-
-
-
-/////////////////////////////////////////////////////////////////////////////////////
-
-
-
-function updateEulaScrollbar(clientY)
-{
-    let t = eulaScrollbarY.yStart + clientY - eulaScrollbarY.pStart;
-    let b = t + eulaScrollbarY.hStart;
-
-    t = Math.max(eulaTitle.clientHeight + smallScrollGap, t);
-    b = Math.min(b, eulaDialogContainer.clientHeight - largeScrollGap);
-
-    t = Math.max(smallScrollGap, Math.min(t, b - smallScrollGap));
-    b = Math.max(t + smallScrollGap, b);
-
-
-    let oy = 
-          eulaDialogContent.topStart 
-        - (clientY - eulaScrollbarY.pStart) / eulaScrollbarY.hStart * eulaDialogContainer.clientHeight;
-
-    oy = Math.max(oy, eulaDialogContainer.clientHeight - eulaDialogContent.clientHeight + eulaTitle.clientHeight);
-
-
-    eulaDialogContent.style.top = Math.min(
-        oy,
-        getTopHeight());
-
-
-    updateEulaScroll();
-}
-
-
-
-function updateEulaScroll()
-{
-    const x       = eulaDialog.clientLeft;
-    const w       = eulaDialog.clientWidth;
-    const h       = eulaDialogContainer.clientHeight;
-    const yOffset = getTopHeight();
-    
-    const bounds = eulaDialogContent.getBoundingClientRect();
-    
-    updateEulaScrollY(x, w, h, bounds, yOffset);
-}
-
-
-
-function updateEulaScrollY(x, w, h, bounds, yOffset)
-{
-    if (   /*eulaDialog.mouseOver
-        &&*/ bounds.bottom - bounds.top > h)
-    {
-        const height = sqr(h) / bounds.height - 2*smallScrollGap;
-
-        eulaScrollbarY.style.display = 'inline-block';
-        eulaScrollbarY.style.height  =  height;
-        eulaScrollbarY.style.left    =  x + w - smallScrollGap - 6;
-        eulaScrollbarY.style.top     =  yOffset - (bounds.top - 100) * h / bounds.height;
-    }
-    else
-       eulaScrollbarY.style.display = 'none';
-}
 
 
 
@@ -113755,124 +114028,6 @@ function uiPostMessageToGenerator(msg)
 ///////////////////////////////////////////////////////////////////////////////////////////////////
 
 
-var minZoomDialogVisible = false;
-
-
-
-function showMinZoomDialog()
-{
-    minZoomDialog.style.left      = '50%';
-    minZoomDialog.style.top       = '50%';
-    minZoomDialog.style.transform = 'translateX(-50%) translateY(-50%)';
-
-    minZoomDialog.style.display   = 'block';
-    minZoomDialogVisible          = true;
-  
-    minZoomTitle.buttonDown0      = false;
-       
-    minZoomTitle.moveStart        = point_NaN;
-    minZoomTitle.pStart           = point_NaN;
-    
-    minZoomInput.value = numToString(settings.minZoomForParams * 100, -1) + '%';
-    minZoomInput.select();
-
-    window.setTimeout(() => document.getElementById('minZoomInput').focus(), 0);
-}
-
-
-
-function hideMinZoomDialog()
-{
-    minZoomDialog.style.display = 'none';
-    minZoomDialogVisible        = false;
-}
-
-
-
-minZoomClose.addEventListener('pointerdown', e => e.stopPropagation());
-
-
-
-minZoomTitle.addEventListener('pointerdown', e => 
-{
-    minZoomTitle.setPointerCapture(e.pointerId);
-    minZoomTitle.buttonDown0 = true;
-
-    minZoomTitle.moveStart = point(minZoomDialog.offsetLeft, minZoomDialog.offsetTop);
-    minZoomTitle.pStart    = point(e.clientX, e.clientY);
-});
-
-
-
-minZoomTitle.addEventListener('pointermove', e =>
-{
-    if (minZoomTitle.buttonDown0)
-    {
-        minZoomDialog.style.left = (minZoomTitle.moveStart.x + (e.clientX - minZoomTitle.pStart.x)) + 'px';
-        minZoomDialog.style.top  = (minZoomTitle.moveStart.y + (e.clientY - minZoomTitle.pStart.y)) + 'px';
-    }
-});
-
-
-
-minZoomTitle.addEventListener('pointerup', e =>
-{
-    minZoomTitle.buttonDown0 = false;
-    minZoomTitle.releasePointerCapture(e.pointerId);
-});
-
-
-
-minZoomInput.addEventListener('keydown', e => 
-{
-    if (   (   e.key < '0' 
-            || e.key > '9')
-        &&  e.key != '.'
-        &&  e.key != '%'
-        &&  e.code != 'Backspace'
-        &&  e.code != 'Delete'
-        &&  e.code != 'Enter'
-        &&  e.code != 'NumpadEnter'
-        && !isArrowKey(e.code))
-        e.preventDefault();    
-        
-        
-    switch (e.code)
-    {
-        case 'Enter':
-        case 'NumpadEnter':
-        {
-            const minZoom = parseFloat(minZoomInput.value.replace('%', ''));
-
-            if (!isNaN(minZoom))
-            {
-                updateSetting('minZoomForParams', minZoom / 100);
-                uiSetLocalData('minZoomForParams', settings.minZoomForParams);
-                
-                updateZoomIcon();
-            }
-
-            hideMinZoomDialog();
-            break;
-        }
-    }
-});
-
-
-
-minZoomInput.addEventListener('pointerup', e =>
-{
-    e.stopPropagation();
-
-    if (e.button == 2)
-    {
-        initTextMenu(minZoomInput);
-        menuText.showAt(e.clientX, e.clientY, false, false);
-    }
-});
-
-
-
 function setCursor(cursor, forceAsync = true)
 {
     document.body.style.cursor = cursor;
@@ -114846,177 +115001,6 @@ function dataColorToJson(color, nTab)
 }
 
 
-var subscription            = NULL;
-var checkoutTimer           = -1;
-var subscriptionDialogShown = false;
-
-
-
-function onSubscribeClick()
-{
-    let checkoutSession = arrayToBase32(sign(hashLicenseString(
-        currentUser.id + (new Date().getTime()).toString(),
-        30), licenseKeys.private));
-
-
-    const response = postToServer(
-    {
-        action: 'createCheckout',
-        userId:  currentUser.id,
-        session: checkoutSession
-    }); 
-    
-
-    if (   response
-        && response.result)
-    {
-        window.open('https://brainshift.design/generator/checkout.html?' + checkoutSession, '_blank');
-
-        checkoutTimer = setInterval(() => 
-        {
-            checkLastSub().then(lastSub =>
-            {
-                if (   lastSub
-                    && lastSub.daysLeft > 0)
-                    uiRestartGenerator(false);
-            });
-        }, 
-        4000);
-    }
-    else
-    {
-        console.error('Could not create create Generator checkout session.')
-    }
-}
-
-
-
-function showSubscriptionDialog(showBack = true)
-{
-    subscriptionBack  .style.display = 'block';
-    subscriptionDialog.style.display = 'block';
-
-    subscriptionBack.style.backgroundColor = showBack ? '#0005' : 'transparent';
-    
-    updateLicenseInfo(
-        subscription != NULL
-        ? validateLicense(currentUser.id, subscription)
-        : null)
-    .then(() => 
-    {
-        dialogShown             = true;
-        subscriptionDialogShown = true;
-    });
-}
-
-
-
-function hideSubscriptionDialog()
-{
-    if (checkoutTimer >= 0)
-        clearInterval(checkoutTimer);
-
-    subscriptionBack  .style.display = 'none';
-    subscriptionDialog.style.display = 'none';
-
-    dialogShown             = false;
-    subscriptionDialogShown = false;
-}
-
-
-
-subscriptionClose.addEventListener('pointerdown', e => e.stopPropagation());
-
-
-
-async function updateLicenseInfo()
-{
-    const lastSub       = await checkLastSub();
-    const trialDaysLeft = await checkRemainingTrialDays();
-
-
-    if (   lastSub
-        && lastSub.daysLeft > 0)
-    {
-        const daysLeft = formatDaysLeft(lastSub.daysLeft);
-
-        licenseInfo.innerHTML            = daysLeft + ' of your subscription.';
-     
-        licenseInfo.style.top            = '55%';
-        licenseInfo.style.transform      = 'translateX(-50%) translateY(-50%)';
-
-        // aboutUserId.style.display = 'none';
-        btnSubscribe      .style.display = 'none';
-
-        subscriptionClose.style.display  = 'inline-block';
-
-        if (checkoutTimer >= 0)
-            clearInterval(checkoutTimer);
-    }
-    else if (trialDaysLeft > 0)
-    {
-        const daysLeft = formatDaysLeft(trialDaysLeft);
-
-        licenseInfo.innerHTML            = daysLeft + ' of your free trial.';
-     
-        licenseInfo.style.top            = '40%';
-        licenseInfo.style.transform      = 'translateX(-50%) translateY(-50%)';
-
-        // aboutUserId.style.display = 'none';
-        btnSubscribe      .style.display = 'block';
-        btnSubscribe      .style.top     = '148px';
-
-        subscriptionClose.style.display  = 'inline-block';
-
-        if (checkoutTimer >= 0)
-            clearInterval(checkoutTimer);
-    }
-    else     
-    {
-        const daysLeft =
-            lastSub
-            ? formatDaysLeft(lastSub.daysLeft)
-            : trialDaysLeft;
-
-        const expDays   = Math.abs  (daysLeft);
-        const expWeeks  = Math.round(expDays / 7);
-        const expMonths = Math.round(expDays / 30.5);
-        const expYears  = Math.round(expDays / 365)
-
-        let expired;
-
-             if (expYears  > 0) expired = 'expired ' + expYears  + ' ' + countString(expYears,  'year' ) + ' ago';
-        else if (expMonths > 0) expired = 'expired ' + expMonths + ' ' + countString(expMonths, 'month') + ' ago';
-        else if (expWeeks  > 0) expired = 'expired ' + expWeeks  + ' ' + countString(expWeeks,  'week' ) + ' ago';
-        else if (expDays   > 1) expired = 'expired ' + expDays   + ' ' + countString(expDays,   'day'  ) + ' ago';
-        else                    expired = 'has expired';
-
-
-        const subOrTrial = lastSub ? 'subscription' : 'free trial';
-
-        licenseInfo.innerHTML            = 'Your ' + subOrTrial + ' ' + expired + '.<br/><br/>Please subscribe to continue using Generator.';
-
-        licenseInfo.style.top            = '70px';
-        licenseInfo.style.transform      = 'translateX(-50%)';
-
-        // aboutUserId.style.display = 'none';
-        btnSubscribe      .style.display = 'block';
-
-        subscriptionClose.style.display  = 'none';
-    }
-}
-
-
-
-function formatDaysLeft(daysLeft)
-{
-    return daysLeft == 1
-        ? 'Last day'
-        :  daysLeft + ' ' + countString(daysLeft, 'day') + ' left';
-
-}
-
-
 var tooltipTimer    = -1;
 var tooltipOutTimer = -1;
 
@@ -115411,10 +115395,10 @@ function createNode(nodeType, creatingButton = null, createdNodeId = -1, options
         case TEXT_SHAPE:              node = new OpTextShape();         break;
         case POINT:                   node = new OpPoint();             break;
         case VECTOR_PATH:             node = new OpVectorPath();        break;
-        case VECTOR_VERTEX:            node = new OpVectorVertex();       break;
+        case VECTOR_VERTEX:           node = new OpVectorVertex();      break;
         case VECTOR_EDGE:             node = new OpVectorEdge();        break;
         case VECTOR_REGION:           node = new OpVectorRegion();      break;
-        case VECTOR_NETWORK:              node = new OpVectorNetwork();         break;
+        case VECTOR_NETWORK:          node = new OpVectorNetwork();     break;
         case BOOLEAN:                 node = new OpShapeBoolean();      break;
         case SHAPE_GROUP:             node = new OpShapeGroup();        break;
         case FRAME:                   node = new OpFrame();             break;
@@ -115424,6 +115408,8 @@ function createNode(nodeType, creatingButton = null, createdNodeId = -1, options
         case ROTATE:                  node = new OpRotate();            break;
         case SCALE:                   node = new OpScale();             break;
         case SKEW:                    node = new OpSkew();              break;
+
+        case RESET_XFORM:             node = new OpResetTransform();    break;
         
         case PLACE:                   node = new OpPlace();             break;
 
@@ -115609,6 +115595,10 @@ function uiVariableConnect(outputNode, outputId, inputNode, inputId, outputOrder
 function uiVariableConnectFromOutput(output, inputNode, inputId, outputOrder = -1)
 {
     //console.log('uiVariableConnectFromOutput()');
+
+    if (!inputNode)
+        return;
+    
 
     const input = inputNode.inputFromId( inputId);
 
@@ -117519,6 +117509,741 @@ function dockWindowLeft    () { uiQueueMessageToFigma({cmd: 'figDockWindowLeft' 
 function dockWindowRight   () { uiQueueMessageToFigma({cmd: 'figDockWindowRight'   }); }
 function dockWindowBottom  () { uiQueueMessageToFigma({cmd: 'figDockWindowBottom'  }); }
 
+
+
+function initAboutDialog()
+{
+    // initCheckbox(chkAboutHideWhatsNew, 'Show what\'s new at startup', settings.showWhatsNew);
+    // chkAboutHideWhatsNew.addEventListener('change', () => uiSetLocalData('showWhatsNew', chkAboutHideWhatsNew.checked ? (generatorVersion-1) : (generatorVersion)));
+
+    aboutBack .addEventListener('pointerdown', e => { e.preventDefault(); });
+    aboutBack .addEventListener('pointerdown', () => { hideAboutDialog(); });
+    aboutClose.addEventListener('pointerdown', e => e.stopPropagation());
+
+    aboutVersion.innerHTML = 'Generator&nbsp;&hairsp;version&nbsp;&thinsp;' + generatorVersion;
+}
+
+
+
+function showAboutDialog()
+{
+    aboutBack  .style.display = 'block';
+    aboutDialog.style.display = 'block';
+
+    //aboutUserId.innerHTML = '<span style="user-select: none; color: var(--figma-color-bg-disabled-secondary);">Your Figma user ID:&nbsp;&nbsp;</span>' + currentUser.id;
+
+    dialogShown = true;
+}
+
+
+
+function hideAboutDialog()
+{
+    aboutBack  .style.display = 'none';
+    aboutDialog.style.display = 'none';
+
+    dialogShown = false;
+}
+
+
+
+function copyUserId()
+{
+    writeTextToClipboard(currentUser.id);
+    selectElementText('aboutUserId');
+    uiNotify('Copied user ID');
+}
+
+
+
+aboutBack.addEventListener('pointerdown', () =>
+{
+    hideAboutDialog();
+});
+
+
+
+var deleteConnectionsDialogVisible = false;
+
+
+
+function showDeleteConnectionsDialog()
+{
+    deleteConnectionsDialog.style.left      = '50%';
+    deleteConnectionsDialog.style.top       = '50%';
+    deleteConnectionsDialog.style.transform = 'translateX(-50%) translateY(-50%)';
+
+    deleteConnectionsDialog.style.display   = 'block';
+    deleteConnectionsDialogVisible          = true;
+  
+    deleteConnectionsTitle.buttonDown0      = false;
+       
+    deleteConnectionsTitle.moveStart        = point_NaN;
+    deleteConnectionsTitle.pStart           = point_NaN;
+    
+    deleteConnectionsInput.value            = graphView.selectedNodes.map(n => n.id).join(', ');
+
+    updateDeleteConnectionsInputBack();
+
+
+    window.setTimeout(() => document.getElementById('deleteConnectionsInput').focus(), 0);
+}
+
+
+
+function hideDeleteConnectionsDialog()
+{
+    deleteConnectionsDialog.style.display = 'none';
+    deleteConnectionsDialogVisible        = false;
+}
+
+
+
+deleteConnectionsClose.addEventListener('pointerdown', e => e.stopPropagation());
+
+
+
+deleteConnectionsTitle.addEventListener('pointerdown', e => 
+{
+    deleteConnectionsTitle.setPointerCapture(e.pointerId);
+    deleteConnectionsTitle.buttonDown0 = true;
+
+    deleteConnectionsTitle.moveStart = point(deleteConnectionsDialog.offsetLeft, deleteConnectionsDialog.offsetTop);
+    deleteConnectionsTitle.pStart    = point(e.clientX, e.clientY);
+});
+
+
+
+deleteConnectionsTitle.addEventListener('pointermove', e =>
+{
+    if (deleteConnectionsTitle.buttonDown0)
+    {
+        deleteConnectionsDialog.style.left = (deleteConnectionsTitle.moveStart.x + (e.clientX - deleteConnectionsTitle.pStart.x)) + 'px';
+        deleteConnectionsDialog.style.top  = (deleteConnectionsTitle.moveStart.y + (e.clientY - deleteConnectionsTitle.pStart.y)) + 'px';
+    }
+});
+
+
+
+deleteConnectionsTitle.addEventListener('pointerup', e =>
+{
+    deleteConnectionsTitle.buttonDown0 = false;
+    deleteConnectionsTitle.releasePointerCapture(e.pointerId);
+});
+
+
+
+deleteConnectionsInput.addEventListener('input', () =>
+{
+    updateDeleteConnectionsInputBack();
+});
+
+
+
+function updateDeleteConnectionsInputBack()
+{
+    deleteConnectionsInputBack.innerHTML          = deleteConnectionsInput.value == '' ? 'Node IDs' : '';
+    deleteConnectionsInputBack.style.borderBottom = deleteConnectionsInput.value == '' ? '1px solid var(--figma-color-bg-tertiary)' : 'none';
+}
+
+
+
+deleteConnectionsInput.addEventListener('pointerup', () =>
+{
+    deleteConnectionsInput.select();
+});
+
+
+
+function deleteConnectionsToNodes(str)
+{
+    str = str.replace(',', ' ');
+    
+    const nodeIds = str.split(' ').filter(i => i);
+
+    uiRemoveConnsToNodes(nodeIds);
+
+    if (!isEmpty(nodeIds))
+        hideDeleteConnectionsDialog();
+}
+
+
+function initEulaDialog()
+{
+    //eulaBack.addEventListener('pointerdown', e => { e.preventDefault(); });
+
+
+    eulaDialog.mouseOver = false;
+
+    eulaDialog.addEventListener('pointerenter', e => { eulaDialog.mouseOver = true;  updateEulaScroll(); });
+    eulaDialog.addEventListener('pointerleave', e => { eulaDialog.mouseOver = false; updateEulaScroll(); });
+    
+
+    let r = simpleIntHash(generatorVersion);
+    r = 3*r*r - 2*r*r*r;
+
+    eulaWatermark.style.left = Math.round(r * 100) + '%';
+
+
+    eulaDialogContainer.addEventListener('wheel', e =>
+    {    
+        const bounds = eulaDialogContent.getBoundingClientRect();
+
+        if (bounds.bottom - bounds.top <= eulaDialogContainer.clientHeight)
+            return;
+
+
+        let oy = eulaDialogContent.style.top = eulaDialogContent.offsetTop - e.deltaY / 3;
+
+        oy = Math.max(oy, eulaDialogContainer.clientHeight - eulaDialogContent.clientHeight + eulaTitle.clientHeight);
+        eulaDialogContent.style.top = Math.min(oy, getTopHeight());
+
+        updateEulaScroll();
+    });
+
+
+
+    eulaScrollbarY.addEventListener('pointerdown', e =>
+    {
+        if (e.button == 0)
+        {
+            eulaScrollbarY.moving = true;
+            eulaScrollbarY.yStart = eulaScrollbarY.offsetTop;
+            eulaScrollbarY.hStart = eulaScrollbarY.offsetHeight;
+            eulaScrollbarY.pStart = e.clientY;
+            eulaScrollbarY.setPointerCapture(e.pointerId);
+    
+            for (const node of graph.nodes)
+                node.div.sly = node.div.offsetTop;
+    
+            eulaDialogContent.topStart = eulaDialogContent.offsetTop;
+        }
+    });
+    
+    
+    
+    eulaScrollbarY.addEventListener('pointerup', e =>
+    {
+        if (   e.button == 0
+            && eulaScrollbarY.moving)
+        {
+            eulaScrollbarY.moving = false;
+            eulaScrollbarY.releasePointerCapture(e.pointerId);
+ 
+            let bounds = Rect.NaN;
+    
+            for (const node of graph.nodes)
+                bounds = expandRect(bounds, boundingRect(node.div));
+    
+            // if (bounds.t >= 0 && bounds.b < eulaDialog.clientHeight)
+            //     eulaScrollbarY.style.display = 'none';
+        }
+    });
+    
+    
+    
+    eulaScrollbarY.addEventListener('pointermove', e =>
+    {
+        if (eulaScrollbarY.moving)
+            updateEulaScrollbar(e.clientY);
+    });
+}
+
+
+
+function showEulaDialog()
+{
+    eulaBack  .style.display = 'block';
+    eulaDialog.style.display = 'block';
+
+    updateEulaScroll();
+
+    dialogShown = true;
+}
+
+
+
+function hideEulaDialog()
+{
+    eulaBack  .style.display = 'none';
+    eulaDialog.style.display = 'none';
+
+    dialogShown = false;
+}
+
+
+
+/////////////////////////////////////////////////////////////////////////////////////
+
+
+
+function updateEulaScrollbar(clientY)
+{
+    let t = eulaScrollbarY.yStart + clientY - eulaScrollbarY.pStart;
+    let b = t + eulaScrollbarY.hStart;
+
+    t = Math.max(eulaTitle.clientHeight + smallScrollGap, t);
+    b = Math.min(b, eulaDialogContainer.clientHeight - largeScrollGap);
+
+    t = Math.max(smallScrollGap, Math.min(t, b - smallScrollGap));
+    b = Math.max(t + smallScrollGap, b);
+
+
+    let oy = 
+          eulaDialogContent.topStart 
+        - (clientY - eulaScrollbarY.pStart) / eulaScrollbarY.hStart * eulaDialogContainer.clientHeight;
+
+    oy = Math.max(oy, eulaDialogContainer.clientHeight - eulaDialogContent.clientHeight + eulaTitle.clientHeight);
+
+
+    eulaDialogContent.style.top = Math.min(
+        oy,
+        getTopHeight());
+
+
+    updateEulaScroll();
+}
+
+
+
+function updateEulaScroll()
+{
+    const x       = eulaDialog.clientLeft;
+    const w       = eulaDialog.clientWidth;
+    const h       = eulaDialogContainer.clientHeight;
+    const yOffset = getTopHeight();
+    
+    const bounds = eulaDialogContent.getBoundingClientRect();
+    
+    updateEulaScrollY(x, w, h, bounds, yOffset);
+}
+
+
+
+function updateEulaScrollY(x, w, h, bounds, yOffset)
+{
+    if (   /*eulaDialog.mouseOver
+        &&*/ bounds.bottom - bounds.top > h)
+    {
+        const height = sqr(h) / bounds.height - 2*smallScrollGap;
+
+        eulaScrollbarY.style.display = 'inline-block';
+        eulaScrollbarY.style.height  =  height;
+        eulaScrollbarY.style.left    =  x + w - smallScrollGap - 6;
+        eulaScrollbarY.style.top     =  yOffset - (bounds.top - 100) * h / bounds.height;
+    }
+    else
+       eulaScrollbarY.style.display = 'none';
+}
+
+
+var minZoomDialogVisible = false;
+
+
+
+function showMinZoomDialog()
+{
+    minZoomDialog.style.left      = '50%';
+    minZoomDialog.style.top       = '50%';
+    minZoomDialog.style.transform = 'translateX(-50%) translateY(-50%)';
+
+    minZoomDialog.style.display   = 'block';
+    minZoomDialogVisible          = true;
+  
+    minZoomTitle.buttonDown0      = false;
+       
+    minZoomTitle.moveStart        = point_NaN;
+    minZoomTitle.pStart           = point_NaN;
+    
+    minZoomInput.value = numToString(settings.minZoomForParams * 100, -1) + '%';
+    minZoomInput.select();
+
+    window.setTimeout(() => document.getElementById('minZoomInput').focus(), 0);
+}
+
+
+
+function hideMinZoomDialog()
+{
+    minZoomDialog.style.display = 'none';
+    minZoomDialogVisible        = false;
+}
+
+
+
+minZoomClose.addEventListener('pointerdown', e => e.stopPropagation());
+
+
+
+minZoomTitle.addEventListener('pointerdown', e => 
+{
+    minZoomTitle.setPointerCapture(e.pointerId);
+    minZoomTitle.buttonDown0 = true;
+
+    minZoomTitle.moveStart = point(minZoomDialog.offsetLeft, minZoomDialog.offsetTop);
+    minZoomTitle.pStart    = point(e.clientX, e.clientY);
+});
+
+
+
+minZoomTitle.addEventListener('pointermove', e =>
+{
+    if (minZoomTitle.buttonDown0)
+    {
+        minZoomDialog.style.left = (minZoomTitle.moveStart.x + (e.clientX - minZoomTitle.pStart.x)) + 'px';
+        minZoomDialog.style.top  = (minZoomTitle.moveStart.y + (e.clientY - minZoomTitle.pStart.y)) + 'px';
+    }
+});
+
+
+
+minZoomTitle.addEventListener('pointerup', e =>
+{
+    minZoomTitle.buttonDown0 = false;
+    minZoomTitle.releasePointerCapture(e.pointerId);
+});
+
+
+
+minZoomInput.addEventListener('keydown', e => 
+{
+    if (   (   e.key < '0' 
+            || e.key > '9')
+        &&  e.key != '.'
+        &&  e.key != '%'
+        &&  e.code != 'Backspace'
+        &&  e.code != 'Delete'
+        &&  e.code != 'Enter'
+        &&  e.code != 'NumpadEnter'
+        && !isArrowKey(e.code))
+        e.preventDefault();    
+        
+        
+    switch (e.code)
+    {
+        case 'Enter':
+        case 'NumpadEnter':
+        {
+            const minZoom = parseFloat(minZoomInput.value.replace('%', ''));
+
+            if (!isNaN(minZoom))
+            {
+                updateSetting('minZoomForParams', minZoom / 100);
+                uiSetLocalData('minZoomForParams', settings.minZoomForParams);
+                
+                updateZoomIcon();
+            }
+
+            hideMinZoomDialog();
+            break;
+        }
+    }
+});
+
+
+
+minZoomInput.addEventListener('pointerup', e =>
+{
+    e.stopPropagation();
+
+    if (e.button == 2)
+    {
+        initTextMenu(minZoomInput);
+        menuText.showAt(e.clientX, e.clientY, false, false);
+    }
+});
+
+
+
+var saveAsTemplateDialogVisible = false;
+
+
+
+function showSaveAsTemplateDialog()
+{
+    saveAsTemplateDialog.copiedJson      = uiCopyNodes(graphView.selectedNodes.map(n => n.id));
+
+
+    saveAsTemplateBack.addEventListener('pointerdown', e => { e.preventDefault(); });
+
+
+    saveAsTemplateDialog.style.left      = '50%';
+    saveAsTemplateDialog.style.top       = '50%';
+    saveAsTemplateDialog.style.transform = 'translateX(-50%) translateY(-50%)';
+
+    saveAsTemplateBack  .style.display   = 'block';
+    saveAsTemplateDialog.style.display   = 'block';
+    saveAsTemplateDialogVisible          = true;
+  
+    saveAsTemplateTitle.buttonDown0      = false;
+       
+    saveAsTemplateTitle.moveStart        = point_NaN;
+    saveAsTemplateTitle.pStart           = point_NaN;
+    
+    saveAsTemplateInput.value            = graphView.selectedNodes.map(n => n.id).join(', ');
+
+    updateSaveAsTemplateInputBack();
+
+
+    window.setTimeout(() => document.getElementById('saveAsTemplateInput').focus(), 0);
+}
+
+
+
+function hideSaveAsTemplateDialog()
+{
+    saveAsTemplateDialog.style.display = 'none';
+    saveAsTemplateBack  .style.display = 'none';
+
+    saveAsTemplateDialogVisible        = false;
+}
+
+
+
+saveAsTemplateClose.addEventListener('pointerdown', e => e.stopPropagation());
+
+
+
+saveAsTemplateTitle.addEventListener('pointerdown', e => 
+{
+    saveAsTemplateTitle.setPointerCapture(e.pointerId);
+    saveAsTemplateTitle.buttonDown0 = true;
+
+    saveAsTemplateTitle.moveStart = point(saveAsTemplateDialog.offsetLeft, saveAsTemplateDialog.offsetTop);
+    saveAsTemplateTitle.pStart    = point(e.clientX, e.clientY);
+});
+
+
+
+saveAsTemplateTitle.addEventListener('pointermove', e =>
+{
+    if (saveAsTemplateTitle.buttonDown0)
+    {
+        saveAsTemplateDialog.style.left = (saveAsTemplateTitle.moveStart.x + (e.clientX - saveAsTemplateTitle.pStart.x)) + 'px';
+        saveAsTemplateDialog.style.top  = (saveAsTemplateTitle.moveStart.y + (e.clientY - saveAsTemplateTitle.pStart.y)) + 'px';
+    }
+});
+
+
+
+saveAsTemplateTitle.addEventListener('pointerup', e =>
+{
+    saveAsTemplateTitle.buttonDown0 = false;
+    saveAsTemplateTitle.releasePointerCapture(e.pointerId);
+});
+
+
+
+saveAsTemplateInput.addEventListener('input', () =>
+{
+    updateSaveAsTemplateInputBack();
+});
+
+
+
+function updateSaveAsTemplateInputBack()
+{
+    saveAsTemplateInputBack.innerHTML          = saveAsTemplateInput.value == '' ? 'Node IDs' : '';
+    saveAsTemplateInputBack.style.borderBottom = saveAsTemplateInput.value == '' ? '1px solid var(--figma-color-bg-tertiary)' : 'none';
+}
+
+
+
+saveAsTemplateInput.addEventListener('pointerup', () =>
+{
+    saveAsTemplateInput.select();
+});
+
+
+
+function saveSelectedAsTemplate(templateName)
+{
+    // TODO
+    // increment name if exists
+    // or warn and don't close dialog if it doesn't
+
+
+
+    // str = str.replace(',', ' ');
+    
+    // const nodeIds = str.split(' ').filter(i => i);
+
+    // uiRemoveConnsToNodes(nodeIds);
+
+    // if (!isEmpty(nodeIds))
+    //hideSaveAsTemplateDialog();
+}
+
+
+var subscription            = NULL;
+var checkoutTimer           = -1;
+var subscriptionDialogShown = false;
+
+
+
+function onSubscribeClick()
+{
+    let checkoutSession = arrayToBase32(sign(hashLicenseString(
+        currentUser.id + (new Date().getTime()).toString(),
+        30), licenseKeys.private));
+
+
+    const response = postToServer(
+    {
+        action: 'createCheckout',
+        userId:  currentUser.id,
+        session: checkoutSession
+    }); 
+    
+
+    if (   response
+        && response.result)
+    {
+        window.open('https://brainshift.design/generator/checkout.html?' + checkoutSession, '_blank');
+
+        checkoutTimer = setInterval(() => 
+        {
+            checkLastSub().then(lastSub =>
+            {
+                if (   lastSub
+                    && lastSub.daysLeft > 0)
+                    uiRestartGenerator(false);
+            });
+        }, 
+        4000);
+    }
+    else
+    {
+        console.error('Could not create create Generator checkout session.')
+    }
+}
+
+
+
+function showSubscriptionDialog(showBack = true)
+{
+    subscriptionBack  .style.display = 'block';
+    subscriptionDialog.style.display = 'block';
+
+    subscriptionBack.style.backgroundColor = showBack ? '#0005' : 'transparent';
+    
+    updateLicenseInfo(
+        subscription != NULL
+        ? validateLicense(currentUser.id, subscription)
+        : null)
+    .then(() => 
+    {
+        dialogShown             = true;
+        subscriptionDialogShown = true;
+    });
+}
+
+
+
+function hideSubscriptionDialog()
+{
+    if (checkoutTimer >= 0)
+        clearInterval(checkoutTimer);
+
+    subscriptionBack  .style.display = 'none';
+    subscriptionDialog.style.display = 'none';
+
+    dialogShown             = false;
+    subscriptionDialogShown = false;
+}
+
+
+
+subscriptionClose.addEventListener('pointerdown', e => e.stopPropagation());
+
+
+
+async function updateLicenseInfo()
+{
+    const lastSub       = await checkLastSub();
+    const trialDaysLeft = await checkRemainingTrialDays();
+
+
+    if (   lastSub
+        && lastSub.daysLeft > 0)
+    {
+        const daysLeft = formatDaysLeft(lastSub.daysLeft);
+
+        licenseInfo.innerHTML            = daysLeft + ' of your subscription.';
+     
+        licenseInfo.style.top            = '55%';
+        licenseInfo.style.transform      = 'translateX(-50%) translateY(-50%)';
+
+        // aboutUserId.style.display = 'none';
+        btnSubscribe      .style.display = 'none';
+
+        subscriptionClose.style.display  = 'inline-block';
+
+        if (checkoutTimer >= 0)
+            clearInterval(checkoutTimer);
+    }
+    else if (trialDaysLeft > 0)
+    {
+        const daysLeft = formatDaysLeft(trialDaysLeft);
+
+        licenseInfo.innerHTML            = daysLeft + ' of your free trial.';
+     
+        licenseInfo.style.top            = '40%';
+        licenseInfo.style.transform      = 'translateX(-50%) translateY(-50%)';
+
+        // aboutUserId.style.display = 'none';
+        btnSubscribe      .style.display = 'block';
+        btnSubscribe      .style.top     = '148px';
+
+        subscriptionClose.style.display  = 'inline-block';
+
+        if (checkoutTimer >= 0)
+            clearInterval(checkoutTimer);
+    }
+    else     
+    {
+        const daysLeft =
+            lastSub
+            ? formatDaysLeft(lastSub.daysLeft)
+            : trialDaysLeft;
+
+        const expDays   = Math.abs  (daysLeft);
+        const expWeeks  = Math.round(expDays / 7);
+        const expMonths = Math.round(expDays / 30.5);
+        const expYears  = Math.round(expDays / 365)
+
+        let expired;
+
+             if (expYears  > 0) expired = 'expired ' + expYears  + ' ' + countString(expYears,  'year' ) + ' ago';
+        else if (expMonths > 0) expired = 'expired ' + expMonths + ' ' + countString(expMonths, 'month') + ' ago';
+        else if (expWeeks  > 0) expired = 'expired ' + expWeeks  + ' ' + countString(expWeeks,  'week' ) + ' ago';
+        else if (expDays   > 1) expired = 'expired ' + expDays   + ' ' + countString(expDays,   'day'  ) + ' ago';
+        else                    expired = 'has expired';
+
+
+        const subOrTrial = lastSub ? 'subscription' : 'free trial';
+
+        licenseInfo.innerHTML            = 'Your ' + subOrTrial + ' ' + expired + '.<br/><br/>Please subscribe to continue using Generator.';
+
+        licenseInfo.style.top            = '70px';
+        licenseInfo.style.transform      = 'translateX(-50%)';
+
+        // aboutUserId.style.display = 'none';
+        btnSubscribe      .style.display = 'block';
+
+        subscriptionClose.style.display  = 'none';
+    }
+}
+
+
+
+function formatDaysLeft(daysLeft)
+{
+    return daysLeft == 1
+        ? 'Last day'
+        :  daysLeft + ' ' + countString(daysLeft, 'day') + ' left';
+
+}
 
 
 

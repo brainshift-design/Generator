@@ -6,6 +6,7 @@ var btnColor;
 var btnLayer;
 //var btnStyle;
 var btnShape;
+var btnTemplate;
 var btnGroup;
 var btnHand;
 var btnComment;
@@ -39,6 +40,7 @@ var menuEffects;
 var menuStyles;
 var menuVariables;
 var menuShape;
+var menuTemplate;
 var menuGroup;
 
 var menuMath;
@@ -157,6 +159,7 @@ var menuItemStyleSep2;
 var menuItemShapeSep1;
 var menuItemShapeSelected;
 
+var menuItemManageTemplates;
 
 var menuItemDataMode;
 
@@ -210,6 +213,7 @@ var menuItemNodeSelect;
 // var menuItemNodeBringToFront;
 // var menuItemNodeSendToBack;
 //var menuItemNodeActivate;
+var menuItemNodeSaveAsTemplate;
 var menuItemNodeSep4;
 var menuItemNodeEnableDisable;
 
@@ -586,10 +590,14 @@ function initGeneratorMenus()
 
     menuTransform = new Menu('Transform', true, false);
     menuTransform.addItems([
-        new MenuItem('Move',   {icon: iconMove,   callback: e => actionManager.do(getCreateNodeAction(MOVE,   btnShape.div, getCreateOptions(e)))}),
-        new MenuItem('Rotate', {icon: iconRotate, callback: e => actionManager.do(getCreateNodeAction(ROTATE, btnShape.div, getCreateOptions(e)))}),
-        new MenuItem('Scale',  {icon: iconScale,  callback: e => actionManager.do(getCreateNodeAction(SCALE,  btnShape.div, getCreateOptions(e)))}),
-        new MenuItem('Skew',   {icon: iconSkew,   callback: e => actionManager.do(getCreateNodeAction(SKEW,   btnShape.div, getCreateOptions(e)))})]);
+        new MenuItem('Move',        {icon: iconMove,       callback: e => actionManager.do(getCreateNodeAction(MOVE,        btnShape.div, getCreateOptions(e)))}),
+        new MenuItem('Rotate',      {icon: iconRotate,     callback: e => actionManager.do(getCreateNodeAction(ROTATE,      btnShape.div, getCreateOptions(e)))}),
+        new MenuItem('Scale',       {icon: iconScale,      callback: e => actionManager.do(getCreateNodeAction(SCALE,       btnShape.div, getCreateOptions(e)))}),
+        new MenuItem('Skew',        {icon: iconSkew,       callback: e => actionManager.do(getCreateNodeAction(SKEW,        btnShape.div, getCreateOptions(e)))}),
+        new MenuItem('',            {separator: true}),
+        new MenuItem('Reset',       {icon: iconResetXform, callback: e => actionManager.do(getCreateNodeAction(RESET_XFORM, btnShape.div, getCreateOptions(e)))}),
+        new MenuItem('',            {separator: true}),
+        new MenuItem('. . . Place', {icon: iconPlace,      callback: e => actionManager.do(getCreateNodeAction(PLACE,       btnShape.div, getCreateOptions(e)))})]);
 
 
     menuShape = new Menu('Shapes', true, false);
@@ -604,11 +612,16 @@ function initGeneratorMenus()
                              // new MenuItem('Boolean',     {enabled: false, icon: iconBoolUnion,  callback: e => actionManager.do(getCreateNodeAction(BOOLEAN,     btnShape.div, getCreateOptions(e)))}),
         menuItemShapeSep1     = new MenuItem('',            {separator: true}),
                                 new MenuItem('Transform',   {icon: iconMove, childMenu: menuTransform}),
-                                new MenuItem('. . . Place', {icon: iconPlace, callback: e => actionManager.do(getCreateNodeAction(PLACE, btnShape.div, getCreateOptions(e)))}),
                                 new MenuItem('',            {separator: true}),
                                 new MenuItem('Apply style', {icon: iconApply, callback: e => actionManager.do(getCreateNodeAction(SHAPE_APPLY, btnShape.div, getCreateOptions(e)))}),
                                 new MenuItem('',            {separator: true}),
                                 new MenuItem('Render',      {icon: iconRenderDown, callback: e => actionManager.do(getCreateNodeAction(RENDER,       btnShape.div, getCreateOptions(e)))})]);
+
+
+    menuTemplate = new Menu('Templates', true, false);
+    menuTemplate.addItems([
+        //new MenuItem('',            {separator: true}),
+        menuItemManageTemplates = new MenuItem('Manage templates...', {icon: iconManageTemplates})]);
 
 
     menuGroup = new Menu('Groups', true, false);
@@ -684,16 +697,18 @@ function initGeneratorMenus()
         // menuItemNodeSepGroup       = new MenuItem('',                {separator: true}),
         //menuItemNodeGroupSelected  = new MenuItem('Group selected',  {shortcut:  osCtrl() + 'G',       callback: e => { hideAllMenus(); actionManager.do(new   GroupNodesAction(graphView.selectedNodes)); }}),
         //menuItemNodeUngroup        = new MenuItem('Ungroup',         {                                 callback: e => { hideAllMenus(); actionManager.do(new UngroupNodesAction(graphView.selectedNodes)); }}),
-        menuItemNodeSep2           = new MenuItem('',                {separator: true}),
-        menuItemNodeRename         = new MenuItem('Rename',          {shortcut:  osCtrl() + 'R',       callback: e => { hideAllMenus(); graphView.renameSelectedNode(); }}),
-        menuItemNodeSelect         = new MenuItem('Select',          {childMenu: menuNodeSelect}),
-        menuItemNodeSep3           = new MenuItem('',                {separator: true}),
-        // menuItemNodeEdit           = new MenuItem('Edit...',      {callback: e => { hideAllMenus(); graphView.editSelectedCustomNode(); }}),
-        //                              new MenuItem('',             {separator: true}),
-        // menuItemNodeActivate    = new MenuItem('Activate',        {callback: () => makeSelectedNodesActive()}),
-        menuItemNodeEnableDisable  = new MenuItem('Enable/Disable',  {shortcut:  osCtrlShift() + 'E',  callback: () => actionManager.do(new ToggleDisableNodesAction(graphView.selectedNodes.map(n => n.id)))}),
-        menuItemNodeSep4           = new MenuItem('',                {separator: true}),
-        menuItemNodeRemove         = new MenuItem('Remove',          {shortcut:  osCtrl() + '⌫',      callback: e => { hideAllMenus(); graphView.removeSelectedNodes(true); }})]);
+        menuItemNodeSep2           = new MenuItem('',                 {separator: true}),
+        menuItemNodeRename         = new MenuItem('Rename',           {shortcut:  osCtrl() + 'R',       callback: e => { hideAllMenus(); graphView.renameSelectedNode(); }}),
+        menuItemNodeSelect         = new MenuItem('Select',           {childMenu: menuNodeSelect}),
+        menuItemNodeSep3           = new MenuItem('',                 {separator: true}),
+        // menuItemNodeEdit           = new MenuItem('Edit...',       {callback: e => { hideAllMenus(); graphView.editSelectedCustomNode(); }}),
+        //                              new MenuItem('',              {separator: true}),
+        // menuItemNodeSaveAsTemplate = new MenuItem('Save as template', {callback: e => { hideAllMenus(); showSaveAsTemplateDialog(); }}),
+        //                              new MenuItem('',                 {separator: true}),
+        // menuItemNodeActivate    = new MenuItem('Activate',         {callback: () => makeSelectedNodesActive()}),
+        menuItemNodeEnableDisable  = new MenuItem('Enable/Disable',   {shortcut:  osCtrlShift() + 'E',  callback: () => actionManager.do(new ToggleDisableNodesAction(graphView.selectedNodes.map(n => n.id)))}),
+        menuItemNodeSep4           = new MenuItem('',                 {separator: true}),
+        menuItemNodeRemove         = new MenuItem('Remove',           {shortcut:  osCtrl() + '⌫',      callback: e => { hideAllMenus(); graphView.removeSelectedNodes(true); }})]);
 
 
 
@@ -742,14 +757,15 @@ function initGeneratorMenus()
     menuSelectParam = new Menu('Select options', false, true);
 
     
-    btnMain   = new MenuButton('', menuMain,   {useMenuName: true, highlight: () => currentMenus.includes(menuMain  ), callback: () => updatePanMode(false)});
-    btnFlow   = new MenuButton('', menuFlow,   {useMenuName: true, highlight: () => currentMenus.includes(menuFlow  ), callback: () => updatePanMode(false)});
-    btnNumber = new MenuButton('', menuNumber, {useMenuName: true, highlight: () => currentMenus.includes(menuNumber), callback: () => updatePanMode(false)});
-    btnText   = new MenuButton('', menuString, {useMenuName: true, highlight: () => currentMenus.includes(menuString), callback: () => updatePanMode(false)});
-    btnColor  = new MenuButton('', menuColor,  {useMenuName: true, highlight: () => currentMenus.includes(menuColor ), callback: () => updatePanMode(false)});
-    btnLayer  = new MenuButton('', menuLayer,  {useMenuName: true, highlight: () => currentMenus.includes(menuLayer ), callback: () => updatePanMode(false)});
-    //btnStyle  = new MenuButton('', menuStyle,  {useMenuName: true, highlight: () => currentMenus.includes(menuStyle ), callback: () => updatePanMode(false)});
-    btnShape  = new MenuButton('', menuShape,  {useMenuName: true, highlight: () => currentMenus.includes(menuShape ), callback: () => updatePanMode(false)});
+    btnMain     = new MenuButton('', menuMain,     {useMenuName: true, highlight: () => currentMenus.includes(menuMain  ), callback: () => updatePanMode(false)});
+    btnFlow     = new MenuButton('', menuFlow,     {useMenuName: true, highlight: () => currentMenus.includes(menuFlow  ), callback: () => updatePanMode(false)});
+    btnNumber   = new MenuButton('', menuNumber,   {useMenuName: true, highlight: () => currentMenus.includes(menuNumber), callback: () => updatePanMode(false)});
+    btnText     = new MenuButton('', menuString,   {useMenuName: true, highlight: () => currentMenus.includes(menuString), callback: () => updatePanMode(false)});
+    btnColor    = new MenuButton('', menuColor,    {useMenuName: true, highlight: () => currentMenus.includes(menuColor ), callback: () => updatePanMode(false)});
+    btnLayer    = new MenuButton('', menuLayer,    {useMenuName: true, highlight: () => currentMenus.includes(menuLayer ), callback: () => updatePanMode(false)});
+    //btnStyle  = new MenuButton('', menuStyle,    {useMenuName: true, highlight: () => currentMenus.includes(menuStyle ), callback: () => updatePanMode(false)});
+    btnShape    = new MenuButton('', menuShape,    {useMenuName: true, highlight: () => currentMenus.includes(menuShape ), callback: () => updatePanMode(false)});
+    //btnTemplate = new MenuButton('', menuTemplate, {useMenuName: true, highlight: () => currentMenus.includes(menuShape ), callback: () => updatePanMode(false)});
     //btnGroup  = new MenuButton('', menuGroup,  {useMenuName: true, highlight: () => currentMenus.includes(menuShape ), callback: () => updatePanMode(false)});
 
     // btnGroup  = new MenuButton('Node groups', null, {callback: () => 
@@ -829,14 +845,15 @@ function initGeneratorMenus()
     // btnZoom.div.style.boxShadow           = '0 0 0 1px red inset';
 
 
-    btnMain   .setIcon(iconGenerator);
-    btnShape  .setIcon(iconShapes);
-    btnLayer  .setIcon(iconEffects);
-    btnColor  .setIcon(iconColor);
+    btnMain    .setIcon(iconGenerator);
+    btnColor   .setIcon(iconColor);
+    btnLayer   .setIcon(iconEffects);
+    btnShape   .setIcon(iconShapes);
+    //btnTemplate.setIcon(iconTemplate);
     //btnStyle  .setIcon(iconStyle);
     //btnGroup  .setIcon(iconGroup);
-    btnHand   .setIcon(iconHand);
-    btnComment.setIcon(iconComment);
+    btnHand    .setIcon(iconHand);
+    btnComment .setIcon(iconComment);
 }
 
 

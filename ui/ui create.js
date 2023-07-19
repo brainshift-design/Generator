@@ -112,10 +112,10 @@ function createNode(nodeType, creatingButton = null, createdNodeId = -1, options
         case TEXT_SHAPE:              node = new OpTextShape();         break;
         case POINT:                   node = new OpPoint();             break;
         case VECTOR_PATH:             node = new OpVectorPath();        break;
-        case VECTOR_VERTEX:            node = new OpVectorVertex();       break;
+        case VECTOR_VERTEX:           node = new OpVectorVertex();      break;
         case VECTOR_EDGE:             node = new OpVectorEdge();        break;
         case VECTOR_REGION:           node = new OpVectorRegion();      break;
-        case VECTOR_NETWORK:              node = new OpVectorNetwork();         break;
+        case VECTOR_NETWORK:          node = new OpVectorNetwork();     break;
         case BOOLEAN:                 node = new OpShapeBoolean();      break;
         case SHAPE_GROUP:             node = new OpShapeGroup();        break;
         case FRAME:                   node = new OpFrame();             break;
@@ -125,6 +125,8 @@ function createNode(nodeType, creatingButton = null, createdNodeId = -1, options
         case ROTATE:                  node = new OpRotate();            break;
         case SCALE:                   node = new OpScale();             break;
         case SKEW:                    node = new OpSkew();              break;
+
+        case RESET_XFORM:             node = new OpResetTransform();    break;
         
         case PLACE:                   node = new OpPlace();             break;
 

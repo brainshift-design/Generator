@@ -4,7 +4,7 @@
 
 
 
-const generatorVersion = 161;
+const generatorVersion = 162;
 
 
 const MAX_INT32        = 2147483647;
@@ -4917,6 +4917,8 @@ const ROTATE               = 'ROT';
 const SCALE                = 'SCALE';
 const SKEW                 = 'SKEW';
 
+const RESET_XFORM          = 'RSTX';
+
 const PLACE                = 'PLACE';
 const SHAPE_APPLY          = 'APPLY';
   
@@ -4999,6 +5001,7 @@ const SHAPE_TYPES =
 
     MOVE,
     ...AFFINE_TYPES,
+    RESET_XFORM,
 
     PLACE,
     SHAPE_APPLY,
@@ -5317,9 +5320,7 @@ class FigmaObject
 
         this.xform        = clone(identity);
 
-        this.cp0          = point(0, 0);
-        this.cp1          = point(1, 0);
-        this.cp2          = point(0, 1);
+        this.createDefaultSpace();
 
         this.scaleCorners = 1;
         this.scaleStyle   = 1;
@@ -5354,6 +5355,15 @@ class FigmaObject
     {
         consoleError('invalid use of abstract class FigmaObject');
         return null;
+    }
+
+
+
+    createDefaultSpace()
+    {
+        this.cp0 = point(0, 0);
+        this.cp1 = point(1, 0);
+        this.cp2 = point(0, 1);
     }
 
 
@@ -5634,11 +5644,21 @@ function getObjBounds(objects)
              && !obj.isDeco)
             bounds = expandRect_(bounds, point(obj.x, obj.y));
 
-        else if (obj.type == LINE)
-            bounds = expandRect(bounds, new Rect(obj.x, obj.y, obj.width, 0));
-
         else
-            bounds = expandRect(bounds, new Rect(obj.x, obj.y, obj.width, obj.height));
+        {
+            const dp = subv(obj.xp1, obj.xp0);
+
+            bounds = expandRect_(bounds, obj.xp0);
+            bounds = expandRect_(bounds, obj.xp1);
+            bounds = expandRect_(bounds, obj.xp2);
+            bounds = expandRect_(bounds, addv(obj.xp2, dp));
+        }
+
+        // else if (obj.type == LINE)
+        //     bounds = expandRect(bounds, new Rect(obj.x, obj.y, obj.width, 0));
+
+        // else
+        //     bounds = expandRect(bounds, new Rect(obj.x, obj.y, obj.width, obj.height));
     }
 
 
@@ -8064,6 +8084,7 @@ extends GOperator
         await this.node.eval(parse);
         this.node.feedbackValue = null;
 
+
         this.param = this.node.paramFromId(this.paramId);
 
         
@@ -8088,15 +8109,6 @@ extends GOperator
 
 
 
-    pushValueUpdates(parse)
-    {
-        super.pushValueUpdates(parse);
-
-        if (this.node) this.node.pushValueUpdates(parse);
-    }
-
-
-    
     isCached()
     {
         return super.isCached();
@@ -8112,6 +8124,15 @@ extends GOperator
 
 
 
+    pushValueUpdates(parse)
+    {
+        super.pushValueUpdates(parse);
+
+        if (this.node) this.node.pushValueUpdates(parse);
+    }
+
+
+    
     invalidateInputs(from)
     {
         super.invalidateInputs(from);
@@ -21024,12 +21045,8 @@ extends GColorType1
             {
                 if (this.options.enabled)
                 {
-                    this.value = new ColorValue(
-                        input.space,
-                        input.c1, 
-                        input.c2, 
-                        input.c3);
-
+                    this.value = input.copy();
+                    
 
                     const fromSpaceIndex = input.space.value;
 
@@ -21039,17 +21056,20 @@ extends GColorType1
                         colorSpaceCount(parse)-1);
 
 
-                    this.convertColor(
-                        this.value,
-                        colorSpace(fromSpaceIndex), 
-                        colorSpace(  toSpaceIndex));
+                    if (toSpaceIndex != fromSpaceIndex)
+                    {
+                        this.convertColor(
+                            this.value,
+                            colorSpace(fromSpaceIndex), 
+                            colorSpace(  toSpaceIndex));
 
-                    this.value.space.value = toSpaceIndex;
+                        this.value.space.value = toSpaceIndex;
+                    }
 
 
-                    if (!this.c1) { this.c1 = this.value.c1.copy(); c1 = this.c1.toValue(); }
-                    if (!this.c2) { this.c2 = this.value.c2.copy(); c2 = this.c2.toValue(); }
-                    if (!this.c3) { this.c3 = this.value.c3.copy(); c3 = this.c3.toValue(); }
+                    if (!c1) c1 = this.value.c1;
+                    if (!c2) c2 = this.value.c2;
+                    if (!c3) c3 = this.value.c3;
                 
                     if (c1) this.value.c1 = c1;
                     if (c2) this.value.c2 = c2;
@@ -23886,16 +23906,19 @@ extends GShapeBase
             props = new ListValue([props]);
 
         
-        if (this.input)
-            this.value.props = props ?? this.input.value.props;
-        else
-            this.value.props = props;
+        if (this.value)
+        {
+            if (this.input)
+                this.value.props = props ?? this.input.value.props;
+            else
+                this.value.props = props;
 
-                
-        if (   this.value
-            && this.value.isValid()
-            && this.value.props != undefined) 
-            this.updateValues.push(['props', this.value.props]);
+                    
+            if (   this.value
+                && this.value.isValid()
+                && this.value.props != undefined) 
+                this.updateValues.push(['props', this.value.props]);
+        }
     }
 
 
@@ -27458,7 +27481,6 @@ extends GOperator1
 
     async evalAffineObjects(options, scaleCorners, scaleStyle, getXform)
     {
-        console.log('this.value =', this.value);
         if (   !this.value
             || !this.value.isValid())
             return Rect.NaN;
@@ -28018,6 +28040,98 @@ extends GAffine
 
         if (this.skewX) this.skewX.invalidateInputs(from);
         if (this.skewY) this.skewY.invalidateInputs(from);
+    }
+
+
+
+    toValue()
+    {
+        return this.value
+             ? this.value.copy()
+             : null;
+    }
+}
+
+
+class GResetTransform
+extends GOperator1
+{
+    constructor(nodeId, options)
+    {
+        super(RESET_XFORM, nodeId, options);
+    }
+
+
+
+    copy()
+    {
+        const copy = new GResetTransform(this.nodeId, this.options);
+
+        copy.copyBase(this);
+
+        return copy;
+    }
+
+
+
+    async eval(parse)
+    {
+        if (this.isCached())
+            return this;
+
+
+        if (this.input)
+        {
+            this.value = (await this.input.eval(parse)).toValue();
+
+            if (this.value)
+                this.value.nodeId = this.nodeId;
+        }
+        else
+        {
+            this.value = NullValue;
+        }
+
+        
+        await this.evalObjects(parse);
+
+
+        this.updateValues = [['', NullValue]];
+
+
+        this.validate();
+
+        return this;
+    }
+
+
+
+    async evalObjects(parse)
+    {
+        if (   this.value
+            && this.value.isValid())
+        {
+            this.value.objects = 
+                   this.input 
+                && this.input.value
+                ? this.input.value.objects.map(o => o.copy()) 
+                : [];
+
+
+            if (this.options.enabled)
+            {
+                for (const obj of this.value.objects)
+                {
+                    obj.nodeId   = this.nodeId;
+                    obj.objectId = obj.objectId + OBJECT_SEPARATOR + this.nodeId;
+
+                    obj.createDefaultSpace();
+                }
+            }
+        }
+        
+        
+        await super.evalObjects(parse);
     }
 
 
@@ -29130,7 +29244,7 @@ function genParseColor(parse)
         }
     }
     
-    
+
     parse.nTab--;
 
 
@@ -33174,6 +33288,50 @@ function genParseSkew(parse)
 
 
 
+function genParseResetTransform(parse)
+{
+    const [, nodeId, options, ignore] = genParseNodeStart(parse);
+
+
+    const reset = new GResetTransform(nodeId, options);
+
+
+    let nInputs = -1;
+
+    if (!ignore)
+    {
+        nInputs = parseInt(parse.move());
+        consoleAssert(nInputs => 0 && nInputs <= 1, 'nInputs must be [0, 1]');
+    }
+
+
+    if (parse.settings.logRequests) 
+        logReq(reset, parse, ignore);
+
+
+    if (ignore) 
+    {
+        genParseNodeEnd(parse, reset);
+        return parse.parsedNodes.find(n => n.nodeId == nodeId);
+    }
+
+
+    parse.nTab++;
+
+
+    if (nInputs == 1)
+        reset.input = genParse(parse);
+
+
+    parse.nTab--;
+
+
+    genParseNodeEnd(parse, reset);
+    return reset;
+}
+
+
+
 function genParsePlace(parse)
 {
     const [, nodeId, options, ignore] = genParseNodeStart(parse);
@@ -34326,14 +34484,14 @@ function genParse(parse, inParam = true)
     else if (parse.next == VECTOR_PATH_VALUE      ) result = genParseVectorPathValue  (parse);
     else if (parse.next == VECTOR_PATH            ) result = genParseVectorPath       (parse);
     
-    else if (parse.next == VECTOR_VERTEX_VALUE     ) result = genParseVectorVertexValue (parse);
-    else if (parse.next == VECTOR_VERTEX           ) result = genParseVectorVertex      (parse);
+    else if (parse.next == VECTOR_VERTEX_VALUE    ) result = genParseVectorVertexValue (parse);
+    else if (parse.next == VECTOR_VERTEX          ) result = genParseVectorVertex      (parse);
     else if (parse.next == VECTOR_EDGE_VALUE      ) result = genParseVectorEdgeValue  (parse);
     else if (parse.next == VECTOR_EDGE            ) result = genParseVectorEdge       (parse);
     else if (parse.next == VECTOR_REGION_VALUE    ) result = genParseVectorRegionValue(parse);
     else if (parse.next == VECTOR_REGION          ) result = genParseVectorRegion     (parse);
-    else if (parse.next == VECTOR_NETWORK_VALUE       ) result = genParseVectorNetworkValue   (parse);
-    else if (parse.next == VECTOR_NETWORK             ) result = genParseVectorNetwork        (parse);
+    else if (parse.next == VECTOR_NETWORK_VALUE   ) result = genParseVectorNetworkValue   (parse);
+    else if (parse.next == VECTOR_NETWORK         ) result = genParseVectorNetwork        (parse);
 
     else if (parse.next == BOOLEAN_VALUE          ) result = genParseShapeBooleanValue(parse);
     else if (parse.next == BOOLEAN                ) result = genParseShapeBoolean     (parse);
@@ -34348,6 +34506,8 @@ function genParse(parse, inParam = true)
     else if (parse.next == ROTATE                 ) result = genParseRotate           (parse);
     else if (parse.next == SCALE                  ) result = genParseScale            (parse);
     else if (parse.next == SKEW                   ) result = genParseSkew             (parse);
+
+    else if (parse.next == RESET_XFORM            ) result = genParseResetTransform   (parse);
 
     else if (parse.next == PLACE                  ) result = genParsePlace            (parse);
     else if (parse.next == SHAPE_APPLY            ) result = genParseShapeApply       (parse);

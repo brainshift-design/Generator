@@ -70,7 +70,7 @@ function genParseColor(parse)
         }
     }
     
-    
+
     parse.nTab--;
 
 

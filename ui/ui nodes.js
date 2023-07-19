@@ -142,6 +142,10 @@ function uiVariableConnectFromOutput(output, inputNode, inputId, outputOrder = -
 {
     //console.log('uiVariableConnectFromOutput()');
 
+    if (!inputNode)
+        return;
+    
+
     const input = inputNode.inputFromId( inputId);
 
 

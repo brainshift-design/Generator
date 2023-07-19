@@ -432,12 +432,12 @@ class Wire
     
             this.xp1.style.display          = 'inline';
             this.xp1.style.stroke           = rgba2style(rgb_a(darkMode ? [0.067, 0.067, 0.067] : [0.784, 0.784, 0.784], 1 - color[3]));
-            this.xp1.style.strokeDasharray  = 9 * graph.currentPage.zoom;
+            this.xp1.style.strokeDasharray  = 9 * Math.max(1, graph.currentPage.zoom);
     
             this.xp2.style.display          = 'inline';
             this.xp2.style.stroke           = rgba2style(rgb_a(darkMode ? [0.302, 0.302, 0.302] : [1, 1, 1], 1 - color[3]));//darkMode ? '#4d4d4d' : '#fff';
-            this.xp2.style.strokeDasharray  = 9 * graph.currentPage.zoom;
-            this.xp2.style.strokeDashoffset = 9 * graph.currentPage.zoom;
+            this.xp2.style.strokeDasharray  = 9 * Math.max(1, graph.currentPage.zoom);
+            this.xp2.style.strokeDashoffset = 9 * Math.max(1, graph.currentPage.zoom);
         }
         else
         {
@@ -528,16 +528,23 @@ class Wire
                    && conn.input.node.isOrFollowedByMultiplier());
 
                 
-        this.curve  .style.stroke          = wireStyle;
-        this.curve2 .style.stroke          = rgb2style(rgbDocumentBody);
+        this.curve .style.stroke = wireStyle;
+        this.curve2.style.stroke = rgb2style(rgbDocumentBody);
     
-        this.curve  .style.strokeDasharray = unknown ? (2.7 * graph.currentPage.zoom) + ' ' + (2.7 * graph.currentPage.zoom) : '0';
-    
-        this. inBall.style.fill            = wireStyle;
-        this.outBall.style.fill            = wireStyle;
 
-        this.arrow1 .style.fill            = arrowStyle;
-        this.arrow2 .style.fill            = arrowStyle;
+        const dash = Math.max(1.5, 2.7 * graph.currentPage.zoom);
+
+        this.curve.style.strokeDasharray = 
+            unknown 
+            ? dash + ' ' + dash 
+            : '0';
+    
+
+        this. inBall.style.fill   = wireStyle;
+        this.outBall.style.fill   = wireStyle;
+
+        this.arrow1 .style.fill   = arrowStyle;
+        this.arrow2 .style.fill   = arrowStyle;
     
     
         if (conn.output) conn.output.wireBall.style.background = wireStyle;

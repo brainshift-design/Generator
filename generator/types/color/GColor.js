@@ -60,12 +60,8 @@ extends GColorType1
             {
                 if (this.options.enabled)
                 {
-                    this.value = new ColorValue(
-                        input.space,
-                        input.c1, 
-                        input.c2, 
-                        input.c3);
-
+                    this.value = input.copy();
+                    
 
                     const fromSpaceIndex = input.space.value;
 
@@ -75,17 +71,20 @@ extends GColorType1
                         colorSpaceCount(parse)-1);
 
 
-                    this.convertColor(
-                        this.value,
-                        colorSpace(fromSpaceIndex), 
-                        colorSpace(  toSpaceIndex));
+                    if (toSpaceIndex != fromSpaceIndex)
+                    {
+                        this.convertColor(
+                            this.value,
+                            colorSpace(fromSpaceIndex), 
+                            colorSpace(  toSpaceIndex));
 
-                    this.value.space.value = toSpaceIndex;
+                        this.value.space.value = toSpaceIndex;
+                    }
 
 
-                    if (!this.c1) { this.c1 = this.value.c1.copy(); c1 = this.c1.toValue(); }
-                    if (!this.c2) { this.c2 = this.value.c2.copy(); c2 = this.c2.toValue(); }
-                    if (!this.c3) { this.c3 = this.value.c3.copy(); c3 = this.c3.toValue(); }
+                    if (!c1) c1 = this.value.c1;
+                    if (!c2) c2 = this.value.c2;
+                    if (!c3) c3 = this.value.c3;
                 
                     if (c1) this.value.c1 = c1;
                     if (c2) this.value.c2 = c2;
