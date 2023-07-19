@@ -92,44 +92,45 @@ extends GOperator1
             createTransform(-cx, -cy));
 
         
+        const centers = [];
+
+
         for (const obj of this.value.objects)
         {
             obj.nodeId   = this.nodeId;
             obj.objectId = obj.objectId + OBJECT_SEPARATOR + this.nodeId;
 
-            // if (obj.type == VECTOR_PATH)
-            //     obj.updatePoints(xform, this.coords);
+
+            if (options.showCenter.value > 0)
+            {
+                const c = obj.cp0;
+                pushUniqueBy(centers, c, p => equalv(p, c));
+            }
+
 
             obj.applyTransform(xform, options.affectSpace.value > 0);
 
             obj.scaleCorners *= Math.abs(scaleCorners);
             obj.scaleStyle   *= Math.abs(scaleStyle);
-
-            // console.log('obj =', obj);
-            // if (options.showCenter.value > 0)
-            // {
-            //     addCenterObject(
-            //         this,
-            //         obj.cp0.x.value, 
-            //         obj.cp0.y.value);
-            // }
         }
 
+
+        for (let i = 0; i < centers.length; i++)
+        {
+            addCenterObject(
+                this,
+                centers[i].x + _cx * bounds.width, 
+                centers[i].y + _cy * bounds.height,
+                i);
+        }
+
+        // addCenterObject(
+        //     this,
+        //     this.coords[0][2] + _cx * bounds.width, 
+        //     this.coords[1][2] + _cy * bounds.height);
+
         
-        // if (options.affectSpace.value == 0)
-        //     this.coords = clone(identity);
-
         this.coords = mulm3m3(this.coords, xform);
-
-
-        // if (  !isEmpty(this.value.objects)
-        //     && options.showCenter.value > 0)
-        // {
-        //     addCenterObject(
-        //         this,
-        //         this.coords[0][2] + _cx * bounds.width, 
-        //         this.coords[1][2] + _cy * bounds.height);
-        // }
 
 
         return bounds;
@@ -173,12 +174,12 @@ extends GOperator1
 
 
 
-function addCenterObject(node, cx, cy)
+function addCenterObject(node, cx, cy, index = null)
 {
     const center = new FigmaPoint(
         node.nodeId,
-        node.nodeId   + PROP_SEPARATOR   + 'center',
-        node.nodeName + CENTER_SEPARATOR + 'center',
+        node.nodeId   + PROP_SEPARATOR   + 'center' + (index ? PROP_SEPARATOR   + index : ''),
+        node.nodeName + CENTER_SEPARATOR + 'center' + (index ? CENTER_SEPARATOR + index : ''),
         cx,
         cy,
         true,

@@ -19,6 +19,9 @@ class FigmaObject
     xp1 = null; //   |     
     xp2 = null; //  xp2
 
+
+    //cp  = null; // pivot
+
     cp0 = null; //  cp0 ------- cp1 
     cp1 = null; //   |
     cp2 = null; //  cp2
@@ -59,6 +62,8 @@ class FigmaObject
         this.xp1          = !!base.xp1 ? base.xp1.copy() : null;
         this.xp2          = !!base.xp2 ? base.xp2.copy() : null;
 
+        //this.cp           = base.cp;
+    
         this.cp0          = base.cp0;
         this.cp1          = base.cp1;
         this.cp2          = base.cp2;
@@ -79,6 +84,7 @@ class FigmaObject
 
     createDefaultSpace()
     {
+        //this.cp  = point(0, 0);
         this.cp0 = point(0, 0);
         this.cp1 = point(1, 0);
         this.cp2 = point(0, 1);
@@ -123,8 +129,8 @@ class FigmaObject
         let sx = nozero(vr.x);
         let sy = nozero(vb.y);
     
-        let kx = -vr.y;
-        let ky = -vb.x;
+        let kx = vr.y;
+        let ky = vb.x;
         
         let dx = -this.cp0.x;
         let dy = -this.cp0.y;
@@ -136,7 +142,7 @@ class FigmaObject
              [0,  0,  1]],
             createTransform(dx, dy));
     
-        xform = inversem3(xform);
+        //xform = inversem3(xform);
         
     
         return xform;
@@ -204,19 +210,20 @@ class FigmaObject
             return;
 
 
-        xform = inversem3(xform);
+        // xform = inversem3(xform);
 
-        this.cp0 = mulv2m3(this.cp0, inversem3(coords));
-        this.cp0 = mulv2m3(this.cp0, xform);
-        this.cp0 = mulv2m3(this.cp0, coords);
+        const cp0 = transformPoint(point(this.cp0.x, this.cp0.y), xform, coords);
+        const cp1 = transformPoint(point(this.cp1.x, this.cp1.y), xform, coords);
+        const cp2 = transformPoint(point(this.cp2.x, this.cp2.y), xform, coords);
 
-        this.cp1 = mulv2m3(this.cp1, inversem3(coords));
-        this.cp1 = mulv2m3(this.cp1, xform);
-        this.cp1 = mulv2m3(this.cp1, coords);
+        this.cp0.x = cp0.x;
+        this.cp0.y = cp0.y;
 
-        this.cp2 = mulv2m3(this.cp2, inversem3(coords));
-        this.cp2 = mulv2m3(this.cp2, xform);
-        this.cp2 = mulv2m3(this.cp2, coords);
+        this.cp1.x = cp1.x;
+        this.cp1.y = cp1.y;
+
+        this.cp2.x = cp2.x;
+        this.cp2.y = cp2.y;
     }
 
 

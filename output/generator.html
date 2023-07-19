@@ -5301,6 +5301,9 @@ class FigmaObject
     xp1 = null; //   |     
     xp2 = null; //  xp2
 
+
+    //cp  = null; // pivot
+
     cp0 = null; //  cp0 ------- cp1 
     cp1 = null; //   |
     cp2 = null; //  cp2
@@ -5341,6 +5344,8 @@ class FigmaObject
         this.xp1          = !!base.xp1 ? base.xp1.copy() : null;
         this.xp2          = !!base.xp2 ? base.xp2.copy() : null;
 
+        //this.cp           = base.cp;
+    
         this.cp0          = base.cp0;
         this.cp1          = base.cp1;
         this.cp2          = base.cp2;
@@ -5361,6 +5366,7 @@ class FigmaObject
 
     createDefaultSpace()
     {
+        //this.cp  = point(0, 0);
         this.cp0 = point(0, 0);
         this.cp1 = point(1, 0);
         this.cp2 = point(0, 1);
@@ -5405,8 +5411,8 @@ class FigmaObject
         let sx = nozero(vr.x);
         let sy = nozero(vb.y);
     
-        let kx = -vr.y;
-        let ky = -vb.x;
+        let kx = vr.y;
+        let ky = vb.x;
         
         let dx = -this.cp0.x;
         let dy = -this.cp0.y;
@@ -5418,7 +5424,7 @@ class FigmaObject
              [0,  0,  1]],
             createTransform(dx, dy));
     
-        xform = inversem3(xform);
+        //xform = inversem3(xform);
         
     
         return xform;
@@ -5486,19 +5492,20 @@ class FigmaObject
             return;
 
 
-        xform = inversem3(xform);
+        // xform = inversem3(xform);
 
-        this.cp0 = mulv2m3(this.cp0, inversem3(coords));
-        this.cp0 = mulv2m3(this.cp0, xform);
-        this.cp0 = mulv2m3(this.cp0, coords);
+        const cp0 = transformPoint(point(this.cp0.x, this.cp0.y), xform, coords);
+        const cp1 = transformPoint(point(this.cp1.x, this.cp1.y), xform, coords);
+        const cp2 = transformPoint(point(this.cp2.x, this.cp2.y), xform, coords);
 
-        this.cp1 = mulv2m3(this.cp1, inversem3(coords));
-        this.cp1 = mulv2m3(this.cp1, xform);
-        this.cp1 = mulv2m3(this.cp1, coords);
+        this.cp0.x = cp0.x;
+        this.cp0.y = cp0.y;
 
-        this.cp2 = mulv2m3(this.cp2, inversem3(coords));
-        this.cp2 = mulv2m3(this.cp2, xform);
-        this.cp2 = mulv2m3(this.cp2, coords);
+        this.cp1.x = cp1.x;
+        this.cp1.y = cp1.y;
+
+        this.cp2.x = cp2.x;
+        this.cp2.y = cp2.y;
     }
 
 
@@ -27386,8 +27393,8 @@ extends GOperator1
             }
 
 
-            const cx = singlePoint ? this.value.objects[0].x + _cx : bounds.x + bounds.width  * _cx;
-            const cy = singlePoint ? this.value.objects[0].y + _cy : bounds.y + bounds.height * _cy;
+            const cx = singlePoint ? this.value.objects[0].x + _cx : bounds.x + _cx * bounds.width;
+            const cy = singlePoint ? this.value.objects[0].y + _cy : bounds.y + _cy * bounds.height;
 
             const xform = 
                 moveType == 0
@@ -27395,45 +27402,45 @@ extends GOperator1
                 : mulm3m3(
                     createTransform(cx, cy),
                     createTransform(_x, _y),
-                    createRotateTransform(-_a),
+                    createRotateTransform(-_a), // for vector movement
                     createTransform(-cx, -cy));
 
                 
+            const centers = [];
+    
+    
             for (const obj of this.value.objects)
             {
                 obj.nodeId   = this.nodeId;
                 obj.objectId = obj.objectId + OBJECT_SEPARATOR + this.nodeId;
 
-                // if (obj.type == VECTOR_PATH)
-                //     obj.updatePoints(xform, this.coords);
 
-                obj.applyTransform(xform, affectSpace > 0);
+                if (showCenter > 0)
+                {
+                    const c = obj.cp0;
+                    pushUniqueBy(centers, c, p => equalv(p, c));
+                }
 
-                // console.log('obj =', obj);
-                // if (showCenter > 0)
-                // {
-                //     addCenterObject(
-                //         this,
-                //         obj.cp0.x.value, 
-                //         obj.cp0.y.value);
-                // }
+
+                obj.applyTransform(xform, affectSpace == 0);
             }
 
 
-            // if (affectSpace == 0)
-            //     this.coords = clone(identity);
-
-            this.coords = mulm3m3(this.coords, xform);
-
-
-            if (  !isEmpty(this.value.objects)
-                && showCenter > 0)
+            for (let i = 0; i < centers.length; i++)
             {
                 addCenterObject(
                     this,
-                    this.coords[0][2] + _cx * bounds.width, 
-                    this.coords[1][2] + _cy * bounds.height);
+                    centers[i].x + _cx * bounds.width, 
+                    centers[i].y + _cy * bounds.height,
+                    i);
             }
+            // addCenterObject(
+            //     this,
+            //     this.coords[0][2] + _cx * bounds.width, 
+            //     this.coords[1][2] + _cy * bounds.height);
+
+
+            this.coords = mulm3m3(this.coords, xform);
         }
         
         
@@ -27583,44 +27590,45 @@ extends GOperator1
             createTransform(-cx, -cy));
 
         
+        const centers = [];
+
+
         for (const obj of this.value.objects)
         {
             obj.nodeId   = this.nodeId;
             obj.objectId = obj.objectId + OBJECT_SEPARATOR + this.nodeId;
 
-            // if (obj.type == VECTOR_PATH)
-            //     obj.updatePoints(xform, this.coords);
+
+            if (options.showCenter.value > 0)
+            {
+                const c = obj.cp0;
+                pushUniqueBy(centers, c, p => equalv(p, c));
+            }
+
 
             obj.applyTransform(xform, options.affectSpace.value > 0);
 
             obj.scaleCorners *= Math.abs(scaleCorners);
             obj.scaleStyle   *= Math.abs(scaleStyle);
-
-            // console.log('obj =', obj);
-            // if (options.showCenter.value > 0)
-            // {
-            //     addCenterObject(
-            //         this,
-            //         obj.cp0.x.value, 
-            //         obj.cp0.y.value);
-            // }
         }
 
+
+        for (let i = 0; i < centers.length; i++)
+        {
+            addCenterObject(
+                this,
+                centers[i].x + _cx * bounds.width, 
+                centers[i].y + _cy * bounds.height,
+                i);
+        }
+
+        // addCenterObject(
+        //     this,
+        //     this.coords[0][2] + _cx * bounds.width, 
+        //     this.coords[1][2] + _cy * bounds.height);
+
         
-        // if (options.affectSpace.value == 0)
-        //     this.coords = clone(identity);
-
         this.coords = mulm3m3(this.coords, xform);
-
-
-        // if (  !isEmpty(this.value.objects)
-        //     && options.showCenter.value > 0)
-        // {
-        //     addCenterObject(
-        //         this,
-        //         this.coords[0][2] + _cx * bounds.width, 
-        //         this.coords[1][2] + _cy * bounds.height);
-        // }
 
 
         return bounds;
@@ -27664,12 +27672,12 @@ extends GOperator1
 
 
 
-function addCenterObject(node, cx, cy)
+function addCenterObject(node, cx, cy, index = null)
 {
     const center = new FigmaPoint(
         node.nodeId,
-        node.nodeId   + PROP_SEPARATOR   + 'center',
-        node.nodeName + CENTER_SEPARATOR + 'center',
+        node.nodeId   + PROP_SEPARATOR   + 'center' + (index ? PROP_SEPARATOR   + index : ''),
+        node.nodeName + CENTER_SEPARATOR + 'center' + (index ? CENTER_SEPARATOR + index : ''),
         cx,
         cy,
         true,
@@ -27777,7 +27785,8 @@ extends GAffine
 
         return await this.evalAffineObjects(
             options, 
-            1, 1,
+            1, 
+            1,
             () => createRotateTransform(a));
     }
 

@@ -94,7 +94,8 @@ extends GAffine
 
         return await this.evalAffineObjects(
             options, 
-            1, 1,
+            1, 
+            1,
             () => createRotateTransform(a));
     }
 
