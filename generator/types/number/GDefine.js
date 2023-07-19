@@ -1,7 +1,7 @@
 class GDefine
 extends GOperator
 {
-    values;
+    inputs = [];
 
 
     loopId = NULL;
@@ -21,7 +21,7 @@ extends GOperator
 
         copy.copyBase(this);
 
-        if (this.values) copy.values = this.values.copy();
+        copy.inputs = this.inputs.map(i => i.copy());
 
         return copy;
     }
@@ -34,40 +34,43 @@ extends GOperator
             return this;
 
 
-        const values = (await this.values.eval(parse)).toValue();
+        const _values = [];
+
+        for (let i = 0; i < this.inputs.length; i++)
+        {
+            const val = (await this.inputs[i].eval(parse)).toValue();
     
+            if (LIST_VALUES.includes(val.type))
+            {
+                if (  !isEmpty(val.items)
+                    && val.items[0].type != NUMBER_VALUE)
+                {
+                    for (const item of val.items)
+                    {
+                        if (item.type == NUMBER_VALUE)
+                            _values.push(item);
+                    }
+                }
+            }
+            else
+            {
+                consoleAssert(
+                    val.type == NUMBER_VALUE, 
+                    'val.type must be NUMBER_VALUE');
+ 
+                _values.push(val);
+            }
+        }
+            
 
         const repeat    = parse.repeats.find(r => r.repeatId == this.loopId);
         const iteration = repeat ? repeat.iteration : this.iteration;
-
-        
-        const  list   = values.value.split(',').map(s => s.trim());
-        const _values = [];
-
-        for (const item of list)
-        {
-            if (item.indexOf('-') > 0)
-            {
-                const limits = item.split('-').map(s => s.trim());
-
-                const start  = NumberValue.fromString(limits[0]);
-                const end    = NumberValue.fromString(limits[1]);
-
-                const maxDec = Math.max(start.decimals, end.decimals);
-                const d      = getDecimalFactor(maxDec);
-
-                for (let i = start.value; i <= end.value; i += d)
-                    _values.push(new NumberValue(i, maxDec));
-            }
-            else
-                _values.push(NumberValue.fromString(item));
-        }
-
+ 
 
         this.value = _values[iteration % _values.length];
 
 
-        this.updateValues = [['values', values]];
+        this.updateValues = [['', NullValue]];
         
 
         this.validate();
@@ -90,7 +93,7 @@ extends GOperator
     {
         super.pushValueUpdates(parse);
 
-        if (this.values) this.values.pushValueUpdates(parse);
+        this.inputs.forEach(i => i.pushValueUpdates(parse));
     }
 
 
@@ -99,6 +102,6 @@ extends GOperator
     {
         super.invalidateInputs(from);
 
-        if (this.values) this.values.invalidateInputs(from);
+        this.inputs.forEach(i => i.invalidateInputs(from));
     }
 }

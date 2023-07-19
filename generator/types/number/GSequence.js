@@ -48,10 +48,16 @@ extends GOperator
         const repeat    = parse.repeats.find(r => r.repeatId == this.loopId);
         const iteration = repeat ? repeat.iteration : this.iteration;
 
-        
-        this.value = new NumberValue(
-            start.toNumber() + (this.options.enabled ? step.toNumber() * iteration : 0),
-            Math.max(start.decimals, step.decimals));
+
+        if (   start
+            && step)
+        {
+            this.value = new NumberValue(
+                start.toNumber() + (this.options.enabled ? step.toNumber() * iteration : 0),
+                Math.max(start.decimals, step.decimals));
+        }
+        else
+            this.value = NumberValue.NaN;
 
 
         // if (  !repeat

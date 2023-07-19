@@ -58,7 +58,8 @@ extends GOperator
             // first copy the input objects
             // to display when list the active node
 
-            if (this.options.enabled)
+            if (   this.options.enabled
+                && this.inputs[i].value)
             {
                 for (let j = 0; j < this.inputs[i].value.objects.length; j++, o++)
                 {

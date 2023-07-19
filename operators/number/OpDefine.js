@@ -1,5 +1,5 @@
 class   OpDefine
-extends ResizableBase
+extends OperatorBase
 {
     paramValues;
 
@@ -9,29 +9,28 @@ extends ResizableBase
     {
         super(NUMBER_DEFINE, 'define', 'define', iconArray);
 
-        this.cached      = false;
-        this.iconOffsetY = 1;
+        this.cached         = false;
+        this.iconOffsetY    = 1;
+        this.variableInputs = true;
 
         
+        this.addNewInput();
         this.addOutput(new Output([NUMBER_VALUE], this.output_genRequest));
-
-        this.addParam(this.paramValues = new TextParam('values', 'values', false, true, true));
     }
 
 
 
-    // setSize(w, h, updateTransform = true)
-    // {
-    //     super.setSize(w, h, updateTransform);
-    //     this.updateValueParam();
-    // }
-
-
-
-    setRect(x, y, w, h, updateTransform = true)
+    addNewInput()
     {
-        super.setRect(x, y, w, h, updateTransform);
-        this.updateValueParam();
+        const newInput = new Input([NUMBER_VALUE]);
+        newInput.isNew = true;
+
+        newInput.addEventListener('connect',    e => { onVariableConnectInput(e.detail.input); e.detail.input.isNew = false; });
+        newInput.addEventListener('disconnect', e => onVariableDisconnectInput(e.detail.input));
+
+        this.addInput(newInput);
+
+        return newInput;
     }
 
 
@@ -48,29 +47,18 @@ extends ResizableBase
         if (ignore) return request;
 
         
-        request.push(...this.node.paramValues.genRequest(gen));
+        const connectedInputs = this.node.inputs.filter(i => i.connected && !i.param);
+
+
+        request.push(connectedInputs.length); // utility values like param count are stored as numbers
+        
+        for (const input of connectedInputs)
+            request.push(...pushInputOrParam(input, gen));
 
 
         gen.scope.pop();
         pushUnique(gen.passedNodes, this.node);
 
         return request;
-    }
-
-
-
-    updateParams()
-    {
-        super.updateParams();
-
-        this.updateValueParam();
-    }
-
-
-
-    updateValueParam()
-    {
-        this.paramValues.div.style.width  = this.div.offsetWidth;
-        this.paramValues.div.style.height = this.div.offsetHeight - Math.max(defHeaderHeight, this.header.offsetHeight);    
     }
 }

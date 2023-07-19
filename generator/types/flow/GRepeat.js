@@ -53,7 +53,10 @@ extends GOperator
         const loop  = (await this.loop .eval(parse)).toValue();
 
 
-        count = new NumberValue(Math.round(count.value));
+        count = 
+            count
+            ? new NumberValue(Math.round(count.value))
+            : new NumberValue(0);
 
 
         if (this.loop.type != NUMBER_VALUE)

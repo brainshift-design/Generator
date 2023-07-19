@@ -431,36 +431,43 @@ function genParseArithmetic(parse, newNode)
 
 
 
-function genParseArray(parse)
+function genParseDefine(parse)
 {
     const [, nodeId, options, ignore] = genParseNodeStart(parse);
 
 
-    const array = new GDefine(nodeId, options);
+    const define = new GDefine(nodeId, options);
+
+
+    let nInputs = 0;
+    
+    if (!ignore)
+        nInputs = parseInt(parse.move());
 
 
     if (parse.settings.logRequests) 
-        logReq(array, parse, ignore);
+        logReq(define, parse, ignore, nInputs);
 
 
     if (ignore) 
     {
-        genParseNodeEnd(parse, array);
+        genParseNodeEnd(parse, define);
         return parse.parsedNodes.find(n => n.nodeId == nodeId);
     }
 
 
     parse.nTab++;
 
-
-    array.values = genParse(parse);
+    
+    for (let i = 0; i < nInputs; i++)
+        define.inputs.push(genParse(parse));
 
 
     parse.nTab--;
 
 
-    genParseNodeEnd(parse, array);
-    return array;
+    genParseNodeEnd(parse, define);
+    return define;
 }
 
 
