@@ -40,15 +40,7 @@ extends GOperator1
             return Rect.NaN;
 
 
-            this.value.objects = 
-                   this.input 
-                && this.input.value
-                ? this.input.value.objects
-                    .filter(o => 
-                           o.isDeco  === false
-                        || o.isXform === true)
-                    .map(o => o.copy()) 
-                : [];
+        this.value.objects = getValidObjects(this.input);
         
 
         const bounds = getObjBounds(this.value.objects);

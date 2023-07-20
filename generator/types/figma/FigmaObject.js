@@ -442,3 +442,17 @@ function createFigmaLine(node, p0, p1, color, suffix)
 
     return line;
 }
+
+
+
+function getValidObjects(input)
+{
+    return input 
+        && input.value
+        ? input.value.objects
+            .filter(o => 
+                   o.isDeco  === false
+                || o.isXform === true)
+            .map(o => o.copy()) 
+        : [];
+}

@@ -83,23 +83,15 @@ extends GOperator1
         if (   this.value
             && this.value.isValid())
         {
-            this.value.objects = 
-                   this.input 
-                && this.input.value
-                ? this.input.value.objects
-                    .filter(o => 
-                           o.isDeco  === false
-                        || o.isXform === true)
-                    .map(o => o.copy()) 
-                : [];
+            this.value.objects = getValidObjects(this.input);
 
             
-            const bounds = getObjBounds(this.value.objects);
+            const bounds       = getObjBounds(this.value.objects);
 
 
-            const centerX    = options.centerX    .value;
-            const centerY    = options.centerY    .value;
-            const showCenter = options.showCenter .value;
+            const centerX      = options.centerX    .value;
+            const centerY      = options.centerY    .value;
+            const showCenter   = options.showCenter .value;
 
 
             const singlePoint = 

@@ -5728,6 +5728,20 @@ function createFigmaLine(node, p0, p1, color, suffix)
 }
 
 
+
+function getValidObjects(input)
+{
+    return input 
+        && input.value
+        ? input.value.objects
+            .filter(o => 
+                   o.isDeco  === false
+                || o.isXform === true)
+            .map(o => o.copy()) 
+        : [];
+}
+
+
 function addColorProp(obj, prop)
 {
     const rgb = scaleRgb(prop.toRgb());
@@ -13544,9 +13558,11 @@ extends GOperator
             if (   this.options.enabled
                 && this.inputs[i].value)
             {
-                for (let j = 0; j < this.inputs[i].value.objects.length; j++, o++)
+                const objects = getValidObjects(this.inputs[i]);
+
+                for (let j = 0; j < objects.length; j++, o++)
                 {
-                    const obj = copyFigmaObject(this.inputs[i].value.objects[j]);
+                    const obj = copyFigmaObject(objects[j]);
 
                     obj.nodeId   = this.nodeId;
                     obj.objectId = obj.objectId + OBJECT_SEPARATOR + this.nodeId;
@@ -27463,15 +27479,7 @@ extends GOperator1
         if (   this.value
             && this.value.isValid())
         {
-            this.value.objects = 
-                   this.input 
-                && this.input.value
-                ? this.input.value.objects
-                    .filter(o => 
-                           o.isDeco  === false
-                        || o.isXform === true)
-                    .map(o => o.copy()) 
-                : [];
+            this.value.objects = getValidObjects(this.input);
 
             
             const bounds = getObjBounds(this.value.objects);
@@ -27633,15 +27641,7 @@ extends GOperator1
             return Rect.NaN;
 
 
-            this.value.objects = 
-                   this.input 
-                && this.input.value
-                ? this.input.value.objects
-                    .filter(o => 
-                           o.isDeco  === false
-                        || o.isXform === true)
-                    .map(o => o.copy()) 
-                : [];
+        this.value.objects = getValidObjects(this.input);
         
 
         const bounds = getObjBounds(this.value.objects);
@@ -28261,23 +28261,15 @@ extends GOperator1
         if (   this.value
             && this.value.isValid())
         {
-            this.value.objects = 
-                   this.input 
-                && this.input.value
-                ? this.input.value.objects
-                    .filter(o => 
-                           o.isDeco  === false
-                        || o.isXform === true)
-                    .map(o => o.copy()) 
-                : [];
+            this.value.objects = getValidObjects(this.input);
 
             
-            const bounds = getObjBounds(this.value.objects);
+            const bounds       = getObjBounds(this.value.objects);
 
 
-            const centerX    = options.centerX    .value;
-            const centerY    = options.centerY    .value;
-            const showCenter = options.showCenter .value;
+            const centerX      = options.centerX    .value;
+            const centerY      = options.centerY    .value;
+            const showCenter   = options.showCenter .value;
 
 
             const singlePoint = 
@@ -28437,15 +28429,7 @@ extends GOperator1
         if (   this.value
             && this.value.isValid())
         {
-            this.value.objects = 
-                   this.input 
-                && this.input.value
-                ? this.input.value.objects
-                    .filter(o => 
-                           o.isDeco  === false
-                        || o.isXform === true)
-                    .map(o => o.copy()) 
-                : [];
+            this.value.objects = getValidObjects(this.input);
 
 
             const bounds = getObjBounds(this.value.objects);
