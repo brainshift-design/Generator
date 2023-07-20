@@ -136,7 +136,7 @@ extends GShape
             path.createDefaultTransform(x, y);
 
 
-            this.value.objects.push(path, ...path.createTransformPoints(parse, x, y, w, h));
+            this.value.objects.push(path, ...path.createDefaultTransformPoints(parse, x, y, w, h));
         }
 
 

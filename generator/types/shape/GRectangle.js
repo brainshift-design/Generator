@@ -114,7 +114,7 @@ extends GShape
 
                 rect.createDefaultTransform(x, y);
 
-                this.value.objects.push(rect, ...rect.createTransformPoints(parse, x, y, w, h));
+                this.value.objects.push(rect, ...rect.createDefaultTransformPoints(parse, x, y, w, h));
             }
         }
 

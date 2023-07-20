@@ -24,6 +24,25 @@ extends FigmaShape
 
 
         this.updateNetworkData();
+
+
+        let bounds = Rect.NaN;
+
+        for (let i = 0; i < this.edges.length; i++)
+        {
+            bounds = expandRect(
+                bounds, 
+                bounds3(
+                    this.edges[i].start.toPoint(), 
+                    this.edges[i].start.toPoint(),
+                    this.edges[i].end  .toPoint(),
+                    this.edges[i].end  .toPoint()));
+        }
+
+        this.createDefaultSpace(
+            bounds.x + bounds.width /2,            
+            bounds.y + bounds.height/2            
+        );
     }
 
 
@@ -75,7 +94,7 @@ extends FigmaShape
         this.width  = maxX - minX;
         this.height = maxY - minY;
 
-        this.createTransformPoints(null, this.x, this.y, this.width, this.height);
+        this.createDefaultTransformPoints(null, this.x, this.y, this.width, this.height);
 
 
         this.networkData = getNetworkData(this.points, this.edges, this.regions);

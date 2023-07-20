@@ -126,7 +126,7 @@ extends GShape
 
                 star.createDefaultTransform(x, y);
 
-                this.value.objects.push(star, ...star.createTransformPoints(parse, x, y, w, h));
+                this.value.objects.push(star, ...star.createDefaultTransformPoints(parse, x, y, w, h));
             }
         }
 

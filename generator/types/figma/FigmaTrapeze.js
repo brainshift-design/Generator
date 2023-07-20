@@ -44,6 +44,11 @@ extends FigmaVectorPath
 
         this.round  = round;
         this.bias   = bias;
+
+        
+        this.createDefaultSpace(
+            x + width /2, 
+            y + height/2);
     }
 
 

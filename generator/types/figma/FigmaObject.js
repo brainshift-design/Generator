@@ -39,8 +39,6 @@ class FigmaObject
 
         this.xform        = clone(identity);
 
-        this.createDefaultSpace();
-
         this.scaleCorners = 1;
         this.scaleStyle   = 1;
     }
@@ -78,11 +76,11 @@ class FigmaObject
 
 
 
-    createDefaultSpace()
+    createDefaultSpace(cx = 0, cy = 0)
     {
-        this.sp0 = point(0, 0);
-        this.sp1 = point(1, 0);
-        this.sp2 = point(0, 1);
+        this.sp0 = point(cx,   cy  );
+        this.sp1 = point(cx+1, cy  );
+        this.sp2 = point(cx,   cy+1);
     }
 
 
@@ -97,7 +95,7 @@ class FigmaObject
 
 
 
-    createTransformPoints(parse, x, y, w, h)
+    createDefaultTransformPoints(parse, x, y, w, h)
     {
         this.xp0 = new FigmaPoint(this.nodeId, this.objectId+'.0', this.objectName+' ^ 0', x,     y,     true, false, true);
         this.xp1 = new FigmaPoint(this.nodeId, this.objectId+'.1', this.objectName+' ^ 1', x + w, y,     true, false, true);

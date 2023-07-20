@@ -5323,8 +5323,6 @@ class FigmaObject
 
         this.xform        = clone(identity);
 
-        this.createDefaultSpace();
-
         this.scaleCorners = 1;
         this.scaleStyle   = 1;
     }
@@ -5362,11 +5360,11 @@ class FigmaObject
 
 
 
-    createDefaultSpace()
+    createDefaultSpace(cx = 0, cy = 0)
     {
-        this.sp0 = point(0, 0);
-        this.sp1 = point(1, 0);
-        this.sp2 = point(0, 1);
+        this.sp0 = point(cx,   cy  );
+        this.sp1 = point(cx+1, cy  );
+        this.sp2 = point(cx,   cy+1);
     }
 
 
@@ -5381,7 +5379,7 @@ class FigmaObject
 
 
 
-    createTransformPoints(parse, x, y, w, h)
+    createDefaultTransformPoints(parse, x, y, w, h)
     {
         this.xp0 = new FigmaPoint(this.nodeId, this.objectId+'.0', this.objectName+' ^ 0', x,     y,     true, false, true);
         this.xp1 = new FigmaPoint(this.nodeId, this.objectId+'.1', this.objectName+' ^ 1', x + w, y,     true, false, true);
@@ -6162,6 +6160,10 @@ extends FigmaShape
         this.height = height;
 
         this.round  = round;
+
+        this.createDefaultSpace(
+            x + width /2, 
+            y + height/2);
     }
 
 
@@ -6222,6 +6224,11 @@ extends FigmaShape
         this.x     = x;
         this.y     = y;
         this.width = width;
+
+        
+        this.createDefaultSpace(
+            x + width/2, 
+            y);
     }
 
 
@@ -6285,6 +6292,11 @@ extends FigmaShape
         this.from   = from;
         this.to     = to;
         this.inner  = inner;
+
+        
+        this.createDefaultSpace(
+            x + width /2, 
+            y + height/2);
     }
 
 
@@ -6367,6 +6379,17 @@ extends FigmaShape
 
         this.updatePathPoints();
         this.updatePathData();
+
+
+        let bounds = Rect.NaN;
+
+        for (const p of this.pathPoints)
+            bounds = expandRect_(bounds, p);
+
+        this.createDefaultSpace(
+            bounds.x + bounds.width /2,            
+            bounds.y + bounds.height/2            
+        );
     }
 
 
@@ -6448,7 +6471,7 @@ extends FigmaShape
         this.width  = maxX - minX;
         this.height = maxY - minY;
 
-        this.createTransformPoints(null, this.x, this.y, this.width, this.height);
+        this.createDefaultTransformPoints(null, this.x, this.y, this.width, this.height);
 
 
         this.pathData = getPathDataFromPoints(this.pathPoints, this.closed, this.degree);
@@ -6776,6 +6799,25 @@ extends FigmaShape
 
 
         this.updateNetworkData();
+
+
+        let bounds = Rect.NaN;
+
+        for (let i = 0; i < this.edges.length; i++)
+        {
+            bounds = expandRect(
+                bounds, 
+                bounds3(
+                    this.edges[i].start.toPoint(), 
+                    this.edges[i].start.toPoint(),
+                    this.edges[i].end  .toPoint(),
+                    this.edges[i].end  .toPoint()));
+        }
+
+        this.createDefaultSpace(
+            bounds.x + bounds.width /2,            
+            bounds.y + bounds.height/2            
+        );
     }
 
 
@@ -6827,7 +6869,7 @@ extends FigmaShape
         this.width  = maxX - minX;
         this.height = maxY - minY;
 
-        this.createTransformPoints(null, this.x, this.y, this.width, this.height);
+        this.createDefaultTransformPoints(null, this.x, this.y, this.width, this.height);
 
 
         this.networkData = getNetworkData(this.points, this.edges, this.regions);
@@ -6981,6 +7023,11 @@ extends FigmaVectorPath
 
         this.round  = round;
         this.bias   = bias;
+
+        
+        this.createDefaultSpace(
+            x + width /2, 
+            y + height/2);
     }
 
 
@@ -7037,6 +7084,11 @@ extends FigmaShape
 
         this.round   = round;
         this.corners = corners;
+
+        
+        this.createDefaultSpace(
+            x + width /2, 
+            y + height/2);
     }
 
 
@@ -7109,6 +7161,11 @@ extends FigmaShape
         this.round  = round;
         this.points = points;
         this.convex = convex;
+
+        
+        this.createDefaultSpace(
+            x + width /2, 
+            y + height/2);
     }
 
 
@@ -7202,6 +7259,11 @@ extends FigmaShape
     
         this.lineHeight    = lineHeight;
         this.letterSpacing = letterSpacing;
+
+        
+        this.createDefaultSpace(
+            x + width /2, 
+            y + height/2);
     }
 
 
@@ -7318,6 +7380,9 @@ extends FigmaShape
         this.x        = x;
         this.y        = y;
         this.isCenter = isCenter;
+
+        
+        this.createDefaultSpace(x, y);
 
         this.createDefaultTransform(x, y);
     }
@@ -24196,7 +24261,7 @@ extends GShape
 
                 rect.createDefaultTransform(x, y);
 
-                this.value.objects.push(rect, ...rect.createTransformPoints(parse, x, y, w, h));
+                this.value.objects.push(rect, ...rect.createDefaultTransformPoints(parse, x, y, w, h));
             }
         }
 
@@ -24349,7 +24414,7 @@ extends GShape
 
                 line.createDefaultTransform(x, y);
                 
-                this.value.objects.push(line, ...line.createTransformPoints(parse, x, y, w, 0.01));
+                this.value.objects.push(line, ...line.createDefaultTransformPoints(parse, x, y, w, 0.01));
             }
         }
 
@@ -24501,7 +24566,7 @@ extends GShape
 
                 ellipse.createDefaultTransform(x, y);
 
-                this.value.objects.push(ellipse, ...ellipse.createTransformPoints(parse, x, y, w, h));
+                this.value.objects.push(ellipse, ...ellipse.createDefaultTransformPoints(parse, x, y, w, h));
             }
         }
 
@@ -24676,7 +24741,7 @@ extends GShape
 
                 trap.createDefaultTransform(x, y);
 
-                this.value.objects.push(trap, ...trap.createTransformPoints(parse, x, y, w, h));
+                this.value.objects.push(trap, ...trap.createDefaultTransformPoints(parse, x, y, w, h));
             }
         }
 
@@ -24857,7 +24922,7 @@ extends GShape
 
                 poly.createDefaultTransform(x, y);
 
-                this.value.objects.push(poly, ...poly.createTransformPoints(parse, x, y, w, h));
+                this.value.objects.push(poly, ...poly.createDefaultTransformPoints(parse, x, y, w, h));
             }
         }
 
@@ -25043,7 +25108,7 @@ extends GShape
 
                 star.createDefaultTransform(x, y);
 
-                this.value.objects.push(star, ...star.createTransformPoints(parse, x, y, w, h));
+                this.value.objects.push(star, ...star.createDefaultTransformPoints(parse, x, y, w, h));
             }
         }
 
@@ -25288,10 +25353,10 @@ extends GShape
                 this.value.width.value  = width;
                 this.value.height.value = height;
 
-                this.value.objects.push(text, ...text.createTransformPoints(parse, x, y, width, height));
+                this.value.objects.push(text, ...text.createDefaultTransformPoints(parse, x, y, width, height));
             }
             else
-                this.value.objects.push(text, ...text.createTransformPoints(parse, x, y, w, h));
+                this.value.objects.push(text, ...text.createDefaultTransformPoints(parse, x, y, w, h));
         }
 
         
@@ -25677,7 +25742,7 @@ extends GShape
             path.createDefaultTransform(x, y);
 
 
-            this.value.objects.push(path, ...path.createTransformPoints(parse, x, y, w, h));
+            this.value.objects.push(path, ...path.createDefaultTransformPoints(parse, x, y, w, h));
         }
 
 
@@ -26025,7 +26090,7 @@ extends GOperator1
             path.createDefaultTransform(x, y);
 
 
-            this.value.objects.push(path, ...path.createTransformPoints(parse, x, y, w, h));
+            this.value.objects.push(path, ...path.createDefaultTransformPoints(parse, x, y, w, h));
         }
 
 
@@ -26261,7 +26326,7 @@ extends GShape
             for (const region of regions)
             {
                 region.createDefaultTransform(x, y);
-                this.value.objects.push(region, ...region.createTransformPoints(parse, x, y, w, h));
+                this.value.objects.push(region, ...region.createDefaultTransformPoints(parse, x, y, w, h));
             }
         }
 
@@ -26466,7 +26531,7 @@ extends GShape
             network.createDefaultTransform(x, y);
 
 
-            this.value.objects.push(network, ...network.createTransformPoints(parse, x, y, w, h));
+            this.value.objects.push(network, ...network.createDefaultTransformPoints(parse, x, y, w, h));
         }
 
 
@@ -26827,7 +26892,7 @@ extends GShape
             frame.createDefaultTransform(x, y);
 
         
-            this.value.objects = [frame, ...frame.createTransformPoints(parse, x, y, w, h)];
+            this.value.objects = [frame, ...frame.createDefaultTransformPoints(parse, x, y, w, h)];
 
             this.updateValues.push(['nChildren', new NumberValue(frame.children.length)]);
         }

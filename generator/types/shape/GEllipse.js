@@ -124,7 +124,7 @@ extends GShape
 
                 ellipse.createDefaultTransform(x, y);
 
-                this.value.objects.push(ellipse, ...ellipse.createTransformPoints(parse, x, y, w, h));
+                this.value.objects.push(ellipse, ...ellipse.createDefaultTransformPoints(parse, x, y, w, h));
             }
         }
 

@@ -130,7 +130,7 @@ extends GShape
             frame.createDefaultTransform(x, y);
 
         
-            this.value.objects = [frame, ...frame.createTransformPoints(parse, x, y, w, h)];
+            this.value.objects = [frame, ...frame.createDefaultTransformPoints(parse, x, y, w, h)];
 
             this.updateValues.push(['nChildren', new NumberValue(frame.children.length)]);
         }

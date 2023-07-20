@@ -21,6 +21,11 @@ extends FigmaShape
 
         this.round   = round;
         this.corners = corners;
+
+        
+        this.createDefaultSpace(
+            x + width /2, 
+            y + height/2);
     }
 
 

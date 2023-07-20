@@ -121,7 +121,7 @@ extends GShape
 
                 trap.createDefaultTransform(x, y);
 
-                this.value.objects.push(trap, ...trap.createTransformPoints(parse, x, y, w, h));
+                this.value.objects.push(trap, ...trap.createDefaultTransformPoints(parse, x, y, w, h));
             }
         }
 

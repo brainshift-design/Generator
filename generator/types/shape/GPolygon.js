@@ -121,7 +121,7 @@ extends GShape
 
                 poly.createDefaultTransform(x, y);
 
-                this.value.objects.push(poly, ...poly.createTransformPoints(parse, x, y, w, h));
+                this.value.objects.push(poly, ...poly.createDefaultTransformPoints(parse, x, y, w, h));
             }
         }
 

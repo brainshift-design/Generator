@@ -24,6 +24,11 @@ extends FigmaShape
         this.from   = from;
         this.to     = to;
         this.inner  = inner;
+
+        
+        this.createDefaultSpace(
+            x + width /2, 
+            y + height/2);
     }
 
 

@@ -19,6 +19,10 @@ extends FigmaShape
         this.height = height;
 
         this.round  = round;
+
+        this.createDefaultSpace(
+            x + width /2, 
+            y + height/2);
     }
 
 

@@ -33,6 +33,17 @@ extends FigmaShape
 
         this.updatePathPoints();
         this.updatePathData();
+
+
+        let bounds = Rect.NaN;
+
+        for (const p of this.pathPoints)
+            bounds = expandRect_(bounds, p);
+
+        this.createDefaultSpace(
+            bounds.x + bounds.width /2,            
+            bounds.y + bounds.height/2            
+        );
     }
 
 
@@ -114,7 +125,7 @@ extends FigmaShape
         this.width  = maxX - minX;
         this.height = maxY - minY;
 
-        this.createTransformPoints(null, this.x, this.y, this.width, this.height);
+        this.createDefaultTransformPoints(null, this.x, this.y, this.width, this.height);
 
 
         this.pathData = getPathDataFromPoints(this.pathPoints, this.closed, this.degree);

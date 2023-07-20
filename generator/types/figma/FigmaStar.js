@@ -24,6 +24,11 @@ extends FigmaShape
         this.round  = round;
         this.points = points;
         this.convex = convex;
+
+        
+        this.createDefaultSpace(
+            x + width /2, 
+            y + height/2);
     }
 
 

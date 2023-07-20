@@ -46,6 +46,11 @@ extends FigmaShape
     
         this.lineHeight    = lineHeight;
         this.letterSpacing = letterSpacing;
+
+        
+        this.createDefaultSpace(
+            x + width /2, 
+            y + height/2);
     }
 
 
