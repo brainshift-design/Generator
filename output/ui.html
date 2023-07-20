@@ -4594,12 +4594,7 @@ a
             <div id='whatsNewBody'>
                 <h1 style='margin-top: 20px;'>What's new</h1>
 
-                <p>•  Define now takes in a list of inputs instead of a text value</p>
-                <p>•  fixed value propagation through the Color node</p>
-                <p>•  fixed Repeat output type</p>
-                <p>•  improved transform pipeline</p>
-                <p>•  object space is now shown instead of the center</p>
-                <p>•  added Center node for adjusting transform origin</p>
+                <p>•  fixed Color node sometimes crashing during animations</p>
                 
                 <p><br/><br/><div id='chkHideWhatsNew'></div></p>
             </div>
@@ -4927,7 +4922,7 @@ a
 
 
 
-const generatorVersion = 162;
+const generatorVersion = 163;
 
 
 const MAX_INT32        = 2147483647;
@@ -4940,10 +4935,11 @@ const NL               = '\n';
   
 const GENERATOR_LOGO   = '◦ G •';
 const OBJECT_PREFIX    = GENERATOR_LOGO + ' ';
-  
+
 const nodeTag          = 'G_NODE';
 const connTag          = 'G_CONN';
 const pageTag          = 'G_PAGE';
+const tempTag          = 'G_TEMP';
 
 
 const identity = Object.freeze(
@@ -22077,7 +22073,7 @@ extends GArithmetic
             case 5: this.value = await evalExponentInputs(this.inputs, parse); break;
         }
 
-        
+
         this.updateValues =
         [
             ['value',     this.value],
@@ -43151,7 +43147,7 @@ onerror = (event, source, line, pos, error) =>
 };
 
 
-const generatorVersion = 162;
+const generatorVersion = 163;
 
 
 const MAX_INT32        = 2147483647;
@@ -43164,10 +43160,11 @@ const NL               = '\n';
   
 const GENERATOR_LOGO   = '◦ G •';
 const OBJECT_PREFIX    = GENERATOR_LOGO + ' ';
-  
+
 const nodeTag          = 'G_NODE';
 const connTag          = 'G_CONN';
 const pageTag          = 'G_PAGE';
+const tempTag          = 'G_TEMP';
 
 
 const identity = Object.freeze(
@@ -62485,7 +62482,7 @@ extends GArithmetic
             case 5: this.value = await evalExponentInputs(this.inputs, parse); break;
         }
 
-        
+
         this.updateValues =
         [
             ['value',     this.value],
@@ -79423,9 +79420,10 @@ class MenuButton
         const icon = 
             this.icon != NULL
             ? this.icon
-            : this.menu
-                ? this.menu.lastItem.icon
-                : NULL;
+            :    this.menu
+              && this.menu.lastItem
+              ? this.menu.lastItem.icon
+              : NULL;
 
         this.divIcon.style.background         = 'url(\'data:image/svg+xml;utf8,' + icon + '\')';
         this.divIcon.style.backgroundPosition = '100% 50%';
@@ -80297,9 +80295,9 @@ function initGeneratorMenus()
 
     menuSets = new Menu('Sets...', true, false);
     menuSets.addItems([
-        menuItemArray      = new MenuItem('Define . . .',     {icon: iconArray,       callback: e => actionManager.do(getCreateNodeAction(NUMBER_DEFINE,      btnNumber.div, getCreateOptions(e)))}),
+        menuItemArray      = new MenuItem('List . . .',       {icon: iconArray,       callback: e => actionManager.do(getCreateNodeAction(NUMBER_DEFINE,      btnNumber.div, getCreateOptions(e)))}),
         menuItemSequence   = new MenuItem('Sequence . . .',   {icon: iconSequence,    callback: e => actionManager.do(getCreateNodeAction(NUMBER_SEQUENCE,    btnNumber.div, getCreateOptions(e)))}),
-        menuItemDistribute = new MenuItem('Distribute . . .', {icon: iconDistribute,  callback: e => actionManager.do(getCreateNodeAction(NUMBER_DISTRIBUTE,  btnNumber.div, getCreateOptions(e)))}),
+        menuItemDistribute = new MenuItem('Range . . .',      {icon: iconDistribute,  callback: e => actionManager.do(getCreateNodeAction(NUMBER_DISTRIBUTE,  btnNumber.div, getCreateOptions(e)))}),
                              new MenuItem('',                 {separator: true}),
                              new MenuItem('Random . . .',     {icon: iconRandom,      callback: e => actionManager.do(getCreateNodeAction(NUMBER_RANDOM,      btnNumber.div, getCreateOptions(e)))}),
                              new MenuItem('Noise . . .',      {icon: iconNoise,       callback: e => actionManager.do(getCreateNodeAction(NUMBER_NOISE,       btnNumber.div, getCreateOptions(e)))}),
@@ -80466,9 +80464,15 @@ function initGeneratorMenus()
 
 
     menuTemplate = new Menu('Templates', true, false);
-    menuTemplate.addItems([
-        //new MenuItem('',            {separator: true}),
-        menuItemManageTemplates = new MenuItem('Manage templates...', {icon: iconManageTemplates})]);
+
+    menuTemplate.init = () => 
+    {
+        menuTemplate.clearItems();
+
+        menuTemplate.addItems([
+            //new MenuItem('',            {separator: true}),
+            menuItemManageTemplates = new MenuItem('Manage templates...', {icon: iconManageTemplates})]);
+    };
 
 
     menuGroup = new Menu('Groups', true, false);
@@ -80549,9 +80553,9 @@ function initGeneratorMenus()
         menuItemNodeSelect         = new MenuItem('Select',           {childMenu: menuNodeSelect}),
         menuItemNodeSep3           = new MenuItem('',                 {separator: true}),
         // menuItemNodeEdit           = new MenuItem('Edit...',       {callback: e => { hideAllMenus(); graphView.editSelectedCustomNode(); }}),
-        //                              new MenuItem('',              {separator: true}),
-        // menuItemNodeSaveAsTemplate = new MenuItem('Save as template', {callback: e => { hideAllMenus(); showSaveAsTemplateDialog(); }}),
-        //                              new MenuItem('',                 {separator: true}),
+                                    //  new MenuItem('',              {separator: true}),
+        menuItemNodeSaveAsTemplate = new MenuItem('Save as template', {callback: e => { hideAllMenus(); showSaveAsTemplateDialog(); }}),
+                                     new MenuItem('',                 {separator: true}),
         // menuItemNodeActivate    = new MenuItem('Activate',         {callback: () => makeSelectedNodesActive()}),
         menuItemNodeEnableDisable  = new MenuItem('Enable/Disable',   {shortcut:  osCtrlShift() + 'E',  callback: () => actionManager.do(new ToggleDisableNodesAction(graphView.selectedNodes.map(n => n.id)))}),
         menuItemNodeSep4           = new MenuItem('',                 {separator: true}),
@@ -80612,7 +80616,7 @@ function initGeneratorMenus()
     btnLayer    = new MenuButton('', menuLayer,    {useMenuName: true, highlight: () => currentMenus.includes(menuLayer ), callback: () => updatePanMode(false)});
     //btnStyle  = new MenuButton('', menuStyle,    {useMenuName: true, highlight: () => currentMenus.includes(menuStyle ), callback: () => updatePanMode(false)});
     btnShape    = new MenuButton('', menuShape,    {useMenuName: true, highlight: () => currentMenus.includes(menuShape ), callback: () => updatePanMode(false)});
-    //btnTemplate = new MenuButton('', menuTemplate, {useMenuName: true, highlight: () => currentMenus.includes(menuShape ), callback: () => updatePanMode(false)});
+    btnTemplate = new MenuButton('', menuTemplate, {useMenuName: true, highlight: () => currentMenus.includes(menuShape ), callback: () => updatePanMode(false)});
     //btnGroup  = new MenuButton('', menuGroup,  {useMenuName: true, highlight: () => currentMenus.includes(menuShape ), callback: () => updatePanMode(false)});
 
     // btnGroup  = new MenuButton('Node groups', null, {callback: () => 
@@ -80696,7 +80700,7 @@ function initGeneratorMenus()
     btnColor   .setIcon(iconColor);
     btnLayer   .setIcon(iconEffects);
     btnShape   .setIcon(iconShapes);
-    //btnTemplate.setIcon(iconTemplate);
+    btnTemplate.setIcon(iconTemplate);
     //btnStyle  .setIcon(iconStyle);
     //btnGroup  .setIcon(iconGroup);
     btnHand    .setIcon(iconHand);
@@ -83566,7 +83570,7 @@ function updateZoomIcon()
         ? graph.currentPage.zoom
         : 1;
 
-        
+
     if (btnZoom)
     {
         btnZoom.divIcon.innerHTML       =  Math.round(zoom * 100) + '%';
@@ -83574,29 +83578,34 @@ function updateZoomIcon()
     }
 
 
-    if (   zoom < settings.minZoomForParams
-        && zoom < 1)
+    const _zoomIconOverlay = document.getElementById('zoomIconOverlay');
+
+    if (_zoomIconOverlay)
     {
-        zoomIconOverlay.style.left       = '14px';
-        zoomIconOverlay.style.top        = '11px';
-        zoomIconOverlay.style.width      = '28';
-        zoomIconOverlay.style.background = 'url(\'data:image/svg+xml;utf8,<svg width="28" height="20" viewBox="0 0 28 20" fill="none" xmlns="http://www.w3.org/2000/svg"><path d="M4 0.5H24C25.933 0.5 27.5 2.067 27.5 4V19.5H0.5V4C0.5 2.067 2.067 0.5 4 0.5Z" stroke="white"/></svg>\')';
-    }
-    else if (zoom < settings.minZoomForParams
-          && zoom < 10)
-    {
-        zoomIconOverlay.style.left       = '12px';
-        zoomIconOverlay.style.top        = '11px';
-        zoomIconOverlay.style.width      = '33';
-        zoomIconOverlay.style.background = 'url(\'data:image/svg+xml;utf8,<svg width="33" height="20" viewBox="0 0 33 20" fill="none" xmlns="http://www.w3.org/2000/svg"><path d="M4 0.5H29C30.933 0.5 32.5 2.067 32.5 4V19.5H0.5V4C0.5 2.067 2.067 0.5 4 0.5Z" stroke="white"/></svg>\')';
-    }
-    else
-        zoomIconOverlay.style.background = 'none';
+        if (   zoom < settings.minZoomForParams
+            && zoom < 1)
+        {
+            _zoomIconOverlay.style.left       = '14px';
+            _zoomIconOverlay.style.top        = '11px';
+            _zoomIconOverlay.style.width      = '28';
+            _zoomIconOverlay.style.background = 'url(\'data:image/svg+xml;utf8,<svg width="28" height="20" viewBox="0 0 28 20" fill="none" xmlns="http://www.w3.org/2000/svg"><path d="M4 0.5H24C25.933 0.5 27.5 2.067 27.5 4V19.5H0.5V4C0.5 2.067 2.067 0.5 4 0.5Z" stroke="white"/></svg>\')';
+        }
+        else if (zoom < settings.minZoomForParams
+            && zoom < 10)
+        {
+            _zoomIconOverlay.style.left       = '12px';
+            _zoomIconOverlay.style.top        = '11px';
+            _zoomIconOverlay.style.width      = '33';
+            _zoomIconOverlay.style.background = 'url(\'data:image/svg+xml;utf8,<svg width="33" height="20" viewBox="0 0 33 20" fill="none" xmlns="http://www.w3.org/2000/svg"><path d="M4 0.5H29C30.933 0.5 32.5 2.067 32.5 4V19.5H0.5V4C0.5 2.067 2.067 0.5 4 0.5Z" stroke="white"/></svg>\')';
+        }
+        else
+            _zoomIconOverlay.style.background = 'none';
 
 
-    zoomIconOverlay.style.backgroundPosition = '50% 50%';
-    zoomIconOverlay.style.backgroundRepeat   = 'no-repeat';
-    zoomIconOverlay.style.backgroundColor    = 'transparent';
+        _zoomIconOverlay.style.backgroundPosition = '50% 50%';
+        _zoomIconOverlay.style.backgroundRepeat   = 'no-repeat';
+        _zoomIconOverlay.style.backgroundColor    = 'transparent';
+    }
 }
 
 
@@ -96991,7 +97000,7 @@ extends OperatorBase
 
     constructor()
     {
-        super(NUMBER_DEFINE, 'define', 'define', iconArray);
+        super(NUMBER_DEFINE, 'list', 'list', iconArray);
 
         this.cached         = false;
         this.iconOffsetY    = 1;
@@ -97062,7 +97071,7 @@ extends OperatorBase
 
     constructor()
     {
-        super(NUMBER_DISTRIBUTE, 'distribute', 'distribute', iconDistribute);
+        super(NUMBER_DISTRIBUTE, 'range', 'range', iconDistribute);
 
         this.cached     = false;
         this.canDisable = true;
@@ -97255,8 +97264,8 @@ extends OperatorBase
         this.addParam(this.paramMin         = new NumberParam('min',         'min',          true,  true, true,   0));
         this.addParam(this.paramMax         = new NumberParam('max',         'max',          true,  true, true, 255));
         this.addParam(this.paramScale       = new NumberParam('scale',       'scale',        true,  true, true, 1, 1));
-        this.addParam(this.paramInterpolate = new SelectParam('interpolate', 'interpolate',  false, true, true, ['step', 'linear', 'cosine'], 2));
         this.addParam(this.paramOffset      = new NumberParam('offset',      'offset',       true,  true, true, 0, 0));
+        this.addParam(this.paramInterpolate = new SelectParam('interpolate', 'interpolate',  false, true, true, ['step', 'linear', 'cosine'], 2));
         this.addParam(this.paramDetail      = new NumberParam('detail',      'detail',       true,  true, true, 1, 1));
 
         this.paramSeed.controls[0].allowEditDecimals = false;
@@ -100659,7 +100668,9 @@ extends OpColorBase
         const c2      = values[paramIds.findIndex(id => id == 'c2'     )];
         const c3      = values[paramIds.findIndex(id => id == 'c3'     )];
 
-        if (space.isValid())
+
+        if (   space 
+            && space.isValid())
         {
             this.paramSpace.setValue(space, false, true, false);
 
@@ -100712,7 +100723,7 @@ extends OpColorBase
                 this.outputs[0].wireColor = rgb_NaN;
             }
         }
-        else
+        else if (space)
         {
             this.paramSpace.setValue(NumberValue.NaN, false, true, false);
             removeParamDivs(this);
@@ -107164,9 +107175,9 @@ extends OperatorBase
         this.addOutput(new Output([SHAPE_VALUE], this.output_genRequest));
 
 
-        this.addParam(this.paramCenterX    = new NumberParam('centerX',    'center X',    true, true, true,  50, 0, 100));
-        this.addParam(this.paramCenterY    = new NumberParam('centerY',    'center Y',    true, true, true,  50, 0, 100));
-        this.addParam(this.paramShowCenter = new NumberParam('showCenter', 'show center', true, true, true, 1, 0, 1));
+        this.addParam(this.paramCenterX    = new NumberParam('centerX',    'center X',    true, true, true, 50, 0, 100));
+        this.addParam(this.paramCenterY    = new NumberParam('centerY',    'center Y',    true, true, true, 50, 0, 100));
+        this.addParam(this.paramShowCenter = new NumberParam('showCenter', 'show center', true, true, true, 0, 0, 1));
 
 
         this.paramCenterX.controls[0].suffix = '%';
@@ -107321,7 +107332,7 @@ extends OperatorBase
         this.addInput (new Input([...SHAPE_VALUES, LIST_VALUE]));
         this.addOutput(new Output([SHAPE_VALUE], this.output_genRequest));
 
-        this.addParam(this.paramShowCenter = new NumberParam('showCenter', 'show center', true, true, true, 1, 0, 1));
+        this.addParam(this.paramShowCenter = new NumberParam('showCenter', 'show center', true, true, true, 0, 0, 1));
 
 
         this.paramShowCenter.controls[0].allowEditDecimals = false;
@@ -118842,6 +118853,9 @@ minZoomTitle.addEventListener('pointerup', e =>
 
 minZoomInput.addEventListener('keydown', e => 
 {
+    e.stopPropagation();
+
+    
     if (   (   e.key < '0' 
             || e.key > '9')
         &&  e.key != '.'
@@ -118915,7 +118929,10 @@ function showSaveAsTemplateDialog()
     saveAsTemplateTitle.moveStart        = point_NaN;
     saveAsTemplateTitle.pStart           = point_NaN;
     
-    saveAsTemplateInput.value            = graphView.selectedNodes.map(n => n.id).join(', ');
+    // TODO suggest correct template name with increment
+
+    saveAsTemplateInput.value            = 'template';
+    saveAsTemplateInput.select();
 
     updateSaveAsTemplateInputBack();
 
@@ -118936,7 +118953,6 @@ function hideSaveAsTemplateDialog()
 
 
 saveAsTemplateClose.addEventListener('pointerdown', e => e.stopPropagation());
-
 
 
 saveAsTemplateTitle.addEventListener('pointerdown', e => 
@@ -118969,6 +118985,16 @@ saveAsTemplateTitle.addEventListener('pointerup', e =>
 
 
 
+saveAsTemplateInput.addEventListener('keydown', e => 
+{
+    e.stopPropagation();
+
+    if (e.code == 'Escape')
+        hideSaveAsTemplateDialog();
+});
+
+
+
 saveAsTemplateInput.addEventListener('input', () =>
 {
     updateSaveAsTemplateInputBack();
@@ -118993,6 +119019,12 @@ saveAsTemplateInput.addEventListener('pointerup', () =>
 
 function saveSelectedAsTemplate(templateName)
 {
+    uiQueueMessageToFigma({
+        cmd:         'figSaveLocalTemplate',
+        templateName: templateName,
+        template:     saveAsTemplateDialog.copiedJson
+    });
+
     // TODO
     // increment name if exists
     // or warn and don't close dialog if it doesn't

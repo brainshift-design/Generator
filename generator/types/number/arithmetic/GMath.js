@@ -47,7 +47,7 @@ extends GArithmetic
             case 5: this.value = await evalExponentInputs(this.inputs, parse); break;
         }
 
-        
+
         this.updateValues =
         [
             ['value',     this.value],

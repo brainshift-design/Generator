@@ -19,7 +19,7 @@ function isConnKey(key) { return isTagKey(key, connTag); }
 function noPageTag(key) { return noTag(key, pageTag); }
 function noNodeTag(key) { return noTag(key, nodeTag); }
 function noConnTag(key) { return noTag(key, connTag); }
-const generatorVersion = 162;
+const generatorVersion = 163;
 const MAX_INT32 = 2147483647;
 const NULL = '';
 const HTAB = '  '; // half-tab
@@ -30,6 +30,7 @@ const OBJECT_PREFIX = GENERATOR_LOGO + ' ';
 const nodeTag = 'G_NODE';
 const connTag = 'G_CONN';
 const pageTag = 'G_PAGE';
+const tempTag = 'G_TEMP';
 const identity = Object.freeze([[1, 0, 0],
     [0, 1, 0],
     [0, 0, 1]]);
@@ -1543,6 +1544,12 @@ figma.ui.onmessage = function (msg) {
         case 'figSaveNodes':
             figSaveNodes(msg.nodeIds, msg.nodeJson);
             break;
+        case 'figGetAllLocalTemplateNames':
+            figGetAllLocalTemplateNames();
+            break;
+        case 'figSaveLocalTemplate':
+            figSaveLocalTemplate(msg.templateName, msg.template);
+            break;
         case 'figRemoveConnsToNodes':
             figRemoveConnsToNodes(msg.nodeIds);
             break;
@@ -1760,6 +1767,20 @@ function figSaveNodes(nodeIds, nodeJson) {
     for (let i = 0; i < nodeIds.length; i++) {
         figSetPageData(nodeNameForStorage(nodeIds[i]), nodeJson[i]);
     }
+}
+function figGetAllLocalTemplateNames() {
+    return __awaiter(this, void 0, void 0, function* () {
+        let keys = yield figma.clientStorage.keysAsync();
+        keys = keys.filter(k => k.length >= tempTag.length
+            && k.substring(0, tempTag.length) == tempTag);
+        figPostMessageToUi({
+            cmd: 'uiReturnGetAllLocalTemplateNames',
+            templateNames: keys
+        });
+    });
+}
+function figSaveLocalTemplate(templateName, template) {
+    figSetLocalData(tempTag + ' ' + templateName, template);
 }
 function figRemoveConnsToNodes(nodeIds) {
     const connKeys = figma.currentPage.getPluginDataKeys().filter(k => isConnKey(k));

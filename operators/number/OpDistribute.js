@@ -11,7 +11,7 @@ extends OperatorBase
 
     constructor()
     {
-        super(NUMBER_DISTRIBUTE, 'distribute', 'distribute', iconDistribute);
+        super(NUMBER_DISTRIBUTE, 'range', 'range', iconDistribute);
 
         this.cached     = false;
         this.canDisable = true;

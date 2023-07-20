@@ -238,9 +238,10 @@ class MenuButton
         const icon = 
             this.icon != NULL
             ? this.icon
-            : this.menu
-                ? this.menu.lastItem.icon
-                : NULL;
+            :    this.menu
+              && this.menu.lastItem
+              ? this.menu.lastItem.icon
+              : NULL;
 
         this.divIcon.style.background         = 'url(\'data:image/svg+xml;utf8,' + icon + '\')';
         this.divIcon.style.backgroundPosition = '100% 50%';

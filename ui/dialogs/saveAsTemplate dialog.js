@@ -23,7 +23,10 @@ function showSaveAsTemplateDialog()
     saveAsTemplateTitle.moveStart        = point_NaN;
     saveAsTemplateTitle.pStart           = point_NaN;
     
-    saveAsTemplateInput.value            = graphView.selectedNodes.map(n => n.id).join(', ');
+    // TODO suggest correct template name with increment
+
+    saveAsTemplateInput.value            = 'template';
+    saveAsTemplateInput.select();
 
     updateSaveAsTemplateInputBack();
 
@@ -44,7 +47,6 @@ function hideSaveAsTemplateDialog()
 
 
 saveAsTemplateClose.addEventListener('pointerdown', e => e.stopPropagation());
-
 
 
 saveAsTemplateTitle.addEventListener('pointerdown', e => 
@@ -77,6 +79,16 @@ saveAsTemplateTitle.addEventListener('pointerup', e =>
 
 
 
+saveAsTemplateInput.addEventListener('keydown', e => 
+{
+    e.stopPropagation();
+
+    if (e.code == 'Escape')
+        hideSaveAsTemplateDialog();
+});
+
+
+
 saveAsTemplateInput.addEventListener('input', () =>
 {
     updateSaveAsTemplateInputBack();
@@ -101,6 +113,12 @@ saveAsTemplateInput.addEventListener('pointerup', () =>
 
 function saveSelectedAsTemplate(templateName)
 {
+    uiQueueMessageToFigma({
+        cmd:         'figSaveLocalTemplate',
+        templateName: templateName,
+        template:     saveAsTemplateDialog.copiedJson
+    });
+
     // TODO
     // increment name if exists
     // or warn and don't close dialog if it doesn't

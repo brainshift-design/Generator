@@ -68,6 +68,9 @@ minZoomTitle.addEventListener('pointerup', e =>
 
 minZoomInput.addEventListener('keydown', e => 
 {
+    e.stopPropagation();
+
+    
     if (   (   e.key < '0' 
             || e.key > '9')
         &&  e.key != '.'

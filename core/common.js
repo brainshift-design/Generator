@@ -1,4 +1,4 @@
-const generatorVersion = 162;
+const generatorVersion = 163;
 
 
 const MAX_INT32        = 2147483647;
@@ -11,10 +11,11 @@ const NL               = '\n';
   
 const GENERATOR_LOGO   = '◦ G •';
 const OBJECT_PREFIX    = GENERATOR_LOGO + ' ';
-  
+
 const nodeTag          = 'G_NODE';
 const connTag          = 'G_CONN';
 const pageTag          = 'G_PAGE';
+const tempTag          = 'G_TEMP';
 
 
 const identity = Object.freeze(

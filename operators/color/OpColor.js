@@ -304,7 +304,9 @@ extends OpColorBase
         const c2      = values[paramIds.findIndex(id => id == 'c2'     )];
         const c3      = values[paramIds.findIndex(id => id == 'c3'     )];
 
-        if (space.isValid())
+
+        if (   space 
+            && space.isValid())
         {
             this.paramSpace.setValue(space, false, true, false);
 
@@ -357,7 +359,7 @@ extends OpColorBase
                 this.outputs[0].wireColor = rgb_NaN;
             }
         }
-        else
+        else if (space)
         {
             this.paramSpace.setValue(NumberValue.NaN, false, true, false);
             removeParamDivs(this);

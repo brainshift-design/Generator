@@ -192,6 +192,31 @@ function figSaveNodes(nodeIds, nodeJson)
 
 
 
+async function figGetAllLocalTemplateNames()
+{
+    let keys = await figma.clientStorage.keysAsync(); 
+
+    keys = keys.filter(k => 
+           k.length >= tempTag.length
+        && k.substring(0, tempTag.length) == tempTag);
+        
+    figPostMessageToUi({
+        cmd:          'uiReturnGetAllLocalTemplateNames',
+        templateNames: keys
+    })
+}
+
+
+
+function figSaveLocalTemplate(templateName, template)
+{
+    figSetLocalData(
+        tempTag + ' ' + templateName,
+        template);
+}
+
+
+
 function figRemoveConnsToNodes(nodeIds)
 {
     const connKeys = figma.currentPage.getPluginDataKeys().filter(k => isConnKey(k));

@@ -220,7 +220,7 @@ function updateZoomIcon()
         ? graph.currentPage.zoom
         : 1;
 
-        
+
     if (btnZoom)
     {
         btnZoom.divIcon.innerHTML       =  Math.round(zoom * 100) + '%';
@@ -228,27 +228,32 @@ function updateZoomIcon()
     }
 
 
-    if (   zoom < settings.minZoomForParams
-        && zoom < 1)
+    const _zoomIconOverlay = document.getElementById('zoomIconOverlay');
+
+    if (_zoomIconOverlay)
     {
-        zoomIconOverlay.style.left       = '14px';
-        zoomIconOverlay.style.top        = '11px';
-        zoomIconOverlay.style.width      = '28';
-        zoomIconOverlay.style.background = 'url(\'data:image/svg+xml;utf8,<svg width="28" height="20" viewBox="0 0 28 20" fill="none" xmlns="http://www.w3.org/2000/svg"><path d="M4 0.5H24C25.933 0.5 27.5 2.067 27.5 4V19.5H0.5V4C0.5 2.067 2.067 0.5 4 0.5Z" stroke="white"/></svg>\')';
-    }
-    else if (zoom < settings.minZoomForParams
-          && zoom < 10)
-    {
-        zoomIconOverlay.style.left       = '12px';
-        zoomIconOverlay.style.top        = '11px';
-        zoomIconOverlay.style.width      = '33';
-        zoomIconOverlay.style.background = 'url(\'data:image/svg+xml;utf8,<svg width="33" height="20" viewBox="0 0 33 20" fill="none" xmlns="http://www.w3.org/2000/svg"><path d="M4 0.5H29C30.933 0.5 32.5 2.067 32.5 4V19.5H0.5V4C0.5 2.067 2.067 0.5 4 0.5Z" stroke="white"/></svg>\')';
-    }
-    else
-        zoomIconOverlay.style.background = 'none';
+        if (   zoom < settings.minZoomForParams
+            && zoom < 1)
+        {
+            _zoomIconOverlay.style.left       = '14px';
+            _zoomIconOverlay.style.top        = '11px';
+            _zoomIconOverlay.style.width      = '28';
+            _zoomIconOverlay.style.background = 'url(\'data:image/svg+xml;utf8,<svg width="28" height="20" viewBox="0 0 28 20" fill="none" xmlns="http://www.w3.org/2000/svg"><path d="M4 0.5H24C25.933 0.5 27.5 2.067 27.5 4V19.5H0.5V4C0.5 2.067 2.067 0.5 4 0.5Z" stroke="white"/></svg>\')';
+        }
+        else if (zoom < settings.minZoomForParams
+            && zoom < 10)
+        {
+            _zoomIconOverlay.style.left       = '12px';
+            _zoomIconOverlay.style.top        = '11px';
+            _zoomIconOverlay.style.width      = '33';
+            _zoomIconOverlay.style.background = 'url(\'data:image/svg+xml;utf8,<svg width="33" height="20" viewBox="0 0 33 20" fill="none" xmlns="http://www.w3.org/2000/svg"><path d="M4 0.5H29C30.933 0.5 32.5 2.067 32.5 4V19.5H0.5V4C0.5 2.067 2.067 0.5 4 0.5Z" stroke="white"/></svg>\')';
+        }
+        else
+            _zoomIconOverlay.style.background = 'none';
 
 
-    zoomIconOverlay.style.backgroundPosition = '50% 50%';
-    zoomIconOverlay.style.backgroundRepeat   = 'no-repeat';
-    zoomIconOverlay.style.backgroundColor    = 'transparent';
+        _zoomIconOverlay.style.backgroundPosition = '50% 50%';
+        _zoomIconOverlay.style.backgroundRepeat   = 'no-repeat';
+        _zoomIconOverlay.style.backgroundColor    = 'transparent';
+    }
 }
