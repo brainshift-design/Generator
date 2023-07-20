@@ -17,19 +17,21 @@ extends FigmaObject
     effects = [];
 
     isDeco;
+    isXform;
 
     isMask  = false;
 
 
 
-    constructor(type, nodeId, objectId, objectName, isDeco = false)
+    constructor(type, nodeId, objectId, objectName, isDeco = false, isXform = false)
     {
         super(type, nodeId, objectId, objectName);
 
-        this.skewX  = 0;
-        this.skewY  = 0;
+        this.skewX   = 0;
+        this.skewY   = 0;
 
-        this.isDeco = isDeco;
+        this.isDeco  = isDeco;
+        this.isXform = isXform;
     }
 
 
@@ -54,6 +56,7 @@ extends FigmaObject
         this.effects          = clone(base.effects);
 
         this.isDeco           = base.isDeco;
+        this.isXform          = base.isXform;
 
         this.isMask           = base.isMask;
     }

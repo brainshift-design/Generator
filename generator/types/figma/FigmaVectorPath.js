@@ -67,10 +67,10 @@ extends FigmaShape
 
 
 
-    updatePoints(xform, coords)
+    updatePoints(xform, space)
     {
         for (let i = 0; i < this.points.length; i++)
-            this.points[i] = PointValue.fromPoint(this.nodeId, transformPoint(this.points[i].toPoint(), xform, coords));
+            this.points[i] = PointValue.fromPoint(this.nodeId, transformPoint(this.points[i].toPoint(), xform, space));
 
         this.updatePathPoints();
         this.updatePathData();

@@ -7,9 +7,9 @@ extends FigmaShape
 
 
 
-    constructor(nodeId, objectId, objectName, x, y, isDeco = false, isCenter = false)
+    constructor(nodeId, objectId, objectName, x, y, isDeco = false, isCenter = false, isXform = false)
     {
-        super(POINT, nodeId, objectId, objectName, isDeco);
+        super(POINT, nodeId, objectId, objectName, isDeco, isXform);
         
         this.x        = x;
         this.y        = y;

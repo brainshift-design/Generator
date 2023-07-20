@@ -7,7 +7,7 @@ extends GOperator1
     showCenter  = null;
     affectSpace = null;
 
-    coords;
+    //coords;
 
 
 
@@ -15,7 +15,7 @@ extends GOperator1
     {
         super(MOVE, nodeId, options);
 
-        this.coords = clone(identity);
+        //this.coords = clone(identity);
     }
 
 
@@ -32,7 +32,7 @@ extends GOperator1
         if (this.showCenter ) copy.showCenter  = this.showCenter .copy();
         if (this.affectSpace) copy.affectSpace = this.affectSpace.copy();
 
-        copy.coords = clone(this.coords);
+        //copy.coords = clone(this.coords);
 
         return copy;
     }
@@ -103,7 +103,9 @@ extends GOperator1
                    this.input 
                 && this.input.value
                 ? this.input.value.objects
-                    .filter(o => o.isDeco === false)
+                    .filter(o => 
+                           o.isDeco  === false
+                        || o.isXform === true)
                     .map(o => o.copy()) 
                 : [];
 
@@ -156,41 +158,45 @@ extends GOperator1
                     createTransform(-cx, -cy));
 
                 
-            const centers = [];
+            // const centers = [];
     
     
-            for (const obj of this.value.objects)
+            const objects = [...this.value.objects]; // avoids infinite growth
+
+            for (const obj of objects)
             {
                 obj.nodeId   = this.nodeId;
                 obj.objectId = obj.objectId + OBJECT_SEPARATOR + this.nodeId;
 
 
+                obj.applyTransform(xform, affectSpace > 0, false);
+
+
                 if (showCenter > 0)
                 {
-                    const c = obj.cp0;
-                    pushUniqueBy(centers, c, p => equalv(p, c));
+                    addObjectCenter(this, obj);
+                    // const c = clone(obj.sp0);
+                    // pushUniqueBy(centers, c, p => equalv(p, c));
                 }
-
-
-                obj.applyTransform(xform, affectSpace == 0);
             }
 
 
-            for (let i = 0; i < centers.length; i++)
-            {
-                addCenterObject(
-                    this,
-                    centers[i].x + _cx * bounds.width, 
-                    centers[i].y + _cy * bounds.height,
-                    i);
-            }
+            // for (let i = 0; i < centers.length; i++)
+            // {
+            //     addCenterObject(
+            //         this,
+            //         centers[i].x + _cx * bounds.width, 
+            //         centers[i].y + _cy * bounds.height,
+            //         i);
+            // }
+
             // addCenterObject(
             //     this,
             //     this.coords[0][2] + _cx * bounds.width, 
             //     this.coords[1][2] + _cy * bounds.height);
 
 
-            this.coords = mulm3m3(this.coords, xform);
+            //this.coords = mulm3m3(this.coords, xform);
         }
         
         

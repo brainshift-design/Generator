@@ -29,12 +29,12 @@ extends OperatorBase
     
     
 
-    addBaseParams()
+    addBaseParams(affect)
     {
-        this.addParam(this.paramCenterX     = new NumberParam('centerX',     'center X',     true, true, true,  50, 0, 100));
-        this.addParam(this.paramCenterY     = new NumberParam('centerY',     'center Y',     true, true, true,  50, 0, 100));
-        this.addParam(this.paramAffectSpace = new NumberParam('affectSpace', 'affect space', true, true, true,   0, 0,   1));
-        this.addParam(this.paramShowCenter  = new NumberParam('showCenter',  'show pivot',  true, true, true,   0, 0,   1));
+        this.addParam(this.paramCenterX     = new NumberParam('centerX',     'center X',         true, true, true,  50, 0, 100));
+        this.addParam(this.paramCenterY     = new NumberParam('centerY',     'center Y',         true, true, true,  50, 0, 100));
+        this.addParam(this.paramAffectSpace = new NumberParam('affectSpace',  affect + ' space', true, true, true,   0, 0,   1));
+        this.addParam(this.paramShowCenter  = new NumberParam('showCenter',  'show center',       true, true, true,   0, 0,   1));
 
 
         this.paramCenterX.controls[0].suffix = '%';

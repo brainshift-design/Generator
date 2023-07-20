@@ -19,7 +19,7 @@ extends OpAffine
         this.paramAngle.divider                 = 0.55;
 
 
-        this.addBaseParams();
+        this.addBaseParams('rotate');
     }
     
     

@@ -31,7 +31,7 @@ extends OpAffine
         this.paramScaleY.controls[0].setMin(0);
 
 
-        this.addBaseParams();
+        this.addBaseParams('scale');
 
     
         this.addParam(this.paramAffectCorners = new NumberParam('affectCorners', 'affect corners', true, true, true, 1, 0, 1));

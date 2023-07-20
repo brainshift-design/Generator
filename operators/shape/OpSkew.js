@@ -19,7 +19,7 @@ extends OpAffine
         this.paramSkewY.divider = 0.55;
 
 
-        this.addBaseParams();
+        this.addBaseParams('skew');
     }
     
     

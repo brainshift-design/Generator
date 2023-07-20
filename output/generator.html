@@ -5304,9 +5304,9 @@ class FigmaObject
 
     //cp  = null; // pivot
 
-    cp0 = null; //  cp0 ------- cp1 
-    cp1 = null; //   |
-    cp2 = null; //  cp2
+    sp0 = null; //  sp0 ------- sp1 
+    sp1 = null; //   |
+    sp2 = null; //  sp2
 
 
     scaleCorners;
@@ -5346,9 +5346,9 @@ class FigmaObject
 
         //this.cp           = base.cp;
     
-        this.cp0          = base.cp0;
-        this.cp1          = base.cp1;
-        this.cp2          = base.cp2;
+        this.sp0          = base.sp0;
+        this.sp1          = base.sp1;
+        this.sp2          = base.sp2;
 
         this.scaleCorners = base.scaleCorners;
         this.scaleStyle   = base.scaleStyle;
@@ -5367,9 +5367,9 @@ class FigmaObject
     createDefaultSpace()
     {
         //this.cp  = point(0, 0);
-        this.cp0 = point(0, 0);
-        this.cp1 = point(1, 0);
-        this.cp2 = point(0, 1);
+        this.sp0 = point(0, 0);
+        this.sp1 = point(1, 0);
+        this.sp2 = point(0, 1);
     }
 
 
@@ -5386,9 +5386,9 @@ class FigmaObject
 
     createTransformPoints(parse, x, y, w, h)
     {
-        this.xp0 = new FigmaPoint(this.nodeId, this.objectId+'.0', this.objectName+' ^ 0', x,     y,     true);
-        this.xp1 = new FigmaPoint(this.nodeId, this.objectId+'.1', this.objectName+' ^ 1', x + w, y,     true);
-        this.xp2 = new FigmaPoint(this.nodeId, this.objectId+'.2', this.objectName+' ^ 2', x,     y + h, true);
+        this.xp0 = new FigmaPoint(this.nodeId, this.objectId+'.0', this.objectName+' ^ 0', x,     y,     true, false, true);
+        this.xp1 = new FigmaPoint(this.nodeId, this.objectId+'.1', this.objectName+' ^ 1', x + w, y,     true, false, true);
+        this.xp2 = new FigmaPoint(this.nodeId, this.objectId+'.2', this.objectName+' ^ 2', x,     y + h, true, false, true);
 
         this.xp0.createDefaultTransform(x,     y    );
         this.xp1.createDefaultTransform(x + w, y    );
@@ -5402,10 +5402,10 @@ class FigmaObject
 
 
 
-    getTransform()
+    createSpaceTransform()
     {
-        let vr = point(this.cp1.x - this.cp0.x, this.cp1.y - this.cp0.y);
-        let vb = point(this.cp2.x - this.cp0.x, this.cp2.y - this.cp0.y);
+        let vr = point(this.sp1.x - this.sp0.x, this.sp1.y - this.sp0.y);
+        let vb = point(this.sp2.x - this.sp0.x, this.sp2.y - this.sp0.y);
     
     
         let sx = nozero(vr.x);
@@ -5414,15 +5414,16 @@ class FigmaObject
         let kx = vr.y;
         let ky = vb.x;
         
-        let dx = -this.cp0.x;
-        let dy = -this.cp0.y;
+        let dx = this.sp0.x;
+        let dy = this.sp0.y;
     
     
         let xform = mulm3m3(
+            createTransform(dx, dy),
             [[sx, ky, 0],
              [kx, sy, 0],
-             [0,  0,  1]],
-            createTransform(dx, dy));
+             [0,  0,  1]]);//,
+//            createTransform(dx, dy));
     
         //xform = inversem3(xform);
         
@@ -5432,47 +5433,47 @@ class FigmaObject
     
     
 
-    applyTransform(xform, affectSpace = false)
+    applyTransform(xform, affectSpace)
     {
-        const coords = this.getTransform();
+        const space = this.createSpaceTransform();
 
 
         if (this.type == POINT)
         {
-            const p = transformPoint(point(this.x, this.y), xform, coords);
+            const p = transformPoint(point(this.x, this.y), xform, space);
 
             this.x = p.x;
             this.y = p.y;
 
-            this.applySpaceTransform(xform, coords, affectSpace);
+            this.applySpaceTransform(xform, space, affectSpace);
         }
         else if (this.type == VECTOR_PATH)
         {
-            this.applyObjectTransform(xform, coords);
-            this.applySpaceTransform(xform, coords, affectSpace);
+            this.applyObjectTransform(xform, space);
+            this.applySpaceTransform(xform, space, affectSpace);
         }
         else if (this.type == SHAPE_GROUP)
         {
             for (const obj of this.children)
             {
-                obj.applyObjectTransform(xform, coords);
-                obj.applySpaceTransform (xform, coords, affectSpace);
+                obj.applyObjectTransform(xform, space);
+                obj.applySpaceTransform (xform, space, affectSpace);
             }                
         }
         else
         {
-            this.applyObjectTransform(xform, coords);
-            this.applySpaceTransform (xform, coords, affectSpace);
+            this.applyObjectTransform(xform, space);
+            this.applySpaceTransform (xform, space, affectSpace);
         }
     }
 
 
 
-    applyObjectTransform(xform, coords)
+    applyObjectTransform(xform, space)
     {
-        const xp0 = transformPoint(point(this.xp0.x, this.xp0.y), xform, coords);
-        const xp1 = transformPoint(point(this.xp1.x, this.xp1.y), xform, coords);
-        const xp2 = transformPoint(point(this.xp2.x, this.xp2.y), xform, coords);
+        const xp0 = transformPoint(point(this.xp0.x, this.xp0.y), xform, space);
+        const xp1 = transformPoint(point(this.xp1.x, this.xp1.y), xform, space);
+        const xp2 = transformPoint(point(this.xp2.x, this.xp2.y), xform, space);
 
         this.xp0.x = xp0.x;
         this.xp0.y = xp0.y;
@@ -5486,7 +5487,7 @@ class FigmaObject
 
 
 
-    applySpaceTransform(xform, coords, affectSpace)
+    applySpaceTransform(xform, space, affectSpace)
     {
         if (!affectSpace)
             return;
@@ -5494,18 +5495,19 @@ class FigmaObject
 
         // xform = inversem3(xform);
 
-        const cp0 = transformPoint(point(this.cp0.x, this.cp0.y), xform, coords);
-        const cp1 = transformPoint(point(this.cp1.x, this.cp1.y), xform, coords);
-        const cp2 = transformPoint(point(this.cp2.x, this.cp2.y), xform, coords);
 
-        this.cp0.x = cp0.x;
-        this.cp0.y = cp0.y;
+        const sp0 = transformPoint(point(this.sp0.x, this.sp0.y), xform, space);
+        const sp1 = transformPoint(point(this.sp1.x, this.sp1.y), xform, space);
+        const sp2 = transformPoint(point(this.sp2.x, this.sp2.y), xform, space);
 
-        this.cp1.x = cp1.x;
-        this.cp1.y = cp1.y;
+        this.sp0.x = sp0.x;
+        this.sp0.y = sp0.y;
 
-        this.cp2.x = cp2.x;
-        this.cp2.y = cp2.y;
+        this.sp1.x = sp1.x;
+        this.sp1.y = sp1.y;
+
+        this.sp2.x = sp2.x;
+        this.sp2.y = sp2.y;
     }
 
 
@@ -5552,11 +5554,11 @@ class FigmaObject
 
 
 
-function transformPoint(p, xform, coords)
+function transformPoint(p, xform, space)
 {
-    p = mulv2m3(p, inversem3(coords));
+    p = mulv2m3(p, inversem3(space));
     p = mulv2m3(p, xform);
-    p = mulv2m3(p, coords);
+    p = mulv2m3(p, space);
 
     return p;
 }
@@ -6006,19 +6008,21 @@ extends FigmaObject
     effects = [];
 
     isDeco;
+    isXform;
 
     isMask  = false;
 
 
 
-    constructor(type, nodeId, objectId, objectName, isDeco = false)
+    constructor(type, nodeId, objectId, objectName, isDeco = false, isXform = false)
     {
         super(type, nodeId, objectId, objectName);
 
-        this.skewX  = 0;
-        this.skewY  = 0;
+        this.skewX   = 0;
+        this.skewY   = 0;
 
-        this.isDeco = isDeco;
+        this.isDeco  = isDeco;
+        this.isXform = isXform;
     }
 
 
@@ -6043,6 +6047,7 @@ extends FigmaObject
         this.effects          = clone(base.effects);
 
         this.isDeco           = base.isDeco;
+        this.isXform          = base.isXform;
 
         this.isMask           = base.isMask;
     }
@@ -6346,10 +6351,10 @@ extends FigmaShape
 
 
 
-    updatePoints(xform, coords)
+    updatePoints(xform, space)
     {
         for (let i = 0; i < this.points.length; i++)
-            this.points[i] = PointValue.fromPoint(this.nodeId, transformPoint(this.points[i].toPoint(), xform, coords));
+            this.points[i] = PointValue.fromPoint(this.nodeId, transformPoint(this.points[i].toPoint(), xform, space));
 
         this.updatePathPoints();
         this.updatePathData();
@@ -7256,9 +7261,9 @@ extends FigmaShape
 
 
 
-    constructor(nodeId, objectId, objectName, x, y, isDeco = false, isCenter = false)
+    constructor(nodeId, objectId, objectName, x, y, isDeco = false, isCenter = false, isXform = false)
     {
-        super(POINT, nodeId, objectId, objectName, isDeco);
+        super(POINT, nodeId, objectId, objectName, isDeco, isXform);
         
         this.x        = x;
         this.y        = y;
@@ -27257,7 +27262,7 @@ extends GOperator1
     showCenter  = null;
     affectSpace = null;
 
-    coords;
+    //coords;
 
 
 
@@ -27265,7 +27270,7 @@ extends GOperator1
     {
         super(MOVE, nodeId, options);
 
-        this.coords = clone(identity);
+        //this.coords = clone(identity);
     }
 
 
@@ -27282,7 +27287,7 @@ extends GOperator1
         if (this.showCenter ) copy.showCenter  = this.showCenter .copy();
         if (this.affectSpace) copy.affectSpace = this.affectSpace.copy();
 
-        copy.coords = clone(this.coords);
+        //copy.coords = clone(this.coords);
 
         return copy;
     }
@@ -27353,7 +27358,9 @@ extends GOperator1
                    this.input 
                 && this.input.value
                 ? this.input.value.objects
-                    .filter(o => o.isDeco === false)
+                    .filter(o => 
+                           o.isDeco  === false
+                        || o.isXform === true)
                     .map(o => o.copy()) 
                 : [];
 
@@ -27406,41 +27413,45 @@ extends GOperator1
                     createTransform(-cx, -cy));
 
                 
-            const centers = [];
+            // const centers = [];
     
     
-            for (const obj of this.value.objects)
+            const objects = [...this.value.objects]; // avoids infinite growth
+
+            for (const obj of objects)
             {
                 obj.nodeId   = this.nodeId;
                 obj.objectId = obj.objectId + OBJECT_SEPARATOR + this.nodeId;
 
 
+                obj.applyTransform(xform, affectSpace > 0, false);
+
+
                 if (showCenter > 0)
                 {
-                    const c = obj.cp0;
-                    pushUniqueBy(centers, c, p => equalv(p, c));
+                    addObjectCenter(this, obj);
+                    // const c = clone(obj.sp0);
+                    // pushUniqueBy(centers, c, p => equalv(p, c));
                 }
-
-
-                obj.applyTransform(xform, affectSpace == 0);
             }
 
 
-            for (let i = 0; i < centers.length; i++)
-            {
-                addCenterObject(
-                    this,
-                    centers[i].x + _cx * bounds.width, 
-                    centers[i].y + _cy * bounds.height,
-                    i);
-            }
+            // for (let i = 0; i < centers.length; i++)
+            // {
+            //     addCenterObject(
+            //         this,
+            //         centers[i].x + _cx * bounds.width, 
+            //         centers[i].y + _cy * bounds.height,
+            //         i);
+            // }
+
             // addCenterObject(
             //     this,
             //     this.coords[0][2] + _cx * bounds.width, 
             //     this.coords[1][2] + _cy * bounds.height);
 
 
-            this.coords = mulm3m3(this.coords, xform);
+            //this.coords = mulm3m3(this.coords, xform);
         }
         
         
@@ -27504,7 +27515,7 @@ extends GOperator1
     showCenter  = null;
     affectSpace = null;
 
-    coords;
+    //coords;
 
 
 
@@ -27512,7 +27523,7 @@ extends GOperator1
     {
         super(type, nodeId, options);
 
-        this.coords = clone(identity);
+        //this.coords = clone(identity);
     }
 
 
@@ -27526,7 +27537,7 @@ extends GOperator1
         if (base.showCenter ) this.showCenter  = base.showCenter .copy();
         if (base.affectSpace) this.affectSpace = base.affectSpace.copy();
 
-        this.coords = clone(base.coords);
+        //this.coords = clone(base.coords);
     }
 
 
@@ -27554,7 +27565,9 @@ extends GOperator1
                    this.input 
                 && this.input.value
                 ? this.input.value.objects
-                    .filter(o => o.isDeco === false)
+                    .filter(o => 
+                           o.isDeco  === false
+                        || o.isXform === true)
                     .map(o => o.copy()) 
                 : [];
         
@@ -27590,7 +27603,7 @@ extends GOperator1
             createTransform(-cx, -cy));
 
         
-        const centers = [];
+        // const centers = [];
 
 
         for (const obj of this.value.objects)
@@ -27599,28 +27612,29 @@ extends GOperator1
             obj.objectId = obj.objectId + OBJECT_SEPARATOR + this.nodeId;
 
 
-            if (options.showCenter.value > 0)
-            {
-                const c = obj.cp0;
-                pushUniqueBy(centers, c, p => equalv(p, c));
-            }
-
-
-            obj.applyTransform(xform, options.affectSpace.value > 0);
+            obj.applyTransform(xform, options.affectSpace.value > 0, false);
 
             obj.scaleCorners *= Math.abs(scaleCorners);
             obj.scaleStyle   *= Math.abs(scaleStyle);
+
+
+            if (options.showCenter.value > 0)
+            {
+                addObjectCenter(this, obj);
+                // const c = clone(obj.sp0);
+                // pushUniqueBy(centers, c, p => equalv(p, c));
+            }
         }
 
 
-        for (let i = 0; i < centers.length; i++)
-        {
-            addCenterObject(
-                this,
-                centers[i].x + _cx * bounds.width, 
-                centers[i].y + _cy * bounds.height,
-                i);
-        }
+        // for (let i = 0; i < centers.length; i++)
+        // {
+        //     addCenterObject(
+        //         this,
+        //         centers[i].x + _cx * bounds.width, 
+        //         centers[i].y + _cy * bounds.height,
+        //         i);
+        // }
 
         // addCenterObject(
         //     this,
@@ -27628,7 +27642,7 @@ extends GOperator1
         //     this.coords[1][2] + _cy * bounds.height);
 
         
-        this.coords = mulm3m3(this.coords, xform);
+        //this.coords = mulm3m3(this.coords, xform);
 
 
         return bounds;
@@ -27672,20 +27686,67 @@ extends GOperator1
 
 
 
-function addCenterObject(node, cx, cy, index = null)
+// function addCenterObject(node, cx, cy, index = null)
+// {
+//     const center = new FigmaPoint(
+//         node.nodeId,
+//         node.nodeId   + PROP_SEPARATOR   + 'center' + (index ? PROP_SEPARATOR   + index : ''),
+//         node.nodeName + CENTER_SEPARATOR + 'center' + (index ? CENTER_SEPARATOR + index : ''),
+//         cx,
+//         cy,
+//         true,
+//         true);
+
+//     center.createDefaultTransform(cx, cy);
+
+//     node.value.objects.push(center);
+// }
+
+
+
+function addObjectCenter(node, obj)
 {
-    const center = new FigmaPoint(
+    const x = createFigmaLine(node, obj.sp0,       obj.sp1,      [255, 0, 0], ' _ x');
+    const y = createFigmaLine(node, obj.sp0, mulvs(obj.sp2, -1), [255, 0, 0], ' _ y');
+
+    node.value.objects.push(x);
+    node.value.objects.push(y);
+}
+
+
+
+function createFigmaLine(node, p0, p1, color, suffix)
+{
+    const line = new FigmaVectorPath(
         node.nodeId,
-        node.nodeId   + PROP_SEPARATOR   + 'center' + (index ? PROP_SEPARATOR   + index : ''),
-        node.nodeName + CENTER_SEPARATOR + 'center' + (index ? CENTER_SEPARATOR + index : ''),
-        cx,
-        cy,
-        true,
-        true);
+        node.nodeId   + suffix,
+        node.nodeName + suffix,
+        [PointValue.fromPoint(node.nodeId, p0), 
+         PointValue.fromPoint(node.nodeId, p1)],
+        0, 0, 0, 0);
 
-    center.createDefaultTransform(cx, cy);
 
-    node.value.objects.push(center);
+    line.strokes.push([
+        'SOLID', 
+        color[0], 
+        color[1], 
+        color[2], 
+        100, 
+        'NORMAL']);
+
+    line.strokeWeight = 1;
+    line.strokeAlign  = 'CENTER';
+    line.strokeJoin   = 'MITER';
+    line.strokeCap    = 'NONE';
+
+
+    line.createDefaultTransform(p0.x, p0.y);
+
+    line.updatePathPoints();
+    line.updatePathData();
+
+
+    return line;
 }
 
 

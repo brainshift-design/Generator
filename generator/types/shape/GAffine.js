@@ -6,7 +6,7 @@ extends GOperator1
     showCenter  = null;
     affectSpace = null;
 
-    coords;
+    //coords;
 
 
 
@@ -14,7 +14,7 @@ extends GOperator1
     {
         super(type, nodeId, options);
 
-        this.coords = clone(identity);
+        //this.coords = clone(identity);
     }
 
 
@@ -28,7 +28,7 @@ extends GOperator1
         if (base.showCenter ) this.showCenter  = base.showCenter .copy();
         if (base.affectSpace) this.affectSpace = base.affectSpace.copy();
 
-        this.coords = clone(base.coords);
+        //this.coords = clone(base.coords);
     }
 
 
@@ -56,7 +56,9 @@ extends GOperator1
                    this.input 
                 && this.input.value
                 ? this.input.value.objects
-                    .filter(o => o.isDeco === false)
+                    .filter(o => 
+                           o.isDeco  === false
+                        || o.isXform === true)
                     .map(o => o.copy()) 
                 : [];
         
@@ -92,7 +94,7 @@ extends GOperator1
             createTransform(-cx, -cy));
 
         
-        const centers = [];
+        // const centers = [];
 
 
         for (const obj of this.value.objects)
@@ -101,28 +103,29 @@ extends GOperator1
             obj.objectId = obj.objectId + OBJECT_SEPARATOR + this.nodeId;
 
 
-            if (options.showCenter.value > 0)
-            {
-                const c = obj.cp0;
-                pushUniqueBy(centers, c, p => equalv(p, c));
-            }
-
-
-            obj.applyTransform(xform, options.affectSpace.value > 0);
+            obj.applyTransform(xform, options.affectSpace.value > 0, false);
 
             obj.scaleCorners *= Math.abs(scaleCorners);
             obj.scaleStyle   *= Math.abs(scaleStyle);
+
+
+            if (options.showCenter.value > 0)
+            {
+                addObjectCenter(this, obj);
+                // const c = clone(obj.sp0);
+                // pushUniqueBy(centers, c, p => equalv(p, c));
+            }
         }
 
 
-        for (let i = 0; i < centers.length; i++)
-        {
-            addCenterObject(
-                this,
-                centers[i].x + _cx * bounds.width, 
-                centers[i].y + _cy * bounds.height,
-                i);
-        }
+        // for (let i = 0; i < centers.length; i++)
+        // {
+        //     addCenterObject(
+        //         this,
+        //         centers[i].x + _cx * bounds.width, 
+        //         centers[i].y + _cy * bounds.height,
+        //         i);
+        // }
 
         // addCenterObject(
         //     this,
@@ -130,7 +133,7 @@ extends GOperator1
         //     this.coords[1][2] + _cy * bounds.height);
 
         
-        this.coords = mulm3m3(this.coords, xform);
+        //this.coords = mulm3m3(this.coords, xform);
 
 
         return bounds;
@@ -174,18 +177,65 @@ extends GOperator1
 
 
 
-function addCenterObject(node, cx, cy, index = null)
+// function addCenterObject(node, cx, cy, index = null)
+// {
+//     const center = new FigmaPoint(
+//         node.nodeId,
+//         node.nodeId   + PROP_SEPARATOR   + 'center' + (index ? PROP_SEPARATOR   + index : ''),
+//         node.nodeName + CENTER_SEPARATOR + 'center' + (index ? CENTER_SEPARATOR + index : ''),
+//         cx,
+//         cy,
+//         true,
+//         true);
+
+//     center.createDefaultTransform(cx, cy);
+
+//     node.value.objects.push(center);
+// }
+
+
+
+function addObjectCenter(node, obj)
 {
-    const center = new FigmaPoint(
+    const x = createFigmaLine(node, obj.sp0,       obj.sp1,      [255, 0, 0], ' _ x');
+    const y = createFigmaLine(node, obj.sp0, mulvs(obj.sp2, -1), [255, 0, 0], ' _ y');
+
+    node.value.objects.push(x);
+    node.value.objects.push(y);
+}
+
+
+
+function createFigmaLine(node, p0, p1, color, suffix)
+{
+    const line = new FigmaVectorPath(
         node.nodeId,
-        node.nodeId   + PROP_SEPARATOR   + 'center' + (index ? PROP_SEPARATOR   + index : ''),
-        node.nodeName + CENTER_SEPARATOR + 'center' + (index ? CENTER_SEPARATOR + index : ''),
-        cx,
-        cy,
-        true,
-        true);
+        node.nodeId   + suffix,
+        node.nodeName + suffix,
+        [PointValue.fromPoint(node.nodeId, p0), 
+         PointValue.fromPoint(node.nodeId, p1)],
+        0, 0, 0, 0);
 
-    center.createDefaultTransform(cx, cy);
 
-    node.value.objects.push(center);
+    line.strokes.push([
+        'SOLID', 
+        color[0], 
+        color[1], 
+        color[2], 
+        100, 
+        'NORMAL']);
+
+    line.strokeWeight = 1;
+    line.strokeAlign  = 'CENTER';
+    line.strokeJoin   = 'MITER';
+    line.strokeCap    = 'NONE';
+
+
+    line.createDefaultTransform(p0.x, p0.y);
+
+    line.updatePathPoints();
+    line.updatePathData();
+
+
+    return line;
 }

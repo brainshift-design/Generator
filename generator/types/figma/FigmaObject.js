@@ -22,9 +22,9 @@ class FigmaObject
 
     //cp  = null; // pivot
 
-    cp0 = null; //  cp0 ------- cp1 
-    cp1 = null; //   |
-    cp2 = null; //  cp2
+    sp0 = null; //  sp0 ------- sp1 
+    sp1 = null; //   |
+    sp2 = null; //  sp2
 
 
     scaleCorners;
@@ -64,9 +64,9 @@ class FigmaObject
 
         //this.cp           = base.cp;
     
-        this.cp0          = base.cp0;
-        this.cp1          = base.cp1;
-        this.cp2          = base.cp2;
+        this.sp0          = base.sp0;
+        this.sp1          = base.sp1;
+        this.sp2          = base.sp2;
 
         this.scaleCorners = base.scaleCorners;
         this.scaleStyle   = base.scaleStyle;
@@ -85,9 +85,9 @@ class FigmaObject
     createDefaultSpace()
     {
         //this.cp  = point(0, 0);
-        this.cp0 = point(0, 0);
-        this.cp1 = point(1, 0);
-        this.cp2 = point(0, 1);
+        this.sp0 = point(0, 0);
+        this.sp1 = point(1, 0);
+        this.sp2 = point(0, 1);
     }
 
 
@@ -104,9 +104,9 @@ class FigmaObject
 
     createTransformPoints(parse, x, y, w, h)
     {
-        this.xp0 = new FigmaPoint(this.nodeId, this.objectId+'.0', this.objectName+' ^ 0', x,     y,     true);
-        this.xp1 = new FigmaPoint(this.nodeId, this.objectId+'.1', this.objectName+' ^ 1', x + w, y,     true);
-        this.xp2 = new FigmaPoint(this.nodeId, this.objectId+'.2', this.objectName+' ^ 2', x,     y + h, true);
+        this.xp0 = new FigmaPoint(this.nodeId, this.objectId+'.0', this.objectName+' ^ 0', x,     y,     true, false, true);
+        this.xp1 = new FigmaPoint(this.nodeId, this.objectId+'.1', this.objectName+' ^ 1', x + w, y,     true, false, true);
+        this.xp2 = new FigmaPoint(this.nodeId, this.objectId+'.2', this.objectName+' ^ 2', x,     y + h, true, false, true);
 
         this.xp0.createDefaultTransform(x,     y    );
         this.xp1.createDefaultTransform(x + w, y    );
@@ -120,10 +120,10 @@ class FigmaObject
 
 
 
-    getTransform()
+    createSpaceTransform()
     {
-        let vr = point(this.cp1.x - this.cp0.x, this.cp1.y - this.cp0.y);
-        let vb = point(this.cp2.x - this.cp0.x, this.cp2.y - this.cp0.y);
+        let vr = point(this.sp1.x - this.sp0.x, this.sp1.y - this.sp0.y);
+        let vb = point(this.sp2.x - this.sp0.x, this.sp2.y - this.sp0.y);
     
     
         let sx = nozero(vr.x);
@@ -132,15 +132,16 @@ class FigmaObject
         let kx = vr.y;
         let ky = vb.x;
         
-        let dx = -this.cp0.x;
-        let dy = -this.cp0.y;
+        let dx = this.sp0.x;
+        let dy = this.sp0.y;
     
     
         let xform = mulm3m3(
+            createTransform(dx, dy),
             [[sx, ky, 0],
              [kx, sy, 0],
-             [0,  0,  1]],
-            createTransform(dx, dy));
+             [0,  0,  1]]);//,
+//            createTransform(dx, dy));
     
         //xform = inversem3(xform);
         
@@ -150,47 +151,47 @@ class FigmaObject
     
     
 
-    applyTransform(xform, affectSpace = false)
+    applyTransform(xform, affectSpace)
     {
-        const coords = this.getTransform();
+        const space = this.createSpaceTransform();
 
 
         if (this.type == POINT)
         {
-            const p = transformPoint(point(this.x, this.y), xform, coords);
+            const p = transformPoint(point(this.x, this.y), xform, space);
 
             this.x = p.x;
             this.y = p.y;
 
-            this.applySpaceTransform(xform, coords, affectSpace);
+            this.applySpaceTransform(xform, space, affectSpace);
         }
         else if (this.type == VECTOR_PATH)
         {
-            this.applyObjectTransform(xform, coords);
-            this.applySpaceTransform(xform, coords, affectSpace);
+            this.applyObjectTransform(xform, space);
+            this.applySpaceTransform(xform, space, affectSpace);
         }
         else if (this.type == SHAPE_GROUP)
         {
             for (const obj of this.children)
             {
-                obj.applyObjectTransform(xform, coords);
-                obj.applySpaceTransform (xform, coords, affectSpace);
+                obj.applyObjectTransform(xform, space);
+                obj.applySpaceTransform (xform, space, affectSpace);
             }                
         }
         else
         {
-            this.applyObjectTransform(xform, coords);
-            this.applySpaceTransform (xform, coords, affectSpace);
+            this.applyObjectTransform(xform, space);
+            this.applySpaceTransform (xform, space, affectSpace);
         }
     }
 
 
 
-    applyObjectTransform(xform, coords)
+    applyObjectTransform(xform, space)
     {
-        const xp0 = transformPoint(point(this.xp0.x, this.xp0.y), xform, coords);
-        const xp1 = transformPoint(point(this.xp1.x, this.xp1.y), xform, coords);
-        const xp2 = transformPoint(point(this.xp2.x, this.xp2.y), xform, coords);
+        const xp0 = transformPoint(point(this.xp0.x, this.xp0.y), xform, space);
+        const xp1 = transformPoint(point(this.xp1.x, this.xp1.y), xform, space);
+        const xp2 = transformPoint(point(this.xp2.x, this.xp2.y), xform, space);
 
         this.xp0.x = xp0.x;
         this.xp0.y = xp0.y;
@@ -204,7 +205,7 @@ class FigmaObject
 
 
 
-    applySpaceTransform(xform, coords, affectSpace)
+    applySpaceTransform(xform, space, affectSpace)
     {
         if (!affectSpace)
             return;
@@ -212,18 +213,19 @@ class FigmaObject
 
         // xform = inversem3(xform);
 
-        const cp0 = transformPoint(point(this.cp0.x, this.cp0.y), xform, coords);
-        const cp1 = transformPoint(point(this.cp1.x, this.cp1.y), xform, coords);
-        const cp2 = transformPoint(point(this.cp2.x, this.cp2.y), xform, coords);
 
-        this.cp0.x = cp0.x;
-        this.cp0.y = cp0.y;
+        const sp0 = transformPoint(point(this.sp0.x, this.sp0.y), xform, space);
+        const sp1 = transformPoint(point(this.sp1.x, this.sp1.y), xform, space);
+        const sp2 = transformPoint(point(this.sp2.x, this.sp2.y), xform, space);
 
-        this.cp1.x = cp1.x;
-        this.cp1.y = cp1.y;
+        this.sp0.x = sp0.x;
+        this.sp0.y = sp0.y;
 
-        this.cp2.x = cp2.x;
-        this.cp2.y = cp2.y;
+        this.sp1.x = sp1.x;
+        this.sp1.y = sp1.y;
+
+        this.sp2.x = sp2.x;
+        this.sp2.y = sp2.y;
     }
 
 
@@ -270,11 +272,11 @@ class FigmaObject
 
 
 
-function transformPoint(p, xform, coords)
+function transformPoint(p, xform, space)
 {
-    p = mulv2m3(p, inversem3(coords));
+    p = mulv2m3(p, inversem3(space));
     p = mulv2m3(p, xform);
-    p = mulv2m3(p, coords);
+    p = mulv2m3(p, space);
 
     return p;
 }
