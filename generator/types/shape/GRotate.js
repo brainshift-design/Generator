@@ -53,8 +53,6 @@ extends GAffine
             parse, 
             {
                 angle:       angle, 
-                // centerX:     centerX, 
-                // centerY:     centerY,
                 showCenter:  showCenter,
                 affectSpace: affectSpace
             });
@@ -73,8 +71,6 @@ extends GAffine
         [
             //['value',       this.value ],
             ['angle',       angle      ],
-            // ['centerX',     centerX    ],
-            // ['centerY',     centerY    ],
             ['showCenter',  showCenter ],
             ['affectSpace', affectSpace],
             ['bounds',      bounds     ]

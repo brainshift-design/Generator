@@ -96,9 +96,6 @@ extends GOperator1
             
             const bounds = getObjBounds(this.value.objects);
 
-            if (!this.options.enabled)
-                return bounds;
-                
 
             const centerX    = options.centerX    .value;
             const centerY    = options.centerY    .value;
@@ -110,8 +107,8 @@ extends GOperator1
                 && this.value.objects[0].type == POINT;
 
 
-            let _cx = 50;
-            let _cy = 50;
+            let _cx = centerX;
+            let _cy = centerY;
 
             if (!singlePoint)
             {
@@ -120,19 +117,10 @@ extends GOperator1
             }
 
 
-            // const cx = singlePoint ? this.value.objects[0].x + _cx : bounds.x + _cx * bounds.width;
-            // const cy = singlePoint ? this.value.objects[0].y + _cy : bounds.y + _cy * bounds.height;
+            const cx = singlePoint ? this.value.objects[0].x + _cx : bounds.x + _cx * bounds.width;
+            const cy = singlePoint ? this.value.objects[0].y + _cy : bounds.y + _cy * bounds.height;
 
-            // const xform = 
-            //     moveType == 0
-            //     ? createTransform(_x, _y)
-            //     : mulm3m3(
-            //         createTransform(cx, cy),
-            //         createTransform(_x, _y),
-            //         createRotateTransform(-_a), // for vector movement
-            //         createTransform(-cx, -cy));
-
-                
+                            
             const objects = [...this.value.objects]; // avoids infinite growth
 
             for (const obj of objects)
@@ -141,9 +129,19 @@ extends GOperator1
                 obj.objectId = obj.objectId + OBJECT_SEPARATOR + this.nodeId;
 
 
-                // obj.applyTransform(xform, affectSpace > 0, false);
+                if (this.options.enabled)
+                {
+                    const ds1 = subv(obj.sp1, obj.sp0);
+                    const ds2 = subv(obj.sp2, obj.sp0);
 
+                    obj.sp0.x = cx;
+                    obj.sp0.y = cy;
 
+                    obj.sp1 = addv(obj.sp0, ds1);
+                    obj.sp2 = addv(obj.sp0, ds2);
+                }
+
+                
                 if (showCenter > 0)
                     addObjectCenter(this, obj, parse.viewportZoom);
             }

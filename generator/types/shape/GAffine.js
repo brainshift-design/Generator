@@ -140,21 +140,3 @@ extends GOperator1
         if (this.affectSpace) this.affectSpace.invalidateInputs(from);
     }
 }
-
-
-
-// function addCenterObject(node, cx, cy, index = null)
-// {
-//     const center = new FigmaPoint(
-//         node.nodeId,
-//         node.nodeId   + PROP_SEPARATOR   + 'center' + (index ? PROP_SEPARATOR   + index : ''),
-//         node.nodeName + CENTER_SEPARATOR + 'center' + (index ? CENTER_SEPARATOR + index : ''),
-//         cx,
-//         cy,
-//         true,
-//         true);
-
-//     center.createDefaultTransform(cx, cy);
-
-//     node.value.objects.push(center);
-// }

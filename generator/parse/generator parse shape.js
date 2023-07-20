@@ -1338,6 +1338,8 @@ function genParseResetTransform(parse)
     if (nInputs == 1)
         reset.input = genParse(parse);
 
+    reset.showCenter = genParse(parse);
+
 
     parse.nTab--;
 

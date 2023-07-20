@@ -57,8 +57,6 @@ extends GAffine
             {
                 skewX:       skewX, 
                 skewY:       skewY, 
-                // centerX:     centerX, 
-                // centerY:     centerY,
                 showCenter:  showCenter,
                 affectSpace: affectSpace
             });
@@ -78,8 +76,6 @@ extends GAffine
             //['value',       this.value ],
             ['skewX',       skewX      ],
             ['skewY',       skewY      ],
-            // ['centerX',     centerX    ],
-            // ['centerY',     centerY    ],
             ['showCenter',  showCenter ],
             ['affectSpace', affectSpace],
             ['bounds',      bounds     ]

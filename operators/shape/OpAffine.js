@@ -29,8 +29,8 @@ extends OperatorBase
 
     addBaseParams(affect)
     {
-        this.addParam(this.paramAffectSpace = new NumberParam('affectSpace',  affect + ' space', true, true, true,   0, 0,   1));
-        this.addParam(this.paramShowCenter  = new NumberParam('showCenter',  'show center',       true, true, true,   0, 0,   1));
+        this.addParam(this.paramAffectSpace = new NumberParam('affectSpace',  affect + ' space', true, true, true, 1, 0, 1));
+        this.addParam(this.paramShowCenter  = new NumberParam('showCenter',  'show center',      true, true, true, 0, 0, 1));
 
 
         this.paramShowCenter .controls[0].allowEditDecimals = false;
@@ -49,19 +49,6 @@ extends OperatorBase
 function OpAffine_onConnectInput(node)
 {
     node.outputs[0].types = [...node.inputs[0].connectedOutput.types];    
-
-
-    // if (   node.inputs[0].connectedOutput.types.length == 1
-    //     && node.inputs[0].connectedOutput.types[0] == POINT_VALUE)
-    // {
-    //     node.setPointOffset();
-    //     setAffineOffset(node, 0, 0);
-    // }
-    // else
-    // {
-        node.setOtherOffset();
-        setAffineOffset(node, 50, 50, 0, 0, 100, 100);
-    //}
 }
 
 
@@ -69,7 +56,4 @@ function OpAffine_onConnectInput(node)
 function OpAffine_onDisconnectInput(node)
 {
     node.outputs[0].types = [SHAPE_VALUE];
-
-    node.setOtherOffset();
-    setAffineOffset(node, 50, 50, 0, 0, 100, 100);
 }

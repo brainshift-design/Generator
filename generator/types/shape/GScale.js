@@ -63,8 +63,6 @@ extends GAffine
             {
                 scaleX:        scaleX, 
                 scaleY:        scaleY, 
-                // centerX:       centerX, 
-                // centerY:       centerY,
                 showCenter:    showCenter,
                 affectSpace:   affectSpace,
                 affectCorners: affectCorners,
@@ -86,8 +84,6 @@ extends GAffine
             //['value',         this.value   ],
             ['scaleX',        scaleX       ],
             ['scaleY',        scaleY       ],
-            // ['centerX',       centerX      ],
-            // ['centerY',       centerY      ],
             ['showCenter',    showCenter   ],
             ['affectSpace',   affectSpace  ],
             ['affectCorners', affectCorners],

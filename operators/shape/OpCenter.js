@@ -22,9 +22,9 @@ extends OperatorBase
         this.addOutput(new Output([SHAPE_VALUE], this.output_genRequest));
 
 
-        this.addParam(this.paramCenterX    = new NumberParam('centerX',    'center X',     true, true, true,  50, 0, 100));
-        this.addParam(this.paramCenterY    = new NumberParam('centerY',    'center Y',     true, true, true,  50, 0, 100));
-        this.addParam(this.paramShowCenter = new NumberParam('showCenter', 'show center',  true, true, true, 1, 0, 1));
+        this.addParam(this.paramCenterX    = new NumberParam('centerX',    'center X',    true, true, true,  50, 0, 100));
+        this.addParam(this.paramCenterY    = new NumberParam('centerY',    'center Y',    true, true, true,  50, 0, 100));
+        this.addParam(this.paramShowCenter = new NumberParam('showCenter', 'show center', true, true, true, 1, 0, 1));
 
 
         this.paramCenterX.controls[0].suffix = '%';
@@ -43,8 +43,8 @@ extends OperatorBase
         this.menuBoolShowCenter  = createBoolMenu(this.paramShowCenter );
 
 
-        this.inputs[0].addEventListener('connect',    e => this.outputs[0].types = [...this.inputs[0].connectedOutput.types]);
-        this.inputs[0].addEventListener('disconnect', e => this.outputs[0].types = [SHAPE_VALUE]);
+        this.inputs[0].addEventListener('connect',    () => OpCenter_onConnectInput   (this));
+        this.inputs[0].addEventListener('disconnect', () => OpCenter_onDisconnectInput(this));    
     }
     
     
@@ -111,17 +111,47 @@ extends OperatorBase
 
 
 
-function setAffineOffset(node, 
-                            x, 
-                            y, 
-                            minX = Number.MIN_SAFE_INTEGER, 
-                            minY = Number.MIN_SAFE_INTEGER, 
-                            maxX = Number.MAX_SAFE_INTEGER, 
-                            maxY = Number.MAX_SAFE_INTEGER) 
+function setCenterOffset(node, 
+                         x, 
+                         y, 
+                         minX = Number.MIN_SAFE_INTEGER, 
+                         minY = Number.MIN_SAFE_INTEGER, 
+                         maxX = Number.MAX_SAFE_INTEGER, 
+                         maxY = Number.MAX_SAFE_INTEGER) 
 {
     node.paramCenterX.controls[0].setMin(minX);
     node.paramCenterX.controls[0].setMax(maxX);
 
     node.paramCenterY.controls[0].setMin(minY);
     node.paramCenterY.controls[0].setMax(maxY);
+}
+
+
+
+function OpCenter_onConnectInput(node)
+{
+    node.outputs[0].types = [...node.inputs[0].connectedOutput.types];    
+
+
+    if (   node.inputs[0].connectedOutput.types.length == 1
+        && node.inputs[0].connectedOutput.types[0] == POINT_VALUE)
+    {
+        node.setPointOffset();
+        setCenterOffset(node, 0, 0);
+    }
+    else
+    {
+        node.setOtherOffset();
+        setCenterOffset(node, 50, 50, 0, 0, 100, 100);
+    }
+}
+
+
+
+function OpCenter_onDisconnectInput(node)
+{
+    node.outputs[0].types = [SHAPE_VALUE];
+
+    node.setOtherOffset();
+    setCenterOffset(node, 50, 50, 0, 0, 100, 100);
 }
