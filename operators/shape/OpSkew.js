@@ -46,8 +46,8 @@ extends OpAffine
 
         request.push(...this.node.paramSkewX      .genRequest(gen));
         request.push(...this.node.paramSkewY      .genRequest(gen));
-        request.push(...this.node.paramCenterX    .genRequest(gen));
-        request.push(...this.node.paramCenterY    .genRequest(gen));
+        // request.push(...this.node.paramCenterX    .genRequest(gen));
+        // request.push(...this.node.paramCenterY    .genRequest(gen));
         request.push(...this.node.paramShowCenter .genRequest(gen));
         request.push(...this.node.paramAffectSpace.genRequest(gen));
 

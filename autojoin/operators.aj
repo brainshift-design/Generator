@@ -172,6 +172,7 @@
 ../operators/shape/OpRotate.js
 ../operators/shape/OpScale.js
 ../operators/shape/OpSkew.js
+../operators/shape/OpCenter.js
 ../operators/shape/OpResetTransform.js
 
 ../operators/shape/boolean/OpShapeBooleanBase.js

@@ -33,7 +33,7 @@ extends GAffine
 
         const angle = this.angle ? (await this.angle.eval(parse)).toValue() : null;
 
-        const [centerX, centerY, showCenter, affectSpace] = await this.evalBaseParams(parse);
+        const [showCenter, affectSpace] = await this.evalBaseParams(parse);
 
 
         if (this.input)
@@ -53,8 +53,8 @@ extends GAffine
             parse, 
             {
                 angle:       angle, 
-                centerX:     centerX, 
-                centerY:     centerY,
+                // centerX:     centerX, 
+                // centerY:     centerY,
                 showCenter:  showCenter,
                 affectSpace: affectSpace
             });
@@ -73,8 +73,8 @@ extends GAffine
         [
             //['value',       this.value ],
             ['angle',       angle      ],
-            ['centerX',     centerX    ],
-            ['centerY',     centerY    ],
+            // ['centerX',     centerX    ],
+            // ['centerY',     centerY    ],
             ['showCenter',  showCenter ],
             ['affectSpace', affectSpace],
             ['bounds',      bounds     ]

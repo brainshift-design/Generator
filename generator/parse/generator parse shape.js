@@ -1139,8 +1139,6 @@ function genParseRotate(parse)
         rotate.input = genParse(parse);
 
     rotate.angle       = genParse(parse);
-    rotate.centerX     = genParse(parse);
-    rotate.centerY     = genParse(parse);
     rotate.showCenter  = genParse(parse);
     rotate.affectSpace = genParse(parse);
 
@@ -1191,8 +1189,6 @@ function genParseScale(parse)
 
     scale.scaleX        = genParse(parse);
     scale.scaleY        = genParse(parse);
-    scale.centerX       = genParse(parse);
-    scale.centerY       = genParse(parse);
     scale.showCenter    = genParse(parse);
     scale.affectSpace   = genParse(parse);
     scale.affectCorners = genParse(parse);
@@ -1245,8 +1241,6 @@ function genParseSkew(parse)
 
     skew.skewX       = genParse(parse);
     skew.skewY       = genParse(parse);
-    skew.centerX     = genParse(parse);
-    skew.centerY     = genParse(parse);
     skew.showCenter  = genParse(parse);
     skew.affectSpace = genParse(parse);
 
@@ -1257,6 +1251,55 @@ function genParseSkew(parse)
 
     genParseNodeEnd(parse, skew);
     return skew;
+}
+
+
+
+function genParseCenter(parse)
+{
+    const [, nodeId, options, ignore] = genParseNodeStart(parse);
+
+
+    const center = new GCenter(nodeId, options);
+
+
+    let nInputs = -1;
+
+    if (!ignore)
+    {
+        nInputs = parseInt(parse.move());
+        consoleAssert(nInputs => 0 && nInputs <= 1, 'nInputs must be [0, 1]');
+    }
+
+
+    if (parse.settings.logRequests) 
+        logReq(center, parse, ignore);
+
+
+    if (ignore) 
+    {
+        genParseNodeEnd(parse, center);
+        return parse.parsedNodes.find(n => n.nodeId == nodeId);
+    }
+
+
+    parse.nTab++;
+
+
+    if (nInputs == 1)
+        center.input = genParse(parse);
+
+    center.centerX    = genParse(parse);
+    center.centerY    = genParse(parse);
+    center.showCenter = genParse(parse);
+
+
+    parse.inParam = false;
+    parse.nTab--;
+
+
+    genParseNodeEnd(parse, center);
+    return center;
 }
 
 

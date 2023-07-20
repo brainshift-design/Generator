@@ -36,7 +36,7 @@ extends GAffine
         const skewX = this.skewX ? (await this.skewX.eval(parse)).toValue() : null;
         const skewY = this.skewY ? (await this.skewY.eval(parse)).toValue() : null;
 
-        const [centerX, centerY, showCenter, affectSpace] = await this.evalBaseParams(parse);
+        const [showCenter, affectSpace] = await this.evalBaseParams(parse);
 
 
         if (this.input)
@@ -57,8 +57,8 @@ extends GAffine
             {
                 skewX:       skewX, 
                 skewY:       skewY, 
-                centerX:     centerX, 
-                centerY:     centerY,
+                // centerX:     centerX, 
+                // centerY:     centerY,
                 showCenter:  showCenter,
                 affectSpace: affectSpace
             });
@@ -78,8 +78,8 @@ extends GAffine
             //['value',       this.value ],
             ['skewX',       skewX      ],
             ['skewY',       skewY      ],
-            ['centerX',     centerX    ],
-            ['centerY',     centerY    ],
+            // ['centerX',     centerX    ],
+            // ['centerY',     centerY    ],
             ['showCenter',  showCenter ],
             ['affectSpace', affectSpace],
             ['bounds',      bounds     ]

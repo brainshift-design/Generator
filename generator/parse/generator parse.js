@@ -261,6 +261,7 @@ function genParse(parse, inParam = true)
     else if (parse.next == SCALE                  ) result = genParseScale            (parse);
     else if (parse.next == SKEW                   ) result = genParseSkew             (parse);
 
+    else if (parse.next == CENTER                 ) result = genParseCenter           (parse);
     else if (parse.next == RESET_XFORM            ) result = genParseResetTransform   (parse);
 
     else if (parse.next == PLACE                  ) result = genParsePlace            (parse);

@@ -42,7 +42,7 @@ extends GAffine
         const affectCorners = this.affectCorners ? (await this.affectCorners.eval(parse)).toValue() : null;
         const affectStyle   = this.affectStyle   ? (await this.affectStyle  .eval(parse)).toValue() : null;
 
-        const [centerX, centerY, showCenter, affectSpace] = await this.evalBaseParams(parse);
+        const [showCenter, affectSpace] = await this.evalBaseParams(parse);
 
 
         if (this.input)
@@ -63,8 +63,8 @@ extends GAffine
             {
                 scaleX:        scaleX, 
                 scaleY:        scaleY, 
-                centerX:       centerX, 
-                centerY:       centerY,
+                // centerX:       centerX, 
+                // centerY:       centerY,
                 showCenter:    showCenter,
                 affectSpace:   affectSpace,
                 affectCorners: affectCorners,
@@ -86,8 +86,8 @@ extends GAffine
             //['value',         this.value   ],
             ['scaleX',        scaleX       ],
             ['scaleY',        scaleY       ],
-            ['centerX',       centerX      ],
-            ['centerY',       centerY      ],
+            // ['centerX',       centerX      ],
+            // ['centerY',       centerY      ],
             ['showCenter',    showCenter   ],
             ['affectSpace',   affectSpace  ],
             ['affectCorners', affectCorners],

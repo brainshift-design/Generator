@@ -3,6 +3,7 @@
 
 ../generator/types/figma/FigmaObject.js
 
+../generator/types/figma/Figma props.js
 ../generator/types/figma/FigmaShape.js
 ../generator/types/figma/FigmaRectangle.js
 ../generator/types/figma/FigmaLine.js
@@ -210,6 +211,7 @@
 ../generator/types/shape/GRotate.js
 ../generator/types/shape/GScale.js
 ../generator/types/shape/GSkew.js
+../generator/types/shape/GCenter.js
 ../generator/types/shape/GResetTransform.js
 
 ../generator/types/shape/GPlace.js

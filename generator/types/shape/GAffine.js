@@ -1,8 +1,6 @@
 class GAffine
 extends GOperator1
 {
-    centerX     = null;
-    centerY     = null;
     showCenter  = null;
     affectSpace = null;
 
@@ -19,8 +17,6 @@ extends GOperator1
     {
         super.copyBase(base);
 
-        if (base.centerX    ) this.centerX     = base.centerX    .copy();
-        if (base.centerY    ) this.centerY     = base.centerY    .copy();
         if (base.showCenter ) this.showCenter  = base.showCenter .copy();
         if (base.affectSpace) this.affectSpace = base.affectSpace.copy();
     }
@@ -29,12 +25,10 @@ extends GOperator1
 
     async evalBaseParams(parse)
     {
-        const centerX     = this.centerX     ? (await this.centerX    .eval(parse)).toValue() : null;
-        const centerY     = this.centerY     ? (await this.centerY    .eval(parse)).toValue() : null;
         const showCenter  = this.showCenter  ? (await this.showCenter .eval(parse)).toValue() : null;
         const affectSpace = this.affectSpace ? (await this.affectSpace.eval(parse)).toValue() : null;
 
-        return [centerX, centerY, showCenter, affectSpace];
+        return [showCenter, affectSpace];
     }
 
 
@@ -63,29 +57,30 @@ extends GOperator1
             return bounds;
 
 
-        const singlePoint = 
-               this.value.objects.length == 1 
-            && this.value.objects[0].type == POINT;
+        // const singlePoint = 
+        //        this.value.objects.length == 1 
+        //     && this.value.objects[0].type == POINT;
 
 
-        let _cx = options.centerX.value;
-        let _cy = options.centerY.value;
+        // let _cx = options.centerX.value;
+        // let _cy = options.centerY.value;
 
-        if (!singlePoint)
-        {
-            _cx /= 100;
-            _cy /= 100;
-        }
-
-
-        const cx = singlePoint ? this.value.objects[0].x + _cx : bounds.x + _cx * bounds.width ;
-        const cy = singlePoint ? this.value.objects[0].y + _cy : bounds.y + _cy * bounds.height;
+        // if (!singlePoint)
+        // {
+        //     _cx /= 100;
+        //     _cy /= 100;
+        // }
 
 
-        const xform = mulm3m3(
-            createTransform(cx, cy),
-            getXform(),
-            createTransform(-cx, -cy));
+        //const cx = singlePoint ? this.value.objects[0].x + _cx : bounds.x + _cx * bounds.width ;
+        //const cy = singlePoint ? this.value.objects[0].y + _cy : bounds.y + _cy * bounds.height;
+
+
+        const xform = getXform();
+        // mulm3m3(
+        //     createTransform(cx, cy),
+        //     getXform(),
+        //     createTransform(-cx, -cy));
 
 
         const objects = [...this.value.objects];
@@ -163,57 +158,3 @@ extends GOperator1
 
 //     node.value.objects.push(center);
 // }
-
-
-
-function addObjectCenter(node, obj, zoom)
-{
-    const length = 10;
-    
-    const sp0 =      obj.sp0;
-    const sp1 = addv(obj.sp0, mulvs(subv(      obj.sp1,      obj.sp0), length));
-    const sp2 = addv(obj.sp0, mulvs(subv(mulvs(obj.sp2, -1), obj.sp0), length));    
-
-    const x = createFigmaLine(node, sp0, sp1, [12, 140, 233], ' _ x');
-    const y = createFigmaLine(node, sp0, sp2, [12, 140, 233], ' _ y');
-
-    node.value.objects.push(x);
-    node.value.objects.push(y);
-}
-
-
-
-function createFigmaLine(node, p0, p1, color, suffix)
-{
-    const line = new FigmaVectorPath(
-        node.nodeId,
-        node.nodeId   + suffix,
-        node.nodeName + suffix,
-        [PointValue.fromPoint(node.nodeId, p0), 
-         PointValue.fromPoint(node.nodeId, p1)],
-        0, 0, 0, 0);
-
-
-    line.strokes.push([
-        'SOLID', 
-        color[0], 
-        color[1], 
-        color[2], 
-        100, 
-        'NORMAL']);
-
-    line.strokeWeight = 1;
-    line.strokeAlign  = 'CENTER';
-    line.strokeJoin   = 'MITER';
-    line.strokeCap    = 'NONE';
-    line.isDeco       = true;
-
-
-    line.createDefaultTransform(p0.x, p0.y);
-
-    line.updatePathPoints();
-    line.updatePathData();
-
-
-    return line;
-}

@@ -36,6 +36,8 @@ extends OperatorBase
         this.paramAffectSpace.controls[0].allowEditDecimals = false;
         this.paramAffectSpace.divider                       = 0.7;
 
+        
+        this.menuBoolShowCenter  = createBoolMenu(this.paramShowCenter );
         this.menuBoolAffectSpace = createBoolMenu(this.paramAffectSpace);
 
 

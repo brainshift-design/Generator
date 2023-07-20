@@ -68,8 +68,8 @@ extends OpAffine
 
         request.push(...this.node.paramScaleX       .genRequest(gen));
         request.push(...this.node.paramScaleY       .genRequest(gen));
-        request.push(...this.node.paramCenterX      .genRequest(gen));
-        request.push(...this.node.paramCenterY      .genRequest(gen));
+        // request.push(...this.node.paramCenterX      .genRequest(gen));
+        // request.push(...this.node.paramCenterY      .genRequest(gen));
         request.push(...this.node.paramShowCenter   .genRequest(gen));
         request.push(...this.node.paramAffectSpace  .genRequest(gen));
         request.push(...this.node.paramAffectCorners.genRequest(gen));
