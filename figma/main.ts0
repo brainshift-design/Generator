@@ -90,6 +90,7 @@ function figOnZoomInterval()
 
     updatePointObjects();
     updateEmptyObjects();
+    updateDecoObjects();
 }
 
 

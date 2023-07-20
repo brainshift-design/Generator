@@ -7,15 +7,11 @@ extends GOperator1
     showCenter  = null;
     affectSpace = null;
 
-    //coords;
-
 
 
     constructor(nodeId, options)
     {
         super(MOVE, nodeId, options);
-
-        //this.coords = clone(identity);
     }
 
 
@@ -31,8 +27,6 @@ extends GOperator1
         if (this.moveType   ) copy.moveType    = this.moveType   .copy();
         if (this.showCenter ) copy.showCenter  = this.showCenter .copy();
         if (this.affectSpace) copy.affectSpace = this.affectSpace.copy();
-
-        //copy.coords = clone(this.coords);
 
         return copy;
     }
@@ -158,9 +152,6 @@ extends GOperator1
                     createTransform(-cx, -cy));
 
                 
-            // const centers = [];
-    
-    
             const objects = [...this.value.objects]; // avoids infinite growth
 
             for (const obj of objects)
@@ -173,30 +164,8 @@ extends GOperator1
 
 
                 if (showCenter > 0)
-                {
-                    addObjectCenter(this, obj);
-                    // const c = clone(obj.sp0);
-                    // pushUniqueBy(centers, c, p => equalv(p, c));
-                }
+                    addObjectCenter(this, obj, parse.viewportZoom);
             }
-
-
-            // for (let i = 0; i < centers.length; i++)
-            // {
-            //     addCenterObject(
-            //         this,
-            //         centers[i].x + _cx * bounds.width, 
-            //         centers[i].y + _cy * bounds.height,
-            //         i);
-            // }
-
-            // addCenterObject(
-            //     this,
-            //     this.coords[0][2] + _cx * bounds.width, 
-            //     this.coords[1][2] + _cy * bounds.height);
-
-
-            //this.coords = mulm3m3(this.coords, xform);
         }
         
         

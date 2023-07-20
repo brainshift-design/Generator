@@ -56,6 +56,9 @@ async function figCreateObject(genObj, addObject = null)
             if (genObj[FO_TYPE] == POINT)
                 figPoints.push(figObj);
 
+            if (genObj[FO_DECO])
+                updateDecoObject(figObj);
+
             addObject(figObj);
         }
     }
@@ -92,6 +95,10 @@ async function figUpdateObject(figObj, genObj)
         case SHAPE_GROUP:       figUpdateShapeGroup   (figObj, genObj);  break;
         case FRAME:             figUpdateFrame        (figObj, genObj);  break;
     }
+
+
+    if (genObj[FO_DECO])
+        updateDecoObject(figObj);
 }
 
 

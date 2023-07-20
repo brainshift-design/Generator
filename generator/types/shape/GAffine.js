@@ -6,15 +6,11 @@ extends GOperator1
     showCenter  = null;
     affectSpace = null;
 
-    //coords;
-
 
 
     constructor(type, nodeId, options)
     {
         super(type, nodeId, options);
-
-        //this.coords = clone(identity);
     }
 
 
@@ -27,8 +23,6 @@ extends GOperator1
         if (base.centerY    ) this.centerY     = base.centerY    .copy();
         if (base.showCenter ) this.showCenter  = base.showCenter .copy();
         if (base.affectSpace) this.affectSpace = base.affectSpace.copy();
-
-        //this.coords = clone(base.coords);
     }
 
 
@@ -45,7 +39,7 @@ extends GOperator1
 
 
 
-    async evalAffineObjects(options, scaleCorners, scaleStyle, getXform)
+    async evalAffineObjects(parse, options, scaleCorners, scaleStyle, getXform)
     {
         if (   !this.value
             || !this.value.isValid())
@@ -93,11 +87,10 @@ extends GOperator1
             getXform(),
             createTransform(-cx, -cy));
 
-        
-        // const centers = [];
 
+        const objects = [...this.value.objects];
 
-        for (const obj of this.value.objects)
+        for (const obj of objects)
         {
             obj.nodeId   = this.nodeId;
             obj.objectId = obj.objectId + OBJECT_SEPARATOR + this.nodeId;
@@ -110,30 +103,8 @@ extends GOperator1
 
 
             if (options.showCenter.value > 0)
-            {
-                addObjectCenter(this, obj);
-                // const c = clone(obj.sp0);
-                // pushUniqueBy(centers, c, p => equalv(p, c));
-            }
+                addObjectCenter(this, obj, parse.viewportZoom);
         }
-
-
-        // for (let i = 0; i < centers.length; i++)
-        // {
-        //     addCenterObject(
-        //         this,
-        //         centers[i].x + _cx * bounds.width, 
-        //         centers[i].y + _cy * bounds.height,
-        //         i);
-        // }
-
-        // addCenterObject(
-        //     this,
-        //     this.coords[0][2] + _cx * bounds.width, 
-        //     this.coords[1][2] + _cy * bounds.height);
-
-        
-        //this.coords = mulm3m3(this.coords, xform);
 
 
         return bounds;
@@ -195,10 +166,16 @@ extends GOperator1
 
 
 
-function addObjectCenter(node, obj)
+function addObjectCenter(node, obj, zoom)
 {
-    const x = createFigmaLine(node, obj.sp0,       obj.sp1,      [255, 0, 0], ' _ x');
-    const y = createFigmaLine(node, obj.sp0, mulvs(obj.sp2, -1), [255, 0, 0], ' _ y');
+    const length = 10;
+    
+    const sp0 =      obj.sp0;
+    const sp1 = addv(obj.sp0, mulvs(subv(      obj.sp1,      obj.sp0), length));
+    const sp2 = addv(obj.sp0, mulvs(subv(mulvs(obj.sp2, -1), obj.sp0), length));    
+
+    const x = createFigmaLine(node, sp0, sp1, [12, 140, 233], ' _ x');
+    const y = createFigmaLine(node, sp0, sp2, [12, 140, 233], ' _ y');
 
     node.value.objects.push(x);
     node.value.objects.push(y);
@@ -229,6 +206,7 @@ function createFigmaLine(node, p0, p1, color, suffix)
     line.strokeAlign  = 'CENTER';
     line.strokeJoin   = 'MITER';
     line.strokeCap    = 'NONE';
+    line.isDeco       = true;
 
 
     line.createDefaultTransform(p0.x, p0.y);

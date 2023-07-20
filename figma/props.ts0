@@ -1,4 +1,5 @@
 const figEmptyObjects = [];
+const figDecoObjects  = [];
 
 
 
@@ -179,6 +180,9 @@ function setObjectStrokes(figObj, genObj, phantom = true)
 
         if (figEmptyObjects.includes(figObj))
             removeFromArray(figEmptyObjects, figObj);
+
+        if (genObj[FO_DECO])
+            pushUnique(figDecoObjects, figObj);
     }
     else if (isEmpty(genObj[FO_FILLS  ])
           && isEmpty(genObj[FO_STROKES])
@@ -289,4 +293,24 @@ function setEmptyObjectStroke(obj)
         'NONE',
         [ 1 / curZoom, 
           2 / curZoom ]);
+}
+
+
+
+function updateDecoObjects()
+{
+    for (const obj of figDecoObjects)
+    {
+        if (obj.removed)
+            removeFromArray(figDecoObjects, obj);
+        else
+            updateDecoObject(obj);
+    }
+}
+
+
+
+function updateDecoObject(obj)
+{
+    obj.strokeWeight = Math.max(0, 1 / curZoom);
 }

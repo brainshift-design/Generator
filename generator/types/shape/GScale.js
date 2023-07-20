@@ -111,6 +111,7 @@ extends GAffine
         const scale = Math.min(sx, sy);
 
         return await this.evalAffineObjects(
+            parse,
             options, 
             this.affectCorners.value > 0 ? scale : 1,
             this.affectStyle  .value > 0 ? scale : 1,

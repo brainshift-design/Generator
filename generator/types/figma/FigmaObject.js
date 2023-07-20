@@ -20,8 +20,6 @@ class FigmaObject
     xp2 = null; //  xp2
 
 
-    //cp  = null; // pivot
-
     sp0 = null; //  sp0 ------- sp1 
     sp1 = null; //   |
     sp2 = null; //  sp2
@@ -62,8 +60,6 @@ class FigmaObject
         this.xp1          = !!base.xp1 ? base.xp1.copy() : null;
         this.xp2          = !!base.xp2 ? base.xp2.copy() : null;
 
-        //this.cp           = base.cp;
-    
         this.sp0          = base.sp0;
         this.sp1          = base.sp1;
         this.sp2          = base.sp2;
@@ -84,7 +80,6 @@ class FigmaObject
 
     createDefaultSpace()
     {
-        //this.cp  = point(0, 0);
         this.sp0 = point(0, 0);
         this.sp1 = point(1, 0);
         this.sp2 = point(0, 1);

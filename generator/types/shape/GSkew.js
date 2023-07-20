@@ -99,6 +99,7 @@ extends GAffine
         const sy = -options.skewY.toNumber() / 100;
 
         return await this.evalAffineObjects(
+            parse,
             options, 
             1, 1,
             () => [[1,  sx, 0],

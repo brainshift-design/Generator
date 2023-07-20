@@ -93,6 +93,7 @@ extends GAffine
         const a = options.angle.toNumber()/360*Tau;
 
         return await this.evalAffineObjects(
+            parse,
             options, 
             1, 
             1,

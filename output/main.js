@@ -1308,6 +1308,7 @@ function figOnZoomInterval() {
     curZoom = figma.viewport.zoom;
     updatePointObjects();
     updateEmptyObjects();
+    updateDecoObjects();
 }
 function figOnSelectionChange() {
     updatePointObjects();
@@ -2157,6 +2158,8 @@ function figCreateObject(genObj, addObject = null) {
                 figObj.setPluginData('retain', genObj[FO_RETAIN].toString());
                 if (genObj[FO_TYPE] == POINT)
                     figPoints.push(figObj);
+                if (genObj[FO_DECO])
+                    updateDecoObject(figObj);
                 addObject(figObj);
             }
         }
@@ -2207,6 +2210,8 @@ function figUpdateObject(figObj, genObj) {
                 figUpdateFrame(figObj, genObj);
                 break;
         }
+        if (genObj[FO_DECO])
+            updateDecoObject(figObj);
     });
 }
 function figUpdateObjects(figParent, genObjects, nodeIds = [], lastChunk = false) {
@@ -2322,6 +2327,7 @@ function clearObjectData(figObj) {
     figObj.setPluginData('retain', '');
 }
 const figEmptyObjects = [];
+const figDecoObjects = [];
 function getObjectEffects(genObjEffects) {
     const effects = [];
     for (const effect of genObjEffects) {
@@ -2449,6 +2455,8 @@ function setObjectStrokes(figObj, genObj, phantom = true) {
         setObjectStroke_(figObj, getObjectFills(genObj[FO_STROKES]), genObj[FO_STROKE_WEIGHT], genObj[FO_STROKE_ALIGN], genObj[FO_STROKE_JOIN], genObj[FO_STROKE_MITER], genObj[FO_STROKE_CAP], parseStrokeDashes(genObj[FO_STROKE_DASHES]));
         if (figEmptyObjects.includes(figObj))
             removeFromArray(figEmptyObjects, figObj);
+        if (genObj[FO_DECO])
+            pushUnique(figDecoObjects, figObj);
     }
     else if (isEmpty(genObj[FO_FILLS])
         && isEmpty(genObj[FO_STROKES])
@@ -2512,6 +2520,17 @@ function setEmptyObjectStroke(obj) {
             color: phantomColor,
             opacity: 0.5 }], 1 / curZoom, 'CENTER', 'MITER', 1, 'NONE', [1 / curZoom,
         2 / curZoom]);
+}
+function updateDecoObjects() {
+    for (const obj of figDecoObjects) {
+        if (obj.removed)
+            removeFromArray(figDecoObjects, obj);
+        else
+            updateDecoObject(obj);
+    }
+}
+function updateDecoObject(obj) {
+    obj.strokeWeight = Math.max(0, 1 / curZoom);
 }
 function figGetAllLocalColorStyles(nodeId, px, py) {
     const _styles = figma.getLocalPaintStyles();

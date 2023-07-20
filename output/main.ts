@@ -2085,6 +2085,7 @@ function figOnZoomInterval()
 
     updatePointObjects();
     updateEmptyObjects();
+    updateDecoObjects();
 }
 
 
@@ -3285,6 +3286,9 @@ async function figCreateObject(genObj, addObject = null)
             if (genObj[FO_TYPE] == POINT)
                 figPoints.push(figObj);
 
+            if (genObj[FO_DECO])
+                updateDecoObject(figObj);
+
             addObject(figObj);
         }
     }
@@ -3321,6 +3325,10 @@ async function figUpdateObject(figObj, genObj)
         case SHAPE_GROUP:       figUpdateShapeGroup   (figObj, genObj);  break;
         case FRAME:             figUpdateFrame        (figObj, genObj);  break;
     }
+
+
+    if (genObj[FO_DECO])
+        updateDecoObject(figObj);
 }
 
 
@@ -3502,6 +3510,7 @@ function clearObjectData(figObj)
 
 
 const figEmptyObjects = [];
+const figDecoObjects  = [];
 
 
 
@@ -3682,6 +3691,9 @@ function setObjectStrokes(figObj, genObj, phantom = true)
 
         if (figEmptyObjects.includes(figObj))
             removeFromArray(figEmptyObjects, figObj);
+
+        if (genObj[FO_DECO])
+            pushUnique(figDecoObjects, figObj);
     }
     else if (isEmpty(genObj[FO_FILLS  ])
           && isEmpty(genObj[FO_STROKES])
@@ -3792,6 +3804,26 @@ function setEmptyObjectStroke(obj)
         'NONE',
         [ 1 / curZoom, 
           2 / curZoom ]);
+}
+
+
+
+function updateDecoObjects()
+{
+    for (const obj of figDecoObjects)
+    {
+        if (obj.removed)
+            removeFromArray(figDecoObjects, obj);
+        else
+            updateDecoObject(obj);
+    }
+}
+
+
+
+function updateDecoObject(obj)
+{
+    obj.strokeWeight = Math.max(0, 1 / curZoom);
 }
 
 
