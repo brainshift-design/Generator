@@ -32,7 +32,6 @@ extends FigmaShape
         
 
         this.updatePathPoints();
-        this.updatePathData();
 
 
         let bounds = Rect.NaN;
@@ -82,9 +81,6 @@ extends FigmaShape
     {
         for (let i = 0; i < this.points.length; i++)
             this.points[i] = PointValue.fromPoint(this.nodeId, transformPoint(this.points[i].toPoint(), xform, space));
-
-        this.updatePathPoints();
-        this.updatePathData();
     }
 
 
@@ -135,6 +131,10 @@ extends FigmaShape
 
     toData()
     {
+        this.updatePathPoints();
+        this.updatePathData();
+
+
         return [
             ...super.toData(),
    

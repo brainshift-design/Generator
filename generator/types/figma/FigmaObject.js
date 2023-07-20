@@ -156,25 +156,37 @@ class FigmaObject
             this.x = p.x;
             this.y = p.y;
 
-            this.applySpaceTransform(xform, space, affectSpace);
+            if (affectSpace)
+                this.applySpaceTransform(xform, space);
         }
         else if (this.type == VECTOR_PATH)
         {
-            this.applyObjectTransform(xform, space);
-            this.applySpaceTransform(xform, space, affectSpace);
+            for (let i = 0; i < this.points.length; i++)
+            {
+                let p = this.points[i].toPoint();
+                p = transformPoint(p, xform, space);
+                this.points[i] = PointValue.fromPoint(this.nodeId, p);
+            }
+
+            if (affectSpace)
+                this.applySpaceTransform(xform, space);
         }
         else if (this.type == SHAPE_GROUP)
         {
             for (const obj of this.children)
             {
                 obj.applyObjectTransform(xform, space);
-                obj.applySpaceTransform (xform, space, affectSpace);
+
+                if (affectSpace)
+                    obj.applySpaceTransform(xform, space);
             }                
         }
         else
         {
             this.applyObjectTransform(xform, space);
-            this.applySpaceTransform (xform, space, affectSpace);
+
+            if (affectSpace)
+                this.applySpaceTransform(xform, space);
         }
     }
 
@@ -198,15 +210,8 @@ class FigmaObject
 
 
 
-    applySpaceTransform(xform, space, affectSpace)
+    applySpaceTransform(xform, space)
     {
-        if (!affectSpace)
-            return;
-
-
-        // xform = inversem3(xform);
-
-
         const sp0 = transformPoint(point(this.sp0.x, this.sp0.y), xform, space);
         const sp1 = transformPoint(point(this.sp1.x, this.sp1.y), xform, space);
         const sp2 = transformPoint(point(this.sp2.x, this.sp2.y), xform, space);
@@ -435,9 +440,6 @@ function createFigmaLine(node, p0, p1, color, suffix)
 
 
     line.createDefaultTransform(p0.x, p0.y);
-
-    line.updatePathPoints();
-    line.updatePathData();
 
 
     return line;
