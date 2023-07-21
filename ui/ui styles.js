@@ -145,6 +145,7 @@ function uiReturnGetAllLocalTemplateNames(templateNames)
     menuTemplate.clearItems();
     menuTemplate.addItems(...menuItems);
 
+    
     hideAllMenus();
 
     menuTemplate.show(btnTemplate.div, null, false, false);

@@ -455,7 +455,9 @@ function initGeneratorMenus()
                              new MenuItem('',                 {separator: true}),
                              new MenuItem('Random . . .',     {icon: iconRandom,      callback: e => actionManager.do(getCreateNodeAction(NUMBER_RANDOM,      btnNumber.div, getCreateOptions(e)))}),
                              new MenuItem('Noise . . .',      {icon: iconNoise,       callback: e => actionManager.do(getCreateNodeAction(NUMBER_NOISE,       btnNumber.div, getCreateOptions(e)))}),
-                             new MenuItem('Probability. . .', {icon: iconProbability, callback: e => actionManager.do(getCreateNodeAction(NUMBER_PROBABILITY, btnNumber.div, getCreateOptions(e)))})]);
+                             new MenuItem('Probability. . .', {icon: iconProbability, callback: e => actionManager.do(getCreateNodeAction(NUMBER_PROBABILITY, btnNumber.div, getCreateOptions(e)))}),
+                             new MenuItem('',                 {separator: true}),
+                             new MenuItem('Accumulate. . .',  {icon: iconAccumulate,  callback: e => actionManager.do(getCreateNodeAction(NUMBER_ACCUMULATE,  btnNumber.div, getCreateOptions(e)))})]);
         
     
     menuNumber = new Menu('Numbers', true, false);
@@ -708,8 +710,8 @@ function initGeneratorMenus()
         menuItemNodeSep3           = new MenuItem('',                 {separator: true}),
         // menuItemNodeEdit           = new MenuItem('Edit...',       {callback: e => { hideAllMenus(); graphView.editSelectedCustomNode(); }}),
                                     //  new MenuItem('',              {separator: true}),
-        // menuItemNodeSaveAsTemplate = new MenuItem('Save as template', {callback: e => { hideAllMenus(); showSaveAsTemplateDialog(); }}),
-        //                              new MenuItem('',                 {separator: true}),
+        menuItemNodeSaveAsTemplate = new MenuItem('Save as template', {callback: e => { hideAllMenus(); showSaveAsTemplateDialog(); }}),
+                                     new MenuItem('',                 {separator: true}),
         // menuItemNodeActivate    = new MenuItem('Activate',         {callback: () => makeSelectedNodesActive()}),
         menuItemNodeEnableDisable  = new MenuItem('Enable/Disable',   {shortcut:  osCtrlShift() + 'E',  callback: () => actionManager.do(new ToggleDisableNodesAction(graphView.selectedNodes.map(n => n.id)))}),
         menuItemNodeSep4           = new MenuItem('',                 {separator: true}),
@@ -770,7 +772,7 @@ function initGeneratorMenus()
     btnLayer    = new MenuButton('', menuLayer,    {useMenuName: true, highlight: () => currentMenus.includes(menuLayer ), callback: () => updatePanMode(false)});
     //btnStyle  = new MenuButton('', menuStyle,    {useMenuName: true, highlight: () => currentMenus.includes(menuStyle ), callback: () => updatePanMode(false)});
     btnShape    = new MenuButton('', menuShape,    {useMenuName: true, highlight: () => currentMenus.includes(menuShape ), callback: () => updatePanMode(false)});
-    //btnTemplate = new MenuButton('', menuTemplate, {useMenuName: true, highlight: () => currentMenus.includes(menuShape ), callback: () => updatePanMode(false)});
+    btnTemplate = new MenuButton('', menuTemplate, {useMenuName: true, highlight: () => currentMenus.includes(menuShape ), callback: () => updatePanMode(false)});
     //btnGroup  = new MenuButton('', menuGroup,  {useMenuName: true, highlight: () => currentMenus.includes(menuShape ), callback: () => updatePanMode(false)});
 
     // btnGroup  = new MenuButton('Node groups', null, {callback: () => 
@@ -856,7 +858,7 @@ function initGeneratorMenus()
     btnShape   .setIcon(iconShapes);
     //btnStyle  .setIcon(iconStyle);
     //btnGroup  .setIcon(iconGroup);
-    //btnTemplate.setIcon(iconTemplate);
+    btnTemplate.setIcon(iconTemplate);
     btnHand    .setIcon(iconHand);
     btnComment .setIcon(iconComment);
 }

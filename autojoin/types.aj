@@ -96,6 +96,7 @@
 ../generator/types/number/GRandom.js
 ../generator/types/number/GNoise.js
 ../generator/types/number/GProbability.js
+../generator/types/number/GAccumulate.js
 ../generator/types/number/GInterpolate.js
 ../generator/types/number/GSolve.js
 ../generator/types/number/GAnimate.js

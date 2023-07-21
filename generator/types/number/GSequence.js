@@ -4,6 +4,7 @@ extends GOperator
     start;
     step;
 
+    current;
 
     loopId = NULL;
 
@@ -60,15 +61,11 @@ extends GOperator
             this.value = NumberValue.NaN;
 
 
-        // if (  !repeat
-        //     || repeat.iteration == repeat.total-1)
-        // {
-            this.updateValues =
-            [
-                ['start', start],
-                ['step',  step ]
-            ];
-        // }
+        this.updateValues =
+        [
+            ['start', start],
+            ['step',  step ]
+        ];
         
 
         this.validate();

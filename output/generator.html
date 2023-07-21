@@ -4605,6 +4605,7 @@ const NUMBER_SEQUENCE         = 'SEQ';
 const NUMBER_RANDOM           = 'RAND';  
 const NUMBER_NOISE            = 'NOISE';  
 const NUMBER_PROBABILITY      = 'PROB';  
+const NUMBER_ACCUMULATE       = 'ACCUM';  
 const NUMBER_INTERPOLATE      = 'LERP'; 
 const NUMBER_SOLVE            = 'SOLVE';
 const NUMBER_ANIMATE          = 'NANIM';
@@ -4717,6 +4718,7 @@ const NUMBER_TYPES =
     NUMBER_RANDOM,
     NUMBER_NOISE,
     NUMBER_PROBABILITY,
+    NUMBER_ACCUMULATE,
     NUMBER_INTERPOLATE,
     NUMBER_SOLVE,
     NUMBER_ANIMATE,
@@ -16032,6 +16034,7 @@ extends GOperator
     start;
     step;
 
+    current;
 
     loopId = NULL;
 
@@ -16088,15 +16091,11 @@ extends GOperator
             this.value = NumberValue.NaN;
 
 
-        // if (  !repeat
-        //     || repeat.iteration == repeat.total-1)
-        // {
-            this.updateValues =
-            [
-                ['start', start],
-                ['step',  step ]
-            ];
-        // }
+        this.updateValues =
+        [
+            ['start', start],
+            ['step',  step ]
+        ];
         
 
         this.validate();
@@ -16530,7 +16529,7 @@ extends GOperator
             : 0;
 
 
-        this.value = new NumberValue(r);
+        this.value = new NumberValue(Math.round(r));
 
 
         this.updateValues =
@@ -16582,6 +16581,100 @@ extends GOperator
         if (this.interpolate) this.interpolate.invalidateInputs(from);
         if (this.offset     ) this.offset     .invalidateInputs(from);
         if (this.detail     ) this.detail     .invalidateInputs(from);
+    }
+}
+
+
+
+class GAccumulate
+extends GNumberType1
+{
+    current;
+
+    loopId = NULL;
+
+
+
+    constructor(nodeId, options)
+    {
+        super(NUMBER_ACCUMULATE, nodeId, options);
+    }
+
+
+    
+    copy()
+    {
+        const copy = new GAccumulate(this.nodeId, this.options);
+
+        copy.copyBase(this);
+
+        if (this.current) copy.current = this.current.copy();
+
+        return copy;
+    }
+
+
+
+    async eval(parse)
+    {
+        if (this.isCached())
+            return this;
+            
+
+        this.value = new NumberValue(0);
+
+
+        if (this.input)
+        {
+            const input = (await this.input.eval(parse)).toValue();
+
+            //const repeat    = parse.repeats.find(r => r.repeatId == this.loopId);
+            //const iteration = repeat ? repeat.iteration : this.iteration;
+
+
+            if (input)
+            {
+                this.value.value += input.value;
+                this.value.decimals = Math.max(this.value.decimals, input.decimals);
+            }
+        }
+
+
+        this.updateValues = [['', NullValue]];
+        
+
+        this.validate();
+
+        return this;
+    }
+
+
+
+    toValue()
+    {
+        return this.value
+             ? this.value.copy()
+             : null;
+    }
+
+
+
+    pushValueUpdates(parse)
+    {
+        super.pushValueUpdates(parse);
+
+        if (this.start) this.start.pushValueUpdates(parse);
+        if (this.step ) this.step .pushValueUpdates(parse);
+    }
+
+
+
+    invalidateInputs(from)
+    {
+        super.invalidateInputs(from);
+
+        if (this.start) this.start.invalidateInputs(from);
+        if (this.step ) this.step .invalidateInputs(from);
     }
 }
 
@@ -32107,6 +32200,50 @@ function genParseProbability(parse)
 
 
 
+function genParseAccumulate(parse)
+{
+    const [, nodeId, options, ignore] = genParseNodeStart(parse);
+
+
+    const accum = new GAccumulate(nodeId, options);
+   
+
+    let nInputs = -1;
+    
+    if (!ignore)
+    {
+        nInputs = parseInt(parse.move());
+        consoleAssert(nInputs == 0 || nInputs == 1, 'nInputs must be [0, 1]');
+    }
+
+    
+    if (parse.settings.logRequests) 
+        logReq(accum, parse, ignore, nInputs);
+
+
+    if (ignore) 
+    {
+        genParseNodeEnd(parse, accum);
+        return parse.parsedNodes.find(n => n.nodeId == nodeId);
+    }
+
+
+    parse.nTab++;
+
+
+    if (nInputs == 1)
+        accum.input = genParse(parse);
+
+    
+    parse.nTab--;
+
+
+    genParseNodeEnd(parse, accum);
+    return accum;
+}
+
+
+
 function genParseInterpolate(parse)
 {
     const [, nodeId, options, ignore] = genParseNodeStart(parse);
@@ -34880,13 +35017,14 @@ function genParse(parse, inParam = true)
     else if (parse.next == NUMBER_ROUND           ) result = genParseRound            (parse);
     else if (parse.next == NUMBER_MINMAX          ) result = genParseMinMax           (parse);
     else if (parse.next == NUMBER_LIMITS          ) result = genParseLimits           (parse);
+    else if (parse.next == NUMBER_CONSTANT        ) result = genParseConstant         (parse);
+    else if (parse.next == NUMBER_DATETIME        ) result = genParseDateTime         (parse);
+    else if (parse.next == NUMBER_SEQUENCE        ) result = genParseSequence         (parse);
+    else if (parse.next == NUMBER_DISTRIBUTE      ) result = genParseDistribute       (parse);
     else if (parse.next == NUMBER_RANDOM          ) result = genParseRandom           (parse);
     else if (parse.next == NUMBER_NOISE           ) result = genParseNoise            (parse);
     else if (parse.next == NUMBER_PROBABILITY     ) result = genParseProbability      (parse);
-    else if (parse.next == NUMBER_CONSTANT        ) result = genParseConstant         (parse);
-    else if (parse.next == NUMBER_DATETIME        ) result = genParseDateTime         (parse);
-    else if (parse.next == NUMBER_DISTRIBUTE      ) result = genParseDistribute       (parse);
-    else if (parse.next == NUMBER_SEQUENCE        ) result = genParseSequence         (parse);
+    else if (parse.next == NUMBER_ACCUMULATE      ) result = genParseAccumulate       (parse);
     else if (parse.next == NUMBER_INTERPOLATE     ) result = genParseInterpolate      (parse);
     else if (parse.next == NUMBER_SOLVE           ) result = genParseSolve            (parse);
     else if (parse.next == NUMBER_ANIMATE         ) result = genParseAnimate          (parse);

@@ -1,24 +1,17 @@
-class   OpSequence
+class   OpAccumulate
 extends OperatorBase
 {
-    paramStart;
-    paramStep;
-
-
-
     constructor()
     {
-        super(NUMBER_SEQUENCE, 'sequence', 'sequence', iconSequence);
+        super(NUMBER_ACCUMULATE, 'accum', 'accumulate', iconAccumulate);
 
         this.cached      = false;
-        this.iconOffsetY = -1;
+        this.iconOffsetY = 1;
         this.canDisable  = true;
         
 
+        this.addInput (new Input ([NUMBER_VALUE]));
         this.addOutput(new Output([NUMBER_VALUE], this.output_genRequest));
-
-        this.addParam(this.paramStart = new NumberParam('start', 'start', true, true, true, 0));
-        this.addParam(this.paramStep  = new NumberParam('step',  'step',  true, true, true, 1));
     }
 
 
@@ -35,8 +28,13 @@ extends OperatorBase
         if (ignore) return request;
 
         
-        request.push(...this.node.paramStart.genRequest(gen));
-        request.push(...this.node.paramStep .genRequest(gen));
+        const input = this.node.inputs[0];
+
+
+        request.push(input.connected ? 1 : 0);
+        
+        if (input.connected)
+            request.push(...pushInputOrParam(input, gen));
 
 
         gen.scope.pop();

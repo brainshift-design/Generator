@@ -60,7 +60,7 @@ extends GOperator
             : 0;
 
 
-        this.value = new NumberValue(r);
+        this.value = new NumberValue(Math.round(r));
 
 
         this.updateValues =

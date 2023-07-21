@@ -70,6 +70,7 @@
 ../operators/number/OpRandom.js
 ../operators/number/OpNoise.js
 ../operators/number/OpProbability.js
+../operators/number/OpAccumulate.js
 ../operators/number/OpInterpolate.js
 ../operators/number/OpNumberToText.js
 ../operators/number/OpTextToNumber.js

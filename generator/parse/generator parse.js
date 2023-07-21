@@ -131,13 +131,14 @@ function genParse(parse, inParam = true)
     else if (parse.next == NUMBER_ROUND           ) result = genParseRound            (parse);
     else if (parse.next == NUMBER_MINMAX          ) result = genParseMinMax           (parse);
     else if (parse.next == NUMBER_LIMITS          ) result = genParseLimits           (parse);
+    else if (parse.next == NUMBER_CONSTANT        ) result = genParseConstant         (parse);
+    else if (parse.next == NUMBER_DATETIME        ) result = genParseDateTime         (parse);
+    else if (parse.next == NUMBER_SEQUENCE        ) result = genParseSequence         (parse);
+    else if (parse.next == NUMBER_DISTRIBUTE      ) result = genParseDistribute       (parse);
     else if (parse.next == NUMBER_RANDOM          ) result = genParseRandom           (parse);
     else if (parse.next == NUMBER_NOISE           ) result = genParseNoise            (parse);
     else if (parse.next == NUMBER_PROBABILITY     ) result = genParseProbability      (parse);
-    else if (parse.next == NUMBER_CONSTANT        ) result = genParseConstant         (parse);
-    else if (parse.next == NUMBER_DATETIME        ) result = genParseDateTime         (parse);
-    else if (parse.next == NUMBER_DISTRIBUTE      ) result = genParseDistribute       (parse);
-    else if (parse.next == NUMBER_SEQUENCE        ) result = genParseSequence         (parse);
+    else if (parse.next == NUMBER_ACCUMULATE      ) result = genParseAccumulate       (parse);
     else if (parse.next == NUMBER_INTERPOLATE     ) result = genParseInterpolate      (parse);
     else if (parse.next == NUMBER_SOLVE           ) result = genParseSolve            (parse);
     else if (parse.next == NUMBER_ANIMATE         ) result = genParseAnimate          (parse);
