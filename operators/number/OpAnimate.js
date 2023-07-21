@@ -14,6 +14,7 @@ extends OperatorBase //WithValue
     playing = false;
 
     startTime;
+    paramTimeStart = 0;
     //prevTime;
 
 
@@ -74,9 +75,15 @@ extends OperatorBase //WithValue
 
                 if (this.playing) // start playback
                 {
-                    this.startTime = Date.now();
-                    //this.prevTiime = this.startTime;
+                    this.startTime      = Date.now();
+                    this.paramTimeStart = this.paramTime.value.value;
 
+                    let   time   = this.paramTimeStart + (Date.now() - this.startTime) / 1000;
+                    const length = this.paramLength.value.value;
+
+                    if (time >= length)
+                        this.paramTime.setValue(new NumberValue(0), false, true, false);
+                        
                     this.updatePlayback();
                 }
             }
@@ -88,6 +95,16 @@ extends OperatorBase //WithValue
         this.label.insertBefore(this.btnPlay, this.labelText);
 
         this.setAllParamDividers(0.44);
+
+
+        this.paramTime.controls[0].addEventListener('change', e =>
+        {
+            if (this.playing)
+            {
+                this.startTime      = Date.now();
+                this.paramTimeStart = this.paramTime.value.value;
+            }
+        });
     }
 
 
@@ -189,7 +206,7 @@ extends OperatorBase //WithValue
 
     updatePlayback(update = true)
     {
-        let   time   = (Date.now() - this.startTime) / 1000;
+        let   time   = this.paramTimeStart + (Date.now() - this.startTime) / 1000;
         const length = this.paramLength.value.value;
 
 
@@ -200,6 +217,7 @@ extends OperatorBase //WithValue
                 {
                     time = length;
                     this.playing = false;
+                    this.updatePlayIcon();
                 }
                 
                 break;
