@@ -2,6 +2,7 @@ class GAccumulate
 extends GNumberType1
 {
     current;
+    when;
 
     loopId = NULL;
 
@@ -10,6 +11,8 @@ extends GNumberType1
     constructor(nodeId, options)
     {
         super(NUMBER_ACCUMULATE, nodeId, options);
+
+        this.current = new NumberValue(0);
     }
 
 
@@ -20,6 +23,7 @@ extends GNumberType1
 
         copy.copyBase(this);
 
+        if (this.when   ) copy.when    = this.when   .copy();
         if (this.current) copy.current = this.current.copy();
 
         return copy;
@@ -31,10 +35,10 @@ extends GNumberType1
     {
         if (this.isCached())
             return this;
+
+
+        const when = (await this.when.eval(parse)).toValue();
             
-
-        this.value = new NumberValue(0);
-
 
         if (this.input)
         {
@@ -43,12 +47,17 @@ extends GNumberType1
             //const repeat    = parse.repeats.find(r => r.repeatId == this.loopId);
             //const iteration = repeat ? repeat.iteration : this.iteration;
 
+            if (when.value == 0)
+                this.value = this.current.copy();
 
             if (input)
             {
-                this.value.value += input.value;
-                this.value.decimals = Math.max(this.value.decimals, input.decimals);
+                this.current.value += input.value;
+                this.current.decimals = Math.max(this.current.decimals, input.decimals);
             }
+
+            if (when.value > 0)
+                this.value = this.current.copy();
         }
 
 
@@ -87,5 +96,14 @@ extends GNumberType1
 
         if (this.start) this.start.invalidateInputs(from);
         if (this.step ) this.step .invalidateInputs(from);
+    }
+
+
+
+    invalidateLoop(parse, nodeId)
+    {
+        super.invalidateLoop(parse, nodeId);
+
+        this.current = new NumberValue(0);
     }
 }

@@ -738,7 +738,9 @@ function genParseAccumulate(parse)
     if (nInputs == 1)
         accum.input = genParse(parse);
 
-    
+    accum.when = genParse(parse);
+
+        
     parse.nTab--;
 
 

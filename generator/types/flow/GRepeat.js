@@ -230,11 +230,7 @@ extends GOperator
 
     invalidateLoopInput(parse, input)
     {
-        if (input.type == PARAM)
-            input = parse.parsedNodes.find(n => n.nodeId == input.nodeId);
-
-        input.valid  = false;
-        input.loopId = this.nodeId;
+        input.invalidateLoop(parse, this.nodeId);
     }
 
 
