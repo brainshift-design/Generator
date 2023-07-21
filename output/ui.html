@@ -4597,6 +4597,7 @@ a
                 <p>•  fixed Color node sometimes crashing during animations</p>
                 <p>•  improved handling of time in Animation node</p>
                 <p>•  renamed Define... to List... and moved it to the flow menu, it can now deal out any value types</p>
+                <p>•  fixed bugs in number Boolean node</p>
                 
                 <p><br/><br/><div id='chkHideWhatsNew'></div></p>
             </div>
@@ -22764,8 +22765,8 @@ extends GArithmetic
         
         this.updateValues =
         [
-            ['operation', op        ],
-            ['value',     this.value]
+            ['value',     this.value],
+            ['operation', op        ]
         ];
 
 
@@ -22780,8 +22781,6 @@ extends GArithmetic
     {
         super.pushValueUpdates(parse);
 
-        this.input.forEach(i => i.pushValueUpdates(parse));
-        
         if (this.operation) this.operation.pushValueUpdates(parse);
     }
 
@@ -63062,8 +63061,8 @@ extends GArithmetic
         
         this.updateValues =
         [
-            ['operation', op        ],
-            ['value',     this.value]
+            ['value',     this.value],
+            ['operation', op        ]
         ];
 
 
@@ -63078,8 +63077,6 @@ extends GArithmetic
     {
         super.pushValueUpdates(parse);
 
-        this.input.forEach(i => i.pushValueUpdates(parse));
-        
         if (this.operation) this.operation.pushValueUpdates(parse);
     }
 
@@ -78755,12 +78752,18 @@ class Menu
 
 
 
-    initMenu()
+    initMenu(callInit = true)
     {
-        if (this.init)
-            this.init();
+        const e = { cancel: false };
 
-            
+        if (   callInit
+            && this.init)
+            this.init(e);
+
+        if (e.cancel)
+            return false;
+
+
         utilContext.font = '12px Inter';
 
         
@@ -78797,17 +78800,20 @@ class Menu
 
 
         this.divItems.style.width = Math.max(this.minWidth, width) + 'px';
+
+        return true;
     }
 
 
 
-    show(srcDiv, subMenu, right = false)
+    show(srcDiv, subMenu, right = false, callInit = true)
     {
         // if (graphView._soloNode);
         //     graphView.unsoloNode();
 
 
-        this.initMenu();
+        if (!this.initMenu(callInit))
+            return;
 
 
         this.div.style.display = 'block';
@@ -79224,7 +79230,7 @@ class MenuButton
         hideAllMenus();
         
         if (!curMenus.includes(this.menu))
-            this.menu.show(this.div, false);
+            this.menu.show(this.div, null);
     }
 
 
@@ -80057,10 +80063,10 @@ function initGeneratorMenus()
         menuItemIfElse        = new MenuItem('I&hairsp;f / else', {icon: iconIfElse,     callback: e => actionManager.do(getCreateNodeAction(IF_ELSE,    btnNumber.div, getCreateOptions(e))), disambiguate: true}),
         menuFlowSep2          = new MenuItem('',                  {separator: true}),
         menuItemCache         = new MenuItem('Cache',             {icon: iconCache,       callback: e => actionManager.do(getCreateNodeAction(CACHE,     btnNumber.div, getCreateOptions(e)))}),
-        menuItemArray         = new MenuItem('List . . .',        {icon: iconList,        callback: e => actionManager.do(getCreateNodeAction(DEFINE,      btnNumber.div, getCreateOptions(e)))}),
         menuFlowSep3          = new MenuItem('',                  {separator: true}),
         menuItemStart         = new MenuItem('Start . . .',       {icon: iconStart,      callback: e => actionManager.do(getCreateNodeAction(START,      btnNumber.div, getCreateOptions(e)))}),
         menuItemFreeze        = new MenuItem('Freeze . . .',      {icon: iconFreeze,     callback: e => actionManager.do(getCreateNodeAction(FREEZE,     btnNumber.div, getCreateOptions(e)))}),
+        menuItemArray         = new MenuItem('List . . .',        {icon: iconList,        callback: e => actionManager.do(getCreateNodeAction(DEFINE,      btnNumber.div, getCreateOptions(e)))}),
         menuFlowSep4          = new MenuItem('',                  {separator: true}),
         menuItemRepeat        = new MenuItem('. . . Repeat',      {icon: iconRepeat,     callback: e => actionManager.do(getCreateNodeAction(REPEAT,     btnNumber.div, getCreateOptions(e)))}),
                                 new MenuItem('',                  {separator: true}),
@@ -80285,15 +80291,14 @@ function initGeneratorMenus()
 
 
     menuTemplate = new Menu('Templates', true, false);
-
-    menuTemplate.init = () => 
+    menuTemplate.init = e => 
     {
-        menuTemplate.clearItems();
-
-        menuTemplate.addItems([
-            //new MenuItem('',            {separator: true}),
-            menuItemManageTemplates = new MenuItem('Manage templates...', {icon: iconManageTemplates})]);
+        uiQueueMessageToFigma({cmd: 'figGetAllLocalTemplateNames'});
+        e.cancel = true;
     };
+
+
+    menuItemManageTemplates = new MenuItem('Manage templates...', {icon: iconManageTemplates});
 
 
     menuGroup = new Menu('Groups', true, false);
@@ -98097,6 +98102,8 @@ extends OperatorWithValue
         this.paramValue    .enableControlText(false, this.isUnknown());
         this.paramOperation.enableControlText(true);
 
+        updateParamConditionText(this.paramValue, this.paramValue.isUnknown(), true, 1);
+
 
         switch (this.paramOperation.value.value)
         {
@@ -114437,32 +114444,33 @@ onmessage = e =>
 
     switch (msg.cmd)
     {
-        case 'uiForwardToGenerator':              uiPostMessageToGenerator         (msg.msg);      break;
-
-        case 'uiStylePropertyChange':             uiStylePropertyChange            (msg);          break;
-        case 'uiStyleDelete':                     uiStyleDelete                    (msg);          break;
-            
-        case 'uiEndFigMessage':                   uiEndFigMessage                  (msg.msgCmd);   break;
-                                    
-        case 'uiReturnFigStartGenerator':         uiReturnFigStartGenerator        (msg);          break;
-                                             
-        case 'uiReturnFigLoadNodesAndConns':      uiReturnFigLoadNodesAndConns     (msg);          break;
-                                             
-        case 'uiReturnFigGetLocalData':           uiReturnFigGetLocalData          (msg);          break;
-        case 'uiReturnFigGetPageData':            uiReturnFigGetPageData           (msg);          break;
+        case 'uiForwardToGenerator':              uiPostMessageToGenerator         (msg.msg);           break;
+       
+        case 'uiStylePropertyChange':             uiStylePropertyChange            (msg);               break;
+        case 'uiStyleDelete':                     uiStyleDelete                    (msg);               break;
+                   
+        case 'uiEndFigMessage':                   uiEndFigMessage                  (msg.msgCmd);        break;
+                                           
+        case 'uiReturnFigStartGenerator':         uiReturnFigStartGenerator        (msg);               break;
+                                                    
+        case 'uiReturnFigLoadNodesAndConns':      uiReturnFigLoadNodesAndConns     (msg);               break;
+                                                    
+        case 'uiReturnFigGetLocalData':           uiReturnFigGetLocalData          (msg);               break;
+        case 'uiReturnFigGetPageData':            uiReturnFigGetPageData           (msg);               break;
                                                    
-        case 'uiReturnFigResizeWindow':           uiReturnFigResizeWindow          ();             break;
+        case 'uiReturnFigResizeWindow':           uiReturnFigResizeWindow          ();                  break;
                            
-        case 'uiReturnFigGetAllLocalColorStyles': uiReturnFigGetAllLocalColorStyles(msg);          break;
+        case 'uiReturnFigGetAllLocalColorStyles': uiReturnFigGetAllLocalColorStyles(msg);               break;
+        case 'uiReturnGetAllLocalTemplateNames':  uiReturnGetAllLocalTemplateNames (msg.templateNames); break;
+        
+        case 'uiReturnFigGetMousePosition':       uiUpdateWindowStartRect          (msg);               break;
 
-        case 'uiReturnFigGetMousePosition':       uiUpdateWindowStartRect          (msg);          break;
+        case 'uiSetStyleId':                      uiSetStyleId                     (msg);               break;
+        case 'uiHideClearUndoWarning':            uiHideClearUndoWarning           ();                  break;
 
-        case 'uiSetStyleId':                      uiSetStyleId                     (msg);          break;
-        case 'uiHideClearUndoWarning':            uiHideClearUndoWarning           ();             break;
+        case 'uiUpdateZoom':                      uiUpdateZoom                     (msg.zoom);         break;
 
-        case 'uiUpdateZoom':                      uiUpdateZoom                     (msg.zoom);     break;
-
-        case 'uiUpdateGroupBounds':               uiUpdateGroupBounds              (msg);          break;
+        case 'uiUpdateGroupBounds':               uiUpdateGroupBounds              (msg);              break;
     }
 };
 
@@ -117279,6 +117287,34 @@ function uiReturnFigGetAllLocalColorStyles(msg)
 
 
 
+function uiReturnGetAllLocalTemplateNames(templateNames)
+{
+    console.log('return local templates');
+
+    const menuItems = [];
+
+
+    for (const templateName of templateNames)
+        menuItems.push(new MenuItem(templateName, {callback: null}));
+
+
+    if (menuItems.length > 0)
+        menuItems.push(new MenuItem('', {separator: true}));
+
+
+    menuItems.push(menuItemManageTemplates);
+
+
+    menuTemplate.clearItems();
+    menuTemplate.addItems(...menuItems);
+
+    hideAllMenus();
+
+    menuTemplate.show(btnTemplate.div, null, false, false);
+}
+
+
+
 function uiSetStyleId(msg)
 {
     nodeFromId(msg.nodeId).linkedStyleId = msg.styleId;
@@ -118710,7 +118746,12 @@ saveAsTemplateInput.addEventListener('keydown', e =>
 {
     e.stopPropagation();
 
-    if (e.code == 'Escape')
+    if (e.code == 'Enter')
+    {
+        saveSelectedAsTemplate(saveAsTemplateInput.value); 
+        hideSaveAsTemplateDialog();
+    }
+    else if (e.code == 'Escape')
         hideSaveAsTemplateDialog();
 });
 
@@ -118760,6 +118801,8 @@ function saveSelectedAsTemplate(templateName)
 
     // if (!isEmpty(nodeIds))
     //hideSaveAsTemplateDialog();
+
+    uiNotify('Saved template \'' + templateName + '\'');
 }
 
 

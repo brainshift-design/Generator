@@ -48,8 +48,8 @@ extends GArithmetic
         
         this.updateValues =
         [
-            ['operation', op        ],
-            ['value',     this.value]
+            ['value',     this.value],
+            ['operation', op        ]
         ];
 
 
@@ -64,8 +64,6 @@ extends GArithmetic
     {
         super.pushValueUpdates(parse);
 
-        this.input.forEach(i => i.pushValueUpdates(parse));
-        
         if (this.operation) this.operation.pushValueUpdates(parse);
     }
 

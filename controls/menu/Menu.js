@@ -100,12 +100,18 @@ class Menu
 
 
 
-    initMenu()
+    initMenu(callInit = true)
     {
-        if (this.init)
-            this.init();
+        const e = { cancel: false };
 
-            
+        if (   callInit
+            && this.init)
+            this.init(e);
+
+        if (e.cancel)
+            return false;
+
+
         utilContext.font = '12px Inter';
 
         
@@ -142,17 +148,20 @@ class Menu
 
 
         this.divItems.style.width = Math.max(this.minWidth, width) + 'px';
+
+        return true;
     }
 
 
 
-    show(srcDiv, subMenu, right = false)
+    show(srcDiv, subMenu, right = false, callInit = true)
     {
         // if (graphView._soloNode);
         //     graphView.unsoloNode();
 
 
-        this.initMenu();
+        if (!this.initMenu(callInit))
+            return;
 
 
         this.div.style.display = 'block';

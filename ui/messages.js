@@ -29,32 +29,33 @@ onmessage = e =>
 
     switch (msg.cmd)
     {
-        case 'uiForwardToGenerator':              uiPostMessageToGenerator         (msg.msg);      break;
-
-        case 'uiStylePropertyChange':             uiStylePropertyChange            (msg);          break;
-        case 'uiStyleDelete':                     uiStyleDelete                    (msg);          break;
-            
-        case 'uiEndFigMessage':                   uiEndFigMessage                  (msg.msgCmd);   break;
-                                    
-        case 'uiReturnFigStartGenerator':         uiReturnFigStartGenerator        (msg);          break;
-                                             
-        case 'uiReturnFigLoadNodesAndConns':      uiReturnFigLoadNodesAndConns     (msg);          break;
-                                             
-        case 'uiReturnFigGetLocalData':           uiReturnFigGetLocalData          (msg);          break;
-        case 'uiReturnFigGetPageData':            uiReturnFigGetPageData           (msg);          break;
+        case 'uiForwardToGenerator':              uiPostMessageToGenerator         (msg.msg);           break;
+       
+        case 'uiStylePropertyChange':             uiStylePropertyChange            (msg);               break;
+        case 'uiStyleDelete':                     uiStyleDelete                    (msg);               break;
+                   
+        case 'uiEndFigMessage':                   uiEndFigMessage                  (msg.msgCmd);        break;
+                                           
+        case 'uiReturnFigStartGenerator':         uiReturnFigStartGenerator        (msg);               break;
+                                                    
+        case 'uiReturnFigLoadNodesAndConns':      uiReturnFigLoadNodesAndConns     (msg);               break;
+                                                    
+        case 'uiReturnFigGetLocalData':           uiReturnFigGetLocalData          (msg);               break;
+        case 'uiReturnFigGetPageData':            uiReturnFigGetPageData           (msg);               break;
                                                    
-        case 'uiReturnFigResizeWindow':           uiReturnFigResizeWindow          ();             break;
+        case 'uiReturnFigResizeWindow':           uiReturnFigResizeWindow          ();                  break;
                            
-        case 'uiReturnFigGetAllLocalColorStyles': uiReturnFigGetAllLocalColorStyles(msg);          break;
+        case 'uiReturnFigGetAllLocalColorStyles': uiReturnFigGetAllLocalColorStyles(msg);               break;
+        case 'uiReturnGetAllLocalTemplateNames':  uiReturnGetAllLocalTemplateNames (msg.templateNames); break;
+        
+        case 'uiReturnFigGetMousePosition':       uiUpdateWindowStartRect          (msg);               break;
 
-        case 'uiReturnFigGetMousePosition':       uiUpdateWindowStartRect          (msg);          break;
+        case 'uiSetStyleId':                      uiSetStyleId                     (msg);               break;
+        case 'uiHideClearUndoWarning':            uiHideClearUndoWarning           ();                  break;
 
-        case 'uiSetStyleId':                      uiSetStyleId                     (msg);          break;
-        case 'uiHideClearUndoWarning':            uiHideClearUndoWarning           ();             break;
+        case 'uiUpdateZoom':                      uiUpdateZoom                     (msg.zoom);         break;
 
-        case 'uiUpdateZoom':                      uiUpdateZoom                     (msg.zoom);     break;
-
-        case 'uiUpdateGroupBounds':               uiUpdateGroupBounds              (msg);          break;
+        case 'uiUpdateGroupBounds':               uiUpdateGroupBounds              (msg);              break;
     }
 };
 

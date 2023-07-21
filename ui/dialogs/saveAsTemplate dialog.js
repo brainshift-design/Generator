@@ -83,7 +83,12 @@ saveAsTemplateInput.addEventListener('keydown', e =>
 {
     e.stopPropagation();
 
-    if (e.code == 'Escape')
+    if (e.code == 'Enter')
+    {
+        saveSelectedAsTemplate(saveAsTemplateInput.value); 
+        hideSaveAsTemplateDialog();
+    }
+    else if (e.code == 'Escape')
         hideSaveAsTemplateDialog();
 });
 
@@ -133,4 +138,6 @@ function saveSelectedAsTemplate(templateName)
 
     // if (!isEmpty(nodeIds))
     //hideSaveAsTemplateDialog();
+
+    uiNotify('Saved template \'' + templateName + '\'');
 }

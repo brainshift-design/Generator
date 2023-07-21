@@ -218,7 +218,7 @@ class MenuButton
         hideAllMenus();
         
         if (!curMenus.includes(this.menu))
-            this.menu.show(this.div, false);
+            this.menu.show(this.div, null);
     }
 
 

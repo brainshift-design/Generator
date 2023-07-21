@@ -124,6 +124,34 @@ function uiReturnFigGetAllLocalColorStyles(msg)
 
 
 
+function uiReturnGetAllLocalTemplateNames(templateNames)
+{
+    console.log('return local templates');
+
+    const menuItems = [];
+
+
+    for (const templateName of templateNames)
+        menuItems.push(new MenuItem(templateName, {callback: null}));
+
+
+    if (menuItems.length > 0)
+        menuItems.push(new MenuItem('', {separator: true}));
+
+
+    menuItems.push(menuItemManageTemplates);
+
+
+    menuTemplate.clearItems();
+    menuTemplate.addItems(...menuItems);
+
+    hideAllMenus();
+
+    menuTemplate.show(btnTemplate.div, null, false, false);
+}
+
+
+
 function uiSetStyleId(msg)
 {
     nodeFromId(msg.nodeId).linkedStyleId = msg.styleId;

@@ -389,10 +389,10 @@ function initGeneratorMenus()
         menuItemIfElse        = new MenuItem('I&hairsp;f / else', {icon: iconIfElse,     callback: e => actionManager.do(getCreateNodeAction(IF_ELSE,    btnNumber.div, getCreateOptions(e))), disambiguate: true}),
         menuFlowSep2          = new MenuItem('',                  {separator: true}),
         menuItemCache         = new MenuItem('Cache',             {icon: iconCache,       callback: e => actionManager.do(getCreateNodeAction(CACHE,     btnNumber.div, getCreateOptions(e)))}),
-        menuItemArray         = new MenuItem('List . . .',        {icon: iconList,        callback: e => actionManager.do(getCreateNodeAction(DEFINE,      btnNumber.div, getCreateOptions(e)))}),
         menuFlowSep3          = new MenuItem('',                  {separator: true}),
         menuItemStart         = new MenuItem('Start . . .',       {icon: iconStart,      callback: e => actionManager.do(getCreateNodeAction(START,      btnNumber.div, getCreateOptions(e)))}),
         menuItemFreeze        = new MenuItem('Freeze . . .',      {icon: iconFreeze,     callback: e => actionManager.do(getCreateNodeAction(FREEZE,     btnNumber.div, getCreateOptions(e)))}),
+        menuItemArray         = new MenuItem('List . . .',        {icon: iconList,        callback: e => actionManager.do(getCreateNodeAction(DEFINE,      btnNumber.div, getCreateOptions(e)))}),
         menuFlowSep4          = new MenuItem('',                  {separator: true}),
         menuItemRepeat        = new MenuItem('. . . Repeat',      {icon: iconRepeat,     callback: e => actionManager.do(getCreateNodeAction(REPEAT,     btnNumber.div, getCreateOptions(e)))}),
                                 new MenuItem('',                  {separator: true}),
@@ -617,15 +617,14 @@ function initGeneratorMenus()
 
 
     menuTemplate = new Menu('Templates', true, false);
-
-    menuTemplate.init = () => 
+    menuTemplate.init = e => 
     {
-        menuTemplate.clearItems();
-
-        menuTemplate.addItems([
-            //new MenuItem('',            {separator: true}),
-            menuItemManageTemplates = new MenuItem('Manage templates...', {icon: iconManageTemplates})]);
+        uiQueueMessageToFigma({cmd: 'figGetAllLocalTemplateNames'});
+        e.cancel = true;
     };
+
+
+    menuItemManageTemplates = new MenuItem('Manage templates...', {icon: iconManageTemplates});
 
 
     menuGroup = new Menu('Groups', true, false);
