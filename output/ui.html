@@ -4596,6 +4596,7 @@ a
 
                 <p>•  fixed Color node sometimes crashing during animations</p>
                 <p>•  improved handling of time in Animation node</p>
+                <p>•  renamed Define... to List... and moved it to the flow menu, it can now deal out any value types</p>
                 
                 <p><br/><br/><div id='chkHideWhatsNew'></div></p>
             </div>
@@ -9460,8 +9461,8 @@ const LIST_COUNT              = 'COUNT';
 const IF_ELSE                 = 'IF';
 const START                   = 'START';
 const REPEAT                  = 'REPT';
+const DEFINE                  = 'DEFINE';  
 const CACHE                   = 'CACHE';
-const COPY                    = 'COPY';
 const FREEZE                  = 'FRZ';
 const TIMER                   = 'TIMER';
 
@@ -9503,8 +9504,8 @@ const FLOW_TYPES =
     START,
     REPEAT,
     //FOREACH,
+    DEFINE,
     CACHE,
-    COPY,
     FREEZE,
     TIMER
 ];
@@ -9519,7 +9520,6 @@ const NUMBER_MINMAX           = 'MINMAX';
 const NUMBER_LIMITS           = 'LIM';   
 const NUMBER_CONSTANT         = 'CONST';  
 const NUMBER_DATETIME         = 'DATE';  
-const NUMBER_DEFINE           = 'DEFINE';  
 const NUMBER_DISTRIBUTE       = 'DISTR';  
 const NUMBER_SEQUENCE         = 'SEQ';  
 const NUMBER_RANDOM           = 'RAND';  
@@ -9630,7 +9630,6 @@ const NUMBER_TYPES =
     NUMBER_LIMITS,
     NUMBER_CONSTANT,
     NUMBER_DATETIME,
-    NUMBER_DEFINE,
     NUMBER_DISTRIBUTE,
     NUMBER_SEQUENCE,
     NUMBER_RANDOM,
@@ -13445,7 +13444,7 @@ function parseListValue(str, i = -1)
 
 
 
-function finalListTypeFromItems(items, debug = 0)
+function getItemTypes(items, debug)
 {
     const types = [];
 
@@ -13461,13 +13460,26 @@ function finalListTypeFromItems(items, debug = 0)
             pushUnique(types, item.type);
     }
 
-
-    return finalListTypeFromTypes(types, debug);
+    return types;
 }
 
 
 
-function finalListTypeFromTypes(types, debug = 0)
+function finalTypeFromItems(items, debug = 0)
+{
+    return finalTypeFromTypes(getItemTypes(items), debug);
+}
+
+
+
+function finalListTypeFromItems(items, debug = 0)
+{
+    return finalListTypeFromTypes(getItemTypes(items), debug);
+}
+
+
+
+function finalTypeFromTypes(types, debug = 0)
 {
     let _type = NULL;
 
@@ -13485,6 +13497,16 @@ function finalListTypeFromTypes(types, debug = 0)
             break; 
         }
     }
+
+
+    return _type;
+}
+
+
+
+function finalListTypeFromTypes(types, debug = 0)
+{
+    let _type = finalTypeFromTypes(types, debug);
 
     
          if (  _type == NUMBER_VALUE || _type == NUMBER_LIST_VALUE)  return NUMBER_LIST_VALUE;
@@ -18475,7 +18497,7 @@ extends GOperator
             
             
             // first copy the input objects
-            // to display when list the active node
+            // to display when list is the active node
 
             if (   this.options.enabled
                 && this.inputs[i].value)
@@ -19452,7 +19474,7 @@ extends GOperator
 function assertVolatile(node)
 {
     consoleAssert(
-           node.loop.type == NUMBER_DEFINE
+           node.loop.type == DEFINE
         || node.loop.type == NUMBER_DISTRIBUTE
         || node.loop.type == NUMBER_SEQUENCE
         || node.loop.type == NUMBER_RANDOM
@@ -19481,84 +19503,6 @@ extends GOperator
     copy()
     {
         const copy = new GCache(this.nodeId, this.options);
-
-        copy.copyBase(this);
-
-        if (this.input) copy.input = this.input.copy();
-        if (this.value) copy.value = this.value.copy();
-
-        return copy;
-    }
-
-
-
-    async eval(parse)
-    {
-        if (this.valid)//isCached())
-            return this;
-
-
-        this.value = 
-            this.input
-            ? (await this.input.eval(parse)).toValue()
-            : NullValue;
-
-
-        this.updateValues = [['value', this.value]];
-        
-        
-        this.validate();
-
-        return this;
-    }
-
-
-
-    pushValueUpdates(parse)
-    {
-        super.pushValueUpdates(parse);
-
-        // if (this.input  ) this.input  .invalidateInputs(from);
-    }
-
-
-
-    toValue()
-    {
-        return this.value
-             ? this.value.copy() 
-             : null;
-    }
-
-
-
-    invalidateInputs(from)
-    {
-        super.invalidateInputs(from);
-
-        // if (this.input  ) this.input  .invalidateInputs(from);
-    }
-}
-
-
-
-class GCopy
-extends GOperator
-{
-    input = null;
-
-
-
-    constructor(nodeId, options)
-    {
-        super(COPY, nodeId, options);
-    }
-
-
-    
-    copy()
-    {
-        const copy = new GCopy(this.nodeId, this.options);
 
         copy.copyBase(this);
 
@@ -20732,7 +20676,7 @@ extends GOperator
 
     constructor(nodeId, options)
     {
-        super(NUMBER_DEFINE, nodeId, options);
+        super(DEFINE, nodeId, options);
     }
 
 
@@ -20760,27 +20704,18 @@ extends GOperator
 
         for (let i = 0; i < this.inputs.length; i++)
         {
-            const val = (await this.inputs[i].eval(parse)).toValue();
-    
-            if (LIST_VALUES.includes(val.type))
+            const input = (await this.inputs[i].eval(parse)).toValue();
+
+            if (   input
+                && this.options.enabled)            
             {
-                if (  !isEmpty(val.items)
-                    && val.items[0].type != NUMBER_VALUE)
+                if (LIST_VALUES.includes(input.type))
                 {
-                    for (const item of val.items)
-                    {
-                        if (item.type == NUMBER_VALUE)
-                            _values.push(item);
-                    }
+                    for (const item of input.items)
+                        _values.push(item.copy());   
                 }
-            }
-            else
-            {
-                consoleAssert(
-                    val.type == NUMBER_VALUE, 
-                    'val.type must be NUMBER_VALUE');
- 
-                _values.push(val);
+                else
+                    _values.push(input.copy());
             }
         }
             
@@ -20792,7 +20727,7 @@ extends GOperator
         this.value = _values[iteration % _values.length];
 
 
-        this.updateValues = [['', NullValue]];
+        this.updateValues = [['type', new TextValue(finalTypeFromItems(_values))]];
         
 
         this.validate();
@@ -35351,50 +35286,6 @@ function genParseCache(parse)
 
 
 
-function genParseCopy(parse)
-{
-    const [, nodeId, options, ignore] = genParseNodeStart(parse);
-
-
-    const copy = new GCopy(nodeId, options);
-
-
-    let nInputs = -1;
-    
-    if (!ignore)
-    {
-        nInputs = parseInt(parse.move());
-        consoleAssert(nInputs == 0 || nInputs == 1, 'nInputs must be [0, 1]');
-    }
-
-
-    if (parse.settings.logRequests) 
-        logReq(copy, parse, ignore, nInputs);
-
-
-    if (ignore) 
-    {
-        genParseNodeEnd(parse, copy);
-        return parse.parsedNodes.find(n => n.nodeId == nodeId);
-    }
-
-
-    parse.nTab++;
-
-
-    if (nInputs == 1)
-        copy.input = genParse(parse);
-
-
-    parse.nTab--;
-
-
-    genParseNodeEnd(parse, copy);
-    return copy;
-}
-
-
-
 function genParseFreeze(parse)
 {
     const [, nodeId, options, ignore] = genParseNodeStart(parse);
@@ -39715,7 +39606,6 @@ function genParse(parse, inParam = true)
     else if (parse.next == START                  ) result = genParseStart            (parse);
     else if (parse.next == REPEAT                 ) result = genParseRepeat           (parse);
     else if (parse.next == CACHE                  ) result = genParseCache            (parse);
-    else if (parse.next == COPY                   ) result = genParseCopy             (parse);
     else if (parse.next == FREEZE                 ) result = genParseFreeze           (parse);
     else if (parse.next == TIMER                  ) result = genParseTimer            (parse);
      
@@ -39732,7 +39622,7 @@ function genParse(parse, inParam = true)
     else if (parse.next == NUMBER_PROBABILITY     ) result = genParseProbability      (parse);
     else if (parse.next == NUMBER_CONSTANT        ) result = genParseConstant         (parse);
     else if (parse.next == NUMBER_DATETIME        ) result = genParseDateTime         (parse);
-    else if (parse.next == NUMBER_DEFINE          ) result = genParseDefine            (parse);
+    else if (parse.next == DEFINE          ) result = genParseDefine            (parse);
     else if (parse.next == NUMBER_DISTRIBUTE      ) result = genParseDistribute       (parse);
     else if (parse.next == NUMBER_SEQUENCE        ) result = genParseSequence         (parse);
     else if (parse.next == NUMBER_INTERPOLATE     ) result = genParseInterpolate      (parse);
@@ -49869,8 +49759,8 @@ const LIST_COUNT              = 'COUNT';
 const IF_ELSE                 = 'IF';
 const START                   = 'START';
 const REPEAT                  = 'REPT';
+const DEFINE                  = 'DEFINE';  
 const CACHE                   = 'CACHE';
-const COPY                    = 'COPY';
 const FREEZE                  = 'FRZ';
 const TIMER                   = 'TIMER';
 
@@ -49912,8 +49802,8 @@ const FLOW_TYPES =
     START,
     REPEAT,
     //FOREACH,
+    DEFINE,
     CACHE,
-    COPY,
     FREEZE,
     TIMER
 ];
@@ -49928,7 +49818,6 @@ const NUMBER_MINMAX           = 'MINMAX';
 const NUMBER_LIMITS           = 'LIM';   
 const NUMBER_CONSTANT         = 'CONST';  
 const NUMBER_DATETIME         = 'DATE';  
-const NUMBER_DEFINE           = 'DEFINE';  
 const NUMBER_DISTRIBUTE       = 'DISTR';  
 const NUMBER_SEQUENCE         = 'SEQ';  
 const NUMBER_RANDOM           = 'RAND';  
@@ -50039,7 +49928,6 @@ const NUMBER_TYPES =
     NUMBER_LIMITS,
     NUMBER_CONSTANT,
     NUMBER_DATETIME,
-    NUMBER_DEFINE,
     NUMBER_DISTRIBUTE,
     NUMBER_SEQUENCE,
     NUMBER_RANDOM,
@@ -53854,7 +53742,7 @@ function parseListValue(str, i = -1)
 
 
 
-function finalListTypeFromItems(items, debug = 0)
+function getItemTypes(items, debug)
 {
     const types = [];
 
@@ -53870,13 +53758,26 @@ function finalListTypeFromItems(items, debug = 0)
             pushUnique(types, item.type);
     }
 
-
-    return finalListTypeFromTypes(types, debug);
+    return types;
 }
 
 
 
-function finalListTypeFromTypes(types, debug = 0)
+function finalTypeFromItems(items, debug = 0)
+{
+    return finalTypeFromTypes(getItemTypes(items), debug);
+}
+
+
+
+function finalListTypeFromItems(items, debug = 0)
+{
+    return finalListTypeFromTypes(getItemTypes(items), debug);
+}
+
+
+
+function finalTypeFromTypes(types, debug = 0)
 {
     let _type = NULL;
 
@@ -53894,6 +53795,16 @@ function finalListTypeFromTypes(types, debug = 0)
             break; 
         }
     }
+
+
+    return _type;
+}
+
+
+
+function finalListTypeFromTypes(types, debug = 0)
+{
+    let _type = finalTypeFromTypes(types, debug);
 
     
          if (  _type == NUMBER_VALUE || _type == NUMBER_LIST_VALUE)  return NUMBER_LIST_VALUE;
@@ -58884,7 +58795,7 @@ extends GOperator
             
             
             // first copy the input objects
-            // to display when list the active node
+            // to display when list is the active node
 
             if (   this.options.enabled
                 && this.inputs[i].value)
@@ -59861,7 +59772,7 @@ extends GOperator
 function assertVolatile(node)
 {
     consoleAssert(
-           node.loop.type == NUMBER_DEFINE
+           node.loop.type == DEFINE
         || node.loop.type == NUMBER_DISTRIBUTE
         || node.loop.type == NUMBER_SEQUENCE
         || node.loop.type == NUMBER_RANDOM
@@ -59890,84 +59801,6 @@ extends GOperator
     copy()
     {
         const copy = new GCache(this.nodeId, this.options);
-
-        copy.copyBase(this);
-
-        if (this.input) copy.input = this.input.copy();
-        if (this.value) copy.value = this.value.copy();
-
-        return copy;
-    }
-
-
-
-    async eval(parse)
-    {
-        if (this.valid)//isCached())
-            return this;
-
-
-        this.value = 
-            this.input
-            ? (await this.input.eval(parse)).toValue()
-            : NullValue;
-
-
-        this.updateValues = [['value', this.value]];
-        
-        
-        this.validate();
-
-        return this;
-    }
-
-
-
-    pushValueUpdates(parse)
-    {
-        super.pushValueUpdates(parse);
-
-        // if (this.input  ) this.input  .invalidateInputs(from);
-    }
-
-
-
-    toValue()
-    {
-        return this.value
-             ? this.value.copy() 
-             : null;
-    }
-
-
-
-    invalidateInputs(from)
-    {
-        super.invalidateInputs(from);
-
-        // if (this.input  ) this.input  .invalidateInputs(from);
-    }
-}
-
-
-
-class GCopy
-extends GOperator
-{
-    input = null;
-
-
-
-    constructor(nodeId, options)
-    {
-        super(COPY, nodeId, options);
-    }
-
-
-    
-    copy()
-    {
-        const copy = new GCopy(this.nodeId, this.options);
 
         copy.copyBase(this);
 
@@ -61141,7 +60974,7 @@ extends GOperator
 
     constructor(nodeId, options)
     {
-        super(NUMBER_DEFINE, nodeId, options);
+        super(DEFINE, nodeId, options);
     }
 
 
@@ -61169,27 +61002,18 @@ extends GOperator
 
         for (let i = 0; i < this.inputs.length; i++)
         {
-            const val = (await this.inputs[i].eval(parse)).toValue();
-    
-            if (LIST_VALUES.includes(val.type))
+            const input = (await this.inputs[i].eval(parse)).toValue();
+
+            if (   input
+                && this.options.enabled)            
             {
-                if (  !isEmpty(val.items)
-                    && val.items[0].type != NUMBER_VALUE)
+                if (LIST_VALUES.includes(input.type))
                 {
-                    for (const item of val.items)
-                    {
-                        if (item.type == NUMBER_VALUE)
-                            _values.push(item);
-                    }
+                    for (const item of input.items)
+                        _values.push(item.copy());   
                 }
-            }
-            else
-            {
-                consoleAssert(
-                    val.type == NUMBER_VALUE, 
-                    'val.type must be NUMBER_VALUE');
- 
-                _values.push(val);
+                else
+                    _values.push(input.copy());
             }
         }
             
@@ -61201,7 +61025,7 @@ extends GOperator
         this.value = _values[iteration % _values.length];
 
 
-        this.updateValues = [['', NullValue]];
+        this.updateValues = [['type', new TextValue(finalTypeFromItems(_values))]];
         
 
         this.validate();
@@ -78673,9 +78497,8 @@ const iconSelect            = '<svg width="15" height="9" viewBox="0 0 15 9" fil
 const iconCount             = '<svg width="16" height="11" viewBox="0 0 16 11" fill="none" xmlns="http://www.w3.org/2000/svg"><path d="M15.0334 0V11H12.0334V10H14.0667L14.0334 1H12L12.0334 0H15.0334Z" fill="white"/><path d="M0 11V0H3V1H0.966639V10H3V11H0Z" fill="white"/><path d="M7.5 11C6.67157 11 6 10.3284 6 9.5C6 8.67157 6.67157 8 7.5 8C8.32843 8 9 8.67157 9 9.5C9 10.3284 8.32843 11 7.5 11Z" fill="white"/><path d="M7.5 7C6.67157 7 6 6.32843 6 5.5C6 4.67157 6.67157 4 7.5 4C8.32843 4 9 4.67157 9 5.5C9 6.32843 8.32843 7 7.5 7Z" fill="white"/><path d="M7.5 3C6.67157 3 6 2.32843 6 1.5C6 0.671573 6.67157 0 7.5 0C8.32843 0 9 0.671573 9 1.5C9 2.32843 8.32843 3 7.5 3Z" fill="white"/></svg>';
 const iconRepeat            = '<svg width="16" height="16" viewBox="0 0 16 16" fill="none" xmlns="http://www.w3.org/2000/svg"><circle r="1.5" transform="matrix(-1 0 0 1 8.5 13.6003)" fill="white"/><path d="M12.996 11.5078C14.0482 10.4921 14.7227 9.16438 14.9093 7.74161C15.0958 6.31883 14.7834 4.88515 14.023 3.67489C13.2626 2.46463 12.0993 1.54937 10.7232 1.0787C9.34705 0.608019 7.83949 0.609769 6.44689 1.08365C5.05429 1.55754 3.85902 2.47553 3.05643 3.6876C2.25383 4.89967 1.89138 6.33413 2.02832 7.75654C2.12729 8.78463 2.48292 9.76246 3.05643 10.6082" stroke="white"/><rect width="4.97369" height="1" transform="matrix(-1 0 0 1 5.00183 10.0282)" fill="white"/><rect width="4.01843" height="1" transform="matrix(1.19249e-08 -1 -1 -1.19249e-08 5.00183 11.0282)" fill="white"/></svg>';
 const iconForEach           = '<svg width="15" height="11" viewBox="0 0 15 11" fill="none" xmlns="http://www.w3.org/2000/svg"><rect x="6" y="9" width="9" height="1" fill="white"/><circle cx="1.5" cy="9.5" r="1.5" fill="white"/><circle cx="1.5" cy="5.5" r="1.5" fill="white"/><circle cx="1.5" cy="1.5" r="1.5" fill="white"/></svg>';
-const iconCache             = '<svg width="15" height="11" viewBox="0 0 15 11" fill="none" xmlns="http://www.w3.org/2000/svg"><path d="M2.30351 1C1.68386 1.65376 1.20533 2.44219 0.906274 3.31653C0.435594 4.69266 0.437344 6.20022 0.911224 7.59282C1.21856 8.49597 1.71269 9.31613 2.35268 10" stroke="white"/><path d="M12.7415 1C13.3612 1.65376 13.8397 2.44219 14.1387 3.31653C14.6094 4.69266 14.6077 6.20022 14.1338 7.59282C13.8265 8.49597 13.3323 9.31613 12.6923 10" stroke="white"/><circle r="1.5" transform="matrix(-1 0 0 1 7.5 5.5)" fill="white"/></svg>';
-const iconCopy              = '<svg width="17" height="5" viewBox="0 0 17 5" fill="none" xmlns="http://www.w3.org/2000/svg"><path d="M15 0H6V1H15V0Z" fill="white"/><path d="M15 4H6V5H15V4Z" fill="white"/><path d="M1.5 4C2.32843 4 3 3.32843 3 2.5C3 1.67157 2.32843 1 1.5 1C0.671573 1 0 1.67157 0 2.5C0 3.32843 0.671573 4 1.5 4Z" fill="white"/></svg>';
-const iconFreeze            = '<svg width="15" height="11" viewBox="0 0 15 11" fill="none" xmlns="http://www.w3.org/2000/svg"><path d="M2.30354 1C1.68389 1.65376 1.20536 2.44219 0.906305 3.31653C0.435625 4.69266 0.437375 6.20022 0.911255 7.59282C1.21859 8.49597 1.71272 9.31613 2.35271 10" stroke="white"/><path d="M12.7415 1C13.3612 1.65376 13.8397 2.44219 14.1387 3.31653C14.6094 4.69266 14.6077 6.20022 14.1338 7.59282C13.8265 8.49597 13.3323 9.31613 12.6923 10" stroke="white"/><circle cx="1.5" cy="1.5" r="1.5" transform="matrix(-1 0 0 1 9 4)" fill="white"/></svg>';
+const iconCache             = '<svg width="15" height="11" viewBox="0 0 15 11" fill="none" xmlns="http://www.w3.org/2000/svg"><path d="M2.30354 1C1.68389 1.65376 1.20536 2.44219 0.906305 3.31653C0.435625 4.69266 0.437375 6.20022 0.911255 7.59282C1.21859 8.49597 1.71272 9.31613 2.35271 10" stroke="white"/><path d="M12.7415 1C13.3612 1.65376 13.8397 2.44219 14.1387 3.31653C14.6094 4.69266 14.6077 6.20022 14.1338 7.59282C13.8265 8.49597 13.3323 9.31613 12.6923 10" stroke="white"/><circle cx="1.5" cy="1.5" r="1.5" transform="matrix(-1 0 0 1 9 4)" fill="white"/></svg>';
+const iconFreeze            = '<svg width="16" height="11" viewBox="0 0 16 11" fill="none" xmlns="http://www.w3.org/2000/svg"><circle cx="1.5" cy="1.5" r="1.5" transform="matrix(-1 0 0 1 9 4)" fill="white"/><path d="M15.0334 0V11H12.0334V10H14.0667L14.0334 1H12L12.0334 0H15.0334Z" fill="white"/><path d="M0 11V0H3V1H0.966639V10H3V11H0Z" fill="white"/></svg>';
 const iconStart             = '<svg width="19" height="8" viewBox="-1 0 19 8" fill="none" xmlns="http://www.w3.org/2000/svg"><rect width="4.97369" height="1" transform="matrix(-0.707107 0.707107 0.707107 0.707107 15.53 2.86005)" fill="white"/><rect x="7.00006" y="3" width="8" height="1" fill="white"/><circle cx="1.5" cy="3.5" r="1.5" fill="white"/><rect width="5" height="1" transform="matrix(-0.707107 -0.707107 -0.707107 0.707107 16.2427 3.53552)" fill="white"/></svg>';
 const iconIfElse            = '<svg width="17" height="7" viewBox="-1 0 17 7" fill="none" xmlns="http://www.w3.org/2000/svg"><rect y="1" width="9" height="1" fill="white"/><rect y="5" width="9" height="1" fill="white"/><path d="M13.157 4.8687V4.75547C13.1591 4.36695 13.1911 4.05725 13.253 3.82636C13.317 3.59546 13.4099 3.40898 13.5318 3.26689C13.6536 3.1248 13.8002 2.99604 13.9715 2.88059C14.0995 2.79179 14.2141 2.69965 14.3153 2.60419C14.4165 2.50872 14.497 2.40327 14.5569 2.28782C14.6167 2.17016 14.6467 2.03917 14.6467 1.89486C14.6467 1.74167 14.6126 1.60736 14.5445 1.49191C14.4763 1.37647 14.3845 1.28766 14.2688 1.2255C14.1553 1.16334 14.0293 1.13225 13.891 1.13225C13.7568 1.13225 13.6298 1.16445 13.5101 1.22883C13.3903 1.29099 13.2922 1.38424 13.2159 1.50856C13.1395 1.63067 13.0982 1.78275 13.092 1.9648H11.8284C11.8387 1.52077 11.9378 1.15446 12.1257 0.865842C12.3136 0.575008 12.5624 0.358548 12.8721 0.21646C13.1818 0.0721535 13.5235 0 13.8972 0C14.3081 0 14.6714 0.0732636 14.9873 0.219791C15.3032 0.364098 15.551 0.573898 15.7306 0.849191C15.9102 1.12448 16.0001 1.45639 16.0001 1.84491C16.0001 2.10466 15.9598 2.33555 15.8793 2.53758C15.8008 2.73739 15.6904 2.915 15.5479 3.07041C15.4054 3.2236 15.2372 3.36235 15.0431 3.48668C14.88 3.59102 14.7458 3.69981 14.6405 3.81304C14.5372 3.92626 14.4598 4.05725 14.4082 4.20599C14.3587 4.35474 14.3328 4.5379 14.3308 4.75547V4.8687H13.157ZM13.7702 6.9C13.5638 6.9 13.3872 6.8223 13.2406 6.66689C13.0961 6.50926 13.0249 6.32055 13.0269 6.10076C13.0249 5.88319 13.0961 5.6967 13.2406 5.54129C13.3872 5.38589 13.5638 5.30818 13.7702 5.30818C13.9664 5.30818 14.1388 5.38589 14.2874 5.54129C14.4361 5.6967 14.5114 5.88319 14.5135 6.10076C14.5114 6.24729 14.4753 6.38161 14.4051 6.50371C14.337 6.6236 14.2472 6.72017 14.1357 6.79344C14.0242 6.86448 13.9024 6.9 13.7702 6.9Z" fill="white"/></svg>';
 const iconTimer             = '<svg width="13" height="17" viewBox="0 0 13 17" fill="none" xmlns="http://www.w3.org/2000/svg"><path fill-rule="evenodd" clip-rule="evenodd" d="M9 0H4L4 2H5.5V4.07645C2.38491 4.55745 0 7.25021 0 10.5C0 14.0899 2.91015 17 6.5 17C10.0899 17 13 14.0899 13 10.5C13 7.25021 10.6151 4.55745 7.5 4.07645V2L9 2V0ZM6.5 5C3.46243 5 1 7.46243 1 10.5C1 13.5376 3.46243 16 6.5 16C9.53757 16 12 13.5376 12 10.5C12 7.46243 9.53757 5 6.5 5Z" fill="white"/><path d="M6.65821 9.51244L9.70667 6.46399L10.6001 7.35747L7.49915 10.4585C7.49972 10.4722 7.5 10.4861 7.5 10.5C7.5 11.0523 7.05229 11.5 6.5 11.5C5.94771 11.5 5.5 11.0523 5.5 10.5C5.5 9.94771 5.94771 9.5 6.5 9.5C6.55384 9.5 6.60668 9.50425 6.65821 9.51244Z" fill="white"/></svg>';
@@ -79974,7 +79797,6 @@ var menuItemRepeat;
 var menuFlowSep4;
 var menuItemTimer;
 var menuItemCache;
-var menuItemCopy;
 var menuItemFreeze;
 
 var menuItemArray;
@@ -80231,19 +80053,18 @@ function initGeneratorMenus()
         menuFlowSep1          = new MenuItem('',                  {separator: true}),     
         menuItemItems         = new MenuItem('Items',             {icon: iconItems,      callback: e => actionManager.do(getCreateNodeAction(ITEMS,      btnNumber.div, getCreateOptions(e)))}),
         menuItemCount         = new MenuItem('Count',             {icon: iconCount,      callback: e => actionManager.do(getCreateNodeAction(LIST_COUNT, btnNumber.div, getCreateOptions(e)))}),
-        menuFlowSep2          = new MenuItem('',                  {separator: true}),
         menuItemSelect        = new MenuItem('Select',            {icon: iconSelect,     callback: e => actionManager.do(getCreateNodeAction(SELECT,     btnNumber.div, getCreateOptions(e)))}),
         menuItemIfElse        = new MenuItem('I&hairsp;f / else', {icon: iconIfElse,     callback: e => actionManager.do(getCreateNodeAction(IF_ELSE,    btnNumber.div, getCreateOptions(e))), disambiguate: true}),
-        menuItemCopy          = new MenuItem('Copy',              {icon: iconCopy,       callback: e => actionManager.do(getCreateNodeAction(COPY,       btnNumber.div, getCreateOptions(e)))}),
+        menuFlowSep2          = new MenuItem('',                  {separator: true}),
+        menuItemCache         = new MenuItem('Cache',             {icon: iconCache,       callback: e => actionManager.do(getCreateNodeAction(CACHE,     btnNumber.div, getCreateOptions(e)))}),
+        menuItemArray         = new MenuItem('List . . .',        {icon: iconList,        callback: e => actionManager.do(getCreateNodeAction(DEFINE,      btnNumber.div, getCreateOptions(e)))}),
         menuFlowSep3          = new MenuItem('',                  {separator: true}),
         menuItemStart         = new MenuItem('Start . . .',       {icon: iconStart,      callback: e => actionManager.do(getCreateNodeAction(START,      btnNumber.div, getCreateOptions(e)))}),
-        menuItemFreeze        = new MenuItem('Freeze . . .',         {icon: iconFreeze,     callback: e => actionManager.do(getCreateNodeAction(FREEZE,     btnNumber.div, getCreateOptions(e)))}),
+        menuItemFreeze        = new MenuItem('Freeze . . .',      {icon: iconFreeze,     callback: e => actionManager.do(getCreateNodeAction(FREEZE,     btnNumber.div, getCreateOptions(e)))}),
         menuFlowSep4          = new MenuItem('',                  {separator: true}),
         menuItemRepeat        = new MenuItem('. . . Repeat',      {icon: iconRepeat,     callback: e => actionManager.do(getCreateNodeAction(REPEAT,     btnNumber.div, getCreateOptions(e)))}),
                                 new MenuItem('',                  {separator: true}),
         menuItemTimer         = new MenuItem('Timer ',            {icon: iconTimer,      callback: e => actionManager.do(getCreateNodeAction(TIMER,      btnNumber.div, getCreateOptions(e)))})]);
-     // menuFlowSep3          = new MenuItem('',                  {separator: true}),
-     // menuItemCache         = new MenuItem('Cache',             {icon: iconCache,  callback: e => actionManager.do(getCreateNodeAction(CACHE,        btnNumber.div, getCreateOptions(e)))}),
     
 
     menuMath = new Menu('Math', true, false);
@@ -80296,7 +80117,6 @@ function initGeneratorMenus()
 
     menuSets = new Menu('Sets...', true, false);
     menuSets.addItems([
-        menuItemArray      = new MenuItem('List . . .',       {icon: iconArray,       callback: e => actionManager.do(getCreateNodeAction(NUMBER_DEFINE,      btnNumber.div, getCreateOptions(e)))}),
         menuItemSequence   = new MenuItem('Sequence . . .',   {icon: iconSequence,    callback: e => actionManager.do(getCreateNodeAction(NUMBER_SEQUENCE,    btnNumber.div, getCreateOptions(e)))}),
         menuItemDistribute = new MenuItem('Range . . .',      {icon: iconDistribute,  callback: e => actionManager.do(getCreateNodeAction(NUMBER_DISTRIBUTE,  btnNumber.div, getCreateOptions(e)))}),
                              new MenuItem('',                 {separator: true}),
@@ -80310,7 +80130,7 @@ function initGeneratorMenus()
                              new MenuItem('Number',           {icon: iconNumber,      callback: e => actionManager.do(getCreateNodeAction(NUMBER,             btnNumber.div, getCreateOptions(e)))}),
                              new MenuItem('',                 {separator: true}),
                              new MenuItem('Basic',            {icon: iconRound, childMenu: menuFunctions}),
-                             new MenuItem('Arithmetic',       {icon: iconMath,        /*childMenu: menuMath,     */ callback: e => actionManager.do(getCreateNodeAction(NUMBER_MATH,      btnNumber.div, getCreateOptions(e)))}),
+                             new MenuItem('Math',             {icon: iconMath,        /*childMenu: menuMath,     */ callback: e => actionManager.do(getCreateNodeAction(NUMBER_MATH,      btnNumber.div, getCreateOptions(e)))}),
                              new MenuItem('Boolean',          {icon: iconBoolean,     /*childMenu: menuBoolean,  */ callback: e => actionManager.do(getCreateNodeAction(NUMBER_BOOLEAN,   btnNumber.div, getCreateOptions(e)))}),
                              new MenuItem('Conditional',      {icon: iconCondition,   /*childMenu: menuCondition,*/ callback: e => actionManager.do(getCreateNodeAction(NUMBER_CONDITION, btnNumber.div, getCreateOptions(e)))}),
                              new MenuItem('Trigonometric',    {icon: iconSine,        /*childMenu: menuTrig,     */ callback: e => actionManager.do(getCreateNodeAction(NUMBER_TRIG,      btnNumber.div, getCreateOptions(e)))}),
@@ -95567,164 +95387,12 @@ extends OperatorBase
 class   OpCache
 extends OperatorBase
 {
-    paramNumber;
-    paramColor;
-
-    //headerColor = null;
-
-
     constructor()
     {
-        super(CACHE, 'cache', 'cache');
-
-        this.cached = true;
-        
-
-        this.addInput(new Input([ANY_VALUE]));
-        //this.addOutput(new Output([], this.output_genRequest));
-
-
-        this.paramNumber = new NumberParam('value', '', false, false, true);
-        this.paramColor  = new  ColorParam('value', '', false, false, true);
-
-        this.paramNumber.volatile = true;
-        this.paramColor .volatile = true;
-
-        
-        this.inputs[0].addEventListener('connect',    () => OpCache_onConnectInput(this));
-        this.inputs[0].addEventListener('disconnect', () => OpCache_onDisconnectInput(this));
-    }
-    
-    
-
-    isCached()
-    {
-        return true;
-    }
-
-
-
-    canAutoConnectFrom(output)
-    {
-        return true;
-    }
-
-    
-
-    genRequest(gen)
-    {
-        // 'this' is the output
-
-        gen.scope.push({
-            nodeId:  this.id, 
-            paramId: NULL });
-
-        const [request, ignore] = this.genRequestStart(gen);
-        if (ignore) return request;
-
-
-        const input = this.inputs[0];
-
-
-        request.push(input.connected ? 1 : 0);
-
-        if (input.connected)
-            request.push(...pushInputOrParam(input, gen));
-
-        
-        gen.scope.pop();
-        pushUnique(gen.passedNodes, this);
-
-        return request;
-    }
-
-
-
-    updateValues(requestId, actionId, updateParamId, paramIds, values) // virtual
-    {
-        const val = values[paramIds.findIndex(id => id == 'value')];
-
-        // this.headerColor =
-        //     val && val.type == COLOR_VALUE
-        //     ? rgb_a(val.toRgb())
-        //     : null;
-
-        if (!isEmpty(this.params)) 
-        {
-            this.params[0].setValue(val);
-            this.params[0].enableControlText(false);
-        }
-    }
-
-
-
-    // getHeaderColors()
-    // {
-    //     const colors = super.getHeaderColors();
-
-    //     const type = 
-    //         this.inputs[0].connected 
-    //         ? this.inputs[0].connectedOutput.node.type 
-    //         : this.type;
-
-    //     // colors.back = 
-    //     //     this.headerColor
-    //     //     ? this.headerColor
-    //     //     : this.inert
-    //     //     ? rgb_a(rgbDocumentBody, 0.95)
-    //     //     : rgb_a(rgbFromType(type, this.active), 0.95);
-
-    //     // colors.border = rgb_a(rgbFromType(this.type, this.active), 0.95);
-
-    //     colors.text    = isDark(colors.back) ? [1, 1, 1, 1] : [0, 0, 0, 1]; 
-
-    //     colors.input   = this.active ? rgb_a(colors.text, 0.4)  : rgb_a(rgbSaturateHsv(rgbFromType(type, true), 0.5), 0.8);
-    //     colors.output  = this.active ? rgb_a(colors.text, 0.35) : rgb_a(rgbSaturateHsv(rgbFromType(type, true), 0.5), 0.7);
-    //     colors.wire    = rgbFromType(type, true);
-
-    //     return colors;
-    // }
-
-
-
-    paramsToJson(nTab = 0)
-    {
-        return '';
-    }
-}
-
-
-
-function OpCache_onConnectInput(node)
-{
-    const inOutput = node.inputs[0].connectedOutput;
-
-    // node.outputs[0].types = [...inOutput.types];
-
-         if (inOutput.supportsTypes(NUMBER_TYPES)) node.addParam(node.paramNumber);
-    else if (inOutput.supportsTypes(  TEXT_TYPES)) node.addParam(node.paramText  );
-    else if (inOutput.supportsTypes( COLOR_TYPES)) node.addParam(node.paramColor );
-}
-
-
-
-function OpCache_onDisconnectInput(node)
-{
-    // node.outputs[0].types = [];
-    
-    node.removeAllParams();
-}
-
-
-class   OpCopy
-extends OperatorBase
-{
-    constructor()
-    {
-        super(COPY, 'copy', 'copy', iconCopy);
+        super(CACHE, 'cache', 'cache', iconCache);
 
         this.canDisable  = true;
-        this.iconOffsetY = -1;
+        this.iconOffsetY = 1;
 
 
         this.addInput (new Input(ALL_VALUES));
@@ -97001,22 +96669,22 @@ extends OperatorBase
 
     constructor()
     {
-        super(NUMBER_DEFINE, 'list', 'list', iconArray);
+        super(DEFINE, 'list', 'list', iconList);
 
         this.cached         = false;
-        this.iconOffsetY    = 1;
+        //this.iconOffsetY    = 1;
         this.variableInputs = true;
 
         
         this.addNewInput();
-        this.addOutput(new Output([NUMBER_VALUE], this.output_genRequest));
+        this.addOutput(new Output([ANY_VALUE], this.output_genRequest));
     }
 
 
 
     addNewInput()
     {
-        const newInput = new Input([NUMBER_VALUE]);
+        const newInput = new Input(ALL_VALUES);
         newInput.isNew = true;
 
         newInput.addEventListener('connect',    e => { onVariableConnectInput(e.detail.input); e.detail.input.isNew = false; });
@@ -97054,6 +96722,41 @@ extends OperatorBase
         pushUnique(gen.passedNodes, this.node);
 
         return request;
+    }
+
+
+
+    updateValues(requestId, actionId, updateParamId, paramIds, values)
+    {
+        super.updateValues(requestId, actionId, updateParamId, paramIds, values);
+
+        const type = values[paramIds.findIndex(id => id == 'type')];
+
+        this.outputs[0].types = [type.value];
+    }
+
+
+
+    getHeaderColors(options = {})
+    {
+        const colors = super.getHeaderColors(options);
+
+        
+        const type = this.outputs[0].types[0];
+
+
+        // const back = rgb_a(rgbFromType(type, this.active), 0.95);
+
+        // colors.back = back;
+
+
+        colors.text   = isDark(colors.back) ? [1, 1, 1, 1] : [0, 0, 0, 1]; 
+
+        colors.input  = this.active ? rgb_a(colors.text, 0.4)  : rgb_a(rgbSaturateHsv(rgbFromType(type, true), 0.5), 0.8);
+        colors.output = this.active ? rgb_a(colors.text, 0.35) : rgb_a(rgbSaturateHsv(rgbFromType(type, true), 0.5), 0.7);
+        colors.wire   = rgbFromType(type, true);
+
+        return colors;
     }
 }
 
@@ -97931,7 +97634,7 @@ extends OperatorWithValue
 
     constructor()
     {
-        super(NUMBER_MATH, 'arith', 'arithmetic', '');
+        super(NUMBER_MATH, 'math', 'math', '');
 
         this.iconOffsetY      = -1;
 
@@ -116259,7 +115962,6 @@ function createNode(nodeType, creatingButton = null, createdNodeId = -1, options
         case START:                   node = new OpStart();             break;
         case REPEAT:                  node = new OpRepeat();            break;
         case CACHE:                   node = new OpCache();             break;
-        case COPY:                    node = new OpCopy();              break;
         case FREEZE:                  node = new OpFreeze();            break;
         case TIMER:                   node = new OpTimer();             break;
 
@@ -116272,7 +115974,7 @@ function createNode(nodeType, creatingButton = null, createdNodeId = -1, options
         case NUMBER_CONSTANT:         node = new OpConstant();          break;
         case NUMBER_DATETIME:         node = new OpDateTime();          break;
         
-        case NUMBER_DEFINE:           node = new OpDefine();            break;
+        case DEFINE:           node = new OpDefine();            break;
         case NUMBER_DISTRIBUTE:       node = new OpDistribute();        break;
         case NUMBER_SEQUENCE:         node = new OpSequence();          break;
         case NUMBER_RANDOM:           node = new OpRandom();            break;

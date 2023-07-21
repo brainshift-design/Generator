@@ -56,7 +56,7 @@ extends GOperator
             
             
             // first copy the input objects
-            // to display when list the active node
+            // to display when list is the active node
 
             if (   this.options.enabled
                 && this.inputs[i].value)

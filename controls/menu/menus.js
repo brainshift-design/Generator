@@ -129,7 +129,6 @@ var menuItemRepeat;
 var menuFlowSep4;
 var menuItemTimer;
 var menuItemCache;
-var menuItemCopy;
 var menuItemFreeze;
 
 var menuItemArray;
@@ -386,19 +385,18 @@ function initGeneratorMenus()
         menuFlowSep1          = new MenuItem('',                  {separator: true}),     
         menuItemItems         = new MenuItem('Items',             {icon: iconItems,      callback: e => actionManager.do(getCreateNodeAction(ITEMS,      btnNumber.div, getCreateOptions(e)))}),
         menuItemCount         = new MenuItem('Count',             {icon: iconCount,      callback: e => actionManager.do(getCreateNodeAction(LIST_COUNT, btnNumber.div, getCreateOptions(e)))}),
-        menuFlowSep2          = new MenuItem('',                  {separator: true}),
         menuItemSelect        = new MenuItem('Select',            {icon: iconSelect,     callback: e => actionManager.do(getCreateNodeAction(SELECT,     btnNumber.div, getCreateOptions(e)))}),
         menuItemIfElse        = new MenuItem('I&hairsp;f / else', {icon: iconIfElse,     callback: e => actionManager.do(getCreateNodeAction(IF_ELSE,    btnNumber.div, getCreateOptions(e))), disambiguate: true}),
-        menuItemCopy          = new MenuItem('Copy',              {icon: iconCopy,       callback: e => actionManager.do(getCreateNodeAction(COPY,       btnNumber.div, getCreateOptions(e)))}),
+        menuFlowSep2          = new MenuItem('',                  {separator: true}),
+        menuItemCache         = new MenuItem('Cache',             {icon: iconCache,       callback: e => actionManager.do(getCreateNodeAction(CACHE,     btnNumber.div, getCreateOptions(e)))}),
+        menuItemArray         = new MenuItem('List . . .',        {icon: iconList,        callback: e => actionManager.do(getCreateNodeAction(DEFINE,      btnNumber.div, getCreateOptions(e)))}),
         menuFlowSep3          = new MenuItem('',                  {separator: true}),
         menuItemStart         = new MenuItem('Start . . .',       {icon: iconStart,      callback: e => actionManager.do(getCreateNodeAction(START,      btnNumber.div, getCreateOptions(e)))}),
-        menuItemFreeze        = new MenuItem('Freeze . . .',         {icon: iconFreeze,     callback: e => actionManager.do(getCreateNodeAction(FREEZE,     btnNumber.div, getCreateOptions(e)))}),
+        menuItemFreeze        = new MenuItem('Freeze . . .',      {icon: iconFreeze,     callback: e => actionManager.do(getCreateNodeAction(FREEZE,     btnNumber.div, getCreateOptions(e)))}),
         menuFlowSep4          = new MenuItem('',                  {separator: true}),
         menuItemRepeat        = new MenuItem('. . . Repeat',      {icon: iconRepeat,     callback: e => actionManager.do(getCreateNodeAction(REPEAT,     btnNumber.div, getCreateOptions(e)))}),
                                 new MenuItem('',                  {separator: true}),
         menuItemTimer         = new MenuItem('Timer ',            {icon: iconTimer,      callback: e => actionManager.do(getCreateNodeAction(TIMER,      btnNumber.div, getCreateOptions(e)))})]);
-     // menuFlowSep3          = new MenuItem('',                  {separator: true}),
-     // menuItemCache         = new MenuItem('Cache',             {icon: iconCache,  callback: e => actionManager.do(getCreateNodeAction(CACHE,        btnNumber.div, getCreateOptions(e)))}),
     
 
     menuMath = new Menu('Math', true, false);
@@ -451,7 +449,6 @@ function initGeneratorMenus()
 
     menuSets = new Menu('Sets...', true, false);
     menuSets.addItems([
-        menuItemArray      = new MenuItem('List . . .',       {icon: iconArray,       callback: e => actionManager.do(getCreateNodeAction(NUMBER_DEFINE,      btnNumber.div, getCreateOptions(e)))}),
         menuItemSequence   = new MenuItem('Sequence . . .',   {icon: iconSequence,    callback: e => actionManager.do(getCreateNodeAction(NUMBER_SEQUENCE,    btnNumber.div, getCreateOptions(e)))}),
         menuItemDistribute = new MenuItem('Range . . .',      {icon: iconDistribute,  callback: e => actionManager.do(getCreateNodeAction(NUMBER_DISTRIBUTE,  btnNumber.div, getCreateOptions(e)))}),
                              new MenuItem('',                 {separator: true}),
@@ -465,7 +462,7 @@ function initGeneratorMenus()
                              new MenuItem('Number',           {icon: iconNumber,      callback: e => actionManager.do(getCreateNodeAction(NUMBER,             btnNumber.div, getCreateOptions(e)))}),
                              new MenuItem('',                 {separator: true}),
                              new MenuItem('Basic',            {icon: iconRound, childMenu: menuFunctions}),
-                             new MenuItem('Arithmetic',       {icon: iconMath,        /*childMenu: menuMath,     */ callback: e => actionManager.do(getCreateNodeAction(NUMBER_MATH,      btnNumber.div, getCreateOptions(e)))}),
+                             new MenuItem('Math',             {icon: iconMath,        /*childMenu: menuMath,     */ callback: e => actionManager.do(getCreateNodeAction(NUMBER_MATH,      btnNumber.div, getCreateOptions(e)))}),
                              new MenuItem('Boolean',          {icon: iconBoolean,     /*childMenu: menuBoolean,  */ callback: e => actionManager.do(getCreateNodeAction(NUMBER_BOOLEAN,   btnNumber.div, getCreateOptions(e)))}),
                              new MenuItem('Conditional',      {icon: iconCondition,   /*childMenu: menuCondition,*/ callback: e => actionManager.do(getCreateNodeAction(NUMBER_CONDITION, btnNumber.div, getCreateOptions(e)))}),
                              new MenuItem('Trigonometric',    {icon: iconSine,        /*childMenu: menuTrig,     */ callback: e => actionManager.do(getCreateNodeAction(NUMBER_TRIG,      btnNumber.div, getCreateOptions(e)))}),

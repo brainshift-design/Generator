@@ -119,7 +119,6 @@ function genParse(parse, inParam = true)
     else if (parse.next == START                  ) result = genParseStart            (parse);
     else if (parse.next == REPEAT                 ) result = genParseRepeat           (parse);
     else if (parse.next == CACHE                  ) result = genParseCache            (parse);
-    else if (parse.next == COPY                   ) result = genParseCopy             (parse);
     else if (parse.next == FREEZE                 ) result = genParseFreeze           (parse);
     else if (parse.next == TIMER                  ) result = genParseTimer            (parse);
      
@@ -136,7 +135,7 @@ function genParse(parse, inParam = true)
     else if (parse.next == NUMBER_PROBABILITY     ) result = genParseProbability      (parse);
     else if (parse.next == NUMBER_CONSTANT        ) result = genParseConstant         (parse);
     else if (parse.next == NUMBER_DATETIME        ) result = genParseDateTime         (parse);
-    else if (parse.next == NUMBER_DEFINE          ) result = genParseDefine            (parse);
+    else if (parse.next == DEFINE          ) result = genParseDefine            (parse);
     else if (parse.next == NUMBER_DISTRIBUTE      ) result = genParseDistribute       (parse);
     else if (parse.next == NUMBER_SEQUENCE        ) result = genParseSequence         (parse);
     else if (parse.next == NUMBER_INTERPOLATE     ) result = genParseInterpolate      (parse);

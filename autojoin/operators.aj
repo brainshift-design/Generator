@@ -53,7 +53,6 @@
 ../operators/flow/OpStart.js
 ../operators/flow/OpRepeat.js
 ../operators/flow/OpCache.js
-../operators/flow/OpCopy.js
 ../operators/flow/OpFreeze.js
 ../operators/flow/OpTimer.js
 

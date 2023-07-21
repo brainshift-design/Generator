@@ -1,39 +1,20 @@
 class   OpCache
 extends OperatorBase
 {
-    paramNumber;
-    paramColor;
-
-    //headerColor = null;
-
-
     constructor()
     {
-        super(CACHE, 'cache', 'cache');
+        super(CACHE, 'cache', 'cache', iconCache);
 
-        this.cached = true;
-        
-
-        this.addInput(new Input([ANY_VALUE]));
-        //this.addOutput(new Output([], this.output_genRequest));
+        this.canDisable  = true;
+        this.iconOffsetY = 1;
 
 
-        this.paramNumber = new NumberParam('value', '', false, false, true);
-        this.paramColor  = new  ColorParam('value', '', false, false, true);
+        this.addInput (new Input(ALL_VALUES));
+        this.addOutput(new Output([ANY_VALUE], this.output_genRequest));
 
-        this.paramNumber.volatile = true;
-        this.paramColor .volatile = true;
 
-        
-        this.inputs[0].addEventListener('connect',    () => OpCache_onConnectInput(this));
-        this.inputs[0].addEventListener('disconnect', () => OpCache_onDisconnectInput(this));
-    }
-    
-    
-
-    isCached()
-    {
-        return true;
+        this.inputs[0].addEventListener('connect',    () => OpCopy_onConnectInput(this));
+        this.inputs[0].addEventListener('disconnect', () => OpCopy_onDisconnectInput(this));
     }
 
 
@@ -45,19 +26,19 @@ extends OperatorBase
 
     
 
-    genRequest(gen)
+    output_genRequest(gen)
     {
         // 'this' is the output
 
         gen.scope.push({
-            nodeId:  this.id, 
+            nodeId:  this.node.id, 
             paramId: NULL });
 
-        const [request, ignore] = this.genRequestStart(gen);
+        const [request, ignore] = this.node.genRequestStart(gen);
         if (ignore) return request;
 
 
-        const input = this.inputs[0];
+        const input = this.node.inputs[0];
 
 
         request.push(input.connected ? 1 : 0);
@@ -67,84 +48,50 @@ extends OperatorBase
 
         
         gen.scope.pop();
-        pushUnique(gen.passedNodes, this);
+        pushUnique(gen.passedNodes, this.node);
 
         return request;
     }
 
 
 
-    updateValues(requestId, actionId, updateParamId, paramIds, values) // virtual
+    getHeaderColors(options = {})
     {
-        const val = values[paramIds.findIndex(id => id == 'value')];
+        const colors = super.getHeaderColors(options);
 
-        // this.headerColor =
-        //     val && val.type == COLOR_VALUE
-        //     ? rgb_a(val.toRgb())
-        //     : null;
+        const type = 
+            this.inputs[0].connected 
+            ? this.inputs[0].connectedOutput.node.type 
+            : this.type;
 
-        if (!isEmpty(this.params)) 
-        {
-            this.params[0].setValue(val);
-            this.params[0].enableControlText(false);
-        }
-    }
-
-
-
-    // getHeaderColors()
-    // {
-    //     const colors = super.getHeaderColors();
-
-    //     const type = 
-    //         this.inputs[0].connected 
-    //         ? this.inputs[0].connectedOutput.node.type 
-    //         : this.type;
-
-    //     // colors.back = 
-    //     //     this.headerColor
-    //     //     ? this.headerColor
-    //     //     : this.inert
-    //     //     ? rgb_a(rgbDocumentBody, 0.95)
-    //     //     : rgb_a(rgbFromType(type, this.active), 0.95);
-
-    //     // colors.border = rgb_a(rgbFromType(this.type, this.active), 0.95);
-
-    //     colors.text    = isDark(colors.back) ? [1, 1, 1, 1] : [0, 0, 0, 1]; 
-
-    //     colors.input   = this.active ? rgb_a(colors.text, 0.4)  : rgb_a(rgbSaturateHsv(rgbFromType(type, true), 0.5), 0.8);
-    //     colors.output  = this.active ? rgb_a(colors.text, 0.35) : rgb_a(rgbSaturateHsv(rgbFromType(type, true), 0.5), 0.7);
-    //     colors.wire    = rgbFromType(type, true);
-
-    //     return colors;
-    // }
+        // colors.back = 
+        //     this.headerColor
+        //     ? this.headerColor
+        //     : this.inert
+        //     ? rgb_a(rgbDocumentBody, 0.95)
+        //     : rgb_a(rgbFromType(type, this.active), 0.95);
 
 
+        colors.text   = isDark(colors.back) ? [1, 1, 1, 1] : [0, 0, 0, 1]; 
 
-    paramsToJson(nTab = 0)
-    {
-        return '';
+        colors.input  = this.active ? rgb_a(colors.text, 0.4)  : rgb_a(rgbSaturateHsv(rgbFromType(type, true), 0.5), 0.8);
+        colors.output = this.active ? rgb_a(colors.text, 0.35) : rgb_a(rgbSaturateHsv(rgbFromType(type, true), 0.5), 0.7);
+        colors.wire   = rgbFromType(type, true);
+
+        return colors;
     }
 }
 
 
 
-function OpCache_onConnectInput(node)
+function OpCopy_onConnectInput(node)
 {
-    const inOutput = node.inputs[0].connectedOutput;
-
-    // node.outputs[0].types = [...inOutput.types];
-
-         if (inOutput.supportsTypes(NUMBER_TYPES)) node.addParam(node.paramNumber);
-    else if (inOutput.supportsTypes(  TEXT_TYPES)) node.addParam(node.paramText  );
-    else if (inOutput.supportsTypes( COLOR_TYPES)) node.addParam(node.paramColor );
+    node.outputs[0].types = [...node.inputs[0].connectedOutput.types];
 }
 
 
 
-function OpCache_onDisconnectInput(node)
+function OpCopy_onDisconnectInput(node)
 {
-    // node.outputs[0].types = [];
-    
-    node.removeAllParams();
+    node.outputs[0].types = [ANY_VALUE];
 }

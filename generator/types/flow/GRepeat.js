@@ -258,7 +258,7 @@ extends GOperator
 function assertVolatile(node)
 {
     consoleAssert(
-           node.loop.type == NUMBER_DEFINE
+           node.loop.type == DEFINE
         || node.loop.type == NUMBER_DISTRIBUTE
         || node.loop.type == NUMBER_SEQUENCE
         || node.loop.type == NUMBER_RANDOM

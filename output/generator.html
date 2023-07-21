@@ -4541,8 +4541,8 @@ const LIST_COUNT              = 'COUNT';
 const IF_ELSE                 = 'IF';
 const START                   = 'START';
 const REPEAT                  = 'REPT';
+const DEFINE                  = 'DEFINE';  
 const CACHE                   = 'CACHE';
-const COPY                    = 'COPY';
 const FREEZE                  = 'FRZ';
 const TIMER                   = 'TIMER';
 
@@ -4584,8 +4584,8 @@ const FLOW_TYPES =
     START,
     REPEAT,
     //FOREACH,
+    DEFINE,
     CACHE,
-    COPY,
     FREEZE,
     TIMER
 ];
@@ -4600,7 +4600,6 @@ const NUMBER_MINMAX           = 'MINMAX';
 const NUMBER_LIMITS           = 'LIM';   
 const NUMBER_CONSTANT         = 'CONST';  
 const NUMBER_DATETIME         = 'DATE';  
-const NUMBER_DEFINE           = 'DEFINE';  
 const NUMBER_DISTRIBUTE       = 'DISTR';  
 const NUMBER_SEQUENCE         = 'SEQ';  
 const NUMBER_RANDOM           = 'RAND';  
@@ -4711,7 +4710,6 @@ const NUMBER_TYPES =
     NUMBER_LIMITS,
     NUMBER_CONSTANT,
     NUMBER_DATETIME,
-    NUMBER_DEFINE,
     NUMBER_DISTRIBUTE,
     NUMBER_SEQUENCE,
     NUMBER_RANDOM,
@@ -8526,7 +8524,7 @@ function parseListValue(str, i = -1)
 
 
 
-function finalListTypeFromItems(items, debug = 0)
+function getItemTypes(items, debug)
 {
     const types = [];
 
@@ -8542,13 +8540,26 @@ function finalListTypeFromItems(items, debug = 0)
             pushUnique(types, item.type);
     }
 
-
-    return finalListTypeFromTypes(types, debug);
+    return types;
 }
 
 
 
-function finalListTypeFromTypes(types, debug = 0)
+function finalTypeFromItems(items, debug = 0)
+{
+    return finalTypeFromTypes(getItemTypes(items), debug);
+}
+
+
+
+function finalListTypeFromItems(items, debug = 0)
+{
+    return finalListTypeFromTypes(getItemTypes(items), debug);
+}
+
+
+
+function finalTypeFromTypes(types, debug = 0)
 {
     let _type = NULL;
 
@@ -8566,6 +8577,16 @@ function finalListTypeFromTypes(types, debug = 0)
             break; 
         }
     }
+
+
+    return _type;
+}
+
+
+
+function finalListTypeFromTypes(types, debug = 0)
+{
+    let _type = finalTypeFromTypes(types, debug);
 
     
          if (  _type == NUMBER_VALUE || _type == NUMBER_LIST_VALUE)  return NUMBER_LIST_VALUE;
@@ -13556,7 +13577,7 @@ extends GOperator
             
             
             // first copy the input objects
-            // to display when list the active node
+            // to display when list is the active node
 
             if (   this.options.enabled
                 && this.inputs[i].value)
@@ -14533,7 +14554,7 @@ extends GOperator
 function assertVolatile(node)
 {
     consoleAssert(
-           node.loop.type == NUMBER_DEFINE
+           node.loop.type == DEFINE
         || node.loop.type == NUMBER_DISTRIBUTE
         || node.loop.type == NUMBER_SEQUENCE
         || node.loop.type == NUMBER_RANDOM
@@ -14562,84 +14583,6 @@ extends GOperator
     copy()
     {
         const copy = new GCache(this.nodeId, this.options);
-
-        copy.copyBase(this);
-
-        if (this.input) copy.input = this.input.copy();
-        if (this.value) copy.value = this.value.copy();
-
-        return copy;
-    }
-
-
-
-    async eval(parse)
-    {
-        if (this.valid)//isCached())
-            return this;
-
-
-        this.value = 
-            this.input
-            ? (await this.input.eval(parse)).toValue()
-            : NullValue;
-
-
-        this.updateValues = [['value', this.value]];
-        
-        
-        this.validate();
-
-        return this;
-    }
-
-
-
-    pushValueUpdates(parse)
-    {
-        super.pushValueUpdates(parse);
-
-        // if (this.input  ) this.input  .invalidateInputs(from);
-    }
-
-
-
-    toValue()
-    {
-        return this.value
-             ? this.value.copy() 
-             : null;
-    }
-
-
-
-    invalidateInputs(from)
-    {
-        super.invalidateInputs(from);
-
-        // if (this.input  ) this.input  .invalidateInputs(from);
-    }
-}
-
-
-
-class GCopy
-extends GOperator
-{
-    input = null;
-
-
-
-    constructor(nodeId, options)
-    {
-        super(COPY, nodeId, options);
-    }
-
-
-    
-    copy()
-    {
-        const copy = new GCopy(this.nodeId, this.options);
 
         copy.copyBase(this);
 
@@ -15813,7 +15756,7 @@ extends GOperator
 
     constructor(nodeId, options)
     {
-        super(NUMBER_DEFINE, nodeId, options);
+        super(DEFINE, nodeId, options);
     }
 
 
@@ -15841,27 +15784,18 @@ extends GOperator
 
         for (let i = 0; i < this.inputs.length; i++)
         {
-            const val = (await this.inputs[i].eval(parse)).toValue();
-    
-            if (LIST_VALUES.includes(val.type))
+            const input = (await this.inputs[i].eval(parse)).toValue();
+
+            if (   input
+                && this.options.enabled)            
             {
-                if (  !isEmpty(val.items)
-                    && val.items[0].type != NUMBER_VALUE)
+                if (LIST_VALUES.includes(input.type))
                 {
-                    for (const item of val.items)
-                    {
-                        if (item.type == NUMBER_VALUE)
-                            _values.push(item);
-                    }
+                    for (const item of input.items)
+                        _values.push(item.copy());   
                 }
-            }
-            else
-            {
-                consoleAssert(
-                    val.type == NUMBER_VALUE, 
-                    'val.type must be NUMBER_VALUE');
- 
-                _values.push(val);
+                else
+                    _values.push(input.copy());
             }
         }
             
@@ -15873,7 +15807,7 @@ extends GOperator
         this.value = _values[iteration % _values.length];
 
 
-        this.updateValues = [['', NullValue]];
+        this.updateValues = [['type', new TextValue(finalTypeFromItems(_values))]];
         
 
         this.validate();
@@ -30432,50 +30366,6 @@ function genParseCache(parse)
 
 
 
-function genParseCopy(parse)
-{
-    const [, nodeId, options, ignore] = genParseNodeStart(parse);
-
-
-    const copy = new GCopy(nodeId, options);
-
-
-    let nInputs = -1;
-    
-    if (!ignore)
-    {
-        nInputs = parseInt(parse.move());
-        consoleAssert(nInputs == 0 || nInputs == 1, 'nInputs must be [0, 1]');
-    }
-
-
-    if (parse.settings.logRequests) 
-        logReq(copy, parse, ignore, nInputs);
-
-
-    if (ignore) 
-    {
-        genParseNodeEnd(parse, copy);
-        return parse.parsedNodes.find(n => n.nodeId == nodeId);
-    }
-
-
-    parse.nTab++;
-
-
-    if (nInputs == 1)
-        copy.input = genParse(parse);
-
-
-    parse.nTab--;
-
-
-    genParseNodeEnd(parse, copy);
-    return copy;
-}
-
-
-
 function genParseFreeze(parse)
 {
     const [, nodeId, options, ignore] = genParseNodeStart(parse);
@@ -34796,7 +34686,6 @@ function genParse(parse, inParam = true)
     else if (parse.next == START                  ) result = genParseStart            (parse);
     else if (parse.next == REPEAT                 ) result = genParseRepeat           (parse);
     else if (parse.next == CACHE                  ) result = genParseCache            (parse);
-    else if (parse.next == COPY                   ) result = genParseCopy             (parse);
     else if (parse.next == FREEZE                 ) result = genParseFreeze           (parse);
     else if (parse.next == TIMER                  ) result = genParseTimer            (parse);
      
@@ -34813,7 +34702,7 @@ function genParse(parse, inParam = true)
     else if (parse.next == NUMBER_PROBABILITY     ) result = genParseProbability      (parse);
     else if (parse.next == NUMBER_CONSTANT        ) result = genParseConstant         (parse);
     else if (parse.next == NUMBER_DATETIME        ) result = genParseDateTime         (parse);
-    else if (parse.next == NUMBER_DEFINE          ) result = genParseDefine            (parse);
+    else if (parse.next == DEFINE          ) result = genParseDefine            (parse);
     else if (parse.next == NUMBER_DISTRIBUTE      ) result = genParseDistribute       (parse);
     else if (parse.next == NUMBER_SEQUENCE        ) result = genParseSequence         (parse);
     else if (parse.next == NUMBER_INTERPOLATE     ) result = genParseInterpolate      (parse);

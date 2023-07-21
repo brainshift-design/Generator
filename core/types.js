@@ -11,8 +11,8 @@ const LIST_COUNT              = 'COUNT';
 const IF_ELSE                 = 'IF';
 const START                   = 'START';
 const REPEAT                  = 'REPT';
+const DEFINE                  = 'DEFINE';  
 const CACHE                   = 'CACHE';
-const COPY                    = 'COPY';
 const FREEZE                  = 'FRZ';
 const TIMER                   = 'TIMER';
 
@@ -54,8 +54,8 @@ const FLOW_TYPES =
     START,
     REPEAT,
     //FOREACH,
+    DEFINE,
     CACHE,
-    COPY,
     FREEZE,
     TIMER
 ];
@@ -70,7 +70,6 @@ const NUMBER_MINMAX           = 'MINMAX';
 const NUMBER_LIMITS           = 'LIM';   
 const NUMBER_CONSTANT         = 'CONST';  
 const NUMBER_DATETIME         = 'DATE';  
-const NUMBER_DEFINE           = 'DEFINE';  
 const NUMBER_DISTRIBUTE       = 'DISTR';  
 const NUMBER_SEQUENCE         = 'SEQ';  
 const NUMBER_RANDOM           = 'RAND';  
@@ -181,7 +180,6 @@ const NUMBER_TYPES =
     NUMBER_LIMITS,
     NUMBER_CONSTANT,
     NUMBER_DATETIME,
-    NUMBER_DEFINE,
     NUMBER_DISTRIBUTE,
     NUMBER_SEQUENCE,
     NUMBER_RANDOM,

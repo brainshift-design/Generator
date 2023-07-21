@@ -18,8 +18,8 @@ extends GOperator
 
         copy.copyBase(this);
 
-        if (this.input) copy.input = this.input.copy();
         if (this.value) copy.value = this.value.copy();
+        if (this.input) copy.input = this.input.copy();
 
         return copy;
     }
@@ -28,22 +28,34 @@ extends GOperator
 
     async eval(parse)
     {
-        if (this.valid)//isCached())
+        if (this.isCached())
             return this;
 
 
         this.value = 
-            this.input
-            ? (await this.input.eval(parse)).toValue()
+            this.input 
+            ? (await this.input.eval(parse)).toValue() 
             : NullValue;
 
 
+        this.updateValueObjects();
+
+
         this.updateValues = [['value', this.value]];
-        
-        
+
+
         this.validate();
 
         return this;
+    }
+
+
+
+    toValue()
+    {
+        return this.value
+             ? this.value.copy()
+             : null;
     }
 
 
@@ -52,16 +64,7 @@ extends GOperator
     {
         super.pushValueUpdates(parse);
 
-        // if (this.input  ) this.input  .invalidateInputs(from);
-    }
-
-
-
-    toValue()
-    {
-        return this.value
-             ? this.value.copy() 
-             : null;
+        if (this.input) this.input.pushValueUpdates(parse);
     }
 
 
@@ -70,6 +73,6 @@ extends GOperator
     {
         super.invalidateInputs(from);
 
-        // if (this.input  ) this.input  .invalidateInputs(from);
+        if (this.input) this.input.invalidateInputs(from);
     }
 }

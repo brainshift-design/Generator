@@ -10,7 +10,7 @@ extends GOperator
 
     constructor(nodeId, options)
     {
-        super(NUMBER_DEFINE, nodeId, options);
+        super(DEFINE, nodeId, options);
     }
 
 
@@ -38,27 +38,18 @@ extends GOperator
 
         for (let i = 0; i < this.inputs.length; i++)
         {
-            const val = (await this.inputs[i].eval(parse)).toValue();
-    
-            if (LIST_VALUES.includes(val.type))
+            const input = (await this.inputs[i].eval(parse)).toValue();
+
+            if (   input
+                && this.options.enabled)            
             {
-                if (  !isEmpty(val.items)
-                    && val.items[0].type != NUMBER_VALUE)
+                if (LIST_VALUES.includes(input.type))
                 {
-                    for (const item of val.items)
-                    {
-                        if (item.type == NUMBER_VALUE)
-                            _values.push(item);
-                    }
+                    for (const item of input.items)
+                        _values.push(item.copy());   
                 }
-            }
-            else
-            {
-                consoleAssert(
-                    val.type == NUMBER_VALUE, 
-                    'val.type must be NUMBER_VALUE');
- 
-                _values.push(val);
+                else
+                    _values.push(input.copy());
             }
         }
             
@@ -70,7 +61,7 @@ extends GOperator
         this.value = _values[iteration % _values.length];
 
 
-        this.updateValues = [['', NullValue]];
+        this.updateValues = [['type', new TextValue(finalTypeFromItems(_values))]];
         
 
         this.validate();

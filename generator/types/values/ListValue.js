@@ -234,7 +234,7 @@ function parseListValue(str, i = -1)
 
 
 
-function finalListTypeFromItems(items, debug = 0)
+function getItemTypes(items, debug)
 {
     const types = [];
 
@@ -250,13 +250,26 @@ function finalListTypeFromItems(items, debug = 0)
             pushUnique(types, item.type);
     }
 
-
-    return finalListTypeFromTypes(types, debug);
+    return types;
 }
 
 
 
-function finalListTypeFromTypes(types, debug = 0)
+function finalTypeFromItems(items, debug = 0)
+{
+    return finalTypeFromTypes(getItemTypes(items), debug);
+}
+
+
+
+function finalListTypeFromItems(items, debug = 0)
+{
+    return finalListTypeFromTypes(getItemTypes(items), debug);
+}
+
+
+
+function finalTypeFromTypes(types, debug = 0)
 {
     let _type = NULL;
 
@@ -274,6 +287,16 @@ function finalListTypeFromTypes(types, debug = 0)
             break; 
         }
     }
+
+
+    return _type;
+}
+
+
+
+function finalListTypeFromTypes(types, debug = 0)
+{
+    let _type = finalTypeFromTypes(types, debug);
 
     
          if (  _type == NUMBER_VALUE || _type == NUMBER_LIST_VALUE)  return NUMBER_LIST_VALUE;
