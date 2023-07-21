@@ -19,7 +19,7 @@ function isConnKey(key) { return isTagKey(key, connTag); }
 function noPageTag(key) { return noTag(key, pageTag); }
 function noNodeTag(key) { return noTag(key, nodeTag); }
 function noConnTag(key) { return noTag(key, connTag); }
-const generatorVersion = 163;
+const generatorVersion = 164;
 const MAX_INT32 = 2147483647;
 const NULL = '';
 const HTAB = '  '; // half-tab
@@ -589,6 +589,7 @@ const NUMBER_INTERPOLATE = 'LERP';
 const NUMBER_SOLVE = 'SOLVE';
 const NUMBER_ANIMATE = 'NANIM';
 const NUMBER_MATH = 'MATH';
+const NUMBER_SIMPLE_MATH = 'SMATH';
 const NUMBER_ADD = 'ADD';
 const NUMBER_SUBTRACT = 'SUB';
 const NUMBER_MULTIPLY = 'MUL';
@@ -613,6 +614,7 @@ const NUMBER_COS = 'COS';
 const NUMBER_TAN = 'TAN';
 const MATH_TYPES = [
     NUMBER_MATH,
+    NUMBER_SIMPLE_MATH,
     NUMBER_ADD,
     NUMBER_SUBTRACT,
     NUMBER_MULTIPLY,

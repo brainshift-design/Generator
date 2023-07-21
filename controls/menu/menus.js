@@ -401,12 +401,13 @@ function initGeneratorMenus()
 
     menuMath = new Menu('Math', true, false);
     menuMath.addItems([
-        new MenuItem('Power',     {icon: iconExponent, callback: e => actionManager.do(getCreateNodeAction(NUMBER_EXPONENT, btnNumber.div, getCreateOptions(e)))}),
-        new MenuItem('Multiply',  {icon: iconMultiply, callback: e => actionManager.do(getCreateNodeAction(NUMBER_MULTIPLY, btnNumber.div, getCreateOptions(e)))}),
-        new MenuItem('Divide',    {icon: iconDivide,   callback: e => actionManager.do(getCreateNodeAction(NUMBER_DIVIDE,   btnNumber.div, getCreateOptions(e)))}),
-        new MenuItem('Remainder', {icon: iconModulo,   callback: e => actionManager.do(getCreateNodeAction(NUMBER_MODULO,   btnNumber.div, getCreateOptions(e)))}),
-        new MenuItem('Add',       {icon: iconAdd,      callback: e => actionManager.do(getCreateNodeAction(NUMBER_ADD,      btnNumber.div, getCreateOptions(e)))}),
-        new MenuItem('Subtract',  {icon: iconSubtract, callback: e => actionManager.do(getCreateNodeAction(NUMBER_SUBTRACT, btnNumber.div, getCreateOptions(e)))})]);
+        // new MenuItem('Power',     {icon: iconExponent, callback: e => actionManager.do(getCreateNodeAction(NUMBER_EXPONENT, btnNumber.div, getCreateOptions(e)))}),
+        // new MenuItem('Multiply',  {icon: iconMultiply, callback: e => actionManager.do(getCreateNodeAction(NUMBER_MULTIPLY, btnNumber.div, getCreateOptions(e)))}),
+        // new MenuItem('Divide',    {icon: iconDivide,   callback: e => actionManager.do(getCreateNodeAction(NUMBER_DIVIDE,   btnNumber.div, getCreateOptions(e)))}),
+        // new MenuItem('Remainder', {icon: iconModulo,   callback: e => actionManager.do(getCreateNodeAction(NUMBER_MODULO,   btnNumber.div, getCreateOptions(e)))}),
+        // new MenuItem('Add',       {icon: iconAdd,      callback: e => actionManager.do(getCreateNodeAction(NUMBER_ADD,      btnNumber.div, getCreateOptions(e)))}),
+        // new MenuItem('Subtract',  {icon: iconSubtract, callback: e => actionManager.do(getCreateNodeAction(NUMBER_SUBTRACT, btnNumber.div, getCreateOptions(e)))})]);
+        new MenuItem('Simple',  {icon: iconMath, callback: e => actionManager.do(getCreateNodeAction(NUMBER_SIMPLE_MATH, btnNumber.div, getCreateOptions(e)))})]);
         
 
     menuBoolean = new Menu('Boolean', true, false);
@@ -461,8 +462,9 @@ function initGeneratorMenus()
     menuNumber.addItems([
                              new MenuItem('Number',           {icon: iconNumber,      callback: e => actionManager.do(getCreateNodeAction(NUMBER,             btnNumber.div, getCreateOptions(e)))}),
                              new MenuItem('',                 {separator: true}),
-                             new MenuItem('Basic',            {icon: iconRound, childMenu: menuFunctions}),
-                             new MenuItem('Math',             {icon: iconMath,        /*childMenu: menuMath,     */ callback: e => actionManager.do(getCreateNodeAction(NUMBER_MATH,      btnNumber.div, getCreateOptions(e)))}),
+                             new MenuItem('Basic',            {icon: iconRound,       childMenu: menuFunctions}),
+                             new MenuItem('',                 {separator: true}),
+                             new MenuItem('Math',             {icon: iconMath,        childMenu: menuMath,          callback: e => actionManager.do(getCreateNodeAction(NUMBER_MATH,      btnNumber.div, getCreateOptions(e)))}),
                              new MenuItem('Boolean',          {icon: iconBoolean,     /*childMenu: menuBoolean,  */ callback: e => actionManager.do(getCreateNodeAction(NUMBER_BOOLEAN,   btnNumber.div, getCreateOptions(e)))}),
                              new MenuItem('Conditional',      {icon: iconCondition,   /*childMenu: menuCondition,*/ callback: e => actionManager.do(getCreateNodeAction(NUMBER_CONDITION, btnNumber.div, getCreateOptions(e)))}),
                              new MenuItem('Trigonometric',    {icon: iconSine,        /*childMenu: menuTrig,     */ callback: e => actionManager.do(getCreateNodeAction(NUMBER_TRIG,      btnNumber.div, getCreateOptions(e)))}),
@@ -706,8 +708,8 @@ function initGeneratorMenus()
         menuItemNodeSep3           = new MenuItem('',                 {separator: true}),
         // menuItemNodeEdit           = new MenuItem('Edit...',       {callback: e => { hideAllMenus(); graphView.editSelectedCustomNode(); }}),
                                     //  new MenuItem('',              {separator: true}),
-        menuItemNodeSaveAsTemplate = new MenuItem('Save as template', {callback: e => { hideAllMenus(); showSaveAsTemplateDialog(); }}),
-                                     new MenuItem('',                 {separator: true}),
+        // menuItemNodeSaveAsTemplate = new MenuItem('Save as template', {callback: e => { hideAllMenus(); showSaveAsTemplateDialog(); }}),
+        //                              new MenuItem('',                 {separator: true}),
         // menuItemNodeActivate    = new MenuItem('Activate',         {callback: () => makeSelectedNodesActive()}),
         menuItemNodeEnableDisable  = new MenuItem('Enable/Disable',   {shortcut:  osCtrlShift() + 'E',  callback: () => actionManager.do(new ToggleDisableNodesAction(graphView.selectedNodes.map(n => n.id)))}),
         menuItemNodeSep4           = new MenuItem('',                 {separator: true}),
@@ -768,7 +770,7 @@ function initGeneratorMenus()
     btnLayer    = new MenuButton('', menuLayer,    {useMenuName: true, highlight: () => currentMenus.includes(menuLayer ), callback: () => updatePanMode(false)});
     //btnStyle  = new MenuButton('', menuStyle,    {useMenuName: true, highlight: () => currentMenus.includes(menuStyle ), callback: () => updatePanMode(false)});
     btnShape    = new MenuButton('', menuShape,    {useMenuName: true, highlight: () => currentMenus.includes(menuShape ), callback: () => updatePanMode(false)});
-    btnTemplate = new MenuButton('', menuTemplate, {useMenuName: true, highlight: () => currentMenus.includes(menuShape ), callback: () => updatePanMode(false)});
+    //btnTemplate = new MenuButton('', menuTemplate, {useMenuName: true, highlight: () => currentMenus.includes(menuShape ), callback: () => updatePanMode(false)});
     //btnGroup  = new MenuButton('', menuGroup,  {useMenuName: true, highlight: () => currentMenus.includes(menuShape ), callback: () => updatePanMode(false)});
 
     // btnGroup  = new MenuButton('Node groups', null, {callback: () => 
@@ -852,9 +854,9 @@ function initGeneratorMenus()
     btnColor   .setIcon(iconColor);
     btnLayer   .setIcon(iconEffects);
     btnShape   .setIcon(iconShapes);
-    btnTemplate.setIcon(iconTemplate);
     //btnStyle  .setIcon(iconStyle);
     //btnGroup  .setIcon(iconGroup);
+    //btnTemplate.setIcon(iconTemplate);
     btnHand    .setIcon(iconHand);
     btnComment .setIcon(iconComment);
 }

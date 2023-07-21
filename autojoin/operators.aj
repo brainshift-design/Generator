@@ -77,6 +77,7 @@
 ../operators/number/OpAnimate.js
 
 ../operators/number/arithmetic/OpMath.js
+../operators/number/arithmetic/OpSimpleMath.js
 ../operators/number/arithmetic/OpArithmetic.js
 ../operators/number/arithmetic/OpAdd.js
 ../operators/number/arithmetic/OpSubtract.js

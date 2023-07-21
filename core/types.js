@@ -80,6 +80,7 @@ const NUMBER_SOLVE            = 'SOLVE';
 const NUMBER_ANIMATE          = 'NANIM';
 
 const NUMBER_MATH             = 'MATH';  
+const NUMBER_SIMPLE_MATH      = 'SMATH';  
 const NUMBER_ADD              = 'ADD';   
 const NUMBER_SUBTRACT         = 'SUB';   
 const NUMBER_MULTIPLY         = 'MUL';   
@@ -110,6 +111,7 @@ const NUMBER_TAN              = 'TAN';
 const MATH_TYPES =
 [
     NUMBER_MATH,
+    NUMBER_SIMPLE_MATH,
     NUMBER_ADD,
     NUMBER_SUBTRACT,
     NUMBER_MULTIPLY,

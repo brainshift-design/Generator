@@ -4594,10 +4594,7 @@ a
             <div id='whatsNewBody'>
                 <h1 style='margin-top: 20px;'>What's new</h1>
 
-                <p>•  fixed Color node sometimes crashing during animations</p>
-                <p>•  improved handling of time in Animation node</p>
-                <p>•  renamed Define... to List... and moved it to the flow menu, it can now deal out any value types</p>
-                <p>•  fixed bugs in number Boolean node</p>
+                <p>•  added Simple Math node (same as regular Math, but with a built-in operand)</p>
                 
                 <p><br/><br/><div id='chkHideWhatsNew'></div></p>
             </div>
@@ -4925,7 +4922,7 @@ a
 
 
 
-const generatorVersion = 163;
+const generatorVersion = 164;
 
 
 const MAX_INT32        = 2147483647;
@@ -9531,6 +9528,7 @@ const NUMBER_SOLVE            = 'SOLVE';
 const NUMBER_ANIMATE          = 'NANIM';
 
 const NUMBER_MATH             = 'MATH';  
+const NUMBER_SIMPLE_MATH      = 'SMATH';  
 const NUMBER_ADD              = 'ADD';   
 const NUMBER_SUBTRACT         = 'SUB';   
 const NUMBER_MULTIPLY         = 'MUL';   
@@ -9561,6 +9559,7 @@ const NUMBER_TAN              = 'TAN';
 const MATH_TYPES =
 [
     NUMBER_MATH,
+    NUMBER_SIMPLE_MATH,
     NUMBER_ADD,
     NUMBER_SUBTRACT,
     NUMBER_MULTIPLY,
@@ -22039,6 +22038,141 @@ extends GArithmetic
         super.invalidateInputs(from);
 
         if (this.operation) this.operation.invalidateInputs(from);
+    }
+}
+
+
+
+class GSimpleMath
+extends GNumberType1
+{
+    operation;
+    operand;
+
+
+
+    constructor(nodeId, options)
+    {
+        super(NUMBER_SIMPLE_MATH, nodeId, options);
+    }
+
+
+    
+    copy()
+    {
+        const copy = new GRound(this.nodeId, this.options);
+
+        copy.copyBase(this);
+
+        copy.operation = this.operation.copy();
+        copy.operand   = this.operand  .copy();
+
+        return copy;
+    }
+
+
+
+    async eval(parse)
+    {
+        if (this.isCached())
+            return this;
+
+
+        this.value = new NumberValue(0);
+
+        
+        const op      = (await this.operation.eval(parse)).toValue();
+        const operand = (await this.operand  .eval(parse)).toValue();
+
+
+        if (this.input)
+        {
+            this.value = (await this.input.eval(parse)).toValue();
+
+            consoleAssert(
+                this.value.type == NUMBER_VALUE, 
+                'this.value.type must be NUMBER_VALUE');
+
+            
+            if (this.options.enabled)
+            {
+                op.value = Math.min(Math.max(0, op.value), MATH_OPS.length-1);
+
+                switch (op.value)
+                {
+                    case 0: 
+                        this.value = new NumberValue(
+                            this.value.value - operand.value,
+                            Math.max(this.value.decimals, operand.decimals));
+                        break;
+
+                    case 1: 
+                        this.value = new NumberValue(
+                            this.value.value + operand.value,
+                            Math.max(this.value.decimals, operand.decimals));
+                        break;
+
+                    case 2: 
+                        this.value = new NumberValue(
+                            this.value.value % operand.value,
+                            Math.max(this.value.decimals, operand.decimals));
+                        break;
+
+                    case 3: 
+                        this.value = new NumberValue(
+                            this.value.value / operand.value,
+                            Math.max(this.value.decimals, operand.decimals));
+                        break;
+
+                    case 4: 
+                        this.value = new NumberValue(
+                            this.value.value * operand.value,
+                            Math.max(this.value.decimals, operand.decimals));
+                        break;
+
+                    case 5: 
+                        this.value = new NumberValue(
+                            Math.pow(this.value.value, operand.value),
+                            Math.max(this.value.decimals, operand.decimals));
+                        break;
+                }
+            }
+        }
+        else
+            this.value = NumberValue.NaN;
+
+
+        this.updateValues =
+        [
+            ['value',     this.value],
+            ['operation', op        ],
+            ['operand',   operand   ]
+        ];
+
+
+        this.validate();
+
+        return this;
+    }
+
+
+
+    pushValueUpdates(parse)
+    {
+        super.pushValueUpdates(parse);
+
+        if (this.operation) this.operation.pushValueUpdates(parse);
+        if (this.operand  ) this.operand  .pushValueUpdates(parse);
+    }
+
+
+
+    invalidateInputs(from)
+    {
+        super.invalidateInputs(from);
+
+        if (this.operation) this.operation.invalidateInputs(from);
+        if (this.operand  ) this.operand  .invalidateInputs(from);
     }
 }
 
@@ -36579,6 +36713,53 @@ function genParseMath(parse, newNode)
 
 
 
+function genParseSimpleMath(parse)
+{
+    const [, nodeId, options, ignore] = genParseNodeStart(parse);
+
+
+    const smath = new GSimpleMath(nodeId, options);
+   
+
+    let nInputs = -1;
+    
+    if (!ignore)
+    {
+        nInputs = parseInt(parse.move());
+        consoleAssert(nInputs == 0 || nInputs == 1, 'nInputs must be [0, 1]');
+    }
+
+    
+    if (parse.settings.logRequests) 
+        logReq(smath, parse, ignore, nInputs);
+
+
+    if (ignore) 
+    {
+        genParseNodeEnd(parse, smath);
+        return parse.parsedNodes.find(n => n.nodeId == nodeId);
+    }
+
+
+    parse.nTab++;
+
+
+    if (nInputs == 1)
+        smath.input = genParse(parse);
+
+    smath.operation = genParse(parse);
+    smath.operand   = genParse(parse);
+
+    
+    parse.nTab--;
+
+
+    genParseNodeEnd(parse, smath);
+    return smath;
+}
+
+
+
 function genParseArithmetic(parse, newNode)
 {
     const [type, nodeId, options, ignore] = genParseNodeStart(parse);
@@ -39605,6 +39786,7 @@ function genParse(parse, inParam = true)
     else if (parse.next == START                  ) result = genParseStart            (parse);
     else if (parse.next == REPEAT                 ) result = genParseRepeat           (parse);
     else if (parse.next == CACHE                  ) result = genParseCache            (parse);
+    else if (parse.next == DEFINE                 ) result = genParseDefine           (parse);
     else if (parse.next == FREEZE                 ) result = genParseFreeze           (parse);
     else if (parse.next == TIMER                  ) result = genParseTimer            (parse);
      
@@ -39621,7 +39803,6 @@ function genParse(parse, inParam = true)
     else if (parse.next == NUMBER_PROBABILITY     ) result = genParseProbability      (parse);
     else if (parse.next == NUMBER_CONSTANT        ) result = genParseConstant         (parse);
     else if (parse.next == NUMBER_DATETIME        ) result = genParseDateTime         (parse);
-    else if (parse.next == DEFINE          ) result = genParseDefine            (parse);
     else if (parse.next == NUMBER_DISTRIBUTE      ) result = genParseDistribute       (parse);
     else if (parse.next == NUMBER_SEQUENCE        ) result = genParseSequence         (parse);
     else if (parse.next == NUMBER_INTERPOLATE     ) result = genParseInterpolate      (parse);
@@ -39629,6 +39810,7 @@ function genParse(parse, inParam = true)
     else if (parse.next == NUMBER_ANIMATE         ) result = genParseAnimate          (parse);
     
     else if (parse.next == NUMBER_MATH            ) result = genParseMath             (parse, (nodeId, options) => new GMath          (nodeId, options));
+    else if (parse.next == NUMBER_SIMPLE_MATH     ) result = genParseSimpleMath       (parse, (nodeId, options) => new GMath          (nodeId, options));
     else if (parse.next == NUMBER_ADD             ) result = genParseArithmetic       (parse, (nodeId, options) => new GAdd           (nodeId, options));
     else if (parse.next == NUMBER_SUBTRACT        ) result = genParseArithmetic       (parse, (nodeId, options) => new GSubtract      (nodeId, options));
     else if (parse.next == NUMBER_MULTIPLY        ) result = genParseArithmetic       (parse, (nodeId, options) => new GMultiply      (nodeId, options));
@@ -43037,7 +43219,7 @@ onerror = (event, source, line, pos, error) =>
 };
 
 
-const generatorVersion = 163;
+const generatorVersion = 164;
 
 
 const MAX_INT32        = 2147483647;
@@ -49827,6 +50009,7 @@ const NUMBER_SOLVE            = 'SOLVE';
 const NUMBER_ANIMATE          = 'NANIM';
 
 const NUMBER_MATH             = 'MATH';  
+const NUMBER_SIMPLE_MATH      = 'SMATH';  
 const NUMBER_ADD              = 'ADD';   
 const NUMBER_SUBTRACT         = 'SUB';   
 const NUMBER_MULTIPLY         = 'MUL';   
@@ -49857,6 +50040,7 @@ const NUMBER_TAN              = 'TAN';
 const MATH_TYPES =
 [
     NUMBER_MATH,
+    NUMBER_SIMPLE_MATH,
     NUMBER_ADD,
     NUMBER_SUBTRACT,
     NUMBER_MULTIPLY,
@@ -62335,6 +62519,141 @@ extends GArithmetic
         super.invalidateInputs(from);
 
         if (this.operation) this.operation.invalidateInputs(from);
+    }
+}
+
+
+
+class GSimpleMath
+extends GNumberType1
+{
+    operation;
+    operand;
+
+
+
+    constructor(nodeId, options)
+    {
+        super(NUMBER_SIMPLE_MATH, nodeId, options);
+    }
+
+
+    
+    copy()
+    {
+        const copy = new GRound(this.nodeId, this.options);
+
+        copy.copyBase(this);
+
+        copy.operation = this.operation.copy();
+        copy.operand   = this.operand  .copy();
+
+        return copy;
+    }
+
+
+
+    async eval(parse)
+    {
+        if (this.isCached())
+            return this;
+
+
+        this.value = new NumberValue(0);
+
+        
+        const op      = (await this.operation.eval(parse)).toValue();
+        const operand = (await this.operand  .eval(parse)).toValue();
+
+
+        if (this.input)
+        {
+            this.value = (await this.input.eval(parse)).toValue();
+
+            consoleAssert(
+                this.value.type == NUMBER_VALUE, 
+                'this.value.type must be NUMBER_VALUE');
+
+            
+            if (this.options.enabled)
+            {
+                op.value = Math.min(Math.max(0, op.value), MATH_OPS.length-1);
+
+                switch (op.value)
+                {
+                    case 0: 
+                        this.value = new NumberValue(
+                            this.value.value - operand.value,
+                            Math.max(this.value.decimals, operand.decimals));
+                        break;
+
+                    case 1: 
+                        this.value = new NumberValue(
+                            this.value.value + operand.value,
+                            Math.max(this.value.decimals, operand.decimals));
+                        break;
+
+                    case 2: 
+                        this.value = new NumberValue(
+                            this.value.value % operand.value,
+                            Math.max(this.value.decimals, operand.decimals));
+                        break;
+
+                    case 3: 
+                        this.value = new NumberValue(
+                            this.value.value / operand.value,
+                            Math.max(this.value.decimals, operand.decimals));
+                        break;
+
+                    case 4: 
+                        this.value = new NumberValue(
+                            this.value.value * operand.value,
+                            Math.max(this.value.decimals, operand.decimals));
+                        break;
+
+                    case 5: 
+                        this.value = new NumberValue(
+                            Math.pow(this.value.value, operand.value),
+                            Math.max(this.value.decimals, operand.decimals));
+                        break;
+                }
+            }
+        }
+        else
+            this.value = NumberValue.NaN;
+
+
+        this.updateValues =
+        [
+            ['value',     this.value],
+            ['operation', op        ],
+            ['operand',   operand   ]
+        ];
+
+
+        this.validate();
+
+        return this;
+    }
+
+
+
+    pushValueUpdates(parse)
+    {
+        super.pushValueUpdates(parse);
+
+        if (this.operation) this.operation.pushValueUpdates(parse);
+        if (this.operand  ) this.operand  .pushValueUpdates(parse);
+    }
+
+
+
+    invalidateInputs(from)
+    {
+        super.invalidateInputs(from);
+
+        if (this.operation) this.operation.invalidateInputs(from);
+        if (this.operand  ) this.operand  .invalidateInputs(from);
     }
 }
 
@@ -80075,12 +80394,13 @@ function initGeneratorMenus()
 
     menuMath = new Menu('Math', true, false);
     menuMath.addItems([
-        new MenuItem('Power',     {icon: iconExponent, callback: e => actionManager.do(getCreateNodeAction(NUMBER_EXPONENT, btnNumber.div, getCreateOptions(e)))}),
-        new MenuItem('Multiply',  {icon: iconMultiply, callback: e => actionManager.do(getCreateNodeAction(NUMBER_MULTIPLY, btnNumber.div, getCreateOptions(e)))}),
-        new MenuItem('Divide',    {icon: iconDivide,   callback: e => actionManager.do(getCreateNodeAction(NUMBER_DIVIDE,   btnNumber.div, getCreateOptions(e)))}),
-        new MenuItem('Remainder', {icon: iconModulo,   callback: e => actionManager.do(getCreateNodeAction(NUMBER_MODULO,   btnNumber.div, getCreateOptions(e)))}),
-        new MenuItem('Add',       {icon: iconAdd,      callback: e => actionManager.do(getCreateNodeAction(NUMBER_ADD,      btnNumber.div, getCreateOptions(e)))}),
-        new MenuItem('Subtract',  {icon: iconSubtract, callback: e => actionManager.do(getCreateNodeAction(NUMBER_SUBTRACT, btnNumber.div, getCreateOptions(e)))})]);
+        // new MenuItem('Power',     {icon: iconExponent, callback: e => actionManager.do(getCreateNodeAction(NUMBER_EXPONENT, btnNumber.div, getCreateOptions(e)))}),
+        // new MenuItem('Multiply',  {icon: iconMultiply, callback: e => actionManager.do(getCreateNodeAction(NUMBER_MULTIPLY, btnNumber.div, getCreateOptions(e)))}),
+        // new MenuItem('Divide',    {icon: iconDivide,   callback: e => actionManager.do(getCreateNodeAction(NUMBER_DIVIDE,   btnNumber.div, getCreateOptions(e)))}),
+        // new MenuItem('Remainder', {icon: iconModulo,   callback: e => actionManager.do(getCreateNodeAction(NUMBER_MODULO,   btnNumber.div, getCreateOptions(e)))}),
+        // new MenuItem('Add',       {icon: iconAdd,      callback: e => actionManager.do(getCreateNodeAction(NUMBER_ADD,      btnNumber.div, getCreateOptions(e)))}),
+        // new MenuItem('Subtract',  {icon: iconSubtract, callback: e => actionManager.do(getCreateNodeAction(NUMBER_SUBTRACT, btnNumber.div, getCreateOptions(e)))})]);
+        new MenuItem('Simple',  {icon: iconMath, callback: e => actionManager.do(getCreateNodeAction(NUMBER_SIMPLE_MATH, btnNumber.div, getCreateOptions(e)))})]);
         
 
     menuBoolean = new Menu('Boolean', true, false);
@@ -80135,8 +80455,9 @@ function initGeneratorMenus()
     menuNumber.addItems([
                              new MenuItem('Number',           {icon: iconNumber,      callback: e => actionManager.do(getCreateNodeAction(NUMBER,             btnNumber.div, getCreateOptions(e)))}),
                              new MenuItem('',                 {separator: true}),
-                             new MenuItem('Basic',            {icon: iconRound, childMenu: menuFunctions}),
-                             new MenuItem('Math',             {icon: iconMath,        /*childMenu: menuMath,     */ callback: e => actionManager.do(getCreateNodeAction(NUMBER_MATH,      btnNumber.div, getCreateOptions(e)))}),
+                             new MenuItem('Basic',            {icon: iconRound,       childMenu: menuFunctions}),
+                             new MenuItem('',                 {separator: true}),
+                             new MenuItem('Math',             {icon: iconMath,        childMenu: menuMath,          callback: e => actionManager.do(getCreateNodeAction(NUMBER_MATH,      btnNumber.div, getCreateOptions(e)))}),
                              new MenuItem('Boolean',          {icon: iconBoolean,     /*childMenu: menuBoolean,  */ callback: e => actionManager.do(getCreateNodeAction(NUMBER_BOOLEAN,   btnNumber.div, getCreateOptions(e)))}),
                              new MenuItem('Conditional',      {icon: iconCondition,   /*childMenu: menuCondition,*/ callback: e => actionManager.do(getCreateNodeAction(NUMBER_CONDITION, btnNumber.div, getCreateOptions(e)))}),
                              new MenuItem('Trigonometric',    {icon: iconSine,        /*childMenu: menuTrig,     */ callback: e => actionManager.do(getCreateNodeAction(NUMBER_TRIG,      btnNumber.div, getCreateOptions(e)))}),
@@ -80380,8 +80701,8 @@ function initGeneratorMenus()
         menuItemNodeSep3           = new MenuItem('',                 {separator: true}),
         // menuItemNodeEdit           = new MenuItem('Edit...',       {callback: e => { hideAllMenus(); graphView.editSelectedCustomNode(); }}),
                                     //  new MenuItem('',              {separator: true}),
-        menuItemNodeSaveAsTemplate = new MenuItem('Save as template', {callback: e => { hideAllMenus(); showSaveAsTemplateDialog(); }}),
-                                     new MenuItem('',                 {separator: true}),
+        // menuItemNodeSaveAsTemplate = new MenuItem('Save as template', {callback: e => { hideAllMenus(); showSaveAsTemplateDialog(); }}),
+        //                              new MenuItem('',                 {separator: true}),
         // menuItemNodeActivate    = new MenuItem('Activate',         {callback: () => makeSelectedNodesActive()}),
         menuItemNodeEnableDisable  = new MenuItem('Enable/Disable',   {shortcut:  osCtrlShift() + 'E',  callback: () => actionManager.do(new ToggleDisableNodesAction(graphView.selectedNodes.map(n => n.id)))}),
         menuItemNodeSep4           = new MenuItem('',                 {separator: true}),
@@ -80442,7 +80763,7 @@ function initGeneratorMenus()
     btnLayer    = new MenuButton('', menuLayer,    {useMenuName: true, highlight: () => currentMenus.includes(menuLayer ), callback: () => updatePanMode(false)});
     //btnStyle  = new MenuButton('', menuStyle,    {useMenuName: true, highlight: () => currentMenus.includes(menuStyle ), callback: () => updatePanMode(false)});
     btnShape    = new MenuButton('', menuShape,    {useMenuName: true, highlight: () => currentMenus.includes(menuShape ), callback: () => updatePanMode(false)});
-    btnTemplate = new MenuButton('', menuTemplate, {useMenuName: true, highlight: () => currentMenus.includes(menuShape ), callback: () => updatePanMode(false)});
+    //btnTemplate = new MenuButton('', menuTemplate, {useMenuName: true, highlight: () => currentMenus.includes(menuShape ), callback: () => updatePanMode(false)});
     //btnGroup  = new MenuButton('', menuGroup,  {useMenuName: true, highlight: () => currentMenus.includes(menuShape ), callback: () => updatePanMode(false)});
 
     // btnGroup  = new MenuButton('Node groups', null, {callback: () => 
@@ -80526,9 +80847,9 @@ function initGeneratorMenus()
     btnColor   .setIcon(iconColor);
     btnLayer   .setIcon(iconEffects);
     btnShape   .setIcon(iconShapes);
-    btnTemplate.setIcon(iconTemplate);
     //btnStyle  .setIcon(iconStyle);
     //btnGroup  .setIcon(iconGroup);
+    //btnTemplate.setIcon(iconTemplate);
     btnHand    .setIcon(iconHand);
     btnComment .setIcon(iconComment);
 }
@@ -97728,6 +98049,90 @@ extends OperatorWithValue
     }
 }
 
+
+
+class   OpSimpleMath
+extends OperatorWithValue
+{
+    paramOperation;
+    paramOperand;
+
+
+
+    constructor()
+    {
+        super(NUMBER_SIMPLE_MATH, 'math', 'math', '');
+
+        this.iconOffsetY      = -1;
+        this.alwaysLoadParams = true;
+        
+
+        this.addInput (new Input (NUMBER_TYPES));
+        this.addOutput(new Output([NUMBER_VALUE], this.output_genRequest));
+
+        this.addParam(this.paramValue);
+        this.addParam(this.paramOperation = new SelectParam('operation', '',        false, true, true, MATH_OPS.map(s => s[1]), 1));
+        this.addParam(this.paramOperand   = new NumberParam('operand',   'operand', false, true, true, 0));
+    }
+
+
+
+    output_genRequest(gen)
+    {
+        // 'this' is the output
+
+        gen.scope.push({
+            nodeId:  this.node.id, 
+            paramId: NULL });
+
+        const [request, ignore] = this.node.genRequestStart(gen);
+        if (ignore) return request;
+
+        
+        const input = this.node.inputs[0];
+
+
+        request.push(input.connected ? 1 : 0);
+        
+        if (input.connected)
+            request.push(...pushInputOrParam(input, gen));
+
+        
+        request.push(...this.node.paramOperation.genRequest(gen));
+        request.push(...this.node.paramOperand  .genRequest(gen));
+
+        
+        gen.scope.pop();
+        pushUnique(gen.passedNodes, this.node);
+
+        return request;
+    }
+
+
+
+    updateParams()
+    {
+        this.paramValue    .enableControlText(false, this.isUnknown());
+        this.paramOperation.enableControlText(true);
+        this.paramOperand  .enableControlText(true);
+
+        
+        switch (this.paramOperation.value.value)
+        {
+            case 0: this.icon = iconSubtract; this.iconOffsetY = -2; break;
+            case 1: this.icon = iconAdd;      this.iconOffsetY =  1; break;
+            case 2: this.icon = iconModulo;   this.iconOffsetY =  1; break;
+            case 3: this.icon = iconDivide;   this.iconOffsetY =  0; break;
+            case 4: this.icon = iconMultiply; this.iconOffsetY =  2; break;
+            case 5: this.icon = iconExponent; this.iconOffsetY = -2; break;
+        }
+
+        this.updateIcon();
+
+
+        this.updateParamControls();
+    }
+}
 
 
 class   OpArithmetic
@@ -115970,6 +116375,7 @@ function createNode(nodeType, creatingButton = null, createdNodeId = -1, options
         case START:                   node = new OpStart();             break;
         case REPEAT:                  node = new OpRepeat();            break;
         case CACHE:                   node = new OpCache();             break;
+        case DEFINE:                  node = new OpDefine();            break;
         case FREEZE:                  node = new OpFreeze();            break;
         case TIMER:                   node = new OpTimer();             break;
 
@@ -115982,7 +116388,6 @@ function createNode(nodeType, creatingButton = null, createdNodeId = -1, options
         case NUMBER_CONSTANT:         node = new OpConstant();          break;
         case NUMBER_DATETIME:         node = new OpDateTime();          break;
         
-        case DEFINE:           node = new OpDefine();            break;
         case NUMBER_DISTRIBUTE:       node = new OpDistribute();        break;
         case NUMBER_SEQUENCE:         node = new OpSequence();          break;
         case NUMBER_RANDOM:           node = new OpRandom();            break;
@@ -115995,6 +116400,7 @@ function createNode(nodeType, creatingButton = null, createdNodeId = -1, options
         case NUMBER_ANIMATE:          node = new OpAnimate();           break;
 
         case NUMBER_MATH:             node = new OpMath();              break;
+        case NUMBER_SIMPLE_MATH:      node = new OpSimpleMath();        break;
         case NUMBER_ADD:              node = new OpAdd();               break;
         case NUMBER_SUBTRACT:         node = new OpSubtract();          break;
         case NUMBER_MULTIPLY:         node = new OpMultiply();          break;

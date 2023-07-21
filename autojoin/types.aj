@@ -101,6 +101,7 @@
 ../generator/types/number/GAnimate.js
 
 ../generator/types/number/arithmetic/GMath.js
+../generator/types/number/arithmetic/GSimpleMath.js
 ../generator/types/number/arithmetic/GAdd.js
 ../generator/types/number/arithmetic/GSubtract.js
 ../generator/types/number/arithmetic/GMultiply.js

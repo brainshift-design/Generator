@@ -4,7 +4,7 @@
 
 
 
-const generatorVersion = 163;
+const generatorVersion = 164;
 
 
 const MAX_INT32        = 2147483647;
@@ -4610,6 +4610,7 @@ const NUMBER_SOLVE            = 'SOLVE';
 const NUMBER_ANIMATE          = 'NANIM';
 
 const NUMBER_MATH             = 'MATH';  
+const NUMBER_SIMPLE_MATH      = 'SMATH';  
 const NUMBER_ADD              = 'ADD';   
 const NUMBER_SUBTRACT         = 'SUB';   
 const NUMBER_MULTIPLY         = 'MUL';   
@@ -4640,6 +4641,7 @@ const NUMBER_TAN              = 'TAN';
 const MATH_TYPES =
 [
     NUMBER_MATH,
+    NUMBER_SIMPLE_MATH,
     NUMBER_ADD,
     NUMBER_SUBTRACT,
     NUMBER_MULTIPLY,
@@ -17118,6 +17120,141 @@ extends GArithmetic
         super.invalidateInputs(from);
 
         if (this.operation) this.operation.invalidateInputs(from);
+    }
+}
+
+
+
+class GSimpleMath
+extends GNumberType1
+{
+    operation;
+    operand;
+
+
+
+    constructor(nodeId, options)
+    {
+        super(NUMBER_SIMPLE_MATH, nodeId, options);
+    }
+
+
+    
+    copy()
+    {
+        const copy = new GRound(this.nodeId, this.options);
+
+        copy.copyBase(this);
+
+        copy.operation = this.operation.copy();
+        copy.operand   = this.operand  .copy();
+
+        return copy;
+    }
+
+
+
+    async eval(parse)
+    {
+        if (this.isCached())
+            return this;
+
+
+        this.value = new NumberValue(0);
+
+        
+        const op      = (await this.operation.eval(parse)).toValue();
+        const operand = (await this.operand  .eval(parse)).toValue();
+
+
+        if (this.input)
+        {
+            this.value = (await this.input.eval(parse)).toValue();
+
+            consoleAssert(
+                this.value.type == NUMBER_VALUE, 
+                'this.value.type must be NUMBER_VALUE');
+
+            
+            if (this.options.enabled)
+            {
+                op.value = Math.min(Math.max(0, op.value), MATH_OPS.length-1);
+
+                switch (op.value)
+                {
+                    case 0: 
+                        this.value = new NumberValue(
+                            this.value.value - operand.value,
+                            Math.max(this.value.decimals, operand.decimals));
+                        break;
+
+                    case 1: 
+                        this.value = new NumberValue(
+                            this.value.value + operand.value,
+                            Math.max(this.value.decimals, operand.decimals));
+                        break;
+
+                    case 2: 
+                        this.value = new NumberValue(
+                            this.value.value % operand.value,
+                            Math.max(this.value.decimals, operand.decimals));
+                        break;
+
+                    case 3: 
+                        this.value = new NumberValue(
+                            this.value.value / operand.value,
+                            Math.max(this.value.decimals, operand.decimals));
+                        break;
+
+                    case 4: 
+                        this.value = new NumberValue(
+                            this.value.value * operand.value,
+                            Math.max(this.value.decimals, operand.decimals));
+                        break;
+
+                    case 5: 
+                        this.value = new NumberValue(
+                            Math.pow(this.value.value, operand.value),
+                            Math.max(this.value.decimals, operand.decimals));
+                        break;
+                }
+            }
+        }
+        else
+            this.value = NumberValue.NaN;
+
+
+        this.updateValues =
+        [
+            ['value',     this.value],
+            ['operation', op        ],
+            ['operand',   operand   ]
+        ];
+
+
+        this.validate();
+
+        return this;
+    }
+
+
+
+    pushValueUpdates(parse)
+    {
+        super.pushValueUpdates(parse);
+
+        if (this.operation) this.operation.pushValueUpdates(parse);
+        if (this.operand  ) this.operand  .pushValueUpdates(parse);
+    }
+
+
+
+    invalidateInputs(from)
+    {
+        super.invalidateInputs(from);
+
+        if (this.operation) this.operation.invalidateInputs(from);
+        if (this.operand  ) this.operand  .invalidateInputs(from);
     }
 }
 
@@ -31658,6 +31795,53 @@ function genParseMath(parse, newNode)
 
 
 
+function genParseSimpleMath(parse)
+{
+    const [, nodeId, options, ignore] = genParseNodeStart(parse);
+
+
+    const smath = new GSimpleMath(nodeId, options);
+   
+
+    let nInputs = -1;
+    
+    if (!ignore)
+    {
+        nInputs = parseInt(parse.move());
+        consoleAssert(nInputs == 0 || nInputs == 1, 'nInputs must be [0, 1]');
+    }
+
+    
+    if (parse.settings.logRequests) 
+        logReq(smath, parse, ignore, nInputs);
+
+
+    if (ignore) 
+    {
+        genParseNodeEnd(parse, smath);
+        return parse.parsedNodes.find(n => n.nodeId == nodeId);
+    }
+
+
+    parse.nTab++;
+
+
+    if (nInputs == 1)
+        smath.input = genParse(parse);
+
+    smath.operation = genParse(parse);
+    smath.operand   = genParse(parse);
+
+    
+    parse.nTab--;
+
+
+    genParseNodeEnd(parse, smath);
+    return smath;
+}
+
+
+
 function genParseArithmetic(parse, newNode)
 {
     const [type, nodeId, options, ignore] = genParseNodeStart(parse);
@@ -34684,6 +34868,7 @@ function genParse(parse, inParam = true)
     else if (parse.next == START                  ) result = genParseStart            (parse);
     else if (parse.next == REPEAT                 ) result = genParseRepeat           (parse);
     else if (parse.next == CACHE                  ) result = genParseCache            (parse);
+    else if (parse.next == DEFINE                 ) result = genParseDefine           (parse);
     else if (parse.next == FREEZE                 ) result = genParseFreeze           (parse);
     else if (parse.next == TIMER                  ) result = genParseTimer            (parse);
      
@@ -34700,7 +34885,6 @@ function genParse(parse, inParam = true)
     else if (parse.next == NUMBER_PROBABILITY     ) result = genParseProbability      (parse);
     else if (parse.next == NUMBER_CONSTANT        ) result = genParseConstant         (parse);
     else if (parse.next == NUMBER_DATETIME        ) result = genParseDateTime         (parse);
-    else if (parse.next == DEFINE          ) result = genParseDefine            (parse);
     else if (parse.next == NUMBER_DISTRIBUTE      ) result = genParseDistribute       (parse);
     else if (parse.next == NUMBER_SEQUENCE        ) result = genParseSequence         (parse);
     else if (parse.next == NUMBER_INTERPOLATE     ) result = genParseInterpolate      (parse);
@@ -34708,6 +34892,7 @@ function genParse(parse, inParam = true)
     else if (parse.next == NUMBER_ANIMATE         ) result = genParseAnimate          (parse);
     
     else if (parse.next == NUMBER_MATH            ) result = genParseMath             (parse, (nodeId, options) => new GMath          (nodeId, options));
+    else if (parse.next == NUMBER_SIMPLE_MATH     ) result = genParseSimpleMath       (parse, (nodeId, options) => new GMath          (nodeId, options));
     else if (parse.next == NUMBER_ADD             ) result = genParseArithmetic       (parse, (nodeId, options) => new GAdd           (nodeId, options));
     else if (parse.next == NUMBER_SUBTRACT        ) result = genParseArithmetic       (parse, (nodeId, options) => new GSubtract      (nodeId, options));
     else if (parse.next == NUMBER_MULTIPLY        ) result = genParseArithmetic       (parse, (nodeId, options) => new GMultiply      (nodeId, options));

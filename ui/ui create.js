@@ -12,6 +12,7 @@ function createNode(nodeType, creatingButton = null, createdNodeId = -1, options
         case START:                   node = new OpStart();             break;
         case REPEAT:                  node = new OpRepeat();            break;
         case CACHE:                   node = new OpCache();             break;
+        case DEFINE:                  node = new OpDefine();            break;
         case FREEZE:                  node = new OpFreeze();            break;
         case TIMER:                   node = new OpTimer();             break;
 
@@ -24,7 +25,6 @@ function createNode(nodeType, creatingButton = null, createdNodeId = -1, options
         case NUMBER_CONSTANT:         node = new OpConstant();          break;
         case NUMBER_DATETIME:         node = new OpDateTime();          break;
         
-        case DEFINE:           node = new OpDefine();            break;
         case NUMBER_DISTRIBUTE:       node = new OpDistribute();        break;
         case NUMBER_SEQUENCE:         node = new OpSequence();          break;
         case NUMBER_RANDOM:           node = new OpRandom();            break;
@@ -37,6 +37,7 @@ function createNode(nodeType, creatingButton = null, createdNodeId = -1, options
         case NUMBER_ANIMATE:          node = new OpAnimate();           break;
 
         case NUMBER_MATH:             node = new OpMath();              break;
+        case NUMBER_SIMPLE_MATH:      node = new OpSimpleMath();        break;
         case NUMBER_ADD:              node = new OpAdd();               break;
         case NUMBER_SUBTRACT:         node = new OpSubtract();          break;
         case NUMBER_MULTIPLY:         node = new OpMultiply();          break;
