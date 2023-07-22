@@ -88,7 +88,6 @@ extends GOperator
                 let   showProgress = false;
 
 
-                console.log('this.options =', this.options);
                 const nRepeats = 
                        this.options.enabled 
                     && (   this.options.active

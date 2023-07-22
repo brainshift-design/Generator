@@ -162,20 +162,25 @@ Operator.prototype.createHeader = function()
             graphView.selectFromClick(this, getCtrlKey(e), e.shiftKey, e.altKey);
                         
 
-            this.sx = e.clientX;
-            this.sy = e.clientY;
-
-            for (const n of graphView.selectedNodes)
+            try
             {
-                n.slx = n.div.offsetLeft;
-                n.sly = n.div.offsetTop;
+                this.header.setPointerCapture(e.pointerId);
+
+                this.sx = e.clientX;
+                this.sy = e.clientY;
+
+                for (const n of graphView.selectedNodes)
+                {
+                    n.slx = n.div.offsetLeft;
+                    n.sly = n.div.offsetTop;
+                }
+
+
+                nodesAltCopied = false;
+
+                this.div.dragging = true;
             }
-
-
-            nodesAltCopied = false;
-
-            this.div.dragging = true;
-            this.header.setPointerCapture(e.pointerId);
+            catch {}
         }
 
         else if (e.button == 2)
@@ -557,13 +562,18 @@ function altCopyNodes(_this, e)
     graphView.selectedNodes[thisIndex].div.dragging = true;
 
     prevSelected           [thisIndex].header.releasePointerCapture(e.pointerId);
-    graphView.selectedNodes[thisIndex].header.setPointerCapture(e.pointerId);
 
-    for (let i = 0; i < prevSelected.length; i++)
+    try
     {
-        graphView.selectedNodes[i].slx = prevSelected[i].div.offsetLeft;
-        graphView.selectedNodes[i].sly = prevSelected[i].div.offsetTop;
-    }
+        graphView.selectedNodes[thisIndex].header.setPointerCapture(e.pointerId);
 
-    nodesAltCopied = true;
+        for (let i = 0; i < prevSelected.length; i++)
+        {
+            graphView.selectedNodes[i].slx = prevSelected[i].div.offsetLeft;
+            graphView.selectedNodes[i].sly = prevSelected[i].div.offsetTop;
+        }
+
+        nodesAltCopied = true;
+    }
+    catch {}
 }

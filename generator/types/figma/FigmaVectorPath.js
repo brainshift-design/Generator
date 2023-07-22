@@ -77,10 +77,23 @@ extends FigmaShape
 
 
 
+    copyBase(base)
+    {
+        super.copyBase(base);
+
+        if (base.points) this.points = base.points.map(p => p.copy());
+    }
+
+
+
     updatePoints(xform, space)
     {
         for (let i = 0; i < this.points.length; i++)
-            this.points[i] = PointValue.fromPoint(this.nodeId, transformPoint(this.points[i].toPoint(), xform, space));
+        {
+            let p = this.points[i].toPoint();
+            p = transformPoint(p, xform, space);
+            this.points[i] = PointValue.fromPoint(this.nodeId, p);
+        }
     }
 
 

@@ -161,12 +161,7 @@ class FigmaObject
         }
         else if (this.type == VECTOR_PATH)
         {
-            for (let i = 0; i < this.points.length; i++)
-            {
-                let p = this.points[i].toPoint();
-                p = transformPoint(p, xform, space);
-                this.points[i] = PointValue.fromPoint(this.nodeId, p);
-            }
+            this.updatePoints(xform, space);
 
             if (affectSpace)
                 this.applySpaceTransform(xform, space);

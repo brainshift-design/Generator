@@ -53,6 +53,13 @@ function nozerov(v)
 }
 
 
+function equal(a, b, eps = Epsilon)
+{
+    return Math.abs(b - a) < eps;
+}
+
+
+
 function sqr (x) { return x*x;   };
 function cube(x) { return x*x*x; };
  
@@ -1203,13 +1210,6 @@ function getQueryVariable(strVar)
 
 const phi = (Math.sqrt(5) - 1) / 2; // 0.618
 const Phi = (Math.sqrt(5) + 1) / 2; // 1.618
-
-
-
-function equal(a, b, eps = Epsilon)
-{
-    return Math.abs(b - a) < eps;
-}
 
 
 
@@ -5448,12 +5448,7 @@ class FigmaObject
         }
         else if (this.type == VECTOR_PATH)
         {
-            for (let i = 0; i < this.points.length; i++)
-            {
-                let p = this.points[i].toPoint();
-                p = transformPoint(p, xform, space);
-                this.points[i] = PointValue.fromPoint(this.nodeId, p);
-            }
+            this.updatePoints(xform, space);
 
             if (affectSpace)
                 this.applySpaceTransform(xform, space);
@@ -6442,10 +6437,23 @@ extends FigmaShape
 
 
 
+    copyBase(base)
+    {
+        super.copyBase(base);
+
+        if (base.points) this.points = base.points.map(p => p.copy());
+    }
+
+
+
     updatePoints(xform, space)
     {
         for (let i = 0; i < this.points.length; i++)
-            this.points[i] = PointValue.fromPoint(this.nodeId, transformPoint(this.points[i].toPoint(), xform, space));
+        {
+            let p = this.points[i].toPoint();
+            p = transformPoint(p, xform, space);
+            this.points[i] = PointValue.fromPoint(this.nodeId, p);
+        }
     }
 
 
@@ -14401,7 +14409,6 @@ extends GOperator
                 let   showProgress = false;
 
 
-                console.log('this.options =', this.options);
                 const nRepeats = 
                        this.options.enabled 
                     && (   this.options.active
@@ -17335,9 +17342,12 @@ extends GNumberType1
                         break;
 
                     case 3: 
-                        this.value = new NumberValue(
-                            this.value.value / operand.value,
-                            Math.max(this.value.decimals, operand.decimals));
+                        if (operand.value == 0)
+                            this.value = NumberValue.NaN;
+                        else
+                            this.value = new NumberValue(
+                                this.value.value / operand.value,
+                                Math.max(this.value.decimals, operand.decimals));
                         break;
 
                     case 4: 
@@ -27742,17 +27752,19 @@ extends GOperator1
                     createTransform(-cx, -cy));
 
                 
-            const objects = [...this.value.objects]; // avoids infinite growth
-
-            for (const obj of objects)
+            for (const obj of this.value.objects)
             {
                 obj.nodeId   = this.nodeId;
                 obj.objectId = obj.objectId + OBJECT_SEPARATOR + this.nodeId;
 
+                obj.applyTransform(xform, affectSpace > 0);
+            }
 
-                obj.applyTransform(xform, affectSpace > 0, false);
 
+            const objects = [...this.value.objects]; // avoids infinite growth
 
+            for (const obj of objects)
+            {
                 if (showCenter > 0)
                     addObjectCenter(this, obj, parse.viewportZoom);
             }
@@ -27862,46 +27874,25 @@ extends GOperator1
             return bounds;
 
 
-        // const singlePoint = 
-        //        this.value.objects.length == 1 
-        //     && this.value.objects[0].type == POINT;
-
-
-        // let _cx = options.centerX.value;
-        // let _cy = options.centerY.value;
-
-        // if (!singlePoint)
-        // {
-        //     _cx /= 100;
-        //     _cy /= 100;
-        // }
-
-
-        //const cx = singlePoint ? this.value.objects[0].x + _cx : bounds.x + _cx * bounds.width ;
-        //const cy = singlePoint ? this.value.objects[0].y + _cy : bounds.y + _cy * bounds.height;
-
-
         const xform = getXform();
-        // mulm3m3(
-        //     createTransform(cx, cy),
-        //     getXform(),
-        //     createTransform(-cx, -cy));
+
+
+        for (const obj of this.value.objects)
+        {
+            obj.nodeId   = this.nodeId;
+            obj.objectId = obj.objectId + OBJECT_SEPARATOR + this.nodeId;
+
+            obj.applyTransform(xform, options.affectSpace.value > 0);
+
+            obj.scaleCorners *= Math.abs(scaleCorners);
+            obj.scaleStyle   *= Math.abs(scaleStyle);
+        }
 
 
         const objects = [...this.value.objects];
 
         for (const obj of objects)
         {
-            obj.nodeId   = this.nodeId;
-            obj.objectId = obj.objectId + OBJECT_SEPARATOR + this.nodeId;
-
-
-            obj.applyTransform(xform, options.affectSpace.value > 0, false);
-
-            obj.scaleCorners *= Math.abs(scaleCorners);
-            obj.scaleStyle   *= Math.abs(scaleStyle);
-
-
             if (options.showCenter.value > 0)
                 addObjectCenter(this, obj, parse.viewportZoom);
         }

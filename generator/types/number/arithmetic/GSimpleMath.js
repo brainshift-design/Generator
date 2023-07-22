@@ -74,9 +74,12 @@ extends GNumberType1
                         break;
 
                     case 3: 
-                        this.value = new NumberValue(
-                            this.value.value / operand.value,
-                            Math.max(this.value.decimals, operand.decimals));
+                        if (operand.value == 0)
+                            this.value = NumberValue.NaN;
+                        else
+                            this.value = new NumberValue(
+                                this.value.value / operand.value,
+                                Math.max(this.value.decimals, operand.decimals));
                         break;
 
                     case 4: 

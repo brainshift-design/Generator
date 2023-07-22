@@ -100,16 +100,20 @@ function initSelect(select, items)
         {
             e.preventDefault();
             e.stopPropagation();
-            
-            select.buttonDown0 = true;        
-            select.setPointerCapture(e.pointerId);
-            
-            select.holding = false;
-            setTimeout(function() { onSelectClickTimer(select); }, 200);
-            
-            select.menu.hoverIndex = select.getSelectedIndex();
 
-            select.showMenu();
+            try
+            {
+                select.buttonDown0 = true;        
+                select.setPointerCapture(e.pointerId);
+                
+                select.holding = false;
+                setTimeout(function() { onSelectClickTimer(select); }, 200);
+                
+                select.menu.hoverIndex = select.getSelectedIndex();
+
+                select.showMenu();
+            }
+            catch {}
         }        
     });        
     

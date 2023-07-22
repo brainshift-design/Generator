@@ -92,14 +92,18 @@ extends OperatorBase
                 e.preventDefault();
 
 
-                sizer.startRect = offsetRect(this.div);
-                sizer.resizing  = true;
+                try
+                {
+                    sizer.setPointerCapture(e.pointerId);
+
+                    sizer.startRect = offsetRect(this.div);
+                    sizer.resizing  = true;
 
                 
-                sizer.setPointerCapture(e.pointerId);
-
-                sizer.sx = e.clientX;
-                sizer.sy = e.clientY;
+                    sizer.sx = e.clientX;
+                    sizer.sy = e.clientY;
+                }
+                catch {}
             }        
         });
 

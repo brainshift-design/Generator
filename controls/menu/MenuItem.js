@@ -136,8 +136,13 @@ class MenuItem
             if (e.button == 0)
             {
                 this.button0   = true;
-                this.dragStart = point(e.clientX, e.clientY);
-                this.div.setPointerCapture(e.pointerId);
+
+                try
+                {
+                    this.div.setPointerCapture(e.pointerId);
+                    this.dragStart = point(e.clientX, e.clientY);
+                }
+                catch {}
             }
         });
 
@@ -211,12 +216,16 @@ class MenuItem
                     node.slx = node.div.offsetLeft - (defNodeWidth    / 2) - (               + graph.currentPage.pan.x) / graph.currentPage.zoom;
                     node.sly = node.div.offsetTop  - (defHeaderHeight / 2) - (getTopHeight() + graph.currentPage.pan.y) / graph.currentPage.zoom;
 
-                    node.div.dragging = true;
+                    try
+                    {
+                        if (this.div.hasPointerCapture(e.pointerId))
+                            this.div.releasePointerCapture(e.pointerId);
 
-                    if (this.div.hasPointerCapture(e.pointerId))
-                        this.div.releasePointerCapture(e.pointerId);
+                        node.header.setPointerCapture(e.pointerId);
 
-                    node.header.setPointerCapture(e.pointerId);
+                        node.div.dragging = true;
+                    }
+                    catch {}
                 }
                 else
                 {

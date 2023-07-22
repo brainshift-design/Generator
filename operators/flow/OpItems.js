@@ -43,12 +43,16 @@ extends ResizableBase
             {
                 e.stopPropagation();
 
-                this.scrollbar.down = true;
+                try
+                {
+                    this.scrollbar.setPointerCapture(e.pointerId);
 
-                this.scrollbar.sy  =  e.clientY;
-                this.scrollbar.spy = -this.scroll;
+                    this.scrollbar.down = true;
 
-                this.scrollbar.setPointerCapture(e.pointerId);
+                    this.scrollbar.sy  =  e.clientY;
+                    this.scrollbar.spy = -this.scroll;
+                }
+                catch {}
             }
         });
 

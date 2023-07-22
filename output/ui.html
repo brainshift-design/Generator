@@ -4594,6 +4594,7 @@ a
             <div id='whatsNewBody'>
                 <h1 style='margin-top: 20px;'>What's new</h1>
 
+                <p>•  fixed trapeze transformation issue</p>
                 <p>•  small performance tweaks</p>
                 
                 <p><br/><br/><div id='chkHideWhatsNew'></div></p>
@@ -4969,6 +4970,13 @@ function nozerov(v)
         nozero(v.x), 
         nozero(v.y)); 
 }
+
+
+function equal(a, b, eps = Epsilon)
+{
+    return Math.abs(b - a) < eps;
+}
+
 
 
 function sqr (x) { return x*x;   };
@@ -6121,13 +6129,6 @@ function getQueryVariable(strVar)
 
 const phi = (Math.sqrt(5) - 1) / 2; // 0.618
 const Phi = (Math.sqrt(5) + 1) / 2; // 1.618
-
-
-
-function equal(a, b, eps = Epsilon)
-{
-    return Math.abs(b - a) < eps;
-}
 
 
 
@@ -10366,12 +10367,7 @@ class FigmaObject
         }
         else if (this.type == VECTOR_PATH)
         {
-            for (let i = 0; i < this.points.length; i++)
-            {
-                let p = this.points[i].toPoint();
-                p = transformPoint(p, xform, space);
-                this.points[i] = PointValue.fromPoint(this.nodeId, p);
-            }
+            this.updatePoints(xform, space);
 
             if (affectSpace)
                 this.applySpaceTransform(xform, space);
@@ -11360,10 +11356,23 @@ extends FigmaShape
 
 
 
+    copyBase(base)
+    {
+        super.copyBase(base);
+
+        if (base.points) this.points = base.points.map(p => p.copy());
+    }
+
+
+
     updatePoints(xform, space)
     {
         for (let i = 0; i < this.points.length; i++)
-            this.points[i] = PointValue.fromPoint(this.nodeId, transformPoint(this.points[i].toPoint(), xform, space));
+        {
+            let p = this.points[i].toPoint();
+            p = transformPoint(p, xform, space);
+            this.points[i] = PointValue.fromPoint(this.nodeId, p);
+        }
     }
 
 
@@ -19319,7 +19328,6 @@ extends GOperator
                 let   showProgress = false;
 
 
-                console.log('this.options =', this.options);
                 const nRepeats = 
                        this.options.enabled 
                     && (   this.options.active
@@ -22253,9 +22261,12 @@ extends GNumberType1
                         break;
 
                     case 3: 
-                        this.value = new NumberValue(
-                            this.value.value / operand.value,
-                            Math.max(this.value.decimals, operand.decimals));
+                        if (operand.value == 0)
+                            this.value = NumberValue.NaN;
+                        else
+                            this.value = new NumberValue(
+                                this.value.value / operand.value,
+                                Math.max(this.value.decimals, operand.decimals));
                         break;
 
                     case 4: 
@@ -32660,17 +32671,19 @@ extends GOperator1
                     createTransform(-cx, -cy));
 
                 
-            const objects = [...this.value.objects]; // avoids infinite growth
-
-            for (const obj of objects)
+            for (const obj of this.value.objects)
             {
                 obj.nodeId   = this.nodeId;
                 obj.objectId = obj.objectId + OBJECT_SEPARATOR + this.nodeId;
 
+                obj.applyTransform(xform, affectSpace > 0);
+            }
 
-                obj.applyTransform(xform, affectSpace > 0, false);
 
+            const objects = [...this.value.objects]; // avoids infinite growth
 
+            for (const obj of objects)
+            {
                 if (showCenter > 0)
                     addObjectCenter(this, obj, parse.viewportZoom);
             }
@@ -32780,46 +32793,25 @@ extends GOperator1
             return bounds;
 
 
-        // const singlePoint = 
-        //        this.value.objects.length == 1 
-        //     && this.value.objects[0].type == POINT;
-
-
-        // let _cx = options.centerX.value;
-        // let _cy = options.centerY.value;
-
-        // if (!singlePoint)
-        // {
-        //     _cx /= 100;
-        //     _cy /= 100;
-        // }
-
-
-        //const cx = singlePoint ? this.value.objects[0].x + _cx : bounds.x + _cx * bounds.width ;
-        //const cy = singlePoint ? this.value.objects[0].y + _cy : bounds.y + _cy * bounds.height;
-
-
         const xform = getXform();
-        // mulm3m3(
-        //     createTransform(cx, cy),
-        //     getXform(),
-        //     createTransform(-cx, -cy));
+
+
+        for (const obj of this.value.objects)
+        {
+            obj.nodeId   = this.nodeId;
+            obj.objectId = obj.objectId + OBJECT_SEPARATOR + this.nodeId;
+
+            obj.applyTransform(xform, options.affectSpace.value > 0);
+
+            obj.scaleCorners *= Math.abs(scaleCorners);
+            obj.scaleStyle   *= Math.abs(scaleStyle);
+        }
 
 
         const objects = [...this.value.objects];
 
         for (const obj of objects)
         {
-            obj.nodeId   = this.nodeId;
-            obj.objectId = obj.objectId + OBJECT_SEPARATOR + this.nodeId;
-
-
-            obj.applyTransform(xform, options.affectSpace.value > 0, false);
-
-            obj.scaleCorners *= Math.abs(scaleCorners);
-            obj.scaleStyle   *= Math.abs(scaleStyle);
-
-
             if (options.showCenter.value > 0)
                 addObjectCenter(this, obj, parse.viewportZoom);
         }
@@ -43450,6 +43442,13 @@ function nozerov(v)
 }
 
 
+function equal(a, b, eps = Epsilon)
+{
+    return Math.abs(b - a) < eps;
+}
+
+
+
 function sqr (x) { return x*x;   };
 function cube(x) { return x*x*x; };
  
@@ -44600,13 +44599,6 @@ function getQueryVariable(strVar)
 
 const phi = (Math.sqrt(5) - 1) / 2; // 0.618
 const Phi = (Math.sqrt(5) + 1) / 2; // 1.618
-
-
-
-function equal(a, b, eps = Epsilon)
-{
-    return Math.abs(b - a) < eps;
-}
 
 
 
@@ -51029,12 +51021,7 @@ class FigmaObject
         }
         else if (this.type == VECTOR_PATH)
         {
-            for (let i = 0; i < this.points.length; i++)
-            {
-                let p = this.points[i].toPoint();
-                p = transformPoint(p, xform, space);
-                this.points[i] = PointValue.fromPoint(this.nodeId, p);
-            }
+            this.updatePoints(xform, space);
 
             if (affectSpace)
                 this.applySpaceTransform(xform, space);
@@ -52023,10 +52010,23 @@ extends FigmaShape
 
 
 
+    copyBase(base)
+    {
+        super.copyBase(base);
+
+        if (base.points) this.points = base.points.map(p => p.copy());
+    }
+
+
+
     updatePoints(xform, space)
     {
         for (let i = 0; i < this.points.length; i++)
-            this.points[i] = PointValue.fromPoint(this.nodeId, transformPoint(this.points[i].toPoint(), xform, space));
+        {
+            let p = this.points[i].toPoint();
+            p = transformPoint(p, xform, space);
+            this.points[i] = PointValue.fromPoint(this.nodeId, p);
+        }
     }
 
 
@@ -59982,7 +59982,6 @@ extends GOperator
                 let   showProgress = false;
 
 
-                console.log('this.options =', this.options);
                 const nRepeats = 
                        this.options.enabled 
                     && (   this.options.active
@@ -62916,9 +62915,12 @@ extends GNumberType1
                         break;
 
                     case 3: 
-                        this.value = new NumberValue(
-                            this.value.value / operand.value,
-                            Math.max(this.value.decimals, operand.decimals));
+                        if (operand.value == 0)
+                            this.value = NumberValue.NaN;
+                        else
+                            this.value = new NumberValue(
+                                this.value.value / operand.value,
+                                Math.max(this.value.decimals, operand.decimals));
                         break;
 
                     case 4: 
@@ -73323,17 +73325,19 @@ extends GOperator1
                     createTransform(-cx, -cy));
 
                 
-            const objects = [...this.value.objects]; // avoids infinite growth
-
-            for (const obj of objects)
+            for (const obj of this.value.objects)
             {
                 obj.nodeId   = this.nodeId;
                 obj.objectId = obj.objectId + OBJECT_SEPARATOR + this.nodeId;
 
+                obj.applyTransform(xform, affectSpace > 0);
+            }
 
-                obj.applyTransform(xform, affectSpace > 0, false);
 
+            const objects = [...this.value.objects]; // avoids infinite growth
 
+            for (const obj of objects)
+            {
                 if (showCenter > 0)
                     addObjectCenter(this, obj, parse.viewportZoom);
             }
@@ -73443,46 +73447,25 @@ extends GOperator1
             return bounds;
 
 
-        // const singlePoint = 
-        //        this.value.objects.length == 1 
-        //     && this.value.objects[0].type == POINT;
-
-
-        // let _cx = options.centerX.value;
-        // let _cy = options.centerY.value;
-
-        // if (!singlePoint)
-        // {
-        //     _cx /= 100;
-        //     _cy /= 100;
-        // }
-
-
-        //const cx = singlePoint ? this.value.objects[0].x + _cx : bounds.x + _cx * bounds.width ;
-        //const cy = singlePoint ? this.value.objects[0].y + _cy : bounds.y + _cy * bounds.height;
-
-
         const xform = getXform();
-        // mulm3m3(
-        //     createTransform(cx, cy),
-        //     getXform(),
-        //     createTransform(-cx, -cy));
+
+
+        for (const obj of this.value.objects)
+        {
+            obj.nodeId   = this.nodeId;
+            obj.objectId = obj.objectId + OBJECT_SEPARATOR + this.nodeId;
+
+            obj.applyTransform(xform, options.affectSpace.value > 0);
+
+            obj.scaleCorners *= Math.abs(scaleCorners);
+            obj.scaleStyle   *= Math.abs(scaleStyle);
+        }
 
 
         const objects = [...this.value.objects];
 
         for (const obj of objects)
         {
-            obj.nodeId   = this.nodeId;
-            obj.objectId = obj.objectId + OBJECT_SEPARATOR + this.nodeId;
-
-
-            obj.applyTransform(xform, options.affectSpace.value > 0, false);
-
-            obj.scaleCorners *= Math.abs(scaleCorners);
-            obj.scaleStyle   *= Math.abs(scaleStyle);
-
-
             if (options.showCenter.value > 0)
                 addObjectCenter(this, obj, parse.viewportZoom);
         }
@@ -80063,8 +80046,13 @@ class MenuItem
             if (e.button == 0)
             {
                 this.button0   = true;
-                this.dragStart = point(e.clientX, e.clientY);
-                this.div.setPointerCapture(e.pointerId);
+
+                try
+                {
+                    this.div.setPointerCapture(e.pointerId);
+                    this.dragStart = point(e.clientX, e.clientY);
+                }
+                catch {}
             }
         });
 
@@ -80138,12 +80126,16 @@ class MenuItem
                     node.slx = node.div.offsetLeft - (defNodeWidth    / 2) - (               + graph.currentPage.pan.x) / graph.currentPage.zoom;
                     node.sly = node.div.offsetTop  - (defHeaderHeight / 2) - (getTopHeight() + graph.currentPage.pan.y) / graph.currentPage.zoom;
 
-                    node.div.dragging = true;
+                    try
+                    {
+                        if (this.div.hasPointerCapture(e.pointerId))
+                            this.div.releasePointerCapture(e.pointerId);
 
-                    if (this.div.hasPointerCapture(e.pointerId))
-                        this.div.releasePointerCapture(e.pointerId);
+                        node.header.setPointerCapture(e.pointerId);
 
-                    node.header.setPointerCapture(e.pointerId);
+                        node.div.dragging = true;
+                    }
+                    catch {}
                 }
                 else
                 {
@@ -81320,9 +81312,13 @@ function createToggleButton(width, height)
     {
         e.stopPropagation();
 
-        btn.setPointerCapture(e.pointerId);
-        btn.enabled = !btn.enabled;
-        btn.updateBackground(true);
+        try
+        {
+            btn.setPointerCapture(e.pointerId);
+            btn.enabled = !btn.enabled;
+            btn.updateBackground(true);
+        }
+        catch {}
     });
 
 
@@ -81718,15 +81714,19 @@ function initMenuSelect(select)
 
             if (e.clientX > rect.width - 20)
             {
-                select.buttonDown0 = true;        
-                select.setPointerCapture(e.pointerId);
-                
-                select.holding = false;
-                setTimeout(function() { onSelectClickTimer(select); }, 200);
-                
-                select.menu.hoverIndex = select.getSelectedIndex();
+                try
+                {
+                    select.setPointerCapture(e.pointerId);
+                    select.buttonDown0 = true;        
+                    
+                    select.holding = false;
+                    setTimeout(function() { onSelectClickTimer(select); }, 200);
+                    
+                    select.menu.hoverIndex = select.getSelectedIndex();
 
-                select.showMenu();
+                    select.showMenu();
+                }
+                catch {}
             }
             else
                 select.showTextbox();
@@ -82080,16 +82080,20 @@ function initSelect(select, items)
         {
             e.preventDefault();
             e.stopPropagation();
-            
-            select.buttonDown0 = true;        
-            select.setPointerCapture(e.pointerId);
-            
-            select.holding = false;
-            setTimeout(function() { onSelectClickTimer(select); }, 200);
-            
-            select.menu.hoverIndex = select.getSelectedIndex();
 
-            select.showMenu();
+            try
+            {
+                select.buttonDown0 = true;        
+                select.setPointerCapture(e.pointerId);
+                
+                select.holding = false;
+                setTimeout(function() { onSelectClickTimer(select); }, 200);
+                
+                select.menu.hoverIndex = select.getSelectedIndex();
+
+                select.showMenu();
+            }
+            catch {}
         }        
     });        
     
@@ -83403,12 +83407,10 @@ GraphView.prototype.createEvents = function()
 
     this.div.addEventListener('pointerleave', e => 
     {
-        //try
-        //{
-            if (this.tempConn)
-                this.div.setPointerCapture(e.pointerId);
-                //}
-        //catch (e) {}
+        if (this.tempConn)
+        {
+            try { this.div.setPointerCapture(e.pointerId); } catch {}
+        }
     });
 
 
@@ -83841,12 +83843,16 @@ GraphView.prototype.updatePanAndZoom = function(updateNodes)
 
 GraphView.prototype.startPan = function(pointerId)
 {
-    this.div.setPointerCapture(pointerId);
+    try 
+    {
+        this.div.setPointerCapture(pointerId);
 
-    this.panning  = true;
-    this.panStart = graph.currentPage.pan;
+        this.panning  = true;
+        this.panStart = graph.currentPage.pan;
 
-    setCursor(panCursor);
+        setCursor(panCursor);
+    }
+    catch {}
 };
 
 
@@ -83887,14 +83893,18 @@ GraphView.prototype.isPanning = function(e)
 
 GraphView.prototype.startZoomSelection = function(pointerId, x, y)
 {
-    this.div.setPointerCapture(pointerId);
+    try
+    {
+        this.div.setPointerCapture(pointerId);
 
-    this.zoomSelecting = true;
-    this.selectionRect = new Rect(x, y, 0, 0);
-    
-    selectBox.style.visibility = 'visible';
-    
-    this.updateZoomSelectBox();
+        this.zoomSelecting = true;
+        this.selectionRect = new Rect(x, y, 0, 0);
+        
+        selectBox.style.visibility = 'visible';
+        
+        this.updateZoomSelectBox();
+    }
+    catch {}
 };
 
 
@@ -84100,16 +84110,20 @@ GraphView.prototype.selectByIds = function(nodeIds)
 
 GraphView.prototype.startSelection = function(pointerId, x, y, shiftKey, ctrlKey)
 {
-    this.div.setPointerCapture(pointerId);
+    try
+    {
+        this.div.setPointerCapture(pointerId);
 
-    this.selecting = true;
+        this.selecting = true;
 
-    this.selectionRect = new Rect(x, y, 0, 0);
-    this._prevSelectedNodes = [];
-   
-    selectBox.style.visibility = 'visible';
+        this.selectionRect = new Rect(x, y, 0, 0);
+        this._prevSelectedNodes = [];
+    
+        selectBox.style.visibility = 'visible';
 
-    this.updateSelectBox(shiftKey, ctrlKey);
+        this.updateSelectBox(shiftKey, ctrlKey);
+    }
+    catch {}
 };
 
 
@@ -84373,16 +84387,21 @@ GraphView.prototype.createScrollbarMethods = function()
     {
         if (e.button == 0)
         {
-            this.scrollbarX.moving = true;
-            this.scrollbarX.xStart = this.scrollbarX.offsetLeft;
-            this.scrollbarX.wStart = this.scrollbarX.offsetWidth;
-            this.scrollbarX.pStart = e.clientX;
-            this.scrollbarX.setPointerCapture(e.pointerId);
+            try
+            {
+                this.scrollbarX.setPointerCapture(e.pointerId);
 
-            this.panStart = graph.currentPage.pan;
+                this.scrollbarX.moving = true;
+                this.scrollbarX.xStart = this.scrollbarX.offsetLeft;
+                this.scrollbarX.wStart = this.scrollbarX.offsetWidth;
+                this.scrollbarX.pStart = e.clientX;
 
-            for (const node of graph.pageNodes)
-                node.slx = node.div.offsetLeft;
+                this.panStart = graph.currentPage.pan;
+
+                for (const node of graph.pageNodes)
+                    node.slx = node.div.offsetLeft;
+            }
+            catch {}
         }
     });
 
@@ -84442,16 +84461,21 @@ GraphView.prototype.createScrollbarMethods = function()
     {
         if (e.button == 0)
         {
-            this.scrollbarY.moving = true;
-            this.scrollbarY.yStart = this.scrollbarY.offsetTop;
-            this.scrollbarY.hStart = this.scrollbarY.offsetHeight;
-            this.scrollbarY.pStart = e.clientY;
-            this.scrollbarY.setPointerCapture(e.pointerId);
+            try
+            {
+                this.scrollbarY.setPointerCapture(e.pointerId);
 
-            for (const node of graph.pageNodes)
-                node.div.sly = node.div.offsetTop;
+                this.scrollbarY.moving = true;
+                this.scrollbarY.yStart = this.scrollbarY.offsetTop;
+                this.scrollbarY.hStart = this.scrollbarY.offsetHeight;
+                this.scrollbarY.pStart = e.clientY;
 
-            this.panStart = graph.currentPage.pan;
+                for (const node of graph.pageNodes)
+                    node.div.sly = node.div.offsetTop;
+
+                this.panStart = graph.currentPage.pan;
+            }
+            catch {}
         }
     });
 
@@ -93255,20 +93279,25 @@ Operator.prototype.createHeader = function()
             graphView.selectFromClick(this, getCtrlKey(e), e.shiftKey, e.altKey);
                         
 
-            this.sx = e.clientX;
-            this.sy = e.clientY;
-
-            for (const n of graphView.selectedNodes)
+            try
             {
-                n.slx = n.div.offsetLeft;
-                n.sly = n.div.offsetTop;
+                this.header.setPointerCapture(e.pointerId);
+
+                this.sx = e.clientX;
+                this.sy = e.clientY;
+
+                for (const n of graphView.selectedNodes)
+                {
+                    n.slx = n.div.offsetLeft;
+                    n.sly = n.div.offsetTop;
+                }
+
+
+                nodesAltCopied = false;
+
+                this.div.dragging = true;
             }
-
-
-            nodesAltCopied = false;
-
-            this.div.dragging = true;
-            this.header.setPointerCapture(e.pointerId);
+            catch {}
         }
 
         else if (e.button == 2)
@@ -93650,15 +93679,20 @@ function altCopyNodes(_this, e)
     graphView.selectedNodes[thisIndex].div.dragging = true;
 
     prevSelected           [thisIndex].header.releasePointerCapture(e.pointerId);
-    graphView.selectedNodes[thisIndex].header.setPointerCapture(e.pointerId);
 
-    for (let i = 0; i < prevSelected.length; i++)
+    try
     {
-        graphView.selectedNodes[i].slx = prevSelected[i].div.offsetLeft;
-        graphView.selectedNodes[i].sly = prevSelected[i].div.offsetTop;
-    }
+        graphView.selectedNodes[thisIndex].header.setPointerCapture(e.pointerId);
 
-    nodesAltCopied = true;
+        for (let i = 0; i < prevSelected.length; i++)
+        {
+            graphView.selectedNodes[i].slx = prevSelected[i].div.offsetLeft;
+            graphView.selectedNodes[i].sly = prevSelected[i].div.offsetTop;
+        }
+
+        nodesAltCopied = true;
+    }
+    catch {}
 }
 
 
@@ -94533,14 +94567,18 @@ extends OperatorBase
                 e.preventDefault();
 
 
-                sizer.startRect = offsetRect(this.div);
-                sizer.resizing  = true;
+                try
+                {
+                    sizer.setPointerCapture(e.pointerId);
+
+                    sizer.startRect = offsetRect(this.div);
+                    sizer.resizing  = true;
 
                 
-                sizer.setPointerCapture(e.pointerId);
-
-                sizer.sx = e.clientX;
-                sizer.sy = e.clientY;
+                    sizer.sx = e.clientX;
+                    sizer.sy = e.clientY;
+                }
+                catch {}
             }        
         });
 
@@ -94997,12 +95035,16 @@ extends ResizableBase
             {
                 e.stopPropagation();
 
-                this.scrollbar.down = true;
+                try
+                {
+                    this.scrollbar.setPointerCapture(e.pointerId);
 
-                this.scrollbar.sy  =  e.clientY;
-                this.scrollbar.spy = -this.scroll;
+                    this.scrollbar.down = true;
 
-                this.scrollbar.setPointerCapture(e.pointerId);
+                    this.scrollbar.sy  =  e.clientY;
+                    this.scrollbar.spy = -this.scroll;
+                }
+                catch {}
             }
         });
 
@@ -107256,18 +107298,18 @@ extends OperatorBase
         this.addOutput(new Output([SHAPE_VALUE], this.output_genRequest));
 
 
-        this.addParam(this.paramX           = new NumberParam('x',           'X',           true, true, true));
-        this.addParam(this.paramY           = new NumberParam('y',           'Y',           true, true, true));
-        this.addParam(this.paramMoveType    = new SelectParam('moveType',    'type',        true, true, true, ['position', 'vector'], 0));
-        this.addParam(this.paramAffectSpace = new NumberParam('affectSpace', 'move space',  true, true, true, 1, 0, 1));
-        this.addParam(this.paramShowCenter  = new NumberParam('showCenter',  'show center', true, true, true, 0, 0, 1));
+        this.addParam(this.paramX           = new NumberParam('x',           'X',            true, true, true));
+        this.addParam(this.paramY           = new NumberParam('y',           'Y',            true, true, true));
+        this.addParam(this.paramMoveType    = new SelectParam('moveType',    'type',         true, true, true, ['position', 'vector'], 0));
+        this.addParam(this.paramAffectSpace = new NumberParam('affectSpace', 'space', true, true, true, 1, 0, 1));
+        this.addParam(this.paramShowCenter  = new NumberParam('showCenter',  'show',   true, true, true, 0, 0, 1));
 
 
-        this.paramShowCenter.controls[0].allowEditDecimals = false;
-        this.paramShowCenter.divider = 0.7;
-
+        this.paramShowCenter .controls[0].allowEditDecimals = false;
         this.paramAffectSpace.controls[0].allowEditDecimals = false;
-        this.paramAffectSpace.divider                       = 0.7;
+        
+        this.paramShowCenter .divider = 0.55;
+        this.paramAffectSpace.divider = 0.55;
 
 
         this.menuBoolShowCenter  = createBoolMenu(this.paramShowCenter );
@@ -107321,7 +107363,7 @@ extends OperatorBase
         super.updateParams();
 
         updateParamConditionText(this.paramShowCenter,  this.paramShowCenter .isUnknown(), false, 1);
-        updateParamConditionText(this.paramAffectSpace, this.paramAffectSpace.isUnknown(), true, 1);
+        updateParamConditionText(this.paramAffectSpace, this.paramAffectSpace.isUnknown(), true,  1);
 
 
         const vector = this.paramMoveType.value.value == 1;
@@ -107376,15 +107418,15 @@ extends OperatorBase
 
     addBaseParams(affect)
     {
-        this.addParam(this.paramAffectSpace = new NumberParam('affectSpace',  affect + ' space', true, true, true, 1, 0, 1));
-        this.addParam(this.paramShowCenter  = new NumberParam('showCenter',  'show center',      true, true, true, 0, 0, 1));
+        this.addParam(this.paramAffectSpace = new NumberParam('affectSpace', /*affect +*/ 'space', true, true, true, 1, 0, 1));
+        this.addParam(this.paramShowCenter  = new NumberParam('showCenter',               'show',   true, true, true, 0, 0, 1));
 
 
         this.paramShowCenter .controls[0].allowEditDecimals = false;
         this.paramAffectSpace.controls[0].allowEditDecimals = false;
 
-        this.paramShowCenter .divider = 0.7;
-        this.paramAffectSpace.divider = 0.7;
+        this.paramShowCenter .divider = 0.55;
+        this.paramAffectSpace.divider = 0.55;
 
         this.menuBoolShowCenter  = createBoolMenu(this.paramShowCenter );
         this.menuBoolAffectSpace = createBoolMenu(this.paramAffectSpace);
@@ -107629,8 +107671,6 @@ extends OpAffine
 
         request.push(...this.node.paramSkewX      .genRequest(gen));
         request.push(...this.node.paramSkewY      .genRequest(gen));
-        // request.push(...this.node.paramCenterX    .genRequest(gen));
-        // request.push(...this.node.paramCenterY    .genRequest(gen));
         request.push(...this.node.paramShowCenter .genRequest(gen));
         request.push(...this.node.paramAffectSpace.genRequest(gen));
 

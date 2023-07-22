@@ -72,6 +72,13 @@ function nozerov(v)
 }
 
 
+function equal(a, b, eps = Epsilon)
+{
+    return Math.abs(b - a) < eps;
+}
+
+
+
 function sqr (x) { return x*x;   };
 function cube(x) { return x*x*x; };
  
@@ -4156,6 +4163,11 @@ function getFigmaTransform(tl, tr, bl)
          [0,     0,     1]],
         createTransform(dx, dy));
 
+
+    // if (!equal(determinant(xform), 1, 0.000001))
+    //     return null;
+
+
     xform = inversem3(xform);
 
 
@@ -4178,11 +4190,15 @@ function applyFigmaTransform(figObj, tl, tr, bl)
 {
     const xform = getFigmaTransform(tl, tr, bl);
 
-    figObj.relativeTransform = 
-    [
-        xform[0],
-        xform[1]
-    ];
+    if (xform)
+        figObj.relativeTransform = 
+        [
+            xform[0],
+            xform[1]
+        ];
+
+    else
+        figObj.remove();
 }
 
 

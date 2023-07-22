@@ -101,16 +101,21 @@ GraphView.prototype.createScrollbarMethods = function()
     {
         if (e.button == 0)
         {
-            this.scrollbarX.moving = true;
-            this.scrollbarX.xStart = this.scrollbarX.offsetLeft;
-            this.scrollbarX.wStart = this.scrollbarX.offsetWidth;
-            this.scrollbarX.pStart = e.clientX;
-            this.scrollbarX.setPointerCapture(e.pointerId);
+            try
+            {
+                this.scrollbarX.setPointerCapture(e.pointerId);
 
-            this.panStart = graph.currentPage.pan;
+                this.scrollbarX.moving = true;
+                this.scrollbarX.xStart = this.scrollbarX.offsetLeft;
+                this.scrollbarX.wStart = this.scrollbarX.offsetWidth;
+                this.scrollbarX.pStart = e.clientX;
 
-            for (const node of graph.pageNodes)
-                node.slx = node.div.offsetLeft;
+                this.panStart = graph.currentPage.pan;
+
+                for (const node of graph.pageNodes)
+                    node.slx = node.div.offsetLeft;
+            }
+            catch {}
         }
     });
 
@@ -170,16 +175,21 @@ GraphView.prototype.createScrollbarMethods = function()
     {
         if (e.button == 0)
         {
-            this.scrollbarY.moving = true;
-            this.scrollbarY.yStart = this.scrollbarY.offsetTop;
-            this.scrollbarY.hStart = this.scrollbarY.offsetHeight;
-            this.scrollbarY.pStart = e.clientY;
-            this.scrollbarY.setPointerCapture(e.pointerId);
+            try
+            {
+                this.scrollbarY.setPointerCapture(e.pointerId);
 
-            for (const node of graph.pageNodes)
-                node.div.sly = node.div.offsetTop;
+                this.scrollbarY.moving = true;
+                this.scrollbarY.yStart = this.scrollbarY.offsetTop;
+                this.scrollbarY.hStart = this.scrollbarY.offsetHeight;
+                this.scrollbarY.pStart = e.clientY;
 
-            this.panStart = graph.currentPage.pan;
+                for (const node of graph.pageNodes)
+                    node.div.sly = node.div.offsetTop;
+
+                this.panStart = graph.currentPage.pan;
+            }
+            catch {}
         }
     });
 

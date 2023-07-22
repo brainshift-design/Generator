@@ -19,12 +19,16 @@ GraphView.prototype.updatePanAndZoom = function(updateNodes)
 
 GraphView.prototype.startPan = function(pointerId)
 {
-    this.div.setPointerCapture(pointerId);
+    try 
+    {
+        this.div.setPointerCapture(pointerId);
 
-    this.panning  = true;
-    this.panStart = graph.currentPage.pan;
+        this.panning  = true;
+        this.panStart = graph.currentPage.pan;
 
-    setCursor(panCursor);
+        setCursor(panCursor);
+    }
+    catch {}
 };
 
 
@@ -65,14 +69,18 @@ GraphView.prototype.isPanning = function(e)
 
 GraphView.prototype.startZoomSelection = function(pointerId, x, y)
 {
-    this.div.setPointerCapture(pointerId);
+    try
+    {
+        this.div.setPointerCapture(pointerId);
 
-    this.zoomSelecting = true;
-    this.selectionRect = new Rect(x, y, 0, 0);
-    
-    selectBox.style.visibility = 'visible';
-    
-    this.updateZoomSelectBox();
+        this.zoomSelecting = true;
+        this.selectionRect = new Rect(x, y, 0, 0);
+        
+        selectBox.style.visibility = 'visible';
+        
+        this.updateZoomSelectBox();
+    }
+    catch {}
 };
 
 

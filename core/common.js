@@ -47,6 +47,13 @@ function nozerov(v)
 }
 
 
+function equal(a, b, eps = Epsilon)
+{
+    return Math.abs(b - a) < eps;
+}
+
+
+
 function sqr (x) { return x*x;   };
 function cube(x) { return x*x*x; };
  

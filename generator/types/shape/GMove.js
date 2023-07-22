@@ -144,17 +144,19 @@ extends GOperator1
                     createTransform(-cx, -cy));
 
                 
-            const objects = [...this.value.objects]; // avoids infinite growth
-
-            for (const obj of objects)
+            for (const obj of this.value.objects)
             {
                 obj.nodeId   = this.nodeId;
                 obj.objectId = obj.objectId + OBJECT_SEPARATOR + this.nodeId;
 
+                obj.applyTransform(xform, affectSpace > 0);
+            }
 
-                obj.applyTransform(xform, affectSpace > 0, false);
 
+            const objects = [...this.value.objects]; // avoids infinite growth
 
+            for (const obj of objects)
+            {
                 if (showCenter > 0)
                     addObjectCenter(this, obj, parse.viewportZoom);
             }

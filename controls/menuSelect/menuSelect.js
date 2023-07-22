@@ -95,15 +95,19 @@ function initMenuSelect(select)
 
             if (e.clientX > rect.width - 20)
             {
-                select.buttonDown0 = true;        
-                select.setPointerCapture(e.pointerId);
-                
-                select.holding = false;
-                setTimeout(function() { onSelectClickTimer(select); }, 200);
-                
-                select.menu.hoverIndex = select.getSelectedIndex();
+                try
+                {
+                    select.setPointerCapture(e.pointerId);
+                    select.buttonDown0 = true;        
+                    
+                    select.holding = false;
+                    setTimeout(function() { onSelectClickTimer(select); }, 200);
+                    
+                    select.menu.hoverIndex = select.getSelectedIndex();
 
-                select.showMenu();
+                    select.showMenu();
+                }
+                catch {}
             }
             else
                 select.showTextbox();

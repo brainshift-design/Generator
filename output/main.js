@@ -43,6 +43,9 @@ function nozero(x) {
 function nozerov(v) {
     return point(nozero(v.x), nozero(v.y));
 }
+function equal(a, b, eps = Epsilon) {
+    return Math.abs(b - a) < eps;
+}
 function sqr(x) { return x * x; }
 ;
 function cube(x) { return x * x * x; }
@@ -2744,6 +2747,8 @@ function getFigmaTransform(tl, tr, bl) {
     let xform = mulm3m3([[1, ky / sy, 0],
         [kx / sx, 1, 0],
         [0, 0, 1]], createTransform(dx, dy));
+    // if (!equal(determinant(xform), 1, 0.000001))
+    //     return null;
     xform = inversem3(xform);
     const a = angle(vr);
     if (a > Tau / 4
@@ -2755,11 +2760,14 @@ function getFigmaTransform(tl, tr, bl) {
 }
 function applyFigmaTransform(figObj, tl, tr, bl) {
     const xform = getFigmaTransform(tl, tr, bl);
-    figObj.relativeTransform =
-        [
-            xform[0],
-            xform[1]
-        ];
+    if (xform)
+        figObj.relativeTransform =
+            [
+                xform[0],
+                xform[1]
+            ];
+    else
+        figObj.remove();
 }
 function setObjectTransform(figObj, genObj, setSize = true, noHeight = 0.01) {
     if (!genObj[FO_XP0]

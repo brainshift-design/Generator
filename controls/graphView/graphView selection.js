@@ -17,16 +17,20 @@ GraphView.prototype.selectByIds = function(nodeIds)
 
 GraphView.prototype.startSelection = function(pointerId, x, y, shiftKey, ctrlKey)
 {
-    this.div.setPointerCapture(pointerId);
+    try
+    {
+        this.div.setPointerCapture(pointerId);
 
-    this.selecting = true;
+        this.selecting = true;
 
-    this.selectionRect = new Rect(x, y, 0, 0);
-    this._prevSelectedNodes = [];
-   
-    selectBox.style.visibility = 'visible';
+        this.selectionRect = new Rect(x, y, 0, 0);
+        this._prevSelectedNodes = [];
+    
+        selectBox.style.visibility = 'visible';
 
-    this.updateSelectBox(shiftKey, ctrlKey);
+        this.updateSelectBox(shiftKey, ctrlKey);
+    }
+    catch {}
 };
 
 

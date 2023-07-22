@@ -7,9 +7,13 @@ function createToggleButton(width, height)
     {
         e.stopPropagation();
 
-        btn.setPointerCapture(e.pointerId);
-        btn.enabled = !btn.enabled;
-        btn.updateBackground(true);
+        try
+        {
+            btn.setPointerCapture(e.pointerId);
+            btn.enabled = !btn.enabled;
+            btn.updateBackground(true);
+        }
+        catch {}
     });
 
 

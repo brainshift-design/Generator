@@ -49,46 +49,25 @@ extends GOperator1
             return bounds;
 
 
-        // const singlePoint = 
-        //        this.value.objects.length == 1 
-        //     && this.value.objects[0].type == POINT;
-
-
-        // let _cx = options.centerX.value;
-        // let _cy = options.centerY.value;
-
-        // if (!singlePoint)
-        // {
-        //     _cx /= 100;
-        //     _cy /= 100;
-        // }
-
-
-        //const cx = singlePoint ? this.value.objects[0].x + _cx : bounds.x + _cx * bounds.width ;
-        //const cy = singlePoint ? this.value.objects[0].y + _cy : bounds.y + _cy * bounds.height;
-
-
         const xform = getXform();
-        // mulm3m3(
-        //     createTransform(cx, cy),
-        //     getXform(),
-        //     createTransform(-cx, -cy));
+
+
+        for (const obj of this.value.objects)
+        {
+            obj.nodeId   = this.nodeId;
+            obj.objectId = obj.objectId + OBJECT_SEPARATOR + this.nodeId;
+
+            obj.applyTransform(xform, options.affectSpace.value > 0);
+
+            obj.scaleCorners *= Math.abs(scaleCorners);
+            obj.scaleStyle   *= Math.abs(scaleStyle);
+        }
 
 
         const objects = [...this.value.objects];
 
         for (const obj of objects)
         {
-            obj.nodeId   = this.nodeId;
-            obj.objectId = obj.objectId + OBJECT_SEPARATOR + this.nodeId;
-
-
-            obj.applyTransform(xform, options.affectSpace.value > 0, false);
-
-            obj.scaleCorners *= Math.abs(scaleCorners);
-            obj.scaleStyle   *= Math.abs(scaleStyle);
-
-
             if (options.showCenter.value > 0)
                 addObjectCenter(this, obj, parse.viewportZoom);
         }
