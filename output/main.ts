@@ -23,7 +23,7 @@ function noNodeTag(key) { return noTag(key, nodeTag); }
 function noConnTag(key) { return noTag(key, connTag); }
 
 
-const generatorVersion = 164;
+const generatorVersion = 165;
 
 
 const MAX_INT32        = 2147483647;
@@ -1627,22 +1627,22 @@ const GROUP_NODES_ACTION         = 'GROUP_NODES';
 const UNGROUP_NODES_ACTION       = 'UNGROUP_NODES';
 
 
-const BLEND_NORMAL      = 'BNORM';
-const BLEND_DARKEN      = 'BDARK';
-const BLEND_MULTIPLY    = 'BMULT';
-const BLEND_COLOR_BURN  = 'BBURN';
-const BLEND_LIGNTEN     = 'BLITE';
-const BLEND_SCREEN      = 'BSCRN';
-const BLEND_COLOR_DODGE = 'BDODG';
-const BLEND_OVERLAY     = 'BOVER';
-const BLEND_SOFT_LIGHT  = 'BSOFT';
-const BLEND_HARD_LIGHT  = 'BHARD';
-const BLEND_DIFFERENCE  = 'BDIFF';
-const BLEND_EXCLUSION   = 'BEXCL';
-const BLEND_HUE         = 'BHUE';
-const BLEND_SATURATION  = 'BSAT';
-const BLEND_COLOR       = 'BCOL';
-const BLEND_LUMINOSITY  = 'BLUM';
+const BLEND_NORMAL               = 'BNORM';
+const BLEND_DARKEN               = 'BDARK';
+const BLEND_MULTIPLY             = 'BMULT';
+const BLEND_COLOR_BURN           = 'BBURN';
+const BLEND_LIGNTEN              = 'BLITE';
+const BLEND_SCREEN               = 'BSCRN';
+const BLEND_COLOR_DODGE          = 'BDODG';
+const BLEND_OVERLAY              = 'BOVER';
+const BLEND_SOFT_LIGHT           = 'BSOFT';
+const BLEND_HARD_LIGHT           = 'BHARD';
+const BLEND_DIFFERENCE           = 'BDIFF';
+const BLEND_EXCLUSION            = 'BEXCL';
+const BLEND_HUE                  = 'BHUE';
+const BLEND_SATURATION           = 'BSAT';
+const BLEND_COLOR                = 'BCOL';
+const BLEND_LUMINOSITY           = 'BLUM';
 
 
 const BlendModes =

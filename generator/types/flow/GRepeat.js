@@ -4,6 +4,7 @@ extends GOperator
     input = null;
 
     count = null;
+   _while = null;
     loop  = null;
 
     iterationObjects = [];
@@ -25,9 +26,10 @@ extends GOperator
 
         if (this.input) copy.input = this.input.copy();
 
-        copy.value = this.value.copy();
-        copy.count = this.count.copy();
-        copy.loop  = this.loop .copy();
+        copy. value = this. value.copy();
+        copy. count = this. count.copy();
+        copy._while = this._while.copy();
+        copy. loop  = this. loop .copy();
 
         return copy;
     }
@@ -49,8 +51,9 @@ extends GOperator
             return this;
             
 
-        let   count = (await this.count.eval(parse)).toValue();
-        const loop  = (await this.loop .eval(parse)).toValue();
+        let   count = (await this. count.eval(parse)).toValue();
+        let  _while = new NumberValue(1);
+        const loop  = (await this. loop .eval(parse)).toValue();
 
 
         count = 
@@ -85,7 +88,7 @@ extends GOperator
                 let   showProgress = false;
 
 
-                const nItems = 
+                const nRepeats = 
                     this.options.enabled 
                     ? count.value 
                     : 1;
@@ -94,8 +97,14 @@ extends GOperator
                 parse.repeats.push(repeat);
 
 
-                for (let i = 0, o = 0; i < nItems; i++)
+                for (let i = 0, o = 0; i < nRepeats; i++)
                 {
+                    _while = (await this._while.eval(parse)).toValue();
+
+                    if (_while.value == 0)
+                        break;
+
+
                     if (  !showProgress
                         && Date.now() - startTime > 50)
                     {
@@ -109,14 +118,14 @@ extends GOperator
                         this.invalidateRepeat(parse, this.loop, this.nodeId);
 
                         repeat.iteration = i;
-                        repeat.total     = nItems;
+                        repeat.total     = nRepeats;
                     }
                     
                     
                     this.input.invalidateInputs(this);
                     
 
-                    const input = (await this.input.eval(parse)).toValue();
+                    const input = (await this.input .eval(parse)).toValue();
 
 
                     if (input)
@@ -144,7 +153,7 @@ extends GOperator
 
 
                     if (showProgress)
-                        genUpdateNodeProgress(this.nodeId, i / nItems);
+                        genUpdateNodeProgress(this.nodeId, i / nRepeats);
                 }
 
 
@@ -173,9 +182,10 @@ extends GOperator
 
         this.updateValues =
         [
-            ['type',  type              ],
-            ['count', count             ],
-            ['loop',  new NumberValue(0)]
+            ['type',   type              ],
+            ['count',  count             ],
+            ['while', _while             ],
+            ['loop',   new NumberValue(0)]
         ];
 
 
@@ -197,9 +207,10 @@ extends GOperator
     {
         super.pushValueUpdates(parse);
 
-        if (this.input) this.input.pushValueUpdates(parse);
-        if (this.count) this.count.pushValueUpdates(parse);
-        if (this.loop ) this.loop .pushValueUpdates(parse);
+        if (this. input) this. input.pushValueUpdates(parse);
+        if (this. count) this. count.pushValueUpdates(parse);
+        if (this._while) this._while.pushValueUpdates(parse);
+        if (this. loop ) this. loop .pushValueUpdates(parse);
     }
 
 
@@ -208,9 +219,10 @@ extends GOperator
     {
         super.invalidateInputs(from);
 
-        if (this.input) this.input.invalidateInputs(from);
-        if (this.count) this.count.invalidateInputs(from);
-        if (this.loop ) this.loop .invalidateInputs(from);
+        if (this. input) this. input.invalidateInputs(from);
+        if (this. count) this. count.invalidateInputs(from);
+        if (this._while) this._while.invalidateInputs(from);
+        if (this. loop ) this. loop .invalidateInputs(from);
     }
 
 

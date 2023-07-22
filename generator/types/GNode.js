@@ -100,4 +100,17 @@ class GNode
 
         return true;
     }
+
+
+
+    invalidateLoop(parse, nodeId)
+    {
+        let _this = this;
+
+        if (_this.type == PARAM)
+            _this = parse.parsedNodes.find(n => n.nodeId == _this.nodeId);
+
+        _this.valid  = false;
+        _this.loopId = nodeId;
+    }
 }

@@ -4,7 +4,7 @@
 
 
 
-const generatorVersion = 164;
+const generatorVersion = 165;
 
 
 const MAX_INT32        = 2147483647;
@@ -5177,22 +5177,22 @@ const GROUP_NODES_ACTION         = 'GROUP_NODES';
 const UNGROUP_NODES_ACTION       = 'UNGROUP_NODES';
 
 
-const BLEND_NORMAL      = 'BNORM';
-const BLEND_DARKEN      = 'BDARK';
-const BLEND_MULTIPLY    = 'BMULT';
-const BLEND_COLOR_BURN  = 'BBURN';
-const BLEND_LIGNTEN     = 'BLITE';
-const BLEND_SCREEN      = 'BSCRN';
-const BLEND_COLOR_DODGE = 'BDODG';
-const BLEND_OVERLAY     = 'BOVER';
-const BLEND_SOFT_LIGHT  = 'BSOFT';
-const BLEND_HARD_LIGHT  = 'BHARD';
-const BLEND_DIFFERENCE  = 'BDIFF';
-const BLEND_EXCLUSION   = 'BEXCL';
-const BLEND_HUE         = 'BHUE';
-const BLEND_SATURATION  = 'BSAT';
-const BLEND_COLOR       = 'BCOL';
-const BLEND_LUMINOSITY  = 'BLUM';
+const BLEND_NORMAL               = 'BNORM';
+const BLEND_DARKEN               = 'BDARK';
+const BLEND_MULTIPLY             = 'BMULT';
+const BLEND_COLOR_BURN           = 'BBURN';
+const BLEND_LIGNTEN              = 'BLITE';
+const BLEND_SCREEN               = 'BSCRN';
+const BLEND_COLOR_DODGE          = 'BDODG';
+const BLEND_OVERLAY              = 'BOVER';
+const BLEND_SOFT_LIGHT           = 'BSOFT';
+const BLEND_HARD_LIGHT           = 'BHARD';
+const BLEND_DIFFERENCE           = 'BDIFF';
+const BLEND_EXCLUSION            = 'BEXCL';
+const BLEND_HUE                  = 'BHUE';
+const BLEND_SATURATION           = 'BSAT';
+const BLEND_COLOR                = 'BCOL';
+const BLEND_LUMINOSITY           = 'BLUM';
 
 
 const BlendModes =
@@ -7789,6 +7789,19 @@ class GNode
 
         return true;
     }
+
+
+
+    invalidateLoop(parse, nodeId)
+    {
+        let _this = this;
+
+        if (_this.type == PARAM)
+            _this = parse.parsedNodes.find(n => n.nodeId == _this.nodeId);
+
+        _this.valid  = false;
+        _this.loopId = nodeId;
+    }
 }
 
 
@@ -8144,19 +8157,6 @@ extends GNode
     //     consoleError('cannot call abstract method GOperator.toValue()');
     //     return null;
     // }
-
-
-
-    invalidateLoop(parse, nodeId)
-    {
-        let _this = this;
-
-        if (_this.type == PARAM)
-            _this = parse.parsedNodes.find(n => n.nodeId == _this.nodeId);
-
-        _this.valid  = false;
-        _this.loopId = nodeId;
-    }
 }
 
 
@@ -14317,6 +14317,7 @@ extends GOperator
     input = null;
 
     count = null;
+   _while = null;
     loop  = null;
 
     iterationObjects = [];
@@ -14338,9 +14339,10 @@ extends GOperator
 
         if (this.input) copy.input = this.input.copy();
 
-        copy.value = this.value.copy();
-        copy.count = this.count.copy();
-        copy.loop  = this.loop .copy();
+        copy. value = this. value.copy();
+        copy. count = this. count.copy();
+        copy._while = this._while.copy();
+        copy. loop  = this. loop .copy();
 
         return copy;
     }
@@ -14362,8 +14364,9 @@ extends GOperator
             return this;
             
 
-        let   count = (await this.count.eval(parse)).toValue();
-        const loop  = (await this.loop .eval(parse)).toValue();
+        let   count = (await this. count.eval(parse)).toValue();
+        let  _while = new NumberValue(1);
+        const loop  = (await this. loop .eval(parse)).toValue();
 
 
         count = 
@@ -14398,7 +14401,7 @@ extends GOperator
                 let   showProgress = false;
 
 
-                const nItems = 
+                const nRepeats = 
                     this.options.enabled 
                     ? count.value 
                     : 1;
@@ -14407,8 +14410,14 @@ extends GOperator
                 parse.repeats.push(repeat);
 
 
-                for (let i = 0, o = 0; i < nItems; i++)
+                for (let i = 0, o = 0; i < nRepeats; i++)
                 {
+                    _while = (await this._while.eval(parse)).toValue();
+
+                    if (_while.value == 0)
+                        break;
+
+
                     if (  !showProgress
                         && Date.now() - startTime > 50)
                     {
@@ -14422,14 +14431,14 @@ extends GOperator
                         this.invalidateRepeat(parse, this.loop, this.nodeId);
 
                         repeat.iteration = i;
-                        repeat.total     = nItems;
+                        repeat.total     = nRepeats;
                     }
                     
                     
                     this.input.invalidateInputs(this);
                     
 
-                    const input = (await this.input.eval(parse)).toValue();
+                    const input = (await this.input .eval(parse)).toValue();
 
 
                     if (input)
@@ -14457,7 +14466,7 @@ extends GOperator
 
 
                     if (showProgress)
-                        genUpdateNodeProgress(this.nodeId, i / nItems);
+                        genUpdateNodeProgress(this.nodeId, i / nRepeats);
                 }
 
 
@@ -14486,9 +14495,10 @@ extends GOperator
 
         this.updateValues =
         [
-            ['type',  type              ],
-            ['count', count             ],
-            ['loop',  new NumberValue(0)]
+            ['type',   type              ],
+            ['count',  count             ],
+            ['while', _while             ],
+            ['loop',   new NumberValue(0)]
         ];
 
 
@@ -14510,9 +14520,10 @@ extends GOperator
     {
         super.pushValueUpdates(parse);
 
-        if (this.input) this.input.pushValueUpdates(parse);
-        if (this.count) this.count.pushValueUpdates(parse);
-        if (this.loop ) this.loop .pushValueUpdates(parse);
+        if (this. input) this. input.pushValueUpdates(parse);
+        if (this. count) this. count.pushValueUpdates(parse);
+        if (this._while) this._while.pushValueUpdates(parse);
+        if (this. loop ) this. loop .pushValueUpdates(parse);
     }
 
 
@@ -14521,9 +14532,10 @@ extends GOperator
     {
         super.invalidateInputs(from);
 
-        if (this.input) this.input.invalidateInputs(from);
-        if (this.count) this.count.invalidateInputs(from);
-        if (this.loop ) this.loop .invalidateInputs(from);
+        if (this. input) this. input.invalidateInputs(from);
+        if (this. count) this. count.invalidateInputs(from);
+        if (this._while) this._while.invalidateInputs(from);
+        if (this. loop ) this. loop .invalidateInputs(from);
     }
 
 
@@ -18583,9 +18595,10 @@ async function evalXorInputs(inputs, parse)
 
 
 class GCondition
-extends GNumberType2
+extends GNumberType1
 {
     operation;
+    operand;
 
 
 
@@ -18603,6 +18616,7 @@ extends GNumberType2
         copy.copyBase(this);
 
         copy.operation = this.operation.copy();
+        copy.operand   = this.operand  .copy();
 
         return copy;
     }
@@ -18615,26 +18629,28 @@ extends GNumberType2
             return this;
 
 
-        const op = (await this.operation.eval(parse)).toValue().toInteger();
+        const op      = (await this.operation.eval(parse)).toValue();
+        const operand = (await this.operand  .eval(parse)).toValue();
 
         op.value = Math.min(Math.max(0, op.value), CONDITION_OPS.length-1);
 
         
         switch (op.value)
         {
-            case CONDITION_LESS:              this.value = await evalConditionInputs(this.input0, this.input1, ((a, b) => a <  b), parse);  break;
-            case CONDITION_LESS_OR_EQUAL:     this.value = await evalConditionInputs(this.input0, this.input1, ((a, b) => a <= b), parse);  break;
-            case CONDITION_NOT_EQUAL:         this.value = await evalConditionInputs(this.input0, this.input1, ((a, b) => a != b), parse);  break;
-            case CONDITION_EQUAL:             this.value = await evalConditionInputs(this.input0, this.input1, ((a, b) => a == b), parse);  break;
-            case CONDITION_GREATER_OR_EQUAL:  this.value = await evalConditionInputs(this.input0, this.input1, ((a, b) => a >= b), parse);  break;
-            case CONDITION_GREATER:           this.value = await evalConditionInputs(this.input0, this.input1, ((a, b) => a >  b), parse);  break;
+            case CONDITION_LESS:              this.value = await evalConditionInputs(this.input, operand, ((a, b) => a <  b), parse);  break;
+            case CONDITION_LESS_OR_EQUAL:     this.value = await evalConditionInputs(this.input, operand, ((a, b) => a <= b), parse);  break;
+            case CONDITION_NOT_EQUAL:         this.value = await evalConditionInputs(this.input, operand, ((a, b) => a != b), parse);  break;
+            case CONDITION_EQUAL:             this.value = await evalConditionInputs(this.input, operand, ((a, b) => a == b), parse);  break;
+            case CONDITION_GREATER_OR_EQUAL:  this.value = await evalConditionInputs(this.input, operand, ((a, b) => a >= b), parse);  break;
+            case CONDITION_GREATER:           this.value = await evalConditionInputs(this.input, operand, ((a, b) => a >  b), parse);  break;
         }
 
 
         this.updateValues =
         [
+            ['value',     this.value],
             ['operation', op        ],
-            ['value',     this.value]
+            ['operand',   operand   ]
         ];
 
 
@@ -18650,6 +18666,7 @@ extends GNumberType2
         super.pushValueUpdates(parse);
 
         if (this.operation) this.operation.pushValueUpdates(parse);
+        if (this.operand  ) this.operand  .pushValueUpdates(parse);
     }
 
 
@@ -18659,6 +18676,7 @@ extends GNumberType2
         super.invalidateInputs(from);
 
         if (this.operation) this.operation.invalidateInputs(from);
+        if (this.operand  ) this.operand  .invalidateInputs(from);
     }
 }
 
@@ -30565,6 +30583,7 @@ function genParseRepeat(parse)
         repeat.input = genParse(parse);
 
     repeat.count = genParse(parse);
+    repeat._while = genParse(parse);
     repeat.loop  = genParse(parse);  // don't set target here
 
 
@@ -32380,11 +32399,11 @@ function genParseCondition(parse)
 
 
     let nInputs = -1;
-
+    
     if (!ignore)
     {
         nInputs = parseInt(parse.move());
-        consoleAssert(nInputs => 0 && nInputs <= 2, 'nInputs must be [0, 2]');
+        consoleAssert(nInputs == 0 || nInputs == 1, 'nInputs must be [0, 1]');
     }
 
     
@@ -32402,18 +32421,12 @@ function genParseCondition(parse)
     parse.nTab++;
 
 
-    if (nInputs == 2)
-    {
-        cond.input0 = genParse(parse);
-        cond.input1 = genParse(parse);
-    }
-    else if (nInputs == 1)
-    {
-        cond.input0 = genParse(parse); // doesn't matter if it's input0 or input1, the eval() result will be the same
-    }
+    if (nInputs == 1)
+        cond.input = genParse(parse);
   
     
     cond.operation = genParse(parse);
+    cond.operand   = genParse(parse);
 
 
     parse.nTab--;
