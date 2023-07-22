@@ -951,7 +951,7 @@ class Operator
 
         if (!ignore)
         {
-            const nextActive   = getActiveAfterNode(this);
+            const nextActive   = getActiveAfterNode(this, true);
             const beforeActive = nextActive && nextActive.follows(this);
 
             const options =

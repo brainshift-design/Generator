@@ -13,8 +13,8 @@ extends OperatorBase
         this.addOutput(new Output([ANY_VALUE], this.output_genRequest));
 
 
-        this.inputs[0].addEventListener('connect',    () => OpCopy_onConnectInput(this));
-        this.inputs[0].addEventListener('disconnect', () => OpCopy_onDisconnectInput(this));
+        this.inputs[0].addEventListener('connect',    () => OpCache_onConnectInput(this));
+        this.inputs[0].addEventListener('disconnect', () => OpCache_onDisconnectInput(this));
     }
 
 
@@ -84,14 +84,14 @@ extends OperatorBase
 
 
 
-function OpCopy_onConnectInput(node)
+function OpCache_onConnectInput(node)
 {
     node.outputs[0].types = [...node.inputs[0].connectedOutput.types];
 }
 
 
 
-function OpCopy_onDisconnectInput(node)
+function OpCache_onDisconnectInput(node)
 {
     node.outputs[0].types = [ANY_VALUE];
 }

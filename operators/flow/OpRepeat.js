@@ -25,10 +25,10 @@ extends OperatorBase
 
 
         this.paramCount.controls[0].allowEditDecimals = false;
-        this.paramCount.divider                       = 0.56;
+        this.paramCount.divider                       = 0.52;
         this.paramCount.affectsHeader                 = false;
 
-        this.paramWhile.divider                       = 0.56;
+        this.paramWhile.divider                       = 0.6;
 
         this.paramLoop.input.types.push(NUMBER_LIST_VALUE);
         this.paramLoop.input.types.push(START);
@@ -72,14 +72,10 @@ extends OperatorBase
 
     updateValues(requestId, actionId, updateParamId, paramIds, values)
     {
-        const  type  = values[paramIds.findIndex(id => id == 'type' )];
-        const  count = values[paramIds.findIndex(id => id == 'count')];
-        const _while = values[paramIds.findIndex(id => id == 'while')];
-        const  loop  = values[paramIds.findIndex(id => id == 'loop' )];
+        const type  = values[paramIds.findIndex(id => id == 'type' )];
+        const count = values[paramIds.findIndex(id => id == 'count')];
 
-        if ( count) this.paramCount.setValue( count, false, true, false);
-        if (_while) this.paramWhile.setValue(_while, false, true, false);
-        if ( loop ) this.paramLoop .setValue( loop,  false, true, false);
+        if (count) this.paramCount.setValue( count, false, true, false);
 
         this.outputs[0].types = 
                type
@@ -98,7 +94,7 @@ extends OperatorBase
         this.paramWhile.enableControlText(false);
         this.paramLoop .enableControlText(false);
 
-        updateParamConditionText(this.paramWhile, this.paramWhile.isUnknown(), false, 1);
+        this.paramWhile.controls[0].valueText = '﻿';
 
 
         const arrowStyle = darkMode ? 'white' : 'black';
@@ -113,19 +109,7 @@ extends OperatorBase
     {
         const colors = super.getHeaderColors(options);
 
-        // const inputTypes = this.connectedHeaderInputs.map(i => i.connectedOutput.types[0]);
-
-        
         const type = this.outputs[0].types[0];
-            // this.inputs[0].connected 
-            // ? finalListTypeFromTypes(inputTypes)
-            // : this.type;
-
-
-        // colors.back = rgb_a(rgbFromType(type, this.active), 0.95);
-
-
-        // colors.text   = isDark(colors.back) ? [1, 1, 1, 1] : [0, 0, 0, 1]; 
 
         colors.input  = this.active ? rgb_a(colors.text, 0.4)  : rgb_a(rgbSaturateHsv(rgbFromType(type, true), 0.5), 0.8);
         colors.output = this.active ? rgb_a(colors.text, 0.35) : rgb_a(rgbSaturateHsv(rgbFromType(type, true), 0.5), 0.7);

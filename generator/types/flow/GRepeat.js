@@ -88,8 +88,11 @@ extends GOperator
                 let   showProgress = false;
 
 
+                console.log('this.options =', this.options);
                 const nRepeats = 
-                    this.options.enabled 
+                       this.options.enabled 
+                    && (   this.options.active
+                        || this.options.beforeActive)
                     ? count.value 
                     : 1;
                 
@@ -182,10 +185,8 @@ extends GOperator
 
         this.updateValues =
         [
-            ['type',   type              ],
-            ['count',  count             ],
-            ['while', _while             ],
-            ['loop',   new NumberValue(0)]
+            ['type',   type ],
+            ['count',  count]
         ];
 
 
@@ -267,6 +268,7 @@ function assertVolatile(node)
 {
     consoleAssert(
            node.loop.type == DEFINE
+        || node.loop.type == FREEZE
         || node.loop.type == NUMBER_DISTRIBUTE
         || node.loop.type == NUMBER_SEQUENCE
         || node.loop.type == NUMBER_RANDOM
