@@ -857,11 +857,11 @@ function genParseCondition(parse)
 
 
     let nInputs = -1;
-
+    
     if (!ignore)
     {
         nInputs = parseInt(parse.move());
-        consoleAssert(nInputs => 0 && nInputs <= 2, 'nInputs must be [0, 2]');
+        consoleAssert(nInputs == 0 || nInputs == 1, 'nInputs must be [0, 1]');
     }
 
     
@@ -879,18 +879,12 @@ function genParseCondition(parse)
     parse.nTab++;
 
 
-    if (nInputs == 2)
-    {
-        cond.input0 = genParse(parse);
-        cond.input1 = genParse(parse);
-    }
-    else if (nInputs == 1)
-    {
-        cond.input0 = genParse(parse); // doesn't matter if it's input0 or input1, the eval() result will be the same
-    }
+    if (nInputs == 1)
+        cond.input = genParse(parse);
   
     
     cond.operation = genParse(parse);
+    cond.operand   = genParse(parse);
 
 
     parse.nTab--;

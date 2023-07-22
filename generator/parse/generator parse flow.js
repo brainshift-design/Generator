@@ -404,6 +404,7 @@ function genParseRepeat(parse)
         repeat.input = genParse(parse);
 
     repeat.count = genParse(parse);
+    repeat._while = genParse(parse);
     repeat.loop  = genParse(parse);  // don't set target here
 
 

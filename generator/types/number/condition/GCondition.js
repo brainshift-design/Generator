@@ -1,7 +1,8 @@
 class GCondition
-extends GNumberType2
+extends GNumberType1
 {
     operation;
+    operand;
 
 
 
@@ -19,6 +20,7 @@ extends GNumberType2
         copy.copyBase(this);
 
         copy.operation = this.operation.copy();
+        copy.operand   = this.operand  .copy();
 
         return copy;
     }
@@ -31,26 +33,28 @@ extends GNumberType2
             return this;
 
 
-        const op = (await this.operation.eval(parse)).toValue().toInteger();
+        const op      = (await this.operation.eval(parse)).toValue();
+        const operand = (await this.operand  .eval(parse)).toValue();
 
         op.value = Math.min(Math.max(0, op.value), CONDITION_OPS.length-1);
 
         
         switch (op.value)
         {
-            case CONDITION_LESS:              this.value = await evalConditionInputs(this.input0, this.input1, ((a, b) => a <  b), parse);  break;
-            case CONDITION_LESS_OR_EQUAL:     this.value = await evalConditionInputs(this.input0, this.input1, ((a, b) => a <= b), parse);  break;
-            case CONDITION_NOT_EQUAL:         this.value = await evalConditionInputs(this.input0, this.input1, ((a, b) => a != b), parse);  break;
-            case CONDITION_EQUAL:             this.value = await evalConditionInputs(this.input0, this.input1, ((a, b) => a == b), parse);  break;
-            case CONDITION_GREATER_OR_EQUAL:  this.value = await evalConditionInputs(this.input0, this.input1, ((a, b) => a >= b), parse);  break;
-            case CONDITION_GREATER:           this.value = await evalConditionInputs(this.input0, this.input1, ((a, b) => a >  b), parse);  break;
+            case CONDITION_LESS:              this.value = await evalConditionInputs(this.input, operand, ((a, b) => a <  b), parse);  break;
+            case CONDITION_LESS_OR_EQUAL:     this.value = await evalConditionInputs(this.input, operand, ((a, b) => a <= b), parse);  break;
+            case CONDITION_NOT_EQUAL:         this.value = await evalConditionInputs(this.input, operand, ((a, b) => a != b), parse);  break;
+            case CONDITION_EQUAL:             this.value = await evalConditionInputs(this.input, operand, ((a, b) => a == b), parse);  break;
+            case CONDITION_GREATER_OR_EQUAL:  this.value = await evalConditionInputs(this.input, operand, ((a, b) => a >= b), parse);  break;
+            case CONDITION_GREATER:           this.value = await evalConditionInputs(this.input, operand, ((a, b) => a >  b), parse);  break;
         }
 
 
         this.updateValues =
         [
+            ['value',     this.value],
             ['operation', op        ],
-            ['value',     this.value]
+            ['operand',   operand   ]
         ];
 
 
@@ -66,6 +70,7 @@ extends GNumberType2
         super.pushValueUpdates(parse);
 
         if (this.operation) this.operation.pushValueUpdates(parse);
+        if (this.operand  ) this.operand  .pushValueUpdates(parse);
     }
 
 
@@ -75,6 +80,7 @@ extends GNumberType2
         super.invalidateInputs(from);
 
         if (this.operation) this.operation.invalidateInputs(from);
+        if (this.operand  ) this.operand  .invalidateInputs(from);
     }
 }
 
