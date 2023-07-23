@@ -98,9 +98,6 @@ extends GOperator1
             
             const bounds = getObjBounds(this.value.objects);
 
-            if (!this.options.enabled)
-                return bounds;
-                
 
             const x           = options.x          .value;
             const y           = options.y          .value;
@@ -149,7 +146,8 @@ extends GOperator1
                 obj.nodeId   = this.nodeId;
                 obj.objectId = obj.objectId + OBJECT_SEPARATOR + this.nodeId;
 
-                obj.applyTransform(xform, affectSpace > 0);
+                if (this.options.enabled)
+                    obj.applyTransform(xform, affectSpace > 0);
             }
 
 

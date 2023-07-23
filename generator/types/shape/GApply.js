@@ -73,11 +73,14 @@ extends GShape
             obj.nodeId   = this.nodeId;
             obj.objectId = obj.objectId + OBJECT_SEPARATOR + this.nodeId;
 
-            obj.fills   = [];
-            obj.strokes = [];
-            obj.effects = [];
+            if (this.options.enabled)
+            {
+                obj.fills   = [];
+                obj.strokes = [];
+                obj.effects = [];
 
-            obj.isMask  = false;
+                obj.isMask  = false;
+            }
         }
 
         

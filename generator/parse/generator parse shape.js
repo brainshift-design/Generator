@@ -1189,10 +1189,10 @@ function genParseScale(parse)
 
     scale.scaleX        = genParse(parse);
     scale.scaleY        = genParse(parse);
-    scale.showCenter    = genParse(parse);
-    scale.affectSpace   = genParse(parse);
     scale.affectCorners = genParse(parse);
     scale.affectStyle   = genParse(parse);
+    scale.showCenter    = genParse(parse);
+    scale.affectSpace   = genParse(parse);
 
     
     parse.inParam = false;

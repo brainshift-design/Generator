@@ -45,11 +45,16 @@ extends GOperator1
         const y      = this.y      ? (await this.y     .eval(parse)).toValue() : null;
         const blur   = this.blur   ? (await this.blur  .eval(parse)).toValue() : null;
         const spread = this.spread ? (await this.spread.eval(parse)).toValue() : null;
-        const fill   = this.fill   ? (await this.fill  .eval(parse)).toValue() : null;
+        let   fill   = this.fill   ? (await this.fill  .eval(parse)).toValue() : null;
         const blend  = this.blend  ? (await this.blend .eval(parse)).toValue() : null;
 
         
-        if (this.input)
+        if (   fill
+            && fill.type == COLOR_VALUE)
+            fill = new FillValue(fill);
+
+
+         if (this.input)
         {
             const input = (await this.input.eval(parse)).toValue();
 
@@ -95,14 +100,9 @@ extends GOperator1
 
     toValue()
     {
-        return new InnerShadowValue(
-            this.x      ? this.x     .toValue() : this.input.x     .toValue(),
-            this.y      ? this.y     .toValue() : this.input.y     .toValue(),
-            this.blur   ? this.blur  .toValue() : this.input.blur  .toValue(),
-            this.spread ? this.spread.toValue() : this.input.spread.toValue(),
-            this.fill   ? this.fill  .toValue() : this.input.fill  .toValue(),
-            this.blend  ? this.blend .toValue() : this.input.blend .toValue(),
-            this.options.enabled);
+        return this.value
+             ? this.value.copy()
+             : null;
     }
 
 

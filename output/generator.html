@@ -4,7 +4,7 @@
 
 
 
-const generatorVersion = 166;
+const generatorVersion = 167;
 
 
 const MAX_INT32        = 2147483647;
@@ -9901,6 +9901,8 @@ extends GValue
         this.blend   = blend;
         this.behind  = behind;
         this.visible = visible;
+        
+        consoleAssert(fill.type == FILL_VALUE, 'fill.type must be FILL_VALUE');
     }
 
 
@@ -23636,9 +23638,14 @@ extends GOperator1
         const y      = this.y      ? (await this.y     .eval(parse)).toValue() : null;
         const blur   = this.blur   ? (await this.blur  .eval(parse)).toValue() : null;
         const spread = this.spread ? (await this.spread.eval(parse)).toValue() : null;
-        const fill   = this.fill   ? (await this.fill  .eval(parse)).toValue() : null;
+        let   fill   = this.fill   ? (await this.fill  .eval(parse)).toValue() : null;
         const blend  = this.blend  ? (await this.blend .eval(parse)).toValue() : null;
         const behind = this.behind ? (await this.behind.eval(parse)).toValue() : null;
+
+
+        if (   fill
+            && fill.type == COLOR_VALUE)
+            fill = new FillValue(fill);
 
         
         if (this.input)
@@ -23690,15 +23697,9 @@ extends GOperator1
 
     toValue()
     {
-        return new DropShadowValue(
-            this.x      ? this.x     .toValue() : this.input.x     .toValue(),
-            this.y      ? this.y     .toValue() : this.input.y     .toValue(),
-            this.blur   ? this.blur  .toValue() : this.input.blur  .toValue(),
-            this.spread ? this.spread.toValue() : this.input.spread.toValue(),
-            this.fill   ? this.fill  .toValue() : this.input.fill  .toValue(),
-            this.blend  ? this.blend .toValue() : this.input.blend .toValue(),
-            this.behind ? this.behind.toValue() : this.input.behind.toValue(),
-            this.options.enabled);
+        return this.value
+             ? this.value.copy()
+             : null;
     }
 
 
@@ -23793,11 +23794,16 @@ extends GOperator1
         const y      = this.y      ? (await this.y     .eval(parse)).toValue() : null;
         const blur   = this.blur   ? (await this.blur  .eval(parse)).toValue() : null;
         const spread = this.spread ? (await this.spread.eval(parse)).toValue() : null;
-        const fill   = this.fill   ? (await this.fill  .eval(parse)).toValue() : null;
+        let   fill   = this.fill   ? (await this.fill  .eval(parse)).toValue() : null;
         const blend  = this.blend  ? (await this.blend .eval(parse)).toValue() : null;
 
         
-        if (this.input)
+        if (   fill
+            && fill.type == COLOR_VALUE)
+            fill = new FillValue(fill);
+
+
+         if (this.input)
         {
             const input = (await this.input.eval(parse)).toValue();
 
@@ -23843,14 +23849,9 @@ extends GOperator1
 
     toValue()
     {
-        return new InnerShadowValue(
-            this.x      ? this.x     .toValue() : this.input.x     .toValue(),
-            this.y      ? this.y     .toValue() : this.input.y     .toValue(),
-            this.blur   ? this.blur  .toValue() : this.input.blur  .toValue(),
-            this.spread ? this.spread.toValue() : this.input.spread.toValue(),
-            this.fill   ? this.fill  .toValue() : this.input.fill  .toValue(),
-            this.blend  ? this.blend .toValue() : this.input.blend .toValue(),
-            this.options.enabled);
+        return this.value
+             ? this.value.copy()
+             : null;
     }
 
 
@@ -27265,11 +27266,14 @@ extends GShape
             obj.nodeId   = this.nodeId;
             obj.objectId = obj.objectId + OBJECT_SEPARATOR + this.nodeId;
 
-            obj.fills   = [];
-            obj.strokes = [];
-            obj.effects = [];
+            if (this.options.enabled)
+            {
+                obj.fills   = [];
+                obj.strokes = [];
+                obj.effects = [];
 
-            obj.isMask  = false;
+                obj.isMask  = false;
+            }
         }
 
         
@@ -27706,9 +27710,6 @@ extends GOperator1
             
             const bounds = getObjBounds(this.value.objects);
 
-            if (!this.options.enabled)
-                return bounds;
-                
 
             const x           = options.x          .value;
             const y           = options.y          .value;
@@ -27757,7 +27758,8 @@ extends GOperator1
                 obj.nodeId   = this.nodeId;
                 obj.objectId = obj.objectId + OBJECT_SEPARATOR + this.nodeId;
 
-                obj.applyTransform(xform, affectSpace > 0);
+                if (this.options.enabled)
+                    obj.applyTransform(xform, affectSpace > 0);
             }
 
 
@@ -27870,9 +27872,6 @@ extends GOperator1
 
         const bounds = getObjBounds(this.value.objects);
 
-        if (!this.options.enabled)
-            return bounds;
-
 
         const xform = getXform();
 
@@ -27882,10 +27881,13 @@ extends GOperator1
             obj.nodeId   = this.nodeId;
             obj.objectId = obj.objectId + OBJECT_SEPARATOR + this.nodeId;
 
-            obj.applyTransform(xform, options.affectSpace.value > 0);
+            if (this.options.enabled)
+            {
+                obj.applyTransform(xform, options.affectSpace.value > 0);
 
-            obj.scaleCorners *= Math.abs(scaleCorners);
-            obj.scaleStyle   *= Math.abs(scaleStyle);
+                obj.scaleCorners *= Math.abs(scaleCorners);
+                obj.scaleStyle   *= Math.abs(scaleStyle);
+            }
         }
 
 
@@ -33846,10 +33848,10 @@ function genParseScale(parse)
 
     scale.scaleX        = genParse(parse);
     scale.scaleY        = genParse(parse);
-    scale.showCenter    = genParse(parse);
-    scale.affectSpace   = genParse(parse);
     scale.affectCorners = genParse(parse);
     scale.affectStyle   = genParse(parse);
+    scale.showCenter    = genParse(parse);
+    scale.affectSpace   = genParse(parse);
 
     
     parse.inParam = false;

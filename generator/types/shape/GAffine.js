@@ -45,9 +45,6 @@ extends GOperator1
 
         const bounds = getObjBounds(this.value.objects);
 
-        if (!this.options.enabled)
-            return bounds;
-
 
         const xform = getXform();
 
@@ -57,10 +54,13 @@ extends GOperator1
             obj.nodeId   = this.nodeId;
             obj.objectId = obj.objectId + OBJECT_SEPARATOR + this.nodeId;
 
-            obj.applyTransform(xform, options.affectSpace.value > 0);
+            if (this.options.enabled)
+            {
+                obj.applyTransform(xform, options.affectSpace.value > 0);
 
-            obj.scaleCorners *= Math.abs(scaleCorners);
-            obj.scaleStyle   *= Math.abs(scaleStyle);
+                obj.scaleCorners *= Math.abs(scaleCorners);
+                obj.scaleStyle   *= Math.abs(scaleStyle);
+            }
         }
 
 

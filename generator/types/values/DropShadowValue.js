@@ -31,6 +31,8 @@ extends GValue
         this.blend   = blend;
         this.behind  = behind;
         this.visible = visible;
+        
+        consoleAssert(fill.type == FILL_VALUE, 'fill.type must be FILL_VALUE');
     }
 
 

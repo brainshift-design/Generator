@@ -4594,8 +4594,7 @@ a
             <div id='whatsNewBody'>
                 <h1 style='margin-top: 20px;'>What's new</h1>
 
-                <p>•  fixed trapeze transformation issue</p>
-                <p>•  small performance tweaks</p>
+                <p>•  fixed transform disable not working properly</p>
                 
                 <p><br/><br/><div id='chkHideWhatsNew'></div></p>
             </div>
@@ -4923,7 +4922,7 @@ a
 
 
 
-const generatorVersion = 166;
+const generatorVersion = 167;
 
 
 const MAX_INT32        = 2147483647;
@@ -14820,6 +14819,8 @@ extends GValue
         this.blend   = blend;
         this.behind  = behind;
         this.visible = visible;
+        
+        consoleAssert(fill.type == FILL_VALUE, 'fill.type must be FILL_VALUE');
     }
 
 
@@ -28555,9 +28556,14 @@ extends GOperator1
         const y      = this.y      ? (await this.y     .eval(parse)).toValue() : null;
         const blur   = this.blur   ? (await this.blur  .eval(parse)).toValue() : null;
         const spread = this.spread ? (await this.spread.eval(parse)).toValue() : null;
-        const fill   = this.fill   ? (await this.fill  .eval(parse)).toValue() : null;
+        let   fill   = this.fill   ? (await this.fill  .eval(parse)).toValue() : null;
         const blend  = this.blend  ? (await this.blend .eval(parse)).toValue() : null;
         const behind = this.behind ? (await this.behind.eval(parse)).toValue() : null;
+
+
+        if (   fill
+            && fill.type == COLOR_VALUE)
+            fill = new FillValue(fill);
 
         
         if (this.input)
@@ -28609,15 +28615,9 @@ extends GOperator1
 
     toValue()
     {
-        return new DropShadowValue(
-            this.x      ? this.x     .toValue() : this.input.x     .toValue(),
-            this.y      ? this.y     .toValue() : this.input.y     .toValue(),
-            this.blur   ? this.blur  .toValue() : this.input.blur  .toValue(),
-            this.spread ? this.spread.toValue() : this.input.spread.toValue(),
-            this.fill   ? this.fill  .toValue() : this.input.fill  .toValue(),
-            this.blend  ? this.blend .toValue() : this.input.blend .toValue(),
-            this.behind ? this.behind.toValue() : this.input.behind.toValue(),
-            this.options.enabled);
+        return this.value
+             ? this.value.copy()
+             : null;
     }
 
 
@@ -28712,11 +28712,16 @@ extends GOperator1
         const y      = this.y      ? (await this.y     .eval(parse)).toValue() : null;
         const blur   = this.blur   ? (await this.blur  .eval(parse)).toValue() : null;
         const spread = this.spread ? (await this.spread.eval(parse)).toValue() : null;
-        const fill   = this.fill   ? (await this.fill  .eval(parse)).toValue() : null;
+        let   fill   = this.fill   ? (await this.fill  .eval(parse)).toValue() : null;
         const blend  = this.blend  ? (await this.blend .eval(parse)).toValue() : null;
 
         
-        if (this.input)
+        if (   fill
+            && fill.type == COLOR_VALUE)
+            fill = new FillValue(fill);
+
+
+         if (this.input)
         {
             const input = (await this.input.eval(parse)).toValue();
 
@@ -28762,14 +28767,9 @@ extends GOperator1
 
     toValue()
     {
-        return new InnerShadowValue(
-            this.x      ? this.x     .toValue() : this.input.x     .toValue(),
-            this.y      ? this.y     .toValue() : this.input.y     .toValue(),
-            this.blur   ? this.blur  .toValue() : this.input.blur  .toValue(),
-            this.spread ? this.spread.toValue() : this.input.spread.toValue(),
-            this.fill   ? this.fill  .toValue() : this.input.fill  .toValue(),
-            this.blend  ? this.blend .toValue() : this.input.blend .toValue(),
-            this.options.enabled);
+        return this.value
+             ? this.value.copy()
+             : null;
     }
 
 
@@ -32184,11 +32184,14 @@ extends GShape
             obj.nodeId   = this.nodeId;
             obj.objectId = obj.objectId + OBJECT_SEPARATOR + this.nodeId;
 
-            obj.fills   = [];
-            obj.strokes = [];
-            obj.effects = [];
+            if (this.options.enabled)
+            {
+                obj.fills   = [];
+                obj.strokes = [];
+                obj.effects = [];
 
-            obj.isMask  = false;
+                obj.isMask  = false;
+            }
         }
 
         
@@ -32625,9 +32628,6 @@ extends GOperator1
             
             const bounds = getObjBounds(this.value.objects);
 
-            if (!this.options.enabled)
-                return bounds;
-                
 
             const x           = options.x          .value;
             const y           = options.y          .value;
@@ -32676,7 +32676,8 @@ extends GOperator1
                 obj.nodeId   = this.nodeId;
                 obj.objectId = obj.objectId + OBJECT_SEPARATOR + this.nodeId;
 
-                obj.applyTransform(xform, affectSpace > 0);
+                if (this.options.enabled)
+                    obj.applyTransform(xform, affectSpace > 0);
             }
 
 
@@ -32789,9 +32790,6 @@ extends GOperator1
 
         const bounds = getObjBounds(this.value.objects);
 
-        if (!this.options.enabled)
-            return bounds;
-
 
         const xform = getXform();
 
@@ -32801,10 +32799,13 @@ extends GOperator1
             obj.nodeId   = this.nodeId;
             obj.objectId = obj.objectId + OBJECT_SEPARATOR + this.nodeId;
 
-            obj.applyTransform(xform, options.affectSpace.value > 0);
+            if (this.options.enabled)
+            {
+                obj.applyTransform(xform, options.affectSpace.value > 0);
 
-            obj.scaleCorners *= Math.abs(scaleCorners);
-            obj.scaleStyle   *= Math.abs(scaleStyle);
+                obj.scaleCorners *= Math.abs(scaleCorners);
+                obj.scaleStyle   *= Math.abs(scaleStyle);
+            }
         }
 
 
@@ -38765,10 +38766,10 @@ function genParseScale(parse)
 
     scale.scaleX        = genParse(parse);
     scale.scaleY        = genParse(parse);
-    scale.showCenter    = genParse(parse);
-    scale.affectSpace   = genParse(parse);
     scale.affectCorners = genParse(parse);
     scale.affectStyle   = genParse(parse);
+    scale.showCenter    = genParse(parse);
+    scale.affectSpace   = genParse(parse);
 
     
     parse.inParam = false;
@@ -43393,7 +43394,7 @@ onerror = (event, source, line, pos, error) =>
 };
 
 
-const generatorVersion = 166;
+const generatorVersion = 167;
 
 
 const MAX_INT32        = 2147483647;
@@ -55474,6 +55475,8 @@ extends GValue
         this.blend   = blend;
         this.behind  = behind;
         this.visible = visible;
+        
+        consoleAssert(fill.type == FILL_VALUE, 'fill.type must be FILL_VALUE');
     }
 
 
@@ -69209,9 +69212,14 @@ extends GOperator1
         const y      = this.y      ? (await this.y     .eval(parse)).toValue() : null;
         const blur   = this.blur   ? (await this.blur  .eval(parse)).toValue() : null;
         const spread = this.spread ? (await this.spread.eval(parse)).toValue() : null;
-        const fill   = this.fill   ? (await this.fill  .eval(parse)).toValue() : null;
+        let   fill   = this.fill   ? (await this.fill  .eval(parse)).toValue() : null;
         const blend  = this.blend  ? (await this.blend .eval(parse)).toValue() : null;
         const behind = this.behind ? (await this.behind.eval(parse)).toValue() : null;
+
+
+        if (   fill
+            && fill.type == COLOR_VALUE)
+            fill = new FillValue(fill);
 
         
         if (this.input)
@@ -69263,15 +69271,9 @@ extends GOperator1
 
     toValue()
     {
-        return new DropShadowValue(
-            this.x      ? this.x     .toValue() : this.input.x     .toValue(),
-            this.y      ? this.y     .toValue() : this.input.y     .toValue(),
-            this.blur   ? this.blur  .toValue() : this.input.blur  .toValue(),
-            this.spread ? this.spread.toValue() : this.input.spread.toValue(),
-            this.fill   ? this.fill  .toValue() : this.input.fill  .toValue(),
-            this.blend  ? this.blend .toValue() : this.input.blend .toValue(),
-            this.behind ? this.behind.toValue() : this.input.behind.toValue(),
-            this.options.enabled);
+        return this.value
+             ? this.value.copy()
+             : null;
     }
 
 
@@ -69366,11 +69368,16 @@ extends GOperator1
         const y      = this.y      ? (await this.y     .eval(parse)).toValue() : null;
         const blur   = this.blur   ? (await this.blur  .eval(parse)).toValue() : null;
         const spread = this.spread ? (await this.spread.eval(parse)).toValue() : null;
-        const fill   = this.fill   ? (await this.fill  .eval(parse)).toValue() : null;
+        let   fill   = this.fill   ? (await this.fill  .eval(parse)).toValue() : null;
         const blend  = this.blend  ? (await this.blend .eval(parse)).toValue() : null;
 
         
-        if (this.input)
+        if (   fill
+            && fill.type == COLOR_VALUE)
+            fill = new FillValue(fill);
+
+
+         if (this.input)
         {
             const input = (await this.input.eval(parse)).toValue();
 
@@ -69416,14 +69423,9 @@ extends GOperator1
 
     toValue()
     {
-        return new InnerShadowValue(
-            this.x      ? this.x     .toValue() : this.input.x     .toValue(),
-            this.y      ? this.y     .toValue() : this.input.y     .toValue(),
-            this.blur   ? this.blur  .toValue() : this.input.blur  .toValue(),
-            this.spread ? this.spread.toValue() : this.input.spread.toValue(),
-            this.fill   ? this.fill  .toValue() : this.input.fill  .toValue(),
-            this.blend  ? this.blend .toValue() : this.input.blend .toValue(),
-            this.options.enabled);
+        return this.value
+             ? this.value.copy()
+             : null;
     }
 
 
@@ -72838,11 +72840,14 @@ extends GShape
             obj.nodeId   = this.nodeId;
             obj.objectId = obj.objectId + OBJECT_SEPARATOR + this.nodeId;
 
-            obj.fills   = [];
-            obj.strokes = [];
-            obj.effects = [];
+            if (this.options.enabled)
+            {
+                obj.fills   = [];
+                obj.strokes = [];
+                obj.effects = [];
 
-            obj.isMask  = false;
+                obj.isMask  = false;
+            }
         }
 
         
@@ -73279,9 +73284,6 @@ extends GOperator1
             
             const bounds = getObjBounds(this.value.objects);
 
-            if (!this.options.enabled)
-                return bounds;
-                
 
             const x           = options.x          .value;
             const y           = options.y          .value;
@@ -73330,7 +73332,8 @@ extends GOperator1
                 obj.nodeId   = this.nodeId;
                 obj.objectId = obj.objectId + OBJECT_SEPARATOR + this.nodeId;
 
-                obj.applyTransform(xform, affectSpace > 0);
+                if (this.options.enabled)
+                    obj.applyTransform(xform, affectSpace > 0);
             }
 
 
@@ -73443,9 +73446,6 @@ extends GOperator1
 
         const bounds = getObjBounds(this.value.objects);
 
-        if (!this.options.enabled)
-            return bounds;
-
 
         const xform = getXform();
 
@@ -73455,10 +73455,13 @@ extends GOperator1
             obj.nodeId   = this.nodeId;
             obj.objectId = obj.objectId + OBJECT_SEPARATOR + this.nodeId;
 
-            obj.applyTransform(xform, options.affectSpace.value > 0);
+            if (this.options.enabled)
+            {
+                obj.applyTransform(xform, options.affectSpace.value > 0);
 
-            obj.scaleCorners *= Math.abs(scaleCorners);
-            obj.scaleStyle   *= Math.abs(scaleStyle);
+                obj.scaleCorners *= Math.abs(scaleCorners);
+                obj.scaleStyle   *= Math.abs(scaleStyle);
+            }
         }
 
 
@@ -81018,8 +81021,8 @@ function initGeneratorMenus()
         menuItemNodeSep3           = new MenuItem('',                 {separator: true}),
         // menuItemNodeEdit           = new MenuItem('Edit...',       {callback: e => { hideAllMenus(); graphView.editSelectedCustomNode(); }}),
                                     //  new MenuItem('',              {separator: true}),
-        menuItemNodeSaveAsTemplate = new MenuItem('Save as template', {callback: e => { hideAllMenus(); showSaveAsTemplateDialog(); }}),
-                                     new MenuItem('',                 {separator: true}),
+        // menuItemNodeSaveAsTemplate = new MenuItem('Save as template', {callback: e => { hideAllMenus(); showSaveAsTemplateDialog(); }}),
+        //                              new MenuItem('',                 {separator: true}),
         // menuItemNodeActivate    = new MenuItem('Activate',         {callback: () => makeSelectedNodesActive()}),
         menuItemNodeEnableDisable  = new MenuItem('Enable/Disable',   {shortcut:  osCtrlShift() + 'E',  callback: () => actionManager.do(new ToggleDisableNodesAction(graphView.selectedNodes.map(n => n.id)))}),
         menuItemNodeSep4           = new MenuItem('',                 {separator: true}),
@@ -81080,7 +81083,7 @@ function initGeneratorMenus()
     btnLayer    = new MenuButton('', menuLayer,    {useMenuName: true, highlight: () => currentMenus.includes(menuLayer ), callback: () => updatePanMode(false)});
     //btnStyle  = new MenuButton('', menuStyle,    {useMenuName: true, highlight: () => currentMenus.includes(menuStyle ), callback: () => updatePanMode(false)});
     btnShape    = new MenuButton('', menuShape,    {useMenuName: true, highlight: () => currentMenus.includes(menuShape ), callback: () => updatePanMode(false)});
-    btnTemplate = new MenuButton('', menuTemplate, {useMenuName: true, highlight: () => currentMenus.includes(menuShape ), callback: () => updatePanMode(false)});
+   // btnTemplate = new MenuButton('', menuTemplate, {useMenuName: true, highlight: () => currentMenus.includes(menuShape ), callback: () => updatePanMode(false)});
     //btnGroup  = new MenuButton('', menuGroup,  {useMenuName: true, highlight: () => currentMenus.includes(menuShape ), callback: () => updatePanMode(false)});
 
     // btnGroup  = new MenuButton('Node groups', null, {callback: () => 
@@ -81166,7 +81169,7 @@ function initGeneratorMenus()
     btnShape   .setIcon(iconShapes);
     //btnStyle  .setIcon(iconStyle);
     //btnGroup  .setIcon(iconGroup);
-    btnTemplate.setIcon(iconTemplate);
+    //btnTemplate.setIcon(iconTemplate);
     btnHand    .setIcon(iconHand);
     btnComment .setIcon(iconComment);
 }
@@ -107554,14 +107557,15 @@ extends OpAffine
         this.paramScaleY.controls[0].setMin(0);
 
 
+    
+        this.addParam(this.paramAffectCorners = new NumberParam('affectCorners', 'corners', true, true, true, 1, 0, 1));
+        this.addParam(this.paramAffectStyle   = new NumberParam('affectStyle',   'style',   true, true, true, 1, 0, 1));
+
         this.addBaseParams('scale');
 
-    
-        this.addParam(this.paramAffectCorners = new NumberParam('affectCorners', 'affect corners', true, true, true, 1, 0, 1));
-        this.addParam(this.paramAffectStyle   = new NumberParam('affectStyle',   'affect style',   true, true, true, 1, 0, 1));
 
-        this.paramAffectCorners.divider = 0.72;
-        this.paramAffectStyle  .divider = 0.72;
+        this.paramAffectCorners.divider = 0.55;
+        this.paramAffectStyle  .divider = 0.55;
     
         this.menuBoolAffectCorners = createBoolMenu(this.paramAffectCorners);
         this.menuBoolAffectStyle   = createBoolMenu(this.paramAffectStyle  );
@@ -107591,12 +107595,10 @@ extends OpAffine
 
         request.push(...this.node.paramScaleX       .genRequest(gen));
         request.push(...this.node.paramScaleY       .genRequest(gen));
-        // request.push(...this.node.paramCenterX      .genRequest(gen));
-        // request.push(...this.node.paramCenterY      .genRequest(gen));
-        request.push(...this.node.paramShowCenter   .genRequest(gen));
-        request.push(...this.node.paramAffectSpace  .genRequest(gen));
         request.push(...this.node.paramAffectCorners.genRequest(gen));
         request.push(...this.node.paramAffectStyle  .genRequest(gen));
+        request.push(...this.node.paramShowCenter   .genRequest(gen));
+        request.push(...this.node.paramAffectSpace  .genRequest(gen));
 
         
         gen.scope.pop();

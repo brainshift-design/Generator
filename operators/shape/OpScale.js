@@ -31,14 +31,15 @@ extends OpAffine
         this.paramScaleY.controls[0].setMin(0);
 
 
+    
+        this.addParam(this.paramAffectCorners = new NumberParam('affectCorners', 'corners', true, true, true, 1, 0, 1));
+        this.addParam(this.paramAffectStyle   = new NumberParam('affectStyle',   'style',   true, true, true, 1, 0, 1));
+
         this.addBaseParams('scale');
 
-    
-        this.addParam(this.paramAffectCorners = new NumberParam('affectCorners', 'affect corners', true, true, true, 1, 0, 1));
-        this.addParam(this.paramAffectStyle   = new NumberParam('affectStyle',   'affect style',   true, true, true, 1, 0, 1));
 
-        this.paramAffectCorners.divider = 0.72;
-        this.paramAffectStyle  .divider = 0.72;
+        this.paramAffectCorners.divider = 0.55;
+        this.paramAffectStyle  .divider = 0.55;
     
         this.menuBoolAffectCorners = createBoolMenu(this.paramAffectCorners);
         this.menuBoolAffectStyle   = createBoolMenu(this.paramAffectStyle  );
@@ -68,12 +69,10 @@ extends OpAffine
 
         request.push(...this.node.paramScaleX       .genRequest(gen));
         request.push(...this.node.paramScaleY       .genRequest(gen));
-        // request.push(...this.node.paramCenterX      .genRequest(gen));
-        // request.push(...this.node.paramCenterY      .genRequest(gen));
-        request.push(...this.node.paramShowCenter   .genRequest(gen));
-        request.push(...this.node.paramAffectSpace  .genRequest(gen));
         request.push(...this.node.paramAffectCorners.genRequest(gen));
         request.push(...this.node.paramAffectStyle  .genRequest(gen));
+        request.push(...this.node.paramShowCenter   .genRequest(gen));
+        request.push(...this.node.paramAffectSpace  .genRequest(gen));
 
         
         gen.scope.pop();
