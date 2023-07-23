@@ -21,8 +21,11 @@ function getFigmaTransform(tl, tr, bl)
         createTransform(dx, dy));
 
 
-    if (!equal(determinant(xform), 1, 0.000001))
+    if (determinant(xform) < 1 - 0.00001)
+    {
+        console.log('determinant(xform) =', determinant(xform));
         return null;
+    }
 
 
     xform = inversem3(xform);
@@ -55,8 +58,8 @@ function applyFigmaTransform(figObj, tl, tr, bl)
             xform[1]
         ];
 
-    // else
-    //     figObj.remove();
+    else
+        figObj.remove();
 
 
     return xform;
@@ -79,11 +82,11 @@ function setObjectTransform(figObj, genObj, setSize = true, noHeight = 0.01)
     
     const xform = applyFigmaTransform(figObj, xp0, xp1, xp2)
     
-    if (!xform)
-    {
-        genObj.badTransform = true;        
-        return;
-    }
+    // if (!xform)
+    // {
+    //     genObj.badTransform = true;        
+    //     return;
+    // }
 
 
     if (setSize)

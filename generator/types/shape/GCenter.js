@@ -113,27 +113,27 @@ extends GOperator1
             const cy = singlePoint ? this.value.objects[0].y + _cy : bounds.y + _cy * bounds.height;
 
                             
-            const objects = [...this.value.objects]; // avoids infinite growth
-
-            for (const obj of objects)
+            for (const obj of this.value.objects)
             {
                 obj.nodeId   = this.nodeId;
                 obj.objectId = obj.objectId + OBJECT_SEPARATOR + this.nodeId;
-
 
                 if (this.options.enabled)
                 {
                     const ds1 = subv(obj.sp1, obj.sp0);
                     const ds2 = subv(obj.sp2, obj.sp0);
 
-                    obj.sp0.x = cx;
-                    obj.sp0.y = cy;
-
+                    obj.sp0 = point(cx, cy);
                     obj.sp1 = addv(obj.sp0, ds1);
                     obj.sp2 = addv(obj.sp0, ds2);
                 }
+            }
 
-                
+
+            const objects = [...this.value.objects]; // avoids infinite growth
+
+            for (const obj of objects)
+            {
                 if (showCenter > 0)
                     addObjectCenter(this, obj, parse.viewportZoom);
             }

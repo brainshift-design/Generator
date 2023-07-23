@@ -3306,7 +3306,8 @@ async function figCreateObject(genObj, addObject = null)
     }
 
 
-    if (addObject)
+    if (    addObject
+        && !figObj.removed)
     {
         figObj.name = makeObjectName(genObj);
 
@@ -3341,7 +3342,8 @@ async function figCreateObject(genObj, addObject = null)
 
 async function figUpdateObject(figObj, genObj)
 {
-    if (!genObjectIsValid(genObj))
+    if (  !genObjectIsValid(genObj)
+        || figObj.removed)
         return;
 
         
@@ -3492,9 +3494,6 @@ async function figUpdateObjects(figParent, genObjects, nodeIds = [], lastChunk =
 
 function genObjectIsValid(genObj)
 {
-    if (genObj.badTransform)
-        return false;
-
     switch (genObj[FO_TYPE])
     {
         case RECTANGLE:      return genRectIsValid         (genObj);
@@ -3692,8 +3691,8 @@ function getObjectEffects(genObjEffects)
 
 function setObjectProps(figObj, genObj, phantom = true)
 {
-    if (genObj.badTransform)
-        return;
+    // if (genObj.badTransform)
+    //     return;
         
     setObjectFills  (figObj, genObj);
     setObjectStrokes(figObj, genObj, phantom);
@@ -4170,8 +4169,11 @@ function getFigmaTransform(tl, tr, bl)
         createTransform(dx, dy));
 
 
-    if (!equal(determinant(xform), 1, 0.000001))
+    if (determinant(xform) < 1 - 0.00001)
+    {
+        console.log('determinant(xform) =', determinant(xform));
         return null;
+    }
 
 
     xform = inversem3(xform);
@@ -4204,8 +4206,8 @@ function applyFigmaTransform(figObj, tl, tr, bl)
             xform[1]
         ];
 
-    // else
-    //     figObj.remove();
+    else
+        figObj.remove();
 
 
     return xform;
@@ -4228,11 +4230,11 @@ function setObjectTransform(figObj, genObj, setSize = true, noHeight = 0.01)
     
     const xform = applyFigmaTransform(figObj, xp0, xp1, xp2)
     
-    if (!xform)
-    {
-        genObj.badTransform = true;        
-        return;
-    }
+    // if (!xform)
+    // {
+    //     genObj.badTransform = true;        
+    //     return;
+    // }
 
 
     if (setSize)

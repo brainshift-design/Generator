@@ -36,7 +36,8 @@ async function figCreateObject(genObj, addObject = null)
     }
 
 
-    if (addObject)
+    if (    addObject
+        && !figObj.removed)
     {
         figObj.name = makeObjectName(genObj);
 
@@ -71,7 +72,8 @@ async function figCreateObject(genObj, addObject = null)
 
 async function figUpdateObject(figObj, genObj)
 {
-    if (!genObjectIsValid(genObj))
+    if (  !genObjectIsValid(genObj)
+        || figObj.removed)
         return;
 
         
@@ -222,9 +224,6 @@ async function figUpdateObjects(figParent, genObjects, nodeIds = [], lastChunk =
 
 function genObjectIsValid(genObj)
 {
-    if (genObj.badTransform)
-        return false;
-
     switch (genObj[FO_TYPE])
     {
         case RECTANGLE:      return genRectIsValid         (genObj);

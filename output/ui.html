@@ -4594,7 +4594,7 @@ a
             <div id='whatsNewBody'>
                 <h1 style='margin-top: 20px;'>What's new</h1>
 
-                <p>•  fixed transform disable not working properly</p>
+                <p>•  fixed transform issues</p>
                 
                 <p><br/><br/><div id='chkHideWhatsNew'></div></p>
             </div>
@@ -33414,27 +33414,27 @@ extends GOperator1
             const cy = singlePoint ? this.value.objects[0].y + _cy : bounds.y + _cy * bounds.height;
 
                             
-            const objects = [...this.value.objects]; // avoids infinite growth
-
-            for (const obj of objects)
+            for (const obj of this.value.objects)
             {
                 obj.nodeId   = this.nodeId;
                 obj.objectId = obj.objectId + OBJECT_SEPARATOR + this.nodeId;
-
 
                 if (this.options.enabled)
                 {
                     const ds1 = subv(obj.sp1, obj.sp0);
                     const ds2 = subv(obj.sp2, obj.sp0);
 
-                    obj.sp0.x = cx;
-                    obj.sp0.y = cy;
-
+                    obj.sp0 = point(cx, cy);
                     obj.sp1 = addv(obj.sp0, ds1);
                     obj.sp2 = addv(obj.sp0, ds2);
                 }
+            }
 
-                
+
+            const objects = [...this.value.objects]; // avoids infinite growth
+
+            for (const obj of objects)
+            {
                 if (showCenter > 0)
                     addObjectCenter(this, obj, parse.viewportZoom);
             }
@@ -33574,13 +33574,13 @@ extends GOperator1
 
 
             const cx = singlePoint ? this.value.objects[0].x + _cx : bounds.x + _cx * bounds.width;
-            const cy = singlePoint ? this.value.objects[0].y + _cy : bounds.y + _cy * bounds.height;            const objects = [...this.value.objects]; // avoids infinite growth
-
-            for (const obj of objects)
+            const cy = singlePoint ? this.value.objects[0].y + _cy : bounds.y + _cy * bounds.height;            
+            
+            
+            for (const obj of this.value.objects)
             {
                 obj.nodeId   = this.nodeId;
                 obj.objectId = obj.objectId + OBJECT_SEPARATOR + this.nodeId;
-
 
                 if (this.options.enabled)
                 {
@@ -33589,17 +33589,17 @@ extends GOperator1
                     const ds1 = subv(obj.sp1, obj.sp0);
                     const ds2 = subv(obj.sp2, obj.sp0);
 
-                    obj.sp0.x = cx;
-                    obj.sp0.y = cy;
-
+                    obj.sp0 = point(cx, cy);
                     obj.sp1 = addv(obj.sp0, ds1);
                     obj.sp2 = addv(obj.sp0, ds2);
                 }
-
-
-                if (options.showCenter.value > 0)
-                    addObjectCenter(this, obj, parse.viewportZoom);
             }
+
+
+            const objects = [...this.value.objects]; // avoids infinite growth
+
+            for (const obj of objects)
+                addObjectCenter(this, obj, parse.viewportZoom);
         }
         
         
@@ -74070,27 +74070,27 @@ extends GOperator1
             const cy = singlePoint ? this.value.objects[0].y + _cy : bounds.y + _cy * bounds.height;
 
                             
-            const objects = [...this.value.objects]; // avoids infinite growth
-
-            for (const obj of objects)
+            for (const obj of this.value.objects)
             {
                 obj.nodeId   = this.nodeId;
                 obj.objectId = obj.objectId + OBJECT_SEPARATOR + this.nodeId;
-
 
                 if (this.options.enabled)
                 {
                     const ds1 = subv(obj.sp1, obj.sp0);
                     const ds2 = subv(obj.sp2, obj.sp0);
 
-                    obj.sp0.x = cx;
-                    obj.sp0.y = cy;
-
+                    obj.sp0 = point(cx, cy);
                     obj.sp1 = addv(obj.sp0, ds1);
                     obj.sp2 = addv(obj.sp0, ds2);
                 }
+            }
 
-                
+
+            const objects = [...this.value.objects]; // avoids infinite growth
+
+            for (const obj of objects)
+            {
                 if (showCenter > 0)
                     addObjectCenter(this, obj, parse.viewportZoom);
             }
@@ -74230,13 +74230,13 @@ extends GOperator1
 
 
             const cx = singlePoint ? this.value.objects[0].x + _cx : bounds.x + _cx * bounds.width;
-            const cy = singlePoint ? this.value.objects[0].y + _cy : bounds.y + _cy * bounds.height;            const objects = [...this.value.objects]; // avoids infinite growth
-
-            for (const obj of objects)
+            const cy = singlePoint ? this.value.objects[0].y + _cy : bounds.y + _cy * bounds.height;            
+            
+            
+            for (const obj of this.value.objects)
             {
                 obj.nodeId   = this.nodeId;
                 obj.objectId = obj.objectId + OBJECT_SEPARATOR + this.nodeId;
-
 
                 if (this.options.enabled)
                 {
@@ -74245,17 +74245,17 @@ extends GOperator1
                     const ds1 = subv(obj.sp1, obj.sp0);
                     const ds2 = subv(obj.sp2, obj.sp0);
 
-                    obj.sp0.x = cx;
-                    obj.sp0.y = cy;
-
+                    obj.sp0 = point(cx, cy);
                     obj.sp1 = addv(obj.sp0, ds1);
                     obj.sp2 = addv(obj.sp0, ds2);
                 }
-
-
-                if (options.showCenter.value > 0)
-                    addObjectCenter(this, obj, parse.viewportZoom);
             }
+
+
+            const objects = [...this.value.objects]; // avoids infinite growth
+
+            for (const obj of objects)
+                addObjectCenter(this, obj, parse.viewportZoom);
         }
         
         
@@ -107614,10 +107614,10 @@ extends OpAffine
     {
         super.updateParams();
 
-        updateParamConditionText(this.paramShowCenter,    this.paramShowCenter   .isUnknown(), false, 1);
-        updateParamConditionText(this.paramAffectSpace,   this.paramAffectSpace  .isUnknown(), true,  1);
         updateParamConditionText(this.paramAffectCorners, this.paramAffectCorners.isUnknown(), false, 1);
         updateParamConditionText(this.paramAffectStyle,   this.paramAffectStyle  .isUnknown(), false, 1);
+        updateParamConditionText(this.paramShowCenter,    this.paramShowCenter   .isUnknown(), false, 1);
+        updateParamConditionText(this.paramAffectSpace,   this.paramAffectSpace  .isUnknown(), true,  1);
 
         this.updateParamControls();
     }
