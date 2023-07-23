@@ -4,8 +4,8 @@ function getFigmaTransform(tl, tr, bl)
     let vb = point(bl.x - tl.x, bl.y - tl.y);
 
 
-    let sx =  nozero(vr.x);
-    let sy =  nozero(vb.y);
+    let sx = vr.x;
+    let sy = vb.y;
 
     let kx = -vr.y;
     let ky = -vb.x;
@@ -13,21 +13,15 @@ function getFigmaTransform(tl, tr, bl)
     let dx = -tl.x;
     let dy = -tl.y;
 
-    const _sx = !equal(sx, 0, 0.01) ? kx/sx : kx;
-    const _sy = !equal(sy, 0, 0.01) ? ky/sy : ky;
+
+    const _sx = equal(sx, 0, 0.0001) ? 0 : kx/sx;
+    const _sy = equal(sy, 0, 0.0001) ? 0 : ky/sy;
 
     let xform = mulm3m3(
-        [[ 1, _sy, 0],
-         [_sx, 1,  0],
-         [ 0,  0,  1]],
+        [[1,     _sy, 0],
+         [_sx, 1,     0],
+         [0,     0,     1]],
         createTransform(dx, dy));
-
-
-    if (determinant(xform) < 1 - 0.000001)
-    {
-        consoleError('determinant(xform) =', determinant(xform));
-        return null;
-    }
 
 
     xform = inversem3(xform);

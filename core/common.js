@@ -34,9 +34,11 @@ var enableAsserts = false;
 
 
 
-function nozero(x) 
+function nozero(x, eps = Epsilon) 
 { 
-    return x != 0 ? x : Epsilon; 
+    return x != 0 
+         ? x 
+         : (x < 0 ? -eps : eps);
 }
 
 function nozerov(v) 

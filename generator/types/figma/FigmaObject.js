@@ -101,6 +101,9 @@ class FigmaObject
         this.xp1 = new FigmaPoint(this.nodeId, this.objectId+'.1', this.objectName+' ^ 1', x + w, y,     true, false, true);
         this.xp2 = new FigmaPoint(this.nodeId, this.objectId+'.2', this.objectName+' ^ 2', x,     y + h, true, false, true);
 
+        w = Math.sign(w) * Math.max(0.000001, Math.abs(w));
+        h = Math.sign(h) * Math.max(0.000001, Math.abs(h));
+
         this.xp0.createDefaultTransform(x,     y    );
         this.xp1.createDefaultTransform(x + w, y    );
         this.xp2.createDefaultTransform(x,     y + h);

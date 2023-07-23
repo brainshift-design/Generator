@@ -37,8 +37,10 @@ const identity = Object.freeze([[1, 0, 0],
 const Epsilon = 0.0000001;
 const Tau = Math.PI * 2;
 var enableAsserts = false;
-function nozero(x) {
-    return x != 0 ? x : Epsilon;
+function nozero(x, eps = Epsilon) {
+    return x != 0
+        ? x
+        : (x < 0 ? -eps : eps);
 }
 function nozerov(v) {
     return point(nozero(v.x), nozero(v.y));
@@ -2742,21 +2744,17 @@ function setStylePaints(figStyle, genStyle) {
 function getFigmaTransform(tl, tr, bl) {
     let vr = point(tr.x - tl.x, tr.y - tl.y);
     let vb = point(bl.x - tl.x, bl.y - tl.y);
-    let sx = nozero(vr.x);
-    let sy = nozero(vb.y);
+    let sx = vr.x;
+    let sy = vb.y;
     let kx = -vr.y;
     let ky = -vb.x;
     let dx = -tl.x;
     let dy = -tl.y;
-    const _sx = !equal(sx, 0, 0.01) ? kx / sx : kx;
-    const _sy = !equal(sy, 0, 0.01) ? ky / sy : ky;
+    const _sx = equal(sx, 0, 0.0001) ? 0 : kx / sx;
+    const _sy = equal(sy, 0, 0.0001) ? 0 : ky / sy;
     let xform = mulm3m3([[1, _sy, 0],
         [_sx, 1, 0],
         [0, 0, 1]], createTransform(dx, dy));
-    if (determinant(xform) < 1 - 0.000001) {
-        consoleError('determinant(xform) =', determinant(xform));
-        return null;
-    }
     xform = inversem3(xform);
     const a = angle(vr);
     if (a > Tau / 4
