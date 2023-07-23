@@ -144,4 +144,13 @@ extends GOperator
         if (this.max   ) this.max   .invalidateInputs(from);
         if (this.unique) this.unique.invalidateInputs(from);
     }
+
+
+
+    invalidateLoop(parse, nodeId)
+    {
+        super.invalidateLoop(parse, nodeId);
+
+        this.randomOffset = 0;
+    }
 }

@@ -4541,7 +4541,7 @@ const ITEMS                   = 'ITEMS';
 const SELECT                  = 'SEL';
 const LIST_COUNT              = 'COUNT';
 const IF_ELSE                 = 'IF';
-const FEEDBACK                = 'FEED';
+const START                   = 'START';
 const REPEAT                  = 'REPT';
 const DEFINE                  = 'DEFINE';  
 const CACHE                   = 'CACHE';
@@ -4583,7 +4583,7 @@ const FLOW_TYPES =
     ITEMS,
     SELECT,
     IF_ELSE,
-    FEEDBACK,
+    START,
     REPEAT,
     //FOREACH,
     DEFINE,
@@ -14195,31 +14195,34 @@ extends GOperator
 
 
 
-class GFeedback
+class GStart
 extends GOperator
 {
-    input  = null;
+    input    = null;
 
-    from   = null;
-    loopId = NULL;
+    feedback = null;
+    from     = null;
+
+    loopId   = NULL;
 
     
 
     constructor(nodeId, options)
     {
-        super(FEEDBACK, nodeId, options);
+        super(START, nodeId, options);
     }
 
 
     
     copy()
     {
-        const copy = new GFeedback(this.nodeId, this.options);
+        const copy = new GStart(this.nodeId, this.options);
 
         copy.copyBase(this);
 
-        if (this.value) copy.value = this.value.copy();
-        if (this.input) copy.input = this.input.copy();
+        if (this.value   ) copy.value    = this.value   .copy();
+        if (this.input   ) copy.input    = this.input   .copy();
+        if (this.feedback) copy.feedback = this.feedback.copy();
 
         return copy;
     }
@@ -14241,16 +14244,19 @@ extends GOperator
             return this;
 
 
+        const feedback = this.feedback ? (await this.feedback.eval(parse)).toValue() : null;
+
+
         this.value = 
             this.input 
             ? (await this.input.eval(parse)).toValue() 
             : NullValue;
 
 
-        this.updateValues = [['', NullValue]];
+        this.updateValues = [['feedback', feedback]];
 
 
-        await this.evalObjects(parse);
+        await this.evalObjects(parse, {feedback: feedback.value > 0});
 
         
         this.validate();
@@ -14264,10 +14270,12 @@ extends GOperator
     {
         const repeat = parse.repeats.find(r => r.repeatId == this.loopId);
 
+
         this.updateObjects(
                this.from
             && repeat
             && repeat.iteration > 0
+            && options.feedback
             ? this.from.iterationObjects 
             : (this.input ? this.input.value.objects : []),
             repeat 
@@ -14305,11 +14313,20 @@ extends GOperator
 
 
 
+    isValid()
+    {
+        return super.isValid()
+            && this.feedback.isValid();
+    }
+
+
+
     pushValueUpdates(parse)
     {
         super.pushValueUpdates(parse);
 
-        if (this.input) this.input.pushValueUpdates(parse);
+        if (this.input   ) this.input   .pushValueUpdates(parse);
+        if (this.feedback) this.feedback.pushValueUpdates(parse);
     }
 
 
@@ -14320,7 +14337,8 @@ extends GOperator
 
         this.from = from;
 
-        if (this.input) this.input.invalidateInputs(from);
+        if (this.input   ) this.input   .invalidateInputs(from);
+        if (this.feedback) this.feedback.invalidateInputs(from);
     }
 }
 
@@ -14602,7 +14620,7 @@ function assertVolatile(node)
         || node.loop.type == NUMBER_NOISE
         || node.loop.type == NUMBER_PROBABILITY
         || node.loop.type == LIST
-        || node.loop.type == PARAM, // for OpFeedback
+        || node.loop.type == PARAM, // for OpStart
         'only volatile types can be repeated');
 }
 
@@ -16317,6 +16335,15 @@ extends GOperator
         if (this.min   ) this.min   .invalidateInputs(from);
         if (this.max   ) this.max   .invalidateInputs(from);
         if (this.unique) this.unique.invalidateInputs(from);
+    }
+
+
+
+    invalidateLoop(parse, nodeId)
+    {
+        super.invalidateLoop(parse, nodeId);
+
+        this.randomOffset = 0;
     }
 }
 
@@ -30456,12 +30483,12 @@ function genParseIfElse(parse)
 
 
 
-function genParseFeedback(parse)
+function genParseStart(parse)
 {
     const [, nodeId, options, ignore] = genParseNodeStart(parse);
 
 
-    const feedback = new GFeedback(nodeId, options);
+    const start = new GStart(nodeId, options);
 
 
     let nInputs = -1;
@@ -30474,12 +30501,12 @@ function genParseFeedback(parse)
 
 
     if (parse.settings.logRequests) 
-        logReq(feedback, parse, ignore, nInputs);
+        logReq(start, parse, ignore, nInputs);
 
 
     if (ignore) 
     {
-        genParseNodeEnd(parse, feedback);
+        genParseNodeEnd(parse, start);
         return parse.parsedNodes.find(n => n.nodeId == nodeId);
     }
 
@@ -30488,14 +30515,16 @@ function genParseFeedback(parse)
 
 
     if (nInputs == 1)
-        feedback.input = genParse(parse);
+        start.input = genParse(parse);
+
+    start.feedback = genParse(parse);
 
 
     parse.nTab--;
 
 
-    genParseNodeEnd(parse, feedback);
-    return feedback;
+    genParseNodeEnd(parse, start);
+    return start;
 }
 
 
@@ -34996,7 +35025,7 @@ function genParse(parse, inParam = true)
     else if (parse.next == SELECT                 ) result = genParseSelect           (parse);
     else if (parse.next == LIST_COUNT             ) result = genParseListCount        (parse);
     else if (parse.next == IF_ELSE                ) result = genParseIfElse           (parse);
-    else if (parse.next == FEEDBACK               ) result = genParseFeedback         (parse);
+    else if (parse.next == START                  ) result = genParseStart            (parse);
     else if (parse.next == REPEAT                 ) result = genParseRepeat           (parse);
     else if (parse.next == CACHE                  ) result = genParseCache            (parse);
     else if (parse.next == DEFINE                 ) result = genParseDefine           (parse);

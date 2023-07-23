@@ -1,13 +1,14 @@
-class   OpFeedback
+class   OpStart
 extends OperatorBase
 {
+    paramFeedback;
     paramFrom;
 
 
 
     constructor()
     {
-        super(FEEDBACK, 'feedback', 'feedback', '');
+        super(START, 'start', 'start', iconStart);
 
         this.cached     = false;
         this.canDisable = true;
@@ -17,11 +18,15 @@ extends OperatorBase
         this.addOutput(new Output([ANY_VALUE], this.output_genRequest));
 
 
-        this.addParam(this.paramFrom = new NumberParam('from', '', false, false, true));
+        this.addParam(this.paramFeedback = new NumberParam('feedback', 'feedback', true,  true,  true, 0, 0, 1));
+        this.addParam(this.paramFrom     = new NumberParam('from',     '',         false, false, true));
 
         
-        this.inputs[0].addEventListener('connect',    () => OpFeedback_onConnectInput(this));
-        this.inputs[0].addEventListener('disconnect', () => OpFeedback_onDisconnectInput(this));
+        this.paramFeedback.divider = 0.64;
+
+
+        this.inputs[0].addEventListener('connect',    () => OpStart_onConnectInput(this));
+        this.inputs[0].addEventListener('disconnect', () => OpStart_onDisconnectInput(this));
     }
 
 
@@ -53,6 +58,9 @@ extends OperatorBase
         if (input.connected)
             request.push(...pushInputOrParam(input, gen));
 
+
+        request.push(...this.node.paramFeedback.genRequest(gen));
+
         
         gen.scope.pop();
         pushUnique(gen.passedNodes, this.node);
@@ -62,9 +70,33 @@ extends OperatorBase
 
 
 
+    getHeaderColors(options = {})
+    {
+        const colors = super.getHeaderColors(options);
+
+        const type = 
+            this.inputs[0].connected 
+            ? this.inputs[0].connectedOutput.node.type 
+            : this.type;
+
+        colors.text   = isDark(colors.back) ? [1, 1, 1, 1] : [0, 0, 0, 1]; 
+
+        colors.input  = this.active ? rgb_a(colors.text, 0.4)  : rgb_a(rgbSaturateHsv(rgbFromType(type, true), 0.5), 0.8);
+        colors.output = this.active ? rgb_a(colors.text, 0.35) : rgb_a(rgbSaturateHsv(rgbFromType(type, true), 0.5), 0.7);
+        colors.wire   = rgbFromType(type, true);
+
+        return colors;
+    }
+
+
+
     updateParams()
     {
+        this.paramFeedback.enableControlText(true);
         this.paramFrom.enableControlText(false);
+
+        updateParamConditionText(this.paramFeedback, this.paramFeedback.isUnknown(), true, 0);
+
 
         const arrowStyle = darkMode ? 'white' : 'black';
 
@@ -76,7 +108,7 @@ extends OperatorBase
 
 
 
-function OpFeedback_onConnectInput(node)
+function OpStart_onConnectInput(node)
 {
     node. inputs[0].types = [...node.inputs[0].connectedOutput.types];
     node.outputs[0].types = [...node.inputs[0].connectedOutput.types];
@@ -84,7 +116,7 @@ function OpFeedback_onConnectInput(node)
 
 
 
-function OpFeedback_onDisconnectInput(node)
+function OpStart_onDisconnectInput(node)
 {
     node. inputs[0].types = ALL_VALUES;
     node.outputs[0].types = [ANY_VALUE];

@@ -277,12 +277,12 @@ function genParseIfElse(parse)
 
 
 
-function genParseFeedback(parse)
+function genParseStart(parse)
 {
     const [, nodeId, options, ignore] = genParseNodeStart(parse);
 
 
-    const feedback = new GFeedback(nodeId, options);
+    const start = new GStart(nodeId, options);
 
 
     let nInputs = -1;
@@ -295,12 +295,12 @@ function genParseFeedback(parse)
 
 
     if (parse.settings.logRequests) 
-        logReq(feedback, parse, ignore, nInputs);
+        logReq(start, parse, ignore, nInputs);
 
 
     if (ignore) 
     {
-        genParseNodeEnd(parse, feedback);
+        genParseNodeEnd(parse, start);
         return parse.parsedNodes.find(n => n.nodeId == nodeId);
     }
 
@@ -309,14 +309,16 @@ function genParseFeedback(parse)
 
 
     if (nInputs == 1)
-        feedback.input = genParse(parse);
+        start.input = genParse(parse);
+
+    start.feedback = genParse(parse);
 
 
     parse.nTab--;
 
 
-    genParseNodeEnd(parse, feedback);
-    return feedback;
+    genParseNodeEnd(parse, start);
+    return start;
 }
 
 

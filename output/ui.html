@@ -4594,8 +4594,9 @@ a
             <div id='whatsNewBody'>
                 <h1 style='margin-top: 20px;'>What's new</h1>
 
+                <p>•  added feedback parameter to Start... node</p>
+                <p>•  fixed sequencing issue</p>
                 <p>•  fixed transform issues</p>
-                <p>•  renamed Start... to Feedback...</p>
                 
                 <p><br/><br/><div id='chkHideWhatsNew'></div></p>
             </div>
@@ -9460,7 +9461,7 @@ const ITEMS                   = 'ITEMS';
 const SELECT                  = 'SEL';
 const LIST_COUNT              = 'COUNT';
 const IF_ELSE                 = 'IF';
-const FEEDBACK                = 'FEED';
+const START                   = 'START';
 const REPEAT                  = 'REPT';
 const DEFINE                  = 'DEFINE';  
 const CACHE                   = 'CACHE';
@@ -9502,7 +9503,7 @@ const FLOW_TYPES =
     ITEMS,
     SELECT,
     IF_ELSE,
-    FEEDBACK,
+    START,
     REPEAT,
     //FOREACH,
     DEFINE,
@@ -19114,31 +19115,34 @@ extends GOperator
 
 
 
-class GFeedback
+class GStart
 extends GOperator
 {
-    input  = null;
+    input    = null;
 
-    from   = null;
-    loopId = NULL;
+    feedback = null;
+    from     = null;
+
+    loopId   = NULL;
 
     
 
     constructor(nodeId, options)
     {
-        super(FEEDBACK, nodeId, options);
+        super(START, nodeId, options);
     }
 
 
     
     copy()
     {
-        const copy = new GFeedback(this.nodeId, this.options);
+        const copy = new GStart(this.nodeId, this.options);
 
         copy.copyBase(this);
 
-        if (this.value) copy.value = this.value.copy();
-        if (this.input) copy.input = this.input.copy();
+        if (this.value   ) copy.value    = this.value   .copy();
+        if (this.input   ) copy.input    = this.input   .copy();
+        if (this.feedback) copy.feedback = this.feedback.copy();
 
         return copy;
     }
@@ -19160,16 +19164,19 @@ extends GOperator
             return this;
 
 
+        const feedback = this.feedback ? (await this.feedback.eval(parse)).toValue() : null;
+
+
         this.value = 
             this.input 
             ? (await this.input.eval(parse)).toValue() 
             : NullValue;
 
 
-        this.updateValues = [['', NullValue]];
+        this.updateValues = [['feedback', feedback]];
 
 
-        await this.evalObjects(parse);
+        await this.evalObjects(parse, {feedback: feedback.value > 0});
 
         
         this.validate();
@@ -19183,10 +19190,12 @@ extends GOperator
     {
         const repeat = parse.repeats.find(r => r.repeatId == this.loopId);
 
+
         this.updateObjects(
                this.from
             && repeat
             && repeat.iteration > 0
+            && options.feedback
             ? this.from.iterationObjects 
             : (this.input ? this.input.value.objects : []),
             repeat 
@@ -19224,11 +19233,20 @@ extends GOperator
 
 
 
+    isValid()
+    {
+        return super.isValid()
+            && this.feedback.isValid();
+    }
+
+
+
     pushValueUpdates(parse)
     {
         super.pushValueUpdates(parse);
 
-        if (this.input) this.input.pushValueUpdates(parse);
+        if (this.input   ) this.input   .pushValueUpdates(parse);
+        if (this.feedback) this.feedback.pushValueUpdates(parse);
     }
 
 
@@ -19239,7 +19257,8 @@ extends GOperator
 
         this.from = from;
 
-        if (this.input) this.input.invalidateInputs(from);
+        if (this.input   ) this.input   .invalidateInputs(from);
+        if (this.feedback) this.feedback.invalidateInputs(from);
     }
 }
 
@@ -19521,7 +19540,7 @@ function assertVolatile(node)
         || node.loop.type == NUMBER_NOISE
         || node.loop.type == NUMBER_PROBABILITY
         || node.loop.type == LIST
-        || node.loop.type == PARAM, // for OpFeedback
+        || node.loop.type == PARAM, // for OpStart
         'only volatile types can be repeated');
 }
 
@@ -21236,6 +21255,15 @@ extends GOperator
         if (this.min   ) this.min   .invalidateInputs(from);
         if (this.max   ) this.max   .invalidateInputs(from);
         if (this.unique) this.unique.invalidateInputs(from);
+    }
+
+
+
+    invalidateLoop(parse, nodeId)
+    {
+        super.invalidateLoop(parse, nodeId);
+
+        this.randomOffset = 0;
     }
 }
 
@@ -35375,12 +35403,12 @@ function genParseIfElse(parse)
 
 
 
-function genParseFeedback(parse)
+function genParseStart(parse)
 {
     const [, nodeId, options, ignore] = genParseNodeStart(parse);
 
 
-    const feedback = new GFeedback(nodeId, options);
+    const start = new GStart(nodeId, options);
 
 
     let nInputs = -1;
@@ -35393,12 +35421,12 @@ function genParseFeedback(parse)
 
 
     if (parse.settings.logRequests) 
-        logReq(feedback, parse, ignore, nInputs);
+        logReq(start, parse, ignore, nInputs);
 
 
     if (ignore) 
     {
-        genParseNodeEnd(parse, feedback);
+        genParseNodeEnd(parse, start);
         return parse.parsedNodes.find(n => n.nodeId == nodeId);
     }
 
@@ -35407,14 +35435,16 @@ function genParseFeedback(parse)
 
 
     if (nInputs == 1)
-        feedback.input = genParse(parse);
+        start.input = genParse(parse);
+
+    start.feedback = genParse(parse);
 
 
     parse.nTab--;
 
 
-    genParseNodeEnd(parse, feedback);
-    return feedback;
+    genParseNodeEnd(parse, start);
+    return start;
 }
 
 
@@ -39915,7 +39945,7 @@ function genParse(parse, inParam = true)
     else if (parse.next == SELECT                 ) result = genParseSelect           (parse);
     else if (parse.next == LIST_COUNT             ) result = genParseListCount        (parse);
     else if (parse.next == IF_ELSE                ) result = genParseIfElse           (parse);
-    else if (parse.next == FEEDBACK               ) result = genParseFeedback         (parse);
+    else if (parse.next == START                  ) result = genParseStart            (parse);
     else if (parse.next == REPEAT                 ) result = genParseRepeat           (parse);
     else if (parse.next == CACHE                  ) result = genParseCache            (parse);
     else if (parse.next == DEFINE                 ) result = genParseDefine           (parse);
@@ -50073,7 +50103,7 @@ const ITEMS                   = 'ITEMS';
 const SELECT                  = 'SEL';
 const LIST_COUNT              = 'COUNT';
 const IF_ELSE                 = 'IF';
-const FEEDBACK                = 'FEED';
+const START                   = 'START';
 const REPEAT                  = 'REPT';
 const DEFINE                  = 'DEFINE';  
 const CACHE                   = 'CACHE';
@@ -50115,7 +50145,7 @@ const FLOW_TYPES =
     ITEMS,
     SELECT,
     IF_ELSE,
-    FEEDBACK,
+    START,
     REPEAT,
     //FOREACH,
     DEFINE,
@@ -59727,31 +59757,34 @@ extends GOperator
 
 
 
-class GFeedback
+class GStart
 extends GOperator
 {
-    input  = null;
+    input    = null;
 
-    from   = null;
-    loopId = NULL;
+    feedback = null;
+    from     = null;
+
+    loopId   = NULL;
 
     
 
     constructor(nodeId, options)
     {
-        super(FEEDBACK, nodeId, options);
+        super(START, nodeId, options);
     }
 
 
     
     copy()
     {
-        const copy = new GFeedback(this.nodeId, this.options);
+        const copy = new GStart(this.nodeId, this.options);
 
         copy.copyBase(this);
 
-        if (this.value) copy.value = this.value.copy();
-        if (this.input) copy.input = this.input.copy();
+        if (this.value   ) copy.value    = this.value   .copy();
+        if (this.input   ) copy.input    = this.input   .copy();
+        if (this.feedback) copy.feedback = this.feedback.copy();
 
         return copy;
     }
@@ -59773,16 +59806,19 @@ extends GOperator
             return this;
 
 
+        const feedback = this.feedback ? (await this.feedback.eval(parse)).toValue() : null;
+
+
         this.value = 
             this.input 
             ? (await this.input.eval(parse)).toValue() 
             : NullValue;
 
 
-        this.updateValues = [['', NullValue]];
+        this.updateValues = [['feedback', feedback]];
 
 
-        await this.evalObjects(parse);
+        await this.evalObjects(parse, {feedback: feedback.value > 0});
 
         
         this.validate();
@@ -59796,10 +59832,12 @@ extends GOperator
     {
         const repeat = parse.repeats.find(r => r.repeatId == this.loopId);
 
+
         this.updateObjects(
                this.from
             && repeat
             && repeat.iteration > 0
+            && options.feedback
             ? this.from.iterationObjects 
             : (this.input ? this.input.value.objects : []),
             repeat 
@@ -59837,11 +59875,20 @@ extends GOperator
 
 
 
+    isValid()
+    {
+        return super.isValid()
+            && this.feedback.isValid();
+    }
+
+
+
     pushValueUpdates(parse)
     {
         super.pushValueUpdates(parse);
 
-        if (this.input) this.input.pushValueUpdates(parse);
+        if (this.input   ) this.input   .pushValueUpdates(parse);
+        if (this.feedback) this.feedback.pushValueUpdates(parse);
     }
 
 
@@ -59852,7 +59899,8 @@ extends GOperator
 
         this.from = from;
 
-        if (this.input) this.input.invalidateInputs(from);
+        if (this.input   ) this.input   .invalidateInputs(from);
+        if (this.feedback) this.feedback.invalidateInputs(from);
     }
 }
 
@@ -60134,7 +60182,7 @@ function assertVolatile(node)
         || node.loop.type == NUMBER_NOISE
         || node.loop.type == NUMBER_PROBABILITY
         || node.loop.type == LIST
-        || node.loop.type == PARAM, // for OpFeedback
+        || node.loop.type == PARAM, // for OpStart
         'only volatile types can be repeated');
 }
 
@@ -61849,6 +61897,15 @@ extends GOperator
         if (this.min   ) this.min   .invalidateInputs(from);
         if (this.max   ) this.max   .invalidateInputs(from);
         if (this.unique) this.unique.invalidateInputs(from);
+    }
+
+
+
+    invalidateLoop(parse, nodeId)
+    {
+        super.invalidateLoop(parse, nodeId);
+
+        this.randomOffset = 0;
     }
 }
 
@@ -79086,7 +79143,8 @@ const iconRepeat            = '<svg width="16" height="16" viewBox="0 0 16 16" f
 const iconForEach           = '<svg width="15" height="11" viewBox="0 0 15 11" fill="none" xmlns="http://www.w3.org/2000/svg"><rect x="6" y="9" width="9" height="1" fill="white"/><circle cx="1.5" cy="9.5" r="1.5" fill="white"/><circle cx="1.5" cy="5.5" r="1.5" fill="white"/><circle cx="1.5" cy="1.5" r="1.5" fill="white"/></svg>';
 const iconCache             = '<svg width="15" height="11" viewBox="0 0 15 11" fill="none" xmlns="http://www.w3.org/2000/svg"><path d="M2.30354 1C1.68389 1.65376 1.20536 2.44219 0.906305 3.31653C0.435625 4.69266 0.437375 6.20022 0.911255 7.59282C1.21859 8.49597 1.71272 9.31613 2.35271 10" stroke="white"/><path d="M12.7415 1C13.3612 1.65376 13.8397 2.44219 14.1387 3.31653C14.6094 4.69266 14.6077 6.20022 14.1338 7.59282C13.8265 8.49597 13.3323 9.31613 12.6923 10" stroke="white"/><circle cx="1.5" cy="1.5" r="1.5" transform="matrix(-1 0 0 1 9 4)" fill="white"/></svg>';
 const iconFreeze            = '<svg width="16" height="11" viewBox="0 0 16 11" fill="none" xmlns="http://www.w3.org/2000/svg"><circle cx="1.5" cy="1.5" r="1.5" transform="matrix(-1 0 0 1 9 4)" fill="white"/><path d="M15.0334 0V11H12.0334V10H14.0667L14.0334 1H12L12.0334 0H15.0334Z" fill="white"/><path d="M0 11V0H3V1H0.966639V10H3V11H0Z" fill="white"/></svg>';
-const iconFeedback          = '<svg width="14" height="12" viewBox="0 0 14 12" fill="none" xmlns="http://www.w3.org/2000/svg"><path fill-rule="evenodd" clip-rule="evenodd" d="M7.70714 0L11.2427 3.53553L11.2241 3.55415L11.2371 3.56723L7.7202 7.08416L7.0131 6.37705L9.39014 4.00001H4V4C2.34315 4 1 5.34315 1 7C1 8.65685 2.34315 10 4 10H14V11H4C1.79086 11 0 9.20914 0 7C0 4.79086 1.79086 3 4 3V3.00001H9.29294L7.00004 0.707107L7.70714 0Z" fill="white"/></svg>';
+const iconStart             = '<svg width="17" height="8" viewBox="0 0 17 8" fill="none" xmlns="http://www.w3.org/2000/svg"><circle cx="1.5" cy="3.5" r="1.5" fill="white"/><path d="M12.7071 0L16.2427 3.53553L16.2241 3.55415L16.2371 3.56723L12.7202 7.08416L12.0131 6.37705L14.3901 4.00001H7V3.00001H14.2929L12 0.707107L12.7071 0Z" fill="white"/></svg>';
+//const iconFeedback          = '<svg width="14" height="12" viewBox="0 0 14 12" fill="none" xmlns="http://www.w3.org/2000/svg"><path fill-rule="evenodd" clip-rule="evenodd" d="M7.70714 0L11.2427 3.53553L11.2241 3.55415L11.2371 3.56723L7.7202 7.08416L7.0131 6.37705L9.39014 4.00001H4V4C2.34315 4 1 5.34315 1 7C1 8.65685 2.34315 10 4 10H14V11H4C1.79086 11 0 9.20914 0 7C0 4.79086 1.79086 3 4 3V3.00001H9.29294L7.00004 0.707107L7.70714 0Z" fill="white"/></svg>';
 const iconIfElse            = '<svg width="17" height="7" viewBox="-1 0 17 7" fill="none" xmlns="http://www.w3.org/2000/svg"><rect y="1" width="9" height="1" fill="white"/><rect y="5" width="9" height="1" fill="white"/><path d="M13.157 4.8687V4.75547C13.1591 4.36695 13.1911 4.05725 13.253 3.82636C13.317 3.59546 13.4099 3.40898 13.5318 3.26689C13.6536 3.1248 13.8002 2.99604 13.9715 2.88059C14.0995 2.79179 14.2141 2.69965 14.3153 2.60419C14.4165 2.50872 14.497 2.40327 14.5569 2.28782C14.6167 2.17016 14.6467 2.03917 14.6467 1.89486C14.6467 1.74167 14.6126 1.60736 14.5445 1.49191C14.4763 1.37647 14.3845 1.28766 14.2688 1.2255C14.1553 1.16334 14.0293 1.13225 13.891 1.13225C13.7568 1.13225 13.6298 1.16445 13.5101 1.22883C13.3903 1.29099 13.2922 1.38424 13.2159 1.50856C13.1395 1.63067 13.0982 1.78275 13.092 1.9648H11.8284C11.8387 1.52077 11.9378 1.15446 12.1257 0.865842C12.3136 0.575008 12.5624 0.358548 12.8721 0.21646C13.1818 0.0721535 13.5235 0 13.8972 0C14.3081 0 14.6714 0.0732636 14.9873 0.219791C15.3032 0.364098 15.551 0.573898 15.7306 0.849191C15.9102 1.12448 16.0001 1.45639 16.0001 1.84491C16.0001 2.10466 15.9598 2.33555 15.8793 2.53758C15.8008 2.73739 15.6904 2.915 15.5479 3.07041C15.4054 3.2236 15.2372 3.36235 15.0431 3.48668C14.88 3.59102 14.7458 3.69981 14.6405 3.81304C14.5372 3.92626 14.4598 4.05725 14.4082 4.20599C14.3587 4.35474 14.3328 4.5379 14.3308 4.75547V4.8687H13.157ZM13.7702 6.9C13.5638 6.9 13.3872 6.8223 13.2406 6.66689C13.0961 6.50926 13.0249 6.32055 13.0269 6.10076C13.0249 5.88319 13.0961 5.6967 13.2406 5.54129C13.3872 5.38589 13.5638 5.30818 13.7702 5.30818C13.9664 5.30818 14.1388 5.38589 14.2874 5.54129C14.4361 5.6967 14.5114 5.88319 14.5135 6.10076C14.5114 6.24729 14.4753 6.38161 14.4051 6.50371C14.337 6.6236 14.2472 6.72017 14.1357 6.79344C14.0242 6.86448 13.9024 6.9 13.7702 6.9Z" fill="white"/></svg>';
 const iconTimer             = '<svg width="13" height="18" viewBox="0 -1 13 18" fill="none" xmlns="http://www.w3.org/2000/svg"><path fill-rule="evenodd" clip-rule="evenodd" d="M9 0H4L4 2H5.5V4.07645C2.38491 4.55745 0 7.25021 0 10.5C0 14.0899 2.91015 17 6.5 17C10.0899 17 13 14.0899 13 10.5C13 7.25021 10.6151 4.55745 7.5 4.07645V2L9 2V0ZM6.5 5C3.46243 5 1 7.46243 1 10.5C1 13.5376 3.46243 16 6.5 16C9.53757 16 12 13.5376 12 10.5C12 7.46243 9.53757 5 6.5 5Z" fill="white"/><path d="M6.65821 9.51244L9.70667 6.46399L10.6001 7.35747L7.49915 10.4585C7.49972 10.4722 7.5 10.4861 7.5 10.5C7.5 11.0523 7.05229 11.5 6.5 11.5C5.94771 11.5 5.5 11.0523 5.5 10.5C5.5 9.94771 5.94771 9.5 6.5 9.5C6.55384 9.5 6.60668 9.50425 6.65821 9.51244Z" fill="white"/></svg>';
  
@@ -80397,7 +80455,7 @@ var menuItemCount;
 var menuItemIfElse;
 var menuFlowSep2;
 var menuFlowSep3;
-var menuItemFeedback;
+var menuItemStart;
 var menuItemRepeat;
 var menuFlowSep4;
 var menuItemTimer;
@@ -80654,22 +80712,22 @@ function initGeneratorMenus()
 
     menuFlow = new Menu('Data flow', true, false);
     menuFlow.addItems([
-        menuItemList          = new MenuItem('List',              {icon: iconList,       callback: e => actionManager.do(getCreateNodeAction(LIST,       btnNumber.div, getCreateOptions(e)))}),
-        menuFlowSep1          = new MenuItem('',                  {separator: true}),     
-        menuItemItems         = new MenuItem('Items',             {icon: iconItems,      callback: e => actionManager.do(getCreateNodeAction(ITEMS,      btnNumber.div, getCreateOptions(e)))}),
-        menuItemCount         = new MenuItem('Count',             {icon: iconCount,      callback: e => actionManager.do(getCreateNodeAction(LIST_COUNT, btnNumber.div, getCreateOptions(e)))}),
-        menuItemSelect        = new MenuItem('Select',            {icon: iconSelect,     callback: e => actionManager.do(getCreateNodeAction(SELECT,     btnNumber.div, getCreateOptions(e)))}),
-        menuItemIfElse        = new MenuItem('I&hairsp;f / else', {icon: iconIfElse,     callback: e => actionManager.do(getCreateNodeAction(IF_ELSE,    btnNumber.div, getCreateOptions(e))), disambiguate: true}),
-        menuFlowSep2          = new MenuItem('',                  {separator: true}),
-        menuItemArray         = new MenuItem('List . . .',        {icon: iconList,       callback: e => actionManager.do(getCreateNodeAction(DEFINE,     btnNumber.div, getCreateOptions(e)))}),
-                                new MenuItem('',                  {separator: true}),
-        menuItemCache         = new MenuItem('Cache',             {icon: iconCache,      callback: e => actionManager.do(getCreateNodeAction(CACHE,      btnNumber.div, getCreateOptions(e)))}),
-        menuItemFreeze        = new MenuItem('Freeze . . .',      {icon: iconFreeze,     callback: e => actionManager.do(getCreateNodeAction(FREEZE,     btnNumber.div, getCreateOptions(e)))}),
-        menuItemFeedback      = new MenuItem('Feedback. . .',     {icon: iconFeedback,   callback: e => actionManager.do(getCreateNodeAction(FEEDBACK,   btnNumber.div, getCreateOptions(e)))}),
-        menuFlowSep4          = new MenuItem('',                  {separator: true}),
-        menuItemRepeat        = new MenuItem('. . . Repeat',      {icon: iconRepeat,     callback: e => actionManager.do(getCreateNodeAction(REPEAT,     btnNumber.div, getCreateOptions(e)))}),
-                                new MenuItem('',                  {separator: true}),
-        menuItemTimer         = new MenuItem('Timer ',            {icon: iconTimer,      callback: e => actionManager.do(getCreateNodeAction(TIMER,      btnNumber.div, getCreateOptions(e)))})]);
+        menuItemList   = new MenuItem('List',              {icon: iconList,       callback: e => actionManager.do(getCreateNodeAction(LIST,       btnNumber.div, getCreateOptions(e)))}),
+        menuFlowSep1   = new MenuItem('',                  {separator: true}),     
+        menuItemItems  = new MenuItem('Items',             {icon: iconItems,      callback: e => actionManager.do(getCreateNodeAction(ITEMS,      btnNumber.div, getCreateOptions(e)))}),
+        menuItemCount  = new MenuItem('Count',             {icon: iconCount,      callback: e => actionManager.do(getCreateNodeAction(LIST_COUNT, btnNumber.div, getCreateOptions(e)))}),
+        menuItemSelect = new MenuItem('Select',            {icon: iconSelect,     callback: e => actionManager.do(getCreateNodeAction(SELECT,     btnNumber.div, getCreateOptions(e)))}),
+        menuItemIfElse = new MenuItem('I&hairsp;f / else', {icon: iconIfElse,     callback: e => actionManager.do(getCreateNodeAction(IF_ELSE,    btnNumber.div, getCreateOptions(e))), disambiguate: true}),
+        menuFlowSep2   = new MenuItem('',                  {separator: true}),
+        menuItemArray  = new MenuItem('List . . .',        {icon: iconList,       callback: e => actionManager.do(getCreateNodeAction(DEFINE,     btnNumber.div, getCreateOptions(e)))}),
+                         new MenuItem('',                  {separator: true}),
+        menuItemCache  = new MenuItem('Cache',             {icon: iconCache,      callback: e => actionManager.do(getCreateNodeAction(CACHE,      btnNumber.div, getCreateOptions(e)))}),
+        menuItemFreeze = new MenuItem('Freeze . . .',      {icon: iconFreeze,     callback: e => actionManager.do(getCreateNodeAction(FREEZE,     btnNumber.div, getCreateOptions(e)))}),
+        menuFlowSep4   = new MenuItem('',                  {separator: true}),
+        menuItemStart  = new MenuItem('Start. . .',        {icon: iconStart,      callback: e => actionManager.do(getCreateNodeAction(START,   btnNumber.div, getCreateOptions(e)))}),
+        menuItemRepeat = new MenuItem('. . . Repeat',      {icon: iconRepeat,     callback: e => actionManager.do(getCreateNodeAction(REPEAT,     btnNumber.div, getCreateOptions(e)))}),
+                         new MenuItem('',                  {separator: true}),
+        menuItemTimer  = new MenuItem('Timer ',            {icon: iconTimer,      callback: e => actionManager.do(getCreateNodeAction(TIMER,      btnNumber.div, getCreateOptions(e)))})]);
     
 
     menuMath = new Menu('Math', true, false);
@@ -95822,16 +95880,17 @@ function OpIfElse_onDisconnectInput(node, inputIndex)
 }
 
 
-class   OpFeedback
+class   OpStart
 extends OperatorBase
 {
+    paramFeedback;
     paramFrom;
 
 
 
     constructor()
     {
-        super(FEEDBACK, 'feedback', 'feedback', '');
+        super(START, 'start', 'start', iconStart);
 
         this.cached     = false;
         this.canDisable = true;
@@ -95841,11 +95900,15 @@ extends OperatorBase
         this.addOutput(new Output([ANY_VALUE], this.output_genRequest));
 
 
-        this.addParam(this.paramFrom = new NumberParam('from', '', false, false, true));
+        this.addParam(this.paramFeedback = new NumberParam('feedback', 'feedback', true,  true,  true, 0, 0, 1));
+        this.addParam(this.paramFrom     = new NumberParam('from',     '',         false, false, true));
 
         
-        this.inputs[0].addEventListener('connect',    () => OpFeedback_onConnectInput(this));
-        this.inputs[0].addEventListener('disconnect', () => OpFeedback_onDisconnectInput(this));
+        this.paramFeedback.divider = 0.64;
+
+
+        this.inputs[0].addEventListener('connect',    () => OpStart_onConnectInput(this));
+        this.inputs[0].addEventListener('disconnect', () => OpStart_onDisconnectInput(this));
     }
 
 
@@ -95877,6 +95940,9 @@ extends OperatorBase
         if (input.connected)
             request.push(...pushInputOrParam(input, gen));
 
+
+        request.push(...this.node.paramFeedback.genRequest(gen));
+
         
         gen.scope.pop();
         pushUnique(gen.passedNodes, this.node);
@@ -95886,9 +95952,33 @@ extends OperatorBase
 
 
 
+    getHeaderColors(options = {})
+    {
+        const colors = super.getHeaderColors(options);
+
+        const type = 
+            this.inputs[0].connected 
+            ? this.inputs[0].connectedOutput.node.type 
+            : this.type;
+
+        colors.text   = isDark(colors.back) ? [1, 1, 1, 1] : [0, 0, 0, 1]; 
+
+        colors.input  = this.active ? rgb_a(colors.text, 0.4)  : rgb_a(rgbSaturateHsv(rgbFromType(type, true), 0.5), 0.8);
+        colors.output = this.active ? rgb_a(colors.text, 0.35) : rgb_a(rgbSaturateHsv(rgbFromType(type, true), 0.5), 0.7);
+        colors.wire   = rgbFromType(type, true);
+
+        return colors;
+    }
+
+
+
     updateParams()
     {
+        this.paramFeedback.enableControlText(true);
         this.paramFrom.enableControlText(false);
+
+        updateParamConditionText(this.paramFeedback, this.paramFeedback.isUnknown(), true, 0);
+
 
         const arrowStyle = darkMode ? 'white' : 'black';
 
@@ -95900,7 +95990,7 @@ extends OperatorBase
 
 
 
-function OpFeedback_onConnectInput(node)
+function OpStart_onConnectInput(node)
 {
     node. inputs[0].types = [...node.inputs[0].connectedOutput.types];
     node.outputs[0].types = [...node.inputs[0].connectedOutput.types];
@@ -95908,7 +95998,7 @@ function OpFeedback_onConnectInput(node)
 
 
 
-function OpFeedback_onDisconnectInput(node)
+function OpStart_onDisconnectInput(node)
 {
     node. inputs[0].types = ALL_VALUES;
     node.outputs[0].types = [ANY_VALUE];
@@ -95947,7 +96037,7 @@ extends OperatorBase
 
         this.paramWhile.divider                       = 0.6;
 
-        this.paramLoop.input.types.push(NUMBER_LIST_VALUE, FEEDBACK);
+        this.paramLoop.input.types.push(NUMBER_LIST_VALUE, START);
     }
     
     
@@ -96101,14 +96191,6 @@ extends OperatorBase
             this.inputs[0].connected 
             ? this.inputs[0].connectedOutput.node.type 
             : this.type;
-
-        // colors.back = 
-        //     this.headerColor
-        //     ? this.headerColor
-        //     : this.inert
-        //     ? rgb_a(rgbDocumentBody, 0.95)
-        //     : rgb_a(rgbFromType(type, this.active), 0.95);
-
 
         colors.text   = isDark(colors.back) ? [1, 1, 1, 1] : [0, 0, 0, 1]; 
 
@@ -108150,7 +108232,7 @@ extends OperatorBase
         this.paramPoints.listTypes = [POINT_VALUE, SHAPE_LIST_VALUE, LIST_VALUE];
         this.paramPoints.input.types.push(...this.paramPoints.listTypes);
 
-        this.paramLoop.input.types.push(NUMBER_LIST_VALUE, FEEDBACK);
+        this.paramLoop.input.types.push(NUMBER_LIST_VALUE, START);
     }
     
     
@@ -116746,7 +116828,7 @@ function createNode(nodeType, creatingButton = null, createdNodeId = -1, options
         case SELECT:                  node = new OpSelect();            break;
         case LIST_COUNT:              node = new OpListCount();         break;
         case IF_ELSE:                 node = new OpIfElse();            break;
-        case FEEDBACK:                node = new OpFeedback();          break;
+        case START:                node = new OpStart();          break;
         case REPEAT:                  node = new OpRepeat();            break;
         case CACHE:                   node = new OpCache();             break;
         case DEFINE:                  node = new OpDefine();            break;

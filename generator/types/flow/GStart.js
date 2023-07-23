@@ -1,28 +1,31 @@
-class GFeedback
+class GStart
 extends GOperator
 {
-    input  = null;
+    input    = null;
 
-    from   = null;
-    loopId = NULL;
+    feedback = null;
+    from     = null;
+
+    loopId   = NULL;
 
     
 
     constructor(nodeId, options)
     {
-        super(FEEDBACK, nodeId, options);
+        super(START, nodeId, options);
     }
 
 
     
     copy()
     {
-        const copy = new GFeedback(this.nodeId, this.options);
+        const copy = new GStart(this.nodeId, this.options);
 
         copy.copyBase(this);
 
-        if (this.value) copy.value = this.value.copy();
-        if (this.input) copy.input = this.input.copy();
+        if (this.value   ) copy.value    = this.value   .copy();
+        if (this.input   ) copy.input    = this.input   .copy();
+        if (this.feedback) copy.feedback = this.feedback.copy();
 
         return copy;
     }
@@ -44,16 +47,19 @@ extends GOperator
             return this;
 
 
+        const feedback = this.feedback ? (await this.feedback.eval(parse)).toValue() : null;
+
+
         this.value = 
             this.input 
             ? (await this.input.eval(parse)).toValue() 
             : NullValue;
 
 
-        this.updateValues = [['', NullValue]];
+        this.updateValues = [['feedback', feedback]];
 
 
-        await this.evalObjects(parse);
+        await this.evalObjects(parse, {feedback: feedback.value > 0});
 
         
         this.validate();
@@ -67,10 +73,12 @@ extends GOperator
     {
         const repeat = parse.repeats.find(r => r.repeatId == this.loopId);
 
+
         this.updateObjects(
                this.from
             && repeat
             && repeat.iteration > 0
+            && options.feedback
             ? this.from.iterationObjects 
             : (this.input ? this.input.value.objects : []),
             repeat 
@@ -108,11 +116,20 @@ extends GOperator
 
 
 
+    isValid()
+    {
+        return super.isValid()
+            && this.feedback.isValid();
+    }
+
+
+
     pushValueUpdates(parse)
     {
         super.pushValueUpdates(parse);
 
-        if (this.input) this.input.pushValueUpdates(parse);
+        if (this.input   ) this.input   .pushValueUpdates(parse);
+        if (this.feedback) this.feedback.pushValueUpdates(parse);
     }
 
 
@@ -123,6 +140,7 @@ extends GOperator
 
         this.from = from;
 
-        if (this.input) this.input.invalidateInputs(from);
+        if (this.input   ) this.input   .invalidateInputs(from);
+        if (this.feedback) this.feedback.invalidateInputs(from);
     }
 }

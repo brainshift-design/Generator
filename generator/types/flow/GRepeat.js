@@ -274,6 +274,6 @@ function assertVolatile(node)
         || node.loop.type == NUMBER_NOISE
         || node.loop.type == NUMBER_PROBABILITY
         || node.loop.type == LIST
-        || node.loop.type == PARAM, // for OpFeedback
+        || node.loop.type == PARAM, // for OpStart
         'only volatile types can be repeated');
 }

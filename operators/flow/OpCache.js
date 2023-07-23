@@ -64,14 +64,6 @@ extends OperatorBase
             ? this.inputs[0].connectedOutput.node.type 
             : this.type;
 
-        // colors.back = 
-        //     this.headerColor
-        //     ? this.headerColor
-        //     : this.inert
-        //     ? rgb_a(rgbDocumentBody, 0.95)
-        //     : rgb_a(rgbFromType(type, this.active), 0.95);
-
-
         colors.text   = isDark(colors.back) ? [1, 1, 1, 1] : [0, 0, 0, 1]; 
 
         colors.input  = this.active ? rgb_a(colors.text, 0.4)  : rgb_a(rgbSaturateHsv(rgbFromType(type, true), 0.5), 0.8);

@@ -9,7 +9,7 @@ function createNode(nodeType, creatingButton = null, createdNodeId = -1, options
         case SELECT:                  node = new OpSelect();            break;
         case LIST_COUNT:              node = new OpListCount();         break;
         case IF_ELSE:                 node = new OpIfElse();            break;
-        case FEEDBACK:                node = new OpFeedback();          break;
+        case START:                node = new OpStart();          break;
         case REPEAT:                  node = new OpRepeat();            break;
         case CACHE:                   node = new OpCache();             break;
         case DEFINE:                  node = new OpDefine();            break;
