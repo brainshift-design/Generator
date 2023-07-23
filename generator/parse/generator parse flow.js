@@ -277,12 +277,12 @@ function genParseIfElse(parse)
 
 
 
-function genParseStart(parse)
+function genParseFeedback(parse)
 {
     const [, nodeId, options, ignore] = genParseNodeStart(parse);
 
 
-    const start = new GStart(nodeId, options);
+    const cont = new GFeedback(nodeId, options);
 
 
     let nInputs = -1;
@@ -295,12 +295,12 @@ function genParseStart(parse)
 
 
     if (parse.settings.logRequests) 
-        logReq(start, parse, ignore, nInputs);
+        logReq(cont, parse, ignore, nInputs);
 
 
     if (ignore) 
     {
-        genParseNodeEnd(parse, start);
+        genParseNodeEnd(parse, cont);
         return parse.parsedNodes.find(n => n.nodeId == nodeId);
     }
 
@@ -309,62 +309,18 @@ function genParseStart(parse)
 
 
     if (nInputs == 1)
-        start.input = genParse(parse);
+        cont.input = genParse(parse);
 
 
-    start.repeatId = genParse(parse);
+    cont.repeatId = genParse(parse);
     // don't set target as it shoudn't be updated
 
 
     parse.nTab--;
 
 
-    genParseNodeEnd(parse, start);
-    return start;
-}
-
-
-
-function genParseStart(parse)
-{
-    const [, nodeId, options, ignore] = genParseNodeStart(parse);
-
-
-    const start = new GStart(nodeId, options);
-
-
-    let nInputs = -1;
-    
-    if (!ignore)
-    {
-        nInputs = parseInt(parse.move());
-        consoleAssert(nInputs == 0 || nInputs == 1, 'nInputs must be [0, 1]');
-    }
-
-
-    if (parse.settings.logRequests) 
-        logReq(start, parse, ignore, nInputs);
-
-
-    if (ignore) 
-    {
-        genParseNodeEnd(parse, start);
-        return parse.parsedNodes.find(n => n.nodeId == nodeId);
-    }
-
-
-    parse.nTab++;
-
-
-    if (nInputs == 1)
-        start.input = genParse(parse);
-
-
-    parse.nTab--;
-
-
-    genParseNodeEnd(parse, start);
-    return start;
+    genParseNodeEnd(parse, cont);
+    return cont;
 }
 
 

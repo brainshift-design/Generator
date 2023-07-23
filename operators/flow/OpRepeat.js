@@ -30,8 +30,7 @@ extends OperatorBase
 
         this.paramWhile.divider                       = 0.6;
 
-        this.paramLoop.input.types.push(NUMBER_LIST_VALUE);
-        this.paramLoop.input.types.push(START);
+        this.paramLoop.input.types.push(NUMBER_LIST_VALUE, FEEDBACK);
     }
     
     

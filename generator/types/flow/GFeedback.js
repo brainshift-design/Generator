@@ -1,4 +1,4 @@
-class GStart
+class GFeedback
 extends GOperator
 {
     input    = null;
@@ -10,14 +10,14 @@ extends GOperator
 
     constructor(nodeId, options)
     {
-        super(START, nodeId, options);
+        super(FEEDBACK, nodeId, options);
     }
 
 
     
     copy()
     {
-        const copy = new GStart(this.nodeId, this.options);
+        const copy = new GFeedback(this.nodeId, this.options);
 
         copy.copyBase(this);
 

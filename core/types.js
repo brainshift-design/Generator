@@ -9,7 +9,7 @@ const ITEMS                   = 'ITEMS';
 const SELECT                  = 'SEL';
 const LIST_COUNT              = 'COUNT';
 const IF_ELSE                 = 'IF';
-const START                   = 'START';
+const FEEDBACK                = 'CONT';
 const REPEAT                  = 'REPT';
 const DEFINE                  = 'DEFINE';  
 const CACHE                   = 'CACHE';
@@ -51,7 +51,7 @@ const FLOW_TYPES =
     ITEMS,
     SELECT,
     IF_ELSE,
-    START,
+    FEEDBACK,
     REPEAT,
     //FOREACH,
     DEFINE,

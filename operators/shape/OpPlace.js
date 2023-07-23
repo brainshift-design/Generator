@@ -28,8 +28,7 @@ extends OperatorBase
         this.paramPoints.listTypes = [POINT_VALUE, SHAPE_LIST_VALUE, LIST_VALUE];
         this.paramPoints.input.types.push(...this.paramPoints.listTypes);
 
-        this.paramLoop.input.types.push(NUMBER_LIST_VALUE);
-        this.paramLoop.input.types.push(START);
+        this.paramLoop.input.types.push(NUMBER_LIST_VALUE, FEEDBACK);
     }
     
     

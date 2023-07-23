@@ -122,9 +122,8 @@ var menuItemSelect;
 var menuItemCount;
 var menuItemIfElse;
 var menuFlowSep2;
-var menuItemStart;
 var menuFlowSep3;
-var menuItemStart;
+var menuItemFeedback;
 var menuItemRepeat;
 var menuFlowSep4;
 var menuItemTimer;
@@ -388,11 +387,11 @@ function initGeneratorMenus()
         menuItemSelect        = new MenuItem('Select',            {icon: iconSelect,     callback: e => actionManager.do(getCreateNodeAction(SELECT,     btnNumber.div, getCreateOptions(e)))}),
         menuItemIfElse        = new MenuItem('I&hairsp;f / else', {icon: iconIfElse,     callback: e => actionManager.do(getCreateNodeAction(IF_ELSE,    btnNumber.div, getCreateOptions(e))), disambiguate: true}),
         menuFlowSep2          = new MenuItem('',                  {separator: true}),
-        menuItemCache         = new MenuItem('Cache',             {icon: iconCache,       callback: e => actionManager.do(getCreateNodeAction(CACHE,     btnNumber.div, getCreateOptions(e)))}),
+        menuItemArray         = new MenuItem('List . . .',        {icon: iconList,       callback: e => actionManager.do(getCreateNodeAction(DEFINE,     btnNumber.div, getCreateOptions(e)))}),
+                                new MenuItem('',                  {separator: true}),
+        menuItemCache         = new MenuItem('Cache',             {icon: iconCache,      callback: e => actionManager.do(getCreateNodeAction(CACHE,      btnNumber.div, getCreateOptions(e)))}),
         menuItemFreeze        = new MenuItem('Freeze . . .',      {icon: iconFreeze,     callback: e => actionManager.do(getCreateNodeAction(FREEZE,     btnNumber.div, getCreateOptions(e)))}),
-        menuFlowSep3          = new MenuItem('',                  {separator: true}),
-        menuItemStart         = new MenuItem('Start . . .',       {icon: iconStart,      callback: e => actionManager.do(getCreateNodeAction(START,      btnNumber.div, getCreateOptions(e)))}),
-        menuItemArray         = new MenuItem('List . . .',        {icon: iconList,        callback: e => actionManager.do(getCreateNodeAction(DEFINE,      btnNumber.div, getCreateOptions(e)))}),
+        menuItemFeedback      = new MenuItem('Feedback. . .',     {icon: iconFeedback,   callback: e => actionManager.do(getCreateNodeAction(FEEDBACK,   btnNumber.div, getCreateOptions(e)))}),
         menuFlowSep4          = new MenuItem('',                  {separator: true}),
         menuItemRepeat        = new MenuItem('. . . Repeat',      {icon: iconRepeat,     callback: e => actionManager.do(getCreateNodeAction(REPEAT,     btnNumber.div, getCreateOptions(e)))}),
                                 new MenuItem('',                  {separator: true}),

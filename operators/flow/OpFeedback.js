@@ -1,4 +1,4 @@
-class   OpStart
+class   OpFeedback
 extends OperatorBase
 {
     paramFeedback;
@@ -7,7 +7,7 @@ extends OperatorBase
 
     constructor()
     {
-        super(START, 'start', 'start', iconStart);
+        super(FEEDBACK, 'feedback', 'feedback', iconFeedback);
 
         this.cached     = false;
         this.canDisable = true;

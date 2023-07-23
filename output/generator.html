@@ -4539,7 +4539,7 @@ const ITEMS                   = 'ITEMS';
 const SELECT                  = 'SEL';
 const LIST_COUNT              = 'COUNT';
 const IF_ELSE                 = 'IF';
-const START                   = 'START';
+const FEEDBACK                = 'CONT';
 const REPEAT                  = 'REPT';
 const DEFINE                  = 'DEFINE';  
 const CACHE                   = 'CACHE';
@@ -4581,7 +4581,7 @@ const FLOW_TYPES =
     ITEMS,
     SELECT,
     IF_ELSE,
-    START,
+    FEEDBACK,
     REPEAT,
     //FOREACH,
     DEFINE,
@@ -14190,7 +14190,7 @@ extends GOperator
 
 
 
-class GStart
+class GFeedback
 extends GOperator
 {
     input    = null;
@@ -14202,14 +14202,14 @@ extends GOperator
 
     constructor(nodeId, options)
     {
-        super(START, nodeId, options);
+        super(FEEDBACK, nodeId, options);
     }
 
 
     
     copy()
     {
-        const copy = new GStart(this.nodeId, this.options);
+        const copy = new GFeedback(this.nodeId, this.options);
 
         copy.copyBase(this);
 
@@ -14597,7 +14597,7 @@ function assertVolatile(node)
         || node.loop.type == NUMBER_NOISE
         || node.loop.type == NUMBER_PROBABILITY
         || node.loop.type == LIST
-        || node.loop.type == PARAM, // for OpStart
+        || node.loop.type == PARAM, // for OpFeedback
         'only volatile types can be repeated');
 }
 
@@ -30451,12 +30451,12 @@ function genParseIfElse(parse)
 
 
 
-function genParseStart(parse)
+function genParseFeedback(parse)
 {
     const [, nodeId, options, ignore] = genParseNodeStart(parse);
 
 
-    const start = new GStart(nodeId, options);
+    const cont = new GFeedback(nodeId, options);
 
 
     let nInputs = -1;
@@ -30469,12 +30469,12 @@ function genParseStart(parse)
 
 
     if (parse.settings.logRequests) 
-        logReq(start, parse, ignore, nInputs);
+        logReq(cont, parse, ignore, nInputs);
 
 
     if (ignore) 
     {
-        genParseNodeEnd(parse, start);
+        genParseNodeEnd(parse, cont);
         return parse.parsedNodes.find(n => n.nodeId == nodeId);
     }
 
@@ -30483,62 +30483,18 @@ function genParseStart(parse)
 
 
     if (nInputs == 1)
-        start.input = genParse(parse);
+        cont.input = genParse(parse);
 
 
-    start.repeatId = genParse(parse);
+    cont.repeatId = genParse(parse);
     // don't set target as it shoudn't be updated
 
 
     parse.nTab--;
 
 
-    genParseNodeEnd(parse, start);
-    return start;
-}
-
-
-
-function genParseStart(parse)
-{
-    const [, nodeId, options, ignore] = genParseNodeStart(parse);
-
-
-    const start = new GStart(nodeId, options);
-
-
-    let nInputs = -1;
-    
-    if (!ignore)
-    {
-        nInputs = parseInt(parse.move());
-        consoleAssert(nInputs == 0 || nInputs == 1, 'nInputs must be [0, 1]');
-    }
-
-
-    if (parse.settings.logRequests) 
-        logReq(start, parse, ignore, nInputs);
-
-
-    if (ignore) 
-    {
-        genParseNodeEnd(parse, start);
-        return parse.parsedNodes.find(n => n.nodeId == nodeId);
-    }
-
-
-    parse.nTab++;
-
-
-    if (nInputs == 1)
-        start.input = genParse(parse);
-
-
-    parse.nTab--;
-
-
-    genParseNodeEnd(parse, start);
-    return start;
+    genParseNodeEnd(parse, cont);
+    return cont;
 }
 
 
@@ -35039,7 +34995,7 @@ function genParse(parse, inParam = true)
     else if (parse.next == SELECT                 ) result = genParseSelect           (parse);
     else if (parse.next == LIST_COUNT             ) result = genParseListCount        (parse);
     else if (parse.next == IF_ELSE                ) result = genParseIfElse           (parse);
-    else if (parse.next == START                  ) result = genParseStart            (parse);
+    else if (parse.next == FEEDBACK               ) result = genParseFeedback         (parse);
     else if (parse.next == REPEAT                 ) result = genParseRepeat           (parse);
     else if (parse.next == CACHE                  ) result = genParseCache            (parse);
     else if (parse.next == DEFINE                 ) result = genParseDefine           (parse);
