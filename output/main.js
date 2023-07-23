@@ -2464,8 +2464,8 @@ function getObjectEffects(genObjEffects) {
     return effects;
 }
 function setObjectProps(figObj, genObj, phantom = true) {
-    // if (genObj.badTransform)
-    //     return;
+    if (genObj.badTransform)
+        return;
     setObjectFills(figObj, genObj);
     setObjectStrokes(figObj, genObj, phantom);
     setObjectEffects(figObj, genObj);
@@ -2748,11 +2748,13 @@ function getFigmaTransform(tl, tr, bl) {
     let ky = -vb.x;
     let dx = -tl.x;
     let dy = -tl.y;
-    let xform = mulm3m3([[1, ky / sy, 0],
-        [kx / sx, 1, 0],
+    const _sx = !equal(sx, 0, 0.01) ? kx / sx : kx;
+    const _sy = !equal(sy, 0, 0.01) ? ky / sy : ky;
+    let xform = mulm3m3([[1, _sy, 0],
+        [_sx, 1, 0],
         [0, 0, 1]], createTransform(dx, dy));
-    if (determinant(xform) < 1 - 0.00001) {
-        console.log('determinant(xform) =', determinant(xform));
+    if (determinant(xform) < 1 - 0.000001) {
+        consoleError('determinant(xform) =', determinant(xform));
         return null;
     }
     xform = inversem3(xform);
@@ -2785,11 +2787,10 @@ function setObjectTransform(figObj, genObj, setSize = true, noHeight = 0.01) {
     const xp1 = point(genObj[FO_XP1].x, genObj[FO_XP1].y);
     const xp2 = point(genObj[FO_XP2].x, genObj[FO_XP2].y);
     const xform = applyFigmaTransform(figObj, xp0, xp1, xp2);
-    // if (!xform)
-    // {
-    //     genObj.badTransform = true;        
-    //     return;
-    // }
+    if (!xform) {
+        genObj.badTransform = true;
+        return;
+    }
     if (setSize) {
         const scaleX = distance(xp0, xp1);
         const scaleY = distance(xp0, xp2);

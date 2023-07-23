@@ -138,8 +138,8 @@ function getObjectEffects(genObjEffects)
 
 function setObjectProps(figObj, genObj, phantom = true)
 {
-    // if (genObj.badTransform)
-    //     return;
+    if (genObj.badTransform)
+        return;
         
     setObjectFills  (figObj, genObj);
     setObjectStrokes(figObj, genObj, phantom);
