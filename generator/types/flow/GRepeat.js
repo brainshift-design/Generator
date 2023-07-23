@@ -184,8 +184,8 @@ extends GOperator
 
         this.updateValues =
         [
-            ['type',   type ],
-            ['count',  count]
+            ['type',  type ],
+            ['count', count]
         ];
 
 

@@ -9458,7 +9458,7 @@ const ITEMS                   = 'ITEMS';
 const SELECT                  = 'SEL';
 const LIST_COUNT              = 'COUNT';
 const IF_ELSE                 = 'IF';
-const FEEDBACK                = 'CONT';
+const FEEDBACK                = 'FEED';
 const REPEAT                  = 'REPT';
 const DEFINE                  = 'DEFINE';  
 const CACHE                   = 'CACHE';
@@ -19112,10 +19112,10 @@ extends GOperator
 class GFeedback
 extends GOperator
 {
-    input    = null;
+    input  = null;
 
-    feedback = null;
-    loopId   = NULL;
+    from   = null;
+    loopId = NULL;
 
     
 
@@ -19179,16 +19179,16 @@ extends GOperator
         const repeat = parse.repeats.find(r => r.repeatId == this.loopId);
 
         this.updateObjects(
-               this.feedback
+               this.from
             && repeat
             && repeat.iteration > 0
-            ? this.feedback.iterationObjects 
+            ? this.from.iterationObjects 
             : (this.input ? this.input.value.objects : []),
             repeat 
             ? repeat.iteration.toString()
             : '');
 
-        this.feedback = null;
+        this.from = null;
 
         
         await super.evalObjects(parse);
@@ -19232,7 +19232,7 @@ extends GOperator
     {
         super.invalidateInputs(from);
 
-        this.feedback = from;
+        this.from = from;
 
         if (this.input) this.input.invalidateInputs(from);
     }
@@ -19426,8 +19426,8 @@ extends GOperator
 
         this.updateValues =
         [
-            ['type',   type ],
-            ['count',  count]
+            ['type',  type ],
+            ['count', count]
         ];
 
 
@@ -32589,7 +32589,7 @@ extends GOperator1
             this.value = NullValue;
         }
 
-        
+
         await this.evalObjects(
             parse, 
             {
@@ -35375,7 +35375,7 @@ function genParseFeedback(parse)
     const [, nodeId, options, ignore] = genParseNodeStart(parse);
 
 
-    const cont = new GFeedback(nodeId, options);
+    const feedback = new GFeedback(nodeId, options);
 
 
     let nInputs = -1;
@@ -35388,12 +35388,12 @@ function genParseFeedback(parse)
 
 
     if (parse.settings.logRequests) 
-        logReq(cont, parse, ignore, nInputs);
+        logReq(feedback, parse, ignore, nInputs);
 
 
     if (ignore) 
     {
-        genParseNodeEnd(parse, cont);
+        genParseNodeEnd(parse, feedback);
         return parse.parsedNodes.find(n => n.nodeId == nodeId);
     }
 
@@ -35402,18 +35402,14 @@ function genParseFeedback(parse)
 
 
     if (nInputs == 1)
-        cont.input = genParse(parse);
-
-
-    cont.repeatId = genParse(parse);
-    // don't set target as it shoudn't be updated
+        feedback.input = genParse(parse);
 
 
     parse.nTab--;
 
 
-    genParseNodeEnd(parse, cont);
-    return cont;
+    genParseNodeEnd(parse, feedback);
+    return feedback;
 }
 
 
@@ -35452,9 +35448,9 @@ function genParseRepeat(parse)
     if (nInputs == 1)
         repeat.input = genParse(parse);
 
-    repeat.count = genParse(parse);
+    repeat. count = genParse(parse);
     repeat._while = genParse(parse);
-    repeat.loop  = genParse(parse);  // don't set target here
+    repeat. loop  = genParse(parse);  // don't set target here
 
 
     parse.nTab--;
@@ -50070,7 +50066,7 @@ const ITEMS                   = 'ITEMS';
 const SELECT                  = 'SEL';
 const LIST_COUNT              = 'COUNT';
 const IF_ELSE                 = 'IF';
-const FEEDBACK                = 'CONT';
+const FEEDBACK                = 'FEED';
 const REPEAT                  = 'REPT';
 const DEFINE                  = 'DEFINE';  
 const CACHE                   = 'CACHE';
@@ -59724,10 +59720,10 @@ extends GOperator
 class GFeedback
 extends GOperator
 {
-    input    = null;
+    input  = null;
 
-    feedback = null;
-    loopId   = NULL;
+    from   = null;
+    loopId = NULL;
 
     
 
@@ -59791,16 +59787,16 @@ extends GOperator
         const repeat = parse.repeats.find(r => r.repeatId == this.loopId);
 
         this.updateObjects(
-               this.feedback
+               this.from
             && repeat
             && repeat.iteration > 0
-            ? this.feedback.iterationObjects 
+            ? this.from.iterationObjects 
             : (this.input ? this.input.value.objects : []),
             repeat 
             ? repeat.iteration.toString()
             : '');
 
-        this.feedback = null;
+        this.from = null;
 
         
         await super.evalObjects(parse);
@@ -59844,7 +59840,7 @@ extends GOperator
     {
         super.invalidateInputs(from);
 
-        this.feedback = from;
+        this.from = from;
 
         if (this.input) this.input.invalidateInputs(from);
     }
@@ -60038,8 +60034,8 @@ extends GOperator
 
         this.updateValues =
         [
-            ['type',   type ],
-            ['count',  count]
+            ['type',  type ],
+            ['count', count]
         ];
 
 
@@ -73201,7 +73197,7 @@ extends GOperator1
             this.value = NullValue;
         }
 
-        
+
         await this.evalObjects(
             parse, 
             {
@@ -95819,7 +95815,7 @@ function OpIfElse_onDisconnectInput(node, inputIndex)
 class   OpFeedback
 extends OperatorBase
 {
-    paramFeedback;
+    paramFrom;
 
 
 
@@ -95835,11 +95831,11 @@ extends OperatorBase
         this.addOutput(new Output([ANY_VALUE], this.output_genRequest));
 
 
-        this.addParam(this.paramFeedback = new NumberParam('feedback', '', false, false, true));
+        this.addParam(this.paramFrom = new NumberParam('from', '', false, false, true));
 
         
-        this.inputs[0].addEventListener('connect',    () => OpStart_onConnectInput(this));
-        this.inputs[0].addEventListener('disconnect', () => OpStart_onDisconnectInput(this));
+        this.inputs[0].addEventListener('connect',    () => OpFeedback_onConnectInput(this));
+        this.inputs[0].addEventListener('disconnect', () => OpFeedback_onDisconnectInput(this));
     }
 
 
@@ -95882,11 +95878,11 @@ extends OperatorBase
 
     updateParams()
     {
-        this.paramFeedback.enableControlText(false);
+        this.paramFrom.enableControlText(false);
 
         const arrowStyle = darkMode ? 'white' : 'black';
 
-        this.paramFeedback.controls[0].valueText = '<svg width="14" height="9" viewBox="0 0 14 9" fill="none" xmlns="http://www.w3.org/2000/svg"><path d="M3.53553 0L0 3.53553L0.707107 4.24264L3.00001 1.94974V4C3.00001 6.76142 5.23859 9 8.00001 9H14V8H8.00001C5.79087 8 4.00001 6.20914 4.00001 4L4.00001 1.85242L6.37717 4.22958L7.08428 3.52247L3.56735 0.00553989L3.55421 0.0186768L3.53553 0Z" fill="' + arrowStyle + '"/></svg>';
+        this.paramFrom.controls[0].valueText = '<svg width="14" height="9" viewBox="0 0 14 9" fill="none" xmlns="http://www.w3.org/2000/svg"><path d="M3.53553 0L0 3.53553L0.707107 4.24264L3.00001 1.94974V4C3.00001 6.76142 5.23859 9 8.00001 9H14V8H8.00001C5.79087 8 4.00001 6.20914 4.00001 4L4.00001 1.85242L6.37717 4.22958L7.08428 3.52247L3.56735 0.00553989L3.55421 0.0186768L3.53553 0Z" fill="' + arrowStyle + '"/></svg>';
 
         this.updateParamControls();
     }
@@ -95894,7 +95890,7 @@ extends OperatorBase
 
 
 
-function OpStart_onConnectInput(node)
+function OpFeedback_onConnectInput(node)
 {
     node. inputs[0].types = [...node.inputs[0].connectedOutput.types];
     node.outputs[0].types = [...node.inputs[0].connectedOutput.types];
@@ -95902,7 +95898,7 @@ function OpStart_onConnectInput(node)
 
 
 
-function OpStart_onDisconnectInput(node)
+function OpFeedback_onDisconnectInput(node)
 {
     node. inputs[0].types = ALL_VALUES;
     node.outputs[0].types = [ANY_VALUE];

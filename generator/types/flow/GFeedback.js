@@ -1,10 +1,10 @@
 class GFeedback
 extends GOperator
 {
-    input    = null;
+    input  = null;
 
-    feedback = null;
-    loopId   = NULL;
+    from   = null;
+    loopId = NULL;
 
     
 
@@ -68,16 +68,16 @@ extends GOperator
         const repeat = parse.repeats.find(r => r.repeatId == this.loopId);
 
         this.updateObjects(
-               this.feedback
+               this.from
             && repeat
             && repeat.iteration > 0
-            ? this.feedback.iterationObjects 
+            ? this.from.iterationObjects 
             : (this.input ? this.input.value.objects : []),
             repeat 
             ? repeat.iteration.toString()
             : '');
 
-        this.feedback = null;
+        this.from = null;
 
         
         await super.evalObjects(parse);
@@ -121,7 +121,7 @@ extends GOperator
     {
         super.invalidateInputs(from);
 
-        this.feedback = from;
+        this.from = from;
 
         if (this.input) this.input.invalidateInputs(from);
     }

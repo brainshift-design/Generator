@@ -282,7 +282,7 @@ function genParseFeedback(parse)
     const [, nodeId, options, ignore] = genParseNodeStart(parse);
 
 
-    const cont = new GFeedback(nodeId, options);
+    const feedback = new GFeedback(nodeId, options);
 
 
     let nInputs = -1;
@@ -295,12 +295,12 @@ function genParseFeedback(parse)
 
 
     if (parse.settings.logRequests) 
-        logReq(cont, parse, ignore, nInputs);
+        logReq(feedback, parse, ignore, nInputs);
 
 
     if (ignore) 
     {
-        genParseNodeEnd(parse, cont);
+        genParseNodeEnd(parse, feedback);
         return parse.parsedNodes.find(n => n.nodeId == nodeId);
     }
 
@@ -309,18 +309,14 @@ function genParseFeedback(parse)
 
 
     if (nInputs == 1)
-        cont.input = genParse(parse);
-
-
-    cont.repeatId = genParse(parse);
-    // don't set target as it shoudn't be updated
+        feedback.input = genParse(parse);
 
 
     parse.nTab--;
 
 
-    genParseNodeEnd(parse, cont);
-    return cont;
+    genParseNodeEnd(parse, feedback);
+    return feedback;
 }
 
 
@@ -359,9 +355,9 @@ function genParseRepeat(parse)
     if (nInputs == 1)
         repeat.input = genParse(parse);
 
-    repeat.count = genParse(parse);
+    repeat. count = genParse(parse);
     repeat._while = genParse(parse);
-    repeat.loop  = genParse(parse);  // don't set target here
+    repeat. loop  = genParse(parse);  // don't set target here
 
 
     parse.nTab--;

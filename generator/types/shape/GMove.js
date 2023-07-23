@@ -58,7 +58,7 @@ extends GOperator1
             this.value = NullValue;
         }
 
-        
+
         await this.evalObjects(
             parse, 
             {
