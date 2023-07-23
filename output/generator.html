@@ -16789,7 +16789,7 @@ extends GOperator
             const maxDec = Math.max(val0.decimals, val1.decimals);
 
             this.value = new NumberValue(
-                floorTo(val0.value + amount.value * (val1.value - val0.value) / 100, maxDec),
+                val0.value + amount.value * (val1.value - val0.value) / 100,
                 maxDec);
         }
         else if (this.input0)

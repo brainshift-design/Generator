@@ -2316,6 +2316,8 @@ function figUpdateObjects(figParent, genObjects, nodeIds = [], lastChunk = false
     });
 }
 function genObjectIsValid(genObj) {
+    if (genObj.badTransform)
+        return false;
     switch (genObj[FO_TYPE]) {
         case RECTANGLE: return genRectIsValid(genObj);
         case LINE: return genLineIsValid(genObj);
@@ -2462,6 +2464,8 @@ function getObjectEffects(genObjEffects) {
     return effects;
 }
 function setObjectProps(figObj, genObj, phantom = true) {
+    if (genObj.badTransform)
+        return;
     setObjectFills(figObj, genObj);
     setObjectStrokes(figObj, genObj, phantom);
     setObjectEffects(figObj, genObj);
@@ -2747,8 +2751,8 @@ function getFigmaTransform(tl, tr, bl) {
     let xform = mulm3m3([[1, ky / sy, 0],
         [kx / sx, 1, 0],
         [0, 0, 1]], createTransform(dx, dy));
-    // if (!equal(determinant(xform), 1, 0.000001))
-    //     return null;
+    if (!equal(determinant(xform), 1, 0.000001))
+        return null;
     xform = inversem3(xform);
     const a = angle(vr);
     if (a > Tau / 4
@@ -2766,8 +2770,9 @@ function applyFigmaTransform(figObj, tl, tr, bl) {
                 xform[0],
                 xform[1]
             ];
-    else
-        figObj.remove();
+    // else
+    //     figObj.remove();
+    return xform;
 }
 function setObjectTransform(figObj, genObj, setSize = true, noHeight = 0.01) {
     if (!genObj[FO_XP0]
@@ -2777,7 +2782,11 @@ function setObjectTransform(figObj, genObj, setSize = true, noHeight = 0.01) {
     const xp0 = point(genObj[FO_XP0].x, genObj[FO_XP0].y);
     const xp1 = point(genObj[FO_XP1].x, genObj[FO_XP1].y);
     const xp2 = point(genObj[FO_XP2].x, genObj[FO_XP2].y);
-    applyFigmaTransform(figObj, xp0, xp1, xp2);
+    const xform = applyFigmaTransform(figObj, xp0, xp1, xp2);
+    if (!xform) {
+        genObj.badTransform = true;
+        return;
+    }
     if (setSize) {
         const scaleX = distance(xp0, xp1);
         const scaleY = distance(xp0, xp2);

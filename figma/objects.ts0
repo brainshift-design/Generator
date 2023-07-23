@@ -222,6 +222,9 @@ async function figUpdateObjects(figParent, genObjects, nodeIds = [], lastChunk =
 
 function genObjectIsValid(genObj)
 {
+    if (genObj.badTransform)
+        return false;
+
     switch (genObj[FO_TYPE])
     {
         case RECTANGLE:      return genRectIsValid         (genObj);
