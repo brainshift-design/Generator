@@ -4594,7 +4594,8 @@ a
             <div id='whatsNewBody'>
                 <h1 style='margin-top: 20px;'>What's new</h1>
 
-                <p>•  removed inapprpopriated rounding from Noise</p>
+                <p>•  fixed incorrect rounding in Noise</p>
+                <p>•  minor bug fixes</p>
                 
                 <p><br/><br/><div id='chkHideWhatsNew'></div></p>
             </div>
@@ -98536,6 +98537,9 @@ extends OperatorWithValue
         this.addParam(this.paramValue);
         this.addParam(this.paramOperation = new SelectParam('operation', '',        false, true, true, MATH_OPS.map(s => s[1]), 1));
         this.addParam(this.paramOperand   = new NumberParam('operand',   'operand', false, true, true, 0));
+
+
+        this.paramOperation.reverseMenu = true;
     }
 
 

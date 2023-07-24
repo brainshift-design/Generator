@@ -20,6 +20,9 @@ extends OperatorWithValue
         this.addParam(this.paramValue);
         this.addParam(this.paramOperation = new SelectParam('operation', '',        false, true, true, MATH_OPS.map(s => s[1]), 1));
         this.addParam(this.paramOperand   = new NumberParam('operand',   'operand', false, true, true, 0));
+
+
+        this.paramOperation.reverseMenu = true;
     }
 
 
