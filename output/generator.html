@@ -5425,11 +5425,8 @@ class FigmaObject
             createTransform(dx, dy),
             [[sx, ky, 0],
              [kx, sy, 0],
-             [0,  0,  1]]);//,
-//            createTransform(dx, dy));
+             [0,  0,  1]]);
     
-        //xform = inversem3(xform);
-        
     
         return xform;
     }
@@ -5687,27 +5684,31 @@ function addObjectCenter(node, obj, zoom)
 {
     const length = 10;
     
-    const sp0 =      obj.sp0;
-    const sp1 = addv(obj.sp0, mulvs(      subv(obj.sp1, obj.sp0),      length));
-    const sp2 = addv(obj.sp0, mulvs(mulvs(subv(obj.sp2, obj.sp0), -1), length));    
+    const sp0 = point(
+        obj.sp0.x + 0.5, 
+        obj.sp0.y + 0.5);
 
-    const x = createFigmaLine(node, sp0, sp1, [12, 140, 233], CENTER_SEPARATOR + 'X');
-    const y = createFigmaLine(node, sp0, sp2, [12, 140, 233], CENTER_SEPARATOR + 'Y');
+    const sp1 = addv(sp0, mulvs(      subv(obj.sp1, obj.sp0),      length));
+    const sp2 = addv(sp0, mulvs(mulvs(subv(obj.sp2, obj.sp0), -1), length));    
 
-    node.value.objects.push(x);
-    node.value.objects.push(y);
+    node.value.objects.push(
+        createFigmaPoly(
+            node, 
+            sp0, 
+            [sp2, sp0, sp1], 
+            [12, 140, 233], 
+            CENTER_SEPARATOR + 'center'));
 }
 
 
 
-function createFigmaLine(node, p0, p1, color, suffix)
+function createFigmaPoly(node, center, points, color, suffix)
 {
     const line = new FigmaVectorPath(
         node.nodeId,
         node.nodeId   + suffix,
         node.nodeName + suffix,
-        [PointValue.fromPoint(node.nodeId, p0), 
-         PointValue.fromPoint(node.nodeId, p1)],
+        points.map(p => PointValue.fromPoint(node.nodeId, p)),
         0, 0, 0, 0);
 
 
@@ -5726,7 +5727,7 @@ function createFigmaLine(node, p0, p1, color, suffix)
     line.isDeco       = true;
 
 
-    line.createDefaultTransform(p0.x, p0.y);
+    line.createDefaultTransform(center.x, center.y);
 
 
     return line;
