@@ -82,6 +82,27 @@ function genRequest(request, save)
         }
 
 
+        if (parse.settings.showTransformPoints)
+        {
+            for (const node of parse.parsedNodes)
+            {
+                if (   node.options.active === true
+                    && node.value)
+                {
+                    node.value.objects.forEach(o => 
+                    {
+                        if (!o.isDeco)
+                        {
+                            genPushUpdateObject(parse, o.xp0);
+                            genPushUpdateObject(parse, o.xp1);
+                            genPushUpdateObject(parse, o.xp2);
+                        }
+                    });
+                }
+            }
+        }
+
+
         genUpdateValuesAndObjects(
             requestId,
             actionId,

@@ -162,7 +162,7 @@ extends GShape
             }
             
 
-            let bounds = getObjBounds(regions);
+            let bounds = getXformBounds(regions);
 
             let x = bounds.x;
             let y = bounds.y;

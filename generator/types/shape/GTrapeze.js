@@ -113,15 +113,16 @@ extends GShape
             if (   w != 0 
                 && h != 0)
             {
-                const trap = new FigmaTrapeze(
+                const trapeze = new FigmaTrapeze(
                     this.nodeId, 
                     this.nodeId, 
                     this.nodeName, 
                     x, y, w, h, r, b);
 
-                trap.createDefaultTransform(x, y);
+                trapeze.createDefaultTransform(x, y);
+                trapeze.createDefaultTransformPoints(parse, x, y, w, h);
 
-                this.value.objects.push(trap, ...trap.createDefaultTransformPoints(parse, x, y, w, h));
+                this.value.objects.push(trapeze);
             }
         }
 

@@ -8,6 +8,7 @@ extends FigmaShape
 
     round;
 
+    
 
     constructor(nodeId, objectId, objectName, x, y, width, height, round)
     {

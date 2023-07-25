@@ -127,7 +127,7 @@ extends GShape
                 regions);
 
             
-            const bounds = getObjBounds([network]);
+            const bounds = getXformBounds([network]);
 
             let x = bounds.x;
             let y = bounds.y;
@@ -136,9 +136,9 @@ extends GShape
 
 
             network.createDefaultTransform(x, y);
+            network.createDefaultTransformPoints(parse, x, y, w, h);
 
-
-            this.value.objects.push(network, ...network.createDefaultTransformPoints(parse, x, y, w, h));
+            this.value.objects.push(network);
         }
 
 

@@ -181,10 +181,16 @@ extends GShape
                 this.value.width.value  = width;
                 this.value.height.value = height;
 
-                this.value.objects.push(text, ...text.createDefaultTransformPoints(parse, x, y, width, height));
+                text.createDefaultTransformPoints(parse, x, y, width, height);
+
+                this.value.objects.push(text);
             }
             else
-                this.value.objects.push(text, ...text.createDefaultTransformPoints(parse, x, y, w, h));
+            {
+                text.createDefaultTransformPoints(parse, x, y, w, h)
+                
+                this.value.objects.push(text);
+            }
         }
 
         

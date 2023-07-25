@@ -2,8 +2,10 @@ class FigmaObject
 {
     type;
     
+
     nodeId     = '';
-    
+
+
     objectId   = NULL;
     objectName = NULL;
 
@@ -100,7 +102,6 @@ class FigmaObject
         const ds1 = subv(this.sp1, this.sp0);
         const ds2 = subv(this.sp2, this.sp0);
 
-
         this.sp0  = point(_cx, _cy);
 
         this.sp1  = addv(this.sp0, ds1);
@@ -136,6 +137,23 @@ class FigmaObject
             && parse.settings.showTransformPoints
             ? [this.xp0, this.xp1, this.xp2]
             : [];
+    }
+
+
+
+    updateTransformPoints()
+    {
+        if (this.xp0) this.xp0.nodeId     = this.nodeId;
+        if (this.xp1) this.xp1.nodeId     = this.nodeId;
+        if (this.xp2) this.xp2.nodeId     = this.nodeId;
+
+        if (this.xp0) this.xp0.objectId   = this.objectId+'.0';
+        if (this.xp1) this.xp1.objectId   = this.objectId+'.1';
+        if (this.xp2) this.xp2.objectId   = this.objectId+'.2';
+
+        if (this.xp0) this.xp0.objectName = this.objectName+' ^ 0';
+        if (this.xp1) this.xp1.objectName = this.objectName+' ^ 1';
+        if (this.xp2) this.xp2.objectName = this.objectName+' ^ 2';
     }
 
 
@@ -183,13 +201,6 @@ class FigmaObject
             if (affectSpace)
                 this.applySpaceTransform(xform, space);
         }
-        else if (this.type == VECTOR_PATH)
-        {
-            this.updatePoints(xform, space);
-
-            if (affectSpace)
-                this.applySpaceTransform(xform, space);
-        }
         else if (this.type == SHAPE_GROUP)
         {
             for (const obj of this.children)
@@ -213,6 +224,8 @@ class FigmaObject
 
     applyObjectTransform(xform, space)
     {
+        this.updateTransformPoints();
+
         const xp0 = transformPoint(point(this.xp0.x, this.xp0.y), xform, space);
         const xp1 = transformPoint(point(this.xp1.x, this.xp1.y), xform, space);
         const xp2 = transformPoint(point(this.xp2.x, this.xp2.y), xform, space);
@@ -231,18 +244,9 @@ class FigmaObject
 
     applySpaceTransform(xform, space)
     {
-        const sp0 = transformPoint(point(this.sp0.x, this.sp0.y), xform, space);
-        const sp1 = transformPoint(point(this.sp1.x, this.sp1.y), xform, space);
-        const sp2 = transformPoint(point(this.sp2.x, this.sp2.y), xform, space);
-
-        this.sp0.x = sp0.x;
-        this.sp0.y = sp0.y;
-
-        this.sp1.x = sp1.x;
-        this.sp1.y = sp1.y;
-
-        this.sp2.x = sp2.x;
-        this.sp2.y = sp2.y;
+        this.sp0 = transformPoint(this.sp0, xform, space);
+        this.sp1 = transformPoint(this.sp1, xform, space);
+        this.sp2 = transformPoint(this.sp2, xform, space);
     }
 
 
@@ -258,9 +262,9 @@ class FigmaObject
             
             feedback:   this.feedback,
 
-            xp0:        this.xp0 ? point(this.xp0.x, this.xp0.y) : null,
-            xp1:        this.xp1 ? point(this.xp1.x, this.xp1.y) : null,
-            xp2:        this.xp2 ? point(this.xp2.x, this.xp2.y) : null
+            xp0:        this.xp0 ? this.xp0.toPoint() : null,
+            xp1:        this.xp1 ? this.xp1.toPoint() : null,
+            xp2:        this.xp2 ? this.xp2.toPoint() : null
         };
     }
 
@@ -278,9 +282,9 @@ class FigmaObject
         /* 4 */ this.feedback,
         /* 5 */ this.retain,
         
-        /* 6 */ this.xp0 ? point(this.xp0.x, this.xp0.y) : null,
-        /* 7 */ this.xp1 ? point(this.xp1.x, this.xp1.y) : null,
-        /* 8 */ this.xp2 ? point(this.xp2.x, this.xp2.y) : null,
+        /* 6 */ this.xp0 ? this.xp0.toPoint() : null,
+        /* 7 */ this.xp1 ? this.xp1.toPoint() : null,
+        /* 8 */ this.xp2 ? this.xp2.toPoint() : null,
 
         /* 9 */ 0 // for future use
         ];
@@ -394,6 +398,54 @@ function getObjBounds(objects)
 
         else
         {
+            const dp = subv(obj.xp1, obj.xp0);
+
+            bounds = expandRect_(bounds, obj.xp0);
+            bounds = expandRect_(bounds, obj.xp1);
+            bounds = expandRect_(bounds, obj.xp2);
+            bounds = expandRect_(bounds, addv(obj.xp2, dp));
+        }
+
+        // else if (obj.type == LINE)
+        //     bounds = expandRect(bounds, new Rect(obj.x, obj.y, obj.width, 0));
+
+        // else
+        //     bounds = expandRect(bounds, new Rect(obj.x, obj.y, obj.width, obj.height));
+    }
+
+
+    return bounds;
+}
+
+
+
+function getXformBounds(objects)
+{
+    let bounds = Rect.NaN;
+
+
+    for (const obj of objects)
+    {
+        // if (obj.type == VECTOR_PATH)
+        // {
+        //     for (const p of obj.points)
+        //         bounds = expandRect_(bounds, p.toPoint());
+        // }
+
+        // else if (obj.type == VECTOR_NETWORK)
+        // {
+        //     for (const p of obj.points)
+        //         bounds = expandRect_(bounds, p.toPoint());
+        // }
+
+        // else 
+        if (obj.type == POINT)
+             //&& !obj.isDeco)
+            bounds = expandRect_(bounds, point(obj.x, obj.y));
+
+        else
+        {
+            //console.log('obj =', obj);
             const dp = subv(obj.xp1, obj.xp0);
 
             bounds = expandRect_(bounds, obj.xp0);

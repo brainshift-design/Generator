@@ -43,16 +43,17 @@ extends GOperator1
         this.value.objects = getValidObjects(this.input);
         
 
-        const bounds = getObjBounds(this.value.objects);
-
-
-        const xform = getXform();
+        const bounds = getXformBounds(this.value.objects);
+        const xform  = getXform();
 
 
         for (const obj of this.value.objects)
         {
             obj.nodeId   = this.nodeId;
             obj.objectId = obj.objectId + OBJECT_SEPARATOR + this.nodeId;
+
+            //obj.updateTransformPoints();
+
 
             if (this.options.enabled)
             {

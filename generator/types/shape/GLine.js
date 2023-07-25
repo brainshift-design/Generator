@@ -96,8 +96,9 @@ extends GShape
                     x, y, w);
 
                 line.createDefaultTransform(x, y);
+                line.createDefaultTransformPoints(parse, x, y, w, 0.01);
                 
-                this.value.objects.push(line, ...line.createDefaultTransformPoints(parse, x, y, w, 0.01));
+                this.value.objects.push(line);
             }
         }
 

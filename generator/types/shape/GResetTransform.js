@@ -69,7 +69,7 @@ extends GOperator1
             const showCenter = options.showCenter.value;
 
 
-            const bounds = getObjBounds(this.value.objects);
+            const bounds = getXformBounds(this.value.objects);
 
             const singlePoint =
                    this.value.objects.length  == 1 

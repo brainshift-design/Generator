@@ -41,6 +41,13 @@ extends FigmaShape
 
 
 
+    toPoint()
+    {
+        return point(this.x, this.y);
+    }
+
+
+
     toData()
     {
         return [

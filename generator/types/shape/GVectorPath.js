@@ -132,11 +132,11 @@ extends GShape
             let w = bounds.w;
             let h = bounds.h;
 
-
+            
             path.createDefaultTransform(x, y);
+            path.createDefaultTransformPoints(parse, x, y, w, h);
 
-
-            this.value.objects.push(path, ...path.createDefaultTransformPoints(parse, x, y, w, h));
+            this.value.objects.push(path);
         }
 
 
