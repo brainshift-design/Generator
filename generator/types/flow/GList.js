@@ -62,7 +62,7 @@ extends GOperator
                 && this.inputs[i].value)
             {
                 const objects = getValidObjects(this.inputs[i]);
-
+                
                 for (let j = 0; j < objects.length; j++, o++)
                 {
                     const obj = copyFigmaObject(objects[j]);
@@ -73,6 +73,22 @@ extends GOperator
 
                     this.value.objects.push(obj);
                 }
+            }
+
+
+            // reset object space
+
+            const bounds = getObjBounds(this.value.objects);
+
+            const singlePoint =
+                   this.value.objects.length  == 1 
+                && this.value.objects[0].type == POINT;
+
+
+            for (const obj of this.value.objects)
+            {
+                obj.createDefaultSpace();
+                obj.resetSpace(bounds, singlePoint);
             }
 
 

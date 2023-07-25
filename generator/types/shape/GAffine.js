@@ -64,12 +64,10 @@ extends GOperator1
         }
 
 
-        const objects = [...this.value.objects];
-
-        for (const obj of objects)
+        if (options.showCenter.value > 0)
         {
-            if (options.showCenter.value > 0)
-                addObjectCenter(this, obj, parse.viewportZoom);
+            const objects = [...this.value.objects]; // avoids infinite growth
+            objects.forEach(o => addObjectCenter(this, o, parse.viewportZoom));
         }
 
 

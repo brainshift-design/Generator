@@ -10,8 +10,6 @@ extends OperatorBase
     {
         super(TEXT_SPLIT, 'split', 'split', iconTextSplit);
 
-        this.iconOffsetY = 1;
-
 
         this.addInput(new Input([TEXT_VALUE]));
 

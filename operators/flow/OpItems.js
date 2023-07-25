@@ -258,6 +258,7 @@ extends ResizableBase
 
        
         const rect = this.measureData.divOffset;
+        //console.log('rect =', rect);
  
         if (this.scrollbar.style.display == 'none')
             rect.h = this.params.length * defParamHeight;

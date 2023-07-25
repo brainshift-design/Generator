@@ -5373,6 +5373,31 @@ class FigmaObject
 
 
 
+    resetSpace(bounds, singlePoint = false, cx = 0.5, cy = 0.5)
+    {
+        if (singlePoint)
+        {
+            cx *= 100;
+            cy *= 100;
+        }
+
+
+        const _cx = singlePoint ? this.x + cx : bounds.x + cx * bounds.width;
+        const _cy = singlePoint ? this.y + cy : bounds.y + cy * bounds.height;            
+
+
+        const ds1 = subv(this.sp1, this.sp0);
+        const ds2 = subv(this.sp2, this.sp0);
+
+
+        this.sp0  = point(_cx, _cy);
+
+        this.sp1  = addv(this.sp0, ds1);
+        this.sp2  = addv(this.sp0, ds2);
+    }
+
+
+
     createDefaultTransform(x, y, a = 0)
     {
         this.xform =
@@ -13615,7 +13640,7 @@ extends GOperator
                 && this.inputs[i].value)
             {
                 const objects = getValidObjects(this.inputs[i]);
-
+                
                 for (let j = 0; j < objects.length; j++, o++)
                 {
                     const obj = copyFigmaObject(objects[j]);
@@ -13626,6 +13651,22 @@ extends GOperator
 
                     this.value.objects.push(obj);
                 }
+            }
+
+
+            // reset object space
+
+            const bounds = getObjBounds(this.value.objects);
+
+            const singlePoint =
+                   this.value.objects.length  == 1 
+                && this.value.objects[0].type == POINT;
+
+
+            for (const obj of this.value.objects)
+            {
+                obj.createDefaultSpace();
+                obj.resetSpace(bounds, singlePoint);
             }
 
 
@@ -27795,12 +27836,10 @@ extends GOperator1
             }
 
 
-            const objects = [...this.value.objects]; // avoids infinite growth
-
-            for (const obj of objects)
+            if (showCenter > 0)
             {
-                if (showCenter > 0)
-                    addObjectCenter(this, obj, parse.viewportZoom);
+                const objects = [...this.value.objects]; // avoids infinite growth
+                objects.forEach(o => addObjectCenter(this, o, parse.viewportZoom));
             }
         }
         
@@ -27923,12 +27962,10 @@ extends GOperator1
         }
 
 
-        const objects = [...this.value.objects];
-
-        for (const obj of objects)
+        if (options.showCenter.value > 0)
         {
-            if (options.showCenter.value > 0)
-                addObjectCenter(this, obj, parse.viewportZoom);
+            const objects = [...this.value.objects]; // avoids infinite growth
+            objects.forEach(o => addObjectCenter(this, o, parse.viewportZoom));
         }
 
 
@@ -28501,56 +28538,35 @@ extends GOperator1
             this.value.objects = getValidObjects(this.input);
 
             
-            const bounds       = getObjBounds(this.value.objects);
+            const centerX     = options.centerX    .value;
+            const centerY     = options.centerY    .value;
+            const showCenter  = options.showCenter .value;
+     
+            const cx          = centerX/100;
+            const cy          = centerY/100;
 
 
-            const centerX      = options.centerX    .value;
-            const centerY      = options.centerY    .value;
-            const showCenter   = options.showCenter .value;
+            const bounds      = getObjBounds(this.value.objects);
 
-
-            const singlePoint = 
+            const singlePoint =  
                    this.value.objects.length  == 1 
                 && this.value.objects[0].type == POINT;
 
 
-            let _cx = centerX;
-            let _cy = centerY;
-
-            if (!singlePoint)
-            {
-                _cx /= 100;
-                _cy /= 100;
-            }
-
-
-            const cx = singlePoint ? this.value.objects[0].x + _cx : bounds.x + _cx * bounds.width;
-            const cy = singlePoint ? this.value.objects[0].y + _cy : bounds.y + _cy * bounds.height;
-
-                            
             for (const obj of this.value.objects)
             {
                 obj.nodeId   = this.nodeId;
                 obj.objectId = obj.objectId + OBJECT_SEPARATOR + this.nodeId;
 
                 if (this.options.enabled)
-                {
-                    const ds1 = subv(obj.sp1, obj.sp0);
-                    const ds2 = subv(obj.sp2, obj.sp0);
-
-                    obj.sp0 = point(cx, cy);
-                    obj.sp1 = addv(obj.sp0, ds1);
-                    obj.sp2 = addv(obj.sp0, ds2);
-                }
+                    obj.resetSpace(bounds, singlePoint, cx, cy);
             }
 
 
-            const objects = [...this.value.objects]; // avoids infinite growth
-
-            for (const obj of objects)
+            if (showCenter > 0)
             {
-                if (showCenter > 0)
-                    addObjectCenter(this, obj, parse.viewportZoom);
+                const objects = [...this.value.objects]; // avoids infinite growth
+                objects.forEach(o => addObjectCenter(this, o, parse.viewportZoom));
             }
         }
         
@@ -28669,28 +28685,16 @@ extends GOperator1
             this.value.objects = getValidObjects(this.input);
 
 
-            const bounds = getObjBounds(this.value.objects);
+            const showCenter = options.showCenter.value;
 
+
+            const bounds = getObjBounds(this.value.objects);
 
             const singlePoint =
                    this.value.objects.length  == 1 
                 && this.value.objects[0].type == POINT;
 
 
-            let _cx = 50;
-            let _cy = 50;
-
-            if (!singlePoint)
-            {
-                _cx /= 100;
-                _cy /= 100;
-            }
-
-
-            const cx = singlePoint ? this.value.objects[0].x + _cx : bounds.x + _cx * bounds.width;
-            const cy = singlePoint ? this.value.objects[0].y + _cy : bounds.y + _cy * bounds.height;            
-            
-            
             for (const obj of this.value.objects)
             {
                 obj.nodeId   = this.nodeId;
@@ -28699,21 +28703,16 @@ extends GOperator1
                 if (this.options.enabled)
                 {
                     obj.createDefaultSpace();
-
-                    const ds1 = subv(obj.sp1, obj.sp0);
-                    const ds2 = subv(obj.sp2, obj.sp0);
-
-                    obj.sp0 = point(cx, cy);
-                    obj.sp1 = addv(obj.sp0, ds1);
-                    obj.sp2 = addv(obj.sp0, ds2);
+                    obj.resetSpace(bounds, singlePoint);
                 }
             }
 
 
-            const objects = [...this.value.objects]; // avoids infinite growth
-
-            for (const obj of objects)
-                addObjectCenter(this, obj, parse.viewportZoom);
+            if (showCenter)
+            {
+                const objects = [...this.value.objects]; // avoids infinite growth
+                objects.forEach(o => addObjectCenter(this, o, parse.viewportZoom));
+            }
         }
         
         

@@ -344,7 +344,6 @@ extends OperatorBase
     {
         super.loadParams(_node, pasting);
 
-
         if (   _node.width
             && _node.height)
         {

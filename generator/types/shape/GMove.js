@@ -151,12 +151,10 @@ extends GOperator1
             }
 
 
-            const objects = [...this.value.objects]; // avoids infinite growth
-
-            for (const obj of objects)
+            if (showCenter > 0)
             {
-                if (showCenter > 0)
-                    addObjectCenter(this, obj, parse.viewportZoom);
+                const objects = [...this.value.objects]; // avoids infinite growth
+                objects.forEach(o => addObjectCenter(this, o, parse.viewportZoom));
             }
         }
         

@@ -84,6 +84,31 @@ class FigmaObject
 
 
 
+    resetSpace(bounds, singlePoint = false, cx = 0.5, cy = 0.5)
+    {
+        if (singlePoint)
+        {
+            cx *= 100;
+            cy *= 100;
+        }
+
+
+        const _cx = singlePoint ? this.x + cx : bounds.x + cx * bounds.width;
+        const _cy = singlePoint ? this.y + cy : bounds.y + cy * bounds.height;            
+
+
+        const ds1 = subv(this.sp1, this.sp0);
+        const ds2 = subv(this.sp2, this.sp0);
+
+
+        this.sp0  = point(_cx, _cy);
+
+        this.sp1  = addv(this.sp0, ds1);
+        this.sp2  = addv(this.sp0, ds2);
+    }
+
+
+
     createDefaultTransform(x, y, a = 0)
     {
         this.xform =

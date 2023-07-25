@@ -66,28 +66,16 @@ extends GOperator1
             this.value.objects = getValidObjects(this.input);
 
 
-            const bounds = getObjBounds(this.value.objects);
+            const showCenter = options.showCenter.value;
 
+
+            const bounds = getObjBounds(this.value.objects);
 
             const singlePoint =
                    this.value.objects.length  == 1 
                 && this.value.objects[0].type == POINT;
 
 
-            let _cx = 50;
-            let _cy = 50;
-
-            if (!singlePoint)
-            {
-                _cx /= 100;
-                _cy /= 100;
-            }
-
-
-            const cx = singlePoint ? this.value.objects[0].x + _cx : bounds.x + _cx * bounds.width;
-            const cy = singlePoint ? this.value.objects[0].y + _cy : bounds.y + _cy * bounds.height;            
-            
-            
             for (const obj of this.value.objects)
             {
                 obj.nodeId   = this.nodeId;
@@ -96,21 +84,16 @@ extends GOperator1
                 if (this.options.enabled)
                 {
                     obj.createDefaultSpace();
-
-                    const ds1 = subv(obj.sp1, obj.sp0);
-                    const ds2 = subv(obj.sp2, obj.sp0);
-
-                    obj.sp0 = point(cx, cy);
-                    obj.sp1 = addv(obj.sp0, ds1);
-                    obj.sp2 = addv(obj.sp0, ds2);
+                    obj.resetSpace(bounds, singlePoint);
                 }
             }
 
 
-            const objects = [...this.value.objects]; // avoids infinite growth
-
-            for (const obj of objects)
-                addObjectCenter(this, obj, parse.viewportZoom);
+            if (showCenter)
+            {
+                const objects = [...this.value.objects]; // avoids infinite growth
+                objects.forEach(o => addObjectCenter(this, o, parse.viewportZoom));
+            }
         }
         
         
