@@ -60,8 +60,7 @@ extends NumberParamBase
                 return;
 
 
-            if (   Math.abs(e.detail.value - e.detail.oldValue) > Number.EPSILON
-                && this.controls[0].allowEditDecimals)
+            if (this.controls[0].allowEditDecimals)
             {
                 this.setValue(new NumberValue(e.detail.value, dec), true);
                 e.preventSetValue = true;

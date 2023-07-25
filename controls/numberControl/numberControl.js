@@ -214,10 +214,6 @@ extends Control
 
     setValue(value, fireChangeEvent = true, confirm = true, fullRange = true)
     {
-        //if (typeof value != 'number')
-            //console.error('NumberControl.setValue(value) is ' + typeof value + ', must be a number');
-
-            
         const oldValue = this.value;
 
         
