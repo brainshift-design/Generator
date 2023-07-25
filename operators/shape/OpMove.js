@@ -23,18 +23,18 @@ extends OperatorBase
         this.addOutput(new Output([SHAPE_VALUE], this.output_genRequest));
 
 
-        this.addParam(this.paramX           = new NumberParam('x',           'X',            true, true, true));
-        this.addParam(this.paramY           = new NumberParam('y',           'Y',            true, true, true));
-        this.addParam(this.paramMoveType    = new SelectParam('moveType',    'type',         true, true, true, ['position', 'vector'], 0));
-        this.addParam(this.paramAffectSpace = new NumberParam('affectSpace', 'space', true, true, true, 1, 0, 1));
-        this.addParam(this.paramShowCenter  = new NumberParam('showCenter',  'show',   true, true, true, 0, 0, 1));
+        this.addParam(this.paramX           = new NumberParam('x',           'X',          true, true, true));
+        this.addParam(this.paramY           = new NumberParam('y',           'Y',          true, true, true));
+        this.addParam(this.paramMoveType    = new SelectParam('moveType',    'type',       true, true, true, ['position', 'vector'], 0));
+        this.addParam(this.paramAffectSpace = new NumberParam('affectSpace', 'move space', true, true, true, 1, 0, 1));
+        this.addParam(this.paramShowCenter  = new NumberParam('showCenter',  'show space', true, true, true, 0, 0, 1));
 
 
         this.paramShowCenter .controls[0].allowEditDecimals = false;
         this.paramAffectSpace.controls[0].allowEditDecimals = false;
         
-        this.paramShowCenter .divider = 0.55;
-        this.paramAffectSpace.divider = 0.55;
+        this.paramShowCenter .divider = 0.68;
+        this.paramAffectSpace.divider = 0.68;
 
 
         this.menuBoolShowCenter  = createBoolMenu(this.paramShowCenter );

@@ -4594,8 +4594,7 @@ a
             <div id='whatsNewBody'>
                 <h1 style='margin-top: 20px;'>What's new</h1>
 
-                <p>•  fixed incorrect rounding in Noise</p>
-                <p>•  minor bug fixes</p>
+                <p>•  fixed UI issues</p>
                 
                 <p><br/><br/><div id='chkHideWhatsNew'></div></p>
             </div>
@@ -4923,7 +4922,7 @@ a
 
 
 
-const generatorVersion = 168;
+const generatorVersion = 169;
 
 
 const MAX_INT32        = 2147483647;
@@ -10227,7 +10226,6 @@ class FigmaObject
     xp1 = null; //   |     
     xp2 = null; //  xp2
 
-
     sp0 = null; //  sp0 ------- sp1 
     sp1 = null; //   |
     sp2 = null; //  sp2
@@ -10266,9 +10264,9 @@ class FigmaObject
         this.xp1          = !!base.xp1 ? base.xp1.copy() : null;
         this.xp2          = !!base.xp2 ? base.xp2.copy() : null;
 
-        this.sp0          = base.sp0;
-        this.sp1          = base.sp1;
-        this.sp2          = base.sp2;
+        this.sp0          = clone(base.sp0);
+        this.sp1          = clone(base.sp1);
+        this.sp2          = clone(base.sp2);
 
         this.scaleCorners = base.scaleCorners;
         this.scaleStyle   = base.scaleStyle;
@@ -10278,7 +10276,7 @@ class FigmaObject
 
     copy()
     {
-        consoleError('invalid use of abstract class FigmaObject');
+        consoleError('invalid use of abstract method FigmaObject.copy()');
         return null;
     }
 
@@ -10336,8 +10334,8 @@ class FigmaObject
         let kx = vr.y;
         let ky = vb.x;
         
-        let dx = this.sp0.x;
-        let dy = this.sp0.y;
+        let dx = this.sp0.x;// - this.xp0.x;
+        let dy = this.sp0.y;// - this.xp0.y;
     
     
         let xform = mulm3m3(
@@ -10346,7 +10344,7 @@ class FigmaObject
              [kx, sy, 0],
              [0,  0,  1]]);
     
-    
+
         return xform;
     }
     
@@ -43382,7 +43380,7 @@ onerror = (event, source, line, pos, error) =>
 };
 
 
-const generatorVersion = 168;
+const generatorVersion = 169;
 
 
 const MAX_INT32        = 2147483647;
@@ -50870,7 +50868,6 @@ class FigmaObject
     xp1 = null; //   |     
     xp2 = null; //  xp2
 
-
     sp0 = null; //  sp0 ------- sp1 
     sp1 = null; //   |
     sp2 = null; //  sp2
@@ -50909,9 +50906,9 @@ class FigmaObject
         this.xp1          = !!base.xp1 ? base.xp1.copy() : null;
         this.xp2          = !!base.xp2 ? base.xp2.copy() : null;
 
-        this.sp0          = base.sp0;
-        this.sp1          = base.sp1;
-        this.sp2          = base.sp2;
+        this.sp0          = clone(base.sp0);
+        this.sp1          = clone(base.sp1);
+        this.sp2          = clone(base.sp2);
 
         this.scaleCorners = base.scaleCorners;
         this.scaleStyle   = base.scaleStyle;
@@ -50921,7 +50918,7 @@ class FigmaObject
 
     copy()
     {
-        consoleError('invalid use of abstract class FigmaObject');
+        consoleError('invalid use of abstract method FigmaObject.copy()');
         return null;
     }
 
@@ -50979,8 +50976,8 @@ class FigmaObject
         let kx = vr.y;
         let ky = vb.x;
         
-        let dx = this.sp0.x;
-        let dy = this.sp0.y;
+        let dx = this.sp0.x;// - this.xp0.x;
+        let dy = this.sp0.y;// - this.xp0.y;
     
     
         let xform = mulm3m3(
@@ -50989,7 +50986,7 @@ class FigmaObject
              [kx, sy, 0],
              [0,  0,  1]]);
     
-    
+
         return xform;
     }
     
@@ -75719,10 +75716,6 @@ extends Control
 
     setValue(value, fireChangeEvent = true, confirm = true, fullRange = true)
     {
-        //if (typeof value != 'number')
-            //console.error('NumberControl.setValue(value) is ' + typeof value + ', must be a number');
-
-            
         const oldValue = this.value;
 
         
@@ -85251,8 +85244,9 @@ extends NumberParamBase
                 return;
 
 
-            if (   Math.abs(e.detail.value - e.detail.oldValue) > Number.EPSILON
-                && this.controls[0].allowEditDecimals)
+            if (//   Math.abs(e.detail.value - e.detail.oldValue) > Number.EPSILON
+                //&& 
+                this.controls[0].allowEditDecimals)
             {
                 this.setValue(new NumberValue(e.detail.value, dec), true);
                 e.preventSetValue = true;
@@ -107348,18 +107342,18 @@ extends OperatorBase
         this.addOutput(new Output([SHAPE_VALUE], this.output_genRequest));
 
 
-        this.addParam(this.paramX           = new NumberParam('x',           'X',            true, true, true));
-        this.addParam(this.paramY           = new NumberParam('y',           'Y',            true, true, true));
-        this.addParam(this.paramMoveType    = new SelectParam('moveType',    'type',         true, true, true, ['position', 'vector'], 0));
-        this.addParam(this.paramAffectSpace = new NumberParam('affectSpace', 'space', true, true, true, 1, 0, 1));
-        this.addParam(this.paramShowCenter  = new NumberParam('showCenter',  'show',   true, true, true, 0, 0, 1));
+        this.addParam(this.paramX           = new NumberParam('x',           'X',          true, true, true));
+        this.addParam(this.paramY           = new NumberParam('y',           'Y',          true, true, true));
+        this.addParam(this.paramMoveType    = new SelectParam('moveType',    'type',       true, true, true, ['position', 'vector'], 0));
+        this.addParam(this.paramAffectSpace = new NumberParam('affectSpace', 'move space', true, true, true, 1, 0, 1));
+        this.addParam(this.paramShowCenter  = new NumberParam('showCenter',  'show space', true, true, true, 0, 0, 1));
 
 
         this.paramShowCenter .controls[0].allowEditDecimals = false;
         this.paramAffectSpace.controls[0].allowEditDecimals = false;
         
-        this.paramShowCenter .divider = 0.55;
-        this.paramAffectSpace.divider = 0.55;
+        this.paramShowCenter .divider = 0.68;
+        this.paramAffectSpace.divider = 0.68;
 
 
         this.menuBoolShowCenter  = createBoolMenu(this.paramShowCenter );
@@ -107468,15 +107462,15 @@ extends OperatorBase
 
     addBaseParams(affect)
     {
-        this.addParam(this.paramAffectSpace = new NumberParam('affectSpace', /*affect +*/ 'space', true, true, true, 1, 0, 1));
-        this.addParam(this.paramShowCenter  = new NumberParam('showCenter',               'show',   true, true, true, 0, 0, 1));
+        this.addParam(this.paramAffectSpace = new NumberParam('affectSpace', affect + ' space', true, true, true, 1, 0, 1));
+        this.addParam(this.paramShowCenter  = new NumberParam('showCenter',       'show space', true, true, true, 0, 0, 1));
 
 
         this.paramShowCenter .controls[0].allowEditDecimals = false;
         this.paramAffectSpace.controls[0].allowEditDecimals = false;
 
-        this.paramShowCenter .divider = 0.55;
-        this.paramAffectSpace.divider = 0.55;
+        this.paramShowCenter .divider = 0.68;
+        this.paramAffectSpace.divider = 0.68;
 
         this.menuBoolShowCenter  = createBoolMenu(this.paramShowCenter );
         this.menuBoolAffectSpace = createBoolMenu(this.paramAffectSpace);
@@ -107772,7 +107766,7 @@ extends OperatorBase
 
         this.addParam(this.paramCenterX    = new NumberParam('centerX',    'center X',    true, true, true, 50, 0, 100));
         this.addParam(this.paramCenterY    = new NumberParam('centerY',    'center Y',    true, true, true, 50, 0, 100));
-        this.addParam(this.paramShowCenter = new NumberParam('showCenter', 'show center', true, true, true, 0, 0, 1));
+        this.addParam(this.paramShowCenter = new NumberParam('showCenter', 'show space', true, true, true, 0, 0, 1));
 
 
         this.paramCenterX.controls[0].suffix = '%';
@@ -107786,7 +107780,7 @@ extends OperatorBase
 
 
         this.paramShowCenter.controls[0].allowEditDecimals = false;
-        this.paramShowCenter.divider = 0.7;
+        this.paramShowCenter.divider = 0.68;
 
         this.menuBoolShowCenter  = createBoolMenu(this.paramShowCenter );
 
@@ -107931,7 +107925,7 @@ extends OperatorBase
 
 
         this.paramShowCenter.controls[0].allowEditDecimals = false;
-        this.paramShowCenter.divider = 0.7;
+        this.paramShowCenter.divider = 0.68;
 
         this.menuBoolShowCenter = createBoolMenu(this.paramShowCenter);
 

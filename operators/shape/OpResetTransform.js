@@ -23,7 +23,7 @@ extends OperatorBase
 
 
         this.paramShowCenter.controls[0].allowEditDecimals = false;
-        this.paramShowCenter.divider = 0.7;
+        this.paramShowCenter.divider = 0.68;
 
         this.menuBoolShowCenter = createBoolMenu(this.paramShowCenter);
 

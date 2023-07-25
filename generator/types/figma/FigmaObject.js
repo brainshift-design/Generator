@@ -19,7 +19,6 @@ class FigmaObject
     xp1 = null; //   |     
     xp2 = null; //  xp2
 
-
     sp0 = null; //  sp0 ------- sp1 
     sp1 = null; //   |
     sp2 = null; //  sp2
@@ -58,9 +57,9 @@ class FigmaObject
         this.xp1          = !!base.xp1 ? base.xp1.copy() : null;
         this.xp2          = !!base.xp2 ? base.xp2.copy() : null;
 
-        this.sp0          = base.sp0;
-        this.sp1          = base.sp1;
-        this.sp2          = base.sp2;
+        this.sp0          = clone(base.sp0);
+        this.sp1          = clone(base.sp1);
+        this.sp2          = clone(base.sp2);
 
         this.scaleCorners = base.scaleCorners;
         this.scaleStyle   = base.scaleStyle;
@@ -70,7 +69,7 @@ class FigmaObject
 
     copy()
     {
-        consoleError('invalid use of abstract class FigmaObject');
+        consoleError('invalid use of abstract method FigmaObject.copy()');
         return null;
     }
 
@@ -128,8 +127,8 @@ class FigmaObject
         let kx = vr.y;
         let ky = vb.x;
         
-        let dx = this.sp0.x;
-        let dy = this.sp0.y;
+        let dx = this.sp0.x;// - this.xp0.x;
+        let dy = this.sp0.y;// - this.xp0.y;
     
     
         let xform = mulm3m3(
@@ -138,7 +137,7 @@ class FigmaObject
              [kx, sy, 0],
              [0,  0,  1]]);
     
-    
+
         return xform;
     }
     
