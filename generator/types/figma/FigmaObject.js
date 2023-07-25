@@ -120,7 +120,7 @@ class FigmaObject
 
 
 
-    createDefaultTransformPoints(parse, x, y, w, h)
+    createDefaultTransformPoints(x, y, w, h)
     {
         this.xp0 = new FigmaPoint(this.nodeId, this.objectId+'.0', this.objectName+' ^ 0', x,     y,     true, false, true);
         this.xp1 = new FigmaPoint(this.nodeId, this.objectId+'.1', this.objectName+' ^ 1', x + w, y,     true, false, true);
@@ -132,11 +132,6 @@ class FigmaObject
         this.xp0.createDefaultTransform(x,     y    );
         this.xp1.createDefaultTransform(x + w, y    );
         this.xp2.createDefaultTransform(x,     y + h);
-
-        return parse
-            && parse.settings.showTransformPoints
-            ? [this.xp0, this.xp1, this.xp2]
-            : [];
     }
 
 
@@ -170,8 +165,8 @@ class FigmaObject
         let kx = vr.y;
         let ky = vb.x;
         
-        let dx = this.sp0.x;// - this.xp0.x;
-        let dy = this.sp0.y;// - this.xp0.y;
+        let dx = this.sp0.x;
+        let dy = this.sp0.y;
     
     
         let xform = mulm3m3(
@@ -226,9 +221,9 @@ class FigmaObject
     {
         this.updateTransformPoints();
 
-        const xp0 = transformPoint(point(this.xp0.x, this.xp0.y), xform, space);
-        const xp1 = transformPoint(point(this.xp1.x, this.xp1.y), xform, space);
-        const xp2 = transformPoint(point(this.xp2.x, this.xp2.y), xform, space);
+        const xp0 = transformPoint(this.xp0.toPoint(), xform, space);
+        const xp1 = transformPoint(this.xp1.toPoint(), xform, space);
+        const xp2 = transformPoint(this.xp2.toPoint(), xform, space);
 
         this.xp0.x = xp0.x;
         this.xp0.y = xp0.y;

@@ -142,7 +142,7 @@ extends FigmaShape
         this.width  = maxX - minX;
         this.height = maxY - minY;
 
-        this.createDefaultTransformPoints(null, this.x, this.y, this.width, this.height);
+        this.createDefaultTransformPoints(this.x, this.y, this.width, this.height);
 
 
         this.pathData = getPathDataFromPoints(this.pathPoints, this.closed, this.degree);

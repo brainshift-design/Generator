@@ -10328,7 +10328,7 @@ class FigmaObject
 
 
 
-    createDefaultTransformPoints(parse, x, y, w, h)
+    createDefaultTransformPoints(x, y, w, h)
     {
         this.xp0 = new FigmaPoint(this.nodeId, this.objectId+'.0', this.objectName+' ^ 0', x,     y,     true, false, true);
         this.xp1 = new FigmaPoint(this.nodeId, this.objectId+'.1', this.objectName+' ^ 1', x + w, y,     true, false, true);
@@ -10340,11 +10340,6 @@ class FigmaObject
         this.xp0.createDefaultTransform(x,     y    );
         this.xp1.createDefaultTransform(x + w, y    );
         this.xp2.createDefaultTransform(x,     y + h);
-
-        return parse
-            && parse.settings.showTransformPoints
-            ? [this.xp0, this.xp1, this.xp2]
-            : [];
     }
 
 
@@ -10378,8 +10373,8 @@ class FigmaObject
         let kx = vr.y;
         let ky = vb.x;
         
-        let dx = this.sp0.x;// - this.xp0.x;
-        let dy = this.sp0.y;// - this.xp0.y;
+        let dx = this.sp0.x;
+        let dy = this.sp0.y;
     
     
         let xform = mulm3m3(
@@ -10434,9 +10429,9 @@ class FigmaObject
     {
         this.updateTransformPoints();
 
-        const xp0 = transformPoint(point(this.xp0.x, this.xp0.y), xform, space);
-        const xp1 = transformPoint(point(this.xp1.x, this.xp1.y), xform, space);
-        const xp2 = transformPoint(point(this.xp2.x, this.xp2.y), xform, space);
+        const xp0 = transformPoint(this.xp0.toPoint(), xform, space);
+        const xp1 = transformPoint(this.xp1.toPoint(), xform, space);
+        const xp2 = transformPoint(this.xp2.toPoint(), xform, space);
 
         this.xp0.x = xp0.x;
         this.xp0.y = xp0.y;
@@ -11504,7 +11499,7 @@ extends FigmaShape
         this.width  = maxX - minX;
         this.height = maxY - minY;
 
-        this.createDefaultTransformPoints(null, this.x, this.y, this.width, this.height);
+        this.createDefaultTransformPoints(this.x, this.y, this.width, this.height);
 
 
         this.pathData = getPathDataFromPoints(this.pathPoints, this.closed, this.degree);
@@ -11906,7 +11901,7 @@ extends FigmaShape
         this.width  = maxX - minX;
         this.height = maxY - minY;
 
-        this.createDefaultTransformPoints(null, this.x, this.y, this.width, this.height);
+        this.createDefaultTransformPoints(this.x, this.y, this.width, this.height);
 
 
         this.networkData = getNetworkData(this.points, this.edges, this.regions);
@@ -29559,7 +29554,7 @@ extends GShape
                     x, y, w, h, r);
 
                 rect.createDefaultTransform(x, y);
-                rect.createDefaultTransformPoints(parse, x, y, w, h);
+                rect.createDefaultTransformPoints(x, y, w, h);
 
                 this.value.objects.push(rect);
             }
@@ -29713,7 +29708,7 @@ extends GShape
                     x, y, w);
 
                 line.createDefaultTransform(x, y);
-                line.createDefaultTransformPoints(parse, x, y, w, 0.01);
+                line.createDefaultTransformPoints(x, y, w, 0.01);
                 
                 this.value.objects.push(line);
             }
@@ -29866,7 +29861,7 @@ extends GShape
                     x, y, w, h, f, t, i);
 
                 ellipse.createDefaultTransform(x, y);
-                ellipse.createDefaultTransformPoints(parse, x, y, w, h);
+                ellipse.createDefaultTransformPoints(x, y, w, h);
 
                 this.value.objects.push(ellipse);
             }
@@ -30042,7 +30037,7 @@ extends GShape
                     x, y, w, h, r, b);
 
                 trapeze.createDefaultTransform(x, y);
-                trapeze.createDefaultTransformPoints(parse, x, y, w, h);
+                trapeze.createDefaultTransformPoints(x, y, w, h);
 
                 this.value.objects.push(trapeze);
             }
@@ -30224,7 +30219,7 @@ extends GShape
                     x, y, w, h, r, c);
 
                 poly.createDefaultTransform(x, y);
-                poly.createDefaultTransformPoints(parse, x, y, w, h);
+                poly.createDefaultTransformPoints(x, y, w, h);
 
                 this.value.objects.push(poly);
             }
@@ -30411,7 +30406,7 @@ extends GShape
                     x, y, w, h, r, p, c);
 
                 star.createDefaultTransform(x, y);
-                star.createDefaultTransformPoints(parse, x, y, w, h);
+                star.createDefaultTransformPoints(x, y, w, h);
 
                 this.value.objects.push(star);
             }
@@ -30658,14 +30653,14 @@ extends GShape
                 this.value.width.value  = width;
                 this.value.height.value = height;
 
-                text.createDefaultTransformPoints(parse, x, y, width, height);
+                text.createDefaultTransformPoints(x, y, width, height);
 
                 this.value.objects.push(text);
             }
             else
             {
-                text.createDefaultTransformPoints(parse, x, y, w, h)
-                
+                text.createDefaultTransformPoints(x, y, w, h)
+
                 this.value.objects.push(text);
             }
         }
@@ -31051,7 +31046,7 @@ extends GShape
 
             
             path.createDefaultTransform(x, y);
-            path.createDefaultTransformPoints(parse, x, y, w, h);
+            path.createDefaultTransformPoints(x, y, w, h);
 
             this.value.objects.push(path);
         }
@@ -31399,9 +31394,9 @@ extends GOperator1
 
 
             path.createDefaultTransform(x, y);
+            path.createDefaultTransformPoints(x, y, w, h);
 
-
-            this.value.objects.push(path, ...path.createDefaultTransformPoints(parse, x, y, w, h));
+            this.value.objects.push(path);
         }
 
 
@@ -31637,7 +31632,9 @@ extends GShape
             for (const region of regions)
             {
                 region.createDefaultTransform(x, y);
-                this.value.objects.push(region, ...region.createDefaultTransformPoints(parse, x, y, w, h));
+                region.createDefaultTransformPoints(x, y, w, h);
+                
+                this.value.objects.push(region);
             }
         }
 
@@ -31840,7 +31837,7 @@ extends GShape
 
 
             network.createDefaultTransform(x, y);
-            network.createDefaultTransformPoints(parse, x, y, w, h);
+            network.createDefaultTransformPoints(x, y, w, h);
 
             this.value.objects.push(network);
         }
@@ -32201,10 +32198,11 @@ extends GShape
 
 
             frame.createDefaultTransform(x, y);
-
+            frame.createDefaultTransformPoints(x, y, w, h);
         
-            this.value.objects = [frame, ...frame.createDefaultTransformPoints(parse, x, y, w, h)];
+            this.value.objects = [frame];
 
+            
             this.updateValues.push(['nChildren', new NumberValue(frame.children.length)]);
         }
 
@@ -32948,8 +32946,6 @@ extends GOperator1
         {
             obj.nodeId   = this.nodeId;
             obj.objectId = obj.objectId + OBJECT_SEPARATOR + this.nodeId;
-
-            //obj.updateTransformPoints();
 
 
             if (this.options.enabled)
@@ -34459,9 +34455,9 @@ function genRequest(request, save)
                     {
                         if (!o.isDeco)
                         {
-                            genPushUpdateObject(parse, o.xp0);
-                            genPushUpdateObject(parse, o.xp1);
-                            genPushUpdateObject(parse, o.xp2);
+                            if (o.xp0) genPushUpdateObject(parse, o.xp0);
+                            if (o.xp1) genPushUpdateObject(parse, o.xp1);
+                            if (o.xp2) genPushUpdateObject(parse, o.xp2);
                         }
                     });
                 }
@@ -51071,7 +51067,7 @@ class FigmaObject
 
 
 
-    createDefaultTransformPoints(parse, x, y, w, h)
+    createDefaultTransformPoints(x, y, w, h)
     {
         this.xp0 = new FigmaPoint(this.nodeId, this.objectId+'.0', this.objectName+' ^ 0', x,     y,     true, false, true);
         this.xp1 = new FigmaPoint(this.nodeId, this.objectId+'.1', this.objectName+' ^ 1', x + w, y,     true, false, true);
@@ -51083,11 +51079,6 @@ class FigmaObject
         this.xp0.createDefaultTransform(x,     y    );
         this.xp1.createDefaultTransform(x + w, y    );
         this.xp2.createDefaultTransform(x,     y + h);
-
-        return parse
-            && parse.settings.showTransformPoints
-            ? [this.xp0, this.xp1, this.xp2]
-            : [];
     }
 
 
@@ -51121,8 +51112,8 @@ class FigmaObject
         let kx = vr.y;
         let ky = vb.x;
         
-        let dx = this.sp0.x;// - this.xp0.x;
-        let dy = this.sp0.y;// - this.xp0.y;
+        let dx = this.sp0.x;
+        let dy = this.sp0.y;
     
     
         let xform = mulm3m3(
@@ -51177,9 +51168,9 @@ class FigmaObject
     {
         this.updateTransformPoints();
 
-        const xp0 = transformPoint(point(this.xp0.x, this.xp0.y), xform, space);
-        const xp1 = transformPoint(point(this.xp1.x, this.xp1.y), xform, space);
-        const xp2 = transformPoint(point(this.xp2.x, this.xp2.y), xform, space);
+        const xp0 = transformPoint(this.xp0.toPoint(), xform, space);
+        const xp1 = transformPoint(this.xp1.toPoint(), xform, space);
+        const xp2 = transformPoint(this.xp2.toPoint(), xform, space);
 
         this.xp0.x = xp0.x;
         this.xp0.y = xp0.y;
@@ -52247,7 +52238,7 @@ extends FigmaShape
         this.width  = maxX - minX;
         this.height = maxY - minY;
 
-        this.createDefaultTransformPoints(null, this.x, this.y, this.width, this.height);
+        this.createDefaultTransformPoints(this.x, this.y, this.width, this.height);
 
 
         this.pathData = getPathDataFromPoints(this.pathPoints, this.closed, this.degree);
@@ -52649,7 +52640,7 @@ extends FigmaShape
         this.width  = maxX - minX;
         this.height = maxY - minY;
 
-        this.createDefaultTransformPoints(null, this.x, this.y, this.width, this.height);
+        this.createDefaultTransformPoints(this.x, this.y, this.width, this.height);
 
 
         this.networkData = getNetworkData(this.points, this.edges, this.regions);
@@ -70302,7 +70293,7 @@ extends GShape
                     x, y, w, h, r);
 
                 rect.createDefaultTransform(x, y);
-                rect.createDefaultTransformPoints(parse, x, y, w, h);
+                rect.createDefaultTransformPoints(x, y, w, h);
 
                 this.value.objects.push(rect);
             }
@@ -70456,7 +70447,7 @@ extends GShape
                     x, y, w);
 
                 line.createDefaultTransform(x, y);
-                line.createDefaultTransformPoints(parse, x, y, w, 0.01);
+                line.createDefaultTransformPoints(x, y, w, 0.01);
                 
                 this.value.objects.push(line);
             }
@@ -70609,7 +70600,7 @@ extends GShape
                     x, y, w, h, f, t, i);
 
                 ellipse.createDefaultTransform(x, y);
-                ellipse.createDefaultTransformPoints(parse, x, y, w, h);
+                ellipse.createDefaultTransformPoints(x, y, w, h);
 
                 this.value.objects.push(ellipse);
             }
@@ -70785,7 +70776,7 @@ extends GShape
                     x, y, w, h, r, b);
 
                 trapeze.createDefaultTransform(x, y);
-                trapeze.createDefaultTransformPoints(parse, x, y, w, h);
+                trapeze.createDefaultTransformPoints(x, y, w, h);
 
                 this.value.objects.push(trapeze);
             }
@@ -70967,7 +70958,7 @@ extends GShape
                     x, y, w, h, r, c);
 
                 poly.createDefaultTransform(x, y);
-                poly.createDefaultTransformPoints(parse, x, y, w, h);
+                poly.createDefaultTransformPoints(x, y, w, h);
 
                 this.value.objects.push(poly);
             }
@@ -71154,7 +71145,7 @@ extends GShape
                     x, y, w, h, r, p, c);
 
                 star.createDefaultTransform(x, y);
-                star.createDefaultTransformPoints(parse, x, y, w, h);
+                star.createDefaultTransformPoints(x, y, w, h);
 
                 this.value.objects.push(star);
             }
@@ -71401,14 +71392,14 @@ extends GShape
                 this.value.width.value  = width;
                 this.value.height.value = height;
 
-                text.createDefaultTransformPoints(parse, x, y, width, height);
+                text.createDefaultTransformPoints(x, y, width, height);
 
                 this.value.objects.push(text);
             }
             else
             {
-                text.createDefaultTransformPoints(parse, x, y, w, h)
-                
+                text.createDefaultTransformPoints(x, y, w, h)
+
                 this.value.objects.push(text);
             }
         }
@@ -71794,7 +71785,7 @@ extends GShape
 
             
             path.createDefaultTransform(x, y);
-            path.createDefaultTransformPoints(parse, x, y, w, h);
+            path.createDefaultTransformPoints(x, y, w, h);
 
             this.value.objects.push(path);
         }
@@ -72142,9 +72133,9 @@ extends GOperator1
 
 
             path.createDefaultTransform(x, y);
+            path.createDefaultTransformPoints(x, y, w, h);
 
-
-            this.value.objects.push(path, ...path.createDefaultTransformPoints(parse, x, y, w, h));
+            this.value.objects.push(path);
         }
 
 
@@ -72380,7 +72371,9 @@ extends GShape
             for (const region of regions)
             {
                 region.createDefaultTransform(x, y);
-                this.value.objects.push(region, ...region.createDefaultTransformPoints(parse, x, y, w, h));
+                region.createDefaultTransformPoints(x, y, w, h);
+                
+                this.value.objects.push(region);
             }
         }
 
@@ -72583,7 +72576,7 @@ extends GShape
 
 
             network.createDefaultTransform(x, y);
-            network.createDefaultTransformPoints(parse, x, y, w, h);
+            network.createDefaultTransformPoints(x, y, w, h);
 
             this.value.objects.push(network);
         }
@@ -72944,10 +72937,11 @@ extends GShape
 
 
             frame.createDefaultTransform(x, y);
-
+            frame.createDefaultTransformPoints(x, y, w, h);
         
-            this.value.objects = [frame, ...frame.createDefaultTransformPoints(parse, x, y, w, h)];
+            this.value.objects = [frame];
 
+            
             this.updateValues.push(['nChildren', new NumberValue(frame.children.length)]);
         }
 
@@ -73691,8 +73685,6 @@ extends GOperator1
         {
             obj.nodeId   = this.nodeId;
             obj.objectId = obj.objectId + OBJECT_SEPARATOR + this.nodeId;
-
-            //obj.updateTransformPoints();
 
 
             if (this.options.enabled)

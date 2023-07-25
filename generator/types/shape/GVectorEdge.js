@@ -102,9 +102,9 @@ extends GOperator1
 
 
             path.createDefaultTransform(x, y);
+            path.createDefaultTransformPoints(x, y, w, h);
 
-
-            this.value.objects.push(path, ...path.createDefaultTransformPoints(parse, x, y, w, h));
+            this.value.objects.push(path);
         }
 
 

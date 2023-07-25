@@ -173,7 +173,9 @@ extends GShape
             for (const region of regions)
             {
                 region.createDefaultTransform(x, y);
-                this.value.objects.push(region, ...region.createDefaultTransformPoints(parse, x, y, w, h));
+                region.createDefaultTransformPoints(x, y, w, h);
+                
+                this.value.objects.push(region);
             }
         }
 

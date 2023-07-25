@@ -136,7 +136,7 @@ extends GShape
 
 
             network.createDefaultTransform(x, y);
-            network.createDefaultTransformPoints(parse, x, y, w, h);
+            network.createDefaultTransformPoints(x, y, w, h);
 
             this.value.objects.push(network);
         }

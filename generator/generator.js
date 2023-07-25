@@ -93,9 +93,9 @@ function genRequest(request, save)
                     {
                         if (!o.isDeco)
                         {
-                            genPushUpdateObject(parse, o.xp0);
-                            genPushUpdateObject(parse, o.xp1);
-                            genPushUpdateObject(parse, o.xp2);
+                            if (o.xp0) genPushUpdateObject(parse, o.xp0);
+                            if (o.xp1) genPushUpdateObject(parse, o.xp1);
+                            if (o.xp2) genPushUpdateObject(parse, o.xp2);
                         }
                     });
                 }

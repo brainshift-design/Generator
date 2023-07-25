@@ -123,7 +123,7 @@ extends GShape
                     x, y, w, h, f, t, i);
 
                 ellipse.createDefaultTransform(x, y);
-                ellipse.createDefaultTransformPoints(parse, x, y, w, h);
+                ellipse.createDefaultTransformPoints(x, y, w, h);
 
                 this.value.objects.push(ellipse);
             }

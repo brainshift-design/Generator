@@ -120,7 +120,7 @@ extends GShape
                     x, y, w, h, r, c);
 
                 poly.createDefaultTransform(x, y);
-                poly.createDefaultTransformPoints(parse, x, y, w, h);
+                poly.createDefaultTransformPoints(x, y, w, h);
 
                 this.value.objects.push(poly);
             }

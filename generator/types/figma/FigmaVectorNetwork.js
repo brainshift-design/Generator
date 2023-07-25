@@ -94,7 +94,7 @@ extends FigmaShape
         this.width  = maxX - minX;
         this.height = maxY - minY;
 
-        this.createDefaultTransformPoints(null, this.x, this.y, this.width, this.height);
+        this.createDefaultTransformPoints(this.x, this.y, this.width, this.height);
 
 
         this.networkData = getNetworkData(this.points, this.edges, this.regions);

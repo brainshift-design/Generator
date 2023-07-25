@@ -52,8 +52,6 @@ extends GOperator1
             obj.nodeId   = this.nodeId;
             obj.objectId = obj.objectId + OBJECT_SEPARATOR + this.nodeId;
 
-            //obj.updateTransformPoints();
-
 
             if (this.options.enabled)
             {

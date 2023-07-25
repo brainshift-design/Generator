@@ -120,7 +120,7 @@ extends GShape
                     x, y, w, h, r, b);
 
                 trapeze.createDefaultTransform(x, y);
-                trapeze.createDefaultTransformPoints(parse, x, y, w, h);
+                trapeze.createDefaultTransformPoints(x, y, w, h);
 
                 this.value.objects.push(trapeze);
             }
