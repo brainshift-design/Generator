@@ -393,62 +393,69 @@ function uiPasteNodes(nodesJson, loading, pasteConnected, x, y, updateNodes)
     pasteOffset.y += pasteOffsetDelta.y;
 
 
-    const data = JSON.parse(nodesJson);
-
-
-    if (   !isNaN(x) 
-        && !isNaN(y)) // position new nodes
+    try
     {
-        const positions = data.nodes.map(n => point(parseFloat(n.x), parseFloat(n.y)));
+        const data = JSON.parse(nodesJson);
 
-        for (let i = 0; i < data.nodes.length; i++)
+
+        if (   !isNaN(x) 
+            && !isNaN(y)) // position new nodes
         {
-            data.nodes[i].x = x + positions[i].x - positions[0].x + 5 / graph.currentPage.zoom;
-            data.nodes[i].y = y + positions[i].y - positions[0].y;
+            const positions = data.nodes.map(n => point(parseFloat(n.x), parseFloat(n.y)));
+
+            for (let i = 0; i < data.nodes.length; i++)
+            {
+                data.nodes[i].x = x + positions[i].x - positions[0].x + 5 / graph.currentPage.zoom;
+                data.nodes[i].y = y + positions[i].y - positions[0].y;
+            }
         }
-    }
-    else // offset new nodes (must be done before loading)
-    {
-        for (let i = 0; i < data.nodes.length; i++)
+        else // offset new nodes (must be done before loading)
         {
-            data.nodes[i].x = parseFloat(data.nodes[i].x) + pasteOffset.x;
-            data.nodes[i].y = parseFloat(data.nodes[i].y) + pasteOffset.y;
+            for (let i = 0; i < data.nodes.length; i++)
+            {
+                data.nodes[i].x = parseFloat(data.nodes[i].x) + pasteOffset.x;
+                data.nodes[i].y = parseFloat(data.nodes[i].y) + pasteOffset.y;
+            }
         }
+
+
+        //moveNodesToViewport(data.nodes);
+
+
+        const nodes = loadNodes(data, true);
+        nodes.forEach(n => n.div.style.display ='none');
+
+        
+        // get the new names of the nodes after they've been added
+        for (let i = 0; i < nodes.length; i++)
+        {
+            graph.addNode(nodes[i], false);
+            data.nodes[i].newId = nodes[i].id;
+        }
+
+
+        if (data.connections)
+        {
+            correctNodeNamesInConnections(data);
+            data.connections = parseConnectionsAndConnect(data, pasteConnected);
+        }
+        else
+            data.connections = []; // return an empty array if no data was loaded
+
+
+        if (loading)
+        {
+            graphView.selectedNodes = nodes;
+            finishLoadingNodes(data.nodes, nodes, updateNodes, true);
+        }
+
+
+        return [nodes, data.connections];
     }
-
-
-    //moveNodesToViewport(data.nodes);
-
-
-    const nodes = loadNodes(data, true);
-    nodes.forEach(n => n.div.style.display ='none');
-
-    
-    // get the new names of the nodes after they've been added
-    for (let i = 0; i < nodes.length; i++)
+    catch (e)
     {
-        graph.addNode(nodes[i], false);
-        data.nodes[i].newId = nodes[i].id;
+        return [[], []];
     }
-
-
-    if (data.connections)
-    {
-        correctNodeNamesInConnections(data);
-        data.connections = parseConnectionsAndConnect(data, pasteConnected);
-    }
-    else
-        data.connections = []; // return an empty array if no data was loaded
-
-
-    if (loading)
-    {
-        graphView.selectedNodes = nodes;
-        finishLoadingNodes(data.nodes, nodes, updateNodes, true);
-    }
-
-
-    return [nodes, data.connections];
 }
 
 

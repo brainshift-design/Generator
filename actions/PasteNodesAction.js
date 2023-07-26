@@ -22,11 +22,19 @@ extends Action
 
     constructor(copiedNodesJson, pasteConnected, isDuplicate = false, isLoading = false, x = Number.NaN, y = Number.NaN)
     {
-        const data = JSON.parse(copiedNodesJson);
+        let nNodes = 0;
 
+        try
+        {
+            const data = JSON.parse(copiedNodesJson);
+            nNodes = data.nodes.length;
+        }
+        catch {}
+
+        
         super(
             PASTE_ACTION,
-            'PASTE ' + data.nodes.length + ' ' + countString(data.nodes.length, 'node'));
+            'PASTE ' + nNodes + ' ' + countString(nNodes, 'node'));
 
         this.copiedNodesJson = copiedNodesJson;
         this.pasteConnected  = pasteConnected;
