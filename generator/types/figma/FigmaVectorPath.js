@@ -123,27 +123,14 @@ extends FigmaShape
 
     updatePathData()
     {
-        let minX = Number.MAX_SAFE_INTEGER;
-        let minY = Number.MAX_SAFE_INTEGER;
-        let maxX = Number.MIN_SAFE_INTEGER;
-        let maxY = Number.MIN_SAFE_INTEGER;
+        const bounds = getPointBounds(this.points);
 
-        for (const p of this.points)
-        {
-            minX = Math.min(minX, p.x.value);
-            minY = Math.min(minY, p.y.value);
-            maxX = Math.max(maxX, p.x.value);
-            maxY = Math.max(maxY, p.y.value);
-        }
-
-
-        this.x      = minX;
-        this.y      = minY;
-        this.width  = maxX - minX;
-        this.height = maxY - minY;
+        this.x      = bounds.x;
+        this.y      = bounds.y;
+        this.width  = bounds.width;
+        this.height = bounds.height;
 
         this.createDefaultTransformPoints(this.x, this.y, this.width, this.height);
-
 
         this.pathData = getPathDataFromPoints(this.pathPoints, this.closed, this.degree);
     }

@@ -10,7 +10,7 @@ extends ShapeValue
 
 
     constructor(nodeId,
-                points  = new NumberValue(0), 
+                points  = new ListValue(), 
                 closed  = new NumberValue(0), 
                 degree  = new NumberValue(0), 
                 winding = new NumberValue(0), 
@@ -18,7 +18,7 @@ extends ShapeValue
     {
         super(VECTOR_PATH_VALUE, nodeId);
 
-        this.points  = points;
+        this.points  = points ?? new ListValue();
         this.closed  = closed;
         this.degree  = degree;
         this.winding = winding;

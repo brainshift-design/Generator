@@ -10407,6 +10407,13 @@ class FigmaObject
             if (affectSpace)
                 this.applySpaceTransform(xform, space);
         }
+        // else if (this.type == VECTOR_PATH)
+        // {
+        //     this.updatePoints(xform, space);
+
+        //     if (affectSpace)
+        //         this.applySpaceTransform(xform, space);
+        // }
         else if (this.type == SHAPE_GROUP)
         {
             for (const obj of this.children)
@@ -10530,6 +10537,26 @@ function copyFigmaObject(obj)
 
     consoleError('invalid Figma object type \'' + obj.type + '\'');
     return null;
+}
+
+
+
+function getPointBounds(points)
+{
+    let minX = Number.MAX_SAFE_INTEGER;
+    let minY = Number.MAX_SAFE_INTEGER;
+    let maxX = Number.MIN_SAFE_INTEGER;
+    let maxY = Number.MIN_SAFE_INTEGER;
+
+    for (const p of points)
+    {
+        minX = Math.min(minX, p.x.value);
+        minY = Math.min(minY, p.y.value);
+        maxX = Math.max(maxX, p.x.value);
+        maxY = Math.max(maxY, p.y.value);
+    }
+
+    return new AbsRect(minX, minY, maxX, maxY);
 }
 
 
@@ -11441,27 +11468,14 @@ extends FigmaShape
 
     updatePathData()
     {
-        let minX = Number.MAX_SAFE_INTEGER;
-        let minY = Number.MAX_SAFE_INTEGER;
-        let maxX = Number.MIN_SAFE_INTEGER;
-        let maxY = Number.MIN_SAFE_INTEGER;
+        const bounds = getPointBounds(this.points);
 
-        for (const p of this.points)
-        {
-            minX = Math.min(minX, p.x.value);
-            minY = Math.min(minY, p.y.value);
-            maxX = Math.max(maxX, p.x.value);
-            maxY = Math.max(maxY, p.y.value);
-        }
-
-
-        this.x      = minX;
-        this.y      = minY;
-        this.width  = maxX - minX;
-        this.height = maxY - minY;
+        this.x      = bounds.x;
+        this.y      = bounds.y;
+        this.width  = bounds.width;
+        this.height = bounds.height;
 
         this.createDefaultTransformPoints(this.x, this.y, this.width, this.height);
-
 
         this.pathData = getPathDataFromPoints(this.pathPoints, this.closed, this.degree);
     }
@@ -17188,7 +17202,7 @@ extends ShapeValue
 
 
     constructor(nodeId,
-                points  = new NumberValue(0), 
+                points  = new ListValue(), 
                 closed  = new NumberValue(0), 
                 degree  = new NumberValue(0), 
                 winding = new NumberValue(0), 
@@ -17196,7 +17210,7 @@ extends ShapeValue
     {
         super(VECTOR_PATH_VALUE, nodeId);
 
-        this.points  = points;
+        this.points  = points ?? new ListValue();
         this.closed  = closed;
         this.degree  = degree;
         this.winding = winding;
@@ -51122,6 +51136,13 @@ class FigmaObject
             if (affectSpace)
                 this.applySpaceTransform(xform, space);
         }
+        // else if (this.type == VECTOR_PATH)
+        // {
+        //     this.updatePoints(xform, space);
+
+        //     if (affectSpace)
+        //         this.applySpaceTransform(xform, space);
+        // }
         else if (this.type == SHAPE_GROUP)
         {
             for (const obj of this.children)
@@ -51245,6 +51266,26 @@ function copyFigmaObject(obj)
 
     consoleError('invalid Figma object type \'' + obj.type + '\'');
     return null;
+}
+
+
+
+function getPointBounds(points)
+{
+    let minX = Number.MAX_SAFE_INTEGER;
+    let minY = Number.MAX_SAFE_INTEGER;
+    let maxX = Number.MIN_SAFE_INTEGER;
+    let maxY = Number.MIN_SAFE_INTEGER;
+
+    for (const p of points)
+    {
+        minX = Math.min(minX, p.x.value);
+        minY = Math.min(minY, p.y.value);
+        maxX = Math.max(maxX, p.x.value);
+        maxY = Math.max(maxY, p.y.value);
+    }
+
+    return new AbsRect(minX, minY, maxX, maxY);
 }
 
 
@@ -52156,27 +52197,14 @@ extends FigmaShape
 
     updatePathData()
     {
-        let minX = Number.MAX_SAFE_INTEGER;
-        let minY = Number.MAX_SAFE_INTEGER;
-        let maxX = Number.MIN_SAFE_INTEGER;
-        let maxY = Number.MIN_SAFE_INTEGER;
+        const bounds = getPointBounds(this.points);
 
-        for (const p of this.points)
-        {
-            minX = Math.min(minX, p.x.value);
-            minY = Math.min(minY, p.y.value);
-            maxX = Math.max(maxX, p.x.value);
-            maxY = Math.max(maxY, p.y.value);
-        }
-
-
-        this.x      = minX;
-        this.y      = minY;
-        this.width  = maxX - minX;
-        this.height = maxY - minY;
+        this.x      = bounds.x;
+        this.y      = bounds.y;
+        this.width  = bounds.width;
+        this.height = bounds.height;
 
         this.createDefaultTransformPoints(this.x, this.y, this.width, this.height);
-
 
         this.pathData = getPathDataFromPoints(this.pathPoints, this.closed, this.degree);
     }
@@ -57903,7 +57931,7 @@ extends ShapeValue
 
 
     constructor(nodeId,
-                points  = new NumberValue(0), 
+                points  = new ListValue(), 
                 closed  = new NumberValue(0), 
                 degree  = new NumberValue(0), 
                 winding = new NumberValue(0), 
@@ -57911,7 +57939,7 @@ extends ShapeValue
     {
         super(VECTOR_PATH_VALUE, nodeId);
 
-        this.points  = points;
+        this.points  = points ?? new ListValue();
         this.closed  = closed;
         this.degree  = degree;
         this.winding = winding;

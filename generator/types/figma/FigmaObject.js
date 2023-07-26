@@ -196,6 +196,13 @@ class FigmaObject
             if (affectSpace)
                 this.applySpaceTransform(xform, space);
         }
+        // else if (this.type == VECTOR_PATH)
+        // {
+        //     this.updatePoints(xform, space);
+
+        //     if (affectSpace)
+        //         this.applySpaceTransform(xform, space);
+        // }
         else if (this.type == SHAPE_GROUP)
         {
             for (const obj of this.children)
@@ -319,6 +326,26 @@ function copyFigmaObject(obj)
 
     consoleError('invalid Figma object type \'' + obj.type + '\'');
     return null;
+}
+
+
+
+function getPointBounds(points)
+{
+    let minX = Number.MAX_SAFE_INTEGER;
+    let minY = Number.MAX_SAFE_INTEGER;
+    let maxX = Number.MIN_SAFE_INTEGER;
+    let maxY = Number.MIN_SAFE_INTEGER;
+
+    for (const p of points)
+    {
+        minX = Math.min(minX, p.x.value);
+        minY = Math.min(minY, p.y.value);
+        maxX = Math.max(maxX, p.x.value);
+        maxY = Math.max(maxY, p.y.value);
+    }
+
+    return new AbsRect(minX, minY, maxX, maxY);
 }
 
 
