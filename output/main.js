@@ -2487,6 +2487,8 @@ function setObjectStrokes(figObj, genObj, phantom = true) {
     if (genObj[FO_STROKES] != null
         && !isEmpty(genObj[FO_STROKES])) {
         setObjectStroke_(figObj, getObjectFills(genObj[FO_STROKES]), genObj[FO_STROKE_WEIGHT], genObj[FO_STROKE_ALIGN], genObj[FO_STROKE_JOIN], genObj[FO_STROKE_MITER], genObj[FO_STROKE_CAP], parseStrokeDashes(genObj[FO_STROKE_DASHES]));
+        if (genObj[FO_DECO])
+            figObj.setPluginData('dashes', genObj[FO_STROKE_DASHES]); // for updating deco polys
         if (figEmptyObjects.includes(figObj))
             removeFromArray(figEmptyObjects, figObj);
         if (genObj[FO_DECO])
@@ -2508,7 +2510,16 @@ function parseStrokeDashes(_dashes) {
     _dashes = _dashes.trim();
     return _dashes == ''
         ? []
-        : _dashes.split(',').map(s => Math.max(0, parseInt(s)));
+        : _dashes.split(',').map(s => Math.max(0, parseFloat(s)));
+}
+function parseDecoStrokeDashes(_dashes) {
+    _dashes = _dashes;
+    _dashes = trimCharFromStart(_dashes, ',');
+    _dashes = trimCharFromEnd(_dashes, ',');
+    _dashes = _dashes.trim();
+    return _dashes == ''
+        ? []
+        : _dashes.split(',').map(s => Math.max(0, parseFloat(s) / curZoom));
 }
 function setObjectStroke_(figObj, fills, weight, align, join, miterLimit, cap, dashes = []) {
     figObj.strokes = fills;
@@ -2556,15 +2567,18 @@ function setEmptyObjectStroke(obj) {
         2 / curZoom]);
 }
 function updateDecoObjects() {
-    for (const obj of figDecoObjects) {
-        if (obj.removed)
-            removeFromArray(figDecoObjects, obj);
+    for (const figObj of figDecoObjects) {
+        if (figObj.removed)
+            removeFromArray(figDecoObjects, figObj);
         else
-            updateDecoObject(obj);
+            updateDecoObject(figObj);
     }
 }
-function updateDecoObject(obj) {
-    obj.strokeWeight = Math.max(0, 1 / curZoom);
+function updateDecoObject(figObj) {
+    figObj.strokeWeight = Math.max(0, 1 / curZoom);
+    const dashes = figObj.getPluginData('dashes');
+    if (dashes != '')
+        figObj.dashPattern = parseDecoStrokeDashes(dashes);
 }
 function figGetAllLocalColorStyles(nodeId, px, py) {
     const _styles = figma.getLocalPaintStyles();

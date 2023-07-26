@@ -414,54 +414,6 @@ function getObjBounds(objects)
 
 
 
-function getXformBounds(objects)
-{
-    let bounds = Rect.NaN;
-
-
-    for (const obj of objects)
-    {
-        // if (obj.type == VECTOR_PATH)
-        // {
-        //     for (const p of obj.points)
-        //         bounds = expandRect_(bounds, p.toPoint());
-        // }
-
-        // else if (obj.type == VECTOR_NETWORK)
-        // {
-        //     for (const p of obj.points)
-        //         bounds = expandRect_(bounds, p.toPoint());
-        // }
-
-        // else 
-        if (obj.type == POINT)
-             //&& !obj.isDeco)
-            bounds = expandRect_(bounds, point(obj.x, obj.y));
-
-        else
-        {
-            //console.log('obj =', obj);
-            const dp = subv(obj.xp1, obj.xp0);
-
-            bounds = expandRect_(bounds, obj.xp0);
-            bounds = expandRect_(bounds, obj.xp1);
-            bounds = expandRect_(bounds, obj.xp2);
-            bounds = expandRect_(bounds, addv(obj.xp2, dp));
-        }
-
-        // else if (obj.type == LINE)
-        //     bounds = expandRect(bounds, new Rect(obj.x, obj.y, obj.width, 0));
-
-        // else
-        //     bounds = expandRect(bounds, new Rect(obj.x, obj.y, obj.width, obj.height));
-    }
-
-
-    return bounds;
-}
-
-
-
 function addObjectCenter(node, obj, zoom)
 {
     const length = 10;
@@ -474,24 +426,29 @@ function addObjectCenter(node, obj, zoom)
     const sp2 = addv(sp0, mulvs(mulvs(subv(obj.sp2, obj.sp0), -1), length));    
 
     node.value.objects.push(
-        createFigmaPoly(
+        createDecoPoly(
             node, 
             sp0, 
-            [sp2, sp0, sp1], 
+            [sp2, sp0, sp1],
+            false,
+            '',
             [12, 140, 233], 
-            CENTER_SEPARATOR + 'center'));
+            CENTER_SUFFIX));
 }
 
 
 
-function createFigmaPoly(node, center, points, color, suffix)
+function createDecoPoly(node, center, points, closed, dashes, color, suffix)
 {
     const line = new FigmaVectorPath(
         node.nodeId,
         node.nodeId   + suffix,
         node.nodeName + suffix,
         points.map(p => PointValue.fromPoint(node.nodeId, p)),
-        0, 0, 0, 0);
+        closed ? 1 : 0, 
+        0, 
+        0, 
+        0);
 
 
     line.strokes.push([
@@ -506,6 +463,7 @@ function createFigmaPoly(node, center, points, color, suffix)
     line.strokeAlign  = 'CENTER';
     line.strokeJoin   = 'MITER';
     line.strokeCap    = 'NONE';
+    line.strokeDashes = dashes;
     line.isDeco       = true;
 
 

@@ -127,7 +127,7 @@ extends GShape
                 regions);
 
             
-            const bounds = getXformBounds([network]);
+            const bounds = getObjBounds([network]);
 
             let x = bounds.x;
             let y = bounds.y;

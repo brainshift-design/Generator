@@ -93,7 +93,7 @@ extends GOperator1
                 0);
 
             
-            const bounds = getXformBounds([path]);
+            const bounds = getObjBounds([path]);
 
             let x = bounds.x;
             let y = bounds.y;

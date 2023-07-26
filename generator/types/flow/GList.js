@@ -78,7 +78,7 @@ extends GOperator
 
             // reset object space
 
-            const bounds = getXformBounds(this.value.objects);
+            const bounds = getObjBounds(this.value.objects);
 
             const singlePoint =
                    this.value.objects.length  == 1 

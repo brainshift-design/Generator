@@ -89,15 +89,31 @@ function genRequest(request, save)
                 if (   node.options.active === true
                     && node.value)
                 {
-                    node.value.objects.forEach(o => 
+                    for (const obj of node.value.objects)
                     {
-                        if (!o.isDeco)
+                        if (  !obj.isDeco
+                            && obj.xp0
+                            && obj.xp1
+                            && obj.xp2)
                         {
-                            if (o.xp0) genPushUpdateObject(parse, o.xp0);
-                            if (o.xp1) genPushUpdateObject(parse, o.xp1);
-                            if (o.xp2) genPushUpdateObject(parse, o.xp2);
+                            const xp0 = obj.xp0.toPoint();
+                            const xp1 = obj.xp1.toPoint();
+                            const xp2 = obj.xp2.toPoint();
+                            const xp3 = addv(xp2, subv(xp1, xp0));
+
+                            genPushUpdateObject(
+                                parse, 
+                                createDecoPoly(
+                                    node, 
+                                    obj.sp0, 
+                                    [xp0, xp2, xp3, xp1], 
+                                    true,
+                                    '1, 2',
+                                    [12, 140, 233], 
+                                    XFORM_SUFFIX));
+                        
                         }
-                    });
+                    }
                 }
             }
         }

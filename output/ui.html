@@ -4595,6 +4595,7 @@ a
                 <h1 style='margin-top: 20px;'>What's new</h1>
 
                 <p>•  fixed List not resetting object space</p>
+                <p>•  fixed transform points not being shown correctly</p>
                 <p>•  small UI updates</p>
                 
                 <p><br/><br/><div id='chkHideWhatsNew'></div></p>
@@ -8788,8 +8789,10 @@ const UNKNOWN_DISPLAY        = UNKNOWN_CHAR;//'🤷‍♂️';
 
 const OBJECT_SEPARATOR       = ' > ';
 const   PROP_SEPARATOR       = ' / ';
-const CENTER_SEPARATOR       = ' • ';
 const  INPUT_SEPARATOR       = ':';
+
+const CENTER_SUFFIX          = ' •';
+const  XFORM_SUFFIX          = ' ◇';
     
 
 const  TRUE_DISPLAY_LIGHT    = '<svg width="13" height="11" viewBox="0 1 13 11" fill="none" xmlns="http://www.w3.org/2000/svg"><path fill-rule="evenodd" clip-rule="evenodd" d="M12.3645 1.82058L10.2676 0.599976L5.1191 8.58091L2.44314 6.06144L0.800003 7.67327L5.54161 12.1958L12.3645 1.82058Z" fill="#2AD400"/></svg>';
@@ -10622,54 +10625,6 @@ function getObjBounds(objects)
 
 
 
-function getXformBounds(objects)
-{
-    let bounds = Rect.NaN;
-
-
-    for (const obj of objects)
-    {
-        // if (obj.type == VECTOR_PATH)
-        // {
-        //     for (const p of obj.points)
-        //         bounds = expandRect_(bounds, p.toPoint());
-        // }
-
-        // else if (obj.type == VECTOR_NETWORK)
-        // {
-        //     for (const p of obj.points)
-        //         bounds = expandRect_(bounds, p.toPoint());
-        // }
-
-        // else 
-        if (obj.type == POINT)
-             //&& !obj.isDeco)
-            bounds = expandRect_(bounds, point(obj.x, obj.y));
-
-        else
-        {
-            //console.log('obj =', obj);
-            const dp = subv(obj.xp1, obj.xp0);
-
-            bounds = expandRect_(bounds, obj.xp0);
-            bounds = expandRect_(bounds, obj.xp1);
-            bounds = expandRect_(bounds, obj.xp2);
-            bounds = expandRect_(bounds, addv(obj.xp2, dp));
-        }
-
-        // else if (obj.type == LINE)
-        //     bounds = expandRect(bounds, new Rect(obj.x, obj.y, obj.width, 0));
-
-        // else
-        //     bounds = expandRect(bounds, new Rect(obj.x, obj.y, obj.width, obj.height));
-    }
-
-
-    return bounds;
-}
-
-
-
 function addObjectCenter(node, obj, zoom)
 {
     const length = 10;
@@ -10682,24 +10637,29 @@ function addObjectCenter(node, obj, zoom)
     const sp2 = addv(sp0, mulvs(mulvs(subv(obj.sp2, obj.sp0), -1), length));    
 
     node.value.objects.push(
-        createFigmaPoly(
+        createDecoPoly(
             node, 
             sp0, 
-            [sp2, sp0, sp1], 
+            [sp2, sp0, sp1],
+            false,
+            '',
             [12, 140, 233], 
-            CENTER_SEPARATOR + 'center'));
+            CENTER_SUFFIX));
 }
 
 
 
-function createFigmaPoly(node, center, points, color, suffix)
+function createDecoPoly(node, center, points, closed, dashes, color, suffix)
 {
     const line = new FigmaVectorPath(
         node.nodeId,
         node.nodeId   + suffix,
         node.nodeName + suffix,
         points.map(p => PointValue.fromPoint(node.nodeId, p)),
-        0, 0, 0, 0);
+        closed ? 1 : 0, 
+        0, 
+        0, 
+        0);
 
 
     line.strokes.push([
@@ -10714,6 +10674,7 @@ function createFigmaPoly(node, center, points, color, suffix)
     line.strokeAlign  = 'CENTER';
     line.strokeJoin   = 'MITER';
     line.strokeCap    = 'NONE';
+    line.strokeDashes = dashes;
     line.isDeco       = true;
 
 
@@ -18638,7 +18599,7 @@ extends GOperator
 
             // reset object space
 
-            const bounds = getXformBounds(this.value.objects);
+            const bounds = getObjBounds(this.value.objects);
 
             const singlePoint =
                    this.value.objects.length  == 1 
@@ -31385,7 +31346,7 @@ extends GOperator1
                 0);
 
             
-            const bounds = getXformBounds([path]);
+            const bounds = getObjBounds([path]);
 
             let x = bounds.x;
             let y = bounds.y;
@@ -31621,7 +31582,7 @@ extends GShape
             }
             
 
-            let bounds = getXformBounds(regions);
+            let bounds = getObjBounds(regions);
 
             let x = bounds.x;
             let y = bounds.y;
@@ -31633,7 +31594,7 @@ extends GShape
             {
                 region.createDefaultTransform(x, y);
                 region.createDefaultTransformPoints(x, y, w, h);
-                
+
                 this.value.objects.push(region);
             }
         }
@@ -31828,7 +31789,7 @@ extends GShape
                 regions);
 
             
-            const bounds = getXformBounds([network]);
+            const bounds = getObjBounds([network]);
 
             let x = bounds.x;
             let y = bounds.y;
@@ -32778,7 +32739,7 @@ extends GOperator1
             this.value.objects = getValidObjects(this.input);
 
             
-            const bounds = getXformBounds(this.value.objects);
+            const bounds = getObjBounds(this.value.objects);
 
 
             const x           = options.x          .value;
@@ -32938,7 +32899,7 @@ extends GOperator1
         this.value.objects = getValidObjects(this.input);
         
 
-        const bounds = getXformBounds(this.value.objects);
+        const bounds = getObjBounds(this.value.objects);
         const xform  = getXform();
 
 
@@ -33542,7 +33503,7 @@ extends GOperator1
             const cy          = centerY/100;
 
 
-            const bounds      = getXformBounds(this.value.objects);
+            const bounds      = getObjBounds(this.value.objects);
 
             const singlePoint =  
                    this.value.objects.length  == 1 
@@ -33684,7 +33645,7 @@ extends GOperator1
             const showCenter = options.showCenter.value;
 
 
-            const bounds = getXformBounds(this.value.objects);
+            const bounds = getObjBounds(this.value.objects);
 
             const singlePoint =
                    this.value.objects.length  == 1 
@@ -34451,15 +34412,31 @@ function genRequest(request, save)
                 if (   node.options.active === true
                     && node.value)
                 {
-                    node.value.objects.forEach(o => 
+                    for (const obj of node.value.objects)
                     {
-                        if (!o.isDeco)
+                        if (  !obj.isDeco
+                            && obj.xp0
+                            && obj.xp1
+                            && obj.xp2)
                         {
-                            if (o.xp0) genPushUpdateObject(parse, o.xp0);
-                            if (o.xp1) genPushUpdateObject(parse, o.xp1);
-                            if (o.xp2) genPushUpdateObject(parse, o.xp2);
+                            const xp0 = obj.xp0.toPoint();
+                            const xp1 = obj.xp1.toPoint();
+                            const xp2 = obj.xp2.toPoint();
+                            const xp3 = addv(xp2, subv(xp1, xp0));
+
+                            genPushUpdateObject(
+                                parse, 
+                                createDecoPoly(
+                                    node, 
+                                    obj.sp0, 
+                                    [xp0, xp2, xp3, xp1], 
+                                    true,
+                                    '1, 2',
+                                    [12, 140, 233], 
+                                    XFORM_SUFFIX));
+                        
                         }
-                    });
+                    }
                 }
             }
         }
@@ -47343,8 +47320,10 @@ const UNKNOWN_DISPLAY        = UNKNOWN_CHAR;//'🤷‍♂️';
 
 const OBJECT_SEPARATOR       = ' > ';
 const   PROP_SEPARATOR       = ' / ';
-const CENTER_SEPARATOR       = ' • ';
 const  INPUT_SEPARATOR       = ':';
+
+const CENTER_SUFFIX          = ' •';
+const  XFORM_SUFFIX          = ' ◇';
     
 
 const  TRUE_DISPLAY_LIGHT    = '<svg width="13" height="11" viewBox="0 1 13 11" fill="none" xmlns="http://www.w3.org/2000/svg"><path fill-rule="evenodd" clip-rule="evenodd" d="M12.3645 1.82058L10.2676 0.599976L5.1191 8.58091L2.44314 6.06144L0.800003 7.67327L5.54161 12.1958L12.3645 1.82058Z" fill="#2AD400"/></svg>';
@@ -51361,54 +51340,6 @@ function getObjBounds(objects)
 
 
 
-function getXformBounds(objects)
-{
-    let bounds = Rect.NaN;
-
-
-    for (const obj of objects)
-    {
-        // if (obj.type == VECTOR_PATH)
-        // {
-        //     for (const p of obj.points)
-        //         bounds = expandRect_(bounds, p.toPoint());
-        // }
-
-        // else if (obj.type == VECTOR_NETWORK)
-        // {
-        //     for (const p of obj.points)
-        //         bounds = expandRect_(bounds, p.toPoint());
-        // }
-
-        // else 
-        if (obj.type == POINT)
-             //&& !obj.isDeco)
-            bounds = expandRect_(bounds, point(obj.x, obj.y));
-
-        else
-        {
-            //console.log('obj =', obj);
-            const dp = subv(obj.xp1, obj.xp0);
-
-            bounds = expandRect_(bounds, obj.xp0);
-            bounds = expandRect_(bounds, obj.xp1);
-            bounds = expandRect_(bounds, obj.xp2);
-            bounds = expandRect_(bounds, addv(obj.xp2, dp));
-        }
-
-        // else if (obj.type == LINE)
-        //     bounds = expandRect(bounds, new Rect(obj.x, obj.y, obj.width, 0));
-
-        // else
-        //     bounds = expandRect(bounds, new Rect(obj.x, obj.y, obj.width, obj.height));
-    }
-
-
-    return bounds;
-}
-
-
-
 function addObjectCenter(node, obj, zoom)
 {
     const length = 10;
@@ -51421,24 +51352,29 @@ function addObjectCenter(node, obj, zoom)
     const sp2 = addv(sp0, mulvs(mulvs(subv(obj.sp2, obj.sp0), -1), length));    
 
     node.value.objects.push(
-        createFigmaPoly(
+        createDecoPoly(
             node, 
             sp0, 
-            [sp2, sp0, sp1], 
+            [sp2, sp0, sp1],
+            false,
+            '',
             [12, 140, 233], 
-            CENTER_SEPARATOR + 'center'));
+            CENTER_SUFFIX));
 }
 
 
 
-function createFigmaPoly(node, center, points, color, suffix)
+function createDecoPoly(node, center, points, closed, dashes, color, suffix)
 {
     const line = new FigmaVectorPath(
         node.nodeId,
         node.nodeId   + suffix,
         node.nodeName + suffix,
         points.map(p => PointValue.fromPoint(node.nodeId, p)),
-        0, 0, 0, 0);
+        closed ? 1 : 0, 
+        0, 
+        0, 
+        0);
 
 
     line.strokes.push([
@@ -51453,6 +51389,7 @@ function createFigmaPoly(node, center, points, color, suffix)
     line.strokeAlign  = 'CENTER';
     line.strokeJoin   = 'MITER';
     line.strokeCap    = 'NONE';
+    line.strokeDashes = dashes;
     line.isDeco       = true;
 
 
@@ -59377,7 +59314,7 @@ extends GOperator
 
             // reset object space
 
-            const bounds = getXformBounds(this.value.objects);
+            const bounds = getObjBounds(this.value.objects);
 
             const singlePoint =
                    this.value.objects.length  == 1 
@@ -72124,7 +72061,7 @@ extends GOperator1
                 0);
 
             
-            const bounds = getXformBounds([path]);
+            const bounds = getObjBounds([path]);
 
             let x = bounds.x;
             let y = bounds.y;
@@ -72360,7 +72297,7 @@ extends GShape
             }
             
 
-            let bounds = getXformBounds(regions);
+            let bounds = getObjBounds(regions);
 
             let x = bounds.x;
             let y = bounds.y;
@@ -72372,7 +72309,7 @@ extends GShape
             {
                 region.createDefaultTransform(x, y);
                 region.createDefaultTransformPoints(x, y, w, h);
-                
+
                 this.value.objects.push(region);
             }
         }
@@ -72567,7 +72504,7 @@ extends GShape
                 regions);
 
             
-            const bounds = getXformBounds([network]);
+            const bounds = getObjBounds([network]);
 
             let x = bounds.x;
             let y = bounds.y;
@@ -73517,7 +73454,7 @@ extends GOperator1
             this.value.objects = getValidObjects(this.input);
 
             
-            const bounds = getXformBounds(this.value.objects);
+            const bounds = getObjBounds(this.value.objects);
 
 
             const x           = options.x          .value;
@@ -73677,7 +73614,7 @@ extends GOperator1
         this.value.objects = getValidObjects(this.input);
         
 
-        const bounds = getXformBounds(this.value.objects);
+        const bounds = getObjBounds(this.value.objects);
         const xform  = getXform();
 
 
@@ -74281,7 +74218,7 @@ extends GOperator1
             const cy          = centerY/100;
 
 
-            const bounds      = getXformBounds(this.value.objects);
+            const bounds      = getObjBounds(this.value.objects);
 
             const singlePoint =  
                    this.value.objects.length  == 1 
@@ -74423,7 +74360,7 @@ extends GOperator1
             const showCenter = options.showCenter.value;
 
 
-            const bounds = getXformBounds(this.value.objects);
+            const bounds = getObjBounds(this.value.objects);
 
             const singlePoint =
                    this.value.objects.length  == 1 
@@ -80833,7 +80770,7 @@ function initGeneratorMenus()
                                 pushUpdate(null, graph.nodes.filter(n => n.active));
                             }
                         }),
-    menuItemShowTransformPoints = new MenuItem('Show transform points', 
+    menuItemShowTransformPoints = new MenuItem('Show transforms', 
                         {
                             checkCallback: () => settings.showTransformPoints, 
                             callback:      () => 

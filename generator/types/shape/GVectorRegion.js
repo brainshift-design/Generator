@@ -162,7 +162,7 @@ extends GShape
             }
             
 
-            let bounds = getXformBounds(regions);
+            let bounds = getObjBounds(regions);
 
             let x = bounds.x;
             let y = bounds.y;
@@ -174,7 +174,7 @@ extends GShape
             {
                 region.createDefaultTransform(x, y);
                 region.createDefaultTransformPoints(x, y, w, h);
-                
+
                 this.value.objects.push(region);
             }
         }

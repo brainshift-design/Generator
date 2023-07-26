@@ -333,7 +333,7 @@ function initGeneratorMenus()
                                 pushUpdate(null, graph.nodes.filter(n => n.active));
                             }
                         }),
-    menuItemShowTransformPoints = new MenuItem('Show transform points', 
+    menuItemShowTransformPoints = new MenuItem('Show transforms', 
                         {
                             checkCallback: () => settings.showTransformPoints, 
                             callback:      () => 

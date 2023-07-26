@@ -181,6 +181,9 @@ function setObjectStrokes(figObj, genObj, phantom = true)
             genObj[FO_STROKE_CAP   ],
             parseStrokeDashes(genObj[FO_STROKE_DASHES]));
 
+        if (genObj[FO_DECO])
+            figObj.setPluginData('dashes', genObj[FO_STROKE_DASHES]); // for updating deco polys
+
         if (figEmptyObjects.includes(figObj))
             removeFromArray(figEmptyObjects, figObj);
 
@@ -210,7 +213,22 @@ function parseStrokeDashes(_dashes)
 
     return _dashes == '' 
          ? [] 
-         : _dashes.split(',').map(s => Math.max(0, parseInt(s)));
+         : _dashes.split(',').map(s => Math.max(0, parseFloat(s)));
+}
+
+
+
+function parseDecoStrokeDashes(_dashes)
+{
+    _dashes = <string><unknown>_dashes;
+    
+    _dashes = trimCharFromStart(_dashes, ',');
+    _dashes = trimCharFromEnd  (_dashes, ',');
+    _dashes = _dashes.trim();
+
+    return _dashes == '' 
+         ? [] 
+         : _dashes.split(',').map(s => Math.max(0, parseFloat(s) / curZoom));
 }
 
 
@@ -302,18 +320,24 @@ function setEmptyObjectStroke(obj)
 
 function updateDecoObjects()
 {
-    for (const obj of figDecoObjects)
+    for (const figObj of figDecoObjects)
     {
-        if (obj.removed)
-            removeFromArray(figDecoObjects, obj);
+        if (figObj.removed)
+            removeFromArray(figDecoObjects, figObj);
         else
-            updateDecoObject(obj);
+            updateDecoObject(figObj);
     }
 }
 
 
 
-function updateDecoObject(obj)
+function updateDecoObject(figObj)
 {
-    obj.strokeWeight = Math.max(0, 1 / curZoom);
+    figObj.strokeWeight = Math.max(0, 1 / curZoom);
+
+
+    const dashes = figObj.getPluginData('dashes');
+
+    if (dashes != '')
+        figObj.dashPattern = parseDecoStrokeDashes(dashes);        
 }

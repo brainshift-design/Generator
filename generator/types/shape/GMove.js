@@ -96,7 +96,7 @@ extends GOperator1
             this.value.objects = getValidObjects(this.input);
 
             
-            const bounds = getXformBounds(this.value.objects);
+            const bounds = getObjBounds(this.value.objects);
 
 
             const x           = options.x          .value;
