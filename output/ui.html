@@ -4598,7 +4598,8 @@ a
                 <p>•  fixed transform points not being shown correctly</p>
                 <p>•  fixed error when pasting invalid JSON</p>
                 <p>•  .gen files can now be dropped onto the plugin window</p>
-                <p>•  small UI updates</p>
+                <p>•  fixed vector path transformations</p>
+                <p>•  fixed UI bugs</p>
                 
                 <p><br/><br/><div id='chkHideWhatsNew'></div></p>
             </div>
@@ -12426,7 +12427,7 @@ extends FigmaShape
 
     getBounds()
     {
-        return new Rect(this.x, this.y, 0, 0);
+        return new Rect(this.x-0.005, this.y-0.005, 0.01, 0.01);
     }
 
 
@@ -53170,7 +53171,7 @@ extends FigmaShape
 
     getBounds()
     {
-        return new Rect(this.x, this.y, 0, 0);
+        return new Rect(this.x-0.005, this.y-0.005, 0.01, 0.01);
     }
 
 
