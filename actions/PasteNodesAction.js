@@ -31,7 +31,7 @@ extends Action
         }
         catch {}
 
-        
+
         super(
             PASTE_ACTION,
             'PASTE ' + nNodes + ' ' + countString(nNodes, 'node'));
@@ -76,6 +76,7 @@ extends Action
             if (   this.pasteConnected
                 ||    nodes.find(n => n.id == conn.outputNodeId)
                    && nodes.find(n => n.id == conn.inputNodeId ))
+            {
                 uiSaveConnection(
                     conn.outputNodeId, conn.outputId, conn.outputOrder,
                     conn.inputNodeId,  conn.inputId,
@@ -91,6 +92,7 @@ extends Action
                             nodeFromId(conn.outputNodeId)
                             .outputFromId(conn.outputId)
                             .supportsTypes(LIST_TYPES))));
+            }
         }
 
 
