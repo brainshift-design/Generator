@@ -34,10 +34,7 @@ extends FigmaShape
         this.updatePathPoints();
 
 
-        let bounds = Rect.NaN;
-
-        for (const p of this.pathPoints)
-            bounds = expandRect_(bounds, p);
+        let bounds = this.getBounds();
 
         this.createDefaultSpace(
             bounds.x + bounds.width /2,            
@@ -248,7 +245,6 @@ function getPathDataFromPoints(points, closed, degree)
         pathData += ' Z';
 
 
-    //console.log('pathData =', pathData);
     return pathData;
 }
 
@@ -264,18 +260,18 @@ function getQuadraticPathData(points, closed)
 
 
     pathData += 'M';
-    pathData += ' ' + points[0].x;
-    pathData += ' ' + points[0].y;
+    pathData += ' ' + almostZero(points[0].x);
+    pathData += ' ' + almostZero(points[0].y);
 
     let i;
     for (i = 1; i < points.length-1; i += 2)
     {
         pathData += 
               ' Q'
-            + ' ' + points[i  ].x
-            + ' ' + points[i  ].y
-            + ' ' + points[i+1].x
-            + ' ' + points[i+1].y;
+            + ' ' + almostZero(points[i  ].x)
+            + ' ' + almostZero(points[i  ].y)
+            + ' ' + almostZero(points[i+1].x)
+            + ' ' + almostZero(points[i+1].y);
     }
 
 
@@ -284,10 +280,10 @@ function getQuadraticPathData(points, closed)
     {
         pathData += 
               ' Q'
-            + ' ' + points.at(-1).x
-            + ' ' + points.at(-1).y
-            + ' ' + points.at( 0).x
-            + ' ' + points.at( 0).y;
+            + ' ' + almostZero(points.at(-1).x)
+            + ' ' + almostZero(points.at(-1).y)
+            + ' ' + almostZero(points.at( 0).x)
+            + ' ' + almostZero(points.at( 0).y);
     }
 
 
@@ -306,20 +302,20 @@ function getCubicPathData(points, closed)
 
 
     pathData += 'M';
-    pathData += ' ' + points[0].x;
-    pathData += ' ' + points[0].y;
+    pathData += ' ' + almostZero(points[0].x);
+    pathData += ' ' + almostZero(points[0].y);
 
     let i;
     for (i = 1; i < points.length-2; i += 3)
     {
         pathData += 
               ' C'
-            + ' ' + points[i  ].x
-            + ' ' + points[i  ].y
-            + ' ' + points[i+1].x
-            + ' ' + points[i+1].y
-            + ' ' + points[i+2].x
-            + ' ' + points[i+2].y;
+            + ' ' + almostZero(points[i  ].x)
+            + ' ' + almostZero(points[i  ].y)
+            + ' ' + almostZero(points[i+1].x)
+            + ' ' + almostZero(points[i+1].y)
+            + ' ' + almostZero(points[i+2].x)
+            + ' ' + almostZero(points[i+2].y);
     }
 
 
@@ -327,12 +323,12 @@ function getCubicPathData(points, closed)
     {
         pathData += 
               ' C'
-            + ' ' + points.at(-2).x
-            + ' ' + points.at(-2).y
-            + ' ' + points.at(-1).x
-            + ' ' + points.at(-1).y
-            + ' ' + points.at( 0).x
-            + ' ' + points.at( 0).y;
+            + ' ' + almostZero(points.at(-2).x)
+            + ' ' + almostZero(points.at(-2).y)
+            + ' ' + almostZero(points.at(-1).x)
+            + ' ' + almostZero(points.at(-1).y)
+            + ' ' + almostZero(points.at( 0).x)
+            + ' ' + almostZero(points.at( 0).y);
     }
 
 

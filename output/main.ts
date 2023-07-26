@@ -59,6 +59,13 @@ var enableAsserts = false;
 
 
 
+function almostZero(x, eps = 0.0000001) 
+{ 
+    return Math.abs(x) < eps ? 0 : x;
+}
+
+
+
 function nozero(x, eps = Epsilon) 
 { 
     return x != 0 
@@ -66,12 +73,15 @@ function nozero(x, eps = Epsilon)
          : (x < 0 ? -eps : eps);
 }
 
+
+
 function nozerov(v) 
 { 
     return point(
         nozero(v.x), 
         nozero(v.y)); 
 }
+
 
 
 function equal(a, b, eps = Epsilon)
@@ -765,15 +775,15 @@ function getLinearPathData(points)
 
 
     pathData += 'M';
-    pathData += ' ' + points[0].x;
-    pathData += ' ' + points[0].y;
+    pathData += ' ' + almostZero(points[0].x);
+    pathData += ' ' + almostZero(points[0].y);
 
     for (let i = 1; i < points.length; i++)
     {
         pathData += 
               ' L'
-            + ' ' + points[i].x
-            + ' ' + points[i].y;
+            + ' ' + almostZero(points[i].x)
+            + ' ' + almostZero(points[i].y);
     }
 
 

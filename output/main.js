@@ -37,6 +37,9 @@ const identity = Object.freeze([[1, 0, 0],
 const Epsilon = 0.0000001;
 const Tau = Math.PI * 2;
 var enableAsserts = false;
+function almostZero(x, eps = 0.0000001) {
+    return Math.abs(x) < eps ? 0 : x;
+}
 function nozero(x, eps = Epsilon) {
     return x != 0
         ? x
@@ -393,13 +396,13 @@ function getLinearPathData(points) {
     if (points.length < 2)
         return pathData;
     pathData += 'M';
-    pathData += ' ' + points[0].x;
-    pathData += ' ' + points[0].y;
+    pathData += ' ' + almostZero(points[0].x);
+    pathData += ' ' + almostZero(points[0].y);
     for (let i = 1; i < points.length; i++) {
         pathData +=
             ' L'
-                + ' ' + points[i].x
-                + ' ' + points[i].y;
+                + ' ' + almostZero(points[i].x)
+                + ' ' + almostZero(points[i].y);
     }
     return pathData;
 }

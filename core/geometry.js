@@ -25,6 +25,15 @@ function lerpv(p0, p1, t)
 
 
 
+function lerpv2(p0, p1, p2, t)
+{
+    return point(
+        lerp2(p0.x, p1.x, p2.x, t),
+        lerp2(p0.y, p1.y, p2.y, t));
+}
+
+
+
 function lerpv3(p0, p1, p2, p3, t)
 {
     return point(
