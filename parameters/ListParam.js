@@ -129,10 +129,12 @@ extends Parameter
         if (   this.input
             && this.input.connected)
         {
-            if (this.input.supportsTypes(this.input.connectedOutput.types))
+            // if (this.input.supportsTypes(this.input.connectedOutput.types))
+            // {
                 request.push(...pushInputOrParam(this.input, gen));
-            else
-                consoleError('invalid input for ListParam (' + this.node.id + ')');
+            // }
+            // else
+            //     consoleError('invalid input for ListParam (' + this.node.id + ')');
         }
 
         else request.push( 

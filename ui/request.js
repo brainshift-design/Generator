@@ -129,9 +129,9 @@ function pushUpdateFromParam(action, nodes, param, save = true)
 
 function pushInputOrParam(input, gen)
 {
-    if (    input.connectedOutput.param
-        &&  gen.markParams
-        &&  gen.scope.at(-1).nodeId != input.connectedOutput.node.id)
+    if (   input.connectedOutput.param
+        && gen.markParams
+        && gen.scope.at(-1).nodeId != input.connectedOutput.node.id)
     {
         pushUnique(gen.paramNodes, input.connectedOutput.node);
 

@@ -87563,10 +87563,12 @@ extends Parameter
         if (   this.input
             && this.input.connected)
         {
-            if (this.input.supportsTypes(this.input.connectedOutput.types))
+            // if (this.input.supportsTypes(this.input.connectedOutput.types))
+            // {
                 request.push(...pushInputOrParam(this.input, gen));
-            else
-                consoleError('invalid input for ListParam (' + this.node.id + ')');
+            // }
+            // else
+            //     consoleError('invalid input for ListParam (' + this.node.id + ')');
         }
 
         else request.push( 
@@ -106856,13 +106858,14 @@ extends OpShape
 
         
         this.paramPoints.input.types.push(SHAPE_LIST_VALUE);
-        this.paramPoints.listTypes = [POINT_VALUE];
+        this.paramPoints.listTypes   = [POINT_VALUE];
 
         this.paramPoints.itemName    = 'point';
         this.paramPoints.showZero    =  false;
 
         this.paramDegree.reverseMenu =  true;
 
+        
         this.paramRound.divider = 0.565;
 
 
@@ -115851,9 +115854,9 @@ function pushUpdateFromParam(action, nodes, param, save = true)
 
 function pushInputOrParam(input, gen)
 {
-    if (    input.connectedOutput.param
-        &&  gen.markParams
-        &&  gen.scope.at(-1).nodeId != input.connectedOutput.node.id)
+    if (   input.connectedOutput.param
+        && gen.markParams
+        && gen.scope.at(-1).nodeId != input.connectedOutput.node.id)
     {
         pushUnique(gen.paramNodes, input.connectedOutput.node);
 
