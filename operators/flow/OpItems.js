@@ -14,7 +14,7 @@ extends ResizableBase
 
 
         this.addInput (new Input(LIST_VALUES));
-        this.addOutput(new Output([LIST_VALUE], this.output_genRequest));
+        //this.addOutput(new Output([LIST_VALUE], this.output_genRequest));
 
         this.alwaysLoadParams = true;
         this.alwaysSaveParams = true;
@@ -138,8 +138,8 @@ extends ResizableBase
 
 
 
-    output_genRequest(gen)
-    {
+    // output_genRequest(gen)
+    // {
         // 'this' is the output        
 
     //     return this.node.genRequest(gen);
@@ -147,20 +147,20 @@ extends ResizableBase
 
 
 
-    // genRequest(gen)
-    // {
+    genRequest(gen)
+    {
         // 'this' is the node
 
         gen.scope.push({
-            nodeId:  this.node.id, 
+            nodeId:  this.id, 
             paramId: NULL });
 
 
-        const [request, ignore] = this.node.genRequestStart(gen);
+        const [request, ignore] = this.genRequestStart(gen);
         if (ignore) return request;
 
 
-        const input = this.node.inputs[0];
+        const input = this.inputs[0];
 
 
         request.push(input.connected ? 1 : 0);
@@ -202,7 +202,7 @@ extends ResizableBase
             ||    paramIds.length == 1 
                && paramIds[0] != '')
         {
-            for (let i = 0; i < values.length - 1; i++) 
+            for (let i = 0; i < values.length; i++) 
             {
                 const value   = values[i];
                 const valueId = paramIds[i];
@@ -251,17 +251,17 @@ extends ResizableBase
         super.updateValues(requestId, actionId, updateParamId, paramIds, values);
 
 
-        const value = values[paramIds.findIndex(id => id == 'value')];
+        // const value = values[paramIds.findIndex(id => id == 'value')];
 
-        if (LIST_VALUES.includes(value.type))
-            this.outputs[0].types = [finalListTypeFromItems(value.items)];
+        // if (LIST_VALUES.includes(value.type))
+        //     this.outputs[0].types = [finalListTypeFromItems(value.items)];
 
        
         const rect = this.measureData.divOffset;
         //console.log('rect =', rect);
  
         if (this.scrollbar.style.display == 'none')
-            rect.h = this.params.length * defParamHeight;
+            rect.h = defHeaderHeight + this.params.length * defParamHeight;
         
         //this.setSize(rect.w, rect.h, false);
         this.setRect(rect.x, rect.y, rect.w, rect.h, false);

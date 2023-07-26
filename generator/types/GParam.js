@@ -45,6 +45,9 @@ extends GOperator
 
         this.param = this.node.paramFromId(this.paramId);
 
+        if (this.node.type == ITEMS)
+            this.param = this.node[this.paramId];
+
         
         if (isValid(this.param))
         {

@@ -28,7 +28,10 @@ extends GNumberType1
 
         
         if (this.input)
+        {
+            console.log('this.input =', this.input);
             this.value = (await this.input.eval(parse)).toValue();
+        }
         else if (this.value)
             await this.value.eval(parse);
         else

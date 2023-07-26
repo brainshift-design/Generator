@@ -8275,6 +8275,9 @@ extends GOperator
 
         this.param = this.node.paramFromId(this.paramId);
 
+        if (this.node.type == ITEMS)
+            this.param = this.node[this.paramId];
+
         
         if (isValid(this.param))
         {
@@ -13787,7 +13790,7 @@ extends GOperator
             this.updateValues.push(['', NullValue]);
 
 
-        this.updateValues.push(['value', this.value]); // first so it can be separated out in OpItems
+        //this.updateValues.push(['value', this.value]); // first so it can be separated out in OpItems
 
 
         for (let j = 0; j < this.value.objects.length; j++)
@@ -15110,7 +15113,10 @@ extends GNumberType1
 
         
         if (this.input)
+        {
+            console.log('this.input =', this.input);
             this.value = (await this.input.eval(parse)).toValue();
+        }
         else if (this.value)
             await this.value.eval(parse);
         else
