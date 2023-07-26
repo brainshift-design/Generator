@@ -14,8 +14,8 @@ function figCreatePolygon(genPoly)
 {
     if (!genPolygonIsValid(genPoly))
         return null;
-    
-    
+
+        
     const figPoly = figma.createPolygon();
 
     figUpdatePolygon(figPoly, genPoly);
@@ -27,6 +27,10 @@ function figCreatePolygon(genPoly)
 
 function figUpdatePolygon(figPoly, genPoly)
 {
+    if (!genPolygonIsValid(genPoly))
+        return;
+
+        
     figPoly.cornerRadius = genPoly[FO_POLY_ROUND];
     figPoly.pointCount   = Math.max(3, genPoly[FO_POLY_CORNERS]);
 

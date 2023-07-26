@@ -4263,9 +4263,9 @@ function setObjectTransform(figObj, genObj, setSize = true, noHeight = 0.01)
         return;
 
 
-    const xp0   = point(genObj[FO_XP0].x, genObj[FO_XP0].y);
-    const xp1   = point(genObj[FO_XP1].x, genObj[FO_XP1].y);
-    const xp2   = point(genObj[FO_XP2].x, genObj[FO_XP2].y);
+    const xp0 = genObj[FO_XP0];//point(genObj[FO_XP0].x, genObj[FO_XP0].y);
+    const xp1 = genObj[FO_XP1];//point(genObj[FO_XP1].x, genObj[FO_XP1].y);
+    const xp2 = genObj[FO_XP2];//point(genObj[FO_XP2].x, genObj[FO_XP2].y);
 
     
     //const xform = 
@@ -4709,8 +4709,8 @@ function figCreatePolygon(genPoly)
 {
     if (!genPolygonIsValid(genPoly))
         return null;
-    
-    
+
+        
     const figPoly = figma.createPolygon();
 
     figUpdatePolygon(figPoly, genPoly);
@@ -4722,6 +4722,10 @@ function figCreatePolygon(genPoly)
 
 function figUpdatePolygon(figPoly, genPoly)
 {
+    if (!genPolygonIsValid(genPoly))
+        return;
+
+        
     figPoly.cornerRadius = genPoly[FO_POLY_ROUND];
     figPoly.pointCount   = Math.max(3, genPoly[FO_POLY_CORNERS]);
 
@@ -4744,18 +4748,13 @@ function genRectIsValid(genRect)
 
 function figCreateRect(genRect)
 {
+    if (!genRectIsValid(genRect))
+        return null;
+
+
     const figRect = figma.createRectangle();
 
-    if (!genRectIsValid(genRect))
-        return figRect;
-
-
-    figRect.cornerRadius = genRect[FO_RECT_ROUND];
-
-
-    setObjectTransform(figRect, genRect);
-    setObjectProps    (figRect, genRect);
-
+    figUpdateRect(figRect, genRect);
 
     return figRect;
 }
@@ -4942,21 +4941,22 @@ function figCreateVectorPath(genPath)
 {
     const figPath = figma.createVector();
 
-    if (!genVectorPathIsValid(genPath))
-        return figPath;
+    figUpdateVectorPath(figPath, genPath);
+    // if (!genVectorPathIsValid(genPath))
+    //     return figPath;
 
     
-    figPath.vectorPaths = [{
-        windingRule: genPath[FO_VECTOR_PATH_WINDING] == 1 ? 'NONZERO' : 'EVENODD',
-        data:        genPath[FO_VECTOR_PATH_DATA   ]
-    }];
+    // figPath.vectorPaths = [{
+    //     windingRule: genPath[FO_VECTOR_PATH_WINDING] == 1 ? 'NONZERO' : 'EVENODD',
+    //     data:        genPath[FO_VECTOR_PATH_DATA   ]
+    // }];
 
 
-    figPath.cornerRadius = genPath[FO_VECTOR_PATH_ROUND];
+    // figPath.cornerRadius = genPath[FO_VECTOR_PATH_ROUND];
 
 
-    setObjectTransform(figPath, genPath, false);
-    setObjectProps    (figPath, genPath);
+    // setObjectTransform(figPath, genPath, false);
+    // setObjectProps    (figPath, genPath);
 
 
     return figPath;

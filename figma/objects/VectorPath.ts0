@@ -11,21 +11,22 @@ function figCreateVectorPath(genPath)
 {
     const figPath = figma.createVector();
 
-    if (!genVectorPathIsValid(genPath))
-        return figPath;
+    figUpdateVectorPath(figPath, genPath);
+    // if (!genVectorPathIsValid(genPath))
+    //     return figPath;
 
     
-    figPath.vectorPaths = [{
-        windingRule: genPath[FO_VECTOR_PATH_WINDING] == 1 ? 'NONZERO' : 'EVENODD',
-        data:        genPath[FO_VECTOR_PATH_DATA   ]
-    }];
+    // figPath.vectorPaths = [{
+    //     windingRule: genPath[FO_VECTOR_PATH_WINDING] == 1 ? 'NONZERO' : 'EVENODD',
+    //     data:        genPath[FO_VECTOR_PATH_DATA   ]
+    // }];
 
 
-    figPath.cornerRadius = genPath[FO_VECTOR_PATH_ROUND];
+    // figPath.cornerRadius = genPath[FO_VECTOR_PATH_ROUND];
 
 
-    setObjectTransform(figPath, genPath, false);
-    setObjectProps    (figPath, genPath);
+    // setObjectTransform(figPath, genPath, false);
+    // setObjectProps    (figPath, genPath);
 
 
     return figPath;

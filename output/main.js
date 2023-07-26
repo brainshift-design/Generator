@@ -2807,9 +2807,9 @@ function setObjectTransform(figObj, genObj, setSize = true, noHeight = 0.01) {
         || !genObj[FO_XP1]
         || !genObj[FO_XP2])
         return;
-    const xp0 = point(genObj[FO_XP0].x, genObj[FO_XP0].y);
-    const xp1 = point(genObj[FO_XP1].x, genObj[FO_XP1].y);
-    const xp2 = point(genObj[FO_XP2].x, genObj[FO_XP2].y);
+    const xp0 = genObj[FO_XP0]; //point(genObj[FO_XP0].x, genObj[FO_XP0].y);
+    const xp1 = genObj[FO_XP1]; //point(genObj[FO_XP1].x, genObj[FO_XP1].y);
+    const xp2 = genObj[FO_XP2]; //point(genObj[FO_XP2].x, genObj[FO_XP2].y);
     //const xform = 
     applyFigmaTransform(figObj, xp0, xp1, xp2);
     // if (!xform)
@@ -3053,6 +3053,8 @@ function figCreatePolygon(genPoly) {
     return figPoly;
 }
 function figUpdatePolygon(figPoly, genPoly) {
+    if (!genPolygonIsValid(genPoly))
+        return;
     figPoly.cornerRadius = genPoly[FO_POLY_ROUND];
     figPoly.pointCount = Math.max(3, genPoly[FO_POLY_CORNERS]);
     setObjectTransform(figPoly, genPoly);
@@ -3066,12 +3068,10 @@ function genRectIsValid(genRect) {
         && genRect[FO_RECT_ROUND] != null && !isNaN(genRect[FO_RECT_ROUND]);
 }
 function figCreateRect(genRect) {
-    const figRect = figma.createRectangle();
     if (!genRectIsValid(genRect))
-        return figRect;
-    figRect.cornerRadius = genRect[FO_RECT_ROUND];
-    setObjectTransform(figRect, genRect);
-    setObjectProps(figRect, genRect);
+        return null;
+    const figRect = figma.createRectangle();
+    figUpdateRect(figRect, genRect);
     return figRect;
 }
 function figUpdateRect(figRect, genRect) {
@@ -3184,15 +3184,16 @@ function genVectorPathIsValid(genPath) {
 }
 function figCreateVectorPath(genPath) {
     const figPath = figma.createVector();
-    if (!genVectorPathIsValid(genPath))
-        return figPath;
-    figPath.vectorPaths = [{
-            windingRule: genPath[FO_VECTOR_PATH_WINDING] == 1 ? 'NONZERO' : 'EVENODD',
-            data: genPath[FO_VECTOR_PATH_DATA]
-        }];
-    figPath.cornerRadius = genPath[FO_VECTOR_PATH_ROUND];
-    setObjectTransform(figPath, genPath, false);
-    setObjectProps(figPath, genPath);
+    figUpdateVectorPath(figPath, genPath);
+    // if (!genVectorPathIsValid(genPath))
+    //     return figPath;
+    // figPath.vectorPaths = [{
+    //     windingRule: genPath[FO_VECTOR_PATH_WINDING] == 1 ? 'NONZERO' : 'EVENODD',
+    //     data:        genPath[FO_VECTOR_PATH_DATA   ]
+    // }];
+    // figPath.cornerRadius = genPath[FO_VECTOR_PATH_ROUND];
+    // setObjectTransform(figPath, genPath, false);
+    // setObjectProps    (figPath, genPath);
     return figPath;
 }
 function figUpdateVectorPath(figPath, genPath) {

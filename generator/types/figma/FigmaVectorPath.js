@@ -86,6 +86,57 @@ extends FigmaShape
 
 
 
+    getBounds()
+    {
+        let bounds = Rect.NaN;
+
+        
+        switch (this.degree)
+        {
+            case 0:
+                for (const p of this.pathPoints)
+                    bounds = expandRect_(bounds, p);
+
+                break;
+
+            case 1:
+                for (let i = 0; i < this.pathPoints.length-2; i += 2)
+                {
+                    bounds = expandRect(
+                        bounds, 
+                        bounds2(
+                            this.pathPoints[i  ], 
+                            this.pathPoints[i+1],
+                            this.pathPoints[i+2]));
+                }
+                break;
+
+            case 2:
+            case 3:
+            case 4:
+            case 5:
+                for (let i = 0; i < this.pathPoints.length-3; i += 3)
+                {
+                    bounds = expandRect(
+                        bounds, 
+                        bounds3(
+                            this.pathPoints[i  ], 
+                            this.pathPoints[i+1],
+                            this.pathPoints[i+2],
+                            this.pathPoints[i+3]));
+                }
+                break;
+
+            default:
+                console.error('invalid curve degree');
+        }
+
+
+        return bounds;
+    }
+
+
+
     applyObjectTransform(xform, space)
     {
         super.applyObjectTransform(xform, space);
@@ -123,7 +174,7 @@ extends FigmaShape
 
     updatePathData()
     {
-        const bounds = getPointBounds(this.points);
+        const bounds = this.getBounds();
 
         this.x      = bounds.x;
         this.y      = bounds.y;

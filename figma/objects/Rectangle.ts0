@@ -11,18 +11,13 @@ function genRectIsValid(genRect)
 
 function figCreateRect(genRect)
 {
+    if (!genRectIsValid(genRect))
+        return null;
+
+
     const figRect = figma.createRectangle();
 
-    if (!genRectIsValid(genRect))
-        return figRect;
-
-
-    figRect.cornerRadius = genRect[FO_RECT_ROUND];
-
-
-    setObjectTransform(figRect, genRect);
-    setObjectProps    (figRect, genRect);
-
+    figUpdateRect(figRect, genRect);
 
     return figRect;
 }

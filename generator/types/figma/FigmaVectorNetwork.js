@@ -102,6 +102,26 @@ extends FigmaShape
 
 
 
+    getBounds()
+    {
+        let bounds = Rect.NaN;
+
+        for (let i = 0; i < this.edges.length; i++)
+        {
+            bounds = expandRect(
+                bounds, 
+                bounds3(
+                    this.edges[i].start.toPoint(), 
+                    this.edges[i].start.toPoint(),
+                    this.edges[i].end  .toPoint(),
+                    this.edges[i].end  .toPoint()));
+        }
+
+        return bounds;
+    }
+
+
+
     toData()
     {
         return [

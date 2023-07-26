@@ -181,6 +181,22 @@ class FigmaObject
     
     
 
+    getBounds()
+    {
+        let bounds = Rect.NaN;
+
+        const dp = subv(this.xp1, this.xp0);
+
+        bounds = expandRect_(bounds, this.xp0);
+        bounds = expandRect_(bounds, this.xp1);
+        bounds = expandRect_(bounds, this.xp2);
+        bounds = expandRect_(bounds, addv(this.xp2, dp));
+
+        return bounds;
+    }
+
+
+
     applyTransform(xform, affectSpace)
     {
         const space = this.createSpaceTransform();
@@ -354,87 +370,8 @@ function getObjBounds(objects)
 {
     let bounds = Rect.NaN;
 
-
     for (const obj of objects)
-    {
-        if (obj.type == VECTOR_PATH)
-        {
-            switch (obj.degree)
-            {
-                case 0:
-                    for (const p of obj.pathPoints)
-                        bounds = expandRect_(bounds, p);
-
-                    break;
-
-                case 1:
-                    for (let i = 0; i < obj.pathPoints.length-2; i += 2)
-                    {
-                        bounds = expandRect(
-                            bounds, 
-                            bounds2(
-                                obj.pathPoints[i  ], 
-                                obj.pathPoints[i+1],
-                                obj.pathPoints[i+2]));
-                    }
-                    break;
-
-                case 2:
-                case 3:
-                case 4:
-                case 5:
-                    for (let i = 0; i < obj.pathPoints.length-3; i += 3)
-                    {
-                        bounds = expandRect(
-                            bounds, 
-                            bounds3(
-                                obj.pathPoints[i  ], 
-                                obj.pathPoints[i+1],
-                                obj.pathPoints[i+2],
-                                obj.pathPoints[i+3]));
-                    }
-                    break;
-
-                default:
-                    console.error('invalid curve degree');
-            }
-        }
-
-        else if (obj.type == VECTOR_NETWORK)
-        {
-            for (let i = 0; i < obj.edges.length; i++)
-            {
-                bounds = expandRect(
-                    bounds, 
-                    bounds3(
-                        obj.edges[i].start.toPoint(), 
-                        obj.edges[i].start.toPoint(),
-                        obj.edges[i].end  .toPoint(),
-                        obj.edges[i].end  .toPoint()));
-            }
-        }
-
-        else if (obj.type == POINT)
-             //&& !obj.isDeco)
-            bounds = expandRect_(bounds, point(obj.x, obj.y));
-
-        else
-        {
-            const dp = subv(obj.xp1, obj.xp0);
-
-            bounds = expandRect_(bounds, obj.xp0);
-            bounds = expandRect_(bounds, obj.xp1);
-            bounds = expandRect_(bounds, obj.xp2);
-            bounds = expandRect_(bounds, addv(obj.xp2, dp));
-        }
-
-        // else if (obj.type == LINE)
-        //     bounds = expandRect(bounds, new Rect(obj.x, obj.y, obj.width, 0));
-
-        // else
-        //     bounds = expandRect(bounds, new Rect(obj.x, obj.y, obj.width, obj.height));
-    }
-
+        bounds = expandRect(bounds, obj.getBounds());
 
     return bounds;
 }

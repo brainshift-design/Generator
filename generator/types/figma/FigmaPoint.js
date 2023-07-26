@@ -41,6 +41,13 @@ extends FigmaShape
 
 
 
+    getBounds()
+    {
+        return new Rect(this.x, this.y, 0, 0);
+    }
+
+
+
     toPoint()
     {
         return point(this.x, this.y);
