@@ -177,6 +177,7 @@ function genParse(parse, inParam = true)
     else if (parse.next == TEXT_LENGTH            ) result = genParseTextLength       (parse);
     else if (parse.next == TEXT_TRIM              ) result = genParseTextTrim         (parse);
     else if (parse.next == TEXT_SUBSTRING         ) result = genParseTextSubstring    (parse);
+    else if (parse.next == TEXT_CONTAINS          ) result = genParseTextContains     (parse);
     else if (parse.next == TEXT_CASE              ) result = genParseTextCase         (parse);
     else if (parse.next == TEXT_CHAR              ) result = genParseTextCharacter    (parse);
     else if (parse.next == NUMBER_TO_TEXT         ) result = genParseNumberToText     (parse);

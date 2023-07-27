@@ -265,7 +265,7 @@ extends OperatorBase
 
     setRect(x, y, w, h, updateTransform = true)
     {
-        const headerHeight = getStyleValue(this.header, 'height');
+        const headerHeight = this.header.offsetHeight;//getStyleValue(this.header, 'height');
 
         const paramHeight = 
                this instanceof ResizableOperatorWithValue
@@ -353,10 +353,6 @@ extends OperatorBase
                 parseFloat(_node.width ), 
                 parseFloat(_node.height),
                 false);
-            // this.setSize(
-            //     parseFloat(_node.width), 
-            //     parseFloat(_node.height),
-            //     false);
         }
     }
 }
