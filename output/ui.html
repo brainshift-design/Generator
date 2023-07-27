@@ -24769,30 +24769,41 @@ extends GTextType2
         if (   input0 && input0.isValid() 
             && input1 && input1.isValid())
         {
-            const indices    = [];
-            let   index = 0;
-          
-            while (index != -1) 
+            const indices = [];
+            let   index   = 0;
+
+            if (input1.value != '')
             {
-                index = input0.value.indexOf(input1.value, index);
-
-                if (index != -1) 
+                while (index != -1) 
                 {
-                    indices.push(index);
-                    index += 1;
+                    index = input0.value.indexOf(input1.value, index);
+
+                    if (index != -1) 
+                    {
+                        indices.push(index);
+                        index += 1;
+                    }
                 }
+
+                
+                this.value = new NumberValue(indices.length > 0 ? 1 : 0);
+
+                this.first = indices.length > 0 ? new NumberValue(indices.at( 0)) : NumberValue.NaN;
+                this.last  = indices.length > 0 ? new NumberValue(indices.at(-1)) : NumberValue.NaN;
+
+                this.all   = new ListValue();
+
+                for (const index of indices)
+                    this.all.items.push(new NumberValue(index));
             }
+            else
+            {
+                this.value = new NumberValue(1);
 
-            
-            this.value = new NumberValue(indices.length > 0 ? 1 : 0);
-
-            this.first = indices.length > 0 ? new NumberValue(indices.at( 0)) : NumberValue.NaN;
-            this.last  = indices.length > 0 ? new NumberValue(indices.at(-1)) : NumberValue.NaN;
-
-            this.all   = new ListValue();
-
-            for (const index of indices)
-                this.all.items.push(new NumberValue(index));
+                this.first = NumberValue.NaN;
+                this.last  = NumberValue.NaN;
+                this.all   =   ListValue.NaN;
+            }
         }
         else                  
         {
@@ -65752,30 +65763,41 @@ extends GTextType2
         if (   input0 && input0.isValid() 
             && input1 && input1.isValid())
         {
-            const indices    = [];
-            let   index = 0;
-          
-            while (index != -1) 
+            const indices = [];
+            let   index   = 0;
+
+            if (input1.value != '')
             {
-                index = input0.value.indexOf(input1.value, index);
-
-                if (index != -1) 
+                while (index != -1) 
                 {
-                    indices.push(index);
-                    index += 1;
+                    index = input0.value.indexOf(input1.value, index);
+
+                    if (index != -1) 
+                    {
+                        indices.push(index);
+                        index += 1;
+                    }
                 }
+
+                
+                this.value = new NumberValue(indices.length > 0 ? 1 : 0);
+
+                this.first = indices.length > 0 ? new NumberValue(indices.at( 0)) : NumberValue.NaN;
+                this.last  = indices.length > 0 ? new NumberValue(indices.at(-1)) : NumberValue.NaN;
+
+                this.all   = new ListValue();
+
+                for (const index of indices)
+                    this.all.items.push(new NumberValue(index));
             }
+            else
+            {
+                this.value = new NumberValue(1);
 
-            
-            this.value = new NumberValue(indices.length > 0 ? 1 : 0);
-
-            this.first = indices.length > 0 ? new NumberValue(indices.at( 0)) : NumberValue.NaN;
-            this.last  = indices.length > 0 ? new NumberValue(indices.at(-1)) : NumberValue.NaN;
-
-            this.all   = new ListValue();
-
-            for (const index of indices)
-                this.all.items.push(new NumberValue(index));
+                this.first = NumberValue.NaN;
+                this.last  = NumberValue.NaN;
+                this.all   =   ListValue.NaN;
+            }
         }
         else                  
         {
