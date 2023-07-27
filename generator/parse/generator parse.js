@@ -112,6 +112,7 @@ function genParse(parse, inParam = true)
           || parse.next ==  SHAPE_LIST_VALUE      ) result = genParseListValue        (parse);
  
     else if (parse.next == LIST                   ) result = genParseList             (parse);
+    else if (parse.next == SUBLIST                ) result = genParseSublist          (parse);
     else if (parse.next == ITEMS                  ) result = genParseItems            (parse);
     else if (parse.next == SELECT                 ) result = genParseSelect           (parse);
     else if (parse.next == LIST_COUNT             ) result = genParseListCount        (parse);

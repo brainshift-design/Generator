@@ -5,6 +5,7 @@ function createNode(nodeType, creatingButton = null, createdNodeId = -1, options
     switch (nodeType)
     {
         case LIST:                    node = new OpList();              break;
+        case SUBLIST:                 node = new OpSublist();           break;
         case ITEMS:                   node = new OpItems();             break;
         case SELECT:                  node = new OpSelect();            break;
         case LIST_COUNT:              node = new OpListCount();         break;

@@ -46,6 +46,7 @@
 
 
 ../operators/flow/OpList.js
+../operators/flow/OpSublist.js
 ../operators/flow/OpItems.js
 ../operators/flow/OpSelect.js
 ../operators/flow/OpListCount.js

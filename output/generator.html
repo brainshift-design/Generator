@@ -4,7 +4,7 @@
 
 
 
-const generatorVersion = 169;
+const generatorVersion = 170;
 
 
 const MAX_INT32        = 2147483647;
@@ -4478,10 +4478,12 @@ const   TEXT_LIST_VALUE       = 'TLIST#';
 const  SHAPE_LIST_VALUE       = 'SLIST#';
 
 const LIST                    = 'LIST';
+const SUBLIST                 = 'SUBLST';
 const ITEMS                   = 'ITEMS';
-const SELECT                  = 'SEL';
 const LIST_COUNT              = 'COUNT';
+const SELECT                  = 'SEL';
 const IF_ELSE                 = 'IF';
+const FILTER                  = 'LSTFLT';
 const START                   = 'START';
 const REPEAT                  = 'REPT';
 const DEFINE                  = 'DEFINE';  
@@ -4500,7 +4502,8 @@ const LIST_TYPES =
     TEXT_LIST_VALUE,
     SHAPE_LIST_VALUE,
     LIST,
-    ITEMS,
+    SUBLIST,
+    //ITEMS,
     LIST_COUNT,
     REPEAT
 ];
@@ -4524,6 +4527,7 @@ const FLOW_TYPES =
     ITEMS,
     SELECT,
     IF_ELSE,
+    FILTER,
     START,
     REPEAT,
     //FOREACH,
@@ -13709,6 +13713,111 @@ extends GOperator
         super.invalidateInputs(from);
 
         this.inputs.forEach(i => i.invalidateInputs(from));
+    }
+}
+
+
+
+class GSublist
+extends GOperator
+{
+    start;
+    end;
+
+
+    
+    constructor(nodeId, options)
+    {
+        super(SUBLIST, nodeId, options);
+    }
+
+
+    
+    copy()
+    {
+        const copy = new GSublist(this.nodeId, this.options);
+
+        copy.copyBase(this);
+
+        copy.start = this.start.copy();
+        copy.end   = this.end  .copy();
+
+        return copy;
+    }
+
+
+
+    async eval(parse)
+    {
+        if (this.isCached())
+            return this;
+
+
+        const start  = (await this.start.eval(parse)).toValue();
+        const end    = (await this.end  .eval(parse)).toValue();
+
+        let   length = 0;
+
+
+        if (this.input)
+        {
+            const input = (await this.input.eval(parse)).toValue();
+           
+            
+            length = input.items.length;
+               
+                
+            if (start.value <= end.value)
+            {
+                if (this.options.enabled)
+                {
+                    this.value = new ListValue();
+
+                    for (let i = start.value; i < end.value; i++)
+                        this.value.items.push(input.items[i].copy());
+                }
+                else
+                    this.value = input.copy();
+            }
+            else
+                this.value = new ListValue();//TextValue.NaN;
+        }
+        else
+            this.value = new ListValue();//TextValue.NaN;
+
+
+        this.updateValues =
+        [
+            //['value',  this.value             ],
+            ['length', new NumberValue(length)], // used to set start and end maxima
+            ['start',  start                  ],
+            ['end',    end                    ]
+        ];
+        
+
+        this.validate();
+
+        return this;
+    }
+
+
+
+    pushValueUpdates(parse)
+    {
+        super.pushValueUpdates(parse);
+
+        if (this.start) this.start.pushValueUpdates(parse);
+        if (this.end  ) this.end  .pushValueUpdates(parse);
+    }
+
+
+
+    invalidateInputs(from)
+    {
+        super.invalidateInputs(from);
+
+        if (this.start) this.start.invalidateInputs(from);
+        if (this.end  ) this.end  .invalidateInputs(from);
     }
 }
 
@@ -30324,6 +30433,53 @@ function genParseList(parse)
 
 
 
+function genParseSublist(parse)
+{
+    const [, nodeId, options, ignore] = genParseNodeStart(parse);
+
+
+    const sub = new GSublist(nodeId, options);
+   
+
+    let nInputs = -1;
+    
+    if (!ignore)
+    {
+        nInputs = parseInt(parse.move());
+        consoleAssert(nInputs == 0 || nInputs == 1, 'nInputs must be [0, 1]');
+    }
+
+    
+    if (parse.settings.logRequests) 
+        logReq(sub, parse, ignore, nInputs);
+
+
+    if (ignore) 
+    {
+        genParseNodeEnd(parse, sub);
+        return parse.parsedNodes.find(n => n.nodeId == nodeId);
+    }
+
+
+    parse.nTab++;
+
+
+    if (nInputs == 1)
+        sub.input = genParse(parse);
+
+    sub.start = genParse(parse);
+    sub.end   = genParse(parse);
+
+    
+    parse.nTab--;
+
+
+    genParseNodeEnd(parse, sub);
+    return sub;
+}
+
+
+
 function genParseItems(parse)
 {
     const [, nodeId, options, ignore] = genParseNodeStart(parse);
@@ -35061,6 +35217,7 @@ function genParse(parse, inParam = true)
           || parse.next ==  SHAPE_LIST_VALUE      ) result = genParseListValue        (parse);
  
     else if (parse.next == LIST                   ) result = genParseList             (parse);
+    else if (parse.next == SUBLIST                ) result = genParseSublist          (parse);
     else if (parse.next == ITEMS                  ) result = genParseItems            (parse);
     else if (parse.next == SELECT                 ) result = genParseSelect           (parse);
     else if (parse.next == LIST_COUNT             ) result = genParseListCount        (parse);

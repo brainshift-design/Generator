@@ -4594,12 +4594,7 @@ a
             <div id='whatsNewBody'>
                 <h1 style='margin-top: 20px;'>What's new</h1>
 
-                <p>•  fixed List not resetting object space</p>
-                <p>•  fixed transform points not being shown correctly</p>
-                <p>•  fixed error when pasting invalid JSON</p>
-                <p>•  .gen files can now be dropped onto the plugin window</p>
-                <p>•  fixed vector path transformations</p>
-                <p>•  fixed UI bugs</p>
+                <p>•  </p>
                 
                 <p><br/><br/><div id='chkHideWhatsNew'></div></p>
             </div>
@@ -4927,7 +4922,7 @@ a
 
 
 
-const generatorVersion = 169;
+const generatorVersion = 170;
 
 
 const MAX_INT32        = 2147483647;
@@ -9401,10 +9396,12 @@ const   TEXT_LIST_VALUE       = 'TLIST#';
 const  SHAPE_LIST_VALUE       = 'SLIST#';
 
 const LIST                    = 'LIST';
+const SUBLIST                 = 'SUBLST';
 const ITEMS                   = 'ITEMS';
-const SELECT                  = 'SEL';
 const LIST_COUNT              = 'COUNT';
+const SELECT                  = 'SEL';
 const IF_ELSE                 = 'IF';
+const FILTER                  = 'LSTFLT';
 const START                   = 'START';
 const REPEAT                  = 'REPT';
 const DEFINE                  = 'DEFINE';  
@@ -9423,7 +9420,8 @@ const LIST_TYPES =
     TEXT_LIST_VALUE,
     SHAPE_LIST_VALUE,
     LIST,
-    ITEMS,
+    SUBLIST,
+    //ITEMS,
     LIST_COUNT,
     REPEAT
 ];
@@ -9447,6 +9445,7 @@ const FLOW_TYPES =
     ITEMS,
     SELECT,
     IF_ELSE,
+    FILTER,
     START,
     REPEAT,
     //FOREACH,
@@ -18632,6 +18631,111 @@ extends GOperator
         super.invalidateInputs(from);
 
         this.inputs.forEach(i => i.invalidateInputs(from));
+    }
+}
+
+
+
+class GSublist
+extends GOperator
+{
+    start;
+    end;
+
+
+    
+    constructor(nodeId, options)
+    {
+        super(SUBLIST, nodeId, options);
+    }
+
+
+    
+    copy()
+    {
+        const copy = new GSublist(this.nodeId, this.options);
+
+        copy.copyBase(this);
+
+        copy.start = this.start.copy();
+        copy.end   = this.end  .copy();
+
+        return copy;
+    }
+
+
+
+    async eval(parse)
+    {
+        if (this.isCached())
+            return this;
+
+
+        const start  = (await this.start.eval(parse)).toValue();
+        const end    = (await this.end  .eval(parse)).toValue();
+
+        let   length = 0;
+
+
+        if (this.input)
+        {
+            const input = (await this.input.eval(parse)).toValue();
+           
+            
+            length = input.items.length;
+               
+                
+            if (start.value <= end.value)
+            {
+                if (this.options.enabled)
+                {
+                    this.value = new ListValue();
+
+                    for (let i = start.value; i < end.value; i++)
+                        this.value.items.push(input.items[i].copy());
+                }
+                else
+                    this.value = input.copy();
+            }
+            else
+                this.value = new ListValue();//TextValue.NaN;
+        }
+        else
+            this.value = new ListValue();//TextValue.NaN;
+
+
+        this.updateValues =
+        [
+            //['value',  this.value             ],
+            ['length', new NumberValue(length)], // used to set start and end maxima
+            ['start',  start                  ],
+            ['end',    end                    ]
+        ];
+        
+
+        this.validate();
+
+        return this;
+    }
+
+
+
+    pushValueUpdates(parse)
+    {
+        super.pushValueUpdates(parse);
+
+        if (this.start) this.start.pushValueUpdates(parse);
+        if (this.end  ) this.end  .pushValueUpdates(parse);
+    }
+
+
+
+    invalidateInputs(from)
+    {
+        super.invalidateInputs(from);
+
+        if (this.start) this.start.invalidateInputs(from);
+        if (this.end  ) this.end  .invalidateInputs(from);
     }
 }
 
@@ -35247,6 +35351,53 @@ function genParseList(parse)
 
 
 
+function genParseSublist(parse)
+{
+    const [, nodeId, options, ignore] = genParseNodeStart(parse);
+
+
+    const sub = new GSublist(nodeId, options);
+   
+
+    let nInputs = -1;
+    
+    if (!ignore)
+    {
+        nInputs = parseInt(parse.move());
+        consoleAssert(nInputs == 0 || nInputs == 1, 'nInputs must be [0, 1]');
+    }
+
+    
+    if (parse.settings.logRequests) 
+        logReq(sub, parse, ignore, nInputs);
+
+
+    if (ignore) 
+    {
+        genParseNodeEnd(parse, sub);
+        return parse.parsedNodes.find(n => n.nodeId == nodeId);
+    }
+
+
+    parse.nTab++;
+
+
+    if (nInputs == 1)
+        sub.input = genParse(parse);
+
+    sub.start = genParse(parse);
+    sub.end   = genParse(parse);
+
+    
+    parse.nTab--;
+
+
+    genParseNodeEnd(parse, sub);
+    return sub;
+}
+
+
+
 function genParseItems(parse)
 {
     const [, nodeId, options, ignore] = genParseNodeStart(parse);
@@ -39984,6 +40135,7 @@ function genParse(parse, inParam = true)
           || parse.next ==  SHAPE_LIST_VALUE      ) result = genParseListValue        (parse);
  
     else if (parse.next == LIST                   ) result = genParseList             (parse);
+    else if (parse.next == SUBLIST                ) result = genParseSublist          (parse);
     else if (parse.next == ITEMS                  ) result = genParseItems            (parse);
     else if (parse.next == SELECT                 ) result = genParseSelect           (parse);
     else if (parse.next == LIST_COUNT             ) result = genParseListCount        (parse);
@@ -43425,7 +43577,7 @@ onerror = (event, source, line, pos, error) =>
 };
 
 
-const generatorVersion = 169;
+const generatorVersion = 170;
 
 
 const MAX_INT32        = 2147483647;
@@ -50083,10 +50235,12 @@ const   TEXT_LIST_VALUE       = 'TLIST#';
 const  SHAPE_LIST_VALUE       = 'SLIST#';
 
 const LIST                    = 'LIST';
+const SUBLIST                 = 'SUBLST';
 const ITEMS                   = 'ITEMS';
-const SELECT                  = 'SEL';
 const LIST_COUNT              = 'COUNT';
+const SELECT                  = 'SEL';
 const IF_ELSE                 = 'IF';
+const FILTER                  = 'LSTFLT';
 const START                   = 'START';
 const REPEAT                  = 'REPT';
 const DEFINE                  = 'DEFINE';  
@@ -50105,7 +50259,8 @@ const LIST_TYPES =
     TEXT_LIST_VALUE,
     SHAPE_LIST_VALUE,
     LIST,
-    ITEMS,
+    SUBLIST,
+    //ITEMS,
     LIST_COUNT,
     REPEAT
 ];
@@ -50129,6 +50284,7 @@ const FLOW_TYPES =
     ITEMS,
     SELECT,
     IF_ELSE,
+    FILTER,
     START,
     REPEAT,
     //FOREACH,
@@ -59314,6 +59470,111 @@ extends GOperator
         super.invalidateInputs(from);
 
         this.inputs.forEach(i => i.invalidateInputs(from));
+    }
+}
+
+
+
+class GSublist
+extends GOperator
+{
+    start;
+    end;
+
+
+    
+    constructor(nodeId, options)
+    {
+        super(SUBLIST, nodeId, options);
+    }
+
+
+    
+    copy()
+    {
+        const copy = new GSublist(this.nodeId, this.options);
+
+        copy.copyBase(this);
+
+        copy.start = this.start.copy();
+        copy.end   = this.end  .copy();
+
+        return copy;
+    }
+
+
+
+    async eval(parse)
+    {
+        if (this.isCached())
+            return this;
+
+
+        const start  = (await this.start.eval(parse)).toValue();
+        const end    = (await this.end  .eval(parse)).toValue();
+
+        let   length = 0;
+
+
+        if (this.input)
+        {
+            const input = (await this.input.eval(parse)).toValue();
+           
+            
+            length = input.items.length;
+               
+                
+            if (start.value <= end.value)
+            {
+                if (this.options.enabled)
+                {
+                    this.value = new ListValue();
+
+                    for (let i = start.value; i < end.value; i++)
+                        this.value.items.push(input.items[i].copy());
+                }
+                else
+                    this.value = input.copy();
+            }
+            else
+                this.value = new ListValue();//TextValue.NaN;
+        }
+        else
+            this.value = new ListValue();//TextValue.NaN;
+
+
+        this.updateValues =
+        [
+            //['value',  this.value             ],
+            ['length', new NumberValue(length)], // used to set start and end maxima
+            ['start',  start                  ],
+            ['end',    end                    ]
+        ];
+        
+
+        this.validate();
+
+        return this;
+    }
+
+
+
+    pushValueUpdates(parse)
+    {
+        super.pushValueUpdates(parse);
+
+        if (this.start) this.start.pushValueUpdates(parse);
+        if (this.end  ) this.end  .pushValueUpdates(parse);
+    }
+
+
+
+    invalidateInputs(from)
+    {
+        super.invalidateInputs(from);
+
+        if (this.start) this.start.invalidateInputs(from);
+        if (this.end  ) this.end  .invalidateInputs(from);
     }
 }
 
@@ -79178,6 +79439,7 @@ const iconPageClose         = '<svg width="9" height="10" viewBox="0 0 9 10" fil
 // const iconAddPage           = '<svg width="10" height="10" viewBox="0 0 10 10" fill="none" xmlns="http://www.w3.org/2000/svg"><path fill-rule="evenodd" clip-rule="evenodd" d="M6 0.5H4V4L0.5 4V6H4V9.5H6V6H9.5V4L6 4V0.5Z" fill="white"/></svg>';
 
 const iconList              = '<svg width="12" height="9" viewBox="0 0 12 9" fill="none" xmlns="http://www.w3.org/2000/svg"><rect width="9" height="1" fill="white"/><rect y="4" width="9" height="1" fill="white"/><rect y="8" width="9" height="1" fill="white"/></svg>';
+const iconSublist           = '<svg width="15" height="13" viewBox="-1 0 15 13" fill="none" xmlns="http://www.w3.org/2000/svg"><rect width="9" height="1" fill="white"/><rect y="12" width="9" height="1" fill="white"/><rect x="5" y="4" width="9" height="1" fill="white"/><rect x="5" y="8" width="9" height="1" fill="white"/></svg>';
 const iconItems             = '<svg width="17" height="11" viewBox="-1 0 17 11" fill="none" xmlns="http://www.w3.org/2000/svg"><rect width="9" height="1" transform="matrix(-1 0 0 1 9 1)" fill="white"/><rect width="9" height="1" transform="matrix(-1 0 0 1 9 5)" fill="white"/><rect width="9" height="1" transform="matrix(-1 0 0 1 9 9)" fill="white"/><circle r="1.5" transform="matrix(-1 0 0 1 13.5 9.5)" fill="white"/><circle r="1.5" transform="matrix(-1 0 0 1 13.5 5.5)" fill="white"/><circle r="1.5" transform="matrix(-1 0 0 1 13.5 1.5)" fill="white"/></svg>';
 const iconSelect            = '<svg width="15" height="9" viewBox="0 0 15 9" fill="none" xmlns="http://www.w3.org/2000/svg"><path d="M0 0H9V1H0V0Z" fill="white"/><path d="M0 4H9V5H0V4Z" fill="white"/><path d="M0 8H9V9H0V8Z" fill="white"/><path d="M13.5 6C12.6716 6 12 5.32843 12 4.5C12 3.67157 12.6716 3 13.5 3C14.3284 3 15 3.67157 15 4.5C15 5.32843 14.3284 6 13.5 6Z" fill="white"/></svg>';
 const iconCount             = '<svg width="16" height="11" viewBox="0 0 16 11" fill="none" xmlns="http://www.w3.org/2000/svg"><path d="M15.0334 0V11H12.0334V10H14.0667L14.0334 1H12L12.0334 0H15.0334Z" fill="white"/><path d="M0 11V0H3V1H0.966639V10H3V11H0Z" fill="white"/><path d="M7.5 11C6.67157 11 6 10.3284 6 9.5C6 8.67157 6.67157 8 7.5 8C8.32843 8 9 8.67157 9 9.5C9 10.3284 8.32843 11 7.5 11Z" fill="white"/><path d="M7.5 7C6.67157 7 6 6.32843 6 5.5C6 4.67157 6.67157 4 7.5 4C8.32843 4 9 4.67157 9 5.5C9 6.32843 8.32843 7 7.5 7Z" fill="white"/><path d="M7.5 3C6.67157 3 6 2.32843 6 1.5C6 0.671573 6.67157 0 7.5 0C8.32843 0 9 0.671573 9 1.5C9 2.32843 8.32843 3 7.5 3Z" fill="white"/></svg>';
@@ -80755,6 +81017,7 @@ function initGeneratorMenus()
     menuFlow = new Menu('Data flow', true, false);
     menuFlow.addItems([
         menuItemList   = new MenuItem('List',              {icon: iconList,       callback: e => actionManager.do(getCreateNodeAction(LIST,       btnNumber.div, getCreateOptions(e)))}),
+                         new MenuItem('Sublist',           {icon: iconSublist,    callback: e => actionManager.do(getCreateNodeAction(SUBLIST,    btnNumber.div, getCreateOptions(e)))}),
         menuFlowSep1   = new MenuItem('',                  {separator: true}),     
         menuItemItems  = new MenuItem('Items',             {icon: iconItems,      callback: e => actionManager.do(getCreateNodeAction(ITEMS,      btnNumber.div, getCreateOptions(e)))}),
         menuItemCount  = new MenuItem('Count',             {icon: iconCount,      callback: e => actionManager.do(getCreateNodeAction(LIST_COUNT, btnNumber.div, getCreateOptions(e)))}),
@@ -80766,7 +81029,7 @@ function initGeneratorMenus()
         menuItemCache  = new MenuItem('Cache',             {icon: iconCache,      callback: e => actionManager.do(getCreateNodeAction(CACHE,      btnNumber.div, getCreateOptions(e)))}),
         menuItemFreeze = new MenuItem('Freeze . . .',      {icon: iconFreeze,     callback: e => actionManager.do(getCreateNodeAction(FREEZE,     btnNumber.div, getCreateOptions(e)))}),
         menuFlowSep4   = new MenuItem('',                  {separator: true}),
-        menuItemStart  = new MenuItem('Start. . .',        {icon: iconStart,      callback: e => actionManager.do(getCreateNodeAction(START,   btnNumber.div, getCreateOptions(e)))}),
+        menuItemStart  = new MenuItem('Start. . .',        {icon: iconStart,      callback: e => actionManager.do(getCreateNodeAction(START,      btnNumber.div, getCreateOptions(e)))}),
         menuItemRepeat = new MenuItem('. . . Repeat',      {icon: iconRepeat,     callback: e => actionManager.do(getCreateNodeAction(REPEAT,     btnNumber.div, getCreateOptions(e)))}),
                          new MenuItem('',                  {separator: true}),
         menuItemTimer  = new MenuItem('Timer ',            {icon: iconTimer,      callback: e => actionManager.do(getCreateNodeAction(TIMER,      btnNumber.div, getCreateOptions(e)))})]);
@@ -94807,7 +95070,7 @@ extends OperatorBase
 
     setRect(x, y, w, h, updateTransform = true)
     {
-        const headerHeight = getStyleValue(this.header, 'height');
+        const headerHeight = this.header.offsetHeight;//getStyleValue(this.header, 'height');
 
         const paramHeight = 
                this instanceof ResizableOperatorWithValue
@@ -94895,10 +95158,6 @@ extends OperatorBase
                 parseFloat(_node.width ), 
                 parseFloat(_node.height),
                 false);
-            // this.setSize(
-            //     parseFloat(_node.width), 
-            //     parseFloat(_node.height),
-            //     false);
         }
     }
 }
@@ -95054,6 +95313,98 @@ extends OperatorBase
     }
 }
 
+
+
+class   OpSublist
+extends OperatorBase
+{
+    paramStart;
+    paramEnd;
+
+
+
+    constructor()
+    {
+        super(SUBLIST, 'sublist', 'sublist', iconSublist);
+
+        this.canDisable  = true;
+        // this.iconOffsetY = 1;
+        
+
+        this.addInput (new Input (LIST_VALUES));
+        this.addOutput(new Output([LIST_VALUE], this.output_genRequest));
+
+        this.addParam(this.paramStart = new NumberParam('start', 'start', true, true, true, 0, 0));
+        this.addParam(this.paramEnd   = new NumberParam('end',   'end',   true, true, true, 0, 0));
+
+
+        this.paramStart.controls[0].allowEditDecimals = false;
+        this.paramEnd  .controls[0].allowEditDecimals = false;
+    }
+
+
+
+    output_genRequest(gen)
+    {
+        // 'this' is the output
+
+        gen.scope.push({
+            nodeId:  this.node.id, 
+            paramId: NULL });
+
+        const [request, ignore] = this.node.genRequestStart(gen);
+        if (ignore) return request;
+
+        
+        const input = this.node.inputs[0];
+
+
+        request.push(input.connected ? 1 : 0);
+        
+        if (input.connected)
+            request.push(...pushInputOrParam(input, gen));
+
+        request.push(...this.node.paramStart.genRequest(gen));
+        request.push(...this.node.paramEnd  .genRequest(gen));
+
+        
+        gen.scope.pop();
+        pushUnique(gen.passedNodes, this.node);
+
+        return request;
+    }
+
+
+
+    updateValues(requestId, actionId, updateParamId, paramIds, values)
+    {
+        super.updateValues(requestId, actionId, updateParamId, paramIds, values);
+
+
+        const length = values[paramIds.findIndex(id => id == 'length')];
+
+        if (length.value > 0)
+        {
+            this.paramStart.controls[0].setMax(length.value);
+            this.paramEnd  .controls[0].setMax(length.value);
+        }
+        else
+        {
+            this.paramStart.controls[0].setMax();
+            this.paramEnd  .controls[0].setMax();
+        }
+    }
+
+
+
+    updateParams()
+    {
+        this.paramStart.enableControlText(true);
+        this.paramEnd  .enableControlText(true);
+
+        this.updateParamControls();
+    }
+}
 
 
 class   OpItems
@@ -116905,6 +117256,7 @@ function createNode(nodeType, creatingButton = null, createdNodeId = -1, options
     switch (nodeType)
     {
         case LIST:                    node = new OpList();              break;
+        case SUBLIST:                 node = new OpSublist();           break;
         case ITEMS:                   node = new OpItems();             break;
         case SELECT:                  node = new OpSelect();            break;
         case LIST_COUNT:              node = new OpListCount();         break;

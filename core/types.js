@@ -5,10 +5,12 @@ const   TEXT_LIST_VALUE       = 'TLIST#';
 const  SHAPE_LIST_VALUE       = 'SLIST#';
 
 const LIST                    = 'LIST';
+const SUBLIST                 = 'SUBLST';
 const ITEMS                   = 'ITEMS';
-const SELECT                  = 'SEL';
 const LIST_COUNT              = 'COUNT';
+const SELECT                  = 'SEL';
 const IF_ELSE                 = 'IF';
+const FILTER                  = 'LSTFLT';
 const START                   = 'START';
 const REPEAT                  = 'REPT';
 const DEFINE                  = 'DEFINE';  
@@ -27,7 +29,8 @@ const LIST_TYPES =
     TEXT_LIST_VALUE,
     SHAPE_LIST_VALUE,
     LIST,
-    ITEMS,
+    SUBLIST,
+    //ITEMS,
     LIST_COUNT,
     REPEAT
 ];
@@ -51,6 +54,7 @@ const FLOW_TYPES =
     ITEMS,
     SELECT,
     IF_ELSE,
+    FILTER,
     START,
     REPEAT,
     //FOREACH,
