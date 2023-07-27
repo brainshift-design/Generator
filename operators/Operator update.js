@@ -250,8 +250,7 @@ Operator.prototype.updateIcon = function()
 Operator.prototype.updateHeaderLabelText = function()
 {
     const prefix = 
-           this.type == REPEAT 
-        || this.type == PLACE
+        this.type == REPEAT 
         ? '...' 
         : '';
     

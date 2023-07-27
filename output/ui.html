@@ -19095,14 +19095,15 @@ extends GOperator
                     && index.value < input.items.length)
                 {
                     this.value = input.items[index.value].copy();
-                    this.value.objects = [];
+                    //this.value.objects = [];
 
                 
-                    const _objects = this.input.value.objects.filter(o => o.listId == index.value);
+                    //const _objects = this.input.value.objects.filter(o => o.listId == index.value);
 
-                    for (let j = 0; j < _objects.length; j++)
+                    //for (let j = 0; j < _objects.length; j++)
+                    for (const obj of this.value.objects)
                     {
-                        const obj  = _objects[j].copy();
+                        // const obj  = _objects[j].copy();
 
                         obj.nodeId = this.nodeId;
                         obj.listId = -1;
@@ -19113,7 +19114,7 @@ extends GOperator
                         obj.objectId += index.value.toString();
 
                         
-                        this.value.objects.push(obj);
+                        //this.value.objects.push(obj);
                     }
                 }
                 else
@@ -60283,14 +60284,15 @@ extends GOperator
                     && index.value < input.items.length)
                 {
                     this.value = input.items[index.value].copy();
-                    this.value.objects = [];
+                    //this.value.objects = [];
 
                 
-                    const _objects = this.input.value.objects.filter(o => o.listId == index.value);
+                    //const _objects = this.input.value.objects.filter(o => o.listId == index.value);
 
-                    for (let j = 0; j < _objects.length; j++)
+                    //for (let j = 0; j < _objects.length; j++)
+                    for (const obj of this.value.objects)
                     {
-                        const obj  = _objects[j].copy();
+                        // const obj  = _objects[j].copy();
 
                         obj.nodeId = this.nodeId;
                         obj.listId = -1;
@@ -60301,7 +60303,7 @@ extends GOperator
                         obj.objectId += index.value.toString();
 
                         
-                        this.value.objects.push(obj);
+                        //this.value.objects.push(obj);
                     }
                 }
                 else
@@ -95152,8 +95154,7 @@ Operator.prototype.updateIcon = function()
 Operator.prototype.updateHeaderLabelText = function()
 {
     const prefix = 
-           this.type == REPEAT 
-        || this.type == PLACE
+        this.type == REPEAT 
         ? '...' 
         : '';
     
