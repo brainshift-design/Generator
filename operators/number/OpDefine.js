@@ -7,7 +7,7 @@ extends OperatorBase
 
     constructor()
     {
-        super(DEFINE, 'list', 'list', iconList);
+        super(DEFINE, 'list', 'list', iconDefine);
 
         this.cached         = false;
         //this.iconOffsetY    = 1;
