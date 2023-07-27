@@ -128,8 +128,8 @@ extends ResizableBase
         super.setRect(
             x, 
             y, 
-            w, 
-            Math.min(h, defHeaderHeight + this.params.length * defParamHeight), 
+            Math.max(defNodeWidth, w), 
+            Math.min(Math.max(defHeaderHeight, defHeaderHeight + this.params.length * defParamHeight), h),
             updateTransform);
 
         this.updateScrollbar();

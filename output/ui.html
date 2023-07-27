@@ -24732,6 +24732,12 @@ extends GTextType1
 class GTextContains
 extends GTextType2
 {
+    first;
+    last;
+    all;
+
+
+
     constructor(nodeId, options)
     {
         super(TEXT_CONTAINS, nodeId, options);
@@ -24759,14 +24765,51 @@ extends GTextType2
         const input0 = this.input0 ? (await this.input0.eval(parse)).toValue() : null;
         const input1 = this.input1 ? (await this.input1.eval(parse)).toValue() : null;
     
+
         if (   input0 && input0.isValid() 
             && input1 && input1.isValid())
-            this.value = new NumberValue(input0.value.includes(input1.value) ? 1 : 0);
+        {
+            const indices    = [];
+            let   index = 0;
+          
+            while (index != -1) 
+            {
+                index = input0.value.indexOf(input1.value, index);
+
+                if (index != -1) 
+                {
+                    indices.push(index);
+                    index += 1;
+                }
+            }
+
+            
+            this.value = new NumberValue(indices.length > 0 ? 1 : 0);
+
+            this.first = indices.length > 0 ? new NumberValue(indices.at( 0)) : NumberValue.NaN;
+            this.last  = indices.length > 0 ? new NumberValue(indices.at(-1)) : NumberValue.NaN;
+
+            this.all   = new ListValue();
+
+            for (const index of indices)
+                this.all.items.push(new NumberValue(index));
+        }
         else                  
+        {
             this.value = NumberValue.NaN;
+            this.first = NumberValue.NaN;
+            this.last  = NumberValue.NaN;
+            this.all   =   ListValue.NaN;
+        }
     
 
-        this.updateValues = [['value', this.value]];
+        this.updateValues = 
+        [
+            ['value', this.value],
+            ['first', this.first],
+            ['last',  this.last ],
+            ['all',   this.all  ]
+        ];
 
 
         this.validate();
@@ -65672,6 +65715,12 @@ extends GTextType1
 class GTextContains
 extends GTextType2
 {
+    first;
+    last;
+    all;
+
+
+
     constructor(nodeId, options)
     {
         super(TEXT_CONTAINS, nodeId, options);
@@ -65699,14 +65748,51 @@ extends GTextType2
         const input0 = this.input0 ? (await this.input0.eval(parse)).toValue() : null;
         const input1 = this.input1 ? (await this.input1.eval(parse)).toValue() : null;
     
+
         if (   input0 && input0.isValid() 
             && input1 && input1.isValid())
-            this.value = new NumberValue(input0.value.includes(input1.value) ? 1 : 0);
+        {
+            const indices    = [];
+            let   index = 0;
+          
+            while (index != -1) 
+            {
+                index = input0.value.indexOf(input1.value, index);
+
+                if (index != -1) 
+                {
+                    indices.push(index);
+                    index += 1;
+                }
+            }
+
+            
+            this.value = new NumberValue(indices.length > 0 ? 1 : 0);
+
+            this.first = indices.length > 0 ? new NumberValue(indices.at( 0)) : NumberValue.NaN;
+            this.last  = indices.length > 0 ? new NumberValue(indices.at(-1)) : NumberValue.NaN;
+
+            this.all   = new ListValue();
+
+            for (const index of indices)
+                this.all.items.push(new NumberValue(index));
+        }
         else                  
+        {
             this.value = NumberValue.NaN;
+            this.first = NumberValue.NaN;
+            this.last  = NumberValue.NaN;
+            this.all   =   ListValue.NaN;
+        }
     
 
-        this.updateValues = [['value', this.value]];
+        this.updateValues = 
+        [
+            ['value', this.value],
+            ['first', this.first],
+            ['last',  this.last ],
+            ['all',   this.all  ]
+        ];
 
 
         this.validate();
@@ -87768,6 +87854,7 @@ extends Parameter
 
     itemName;
     showZero     = false;
+    showCount    = true;
 
     getItemCount = null;
 
@@ -87933,9 +88020,14 @@ extends Parameter
                       || this.listTypes.includes(i.type))
                   .length;
 
-        const value =
-              (this.node.isUnknown() ? '? ' : ((nItems != 0 || this.showZero) ? (nItems + ' ') : ''))
-            +  countString(nItems, this.itemName);
+        let value =
+            this.itemName != ''
+            ?   (this.node.isUnknown() ? '? ' : ((nItems != 0 || this.showZero) ? (nItems + ' ') : ''))
+              +  countString(nItems, this.itemName)
+            : this.name;
+
+        if (this.showCount)
+            value += '  [ ' + nItems + ' ]';
 
 
         this.controls[0].textbox.value = value;
@@ -95690,8 +95782,8 @@ extends ResizableBase
         super.setRect(
             x, 
             y, 
-            w, 
-            Math.min(h, defHeaderHeight + this.params.length * defParamHeight), 
+            Math.max(defNodeWidth, w), 
+            Math.min(Math.max(defHeaderHeight, defHeaderHeight + this.params.length * defParamHeight), h),
             updateTransform);
 
         this.updateScrollbar();
@@ -100466,6 +100558,9 @@ class   OpTextContains
 extends OperatorBase
 {
     paramValue;
+    paramFirst;
+    paramLast;
+    paramAll;
 
 
 
@@ -100480,9 +100575,14 @@ extends OperatorBase
         this.addInput (new Input([TEXT_VALUE]));
         this.addInput (new Input([TEXT_VALUE]));
 
-        this.addParam(this.paramValue = new NumberParam('value', '', false, false, true));
+        this.addParam(this.paramValue = new NumberParam('value', '',      false, false, true));
+        this.addParam(this.paramFirst = new NumberParam('first', 'first', true,  false, true));
+        this.addParam(this.paramLast  = new NumberParam('last',  'last',  true,  false, true));
+        this.addParam(this.paramAll   = new   ListParam('all',   'all',   false, false, true));
 
         this.paramValue.isNodeValue = true;
+
+        this.paramAll.itemName = '';
     }
 
 
@@ -100522,13 +100622,26 @@ extends OperatorBase
 
 
 
+    updateValues(requestId, actionId, updateParamId, paramIds, values)
+    {
+        super.updateValues(requestId, actionId, updateParamId, paramIds, values);
+
+        const value = values[paramIds.findIndex(id => id == 'value')];
+
+        this.paramAll.showCount = value.isValid();
+    }
+
+
+
     updateParams()
     {
         this.paramValue.enableControlText(false);
+        this.paramFirst.enableControlText(false);
+        this.paramLast .enableControlText(false);
+        this.paramAll  .enableControlText(false);
 
         updateParamConditionText(this.paramValue, this.paramValue.isUnknown(), true);
 
-        
         this.updateParamControls();
     }
 }

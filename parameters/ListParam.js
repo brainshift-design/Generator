@@ -8,6 +8,7 @@ extends Parameter
 
     itemName;
     showZero     = false;
+    showCount    = true;
 
     getItemCount = null;
 
@@ -173,9 +174,14 @@ extends Parameter
                       || this.listTypes.includes(i.type))
                   .length;
 
-        const value =
-              (this.node.isUnknown() ? '? ' : ((nItems != 0 || this.showZero) ? (nItems + ' ') : ''))
-            +  countString(nItems, this.itemName);
+        let value =
+            this.itemName != ''
+            ?   (this.node.isUnknown() ? '? ' : ((nItems != 0 || this.showZero) ? (nItems + ' ') : ''))
+              +  countString(nItems, this.itemName)
+            : this.name;
+
+        if (this.showCount)
+            value += '  [ ' + nItems + ' ]';
 
 
         this.controls[0].textbox.value = value;

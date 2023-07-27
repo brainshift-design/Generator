@@ -2,6 +2,9 @@ class   OpTextContains
 extends OperatorBase
 {
     paramValue;
+    paramFirst;
+    paramLast;
+    paramAll;
 
 
 
@@ -16,9 +19,14 @@ extends OperatorBase
         this.addInput (new Input([TEXT_VALUE]));
         this.addInput (new Input([TEXT_VALUE]));
 
-        this.addParam(this.paramValue = new NumberParam('value', '', false, false, true));
+        this.addParam(this.paramValue = new NumberParam('value', '',      false, false, true));
+        this.addParam(this.paramFirst = new NumberParam('first', 'first', true,  false, true));
+        this.addParam(this.paramLast  = new NumberParam('last',  'last',  true,  false, true));
+        this.addParam(this.paramAll   = new   ListParam('all',   'all',   false, false, true));
 
         this.paramValue.isNodeValue = true;
+
+        this.paramAll.itemName = '';
     }
 
 
@@ -58,13 +66,26 @@ extends OperatorBase
 
 
 
+    updateValues(requestId, actionId, updateParamId, paramIds, values)
+    {
+        super.updateValues(requestId, actionId, updateParamId, paramIds, values);
+
+        const value = values[paramIds.findIndex(id => id == 'value')];
+
+        this.paramAll.showCount = value.isValid();
+    }
+
+
+
     updateParams()
     {
         this.paramValue.enableControlText(false);
+        this.paramFirst.enableControlText(false);
+        this.paramLast .enableControlText(false);
+        this.paramAll  .enableControlText(false);
 
         updateParamConditionText(this.paramValue, this.paramValue.isUnknown(), true);
 
-        
         this.updateParamControls();
     }
 }
