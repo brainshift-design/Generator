@@ -111,7 +111,7 @@ extends OpShape
             return;
         
             
-        console.log('_node.params =', _node.params);
+        //console.log('_node.params =', _node.params);
         for (const _param of _node.params)
         {
             let index = this.params.findIndex(p => p.id == _param[1]);

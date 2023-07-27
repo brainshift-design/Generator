@@ -599,10 +599,10 @@ function initGeneratorMenus()
         new MenuItem('Scale',       {icon: iconScale,      callback: e => actionManager.do(getCreateNodeAction(SCALE,       btnShape.div, getCreateOptions(e)))}),
         new MenuItem('Skew',        {icon: iconSkew,       callback: e => actionManager.do(getCreateNodeAction(SKEW,        btnShape.div, getCreateOptions(e)))}),
         new MenuItem('',            {separator: true}),
-        new MenuItem('Center',      {icon: iconCenter,     callback: e => actionManager.do(getCreateNodeAction(CENTER,      btnShape.div, getCreateOptions(e)))}),
-        new MenuItem('Reset',       {icon: iconResetXform, callback: e => actionManager.do(getCreateNodeAction(RESET_XFORM, btnShape.div, getCreateOptions(e)))}),
+        new MenuItem('. . . Place', {icon: iconPlace,      callback: e => actionManager.do(getCreateNodeAction(PLACE,       btnShape.div, getCreateOptions(e)))}),
         new MenuItem('',            {separator: true}),
-        new MenuItem('. . . Place', {icon: iconPlace,      callback: e => actionManager.do(getCreateNodeAction(PLACE,       btnShape.div, getCreateOptions(e)))})]);
+        new MenuItem('Center',      {icon: iconCenter,     callback: e => actionManager.do(getCreateNodeAction(CENTER,      btnShape.div, getCreateOptions(e)))}),
+        new MenuItem('Reset',       {icon: iconResetXform, callback: e => actionManager.do(getCreateNodeAction(RESET_XFORM, btnShape.div, getCreateOptions(e)))})]);
 
 
     menuShape = new Menu('Shapes', true, false);

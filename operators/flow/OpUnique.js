@@ -18,7 +18,7 @@ extends OperatorBase
 
         this.addParam(this.paramCounts = new ListParam('counts', 'counts', false, false, true));
 
-        this.paramCounts.itemName = '';
+        this.paramCounts.itemName  = '';
     }
 
 

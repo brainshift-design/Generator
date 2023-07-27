@@ -4594,9 +4594,7 @@ a
             <div id='whatsNewBody'>
                 <h1 style='margin-top: 20px;'>What's new</h1>
 
-                <p>•  added Contains nodes for lists and text</p>
-                <p>•  added Unique list node</p>
-                <p>•  fixed UI issues</p>
+                <p>•  </p>
                 
                 <p><br/><br/><div id='chkHideWhatsNew'></div></p>
             </div>
@@ -4924,7 +4922,7 @@ a
 
 
 
-const generatorVersion = 170;
+const generatorVersion = 171;
 
 
 const MAX_INT32        = 2147483647;
@@ -43981,7 +43979,7 @@ onerror = (event, source, line, pos, error) =>
 };
 
 
-const generatorVersion = 170;
+const generatorVersion = 171;
 
 
 const MAX_INT32        = 2147483647;
@@ -81896,10 +81894,10 @@ function initGeneratorMenus()
         new MenuItem('Scale',       {icon: iconScale,      callback: e => actionManager.do(getCreateNodeAction(SCALE,       btnShape.div, getCreateOptions(e)))}),
         new MenuItem('Skew',        {icon: iconSkew,       callback: e => actionManager.do(getCreateNodeAction(SKEW,        btnShape.div, getCreateOptions(e)))}),
         new MenuItem('',            {separator: true}),
-        new MenuItem('Center',      {icon: iconCenter,     callback: e => actionManager.do(getCreateNodeAction(CENTER,      btnShape.div, getCreateOptions(e)))}),
-        new MenuItem('Reset',       {icon: iconResetXform, callback: e => actionManager.do(getCreateNodeAction(RESET_XFORM, btnShape.div, getCreateOptions(e)))}),
+        new MenuItem('. . . Place', {icon: iconPlace,      callback: e => actionManager.do(getCreateNodeAction(PLACE,       btnShape.div, getCreateOptions(e)))}),
         new MenuItem('',            {separator: true}),
-        new MenuItem('. . . Place', {icon: iconPlace,      callback: e => actionManager.do(getCreateNodeAction(PLACE,       btnShape.div, getCreateOptions(e)))})]);
+        new MenuItem('Center',      {icon: iconCenter,     callback: e => actionManager.do(getCreateNodeAction(CENTER,      btnShape.div, getCreateOptions(e)))}),
+        new MenuItem('Reset',       {icon: iconResetXform, callback: e => actionManager.do(getCreateNodeAction(RESET_XFORM, btnShape.div, getCreateOptions(e)))})]);
 
 
     menuShape = new Menu('Shapes', true, false);
@@ -88279,7 +88277,7 @@ extends Parameter
 
     itemName;
     showZero     = false;
-    showCount    = true;
+    showCount    = false;
 
     getItemCount = null;
 
@@ -96097,7 +96095,7 @@ extends OperatorBase
 
         this.addParam(this.paramCounts = new ListParam('counts', 'counts', false, false, true));
 
-        this.paramCounts.itemName = '';
+        this.paramCounts.itemName  = '';
     }
 
 
@@ -107841,7 +107839,7 @@ extends OpShape
             return;
         
             
-        console.log('_node.params =', _node.params);
+        //console.log('_node.params =', _node.params);
         for (const _param of _node.params)
         {
             let index = this.params.findIndex(p => p.id == _param[1]);

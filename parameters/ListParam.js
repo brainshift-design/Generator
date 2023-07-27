@@ -8,7 +8,7 @@ extends Parameter
 
     itemName;
     showZero     = false;
-    showCount    = true;
+    showCount    = false;
 
     getItemCount = null;
 
