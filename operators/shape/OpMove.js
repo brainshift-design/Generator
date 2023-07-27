@@ -5,9 +5,11 @@ extends OperatorBase
     paramY;
     paramMoveType;
     paramAffectSpace;
+    paramShowCenter;
 
 
     menuBoolAffectSpace;
+    menuBoolShowCenter;
 
 
 
@@ -27,7 +29,7 @@ extends OperatorBase
         this.addParam(this.paramY           = new NumberParam('y',           'Y',          true, true, true));
         this.addParam(this.paramMoveType    = new SelectParam('moveType',    'type',       true, true, true, ['position', 'vector'], 0));
         this.addParam(this.paramAffectSpace = new NumberParam('affectSpace', 'move space', true, true, true, 1, 0, 1));
-        this.addParam(this.paramShowCenter  = new NumberParam('showCenter',  'show space', true, true, true, 0, 0, 1));
+        this.addParam(this.paramShowCenter  = new NumberParam('showCenter',  'show center', true, true, true, 0, 0, 1));
 
 
         this.paramShowCenter .controls[0].allowEditDecimals = false;
@@ -70,8 +72,8 @@ extends OperatorBase
         request.push(...this.node.paramX          .genRequest(gen));
         request.push(...this.node.paramY          .genRequest(gen));
         request.push(...this.node.paramMoveType   .genRequest(gen));
-        request.push(...this.node.paramShowCenter .genRequest(gen));
         request.push(...this.node.paramAffectSpace.genRequest(gen));
+        request.push(...this.node.paramShowCenter .genRequest(gen));
 
         
         gen.scope.pop();

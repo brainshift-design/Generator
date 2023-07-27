@@ -2770,28 +2770,19 @@ function setStylePaints(figStyle, genStyle) {
         figStyle.paints = [];
 }
 function getFigmaTransform(tl, tr, bl) {
-    // console.log('tl =', tl);
-    // console.log('tr =', tr);
-    // console.log('bl =', bl);
     let vr = point(tr.x - tl.x, tr.y - tl.y);
     let vb = point(bl.x - tl.x, bl.y - tl.y);
-    let sx = vr.x; //nozero(vr.x);
-    let sy = vb.y; //nozero(vb.y);
-    // console.log('sx =', sx);
-    // console.log('sy =', sy);
+    let sx = vr.x;
+    let sy = vb.y;
     let kx = -vr.y;
     let ky = -vb.x;
     let dx = -tl.x;
     let dy = -tl.y;
-    // console.log('dx =', dx);
-    // console.log('dy =', dy);
-    const _sx = kx / nozero(sx); //equal(sx, 0, 0.0001) ? MAX_INT32 : kx/sx;
-    const _sy = ky / nozero(sy); //equal(sy, 0, 0.0001) ? MAX_INT32 : ky/sy;
+    const _sx = kx / nozero(sx);
+    const _sy = ky / nozero(sy);
     let xform = mulm3m3([[1, _sy, 0],
         [_sx, 1, 0],
         [0, 0, 1]], createTransform(dx, dy));
-    // console.log('xform =', xform);
-    // console.log('determinant(xform) =', determinant(xform));
     xform = inversem3(xform);
     const a = angle(vr);
     if (a > Tau / 4
@@ -2799,9 +2790,6 @@ function getFigmaTransform(tl, tr, bl) {
         xform = mulm3m3(xform, createTransform(0, 0, 1, 1, Tau / 2));
     if (determinant(xform) < 0)
         xform = mulm3m3(xform, createTransform(0, 0, -1, 1, 0));
-    // console.log('xform =', xform);
-    // console.log('determinant(xform) =', determinant(xform));
-    // console.log('');
     return xform;
 }
 function applyFigmaTransform(figObj, tl, tr, bl) {

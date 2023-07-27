@@ -58,7 +58,7 @@ extends GOperator1
                 obj.applyTransform(xform, options.affectSpace.value > 0);
 
                 obj.scaleCorners *= Math.abs(scaleCorners);
-                obj.scaleStyle   *= Math.abs(scaleStyle);
+                obj.scaleStyle   *= Math.abs(scaleStyle  );
             }
         }
 

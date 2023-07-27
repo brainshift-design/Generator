@@ -1090,8 +1090,8 @@ function genParseMove(parse)
     move.x           = genParse(parse);
     move.y           = genParse(parse);
     move.moveType    = genParse(parse);
-    move.showCenter  = genParse(parse);
     move.affectSpace = genParse(parse);
+    move.showCenter  = genParse(parse);
 
 
     parse.inParam = false;
@@ -1384,8 +1384,9 @@ function genParsePlace(parse)
     if (nInputs == 1)
         place.input = genParse(parse);
 
-    place.points = genParse(parse);
-    place.loop   = genParse(parse);
+    place.position   = genParse(parse);
+    place.transform  = genParse(parse);
+    place.showCenter = genParse(parse);
 
 
     parse.inParam = false;

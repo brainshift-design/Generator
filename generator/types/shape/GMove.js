@@ -4,8 +4,8 @@ extends GOperator1
     x           = null;
     y           = null;
     moveType    = null;
-    showCenter  = null;
     affectSpace = null;
+    showCenter  = null;
 
 
 
@@ -25,8 +25,8 @@ extends GOperator1
         if (this.x          ) copy.x           = this.x          .copy();
         if (this.y          ) copy.y           = this.y          .copy();
         if (this.moveType   ) copy.moveType    = this.moveType   .copy();
-        if (this.showCenter ) copy.showCenter  = this.showCenter .copy();
         if (this.affectSpace) copy.affectSpace = this.affectSpace.copy();
+        if (this.showCenter ) copy.showCenter  = this.showCenter .copy();
 
         return copy;
     }
@@ -42,8 +42,8 @@ extends GOperator1
         const x           = this.x           ? (await this.x          .eval(parse)).toValue() : null;
         const y           = this.y           ? (await this.y          .eval(parse)).toValue() : null;
         const moveType    = this.moveType    ? (await this.moveType   .eval(parse)).toValue() : null;
-        const showCenter  = this.showCenter  ? (await this.showCenter .eval(parse)).toValue() : null;
         const affectSpace = this.affectSpace ? (await this.affectSpace.eval(parse)).toValue() : null;
+        const showCenter  = this.showCenter  ? (await this.showCenter .eval(parse)).toValue() : null;
 
 
         if (this.input)
@@ -76,8 +76,8 @@ extends GOperator1
             ['x',           x          ],
             ['y',           y          ],
             ['moveType',    moveType   ],
-            ['showCenter',  showCenter ],
-            ['affectSpace', affectSpace]
+            ['affectSpace', affectSpace],
+            ['showCenter',  showCenter ]
         ];
 
 
@@ -102,8 +102,8 @@ extends GOperator1
             const x           = options.x          .value;
             const y           = options.y          .value;
             const moveType    = options.moveType   .value;
-            const showCenter  = options.showCenter .value;
             const affectSpace = options.affectSpace.value;
+            const showCenter  = options.showCenter .value;
 
 
             const _a = y/360*Tau;
@@ -170,8 +170,8 @@ extends GOperator1
             && this.x          .isValid()
             && this.y          .isValid()
             && this.moveType   .isValid()
-            && this.showCenter .isValid()
-            && this.affectSpace.isValid();
+            && this.affectSpace.isValid()
+            && this.showCenter .isValid();
     }
 
 
@@ -192,8 +192,8 @@ extends GOperator1
         if (this.x          ) this.x          .pushValueUpdates(parse);
         if (this.y          ) this.y          .pushValueUpdates(parse);
         if (this.moveType   ) this.moveType   .pushValueUpdates(parse);
-        if (this.showCenter ) this.showCenter .pushValueUpdates(parse);
         if (this.affectSpace) this.affectSpace.pushValueUpdates(parse);
+        if (this.showCenter ) this.showCenter .pushValueUpdates(parse);
     }
 
 
@@ -205,7 +205,7 @@ extends GOperator1
         if (this.x          ) this.x          .invalidateInputs(from);
         if (this.y          ) this.y          .invalidateInputs(from);
         if (this.moveType   ) this.moveType   .invalidateInputs(from);
-        if (this.showCenter ) this.showCenter .invalidateInputs(from);
         if (this.affectSpace) this.affectSpace.invalidateInputs(from);
+        if (this.showCenter ) this.showCenter .invalidateInputs(from);
     }
 }

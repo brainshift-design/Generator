@@ -29,6 +29,8 @@ extends GValue
             this.x.copy(), 
             this.y.copy());
 
+        copy.copyBase(this);
+
         return copy;
     }
 

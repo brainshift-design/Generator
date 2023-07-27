@@ -64,10 +64,9 @@ extends GOperator1
 
         this.updateValues =
         [
-            //['value',       this.value],
-            ['centerX',     centerX   ],
-            ['centerY',     centerY   ],
-            ['showCenter',  showCenter]
+            ['centerX',    centerX   ],
+            ['centerY',    centerY   ],
+            ['showCenter', showCenter]
         ];
 
 
@@ -86,9 +85,9 @@ extends GOperator1
             this.value.objects = getValidObjects(this.input);
 
             
-            const centerX     = options.centerX    .value;
-            const centerY     = options.centerY    .value;
-            const showCenter  = options.showCenter .value;
+            const centerX     = options.centerX   .value;
+            const centerY     = options.centerY   .value;
+            const showCenter  = options.showCenter.value;
      
             const cx          = centerX/100;
             const cy          = centerY/100;

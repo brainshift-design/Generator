@@ -30,7 +30,7 @@ extends OperatorBase
     addBaseParams(affect)
     {
         this.addParam(this.paramAffectSpace = new NumberParam('affectSpace', affect + ' space', true, true, true, 1, 0, 1));
-        this.addParam(this.paramShowCenter  = new NumberParam('showCenter',       'show space', true, true, true, 0, 0, 1));
+        this.addParam(this.paramShowCenter  = new NumberParam('showCenter',       'show center', true, true, true, 0, 0, 1));
 
 
         this.paramShowCenter .controls[0].allowEditDecimals = false;

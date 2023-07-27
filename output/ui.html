@@ -4594,7 +4594,7 @@ a
             <div id='whatsNewBody'>
                 <h1 style='margin-top: 20px;'>What's new</h1>
 
-                <p>•  </p>
+                <p>•  Place now works with one input and is more flexible</p>
                 
                 <p><br/><br/><div id='chkHideWhatsNew'></div></p>
             </div>
@@ -17050,6 +17050,8 @@ extends GValue
             this.nodeId,
             this.x.copy(), 
             this.y.copy());
+
+        copy.copyBase(this);
 
         return copy;
     }
@@ -31076,8 +31078,9 @@ extends GOperator1
 
         copy.copyBase(this);
 
-        if (this.x) copy.x = this.x.copy();
-        if (this.y) copy.y = this.y.copy();
+        if (this.value) copy.value = this.value.copy();
+        if (this.x    ) copy.x     = this.x    .copy();
+        if (this.y    ) copy.y     = this.y    .copy();
 
         return copy;
     }
@@ -32974,8 +32977,8 @@ extends GOperator1
     x           = null;
     y           = null;
     moveType    = null;
-    showCenter  = null;
     affectSpace = null;
+    showCenter  = null;
 
 
 
@@ -32995,8 +32998,8 @@ extends GOperator1
         if (this.x          ) copy.x           = this.x          .copy();
         if (this.y          ) copy.y           = this.y          .copy();
         if (this.moveType   ) copy.moveType    = this.moveType   .copy();
-        if (this.showCenter ) copy.showCenter  = this.showCenter .copy();
         if (this.affectSpace) copy.affectSpace = this.affectSpace.copy();
+        if (this.showCenter ) copy.showCenter  = this.showCenter .copy();
 
         return copy;
     }
@@ -33012,8 +33015,8 @@ extends GOperator1
         const x           = this.x           ? (await this.x          .eval(parse)).toValue() : null;
         const y           = this.y           ? (await this.y          .eval(parse)).toValue() : null;
         const moveType    = this.moveType    ? (await this.moveType   .eval(parse)).toValue() : null;
-        const showCenter  = this.showCenter  ? (await this.showCenter .eval(parse)).toValue() : null;
         const affectSpace = this.affectSpace ? (await this.affectSpace.eval(parse)).toValue() : null;
+        const showCenter  = this.showCenter  ? (await this.showCenter .eval(parse)).toValue() : null;
 
 
         if (this.input)
@@ -33046,8 +33049,8 @@ extends GOperator1
             ['x',           x          ],
             ['y',           y          ],
             ['moveType',    moveType   ],
-            ['showCenter',  showCenter ],
-            ['affectSpace', affectSpace]
+            ['affectSpace', affectSpace],
+            ['showCenter',  showCenter ]
         ];
 
 
@@ -33072,8 +33075,8 @@ extends GOperator1
             const x           = options.x          .value;
             const y           = options.y          .value;
             const moveType    = options.moveType   .value;
-            const showCenter  = options.showCenter .value;
             const affectSpace = options.affectSpace.value;
+            const showCenter  = options.showCenter .value;
 
 
             const _a = y/360*Tau;
@@ -33140,8 +33143,8 @@ extends GOperator1
             && this.x          .isValid()
             && this.y          .isValid()
             && this.moveType   .isValid()
-            && this.showCenter .isValid()
-            && this.affectSpace.isValid();
+            && this.affectSpace.isValid()
+            && this.showCenter .isValid();
     }
 
 
@@ -33162,8 +33165,8 @@ extends GOperator1
         if (this.x          ) this.x          .pushValueUpdates(parse);
         if (this.y          ) this.y          .pushValueUpdates(parse);
         if (this.moveType   ) this.moveType   .pushValueUpdates(parse);
-        if (this.showCenter ) this.showCenter .pushValueUpdates(parse);
         if (this.affectSpace) this.affectSpace.pushValueUpdates(parse);
+        if (this.showCenter ) this.showCenter .pushValueUpdates(parse);
     }
 
 
@@ -33175,8 +33178,8 @@ extends GOperator1
         if (this.x          ) this.x          .invalidateInputs(from);
         if (this.y          ) this.y          .invalidateInputs(from);
         if (this.moveType   ) this.moveType   .invalidateInputs(from);
-        if (this.showCenter ) this.showCenter .invalidateInputs(from);
         if (this.affectSpace) this.affectSpace.invalidateInputs(from);
+        if (this.showCenter ) this.showCenter .invalidateInputs(from);
     }
 }
 
@@ -33241,7 +33244,7 @@ extends GOperator1
                 obj.applyTransform(xform, options.affectSpace.value > 0);
 
                 obj.scaleCorners *= Math.abs(scaleCorners);
-                obj.scaleStyle   *= Math.abs(scaleStyle);
+                obj.scaleStyle   *= Math.abs(scaleStyle  );
             }
         }
 
@@ -33800,10 +33803,9 @@ extends GOperator1
 
         this.updateValues =
         [
-            //['value',       this.value],
-            ['centerX',     centerX   ],
-            ['centerY',     centerY   ],
-            ['showCenter',  showCenter]
+            ['centerX',    centerX   ],
+            ['centerY',    centerY   ],
+            ['showCenter', showCenter]
         ];
 
 
@@ -33822,9 +33824,9 @@ extends GOperator1
             this.value.objects = getValidObjects(this.input);
 
             
-            const centerX     = options.centerX    .value;
-            const centerY     = options.centerY    .value;
-            const showCenter  = options.showCenter .value;
+            const centerX     = options.centerX   .value;
+            const centerY     = options.centerY   .value;
+            const showCenter  = options.showCenter.value;
      
             const cx          = centerX/100;
             const cy          = centerY/100;
@@ -34043,12 +34045,10 @@ extends GOperator1
 class GPlace
 extends GOperator
 {
-    input  = null;
+    input     = null;
 
-    points = null;
-    loop   = null;
-
-    iterationObjects = [];
+    position  = null;
+    transform = null;
 
 
 
@@ -34068,8 +34068,7 @@ extends GOperator
         if (this.input) 
             copy.input = this.input.copy();
 
-        if (this.points) copy.points = this.points.copy();
-        if (this.loop  ) copy.loop   = this.loop  .copy();
+        if (this.point) copy.point = this.point.copy();
 
         return copy;
     }
@@ -34082,144 +34081,39 @@ extends GOperator
             return this;
 
             
-        let points = this.points ? (await this.points.eval(parse)).toValue() : null;
+        const position   = this.position   ? (await this.position  .eval(parse)).toValue() : null;
+        const transform  = this.transform  ? (await this.transform .eval(parse)).toValue() : null;
+        const showCenter = this.showCenter ? (await this.showCenter.eval(parse)).toValue() : null;
 
-        if (   points
-            && points.type == POINT_VALUE)
-            points = new ListValue([points]);
-
-
-        if (this.loop.type != NUMBER_VALUE)
+        if (this.input)
         {
-            assertVolatile(this);
-            this.setRepeatCount(this.loop, count.value);
-        }
+            this.value = (await this.input.eval(parse)).toValue();
 
-
-        this.value = new ListValue();
-
-
-        let repeat =
-        {
-            repeatId:  this.nodeId,
-            iteration: 0,
-            total:     1
-        };
-
-
-        if (points.items.length > 0)
-        {
-            if (this.input)
-            {
-                const startTime    = Date.now();
-                let   showProgress = false;
-
-
-                const nItems = 
-                    this.options.enabled 
-                    ? points.items.length
-                    : 1;
-
-
-                this.value.objects = [];
-
-
-                parse.repeats.push(repeat);
-
-
-                for (let i = 0, o = 0; i < points.items.length; i++)
-                {
-                    if (  !showProgress
-                        && Date.now() - startTime > 50)
-                    {
-                        genInitNodeProgress(this.nodeId);
-                        showProgress = true;
-                    }
-
-                    
-                    if (this.loop.type != NUMBER_VALUE)
-                    {
-                        this.invalidateRepeat(parse, this.loop, this.nodeId);
-
-                        repeat.iteration = i;
-                        repeat.total     = nItems;
-                    }
-                    
-                    
-                    this.input.invalidateInputs(this);
-
-
-                    let input = (await this.input.eval(parse)).toValue();
-
-                    if (!LIST_VALUES.includes(input.type))
-                        input = new ListValue([input]);
-
-                    
-                    if (input)
-                    {
-                        this.value.items.push(input.copy());
-
-
-                        this.iterationObjects = [];
-
-
-                        for (let j = 0; j < this.input.value.objects.length; j++, o++)
-                        {
-                            const obj = copyFigmaObject(this.input.value.objects[o % input.items.length]);
-
-                            this.iterationObjects.push(obj.copy());
-
-                            obj.nodeId      = this.nodeId;
-                            obj.listId      = i;
-
-                            obj.objectId    = obj.objectId + OBJECT_SEPARATOR + this.nodeId + ':' + (o+1).toString();
-                            obj.objectName += ' ' + (o+1).toString();
-
-
-                            obj.applyTransform(createTransform(
-                                points.items[i].x.toNumber(),
-                                points.items[i].y.toNumber()));
-
-                                
-                            this.value.objects.push(obj);
-                        }
-                    }
-
-
-                    if (showProgress)
-                        genUpdateNodeProgress(this.nodeId, i / nItems);
-                }
-
-
-                if (this.startTimer > -1)
-                {
-                    clearTimeout(this.startTimer);
-                    this.startTimer = -1;
-                }
-
-
-                consoleAssert(parse.repeats.at(-1) == repeat, 'invalid nested repeat \'' + this.nodeId + '\'');
-                parse.repeats.pop();
-            }
-
-            
-            this.updateValues =
-            [
-                ['value',  this.value     ],
-                ['points', points         ],
-                ['loop',   NumberValue.NaN]
-            ];
+            if (this.value)
+                this.value.nodeId = this.nodeId;
         }
         else
         {
-            if (this.input)
-                await this.input.eval(parse);
-
-            this.updateValues = [['', NullValue]];
+            this.value = NullValue;
         }
 
 
-        //await this.evalObjects(parse, {points: points});
+        await this.evalObjects(
+            parse, 
+            {
+                transform:  transform,
+                showCenter: showCenter,
+                sp0:        position.objects.length > 0 ? position.objects[0].sp0 : null,
+                sp1:        position.objects.length > 0 ? position.objects[0].sp1 : null,
+                sp2:        position.objects.length > 0 ? position.objects[0].sp2 : null
+            });
+
+        
+        this.updateValues = [
+            ['position',   position  ],
+            ['transform',  transform ],
+            ['showCenter', showCenter]
+        ];
 
 
         this.validate();
@@ -34229,43 +34123,72 @@ extends GOperator
 
 
 
-    // async evalObjects(parse, options = {})
-    // {
-    //     this.value.objects = this.input ? this.input.objects.map(o => o.copy()) : [];
-    //     //this.value.objects = this.input ? this.input.objects.map(o => o.copy()) : [];
-
-            
-    //     if (!this.options.enabled)
-    //         return;
-            
-
-    //     // const x = options.x.toNumber();
-    //     // const y = options.y.toNumber();
-
-    //     // const xform = createTransform(x, y);
+    async evalObjects(parse, options)
+    {
+        if (   this.value
+            && this.value.isValid())
+        {
+            this.value.objects = getValidObjects(this.input);
 
 
-    //     // let i = 0;
+            const place = createTransform(
+                options.sp0 ? options.sp0.x : 0,
+                options.sp0 ? options.sp0.y : 0);
+
+
+            for (const obj of this.value.objects)
+            {
+                obj.nodeId   = this.nodeId;
+                obj.objectId = obj.objectId + OBJECT_SEPARATOR + this.nodeId;
+
+                if (this.options.enabled)
+                {
+                    let xform = clone(identity);
+
+                    xform = mulm3m3(
+                        xform,
+                        createTransform(-obj.sp0.x, -obj.sp0.y),
+                        place);
+
+                    if (   options.transform.value > 0
+                        && options.sp0
+                        && options.sp1
+                        && options.sp2)
+                    {
+                        const sp = getTransformFromPoints(
+                            options.sp0, 
+                            options.sp1, 
+                            options.sp2);
+
+                        xform = mulm3m3(xform, sp);
+
+                        obj.sp1 = addv(obj.sp0, point(1, 0));
+                        obj.sp2 = addv(obj.sp0, point(0, 1));
+                    }
+
+                    obj.applyTransform(xform, true);
+                }
+            }
+
+
+            if (options.showCenter.value > 0)
+            {
+                const objects = [...this.value.objects]; // avoids infinite growth
+                objects.forEach(o => addObjectCenter(this, o, parse.viewportZoom));
+            }
+        }
         
-    //     // for (const obj of this.value.objects)
-    //     // {
-    //     //     obj.nodeId   = this.nodeId;
-    //     //     obj.objectId = obj.objectId + OBJECT_SEPARATOR + this.nodeId;
-
-    //     //     obj.applyTransform(xform);
-    //     // }
-
         
-    //     await super.evalObjects(parse);
-    // }
+        await super.evalObjects(parse);
+    }
 
 
 
     isValid()
     {
         return super.isValid()
-            && this.points.isValid()
-            && this.loop  .isValid();
+            && this.position .isValid()
+            && this.transform.isValid();
     }
 
 
@@ -34281,9 +34204,9 @@ extends GOperator
     {
         super.pushValueUpdates(parse);
 
-        if (this.input ) this.input .pushValueUpdates(parse);
-        if (this.points) this.points.pushValueUpdates(parse);
-        if (this.loop  ) this.loop  .pushValueUpdates(parse);
+        if (this.input    ) this.input    .pushValueUpdates(parse);
+        if (this.position ) this.position .pushValueUpdates(parse);
+        if (this.transform) this.transform.pushValueUpdates(parse);
     }
 
 
@@ -34292,10 +34215,33 @@ extends GOperator
     {
         super.invalidateInputs(from);
 
-        if (this.input ) this.input .invalidateInputs(from);
-        if (this.points) this.points.invalidateInputs(from);
-        if (this.loop  ) this.loop  .invalidateInputs(from);
+        if (this.input    ) this.input    .invalidateInputs(from);
+        if (this.position ) this.position .invalidateInputs(from);
+        if (this.transform) this.transform.invalidateInputs(from);
     }
+}
+
+
+
+function getTransformFromPoints(p0, p1, p2) 
+{
+    const dx   = p1.x - p0.x;
+    const dy   = p1.y - p0.y;
+
+    const a    = Math.atan2(dy, dx);
+  
+    const cosa = Math.cos(a);
+    const sina = Math.sin(a);
+
+
+    const sx   = ((p1.y - p0.y) / nozero(p1.x - p0.x));
+    const sy   = ((p2.x - p0.x) / nozero(p2.y - p0.y));
+
+    // TODO add skew 
+
+    return [[ cosa,         -sina /** sy*/, 0 ], 
+            [ sina /** sx*/, cosa,          0 ], 
+            [ 0,             0,             1 ]];
 }
 
 
@@ -39197,8 +39143,8 @@ function genParseMove(parse)
     move.x           = genParse(parse);
     move.y           = genParse(parse);
     move.moveType    = genParse(parse);
-    move.showCenter  = genParse(parse);
     move.affectSpace = genParse(parse);
+    move.showCenter  = genParse(parse);
 
 
     parse.inParam = false;
@@ -39491,8 +39437,9 @@ function genParsePlace(parse)
     if (nInputs == 1)
         place.input = genParse(parse);
 
-    place.points = genParse(parse);
-    place.loop   = genParse(parse);
+    place.position   = genParse(parse);
+    place.transform  = genParse(parse);
+    place.showCenter = genParse(parse);
 
 
     parse.inParam = false;
@@ -58292,6 +58239,8 @@ extends GValue
             this.x.copy(), 
             this.y.copy());
 
+        copy.copyBase(this);
+
         return copy;
     }
 
@@ -72317,8 +72266,9 @@ extends GOperator1
 
         copy.copyBase(this);
 
-        if (this.x) copy.x = this.x.copy();
-        if (this.y) copy.y = this.y.copy();
+        if (this.value) copy.value = this.value.copy();
+        if (this.x    ) copy.x     = this.x    .copy();
+        if (this.y    ) copy.y     = this.y    .copy();
 
         return copy;
     }
@@ -74215,8 +74165,8 @@ extends GOperator1
     x           = null;
     y           = null;
     moveType    = null;
-    showCenter  = null;
     affectSpace = null;
+    showCenter  = null;
 
 
 
@@ -74236,8 +74186,8 @@ extends GOperator1
         if (this.x          ) copy.x           = this.x          .copy();
         if (this.y          ) copy.y           = this.y          .copy();
         if (this.moveType   ) copy.moveType    = this.moveType   .copy();
-        if (this.showCenter ) copy.showCenter  = this.showCenter .copy();
         if (this.affectSpace) copy.affectSpace = this.affectSpace.copy();
+        if (this.showCenter ) copy.showCenter  = this.showCenter .copy();
 
         return copy;
     }
@@ -74253,8 +74203,8 @@ extends GOperator1
         const x           = this.x           ? (await this.x          .eval(parse)).toValue() : null;
         const y           = this.y           ? (await this.y          .eval(parse)).toValue() : null;
         const moveType    = this.moveType    ? (await this.moveType   .eval(parse)).toValue() : null;
-        const showCenter  = this.showCenter  ? (await this.showCenter .eval(parse)).toValue() : null;
         const affectSpace = this.affectSpace ? (await this.affectSpace.eval(parse)).toValue() : null;
+        const showCenter  = this.showCenter  ? (await this.showCenter .eval(parse)).toValue() : null;
 
 
         if (this.input)
@@ -74287,8 +74237,8 @@ extends GOperator1
             ['x',           x          ],
             ['y',           y          ],
             ['moveType',    moveType   ],
-            ['showCenter',  showCenter ],
-            ['affectSpace', affectSpace]
+            ['affectSpace', affectSpace],
+            ['showCenter',  showCenter ]
         ];
 
 
@@ -74313,8 +74263,8 @@ extends GOperator1
             const x           = options.x          .value;
             const y           = options.y          .value;
             const moveType    = options.moveType   .value;
-            const showCenter  = options.showCenter .value;
             const affectSpace = options.affectSpace.value;
+            const showCenter  = options.showCenter .value;
 
 
             const _a = y/360*Tau;
@@ -74381,8 +74331,8 @@ extends GOperator1
             && this.x          .isValid()
             && this.y          .isValid()
             && this.moveType   .isValid()
-            && this.showCenter .isValid()
-            && this.affectSpace.isValid();
+            && this.affectSpace.isValid()
+            && this.showCenter .isValid();
     }
 
 
@@ -74403,8 +74353,8 @@ extends GOperator1
         if (this.x          ) this.x          .pushValueUpdates(parse);
         if (this.y          ) this.y          .pushValueUpdates(parse);
         if (this.moveType   ) this.moveType   .pushValueUpdates(parse);
-        if (this.showCenter ) this.showCenter .pushValueUpdates(parse);
         if (this.affectSpace) this.affectSpace.pushValueUpdates(parse);
+        if (this.showCenter ) this.showCenter .pushValueUpdates(parse);
     }
 
 
@@ -74416,8 +74366,8 @@ extends GOperator1
         if (this.x          ) this.x          .invalidateInputs(from);
         if (this.y          ) this.y          .invalidateInputs(from);
         if (this.moveType   ) this.moveType   .invalidateInputs(from);
-        if (this.showCenter ) this.showCenter .invalidateInputs(from);
         if (this.affectSpace) this.affectSpace.invalidateInputs(from);
+        if (this.showCenter ) this.showCenter .invalidateInputs(from);
     }
 }
 
@@ -74482,7 +74432,7 @@ extends GOperator1
                 obj.applyTransform(xform, options.affectSpace.value > 0);
 
                 obj.scaleCorners *= Math.abs(scaleCorners);
-                obj.scaleStyle   *= Math.abs(scaleStyle);
+                obj.scaleStyle   *= Math.abs(scaleStyle  );
             }
         }
 
@@ -75041,10 +74991,9 @@ extends GOperator1
 
         this.updateValues =
         [
-            //['value',       this.value],
-            ['centerX',     centerX   ],
-            ['centerY',     centerY   ],
-            ['showCenter',  showCenter]
+            ['centerX',    centerX   ],
+            ['centerY',    centerY   ],
+            ['showCenter', showCenter]
         ];
 
 
@@ -75063,9 +75012,9 @@ extends GOperator1
             this.value.objects = getValidObjects(this.input);
 
             
-            const centerX     = options.centerX    .value;
-            const centerY     = options.centerY    .value;
-            const showCenter  = options.showCenter .value;
+            const centerX     = options.centerX   .value;
+            const centerY     = options.centerY   .value;
+            const showCenter  = options.showCenter.value;
      
             const cx          = centerX/100;
             const cy          = centerY/100;
@@ -75284,12 +75233,10 @@ extends GOperator1
 class GPlace
 extends GOperator
 {
-    input  = null;
+    input     = null;
 
-    points = null;
-    loop   = null;
-
-    iterationObjects = [];
+    position  = null;
+    transform = null;
 
 
 
@@ -75309,8 +75256,7 @@ extends GOperator
         if (this.input) 
             copy.input = this.input.copy();
 
-        if (this.points) copy.points = this.points.copy();
-        if (this.loop  ) copy.loop   = this.loop  .copy();
+        if (this.point) copy.point = this.point.copy();
 
         return copy;
     }
@@ -75323,144 +75269,39 @@ extends GOperator
             return this;
 
             
-        let points = this.points ? (await this.points.eval(parse)).toValue() : null;
+        const position   = this.position   ? (await this.position  .eval(parse)).toValue() : null;
+        const transform  = this.transform  ? (await this.transform .eval(parse)).toValue() : null;
+        const showCenter = this.showCenter ? (await this.showCenter.eval(parse)).toValue() : null;
 
-        if (   points
-            && points.type == POINT_VALUE)
-            points = new ListValue([points]);
-
-
-        if (this.loop.type != NUMBER_VALUE)
+        if (this.input)
         {
-            assertVolatile(this);
-            this.setRepeatCount(this.loop, count.value);
-        }
+            this.value = (await this.input.eval(parse)).toValue();
 
-
-        this.value = new ListValue();
-
-
-        let repeat =
-        {
-            repeatId:  this.nodeId,
-            iteration: 0,
-            total:     1
-        };
-
-
-        if (points.items.length > 0)
-        {
-            if (this.input)
-            {
-                const startTime    = Date.now();
-                let   showProgress = false;
-
-
-                const nItems = 
-                    this.options.enabled 
-                    ? points.items.length
-                    : 1;
-
-
-                this.value.objects = [];
-
-
-                parse.repeats.push(repeat);
-
-
-                for (let i = 0, o = 0; i < points.items.length; i++)
-                {
-                    if (  !showProgress
-                        && Date.now() - startTime > 50)
-                    {
-                        genInitNodeProgress(this.nodeId);
-                        showProgress = true;
-                    }
-
-                    
-                    if (this.loop.type != NUMBER_VALUE)
-                    {
-                        this.invalidateRepeat(parse, this.loop, this.nodeId);
-
-                        repeat.iteration = i;
-                        repeat.total     = nItems;
-                    }
-                    
-                    
-                    this.input.invalidateInputs(this);
-
-
-                    let input = (await this.input.eval(parse)).toValue();
-
-                    if (!LIST_VALUES.includes(input.type))
-                        input = new ListValue([input]);
-
-                    
-                    if (input)
-                    {
-                        this.value.items.push(input.copy());
-
-
-                        this.iterationObjects = [];
-
-
-                        for (let j = 0; j < this.input.value.objects.length; j++, o++)
-                        {
-                            const obj = copyFigmaObject(this.input.value.objects[o % input.items.length]);
-
-                            this.iterationObjects.push(obj.copy());
-
-                            obj.nodeId      = this.nodeId;
-                            obj.listId      = i;
-
-                            obj.objectId    = obj.objectId + OBJECT_SEPARATOR + this.nodeId + ':' + (o+1).toString();
-                            obj.objectName += ' ' + (o+1).toString();
-
-
-                            obj.applyTransform(createTransform(
-                                points.items[i].x.toNumber(),
-                                points.items[i].y.toNumber()));
-
-                                
-                            this.value.objects.push(obj);
-                        }
-                    }
-
-
-                    if (showProgress)
-                        genUpdateNodeProgress(this.nodeId, i / nItems);
-                }
-
-
-                if (this.startTimer > -1)
-                {
-                    clearTimeout(this.startTimer);
-                    this.startTimer = -1;
-                }
-
-
-                consoleAssert(parse.repeats.at(-1) == repeat, 'invalid nested repeat \'' + this.nodeId + '\'');
-                parse.repeats.pop();
-            }
-
-            
-            this.updateValues =
-            [
-                ['value',  this.value     ],
-                ['points', points         ],
-                ['loop',   NumberValue.NaN]
-            ];
+            if (this.value)
+                this.value.nodeId = this.nodeId;
         }
         else
         {
-            if (this.input)
-                await this.input.eval(parse);
-
-            this.updateValues = [['', NullValue]];
+            this.value = NullValue;
         }
 
 
-        //await this.evalObjects(parse, {points: points});
+        await this.evalObjects(
+            parse, 
+            {
+                transform:  transform,
+                showCenter: showCenter,
+                sp0:        position.objects.length > 0 ? position.objects[0].sp0 : null,
+                sp1:        position.objects.length > 0 ? position.objects[0].sp1 : null,
+                sp2:        position.objects.length > 0 ? position.objects[0].sp2 : null
+            });
+
+        
+        this.updateValues = [
+            ['position',   position  ],
+            ['transform',  transform ],
+            ['showCenter', showCenter]
+        ];
 
 
         this.validate();
@@ -75470,43 +75311,72 @@ extends GOperator
 
 
 
-    // async evalObjects(parse, options = {})
-    // {
-    //     this.value.objects = this.input ? this.input.objects.map(o => o.copy()) : [];
-    //     //this.value.objects = this.input ? this.input.objects.map(o => o.copy()) : [];
-
-            
-    //     if (!this.options.enabled)
-    //         return;
-            
-
-    //     // const x = options.x.toNumber();
-    //     // const y = options.y.toNumber();
-
-    //     // const xform = createTransform(x, y);
+    async evalObjects(parse, options)
+    {
+        if (   this.value
+            && this.value.isValid())
+        {
+            this.value.objects = getValidObjects(this.input);
 
 
-    //     // let i = 0;
+            const place = createTransform(
+                options.sp0 ? options.sp0.x : 0,
+                options.sp0 ? options.sp0.y : 0);
+
+
+            for (const obj of this.value.objects)
+            {
+                obj.nodeId   = this.nodeId;
+                obj.objectId = obj.objectId + OBJECT_SEPARATOR + this.nodeId;
+
+                if (this.options.enabled)
+                {
+                    let xform = clone(identity);
+
+                    xform = mulm3m3(
+                        xform,
+                        createTransform(-obj.sp0.x, -obj.sp0.y),
+                        place);
+
+                    if (   options.transform.value > 0
+                        && options.sp0
+                        && options.sp1
+                        && options.sp2)
+                    {
+                        const sp = getTransformFromPoints(
+                            options.sp0, 
+                            options.sp1, 
+                            options.sp2);
+
+                        xform = mulm3m3(xform, sp);
+
+                        obj.sp1 = addv(obj.sp0, point(1, 0));
+                        obj.sp2 = addv(obj.sp0, point(0, 1));
+                    }
+
+                    obj.applyTransform(xform, true);
+                }
+            }
+
+
+            if (options.showCenter.value > 0)
+            {
+                const objects = [...this.value.objects]; // avoids infinite growth
+                objects.forEach(o => addObjectCenter(this, o, parse.viewportZoom));
+            }
+        }
         
-    //     // for (const obj of this.value.objects)
-    //     // {
-    //     //     obj.nodeId   = this.nodeId;
-    //     //     obj.objectId = obj.objectId + OBJECT_SEPARATOR + this.nodeId;
-
-    //     //     obj.applyTransform(xform);
-    //     // }
-
         
-    //     await super.evalObjects(parse);
-    // }
+        await super.evalObjects(parse);
+    }
 
 
 
     isValid()
     {
         return super.isValid()
-            && this.points.isValid()
-            && this.loop  .isValid();
+            && this.position .isValid()
+            && this.transform.isValid();
     }
 
 
@@ -75522,9 +75392,9 @@ extends GOperator
     {
         super.pushValueUpdates(parse);
 
-        if (this.input ) this.input .pushValueUpdates(parse);
-        if (this.points) this.points.pushValueUpdates(parse);
-        if (this.loop  ) this.loop  .pushValueUpdates(parse);
+        if (this.input    ) this.input    .pushValueUpdates(parse);
+        if (this.position ) this.position .pushValueUpdates(parse);
+        if (this.transform) this.transform.pushValueUpdates(parse);
     }
 
 
@@ -75533,10 +75403,33 @@ extends GOperator
     {
         super.invalidateInputs(from);
 
-        if (this.input ) this.input .invalidateInputs(from);
-        if (this.points) this.points.invalidateInputs(from);
-        if (this.loop  ) this.loop  .invalidateInputs(from);
+        if (this.input    ) this.input    .invalidateInputs(from);
+        if (this.position ) this.position .invalidateInputs(from);
+        if (this.transform) this.transform.invalidateInputs(from);
     }
+}
+
+
+
+function getTransformFromPoints(p0, p1, p2) 
+{
+    const dx   = p1.x - p0.x;
+    const dy   = p1.y - p0.y;
+
+    const a    = Math.atan2(dy, dx);
+  
+    const cosa = Math.cos(a);
+    const sina = Math.sin(a);
+
+
+    const sx   = ((p1.y - p0.y) / nozero(p1.x - p0.x));
+    const sy   = ((p2.x - p0.x) / nozero(p2.y - p0.y));
+
+    // TODO add skew 
+
+    return [[ cosa,         -sina /** sy*/, 0 ], 
+            [ sina /** sx*/, cosa,          0 ], 
+            [ 0,             0,             1 ]];
 }
 
 
@@ -81889,15 +81782,15 @@ function initGeneratorMenus()
 
     menuTransform = new Menu('Transform', true, false);
     menuTransform.addItems([
-        new MenuItem('Move',        {icon: iconMove,       callback: e => actionManager.do(getCreateNodeAction(MOVE,        btnShape.div, getCreateOptions(e)))}),
-        new MenuItem('Rotate',      {icon: iconRotate,     callback: e => actionManager.do(getCreateNodeAction(ROTATE,      btnShape.div, getCreateOptions(e)))}),
-        new MenuItem('Scale',       {icon: iconScale,      callback: e => actionManager.do(getCreateNodeAction(SCALE,       btnShape.div, getCreateOptions(e)))}),
-        new MenuItem('Skew',        {icon: iconSkew,       callback: e => actionManager.do(getCreateNodeAction(SKEW,        btnShape.div, getCreateOptions(e)))}),
-        new MenuItem('',            {separator: true}),
-        new MenuItem('. . . Place', {icon: iconPlace,      callback: e => actionManager.do(getCreateNodeAction(PLACE,       btnShape.div, getCreateOptions(e)))}),
-        new MenuItem('',            {separator: true}),
-        new MenuItem('Center',      {icon: iconCenter,     callback: e => actionManager.do(getCreateNodeAction(CENTER,      btnShape.div, getCreateOptions(e)))}),
-        new MenuItem('Reset',       {icon: iconResetXform, callback: e => actionManager.do(getCreateNodeAction(RESET_XFORM, btnShape.div, getCreateOptions(e)))})]);
+        new MenuItem('Move',   {icon: iconMove,       callback: e => actionManager.do(getCreateNodeAction(MOVE,        btnShape.div, getCreateOptions(e)))}),
+        new MenuItem('Rotate', {icon: iconRotate,     callback: e => actionManager.do(getCreateNodeAction(ROTATE,      btnShape.div, getCreateOptions(e)))}),
+        new MenuItem('Scale',  {icon: iconScale,      callback: e => actionManager.do(getCreateNodeAction(SCALE,       btnShape.div, getCreateOptions(e)))}),
+        new MenuItem('Skew',   {icon: iconSkew,       callback: e => actionManager.do(getCreateNodeAction(SKEW,        btnShape.div, getCreateOptions(e)))}),
+        new MenuItem('',       {separator: true}),
+        new MenuItem('Place',  {icon: iconPlace,      callback: e => actionManager.do(getCreateNodeAction(PLACE,       btnShape.div, getCreateOptions(e)))}),
+        new MenuItem('',       {separator: true}),
+        new MenuItem('Center', {icon: iconCenter,     callback: e => actionManager.do(getCreateNodeAction(CENTER,      btnShape.div, getCreateOptions(e)))}),
+        new MenuItem('Reset',  {icon: iconResetXform, callback: e => actionManager.do(getCreateNodeAction(RESET_XFORM, btnShape.div, getCreateOptions(e)))})]);
 
 
     menuShape = new Menu('Shapes', true, false);
@@ -108648,9 +108541,11 @@ extends OperatorBase
     paramY;
     paramMoveType;
     paramAffectSpace;
+    paramShowCenter;
 
 
     menuBoolAffectSpace;
+    menuBoolShowCenter;
 
 
 
@@ -108670,7 +108565,7 @@ extends OperatorBase
         this.addParam(this.paramY           = new NumberParam('y',           'Y',          true, true, true));
         this.addParam(this.paramMoveType    = new SelectParam('moveType',    'type',       true, true, true, ['position', 'vector'], 0));
         this.addParam(this.paramAffectSpace = new NumberParam('affectSpace', 'move space', true, true, true, 1, 0, 1));
-        this.addParam(this.paramShowCenter  = new NumberParam('showCenter',  'show space', true, true, true, 0, 0, 1));
+        this.addParam(this.paramShowCenter  = new NumberParam('showCenter',  'show center', true, true, true, 0, 0, 1));
 
 
         this.paramShowCenter .controls[0].allowEditDecimals = false;
@@ -108713,8 +108608,8 @@ extends OperatorBase
         request.push(...this.node.paramX          .genRequest(gen));
         request.push(...this.node.paramY          .genRequest(gen));
         request.push(...this.node.paramMoveType   .genRequest(gen));
-        request.push(...this.node.paramShowCenter .genRequest(gen));
         request.push(...this.node.paramAffectSpace.genRequest(gen));
+        request.push(...this.node.paramShowCenter .genRequest(gen));
 
         
         gen.scope.pop();
@@ -108787,7 +108682,7 @@ extends OperatorBase
     addBaseParams(affect)
     {
         this.addParam(this.paramAffectSpace = new NumberParam('affectSpace', affect + ' space', true, true, true, 1, 0, 1));
-        this.addParam(this.paramShowCenter  = new NumberParam('showCenter',       'show space', true, true, true, 0, 0, 1));
+        this.addParam(this.paramShowCenter  = new NumberParam('showCenter',       'show center', true, true, true, 0, 0, 1));
 
 
         this.paramShowCenter .controls[0].allowEditDecimals = false;
@@ -109090,7 +108985,7 @@ extends OperatorBase
 
         this.addParam(this.paramCenterX    = new NumberParam('centerX',    'center X',    true, true, true, 50, 0, 100));
         this.addParam(this.paramCenterY    = new NumberParam('centerY',    'center Y',    true, true, true, 50, 0, 100));
-        this.addParam(this.paramShowCenter = new NumberParam('showCenter', 'show space', true, true, true, 0, 0, 1));
+        this.addParam(this.paramShowCenter = new NumberParam('showCenter', 'show center', true, true, true, 0, 0, 1));
 
 
         this.paramCenterX.controls[0].suffix = '%';
@@ -109245,7 +109140,7 @@ extends OperatorBase
         this.addInput (new Input([...SHAPE_VALUES, LIST_VALUE]));
         this.addOutput(new Output([SHAPE_VALUE], this.output_genRequest));
 
-        this.addParam(this.paramShowCenter = new NumberParam('showCenter', 'show space', true, true, true, 0, 0, 1));
+        this.addParam(this.paramShowCenter = new NumberParam('showCenter', 'show center', true, true, true, 0, 0, 1));
 
 
         this.paramShowCenter.controls[0].allowEditDecimals = false;
@@ -109527,34 +109422,37 @@ extends OpShapeBooleanBase
 class   OpPlace
 extends OperatorBase
 {
-    paramPoints;
-    paramLoop;
+    paramPosition;
+    paramTransform;
+    paramShowCenter;
+
+
+    menuTransform;
+    menuShowCenter;
 
 
 
     constructor()
     {
-        super(PLACE, 'place', 'place', iconPlace, defNodeWidth, true);
+        super(PLACE, 'place', 'place', iconPlace, defNodeWidth);
 
-        this.isMultiplier = true;
         this.canDisable   = true;
         this.iconOffsetY  = -2;
 
         
         this.addInput (new Input (SHAPE_VALUES));
-        this.addOutput(new Output([SHAPE_LIST_VALUE], this.output_genRequest));
+        this.addOutput(new Output([SHAPE_VALUE], this.output_genRequest));
 
 
-        this.addParam(this.paramPoints = new   ListParam('points', 'points', false, true, true ));
-        this.addParam(this.paramLoop   = new NumberParam('loop',   '',       false, true, false));
+        this.addParam(this.paramPosition   = new  PointParam('position',   'position',    false, true, true));
+        this.addParam(this.paramTransform  = new NumberParam('transform',  'transform',   true,  true, true, 1, 0, 1));
+        this.addParam(this.paramShowCenter = new NumberParam('showCenter', 'show center', true,  true, true, 0, 0, 1));
 
+        this.paramTransform .divider = 0.68;
+        this.paramShowCenter.divider = 0.68;
 
-        this.paramPoints.itemName  = 'point';
-        this.paramPoints.showZero  = false;
-        this.paramPoints.listTypes = [POINT_VALUE, SHAPE_LIST_VALUE, LIST_VALUE];
-        this.paramPoints.input.types.push(...this.paramPoints.listTypes);
-
-        this.paramLoop.input.types.push(NUMBER_LIST_VALUE, START);
+        this.menuTransform  = createBoolMenu(this.paramTransform );
+        this.menuShowCenter = createBoolMenu(this.paramShowCenter);
     }
     
     
@@ -109579,8 +109477,9 @@ extends OperatorBase
         if (input.connected)
             request.push(...pushInputOrParam(input, gen));
 
-        request.push(...this.node.paramPoints.genRequest(gen));
-        request.push(...this.node.paramLoop  .genRequest(gen));
+        request.push(...this.node.paramPosition  .genRequest(gen));
+        request.push(...this.node.paramTransform .genRequest(gen));
+        request.push(...this.node.paramShowCenter.genRequest(gen));
 
         
         gen.scope.pop();
@@ -109592,33 +109491,23 @@ extends OperatorBase
 
 
 
-    updateValues(requestId, actionId, updateParamId, paramIds, values)
-    {
-        const value  = values[paramIds.findIndex(id => id == 'value' )];
-        const points = values[paramIds.findIndex(id => id == 'points')];
-        const loop   = values[paramIds.findIndex(id => id == 'loop'  )];
+    // updateValues(requestId, actionId, updateParamId, paramIds, values)
+    // {
+    //     const position = values[paramIds.findIndex(id => id == 'position')];
 
-        if (points) this.paramPoints.setValue(points, false, true, false);
-        if (loop  ) this.paramLoop  .setValue(loop,   false, true, false);
-
-        this.outputs[0].types = 
-            value
-            ? [finalListTypeFromItems(value.items)]
-            : [LIST_VALUE];
-
-        this.endNodeProgress();
-    }
+    //     if (position) this.paramPosition.setValue(position, false, true, false);
+    // }
 
 
 
     updateParams()
     {
-        this.paramPoints.enableControlText(false);
-        this.paramLoop  .enableControlText(false);
+        this.paramPosition  .enableControlText(true);
+        this.paramTransform .enableControlText(true);
+        this.paramShowCenter.enableControlText(true);
 
-        const arrowStyle = darkMode ? 'white' : 'black';
-
-        this.paramLoop.controls[0].valueText = '<svg width="14" height="12" viewBox="0 -1 14 12" fill="none" xmlns="http://www.w3.org/2000/svg"><path fill-rule="evenodd" clip-rule="evenodd" d="M13 0H14L14 2C14 4.76142 11.7614 7 8.99999 7H1V6H8.99999C11.2091 6 13 4.20914 13 2L13 0Z" fill="' + arrowStyle + '"/><rect width="4.97369" height="1" transform="matrix(0.707107 -0.707107 -0.707107 -0.707107 0.712646 7.224)" fill="' + arrowStyle + '"/><rect width="5" height="1" transform="matrix(0.707107 0.707107 0.707107 -0.707107 0 6.54858)" fill="' + arrowStyle + '"/></svg>';
+        updateParamConditionText(this.paramTransform,  this.paramTransform.isUnknown(),  true,  1);
+        updateParamConditionText(this.paramShowCenter, this.paramShowCenter.isUnknown(), false, 1);
 
         this.updateParamControls();
     }
