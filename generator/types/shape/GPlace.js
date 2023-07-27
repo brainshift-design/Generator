@@ -1,10 +1,11 @@
 class GPlace
 extends GOperator
 {
-    input     = null;
+    input      = null;
 
-    position  = null;
-    transform = null;
+    position   = null;
+    transform  = null;
+    showCenter = null;
 
 
 
@@ -24,7 +25,9 @@ extends GOperator
         if (this.input) 
             copy.input = this.input.copy();
 
-        if (this.point) copy.point = this.point.copy();
+        if (this.position  ) copy.position   = this.position  .copy();
+        if (this.transform ) copy.transform  = this.transform .copy();
+        if (this.showCenter) copy.showCenter = this.showCenter.copy();
 
         return copy;
     }
@@ -54,18 +57,23 @@ extends GOperator
         }
 
 
+        const p = point(
+            position.objects.length > 0 ? position.objects[0].x : 0, 
+            position.objects.length > 0 ? position.objects[0].y : 0);
+
         await this.evalObjects(
             parse, 
             {
                 transform:  transform,
                 showCenter: showCenter,
-                sp0:        position.objects.length > 0 ? position.objects[0].sp0 : null,
-                sp1:        position.objects.length > 0 ? position.objects[0].sp1 : null,
-                sp2:        position.objects.length > 0 ? position.objects[0].sp2 : null
+                sp0:        position.objects.length > 0 ? addv(p, position.objects[0].sp0) : null,
+                sp1:        position.objects.length > 0 ? addv(p, position.objects[0].sp1) : null,
+                sp2:        position.objects.length > 0 ? addv(p, position.objects[0].sp2) : null
             });
 
         
-        this.updateValues = [
+        this.updateValues = 
+        [
             ['position',   position  ],
             ['transform',  transform ],
             ['showCenter', showCenter]

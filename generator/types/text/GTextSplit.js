@@ -43,7 +43,8 @@ extends GOperator1
         {
             const input = (await this.input.eval(parse)).toValue();
             
-            if (input)
+            if (   input
+                && input.value)
             {
                 consoleAssert(input.type == TEXT_VALUE, 'input must be TEXT_VALUE');
                 const items = input.value.split(unescapeString(separator.value));

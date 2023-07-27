@@ -55,14 +55,12 @@ extends GOperator
             const input = (await this.input.eval(parse)).toValue();
 
 
-            if (   !!input
-                && !!input.items
-                &&   input.items.length > 0)
+            if (   input
+                && input.items
+                && input.items.length > 0)
             {
                 length = input.items.length;
 
-
-                // index.value = Math.min(Math.max(0, index.value), input.items.length-1);
 
                 index = 
                        index.isValid()
@@ -77,16 +75,9 @@ extends GOperator
                     && index.value < input.items.length)
                 {
                     this.value = input.items[index.value].copy();
-                    //this.value.objects = [];
-
                 
-                    //const _objects = this.input.value.objects.filter(o => o.listId == index.value);
-
-                    //for (let j = 0; j < _objects.length; j++)
                     for (const obj of this.value.objects)
                     {
-                        // const obj  = _objects[j].copy();
-
                         obj.nodeId = this.nodeId;
                         obj.listId = -1;
 
@@ -94,9 +85,6 @@ extends GOperator
                             obj.objectId += '/';
 
                         obj.objectId += index.value.toString();
-
-                        
-                        //this.value.objects.push(obj);
                     }
                 }
                 else
@@ -104,7 +92,6 @@ extends GOperator
                     this.value = NullValue;
                     index      = NumberValue.NaN;
                 }                    
-                //console.log('GSelect.value =', this.value);
             }
             else
             {

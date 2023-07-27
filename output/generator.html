@@ -14155,14 +14155,12 @@ extends GOperator
             const input = (await this.input.eval(parse)).toValue();
 
 
-            if (   !!input
-                && !!input.items
-                &&   input.items.length > 0)
+            if (   input
+                && input.items
+                && input.items.length > 0)
             {
                 length = input.items.length;
 
-
-                // index.value = Math.min(Math.max(0, index.value), input.items.length-1);
 
                 index = 
                        index.isValid()
@@ -14177,16 +14175,9 @@ extends GOperator
                     && index.value < input.items.length)
                 {
                     this.value = input.items[index.value].copy();
-                    //this.value.objects = [];
-
                 
-                    //const _objects = this.input.value.objects.filter(o => o.listId == index.value);
-
-                    //for (let j = 0; j < _objects.length; j++)
                     for (const obj of this.value.objects)
                     {
-                        // const obj  = _objects[j].copy();
-
                         obj.nodeId = this.nodeId;
                         obj.listId = -1;
 
@@ -14194,9 +14185,6 @@ extends GOperator
                             obj.objectId += '/';
 
                         obj.objectId += index.value.toString();
-
-                        
-                        //this.value.objects.push(obj);
                     }
                 }
                 else
@@ -14204,7 +14192,6 @@ extends GOperator
                     this.value = NullValue;
                     index      = NumberValue.NaN;
                 }                    
-                //console.log('GSelect.value =', this.value);
             }
             else
             {
@@ -20813,7 +20800,8 @@ extends GOperator1
         {
             const input = (await this.input.eval(parse)).toValue();
             
-            if (input)
+            if (   input
+                && input.value)
             {
                 consoleAssert(input.type == TEXT_VALUE, 'input must be TEXT_VALUE');
                 const items = input.value.split(unescapeString(separator.value));
@@ -29128,10 +29116,11 @@ extends GOperator1
 class GPlace
 extends GOperator
 {
-    input     = null;
+    input      = null;
 
-    position  = null;
-    transform = null;
+    position   = null;
+    transform  = null;
+    showCenter = null;
 
 
 
@@ -29151,7 +29140,9 @@ extends GOperator
         if (this.input) 
             copy.input = this.input.copy();
 
-        if (this.point) copy.point = this.point.copy();
+        if (this.position  ) copy.position   = this.position  .copy();
+        if (this.transform ) copy.transform  = this.transform .copy();
+        if (this.showCenter) copy.showCenter = this.showCenter.copy();
 
         return copy;
     }
@@ -29181,18 +29172,23 @@ extends GOperator
         }
 
 
+        const p = point(
+            position.objects.length > 0 ? position.objects[0].x : 0, 
+            position.objects.length > 0 ? position.objects[0].y : 0);
+
         await this.evalObjects(
             parse, 
             {
                 transform:  transform,
                 showCenter: showCenter,
-                sp0:        position.objects.length > 0 ? position.objects[0].sp0 : null,
-                sp1:        position.objects.length > 0 ? position.objects[0].sp1 : null,
-                sp2:        position.objects.length > 0 ? position.objects[0].sp2 : null
+                sp0:        position.objects.length > 0 ? addv(p, position.objects[0].sp0) : null,
+                sp1:        position.objects.length > 0 ? addv(p, position.objects[0].sp1) : null,
+                sp2:        position.objects.length > 0 ? addv(p, position.objects[0].sp2) : null
             });
 
         
-        this.updateValues = [
+        this.updateValues = 
+        [
             ['position',   position  ],
             ['transform',  transform ],
             ['showCenter', showCenter]
