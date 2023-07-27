@@ -9,7 +9,7 @@ extends GOperatorBase2
 
     constructor(nodeId, options)
     {
-        super(LIST_CONTAINS, nodeId, options);
+        super(CONTAINS, nodeId, options);
     }
 
 
@@ -40,6 +40,7 @@ extends GOperatorBase2
         {
             const indices = [];
 
+            
             if (   input1
                 && input1.isValid())
             {

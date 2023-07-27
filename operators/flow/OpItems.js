@@ -21,6 +21,14 @@ extends ResizableBase
 
 
         this.createScrollbar();
+
+        
+        this.setRect(
+            this.div.offsetLeft, 
+            this.div.offsetTop, 
+            Math.max(defNodeWidth,    this.div.offsetWidth ), 
+            Math.max(defHeaderHeight, this.div.offsetHeight), 
+            false);
     }
 
 

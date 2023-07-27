@@ -19,8 +19,8 @@ extends GOperator
 
         copy.copyBase(this);
 
-        copy.start = this.start.copy();
-        copy.end   = this.end  .copy();
+        if (this.start) copy.start = this.start.copy();
+        if (this.end  ) copy.end   = this.end  .copy();
 
         return copy;
     }
@@ -33,8 +33,8 @@ extends GOperator
             return this;
 
 
-        const start  = (await this.start.eval(parse)).toValue();
-        const end    = (await this.end  .eval(parse)).toValue();
+        const start = (await this.start.eval(parse)).toValue();
+        const end   = (await this.end  .eval(parse)).toValue();
 
         let   length = 0;
 
@@ -60,10 +60,10 @@ extends GOperator
                     this.value = input.copy();
             }
             else
-                this.value = new ListValue();//TextValue.NaN;
+                this.value = new ListValue();
         }
         else
-            this.value = new ListValue();//TextValue.NaN;
+            this.value = new ListValue();
 
 
         this.updateValues =

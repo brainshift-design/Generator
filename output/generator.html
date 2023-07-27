@@ -4479,9 +4479,10 @@ const  SHAPE_LIST_VALUE       = 'SLIST#';
 
 const LIST                    = 'LIST';
 const SUBLIST                 = 'SUBLST';
+const UNIQUE                  = 'UNIQ';
 const ITEMS                   = 'ITEMS';
 const LIST_COUNT              = 'COUNT';
-const LIST_CONTAINS           = 'LCONT';
+const CONTAINS                = 'LCONT';
 const SELECT                  = 'SEL';
 const IF_ELSE                 = 'IF';
 const FILTER                  = 'LSTFLT';
@@ -4506,7 +4507,7 @@ const LIST_TYPES =
     SUBLIST,
     //ITEMS,
     LIST_COUNT,
-    LIST_CONTAINS,
+    CONTAINS,
     REPEAT
 ];
 
@@ -4526,6 +4527,8 @@ const LIST_VALUES =
 const FLOW_TYPES =
 [
     ...LIST_TYPES,
+    SUBLIST,
+    UNIQUE,
     ITEMS,
     SELECT,
     IF_ELSE,
@@ -13790,8 +13793,8 @@ extends GOperator
 
         copy.copyBase(this);
 
-        copy.start = this.start.copy();
-        copy.end   = this.end  .copy();
+        if (this.start) copy.start = this.start.copy();
+        if (this.end  ) copy.end   = this.end  .copy();
 
         return copy;
     }
@@ -13804,8 +13807,8 @@ extends GOperator
             return this;
 
 
-        const start  = (await this.start.eval(parse)).toValue();
-        const end    = (await this.end  .eval(parse)).toValue();
+        const start = (await this.start.eval(parse)).toValue();
+        const end   = (await this.end  .eval(parse)).toValue();
 
         let   length = 0;
 
@@ -13831,10 +13834,10 @@ extends GOperator
                     this.value = input.copy();
             }
             else
-                this.value = new ListValue();//TextValue.NaN;
+                this.value = new ListValue();
         }
         else
-            this.value = new ListValue();//TextValue.NaN;
+            this.value = new ListValue();
 
 
         this.updateValues =
@@ -13869,6 +13872,101 @@ extends GOperator
 
         if (this.start) this.start.invalidateInputs(from);
         if (this.end  ) this.end  .invalidateInputs(from);
+    }
+}
+
+
+
+class GUnique
+extends GOperator
+{
+    input  = null;
+
+    counts = null;
+
+
+    
+    constructor(nodeId, options)
+    {
+        super(UNIQUE, nodeId, options);
+    }
+
+
+    
+    copy()
+    {
+        const copy = new GUnique(this.nodeId, this.options);
+
+        copy.copyBase(this);
+
+        return copy;
+    }
+
+
+
+    async eval(parse)
+    {
+        if (this.isCached())
+            return this;
+
+
+        const input = this.input ? (await this.input.eval(parse)).toValue() : null;
+
+
+        this.counts = new ListValue();
+
+
+        if (input)
+        {
+            if (this.options.enabled)
+            {
+                this.value = new ListValue();
+
+                for (let i = 0; i < input.items.length; i++)
+                {
+                    const item       = input.items[i];
+                    const foundIndex = this.value.items.findIndex(i => i.equals(item));
+
+                    if (foundIndex < 0)
+                    {
+                        this.value.items.push(item.copy());
+                        this.counts.items.push(new NumberValue(1));
+                    }
+                    else
+                        this.counts.items[foundIndex].value++;
+                }
+            }
+            else
+                this.value = input.copy();
+        }
+        else
+            this.value = new ListValue();//TextValue.NaN;
+
+
+        this.updateValues = [['counts', this.counts]];
+        
+
+        this.validate();
+
+        return this;
+    }
+
+
+
+    pushValueUpdates(parse)
+    {
+        super.pushValueUpdates(parse);
+
+        if (this.input) this.input.pushValueUpdates(parse);
+    }
+
+
+
+    invalidateInputs(from)
+    {
+        super.invalidateInputs(from);
+
+        if (this.input) this.input.invalidateInputs(from);
     }
 }
 
@@ -14265,7 +14363,7 @@ extends GOperatorBase2
 
     constructor(nodeId, options)
     {
-        super(LIST_CONTAINS, nodeId, options);
+        super(CONTAINS, nodeId, options);
     }
 
 
@@ -14296,6 +14394,7 @@ extends GOperatorBase2
         {
             const indices = [];
 
+            
             if (   input1
                 && input1.isValid())
             {
@@ -30634,6 +30733,50 @@ function genParseSublist(parse)
 
 
 
+function genParseUnique(parse)
+{
+    const [, nodeId, options, ignore] = genParseNodeStart(parse);
+
+
+    const unique = new GUnique(nodeId, options);
+   
+
+    let nInputs = -1;
+    
+    if (!ignore)
+    {
+        nInputs = parseInt(parse.move());
+        consoleAssert(nInputs == 0 || nInputs == 1, 'nInputs must be [0, 1]');
+    }
+
+    
+    if (parse.settings.logRequests) 
+        logReq(unique, parse, ignore, nInputs);
+
+
+    if (ignore) 
+    {
+        genParseNodeEnd(parse, unique);
+        return parse.parsedNodes.find(n => n.nodeId == nodeId);
+    }
+
+
+    parse.nTab++;
+
+
+    if (nInputs == 1)
+        unique.input = genParse(parse);
+  
+    
+    parse.nTab--;
+
+
+    genParseNodeEnd(parse, unique);
+    return unique;
+}
+
+
+
 function genParseItems(parse)
 {
     const [, nodeId, options, ignore] = genParseNodeStart(parse);
@@ -35474,10 +35617,11 @@ function genParse(parse, inParam = true)
  
     else if (parse.next == LIST                   ) result = genParseList             (parse);
     else if (parse.next == SUBLIST                ) result = genParseSublist          (parse);
+    else if (parse.next == UNIQUE                 ) result = genParseUnique           (parse);
     else if (parse.next == ITEMS                  ) result = genParseItems            (parse);
     else if (parse.next == SELECT                 ) result = genParseSelect           (parse);
     else if (parse.next == LIST_COUNT             ) result = genParseListCount        (parse);
-    else if (parse.next == LIST_CONTAINS          ) result = genParseListContains     (parse);
+    else if (parse.next == CONTAINS               ) result = genParseListContains     (parse);
     else if (parse.next == IF_ELSE                ) result = genParseIfElse           (parse);
     else if (parse.next == START                  ) result = genParseStart            (parse);
     else if (parse.next == REPEAT                 ) result = genParseRepeat           (parse);
