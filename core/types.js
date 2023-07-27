@@ -8,6 +8,7 @@ const LIST                    = 'LIST';
 const SUBLIST                 = 'SUBLST';
 const ITEMS                   = 'ITEMS';
 const LIST_COUNT              = 'COUNT';
+const LIST_CONTAINS           = 'LCONT';
 const SELECT                  = 'SEL';
 const IF_ELSE                 = 'IF';
 const FILTER                  = 'LSTFLT';
@@ -32,6 +33,7 @@ const LIST_TYPES =
     SUBLIST,
     //ITEMS,
     LIST_COUNT,
+    LIST_CONTAINS,
     REPEAT
 ];
 
@@ -45,7 +47,7 @@ const LIST_VALUES =
 ];
 
 
-//const FOREACH                 = 'FOR';
+//const FOREACH = 'FOR';
 
 
 const FLOW_TYPES =

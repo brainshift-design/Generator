@@ -1,5 +1,5 @@
 class GLess
-extends GNumberType2
+extends GOperatorBase2
 {
     constructor(nodeId, options)
     {

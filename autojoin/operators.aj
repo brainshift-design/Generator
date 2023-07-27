@@ -50,6 +50,7 @@
 ../operators/flow/OpItems.js
 ../operators/flow/OpSelect.js
 ../operators/flow/OpListCount.js
+../operators/flow/OpContains.js
 ../operators/flow/OpIfElse.js
 ../operators/flow/OpStart.js
 ../operators/flow/OpRepeat.js

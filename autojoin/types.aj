@@ -27,6 +27,7 @@
 
 ../generator/types/GOperator.js
 ../generator/types/GOperator1.js
+../generator/types/text/GOperatorBase2.js
 
 ../generator/types/GParam.js
 
@@ -69,6 +70,7 @@
 ../generator/types/flow/GItems.js
 ../generator/types/flow/GSelect.js
 ../generator/types/flow/GListCount.js
+../generator/types/flow/GContains.js
 ../generator/types/flow/GIfElse.js
 ../generator/types/flow/GStart.js
 ../generator/types/flow/GRepeat.js
@@ -79,7 +81,7 @@
 
 ../generator/types/number/GNumberType.js
 ../generator/types/number/GNumberType1.js
-../generator/types/number/GNumberType2.js
+//../generator/types/number/GNumberType2.js
 
 ../generator/types/number/arithmetic/GArithmetic.js
 
@@ -133,7 +135,6 @@
 
 ../generator/types/text/GTextType.js
 ../generator/types/text/GTextType1.js
-../generator/types/text/GTextType2.js
 
 ../generator/types/text/GText.js
 ../generator/types/text/GTextLength.js

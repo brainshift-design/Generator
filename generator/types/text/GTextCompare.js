@@ -1,5 +1,5 @@
 class GTextCompare
-extends GTextType2
+extends GOperatorBase2
 {
     operation;
 

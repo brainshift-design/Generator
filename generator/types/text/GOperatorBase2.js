@@ -1,4 +1,4 @@
-class GTextType2
+class GOperatorBase2
 extends GOperator
 {
     input0 = null;

@@ -4481,6 +4481,7 @@ const LIST                    = 'LIST';
 const SUBLIST                 = 'SUBLST';
 const ITEMS                   = 'ITEMS';
 const LIST_COUNT              = 'COUNT';
+const LIST_CONTAINS           = 'LCONT';
 const SELECT                  = 'SEL';
 const IF_ELSE                 = 'IF';
 const FILTER                  = 'LSTFLT';
@@ -4505,6 +4506,7 @@ const LIST_TYPES =
     SUBLIST,
     //ITEMS,
     LIST_COUNT,
+    LIST_CONTAINS,
     REPEAT
 ];
 
@@ -4518,7 +4520,7 @@ const LIST_VALUES =
 ];
 
 
-//const FOREACH                 = 'FOR';
+//const FOREACH = 'FOR';
 
 
 const FLOW_TYPES =
@@ -8230,6 +8232,53 @@ extends GOperator
         super.invalidateInputs(from);
 
         if (this.input) this.input.invalidateInputs(from);
+    }
+}
+
+
+class GOperatorBase2
+extends GOperator
+{
+    input0 = null;
+    input1 = null;
+
+
+
+    copyBase(base)
+    {
+        super.copyBase(base);
+
+        if (base.input0) this.input0 = base.input0.copy();
+        if (base.input1) this.input1 = base.input1.copy();
+    }
+
+
+
+    isCached()
+    {
+        return super.isCached()
+            && (!this.input0 || this.input0.isCached())
+            && (!this.input1 || this.input1.isCached());
+    }
+
+
+
+    pushValueUpdates(parse)
+    {
+        super.pushValueUpdates(parse);
+
+        if (this.input0) this.input0.pushValueUpdates(parse);
+        if (this.input1) this.input1.pushValueUpdates(parse);
+    }
+
+
+
+    invalidateInputs(from)
+    {
+        super.invalidateInputs(from);
+
+        if (this.input0) this.input0.invalidateInputs(from);
+        if (this.input1) this.input1.invalidateInputs(from);
     }
 }
 
@@ -14205,6 +14254,102 @@ extends GOperator
 }
 
 
+class GContains
+extends GOperatorBase2
+{
+    first;
+    last;
+    all;
+
+
+
+    constructor(nodeId, options)
+    {
+        super(LIST_CONTAINS, nodeId, options);
+    }
+
+
+    
+    copy()
+    {
+        const copy = new GContains(this.nodeId, this.options);
+
+        copy.copyBase(this);
+
+        return copy;
+    }
+
+
+
+    async eval(parse)
+    {
+        if (this.isCached())
+            return this;
+
+
+        const input0 = this.input0 ? (await this.input0.eval(parse)).toValue() : null;
+        const input1 = this.input1 ? (await this.input1.eval(parse)).toValue() : null;
+    
+
+        if (   input0 && input0.isValid() 
+            && input1 && input1.isValid())
+        {
+            const indices = [];
+
+            if (   input1
+                && input1.isValid())
+            {
+                for (let i = 0; i < input0.items.length; i++)
+                {
+                    if (input0.items[i].equals(input1))
+                        indices.push(i);
+                }  
+
+
+                this.value = new NumberValue(indices.length > 0 ? 1 : 0);
+
+                this.first = indices.length > 0 ? new NumberValue(indices.at( 0)) : NumberValue.NaN;
+                this.last  = indices.length > 0 ? new NumberValue(indices.at(-1)) : NumberValue.NaN;
+
+                this.all   = new ListValue();
+
+                for (const index of indices)
+                    this.all.items.push(new NumberValue(index));
+            }
+            else
+            {
+                this.value = new NumberValue(1);
+
+                this.first = NumberValue.NaN;
+                this.last  = NumberValue.NaN;
+                this.all   =   ListValue.NaN;
+            }
+        }
+        else                  
+        {
+            this.value = NumberValue.NaN;
+            this.first = NumberValue.NaN;
+            this.last  = NumberValue.NaN;
+            this.all   =   ListValue.NaN;
+        }
+    
+
+        this.updateValues = 
+        [
+            ['value', this.value],
+            ['first', this.first],
+            ['last',  this.last ],
+            ['all',   this.all  ]
+        ];
+
+
+        this.validate();
+
+        return this;
+    }
+}
+
+
 class GIfElse
 extends GOperator
 {
@@ -15106,53 +15251,6 @@ extends GOperator
         super.invalidateInputs(from);
 
         if (this.input) this.input.invalidateInputs(from);
-    }
-}
-
-
-class GNumberType2
-extends GOperator
-{
-    input0 = null;
-    input1 = null;
-
-
-
-    copyBase(base)
-    {
-        super.copyBase(base);
-
-        if (base.input0) this.input0 = base.input0.copy();
-        if (base.input1) this.input1 = base.input1.copy();
-    }
-
-
-
-    isCached()
-    {
-        return super.isCached()
-            && (!this.input0 || this.input0.isCached())
-            && (!this.input1 || this.input1.isCached());
-    }
-
-
-
-    pushValueUpdates(parse)
-    {
-        super.pushValueUpdates(parse);
-
-        if (this.input0) this.input0.pushValueUpdates(parse);
-        if (this.input1) this.input1.pushValueUpdates(parse);
-    }
-
-
-
-    invalidateInputs(from)
-    {
-        super.invalidateInputs(from);
-
-        if (this.input0) this.input0.invalidateInputs(from);
-        if (this.input1) this.input1.invalidateInputs(from);
     }
 }
 
@@ -18884,7 +18982,7 @@ async function evalConditionInputs(input0, input1, op, parse)
 
 
 class GEqual
-extends GNumberType2
+extends GOperatorBase2
 {
     constructor(nodeId, options)
     {
@@ -18928,7 +19026,7 @@ extends GNumberType2
 
 
 class GNotEqual
-extends GNumberType2
+extends GOperatorBase2
 {
     constructor(nodeId, options)
     {
@@ -18971,7 +19069,7 @@ extends GNumberType2
 
 
 class GLess
-extends GNumberType2
+extends GOperatorBase2
 {
     constructor(nodeId, options)
     {
@@ -19014,7 +19112,7 @@ extends GNumberType2
 
 
 class GLessOrEqual
-extends GNumberType2
+extends GOperatorBase2
 {
     constructor(nodeId, options)
     {
@@ -19058,7 +19156,7 @@ extends GNumberType2
 
 
 class GGreater
-extends GNumberType2
+extends GOperatorBase2
 {
     constructor(nodeId, options)
     {
@@ -19101,7 +19199,7 @@ extends GNumberType2
 
 
 class GGreaterOrEqual
-extends GNumberType2
+extends GOperatorBase2
 {
     constructor(nodeId, options)
     {
@@ -19462,53 +19560,6 @@ extends GOperator
 }
 
 
-class GTextType2
-extends GOperator
-{
-    input0 = null;
-    input1 = null;
-
-
-
-    copyBase(base)
-    {
-        super.copyBase(base);
-
-        if (base.input0) this.input0 = base.input0.copy();
-        if (base.input1) this.input1 = base.input1.copy();
-    }
-
-
-
-    isCached()
-    {
-        return super.isCached()
-            && (!this.input0 || this.input0.isCached())
-            && (!this.input1 || this.input1.isCached());
-    }
-
-
-
-    pushValueUpdates(parse)
-    {
-        super.pushValueUpdates(parse);
-
-        if (this.input0) this.input0.pushValueUpdates(parse);
-        if (this.input1) this.input1.pushValueUpdates(parse);
-    }
-
-
-
-    invalidateInputs(from)
-    {
-        super.invalidateInputs(from);
-
-        if (this.input0) this.input0.invalidateInputs(from);
-        if (this.input1) this.input1.invalidateInputs(from);
-    }
-}
-
-
 class GText
 extends GTextType1
 {
@@ -19811,7 +19862,7 @@ extends GTextType1
 
 
 class GTextContains
-extends GTextType2
+extends GOperatorBase2
 {
     first;
     last;
@@ -20707,7 +20758,7 @@ extends GOperator1
 
 
 class GTextCompare
-extends GTextType2
+extends GOperatorBase2
 {
     operation;
 
@@ -30719,6 +30770,57 @@ function genParseListCount(parse)
 
 
 
+function genParseListContains(parse)
+{
+    const [, nodeId, options, ignore] = genParseNodeStart(parse);
+
+
+    const cont = new GContains(nodeId, options);
+   
+
+    let nInputs = -1;
+
+    if (!ignore)
+    {
+        nInputs = parseInt(parse.move());
+        consoleAssert(nInputs => 0 && nInputs <= 2, 'nInputs must be [0, 2]');
+    }
+
+    
+    if (parse.settings.logRequests) 
+        logReq(cont, parse, ignore, nInputs);
+
+
+    if (ignore) 
+    {
+        genParseNodeEnd(parse, cont);
+        return parse.parsedNodes.find(n => n.nodeId == nodeId);
+    }
+
+
+    parse.nTab++;
+
+
+    if (nInputs == 2)
+    {
+        cont.input0 = genParse(parse);
+        cont.input1 = genParse(parse);
+    }
+    else if (nInputs == 1)
+    {
+        cont.input0 = genParse(parse); // doesn't matter if it's input0 or input1, the eval() result will be the same
+    }
+  
+    
+    parse.nTab--;
+
+
+    genParseNodeEnd(parse, cont);
+    return cont;
+}
+
+
+
 function genParseIfElse(parse)
 {
     const [, nodeId, options, ignore] = genParseNodeStart(parse);
@@ -35375,6 +35477,7 @@ function genParse(parse, inParam = true)
     else if (parse.next == ITEMS                  ) result = genParseItems            (parse);
     else if (parse.next == SELECT                 ) result = genParseSelect           (parse);
     else if (parse.next == LIST_COUNT             ) result = genParseListCount        (parse);
+    else if (parse.next == LIST_CONTAINS          ) result = genParseListContains     (parse);
     else if (parse.next == IF_ELSE                ) result = genParseIfElse           (parse);
     else if (parse.next == START                  ) result = genParseStart            (parse);
     else if (parse.next == REPEAT                 ) result = genParseRepeat           (parse);

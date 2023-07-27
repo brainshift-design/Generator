@@ -1,5 +1,5 @@
 class GTextContains
-extends GTextType2
+extends GOperatorBase2
 {
     first;
     last;

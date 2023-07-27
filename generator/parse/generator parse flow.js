@@ -261,6 +261,57 @@ function genParseListCount(parse)
 
 
 
+function genParseListContains(parse)
+{
+    const [, nodeId, options, ignore] = genParseNodeStart(parse);
+
+
+    const cont = new GContains(nodeId, options);
+   
+
+    let nInputs = -1;
+
+    if (!ignore)
+    {
+        nInputs = parseInt(parse.move());
+        consoleAssert(nInputs => 0 && nInputs <= 2, 'nInputs must be [0, 2]');
+    }
+
+    
+    if (parse.settings.logRequests) 
+        logReq(cont, parse, ignore, nInputs);
+
+
+    if (ignore) 
+    {
+        genParseNodeEnd(parse, cont);
+        return parse.parsedNodes.find(n => n.nodeId == nodeId);
+    }
+
+
+    parse.nTab++;
+
+
+    if (nInputs == 2)
+    {
+        cont.input0 = genParse(parse);
+        cont.input1 = genParse(parse);
+    }
+    else if (nInputs == 1)
+    {
+        cont.input0 = genParse(parse); // doesn't matter if it's input0 or input1, the eval() result will be the same
+    }
+  
+    
+    parse.nTab--;
+
+
+    genParseNodeEnd(parse, cont);
+    return cont;
+}
+
+
+
 function genParseIfElse(parse)
 {
     const [, nodeId, options, ignore] = genParseNodeStart(parse);

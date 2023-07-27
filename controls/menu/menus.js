@@ -380,23 +380,24 @@ function initGeneratorMenus()
 
     menuFlow = new Menu('Data flow', true, false);
     menuFlow.addItems([
-        menuItemList   = new MenuItem('List',              {icon: iconList,       callback: e => actionManager.do(getCreateNodeAction(LIST,       btnNumber.div, getCreateOptions(e)))}),
-                         new MenuItem('Sublist',           {icon: iconSublist,    callback: e => actionManager.do(getCreateNodeAction(SUBLIST,    btnNumber.div, getCreateOptions(e)))}),
+        menuItemList   = new MenuItem('List',              {icon: iconList,       callback: e => actionManager.do(getCreateNodeAction(LIST,          btnNumber.div, getCreateOptions(e)))}),
+                         new MenuItem('Sublist',           {icon: iconSublist,    callback: e => actionManager.do(getCreateNodeAction(SUBLIST,       btnNumber.div, getCreateOptions(e)))}),
         menuFlowSep1   = new MenuItem('',                  {separator: true}),     
-        menuItemItems  = new MenuItem('Items',             {icon: iconItems,      callback: e => actionManager.do(getCreateNodeAction(ITEMS,      btnNumber.div, getCreateOptions(e)))}),
-        menuItemCount  = new MenuItem('Count',             {icon: iconCount,      callback: e => actionManager.do(getCreateNodeAction(LIST_COUNT, btnNumber.div, getCreateOptions(e)))}),
-        menuItemSelect = new MenuItem('Select',            {icon: iconSelect,     callback: e => actionManager.do(getCreateNodeAction(SELECT,     btnNumber.div, getCreateOptions(e)))}),
-        menuItemIfElse = new MenuItem('I&hairsp;f / else', {icon: iconIfElse,     callback: e => actionManager.do(getCreateNodeAction(IF_ELSE,    btnNumber.div, getCreateOptions(e))), disambiguate: true}),
+        menuItemItems  = new MenuItem('Items',             {icon: iconItems,      callback: e => actionManager.do(getCreateNodeAction(ITEMS,         btnNumber.div, getCreateOptions(e)))}),
+        menuItemCount  = new MenuItem('Count',             {icon: iconCount,      callback: e => actionManager.do(getCreateNodeAction(LIST_COUNT,    btnNumber.div, getCreateOptions(e)))}),
+        menuItemSelect = new MenuItem('Select',            {icon: iconSelect,     callback: e => actionManager.do(getCreateNodeAction(SELECT,        btnNumber.div, getCreateOptions(e)))}),
+        menuItemIfElse = new MenuItem('I&hairsp;f / else', {icon: iconIfElse,     callback: e => actionManager.do(getCreateNodeAction(IF_ELSE,       btnNumber.div, getCreateOptions(e))), disambiguate: true}),
+                         new MenuItem('Contains',          {icon: iconContains,   callback: e => actionManager.do(getCreateNodeAction(LIST_CONTAINS, btnNumber.div, getCreateOptions(e))), disambiguate: true}),
         menuFlowSep2   = new MenuItem('',                  {separator: true}),
-        menuItemArray  = new MenuItem('List . . .',        {icon: iconDefine,     callback: e => actionManager.do(getCreateNodeAction(DEFINE,     btnNumber.div, getCreateOptions(e)))}),
+        menuItemArray  = new MenuItem('List . . .',        {icon: iconDefine,     callback: e => actionManager.do(getCreateNodeAction(DEFINE,        btnNumber.div, getCreateOptions(e)))}),
                          new MenuItem('',                  {separator: true}),
-        menuItemCache  = new MenuItem('Cache',             {icon: iconCache,      callback: e => actionManager.do(getCreateNodeAction(CACHE,      btnNumber.div, getCreateOptions(e)))}),
-        menuItemFreeze = new MenuItem('Freeze . . .',      {icon: iconFreeze,     callback: e => actionManager.do(getCreateNodeAction(FREEZE,     btnNumber.div, getCreateOptions(e)))}),
+        menuItemCache  = new MenuItem('Cache',             {icon: iconCache,      callback: e => actionManager.do(getCreateNodeAction(CACHE,         btnNumber.div, getCreateOptions(e)))}),
+        menuItemFreeze = new MenuItem('Freeze . . .',      {icon: iconFreeze,     callback: e => actionManager.do(getCreateNodeAction(FREEZE,        btnNumber.div, getCreateOptions(e)))}),
         menuFlowSep4   = new MenuItem('',                  {separator: true}),
-        menuItemStart  = new MenuItem('Start. . .',        {icon: iconStart,      callback: e => actionManager.do(getCreateNodeAction(START,      btnNumber.div, getCreateOptions(e)))}),
-        menuItemRepeat = new MenuItem('. . . Repeat',      {icon: iconRepeat,     callback: e => actionManager.do(getCreateNodeAction(REPEAT,     btnNumber.div, getCreateOptions(e)))}),
+        menuItemStart  = new MenuItem('Start. . .',        {icon: iconStart,      callback: e => actionManager.do(getCreateNodeAction(START,         btnNumber.div, getCreateOptions(e)))}),
+        menuItemRepeat = new MenuItem('. . . Repeat',      {icon: iconRepeat,     callback: e => actionManager.do(getCreateNodeAction(REPEAT,        btnNumber.div, getCreateOptions(e)))}),
                          new MenuItem('',                  {separator: true}),
-        menuItemTimer  = new MenuItem('Timer ',            {icon: iconTimer,      callback: e => actionManager.do(getCreateNodeAction(TIMER,      btnNumber.div, getCreateOptions(e)))})]);
+        menuItemTimer  = new MenuItem('Timer ',            {icon: iconTimer,      callback: e => actionManager.do(getCreateNodeAction(TIMER,         btnNumber.div, getCreateOptions(e)))})]);
     
 
     menuMath = new Menu('Math', true, false);
