@@ -1,6 +1,8 @@
 class GTextCSV
 extends GOperator1
 {
+    rows;
+    columns;
     rowSeparator;
     columnSeparator;
 
@@ -40,6 +42,9 @@ extends GOperator1
         this.value = new ListValue();
 
 
+        let maxColumns = 0;
+
+
         if (   this.input
             && rowSeparator
             && columnSeparator
@@ -47,26 +52,38 @@ extends GOperator1
         {
             const input = (await this.input.eval(parse)).toValue();
             
-            const rows = input.value.split(rowSeparator.value);
+            const rows = input.value.split(unescapeString(rowSeparator.value));
 
             for (const _row of rows)
             {
-                const cells = _row.split(columnSeparator.value);
+                const cells = _row.split(unescapeString(columnSeparator.value));
 
                 const row = new ListValue();
 
                 for (const cell of cells)
                     row.items.push(new TextValue(cell));
 
+                maxColumns = Math.max(maxColumns, row.items.length);
+
                 this.value.items.push(row);
             }
+
+            this.rows    = new NumberValue(this.value.items.length);
+            this.columns = new NumberValue(maxColumns);
+        }
+        else
+        {
+            this.rows    = new NumberValue(0);
+            this.columns = new NumberValue(0);
         }
     
 
         this.updateValues =
         [
             ['rowSeparator',    rowSeparator   ],
-            ['columnSeparator', columnSeparator]
+            ['columnSeparator', columnSeparator],
+            ['rows',            this.rows      ],
+            ['columns',         this.columns   ]
         ];
         
 

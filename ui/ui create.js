@@ -7,6 +7,8 @@ function createNode(nodeType, creatingButton = null, createdNodeId = -1, options
         case LIST:                    node = new OpList();              break;
         case SUBLIST:                 node = new OpSublist();           break;
         case UNIQUE:                  node = new OpUnique();            break;
+        case COLUMN:                  node = new OpColumn();            break;
+        case CELL:                    node = new OpCell();              break;
         case ITEMS:                   node = new OpItems();             break;
         case SELECT:                  node = new OpSelect();            break;
         case LIST_COUNT:              node = new OpListCount();         break;

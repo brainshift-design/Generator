@@ -383,6 +383,8 @@ function initGeneratorMenus()
         menuItemList   = new MenuItem('List',              {icon: iconList,       callback: e => actionManager.do(getCreateNodeAction(LIST,          btnNumber.div, getCreateOptions(e)))}),
                          new MenuItem('Sublist',           {icon: iconSublist,    callback: e => actionManager.do(getCreateNodeAction(SUBLIST,       btnNumber.div, getCreateOptions(e)))}),
                          new MenuItem('Unique',            {icon: iconUnique,     callback: e => actionManager.do(getCreateNodeAction(UNIQUE,        btnNumber.div, getCreateOptions(e)))}),
+                         new MenuItem('',                  {separator: true}),     
+                         new MenuItem('Column',            {icon: iconColumn,     callback: e => actionManager.do(getCreateNodeAction(COLUMN,        btnNumber.div, getCreateOptions(e)))}),
         menuFlowSep1   = new MenuItem('',                  {separator: true}),     
         menuItemItems  = new MenuItem('Items',             {icon: iconItems,      callback: e => actionManager.do(getCreateNodeAction(ITEMS,         btnNumber.div, getCreateOptions(e)))}),
         menuItemCount  = new MenuItem('Count',             {icon: iconCount,      callback: e => actionManager.do(getCreateNodeAction(LIST_COUNT,    btnNumber.div, getCreateOptions(e)))}),

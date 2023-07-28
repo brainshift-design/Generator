@@ -9400,6 +9400,8 @@ const  SHAPE_LIST_VALUE       = 'SLIST#';
 const LIST                    = 'LIST';
 const SUBLIST                 = 'SUBLST';
 const UNIQUE                  = 'UNIQ';
+const COLUMN                  = 'CLMN';
+const CELL                    = 'CELL';
 const ITEMS                   = 'ITEMS';
 const LIST_COUNT              = 'COUNT';
 const CONTAINS                = 'LCONT';
@@ -9449,6 +9451,8 @@ const FLOW_TYPES =
     ...LIST_TYPES,
     SUBLIST,
     UNIQUE,
+    COLUMN,
+    CELL,
     ITEMS,
     SELECT,
     IF_ELSE,
@@ -18896,6 +18900,122 @@ extends GOperator
 
 
 
+class GColumn
+extends GOperator
+{
+    index;
+
+
+    
+    constructor(nodeId, options)
+    {
+        super(COLUMN, nodeId, options);
+    }
+
+
+    
+    copy()
+    {
+        const copy = new GColumn(this.nodeId, this.options);
+
+        copy.copyBase(this);
+
+        if (this.index) copy.index = this.index.copy();
+
+        return copy;
+    }
+
+
+
+    async eval(parse)
+    {
+        if (this.isCached())
+            return this;
+
+
+        const index = (await this.index.eval(parse)).toValue();
+
+        
+        this.value = new ListValue();
+
+        
+        if (   this.input
+            && index)
+        {
+            const input = (await this.input.eval(parse)).toValue();
+           
+            if (isTable(input))
+            {
+                let maxColumns = 0;
+                input.items.forEach(i => maxColumns = Math.max(maxColumns, i.items.length));
+
+                if (index.value < maxColumns)
+                {
+                    for (let i = 0; i < input.items.length; i++)
+                    {
+                        const row = input.items[i];
+
+                        this.value.items.push(
+                            index.value < row.items.length
+                            ? row.items[index.value].copy()
+                            : NullValue);
+                    }
+                }
+            }
+        }
+
+
+        this.updateValues =
+        [
+            ['length', new NumberValue(this.value.items.length)],
+            ['index',  index                                   ]
+        ];
+        
+
+        this.validate();
+
+        return this;
+    }
+
+
+
+    pushValueUpdates(parse)
+    {
+        super.pushValueUpdates(parse);
+
+        if (this.index) this.index.pushValueUpdates(parse);
+    }
+
+
+
+    invalidateInputs(from)
+    {
+        super.invalidateInputs(from);
+
+        if (this.index) this.index.invalidateInputs(from);
+    }
+}
+
+
+
+function isTable(value)
+{
+    if (!LIST_VALUES.includes(value.type))
+        return false;
+
+    for (const item of value.items)
+    {
+        if (!LIST_VALUES.includes(item.type))
+            return false;
+    }
+
+    return true;
+}
+
+
+
+
+
 class GItems
 extends GOperator
 {
@@ -18938,6 +19058,7 @@ extends GOperator
             return this;
 
 
+        console.log('this.input =', this.input);
         if (this.input)
         {
             await this.input.eval(parse);
@@ -25870,6 +25991,8 @@ async function evalCompareInputs(input0, input1, op, parse)
 class GTextCSV
 extends GOperator1
 {
+    rows;
+    columns;
     rowSeparator;
     columnSeparator;
 
@@ -25909,6 +26032,9 @@ extends GOperator1
         this.value = new ListValue();
 
 
+        let maxColumns = 0;
+
+
         if (   this.input
             && rowSeparator
             && columnSeparator
@@ -25916,26 +26042,38 @@ extends GOperator1
         {
             const input = (await this.input.eval(parse)).toValue();
             
-            const rows = input.value.split(rowSeparator.value);
+            const rows = input.value.split(unescapeString(rowSeparator.value));
 
             for (const _row of rows)
             {
-                const cells = _row.split(columnSeparator.value);
+                const cells = _row.split(unescapeString(columnSeparator.value));
 
                 const row = new ListValue();
 
                 for (const cell of cells)
                     row.items.push(new TextValue(cell));
 
+                maxColumns = Math.max(maxColumns, row.items.length);
+
                 this.value.items.push(row);
             }
+
+            this.rows    = new NumberValue(this.value.items.length);
+            this.columns = new NumberValue(maxColumns);
+        }
+        else
+        {
+            this.rows    = new NumberValue(0);
+            this.columns = new NumberValue(0);
         }
     
 
         this.updateValues =
         [
             ['rowSeparator',    rowSeparator   ],
-            ['columnSeparator', columnSeparator]
+            ['columnSeparator', columnSeparator],
+            ['rows',            this.rows      ],
+            ['columns',         this.columns   ]
         ];
         
 
@@ -35743,6 +35881,52 @@ function genParseUnique(parse)
 
 
 
+function genParseColumn(parse)
+{
+    const [, nodeId, options, ignore] = genParseNodeStart(parse);
+
+
+    const column = new GColumn(nodeId, options);
+   
+
+    let nInputs = -1;
+    
+    if (!ignore)
+    {
+        nInputs = parseInt(parse.move());
+        consoleAssert(nInputs == 0 || nInputs == 1, 'nInputs must be [0, 1]');
+    }
+
+    
+    if (parse.settings.logRequests) 
+        logReq(column, parse, ignore, nInputs);
+
+
+    if (ignore) 
+    {
+        genParseNodeEnd(parse, column);
+        return parse.parsedNodes.find(n => n.nodeId == nodeId);
+    }
+
+
+    parse.nTab++;
+
+
+    if (nInputs == 1)
+        column.input = genParse(parse);
+
+    column.index = genParse(parse);
+
+    
+    parse.nTab--;
+
+
+    genParseNodeEnd(parse, column);
+    return column;
+}
+
+
+
 function genParseItems(parse)
 {
     const [, nodeId, options, ignore] = genParseNodeStart(parse);
@@ -40632,6 +40816,8 @@ function genParse(parse, inParam = true)
     else if (parse.next == LIST                   ) result = genParseList             (parse);
     else if (parse.next == SUBLIST                ) result = genParseSublist          (parse);
     else if (parse.next == UNIQUE                 ) result = genParseUnique           (parse);
+    else if (parse.next == COLUMN                 ) result = genParseColumn           (parse);
+    else if (parse.next == CELL                   ) result = genParseCell             (parse);
     else if (parse.next == ITEMS                  ) result = genParseItems            (parse);
     else if (parse.next == SELECT                 ) result = genParseSelect           (parse);
     else if (parse.next == LIST_COUNT             ) result = genParseListCount        (parse);
@@ -50736,6 +50922,8 @@ const  SHAPE_LIST_VALUE       = 'SLIST#';
 const LIST                    = 'LIST';
 const SUBLIST                 = 'SUBLST';
 const UNIQUE                  = 'UNIQ';
+const COLUMN                  = 'CLMN';
+const CELL                    = 'CELL';
 const ITEMS                   = 'ITEMS';
 const LIST_COUNT              = 'COUNT';
 const CONTAINS                = 'LCONT';
@@ -50785,6 +50973,8 @@ const FLOW_TYPES =
     ...LIST_TYPES,
     SUBLIST,
     UNIQUE,
+    COLUMN,
+    CELL,
     ITEMS,
     SELECT,
     IF_ELSE,
@@ -60232,6 +60422,122 @@ extends GOperator
 
 
 
+class GColumn
+extends GOperator
+{
+    index;
+
+
+    
+    constructor(nodeId, options)
+    {
+        super(COLUMN, nodeId, options);
+    }
+
+
+    
+    copy()
+    {
+        const copy = new GColumn(this.nodeId, this.options);
+
+        copy.copyBase(this);
+
+        if (this.index) copy.index = this.index.copy();
+
+        return copy;
+    }
+
+
+
+    async eval(parse)
+    {
+        if (this.isCached())
+            return this;
+
+
+        const index = (await this.index.eval(parse)).toValue();
+
+        
+        this.value = new ListValue();
+
+        
+        if (   this.input
+            && index)
+        {
+            const input = (await this.input.eval(parse)).toValue();
+           
+            if (isTable(input))
+            {
+                let maxColumns = 0;
+                input.items.forEach(i => maxColumns = Math.max(maxColumns, i.items.length));
+
+                if (index.value < maxColumns)
+                {
+                    for (let i = 0; i < input.items.length; i++)
+                    {
+                        const row = input.items[i];
+
+                        this.value.items.push(
+                            index.value < row.items.length
+                            ? row.items[index.value].copy()
+                            : NullValue);
+                    }
+                }
+            }
+        }
+
+
+        this.updateValues =
+        [
+            ['length', new NumberValue(this.value.items.length)],
+            ['index',  index                                   ]
+        ];
+        
+
+        this.validate();
+
+        return this;
+    }
+
+
+
+    pushValueUpdates(parse)
+    {
+        super.pushValueUpdates(parse);
+
+        if (this.index) this.index.pushValueUpdates(parse);
+    }
+
+
+
+    invalidateInputs(from)
+    {
+        super.invalidateInputs(from);
+
+        if (this.index) this.index.invalidateInputs(from);
+    }
+}
+
+
+
+function isTable(value)
+{
+    if (!LIST_VALUES.includes(value.type))
+        return false;
+
+    for (const item of value.items)
+    {
+        if (!LIST_VALUES.includes(item.type))
+            return false;
+    }
+
+    return true;
+}
+
+
+
+
+
 class GItems
 extends GOperator
 {
@@ -60274,6 +60580,7 @@ extends GOperator
             return this;
 
 
+        console.log('this.input =', this.input);
         if (this.input)
         {
             await this.input.eval(parse);
@@ -67206,6 +67513,8 @@ async function evalCompareInputs(input0, input1, op, parse)
 class GTextCSV
 extends GOperator1
 {
+    rows;
+    columns;
     rowSeparator;
     columnSeparator;
 
@@ -67245,6 +67554,9 @@ extends GOperator1
         this.value = new ListValue();
 
 
+        let maxColumns = 0;
+
+
         if (   this.input
             && rowSeparator
             && columnSeparator
@@ -67252,26 +67564,38 @@ extends GOperator1
         {
             const input = (await this.input.eval(parse)).toValue();
             
-            const rows = input.value.split(rowSeparator.value);
+            const rows = input.value.split(unescapeString(rowSeparator.value));
 
             for (const _row of rows)
             {
-                const cells = _row.split(columnSeparator.value);
+                const cells = _row.split(unescapeString(columnSeparator.value));
 
                 const row = new ListValue();
 
                 for (const cell of cells)
                     row.items.push(new TextValue(cell));
 
+                maxColumns = Math.max(maxColumns, row.items.length);
+
                 this.value.items.push(row);
             }
+
+            this.rows    = new NumberValue(this.value.items.length);
+            this.columns = new NumberValue(maxColumns);
+        }
+        else
+        {
+            this.rows    = new NumberValue(0);
+            this.columns = new NumberValue(0);
         }
     
 
         this.updateValues =
         [
             ['rowSeparator',    rowSeparator   ],
-            ['columnSeparator', columnSeparator]
+            ['columnSeparator', columnSeparator],
+            ['rows',            this.rows      ],
+            ['columns',         this.columns   ]
         ];
         
 
@@ -80239,6 +80563,8 @@ const iconPageClose         = '<svg width="9" height="10" viewBox="0 0 9 10" fil
 const iconList              = '<svg width="12" height="9" viewBox="0 0 12 9" fill="none" xmlns="http://www.w3.org/2000/svg"><rect width="9" height="1" fill="white"/><rect y="4" width="9" height="1" fill="white"/><rect y="8" width="9" height="1" fill="white"/></svg>';
 const iconSublist           = '<svg width="15" height="13" viewBox="-1 0 15 13" fill="none" xmlns="http://www.w3.org/2000/svg"><rect width="9" height="1" fill="white"/><rect y="12" width="9" height="1" fill="white"/><rect x="5" y="4" width="9" height="1" fill="white"/><rect x="5" y="8" width="9" height="1" fill="white"/></svg>';
 const iconUnique            = '<svg width="13" height="13" viewBox="0 0 13 13" fill="none" xmlns="http://www.w3.org/2000/svg"><rect width="9" height="1" fill="white"/><rect x="4" y="12" width="9" height="1" fill="white"/><rect x="4" y="4" width="9" height="1" fill="white"/><rect y="8" width="9" height="1" fill="white"/></svg>';
+const iconColumn            = '<svg width="9" height="11" viewBox="0 0 9 11" fill="none" xmlns="http://www.w3.org/2000/svg"><rect y="11" width="11" height="1" transform="rotate(-90 0 11)" fill="white"/><rect x="4" y="11" width="11" height="1" transform="rotate(-90 4 11)" fill="white"/><rect x="8" y="11" width="11" height="1" transform="rotate(-90 8 11)" fill="white"/></svg>';
+const iconCell              = '';
 const iconItems             = '<svg width="17" height="11" viewBox="-1 0 17 11" fill="none" xmlns="http://www.w3.org/2000/svg"><rect width="9" height="1" transform="matrix(-1 0 0 1 9 1)" fill="white"/><rect width="9" height="1" transform="matrix(-1 0 0 1 9 5)" fill="white"/><rect width="9" height="1" transform="matrix(-1 0 0 1 9 9)" fill="white"/><circle r="1.5" transform="matrix(-1 0 0 1 13.5 9.5)" fill="white"/><circle r="1.5" transform="matrix(-1 0 0 1 13.5 5.5)" fill="white"/><circle r="1.5" transform="matrix(-1 0 0 1 13.5 1.5)" fill="white"/></svg>';
 const iconSelect            = '<svg width="15" height="9" viewBox="0 0 15 9" fill="none" xmlns="http://www.w3.org/2000/svg"><path d="M0 0H9V1H0V0Z" fill="white"/><path d="M0 4H9V5H0V4Z" fill="white"/><path d="M0 8H9V9H0V8Z" fill="white"/><path d="M13.5 6C12.6716 6 12 5.32843 12 4.5C12 3.67157 12.6716 3 13.5 3C14.3284 3 15 3.67157 15 4.5C15 5.32843 14.3284 6 13.5 6Z" fill="white"/></svg>';
 const iconCount             = '<svg width="16" height="11" viewBox="0 0 16 11" fill="none" xmlns="http://www.w3.org/2000/svg"><path d="M15.0334 0V11H12.0334V10H14.0667L14.0334 1H12L12.0334 0H15.0334Z" fill="white"/><path d="M0 11V0H3V1H0.966639V10H3V11H0Z" fill="white"/><path d="M7.5 11C6.67157 11 6 10.3284 6 9.5C6 8.67157 6.67157 8 7.5 8C8.32843 8 9 8.67157 9 9.5C9 10.3284 8.32843 11 7.5 11Z" fill="white"/><path d="M7.5 7C6.67157 7 6 6.32843 6 5.5C6 4.67157 6.67157 4 7.5 4C8.32843 4 9 4.67157 9 5.5C9 6.32843 8.32843 7 7.5 7Z" fill="white"/><path d="M7.5 3C6.67157 3 6 2.32843 6 1.5C6 0.671573 6.67157 0 7.5 0C8.32843 0 9 0.671573 9 1.5C9 2.32843 8.32843 3 7.5 3Z" fill="white"/></svg>';
@@ -81822,6 +82148,8 @@ function initGeneratorMenus()
         menuItemList   = new MenuItem('List',              {icon: iconList,       callback: e => actionManager.do(getCreateNodeAction(LIST,          btnNumber.div, getCreateOptions(e)))}),
                          new MenuItem('Sublist',           {icon: iconSublist,    callback: e => actionManager.do(getCreateNodeAction(SUBLIST,       btnNumber.div, getCreateOptions(e)))}),
                          new MenuItem('Unique',            {icon: iconUnique,     callback: e => actionManager.do(getCreateNodeAction(UNIQUE,        btnNumber.div, getCreateOptions(e)))}),
+                         new MenuItem('',                  {separator: true}),     
+                         new MenuItem('Column',            {icon: iconColumn,     callback: e => actionManager.do(getCreateNodeAction(COLUMN,        btnNumber.div, getCreateOptions(e)))}),
         menuFlowSep1   = new MenuItem('',                  {separator: true}),     
         menuItemItems  = new MenuItem('Items',             {icon: iconItems,      callback: e => actionManager.do(getCreateNodeAction(ITEMS,         btnNumber.div, getCreateOptions(e)))}),
         menuItemCount  = new MenuItem('Count',             {icon: iconCount,      callback: e => actionManager.do(getCreateNodeAction(LIST_COUNT,    btnNumber.div, getCreateOptions(e)))}),
@@ -92980,6 +93308,9 @@ class Operator
     showReorderArrows  = false;
 
 
+    suffix = '';
+
+
     valid;
 
     
@@ -95417,6 +95748,9 @@ Operator.prototype.updateHeaderLabelText = function()
     else                          suffix = this.cached ? '' : '...';
 
 
+    suffix += this.suffix;
+    
+
     this.labelText.innerHTML = 
           (settings.showNodeId ? this.id + suffix : prefix + this.name + suffix)
         + (this.active && this.showActiveArrow ? (settings.showNodeId ? ' ' : '  ') + '‣' : '');
@@ -96279,6 +96613,89 @@ extends OperatorBase
         this.updateParamControls();
     }
 }
+
+
+class   OpColumn
+extends OperatorBase
+{
+    paramIndex;
+
+
+
+    constructor()
+    {
+        super(COLUMN, 'column', 'column', iconColumn);
+
+        this.iconOffsetY = 1;
+        
+
+        this.addInput (new Input (LIST_VALUES));
+        this.addOutput(new Output([LIST_VALUE], this.output_genRequest));
+
+        this.addParam(this.paramIndex = new NumberParam('index', 'index', true, true, true, 0, 0));
+
+        this.paramIndex.divider                       = 0.54;
+        this.paramIndex.controls[0].allowEditDecimals = false;
+    }
+
+
+
+    output_genRequest(gen)
+    {
+        // 'this' is the output
+
+        gen.scope.push({
+            nodeId:  this.node.id, 
+            paramId: NULL });
+
+        const [request, ignore] = this.node.genRequestStart(gen);
+        if (ignore) return request;
+
+        
+        const input = this.node.inputs[0];
+
+
+        request.push(input.connected ? 1 : 0);
+        
+        if (input.connected)
+            request.push(...pushInputOrParam(input, gen));
+
+        request.push(...this.node.paramIndex.genRequest(gen));
+
+        
+        gen.scope.pop();
+        pushUnique(gen.passedNodes, this.node);
+
+        return request;
+    }
+
+
+
+    updateValues(requestId, actionId, updateParamId, paramIds, values)
+    {
+        super.updateValues(requestId, actionId, updateParamId, paramIds, values);
+
+
+        const length = values[paramIds.findIndex(id => id == 'length')];
+
+        if (length.value > 0)
+            this.paramIndex.controls[0].setMax(length.value);
+        else
+            this.paramIndex.controls[0].setMax();
+    }
+
+
+
+    updateParams()
+    {
+        this.paramIndex.enableControlText(true);
+
+        this.updateParamControls();
+    }
+}
+
+
+
 
 
 class   OpItems
@@ -101995,6 +102412,8 @@ class   OpTextCSV
 extends OperatorBase
 {
     paramValue;
+    paramRows;
+    paramColumns;
     paramRowSeparator;
     paramColumnSeparator;
 
@@ -102009,14 +102428,18 @@ extends OperatorBase
 
         this.addInput(new Input([TEXT_VALUE]));
 
-        this.addParam(this.paramValue           = new ListParam('value',           'table',   false, false, true));
-        this.addParam(this.paramRowSeparator    = new TextParam('rowSeparator',    'rows',    true , true,  true, '\\n'));
-        this.addParam(this.paramColumnSeparator = new TextParam('columnSeparator', 'columns', true , true,  true, ','));
+        this.addParam(this.paramValue           = new ListParam  ('value',           'table',     false, false, true));
+        this.addParam(this.paramColumns         = new NumberParam('columns',         'columns',   true,  false, true, 0, 0));
+        this.addParam(this.paramColumnSeparator = new TextParam  ('columnSeparator', 'separator', true , true,  true, ','));
+        this.addParam(this.paramRows            = new NumberParam('rows',            'rows',      true,  false, true, 0, 0));
+        this.addParam(this.paramRowSeparator    = new TextParam  ('rowSeparator',    'separator', true , true,  true, '\\n'));
 
         this.paramValue.itemName = '';
 
-        this.paramRowSeparator   .divider = 0.6;
-        this.paramColumnSeparator.divider = 0.6;
+        this.paramRows           .divider = 0.5;
+        this.paramRowSeparator   .divider = 0.62;
+        this.paramColumns        .divider = 0.5;
+        this.paramColumnSeparator.divider = 0.62;
     }
 
 
@@ -102054,12 +102477,27 @@ extends OperatorBase
 
 
 
+    // updateValues(requestId, actionId, updateParamId, paramIds, values)
+    // {
+    //     super.updateValues(requestId, actionId, updateParamId, paramIds, values);
+
+
+    //     const rows    = values[paramIds.findIndex(id => id == 'rows'   )];
+    //     const columns = values[paramIds.findIndex(id => id == 'columns')];
+
+
+    // }
+
+
+
     updateParams()
     {
         this.paramValue.enableControlText(false, this.isUnknown());
         
-        this.paramRowSeparator   .enableControlText(true);
-        this.paramColumnSeparator.enableControlText(true);
+        this.paramRows           .enableControlText(false);
+        this.paramColumns        .enableControlText(false);
+        this.paramRowSeparator   .enableControlText(true );
+        this.paramColumnSeparator.enableControlText(true );
 
 
         this.updateParamControls();
@@ -118391,6 +118829,8 @@ function createNode(nodeType, creatingButton = null, createdNodeId = -1, options
         case LIST:                    node = new OpList();              break;
         case SUBLIST:                 node = new OpSublist();           break;
         case UNIQUE:                  node = new OpUnique();            break;
+        case COLUMN:                  node = new OpColumn();            break;
+        case CELL:                    node = new OpCell();              break;
         case ITEMS:                   node = new OpItems();             break;
         case SELECT:                  node = new OpSelect();            break;
         case LIST_COUNT:              node = new OpListCount();         break;

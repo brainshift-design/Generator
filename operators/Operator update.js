@@ -262,6 +262,9 @@ Operator.prototype.updateHeaderLabelText = function()
     else                          suffix = this.cached ? '' : '...';
 
 
+    suffix += this.suffix;
+    
+
     this.labelText.innerHTML = 
           (settings.showNodeId ? this.id + suffix : prefix + this.name + suffix)
         + (this.active && this.showActiveArrow ? (settings.showNodeId ? ' ' : '  ') + '‣' : '');

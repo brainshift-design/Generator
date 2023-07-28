@@ -119,6 +119,9 @@ class Operator
     showReorderArrows  = false;
 
 
+    suffix = '';
+
+
     valid;
 
     

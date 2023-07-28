@@ -40,6 +40,7 @@ extends GOperator
             return this;
 
 
+        console.log('this.input =', this.input);
         if (this.input)
         {
             await this.input.eval(parse);

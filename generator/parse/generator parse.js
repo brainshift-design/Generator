@@ -114,6 +114,8 @@ function genParse(parse, inParam = true)
     else if (parse.next == LIST                   ) result = genParseList             (parse);
     else if (parse.next == SUBLIST                ) result = genParseSublist          (parse);
     else if (parse.next == UNIQUE                 ) result = genParseUnique           (parse);
+    else if (parse.next == COLUMN                 ) result = genParseColumn           (parse);
+    else if (parse.next == CELL                   ) result = genParseCell             (parse);
     else if (parse.next == ITEMS                  ) result = genParseItems            (parse);
     else if (parse.next == SELECT                 ) result = genParseSelect           (parse);
     else if (parse.next == LIST_COUNT             ) result = genParseListCount        (parse);

@@ -4480,6 +4480,8 @@ const  SHAPE_LIST_VALUE       = 'SLIST#';
 const LIST                    = 'LIST';
 const SUBLIST                 = 'SUBLST';
 const UNIQUE                  = 'UNIQ';
+const COLUMN                  = 'CLMN';
+const CELL                    = 'CELL';
 const ITEMS                   = 'ITEMS';
 const LIST_COUNT              = 'COUNT';
 const CONTAINS                = 'LCONT';
@@ -4529,6 +4531,8 @@ const FLOW_TYPES =
     ...LIST_TYPES,
     SUBLIST,
     UNIQUE,
+    COLUMN,
+    CELL,
     ITEMS,
     SELECT,
     IF_ELSE,
@@ -13976,6 +13980,122 @@ extends GOperator
 
 
 
+class GColumn
+extends GOperator
+{
+    index;
+
+
+    
+    constructor(nodeId, options)
+    {
+        super(COLUMN, nodeId, options);
+    }
+
+
+    
+    copy()
+    {
+        const copy = new GColumn(this.nodeId, this.options);
+
+        copy.copyBase(this);
+
+        if (this.index) copy.index = this.index.copy();
+
+        return copy;
+    }
+
+
+
+    async eval(parse)
+    {
+        if (this.isCached())
+            return this;
+
+
+        const index = (await this.index.eval(parse)).toValue();
+
+        
+        this.value = new ListValue();
+
+        
+        if (   this.input
+            && index)
+        {
+            const input = (await this.input.eval(parse)).toValue();
+           
+            if (isTable(input))
+            {
+                let maxColumns = 0;
+                input.items.forEach(i => maxColumns = Math.max(maxColumns, i.items.length));
+
+                if (index.value < maxColumns)
+                {
+                    for (let i = 0; i < input.items.length; i++)
+                    {
+                        const row = input.items[i];
+
+                        this.value.items.push(
+                            index.value < row.items.length
+                            ? row.items[index.value].copy()
+                            : NullValue);
+                    }
+                }
+            }
+        }
+
+
+        this.updateValues =
+        [
+            ['length', new NumberValue(this.value.items.length)],
+            ['index',  index                                   ]
+        ];
+        
+
+        this.validate();
+
+        return this;
+    }
+
+
+
+    pushValueUpdates(parse)
+    {
+        super.pushValueUpdates(parse);
+
+        if (this.index) this.index.pushValueUpdates(parse);
+    }
+
+
+
+    invalidateInputs(from)
+    {
+        super.invalidateInputs(from);
+
+        if (this.index) this.index.invalidateInputs(from);
+    }
+}
+
+
+
+function isTable(value)
+{
+    if (!LIST_VALUES.includes(value.type))
+        return false;
+
+    for (const item of value.items)
+    {
+        if (!LIST_VALUES.includes(item.type))
+            return false;
+    }
+
+    return true;
+}
+
+
+
+
+
 class GItems
 extends GOperator
 {
@@ -14018,6 +14138,7 @@ extends GOperator
             return this;
 
 
+        console.log('this.input =', this.input);
         if (this.input)
         {
             await this.input.eval(parse);
@@ -20950,6 +21071,8 @@ async function evalCompareInputs(input0, input1, op, parse)
 class GTextCSV
 extends GOperator1
 {
+    rows;
+    columns;
     rowSeparator;
     columnSeparator;
 
@@ -20989,6 +21112,9 @@ extends GOperator1
         this.value = new ListValue();
 
 
+        let maxColumns = 0;
+
+
         if (   this.input
             && rowSeparator
             && columnSeparator
@@ -20996,26 +21122,38 @@ extends GOperator1
         {
             const input = (await this.input.eval(parse)).toValue();
             
-            const rows = input.value.split(rowSeparator.value);
+            const rows = input.value.split(unescapeString(rowSeparator.value));
 
             for (const _row of rows)
             {
-                const cells = _row.split(columnSeparator.value);
+                const cells = _row.split(unescapeString(columnSeparator.value));
 
                 const row = new ListValue();
 
                 for (const cell of cells)
                     row.items.push(new TextValue(cell));
 
+                maxColumns = Math.max(maxColumns, row.items.length);
+
                 this.value.items.push(row);
             }
+
+            this.rows    = new NumberValue(this.value.items.length);
+            this.columns = new NumberValue(maxColumns);
+        }
+        else
+        {
+            this.rows    = new NumberValue(0);
+            this.columns = new NumberValue(0);
         }
     
 
         this.updateValues =
         [
             ['rowSeparator',    rowSeparator   ],
-            ['columnSeparator', columnSeparator]
+            ['columnSeparator', columnSeparator],
+            ['rows',            this.rows      ],
+            ['columns',         this.columns   ]
         ];
         
 
@@ -30823,6 +30961,52 @@ function genParseUnique(parse)
 
 
 
+function genParseColumn(parse)
+{
+    const [, nodeId, options, ignore] = genParseNodeStart(parse);
+
+
+    const column = new GColumn(nodeId, options);
+   
+
+    let nInputs = -1;
+    
+    if (!ignore)
+    {
+        nInputs = parseInt(parse.move());
+        consoleAssert(nInputs == 0 || nInputs == 1, 'nInputs must be [0, 1]');
+    }
+
+    
+    if (parse.settings.logRequests) 
+        logReq(column, parse, ignore, nInputs);
+
+
+    if (ignore) 
+    {
+        genParseNodeEnd(parse, column);
+        return parse.parsedNodes.find(n => n.nodeId == nodeId);
+    }
+
+
+    parse.nTab++;
+
+
+    if (nInputs == 1)
+        column.input = genParse(parse);
+
+    column.index = genParse(parse);
+
+    
+    parse.nTab--;
+
+
+    genParseNodeEnd(parse, column);
+    return column;
+}
+
+
+
 function genParseItems(parse)
 {
     const [, nodeId, options, ignore] = genParseNodeStart(parse);
@@ -35712,6 +35896,8 @@ function genParse(parse, inParam = true)
     else if (parse.next == LIST                   ) result = genParseList             (parse);
     else if (parse.next == SUBLIST                ) result = genParseSublist          (parse);
     else if (parse.next == UNIQUE                 ) result = genParseUnique           (parse);
+    else if (parse.next == COLUMN                 ) result = genParseColumn           (parse);
+    else if (parse.next == CELL                   ) result = genParseCell             (parse);
     else if (parse.next == ITEMS                  ) result = genParseItems            (parse);
     else if (parse.next == SELECT                 ) result = genParseSelect           (parse);
     else if (parse.next == LIST_COUNT             ) result = genParseListCount        (parse);

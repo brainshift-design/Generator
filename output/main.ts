@@ -1006,6 +1006,8 @@ const  SHAPE_LIST_VALUE       = 'SLIST#';
 const LIST                    = 'LIST';
 const SUBLIST                 = 'SUBLST';
 const UNIQUE                  = 'UNIQ';
+const COLUMN                  = 'CLMN';
+const CELL                    = 'CELL';
 const ITEMS                   = 'ITEMS';
 const LIST_COUNT              = 'COUNT';
 const CONTAINS                = 'LCONT';
@@ -1055,6 +1057,8 @@ const FLOW_TYPES =
     ...LIST_TYPES,
     SUBLIST,
     UNIQUE,
+    COLUMN,
+    CELL,
     ITEMS,
     SELECT,
     IF_ELSE,
