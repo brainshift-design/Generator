@@ -1,5 +1,6 @@
 var btnMain;
 var btnFlow;
+var btnData;
 var btnNumber;
 var btnText;
 var btnColor;
@@ -29,6 +30,7 @@ var menuLogMessages;
 var menuDebugDelete;
 
 var menuFlow;
+var menuData;
 var menuNumber;
 var menuSets;
 var menuString;
@@ -378,22 +380,8 @@ function initGeneratorMenus()
         menuItemHelp  = new MenuItem('Help and subscription', {childMenu: menuMainHelp })]);
 
 
-    menuFlow = new Menu('Data flow', true, false);
+    menuFlow = new Menu('Flow', true, false);
     menuFlow.addItems([
-        menuItemList   = new MenuItem('List',              {icon: iconList,       callback: e => actionManager.do(getCreateNodeAction(LIST,          btnNumber.div, getCreateOptions(e)))}),
-                         new MenuItem('Sublist',           {icon: iconSublist,    callback: e => actionManager.do(getCreateNodeAction(SUBLIST,       btnNumber.div, getCreateOptions(e)))}),
-                         new MenuItem('Unique',            {icon: iconUnique,     callback: e => actionManager.do(getCreateNodeAction(UNIQUE,        btnNumber.div, getCreateOptions(e)))}),
-                         new MenuItem('',                  {separator: true}),     
-                         new MenuItem('Column',            {icon: iconColumn,     callback: e => actionManager.do(getCreateNodeAction(COLUMN,        btnNumber.div, getCreateOptions(e)))}),
-        menuFlowSep1   = new MenuItem('',                  {separator: true}),     
-        menuItemItems  = new MenuItem('Items',             {icon: iconItems,      callback: e => actionManager.do(getCreateNodeAction(ITEMS,         btnNumber.div, getCreateOptions(e)))}),
-        menuItemCount  = new MenuItem('Count',             {icon: iconCount,      callback: e => actionManager.do(getCreateNodeAction(LIST_COUNT,    btnNumber.div, getCreateOptions(e)))}),
-        menuItemSelect = new MenuItem('Select',            {icon: iconSelect,     callback: e => actionManager.do(getCreateNodeAction(SELECT,        btnNumber.div, getCreateOptions(e)))}),
-        menuItemIfElse = new MenuItem('I&hairsp;f / else', {icon: iconIfElse,     callback: e => actionManager.do(getCreateNodeAction(IF_ELSE,       btnNumber.div, getCreateOptions(e))), disambiguate: true}),
-                         new MenuItem('Contains',          {icon: iconContains,   callback: e => actionManager.do(getCreateNodeAction(CONTAINS, btnNumber.div, getCreateOptions(e))), disambiguate: true}),
-        menuFlowSep2   = new MenuItem('',                  {separator: true}),
-        menuItemArray  = new MenuItem('List . . .',        {icon: iconDefine,     callback: e => actionManager.do(getCreateNodeAction(DEFINE,        btnNumber.div, getCreateOptions(e)))}),
-                         new MenuItem('',                  {separator: true}),
         menuItemCache  = new MenuItem('Cache',             {icon: iconCache,      callback: e => actionManager.do(getCreateNodeAction(CACHE,         btnNumber.div, getCreateOptions(e)))}),
         menuItemFreeze = new MenuItem('Freeze . . .',      {icon: iconFreeze,     callback: e => actionManager.do(getCreateNodeAction(FREEZE,        btnNumber.div, getCreateOptions(e)))}),
         menuFlowSep4   = new MenuItem('',                  {separator: true}),
@@ -401,6 +389,24 @@ function initGeneratorMenus()
         menuItemRepeat = new MenuItem('. . . Repeat',      {icon: iconRepeat,     callback: e => actionManager.do(getCreateNodeAction(REPEAT,        btnNumber.div, getCreateOptions(e)))}),
                          new MenuItem('',                  {separator: true}),
         menuItemTimer  = new MenuItem('Timer ',            {icon: iconTimer,      callback: e => actionManager.do(getCreateNodeAction(TIMER,         btnNumber.div, getCreateOptions(e)))})]);
+    
+
+    menuData = new Menu('Data', true, false);
+    menuData.addItems([
+        menuItemList   = new MenuItem('List',              {icon: iconList,       callback: e => actionManager.do(getCreateNodeAction(LIST,          btnNumber.div, getCreateOptions(e)))}),
+                         new MenuItem('Sublist',           {icon: iconSublist,    callback: e => actionManager.do(getCreateNodeAction(SUBLIST,       btnNumber.div, getCreateOptions(e)))}),
+                         new MenuItem('Unique',            {icon: iconUnique,     callback: e => actionManager.do(getCreateNodeAction(UNIQUE,        btnNumber.div, getCreateOptions(e)))}),
+                         new MenuItem('',                  {separator: true}),     
+                         new MenuItem('Column',            {icon: iconColumn,     callback: e => actionManager.do(getCreateNodeAction(COLUMN,        btnNumber.div, getCreateOptions(e)))}),
+                         new MenuItem('Cell',              {icon: iconCell,       callback: e => actionManager.do(getCreateNodeAction(CELL,          btnNumber.div, getCreateOptions(e)))}),
+        menuFlowSep1   = new MenuItem('',                  {separator: true}),     
+        menuItemItems  = new MenuItem('Items',             {icon: iconItems,      callback: e => actionManager.do(getCreateNodeAction(ITEMS,         btnNumber.div, getCreateOptions(e)))}),
+        menuItemCount  = new MenuItem('Count',             {icon: iconCount,      callback: e => actionManager.do(getCreateNodeAction(LIST_COUNT,    btnNumber.div, getCreateOptions(e)))}),
+        menuItemSelect = new MenuItem('Select',            {icon: iconSelect,     callback: e => actionManager.do(getCreateNodeAction(SELECT,        btnNumber.div, getCreateOptions(e)))}),
+        menuItemIfElse = new MenuItem('I&hairsp;f / else', {icon: iconIfElse,     callback: e => actionManager.do(getCreateNodeAction(IF_ELSE,       btnNumber.div, getCreateOptions(e))), disambiguate: true}),
+                         new MenuItem('Contains',          {icon: iconContains,   callback: e => actionManager.do(getCreateNodeAction(CONTAINS, btnNumber.div, getCreateOptions(e))), disambiguate: true}),
+        menuFlowSep2   = new MenuItem('',                  {separator: true}),
+        menuItemArray  = new MenuItem('List . . .',        {icon: iconDefine,     callback: e => actionManager.do(getCreateNodeAction(DEFINE,        btnNumber.div, getCreateOptions(e)))})]);
     
 
     menuMath = new Menu('Math', true, false);
@@ -773,6 +779,7 @@ function initGeneratorMenus()
     
     btnMain     = new MenuButton('', menuMain,     {useMenuName: true, highlight: () => currentMenus.includes(menuMain  ), callback: () => updatePanMode(false)});
     btnFlow     = new MenuButton('', menuFlow,     {useMenuName: true, highlight: () => currentMenus.includes(menuFlow  ), callback: () => updatePanMode(false)});
+    btnData     = new MenuButton('', menuData,     {useMenuName: true, highlight: () => currentMenus.includes(menuData  ), callback: () => updatePanMode(false)});
     btnNumber   = new MenuButton('', menuNumber,   {useMenuName: true, highlight: () => currentMenus.includes(menuNumber), callback: () => updatePanMode(false)});
     btnText     = new MenuButton('', menuString,   {useMenuName: true, highlight: () => currentMenus.includes(menuString), callback: () => updatePanMode(false)});
     btnColor    = new MenuButton('', menuColor,    {useMenuName: true, highlight: () => currentMenus.includes(menuColor ), callback: () => updatePanMode(false)});
@@ -859,6 +866,7 @@ function initGeneratorMenus()
     // btnZoom.div.style.boxShadow           = '0 0 0 1px red inset';
 
 
+    btnFlow    .setIcon(iconFlow);
     btnMain    .setIcon(iconGenerator);
     btnColor   .setIcon(iconColor);
     btnLayer   .setIcon(iconEffects);

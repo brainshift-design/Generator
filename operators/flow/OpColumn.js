@@ -62,7 +62,7 @@ extends OperatorBase
         const length = values[paramIds.findIndex(id => id == 'length')];
 
         if (length.value > 0)
-            this.paramIndex.controls[0].setMax(length.value);
+            this.paramIndex.controls[0].setMax(length.value-1);
         else
             this.paramIndex.controls[0].setMax();
     }

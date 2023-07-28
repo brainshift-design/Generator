@@ -76,8 +76,9 @@ extends GValue
 
     isValid()
     {
-        return  this.items
-            && !this.items.find(i => !i.isValid());
+        //console.log('invalid =', this.items.find(i => !i.isValid()));
+        return  this.items;
+        //    && !this.items.find(i => !i.isValid());
     }
 
 

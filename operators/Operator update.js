@@ -263,7 +263,7 @@ Operator.prototype.updateHeaderLabelText = function()
 
 
     suffix += this.suffix;
-    
+
 
     this.labelText.innerHTML = 
           (settings.showNodeId ? this.id + suffix : prefix + this.name + suffix)
@@ -355,7 +355,10 @@ Operator.prototype.updateValues = function(requestId, actionId, updateParamId, p
         const index = this.params.findIndex(p => p.id == paramIds[i]);
 
         if (   paramIds[index] != updateParamId
-            && index > -1)
+            && index > -1
+            && this.params[index].type == values[i].type)
+        {
             this.params[index].setValue(values[i], false, true, false);
+        }
     }
 }

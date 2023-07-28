@@ -201,7 +201,7 @@ function displayValue(type, value)
 
 
 
-function nullFromType(type)
+function nanFromType(type)
 {
     switch (type)
     {

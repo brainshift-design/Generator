@@ -4594,9 +4594,7 @@ a
             <div id='whatsNewBody'>
                 <h1 style='margin-top: 20px;'>What's new</h1>
 
-                <p>•  Place now works with one input and is more flexible</p>
-                <p>•  added CSV node</p>
-                <p>•  fixed bug in text Split node</p>
+                <p>•  </p>
                 
                 <p><br/><br/><div id='chkHideWhatsNew'></div></p>
             </div>
@@ -4924,7 +4922,7 @@ a
 
 
 
-const generatorVersion = 171;
+const generatorVersion = 172;
 
 
 const MAX_INT32        = 2147483647;
@@ -12971,7 +12969,7 @@ function displayValue(type, value)
 
 
 
-function nullFromType(type)
+function nanFromType(type)
 {
     switch (type)
     {
@@ -13395,8 +13393,9 @@ extends GValue
 
     isValid()
     {
-        return  this.items
-            && !this.items.find(i => !i.isValid());
+        //console.log('invalid =', this.items.find(i => !i.isValid()));
+        return  this.items;
+        //    && !this.items.find(i => !i.isValid());
     }
 
 
@@ -13817,7 +13816,7 @@ extends GValue
             && typeof val !== 'string')
         {
             console.trace();
-            consoleError('TextValue(value) is ' + typeof val + ', must be a string');
+            consoleError('TextValue('+val+') is ' + typeof val + ', must be a string');
         }
 
         
@@ -18735,13 +18734,18 @@ extends GOperator
             return this;
 
 
-        const start = (await this.start.eval(parse)).toValue();
-        const end   = (await this.end  .eval(parse)).toValue();
-
-        let   length = 0;
+        const start = this.start ? (await this.start.eval(parse)).toValue() : null;
+        const end   = this.end   ? (await this.end  .eval(parse)).toValue() : null;
 
 
-        if (this.input)
+        this.value = new ListValue();
+
+        let length = 0;
+
+
+        if (   this.input
+            && start
+            && end)
         {
             const input = (await this.input.eval(parse)).toValue();
            
@@ -18753,24 +18757,17 @@ extends GOperator
             {
                 if (this.options.enabled)
                 {
-                    this.value = new ListValue();
-
                     for (let i = start.value; i < end.value; i++)
                         this.value.items.push(input.items[i].copy());
                 }
                 else
                     this.value = input.copy();
             }
-            else
-                this.value = new ListValue();
         }
-        else
-            this.value = new ListValue();
 
 
         this.updateValues =
         [
-            //['value',  this.value             ],
             ['length', new NumberValue(length)], // used to set start and end maxima
             ['start',  start                  ],
             ['end',    end                    ]
@@ -18938,6 +18935,8 @@ extends GOperator
         
         this.value = new ListValue();
 
+        let maxColumns = 0;
+
         
         if (   this.input
             && index)
@@ -18946,7 +18945,6 @@ extends GOperator
            
             if (isTable(input))
             {
-                let maxColumns = 0;
                 input.items.forEach(i => maxColumns = Math.max(maxColumns, i.items.length));
 
                 if (index.value < maxColumns)
@@ -18967,8 +18965,8 @@ extends GOperator
 
         this.updateValues =
         [
-            ['length', new NumberValue(this.value.items.length)],
-            ['index',  index                                   ]
+            ['length', new NumberValue(maxColumns)],
+            ['index',  index                  ]
         ];
         
 
@@ -19013,7 +19011,106 @@ function isTable(value)
 }
 
 
+class GCell
+extends GOperator
+{
+    column;
+    row;
 
+
+    
+    constructor(nodeId, options)
+    {
+        super(CELL, nodeId, options);
+    }
+
+
+    
+    copy()
+    {
+        const copy = new GCell(this.nodeId, this.options);
+
+        copy.copyBase(this);
+
+        if (this.column) copy.column = this.column.copy();
+        if (this.row   ) copy.row    = this.row   .copy();
+
+        return copy;
+    }
+
+
+
+    async eval(parse)
+    {
+        if (this.isCached())
+            return this;
+
+
+        const column = this.column ? (await this.column.eval(parse)).toValue() : null;
+        const row    = this.row    ? (await this.row   .eval(parse)).toValue() : null;
+
+
+        let columns = 0;
+        let rows    = 0;
+
+        if (   this.input
+            && column
+            && row)
+        {
+            const input = (await this.input.eval(parse)).toValue();
+
+            
+            if (isTable(input))
+            {
+                rows = input.items.length;
+
+                input.items.forEach(i => columns = Math.max(columns, i.items.length));
+
+                this.value = 
+                    column.value < columns
+                    ? input.items[row.value].items[column.value].copy()
+                    : NullValue;
+            }
+            else
+                this.value = NullValue;
+        }
+        else
+            this.value = NullValue;
+
+
+        this.updateValues =
+        [
+            ['value',   this.value              ],
+            ['columns', new NumberValue(columns)],
+            ['rows',    new NumberValue(rows   )]
+        ];
+        
+
+        this.validate();
+
+        return this;
+    }
+
+
+
+    pushValueUpdates(parse)
+    {
+        super.pushValueUpdates(parse);
+
+        if (this.column) this.column.pushValueUpdates(parse);
+        if (this.row   ) this.row   .pushValueUpdates(parse);
+    }
+
+
+
+    invalidateInputs(from)
+    {
+        super.invalidateInputs(from);
+
+        if (this.column) this.column.invalidateInputs(from);
+        if (this.row   ) this.row   .invalidateInputs(from);
+    }
+}
 
 
 class GItems
@@ -19058,21 +19155,12 @@ extends GOperator
             return this;
 
 
-        console.log('this.input =', this.input);
-        if (this.input)
-        {
-            await this.input.eval(parse);
-            this.value = this.input.toValue();
-        }
-        else
-        {
-            this.value = ListValue.NaN;
-        }
+        this.value = this.input ? (await this.input.eval(parse)).toValue() : ListValue.NaN;
 
 
         this.updateValues = [];
 
-
+        
         if (    this.value.isValid()
             && !isEmpty(this.value.items))
         {
@@ -19083,7 +19171,7 @@ extends GOperator
                 const valueId = 
                     item.valueId != ''
                     ? item.valueId
-                    : 'item' + i;
+                    : i;//'item' + i;
 
                 Object.assign(this, {[valueId]: item});
                 this.updateValues.push([valueId, item]);
@@ -25991,8 +26079,8 @@ async function evalCompareInputs(input0, input1, op, parse)
 class GTextCSV
 extends GOperator1
 {
-    rows;
-    columns;
+    // rows;
+    // columns;
     rowSeparator;
     columnSeparator;
 
@@ -26034,6 +26122,10 @@ extends GOperator1
 
         let maxColumns = 0;
 
+        
+        let nRows    = 0;
+        let nColumns = 0;
+
 
         if (   this.input
             && rowSeparator
@@ -26058,22 +26150,22 @@ extends GOperator1
                 this.value.items.push(row);
             }
 
-            this.rows    = new NumberValue(this.value.items.length);
-            this.columns = new NumberValue(maxColumns);
+            nRows    = this.value.items.length;
+            nColumns = maxColumns;
         }
-        else
-        {
-            this.rows    = new NumberValue(0);
-            this.columns = new NumberValue(0);
-        }
+        // else
+        // {
+        //     this.rows    = new NumberValue(0);
+        //     this.columns = new NumberValue(0);
+        // }
     
 
         this.updateValues =
         [
-            ['rowSeparator',    rowSeparator   ],
-            ['columnSeparator', columnSeparator],
-            ['rows',            this.rows      ],
-            ['columns',         this.columns   ]
+            ['rowSeparator',    rowSeparator            ],
+            ['columnSeparator', columnSeparator         ],
+            ['rows',            new NumberValue(nRows   )],
+            ['columns',         new NumberValue(nColumns)]
         ];
         
 
@@ -34615,7 +34707,7 @@ extends GOperator
         }
 
         else if (this.dataType != NULL)
-            this.value = nullFromType(this.dataType);
+            this.value = nanFromType(this.dataType);
         
         else
             this.value = NullValue;
@@ -35923,6 +36015,53 @@ function genParseColumn(parse)
 
     genParseNodeEnd(parse, column);
     return column;
+}
+
+
+
+function genParseCell(parse)
+{
+    const [, nodeId, options, ignore] = genParseNodeStart(parse);
+
+
+    const cell = new GCell(nodeId, options);
+   
+
+    let nInputs = -1;
+    
+    if (!ignore)
+    {
+        nInputs = parseInt(parse.move());
+        consoleAssert(nInputs == 0 || nInputs == 1, 'nInputs must be [0, 1]');
+    }
+
+    
+    if (parse.settings.logRequests) 
+        logReq(cell, parse, ignore, nInputs);
+
+
+    if (ignore) 
+    {
+        genParseNodeEnd(parse, cell);
+        return parse.parsedNodes.find(n => n.nodeId == nodeId);
+    }
+
+
+    parse.nTab++;
+
+
+    if (nInputs == 1)
+        cell.input = genParse(parse);
+
+    cell.column = genParse(parse);
+    cell.row    = genParse(parse);
+
+    
+    parse.nTab--;
+
+
+    genParseNodeEnd(parse, cell);
+    return cell;
 }
 
 
@@ -44262,7 +44401,7 @@ onerror = (event, source, line, pos, error) =>
 };
 
 
-const generatorVersion = 171;
+const generatorVersion = 172;
 
 
 const MAX_INT32        = 2147483647;
@@ -54493,7 +54632,7 @@ function displayValue(type, value)
 
 
 
-function nullFromType(type)
+function nanFromType(type)
 {
     switch (type)
     {
@@ -54917,8 +55056,9 @@ extends GValue
 
     isValid()
     {
-        return  this.items
-            && !this.items.find(i => !i.isValid());
+        //console.log('invalid =', this.items.find(i => !i.isValid()));
+        return  this.items;
+        //    && !this.items.find(i => !i.isValid());
     }
 
 
@@ -55339,7 +55479,7 @@ extends GValue
             && typeof val !== 'string')
         {
             console.trace();
-            consoleError('TextValue(value) is ' + typeof val + ', must be a string');
+            consoleError('TextValue('+val+') is ' + typeof val + ', must be a string');
         }
 
         
@@ -60257,13 +60397,18 @@ extends GOperator
             return this;
 
 
-        const start = (await this.start.eval(parse)).toValue();
-        const end   = (await this.end  .eval(parse)).toValue();
-
-        let   length = 0;
+        const start = this.start ? (await this.start.eval(parse)).toValue() : null;
+        const end   = this.end   ? (await this.end  .eval(parse)).toValue() : null;
 
 
-        if (this.input)
+        this.value = new ListValue();
+
+        let length = 0;
+
+
+        if (   this.input
+            && start
+            && end)
         {
             const input = (await this.input.eval(parse)).toValue();
            
@@ -60275,24 +60420,17 @@ extends GOperator
             {
                 if (this.options.enabled)
                 {
-                    this.value = new ListValue();
-
                     for (let i = start.value; i < end.value; i++)
                         this.value.items.push(input.items[i].copy());
                 }
                 else
                     this.value = input.copy();
             }
-            else
-                this.value = new ListValue();
         }
-        else
-            this.value = new ListValue();
 
 
         this.updateValues =
         [
-            //['value',  this.value             ],
             ['length', new NumberValue(length)], // used to set start and end maxima
             ['start',  start                  ],
             ['end',    end                    ]
@@ -60460,6 +60598,8 @@ extends GOperator
         
         this.value = new ListValue();
 
+        let maxColumns = 0;
+
         
         if (   this.input
             && index)
@@ -60468,7 +60608,6 @@ extends GOperator
            
             if (isTable(input))
             {
-                let maxColumns = 0;
                 input.items.forEach(i => maxColumns = Math.max(maxColumns, i.items.length));
 
                 if (index.value < maxColumns)
@@ -60489,8 +60628,8 @@ extends GOperator
 
         this.updateValues =
         [
-            ['length', new NumberValue(this.value.items.length)],
-            ['index',  index                                   ]
+            ['length', new NumberValue(maxColumns)],
+            ['index',  index                  ]
         ];
         
 
@@ -60535,7 +60674,106 @@ function isTable(value)
 }
 
 
+class GCell
+extends GOperator
+{
+    column;
+    row;
 
+
+    
+    constructor(nodeId, options)
+    {
+        super(CELL, nodeId, options);
+    }
+
+
+    
+    copy()
+    {
+        const copy = new GCell(this.nodeId, this.options);
+
+        copy.copyBase(this);
+
+        if (this.column) copy.column = this.column.copy();
+        if (this.row   ) copy.row    = this.row   .copy();
+
+        return copy;
+    }
+
+
+
+    async eval(parse)
+    {
+        if (this.isCached())
+            return this;
+
+
+        const column = this.column ? (await this.column.eval(parse)).toValue() : null;
+        const row    = this.row    ? (await this.row   .eval(parse)).toValue() : null;
+
+
+        let columns = 0;
+        let rows    = 0;
+
+        if (   this.input
+            && column
+            && row)
+        {
+            const input = (await this.input.eval(parse)).toValue();
+
+            
+            if (isTable(input))
+            {
+                rows = input.items.length;
+
+                input.items.forEach(i => columns = Math.max(columns, i.items.length));
+
+                this.value = 
+                    column.value < columns
+                    ? input.items[row.value].items[column.value].copy()
+                    : NullValue;
+            }
+            else
+                this.value = NullValue;
+        }
+        else
+            this.value = NullValue;
+
+
+        this.updateValues =
+        [
+            ['value',   this.value              ],
+            ['columns', new NumberValue(columns)],
+            ['rows',    new NumberValue(rows   )]
+        ];
+        
+
+        this.validate();
+
+        return this;
+    }
+
+
+
+    pushValueUpdates(parse)
+    {
+        super.pushValueUpdates(parse);
+
+        if (this.column) this.column.pushValueUpdates(parse);
+        if (this.row   ) this.row   .pushValueUpdates(parse);
+    }
+
+
+
+    invalidateInputs(from)
+    {
+        super.invalidateInputs(from);
+
+        if (this.column) this.column.invalidateInputs(from);
+        if (this.row   ) this.row   .invalidateInputs(from);
+    }
+}
 
 
 class GItems
@@ -60580,21 +60818,12 @@ extends GOperator
             return this;
 
 
-        console.log('this.input =', this.input);
-        if (this.input)
-        {
-            await this.input.eval(parse);
-            this.value = this.input.toValue();
-        }
-        else
-        {
-            this.value = ListValue.NaN;
-        }
+        this.value = this.input ? (await this.input.eval(parse)).toValue() : ListValue.NaN;
 
 
         this.updateValues = [];
 
-
+        
         if (    this.value.isValid()
             && !isEmpty(this.value.items))
         {
@@ -60605,7 +60834,7 @@ extends GOperator
                 const valueId = 
                     item.valueId != ''
                     ? item.valueId
-                    : 'item' + i;
+                    : i;//'item' + i;
 
                 Object.assign(this, {[valueId]: item});
                 this.updateValues.push([valueId, item]);
@@ -67513,8 +67742,8 @@ async function evalCompareInputs(input0, input1, op, parse)
 class GTextCSV
 extends GOperator1
 {
-    rows;
-    columns;
+    // rows;
+    // columns;
     rowSeparator;
     columnSeparator;
 
@@ -67556,6 +67785,10 @@ extends GOperator1
 
         let maxColumns = 0;
 
+        
+        let nRows    = 0;
+        let nColumns = 0;
+
 
         if (   this.input
             && rowSeparator
@@ -67580,22 +67813,22 @@ extends GOperator1
                 this.value.items.push(row);
             }
 
-            this.rows    = new NumberValue(this.value.items.length);
-            this.columns = new NumberValue(maxColumns);
+            nRows    = this.value.items.length;
+            nColumns = maxColumns;
         }
-        else
-        {
-            this.rows    = new NumberValue(0);
-            this.columns = new NumberValue(0);
-        }
+        // else
+        // {
+        //     this.rows    = new NumberValue(0);
+        //     this.columns = new NumberValue(0);
+        // }
     
 
         this.updateValues =
         [
-            ['rowSeparator',    rowSeparator   ],
-            ['columnSeparator', columnSeparator],
-            ['rows',            this.rows      ],
-            ['columns',         this.columns   ]
+            ['rowSeparator',    rowSeparator            ],
+            ['columnSeparator', columnSeparator         ],
+            ['rows',            new NumberValue(nRows   )],
+            ['columns',         new NumberValue(nColumns)]
         ];
         
 
@@ -76137,7 +76370,7 @@ extends GOperator
         }
 
         else if (this.dataType != NULL)
-            this.value = nullFromType(this.dataType);
+            this.value = nanFromType(this.dataType);
         
         else
             this.value = NullValue;
@@ -80560,11 +80793,13 @@ const iconPage              = '<svg width="14" height="14" viewBox="0 0 14 14" f
 const iconPageClose         = '<svg width="9" height="10" viewBox="0 0 9 10" fill="none" xmlns="http://www.w3.org/2000/svg"><rect x="1.23505" y="9.01202" width="1.6925" height="9.641" transform="rotate(-135 1.23505 9.01202)" fill="white"/><rect x="8.05226" y="7.81525" width="1.6925" height="9.641" transform="rotate(135 8.05226 7.81525)" fill="white"/></svg>';
 // const iconAddPage           = '<svg width="10" height="10" viewBox="0 0 10 10" fill="none" xmlns="http://www.w3.org/2000/svg"><path fill-rule="evenodd" clip-rule="evenodd" d="M6 0.5H4V4L0.5 4V6H4V9.5H6V6H9.5V4L6 4V0.5Z" fill="white"/></svg>';
 
+const iconFlow              = '<svg width="14" height="13" viewBox="0 0 14 13" fill="none" xmlns="http://www.w3.org/2000/svg"><circle cx="12" cy="2" r="1.5" stroke="white"/><circle cx="12" cy="11" r="1.5" stroke="white"/><circle cx="1.5" cy="6.5" r="1.5" fill="white"/><path d="M10.2736 2C6.76261 2 6.43644 6.5 2.72644 6.5C6.43644 6.5 6.76261 11 10.2736 11" stroke="white"/></svg>';
+
 const iconList              = '<svg width="12" height="9" viewBox="0 0 12 9" fill="none" xmlns="http://www.w3.org/2000/svg"><rect width="9" height="1" fill="white"/><rect y="4" width="9" height="1" fill="white"/><rect y="8" width="9" height="1" fill="white"/></svg>';
 const iconSublist           = '<svg width="15" height="13" viewBox="-1 0 15 13" fill="none" xmlns="http://www.w3.org/2000/svg"><rect width="9" height="1" fill="white"/><rect y="12" width="9" height="1" fill="white"/><rect x="5" y="4" width="9" height="1" fill="white"/><rect x="5" y="8" width="9" height="1" fill="white"/></svg>';
 const iconUnique            = '<svg width="13" height="13" viewBox="0 0 13 13" fill="none" xmlns="http://www.w3.org/2000/svg"><rect width="9" height="1" fill="white"/><rect x="4" y="12" width="9" height="1" fill="white"/><rect x="4" y="4" width="9" height="1" fill="white"/><rect y="8" width="9" height="1" fill="white"/></svg>';
 const iconColumn            = '<svg width="9" height="11" viewBox="0 0 9 11" fill="none" xmlns="http://www.w3.org/2000/svg"><rect y="11" width="11" height="1" transform="rotate(-90 0 11)" fill="white"/><rect x="4" y="11" width="11" height="1" transform="rotate(-90 4 11)" fill="white"/><rect x="8" y="11" width="11" height="1" transform="rotate(-90 8 11)" fill="white"/></svg>';
-const iconCell              = '';
+const iconCell              = '<svg width="13" height="13" viewBox="0 0 13 13" fill="none" xmlns="http://www.w3.org/2000/svg"><rect y="2" width="13" height="1" fill="white"/><rect x="11" width="13" height="1" transform="rotate(90 11 0)" fill="white"/><rect y="6" width="13" height="1" fill="white"/><rect x="7" width="13" height="1" transform="rotate(90 7 0)" fill="white"/><rect y="10" width="13" height="1" fill="white"/><rect x="3" width="13" height="1" transform="rotate(90 3 0)" fill="white"/></svg>';
 const iconItems             = '<svg width="17" height="11" viewBox="-1 0 17 11" fill="none" xmlns="http://www.w3.org/2000/svg"><rect width="9" height="1" transform="matrix(-1 0 0 1 9 1)" fill="white"/><rect width="9" height="1" transform="matrix(-1 0 0 1 9 5)" fill="white"/><rect width="9" height="1" transform="matrix(-1 0 0 1 9 9)" fill="white"/><circle r="1.5" transform="matrix(-1 0 0 1 13.5 9.5)" fill="white"/><circle r="1.5" transform="matrix(-1 0 0 1 13.5 5.5)" fill="white"/><circle r="1.5" transform="matrix(-1 0 0 1 13.5 1.5)" fill="white"/></svg>';
 const iconSelect            = '<svg width="15" height="9" viewBox="0 0 15 9" fill="none" xmlns="http://www.w3.org/2000/svg"><path d="M0 0H9V1H0V0Z" fill="white"/><path d="M0 4H9V5H0V4Z" fill="white"/><path d="M0 8H9V9H0V8Z" fill="white"/><path d="M13.5 6C12.6716 6 12 5.32843 12 4.5C12 3.67157 12.6716 3 13.5 3C14.3284 3 15 3.67157 15 4.5C15 5.32843 14.3284 6 13.5 6Z" fill="white"/></svg>';
 const iconCount             = '<svg width="16" height="11" viewBox="0 0 16 11" fill="none" xmlns="http://www.w3.org/2000/svg"><path d="M15.0334 0V11H12.0334V10H14.0667L14.0334 1H12L12.0334 0H15.0334Z" fill="white"/><path d="M0 11V0H3V1H0.966639V10H3V11H0Z" fill="white"/><path d="M7.5 11C6.67157 11 6 10.3284 6 9.5C6 8.67157 6.67157 8 7.5 8C8.32843 8 9 8.67157 9 9.5C9 10.3284 8.32843 11 7.5 11Z" fill="white"/><path d="M7.5 7C6.67157 7 6 6.32843 6 5.5C6 4.67157 6.67157 4 7.5 4C8.32843 4 9 4.67157 9 5.5C9 6.32843 8.32843 7 7.5 7Z" fill="white"/><path d="M7.5 3C6.67157 3 6 2.32843 6 1.5C6 0.671573 6.67157 0 7.5 0C8.32843 0 9 0.671573 9 1.5C9 2.32843 8.32843 3 7.5 3Z" fill="white"/></svg>';
@@ -81765,6 +82000,7 @@ class MenuItem
 
 var btnMain;
 var btnFlow;
+var btnData;
 var btnNumber;
 var btnText;
 var btnColor;
@@ -81794,6 +82030,7 @@ var menuLogMessages;
 var menuDebugDelete;
 
 var menuFlow;
+var menuData;
 var menuNumber;
 var menuSets;
 var menuString;
@@ -82143,22 +82380,8 @@ function initGeneratorMenus()
         menuItemHelp  = new MenuItem('Help and subscription', {childMenu: menuMainHelp })]);
 
 
-    menuFlow = new Menu('Data flow', true, false);
+    menuFlow = new Menu('Flow', true, false);
     menuFlow.addItems([
-        menuItemList   = new MenuItem('List',              {icon: iconList,       callback: e => actionManager.do(getCreateNodeAction(LIST,          btnNumber.div, getCreateOptions(e)))}),
-                         new MenuItem('Sublist',           {icon: iconSublist,    callback: e => actionManager.do(getCreateNodeAction(SUBLIST,       btnNumber.div, getCreateOptions(e)))}),
-                         new MenuItem('Unique',            {icon: iconUnique,     callback: e => actionManager.do(getCreateNodeAction(UNIQUE,        btnNumber.div, getCreateOptions(e)))}),
-                         new MenuItem('',                  {separator: true}),     
-                         new MenuItem('Column',            {icon: iconColumn,     callback: e => actionManager.do(getCreateNodeAction(COLUMN,        btnNumber.div, getCreateOptions(e)))}),
-        menuFlowSep1   = new MenuItem('',                  {separator: true}),     
-        menuItemItems  = new MenuItem('Items',             {icon: iconItems,      callback: e => actionManager.do(getCreateNodeAction(ITEMS,         btnNumber.div, getCreateOptions(e)))}),
-        menuItemCount  = new MenuItem('Count',             {icon: iconCount,      callback: e => actionManager.do(getCreateNodeAction(LIST_COUNT,    btnNumber.div, getCreateOptions(e)))}),
-        menuItemSelect = new MenuItem('Select',            {icon: iconSelect,     callback: e => actionManager.do(getCreateNodeAction(SELECT,        btnNumber.div, getCreateOptions(e)))}),
-        menuItemIfElse = new MenuItem('I&hairsp;f / else', {icon: iconIfElse,     callback: e => actionManager.do(getCreateNodeAction(IF_ELSE,       btnNumber.div, getCreateOptions(e))), disambiguate: true}),
-                         new MenuItem('Contains',          {icon: iconContains,   callback: e => actionManager.do(getCreateNodeAction(CONTAINS, btnNumber.div, getCreateOptions(e))), disambiguate: true}),
-        menuFlowSep2   = new MenuItem('',                  {separator: true}),
-        menuItemArray  = new MenuItem('List . . .',        {icon: iconDefine,     callback: e => actionManager.do(getCreateNodeAction(DEFINE,        btnNumber.div, getCreateOptions(e)))}),
-                         new MenuItem('',                  {separator: true}),
         menuItemCache  = new MenuItem('Cache',             {icon: iconCache,      callback: e => actionManager.do(getCreateNodeAction(CACHE,         btnNumber.div, getCreateOptions(e)))}),
         menuItemFreeze = new MenuItem('Freeze . . .',      {icon: iconFreeze,     callback: e => actionManager.do(getCreateNodeAction(FREEZE,        btnNumber.div, getCreateOptions(e)))}),
         menuFlowSep4   = new MenuItem('',                  {separator: true}),
@@ -82166,6 +82389,24 @@ function initGeneratorMenus()
         menuItemRepeat = new MenuItem('. . . Repeat',      {icon: iconRepeat,     callback: e => actionManager.do(getCreateNodeAction(REPEAT,        btnNumber.div, getCreateOptions(e)))}),
                          new MenuItem('',                  {separator: true}),
         menuItemTimer  = new MenuItem('Timer ',            {icon: iconTimer,      callback: e => actionManager.do(getCreateNodeAction(TIMER,         btnNumber.div, getCreateOptions(e)))})]);
+    
+
+    menuData = new Menu('Data', true, false);
+    menuData.addItems([
+        menuItemList   = new MenuItem('List',              {icon: iconList,       callback: e => actionManager.do(getCreateNodeAction(LIST,          btnNumber.div, getCreateOptions(e)))}),
+                         new MenuItem('Sublist',           {icon: iconSublist,    callback: e => actionManager.do(getCreateNodeAction(SUBLIST,       btnNumber.div, getCreateOptions(e)))}),
+                         new MenuItem('Unique',            {icon: iconUnique,     callback: e => actionManager.do(getCreateNodeAction(UNIQUE,        btnNumber.div, getCreateOptions(e)))}),
+                         new MenuItem('',                  {separator: true}),     
+                         new MenuItem('Column',            {icon: iconColumn,     callback: e => actionManager.do(getCreateNodeAction(COLUMN,        btnNumber.div, getCreateOptions(e)))}),
+                         new MenuItem('Cell',              {icon: iconCell,       callback: e => actionManager.do(getCreateNodeAction(CELL,          btnNumber.div, getCreateOptions(e)))}),
+        menuFlowSep1   = new MenuItem('',                  {separator: true}),     
+        menuItemItems  = new MenuItem('Items',             {icon: iconItems,      callback: e => actionManager.do(getCreateNodeAction(ITEMS,         btnNumber.div, getCreateOptions(e)))}),
+        menuItemCount  = new MenuItem('Count',             {icon: iconCount,      callback: e => actionManager.do(getCreateNodeAction(LIST_COUNT,    btnNumber.div, getCreateOptions(e)))}),
+        menuItemSelect = new MenuItem('Select',            {icon: iconSelect,     callback: e => actionManager.do(getCreateNodeAction(SELECT,        btnNumber.div, getCreateOptions(e)))}),
+        menuItemIfElse = new MenuItem('I&hairsp;f / else', {icon: iconIfElse,     callback: e => actionManager.do(getCreateNodeAction(IF_ELSE,       btnNumber.div, getCreateOptions(e))), disambiguate: true}),
+                         new MenuItem('Contains',          {icon: iconContains,   callback: e => actionManager.do(getCreateNodeAction(CONTAINS, btnNumber.div, getCreateOptions(e))), disambiguate: true}),
+        menuFlowSep2   = new MenuItem('',                  {separator: true}),
+        menuItemArray  = new MenuItem('List . . .',        {icon: iconDefine,     callback: e => actionManager.do(getCreateNodeAction(DEFINE,        btnNumber.div, getCreateOptions(e)))})]);
     
 
     menuMath = new Menu('Math', true, false);
@@ -82538,6 +82779,7 @@ function initGeneratorMenus()
     
     btnMain     = new MenuButton('', menuMain,     {useMenuName: true, highlight: () => currentMenus.includes(menuMain  ), callback: () => updatePanMode(false)});
     btnFlow     = new MenuButton('', menuFlow,     {useMenuName: true, highlight: () => currentMenus.includes(menuFlow  ), callback: () => updatePanMode(false)});
+    btnData     = new MenuButton('', menuData,     {useMenuName: true, highlight: () => currentMenus.includes(menuData  ), callback: () => updatePanMode(false)});
     btnNumber   = new MenuButton('', menuNumber,   {useMenuName: true, highlight: () => currentMenus.includes(menuNumber), callback: () => updatePanMode(false)});
     btnText     = new MenuButton('', menuString,   {useMenuName: true, highlight: () => currentMenus.includes(menuString), callback: () => updatePanMode(false)});
     btnColor    = new MenuButton('', menuColor,    {useMenuName: true, highlight: () => currentMenus.includes(menuColor ), callback: () => updatePanMode(false)});
@@ -82624,6 +82866,7 @@ function initGeneratorMenus()
     // btnZoom.div.style.boxShadow           = '0 0 0 1px red inset';
 
 
+    btnFlow    .setIcon(iconFlow);
     btnMain    .setIcon(iconGenerator);
     btnColor   .setIcon(iconColor);
     btnLayer   .setIcon(iconEffects);
@@ -87007,7 +87250,10 @@ extends Parameter
     }
 
     
-    get value() { return new TextValue(this.controls[0].value); }
+    get value() 
+    { 
+        return new TextValue(this.controls[0].value); 
+    }
     
 
     
@@ -87096,6 +87342,14 @@ extends Parameter
             || !value.type == TEXT_VALUE)
         { 
             consoleError('value.type must be TEXT_VALUE');
+            console.trace();
+        }
+
+
+        if (   value.value === null
+            || (typeof value.value) !== 'string')
+        {
+            consoleError('value.value (' + value.value + ') has type \'' + (typeof value.value) + '\', must be string');
             console.trace();
         }
 
@@ -94307,6 +94561,8 @@ class Operator
 
     paramsToJson(nTab = 0)
     {
+        //console.log(this.nodeId + '.paramsToJson()');
+
         let   pos = ' '.repeat(nTab);
         const tab = HTAB;
 
@@ -95749,7 +96005,7 @@ Operator.prototype.updateHeaderLabelText = function()
 
 
     suffix += this.suffix;
-    
+
 
     this.labelText.innerHTML = 
           (settings.showNodeId ? this.id + suffix : prefix + this.name + suffix)
@@ -95841,8 +96097,11 @@ Operator.prototype.updateValues = function(requestId, actionId, updateParamId, p
         const index = this.params.findIndex(p => p.id == paramIds[i]);
 
         if (   paramIds[index] != updateParamId
-            && index > -1)
+            && index > -1
+            && this.params[index].type == values[i].type)
+        {
             this.params[index].setValue(values[i], false, true, false);
+        }
     }
 }
 
@@ -96679,7 +96938,7 @@ extends OperatorBase
         const length = values[paramIds.findIndex(id => id == 'length')];
 
         if (length.value > 0)
-            this.paramIndex.controls[0].setMax(length.value);
+            this.paramIndex.controls[0].setMax(length.value-1);
         else
             this.paramIndex.controls[0].setMax();
     }
@@ -96695,7 +96954,142 @@ extends OperatorBase
 }
 
 
+class   OpCell
+extends OperatorBase
+{
+    paramColumn;
+    paramRow;
 
+    columns;
+    rows;
+
+
+
+    constructor()
+    {
+        super(CELL, 'cell', 'cell', iconCell);
+
+        //this.cached           = false;
+        this.alwaysSaveParams = true;
+        this.iconOffsetY      = 1;
+
+
+        this.addInput(new Input(LIST_VALUES, getNodeInputValuesForUndo));
+        this.addOutput(new Output([ANY_VALUE], this.output_genRequest));
+
+        this.addParam(this.paramColumn = new NumberParam('column', 'column', true, true, false, 0, 0));
+        this.addParam(this.paramRow    = new NumberParam('row',    'row',    true, true, false, 0, 0));
+
+        this.paramColumn.divider                       = 0.6;
+        this.paramColumn.controls[0].allowEditDecimals = false;
+
+        this.paramRow.divider                       = 0.6;
+        this.paramRow.controls[0].allowEditDecimals = false;
+
+
+        this.columns = new NumberValue(0);
+        this.rows    = new NumberValue(0);
+    }
+
+
+
+    output_genRequest(gen)
+    {
+        // 'this' is the output        
+
+        return this.node.genRequest(gen);
+    }
+
+
+
+    genRequest(gen)
+    {
+        // 'this' is the node
+
+        gen.scope.push({
+            nodeId:  this.id, 
+            paramId: NULL });
+
+
+        const [request, ignore] = this.genRequestStart(gen);
+        if (ignore) return request;
+
+
+        const input = this.inputs[0];
+
+
+        request.push(input.connected ? 1 : 0);
+
+        if (input.connected) 
+            request.push(...pushInputOrParam(input, gen));
+
+        request.push(...this.paramColumn.genRequest(gen));
+        request.push(...this.paramRow   .genRequest(gen));
+
+            
+        gen.scope.pop();
+        pushUnique(gen.passedNodes, this);
+
+        return request;
+    }
+
+
+
+    updateValues(requestId, actionId, updateParamId, paramIds, values)
+    {
+        super.updateValues(requestId, actionId, updateParamId, paramIds, values);
+
+        
+        const value  = values[paramIds.findIndex(id => id == 'value'  )];
+        this.columns = values[paramIds.findIndex(id => id == 'columns')];
+        this.rows    = values[paramIds.findIndex(id => id == 'rows'   )];
+
+        this.outputs[0].types = [value ? value.type : ANY_VALUE];
+    }
+
+
+
+    updateParams()
+    {
+        // super.updateParams();
+        
+        this.paramColumn.enableControlText(true);
+        this.paramColumn.controls[0].setMax(Math.max(0, this.columns.value-1));
+
+        this.paramRow.enableControlText(true);
+        this.paramRow.controls[0].setMax(Math.max(0, this.rows.value-1));
+
+        this.updateParamControls();
+    }
+
+
+
+    getHeaderColors(options = {})
+    {
+        const colors = super.getHeaderColors(options);
+
+        const inputTypes = this.connectedHeaderInputs.map(i => i.connectedOutput.types[0]);
+
+        const type = 
+            this.inputs[0].connected 
+            ? finalListTypeFromTypes(inputTypes)
+            : this.type;
+
+           
+        //const col = rgb_a(rgbFromType(type, this.active), 0.95);
+            
+        // colors.back = col;
+
+
+        colors.text   = isDark(colors.back) ? [1, 1, 1, 1] : [0, 0, 0, 1]; 
+
+        colors.input  = this.active ? rgb_a(colors.text, 0.4)  : rgb_a(rgbSaturateHsv(rgbFromType(type, true), 0.5), 0.8);
+        colors.output = this.active ? rgb_a(colors.text, 0.35) : rgb_a(rgbSaturateHsv(rgbFromType(type, true), 0.5), 0.7);
+        colors.wire   = rgbFromType(type, true);
+
+        return colors;
+    }
+}
 
 
 class   OpItems
@@ -96887,19 +97281,12 @@ extends ResizableBase
 
     updateValues(requestId, actionId, updateParamId, paramIds, values)
     {
-        //logFunction('OpItems.updateValues()');
-
         const oldParams = [...this.params];
-        //console.log('oldParams =', [...oldParams]);
 
         const action = actionFromId(actionId);
 
         if (action)
             pushUnique(oldParams, action.oldOutputParams);
-
-        // console.log('action =', action);
-
-        //const oldParamConns = this.getAllParamConnections();
 
 
         this.disconnectParamsNotInList(paramIds, true);
@@ -96915,37 +97302,18 @@ extends ResizableBase
                 const value   = values[i];
                 const valueId = paramIds[i];
     
-                if (  !value.isValid()
-                    || valueId == 'value') 
+                if (valueId == 'value')
                     continue;
 
                     
-                const param = oldParams.find(p => 
-                       p.id   == valueId
-                    && p.type == value.type);
+                let param = oldParams.find(p => p.id == valueId);
 
-                    
-                // if (   param
-                //     && paramIds.includes(param.id))
-                // {
-                //     this.addParam(param, true);
-
-                //     const _conn = oldParamConns.find(c =>
-                //            c.outputNodeId == this.id
-                //         && c.outputId     == param.id);
-
-                //     if (_conn)
-                //     {
-                //         const inputNode = nodeFromId(_conn.inputNodeId);
-
-                //         const conn = uiConnect(
-                //             param.output, 
-                //             inputNode.inputFromId(_conn.inputId));
-
-                //         uiSaveConn(conn);
-                //     }
-                // }
-                // else
+                if (   param
+                    && param.type != value.type)
+                {
+                    this.removeParam(param);
+                    param = null;
+                }
 
                 if (!param)
                     this.createAndAddParamByType(value.type, valueId, true, false, true, true);
@@ -96968,7 +97336,7 @@ extends ResizableBase
 
 
         for (const param of this.params)
-            param.divider = Math.min(120 / this.measureData.divOffset.width, 0.35);
+            param.divider = Math.min(120 / this.measureData.divOffset.width, 0.25);
     }
 
 
@@ -97101,7 +97469,7 @@ extends OperatorBase
         // super.updateParams();
         
         this.paramIndex.enableControlText(true);
-        this.paramIndex.controls[0].setMax(Math.max(0, this.length.value - 1));
+        this.paramIndex.controls[0].setMax(Math.max(0, this.length.value-1));
 
         this.updateParamControls();
     }
@@ -102412,8 +102780,8 @@ class   OpTextCSV
 extends OperatorBase
 {
     paramValue;
-    paramRows;
-    paramColumns;
+    // paramRows;
+    // paramColumns;
     paramRowSeparator;
     paramColumnSeparator;
 
@@ -102429,17 +102797,17 @@ extends OperatorBase
         this.addInput(new Input([TEXT_VALUE]));
 
         this.addParam(this.paramValue           = new ListParam  ('value',           'table',     false, false, true));
-        this.addParam(this.paramColumns         = new NumberParam('columns',         'columns',   true,  false, true, 0, 0));
-        this.addParam(this.paramColumnSeparator = new TextParam  ('columnSeparator', 'separator', true , true,  true, ','));
-        this.addParam(this.paramRows            = new NumberParam('rows',            'rows',      true,  false, true, 0, 0));
-        this.addParam(this.paramRowSeparator    = new TextParam  ('rowSeparator',    'separator', true , true,  true, '\\n'));
+        // this.addParam(this.paramColumns         = new NumberParam('columns',         'columns',   true,  false, true, 0, 0));
+        // this.addParam(this.paramRows            = new NumberParam('rows',            'rows',      true,  false, true, 0, 0));
+        this.addParam(this.paramRowSeparator    = new TextParam  ('rowSeparator',    'rows', true , true,  true, '\\n'));
+        this.addParam(this.paramColumnSeparator = new TextParam  ('columnSeparator', 'columns', true , true,  true, ','));
 
         this.paramValue.itemName = '';
 
-        this.paramRows           .divider = 0.5;
-        this.paramRowSeparator   .divider = 0.62;
-        this.paramColumns        .divider = 0.5;
-        this.paramColumnSeparator.divider = 0.62;
+        // this.paramRows           .divider = 0.5;
+        // this.paramColumns        .divider = 0.5;
+        this.paramRowSeparator   .divider = 0.6;
+        this.paramColumnSeparator.divider = 0.6;
     }
 
 
@@ -102477,16 +102845,16 @@ extends OperatorBase
 
 
 
-    // updateValues(requestId, actionId, updateParamId, paramIds, values)
-    // {
-    //     super.updateValues(requestId, actionId, updateParamId, paramIds, values);
+    updateValues(requestId, actionId, updateParamId, paramIds, values)
+    {
+        super.updateValues(requestId, actionId, updateParamId, paramIds, values);
 
 
-    //     const rows    = values[paramIds.findIndex(id => id == 'rows'   )];
-    //     const columns = values[paramIds.findIndex(id => id == 'columns')];
+        const rows    = values[paramIds.findIndex(id => id == 'rows'   )];
+        const columns = values[paramIds.findIndex(id => id == 'columns')];
 
-
-    // }
+        this.paramValue.setName('[ ' + columns.value + ' × ' + rows.value + ' ]');
+    }
 
 
 
@@ -102494,8 +102862,8 @@ extends OperatorBase
     {
         this.paramValue.enableControlText(false, this.isUnknown());
         
-        this.paramRows           .enableControlText(false);
-        this.paramColumns        .enableControlText(false);
+        // this.paramRows           .enableControlText(false);
+        // this.paramColumns        .enableControlText(false);
         this.paramRowSeparator   .enableControlText(true );
         this.paramColumnSeparator.enableControlText(true );
 

@@ -45,7 +45,7 @@ extends GOperator
         }
 
         else if (this.dataType != NULL)
-            this.value = nullFromType(this.dataType);
+            this.value = nanFromType(this.dataType);
         
         else
             this.value = NullValue;

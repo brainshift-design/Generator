@@ -40,21 +40,12 @@ extends GOperator
             return this;
 
 
-        console.log('this.input =', this.input);
-        if (this.input)
-        {
-            await this.input.eval(parse);
-            this.value = this.input.toValue();
-        }
-        else
-        {
-            this.value = ListValue.NaN;
-        }
+        this.value = this.input ? (await this.input.eval(parse)).toValue() : ListValue.NaN;
 
 
         this.updateValues = [];
 
-
+        
         if (    this.value.isValid()
             && !isEmpty(this.value.items))
         {
@@ -65,7 +56,7 @@ extends GOperator
                 const valueId = 
                     item.valueId != ''
                     ? item.valueId
-                    : 'item' + i;
+                    : i;//'item' + i;
 
                 Object.assign(this, {[valueId]: item});
                 this.updateValues.push([valueId, item]);

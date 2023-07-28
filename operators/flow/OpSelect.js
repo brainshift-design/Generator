@@ -88,7 +88,7 @@ extends OperatorBase
         // super.updateParams();
         
         this.paramIndex.enableControlText(true);
-        this.paramIndex.controls[0].setMax(Math.max(0, this.length.value - 1));
+        this.paramIndex.controls[0].setMax(Math.max(0, this.length.value-1));
 
         this.updateParamControls();
     }

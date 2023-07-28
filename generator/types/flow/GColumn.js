@@ -36,6 +36,8 @@ extends GOperator
         
         this.value = new ListValue();
 
+        let maxColumns = 0;
+
         
         if (   this.input
             && index)
@@ -44,7 +46,6 @@ extends GOperator
            
             if (isTable(input))
             {
-                let maxColumns = 0;
                 input.items.forEach(i => maxColumns = Math.max(maxColumns, i.items.length));
 
                 if (index.value < maxColumns)
@@ -65,8 +66,8 @@ extends GOperator
 
         this.updateValues =
         [
-            ['length', new NumberValue(this.value.items.length)],
-            ['index',  index                                   ]
+            ['length', new NumberValue(maxColumns)],
+            ['index',  index                  ]
         ];
         
 

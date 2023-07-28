@@ -15,7 +15,7 @@ extends GValue
             && typeof val !== 'string')
         {
             console.trace();
-            consoleError('TextValue(value) is ' + typeof val + ', must be a string');
+            consoleError('TextValue('+val+') is ' + typeof val + ', must be a string');
         }
 
         

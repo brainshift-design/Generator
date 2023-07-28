@@ -187,19 +187,12 @@ extends ResizableBase
 
     updateValues(requestId, actionId, updateParamId, paramIds, values)
     {
-        //logFunction('OpItems.updateValues()');
-
         const oldParams = [...this.params];
-        //console.log('oldParams =', [...oldParams]);
 
         const action = actionFromId(actionId);
 
         if (action)
             pushUnique(oldParams, action.oldOutputParams);
-
-        // console.log('action =', action);
-
-        //const oldParamConns = this.getAllParamConnections();
 
 
         this.disconnectParamsNotInList(paramIds, true);
@@ -215,37 +208,18 @@ extends ResizableBase
                 const value   = values[i];
                 const valueId = paramIds[i];
     
-                if (  !value.isValid()
-                    || valueId == 'value') 
+                if (valueId == 'value')
                     continue;
 
                     
-                const param = oldParams.find(p => 
-                       p.id   == valueId
-                    && p.type == value.type);
+                let param = oldParams.find(p => p.id == valueId);
 
-                    
-                // if (   param
-                //     && paramIds.includes(param.id))
-                // {
-                //     this.addParam(param, true);
-
-                //     const _conn = oldParamConns.find(c =>
-                //            c.outputNodeId == this.id
-                //         && c.outputId     == param.id);
-
-                //     if (_conn)
-                //     {
-                //         const inputNode = nodeFromId(_conn.inputNodeId);
-
-                //         const conn = uiConnect(
-                //             param.output, 
-                //             inputNode.inputFromId(_conn.inputId));
-
-                //         uiSaveConn(conn);
-                //     }
-                // }
-                // else
+                if (   param
+                    && param.type != value.type)
+                {
+                    this.removeParam(param);
+                    param = null;
+                }
 
                 if (!param)
                     this.createAndAddParamByType(value.type, valueId, true, false, true, true);
@@ -268,7 +242,7 @@ extends ResizableBase
 
 
         for (const param of this.params)
-            param.divider = Math.min(120 / this.measureData.divOffset.width, 0.35);
+            param.divider = Math.min(120 / this.measureData.divOffset.width, 0.25);
     }
 
 

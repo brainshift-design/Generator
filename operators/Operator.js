@@ -1118,6 +1118,8 @@ class Operator
 
     paramsToJson(nTab = 0)
     {
+        //console.log(this.nodeId + '.paramsToJson()');
+
         let   pos = ' '.repeat(nTab);
         const tab = HTAB;
 

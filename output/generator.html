@@ -4,7 +4,7 @@
 
 
 
-const generatorVersion = 171;
+const generatorVersion = 172;
 
 
 const MAX_INT32        = 2147483647;
@@ -8051,7 +8051,7 @@ function displayValue(type, value)
 
 
 
-function nullFromType(type)
+function nanFromType(type)
 {
     switch (type)
     {
@@ -8475,8 +8475,9 @@ extends GValue
 
     isValid()
     {
-        return  this.items
-            && !this.items.find(i => !i.isValid());
+        //console.log('invalid =', this.items.find(i => !i.isValid()));
+        return  this.items;
+        //    && !this.items.find(i => !i.isValid());
     }
 
 
@@ -8897,7 +8898,7 @@ extends GValue
             && typeof val !== 'string')
         {
             console.trace();
-            consoleError('TextValue(value) is ' + typeof val + ', must be a string');
+            consoleError('TextValue('+val+') is ' + typeof val + ', must be a string');
         }
 
         
@@ -13815,13 +13816,18 @@ extends GOperator
             return this;
 
 
-        const start = (await this.start.eval(parse)).toValue();
-        const end   = (await this.end  .eval(parse)).toValue();
-
-        let   length = 0;
+        const start = this.start ? (await this.start.eval(parse)).toValue() : null;
+        const end   = this.end   ? (await this.end  .eval(parse)).toValue() : null;
 
 
-        if (this.input)
+        this.value = new ListValue();
+
+        let length = 0;
+
+
+        if (   this.input
+            && start
+            && end)
         {
             const input = (await this.input.eval(parse)).toValue();
            
@@ -13833,24 +13839,17 @@ extends GOperator
             {
                 if (this.options.enabled)
                 {
-                    this.value = new ListValue();
-
                     for (let i = start.value; i < end.value; i++)
                         this.value.items.push(input.items[i].copy());
                 }
                 else
                     this.value = input.copy();
             }
-            else
-                this.value = new ListValue();
         }
-        else
-            this.value = new ListValue();
 
 
         this.updateValues =
         [
-            //['value',  this.value             ],
             ['length', new NumberValue(length)], // used to set start and end maxima
             ['start',  start                  ],
             ['end',    end                    ]
@@ -14018,6 +14017,8 @@ extends GOperator
         
         this.value = new ListValue();
 
+        let maxColumns = 0;
+
         
         if (   this.input
             && index)
@@ -14026,7 +14027,6 @@ extends GOperator
            
             if (isTable(input))
             {
-                let maxColumns = 0;
                 input.items.forEach(i => maxColumns = Math.max(maxColumns, i.items.length));
 
                 if (index.value < maxColumns)
@@ -14047,8 +14047,8 @@ extends GOperator
 
         this.updateValues =
         [
-            ['length', new NumberValue(this.value.items.length)],
-            ['index',  index                                   ]
+            ['length', new NumberValue(maxColumns)],
+            ['index',  index                  ]
         ];
         
 
@@ -14093,7 +14093,106 @@ function isTable(value)
 }
 
 
+class GCell
+extends GOperator
+{
+    column;
+    row;
 
+
+    
+    constructor(nodeId, options)
+    {
+        super(CELL, nodeId, options);
+    }
+
+
+    
+    copy()
+    {
+        const copy = new GCell(this.nodeId, this.options);
+
+        copy.copyBase(this);
+
+        if (this.column) copy.column = this.column.copy();
+        if (this.row   ) copy.row    = this.row   .copy();
+
+        return copy;
+    }
+
+
+
+    async eval(parse)
+    {
+        if (this.isCached())
+            return this;
+
+
+        const column = this.column ? (await this.column.eval(parse)).toValue() : null;
+        const row    = this.row    ? (await this.row   .eval(parse)).toValue() : null;
+
+
+        let columns = 0;
+        let rows    = 0;
+
+        if (   this.input
+            && column
+            && row)
+        {
+            const input = (await this.input.eval(parse)).toValue();
+
+            
+            if (isTable(input))
+            {
+                rows = input.items.length;
+
+                input.items.forEach(i => columns = Math.max(columns, i.items.length));
+
+                this.value = 
+                    column.value < columns
+                    ? input.items[row.value].items[column.value].copy()
+                    : NullValue;
+            }
+            else
+                this.value = NullValue;
+        }
+        else
+            this.value = NullValue;
+
+
+        this.updateValues =
+        [
+            ['value',   this.value              ],
+            ['columns', new NumberValue(columns)],
+            ['rows',    new NumberValue(rows   )]
+        ];
+        
+
+        this.validate();
+
+        return this;
+    }
+
+
+
+    pushValueUpdates(parse)
+    {
+        super.pushValueUpdates(parse);
+
+        if (this.column) this.column.pushValueUpdates(parse);
+        if (this.row   ) this.row   .pushValueUpdates(parse);
+    }
+
+
+
+    invalidateInputs(from)
+    {
+        super.invalidateInputs(from);
+
+        if (this.column) this.column.invalidateInputs(from);
+        if (this.row   ) this.row   .invalidateInputs(from);
+    }
+}
 
 
 class GItems
@@ -14138,21 +14237,12 @@ extends GOperator
             return this;
 
 
-        console.log('this.input =', this.input);
-        if (this.input)
-        {
-            await this.input.eval(parse);
-            this.value = this.input.toValue();
-        }
-        else
-        {
-            this.value = ListValue.NaN;
-        }
+        this.value = this.input ? (await this.input.eval(parse)).toValue() : ListValue.NaN;
 
 
         this.updateValues = [];
 
-
+        
         if (    this.value.isValid()
             && !isEmpty(this.value.items))
         {
@@ -14163,7 +14253,7 @@ extends GOperator
                 const valueId = 
                     item.valueId != ''
                     ? item.valueId
-                    : 'item' + i;
+                    : i;//'item' + i;
 
                 Object.assign(this, {[valueId]: item});
                 this.updateValues.push([valueId, item]);
@@ -21071,8 +21161,8 @@ async function evalCompareInputs(input0, input1, op, parse)
 class GTextCSV
 extends GOperator1
 {
-    rows;
-    columns;
+    // rows;
+    // columns;
     rowSeparator;
     columnSeparator;
 
@@ -21114,6 +21204,10 @@ extends GOperator1
 
         let maxColumns = 0;
 
+        
+        let nRows    = 0;
+        let nColumns = 0;
+
 
         if (   this.input
             && rowSeparator
@@ -21138,22 +21232,22 @@ extends GOperator1
                 this.value.items.push(row);
             }
 
-            this.rows    = new NumberValue(this.value.items.length);
-            this.columns = new NumberValue(maxColumns);
+            nRows    = this.value.items.length;
+            nColumns = maxColumns;
         }
-        else
-        {
-            this.rows    = new NumberValue(0);
-            this.columns = new NumberValue(0);
-        }
+        // else
+        // {
+        //     this.rows    = new NumberValue(0);
+        //     this.columns = new NumberValue(0);
+        // }
     
 
         this.updateValues =
         [
-            ['rowSeparator',    rowSeparator   ],
-            ['columnSeparator', columnSeparator],
-            ['rows',            this.rows      ],
-            ['columns',         this.columns   ]
+            ['rowSeparator',    rowSeparator            ],
+            ['columnSeparator', columnSeparator         ],
+            ['rows',            new NumberValue(nRows   )],
+            ['columns',         new NumberValue(nColumns)]
         ];
         
 
@@ -29695,7 +29789,7 @@ extends GOperator
         }
 
         else if (this.dataType != NULL)
-            this.value = nullFromType(this.dataType);
+            this.value = nanFromType(this.dataType);
         
         else
             this.value = NullValue;
@@ -31003,6 +31097,53 @@ function genParseColumn(parse)
 
     genParseNodeEnd(parse, column);
     return column;
+}
+
+
+
+function genParseCell(parse)
+{
+    const [, nodeId, options, ignore] = genParseNodeStart(parse);
+
+
+    const cell = new GCell(nodeId, options);
+   
+
+    let nInputs = -1;
+    
+    if (!ignore)
+    {
+        nInputs = parseInt(parse.move());
+        consoleAssert(nInputs == 0 || nInputs == 1, 'nInputs must be [0, 1]');
+    }
+
+    
+    if (parse.settings.logRequests) 
+        logReq(cell, parse, ignore, nInputs);
+
+
+    if (ignore) 
+    {
+        genParseNodeEnd(parse, cell);
+        return parse.parsedNodes.find(n => n.nodeId == nodeId);
+    }
+
+
+    parse.nTab++;
+
+
+    if (nInputs == 1)
+        cell.input = genParse(parse);
+
+    cell.column = genParse(parse);
+    cell.row    = genParse(parse);
+
+    
+    parse.nTab--;
+
+
+    genParseNodeEnd(parse, cell);
+    return cell;
 }
 
 

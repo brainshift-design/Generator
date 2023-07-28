@@ -1,8 +1,8 @@
 class GTextCSV
 extends GOperator1
 {
-    rows;
-    columns;
+    // rows;
+    // columns;
     rowSeparator;
     columnSeparator;
 
@@ -44,6 +44,10 @@ extends GOperator1
 
         let maxColumns = 0;
 
+        
+        let nRows    = 0;
+        let nColumns = 0;
+
 
         if (   this.input
             && rowSeparator
@@ -68,22 +72,22 @@ extends GOperator1
                 this.value.items.push(row);
             }
 
-            this.rows    = new NumberValue(this.value.items.length);
-            this.columns = new NumberValue(maxColumns);
+            nRows    = this.value.items.length;
+            nColumns = maxColumns;
         }
-        else
-        {
-            this.rows    = new NumberValue(0);
-            this.columns = new NumberValue(0);
-        }
+        // else
+        // {
+        //     this.rows    = new NumberValue(0);
+        //     this.columns = new NumberValue(0);
+        // }
     
 
         this.updateValues =
         [
-            ['rowSeparator',    rowSeparator   ],
-            ['columnSeparator', columnSeparator],
-            ['rows',            this.rows      ],
-            ['columns',         this.columns   ]
+            ['rowSeparator',    rowSeparator            ],
+            ['columnSeparator', columnSeparator         ],
+            ['rows',            new NumberValue(nRows   )],
+            ['columns',         new NumberValue(nColumns)]
         ];
         
 

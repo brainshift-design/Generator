@@ -14,7 +14,10 @@ extends Parameter
     }
 
     
-    get value() { return new TextValue(this.controls[0].value); }
+    get value() 
+    { 
+        return new TextValue(this.controls[0].value); 
+    }
     
 
     
@@ -103,6 +106,14 @@ extends Parameter
             || !value.type == TEXT_VALUE)
         { 
             consoleError('value.type must be TEXT_VALUE');
+            console.trace();
+        }
+
+
+        if (   value.value === null
+            || (typeof value.value) !== 'string')
+        {
+            consoleError('value.value (' + value.value + ') has type \'' + (typeof value.value) + '\', must be string');
             console.trace();
         }
 

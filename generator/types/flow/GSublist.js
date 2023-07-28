@@ -33,13 +33,18 @@ extends GOperator
             return this;
 
 
-        const start = (await this.start.eval(parse)).toValue();
-        const end   = (await this.end  .eval(parse)).toValue();
-
-        let   length = 0;
+        const start = this.start ? (await this.start.eval(parse)).toValue() : null;
+        const end   = this.end   ? (await this.end  .eval(parse)).toValue() : null;
 
 
-        if (this.input)
+        this.value = new ListValue();
+
+        let length = 0;
+
+
+        if (   this.input
+            && start
+            && end)
         {
             const input = (await this.input.eval(parse)).toValue();
            
@@ -51,24 +56,17 @@ extends GOperator
             {
                 if (this.options.enabled)
                 {
-                    this.value = new ListValue();
-
                     for (let i = start.value; i < end.value; i++)
                         this.value.items.push(input.items[i].copy());
                 }
                 else
                     this.value = input.copy();
             }
-            else
-                this.value = new ListValue();
         }
-        else
-            this.value = new ListValue();
 
 
         this.updateValues =
         [
-            //['value',  this.value             ],
             ['length', new NumberValue(length)], // used to set start and end maxima
             ['start',  start                  ],
             ['end',    end                    ]
