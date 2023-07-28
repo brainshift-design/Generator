@@ -255,17 +255,15 @@ Operator.prototype.updateHeaderLabelText = function()
         : '';
     
     let suffix;
-    
-    if (this.type == LIST)
-        suffix = '  [ ' + this.inputs.filter(i => !i.isNew).length + ' ]';
-    else if (this.type == ITEMS)
-        suffix = '  [ ' + this.params.length + ' ]';
-    else 
-        suffix = this.cached ? '' : '...';
+
+         if (this.type == LIST  ) suffix = '  [ ' + this.inputs.filter(i => !i.isNew).length + ' ]';
+    else if (this.type == UNIQUE) suffix = '  [ ' + this.paramCounts.value.items.length + ' ]';
+    else if (this.type == ITEMS ) suffix = '  [ ' + this.params.length + ' ]';
+    else                          suffix = this.cached ? '' : '...';
 
 
     this.labelText.innerHTML = 
-          (settings.showNodeId ? this.id : prefix + this.name + suffix)
+          (settings.showNodeId ? this.id + suffix : prefix + this.name + suffix)
         + (this.active && this.showActiveArrow ? (settings.showNodeId ? ' ' : '  ') + '‣' : '');
 
     this.labelText.style.fontFamily = 

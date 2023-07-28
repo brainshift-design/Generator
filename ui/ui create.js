@@ -81,6 +81,7 @@ function createNode(nodeType, creatingButton = null, createdNodeId = -1, options
         case TEXT_COMPARE:            node = new OpTextCompare();       break;
         case TEXT_TO_NUMBER:          node = new OpTextToNumber();      break;
         case TEXT_SPLIT:              node = new OpTextSplit();         break;
+        case TEXT_CSV:                node = new OpTextCSV();           break;
         case TEXT_JSON:               node = new OpTextJson();          break;
         case TEXT_FETCH:              node = new OpTextFetch();         break;
 

@@ -19,6 +19,7 @@ extends OperatorBase
         this.addParam(this.paramStart = new NumberParam('start', 'start', true,  true,  true, 1, 0, 1));
 
 
+        this.paramStart.divider = 0.54;
         this.paramStart.controls[0].allowEditDecimals = false;
     }
 

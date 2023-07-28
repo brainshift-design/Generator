@@ -678,6 +678,7 @@ const NUMBER_TO_TEXT = 'N2T';
 const TEXT_TO_NUMBER = 'T2N';
 const TEXT_SPLIT = 'TSPLT';
 const TEXT_JSON = 'TJSON';
+const TEXT_CSV = 'TCSV';
 const TEXT_FETCH = 'FETCH';
 const NUMBER_TYPES = [
     NUMBER_VALUE,
@@ -722,6 +723,7 @@ const TEXT_TYPES = [
     TEXT_TO_NUMBER,
     TEXT_SPLIT,
     TEXT_JSON,
+    TEXT_CSV,
     TEXT_FETCH
 ];
 const COLOR_VALUE = 'COL#';

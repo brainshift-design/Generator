@@ -4651,6 +4651,7 @@ const NUMBER_TO_TEXT = 'N2T';
 const TEXT_TO_NUMBER = 'T2N';
 const TEXT_SPLIT     = 'TSPLT';
 const TEXT_JSON      = 'TJSON';
+const TEXT_CSV       = 'TCSV';
 const TEXT_FETCH     = 'FETCH';
 
 
@@ -4702,6 +4703,7 @@ const TEXT_TYPES =
     TEXT_TO_NUMBER,
     TEXT_SPLIT,
     TEXT_JSON,
+    TEXT_CSV,
     TEXT_FETCH
 ];
 
@@ -20944,6 +20946,119 @@ async function evalCompareInputs(input0, input1, op, parse)
 }
 
 
+class GTextCSV
+extends GOperator1
+{
+    constructor(nodeId, options)
+    {
+        super(TEXT_CSV, nodeId, options);
+    }
+
+
+    
+    copy()
+    {
+        const copy = new GTextCSV(this.nodeId, this.options);
+
+        copy.copyBase(this);
+
+        return copy;
+    }
+
+
+
+    async eval(parse)
+    {
+        if (this.isCached())
+            return this;
+
+
+        this.value = new ListValue();
+
+
+        if (this.input)
+        {
+            const input = (await this.input.eval(parse)).toValue();
+            
+            try
+            {
+                const rows = input.value.split('\n');
+
+                for (const _row of rows)
+                {
+                    const cells = _row.split(',');
+
+                    const row = new ListValue();
+
+                    for (const cell of cells)
+                        row.items.push(new TextValue(cell));
+
+                    this.value.items.push(row);
+                }
+            }
+            catch (e)
+            {
+                this.value = new ListValue();
+            }
+        }
+    
+
+        this.updateValues =
+        [
+            ['', NullValue] //['value', this.value]
+        ];
+        
+
+        this.validate();
+
+        return this;
+    }
+
+
+
+    // evalItems(json)
+    // {
+    //     let list = new ListValue();
+
+
+    //     for (let key in json)
+    //     {
+    //         if (   typeof json[key] === 'object'
+    //             && json[key] !== null)
+    //         {
+    //             const obj = this.evalItems(json[key]);
+    //             obj.valueId = key;
+    //             list.items.push(obj);
+    //         }
+    //         else
+    //         {
+    //             let value;
+
+    //             if (   typeof json[key] === 'number'
+    //                 || isValidFloatString(json[key]))
+    //                 value = NumberValue.fromString(json[key].toString());
+    //             else if (typeof json[key] === 'boolean')
+    //                 value = new NumberValue(parseBool(json[key].toString()) ? 1 : 0);
+    //             else
+    //                 value = new TextValue(json[key]);
+
+                    
+    //             value.valueId = 
+    //                 key == 'value'
+    //                 ? '(value)' // reserved param name in Generator
+    //                 : key;
+
+    //             list.items.push(value);
+    //         }
+    //     }
+
+        
+    //     return list;
+    // }
+}
+
+
+
 class GTextJson
 extends GOperator1
 {
@@ -35368,6 +35483,50 @@ function genParseTextSplit(parse)
 
 
 
+function genParseTextCSV(parse)
+{
+    const [, nodeId, options, ignore] = genParseNodeStart(parse);
+
+
+    const csv = new GTextCSV(nodeId, options);
+   
+
+    let nInputs = -1;
+    
+    if (!ignore)
+    {
+        nInputs = parseInt(parse.move());
+        consoleAssert(nInputs == 0 || nInputs == 1, 'nInputs must be [0, 1]');
+    }
+
+    
+    if (parse.settings.logRequests) 
+        logReq(csv, parse, ignore, nInputs);
+
+
+    if (ignore) 
+    {
+        genParseNodeEnd(parse, csv);
+        return parse.parsedNodes.find(n => n.nodeId == nodeId);
+    }
+
+
+    parse.nTab++;
+
+
+    if (nInputs == 1)
+        csv.input = genParse(parse);
+
+    
+    parse.nTab--;
+
+
+    genParseNodeEnd(parse, csv);
+    return csv;
+}
+
+
+
 function genParseTextJson(parse)
 {
     const [, nodeId, options, ignore] = genParseNodeStart(parse);
@@ -35637,6 +35796,7 @@ function genParse(parse, inParam = true)
     else if (parse.next == TEXT_PAD               ) result = genParseTextPad          (parse);
     else if (parse.next == TEXT_COMPARE           ) result = genParseTextCompare      (parse);
     else if (parse.next == TEXT_SPLIT             ) result = genParseTextSplit        (parse);
+    else if (parse.next == TEXT_CSV               ) result = genParseTextCSV          (parse);
     else if (parse.next == TEXT_JSON              ) result = genParseTextJson         (parse);
     else if (parse.next == TEXT_FETCH             ) result = genParseTextFetch        (parse);
  
