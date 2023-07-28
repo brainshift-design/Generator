@@ -259,24 +259,16 @@ extends ResizableBase
         super.updateValues(requestId, actionId, updateParamId, paramIds, values);
 
 
-        // const value = values[paramIds.findIndex(id => id == 'value')];
-
-        // if (LIST_VALUES.includes(value.type))
-        //     this.outputs[0].types = [finalListTypeFromItems(value.items)];
-
-       
         const rect = this.measureData.divOffset;
-        //console.log('rect =', rect);
  
         if (this.scrollbar.style.display == 'none')
             rect.h = defHeaderHeight + this.params.length * defParamHeight;
         
-        //this.setSize(rect.w, rect.h, false);
         this.setRect(rect.x, rect.y, rect.w, rect.h, false);
 
 
         for (const param of this.params)
-            param.divider = Math.min(120 / this.measureData.divOffset.width, 0.5);
+            param.divider = Math.min(120 / this.measureData.divOffset.width, 0.35);
     }
 
 

@@ -697,6 +697,9 @@ function genParseTextCSV(parse)
     if (nInputs == 1)
         csv.input = genParse(parse);
 
+    csv.rowSeparator    = genParse(parse);
+    csv.columnSeparator = genParse(parse);
+
     
     parse.nTab--;
 

@@ -33,13 +33,14 @@ extends GOperator1
             return this;
 
 
-        const separator = (await this.separator.eval(parse)).toValue();
+        const separator = this.separator ? (await this.separator.eval(parse)).toValue() : null;
 
 
         this.value = new ListValue();
 
 
-        if (this.input)
+        if (   this.input
+            && separator)
         {
             const input = (await this.input.eval(parse)).toValue();
             
@@ -73,7 +74,7 @@ extends GOperator1
     {
         super.pushValueUpdates(parse);
 
-        if (this.value    ) this.value    .pushValueUpdates(parse);
+        //if (this.value    ) this.value    .pushValueUpdates(parse);
         if (this.separator) this.separator.pushValueUpdates(parse);
     }
 
@@ -83,7 +84,7 @@ extends GOperator1
     {
         super.invalidateInputs(from);
 
-        if (this.value    ) this.value    .invalidateInputs(from);
+        //if (this.value    ) this.value    .invalidateInputs(from);
         if (this.separator) this.separator.invalidateInputs(from);
     }
 }

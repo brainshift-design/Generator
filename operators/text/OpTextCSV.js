@@ -2,6 +2,8 @@ class   OpTextCSV
 extends OperatorBase
 {
     paramValue;
+    paramRowSeparator;
+    paramColumnSeparator;
 
 
 
@@ -14,9 +16,14 @@ extends OperatorBase
 
         this.addInput(new Input([TEXT_VALUE]));
 
-        this.addParam(this.paramValue = new ListParam('value', 'values', false, false, true));
+        this.addParam(this.paramValue           = new ListParam('value',           'table',   false, false, true));
+        this.addParam(this.paramRowSeparator    = new TextParam('rowSeparator',    'rows',    true , true,  true, '\\n'));
+        this.addParam(this.paramColumnSeparator = new TextParam('columnSeparator', 'columns', true , true,  true, ','));
 
-        this.paramValue.itemName = 'value';
+        this.paramValue.itemName = '';
+
+        this.paramRowSeparator   .divider = 0.6;
+        this.paramColumnSeparator.divider = 0.6;
     }
 
 
@@ -42,7 +49,10 @@ extends OperatorBase
         if (input.connected)
             request.push(...pushInputOrParam(input, gen));
 
-        
+        request.push(...this.paramRowSeparator   .genRequest(gen));
+        request.push(...this.paramColumnSeparator.genRequest(gen));
+
+            
         gen.scope.pop();
         pushUnique(gen.passedNodes, this);
 
@@ -53,7 +63,11 @@ extends OperatorBase
 
     updateParams()
     {
-        this.paramValue.enableControlText(false);
+        this.paramValue.enableControlText(false, this.isUnknown());
+        
+        this.paramRowSeparator   .enableControlText(true);
+        this.paramColumnSeparator.enableControlText(true);
+
 
         this.updateParamControls();
     }

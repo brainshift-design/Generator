@@ -1,6 +1,11 @@
 class GTextCSV
 extends GOperator1
 {
+    rowSeparator;
+    columnSeparator;
+
+
+
     constructor(nodeId, options)
     {
         super(TEXT_CSV, nodeId, options);
@@ -14,6 +19,9 @@ extends GOperator1
 
         copy.copyBase(this);
 
+        if (this.rowSeparator   ) copy.rowSeparator    = this.rowSeparator   .copy();
+        if (this.columnSeparator) copy.columnSeparator = this.columnSeparator.copy();
+
         return copy;
     }
 
@@ -25,39 +33,40 @@ extends GOperator1
             return this;
 
 
+        const rowSeparator    = this.rowSeparator    ? (await this.rowSeparator   .eval(parse)).toValue() : null;
+        const columnSeparator = this.columnSeparator ? (await this.columnSeparator.eval(parse)).toValue() : null;
+
+
         this.value = new ListValue();
 
 
-        if (this.input)
+        if (   this.input
+            && rowSeparator
+            && columnSeparator
+            && rowSeparator.value != '')
         {
             const input = (await this.input.eval(parse)).toValue();
             
-            try
+            const rows = input.value.split(rowSeparator.value);
+
+            for (const _row of rows)
             {
-                const rows = input.value.split('\n');
+                const cells = _row.split(columnSeparator.value);
 
-                for (const _row of rows)
-                {
-                    const cells = _row.split(',');
+                const row = new ListValue();
 
-                    const row = new ListValue();
+                for (const cell of cells)
+                    row.items.push(new TextValue(cell));
 
-                    for (const cell of cells)
-                        row.items.push(new TextValue(cell));
-
-                    this.value.items.push(row);
-                }
-            }
-            catch (e)
-            {
-                this.value = new ListValue();
+                this.value.items.push(row);
             }
         }
     
 
         this.updateValues =
         [
-            ['', NullValue] //['value', this.value]
+            ['rowSeparator',    rowSeparator   ],
+            ['columnSeparator', columnSeparator]
         ];
         
 
@@ -68,43 +77,21 @@ extends GOperator1
 
 
 
-    // evalItems(json)
-    // {
-    //     let list = new ListValue();
+    pushValueUpdates(parse)
+    {
+        super.pushValueUpdates(parse);
+
+        if (this.rowSeparator   ) this.rowSeparator   .pushValueUpdates(parse);
+        if (this.columnSeparator) this.columnSeparator.pushValueUpdates(parse);
+    }
 
 
-    //     for (let key in json)
-    //     {
-    //         if (   typeof json[key] === 'object'
-    //             && json[key] !== null)
-    //         {
-    //             const obj = this.evalItems(json[key]);
-    //             obj.valueId = key;
-    //             list.items.push(obj);
-    //         }
-    //         else
-    //         {
-    //             let value;
 
-    //             if (   typeof json[key] === 'number'
-    //                 || isValidFloatString(json[key]))
-    //                 value = NumberValue.fromString(json[key].toString());
-    //             else if (typeof json[key] === 'boolean')
-    //                 value = new NumberValue(parseBool(json[key].toString()) ? 1 : 0);
-    //             else
-    //                 value = new TextValue(json[key]);
+    invalidateInputs(from)
+    {
+        super.invalidateInputs(from);
 
-                    
-    //             value.valueId = 
-    //                 key == 'value'
-    //                 ? '(value)' // reserved param name in Generator
-    //                 : key;
-
-    //             list.items.push(value);
-    //         }
-    //     }
-
-        
-    //     return list;
-    // }
+        if (this.rowSeparator   ) this.rowSeparator   .invalidateInputs(from);
+        if (this.columnSeparator) this.columnSeparator.invalidateInputs(from);
+    }
 }
