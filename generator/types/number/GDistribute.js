@@ -112,7 +112,7 @@ extends GOperator
 
                      if (b >= 0 && f >= 0.5) f = 1 - Math.pow((1-f)*2, 1+b) / 2;
                 else if (b >= 0 && f <  0.5) f = Math.pow(f*2, 1+b) / 2;
-                else if (b < 0)              f = lerp3(0, -b/2, 1+b/2, 1, f);
+                else if (b < 0)              f = lerp3(0, (1-b)/3, (2+b)/3, 1, f);
 
                 break;
             }
@@ -120,7 +120,7 @@ extends GOperator
 
 
         this.value = new NumberValue(
-            start.toNumber() + delta * f,
+            start.toNumber() + startOffset + delta * f,
             Math.max(start.decimals, end.decimals));
 
             
