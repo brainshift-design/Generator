@@ -370,5 +370,6 @@ Operator.prototype.setLayoutIndex = function()
     this.layoutIndex++;
 
     for (const output of this.connectedOutputs)
-        input.node.setLayoutIndex();
+        for (const input of output.connectedInputs)
+            input.node.setLayoutIndex();
 };

@@ -1052,7 +1052,7 @@ function layoutSelectedNodes()
                 node.div.offsetLeft, 
                 node.div.offsetTop, 
                 node.div.offsetWidth, 
-                node.dif.offsetHeight));
+                node.div.offsetHeight));
     }
 
 
@@ -1068,27 +1068,39 @@ function layoutSelectedNodes()
 
     let   totalWidth = 0;
     const maxWidth   = [];
+    const gap        = 50;
+
 
     for (let i = 0; i <= maxIndex; i++)
     {
-        let width = 0;
-        
         const colNodes = graphView.selectedNodes.filter(n => n.layoutIndex == i);
+        
+        let width = 0;
 
-        colNodes.forEach(n => width      = Math.max(wdth, n.div.offsetWidth));
-        colNodes.forEach(n => totalWidth = Math.max(totalWidth, width));
-
+        colNodes.forEach(n => width = Math.max(width, n.div.offsetWidth));
         maxWidth.push(width);
+
+        totalWidth += width;
     }
+
+    totalWidth += gap * Math.max(0, maxWidth.filter(w => w > 0).length - 1);
 
 
     let x = bounds.x + bounds.width/2 - totalWidth/2;
 
+    // let first = false;
+    
     for (let i = 0; i <= maxIndex; i++)
     {
         const colNodes = graphView.selectedNodes.filter(n => n.layoutIndex == i);
         colNodes.forEach(n => n.div.style.left = x);
 
         x += maxWidth[i];
+
+        if (maxWidth[i] > 0)
+            x += gap;
     }
+
+
+    graphView.updateNodes(graphView.selectedNodes);
 }

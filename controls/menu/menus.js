@@ -205,6 +205,7 @@ var menuItemNodePaste;
 var menuItemNodePasteConnected;
 var menuItemNodeRemove;
 var menuItemNodeLayout;
+var menuItemNodeLayoutSep;
 var menuItemNodeSep1;
 var menuItemNodeGroupSelected;
 var menuItemNodeUngroup;
@@ -715,8 +716,8 @@ function initGeneratorMenus()
         menuItemNodePaste          = new MenuItem('Paste here',      {shortcut:  osCtrl() + 'V',       callback: e => { hideAllMenus(); graphView.pasteCopiedNodes(false); }}),
         menuItemNodePasteConnected = new MenuItem('Paste connected', {shortcut:  osCtrlShift() + 'D',  callback: e => { hideAllMenus(); graphView.pasteCopiedNodes(true ); }}),
         //                                 new MenuItem('Copy/Paste as',   {childMenu: menuNodeCopyAs}),
-                                     new MenuItem('',                {separator: true}),
-        menuItemNodeLayout         = new MenuItem('Layout',          {enabled: false, shortcut: osCtrl() + 'L', callback: e => { hideAllMenus(); layoutSelectedNodes(); }}),
+        menuItemNodeLayoutSep      = new MenuItem('',                {separator: true}),
+        menuItemNodeLayout         = new MenuItem('Layout',          {shortcut: osCtrlShift() + 'L', callback: e => { hideAllMenus(); layoutSelectedNodes(); }}),
         // menuItemNodeSepGroup       = new MenuItem('',                {separator: true}),
         //menuItemNodeGroupSelected  = new MenuItem('Group selected',  {shortcut:  osCtrl() + 'G',       callback: e => { hideAllMenus(); actionManager.do(new   GroupNodesAction(graphView.selectedNodes)); }}),
         //menuItemNodeUngroup        = new MenuItem('Ungroup',         {                                 callback: e => { hideAllMenus(); actionManager.do(new UngroupNodesAction(graphView.selectedNodes)); }}),
@@ -752,6 +753,8 @@ function initGeneratorMenus()
         //updateElementDisplay(menuItemNodeUngroup      .div, hasGroups);
         //updateElementDisplay(menuItemNodeSep2         .div, single);
         updateElementDisplay(menuItemNodeRename       .div, single);
+        updateElementDisplay(menuItemNodeLayoutSep    .div, !single);
+        updateElementDisplay(menuItemNodeLayout       .div, !single);
         //updateElementDisplay(menuItemNodeEdit       .div, single);
         updateElementDisplay(menuItemNodeSep3         .div, single);
         updateElementDisplay(menuItemNodeSelect       .div, single);

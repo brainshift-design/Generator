@@ -125,13 +125,14 @@ document.addEventListener('keydown', e =>
         else               graphView.deleteSelectedNodes();
     }
 
-    // // select all
+    // layout selected nodes
     else if (e.code == 'KeyL'
-          && getCtrlKey(e))
+          && getCtrlKey(e)
+          && e.shiftKey)
     {
         e.preventDefault();
-        e.stopPropagation();
-        
+        e.stopImmediatePropagation();
+
         layoutSelectedNodes();
     }
 

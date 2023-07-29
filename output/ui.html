@@ -4780,6 +4780,7 @@ a
                 <p>•  double-clicking anywhere in the header now activates it, Ctrl/Cmd + double click to rename</p>
                 <p>•  added menu search</p>
                 <p>•  nodes can now be moved with arrow keys</p>
+                <p>•  added auto-layout for selected nodes</p>
                 <p>•  fixed bug in Range node</p>
                 <p>•  fixed UI issues</p>
                 
@@ -4886,6 +4887,7 @@ a
                 <div class='keyboardShortcut'><div class='shortcutAction'>Enable/disable</div><div class='shortcutKeys'><div class='shortcutKeys'><div class='shortcutKey ctrlShift'>Ctrl</div><div class='shortcutKey ctrlShift'>Shift</div><div class='shortcutKey shortcutChar'>E</div></div></div></div>
                 <div class='keyboardShortcut'><div class='shortcutAction'>Show/hide node icons</div><div class='shortcutKeys'><div class='shortcutKeys'><div class='shortcutKey ctrlShift'>Ctrl</div><div class='shortcutKey ctrlShift'>Shift</div><div class='shortcutKey shortcutCharNarrow'>I</div></div></div></div>
                 <div class='keyboardShortcut'><div class='shortcutAction'>Show/hide operation results</div><div class='shortcutKeys'><div class='shortcutKeys'><div class='shortcutKey ctrlShift'>Ctrl</div><div class='shortcutKey ctrlShift'>Shift</div><div class='shortcutKey shortcutChar'>R</div></div></div></div>
+                <div class='keyboardShortcut'><div class='shortcutAction'>Layout selected nodes</div><div class='shortcutKeys'><div class='shortcutKeys'><div class='shortcutKey ctrlShift'>Ctrl</div><div class='shortcutKey ctrlShift'>Shift</div><div class='shortcutKey shortcutChar'>L</div></div></div></div>
             </div>
         </div>
  
@@ -82406,6 +82408,7 @@ var menuItemNodePaste;
 var menuItemNodePasteConnected;
 var menuItemNodeRemove;
 var menuItemNodeLayout;
+var menuItemNodeLayoutSep;
 var menuItemNodeSep1;
 var menuItemNodeGroupSelected;
 var menuItemNodeUngroup;
@@ -82916,8 +82919,8 @@ function initGeneratorMenus()
         menuItemNodePaste          = new MenuItem('Paste here',      {shortcut:  osCtrl() + 'V',       callback: e => { hideAllMenus(); graphView.pasteCopiedNodes(false); }}),
         menuItemNodePasteConnected = new MenuItem('Paste connected', {shortcut:  osCtrlShift() + 'D',  callback: e => { hideAllMenus(); graphView.pasteCopiedNodes(true ); }}),
         //                                 new MenuItem('Copy/Paste as',   {childMenu: menuNodeCopyAs}),
-                                     new MenuItem('',                {separator: true}),
-        menuItemNodeLayout         = new MenuItem('Layout',          {enabled: false, shortcut: osCtrl() + 'L', callback: e => { hideAllMenus(); layoutSelectedNodes(); }}),
+        menuItemNodeLayoutSep      = new MenuItem('',                {separator: true}),
+        menuItemNodeLayout         = new MenuItem('Layout',          {shortcut: osCtrlShift() + 'L', callback: e => { hideAllMenus(); layoutSelectedNodes(); }}),
         // menuItemNodeSepGroup       = new MenuItem('',                {separator: true}),
         //menuItemNodeGroupSelected  = new MenuItem('Group selected',  {shortcut:  osCtrl() + 'G',       callback: e => { hideAllMenus(); actionManager.do(new   GroupNodesAction(graphView.selectedNodes)); }}),
         //menuItemNodeUngroup        = new MenuItem('Ungroup',         {                                 callback: e => { hideAllMenus(); actionManager.do(new UngroupNodesAction(graphView.selectedNodes)); }}),
@@ -82953,6 +82956,8 @@ function initGeneratorMenus()
         //updateElementDisplay(menuItemNodeUngroup      .div, hasGroups);
         //updateElementDisplay(menuItemNodeSep2         .div, single);
         updateElementDisplay(menuItemNodeRename       .div, single);
+        updateElementDisplay(menuItemNodeLayoutSep    .div, !single);
+        updateElementDisplay(menuItemNodeLayout       .div, !single);
         //updateElementDisplay(menuItemNodeEdit       .div, single);
         updateElementDisplay(menuItemNodeSep3         .div, single);
         updateElementDisplay(menuItemNodeSelect       .div, single);
@@ -96355,7 +96360,8 @@ Operator.prototype.setLayoutIndex = function()
     this.layoutIndex++;
 
     for (const output of this.connectedOutputs)
-        input.node.setLayoutIndex();
+        for (const input of output.connectedInputs)
+            input.node.setLayoutIndex();
 };
 
 
@@ -117478,13 +117484,14 @@ document.addEventListener('keydown', e =>
         else               graphView.deleteSelectedNodes();
     }
 
-    // // select all
+    // layout selected nodes
     else if (e.code == 'KeyL'
-          && getCtrlKey(e))
+          && getCtrlKey(e)
+          && e.shiftKey)
     {
         e.preventDefault();
-        e.stopPropagation();
-        
+        e.stopImmediatePropagation();
+
         layoutSelectedNodes();
     }
 
@@ -120912,7 +120919,7 @@ function layoutSelectedNodes()
                 node.div.offsetLeft, 
                 node.div.offsetTop, 
                 node.div.offsetWidth, 
-                node.dif.offsetHeight));
+                node.div.offsetHeight));
     }
 
 
@@ -120928,29 +120935,41 @@ function layoutSelectedNodes()
 
     let   totalWidth = 0;
     const maxWidth   = [];
+    const gap        = 50;
+
 
     for (let i = 0; i <= maxIndex; i++)
     {
-        let width = 0;
-        
         const colNodes = graphView.selectedNodes.filter(n => n.layoutIndex == i);
+        
+        let width = 0;
 
-        colNodes.forEach(n => width      = Math.max(wdth, n.div.offsetWidth));
-        colNodes.forEach(n => totalWidth = Math.max(totalWidth, width));
-
+        colNodes.forEach(n => width = Math.max(width, n.div.offsetWidth));
         maxWidth.push(width);
+
+        totalWidth += width;
     }
+
+    totalWidth += gap * Math.max(0, maxWidth.filter(w => w > 0).length - 1);
 
 
     let x = bounds.x + bounds.width/2 - totalWidth/2;
 
+    // let first = false;
+    
     for (let i = 0; i <= maxIndex; i++)
     {
         const colNodes = graphView.selectedNodes.filter(n => n.layoutIndex == i);
         colNodes.forEach(n => n.div.style.left = x);
 
         x += maxWidth[i];
+
+        if (maxWidth[i] > 0)
+            x += gap;
     }
+
+
+    graphView.updateNodes(graphView.selectedNodes);
 }
 
 
