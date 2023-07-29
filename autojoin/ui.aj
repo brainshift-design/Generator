@@ -31,6 +31,7 @@
 ../html/eula.html
 ../html/minZoom.html
 ../html/whatsNew.html
+../html/search.html
 
 
 ../html/keyboardPanel.html
