@@ -32,6 +32,25 @@
 }
 
 
+#searchIcon
+{
+    width:        19px;
+    height:       19px;
+    /* box-shadow:   0 0 0 1px red inset; */
+    display:      block;
+    position:     absolute;
+    left:         14px;
+    top:          50%;
+    transform:    translateY(-50%);
+    padding-left: 3px;
+    padding-top:  4px;
+}
+
+
+.figma-dark  #searchIconPath { fill: white; }
+.figma-light #searchIconPath { fill: black; }
+
+
 #searchText
 {
     background-color: transparent;

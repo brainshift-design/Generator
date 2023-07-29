@@ -116,6 +116,9 @@ function initGenerator()
     uiQueueMessageToFigma({
         cmd:     'figLoadNodesAndConns',
         dataMode: settings.dataMode });
+
+        
+    showSearchBox();
 }
 
 

@@ -902,6 +902,25 @@ div
 }
 
 
+#searchIcon
+{
+    width:        19px;
+    height:       19px;
+    /* box-shadow:   0 0 0 1px red inset; */
+    display:      block;
+    position:     absolute;
+    left:         14px;
+    top:          50%;
+    transform:    translateY(-50%);
+    padding-left: 3px;
+    padding-top:  4px;
+}
+
+
+.figma-dark  #searchIconPath { fill: white; }
+.figma-light #searchIconPath { fill: black; }
+
+
 #searchText
 {
     background-color: transparent;
@@ -4669,6 +4688,7 @@ a
 
 
 <div id='search'>
+    <div id='searchIcon'></div>
     <input id='searchText' type='text' placeholder='Search nodes and menus' spellcheck='false' />
 </div>
 
@@ -81036,7 +81056,7 @@ const iconWindowDockTop     = '<svg width="15" height="12" viewBox="0 0 15 12" f
 const iconWindowDockBottom  = '<svg width="15" height="12" viewBox="0 0 15 12" fill="none" xmlns="http://www.w3.org/2000/svg"><rect x="0.5" y="0.5" width="14" height="11" stroke="white"/><rect y="7" width="15" height="5" fill="white"/></svg>';
 
 
-const iconSearch            = '<svg width="15" height="15" viewBox="0 0 15 15" fill="none" xmlns="http://www.w3.org/2000/svg"><path fill-rule="evenodd" clip-rule="evenodd" d="M11 6C11 8.76147 8.76147 11 6 11C3.23853 11 1 8.76147 1 6C1 3.23853 3.23853 1 6 1C8.76147 1 11 3.23853 11 6ZM9.87439 10.5815C8.8291 11.4663 7.47681 12 6 12C2.68628 12 0 9.31372 0 6C0 2.68628 2.68628 0 6 0C9.31372 0 12 2.68628 12 6C12 7.47681 11.4664 8.8291 10.5815 9.87451L14.364 13.657L13.6569 14.364L9.87439 10.5815Z" fill="white"/></svg>';
+const iconSearch            = '<svg width="15" height="15" viewBox="0 0 15 15" fill="none" xmlns="http://www.w3.org/2000/svg"><path id="searchIconPath" fill-rule="evenodd" clip-rule="evenodd" d="M11 6C11 8.76147 8.76147 11 6 11C3.23853 11 1 8.76147 1 6C1 3.23853 3.23853 1 6 1C8.76147 1 11 3.23853 11 6ZM9.87439 10.5815C8.8291 11.4663 7.47681 12 6 12C2.68628 12 0 9.31372 0 6C0 2.68628 2.68628 0 6 0C9.31372 0 12 2.68628 12 6C12 7.47681 11.4664 8.8291 10.5815 9.87451L14.364 13.657L13.6569 14.364L9.87439 10.5815Z" fill="white"/></svg>';
 
 
 var currentMenus      = [];
@@ -117119,6 +117139,9 @@ function initGenerator()
     uiQueueMessageToFigma({
         cmd:     'figLoadNodesAndConns',
         dataMode: settings.dataMode });
+
+        
+    showSearchBox();
 }
 
 
@@ -118209,7 +118232,22 @@ function getNodeRequest(node, gen)
 }
 
 
+function showSearchBox()
+{
+    search.style.display = 'block';
 
+    searchIcon.innerHTML = iconSearch;
+
+    searchText.focus();
+    searchText.select();
+}
+
+
+
+function hideSearchBox()
+{
+    search.style.display = 'none';
+}
 
 
 function checkTrialExists()
