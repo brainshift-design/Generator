@@ -328,6 +328,7 @@ extends OpColorBase
 
         this.paramColor  .enableControlText(enable);
         this.paramOpacity.enableControlText(enable);
+        this.paramBlend  .enableControlText(enable);
 
         this.updateParamControls();
     }
