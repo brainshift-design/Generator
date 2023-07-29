@@ -2,13 +2,14 @@
 {
     width:            400px;
     height:           48px;
-    display:          block;
     position:         absolute;
     left:             50%;
     top:              116px;
     transform:        translateX(-50%);
     border-radius:    6px;
     overflow:         hidden;
+    z-index:          100000000;
+    display:          none;
 }
 
 

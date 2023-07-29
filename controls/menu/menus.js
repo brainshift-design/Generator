@@ -1,6 +1,7 @@
 var btnMain;
 var btnFlow;
 var btnData;
+var btnSets;
 var btnNumber;
 var btnText;
 var btnColor;
@@ -382,33 +383,51 @@ function initGeneratorMenus()
 
     menuFlow = new Menu('Flow', true, false);
     menuFlow.addItems([
-        menuItemCache  = new MenuItem('Cache',             {icon: iconCache,      callback: e => actionManager.do(getCreateNodeAction(CACHE,         btnNumber.div, getCreateOptions(e)))}),
-        menuItemFreeze = new MenuItem('Freeze . . .',      {icon: iconFreeze,     callback: e => actionManager.do(getCreateNodeAction(FREEZE,        btnNumber.div, getCreateOptions(e)))}),
-        menuFlowSep4   = new MenuItem('',                  {separator: true}),
-        menuItemStart  = new MenuItem('Start. . .',        {icon: iconStart,      callback: e => actionManager.do(getCreateNodeAction(START,         btnNumber.div, getCreateOptions(e)))}),
-        menuItemRepeat = new MenuItem('. . . Repeat',      {icon: iconRepeat,     callback: e => actionManager.do(getCreateNodeAction(REPEAT,        btnNumber.div, getCreateOptions(e)))}),
-                         new MenuItem('',                  {separator: true}),
-        menuItemTimer  = new MenuItem('Timer ',            {icon: iconTimer,      callback: e => actionManager.do(getCreateNodeAction(TIMER,         btnNumber.div, getCreateOptions(e)))})]);
+        menuItemStart   = new MenuItem('Start. . .',   {icon: iconStart,     callback: e => actionManager.do(getCreateNodeAction(START,           btnNumber.div, getCreateOptions(e)))}),
+        menuItemRepeat  = new MenuItem('. . . Repeat', {icon: iconRepeat,    callback: e => actionManager.do(getCreateNodeAction(REPEAT,          btnNumber.div, getCreateOptions(e)))}),
+                          new MenuItem('',             {separator: true}),
+        menuItemCache   = new MenuItem('Cache',        {icon: iconCache,     callback: e => actionManager.do(getCreateNodeAction(CACHE,           btnNumber.div, getCreateOptions(e)))}),
+        menuItemFreeze  = new MenuItem('Freeze . . .', {icon: iconFreeze,    callback: e => actionManager.do(getCreateNodeAction(FREEZE,          btnNumber.div, getCreateOptions(e)))}),
+                          new MenuItem('',             {separator: true}),
+        menuItemTimer   = new MenuItem('Timer ',       {icon: iconTimer,     callback: e => actionManager.do(getCreateNodeAction(TIMER,           btnNumber.div, getCreateOptions(e)))}),
+        menuItemAnimate = new MenuItem('Animate',      {icon: iconAnimate,   callback: e => actionManager.do(getCreateNodeAction(NUMBER_ANIMATE,  btnNumber.div, getCreateOptions(e)))}),
+                          new MenuItem('',             {separator: true}),
+                          new MenuItem('Date & time',  {icon: iconDateTime,  callback: e => actionManager.do(getCreateNodeAction(NUMBER_DATETIME, btnNumber.div, getCreateOptions(e)))}),
+        menuFlowSep4    = new MenuItem('',             {separator: true}),
+                          new MenuItem('Fetch',        {icon: iconTextFetch, callback: e => actionManager.do(getCreateNodeAction(TEXT_FETCH,      btnText.div,   getCreateOptions(e)))})]);
     
 
     menuData = new Menu('Data', true, false);
     menuData.addItems([
         menuItemList   = new MenuItem('List',              {icon: iconList,       callback: e => actionManager.do(getCreateNodeAction(LIST,          btnNumber.div, getCreateOptions(e)))}),
+        menuFlowSep1   = new MenuItem('',                  {separator: true}),     
+        menuItemItems  = new MenuItem('Items',             {icon: iconItems,      callback: e => actionManager.do(getCreateNodeAction(ITEMS,         btnNumber.div, getCreateOptions(e)))}),
+        menuItemCount  = new MenuItem('Count',             {icon: iconCount,      callback: e => actionManager.do(getCreateNodeAction(LIST_COUNT,    btnNumber.div, getCreateOptions(e)))}),
+                         new MenuItem('',                  {separator: true}),     
+        menuItemSelect = new MenuItem('Select',            {icon: iconSelect,     callback: e => actionManager.do(getCreateNodeAction(SELECT,        btnNumber.div, getCreateOptions(e)))}),
+        menuItemIfElse = new MenuItem('I&hairsp;f / else', {icon: iconIfElse,     callback: e => actionManager.do(getCreateNodeAction(IF_ELSE,       btnNumber.div, getCreateOptions(e))), disambiguate: true}),
+                         new MenuItem('Contains',          {icon: iconContains,   callback: e => actionManager.do(getCreateNodeAction(CONTAINS,      btnNumber.div, getCreateOptions(e))), disambiguate: true}),
+                         new MenuItem('',                  {separator: true}),     
                          new MenuItem('Sublist',           {icon: iconSublist,    callback: e => actionManager.do(getCreateNodeAction(SUBLIST,       btnNumber.div, getCreateOptions(e)))}),
                          new MenuItem('Unique',            {icon: iconUnique,     callback: e => actionManager.do(getCreateNodeAction(UNIQUE,        btnNumber.div, getCreateOptions(e)))}),
                          new MenuItem('',                  {separator: true}),     
                          new MenuItem('Column',            {icon: iconColumn,     callback: e => actionManager.do(getCreateNodeAction(COLUMN,        btnNumber.div, getCreateOptions(e)))}),
-                         new MenuItem('Cell',              {icon: iconCell,       callback: e => actionManager.do(getCreateNodeAction(CELL,          btnNumber.div, getCreateOptions(e)))}),
-        menuFlowSep1   = new MenuItem('',                  {separator: true}),     
-        menuItemItems  = new MenuItem('Items',             {icon: iconItems,      callback: e => actionManager.do(getCreateNodeAction(ITEMS,         btnNumber.div, getCreateOptions(e)))}),
-        menuItemCount  = new MenuItem('Count',             {icon: iconCount,      callback: e => actionManager.do(getCreateNodeAction(LIST_COUNT,    btnNumber.div, getCreateOptions(e)))}),
-        menuItemSelect = new MenuItem('Select',            {icon: iconSelect,     callback: e => actionManager.do(getCreateNodeAction(SELECT,        btnNumber.div, getCreateOptions(e)))}),
-        menuItemIfElse = new MenuItem('I&hairsp;f / else', {icon: iconIfElse,     callback: e => actionManager.do(getCreateNodeAction(IF_ELSE,       btnNumber.div, getCreateOptions(e))), disambiguate: true}),
-                         new MenuItem('Contains',          {icon: iconContains,   callback: e => actionManager.do(getCreateNodeAction(CONTAINS, btnNumber.div, getCreateOptions(e))), disambiguate: true}),
-        menuFlowSep2   = new MenuItem('',                  {separator: true}),
-        menuItemArray  = new MenuItem('List . . .',        {icon: iconDefine,     callback: e => actionManager.do(getCreateNodeAction(DEFINE,        btnNumber.div, getCreateOptions(e)))})]);
+                         new MenuItem('Cell',              {icon: iconCell,       callback: e => actionManager.do(getCreateNodeAction(CELL,          btnNumber.div, getCreateOptions(e)))})]);
     
 
+    menuSets = new Menu('Sets...', true, false);
+    menuSets.addItems([
+        menuItemSequence   = new MenuItem('Sequence . . .',   {icon: iconSequence,    callback: e => actionManager.do(getCreateNodeAction(NUMBER_SEQUENCE,    btnNumber.div, getCreateOptions(e)))}),
+        menuItemDistribute = new MenuItem('Range . . .',      {icon: iconDistribute,  callback: e => actionManager.do(getCreateNodeAction(NUMBER_DISTRIBUTE,  btnNumber.div, getCreateOptions(e)))}),
+        menuItemArray      = new MenuItem('Define . . .',     {icon: iconDefine,      callback: e => actionManager.do(getCreateNodeAction(DEFINE,             btnNumber.div, getCreateOptions(e)))}),
+                             new MenuItem('',                 {separator: true}),
+                             new MenuItem('Random . . .',     {icon: iconRandom,      callback: e => actionManager.do(getCreateNodeAction(NUMBER_RANDOM,      btnNumber.div, getCreateOptions(e)))}),
+                             new MenuItem('Noise . . .',      {icon: iconNoise,       callback: e => actionManager.do(getCreateNodeAction(NUMBER_NOISE,       btnNumber.div, getCreateOptions(e)))}),
+                             new MenuItem('Probability. . .', {icon: iconProbability, callback: e => actionManager.do(getCreateNodeAction(NUMBER_PROBABILITY, btnNumber.div, getCreateOptions(e)))}),
+                             new MenuItem('',                 {separator: true}),
+                             new MenuItem('Accumulate. . .',  {icon: iconAccumulate,  callback: e => actionManager.do(getCreateNodeAction(NUMBER_ACCUMULATE,  btnNumber.div, getCreateOptions(e)))})]);
+        
+    
     menuMath = new Menu('Math', true, false);
     menuMath.addItems([
         // new MenuItem('Power',     {icon: iconExponent, callback: e => actionManager.do(getCreateNodeAction(NUMBER_EXPONENT, btnNumber.div, getCreateOptions(e)))}),
@@ -417,7 +436,7 @@ function initGeneratorMenus()
         // new MenuItem('Remainder', {icon: iconModulo,   callback: e => actionManager.do(getCreateNodeAction(NUMBER_MODULO,   btnNumber.div, getCreateOptions(e)))}),
         // new MenuItem('Add',       {icon: iconAdd,      callback: e => actionManager.do(getCreateNodeAction(NUMBER_ADD,      btnNumber.div, getCreateOptions(e)))}),
         // new MenuItem('Subtract',  {icon: iconSubtract, callback: e => actionManager.do(getCreateNodeAction(NUMBER_SUBTRACT, btnNumber.div, getCreateOptions(e)))})]);
-        new MenuItem('Simple',  {icon: iconMath, callback: e => actionManager.do(getCreateNodeAction(NUMBER_SIMPLE_MATH, btnNumber.div, getCreateOptions(e)))})]);
+        new MenuItem('Math',  {icon: iconMulti, callback: e => actionManager.do(getCreateNodeAction(NUMBER_MATH, btnNumber.div, getCreateOptions(e)))})]);
         
 
     menuBoolean = new Menu('Boolean', true, false);
@@ -453,42 +472,9 @@ function initGeneratorMenus()
         new MenuItem('Absolute',    {icon: iconAbsolute,    callback: e => actionManager.do(getCreateNodeAction(NUMBER_ABSOLUTE,    btnNumber.div, getCreateOptions(e)))}),
         new MenuItem('Round',       {icon: iconRound,       callback: e => actionManager.do(getCreateNodeAction(NUMBER_ROUND,       btnNumber.div, getCreateOptions(e)))}),
         new MenuItem('Min/max',     {icon: iconMinMax,      callback: e => actionManager.do(getCreateNodeAction(NUMBER_MINMAX,      btnNumber.div, getCreateOptions(e)))}),
-        new MenuItem('Limits',      {icon: iconLimits,      callback: e => actionManager.do(getCreateNodeAction(NUMBER_LIMITS,      btnNumber.div, getCreateOptions(e)))}),
-        new MenuItem('',            {separator: true}),
-        new MenuItem('Date & time', {icon: iconDateTime,    callback: e => actionManager.do(getCreateNodeAction(NUMBER_DATETIME,    btnNumber.div, getCreateOptions(e)))})]);
+        new MenuItem('Limits',      {icon: iconLimits,      callback: e => actionManager.do(getCreateNodeAction(NUMBER_LIMITS,      btnNumber.div, getCreateOptions(e)))})]);
         
 
-    menuSets = new Menu('Sets...', true, false);
-    menuSets.addItems([
-        menuItemSequence   = new MenuItem('Sequence . . .',   {icon: iconSequence,    callback: e => actionManager.do(getCreateNodeAction(NUMBER_SEQUENCE,    btnNumber.div, getCreateOptions(e)))}),
-        menuItemDistribute = new MenuItem('Range . . .',      {icon: iconDistribute,  callback: e => actionManager.do(getCreateNodeAction(NUMBER_DISTRIBUTE,  btnNumber.div, getCreateOptions(e)))}),
-                             new MenuItem('',                 {separator: true}),
-                             new MenuItem('Random . . .',     {icon: iconRandom,      callback: e => actionManager.do(getCreateNodeAction(NUMBER_RANDOM,      btnNumber.div, getCreateOptions(e)))}),
-                             new MenuItem('Noise . . .',      {icon: iconNoise,       callback: e => actionManager.do(getCreateNodeAction(NUMBER_NOISE,       btnNumber.div, getCreateOptions(e)))}),
-                             new MenuItem('Probability. . .', {icon: iconProbability, callback: e => actionManager.do(getCreateNodeAction(NUMBER_PROBABILITY, btnNumber.div, getCreateOptions(e)))}),
-                             new MenuItem('',                 {separator: true}),
-                             new MenuItem('Accumulate. . .',  {icon: iconAccumulate,  callback: e => actionManager.do(getCreateNodeAction(NUMBER_ACCUMULATE,  btnNumber.div, getCreateOptions(e)))})]);
-        
-    
-    menuNumber = new Menu('Numbers', true, false);
-    menuNumber.addItems([
-                             new MenuItem('Number',           {icon: iconNumber,      callback: e => actionManager.do(getCreateNodeAction(NUMBER,             btnNumber.div, getCreateOptions(e)))}),
-                             new MenuItem('',                 {separator: true}),
-                             new MenuItem('Basic',            {icon: iconRound,       childMenu: menuFunctions}),
-                             new MenuItem('',                 {separator: true}),
-                             new MenuItem('Math',             {icon: iconMath,        childMenu: menuMath,          callback: e => actionManager.do(getCreateNodeAction(NUMBER_MATH,      btnNumber.div, getCreateOptions(e)))}),
-                             new MenuItem('Boolean',          {icon: iconBoolean,     /*childMenu: menuBoolean,  */ callback: e => actionManager.do(getCreateNodeAction(NUMBER_BOOLEAN,   btnNumber.div, getCreateOptions(e)))}),
-                             new MenuItem('Conditional',      {icon: iconCondition,   /*childMenu: menuCondition,*/ callback: e => actionManager.do(getCreateNodeAction(NUMBER_CONDITION, btnNumber.div, getCreateOptions(e)))}),
-                             new MenuItem('Trigonometric',    {icon: iconSine,        /*childMenu: menuTrig,     */ callback: e => actionManager.do(getCreateNodeAction(NUMBER_TRIG,      btnNumber.div, getCreateOptions(e)))}),
-                             new MenuItem('',                 {separator: true}),
-                             new MenuItem('Sets. . .',        {icon: iconArray, childMenu: menuSets}),
-                             new MenuItem('',                 {separator: true}),
-                             new MenuItem('Interpolate',      {icon: iconInterpolate, callback: e => actionManager.do(getCreateNodeAction(NUMBER_INTERPOLATE, btnNumber.div, getCreateOptions(e)))}),
-        menuItemSolve      = new MenuItem('Solve',            {icon: iconSolve,       callback: e => actionManager.do(getCreateNodeAction(NUMBER_SOLVE,       btnNumber.div, getCreateOptions(e)))}),
-        menuItemNumberSep1 = new MenuItem('',                 {separator: true}),
-        menuItemAnimate    = new MenuItem('Animate',          {icon: iconAnimate,     callback: e => actionManager.do(getCreateNodeAction(NUMBER_ANIMATE,     btnNumber.div, getCreateOptions(e)))})]);
-        
-    
     menuConvert = new Menu('Text', true, false);
     menuConvert.addItems([
         new MenuItem('Text to number',       {icon: iconTextToNumber,  callback: e => actionManager.do(getCreateNodeAction(TEXT_TO_NUMBER, btnText.div, getCreateOptions(e)))}),
@@ -497,9 +483,30 @@ function initGeneratorMenus()
         new MenuItem('Unicode to character', {icon: iconTextCharacter, callback: e => actionManager.do(getCreateNodeAction(TEXT_CHAR,      btnText.div, getCreateOptions(e)))})]);
     
 
+    menuNumber = new Menu('Numbers', true, false);
+    menuNumber.addItems([
+                        new MenuItem('Number',           {icon: iconNumber,      callback: e => actionManager.do(getCreateNodeAction(NUMBER,             btnNumber.div, getCreateOptions(e)))}),
+                        new MenuItem('',                 {separator: true}),
+                        new MenuItem('Basic',            {icon: iconRound,       childMenu: menuFunctions}),
+                        new MenuItem('',                 {separator: true}),
+                        new MenuItem('Math',             {icon: iconMath,        childMenu: menuMath,          callback: e => actionManager.do(getCreateNodeAction(NUMBER_SIMPLE_MATH, btnNumber.div, getCreateOptions(e)))}),
+                        new MenuItem('Boolean',          {icon: iconBoolean,     /*childMenu: menuBoolean,  */ callback: e => actionManager.do(getCreateNodeAction(NUMBER_BOOLEAN,     btnNumber.div, getCreateOptions(e)))}),
+                        new MenuItem('Conditional',      {icon: iconCondition,   /*childMenu: menuCondition,*/ callback: e => actionManager.do(getCreateNodeAction(NUMBER_CONDITION,   btnNumber.div, getCreateOptions(e)))}),
+                        new MenuItem('Trigonometric',    {icon: iconSine,        /*childMenu: menuTrig,     */ callback: e => actionManager.do(getCreateNodeAction(NUMBER_TRIG,        btnNumber.div, getCreateOptions(e)))}),
+                        new MenuItem('',                 {separator: true}),
+                        new MenuItem('Interpolate',      {icon: iconInterpolate, callback: e => actionManager.do(getCreateNodeAction(NUMBER_INTERPOLATE, btnNumber.div, getCreateOptions(e)))}),
+        menuItemSolve = new MenuItem('Solve',            {icon: iconSolve,       callback: e => actionManager.do(getCreateNodeAction(NUMBER_SOLVE,       btnNumber.div, getCreateOptions(e)))}),
+                        new MenuItem('',                 {separator: true}),
+                        new MenuItem('Convert',          {icon: iconNumberToText, childMenu: menuConvert})]);
+        
+    
     menuString = new Menu('Text', true, false);
     menuString.addItems([
         new MenuItem('Text',                {icon: iconText,          callback: e => actionManager.do(getCreateNodeAction(TEXT,           btnText.div, getCreateOptions(e)))}),
+        new MenuItem('',                    {separator: true}),
+        new MenuItem('Length',              {icon: iconTextLength,    callback: e => actionManager.do(getCreateNodeAction(TEXT_LENGTH,    btnText.div, getCreateOptions(e)))}),
+        new MenuItem('Compare',             {icon: iconTextCompare,   callback: e => actionManager.do(getCreateNodeAction(TEXT_COMPARE,   btnText.div, getCreateOptions(e)))}),
+        new MenuItem('Contains',            {icon: iconTextContains,  callback: e => actionManager.do(getCreateNodeAction(TEXT_CONTAINS,  btnText.div, getCreateOptions(e)))}),
         new MenuItem('',                    {separator: true}),
         new MenuItem('Trim',                {icon: iconTextTrim,      callback: e => actionManager.do(getCreateNodeAction(TEXT_TRIM,      btnText.div, getCreateOptions(e)))}),
         new MenuItem('Spl it',              {icon: iconTextSplit,     callback: e => actionManager.do(getCreateNodeAction(TEXT_SPLIT,     btnText.div, getCreateOptions(e)))}),
@@ -509,16 +516,8 @@ function initGeneratorMenus()
         new MenuItem('Replace',             {icon: iconTextReplace,   callback: e => actionManager.do(getCreateNodeAction(TEXT_REPLACE,   btnText.div, getCreateOptions(e)))}),
         new MenuItem('Pad',                 {icon: iconTextPad,       callback: e => actionManager.do(getCreateNodeAction(TEXT_PAD,       btnText.div, getCreateOptions(e)))}),
         new MenuItem('',                    {separator: true}),
-        new MenuItem('Length',              {icon: iconTextLength,    callback: e => actionManager.do(getCreateNodeAction(TEXT_LENGTH,    btnText.div, getCreateOptions(e)))}),
-        new MenuItem('Compare',             {icon: iconTextCompare,   callback: e => actionManager.do(getCreateNodeAction(TEXT_COMPARE,   btnText.div, getCreateOptions(e)))}),
-        new MenuItem('Contains',            {icon: iconTextContains,  callback: e => actionManager.do(getCreateNodeAction(TEXT_CONTAINS,  btnText.div, getCreateOptions(e)))}),
-        new MenuItem('',                    {separator: true}),
-        new MenuItem('Convert',             {icon: iconNumberToText, childMenu: menuConvert}),
-        new MenuItem('',                    {separator: true}),
         new MenuItem('Parse CSV',           {icon: iconTextCSV,       callback: e => actionManager.do(getCreateNodeAction(TEXT_CSV,       btnText.div, getCreateOptions(e)))}),
-        new MenuItem('Parse JSON',          {icon: iconTextJson,      callback: e => actionManager.do(getCreateNodeAction(TEXT_JSON,      btnText.div, getCreateOptions(e)))}),
-        new MenuItem('',                    {separator: true}),
-        new MenuItem('Fetch',               {icon: iconTextFetch,     callback: e => actionManager.do(getCreateNodeAction(TEXT_FETCH,     btnText.div, getCreateOptions(e)))})]);
+        new MenuItem('Parse JSON',          {icon: iconTextJson,      callback: e => actionManager.do(getCreateNodeAction(TEXT_JSON,      btnText.div, getCreateOptions(e)))})]);
     
 
     menuColorStyle = new Menu('Color style', true, false);
@@ -780,6 +779,7 @@ function initGeneratorMenus()
     btnMain     = new MenuButton('', menuMain,     {useMenuName: true, highlight: () => currentMenus.includes(menuMain  ), callback: () => updatePanMode(false)});
     btnFlow     = new MenuButton('', menuFlow,     {useMenuName: true, highlight: () => currentMenus.includes(menuFlow  ), callback: () => updatePanMode(false)});
     btnData     = new MenuButton('', menuData,     {useMenuName: true, highlight: () => currentMenus.includes(menuData  ), callback: () => updatePanMode(false)});
+    btnSets     = new MenuButton('', menuSets,     {useMenuName: true, highlight: () => currentMenus.includes(menuSets  ), callback: () => updatePanMode(false)});
     btnNumber   = new MenuButton('', menuNumber,   {useMenuName: true, highlight: () => currentMenus.includes(menuNumber), callback: () => updatePanMode(false)});
     btnText     = new MenuButton('', menuString,   {useMenuName: true, highlight: () => currentMenus.includes(menuString), callback: () => updatePanMode(false)});
     btnColor    = new MenuButton('', menuColor,    {useMenuName: true, highlight: () => currentMenus.includes(menuColor ), callback: () => updatePanMode(false)});
@@ -867,8 +867,9 @@ function initGeneratorMenus()
 
 
     btnFlow    .setIcon(iconFlow);
+    btnSets    .setIcon(iconSequence);
     btnMain    .setIcon(iconGenerator);
-    btnColor   .setIcon(iconColor);
+    btnColor   .setIcon(iconVarColor);
     btnLayer   .setIcon(iconEffects);
     btnShape   .setIcon(iconShapes);
     //btnStyle  .setIcon(iconStyle);
