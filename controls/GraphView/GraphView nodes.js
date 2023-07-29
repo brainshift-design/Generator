@@ -317,3 +317,14 @@ GraphView.prototype.getTopNodeIndex = function()
 
     return max;
 };
+
+
+
+GraphView.prototype.nudgeSelected = function(x, y)
+{
+    graphView.selectedNodes.forEach(n => 
+        n.setPosition(
+            n.div.offsetLeft + x / graph.currentPage.zoom,
+            n.div.offsetTop  + y / graph.currentPage.zoom,
+            true));
+};

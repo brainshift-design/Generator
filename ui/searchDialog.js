@@ -131,6 +131,7 @@ function selectSearchItem(item, shift, ctrl, alt)
 }
 
 
+
 function updateSearchBox()
 {
     for (let i = 0; i < searchItems.children.length; i++)

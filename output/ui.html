@@ -4779,7 +4779,9 @@ a
 
                 <p>•  double-clicking anywhere in the header now activates it, Ctrl/Cmd + double click to rename</p>
                 <p>•  added menu search</p>
+                <p>•  nodes can now be moved with arrow keys</p>
                 <p>•  fixed bug in Range node</p>
+                <p>•  fixed UI issues</p>
                 
                 <p><br/><br/><div id='chkHideWhatsNew'></div></p>
             </div>
@@ -84972,6 +84974,17 @@ GraphView.prototype.getTopNodeIndex = function()
 };
 
 
+
+GraphView.prototype.nudgeSelected = function(x, y)
+{
+    graphView.selectedNodes.forEach(n => 
+        n.setPosition(
+            n.div.offsetLeft + x / graph.currentPage.zoom,
+            n.div.offsetTop  + y / graph.currentPage.zoom,
+            true));
+};
+
+
 GraphView.prototype.startConnectionFromOutput = function(pointerId, output, updateTempWire = true, backInit = false)
 {
     this.connPointerId = pointerId;
@@ -95618,6 +95631,8 @@ Operator.prototype.endNodeProgress = function()
 
 Operator.prototype.setPosition = function(x, y, updateTransform = true)
 {
+    console.log('x =', x);
+    console.log('y =', y);
     this.div.style.left = x + 'px';
     this.div.style.top  = y + 'px';
 
@@ -117686,6 +117701,30 @@ document.addEventListener('keydown', e =>
         showSearchBox();
     }
 
+    else if (e.code == 'ArrowUp')
+    {
+        e.preventDefault();
+        graphView.nudgeSelected(0, -10);
+    }
+
+    else if (e.code == 'ArrowDown')
+    {
+        e.preventDefault();
+        graphView.nudgeSelected(0, 10);
+    }
+
+    else if (e.code == 'ArrowLeft')
+    {
+        e.preventDefault();
+        graphView.nudgeSelected(-10, 0);
+    }
+
+    else if (e.code == 'ArrowRight')
+    {
+        e.preventDefault();
+        graphView.nudgeSelected(10, 0);
+    }
+
 
     // else if (e.code == 'KeyN' && !getCtrlKey(e) && !e.shiftKey && !e.altKey) actionManager.do(getCreateNodeAction(NUMBER,      null, getCreateOptions(e)));
     // else if (e.code == 'KeyT' && !getCtrlKey(e) && !e.shiftKey && !e.altKey) actionManager.do(getCreateNodeAction(TEXT,        null, getCreateOptions(e)));
@@ -118506,6 +118545,7 @@ function selectSearchItem(item, shift, ctrl, alt)
 
     searchIndex = -1;
 }
+
 
 
 function updateSearchBox()

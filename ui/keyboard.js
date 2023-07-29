@@ -351,6 +351,30 @@ document.addEventListener('keydown', e =>
         showSearchBox();
     }
 
+    else if (e.code == 'ArrowUp')
+    {
+        e.preventDefault();
+        graphView.nudgeSelected(0, -10);
+    }
+
+    else if (e.code == 'ArrowDown')
+    {
+        e.preventDefault();
+        graphView.nudgeSelected(0, 10);
+    }
+
+    else if (e.code == 'ArrowLeft')
+    {
+        e.preventDefault();
+        graphView.nudgeSelected(-10, 0);
+    }
+
+    else if (e.code == 'ArrowRight')
+    {
+        e.preventDefault();
+        graphView.nudgeSelected(10, 0);
+    }
+
 
     // else if (e.code == 'KeyN' && !getCtrlKey(e) && !e.shiftKey && !e.altKey) actionManager.do(getCreateNodeAction(NUMBER,      null, getCreateOptions(e)));
     // else if (e.code == 'KeyT' && !getCtrlKey(e) && !e.shiftKey && !e.altKey) actionManager.do(getCreateNodeAction(TEXT,        null, getCreateOptions(e)));
