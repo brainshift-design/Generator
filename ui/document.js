@@ -43,7 +43,6 @@ document.addEventListener('dragover',  e => e.preventDefault());
 document.addEventListener("drop", async e => 
 {
     e.preventDefault();
-    console.log('drop');
     
 
     const files = [];

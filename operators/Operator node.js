@@ -446,12 +446,18 @@ Operator.prototype.createHeader = function()
     {
         e.stopPropagation();
 
-        actionManager.do(new MakeActiveNodesAction([this.id], e.shiftKey));
-        
-        if (this.deselectTimer > -1)
+        if (getCtrlKey(e))
+            this.showLabelTextbox();
+
+        else
         {
-            clearTimeout(this.deselectTimer);
-            this.deselectTimer = -1;
+            actionManager.do(new MakeActiveNodesAction([this.id], e.shiftKey));
+            
+            if (this.deselectTimer > -1)
+            {
+                clearTimeout(this.deselectTimer);
+                this.deselectTimer = -1;
+            }
         }
     });
 
@@ -469,11 +475,11 @@ Operator.prototype.createHeader = function()
 
 
 
-    this.labelText.addEventListener('dblclick', e =>
-    {
-        e.stopPropagation();
-        this.showLabelTextbox();
-    });
+    // this.labelText.addEventListener('dblclick', e =>
+    // {
+    //     e.stopPropagation();
+    //     this.showLabelTextbox();
+    // });
 };
 
 

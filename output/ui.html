@@ -4594,7 +4594,7 @@ a
             <div id='whatsNewBody'>
                 <h1 style='margin-top: 20px;'>What's new</h1>
 
-                <p>•  </p>
+                <p>•  double-clicking anywhere in the header now activates it, Ctrl/Cmd + double click to rename</p>
                 
                 <p><br/><br/><div id='chkHideWhatsNew'></div></p>
             </div>
@@ -95294,12 +95294,18 @@ Operator.prototype.createHeader = function()
     {
         e.stopPropagation();
 
-        actionManager.do(new MakeActiveNodesAction([this.id], e.shiftKey));
-        
-        if (this.deselectTimer > -1)
+        if (getCtrlKey(e))
+            this.showLabelTextbox();
+
+        else
         {
-            clearTimeout(this.deselectTimer);
-            this.deselectTimer = -1;
+            actionManager.do(new MakeActiveNodesAction([this.id], e.shiftKey));
+            
+            if (this.deselectTimer > -1)
+            {
+                clearTimeout(this.deselectTimer);
+                this.deselectTimer = -1;
+            }
         }
     });
 
@@ -95317,11 +95323,11 @@ Operator.prototype.createHeader = function()
 
 
 
-    this.labelText.addEventListener('dblclick', e =>
-    {
-        e.stopPropagation();
-        this.showLabelTextbox();
-    });
+    // this.labelText.addEventListener('dblclick', e =>
+    // {
+    //     e.stopPropagation();
+    //     this.showLabelTextbox();
+    // });
 };
 
 
@@ -116890,7 +116896,6 @@ document.addEventListener('dragover',  e => e.preventDefault());
 document.addEventListener("drop", async e => 
 {
     e.preventDefault();
-    console.log('drop');
     
 
     const files = [];
