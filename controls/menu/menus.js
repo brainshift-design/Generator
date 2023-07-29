@@ -16,6 +16,9 @@ var btnPage;
 var btnZoom;
 
 
+var menuBarMenus = [];
+
+
 var menuMain;
 var menuMainFile;
 var menuMainPreferences;
@@ -84,7 +87,6 @@ var menuNodeData;
 var menuNodeDataNodes;
 var menuConnData;
 var menuConnDataConns;
-
 
 var menuItemShowTooltipLongText;
 var menuItemShowTooltipColorInterpolation;
@@ -877,6 +879,31 @@ function initGeneratorMenus()
     //btnTemplate.setIcon(iconTemplate);
     btnHand    .setIcon(iconHand);
     btnComment .setIcon(iconComment);
+
+
+    menuBarMenus = 
+    [
+        menuMainFile,
+        menuMainPreferences,
+        menuMainDebug,
+        menuMainHelp,
+        menuFlow,
+        menuData,
+        menuSets,
+        menuNumber,
+        menuFunctions,
+        menuMath,
+        menuConvert,
+        menuText,
+        menuColor,
+        menuLayer,
+        menuEffects,
+        menuStyles,
+        menuShape,
+        menuShapes,
+        menuVector,
+        menuTransform
+    ];
 }
 
 

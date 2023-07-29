@@ -13,6 +13,7 @@ class Menu
 
     div;
     divArrow;
+    divItems;
 
     showChecks;
     showIcons;
@@ -46,8 +47,8 @@ class Menu
         this.showIcons  = showIcons;
         this.showChecks = showChecks;
 
-        this.divArrow   = createDiv('menuArrow');
         this.div        = createDiv('menu');
+        this.divArrow   = createDiv('menuArrow');
         this.divItems   = createDiv('menuItems');
 
         this.div.appendChild(this.divItems);

@@ -910,10 +910,9 @@ div
     display:      block;
     position:     absolute;
     left:         14px;
-    top:          50%;
-    transform:    translateY(-50%);
+    top:          14px;
     padding-left: 3px;
-    padding-top:  4px;
+    padding-top:  3px;
 }
 
 
@@ -923,6 +922,7 @@ div
 
 #searchText
 {
+    display:          block;
     background-color: transparent;
     pointer-events:   all;
     font-family:      Inter;
@@ -930,9 +930,25 @@ div
     width:            100%;
     height:           48px;
     padding-left:     48px;
+    padding-right:    15px;
     /* box-shadow:       0 0 0 1px red inset; */
     border:           none;
     outline:          none;
+}
+
+
+#searchText:hover
+{
+    border:     none;
+    outline:    none;
+    box-shadow: none;
+}
+
+#searchText:focus
+{
+    border:     none;
+    outline:    none;
+    box-shadow: none;
 }
 
 
@@ -948,6 +964,91 @@ div
     color:      #c4c4c4;
     font-weight: 300;
 }
+
+
+
+#searchResults
+{
+    width:      100%;
+    height:     auto;
+    max-height: 304px;
+    /* box-shadow: 0 0 0 1px red inset; */
+    overflow-y: scroll;
+    margin:     0;
+}
+
+
+
+#searchResults::-webkit-scrollbar
+{
+    background: transparent;
+    width:      0;
+    height:     0;
+}
+
+
+#searchResults::-webkit-scrollbar-track
+{
+    margin: 0;
+}
+
+
+#searchResults::-webkit-scrollbar-thumb
+{
+    background: transparent;
+}
+
+
+#searchItems
+{
+    width:      100%;
+    /* box-shadow: 0 0 0 1px yellow inset; */
+    margin: 0;
+}
+
+
+
+.resultItem
+{
+    font-family:  Inter;
+    font-size:    13px;
+    display:      inline-block;
+    /* box-shadow:   0 0 0 1px green inset; */
+    width:        100%;
+    height:       24px;
+    padding-left: 48px;
+    padding-top:   8px;
+    position:     relative;
+} 
+
+
+.figma-dark .resultItem
+{
+    color:       white;
+    font-weight: 600;
+}
+
+.figma-light .resultItem
+{
+    color:       #444;
+    font-weight: 400;
+}
+
+
+.resultIcon
+{
+    width:          auto;
+    height:         auto;
+    line-height:    19px;
+    /* box-shadow:     0 0 0 1px red inset; */
+    display:        block;
+    position:       absolute;
+    left:           14px;
+    top:            50%;
+    transform:      translateY(-50%);
+    text-align:     center;
+}
+
 
 
 .tooltipPre /* to avoid FOUC (flash of unstyled content) */
@@ -4690,6 +4791,9 @@ a
 <div id='search'>
     <div id='searchIcon'></div>
     <input id='searchText' type='text' placeholder='Search nodes and menus' spellcheck='false' />
+    <div id='searchResults'>
+        <div id='searchItems'></div>
+    </div>
 </div>
 
 
@@ -10636,8 +10740,8 @@ function addObjectCenter(node, obj, zoom)
     const length = 10;
     
     const sp0 = point(
-        obj.sp0.x + 0.5, 
-        obj.sp0.y + 0.5);
+        obj.sp0.x /*+ 0.5*/, 
+        obj.sp0.y /*+ 0.5*/);
 
     const sp1 = addv(sp0, mulvs(      subv(obj.sp1, obj.sp0),      length));
     const sp2 = addv(sp0, mulvs(mulvs(subv(obj.sp2, obj.sp0), -1), length));    
@@ -52299,8 +52403,8 @@ function addObjectCenter(node, obj, zoom)
     const length = 10;
     
     const sp0 = point(
-        obj.sp0.x + 0.5, 
-        obj.sp0.y + 0.5);
+        obj.sp0.x /*+ 0.5*/, 
+        obj.sp0.y /*+ 0.5*/);
 
     const sp1 = addv(sp0, mulvs(      subv(obj.sp1, obj.sp0),      length));
     const sp2 = addv(sp0, mulvs(mulvs(subv(obj.sp2, obj.sp0), -1), length));    
@@ -81074,6 +81178,7 @@ class Menu
 
     div;
     divArrow;
+    divItems;
 
     showChecks;
     showIcons;
@@ -81107,8 +81212,8 @@ class Menu
         this.showIcons  = showIcons;
         this.showChecks = showChecks;
 
-        this.divArrow   = createDiv('menuArrow');
         this.div        = createDiv('menu');
+        this.divArrow   = createDiv('menuArrow');
         this.divItems   = createDiv('menuItems');
 
         this.div.appendChild(this.divItems);
@@ -82108,6 +82213,9 @@ var btnPage;
 var btnZoom;
 
 
+var menuBarMenus = [];
+
+
 var menuMain;
 var menuMainFile;
 var menuMainPreferences;
@@ -82176,7 +82284,6 @@ var menuNodeData;
 var menuNodeDataNodes;
 var menuConnData;
 var menuConnDataConns;
-
 
 var menuItemShowTooltipLongText;
 var menuItemShowTooltipColorInterpolation;
@@ -82969,6 +83076,31 @@ function initGeneratorMenus()
     //btnTemplate.setIcon(iconTemplate);
     btnHand    .setIcon(iconHand);
     btnComment .setIcon(iconComment);
+
+
+    menuBarMenus = 
+    [
+        menuMainFile,
+        menuMainPreferences,
+        menuMainDebug,
+        menuMainHelp,
+        menuFlow,
+        menuData,
+        menuSets,
+        menuNumber,
+        menuFunctions,
+        menuMath,
+        menuConvert,
+        menuText,
+        menuColor,
+        menuLayer,
+        menuEffects,
+        menuStyles,
+        menuShape,
+        menuShapes,
+        menuVector,
+        menuTransform
+    ];
 }
 
 
@@ -85240,6 +85372,7 @@ GraphView.prototype.createEvents = function()
 
 
         hideAllMenus();
+        hideSearchBox();
 
 
         if (   e.button == 0
@@ -117139,9 +117272,6 @@ function initGenerator()
     uiQueueMessageToFigma({
         cmd:     'figLoadNodesAndConns',
         dataMode: settings.dataMode });
-
-        
-    showSearchBox();
 }
 
 
@@ -117544,6 +117674,15 @@ document.addEventListener('keydown', e =>
     else if (e.code == 'Tab')
         e.preventDefault();
 
+    else if (     (e.code == 'Slash'
+                || e.code == 'KeyP')
+             && getCtrlKey(e))
+    {
+        e.preventDefault();
+        showSearchBox();
+    }
+
+
     // else if (e.code == 'KeyN' && !getCtrlKey(e) && !e.shiftKey && !e.altKey) actionManager.do(getCreateNodeAction(NUMBER,      null, getCreateOptions(e)));
     // else if (e.code == 'KeyT' && !getCtrlKey(e) && !e.shiftKey && !e.altKey) actionManager.do(getCreateNodeAction(TEXT,        null, getCreateOptions(e)));
     // else if (e.code == 'KeyC' && !getCtrlKey(e) && !e.shiftKey && !e.altKey) actionManager.do(getCreateNodeAction(COLOR,       null, getCreateOptions(e, {random: e.altKey && !getCtrlKey(e)})));
@@ -117553,8 +117692,8 @@ document.addEventListener('keydown', e =>
     // graph.nodes.at(-1).div.style.left = e.clientX - (defNodeWidth    / 2) - (               + graph.currentPage.pan.x) / graph.currentPage.zoom;
     // graph.nodes.at(-1).div.style.top  = e.clientY - (defHeaderHeight / 2) - (getTopHeight() + graph.currentPage.pan.y) / graph.currentPage.zoom;
 
-    else
-        e.preventDefault();
+    // else
+    //     e.preventDefault();
 });
 
 
@@ -118238,6 +118377,8 @@ function showSearchBox()
 
     searchIcon.innerHTML = iconSearch;
 
+    searchText.value = '';
+
     searchText.focus();
     searchText.select();
 }
@@ -118246,8 +118387,117 @@ function showSearchBox()
 
 function hideSearchBox()
 {
-    search.style.display = 'none';
+    search.style.display  = 'none';
+    searchItems.innerHTML = '';
 }
+
+
+
+function initSearchBox(query)
+{
+    const found = [];
+
+    if (query != '')
+    {
+        for (const menu of menuBarMenus)
+        {
+            for (const item of menu.items)
+            {
+                if (item.name.toLowerCase().includes(query.toLowerCase()))
+                    found.push(item);
+            }
+        }
+
+        found.sort((_a, _b) => 
+        {
+            const a = _a.name.toLowerCase();
+            const b = _b.name.toLowerCase();
+
+            const ia = a.indexOf(query);
+            const ib = b.indexOf(query);
+
+            if (ia < ib) return -1;
+            if (ia > ib) return  1;
+
+            if (a < b) return -1;
+            if (a > b) return  1;
+
+            return 0;
+        });
+    }
+
+    
+    searchItems.innerHTML = '';
+
+
+    for (const item of found)
+    {
+        const result     = createDiv('resultItem');
+        const icon       = createDiv('resultIcon')
+
+        result.innerHTML = item.name;
+        icon  .innerHTML = item.icon;
+
+        result.appendChild(
+            darkMode
+            ? icon
+            : icon.replaceAll('white', 'black'));
+        
+        result.addEventListener('click', e =>
+        {
+            if (!shift) 
+                hideSearchBox();
+
+            const _e = 
+            {
+                shiftKey: e.shiftKey,
+                ctrlKey:  getCtrlKey(e),
+                altKey:   e.altKey
+            };
+
+            if (item.callback)
+                item.callback(_e);
+        });
+
+        searchItems.appendChild(result);
+    }
+     
+
+    searchResults.style.paddingBottom = 
+           found.length > 0 
+        && found.length < 10
+        ? '8px'
+        : 0;
+
+    search.style.height = searchText.offsetHeight + searchResults.offsetHeight;
+
+
+    updateSearchBox();
+}
+
+
+
+function updateSearchBox()
+{
+
+}
+
+
+
+searchText.addEventListener('keydown', e =>
+{
+    e.stopPropagation();
+
+    if (e.code == 'Escape')
+        hideSearchBox();
+});
+
+
+
+searchText.addEventListener('input', e =>
+{
+    initSearchBox(searchText.value);
+});
 
 
 function checkTrialExists()

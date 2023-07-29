@@ -343,6 +343,15 @@ document.addEventListener('keydown', e =>
     else if (e.code == 'Tab')
         e.preventDefault();
 
+    else if (     (e.code == 'Slash'
+                || e.code == 'KeyP')
+             && getCtrlKey(e))
+    {
+        e.preventDefault();
+        showSearchBox();
+    }
+
+
     // else if (e.code == 'KeyN' && !getCtrlKey(e) && !e.shiftKey && !e.altKey) actionManager.do(getCreateNodeAction(NUMBER,      null, getCreateOptions(e)));
     // else if (e.code == 'KeyT' && !getCtrlKey(e) && !e.shiftKey && !e.altKey) actionManager.do(getCreateNodeAction(TEXT,        null, getCreateOptions(e)));
     // else if (e.code == 'KeyC' && !getCtrlKey(e) && !e.shiftKey && !e.altKey) actionManager.do(getCreateNodeAction(COLOR,       null, getCreateOptions(e, {random: e.altKey && !getCtrlKey(e)})));
@@ -352,8 +361,8 @@ document.addEventListener('keydown', e =>
     // graph.nodes.at(-1).div.style.left = e.clientX - (defNodeWidth    / 2) - (               + graph.currentPage.pan.x) / graph.currentPage.zoom;
     // graph.nodes.at(-1).div.style.top  = e.clientY - (defHeaderHeight / 2) - (getTopHeight() + graph.currentPage.pan.y) / graph.currentPage.zoom;
 
-    else
-        e.preventDefault();
+    // else
+    //     e.preventDefault();
 });
 
 

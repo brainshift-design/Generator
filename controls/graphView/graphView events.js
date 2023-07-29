@@ -43,6 +43,7 @@ GraphView.prototype.createEvents = function()
 
 
         hideAllMenus();
+        hideSearchBox();
 
 
         if (   e.button == 0
