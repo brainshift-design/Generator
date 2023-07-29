@@ -681,8 +681,10 @@ function initGeneratorMenus()
         
     menuGraph = new Menu('Graph menu', false, false);
     menuGraph.addItems([
-        menuItemGraphPaste          = new MenuItem('Paste here',      {shortcut: osCtrl()      + 'V', callback: e => { hideAllMenus(); graphView.pasteCopiedNodes(false, e.clientX, e.clientY - getTopHeight()); }}),
-        menuItemGraphPasteConnected = new MenuItem('Paste connected', {shortcut: osCtrlShift() + 'V', callback: e => { hideAllMenus(); graphView.pasteCopiedNodes(true,  e.clientX, e.clientY - getTopHeight()); }})]);
+        menuItemGraphPaste          = new MenuItem('Paste here',       {shortcut: osCtrl()      + 'V', callback: e => { hideAllMenus(); graphView.pasteCopiedNodes(false, e.clientX, e.clientY - getTopHeight()); }}),
+        menuItemGraphPasteConnected = new MenuItem('Paste connected',  {shortcut: osCtrlShift() + 'V', callback: e => { hideAllMenus(); graphView.pasteCopiedNodes(true,  e.clientX, e.clientY - getTopHeight()); }}),
+                                      new MenuItem('',                 {separator: true}),
+                                      new MenuItem('Quick actions...', {shortcut: osCtrl() + '/',      callback: () => showSearchBox() })]);
 
     menuGraph.init = () => 
     {
@@ -883,10 +885,10 @@ function initGeneratorMenus()
 
     menuBarMenus = 
     [
-        menuMainFile,
-        menuMainPreferences,
-        menuMainDebug,
-        menuMainHelp,
+        // menuMainFile,
+        // menuMainPreferences,
+        // menuMainDebug,
+        // menuMainHelp,
         menuFlow,
         menuData,
         menuSets,

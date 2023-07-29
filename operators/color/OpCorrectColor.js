@@ -16,7 +16,7 @@ extends OpColorBase
     
     constructor()
     {
-        super(CORRECT_COLOR, 'corrected', 'corrected', iconCorrectColor, true);
+        super(CORRECT_COLOR, 'correct', 'correct', iconCorrectColor, true);
 
         this.slow             = true;
         this.canDisable       = true;
