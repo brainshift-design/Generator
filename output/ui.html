@@ -34630,9 +34630,9 @@ extends GOperator
             {
                 transform:  transform,
                 showCenter: showCenter,
-                sp0:        position.objects.length > 0 ? addv(p, position.objects[0].sp0) : null,
-                sp1:        position.objects.length > 0 ? addv(p, position.objects[0].sp1) : null,
-                sp2:        position.objects.length > 0 ? addv(p, position.objects[0].sp2) : null
+                sp0:        position.objects.length > 0 ? position.objects[0].sp0 : null,
+                sp1:        position.objects.length > 0 ? position.objects[0].sp1 : null,
+                sp2:        position.objects.length > 0 ? position.objects[0].sp2 : null
             });
 
         
@@ -34669,13 +34669,13 @@ extends GOperator
                 obj.nodeId   = this.nodeId;
                 obj.objectId = obj.objectId + OBJECT_SEPARATOR + this.nodeId;
 
+
                 if (this.options.enabled)
                 {
-                    let xform = clone(identity);
-
-                    xform = mulm3m3(
-                        xform,
-                        createTransform(-obj.sp0.x, -obj.sp0.y),
+                    let xform = mulm3m3(
+                        createTransform(
+                            -obj.sp0.x, 
+                            -obj.sp0.y),
                         place);
 
                     if (   options.transform.value > 0
@@ -76293,9 +76293,9 @@ extends GOperator
             {
                 transform:  transform,
                 showCenter: showCenter,
-                sp0:        position.objects.length > 0 ? addv(p, position.objects[0].sp0) : null,
-                sp1:        position.objects.length > 0 ? addv(p, position.objects[0].sp1) : null,
-                sp2:        position.objects.length > 0 ? addv(p, position.objects[0].sp2) : null
+                sp0:        position.objects.length > 0 ? position.objects[0].sp0 : null,
+                sp1:        position.objects.length > 0 ? position.objects[0].sp1 : null,
+                sp2:        position.objects.length > 0 ? position.objects[0].sp2 : null
             });
 
         
@@ -76332,13 +76332,13 @@ extends GOperator
                 obj.nodeId   = this.nodeId;
                 obj.objectId = obj.objectId + OBJECT_SEPARATOR + this.nodeId;
 
+
                 if (this.options.enabled)
                 {
-                    let xform = clone(identity);
-
-                    xform = mulm3m3(
-                        xform,
-                        createTransform(-obj.sp0.x, -obj.sp0.y),
+                    let xform = mulm3m3(
+                        createTransform(
+                            -obj.sp0.x, 
+                            -obj.sp0.y),
                         place);
 
                     if (   options.transform.value > 0
@@ -82916,8 +82916,8 @@ function initGeneratorMenus()
         menuItemNodePaste          = new MenuItem('Paste here',      {shortcut:  osCtrl() + 'V',       callback: e => { hideAllMenus(); graphView.pasteCopiedNodes(false); }}),
         menuItemNodePasteConnected = new MenuItem('Paste connected', {shortcut:  osCtrlShift() + 'D',  callback: e => { hideAllMenus(); graphView.pasteCopiedNodes(true ); }}),
         //                                 new MenuItem('Copy/Paste as',   {childMenu: menuNodeCopyAs}),
-        //new MenuItem('',                {separator: true}),
-        //menuItemNodeLayout         = new MenuItem('Layout',          {enabled:   false, shortcut: osCtrl() + 'L', callback: e => { hideAllMenus(); layoutSelectedNodes(); }}),
+                                     new MenuItem('',                {separator: true}),
+        menuItemNodeLayout         = new MenuItem('Layout',          {enabled: false, shortcut: osCtrl() + 'L', callback: e => { hideAllMenus(); layoutSelectedNodes(); }}),
         // menuItemNodeSepGroup       = new MenuItem('',                {separator: true}),
         //menuItemNodeGroupSelected  = new MenuItem('Group selected',  {shortcut:  osCtrl() + 'G',       callback: e => { hideAllMenus(); actionManager.do(new   GroupNodesAction(graphView.selectedNodes)); }}),
         //menuItemNodeUngroup        = new MenuItem('Ungroup',         {                                 callback: e => { hideAllMenus(); actionManager.do(new UngroupNodesAction(graphView.selectedNodes)); }}),
@@ -84937,13 +84937,6 @@ GraphView.prototype.removeSelectedNodes = function()
         actionManager.do(new RemoveNodesAction(nodeIds));
         this._selected = [];
     }
-};
-
-
-
-GraphView.prototype.layoutSelectedNodes = function()
-{
-    
 };
 
 
@@ -93756,6 +93749,7 @@ class Operator
     scrollName         = true;
 
     showActiveArrow    = false;
+    layoutIndex        = -1;
 
     sharpBottomCorners = false;
 
@@ -95631,8 +95625,6 @@ Operator.prototype.endNodeProgress = function()
 
 Operator.prototype.setPosition = function(x, y, updateTransform = true)
 {
-    console.log('x =', x);
-    console.log('y =', y);
     this.div.style.left = x + 'px';
     this.div.style.top  = y + 'px';
 
@@ -96337,7 +96329,7 @@ Operator.prototype.updateHeaderInputsAndOutputs = function()
 
 
     return height;
-}
+};
 
 
 
@@ -96354,7 +96346,17 @@ Operator.prototype.updateValues = function(requestId, actionId, updateParamId, p
             this.params[index].setValue(values[i], false, true, false);
         }
     }
-}
+};
+
+
+
+Operator.prototype.setLayoutIndex = function()
+{
+    this.layoutIndex++;
+
+    for (const output of this.connectedOutputs)
+        input.node.setLayoutIndex();
+};
 
 
 class OperatorBase
@@ -117477,9 +117479,14 @@ document.addEventListener('keydown', e =>
     }
 
     // // select all
-    // else if (e.code == 'KeyL'
-    //       && getCtrlKey(e))
-    //     layoutSelectedNodes();
+    else if (e.code == 'KeyL'
+          && getCtrlKey(e))
+    {
+        e.preventDefault();
+        e.stopPropagation();
+        
+        layoutSelectedNodes();
+    }
 
     else if (e.code == 'Slash'
           && getCtrlKey(e)
@@ -118518,7 +118525,7 @@ function initSearchBox(query)
     searchResults.style.paddingBottom = 
            found.length > 0 
         && found.length < 10
-        ? '6px'
+        ? '8px'
         : 0;
 
     search.style.height = searchText.offsetHeight + searchResults.offsetHeight;
@@ -118582,13 +118589,23 @@ searchText.addEventListener('keydown', e =>
 
     else if (e.code == 'ArrowDown')
     {
-        searchIndex = Math.min(searchIndex+1, searchItems.children.length-1);
+        searchIndex =
+            searchIndex < searchItems.children.length-1
+            ? searchIndex + 1
+            : 0;
+
+        e.preventDefault();
         updateSearchBox();
     }
 
     else if (e.code == 'ArrowUp')
     {
-        searchIndex = Math.max(0, searchIndex-1);
+        searchIndex = 
+            searchIndex > 0
+            ? searchIndex - 1
+            : searchItems.children.length-1;
+
+        e.preventDefault();
         updateSearchBox();
     }
 
@@ -120879,6 +120896,61 @@ function findNodeBelow(node)
     return nodesBelow.length > 0
          ? nodesBelow[0]
          : null;
+}
+
+
+
+function layoutSelectedNodes()
+{
+    let bounds = Rect.NaN;
+
+    for (const node of graphView.selectedNodes)
+    {
+        bounds = expandRect(
+            bounds, 
+            new Rect(
+                node.div.offsetLeft, 
+                node.div.offsetTop, 
+                node.div.offsetWidth, 
+                node.dif.offsetHeight));
+    }
+
+
+    graphView.selectedNodes.forEach(n => n.layoutIndex = -1);
+    graphView.selectedNodes.forEach(n => n.setLayoutIndex());
+
+
+    let maxIndex = 0;
+
+    for (const node of graphView.selectedNodes)
+        maxIndex = Math.max(maxIndex, node.layoutIndex);
+
+
+    let   totalWidth = 0;
+    const maxWidth   = [];
+
+    for (let i = 0; i <= maxIndex; i++)
+    {
+        let width = 0;
+        
+        const colNodes = graphView.selectedNodes.filter(n => n.layoutIndex == i);
+
+        colNodes.forEach(n => width      = Math.max(wdth, n.div.offsetWidth));
+        colNodes.forEach(n => totalWidth = Math.max(totalWidth, width));
+
+        maxWidth.push(width);
+    }
+
+
+    let x = bounds.x + bounds.width/2 - totalWidth/2;
+
+    for (let i = 0; i <= maxIndex; i++)
+    {
+        const colNodes = graphView.selectedNodes.filter(n => n.layoutIndex == i);
+        colNodes.forEach(n => n.div.style.left = x);
+
+        x += maxWidth[i];
+    }
 }
 
 

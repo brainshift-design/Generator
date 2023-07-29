@@ -286,13 +286,6 @@ GraphView.prototype.removeSelectedNodes = function()
 
 
 
-GraphView.prototype.layoutSelectedNodes = function()
-{
-    
-};
-
-
-
 GraphView.prototype.renameSelectedNode = function()
 {
     if (this.selectedNodes.length == 1)

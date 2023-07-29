@@ -344,7 +344,7 @@ Operator.prototype.updateHeaderInputsAndOutputs = function()
 
 
     return height;
-}
+};
 
 
 
@@ -361,4 +361,14 @@ Operator.prototype.updateValues = function(requestId, actionId, updateParamId, p
             this.params[index].setValue(values[i], false, true, false);
         }
     }
-}
+};
+
+
+
+Operator.prototype.setLayoutIndex = function()
+{
+    this.layoutIndex++;
+
+    for (const output of this.connectedOutputs)
+        input.node.setLayoutIndex();
+};

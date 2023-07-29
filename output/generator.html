@@ -29516,9 +29516,9 @@ extends GOperator
             {
                 transform:  transform,
                 showCenter: showCenter,
-                sp0:        position.objects.length > 0 ? addv(p, position.objects[0].sp0) : null,
-                sp1:        position.objects.length > 0 ? addv(p, position.objects[0].sp1) : null,
-                sp2:        position.objects.length > 0 ? addv(p, position.objects[0].sp2) : null
+                sp0:        position.objects.length > 0 ? position.objects[0].sp0 : null,
+                sp1:        position.objects.length > 0 ? position.objects[0].sp1 : null,
+                sp2:        position.objects.length > 0 ? position.objects[0].sp2 : null
             });
 
         
@@ -29555,13 +29555,13 @@ extends GOperator
                 obj.nodeId   = this.nodeId;
                 obj.objectId = obj.objectId + OBJECT_SEPARATOR + this.nodeId;
 
+
                 if (this.options.enabled)
                 {
-                    let xform = clone(identity);
-
-                    xform = mulm3m3(
-                        xform,
-                        createTransform(-obj.sp0.x, -obj.sp0.y),
+                    let xform = mulm3m3(
+                        createTransform(
+                            -obj.sp0.x, 
+                            -obj.sp0.y),
                         place);
 
                     if (   options.transform.value > 0

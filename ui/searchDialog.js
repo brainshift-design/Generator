@@ -101,7 +101,7 @@ function initSearchBox(query)
     searchResults.style.paddingBottom = 
            found.length > 0 
         && found.length < 10
-        ? '6px'
+        ? '8px'
         : 0;
 
     search.style.height = searchText.offsetHeight + searchResults.offsetHeight;
@@ -165,13 +165,23 @@ searchText.addEventListener('keydown', e =>
 
     else if (e.code == 'ArrowDown')
     {
-        searchIndex = Math.min(searchIndex+1, searchItems.children.length-1);
+        searchIndex =
+            searchIndex < searchItems.children.length-1
+            ? searchIndex + 1
+            : 0;
+
+        e.preventDefault();
         updateSearchBox();
     }
 
     else if (e.code == 'ArrowUp')
     {
-        searchIndex = Math.max(0, searchIndex-1);
+        searchIndex = 
+            searchIndex > 0
+            ? searchIndex - 1
+            : searchItems.children.length-1;
+
+        e.preventDefault();
         updateSearchBox();
     }
 

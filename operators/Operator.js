@@ -70,6 +70,7 @@ class Operator
     scrollName         = true;
 
     showActiveArrow    = false;
+    layoutIndex        = -1;
 
     sharpBottomCorners = false;
 

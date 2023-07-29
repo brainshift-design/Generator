@@ -126,9 +126,14 @@ document.addEventListener('keydown', e =>
     }
 
     // // select all
-    // else if (e.code == 'KeyL'
-    //       && getCtrlKey(e))
-    //     layoutSelectedNodes();
+    else if (e.code == 'KeyL'
+          && getCtrlKey(e))
+    {
+        e.preventDefault();
+        e.stopPropagation();
+        
+        layoutSelectedNodes();
+    }
 
     else if (e.code == 'Slash'
           && getCtrlKey(e)

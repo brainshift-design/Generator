@@ -540,8 +540,6 @@ Operator.prototype.endNodeProgress = function()
 
 Operator.prototype.setPosition = function(x, y, updateTransform = true)
 {
-    console.log('x =', x);
-    console.log('y =', y);
     this.div.style.left = x + 'px';
     this.div.style.top  = y + 'px';
 

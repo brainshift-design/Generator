@@ -1037,3 +1037,58 @@ function findNodeBelow(node)
          ? nodesBelow[0]
          : null;
 }
+
+
+
+function layoutSelectedNodes()
+{
+    let bounds = Rect.NaN;
+
+    for (const node of graphView.selectedNodes)
+    {
+        bounds = expandRect(
+            bounds, 
+            new Rect(
+                node.div.offsetLeft, 
+                node.div.offsetTop, 
+                node.div.offsetWidth, 
+                node.dif.offsetHeight));
+    }
+
+
+    graphView.selectedNodes.forEach(n => n.layoutIndex = -1);
+    graphView.selectedNodes.forEach(n => n.setLayoutIndex());
+
+
+    let maxIndex = 0;
+
+    for (const node of graphView.selectedNodes)
+        maxIndex = Math.max(maxIndex, node.layoutIndex);
+
+
+    let   totalWidth = 0;
+    const maxWidth   = [];
+
+    for (let i = 0; i <= maxIndex; i++)
+    {
+        let width = 0;
+        
+        const colNodes = graphView.selectedNodes.filter(n => n.layoutIndex == i);
+
+        colNodes.forEach(n => width      = Math.max(wdth, n.div.offsetWidth));
+        colNodes.forEach(n => totalWidth = Math.max(totalWidth, width));
+
+        maxWidth.push(width);
+    }
+
+
+    let x = bounds.x + bounds.width/2 - totalWidth/2;
+
+    for (let i = 0; i <= maxIndex; i++)
+    {
+        const colNodes = graphView.selectedNodes.filter(n => n.layoutIndex == i);
+        colNodes.forEach(n => n.div.style.left = x);
+
+        x += maxWidth[i];
+    }
+}
