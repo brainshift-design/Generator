@@ -13,8 +13,7 @@ extends ResizableBase
         this.iconOffsetY = 1;
 
 
-        this.addInput (new Input(LIST_VALUES));
-        //this.addOutput(new Output([LIST_VALUE], this.output_genRequest));
+        this.addInput(new Input(LIST_VALUES));
 
         this.alwaysLoadParams = true;
         this.alwaysSaveParams = true;
@@ -23,12 +22,12 @@ extends ResizableBase
         this.createScrollbar();
 
         
-        this.setRect(
-            this.div.offsetLeft, 
-            this.div.offsetTop, 
-            Math.max(defNodeWidth,    this.div.offsetWidth ), 
-            Math.max(defHeaderHeight, this.div.offsetHeight), 
-            false);
+        // this.setRect(
+        //     this.div.offsetLeft, 
+        //     this.div.offsetTop, 
+        //     this.div.offsetWidth, 
+        //     this.div.offsetHeight, 
+        //     false);
     }
 
 
@@ -137,7 +136,9 @@ extends ResizableBase
             x, 
             y, 
             Math.max(defNodeWidth, w), 
-            Math.min(Math.max(defHeaderHeight, defHeaderHeight + this.params.length * defParamHeight), h),
+            Math.min(
+                Math.max(defHeaderHeight, defHeaderHeight + this.params.length * defParamHeight),
+                Math.max(h, defHeaderHeight)),
             updateTransform);
 
         this.updateScrollbar();
@@ -274,10 +275,10 @@ extends ResizableBase
             this.scrollbar.style.left = this.measureData.divOffset.width - 20;
             this.scrollbar.style.top  = defHeaderHeight + 5 - this.scroll;
 
-            this.scrollbar.style.height = 
+            this.scrollbar.style.height = Math.max(0,
                   (totalHeight - 10)
                 *  totalHeight / this.measureData.paramOffset.height
-                - 10;
+                - 10);
 
             this.paramHolder.style.top = this.scroll;
         }

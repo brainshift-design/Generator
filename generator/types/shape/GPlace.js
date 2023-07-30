@@ -66,9 +66,9 @@ extends GOperator
             {
                 transform:  transform,
                 showCenter: showCenter,
-                sp0:        position.objects.length > 0 ? position.objects[0].sp0 : null,
-                sp1:        position.objects.length > 0 ? position.objects[0].sp1 : null,
-                sp2:        position.objects.length > 0 ? position.objects[0].sp2 : null
+                sp0:        position.objects.length > 0 ? addv(p, position.objects[0].sp0) : null,
+                sp1:        position.objects.length > 0 ? addv(p, position.objects[0].sp1) : null,
+                sp2:        position.objects.length > 0 ? addv(p, position.objects[0].sp2) : null
             });
 
         
@@ -151,8 +151,9 @@ extends GOperator
     isValid()
     {
         return super.isValid()
-            && this.position .isValid()
-            && this.transform.isValid();
+            && this.position  .isValid()
+            && this.transform .isValid()
+            && this.showCenter.isValid();
     }
 
 
@@ -168,9 +169,10 @@ extends GOperator
     {
         super.pushValueUpdates(parse);
 
-        if (this.input    ) this.input    .pushValueUpdates(parse);
-        if (this.position ) this.position .pushValueUpdates(parse);
-        if (this.transform) this.transform.pushValueUpdates(parse);
+        if (this.input     ) this.input     .pushValueUpdates(parse);
+        if (this.position  ) this.position  .pushValueUpdates(parse);
+        if (this.transform ) this.transform .pushValueUpdates(parse);
+        if (this.showCenter) this.showCenter.pushValueUpdates(parse);
     }
 
 
@@ -179,9 +181,10 @@ extends GOperator
     {
         super.invalidateInputs(from);
 
-        if (this.input    ) this.input    .invalidateInputs(from);
-        if (this.position ) this.position .invalidateInputs(from);
-        if (this.transform) this.transform.invalidateInputs(from);
+        if (this.input     ) this.input     .invalidateInputs(from);
+        if (this.position  ) this.position  .invalidateInputs(from);
+        if (this.transform ) this.transform .invalidateInputs(from);
+        if (this.showCenter) this.showCenter.invalidateInputs(from);
     }
 }
 

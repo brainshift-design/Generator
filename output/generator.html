@@ -4,7 +4,7 @@
 
 
 
-const generatorVersion = 172;
+const generatorVersion = 175;
 
 
 const MAX_INT32        = 2147483647;
@@ -2841,15 +2841,6 @@ function osCtrlShift(plus = true) { return isMac ? osShift(plus) + osCtrl(plus) 
 
 function getCreateNodeAction(type, creatingButton, options)
 {
-    //let node = 
-    //createNode(type);
-
-    // if (isEmpty(node.headerOutputs))
-    //     options.autoConnect = true;
-
-    //node = null;
-
-
     return  options.insert != undefined
         &&  options.insert
         && (    options.autoConnect == undefined
@@ -2869,7 +2860,7 @@ function simpleIntHash(x)
 
 function getNewNumberId(nodes, checkExists, curId, id = curId, join = '')
 {
-    if (!checkExists(id))//nodes.find(n => n.id == id))
+    if (!checkExists(id))
         return id;
     
 
@@ -2881,7 +2872,7 @@ function getNewNumberId(nodes, checkExists, curId, id = curId, join = '')
         let   num = parseInt(id.substring(len));
 
         let newId = '';
-        while (newId == '' || checkExists(newId))//nodes.find(n => n.id == newId))
+        while (newId == '' || checkExists(newId))
             newId = id.substring(0, len + join.length) + join + (++num);
 
         return newId;
@@ -2892,9 +2883,7 @@ function getNewNumberId(nodes, checkExists, curId, id = curId, join = '')
         let num   = 2;
         let newId = id + join + num;
 
-        while (checkExists(newId))//nodes.find(n => 
-            //    n.id != curId 
-            // && n.id == newId))
+        while (checkExists(newId))
             newId = id + join + (++num);
 
         return newId;
@@ -4477,6 +4466,15 @@ const NUMBER_LIST_VALUE       = 'NLIST#';
 const   TEXT_LIST_VALUE       = 'TLIST#';
 const  SHAPE_LIST_VALUE       = 'SLIST#';
 
+
+const NULL_NODE               = 'NULL';
+const START                   = 'START';
+const REPEAT                  = 'REPT';
+const CACHE                   = 'CACHE';
+const FREEZE                  = 'FRZ';
+const TIMER                   = 'TIMER';
+
+
 const LIST                    = 'LIST';
 const SUBLIST                 = 'SUBLST';
 const UNIQUE                  = 'UNIQ';
@@ -4488,12 +4486,7 @@ const CONTAINS                = 'LCONT';
 const SELECT                  = 'SEL';
 const IF_ELSE                 = 'IF';
 const FILTER                  = 'LSTFLT';
-const START                   = 'START';
-const REPEAT                  = 'REPT';
 const DEFINE                  = 'DEFINE';  
-const CACHE                   = 'CACHE';
-const FREEZE                  = 'FRZ';
-const TIMER                   = 'TIMER';
 
 
 const ANY_VALUE               = 'ANY#';
@@ -4528,6 +4521,7 @@ const LIST_VALUES =
 
 const FLOW_TYPES =
 [
+    NULL_NODE,
     ...LIST_TYPES,
     SUBLIST,
     UNIQUE,
@@ -14222,8 +14216,6 @@ extends GOperator
         for (const key of this.keys())
         {
             if (this[key] instanceof GValue)
-            //    key.length > 4
-            //    && key.substring(0, 4) == 'item')
                 Object.assign(copy, {[key]: this[key]});
         }
 
@@ -28791,7 +28783,7 @@ extends GAffine
 
     async evalObjects(parse, options)
     {
-        const a = options.angle.toNumber()/360*Tau;
+        const a = options.angle.value/360*Tau;
 
         return await this.evalAffineObjects(
             parse,
@@ -28941,8 +28933,8 @@ extends GAffine
 
     async evalObjects(parse, options)
     {
-        const sx    = options.scaleX.toNumber() / 100;
-        const sy    = options.scaleY.toNumber() / 100;
+        const sx    = options.scaleX.value / 100;
+        const sy    = options.scaleY.value / 100;
 
         const scale = Math.min(sx, sy);
 
@@ -29092,8 +29084,8 @@ extends GAffine
 
     async evalObjects(parse, options)
     {
-        const sx = -options.skewX.toNumber() / 100;
-        const sy = -options.skewY.toNumber() / 100;
+        const sx = -options.skewX.value / 100;
+        const sy = -options.skewY.value / 100;
 
         return await this.evalAffineObjects(
             parse,
@@ -29517,9 +29509,9 @@ extends GOperator
             {
                 transform:  transform,
                 showCenter: showCenter,
-                sp0:        position.objects.length > 0 ? position.objects[0].sp0 : null,
-                sp1:        position.objects.length > 0 ? position.objects[0].sp1 : null,
-                sp2:        position.objects.length > 0 ? position.objects[0].sp2 : null
+                sp0:        position.objects.length > 0 ? addv(p, position.objects[0].sp0) : null,
+                sp1:        position.objects.length > 0 ? addv(p, position.objects[0].sp1) : null,
+                sp2:        position.objects.length > 0 ? addv(p, position.objects[0].sp2) : null
             });
 
         
@@ -29602,8 +29594,9 @@ extends GOperator
     isValid()
     {
         return super.isValid()
-            && this.position .isValid()
-            && this.transform.isValid();
+            && this.position  .isValid()
+            && this.transform .isValid()
+            && this.showCenter.isValid();
     }
 
 
@@ -29619,9 +29612,10 @@ extends GOperator
     {
         super.pushValueUpdates(parse);
 
-        if (this.input    ) this.input    .pushValueUpdates(parse);
-        if (this.position ) this.position .pushValueUpdates(parse);
-        if (this.transform) this.transform.pushValueUpdates(parse);
+        if (this.input     ) this.input     .pushValueUpdates(parse);
+        if (this.position  ) this.position  .pushValueUpdates(parse);
+        if (this.transform ) this.transform .pushValueUpdates(parse);
+        if (this.showCenter) this.showCenter.pushValueUpdates(parse);
     }
 
 
@@ -29630,9 +29624,10 @@ extends GOperator
     {
         super.invalidateInputs(from);
 
-        if (this.input    ) this.input    .invalidateInputs(from);
-        if (this.position ) this.position .invalidateInputs(from);
-        if (this.transform) this.transform.invalidateInputs(from);
+        if (this.input     ) this.input     .invalidateInputs(from);
+        if (this.position  ) this.position  .invalidateInputs(from);
+        if (this.transform ) this.transform .invalidateInputs(from);
+        if (this.showCenter) this.showCenter.invalidateInputs(from);
     }
 }
 

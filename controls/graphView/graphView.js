@@ -253,8 +253,6 @@ class GraphView
 
     placeNewNode(node)
     {
-        //console.log('GraphView.placeNewNode()');
-
         const nodeRect = boundingRect(node.div);
         
         const btn = node._creatingButton;

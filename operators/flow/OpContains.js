@@ -13,7 +13,7 @@ extends OperatorBase
         super(CONTAINS, 'contains', 'contains', iconContains);
 
         this.canDisable  = true;
-        //this.iconOffsetY = -1;
+        this.iconOffsetY = 1;
         
 
         this.addInput (new Input(LIST_VALUES));

@@ -24,8 +24,6 @@ extends GOperator
         for (const key of this.keys())
         {
             if (this[key] instanceof GValue)
-            //    key.length > 4
-            //    && key.substring(0, 4) == 'item')
                 Object.assign(copy, {[key]: this[key]});
         }
 

@@ -16,6 +16,7 @@ class MenuItem
     childMenu     = null;
 
     separator     = false;
+    createType    = '';
 
     selectOnDrag  = false;
 
@@ -74,6 +75,7 @@ class MenuItem
         if (options.enabled       != undefined) this.enabled       = options.enabled;
         if (options.setting       != undefined) this.isSetting     = options.setting;
         if (options.disambiguate  != undefined) this.disambiguate  = options.disambiguate;
+        if (options.createType    != undefined) this.createType    = options.createType;
     }
 
 

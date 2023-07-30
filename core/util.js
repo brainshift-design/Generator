@@ -233,15 +233,6 @@ function osCtrlShift(plus = true) { return isMac ? osShift(plus) + osCtrl(plus) 
 
 function getCreateNodeAction(type, creatingButton, options)
 {
-    //let node = 
-    //createNode(type);
-
-    // if (isEmpty(node.headerOutputs))
-    //     options.autoConnect = true;
-
-    //node = null;
-
-
     return  options.insert != undefined
         &&  options.insert
         && (    options.autoConnect == undefined
@@ -261,7 +252,7 @@ function simpleIntHash(x)
 
 function getNewNumberId(nodes, checkExists, curId, id = curId, join = '')
 {
-    if (!checkExists(id))//nodes.find(n => n.id == id))
+    if (!checkExists(id))
         return id;
     
 
@@ -273,7 +264,7 @@ function getNewNumberId(nodes, checkExists, curId, id = curId, join = '')
         let   num = parseInt(id.substring(len));
 
         let newId = '';
-        while (newId == '' || checkExists(newId))//nodes.find(n => n.id == newId))
+        while (newId == '' || checkExists(newId))
             newId = id.substring(0, len + join.length) + join + (++num);
 
         return newId;
@@ -284,9 +275,7 @@ function getNewNumberId(nodes, checkExists, curId, id = curId, join = '')
         let num   = 2;
         let newId = id + join + num;
 
-        while (checkExists(newId))//nodes.find(n => 
-            //    n.id != curId 
-            // && n.id == newId))
+        while (checkExists(newId))
             newId = id + join + (++num);
 
         return newId;

@@ -68,10 +68,13 @@ function initSearchBox(query)
 
     for (let i = 0; i < found.length; i++)
     {
-        const item       = found[i];
+        const item = found[i];
+        if (!item.callback) continue;
+        
 
         const result     = createDiv('resultItem');
         const icon       = createDiv('resultIcon')
+        const legend     = createDiv('resultLegend')
 
         result.innerHTML = item.name;
 
@@ -80,10 +83,14 @@ function initSearchBox(query)
             ? item.icon
             : item.icon.replaceAll('white', 'black');
 
+        if (item.createType != '')
+            legend.style.background = rgb2style(rgbFromType(item.createType, true));
+
         result.callback  = item.callback;
 
         result.index     = i;
 
+        result.appendChild(legend);
         result.appendChild(icon);
         
         result.addEventListener('click', e => selectSearchItem(result, e.shiftKey, getCtrlKey(e), e.altKey));

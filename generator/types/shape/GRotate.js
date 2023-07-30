@@ -86,7 +86,7 @@ extends GAffine
 
     async evalObjects(parse, options)
     {
-        const a = options.angle.toNumber()/360*Tau;
+        const a = options.angle.value/360*Tau;
 
         return await this.evalAffineObjects(
             parse,

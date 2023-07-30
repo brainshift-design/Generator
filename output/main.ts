@@ -23,7 +23,7 @@ function noNodeTag(key) { return noTag(key, nodeTag); }
 function noConnTag(key) { return noTag(key, connTag); }
 
 
-const generatorVersion = 172;
+const generatorVersion = 175;
 
 
 const MAX_INT32        = 2147483647;
@@ -1003,6 +1003,15 @@ const NUMBER_LIST_VALUE       = 'NLIST#';
 const   TEXT_LIST_VALUE       = 'TLIST#';
 const  SHAPE_LIST_VALUE       = 'SLIST#';
 
+
+const NULL_NODE               = 'NULL';
+const START                   = 'START';
+const REPEAT                  = 'REPT';
+const CACHE                   = 'CACHE';
+const FREEZE                  = 'FRZ';
+const TIMER                   = 'TIMER';
+
+
 const LIST                    = 'LIST';
 const SUBLIST                 = 'SUBLST';
 const UNIQUE                  = 'UNIQ';
@@ -1014,12 +1023,7 @@ const CONTAINS                = 'LCONT';
 const SELECT                  = 'SEL';
 const IF_ELSE                 = 'IF';
 const FILTER                  = 'LSTFLT';
-const START                   = 'START';
-const REPEAT                  = 'REPT';
 const DEFINE                  = 'DEFINE';  
-const CACHE                   = 'CACHE';
-const FREEZE                  = 'FRZ';
-const TIMER                   = 'TIMER';
 
 
 const ANY_VALUE               = 'ANY#';
@@ -1054,6 +1058,7 @@ const LIST_VALUES =
 
 const FLOW_TYPES =
 [
+    NULL_NODE,
     ...LIST_TYPES,
     SUBLIST,
     UNIQUE,
