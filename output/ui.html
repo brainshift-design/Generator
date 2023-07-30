@@ -90609,7 +90609,8 @@ extends Parameter
         this.controls[0].textbox.style.fontWeight = '500';
 
         this.controls[0].textbox.value = 
-            this.value.isValid()
+                this.value.isValid()
+            && !this.node.isUnknown()
             ?          printNum(this.value.x.value)  
               + ', ' + printNum(this.value.y.value)
             : NAN_DISPLAY;
