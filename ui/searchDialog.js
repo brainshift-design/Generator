@@ -47,11 +47,11 @@ function initSearchBox(query)
             const a = _a.name.toLowerCase().replaceAll(' . . .', '').replaceAll('. . . ', '').replaceAll('...', '');
             const b = _b.name.toLowerCase().replaceAll(' . . .', '').replaceAll('. . . ', '').replaceAll('...', '');
 
-            const ia = a.indexOf(query);
-            const ib = b.indexOf(query);
+            const qa = a.indexOf(query);
+            const qb = b.indexOf(query);
 
-            if (ia < ib) return -1;
-            if (ia > ib) return  1;
+            if (qa < qb) return -1;
+            if (qa > qb) return  1;
 
             if (a < b) return -1;
             if (a > b) return  1;
