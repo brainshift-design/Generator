@@ -1093,7 +1093,7 @@ function layoutSelectedNodes()
     for (let i = 0; i <= maxIndex; i++)
     {
         const colNodes = graphView.selectedNodes.filter(n => n.layoutIndex == i);
-        colNodes.forEach(n => n.div.style.left = x);
+        colNodes.forEach(n => n.newX = x);
 
         x += maxWidth[i];
 
@@ -1102,5 +1102,8 @@ function layoutSelectedNodes()
     }
 
 
-    graphView.updateNodes(graphView.selectedNodes);
+    const positions = graphView.selectedNodes.map(n => point(n.newX, n.div.offsetTop));
+
+
+    actionManager.do(new MoveNodesAction(graphView.selectedNodes.map(n => n.nodeId), positions));
 }

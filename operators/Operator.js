@@ -70,7 +70,9 @@ class Operator
     scrollName         = true;
 
     showActiveArrow    = false;
+
     layoutIndex        = -1;
+    newX               = Number.NaN;
 
     sharpBottomCorners = false;
 
