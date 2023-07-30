@@ -3,6 +3,8 @@ extends OperatorBase
 {
     paramIndex;
 
+    columnLength;
+
 
 
     constructor()
@@ -60,6 +62,7 @@ extends OperatorBase
 
 
         const length = values[paramIds.findIndex(id => id == 'length')];
+        this.columnLength = length.value;
 
         if (length.value > 0)
             this.paramIndex.controls[0].setMax(length.value-1);

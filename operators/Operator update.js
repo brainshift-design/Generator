@@ -257,6 +257,7 @@ Operator.prototype.updateHeaderLabelText = function()
     let suffix;
 
          if (this.type == LIST  ) suffix = '  [ ' + this.inputs.filter(i => !i.isNew).length + ' ]';
+         if (this.type == COLUMN) suffix = '  [ ' + this.columnLength + ' ]';
     else if (this.type == UNIQUE) suffix = '  [ ' + this.paramCounts.value.items.length + ' ]';
     else if (this.type == ITEMS ) suffix = '  [ ' + this.params.length + ' ]';
     else                          suffix = this.cached ? '' : '...';

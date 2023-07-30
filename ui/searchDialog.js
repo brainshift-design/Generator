@@ -44,8 +44,8 @@ function initSearchBox(query)
 
         found.sort((_a, _b) => 
         {
-            const a = _a.name.toLowerCase();
-            const b = _b.name.toLowerCase();
+            const a = _a.name.toLowerCase().replaceAll(' . . .', '').replaceAll('. . . ', '').replaceAll('...', '');
+            const b = _b.name.toLowerCase().replaceAll(' . . .', '').replaceAll('. . . ', '').replaceAll('...', '');
 
             const ia = a.indexOf(query);
             const ib = b.indexOf(query);
@@ -70,7 +70,7 @@ function initSearchBox(query)
     {
         const item = found[i];
         if (!item.callback) continue;
-        
+
 
         const result     = createDiv('resultItem');
         const icon       = createDiv('resultIcon')

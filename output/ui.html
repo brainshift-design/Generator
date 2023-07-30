@@ -96249,6 +96249,7 @@ Operator.prototype.updateHeaderLabelText = function()
     let suffix;
 
          if (this.type == LIST  ) suffix = '  [ ' + this.inputs.filter(i => !i.isNew).length + ' ]';
+         if (this.type == COLUMN) suffix = '  [ ' + this.columnLength + ' ]';
     else if (this.type == UNIQUE) suffix = '  [ ' + this.paramCounts.value.items.length + ' ]';
     else if (this.type == ITEMS ) suffix = '  [ ' + this.params.length + ' ]';
     else                          suffix = this.cached ? '' : '...';
@@ -97140,6 +97141,8 @@ extends OperatorBase
 {
     paramIndex;
 
+    columnLength;
+
 
 
     constructor()
@@ -97197,6 +97200,7 @@ extends OperatorBase
 
 
         const length = values[paramIds.findIndex(id => id == 'length')];
+        this.columnLength = length.value;
 
         if (length.value > 0)
             this.paramIndex.controls[0].setMax(length.value-1);
@@ -118551,8 +118555,8 @@ function initSearchBox(query)
 
         found.sort((_a, _b) => 
         {
-            const a = _a.name.toLowerCase();
-            const b = _b.name.toLowerCase();
+            const a = _a.name.toLowerCase().replaceAll(' . . .', '').replaceAll('. . . ', '').replaceAll('...', '');
+            const b = _b.name.toLowerCase().replaceAll(' . . .', '').replaceAll('. . . ', '').replaceAll('...', '');
 
             const ia = a.indexOf(query);
             const ib = b.indexOf(query);
@@ -118577,7 +118581,7 @@ function initSearchBox(query)
     {
         const item = found[i];
         if (!item.callback) continue;
-        
+
 
         const result     = createDiv('resultItem');
         const icon       = createDiv('resultIcon')
