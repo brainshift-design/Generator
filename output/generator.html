@@ -36158,6 +36158,7 @@ function genParse(parse, inParam = true)
           || parse.next ==   TEXT_LIST_VALUE             
           || parse.next ==  SHAPE_LIST_VALUE      ) result = genParseListValue        (parse);
  
+    else if (parse.next == NULL_NODE              ) result = genParseNull             (parse);
     else if (parse.next == LIST                   ) result = genParseList             (parse);
     else if (parse.next == SUBLIST                ) result = genParseSublist          (parse);
     else if (parse.next == UNIQUE                 ) result = genParseUnique           (parse);
