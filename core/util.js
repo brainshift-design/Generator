@@ -475,3 +475,11 @@ function getEditDistance(str1, str2)
     
     return current;
 }
+
+
+
+function skipRandom(count)
+{
+    for (let i = 0; i < count; i++) 
+        Math.random();
+}

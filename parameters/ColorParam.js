@@ -108,10 +108,11 @@ extends Parameter
                     || colorName == 'random'
                     || getEditDistance(colorName, 'random') <= LD)
                 {
-                    rgb = [
-                        Math.random(), 
-                        Math.random(), 
-                        Math.random()];
+                    skipRandom(Date.now() % 10);  const r = Math.random();
+                    skipRandom(Date.now() % 10);  const g = Math.random();
+                    skipRandom(Date.now() % 10);  const b = Math.random();
+
+                    rgb = [r, g, b];
                 }
                 else
                 {
