@@ -418,6 +418,10 @@ const RESET_XFORM          = 'RSTX';
 const PLACE                = 'PLACE';
 const SHAPE_APPLY          = 'APPLY';
   
+const MEASURE_POINTS       = 'MESPT';
+const INTERPOLATE_POINT    = 'PTLERP';
+const POINT_ON_PATH        = 'PONPT';
+
 
 const BOOLEAN              = 'BOOL';
 const BOOLEAN_VALUE        = 'BOOL#';

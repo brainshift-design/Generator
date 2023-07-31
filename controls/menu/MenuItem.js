@@ -32,6 +32,7 @@ class MenuItem
     div;
     divHighlight;
 
+    divLegend;
     divCheck;
     divIcon;
     divName;
@@ -85,6 +86,7 @@ class MenuItem
         this.div          = createDiv('menuItem' + (this.disambiguate ? ' disambiguate' : ''));
         this.divHighlight = createDiv('menuItemHighlight');
 
+        this.divLegend    = createDiv('menuItemLegend'   );
         this.divCheck     = createDiv('menuItemCheck'    );
         this.divIcon      = createDiv('menuItemIcon'     );
         this.divName      = createDiv('menuItemName'     );
@@ -117,15 +119,19 @@ class MenuItem
         {
             this.div.appendChild(this.divHighlight);
 
-            this.div.appendChild(this.divCheck);
-            this.div.appendChild(this.divIcon );
+            this.div.appendChild(this.divLegend   );
+            this.div.appendChild(this.divCheck    );
+            this.div.appendChild(this.divIcon     );
 
-            this.div.appendChild(this.divName    );
-            this.div.appendChild(this.divExpand  );
-            this.div.appendChild(this.divShortcut);
+            this.div.appendChild(this.divName     );
+            this.div.appendChild(this.divExpand   );
+            this.div.appendChild(this.divShortcut );
         }
         else
             this.div.appendChild(this.divSeparator);
+
+
+        this.updateLegend();
 
 
 
@@ -283,6 +289,9 @@ class MenuItem
             this.enteredDiv    = false;
             this.enteredExpand = false;
         });
+
+
+        this.update();
     }
 
 
@@ -305,6 +314,17 @@ class MenuItem
         }
         else
             this.divIcon.style.background         = 'transparent';
+    }
+
+
+
+    updateLegend()
+    {
+        this.divLegend.style.background = 
+               this.createType != ''
+            && settings.showColorLegendInMenus
+            ?  rgb2style(rgbFromType(this.createType, true))
+            : 'transparent';
     }
 
 
@@ -394,5 +414,7 @@ class MenuItem
 
         this.divCheck.style.visibility = this.checked ? 'visible' : 'hidden';
         this.div     .style.opacity    = this.enabled ? '100%'    : '40%';
+
+        this.updateLegend();
     }
 }

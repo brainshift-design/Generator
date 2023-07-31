@@ -45,6 +45,7 @@ async function uiReturnFigGetLocalData(msg)
         case 'showPages':
         case 'showNodeIcons':
         case 'showBoolValues':
+        case 'showColorLegendInMenus':
         case 'showOperationResults':
         case 'showClearUndoWarning':
         case 'showDebugMenu':
@@ -82,6 +83,7 @@ async function uiReturnFigGetLocalData(msg)
 
         case 'logRawRequests':   
         case 'logRawValues':     
+            console.log('%s = %s', msg.key, msg.value);
             updateSettingAndMenu(
                 msg.key, 
                 msg.value, 

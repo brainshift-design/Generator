@@ -62,7 +62,7 @@ extends GOperator1
         let list = new ListValue();
 
 
-        for (let key in json)
+        for (const key of json)
         {
             if (   typeof json[key] === 'object'
                 && json[key] !== null)

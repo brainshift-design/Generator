@@ -4,6 +4,8 @@ var searchIndex = -1;
 
 function showSearchBox()
 {
+    hideAllMenus();
+    
     search.style.display = 'block';
 
     searchIcon.innerHTML = iconSearch;

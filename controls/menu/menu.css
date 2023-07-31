@@ -131,6 +131,7 @@
     height:      auto;
     font-family: Inter;
     font-size:   12px;
+    position:    relative;
     /* box-shadow:  0 0 0 1px red inset; */
 }
 
@@ -142,6 +143,20 @@
     /* width:    100%; */
     height:   25px;
 }
+
+
+.menuItemLegend
+{
+    display:             block;
+    position:            absolute;
+    width:               2px;
+    height:              12px;
+    left:                1px;
+    top:                 50%;
+    transform:           translateY(-50%);
+    background:          transparent;
+}
+
 
 
 .menuItemCheck

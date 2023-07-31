@@ -2896,6 +2896,7 @@ a
     height:      auto;
     font-family: Inter;
     font-size:   12px;
+    position:    relative;
     /* box-shadow:  0 0 0 1px red inset; */
 }
 
@@ -2907,6 +2908,20 @@ a
     /* width:    100%; */
     height:   25px;
 }
+
+
+.menuItemLegend
+{
+    display:             block;
+    position:            absolute;
+    width:               2px;
+    height:              12px;
+    left:                1px;
+    top:                 50%;
+    transform:           translateY(-50%);
+    background:          transparent;
+}
+
 
 
 .menuItemCheck
@@ -9182,6 +9197,7 @@ const settings =
     showAllColorSpaces:            false,
     showNodeIcons:                 true,
     showBoolValues:                true,
+    showColorLegendInMenus:        false,
     showOperationResults:          false,
     showClearUndoWarning:          true,
     showDebugMenu:                 false,
@@ -9238,6 +9254,7 @@ function updateSetting(settingName, value)
         case 'showAllColorSpaces':            settings.showAllColorSpaces            = value;  break;
         case 'showNodeIcons':                 settings.showNodeIcons                 = value;  break;
         case 'showBoolValues':                settings.showBoolValues                = value;  break;
+        case 'showColorLegendInMenus':        settings.showColorLegendInMenus        = value;  break;
         case 'showOperationResults':          settings.showOperationResults          = value;  break;
         case 'showClearUndoWarning':          settings.showClearUndoWarning          = value;  break;
         case 'showDebugMenu':                 settings.showDebugMenu                 = value;  break;
@@ -9293,6 +9310,7 @@ function updateSettingAndMenu(settingName, valid, value, save = true)
         case 'showAllColorSpaces':            updateSettingAndMenu_(valid, settingName, value, menuItemShowAllColorSpaces           ); break;
         case 'showNodeIcons':                 updateSettingAndMenu_(valid, settingName, value, menuItemShowNodeIcons                ); break;
         case 'showBoolValues':                updateSettingAndMenu_(valid, settingName, value, menuItemShowBoolValues               ); break;
+        case 'showColorLegendInMenus':        updateSettingAndMenu_(valid, settingName, value, menuItemShowColorLegendInMenus       ); break;
         case 'showOperationResults':          updateSettingAndMenu_(valid, settingName, value, menuItemShowOperationResults         ); break;
         case 'showClearUndoWarning':          updateSettingAndMenu_(valid, settingName, value, menuItemShowClearUndoWarning         ); break;
         case 'showDebugMenu':                 updateSettingAndMenu_(valid, settingName, value, menuItemShowDebugMenu                ); break;
@@ -9371,6 +9389,7 @@ function updateSettingsMenus()
     menuItemShowAllColorSpaces           .setChecked(settings.showAllColorSpaces           );
     menuItemShowNodeIcons                .setChecked(settings.showNodeIcons                );
     menuItemShowBoolValues               .setChecked(settings.showBoolValues               );
+    menuItemShowColorLegendInMenus       .setChecked(settings.showColorLegendInMenus       );
     menuItemShowOperationResults         .setChecked(settings.showOperationResults         );
     menuItemShowClearUndoWarning         .setChecked(settings.showClearUndoWarning         );
     menuItemShowDebugMenu                .setChecked(settings.showDebugMenu                );
@@ -9448,6 +9467,14 @@ function updateMenuItemShowBoolValues()
             ||         AFFINE_TYPES.includes(n.type)
             || n.type == IF_ELSE)
         .forEach(n => n.updateNode());
+}
+
+
+
+function updateMenuItemShowColorLegendInMenus()
+{
+    for (const menu of menuBarMenus)
+        menu.items.forEach(i => i.updateLegend());
 }
 
 
@@ -9548,6 +9575,7 @@ function loadLocalSettings()
     uiGetLocalData('minZoomForParams'             );
     uiGetLocalData('showNodeIcons'                );
     uiGetLocalData('showBoolValues'               );
+    uiGetLocalData('showColorLegendInMenus'       );
     uiGetLocalData('showPages'                    );
     uiGetLocalData('showOperationResults'         );
     uiGetLocalData('showClearUndoWarning'         );
@@ -10011,6 +10039,10 @@ const RESET_XFORM          = 'RSTX';
 const PLACE                = 'PLACE';
 const SHAPE_APPLY          = 'APPLY';
   
+const MEASURE_POINTS       = 'MESPT';
+const INTERPOLATE_POINT    = 'PTLERP';
+const POINT_ON_PATH        = 'PONPT';
+
 
 const BOOLEAN              = 'BOOL';
 const BOOLEAN_VALUE        = 'BOOL#';
@@ -26551,7 +26583,7 @@ extends GOperator1
         let list = new ListValue();
 
 
-        for (let key in json)
+        for (const key of json)
         {
             if (   typeof json[key] === 'object'
                 && json[key] !== null)
@@ -51799,6 +51831,10 @@ const RESET_XFORM          = 'RSTX';
 const PLACE                = 'PLACE';
 const SHAPE_APPLY          = 'APPLY';
   
+const MEASURE_POINTS       = 'MESPT';
+const INTERPOLATE_POINT    = 'PTLERP';
+const POINT_ON_PATH        = 'PONPT';
+
 
 const BOOLEAN              = 'BOOL';
 const BOOLEAN_VALUE        = 'BOOL#';
@@ -68339,7 +68375,7 @@ extends GOperator1
         let list = new ListValue();
 
 
-        for (let key in json)
+        for (const key of json)
         {
             if (   typeof json[key] === 'object'
                 && json[key] !== null)
@@ -76890,6 +76926,7 @@ const settings =
     showAllColorSpaces:            false,
     showNodeIcons:                 true,
     showBoolValues:                true,
+    showColorLegendInMenus:        false,
     showOperationResults:          false,
     showClearUndoWarning:          true,
     showDebugMenu:                 false,
@@ -76946,6 +76983,7 @@ function updateSetting(settingName, value)
         case 'showAllColorSpaces':            settings.showAllColorSpaces            = value;  break;
         case 'showNodeIcons':                 settings.showNodeIcons                 = value;  break;
         case 'showBoolValues':                settings.showBoolValues                = value;  break;
+        case 'showColorLegendInMenus':        settings.showColorLegendInMenus        = value;  break;
         case 'showOperationResults':          settings.showOperationResults          = value;  break;
         case 'showClearUndoWarning':          settings.showClearUndoWarning          = value;  break;
         case 'showDebugMenu':                 settings.showDebugMenu                 = value;  break;
@@ -77001,6 +77039,7 @@ function updateSettingAndMenu(settingName, valid, value, save = true)
         case 'showAllColorSpaces':            updateSettingAndMenu_(valid, settingName, value, menuItemShowAllColorSpaces           ); break;
         case 'showNodeIcons':                 updateSettingAndMenu_(valid, settingName, value, menuItemShowNodeIcons                ); break;
         case 'showBoolValues':                updateSettingAndMenu_(valid, settingName, value, menuItemShowBoolValues               ); break;
+        case 'showColorLegendInMenus':        updateSettingAndMenu_(valid, settingName, value, menuItemShowColorLegendInMenus       ); break;
         case 'showOperationResults':          updateSettingAndMenu_(valid, settingName, value, menuItemShowOperationResults         ); break;
         case 'showClearUndoWarning':          updateSettingAndMenu_(valid, settingName, value, menuItemShowClearUndoWarning         ); break;
         case 'showDebugMenu':                 updateSettingAndMenu_(valid, settingName, value, menuItemShowDebugMenu                ); break;
@@ -77079,6 +77118,7 @@ function updateSettingsMenus()
     menuItemShowAllColorSpaces           .setChecked(settings.showAllColorSpaces           );
     menuItemShowNodeIcons                .setChecked(settings.showNodeIcons                );
     menuItemShowBoolValues               .setChecked(settings.showBoolValues               );
+    menuItemShowColorLegendInMenus       .setChecked(settings.showColorLegendInMenus       );
     menuItemShowOperationResults         .setChecked(settings.showOperationResults         );
     menuItemShowClearUndoWarning         .setChecked(settings.showClearUndoWarning         );
     menuItemShowDebugMenu                .setChecked(settings.showDebugMenu                );
@@ -77156,6 +77196,14 @@ function updateMenuItemShowBoolValues()
             ||         AFFINE_TYPES.includes(n.type)
             || n.type == IF_ELSE)
         .forEach(n => n.updateNode());
+}
+
+
+
+function updateMenuItemShowColorLegendInMenus()
+{
+    for (const menu of menuBarMenus)
+        menu.items.forEach(i => i.updateLegend());
 }
 
 
@@ -77256,6 +77304,7 @@ function loadLocalSettings()
     uiGetLocalData('minZoomForParams'             );
     uiGetLocalData('showNodeIcons'                );
     uiGetLocalData('showBoolValues'               );
+    uiGetLocalData('showColorLegendInMenus'       );
     uiGetLocalData('showPages'                    );
     uiGetLocalData('showOperationResults'         );
     uiGetLocalData('showClearUndoWarning'         );
@@ -81541,6 +81590,9 @@ class Menu
         }
 
 
+        this.items.forEach(i => i.updateLegend());
+
+
         this.divItems.style.width = Math.max(this.minWidth, width) + 'px';
 
         return true;
@@ -81622,7 +81674,7 @@ class Menu
 
         hideSearchBox();
 
-        
+
         this.initMenu();
 
 
@@ -82061,6 +82113,7 @@ class MenuItem
     div;
     divHighlight;
 
+    divLegend;
     divCheck;
     divIcon;
     divName;
@@ -82114,6 +82167,7 @@ class MenuItem
         this.div          = createDiv('menuItem' + (this.disambiguate ? ' disambiguate' : ''));
         this.divHighlight = createDiv('menuItemHighlight');
 
+        this.divLegend    = createDiv('menuItemLegend'   );
         this.divCheck     = createDiv('menuItemCheck'    );
         this.divIcon      = createDiv('menuItemIcon'     );
         this.divName      = createDiv('menuItemName'     );
@@ -82146,15 +82200,19 @@ class MenuItem
         {
             this.div.appendChild(this.divHighlight);
 
-            this.div.appendChild(this.divCheck);
-            this.div.appendChild(this.divIcon );
+            this.div.appendChild(this.divLegend   );
+            this.div.appendChild(this.divCheck    );
+            this.div.appendChild(this.divIcon     );
 
-            this.div.appendChild(this.divName    );
-            this.div.appendChild(this.divExpand  );
-            this.div.appendChild(this.divShortcut);
+            this.div.appendChild(this.divName     );
+            this.div.appendChild(this.divExpand   );
+            this.div.appendChild(this.divShortcut );
         }
         else
             this.div.appendChild(this.divSeparator);
+
+
+        this.updateLegend();
 
 
 
@@ -82312,6 +82370,9 @@ class MenuItem
             this.enteredDiv    = false;
             this.enteredExpand = false;
         });
+
+
+        this.update();
     }
 
 
@@ -82334,6 +82395,17 @@ class MenuItem
         }
         else
             this.divIcon.style.background         = 'transparent';
+    }
+
+
+
+    updateLegend()
+    {
+        this.divLegend.style.background = 
+               this.createType != ''
+            && settings.showColorLegendInMenus
+            ?  rgb2style(rgbFromType(this.createType, true))
+            : 'transparent';
     }
 
 
@@ -82423,6 +82495,8 @@ class MenuItem
 
         this.divCheck.style.visibility = this.checked ? 'visible' : 'hidden';
         this.div     .style.opacity    = this.enabled ? '100%'    : '40%';
+
+        this.updateLegend();
     }
 }
 
@@ -82445,7 +82519,7 @@ var btnPage;
 var btnZoom;
 
 
-var menuBarMenus = [];
+var menuBarMenus;
 
 
 var menuMain;
@@ -82529,6 +82603,7 @@ var menuItemShowPages;
 var menuPrefSep1;
 var menuItemShowAllColorSpaces;
 var menuItemShowNodeIcons;
+var menuItemShowColorLegendInMenus;
 var menuItemShowBoolValues;
 var menuItemShowOperationResults;
 var menuItemShowClearUndoWarning;
@@ -82676,20 +82751,21 @@ function initGeneratorMenus()
 
     menuMainPreferences = new Menu('Preferences', false);
     menuMainPreferences.addItems([
-        // menuItemShowPages            = new MenuItem('Show pages',                    {checkCallback: () => settings.showAllColorSpaces,    callback: () => { updateSettingAndMenu('showPages',            true, !settings.showPages);             updateMenuItemShowPages();            }}),
-        // menuPrefSep1                 = new MenuItem('',                              {separator: true}),    
-        menuItemShowAllColorSpaces   = new MenuItem('Show all color spaces',         {checkCallback: () => settings.showAllColorSpaces,    callback: () => { updateSettingAndMenu('showAllColorSpaces',   true, !settings.showAllColorSpaces);    updateMenuItemShowAllColorSpaces();   }}),
-        menuItemShowOperationResults = new MenuItem('Show operation results',        {checkCallback: () => settings.showOperationResults,  callback: () => { updateSettingAndMenu('showOperationResults', true, !settings.showOperationResults);  updateMenuItemShowOperationResults(); }}),
-        menuItemShowNodeIcons        = new MenuItem('Show node icons',               {checkCallback: () => settings.showNodeIcons,         callback: () => { updateSettingAndMenu('showNodeIcons',        true, !settings.showNodeIcons);         updateMenuItemShowNodeIcons();        }}),
-        menuItemShowBoolValues       = new MenuItem('Show boolean values as   ✓ ✗', {checkCallback: () => settings.showBoolValues,        callback: () => { updateSettingAndMenu('showBoolValues',       true, !settings.showBoolValues);        updateMenuItemShowBoolValues();       }}),
-                                       new MenuItem('',                              {separator: true}),    
-        menuItemShowTooltips         = new MenuItem('Show tooltips',                 {childMenu: menuShowTooltips}),
-        menuItemShowClearUndoWarning = new MenuItem('Show clear undo warning',       {checkCallback: () => settings.showClearUndoWarning,  callback: () => { updateSettingAndMenu('showClearUndoWarning', true, !settings.showClearUndoWarning);                                        }}),
-        menuItemShowDebugMenu        = new MenuItem('Show debug menu',               {checkCallback: () => settings.showDebugMenu,         callback: () => { updateSettingAndMenu('showDebugMenu',        true, !settings.showDebugMenu);         updateMenuItemShowDebugMenu();        }}),
-        menuPrefSep2                 = new MenuItem('',                              {separator: true}),    
-        // menuItemEnableBetaFeatures   = new MenuItem('Enable beta features',          {checkCallback: () => settings.enableBetaFeatures,    callback: () => { updateSettingAndMenu('enableBetaFeatures',   true, !settings.enableBetaFeatures);    enableFeatures(true, settings.enableBetaFeatures); }}),
-        //                                new MenuItem('',                              {separator: true}),    
-        menuItemMinZoomForParams     = new MenuItem('Zoom level for values...',      {callback: () => showMinZoomDialog()})]);
+        // menuItemShowPages           = new MenuItem('Show pages',                    {checkCallback: () => settings.showAllColorSpaces,     callback: () => { updateSettingAndMenu('showPages',              true, !settings.showPages);              updateMenuItemShowPages();              }}),
+        // menuPrefSep1                = new MenuItem('',                              {separator: true}),    
+        menuItemShowAllColorSpaces     = new MenuItem('Show all color spaces',         {checkCallback: () => settings.showAllColorSpaces,     callback: () => { updateSettingAndMenu('showAllColorSpaces',     true, !settings.showAllColorSpaces);     updateMenuItemShowAllColorSpaces();     }}),
+        menuItemShowOperationResults   = new MenuItem('Show operation results',        {checkCallback: () => settings.showOperationResults,   callback: () => { updateSettingAndMenu('showOperationResults',   true, !settings.showOperationResults);   updateMenuItemShowOperationResults();   }}),
+        menuItemShowNodeIcons          = new MenuItem('Show node icons',               {checkCallback: () => settings.showNodeIcons,          callback: () => { updateSettingAndMenu('showNodeIcons',          true, !settings.showNodeIcons);          updateMenuItemShowNodeIcons();          }}),
+        menuItemShowBoolValues         = new MenuItem('Show boolean values as   ✓ ✗', {checkCallback: () => settings.showBoolValues,         callback: () => { updateSettingAndMenu('showBoolValues',         true, !settings.showBoolValues);         updateMenuItemShowBoolValues();         }}),
+        menuItemShowColorLegendInMenus = new MenuItem('Show color legend in menus',    {checkCallback: () => settings.showColorLegendInMenus, callback: () => { updateSettingAndMenu('showColorLegendInMenus', true, !settings.showColorLegendInMenus); updateMenuItemShowColorLegendInMenus(); }}),
+                                         new MenuItem('',                              {separator: true}),    
+        menuItemShowTooltips           = new MenuItem('Show tooltips',                 {childMenu: menuShowTooltips}),
+        menuItemShowClearUndoWarning   = new MenuItem('Show clear undo warning',       {checkCallback: () => settings.showClearUndoWarning,   callback: () => { updateSettingAndMenu('showClearUndoWarning',   true, !settings.showClearUndoWarning);                                           }}),
+        menuItemShowDebugMenu          = new MenuItem('Show debug menu',               {checkCallback: () => settings.showDebugMenu,          callback: () => { updateSettingAndMenu('showDebugMenu',          true, !settings.showDebugMenu);          updateMenuItemShowDebugMenu();          }}),
+        menuPrefSep2                   = new MenuItem('',                              {separator: true}),    
+        // menuItemEnableBetaFeatures  = new MenuItem('Enable beta features',          {checkCallback: () => settings.enableBetaFeatures,     callback: () => { updateSettingAndMenu('enableBetaFeatures',     true, !settings.enableBetaFeatures);     enableFeatures(true, settings.enableBetaFeatures); }}),
+        //                               new MenuItem('',                              {separator: true}),    
+        menuItemMinZoomForParams       = new MenuItem('Zoom level for values...',      {callback: () => showMinZoomDialog()})]);
         
 
     menuItemShowBoolValues.divName.innerHTML = 'Show boolean values as   <span style="position: relative; top: 1px;">' + TRUE_DISPLAY_MENU + '</span>  <span>' + FALSE_DISPLAY_MENU + '</span>'
@@ -118893,6 +118969,8 @@ var searchIndex = -1;
 
 function showSearchBox()
 {
+    hideAllMenus();
+    
     search.style.display = 'block';
 
     searchIcon.innerHTML = iconSearch;
@@ -119282,6 +119360,7 @@ async function uiReturnFigGetLocalData(msg)
         case 'showPages':
         case 'showNodeIcons':
         case 'showBoolValues':
+        case 'showColorLegendInMenus':
         case 'showOperationResults':
         case 'showClearUndoWarning':
         case 'showDebugMenu':
@@ -119319,6 +119398,7 @@ async function uiReturnFigGetLocalData(msg)
 
         case 'logRawRequests':   
         case 'logRawValues':     
+            console.log('%s = %s', msg.key, msg.value);
             updateSettingAndMenu(
                 msg.key, 
                 msg.value, 

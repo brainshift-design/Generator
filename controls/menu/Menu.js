@@ -148,6 +148,9 @@ class Menu
         }
 
 
+        this.items.forEach(i => i.updateLegend());
+
+
         this.divItems.style.width = Math.max(this.minWidth, width) + 'px';
 
         return true;
@@ -229,7 +232,7 @@ class Menu
 
         hideSearchBox();
 
-        
+
         this.initMenu();
 
 
