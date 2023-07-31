@@ -37,7 +37,8 @@ function initSearchBox(query)
         {
             for (const item of menu.items)
             {
-                if (item.name.toLowerCase().includes(query.toLowerCase()))
+                if (   item.name.toLowerCase().includes(query.toLowerCase())
+                    && item.callback)
                     found.push(item);
             }
         }
@@ -68,13 +69,12 @@ function initSearchBox(query)
 
     for (let i = 0; i < found.length; i++)
     {
-        const item = found[i];
-        if (!item.callback) continue;
+        const item   = found[i];
 
+        const result = createDiv('resultItem');
+        const icon   = createDiv('resultIcon')
+        const legend = createDiv('resultLegend')
 
-        const result     = createDiv('resultItem');
-        const icon       = createDiv('resultIcon')
-        const legend     = createDiv('resultLegend')
 
         result.innerHTML = item.name;
 
