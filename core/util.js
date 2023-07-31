@@ -375,3 +375,103 @@ function unescapeString(str)
         return replacements[char] || match;
     });
 }
+
+
+
+function getEditDistance(str1, str2)
+{
+    // calculate the Levenshtein distance between two strings
+    // implementation taken from http://blog.softwx.net/2014/12/optimizing-levenshtein-algorithm-in-c.html
+
+    // TODO replace with Damerau-Levenshtein
+
+    if (str1.length == 0) return str2.length;
+    if (str2.length == 0) return str1.length;
+
+    // make sure str1 is the shorter string
+
+    if (str1.length > str2.length)
+    {
+        const _str = str1;
+        str1 = str2;
+        str2 = _str;
+    } 
+
+    let len1 = str1.length; // min length of the two strings
+    let len2 = str2.length;
+
+    // suffix common to both strings can be ignored
+
+    while (len1 > 0 
+        && str1[len1 - 1] == str2[len2 - 1])
+    {
+        len1--; 
+        len2--; 
+    }
+
+    let start = 0;
+
+    // if there's a shared prefix or str1 == str2's suffix
+
+    if (str1[0] == str2[0])
+    {
+        while (start < len1 
+            && str1[start] == str2[start]) 
+            start++;
+
+        len1 -= start; // length of the part excluding common prefix and suffix
+        len2 -= start;
+
+        // if str1 == prefix and/or suffix of str2, 
+        // edit distance is just the number of additional characters in str2
+
+        if (len1 == 0) return len2;
+
+        str2 = str2.substring(start, len2); // faster than str2[start + j] in inner loop below
+    }
+
+    //
+
+    let v0 = [];
+    
+    for (let j = 0; j < len2; j++) 
+        v0.push(j + 1);
+
+    //
+
+    let current = 0;
+
+    for (let i = 0; i < len1; i++)
+    {
+        const c = str1[start + i];
+
+        let left = current = i;
+
+        for (let j = 0; j < len2; j++)
+        {
+            const above = current;
+           
+            current = left; // cost on diagonal (substitution)
+            left = v0[j];
+
+            if (c != str2[j])
+            {
+                current++; // substitution
+
+                let insDel = above + 1; // deletion
+
+                if (insDel < current) 
+                    current = insDel;
+
+                insDel = left + 1; // insertion
+
+                if (insDel < current) 
+                    current = insDel;
+            }
+
+            v0[j] = current;
+        }
+    }
+    
+    return current;
+}

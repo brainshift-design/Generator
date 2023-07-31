@@ -100,14 +100,13 @@ extends Parameter
             if (   e.detail.value.trim() != ''
                 && e.detail.value != e.detail.oldValue)
             {
+                const LD = 2; // levenshtein distance
+
                 const colorName = e.detail.value.toLowerCase();
 
                 if (   colorName == 'rnd'
-                    || colorName == 'rndo'
-                    || colorName == 'rndom'
-                    || colorName == 'rand'
-                    || colorName == 'rando'
-                    || colorName == 'random')
+                    || colorName == 'random'
+                    || getEditDistance(colorName, 'random') <= LD)
                 {
                     rgb = [
                         Math.random(), 
@@ -116,7 +115,9 @@ extends Parameter
                 }
                 else
                 {
-                    const webColor = webColors.find(wc => wc.name.toLowerCase() == colorName);
+                               let webColor = webColors.find(wc => wc.name.toLowerCase() == colorName);
+                    if (!webColor) webColor = webColors.find(wc => getEditDistance(wc.name.toLowerCase(), colorName) <= LD);
+                    
                     if (webColor) e.detail.value = webColor.color;
 
                     rgb = validHex2rgb(e.detail.value);
