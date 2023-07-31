@@ -29183,9 +29183,9 @@ extends GOperator1
     {
         return this.options.enabled
             ? new FillValue(
-                this.color   ? this.color  .toValue() : this.input.color  .toValue(),
-                this.opacity ? this.opacity.toValue() : this.input.opacity.toValue(),
-                this.blend   ? this.blend  .toValue() : this.input.blend  .toValue())
+                this.color   ? this.color  .toValue() : this.input.value.color  .toValue(),
+                this.opacity ? this.opacity.toValue() : this.input.value.opacity.toValue(),
+                this.blend   ? this.blend  .toValue() : this.input.value.blend  .toValue())
             : FillValue.NaN;
     }
 
@@ -71082,9 +71082,9 @@ extends GOperator1
     {
         return this.options.enabled
             ? new FillValue(
-                this.color   ? this.color  .toValue() : this.input.color  .toValue(),
-                this.opacity ? this.opacity.toValue() : this.input.opacity.toValue(),
-                this.blend   ? this.blend  .toValue() : this.input.blend  .toValue())
+                this.color   ? this.color  .toValue() : this.input.value.color  .toValue(),
+                this.opacity ? this.opacity.toValue() : this.input.value.opacity.toValue(),
+                this.blend   ? this.blend  .toValue() : this.input.value.blend  .toValue())
             : FillValue.NaN;
     }
 
@@ -107674,6 +107674,8 @@ extends OpColorBase
         this.addParam(this.paramBlend   = new SelectParam('blend',   'blend',   false, true, true, BlendModes.map(bm => bm[1]), 0));
 
 
+        this.paramColor.isNodeValue = true;
+
         this.paramOpacity.controls[0].suffix = '%';
 
         this.paramOpacity.divider = 0.54;
@@ -107961,9 +107963,9 @@ extends OpColorBase
               !this.inputs[0].connected
             || this.inputs[0].connectedOutput.supportsTypes(SHAPE_TYPES);
 
-        this.paramColor  .enableControlText(enable);
-        this.paramOpacity.enableControlText(enable);
-        this.paramBlend  .enableControlText(enable);
+        this.paramColor  .enableControlText(enable, !this.isUnknown());
+        this.paramOpacity.enableControlText(enable, !this.paramOpacity.isUnknown());
+        this.paramBlend  .enableControlText(enable, !this.paramBlend  .isUnknown());
 
         this.updateParamControls();
     }
@@ -119187,7 +119189,7 @@ var searchIndex = -1;
 function showSearchBox()
 {
     hideAllMenus();
-    
+
     search.style.display = 'block';
 
     searchIcon.innerHTML = iconSearch;
@@ -119377,7 +119379,7 @@ searchText.addEventListener('keydown', e =>
     }
 
     else if (e.code == 'Enter')
-        searchItems.children[searchIndex].click();
+        selectSearchItem(searchItems.children[searchIndex], e.shiftKey, getCtrlKey(e), e.altKey)
 });
 
 
@@ -119615,7 +119617,6 @@ async function uiReturnFigGetLocalData(msg)
 
         case 'logRawRequests':   
         case 'logRawValues':     
-            console.log('%s = %s', msg.key, msg.value);
             updateSettingAndMenu(
                 msg.key, 
                 msg.value, 

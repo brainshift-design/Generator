@@ -5,7 +5,7 @@ var searchIndex = -1;
 function showSearchBox()
 {
     hideAllMenus();
-    
+
     search.style.display = 'block';
 
     searchIcon.innerHTML = iconSearch;
@@ -195,7 +195,7 @@ searchText.addEventListener('keydown', e =>
     }
 
     else if (e.code == 'Enter')
-        searchItems.children[searchIndex].click();
+        selectSearchItem(searchItems.children[searchIndex], e.shiftKey, getCtrlKey(e), e.altKey)
 });
 
 

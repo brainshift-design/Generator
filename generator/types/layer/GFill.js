@@ -72,9 +72,9 @@ extends GOperator1
     {
         return this.options.enabled
             ? new FillValue(
-                this.color   ? this.color  .toValue() : this.input.color  .toValue(),
-                this.opacity ? this.opacity.toValue() : this.input.opacity.toValue(),
-                this.blend   ? this.blend  .toValue() : this.input.blend  .toValue())
+                this.color   ? this.color  .toValue() : this.input.value.color  .toValue(),
+                this.opacity ? this.opacity.toValue() : this.input.value.opacity.toValue(),
+                this.blend   ? this.blend  .toValue() : this.input.value.blend  .toValue())
             : FillValue.NaN;
     }
 

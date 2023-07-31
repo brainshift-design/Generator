@@ -39,6 +39,8 @@ extends OpColorBase
         this.addParam(this.paramBlend   = new SelectParam('blend',   'blend',   false, true, true, BlendModes.map(bm => bm[1]), 0));
 
 
+        this.paramColor.isNodeValue = true;
+
         this.paramOpacity.controls[0].suffix = '%';
 
         this.paramOpacity.divider = 0.54;
@@ -326,9 +328,9 @@ extends OpColorBase
               !this.inputs[0].connected
             || this.inputs[0].connectedOutput.supportsTypes(SHAPE_TYPES);
 
-        this.paramColor  .enableControlText(enable);
-        this.paramOpacity.enableControlText(enable);
-        this.paramBlend  .enableControlText(enable);
+        this.paramColor  .enableControlText(enable, !this.isUnknown());
+        this.paramOpacity.enableControlText(enable, !this.paramOpacity.isUnknown());
+        this.paramBlend  .enableControlText(enable, !this.paramBlend  .isUnknown());
 
         this.updateParamControls();
     }
