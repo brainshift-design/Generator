@@ -65,6 +65,13 @@
 ../generator/types/values/FrameValue.js
 
 
+../generator/types/flow/GStart.js
+../generator/types/flow/GRepeat.js
+../generator/types/flow/GNull.js
+../generator/types/flow/GCache.js
+../generator/types/flow/GFreeze.js
+../generator/types/flow/GTimer.js
+
 ../generator/types/flow/GList.js
 ../generator/types/flow/GSublist.js
 ../generator/types/flow/GUnique.js
@@ -75,11 +82,6 @@
 ../generator/types/flow/GListCount.js
 ../generator/types/flow/GContains.js
 ../generator/types/flow/GIfElse.js
-../generator/types/flow/GStart.js
-../generator/types/flow/GRepeat.js
-../generator/types/flow/GCache.js
-../generator/types/flow/GFreeze.js
-../generator/types/flow/GTimer.js
 
 
 ../generator/types/number/GNumberType.js

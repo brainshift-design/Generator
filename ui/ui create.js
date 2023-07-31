@@ -4,22 +4,31 @@ function createNode(nodeType, creatingButton = null, createdNodeId = -1, options
  
     switch (nodeType)
     {
+        case NULL_NODE:               node = new OpNull();              break;
+        case START:                   node = new OpStart();             break;
+        case REPEAT:                  node = new OpRepeat();            break;
+        case CACHE:                   node = new OpCache();             break;
+        case FREEZE:                  node = new OpFreeze();            break;
+        case TIMER:                   node = new OpTimer();             break;
+
         case LIST:                    node = new OpList();              break;
+        case ITEMS:                   node = new OpItems();             break;
+        case LIST_COUNT:              node = new OpListCount();         break;
+        case SELECT:                  node = new OpSelect();            break;
+        case CONTAINS:                node = new OpContains();          break;
+        case IF_ELSE:                 node = new OpIfElse();            break;
         case SUBLIST:                 node = new OpSublist();           break;
         case UNIQUE:                  node = new OpUnique();            break;
         case COLUMN:                  node = new OpColumn();            break;
         case CELL:                    node = new OpCell();              break;
-        case ITEMS:                   node = new OpItems();             break;
-        case SELECT:                  node = new OpSelect();            break;
-        case LIST_COUNT:              node = new OpListCount();         break;
-        case CONTAINS:                node = new OpContains();          break;
-        case IF_ELSE:                 node = new OpIfElse();            break;
-        case START:                   node = new OpStart();             break;
-        case REPEAT:                  node = new OpRepeat();            break;
-        case CACHE:                   node = new OpCache();             break;
+        
         case DEFINE:                  node = new OpDefine();            break;
-        case FREEZE:                  node = new OpFreeze();            break;
-        case TIMER:                   node = new OpTimer();             break;
+        case NUMBER_DISTRIBUTE:       node = new OpDistribute();        break;
+        case NUMBER_SEQUENCE:         node = new OpSequence();          break;
+        case NUMBER_RANDOM:           node = new OpRandom();            break;
+        case NUMBER_NOISE:            node = new OpNoise();             break;
+        case NUMBER_PROBABILITY:      node = new OpProbability();       break;
+        case NUMBER_ACCUMULATE:       node = new OpAccumulate();        break;
 
         case NUMBER:                  node = new OpNumber();            break;
         case NUMBER_SIGN:             node = new OpSign();              break;
@@ -29,13 +38,6 @@ function createNode(nodeType, creatingButton = null, createdNodeId = -1, options
         case NUMBER_LIMITS:           node = new OpLimits();            break;
         case NUMBER_CONSTANT:         node = new OpConstant();          break;
         case NUMBER_DATETIME:         node = new OpDateTime();          break;
-        
-        case NUMBER_DISTRIBUTE:       node = new OpDistribute();        break;
-        case NUMBER_SEQUENCE:         node = new OpSequence();          break;
-        case NUMBER_RANDOM:           node = new OpRandom();            break;
-        case NUMBER_NOISE:            node = new OpNoise();             break;
-        case NUMBER_PROBABILITY:      node = new OpProbability();       break;
-        case NUMBER_ACCUMULATE:       node = new OpAccumulate();        break;
 
         case NUMBER_INTERPOLATE:      node = new OpInterpolate();       break;
         case NUMBER_TO_TEXT:          node = new OpNumberToText();      break;

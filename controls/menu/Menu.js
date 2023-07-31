@@ -227,7 +227,9 @@ class Menu
         if (hidePrev)
             hideAllMenus();
 
+        hideSearchBox();
 
+        
         this.initMenu();
 
 

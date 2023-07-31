@@ -132,6 +132,7 @@ var menuItemStart;
 var menuItemRepeat;
 var menuFlowSep4;
 var menuItemTimer;
+var menuItemNull;
 var menuItemCache;
 var menuItemFreeze;
 
@@ -389,6 +390,7 @@ function initGeneratorMenus()
         menuItemStart   = new MenuItem('Start. . .',   {icon: iconStart,     createType: START,            callback: e => actionManager.do(getCreateNodeAction(START,           btnFlow.div, getCreateOptions(e)))}),
         menuItemRepeat  = new MenuItem('. . . Repeat', {icon: iconRepeat,    createType: REPEAT,           callback: e => actionManager.do(getCreateNodeAction(REPEAT,          btnFlow.div, getCreateOptions(e)))}),
                           new MenuItem('',             {separator: true}),
+        menuItemNull    = new MenuItem('Null',         {icon: iconNull,      createType: NULL_NODE,        callback: e => actionManager.do(getCreateNodeAction(NULL_NODE,       btnFlow.div, getCreateOptions(e)))}),
         menuItemCache   = new MenuItem('Cache',        {icon: iconCache,     createType: CACHE,            callback: e => actionManager.do(getCreateNodeAction(CACHE,           btnFlow.div, getCreateOptions(e)))}),
         menuItemFreeze  = new MenuItem('Freeze . . .', {icon: iconFreeze,    createType: FREEZE,           callback: e => actionManager.do(getCreateNodeAction(FREEZE,          btnFlow.div, getCreateOptions(e)))}),
                           new MenuItem('',             {separator: true}),

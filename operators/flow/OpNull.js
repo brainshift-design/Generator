@@ -5,8 +5,7 @@ extends OperatorBase
     {
         super(NULL_NODE, 'null', 'null', iconNull);
 
-        // this.iconOffsetY = 1;
-        this.cached = false;
+        //this.cached = false;
 
 
         this.addInput (new Input(ALL_VALUES));

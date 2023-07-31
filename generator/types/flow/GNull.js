@@ -7,14 +7,14 @@ extends GOperator
 
     constructor(nodeId, options)
     {
-        super(CACHE, nodeId, options);
+        super(NULL_NODE, nodeId, options);
     }
 
 
     
     copy()
     {
-        const copy = new GCache(this.nodeId, this.options);
+        const copy = new GNull(this.nodeId, this.options);
 
         copy.copyBase(this);
 
@@ -28,8 +28,8 @@ extends GOperator
 
     async eval(parse)
     {
-        if (this.isCached())
-            return this;
+        // if (this.isCached())
+        //     return this;
 
 
         this.value = 
@@ -41,7 +41,7 @@ extends GOperator
         this.updateValueObjects();
 
 
-        this.updateValues = [['value', this.value]];
+        this.updateValues = [['', NullValue]];
 
 
         this.validate();

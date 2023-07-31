@@ -45,6 +45,13 @@
 ../operators/ResizableOperatorWithValue.js
 
 
+../operators/flow/OpStart.js
+../operators/flow/OpRepeat.js
+../operators/flow/OpNull.js
+../operators/flow/OpCache.js
+../operators/flow/OpFreeze.js
+../operators/flow/OpTimer.js
+
 ../operators/flow/OpList.js
 ../operators/flow/OpSublist.js
 ../operators/flow/OpUnique.js
@@ -55,11 +62,6 @@
 ../operators/flow/OpListCount.js
 ../operators/flow/OpContains.js
 ../operators/flow/OpIfElse.js
-../operators/flow/OpStart.js
-../operators/flow/OpRepeat.js
-../operators/flow/OpCache.js
-../operators/flow/OpFreeze.js
-../operators/flow/OpTimer.js
 
 ../operators/number/OpNumber.js
 ../operators/number/OpSign.js
