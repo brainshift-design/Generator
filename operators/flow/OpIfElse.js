@@ -12,6 +12,7 @@ extends OperatorBase
     {
         super(IF_ELSE, 'ifElse', 'if/else', iconIfElse);
 
+        this.iconOffsetY = -1;
         //this.cached = false;
 
 
@@ -78,6 +79,17 @@ extends OperatorBase
         pushUnique(gen.passedNodes, this.node);
 
         return request;
+    }
+
+
+
+    updateValues(requestId, actionId, updateParamId, paramIds, values)
+    {
+        super.updateValues(requestId, actionId, updateParamId, paramIds, values);
+
+        const type = values[paramIds.findIndex(id => id == 'type')];
+
+        this.outputs[0].types = [type.value];
     }
 
 
@@ -166,93 +178,109 @@ extends OperatorBase
               : ANY_VALUE;
 
 
-        let colorActive  = rgbFromType(type, true);
-        let colorPassive = rgbFromType(type, false);
+        colors.text   = isDark(colors.back) ? [1, 1, 1, 1] : [0, 0, 0, 1]; 
+
+        const gray =
+               this.active
+            && (  !this.inputs[0].connected
+                || arraysIntersect(this.inputs[0].connectedOutput.types, [ANY_VALUE, LIST_VALUE])
+                || this.paramCondition.value.value == 0)
+            && (  !this.inputs[1].connected
+                || arraysIntersect(this.inputs[1].connectedOutput.types, [ANY_VALUE, LIST_VALUE])
+                || this.paramCondition.value.value == 1);
+
+        colors.input  = this.active ? rgb_a(colors.text, 0.4)  : rgb_a(rgbSaturateHsv(rgbFromType(type, true), 0.5), 0.8);
+        colors.output = gray        ? rgb_a(colors.text, 0.35) : rgb_a(rgbSaturateHsv(rgbFromType(type, true), 0.5), 0.7);
+        colors.wire   = rgbFromType(ANY_VALUE, true);
 
 
-        if (NUMBER_TYPES.includes(type))
-        {
-            colors.input  = this.active ? rgb_a(colorPassive, 0.55) : rgb_a(colorActive, darkMode ? 0.65 : 0.5);
-            colors.output = this.active ? rgb_a(colorPassive, 0.5 ) : rgb_a(colorActive, darkMode ? 0.6  : 0.4);
-            colors.wire   = colorActive;
-        }
-        else if (TEXT_TYPES.includes(type))
-        {
-            colors.input  = this.active ? rgb_a(colorActive, 0.55) : rgb_a(darkMode ? colorActive : colorPassive, darkMode ? 0.55 : 1);
-            colors.output = this.active ? rgb_a(colorActive, 0.45) : rgb_a(darkMode ? colorActive : colorPassive, darkMode ? 0.45 : 0.9);
-            colors.wire   = colorActive;
-        }
-        else if (SHAPE_TYPES.includes(type))
-        {
-            colors.input  = this.active ? rgb_a(colorPassive, 0.65) : rgb_a(colorActive, darkMode ? 0.6 : 0.5 );
-            colors.output = this.active ? rgb_a(colorPassive, 0.65) : rgb_a(colorActive, darkMode ? 0.5 : 0.45);
-            colors.wire   = colorActive;
-        }
-        else if (COLOR_TYPES.includes(type))
-        {
-            if (   this.inputs[0].connected
-                && this.inputs[1].connected)
-            {
-                colors.output = 
-                    this.paramCondition.value.value > 0
-                    ? this.inputs[0].connectedOutput.wireColor
-                    : this.inputs[1].connectedOutput.wireColor;
-            }
-
-            else if (this.inputs[0].connected
-                  && this.paramCondition.value.value > 0)
-                colors.output = this.inputs[0].connectedOutput.wireColor;
-
-            else if (this.inputs[1].connected
-                  && this.paramCondition.value.value == 0)
-                colors.output = this.inputs[1].connectedOutput.wireColor;
+        // let colorActive  = rgbFromType(type, true);
+        // let colorPassive = rgbFromType(type, false);
 
 
-            colors.wire = colors.output;
-        }
-        else if (FILL_TYPES.includes(type))
-        {
-            if (   this.inputs[0].connected
-                && this.inputs[1].connected)
-            {
-                const wireColor =
-                    this.paramCondition.value.value > 0
-                    ? this.inputs[0].connectedOutput.wireColor
-                    : this.inputs[1].connectedOutput.wireColor;
+        // if (NUMBER_TYPES.includes(type))
+        // {
+        //     colors.input  = this.active ? rgb_a(colorPassive, 0.55) : rgb_a(colorActive, darkMode ? 0.65 : 0.5);
+        //     colors.output = this.active ? rgb_a(colorPassive, 0.5 ) : rgb_a(colorActive, darkMode ? 0.6  : 0.4);
+        //     colors.wire   = colorActive;
+        // }
+        // else if (TEXT_TYPES.includes(type))
+        // {
+        //     colors.input  = this.active ? rgb_a(colorActive, 0.55) : rgb_a(darkMode ? colorActive : colorPassive, darkMode ? 0.55 : 1);
+        //     colors.output = this.active ? rgb_a(colorActive, 0.45) : rgb_a(darkMode ? colorActive : colorPassive, darkMode ? 0.45 : 0.9);
+        //     colors.wire   = colorActive;
+        // }
+        // else if (SHAPE_TYPES.includes(type))
+        // {
+        //     colors.input  = this.active ? rgb_a(colorPassive, 0.65) : rgb_a(colorActive, darkMode ? 0.6 : 0.5 );
+        //     colors.output = this.active ? rgb_a(colorPassive, 0.65) : rgb_a(colorActive, darkMode ? 0.5 : 0.45);
+        //     colors.wire   = colorActive;
+        // }
+        // else if (COLOR_TYPES.includes(type))
+        // {
+        //     if (   this.inputs[0].connected
+        //         && this.inputs[1].connected)
+        //     {
+        //         colors.output = 
+        //             this.paramCondition.value.value > 0
+        //             ? this.inputs[0].connectedOutput.wireColor
+        //             : this.inputs[1].connectedOutput.wireColor;
+        //     }
 
-                colors.outputWire = wireColor;
-                colors.output = rgbaLerp(
-                    rgb_a(getTextColorFromBackColor(rgbFromType(ANY_VALUE, true)), 0.3),
-                    wireColor,
-                    wireColor[3]);
-            }
+        //     else if (this.inputs[0].connected
+        //           && this.paramCondition.value.value > 0)
+        //         colors.output = this.inputs[0].connectedOutput.wireColor;
 
-            else if (this.inputs[0].connected
-                  && this.paramCondition.value.value > 0)
-            {
-                const wireColor = this.inputs[0].connectedOutput.wireColor;
-
-                colors.outputWire = wireColor;
-                colors.output = rgbaLerp(
-                    rgb_a(getTextColorFromBackColor(rgbFromType(ANY_VALUE, true)), 0.3),
-                    wireColor,
-                    wireColor[3]);
-            }
-            else if (this.inputs[1].connected
-                  && this.paramCondition.value.value == 0)
-            {
-                const wireColor = this.inputs[1].connectedOutput.wireColor;
-
-                colors.outputWire = wireColor;
-                colors.output = rgbaLerp(
-                    rgb_a(getTextColorFromBackColor(rgbFromType(ANY_VALUE, true)), 0.3),
-                    wireColor,
-                    wireColor[3]);
-            }
+        //     else if (this.inputs[1].connected
+        //           && this.paramCondition.value.value == 0)
+        //         colors.output = this.inputs[1].connectedOutput.wireColor;
 
 
-            colors.wire = colors.output;
-        }
+        //     colors.wire = colors.output;
+        // }
+        // else if (FILL_TYPES.includes(type))
+        // {
+        //     if (   this.inputs[0].connected
+        //         && this.inputs[1].connected)
+        //     {
+        //         const wireColor =
+        //             this.paramCondition.value.value > 0
+        //             ? this.inputs[0].connectedOutput.wireColor
+        //             : this.inputs[1].connectedOutput.wireColor;
+
+        //         colors.outputWire = wireColor;
+        //         colors.output = rgbaLerp(
+        //             rgb_a(getTextColorFromBackColor(rgbFromType(ANY_VALUE, true)), 0.3),
+        //             wireColor,
+        //             wireColor[3]);
+        //     }
+
+        //     else if (this.inputs[0].connected
+        //           && this.paramCondition.value.value > 0)
+        //     {
+        //         const wireColor = this.inputs[0].connectedOutput.wireColor;
+
+        //         colors.outputWire = wireColor;
+        //         colors.output = rgbaLerp(
+        //             rgb_a(getTextColorFromBackColor(rgbFromType(ANY_VALUE, true)), 0.3),
+        //             wireColor,
+        //             wireColor[3]);
+        //     }
+        //     else if (this.inputs[1].connected
+        //           && this.paramCondition.value.value == 0)
+        //     {
+        //         const wireColor = this.inputs[1].connectedOutput.wireColor;
+
+        //         colors.outputWire = wireColor;
+        //         colors.output = rgbaLerp(
+        //             rgb_a(getTextColorFromBackColor(rgbFromType(ANY_VALUE, true)), 0.3),
+        //             wireColor,
+        //             wireColor[3]);
+        //     }
+
+
+        //     colors.wire = colors.output;
+        // }
 
         
         

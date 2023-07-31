@@ -13780,21 +13780,21 @@ function getItemTypes(items, debug)
 
 
 
-function finalTypeFromItems(items, debug = 0)
+function finalTypeFromItems(items)
 {
-    return finalTypeFromTypes(getItemTypes(items), debug);
+    return finalTypeFromTypes(getItemTypes(items));
 }
 
 
 
-function finalListTypeFromItems(items, debug = 0)
+function finalListTypeFromItems(items)
 {
-    return finalListTypeFromTypes(getItemTypes(items), debug);
+    return finalListTypeFromTypes(getItemTypes(items));
 }
 
 
 
-function finalTypeFromTypes(types, debug = 0)
+function finalTypeFromTypes(types)
 {
     let _type = NULL;
 
@@ -13805,7 +13805,7 @@ function finalTypeFromTypes(types, debug = 0)
             _type = type;
 
         else if (_type != type
-              &&     SHAPE_VALUES.includes(_type) 
+              ||     SHAPE_VALUES.includes(_type) 
                  && !SHAPE_VALUES.includes( type))
         { 
             _type = ANY_VALUE;
@@ -13819,9 +13819,9 @@ function finalTypeFromTypes(types, debug = 0)
 
 
 
-function finalListTypeFromTypes(types, debug = 0)
+function finalListTypeFromTypes(types)
 {
-    let _type = finalTypeFromTypes(types, debug);
+    let _type = finalTypeFromTypes(types);
 
     
          if (  _type == NUMBER_VALUE || _type == NUMBER_LIST_VALUE)  return NUMBER_LIST_VALUE;
@@ -19662,7 +19662,7 @@ extends GOperator
         }
 
 
-        this.updateValues = [['type', new TextValue(finalListTypeFromItems(this.value.items))]];//[['value', this.value]];
+        this.updateValues = [['type', new TextValue(finalListTypeFromItems(this.value.items))]];
 
 
         this.validate();
@@ -20079,9 +20079,10 @@ extends GOperator
 
         this.updateValues =
         [
-            ['value',   this.value              ],
-            ['columns', new NumberValue(columns)],
-            ['rows',    new NumberValue(rows   )]
+            //['value',   this.value              ],
+            ['type',    new TextValue(this.value ? this.value.type : ANY_VALUE)],
+            ['columns', new NumberValue(columns)                               ],
+            ['rows',    new NumberValue(rows   )                               ]
         ];
         
 
@@ -20336,9 +20337,10 @@ extends GOperator
 
         this.updateValues =
         [
-            ['value',  this.value             ],
-            ['length', new NumberValue(length)],
-            ['index',  index                  ]
+            //['value',  this.value             ],
+            ['type',   new TextValue(this.value.type)],
+            ['length', new NumberValue(length)       ],
+            ['index',  index                         ]
         ];
 
 
@@ -20655,8 +20657,9 @@ extends GOperator
 
         this.updateValues =
         [
-            ['value',     this.value],
-            ['condition', cond      ]
+            //['value',     this.value],
+            ['type',      new TextValue(this.value ? this.value.type : ANY_VALUE)],
+            ['condition', cond                          ]
         ];
         
         
@@ -55564,21 +55567,21 @@ function getItemTypes(items, debug)
 
 
 
-function finalTypeFromItems(items, debug = 0)
+function finalTypeFromItems(items)
 {
-    return finalTypeFromTypes(getItemTypes(items), debug);
+    return finalTypeFromTypes(getItemTypes(items));
 }
 
 
 
-function finalListTypeFromItems(items, debug = 0)
+function finalListTypeFromItems(items)
 {
-    return finalListTypeFromTypes(getItemTypes(items), debug);
+    return finalListTypeFromTypes(getItemTypes(items));
 }
 
 
 
-function finalTypeFromTypes(types, debug = 0)
+function finalTypeFromTypes(types)
 {
     let _type = NULL;
 
@@ -55589,7 +55592,7 @@ function finalTypeFromTypes(types, debug = 0)
             _type = type;
 
         else if (_type != type
-              &&     SHAPE_VALUES.includes(_type) 
+              ||     SHAPE_VALUES.includes(_type) 
                  && !SHAPE_VALUES.includes( type))
         { 
             _type = ANY_VALUE;
@@ -55603,9 +55606,9 @@ function finalTypeFromTypes(types, debug = 0)
 
 
 
-function finalListTypeFromTypes(types, debug = 0)
+function finalListTypeFromTypes(types)
 {
-    let _type = finalTypeFromTypes(types, debug);
+    let _type = finalTypeFromTypes(types);
 
     
          if (  _type == NUMBER_VALUE || _type == NUMBER_LIST_VALUE)  return NUMBER_LIST_VALUE;
@@ -61446,7 +61449,7 @@ extends GOperator
         }
 
 
-        this.updateValues = [['type', new TextValue(finalListTypeFromItems(this.value.items))]];//[['value', this.value]];
+        this.updateValues = [['type', new TextValue(finalListTypeFromItems(this.value.items))]];
 
 
         this.validate();
@@ -61863,9 +61866,10 @@ extends GOperator
 
         this.updateValues =
         [
-            ['value',   this.value              ],
-            ['columns', new NumberValue(columns)],
-            ['rows',    new NumberValue(rows   )]
+            //['value',   this.value              ],
+            ['type',    new TextValue(this.value ? this.value.type : ANY_VALUE)],
+            ['columns', new NumberValue(columns)                               ],
+            ['rows',    new NumberValue(rows   )                               ]
         ];
         
 
@@ -62120,9 +62124,10 @@ extends GOperator
 
         this.updateValues =
         [
-            ['value',  this.value             ],
-            ['length', new NumberValue(length)],
-            ['index',  index                  ]
+            //['value',  this.value             ],
+            ['type',   new TextValue(this.value.type)],
+            ['length', new NumberValue(length)       ],
+            ['index',  index                         ]
         ];
 
 
@@ -62439,8 +62444,9 @@ extends GOperator
 
         this.updateValues =
         [
-            ['value',     this.value],
-            ['condition', cond      ]
+            //['value',     this.value],
+            ['type',      new TextValue(this.value ? this.value.type : ANY_VALUE)],
+            ['condition', cond                          ]
         ];
         
         
@@ -97414,8 +97420,13 @@ extends OperatorBase
 
         colors.text   = isDark(colors.back) ? [1, 1, 1, 1] : [0, 0, 0, 1]; 
 
-        colors.input  = this.active ? rgb_a(colors.text, 0.4)  : rgb_a(rgbSaturateHsv(rgbFromType(type, true), 0.5), 0.8);
-        colors.output = this.active ? rgb_a(colors.text, 0.35) : rgb_a(rgbSaturateHsv(rgbFromType(type, true), 0.5), 0.7);
+        const gray =
+               this.active
+            && (  !this.inputs[0].connected
+                || arraysIntersect(this.inputs[0].connectedOutput.types, [ANY_VALUE, LIST_VALUE]));
+
+        colors.input  = gray ? rgb_a(colors.text, 0.4)  : rgb_a(rgbSaturateHsv(rgbFromType(type, true), 0.5), 0.8);
+        colors.output = gray ? rgb_a(colors.text, 0.35) : rgb_a(rgbSaturateHsv(rgbFromType(type, true), 0.5), 0.7);
         colors.wire   = rgbFromType(type, true);
 
         return colors;
@@ -97505,8 +97516,13 @@ extends OperatorBase
 
         colors.text   = isDark(colors.back) ? [1, 1, 1, 1] : [0, 0, 0, 1]; 
 
-        colors.input  = this.active ? rgb_a(colors.text, 0.4)  : rgb_a(rgbSaturateHsv(rgbFromType(type, true), 0.5), 0.8);
-        colors.output = this.active ? rgb_a(colors.text, 0.35) : rgb_a(rgbSaturateHsv(rgbFromType(type, true), 0.5), 0.7);
+        const gray =
+               this.active
+            && (  !this.inputs[0].connected
+                || arraysIntersect(this.inputs[0].connectedOutput.types, [ANY_VALUE, LIST_VALUE]));
+
+        colors.input  = gray ? rgb_a(colors.text, 0.4)  : rgb_a(rgbSaturateHsv(rgbFromType(type, true), 0.5), 0.8);
+        colors.output = gray ? rgb_a(colors.text, 0.35) : rgb_a(rgbSaturateHsv(rgbFromType(type, true), 0.5), 0.7);
         colors.wire   = rgbFromType(type, true);
 
         return colors;
@@ -97605,8 +97621,13 @@ extends OperatorBase
 
         colors.text   = isDark(colors.back) ? [1, 1, 1, 1] : [0, 0, 0, 1]; 
 
-        colors.input  = this.active ? rgb_a(colors.text, 0.4)  : rgb_a(rgbSaturateHsv(rgbFromType(type, true), 0.5), 0.8);
-        colors.output = this.active ? rgb_a(colors.text, 0.35) : rgb_a(rgbSaturateHsv(rgbFromType(type, true), 0.5), 0.7);
+        const gray =
+               this.active
+            && (  !this.inputs[0].connected
+                || arraysIntersect(this.inputs[0].connectedOutput.types, [ANY_VALUE, LIST_VALUE]));
+
+        colors.input  = gray ? rgb_a(colors.text, 0.4)  : rgb_a(rgbSaturateHsv(rgbFromType(type, true), 0.5), 0.8);
+        colors.output = gray ? rgb_a(colors.text, 0.35) : rgb_a(rgbSaturateHsv(rgbFromType(type, true), 0.5), 0.7);
         colors.wire   = rgbFromType(type, true);
 
         return colors;
@@ -97840,8 +97861,12 @@ extends OperatorBase
 
         colors.text   = isDark(colors.back) ? [1, 1, 1, 1] : [0, 0, 0, 1]; 
 
+        const gray =
+               this.active
+            && this.outputs[0].types[0] == LIST_VALUE;
+
         colors.input  = this.active ? rgb_a(colors.text, 0.4)  : rgb_a(rgbSaturateHsv(rgbFromType(type, true), 0.5), 0.8);
-        colors.output = this.active ? rgb_a(colors.text, 0.35) : rgb_a(rgbSaturateHsv(rgbFromType(type, true), 0.5), 0.7);
+        colors.output = gray        ? rgb_a(colors.text, 0.35) : rgb_a(rgbSaturateHsv(rgbFromType(type, true), 0.5), 0.7);
         colors.wire   = rgbFromType(type, true);
 
         return colors;
@@ -98174,11 +98199,11 @@ extends OperatorBase
         super.updateValues(requestId, actionId, updateParamId, paramIds, values);
 
         
-        const value  = values[paramIds.findIndex(id => id == 'value'  )];
+        const type   = values[paramIds.findIndex(id => id == 'type'   )];
         this.columns = values[paramIds.findIndex(id => id == 'columns')];
         this.rows    = values[paramIds.findIndex(id => id == 'rows'   )];
 
-        this.outputs[0].types = [value ? value.type : ANY_VALUE];
+        this.outputs[0].types = [type.value];
     }
 
 
@@ -98217,8 +98242,13 @@ extends OperatorBase
 
         colors.text   = isDark(colors.back) ? [1, 1, 1, 1] : [0, 0, 0, 1]; 
 
+        const gray =
+               this.active
+            && (  !this.inputs[0].connected
+                || arraysIntersect(this.inputs[0].connectedOutput.types, [ANY_VALUE, LIST_VALUE]));
+
         colors.input  = this.active ? rgb_a(colors.text, 0.4)  : rgb_a(rgbSaturateHsv(rgbFromType(type, true), 0.5), 0.8);
-        colors.output = this.active ? rgb_a(colors.text, 0.35) : rgb_a(rgbSaturateHsv(rgbFromType(type, true), 0.5), 0.7);
+        colors.output = gray        ? rgb_a(colors.text, 0.35) : rgb_a(rgbSaturateHsv(rgbFromType(type, true), 0.5), 0.7);
         colors.wire   = rgbFromType(type, true);
 
         return colors;
@@ -98591,10 +98621,10 @@ extends OperatorBase
         super.updateValues(requestId, actionId, updateParamId, paramIds, values);
 
         
-        const value = values[paramIds.findIndex(id => id == 'value')];
+        const type  = values[paramIds.findIndex(id => id == 'type')];
         this.length = values[paramIds.findIndex(id => id == 'length')];
 
-        this.outputs[0].types = [value ? value.type : ANY_VALUE];
+        this.outputs[0].types = [type.value];
     }
 
 
@@ -98630,8 +98660,13 @@ extends OperatorBase
 
         colors.text   = isDark(colors.back) ? [1, 1, 1, 1] : [0, 0, 0, 1]; 
 
-        colors.input  = this.active ? rgb_a(colors.text, 0.4)  : rgb_a(rgbSaturateHsv(rgbFromType(type, true), 0.5), 0.8);
-        colors.output = this.active ? rgb_a(colors.text, 0.35) : rgb_a(rgbSaturateHsv(rgbFromType(type, true), 0.5), 0.7);
+        const gray =
+               this.active
+            && (  !this.inputs[0].connected
+                || arraysIntersect(this.inputs[0].connectedOutput.types, [ANY_VALUE, LIST_VALUE]));
+
+        colors.input  = gray ? rgb_a(colors.text, 0.4)  : rgb_a(rgbSaturateHsv(rgbFromType(type, true), 0.5), 0.8);
+        colors.output = gray ? rgb_a(colors.text, 0.35) : rgb_a(rgbSaturateHsv(rgbFromType(type, true), 0.5), 0.7);
         colors.wire   = rgbFromType(type, true);
 
         return colors;
@@ -98824,6 +98859,7 @@ extends OperatorBase
     {
         super(IF_ELSE, 'ifElse', 'if/else', iconIfElse);
 
+        this.iconOffsetY = -1;
         //this.cached = false;
 
 
@@ -98890,6 +98926,17 @@ extends OperatorBase
         pushUnique(gen.passedNodes, this.node);
 
         return request;
+    }
+
+
+
+    updateValues(requestId, actionId, updateParamId, paramIds, values)
+    {
+        super.updateValues(requestId, actionId, updateParamId, paramIds, values);
+
+        const type = values[paramIds.findIndex(id => id == 'type')];
+
+        this.outputs[0].types = [type.value];
     }
 
 
@@ -98978,93 +99025,109 @@ extends OperatorBase
               : ANY_VALUE;
 
 
-        let colorActive  = rgbFromType(type, true);
-        let colorPassive = rgbFromType(type, false);
+        colors.text   = isDark(colors.back) ? [1, 1, 1, 1] : [0, 0, 0, 1]; 
+
+        const gray =
+               this.active
+            && (  !this.inputs[0].connected
+                || arraysIntersect(this.inputs[0].connectedOutput.types, [ANY_VALUE, LIST_VALUE])
+                || this.paramCondition.value.value == 0)
+            && (  !this.inputs[1].connected
+                || arraysIntersect(this.inputs[1].connectedOutput.types, [ANY_VALUE, LIST_VALUE])
+                || this.paramCondition.value.value == 1);
+
+        colors.input  = this.active ? rgb_a(colors.text, 0.4)  : rgb_a(rgbSaturateHsv(rgbFromType(type, true), 0.5), 0.8);
+        colors.output = gray        ? rgb_a(colors.text, 0.35) : rgb_a(rgbSaturateHsv(rgbFromType(type, true), 0.5), 0.7);
+        colors.wire   = rgbFromType(ANY_VALUE, true);
 
 
-        if (NUMBER_TYPES.includes(type))
-        {
-            colors.input  = this.active ? rgb_a(colorPassive, 0.55) : rgb_a(colorActive, darkMode ? 0.65 : 0.5);
-            colors.output = this.active ? rgb_a(colorPassive, 0.5 ) : rgb_a(colorActive, darkMode ? 0.6  : 0.4);
-            colors.wire   = colorActive;
-        }
-        else if (TEXT_TYPES.includes(type))
-        {
-            colors.input  = this.active ? rgb_a(colorActive, 0.55) : rgb_a(darkMode ? colorActive : colorPassive, darkMode ? 0.55 : 1);
-            colors.output = this.active ? rgb_a(colorActive, 0.45) : rgb_a(darkMode ? colorActive : colorPassive, darkMode ? 0.45 : 0.9);
-            colors.wire   = colorActive;
-        }
-        else if (SHAPE_TYPES.includes(type))
-        {
-            colors.input  = this.active ? rgb_a(colorPassive, 0.65) : rgb_a(colorActive, darkMode ? 0.6 : 0.5 );
-            colors.output = this.active ? rgb_a(colorPassive, 0.65) : rgb_a(colorActive, darkMode ? 0.5 : 0.45);
-            colors.wire   = colorActive;
-        }
-        else if (COLOR_TYPES.includes(type))
-        {
-            if (   this.inputs[0].connected
-                && this.inputs[1].connected)
-            {
-                colors.output = 
-                    this.paramCondition.value.value > 0
-                    ? this.inputs[0].connectedOutput.wireColor
-                    : this.inputs[1].connectedOutput.wireColor;
-            }
-
-            else if (this.inputs[0].connected
-                  && this.paramCondition.value.value > 0)
-                colors.output = this.inputs[0].connectedOutput.wireColor;
-
-            else if (this.inputs[1].connected
-                  && this.paramCondition.value.value == 0)
-                colors.output = this.inputs[1].connectedOutput.wireColor;
+        // let colorActive  = rgbFromType(type, true);
+        // let colorPassive = rgbFromType(type, false);
 
 
-            colors.wire = colors.output;
-        }
-        else if (FILL_TYPES.includes(type))
-        {
-            if (   this.inputs[0].connected
-                && this.inputs[1].connected)
-            {
-                const wireColor =
-                    this.paramCondition.value.value > 0
-                    ? this.inputs[0].connectedOutput.wireColor
-                    : this.inputs[1].connectedOutput.wireColor;
+        // if (NUMBER_TYPES.includes(type))
+        // {
+        //     colors.input  = this.active ? rgb_a(colorPassive, 0.55) : rgb_a(colorActive, darkMode ? 0.65 : 0.5);
+        //     colors.output = this.active ? rgb_a(colorPassive, 0.5 ) : rgb_a(colorActive, darkMode ? 0.6  : 0.4);
+        //     colors.wire   = colorActive;
+        // }
+        // else if (TEXT_TYPES.includes(type))
+        // {
+        //     colors.input  = this.active ? rgb_a(colorActive, 0.55) : rgb_a(darkMode ? colorActive : colorPassive, darkMode ? 0.55 : 1);
+        //     colors.output = this.active ? rgb_a(colorActive, 0.45) : rgb_a(darkMode ? colorActive : colorPassive, darkMode ? 0.45 : 0.9);
+        //     colors.wire   = colorActive;
+        // }
+        // else if (SHAPE_TYPES.includes(type))
+        // {
+        //     colors.input  = this.active ? rgb_a(colorPassive, 0.65) : rgb_a(colorActive, darkMode ? 0.6 : 0.5 );
+        //     colors.output = this.active ? rgb_a(colorPassive, 0.65) : rgb_a(colorActive, darkMode ? 0.5 : 0.45);
+        //     colors.wire   = colorActive;
+        // }
+        // else if (COLOR_TYPES.includes(type))
+        // {
+        //     if (   this.inputs[0].connected
+        //         && this.inputs[1].connected)
+        //     {
+        //         colors.output = 
+        //             this.paramCondition.value.value > 0
+        //             ? this.inputs[0].connectedOutput.wireColor
+        //             : this.inputs[1].connectedOutput.wireColor;
+        //     }
 
-                colors.outputWire = wireColor;
-                colors.output = rgbaLerp(
-                    rgb_a(getTextColorFromBackColor(rgbFromType(ANY_VALUE, true)), 0.3),
-                    wireColor,
-                    wireColor[3]);
-            }
+        //     else if (this.inputs[0].connected
+        //           && this.paramCondition.value.value > 0)
+        //         colors.output = this.inputs[0].connectedOutput.wireColor;
 
-            else if (this.inputs[0].connected
-                  && this.paramCondition.value.value > 0)
-            {
-                const wireColor = this.inputs[0].connectedOutput.wireColor;
-
-                colors.outputWire = wireColor;
-                colors.output = rgbaLerp(
-                    rgb_a(getTextColorFromBackColor(rgbFromType(ANY_VALUE, true)), 0.3),
-                    wireColor,
-                    wireColor[3]);
-            }
-            else if (this.inputs[1].connected
-                  && this.paramCondition.value.value == 0)
-            {
-                const wireColor = this.inputs[1].connectedOutput.wireColor;
-
-                colors.outputWire = wireColor;
-                colors.output = rgbaLerp(
-                    rgb_a(getTextColorFromBackColor(rgbFromType(ANY_VALUE, true)), 0.3),
-                    wireColor,
-                    wireColor[3]);
-            }
+        //     else if (this.inputs[1].connected
+        //           && this.paramCondition.value.value == 0)
+        //         colors.output = this.inputs[1].connectedOutput.wireColor;
 
 
-            colors.wire = colors.output;
-        }
+        //     colors.wire = colors.output;
+        // }
+        // else if (FILL_TYPES.includes(type))
+        // {
+        //     if (   this.inputs[0].connected
+        //         && this.inputs[1].connected)
+        //     {
+        //         const wireColor =
+        //             this.paramCondition.value.value > 0
+        //             ? this.inputs[0].connectedOutput.wireColor
+        //             : this.inputs[1].connectedOutput.wireColor;
+
+        //         colors.outputWire = wireColor;
+        //         colors.output = rgbaLerp(
+        //             rgb_a(getTextColorFromBackColor(rgbFromType(ANY_VALUE, true)), 0.3),
+        //             wireColor,
+        //             wireColor[3]);
+        //     }
+
+        //     else if (this.inputs[0].connected
+        //           && this.paramCondition.value.value > 0)
+        //     {
+        //         const wireColor = this.inputs[0].connectedOutput.wireColor;
+
+        //         colors.outputWire = wireColor;
+        //         colors.output = rgbaLerp(
+        //             rgb_a(getTextColorFromBackColor(rgbFromType(ANY_VALUE, true)), 0.3),
+        //             wireColor,
+        //             wireColor[3]);
+        //     }
+        //     else if (this.inputs[1].connected
+        //           && this.paramCondition.value.value == 0)
+        //     {
+        //         const wireColor = this.inputs[1].connectedOutput.wireColor;
+
+        //         colors.outputWire = wireColor;
+        //         colors.output = rgbaLerp(
+        //             rgb_a(getTextColorFromBackColor(rgbFromType(ANY_VALUE, true)), 0.3),
+        //             wireColor,
+        //             wireColor[3]);
+        //     }
+
+
+        //     colors.wire = colors.output;
+        // }
 
         
         
@@ -100188,7 +100251,7 @@ extends OperatorBase
         super.updateValues(requestId, actionId, updateParamId, paramIds, values);
 
         const type = values[paramIds.findIndex(id => id == 'type')];
-
+console.log('type =', type.value);
         this.outputs[0].types = [type.value];
     }
 
@@ -100209,8 +100272,12 @@ extends OperatorBase
 
         colors.text   = isDark(colors.back) ? [1, 1, 1, 1] : [0, 0, 0, 1]; 
 
+        const gray =
+               this.active
+            && this.outputs[0].types[0] == ANY_VALUE;
+
         colors.input  = this.active ? rgb_a(colors.text, 0.4)  : rgb_a(rgbSaturateHsv(rgbFromType(type, true), 0.5), 0.8);
-        colors.output = this.active ? rgb_a(colors.text, 0.35) : rgb_a(rgbSaturateHsv(rgbFromType(type, true), 0.5), 0.7);
+        colors.output = gray        ? rgb_a(colors.text, 0.35) : rgb_a(rgbSaturateHsv(rgbFromType(type, true), 0.5), 0.7);
         colors.wire   = rgbFromType(type, true);
 
         return colors;

@@ -69,7 +69,7 @@ extends OperatorBase
         super.updateValues(requestId, actionId, updateParamId, paramIds, values);
 
         const type = values[paramIds.findIndex(id => id == 'type')];
-
+console.log('type =', type.value);
         this.outputs[0].types = [type.value];
     }
 
@@ -90,8 +90,12 @@ extends OperatorBase
 
         colors.text   = isDark(colors.back) ? [1, 1, 1, 1] : [0, 0, 0, 1]; 
 
+        const gray =
+               this.active
+            && this.outputs[0].types[0] == ANY_VALUE;
+
         colors.input  = this.active ? rgb_a(colors.text, 0.4)  : rgb_a(rgbSaturateHsv(rgbFromType(type, true), 0.5), 0.8);
-        colors.output = this.active ? rgb_a(colors.text, 0.35) : rgb_a(rgbSaturateHsv(rgbFromType(type, true), 0.5), 0.7);
+        colors.output = gray        ? rgb_a(colors.text, 0.35) : rgb_a(rgbSaturateHsv(rgbFromType(type, true), 0.5), 0.7);
         colors.wire   = rgbFromType(type, true);
 
         return colors;

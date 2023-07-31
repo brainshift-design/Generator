@@ -8650,21 +8650,21 @@ function getItemTypes(items, debug)
 
 
 
-function finalTypeFromItems(items, debug = 0)
+function finalTypeFromItems(items)
 {
-    return finalTypeFromTypes(getItemTypes(items), debug);
+    return finalTypeFromTypes(getItemTypes(items));
 }
 
 
 
-function finalListTypeFromItems(items, debug = 0)
+function finalListTypeFromItems(items)
 {
-    return finalListTypeFromTypes(getItemTypes(items), debug);
+    return finalListTypeFromTypes(getItemTypes(items));
 }
 
 
 
-function finalTypeFromTypes(types, debug = 0)
+function finalTypeFromTypes(types)
 {
     let _type = NULL;
 
@@ -8675,7 +8675,7 @@ function finalTypeFromTypes(types, debug = 0)
             _type = type;
 
         else if (_type != type
-              &&     SHAPE_VALUES.includes(_type) 
+              ||     SHAPE_VALUES.includes(_type) 
                  && !SHAPE_VALUES.includes( type))
         { 
             _type = ANY_VALUE;
@@ -8689,9 +8689,9 @@ function finalTypeFromTypes(types, debug = 0)
 
 
 
-function finalListTypeFromTypes(types, debug = 0)
+function finalListTypeFromTypes(types)
 {
-    let _type = finalTypeFromTypes(types, debug);
+    let _type = finalTypeFromTypes(types);
 
     
          if (  _type == NUMBER_VALUE || _type == NUMBER_LIST_VALUE)  return NUMBER_LIST_VALUE;
@@ -14532,7 +14532,7 @@ extends GOperator
         }
 
 
-        this.updateValues = [['type', new TextValue(finalListTypeFromItems(this.value.items))]];//[['value', this.value]];
+        this.updateValues = [['type', new TextValue(finalListTypeFromItems(this.value.items))]];
 
 
         this.validate();
@@ -14949,9 +14949,10 @@ extends GOperator
 
         this.updateValues =
         [
-            ['value',   this.value              ],
-            ['columns', new NumberValue(columns)],
-            ['rows',    new NumberValue(rows   )]
+            //['value',   this.value              ],
+            ['type',    new TextValue(this.value ? this.value.type : ANY_VALUE)],
+            ['columns', new NumberValue(columns)                               ],
+            ['rows',    new NumberValue(rows   )                               ]
         ];
         
 
@@ -15206,9 +15207,10 @@ extends GOperator
 
         this.updateValues =
         [
-            ['value',  this.value             ],
-            ['length', new NumberValue(length)],
-            ['index',  index                  ]
+            //['value',  this.value             ],
+            ['type',   new TextValue(this.value.type)],
+            ['length', new NumberValue(length)       ],
+            ['index',  index                         ]
         ];
 
 
@@ -15525,8 +15527,9 @@ extends GOperator
 
         this.updateValues =
         [
-            ['value',     this.value],
-            ['condition', cond      ]
+            //['value',     this.value],
+            ['type',      new TextValue(this.value ? this.value.type : ANY_VALUE)],
+            ['condition', cond                          ]
         ];
         
         

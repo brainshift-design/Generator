@@ -256,21 +256,21 @@ function getItemTypes(items, debug)
 
 
 
-function finalTypeFromItems(items, debug = 0)
+function finalTypeFromItems(items)
 {
-    return finalTypeFromTypes(getItemTypes(items), debug);
+    return finalTypeFromTypes(getItemTypes(items));
 }
 
 
 
-function finalListTypeFromItems(items, debug = 0)
+function finalListTypeFromItems(items)
 {
-    return finalListTypeFromTypes(getItemTypes(items), debug);
+    return finalListTypeFromTypes(getItemTypes(items));
 }
 
 
 
-function finalTypeFromTypes(types, debug = 0)
+function finalTypeFromTypes(types)
 {
     let _type = NULL;
 
@@ -281,7 +281,7 @@ function finalTypeFromTypes(types, debug = 0)
             _type = type;
 
         else if (_type != type
-              &&     SHAPE_VALUES.includes(_type) 
+              ||     SHAPE_VALUES.includes(_type) 
                  && !SHAPE_VALUES.includes( type))
         { 
             _type = ANY_VALUE;
@@ -295,9 +295,9 @@ function finalTypeFromTypes(types, debug = 0)
 
 
 
-function finalListTypeFromTypes(types, debug = 0)
+function finalListTypeFromTypes(types)
 {
-    let _type = finalTypeFromTypes(types, debug);
+    let _type = finalTypeFromTypes(types);
 
     
          if (  _type == NUMBER_VALUE || _type == NUMBER_LIST_VALUE)  return NUMBER_LIST_VALUE;

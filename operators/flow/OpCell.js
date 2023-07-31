@@ -84,11 +84,11 @@ extends OperatorBase
         super.updateValues(requestId, actionId, updateParamId, paramIds, values);
 
         
-        const value  = values[paramIds.findIndex(id => id == 'value'  )];
+        const type   = values[paramIds.findIndex(id => id == 'type'   )];
         this.columns = values[paramIds.findIndex(id => id == 'columns')];
         this.rows    = values[paramIds.findIndex(id => id == 'rows'   )];
 
-        this.outputs[0].types = [value ? value.type : ANY_VALUE];
+        this.outputs[0].types = [type.value];
     }
 
 
@@ -127,8 +127,13 @@ extends OperatorBase
 
         colors.text   = isDark(colors.back) ? [1, 1, 1, 1] : [0, 0, 0, 1]; 
 
+        const gray =
+               this.active
+            && (  !this.inputs[0].connected
+                || arraysIntersect(this.inputs[0].connectedOutput.types, [ANY_VALUE, LIST_VALUE]));
+
         colors.input  = this.active ? rgb_a(colors.text, 0.4)  : rgb_a(rgbSaturateHsv(rgbFromType(type, true), 0.5), 0.8);
-        colors.output = this.active ? rgb_a(colors.text, 0.35) : rgb_a(rgbSaturateHsv(rgbFromType(type, true), 0.5), 0.7);
+        colors.output = gray        ? rgb_a(colors.text, 0.35) : rgb_a(rgbSaturateHsv(rgbFromType(type, true), 0.5), 0.7);
         colors.wire   = rgbFromType(type, true);
 
         return colors;

@@ -86,8 +86,9 @@ extends GOperator
 
         this.updateValues =
         [
-            ['value',     this.value],
-            ['condition', cond      ]
+            //['value',     this.value],
+            ['type',      new TextValue(this.value ? this.value.type : ANY_VALUE)],
+            ['condition', cond                          ]
         ];
         
         
