@@ -44,6 +44,7 @@ extends GOperator
         const transform  = this.transform  ? (await this.transform .eval(parse)).toValue() : null;
         const showCenter = this.showCenter ? (await this.showCenter.eval(parse)).toValue() : null;
 
+
         if (this.input)
         {
             this.value = (await this.input.eval(parse)).toValue();

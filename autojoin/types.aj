@@ -224,6 +224,9 @@
 ../generator/types/shape/GCenter.js
 ../generator/types/shape/GResetTransform.js
 
+../generator/types/shape/GMeasurePoints.js
+../generator/types/shape/GInterpolatePoint.js
+
 ../generator/types/shape/GPlace.js
 
 

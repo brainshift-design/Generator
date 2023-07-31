@@ -50,10 +50,10 @@ function showSubscriptionDialog(showBack = true)
 
     subscriptionBack.style.backgroundColor = showBack ? '#0005' : 'transparent';
     
-    updateLicenseInfo(
-        subscription != NULL
-        ? validateLicense(currentUser.id, subscription)
-        : null)
+    updateLicenseInfo()
+        // subscription != NULL
+        // ? validateLicense(currentUser.id, subscription)
+        // : null)
     .then(() => 
     {
         dialogShown             = true;

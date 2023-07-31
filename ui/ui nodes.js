@@ -100,7 +100,7 @@ function canAutoConnectNode(node)
 
 function uiDeleteNodes(nodeIds)
 {
-    nodeIds.forEach(id => nodeFromId(id).makePassive());
+    //nodeIds.forEach(id => nodeFromId(id).makePassive());
 
     graph.deleteNodes(nodeIds);
 

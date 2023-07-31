@@ -507,6 +507,10 @@ const SHAPE_TYPES =
     PLACE,
     SHAPE_APPLY,
 
+    MEASURE_POINTS,
+    INTERPOLATE_POINT,
+    POINT_ON_PATH,
+    
     RENDER
 ];
 

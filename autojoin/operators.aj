@@ -185,6 +185,9 @@
 ../operators/shape/OpCenter.js
 ../operators/shape/OpResetTransform.js
 
+../operators/shape/OpMeasurePoints.js
+../operators/shape/OpInterpolatePoint.js
+
 ../operators/shape/boolean/OpShapeBooleanBase.js
 ../operators/shape/boolean/OpShapeBoolean.js
 ../operators/shape/boolean/OpShapeUnion.js

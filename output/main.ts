@@ -23,7 +23,7 @@ function noNodeTag(key) { return noTag(key, nodeTag); }
 function noConnTag(key) { return noTag(key, connTag); }
 
 
-const generatorVersion = 175;
+const generatorVersion = 176;
 
 
 const MAX_INT32        = 2147483647;
@@ -1506,6 +1506,10 @@ const SHAPE_TYPES =
     PLACE,
     SHAPE_APPLY,
 
+    MEASURE_POINTS,
+    INTERPOLATE_POINT,
+    POINT_ON_PATH,
+    
     RENDER
 ];
 

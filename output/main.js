@@ -19,7 +19,7 @@ function isConnKey(key) { return isTagKey(key, connTag); }
 function noPageTag(key) { return noTag(key, pageTag); }
 function noNodeTag(key) { return noTag(key, nodeTag); }
 function noConnTag(key) { return noTag(key, connTag); }
-const generatorVersion = 175;
+const generatorVersion = 176;
 const MAX_INT32 = 2147483647;
 const NULL = '';
 const HTAB = '  '; // half-tab
@@ -926,6 +926,9 @@ const SHAPE_TYPES = [
     RESET_XFORM,
     PLACE,
     SHAPE_APPLY,
+    MEASURE_POINTS,
+    INTERPOLATE_POINT,
+    POINT_ON_PATH,
     RENDER
 ];
 const ALL_VALUES = [

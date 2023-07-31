@@ -139,6 +139,9 @@ function createNode(nodeType, creatingButton = null, createdNodeId = -1, options
         case CENTER:                  node = new OpCenter();            break;
         case RESET_XFORM:             node = new OpResetTransform();    break;
         
+        case MEASURE_POINTS:          node = new OpMeasurePoints();     break;
+        case INTERPOLATE_POINT:       node = new OpInterpolatePoint();  break;
+
         case PLACE:                   node = new OpPlace();             break;
 
         case RENDER:                  node = new OpRender();            break;

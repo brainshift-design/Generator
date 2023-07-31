@@ -1,137 +1,77 @@
-// class   OpMeasurePoints
-// extends OpShapeBase
-// {
-//     paramDistance;
-//     paramAngle;
+class   OpMeasurePoints
+extends OpShapeBase
+{
+    paramDistance;
+    paramAngle;
 
 
 
-//     constructor()
-//     {
-//         super(MEASURE_POINTS, 'measure', 'measure', iconPoint);
+    constructor()
+    {
+        super(MEASURE_POINTS, 'measure', 'measure', iconMeasurePoints);
 
-//         this.canDisable  = true;
-//         this.iconOffsetY = -1;
-
-
-//         this.addInput (new Input ([POINT_VALUE], getNodeInputValuesForUndo, this.input_getBackInitValue));
-//         this.addOutput(new Output([POINT_VALUE], this.output_genRequest, getNodeOutputValuesForUndo, this.output_backInit));
-
-//         this.addParam(this.paramX = new NumberParam('x', 'X', true, true, true, 0));
-//         this.addParam(this.paramY = new NumberParam('y', 'Y', true, true, true, 0));
+        this.iconOffsetY = 1;
 
 
-//         this.setAllParamDividers(0.45);
-//     }
+        this.addInput (new Input ([POINT_VALUE], getNodeInputValuesForUndo));//, this.input_getBackInitValue));
+        this.addInput (new Input ([POINT_VALUE], getNodeInputValuesForUndo));//, this.input_getBackInitValue));
+
+        this.addParam(this.paramDistance = new NumberParam('distance', 'distance', true, false, true, 0));
+        this.addParam(this.paramAngle    = new NumberParam('angle',    'angle',    true, false, true, 0, -180, 180));
 
 
+        this.paramAngle.controls[0].setSuffix('°', true);
 
-//     input_getBackInitValue()
-//     {
-//         // 'this' is the input
+        this.paramDistance.controls[0].setDecimals(10, 0);
+        this.paramAngle   .controls[0].setDecimals(10, 0);
 
-//         return new PointValue(
-//             this.nodeId,
-//             this.node.paramX.value,
-//             this.node.paramY.value);
-//     }
+        this.setAllParamDividers(0.5);
+    }
 
 
 
-//     output_backInit(value)
-//     {
-//         // 'this' is the output
+    genRequest(gen)
+    {
+        // 'this' is the node
 
-//         consoleAssert(value.type == POINT_VALUE, 'expected POINT_VALUE in backInit()');
-        
-//         this.node.paramX.setValue(value.x, false, true, false);
-//         this.node.paramY.setValue(value.y, false, true, false);
-//     }
+        gen.scope.push({
+            nodeId:  this.id, 
+            paramId: NULL });
 
 
-
-// //     paramIsConsideredDefault(param)
-// //     {
-// //         return  param.isDefault()
-// //             && !this.inputs[0].connected;
-// //     }
+        const [request, ignore] = this.genRequestStart(gen);
+        if (ignore) return request;
 
 
-
-// //     toJavascript(gen)
-// //     {
-// //         const conn = this.inputs[0].connected;
-
-
-// //         gen.nTab++;
-// //         const defs = this.toJsDefs(gen);
-// //         gen.nTab--;
-
-
-// //         let js = gen.NL + 'function ' + this.name + '(';
-        
-// //         if (   conn 
-// //             && defs == NULL)
-// //             js += 'input';
-
-// //         js += ')';
-
-
-// //         js += gen.NL + '{';
-// //         gen.nTab++;
-
-
-// //         js += defs;
-
-
-// //         js += gen.NL + 'return ';
-// //         js += conn ? 'input' : this.toJsCode(gen);
-// //         js += ';'
-
-
-// //         gen.nTab--;
-// //         js += gen.NL + '}';
-
-
-// //         return js;
-// //     }
-
-
-
-// //     toJsDefs(gen)
-// //     {
-// //         if (  !this.inputs[0].connected
-// //             || gen.connectedOut(this))
-// //             return '';
+        const input0 = this.inputs[0];
+        const input1 = this.inputs[1];
 
         
-// //         let js = '';
+        if (   input0.connected
+            && input1.connected)   request.push(2,
+                                       ...pushInputOrParam(input0, gen),
+                                       ...pushInputOrParam(input1, gen));
 
+        else if (input0.connected) request.push(1, ...pushInputOrParam(input0, gen));
+        else if (input1.connected) request.push(1, ...pushInputOrParam(input1, gen));
+            
+        else                       request.push(0);
 
-// //         js += gen.NL + 'const input = ';
-// //         js += this.inputs[0].connectedOutput.toJsCode(gen);
-// //         js += ';';
+            
+        gen.scope.pop();
+        pushUnique(gen.passedNodes, this);
 
-
-// //         return js;
-// //     }
-
-
-
-// //     toJsCode(gen)
-// //     {
-// //         return this.inputs[0].connected
-// //              ? this.inputs[0].connectedOutput.toJsCode(gen)
-// //              : this.paramValue.value.toJsCode(gen);
-// //     }
+        return request;
+    }
 
 
 
-//     updateValues(requestId, actionId, updateParamId, paramIds, values)
-//     {
-//         const value = values[paramIds.findIndex(id => id == 'value')];
+    updateValues(requestId, actionId, updateParamId, paramIds, values)
+    {
+        const distance = values[paramIds.findIndex(id => id == 'distance')];
+        const angle    = values[paramIds.findIndex(id => id == 'angle'   )];
 
-//         this.paramX.setValue(value.x, false, true, false);
-//         this.paramY.setValue(value.y, false, true, false);
-//     }
-// }
+        this.paramDistance.setValue(distance, false, true, false);
+        this.paramAngle   .setValue(angle,    false, true, false);
+    }
+}

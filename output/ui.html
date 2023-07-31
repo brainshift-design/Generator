@@ -4805,9 +4805,8 @@ a
             <div id='whatsNewBody'>
                 <h1 style='margin-top: 20px;'>What's new</h1>
 
-                <p>•  added Null node</p>
-                <p>•  slightly misspelled hex colors are now understood</p>
-                <p>•  fixed UI issues</p>
+                <p>•  added Measure points node</p>
+                <p>•  added Interpolate point node</p>
                 
                 <p><br/><br/><div id='chkHideWhatsNew'></div></p>
             </div>
@@ -5151,7 +5150,7 @@ a
 
 
 
-const generatorVersion = 175;
+const generatorVersion = 176;
 
 
 const MAX_INT32        = 2147483647;
@@ -10236,6 +10235,10 @@ const SHAPE_TYPES =
     PLACE,
     SHAPE_APPLY,
 
+    MEASURE_POINTS,
+    INTERPOLATE_POINT,
+    POINT_ON_PATH,
+    
     RENDER
 ];
 
@@ -34796,6 +34799,235 @@ extends GOperator1
 }
 
 
+class GMeasurePoints
+extends GOperatorBase2
+{
+    distance = null;
+    angle    = null;
+
+
+    
+    constructor(nodeId, options)
+    {
+        super(MEASURE_POINTS, nodeId, options);
+    }
+
+
+    
+    copy()
+    {
+        const copy = new GMeasurePoints(this.nodeId, this.options);
+
+        copy.copyBase(this);
+
+        if (this.distance) copy.distance = this.distance.copy();
+        if (this.angle   ) copy.angle    = this.angle   .copy();
+
+        return copy;
+    }
+
+
+
+    async eval(parse)
+    {
+        if (this.isCached())
+            return this;
+
+
+        if (   this.input0
+            && this.input1)
+        {
+            const input0 = this.input0 ? (await this.input0.eval(parse)).toValue() : null;
+            const input1 = this.input1 ? (await this.input1.eval(parse)).toValue() : null;
+
+            if (   input0
+                && input1)
+            {
+                const dist = distance(input0.toPoint(), input1.toPoint());
+
+                let ang = angle(subv(input1.toPoint(), input0.toPoint()));
+                if (ang > Tau/2) ang -= Tau;
+
+                this.distance = new NumberValue(dist);
+                this.angle    = new NumberValue(ang / Tau * 360);
+            }
+            else
+            {
+                this.distance = NumberValue.NaN;
+                this.angle    = NumberValue.NaN;
+            }
+        }
+        else
+        {
+            this.distance = NumberValue.NaN;
+            this.angle    = NumberValue.NaN;
+        }
+
+
+        this.updateValues =
+        [
+            ['distance', this.distance],
+            ['angle',    this.angle   ]
+        ];
+        
+
+        this.validate();
+
+        return this;
+    }
+
+
+
+    pushValueUpdates(parse)
+    {
+        super.pushValueUpdates(parse);
+
+        if (this.distance) this.distance.pushValueUpdates(parse);
+        if (this.angle   ) this.angle   .pushValueUpdates(parse);
+    }
+
+
+
+    invalidateInputs(from)
+    {
+        super.invalidateInputs(from);
+
+        if (this.distance) this.distance.invalidateInputs(from);
+        if (this.angle   ) this.angle   .invalidateInputs(from);
+    }
+}
+
+
+class GInterpolatePoints
+extends GOperatorBase2
+{
+    amount     = null;
+    transform  = null;
+    showCenter = null;
+
+
+    
+    constructor(nodeId, options)
+    {
+        super(INTERPOLATE_POINT, nodeId, options);
+    }
+
+
+    
+    copy()
+    {
+        const copy = new GMeasurePoints(this.nodeId, this.options);
+
+        copy.copyBase(this);
+
+        if (this.amount    ) copy.amount     = this.amount    .copy();
+        if (this.transform ) copy.transform  = this.transform .copy();
+        if (this.showCenter) copy.showCenter = this.showCenter.copy();
+
+        return copy;
+    }
+
+
+
+    async eval(parse)
+    {
+        if (this.isCached())
+            return this;
+
+
+        const amount     = this.amount     ? (await this.amount    .eval(parse)).toValue() : null;
+        const transform  = this.transform  ? (await this.transform .eval(parse)).toValue() : null;
+        const showCenter = this.showCenter ? (await this.showCenter.eval(parse)).toValue() : null;
+
+
+        if (   this.input0
+            && this.input1)
+        {
+            const input0 = this.input0 ? (await this.input0.eval(parse)).toValue() : null;
+            const input1 = this.input1 ? (await this.input1.eval(parse)).toValue() : null;
+
+            if (   input0
+                && input1)
+            {
+                const p0  = point(input0.objects[0].x, input0.objects[0].y);
+                const p1  = point(input1.objects[0].x, input1.objects[0].y);
+                const amt = amount.value / 100;
+
+                const p   = lerpv(p0, p1, amt);
+
+                    
+                let sp0 = lerpv(input0.objects[0].sp0, input1.objects[0].sp0, amt);
+                let sp1 = lerpv(input0.objects[0].sp1, input1.objects[0].sp1, amt);
+                let sp2 = lerpv(input0.objects[0].sp2, input1.objects[0].sp2, amt);
+
+                if (transform.value > 0)
+                {
+                    const l1 = distance(sp0, sp1);
+                    const l2 = distance(sp0, sp2);
+
+                    sp0 = clone(p);
+                    sp1 = addv(sp0, mulvs(unitv(subv(p1, p0)), l1));
+                    sp2 = addv(sp0, crossv(mulvs(unitv(subv(p1, p0)), l2)));
+                }
+
+
+                this.value = new PointValue(this.nodeId, new NumberValue(p.x), new NumberValue(p.y));
+
+                const pt = new FigmaPoint(this.nodeId, this.nodeId, this.nodeName, p.x, p.y);
+                pt.createDefaultTransform(p.x, p.y);
+                this.value.objects = [pt];
+
+                this.value.objects[0].sp0 = sp0;
+                this.value.objects[0].sp1 = sp1;
+                this.value.objects[0].sp2 = sp2;
+
+
+                if (showCenter.value > 0)
+                {
+                    const objects = [...this.value.objects]; // avoids infinite growth
+                    objects.forEach(o => addObjectCenter(this, o, parse.viewportZoom));
+                }
+            }
+        }
+
+
+        this.updateValues =
+        [
+            ['amount',     amount    ],
+            ['transform',  transform ],
+            ['showCenter', showCenter]
+        ];
+        
+
+        this.validate();
+
+        return this;
+    }
+
+
+
+    pushValueUpdates(parse)
+    {
+        super.pushValueUpdates(parse);
+
+        if (this.amount    ) this.amount    .pushValueUpdates(parse);
+        if (this.transform ) this.transform .pushValueUpdates(parse);
+        if (this.showCenter) this.showCenter.pushValueUpdates(parse);
+    }
+
+
+
+    invalidateInputs(from)
+    {
+        super.invalidateInputs(from);
+
+        if (this.amount    ) this.amount    .invalidateInputs(from);
+        if (this.transform ) this.transform .invalidateInputs(from);
+        if (this.showCenter) this.showCenter.invalidateInputs(from);
+    }
+}
+
+
 class GPlace
 extends GOperator
 {
@@ -34841,6 +35073,7 @@ extends GOperator
         const position   = this.position   ? (await this.position  .eval(parse)).toValue() : null;
         const transform  = this.transform  ? (await this.transform .eval(parse)).toValue() : null;
         const showCenter = this.showCenter ? (await this.showCenter.eval(parse)).toValue() : null;
+
 
         if (this.input)
         {
@@ -40305,6 +40538,113 @@ function genParseResetTransform(parse)
 
 
 
+function genParseMeasurePoints(parse)
+{
+    const [, nodeId, options, ignore] = genParseNodeStart(parse);
+
+
+    const measure = new GMeasurePoints(nodeId, options);
+
+
+    let nInputs = -1;
+
+    if (!ignore)
+    {
+        nInputs = parseInt(parse.move());
+        consoleAssert(nInputs => 0 && nInputs <= 2, 'nInputs must be [0, 2]');
+    }
+
+    
+    if (parse.settings.logRequests) 
+        logReq(measure, parse, ignore, nInputs);
+
+
+    if (ignore) 
+    {
+        genParseNodeEnd(parse, measure);
+        return parse.parsedNodes.find(n => n.nodeId == nodeId);
+    }
+
+
+    parse.nTab++;
+
+    
+    if (nInputs == 2)
+    {
+        measure.input0 = genParse(parse);
+        measure.input1 = genParse(parse);
+    }
+    else if (nInputs == 1)
+    {
+        measure.input0 = genParse(parse); // doesn't matter if it's input0 or input1, the eval() result will be the same
+    }
+
+
+    parse.nTab--;
+
+
+    genParseNodeEnd(parse, measure);
+    return measure;
+}
+
+
+
+function genParseInterpolatePoint(parse)
+{
+    const [, nodeId, options, ignore] = genParseNodeStart(parse);
+
+
+    const lerp = new GInterpolatePoints(nodeId, options);
+
+
+    let nInputs = -1;
+
+    if (!ignore)
+    {
+        nInputs = parseInt(parse.move());
+        consoleAssert(nInputs => 0 && nInputs <= 2, 'nInputs must be [0, 2]');
+    }
+
+    
+    if (parse.settings.logRequests) 
+        logReq(lerp, parse, ignore, nInputs);
+
+
+    if (ignore) 
+    {
+        genParseNodeEnd(parse, lerp);
+        return parse.parsedNodes.find(n => n.nodeId == nodeId);
+    }
+
+
+    parse.nTab++;
+
+
+    if (nInputs == 2)
+    {
+        lerp.input0 = genParse(parse);
+        lerp.input1 = genParse(parse);
+    }
+    else if (nInputs == 1)
+    {
+        lerp.input0 = genParse(parse); // doesn't matter if it's input0 or input1, the eval() result will be the same
+    }
+
+
+    lerp.amount     = genParse(parse);
+    lerp.transform  = genParse(parse);
+    lerp.showCenter = genParse(parse);
+
+
+    parse.nTab--;
+
+
+    genParseNodeEnd(parse, lerp);
+    return lerp;
+}
+
+
+
 function genParsePlace(parse)
 {
     const [, nodeId, options, ignore] = genParseNodeStart(parse);
@@ -41422,184 +41762,187 @@ function genParse(parse, inParam = true)
     let result = null;
 
 
-         if (parse.next == PARAM                  ) result = genParseParam            (parse);
+         if (parse.next == PARAM                  ) result = genParseParam             (parse);
         
     else if (parse.next ==        LIST_VALUE             
           || parse.next == NUMBER_LIST_VALUE             
           || parse.next ==   TEXT_LIST_VALUE             
-          || parse.next ==  SHAPE_LIST_VALUE      ) result = genParseListValue        (parse);
+          || parse.next ==  SHAPE_LIST_VALUE      ) result = genParseListValue         (parse);
  
-    else if (parse.next == NULL_NODE              ) result = genParseNull             (parse);
-    else if (parse.next == LIST                   ) result = genParseList             (parse);
-    else if (parse.next == SUBLIST                ) result = genParseSublist          (parse);
-    else if (parse.next == UNIQUE                 ) result = genParseUnique           (parse);
-    else if (parse.next == COLUMN                 ) result = genParseColumn           (parse);
-    else if (parse.next == CELL                   ) result = genParseCell             (parse);
-    else if (parse.next == ITEMS                  ) result = genParseItems            (parse);
-    else if (parse.next == SELECT                 ) result = genParseSelect           (parse);
-    else if (parse.next == LIST_COUNT             ) result = genParseListCount        (parse);
-    else if (parse.next == CONTAINS               ) result = genParseListContains     (parse);
-    else if (parse.next == IF_ELSE                ) result = genParseIfElse           (parse);
-    else if (parse.next == START                  ) result = genParseStart            (parse);
-    else if (parse.next == REPEAT                 ) result = genParseRepeat           (parse);
-    else if (parse.next == CACHE                  ) result = genParseCache            (parse);
-    else if (parse.next == DEFINE                 ) result = genParseDefine           (parse);
-    else if (parse.next == FREEZE                 ) result = genParseFreeze           (parse);
-    else if (parse.next == TIMER                  ) result = genParseTimer            (parse);
+    else if (parse.next == NULL_NODE              ) result = genParseNull              (parse);
+    else if (parse.next == LIST                   ) result = genParseList              (parse);
+    else if (parse.next == SUBLIST                ) result = genParseSublist           (parse);
+    else if (parse.next == UNIQUE                 ) result = genParseUnique            (parse);
+    else if (parse.next == COLUMN                 ) result = genParseColumn            (parse);
+    else if (parse.next == CELL                   ) result = genParseCell              (parse);
+    else if (parse.next == ITEMS                  ) result = genParseItems             (parse);
+    else if (parse.next == SELECT                 ) result = genParseSelect            (parse);
+    else if (parse.next == LIST_COUNT             ) result = genParseListCount         (parse);
+    else if (parse.next == CONTAINS               ) result = genParseListContains      (parse);
+    else if (parse.next == IF_ELSE                ) result = genParseIfElse            (parse);
+    else if (parse.next == START                  ) result = genParseStart             (parse);
+    else if (parse.next == REPEAT                 ) result = genParseRepeat            (parse);
+    else if (parse.next == CACHE                  ) result = genParseCache             (parse);
+    else if (parse.next == DEFINE                 ) result = genParseDefine            (parse);
+    else if (parse.next == FREEZE                 ) result = genParseFreeze            (parse);
+    else if (parse.next == TIMER                  ) result = genParseTimer             (parse);
      
-    else if (parse.next == NUMBER_VALUE           ) result = genParseNumValue         (parse);
-    else if (parse.next == NUMBER                 ) result = genParseNumber           (parse);
+    else if (parse.next == NUMBER_VALUE           ) result = genParseNumValue          (parse);
+    else if (parse.next == NUMBER                 ) result = genParseNumber            (parse);
      
-    else if (parse.next == NUMBER_SIGN            ) result = genParseSign             (parse);
-    else if (parse.next == NUMBER_ABSOLUTE        ) result = genParseAbsolute         (parse);
-    else if (parse.next == NUMBER_ROUND           ) result = genParseRound            (parse);
-    else if (parse.next == NUMBER_MINMAX          ) result = genParseMinMax           (parse);
-    else if (parse.next == NUMBER_LIMITS          ) result = genParseLimits           (parse);
-    else if (parse.next == NUMBER_CONSTANT        ) result = genParseConstant         (parse);
-    else if (parse.next == NUMBER_DATETIME        ) result = genParseDateTime         (parse);
-    else if (parse.next == NUMBER_SEQUENCE        ) result = genParseSequence         (parse);
-    else if (parse.next == NUMBER_DISTRIBUTE      ) result = genParseDistribute       (parse);
-    else if (parse.next == NUMBER_RANDOM          ) result = genParseRandom           (parse);
-    else if (parse.next == NUMBER_NOISE           ) result = genParseNoise            (parse);
-    else if (parse.next == NUMBER_PROBABILITY     ) result = genParseProbability      (parse);
-    else if (parse.next == NUMBER_ACCUMULATE      ) result = genParseAccumulate       (parse);
-    else if (parse.next == NUMBER_INTERPOLATE     ) result = genParseInterpolate      (parse);
-    else if (parse.next == NUMBER_SOLVE           ) result = genParseSolve            (parse);
-    else if (parse.next == NUMBER_ANIMATE         ) result = genParseAnimate          (parse);
+    else if (parse.next == NUMBER_SIGN            ) result = genParseSign              (parse);
+    else if (parse.next == NUMBER_ABSOLUTE        ) result = genParseAbsolute          (parse);
+    else if (parse.next == NUMBER_ROUND           ) result = genParseRound             (parse);
+    else if (parse.next == NUMBER_MINMAX          ) result = genParseMinMax            (parse);
+    else if (parse.next == NUMBER_LIMITS          ) result = genParseLimits            (parse);
+    else if (parse.next == NUMBER_CONSTANT        ) result = genParseConstant          (parse);
+    else if (parse.next == NUMBER_DATETIME        ) result = genParseDateTime          (parse);
+    else if (parse.next == NUMBER_SEQUENCE        ) result = genParseSequence          (parse);
+    else if (parse.next == NUMBER_DISTRIBUTE      ) result = genParseDistribute        (parse);
+    else if (parse.next == NUMBER_RANDOM          ) result = genParseRandom            (parse);
+    else if (parse.next == NUMBER_NOISE           ) result = genParseNoise             (parse);
+    else if (parse.next == NUMBER_PROBABILITY     ) result = genParseProbability       (parse);
+    else if (parse.next == NUMBER_ACCUMULATE      ) result = genParseAccumulate        (parse);
+    else if (parse.next == NUMBER_INTERPOLATE     ) result = genParseInterpolate       (parse);
+    else if (parse.next == NUMBER_SOLVE           ) result = genParseSolve             (parse);
+    else if (parse.next == NUMBER_ANIMATE         ) result = genParseAnimate           (parse);
     
-    else if (parse.next == NUMBER_MATH            ) result = genParseMath             (parse, (nodeId, options) => new GMath          (nodeId, options));
-    else if (parse.next == NUMBER_SIMPLE_MATH     ) result = genParseSimpleMath       (parse, (nodeId, options) => new GMath          (nodeId, options));
-    else if (parse.next == NUMBER_ADD             ) result = genParseArithmetic       (parse, (nodeId, options) => new GAdd           (nodeId, options));
-    else if (parse.next == NUMBER_SUBTRACT        ) result = genParseArithmetic       (parse, (nodeId, options) => new GSubtract      (nodeId, options));
-    else if (parse.next == NUMBER_MULTIPLY        ) result = genParseArithmetic       (parse, (nodeId, options) => new GMultiply      (nodeId, options));
-    else if (parse.next == NUMBER_DIVIDE          ) result = genParseArithmetic       (parse, (nodeId, options) => new GDivide        (nodeId, options));
-    else if (parse.next == NUMBER_MODULO          ) result = genParseArithmetic       (parse, (nodeId, options) => new GModulo        (nodeId, options));
-    else if (parse.next == NUMBER_EXPONENT        ) result = genParseArithmetic       (parse, (nodeId, options) => new GExponent      (nodeId, options));
+    else if (parse.next == NUMBER_MATH            ) result = genParseMath              (parse, (nodeId, options) => new GMath          (nodeId, options));
+    else if (parse.next == NUMBER_SIMPLE_MATH     ) result = genParseSimpleMath        (parse, (nodeId, options) => new GMath          (nodeId, options));
+    else if (parse.next == NUMBER_ADD             ) result = genParseArithmetic        (parse, (nodeId, options) => new GAdd           (nodeId, options));
+    else if (parse.next == NUMBER_SUBTRACT        ) result = genParseArithmetic        (parse, (nodeId, options) => new GSubtract      (nodeId, options));
+    else if (parse.next == NUMBER_MULTIPLY        ) result = genParseArithmetic        (parse, (nodeId, options) => new GMultiply      (nodeId, options));
+    else if (parse.next == NUMBER_DIVIDE          ) result = genParseArithmetic        (parse, (nodeId, options) => new GDivide        (nodeId, options));
+    else if (parse.next == NUMBER_MODULO          ) result = genParseArithmetic        (parse, (nodeId, options) => new GModulo        (nodeId, options));
+    else if (parse.next == NUMBER_EXPONENT        ) result = genParseArithmetic        (parse, (nodeId, options) => new GExponent      (nodeId, options));
      
-    else if (parse.next == NUMBER_BOOLEAN         ) result = genParseBoolean          (parse);
-    else if (parse.next == NUMBER_NOT             ) result = genParseArithmetic       (parse, (nodeId, options) => new GNot           (nodeId, options));
-    else if (parse.next == NUMBER_AND             ) result = genParseArithmetic       (parse, (nodeId, options) => new GAnd           (nodeId, options));
-    else if (parse.next == NUMBER_OR              ) result = genParseArithmetic       (parse, (nodeId, options) => new GOr            (nodeId, options));
-    else if (parse.next == NUMBER_XOR             ) result = genParseArithmetic       (parse, (nodeId, options) => new GXor           (nodeId, options));
+    else if (parse.next == NUMBER_BOOLEAN         ) result = genParseBoolean           (parse);
+    else if (parse.next == NUMBER_NOT             ) result = genParseArithmetic        (parse, (nodeId, options) => new GNot           (nodeId, options));
+    else if (parse.next == NUMBER_AND             ) result = genParseArithmetic        (parse, (nodeId, options) => new GAnd           (nodeId, options));
+    else if (parse.next == NUMBER_OR              ) result = genParseArithmetic        (parse, (nodeId, options) => new GOr            (nodeId, options));
+    else if (parse.next == NUMBER_XOR             ) result = genParseArithmetic        (parse, (nodeId, options) => new GXor           (nodeId, options));
      
-    else if (parse.next == NUMBER_CONDITION       ) result = genParseCondition        (parse);
-    else if (parse.next == NUMBER_EQUAL           ) result = genParseConditionBase    (parse, (nodeId, options) => new GEqual         (nodeId, options));
-    else if (parse.next == NUMBER_NOT_EQUAL       ) result = genParseConditionBase    (parse, (nodeId, options) => new GNotEqual      (nodeId, options));
-    else if (parse.next == NUMBER_LESS            ) result = genParseConditionBase    (parse, (nodeId, options) => new GLess          (nodeId, options));
-    else if (parse.next == NUMBER_LESS_OR_EQUAL   ) result = genParseConditionBase    (parse, (nodeId, options) => new GLessOrEqual   (nodeId, options));
-    else if (parse.next == NUMBER_GREATER         ) result = genParseConditionBase    (parse, (nodeId, options) => new GGreater       (nodeId, options));
-    else if (parse.next == NUMBER_GREATER_OR_EQUAL) result = genParseConditionBase    (parse, (nodeId, options) => new GGreaterOrEqual(nodeId, options));
+    else if (parse.next == NUMBER_CONDITION       ) result = genParseCondition         (parse);
+    else if (parse.next == NUMBER_EQUAL           ) result = genParseConditionBase     (parse, (nodeId, options) => new GEqual         (nodeId, options));
+    else if (parse.next == NUMBER_NOT_EQUAL       ) result = genParseConditionBase     (parse, (nodeId, options) => new GNotEqual      (nodeId, options));
+    else if (parse.next == NUMBER_LESS            ) result = genParseConditionBase     (parse, (nodeId, options) => new GLess          (nodeId, options));
+    else if (parse.next == NUMBER_LESS_OR_EQUAL   ) result = genParseConditionBase     (parse, (nodeId, options) => new GLessOrEqual   (nodeId, options));
+    else if (parse.next == NUMBER_GREATER         ) result = genParseConditionBase     (parse, (nodeId, options) => new GGreater       (nodeId, options));
+    else if (parse.next == NUMBER_GREATER_OR_EQUAL) result = genParseConditionBase     (parse, (nodeId, options) => new GGreaterOrEqual(nodeId, options));
  
-    else if (parse.next == NUMBER_TRIG            ) result = genParseTrigonometric    (parse);
-    else if (parse.next == NUMBER_SIN             ) result = genParseTrigBase         (parse, (nodeId, options) => new GSine          (nodeId, options));
-    else if (parse.next == NUMBER_COS             ) result = genParseTrigBase         (parse, (nodeId, options) => new GCosine        (nodeId, options));
-    else if (parse.next == NUMBER_TAN             ) result = genParseTrigBase         (parse, (nodeId, options) => new GTangent       (nodeId, options));
+    else if (parse.next == NUMBER_TRIG            ) result = genParseTrigonometric     (parse);
+    else if (parse.next == NUMBER_SIN             ) result = genParseTrigBase          (parse, (nodeId, options) => new GSine          (nodeId, options));
+    else if (parse.next == NUMBER_COS             ) result = genParseTrigBase          (parse, (nodeId, options) => new GCosine        (nodeId, options));
+    else if (parse.next == NUMBER_TAN             ) result = genParseTrigBase          (parse, (nodeId, options) => new GTangent       (nodeId, options));
  
-    else if (parse.next == TEXT_VALUE             ) result = genParseTextValue        (parse);
-    else if (parse.next == TEXT                   ) result = genParseText             (parse);
-    else if (parse.next == TEXT_LENGTH            ) result = genParseTextLength       (parse);
-    else if (parse.next == TEXT_TRIM              ) result = genParseTextTrim         (parse);
-    else if (parse.next == TEXT_SUBSTRING         ) result = genParseTextSubstring    (parse);
-    else if (parse.next == TEXT_CONTAINS          ) result = genParseTextContains     (parse);
-    else if (parse.next == TEXT_CASE              ) result = genParseTextCase         (parse);
-    else if (parse.next == TEXT_CHAR              ) result = genParseTextCharacter    (parse);
-    else if (parse.next == NUMBER_TO_TEXT         ) result = genParseNumberToText     (parse);
-    else if (parse.next == TEXT_TO_NUMBER         ) result = genParseTextToNumber     (parse);
-    else if (parse.next == TEXT_REPLACE           ) result = genParseTextReplace      (parse);
-    else if (parse.next == TEXT_JOIN              ) result = genParseTextJoin         (parse);
-    else if (parse.next == TEXT_PAD               ) result = genParseTextPad          (parse);
-    else if (parse.next == TEXT_COMPARE           ) result = genParseTextCompare      (parse);
-    else if (parse.next == TEXT_SPLIT             ) result = genParseTextSplit        (parse);
-    else if (parse.next == TEXT_CSV               ) result = genParseTextCSV          (parse);
-    else if (parse.next == TEXT_JSON              ) result = genParseTextJson         (parse);
-    else if (parse.next == TEXT_FETCH             ) result = genParseTextFetch        (parse);
+    else if (parse.next == TEXT_VALUE             ) result = genParseTextValue         (parse);
+    else if (parse.next == TEXT                   ) result = genParseText              (parse);
+    else if (parse.next == TEXT_LENGTH            ) result = genParseTextLength        (parse);
+    else if (parse.next == TEXT_TRIM              ) result = genParseTextTrim          (parse);
+    else if (parse.next == TEXT_SUBSTRING         ) result = genParseTextSubstring     (parse);
+    else if (parse.next == TEXT_CONTAINS          ) result = genParseTextContains      (parse);
+    else if (parse.next == TEXT_CASE              ) result = genParseTextCase          (parse);
+    else if (parse.next == TEXT_CHAR              ) result = genParseTextCharacter     (parse);
+    else if (parse.next == NUMBER_TO_TEXT         ) result = genParseNumberToText      (parse);
+    else if (parse.next == TEXT_TO_NUMBER         ) result = genParseTextToNumber      (parse);
+    else if (parse.next == TEXT_REPLACE           ) result = genParseTextReplace       (parse);
+    else if (parse.next == TEXT_JOIN              ) result = genParseTextJoin          (parse);
+    else if (parse.next == TEXT_PAD               ) result = genParseTextPad           (parse);
+    else if (parse.next == TEXT_COMPARE           ) result = genParseTextCompare       (parse);
+    else if (parse.next == TEXT_SPLIT             ) result = genParseTextSplit         (parse);
+    else if (parse.next == TEXT_CSV               ) result = genParseTextCSV           (parse);
+    else if (parse.next == TEXT_JSON              ) result = genParseTextJson          (parse);
+    else if (parse.next == TEXT_FETCH             ) result = genParseTextFetch         (parse);
  
-    else if (parse.next == COLOR_VALUE            ) result = genParseColorValue       (parse);
-    else if (parse.next == COLOR                  ) result = genParseColor            (parse);
-    else if (parse.next == VALID_COLOR            ) result = genParseValidColor       (parse);
-    else if (parse.next == CORRECT_COLOR          ) result = genParseCorrectColor     (parse);
-    else if (parse.next == COLOR_CONTRAST         ) result = genParseColorContrast    (parse);
-    else if (parse.next == COLORBLIND             ) result = genParseColorBlind       (parse);
-    else if (parse.next == COLOR_INTERPOLATE      ) result = genParseColorInterpolate (parse);
-    else if (parse.next == COLOR_BLEND            ) result = genParseColorBlend       (parse);
+    else if (parse.next == COLOR_VALUE            ) result = genParseColorValue        (parse);
+    else if (parse.next == COLOR                  ) result = genParseColor             (parse);
+    else if (parse.next == VALID_COLOR            ) result = genParseValidColor        (parse);
+    else if (parse.next == CORRECT_COLOR          ) result = genParseCorrectColor      (parse);
+    else if (parse.next == COLOR_CONTRAST         ) result = genParseColorContrast     (parse);
+    else if (parse.next == COLORBLIND             ) result = genParseColorBlind        (parse);
+    else if (parse.next == COLOR_INTERPOLATE      ) result = genParseColorInterpolate  (parse);
+    else if (parse.next == COLOR_BLEND            ) result = genParseColorBlend        (parse);
       
-    else if (parse.next == FILL_VALUE             ) result = genParseFillValue        (parse);
-    else if (parse.next == FILL                   ) result = genParseFill             (parse);
+    else if (parse.next == FILL_VALUE             ) result = genParseFillValue         (parse);
+    else if (parse.next == FILL                   ) result = genParseFill              (parse);
       
-    else if (parse.next == COLOR_STOP_VALUE       ) result = genParseColorStopValue   (parse);
-    else if (parse.next == COLOR_STOP             ) result = genParseColorStop        (parse);
+    else if (parse.next == COLOR_STOP_VALUE       ) result = genParseColorStopValue    (parse);
+    else if (parse.next == COLOR_STOP             ) result = genParseColorStop         (parse);
       
-    else if (parse.next == GRADIENT_VALUE         ) result = genParseGradientValue    (parse);
-    else if (parse.next == GRADIENT               ) result = genParseGradient         (parse);
+    else if (parse.next == GRADIENT_VALUE         ) result = genParseGradientValue     (parse);
+    else if (parse.next == GRADIENT               ) result = genParseGradient          (parse);
       
-    else if (parse.next == STROKE_VALUE           ) result = genParseStrokeValue      (parse);
-    else if (parse.next == STROKE                 ) result = genParseStroke           (parse);
+    else if (parse.next == STROKE_VALUE           ) result = genParseStrokeValue       (parse);
+    else if (parse.next == STROKE                 ) result = genParseStroke            (parse);
       
-    else if (parse.next == DROP_SHADOW_VALUE      ) result = genParseDropShadowValue  (parse);
-    else if (parse.next == DROP_SHADOW            ) result = genParseDropShadow       (parse);
+    else if (parse.next == DROP_SHADOW_VALUE      ) result = genParseDropShadowValue   (parse);
+    else if (parse.next == DROP_SHADOW            ) result = genParseDropShadow        (parse);
       
-    else if (parse.next == INNER_SHADOW_VALUE     ) result = genParseInnerShadowValue (parse);
-    else if (parse.next == INNER_SHADOW           ) result = genParseInnerShadow      (parse);
+    else if (parse.next == INNER_SHADOW_VALUE     ) result = genParseInnerShadowValue  (parse);
+    else if (parse.next == INNER_SHADOW           ) result = genParseInnerShadow       (parse);
       
-    else if (parse.next == LAYER_BLUR_VALUE       ) result = genParseLayerBlurValue   (parse);
-    else if (parse.next == LAYER_BLUR             ) result = genParseLayerBlur        (parse);
+    else if (parse.next == LAYER_BLUR_VALUE       ) result = genParseLayerBlurValue    (parse);
+    else if (parse.next == LAYER_BLUR             ) result = genParseLayerBlur         (parse);
       
-    else if (parse.next == BACK_BLUR_VALUE        ) result = genParseBackBlurValue    (parse);
-    else if (parse.next == BACK_BLUR              ) result = genParseBackBlur         (parse);
+    else if (parse.next == BACK_BLUR_VALUE        ) result = genParseBackBlurValue     (parse);
+    else if (parse.next == BACK_BLUR              ) result = genParseBackBlur          (parse);
 
-    else if (parse.next == LAYER_MASK_VALUE       ) result = genParseLayerMaskValue   (parse);
-    else if (parse.next == LAYER_MASK             ) result = genParseLayerMask        (parse);
+    else if (parse.next == LAYER_MASK_VALUE       ) result = genParseLayerMaskValue    (parse);
+    else if (parse.next == LAYER_MASK             ) result = genParseLayerMask         (parse);
       
-    else if (parse.next == COLOR_STYLE            ) result = genParseColorStyle       (parse);
+    else if (parse.next == COLOR_STYLE            ) result = genParseColorStyle        (parse);
       
-    else if (parse.next == RECTANGLE              ) result = genParseRectangle        (parse);
-    else if (parse.next == LINE                   ) result = genParseLine             (parse);
-    else if (parse.next == ELLIPSE                ) result = genParseEllipse          (parse);
-    else if (parse.next == TRAPEZE                ) result = genParseTrapeze          (parse);
-    else if (parse.next == POLYGON                ) result = genParsePolygon          (parse);
-    else if (parse.next == STAR                   ) result = genParseStar             (parse);
-    else if (parse.next == TEXT_SHAPE             ) result = genParseTextShape        (parse);
+    else if (parse.next == RECTANGLE              ) result = genParseRectangle         (parse);
+    else if (parse.next == LINE                   ) result = genParseLine              (parse);
+    else if (parse.next == ELLIPSE                ) result = genParseEllipse           (parse);
+    else if (parse.next == TRAPEZE                ) result = genParseTrapeze           (parse);
+    else if (parse.next == POLYGON                ) result = genParsePolygon           (parse);
+    else if (parse.next == STAR                   ) result = genParseStar              (parse);
+    else if (parse.next == TEXT_SHAPE             ) result = genParseTextShape         (parse);
  
-    else if (parse.next == POINT_VALUE            ) result = genParsePointValue       (parse);
-    else if (parse.next == POINT                  ) result = genParsePoint            (parse);
-    else if (parse.next == VECTOR_PATH_VALUE      ) result = genParseVectorPathValue  (parse);
-    else if (parse.next == VECTOR_PATH            ) result = genParseVectorPath       (parse);
+    else if (parse.next == POINT_VALUE            ) result = genParsePointValue        (parse);
+    else if (parse.next == POINT                  ) result = genParsePoint             (parse);
+    else if (parse.next == VECTOR_PATH_VALUE      ) result = genParseVectorPathValue   (parse);
+    else if (parse.next == VECTOR_PATH            ) result = genParseVectorPath        (parse);
     
     else if (parse.next == VECTOR_VERTEX_VALUE    ) result = genParseVectorVertexValue (parse);
     else if (parse.next == VECTOR_VERTEX          ) result = genParseVectorVertex      (parse);
-    else if (parse.next == VECTOR_EDGE_VALUE      ) result = genParseVectorEdgeValue  (parse);
-    else if (parse.next == VECTOR_EDGE            ) result = genParseVectorEdge       (parse);
-    else if (parse.next == VECTOR_REGION_VALUE    ) result = genParseVectorRegionValue(parse);
-    else if (parse.next == VECTOR_REGION          ) result = genParseVectorRegion     (parse);
-    else if (parse.next == VECTOR_NETWORK_VALUE   ) result = genParseVectorNetworkValue   (parse);
-    else if (parse.next == VECTOR_NETWORK         ) result = genParseVectorNetwork        (parse);
+    else if (parse.next == VECTOR_EDGE_VALUE      ) result = genParseVectorEdgeValue   (parse);
+    else if (parse.next == VECTOR_EDGE            ) result = genParseVectorEdge        (parse);
+    else if (parse.next == VECTOR_REGION_VALUE    ) result = genParseVectorRegionValue (parse);
+    else if (parse.next == VECTOR_REGION          ) result = genParseVectorRegion      (parse);
+    else if (parse.next == VECTOR_NETWORK_VALUE   ) result = genParseVectorNetworkValue(parse);
+    else if (parse.next == VECTOR_NETWORK         ) result = genParseVectorNetwork     (parse);
 
-    else if (parse.next == BOOLEAN_VALUE          ) result = genParseShapeBooleanValue(parse);
-    else if (parse.next == BOOLEAN                ) result = genParseShapeBoolean     (parse);
+    else if (parse.next == BOOLEAN_VALUE          ) result = genParseShapeBooleanValue (parse);
+    else if (parse.next == BOOLEAN                ) result = genParseShapeBoolean      (parse);
 
-    else if (parse.next == SHAPE_GROUP_VALUE      ) result = genParseShapeGroupValue  (parse);
-    else if (parse.next == SHAPE_GROUP            ) result = genParseShapeGroup       (parse);
+    else if (parse.next == SHAPE_GROUP_VALUE      ) result = genParseShapeGroupValue   (parse);
+    else if (parse.next == SHAPE_GROUP            ) result = genParseShapeGroup        (parse);
  
-    else if (parse.next == FRAME_VALUE            ) result = genParseFrameValue       (parse);
-    else if (parse.next == FRAME                  ) result = genParseFrame            (parse);
+    else if (parse.next == FRAME_VALUE            ) result = genParseFrameValue        (parse);
+    else if (parse.next == FRAME                  ) result = genParseFrame             (parse);
  
-    else if (parse.next == MOVE                   ) result = genParseMove             (parse);
-    else if (parse.next == ROTATE                 ) result = genParseRotate           (parse);
-    else if (parse.next == SCALE                  ) result = genParseScale            (parse);
-    else if (parse.next == SKEW                   ) result = genParseSkew             (parse);
+    else if (parse.next == MOVE                   ) result = genParseMove              (parse);
+    else if (parse.next == ROTATE                 ) result = genParseRotate            (parse);
+    else if (parse.next == SCALE                  ) result = genParseScale             (parse);
+    else if (parse.next == SKEW                   ) result = genParseSkew              (parse);
 
-    else if (parse.next == CENTER                 ) result = genParseCenter           (parse);
-    else if (parse.next == RESET_XFORM            ) result = genParseResetTransform   (parse);
+    else if (parse.next == CENTER                 ) result = genParseCenter            (parse);
+    else if (parse.next == RESET_XFORM            ) result = genParseResetTransform    (parse);
 
-    else if (parse.next == PLACE                  ) result = genParsePlace            (parse);
-    else if (parse.next == SHAPE_APPLY            ) result = genParseShapeApply       (parse);
+    else if (parse.next == MEASURE_POINTS         ) result = genParseMeasurePoints     (parse);
+    else if (parse.next == INTERPOLATE_POINT      ) result = genParseInterpolatePoint  (parse);
+
+    else if (parse.next == PLACE                  ) result = genParsePlace             (parse);
+    else if (parse.next == SHAPE_APPLY            ) result = genParseShapeApply        (parse);
     
-    else if (parse.next == RENDER                 ) result = genParseRender           (parse);
+    else if (parse.next == RENDER                 ) result = genParseRender            (parse);
  
-    else if (parse.next == GROUP_NODE             ) result = genParseGroupNode        (parse);
-    else if (parse.next == GROUP_PARAM            ) result = genParseGroupParam       (parse);
+    else if (parse.next == GROUP_NODE             ) result = genParseGroupNode         (parse);
+    else if (parse.next == GROUP_PARAM            ) result = genParseGroupParam        (parse);
  
-    else if (parse.next == COMMENT                ) result = genParseComment          (parse);
+    else if (parse.next == COMMENT                ) result = genParseComment           (parse);
 
     else consoleError('unknown parse token \'' + parse.next + '\' @ ' + parse.pos);
 
@@ -44879,7 +45222,7 @@ onerror = (event, source, line, pos, error) =>
 };
 
 
-const generatorVersion = 175;
+const generatorVersion = 176;
 
 
 const MAX_INT32        = 2147483647;
@@ -52135,6 +52478,10 @@ const SHAPE_TYPES =
     PLACE,
     SHAPE_APPLY,
 
+    MEASURE_POINTS,
+    INTERPOLATE_POINT,
+    POINT_ON_PATH,
+    
     RENDER
 ];
 
@@ -76695,6 +77042,235 @@ extends GOperator1
 }
 
 
+class GMeasurePoints
+extends GOperatorBase2
+{
+    distance = null;
+    angle    = null;
+
+
+    
+    constructor(nodeId, options)
+    {
+        super(MEASURE_POINTS, nodeId, options);
+    }
+
+
+    
+    copy()
+    {
+        const copy = new GMeasurePoints(this.nodeId, this.options);
+
+        copy.copyBase(this);
+
+        if (this.distance) copy.distance = this.distance.copy();
+        if (this.angle   ) copy.angle    = this.angle   .copy();
+
+        return copy;
+    }
+
+
+
+    async eval(parse)
+    {
+        if (this.isCached())
+            return this;
+
+
+        if (   this.input0
+            && this.input1)
+        {
+            const input0 = this.input0 ? (await this.input0.eval(parse)).toValue() : null;
+            const input1 = this.input1 ? (await this.input1.eval(parse)).toValue() : null;
+
+            if (   input0
+                && input1)
+            {
+                const dist = distance(input0.toPoint(), input1.toPoint());
+
+                let ang = angle(subv(input1.toPoint(), input0.toPoint()));
+                if (ang > Tau/2) ang -= Tau;
+
+                this.distance = new NumberValue(dist);
+                this.angle    = new NumberValue(ang / Tau * 360);
+            }
+            else
+            {
+                this.distance = NumberValue.NaN;
+                this.angle    = NumberValue.NaN;
+            }
+        }
+        else
+        {
+            this.distance = NumberValue.NaN;
+            this.angle    = NumberValue.NaN;
+        }
+
+
+        this.updateValues =
+        [
+            ['distance', this.distance],
+            ['angle',    this.angle   ]
+        ];
+        
+
+        this.validate();
+
+        return this;
+    }
+
+
+
+    pushValueUpdates(parse)
+    {
+        super.pushValueUpdates(parse);
+
+        if (this.distance) this.distance.pushValueUpdates(parse);
+        if (this.angle   ) this.angle   .pushValueUpdates(parse);
+    }
+
+
+
+    invalidateInputs(from)
+    {
+        super.invalidateInputs(from);
+
+        if (this.distance) this.distance.invalidateInputs(from);
+        if (this.angle   ) this.angle   .invalidateInputs(from);
+    }
+}
+
+
+class GInterpolatePoints
+extends GOperatorBase2
+{
+    amount     = null;
+    transform  = null;
+    showCenter = null;
+
+
+    
+    constructor(nodeId, options)
+    {
+        super(INTERPOLATE_POINT, nodeId, options);
+    }
+
+
+    
+    copy()
+    {
+        const copy = new GMeasurePoints(this.nodeId, this.options);
+
+        copy.copyBase(this);
+
+        if (this.amount    ) copy.amount     = this.amount    .copy();
+        if (this.transform ) copy.transform  = this.transform .copy();
+        if (this.showCenter) copy.showCenter = this.showCenter.copy();
+
+        return copy;
+    }
+
+
+
+    async eval(parse)
+    {
+        if (this.isCached())
+            return this;
+
+
+        const amount     = this.amount     ? (await this.amount    .eval(parse)).toValue() : null;
+        const transform  = this.transform  ? (await this.transform .eval(parse)).toValue() : null;
+        const showCenter = this.showCenter ? (await this.showCenter.eval(parse)).toValue() : null;
+
+
+        if (   this.input0
+            && this.input1)
+        {
+            const input0 = this.input0 ? (await this.input0.eval(parse)).toValue() : null;
+            const input1 = this.input1 ? (await this.input1.eval(parse)).toValue() : null;
+
+            if (   input0
+                && input1)
+            {
+                const p0  = point(input0.objects[0].x, input0.objects[0].y);
+                const p1  = point(input1.objects[0].x, input1.objects[0].y);
+                const amt = amount.value / 100;
+
+                const p   = lerpv(p0, p1, amt);
+
+                    
+                let sp0 = lerpv(input0.objects[0].sp0, input1.objects[0].sp0, amt);
+                let sp1 = lerpv(input0.objects[0].sp1, input1.objects[0].sp1, amt);
+                let sp2 = lerpv(input0.objects[0].sp2, input1.objects[0].sp2, amt);
+
+                if (transform.value > 0)
+                {
+                    const l1 = distance(sp0, sp1);
+                    const l2 = distance(sp0, sp2);
+
+                    sp0 = clone(p);
+                    sp1 = addv(sp0, mulvs(unitv(subv(p1, p0)), l1));
+                    sp2 = addv(sp0, crossv(mulvs(unitv(subv(p1, p0)), l2)));
+                }
+
+
+                this.value = new PointValue(this.nodeId, new NumberValue(p.x), new NumberValue(p.y));
+
+                const pt = new FigmaPoint(this.nodeId, this.nodeId, this.nodeName, p.x, p.y);
+                pt.createDefaultTransform(p.x, p.y);
+                this.value.objects = [pt];
+
+                this.value.objects[0].sp0 = sp0;
+                this.value.objects[0].sp1 = sp1;
+                this.value.objects[0].sp2 = sp2;
+
+
+                if (showCenter.value > 0)
+                {
+                    const objects = [...this.value.objects]; // avoids infinite growth
+                    objects.forEach(o => addObjectCenter(this, o, parse.viewportZoom));
+                }
+            }
+        }
+
+
+        this.updateValues =
+        [
+            ['amount',     amount    ],
+            ['transform',  transform ],
+            ['showCenter', showCenter]
+        ];
+        
+
+        this.validate();
+
+        return this;
+    }
+
+
+
+    pushValueUpdates(parse)
+    {
+        super.pushValueUpdates(parse);
+
+        if (this.amount    ) this.amount    .pushValueUpdates(parse);
+        if (this.transform ) this.transform .pushValueUpdates(parse);
+        if (this.showCenter) this.showCenter.pushValueUpdates(parse);
+    }
+
+
+
+    invalidateInputs(from)
+    {
+        super.invalidateInputs(from);
+
+        if (this.amount    ) this.amount    .invalidateInputs(from);
+        if (this.transform ) this.transform .invalidateInputs(from);
+        if (this.showCenter) this.showCenter.invalidateInputs(from);
+    }
+}
+
+
 class GPlace
 extends GOperator
 {
@@ -76740,6 +77316,7 @@ extends GOperator
         const position   = this.position   ? (await this.position  .eval(parse)).toValue() : null;
         const transform  = this.transform  ? (await this.transform .eval(parse)).toValue() : null;
         const showCenter = this.showCenter ? (await this.showCenter.eval(parse)).toValue() : null;
+
 
         if (this.input)
         {
@@ -81632,6 +82209,9 @@ const iconPlace             = '<svg width="19" height="17" viewBox="0 0 19 17" f
 
 const iconApply             = '<svg width="18" height="15" viewBox="0 -1 18 15" fill="none" xmlns="http://www.w3.org/2000/svg"><path fill-rule="evenodd" clip-rule="evenodd" d="M1.99634 3.23086C1.99634 1.43758 3.48795 0.00793457 5.2978 0.00793457H13.7022C15.512 0.00793457 17.0037 1.43758 17.0037 3.23086V7.76908C17.0037 9.56236 15.512 10.992 13.7022 10.992H11.5V9.99201H13.7022C14.9868 9.99201 16.0037 8.98346 16.0037 7.76908V3.23086C16.0037 2.01648 14.9868 1.00793 13.7022 1.00793H5.2978C4.01324 1.00793 2.99634 2.01648 2.99634 3.23086V5H1.99634V3.23086Z" fill="white"/><path d="M0 7H9V8H0V7Z" fill="white"/><path d="M0 10H9V11H0V10Z" fill="white"/><path d="M0 13H9V14H0V13Z" fill="white"/></svg>'; 
 
+const iconMeasurePoints     = '<svg width="19" height="11" viewBox="0 0 19 11" fill="none" xmlns="http://www.w3.org/2000/svg"><path fill-rule="evenodd" clip-rule="evenodd" d="M17.941 8.97729C17.8494 8.16451 17.652 7.36712 17.353 6.60789C17.2193 6.26837 17.0661 5.93856 16.8945 5.62019L14.9461 6.80328L14.4461 5.89243L16.3502 4.73622C16.096 4.3723 15.8154 4.02833 15.5104 3.70756C15.0432 3.21621 14.5243 2.78499 13.9647 2.42169L12.9331 4.301L12.0671 3.77512L13.084 1.92265C12.9747 1.86923 12.8643 1.8182 12.7528 1.76962C11.8758 1.38756 10.9453 1.16317 10 1.10459V3.19263H9V1.10459C8.05473 1.16317 7.12419 1.38756 6.24719 1.76962C6.13569 1.8182 6.02529 1.86922 5.91606 1.92264L6.93298 3.77516L6.06695 4.30104L5.0353 2.42168C4.4757 2.78498 3.95677 3.2162 3.48959 3.70756C3.1846 4.02834 2.90397 4.37232 2.64977 4.73625L4.55383 5.89246L4.05383 6.80331L2.10552 5.62023C1.93393 5.93859 1.78073 6.26838 1.64702 6.60789C1.34801 7.36712 1.15058 8.16451 1.05903 8.9773H3V8.45145H4V8.9773H6V8.45145H7V8.9773H9V8.45145H10V8.97729H12V8.45145H13V8.97729H15V8.45145H16V8.97729H17.941ZM9.5 1.08911L9.5076 1.08911H9.4924L9.5 1.08911ZM18.9472 8.97729C18.8515 8.0261 18.6262 7.09245 18.2769 6.20539C17.7994 4.99315 17.0997 3.89167 16.2175 2.96385C15.3354 2.03604 14.2881 1.30006 13.1355 0.797926C11.9829 0.295796 10.7476 0.0373535 9.5 0.0373535C8.25244 0.0373535 7.0171 0.295797 5.86451 0.797927C4.71191 1.30006 3.66464 2.03604 2.78249 2.96385C1.90033 3.89167 1.20056 4.99315 0.723144 6.2054C0.373796 7.09245 0.148508 8.02611 0.0527776 8.9773C0.0176828 9.326 0 9.67707 0 10.0291L19 10.0291C19 9.67706 18.9823 9.326 18.9472 8.97729Z" fill="white"/></svg>';
+const iconInterpolatePoint  = '<svg width="19" height="19" viewBox="0 0 19 19" fill="none" xmlns="http://www.w3.org/2000/svg"><circle cx="9.49994" cy="9.5" r="2.23029" fill="white"/><rect x="7.76428" y="10.58" width="1" height="8.35723" transform="rotate(45 7.76428 10.58)" fill="white"/><rect x="16.4326" y="1.91156" width="1" height="8.27428" transform="rotate(45 16.4326 1.91156)" fill="white"/><rect x="4.37927" y="18.3553" width="1" height="5.20878" transform="rotate(135 4.37927 18.3553)" fill="white"/><rect x="19" y="3.72803" width="1" height="5.20878" transform="rotate(135 19 3.72803)" fill="white"/></svg>';
+
 const iconRender            = '<svg width="18" height="17" viewBox="0 0 18 17" fill="none" xmlns="http://www.w3.org/2000/svg"><rect x="0.5" y="0.5" width="17" height="16" rx="1.5" stroke="white"/><rect x="3.5" y="3.5" width="4" height="4" stroke="white"/><circle cx="12.5" cy="5.5" r="2" stroke="white"/><line x1="3.43646" y1="14.6568" x2="7.93646" y2="9.88989" stroke="white"/><path d="M10.3349 13.75L12.5 10L14.6651 13.75H10.3349Z" stroke="white"/></svg>';
 const iconRenderDown        = '<svg width="18" height="17" viewBox="0 0 18 17" fill="none" xmlns="http://www.w3.org/2000/svg"><path d="M6.81598 4.18533H4.18663V6.81467H6.81598V4.18533Z" fill="white"/><path d="M13.8147 5.5C13.8147 6.22607 13.2261 6.81467 12.5 6.81467C11.7739 6.81467 11.1853 6.22607 11.1853 5.5C11.1853 4.77393 11.7739 4.18533 12.5 4.18533C13.2261 4.18533 13.8147 4.77393 13.8147 5.5Z" fill="white"/><path d="M11.5401 13.0542L12.5 11.3917L13.4599 13.0542H11.5401Z" fill="white"/><path fill-rule="evenodd" clip-rule="evenodd" d="M2 0C0.895431 0 0 1.01482 0 2.26667V14.7333C0 15.9852 0.89543 17 2 17H16C17.1046 17 18 15.9852 18 14.7333V2.26667C18 1.01482 17.1046 0 16 0L2 0ZM2.83663 2.83533V8.16467H8.16598V2.83533H2.83663ZM15.1647 5.5C15.1647 6.97166 13.9717 8.16467 12.5 8.16467C11.0283 8.16467 9.83533 6.97166 9.83533 5.5C9.83533 4.02834 11.0283 2.83533 12.5 2.83533C13.9717 2.83533 15.1647 4.02834 15.1647 5.5ZM8.42428 10.4267L3.92428 15.1936L2.9426 14.2669L7.4426 9.5L8.42428 10.4267ZM12.5 8.69165L15.7981 14.4042H9.20187L12.5 8.69165Z" fill="white"/></svg>';
 
@@ -83292,16 +83872,15 @@ function initGeneratorMenus()
         menuItemLayerFill        = new MenuItem('Fill',            {icon: iconFill,        callback: e => actionManager.do(getCreateNodeAction(FILL,       btnLayer.div, getCreateOptions(e)))}),
                                    new MenuItem('Gradient',        {icon: iconGradient,    callback: e => actionManager.do(getCreateNodeAction(GRADIENT,   btnLayer.div, getCreateOptions(e)))}),
                                    new MenuItem('Color stop',      {icon: iconColorStop,   callback: e => actionManager.do(getCreateNodeAction(COLOR_STOP, btnLayer.div, getCreateOptions(e)))}),
-                                //    new MenuItem('',                {separator: true}),
         menuItemLayerStroke      = new MenuItem('Stroke',          {icon: iconStroke,      callback: e => actionManager.do(getCreateNodeAction(STROKE,     btnLayer.div, getCreateOptions(e)))}),
         menuItemLayerSep1        = new MenuItem('',                {separator: true}),
+                                   new MenuItem('Apply style',    {icon: iconApply, createType: SHAPE_APPLY, callback: e => actionManager.do(getCreateNodeAction(SHAPE_APPLY, btnLayer.div, getCreateOptions(e)))}),
+                                   new MenuItem('',               {separator: true}),
                                    new MenuItem('Effects',         {icon: iconEffects, childMenu: menuEffects}),
-                                   new MenuItem('',                {separator: true}),
                                    new MenuItem('Styles',          {icon: iconStyle, childMenu: menuStyles}),
                                    //new MenuItem('Variables',       {childMenu: menuVariables}),
                                    new MenuItem('',                {separator: true}),
                                    new MenuItem('Mask',            {icon: iconMask,        callback: e => actionManager.do(getCreateNodeAction(LAYER_MASK, btnLayer.div, getCreateOptions(e)))})]);
-                                 //new MenuItem('Color style',     {icon: iconColorStyle,  childMenu: menuColorStyle, callback: e => actionManager.do(getCreateNodeAction(COLOR_STYLE,  btnColor.div, getCreateOptions(e)))})]);
     
     
     menuVector = new Menu('Vector', true, false);
@@ -83328,33 +83907,34 @@ function initGeneratorMenus()
 
     menuTransform = new Menu('Transform', true, false);
     menuTransform.addItems([
-        new MenuItem('Move',   {icon: iconMove,       createType: MOVE,        callback: e => actionManager.do(getCreateNodeAction(MOVE,        btnShape.div, getCreateOptions(e)))}),
-        new MenuItem('Rotate', {icon: iconRotate,     createType: ROTATE,      callback: e => actionManager.do(getCreateNodeAction(ROTATE,      btnShape.div, getCreateOptions(e)))}),
-        new MenuItem('Scale',  {icon: iconScale,      createType: SCALE,       callback: e => actionManager.do(getCreateNodeAction(SCALE,       btnShape.div, getCreateOptions(e)))}),
-        new MenuItem('Skew',   {icon: iconSkew,       createType: SKEW,        callback: e => actionManager.do(getCreateNodeAction(SKEW,        btnShape.div, getCreateOptions(e)))}),
-        new MenuItem('',       {separator: true}),
-        new MenuItem('Place',  {icon: iconPlace,      createType: PLACE,       callback: e => actionManager.do(getCreateNodeAction(PLACE,       btnShape.div, getCreateOptions(e)))}),
-        new MenuItem('',       {separator: true}),
-        new MenuItem('Center', {icon: iconCenter,     createType: CENTER,      callback: e => actionManager.do(getCreateNodeAction(CENTER,      btnShape.div, getCreateOptions(e)))}),
-        new MenuItem('Reset',  {icon: iconResetXform, createType: RESET_XFORM, callback: e => actionManager.do(getCreateNodeAction(RESET_XFORM, btnShape.div, getCreateOptions(e)))})]);
+        new MenuItem('Move',              {icon: iconMove,       createType: MOVE,        callback: e => actionManager.do(getCreateNodeAction(MOVE,        btnShape.div, getCreateOptions(e)))}),
+        new MenuItem('Rotate',            {icon: iconRotate,     createType: ROTATE,      callback: e => actionManager.do(getCreateNodeAction(ROTATE,      btnShape.div, getCreateOptions(e)))}),
+        new MenuItem('Scale',             {icon: iconScale,      createType: SCALE,       callback: e => actionManager.do(getCreateNodeAction(SCALE,       btnShape.div, getCreateOptions(e)))}),
+        new MenuItem('Skew',              {icon: iconSkew,       createType: SKEW,        callback: e => actionManager.do(getCreateNodeAction(SKEW,        btnShape.div, getCreateOptions(e)))}),
+        new MenuItem('',                  {separator: true}),
+        new MenuItem('Place',             {icon: iconPlace,      createType: PLACE,       callback: e => actionManager.do(getCreateNodeAction(PLACE,       btnShape.div, getCreateOptions(e)))}),
+        new MenuItem('Interpolate point', {icon: iconInterpolatePoint, createType: INTERPOLATE_POINT, callback: e => actionManager.do(getCreateNodeAction(INTERPOLATE_POINT, btnShape.div, getCreateOptions(e)))}),
+        new MenuItem('',                  {separator: true}),
+        new MenuItem('Center',            {icon: iconCenter,     createType: CENTER,      callback: e => actionManager.do(getCreateNodeAction(CENTER,      btnShape.div, getCreateOptions(e)))}),
+        new MenuItem('Reset',             {icon: iconResetXform, createType: RESET_XFORM, callback: e => actionManager.do(getCreateNodeAction(RESET_XFORM, btnShape.div, getCreateOptions(e)))})]);
 
 
     menuShape = new Menu('Shapes', true, false);
     menuShape.addItems([
         // menuItemShapeSelected = new MenuItem('Selected objects...', {icon: iconSelected,   enabled: false}),
                              // new MenuItem('',            {separator: true}),
-                                new MenuItem('Shapes',      {icon: iconShapes,        childMenu: menuShapes}),
-                                new MenuItem('Vector',      {icon: iconVectorNetwork, childMenu: menuVector}),
-                                new MenuItem('',            {separator: true}),
-                                new MenuItem('Frame',       {icon: iconFrame,      createType: FRAME,       callback: e => actionManager.do(getCreateNodeAction(FRAME,       btnShape.div, getCreateOptions(e)))}),
-                                new MenuItem('Group',       {icon: iconShapeGroup, createType: SHAPE_GROUP, callback: e => actionManager.do(getCreateNodeAction(SHAPE_GROUP, btnShape.div, getCreateOptions(e)))}),
-                             // new MenuItem('Boolean',     {enabled: false, icon: iconBoolUnion,  callback: e => actionManager.do(getCreateNodeAction(BOOLEAN,     btnShape.div, getCreateOptions(e)))}),
-        menuItemShapeSep1     = new MenuItem('',            {separator: true}),
-                                new MenuItem('Transform',   {icon: iconMove, childMenu: menuTransform}),
-                                new MenuItem('',            {separator: true}),
-                                new MenuItem('Apply style', {icon: iconApply, createType: SHAPE_APPLY, callback: e => actionManager.do(getCreateNodeAction(SHAPE_APPLY, btnShape.div, getCreateOptions(e)))}),
-                                new MenuItem('',            {separator: true}),
-                                new MenuItem('Render',      {icon: iconRenderDown, createType: RENDER, callback: e => actionManager.do(getCreateNodeAction(RENDER,       btnShape.div, getCreateOptions(e)))})]);
+                                new MenuItem('Shapes',            {icon: iconShapes,        childMenu: menuShapes}),
+                                new MenuItem('Vector',            {icon: iconVectorNetwork, childMenu: menuVector}),
+                                new MenuItem('',                  {separator: true}),
+                                new MenuItem('Frame',             {icon: iconFrame,      createType: FRAME,       callback: e => actionManager.do(getCreateNodeAction(FRAME,       btnShape.div, getCreateOptions(e)))}),
+                                new MenuItem('Group',             {icon: iconShapeGroup, createType: SHAPE_GROUP, callback: e => actionManager.do(getCreateNodeAction(SHAPE_GROUP, btnShape.div, getCreateOptions(e)))}),
+                             // new MenuItem('Boolean',           {enabled: false, icon: iconBoolUnion,  callback: e => actionManager.do(getCreateNodeAction(BOOLEAN,     btnShape.div, getCreateOptions(e)))}),
+        menuItemShapeSep1     = new MenuItem('',                  {separator: true}),
+                                new MenuItem('Transform',         {icon: iconMove, childMenu: menuTransform}),
+                                new MenuItem('',                  {separator: true}),
+                                new MenuItem('Measure points',    {icon: iconMeasurePoints,    createType: MEASURE_POINTS,    callback: e => actionManager.do(getCreateNodeAction(MEASURE_POINTS,    btnShape.div, getCreateOptions(e)))}),
+                                new MenuItem('',                  {separator: true}),
+                                new MenuItem('Render',            {icon: iconRenderDown, createType: RENDER, callback: e => actionManager.do(getCreateNodeAction(RENDER,       btnShape.div, getCreateOptions(e)))})]);
 
 
     menuTemplate = new Menu('Templates', true, false);
@@ -111309,6 +111889,182 @@ extends OperatorBase
 // }
 
 
+class   OpMeasurePoints
+extends OpShapeBase
+{
+    paramDistance;
+    paramAngle;
+
+
+
+    constructor()
+    {
+        super(MEASURE_POINTS, 'measure', 'measure', iconMeasurePoints);
+
+        this.iconOffsetY = 1;
+
+
+        this.addInput (new Input ([POINT_VALUE], getNodeInputValuesForUndo));//, this.input_getBackInitValue));
+        this.addInput (new Input ([POINT_VALUE], getNodeInputValuesForUndo));//, this.input_getBackInitValue));
+
+        this.addParam(this.paramDistance = new NumberParam('distance', 'distance', true, false, true, 0));
+        this.addParam(this.paramAngle    = new NumberParam('angle',    'angle',    true, false, true, 0, -180, 180));
+
+
+        this.paramAngle.controls[0].setSuffix('°', true);
+
+        this.paramDistance.controls[0].setDecimals(10, 0);
+        this.paramAngle   .controls[0].setDecimals(10, 0);
+
+        this.setAllParamDividers(0.5);
+    }
+
+
+
+    genRequest(gen)
+    {
+        // 'this' is the node
+
+        gen.scope.push({
+            nodeId:  this.id, 
+            paramId: NULL });
+
+
+        const [request, ignore] = this.genRequestStart(gen);
+        if (ignore) return request;
+
+
+        const input0 = this.inputs[0];
+        const input1 = this.inputs[1];
+
+        
+        if (   input0.connected
+            && input1.connected)   request.push(2,
+                                       ...pushInputOrParam(input0, gen),
+                                       ...pushInputOrParam(input1, gen));
+
+        else if (input0.connected) request.push(1, ...pushInputOrParam(input0, gen));
+        else if (input1.connected) request.push(1, ...pushInputOrParam(input1, gen));
+            
+        else                       request.push(0);
+
+            
+        gen.scope.pop();
+        pushUnique(gen.passedNodes, this);
+
+        return request;
+    }
+
+
+
+    updateValues(requestId, actionId, updateParamId, paramIds, values)
+    {
+        const distance = values[paramIds.findIndex(id => id == 'distance')];
+        const angle    = values[paramIds.findIndex(id => id == 'angle'   )];
+
+        this.paramDistance.setValue(distance, false, true, false);
+        this.paramAngle   .setValue(angle,    false, true, false);
+    }
+}
+
+
+class   OpInterpolatePoint
+extends OpShapeBase
+{
+    paramAmount;
+    paramTransform;
+    paramShowCenter;
+
+
+    menuTransform;
+    menuShowCenter;
+
+
+
+    constructor()
+    {
+        super(INTERPOLATE_POINT, 'interpolate', 'interpolate', iconInterpolatePoint);
+
+        this.iconOffsetY = -2;
+
+
+        this.addInput (new Input ([POINT_VALUE], getNodeInputValuesForUndo));//, this.input_getBackInitValue));
+        this.addInput (new Input ([POINT_VALUE], getNodeInputValuesForUndo));//, this.input_getBackInitValue));
+        this.addOutput(new Output([POINT_VALUE], this.output_genRequest));
+
+        this.addParam(this.paramAmount     = new NumberParam('amount',     'amount',      true, true, true, 50, 0, 100));
+        this.addParam(this.paramTransform  = new NumberParam('transform',  'transform',   true, true, true, 1, 0, 1));
+        this.addParam(this.paramShowCenter = new NumberParam('showCenter', 'show center', true, true, true, 0, 0, 1));
+
+        this.paramAmount.controls[0].min = Number.MIN_SAFE_INTEGER; // allow
+        this.paramAmount.controls[0].max = Number.MAX_SAFE_INTEGER; // extrapolation
+        
+        this.paramAmount.controls[0].setSuffix('%', true);
+
+        this.paramTransform .divider = 0.68;
+        this.paramShowCenter.divider = 0.68;
+
+        this.menuTransform  = createBoolMenu(this.paramTransform );
+        this.menuShowCenter = createBoolMenu(this.paramShowCenter);
+    }
+
+
+
+    output_genRequest(gen)
+    {
+        // 'this' is the output
+
+        gen.scope.push({
+            nodeId:  this.id, 
+            paramId: NULL });
+
+
+        const [request, ignore] = this.node.genRequestStart(gen);
+        if (ignore) return request;
+
+
+        const input0 = this.node.inputs[0];
+        const input1 = this.node.inputs[1];
+
+        
+        if (   input0.connected
+            && input1.connected)   request.push(2,
+                                       ...pushInputOrParam(input0, gen),
+                                       ...pushInputOrParam(input1, gen));
+
+        else if (input0.connected) request.push(1, ...pushInputOrParam(input0, gen));
+        else if (input1.connected) request.push(1, ...pushInputOrParam(input1, gen));
+            
+        else                       request.push(0);
+
+            
+        request.push(...this.node.paramAmount    .genRequest(gen));
+        request.push(...this.node.paramTransform .genRequest(gen));
+        request.push(...this.node.paramShowCenter.genRequest(gen));
+
+
+        gen.scope.pop();
+        pushUnique(gen.passedNodes, this.node);
+
+        return request;
+    }
+
+
+
+    updateParams()
+    {
+        this.paramAmount    .enableControlText(true);
+        this.paramTransform .enableControlText(true);
+        this.paramShowCenter.enableControlText(true);
+
+        updateParamConditionText(this.paramTransform,  this.paramTransform.isUnknown(),  true,  1);
+        updateParamConditionText(this.paramShowCenter, this.paramShowCenter.isUnknown(), false, 1);
+
+        this.updateParamControls();
+    }
+}
+
+
 class OpShapeBooleanBase
 extends OpShapeBase
 {
@@ -120589,6 +121345,9 @@ function createNode(nodeType, creatingButton = null, createdNodeId = -1, options
         case CENTER:                  node = new OpCenter();            break;
         case RESET_XFORM:             node = new OpResetTransform();    break;
         
+        case MEASURE_POINTS:          node = new OpMeasurePoints();     break;
+        case INTERPOLATE_POINT:       node = new OpInterpolatePoint();  break;
+
         case PLACE:                   node = new OpPlace();             break;
 
         case RENDER:                  node = new OpRender();            break;
@@ -120732,7 +121491,7 @@ function canAutoConnectNode(node)
 
 function uiDeleteNodes(nodeIds)
 {
-    nodeIds.forEach(id => nodeFromId(id).makePassive());
+    //nodeIds.forEach(id => nodeFromId(id).makePassive());
 
     graph.deleteNodes(nodeIds);
 
@@ -123439,10 +124198,10 @@ function showSubscriptionDialog(showBack = true)
 
     subscriptionBack.style.backgroundColor = showBack ? '#0005' : 'transparent';
     
-    updateLicenseInfo(
-        subscription != NULL
-        ? validateLicense(currentUser.id, subscription)
-        : null)
+    updateLicenseInfo()
+        // subscription != NULL
+        // ? validateLicense(currentUser.id, subscription)
+        // : null)
     .then(() => 
     {
         dialogShown             = true;
