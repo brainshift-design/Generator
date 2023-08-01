@@ -34,7 +34,7 @@ extends ResizableOperatorWithValue
 
     setRect(x, y, w, h, updateTransform = true)
     {
-        const headerHeight = boundingRect(this.header).height / graph.currentPage.zoom;
+        const headerHeight = Math.max(defHeaderHeight, boundingRect(this.header).height / graph.currentPage.zoom);
 
         const height =
             settings.showOperationResults

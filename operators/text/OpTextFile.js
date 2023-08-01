@@ -1,11 +1,11 @@
 class   OpTextFile
 extends ResizableBase
 {
-    file = null;
+    file        = null;
+    cachedValue = '';
  
     paramPath;
 
-    cachedValue = '';
 
 
 
@@ -55,7 +55,7 @@ extends ResizableBase
             {
                 this.file = file;
                 this.paramPath.setValue(new TextValue(file.path), false, true);
-                this.updateCachedValue();
+                this.updateCachedValue(true);
             });
             
 
@@ -72,9 +72,7 @@ extends ResizableBase
 
     setRect(x, y, w, h, updateTransform = true)
     {
-        const headerHeight = boundingRect(this.header).height / graph.currentPage.zoom;
-
-        const height = headerHeight + defParamHeight;
+        const height = defHeaderHeight + defParamHeight;
 
         super.setRect(
             x, 
@@ -86,14 +84,20 @@ extends ResizableBase
 
     
     
-    updateCachedValue()
+    updateCachedValue(update)
     {
         if (this.file)
         {
             const reader = new FileReader();
             reader.readAsText(this.file,'UTF-8');
 
-            reader.onload = e => this.cachedValue = e.target.result;
+            reader.onload = e => 
+            {
+                this.cachedValue = e.target.result;
+
+                if (update)
+                    pushUpdate(null, [this]);
+            };
         }
     }
 
@@ -111,11 +115,12 @@ extends ResizableBase
         if (ignore) return request;
 
         
-        if (this.node.cachedValue == '')
-            this.node.updateCachedValue();
+        // if (this.node.cachedValue == '')
+        //     this.node.updateCachedValue(true);
 
 
         request.push(TEXT_VALUE, encodeURIComponent(this.node.cachedValue));
+        request.push(...this.node.paramPath.genRequest(gen));
 
         
         gen.scope.pop();
@@ -139,19 +144,29 @@ extends ResizableBase
 
 
 
-    // updateParams()
-    // {
-    //     this.paramPath.enableControlText(false);
+    updateParams()
+    {
+        this.paramPath.enableControlText(false);
 
-    //     this.updateParamControls();
+        this.updateParamControls();
+    }
+
+
+
+    // invalidate()
+    // {
+    //     //this.cachedValue = '';
+
+    //     super.invalidate();
     // }
 
 
 
-    invalidate()
-    {
-        this.cachedValue = '';
+    // loadParams(_node, pasting)
+    // {
+    //     if (_node.path != undefined)
+    //         this.paramPath.setValue(parseTextValue(_node.path)[0], false, true);
 
-        super.invalidate();
-    }
+    //     super.loadParams(_node, pasting);
+    // }
 }

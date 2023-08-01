@@ -812,6 +812,7 @@ function genParseTextFile(parse)
 
 
     file.cachedValue = genParse(parse);
+    file.path        = genParse(parse);
 
     
     parse.nTab--;

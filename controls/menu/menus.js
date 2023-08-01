@@ -403,8 +403,8 @@ function initGeneratorMenus()
                           new MenuItem('',             {separator: true}),
                           new MenuItem('Date & time',  {icon: iconDateTime,  createType: NUMBER_DATETIME,  callback: e => actionManager.do(getCreateNodeAction(NUMBER_DATETIME, btnFlow.div, getCreateOptions(e)))}),
         menuFlowSep4    = new MenuItem('',             {separator: true}),
-                          new MenuItem('Fetch',        {icon: iconTextFetch, createType: TEXT_FETCH,       callback: e => actionManager.do(getCreateNodeAction(TEXT_FETCH,      btnFlow.div, getCreateOptions(e)))})]);//,
-                          //new MenuItem('Text file',    {icon: iconTextFile,  createType: TEXT_FILE,        callback: e => actionManager.do(getCreateNodeAction(TEXT_FILE,       btnFlow.div, getCreateOptions(e)))})]);
+                          new MenuItem('Fetch',        {icon: iconTextFetch, createType: TEXT_FETCH,       callback: e => actionManager.do(getCreateNodeAction(TEXT_FETCH,      btnFlow.div, getCreateOptions(e)))}),
+                          new MenuItem('Text file',    {icon: iconTextFile,  createType: TEXT_FILE,        callback: e => actionManager.do(getCreateNodeAction(TEXT_FILE,       btnFlow.div, getCreateOptions(e)))})]);
     
 
     menuData = new Menu('Data', true, false);
