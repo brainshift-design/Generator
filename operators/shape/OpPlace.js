@@ -32,6 +32,10 @@ extends OperatorBase
 
         this.menuTransform  = createBoolMenu(this.paramTransform );
         this.menuShowCenter = createBoolMenu(this.paramShowCenter);
+
+
+        this.inputs[0].addEventListener('connect',    e => this.outputs[0].types = [...this.inputs[0].connectedOutput.types]);
+        this.inputs[0].addEventListener('disconnect', e => this.outputs[0].types = [SHAPE_VALUE]);
     }
     
     
