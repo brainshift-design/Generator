@@ -67,9 +67,9 @@ extends GOperator
             {
                 transform:  transform,
                 showCenter: showCenter,
-                sp0:        position.objects.length > 0 ? addv(p, position.objects[0].sp0) : null,
-                sp1:        position.objects.length > 0 ? addv(p, position.objects[0].sp1) : null,
-                sp2:        position.objects.length > 0 ? addv(p, position.objects[0].sp2) : null
+                sp0:        position.objects.length > 0 ? p : null,
+                sp1:        position.objects.length > 0 ? p : null,
+                sp2:        position.objects.length > 0 ? p : null
             });
 
         
@@ -96,6 +96,8 @@ extends GOperator
             this.value.objects = getValidObjects(this.input);
 
 
+            console.log('options.sp0 =', options.sp0);
+
             const place = createTransform(
                 options.sp0 ? options.sp0.x : 0,
                 options.sp0 ? options.sp0.y : 0);
@@ -115,6 +117,7 @@ extends GOperator
                             -obj.sp0.y),
                         place);
 
+
                     if (   options.transform.value > 0
                         && options.sp0
                         && options.sp1
@@ -131,6 +134,7 @@ extends GOperator
                         obj.sp2 = addv(obj.sp0, point(0, 1));
                     }
 
+                    
                     obj.applyTransform(xform, true);
                 }
             }
