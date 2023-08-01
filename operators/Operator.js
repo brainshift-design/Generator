@@ -71,6 +71,8 @@ class Operator
 
     showActiveArrow    = false;
 
+    highlight          = 0;
+
     layoutIndex        = -1;
     newX               = Number.NaN;
 
@@ -1100,14 +1102,15 @@ class Operator
         const tab = HTAB;
 
         let json =
-              pos + tab + '"type": "'    + this.type                                     + '",\n'
-            + pos + tab + '"id": "'      + (this.stripIdForCopy ? this.nodeId : this.id) + '",\n'
-            + pos + tab + '"name": "'    + this.name.replace('"', '\\\"')                + '",\n'
-            + pos + tab + '"renamed": "' + boolToString(this.renamed)                    + '",\n'
-            + pos + tab + '"enabled": "' + boolToString(this.enabled)                    + '",\n'
-            + pos + tab + '"x": "'       + parseFloat(this.div.style.left)               + '",\n'
-            + pos + tab + '"y": "'       + parseFloat(this.div.style.top )               + '",\n'
-            + pos + tab + '"z": "'       + graph.nodes.indexOf(this)                     + '"';
+              pos + tab + '"type": "'      + this.type                                     + '",\n'
+            + pos + tab + '"id": "'        + (this.stripIdForCopy ? this.nodeId : this.id) + '",\n'
+            + pos + tab + '"name": "'      + this.name.replace('"', '\\\"')                + '",\n'
+            + pos + tab + '"renamed": "'   + boolToString(this.renamed)                    + '",\n'
+            + pos + tab + '"enabled": "'   + boolToString(this.enabled)                    + '",\n'
+            + pos + tab + '"highlight": "' + this.highlight                                + '",\n'
+            + pos + tab + '"x": "'         + parseFloat(this.div.style.left)               + '",\n'
+            + pos + tab + '"y": "'         + parseFloat(this.div.style.top )               + '",\n'
+            + pos + tab + '"z": "'         + graph.nodes.indexOf(this)                     + '"';
 
         if (this.active)
             json += ',\n' + pos + tab + '"active": "' + this.active + '"';
@@ -1161,11 +1164,9 @@ class Operator
         this.id   = _node.id;
         this.name = _node.name;
     
-        if (_node.renamed != undefined)
-            this.renamed = parseBool(_node.renamed);
-
-        if (_node.enabled)
-            this.enabled = parseBool(_node.enabled);
+        if (_node.renamed  ) this.renamed   = parseBool(_node.renamed);
+        if (_node.enabled  ) this.enabled   = parseBool(_node.enabled);
+        if (_node.highlight) this.highlight = parseInt(_node.highlight);
     
         if (   _node.params
             || this.alwaysLoadParams)

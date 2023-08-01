@@ -79,8 +79,8 @@ class Menu
             if (i > 0) 
                 item.div.appendChild(document.createElement('br'));
 
-            if (!this.showIcons ) item.divIcon .style.display = 'none';
-            if (!this.showChecks) item.divCheck.style.width   = this.showIcons ? 18 : 15;
+            if (!this.showIcons  && item.divIcon ) item.divIcon .style.display = 'none';
+            if (!this.showChecks && item.divCheck) item.divCheck.style.width   = this.showIcons ? 18 : 15;
 
             item.parentMenu = this;
             item.index      = i;
@@ -148,7 +148,11 @@ class Menu
         }
 
 
-        this.items.forEach(i => i.updateLegend());
+        for (const item of this.items)
+        {
+            if (item.updateLegend) 
+                item.updateLegend();
+        }
 
 
         this.divItems.style.width = Math.max(this.minWidth, width) + 'px';

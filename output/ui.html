@@ -2903,10 +2903,10 @@ a
 
 .menuItemHighlight
 {
-    display:  block;
-    position: absolute;
-    /* width:    100%; */
-    height:   25px;
+    display:        block;
+    position:       absolute;
+    height:         25px;
+    pointer-events: none;
 }
 
 
@@ -2922,6 +2922,19 @@ a
     background:          transparent;
 }
 
+
+.menuItemColor
+{
+    display:             inline-block;
+    width:               16px;
+    height:              16px;
+    border-radius:       1px;
+    margin-left:         4px;
+    margin-right:        4px;
+    position:            relative;
+    top:                 13px;
+    pointer-events:      none;
+}
 
 
 .menuItemCheck
@@ -4805,8 +4818,9 @@ a
             <div id='whatsNewBody'>
                 <h1 style='margin-top: 20px;'>What's new</h1>
 
-                <p>•  added Measure points node</p>
-                <p>•  added Interpolate point node</p>
+                <p>•  added Measure Points node</p>
+                <p>•  added Interpolate Point node</p>
+                <p>•  added color markers for nodes</p>
                 
                 <p><br/><br/><div id='chkHideWhatsNew'></div></p>
             </div>
@@ -10238,7 +10252,7 @@ const SHAPE_TYPES =
     MEASURE_POINTS,
     INTERPOLATE_POINT,
     POINT_ON_PATH,
-    
+
     RENDER
 ];
 
@@ -10404,6 +10418,7 @@ const CREATE_PAGE_ACTION         = 'CREATE_PAGE';
 const DELETE_PAGE_ACTION         = 'DELETE_PAGE';
 const GROUP_NODES_ACTION         = 'GROUP_NODES';
 const UNGROUP_NODES_ACTION       = 'UNGROUP_NODES';
+const HIGHLIGHT_NODES_ACTION     = 'HIGHLIGHT_NODES';
 
 
 const BLEND_NORMAL               = 'BNORM';
@@ -52481,7 +52496,7 @@ const SHAPE_TYPES =
     MEASURE_POINTS,
     INTERPOLATE_POINT,
     POINT_ON_PATH,
-    
+
     RENDER
 ];
 
@@ -52647,6 +52662,7 @@ const CREATE_PAGE_ACTION         = 'CREATE_PAGE';
 const DELETE_PAGE_ACTION         = 'DELETE_PAGE';
 const GROUP_NODES_ACTION         = 'GROUP_NODES';
 const UNGROUP_NODES_ACTION       = 'UNGROUP_NODES';
+const HIGHLIGHT_NODES_ACTION     = 'HIGHLIGHT_NODES';
 
 
 const BLEND_NORMAL               = 'BNORM';
@@ -82046,6 +82062,217 @@ ColorControl.prototype.initEvents = function()
 
 
 
+class ColorListMenuItem
+{
+    parentMenu    = null;
+    index         = -1;
+
+    enabled       = true;
+
+    callback      = null;
+
+
+    div;
+    divHighlight;
+
+    divColor1;
+    divColor2;
+    divColor3;
+    divColor4;
+    divColor5;
+    divColor6;
+    divColor7;
+    divColor8;
+
+    mouseOver = false;
+
+
+
+    constructor(options = {})
+    {
+        this.initOptions(options);
+        this.createControls();
+
+        this.update();
+    }
+
+
+
+    initOptions(options)
+    {
+        if (options.callback != undefined) this.callback = options.callback;
+    }
+
+
+
+    createControls()
+    {
+        this.div          = createDiv('menuItem');
+        this.divHighlight = createDiv('menuItemHighlight');
+
+        this.divColor1    = createDiv('menuItemColor');
+        this.divColor2    = createDiv('menuItemColor');
+        this.divColor3    = createDiv('menuItemColor');
+        this.divColor4    = createDiv('menuItemColor');
+        this.divColor5    = createDiv('menuItemColor');
+        this.divColor6    = createDiv('menuItemColor');
+        this.divColor7    = createDiv('menuItemColor');
+        this.divColor8    = createDiv('menuItemColor');
+
+        this.div      .style.textAlign  = 'center';
+        this.div      .style.top        = '-8px';
+        this.div      .style.height     = '41px';
+        
+        this.divColor1.style.background = 'transparent';
+        this.divColor1.style.boxShadow  = '0 0 0 1px inset #fff2';
+
+        this.divColor2.style.background = '#d44';
+        this.divColor3.style.background = '#f94';
+        this.divColor4.style.background = '#dd4';
+        this.divColor5.style.background = '#4d4';
+        this.divColor6.style.background = '#36f';
+        this.divColor7.style.background = '#d4d';
+        this.divColor8.style.background = '#ddd';
+
+        this.divHighlight.style.zIndex = -2;
+
+        
+        this.div.appendChild(this.divHighlight);
+
+        this.div.appendChild(this.divColor1);
+        this.div.appendChild(this.divColor2);
+        this.div.appendChild(this.divColor3);
+        this.div.appendChild(this.divColor4);
+        this.div.appendChild(this.divColor5);
+        this.div.appendChild(this.divColor6);
+        this.div.appendChild(this.divColor7);
+        this.div.appendChild(this.divColor8);
+
+
+
+        this.div.addEventListener('pointerup', e => 
+        {
+            e.stopPropagation();
+            e.preventDefault();
+
+
+            if (e.button == 0)
+            {
+                const rect = boundingRect(this.div);
+
+                if (this.callback)
+                {
+                    let index = Math.round((e.clientX - (rect.x-8)) / 24) - 1;
+                        index = Math.min(Math.max(0, index), 7);
+
+                    this.callback(index);
+                }
+            }
+        });
+
+
+
+        this.div.addEventListener('pointermove', e =>
+        {
+            if (this.enabled)
+            {
+                this.mouseOver = true;
+                this.update();
+
+
+                const rect = boundingRect(this.div);
+
+                let index = Math.round((e.clientX - (rect.x-8)) / 24) - 1;
+                    index = Math.min(Math.max(0, index), 7);
+
+                this.divHighlight.style.left   = (4 + index*24) + 'px';
+                this.divHighlight.style.width  = '24px';
+                this.divHighlight.style.top    = '0px';
+                this.divHighlight.style.height = '41px';
+
+                this.enteredDiv  = true;
+            }
+        });
+    
+
+    
+        this.div.addEventListener('pointerleave', () =>
+        {
+            this.mouseOver = false;
+            this.update();
+
+            this.enteredDiv    = false;
+            this.enteredExpand = false;
+        });
+
+
+        this.update();
+    }
+
+
+
+    select(shift = false, ctrl = false, alt = false, x = Number.NaN, y = Number.NaN)
+    {
+        if (!this.enabled)
+            return;
+
+
+        if (!isEmpty(currentMenus)) // this lets the item be selected without its parent menu being involved
+        {
+            if (this.parentMenu.button)
+                this.parentMenu.button.update();
+        }
+
+        if (!shift) 
+            hideAllMenus();
+
+
+        const e = 
+        {
+            shiftKey: shift,
+            ctrlKey:  ctrl,
+            altKey:   alt
+        };
+
+
+        if (!isNaN(x)) e.clientX = x;
+        if (!isNaN(y)) e.clientY = y;
+
+        if (this.callback)
+            this.callback(e);
+    }
+
+
+
+    // setEnabled(enabled)
+    // {
+    //     this.enabled = enabled;
+    //     this.update();
+    // }
+
+
+
+    setVisible(visible)
+    {
+        this.div.style.display = visible ? 'inline-block' : 'none';
+    }
+
+
+
+    update()
+    {
+        this.divHighlight.style.background = 
+               this.mouseOver
+            ||    this.childMenu
+               && this.childMenu.visible
+            ? 'var(--figma-color-bg-brand)'
+            : 'transparent';
+
+        this.div.style.opacity = this.enabled ? '100%' : '40%';
+    }
+}
+
+
 const iconGenerator         = '<svg width="20" height="10" viewBox="0 0 20 10" fill="none" xmlns="http://www.w3.org/2000/svg"><path d="M12.4662 3.05966C12.3952 2.82955 12.2972 2.62358 12.1722 2.44176C12.05 2.2571 11.9023 2.09943 11.729 1.96875C11.5585 1.83807 11.3625 1.74006 11.1409 1.67472C10.9193 1.60653 10.6779 1.57244 10.4165 1.57244C9.94775 1.57244 9.53014 1.69034 9.16366 1.92614C8.79718 2.16193 8.50883 2.50852 8.2986 2.96591C8.09122 3.42045 7.98752 3.97443 7.98752 4.62784C7.98752 5.28693 8.09122 5.84517 8.2986 6.30256C8.50599 6.75994 8.79434 7.10795 9.16366 7.34659C9.53298 7.58239 9.96196 7.70028 10.4506 7.70028C10.8938 7.70028 11.2773 7.61506 11.6012 7.4446C11.9279 7.27415 12.1793 7.03267 12.3554 6.72017C12.5316 6.40483 12.6196 6.03551 12.6196 5.61222L12.9776 5.66761H10.6083V4.43182H14.1495V5.48011C14.1495 6.22727 13.9904 6.87358 13.6722 7.41903C13.354 7.96449 12.9165 8.38494 12.3597 8.6804C11.8029 8.97301 11.1637 9.11932 10.4421 9.11932C9.63809 9.11932 8.93213 8.93892 8.32417 8.57812C7.71906 8.21449 7.24605 7.69886 6.90514 7.03125C6.56707 6.3608 6.39804 5.56534 6.39804 4.64489C6.39804 3.94034 6.49747 3.31108 6.69633 2.7571C6.89804 2.20312 7.17929 1.73295 7.54008 1.34659C7.90088 0.957386 8.32417 0.661932 8.80997 0.460227C9.29576 0.255682 9.82417 0.153409 10.3952 0.153409C10.8781 0.153409 11.3284 0.224432 11.746 0.366477C12.1637 0.505682 12.5344 0.704545 12.8583 0.963068C13.185 1.22159 13.4534 1.52841 13.6637 1.88352C13.8739 2.23864 14.0117 2.63068 14.077 3.05966H12.4662Z" fill="white"/><circle cx="2.5" cy="4.5" r="2" stroke="white"/><circle cx="18" cy="4.9" r="2" fill="white"/></svg>';
 
 const iconPage              = '<svg width="14" height="14" viewBox="0 0 14 14" fill="none" xmlns="http://www.w3.org/2000/svg"><rect width="14" height="14" rx="2.5" fill="#0C8CE9"/><path d="M7.4745 3.79841C7.83778 3.52553 8.2647 3.34457 8.78006 3.32152C8.92706 2.6837 9.49845 2.20813 10.1809 2.20813C10.9749 2.20813 11.6185 2.85175 11.6185 3.64569C11.6185 4.43963 10.9749 5.08325 10.1809 5.08325C9.61362 5.08325 9.12307 4.75465 8.88923 4.2774C8.54486 4.27815 8.28313 4.38963 8.0501 4.56468C7.73976 4.79779 7.47714 5.14458 7.16592 5.57207L7.10258 5.65929C6.7792 6.1051 6.39914 6.62905 5.86696 6.99999C6.39914 7.37093 6.7792 7.89489 7.10258 8.3407L7.16592 8.42792C7.47714 8.85541 7.73976 9.2022 8.0501 9.43531C8.28313 9.61036 8.54486 9.72184 8.88923 9.7226C9.12307 9.24535 9.61362 8.91674 10.1809 8.91674C10.9749 8.91674 11.6185 9.56035 11.6185 10.3543C11.6185 11.1482 10.9749 11.7919 10.1809 11.7919C9.49845 11.7919 8.92706 11.3163 8.78006 10.6785C8.2647 10.6554 7.83778 10.4745 7.4745 10.2016C7.03044 9.86801 6.68787 9.39958 6.39113 8.99198C5.871 8.27753 5.4567 7.71987 4.80484 7.54038C4.59126 8.06653 4.07511 8.43755 3.47231 8.43755C2.67837 8.43755 2.03475 7.79393 2.03475 6.99999C2.03475 6.20605 2.67837 5.56243 3.47231 5.56243C4.07512 5.56243 4.59127 5.93346 4.80485 6.45961C5.4567 6.28012 5.871 5.72245 6.39113 5.00801C6.68787 4.6004 7.03044 4.13197 7.4745 3.79841Z" fill="white"/></svg>';
@@ -82086,7 +82313,7 @@ const iconRandom            = '<svg width="7" height="11" viewBox="0 0 7 11" fil
 const iconNoise             = '<svg width="16" height="9" viewBox="0 0 16 9" fill="none" xmlns="http://www.w3.org/2000/svg"><circle cx="1" cy="8" r="1" fill="white"/><circle cx="3" cy="5" r="1" fill="white"/><circle cx="5" cy="3" r="1" fill="white"/><circle cx="7" cy="6" r="1" fill="white"/><circle cx="9" cy="1" r="1" fill="white"/><circle cx="11" cy="4" r="1" fill="white"/><circle cx="13" cy="2" r="1" fill="white"/><circle cx="15" cy="8" r="1" fill="white"/></svg>';
 const iconProbability       = '<svg width="18" height="18" viewBox="0 0 18 18" fill="none" xmlns="http://www.w3.org/2000/svg"><path d="M10.4802 4C11.0324 4 11.4802 3.55228 11.4802 3C11.4802 2.44772 11.0324 2 10.4802 2C9.92788 2 9.48016 2.44772 9.48016 3C9.48016 3.55228 9.92788 4 10.4802 4Z" fill="white"/><path d="M10.4802 6.5C11.0324 6.5 11.4802 6.05228 11.4802 5.5C11.4802 4.94772 11.0324 4.5 10.4802 4.5C9.92788 4.5 9.48016 4.94772 9.48016 5.5C9.48016 6.05228 9.92788 6.5 10.4802 6.5Z" fill="white"/><path d="M14.5198 9C15.0721 9 15.5198 8.55229 15.5198 8C15.5198 7.44772 15.0721 7 14.5198 7C13.9676 7 13.5198 7.44772 13.5198 8C13.5198 8.55229 13.9676 9 14.5198 9Z" fill="white"/><path d="M15.5198 5.5C15.5198 6.05228 15.0721 6.5 14.5198 6.5C13.9676 6.5 13.5198 6.05228 13.5198 5.5C13.5198 4.94772 13.9676 4.5 14.5198 4.5C15.0721 4.5 15.5198 4.94772 15.5198 5.5Z" fill="white"/><path d="M14.5198 4C15.0721 4 15.5198 3.55228 15.5198 3C15.5198 2.44772 15.0721 2 14.5198 2C13.9676 2 13.5198 2.44772 13.5198 3C13.5198 3.55228 13.9676 4 14.5198 4Z" fill="white"/><path d="M7.5 11.5C8.05229 11.5 8.5 11.0523 8.5 10.5C8.5 9.94771 8.05229 9.5 7.5 9.5C6.94772 9.5 6.5 9.94771 6.5 10.5C6.5 11.0523 6.94772 11.5 7.5 11.5Z" fill="white"/><path d="M8.5 14.5C8.5 15.0523 8.05229 15.5 7.5 15.5C6.94772 15.5 6.5 15.0523 6.5 14.5C6.5 13.9477 6.94772 13.5 7.5 13.5C8.05229 13.5 8.5 13.9477 8.5 14.5Z" fill="white"/><path d="M3.5 15.5C4.05228 15.5 4.5 15.0523 4.5 14.5C4.5 13.9477 4.05228 13.5 3.5 13.5C2.94772 13.5 2.5 13.9477 2.5 14.5C2.5 15.0523 2.94772 15.5 3.5 15.5Z" fill="white"/><path d="M4.5 10.5C4.5 11.0523 4.05228 11.5 3.5 11.5C2.94772 11.5 2.5 11.0523 2.5 10.5C2.5 9.94771 2.94772 9.5 3.5 9.5C4.05228 9.5 4.5 9.94771 4.5 10.5Z" fill="white"/><path d="M6.5 12.5C6.5 13.0523 6.05228 13.5 5.5 13.5C4.94772 13.5 4.5 13.0523 4.5 12.5C4.5 11.9477 4.94772 11.5 5.5 11.5C6.05228 11.5 6.5 11.9477 6.5 12.5Z" fill="white"/><path fill-rule="evenodd" clip-rule="evenodd" d="M7.00079 1.50079C7.00079 0.672366 7.67237 0.000793457 8.50079 0.000793457H16.4992C17.3276 0.000793457 17.9992 0.672366 17.9992 1.50079V9.49921C17.9992 10.3276 17.3276 10.9992 16.4992 10.9992H11V17C11 17.5523 10.5523 18 10 18H1C0.447715 18 0 17.5523 0 17V8C0 7.44771 0.447715 7 1 7H7.00079V1.50079ZM16.4992 9.99921H11V8.85427L11.0082 8.8492C11.1667 8.75064 11.2945 8.60969 11.377 8.44229C11.4596 8.27489 11.4936 8.08773 11.4753 7.90198C11.4571 7.71624 11.3871 7.53932 11.2735 7.39124C11.1599 7.24316 11.0071 7.12984 10.8324 7.06409C10.6577 6.99835 10.4681 6.9828 10.2851 7.01921C10.2701 7.02218 10.2553 7.02549 10.2406 7.02913C10.1635 7.0101 10.0829 7 10 7H8.00079V1.50079C8.00079 1.22465 8.22465 1.00079 8.50079 1.00079H16.4992C16.7753 1.00079 16.9992 1.22465 16.9992 1.50079V9.49921C16.9992 9.77535 16.7753 9.99921 16.4992 9.99921ZM10 8H1L1 17H10V8Z" fill="white"/></svg>';
 const iconAccumulate        = '<svg width="16" height="11" viewBox="0 0 16 11" fill="none" xmlns="http://www.w3.org/2000/svg"><rect y="9" width="1" height="2" fill="white"/><rect x="5" y="6" width="1" height="5" fill="white"/><rect x="10" y="3" width="1" height="8" fill="white"/><rect x="15" width="1" height="11" fill="white"/></svg>';
-const iconInterpolate       = '<svg width="17" height="17" viewBox="0 0 17 17" fill="none" xmlns="http://www.w3.org/2000/svg"><path fill-rule="evenodd" clip-rule="evenodd" d="M16.3083 1.39886L1.39882 16.3083L0.691711 15.6012L15.6012 0.691755L16.3083 1.39886Z" fill="white"/><circle cx="9" cy="8" r="2" fill="white"/></svg>';
+const iconInterpolate       = '<svg width="19" height="19" viewBox="0 0 19 19" fill="none" xmlns="http://www.w3.org/2000/svg"><path d="M6.52103 8.3389L8.95824 8.95823L8.35357 6.50635L9.47656 5.38337L10.189 8.81096L13.6401 9.5L12.523 10.6171L10.0795 10.0795L10.6259 12.5142L9.50001 13.6401L8.80218 10.1978L5.39511 9.46482L6.52103 8.3389Z" fill="white"/><rect x="7.5874" y="10.7054" width="1" height="7.09972" transform="rotate(45 7.5874 10.7054)" fill="white"/><rect x="4.39026" y="18.2929" width="1" height="5.20878" transform="rotate(135 4.39026 18.2929)" fill="white"/><rect x="11.3986" y="8.30853" width="1" height="7.11945" transform="rotate(-135 11.3986 8.30853)" fill="white"/><rect x="14.6097" y="0.707092" width="1" height="5.20878" transform="rotate(-45 14.6097 0.707092)" fill="white"/></svg>';
 const iconSolve             = '<svg width="18" height="14" viewBox="-4 0 18 14" fill="none" xmlns="http://www.w3.org/2000/svg"><circle cx="5.5" cy="5.5" r="5" stroke="white"/><rect x="9.44473" y="8.55527" width="6.21958" height="1.25789" transform="rotate(45 9.44473 8.55527)" fill="white"/><path d="M4.40227 3L5.5 4.8457L6.61544 3H7.97167L6.33215 5.5L8 8H6.65085L5.5 6.19987L4.35977 8H3L4.65722 5.5L3.04249 3H4.40227Z" fill="white"/></svg>';
 const iconAnimate           = '<svg width="9" height="13" viewBox="0 0 9 13" fill="none" xmlns="http://www.w3.org/2000/svg"><path d="M0 13V0L9 6.5L0 13Z" fill="white"/></svg>';
  
@@ -82316,8 +82543,8 @@ class Menu
             if (i > 0) 
                 item.div.appendChild(document.createElement('br'));
 
-            if (!this.showIcons ) item.divIcon .style.display = 'none';
-            if (!this.showChecks) item.divCheck.style.width   = this.showIcons ? 18 : 15;
+            if (!this.showIcons  && item.divIcon ) item.divIcon .style.display = 'none';
+            if (!this.showChecks && item.divCheck) item.divCheck.style.width   = this.showIcons ? 18 : 15;
 
             item.parentMenu = this;
             item.index      = i;
@@ -82385,7 +82612,11 @@ class Menu
         }
 
 
-        this.items.forEach(i => i.updateLegend());
+        for (const item of this.items)
+        {
+            if (item.updateLegend) 
+                item.updateLegend();
+        }
 
 
         this.divItems.style.width = Math.max(this.minWidth, width) + 'px';
@@ -83274,7 +83505,7 @@ class MenuItem
 
     setVisible(visible)
     {
-        menuItemDebug.div.style.display = visible ? 'inline-block' : 'none';
+        this.div.style.display = visible ? 'inline-block' : 'none';
     }
 
 
@@ -83366,6 +83597,7 @@ var menuWindow;
 var menuGraph;
 var menuNode;
 var menuNodeCopyAs;
+var menuNodeHighlight;
 var menuNodeSelect;
 
 
@@ -83513,6 +83745,7 @@ var menuItemNodeSep2;
 var menuItemNodeRename;
 //var menuItemNodeEdit;
 var menuItemNodeSep3;
+var menuItemNodeHighlight;
 var menuItemNodeSelect;
 // var menuItemNodeBringToFront;
 // var menuItemNodeSendToBack;
@@ -83997,6 +84230,10 @@ function initGeneratorMenus()
     };
 
 
+    menuNodeHighlight = new Menu('Highlight nodes menu', false, false);
+    menuNodeHighlight.addItems([
+        new ColorListMenuItem({callback: color => { hideAllMenus(); setNodeHighlight(graphView.selectedNodes, color); }})]);
+
     menuNodeSelect = new Menu('Select nodes menu', false, false);
     menuNodeSelect.addItems([
         new MenuItem('Select left',   {shortcut:  isMac ? osShift() + osAlt ()            : osShift() + osCtrl(false)          , callback: () => graphView.selectedNodes = [graphView.selectedNodes[0], ...getNodesBeforeNode(graphView.selectedNodes[0])] }),
@@ -84026,6 +84263,7 @@ function initGeneratorMenus()
         //menuItemNodeUngroup        = new MenuItem('Ungroup',         {                                 callback: e => { hideAllMenus(); actionManager.do(new UngroupNodesAction(graphView.selectedNodes)); }}),
         menuItemNodeSep2           = new MenuItem('',                 {separator: true}),
         menuItemNodeRename         = new MenuItem('Rename',           {shortcut:  osCtrl() + 'R',       callback: e => { hideAllMenus(); graphView.renameSelectedNode(); }}),
+        menuItemNodeHighlight      = new MenuItem('Highlight',        {childMenu: menuNodeHighlight}),
         menuItemNodeSelect         = new MenuItem('Select',           {childMenu: menuNodeSelect}),
         menuItemNodeSep3           = new MenuItem('',                 {separator: true}),
         // menuItemNodeEdit           = new MenuItem('Edit...',       {callback: e => { hideAllMenus(); graphView.editSelectedCustomNode(); }}),
@@ -94856,6 +95094,8 @@ class Operator
 
     showActiveArrow    = false;
 
+    highlight          = 0;
+
     layoutIndex        = -1;
     newX               = Number.NaN;
 
@@ -95885,14 +96125,15 @@ class Operator
         const tab = HTAB;
 
         let json =
-              pos + tab + '"type": "'    + this.type                                     + '",\n'
-            + pos + tab + '"id": "'      + (this.stripIdForCopy ? this.nodeId : this.id) + '",\n'
-            + pos + tab + '"name": "'    + this.name.replace('"', '\\\"')                + '",\n'
-            + pos + tab + '"renamed": "' + boolToString(this.renamed)                    + '",\n'
-            + pos + tab + '"enabled": "' + boolToString(this.enabled)                    + '",\n'
-            + pos + tab + '"x": "'       + parseFloat(this.div.style.left)               + '",\n'
-            + pos + tab + '"y": "'       + parseFloat(this.div.style.top )               + '",\n'
-            + pos + tab + '"z": "'       + graph.nodes.indexOf(this)                     + '"';
+              pos + tab + '"type": "'      + this.type                                     + '",\n'
+            + pos + tab + '"id": "'        + (this.stripIdForCopy ? this.nodeId : this.id) + '",\n'
+            + pos + tab + '"name": "'      + this.name.replace('"', '\\\"')                + '",\n'
+            + pos + tab + '"renamed": "'   + boolToString(this.renamed)                    + '",\n'
+            + pos + tab + '"enabled": "'   + boolToString(this.enabled)                    + '",\n'
+            + pos + tab + '"highlight": "' + this.highlight                                + '",\n'
+            + pos + tab + '"x": "'         + parseFloat(this.div.style.left)               + '",\n'
+            + pos + tab + '"y": "'         + parseFloat(this.div.style.top )               + '",\n'
+            + pos + tab + '"z": "'         + graph.nodes.indexOf(this)                     + '"';
 
         if (this.active)
             json += ',\n' + pos + tab + '"active": "' + this.active + '"';
@@ -95946,11 +96187,9 @@ class Operator
         this.id   = _node.id;
         this.name = _node.name;
     
-        if (_node.renamed != undefined)
-            this.renamed = parseBool(_node.renamed);
-
-        if (_node.enabled)
-            this.enabled = parseBool(_node.enabled);
+        if (_node.renamed  ) this.renamed   = parseBool(_node.renamed);
+        if (_node.enabled  ) this.enabled   = parseBool(_node.enabled);
+        if (_node.highlight) this.highlight = parseInt(_node.highlight);
     
         if (   _node.params
             || this.alwaysLoadParams)
@@ -97160,10 +97399,32 @@ Operator.prototype.updateBorder = function()
         ? 3
         : 3 * (((1 / graph.currentPage.zoom - 1) / 2) + 1);
 
+    const highlightScale = 
+        graph.currentPage.zoom >= 1
+        ? 8
+        : 8 * (((1 / graph.currentPage.zoom - 1) / 4) + 1);
+
+
+    let highlight;
+
+    switch (this.highlight)
+    {
+        case 0: highlight = 'transparent'; break;
+        case 1: highlight = '#f008';       break;
+        case 2: highlight = '#f809';       break;
+        case 3: highlight = '#ff08';       break;
+        case 4: highlight = '#0f08';       break;
+        case 5: highlight = '#36fd';       break;
+        case 6: highlight = '#f0f8';       break;
+        case 7: highlight = '#fff8';       break;
+    }
+
+
     this.div.style.boxShadow = 
-        this._selected
-        ? '0 0 0 ' + scale + 'px var(--figma-color-bg-brand)'
-        : 'none';
+          (this._selected
+           ? '0 0 0 ' + scale + 'px var(--figma-color-bg-brand), '
+           : '')
+        + '0 0 0 ' + highlightScale + 'px ' + highlight;
 }
 
 
@@ -109000,7 +109261,7 @@ extends OpColorBase
 
         this.addParam(this.paramFills  = new   ListParam('fills',  'fills',  false, true, true));
         this.addParam(this.paramWeight = new NumberParam('weight', 'weight', true,  true, true, 1, 0));
-        this.addParam(this.paramFit    = new SelectParam('fit',    'align',  true,  true, true, ['inside', 'center', 'outside'], 0));
+        this.addParam(this.paramFit    = new SelectParam('fit',    'align',  true,  true, true, ['inside', 'center', 'outside'], 1));
         this.addParam(this.paramJoin   = new SelectParam('join',   'join',   true,  true, true, ['miter', 'bevel', 'round'], 0));
         this.addParam(this.paramMiter  = new NumberParam('miter',  'miter',  true,  true, true, 28.96, 0, 180, 2));
         this.addParam(this.paramCap    = new SelectParam('cap',    'cap',    true,  true, true, ['none', 'square', 'round'], 0));
@@ -116258,6 +116519,66 @@ function GroupNodesAction_createOutputNodes(action)
 }
 
 
+class HighlightNodesAction
+extends Action
+{
+    nodeIds          = [];
+
+    prevColorIndices = [];
+    newColorIndex;
+
+
+
+    constructor(nodeIds, colorIndex)
+    {
+        super(
+            HIGHLIGHT_NODES_ACTION,
+              'HIGHLIGHT ' + nodeIds.length 
+            + ' ' + countString(nodeIds.length, 'node')
+            + ' as \'' + colorIndex + '\'');
+
+        this.affectsConnections = false;
+        this.selfUpdate         = true;
+
+        this.nodeIds            = [...nodeIds];
+        this.newColorIndex      = colorIndex;
+    }
+
+
+
+    do(updateNodes)
+    {
+        const nodes = this.nodeIds.map(id => nodeFromId(id));
+
+        this.prevColorIndices = [];
+
+        for (const node of nodes)
+        {
+            this.prevColorIndices.push(node.highlight);
+            node.highlight = this.newColorIndex;
+            node.updateBorder();
+        }
+
+        uiSaveNodes(this.nodeIds);
+    }
+
+
+
+    undo(updateNodes)
+    {
+        const nodes = this.nodeIds.map(id => nodeFromId(id));
+
+        for (let i = 0; i < nodes.length; i++)
+        {
+            nodes[i].highlight = this.prevColorIndices[i];
+            nodes[i].updateBorder();
+        }
+
+        uiSaveNodes(this.nodeIds);
+    }
+}
+
+
 class LinkExistingStyleAction
 extends Action
 {
@@ -122498,6 +122819,13 @@ function layoutSelectedNodes()
 
 
     actionManager.do(new MoveNodesAction(graphView.selectedNodes.map(n => n.nodeId), positions));
+}
+
+
+
+function setNodeHighlight(nodes, color)
+{
+    actionManager.do(new HighlightNodesAction(nodes.map(n => n.nodeId), color));
 }
 
 

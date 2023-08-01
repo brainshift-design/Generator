@@ -67,10 +67,32 @@ Operator.prototype.updateBorder = function()
         ? 3
         : 3 * (((1 / graph.currentPage.zoom - 1) / 2) + 1);
 
+    const highlightScale = 
+        graph.currentPage.zoom >= 1
+        ? 8
+        : 8 * (((1 / graph.currentPage.zoom - 1) / 4) + 1);
+
+
+    let highlight;
+
+    switch (this.highlight)
+    {
+        case 0: highlight = 'transparent'; break;
+        case 1: highlight = '#f008';       break;
+        case 2: highlight = '#f809';       break;
+        case 3: highlight = '#ff08';       break;
+        case 4: highlight = '#0f08';       break;
+        case 5: highlight = '#36fd';       break;
+        case 6: highlight = '#f0f8';       break;
+        case 7: highlight = '#fff8';       break;
+    }
+
+
     this.div.style.boxShadow = 
-        this._selected
-        ? '0 0 0 ' + scale + 'px var(--figma-color-bg-brand)'
-        : 'none';
+          (this._selected
+           ? '0 0 0 ' + scale + 'px var(--figma-color-bg-brand), '
+           : '')
+        + '0 0 0 ' + highlightScale + 'px ' + highlight;
 }
 
 

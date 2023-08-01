@@ -510,7 +510,7 @@ const SHAPE_TYPES =
     MEASURE_POINTS,
     INTERPOLATE_POINT,
     POINT_ON_PATH,
-    
+
     RENDER
 ];
 
@@ -676,6 +676,7 @@ const CREATE_PAGE_ACTION         = 'CREATE_PAGE';
 const DELETE_PAGE_ACTION         = 'DELETE_PAGE';
 const GROUP_NODES_ACTION         = 'GROUP_NODES';
 const UNGROUP_NODES_ACTION       = 'UNGROUP_NODES';
+const HIGHLIGHT_NODES_ACTION     = 'HIGHLIGHT_NODES';
 
 
 const BLEND_NORMAL               = 'BNORM';

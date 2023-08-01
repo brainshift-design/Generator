@@ -68,6 +68,7 @@ var menuWindow;
 var menuGraph;
 var menuNode;
 var menuNodeCopyAs;
+var menuNodeHighlight;
 var menuNodeSelect;
 
 
@@ -215,6 +216,7 @@ var menuItemNodeSep2;
 var menuItemNodeRename;
 //var menuItemNodeEdit;
 var menuItemNodeSep3;
+var menuItemNodeHighlight;
 var menuItemNodeSelect;
 // var menuItemNodeBringToFront;
 // var menuItemNodeSendToBack;
@@ -699,6 +701,10 @@ function initGeneratorMenus()
     };
 
 
+    menuNodeHighlight = new Menu('Highlight nodes menu', false, false);
+    menuNodeHighlight.addItems([
+        new ColorListMenuItem({callback: color => { hideAllMenus(); setNodeHighlight(graphView.selectedNodes, color); }})]);
+
     menuNodeSelect = new Menu('Select nodes menu', false, false);
     menuNodeSelect.addItems([
         new MenuItem('Select left',   {shortcut:  isMac ? osShift() + osAlt ()            : osShift() + osCtrl(false)          , callback: () => graphView.selectedNodes = [graphView.selectedNodes[0], ...getNodesBeforeNode(graphView.selectedNodes[0])] }),
@@ -728,6 +734,7 @@ function initGeneratorMenus()
         //menuItemNodeUngroup        = new MenuItem('Ungroup',         {                                 callback: e => { hideAllMenus(); actionManager.do(new UngroupNodesAction(graphView.selectedNodes)); }}),
         menuItemNodeSep2           = new MenuItem('',                 {separator: true}),
         menuItemNodeRename         = new MenuItem('Rename',           {shortcut:  osCtrl() + 'R',       callback: e => { hideAllMenus(); graphView.renameSelectedNode(); }}),
+        menuItemNodeHighlight      = new MenuItem('Highlight',        {childMenu: menuNodeHighlight}),
         menuItemNodeSelect         = new MenuItem('Select',           {childMenu: menuNodeSelect}),
         menuItemNodeSep3           = new MenuItem('',                 {separator: true}),
         // menuItemNodeEdit           = new MenuItem('Edit...',       {callback: e => { hideAllMenus(); graphView.editSelectedCustomNode(); }}),

@@ -1107,3 +1107,10 @@ function layoutSelectedNodes()
 
     actionManager.do(new MoveNodesAction(graphView.selectedNodes.map(n => n.nodeId), positions));
 }
+
+
+
+function setNodeHighlight(nodes, color)
+{
+    actionManager.do(new HighlightNodesAction(nodes.map(n => n.nodeId), color));
+}

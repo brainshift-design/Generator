@@ -398,7 +398,7 @@ class MenuItem
 
     setVisible(visible)
     {
-        menuItemDebug.div.style.display = visible ? 'inline-block' : 'none';
+        this.div.style.display = visible ? 'inline-block' : 'none';
     }
 
 
