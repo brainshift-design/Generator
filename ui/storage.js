@@ -492,15 +492,6 @@ function resolveConnections(nodes, _connections, first, last)
         return 0;
     });
 
-    for (const conn of _connections)
-        console.log('conn =', getConnectionString(
-            conn.outputNodeId,
-            conn.outputId,
-            conn.outputOrder,
-            conn.inputNodeId,
-            conn.inputId,
-            false));
-
 
     return new Promise(resolve => 
         requestAnimationFrame(() => 

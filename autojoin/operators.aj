@@ -55,6 +55,7 @@
 ../operators/flow/OpList.js
 ../operators/flow/OpSublist.js
 ../operators/flow/OpUnique.js
+../operators/flow/OpReverseList.js
 ../operators/flow/OpColumn.js
 ../operators/flow/OpCell.js
 ../operators/flow/OpItems.js
@@ -132,6 +133,7 @@
 ../operators/text/OpTextCSV.js
 ../operators/text/OpTextJson.js
 ../operators/text/OpTextFetch.js
+../operators/text/OpTextFile.js
 
 
 ../operators/color/OpColorBase.js
@@ -187,6 +189,7 @@
 
 ../operators/shape/OpMeasurePoints.js
 ../operators/shape/OpInterpolatePoint.js
+../operators/shape/OpPointOnPath.js
 
 ../operators/shape/boolean/OpShapeBooleanBase.js
 ../operators/shape/boolean/OpShapeBoolean.js

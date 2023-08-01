@@ -40,7 +40,7 @@ extends OpColorBase
 
 
         this.paramColor.isNodeValue = true;
-
+        
         this.paramOpacity.controls[0].suffix = '%';
 
         this.paramOpacity.divider = 0.54;
@@ -328,9 +328,9 @@ extends OpColorBase
               !this.inputs[0].connected
             || this.inputs[0].connectedOutput.supportsTypes(SHAPE_TYPES);
 
-        this.paramColor  .enableControlText(enable, !this.isUnknown());
-        this.paramOpacity.enableControlText(enable, !this.paramOpacity.isUnknown());
-        this.paramBlend  .enableControlText(enable, !this.paramBlend  .isUnknown());
+        this.paramColor  .enableControlText(enable, this.paramColor  .isUnknown());
+        this.paramOpacity.enableControlText(enable, this.paramOpacity.isUnknown());
+        this.paramBlend  .enableControlText(enable, this.paramBlend  .isUnknown());
 
         this.updateParamControls();
     }

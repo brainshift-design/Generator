@@ -323,6 +323,23 @@ function loadFromLocalFile(callback)
 
 
 
+function getLocalFile(callback)
+{
+    const input = document.createElement('input');
+
+    input.type   = 'file';
+    input.accept = '*.*';
+    
+    input.onchange = e => 
+    { 
+        callback(e.target.files[0]); 
+    }; 
+
+    input.click();
+}
+
+
+
 function saveToLocalFile(content, filename, contentType)
 {
     const a    = document.createElement('a');

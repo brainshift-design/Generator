@@ -75,6 +75,7 @@
 ../generator/types/flow/GList.js
 ../generator/types/flow/GSublist.js
 ../generator/types/flow/GUnique.js
+../generator/types/flow/GReverseList.js
 ../generator/types/flow/GColumn.js
 ../generator/types/flow/GCell.js
 ../generator/types/flow/GItems.js
@@ -158,6 +159,7 @@
 ../generator/types/text/GTextCSV.js
 ../generator/types/text/GTextJson.js
 ../generator/types/text/GTextFetch.js
+../generator/types/text/GTextFile.js
 
 
 ../generator/types/color/color correction.js
@@ -226,6 +228,7 @@
 
 ../generator/types/shape/GMeasurePoints.js
 ../generator/types/shape/GInterpolatePoint.js
+../generator/types/shape/GPointOnPath.js
 
 ../generator/types/shape/GPlace.js
 

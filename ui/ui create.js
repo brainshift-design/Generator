@@ -19,6 +19,7 @@ function createNode(nodeType, creatingButton = null, createdNodeId = -1, options
         case IF_ELSE:                 node = new OpIfElse();            break;
         case SUBLIST:                 node = new OpSublist();           break;
         case UNIQUE:                  node = new OpUnique();            break;
+        case REVERSE_LIST:            node = new OpReverseList();       break;
         case COLUMN:                  node = new OpColumn();            break;
         case CELL:                    node = new OpCell();              break;
         
@@ -88,6 +89,7 @@ function createNode(nodeType, creatingButton = null, createdNodeId = -1, options
         case TEXT_CSV:                node = new OpTextCSV();           break;
         case TEXT_JSON:               node = new OpTextJson();          break;
         case TEXT_FETCH:              node = new OpTextFetch();         break;
+        case TEXT_FILE:               node = new OpTextFile();          break;
 
         case COLOR:                   node = new OpColor(options);      break;
         case VALID_COLOR:             node = new OpValidColor();        break;
@@ -141,6 +143,7 @@ function createNode(nodeType, creatingButton = null, createdNodeId = -1, options
         
         case MEASURE_POINTS:          node = new OpMeasurePoints();     break;
         case INTERPOLATE_POINT:       node = new OpInterpolatePoint();  break;
+        case POINT_ON_PATH:           node = new OpPointOnPath();       break;
 
         case PLACE:                   node = new OpPlace();             break;
 

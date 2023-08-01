@@ -239,11 +239,11 @@ extends OpColorBase
                !this.inputs[0].connected
             || !this.inputs[0].connectedOutput.supportsTypes(STROKE_TYPES);
 
-        this.paramFills .enableControlText(enableFills);
-        this.paramWeight.enableControlText(enable);
-        this.paramFit   .enableControlText(enable);
-        this.paramJoin  .enableControlText(enable);
-        this.paramMiter .enableControlText(enable);
+        this.paramFills .enableControlText(enableFills, this.paramFills .isUnknown());
+        this.paramWeight.enableControlText(enable,      this.paramWeight.isUnknown());
+        this.paramFit   .enableControlText(enable,      this.paramFit   .isUnknown());
+        this.paramJoin  .enableControlText(enable,      this.paramJoin  .isUnknown());
+        this.paramMiter .enableControlText(enable,      this.paramMiter .isUnknown());
 
         this.updateParamControls();
     }

@@ -1,4 +1,4 @@
-class GInterpolatePoints
+class GInterpolatePoint
 extends GOperatorBase2
 {
     amount     = null;
@@ -16,7 +16,7 @@ extends GOperatorBase2
     
     copy()
     {
-        const copy = new GMeasurePoints(this.nodeId, this.options);
+        const copy = new GInterpolatePoint(this.nodeId, this.options);
 
         copy.copyBase(this);
 

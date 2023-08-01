@@ -115,6 +115,7 @@ function genParse(parse, inParam = true)
     else if (parse.next == LIST                   ) result = genParseList              (parse);
     else if (parse.next == SUBLIST                ) result = genParseSublist           (parse);
     else if (parse.next == UNIQUE                 ) result = genParseUnique            (parse);
+    else if (parse.next == REVERSE_LIST           ) result = genParseReverseList       (parse);
     else if (parse.next == COLUMN                 ) result = genParseColumn            (parse);
     else if (parse.next == CELL                   ) result = genParseCell              (parse);
     else if (parse.next == ITEMS                  ) result = genParseItems             (parse);
@@ -195,6 +196,7 @@ function genParse(parse, inParam = true)
     else if (parse.next == TEXT_CSV               ) result = genParseTextCSV           (parse);
     else if (parse.next == TEXT_JSON              ) result = genParseTextJson          (parse);
     else if (parse.next == TEXT_FETCH             ) result = genParseTextFetch         (parse);
+    else if (parse.next == TEXT_FILE              ) result = genParseTextFile          (parse);
  
     else if (parse.next == COLOR_VALUE            ) result = genParseColorValue        (parse);
     else if (parse.next == COLOR                  ) result = genParseColor             (parse);
@@ -275,6 +277,7 @@ function genParse(parse, inParam = true)
 
     else if (parse.next == MEASURE_POINTS         ) result = genParseMeasurePoints     (parse);
     else if (parse.next == INTERPOLATE_POINT      ) result = genParseInterpolatePoint  (parse);
+    else if (parse.next == POINT_ON_PATH          ) result = genParsePointOnPath       (parse);
 
     else if (parse.next == PLACE                  ) result = genParsePlace             (parse);
     else if (parse.next == SHAPE_APPLY            ) result = genParseShapeApply        (parse);

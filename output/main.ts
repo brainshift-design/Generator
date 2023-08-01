@@ -23,7 +23,7 @@ function noNodeTag(key) { return noTag(key, nodeTag); }
 function noConnTag(key) { return noTag(key, connTag); }
 
 
-const generatorVersion = 176;
+const generatorVersion = 178;
 
 
 const MAX_INT32        = 2147483647;
@@ -1015,6 +1015,7 @@ const TIMER                   = 'TIMER';
 const LIST                    = 'LIST';
 const SUBLIST                 = 'SUBLST';
 const UNIQUE                  = 'UNIQ';
+const REVERSE_LIST            = 'REVLST';
 const COLUMN                  = 'CLMN';
 const CELL                    = 'CELL';
 const ITEMS                   = 'ITEMS';
@@ -1062,6 +1063,7 @@ const FLOW_TYPES =
     ...LIST_TYPES,
     SUBLIST,
     UNIQUE,
+    REVERSE_LIST,
     COLUMN,
     CELL,
     ITEMS,
@@ -1188,6 +1190,7 @@ const TEXT_SPLIT     = 'TSPLT';
 const TEXT_JSON      = 'TJSON';
 const TEXT_CSV       = 'TCSV';
 const TEXT_FETCH     = 'FETCH';
+const TEXT_FILE      = 'TFILE';
 
 
 const NUMBER_TYPES =
@@ -1239,7 +1242,8 @@ const TEXT_TYPES =
     TEXT_SPLIT,
     TEXT_JSON,
     TEXT_CSV,
-    TEXT_FETCH
+    TEXT_FETCH,
+    TEXT_FILE
 ];
 
 

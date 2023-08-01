@@ -32,25 +32,6 @@ extends ResizableOperatorWithValue
 
 
 
-    // setSize(w, h, updateTransform = true)
-    // {
-    //     const headerHeight = boundingRect(this.header).height / graph.currentPage.zoom;
-
-    //     const height =
-    //         settings.showOperationResults
-    //         ? Math.max(headerHeight + 2 * defParamHeight, h)
-    //         : headerHeight + 2 * defParamHeight;
-
-    //     super.setSize(
-    //         w, 
-    //         height, 
-    //         updateTransform);
-
-    //     this.updateValueParam();
-    // }
-
-
-
     setRect(x, y, w, h, updateTransform = true)
     {
         const headerHeight = boundingRect(this.header).height / graph.currentPage.zoom;

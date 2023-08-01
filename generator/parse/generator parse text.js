@@ -786,3 +786,37 @@ function genParseTextFetch(parse)
     genParseNodeEnd(parse, fetch);
     return fetch;
 }
+
+
+
+function genParseTextFile(parse)
+{
+    const [, nodeId, options, ignore] = genParseNodeStart(parse);
+
+
+    const file = new GTextFile(nodeId, options);
+   
+
+    if (parse.settings.logRequests) 
+        logReq(file, parse, ignore);
+
+
+    if (ignore) 
+    {
+        genParseNodeEnd(parse, file);
+        return parse.parsedNodes.find(n => n.nodeId == nodeId);
+    }
+
+
+    parse.nTab++;
+
+
+    file.cachedValue = genParse(parse);
+
+    
+    parse.nTab--;
+
+
+    genParseNodeEnd(parse, file);
+    return file;
+}

@@ -4,7 +4,7 @@
 
 
 
-const generatorVersion = 176;
+const generatorVersion = 178;
 
 
 const MAX_INT32        = 2147483647;
@@ -3643,6 +3643,23 @@ function loadFromLocalFile(callback)
 
 
 
+function getLocalFile(callback)
+{
+    const input = document.createElement('input');
+
+    input.type   = 'file';
+    input.accept = '*.*';
+    
+    input.onchange = e => 
+    { 
+        callback(e.target.files[0]); 
+    }; 
+
+    input.click();
+}
+
+
+
 function saveToLocalFile(content, filename, contentType)
 {
     const a    = document.createElement('a');
@@ -4598,6 +4615,7 @@ const TIMER                   = 'TIMER';
 const LIST                    = 'LIST';
 const SUBLIST                 = 'SUBLST';
 const UNIQUE                  = 'UNIQ';
+const REVERSE_LIST            = 'REVLST';
 const COLUMN                  = 'CLMN';
 const CELL                    = 'CELL';
 const ITEMS                   = 'ITEMS';
@@ -4645,6 +4663,7 @@ const FLOW_TYPES =
     ...LIST_TYPES,
     SUBLIST,
     UNIQUE,
+    REVERSE_LIST,
     COLUMN,
     CELL,
     ITEMS,
@@ -4771,6 +4790,7 @@ const TEXT_SPLIT     = 'TSPLT';
 const TEXT_JSON      = 'TJSON';
 const TEXT_CSV       = 'TCSV';
 const TEXT_FETCH     = 'FETCH';
+const TEXT_FILE      = 'TFILE';
 
 
 const NUMBER_TYPES =
@@ -4822,7 +4842,8 @@ const TEXT_TYPES =
     TEXT_SPLIT,
     TEXT_JSON,
     TEXT_CSV,
-    TEXT_FETCH
+    TEXT_FETCH,
+    TEXT_FILE
 ];
 
 
@@ -14895,6 +14916,88 @@ extends GOperator
 
 
 
+class GReverseList
+extends GOperator
+{
+    input  = null;
+
+
+    
+    constructor(nodeId, options)
+    {
+        super(REVERSE_LIST, nodeId, options);
+    }
+
+
+    
+    copy()
+    {
+        const copy = new GReverseList(this.nodeId, this.options);
+
+        copy.copyBase(this);
+
+        return copy;
+    }
+
+
+
+    async eval(parse)
+    {
+        if (this.isCached())
+            return this;
+
+
+        const input = this.input ? (await this.input.eval(parse)).toValue() : null;
+
+
+        this.counts = new ListValue();
+
+
+        if (input)
+        {
+            if (this.options.enabled)
+            {
+                this.value = new ListValue();
+
+                for (let i = input.items.length-1; i >= 0; i--)
+                    this.value.items.push(input.items[i].copy());
+            }
+            else
+                this.value = input.copy();
+        }
+        else
+            this.value = new ListValue();//TextValue.NaN;
+
+
+        this.updateValues = [['', NullValue]];
+        
+
+        this.validate();
+
+        return this;
+    }
+
+
+
+    pushValueUpdates(parse)
+    {
+        super.pushValueUpdates(parse);
+
+        if (this.input) this.input.pushValueUpdates(parse);
+    }
+
+
+
+    invalidateInputs(from)
+    {
+        super.invalidateInputs(from);
+
+        if (this.input) this.input.invalidateInputs(from);
+    }
+}
+
+
+
 class GColumn
 extends GOperator
 {
@@ -21682,6 +21785,81 @@ extends GOperator
         super.invalidateInputs(from);
 
         if (this.request) this.request.invalidateInputs(from);
+
+        this.cachedValue = new TextValue();
+    }
+}
+
+
+class GTextFile
+extends GOperator
+{
+    cachedValue = null;
+
+
+
+    constructor(nodeId, options)
+    {
+        super(TEXT_FILE, nodeId, options);
+    }
+
+
+    
+    copy()
+    {
+        const copy = new GTextFile(this.nodeId, this.options);
+
+        copy.copyBase(this);
+
+        copy.cachedValue = this.cachedValue.copy();
+
+        return copy;
+    }
+
+
+
+    async eval(parse)
+    {
+        if (this.isCached())
+            return this;
+
+
+        const cachedValue = (await this.cachedValue.eval(parse)).toValue();
+
+        
+        genInitNodeProgress(this.nodeId);
+
+
+        this.value = cachedValue ?? new TextValue();
+
+
+        this.updateValues = [['', NullValue]];
+        // [
+        //     ['path', path]
+        // ];
+        
+        
+        this.validate();
+
+        return this;
+    }
+
+
+
+    pushValueUpdates(parse)
+    {
+        super.pushValueUpdates(parse);
+
+        //if (this.path) this.path.pushValueUpdates(parse);
+    }
+
+
+
+    invalidateInputs(from)
+    {
+        super.invalidateInputs(from);
+
+        //if (this.path) this.path.invalidateInputs(from);
 
         this.cachedValue = new TextValue();
     }
@@ -29753,7 +29931,7 @@ extends GOperatorBase2
 }
 
 
-class GInterpolatePoints
+class GInterpolatePoint
 extends GOperatorBase2
 {
     amount     = null;
@@ -29771,7 +29949,7 @@ extends GOperatorBase2
     
     copy()
     {
-        const copy = new GMeasurePoints(this.nodeId, this.options);
+        const copy = new GInterpolatePoint(this.nodeId, this.options);
 
         copy.copyBase(this);
 
@@ -29876,6 +30054,142 @@ extends GOperatorBase2
     {
         super.invalidateInputs(from);
 
+        if (this.amount    ) this.amount    .invalidateInputs(from);
+        if (this.transform ) this.transform .invalidateInputs(from);
+        if (this.showCenter) this.showCenter.invalidateInputs(from);
+    }
+}
+
+
+class GPointOnPath
+extends GOperatorBase2
+{
+    measure    = null;
+    amount     = null;
+    transform  = null;
+    showCenter = null;
+
+
+    
+    constructor(nodeId, options)
+    {
+        super(POINT_ON_PATH, nodeId, options);
+    }
+
+
+    
+    copy()
+    {
+        const copy = new GPointOnPath(this.nodeId, this.options);
+
+        copy.copyBase(this);
+
+        if (this.measure   ) copy.measure    = this.measure   .copy();
+        if (this.amount    ) copy.amount     = this.amount    .copy();
+        if (this.transform ) copy.transform  = this.transform .copy();
+        if (this.showCenter) copy.showCenter = this.showCenter.copy();
+
+        return copy;
+    }
+
+
+
+    async eval(parse)
+    {
+        if (this.isCached())
+            return this;
+
+
+        const measure    = this.measure    ? (await this.measure   .eval(parse)).toValue() : null;
+        const amount     = this.amount     ? (await this.amount    .eval(parse)).toValue() : null;
+        const transform  = this.transform  ? (await this.transform .eval(parse)).toValue() : null;
+        const showCenter = this.showCenter ? (await this.showCenter.eval(parse)).toValue() : null;
+
+
+        if (   this.input0
+            && this.input1)
+        {
+            const input0 = this.input0 ? (await this.input0.eval(parse)).toValue() : null;
+            const input1 = this.input1 ? (await this.input1.eval(parse)).toValue() : null;
+
+            if (   input0
+                && input1)
+            {
+                // const p0  = point(input0.objects[0].x, input0.objects[0].y);
+                // const p1  = point(input1.objects[0].x, input1.objects[0].y);
+                // const amt = amount.value / 100;
+
+                // const p   = lerpv(p0, p1, amt);
+
+                    
+                // let sp0 = lerpv(input0.objects[0].sp0, input1.objects[0].sp0, amt);
+                // let sp1 = lerpv(input0.objects[0].sp1, input1.objects[0].sp1, amt);
+                // let sp2 = lerpv(input0.objects[0].sp2, input1.objects[0].sp2, amt);
+
+                // if (transform.value > 0)
+                // {
+                //     const l1 = distance(sp0, sp1);
+                //     const l2 = distance(sp0, sp2);
+
+                //     sp0 = clone(p);
+                //     sp1 = addv(sp0, mulvs(unitv(subv(p1, p0)), l1));
+                //     sp2 = addv(sp0, crossv(mulvs(unitv(subv(p1, p0)), l2)));
+                // }
+
+
+                // this.value = new PointValue(this.nodeId, new NumberValue(p.x), new NumberValue(p.y));
+
+                // const pt = new FigmaPoint(this.nodeId, this.nodeId, this.nodeName, p.x, p.y);
+                // pt.createDefaultTransform(p.x, p.y);
+                // this.value.objects = [pt];
+
+                // this.value.objects[0].sp0 = sp0;
+                // this.value.objects[0].sp1 = sp1;
+                // this.value.objects[0].sp2 = sp2;
+
+
+                // if (showCenter.value > 0)
+                // {
+                //     const objects = [...this.value.objects]; // avoids infinite growth
+                //     objects.forEach(o => addObjectCenter(this, o, parse.viewportZoom));
+                // }
+            }
+        }
+
+
+        this.updateValues =
+        [
+            ['measure',    measure   ],
+            ['amount',     amount    ],
+            ['transform',  transform ],
+            ['showCenter', showCenter]
+        ];
+        
+
+        this.validate();
+
+        return this;
+    }
+
+
+
+    pushValueUpdates(parse)
+    {
+        super.pushValueUpdates(parse);
+
+        if (this.measure   ) this.measure   .pushValueUpdates(parse);
+        if (this.amount    ) this.amount    .pushValueUpdates(parse);
+        if (this.transform ) this.transform .pushValueUpdates(parse);
+        if (this.showCenter) this.showCenter.pushValueUpdates(parse);
+    }
+
+
+
+    invalidateInputs(from)
+    {
+        super.invalidateInputs(from);
+
+        if (this.measure   ) this.measure   .invalidateInputs(from);
         if (this.amount    ) this.amount    .invalidateInputs(from);
         if (this.transform ) this.transform .invalidateInputs(from);
         if (this.showCenter) this.showCenter.invalidateInputs(from);
@@ -31534,6 +31848,50 @@ function genParseUnique(parse)
 
     genParseNodeEnd(parse, unique);
     return unique;
+}
+
+
+
+function genParseReverseList(parse)
+{
+    const [, nodeId, options, ignore] = genParseNodeStart(parse);
+
+
+    const reverse = new GReverseList(nodeId, options);
+   
+
+    let nInputs = -1;
+    
+    if (!ignore)
+    {
+        nInputs = parseInt(parse.move());
+        consoleAssert(nInputs == 0 || nInputs == 1, 'nInputs must be [0, 1]');
+    }
+
+    
+    if (parse.settings.logRequests) 
+        logReq(reverse, parse, ignore, nInputs);
+
+
+    if (ignore) 
+    {
+        genParseNodeEnd(parse, reverse);
+        return parse.parsedNodes.find(n => n.nodeId == nodeId);
+    }
+
+
+    parse.nTab++;
+
+
+    if (nInputs == 1)
+        reverse.input = genParse(parse);
+  
+    
+    parse.nTab--;
+
+
+    genParseNodeEnd(parse, reverse);
+    return reverse;
 }
 
 
@@ -35449,7 +35807,7 @@ function genParseInterpolatePoint(parse)
     const [, nodeId, options, ignore] = genParseNodeStart(parse);
 
 
-    const lerp = new GInterpolatePoints(nodeId, options);
+    const lerp = new GInterpolatePoint(nodeId, options);
 
 
     let nInputs = -1;
@@ -35496,6 +35854,63 @@ function genParseInterpolatePoint(parse)
 
     genParseNodeEnd(parse, lerp);
     return lerp;
+}
+
+
+
+function genParsePointOnPath(parse)
+{
+    const [, nodeId, options, ignore] = genParseNodeStart(parse);
+
+
+    const pop = new GPointOnPath(nodeId, options);
+
+
+    let nInputs = -1;
+
+    if (!ignore)
+    {
+        nInputs = parseInt(parse.move());
+        consoleAssert(nInputs => 0 && nInputs <= 2, 'nInputs must be [0, 2]');
+    }
+
+    
+    if (parse.settings.logRequests) 
+        logReq(pop, parse, ignore, nInputs);
+
+
+    if (ignore) 
+    {
+        genParseNodeEnd(parse, pop);
+        return parse.parsedNodes.find(n => n.nodeId == nodeId);
+    }
+
+
+    parse.nTab++;
+
+
+    if (nInputs == 2)
+    {
+        pop.input0 = genParse(parse);
+        pop.input1 = genParse(parse);
+    }
+    else if (nInputs == 1)
+    {
+        pop.input0 = genParse(parse); // doesn't matter if it's input0 or input1, the eval() result will be the same
+    }
+
+
+    pop.measure    = genParse(parse);
+    pop.amount     = genParse(parse);
+    pop.transform  = genParse(parse);
+    pop.showCenter = genParse(parse);
+
+
+    parse.nTab--;
+
+
+    genParseNodeEnd(parse, pop);
+    return pop;
 }
 
 
@@ -36511,6 +36926,40 @@ function genParseTextFetch(parse)
 }
 
 
+
+function genParseTextFile(parse)
+{
+    const [, nodeId, options, ignore] = genParseNodeStart(parse);
+
+
+    const file = new GTextFile(nodeId, options);
+   
+
+    if (parse.settings.logRequests) 
+        logReq(file, parse, ignore);
+
+
+    if (ignore) 
+    {
+        genParseNodeEnd(parse, file);
+        return parse.parsedNodes.find(n => n.nodeId == nodeId);
+    }
+
+
+    parse.nTab++;
+
+
+    file.cachedValue = genParse(parse);
+
+    
+    parse.nTab--;
+
+
+    genParseNodeEnd(parse, file);
+    return file;
+}
+
+
 class Parse
 {
     request;
@@ -36628,6 +37077,7 @@ function genParse(parse, inParam = true)
     else if (parse.next == LIST                   ) result = genParseList              (parse);
     else if (parse.next == SUBLIST                ) result = genParseSublist           (parse);
     else if (parse.next == UNIQUE                 ) result = genParseUnique            (parse);
+    else if (parse.next == REVERSE_LIST           ) result = genParseReverseList       (parse);
     else if (parse.next == COLUMN                 ) result = genParseColumn            (parse);
     else if (parse.next == CELL                   ) result = genParseCell              (parse);
     else if (parse.next == ITEMS                  ) result = genParseItems             (parse);
@@ -36708,6 +37158,7 @@ function genParse(parse, inParam = true)
     else if (parse.next == TEXT_CSV               ) result = genParseTextCSV           (parse);
     else if (parse.next == TEXT_JSON              ) result = genParseTextJson          (parse);
     else if (parse.next == TEXT_FETCH             ) result = genParseTextFetch         (parse);
+    else if (parse.next == TEXT_FILE              ) result = genParseTextFile          (parse);
  
     else if (parse.next == COLOR_VALUE            ) result = genParseColorValue        (parse);
     else if (parse.next == COLOR                  ) result = genParseColor             (parse);
@@ -36788,6 +37239,7 @@ function genParse(parse, inParam = true)
 
     else if (parse.next == MEASURE_POINTS         ) result = genParseMeasurePoints     (parse);
     else if (parse.next == INTERPOLATE_POINT      ) result = genParseInterpolatePoint  (parse);
+    else if (parse.next == POINT_ON_PATH          ) result = genParsePointOnPath       (parse);
 
     else if (parse.next == PLACE                  ) result = genParsePlace             (parse);
     else if (parse.next == SHAPE_APPLY            ) result = genParseShapeApply        (parse);

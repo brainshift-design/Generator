@@ -1406,7 +1406,7 @@ function genParseInterpolatePoint(parse)
     const [, nodeId, options, ignore] = genParseNodeStart(parse);
 
 
-    const lerp = new GInterpolatePoints(nodeId, options);
+    const lerp = new GInterpolatePoint(nodeId, options);
 
 
     let nInputs = -1;
@@ -1453,6 +1453,63 @@ function genParseInterpolatePoint(parse)
 
     genParseNodeEnd(parse, lerp);
     return lerp;
+}
+
+
+
+function genParsePointOnPath(parse)
+{
+    const [, nodeId, options, ignore] = genParseNodeStart(parse);
+
+
+    const pop = new GPointOnPath(nodeId, options);
+
+
+    let nInputs = -1;
+
+    if (!ignore)
+    {
+        nInputs = parseInt(parse.move());
+        consoleAssert(nInputs => 0 && nInputs <= 2, 'nInputs must be [0, 2]');
+    }
+
+    
+    if (parse.settings.logRequests) 
+        logReq(pop, parse, ignore, nInputs);
+
+
+    if (ignore) 
+    {
+        genParseNodeEnd(parse, pop);
+        return parse.parsedNodes.find(n => n.nodeId == nodeId);
+    }
+
+
+    parse.nTab++;
+
+
+    if (nInputs == 2)
+    {
+        pop.input0 = genParse(parse);
+        pop.input1 = genParse(parse);
+    }
+    else if (nInputs == 1)
+    {
+        pop.input0 = genParse(parse); // doesn't matter if it's input0 or input1, the eval() result will be the same
+    }
+
+
+    pop.measure    = genParse(parse);
+    pop.amount     = genParse(parse);
+    pop.transform  = genParse(parse);
+    pop.showCenter = genParse(parse);
+
+
+    parse.nTab--;
+
+
+    genParseNodeEnd(parse, pop);
+    return pop;
 }
 
 
