@@ -486,11 +486,20 @@ function resolveConnections(nodes, _connections, first, last)
 {
     _connections.sort((c1, c2) =>
     {
-        if (c1.outputOrder != c2.outputOrder) return c1.outputOrder - c2.outputOrder;
         if (c1.inputNodeId != c2.inputNodeId) return c1.inputNodeId - c2.inputNodeId;
         if (c1.inputId     != c2.inputId    ) return c1.inputId     - c2.inputId;
+        if (c1.outputOrder != c2.outputOrder) return c1.outputOrder - c2.outputOrder;
         return 0;
     });
+
+    for (const conn of _connections)
+        console.log('conn =', getConnectionString(
+            conn.outputNodeId,
+            conn.outputId,
+            conn.outputOrder,
+            conn.inputNodeId,
+            conn.inputId,
+            false));
 
 
     return new Promise(resolve => 
