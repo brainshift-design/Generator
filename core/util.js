@@ -483,3 +483,22 @@ function skipRandom(count)
     for (let i = 0; i < count; i++) 
         Math.random();
 }
+
+
+
+function includesSimilar(str, sub, levenshteinDistance)
+{
+    if (sub.length > str.length)
+        return false;
+    
+    if (str.includes(sub))
+        return true;
+    
+    for (let i = 0; i <= str.length - sub.length; i++) 
+    {
+        const s = str.substring(i, i + sub.length);
+        
+        if (getEditDistance(sub, s) <= levenshteinDistance)
+            return true;
+    }
+}

@@ -16,7 +16,7 @@ extends OperatorWithValue
         this.addOutput(new Output([TEXT_VALUE], this.output_genRequest));
 
         this.addParam(this.paramValue);
-        this.addParam(this.paramCase = new SelectParam('case', 'case', false, true, true, ['lower', 'Capital', 'UPPER']));
+        this.addParam(this.paramCase = new SelectParam('case', 'case', false, true, true, ['lower', 'Capital first', 'Capital All', 'UPPER'], 1));
 
         setControlFont(this.paramValue.controls[0].textbox, 'Roboto Mono', 10, 'center');
     }

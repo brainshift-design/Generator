@@ -96,8 +96,6 @@ extends GOperator
             this.value.objects = getValidObjects(this.input);
 
 
-            console.log('options.sp0 =', options.sp0);
-
             const place = createTransform(
                 options.sp0 ? options.sp0.x : 0,
                 options.sp0 ? options.sp0.y : 0);

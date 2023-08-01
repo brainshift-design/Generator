@@ -3093,6 +3093,25 @@ function skipRandom(count)
 }
 
 
+
+function includesSimilar(str, sub, levenshteinDistance)
+{
+    if (sub.length > str.length)
+        return false;
+    
+    if (str.includes(sub))
+        return true;
+    
+    for (let i = 0; i <= str.length - sub.length; i++) 
+    {
+        const s = str.substring(i, i + sub.length);
+        
+        if (getEditDistance(sub, s) <= levenshteinDistance)
+            return true;
+    }
+}
+
+
 "use strict";
 
 // Base64 / binary data / UTF-8 strings utilities
@@ -20649,7 +20668,27 @@ extends GTextType1
                     if (val.length > 1) this.value.value += val.substring(1)   .toLowerCase();
                 }
 
-                else if (_case.value == 2) 
+                else if (_case.value == 2)
+                {
+                    this.value.value = '';
+
+                    let i = 0;
+                    while (i < val.length)
+                    {
+                        while (i < val.length
+                            && /\s/.test(val.charAt(i)))
+                            this.value.value += val.charAt(i++);
+
+                        if (i < val.length)
+                            this.value.value += val.charAt(i++).toUpperCase();
+
+                        while (i < val.length
+                            && !/\s/.test(val.charAt(i)))
+                            this.value.value += val.charAt(i++).toLowerCase();
+                    }
+                }
+
+                else if (_case.value == 3) 
                     this.value.value = val.toUpperCase();
             }
         }
@@ -30312,8 +30351,6 @@ extends GOperator
         {
             this.value.objects = getValidObjects(this.input);
 
-
-            console.log('options.sp0 =', options.sp0);
 
             const place = createTransform(
                 options.sp0 ? options.sp0.x : 0,

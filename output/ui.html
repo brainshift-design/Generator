@@ -4819,6 +4819,7 @@ a
                 <h1 style='margin-top: 20px;'>What's new</h1>
 
                 <p>•  fixed bug in Place node</p>
+                <p>•  added Capital All to text Case node</p>
                 <p>•  fixed UI issues</p>
                 
                 <p><br/><br/><div id='chkHideWhatsNew'></div></p>
@@ -8249,6 +8250,25 @@ function skipRandom(count)
 {
     for (let i = 0; i < count; i++) 
         Math.random();
+}
+
+
+
+function includesSimilar(str, sub, levenshteinDistance)
+{
+    if (sub.length > str.length)
+        return false;
+    
+    if (str.includes(sub))
+        return true;
+    
+    for (let i = 0; i <= str.length - sub.length; i++) 
+    {
+        const s = str.substring(i, i + sub.length);
+        
+        if (getEditDistance(sub, s) <= levenshteinDistance)
+            return true;
+    }
 }
 
 
@@ -25808,7 +25828,27 @@ extends GTextType1
                     if (val.length > 1) this.value.value += val.substring(1)   .toLowerCase();
                 }
 
-                else if (_case.value == 2) 
+                else if (_case.value == 2)
+                {
+                    this.value.value = '';
+
+                    let i = 0;
+                    while (i < val.length)
+                    {
+                        while (i < val.length
+                            && /\s/.test(val.charAt(i)))
+                            this.value.value += val.charAt(i++);
+
+                        if (i < val.length)
+                            this.value.value += val.charAt(i++).toUpperCase();
+
+                        while (i < val.length
+                            && !/\s/.test(val.charAt(i)))
+                            this.value.value += val.charAt(i++).toLowerCase();
+                    }
+                }
+
+                else if (_case.value == 3) 
                     this.value.value = val.toUpperCase();
             }
         }
@@ -35471,8 +35511,6 @@ extends GOperator
         {
             this.value.objects = getValidObjects(this.input);
 
-
-            console.log('options.sp0 =', options.sp0);
 
             const place = createTransform(
                 options.sp0 ? options.sp0.x : 0,
@@ -48796,6 +48834,25 @@ function skipRandom(count)
 {
     for (let i = 0; i < count; i++) 
         Math.random();
+}
+
+
+
+function includesSimilar(str, sub, levenshteinDistance)
+{
+    if (sub.length > str.length)
+        return false;
+    
+    if (str.includes(sub))
+        return true;
+    
+    for (let i = 0; i <= str.length - sub.length; i++) 
+    {
+        const s = str.substring(i, i + sub.length);
+        
+        if (getEditDistance(sub, s) <= levenshteinDistance)
+            return true;
+    }
 }
 
 
@@ -68526,7 +68583,27 @@ extends GTextType1
                     if (val.length > 1) this.value.value += val.substring(1)   .toLowerCase();
                 }
 
-                else if (_case.value == 2) 
+                else if (_case.value == 2)
+                {
+                    this.value.value = '';
+
+                    let i = 0;
+                    while (i < val.length)
+                    {
+                        while (i < val.length
+                            && /\s/.test(val.charAt(i)))
+                            this.value.value += val.charAt(i++);
+
+                        if (i < val.length)
+                            this.value.value += val.charAt(i++).toUpperCase();
+
+                        while (i < val.length
+                            && !/\s/.test(val.charAt(i)))
+                            this.value.value += val.charAt(i++).toLowerCase();
+                    }
+                }
+
+                else if (_case.value == 3) 
                     this.value.value = val.toUpperCase();
             }
         }
@@ -78189,8 +78266,6 @@ extends GOperator
         {
             this.value.objects = getValidObjects(this.input);
 
-
-            console.log('options.sp0 =', options.sp0);
 
             const place = createTransform(
                 options.sp0 ? options.sp0.x : 0,
@@ -104832,7 +104907,7 @@ extends OperatorWithValue
         this.addOutput(new Output([TEXT_VALUE], this.output_genRequest));
 
         this.addParam(this.paramValue);
-        this.addParam(this.paramCase = new SelectParam('case', 'case', false, true, true, ['lower', 'Capital', 'UPPER']));
+        this.addParam(this.paramCase = new SelectParam('case', 'case', false, true, true, ['lower', 'Capital first', 'Capital All', 'UPPER'], 1));
 
         setControlFont(this.paramValue.controls[0].textbox, 'Roboto Mono', 10, 'center');
     }

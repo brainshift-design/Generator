@@ -56,7 +56,27 @@ extends GTextType1
                     if (val.length > 1) this.value.value += val.substring(1)   .toLowerCase();
                 }
 
-                else if (_case.value == 2) 
+                else if (_case.value == 2)
+                {
+                    this.value.value = '';
+
+                    let i = 0;
+                    while (i < val.length)
+                    {
+                        while (i < val.length
+                            && /\s/.test(val.charAt(i)))
+                            this.value.value += val.charAt(i++);
+
+                        if (i < val.length)
+                            this.value.value += val.charAt(i++).toUpperCase();
+
+                        while (i < val.length
+                            && !/\s/.test(val.charAt(i)))
+                            this.value.value += val.charAt(i++).toLowerCase();
+                    }
+                }
+
+                else if (_case.value == 3) 
                     this.value.value = val.toUpperCase();
             }
         }
