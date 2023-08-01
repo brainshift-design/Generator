@@ -14777,12 +14777,18 @@ extends GOperator
                 if (this.options.enabled)
                 {
                     for (let i = start.value; i < end.value; i++)
+                    {
                         this.value.items.push(input.items[i].copy());
+                        this.value.objects.push(...input.items[i].objects);
+                    }
                 }
                 else
                     this.value = input.copy();
             }
         }
+
+
+        this.updateValueObjects();
 
 
         this.updateValues =
@@ -14874,6 +14880,8 @@ extends GOperator
                     if (foundIndex < 0)
                     {
                         this.value.items.push(item.copy());
+                        this.value.objects.push(...item.objects);
+
                         this.counts.items.push(new NumberValue(1));
                     }
                     else
@@ -14885,6 +14893,9 @@ extends GOperator
         }
         else
             this.value = new ListValue();//TextValue.NaN;
+
+
+        this.updateValueObjects();
 
 
         this.updateValues = [['counts', this.counts]];
@@ -14960,13 +14971,19 @@ extends GOperator
                 this.value = new ListValue();
 
                 for (let i = input.items.length-1; i >= 0; i--)
+                {
                     this.value.items.push(input.items[i].copy());
+                    this.value.objects.push(...input.items[i].objects);
+                }
             }
             else
                 this.value = input.copy();
         }
         else
             this.value = new ListValue();//TextValue.NaN;
+
+
+        this.updateValueObjects();
 
 
         this.updateValues = [['', NullValue]];
@@ -15054,10 +15071,11 @@ extends GOperator
                     {
                         const row = input.items[i];
 
-                        this.value.items.push(
-                            index.value < row.items.length
-                            ? row.items[index.value].copy()
-                            : NullValue);
+                        if (index.value < row.items.length)
+                        {
+                            this.value.items.push(row.items[index.value].copy());
+                            this.value.objects.push(...row.items[index.value].objects);
+                        }
                     }
                 }
             }
@@ -15066,8 +15084,8 @@ extends GOperator
 
         this.updateValues =
         [
-            ['length', new NumberValue(maxColumns)],
-            ['index',  index                  ]
+            ['length', new NumberValue(this.value.items.length)],
+            ['index',  index]
         ];
         
 

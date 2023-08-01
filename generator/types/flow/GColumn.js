@@ -54,10 +54,11 @@ extends GOperator
                     {
                         const row = input.items[i];
 
-                        this.value.items.push(
-                            index.value < row.items.length
-                            ? row.items[index.value].copy()
-                            : NullValue);
+                        if (index.value < row.items.length)
+                        {
+                            this.value.items.push(row.items[index.value].copy());
+                            this.value.objects.push(...row.items[index.value].objects);
+                        }
                     }
                 }
             }
@@ -66,8 +67,8 @@ extends GOperator
 
         this.updateValues =
         [
-            ['length', new NumberValue(maxColumns)],
-            ['index',  index                  ]
+            ['length', new NumberValue(this.value.items.length)],
+            ['index',  index]
         ];
         
 

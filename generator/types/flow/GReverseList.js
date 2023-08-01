@@ -42,13 +42,19 @@ extends GOperator
                 this.value = new ListValue();
 
                 for (let i = input.items.length-1; i >= 0; i--)
+                {
                     this.value.items.push(input.items[i].copy());
+                    this.value.objects.push(...input.items[i].objects);
+                }
             }
             else
                 this.value = input.copy();
         }
         else
             this.value = new ListValue();//TextValue.NaN;
+
+
+        this.updateValueObjects();
 
 
         this.updateValues = [['', NullValue]];

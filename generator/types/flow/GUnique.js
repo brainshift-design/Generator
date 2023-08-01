@@ -51,6 +51,8 @@ extends GOperator
                     if (foundIndex < 0)
                     {
                         this.value.items.push(item.copy());
+                        this.value.objects.push(...item.objects);
+
                         this.counts.items.push(new NumberValue(1));
                     }
                     else
@@ -62,6 +64,9 @@ extends GOperator
         }
         else
             this.value = new ListValue();//TextValue.NaN;
+
+
+        this.updateValueObjects();
 
 
         this.updateValues = [['counts', this.counts]];

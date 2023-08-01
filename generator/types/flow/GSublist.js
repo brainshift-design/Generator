@@ -57,12 +57,18 @@ extends GOperator
                 if (this.options.enabled)
                 {
                     for (let i = start.value; i < end.value; i++)
+                    {
                         this.value.items.push(input.items[i].copy());
+                        this.value.objects.push(...input.items[i].objects);
+                    }
                 }
                 else
                     this.value = input.copy();
             }
         }
+
+
+        this.updateValueObjects();
 
 
         this.updateValues =
