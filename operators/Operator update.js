@@ -78,13 +78,14 @@ Operator.prototype.updateBorder = function()
     switch (this.highlight)
     {
         case 0: highlight = 'transparent'; break;
-        case 1: highlight = '#f008';       break;
-        case 2: highlight = '#f809';       break;
-        case 3: highlight = '#ff08';       break;
-        case 4: highlight = '#0f08';       break;
-        case 5: highlight = '#36fd';       break;
-        case 6: highlight = '#f0f8';       break;
-        case 7: highlight = '#fff8';       break;
+
+        case 1: highlight = darkMode ? '#f008' : '#f006'; break;
+        case 2: highlight = darkMode ? '#f809' : '#f808'; break;
+        case 3: highlight = darkMode ? '#ff08' : '#dd0f'; break;
+        case 4: highlight = darkMode ? '#0f08' : '#0d09'; break;
+        case 5: highlight = darkMode ? '#36fd' : '#03f7'; break;
+        case 6: highlight = darkMode ? '#f0f8' : '#f0f7'; break;
+        case 7: highlight = darkMode ? '#fff8' : '#0007'; break;
     }
 
 

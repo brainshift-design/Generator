@@ -61,6 +61,20 @@ class ColorListMenuItem
         
         this.divColor1.style.background = 'transparent';
         this.divColor1.style.boxShadow  = '0 0 0 1px inset #fff2';
+        
+
+        const line = createDiv();
+        
+        line.style.width      = '1px';
+        line.style.height     = '19px';
+        line.style.transform  = 'rotate(45deg)';
+        line.style.position   = 'relative';
+        line.style.left       = '8px';
+        line.style.top        = '-2px';
+        line.style.background = '#fff2';
+
+        this.divColor1.appendChild(line);
+
 
         this.divColor2.style.background = '#d44';
         this.divColor3.style.background = '#f94';
@@ -68,7 +82,7 @@ class ColorListMenuItem
         this.divColor5.style.background = '#4d4';
         this.divColor6.style.background = '#36f';
         this.divColor7.style.background = '#d4d';
-        this.divColor8.style.background = '#ddd';
+        this.divColor8.style.background = darkMode ? '#ddd' : '#333';
 
         this.divHighlight.style.zIndex = -2;
 
@@ -203,6 +217,8 @@ class ColorListMenuItem
                && this.childMenu.visible
             ? 'var(--figma-color-bg-brand)'
             : 'transparent';
+
+        this.divColor8.style.background = darkMode ? '#ddd' : '#333';
 
         this.div.style.opacity = this.enabled ? '100%' : '40%';
     }

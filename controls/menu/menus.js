@@ -494,19 +494,19 @@ function initGeneratorMenus()
 
     menuNumber = new Menu('Numbers', true, false);
     menuNumber.addItems([
-                        new MenuItem('Number',           {icon: iconNumber,      createType: NUMBER, callback: e => actionManager.do(getCreateNodeAction(NUMBER,             btnNumber.div, getCreateOptions(e)))}),
-                        new MenuItem('',                 {separator: true}),
-                        new MenuItem('Basic',            {icon: iconRound,       childMenu: menuFunctions}),
-                        new MenuItem('',                 {separator: true}),
-                        new MenuItem('Math',             {icon: iconMath,        childMenu: menuMath,          createType: NUMBER_SIMPLE_MATH, callback: e => actionManager.do(getCreateNodeAction(NUMBER_SIMPLE_MATH, btnNumber.div, getCreateOptions(e)))}),
-                        new MenuItem('Boolean',          {icon: iconBoolean,     /*childMenu: menuBoolean,  */ createType: NUMBER_BOOLEAN,     callback: e => actionManager.do(getCreateNodeAction(NUMBER_BOOLEAN,     btnNumber.div, getCreateOptions(e)))}),
-                        new MenuItem('Conditional',      {icon: iconCondition,   /*childMenu: menuCondition,*/ createType: NUMBER_CONDITION,   callback: e => actionManager.do(getCreateNodeAction(NUMBER_CONDITION,   btnNumber.div, getCreateOptions(e)))}),
-                        new MenuItem('Trigonometric',    {icon: iconSine,        /*childMenu: menuTrig,     */ createType: NUMBER_TRIG,        callback: e => actionManager.do(getCreateNodeAction(NUMBER_TRIG,        btnNumber.div, getCreateOptions(e)))}),
-                        new MenuItem('',                 {separator: true}),
-                        new MenuItem('Interpolate',      {icon: iconInterpolate, createType: NUMBER_INTERPOLATE, callback: e => actionManager.do(getCreateNodeAction(NUMBER_INTERPOLATE, btnNumber.div, getCreateOptions(e)))}),
-        menuItemSolve = new MenuItem('Solve',            {icon: iconSolve,       createType: NUMBER_SOLVE,       callback: e => actionManager.do(getCreateNodeAction(NUMBER_SOLVE,       btnNumber.div, getCreateOptions(e)))}),
-                        new MenuItem('',                 {separator: true}),
-                        new MenuItem('Convert',          {icon: iconNumberToText, childMenu: menuConvert})]);
+                        new MenuItem('Number',             {icon: iconNumber,      createType: NUMBER, callback: e => actionManager.do(getCreateNodeAction(NUMBER,             btnNumber.div, getCreateOptions(e)))}),
+                        new MenuItem('',                   {separator: true}),
+                        new MenuItem('Basic',              {icon: iconRound,       childMenu: menuFunctions}),
+                        new MenuItem('',                   {separator: true}),
+                        new MenuItem('Math',               {icon: iconMath,        childMenu: menuMath,          createType: NUMBER_SIMPLE_MATH, callback: e => actionManager.do(getCreateNodeAction(NUMBER_SIMPLE_MATH, btnNumber.div, getCreateOptions(e)))}),
+                        new MenuItem('Boolean',            {icon: iconBoolean,     /*childMenu: menuBoolean,  */ createType: NUMBER_BOOLEAN,     callback: e => actionManager.do(getCreateNodeAction(NUMBER_BOOLEAN,     btnNumber.div, getCreateOptions(e)))}),
+                        new MenuItem('Conditional',        {icon: iconCondition,   /*childMenu: menuCondition,*/ createType: NUMBER_CONDITION,   callback: e => actionManager.do(getCreateNodeAction(NUMBER_CONDITION,   btnNumber.div, getCreateOptions(e)))}),
+                        new MenuItem('Trigonometric',      {icon: iconSine,        /*childMenu: menuTrig,     */ createType: NUMBER_TRIG,        callback: e => actionManager.do(getCreateNodeAction(NUMBER_TRIG,        btnNumber.div, getCreateOptions(e)))}),
+                        new MenuItem('',                   {separator: true}),
+                        new MenuItem('Interpolate number', {icon: iconInterpolate, createType: NUMBER_INTERPOLATE, callback: e => actionManager.do(getCreateNodeAction(NUMBER_INTERPOLATE, btnNumber.div, getCreateOptions(e)))}),
+        menuItemSolve = new MenuItem('Solve',              {icon: iconSolve,       createType: NUMBER_SOLVE,       callback: e => actionManager.do(getCreateNodeAction(NUMBER_SOLVE,       btnNumber.div, getCreateOptions(e)))}),
+                        new MenuItem('',                   {separator: true}),
+                        new MenuItem('Convert',            {icon: iconNumberToText, childMenu: menuConvert})]);
         
     
     menuString = new Menu('Text', true, false);
@@ -536,16 +536,16 @@ function initGeneratorMenus()
         
     menuColor = new Menu('Colors', true, true);
     menuColor.addItems([
-        menuItemColor        = new MenuItem('Color',         {icon: iconColor,            callback: e => actionManager.do(getCreateNodeAction(COLOR,             btnColor.div, getCreateOptions(e,  {random: e.altKey && !getCtrlKey(e)})))}),
-                               new MenuItem('',              {separator: true}),
-                               new MenuItem('Valid sRGB',    {icon: iconValidColor,       callback: e => actionManager.do(getCreateNodeAction(VALID_COLOR,       btnColor.div, getCreateOptions(e)))}),
-        menuItemCorrectColor = new MenuItem('Correct color', {icon: iconCorrectColor,     callback: e => actionManager.do(getCreateNodeAction(CORRECT_COLOR,     btnColor.div, getCreateOptions(e)))}),
-        menuItemColorSep1    = new MenuItem('',              {separator: true}),
-                               new MenuItem('Web contrast',  {icon: iconWebContrast,      callback: e => actionManager.do(getCreateNodeAction(COLOR_CONTRAST,    btnColor.div, getCreateOptions(e)))}),
-        menuItemColorblind   = new MenuItem('Colorblind',    {icon: iconColorblind,       callback: e => actionManager.do(getCreateNodeAction(COLORBLIND,        btnColor.div, getCreateOptions(e)))}),
-                               new MenuItem('',              {separator: true}),
-                               new MenuItem('Interpolate',   {icon: iconColorInterpolate, callback: e => actionManager.do(getCreateNodeAction(COLOR_INTERPOLATE, btnColor.div, getCreateOptions(e)))}),
-        menuItemColorBlend   = new MenuItem('Blend',         {icon: iconColorBlend,       callback: e => actionManager.do(getCreateNodeAction(COLOR_BLEND,       btnColor.div, getCreateOptions(e)))})]);
+        menuItemColor        = new MenuItem('Color',             {icon: iconColor,            callback: e => actionManager.do(getCreateNodeAction(COLOR,             btnColor.div, getCreateOptions(e,  {random: e.altKey && !getCtrlKey(e)})))}),
+                               new MenuItem('',                  {separator: true}),
+                               new MenuItem('Valid sRGB',        {icon: iconValidColor,       callback: e => actionManager.do(getCreateNodeAction(VALID_COLOR,       btnColor.div, getCreateOptions(e)))}),
+        menuItemCorrectColor = new MenuItem('Correct color',     {icon: iconCorrectColor,     callback: e => actionManager.do(getCreateNodeAction(CORRECT_COLOR,     btnColor.div, getCreateOptions(e)))}),
+        menuItemColorSep1    = new MenuItem('',                  {separator: true}),
+                               new MenuItem('Web contrast',      {icon: iconWebContrast,      callback: e => actionManager.do(getCreateNodeAction(COLOR_CONTRAST,    btnColor.div, getCreateOptions(e)))}),
+        menuItemColorblind   = new MenuItem('Colorblind',        {icon: iconColorblind,       callback: e => actionManager.do(getCreateNodeAction(COLORBLIND,        btnColor.div, getCreateOptions(e)))}),
+                               new MenuItem('',                  {separator: true}),
+                               new MenuItem('Interpolate color', {icon: iconColorInterpolate, callback: e => actionManager.do(getCreateNodeAction(COLOR_INTERPOLATE, btnColor.div, getCreateOptions(e)))}),
+        menuItemColorBlend   = new MenuItem('Blend color',       {icon: iconColorBlend,       callback: e => actionManager.do(getCreateNodeAction(COLOR_BLEND,       btnColor.div, getCreateOptions(e)))})]);
 
     menuColor.init = () => 
     {
@@ -590,7 +590,11 @@ function initGeneratorMenus()
     menuVector = new Menu('Vector', true, false);
     menuVector.addItems([
         new MenuItem('Point',   {icon: iconPoint,         createType: POINT,       callback: e => actionManager.do(getCreateNodeAction(POINT,          btnShape.div, getCreateOptions(e)))}),
-        new MenuItem('Path',    {icon: iconVectorPath,    createType: VECTOR_PATH, callback: e => actionManager.do(getCreateNodeAction(VECTOR_PATH,    btnShape.div, getCreateOptions(e)))})]);//,
+        new MenuItem('Path',    {icon: iconVectorPath,    createType: VECTOR_PATH, callback: e => actionManager.do(getCreateNodeAction(VECTOR_PATH,    btnShape.div, getCreateOptions(e)))}),
+        new MenuItem('',                  {separator: true}),
+        new MenuItem('Interpolate point', {icon: iconInterpolatePoint, createType: INTERPOLATE_POINT, callback: e => actionManager.do(getCreateNodeAction(INTERPOLATE_POINT, btnShape.div, getCreateOptions(e)))}),
+        new MenuItem('',                  {separator: true}),
+        new MenuItem('Measure points',    {icon: iconMeasurePoints,    createType: MEASURE_POINTS,    callback: e => actionManager.do(getCreateNodeAction(MEASURE_POINTS,    btnShape.div, getCreateOptions(e)))})]);
         // new MenuItem('',        {separator: true}),
         // new MenuItem('Vertex',  {icon: iconVectorVertex,  createType: START, callback: e => actionManager.do(getCreateNodeAction(VECTOR_VERTEX,  btnShape.div, getCreateOptions(e)))}),
         // new MenuItem('Edge',    {icon: iconVectorEdge,    createType: START, callback: e => actionManager.do(getCreateNodeAction(VECTOR_EDGE,    btnShape.div, getCreateOptions(e)))}),
@@ -618,8 +622,6 @@ function initGeneratorMenus()
         new MenuItem('',                  {separator: true}),
         new MenuItem('Place',             {icon: iconPlace,            createType: PLACE,             callback: e => actionManager.do(getCreateNodeAction(PLACE,             btnShape.div, getCreateOptions(e)))}),
         new MenuItem('',                  {separator: true}),
-        new MenuItem('Interpolate point', {icon: iconInterpolatePoint, createType: INTERPOLATE_POINT, callback: e => actionManager.do(getCreateNodeAction(INTERPOLATE_POINT, btnShape.div, getCreateOptions(e)))}),
-        new MenuItem('',                  {separator: true}),
         new MenuItem('Center',            {icon: iconCenter,           createType: CENTER,            callback: e => actionManager.do(getCreateNodeAction(CENTER,            btnShape.div, getCreateOptions(e)))}),
         new MenuItem('Reset',             {icon: iconResetXform,       createType: RESET_XFORM,       callback: e => actionManager.do(getCreateNodeAction(RESET_XFORM,       btnShape.div, getCreateOptions(e)))})]);
 
@@ -636,8 +638,6 @@ function initGeneratorMenus()
                              // new MenuItem('Boolean',           {enabled: false, icon: iconBoolUnion,  callback: e => actionManager.do(getCreateNodeAction(BOOLEAN,     btnShape.div, getCreateOptions(e)))}),
         menuItemShapeSep1     = new MenuItem('',                  {separator: true}),
                                 new MenuItem('Transform',         {icon: iconMove, childMenu: menuTransform}),
-                                new MenuItem('',                  {separator: true}),
-                                new MenuItem('Measure points',    {icon: iconMeasurePoints,    createType: MEASURE_POINTS,    callback: e => actionManager.do(getCreateNodeAction(MEASURE_POINTS,    btnShape.div, getCreateOptions(e)))}),
                                 new MenuItem('',                  {separator: true}),
                                 new MenuItem('Render',            {icon: iconRenderDown, createType: RENDER, callback: e => actionManager.do(getCreateNodeAction(RENDER,       btnShape.div, getCreateOptions(e)))})]);
 
