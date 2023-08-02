@@ -420,9 +420,10 @@ function initGeneratorMenus()
                          new MenuItem('',                  {separator: true}),     
                          new MenuItem('Sublist',           {icon: iconSublist,     createType: SUBLIST,      callback: e => actionManager.do(getCreateNodeAction(SUBLIST,       btnData.div, getCreateOptions(e)))}),
                          new MenuItem('Unique',            {icon: iconUnique,      createType: UNIQUE,       callback: e => actionManager.do(getCreateNodeAction(UNIQUE,        btnData.div, getCreateOptions(e)))}),
+                         new MenuItem('Expand',            {icon: iconExpand,      createType: EXPAND,       callback: e => actionManager.do(getCreateNodeAction(EXPAND,        btnData.div, getCreateOptions(e)))}),
+                         new MenuItem('',                  {separator: true}),     
                          new MenuItem('Reverse',           {icon: iconReverseList, createType: REVERSE_LIST, callback: e => actionManager.do(getCreateNodeAction(REVERSE_LIST,  btnData.div, getCreateOptions(e)))}),
                          new MenuItem('Sort',              {icon: iconSort,        createType: SORT,         callback: e => actionManager.do(getCreateNodeAction(SORT,          btnData.div, getCreateOptions(e)))}),
-                         new MenuItem('Expand',            {icon: iconExpand,      createType: EXPAND,       callback: e => actionManager.do(getCreateNodeAction(EXPAND,        btnData.div, getCreateOptions(e)))}),
                          new MenuItem('',                  {separator: true}),     
                          new MenuItem('Column',            {icon: iconColumn,      createType: COLUMN,       callback: e => actionManager.do(getCreateNodeAction(COLUMN,        btnData.div, getCreateOptions(e)))}),
                          new MenuItem('Cell',              {icon: iconCell,        createType: CELL,         callback: e => actionManager.do(getCreateNodeAction(CELL,          btnData.div, getCreateOptions(e)))})]);

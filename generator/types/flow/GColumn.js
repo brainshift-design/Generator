@@ -1,5 +1,5 @@
 class GColumn
-extends GOperator
+extends GOperator1
 {
     index;
 

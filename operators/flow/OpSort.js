@@ -21,7 +21,7 @@ extends OperatorBase
         this.addOutput(new Output([LIST_VALUE], this.output_genRequest));
 
         this.addParam(this.paramColumn  = new NumberParam('column',  'column',  true, true, true, 0, 0));
-        this.addParam(this.paramReverse = new NumberParam('reverse', 'reverse', true, true, true, 1, 0, 1));
+        this.addParam(this.paramReverse = new NumberParam('reverse', 'reverse', true, true, true, 0, 0, 1));
 
         this.paramColumn.controls[0].allowEditDecimals = false;
         
@@ -70,15 +70,16 @@ extends OperatorBase
         super.updateValues(requestId, actionId, updateParamId, paramIds, values);
 
 
-        const column  = values[paramIds.findIndex(id => id == 'column')];
+        //const column  = values[paramIds.findIndex(id => id == 'column')];
 
         const columns = values[paramIds.findIndex(id => id == 'columns')];
         const length  = values[paramIds.findIndex(id => id == 'length' )];
 
         this.tableLength = length.value;
+        console.log('this.tableLength = ', this.tableLength);
 
         if (columns.value > 0)
-            this.paramColumn.controls[0].setMax(column.value-1);
+            this.paramColumn.controls[0].setMax(columns.value-1);
         else
             this.paramColumn.controls[0].setMax();
     }

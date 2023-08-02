@@ -4819,6 +4819,7 @@ a
                 <h1 style='margin-top: 20px;'>What's new</h1>
 
                 <p>•  added Expand node for lists</p>
+                <p>•  added Sort node for lists and tables</p>
                 
                 <p><br/><br/><div id='chkHideWhatsNew'></div></p>
             </div>
@@ -20333,7 +20334,22 @@ extends GOperator
             && reverse)
         {
             const input = (await this.input.eval(parse)).toValue();
-           
+
+            
+            const sortMultiplier = reverse.value > 0 ? -1 : 1;
+
+            input.items.sort((a, b) => 
+            {
+                const ca = a ? (LIST_VALUES.includes(a.type) ? a.items[column.value].value : a.value) : 0;
+                const cb = b ? (LIST_VALUES.includes(b.type) ? b.items[column.value].value : b.value) : 0;
+
+                if (ca < cb) return -1 * sortMultiplier;
+                if (ca > cb) return  1 * sortMultiplier;
+
+                return 0;
+            });
+
+
             input.items.forEach(i => maxColumns = Math.max(maxColumns, LIST_VALUES.includes(i.type) ? i.items.length : 1));
 
             for (let i = 0; i < input.items.length; i++)
@@ -20384,7 +20400,7 @@ extends GOperator
 
 
 class GColumn
-extends GOperator
+extends GOperator1
 {
     index;
 
@@ -63378,7 +63394,22 @@ extends GOperator
             && reverse)
         {
             const input = (await this.input.eval(parse)).toValue();
-           
+
+            
+            const sortMultiplier = reverse.value > 0 ? -1 : 1;
+
+            input.items.sort((a, b) => 
+            {
+                const ca = a ? (LIST_VALUES.includes(a.type) ? a.items[column.value].value : a.value) : 0;
+                const cb = b ? (LIST_VALUES.includes(b.type) ? b.items[column.value].value : b.value) : 0;
+
+                if (ca < cb) return -1 * sortMultiplier;
+                if (ca > cb) return  1 * sortMultiplier;
+
+                return 0;
+            });
+
+
             input.items.forEach(i => maxColumns = Math.max(maxColumns, LIST_VALUES.includes(i.type) ? i.items.length : 1));
 
             for (let i = 0; i < input.items.length; i++)
@@ -63429,7 +63460,7 @@ extends GOperator
 
 
 class GColumn
-extends GOperator
+extends GOperator1
 {
     index;
 
@@ -85339,9 +85370,10 @@ function initGeneratorMenus()
                          new MenuItem('',                  {separator: true}),     
                          new MenuItem('Sublist',           {icon: iconSublist,     createType: SUBLIST,      callback: e => actionManager.do(getCreateNodeAction(SUBLIST,       btnData.div, getCreateOptions(e)))}),
                          new MenuItem('Unique',            {icon: iconUnique,      createType: UNIQUE,       callback: e => actionManager.do(getCreateNodeAction(UNIQUE,        btnData.div, getCreateOptions(e)))}),
+                         new MenuItem('Expand',            {icon: iconExpand,      createType: EXPAND,       callback: e => actionManager.do(getCreateNodeAction(EXPAND,        btnData.div, getCreateOptions(e)))}),
+                         new MenuItem('',                  {separator: true}),     
                          new MenuItem('Reverse',           {icon: iconReverseList, createType: REVERSE_LIST, callback: e => actionManager.do(getCreateNodeAction(REVERSE_LIST,  btnData.div, getCreateOptions(e)))}),
                          new MenuItem('Sort',              {icon: iconSort,        createType: SORT,         callback: e => actionManager.do(getCreateNodeAction(SORT,          btnData.div, getCreateOptions(e)))}),
-                         new MenuItem('Expand',            {icon: iconExpand,      createType: EXPAND,       callback: e => actionManager.do(getCreateNodeAction(EXPAND,        btnData.div, getCreateOptions(e)))}),
                          new MenuItem('',                  {separator: true}),     
                          new MenuItem('Column',            {icon: iconColumn,      createType: COLUMN,       callback: e => actionManager.do(getCreateNodeAction(COLUMN,        btnData.div, getCreateOptions(e)))}),
                          new MenuItem('Cell',              {icon: iconCell,        createType: CELL,         callback: e => actionManager.do(getCreateNodeAction(CELL,          btnData.div, getCreateOptions(e)))})]);
@@ -100814,7 +100846,7 @@ extends OperatorBase
         this.addOutput(new Output([LIST_VALUE], this.output_genRequest));
 
         this.addParam(this.paramColumn  = new NumberParam('column',  'column',  true, true, true, 0, 0));
-        this.addParam(this.paramReverse = new NumberParam('reverse', 'reverse', true, true, true, 1, 0, 1));
+        this.addParam(this.paramReverse = new NumberParam('reverse', 'reverse', true, true, true, 0, 0, 1));
 
         this.paramColumn.controls[0].allowEditDecimals = false;
         
@@ -100863,15 +100895,16 @@ extends OperatorBase
         super.updateValues(requestId, actionId, updateParamId, paramIds, values);
 
 
-        const column  = values[paramIds.findIndex(id => id == 'column')];
+        //const column  = values[paramIds.findIndex(id => id == 'column')];
 
         const columns = values[paramIds.findIndex(id => id == 'columns')];
         const length  = values[paramIds.findIndex(id => id == 'length' )];
 
         this.tableLength = length.value;
+        console.log('this.tableLength = ', this.tableLength);
 
         if (columns.value > 0)
-            this.paramColumn.controls[0].setMax(column.value-1);
+            this.paramColumn.controls[0].setMax(columns.value-1);
         else
             this.paramColumn.controls[0].setMax();
     }
