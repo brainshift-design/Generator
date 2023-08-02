@@ -1,6 +1,10 @@
 class   OpReverseList
 extends OperatorBase
 {
+    tableLength;
+
+
+
     constructor()
     {
         super(REVERSE_LIST, 'reverse', 'reverse', iconReverseList);
@@ -40,5 +44,16 @@ extends OperatorBase
         pushUnique(gen.passedNodes, this.node);
 
         return request;
+    }
+
+
+
+    updateValues(requestId, actionId, updateParamId, paramIds, values)
+    {
+        super.updateValues(requestId, actionId, updateParamId, paramIds, values);
+
+        const length = values[paramIds.findIndex(id => id == 'length' )];
+
+        this.tableLength = length.value;
     }
 }

@@ -3,6 +3,8 @@ extends GValue
 {
     items;
 
+    expanded = false;
+
 
 
     constructor(items = [])
@@ -28,6 +30,8 @@ extends GValue
         const copy = new ListValue(this.items);
 
         copy.copyBase(this);
+        
+        copy.expanded = this.expanded;
 
         return copy;
     }

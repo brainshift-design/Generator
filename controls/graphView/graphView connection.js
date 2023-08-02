@@ -15,6 +15,12 @@ GraphView.prototype.startConnectionFromOutput = function(pointerId, output, upda
     this.hideAllOutputs(this.tempConn.output);
 
     output.updateControl();
+
+
+    // if (dragOutTimer) clearInterval(dragOutTimer);
+    // dragOutTimer = setInterval(() => checkDragOut(), 200);
+
+    //try { this.div.setPointerCapture(pointerId); } catch {}
 };
 
 
@@ -34,6 +40,12 @@ GraphView.prototype.startConnectionFromInput = function(pointerId, input, backIn
     this.hideAllInputs(this.tempConn.input);
 
     input.updateControl();
+
+
+    // if (dragOutTimer) clearInterval(dragOutTimer);
+    // dragOutTimer = setInterval(() => checkDragOut(), 200);
+
+    //try { this.div.setPointerCapture(pointerId); } catch {}
 };
 
 
@@ -71,6 +83,13 @@ GraphView.prototype.cancelConnection = function(pointerId)
     newReorderIndex  = Number.NaN;
     prevReorderIndex = Number.NaN;
     oldReorderIndex  = Number.NaN;
+
+
+    // if (dragOutTimer) 
+    // {
+    //     clearInterval(dragOutTimer);
+    //     dragOutTimer = null;
+    // }
 };
 
 
@@ -191,6 +210,13 @@ GraphView.prototype.endConnection = function(pointerId, backInit = false, shiftK
 
         this.cancelConnection(pointerId);
     }
+
+
+    // if (dragOutTimer) 
+    // {
+    //     clearInterval(dragOutTimer);
+    //     dragOutTimer = null;
+    // }
 };
 
 
@@ -218,6 +244,13 @@ GraphView.prototype.endConnectionFromOutputToFixed = function(output, input, sav
     //     console.log('2 reorder');
     //     actionManager.do(new ReorderInputConnectionsAction(savedConnInput.node.id, savedConnInput.id, input.id));
     // }
+
+
+    // if (dragOutTimer) 
+    // {
+    //     clearInterval(dragOutTimer);
+    //     dragOutTimer = null;
+    // }
 };
 
 
@@ -243,6 +276,13 @@ GraphView.prototype.endConnectionFromOutputToVariable = function(output, input, 
         //console.log('V2 reconnect');
         actionManager.do(new ReconnectAction(output, savedConnInput, input));
     }
+
+
+    // if (dragOutTimer) 
+    // {
+    //     clearInterval(dragOutTimer);
+    //     dragOutTimer = null;
+    // }
 };
 
 

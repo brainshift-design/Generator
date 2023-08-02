@@ -112,10 +112,13 @@ function genParse(parse, inParam = true)
           || parse.next ==  SHAPE_LIST_VALUE      ) result = genParseListValue         (parse);
  
     else if (parse.next == NULL_NODE              ) result = genParseNull              (parse);
+
     else if (parse.next == LIST                   ) result = genParseList              (parse);
+    else if (parse.next == EXPAND                 ) result = genParseExpand            (parse);
     else if (parse.next == SUBLIST                ) result = genParseSublist           (parse);
     else if (parse.next == UNIQUE                 ) result = genParseUnique            (parse);
     else if (parse.next == REVERSE_LIST           ) result = genParseReverseList       (parse);
+    else if (parse.next == SORT                   ) result = genParseSort              (parse);
     else if (parse.next == COLUMN                 ) result = genParseColumn            (parse);
     else if (parse.next == CELL                   ) result = genParseCell              (parse);
     else if (parse.next == ITEMS                  ) result = genParseItems             (parse);

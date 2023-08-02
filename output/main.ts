@@ -23,7 +23,7 @@ function noNodeTag(key) { return noTag(key, nodeTag); }
 function noConnTag(key) { return noTag(key, connTag); }
 
 
-const generatorVersion = 178;
+const generatorVersion = 179;
 
 
 const MAX_INT32        = 2147483647;
@@ -1013,9 +1013,11 @@ const TIMER                   = 'TIMER';
 
 
 const LIST                    = 'LIST';
+const EXPAND                  = 'EXPAND';
 const SUBLIST                 = 'SUBLST';
 const UNIQUE                  = 'UNIQ';
 const REVERSE_LIST            = 'REVLST';
+const SORT                    = 'SORT';
 const COLUMN                  = 'CLMN';
 const CELL                    = 'CELL';
 const ITEMS                   = 'ITEMS';
@@ -1061,10 +1063,12 @@ const FLOW_TYPES =
 [
     NULL_NODE,
     ...LIST_TYPES,
+    EXPAND,
     SUBLIST,
     UNIQUE,
     REVERSE_LIST,
     COLUMN,
+    SORT,
     CELL,
     ITEMS,
     SELECT,

@@ -279,11 +279,16 @@ Operator.prototype.updateHeaderLabelText = function()
     
     let suffix;
 
-         if (this.type == LIST  ) suffix = '  [ ' + this.inputs.filter(i => !i.isNew).length + ' ]';
-         if (this.type == COLUMN) suffix = '  [ ' + this.columnLength + ' ]';
-    else if (this.type == UNIQUE) suffix = '  [ ' + this.paramCounts.value.items.length + ' ]';
-    else if (this.type == ITEMS ) suffix = '  [ ' + this.params.length + ' ]';
-    else                          suffix = this.cached ? '' : '...';
+    const sep = settings.showNodeId ? ' ' : '  ';
+
+         if (this.type == LIST        ) suffix = sep + '[ ' + this.length + ' ]';
+    else if (this.type == COLUMN      ) suffix = sep + '[ ' + this.columnLength + ' ]';
+    else if (this.type == REVERSE_LIST) suffix = sep + '[ ' + this.tableLength + ' ]';
+    else if (this.type == SORT        ) suffix = sep + '[ ' + this.tableLength + ' ]';
+    else if (this.type == EXPAND      ) suffix = sep + '[ ' + this.length + ' ]';
+    else if (this.type == UNIQUE      ) suffix = sep + '[ ' + this.paramCounts.value.items.length + ' ]';
+    else if (this.type == ITEMS       ) suffix = sep + '[ ' + this.params.length + ' ]';
+    else                                suffix = this.cached ? '' : '...';
 
 
     suffix += this.suffix;

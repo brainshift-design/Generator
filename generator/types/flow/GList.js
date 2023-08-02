@@ -99,7 +99,8 @@ extends GOperator
             if (   input
                 && this.options.enabled)            
             {
-                if (LIST_VALUES.includes(input.type))
+                if (   LIST_VALUES.includes(input.type)
+                    && input.expanded === true)
                 {
                     for (const item of input.items)
                         this.value.items.push(item.copy());   
@@ -110,7 +111,11 @@ extends GOperator
         }
 
 
-        this.updateValues = [['type', new TextValue(finalListTypeFromItems(this.value.items))]];
+        this.updateValues = 
+        [
+            ['length', new NumberValue(this.value.items.length)               ],
+            ['type',   new TextValue(finalListTypeFromItems(this.value.items))]
+        ];
 
 
         this.validate();

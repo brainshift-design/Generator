@@ -11,10 +11,10 @@ GraphView.prototype.createEvents = function()
 
     this.div.addEventListener('pointerleave', e => 
     {
-        if (this.tempConn)
-        {
-            try { this.div.setPointerCapture(e.pointerId); } catch {}
-        }
+        // if (this.tempConn)
+        // {
+        //     try { this.div.setPointerCapture(e.pointerId); } catch {}
+        // }
     });
 
 
@@ -86,6 +86,7 @@ GraphView.prototype.createEvents = function()
                     this.overInput.connecting = true;
                     this.startConnectionFromInput(e.pointerId, this.overInput, getCtrlKey(e));
 
+                    
                     this.tempConn.wire.update(sx, sy);
                 }
             }
@@ -200,8 +201,12 @@ GraphView.prototype.createEvents = function()
 
         else if (e.button == 0
             && this.tempConn)
+        {
             this.endConnection(e.pointerId, getCtrlKey(e), e.shiftKey);
 
+            // if (this.div.hasPointerCapture(e.pointerId))
+            //     this.div.releasePointerCapture(e.pointerId);
+        }
         else if (e.button == 1
             && this.panning)
         {

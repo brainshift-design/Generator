@@ -103,7 +103,7 @@ extends GOperator
         for (const obj of this.value.objects)
         {
             obj.nodeId   = this.nodeId;
-            obj.objectId = obj.objectId + OBJECT_SEPARATOR + this.nodeId;// + (iteration != '' ? ':' + iteration : '');
+            obj.objectId = obj.objectId + OBJECT_SEPARATOR + this.nodeId;
         }
     }
     

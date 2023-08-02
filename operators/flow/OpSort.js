@@ -1,26 +1,34 @@
-class   OpColumn
+class   OpSort
 extends OperatorBase
 {
-    paramIndex;
+    paramColumn;
+    paramReverse;
 
-    columnLength;
+    tableLength;
+
+    menuBoolReverse;
 
 
 
     constructor()
     {
-        super(COLUMN, 'column', 'column', iconColumn);
+        super(SORT, 'sort', 'sort', iconSort);
 
-        this.iconOffsetY = 1;
+        //this.iconOffsetY = 1;
         
 
         this.addInput (new Input (LIST_VALUES));
         this.addOutput(new Output([LIST_VALUE], this.output_genRequest));
 
-        this.addParam(this.paramIndex = new NumberParam('index', 'index', true, true, true, 0, 0));
+        this.addParam(this.paramColumn  = new NumberParam('column',  'column',  true, true, true, 0, 0));
+        this.addParam(this.paramReverse = new NumberParam('reverse', 'reverse', true, true, true, 1, 0, 1));
 
-        this.paramIndex.divider                       = 0.54;
-        this.paramIndex.controls[0].allowEditDecimals = false;
+        this.paramColumn.controls[0].allowEditDecimals = false;
+        
+        this.paramColumn.divider  = 0.59;
+        this.paramReverse.divider = 0.59;
+
+        this.menuBoolReverse = createBoolMenu(this.paramReverse);
     }
 
 
@@ -45,7 +53,8 @@ extends OperatorBase
         if (input.connected)
             request.push(...pushInputOrParam(input, gen));
 
-        request.push(...this.node.paramIndex.genRequest(gen));
+        request.push(...this.node.paramColumn .genRequest(gen));
+        request.push(...this.node.paramReverse.genRequest(gen));
 
         
         gen.scope.pop();
@@ -61,22 +70,27 @@ extends OperatorBase
         super.updateValues(requestId, actionId, updateParamId, paramIds, values);
 
 
+        const column  = values[paramIds.findIndex(id => id == 'column')];
+
         const columns = values[paramIds.findIndex(id => id == 'columns')];
         const length  = values[paramIds.findIndex(id => id == 'length' )];
 
-        this.columnLength = length.value;
+        this.tableLength = length.value;
 
         if (columns.value > 0)
-            this.paramIndex.controls[0].setMax(columns.value-1);
+            this.paramColumn.controls[0].setMax(column.value-1);
         else
-            this.paramIndex.controls[0].setMax();
+            this.paramColumn.controls[0].setMax();
     }
 
 
 
     updateParams()
     {
-        this.paramIndex.enableControlText(true);
+        this.paramColumn .enableControlText(true);
+        this.paramReverse.enableControlText(true);
+
+        updateParamConditionText(this.paramReverse, this.paramReverse.isUnknown(), false, 1);
 
         this.updateParamControls();
     }

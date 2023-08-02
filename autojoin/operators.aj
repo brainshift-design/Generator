@@ -53,9 +53,11 @@
 ../operators/flow/OpTimer.js
 
 ../operators/flow/OpList.js
+../operators/flow/OpExpand.js
 ../operators/flow/OpSublist.js
 ../operators/flow/OpUnique.js
 ../operators/flow/OpReverseList.js
+../operators/flow/OpSort.js
 ../operators/flow/OpColumn.js
 ../operators/flow/OpCell.js
 ../operators/flow/OpItems.js

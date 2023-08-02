@@ -4818,10 +4818,7 @@ a
             <div id='whatsNewBody'>
                 <h1 style='margin-top: 20px;'>What's new</h1>
 
-                <p>•  fixed bug in Place node</p>
-                <p>•  added Capital All to text Case node</p>
-                <p>•  added Text File node</p>
-                <p>•  fixed a number of UI issues</p>
+                <p>•  added Expand node for lists</p>
                 
                 <p><br/><br/><div id='chkHideWhatsNew'></div></p>
             </div>
@@ -5165,7 +5162,7 @@ a
 
 
 
-const generatorVersion = 178;
+const generatorVersion = 179;
 
 
 const MAX_INT32        = 2147483647;
@@ -9793,9 +9790,11 @@ const TIMER                   = 'TIMER';
 
 
 const LIST                    = 'LIST';
+const EXPAND                  = 'EXPAND';
 const SUBLIST                 = 'SUBLST';
 const UNIQUE                  = 'UNIQ';
 const REVERSE_LIST            = 'REVLST';
+const SORT                    = 'SORT';
 const COLUMN                  = 'CLMN';
 const CELL                    = 'CELL';
 const ITEMS                   = 'ITEMS';
@@ -9841,10 +9840,12 @@ const FLOW_TYPES =
 [
     NULL_NODE,
     ...LIST_TYPES,
+    EXPAND,
     SUBLIST,
     UNIQUE,
     REVERSE_LIST,
     COLUMN,
+    SORT,
     CELL,
     ITEMS,
     SELECT,
@@ -13727,6 +13728,8 @@ extends GValue
 {
     items;
 
+    expanded = false;
+
 
 
     constructor(items = [])
@@ -13752,6 +13755,8 @@ extends GValue
         const copy = new ListValue(this.items);
 
         copy.copyBase(this);
+        
+        copy.expanded = this.expanded;
 
         return copy;
     }
@@ -19063,7 +19068,7 @@ extends GOperator
         for (const obj of this.value.objects)
         {
             obj.nodeId   = this.nodeId;
-            obj.objectId = obj.objectId + OBJECT_SEPARATOR + this.nodeId;// + (iteration != '' ? ':' + iteration : '');
+            obj.objectId = obj.objectId + OBJECT_SEPARATOR + this.nodeId;
         }
     }
     
@@ -19851,7 +19856,8 @@ extends GOperator
             if (   input
                 && this.options.enabled)            
             {
-                if (LIST_VALUES.includes(input.type))
+                if (   LIST_VALUES.includes(input.type)
+                    && input.expanded === true)
                 {
                     for (const item of input.items)
                         this.value.items.push(item.copy());   
@@ -19862,7 +19868,11 @@ extends GOperator
         }
 
 
-        this.updateValues = [['type', new TextValue(finalListTypeFromItems(this.value.items))]];
+        this.updateValues = 
+        [
+            ['length', new NumberValue(this.value.items.length)               ],
+            ['type',   new TextValue(finalListTypeFromItems(this.value.items))]
+        ];
 
 
         this.validate();
@@ -19893,6 +19903,84 @@ extends GOperator
         super.invalidateInputs(from);
 
         this.inputs.forEach(i => i.invalidateInputs(from));
+    }
+}
+
+
+
+class GExpand
+extends GOperator1
+{
+    constructor(nodeId, options)
+    {
+        super(EXPAND, nodeId, options);
+    }
+
+
+    
+    copy()
+    {
+        const copy = new GExpand(this.nodeId, this.options);
+
+        copy.copyBase(this);
+
+        return copy;
+    }
+
+
+
+    async eval(parse)
+    {
+        if (this.isCached())
+            return this;
+
+
+        this.value = new ListValue();
+        this.value.expanded = true;
+
+        let length = 0;
+
+
+        if (this.input)
+        {
+            const input = (await this.input.eval(parse)).toValue();
+                       
+            length = input.items.length;
+               
+                
+            if (input)
+            {
+                if (   LIST_VALUES.includes(input.type)
+                    && this.options.enabled)
+                {
+                    for (const item of input.items)
+                    {
+                        this.value.items.push(item.copy());
+                        this.value.objects.push(...item.objects.map(o => o.copy()));
+                    }
+                }
+                else
+                {
+                    this.value.items.push(input.copy());
+                    this.value.objects.push(...input.objects.map(o => o.copy()));
+                }
+            }
+        }
+
+
+        this.updateValueObjects();
+
+
+        this.updateValues =
+        [
+            ['length', new NumberValue(length)                              ],
+            ['type', new TextValue(finalListTypeFromItems(this.value.items))]
+        ];
+        
+
+        this.validate();
+
+        return this;
     }
 }
 
@@ -20166,8 +20254,8 @@ extends GOperator
         this.updateValueObjects();
 
 
-        this.updateValues = [['', NullValue]];
-        
+        this.updateValues = [['length', new NumberValue(this.value.items.length)]]; 
+               
 
         this.validate();
 
@@ -20193,6 +20281,106 @@ extends GOperator
     }
 }
 
+
+
+class GSort
+extends GOperator
+{
+    input   = null;
+    column  = null;
+    reverse = null;
+
+
+    
+    constructor(nodeId, options)
+    {
+        super(SORT, nodeId, options);
+    }
+
+
+    
+    copy()
+    {
+        const copy = new GSort(this.nodeId, this.options);
+
+        copy.copyBase(this);
+
+        if (this.column ) copy.column  = this.column .copy();
+        if (this.reverse) copy.reverse = this.reverse.copy();
+
+        return copy;
+    }
+
+
+
+    async eval(parse)
+    {
+        if (this.isCached())
+            return this;
+
+
+        const column  = this.column  ? (await this.column .eval(parse)).toValue() : null;
+        const reverse = this.reverse ? (await this.reverse.eval(parse)).toValue() : null;
+
+        
+        this.value = new ListValue();
+
+        let maxColumns = 0;
+
+        
+        if (   this.input
+            && column
+            && reverse)
+        {
+            const input = (await this.input.eval(parse)).toValue();
+           
+            input.items.forEach(i => maxColumns = Math.max(maxColumns, LIST_VALUES.includes(i.type) ? i.items.length : 1));
+
+            for (let i = 0; i < input.items.length; i++)
+            {
+                const row = input.items[i];
+                this.value.items.push(row.copy());
+                this.value.objects.push(...row.objects);
+            }
+        }
+
+
+        this.updateValues =
+        [
+            ['columns', new NumberValue(maxColumns)             ],
+            ['length',  new NumberValue(this.value.items.length)],
+            ['column',  column                                  ],
+            ['reverse', reverse                                 ]
+        ];
+        
+
+        this.validate();
+
+        return this;
+    }
+
+
+
+    pushValueUpdates(parse)
+    {
+        super.pushValueUpdates(parse);
+
+        if (this.input  ) this.input  .pushValueUpdates(parse);
+        if (this.column ) this.column .pushValueUpdates(parse);
+        if (this.reverse) this.reverse.pushValueUpdates(parse);
+    }
+
+
+
+    invalidateInputs(from)
+    {
+        super.invalidateInputs(from);
+
+        if (this.input  ) this.input  .invalidateInputs(from);
+        if (this.column ) this.column .invalidateInputs(from);
+        if (this.reverse) this.reverse.invalidateInputs(from);
+    }
+}
 
 
 class GColumn
@@ -20264,8 +20452,9 @@ extends GOperator
 
         this.updateValues =
         [
-            ['length', new NumberValue(this.value.items.length)],
-            ['index',  index]
+            ['columns', new NumberValue(maxColumns)             ],
+            ['length',  new NumberValue(this.value.items.length)],
+            ['index',   index                                   ]
         ];
         
 
@@ -36984,6 +37173,50 @@ function genParseList(parse)
 
 
 
+function genParseExpand(parse)
+{
+    const [, nodeId, options, ignore] = genParseNodeStart(parse);
+
+
+    const expand = new GExpand(nodeId, options);
+   
+
+    let nInputs = -1;
+    
+    if (!ignore)
+    {
+        nInputs = parseInt(parse.move());
+        consoleAssert(nInputs == 0 || nInputs == 1, 'nInputs must be [0, 1]');
+    }
+
+    
+    if (parse.settings.logRequests) 
+        logReq(expand, parse, ignore, nInputs);
+
+
+    if (ignore) 
+    {
+        genParseNodeEnd(parse, expand);
+        return parse.parsedNodes.find(n => n.nodeId == nodeId);
+    }
+
+
+    parse.nTab++;
+
+
+    if (nInputs == 1)
+        expand.input = genParse(parse);
+
+    
+    parse.nTab--;
+
+
+    genParseNodeEnd(parse, expand);
+    return expand;
+}
+
+
+
 function genParseSublist(parse)
 {
     const [, nodeId, options, ignore] = genParseNodeStart(parse);
@@ -37115,6 +37348,53 @@ function genParseReverseList(parse)
 
     genParseNodeEnd(parse, reverse);
     return reverse;
+}
+
+
+
+function genParseSort(parse)
+{
+    const [, nodeId, options, ignore] = genParseNodeStart(parse);
+
+
+    const sort = new GSort(nodeId, options);
+   
+
+    let nInputs = -1;
+    
+    if (!ignore)
+    {
+        nInputs = parseInt(parse.move());
+        consoleAssert(nInputs == 0 || nInputs == 1, 'nInputs must be [0, 1]');
+    }
+
+    
+    if (parse.settings.logRequests) 
+        logReq(sort, parse, ignore, nInputs);
+
+
+    if (ignore) 
+    {
+        genParseNodeEnd(parse, sort);
+        return parse.parsedNodes.find(n => n.nodeId == nodeId);
+    }
+
+
+    parse.nTab++;
+
+
+    if (nInputs == 1)
+        sort.input = genParse(parse);
+
+    sort.column  = genParse(parse);
+    sort.reverse = genParse(parse);
+
+    
+    parse.nTab--;
+
+
+    genParseNodeEnd(parse, sort);
+    return sort;
 }
 
 
@@ -42298,10 +42578,13 @@ function genParse(parse, inParam = true)
           || parse.next ==  SHAPE_LIST_VALUE      ) result = genParseListValue         (parse);
  
     else if (parse.next == NULL_NODE              ) result = genParseNull              (parse);
+
     else if (parse.next == LIST                   ) result = genParseList              (parse);
+    else if (parse.next == EXPAND                 ) result = genParseExpand            (parse);
     else if (parse.next == SUBLIST                ) result = genParseSublist           (parse);
     else if (parse.next == UNIQUE                 ) result = genParseUnique            (parse);
     else if (parse.next == REVERSE_LIST           ) result = genParseReverseList       (parse);
+    else if (parse.next == SORT                   ) result = genParseSort              (parse);
     else if (parse.next == COLUMN                 ) result = genParseColumn            (parse);
     else if (parse.next == CELL                   ) result = genParseCell              (parse);
     else if (parse.next == ITEMS                  ) result = genParseItems             (parse);
@@ -45753,7 +46036,7 @@ onerror = (event, source, line, pos, error) =>
 };
 
 
-const generatorVersion = 178;
+const generatorVersion = 179;
 
 
 const MAX_INT32        = 2147483647;
@@ -52552,9 +52835,11 @@ const TIMER                   = 'TIMER';
 
 
 const LIST                    = 'LIST';
+const EXPAND                  = 'EXPAND';
 const SUBLIST                 = 'SUBLST';
 const UNIQUE                  = 'UNIQ';
 const REVERSE_LIST            = 'REVLST';
+const SORT                    = 'SORT';
 const COLUMN                  = 'CLMN';
 const CELL                    = 'CELL';
 const ITEMS                   = 'ITEMS';
@@ -52600,10 +52885,12 @@ const FLOW_TYPES =
 [
     NULL_NODE,
     ...LIST_TYPES,
+    EXPAND,
     SUBLIST,
     UNIQUE,
     REVERSE_LIST,
     COLUMN,
+    SORT,
     CELL,
     ITEMS,
     SELECT,
@@ -56486,6 +56773,8 @@ extends GValue
 {
     items;
 
+    expanded = false;
+
 
 
     constructor(items = [])
@@ -56511,6 +56800,8 @@ extends GValue
         const copy = new ListValue(this.items);
 
         copy.copyBase(this);
+        
+        copy.expanded = this.expanded;
 
         return copy;
     }
@@ -61822,7 +62113,7 @@ extends GOperator
         for (const obj of this.value.objects)
         {
             obj.nodeId   = this.nodeId;
-            obj.objectId = obj.objectId + OBJECT_SEPARATOR + this.nodeId;// + (iteration != '' ? ':' + iteration : '');
+            obj.objectId = obj.objectId + OBJECT_SEPARATOR + this.nodeId;
         }
     }
     
@@ -62610,7 +62901,8 @@ extends GOperator
             if (   input
                 && this.options.enabled)            
             {
-                if (LIST_VALUES.includes(input.type))
+                if (   LIST_VALUES.includes(input.type)
+                    && input.expanded === true)
                 {
                     for (const item of input.items)
                         this.value.items.push(item.copy());   
@@ -62621,7 +62913,11 @@ extends GOperator
         }
 
 
-        this.updateValues = [['type', new TextValue(finalListTypeFromItems(this.value.items))]];
+        this.updateValues = 
+        [
+            ['length', new NumberValue(this.value.items.length)               ],
+            ['type',   new TextValue(finalListTypeFromItems(this.value.items))]
+        ];
 
 
         this.validate();
@@ -62652,6 +62948,84 @@ extends GOperator
         super.invalidateInputs(from);
 
         this.inputs.forEach(i => i.invalidateInputs(from));
+    }
+}
+
+
+
+class GExpand
+extends GOperator1
+{
+    constructor(nodeId, options)
+    {
+        super(EXPAND, nodeId, options);
+    }
+
+
+    
+    copy()
+    {
+        const copy = new GExpand(this.nodeId, this.options);
+
+        copy.copyBase(this);
+
+        return copy;
+    }
+
+
+
+    async eval(parse)
+    {
+        if (this.isCached())
+            return this;
+
+
+        this.value = new ListValue();
+        this.value.expanded = true;
+
+        let length = 0;
+
+
+        if (this.input)
+        {
+            const input = (await this.input.eval(parse)).toValue();
+                       
+            length = input.items.length;
+               
+                
+            if (input)
+            {
+                if (   LIST_VALUES.includes(input.type)
+                    && this.options.enabled)
+                {
+                    for (const item of input.items)
+                    {
+                        this.value.items.push(item.copy());
+                        this.value.objects.push(...item.objects.map(o => o.copy()));
+                    }
+                }
+                else
+                {
+                    this.value.items.push(input.copy());
+                    this.value.objects.push(...input.objects.map(o => o.copy()));
+                }
+            }
+        }
+
+
+        this.updateValueObjects();
+
+
+        this.updateValues =
+        [
+            ['length', new NumberValue(length)                              ],
+            ['type', new TextValue(finalListTypeFromItems(this.value.items))]
+        ];
+        
+
+        this.validate();
+
+        return this;
     }
 }
 
@@ -62925,8 +63299,8 @@ extends GOperator
         this.updateValueObjects();
 
 
-        this.updateValues = [['', NullValue]];
-        
+        this.updateValues = [['length', new NumberValue(this.value.items.length)]]; 
+               
 
         this.validate();
 
@@ -62952,6 +63326,106 @@ extends GOperator
     }
 }
 
+
+
+class GSort
+extends GOperator
+{
+    input   = null;
+    column  = null;
+    reverse = null;
+
+
+    
+    constructor(nodeId, options)
+    {
+        super(SORT, nodeId, options);
+    }
+
+
+    
+    copy()
+    {
+        const copy = new GSort(this.nodeId, this.options);
+
+        copy.copyBase(this);
+
+        if (this.column ) copy.column  = this.column .copy();
+        if (this.reverse) copy.reverse = this.reverse.copy();
+
+        return copy;
+    }
+
+
+
+    async eval(parse)
+    {
+        if (this.isCached())
+            return this;
+
+
+        const column  = this.column  ? (await this.column .eval(parse)).toValue() : null;
+        const reverse = this.reverse ? (await this.reverse.eval(parse)).toValue() : null;
+
+        
+        this.value = new ListValue();
+
+        let maxColumns = 0;
+
+        
+        if (   this.input
+            && column
+            && reverse)
+        {
+            const input = (await this.input.eval(parse)).toValue();
+           
+            input.items.forEach(i => maxColumns = Math.max(maxColumns, LIST_VALUES.includes(i.type) ? i.items.length : 1));
+
+            for (let i = 0; i < input.items.length; i++)
+            {
+                const row = input.items[i];
+                this.value.items.push(row.copy());
+                this.value.objects.push(...row.objects);
+            }
+        }
+
+
+        this.updateValues =
+        [
+            ['columns', new NumberValue(maxColumns)             ],
+            ['length',  new NumberValue(this.value.items.length)],
+            ['column',  column                                  ],
+            ['reverse', reverse                                 ]
+        ];
+        
+
+        this.validate();
+
+        return this;
+    }
+
+
+
+    pushValueUpdates(parse)
+    {
+        super.pushValueUpdates(parse);
+
+        if (this.input  ) this.input  .pushValueUpdates(parse);
+        if (this.column ) this.column .pushValueUpdates(parse);
+        if (this.reverse) this.reverse.pushValueUpdates(parse);
+    }
+
+
+
+    invalidateInputs(from)
+    {
+        super.invalidateInputs(from);
+
+        if (this.input  ) this.input  .invalidateInputs(from);
+        if (this.column ) this.column .invalidateInputs(from);
+        if (this.reverse) this.reverse.invalidateInputs(from);
+    }
+}
 
 
 class GColumn
@@ -63023,8 +63497,9 @@ extends GOperator
 
         this.updateValues =
         [
-            ['length', new NumberValue(this.value.items.length)],
-            ['index',  index]
+            ['columns', new NumberValue(maxColumns)             ],
+            ['length',  new NumberValue(this.value.items.length)],
+            ['index',   index                                   ]
         ];
         
 
@@ -83200,9 +83675,11 @@ const iconFreeze            = '<svg width="18" height="11" viewBox="0 0 18 11" f
 const iconTimer             = '<svg width="13" height="18" viewBox="0 -1 13 18" fill="none" xmlns="http://www.w3.org/2000/svg"><path fill-rule="evenodd" clip-rule="evenodd" d="M9 0H4L4 2H5.5V4.07645C2.38491 4.55745 0 7.25021 0 10.5C0 14.0899 2.91015 17 6.5 17C10.0899 17 13 14.0899 13 10.5C13 7.25021 10.6151 4.55745 7.5 4.07645V2L9 2V0ZM6.5 5C3.46243 5 1 7.46243 1 10.5C1 13.5376 3.46243 16 6.5 16C9.53757 16 12 13.5376 12 10.5C12 7.46243 9.53757 5 6.5 5Z" fill="white"/><path d="M6.65821 9.51244L9.70667 6.46399L10.6001 7.35747L7.49915 10.4585C7.49972 10.4722 7.5 10.4861 7.5 10.5C7.5 11.0523 7.05229 11.5 6.5 11.5C5.94771 11.5 5.5 11.0523 5.5 10.5C5.5 9.94771 5.94771 9.5 6.5 9.5C6.55384 9.5 6.60668 9.50425 6.65821 9.51244Z" fill="white"/></svg>';
 
 const iconList              = '<svg width="12" height="9" viewBox="0 0 12 9" fill="none" xmlns="http://www.w3.org/2000/svg"><rect width="9" height="1" fill="white"/><rect y="4" width="9" height="1" fill="white"/><rect y="8" width="9" height="1" fill="white"/></svg>';
+const iconExpand            = '<svg width="13" height="9" viewBox="0 0 13 9" fill="none" xmlns="http://www.w3.org/2000/svg"><rect width="5" height="1" transform="matrix(-1 0 0 1 13 0)" fill="white"/><rect width="5" height="1" transform="matrix(-1 0 0 1 13 8)" fill="white"/><rect width="13" height="1" transform="matrix(-1 0 0 1 13 4)" fill="white"/><rect width="5.52856" height="1" transform="matrix(-0.652935 0.757414 0.757414 0.652935 8.00037 0)" fill="white"/><rect x="8.00037" y="8.98938" width="5.52856" height="1" transform="rotate(-130.763 8.00037 8.98938)" fill="white"/></svg>';
 const iconSublist           = '<svg width="15" height="13" viewBox="-1 0 15 13" fill="none" xmlns="http://www.w3.org/2000/svg"><rect width="9" height="1" fill="white"/><rect y="12" width="9" height="1" fill="white"/><rect x="5" y="4" width="9" height="1" fill="white"/><rect x="5" y="8" width="9" height="1" fill="white"/></svg>';
 const iconUnique            = '<svg width="13" height="13" viewBox="0 0 13 13" fill="none" xmlns="http://www.w3.org/2000/svg"><rect width="9" height="1" fill="white"/><rect x="4" y="12" width="9" height="1" fill="white"/><rect x="4" y="4" width="9" height="1" fill="white"/><rect y="8" width="9" height="1" fill="white"/></svg>';
-const iconReverseList       = '<svg width="17" height="15" viewBox="0 0 17 15" fill="none" xmlns="http://www.w3.org/2000/svg"><rect y="3" width="9" height="1" fill="white"/><rect y="7" width="9" height="1" fill="white"/><rect y="11" width="9" height="1" fill="white"/><path d="M11.9899 13.7828L11.9886 13.9778L15.9189 14.004L15.9268 12.8194L13.9576 12.8063C14.7313 11.9939 15.4826 10.933 15.9038 9.70503C16.1407 9.01413 16.2718 8.27255 16.245 7.49996H15.0596C15.0877 8.13674 14.98 8.74699 14.7833 9.3207C14.4072 10.417 13.7011 11.3868 12.97 12.1229L12.6764 9.8487L11.5016 10.0004L11.9899 13.7828Z" fill="white"/><path d="M11.9899 1.21724L11.9886 1.02219L15.9189 0.995972L15.9268 2.18055L13.9576 2.19368C14.7313 3.00606 15.4826 4.06702 15.9038 5.29496C16.1407 5.98586 16.2718 6.72737 16.245 7.49996H15.0596C15.0877 6.86318 14.98 6.253 14.7833 5.67929C14.4072 4.58301 13.7011 3.61316 12.97 2.87713L12.6764 5.15129L11.5016 4.99962L11.9899 1.21724Z" fill="white"/></svg>';
+const iconReverseList       = '<svg width="19" height="15" viewBox="-2 0 19 15" fill="none" xmlns="http://www.w3.org/2000/svg"><rect y="3" width="9" height="1" fill="white"/><rect y="7" width="9" height="1" fill="white"/><rect y="11" width="9" height="1" fill="white"/><path d="M11.9899 13.7828L11.9886 13.9778L15.9189 14.004L15.9268 12.8194L13.9576 12.8063C14.7313 11.9939 15.4826 10.933 15.9038 9.70503C16.1407 9.01413 16.2718 8.27255 16.245 7.49996H15.0596C15.0877 8.13674 14.98 8.74699 14.7833 9.3207C14.4072 10.417 13.7011 11.3868 12.97 12.1229L12.6764 9.8487L11.5016 10.0004L11.9899 13.7828Z" fill="white"/><path d="M11.9899 1.21724L11.9886 1.02219L15.9189 0.995972L15.9268 2.18055L13.9576 2.19368C14.7313 3.00606 15.4826 4.06702 15.9038 5.29496C16.1407 5.98586 16.2718 6.72737 16.245 7.49996H15.0596C15.0877 6.86318 14.98 6.253 14.7833 5.67929C14.4072 4.58301 13.7011 3.61316 12.97 2.87713L12.6764 5.15129L11.5016 4.99962L11.9899 1.21724Z" fill="white"/></svg>';
+const iconSort              = '<svg width="11" height="9" viewBox="0 0 11 9" fill="none" xmlns="http://www.w3.org/2000/svg"><rect x="4" width="3" height="1" fill="white"/><rect x="2" y="4" width="7" height="1" fill="white"/><rect y="8" width="11" height="1" fill="white"/></svg>';
 const iconColumn            = '<svg width="9" height="11" viewBox="0 0 9 11" fill="none" xmlns="http://www.w3.org/2000/svg"><rect y="11" width="11" height="1" transform="rotate(-90 0 11)" fill="white"/><rect x="4" y="11" width="11" height="1" transform="rotate(-90 4 11)" fill="white"/><rect x="8" y="11" width="11" height="1" transform="rotate(-90 8 11)" fill="white"/></svg>';
 const iconCell              = '<svg width="13" height="13" viewBox="0 0 13 13" fill="none" xmlns="http://www.w3.org/2000/svg"><rect y="2" width="13" height="1" fill="white"/><rect x="11" width="13" height="1" transform="rotate(90 11 0)" fill="white"/><rect y="6" width="13" height="1" fill="white"/><rect x="7" width="13" height="1" transform="rotate(90 7 0)" fill="white"/><rect y="10" width="13" height="1" fill="white"/><rect x="3" width="13" height="1" transform="rotate(90 3 0)" fill="white"/></svg>';
 const iconItems             = '<svg width="17" height="11" viewBox="-1 0 17 11" fill="none" xmlns="http://www.w3.org/2000/svg"><rect width="9" height="1" transform="matrix(-1 0 0 1 9 1)" fill="white"/><rect width="9" height="1" transform="matrix(-1 0 0 1 9 5)" fill="white"/><rect width="9" height="1" transform="matrix(-1 0 0 1 9 9)" fill="white"/><circle r="1.5" transform="matrix(-1 0 0 1 13.5 9.5)" fill="white"/><circle r="1.5" transform="matrix(-1 0 0 1 13.5 5.5)" fill="white"/><circle r="1.5" transform="matrix(-1 0 0 1 13.5 1.5)" fill="white"/></svg>';
@@ -83279,7 +83756,7 @@ const iconTextCompare       = '<svg width="19" height="7" viewBox="0 0 19 7" fil
 const iconTextCSV           = '<svg width="14" height="11" viewBox="0 0 14 11" fill="none" xmlns="http://www.w3.org/2000/svg"><path d="M2.37774 4.99976L2.32234 5.46851C2.28257 5.82646 2.21155 6.1901 2.10928 6.55941C2.00984 6.93157 1.90473 7.2739 1.79393 7.5864C1.68314 7.8989 1.10795 8.32078 1.03977 8.49976H0C0.0397727 8.32646 0.579446 7.91453 0.647628 7.61623C0.718651 7.31794 0.786833 6.98271 0.852173 6.61055C0.647628 6.40057 0.210938 6.55941 0 6.49976V4.99976H2.37774Z" fill="white"/><path d="M7.37774 4.99976L7.32234 5.46851C7.28257 5.82646 7.21155 6.1901 7.10928 6.55941C7.00984 6.93157 6.90473 7.2739 6.79393 7.5864C6.68314 7.8989 6.10795 8.32078 6.03977 8.49976H5C5.03977 8.32646 5.57945 7.91453 5.64763 7.61623C5.71865 7.31794 5.78683 6.98271 5.85217 6.61055C5.64763 6.40057 5.21094 6.55941 5 6.49976V4.99976H7.37774Z" fill="white"/><path d="M12.5 10.9998C11.6716 10.9998 11 10.3282 11 9.49976C11 8.67133 11.6716 7.99976 12.5 7.99976C13.3284 7.99976 14 8.67133 14 9.49976C14 10.3282 13.3284 10.9998 12.5 10.9998Z" fill="white"/><path d="M12.5 6.99976C11.6716 6.99976 11 6.32818 11 5.49976C11 4.67133 11.6716 3.99976 12.5 3.99976C13.3284 3.99976 14 4.67133 14 5.49976C14 6.32818 13.3284 6.99976 12.5 6.99976Z" fill="white"/><path d="M12.5 2.99976C11.6716 2.99976 11 2.32818 11 1.49976C11 0.671329 11.6716 -0.000244141 12.5 -0.000244141C13.3284 -0.000244141 14 0.671329 14 1.49976C14 2.32818 13.3284 2.99976 12.5 2.99976Z" fill="white"/></svg>';
 const iconTextJson          = '<svg width="15" height="11" viewBox="0 0 15 11" fill="none" xmlns="http://www.w3.org/2000/svg"><path d="M0.5 5.51719V4.98437C1.05152 4.98437 1.93627 4.88411 2.15423 4.68359C2.3755 4.48307 2.48614 4.14792 2.48614 3.67813V2.30313C2.48614 1.90781 2.52907 1.56549 2.61494 1.27617C2.70411 0.986849 2.84777 0.747657 3.04592 0.558594C3.24407 0.369532 3.50827 0.229167 3.83853 0.137501C4.16878 0.0458335 5.51453 0 6 0V0.842188C5.61691 0.842188 4.37684 0.89375 4.15557 0.996875C3.9376 1.1 3.78238 1.26042 3.68991 1.47813C3.60074 1.69297 3.55616 1.96797 3.55616 2.30313V4.02188C3.55616 4.24531 3.52148 4.4487 3.45213 4.63203C3.38608 4.81536 3.26223 4.97292 3.08059 5.10469C2.89896 5.23646 2.63971 5.33815 2.30285 5.40977C1.96929 5.48138 1.03501 5.51719 0.5 5.51719ZM6 11C5.51453 11 4.16878 10.9542 3.83853 10.8625C3.50827 10.7708 3.24407 10.6305 3.04592 10.4414C2.84777 10.2523 2.70411 10.0132 2.61494 9.72383C2.52907 9.4345 2.48614 9.09219 2.48614 8.69687V7.32188C2.48614 6.85208 2.3755 6.51693 2.15423 6.31641C1.93627 6.11589 1.05152 6.01562 0.5 6.01562V5.48281C1.03501 5.48281 1.96929 5.51862 2.30285 5.59023C2.63971 5.66185 2.89896 5.76354 3.08059 5.89531C3.26223 6.02708 3.38608 6.18464 3.45213 6.36797C3.52148 6.5513 3.55616 6.75469 3.55616 6.97813V8.69687C3.55616 9.03203 3.60074 9.30703 3.68991 9.52188C3.78238 9.73672 3.9376 9.8957 4.15557 9.99883C4.37684 10.1048 5.61691 10.1578 6 10.1578V11ZM0.5 6.01562V4.98437H2.1691V6.01562H0.5Z" fill="white"/><path d="M14.5 5.48281V6.01562C13.9485 6.01562 13.0621 6.11589 12.8408 6.31641C12.6228 6.51693 12.5139 6.85208 12.5139 7.32188V8.69687C12.5139 9.09219 12.4693 9.4345 12.3801 9.72383C12.2942 10.0132 12.1522 10.2523 11.9541 10.4414C11.7559 10.6305 11.4917 10.7708 11.1615 10.8625C10.8312 10.9542 9.48547 11 9 11V10.1578C9.38309 10.1578 10.6215 10.1048 10.8395 9.99883C11.0607 9.8957 11.216 9.73672 11.3051 9.52188C11.3976 9.30703 11.4438 9.03203 11.4438 8.69687V6.97813C11.4438 6.75469 11.4769 6.5513 11.5429 6.36797C11.6123 6.18464 11.7378 6.02708 11.9194 5.89531C12.101 5.76354 12.3586 5.66185 12.6922 5.59023C13.0291 5.51862 13.965 5.48281 14.5 5.48281ZM9 0C9.48547 0 10.8312 0.0458335 11.1615 0.137501C11.4917 0.229167 11.7559 0.369532 11.9541 0.558594C12.1522 0.747657 12.2942 0.986849 12.3801 1.27617C12.4693 1.56549 12.5139 1.90781 12.5139 2.30313V3.67813C12.5139 4.14792 12.6228 4.48307 12.8408 4.68359C13.0621 4.88411 13.9485 4.98437 14.5 4.98437V5.51719C13.965 5.51719 13.0291 5.48138 12.6922 5.40977C12.3586 5.33815 12.101 5.23646 11.9194 5.10469C11.7378 4.97292 11.6123 4.81536 11.5429 4.63203C11.4769 4.4487 11.4438 4.24531 11.4438 4.02188V2.30313C11.4438 1.96797 11.3976 1.69297 11.3051 1.47813C11.216 1.26042 11.0607 1.1 10.8395 0.996875C10.6215 0.89375 9.38309 0.842188 9 0.842188V0ZM14.5 4.98437V6.01562H12.8309V4.98437H14.5Z" fill="white"/></svg>';
 const iconTextFetch         = '<svg width="16" height="15" viewBox="0 0 16 15" fill="none" xmlns="http://www.w3.org/2000/svg"><path fill-rule="evenodd" clip-rule="evenodd" d="M14.5 7.5C14.5 11.366 11.366 14.5 7.5 14.5C3.63401 14.5 0.5 11.366 0.5 7.5C0.5 3.63401 3.63401 0.5 7.5 0.5C11.366 0.5 14.5 3.63401 14.5 7.5ZM6.89681 1.84719C7.1396 1.58019 7.34416 1.5 7.5 1.5C7.65584 1.5 7.8604 1.58019 8.10319 1.84719C8.34611 2.11433 8.58782 2.52877 8.80109 3.0833C9.18541 4.08253 9.44589 5.45389 9.4925 7L5.5075 7C5.55411 5.45389 5.81459 4.08253 6.19891 3.0833C6.41218 2.52877 6.65389 2.11433 6.89681 1.84719ZM4.50708 7C4.55384 5.35511 4.82979 3.85731 5.26556 2.72432C5.39989 2.37505 5.55249 2.05238 5.72342 1.76738C3.4299 2.47736 1.72465 4.52586 1.52054 7H4.50708ZM1.52054 8H4.50708C4.55384 9.64489 4.82979 11.1427 5.26556 12.2757C5.39989 12.625 5.55249 12.9476 5.72342 13.2326C3.4299 12.5226 1.72465 10.4741 1.52054 8ZM5.5075 8L9.4925 8C9.44589 9.54611 9.18541 10.9175 8.80109 11.9167C8.58782 12.4712 8.34611 12.8857 8.10319 13.1528C7.8604 13.4198 7.65584 13.5 7.5 13.5C7.34416 13.5 7.1396 13.4198 6.89681 13.1528C6.65389 12.8857 6.41218 12.4712 6.19891 11.9167C5.81459 10.9175 5.55411 9.54611 5.5075 8ZM10.4929 8C10.4462 9.64489 10.1702 11.1427 9.73444 12.2757C9.60011 12.625 9.44751 12.9476 9.27658 13.2326C11.5701 12.5226 13.2754 10.4741 13.4795 8H10.4929ZM13.4795 7C13.2753 4.52586 11.5701 2.47736 9.27658 1.76738C9.44751 2.05238 9.60011 2.37505 9.73444 2.72432C10.1702 3.85731 10.4462 5.35511 10.4929 7H13.4795Z" fill="white"/></svg>';
-const iconTextFile          = '<svg width="13" height="15" viewBox="0 0 13 15" fill="none" xmlns="http://www.w3.org/2000/svg"><path d="M0.5 14.5H12.5V0.5H2.20237L0.5 2.2138V14.5Z" stroke="white"/><rect x="3" y="4" width="7" height="1" fill="white"/><rect x="3" y="7" width="7" height="1" fill="white"/><rect x="3" y="10" width="7" height="1" fill="white"/></svg>';
+const iconTextFile          = '<svg width="14" height="15" viewBox="0 0 14 15" fill="none" xmlns="http://www.w3.org/2000/svg"><path d="M0.5 14.5H12.5V0.5H2.20237L0.5 2.2138V14.5Z" stroke="white"/><rect x="3" y="4" width="7" height="1" fill="white"/><rect x="3" y="7" width="7" height="1" fill="white"/><rect x="3" y="10" width="7" height="1" fill="white"/></svg>';
 
 const iconColor             = '<svg width="13" height="15" viewBox="0 0 13 15" fill="none" xmlns="http://www.w3.org/2000/svg"><path d="M11.8409 3.43385C10.7465 2.2502 9.18038 1.50909 7.44118 1.50909C4.13249 1.50909 1.45027 4.19132 1.45027 7.5C1.45027 10.8087 4.13249 13.4909 7.44118 13.4909C9.18038 13.4909 10.7465 12.7498 11.8409 11.5662" stroke="white" stroke-width="1.2"/><path d="M7.5 8.57512C8.09377 8.57512 8.57511 8.09378 8.57511 7.50001C8.57511 6.90624 8.09377 6.4249 7.5 6.4249C6.90623 6.4249 6.42489 6.90624 6.42489 7.50001C6.42489 8.09378 6.90623 8.57512 7.5 8.57512Z" fill="white"/></svg>';
 const iconRandomColor       = '<svg width="13" height="15" viewBox="0 0 13 15" fill="none" xmlns="http://www.w3.org/2000/svg"><path d="M11.9099 3.43385C10.8155 2.2502 9.24936 1.50909 7.51016 1.50909C4.20148 1.50909 1.51926 4.19132 1.51926 7.5C1.51926 10.8087 4.20148 13.4909 7.51016 13.4909C9.24936 13.4909 10.8155 12.7498 11.9099 11.5662" stroke="white" stroke-width="1.2"/><path d="M6.77317 8.80159V8.71763C6.77533 8.32795 6.81193 8.01793 6.88297 7.78757C6.95617 7.55721 7.05951 7.37206 7.19299 7.23212C7.32647 7.09003 7.48902 6.95978 7.68063 6.84137C7.81195 6.75956 7.92929 6.67021 8.03263 6.57333C8.13812 6.4743 8.22101 6.3645 8.28129 6.24393C8.34157 6.12122 8.37171 5.98451 8.37171 5.8338C8.37171 5.66372 8.33188 5.51625 8.25222 5.39138C8.17257 5.26651 8.06492 5.16963 7.92929 5.10074C7.79581 5.03184 7.64618 4.9974 7.4804 4.9974C7.32755 4.9974 7.18223 5.03077 7.04444 5.09751C6.90881 5.16209 6.79578 5.26113 6.70536 5.39461C6.61709 5.52594 6.56757 5.69279 6.55681 5.89516H5.40715C5.41791 5.48611 5.51695 5.14379 5.70425 4.86822C5.89371 4.59265 6.14345 4.38597 6.45347 4.24818C6.76564 4.1104 7.1101 4.0415 7.48686 4.0415C7.89807 4.0415 8.25976 4.11363 8.57193 4.25787C8.88626 4.40212 9.13061 4.60772 9.305 4.87468C9.48154 5.13949 9.56981 5.45381 9.56981 5.81766C9.56981 6.06309 9.52998 6.28269 9.45032 6.47645C9.37281 6.67021 9.26194 6.84244 9.11769 6.99315C8.97345 7.14385 8.80229 7.27841 8.60423 7.39682C8.42984 7.50446 8.28667 7.61642 8.17472 7.73267C8.06492 7.84893 7.98311 7.98564 7.92929 8.1428C7.87762 8.29781 7.85071 8.48942 7.84855 8.71763V8.80159H6.77317Z" fill="white"/><path d="M6.7784 10.8136C6.94344 10.9761 7.14021 11.0574 7.36872 11.0574C7.52106 11.0574 7.65943 11.0205 7.78384 10.9469C7.91079 10.8707 8.01235 10.7692 8.08852 10.6422C8.16723 10.5153 8.20658 10.3744 8.20658 10.2195C8.20658 9.99099 8.1228 9.79549 7.95522 9.63299C7.79019 9.4705 7.59469 9.38925 7.36872 9.38925C7.14021 9.38925 6.94344 9.4705 6.7784 9.63299C6.61337 9.79549 6.53085 9.99099 6.53085 10.2195C6.53085 10.4531 6.61337 10.6511 6.7784 10.8136Z" fill="white"/></svg>';
@@ -84863,6 +85340,8 @@ function initGeneratorMenus()
                          new MenuItem('Sublist',           {icon: iconSublist,     createType: SUBLIST,      callback: e => actionManager.do(getCreateNodeAction(SUBLIST,       btnData.div, getCreateOptions(e)))}),
                          new MenuItem('Unique',            {icon: iconUnique,      createType: UNIQUE,       callback: e => actionManager.do(getCreateNodeAction(UNIQUE,        btnData.div, getCreateOptions(e)))}),
                          new MenuItem('Reverse',           {icon: iconReverseList, createType: REVERSE_LIST, callback: e => actionManager.do(getCreateNodeAction(REVERSE_LIST,  btnData.div, getCreateOptions(e)))}),
+                         new MenuItem('Sort',              {icon: iconSort,        createType: SORT,         callback: e => actionManager.do(getCreateNodeAction(SORT,          btnData.div, getCreateOptions(e)))}),
+                         new MenuItem('Expand',            {icon: iconExpand,      createType: EXPAND,       callback: e => actionManager.do(getCreateNodeAction(EXPAND,        btnData.div, getCreateOptions(e)))}),
                          new MenuItem('',                  {separator: true}),     
                          new MenuItem('Column',            {icon: iconColumn,      createType: COLUMN,       callback: e => actionManager.do(getCreateNodeAction(COLUMN,        btnData.div, getCreateOptions(e)))}),
                          new MenuItem('Cell',              {icon: iconCell,        createType: CELL,         callback: e => actionManager.do(getCreateNodeAction(CELL,          btnData.div, getCreateOptions(e)))})]);
@@ -85034,7 +85513,7 @@ function initGeneratorMenus()
     menuVector = new Menu('Vector', true, false);
     menuVector.addItems([
         new MenuItem('Point',             {icon: iconPoint,            createType: POINT,             callback: e => actionManager.do(getCreateNodeAction(POINT,             btnShape.div, getCreateOptions(e)))}),
-        new MenuItem('Path',              {icon: iconVectorPath,       createType: VECTOR_PATH,       callback: e => actionManager.do(getCreateNodeAction(VECTOR_PATH,       btnShape.div, getCreateOptions(e)))}),
+        new MenuItem('Vector path',       {icon: iconVectorPath,       createType: VECTOR_PATH,       callback: e => actionManager.do(getCreateNodeAction(VECTOR_PATH,       btnShape.div, getCreateOptions(e)))}),
         new MenuItem('',                  {separator: true}),
         new MenuItem('Interpolate point', {icon: iconInterpolatePoint, createType: INTERPOLATE_POINT, callback: e => actionManager.do(getCreateNodeAction(INTERPOLATE_POINT, btnShape.div, getCreateOptions(e)))}),
         //new MenuItem('Point on path',     {icon: iconPointOnPath,      createType: POINT_ON_PATH,     callback: e => actionManager.do(getCreateNodeAction(POINT_ON_PATH,     btnShape.div, getCreateOptions(e)))}),
@@ -85049,26 +85528,26 @@ function initGeneratorMenus()
 
     menuShapes = new Menu('Shapes', true, false);
     menuShapes.addItems([
-        new MenuItem('Rectangle', {icon: iconRectangle,  createType: RECTANGLE,  callback: e => actionManager.do(getCreateNodeAction(RECTANGLE,  btnShape.div, getCreateOptions(e)))}),
-        new MenuItem('Line',      {icon: iconLine,       createType: LINE,       callback: e => actionManager.do(getCreateNodeAction(LINE,       btnShape.div, getCreateOptions(e)))}),
-        new MenuItem('Ellipse',   {icon: iconEllipse,    createType: ELLIPSE,    callback: e => actionManager.do(getCreateNodeAction(ELLIPSE,    btnShape.div, getCreateOptions(e)))}),
-        new MenuItem('Trapeze',   {icon: iconTrapeze,    createType: TRAPEZE,    callback: e => actionManager.do(getCreateNodeAction(TRAPEZE,    btnShape.div, getCreateOptions(e)))}),
-        new MenuItem('Polygon',   {icon: iconPolygon,    createType: POLYGON,    callback: e => actionManager.do(getCreateNodeAction(POLYGON,    btnShape.div, getCreateOptions(e)))}),
-        new MenuItem('Star',      {icon: iconStar,       createType: STAR,       callback: e => actionManager.do(getCreateNodeAction(STAR,       btnShape.div, getCreateOptions(e)))}),
-        new MenuItem('Text',      {icon: iconTextShape,  createType: TEXT_SHAPE, callback: e => actionManager.do(getCreateNodeAction(TEXT_SHAPE, btnShape.div, getCreateOptions(e)))})]);
+        new MenuItem('Rectangle',  {icon: iconRectangle,  createType: RECTANGLE,  callback: e => actionManager.do(getCreateNodeAction(RECTANGLE,  btnShape.div, getCreateOptions(e)))}),
+        new MenuItem('Line',       {icon: iconLine,       createType: LINE,       callback: e => actionManager.do(getCreateNodeAction(LINE,       btnShape.div, getCreateOptions(e)))}),
+        new MenuItem('Ellipse',    {icon: iconEllipse,    createType: ELLIPSE,    callback: e => actionManager.do(getCreateNodeAction(ELLIPSE,    btnShape.div, getCreateOptions(e)))}),
+        new MenuItem('Trapeze',    {icon: iconTrapeze,    createType: TRAPEZE,    callback: e => actionManager.do(getCreateNodeAction(TRAPEZE,    btnShape.div, getCreateOptions(e)))}),
+        new MenuItem('Polygon',    {icon: iconPolygon,    createType: POLYGON,    callback: e => actionManager.do(getCreateNodeAction(POLYGON,    btnShape.div, getCreateOptions(e)))}),
+        new MenuItem('Star',       {icon: iconStar,       createType: STAR,       callback: e => actionManager.do(getCreateNodeAction(STAR,       btnShape.div, getCreateOptions(e)))}),
+        new MenuItem('Text shape', {icon: iconTextShape,  createType: TEXT_SHAPE, callback: e => actionManager.do(getCreateNodeAction(TEXT_SHAPE, btnShape.div, getCreateOptions(e)))})]);
 
 
     menuTransform = new Menu('Transform', true, false);
     menuTransform.addItems([
-        new MenuItem('Move',              {icon: iconMove,             createType: MOVE,              callback: e => actionManager.do(getCreateNodeAction(MOVE,              btnShape.div, getCreateOptions(e)))}),
-        new MenuItem('Rotate',            {icon: iconRotate,           createType: ROTATE,            callback: e => actionManager.do(getCreateNodeAction(ROTATE,            btnShape.div, getCreateOptions(e)))}),
-        new MenuItem('Scale',             {icon: iconScale,            createType: SCALE,             callback: e => actionManager.do(getCreateNodeAction(SCALE,             btnShape.div, getCreateOptions(e)))}),
-        new MenuItem('Skew',              {icon: iconSkew,             createType: SKEW,              callback: e => actionManager.do(getCreateNodeAction(SKEW,              btnShape.div, getCreateOptions(e)))}),
-        new MenuItem('',                  {separator: true}),
-        new MenuItem('Place',             {icon: iconPlace,            createType: PLACE,             callback: e => actionManager.do(getCreateNodeAction(PLACE,             btnShape.div, getCreateOptions(e)))}),
-        new MenuItem('',                  {separator: true}),
-        new MenuItem('Center',            {icon: iconCenter,           createType: CENTER,            callback: e => actionManager.do(getCreateNodeAction(CENTER,            btnShape.div, getCreateOptions(e)))}),
-        new MenuItem('Reset',             {icon: iconResetXform,       createType: RESET_XFORM,       callback: e => actionManager.do(getCreateNodeAction(RESET_XFORM,       btnShape.div, getCreateOptions(e)))})]);
+        new MenuItem('Move',       {icon: iconMove,             createType: MOVE,              callback: e => actionManager.do(getCreateNodeAction(MOVE,              btnShape.div, getCreateOptions(e)))}),
+        new MenuItem('Rotate',     {icon: iconRotate,           createType: ROTATE,            callback: e => actionManager.do(getCreateNodeAction(ROTATE,            btnShape.div, getCreateOptions(e)))}),
+        new MenuItem('Scale',      {icon: iconScale,            createType: SCALE,             callback: e => actionManager.do(getCreateNodeAction(SCALE,             btnShape.div, getCreateOptions(e)))}),
+        new MenuItem('Skew',       {icon: iconSkew,             createType: SKEW,              callback: e => actionManager.do(getCreateNodeAction(SKEW,              btnShape.div, getCreateOptions(e)))}),
+        new MenuItem('',           {separator: true}),
+        new MenuItem('Place',      {icon: iconPlace,            createType: PLACE,             callback: e => actionManager.do(getCreateNodeAction(PLACE,             btnShape.div, getCreateOptions(e)))}),
+        new MenuItem('',           {separator: true}),
+        new MenuItem('Center',     {icon: iconCenter,           createType: CENTER,            callback: e => actionManager.do(getCreateNodeAction(CENTER,            btnShape.div, getCreateOptions(e)))}),
+        new MenuItem('Reset',      {icon: iconResetXform,       createType: RESET_XFORM,       callback: e => actionManager.do(getCreateNodeAction(RESET_XFORM,       btnShape.div, getCreateOptions(e)))})]);
 
 
     menuShape = new Menu('Shapes', true, false);
@@ -85079,7 +85558,7 @@ function initGeneratorMenus()
                                 new MenuItem('Vector',            {icon: iconVectorNetwork, childMenu: menuVector}),
                                 new MenuItem('',                  {separator: true}),
                                 new MenuItem('Frame',             {icon: iconFrame,      createType: FRAME,       callback: e => actionManager.do(getCreateNodeAction(FRAME,       btnShape.div, getCreateOptions(e)))}),
-                                new MenuItem('Group',             {icon: iconShapeGroup, createType: SHAPE_GROUP, callback: e => actionManager.do(getCreateNodeAction(SHAPE_GROUP, btnShape.div, getCreateOptions(e)))}),
+                                //new MenuItem('Group',             {icon: iconShapeGroup, createType: SHAPE_GROUP, callback: e => actionManager.do(getCreateNodeAction(SHAPE_GROUP, btnShape.div, getCreateOptions(e)))}),
                              // new MenuItem('Boolean',           {enabled: false, icon: iconBoolUnion,  callback: e => actionManager.do(getCreateNodeAction(BOOLEAN,     btnShape.div, getCreateOptions(e)))}),
         menuItemShapeSep1     = new MenuItem('',                  {separator: true}),
                                 new MenuItem('Transform',         {icon: iconMove, childMenu: menuTransform}),
@@ -87252,6 +87731,12 @@ GraphView.prototype.startConnectionFromOutput = function(pointerId, output, upda
     this.hideAllOutputs(this.tempConn.output);
 
     output.updateControl();
+
+
+    // if (dragOutTimer) clearInterval(dragOutTimer);
+    // dragOutTimer = setInterval(() => checkDragOut(), 200);
+
+    //try { this.div.setPointerCapture(pointerId); } catch {}
 };
 
 
@@ -87271,6 +87756,12 @@ GraphView.prototype.startConnectionFromInput = function(pointerId, input, backIn
     this.hideAllInputs(this.tempConn.input);
 
     input.updateControl();
+
+
+    // if (dragOutTimer) clearInterval(dragOutTimer);
+    // dragOutTimer = setInterval(() => checkDragOut(), 200);
+
+    //try { this.div.setPointerCapture(pointerId); } catch {}
 };
 
 
@@ -87308,6 +87799,13 @@ GraphView.prototype.cancelConnection = function(pointerId)
     newReorderIndex  = Number.NaN;
     prevReorderIndex = Number.NaN;
     oldReorderIndex  = Number.NaN;
+
+
+    // if (dragOutTimer) 
+    // {
+    //     clearInterval(dragOutTimer);
+    //     dragOutTimer = null;
+    // }
 };
 
 
@@ -87428,6 +87926,13 @@ GraphView.prototype.endConnection = function(pointerId, backInit = false, shiftK
 
         this.cancelConnection(pointerId);
     }
+
+
+    // if (dragOutTimer) 
+    // {
+    //     clearInterval(dragOutTimer);
+    //     dragOutTimer = null;
+    // }
 };
 
 
@@ -87455,6 +87960,13 @@ GraphView.prototype.endConnectionFromOutputToFixed = function(output, input, sav
     //     console.log('2 reorder');
     //     actionManager.do(new ReorderInputConnectionsAction(savedConnInput.node.id, savedConnInput.id, input.id));
     // }
+
+
+    // if (dragOutTimer) 
+    // {
+    //     clearInterval(dragOutTimer);
+    //     dragOutTimer = null;
+    // }
 };
 
 
@@ -87480,6 +87992,13 @@ GraphView.prototype.endConnectionFromOutputToVariable = function(output, input, 
         //console.log('V2 reconnect');
         actionManager.do(new ReconnectAction(output, savedConnInput, input));
     }
+
+
+    // if (dragOutTimer) 
+    // {
+    //     clearInterval(dragOutTimer);
+    //     dragOutTimer = null;
+    // }
 };
 
 
@@ -87607,10 +88126,10 @@ GraphView.prototype.createEvents = function()
 
     this.div.addEventListener('pointerleave', e => 
     {
-        if (this.tempConn)
-        {
-            try { this.div.setPointerCapture(e.pointerId); } catch {}
-        }
+        // if (this.tempConn)
+        // {
+        //     try { this.div.setPointerCapture(e.pointerId); } catch {}
+        // }
     });
 
 
@@ -87682,6 +88201,7 @@ GraphView.prototype.createEvents = function()
                     this.overInput.connecting = true;
                     this.startConnectionFromInput(e.pointerId, this.overInput, getCtrlKey(e));
 
+                    
                     this.tempConn.wire.update(sx, sy);
                 }
             }
@@ -87796,8 +88316,12 @@ GraphView.prototype.createEvents = function()
 
         else if (e.button == 0
             && this.tempConn)
+        {
             this.endConnection(e.pointerId, getCtrlKey(e), e.shiftKey);
 
+            // if (this.div.hasPointerCapture(e.pointerId))
+            //     this.div.releasePointerCapture(e.pointerId);
+        }
         else if (e.button == 1
             && this.panning)
         {
@@ -88021,6 +88545,23 @@ function graphView_onpointermove(e)
     else if (graphView.tempConn)
         graphView.tempConn.wire.update(e.clientX, e.clientY);
 }
+
+
+//var dragOutTimer = null;
+
+
+
+function checkDragOut()
+{
+    const pan  = graphView.currentPage ? graphView.currentPage.pan  : point(0, 0);
+    const zoom = graphView.currentPage ? graphView.currentPage.zoom : 1;
+
+    const offset = 10;
+    
+    if (graphView.p.x >= graphView.offsetWidth)
+        graphView.currentPage.setPanAndZoom(point(pan.x + offset, pan.y), zoom);
+}
+
 
 
 GraphView.prototype.updatePanAndZoom = function(updateNodes)
@@ -98527,11 +99068,16 @@ Operator.prototype.updateHeaderLabelText = function()
     
     let suffix;
 
-         if (this.type == LIST  ) suffix = '  [ ' + this.inputs.filter(i => !i.isNew).length + ' ]';
-         if (this.type == COLUMN) suffix = '  [ ' + this.columnLength + ' ]';
-    else if (this.type == UNIQUE) suffix = '  [ ' + this.paramCounts.value.items.length + ' ]';
-    else if (this.type == ITEMS ) suffix = '  [ ' + this.params.length + ' ]';
-    else                          suffix = this.cached ? '' : '...';
+    const sep = settings.showNodeId ? ' ' : '  ';
+
+         if (this.type == LIST        ) suffix = sep + '[ ' + this.length + ' ]';
+    else if (this.type == COLUMN      ) suffix = sep + '[ ' + this.columnLength + ' ]';
+    else if (this.type == REVERSE_LIST) suffix = sep + '[ ' + this.tableLength + ' ]';
+    else if (this.type == SORT        ) suffix = sep + '[ ' + this.tableLength + ' ]';
+    else if (this.type == EXPAND      ) suffix = sep + '[ ' + this.length + ' ]';
+    else if (this.type == UNIQUE      ) suffix = sep + '[ ' + this.paramCounts.value.items.length + ' ]';
+    else if (this.type == ITEMS       ) suffix = sep + '[ ' + this.params.length + ' ]';
+    else                                suffix = this.cached ? '' : '...';
 
 
     suffix += this.suffix;
@@ -99829,6 +100375,10 @@ function OpTimer_onDisconnectInput(node)
 class   OpList
 extends OperatorBase
 {
+    length;
+
+
+
     constructor()
     {
         super(LIST, 'list', 'list', iconList);
@@ -99891,9 +100441,10 @@ extends OperatorBase
     {
         super.updateValues(requestId, actionId, updateParamId, paramIds, values);
 
+        this.length = values[paramIds.findIndex(id => id == 'length')].value;
+
         const type = values[paramIds.findIndex(id => id == 'type')];
         consoleAssert(LIST_VALUES.includes(type.value));
-
 
         this.outputs[0].types = [type.value];
     }
@@ -99927,6 +100478,101 @@ extends OperatorBase
     }
 }
 
+
+
+class   OpExpand
+extends OperatorBase
+{
+    length;
+
+
+
+    constructor()
+    {
+        super(EXPAND, 'expand', 'expand', iconExpand);
+
+        this.canDisable  = true;
+        // this.iconOffsetY = 1;
+        
+
+        this.addInput (new Input (LIST_VALUES));
+        this.addOutput(new Output([LIST_VALUE], this.output_genRequest));
+    }
+
+
+
+    output_genRequest(gen)
+    {
+        // 'this' is the output
+
+        gen.scope.push({
+            nodeId:  this.node.id, 
+            paramId: NULL });
+
+        const [request, ignore] = this.node.genRequestStart(gen);
+        if (ignore) return request;
+
+        
+        const input = this.node.inputs[0];
+
+
+        request.push(input.connected ? 1 : 0);
+        
+        if (input.connected)
+            request.push(...pushInputOrParam(input, gen));
+
+        gen.scope.pop();
+        pushUnique(gen.passedNodes, this.node);
+
+        return request;
+    }
+
+
+
+    updateValues(requestId, actionId, updateParamId, paramIds, values)
+    {
+        super.updateValues(requestId, actionId, updateParamId, paramIds, values);
+
+        this.length = values[paramIds.findIndex(id => id == 'length')].value;
+
+
+        const type = values[paramIds.findIndex(id => id == 'type')];
+        consoleAssert(LIST_VALUES.includes(type.value));
+
+        this.outputs[0].types = [type.value];
+    }
+
+
+
+
+
+
+    getHeaderColors(options = {})
+    {
+        const colors = super.getHeaderColors(options);
+
+        
+        const type = this.outputs[0].types[0];
+
+
+        // const back = rgb_a(rgbFromType(type, this.active), 0.95);
+
+        // colors.back = back;
+
+
+        colors.text   = isDark(colors.back) ? [1, 1, 1, 1] : [0, 0, 0, 1]; 
+
+        const gray =
+               this.active
+            && this.outputs[0].types[0] == LIST_VALUE;
+
+        colors.input  = this.active ? rgb_a(colors.text, 0.4)  : rgb_a(rgbSaturateHsv(rgbFromType(type, true), 0.5), 0.8);
+        colors.output = gray        ? rgb_a(colors.text, 0.35) : rgb_a(rgbSaturateHsv(rgbFromType(type, true), 0.5), 0.7);
+        colors.wire   = rgbFromType(type, true);
+
+        return colors;
+    }
+}
 
 
 class   OpSublist
@@ -100087,6 +100733,10 @@ extends OperatorBase
 class   OpReverseList
 extends OperatorBase
 {
+    tableLength;
+
+
+
     constructor()
     {
         super(REVERSE_LIST, 'reverse', 'reverse', iconReverseList);
@@ -100126,6 +100776,116 @@ extends OperatorBase
         pushUnique(gen.passedNodes, this.node);
 
         return request;
+    }
+
+
+
+    updateValues(requestId, actionId, updateParamId, paramIds, values)
+    {
+        super.updateValues(requestId, actionId, updateParamId, paramIds, values);
+
+        const length = values[paramIds.findIndex(id => id == 'length' )];
+
+        this.tableLength = length.value;
+    }
+}
+
+
+class   OpSort
+extends OperatorBase
+{
+    paramColumn;
+    paramReverse;
+
+    tableLength;
+
+    menuBoolReverse;
+
+
+
+    constructor()
+    {
+        super(SORT, 'sort', 'sort', iconSort);
+
+        //this.iconOffsetY = 1;
+        
+
+        this.addInput (new Input (LIST_VALUES));
+        this.addOutput(new Output([LIST_VALUE], this.output_genRequest));
+
+        this.addParam(this.paramColumn  = new NumberParam('column',  'column',  true, true, true, 0, 0));
+        this.addParam(this.paramReverse = new NumberParam('reverse', 'reverse', true, true, true, 1, 0, 1));
+
+        this.paramColumn.controls[0].allowEditDecimals = false;
+        
+        this.paramColumn.divider  = 0.59;
+        this.paramReverse.divider = 0.59;
+
+        this.menuBoolReverse = createBoolMenu(this.paramReverse);
+    }
+
+
+
+    output_genRequest(gen)
+    {
+        // 'this' is the output
+
+        gen.scope.push({
+            nodeId:  this.node.id, 
+            paramId: NULL });
+
+        const [request, ignore] = this.node.genRequestStart(gen);
+        if (ignore) return request;
+
+        
+        const input = this.node.inputs[0];
+
+
+        request.push(input.connected ? 1 : 0);
+        
+        if (input.connected)
+            request.push(...pushInputOrParam(input, gen));
+
+        request.push(...this.node.paramColumn .genRequest(gen));
+        request.push(...this.node.paramReverse.genRequest(gen));
+
+        
+        gen.scope.pop();
+        pushUnique(gen.passedNodes, this.node);
+
+        return request;
+    }
+
+
+
+    updateValues(requestId, actionId, updateParamId, paramIds, values)
+    {
+        super.updateValues(requestId, actionId, updateParamId, paramIds, values);
+
+
+        const column  = values[paramIds.findIndex(id => id == 'column')];
+
+        const columns = values[paramIds.findIndex(id => id == 'columns')];
+        const length  = values[paramIds.findIndex(id => id == 'length' )];
+
+        this.tableLength = length.value;
+
+        if (columns.value > 0)
+            this.paramColumn.controls[0].setMax(column.value-1);
+        else
+            this.paramColumn.controls[0].setMax();
+    }
+
+
+
+    updateParams()
+    {
+        this.paramColumn .enableControlText(true);
+        this.paramReverse.enableControlText(true);
+
+        updateParamConditionText(this.paramReverse, this.paramReverse.isUnknown(), false, 1);
+
+        this.updateParamControls();
     }
 }
 
@@ -100193,11 +100953,13 @@ extends OperatorBase
         super.updateValues(requestId, actionId, updateParamId, paramIds, values);
 
 
-        const length = values[paramIds.findIndex(id => id == 'length')];
+        const columns = values[paramIds.findIndex(id => id == 'columns')];
+        const length  = values[paramIds.findIndex(id => id == 'length' )];
+
         this.columnLength = length.value;
 
-        if (length.value > 0)
-            this.paramIndex.controls[0].setMax(length.value-1);
+        if (columns.value > 0)
+            this.paramIndex.controls[0].setMax(columns.value-1);
         else
             this.paramIndex.controls[0].setMax();
     }
@@ -122773,6 +123535,7 @@ function createNode(nodeType, creatingButton = null, createdNodeId = -1, options
         case TIMER:                   node = new OpTimer();             break;
 
         case LIST:                    node = new OpList();              break;
+        case EXPAND:                  node = new OpExpand();            break;
         case ITEMS:                   node = new OpItems();             break;
         case LIST_COUNT:              node = new OpListCount();         break;
         case SELECT:                  node = new OpSelect();            break;
@@ -122781,6 +123544,7 @@ function createNode(nodeType, creatingButton = null, createdNodeId = -1, options
         case SUBLIST:                 node = new OpSublist();           break;
         case UNIQUE:                  node = new OpUnique();            break;
         case REVERSE_LIST:            node = new OpReverseList();       break;
+        case SORT:                    node = new OpSort();              break;
         case COLUMN:                  node = new OpColumn();            break;
         case CELL:                    node = new OpCell();              break;
         

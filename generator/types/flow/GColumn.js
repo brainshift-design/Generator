@@ -67,8 +67,9 @@ extends GOperator
 
         this.updateValues =
         [
-            ['length', new NumberValue(this.value.items.length)],
-            ['index',  index]
+            ['columns', new NumberValue(maxColumns)             ],
+            ['length',  new NumberValue(this.value.items.length)],
+            ['index',   index                                   ]
         ];
         
 

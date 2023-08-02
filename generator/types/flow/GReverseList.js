@@ -57,8 +57,8 @@ extends GOperator
         this.updateValueObjects();
 
 
-        this.updateValues = [['', NullValue]];
-        
+        this.updateValues = [['length', new NumberValue(this.value.items.length)]]; 
+               
 
         this.validate();
 
