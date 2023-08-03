@@ -52,11 +52,11 @@ extends GOperator
         this.value = new NumberValue(value, 10);
 
         
-        this.updateValues =
+        this.setUpdateValues(parse,
         [
             ['value',   this.value],
             ['constant', constant ]
-        ];
+        ]);
 
 
         this.validate();

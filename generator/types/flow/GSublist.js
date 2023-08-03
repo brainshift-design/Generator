@@ -71,12 +71,12 @@ extends GOperator
         this.updateValueObjects();
 
 
-        this.updateValues =
+        this.setUpdateValues(parse,
         [
             ['length', new NumberValue(length)], // used to set start and end maxima
             ['start',  start                  ],
             ['end',    end                    ]
-        ];
+        ]);
         
 
         this.validate();

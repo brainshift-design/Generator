@@ -46,7 +46,7 @@ extends GShape
         }
 
        
-        this.updateValues = [['value', this.value]];
+        this.setUpdateValues(parse, [['value', this.value]]);
 
 
         this.validate();

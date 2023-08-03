@@ -70,12 +70,12 @@ extends GShapeBase
         }
 
 
-        this.updateValues =
+        this.setUpdateValues(parse,
         [
             ['value',     this.value          ],
             ['operation', this.value.operation],
             ['children',  this.value.children ]
-        ];
+        ]);
 
 
         await this.evalShapeBase(parse);

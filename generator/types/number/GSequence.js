@@ -61,11 +61,11 @@ extends GOperator
             this.value = NumberValue.NaN;
 
 
-        this.updateValues =
+        this.setUpdateValues(parse,
         [
             ['start', start],
             ['step',  step ]
-        ];
+        ]);
         
 
         this.validate();

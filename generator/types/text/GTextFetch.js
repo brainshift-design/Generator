@@ -65,11 +65,11 @@ extends GOperator
         }
 
 
-        this.updateValues =
+        this.setUpdateValues(parse,
         [
             ['value',   this.value],
             ['request', request   ]
-        ];
+        ]);
         
         
         this.validate();

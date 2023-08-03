@@ -43,6 +43,9 @@ extends GOperator
             return this;
 
 
+        this.updateValues = [];
+
+        
         if (this.options.enabled)
         {
             const dateTime = new Date();
@@ -56,17 +59,17 @@ extends GOperator
             const year      = new NumberValue(dateTime.getFullYear());
 
 
-            this.updateValues =
-                [['seconds',   seconds  ],
-                 ['minutes',   minutes  ],
-                 ['hours',     hours    ],
-                 ['dayOfWeek', dayOfWeek],
-                 ['date',      date     ],
-                 ['month',     month    ],
-                 ['year',      year     ]];
+            this.setUpdateValues(parse,
+            [
+                ['seconds',   seconds  ],
+                ['minutes',   minutes  ],
+                ['hours',     hours    ],
+                ['dayOfWeek', dayOfWeek],
+                ['date',      date     ],
+                ['month',     month    ],
+                ['year',      year     ]
+            ]);
         }
-        else
-            this.updateValues = [];
 
         
         this.validate();

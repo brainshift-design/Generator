@@ -65,12 +65,12 @@ extends GNumberType1
             this.value = NumberValue.NaN;
 
 
-        this.updateValues =
+        this.setUpdateValues(parse,
         [
             ['value',    this.value],
             ['type',     type      ],
             ['decimals', dec       ]
-        ];
+        ]);
 
 
         this.validate();

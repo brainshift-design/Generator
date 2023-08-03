@@ -64,11 +64,11 @@ extends GOperator
             this.value = TextValue.NaN;
 
 
-        this.updateValues =
+        this.setUpdateValues(parse,
         [
             ['value',  this.value],
             ['format', format    ]
-        ];
+        ]);
 
 
         this.validate();

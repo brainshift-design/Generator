@@ -50,10 +50,10 @@ extends GOperator1
         }
 
 
-        this.updateValues =
+        this.setUpdateValues(parse,
         [
             ['radius', this.value.radius]
-        ];
+        ]);
         
 
         this.validate();

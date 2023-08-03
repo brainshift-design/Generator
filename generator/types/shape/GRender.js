@@ -76,7 +76,7 @@ extends GShapeBase
         }
 
 
-        this.updateValues = [['', NullValue]];
+        this.setUpdateValues(parse, [['', NullValue]]);
 
 
         this.validate();

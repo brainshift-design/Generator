@@ -43,10 +43,10 @@ extends GOperator
         this.value = cachedValue ?? new TextValue();
 
 
-        this.updateValues = //[['', NullValue]];
+        this.setUpdateValues(parse,
         [
             ['path', path]
-        ];
+        ]);
         
         
         this.validate();

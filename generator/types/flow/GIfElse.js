@@ -84,12 +84,11 @@ extends GOperator
         this.updateValueObjects();
 
 
-        this.updateValues =
+        this.setUpdateValues(parse,
         [
-            //['value',     this.value],
             ['type',      new TextValue(this.value ? this.value.type : ANY_VALUE)],
             ['condition', cond                          ]
-        ];
+        ]);
         
         
         this.validate();

@@ -35,7 +35,10 @@ extends GTextType1
             this.value = new TextValue();//TextValue.NaN;
 
 
-        this.updateValues = [['value', this.value]];
+        this.setUpdateValues(parse,
+        [
+            ['value', this.value]
+        ]);
 
         
         this.validate();

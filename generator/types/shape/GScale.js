@@ -79,9 +79,8 @@ extends GAffine
             new NumberValue(0));
 
 
-        this.updateValues =
+        this.setUpdateValues(parse,
         [
-            //['value',         this.value   ],
             ['scaleX',        scaleX       ],
             ['scaleY',        scaleY       ],
             ['showCenter',    showCenter   ],
@@ -89,7 +88,7 @@ extends GAffine
             ['affectCorners', affectCorners],
             ['affectStyle',   affectStyle  ],
             ['bounds',        bounds       ]
-        ];
+        ]);
         
 
         this.validate();

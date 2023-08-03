@@ -141,14 +141,14 @@ extends GColorType1
                 NumberValue.NaN);
 
 
-        this.updateValues = 
+        this.setUpdateValues(parse,
         [
             ['convert', this.convert    ],
             ['space',   this.value.space],
             ['c1',      this.value.c1   ],
             ['c2',      this.value.c2   ],
             ['c3',      this.value.c3   ]
-        ];
+        ]);
 
 
         this.validate();

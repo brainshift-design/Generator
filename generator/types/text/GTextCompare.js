@@ -49,11 +49,11 @@ extends GOperatorBase2
         }
 
 
-        this.updateValues =
+        this.setUpdateValues(parse,
         [
             ['result',    result],
             ['operation', op    ]
-        ];
+        ]);
 
 
         this.validate();

@@ -41,7 +41,10 @@ extends GOperator
         this.updateValueObjects();
 
 
-        this.updateValues = [['value', this.value]];
+        this.setUpdateValues(parse,
+        [
+            ['', NullValue]
+        ]);
 
 
         this.validate();

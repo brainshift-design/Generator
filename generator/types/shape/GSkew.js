@@ -71,15 +71,14 @@ extends GAffine
             new NumberValue(0));
 
 
-        this.updateValues =
+        this.setUpdateValues(parse,
         [
-            //['value',       this.value ],
             ['skewX',       skewX      ],
             ['skewY',       skewY      ],
             ['showCenter',  showCenter ],
             ['affectSpace', affectSpace],
             ['bounds',      bounds     ]
-        ];
+        ]);
 
 
         this.validate();

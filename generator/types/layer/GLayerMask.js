@@ -28,7 +28,7 @@ extends GOperator
         this.value = new LayerMaskValue(this.options.enabled);
 
 
-        this.updateValues = [['', NullValue]];
+        this.setUpdateValues(parse, [['', NullValue]]);
 
 
         this.validate();

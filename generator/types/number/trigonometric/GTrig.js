@@ -44,11 +44,11 @@ extends GNumberType1
         }
 
 
-        this.updateValues =
+        this.setUpdateValues(parse,
         [
             ['value',    this.value],
             ['function', func      ]
-        ];
+        ]);
 
 
         this.validate();

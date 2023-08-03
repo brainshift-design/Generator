@@ -48,11 +48,11 @@ extends GArithmetic
         }
 
 
-        this.updateValues =
+        this.setUpdateValues(parse,
         [
             ['value',     this.value],
             ['operation', op        ]
-        ];
+        ]);
 
 
         this.validate();

@@ -49,11 +49,11 @@ extends GOperator
         this.value = await evalJoinInputs(this.inputs, _with, parse);
 
         
-        this.updateValues = 
+        this.setUpdateValues(parse,
         [
             ['value', this.value],
             ['with',  _with     ]
-        ];
+        ]);
 
 
         this.validate();

@@ -106,13 +106,12 @@ extends GOperator
         }
 
 
-        this.updateValues =
+        this.setUpdateValues(parse,
         [
-            //['value',  this.value             ],
             ['type',   new TextValue(this.value.type)],
             ['length', new NumberValue(length)       ],
             ['index',  index                         ]
-        ];
+        ]);
 
 
         this.validate();

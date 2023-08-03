@@ -41,7 +41,10 @@ extends GOperator1
             length = NumberValue.NaN;
     
 
-        this.updateValues = [['length', length]];
+        this.setUpdateValues(parse,
+        [
+            ['length', length]
+        ]);
 
 
         this.validate();

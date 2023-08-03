@@ -48,7 +48,10 @@ extends GOperator1
         await this.evalObjects(parse, { showCenter: showCenter });
 
 
-        this.updateValues = [['showCenter', showCenter]];
+        this.setUpdateValues(parse,
+        [
+            ['showCenter', showCenter]
+        ]);
 
 
         this.validate();

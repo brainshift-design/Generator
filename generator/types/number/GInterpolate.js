@@ -70,11 +70,11 @@ extends GOperator
             this.value = NumberValue.NaN;
 
 
-        this.updateValues =
+        this.setUpdateValues(parse,
         [
             ['amount', amount    ],
             ['value',  this.value]
-        ];
+        ]);
         
 
         this.validate();

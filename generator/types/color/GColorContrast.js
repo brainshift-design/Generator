@@ -75,22 +75,22 @@ extends GColorType2
             }
 
 
-            this.updateValues =
+            this.setUpdateValues(parse,
             [
                 ['text', input0],
                 ['back', input1]
-            ];
+            ]);
         }
 
         else if (this.input0) 
         {
             const input0 = (await this.input0.eval(parse)).toValue();
 
-            this.updateValues =
+            this.setUpdateValues(parse,
             [
                 ['text', input0.isValid() ? input0 : ColorValue.NaN],
                 ['back', ColorValue.NaN                            ]
-            ];
+            ]);
             
             this.value    = ColorValue.NaN;
             this.contrast = NumberValue.NaN;
@@ -100,11 +100,11 @@ extends GColorType2
         {
             const input1 = (await this.input1.eval(parse)).toValue();
 
-            this.updateValues =
+            this.setUpdateValues(parse,
             [
                 ['text', ColorValue.NaN                            ],
                 ['back', input1.isValid() ? input1 : ColorValue.NaN]
-            ];
+            ]);
 
             this.value    = input1.isValid() ? input1 : ColorValue.NaN;
             this.contrast = NumberValue.NaN;
@@ -115,18 +115,21 @@ extends GColorType2
             this.value    = ColorValue.NaN;
             this.contrast = NumberValue.NaN;
 
-            this.updateValues =
+            this.setUpdateValues(parse,
             [
                 ['text', ColorValue.NaN],
                 ['back', ColorValue.NaN]
-            ];
+            ]);
         }
         
 
 
-        this.updateValues.push(
+        this.setUpdateValues(parse,
+        [
             ['standard', standard     ],
-            ['contrast', this.contrast]);
+            ['contrast', this.contrast]
+        ],
+        true);
 
 
         this.validate();

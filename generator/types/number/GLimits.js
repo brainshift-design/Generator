@@ -71,12 +71,12 @@ extends GNumberType1
             this.value = this.feedbackValue();
 
 
-        this.updateValues =
+        this.setUpdateValues(parse,
         [
             ['value', this.value],
             ['min',   min       ],
             ['max',   max       ]
-        ];
+        ]);
 
 
         this.validate();

@@ -98,13 +98,13 @@ extends GOperator
         this.lastValue1 = this.value.toNumber();
 
 
-        this.updateValues =
+        this.setUpdateValues(parse,
         [
             ['seed',   seed  ],
             ['min',    min   ],
             ['max',    max   ],
             ['unique', unique]
-        ];
+        ]);
         
 
         this.validate();

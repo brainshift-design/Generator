@@ -83,13 +83,13 @@ extends GOperatorBase2
         }
     
 
-        this.updateValues = 
+        this.setUpdateValues(parse,
         [
             ['value', this.value],
             ['first', this.first],
             ['last',  this.last ],
             ['all',   this.all  ]
-        ];
+        ]);
 
 
         this.validate();

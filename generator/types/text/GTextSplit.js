@@ -56,11 +56,11 @@ extends GOperator1
         }
     
 
-        this.updateValues =
+        this.setUpdateValues(parse,
         [
             ['value',     this.value],
             ['separator', separator ]
-        ];
+        ]);
         
 
         this.validate();

@@ -65,13 +65,12 @@ extends GOperator
             this.value = NullValue;
 
 
-        this.updateValues =
+        this.setUpdateValues(parse,
         [
-            //['value',   this.value              ],
             ['type',    new TextValue(this.value ? this.value.type : ANY_VALUE)],
             ['columns', new NumberValue(columns)                               ],
             ['rows',    new NumberValue(rows   )                               ]
-        ];
+        ]);
         
 
         this.validate();

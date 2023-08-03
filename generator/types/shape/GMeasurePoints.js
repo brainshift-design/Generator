@@ -63,11 +63,11 @@ extends GOperatorBase2
         }
 
 
-        this.updateValues =
+        this.setUpdateValues(parse,
         [
             ['distance', this.distance],
             ['angle',    this.angle   ]
-        ];
+        ]);
         
 
         this.validate();

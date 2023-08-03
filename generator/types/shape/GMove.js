@@ -70,15 +70,14 @@ extends GOperator1
             });
 
 
-        this.updateValues =
+        this.setUpdateValues(parse,
         [
-            //['value',       this.value],
             ['x',           x          ],
             ['y',           y          ],
             ['moveType',    moveType   ],
             ['affectSpace', affectSpace],
             ['showCenter',  showCenter ]
-        ];
+        ]);
 
 
         this.validate();

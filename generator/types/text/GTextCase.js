@@ -84,11 +84,11 @@ extends GTextType1
             this.value = new TextValue();//TextValue.NaN;
 
 
-        this.updateValues =
+        this.setUpdateValues(parse,
         [
             ['value', this.value],
             ['case',  _case     ]
-        ];
+        ]);
 
 
         this.validate();

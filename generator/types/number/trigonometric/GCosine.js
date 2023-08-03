@@ -30,7 +30,7 @@ extends GNumberType1
         this.value = await evalCosine(this.input, parse);
 
 
-        this.updateValues = [['value', this.value]];
+        this.setUpdateValues(parse, [['value', this.value]]);
 
 
         this.validate();

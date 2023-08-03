@@ -55,11 +55,11 @@ extends GOperator
             this.value = NullValue;
             
 
-        this.updateValues = 
+        this.setUpdateValues(parse,
         [
             ['value', this.value],
             ['delay', delay     ]
-        ];
+        ]);
 
         
         this.updateValueObjects();

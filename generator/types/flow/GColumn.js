@@ -65,12 +65,12 @@ extends GOperator1
         }
 
 
-        this.updateValues =
+        this.setUpdateValues(parse,
         [
             ['columns', new NumberValue(maxColumns)             ],
             ['length',  new NumberValue(this.value.items.length)],
             ['index',   index                                   ]
-        ];
+        ]);
         
 
         this.validate();

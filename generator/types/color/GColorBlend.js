@@ -70,12 +70,12 @@ extends GColorType2
             this.value = ColorValue.NaN;
 
 
-        this.updateValues = 
+        this.setUpdateValues(parse,
         [
             ['value',   this.value],
             ['mode',    mode      ],
             ['opacity', opacity   ]
-        ];
+        ]);
 
 
         this.validate();

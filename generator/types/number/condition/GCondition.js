@@ -50,12 +50,12 @@ extends GNumberType1
         }
 
 
-        this.updateValues =
+        this.setUpdateValues(parse,
         [
             ['value',     this.value],
             ['operation', op        ],
             ['operand',   operand   ]
-        ];
+        ]);
 
 
         this.validate();

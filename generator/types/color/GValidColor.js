@@ -116,11 +116,11 @@ extends GColorType1
             this.value = ColorValue.NaN;
 
             
-        this.updateValues =
+        this.setUpdateValues(parse,
         [
             ['value',   this.value],
             ['quality', quality   ]
-        ];
+        ]);
         
 
         this.validate();

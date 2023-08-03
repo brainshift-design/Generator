@@ -80,7 +80,7 @@ extends GOperator1
         }
 
 
-        this.updateValues =
+        this.setUpdateValues(parse,
         [
             ['x',      this.value.x     ],
             ['y',      this.value.y     ],
@@ -88,7 +88,7 @@ extends GOperator1
             ['spread', this.value.spread],
             ['fill',   this.value.fill  ],
             ['blend',  this.value.blend ],
-        ];
+        ]);
         
 
         this.validate();

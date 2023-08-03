@@ -124,14 +124,14 @@ extends GOperator
             Math.max(start.decimals, end.decimals));
 
             
-        this.updateValues =
+        this.setUpdateValues(parse,
         [
             ['from',   from  ],
             ['start',  start ],
             ['end',    end   ],
             ['spread', spread],
             ['bias',   bias  ]
-        ];
+        ]);
 
 
         this.validate();

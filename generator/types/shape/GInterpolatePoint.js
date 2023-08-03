@@ -91,12 +91,12 @@ extends GOperatorBase2
         }
 
 
-        this.updateValues =
+        this.setUpdateValues(parse,
         [
             ['amount',     amount    ],
             ['transform',  transform ],
             ['showCenter', showCenter]
-        ];
+        ]);
         
 
         this.validate();

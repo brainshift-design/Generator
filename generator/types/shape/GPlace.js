@@ -73,12 +73,12 @@ extends GOperator
             });
 
         
-        this.updateValues = 
+        this.setUpdateValues(parse,
         [
             ['position',   position  ],
             ['transform',  transform ],
             ['showCenter', showCenter]
-        ];
+        ]);
 
 
         this.validate();

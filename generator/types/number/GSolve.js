@@ -146,12 +146,12 @@ extends GNumberType1
         
         // TODO push good result value to input 
 
-        this.updateValues =
+        this.setUpdateValues(parse,
         [
             ['value',   this.value],
             ['current', current   ],
             ['target',  target    ]
-        ];
+        ]);
 
 
         this.validate();

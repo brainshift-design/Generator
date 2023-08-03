@@ -121,7 +121,7 @@ extends GOperator
         this.value = new NumberValue(r, Math.max(min.decimals, max.decimals));
 
 
-        this.updateValues =
+        this.setUpdateValues(parse,
         [
             ['seed',        seed       ],
             ['min',         min        ],
@@ -130,7 +130,7 @@ extends GOperator
             ['offset',      offset     ],
             ['interpolate', interpolate],
             ['detail',      detail     ]
-        ];
+        ]);
         
 
         this.validate();

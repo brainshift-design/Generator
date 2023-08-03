@@ -57,11 +57,11 @@ extends GOperator
                     : i;//'item' + i;
 
                 Object.assign(this, {[valueId]: item});
-                this.updateValues.push([valueId, item]);
+                this.setUpdateValues(parse, [[valueId, item]], true);
             }
         }
         else
-            this.updateValues.push(['', NullValue]);
+            this.setUpdateValues(parse, [['', NullValue]], true);
 
 
         //this.updateValues.push(['value', this.value]); // first so it can be separated out in OpItems

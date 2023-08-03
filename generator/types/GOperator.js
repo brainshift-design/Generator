@@ -78,13 +78,13 @@ extends GNode
 
 
 
-    setUpdateValues(parse, values)
+    setUpdateValues(parse, values, add = false)
     {
-        this.updateValues =
-               parse.repeats.length == 0
-            || parse.repeats[0].iteration == parse.repeats[0].total-1
-            ? values
-            : [];
+        if (   parse.repeats.length == 0
+            || parse.repeats[0].iteration == parse.repeats[0].total-1)
+            this.updateValues = values;
+        else if (!add)
+            this.updateValues = [];
     }
 
 

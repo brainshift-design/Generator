@@ -47,11 +47,11 @@ extends GOperator
             for (let i = 0; i < this.params.length; i++)
             {
                 const param = await this.params[i].eval(parse);
-                this.updateValues.push([this.paramIds[i], param.toValue()]);
+                this.setUpdateValues(parse, [[this.paramIds[i], param.toValue()]], true);
             }
         }
         else
-            this.updateValues.push(['', NullValue]);
+            this.setUpdateValues(parse, [['', NullValue]], true);
                 
         
         this.validate();

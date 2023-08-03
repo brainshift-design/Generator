@@ -54,12 +54,12 @@ extends GTextType1
             this.value = new TextValue();//TextValue.NaN;
 
 
-        this.updateValues =
+        this.setUpdateValues(parse,
         [
             ['value', this.value],
             ['start', start     ],
             ['end',   end       ]
-        ];
+        ]);
 
 
         this.validate();

@@ -108,16 +108,15 @@ extends GOperator
         }
         
 
-        this.updateValues =
+        this.setUpdateValues(parse,
         [
-            //['value',  this.value],
             ['from',   from      ],
             ['to',     to        ],
             ['curve',  curve     ],
             ['repeat', repeat    ],
             ['length', length    ],
             ['time',   time      ]
-        ];
+        ]);
         
 
         this.validate();

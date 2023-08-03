@@ -61,11 +61,11 @@ extends GOperator1
         this.updateValueObjects();
 
 
-        this.updateValues =
+        this.setUpdateValues(parse,
         [
             ['length', new NumberValue(length)                              ],
             ['type', new TextValue(finalListTypeFromItems(this.value.items))]
-        ];
+        ]);
         
 
         this.validate();

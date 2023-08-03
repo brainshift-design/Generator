@@ -62,12 +62,12 @@ extends GOperator1
             });
 
 
-        this.updateValues =
+        this.setUpdateValues(parse,
         [
             ['centerX',    centerX   ],
             ['centerY',    centerY   ],
             ['showCenter', showCenter]
-        ];
+        ]);
 
 
         this.validate();

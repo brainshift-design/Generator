@@ -61,7 +61,7 @@ extends GNumberType1
         }
 
 
-        this.updateValues = [['', NullValue]];
+        this.setUpdateValues(parse, [['', NullValue]]);
         
 
         this.validate();

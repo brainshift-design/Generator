@@ -82,13 +82,13 @@ extends GOperator1
         // }
     
 
-        this.updateValues = 
+        this.setUpdateValues(parse,
         [
             ['rowSeparator',    rowSeparator             ],
             ['columnSeparator', columnSeparator          ],
             ['rows',            new NumberValue(nRows   )],
             ['columns',         new NumberValue(nColumns)]
-        ];
+        ]);
         
 
         this.validate();

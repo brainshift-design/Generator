@@ -182,11 +182,12 @@ extends GOperator
             ? new TextValue(finalListTypeFromItems(this.value.items))
             : TextValue.NaN;
 
-        this.updateValues =
+
+        this.setUpdateValues(parse,
         [
             ['type',  type ],
             ['count', count]
-        ];
+        ]);
 
 
         this.validate();

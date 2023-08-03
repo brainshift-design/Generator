@@ -94,11 +94,11 @@ extends GShape
             winding);
 
 
-        this.updateValues = 
+        this.setUpdateValues(parse,
         [
             ['value',   this.value],
             ['winding', winding   ]
-        ];
+        ]);
 
 
         await this.evalShapeBase(parse);

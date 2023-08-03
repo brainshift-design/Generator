@@ -63,11 +63,11 @@ extends GOperator
         this.value = new NumberValue(Math.round(r));
 
 
-        this.updateValues =
+        this.setUpdateValues(parse,
         [
             ['seed', seed  ],
             ['min',  chance],
-        ];
+        ]);
         
 
         this.validate();

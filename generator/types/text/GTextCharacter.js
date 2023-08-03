@@ -37,11 +37,11 @@ extends GTextType1
         this.value = new TextValue(String.fromCharCode(code.value));
 
 
-        this.updateValues =
+        this.setUpdateValues(parse,
         [
             ['value', this.value],
             ['code',  code      ]
-        ];
+        ]);
 
 
         this.validate();

@@ -40,11 +40,11 @@ extends GArithmetic
         this.value = await evalMinMaxInputs(this.inputs, op.value, parse);
 
         
-        this.updateValues =
+        this.setUpdateValues(parse,
         [
             ['operation', op        ],
             ['value',     this.value]
-        ];
+        ]);
 
 
         this.validate();

@@ -56,7 +56,10 @@ extends GOperator
             : NullValue;
 
 
-        this.updateValues = [['feedback', feedback]];
+        this.setUpdateValues(parse, 
+        [
+            ['feedback', feedback]
+        ]);
 
 
         await this.evalObjects(parse, {feedback: feedback.value > 0});

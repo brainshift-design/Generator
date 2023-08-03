@@ -81,13 +81,13 @@ extends GColorType2
             this.value = ColorValue.NaN;
 
 
-        this.updateValues =
+        this.setUpdateValues(parse,
         [
             ['space',  space     ],
             ['amount', amount    ],
             ['gamma',  gamma     ],
             ['value',  this.value]
-        ];
+        ]);
         
 
         this.validate();

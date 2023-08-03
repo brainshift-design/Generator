@@ -81,17 +81,10 @@ extends GOperator1
         }
 
 
-        this.updateValues =
+        this.setUpdateValues(parse,
         [
             ['value', this.value]
-            // ['fills',  this.value.fills ],
-            // ['weight', this.value.weight],
-            // ['fit',    this.value.fit   ],
-            // ['join',   this.value.join  ],
-            // ['miter',  this.value.miter ],
-            // ['cap',    this.value.cap   ],
-            // ['dashes', this.value.dashes]
-        ];
+        ]);
         
 
         this.validate();

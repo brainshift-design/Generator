@@ -62,13 +62,13 @@ extends GTextType1
             this.value = new TextValue();//TextValue.NaN;
 
 
-        this.updateValues =
+        this.setUpdateValues(parse,
         [
             ['value',  this.value             ],
             ['length', new NumberValue(length)], // used to set start and end maxima
             ['start',  start                  ],
             ['end',    end                    ]
-        ];
+        ]);
         
 
         this.validate();

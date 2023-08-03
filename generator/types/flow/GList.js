@@ -111,11 +111,11 @@ extends GOperator
         }
 
 
-        this.updateValues = 
+        this.setUpdateValues(parse,
         [
             ['length', new NumberValue(this.value.items.length)               ],
             ['type',   new TextValue(finalListTypeFromItems(this.value.items))]
-        ];
+        ]);
 
 
         this.validate();

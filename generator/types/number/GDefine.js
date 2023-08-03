@@ -61,7 +61,10 @@ extends GOperator
         this.value = _values[iteration % _values.length];
 
 
-        this.updateValues = [['type', new TextValue(finalTypeFromItems(_values))]];
+        this.setUpdateValues(parse,
+        [
+            ['type', new TextValue(finalTypeFromItems(_values))]
+        ]);
         
 
         this.validate();

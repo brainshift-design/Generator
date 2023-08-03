@@ -75,13 +75,13 @@ extends GOperator
         }
 
 
-        this.updateValues =
+        this.setUpdateValues(parse,
         [
             ['columns', new NumberValue(maxColumns)             ],
             ['length',  new NumberValue(this.value.items.length)],
             ['column',  column                                  ],
             ['reverse', reverse                                 ]
-        ];
+        ]);
         
 
         this.validate();
