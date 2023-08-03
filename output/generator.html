@@ -4,7 +4,7 @@
 
 
 
-const generatorVersion = 179;
+const generatorVersion = 180;
 
 
 const MAX_INT32        = 2147483647;
@@ -7979,6 +7979,8 @@ class GNode
     {
         for (const value of this.updateValues)
             genPushUpdateValue(parse, this.nodeId, value[0], value[1]);
+
+        this.updateValues = [];
     }
 
 
@@ -7993,8 +7995,9 @@ class GNode
 
     invalidateInputs(from)
     {
-        if (   this.options
-            && this.options.unknown)
+        if (    this.options
+            &&  this.options.unknown)
+            //&& !this.options.cached)
             this.valid = false;
 
         return true;
@@ -8269,6 +8272,7 @@ extends GNode
 
     value;
 
+    updateValues  = [];
     feedbackValue = null; // () => {}
 
 
@@ -8334,6 +8338,17 @@ extends GNode
     async evalObjects(parse)
     {
 
+    }
+
+
+
+    setUpdateValues(parse, values)
+    {
+        this.updateValues =
+               parse.repeats.length == 0
+            || parse.repeats[0].iteration == parse.repeats[0].total-1
+            ? values
+            : [];
     }
 
 
@@ -8597,7 +8612,7 @@ extends GValue
         const copy = new ListValue(this.items);
 
         copy.copyBase(this);
-        
+
         copy.expanded = this.expanded;
 
         return copy;
@@ -8636,6 +8651,9 @@ extends GValue
 
     hasInitValue()
     {
+        if (!this.items)
+            return false;
+            
         for (const item of this.items)
             if (!item.hasInitValue())
                 return false;
@@ -14457,7 +14475,7 @@ extends GOperator
         this.updateValueObjects();
 
 
-        this.updateValues = [['value', this.value]];
+        this.updateValues = [['', NullValue]];
 
 
         this.validate();
@@ -15008,7 +15026,10 @@ extends GOperator
         this.updateValueObjects();
 
 
-        this.updateValues = [['counts', this.counts]];
+        this.updateValues =
+        [
+            ['length', new NumberValue(this.value.items.length)]
+        ];
         
 
         this.validate();
@@ -21815,10 +21836,10 @@ extends GOperator1
         // }
     
 
-        this.updateValues =
+        this.updateValues = 
         [
-            ['rowSeparator',    rowSeparator            ],
-            ['columnSeparator', columnSeparator         ],
+            ['rowSeparator',    rowSeparator             ],
+            ['columnSeparator', columnSeparator          ],
             ['rows',            new NumberValue(nRows   )],
             ['columns',         new NumberValue(nColumns)]
         ];

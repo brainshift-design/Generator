@@ -4818,8 +4818,7 @@ a
             <div id='whatsNewBody'>
                 <h1 style='margin-top: 20px;'>What's new</h1>
 
-                <p>•  added Expand node for lists</p>
-                <p>•  added Sort node for lists and tables</p>
+                <p>•  added row count to Unique counts parameter</p>
                 
                 <p><br/><br/><div id='chkHideWhatsNew'></div></p>
             </div>
@@ -4835,7 +4834,7 @@ a
 
     <input id='searchText' 
            type='text' 
-           placeholder='Search menus' 
+           placeholder="Search menu (type '/' to search nodes)" 
            spellcheck='false'
            autocomplete='off' />
 
@@ -5163,7 +5162,7 @@ a
 
 
 
-const generatorVersion = 179;
+const generatorVersion = 180;
 
 
 const MAX_INT32        = 2147483647;
@@ -13138,6 +13137,8 @@ class GNode
     {
         for (const value of this.updateValues)
             genPushUpdateValue(parse, this.nodeId, value[0], value[1]);
+
+        this.updateValues = [];
     }
 
 
@@ -13152,8 +13153,9 @@ class GNode
 
     invalidateInputs(from)
     {
-        if (   this.options
-            && this.options.unknown)
+        if (    this.options
+            &&  this.options.unknown)
+            //&& !this.options.cached)
             this.valid = false;
 
         return true;
@@ -13428,6 +13430,7 @@ extends GNode
 
     value;
 
+    updateValues  = [];
     feedbackValue = null; // () => {}
 
 
@@ -13493,6 +13496,17 @@ extends GNode
     async evalObjects(parse)
     {
 
+    }
+
+
+
+    setUpdateValues(parse, values)
+    {
+        this.updateValues =
+               parse.repeats.length == 0
+            || parse.repeats[0].iteration == parse.repeats[0].total-1
+            ? values
+            : [];
     }
 
 
@@ -13756,7 +13770,7 @@ extends GValue
         const copy = new ListValue(this.items);
 
         copy.copyBase(this);
-        
+
         copy.expanded = this.expanded;
 
         return copy;
@@ -13795,6 +13809,9 @@ extends GValue
 
     hasInitValue()
     {
+        if (!this.items)
+            return false;
+            
         for (const item of this.items)
             if (!item.hasInitValue())
                 return false;
@@ -19616,7 +19633,7 @@ extends GOperator
         this.updateValueObjects();
 
 
-        this.updateValues = [['value', this.value]];
+        this.updateValues = [['', NullValue]];
 
 
         this.validate();
@@ -20167,7 +20184,10 @@ extends GOperator
         this.updateValueObjects();
 
 
-        this.updateValues = [['counts', this.counts]];
+        this.updateValues =
+        [
+            ['length', new NumberValue(this.value.items.length)]
+        ];
         
 
         this.validate();
@@ -26974,10 +26994,10 @@ extends GOperator1
         // }
     
 
-        this.updateValues =
+        this.updateValues = 
         [
-            ['rowSeparator',    rowSeparator            ],
-            ['columnSeparator', columnSeparator         ],
+            ['rowSeparator',    rowSeparator             ],
+            ['columnSeparator', columnSeparator          ],
             ['rows',            new NumberValue(nRows   )],
             ['columns',         new NumberValue(nColumns)]
         ];
@@ -46052,7 +46072,7 @@ onerror = (event, source, line, pos, error) =>
 };
 
 
-const generatorVersion = 179;
+const generatorVersion = 180;
 
 
 const MAX_INT32        = 2147483647;
@@ -56198,6 +56218,8 @@ class GNode
     {
         for (const value of this.updateValues)
             genPushUpdateValue(parse, this.nodeId, value[0], value[1]);
+
+        this.updateValues = [];
     }
 
 
@@ -56212,8 +56234,9 @@ class GNode
 
     invalidateInputs(from)
     {
-        if (   this.options
-            && this.options.unknown)
+        if (    this.options
+            &&  this.options.unknown)
+            //&& !this.options.cached)
             this.valid = false;
 
         return true;
@@ -56488,6 +56511,7 @@ extends GNode
 
     value;
 
+    updateValues  = [];
     feedbackValue = null; // () => {}
 
 
@@ -56553,6 +56577,17 @@ extends GNode
     async evalObjects(parse)
     {
 
+    }
+
+
+
+    setUpdateValues(parse, values)
+    {
+        this.updateValues =
+               parse.repeats.length == 0
+            || parse.repeats[0].iteration == parse.repeats[0].total-1
+            ? values
+            : [];
     }
 
 
@@ -56816,7 +56851,7 @@ extends GValue
         const copy = new ListValue(this.items);
 
         copy.copyBase(this);
-        
+
         copy.expanded = this.expanded;
 
         return copy;
@@ -56855,6 +56890,9 @@ extends GValue
 
     hasInitValue()
     {
+        if (!this.items)
+            return false;
+            
         for (const item of this.items)
             if (!item.hasInitValue())
                 return false;
@@ -62676,7 +62714,7 @@ extends GOperator
         this.updateValueObjects();
 
 
-        this.updateValues = [['value', this.value]];
+        this.updateValues = [['', NullValue]];
 
 
         this.validate();
@@ -63227,7 +63265,10 @@ extends GOperator
         this.updateValueObjects();
 
 
-        this.updateValues = [['counts', this.counts]];
+        this.updateValues =
+        [
+            ['length', new NumberValue(this.value.items.length)]
+        ];
         
 
         this.validate();
@@ -70034,10 +70075,10 @@ extends GOperator1
         // }
     
 
-        this.updateValues =
+        this.updateValues = 
         [
-            ['rowSeparator',    rowSeparator            ],
-            ['columnSeparator', columnSeparator         ],
+            ['rowSeparator',    rowSeparator             ],
+            ['columnSeparator', columnSeparator          ],
             ['rows',            new NumberValue(nRows   )],
             ['columns',         new NumberValue(nColumns)]
         ];
@@ -85366,7 +85407,7 @@ function initGeneratorMenus()
                          new MenuItem('',                  {separator: true}),     
         menuItemSelect = new MenuItem('Select',            {icon: iconSelect,      createType: SELECT,       callback: e => actionManager.do(getCreateNodeAction(SELECT,        btnData.div, getCreateOptions(e)))}),
         menuItemIfElse = new MenuItem('I&hairsp;f / else', {icon: iconIfElse,      createType: IF_ELSE,      callback: e => actionManager.do(getCreateNodeAction(IF_ELSE,       btnData.div, getCreateOptions(e))), disambiguate: true}),
-                         new MenuItem('Contains',          {icon: iconContains,    createType: CONTAINS,     callback: e => actionManager.do(getCreateNodeAction(CONTAINS,      btnData.div, getCreateOptions(e))), disambiguate: true}),
+                         new MenuItem('Find in list',      {icon: iconContains,    createType: CONTAINS,     callback: e => actionManager.do(getCreateNodeAction(CONTAINS,      btnData.div, getCreateOptions(e))), disambiguate: true}),
                          new MenuItem('',                  {separator: true}),     
                          new MenuItem('Sublist',           {icon: iconSublist,     createType: SUBLIST,      callback: e => actionManager.do(getCreateNodeAction(SUBLIST,       btnData.div, getCreateOptions(e)))}),
                          new MenuItem('Unique',            {icon: iconUnique,      createType: UNIQUE,       callback: e => actionManager.do(getCreateNodeAction(UNIQUE,        btnData.div, getCreateOptions(e)))}),
@@ -85470,7 +85511,7 @@ function initGeneratorMenus()
         new MenuItem('',                    {separator: true}),
         new MenuItem('Length',              {icon: iconTextLength,    createType: TEXT_LENGTH,    callback: e => actionManager.do(getCreateNodeAction(TEXT_LENGTH,    btnText.div, getCreateOptions(e)))}),
         new MenuItem('Compare',             {icon: iconTextCompare,   createType: TEXT_COMPARE,   callback: e => actionManager.do(getCreateNodeAction(TEXT_COMPARE,   btnText.div, getCreateOptions(e)))}),
-        new MenuItem('Contains',            {icon: iconTextContains,  createType: TEXT_CONTAINS,  callback: e => actionManager.do(getCreateNodeAction(TEXT_CONTAINS,  btnText.div, getCreateOptions(e)))}),
+        new MenuItem('Find in text',        {icon: iconTextContains,  createType: TEXT_CONTAINS,  callback: e => actionManager.do(getCreateNodeAction(TEXT_CONTAINS,  btnText.div, getCreateOptions(e)))}),
         new MenuItem('',                    {separator: true}),
         new MenuItem('Trim',                {icon: iconTextTrim,      createType: TEXT_TRIM,      callback: e => actionManager.do(getCreateNodeAction(TEXT_TRIM,      btnText.div, getCreateOptions(e)))}),
         new MenuItem('Spl it',              {icon: iconTextSplit,     createType: TEXT_SPLIT,     callback: e => actionManager.do(getCreateNodeAction(TEXT_SPLIT,     btnText.div, getCreateOptions(e)))}),
@@ -98890,8 +98931,8 @@ Operator.prototype.updateBorder = function()
 
     const highlightScale = 
         graph.currentPage.zoom >= 1
-        ? 8
-        : 8 * (((1 / graph.currentPage.zoom - 1) / 4) + 1);
+        ? 7
+        : 7 * (((1 / graph.currentPage.zoom - 1) / 3.5) + 1);
 
 
     let highlight;
@@ -98905,7 +98946,7 @@ Operator.prototype.updateBorder = function()
         case 3: highlight = darkMode ? '#ff08' : '#dd0f'; break;
         case 4: highlight = darkMode ? '#0f08' : '#0d09'; break;
         case 5: highlight = darkMode ? '#36fd' : '#03f7'; break;
-        case 6: highlight = darkMode ? '#f0f8' : '#f0f7'; break;
+        case 6: highlight = darkMode ? '#f1f9' : '#f0f7'; break;
         case 7: highlight = darkMode ? '#fff8' : '#0007'; break;
     }
 
@@ -99107,7 +99148,7 @@ Operator.prototype.updateHeaderLabelText = function()
     else if (this.type == REVERSE_LIST) suffix = sep + '[ ' + this.tableLength + ' ]';
     else if (this.type == SORT        ) suffix = sep + '[ ' + this.tableLength + ' ]';
     else if (this.type == EXPAND      ) suffix = sep + '[ ' + this.length + ' ]';
-    else if (this.type == UNIQUE      ) suffix = sep + '[ ' + this.paramCounts.value.items.length + ' ]';
+    else if (this.type == UNIQUE      ) suffix = sep + '[ ' + this.length + ' ]';
     else if (this.type == ITEMS       ) suffix = sep + '[ ' + this.params.length + ' ]';
     else                                suffix = this.cached ? '' : '...';
 
@@ -100704,6 +100745,8 @@ extends OperatorBase
 {
     paramCounts;
 
+    length;
+
 
 
     constructor()
@@ -100749,6 +100792,20 @@ extends OperatorBase
         pushUnique(gen.passedNodes, this.node);
 
         return request;
+    }
+
+
+
+    updateValues(requestId, actionId, updateParamId, paramIds, values)
+    {
+        super.updateValues(requestId, actionId, updateParamId, paramIds, values);
+
+        const length = values[paramIds.findIndex(id => id == 'length')];
+
+        this.length = length.value;
+
+        const sep = settings.showNodeId ? ' ' : '  ';
+        this.paramCounts.setName('counts' + sep + '[ ' + this.length + ' ]');
     }
 
 
@@ -100901,7 +100958,6 @@ extends OperatorBase
         const length  = values[paramIds.findIndex(id => id == 'length' )];
 
         this.tableLength = length.value;
-        console.log('this.tableLength = ', this.tableLength);
 
         if (columns.value > 0)
             this.paramColumn.controls[0].setMax(columns.value-1);
@@ -101659,7 +101715,7 @@ extends OperatorBase
 
     constructor()
     {
-        super(CONTAINS, 'contains', 'contains', iconContains);
+        super(CONTAINS, 'find', 'find', iconContains);
 
         this.canDisable  = true;
         this.iconOffsetY = 1;
@@ -105611,7 +105667,7 @@ extends OperatorBase
 
     constructor()
     {
-        super(TEXT_CONTAINS, 'contains', 'contains', iconTextContains);
+        super(TEXT_CONTAINS, 'find', 'find', iconTextContains);
 
         this.canDisable  = true;
         this.iconOffsetY = 1;
@@ -122298,6 +122354,9 @@ function showSearchBox()
 
     search.style.display = 'block';
 
+    search.oldPan  = clone(graph.currentPage.pan);
+    search.oldZoom = graph.currentPage.zoom;
+
     searchIcon.innerHTML = iconSearch;
 
     searchText.value = '';
@@ -122322,18 +122381,35 @@ function hideSearchBox()
 function initSearchBox(query)
 {
     const found = [];
+    
+    
+    search.nodes = false;
 
     if (query != '')
     {
-        for (const menu of menuBarMenus)
+        if (query.charAt(0) == '/')
         {
-            for (const item of menu.items)
+            search.nodes = true;
+
+            for (const node of graph.currentPage.nodes)
             {
-                if (   item.name.toLowerCase().includes(query.toLowerCase())
-                    && item.callback)
-                    found.push(item);
+                if (node.name.toLowerCase().includes(query.toLowerCase()))
+                    found.push(node);
             }
         }
+        else
+        {
+            for (const menu of menuBarMenus)
+            {
+                for (const item of menu.items)
+                {
+                    if (   item.name.toLowerCase().includes(query.toLowerCase())
+                        && item.callback)
+                        found.push(item);
+                }
+            }
+        }
+
 
         found.sort((_a, _b) => 
         {
@@ -122375,12 +122451,14 @@ function initSearchBox(query)
             ? item.icon
             : item.icon.replaceAll('white', 'black');
 
+
         if (item.createType != '')
             legend.style.background = rgb2style(rgbFromType(item.createType, true));
 
-        result.callback  = item.callback;
+        if (!search.nodes)
+            result.callback = item.callback;
 
-        result.index     = i;
+        result.index = i;
 
         result.appendChild(legend);
         result.appendChild(icon);
@@ -122391,6 +122469,9 @@ function initSearchBox(query)
         {
             searchIndex = result.index;
             updateSearchBox();
+
+            if (search.nodes)
+                graphView.zoomToNode(found[searchIndex])
         });
 
         searchItems.appendChild(result);
@@ -123131,6 +123212,15 @@ function resolveConnections(nodes, _connections, first, last)
         if (c1.outputOrder != c2.outputOrder) return c1.outputOrder - c2.outputOrder;
         return 0;
     });
+
+    // for (const conn of _connections)
+    //     console.log('conn =', getConnectionString(
+    //         conn.outputNodeId,
+    //         conn.outputId,
+    //         conn.outputOrder,
+    //         conn.inputNodeId,
+    //         conn.inputId,
+    //         false));
 
 
     return new Promise(resolve => 

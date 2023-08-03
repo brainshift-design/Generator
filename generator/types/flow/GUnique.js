@@ -69,7 +69,10 @@ extends GOperator
         this.updateValueObjects();
 
 
-        this.updateValues = [['counts', this.counts]];
+        this.updateValues =
+        [
+            ['length', new NumberValue(this.value.items.length)]
+        ];
         
 
         this.validate();

@@ -3,6 +3,8 @@ extends OperatorBase
 {
     paramCounts;
 
+    length;
+
 
 
     constructor()
@@ -48,6 +50,20 @@ extends OperatorBase
         pushUnique(gen.passedNodes, this.node);
 
         return request;
+    }
+
+
+
+    updateValues(requestId, actionId, updateParamId, paramIds, values)
+    {
+        super.updateValues(requestId, actionId, updateParamId, paramIds, values);
+
+        const length = values[paramIds.findIndex(id => id == 'length')];
+
+        this.length = length.value;
+
+        const sep = settings.showNodeId ? ' ' : '  ';
+        this.paramCounts.setName('counts' + sep + '[ ' + this.length + ' ]');
     }
 
 

@@ -8,6 +8,9 @@ function showSearchBox()
 
     search.style.display = 'block';
 
+    search.oldPan  = clone(graph.currentPage.pan);
+    search.oldZoom = graph.currentPage.zoom;
+
     searchIcon.innerHTML = iconSearch;
 
     searchText.value = '';
@@ -32,18 +35,35 @@ function hideSearchBox()
 function initSearchBox(query)
 {
     const found = [];
+    
+    
+    search.nodes = false;
 
     if (query != '')
     {
-        for (const menu of menuBarMenus)
+        if (query.charAt(0) == '/')
         {
-            for (const item of menu.items)
+            search.nodes = true;
+
+            for (const node of graph.currentPage.nodes)
             {
-                if (   item.name.toLowerCase().includes(query.toLowerCase())
-                    && item.callback)
-                    found.push(item);
+                if (node.name.toLowerCase().includes(query.toLowerCase()))
+                    found.push(node);
             }
         }
+        else
+        {
+            for (const menu of menuBarMenus)
+            {
+                for (const item of menu.items)
+                {
+                    if (   item.name.toLowerCase().includes(query.toLowerCase())
+                        && item.callback)
+                        found.push(item);
+                }
+            }
+        }
+
 
         found.sort((_a, _b) => 
         {
@@ -85,12 +105,14 @@ function initSearchBox(query)
             ? item.icon
             : item.icon.replaceAll('white', 'black');
 
+
         if (item.createType != '')
             legend.style.background = rgb2style(rgbFromType(item.createType, true));
 
-        result.callback  = item.callback;
+        if (!search.nodes)
+            result.callback = item.callback;
 
-        result.index     = i;
+        result.index = i;
 
         result.appendChild(legend);
         result.appendChild(icon);
@@ -101,6 +123,9 @@ function initSearchBox(query)
         {
             searchIndex = result.index;
             updateSearchBox();
+
+            if (search.nodes)
+                graphView.zoomToNode(found[searchIndex])
         });
 
         searchItems.appendChild(result);

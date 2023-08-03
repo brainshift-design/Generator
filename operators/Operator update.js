@@ -69,8 +69,8 @@ Operator.prototype.updateBorder = function()
 
     const highlightScale = 
         graph.currentPage.zoom >= 1
-        ? 8
-        : 8 * (((1 / graph.currentPage.zoom - 1) / 4) + 1);
+        ? 7
+        : 7 * (((1 / graph.currentPage.zoom - 1) / 3.5) + 1);
 
 
     let highlight;
@@ -84,7 +84,7 @@ Operator.prototype.updateBorder = function()
         case 3: highlight = darkMode ? '#ff08' : '#dd0f'; break;
         case 4: highlight = darkMode ? '#0f08' : '#0d09'; break;
         case 5: highlight = darkMode ? '#36fd' : '#03f7'; break;
-        case 6: highlight = darkMode ? '#f0f8' : '#f0f7'; break;
+        case 6: highlight = darkMode ? '#f1f9' : '#f0f7'; break;
         case 7: highlight = darkMode ? '#fff8' : '#0007'; break;
     }
 
@@ -286,7 +286,7 @@ Operator.prototype.updateHeaderLabelText = function()
     else if (this.type == REVERSE_LIST) suffix = sep + '[ ' + this.tableLength + ' ]';
     else if (this.type == SORT        ) suffix = sep + '[ ' + this.tableLength + ' ]';
     else if (this.type == EXPAND      ) suffix = sep + '[ ' + this.length + ' ]';
-    else if (this.type == UNIQUE      ) suffix = sep + '[ ' + this.paramCounts.value.items.length + ' ]';
+    else if (this.type == UNIQUE      ) suffix = sep + '[ ' + this.length + ' ]';
     else if (this.type == ITEMS       ) suffix = sep + '[ ' + this.params.length + ' ]';
     else                                suffix = this.cached ? '' : '...';
 

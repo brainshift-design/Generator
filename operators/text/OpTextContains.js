@@ -10,7 +10,7 @@ extends OperatorBase
 
     constructor()
     {
-        super(TEXT_CONTAINS, 'contains', 'contains', iconTextContains);
+        super(TEXT_CONTAINS, 'find', 'find', iconTextContains);
 
         this.canDisable  = true;
         this.iconOffsetY = 1;

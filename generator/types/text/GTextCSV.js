@@ -82,10 +82,10 @@ extends GOperator1
         // }
     
 
-        this.updateValues =
+        this.updateValues = 
         [
-            ['rowSeparator',    rowSeparator            ],
-            ['columnSeparator', columnSeparator         ],
+            ['rowSeparator',    rowSeparator             ],
+            ['columnSeparator', columnSeparator          ],
             ['rows',            new NumberValue(nRows   )],
             ['columns',         new NumberValue(nColumns)]
         ];

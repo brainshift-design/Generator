@@ -8,6 +8,7 @@ extends GNode
 
     value;
 
+    updateValues  = [];
     feedbackValue = null; // () => {}
 
 
@@ -73,6 +74,17 @@ extends GNode
     async evalObjects(parse)
     {
 
+    }
+
+
+
+    setUpdateValues(parse, values)
+    {
+        this.updateValues =
+               parse.repeats.length == 0
+            || parse.repeats[0].iteration == parse.repeats[0].total-1
+            ? values
+            : [];
     }
 
 

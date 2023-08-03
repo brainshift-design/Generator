@@ -76,7 +76,6 @@ extends OperatorBase
         const length  = values[paramIds.findIndex(id => id == 'length' )];
 
         this.tableLength = length.value;
-        console.log('this.tableLength = ', this.tableLength);
 
         if (columns.value > 0)
             this.paramColumn.controls[0].setMax(columns.value-1);

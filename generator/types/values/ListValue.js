@@ -30,7 +30,7 @@ extends GValue
         const copy = new ListValue(this.items);
 
         copy.copyBase(this);
-        
+
         copy.expanded = this.expanded;
 
         return copy;
@@ -69,6 +69,9 @@ extends GValue
 
     hasInitValue()
     {
+        if (!this.items)
+            return false;
+            
         for (const item of this.items)
             if (!item.hasInitValue())
                 return false;

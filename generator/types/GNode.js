@@ -80,6 +80,8 @@ class GNode
     {
         for (const value of this.updateValues)
             genPushUpdateValue(parse, this.nodeId, value[0], value[1]);
+
+        this.updateValues = [];
     }
 
 
@@ -94,8 +96,9 @@ class GNode
 
     invalidateInputs(from)
     {
-        if (   this.options
-            && this.options.unknown)
+        if (    this.options
+            &&  this.options.unknown)
+            //&& !this.options.cached)
             this.valid = false;
 
         return true;
