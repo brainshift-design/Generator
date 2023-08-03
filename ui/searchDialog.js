@@ -220,7 +220,8 @@ searchText.addEventListener('keydown', e =>
         updateSearchBox();
     }
 
-    else if (e.code == 'Enter')
+    else if (   e.code == 'Enter' 
+             || e.code == 'NumpadEnter')
         selectSearchItem(searchItems.children[searchIndex], e.shiftKey, getCtrlKey(e), e.altKey)
 });
 
