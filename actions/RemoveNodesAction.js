@@ -50,7 +50,7 @@ extends Action
 
     undo(updateNodes)
     {
-        deleteNodesAction_restoreNodes(this);
+        deleteNodesAction_restoreNodes(this, updateNodes);
         
         this.deactivateNewActiveNodes();
         deleteNodesAction_activateOldActiveNodes(this, updateNodes);
