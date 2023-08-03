@@ -1,11 +1,11 @@
 class GVectorPath
 extends GShape
 {
-    points      = null;
-    closed      = null;
-    degree      = null;
-    winding     = null;
-    round       = null;
+    points  = null;
+    closed  = null;
+    degree  = null;
+    winding = null;
+    round   = null;
 
 
 
@@ -45,7 +45,7 @@ extends GShape
         const winding = this.winding ? (await this.winding.eval(parse)).toValue() : null;
         const round   = this.round   ? (await this.round  .eval(parse)).toValue() : null;
 
-
+        
         let input = null;
 
         if (this.input)
@@ -72,7 +72,10 @@ extends GShape
         }
 
 
-        this.setUpdateValues(parse, [['value', this.value]]);
+        this.setUpdateValues(parse, 
+        [
+            ['value', this.value]
+        ]);
 
 
         await this.evalShapeBase(parse);

@@ -89,6 +89,28 @@ extends GNode
 
 
 
+    copyObjects(value, listId = -1)
+    {
+        const objects = getValidObjects(value);
+        const copies  = [];
+                        
+        
+        for (let i = 0; i < objects.length; i++)//, o++)
+        {
+            const obj = copyFigmaObject(objects[i]);
+    
+            obj.nodeId   = this.nodeId;
+            obj.objectId = obj.objectId + OBJECT_SEPARATOR + this.nodeId;
+            obj.listId   = listId;
+    
+            copies.push(obj);
+        }
+
+        return copies;
+    }
+    
+    
+    
     updateValueObjects()
     {
         if (!this.value)

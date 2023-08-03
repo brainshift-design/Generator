@@ -93,7 +93,7 @@ extends GOperator
         if (   this.value
             && this.value.isValid())
         {
-            this.value.objects = getValidObjects(this.input);
+            this.value.objects = getValidObjects(this.input.value);
 
 
             const place = createTransform(

@@ -5854,16 +5854,15 @@ function createDecoPoly(node, center, points, closed, dashes, color, suffix)
 
 
 
-function getValidObjects(input)
+function getValidObjects(value)
 {
-    return input 
-        && input.value
-        ? input.value.objects
-            .filter(o => 
-                   o.isDeco  === false
-                || o.isXform === true)
-            .map(o => o.copy()) 
-        : [];
+    return value
+         ? value.objects
+               .filter(o => 
+                      o.isDeco  === false
+                   || o.isXform === true)
+               .map(o => o.copy()) 
+         : [];
 }
 
 
@@ -8353,6 +8352,28 @@ extends GNode
 
 
 
+    copyObjects(value, listId = -1)
+    {
+        const objects = getValidObjects(value);
+        const copies  = [];
+                        
+        
+        for (let i = 0; i < objects.length; i++)//, o++)
+        {
+            const obj = copyFigmaObject(objects[i]);
+    
+            obj.nodeId   = this.nodeId;
+            obj.objectId = obj.objectId + OBJECT_SEPARATOR + this.nodeId;
+            obj.listId   = listId;
+    
+            copies.push(obj);
+        }
+
+        return copies;
+    }
+    
+    
+    
     updateValueObjects()
     {
         if (!this.value)
@@ -14685,38 +14706,22 @@ extends GOperator
             // first copy the input objects
             // to display when list is the active node
 
-            if (   this.options.enabled
-                && this.inputs[i].value)
-            {
-                const objects = getValidObjects(this.inputs[i]);
+            // if (   this.options.enabled
+            //     && this.inputs[i].value)
+            // {
+            //     const objects = getValidObjects(this.inputs[i].value);
                 
-                for (let j = 0; j < objects.length; j++, o++)
-                {
-                    const obj = copyFigmaObject(objects[j]);
+            //     for (let j = 0; j < objects.length; j++, o++)
+            //     {
+            //         const obj = objects[j];//copyFigmaObject(objects[j]);
 
-                    obj.nodeId   = this.nodeId;
-                    obj.objectId = obj.objectId + OBJECT_SEPARATOR + this.nodeId;
-                    obj.listId   = i;
+            //         obj.nodeId   = this.nodeId;
+            //         obj.objectId = obj.objectId + OBJECT_SEPARATOR + this.nodeId;
+            //         obj.listId   = i;
 
-                    this.value.objects.push(obj);
-                }
-            }
-
-
-            // reset object space
-
-            const bounds = getObjBounds(this.value.objects);
-
-            const singlePoint =
-                   this.value.objects.length  == 1 
-                && this.value.objects[0].type == POINT;
-
-
-            for (const obj of this.value.objects)
-            {
-                obj.createDefaultSpace();
-                obj.resetSpace(bounds, singlePoint);
-            }
+            //         //this.value.objects.push(obj);
+            //     }
+            // }
 
 
             // now create the output value
@@ -14726,15 +14731,42 @@ extends GOperator
             if (   input
                 && this.options.enabled)            
             {
-                if (   LIST_VALUES.includes(input.type)
-                    && input.expanded === true)
+                if (LIST_VALUES.includes(input.type))
                 {
-                    for (const item of input.items)
-                        this.value.items.push(item.copy());   
+                    if (input.expanded === true)
+                    {
+                        for (const item of input.items)
+                        {
+                            this.value.items.push(item.copy());   
+                            this.value.objects.push(...this.copyObjects(item, i));
+                        }
+                    }
+                    else
+                    {
+                        this.value.items.push(input.copy());
+                    }
                 }
                 else
+                {
                     this.value.items.push(input.copy());
+                    this.value.objects.push(...this.copyObjects(input, i));
+                }
             }
+        }
+
+
+        // reset object space
+
+        const bounds = getObjBounds(this.value.objects);
+
+        const singlePoint =
+               this.value.objects.length  == 1 
+            && this.value.objects[0].type == POINT;
+
+        for (const obj of this.value.objects)
+        {
+            obj.createDefaultSpace();
+            obj.resetSpace(bounds, singlePoint);
         }
 
 
@@ -14775,7 +14807,6 @@ extends GOperator
         this.inputs.forEach(i => i.invalidateInputs(from));
     }
 }
-
 
 
 class GExpand
@@ -27311,11 +27342,11 @@ extends GOperator1
 class GVectorPath
 extends GShape
 {
-    points      = null;
-    closed      = null;
-    degree      = null;
-    winding     = null;
-    round       = null;
+    points  = null;
+    closed  = null;
+    degree  = null;
+    winding = null;
+    round   = null;
 
 
 
@@ -27355,7 +27386,7 @@ extends GShape
         const winding = this.winding ? (await this.winding.eval(parse)).toValue() : null;
         const round   = this.round   ? (await this.round  .eval(parse)).toValue() : null;
 
-
+        
         let input = null;
 
         if (this.input)
@@ -27382,7 +27413,10 @@ extends GShape
         }
 
 
-        this.setUpdateValues(parse, [['value', this.value]]);
+        this.setUpdateValues(parse, 
+        [
+            ['value', this.value]
+        ]);
 
 
         await this.evalShapeBase(parse);
@@ -29172,7 +29206,7 @@ extends GOperator1
         if (   this.value
             && this.value.isValid())
         {
-            this.value.objects = getValidObjects(this.input);
+            this.value.objects = getValidObjects(this.input.value);
 
             
             const bounds = getObjBounds(this.value.objects);
@@ -29332,7 +29366,7 @@ extends GOperator1
             return Rect.NaN;
 
 
-        this.value.objects = getValidObjects(this.input);
+        this.value.objects = getValidObjects(this.input.value);
         
 
         const bounds = getObjBounds(this.value.objects);
@@ -29924,7 +29958,7 @@ extends GOperator1
         if (   this.value
             && this.value.isValid())
         {
-            this.value.objects = getValidObjects(this.input);
+            this.value.objects = getValidObjects(this.input.value);
 
             
             const centerX     = options.centerX   .value;
@@ -30074,7 +30108,7 @@ extends GOperator1
         if (   this.value
             && this.value.isValid())
         {
-            this.value.objects = getValidObjects(this.input);
+            this.value.objects = getValidObjects(this.input.value);
 
 
             const showCenter = options.showCenter.value;
@@ -30608,7 +30642,7 @@ extends GOperator
         if (   this.value
             && this.value.isValid())
         {
-            this.value.objects = getValidObjects(this.input);
+            this.value.objects = getValidObjects(this.input.value);
 
 
             const place = createTransform(

@@ -58,38 +58,22 @@ extends GOperator
             // first copy the input objects
             // to display when list is the active node
 
-            if (   this.options.enabled
-                && this.inputs[i].value)
-            {
-                const objects = getValidObjects(this.inputs[i]);
+            // if (   this.options.enabled
+            //     && this.inputs[i].value)
+            // {
+            //     const objects = getValidObjects(this.inputs[i].value);
                 
-                for (let j = 0; j < objects.length; j++, o++)
-                {
-                    const obj = copyFigmaObject(objects[j]);
+            //     for (let j = 0; j < objects.length; j++, o++)
+            //     {
+            //         const obj = objects[j];//copyFigmaObject(objects[j]);
 
-                    obj.nodeId   = this.nodeId;
-                    obj.objectId = obj.objectId + OBJECT_SEPARATOR + this.nodeId;
-                    obj.listId   = i;
+            //         obj.nodeId   = this.nodeId;
+            //         obj.objectId = obj.objectId + OBJECT_SEPARATOR + this.nodeId;
+            //         obj.listId   = i;
 
-                    this.value.objects.push(obj);
-                }
-            }
-
-
-            // reset object space
-
-            const bounds = getObjBounds(this.value.objects);
-
-            const singlePoint =
-                   this.value.objects.length  == 1 
-                && this.value.objects[0].type == POINT;
-
-
-            for (const obj of this.value.objects)
-            {
-                obj.createDefaultSpace();
-                obj.resetSpace(bounds, singlePoint);
-            }
+            //         //this.value.objects.push(obj);
+            //     }
+            // }
 
 
             // now create the output value
@@ -99,15 +83,42 @@ extends GOperator
             if (   input
                 && this.options.enabled)            
             {
-                if (   LIST_VALUES.includes(input.type)
-                    && input.expanded === true)
+                if (LIST_VALUES.includes(input.type))
                 {
-                    for (const item of input.items)
-                        this.value.items.push(item.copy());   
+                    if (input.expanded === true)
+                    {
+                        for (const item of input.items)
+                        {
+                            this.value.items.push(item.copy());   
+                            this.value.objects.push(...this.copyObjects(item, i));
+                        }
+                    }
+                    else
+                    {
+                        this.value.items.push(input.copy());
+                    }
                 }
                 else
+                {
                     this.value.items.push(input.copy());
+                    this.value.objects.push(...this.copyObjects(input, i));
+                }
             }
+        }
+
+
+        // reset object space
+
+        const bounds = getObjBounds(this.value.objects);
+
+        const singlePoint =
+               this.value.objects.length  == 1 
+            && this.value.objects[0].type == POINT;
+
+        for (const obj of this.value.objects)
+        {
+            obj.createDefaultSpace();
+            obj.resetSpace(bounds, singlePoint);
         }
 
 

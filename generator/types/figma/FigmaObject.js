@@ -439,14 +439,13 @@ function createDecoPoly(node, center, points, closed, dashes, color, suffix)
 
 
 
-function getValidObjects(input)
+function getValidObjects(value)
 {
-    return input 
-        && input.value
-        ? input.value.objects
-            .filter(o => 
-                   o.isDeco  === false
-                || o.isXform === true)
-            .map(o => o.copy()) 
-        : [];
+    return value
+         ? value.objects
+               .filter(o => 
+                      o.isDeco  === false
+                   || o.isXform === true)
+               .map(o => o.copy()) 
+         : [];
 }

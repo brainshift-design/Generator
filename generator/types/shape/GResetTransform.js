@@ -66,7 +66,7 @@ extends GOperator1
         if (   this.value
             && this.value.isValid())
         {
-            this.value.objects = getValidObjects(this.input);
+            this.value.objects = getValidObjects(this.input.value);
 
 
             const showCenter = options.showCenter.value;

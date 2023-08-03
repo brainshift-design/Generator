@@ -40,7 +40,7 @@ extends GOperator1
             return Rect.NaN;
 
 
-        this.value.objects = getValidObjects(this.input);
+        this.value.objects = getValidObjects(this.input.value);
         
 
         const bounds = getObjBounds(this.value.objects);
