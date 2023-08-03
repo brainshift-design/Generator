@@ -25,12 +25,15 @@ extends Action
 
     do(updateNodes)
     {
-        this.oldActiveNodeIds = [];
-
-        this.newActiveNodeIds.forEach(id =>
-            pushUnique(
-                this.oldActiveNodeIds, 
-                getActiveNodesFromNodeId(id).map(n => n.id))); 
+        this.oldActiveNodeIds = 
+            graph.currentPage.nodes
+                .filter(n => n.active)
+                .map(n => n.nodeId);
+            
+        // this.newActiveNodeIds.forEach(id =>
+        //     pushUnique(
+        //         this.oldActiveNodeIds, 
+        //         getActiveNodesFromNodeId(id).map(n => n.id))); 
 
         //uiDeleteObjectsAndStyles(this.oldActiveNodeIds, false);
 

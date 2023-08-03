@@ -127,7 +127,7 @@ extends GOperator
                     this.input.invalidateInputs(this);
                     
 
-                    const input = (await this.input .eval(parse)).toValue();
+                    const input = (await this.input.eval(parse)).toValue();
 
 
                     if (input)

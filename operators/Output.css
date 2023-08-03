@@ -32,8 +32,9 @@
     height:         6px;
     border-radius:  6px;
     margin:         0;
-    position:       relative;
-    top:            -12px;
+    position:       absolute;
+    top:            50%;
+    transform:      translateY(-50%);
     pointer-events: none;
     /* box-shadow:     0 0 0 1px rgba(0, 0, 0, 0.12); */
 }

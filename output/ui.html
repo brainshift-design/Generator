@@ -3848,6 +3848,7 @@ a
     box-shadow:     0 0 0 1px rgba(0, 0, 0, 0.12);
     z-index:        10;
     transition:     opacity 0.2s linear 0s;
+    /* box-shadow:     0 0 0 1px yellow inset; */
 }
 
 
@@ -3862,6 +3863,7 @@ a
     left:           50%;
     pointer-events: none;
     /* box-shadow:     0 0 0 1px rgba(0, 0, 0, 0.12); */
+    /* box-shadow:     0 0 0 1px orange inset; */
 }
 
 
@@ -3873,6 +3875,7 @@ a
     width:          12px;
     height:         12px;
     pointer-events: auto;
+    /* box-shadow:     0 0 0 1px red inset; */
 }
 
 
@@ -4482,8 +4485,9 @@ a
     height:         6px;
     border-radius:  6px;
     margin:         0;
-    position:       relative;
-    top:            -12px;
+    position:       absolute;
+    top:            50%;
+    transform:      translateY(-50%);
     pointer-events: none;
     /* box-shadow:     0 0 0 1px rgba(0, 0, 0, 0.12); */
 }
@@ -19286,7 +19290,7 @@ extends GOperator
                     this.input.invalidateInputs(this);
                     
 
-                    const input = (await this.input .eval(parse)).toValue();
+                    const input = (await this.input.eval(parse)).toValue();
 
 
                     if (input)
@@ -19658,10 +19662,10 @@ extends GOperator
                 : NullValue;
 
             this.frozen = true;
+
+
+            this.updateValueObjects();
         }
-
-
-        this.updateValueObjects();
 
 
         this.setUpdateValues(parse,
@@ -19905,6 +19909,7 @@ extends GOperator
                     else
                     {
                         this.value.items.push(input.copy());
+                        this.value.objects.push(...this.copyObjects(input, i));
                     }
                 }
                 else
@@ -62435,7 +62440,7 @@ extends GOperator
                     this.input.invalidateInputs(this);
                     
 
-                    const input = (await this.input .eval(parse)).toValue();
+                    const input = (await this.input.eval(parse)).toValue();
 
 
                     if (input)
@@ -62807,10 +62812,10 @@ extends GOperator
                 : NullValue;
 
             this.frozen = true;
+
+
+            this.updateValueObjects();
         }
-
-
-        this.updateValueObjects();
 
 
         this.setUpdateValues(parse,
@@ -63054,6 +63059,7 @@ extends GOperator
                     else
                     {
                         this.value.items.push(input.copy());
+                        this.value.objects.push(...this.copyObjects(input, i));
                     }
                 }
                 else
@@ -95167,11 +95173,11 @@ extends EventTarget
 
         const zoom = graph.currentPage.zoom;
 
-        this.hitbox.style.left  = isConnected ? -2 : -3;
-        this.hitbox.style.width = 12 + Math.max(0, (1 - 1*zoom) * 10);
+        this.hitbox.style.left              = isConnected ? -2 : -3;
+        this.hitbox.style.width             = 12 + Math.max(0, (1 - 1*zoom) * 10);
 
-        this.hitbox.style.top    = (isConnected ? -2 : -3) - Math.max(0, (1 - 1*zoom) * 10);
-        this.hitbox.style.height = 12 + Math.max(0, (1 - 1*zoom) * 20);
+        this.hitbox.style.top               = (isConnected ? -2 : -3) - Math.max(0, (1 - 1*zoom) * 10);
+        this.hitbox.style.height            = 12 + Math.max(0, (1 - 1*zoom) * 20);
 
 
         this.wireBall.style.left            = '1px';
@@ -95915,7 +95921,8 @@ extends EventTarget
         this.hitbox.style.height = 12 + Math.max(0, (1 - 1*zoom) * 20);
         
 
-        this.wireBall.style.zIndex = MAX_INT32;
+        this.wireBall.style.top    = '50%';
+        this.wireBall.style.zIndex =  MAX_INT32;
 
 
         showElement(this.wireBall, isConnected);
@@ -118995,12 +119002,15 @@ extends Action
 
     do(updateNodes)
     {
-        this.oldActiveNodeIds = [];
-
-        this.newActiveNodeIds.forEach(id =>
-            pushUnique(
-                this.oldActiveNodeIds, 
-                getActiveNodesFromNodeId(id).map(n => n.id))); 
+        this.oldActiveNodeIds = 
+            graph.currentPage.nodes
+                .filter(n => n.active)
+                .map(n => n.nodeId);
+            
+        // this.newActiveNodeIds.forEach(id =>
+        //     pushUnique(
+        //         this.oldActiveNodeIds, 
+        //         getActiveNodesFromNodeId(id).map(n => n.id))); 
 
         //uiDeleteObjectsAndStyles(this.oldActiveNodeIds, false);
 
@@ -119158,10 +119168,10 @@ extends Action
         this.prevSelectedNodeIds = graphView.selectedNodes.map(n => n.id);
 
 
-        this.oldActiveNodeIds = [];
+        // this.oldActiveNodeIds = [];
 
-        for (const nodeId of this.prevSelectedNodeIds)
-            pushUnique(this.oldActiveNodeIds, getActiveNodesFromNodeId(nodeId).map(n => n.id));
+        // for (const nodeId of this.prevSelectedNodeIds)
+        //     pushUnique(this.oldActiveNodeIds, graph.currentPage.nodes.filter(n => n.active));//getActiveNodesFromNodeId(nodeId).map(n => n.id));
 
 
         const [nodes, _conns] = uiPasteNodes(this.copiedNodesJson, true, this.pasteConnected, this.x, this.y, updateNodes);
@@ -119172,7 +119182,7 @@ extends Action
         const terminals = getTerminalsInNodes(nodes);
 
         for (const terminal of terminals)
-            if (!getActiveFromNode(terminal))
+            if (terminal.active)//!getActiveFromNode(terminal))
                 uiMakeNodeActive(terminal);
 
 
@@ -119225,11 +119235,11 @@ extends Action
         graphView.selectedNodes = graph.nodes.filter(n => this.prevSelectedNodeIds.includes(n.id));
 
 
-        let oldActiveNodeIds = [...this.oldActiveNodeIds];
-        oldActiveNodeIds.sort((x, y) => (nodeFromId(x) === nodeFromId(y)) ? 0 : nodeFromId(y).isOrFollows(nodeFromId(x)) ? -1 : 1);
+        // let oldActiveNodeIds = [...this.oldActiveNodeIds];
+        // oldActiveNodeIds.sort((x, y) => (nodeFromId(x) === nodeFromId(y)) ? 0 : nodeFromId(y).isOrFollows(nodeFromId(x)) ? -1 : 1);
 
-        for (const id of oldActiveNodeIds)
-            uiMakeNodeActive(nodeFromId(id));
+        // for (const id of oldActiveNodeIds)
+        //     uiMakeNodeActive(nodeFromId(id));
     }
 
 

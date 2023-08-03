@@ -299,11 +299,11 @@ extends EventTarget
 
         const zoom = graph.currentPage.zoom;
 
-        this.hitbox.style.left  = isConnected ? -2 : -3;
-        this.hitbox.style.width = 12 + Math.max(0, (1 - 1*zoom) * 10);
+        this.hitbox.style.left              = isConnected ? -2 : -3;
+        this.hitbox.style.width             = 12 + Math.max(0, (1 - 1*zoom) * 10);
 
-        this.hitbox.style.top    = (isConnected ? -2 : -3) - Math.max(0, (1 - 1*zoom) * 10);
-        this.hitbox.style.height = 12 + Math.max(0, (1 - 1*zoom) * 20);
+        this.hitbox.style.top               = (isConnected ? -2 : -3) - Math.max(0, (1 - 1*zoom) * 10);
+        this.hitbox.style.height            = 12 + Math.max(0, (1 - 1*zoom) * 20);
 
 
         this.wireBall.style.left            = '1px';

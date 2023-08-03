@@ -270,7 +270,8 @@ extends EventTarget
         this.hitbox.style.height = 12 + Math.max(0, (1 - 1*zoom) * 20);
         
 
-        this.wireBall.style.zIndex = MAX_INT32;
+        this.wireBall.style.top    = '50%';
+        this.wireBall.style.zIndex =  MAX_INT32;
 
 
         showElement(this.wireBall, isConnected);

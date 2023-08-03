@@ -52,10 +52,10 @@ extends GOperator
                 : NullValue;
 
             this.frozen = true;
+
+
+            this.updateValueObjects();
         }
-
-
-        this.updateValueObjects();
 
 
         this.setUpdateValues(parse,
