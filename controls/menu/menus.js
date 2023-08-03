@@ -65,6 +65,7 @@ var menuZoom;
 var menuWindow;
 
 
+var wholeMenu;
 var menuGraph;
 var menuNode;
 var menuNodeCopyAs;
@@ -693,10 +694,24 @@ function initGeneratorMenus()
                         //  new MenuItem('Window',       {childMenu: menuWindow})]);
 
         
+    wholeMenu = new Menu('Create node...', true, false);
+    wholeMenu.addItems([
+        new MenuItem('Flow',    {icon: iconFlow,     childMenu: menuFlow  }),
+        new MenuItem('Data',    {icon: iconList,     childMenu: menuData  }),
+        new MenuItem('Sets...', {icon: iconSequence, childMenu: menuSets  }),
+        new MenuItem('Number',  {icon: iconNumber,   childMenu: menuNumber}),
+        new MenuItem('Text',    {icon: iconText,     childMenu: menuString}),
+        new MenuItem('Color',   {icon: iconVarColor, childMenu: menuColor }),
+        new MenuItem('Layer',   {icon: iconEffects,  childMenu: menuLayer }),
+        new MenuItem('Shape',   {icon: iconShapes,   childMenu: menuShape })]);
+
+                                      
     menuGraph = new Menu('Graph menu', false, false);
     menuGraph.addItems([
         menuItemGraphPaste          = new MenuItem('Paste here',       {shortcut: osCtrl()      + 'V', callback: e => { hideAllMenus(); graphView.pasteCopiedNodes(false, e.clientX, e.clientY - getTopHeight()); }}),
         menuItemGraphPasteConnected = new MenuItem('Paste connected',  {shortcut: osCtrlShift() + 'V', callback: e => { hideAllMenus(); graphView.pasteCopiedNodes(true,  e.clientX, e.clientY - getTopHeight()); }}),
+                                      new MenuItem('',                 {separator: true}),
+                                      new MenuItem('Create node...',   {childMenu: wholeMenu}),
                                       new MenuItem('',                 {separator: true}),
                                       new MenuItem('Quick actions...', {shortcut: osCtrl() + '/',      callback: () => showSearchBox() })]);
 

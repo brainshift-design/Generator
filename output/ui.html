@@ -4820,6 +4820,7 @@ a
 
                 <p>•  added row count to Unique counts parameter</p>
                 <p>•  fixed deleting from complex graphs taking a long time</p>
+                <p>•  nodes can now be created from the context menu</p>
                 <p>•  fixed UI bugs and other issues</p>
                 
                 <p><br/><br/><div id='chkHideWhatsNew'></div></p>
@@ -84073,7 +84074,8 @@ class Menu
     parentItem = null;
 
     name;
-    button = null;
+    button     = null;
+    fromButton = false;
 
     div;
     divArrow;
@@ -84283,7 +84285,8 @@ class Menu
         this.divArrow.style.top  = menuRect.y - this.divArrow.offsetHeight + 2;
 
 
-        if (this.button)
+        if (   this.button
+            && this.fromButton)
             this.button.update();
     }
 
@@ -85194,6 +85197,7 @@ var menuZoom;
 var menuWindow;
 
 
+var wholeMenu;
 var menuGraph;
 var menuNode;
 var menuNodeCopyAs;
@@ -85822,10 +85826,24 @@ function initGeneratorMenus()
                         //  new MenuItem('Window',       {childMenu: menuWindow})]);
 
         
+    wholeMenu = new Menu('Create node...', true, false);
+    wholeMenu.addItems([
+        new MenuItem('Flow',    {icon: iconFlow,     childMenu: menuFlow  }),
+        new MenuItem('Data',    {icon: iconList,     childMenu: menuData  }),
+        new MenuItem('Sets...', {icon: iconSequence, childMenu: menuSets  }),
+        new MenuItem('Number',  {icon: iconNumber,   childMenu: menuNumber}),
+        new MenuItem('Text',    {icon: iconText,     childMenu: menuString}),
+        new MenuItem('Color',   {icon: iconVarColor, childMenu: menuColor }),
+        new MenuItem('Layer',   {icon: iconEffects,  childMenu: menuLayer }),
+        new MenuItem('Shape',   {icon: iconShapes,   childMenu: menuShape })]);
+
+                                      
     menuGraph = new Menu('Graph menu', false, false);
     menuGraph.addItems([
         menuItemGraphPaste          = new MenuItem('Paste here',       {shortcut: osCtrl()      + 'V', callback: e => { hideAllMenus(); graphView.pasteCopiedNodes(false, e.clientX, e.clientY - getTopHeight()); }}),
         menuItemGraphPasteConnected = new MenuItem('Paste connected',  {shortcut: osCtrlShift() + 'V', callback: e => { hideAllMenus(); graphView.pasteCopiedNodes(true,  e.clientX, e.clientY - getTopHeight()); }}),
+                                      new MenuItem('',                 {separator: true}),
+                                      new MenuItem('Create node...',   {childMenu: wholeMenu}),
                                       new MenuItem('',                 {separator: true}),
                                       new MenuItem('Quick actions...', {shortcut: osCtrl() + '/',      callback: () => showSearchBox() })]);
 
@@ -95146,6 +95164,16 @@ extends EventTarget
         this.hitbox.style.left              = isConnected ? -2 : -3;
         this.hitbox.style.top               = isConnected ? -2 : -3;
 
+
+        const zoom = graph.currentPage.zoom;
+
+        this.hitbox.style.left  = isConnected ? -2 : -3;
+        this.hitbox.style.width = 12 + Math.max(0, (1 - 1*zoom) * 10);
+
+        this.hitbox.style.top    = (isConnected ? -2 : -3) - Math.max(0, (1 - 1*zoom) * 10);
+        this.hitbox.style.height = 12 + Math.max(0, (1 - 1*zoom) * 20);
+
+
         this.wireBall.style.left            = '1px';
         this.wireBall.style.top             = 'calc(50% - 3px)';
 
@@ -95877,6 +95905,15 @@ extends EventTarget
             ? '0 0 0 1px ' + colorStyle
             : 'none';
 
+
+        const zoom = graph.currentPage.zoom;
+
+        this.hitbox.style.left  = -3 - Math.max(0, (1 - 1*zoom) * 10);
+        this.hitbox.style.width = 12 + Math.max(0, (1 - 1*zoom) * 10);
+
+        this.hitbox.style.top    = -3 - Math.max(0, (1 - 1*zoom) * 10);
+        this.hitbox.style.height = 12 + Math.max(0, (1 - 1*zoom) * 20);
+        
 
         this.wireBall.style.zIndex = MAX_INT32;
 

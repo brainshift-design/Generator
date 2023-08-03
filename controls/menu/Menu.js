@@ -9,7 +9,8 @@ class Menu
     parentItem = null;
 
     name;
-    button = null;
+    button     = null;
+    fromButton = false;
 
     div;
     divArrow;
@@ -219,7 +220,8 @@ class Menu
         this.divArrow.style.top  = menuRect.y - this.divArrow.offsetHeight + 2;
 
 
-        if (this.button)
+        if (   this.button
+            && this.fromButton)
             this.button.update();
     }
 
