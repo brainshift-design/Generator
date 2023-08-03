@@ -10,7 +10,7 @@ extends OperatorBase
 
     constructor()
     {
-        super(TEXT_CONTAINS, 'find', 'find', iconTextContains);
+        super(TEXT_CONTAINS, 'contains', 'contains', iconTextContains);
 
         this.canDisable  = true;
         this.iconOffsetY = 1;
@@ -19,14 +19,17 @@ extends OperatorBase
         this.addInput (new Input([TEXT_VALUE]));
         this.addInput (new Input([TEXT_VALUE]));
 
-        this.addParam(this.paramValue = new NumberParam('value', '',      false, false, true));
-        this.addParam(this.paramFirst = new NumberParam('first', 'first', true,  false, true));
-        this.addParam(this.paramLast  = new NumberParam('last',  'last',  true,  false, true));
-        this.addParam(this.paramAll   = new   ListParam('all',   'all',   false, false, true));
+        this.addParam(this.paramValue = new NumberParam('value', '',            false, false, true));
+        this.addParam(this.paramFirst = new NumberParam('first', 'first index', true,  false, true));
+        this.addParam(this.paramLast  = new NumberParam('last',  'last index',  true,  false, true));
+        this.addParam(this.paramAll   = new   ListParam('all',   'all',        false, false, true));
 
         this.paramValue.isNodeValue = true;
 
         this.paramAll.itemName = '';
+
+        this.paramFirst.divider = 0.62;
+        this.paramLast .divider = 0.62;
     }
 
 

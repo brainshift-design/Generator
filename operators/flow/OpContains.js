@@ -10,7 +10,7 @@ extends OperatorBase
 
     constructor()
     {
-        super(CONTAINS, 'find', 'find', iconContains);
+        super(CONTAINS, 'contains', 'contains', iconContains);
 
         this.canDisable  = true;
         this.iconOffsetY = 1;
@@ -19,14 +19,17 @@ extends OperatorBase
         this.addInput (new Input(LIST_VALUES));
         this.addInput (new Input([ANY_VALUE]));
 
-        this.addParam(this.paramValue = new NumberParam('value', '',      false, false, true));
-        this.addParam(this.paramFirst = new NumberParam('first', 'first', true,  false, true));
-        this.addParam(this.paramLast  = new NumberParam('last',  'last',  true,  false, true));
-        this.addParam(this.paramAll   = new   ListParam('all',   'all',   false, false, true));
+        this.addParam(this.paramValue = new NumberParam('value', '',            false, false, true));
+        this.addParam(this.paramFirst = new NumberParam('first', 'first index', true,  false, true));
+        this.addParam(this.paramLast  = new NumberParam('last',  'last index',  true,  false, true));
+        this.addParam(this.paramAll   = new   ListParam('all',   'all',         false, false, true));
 
         this.paramValue.isNodeValue = true;
 
         this.paramAll.itemName = '';
+
+        this.paramFirst.divider = 0.62;
+        this.paramLast .divider = 0.62;
     }
 
 
@@ -79,12 +82,12 @@ extends OperatorBase
 
     updateParams()
     {
-        this.paramValue.enableControlText(false);
-        this.paramFirst.enableControlText(false);
-        this.paramLast .enableControlText(false);
-        this.paramAll  .enableControlText(false);
+        this.paramValue.enableControlText(false, this.isUnknown());
+        this.paramFirst.enableControlText(false, this.isUnknown());
+        this.paramLast .enableControlText(false, this.isUnknown());
+        this.paramAll  .enableControlText(false, this.isUnknown());
 
-        updateParamConditionText(this.paramValue, this.paramValue.isUnknown(), true);
+        updateParamConditionText(this.paramValue, this.isUnknown(), true);
 
         this.updateParamControls();
     }

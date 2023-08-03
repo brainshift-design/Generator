@@ -4819,6 +4819,7 @@ a
                 <h1 style='margin-top: 20px;'>What's new</h1>
 
                 <p>•  added row count to Unique counts parameter</p>
+                <p>•  fixed deleting from complex graphs taking a long time</p>
                 <p>•  UI improvements</p>
                 
                 <p><br/><br/><div id='chkHideWhatsNew'></div></p>
@@ -85476,7 +85477,7 @@ function initGeneratorMenus()
                          new MenuItem('',                  {separator: true}),     
         menuItemSelect = new MenuItem('Select',            {icon: iconSelect,      createType: SELECT,       callback: e => actionManager.do(getCreateNodeAction(SELECT,        btnData.div, getCreateOptions(e)))}),
         menuItemIfElse = new MenuItem('I&hairsp;f / else', {icon: iconIfElse,      createType: IF_ELSE,      callback: e => actionManager.do(getCreateNodeAction(IF_ELSE,       btnData.div, getCreateOptions(e))), disambiguate: true}),
-                         new MenuItem('Find in list',      {icon: iconContains,    createType: CONTAINS,     callback: e => actionManager.do(getCreateNodeAction(CONTAINS,      btnData.div, getCreateOptions(e))), disambiguate: true}),
+                         new MenuItem('List contains',     {icon: iconContains,    createType: CONTAINS,     callback: e => actionManager.do(getCreateNodeAction(CONTAINS,      btnData.div, getCreateOptions(e))), disambiguate: true}),
                          new MenuItem('',                  {separator: true}),     
                          new MenuItem('Sublist',           {icon: iconSublist,     createType: SUBLIST,      callback: e => actionManager.do(getCreateNodeAction(SUBLIST,       btnData.div, getCreateOptions(e)))}),
                          new MenuItem('Unique',            {icon: iconUnique,      createType: UNIQUE,       callback: e => actionManager.do(getCreateNodeAction(UNIQUE,        btnData.div, getCreateOptions(e)))}),
@@ -85580,7 +85581,7 @@ function initGeneratorMenus()
         new MenuItem('',                    {separator: true}),
         new MenuItem('Length',              {icon: iconTextLength,    createType: TEXT_LENGTH,    callback: e => actionManager.do(getCreateNodeAction(TEXT_LENGTH,    btnText.div, getCreateOptions(e)))}),
         new MenuItem('Compare',             {icon: iconTextCompare,   createType: TEXT_COMPARE,   callback: e => actionManager.do(getCreateNodeAction(TEXT_COMPARE,   btnText.div, getCreateOptions(e)))}),
-        new MenuItem('Find in text',        {icon: iconTextContains,  createType: TEXT_CONTAINS,  callback: e => actionManager.do(getCreateNodeAction(TEXT_CONTAINS,  btnText.div, getCreateOptions(e)))}),
+        new MenuItem('Text contains',       {icon: iconTextContains,  createType: TEXT_CONTAINS,  callback: e => actionManager.do(getCreateNodeAction(TEXT_CONTAINS,  btnText.div, getCreateOptions(e)))}),
         new MenuItem('',                    {separator: true}),
         new MenuItem('Trim',                {icon: iconTextTrim,      createType: TEXT_TRIM,      callback: e => actionManager.do(getCreateNodeAction(TEXT_TRIM,      btnText.div, getCreateOptions(e)))}),
         new MenuItem('Spl it',              {icon: iconTextSplit,     createType: TEXT_SPLIT,     callback: e => actionManager.do(getCreateNodeAction(TEXT_SPLIT,     btnText.div, getCreateOptions(e)))}),
@@ -101813,7 +101814,7 @@ extends OperatorBase
 
     constructor()
     {
-        super(CONTAINS, 'find', 'find', iconContains);
+        super(CONTAINS, 'contains', 'contains', iconContains);
 
         this.canDisable  = true;
         this.iconOffsetY = 1;
@@ -101822,14 +101823,17 @@ extends OperatorBase
         this.addInput (new Input(LIST_VALUES));
         this.addInput (new Input([ANY_VALUE]));
 
-        this.addParam(this.paramValue = new NumberParam('value', '',      false, false, true));
-        this.addParam(this.paramFirst = new NumberParam('first', 'first', true,  false, true));
-        this.addParam(this.paramLast  = new NumberParam('last',  'last',  true,  false, true));
-        this.addParam(this.paramAll   = new   ListParam('all',   'all',   false, false, true));
+        this.addParam(this.paramValue = new NumberParam('value', '',            false, false, true));
+        this.addParam(this.paramFirst = new NumberParam('first', 'first index', true,  false, true));
+        this.addParam(this.paramLast  = new NumberParam('last',  'last index',  true,  false, true));
+        this.addParam(this.paramAll   = new   ListParam('all',   'all',         false, false, true));
 
         this.paramValue.isNodeValue = true;
 
         this.paramAll.itemName = '';
+
+        this.paramFirst.divider = 0.62;
+        this.paramLast .divider = 0.62;
     }
 
 
@@ -101882,12 +101886,12 @@ extends OperatorBase
 
     updateParams()
     {
-        this.paramValue.enableControlText(false);
-        this.paramFirst.enableControlText(false);
-        this.paramLast .enableControlText(false);
-        this.paramAll  .enableControlText(false);
+        this.paramValue.enableControlText(false, this.isUnknown());
+        this.paramFirst.enableControlText(false, this.isUnknown());
+        this.paramLast .enableControlText(false, this.isUnknown());
+        this.paramAll  .enableControlText(false, this.isUnknown());
 
-        updateParamConditionText(this.paramValue, this.paramValue.isUnknown(), true);
+        updateParamConditionText(this.paramValue, this.isUnknown(), true);
 
         this.updateParamControls();
     }
@@ -105765,7 +105769,7 @@ extends OperatorBase
 
     constructor()
     {
-        super(TEXT_CONTAINS, 'find', 'find', iconTextContains);
+        super(TEXT_CONTAINS, 'contains', 'contains', iconTextContains);
 
         this.canDisable  = true;
         this.iconOffsetY = 1;
@@ -105774,14 +105778,17 @@ extends OperatorBase
         this.addInput (new Input([TEXT_VALUE]));
         this.addInput (new Input([TEXT_VALUE]));
 
-        this.addParam(this.paramValue = new NumberParam('value', '',      false, false, true));
-        this.addParam(this.paramFirst = new NumberParam('first', 'first', true,  false, true));
-        this.addParam(this.paramLast  = new NumberParam('last',  'last',  true,  false, true));
-        this.addParam(this.paramAll   = new   ListParam('all',   'all',   false, false, true));
+        this.addParam(this.paramValue = new NumberParam('value', '',            false, false, true));
+        this.addParam(this.paramFirst = new NumberParam('first', 'first index', true,  false, true));
+        this.addParam(this.paramLast  = new NumberParam('last',  'last index',  true,  false, true));
+        this.addParam(this.paramAll   = new   ListParam('all',   'all',        false, false, true));
 
         this.paramValue.isNodeValue = true;
 
         this.paramAll.itemName = '';
+
+        this.paramFirst.divider = 0.62;
+        this.paramLast .divider = 0.62;
     }
 
 
@@ -118102,7 +118109,10 @@ extends Action
 function deleteNodesAction_saveOldActiveNodes(act)
 {
     for (const nodeId of act.nodeIds)
-        pushUnique(act.oldActiveNodeIds, getActiveNodesFromNodeId(nodeId).map(n => n.id));
+    {
+        if (nodeFromId(nodeId).active)
+            pushUnique(act.oldActiveNodeIds, nodeId);
+    }
 }
 
 
@@ -118184,24 +118194,24 @@ function deleteNodesAction_disconnect(act, input, ignoreNodeIds = [])
     const updateNodes       = [];        
 
 
-    const activeLeft        = getActiveBeforeNode    (input.node, [input.node]);
-    const activeLeftOnly    = getActiveOnlyBeforeNode(input.node, [input.node]);
-    const activeRightHeader = getActiveAfterNode     (output.node, false, [output.node]);
+    // const activeLeft        = getActiveBeforeNode    (input.node, [input.node]);
+    // const activeLeftOnly    = getActiveOnlyBeforeNode(input.node, [input.node]);
+    // const activeRightHeader = getActiveAfterNode     (output.node, false, [output.node]);
     const terminalsRight    = getTerminalsAfterNode  (input.node);
 
 
     uiDisconnect(input);
     
     
-    if (   !activeLeftOnly
-        && !activeLeft)
-    {
-        if (!ignoreNodeIds.includes(output.node.id))
-        {
-            pushUnique(act.newActiveNodeIds, output.node.id);
-            pushUnique(updateNodes, output.node);
-        }
-    }
+    // if (   !activeLeftOnly
+    //     && !activeLeft)
+    // {
+    //     if (!ignoreNodeIds.includes(output.node.id))
+    //     {
+    //         pushUnique(act.newActiveNodeIds, output.node.id);
+    //         pushUnique(updateNodes, output.node);
+    //     }
+    // }
 
 
     // if (!activeRightHeader)

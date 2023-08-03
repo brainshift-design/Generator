@@ -61,7 +61,10 @@ extends Action
 function deleteNodesAction_saveOldActiveNodes(act)
 {
     for (const nodeId of act.nodeIds)
-        pushUnique(act.oldActiveNodeIds, getActiveNodesFromNodeId(nodeId).map(n => n.id));
+    {
+        if (nodeFromId(nodeId).active)
+            pushUnique(act.oldActiveNodeIds, nodeId);
+    }
 }
 
 
@@ -143,24 +146,24 @@ function deleteNodesAction_disconnect(act, input, ignoreNodeIds = [])
     const updateNodes       = [];        
 
 
-    const activeLeft        = getActiveBeforeNode    (input.node, [input.node]);
-    const activeLeftOnly    = getActiveOnlyBeforeNode(input.node, [input.node]);
-    const activeRightHeader = getActiveAfterNode     (output.node, false, [output.node]);
+    // const activeLeft        = getActiveBeforeNode    (input.node, [input.node]);
+    // const activeLeftOnly    = getActiveOnlyBeforeNode(input.node, [input.node]);
+    // const activeRightHeader = getActiveAfterNode     (output.node, false, [output.node]);
     const terminalsRight    = getTerminalsAfterNode  (input.node);
 
 
     uiDisconnect(input);
     
     
-    if (   !activeLeftOnly
-        && !activeLeft)
-    {
-        if (!ignoreNodeIds.includes(output.node.id))
-        {
-            pushUnique(act.newActiveNodeIds, output.node.id);
-            pushUnique(updateNodes, output.node);
-        }
-    }
+    // if (   !activeLeftOnly
+    //     && !activeLeft)
+    // {
+    //     if (!ignoreNodeIds.includes(output.node.id))
+    //     {
+    //         pushUnique(act.newActiveNodeIds, output.node.id);
+    //         pushUnique(updateNodes, output.node);
+    //     }
+    // }
 
 
     // if (!activeRightHeader)
