@@ -23,6 +23,14 @@ class Wire
 
     arrow1;
     arrow2;
+
+
+    // subdivision cache
+    sp0        = null;
+    sp1        = null;
+    sp2        = null;
+    sp3        = null;
+    sArcLength = null;
    
 
 
@@ -336,9 +344,29 @@ class Wire
 
     updateArrow(p0, p1, p2, p3, arrow, dist, size, index, feedback, back)
     {
+        if (   !this.sp0 
+            || !this.sp1 
+            || !this.sp2 
+            || !this.sp3
+            || !equal(p1.x - p0.x, this.sp1.x - this.sp0.x, 0.005)
+            || !equal(p2.x - p1.x, this.sp2.x - this.sp1.x, 0.005)
+            || !equal(p3.x - p2.x, this.sp3.x - this.sp2.x, 0.005)
+            || !equal(p1.y - p0.y, this.sp1.y - this.sp0.y, 0.005)
+            || !equal(p2.y - p1.y, this.sp2.y - this.sp1.y, 0.005)
+            || !equal(p3.y - p2.y, this.sp3.y - this.sp2.y, 0.005))
+        {
+            this.sArcLength = arcLength(p0, p1, p2, p3);
+
+            this.sp0 = clone(p0);
+            this.sp1 = clone(p1);
+            this.sp2 = clone(p2);
+            this.sp3 = clone(p3);
+        }
+
+
         let al = 
             dist >= 0
-            ? arcLength(p0, p1, p2, p3) - dist * graph.currentPage.zoom
+            ? this.sArcLength - dist * graph.currentPage.zoom
             : -dist * graph.currentPage.zoom;
     
         if (al <= 0)
@@ -390,6 +418,7 @@ class Wire
         arrow.style.transformOrigin = 'center';
         arrow.style.transform       = 'rotate(' + (angle(ct) - Tau/4 + (!back || feedback ? 0 : Tau/2)) + 'rad)';
     }
+
 
 
 
