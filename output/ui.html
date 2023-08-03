@@ -4836,7 +4836,7 @@ a
 
     <input id='searchText' 
            type='text' 
-           placeholder="Search menu (type '/' to search nodes)" 
+           placeholder="Search menu" 
            spellcheck='false'
            autocomplete='off' />
 
@@ -122680,7 +122680,8 @@ function selectSearchItem(item, shift, ctrl, alt)
         altKey:   alt
     };
 
-    if (item.callback)
+    if (   item
+        && item.callback)
         item.callback(e);
 
     searchIndex = -1;

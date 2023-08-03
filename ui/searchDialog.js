@@ -158,7 +158,8 @@ function selectSearchItem(item, shift, ctrl, alt)
         altKey:   alt
     };
 
-    if (item.callback)
+    if (   item
+        && item.callback)
         item.callback(e);
 
     searchIndex = -1;
