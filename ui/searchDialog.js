@@ -138,7 +138,16 @@ function initSearchBox(query)
         ? '8px'
         : 0;
 
-    search.style.height = searchText.offsetHeight + searchResults.offsetHeight;
+    if (   query.length == 0
+        || found.length > 0)
+    {
+        search.style.height = searchText.offsetHeight + searchResults.offsetHeight;
+    }
+    else
+    {
+        search.style.height = searchText.offsetHeight + 40;
+        noSearchResults.style.display = 'inline';
+    }
 
 
     updateSearchBox();

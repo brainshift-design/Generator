@@ -109,6 +109,33 @@
 
 
 
+#noSearchResults
+{
+    width:       100%;
+    height:      auto;
+    display:     none;
+    /* box-shadow:  0 0 0 1px red inset; */
+    font-family: Inter;
+    font-size:   13px;
+    position:    absolute;
+    top:         56px;
+    left:        48px
+}
+
+
+.figma-dark  #noSearchResults 
+{
+    font-weight: 500;
+    color:     #7d7d7d;
+}
+
+.figma-light #noSearchResults 
+{
+    color: #444;    
+}
+
+
+
 #searchResults::-webkit-scrollbar
 {
     background: transparent;

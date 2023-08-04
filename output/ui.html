@@ -979,6 +979,33 @@ div
 
 
 
+#noSearchResults
+{
+    width:       100%;
+    height:      auto;
+    display:     none;
+    /* box-shadow:  0 0 0 1px red inset; */
+    font-family: Inter;
+    font-size:   13px;
+    position:    absolute;
+    top:         56px;
+    left:        48px
+}
+
+
+.figma-dark  #noSearchResults 
+{
+    font-weight: 500;
+    color:     #7d7d7d;
+}
+
+.figma-light #noSearchResults 
+{
+    color: #444;    
+}
+
+
+
 #searchResults::-webkit-scrollbar
 {
     background: transparent;
@@ -4848,6 +4875,8 @@ a
     <div id='searchResults'>
         <div id='searchItems'></div>
     </div>
+    
+    <div id='noSearchResults'>No matches</div>
 </div>
 
 
@@ -122773,7 +122802,16 @@ function initSearchBox(query)
         ? '8px'
         : 0;
 
-    search.style.height = searchText.offsetHeight + searchResults.offsetHeight;
+    if (   query.length == 0
+        || found.length > 0)
+    {
+        search.style.height = searchText.offsetHeight + searchResults.offsetHeight;
+    }
+    else
+    {
+        search.style.height = searchText.offsetHeight + 40;
+        noSearchResults.style.display = 'inline';
+    }
 
 
     updateSearchBox();
