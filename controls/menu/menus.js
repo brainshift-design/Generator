@@ -421,13 +421,14 @@ function initGeneratorMenus()
         menuItemSelect = new MenuItem('Select',       null,            {icon: iconSelect,      createType: SELECT,       callback: e => actionManager.do(getCreateNodeAction(SELECT,        btnData.div, getCreateOptions(e)))}),
                          new MenuItem('Sublist',      null,            {icon: iconSublist,     createType: SUBLIST,      callback: e => actionManager.do(getCreateNodeAction(SUBLIST,       btnData.div, getCreateOptions(e)))}),
                          new MenuItem('Unique',       null,            {icon: iconUnique,      createType: UNIQUE,       callback: e => actionManager.do(getCreateNodeAction(UNIQUE,        btnData.div, getCreateOptions(e)))}),
-                         new MenuItem('List as item', null,            {icon: iconCondense,    createType: CONDENSE,     callback: e => actionManager.do(getCreateNodeAction(CONDENSE,      btnData.div, getCreateOptions(e)))}),
                          new MenuItem('',             null,            {separator: true}),     
                          new MenuItem('Reverse',      null,            {icon: iconReverseList, createType: REVERSE_LIST, callback: e => actionManager.do(getCreateNodeAction(REVERSE_LIST,  btnData.div, getCreateOptions(e)))}),
                          new MenuItem('Sort',         null,            {icon: iconSort,        createType: SORT,         callback: e => actionManager.do(getCreateNodeAction(SORT,          btnData.div, getCreateOptions(e)))}),
                          new MenuItem('',             null,            {separator: true}),     
                          new MenuItem('Column',       null,            {icon: iconColumn,      createType: COLUMN,       callback: e => actionManager.do(getCreateNodeAction(COLUMN,        btnData.div, getCreateOptions(e)))}),
-                         new MenuItem('Cell',         null,            {icon: iconCell,        createType: CELL,         callback: e => actionManager.do(getCreateNodeAction(CELL,          btnData.div, getCreateOptions(e)))})]);
+                         new MenuItem('Cell',         null,            {icon: iconCell,        createType: CELL,         callback: e => actionManager.do(getCreateNodeAction(CELL,          btnData.div, getCreateOptions(e)))}),
+                         new MenuItem('',             null,            {separator: true}),     
+                         new MenuItem('List as item', null,            {icon: iconCondense,    createType: CONDENSE,     callback: e => actionManager.do(getCreateNodeAction(CONDENSE,      btnData.div, getCreateOptions(e)))})]);
     
 
     menuSets = new Menu('Sets...', true, false);

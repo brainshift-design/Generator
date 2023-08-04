@@ -60,7 +60,7 @@ extends OpShape
         const min = Math.min(this.paramWidth.value.value, this.paramHeight.value.value);
 
         this.paramRound.controls[0].displayMin = 0;
-        this.paramRound.controls[0].displayMax = min/2;
+        this.paramRound.controls[0].displayMax = Math.abs(min/2);
 
         this.paramRound.controls[0].update();
     }

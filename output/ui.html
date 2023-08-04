@@ -10635,9 +10635,9 @@ class FigmaObject
         
         this.xform        = clone(base.xform);
 
-        this.xp0          = !!base.xp0 ? base.xp0.copy() : null;
-        this.xp1          = !!base.xp1 ? base.xp1.copy() : null;
-        this.xp2          = !!base.xp2 ? base.xp2.copy() : null;
+        this.xp0          = base.xp0 ? base.xp0.copy() : null;
+        this.xp1          = base.xp1 ? base.xp1.copy() : null;
+        this.xp2          = base.xp2 ? base.xp2.copy() : null;
 
         this.sp0          = clone(base.sp0);
         this.sp1          = clone(base.sp1);
@@ -11029,6 +11029,32 @@ function getValidObjects(value)
                .map(o => o.copy()) 
          : [];
 }
+
+
+
+// function getValidInputObjects(input)
+// {
+//     const objects = [];
+    
+
+//     if (!input)
+//         return objects;
+
+//     // if (LIST_VALUES.includes(input.type))
+//     //     for (const item of input.items)
+//     //         objects.push(...getValidInputObjects(item));
+
+//     if (   input.value
+//         && input.value.objects)
+//         objects.push(...input.value.objects
+//               .filter(o => 
+//                      o.isDeco  === false
+//                   || o.isXform === true)
+//               .map(o => o.copy()));
+
+
+//     return objects;
+// }
 
 
 function addColorProp(obj, prop)
@@ -13215,15 +13241,16 @@ extends GNode
         
         this.valueId = base.valueId;
 
-        this.copyObjects(base.objects);
+        this.objects = base.objects.map(o => o.copy());
+        //this.copyObjects(base.objects);
     }
 
 
 
-    copyObjects(objects)
-    {
-        this.objects = objects.map(o => o.copy());
-    }
+    // copyObjects(objects)
+    // {
+    //     this.objects = objects.map(o => o.copy());
+    // }
 
 
 
@@ -19893,31 +19920,26 @@ extends GOperator
 
             const input = this.inputs[i].toValue();
 
+
             if (   input
                 && this.options.enabled)            
             {
                 if (LIST_VALUES.includes(input.type))
                 {
                     if (input.condensed === true)
-                    {
                         this.value.items.push(input.copy());
-                        this.value.objects.push(...this.copyObjects(input, i));
-                    }
                     else
                     {
                         for (const item of input.items)
-                        {
                             this.value.items.push(item.copy());   
-                            this.value.objects.push(...this.copyObjects(item, i));
-                        }
                     }
                 }
                 else
-                {
                     this.value.items.push(input.copy());
-                    this.value.objects.push(...this.copyObjects(input, i));
-                }
             }
+
+
+            this.value.objects.push(...this.copyObjects(input, i));
         }
 
 
@@ -19929,9 +19951,10 @@ extends GOperator
                this.value.objects.length  == 1 
             && this.value.objects[0].type == POINT;
 
+
         for (const obj of this.value.objects)
         {
-            obj.createDefaultSpace();
+            obj.createDefaultSpace(obj.sp0.x, obj.sp0.y);
             obj.resetSpace(bounds, singlePoint);
         }
 
@@ -20028,7 +20051,7 @@ extends GOperator1
                         const copy = item.copy();
 
                         this.value.items.push(copy);
-                        this.value.objects.push(...copy.objects);
+                        //this.value.objects.push(...copy.objects);
                     }
                 }
                 else
@@ -20044,9 +20067,6 @@ extends GOperator1
 
         this.updateValueObjects();
     
-        if (this.nodeId == 'expand2')
-            console.log('this.value.objects =', [...this.value.objects]);
-
 
         this.setUpdateValues(parse,
         [
@@ -35841,6 +35861,9 @@ extends GOperator
                         place);
 
 
+                    obj.applyTransform(xform, true);
+
+
                     if (   options.transform.value > 0
                         && options.sp0
                         && options.sp1
@@ -35856,9 +35879,6 @@ extends GOperator
                         obj.sp1 = addv(obj.sp0, point(1, 0));
                         obj.sp2 = addv(obj.sp0, point(0, 1));
                     }
-
-                    
-                    obj.applyTransform(xform, true);
                 }
             }
 
@@ -53795,9 +53815,9 @@ class FigmaObject
         
         this.xform        = clone(base.xform);
 
-        this.xp0          = !!base.xp0 ? base.xp0.copy() : null;
-        this.xp1          = !!base.xp1 ? base.xp1.copy() : null;
-        this.xp2          = !!base.xp2 ? base.xp2.copy() : null;
+        this.xp0          = base.xp0 ? base.xp0.copy() : null;
+        this.xp1          = base.xp1 ? base.xp1.copy() : null;
+        this.xp2          = base.xp2 ? base.xp2.copy() : null;
 
         this.sp0          = clone(base.sp0);
         this.sp1          = clone(base.sp1);
@@ -54189,6 +54209,32 @@ function getValidObjects(value)
                .map(o => o.copy()) 
          : [];
 }
+
+
+
+// function getValidInputObjects(input)
+// {
+//     const objects = [];
+    
+
+//     if (!input)
+//         return objects;
+
+//     // if (LIST_VALUES.includes(input.type))
+//     //     for (const item of input.items)
+//     //         objects.push(...getValidInputObjects(item));
+
+//     if (   input.value
+//         && input.value.objects)
+//         objects.push(...input.value.objects
+//               .filter(o => 
+//                      o.isDeco  === false
+//                   || o.isXform === true)
+//               .map(o => o.copy()));
+
+
+//     return objects;
+// }
 
 
 function addColorProp(obj, prop)
@@ -56375,15 +56421,16 @@ extends GNode
         
         this.valueId = base.valueId;
 
-        this.copyObjects(base.objects);
+        this.objects = base.objects.map(o => o.copy());
+        //this.copyObjects(base.objects);
     }
 
 
 
-    copyObjects(objects)
-    {
-        this.objects = objects.map(o => o.copy());
-    }
+    // copyObjects(objects)
+    // {
+    //     this.objects = objects.map(o => o.copy());
+    // }
 
 
 
@@ -63053,31 +63100,26 @@ extends GOperator
 
             const input = this.inputs[i].toValue();
 
+
             if (   input
                 && this.options.enabled)            
             {
                 if (LIST_VALUES.includes(input.type))
                 {
                     if (input.condensed === true)
-                    {
                         this.value.items.push(input.copy());
-                        this.value.objects.push(...this.copyObjects(input, i));
-                    }
                     else
                     {
                         for (const item of input.items)
-                        {
                             this.value.items.push(item.copy());   
-                            this.value.objects.push(...this.copyObjects(item, i));
-                        }
                     }
                 }
                 else
-                {
                     this.value.items.push(input.copy());
-                    this.value.objects.push(...this.copyObjects(input, i));
-                }
             }
+
+
+            this.value.objects.push(...this.copyObjects(input, i));
         }
 
 
@@ -63089,9 +63131,10 @@ extends GOperator
                this.value.objects.length  == 1 
             && this.value.objects[0].type == POINT;
 
+
         for (const obj of this.value.objects)
         {
-            obj.createDefaultSpace();
+            obj.createDefaultSpace(obj.sp0.x, obj.sp0.y);
             obj.resetSpace(bounds, singlePoint);
         }
 
@@ -63188,7 +63231,7 @@ extends GOperator1
                         const copy = item.copy();
 
                         this.value.items.push(copy);
-                        this.value.objects.push(...copy.objects);
+                        //this.value.objects.push(...copy.objects);
                     }
                 }
                 else
@@ -63204,9 +63247,6 @@ extends GOperator1
 
         this.updateValueObjects();
     
-        if (this.nodeId == 'expand2')
-            console.log('this.value.objects =', [...this.value.objects]);
-
 
         this.setUpdateValues(parse,
         [
@@ -79001,6 +79041,9 @@ extends GOperator
                         place);
 
 
+                    obj.applyTransform(xform, true);
+
+
                     if (   options.transform.value > 0
                         && options.sp0
                         && options.sp1
@@ -79016,9 +79059,6 @@ extends GOperator
                         obj.sp1 = addv(obj.sp0, point(1, 0));
                         obj.sp2 = addv(obj.sp0, point(0, 1));
                     }
-
-                    
-                    obj.applyTransform(xform, true);
                 }
             }
 
@@ -85582,13 +85622,14 @@ function initGeneratorMenus()
         menuItemSelect = new MenuItem('Select',       null,            {icon: iconSelect,      createType: SELECT,       callback: e => actionManager.do(getCreateNodeAction(SELECT,        btnData.div, getCreateOptions(e)))}),
                          new MenuItem('Sublist',      null,            {icon: iconSublist,     createType: SUBLIST,      callback: e => actionManager.do(getCreateNodeAction(SUBLIST,       btnData.div, getCreateOptions(e)))}),
                          new MenuItem('Unique',       null,            {icon: iconUnique,      createType: UNIQUE,       callback: e => actionManager.do(getCreateNodeAction(UNIQUE,        btnData.div, getCreateOptions(e)))}),
-                         new MenuItem('List as item', null,            {icon: iconCondense,    createType: CONDENSE,     callback: e => actionManager.do(getCreateNodeAction(CONDENSE,      btnData.div, getCreateOptions(e)))}),
                          new MenuItem('',             null,            {separator: true}),     
                          new MenuItem('Reverse',      null,            {icon: iconReverseList, createType: REVERSE_LIST, callback: e => actionManager.do(getCreateNodeAction(REVERSE_LIST,  btnData.div, getCreateOptions(e)))}),
                          new MenuItem('Sort',         null,            {icon: iconSort,        createType: SORT,         callback: e => actionManager.do(getCreateNodeAction(SORT,          btnData.div, getCreateOptions(e)))}),
                          new MenuItem('',             null,            {separator: true}),     
                          new MenuItem('Column',       null,            {icon: iconColumn,      createType: COLUMN,       callback: e => actionManager.do(getCreateNodeAction(COLUMN,        btnData.div, getCreateOptions(e)))}),
-                         new MenuItem('Cell',         null,            {icon: iconCell,        createType: CELL,         callback: e => actionManager.do(getCreateNodeAction(CELL,          btnData.div, getCreateOptions(e)))})]);
+                         new MenuItem('Cell',         null,            {icon: iconCell,        createType: CELL,         callback: e => actionManager.do(getCreateNodeAction(CELL,          btnData.div, getCreateOptions(e)))}),
+                         new MenuItem('',             null,            {separator: true}),     
+                         new MenuItem('List as item', null,            {icon: iconCondense,    createType: CONDENSE,     callback: e => actionManager.do(getCreateNodeAction(CONDENSE,      btnData.div, getCreateOptions(e)))})]);
     
 
     menuSets = new Menu('Sets...', true, false);
@@ -99391,7 +99432,6 @@ Operator.prototype.updateHeaderLabelText = function()
     else if (this.type == COLUMN      ) suffix = sep + '[ ' + this.columnLength + ' ]';
     else if (this.type == REVERSE_LIST) suffix = sep + '[ ' + this.tableLength + ' ]';
     else if (this.type == SORT        ) suffix = sep + '[ ' + this.tableLength + ' ]';
-    else if (this.type == CONDENSE      ) suffix = sep + '[ ' + this.length + ' ]';
     else if (this.type == UNIQUE      ) suffix = sep + '[ ' + this.length + ' ]';
     else if (this.type == ITEMS       ) suffix = sep + '[ ' + this.params.length + ' ]';
     else                                suffix = this.cached ? '' : '...';
@@ -100800,13 +100840,9 @@ extends OperatorBase
 class   OpCondense
 extends OperatorBase
 {
-    length;
-
-
-
     constructor()
     {
-        super(CONDENSE, 'listAsItem', 'list as item', iconCondense);
+        super(CONDENSE, 'asItem', 'as item', iconCondense);
 
         this.canDisable  = true;
         // this.iconOffsetY = 1;
@@ -100849,9 +100885,6 @@ extends OperatorBase
     updateValues(requestId, actionId, updateParamId, paramIds, values)
     {
         super.updateValues(requestId, actionId, updateParamId, paramIds, values);
-
-        this.length = values[paramIds.findIndex(id => id == 'length')].value;
-
 
         const type = values[paramIds.findIndex(id => id == 'type')];
         consoleAssert(LIST_VALUES.includes(type.value));
@@ -112436,7 +112469,7 @@ extends OpShape
         const min = Math.min(this.paramWidth.value.value, this.paramHeight.value.value);
 
         this.paramRound.controls[0].displayMin = 0;
-        this.paramRound.controls[0].displayMax = min/2;
+        this.paramRound.controls[0].displayMax = Math.abs(min/2);
 
         this.paramRound.controls[0].update();
     }
@@ -112606,7 +112639,7 @@ extends OpShape
         const min = Math.min(this.paramWidth.value.value, this.paramHeight.value.value);
 
         this.paramRound.controls[0].displayMin = 0;
-        this.paramRound.controls[0].displayMax = min/2;
+        this.paramRound.controls[0].displayMax = Math.abs(min/2);
 
         this.paramRound.controls[0].update();
     }
@@ -117597,8 +117630,8 @@ extends Action
         this.inputActiveNodeIds    = [];
 
 
-        connectAction_saveOutputActiveNodes(this);
-        connectAction_saveInputActiveNodes(this);
+        // connectAction_saveOutputActiveNodes(this);
+        // connectAction_saveInputActiveNodes(this);
 
         connectAction_saveOutputValues(this);
         connectAction_saveInputValues(this);
@@ -117624,7 +117657,7 @@ extends Action
         connectAction_restoreInputValues(this);
         connectAction_restoreOutputValues(this);
 
-        this.deactivateNewActiveNodes();
+        //this.deactivateNewActiveNodes();
         //connectAction_activateOldActiveNodes(this, updateNodes); 
 
         connectAction_restoreCleanup(this);
@@ -118562,7 +118595,7 @@ extends Action
     {
         this.newActiveNodeIds = [];
 
-        this.saveOldActiveNodes();
+        //this.saveOldActiveNodes();
         this.removeConnection();        
 
         //DisconnectAction_activateNewNodes(this);
@@ -118577,7 +118610,7 @@ extends Action
     {
         this.deactivateNewActiveNodes();
 
-        this.activateOldActiveNodes(updateNodes);
+        //this.activateOldActiveNodes(updateNodes);
         pushUnique(updateNodes, this.outputNode);
 
         this.oldActiveNodeIds = [];
@@ -118585,17 +118618,17 @@ extends Action
 
 
 
-    saveOldActiveNodes()
-    {
-        this.oldActiveNodeIds = [...getActiveNodesFromNodeId(this.inputNodeId).map(n => n.id)];
+    // saveOldActiveNodes()
+    // {
+    //     this.oldActiveNodeIds = [...getActiveNodesFromNodeId(this.inputNodeId).map(n => n.id)];
 
-        if (!getActiveFromNode(this.outputNode, [this.inputNode]))
-            this.newActiveNodeIds.push(this.outputNodeId);
+    //     if (!getActiveFromNode(this.outputNode, [this.inputNode]))
+    //         this.newActiveNodeIds.push(this.outputNodeId);
 
-        if (   !getActiveOnlyBeforeNode(this.inputNode)
-            && !getActiveAfterNode     (this.inputNode))
-            this.newActiveNodeIds.push(this.inputNodeId);
-    }
+    //     if (   !getActiveOnlyBeforeNode(this.inputNode)
+    //         && !getActiveAfterNode     (this.inputNode))
+    //         this.newActiveNodeIds.push(this.inputNodeId);
+    // }
 
 
 
@@ -118642,16 +118675,16 @@ extends Action
 
 
 
-    activateOldActiveNodes(updateNodes)
-    {
-        const oldActiveNodeIds = [...this.oldActiveNodeIds].sort((x, y) => 
-            (nodeFromId(x) === nodeFromId(y)) ? 0 : nodeFromId(y).isOrFollows(nodeFromId(x)) ? -1 : 1);
+    // activateOldActiveNodes(updateNodes)
+    // {
+    //     const oldActiveNodeIds = [...this.oldActiveNodeIds].sort((x, y) => 
+    //         (nodeFromId(x) === nodeFromId(y)) ? 0 : nodeFromId(y).isOrFollows(nodeFromId(x)) ? -1 : 1);
 
-        pushUnique(updateNodes, oldActiveNodeIds.map(id => nodeFromId(id)));
+    //     pushUnique(updateNodes, oldActiveNodeIds.map(id => nodeFromId(id)));
 
-        for (const id of oldActiveNodeIds)
-            uiMakeNodeActive(nodeFromId(id));
-    }
+    //     for (const id of oldActiveNodeIds)
+    //         uiMakeNodeActive(nodeFromId(id));
+    // }
 }
 
 
@@ -119376,8 +119409,8 @@ extends Action
     {
         this.newActiveNodeIds = [];
 
-        connectAction_saveOutputActiveNodes(this);
-        connectAction_saveInputActiveNodes(this);
+        // connectAction_saveOutputActiveNodes(this);
+        // connectAction_saveInputActiveNodes(this);
 
         connectAction_saveOutputValues(this);
         connectAction_saveInputValues(this);
@@ -119408,8 +119441,8 @@ extends Action
 
         connectAction_restoreOutputValues(this);
         
-        this.deactivateNewActiveNodes();
-        connectAction_activateOldActiveNodes(this, updateNodes); 
+        // this.deactivateNewActiveNodes();
+        // connectAction_activateOldActiveNodes(this, updateNodes); 
 
         connectAction_restoreCleanup(this);
     }
@@ -123544,7 +123577,7 @@ function loadNode(_node, pasting)
 {
     // replace legacy
     if (_node.type == 'EXPAND') _node.type = CONDENSE;
-    
+
 
     const node = createNode(_node.type);
     node.div.style.display = 'none';

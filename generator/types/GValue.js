@@ -30,15 +30,16 @@ extends GNode
         
         this.valueId = base.valueId;
 
-        this.copyObjects(base.objects);
+        this.objects = base.objects.map(o => o.copy());
+        //this.copyObjects(base.objects);
     }
 
 
 
-    copyObjects(objects)
-    {
-        this.objects = objects.map(o => o.copy());
-    }
+    // copyObjects(objects)
+    // {
+    //     this.objects = objects.map(o => o.copy());
+    // }
 
 
 

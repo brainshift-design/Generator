@@ -1,13 +1,9 @@
 class   OpCondense
 extends OperatorBase
 {
-    length;
-
-
-
     constructor()
     {
-        super(CONDENSE, 'listAsItem', 'list as item', iconCondense);
+        super(CONDENSE, 'asItem', 'as item', iconCondense);
 
         this.canDisable  = true;
         // this.iconOffsetY = 1;
@@ -50,9 +46,6 @@ extends OperatorBase
     updateValues(requestId, actionId, updateParamId, paramIds, values)
     {
         super.updateValues(requestId, actionId, updateParamId, paramIds, values);
-
-        this.length = values[paramIds.findIndex(id => id == 'length')].value;
-
 
         const type = values[paramIds.findIndex(id => id == 'type')];
         consoleAssert(LIST_VALUES.includes(type.value));

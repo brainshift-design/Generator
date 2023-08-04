@@ -5470,9 +5470,9 @@ class FigmaObject
         
         this.xform        = clone(base.xform);
 
-        this.xp0          = !!base.xp0 ? base.xp0.copy() : null;
-        this.xp1          = !!base.xp1 ? base.xp1.copy() : null;
-        this.xp2          = !!base.xp2 ? base.xp2.copy() : null;
+        this.xp0          = base.xp0 ? base.xp0.copy() : null;
+        this.xp1          = base.xp1 ? base.xp1.copy() : null;
+        this.xp2          = base.xp2 ? base.xp2.copy() : null;
 
         this.sp0          = clone(base.sp0);
         this.sp1          = clone(base.sp1);
@@ -5864,6 +5864,32 @@ function getValidObjects(value)
                .map(o => o.copy()) 
          : [];
 }
+
+
+
+// function getValidInputObjects(input)
+// {
+//     const objects = [];
+    
+
+//     if (!input)
+//         return objects;
+
+//     // if (LIST_VALUES.includes(input.type))
+//     //     for (const item of input.items)
+//     //         objects.push(...getValidInputObjects(item));
+
+//     if (   input.value
+//         && input.value.objects)
+//         objects.push(...input.value.objects
+//               .filter(o => 
+//                      o.isDeco  === false
+//                   || o.isXform === true)
+//               .map(o => o.copy()));
+
+
+//     return objects;
+// }
 
 
 function addColorProp(obj, prop)
@@ -8050,15 +8076,16 @@ extends GNode
         
         this.valueId = base.valueId;
 
-        this.copyObjects(base.objects);
+        this.objects = base.objects.map(o => o.copy());
+        //this.copyObjects(base.objects);
     }
 
 
 
-    copyObjects(objects)
-    {
-        this.objects = objects.map(o => o.copy());
-    }
+    // copyObjects(objects)
+    // {
+    //     this.objects = objects.map(o => o.copy());
+    // }
 
 
 
@@ -14728,31 +14755,26 @@ extends GOperator
 
             const input = this.inputs[i].toValue();
 
+
             if (   input
                 && this.options.enabled)            
             {
                 if (LIST_VALUES.includes(input.type))
                 {
                     if (input.condensed === true)
-                    {
                         this.value.items.push(input.copy());
-                        this.value.objects.push(...this.copyObjects(input, i));
-                    }
                     else
                     {
                         for (const item of input.items)
-                        {
                             this.value.items.push(item.copy());   
-                            this.value.objects.push(...this.copyObjects(item, i));
-                        }
                     }
                 }
                 else
-                {
                     this.value.items.push(input.copy());
-                    this.value.objects.push(...this.copyObjects(input, i));
-                }
             }
+
+
+            this.value.objects.push(...this.copyObjects(input, i));
         }
 
 
@@ -14764,9 +14786,10 @@ extends GOperator
                this.value.objects.length  == 1 
             && this.value.objects[0].type == POINT;
 
+
         for (const obj of this.value.objects)
         {
-            obj.createDefaultSpace();
+            obj.createDefaultSpace(obj.sp0.x, obj.sp0.y);
             obj.resetSpace(bounds, singlePoint);
         }
 
@@ -14863,7 +14886,7 @@ extends GOperator1
                         const copy = item.copy();
 
                         this.value.items.push(copy);
-                        this.value.objects.push(...copy.objects);
+                        //this.value.objects.push(...copy.objects);
                     }
                 }
                 else
@@ -14879,9 +14902,6 @@ extends GOperator1
 
         this.updateValueObjects();
     
-        if (this.nodeId == 'expand2')
-            console.log('this.value.objects =', [...this.value.objects]);
-
 
         this.setUpdateValues(parse,
         [
@@ -30676,6 +30696,9 @@ extends GOperator
                         place);
 
 
+                    obj.applyTransform(xform, true);
+
+
                     if (   options.transform.value > 0
                         && options.sp0
                         && options.sp1
@@ -30691,9 +30714,6 @@ extends GOperator
                         obj.sp1 = addv(obj.sp0, point(1, 0));
                         obj.sp2 = addv(obj.sp0, point(0, 1));
                     }
-
-                    
-                    obj.applyTransform(xform, true);
                 }
             }
 

@@ -116,6 +116,9 @@ extends GOperator
                         place);
 
 
+                    obj.applyTransform(xform, true);
+
+
                     if (   options.transform.value > 0
                         && options.sp0
                         && options.sp1
@@ -131,9 +134,6 @@ extends GOperator
                         obj.sp1 = addv(obj.sp0, point(1, 0));
                         obj.sp2 = addv(obj.sp0, point(0, 1));
                     }
-
-                    
-                    obj.applyTransform(xform, true);
                 }
             }
 

@@ -80,31 +80,26 @@ extends GOperator
 
             const input = this.inputs[i].toValue();
 
+
             if (   input
                 && this.options.enabled)            
             {
                 if (LIST_VALUES.includes(input.type))
                 {
                     if (input.condensed === true)
-                    {
                         this.value.items.push(input.copy());
-                        this.value.objects.push(...this.copyObjects(input, i));
-                    }
                     else
                     {
                         for (const item of input.items)
-                        {
                             this.value.items.push(item.copy());   
-                            this.value.objects.push(...this.copyObjects(item, i));
-                        }
                     }
                 }
                 else
-                {
                     this.value.items.push(input.copy());
-                    this.value.objects.push(...this.copyObjects(input, i));
-                }
             }
+
+
+            this.value.objects.push(...this.copyObjects(input, i));
         }
 
 
@@ -116,9 +111,10 @@ extends GOperator
                this.value.objects.length  == 1 
             && this.value.objects[0].type == POINT;
 
+
         for (const obj of this.value.objects)
         {
-            obj.createDefaultSpace();
+            obj.createDefaultSpace(obj.sp0.x, obj.sp0.y);
             obj.resetSpace(bounds, singlePoint);
         }
 

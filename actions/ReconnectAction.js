@@ -86,8 +86,8 @@ extends Action
     {
         this.newActiveNodeIds = [];
 
-        connectAction_saveOutputActiveNodes(this);
-        connectAction_saveInputActiveNodes(this);
+        // connectAction_saveOutputActiveNodes(this);
+        // connectAction_saveInputActiveNodes(this);
 
         connectAction_saveOutputValues(this);
         connectAction_saveInputValues(this);
@@ -118,8 +118,8 @@ extends Action
 
         connectAction_restoreOutputValues(this);
         
-        this.deactivateNewActiveNodes();
-        connectAction_activateOldActiveNodes(this, updateNodes); 
+        // this.deactivateNewActiveNodes();
+        // connectAction_activateOldActiveNodes(this, updateNodes); 
 
         connectAction_restoreCleanup(this);
     }

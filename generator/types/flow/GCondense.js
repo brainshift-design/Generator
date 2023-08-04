@@ -51,7 +51,7 @@ extends GOperator1
                         const copy = item.copy();
 
                         this.value.items.push(copy);
-                        this.value.objects.push(...copy.objects);
+                        //this.value.objects.push(...copy.objects);
                     }
                 }
                 else
@@ -67,9 +67,6 @@ extends GOperator1
 
         this.updateValueObjects();
     
-        if (this.nodeId == 'expand2')
-            console.log('this.value.objects =', [...this.value.objects]);
-
 
         this.setUpdateValues(parse,
         [

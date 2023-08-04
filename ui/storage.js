@@ -565,7 +565,7 @@ function loadNode(_node, pasting)
 {
     // replace legacy
     if (_node.type == 'EXPAND') _node.type = CONDENSE;
-    
+
 
     const node = createNode(_node.type);
     node.div.style.display = 'none';

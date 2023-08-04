@@ -45,7 +45,7 @@ extends Action
     {
         this.newActiveNodeIds = [];
 
-        this.saveOldActiveNodes();
+        //this.saveOldActiveNodes();
         this.removeConnection();        
 
         //DisconnectAction_activateNewNodes(this);
@@ -60,7 +60,7 @@ extends Action
     {
         this.deactivateNewActiveNodes();
 
-        this.activateOldActiveNodes(updateNodes);
+        //this.activateOldActiveNodes(updateNodes);
         pushUnique(updateNodes, this.outputNode);
 
         this.oldActiveNodeIds = [];
@@ -68,17 +68,17 @@ extends Action
 
 
 
-    saveOldActiveNodes()
-    {
-        this.oldActiveNodeIds = [...getActiveNodesFromNodeId(this.inputNodeId).map(n => n.id)];
+    // saveOldActiveNodes()
+    // {
+    //     this.oldActiveNodeIds = [...getActiveNodesFromNodeId(this.inputNodeId).map(n => n.id)];
 
-        if (!getActiveFromNode(this.outputNode, [this.inputNode]))
-            this.newActiveNodeIds.push(this.outputNodeId);
+    //     if (!getActiveFromNode(this.outputNode, [this.inputNode]))
+    //         this.newActiveNodeIds.push(this.outputNodeId);
 
-        if (   !getActiveOnlyBeforeNode(this.inputNode)
-            && !getActiveAfterNode     (this.inputNode))
-            this.newActiveNodeIds.push(this.inputNodeId);
-    }
+    //     if (   !getActiveOnlyBeforeNode(this.inputNode)
+    //         && !getActiveAfterNode     (this.inputNode))
+    //         this.newActiveNodeIds.push(this.inputNodeId);
+    // }
 
 
 
@@ -125,16 +125,16 @@ extends Action
 
 
 
-    activateOldActiveNodes(updateNodes)
-    {
-        const oldActiveNodeIds = [...this.oldActiveNodeIds].sort((x, y) => 
-            (nodeFromId(x) === nodeFromId(y)) ? 0 : nodeFromId(y).isOrFollows(nodeFromId(x)) ? -1 : 1);
+    // activateOldActiveNodes(updateNodes)
+    // {
+    //     const oldActiveNodeIds = [...this.oldActiveNodeIds].sort((x, y) => 
+    //         (nodeFromId(x) === nodeFromId(y)) ? 0 : nodeFromId(y).isOrFollows(nodeFromId(x)) ? -1 : 1);
 
-        pushUnique(updateNodes, oldActiveNodeIds.map(id => nodeFromId(id)));
+    //     pushUnique(updateNodes, oldActiveNodeIds.map(id => nodeFromId(id)));
 
-        for (const id of oldActiveNodeIds)
-            uiMakeNodeActive(nodeFromId(id));
-    }
+    //     for (const id of oldActiveNodeIds)
+    //         uiMakeNodeActive(nodeFromId(id));
+    // }
 }
 
 

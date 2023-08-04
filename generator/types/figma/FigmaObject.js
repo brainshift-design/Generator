@@ -55,9 +55,9 @@ class FigmaObject
         
         this.xform        = clone(base.xform);
 
-        this.xp0          = !!base.xp0 ? base.xp0.copy() : null;
-        this.xp1          = !!base.xp1 ? base.xp1.copy() : null;
-        this.xp2          = !!base.xp2 ? base.xp2.copy() : null;
+        this.xp0          = base.xp0 ? base.xp0.copy() : null;
+        this.xp1          = base.xp1 ? base.xp1.copy() : null;
+        this.xp2          = base.xp2 ? base.xp2.copy() : null;
 
         this.sp0          = clone(base.sp0);
         this.sp1          = clone(base.sp1);
@@ -449,3 +449,29 @@ function getValidObjects(value)
                .map(o => o.copy()) 
          : [];
 }
+
+
+
+// function getValidInputObjects(input)
+// {
+//     const objects = [];
+    
+
+//     if (!input)
+//         return objects;
+
+//     // if (LIST_VALUES.includes(input.type))
+//     //     for (const item of input.items)
+//     //         objects.push(...getValidInputObjects(item));
+
+//     if (   input.value
+//         && input.value.objects)
+//         objects.push(...input.value.objects
+//               .filter(o => 
+//                      o.isDeco  === false
+//                   || o.isXform === true)
+//               .map(o => o.copy()));
+
+
+//     return objects;
+// }
