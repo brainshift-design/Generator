@@ -8,6 +8,7 @@ class MenuItem
     checked       = false;
     icon          = ''; // svg
     name          = '';
+    searchName    = '';
     shortcut      = '';
 
     callback      = null;
@@ -46,9 +47,10 @@ class MenuItem
 
 
 
-    constructor(name, options = {})
+    constructor(name, searchName, options = {})
     {
-        this.name = name;
+        this.name       = name;
+        this.searchName = searchName ?? name;
 
         this.initOptions(options);
         this.createControls();
@@ -99,7 +101,7 @@ class MenuItem
         this.div.style.pointerEvents = this.separator ? 'none' : 'all';
 
 
-        this.setName(this.name);
+        this.setName(this.name, this.searchName);
 
         
         if (this.childMenu)
@@ -296,9 +298,10 @@ class MenuItem
 
 
 
-    setName(name)
+    setName(name, searchName = null)
     {
         this.name              = name;
+        this.searchName        = searchName ?? name;
         this.divName.innerHTML = name;
     }
 

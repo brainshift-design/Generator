@@ -98,7 +98,7 @@ function initSearchBox(query)
         const legend = createDiv('resultLegend')
 
 
-        result.innerHTML = item.name;
+        result.innerHTML = item.searchName;
 
         icon.innerHTML = 
             darkMode

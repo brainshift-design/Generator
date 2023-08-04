@@ -132,11 +132,11 @@ function uiReturnGetAllLocalTemplateNames(templateNames)
 
 
     for (const templateName of templateNames)
-        menuItems.push(new MenuItem(templateName, {callback: null}));
+        menuItems.push(new MenuItem(templateName, null, {callback: null}));
 
 
     if (menuItems.length > 0)
-        menuItems.push(new MenuItem('', {separator: true}));
+        menuItems.push(new MenuItem('', null, {separator: true}));
 
 
     menuItems.push(menuItemManageTemplates);
@@ -190,7 +190,7 @@ function initLocalStylesMenu(styles, nodeId)
                 style.name,
                 style.paints));
             
-        const item = new MenuItem(style.name.replaceAll('/', ' / '), options);
+        const item = new MenuItem(style.name.replaceAll('/', ' / '), null, options);
 
         item.setChecked(style.nodeId == node.id);
 
@@ -199,11 +199,11 @@ function initLocalStylesMenu(styles, nodeId)
 
 
     if (!isEmpty(styles))
-        menuLocalStyles.addItems([new MenuItem('', {separator: true})]);
+        menuLocalStyles.addItems([new MenuItem('', null, {separator: true})]);
 
         
     menuLocalStyles.addItems([
-        new MenuItem('None', {
+        new MenuItem('None', null, {
             callback: e => actionManager.do(new LinkExistingStyleAction(nodeId, NULL, '', [])),
             enabled:  node.linkedStyleId != NULL})
     ]);

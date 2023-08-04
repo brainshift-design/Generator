@@ -79,10 +79,10 @@ Operator.prototype.updateBorder = function()
     {
         case 0: highlight = 'transparent'; break;
 
-        case 1: highlight = darkMode ? '#f118' : '#f006'; break;
+        case 1: highlight = darkMode ? '#f33a' : '#f006'; break;
         case 2: highlight = darkMode ? '#f809' : '#f808'; break;
         case 3: highlight = darkMode ? '#ff08' : '#dd0f'; break;
-        case 4: highlight = darkMode ? '#0f08' : '#0d09'; break;
+        case 4: highlight = darkMode ? '#1e18' : '#0d09'; break;
         case 5: highlight = darkMode ? '#27fd' : '#03f7'; break;
         case 6: highlight = darkMode ? '#f2f9' : '#f0f7'; break;
         case 7: highlight = darkMode ? '#fff8' : '#0007'; break;

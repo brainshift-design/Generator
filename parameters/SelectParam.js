@@ -205,7 +205,7 @@ function initSelectParamMenu(param)
 
 
         if (param.separatorsBefore.includes(i))
-            menuSelectParam.addItems([new MenuItem(option, {separator: true})]);
+            menuSelectParam.addItems([new MenuItem(option, null, {separator: true})]);
         
 
         const options = { callback: () => param.setValue(new NumberValue(i), true) };
@@ -216,6 +216,7 @@ function initSelectParamMenu(param)
             
         const item = new MenuItem(
             option.replaceAll('/', ' / '), 
+            null,
             options);
 
         item.setChecked(i == param.value.toNumber());

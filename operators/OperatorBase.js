@@ -48,8 +48,8 @@ function createBoolMenu(param)
     menu.minWidth = 130;
     
     menu.addItems([
-        new MenuItem('true',  {icon:  TRUE_DISPLAY_MENU, callback: () => { hideAllMenus(); param.setValue(new NumberValue(1), true); }}),
-        new MenuItem('false', {icon: FALSE_DISPLAY_MENU, callback: () => { hideAllMenus(); param.setValue(new NumberValue(0), true); }})]);
+        new MenuItem('true',  null, {icon:  TRUE_DISPLAY_MENU, callback: () => { hideAllMenus(); param.setValue(new NumberValue(1), true); }}),
+        new MenuItem('false', null, {icon: FALSE_DISPLAY_MENU, callback: () => { hideAllMenus(); param.setValue(new NumberValue(0), true); }})]);
 
     param.controls[0].div.addEventListener('pointerdown', e => param.node.showParamMenu(e, param, menu));
 
