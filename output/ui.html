@@ -4825,7 +4825,7 @@ a
                 <p>•  added row count to Unique counts parameter</p>
                 <p>•  fixed deleting from complex graphs taking a long time</p>
                 <p>•  nodes can now be created from the context menu</p>
-                <p>•  fixed UI bugs and other issues</p>
+                <p>•  many UI bug fixes and other improvements</p>
                 
                 <p><br/><br/><div id='chkHideWhatsNew'></div></p>
             </div>
@@ -9797,7 +9797,7 @@ const TIMER                   = 'TIMER';
 
 
 const LIST                    = 'LIST';
-const EXPAND                  = 'EXPAND';
+const CONDENSE                = 'CDENSE';
 const SUBLIST                 = 'SUBLST';
 const UNIQUE                  = 'UNIQ';
 const REVERSE_LIST            = 'REVLST';
@@ -9847,7 +9847,7 @@ const FLOW_TYPES =
 [
     NULL_NODE,
     ...LIST_TYPES,
-    EXPAND,
+    CONDENSE,
     SUBLIST,
     UNIQUE,
     REVERSE_LIST,
@@ -13771,7 +13771,7 @@ extends GValue
 {
     items;
 
-    expanded = false;
+    condensed = false;
 
 
 
@@ -13799,7 +13799,7 @@ extends GValue
 
         copy.copyBase(this);
 
-        copy.expanded = this.expanded;
+        copy.condensed = this.condensed;
 
         return copy;
     }
@@ -19898,18 +19898,18 @@ extends GOperator
             {
                 if (LIST_VALUES.includes(input.type))
                 {
-                    if (input.expanded === true)
+                    if (input.condensed === true)
+                    {
+                        this.value.items.push(input.copy());
+                        this.value.objects.push(...this.copyObjects(input, i));
+                    }
+                    else
                     {
                         for (const item of input.items)
                         {
                             this.value.items.push(item.copy());   
                             this.value.objects.push(...this.copyObjects(item, i));
                         }
-                    }
-                    else
-                    {
-                        this.value.items.push(input.copy());
-                        this.value.objects.push(...this.copyObjects(input, i));
                     }
                 }
                 else
@@ -19975,19 +19975,19 @@ extends GOperator
 }
 
 
-class GExpand
+class GCondense
 extends GOperator1
 {
     constructor(nodeId, options)
     {
-        super(EXPAND, nodeId, options);
+        super(CONDENSE, nodeId, options);
     }
 
 
     
     copy()
     {
-        const copy = new GExpand(this.nodeId, this.options);
+        const copy = new GCondense(this.nodeId, this.options);
 
         copy.copyBase(this);
 
@@ -20005,7 +20005,7 @@ extends GOperator1
 
 
         this.value = new ListValue();
-        this.value.expanded = true;
+        this.value.condensed = true;
 
         let length = 0;
 
@@ -37295,12 +37295,12 @@ function genParseList(parse)
 
 
 
-function genParseExpand(parse)
+function genParseCondense(parse)
 {
     const [, nodeId, options, ignore] = genParseNodeStart(parse);
 
 
-    const expand = new GExpand(nodeId, options);
+    const condense = new GCondense(nodeId, options);
    
 
     let nInputs = -1;
@@ -37313,12 +37313,12 @@ function genParseExpand(parse)
 
     
     if (parse.settings.logRequests) 
-        logReq(expand, parse, ignore, nInputs);
+        logReq(condense, parse, ignore, nInputs);
 
 
     if (ignore) 
     {
-        genParseNodeEnd(parse, expand);
+        genParseNodeEnd(parse, condense);
         return parse.parsedNodes.find(n => n.nodeId == nodeId);
     }
 
@@ -37327,14 +37327,14 @@ function genParseExpand(parse)
 
 
     if (nInputs == 1)
-        expand.input = genParse(parse);
+        condense.input = genParse(parse);
 
     
     parse.nTab--;
 
 
-    genParseNodeEnd(parse, expand);
-    return expand;
+    genParseNodeEnd(parse, condense);
+    return condense;
 }
 
 
@@ -42702,7 +42702,7 @@ function genParse(parse, inParam = true)
     else if (parse.next == NULL_NODE              ) result = genParseNull              (parse);
 
     else if (parse.next == LIST                   ) result = genParseList              (parse);
-    else if (parse.next == EXPAND                 ) result = genParseExpand            (parse);
+    else if (parse.next == CONDENSE               ) result = genParseCondense          (parse);
     else if (parse.next == SUBLIST                ) result = genParseSublist           (parse);
     else if (parse.next == UNIQUE                 ) result = genParseUnique            (parse);
     else if (parse.next == REVERSE_LIST           ) result = genParseReverseList       (parse);
@@ -52957,7 +52957,7 @@ const TIMER                   = 'TIMER';
 
 
 const LIST                    = 'LIST';
-const EXPAND                  = 'EXPAND';
+const CONDENSE                = 'CDENSE';
 const SUBLIST                 = 'SUBLST';
 const UNIQUE                  = 'UNIQ';
 const REVERSE_LIST            = 'REVLST';
@@ -53007,7 +53007,7 @@ const FLOW_TYPES =
 [
     NULL_NODE,
     ...LIST_TYPES,
-    EXPAND,
+    CONDENSE,
     SUBLIST,
     UNIQUE,
     REVERSE_LIST,
@@ -56931,7 +56931,7 @@ extends GValue
 {
     items;
 
-    expanded = false;
+    condensed = false;
 
 
 
@@ -56959,7 +56959,7 @@ extends GValue
 
         copy.copyBase(this);
 
-        copy.expanded = this.expanded;
+        copy.condensed = this.condensed;
 
         return copy;
     }
@@ -63058,18 +63058,18 @@ extends GOperator
             {
                 if (LIST_VALUES.includes(input.type))
                 {
-                    if (input.expanded === true)
+                    if (input.condensed === true)
+                    {
+                        this.value.items.push(input.copy());
+                        this.value.objects.push(...this.copyObjects(input, i));
+                    }
+                    else
                     {
                         for (const item of input.items)
                         {
                             this.value.items.push(item.copy());   
                             this.value.objects.push(...this.copyObjects(item, i));
                         }
-                    }
-                    else
-                    {
-                        this.value.items.push(input.copy());
-                        this.value.objects.push(...this.copyObjects(input, i));
                     }
                 }
                 else
@@ -63135,19 +63135,19 @@ extends GOperator
 }
 
 
-class GExpand
+class GCondense
 extends GOperator1
 {
     constructor(nodeId, options)
     {
-        super(EXPAND, nodeId, options);
+        super(CONDENSE, nodeId, options);
     }
 
 
     
     copy()
     {
-        const copy = new GExpand(this.nodeId, this.options);
+        const copy = new GCondense(this.nodeId, this.options);
 
         copy.copyBase(this);
 
@@ -63165,7 +63165,7 @@ extends GOperator1
 
 
         this.value = new ListValue();
-        this.value.expanded = true;
+        this.value.condensed = true;
 
         let length = 0;
 
@@ -83912,7 +83912,7 @@ const iconFreeze            = '<svg width="18" height="11" viewBox="0 0 18 11" f
 const iconTimer             = '<svg width="13" height="18" viewBox="0 -1 13 18" fill="none" xmlns="http://www.w3.org/2000/svg"><path fill-rule="evenodd" clip-rule="evenodd" d="M9 0H4L4 2H5.5V4.07645C2.38491 4.55745 0 7.25021 0 10.5C0 14.0899 2.91015 17 6.5 17C10.0899 17 13 14.0899 13 10.5C13 7.25021 10.6151 4.55745 7.5 4.07645V2L9 2V0ZM6.5 5C3.46243 5 1 7.46243 1 10.5C1 13.5376 3.46243 16 6.5 16C9.53757 16 12 13.5376 12 10.5C12 7.46243 9.53757 5 6.5 5Z" fill="white"/><path d="M6.65821 9.51244L9.70667 6.46399L10.6001 7.35747L7.49915 10.4585C7.49972 10.4722 7.5 10.4861 7.5 10.5C7.5 11.0523 7.05229 11.5 6.5 11.5C5.94771 11.5 5.5 11.0523 5.5 10.5C5.5 9.94771 5.94771 9.5 6.5 9.5C6.55384 9.5 6.60668 9.50425 6.65821 9.51244Z" fill="white"/></svg>';
 
 const iconList              = '<svg width="12" height="9" viewBox="0 0 12 9" fill="none" xmlns="http://www.w3.org/2000/svg"><rect width="9" height="1" fill="white"/><rect y="4" width="9" height="1" fill="white"/><rect y="8" width="9" height="1" fill="white"/></svg>';
-const iconExpand            = '<svg width="13" height="9" viewBox="0 0 13 9" fill="none" xmlns="http://www.w3.org/2000/svg"><rect width="5" height="1" transform="matrix(-1 0 0 1 13 0)" fill="white"/><rect width="5" height="1" transform="matrix(-1 0 0 1 13 8)" fill="white"/><rect width="13" height="1" transform="matrix(-1 0 0 1 13 4)" fill="white"/><rect width="5.52856" height="1" transform="matrix(-0.652935 0.757414 0.757414 0.652935 8.00037 0)" fill="white"/><rect x="8.00037" y="8.98938" width="5.52856" height="1" transform="rotate(-130.763 8.00037 8.98938)" fill="white"/></svg>';
+const iconCondense          = '<svg width="13" height="9" viewBox="0 0 13 9" fill="none" xmlns="http://www.w3.org/2000/svg"><rect width="5" height="1" fill="white"/><rect y="8" width="5" height="1" fill="white"/><rect y="4" width="13" height="1" fill="white"/><rect x="4.99963" width="5.52856" height="1" transform="rotate(49.2368 4.99963 0)" fill="white"/><rect width="5.52856" height="1" transform="matrix(0.652935 -0.757414 -0.757414 -0.652935 4.99963 8.98938)" fill="white"/></svg>';
 const iconSublist           = '<svg width="15" height="13" viewBox="-1 0 15 13" fill="none" xmlns="http://www.w3.org/2000/svg"><rect width="9" height="1" fill="white"/><rect y="12" width="9" height="1" fill="white"/><rect x="5" y="4" width="9" height="1" fill="white"/><rect x="5" y="8" width="9" height="1" fill="white"/></svg>';
 const iconUnique            = '<svg width="13" height="13" viewBox="0 0 13 13" fill="none" xmlns="http://www.w3.org/2000/svg"><rect width="9" height="1" fill="white"/><rect x="4" y="12" width="9" height="1" fill="white"/><rect x="4" y="4" width="9" height="1" fill="white"/><rect y="8" width="9" height="1" fill="white"/></svg>';
 const iconReverseList       = '<svg width="19" height="15" viewBox="-2 0 19 15" fill="none" xmlns="http://www.w3.org/2000/svg"><rect y="3" width="9" height="1" fill="white"/><rect y="7" width="9" height="1" fill="white"/><rect y="11" width="9" height="1" fill="white"/><path d="M11.9899 13.7828L11.9886 13.9778L15.9189 14.004L15.9268 12.8194L13.9576 12.8063C14.7313 11.9939 15.4826 10.933 15.9038 9.70503C16.1407 9.01413 16.2718 8.27255 16.245 7.49996H15.0596C15.0877 8.13674 14.98 8.74699 14.7833 9.3207C14.4072 10.417 13.7011 11.3868 12.97 12.1229L12.6764 9.8487L11.5016 10.0004L11.9899 13.7828Z" fill="white"/><path d="M11.9899 1.21724L11.9886 1.02219L15.9189 0.995972L15.9268 2.18055L13.9576 2.19368C14.7313 3.00606 15.4826 4.06702 15.9038 5.29496C16.1407 5.98586 16.2718 6.72737 16.245 7.49996H15.0596C15.0877 6.86318 14.98 6.253 14.7833 5.67929C14.4072 4.58301 13.7011 3.61316 12.97 2.87713L12.6764 5.15129L11.5016 4.99962L11.9899 1.21724Z" fill="white"/></svg>';
@@ -85573,22 +85573,22 @@ function initGeneratorMenus()
 
     menuData = new Menu('Data', true, false);
     menuData.addItems([
-        menuItemList   = new MenuItem('List',     null,            {icon: iconList,        createType: LIST,         callback: e => actionManager.do(getCreateNodeAction(LIST,          btnData.div, getCreateOptions(e)))}),
-        menuFlowSep1   = new MenuItem('',         null,            {separator: true}),     
-        menuItemItems  = new MenuItem('Items',    null,            {icon: iconItems,       createType: ITEMS,        callback: e => actionManager.do(getCreateNodeAction(ITEMS,         btnData.div, getCreateOptions(e)))}),
-        menuItemCount  = new MenuItem('Count',    null,            {icon: iconCount,       createType: LIST_COUNT,   callback: e => actionManager.do(getCreateNodeAction(LIST_COUNT,    btnData.div, getCreateOptions(e)))}),
-                         new MenuItem('Contains', 'List contains', {icon: iconContains,    createType: CONTAINS,     callback: e => actionManager.do(getCreateNodeAction(CONTAINS,      btnData.div, getCreateOptions(e))), disambiguate: true}),
-                         new MenuItem('',         null,            {separator: true}),     
-        menuItemSelect = new MenuItem('Select',   null,            {icon: iconSelect,      createType: SELECT,       callback: e => actionManager.do(getCreateNodeAction(SELECT,        btnData.div, getCreateOptions(e)))}),
-                         new MenuItem('Sublist',  null,            {icon: iconSublist,     createType: SUBLIST,      callback: e => actionManager.do(getCreateNodeAction(SUBLIST,       btnData.div, getCreateOptions(e)))}),
-                         new MenuItem('Unique',   null,            {icon: iconUnique,      createType: UNIQUE,       callback: e => actionManager.do(getCreateNodeAction(UNIQUE,        btnData.div, getCreateOptions(e)))}),
-                         new MenuItem('Expand',   null,            {icon: iconExpand,      createType: EXPAND,       callback: e => actionManager.do(getCreateNodeAction(EXPAND,        btnData.div, getCreateOptions(e)))}),
-                         new MenuItem('',         null,            {separator: true}),     
-                         new MenuItem('Reverse',  null,            {icon: iconReverseList, createType: REVERSE_LIST, callback: e => actionManager.do(getCreateNodeAction(REVERSE_LIST,  btnData.div, getCreateOptions(e)))}),
-                         new MenuItem('Sort',     null,            {icon: iconSort,        createType: SORT,         callback: e => actionManager.do(getCreateNodeAction(SORT,          btnData.div, getCreateOptions(e)))}),
-                         new MenuItem('',         null,            {separator: true}),     
-                         new MenuItem('Column',   null,            {icon: iconColumn,      createType: COLUMN,       callback: e => actionManager.do(getCreateNodeAction(COLUMN,        btnData.div, getCreateOptions(e)))}),
-                         new MenuItem('Cell',     null,            {icon: iconCell,        createType: CELL,         callback: e => actionManager.do(getCreateNodeAction(CELL,          btnData.div, getCreateOptions(e)))})]);
+        menuItemList   = new MenuItem('List',         null,            {icon: iconList,        createType: LIST,         callback: e => actionManager.do(getCreateNodeAction(LIST,          btnData.div, getCreateOptions(e)))}),
+        menuFlowSep1   = new MenuItem('',             null,            {separator: true}),     
+        menuItemItems  = new MenuItem('Items',        null,            {icon: iconItems,       createType: ITEMS,        callback: e => actionManager.do(getCreateNodeAction(ITEMS,         btnData.div, getCreateOptions(e)))}),
+        menuItemCount  = new MenuItem('Count',        null,            {icon: iconCount,       createType: LIST_COUNT,   callback: e => actionManager.do(getCreateNodeAction(LIST_COUNT,    btnData.div, getCreateOptions(e)))}),
+                         new MenuItem('Contains',     'List contains', {icon: iconContains,    createType: CONTAINS,     callback: e => actionManager.do(getCreateNodeAction(CONTAINS,      btnData.div, getCreateOptions(e))), disambiguate: true}),
+                         new MenuItem('',             null,            {separator: true}),     
+        menuItemSelect = new MenuItem('Select',       null,            {icon: iconSelect,      createType: SELECT,       callback: e => actionManager.do(getCreateNodeAction(SELECT,        btnData.div, getCreateOptions(e)))}),
+                         new MenuItem('Sublist',      null,            {icon: iconSublist,     createType: SUBLIST,      callback: e => actionManager.do(getCreateNodeAction(SUBLIST,       btnData.div, getCreateOptions(e)))}),
+                         new MenuItem('Unique',       null,            {icon: iconUnique,      createType: UNIQUE,       callback: e => actionManager.do(getCreateNodeAction(UNIQUE,        btnData.div, getCreateOptions(e)))}),
+                         new MenuItem('List as item', null,            {icon: iconCondense,    createType: CONDENSE,     callback: e => actionManager.do(getCreateNodeAction(CONDENSE,      btnData.div, getCreateOptions(e)))}),
+                         new MenuItem('',             null,            {separator: true}),     
+                         new MenuItem('Reverse',      null,            {icon: iconReverseList, createType: REVERSE_LIST, callback: e => actionManager.do(getCreateNodeAction(REVERSE_LIST,  btnData.div, getCreateOptions(e)))}),
+                         new MenuItem('Sort',         null,            {icon: iconSort,        createType: SORT,         callback: e => actionManager.do(getCreateNodeAction(SORT,          btnData.div, getCreateOptions(e)))}),
+                         new MenuItem('',             null,            {separator: true}),     
+                         new MenuItem('Column',       null,            {icon: iconColumn,      createType: COLUMN,       callback: e => actionManager.do(getCreateNodeAction(COLUMN,        btnData.div, getCreateOptions(e)))}),
+                         new MenuItem('Cell',         null,            {icon: iconCell,        createType: CELL,         callback: e => actionManager.do(getCreateNodeAction(CELL,          btnData.div, getCreateOptions(e)))})]);
     
 
     menuSets = new Menu('Sets...', true, false);
@@ -99391,7 +99391,7 @@ Operator.prototype.updateHeaderLabelText = function()
     else if (this.type == COLUMN      ) suffix = sep + '[ ' + this.columnLength + ' ]';
     else if (this.type == REVERSE_LIST) suffix = sep + '[ ' + this.tableLength + ' ]';
     else if (this.type == SORT        ) suffix = sep + '[ ' + this.tableLength + ' ]';
-    else if (this.type == EXPAND      ) suffix = sep + '[ ' + this.length + ' ]';
+    else if (this.type == CONDENSE      ) suffix = sep + '[ ' + this.length + ' ]';
     else if (this.type == UNIQUE      ) suffix = sep + '[ ' + this.length + ' ]';
     else if (this.type == ITEMS       ) suffix = sep + '[ ' + this.params.length + ' ]';
     else                                suffix = this.cached ? '' : '...';
@@ -100797,7 +100797,7 @@ extends OperatorBase
 
 
 
-class   OpExpand
+class   OpCondense
 extends OperatorBase
 {
     length;
@@ -100806,7 +100806,7 @@ extends OperatorBase
 
     constructor()
     {
-        super(EXPAND, 'expand', 'expand', iconExpand);
+        super(CONDENSE, 'listAsItem', 'list as item', iconCondense);
 
         this.canDisable  = true;
         // this.iconOffsetY = 1;
@@ -123542,6 +123542,10 @@ function loadNodes(data, pasting)
 
 function loadNode(_node, pasting)
 {
+    // replace legacy
+    if (_node.type == 'EXPAND') _node.type = CONDENSE;
+    
+
     const node = createNode(_node.type);
     node.div.style.display = 'none';
 
@@ -123916,7 +123920,7 @@ function createNode(nodeType, creatingButton = null, createdNodeId = -1, options
         case TIMER:                   node = new OpTimer();             break;
 
         case LIST:                    node = new OpList();              break;
-        case EXPAND:                  node = new OpExpand();            break;
+        case CONDENSE:                node = new OpCondense();          break;
         case ITEMS:                   node = new OpItems();             break;
         case LIST_COUNT:              node = new OpListCount();         break;
         case SELECT:                  node = new OpSelect();            break;

@@ -3,7 +3,7 @@ extends GValue
 {
     items;
 
-    expanded = false;
+    condensed = false;
 
 
 
@@ -31,7 +31,7 @@ extends GValue
 
         copy.copyBase(this);
 
-        copy.expanded = this.expanded;
+        copy.condensed = this.condensed;
 
         return copy;
     }

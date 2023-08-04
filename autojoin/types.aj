@@ -73,7 +73,7 @@
 ../generator/types/flow/GTimer.js
 
 ../generator/types/flow/GList.js
-../generator/types/flow/GExpand.js
+../generator/types/flow/GCondense.js
 ../generator/types/flow/GSublist.js
 ../generator/types/flow/GUnique.js
 ../generator/types/flow/GReverseList.js

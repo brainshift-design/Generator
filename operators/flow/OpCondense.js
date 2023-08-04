@@ -1,4 +1,4 @@
-class   OpExpand
+class   OpCondense
 extends OperatorBase
 {
     length;
@@ -7,7 +7,7 @@ extends OperatorBase
 
     constructor()
     {
-        super(EXPAND, 'expand', 'expand', iconExpand);
+        super(CONDENSE, 'listAsItem', 'list as item', iconCondense);
 
         this.canDisable  = true;
         // this.iconOffsetY = 1;

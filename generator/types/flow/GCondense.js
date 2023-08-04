@@ -1,16 +1,16 @@
-class GExpand
+class GCondense
 extends GOperator1
 {
     constructor(nodeId, options)
     {
-        super(EXPAND, nodeId, options);
+        super(CONDENSE, nodeId, options);
     }
 
 
     
     copy()
     {
-        const copy = new GExpand(this.nodeId, this.options);
+        const copy = new GCondense(this.nodeId, this.options);
 
         copy.copyBase(this);
 
@@ -28,7 +28,7 @@ extends GOperator1
 
 
         this.value = new ListValue();
-        this.value.expanded = true;
+        this.value.condensed = true;
 
         let length = 0;
 

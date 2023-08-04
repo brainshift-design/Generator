@@ -122,12 +122,12 @@ function genParseList(parse)
 
 
 
-function genParseExpand(parse)
+function genParseCondense(parse)
 {
     const [, nodeId, options, ignore] = genParseNodeStart(parse);
 
 
-    const expand = new GExpand(nodeId, options);
+    const condense = new GCondense(nodeId, options);
    
 
     let nInputs = -1;
@@ -140,12 +140,12 @@ function genParseExpand(parse)
 
     
     if (parse.settings.logRequests) 
-        logReq(expand, parse, ignore, nInputs);
+        logReq(condense, parse, ignore, nInputs);
 
 
     if (ignore) 
     {
-        genParseNodeEnd(parse, expand);
+        genParseNodeEnd(parse, condense);
         return parse.parsedNodes.find(n => n.nodeId == nodeId);
     }
 
@@ -154,14 +154,14 @@ function genParseExpand(parse)
 
 
     if (nInputs == 1)
-        expand.input = genParse(parse);
+        condense.input = genParse(parse);
 
     
     parse.nTab--;
 
 
-    genParseNodeEnd(parse, expand);
-    return expand;
+    genParseNodeEnd(parse, condense);
+    return condense;
 }
 
 

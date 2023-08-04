@@ -114,7 +114,7 @@ function genParse(parse, inParam = true)
     else if (parse.next == NULL_NODE              ) result = genParseNull              (parse);
 
     else if (parse.next == LIST                   ) result = genParseList              (parse);
-    else if (parse.next == EXPAND                 ) result = genParseExpand            (parse);
+    else if (parse.next == CONDENSE               ) result = genParseCondense          (parse);
     else if (parse.next == SUBLIST                ) result = genParseSublist           (parse);
     else if (parse.next == UNIQUE                 ) result = genParseUnique            (parse);
     else if (parse.next == REVERSE_LIST           ) result = genParseReverseList       (parse);

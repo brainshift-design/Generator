@@ -85,18 +85,18 @@ extends GOperator
             {
                 if (LIST_VALUES.includes(input.type))
                 {
-                    if (input.expanded === true)
+                    if (input.condensed === true)
+                    {
+                        this.value.items.push(input.copy());
+                        this.value.objects.push(...this.copyObjects(input, i));
+                    }
+                    else
                     {
                         for (const item of input.items)
                         {
                             this.value.items.push(item.copy());   
                             this.value.objects.push(...this.copyObjects(item, i));
                         }
-                    }
-                    else
-                    {
-                        this.value.items.push(input.copy());
-                        this.value.objects.push(...this.copyObjects(input, i));
                     }
                 }
                 else

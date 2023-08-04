@@ -12,7 +12,7 @@ function createNode(nodeType, creatingButton = null, createdNodeId = -1, options
         case TIMER:                   node = new OpTimer();             break;
 
         case LIST:                    node = new OpList();              break;
-        case EXPAND:                  node = new OpExpand();            break;
+        case CONDENSE:                node = new OpCondense();          break;
         case ITEMS:                   node = new OpItems();             break;
         case LIST_COUNT:              node = new OpListCount();         break;
         case SELECT:                  node = new OpSelect();            break;

@@ -4632,7 +4632,7 @@ const TIMER                   = 'TIMER';
 
 
 const LIST                    = 'LIST';
-const EXPAND                  = 'EXPAND';
+const CONDENSE                = 'CDENSE';
 const SUBLIST                 = 'SUBLST';
 const UNIQUE                  = 'UNIQ';
 const REVERSE_LIST            = 'REVLST';
@@ -4682,7 +4682,7 @@ const FLOW_TYPES =
 [
     NULL_NODE,
     ...LIST_TYPES,
-    EXPAND,
+    CONDENSE,
     SUBLIST,
     UNIQUE,
     REVERSE_LIST,
@@ -8606,7 +8606,7 @@ extends GValue
 {
     items;
 
-    expanded = false;
+    condensed = false;
 
 
 
@@ -8634,7 +8634,7 @@ extends GValue
 
         copy.copyBase(this);
 
-        copy.expanded = this.expanded;
+        copy.condensed = this.condensed;
 
         return copy;
     }
@@ -14733,18 +14733,18 @@ extends GOperator
             {
                 if (LIST_VALUES.includes(input.type))
                 {
-                    if (input.expanded === true)
+                    if (input.condensed === true)
+                    {
+                        this.value.items.push(input.copy());
+                        this.value.objects.push(...this.copyObjects(input, i));
+                    }
+                    else
                     {
                         for (const item of input.items)
                         {
                             this.value.items.push(item.copy());   
                             this.value.objects.push(...this.copyObjects(item, i));
                         }
-                    }
-                    else
-                    {
-                        this.value.items.push(input.copy());
-                        this.value.objects.push(...this.copyObjects(input, i));
                     }
                 }
                 else
@@ -14810,19 +14810,19 @@ extends GOperator
 }
 
 
-class GExpand
+class GCondense
 extends GOperator1
 {
     constructor(nodeId, options)
     {
-        super(EXPAND, nodeId, options);
+        super(CONDENSE, nodeId, options);
     }
 
 
     
     copy()
     {
-        const copy = new GExpand(this.nodeId, this.options);
+        const copy = new GCondense(this.nodeId, this.options);
 
         copy.copyBase(this);
 
@@ -14840,7 +14840,7 @@ extends GOperator1
 
 
         this.value = new ListValue();
-        this.value.expanded = true;
+        this.value.condensed = true;
 
         let length = 0;
 
@@ -32130,12 +32130,12 @@ function genParseList(parse)
 
 
 
-function genParseExpand(parse)
+function genParseCondense(parse)
 {
     const [, nodeId, options, ignore] = genParseNodeStart(parse);
 
 
-    const expand = new GExpand(nodeId, options);
+    const condense = new GCondense(nodeId, options);
    
 
     let nInputs = -1;
@@ -32148,12 +32148,12 @@ function genParseExpand(parse)
 
     
     if (parse.settings.logRequests) 
-        logReq(expand, parse, ignore, nInputs);
+        logReq(condense, parse, ignore, nInputs);
 
 
     if (ignore) 
     {
-        genParseNodeEnd(parse, expand);
+        genParseNodeEnd(parse, condense);
         return parse.parsedNodes.find(n => n.nodeId == nodeId);
     }
 
@@ -32162,14 +32162,14 @@ function genParseExpand(parse)
 
 
     if (nInputs == 1)
-        expand.input = genParse(parse);
+        condense.input = genParse(parse);
 
     
     parse.nTab--;
 
 
-    genParseNodeEnd(parse, expand);
-    return expand;
+    genParseNodeEnd(parse, condense);
+    return condense;
 }
 
 
@@ -37537,7 +37537,7 @@ function genParse(parse, inParam = true)
     else if (parse.next == NULL_NODE              ) result = genParseNull              (parse);
 
     else if (parse.next == LIST                   ) result = genParseList              (parse);
-    else if (parse.next == EXPAND                 ) result = genParseExpand            (parse);
+    else if (parse.next == CONDENSE               ) result = genParseCondense          (parse);
     else if (parse.next == SUBLIST                ) result = genParseSublist           (parse);
     else if (parse.next == UNIQUE                 ) result = genParseUnique            (parse);
     else if (parse.next == REVERSE_LIST           ) result = genParseReverseList       (parse);

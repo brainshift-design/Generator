@@ -14,7 +14,7 @@ const TIMER                   = 'TIMER';
 
 
 const LIST                    = 'LIST';
-const EXPAND                  = 'EXPAND';
+const CONDENSE                = 'CDENSE';
 const SUBLIST                 = 'SUBLST';
 const UNIQUE                  = 'UNIQ';
 const REVERSE_LIST            = 'REVLST';
@@ -64,7 +64,7 @@ const FLOW_TYPES =
 [
     NULL_NODE,
     ...LIST_TYPES,
-    EXPAND,
+    CONDENSE,
     SUBLIST,
     UNIQUE,
     REVERSE_LIST,
