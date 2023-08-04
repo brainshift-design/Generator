@@ -163,7 +163,7 @@ NumberControl.prototype.initTextbox = function()
                 this.textbox.selectionStart,
                 text.length);
 
-            const revPos = text.length - pos;
+            const revPos = 0;//text.length - pos;
             const sign   = e.key == 'ArrowUp' ? 1 : -1;
 
 
