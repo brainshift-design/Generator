@@ -158,7 +158,7 @@ GraphView.prototype.createEvents = function()
                     this.oldZoom = graph.currentPage.zoom;
                     this.endZoomSelection(e.pointerId, true);
                 }
-                else if (this.altDown)
+                else
                 {
                     const wndRect = new Rect(
                         1,
@@ -172,7 +172,8 @@ GraphView.prototype.createEvents = function()
                     this.oldZoom = graph.currentPage.zoom;
                     this.endZoomSelection(e.pointerId, false);
 
-                    graph.currentPage.zoom /= 2;
+                    if (!this.altDown) graph.currentPage.zoom *= 2;
+                    else               graph.currentPage.zoom /= 2;
                     
                     
                     graph.currentPage.pan.x += wndRect.c - selection.c;
@@ -181,8 +182,6 @@ GraphView.prototype.createEvents = function()
 
                     this.updateNodes();
                 }
-                else
-                this.endZoomSelection(e.pointerId, false);
             }
 
             this.endPan(e.pointerId, false);

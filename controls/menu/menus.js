@@ -765,7 +765,9 @@ function initGeneratorMenus()
         // menuItemNodeActivate    = new MenuItem('Activate',         {callback: () => makeSelectedNodesActive()}),
         menuItemNodeEnableDisable  = new MenuItem('Enable/Disable',   {shortcut:  osCtrlShift() + 'E',  callback: () => actionManager.do(new ToggleDisableNodesAction(graphView.selectedNodes.map(n => n.id)))}),
         menuItemNodeSep4           = new MenuItem('',                 {separator: true}),
-        menuItemNodeRemove         = new MenuItem('Remove',           {shortcut:  osCtrl() + '⌫',      callback: e => { hideAllMenus(); graphView.removeSelectedNodes(true); }})]);
+        menuItemNodeRemove         = new MenuItem('Remove',           {shortcut:  osCtrl() + '⌫',      callback: e => { hideAllMenus(); graphView.removeSelectedNodes(true); }}),
+                                     new MenuItem('',                 {separator: true}),
+                                     new MenuItem('Create node...',   {childMenu: wholeMenu})]);
 
 
 

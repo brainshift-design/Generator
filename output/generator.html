@@ -14826,6 +14826,8 @@ extends GOperator1
 
         copy.copyBase(this);
 
+        //copy.value  = this.value.copy();
+
         return copy;
     }
 
@@ -14846,7 +14848,8 @@ extends GOperator1
         if (this.input)
         {
             const input = (await this.input.eval(parse)).toValue();
-                       
+
+
             length = input.items.length;
                
                 
@@ -14857,20 +14860,27 @@ extends GOperator1
                 {
                     for (const item of input.items)
                     {
-                        this.value.items.push(item.copy());
-                        this.value.objects.push(...item.objects.map(o => o.copy()));
+                        const copy = item.copy();
+
+                        this.value.items.push(copy);
+                        this.value.objects.push(...copy.objects);
                     }
                 }
                 else
                 {
-                    this.value.items.push(input.copy());
-                    this.value.objects.push(...input.objects.map(o => o.copy()));
+                    const copy = input.copy();
+
+                    this.value.items.push(copy);
+                    this.value.objects.push(...copy.objects);
                 }
             }
         }
 
 
         this.updateValueObjects();
+    
+        if (this.nodeId == 'expand2')
+            console.log('this.value.objects =', [...this.value.objects]);
 
 
         this.setUpdateValues(parse,

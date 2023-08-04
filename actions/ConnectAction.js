@@ -115,14 +115,14 @@ function connectAction_backInitOutputValue(act)
 
 function connectAction_saveOutputActiveNodes(act)
 {
-    act.oldOutputActiveNodeId = idFromNode(getActiveFromNodeId(act.outputNodeId));
+    act.oldOutputActiveNodeId = [];//idFromNode(getActiveFromNodeId(act.outputNodeId));
 }
 
 
 
 function connectAction_saveInputActiveNodes(act)
 {
-    act.inputActiveNodeIds = getActiveNodesAfterNodeId(act.inputNodeId).map(n => n.id);
+    act.inputActiveNodeIds = [];//getActiveNodesAfterNodeId(act.inputNodeId).map(n => n.id);
 }
 
 

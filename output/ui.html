@@ -19991,6 +19991,8 @@ extends GOperator1
 
         copy.copyBase(this);
 
+        //copy.value  = this.value.copy();
+
         return copy;
     }
 
@@ -20011,7 +20013,8 @@ extends GOperator1
         if (this.input)
         {
             const input = (await this.input.eval(parse)).toValue();
-                       
+
+
             length = input.items.length;
                
                 
@@ -20022,20 +20025,27 @@ extends GOperator1
                 {
                     for (const item of input.items)
                     {
-                        this.value.items.push(item.copy());
-                        this.value.objects.push(...item.objects.map(o => o.copy()));
+                        const copy = item.copy();
+
+                        this.value.items.push(copy);
+                        this.value.objects.push(...copy.objects);
                     }
                 }
                 else
                 {
-                    this.value.items.push(input.copy());
-                    this.value.objects.push(...input.objects.map(o => o.copy()));
+                    const copy = input.copy();
+
+                    this.value.items.push(copy);
+                    this.value.objects.push(...copy.objects);
                 }
             }
         }
 
 
         this.updateValueObjects();
+    
+        if (this.nodeId == 'expand2')
+            console.log('this.value.objects =', [...this.value.objects]);
 
 
         this.setUpdateValues(parse,
@@ -63141,6 +63151,8 @@ extends GOperator1
 
         copy.copyBase(this);
 
+        //copy.value  = this.value.copy();
+
         return copy;
     }
 
@@ -63161,7 +63173,8 @@ extends GOperator1
         if (this.input)
         {
             const input = (await this.input.eval(parse)).toValue();
-                       
+
+
             length = input.items.length;
                
                 
@@ -63172,20 +63185,27 @@ extends GOperator1
                 {
                     for (const item of input.items)
                     {
-                        this.value.items.push(item.copy());
-                        this.value.objects.push(...item.objects.map(o => o.copy()));
+                        const copy = item.copy();
+
+                        this.value.items.push(copy);
+                        this.value.objects.push(...copy.objects);
                     }
                 }
                 else
                 {
-                    this.value.items.push(input.copy());
-                    this.value.objects.push(...input.objects.map(o => o.copy()));
+                    const copy = input.copy();
+
+                    this.value.items.push(copy);
+                    this.value.objects.push(...copy.objects);
                 }
             }
         }
 
 
         this.updateValueObjects();
+    
+        if (this.nodeId == 'expand2')
+            console.log('this.value.objects =', [...this.value.objects]);
 
 
         this.setUpdateValues(parse,
@@ -85903,7 +85923,9 @@ function initGeneratorMenus()
         // menuItemNodeActivate    = new MenuItem('Activate',         {callback: () => makeSelectedNodesActive()}),
         menuItemNodeEnableDisable  = new MenuItem('Enable/Disable',   {shortcut:  osCtrlShift() + 'E',  callback: () => actionManager.do(new ToggleDisableNodesAction(graphView.selectedNodes.map(n => n.id)))}),
         menuItemNodeSep4           = new MenuItem('',                 {separator: true}),
-        menuItemNodeRemove         = new MenuItem('Remove',           {shortcut:  osCtrl() + '⌫',      callback: e => { hideAllMenus(); graphView.removeSelectedNodes(true); }})]);
+        menuItemNodeRemove         = new MenuItem('Remove',           {shortcut:  osCtrl() + '⌫',      callback: e => { hideAllMenus(); graphView.removeSelectedNodes(true); }}),
+                                     new MenuItem('',                 {separator: true}),
+                                     new MenuItem('Create node...',   {childMenu: wholeMenu})]);
 
 
 
@@ -88516,7 +88538,7 @@ GraphView.prototype.createEvents = function()
                     this.oldZoom = graph.currentPage.zoom;
                     this.endZoomSelection(e.pointerId, true);
                 }
-                else if (this.altDown)
+                else
                 {
                     const wndRect = new Rect(
                         1,
@@ -88530,7 +88552,8 @@ GraphView.prototype.createEvents = function()
                     this.oldZoom = graph.currentPage.zoom;
                     this.endZoomSelection(e.pointerId, false);
 
-                    graph.currentPage.zoom /= 2;
+                    if (!this.altDown) graph.currentPage.zoom *= 2;
+                    else               graph.currentPage.zoom /= 2;
                     
                     
                     graph.currentPage.pan.x += wndRect.c - selection.c;
@@ -88539,8 +88562,6 @@ GraphView.prototype.createEvents = function()
 
                     this.updateNodes();
                 }
-                else
-                this.endZoomSelection(e.pointerId, false);
             }
 
             this.endPan(e.pointerId, false);
@@ -99164,7 +99185,7 @@ Operator.prototype.updateBorder = function()
         case 2: highlight = darkMode ? '#f809' : '#f808'; break;
         case 3: highlight = darkMode ? '#ff08' : '#dd0f'; break;
         case 4: highlight = darkMode ? '#0f08' : '#0d09'; break;
-        case 5: highlight = darkMode ? '#36fd' : '#03f7'; break;
+        case 5: highlight = darkMode ? '#27fd' : '#03f7'; break;
         case 6: highlight = darkMode ? '#f2f9' : '#f0f7'; break;
         case 7: highlight = darkMode ? '#fff8' : '#0007'; break;
     }
@@ -117619,14 +117640,14 @@ function connectAction_backInitOutputValue(act)
 
 function connectAction_saveOutputActiveNodes(act)
 {
-    act.oldOutputActiveNodeId = idFromNode(getActiveFromNodeId(act.outputNodeId));
+    act.oldOutputActiveNodeId = [];//idFromNode(getActiveFromNodeId(act.outputNodeId));
 }
 
 
 
 function connectAction_saveInputActiveNodes(act)
 {
-    act.inputActiveNodeIds = getActiveNodesAfterNodeId(act.inputNodeId).map(n => n.id);
+    act.inputActiveNodeIds = [];//getActiveNodesAfterNodeId(act.inputNodeId).map(n => n.id);
 }
 
 
@@ -117918,8 +117939,8 @@ extends Action
         graphView.selectedNodes     = [node];
 
 
-        if (!getActiveAfterNode(node))
-            uiMakeNodeActive(node);
+        // if (!getActiveAfterNode(node))
+        //     uiMakeNodeActive(node);
 
 
         pushUnique(updateNodes, node);
