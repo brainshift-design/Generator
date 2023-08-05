@@ -31,12 +31,9 @@ Operator.prototype.createNode = function()
         this.div.over      = true;
         graphView.overNode = this;
         
-        // if (    e.altKey
-        //     && !getCtrlKey(e)
-        //     &&  e.shiftKey
-        //     &&  graphView._soloNode != this
-        //     && !altPressedInMenu) 
-        //     graphView.soloNode(this);
+        if (   graphView.soloMode
+            && graphView._soloNode != this) 
+            graphView.soloNode(this);
         
         this.updateNode();
     });
@@ -48,10 +45,7 @@ Operator.prototype.createNode = function()
         this.div.over      = false;
         graphView.overNode = null;
         
-        // if (   (   !e.altKey
-        //         ||  getCtrlKey(e)
-        //         || !e.shiftKey)
-        //     && graphView._soloNode == this)
+        // if (graphView._soloNode == this)
         //     graphView.unsoloNode();
 
         this.updateNode();

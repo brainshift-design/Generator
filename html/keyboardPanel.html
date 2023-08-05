@@ -3,12 +3,13 @@
     <div id='keyboardPanelTabsHolder'>
         <div id='keyboardPanelTabs'>
             <div id='keyboardPanelTab' onclick="setCurrentKeyboardTab(0);">Menu</div>
-            <div id='keyboardPanelTab' onclick="setCurrentKeyboardTab(1);">Zoom</div>
-            <div id='keyboardPanelTab' onclick="setCurrentKeyboardTab(2);">Selection</div>
-            <div id='keyboardPanelTab' onclick="setCurrentKeyboardTab(3);">Nodes</div>
-            <div id='keyboardPanelTab' onclick="setCurrentKeyboardTab(4);">Connections</div>
-            <div id='keyboardPanelTab' onclick="setCurrentKeyboardTab(5);">Cursor</div>
-            <div id='keyboardPanelTab' onclick="setCurrentKeyboardTab(6);">Edit</div>
+            <div id='keyboardPanelTab' onclick="setCurrentKeyboardTab(1);">View</div>
+            <div id='keyboardPanelTab' onclick="setCurrentKeyboardTab(2);">Zoom</div>
+            <div id='keyboardPanelTab' onclick="setCurrentKeyboardTab(3);">Selection</div>
+            <div id='keyboardPanelTab' onclick="setCurrentKeyboardTab(4);">Nodes</div>
+            <div id='keyboardPanelTab' onclick="setCurrentKeyboardTab(5);">Connections</div>
+            <div id='keyboardPanelTab' onclick="setCurrentKeyboardTab(6);">Cursor</div>
+            <div id='keyboardPanelTab' onclick="setCurrentKeyboardTab(7);">Edit</div>
         </div>
         <div id='keyboardPanelClose' onclick="hideKeyboardPanel();"></div>
     </div>
@@ -22,12 +23,15 @@
                 <div class='keyboardShortcut'></div>
                 <div class='keyboardInfo'>Click a node menu to create a node under<br/>the menu button. Drag the menu to directly<br/>move the new node.</div>
             </div>
-            <div class='keyboardGroup nextGroup'>
-                <div class='keyboardShortcut'><div class='shortcutAction'>Create node</div><div class='shortcutKeys'><div class='shortcutKeys'><div class='shortcutKey'>Menu</div></div></div></div>
-                <div class='keyboardShortcut'><div class='shortcutAction'>Insert node into branch</div><div class='shortcutKeys'><div class='shortcutKeys'><div class='shortcutKey'>Ctrl</div><div class='shortcutKey'>menu</div></div></div></div>
-                <div class='keyboardShortcut'><div class='shortcutAction'>Connect node in new branch</div><div class='shortcutKeys'><div class='shortcutKeys'><div class='shortcutKey newBranch1'>Ctrl</div><div class='shortcutKey newBranch2'>Alt</div><div class='shortcutKey'>menu</div></div></div></div>
-                <div class='keyboardShortcut'><div class='shortcutAction'>Create random color</div><div class='shortcutKeys'><div class='shortcutKeys'><div class='shortcutKey'>Alt</div><div class='shortcutKey'>Color menu</div></div></div></div>
+        </div>
+
+
+        <div class='keyboardPage' id='keyboardPageView'>
+
+            <div class='keyboardGroup'>
+                <div class='keyboardShortcut'><div class='shortcutAction'>Toggle Solo mode</div><div class='shortcutKeys'><div class='shortcutKeys'><div class='shortcutKey'>Alt</div><div class='shortcutKey shortcutChar'>S</div></div></div></div>
             </div>
+
         </div>
 
 
@@ -79,6 +83,12 @@
 
         <div class='keyboardPage' id='keyboardPageNodes'>
             <div class='keyboardGroup'>
+                <div class='keyboardShortcut'><div class='shortcutAction'>Create node</div><div class='shortcutKeys'><div class='shortcutKeys'><div class='shortcutKey'>Menu</div></div></div></div>
+                <div class='keyboardShortcut'><div class='shortcutAction'>Insert node into branch</div><div class='shortcutKeys'><div class='shortcutKeys'><div class='shortcutKey'>Ctrl</div><div class='shortcutKey'>menu</div></div></div></div>
+                <div class='keyboardShortcut'><div class='shortcutAction'>Connect node in new branch</div><div class='shortcutKeys'><div class='shortcutKeys'><div class='shortcutKey newBranch1'>Ctrl</div><div class='shortcutKey newBranch2'>Alt</div><div class='shortcutKey'>menu</div></div></div></div>
+                <div class='keyboardShortcut'><div class='shortcutAction'>Create random color</div><div class='shortcutKeys'><div class='shortcutKeys'><div class='shortcutKey'>Alt</div><div class='shortcutKey'>Color menu</div></div></div></div>
+            </div>
+            <div class='keyboardGroup nextGroup'>
                 <div class='keyboardShortcut'><div class='shortcutAction'>Rename</div><div class='shortcutKeys'><div class='shortcutKeys'><div class='shortcutKey'>Shift</div><div class='shortcutKey shortcutChar'>R</div></div></div></div>
                 <div class='keyboardShortcut'><div class='shortcutAction'>Enable/disable</div><div class='shortcutKeys'><div class='shortcutKeys'><div class='shortcutKey ctrlShift'>Ctrl</div><div class='shortcutKey ctrlShift'>Shift</div><div class='shortcutKey shortcutChar'>E</div></div></div></div>
                 <div class='keyboardShortcut'><div class='shortcutAction'>Show/hide node icons</div><div class='shortcutKeys'><div class='shortcutKeys'><div class='shortcutKey ctrlShift'>Ctrl</div><div class='shortcutKey ctrlShift'>Shift</div><div class='shortcutKey shortcutCharNarrow'>I</div></div></div></div>

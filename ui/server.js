@@ -12,7 +12,7 @@ function checkTrialExists()
         })
         .catch(e =>
         {
-            console.error(e);
+            consoleError(e);
             throw e;
         });
 }
@@ -33,7 +33,7 @@ function checkSubOrTrialActive()
         })
         .catch(e =>
         {
-            console.error(e);
+            consoleError(e);
             throw e;
         });
 }
@@ -54,7 +54,7 @@ function checkRemainingTrialDays()
         })
         .catch(e =>
         {
-            console.error(e);
+            consoleError(e);
             throw e;
         });
 }

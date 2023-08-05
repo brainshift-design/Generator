@@ -141,7 +141,9 @@ function initSearchBox(query)
     if (   query.length == 0
         || found.length > 0)
     {
-        search.style.height = searchText.offsetHeight + searchResults.offsetHeight;
+        search.style.height = Math.min(
+            searchText.offsetHeight + searchResults.offsetHeight,
+            graphView.div.offsetHeight - search.offsetTop - 40);
     }
     else
     {

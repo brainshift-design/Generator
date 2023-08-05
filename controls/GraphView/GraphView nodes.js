@@ -79,41 +79,41 @@ GraphView.prototype.updateNodeWireTransforms = function(nodes)
 
 
 
-// GraphView.prototype.soloNode = function(node)
-// {
-//     this._soloNode = node;
+GraphView.prototype.soloNode = function(node)
+{
+    this._soloNode = node;
 
-//     graph.pageNodes.forEach(n => 
-//         n.div.style.opacity = 
-//                 n == this._soloNode
-//             || n.isConnectedTo(this._soloNode)
-//             ? 1 
-//             : 0.12);
+    graph.pageNodes.forEach(n => 
+        n.div.style.opacity = 
+                n == this._soloNode
+            || n.isConnectedTo(this._soloNode)
+            ? 1 
+            : 0.12);
 
-//     graph.connections.forEach(c =>
-//     { 
-//         c.wire.svg.style.opacity = 
-//                c.input  && this._soloNode == c.input .node
-//             || c.output && this._soloNode == c.output.node
-//             ? 1 
-//             : 0.09;
-//     });
-
-
-//     this.updateWires(graph.connections.map(c => c.wire));
-// };
+    graph.connections.forEach(c =>
+    { 
+        c.wire.svg.style.opacity = 
+               c.input  && this._soloNode == c.input .node
+            || c.output && this._soloNode == c.output.node
+            ? 1 
+            : 0.09;
+    });
 
 
+    this.updateWires(graph.connections.map(c => c.wire));
+};
 
-// GraphView.prototype.unsoloNode = function()
-// {
-//     this._soloNode = null;
 
-//     graph.pageNodes  .forEach(n => n.div     .style.opacity = 1);
-//     graph.connections.forEach(c => c.wire.svg.style.opacity = 1);
 
-//     this.updateWires(graph.connections.map(c => c.wire));
-// };
+GraphView.prototype.unsoloNode = function()
+{
+    this._soloNode = null;
+
+    graph.pageNodes  .forEach(n => n.div     .style.opacity = 1);
+    graph.connections.forEach(c => c.wire.svg.style.opacity = 1);
+
+    this.updateWires(graph.connections.map(c => c.wire));
+};
 
 
 

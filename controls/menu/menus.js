@@ -13,6 +13,7 @@ var btnGroup;
 var btnHand;
 var btnComment;
 var btnPage;
+var btnSolo;
 var btnZoom;
 
 
@@ -881,6 +882,17 @@ function initGeneratorMenus()
 
 
 
+    btnSolo = new MenuButton('Solo mode&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<span style="color: #888; font-weight: 500;">'+osAlt()+'S</span>', null, {callback: () => 
+    {
+        updateSoloMode(!graphView.soloMode);
+    }});
+    
+    btnSolo.highlight = () => graphView.soloMode;
+
+    btnSolo.div.style.position               = 'absolute';
+    btnSolo.div.style.right                  = '66px';
+
+
     btnZoom = new MenuButton(
         '', 
         menuZoom, 
@@ -909,25 +921,19 @@ function initGeneratorMenus()
     // btnZoom.div.style.boxShadow           = '0 0 0 1px red inset';
 
 
-    btnFlow    .setIcon(iconFlow);
-    btnSets    .setIcon(iconSequence);
-    btnMain    .setIcon(iconGenerator);
-    btnColor   .setIcon(iconVarColor);
-    btnLayer   .setIcon(iconEffects);
-    btnShape   .setIcon(iconShapes);
-    //btnStyle  .setIcon(iconStyle);
-    //btnGroup  .setIcon(iconGroup);
-    //btnTemplate.setIcon(iconTemplate);
-    btnHand    .setIcon(iconHand);
-    btnComment .setIcon(iconComment);
+    btnFlow   .setIcon(iconFlow);
+    btnSets   .setIcon(iconSequence);
+    btnMain   .setIcon(iconGenerator);
+    btnColor  .setIcon(iconVarColor);
+    btnLayer  .setIcon(iconEffects);
+    btnShape  .setIcon(iconShapes);
+    btnHand   .setIcon(iconHand);
+    btnComment.setIcon(iconComment);
+    btnSolo   .setIcon(iconSolo);
 
 
     menuBarMenus = 
     [
-        // menuMainFile,
-        // menuMainPreferences,
-        // menuMainDebug,
-        // menuMainHelp,
         menuFlow,
         menuData,
         menuSets,
@@ -1065,6 +1071,17 @@ function updatePanMode(enabled)
     panMode = enabled;  
     currentMenuButton = panMode ? btnHand : null;
     btnHand.update();
+}
+
+
+
+function updateSoloMode(enabled)
+{
+    graphView.soloMode = enabled;  
+    btnSolo.update();
+
+    if (graphView.soloMode) graphView.soloNode(null);
+    else                    graphView.unsoloNode();
 }
 
 

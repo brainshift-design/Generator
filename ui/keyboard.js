@@ -30,11 +30,22 @@ document.addEventListener('keydown', e =>
 
     // save to file
     else if (   e.code == 'KeyS'
-        && getCtrlKey(e)
-        && e.shiftKey)
+        &&  getCtrlKey(e)
+        &&  e.shiftKey
+        && !e.altKey)
     {
         e.preventDefault();
         uiSaveSelectionToLocalFile();
+    }
+
+    // solo mode
+    else if (   e.code == 'KeyS'
+        && !getCtrlKey(e)
+        && !e.shiftKey
+        && e.altKey)
+    {
+        e.preventDefault();
+        updateSoloMode(!graphView.soloMode);
     }
 
     // cut
@@ -258,9 +269,6 @@ document.addEventListener('keydown', e =>
 
     else if (e.key == 'Shift')
     {
-        // if (graphView._soloNode)
-        //     graphView.unsoloNode();
-        
         if (    numberControlChanging
             && !numberControlChanging.shiftDown)
         {
@@ -313,12 +321,6 @@ document.addEventListener('keydown', e =>
              && !e.shiftKey
              && !getCtrlKey(e))
     {
-        // if ( graphView.overNode
-        //       &&  isEmpty(currentMenus)
-        //       && !altPressedInMenu)
-        //     graphView.soloNode(graphView.overNode);
-
-        // else 
         if (   currentMenus.length == 1
             && currentMenus[0] == menuColor)
         {
@@ -326,16 +328,6 @@ document.addEventListener('keydown', e =>
               altPressedInMenu = true;
         }
     }
-
-    // else if (    e.key == 'Shift'
-    //          &&  e.altKey
-    //          && !getCtrlKey(e))
-    // {
-    //     if ( graphView.overNode
-    //           &&  isEmpty(currentMenus)
-    //           && !altPressedInMenu)
-    //         graphView.soloNode(graphView.overNode);
-    // }
 
     else if (    e.key == 'Alt'
              && !e.shiftKey
@@ -424,9 +416,6 @@ document.addEventListener('keyup', e =>
                 graphView.zoomSelecting = false;
             }
         }
-        // else if (graphView._soloNode
-        //       && isEmpty(currentMenus))
-        //     graphView.unsoloNode();
 
         else if (currentMenus.length == 1
             && currentMenus[0] == menuColor)
@@ -435,14 +424,6 @@ document.addEventListener('keyup', e =>
 
         altPressedInMenu = false;
     }
-
-    // else if (e.key == 'Shift'
-    //       && e.altKey)
-    // {
-    //     if (   graphView._soloNode
-    //         && isEmpty(currentMenus))
-    //         graphView.unsoloNode();
-    // }
 
     else if (e.key == 'Control')
     {

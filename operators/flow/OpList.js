@@ -67,12 +67,17 @@ extends OperatorBase
     {
         super.updateValues(requestId, actionId, updateParamId, paramIds, values);
 
-        this.length = values[paramIds.findIndex(id => id == 'length')].value;
+        const length = values[paramIds.findIndex(id => id == 'length')];
+        const type   = values[paramIds.findIndex(id => id == 'type'  )];
 
-        const type = values[paramIds.findIndex(id => id == 'type')];
-        consoleAssert(LIST_VALUES.includes(type.value));
+        if (   length 
+            && type)
+        {
+            this.length = length.value;
+            consoleAssert(LIST_VALUES.includes(type.value));
 
-        this.outputs[0].types = [type.value];
+            this.outputs[0].types = [type.value];
+        }
     }
 
 

@@ -137,20 +137,24 @@ function validateInit(lastValidCheck)
 
     try
     {
-        if (checkTrialExists())
-        {
-            if (checkSubOrTrialActive())
+        checkTrialExists()
+            .then(trialExists => 
             {
-                uiSetLocalData('lastValidCheck', today);
-                initGenerator();
-            }
-            else
-                showSubscriptionDialog(false);
-        }
-        else
-        {
-            showEulaDialog();
-        }
+                if (trialExists)
+                    return checkSubOrTrialActive();
+                else 
+                    showEulaDialog();
+            })
+            .then(subOrTrialActive => 
+            {
+                if (subOrTrialActive) 
+                {
+                    uiSetLocalData('lastValidCheck', today);
+                    initGenerator();
+                }
+                else
+                    showSubscriptionDialog(false);
+            });
     }
     catch (e)
     {

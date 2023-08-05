@@ -4849,10 +4849,8 @@ a
             <div id='whatsNewBody'>
                 <h1 style='margin-top: 20px;'>What's new</h1>
 
-                <p>•  added row count to Unique counts parameter</p>
-                <p>•  fixed deleting from complex graphs taking a long time</p>
-                <p>•  nodes can now be created from the context menu</p>
-                <p>•  many UI bug fixes and other improvements</p>
+                <p>•  fixed value update bugs</p>
+                <p>•  added Solo mode to isolate nodes and their connections</p>
                 
                 <p><br/><br/><div id='chkHideWhatsNew'></div></p>
             </div>
@@ -4885,12 +4883,13 @@ a
     <div id='keyboardPanelTabsHolder'>
         <div id='keyboardPanelTabs'>
             <div id='keyboardPanelTab' onclick="setCurrentKeyboardTab(0);">Menu</div>
-            <div id='keyboardPanelTab' onclick="setCurrentKeyboardTab(1);">Zoom</div>
-            <div id='keyboardPanelTab' onclick="setCurrentKeyboardTab(2);">Selection</div>
-            <div id='keyboardPanelTab' onclick="setCurrentKeyboardTab(3);">Nodes</div>
-            <div id='keyboardPanelTab' onclick="setCurrentKeyboardTab(4);">Connections</div>
-            <div id='keyboardPanelTab' onclick="setCurrentKeyboardTab(5);">Cursor</div>
-            <div id='keyboardPanelTab' onclick="setCurrentKeyboardTab(6);">Edit</div>
+            <div id='keyboardPanelTab' onclick="setCurrentKeyboardTab(1);">View</div>
+            <div id='keyboardPanelTab' onclick="setCurrentKeyboardTab(2);">Zoom</div>
+            <div id='keyboardPanelTab' onclick="setCurrentKeyboardTab(3);">Selection</div>
+            <div id='keyboardPanelTab' onclick="setCurrentKeyboardTab(4);">Nodes</div>
+            <div id='keyboardPanelTab' onclick="setCurrentKeyboardTab(5);">Connections</div>
+            <div id='keyboardPanelTab' onclick="setCurrentKeyboardTab(6);">Cursor</div>
+            <div id='keyboardPanelTab' onclick="setCurrentKeyboardTab(7);">Edit</div>
         </div>
         <div id='keyboardPanelClose' onclick="hideKeyboardPanel();"></div>
     </div>
@@ -4904,12 +4903,15 @@ a
                 <div class='keyboardShortcut'></div>
                 <div class='keyboardInfo'>Click a node menu to create a node under<br/>the menu button. Drag the menu to directly<br/>move the new node.</div>
             </div>
-            <div class='keyboardGroup nextGroup'>
-                <div class='keyboardShortcut'><div class='shortcutAction'>Create node</div><div class='shortcutKeys'><div class='shortcutKeys'><div class='shortcutKey'>Menu</div></div></div></div>
-                <div class='keyboardShortcut'><div class='shortcutAction'>Insert node into branch</div><div class='shortcutKeys'><div class='shortcutKeys'><div class='shortcutKey'>Ctrl</div><div class='shortcutKey'>menu</div></div></div></div>
-                <div class='keyboardShortcut'><div class='shortcutAction'>Connect node in new branch</div><div class='shortcutKeys'><div class='shortcutKeys'><div class='shortcutKey newBranch1'>Ctrl</div><div class='shortcutKey newBranch2'>Alt</div><div class='shortcutKey'>menu</div></div></div></div>
-                <div class='keyboardShortcut'><div class='shortcutAction'>Create random color</div><div class='shortcutKeys'><div class='shortcutKeys'><div class='shortcutKey'>Alt</div><div class='shortcutKey'>Color menu</div></div></div></div>
+        </div>
+
+
+        <div class='keyboardPage' id='keyboardPageView'>
+
+            <div class='keyboardGroup'>
+                <div class='keyboardShortcut'><div class='shortcutAction'>Toggle Solo mode</div><div class='shortcutKeys'><div class='shortcutKeys'><div class='shortcutKey'>Alt</div><div class='shortcutKey shortcutChar'>S</div></div></div></div>
             </div>
+
         </div>
 
 
@@ -4961,6 +4963,12 @@ a
 
         <div class='keyboardPage' id='keyboardPageNodes'>
             <div class='keyboardGroup'>
+                <div class='keyboardShortcut'><div class='shortcutAction'>Create node</div><div class='shortcutKeys'><div class='shortcutKeys'><div class='shortcutKey'>Menu</div></div></div></div>
+                <div class='keyboardShortcut'><div class='shortcutAction'>Insert node into branch</div><div class='shortcutKeys'><div class='shortcutKeys'><div class='shortcutKey'>Ctrl</div><div class='shortcutKey'>menu</div></div></div></div>
+                <div class='keyboardShortcut'><div class='shortcutAction'>Connect node in new branch</div><div class='shortcutKeys'><div class='shortcutKeys'><div class='shortcutKey newBranch1'>Ctrl</div><div class='shortcutKey newBranch2'>Alt</div><div class='shortcutKey'>menu</div></div></div></div>
+                <div class='keyboardShortcut'><div class='shortcutAction'>Create random color</div><div class='shortcutKeys'><div class='shortcutKeys'><div class='shortcutKey'>Alt</div><div class='shortcutKey'>Color menu</div></div></div></div>
+            </div>
+            <div class='keyboardGroup nextGroup'>
                 <div class='keyboardShortcut'><div class='shortcutAction'>Rename</div><div class='shortcutKeys'><div class='shortcutKeys'><div class='shortcutKey'>Shift</div><div class='shortcutKey shortcutChar'>R</div></div></div></div>
                 <div class='keyboardShortcut'><div class='shortcutAction'>Enable/disable</div><div class='shortcutKeys'><div class='shortcutKeys'><div class='shortcutKey ctrlShift'>Ctrl</div><div class='shortcutKey ctrlShift'>Shift</div><div class='shortcutKey shortcutChar'>E</div></div></div></div>
                 <div class='keyboardShortcut'><div class='shortcutAction'>Show/hide node icons</div><div class='shortcutKeys'><div class='shortcutKeys'><div class='shortcutKey ctrlShift'>Ctrl</div><div class='shortcutKey ctrlShift'>Shift</div><div class='shortcutKey shortcutCharNarrow'>I</div></div></div></div>
@@ -5198,7 +5206,7 @@ a
 
 
 
-const generatorVersion = 180;
+const generatorVersion = 181;
 
 
 const MAX_INT32        = 2147483647;
@@ -13564,11 +13572,11 @@ extends GNode
 
     setUpdateValues(parse, values, add = false)
     {
-        if (   parse.repeats.length == 0
-            || parse.repeats[0].iteration == parse.repeats[0].total-1)
+        // if (   parse.repeats.length == 0
+        //     || parse.repeats[0].iteration == parse.repeats[0].total-1)
             this.updateValues = values;
-        else if (!add)
-            this.updateValues = [];
+        // else if (!add)
+        //     this.updateValues = [];
     }
 
 
@@ -32637,7 +32645,7 @@ extends GShape
                 round);
         }
 
-
+        
         this.setUpdateValues(parse, 
         [
             ['value', this.value]
@@ -46207,7 +46215,7 @@ onerror = (event, source, line, pos, error) =>
 };
 
 
-const generatorVersion = 180;
+const generatorVersion = 181;
 
 
 const MAX_INT32        = 2147483647;
@@ -56744,11 +56752,11 @@ extends GNode
 
     setUpdateValues(parse, values, add = false)
     {
-        if (   parse.repeats.length == 0
-            || parse.repeats[0].iteration == parse.repeats[0].total-1)
+        // if (   parse.repeats.length == 0
+        //     || parse.repeats[0].iteration == parse.repeats[0].total-1)
             this.updateValues = values;
-        else if (!add)
-            this.updateValues = [];
+        // else if (!add)
+        //     this.updateValues = [];
     }
 
 
@@ -75817,7 +75825,7 @@ extends GShape
                 round);
         }
 
-
+        
         this.setUpdateValues(parse, 
         [
             ['value', this.value]
@@ -84071,7 +84079,7 @@ const iconCorrectColor      = '<svg width="14" height="15" viewBox="0 0 14 15" f
 const iconWebContrast       = '<svg width="16" height="16" viewBox="0 0 16 16" fill="none" xmlns="http://www.w3.org/2000/svg"><path d="M12 4H8V12H10V11H9V5H11V6.267H12V4Z" fill="white"/><path d="M12 4H8V12H10V11H9V5H11V6.267H12V4Z" fill="white"/><path d="M12 4H8V12H10V11H9V5H11V6.267H12V4Z" fill="white"/><path fill-rule="evenodd" clip-rule="evenodd" d="M0 1.5C0 0.671573 0.671573 0 1.5 0H14.5C15.3284 0 16 0.671573 16 1.5V14.5C16 15.3284 15.3284 16 14.5 16H1.5C0.671573 16 0 15.3284 0 14.5V1.5ZM8 1H14.5C14.7761 1 15 1.22386 15 1.5V14.5C15 14.7761 14.7761 15 14.5 15H8V12.4H5.47075V11H6.8V5.4H5.22306V6.93713H3.80043V4H8V1Z" fill="white"/></svg>';
 const iconColorblind        = '<svg width="21" height="21" viewBox="0 0 21 21" fill="none" xmlns="http://www.w3.org/2000/svg"><path d="M10.5 19.5371C15.491 19.5371 19.5371 15.491 19.5371 10.5C19.5371 5.50898 15.491 1.46295 10.5 1.46295C5.50898 1.46295 1.46295 5.50898 1.46295 10.5C1.46295 15.491 5.50898 19.5371 10.5 19.5371Z" stroke="white"/><path fill-rule="evenodd" clip-rule="evenodd" d="M9.37288 4.83079C9.73798 4.75856 10.1149 4.7208 10.5 4.7208C10.8851 4.7208 11.262 4.75856 11.6271 4.83079L11.3554 6.20417C11.0793 6.14955 10.7934 6.1208 10.5 6.1208C10.2066 6.1208 9.92068 6.14955 9.64458 6.20417L9.37288 4.83079ZM5.69463 7.2885C6.11636 6.65857 6.65856 6.11636 7.28849 5.69464L8.06734 6.85799C7.58948 7.17791 7.17791 7.58948 6.85799 8.06734L5.69463 7.2885ZM13.7115 5.69464C14.3414 6.11636 14.8836 6.65857 15.3054 7.2885L14.142 8.06734C13.8221 7.58948 13.4105 7.17791 12.9327 6.85799L13.7115 5.69464ZM16.1692 9.37289C16.2414 9.73799 16.2792 10.1149 16.2792 10.5C16.2792 10.8851 16.2414 11.262 16.1692 11.6271L14.7958 11.3554C14.8504 11.0793 14.8792 10.7934 14.8792 10.5C14.8792 10.2066 14.8504 9.92068 14.7958 9.64458L16.1692 9.37289ZM4.7208 10.5C4.7208 10.1149 4.75856 9.73799 4.83078 9.37289L6.20417 9.64458C6.14955 9.92068 6.1208 10.2066 6.1208 10.5C6.1208 10.7934 6.14955 11.0793 6.20417 11.3554L4.83078 11.6271C4.75856 11.262 4.7208 10.8851 4.7208 10.5ZM7.28849 15.3054C6.65856 14.8836 6.11636 14.3414 5.69463 13.7115L6.85799 12.9327C7.17791 13.4105 7.58948 13.8221 8.06734 14.142L7.28849 15.3054ZM15.3054 13.7115C14.8836 14.3414 14.3414 14.8836 13.7115 15.3054L12.9327 14.142C13.4105 13.8221 13.8221 13.4105 14.142 12.9327L15.3054 13.7115ZM10.5 16.2792C10.1149 16.2792 9.73798 16.2414 9.37288 16.1692L9.64458 14.7958C9.92068 14.8505 10.2066 14.8792 10.5 14.8792C10.7934 14.8792 11.0793 14.8505 11.3554 14.7958L11.6271 16.1692C11.262 16.2414 10.8851 16.2792 10.5 16.2792Z" fill="white"/><path d="M10.5 11.9909C11.3234 11.9909 11.9909 11.3234 11.9909 10.5C11.9909 9.6766 11.3234 9.0091 10.5 9.0091C9.6766 9.0091 9.0091 9.6766 9.0091 10.5C9.0091 11.3234 9.6766 11.9909 10.5 11.9909Z" fill="white"/></svg>';
 const iconColorInterpolate  = '<svg width="18" height="19" viewBox="0 0 18 19" fill="none" xmlns="http://www.w3.org/2000/svg"><circle cx="9.5" cy="2.5" r="2.5" fill="white" fill-opacity="0.1"/><circle cx="9.5" cy="2.5" r="2" stroke="white" stroke-opacity="0.4"/><circle cx="2.5" cy="9.5" r="2.5" fill="white" fill-opacity="0.4"/><circle cx="2.5" cy="9.5" r="2" stroke="white" stroke-opacity="0.61"/><circle cx="9.5" cy="16.5" r="2.5" fill="white" fill-opacity="0.8"/><circle cx="9.5" cy="16.5" r="2" stroke="white" stroke-opacity="0.9"/><circle cx="14.5" cy="14.5" r="2" fill="white" stroke="white"/><circle cx="14.5" cy="4.5" r="2" stroke="white" stroke-opacity="0.4"/><circle cx="4.5" cy="14.5" r="2.5" fill="white" fill-opacity="0.6"/><circle cx="4.5" cy="14.5" r="2" stroke="white" stroke-opacity="0.8"/><circle cx="4.5" cy="4.5" r="2.5" fill="white" fill-opacity="0.2"/><circle cx="4.5" cy="4.5" r="2" stroke="white" stroke-opacity="0.55"/></svg>';
-const iconColorBlend        = '<svg width="15" height="15" viewBox="-2 0 15 15" fill="none" xmlns="http://www.w3.org/2000/svg"><path d="M-4.02642e-07 9C-5.48785e-07 10.5913 0.63214 12.1174 1.75736 13.2426C2.88258 14.3679 4.4087 15 6 15C7.5913 15 9.11742 14.3679 10.2426 13.2426C11.3679 12.1174 12 10.5913 12 9L6 9L-4.02642e-07 9Z" fill="white"/><path d="M0.499999 9.2647C0.499999 7.80555 0.917848 6.69229 1.85417 5.39097C2.66503 4.26403 3.84136 3.02592 5.4562 1.32626C5.64008 1.13273 5.82964 0.933209 6.02499 0.727189C6.22035 0.933214 6.40992 1.13274 6.5938 1.32628C8.20864 3.02593 9.38496 4.26403 10.1958 5.39097C11.1321 6.69229 11.55 7.80555 11.55 9.26471C11.55 12.1331 9.09987 14.5 6.02499 14.5C2.95012 14.5 0.499998 12.1331 0.499999 9.2647Z" stroke="white"/></svg>';
+const iconColorBlend        = '<svg width="14" height="15" viewBox="-1 0 14 15" fill="none" xmlns="http://www.w3.org/2000/svg"><path d="M-4.02642e-07 9C-5.48785e-07 10.5913 0.63214 12.1174 1.75736 13.2426C2.88258 14.3679 4.4087 15 6 15C7.5913 15 9.11742 14.3679 10.2426 13.2426C11.3679 12.1174 12 10.5913 12 9L6 9L-4.02642e-07 9Z" fill="white"/><path d="M0.499999 9.2647C0.499999 7.80555 0.917848 6.69229 1.85417 5.39097C2.66503 4.26403 3.84136 3.02592 5.4562 1.32626C5.64008 1.13273 5.82964 0.933209 6.02499 0.727189C6.22035 0.933214 6.40992 1.13274 6.5938 1.32628C8.20864 3.02593 9.38496 4.26403 10.1958 5.39097C11.1321 6.69229 11.55 7.80555 11.55 9.26471C11.55 12.1331 9.09987 14.5 6.02499 14.5C2.95012 14.5 0.499998 12.1331 0.499999 9.2647Z" stroke="white"/></svg>';
 
 const iconLayer             = '<svg width="15" height="11" viewBox="0 0 15 11" fill="none" xmlns="http://www.w3.org/2000/svg"><rect x="0.5" y="0.5" width="14" height="10" rx="2.5" stroke="white"/><rect x="2" y="2" width="11" height="7" rx="1" fill="white"/></svg>';
 const iconFill              = '<svg width="15" height="11" viewBox="0 0 15 11" fill="none" xmlns="http://www.w3.org/2000/svg"><rect width="15" height="11" rx="3" fill="white"/></svg>';
@@ -84153,6 +84161,9 @@ const iconWindowDockLeft    = '<svg width="15" height="12" viewBox="fcop7y0 0 15
 const iconWindowDockRight   = '<svg width="15" height="12" viewBox="0 0 15 12" fill="none" xmlns="http://www.w3.org/2000/svg"><rect x="0.5" y="0.5" width="14" height="11" stroke="white"/><rect x="8" width="7" height="12" fill="white"/></svg>';
 const iconWindowDockTop     = '<svg width="15" height="12" viewBox="0 0 15 12" fill="none" xmlns="http://www.w3.org/2000/svg"><rect x="0.5" y="0.5" width="14" height="11" stroke="white"/><rect width="15" height="5" fill="white"/></svg>';
 const iconWindowDockBottom  = '<svg width="15" height="12" viewBox="0 0 15 12" fill="none" xmlns="http://www.w3.org/2000/svg"><rect x="0.5" y="0.5" width="14" height="11" stroke="white"/><rect y="7" width="15" height="5" fill="white"/></svg>';
+
+
+const iconSolo              = '<svg width="17" height="15" viewBox="0 -1 17 15" fill="none" xmlns="http://www.w3.org/2000/svg"><circle cx="7" cy="7" r="2" fill="white"/><path fill-rule="evenodd" clip-rule="evenodd" d="M0.0708009 6.00003C0.509314 2.93434 2.93422 0.509436 5.99991 0.0709229V1.08299C3.48741 1.50451 1.50439 3.48753 1.08287 6.00003H0.0708009ZM0.0708009 8.00003C0.509314 11.0657 2.93422 13.4906 5.99991 13.9291V12.9171C3.48741 12.4956 1.50439 10.5125 1.08287 8.00003H0.0708009ZM12.917 8.00003C12.4954 10.5125 10.5124 12.4956 7.99991 12.9171V13.9291C11.0656 13.4906 13.4905 11.0657 13.929 8.00003H12.917ZM13.929 6.00003C13.4905 2.93434 11.0656 0.509436 7.99991 0.0709229V1.08299C10.5124 1.50451 12.4954 3.48753 12.917 6.00003H13.929Z" fill="white"/></svg>';
 
 
 const iconSearch            = '<svg width="15" height="15" viewBox="0 0 15 15" fill="none" xmlns="http://www.w3.org/2000/svg"><path id="searchIconPath" fill-rule="evenodd" clip-rule="evenodd" d="M11 6C11 8.76147 8.76147 11 6 11C3.23853 11 1 8.76147 1 6C1 3.23853 3.23853 1 6 1C8.76147 1 11 3.23853 11 6ZM9.87439 10.5815C8.8291 11.4663 7.47681 12 6 12C2.68628 12 0 9.31372 0 6C0 2.68628 2.68628 0 6 0C9.31372 0 12 2.68628 12 6C12 7.47681 11.4664 8.8291 10.5815 9.87451L14.364 13.657L13.6569 14.364L9.87439 10.5815Z" fill="white"/></svg>';
@@ -84325,8 +84336,8 @@ class Menu
 
     show(srcDiv, subMenu, right = false, callInit = true)
     {
-        // if (graphView._soloNode);
-        //     graphView.unsoloNode();
+        if (graphView._soloNode);
+            graphView.unsoloNode();
 
 
         if (!this.initMenu(callInit))
@@ -84389,8 +84400,8 @@ class Menu
 
     showAt(x, y, subMenu, hidePrev = true)
     {
-        // if (graphView._soloNode);
-        //     graphView.unsoloNode();
+        if (graphView._soloNode);
+            graphView.unsoloNode();
 
 
         if (hidePrev)
@@ -85243,6 +85254,7 @@ var btnGroup;
 var btnHand;
 var btnComment;
 var btnPage;
+var btnSolo;
 var btnZoom;
 
 
@@ -86111,6 +86123,17 @@ function initGeneratorMenus()
 
 
 
+    btnSolo = new MenuButton('Solo mode&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<span style="color: #888; font-weight: 500;">'+osAlt()+'S</span>', null, {callback: () => 
+    {
+        updateSoloMode(!graphView.soloMode);
+    }});
+    
+    btnSolo.highlight = () => graphView.soloMode;
+
+    btnSolo.div.style.position               = 'absolute';
+    btnSolo.div.style.right                  = '66px';
+
+
     btnZoom = new MenuButton(
         '', 
         menuZoom, 
@@ -86139,25 +86162,19 @@ function initGeneratorMenus()
     // btnZoom.div.style.boxShadow           = '0 0 0 1px red inset';
 
 
-    btnFlow    .setIcon(iconFlow);
-    btnSets    .setIcon(iconSequence);
-    btnMain    .setIcon(iconGenerator);
-    btnColor   .setIcon(iconVarColor);
-    btnLayer   .setIcon(iconEffects);
-    btnShape   .setIcon(iconShapes);
-    //btnStyle  .setIcon(iconStyle);
-    //btnGroup  .setIcon(iconGroup);
-    //btnTemplate.setIcon(iconTemplate);
-    btnHand    .setIcon(iconHand);
-    btnComment .setIcon(iconComment);
+    btnFlow   .setIcon(iconFlow);
+    btnSets   .setIcon(iconSequence);
+    btnMain   .setIcon(iconGenerator);
+    btnColor  .setIcon(iconVarColor);
+    btnLayer  .setIcon(iconEffects);
+    btnShape  .setIcon(iconShapes);
+    btnHand   .setIcon(iconHand);
+    btnComment.setIcon(iconComment);
+    btnSolo   .setIcon(iconSolo);
 
 
     menuBarMenus = 
     [
-        // menuMainFile,
-        // menuMainPreferences,
-        // menuMainDebug,
-        // menuMainHelp,
         menuFlow,
         menuData,
         menuSets,
@@ -86295,6 +86312,17 @@ function updatePanMode(enabled)
     panMode = enabled;  
     currentMenuButton = panMode ? btnHand : null;
     btnHand.update();
+}
+
+
+
+function updateSoloMode(enabled)
+{
+    graphView.soloMode = enabled;  
+    btnSolo.update();
+
+    if (graphView.soloMode) graphView.soloNode(null);
+    else                    graphView.unsoloNode();
 }
 
 
@@ -87328,7 +87356,8 @@ class GraphView
 
     connPointerId  = -1;
 
-    //_soloNode      = null;
+    soloMode       = false;
+    _soloNode      = null;
     
     selecting      = false;
     selectionRect  = Rect.NaN;
@@ -87808,41 +87837,41 @@ GraphView.prototype.updateNodeWireTransforms = function(nodes)
 
 
 
-// GraphView.prototype.soloNode = function(node)
-// {
-//     this._soloNode = node;
+GraphView.prototype.soloNode = function(node)
+{
+    this._soloNode = node;
 
-//     graph.pageNodes.forEach(n => 
-//         n.div.style.opacity = 
-//                 n == this._soloNode
-//             || n.isConnectedTo(this._soloNode)
-//             ? 1 
-//             : 0.12);
+    graph.pageNodes.forEach(n => 
+        n.div.style.opacity = 
+                n == this._soloNode
+            || n.isConnectedTo(this._soloNode)
+            ? 1 
+            : 0.12);
 
-//     graph.connections.forEach(c =>
-//     { 
-//         c.wire.svg.style.opacity = 
-//                c.input  && this._soloNode == c.input .node
-//             || c.output && this._soloNode == c.output.node
-//             ? 1 
-//             : 0.09;
-//     });
-
-
-//     this.updateWires(graph.connections.map(c => c.wire));
-// };
+    graph.connections.forEach(c =>
+    { 
+        c.wire.svg.style.opacity = 
+               c.input  && this._soloNode == c.input .node
+            || c.output && this._soloNode == c.output.node
+            ? 1 
+            : 0.09;
+    });
 
 
+    this.updateWires(graph.connections.map(c => c.wire));
+};
 
-// GraphView.prototype.unsoloNode = function()
-// {
-//     this._soloNode = null;
 
-//     graph.pageNodes  .forEach(n => n.div     .style.opacity = 1);
-//     graph.connections.forEach(c => c.wire.svg.style.opacity = 1);
 
-//     this.updateWires(graph.connections.map(c => c.wire));
-// };
+GraphView.prototype.unsoloNode = function()
+{
+    this._soloNode = null;
+
+    graph.pageNodes  .forEach(n => n.div     .style.opacity = 1);
+    graph.connections.forEach(c => c.wire.svg.style.opacity = 1);
+
+    this.updateWires(graph.connections.map(c => c.wire));
+};
 
 
 
@@ -88464,6 +88493,10 @@ GraphView.prototype.createEvents = function()
 
     this.div.addEventListener('pointerleave', e => 
     {
+        if (graphView.soloMode)
+            graphView.soloNode(null);
+
+            
         // if (this.tempConn)
         // {
         //     try { this.div.setPointerCapture(e.pointerId); } catch {}
@@ -98307,12 +98340,9 @@ Operator.prototype.createNode = function()
         this.div.over      = true;
         graphView.overNode = this;
         
-        // if (    e.altKey
-        //     && !getCtrlKey(e)
-        //     &&  e.shiftKey
-        //     &&  graphView._soloNode != this
-        //     && !altPressedInMenu) 
-        //     graphView.soloNode(this);
+        if (   graphView.soloMode
+            && graphView._soloNode != this) 
+            graphView.soloNode(this);
         
         this.updateNode();
     });
@@ -98324,10 +98354,7 @@ Operator.prototype.createNode = function()
         this.div.over      = false;
         graphView.overNode = null;
         
-        // if (   (   !e.altKey
-        //         ||  getCtrlKey(e)
-        //         || !e.shiftKey)
-        //     && graphView._soloNode == this)
+        // if (graphView._soloNode == this)
         //     graphView.unsoloNode();
 
         this.updateNode();
@@ -100827,12 +100854,17 @@ extends OperatorBase
     {
         super.updateValues(requestId, actionId, updateParamId, paramIds, values);
 
-        this.length = values[paramIds.findIndex(id => id == 'length')].value;
+        const length = values[paramIds.findIndex(id => id == 'length')];
+        const type   = values[paramIds.findIndex(id => id == 'type'  )];
 
-        const type = values[paramIds.findIndex(id => id == 'type')];
-        consoleAssert(LIST_VALUES.includes(type.value));
+        if (   length 
+            && type)
+        {
+            this.length = length.value;
+            consoleAssert(LIST_VALUES.includes(type.value));
 
-        this.outputs[0].types = [type.value];
+            this.outputs[0].types = [type.value];
+        }
     }
 
 
@@ -121554,20 +121586,24 @@ function validateInit(lastValidCheck)
 
     try
     {
-        if (checkTrialExists())
-        {
-            if (checkSubOrTrialActive())
+        checkTrialExists()
+            .then(trialExists => 
             {
-                uiSetLocalData('lastValidCheck', today);
-                initGenerator();
-            }
-            else
-                showSubscriptionDialog(false);
-        }
-        else
-        {
-            showEulaDialog();
-        }
+                if (trialExists)
+                    return checkSubOrTrialActive();
+                else 
+                    showEulaDialog();
+            })
+            .then(subOrTrialActive => 
+            {
+                if (subOrTrialActive) 
+                {
+                    uiSetLocalData('lastValidCheck', today);
+                    initGenerator();
+                }
+                else
+                    showSubscriptionDialog(false);
+            });
     }
     catch (e)
     {
@@ -121622,11 +121658,22 @@ document.addEventListener('keydown', e =>
 
     // save to file
     else if (   e.code == 'KeyS'
-        && getCtrlKey(e)
-        && e.shiftKey)
+        &&  getCtrlKey(e)
+        &&  e.shiftKey
+        && !e.altKey)
     {
         e.preventDefault();
         uiSaveSelectionToLocalFile();
+    }
+
+    // solo mode
+    else if (   e.code == 'KeyS'
+        && !getCtrlKey(e)
+        && !e.shiftKey
+        && e.altKey)
+    {
+        e.preventDefault();
+        updateSoloMode(!graphView.soloMode);
     }
 
     // cut
@@ -121850,9 +121897,6 @@ document.addEventListener('keydown', e =>
 
     else if (e.key == 'Shift')
     {
-        // if (graphView._soloNode)
-        //     graphView.unsoloNode();
-        
         if (    numberControlChanging
             && !numberControlChanging.shiftDown)
         {
@@ -121905,12 +121949,6 @@ document.addEventListener('keydown', e =>
              && !e.shiftKey
              && !getCtrlKey(e))
     {
-        // if ( graphView.overNode
-        //       &&  isEmpty(currentMenus)
-        //       && !altPressedInMenu)
-        //     graphView.soloNode(graphView.overNode);
-
-        // else 
         if (   currentMenus.length == 1
             && currentMenus[0] == menuColor)
         {
@@ -121918,16 +121956,6 @@ document.addEventListener('keydown', e =>
               altPressedInMenu = true;
         }
     }
-
-    // else if (    e.key == 'Shift'
-    //          &&  e.altKey
-    //          && !getCtrlKey(e))
-    // {
-    //     if ( graphView.overNode
-    //           &&  isEmpty(currentMenus)
-    //           && !altPressedInMenu)
-    //         graphView.soloNode(graphView.overNode);
-    // }
 
     else if (    e.key == 'Alt'
              && !e.shiftKey
@@ -122016,9 +122044,6 @@ document.addEventListener('keyup', e =>
                 graphView.zoomSelecting = false;
             }
         }
-        // else if (graphView._soloNode
-        //       && isEmpty(currentMenus))
-        //     graphView.unsoloNode();
 
         else if (currentMenus.length == 1
             && currentMenus[0] == menuColor)
@@ -122027,14 +122052,6 @@ document.addEventListener('keyup', e =>
 
         altPressedInMenu = false;
     }
-
-    // else if (e.key == 'Shift'
-    //       && e.altKey)
-    // {
-    //     if (   graphView._soloNode
-    //         && isEmpty(currentMenus))
-    //         graphView.unsoloNode();
-    // }
 
     else if (e.key == 'Control')
     {
@@ -122805,7 +122822,9 @@ function initSearchBox(query)
     if (   query.length == 0
         || found.length > 0)
     {
-        search.style.height = searchText.offsetHeight + searchResults.offsetHeight;
+        search.style.height = Math.min(
+            searchText.offsetHeight + searchResults.offsetHeight,
+            graphView.div.offsetHeight - search.offsetTop - 40);
     }
     else
     {
@@ -122920,7 +122939,7 @@ function checkTrialExists()
         })
         .catch(e =>
         {
-            console.error(e);
+            consoleError(e);
             throw e;
         });
 }
@@ -122941,7 +122960,7 @@ function checkSubOrTrialActive()
         })
         .catch(e =>
         {
-            console.error(e);
+            consoleError(e);
             throw e;
         });
 }
@@ -122962,7 +122981,7 @@ function checkRemainingTrialDays()
         })
         .catch(e =>
         {
-            console.error(e);
+            consoleError(e);
             throw e;
         });
 }
@@ -123915,11 +123934,10 @@ function updateZoomTooltip()
               '<p style="margin-top: 1px; width: 100%; text-align: center; position: relative; left: -2px;">Zoom/view options</p>'
             + '<p style="margin-top: 1.25em">'
             + '    An outline around the zoom means<br/>'
-            + '    that value controls are too small<br/>'
-            + '    to be adjusted and the whole node<br/>'
-            + '    is moved instead.'
+            + '    that values are too small to adjust<br/>'
+            + '    and nodes can only be moved.'
             + '</p>'
-            + '<p style="margin-top: 1.25em">The threshold can be set in the<br/>preferences menu.</p>';
+            + '<p style="margin-top: 1.25em">The threshold can be changed in the<br/>preferences menu.</p>';
 
         ttMinValueZoom.style.height = '130px';
     }
