@@ -86,9 +86,9 @@ GraphView.prototype.soloNode = function(node)
     graph.pageNodes.forEach(n => 
         n.div.style.opacity = 
                 n == this._soloNode
-            || n.isConnectedTo(this._soloNode)
+            //|| n.isConnectedTo(this._soloNode)
             ? 1 
-            : 0.12);
+            : 0.2);
 
     graph.connections.forEach(c =>
     { 
@@ -96,7 +96,7 @@ GraphView.prototype.soloNode = function(node)
                c.input  && this._soloNode == c.input .node
             || c.output && this._soloNode == c.output.node
             ? 1 
-            : 0.09;
+            : 0.15;
     });
 
 

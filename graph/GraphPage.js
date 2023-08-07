@@ -45,7 +45,7 @@ class GraphPage
 
         this._pan = pan;
         
-        graphView.updatePanAndZoom(true);
+        graphView.updatePanAndZoom(false);//true);
     }
     
 
@@ -83,7 +83,7 @@ class GraphPage
             
             graphView.panZoomTimer = setTimeout(() => 
             {
-                graphView.updatePanAndZoom(this.zoom != graphView.oldZoom);
+                graphView.updatePanAndZoom(false);//this.zoom != graphView.oldZoom);
                 graphView.panZoomTimer = null;
             });
         }

@@ -959,51 +959,51 @@ function initDataModeMenus()
 {
     menuPageData = new Menu('Pages menu', false, false);
     menuPageData.addItems([
-        // new MenuItem('Delete all pages',  { enabled: false, callback: () => { hideAllMenus(); dataModeDeleteAllPages(); }}),
-        // new MenuItem('',                  { enabled: false, separator: true }),
-        new MenuItem('Delete page',       { callback: () => { hideAllMenus(); dataModeDeletePage(menuPageData._div.page); }})]);
+        // new MenuItem('Delete all pages',  null, { enabled: false, callback: () => { hideAllMenus(); dataModeDeleteAllPages(); }}),
+        // new MenuItem('',                  null, { enabled: false, separator: true }),
+        new MenuItem('Delete page',       null, { callback: () => { hideAllMenus(); dataModeDeletePage(menuPageData._div.page); }})]);
 
 
     menuPageDataPages = new Menu('Pages menu', false, false);
     menuPageDataPages.addItems([
-        new MenuItem('Expand all',       { callback: () => { hideAllMenus(); expandAllPageData();   }}),
-        new MenuItem('Collapse all',     { callback: () => { hideAllMenus(); collapseAllPageData(); }}),
-        new MenuItem('',                 { separator: true }),
-        new MenuItem('Delete all pages', { callback: () => { hideAllMenus(); dataModeDeleteAllPages(); }})]);
+        new MenuItem('Expand all',       null, { callback: () => { hideAllMenus(); expandAllPageData();   }}),
+        new MenuItem('Collapse all',     null, { callback: () => { hideAllMenus(); collapseAllPageData(); }}),
+        new MenuItem('',                 null, { separator: true }),
+        new MenuItem('Delete all pages', null, { callback: () => { hideAllMenus(); dataModeDeleteAllPages(); }})]);
 
 
     menuNodeData = new Menu('Node menu', false, false);
     menuNodeData.addItems([
-        new MenuItem('Remove path from ID',     { callback: () => { hideAllMenus(); dataModeDeletePathFromNodeId(menuNodeData._div.node); }}),
-        new MenuItem('',                        { separator: true }),
-        new MenuItem('Delete connections from', { callback: () => { hideAllMenus(); dataModeDeleteConnectionsFromNode     (menuNodeData._div.node); }}),
-        new MenuItem('Delete connections to'  , { callback: () => { hideAllMenus(); dataModeDeleteConnectionsToNode       (menuNodeData._div.node); }}),
-        new MenuItem('Delete all connections',  { callback: () => { hideAllMenus(); dataModeDeleteConnectionsToAndFromNode(menuNodeData._div.node); }}),
-        new MenuItem('',                        { separator: true }),
-        new MenuItem('Delete node',             { callback: () => { hideAllMenus(); dataModeDeleteNode(menuNodeData._div.node); }})]);
+        new MenuItem('Remove path from ID',     null, { callback: () => { hideAllMenus(); dataModeDeletePathFromNodeId(menuNodeData._div.node); }}),
+        new MenuItem('',                        null, { separator: true }),
+        new MenuItem('Delete connections from', null, { callback: () => { hideAllMenus(); dataModeDeleteConnectionsFromNode     (menuNodeData._div.node); }}),
+        new MenuItem('Delete connections to'  , null, { callback: () => { hideAllMenus(); dataModeDeleteConnectionsToNode       (menuNodeData._div.node); }}),
+        new MenuItem('Delete all connections',  null, { callback: () => { hideAllMenus(); dataModeDeleteConnectionsToAndFromNode(menuNodeData._div.node); }}),
+        new MenuItem('',                        null, { separator: true }),
+        new MenuItem('Delete node',             null, { callback: () => { hideAllMenus(); dataModeDeleteNode(menuNodeData._div.node); }})]);
 
 
     menuNodeDataNodes = new Menu('Nodes menu', false, false);
     menuNodeDataNodes.addItems([
-        new MenuItem('Expand all',       { callback: () => { hideAllMenus(); expandAllNodeData();   }}),
-        new MenuItem('Collapse all',     { callback: () => { hideAllMenus(); collapseAllNodeData(); }}),
-        new MenuItem('',                 { separator: true }),
-        new MenuItem('Delete all nodes', { callback: () => { hideAllMenus(); dataModeDeleteAllNodes(); }})]);
+        new MenuItem('Expand all',       null, { callback: () => { hideAllMenus(); expandAllNodeData();   }}),
+        new MenuItem('Collapse all',     null, { callback: () => { hideAllMenus(); collapseAllNodeData(); }}),
+        new MenuItem('',                 null, { separator: true }),
+        new MenuItem('Delete all nodes', null, { callback: () => { hideAllMenus(); dataModeDeleteAllNodes(); }})]);
 
 
     menuConnData = new Menu('Connection menu', false, false);
     menuConnData.addItems([
-        new MenuItem('Delete connection', { callback: () => { hideAllMenus(); dataModeDeleteConnection(menuConnData._div.conn); }})]);
+        new MenuItem('Delete connection', null, { callback: () => { hideAllMenus(); dataModeDeleteConnection(menuConnData._div.conn); }})]);
 
 
     menuConnDataConns = new Menu('Connections menu', false, false);
     menuConnDataConns.addItems([
-        new MenuItem('Expand all',               { callback: () => { hideAllMenus(); expandAllConnData();   }}),
-        new MenuItem('Collapse all',             { callback: () => { hideAllMenus(); collapseAllConnData(); }}),
-        new MenuItem('',                         { separator: true }),
-        // new MenuItem('List all connection keys', { callback: () => { hideAllMenus(); uiQueueMessageToFigma({cmd: 'figLogAllSavedConnKeys', darkMode: darkMode}); }}),
-        // new MenuItem('',                         { separator: true }),
-        new MenuItem('Delete all connections',   { callback: e => { hideAllMenus(); dataModeDeleteAllConnections(); }})]);
+        new MenuItem('Expand all',               null, { callback: () => { hideAllMenus(); expandAllConnData();   }}),
+        new MenuItem('Collapse all',             null, { callback: () => { hideAllMenus(); collapseAllConnData(); }}),
+        new MenuItem('',                         null, { separator: true }),
+        // new MenuItem('List all connection keys', null, { callback: () => { hideAllMenus(); uiQueueMessageToFigma({cmd: 'figLogAllSavedConnKeys', darkMode: darkMode}); }}),
+        // new MenuItem('',                         null, { separator: true }),
+        new MenuItem('Delete all connections',   null, { callback: e => { hideAllMenus(); dataModeDeleteAllConnections(); }})]);
 }
 
 
@@ -1013,9 +1013,9 @@ function initTextMenu(textbox)
     menuText.clearItems();
 
     menuText.addItems([
-        new MenuItem('Cut',   {enabled: !textbox.control || !textbox.control.readOnly, callback: () => { hideAllMenus(); document.execCommand('cut'); }}),
-        new MenuItem('Copy',  {                                                        callback: () => { hideAllMenus(); document.execCommand('copy'); }}),
-        new MenuItem('Paste', {enabled: !textbox.control || !textbox.control.readOnly, callback: () => { hideAllMenus(); document.execCommand('paste'); }})]);
+        new MenuItem('Cut',   null, {enabled: !textbox.control || !textbox.control.readOnly, callback: () => { hideAllMenus(); document.execCommand('cut'); }}),
+        new MenuItem('Copy',  null, {                                                        callback: () => { hideAllMenus(); document.execCommand('copy'); }}),
+        new MenuItem('Paste', null, {enabled: !textbox.control || !textbox.control.readOnly, callback: () => { hideAllMenus(); document.execCommand('paste'); }})]);
 }
 
 
@@ -1025,9 +1025,9 @@ function initCopyMenu()
     menuCopy.clearItems();
 
     menuCopy.addItems([
-        new MenuItem('Copy',       {enabled: elementHasSelectedText(crashDialogBody), callback: () => { hideAllMenus(); document.execCommand('copy'); }}),
-        new MenuItem('',           {separator: true }),
-        new MenuItem('Select all', {callback: () => { hideAllMenus(); selectDivText(crashDetails); }})]);
+        new MenuItem('Copy',       null, {enabled: elementHasSelectedText(crashDialogBody), callback: () => { hideAllMenus(); document.execCommand('copy'); }}),
+        new MenuItem('',           null, {separator: true }),
+        new MenuItem('Select all', null, {callback: () => { hideAllMenus(); selectDivText(crashDetails); }})]);
 }
 
 
@@ -1046,14 +1046,14 @@ function initTextboxMenu(textbox)
     const param = textbox.control.param;
 
     menuTextbox.addItems([
-                          new MenuItem('Cut',          { enabled: !textbox.control.readOnly, callback: () => { hideAllMenus(); document.execCommand('cut'); }}),
-                          new MenuItem('Copy',         {                                     callback: () => { hideAllMenus(); document.execCommand('copy'); }}),
-                          new MenuItem('Paste',        { enabled: !textbox.control.readOnly, callback: () => { hideAllMenus(); document.execCommand('paste'); }}),
-                          new MenuItem('',             { separator: true }),
-        menuItemLeft    = new MenuItem('Align left',   { callback: () => { hideAllMenus(); actionManager.do(new SetParamSettingAction(param, 'align', 'left'   )); }}),
-        menuItemCenter  = new MenuItem('Align center', { callback: () => { hideAllMenus(); actionManager.do(new SetParamSettingAction(param, 'align', 'center' )); }}),
-        menuItemRight   = new MenuItem('Align right',  { callback: () => { hideAllMenus(); actionManager.do(new SetParamSettingAction(param, 'align', 'right'  )); }}),
-        menuItemJustify = new MenuItem('Justify',      { callback: () => { hideAllMenus(); actionManager.do(new SetParamSettingAction(param, 'align', 'justify')); }})]);
+                          new MenuItem('Cut',          null, { enabled: !textbox.control.readOnly, callback: () => { hideAllMenus(); document.execCommand('cut'); }}),
+                          new MenuItem('Copy',         null, {                                     callback: () => { hideAllMenus(); document.execCommand('copy'); }}),
+                          new MenuItem('Paste',        null, { enabled: !textbox.control.readOnly, callback: () => { hideAllMenus(); document.execCommand('paste'); }}),
+                          new MenuItem('',             null, { separator: true }),
+        menuItemLeft    = new MenuItem('Align left',   null, { callback: () => { hideAllMenus(); actionManager.do(new SetParamSettingAction(param, 'align', 'left'   )); }}),
+        menuItemCenter  = new MenuItem('Align center', null, { callback: () => { hideAllMenus(); actionManager.do(new SetParamSettingAction(param, 'align', 'center' )); }}),
+        menuItemRight   = new MenuItem('Align right',  null, { callback: () => { hideAllMenus(); actionManager.do(new SetParamSettingAction(param, 'align', 'right'  )); }}),
+        menuItemJustify = new MenuItem('Justify',      null, { callback: () => { hideAllMenus(); actionManager.do(new SetParamSettingAction(param, 'align', 'justify')); }})]);
 
 
     const align = textbox.control.getTextAlignment();
@@ -1086,11 +1086,11 @@ function updateSoloMode(enabled)
 
 
 
-function getCreateOptions(e, opt = {})
+function getCreateOptions(e, options = {})
 {
     return {
         insert:      e.ctrlKey,
         autoConnect: e.ctrlKey && e.altKey,
-        ...opt
+        ...options
     };
 }

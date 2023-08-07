@@ -28,44 +28,60 @@ function hideSearchBox()
 {
     search.style.display  = 'none';
     searchItems.innerHTML = '';
+
+    if (graphView._soloNode)
+        graphView.unsoloNode();
+
+    // if (   search.oldPan
+    //     && search.oldZoom)
+    // {
+    //     graph.currentPage.setPanAndZoom(
+    //         search.oldPan, 
+    //         search.oldZoom);
+
+    //     search.oldPan  = null;
+    //     search.oldZoom = null;
+    // }
 }
 
 
 
 function initSearchBox(query)
 {
-    const found = [];
-    
-    
+    search.found = [];
     search.nodes = false;
+
 
     if (query != '')
     {
         if (query.charAt(0) == '/')
         {
+            query = query.substring(1);
             search.nodes = true;
 
             for (const node of graph.currentPage.nodes)
             {
                 if (node.name.toLowerCase().includes(query.toLowerCase()))
-                    found.push(node);
+                    search.found.push(node);
             }
         }
         else
         {
+            search.nodes = false;
+
             for (const menu of menuBarMenus)
             {
                 for (const item of menu.items)
                 {
                     if (   item.name.toLowerCase().includes(query.toLowerCase())
                         && item.callback)
-                        found.push(item);
+                        search.found.push(item);
                 }
             }
         }
 
 
-        found.sort((_a, _b) => 
+        search.found.sort((_a, _b) => 
         {
             const a = _a.name.toLowerCase().replaceAll(' . . .', '').replaceAll('. . . ', '').replaceAll('...', '');
             const b = _b.name.toLowerCase().replaceAll(' . . .', '').replaceAll('. . . ', '').replaceAll('...', '');
@@ -86,31 +102,41 @@ function initSearchBox(query)
     
     searchItems.innerHTML = '';
 
-    searchIndex = found.length > 0 ? 0 : -1;
+    searchIndex = search.found.length > 0 ? 0 : -1;
 
 
-    for (let i = 0; i < found.length; i++)
+    for (let i = 0; i < search.found.length; i++)
     {
-        const item   = found[i];
+        const item   = search.found[i];
 
-        const result = createDiv('resultItem');
-        const icon   = createDiv('resultIcon')
-        const legend = createDiv('resultLegend')
+        const result = createDiv('resultItem'  );
+        const icon   = createDiv('resultIcon'  );
+        const legend = createDiv('resultLegend');
 
 
-        result.innerHTML = item.searchName;
+        result.innerHTML = 
+            search.nodes 
+            ? item.name 
+            : item.searchName;
+
 
         icon.innerHTML = 
             darkMode
             ? item.icon
             : item.icon.replaceAll('white', 'black');
 
+        
+        let type = null;
 
-        if (item.createType != '')
-            legend.style.background = rgb2style(rgbFromType(item.createType, true));
+             if (item.createType && item.createType != '') type = item.createType;
+        else if (item.type       && item.type       != '') type = item.type;
+
+        if (type) legend.style.background = rgb2style(rgbFromType(type, true));
+
 
         if (!search.nodes)
             result.callback = item.callback;
+
 
         result.index = i;
 
@@ -123,9 +149,6 @@ function initSearchBox(query)
         {
             searchIndex = result.index;
             updateSearchBox();
-
-            if (search.nodes)
-                graphView.zoomToNode(found[searchIndex])
         });
 
         searchItems.appendChild(result);
@@ -133,17 +156,19 @@ function initSearchBox(query)
      
 
     searchResults.style.paddingBottom = 
-           found.length > 0 
-        && found.length < 10
+           search.found.length > 0 
+        && search.found.length < 10
         ? '8px'
         : 0;
 
     if (   query.length == 0
-        || found.length > 0)
+        || search.found.length > 0)
     {
         search.style.height = Math.min(
             searchText.offsetHeight + searchResults.offsetHeight,
-            graphView.div.offsetHeight - search.offsetTop - 40);
+            graphView.div.offsetHeight - search.offsetTop - 100);
+
+        noSearchResults.style.display = 'none';
     }
     else
     {
@@ -198,6 +223,14 @@ function updateSearchBox()
 
     if (vpos > searchResults.scrollTop + searchResults.offsetHeight - 32)
         searchResults.scrollTop = vpos + 32 - searchResults.offsetHeight;
+
+
+    if (   search.nodes
+        && searchIndex > -1)
+    {
+        graphView.soloNode(search.found[searchIndex]);
+        graphView.zoomToNodes([search.found[searchIndex]], false, search.offsetTop + search.offsetHeight)
+    }
 }
 
 

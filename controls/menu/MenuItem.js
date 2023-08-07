@@ -145,7 +145,7 @@ class MenuItem
 
             if (e.button == 0)
             {
-                this.button0   = true;
+                this.button0 = true;
 
                 try
                 {
@@ -160,6 +160,7 @@ class MenuItem
 
         this.div.addEventListener('pointerup', e => 
         {
+            console.log('pointerup');
             e.stopPropagation();
             e.preventDefault();
 

@@ -57,7 +57,7 @@ function uiSetWindowRect(x, y, width, height)
         cmd:   'figSetWindowRect', 
         x:      x,
         y:      y,
-        width:  Math.max(500, width),
+        width:  Math.max(660, width),
         height: height
     });
 }
@@ -68,7 +68,7 @@ function uiResizeWindow(width, height)
 {
     uiQueueMessageToFigma({ 
         cmd:   'figResizeWindow', 
-        width:  Math.max(600, width),
+        width:  Math.max(660, width),
         height: height
     });
 }

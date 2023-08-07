@@ -4849,8 +4849,7 @@ a
             <div id='whatsNewBody'>
                 <h1 style='margin-top: 20px;'>What's new</h1>
 
-                <p>•  fixed value update bugs</p>
-                <p>•  added Solo mode to isolate nodes and their connections</p>
+                <p>•  </p>
                 
                 <p><br/><br/><div id='chkHideWhatsNew'></div></p>
             </div>
@@ -4866,14 +4865,14 @@ a
 
     <input id='searchText' 
            type='text' 
-           placeholder="Search menu" 
+           placeholder="Search menu,&nbsp;&nbsp;'/' to search nodes" 
            spellcheck='false'
            autocomplete='off' />
 
     <div id='searchResults'>
         <div id='searchItems'></div>
     </div>
-    
+
     <div id='noSearchResults'>No matches</div>
 </div>
 
@@ -5206,7 +5205,7 @@ a
 
 
 
-const generatorVersion = 181;
+const generatorVersion = 183;
 
 
 const MAX_INT32        = 2147483647;
@@ -20697,19 +20696,27 @@ extends GOperator
             && column
             && row)
         {
-            const input = (await this.input.eval(parse)).toValue();
+            const input = this.input ? (await this.input.eval(parse)).toValue() : null;
 
             
-            if (isTable(input))
+            if (   input
+                && isTable(input))
             {
                 rows = input.items.length;
 
-                input.items.forEach(i => columns = Math.max(columns, i.items.length));
+                input.items.forEach(i => columns = Math.max(columns, i.items ? i.items.length : null));
 
-                this.value = 
-                    column.value < columns
-                    ? input.items[row.value].items[column.value].copy()
-                    : NullValue;
+                if (row.value < rows)
+                {
+                    const _row = input.items[row.value];
+
+                    if (column.value < columns)
+                        this.value = _row.items[column.value].copy()
+                    else
+                        this.value = NullValue;
+                }
+                else
+                    this.value = NullValue;
             }
             else
                 this.value = NullValue;
@@ -46215,7 +46222,7 @@ onerror = (event, source, line, pos, error) =>
 };
 
 
-const generatorVersion = 181;
+const generatorVersion = 183;
 
 
 const MAX_INT32        = 2147483647;
@@ -63877,19 +63884,27 @@ extends GOperator
             && column
             && row)
         {
-            const input = (await this.input.eval(parse)).toValue();
+            const input = this.input ? (await this.input.eval(parse)).toValue() : null;
 
             
-            if (isTable(input))
+            if (   input
+                && isTable(input))
             {
                 rows = input.items.length;
 
-                input.items.forEach(i => columns = Math.max(columns, i.items.length));
+                input.items.forEach(i => columns = Math.max(columns, i.items ? i.items.length : null));
 
-                this.value = 
-                    column.value < columns
-                    ? input.items[row.value].items[column.value].copy()
-                    : NullValue;
+                if (row.value < rows)
+                {
+                    const _row = input.items[row.value];
+
+                    if (column.value < columns)
+                        this.value = _row.items[column.value].copy()
+                    else
+                        this.value = NullValue;
+                }
+                else
+                    this.value = NullValue;
             }
             else
                 this.value = NullValue;
@@ -84961,7 +84976,7 @@ class MenuItem
 
             if (e.button == 0)
             {
-                this.button0   = true;
+                this.button0 = true;
 
                 try
                 {
@@ -84976,6 +84991,7 @@ class MenuItem
 
         this.div.addEventListener('pointerup', e => 
         {
+            console.log('pointerup');
             e.stopPropagation();
             e.preventDefault();
 
@@ -86200,51 +86216,51 @@ function initDataModeMenus()
 {
     menuPageData = new Menu('Pages menu', false, false);
     menuPageData.addItems([
-        // new MenuItem('Delete all pages',  { enabled: false, callback: () => { hideAllMenus(); dataModeDeleteAllPages(); }}),
-        // new MenuItem('',                  { enabled: false, separator: true }),
-        new MenuItem('Delete page',       { callback: () => { hideAllMenus(); dataModeDeletePage(menuPageData._div.page); }})]);
+        // new MenuItem('Delete all pages',  null, { enabled: false, callback: () => { hideAllMenus(); dataModeDeleteAllPages(); }}),
+        // new MenuItem('',                  null, { enabled: false, separator: true }),
+        new MenuItem('Delete page',       null, { callback: () => { hideAllMenus(); dataModeDeletePage(menuPageData._div.page); }})]);
 
 
     menuPageDataPages = new Menu('Pages menu', false, false);
     menuPageDataPages.addItems([
-        new MenuItem('Expand all',       { callback: () => { hideAllMenus(); expandAllPageData();   }}),
-        new MenuItem('Collapse all',     { callback: () => { hideAllMenus(); collapseAllPageData(); }}),
-        new MenuItem('',                 { separator: true }),
-        new MenuItem('Delete all pages', { callback: () => { hideAllMenus(); dataModeDeleteAllPages(); }})]);
+        new MenuItem('Expand all',       null, { callback: () => { hideAllMenus(); expandAllPageData();   }}),
+        new MenuItem('Collapse all',     null, { callback: () => { hideAllMenus(); collapseAllPageData(); }}),
+        new MenuItem('',                 null, { separator: true }),
+        new MenuItem('Delete all pages', null, { callback: () => { hideAllMenus(); dataModeDeleteAllPages(); }})]);
 
 
     menuNodeData = new Menu('Node menu', false, false);
     menuNodeData.addItems([
-        new MenuItem('Remove path from ID',     { callback: () => { hideAllMenus(); dataModeDeletePathFromNodeId(menuNodeData._div.node); }}),
-        new MenuItem('',                        { separator: true }),
-        new MenuItem('Delete connections from', { callback: () => { hideAllMenus(); dataModeDeleteConnectionsFromNode     (menuNodeData._div.node); }}),
-        new MenuItem('Delete connections to'  , { callback: () => { hideAllMenus(); dataModeDeleteConnectionsToNode       (menuNodeData._div.node); }}),
-        new MenuItem('Delete all connections',  { callback: () => { hideAllMenus(); dataModeDeleteConnectionsToAndFromNode(menuNodeData._div.node); }}),
-        new MenuItem('',                        { separator: true }),
-        new MenuItem('Delete node',             { callback: () => { hideAllMenus(); dataModeDeleteNode(menuNodeData._div.node); }})]);
+        new MenuItem('Remove path from ID',     null, { callback: () => { hideAllMenus(); dataModeDeletePathFromNodeId(menuNodeData._div.node); }}),
+        new MenuItem('',                        null, { separator: true }),
+        new MenuItem('Delete connections from', null, { callback: () => { hideAllMenus(); dataModeDeleteConnectionsFromNode     (menuNodeData._div.node); }}),
+        new MenuItem('Delete connections to'  , null, { callback: () => { hideAllMenus(); dataModeDeleteConnectionsToNode       (menuNodeData._div.node); }}),
+        new MenuItem('Delete all connections',  null, { callback: () => { hideAllMenus(); dataModeDeleteConnectionsToAndFromNode(menuNodeData._div.node); }}),
+        new MenuItem('',                        null, { separator: true }),
+        new MenuItem('Delete node',             null, { callback: () => { hideAllMenus(); dataModeDeleteNode(menuNodeData._div.node); }})]);
 
 
     menuNodeDataNodes = new Menu('Nodes menu', false, false);
     menuNodeDataNodes.addItems([
-        new MenuItem('Expand all',       { callback: () => { hideAllMenus(); expandAllNodeData();   }}),
-        new MenuItem('Collapse all',     { callback: () => { hideAllMenus(); collapseAllNodeData(); }}),
-        new MenuItem('',                 { separator: true }),
-        new MenuItem('Delete all nodes', { callback: () => { hideAllMenus(); dataModeDeleteAllNodes(); }})]);
+        new MenuItem('Expand all',       null, { callback: () => { hideAllMenus(); expandAllNodeData();   }}),
+        new MenuItem('Collapse all',     null, { callback: () => { hideAllMenus(); collapseAllNodeData(); }}),
+        new MenuItem('',                 null, { separator: true }),
+        new MenuItem('Delete all nodes', null, { callback: () => { hideAllMenus(); dataModeDeleteAllNodes(); }})]);
 
 
     menuConnData = new Menu('Connection menu', false, false);
     menuConnData.addItems([
-        new MenuItem('Delete connection', { callback: () => { hideAllMenus(); dataModeDeleteConnection(menuConnData._div.conn); }})]);
+        new MenuItem('Delete connection', null, { callback: () => { hideAllMenus(); dataModeDeleteConnection(menuConnData._div.conn); }})]);
 
 
     menuConnDataConns = new Menu('Connections menu', false, false);
     menuConnDataConns.addItems([
-        new MenuItem('Expand all',               { callback: () => { hideAllMenus(); expandAllConnData();   }}),
-        new MenuItem('Collapse all',             { callback: () => { hideAllMenus(); collapseAllConnData(); }}),
-        new MenuItem('',                         { separator: true }),
-        // new MenuItem('List all connection keys', { callback: () => { hideAllMenus(); uiQueueMessageToFigma({cmd: 'figLogAllSavedConnKeys', darkMode: darkMode}); }}),
-        // new MenuItem('',                         { separator: true }),
-        new MenuItem('Delete all connections',   { callback: e => { hideAllMenus(); dataModeDeleteAllConnections(); }})]);
+        new MenuItem('Expand all',               null, { callback: () => { hideAllMenus(); expandAllConnData();   }}),
+        new MenuItem('Collapse all',             null, { callback: () => { hideAllMenus(); collapseAllConnData(); }}),
+        new MenuItem('',                         null, { separator: true }),
+        // new MenuItem('List all connection keys', null, { callback: () => { hideAllMenus(); uiQueueMessageToFigma({cmd: 'figLogAllSavedConnKeys', darkMode: darkMode}); }}),
+        // new MenuItem('',                         null, { separator: true }),
+        new MenuItem('Delete all connections',   null, { callback: e => { hideAllMenus(); dataModeDeleteAllConnections(); }})]);
 }
 
 
@@ -86254,9 +86270,9 @@ function initTextMenu(textbox)
     menuText.clearItems();
 
     menuText.addItems([
-        new MenuItem('Cut',   {enabled: !textbox.control || !textbox.control.readOnly, callback: () => { hideAllMenus(); document.execCommand('cut'); }}),
-        new MenuItem('Copy',  {                                                        callback: () => { hideAllMenus(); document.execCommand('copy'); }}),
-        new MenuItem('Paste', {enabled: !textbox.control || !textbox.control.readOnly, callback: () => { hideAllMenus(); document.execCommand('paste'); }})]);
+        new MenuItem('Cut',   null, {enabled: !textbox.control || !textbox.control.readOnly, callback: () => { hideAllMenus(); document.execCommand('cut'); }}),
+        new MenuItem('Copy',  null, {                                                        callback: () => { hideAllMenus(); document.execCommand('copy'); }}),
+        new MenuItem('Paste', null, {enabled: !textbox.control || !textbox.control.readOnly, callback: () => { hideAllMenus(); document.execCommand('paste'); }})]);
 }
 
 
@@ -86266,9 +86282,9 @@ function initCopyMenu()
     menuCopy.clearItems();
 
     menuCopy.addItems([
-        new MenuItem('Copy',       {enabled: elementHasSelectedText(crashDialogBody), callback: () => { hideAllMenus(); document.execCommand('copy'); }}),
-        new MenuItem('',           {separator: true }),
-        new MenuItem('Select all', {callback: () => { hideAllMenus(); selectDivText(crashDetails); }})]);
+        new MenuItem('Copy',       null, {enabled: elementHasSelectedText(crashDialogBody), callback: () => { hideAllMenus(); document.execCommand('copy'); }}),
+        new MenuItem('',           null, {separator: true }),
+        new MenuItem('Select all', null, {callback: () => { hideAllMenus(); selectDivText(crashDetails); }})]);
 }
 
 
@@ -86287,14 +86303,14 @@ function initTextboxMenu(textbox)
     const param = textbox.control.param;
 
     menuTextbox.addItems([
-                          new MenuItem('Cut',          { enabled: !textbox.control.readOnly, callback: () => { hideAllMenus(); document.execCommand('cut'); }}),
-                          new MenuItem('Copy',         {                                     callback: () => { hideAllMenus(); document.execCommand('copy'); }}),
-                          new MenuItem('Paste',        { enabled: !textbox.control.readOnly, callback: () => { hideAllMenus(); document.execCommand('paste'); }}),
-                          new MenuItem('',             { separator: true }),
-        menuItemLeft    = new MenuItem('Align left',   { callback: () => { hideAllMenus(); actionManager.do(new SetParamSettingAction(param, 'align', 'left'   )); }}),
-        menuItemCenter  = new MenuItem('Align center', { callback: () => { hideAllMenus(); actionManager.do(new SetParamSettingAction(param, 'align', 'center' )); }}),
-        menuItemRight   = new MenuItem('Align right',  { callback: () => { hideAllMenus(); actionManager.do(new SetParamSettingAction(param, 'align', 'right'  )); }}),
-        menuItemJustify = new MenuItem('Justify',      { callback: () => { hideAllMenus(); actionManager.do(new SetParamSettingAction(param, 'align', 'justify')); }})]);
+                          new MenuItem('Cut',          null, { enabled: !textbox.control.readOnly, callback: () => { hideAllMenus(); document.execCommand('cut'); }}),
+                          new MenuItem('Copy',         null, {                                     callback: () => { hideAllMenus(); document.execCommand('copy'); }}),
+                          new MenuItem('Paste',        null, { enabled: !textbox.control.readOnly, callback: () => { hideAllMenus(); document.execCommand('paste'); }}),
+                          new MenuItem('',             null, { separator: true }),
+        menuItemLeft    = new MenuItem('Align left',   null, { callback: () => { hideAllMenus(); actionManager.do(new SetParamSettingAction(param, 'align', 'left'   )); }}),
+        menuItemCenter  = new MenuItem('Align center', null, { callback: () => { hideAllMenus(); actionManager.do(new SetParamSettingAction(param, 'align', 'center' )); }}),
+        menuItemRight   = new MenuItem('Align right',  null, { callback: () => { hideAllMenus(); actionManager.do(new SetParamSettingAction(param, 'align', 'right'  )); }}),
+        menuItemJustify = new MenuItem('Justify',      null, { callback: () => { hideAllMenus(); actionManager.do(new SetParamSettingAction(param, 'align', 'justify')); }})]);
 
 
     const align = textbox.control.getTextAlignment();
@@ -86327,12 +86343,12 @@ function updateSoloMode(enabled)
 
 
 
-function getCreateOptions(e, opt = {})
+function getCreateOptions(e, options = {})
 {
     return {
         insert:      e.ctrlKey,
         autoConnect: e.ctrlKey && e.altKey,
-        ...opt
+        ...options
     };
 }
 
@@ -87844,9 +87860,9 @@ GraphView.prototype.soloNode = function(node)
     graph.pageNodes.forEach(n => 
         n.div.style.opacity = 
                 n == this._soloNode
-            || n.isConnectedTo(this._soloNode)
+            //|| n.isConnectedTo(this._soloNode)
             ? 1 
-            : 0.12);
+            : 0.2);
 
     graph.connections.forEach(c =>
     { 
@@ -87854,7 +87870,7 @@ GraphView.prototype.soloNode = function(node)
                c.input  && this._soloNode == c.input .node
             || c.output && this._soloNode == c.output.node
             ? 1 
-            : 0.09;
+            : 0.15;
     });
 
 
@@ -89105,21 +89121,24 @@ GraphView.prototype.zoomToSelection = function()
 
 
 
-GraphView.prototype.zoomToNodes = function(nodes)
+GraphView.prototype.zoomToNodes = function(nodes, zoom = true, topOffset = 0)
 {
     if (!isEmpty(nodes))
     {
         nodes.forEach(n => n.updateMeasureData());
         const offset = this.getAllNodeOffsets(nodes);
 
+        offset.y -= topOffset / graph.currentPage.zoom;
+        offset.h += topOffset / graph.currentPage.zoom;
+
         for (let i = 0; i < 5; i++) // need to do it a few times
-            this.zoomToRect(offset);
+            this.zoomToRect(offset, 40, zoom);
     }
 };
 
 
 
-GraphView.prototype.zoomToRect = function(rect, margin = 40)
+GraphView.prototype.zoomToRect = function(rect, margin = 40, zoom = true)
 {
     const viewRect   = this.measureData.clientRect;
 
@@ -89127,18 +89146,21 @@ GraphView.prototype.zoomToRect = function(rect, margin = 40)
     const rectAspect = rect.width     / rect.height;
 
 
-    graph.currentPage.zoom = 
-        viewRect.width >= viewRect.height
-    
-        ? (   rect.width >= rect.height
-           && rectAspect > viewAspect
-           ? (viewRect.width  - margin*2) / rect.width  
-           : (viewRect.height - margin*2) / rect.height)
-    
-        : (   rect.width <  rect.height
-           && rectAspect <= viewAspect
-           ? (viewRect.height - margin*2) / rect.height 
-           : (viewRect.width  - margin*2) / rect.width );
+    if (zoom)
+    {
+        graph.currentPage.zoom = 
+            viewRect.width >= viewRect.height
+        
+            ? (   rect.width >= rect.height
+               && rectAspect > viewAspect
+               ? (viewRect.width  - margin*2) / rect.width  
+               : (viewRect.height - margin*2) / rect.height)
+        
+            : (   rect.width <  rect.height
+               && rectAspect <= viewAspect
+               ? (viewRect.height - margin*2) / rect.height 
+               : (viewRect.width  - margin*2) / rect.width );
+    }
 
 
     graph.currentPage.pan = 
@@ -97065,6 +97087,19 @@ class Operator
     get connectedHeaderOutputs() { return this.outputs.filter(o => !o.param && o.connected);    }
 
 
+    get connections() 
+    { 
+        const conns = [];
+
+        conns.push(...this.connectedInputs.map(i => i.connection));
+
+        for (const output of this.connectedOutputs)
+            conns.push(...output.connectedInputs.map(i => i.connection));
+
+        return conns;
+    }
+
+    
 
     constructor(type, id, name, icon, defWidth = defNodeWidth, progressBar = false)
     {
@@ -107821,9 +107856,9 @@ extends OpColorBase
         const enable = !this.inputs[0].connected;
 
         this.paramSpace.enableControlText(!this.paramSpace.input.connected);
-        this.param1    .enableControlText(enable, this.isUnknown());
-        this.param2    .enableControlText(enable, this.isUnknown());
-        this.param3    .enableControlText(enable, this.isUnknown());
+        this.param1    .enableControlText(enable, this.param1.isUnknown());
+        this.param2    .enableControlText(enable, this.param2.isUnknown());
+        this.param3    .enableControlText(enable, this.param3.isUnknown());
 
 
         enableElementText(this.paramColor.controls[0].div, !this.isConnected());
@@ -116088,7 +116123,7 @@ class GraphPage
 
         this._pan = pan;
         
-        graphView.updatePanAndZoom(true);
+        graphView.updatePanAndZoom(false);//true);
     }
     
 
@@ -116126,7 +116161,7 @@ class GraphPage
             
             graphView.panZoomTimer = setTimeout(() => 
             {
-                graphView.updatePanAndZoom(this.zoom != graphView.oldZoom);
+                graphView.updatePanAndZoom(false);//this.zoom != graphView.oldZoom);
                 graphView.panZoomTimer = null;
             });
         }
@@ -118037,8 +118072,8 @@ extends Action
         graphView.selectedNodes     = [node];
 
 
-        // if (!getActiveAfterNode(node))
-        //     uiMakeNodeActive(node);
+        if (!getActiveAfterNode(node, true))
+            uiMakeNodeActive(node);
 
 
         pushUnique(updateNodes, node);
@@ -122709,44 +122744,60 @@ function hideSearchBox()
 {
     search.style.display  = 'none';
     searchItems.innerHTML = '';
+
+    if (graphView._soloNode)
+        graphView.unsoloNode();
+
+    // if (   search.oldPan
+    //     && search.oldZoom)
+    // {
+    //     graph.currentPage.setPanAndZoom(
+    //         search.oldPan, 
+    //         search.oldZoom);
+
+    //     search.oldPan  = null;
+    //     search.oldZoom = null;
+    // }
 }
 
 
 
 function initSearchBox(query)
 {
-    const found = [];
-    
-    
+    search.found = [];
     search.nodes = false;
+
 
     if (query != '')
     {
         if (query.charAt(0) == '/')
         {
+            query = query.substring(1);
             search.nodes = true;
 
             for (const node of graph.currentPage.nodes)
             {
                 if (node.name.toLowerCase().includes(query.toLowerCase()))
-                    found.push(node);
+                    search.found.push(node);
             }
         }
         else
         {
+            search.nodes = false;
+
             for (const menu of menuBarMenus)
             {
                 for (const item of menu.items)
                 {
                     if (   item.name.toLowerCase().includes(query.toLowerCase())
                         && item.callback)
-                        found.push(item);
+                        search.found.push(item);
                 }
             }
         }
 
 
-        found.sort((_a, _b) => 
+        search.found.sort((_a, _b) => 
         {
             const a = _a.name.toLowerCase().replaceAll(' . . .', '').replaceAll('. . . ', '').replaceAll('...', '');
             const b = _b.name.toLowerCase().replaceAll(' . . .', '').replaceAll('. . . ', '').replaceAll('...', '');
@@ -122767,31 +122818,41 @@ function initSearchBox(query)
     
     searchItems.innerHTML = '';
 
-    searchIndex = found.length > 0 ? 0 : -1;
+    searchIndex = search.found.length > 0 ? 0 : -1;
 
 
-    for (let i = 0; i < found.length; i++)
+    for (let i = 0; i < search.found.length; i++)
     {
-        const item   = found[i];
+        const item   = search.found[i];
 
-        const result = createDiv('resultItem');
-        const icon   = createDiv('resultIcon')
-        const legend = createDiv('resultLegend')
+        const result = createDiv('resultItem'  );
+        const icon   = createDiv('resultIcon'  );
+        const legend = createDiv('resultLegend');
 
 
-        result.innerHTML = item.searchName;
+        result.innerHTML = 
+            search.nodes 
+            ? item.name 
+            : item.searchName;
+
 
         icon.innerHTML = 
             darkMode
             ? item.icon
             : item.icon.replaceAll('white', 'black');
 
+        
+        let type = null;
 
-        if (item.createType != '')
-            legend.style.background = rgb2style(rgbFromType(item.createType, true));
+             if (item.createType && item.createType != '') type = item.createType;
+        else if (item.type       && item.type       != '') type = item.type;
+
+        if (type) legend.style.background = rgb2style(rgbFromType(type, true));
+
 
         if (!search.nodes)
             result.callback = item.callback;
+
 
         result.index = i;
 
@@ -122804,9 +122865,6 @@ function initSearchBox(query)
         {
             searchIndex = result.index;
             updateSearchBox();
-
-            if (search.nodes)
-                graphView.zoomToNode(found[searchIndex])
         });
 
         searchItems.appendChild(result);
@@ -122814,17 +122872,19 @@ function initSearchBox(query)
      
 
     searchResults.style.paddingBottom = 
-           found.length > 0 
-        && found.length < 10
+           search.found.length > 0 
+        && search.found.length < 10
         ? '8px'
         : 0;
 
     if (   query.length == 0
-        || found.length > 0)
+        || search.found.length > 0)
     {
         search.style.height = Math.min(
             searchText.offsetHeight + searchResults.offsetHeight,
-            graphView.div.offsetHeight - search.offsetTop - 40);
+            graphView.div.offsetHeight - search.offsetTop - 100);
+
+        noSearchResults.style.display = 'none';
     }
     else
     {
@@ -122879,6 +122939,14 @@ function updateSearchBox()
 
     if (vpos > searchResults.scrollTop + searchResults.offsetHeight - 32)
         searchResults.scrollTop = vpos + 32 - searchResults.offsetHeight;
+
+
+    if (   search.nodes
+        && searchIndex > -1)
+    {
+        graphView.soloNode(search.found[searchIndex]);
+        graphView.zoomToNodes([search.found[searchIndex]], false, search.offsetTop + search.offsetHeight)
+    }
 }
 
 
@@ -126269,7 +126337,7 @@ function uiSetWindowRect(x, y, width, height)
         cmd:   'figSetWindowRect', 
         x:      x,
         y:      y,
-        width:  Math.max(500, width),
+        width:  Math.max(660, width),
         height: height
     });
 }
@@ -126280,7 +126348,7 @@ function uiResizeWindow(width, height)
 {
     uiQueueMessageToFigma({ 
         cmd:   'figResizeWindow', 
-        width:  Math.max(600, width),
+        width:  Math.max(660, width),
         height: height
     });
 }

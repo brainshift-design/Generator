@@ -165,6 +165,19 @@ class Operator
     get connectedHeaderOutputs() { return this.outputs.filter(o => !o.param && o.connected);    }
 
 
+    get connections() 
+    { 
+        const conns = [];
+
+        conns.push(...this.connectedInputs.map(i => i.connection));
+
+        for (const output of this.connectedOutputs)
+            conns.push(...output.connectedInputs.map(i => i.connection));
+
+        return conns;
+    }
+
+    
 
     constructor(type, id, name, icon, defWidth = defNodeWidth, progressBar = false)
     {

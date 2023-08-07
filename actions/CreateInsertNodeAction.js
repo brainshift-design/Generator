@@ -95,8 +95,8 @@ extends Action
         graphView.selectedNodes     = [node];
 
 
-        // if (!getActiveAfterNode(node))
-        //     uiMakeNodeActive(node);
+        if (!getActiveAfterNode(node, true))
+            uiMakeNodeActive(node);
 
 
         pushUnique(updateNodes, node);

@@ -186,21 +186,24 @@ GraphView.prototype.zoomToSelection = function()
 
 
 
-GraphView.prototype.zoomToNodes = function(nodes)
+GraphView.prototype.zoomToNodes = function(nodes, zoom = true, topOffset = 0)
 {
     if (!isEmpty(nodes))
     {
         nodes.forEach(n => n.updateMeasureData());
         const offset = this.getAllNodeOffsets(nodes);
 
+        offset.y -= topOffset / graph.currentPage.zoom;
+        offset.h += topOffset / graph.currentPage.zoom;
+
         for (let i = 0; i < 5; i++) // need to do it a few times
-            this.zoomToRect(offset);
+            this.zoomToRect(offset, 40, zoom);
     }
 };
 
 
 
-GraphView.prototype.zoomToRect = function(rect, margin = 40)
+GraphView.prototype.zoomToRect = function(rect, margin = 40, zoom = true)
 {
     const viewRect   = this.measureData.clientRect;
 
@@ -208,18 +211,21 @@ GraphView.prototype.zoomToRect = function(rect, margin = 40)
     const rectAspect = rect.width     / rect.height;
 
 
-    graph.currentPage.zoom = 
-        viewRect.width >= viewRect.height
-    
-        ? (   rect.width >= rect.height
-           && rectAspect > viewAspect
-           ? (viewRect.width  - margin*2) / rect.width  
-           : (viewRect.height - margin*2) / rect.height)
-    
-        : (   rect.width <  rect.height
-           && rectAspect <= viewAspect
-           ? (viewRect.height - margin*2) / rect.height 
-           : (viewRect.width  - margin*2) / rect.width );
+    if (zoom)
+    {
+        graph.currentPage.zoom = 
+            viewRect.width >= viewRect.height
+        
+            ? (   rect.width >= rect.height
+               && rectAspect > viewAspect
+               ? (viewRect.width  - margin*2) / rect.width  
+               : (viewRect.height - margin*2) / rect.height)
+        
+            : (   rect.width <  rect.height
+               && rectAspect <= viewAspect
+               ? (viewRect.height - margin*2) / rect.height 
+               : (viewRect.width  - margin*2) / rect.width );
+    }
 
 
     graph.currentPage.pan = 

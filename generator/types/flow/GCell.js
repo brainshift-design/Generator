@@ -44,19 +44,27 @@ extends GOperator
             && column
             && row)
         {
-            const input = (await this.input.eval(parse)).toValue();
+            const input = this.input ? (await this.input.eval(parse)).toValue() : null;
 
             
-            if (isTable(input))
+            if (   input
+                && isTable(input))
             {
                 rows = input.items.length;
 
-                input.items.forEach(i => columns = Math.max(columns, i.items.length));
+                input.items.forEach(i => columns = Math.max(columns, i.items ? i.items.length : null));
 
-                this.value = 
-                    column.value < columns
-                    ? input.items[row.value].items[column.value].copy()
-                    : NullValue;
+                if (row.value < rows)
+                {
+                    const _row = input.items[row.value];
+
+                    if (column.value < columns)
+                        this.value = _row.items[column.value].copy()
+                    else
+                        this.value = NullValue;
+                }
+                else
+                    this.value = NullValue;
             }
             else
                 this.value = NullValue;
