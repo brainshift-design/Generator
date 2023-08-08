@@ -279,16 +279,8 @@ class Menu
 
         if (this.parentItem)
         {
-            console.log('left =', left);
-            console.log('this.div.offsetWidth =', this.div.offsetWidth);
-            console.log('graphView.div.offsetWidth =', graphView.div.offsetWidth);
-            console.log('margin =', margin);
-            console.log('left + this.div.offsetWidth > graphView.div.offsetWidth - margin =', left + this.div.offsetWidth > graphView.div.offsetWidth - margin);
-            console.log('this.parentItem.parentMenu.div.offsetLeft =', this.parentItem.parentMenu.div.offsetLeft);
             if (left + this.div.offsetWidth + margin >= graphView.div.offsetWidth)
-            {
                 left = this.parentItem.parentMenu.div.offsetLeft - this.div.offsetWidth;
-            }
         }
         else
         {

@@ -15393,7 +15393,7 @@ extends GOperator1
             && index)
         {
             const input = (await this.input.eval(parse)).toValue();
-           
+
             if (isTable(input))
             {
                 input.items.forEach(i => maxColumns = Math.max(maxColumns, i.items.length));

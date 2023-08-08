@@ -20594,7 +20594,7 @@ extends GOperator1
             && index)
         {
             const input = (await this.input.eval(parse)).toValue();
-           
+
             if (isTable(input))
             {
                 input.items.forEach(i => maxColumns = Math.max(maxColumns, i.items.length));
@@ -64051,7 +64051,7 @@ extends GOperator1
             && index)
         {
             const input = (await this.input.eval(parse)).toValue();
-           
+
             if (isTable(input))
             {
                 input.items.forEach(i => maxColumns = Math.max(maxColumns, i.items.length));
@@ -84717,7 +84717,7 @@ const iconWindowDockTop     = '<svg width="15" height="12" viewBox="0 0 15 12" f
 const iconWindowDockBottom  = '<svg width="15" height="12" viewBox="0 0 15 12" fill="none" xmlns="http://www.w3.org/2000/svg"><rect x="0.5" y="0.5" width="14" height="11" stroke="white"/><rect y="7" width="15" height="5" fill="white"/></svg>';
 
 
-const iconSolo              = '<svg width="17" height="15" viewBox="0 -1 17 15" fill="none" xmlns="http://www.w3.org/2000/svg"><circle cx="7" cy="7" r="2" fill="white"/><path fill-rule="evenodd" clip-rule="evenodd" d="M0.0708009 6.00003C0.509314 2.93434 2.93422 0.509436 5.99991 0.0709229V1.08299C3.48741 1.50451 1.50439 3.48753 1.08287 6.00003H0.0708009ZM0.0708009 8.00003C0.509314 11.0657 2.93422 13.4906 5.99991 13.9291V12.9171C3.48741 12.4956 1.50439 10.5125 1.08287 8.00003H0.0708009ZM12.917 8.00003C12.4954 10.5125 10.5124 12.4956 7.99991 12.9171V13.9291C11.0656 13.4906 13.4905 11.0657 13.929 8.00003H12.917ZM13.929 6.00003C13.4905 2.93434 11.0656 0.509436 7.99991 0.0709229V1.08299C10.5124 1.50451 12.4954 3.48753 12.917 6.00003H13.929Z" fill="white"/></svg>';
+const iconSolo              = '<svg width="14" height="13" viewBox="0 -1 14 13" fill="none" xmlns="http://www.w3.org/2000/svg"><path d="M8 0.5C1 0.5 7 11.5 0 11.5" stroke="white"/></svg>';
 
 
 const iconSearch            = '<svg width="15" height="15" viewBox="0 0 15 15" fill="none" xmlns="http://www.w3.org/2000/svg"><path id="searchIconPath" fill-rule="evenodd" clip-rule="evenodd" d="M11 6C11 8.76147 8.76147 11 6 11C3.23853 11 1 8.76147 1 6C1 3.23853 3.23853 1 6 1C8.76147 1 11 3.23853 11 6ZM9.87439 10.5815C8.8291 11.4663 7.47681 12 6 12C2.68628 12 0 9.31372 0 6C0 2.68628 2.68628 0 6 0C9.31372 0 12 2.68628 12 6C12 7.47681 11.4664 8.8291 10.5815 9.87451L14.364 13.657L13.6569 14.364L9.87439 10.5815Z" fill="white"/></svg>';
@@ -85004,16 +85004,8 @@ class Menu
 
         if (this.parentItem)
         {
-            console.log('left =', left);
-            console.log('this.div.offsetWidth =', this.div.offsetWidth);
-            console.log('graphView.div.offsetWidth =', graphView.div.offsetWidth);
-            console.log('margin =', margin);
-            console.log('left + this.div.offsetWidth > graphView.div.offsetWidth - margin =', left + this.div.offsetWidth > graphView.div.offsetWidth - margin);
-            console.log('this.parentItem.parentMenu.div.offsetLeft =', this.parentItem.parentMenu.div.offsetLeft);
             if (left + this.div.offsetWidth + margin >= graphView.div.offsetWidth)
-            {
                 left = this.parentItem.parentMenu.div.offsetLeft - this.div.offsetWidth;
-            }
         }
         else
         {
