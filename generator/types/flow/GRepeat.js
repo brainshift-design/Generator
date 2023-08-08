@@ -211,7 +211,7 @@ extends GOperator
         if (this. input) this. input.pushValueUpdates(parse);
         if (this. count) this. count.pushValueUpdates(parse);
         if (this._while) this._while.pushValueUpdates(parse);
-        if (this. loop ) this. loop .pushValueUpdates(parse);
+        //if (this. loop ) this. loop .pushValueUpdates(parse);
     }
 
 
@@ -223,7 +223,7 @@ extends GOperator
         if (this. input) this. input.invalidateInputs(from);
         if (this. count) this. count.invalidateInputs(from);
         if (this._while) this._while.invalidateInputs(from);
-        if (this. loop ) this. loop .invalidateInputs(from);
+        //if (this. loop ) this. loop .invalidateInputs(from);
     }
 
 

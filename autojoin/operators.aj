@@ -83,7 +83,6 @@
 ../operators/number/OpAccumulate.js
 ../operators/number/OpInterpolate.js
 ../operators/number/OpNumberToText.js
-../operators/number/OpTextToNumber.js
 ../operators/number/OpSolve.js
 ../operators/number/OpAnimate.js
 
@@ -136,6 +135,8 @@
 ../operators/text/OpTextJson.js
 ../operators/text/OpTextFetch.js
 ../operators/text/OpTextFile.js
+../operators/text/OpTextToNumber.js
+../operators/text/OpTextToColor.js
 
 
 ../operators/color/OpColorBase.js

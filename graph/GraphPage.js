@@ -83,7 +83,7 @@ class GraphPage
             
             graphView.panZoomTimer = setTimeout(() => 
             {
-                graphView.updatePanAndZoom(false);//this.zoom != graphView.oldZoom);
+                graphView.updatePanAndZoom(this.zoom != graphView.oldZoom);
                 graphView.panZoomTimer = null;
             });
         }

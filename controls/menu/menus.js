@@ -495,6 +495,8 @@ function initGeneratorMenus()
     menuConvert = new Menu('Text', true, false);
     menuConvert.addItems([
         new MenuItem('Text to number',       null, {icon: iconTextToNumber,  createType: TEXT_TO_NUMBER, callback: e => actionManager.do(getCreateNodeAction(TEXT_TO_NUMBER, btnText.div, getCreateOptions(e)))}),
+        new MenuItem('Text to color',        null, {icon: iconTextToColor,   createType: TEXT_TO_COLOR,  callback: e => actionManager.do(getCreateNodeAction(TEXT_TO_COLOR,  btnText.div, getCreateOptions(e)))}),
+        new MenuItem('',                     null, {separator: true}),
         new MenuItem('Number to text',       null, {icon: iconNumberToText,  createType: NUMBER_TO_TEXT, callback: e => actionManager.do(getCreateNodeAction(NUMBER_TO_TEXT, btnText.div, getCreateOptions(e)))}),
         new MenuItem('',                     null, {separator: true}),
         new MenuItem('Unicode to character', null, {icon: iconTextCharacter, createType: TEXT_CHAR,      callback: e => actionManager.do(getCreateNodeAction(TEXT_CHAR,      btnText.div, getCreateOptions(e)))})]);
@@ -512,9 +514,7 @@ function initGeneratorMenus()
                         new MenuItem('Trigonometric', null,                 {icon: iconSine,        /*childMenu: menuTrig,     */ createType: NUMBER_TRIG,        callback: e => actionManager.do(getCreateNodeAction(NUMBER_TRIG,        btnNumber.div, getCreateOptions(e)))}),
                         new MenuItem('',              null,                 {separator: true}),
                         new MenuItem('Interpolate',   'Interpolate number', {icon: iconInterpolate, createType: NUMBER_INTERPOLATE, callback: e => actionManager.do(getCreateNodeAction(NUMBER_INTERPOLATE, btnNumber.div, getCreateOptions(e)))}),
-        menuItemSolve = new MenuItem('Solve',         null,                 {icon: iconSolve,       createType: NUMBER_SOLVE,       callback: e => actionManager.do(getCreateNodeAction(NUMBER_SOLVE,       btnNumber.div, getCreateOptions(e)))}),
-                        new MenuItem('',              null,                 {separator: true}),
-                        new MenuItem('Convert',       null,                 {icon: iconNumberToText, childMenu: menuConvert})]);
+        menuItemSolve = new MenuItem('Solve',         null,                 {icon: iconSolve,       createType: NUMBER_SOLVE,       callback: e => actionManager.do(getCreateNodeAction(NUMBER_SOLVE,       btnNumber.div, getCreateOptions(e)))})]);
         
     
     menuString = new Menu('Text', true, false);
@@ -534,8 +534,10 @@ function initGeneratorMenus()
         new MenuItem('Pad',        null,            {icon: iconTextPad,       createType: TEXT_PAD,       callback: e => actionManager.do(getCreateNodeAction(TEXT_PAD,       btnText.div, getCreateOptions(e)))}),
         new MenuItem('',           null,            {separator: true}),
         new MenuItem('Parse CSV',  null,            {icon: iconTextCSV,       createType: TEXT_CSV,       callback: e => actionManager.do(getCreateNodeAction(TEXT_CSV,       btnText.div, getCreateOptions(e)))}),
-        new MenuItem('Parse JSON', null,            {icon: iconTextJson,      createType: TEXT_JSON,      callback: e => actionManager.do(getCreateNodeAction(TEXT_JSON,      btnText.div, getCreateOptions(e)))})]);
-    
+        new MenuItem('Parse JSON', null,            {icon: iconTextJson,      createType: TEXT_JSON,      callback: e => actionManager.do(getCreateNodeAction(TEXT_JSON,      btnText.div, getCreateOptions(e)))}),
+        new MenuItem('',           null,            {separator: true}),
+        new MenuItem('Convert',    null,            {icon: iconNumberToText, childMenu: menuConvert})]);
+
 
     menuColorStyle = new Menu('Color style', true, false);
     menuColorStyle.addItems([

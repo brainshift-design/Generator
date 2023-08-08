@@ -47,24 +47,32 @@ extends GOperator
             && end)
         {
             const input = (await this.input.eval(parse)).toValue();
-           
+
             
-            length = input.items.length;
-               
-                
-            if (start.value <= end.value)
+            if (input)
             {
-                if (this.options.enabled)
+                length = input.items.length;
+                
+                if (start.value <= end.value)
                 {
-                    for (let i = start.value; i < end.value; i++)
+                    if (this.options.enabled)
                     {
-                        this.value.items.push(input.items[i].copy());
-                        this.value.objects.push(...input.items[i].objects);
+                        for (let i = start.value; i < end.value; i++)
+                        {
+                            const item = input.items[i];
+                            
+                            this.value.items.push(item ? item.copy() : NullValue);
+                            
+                            if (item) 
+                                this.value.objects.push(...input.items[i].objects);
+                        }
                     }
+                    else
+                        this.value = input.copy();
                 }
-                else
-                    this.value = input.copy();
             }
+            else
+                this.value = NullValue;
         }
 
 

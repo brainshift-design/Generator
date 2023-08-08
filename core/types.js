@@ -191,6 +191,7 @@ const TEXT_COMPARE   = 'TCMP';
 const TEXT_CHAR      = 'TCHAR';
 const NUMBER_TO_TEXT = 'N2T';
 const TEXT_TO_NUMBER = 'T2N';
+const TEXT_TO_COLOR  = 'T2C';
 const TEXT_SPLIT     = 'TSPLT';
 const TEXT_JSON      = 'TJSON';
 const TEXT_CSV       = 'TCSV';
@@ -244,6 +245,7 @@ const TEXT_TYPES =
     TEXT_COMPARE,
     TEXT_CHAR,
     TEXT_TO_NUMBER,
+    TEXT_TO_COLOR,
     TEXT_SPLIT,
     TEXT_JSON,
     TEXT_CSV,

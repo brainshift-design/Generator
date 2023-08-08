@@ -77,9 +77,13 @@ function uiUpdateValuesAndObjects(requestId, actionId, updateNodeId, updateParam
         || isLastChunk)
     {
         if (settings.logObjectUpdates) logObjectUpdates([...objects]);
-        if (settings.logStyleUpdates)  logStyleUpdates ([...styles ]);
+        if (settings.logStyleUpdates ) logStyleUpdates ([...styles ]);
 
-        objects = objects.filter(o => nodeFromId(o[FO_NODE_ID]).active);
+        objects = objects.filter(o => 
+        {
+            const node = nodeFromId(o[FO_NODE_ID]);
+            return node && node.active;
+        });
 
         uiQueueMessageToFigma(
         {

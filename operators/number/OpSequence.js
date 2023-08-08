@@ -44,4 +44,14 @@ extends OperatorBase
 
         return request;
     }
+
+
+
+    updateParams()
+    {
+        this.paramStart.enableControlText(true, this.paramStart.isUnknown());
+        this.paramStep .enableControlText(true, this.paramStep .isUnknown());
+
+        this.updateParamControls();
+    }
 }

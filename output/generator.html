@@ -4,7 +4,7 @@
 
 
 
-const generatorVersion = 184;
+const generatorVersion = 185;
 
 
 const MAX_INT32        = 2147483647;
@@ -4809,6 +4809,7 @@ const TEXT_COMPARE   = 'TCMP';
 const TEXT_CHAR      = 'TCHAR';
 const NUMBER_TO_TEXT = 'N2T';
 const TEXT_TO_NUMBER = 'T2N';
+const TEXT_TO_COLOR  = 'T2C';
 const TEXT_SPLIT     = 'TSPLT';
 const TEXT_JSON      = 'TJSON';
 const TEXT_CSV       = 'TCSV';
@@ -4862,6 +4863,7 @@ const TEXT_TYPES =
     TEXT_COMPARE,
     TEXT_CHAR,
     TEXT_TO_NUMBER,
+    TEXT_TO_COLOR,
     TEXT_SPLIT,
     TEXT_JSON,
     TEXT_CSV,
@@ -14240,7 +14242,7 @@ extends GOperator
         if (this. input) this. input.pushValueUpdates(parse);
         if (this. count) this. count.pushValueUpdates(parse);
         if (this._while) this._while.pushValueUpdates(parse);
-        if (this. loop ) this. loop .pushValueUpdates(parse);
+        //if (this. loop ) this. loop .pushValueUpdates(parse);
     }
 
 
@@ -14252,7 +14254,7 @@ extends GOperator
         if (this. input) this. input.invalidateInputs(from);
         if (this. count) this. count.invalidateInputs(from);
         if (this._while) this._while.invalidateInputs(from);
-        if (this. loop ) this. loop .invalidateInputs(from);
+        //if (this. loop ) this. loop .invalidateInputs(from);
     }
 
 
@@ -14971,24 +14973,32 @@ extends GOperator
             && end)
         {
             const input = (await this.input.eval(parse)).toValue();
-           
+
             
-            length = input.items.length;
-               
-                
-            if (start.value <= end.value)
+            if (input)
             {
-                if (this.options.enabled)
+                length = input.items.length;
+                
+                if (start.value <= end.value)
                 {
-                    for (let i = start.value; i < end.value; i++)
+                    if (this.options.enabled)
                     {
-                        this.value.items.push(input.items[i].copy());
-                        this.value.objects.push(...input.items[i].objects);
+                        for (let i = start.value; i < end.value; i++)
+                        {
+                            const item = input.items[i];
+                            
+                            this.value.items.push(item ? item.copy() : NullValue);
+                            
+                            if (item) 
+                                this.value.objects.push(...input.items[i].objects);
+                        }
                     }
+                    else
+                        this.value = input.copy();
                 }
-                else
-                    this.value = input.copy();
             }
+            else
+                this.value = NullValue;
         }
 
 
@@ -21254,6 +21264,106 @@ extends GOperator
         if (this.format) this.format.invalidateInputs(from);
     }
 }
+
+
+
+// class GTextToColor
+// extends GOperator
+// {
+//     input;
+
+//     format;
+
+
+    
+//     constructor(nodeId, options)
+//     {
+//         super(TEXT_TO_NUMBER, nodeId, options);
+//     }
+
+
+    
+//     copy()
+//     {
+//         const copy = new GTextToNumber(this.nodeId, this.options);
+
+//         copy.copyBase(this);
+
+//         if (this.input) 
+//             copy.input = this.input.copy();
+
+//         copy.format = this.format.copy();
+
+//         return copy;
+//     }
+
+
+
+//     async eval(parse)
+//     {
+//         if (this.isCached())
+//             return this;
+
+
+//         const format = (await this.format.eval(parse)).toValue();
+
+
+//         if (this.input)
+//         {
+//             const input = (await this.input.eval(parse)).toValue();
+
+
+//             let num = Number.NaN;
+
+//             switch (format.value)
+//             {
+//                 case 0: // dec
+//                     num = parseFloat(input.value);
+//                     break;
+
+//                 case 1: // hex
+//                     num = parseInt(input.value, 16);
+//                     break;
+//             }
+
+//             this.value = new NumberValue(num);
+//         }
+//         else
+//             this.value = NumberValue.NaN;
+
+
+//         this.setUpdateValues(parse,
+//         [
+//             ['value',  this.value],
+//             ['format', format    ]
+//         ]);
+
+
+//         this.validate();
+
+//         return this;
+//     }
+
+
+
+//     pushValueUpdates(parse)
+//     {
+//         super.pushValueUpdates(parse);
+
+//         if (this.input)  this.input .pushValueUpdates(parse);
+//         if (this.format) this.format.pushValueUpdates(parse);
+//     }
+
+
+
+//     invalidateInputs(from)
+//     {
+//         super.invalidateInputs(from);
+
+//         if (this.input)  this.input .invalidateInputs(from);
+//         if (this.format) this.format.invalidateInputs(from);
+//     }
+// }
 
 
 
