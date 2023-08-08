@@ -116,7 +116,7 @@ extends Parameter
             if (this.input.connectedOutput.supportsTypes(this.input.types))
                 request.push(...pushInputOrParam(this.input, gen));
             else
-                consoleError('invalid input for PointParam (' + this.node.id + ')');
+                request.push(POINT_VALUE, '?,? ?,?');
         }
 
         else request.push( 

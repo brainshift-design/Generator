@@ -54,13 +54,23 @@ extends GOperator1
             && columnSeparator
             && rowSeparator.value != '')
         {
-            const input = (await this.input.eval(parse)).toValue();
+            const input = this.input ? (await this.input.eval(parse)).toValue() : null;
             
-            const rows = input.value.split(unescapeString(rowSeparator.value));
+
+            const rows = 
+                   input
+                && input.value            
+                ? input.value.split(unescapeString(rowSeparator.value))
+                : [];
+
 
             for (const _row of rows)
             {
-                const cells = _row.split(unescapeString(columnSeparator.value));
+                const cells = 
+                    _row
+                    ? _row.split(unescapeString(columnSeparator.value))
+                    : [];
+
 
                 const row = new ListValue();
 
@@ -69,8 +79,10 @@ extends GOperator1
 
                 maxColumns = Math.max(maxColumns, row.items.length);
 
+
                 this.value.items.push(row);
             }
+
 
             nRows    = this.value.items.length;
             nColumns = maxColumns;
