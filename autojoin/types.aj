@@ -102,7 +102,7 @@
 ../generator/types/number/GConstant.js
 ../generator/types/number/GDateTime.js
 ../generator/types/number/GDefine.js
-../generator/types/number/GDistribute.js
+../generator/types/number/GRange.js
 ../generator/types/number/GSequence.js
 ../generator/types/number/GRandom.js
 ../generator/types/number/GNoise.js

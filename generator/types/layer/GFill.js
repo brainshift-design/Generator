@@ -33,11 +33,11 @@ extends GOperator1
     {
         if (this.isCached())
             return this;
-``
 
-        const color   = this.color   ? (await this.color  .eval(parse)).toValue() : null;
-        const opacity = this.opacity ? (await this.opacity.eval(parse)).toValue() : null;
-        const blend   = this.blend   ? (await this.blend  .eval(parse)).toValue() : null;
+
+        let color   = this.color   ? (await this.color  .eval(parse)).toValue() : null;
+        let opacity = this.opacity ? (await this.opacity.eval(parse)).toValue() : null;
+        let blend   = this.blend   ? (await this.blend  .eval(parse)).toValue() : null;
 
         
         if (this.input)
@@ -63,6 +63,11 @@ extends GOperator1
             ['value', this.value]
         ]);
         
+
+        if (!this.color  ) this.color   = this.value.color  .copy();
+        if (!this.opacity) this.opacity = this.value.opacity.copy();
+        if (!this.blend  ) this.blend   = this.value.blend  .copy();
+
 
         this.validate();
 

@@ -62,6 +62,10 @@ extends GOperator1
         ]);
         
 
+        if (!this.fill    ) this.fill     = this.value.fill    .copy();
+        if (!this.position) this.position = this.value.position.copy();
+
+
         this.validate();
 
         return this;

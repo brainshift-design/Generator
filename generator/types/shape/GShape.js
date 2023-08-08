@@ -59,6 +59,9 @@ extends GShapeBase
                     ['props', this.value.props]
                 ], 
                 true);
+
+
+                if (!this.props) this.props = this.value.props.copy();
             }
         }
     }

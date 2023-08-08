@@ -97,6 +97,15 @@ extends GOperator1
         ]);
         
 
+        if (!this.x     ) this.x      = this.value.x     .copy();
+        if (!this.y     ) this.y      = this.value.y     .copy();
+        if (!this.blur  ) this.blur   = this.value.blur  .copy();
+        if (!this.spread) this.spread = this.value.spread.copy();
+        if (!this.fill  ) this.fill   = this.value.fill  .copy();
+        if (!this.blend ) this.blend  = this.value.blend .copy();
+        if (!this.behind) this.behind = this.value.behind.copy();
+
+
         this.validate();
 
         return this;

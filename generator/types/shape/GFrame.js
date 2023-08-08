@@ -72,13 +72,24 @@ extends GShape
         }
 
 
-        this.setUpdateValues(parse, [['value', this.value]]);
+        this.setUpdateValues(parse, 
+        [
+            ['value', this.value]
+        ]);
 
 
         await this.evalShapeBase(parse);
 
 
         await this.evalObjects(parse);
+
+
+        if (!this.x       ) this.x        = this.value.x       .copy();
+        if (!this.y       ) this.y        = this.value.y       .copy();
+        if (!this.width   ) this.width    = this.value.width   .copy();
+        if (!this.height  ) this.height   = this.value.height  .copy();
+        if (!this.round   ) this.round    = this.value.round   .copy();
+        if (!this.children) this.children = this.value.children.copy();
 
 
         this.validate();
@@ -136,7 +147,8 @@ extends GShape
             this.setUpdateValues(parse, 
             [
                 ['nChildren', new NumberValue(frame.children.length)]
-            ]);
+            ], 
+            true);
         }
 
 

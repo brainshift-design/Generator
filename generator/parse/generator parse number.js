@@ -519,12 +519,12 @@ function genParseDefine(parse)
 
 
 
-function genParseDistribute(parse)
+function genParseRange(parse)
 {
     const [, nodeId, options, ignore] = genParseNodeStart(parse);
 
 
-    const dist = new GDistribute(nodeId, options);
+    const dist = new GRange(nodeId, options);
 
 
     if (parse.settings.logRequests) 

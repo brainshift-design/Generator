@@ -125,11 +125,6 @@ extends GColorType1
                     colorSpace(this.convert.value), 
                     colorSpace(toSpaceIndex));
             }
-
-
-            if (!this.c1) this.c1 = this.value.c1.copy();
-            if (!this.c2) this.c2 = this.value.c2.copy();
-            if (!this.c3) this.c3 = this.value.c3.copy();
         }
 
 
@@ -149,6 +144,11 @@ extends GColorType1
             ['c2',      this.value.c2   ],
             ['c3',      this.value.c3   ]
         ]);
+
+
+        if (!this.c1) this.c1 = this.value.c1.copy();
+        if (!this.c2) this.c2 = this.value.c2.copy();
+        if (!this.c3) this.c3 = this.value.c3.copy();
 
 
         this.validate();

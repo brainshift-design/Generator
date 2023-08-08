@@ -1,4 +1,4 @@
-class   OpDistribute
+class   OpRange
 extends OperatorBase
 {
     paramFrom;
@@ -11,7 +11,7 @@ extends OperatorBase
 
     constructor()
     {
-        super(NUMBER_DISTRIBUTE, 'range', 'range', iconDistribute);
+        super(NUMBER_RANGE, 'range', 'range', iconRange);
 
         this.cached     = false;
         this.canDisable = true;

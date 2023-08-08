@@ -64,6 +64,10 @@ extends GOperator1
         this.setUpdateValues(parse, [['value', this.value]]);
 
 
+        if (!this.x) this.x = this.value.x.copy();
+        if (!this.y) this.y = this.value.y.copy();
+
+
         this.validate();
 
         return this;

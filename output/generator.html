@@ -4712,7 +4712,7 @@ const NUMBER_MINMAX           = 'MINMAX';
 const NUMBER_LIMITS           = 'LIM';   
 const NUMBER_CONSTANT         = 'CONST';  
 const NUMBER_DATETIME         = 'DATE';  
-const NUMBER_DISTRIBUTE       = 'DISTR';  
+const NUMBER_RANGE            = 'RANGE';  
 const NUMBER_SEQUENCE         = 'SEQ';  
 const NUMBER_RANDOM           = 'RAND';  
 const NUMBER_NOISE            = 'NOISE';  
@@ -4828,7 +4828,7 @@ const NUMBER_TYPES =
     NUMBER_LIMITS,
     NUMBER_CONSTANT,
     NUMBER_DATETIME,
-    NUMBER_DISTRIBUTE,
+    NUMBER_RANGE,
     NUMBER_SEQUENCE,
     NUMBER_RANDOM,
     NUMBER_NOISE,
@@ -14298,7 +14298,7 @@ function assertVolatile(node)
     consoleAssert(
            node.loop.type == DEFINE
         || node.loop.type == FREEZE
-        || node.loop.type == NUMBER_DISTRIBUTE
+        || node.loop.type == NUMBER_RANGE
         || node.loop.type == NUMBER_SEQUENCE
         || node.loop.type == NUMBER_RANDOM
         || node.loop.type == NUMBER_NOISE
@@ -17114,7 +17114,7 @@ extends GOperator
 
 
 
-class GDistribute
+class GRange
 extends GOperator
 {
     from;
@@ -17130,14 +17130,14 @@ extends GOperator
 
     constructor(nodeId, options)
     {
-        super(NUMBER_DISTRIBUTE, nodeId, options);
+        super(NUMBER_RANGE, nodeId, options);
     }
 
 
     
     copy()
     {
-        const copy = new GDistribute(this.nodeId, this.options);
+        const copy = new GRange(this.nodeId, this.options);
 
         copy.copyBase(this);
 
@@ -23022,11 +23022,6 @@ extends GColorType1
                     colorSpace(this.convert.value), 
                     colorSpace(toSpaceIndex));
             }
-
-
-            if (!this.c1) this.c1 = this.value.c1.copy();
-            if (!this.c2) this.c2 = this.value.c2.copy();
-            if (!this.c3) this.c3 = this.value.c3.copy();
         }
 
 
@@ -23046,6 +23041,11 @@ extends GColorType1
             ['c2',      this.value.c2   ],
             ['c3',      this.value.c3   ]
         ]);
+
+
+        if (!this.c1) this.c1 = this.value.c1.copy();
+        if (!this.c2) this.c2 = this.value.c2.copy();
+        if (!this.c3) this.c3 = this.value.c3.copy();
 
 
         this.validate();
@@ -24573,11 +24573,11 @@ extends GOperator1
     {
         if (this.isCached())
             return this;
-``
 
-        const color   = this.color   ? (await this.color  .eval(parse)).toValue() : null;
-        const opacity = this.opacity ? (await this.opacity.eval(parse)).toValue() : null;
-        const blend   = this.blend   ? (await this.blend  .eval(parse)).toValue() : null;
+
+        let color   = this.color   ? (await this.color  .eval(parse)).toValue() : null;
+        let opacity = this.opacity ? (await this.opacity.eval(parse)).toValue() : null;
+        let blend   = this.blend   ? (await this.blend  .eval(parse)).toValue() : null;
 
         
         if (this.input)
@@ -24603,6 +24603,11 @@ extends GOperator1
             ['value', this.value]
         ]);
         
+
+        if (!this.color  ) this.color   = this.value.color  .copy();
+        if (!this.opacity) this.opacity = this.value.opacity.copy();
+        if (!this.blend  ) this.blend   = this.value.blend  .copy();
+
 
         this.validate();
 
@@ -24717,6 +24722,10 @@ extends GOperator1
             ['value', this.value]
         ]);
         
+
+        if (!this.fill    ) this.fill     = this.value.fill    .copy();
+        if (!this.position) this.position = this.value.position.copy();
+
 
         this.validate();
 
@@ -24864,6 +24873,16 @@ extends GOperator
             ['value', this.value]
         ]);
         
+
+        if (!this.gradType) this.gradType = this.value.gradType.copy();
+        if (!this.x       ) this.x        = this.value.x       .copy();
+        if (!this.y       ) this.y        = this.value.y       .copy();
+        if (!this.size    ) this.size     = this.value.size    .copy();
+        if (!this.angle   ) this.angle    = this.value.angle   .copy();
+        if (!this.aspect  ) this.aspect   = this.value.aspect  .copy();
+        if (!this.skew    ) this.skew     = this.value.skew    .copy();
+        if (!this.blend   ) this.blend    = this.value.blend   .copy();
+
 
         this.validate();
 
@@ -25031,6 +25050,14 @@ extends GOperator1
             ['value', this.value]
         ]);
         
+
+        if (!this.weight) this.weight = this.value.weight.copy();
+        if (!this.fit   ) this.fit    = this.value.fit   .copy();
+        if (!this.join  ) this.join   = this.value.join  .copy();
+        if (!this.miter ) this.miter  = this.value.miter .copy();
+        if (!this.cap   ) this.cap    = this.value.cap   .copy();
+        if (!this.dashes) this.dashes = this.value.dashes.copy();
+
 
         this.validate();
 
@@ -25218,6 +25245,15 @@ extends GOperator1
         ]);
         
 
+        if (!this.x     ) this.x      = this.value.x     .copy();
+        if (!this.y     ) this.y      = this.value.y     .copy();
+        if (!this.blur  ) this.blur   = this.value.blur  .copy();
+        if (!this.spread) this.spread = this.value.spread.copy();
+        if (!this.fill  ) this.fill   = this.value.fill  .copy();
+        if (!this.blend ) this.blend  = this.value.blend .copy();
+        if (!this.behind) this.behind = this.value.behind.copy();
+
+
         this.validate();
 
         return this;
@@ -25370,6 +25406,14 @@ extends GOperator1
         ]);
         
 
+        if (!this.x     ) this.x      = this.value.x     .copy();
+        if (!this.y     ) this.y      = this.value.y     .copy();
+        if (!this.blur  ) this.blur   = this.value.blur  .copy();
+        if (!this.spread) this.spread = this.value.spread.copy();
+        if (!this.fill  ) this.fill   = this.value.fill  .copy();
+        if (!this.blend ) this.blend  = this.value.blend .copy();
+
+
         this.validate();
 
         return this;
@@ -25484,6 +25528,9 @@ extends GOperator1
         ]);
         
 
+        if (!this.radius) this.radius = this.value.radius.copy();
+
+
         this.validate();
 
         return this;
@@ -25582,6 +25629,9 @@ extends GOperator1
             ['radius', this.value.radius]
         ]);
         
+
+        if (!this.radius) this.radius = this.value.radius.copy();
+
 
         this.validate();
 
@@ -25842,6 +25892,9 @@ extends GShapeBase
                     ['props', this.value.props]
                 ], 
                 true);
+
+
+                if (!this.props) this.props = this.value.props.copy();
             }
         }
     }
@@ -25991,6 +26044,13 @@ extends GShape
 
 
         await this.evalObjects(parse);
+
+
+        if (!this.x     ) this.x      = this.value.x     .copy();
+        if (!this.y     ) this.y      = this.value.y     .copy();
+        if (!this.width ) this.width  = this.value.width .copy();
+        if (!this.height) this.height = this.value.height.copy();
+        if (!this.round ) this.round  = this.value.round .copy();
 
 
         this.validate();
@@ -26152,6 +26212,11 @@ extends GShape
         await this.evalObjects(parse);
 
 
+        if (!this.x    ) this.x     = this.value.x    .copy();
+        if (!this.y    ) this.y     = this.value.y    .copy();
+        if (!this.width) this.width = this.value.width.copy();
+
+
         this.validate();
 
         return this;
@@ -26297,6 +26362,15 @@ extends GShape
 
 
         await this.evalObjects(parse);
+
+
+        if (!this.x     ) this.x      = this.value.x     .copy();
+        if (!this.y     ) this.y      = this.value.y     .copy();
+        if (!this.width ) this.width  = this.value.width .copy();
+        if (!this.height) this.height = this.value.height.copy();
+        if (!this.from  ) this.from   = this.value.from  .copy();
+        if (!this.to    ) this.to     = this.value.to    .copy();
+        if (!this.inner ) this.inner  = this.value.inner .copy();
 
 
         this.validate();
@@ -26656,6 +26730,14 @@ extends GShape
         await this.evalObjects(parse);
 
 
+        if (!this.x      ) this.x       = this.value.x      .copy();
+        if (!this.y      ) this.y       = this.value.y      .copy();
+        if (!this.width  ) this.width   = this.value.width  .copy();
+        if (!this.height ) this.height  = this.value.height .copy();
+        if (!this.round  ) this.round   = this.value.round  .copy();
+        if (!this.corners) this.corners = this.value.corners.copy();
+
+
         this.validate();
 
         return this;
@@ -26842,6 +26924,16 @@ extends GShape
 
 
         await this.evalObjects(parse);
+
+
+        if (!this.x     ) this.x      = this.value.x     .copy();
+        if (!this.y     ) this.y      = this.value.y     .copy();
+        if (!this.width ) this.width  = this.value.width .copy();
+        if (!this.height) this.height = this.value.height.copy();
+        if (!this.round ) this.round  = this.value.round .copy();
+        if (!this.points) this.points = this.value.points.copy();
+        if (!this.convex) this.convex = this.value.convex.copy();
+
 
 
         this.validate();
@@ -27067,6 +27159,20 @@ extends GShape
 
 
         await this.evalObjects(parse);
+
+
+        if (!this.text         ) this.text          = this.value.text         .copy();
+        if (!this.x            ) this.x             = this.value.x            .copy();
+        if (!this.y            ) this.y             = this.value.y            .copy();
+        if (!this.width        ) this.width         = this.value.width        .copy();
+        if (!this.height       ) this.height        = this.value.height       .copy();
+        if (!this.font         ) this.font          = this.value.font         .copy();
+        if (!this.style        ) this.style         = this.value.style        .copy();
+        if (!this.size         ) this.size          = this.value.size         .copy();
+        if (!this.alignH       ) this.alignH        = this.value.alignH       .copy();
+        if (!this.alignV       ) this.alignV        = this.value.alignV       .copy();
+        if (!this.lineHeight   ) this.lineHeight    = this.value.lineHeight   .copy();
+        if (!this.letterSpacing) this.letterSpacing = this.value.letterSpacing.copy();
 
 
         this.validate();
@@ -27314,6 +27420,10 @@ extends GOperator1
         this.setUpdateValues(parse, [['value', this.value]]);
 
 
+        if (!this.x) this.x = this.value.x.copy();
+        if (!this.y) this.y = this.value.y.copy();
+
+
         this.validate();
 
         return this;
@@ -27475,6 +27585,14 @@ extends GShape
 
 
         await this.evalObjects(parse);
+
+
+        if (!this.points ) this.points  = this.value.points .copy();
+        if (!this.closed ) this.closed  = this.value.closed .copy();
+        if (!this.degree ) this.degree  = this.value.degree .copy();
+        if (!this.winding) this.winding = this.value.winding.copy();
+        if (!this.round  ) this.round   = this.value.round  .copy();
+
 
 
         this.validate();
@@ -28626,13 +28744,24 @@ extends GShape
         }
 
 
-        this.setUpdateValues(parse, [['value', this.value]]);
+        this.setUpdateValues(parse, 
+        [
+            ['value', this.value]
+        ]);
 
 
         await this.evalShapeBase(parse);
 
 
         await this.evalObjects(parse);
+
+
+        if (!this.x       ) this.x        = this.value.x       .copy();
+        if (!this.y       ) this.y        = this.value.y       .copy();
+        if (!this.width   ) this.width    = this.value.width   .copy();
+        if (!this.height  ) this.height   = this.value.height  .copy();
+        if (!this.round   ) this.round    = this.value.round   .copy();
+        if (!this.children) this.children = this.value.children.copy();
 
 
         this.validate();
@@ -28690,7 +28819,8 @@ extends GShape
             this.setUpdateValues(parse, 
             [
                 ['nChildren', new NumberValue(frame.children.length)]
-            ]);
+            ], 
+            true);
         }
 
 
@@ -34302,12 +34432,12 @@ function genParseDefine(parse)
 
 
 
-function genParseDistribute(parse)
+function genParseRange(parse)
 {
     const [, nodeId, options, ignore] = genParseNodeStart(parse);
 
 
-    const dist = new GDistribute(nodeId, options);
+    const dist = new GRange(nodeId, options);
 
 
     if (parse.settings.logRequests) 
@@ -37611,7 +37741,7 @@ function genParse(parse, inParam = true)
     else if (parse.next == NUMBER_CONSTANT        ) result = genParseConstant          (parse);
     else if (parse.next == NUMBER_DATETIME        ) result = genParseDateTime          (parse);
     else if (parse.next == NUMBER_SEQUENCE        ) result = genParseSequence          (parse);
-    else if (parse.next == NUMBER_DISTRIBUTE      ) result = genParseDistribute        (parse);
+    else if (parse.next == NUMBER_RANGE           ) result = genParseRange             (parse);
     else if (parse.next == NUMBER_RANDOM          ) result = genParseRandom            (parse);
     else if (parse.next == NUMBER_NOISE           ) result = genParseNoise             (parse);
     else if (parse.next == NUMBER_PROBABILITY     ) result = genParseProbability       (parse);

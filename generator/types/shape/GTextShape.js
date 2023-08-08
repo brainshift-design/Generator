@@ -116,6 +116,20 @@ extends GShape
         await this.evalObjects(parse);
 
 
+        if (!this.text         ) this.text          = this.value.text         .copy();
+        if (!this.x            ) this.x             = this.value.x            .copy();
+        if (!this.y            ) this.y             = this.value.y            .copy();
+        if (!this.width        ) this.width         = this.value.width        .copy();
+        if (!this.height       ) this.height        = this.value.height       .copy();
+        if (!this.font         ) this.font          = this.value.font         .copy();
+        if (!this.style        ) this.style         = this.value.style        .copy();
+        if (!this.size         ) this.size          = this.value.size         .copy();
+        if (!this.alignH       ) this.alignH        = this.value.alignH       .copy();
+        if (!this.alignV       ) this.alignV        = this.value.alignV       .copy();
+        if (!this.lineHeight   ) this.lineHeight    = this.value.lineHeight   .copy();
+        if (!this.letterSpacing) this.letterSpacing = this.value.letterSpacing.copy();
+
+
         this.validate();
 
         return this;

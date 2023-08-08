@@ -141,7 +141,7 @@ var menuItemCache;
 var menuItemFreeze;
 
 var menuItemArray;
-var menuItemDistribute;
+var menuItemRange;
 var menuItemSequence;
 var menuItemSolve;  
 var menuItemAnimate;  
@@ -435,7 +435,7 @@ function initGeneratorMenus()
     menuSets = new Menu('Sets...', true, false);
     menuSets.addItems([
         menuItemSequence   = new MenuItem('Sequence . . .',   null, {icon: iconSequence,    createType: NUMBER_SEQUENCE,    callback: e => actionManager.do(getCreateNodeAction(NUMBER_SEQUENCE,    btnSets.div, getCreateOptions(e)))}),
-        menuItemDistribute = new MenuItem('Range . . .',      null, {icon: iconDistribute,  createType: NUMBER_DISTRIBUTE,  callback: e => actionManager.do(getCreateNodeAction(NUMBER_DISTRIBUTE,  btnSets.div, getCreateOptions(e)))}),
+        menuItemRange = new MenuItem('Range . . .',      null, {icon: iconRange,  createType: NUMBER_RANGE,  callback: e => actionManager.do(getCreateNodeAction(NUMBER_RANGE,  btnSets.div, getCreateOptions(e)))}),
         menuItemArray      = new MenuItem('Define . . .',     null, {icon: iconDefine,      createType: DEFINE,             callback: e => actionManager.do(getCreateNodeAction(DEFINE,             btnSets.div, getCreateOptions(e)))}),
                              new MenuItem('',                 null, {separator: true}),
                              new MenuItem('Random . . .',     null, {icon: iconRandom,      createType: NUMBER_RANDOM,      callback: e => actionManager.do(getCreateNodeAction(NUMBER_RANDOM,      btnSets.div, getCreateOptions(e)))}),

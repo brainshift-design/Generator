@@ -59,6 +59,11 @@ extends GShape
         await this.evalObjects(parse);
 
 
+        if (!this.x    ) this.x     = this.value.x    .copy();
+        if (!this.y    ) this.y     = this.value.y    .copy();
+        if (!this.width) this.width = this.value.width.copy();
+
+
         this.validate();
 
         return this;

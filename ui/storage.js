@@ -565,6 +565,7 @@ function loadNode(_node, pasting)
 {
     // replace legacy
     if (_node.type == 'EXPAND') _node.type = CONDENSE;
+    if (_node.type == 'DISTR')  _node.type = NUMBER_RANGE;
 
 
     const node = createNode(_node.type);

@@ -269,7 +269,7 @@ function assertVolatile(node)
     consoleAssert(
            node.loop.type == DEFINE
         || node.loop.type == FREEZE
-        || node.loop.type == NUMBER_DISTRIBUTE
+        || node.loop.type == NUMBER_RANGE
         || node.loop.type == NUMBER_SEQUENCE
         || node.loop.type == NUMBER_RANDOM
         || node.loop.type == NUMBER_NOISE

@@ -85,6 +85,16 @@ extends GOperator
         ]);
         
 
+        if (!this.gradType) this.gradType = this.value.gradType.copy();
+        if (!this.x       ) this.x        = this.value.x       .copy();
+        if (!this.y       ) this.y        = this.value.y       .copy();
+        if (!this.size    ) this.size     = this.value.size    .copy();
+        if (!this.angle   ) this.angle    = this.value.angle   .copy();
+        if (!this.aspect  ) this.aspect   = this.value.aspect  .copy();
+        if (!this.skew    ) this.skew     = this.value.skew    .copy();
+        if (!this.blend   ) this.blend    = this.value.blend   .copy();
+
+
         this.validate();
 
         return this;

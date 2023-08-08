@@ -1,4 +1,4 @@
-class GDistribute
+class GRange
 extends GOperator
 {
     from;
@@ -14,14 +14,14 @@ extends GOperator
 
     constructor(nodeId, options)
     {
-        super(NUMBER_DISTRIBUTE, nodeId, options);
+        super(NUMBER_RANGE, nodeId, options);
     }
 
 
     
     copy()
     {
-        const copy = new GDistribute(this.nodeId, this.options);
+        const copy = new GRange(this.nodeId, this.options);
 
         copy.copyBase(this);
 

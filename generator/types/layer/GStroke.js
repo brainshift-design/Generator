@@ -87,6 +87,14 @@ extends GOperator1
         ]);
         
 
+        if (!this.weight) this.weight = this.value.weight.copy();
+        if (!this.fit   ) this.fit    = this.value.fit   .copy();
+        if (!this.join  ) this.join   = this.value.join  .copy();
+        if (!this.miter ) this.miter  = this.value.miter .copy();
+        if (!this.cap   ) this.cap    = this.value.cap   .copy();
+        if (!this.dashes) this.dashes = this.value.dashes.copy();
+
+
         this.validate();
 
         return this;

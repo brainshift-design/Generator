@@ -56,6 +56,9 @@ extends GOperator1
         ]);
         
 
+        if (!this.radius) this.radius = this.value.radius.copy();
+
+
         this.validate();
 
         return this;
