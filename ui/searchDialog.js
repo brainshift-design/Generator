@@ -199,7 +199,12 @@ function selectSearchItem(item, shift, ctrl, alt)
         if (item.callback)
             item.callback(e);
         else
-            graphView.selectedNodes = [item.selected];
+        {
+            if (!shift)
+                graphView.selectedNodes = [];
+
+            search.found[searchIndex].setSelected(true);
+        }
     }
 
     searchIndex = -1;

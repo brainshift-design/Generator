@@ -4849,7 +4849,9 @@ a
             <div id='whatsNewBody'>
                 <h1 style='margin-top: 20px;'>What's new</h1>
 
-                <p>•  fixed bugs</p>
+                <p>•  fixed crash when selecting node from search box</p>
+                <p>•  fixed values not propagating through nodes with header types</p>
+                <p>•  fixed various other bugs</p>
                 
                 <p><br/><br/><div id='chkHideWhatsNew'></div></p>
             </div>
@@ -123206,7 +123208,12 @@ function selectSearchItem(item, shift, ctrl, alt)
         if (item.callback)
             item.callback(e);
         else
-            graphView.selectedNodes = [item.selected];
+        {
+            if (!shift)
+                graphView.selectedNodes = [];
+
+            search.found[searchIndex].setSelected(true);
+        }
     }
 
     searchIndex = -1;
