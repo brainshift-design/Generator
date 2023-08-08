@@ -263,11 +263,11 @@ class Menu
     {
         const margin = 8;
 
-        const  dy    = subMenu ? 0 : 4;
-        const _dy    = subMenu ? 4 : 0;
+        const  dy  = subMenu ? 0 : 4;
+        const _dy  = subMenu ? 4 : 0;
 
-        let   left   = Math.min(Math.max(margin, x), graphView.div.offsetWidth - this.div.offsetWidth - margin) - 6;
-        let   top    = y - dy;
+        let   left = Math.max(margin, x) - 6;
+        let   top  = y - dy;
 
 
         let height = 0;
@@ -277,11 +277,31 @@ class Menu
                 height += item.separator ? 17 : 25;
 
 
+        if (this.parentItem)
+        {
+            console.log('left =', left);
+            console.log('this.div.offsetWidth =', this.div.offsetWidth);
+            console.log('graphView.div.offsetWidth =', graphView.div.offsetWidth);
+            console.log('margin =', margin);
+            console.log('left + this.div.offsetWidth > graphView.div.offsetWidth - margin =', left + this.div.offsetWidth > graphView.div.offsetWidth - margin);
+            console.log('this.parentItem.parentMenu.div.offsetLeft =', this.parentItem.parentMenu.div.offsetLeft);
+            if (left + this.div.offsetWidth + margin >= graphView.div.offsetWidth)
+            {
+                left = this.parentItem.parentMenu.div.offsetLeft - this.div.offsetWidth;
+            }
+        }
+        else
+        {
+            if (left + this.div.offsetWidth > graphView.div.offsetWidth - margin)
+                left = graphView.div.offsetWidth - this.div.offsetWidth - margin;
+        }
+
+
         const graphHeight = graphView.div.offsetHeight - getTopHeight();
 
-        if (top + height > graphView.div.offsetHeight-8)
+        if (top + height > graphView.div.offsetHeight - margin)
         {
-            height = Math.min(height, graphHeight - 16);
+            height = Math.min(height, graphHeight - margin*2);
             top    = getTopHeight() + Math.max(8, graphHeight - height);
             
             if (!subMenu)
@@ -300,7 +320,6 @@ class Menu
 
         
         this.div.style.height = height + 'px';
-
     }
 
 
