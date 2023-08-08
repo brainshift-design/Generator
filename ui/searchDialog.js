@@ -194,9 +194,13 @@ function selectSearchItem(item, shift, ctrl, alt)
         altKey:   alt
     };
 
-    if (   item
-        && item.callback)
-        item.callback(e);
+    if (item)
+    {
+        if (item.callback)
+            item.callback(e);
+        else
+            graphView.selectedNodes = [item.selected];
+    }
 
     searchIndex = -1;
 }

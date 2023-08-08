@@ -160,7 +160,6 @@ class MenuItem
 
         this.div.addEventListener('pointerup', e => 
         {
-            console.log('pointerup');
             e.stopPropagation();
             e.preventDefault();
 

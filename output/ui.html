@@ -4849,7 +4849,7 @@ a
             <div id='whatsNewBody'>
                 <h1 style='margin-top: 20px;'>What's new</h1>
 
-                <p>•  </p>
+                <p>•  fixed bugs</p>
                 
                 <p><br/><br/><div id='chkHideWhatsNew'></div></p>
             </div>
@@ -5205,7 +5205,7 @@ a
 
 
 
-const generatorVersion = 183;
+const generatorVersion = 184;
 
 
 const MAX_INT32        = 2147483647;
@@ -13571,11 +13571,15 @@ extends GNode
 
     setUpdateValues(parse, values, add = false)
     {
-        // if (   parse.repeats.length == 0
-        //     || parse.repeats[0].iteration == parse.repeats[0].total-1)
-            this.updateValues = values;
-        // else if (!add)
-        //     this.updateValues = [];
+        if (    parse.repeats.length == 0
+            || !this.options.unknown
+            ||  parse.repeats.at(-1).iteration == parse.repeats.at(-1).total-1)
+        {
+            if (add) this.updateValues.push(...values);
+            else     this.updateValues = [...values];
+        }
+        else if (!add)
+            this.updateValues = [];
     }
 
 
@@ -20820,7 +20824,11 @@ extends GOperator
 
                 Object.assign(this, {[valueId]: item});
                 this.setUpdateValues(parse, [[valueId, item]], true);
+
+                item.sortId = i;
             }
+
+            this.updateValues.sort((a, b) => a.sortId - b.sortId);
         }
         else
             this.setUpdateValues(parse, [['', NullValue]], true);
@@ -31029,7 +31037,13 @@ extends GShapeBase
             if (   this.value
                 && this.value.isValid()
                 && this.value.props != undefined) 
-                this.updateValues.push(['props', this.value.props]);
+            {
+                this.setUpdateValues(parse, 
+                [
+                    ['props', this.value.props]
+                ], 
+                true);
+            }
         }
     }
 
@@ -32652,7 +32666,6 @@ extends GShape
                 round);
         }
 
-        
         this.setUpdateValues(parse, 
         [
             ['value', this.value]
@@ -33875,7 +33888,10 @@ extends GShape
             this.value.objects = [frame];
 
             
-            this.updateValues.push(['nChildren', new NumberValue(frame.children.length)]);
+            this.setUpdateValues(parse, 
+            [
+                ['nChildren', new NumberValue(frame.children.length)]
+            ]);
         }
 
 
@@ -46222,7 +46238,7 @@ onerror = (event, source, line, pos, error) =>
 };
 
 
-const generatorVersion = 183;
+const generatorVersion = 184;
 
 
 const MAX_INT32        = 2147483647;
@@ -56759,11 +56775,15 @@ extends GNode
 
     setUpdateValues(parse, values, add = false)
     {
-        // if (   parse.repeats.length == 0
-        //     || parse.repeats[0].iteration == parse.repeats[0].total-1)
-            this.updateValues = values;
-        // else if (!add)
-        //     this.updateValues = [];
+        if (    parse.repeats.length == 0
+            || !this.options.unknown
+            ||  parse.repeats.at(-1).iteration == parse.repeats.at(-1).total-1)
+        {
+            if (add) this.updateValues.push(...values);
+            else     this.updateValues = [...values];
+        }
+        else if (!add)
+            this.updateValues = [];
     }
 
 
@@ -64008,7 +64028,11 @@ extends GOperator
 
                 Object.assign(this, {[valueId]: item});
                 this.setUpdateValues(parse, [[valueId, item]], true);
+
+                item.sortId = i;
             }
+
+            this.updateValues.sort((a, b) => a.sortId - b.sortId);
         }
         else
             this.setUpdateValues(parse, [['', NullValue]], true);
@@ -74217,7 +74241,13 @@ extends GShapeBase
             if (   this.value
                 && this.value.isValid()
                 && this.value.props != undefined) 
-                this.updateValues.push(['props', this.value.props]);
+            {
+                this.setUpdateValues(parse, 
+                [
+                    ['props', this.value.props]
+                ], 
+                true);
+            }
         }
     }
 
@@ -75840,7 +75870,6 @@ extends GShape
                 round);
         }
 
-        
         this.setUpdateValues(parse, 
         [
             ['value', this.value]
@@ -77063,7 +77092,10 @@ extends GShape
             this.value.objects = [frame];
 
             
-            this.updateValues.push(['nChildren', new NumberValue(frame.children.length)]);
+            this.setUpdateValues(parse, 
+            [
+                ['nChildren', new NumberValue(frame.children.length)]
+            ]);
         }
 
 
@@ -84991,7 +85023,6 @@ class MenuItem
 
         this.div.addEventListener('pointerup', e => 
         {
-            console.log('pointerup');
             e.stopPropagation();
             e.preventDefault();
 
@@ -122910,9 +122941,13 @@ function selectSearchItem(item, shift, ctrl, alt)
         altKey:   alt
     };
 
-    if (   item
-        && item.callback)
-        item.callback(e);
+    if (item)
+    {
+        if (item.callback)
+            item.callback(e);
+        else
+            graphView.selectedNodes = [item.selected];
+    }
 
     searchIndex = -1;
 }
@@ -123624,8 +123659,8 @@ function resolveConnections(nodes, _connections, first, last)
     _connections.sort((c1, c2) =>
     {
         if (c1.inputNodeId != c2.inputNodeId) return c1.inputNodeId - c2.inputNodeId;
-        if (c1.inputId     != c2.inputId    ) return c1.inputId     - c2.inputId;
         if (c1.outputOrder != c2.outputOrder) return c1.outputOrder - c2.outputOrder;
+        if (c1.inputId     != c2.inputId    ) return c1.inputId     - c2.inputId;
         return 0;
     });
 

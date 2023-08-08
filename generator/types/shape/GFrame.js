@@ -133,7 +133,10 @@ extends GShape
             this.value.objects = [frame];
 
             
-            this.updateValues.push(['nChildren', new NumberValue(frame.children.length)]);
+            this.setUpdateValues(parse, 
+            [
+                ['nChildren', new NumberValue(frame.children.length)]
+            ]);
         }
 
 

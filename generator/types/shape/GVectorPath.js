@@ -71,7 +71,6 @@ extends GShape
                 round);
         }
 
-        
         this.setUpdateValues(parse, 
         [
             ['value', this.value]

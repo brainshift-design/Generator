@@ -53,7 +53,13 @@ extends GShapeBase
             if (   this.value
                 && this.value.isValid()
                 && this.value.props != undefined) 
-                this.updateValues.push(['props', this.value.props]);
+            {
+                this.setUpdateValues(parse, 
+                [
+                    ['props', this.value.props]
+                ], 
+                true);
+            }
         }
     }
 

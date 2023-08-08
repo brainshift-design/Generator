@@ -58,7 +58,11 @@ extends GOperator
 
                 Object.assign(this, {[valueId]: item});
                 this.setUpdateValues(parse, [[valueId, item]], true);
+
+                item.sortId = i;
             }
+
+            this.updateValues.sort((a, b) => a.sortId - b.sortId);
         }
         else
             this.setUpdateValues(parse, [['', NullValue]], true);

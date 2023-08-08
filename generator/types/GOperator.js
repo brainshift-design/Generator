@@ -80,11 +80,15 @@ extends GNode
 
     setUpdateValues(parse, values, add = false)
     {
-        // if (   parse.repeats.length == 0
-        //     || parse.repeats[0].iteration == parse.repeats[0].total-1)
-            this.updateValues = values;
-        // else if (!add)
-        //     this.updateValues = [];
+        if (    parse.repeats.length == 0
+            || !this.options.unknown
+            ||  parse.repeats.at(-1).iteration == parse.repeats.at(-1).total-1)
+        {
+            if (add) this.updateValues.push(...values);
+            else     this.updateValues = [...values];
+        }
+        else if (!add)
+            this.updateValues = [];
     }
 
 
