@@ -396,7 +396,7 @@ function addObjectCenter(node, obj, zoom)
             [sp2, sp0, sp1],
             false,
             '',
-            [12, 140, 233], 
+            [242, 72, 34], 
             CENTER_SUFFIX));
 }
 
