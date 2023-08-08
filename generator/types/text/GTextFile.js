@@ -71,6 +71,6 @@ extends GOperator
 
         //if (this.path) this.path.invalidateInputs(from);
 
-        this.cachedValue = new TextValue();
+        //this.cachedValue = new TextValue();
     }
 }

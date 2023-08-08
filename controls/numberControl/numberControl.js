@@ -268,7 +268,7 @@ extends Control
     
 
 
-    setMin(displayMin = Number.MIN_SAFE_INTEGER, min = Number.MIN_SAFE_INTEGER)
+    setMin(displayMin = Number.MIN_SAFE_INTEGER, min = displayMin)
     {
         this.min        = min;
         this.displayMin = displayMin;
@@ -276,7 +276,7 @@ extends Control
 
 
 
-    setMax(displayMax = Number.MAX_SAFE_INTEGER, max = Number.MAX_SAFE_INTEGER)
+    setMax(displayMax = Number.MAX_SAFE_INTEGER, max = displayMax)
     {
         this.max        = max;
         this.displayMax = displayMax;

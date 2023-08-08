@@ -53,6 +53,7 @@ extends GOperator
             {
                 length = input.items.length;
                 
+                
                 if (start.value <= end.value)
                 {
                     if (this.options.enabled)

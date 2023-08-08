@@ -61,9 +61,6 @@ extends OperatorBase
 
     updateValues(requestId, actionId, updateParamId, paramIds, values)
     {
-        super.updateValues(requestId, actionId, updateParamId, paramIds, values);
-
-
         const length = values[paramIds.findIndex(id => id == 'length')];
 
         if (length.value > 0)
@@ -76,6 +73,9 @@ extends OperatorBase
             this.paramStart.controls[0].setMax();
             this.paramEnd  .controls[0].setMax();
         }
+
+        
+        super.updateValues(requestId, actionId, updateParamId, paramIds, values);
     }
 
 

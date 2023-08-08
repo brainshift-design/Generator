@@ -20180,6 +20180,7 @@ extends GOperator
             {
                 length = input.items.length;
                 
+                
                 if (start.value <= end.value)
                 {
                     if (this.options.enabled)
@@ -27571,7 +27572,7 @@ extends GOperator
 
         //if (this.path) this.path.invalidateInputs(from);
 
-        this.cachedValue = new TextValue();
+        //this.cachedValue = new TextValue();
     }
 }
 
@@ -63636,6 +63637,7 @@ extends GOperator
             {
                 length = input.items.length;
                 
+                
                 if (start.value <= end.value)
                 {
                     if (this.options.enabled)
@@ -71027,7 +71029,7 @@ extends GOperator
 
         //if (this.path) this.path.invalidateInputs(from);
 
-        this.cachedValue = new TextValue();
+        //this.cachedValue = new TextValue();
     }
 }
 
@@ -80941,7 +80943,7 @@ extends Control
     
 
 
-    setMin(displayMin = Number.MIN_SAFE_INTEGER, min = Number.MIN_SAFE_INTEGER)
+    setMin(displayMin = Number.MIN_SAFE_INTEGER, min = displayMin)
     {
         this.min        = min;
         this.displayMin = displayMin;
@@ -80949,7 +80951,7 @@ extends Control
 
 
 
-    setMax(displayMax = Number.MAX_SAFE_INTEGER, max = Number.MAX_SAFE_INTEGER)
+    setMax(displayMax = Number.MAX_SAFE_INTEGER, max = displayMax)
     {
         this.max        = max;
         this.displayMax = displayMax;
@@ -101622,9 +101624,6 @@ extends OperatorBase
 
     updateValues(requestId, actionId, updateParamId, paramIds, values)
     {
-        super.updateValues(requestId, actionId, updateParamId, paramIds, values);
-
-
         const length = values[paramIds.findIndex(id => id == 'length')];
 
         if (length.value > 0)
@@ -101637,6 +101636,9 @@ extends OperatorBase
             this.paramStart.controls[0].setMax();
             this.paramEnd  .controls[0].setMax();
         }
+
+        
+        super.updateValues(requestId, actionId, updateParamId, paramIds, values);
     }
 
 
