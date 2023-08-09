@@ -53,7 +53,7 @@ extends GOperator
                 this.value.nodeId = this.nodeId;
         }
         else
-            this.value = NullValue;
+            this.value = null;//NullValue.copy();
 
 
         if (   position

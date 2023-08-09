@@ -61,16 +61,16 @@ extends GOperator
                     if (column.value < columns)
                         this.value = _row.items[column.value].copy()
                     else
-                        this.value = NullValue;
+                        this.value = NullValue.copy();
                 }
                 else
-                    this.value = NullValue;
+                    this.value = NullValue.copy();
             }
             else
-                this.value = NullValue;
+                this.value = NullValue.copy();
         }
         else
-            this.value = NullValue;
+            this.value = NullValue.copy();
 
 
         this.setUpdateValues(parse,

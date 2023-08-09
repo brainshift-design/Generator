@@ -52,7 +52,7 @@ extends GOperator
             this.value = input ? input : NullValue;
         }
         else
-            this.value = NullValue;
+            this.value = NullValue.copy();
             
 
         this.setUpdateValues(parse,

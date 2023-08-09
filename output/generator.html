@@ -8007,7 +8007,8 @@ class GNode
         for (const value of this.updateValues)
             genPushUpdateValue(parse, this.nodeId, value[0], value[1]);
 
-        this.updateValues = [];
+        if (this.isValid())
+            this.updateValues = [];
     }
 
 
@@ -8595,7 +8596,7 @@ extends GOperator
         else
         {
             //this.param.feedbackValue = null;
-            return this.value = NullValue;
+            return this.value = NullValue.copy();
         }
     }
 
@@ -12369,10 +12370,10 @@ extends GValue
     {
         super(POINT_VALUE);
 
-        this.nodeId   = nodeId;
+        this.nodeId = nodeId;
 
-        this.x        = x;
-        this.y        = y;
+        this.x      = x;
+        this.y      = y;
     }
 
 
@@ -14631,7 +14632,7 @@ extends GOperator
             this.value = input ? input : NullValue;
         }
         else
-            this.value = NullValue;
+            this.value = NullValue.copy();
             
 
         this.setUpdateValues(parse,
@@ -14999,7 +15000,7 @@ extends GOperator
                 }
             }
             else
-                this.value = NullValue;
+                this.value = NullValue.copy();
         }
 
 
@@ -15527,16 +15528,16 @@ extends GOperator
                     if (column.value < columns)
                         this.value = _row.items[column.value].copy()
                     else
-                        this.value = NullValue;
+                        this.value = NullValue.copy();
                 }
                 else
-                    this.value = NullValue;
+                    this.value = NullValue.copy();
             }
             else
-                this.value = NullValue;
+                this.value = NullValue.copy();
         }
         else
-            this.value = NullValue;
+            this.value = NullValue.copy();
 
 
         this.setUpdateValues(parse,
@@ -15748,10 +15749,6 @@ extends GOperator
         {
             const input = (await this.input.eval(parse)).toValue();
             
-            if (this.nodeId == 'select')
-                console.log('this.input =', this.input);
-    
-    
 
             if (   index
                 && input
@@ -15788,19 +15785,19 @@ extends GOperator
                 }
                 else
                 {
-                    this.value = NullValue;
+                    this.value = NullValue.copy();
                     index      = NumberValue.NaN;
                 }                    
             }
             else
             {
-                this.value = NullValue;
+                this.value = NullValue.copy();
                 index      = NumberValue.NaN;
             }
         }
         else
         {
-            this.value = NullValue;
+            this.value = NullValue.copy();
             index      = NumberValue.NaN;
         }
 
@@ -29045,7 +29042,7 @@ extends GShape
         else
         {
             await this.evalShapeBase(parse); // to updated anything connected to styles
-            this.value = NullValue;
+            this.value = NullValue.copy();
         }
 
        
@@ -29477,7 +29474,7 @@ extends GOperator1
         }
         else
         {
-            this.value = NullValue;
+            this.value = NullValue.copy();
         }
 
 
@@ -29791,7 +29788,7 @@ extends GAffine
         }
         else
         {
-            this.value = NullValue;
+            this.value = NullValue.copy();
         }
 
        
@@ -29934,7 +29931,7 @@ extends GAffine
         }
         else
         {
-            this.value = NullValue;
+            this.value = NullValue.copy();
         }
 
        
@@ -30088,7 +30085,7 @@ extends GAffine
         }
         else
         {
-            this.value = NullValue;
+            this.value = NullValue.copy();
         }
 
         
@@ -30233,7 +30230,7 @@ extends GOperator1
         }
         else
         {
-            this.value = NullValue;
+            this.value = NullValue.copy();
         }
 
         
@@ -30392,7 +30389,7 @@ extends GOperator1
                 this.value.nodeId = this.nodeId;
         }
         else
-            this.value = NullValue;
+            this.value = NullValue.copy();
 
         
         await this.evalObjects(parse, { showCenter: showCenter });
@@ -30910,7 +30907,7 @@ extends GOperator
                 this.value.nodeId = this.nodeId;
         }
         else
-            this.value = NullValue;
+            this.value = null;//NullValue.copy();
 
 
         if (   position
@@ -31211,7 +31208,7 @@ extends GOperator
             this.value = nanFromType(this.dataType);
         
         else
-            this.value = NullValue;
+            this.value = NullValue.copy();
 
 
         this.setUpdateValues(parse,
@@ -31279,7 +31276,7 @@ extends GOperator
             return this;
 
 
-        this.value = NullValue;
+        this.value = NullValue.copy();
 
 
         this.setUpdateValues(parse, 

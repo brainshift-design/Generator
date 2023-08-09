@@ -54,10 +54,6 @@ extends GOperator
         {
             const input = (await this.input.eval(parse)).toValue();
             
-            if (this.nodeId == 'select')
-                console.log('this.input =', this.input);
-    
-    
 
             if (   index
                 && input
@@ -94,19 +90,19 @@ extends GOperator
                 }
                 else
                 {
-                    this.value = NullValue;
+                    this.value = NullValue.copy();
                     index      = NumberValue.NaN;
                 }                    
             }
             else
             {
-                this.value = NullValue;
+                this.value = NullValue.copy();
                 index      = NumberValue.NaN;
             }
         }
         else
         {
-            this.value = NullValue;
+            this.value = NullValue.copy();
             index      = NumberValue.NaN;
         }
 

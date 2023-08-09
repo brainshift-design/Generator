@@ -64,7 +64,7 @@ extends GOperator
         else
         {
             //this.param.feedbackValue = null;
-            return this.value = NullValue;
+            return this.value = NullValue.copy();
         }
     }
 

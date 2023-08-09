@@ -25,7 +25,7 @@ extends GOperator
             return this;
 
 
-        this.value = NullValue;
+        this.value = NullValue.copy();
 
 
         this.setUpdateValues(parse, 

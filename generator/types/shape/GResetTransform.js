@@ -42,7 +42,7 @@ extends GOperator1
                 this.value.nodeId = this.nodeId;
         }
         else
-            this.value = NullValue;
+            this.value = NullValue.copy();
 
         
         await this.evalObjects(parse, { showCenter: showCenter });

@@ -9,9 +9,6 @@ extends ResizableBase
     {
         super(TEXT, 'text', 'text', '');
 
-        // this.alwaysSaveParams = true;
-        // this.alwaysLoadParams = true;
-
 
         this.addInput (new Input (TEXT_TYPES, getNodeInputValuesForUndo, this.input_getBackInitValue));
         this.addOutput(new Output([TEXT_VALUE], this.output_genRequest, getNodeOutputValuesForUndo, this.output_backInit));
@@ -20,18 +17,7 @@ extends ResizableBase
 
         this.paramValue.controls[0].textbox.defPlaceholder = '...';
         setControlFont(this.paramValue.controls[0].textbox, 'Roboto Mono', 10, 'center');
-
-
-        //this.header.addEventListener('pointerdown', e => this.paramValue.controls[0].textbox.blur());
     }
-
-
-
-    // setSize(w, h, updateTransform = true)
-    // {
-    //     super.setSize(w, h, updateTransform);
-    //     this.updateValueParam();
-    // }
 
 
 
@@ -92,7 +78,6 @@ extends ResizableBase
     updateParams()
     {
         this.paramValue.enableControlText(true, this.isUnknown());
-        // this.paramValue.controls[0].valueText = this.isUnknown() ? UNKNOWN_DISPLAY : '';
 
         this.updateParamControls();
         

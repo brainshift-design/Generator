@@ -81,7 +81,8 @@ class GNode
         for (const value of this.updateValues)
             genPushUpdateValue(parse, this.nodeId, value[0], value[1]);
 
-        this.updateValues = [];
+        if (this.isValid())
+            this.updateValues = [];
     }
 
 

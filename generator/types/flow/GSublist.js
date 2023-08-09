@@ -73,7 +73,7 @@ extends GOperator
                 }
             }
             else
-                this.value = NullValue;
+                this.value = NullValue.copy();
         }
 
 

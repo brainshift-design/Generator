@@ -14,10 +14,10 @@ extends GValue
     {
         super(POINT_VALUE);
 
-        this.nodeId   = nodeId;
+        this.nodeId = nodeId;
 
-        this.x        = x;
-        this.y        = y;
+        this.x      = x;
+        this.y      = y;
     }
 
 
