@@ -4854,6 +4854,7 @@ a
                 <p>•  fixed Place node not transforming objects</p>
                 <p>•  added End parameter to Sequence...</p>
                 <p>•  added Text to color node</p>
+                <p>•  added preview tooltip to all list nodes</p>
                 <p>•  fixed list node issues</p>
                 
                 <p><br/><br/><div id='chkHideWhatsNew'></div></p>
@@ -14008,6 +14009,27 @@ extends GValue
 
 
 
+    toSimpleString()
+    {
+        if (!this.items)
+            return '';
+
+
+        let str = '';
+        
+        
+        for (let i = 0; i < this.items.length; i++)
+        {
+            if (i > 0) str += ', ';
+            str += this.items[i].toSimpleString();
+        }
+
+
+        return str;
+    }
+
+
+
     getNaN()
     {
         return ListValue.NaN;
@@ -14612,6 +14634,18 @@ extends GValue
             + ' ' + this.c1   .toDisplayString()
             + ' ' + this.c2   .toDisplayString()
             + ' ' + this.c3   .toDisplayString();
+    }
+
+
+
+    toSimpleString()
+    {
+        if (!this.isValid())
+            return UNKNOWN_DISPLAY;
+
+        const rgb = this.toRgb();
+
+        return '#' + rgb2hex(rgb);
     }
 
 
@@ -20009,8 +20043,9 @@ extends GOperator
 
         this.setUpdateValues(parse,
         [
-            ['length', new NumberValue(this.value.items.length)               ],
-            ['type',   new TextValue(finalListTypeFromItems(this.value.items))]
+            ['preview', new ListValue(this.value.items.slice(0, Math.min(this.value.items.length, 10)))],
+            ['length',  new NumberValue(this.value.items.length)                                       ],
+            ['type',    new TextValue(finalListTypeFromItems(this.value.items))                        ]
         ]);
 
 
@@ -20132,7 +20167,7 @@ extends GOperator1
 
 
 class GSublist
-extends GOperator
+extends GOperator1
 {
     start;
     end;
@@ -20173,7 +20208,7 @@ extends GOperator
         this.value = new ListValue();
 
         let length = 0;
-
+        
 
         if (   this.input
             && start
@@ -20185,9 +20220,9 @@ extends GOperator
             if (input)
             {
                 length = input.items.length;
-                
-                
-                if (start.value <= end.value)
+
+
+                if (start.value < end.value)
                 {
                     if (this.options.enabled)
                     {
@@ -20215,9 +20250,10 @@ extends GOperator
 
         this.setUpdateValues(parse,
         [
-            ['length', new NumberValue(length)], // used to set start and end maxima
-            ['start',  start                  ],
-            ['end',    end                    ]
+            ['preview', new ListValue(this.value.items.slice(0, Math.min(this.value.items.length, 10)))],
+            ['length',  new NumberValue(length)                                                        ], // used to set start and end maxima
+            ['start',   start                                                                          ],
+            ['end',     end                                                                            ]
         ]);
         
 
@@ -20322,7 +20358,8 @@ extends GOperator
 
         this.setUpdateValues(parse,
         [
-            ['length', new NumberValue(this.value.items.length)]
+            ['preview', new ListValue(this.value.items.slice(0, Math.min(this.value.items.length, 10)))],
+            ['length', new NumberValue(this.value.items.length)                                        ]
         ]);
         
 
@@ -20411,7 +20448,11 @@ extends GOperator
         this.updateValueObjects();
 
 
-        this.setUpdateValues(parse, [['length', new NumberValue(this.value.items.length)]]); 
+        this.setUpdateValues(parse, 
+        [
+            ['preview', new ListValue(this.value.items.slice(0, Math.min(this.value.items.length, 10)))],
+            ['length', new NumberValue(this.value.items.length)                                        ]
+        ]); 
                
 
         this.validate();
@@ -20519,10 +20560,11 @@ extends GOperator
 
         this.setUpdateValues(parse,
         [
-            ['columns', new NumberValue(maxColumns)             ],
-            ['length',  new NumberValue(this.value.items.length)],
-            ['column',  column                                  ],
-            ['reverse', reverse                                 ]
+            ['preview', new ListValue(this.value.items.slice(0, Math.min(this.value.items.length, 10)))],
+            ['length',  new NumberValue(this.value.items.length)                                       ],
+            ['columns', new NumberValue(maxColumns)                                                    ],
+            ['column',  column                                                                         ],
+            ['reverse', reverse                                                                        ]
         ]);
         
 
@@ -20619,14 +20661,17 @@ extends GOperator1
                     }
                 }
             }
+            else if (LIST_VALUES.includes(input.type))
+                this.value = input.copy();
         }
 
 
         this.setUpdateValues(parse,
         [
-            ['columns', new NumberValue(maxColumns)             ],
-            ['length',  new NumberValue(this.value.items.length)],
-            ['index',   index                                   ]
+            ['preview', new ListValue(this.value.items.slice(0, Math.min(this.value.items.length, 10)))],
+            ['length',  new NumberValue(this.value.items.length)                                       ],
+            ['columns', new NumberValue(maxColumns)                                                    ],
+            ['index',   index                                                                          ]
         ]);
         
 
@@ -23364,7 +23409,6 @@ extends GNumberType1
         const target  = (await this.target .eval(parse)).toValue();
 
 
-        //console.log('this.input =', this.input);
         if (   this.input
             && current.isValid()
             && target .isValid())
@@ -23382,9 +23426,6 @@ extends GNumberType1
                 let   diff      = diffStart;
                 let   prevDiff  = diffStart;
 
-                // console.log('diffStart =', diffStart);
-                // console.log('diff =', diff);
-                // console.log('prevDiff =', prevDiff);
 
                 let   start     = input.copy();
                 let   step      = Number.MAX_SAFE_INTEGER;
@@ -27263,6 +27304,7 @@ extends GOperator1
 
         this.setUpdateValues(parse,
         [
+            ['preview',         new ListValue(this.value.items.slice(0, Math.min(this.value.items.length, 10)))],
             ['rowSeparator',    rowSeparator             ],
             ['columnSeparator', columnSeparator          ],
             ['rows',            new NumberValue(nRows   )],
@@ -57514,6 +57556,27 @@ extends GValue
 
 
 
+    toSimpleString()
+    {
+        if (!this.items)
+            return '';
+
+
+        let str = '';
+        
+        
+        for (let i = 0; i < this.items.length; i++)
+        {
+            if (i > 0) str += ', ';
+            str += this.items[i].toSimpleString();
+        }
+
+
+        return str;
+    }
+
+
+
     getNaN()
     {
         return ListValue.NaN;
@@ -58118,6 +58181,18 @@ extends GValue
             + ' ' + this.c1   .toDisplayString()
             + ' ' + this.c2   .toDisplayString()
             + ' ' + this.c3   .toDisplayString();
+    }
+
+
+
+    toSimpleString()
+    {
+        if (!this.isValid())
+            return UNKNOWN_DISPLAY;
+
+        const rgb = this.toRgb();
+
+        return '#' + rgb2hex(rgb);
     }
 
 
@@ -63515,8 +63590,9 @@ extends GOperator
 
         this.setUpdateValues(parse,
         [
-            ['length', new NumberValue(this.value.items.length)               ],
-            ['type',   new TextValue(finalListTypeFromItems(this.value.items))]
+            ['preview', new ListValue(this.value.items.slice(0, Math.min(this.value.items.length, 10)))],
+            ['length',  new NumberValue(this.value.items.length)                                       ],
+            ['type',    new TextValue(finalListTypeFromItems(this.value.items))                        ]
         ]);
 
 
@@ -63638,7 +63714,7 @@ extends GOperator1
 
 
 class GSublist
-extends GOperator
+extends GOperator1
 {
     start;
     end;
@@ -63679,7 +63755,7 @@ extends GOperator
         this.value = new ListValue();
 
         let length = 0;
-
+        
 
         if (   this.input
             && start
@@ -63691,9 +63767,9 @@ extends GOperator
             if (input)
             {
                 length = input.items.length;
-                
-                
-                if (start.value <= end.value)
+
+
+                if (start.value < end.value)
                 {
                     if (this.options.enabled)
                     {
@@ -63721,9 +63797,10 @@ extends GOperator
 
         this.setUpdateValues(parse,
         [
-            ['length', new NumberValue(length)], // used to set start and end maxima
-            ['start',  start                  ],
-            ['end',    end                    ]
+            ['preview', new ListValue(this.value.items.slice(0, Math.min(this.value.items.length, 10)))],
+            ['length',  new NumberValue(length)                                                        ], // used to set start and end maxima
+            ['start',   start                                                                          ],
+            ['end',     end                                                                            ]
         ]);
         
 
@@ -63828,7 +63905,8 @@ extends GOperator
 
         this.setUpdateValues(parse,
         [
-            ['length', new NumberValue(this.value.items.length)]
+            ['preview', new ListValue(this.value.items.slice(0, Math.min(this.value.items.length, 10)))],
+            ['length', new NumberValue(this.value.items.length)                                        ]
         ]);
         
 
@@ -63917,7 +63995,11 @@ extends GOperator
         this.updateValueObjects();
 
 
-        this.setUpdateValues(parse, [['length', new NumberValue(this.value.items.length)]]); 
+        this.setUpdateValues(parse, 
+        [
+            ['preview', new ListValue(this.value.items.slice(0, Math.min(this.value.items.length, 10)))],
+            ['length', new NumberValue(this.value.items.length)                                        ]
+        ]); 
                
 
         this.validate();
@@ -64025,10 +64107,11 @@ extends GOperator
 
         this.setUpdateValues(parse,
         [
-            ['columns', new NumberValue(maxColumns)             ],
-            ['length',  new NumberValue(this.value.items.length)],
-            ['column',  column                                  ],
-            ['reverse', reverse                                 ]
+            ['preview', new ListValue(this.value.items.slice(0, Math.min(this.value.items.length, 10)))],
+            ['length',  new NumberValue(this.value.items.length)                                       ],
+            ['columns', new NumberValue(maxColumns)                                                    ],
+            ['column',  column                                                                         ],
+            ['reverse', reverse                                                                        ]
         ]);
         
 
@@ -64125,14 +64208,17 @@ extends GOperator1
                     }
                 }
             }
+            else if (LIST_VALUES.includes(input.type))
+                this.value = input.copy();
         }
 
 
         this.setUpdateValues(parse,
         [
-            ['columns', new NumberValue(maxColumns)             ],
-            ['length',  new NumberValue(this.value.items.length)],
-            ['index',   index                                   ]
+            ['preview', new ListValue(this.value.items.slice(0, Math.min(this.value.items.length, 10)))],
+            ['length',  new NumberValue(this.value.items.length)                                       ],
+            ['columns', new NumberValue(maxColumns)                                                    ],
+            ['index',   index                                                                          ]
         ]);
         
 
@@ -66870,7 +66956,6 @@ extends GNumberType1
         const target  = (await this.target .eval(parse)).toValue();
 
 
-        //console.log('this.input =', this.input);
         if (   this.input
             && current.isValid()
             && target .isValid())
@@ -66888,9 +66973,6 @@ extends GNumberType1
                 let   diff      = diffStart;
                 let   prevDiff  = diffStart;
 
-                // console.log('diffStart =', diffStart);
-                // console.log('diff =', diff);
-                // console.log('prevDiff =', prevDiff);
 
                 let   start     = input.copy();
                 let   step      = Number.MAX_SAFE_INTEGER;
@@ -70769,6 +70851,7 @@ extends GOperator1
 
         this.setUpdateValues(parse,
         [
+            ['preview',         new ListValue(this.value.items.slice(0, Math.min(this.value.items.length, 10)))],
             ['rowSeparator',    rowSeparator             ],
             ['columnSeparator', columnSeparator          ],
             ['rows',            new NumberValue(nRows   )],
@@ -100128,6 +100211,7 @@ Operator.prototype.updateHeaderLabelText = function()
     const sep = settings.showNodeId ? ' ' : '  ';
 
          if (this.type == LIST        ) suffix = sep + '[ ' + this.length + ' ]';
+    else if (this.type == SUBLIST     ) suffix = sep + '[ ' + this.length + ' ]';
     else if (this.type == COLUMN      ) suffix = sep + '[ ' + this.columnLength + ' ]';
     else if (this.type == REVERSE_LIST) suffix = sep + '[ ' + this.tableLength + ' ]';
     else if (this.type == SORT        ) suffix = sep + '[ ' + this.tableLength + ' ]';
@@ -101431,6 +101515,7 @@ function OpTimer_onDisconnectInput(node)
 class   OpList
 extends OperatorBase
 {
+    preview = null;
     length;
 
 
@@ -101445,6 +101530,9 @@ extends OperatorBase
 
         this.addNewInput();
         this.addOutput(new Output([LIST_VALUE], this.output_genRequest));
+
+
+        createListTooltip(this);
     }
     
     
@@ -101497,8 +101585,9 @@ extends OperatorBase
     {
         super.updateValues(requestId, actionId, updateParamId, paramIds, values);
 
-        const length = values[paramIds.findIndex(id => id == 'length')];
-        const type   = values[paramIds.findIndex(id => id == 'type'  )];
+        this.preview = values[paramIds.findIndex(id => id == 'preview')];
+        const length = values[paramIds.findIndex(id => id == 'length' )];
+        const type   = values[paramIds.findIndex(id => id == 'type'   )];
 
         if (   length 
             && type)
@@ -101539,6 +101628,45 @@ extends OperatorBase
     }
 }
 
+
+
+function createListTooltip(node)
+{
+    createTooltipSrc(node.header, node.header, () => ttText);
+
+    node.header.addEventListener('pointerenter', e =>
+    {
+        if (  !currentTooltip
+            && node.preview)
+        {
+            let strTooltip = '';
+            
+            for (let i = 0; i < node.preview.items.length; i++)
+            {
+                if (i > 0) strTooltip += '<br/>';
+                strTooltip += node.preview.items[i].toSimpleString();
+            }
+
+            // if (node.length > node.preview.items.length) 
+            //     strTooltip = '<br/>. . .';
+            // else 
+            if (strTooltip == '')
+                strTooltip = '. . .';
+            
+            initTextTooltip(strTooltip);
+        }
+    });
+
+
+    node.header.addEventListener('pointerdown', () =>
+    {
+        if (tooltipTimer)
+            clearTimeout(tooltipTimer);
+
+        if (currentTooltip) 
+            hideTooltip(currentTooltip);
+    });
+}
 
 
 class   OpCondense
@@ -101635,6 +101763,9 @@ extends OperatorBase
     paramStart;
     paramEnd;
 
+    preview = null;
+    length;
+
 
 
     constructor()
@@ -101648,12 +101779,15 @@ extends OperatorBase
         this.addInput (new Input (LIST_VALUES));
         this.addOutput(new Output([LIST_VALUE], this.output_genRequest));
 
-        this.addParam(this.paramStart = new NumberParam('start', ' start', true, true, true, 0, 0));
+        this.addParam(this.paramStart = new NumberParam('start', '[ start', true, true, true, 0, 0));
         this.addParam(this.paramEnd   = new NumberParam('end',   '] end',   true, true, true, 0, 0));
 
 
         this.paramStart.controls[0].allowEditDecimals = false;
         this.paramEnd  .controls[0].allowEditDecimals = false;
+
+
+        createListTooltip(this);
     }
 
 
@@ -101692,6 +101826,7 @@ extends OperatorBase
 
     updateValues(requestId, actionId, updateParamId, paramIds, values)
     {
+        this.preview = values[paramIds.findIndex(id => id == 'preview')];
         const length = values[paramIds.findIndex(id => id == 'length')];
 
         if (length.value > 0)
@@ -101705,6 +101840,7 @@ extends OperatorBase
             this.paramEnd  .controls[0].setMax();
         }
 
+        this.length = length.value;
         
         super.updateValues(requestId, actionId, updateParamId, paramIds, values);
     }
@@ -101726,6 +101862,7 @@ extends OperatorBase
 {
     paramCounts;
 
+    preview = null;
     length;
 
 
@@ -101744,6 +101881,9 @@ extends OperatorBase
         this.addParam(this.paramCounts = new ListParam('counts', 'counts', false, false, true));
 
         this.paramCounts.itemName  = '';
+
+
+        createListTooltip(this);
     }
 
 
@@ -101781,6 +101921,7 @@ extends OperatorBase
     {
         super.updateValues(requestId, actionId, updateParamId, paramIds, values);
 
+        this.preview = values[paramIds.findIndex(id => id == 'preview')];
         const length = values[paramIds.findIndex(id => id == 'length')];
 
         this.length = length.value;
@@ -101803,6 +101944,7 @@ extends OperatorBase
 class   OpReverseList
 extends OperatorBase
 {
+    preview = null;
     tableLength;
 
 
@@ -101817,6 +101959,9 @@ extends OperatorBase
 
         this.addInput (new Input (LIST_VALUES));
         this.addOutput(new Output([LIST_VALUE], this.output_genRequest));
+
+
+        createListTooltip(this);
     }
 
 
@@ -101854,6 +101999,7 @@ extends OperatorBase
     {
         super.updateValues(requestId, actionId, updateParamId, paramIds, values);
 
+        this.preview = values[paramIds.findIndex(id => id == 'preview')];
         const length = values[paramIds.findIndex(id => id == 'length' )];
 
         this.tableLength = length.value;
@@ -101867,6 +102013,7 @@ extends OperatorBase
     paramColumn;
     paramReverse;
 
+    preview = null;
     tableLength;
 
     menuBoolReverse;
@@ -101892,6 +102039,9 @@ extends OperatorBase
         this.paramReverse.divider = 0.59;
 
         this.menuBoolReverse = createBoolMenu(this.paramReverse);
+
+
+        createListTooltip(this);
     }
 
 
@@ -101935,8 +102085,9 @@ extends OperatorBase
 
         //const column  = values[paramIds.findIndex(id => id == 'column')];
 
-        const columns = values[paramIds.findIndex(id => id == 'columns')];
+        this.preview  = values[paramIds.findIndex(id => id == 'preview')];
         const length  = values[paramIds.findIndex(id => id == 'length' )];
+        const columns = values[paramIds.findIndex(id => id == 'columns')];
 
         this.tableLength = length.value;
 
@@ -101965,6 +102116,7 @@ extends OperatorBase
 {
     paramIndex;
 
+    preview = null;
     columnLength;
 
 
@@ -101983,6 +102135,9 @@ extends OperatorBase
 
         this.paramIndex.divider                       = 0.54;
         this.paramIndex.controls[0].allowEditDecimals = false;
+
+
+        createListTooltip(this);
     }
 
 
@@ -102023,8 +102178,9 @@ extends OperatorBase
         super.updateValues(requestId, actionId, updateParamId, paramIds, values);
 
 
-        const columns = values[paramIds.findIndex(id => id == 'columns')];
+        this.preview  = values[paramIds.findIndex(id => id == 'preview')];
         const length  = values[paramIds.findIndex(id => id == 'length' )];
+        const columns = values[paramIds.findIndex(id => id == 'columns')];
 
 
         this.columnLength = length ? length.value : 0;
@@ -107300,6 +107456,8 @@ extends OperatorBase
     paramRowSeparator;
     paramColumnSeparator;
 
+    preview = null;
+
 
 
     constructor()
@@ -107323,6 +107481,9 @@ extends OperatorBase
         // this.paramColumns        .divider = 0.5;
         this.paramRowSeparator   .divider = 0.6;
         this.paramColumnSeparator.divider = 0.6;
+
+
+        createListTooltip(this);
     }
 
 
@@ -107365,6 +107526,7 @@ extends OperatorBase
         super.updateValues(requestId, actionId, updateParamId, paramIds, values);
 
 
+        this.preview  = values[paramIds.findIndex(id => id == 'preview')];
         const rows    = values[paramIds.findIndex(id => id == 'rows'   )];
         const columns = values[paramIds.findIndex(id => id == 'columns')];
 

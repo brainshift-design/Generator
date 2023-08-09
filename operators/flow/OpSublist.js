@@ -4,6 +4,9 @@ extends OperatorBase
     paramStart;
     paramEnd;
 
+    preview = null;
+    length;
+
 
 
     constructor()
@@ -17,12 +20,15 @@ extends OperatorBase
         this.addInput (new Input (LIST_VALUES));
         this.addOutput(new Output([LIST_VALUE], this.output_genRequest));
 
-        this.addParam(this.paramStart = new NumberParam('start', ' start', true, true, true, 0, 0));
+        this.addParam(this.paramStart = new NumberParam('start', '[ start', true, true, true, 0, 0));
         this.addParam(this.paramEnd   = new NumberParam('end',   '] end',   true, true, true, 0, 0));
 
 
         this.paramStart.controls[0].allowEditDecimals = false;
         this.paramEnd  .controls[0].allowEditDecimals = false;
+
+
+        createListTooltip(this);
     }
 
 
@@ -61,6 +67,7 @@ extends OperatorBase
 
     updateValues(requestId, actionId, updateParamId, paramIds, values)
     {
+        this.preview = values[paramIds.findIndex(id => id == 'preview')];
         const length = values[paramIds.findIndex(id => id == 'length')];
 
         if (length.value > 0)
@@ -74,6 +81,7 @@ extends OperatorBase
             this.paramEnd  .controls[0].setMax();
         }
 
+        this.length = length.value;
         
         super.updateValues(requestId, actionId, updateParamId, paramIds, values);
     }

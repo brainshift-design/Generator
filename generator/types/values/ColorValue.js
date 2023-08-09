@@ -163,6 +163,18 @@ extends GValue
 
 
 
+    toSimpleString()
+    {
+        if (!this.isValid())
+            return UNKNOWN_DISPLAY;
+
+        const rgb = this.toRgb();
+
+        return '#' + rgb2hex(rgb);
+    }
+
+
+
     toRgbString()
     {
         if (!this.isValid())

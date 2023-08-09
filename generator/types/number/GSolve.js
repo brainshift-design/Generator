@@ -48,7 +48,6 @@ extends GNumberType1
         const target  = (await this.target .eval(parse)).toValue();
 
 
-        //console.log('this.input =', this.input);
         if (   this.input
             && current.isValid()
             && target .isValid())
@@ -66,9 +65,6 @@ extends GNumberType1
                 let   diff      = diffStart;
                 let   prevDiff  = diffStart;
 
-                // console.log('diffStart =', diffStart);
-                // console.log('diff =', diff);
-                // console.log('prevDiff =', prevDiff);
 
                 let   start     = input.copy();
                 let   step      = Number.MAX_SAFE_INTEGER;

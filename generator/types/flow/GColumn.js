@@ -62,14 +62,17 @@ extends GOperator1
                     }
                 }
             }
+            else if (LIST_VALUES.includes(input.type))
+                this.value = input.copy();
         }
 
 
         this.setUpdateValues(parse,
         [
-            ['columns', new NumberValue(maxColumns)             ],
-            ['length',  new NumberValue(this.value.items.length)],
-            ['index',   index                                   ]
+            ['preview', new ListValue(this.value.items.slice(0, Math.min(this.value.items.length, 10)))],
+            ['length',  new NumberValue(this.value.items.length)                                       ],
+            ['columns', new NumberValue(maxColumns)                                                    ],
+            ['index',   index                                                                          ]
         ]);
         
 

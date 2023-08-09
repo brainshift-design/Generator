@@ -96,6 +96,7 @@ extends GOperator1
 
         this.setUpdateValues(parse,
         [
+            ['preview',         new ListValue(this.value.items.slice(0, Math.min(this.value.items.length, 10)))],
             ['rowSeparator',    rowSeparator             ],
             ['columnSeparator', columnSeparator          ],
             ['rows',            new NumberValue(nRows   )],

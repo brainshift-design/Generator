@@ -1,6 +1,7 @@
 class   OpList
 extends OperatorBase
 {
+    preview = null;
     length;
 
 
@@ -15,6 +16,9 @@ extends OperatorBase
 
         this.addNewInput();
         this.addOutput(new Output([LIST_VALUE], this.output_genRequest));
+
+
+        createListTooltip(this);
     }
     
     
@@ -67,8 +71,9 @@ extends OperatorBase
     {
         super.updateValues(requestId, actionId, updateParamId, paramIds, values);
 
-        const length = values[paramIds.findIndex(id => id == 'length')];
-        const type   = values[paramIds.findIndex(id => id == 'type'  )];
+        this.preview = values[paramIds.findIndex(id => id == 'preview')];
+        const length = values[paramIds.findIndex(id => id == 'length' )];
+        const type   = values[paramIds.findIndex(id => id == 'type'   )];
 
         if (   length 
             && type)
@@ -107,4 +112,44 @@ extends OperatorBase
 
         return colors;
     }
+}
+
+
+
+function createListTooltip(node)
+{
+    createTooltipSrc(node.header, node.header, () => ttText);
+
+    node.header.addEventListener('pointerenter', e =>
+    {
+        if (  !currentTooltip
+            && node.preview)
+        {
+            let strTooltip = '';
+            
+            for (let i = 0; i < node.preview.items.length; i++)
+            {
+                if (i > 0) strTooltip += '<br/>';
+                strTooltip += node.preview.items[i].toSimpleString();
+            }
+
+            // if (node.length > node.preview.items.length) 
+            //     strTooltip = '<br/>. . .';
+            // else 
+            if (strTooltip == '')
+                strTooltip = '. . .';
+            
+            initTextTooltip(strTooltip);
+        }
+    });
+
+
+    node.header.addEventListener('pointerdown', () =>
+    {
+        if (tooltipTimer)
+            clearTimeout(tooltipTimer);
+
+        if (currentTooltip) 
+            hideTooltip(currentTooltip);
+    });
 }

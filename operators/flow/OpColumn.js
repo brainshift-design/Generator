@@ -3,6 +3,7 @@ extends OperatorBase
 {
     paramIndex;
 
+    preview = null;
     columnLength;
 
 
@@ -21,6 +22,9 @@ extends OperatorBase
 
         this.paramIndex.divider                       = 0.54;
         this.paramIndex.controls[0].allowEditDecimals = false;
+
+
+        createListTooltip(this);
     }
 
 
@@ -61,8 +65,9 @@ extends OperatorBase
         super.updateValues(requestId, actionId, updateParamId, paramIds, values);
 
 
-        const columns = values[paramIds.findIndex(id => id == 'columns')];
+        this.preview  = values[paramIds.findIndex(id => id == 'preview')];
         const length  = values[paramIds.findIndex(id => id == 'length' )];
+        const columns = values[paramIds.findIndex(id => id == 'columns')];
 
 
         this.columnLength = length ? length.value : 0;

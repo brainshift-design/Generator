@@ -77,10 +77,11 @@ extends GOperator
 
         this.setUpdateValues(parse,
         [
-            ['columns', new NumberValue(maxColumns)             ],
-            ['length',  new NumberValue(this.value.items.length)],
-            ['column',  column                                  ],
-            ['reverse', reverse                                 ]
+            ['preview', new ListValue(this.value.items.slice(0, Math.min(this.value.items.length, 10)))],
+            ['length',  new NumberValue(this.value.items.length)                                       ],
+            ['columns', new NumberValue(maxColumns)                                                    ],
+            ['column',  column                                                                         ],
+            ['reverse', reverse                                                                        ]
         ]);
         
 

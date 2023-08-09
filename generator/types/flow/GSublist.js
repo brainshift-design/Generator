@@ -1,5 +1,5 @@
 class GSublist
-extends GOperator
+extends GOperator1
 {
     start;
     end;
@@ -40,7 +40,7 @@ extends GOperator
         this.value = new ListValue();
 
         let length = 0;
-
+        
 
         if (   this.input
             && start
@@ -52,9 +52,9 @@ extends GOperator
             if (input)
             {
                 length = input.items.length;
-                
-                
-                if (start.value <= end.value)
+
+
+                if (start.value < end.value)
                 {
                     if (this.options.enabled)
                     {
@@ -82,9 +82,10 @@ extends GOperator
 
         this.setUpdateValues(parse,
         [
-            ['length', new NumberValue(length)], // used to set start and end maxima
-            ['start',  start                  ],
-            ['end',    end                    ]
+            ['preview', new ListValue(this.value.items.slice(0, Math.min(this.value.items.length, 10)))],
+            ['length',  new NumberValue(length)                                                        ], // used to set start and end maxima
+            ['start',   start                                                                          ],
+            ['end',     end                                                                            ]
         ]);
         
 

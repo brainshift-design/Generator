@@ -4,6 +4,7 @@ extends OperatorBase
     paramColumn;
     paramReverse;
 
+    preview = null;
     tableLength;
 
     menuBoolReverse;
@@ -29,6 +30,9 @@ extends OperatorBase
         this.paramReverse.divider = 0.59;
 
         this.menuBoolReverse = createBoolMenu(this.paramReverse);
+
+
+        createListTooltip(this);
     }
 
 
@@ -72,8 +76,9 @@ extends OperatorBase
 
         //const column  = values[paramIds.findIndex(id => id == 'column')];
 
-        const columns = values[paramIds.findIndex(id => id == 'columns')];
+        this.preview  = values[paramIds.findIndex(id => id == 'preview')];
         const length  = values[paramIds.findIndex(id => id == 'length' )];
+        const columns = values[paramIds.findIndex(id => id == 'columns')];
 
         this.tableLength = length.value;
 
