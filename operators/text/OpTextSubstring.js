@@ -18,8 +18,8 @@ extends OperatorWithValue
         this.addOutput(new Output([TEXT_VALUE], this.output_genRequest));
 
         this.addParam(this.paramValue);
-        this.addParam(this.paramStart = new NumberParam('start', 'start', true, true, true, 0, 0));
-        this.addParam(this.paramEnd   = new NumberParam('end',   'end',   true, true, true, 0, 0));
+        this.addParam(this.paramStart = new NumberParam('start', '[ start', true, true, true, 0, 0));
+        this.addParam(this.paramEnd   = new NumberParam('end',   '] end',   true, true, true, 0, 0));
 
 
         ///this.paramValue.controls[0].textbox.defPlaceholder = '';

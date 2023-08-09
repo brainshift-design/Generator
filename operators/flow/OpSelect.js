@@ -78,7 +78,8 @@ extends OperatorBase
         const type  = values[paramIds.findIndex(id => id == 'type')];
         this.length = values[paramIds.findIndex(id => id == 'length')];
 
-        this.outputs[0].types = [type.value];
+        if (type)
+            this.outputs[0].types = [type.value];
     }
 
 

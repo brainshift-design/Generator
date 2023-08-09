@@ -44,8 +44,8 @@ extends GOperator
         const transform  = this.transform  ? (await this.transform .eval(parse)).toValue() : null;
         const showCenter = this.showCenter ? (await this.showCenter.eval(parse)).toValue() : null;
 
-
-        if (this.input)
+        if (   this.input
+            && position)
         {
             this.value = (await this.input.eval(parse)).toValue();
 
@@ -56,7 +56,9 @@ extends GOperator
             this.value = NullValue;
 
 
-        if (position.objects.length > 0)
+        if (   position
+            && position.isValid()
+            && position.objects.length > 0)
         {
             const p0 = point(
                 position.objects[0].x, 

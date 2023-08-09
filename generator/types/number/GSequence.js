@@ -2,6 +2,7 @@ class GSequence
 extends GOperator
 {
     start;
+    end;
     step;
 
     current;
@@ -24,6 +25,7 @@ extends GOperator
         copy.copyBase(this);
 
         if (this.start  ) copy.start   = this.start  .copy();
+        if (this.end    ) copy.end     = this.end    .copy();
         if (this.step   ) copy.step    = this.step   .copy();
 
         if (this.current) copy.current = this.current.copy();
@@ -43,6 +45,7 @@ extends GOperator
 
 
         const start = (await this.start.eval(parse)).toValue();
+        const end   = (await this.end  .eval(parse)).toValue();
         const step  = (await this.step .eval(parse)).toValue();
     
 
@@ -51,11 +54,19 @@ extends GOperator
 
 
         if (   start
+            && end
             && step)
         {
-            this.value = new NumberValue(
-                start.toNumber() + (this.options.enabled ? step.toNumber() * iteration : 0),
-                Math.max(start.decimals, step.decimals));
+            const value = start.toNumber() + (this.options.enabled ? step.toNumber() * iteration : 0);
+
+            if (value < end.toNumber())
+            {
+                this.value = new NumberValue(
+                    start.toNumber() + (this.options.enabled ? step.toNumber() * iteration : 0),
+                    Math.max(start.decimals, step.decimals));
+            }
+            else
+                this.value = null;
         }
         else
             this.value = NumberValue.NaN;
@@ -64,6 +75,7 @@ extends GOperator
         this.setUpdateValues(parse,
         [
             ['start', start],
+            ['end',   end  ],
             ['step',  step ]
         ]);
         
@@ -89,6 +101,7 @@ extends GOperator
         super.pushValueUpdates(parse);
 
         if (this.start) this.start.pushValueUpdates(parse);
+        if (this.end  ) this.end  .pushValueUpdates(parse);
         if (this.step ) this.step .pushValueUpdates(parse);
     }
 
@@ -99,6 +112,7 @@ extends GOperator
         super.invalidateInputs(from);
 
         if (this.start) this.start.invalidateInputs(from);
+        if (this.end  ) this.end  .invalidateInputs(from);
         if (this.step ) this.step .invalidateInputs(from);
     }
 }

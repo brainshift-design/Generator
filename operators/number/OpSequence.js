@@ -2,6 +2,7 @@ class   OpSequence
 extends OperatorBase
 {
     paramStart;
+    paramEnd;
     paramStep;
 
 
@@ -17,8 +18,9 @@ extends OperatorBase
 
         this.addOutput(new Output([NUMBER_VALUE], this.output_genRequest));
 
-        this.addParam(this.paramStart = new NumberParam('start', 'start', true, true, true, 0));
-        this.addParam(this.paramStep  = new NumberParam('step',  'step',  true, true, true, 1));
+        this.addParam(this.paramStart = new NumberParam('start', '[ start', true, true, true,  0));
+        this.addParam(this.paramEnd   = new NumberParam('end',   '] end',  true, true, true, 10));
+        this.addParam(this.paramStep  = new NumberParam('step',  'step',   true, true, true,  1));
     }
 
 
@@ -36,6 +38,7 @@ extends OperatorBase
 
         
         request.push(...this.node.paramStart.genRequest(gen));
+        request.push(...this.node.paramEnd  .genRequest(gen));
         request.push(...this.node.paramStep .genRequest(gen));
 
 
@@ -50,6 +53,7 @@ extends OperatorBase
     updateParams()
     {
         this.paramStart.enableControlText(true, this.paramStart.isUnknown());
+        this.paramEnd  .enableControlText(true, this.paramEnd  .isUnknown());
         this.paramStep .enableControlText(true, this.paramStep .isUnknown());
 
         this.updateParamControls();

@@ -580,6 +580,7 @@ function genParseSequence(parse)
 
 
     seq.start = genParse(parse);
+    seq.end   = genParse(parse);
     seq.step  = genParse(parse);
 
 

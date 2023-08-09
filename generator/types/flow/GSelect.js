@@ -44,13 +44,15 @@ extends GOperator
             return this;
 
 
-        let index = (await this.index.eval(parse)).toValue();
+        let index = this.index ? (await this.index.eval(parse)).toValue() : null;
 
 
         let length = 0;
 
 
-        if (this.input)
+        if (   this.input
+            && index
+            && index.isValid())
         {
             const input = (await this.input.eval(parse)).toValue();
 
@@ -101,16 +103,16 @@ extends GOperator
         }
         else
         {
-            this.value = NullValue;
-            index      = NumberValue.NaN;
+            this.value = null;//NullValue;
+            index      = null;//NumberValue.NaN;
         }
 
 
         this.setUpdateValues(parse,
         [
-            ['type',   new TextValue(this.value.type)],
-            ['length', new NumberValue(length)       ],
-            ['index',  index                         ]
+            ['type',   this.value ? new TextValue(this.value.type) : null],
+            ['length', new NumberValue(length)                           ],
+            ['index',  index                                             ]
         ]);
 
 
