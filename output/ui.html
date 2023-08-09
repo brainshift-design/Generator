@@ -4855,6 +4855,7 @@ a
                 <p>•  added End parameter to Sequence...</p>
                 <p>•  added Text to color node</p>
                 <p>•  added preview tooltip to all list nodes</p>
+                <p>•  nodes in debug mode are now sorted alphabetically</p>
                 <p>•  fixed list node issues</p>
                 
                 <p><br/><br/><div id='chkHideWhatsNew'></div></p>
@@ -14016,8 +14017,7 @@ extends GValue
 
 
         let str = '';
-        
-        
+                
         for (let i = 0; i < this.items.length; i++)
         {
             if (i > 0) str += ', ';
@@ -57563,8 +57563,7 @@ extends GValue
 
 
         let str = '';
-        
-        
+                
         for (let i = 0; i < this.items.length; i++)
         {
             if (i > 0) str += ', ';
@@ -121604,8 +121603,10 @@ function loadNodesAndConnsData(_pages, _nodes, _conns)
 
     _dataModeNodes.sort((n1, n2) => 
     {
-        if (n1.y != n2.y) return parseFloat(n1.value.y) - parseFloat(n2.value.y);
-        if (n1.x != n2.x) return parseFloat(n1.value.x) - parseFloat(n2.value.x);
+        if (n1.key.split(' ')[1] < n2.key.split(' ')[1]) return -1;
+        if (n1.key.split(' ')[1] > n2.key.split(' ')[1]) return  1;
+        // if (n1.y != n2.y) return parseFloat(n1.value.y) - parseFloat(n2.value.y);
+        // if (n1.x != n2.x) return parseFloat(n1.value.x) - parseFloat(n2.value.x);
         return 0;
     });
 
