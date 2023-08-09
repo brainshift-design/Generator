@@ -38,7 +38,7 @@ extends GOperator1
 
         let maxColumns = 0;
 
-        
+
         if (   this.input
             && index)
         {
@@ -56,7 +56,7 @@ extends GOperator1
 
                         if (index.value < row.items.length)
                         {
-                            this.value.items.push(row.items[index.value].copy());
+                            this.value.items  .push(row.items[index.value].copy());
                             this.value.objects.push(...row.items[index.value].objects);
                         }
                     }

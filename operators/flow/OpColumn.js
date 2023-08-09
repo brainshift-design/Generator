@@ -64,7 +64,8 @@ extends OperatorBase
         const columns = values[paramIds.findIndex(id => id == 'columns')];
         const length  = values[paramIds.findIndex(id => id == 'length' )];
 
-        this.columnLength = length.value;
+
+        this.columnLength = length ? length.value : 0;
 
         if (columns.value > 0)
             this.paramIndex.controls[0].setMax(columns.value-1);

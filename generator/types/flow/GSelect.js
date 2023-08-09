@@ -50,14 +50,17 @@ extends GOperator
         let length = 0;
 
 
-        if (   this.input
-            && index
-            && index.isValid())
+        if (this.input)
         {
             const input = (await this.input.eval(parse)).toValue();
+            
+            if (this.nodeId == 'select')
+                console.log('this.input =', this.input);
+    
+    
 
-
-            if (   input
+            if (   index
+                && input
                 && input.items
                 && input.items.length > 0)
             {
@@ -103,8 +106,8 @@ extends GOperator
         }
         else
         {
-            this.value = null;//NullValue;
-            index      = null;//NumberValue.NaN;
+            this.value = NullValue;
+            index      = NumberValue.NaN;
         }
 
 
