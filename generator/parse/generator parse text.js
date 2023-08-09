@@ -617,6 +617,50 @@ function genParseTextToNumber(parse)
 
 
 
+function genParseTextToColor(parse)
+{
+    const [, nodeId, options, ignore] = genParseNodeStart(parse);
+
+
+    const text2col = new GTextToColor(nodeId, options);
+   
+
+    let nInputs = -1;
+    
+    if (!ignore)
+    {
+        nInputs = parseInt(parse.move());
+        consoleAssert(nInputs == 0 || nInputs == 1, 'nInputs must be [0, 1]');
+    }
+
+
+    if (parse.settings.logRequests) 
+        logReq(text2col, parse, ignore);
+
+
+    if (ignore) 
+    {
+        genParseNodeEnd(parse, text2col);
+        return parse.parsedNodes.find(n => n.nodeId == nodeId);
+    }
+
+
+    parse.nTab++;
+
+
+    if (nInputs == 1)
+        text2col.input = genParse(parse);
+
+    
+    parse.nTab--;
+
+
+    genParseNodeEnd(parse, text2col);
+    return text2col;
+}
+
+
+
 function genParseTextSplit(parse)
 {
     const [, nodeId, options, ignore] = genParseNodeStart(parse);

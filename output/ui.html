@@ -4853,6 +4853,7 @@ a
                 <p>•  objects centers are now shown in red</p>
                 <p>•  fixed Place node not transforming objects</p>
                 <p>•  added End parameter to Sequence...</p>
+                <p>•  added Text to color node</p>
                 <p>•  fixed list node issues</p>
                 
                 <p><br/><br/><div id='chkHideWhatsNew'></div></p>
@@ -26489,103 +26490,84 @@ extends GOperator
 
 
 
-// class GTextToColor
-// extends GOperator
-// {
-//     input;
-
-//     format;
+class GTextToColor
+extends GOperator
+{
+    input;
 
 
     
-//     constructor(nodeId, options)
-//     {
-//         super(TEXT_TO_NUMBER, nodeId, options);
-//     }
+    constructor(nodeId, options)
+    {
+        super(TEXT_TO_COLOR, nodeId, options);
+    }
 
 
     
-//     copy()
-//     {
-//         const copy = new GTextToNumber(this.nodeId, this.options);
+    copy()
+    {
+        const copy = new GTextToColor(this.nodeId, this.options);
 
-//         copy.copyBase(this);
+        copy.copyBase(this);
 
-//         if (this.input) 
-//             copy.input = this.input.copy();
+        if (this.input) 
+            copy.input = this.input.copy();
 
-//         copy.format = this.format.copy();
-
-//         return copy;
-//     }
+        return copy;
+    }
 
 
 
-//     async eval(parse)
-//     {
-//         if (this.isCached())
-//             return this;
+    async eval(parse)
+    {
+        if (this.isCached())
+            return this;
 
 
-//         const format = (await this.format.eval(parse)).toValue();
+        if (this.input)
+        {
+            const input = (await this.input.eval(parse)).toValue();
+
+            let rgb = 
+                input.value.trim() != ''
+                ? validHex2rgb(input.value)
+                : rgb_NaN;
+                
+            this.value = ColorValue.fromRgb(scaleRgb(rgb));
+        }
+        else
+            this.value = ColorValue.NaN;
 
 
-//         if (this.input)
-//         {
-//             const input = (await this.input.eval(parse)).toValue();
+        this.setUpdateValues(parse,
+        [
+            ['value', this.value]
+        ]);
 
 
-//             let num = Number.NaN;
+        this.validate();
 
-//             switch (format.value)
-//             {
-//                 case 0: // dec
-//                     num = parseFloat(input.value);
-//                     break;
-
-//                 case 1: // hex
-//                     num = parseInt(input.value, 16);
-//                     break;
-//             }
-
-//             this.value = new NumberValue(num);
-//         }
-//         else
-//             this.value = NumberValue.NaN;
-
-
-//         this.setUpdateValues(parse,
-//         [
-//             ['value',  this.value],
-//             ['format', format    ]
-//         ]);
-
-
-//         this.validate();
-
-//         return this;
-//     }
+        return this;
+    }
 
 
 
-//     pushValueUpdates(parse)
-//     {
-//         super.pushValueUpdates(parse);
+    pushValueUpdates(parse)
+    {
+        super.pushValueUpdates(parse);
 
-//         if (this.input)  this.input .pushValueUpdates(parse);
-//         if (this.format) this.format.pushValueUpdates(parse);
-//     }
-
+        if (this.input) this.input.pushValueUpdates(parse);
+    }
 
 
-//     invalidateInputs(from)
-//     {
-//         super.invalidateInputs(from);
 
-//         if (this.input)  this.input .invalidateInputs(from);
-//         if (this.format) this.format.invalidateInputs(from);
-//     }
-// }
+    invalidateInputs(from)
+    {
+        super.invalidateInputs(from);
+
+        if (this.input) this.input.invalidateInputs(from);
+    }
+}
 
 
 
@@ -42740,6 +42722,50 @@ function genParseTextToNumber(parse)
 
 
 
+function genParseTextToColor(parse)
+{
+    const [, nodeId, options, ignore] = genParseNodeStart(parse);
+
+
+    const text2col = new GTextToColor(nodeId, options);
+   
+
+    let nInputs = -1;
+    
+    if (!ignore)
+    {
+        nInputs = parseInt(parse.move());
+        consoleAssert(nInputs == 0 || nInputs == 1, 'nInputs must be [0, 1]');
+    }
+
+
+    if (parse.settings.logRequests) 
+        logReq(text2col, parse, ignore);
+
+
+    if (ignore) 
+    {
+        genParseNodeEnd(parse, text2col);
+        return parse.parsedNodes.find(n => n.nodeId == nodeId);
+    }
+
+
+    parse.nTab++;
+
+
+    if (nInputs == 1)
+        text2col.input = genParse(parse);
+
+    
+    parse.nTab--;
+
+
+    genParseNodeEnd(parse, text2col);
+    return text2col;
+}
+
+
+
 function genParseTextSplit(parse)
 {
     const [, nodeId, options, ignore] = genParseNodeStart(parse);
@@ -43139,6 +43165,7 @@ function genParse(parse, inParam = true)
     else if (parse.next == TEXT_CHAR              ) result = genParseTextCharacter     (parse);
     else if (parse.next == NUMBER_TO_TEXT         ) result = genParseNumberToText      (parse);
     else if (parse.next == TEXT_TO_NUMBER         ) result = genParseTextToNumber      (parse);
+    else if (parse.next == TEXT_TO_COLOR          ) result = genParseTextToColor       (parse);
     else if (parse.next == TEXT_REPLACE           ) result = genParseTextReplace       (parse);
     else if (parse.next == TEXT_JOIN              ) result = genParseTextJoin          (parse);
     else if (parse.next == TEXT_PAD               ) result = genParseTextPad           (parse);
@@ -69969,103 +69996,84 @@ extends GOperator
 
 
 
-// class GTextToColor
-// extends GOperator
-// {
-//     input;
-
-//     format;
+class GTextToColor
+extends GOperator
+{
+    input;
 
 
     
-//     constructor(nodeId, options)
-//     {
-//         super(TEXT_TO_NUMBER, nodeId, options);
-//     }
+    constructor(nodeId, options)
+    {
+        super(TEXT_TO_COLOR, nodeId, options);
+    }
 
 
     
-//     copy()
-//     {
-//         const copy = new GTextToNumber(this.nodeId, this.options);
+    copy()
+    {
+        const copy = new GTextToColor(this.nodeId, this.options);
 
-//         copy.copyBase(this);
+        copy.copyBase(this);
 
-//         if (this.input) 
-//             copy.input = this.input.copy();
+        if (this.input) 
+            copy.input = this.input.copy();
 
-//         copy.format = this.format.copy();
-
-//         return copy;
-//     }
+        return copy;
+    }
 
 
 
-//     async eval(parse)
-//     {
-//         if (this.isCached())
-//             return this;
+    async eval(parse)
+    {
+        if (this.isCached())
+            return this;
 
 
-//         const format = (await this.format.eval(parse)).toValue();
+        if (this.input)
+        {
+            const input = (await this.input.eval(parse)).toValue();
+
+            let rgb = 
+                input.value.trim() != ''
+                ? validHex2rgb(input.value)
+                : rgb_NaN;
+                
+            this.value = ColorValue.fromRgb(scaleRgb(rgb));
+        }
+        else
+            this.value = ColorValue.NaN;
 
 
-//         if (this.input)
-//         {
-//             const input = (await this.input.eval(parse)).toValue();
+        this.setUpdateValues(parse,
+        [
+            ['value', this.value]
+        ]);
 
 
-//             let num = Number.NaN;
+        this.validate();
 
-//             switch (format.value)
-//             {
-//                 case 0: // dec
-//                     num = parseFloat(input.value);
-//                     break;
-
-//                 case 1: // hex
-//                     num = parseInt(input.value, 16);
-//                     break;
-//             }
-
-//             this.value = new NumberValue(num);
-//         }
-//         else
-//             this.value = NumberValue.NaN;
-
-
-//         this.setUpdateValues(parse,
-//         [
-//             ['value',  this.value],
-//             ['format', format    ]
-//         ]);
-
-
-//         this.validate();
-
-//         return this;
-//     }
+        return this;
+    }
 
 
 
-//     pushValueUpdates(parse)
-//     {
-//         super.pushValueUpdates(parse);
+    pushValueUpdates(parse)
+    {
+        super.pushValueUpdates(parse);
 
-//         if (this.input)  this.input .pushValueUpdates(parse);
-//         if (this.format) this.format.pushValueUpdates(parse);
-//     }
-
+        if (this.input) this.input.pushValueUpdates(parse);
+    }
 
 
-//     invalidateInputs(from)
-//     {
-//         super.invalidateInputs(from);
 
-//         if (this.input)  this.input .invalidateInputs(from);
-//         if (this.format) this.format.invalidateInputs(from);
-//     }
-// }
+    invalidateInputs(from)
+    {
+        super.invalidateInputs(from);
+
+        if (this.input) this.input.invalidateInputs(from);
+    }
+}
 
 
 
@@ -84766,7 +84774,7 @@ const iconWindowDockTop     = '<svg width="15" height="12" viewBox="0 0 15 12" f
 const iconWindowDockBottom  = '<svg width="15" height="12" viewBox="0 0 15 12" fill="none" xmlns="http://www.w3.org/2000/svg"><rect x="0.5" y="0.5" width="14" height="11" stroke="white"/><rect y="7" width="15" height="5" fill="white"/></svg>';
 
 
-const iconSolo              = '<svg width="14" height="13" viewBox="0 -1 14 13" fill="none" xmlns="http://www.w3.org/2000/svg"><path fill-rule="evenodd" clip-rule="evenodd" d="M5.45173 0.531734C6.10809 0.180765 6.94591 0 8 0V1C7.05409 1 6.39191 1.16299 5.92327 1.41358C5.46304 1.65967 5.15859 2.00648 4.94991 2.43689C4.51047 3.34322 4.5 4.58776 4.5 6C4.5 6.02404 4.5 6.04814 4.50001 6.07228C4.50019 7.39175 4.5004 8.864 3.94991 9.99939C3.65859 10.6002 3.21304 11.1128 2.54827 11.4683C1.89191 11.8192 1.05409 12 0 12V11C0.945906 11 1.60809 10.837 2.07673 10.5864C2.53696 10.3403 2.84141 9.99352 3.05009 9.56311C3.48953 8.65678 3.5 7.41224 3.5 6C3.5 5.97596 3.5 5.95186 3.49999 5.92772C3.49981 4.60825 3.4996 3.136 4.05009 2.00061C4.34141 1.39977 4.78696 0.887203 5.45173 0.531734Z" fill="white"/></svg>';
+const iconSolo              = '<svg width="14" height="15" viewBox="0 -1 14 15" fill="none" xmlns="http://www.w3.org/2000/svg"><path d="M8 1C-1 1 9 13 0 13" stroke="white" stroke-width="1.3"/></svg>';
 
 
 const iconSearch            = '<svg width="15" height="15" viewBox="0 0 15 15" fill="none" xmlns="http://www.w3.org/2000/svg"><path id="searchIconPath" fill-rule="evenodd" clip-rule="evenodd" d="M11 6C11 8.76147 8.76147 11 6 11C3.23853 11 1 8.76147 1 6C1 3.23853 3.23853 1 6 1C8.76147 1 11 3.23853 11 6ZM9.87439 10.5815C8.8291 11.4663 7.47681 12 6 12C2.68628 12 0 9.31372 0 6C0 2.68628 2.68628 0 6 0C9.31372 0 12 2.68628 12 6C12 7.47681 11.4664 8.8291 10.5815 9.87451L14.364 13.657L13.6569 14.364L9.87439 10.5815Z" fill="white"/></svg>';
@@ -107829,63 +107837,63 @@ extends OperatorBase
 }
 
 
-// class   OpTextToColor
-// extends OperatorBase
-// {
-//     paramValue;
+class   OpTextToColor
+extends OperatorBase
+{
+    paramValue;
 
 
 
-//     constructor()
-//     {
-//         super(TEXT_TO_COLOR, 'textToColor', 'to color', iconTextToColor);
+    constructor()
+    {
+        super(TEXT_TO_COLOR, 'textToColor', 'to color', iconTextToColor);
 
 
-//         this.addInput(new Input([TEXT_VALUE]));
+        this.addInput(new Input([TEXT_VALUE]));
 
-//         this.addParam(this.paramValue = new ColorParam('value', 'value', false, false, true));
+        this.addParam(this.paramValue = new ColorParam('value', 'value', false, false, true));
 
-//         this.paramValue.isNodeValue = true;
-//     }
-
-
-
-//     genRequest(gen)
-//     {
-//         // 'this' is the node
-
-//         gen.scope.push({
-//             nodeId:  this.id, 
-//             paramId: NULL });
-
-//         const [request, ignore] = this.genRequestStart(gen);
-//         if (ignore) return request;
-
-        
-//         const input = this.inputs[0];
+        this.paramValue.isNodeValue = true;
+    }
 
 
-//         request.push(input.connected ? 1 : 0);
-        
-//         if (input.connected)
-//             request.push(...pushInputOrParam(input, gen));
+
+    genRequest(gen)
+    {
+        // 'this' is the node
+
+        gen.scope.push({
+            nodeId:  this.id, 
+            paramId: NULL });
+
+        const [request, ignore] = this.genRequestStart(gen);
+        if (ignore) return request;
 
         
-//         gen.scope.pop();
-//         pushUnique(gen.passedNodes, this);
-
-//         return request;
-//     }
+        const input = this.inputs[0];
 
 
+        request.push(input.connected ? 1 : 0);
+        
+        if (input.connected)
+            request.push(...pushInputOrParam(input, gen));
 
-//     updateParams()
-//     {
-//         this.paramValue.enableControlText(false, this.isUnknown());
+        
+        gen.scope.pop();
+        pushUnique(gen.passedNodes, this);
 
-//         this.updateParamControls();
-//     }
-// }
+        return request;
+    }
+
+
+
+    updateParams()
+    {
+        this.paramValue.enableControlText(false, this.isUnknown());
+
+        this.updateParamControls();
+    }
+}
 
 
 class OpColorBase
@@ -124836,6 +124844,7 @@ function createNode(nodeType, creatingButton = null, createdNodeId = -1, options
         case TEXT_PAD:                node = new OpTextPad();           break;
         case TEXT_COMPARE:            node = new OpTextCompare();       break;
         case TEXT_TO_NUMBER:          node = new OpTextToNumber();      break;
+        case TEXT_TO_COLOR:           node = new OpTextToColor();       break;
         case TEXT_SPLIT:              node = new OpTextSplit();         break;
         case TEXT_CSV:                node = new OpTextCSV();           break;
         case TEXT_JSON:               node = new OpTextJson();          break;

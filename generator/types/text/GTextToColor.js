@@ -1,97 +1,78 @@
-// class GTextToColor
-// extends GOperator
-// {
-//     input;
-
-//     format;
+class GTextToColor
+extends GOperator
+{
+    input;
 
 
     
-//     constructor(nodeId, options)
-//     {
-//         super(TEXT_TO_NUMBER, nodeId, options);
-//     }
+    constructor(nodeId, options)
+    {
+        super(TEXT_TO_COLOR, nodeId, options);
+    }
 
 
     
-//     copy()
-//     {
-//         const copy = new GTextToNumber(this.nodeId, this.options);
+    copy()
+    {
+        const copy = new GTextToColor(this.nodeId, this.options);
 
-//         copy.copyBase(this);
+        copy.copyBase(this);
 
-//         if (this.input) 
-//             copy.input = this.input.copy();
+        if (this.input) 
+            copy.input = this.input.copy();
 
-//         copy.format = this.format.copy();
-
-//         return copy;
-//     }
+        return copy;
+    }
 
 
 
-//     async eval(parse)
-//     {
-//         if (this.isCached())
-//             return this;
+    async eval(parse)
+    {
+        if (this.isCached())
+            return this;
 
 
-//         const format = (await this.format.eval(parse)).toValue();
+        if (this.input)
+        {
+            const input = (await this.input.eval(parse)).toValue();
+
+            let rgb = 
+                input.value.trim() != ''
+                ? validHex2rgb(input.value)
+                : rgb_NaN;
+                
+            this.value = ColorValue.fromRgb(scaleRgb(rgb));
+        }
+        else
+            this.value = ColorValue.NaN;
 
 
-//         if (this.input)
-//         {
-//             const input = (await this.input.eval(parse)).toValue();
+        this.setUpdateValues(parse,
+        [
+            ['value', this.value]
+        ]);
 
 
-//             let num = Number.NaN;
+        this.validate();
 
-//             switch (format.value)
-//             {
-//                 case 0: // dec
-//                     num = parseFloat(input.value);
-//                     break;
-
-//                 case 1: // hex
-//                     num = parseInt(input.value, 16);
-//                     break;
-//             }
-
-//             this.value = new NumberValue(num);
-//         }
-//         else
-//             this.value = NumberValue.NaN;
-
-
-//         this.setUpdateValues(parse,
-//         [
-//             ['value',  this.value],
-//             ['format', format    ]
-//         ]);
-
-
-//         this.validate();
-
-//         return this;
-//     }
+        return this;
+    }
 
 
 
-//     pushValueUpdates(parse)
-//     {
-//         super.pushValueUpdates(parse);
+    pushValueUpdates(parse)
+    {
+        super.pushValueUpdates(parse);
 
-//         if (this.input)  this.input .pushValueUpdates(parse);
-//         if (this.format) this.format.pushValueUpdates(parse);
-//     }
-
+        if (this.input) this.input.pushValueUpdates(parse);
+    }
 
 
-//     invalidateInputs(from)
-//     {
-//         super.invalidateInputs(from);
 
-//         if (this.input)  this.input .invalidateInputs(from);
-//         if (this.format) this.format.invalidateInputs(from);
-//     }
-// }
+    invalidateInputs(from)
+    {
+        super.invalidateInputs(from);
+
+        if (this.input) this.input.invalidateInputs(from);
+    }
+}
