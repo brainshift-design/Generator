@@ -30910,24 +30910,28 @@ extends GOperator
                 this.value.nodeId = this.nodeId;
         }
         else
-        {
             this.value = NullValue;
+
+
+        if (position.objects.length > 0)
+        {
+            const p0 = point(
+                position.objects[0].x, 
+                position.objects[0].y);
+
+            const p1 = addv(p0, subv(position.objects[0].sp1, position.objects[0].sp0));
+            const p2 = addv(p0, subv(position.objects[0].sp2, position.objects[0].sp0));
+
+            await this.evalObjects(
+                parse, 
+                {
+                    transform:  transform,
+                    showCenter: showCenter,
+                    sp0:        p0,
+                    sp1:        p1,
+                    sp2:        p2
+                });
         }
-
-
-        const p = point(
-            position.objects.length > 0 ? position.objects[0].x : 0, 
-            position.objects.length > 0 ? position.objects[0].y : 0);
-
-        await this.evalObjects(
-            parse, 
-            {
-                transform:  transform,
-                showCenter: showCenter,
-                sp0:        position.objects.length > 0 ? p : null,
-                sp1:        position.objects.length > 0 ? p : null,
-                sp2:        position.objects.length > 0 ? p : null
-            });
 
         
         this.setUpdateValues(parse,
@@ -30973,9 +30977,6 @@ extends GOperator
                         place);
 
 
-                    obj.applyTransform(xform, true);
-
-
                     if (   options.transform.value > 0
                         && options.sp0
                         && options.sp1
@@ -30991,6 +30992,9 @@ extends GOperator
                         obj.sp1 = addv(obj.sp0, point(1, 0));
                         obj.sp2 = addv(obj.sp0, point(0, 1));
                     }
+
+
+                    obj.applyTransform(xform, true);
                 }
             }
 
