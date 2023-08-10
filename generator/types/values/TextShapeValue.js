@@ -161,6 +161,24 @@ extends ShapeValue
 
 
 
+    toSimpleString()
+    {
+        return      this.text         .toJson() // otherwise the string can't contain another string
+            + ' ' + this.x            .toSimpleString()
+            + ' ' + this.y            .toSimpleString()
+            + ' ' + this.width        .toSimpleString()
+            + ' ' + this.height       .toSimpleString()
+            + ' ' + this.font         .toSimpleString()
+            + ' ' + this.style        .toSimpleString()
+            + ' ' + this.size         .toSimpleString()
+            + ' ' + this.alignH       .toSimpleString()
+            + ' ' + this.alignV       .toSimpleString()
+            + ' ' + this.lineHeight   .toSimpleString()
+            + ' ' + this.letterSpacing.toSimpleString();
+    }
+
+
+
     toDisplayString()
     {
         return      this.text         .toDisplayString()

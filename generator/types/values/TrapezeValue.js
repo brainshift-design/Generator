@@ -80,6 +80,18 @@ extends ShapeValue
 
 
 
+    toSimpleString()
+    {
+        return      this.x     .toSimpleString()
+            + ' ' + this.y     .toSimpleString()
+            + ' ' + this.width .toSimpleString()
+            + ' ' + this.height.toSimpleString()
+            + ' ' + this.round .toSimpleString()
+            + ' ' + this.bias  .toSimpleString();
+    }
+
+
+
     toDisplayString()
     {
         return      this.x     .toDisplayString()

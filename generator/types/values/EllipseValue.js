@@ -121,6 +121,19 @@ extends ShapeValue
 
 
 
+    toSimpleString()
+    {
+        return      this.x     .toSimpleString()
+            + ' ' + this.y     .toSimpleString()
+            + ' ' + this.width .toSimpleString()
+            + ' ' + this.height.toSimpleString()
+            + ' ' + this.from  .toSimpleString()
+            + ' ' + this.to    .toSimpleString()
+            + ' ' + this.inner .toSimpleString();
+    }
+
+
+
     toDisplayString()
     {
         return      this.x     .toDisplayString()

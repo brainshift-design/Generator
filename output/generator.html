@@ -8812,6 +8812,26 @@ extends GValue
 
 
 
+    toSimpleString()
+    {
+        if (!this.items)
+            return '';
+
+
+        let str = '';
+                
+        for (let i = 0; i < this.items.length; i++)
+        {
+            if (i > 0) str += ', ';
+            str += this.items[i].toSimpleString();
+        }
+
+
+        return str;
+    }
+
+
+
     toDisplayString()
     {
         if (!this.items)
@@ -8829,26 +8849,6 @@ extends GValue
 
             str += ' ' + item.type + ' ';
             str += item.toDisplayString();
-        }
-
-
-        return str;
-    }
-
-
-
-    toSimpleString()
-    {
-        if (!this.items)
-            return '';
-
-
-        let str = '';
-                
-        for (let i = 0; i < this.items.length; i++)
-        {
-            if (i > 0) str += ', ';
-            str += this.items[i].toSimpleString();
         }
 
 
@@ -9455,6 +9455,16 @@ extends GValue
 
 
 
+    toSimpleString()
+    {
+        return      this.space.toSimpleString()
+            + ' ' + this.c1   .toSimpleString()
+            + ' ' + this.c2   .toSimpleString()
+            + ' ' + this.c3   .toSimpleString();
+    }
+
+
+
     toDisplayString()
     {
         return      this.space.toDisplayString()
@@ -9641,6 +9651,19 @@ extends GValue
 
 
 
+    toSimpleString()
+    {
+        const rgb = scaleRgb(this.color.toRgb());
+
+        return        new NumberValue(rgb[0]).toSimpleString()
+              + ' ' + new NumberValue(rgb[1]).toSimpleString()
+              + ' ' + new NumberValue(rgb[2]).toSimpleString()
+              + ' ' + this.opacity           .toSimpleString()
+              + ' ' + this.blend             .toSimpleString();
+    }
+
+
+
     toDisplayString()
     {
         const rgb = scaleRgb(this.color.toRgb());
@@ -9805,6 +9828,14 @@ extends GValue
     {
         return      this.fill    .toString()
             + ' ' + this.position.toString();
+    }
+
+
+
+    toSimpleString()
+    {
+        return      this.fill    .toSimpleString()
+            + ' ' + this.position.toSimpleString();
     }
 
 
@@ -9975,6 +10006,21 @@ extends GValue
             + ' ' + this.aspect  .toString()
             + ' ' + this.skew    .toString()
             + ' ' + this.blend   .toString();
+    }
+
+
+
+    toSimpleString()
+    {
+        return      this.stops   .toSimpleString()
+            + ' ' + this.gradType.toSimpleString()
+            + ' ' + this.x       .toSimpleString()
+            + ' ' + this.y       .toSimpleString()
+            + ' ' + this.size    .toSimpleString()
+            + ' ' + this.angle   .toSimpleString()
+            + ' ' + this.aspect  .toSimpleString()
+            + ' ' + this.skew    .toSimpleString()
+            + ' ' + this.blend   .toSimpleString();
     }
 
 
@@ -10182,6 +10228,19 @@ extends GValue
 
 
 
+    toSimpleString()
+    {
+        return      this.fills .toSimpleString()
+            + ' ' + this.weight.toSimpleString()
+            + ' ' + this.fit   .toSimpleString()
+            + ' ' + this.join  .toSimpleString()
+            + ' ' + this.miter .toSimpleString()
+            + ' ' + this.cap   .toSimpleString()
+            + ' ' + this.dashes.toSimpleString();
+    }
+
+
+
     toDisplayString()
     {
         return      this.fills .toDisplayString()
@@ -10378,6 +10437,19 @@ extends GValue
             + ' ' + this.fill  .toString()
             + ' ' + this.blend .toString()
             + ' ' + this.behind.toString();
+    }
+
+
+
+    toSimpleString()
+    {
+        return      this.x     .toSimpleString()
+            + ' ' + this.y     .toSimpleString()
+            + ' ' + this.blur  .toSimpleString()
+            + ' ' + this.spread.toSimpleString()
+            + ' ' + this.fill  .toSimpleString()
+            + ' ' + this.blend .toSimpleString()
+            + ' ' + this.behind.toSimpleString();
     }
 
 
@@ -10580,6 +10652,18 @@ extends GValue
 
 
 
+    toSimpleString()
+    {
+        return      this.x     .toSimpleString()
+            + ' ' + this.y     .toSimpleString()
+            + ' ' + this.blur  .toSimpleString()
+            + ' ' + this.spread.toSimpleString()
+            + ' ' + this.fill  .toSimpleString()
+            + ' ' + this.blend .toSimpleString();
+    }
+
+
+
     toDisplayString()
     {
         return      this.x     .toDisplayString()
@@ -10744,6 +10828,13 @@ extends GValue
 
 
 
+    toSimpleString()
+    {
+        return this.radius.toSimpleString();
+    }
+
+
+
     toDisplayString()
     {
         return this.radius.toDisplayString();
@@ -10883,6 +10974,13 @@ extends GValue
 
 
 
+    toSimpleString()
+    {
+        return this.radius.toSimpleString();
+    }
+
+
+
     toDisplayString()
     {
         return this.radius.toDisplayString();
@@ -10985,6 +11083,13 @@ extends GValue
 
 
     toString()
+    {
+        return 'mask';
+    }
+
+
+
+    toSimpleString()
     {
         return 'mask';
     }
@@ -11162,6 +11267,17 @@ extends ShapeValue
             + ' ' + this.width .toString()
             + ' ' + this.height.toString()
             + ' ' + this.round .toString();
+    }
+
+
+
+    toSimpleString()
+    {
+        return      this.x     .toSimpleString()
+            + ' ' + this.y     .toSimpleString()
+            + ' ' + this.width .toSimpleString()
+            + ' ' + this.height.toSimpleString()
+            + ' ' + this.round .toSimpleString();
     }
 
 
@@ -11350,6 +11466,15 @@ extends ShapeValue
 
 
 
+    toSimpleString()
+    {
+        return      this.x    .toSimpleString()
+            + ' ' + this.y    .toSimpleString()
+            + ' ' + this.width.toSimpleString();
+    }
+
+
+
     toDisplayString()
     {
         return      this.x    .toDisplayString()
@@ -11527,6 +11652,19 @@ extends ShapeValue
 
 
 
+    toSimpleString()
+    {
+        return      this.x     .toSimpleString()
+            + ' ' + this.y     .toSimpleString()
+            + ' ' + this.width .toSimpleString()
+            + ' ' + this.height.toSimpleString()
+            + ' ' + this.from  .toSimpleString()
+            + ' ' + this.to    .toSimpleString()
+            + ' ' + this.inner .toSimpleString();
+    }
+
+
+
     toDisplayString()
     {
         return      this.x     .toDisplayString()
@@ -11675,6 +11813,18 @@ extends ShapeValue
             + ' ' + this.height.toString()
             + ' ' + this.round .toString()
             + ' ' + this.bias  .toString();
+    }
+
+
+
+    toSimpleString()
+    {
+        return      this.x     .toSimpleString()
+            + ' ' + this.y     .toSimpleString()
+            + ' ' + this.width .toSimpleString()
+            + ' ' + this.height.toSimpleString()
+            + ' ' + this.round .toSimpleString()
+            + ' ' + this.bias  .toSimpleString();
     }
 
 
@@ -11893,6 +12043,18 @@ extends ShapeValue
 
 
 
+    toSimpleString()
+    {
+        return      this.x      .toSimpleString()
+            + ' ' + this.y      .toSimpleString()
+            + ' ' + this.width  .toSimpleString()
+            + ' ' + this.height .toSimpleString()
+            + ' ' + this.round  .toSimpleString()
+            + ' ' + this.corners.toSimpleString();
+    }
+
+
+
     toDisplayString()
     {
         return      this.x      .toDisplayString()
@@ -12078,6 +12240,19 @@ extends ShapeValue
             + ' ' + this.round .toString()
             + ' ' + this.points.toString()
             + ' ' + this.convex.toString();
+    }
+
+
+
+    toSimpleString()
+    {
+        return      this.x     .toSimpleString()
+            + ' ' + this.y     .toSimpleString()
+            + ' ' + this.width .toSimpleString()
+            + ' ' + this.height.toSimpleString()
+            + ' ' + this.round .toSimpleString()
+            + ' ' + this.points.toSimpleString()
+            + ' ' + this.convex.toSimpleString();
     }
 
 
@@ -12315,6 +12490,24 @@ extends ShapeValue
 
 
 
+    toSimpleString()
+    {
+        return      this.text         .toJson() // otherwise the string can't contain another string
+            + ' ' + this.x            .toSimpleString()
+            + ' ' + this.y            .toSimpleString()
+            + ' ' + this.width        .toSimpleString()
+            + ' ' + this.height       .toSimpleString()
+            + ' ' + this.font         .toSimpleString()
+            + ' ' + this.style        .toSimpleString()
+            + ' ' + this.size         .toSimpleString()
+            + ' ' + this.alignH       .toSimpleString()
+            + ' ' + this.alignV       .toSimpleString()
+            + ' ' + this.lineHeight   .toSimpleString()
+            + ' ' + this.letterSpacing.toSimpleString();
+    }
+
+
+
     toDisplayString()
     {
         return      this.text         .toDisplayString()
@@ -12522,6 +12715,18 @@ extends GValue
 
 
 
+    toSimpleString()
+    {
+        return this.x.isValid()
+            && this.y.isValid()
+            ?   '(' + this.x.toSimpleString()
+              + ', ' + this.y.toSimpleString()
+              + ')'
+            : NAN_DISPLAY;
+    }
+
+
+
     toDisplayString()
     {
         return this.x.isValid()
@@ -12674,6 +12879,17 @@ extends ShapeValue
             + ' ' + this.degree .toString()
             + ' ' + this.winding.toString()
             + ' ' + this.round  .toString();
+    }
+
+
+
+    toSimpleString()
+    {
+        return      this.points .toSimpleString()
+            + ' ' + this.closed .toSimpleString()
+            + ' ' + this.degree .toSimpleString()
+            + ' ' + this.winding.toSimpleString()
+            + ' ' + this.round  .toSimpleString();
     }
 
 
@@ -12898,6 +13114,17 @@ extends GValue
 
 
 
+    toSimpleString()
+    {
+        return      this.x    .toSimpleString()
+            + ' ' + this.y    .toSimpleString()
+            + ' ' + this.join .toSimpleString()
+            + ' ' + this.cap  .toSimpleString()
+            + ' ' + this.round.toSimpleString();
+    }
+
+
+
     toDisplayString()
     {
         return      this.x    .toDisplayString()
@@ -13093,6 +13320,16 @@ extends GValue
 
 
 
+    toSimpleString()
+    {
+        return      this.start       .toString()
+            + ' ' + this.end         .toString()
+            + ' ' + this.startTangent.toString()
+            + ' ' + this.endTangent  .toString();
+    }
+
+
+
     toDisplayString()
     {
         return      this.start       .toDisplayString()
@@ -13257,6 +13494,14 @@ extends ShapeValue
 
 
 
+    toSimpleString()
+    {
+        return      this.loops  .toSimpleString()
+            + ' ' + this.winding.toSimpleString();
+    }
+
+
+
     toDisplayString()
     {
         return      this.loops  .toDisplayString()
@@ -13407,6 +13652,13 @@ extends GValue
 
 
 
+    toSimpleString()
+    {
+        return this.regions.toSimpleString();
+    }
+
+
+
     toDisplayString()
     {
         return this.regions.toDisplayString();
@@ -13525,6 +13777,14 @@ extends ShapeValue
     {
         return      this.operation.toString()
             + ' ' + this.children .toString();
+    }
+
+
+
+    toSimpleString()
+    {
+        return      this.operation.toSimpleString()
+            + ' ' + this.children .toSimpleString();
     }
 
 
@@ -13664,6 +13924,31 @@ extends GValue
 
             str += ' ' + item.type + ' ';
             str += item.toString();
+        }
+
+
+        return str;
+    }
+
+
+
+    toSimpleString()
+    {
+        if (!this.items)
+            return '';
+
+
+        let str = '';
+        
+        
+        str += this.items.length;
+
+        for (let i = 0; i < this.items.length; i++)
+        {
+            const item = this.items[i];
+
+            str += ' ' + item.type + ' ';
+            str += item.toSimpleString();
         }
 
 
@@ -13856,6 +14141,18 @@ extends ShapeValue
             + ' ' + this.height  .toString()
             + ' ' + this.round   .toString()
             + ' ' + this.children.toString();
+    }
+
+
+
+    toSimpleString()
+    {
+        return      this.x       .toSimpleString()
+            + ' ' + this.y       .toSimpleString()
+            + ' ' + this.width   .toSimpleString()
+            + ' ' + this.height  .toSimpleString()
+            + ' ' + this.round   .toSimpleString()
+            + ' ' + this.children.toSimpleString();
     }
 
 

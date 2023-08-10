@@ -140,6 +140,26 @@ extends GValue
 
 
 
+    toSimpleString()
+    {
+        if (!this.items)
+            return '';
+
+
+        let str = '';
+                
+        for (let i = 0; i < this.items.length; i++)
+        {
+            if (i > 0) str += ', ';
+            str += this.items[i].toSimpleString();
+        }
+
+
+        return str;
+    }
+
+
+
     toDisplayString()
     {
         if (!this.items)
@@ -157,26 +177,6 @@ extends GValue
 
             str += ' ' + item.type + ' ';
             str += item.toDisplayString();
-        }
-
-
-        return str;
-    }
-
-
-
-    toSimpleString()
-    {
-        if (!this.items)
-            return '';
-
-
-        let str = '';
-                
-        for (let i = 0; i < this.items.length; i++)
-        {
-            if (i > 0) str += ', ';
-            str += this.items[i].toSimpleString();
         }
 
 

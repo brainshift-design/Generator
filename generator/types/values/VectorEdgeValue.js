@@ -104,6 +104,16 @@ extends GValue
 
 
 
+    toSimpleString()
+    {
+        return      this.start       .toString()
+            + ' ' + this.end         .toString()
+            + ' ' + this.startTangent.toString()
+            + ' ' + this.endTangent  .toString();
+    }
+
+
+
     toDisplayString()
     {
         return      this.start       .toDisplayString()

@@ -120,6 +120,21 @@ extends GValue
 
 
 
+    toSimpleString()
+    {
+        return      this.stops   .toSimpleString()
+            + ' ' + this.gradType.toSimpleString()
+            + ' ' + this.x       .toSimpleString()
+            + ' ' + this.y       .toSimpleString()
+            + ' ' + this.size    .toSimpleString()
+            + ' ' + this.angle   .toSimpleString()
+            + ' ' + this.aspect  .toSimpleString()
+            + ' ' + this.skew    .toSimpleString()
+            + ' ' + this.blend   .toSimpleString();
+    }
+
+
+
     toDisplayString()
     {
         return      this.stops   .toDisplayString()

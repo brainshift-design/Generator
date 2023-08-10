@@ -126,6 +126,17 @@ extends GValue
 
 
 
+    toSimpleString()
+    {
+        return      this.x    .toSimpleString()
+            + ' ' + this.y    .toSimpleString()
+            + ' ' + this.join .toSimpleString()
+            + ' ' + this.cap  .toSimpleString()
+            + ' ' + this.round.toSimpleString();
+    }
+
+
+
     toDisplayString()
     {
         return      this.x    .toDisplayString()

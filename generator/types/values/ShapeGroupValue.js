@@ -76,6 +76,31 @@ extends GValue
 
 
 
+    toSimpleString()
+    {
+        if (!this.items)
+            return '';
+
+
+        let str = '';
+        
+        
+        str += this.items.length;
+
+        for (let i = 0; i < this.items.length; i++)
+        {
+            const item = this.items[i];
+
+            str += ' ' + item.type + ' ';
+            str += item.toSimpleString();
+        }
+
+
+        return str;
+    }
+
+
+
     toDisplayString()
     {
         if (!this.items)

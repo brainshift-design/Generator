@@ -77,6 +77,13 @@ extends GValue
 
 
 
+    toSimpleString()
+    {
+        return this.radius.toSimpleString();
+    }
+
+
+
     toDisplayString()
     {
         return this.radius.toDisplayString();

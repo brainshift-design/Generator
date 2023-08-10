@@ -74,6 +74,17 @@ extends ShapeValue
 
 
 
+    toSimpleString()
+    {
+        return      this.points .toSimpleString()
+            + ' ' + this.closed .toSimpleString()
+            + ' ' + this.degree .toSimpleString()
+            + ' ' + this.winding.toSimpleString()
+            + ' ' + this.round  .toSimpleString();
+    }
+
+
+
     toDisplayString()
     {
         return      this.points .toDisplayString()

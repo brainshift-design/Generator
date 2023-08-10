@@ -99,6 +99,18 @@ extends GValue
 
 
 
+    toSimpleString()
+    {
+        return this.x.isValid()
+            && this.y.isValid()
+            ?   '(' + this.x.toSimpleString()
+              + ', ' + this.y.toSimpleString()
+              + ')'
+            : NAN_DISPLAY;
+    }
+
+
+
     toDisplayString()
     {
         return this.x.isValid()

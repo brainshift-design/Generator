@@ -77,6 +77,13 @@ extends GValue
 
 
 
+    toSimpleString()
+    {
+        return this.regions.toSimpleString();
+    }
+
+
+
     toDisplayString()
     {
         return this.regions.toDisplayString();

@@ -75,6 +75,14 @@ extends GValue
 
 
 
+    toSimpleString()
+    {
+        return      this.fill    .toSimpleString()
+            + ' ' + this.position.toSimpleString();
+    }
+
+
+
     toDisplayString()
     {
         return      this.fill    .toDisplayString()

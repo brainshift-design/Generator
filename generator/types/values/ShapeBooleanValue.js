@@ -56,6 +56,14 @@ extends ShapeValue
 
 
 
+    toSimpleString()
+    {
+        return      this.operation.toSimpleString()
+            + ' ' + this.children .toSimpleString();
+    }
+
+
+
     toDisplayString()
     {
         return      this.operation.toDisplayString()

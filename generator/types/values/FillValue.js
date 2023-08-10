@@ -109,6 +109,19 @@ extends GValue
 
 
 
+    toSimpleString()
+    {
+        const rgb = scaleRgb(this.color.toRgb());
+
+        return        new NumberValue(rgb[0]).toSimpleString()
+              + ' ' + new NumberValue(rgb[1]).toSimpleString()
+              + ' ' + new NumberValue(rgb[2]).toSimpleString()
+              + ' ' + this.opacity           .toSimpleString()
+              + ' ' + this.blend             .toSimpleString();
+    }
+
+
+
     toDisplayString()
     {
         const rgb = scaleRgb(this.color.toRgb());

@@ -153,6 +153,16 @@ extends GValue
 
 
 
+    toSimpleString()
+    {
+        return      this.space.toSimpleString()
+            + ' ' + this.c1   .toSimpleString()
+            + ' ' + this.c2   .toSimpleString()
+            + ' ' + this.c3   .toSimpleString();
+    }
+
+
+
     toDisplayString()
     {
         return      this.space.toDisplayString()

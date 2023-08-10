@@ -46,6 +46,13 @@ extends GValue
 
 
 
+    toSimpleString()
+    {
+        return 'mask';
+    }
+
+
+
     toDisplayString()
     {
         return 'mask';

@@ -86,6 +86,14 @@ extends ShapeValue
 
 
 
+    toSimpleString()
+    {
+        return      this.loops  .toSimpleString()
+            + ' ' + this.winding.toSimpleString();
+    }
+
+
+
     toDisplayString()
     {
         return      this.loops  .toDisplayString()

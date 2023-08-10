@@ -123,6 +123,19 @@ extends GValue
 
 
 
+    toSimpleString()
+    {
+        return      this.fills .toSimpleString()
+            + ' ' + this.weight.toSimpleString()
+            + ' ' + this.fit   .toSimpleString()
+            + ' ' + this.join  .toSimpleString()
+            + ' ' + this.miter .toSimpleString()
+            + ' ' + this.cap   .toSimpleString()
+            + ' ' + this.dashes.toSimpleString();
+    }
+
+
+
     toDisplayString()
     {
         return      this.fills .toDisplayString()

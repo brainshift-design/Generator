@@ -115,6 +115,19 @@ extends GValue
 
 
 
+    toSimpleString()
+    {
+        return      this.x     .toSimpleString()
+            + ' ' + this.y     .toSimpleString()
+            + ' ' + this.blur  .toSimpleString()
+            + ' ' + this.spread.toSimpleString()
+            + ' ' + this.fill  .toSimpleString()
+            + ' ' + this.blend .toSimpleString()
+            + ' ' + this.behind.toSimpleString();
+    }
+
+
+
     toDisplayString()
     {
         return      this.x     .toDisplayString()
