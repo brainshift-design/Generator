@@ -45,7 +45,8 @@ extends GOperator
 
         this.setUpdateValues(parse,
         [
-            ['path', path]
+            ['preview', this.value],
+            ['path',    path      ]
         ]);
         
         

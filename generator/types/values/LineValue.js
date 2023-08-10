@@ -89,11 +89,11 @@ extends ShapeValue
 
 
 
-    toSimpleString()
+    toPreviewString()
     {
-        return      this.x    .toSimpleString()
-            + ' ' + this.y    .toSimpleString()
-            + ' ' + this.width.toSimpleString();
+        return      this.x    .toPreviewString()
+            + ' ' + this.y    .toPreviewString()
+            + ' ' + this.width.toPreviewString();
     }
 
 

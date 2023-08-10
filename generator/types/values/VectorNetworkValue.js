@@ -77,9 +77,9 @@ extends GValue
 
 
 
-    toSimpleString()
+    toPreviewString()
     {
-        return this.regions.toSimpleString();
+        return this.regions.toPreviewString();
     }
 
 
@@ -100,7 +100,7 @@ extends GValue
 
     toJsCode(gen)
     {
-        return '';//this.toSimpleString();
+        return '';//this.toPreviewString();
     }
 
 

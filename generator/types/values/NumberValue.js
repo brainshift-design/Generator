@@ -98,7 +98,7 @@ extends GValue
 
 
 
-    toSimpleString()
+    toPreviewString()
     {
         return this.isValid()
              ? numToString(this.value, this.decimals)
@@ -119,7 +119,7 @@ extends GValue
 
     toJsCode(gen)
     {
-        return this.toSimpleString();
+        return this.toPreviewString();
     }
 
 

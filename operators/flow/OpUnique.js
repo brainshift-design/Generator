@@ -11,8 +11,8 @@ extends OperatorBase
     {
         super(UNIQUE, 'unique', 'unique', iconUnique);
 
-        this.canDisable  = true;
-        // this.iconOffsetY = 1;
+        this.canDisable        = true;
+        this.showHeaderTooltip = true;
         
 
         this.addInput (new Input (LIST_VALUES));

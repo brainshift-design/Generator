@@ -53,8 +53,8 @@ extends Action
         {
             nodes[i].highlight = this.prevColorIndices[i];
 
-            if (node.type == PANEL) node.updateNode()
-            else                    node.updateBorder();
+            if (nodes[i].type == PANEL) nodes[i].updateNode()
+            else                        nodes[i].updateBorder();
         }
 
         uiSaveNodes(this.nodeIds);

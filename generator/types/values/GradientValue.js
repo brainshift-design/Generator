@@ -120,17 +120,17 @@ extends GValue
 
 
 
-    toSimpleString()
+    toPreviewString()
     {
-        return      this.stops   .toSimpleString()
-            + ' ' + this.gradType.toSimpleString()
-            + ' ' + this.x       .toSimpleString()
-            + ' ' + this.y       .toSimpleString()
-            + ' ' + this.size    .toSimpleString()
-            + ' ' + this.angle   .toSimpleString()
-            + ' ' + this.aspect  .toSimpleString()
-            + ' ' + this.skew    .toSimpleString()
-            + ' ' + this.blend   .toSimpleString();
+        return      this.stops   .toPreviewString()
+            + ' ' + this.gradType.toPreviewString()
+            + ' ' + this.x       .toPreviewString()
+            + ' ' + this.y       .toPreviewString()
+            + ' ' + this.size    .toPreviewString()
+            + ' ' + this.angle   .toPreviewString()
+            + ' ' + this.aspect  .toPreviewString()
+            + ' ' + this.skew    .toPreviewString()
+            + ' ' + this.blend   .toPreviewString();
     }
 
 

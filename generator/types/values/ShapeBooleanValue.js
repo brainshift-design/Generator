@@ -56,10 +56,10 @@ extends ShapeValue
 
 
 
-    toSimpleString()
+    toPreviewString()
     {
-        return      this.operation.toSimpleString()
-            + ' ' + this.children .toSimpleString();
+        return      this.operation.toPreviewString()
+            + ' ' + this.children .toPreviewString();
     }
 
 

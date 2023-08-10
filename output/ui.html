@@ -4850,6 +4850,7 @@ a
                 <h1 style='margin-top: 20px;'>What's new</h1>
 
                 <p>•  fixed crash when tabbing through List node</p>
+                <p>•  improved header tooltips</p>
                 <p>•  fixed other bugs</p>
                 
                 <p><br/><br/><div id='chkHideWhatsNew'></div></p>
@@ -14016,20 +14017,34 @@ extends GValue
 
 
 
-    toSimpleString()
+    toPreviewString()
     {
         if (!this.items)
             return '';
 
 
         let str = '';
-                
-        for (let i = 0; i < this.items.length; i++)
+
+        for (let i = 0; i < Math.min(this.items.length, 10); i++)
         {
-            if (i > 0) str += ', ';
-            str += this.items[i].toSimpleString();
+            if (i > 0) str += '<br/>';
+
+            const item = this.items[i];
+
+            if (LIST_VALUES.includes(item.type))
+            {
+                for (let j = 0; j < item.items.length; j++)
+                {
+                    if (j > 0) str += ', ';
+                    str += item.items[j].toPreviewString();
+                }
+            }
+            else
+                str += item.toPreviewString();
         }
 
+        if (this.items.length > 10) 
+            str += '<br/>. . .';
 
         return str;
     }
@@ -14310,7 +14325,7 @@ extends GValue
 
 
 
-    toSimpleString()
+    toPreviewString()
     {
         return this.isValid()
              ? numToString(this.value, this.decimals)
@@ -14331,7 +14346,7 @@ extends GValue
 
     toJsCode(gen)
     {
-        return this.toSimpleString();
+        return this.toPreviewString();
     }
 
 
@@ -14468,7 +14483,7 @@ extends GValue
 
 
 
-    toSimpleString()
+    toPreviewString()
     {
         return this.value;
     }
@@ -14659,12 +14674,12 @@ extends GValue
 
 
 
-    toSimpleString()
+    toPreviewString()
     {
-        return      this.space.toSimpleString()
-            + ' ' + this.c1   .toSimpleString()
-            + ' ' + this.c2   .toSimpleString()
-            + ' ' + this.c3   .toSimpleString();
+        return      this.space.toPreviewString()
+            + ' ' + this.c1   .toPreviewString()
+            + ' ' + this.c2   .toPreviewString()
+            + ' ' + this.c3   .toPreviewString();
     }
 
 
@@ -14679,7 +14694,7 @@ extends GValue
 
 
 
-    toSimpleString()
+    toPreviewString()
     {
         if (!this.isValid())
             return UNKNOWN_DISPLAY;
@@ -14855,15 +14870,15 @@ extends GValue
 
 
 
-    toSimpleString()
+    toPreviewString()
     {
         const rgb = scaleRgb(this.color.toRgb());
 
-        return        new NumberValue(rgb[0]).toSimpleString()
-              + ' ' + new NumberValue(rgb[1]).toSimpleString()
-              + ' ' + new NumberValue(rgb[2]).toSimpleString()
-              + ' ' + this.opacity           .toSimpleString()
-              + ' ' + this.blend             .toSimpleString();
+        return        new NumberValue(rgb[0]).toPreviewString()
+              + ' ' + new NumberValue(rgb[1]).toPreviewString()
+              + ' ' + new NumberValue(rgb[2]).toPreviewString()
+              + ' ' + this.opacity           .toPreviewString()
+              + ' ' + this.blend             .toPreviewString();
     }
 
 
@@ -15036,10 +15051,10 @@ extends GValue
 
 
 
-    toSimpleString()
+    toPreviewString()
     {
-        return      this.fill    .toSimpleString()
-            + ' ' + this.position.toSimpleString();
+        return      this.fill    .toPreviewString()
+            + ' ' + this.position.toPreviewString();
     }
 
 
@@ -15214,17 +15229,17 @@ extends GValue
 
 
 
-    toSimpleString()
+    toPreviewString()
     {
-        return      this.stops   .toSimpleString()
-            + ' ' + this.gradType.toSimpleString()
-            + ' ' + this.x       .toSimpleString()
-            + ' ' + this.y       .toSimpleString()
-            + ' ' + this.size    .toSimpleString()
-            + ' ' + this.angle   .toSimpleString()
-            + ' ' + this.aspect  .toSimpleString()
-            + ' ' + this.skew    .toSimpleString()
-            + ' ' + this.blend   .toSimpleString();
+        return      this.stops   .toPreviewString()
+            + ' ' + this.gradType.toPreviewString()
+            + ' ' + this.x       .toPreviewString()
+            + ' ' + this.y       .toPreviewString()
+            + ' ' + this.size    .toPreviewString()
+            + ' ' + this.angle   .toPreviewString()
+            + ' ' + this.aspect  .toPreviewString()
+            + ' ' + this.skew    .toPreviewString()
+            + ' ' + this.blend   .toPreviewString();
     }
 
 
@@ -15432,15 +15447,15 @@ extends GValue
 
 
 
-    toSimpleString()
+    toPreviewString()
     {
-        return      this.fills .toSimpleString()
-            + ' ' + this.weight.toSimpleString()
-            + ' ' + this.fit   .toSimpleString()
-            + ' ' + this.join  .toSimpleString()
-            + ' ' + this.miter .toSimpleString()
-            + ' ' + this.cap   .toSimpleString()
-            + ' ' + this.dashes.toSimpleString();
+        return      this.fills .toPreviewString()
+            + ' ' + this.weight.toPreviewString()
+            + ' ' + this.fit   .toPreviewString()
+            + ' ' + this.join  .toPreviewString()
+            + ' ' + this.miter .toPreviewString()
+            + ' ' + this.cap   .toPreviewString()
+            + ' ' + this.dashes.toPreviewString();
     }
 
 
@@ -15645,15 +15660,15 @@ extends GValue
 
 
 
-    toSimpleString()
+    toPreviewString()
     {
-        return      this.x     .toSimpleString()
-            + ' ' + this.y     .toSimpleString()
-            + ' ' + this.blur  .toSimpleString()
-            + ' ' + this.spread.toSimpleString()
-            + ' ' + this.fill  .toSimpleString()
-            + ' ' + this.blend .toSimpleString()
-            + ' ' + this.behind.toSimpleString();
+        return      this.x     .toPreviewString()
+            + ' ' + this.y     .toPreviewString()
+            + ' ' + this.blur  .toPreviewString()
+            + ' ' + this.spread.toPreviewString()
+            + ' ' + this.fill  .toPreviewString()
+            + ' ' + this.blend .toPreviewString()
+            + ' ' + this.behind.toPreviewString();
     }
 
 
@@ -15856,14 +15871,14 @@ extends GValue
 
 
 
-    toSimpleString()
+    toPreviewString()
     {
-        return      this.x     .toSimpleString()
-            + ' ' + this.y     .toSimpleString()
-            + ' ' + this.blur  .toSimpleString()
-            + ' ' + this.spread.toSimpleString()
-            + ' ' + this.fill  .toSimpleString()
-            + ' ' + this.blend .toSimpleString();
+        return      this.x     .toPreviewString()
+            + ' ' + this.y     .toPreviewString()
+            + ' ' + this.blur  .toPreviewString()
+            + ' ' + this.spread.toPreviewString()
+            + ' ' + this.fill  .toPreviewString()
+            + ' ' + this.blend .toPreviewString();
     }
 
 
@@ -16032,9 +16047,9 @@ extends GValue
 
 
 
-    toSimpleString()
+    toPreviewString()
     {
-        return this.radius.toSimpleString();
+        return this.radius.toPreviewString();
     }
 
 
@@ -16178,9 +16193,9 @@ extends GValue
 
 
 
-    toSimpleString()
+    toPreviewString()
     {
-        return this.radius.toSimpleString();
+        return this.radius.toPreviewString();
     }
 
 
@@ -16293,7 +16308,7 @@ extends GValue
 
 
 
-    toSimpleString()
+    toPreviewString()
     {
         return 'mask';
     }
@@ -16475,13 +16490,13 @@ extends ShapeValue
 
 
 
-    toSimpleString()
+    toPreviewString()
     {
-        return      this.x     .toSimpleString()
-            + ' ' + this.y     .toSimpleString()
-            + ' ' + this.width .toSimpleString()
-            + ' ' + this.height.toSimpleString()
-            + ' ' + this.round .toSimpleString();
+        return      this.x     .toPreviewString()
+            + ' ' + this.y     .toPreviewString()
+            + ' ' + this.width .toPreviewString()
+            + ' ' + this.height.toPreviewString()
+            + ' ' + this.round .toPreviewString();
     }
 
 
@@ -16670,11 +16685,11 @@ extends ShapeValue
 
 
 
-    toSimpleString()
+    toPreviewString()
     {
-        return      this.x    .toSimpleString()
-            + ' ' + this.y    .toSimpleString()
-            + ' ' + this.width.toSimpleString();
+        return      this.x    .toPreviewString()
+            + ' ' + this.y    .toPreviewString()
+            + ' ' + this.width.toPreviewString();
     }
 
 
@@ -16856,15 +16871,15 @@ extends ShapeValue
 
 
 
-    toSimpleString()
+    toPreviewString()
     {
-        return      this.x     .toSimpleString()
-            + ' ' + this.y     .toSimpleString()
-            + ' ' + this.width .toSimpleString()
-            + ' ' + this.height.toSimpleString()
-            + ' ' + this.from  .toSimpleString()
-            + ' ' + this.to    .toSimpleString()
-            + ' ' + this.inner .toSimpleString();
+        return      this.x     .toPreviewString()
+            + ' ' + this.y     .toPreviewString()
+            + ' ' + this.width .toPreviewString()
+            + ' ' + this.height.toPreviewString()
+            + ' ' + this.from  .toPreviewString()
+            + ' ' + this.to    .toPreviewString()
+            + ' ' + this.inner .toPreviewString();
     }
 
 
@@ -17021,14 +17036,14 @@ extends ShapeValue
 
 
 
-    toSimpleString()
+    toPreviewString()
     {
-        return      this.x     .toSimpleString()
-            + ' ' + this.y     .toSimpleString()
-            + ' ' + this.width .toSimpleString()
-            + ' ' + this.height.toSimpleString()
-            + ' ' + this.round .toSimpleString()
-            + ' ' + this.bias  .toSimpleString();
+        return      this.x     .toPreviewString()
+            + ' ' + this.y     .toPreviewString()
+            + ' ' + this.width .toPreviewString()
+            + ' ' + this.height.toPreviewString()
+            + ' ' + this.round .toPreviewString()
+            + ' ' + this.bias  .toPreviewString();
     }
 
 
@@ -17247,14 +17262,14 @@ extends ShapeValue
 
 
 
-    toSimpleString()
+    toPreviewString()
     {
-        return      this.x      .toSimpleString()
-            + ' ' + this.y      .toSimpleString()
-            + ' ' + this.width  .toSimpleString()
-            + ' ' + this.height .toSimpleString()
-            + ' ' + this.round  .toSimpleString()
-            + ' ' + this.corners.toSimpleString();
+        return      this.x      .toPreviewString()
+            + ' ' + this.y      .toPreviewString()
+            + ' ' + this.width  .toPreviewString()
+            + ' ' + this.height .toPreviewString()
+            + ' ' + this.round  .toPreviewString()
+            + ' ' + this.corners.toPreviewString();
     }
 
 
@@ -17448,15 +17463,15 @@ extends ShapeValue
 
 
 
-    toSimpleString()
+    toPreviewString()
     {
-        return      this.x     .toSimpleString()
-            + ' ' + this.y     .toSimpleString()
-            + ' ' + this.width .toSimpleString()
-            + ' ' + this.height.toSimpleString()
-            + ' ' + this.round .toSimpleString()
-            + ' ' + this.points.toSimpleString()
-            + ' ' + this.convex.toSimpleString();
+        return      this.x     .toPreviewString()
+            + ' ' + this.y     .toPreviewString()
+            + ' ' + this.width .toPreviewString()
+            + ' ' + this.height.toPreviewString()
+            + ' ' + this.round .toPreviewString()
+            + ' ' + this.points.toPreviewString()
+            + ' ' + this.convex.toPreviewString();
     }
 
 
@@ -17694,20 +17709,20 @@ extends ShapeValue
 
 
 
-    toSimpleString()
+    toPreviewString()
     {
         return      this.text         .toJson() // otherwise the string can't contain another string
-            + ' ' + this.x            .toSimpleString()
-            + ' ' + this.y            .toSimpleString()
-            + ' ' + this.width        .toSimpleString()
-            + ' ' + this.height       .toSimpleString()
-            + ' ' + this.font         .toSimpleString()
-            + ' ' + this.style        .toSimpleString()
-            + ' ' + this.size         .toSimpleString()
-            + ' ' + this.alignH       .toSimpleString()
-            + ' ' + this.alignV       .toSimpleString()
-            + ' ' + this.lineHeight   .toSimpleString()
-            + ' ' + this.letterSpacing.toSimpleString();
+            + ' ' + this.x            .toPreviewString()
+            + ' ' + this.y            .toPreviewString()
+            + ' ' + this.width        .toPreviewString()
+            + ' ' + this.height       .toPreviewString()
+            + ' ' + this.font         .toPreviewString()
+            + ' ' + this.style        .toPreviewString()
+            + ' ' + this.size         .toPreviewString()
+            + ' ' + this.alignH       .toPreviewString()
+            + ' ' + this.alignV       .toPreviewString()
+            + ' ' + this.lineHeight   .toPreviewString()
+            + ' ' + this.letterSpacing.toPreviewString();
     }
 
 
@@ -17919,12 +17934,12 @@ extends GValue
 
 
 
-    toSimpleString()
+    toPreviewString()
     {
         return this.x.isValid()
             && this.y.isValid()
-            ?   '(' + this.x.toSimpleString()
-              + ', ' + this.y.toSimpleString()
+            ?   '(' + this.x.toPreviewString()
+              + ', ' + this.y.toPreviewString()
               + ')'
             : NAN_DISPLAY;
     }
@@ -17960,7 +17975,7 @@ extends GValue
 
     toJsCode(gen)
     {
-        return '';//this.toSimpleString();
+        return '';//this.toPreviewString();
     }
 
 
@@ -18087,13 +18102,13 @@ extends ShapeValue
 
 
 
-    toSimpleString()
+    toPreviewString()
     {
-        return      this.points .toSimpleString()
-            + ' ' + this.closed .toSimpleString()
-            + ' ' + this.degree .toSimpleString()
-            + ' ' + this.winding.toSimpleString()
-            + ' ' + this.round  .toSimpleString();
+        return      this.points .toPreviewString()
+            + ' ' + this.closed .toPreviewString()
+            + ' ' + this.degree .toPreviewString()
+            + ' ' + this.winding.toPreviewString()
+            + ' ' + this.round  .toPreviewString();
     }
 
 
@@ -18318,13 +18333,13 @@ extends GValue
 
 
 
-    toSimpleString()
+    toPreviewString()
     {
-        return      this.x    .toSimpleString()
-            + ' ' + this.y    .toSimpleString()
-            + ' ' + this.join .toSimpleString()
-            + ' ' + this.cap  .toSimpleString()
-            + ' ' + this.round.toSimpleString();
+        return      this.x    .toPreviewString()
+            + ' ' + this.y    .toPreviewString()
+            + ' ' + this.join .toPreviewString()
+            + ' ' + this.cap  .toPreviewString()
+            + ' ' + this.round.toPreviewString();
     }
 
 
@@ -18358,7 +18373,7 @@ extends GValue
 
     toJsCode(gen)
     {
-        return '';//this.toSimpleString();
+        return '';//this.toPreviewString();
     }
 
 
@@ -18524,7 +18539,7 @@ extends GValue
 
 
 
-    toSimpleString()
+    toPreviewString()
     {
         return      this.start       .toString()
             + ' ' + this.end         .toString()
@@ -18553,7 +18568,7 @@ extends GValue
 
     toJsCode(gen)
     {
-        return '';//this.toSimpleString();
+        return '';//this.toPreviewString();
     }
 
 
@@ -18698,10 +18713,10 @@ extends ShapeValue
 
 
 
-    toSimpleString()
+    toPreviewString()
     {
-        return      this.loops  .toSimpleString()
-            + ' ' + this.winding.toSimpleString();
+        return      this.loops  .toPreviewString()
+            + ' ' + this.winding.toPreviewString();
     }
 
 
@@ -18723,7 +18738,7 @@ extends ShapeValue
 
     toJsCode(gen)
     {
-        return '';//this.toSimpleString();
+        return '';//this.toPreviewString();
     }
 
 
@@ -18856,9 +18871,9 @@ extends GValue
 
 
 
-    toSimpleString()
+    toPreviewString()
     {
-        return this.regions.toSimpleString();
+        return this.regions.toPreviewString();
     }
 
 
@@ -18879,7 +18894,7 @@ extends GValue
 
     toJsCode(gen)
     {
-        return '';//this.toSimpleString();
+        return '';//this.toPreviewString();
     }
 
 
@@ -18985,10 +19000,10 @@ extends ShapeValue
 
 
 
-    toSimpleString()
+    toPreviewString()
     {
-        return      this.operation.toSimpleString()
-            + ' ' + this.children .toSimpleString();
+        return      this.operation.toPreviewString()
+            + ' ' + this.children .toPreviewString();
     }
 
 
@@ -19136,7 +19151,7 @@ extends GValue
 
 
 
-    toSimpleString()
+    toPreviewString()
     {
         if (!this.items)
             return '';
@@ -19152,7 +19167,7 @@ extends GValue
             const item = this.items[i];
 
             str += ' ' + item.type + ' ';
-            str += item.toSimpleString();
+            str += item.toPreviewString();
         }
 
 
@@ -19349,14 +19364,14 @@ extends ShapeValue
 
 
 
-    toSimpleString()
+    toPreviewString()
     {
-        return      this.x       .toSimpleString()
-            + ' ' + this.y       .toSimpleString()
-            + ' ' + this.width   .toSimpleString()
-            + ' ' + this.height  .toSimpleString()
-            + ' ' + this.round   .toSimpleString()
-            + ' ' + this.children.toSimpleString();
+        return      this.x       .toPreviewString()
+            + ' ' + this.y       .toPreviewString()
+            + ' ' + this.width   .toPreviewString()
+            + ' ' + this.height  .toPreviewString()
+            + ' ' + this.round   .toPreviewString()
+            + ' ' + this.children.toPreviewString();
     }
 
 
@@ -20578,7 +20593,7 @@ extends GOperator1
 
         this.setUpdateValues(parse,
         [
-            ['preview', new ListValue(this.value.items.slice(0, Math.min(this.value.items.length, 10)))],
+            ['preview', new ListValue(this.value.items.slice(0, Math.min(this.value.items.length, 11)))],
             ['length',  new NumberValue(length)                                                        ], // used to set start and end maxima
             ['start',   start                                                                          ],
             ['end',     end                                                                            ]
@@ -20888,7 +20903,7 @@ extends GOperator
 
         this.setUpdateValues(parse,
         [
-            ['preview', new ListValue(this.value.items.slice(0, Math.min(this.value.items.length, 10)))],
+            ['preview', new ListValue(this.value.items.slice(0, Math.min(this.value.items.length, 11)))],
             ['length',  new NumberValue(this.value.items.length)                                       ],
             ['columns', new NumberValue(maxColumns)                                                    ],
             ['column',  column                                                                         ],
@@ -20996,7 +21011,7 @@ extends GOperator1
 
         this.setUpdateValues(parse,
         [
-            ['preview', new ListValue(this.value.items.slice(0, Math.min(this.value.items.length, 10)))],
+            ['preview', new ListValue(this.value.items.slice(0, Math.min(this.value.items.length, 11)))],
             ['length',  new NumberValue(this.value.items.length)                                       ],
             ['columns', new NumberValue(maxColumns)                                                    ],
             ['index',   index                                                                          ]
@@ -21119,11 +21134,13 @@ extends GOperator
             this.value = NullValue.copy();
 
 
+        console.log('this.value =', this.value);
         this.setUpdateValues(parse,
         [
-            ['type',    new TextValue(this.value ? this.value.type : ANY_VALUE)],
-            ['columns', new NumberValue(columns)                               ],
-            ['rows',    new NumberValue(rows   )                               ]
+            ['preview', this.value                                        ],
+            ['type',    this.value ? new TextValue(this.value.type) : null],
+            ['columns', new NumberValue(columns)                          ],
+            ['rows',    new NumberValue(rows   )                          ]
         ]);
         
 
@@ -21383,9 +21400,10 @@ extends GOperator
 
         this.setUpdateValues(parse,
         [
-            ['type',   this.value ? new TextValue(this.value.type) : null],
-            ['length', new NumberValue(length)                           ],
-            ['index',  index                                             ]
+            ['preview', this.value                                        ],
+            ['type',    this.value ? new TextValue(this.value.type) : null],
+            ['length',  new NumberValue(length)                           ],
+            ['index',   index                                             ]
         ]);
 
 
@@ -27546,8 +27564,6 @@ async function evalCompareInputs(input0, input1, op, parse)
 class GTextCSV
 extends GOperator1
 {
-    // rows;
-    // columns;
     rowSeparator;
     columnSeparator;
 
@@ -27632,16 +27648,11 @@ extends GOperator1
             nRows    = this.value.items.length;
             nColumns = maxColumns;
         }
-        // else
-        // {
-        //     this.rows    = new NumberValue(0);
-        //     this.columns = new NumberValue(0);
-        // }
     
 
         this.setUpdateValues(parse,
         [
-            ['preview',         new ListValue(this.value.items.slice(0, Math.min(this.value.items.length, 10)))],
+            ['preview',         new ListValue(this.value.items.slice(0, Math.min(this.value.items.length, 11)))],
             ['rowSeparator',    rowSeparator             ],
             ['columnSeparator', columnSeparator          ],
             ['rows',            new NumberValue(nRows   )],
@@ -27723,9 +27734,11 @@ extends GOperator1
         }
     
 
+        console.log('this.value =', this.value);
         this.setUpdateValues(parse,
         [
-            ['value', this.value]
+            ['preview', new ListValue(this.value.items.slice(0, Math.min(this.value.items.length, 11)))]//,
+            //['value',   this.value]
         ]);
         
 
@@ -27738,6 +27751,7 @@ extends GOperator1
 
     evalItems(json)
     {
+        console.log('json =', json);
         let list = new ListValue();
 
 
@@ -27848,6 +27862,7 @@ extends GOperator
 
         this.setUpdateValues(parse,
         [
+            ['preview', this.value],
             ['value',   this.value],
             ['request', request   ]
         ]);
@@ -27927,7 +27942,8 @@ extends GOperator
 
         this.setUpdateValues(parse,
         [
-            ['path', path]
+            ['preview', this.value],
+            ['path',    path      ]
         ]);
         
         
@@ -58010,20 +58026,34 @@ extends GValue
 
 
 
-    toSimpleString()
+    toPreviewString()
     {
         if (!this.items)
             return '';
 
 
         let str = '';
-                
-        for (let i = 0; i < this.items.length; i++)
+
+        for (let i = 0; i < Math.min(this.items.length, 10); i++)
         {
-            if (i > 0) str += ', ';
-            str += this.items[i].toSimpleString();
+            if (i > 0) str += '<br/>';
+
+            const item = this.items[i];
+
+            if (LIST_VALUES.includes(item.type))
+            {
+                for (let j = 0; j < item.items.length; j++)
+                {
+                    if (j > 0) str += ', ';
+                    str += item.items[j].toPreviewString();
+                }
+            }
+            else
+                str += item.toPreviewString();
         }
 
+        if (this.items.length > 10) 
+            str += '<br/>. . .';
 
         return str;
     }
@@ -58304,7 +58334,7 @@ extends GValue
 
 
 
-    toSimpleString()
+    toPreviewString()
     {
         return this.isValid()
              ? numToString(this.value, this.decimals)
@@ -58325,7 +58355,7 @@ extends GValue
 
     toJsCode(gen)
     {
-        return this.toSimpleString();
+        return this.toPreviewString();
     }
 
 
@@ -58462,7 +58492,7 @@ extends GValue
 
 
 
-    toSimpleString()
+    toPreviewString()
     {
         return this.value;
     }
@@ -58653,12 +58683,12 @@ extends GValue
 
 
 
-    toSimpleString()
+    toPreviewString()
     {
-        return      this.space.toSimpleString()
-            + ' ' + this.c1   .toSimpleString()
-            + ' ' + this.c2   .toSimpleString()
-            + ' ' + this.c3   .toSimpleString();
+        return      this.space.toPreviewString()
+            + ' ' + this.c1   .toPreviewString()
+            + ' ' + this.c2   .toPreviewString()
+            + ' ' + this.c3   .toPreviewString();
     }
 
 
@@ -58673,7 +58703,7 @@ extends GValue
 
 
 
-    toSimpleString()
+    toPreviewString()
     {
         if (!this.isValid())
             return UNKNOWN_DISPLAY;
@@ -58849,15 +58879,15 @@ extends GValue
 
 
 
-    toSimpleString()
+    toPreviewString()
     {
         const rgb = scaleRgb(this.color.toRgb());
 
-        return        new NumberValue(rgb[0]).toSimpleString()
-              + ' ' + new NumberValue(rgb[1]).toSimpleString()
-              + ' ' + new NumberValue(rgb[2]).toSimpleString()
-              + ' ' + this.opacity           .toSimpleString()
-              + ' ' + this.blend             .toSimpleString();
+        return        new NumberValue(rgb[0]).toPreviewString()
+              + ' ' + new NumberValue(rgb[1]).toPreviewString()
+              + ' ' + new NumberValue(rgb[2]).toPreviewString()
+              + ' ' + this.opacity           .toPreviewString()
+              + ' ' + this.blend             .toPreviewString();
     }
 
 
@@ -59030,10 +59060,10 @@ extends GValue
 
 
 
-    toSimpleString()
+    toPreviewString()
     {
-        return      this.fill    .toSimpleString()
-            + ' ' + this.position.toSimpleString();
+        return      this.fill    .toPreviewString()
+            + ' ' + this.position.toPreviewString();
     }
 
 
@@ -59208,17 +59238,17 @@ extends GValue
 
 
 
-    toSimpleString()
+    toPreviewString()
     {
-        return      this.stops   .toSimpleString()
-            + ' ' + this.gradType.toSimpleString()
-            + ' ' + this.x       .toSimpleString()
-            + ' ' + this.y       .toSimpleString()
-            + ' ' + this.size    .toSimpleString()
-            + ' ' + this.angle   .toSimpleString()
-            + ' ' + this.aspect  .toSimpleString()
-            + ' ' + this.skew    .toSimpleString()
-            + ' ' + this.blend   .toSimpleString();
+        return      this.stops   .toPreviewString()
+            + ' ' + this.gradType.toPreviewString()
+            + ' ' + this.x       .toPreviewString()
+            + ' ' + this.y       .toPreviewString()
+            + ' ' + this.size    .toPreviewString()
+            + ' ' + this.angle   .toPreviewString()
+            + ' ' + this.aspect  .toPreviewString()
+            + ' ' + this.skew    .toPreviewString()
+            + ' ' + this.blend   .toPreviewString();
     }
 
 
@@ -59426,15 +59456,15 @@ extends GValue
 
 
 
-    toSimpleString()
+    toPreviewString()
     {
-        return      this.fills .toSimpleString()
-            + ' ' + this.weight.toSimpleString()
-            + ' ' + this.fit   .toSimpleString()
-            + ' ' + this.join  .toSimpleString()
-            + ' ' + this.miter .toSimpleString()
-            + ' ' + this.cap   .toSimpleString()
-            + ' ' + this.dashes.toSimpleString();
+        return      this.fills .toPreviewString()
+            + ' ' + this.weight.toPreviewString()
+            + ' ' + this.fit   .toPreviewString()
+            + ' ' + this.join  .toPreviewString()
+            + ' ' + this.miter .toPreviewString()
+            + ' ' + this.cap   .toPreviewString()
+            + ' ' + this.dashes.toPreviewString();
     }
 
 
@@ -59639,15 +59669,15 @@ extends GValue
 
 
 
-    toSimpleString()
+    toPreviewString()
     {
-        return      this.x     .toSimpleString()
-            + ' ' + this.y     .toSimpleString()
-            + ' ' + this.blur  .toSimpleString()
-            + ' ' + this.spread.toSimpleString()
-            + ' ' + this.fill  .toSimpleString()
-            + ' ' + this.blend .toSimpleString()
-            + ' ' + this.behind.toSimpleString();
+        return      this.x     .toPreviewString()
+            + ' ' + this.y     .toPreviewString()
+            + ' ' + this.blur  .toPreviewString()
+            + ' ' + this.spread.toPreviewString()
+            + ' ' + this.fill  .toPreviewString()
+            + ' ' + this.blend .toPreviewString()
+            + ' ' + this.behind.toPreviewString();
     }
 
 
@@ -59850,14 +59880,14 @@ extends GValue
 
 
 
-    toSimpleString()
+    toPreviewString()
     {
-        return      this.x     .toSimpleString()
-            + ' ' + this.y     .toSimpleString()
-            + ' ' + this.blur  .toSimpleString()
-            + ' ' + this.spread.toSimpleString()
-            + ' ' + this.fill  .toSimpleString()
-            + ' ' + this.blend .toSimpleString();
+        return      this.x     .toPreviewString()
+            + ' ' + this.y     .toPreviewString()
+            + ' ' + this.blur  .toPreviewString()
+            + ' ' + this.spread.toPreviewString()
+            + ' ' + this.fill  .toPreviewString()
+            + ' ' + this.blend .toPreviewString();
     }
 
 
@@ -60026,9 +60056,9 @@ extends GValue
 
 
 
-    toSimpleString()
+    toPreviewString()
     {
-        return this.radius.toSimpleString();
+        return this.radius.toPreviewString();
     }
 
 
@@ -60172,9 +60202,9 @@ extends GValue
 
 
 
-    toSimpleString()
+    toPreviewString()
     {
-        return this.radius.toSimpleString();
+        return this.radius.toPreviewString();
     }
 
 
@@ -60287,7 +60317,7 @@ extends GValue
 
 
 
-    toSimpleString()
+    toPreviewString()
     {
         return 'mask';
     }
@@ -60469,13 +60499,13 @@ extends ShapeValue
 
 
 
-    toSimpleString()
+    toPreviewString()
     {
-        return      this.x     .toSimpleString()
-            + ' ' + this.y     .toSimpleString()
-            + ' ' + this.width .toSimpleString()
-            + ' ' + this.height.toSimpleString()
-            + ' ' + this.round .toSimpleString();
+        return      this.x     .toPreviewString()
+            + ' ' + this.y     .toPreviewString()
+            + ' ' + this.width .toPreviewString()
+            + ' ' + this.height.toPreviewString()
+            + ' ' + this.round .toPreviewString();
     }
 
 
@@ -60664,11 +60694,11 @@ extends ShapeValue
 
 
 
-    toSimpleString()
+    toPreviewString()
     {
-        return      this.x    .toSimpleString()
-            + ' ' + this.y    .toSimpleString()
-            + ' ' + this.width.toSimpleString();
+        return      this.x    .toPreviewString()
+            + ' ' + this.y    .toPreviewString()
+            + ' ' + this.width.toPreviewString();
     }
 
 
@@ -60850,15 +60880,15 @@ extends ShapeValue
 
 
 
-    toSimpleString()
+    toPreviewString()
     {
-        return      this.x     .toSimpleString()
-            + ' ' + this.y     .toSimpleString()
-            + ' ' + this.width .toSimpleString()
-            + ' ' + this.height.toSimpleString()
-            + ' ' + this.from  .toSimpleString()
-            + ' ' + this.to    .toSimpleString()
-            + ' ' + this.inner .toSimpleString();
+        return      this.x     .toPreviewString()
+            + ' ' + this.y     .toPreviewString()
+            + ' ' + this.width .toPreviewString()
+            + ' ' + this.height.toPreviewString()
+            + ' ' + this.from  .toPreviewString()
+            + ' ' + this.to    .toPreviewString()
+            + ' ' + this.inner .toPreviewString();
     }
 
 
@@ -61015,14 +61045,14 @@ extends ShapeValue
 
 
 
-    toSimpleString()
+    toPreviewString()
     {
-        return      this.x     .toSimpleString()
-            + ' ' + this.y     .toSimpleString()
-            + ' ' + this.width .toSimpleString()
-            + ' ' + this.height.toSimpleString()
-            + ' ' + this.round .toSimpleString()
-            + ' ' + this.bias  .toSimpleString();
+        return      this.x     .toPreviewString()
+            + ' ' + this.y     .toPreviewString()
+            + ' ' + this.width .toPreviewString()
+            + ' ' + this.height.toPreviewString()
+            + ' ' + this.round .toPreviewString()
+            + ' ' + this.bias  .toPreviewString();
     }
 
 
@@ -61241,14 +61271,14 @@ extends ShapeValue
 
 
 
-    toSimpleString()
+    toPreviewString()
     {
-        return      this.x      .toSimpleString()
-            + ' ' + this.y      .toSimpleString()
-            + ' ' + this.width  .toSimpleString()
-            + ' ' + this.height .toSimpleString()
-            + ' ' + this.round  .toSimpleString()
-            + ' ' + this.corners.toSimpleString();
+        return      this.x      .toPreviewString()
+            + ' ' + this.y      .toPreviewString()
+            + ' ' + this.width  .toPreviewString()
+            + ' ' + this.height .toPreviewString()
+            + ' ' + this.round  .toPreviewString()
+            + ' ' + this.corners.toPreviewString();
     }
 
 
@@ -61442,15 +61472,15 @@ extends ShapeValue
 
 
 
-    toSimpleString()
+    toPreviewString()
     {
-        return      this.x     .toSimpleString()
-            + ' ' + this.y     .toSimpleString()
-            + ' ' + this.width .toSimpleString()
-            + ' ' + this.height.toSimpleString()
-            + ' ' + this.round .toSimpleString()
-            + ' ' + this.points.toSimpleString()
-            + ' ' + this.convex.toSimpleString();
+        return      this.x     .toPreviewString()
+            + ' ' + this.y     .toPreviewString()
+            + ' ' + this.width .toPreviewString()
+            + ' ' + this.height.toPreviewString()
+            + ' ' + this.round .toPreviewString()
+            + ' ' + this.points.toPreviewString()
+            + ' ' + this.convex.toPreviewString();
     }
 
 
@@ -61688,20 +61718,20 @@ extends ShapeValue
 
 
 
-    toSimpleString()
+    toPreviewString()
     {
         return      this.text         .toJson() // otherwise the string can't contain another string
-            + ' ' + this.x            .toSimpleString()
-            + ' ' + this.y            .toSimpleString()
-            + ' ' + this.width        .toSimpleString()
-            + ' ' + this.height       .toSimpleString()
-            + ' ' + this.font         .toSimpleString()
-            + ' ' + this.style        .toSimpleString()
-            + ' ' + this.size         .toSimpleString()
-            + ' ' + this.alignH       .toSimpleString()
-            + ' ' + this.alignV       .toSimpleString()
-            + ' ' + this.lineHeight   .toSimpleString()
-            + ' ' + this.letterSpacing.toSimpleString();
+            + ' ' + this.x            .toPreviewString()
+            + ' ' + this.y            .toPreviewString()
+            + ' ' + this.width        .toPreviewString()
+            + ' ' + this.height       .toPreviewString()
+            + ' ' + this.font         .toPreviewString()
+            + ' ' + this.style        .toPreviewString()
+            + ' ' + this.size         .toPreviewString()
+            + ' ' + this.alignH       .toPreviewString()
+            + ' ' + this.alignV       .toPreviewString()
+            + ' ' + this.lineHeight   .toPreviewString()
+            + ' ' + this.letterSpacing.toPreviewString();
     }
 
 
@@ -61913,12 +61943,12 @@ extends GValue
 
 
 
-    toSimpleString()
+    toPreviewString()
     {
         return this.x.isValid()
             && this.y.isValid()
-            ?   '(' + this.x.toSimpleString()
-              + ', ' + this.y.toSimpleString()
+            ?   '(' + this.x.toPreviewString()
+              + ', ' + this.y.toPreviewString()
               + ')'
             : NAN_DISPLAY;
     }
@@ -61954,7 +61984,7 @@ extends GValue
 
     toJsCode(gen)
     {
-        return '';//this.toSimpleString();
+        return '';//this.toPreviewString();
     }
 
 
@@ -62081,13 +62111,13 @@ extends ShapeValue
 
 
 
-    toSimpleString()
+    toPreviewString()
     {
-        return      this.points .toSimpleString()
-            + ' ' + this.closed .toSimpleString()
-            + ' ' + this.degree .toSimpleString()
-            + ' ' + this.winding.toSimpleString()
-            + ' ' + this.round  .toSimpleString();
+        return      this.points .toPreviewString()
+            + ' ' + this.closed .toPreviewString()
+            + ' ' + this.degree .toPreviewString()
+            + ' ' + this.winding.toPreviewString()
+            + ' ' + this.round  .toPreviewString();
     }
 
 
@@ -62312,13 +62342,13 @@ extends GValue
 
 
 
-    toSimpleString()
+    toPreviewString()
     {
-        return      this.x    .toSimpleString()
-            + ' ' + this.y    .toSimpleString()
-            + ' ' + this.join .toSimpleString()
-            + ' ' + this.cap  .toSimpleString()
-            + ' ' + this.round.toSimpleString();
+        return      this.x    .toPreviewString()
+            + ' ' + this.y    .toPreviewString()
+            + ' ' + this.join .toPreviewString()
+            + ' ' + this.cap  .toPreviewString()
+            + ' ' + this.round.toPreviewString();
     }
 
 
@@ -62352,7 +62382,7 @@ extends GValue
 
     toJsCode(gen)
     {
-        return '';//this.toSimpleString();
+        return '';//this.toPreviewString();
     }
 
 
@@ -62518,7 +62548,7 @@ extends GValue
 
 
 
-    toSimpleString()
+    toPreviewString()
     {
         return      this.start       .toString()
             + ' ' + this.end         .toString()
@@ -62547,7 +62577,7 @@ extends GValue
 
     toJsCode(gen)
     {
-        return '';//this.toSimpleString();
+        return '';//this.toPreviewString();
     }
 
 
@@ -62692,10 +62722,10 @@ extends ShapeValue
 
 
 
-    toSimpleString()
+    toPreviewString()
     {
-        return      this.loops  .toSimpleString()
-            + ' ' + this.winding.toSimpleString();
+        return      this.loops  .toPreviewString()
+            + ' ' + this.winding.toPreviewString();
     }
 
 
@@ -62717,7 +62747,7 @@ extends ShapeValue
 
     toJsCode(gen)
     {
-        return '';//this.toSimpleString();
+        return '';//this.toPreviewString();
     }
 
 
@@ -62850,9 +62880,9 @@ extends GValue
 
 
 
-    toSimpleString()
+    toPreviewString()
     {
-        return this.regions.toSimpleString();
+        return this.regions.toPreviewString();
     }
 
 
@@ -62873,7 +62903,7 @@ extends GValue
 
     toJsCode(gen)
     {
-        return '';//this.toSimpleString();
+        return '';//this.toPreviewString();
     }
 
 
@@ -62979,10 +63009,10 @@ extends ShapeValue
 
 
 
-    toSimpleString()
+    toPreviewString()
     {
-        return      this.operation.toSimpleString()
-            + ' ' + this.children .toSimpleString();
+        return      this.operation.toPreviewString()
+            + ' ' + this.children .toPreviewString();
     }
 
 
@@ -63130,7 +63160,7 @@ extends GValue
 
 
 
-    toSimpleString()
+    toPreviewString()
     {
         if (!this.items)
             return '';
@@ -63146,7 +63176,7 @@ extends GValue
             const item = this.items[i];
 
             str += ' ' + item.type + ' ';
-            str += item.toSimpleString();
+            str += item.toPreviewString();
         }
 
 
@@ -63343,14 +63373,14 @@ extends ShapeValue
 
 
 
-    toSimpleString()
+    toPreviewString()
     {
-        return      this.x       .toSimpleString()
-            + ' ' + this.y       .toSimpleString()
-            + ' ' + this.width   .toSimpleString()
-            + ' ' + this.height  .toSimpleString()
-            + ' ' + this.round   .toSimpleString()
-            + ' ' + this.children.toSimpleString();
+        return      this.x       .toPreviewString()
+            + ' ' + this.y       .toPreviewString()
+            + ' ' + this.width   .toPreviewString()
+            + ' ' + this.height  .toPreviewString()
+            + ' ' + this.round   .toPreviewString()
+            + ' ' + this.children.toPreviewString();
     }
 
 
@@ -64572,7 +64602,7 @@ extends GOperator1
 
         this.setUpdateValues(parse,
         [
-            ['preview', new ListValue(this.value.items.slice(0, Math.min(this.value.items.length, 10)))],
+            ['preview', new ListValue(this.value.items.slice(0, Math.min(this.value.items.length, 11)))],
             ['length',  new NumberValue(length)                                                        ], // used to set start and end maxima
             ['start',   start                                                                          ],
             ['end',     end                                                                            ]
@@ -64882,7 +64912,7 @@ extends GOperator
 
         this.setUpdateValues(parse,
         [
-            ['preview', new ListValue(this.value.items.slice(0, Math.min(this.value.items.length, 10)))],
+            ['preview', new ListValue(this.value.items.slice(0, Math.min(this.value.items.length, 11)))],
             ['length',  new NumberValue(this.value.items.length)                                       ],
             ['columns', new NumberValue(maxColumns)                                                    ],
             ['column',  column                                                                         ],
@@ -64990,7 +65020,7 @@ extends GOperator1
 
         this.setUpdateValues(parse,
         [
-            ['preview', new ListValue(this.value.items.slice(0, Math.min(this.value.items.length, 10)))],
+            ['preview', new ListValue(this.value.items.slice(0, Math.min(this.value.items.length, 11)))],
             ['length',  new NumberValue(this.value.items.length)                                       ],
             ['columns', new NumberValue(maxColumns)                                                    ],
             ['index',   index                                                                          ]
@@ -65113,11 +65143,13 @@ extends GOperator
             this.value = NullValue.copy();
 
 
+        console.log('this.value =', this.value);
         this.setUpdateValues(parse,
         [
-            ['type',    new TextValue(this.value ? this.value.type : ANY_VALUE)],
-            ['columns', new NumberValue(columns)                               ],
-            ['rows',    new NumberValue(rows   )                               ]
+            ['preview', this.value                                        ],
+            ['type',    this.value ? new TextValue(this.value.type) : null],
+            ['columns', new NumberValue(columns)                          ],
+            ['rows',    new NumberValue(rows   )                          ]
         ]);
         
 
@@ -65377,9 +65409,10 @@ extends GOperator
 
         this.setUpdateValues(parse,
         [
-            ['type',   this.value ? new TextValue(this.value.type) : null],
-            ['length', new NumberValue(length)                           ],
-            ['index',  index                                             ]
+            ['preview', this.value                                        ],
+            ['type',    this.value ? new TextValue(this.value.type) : null],
+            ['length',  new NumberValue(length)                           ],
+            ['index',   index                                             ]
         ]);
 
 
@@ -71540,8 +71573,6 @@ async function evalCompareInputs(input0, input1, op, parse)
 class GTextCSV
 extends GOperator1
 {
-    // rows;
-    // columns;
     rowSeparator;
     columnSeparator;
 
@@ -71626,16 +71657,11 @@ extends GOperator1
             nRows    = this.value.items.length;
             nColumns = maxColumns;
         }
-        // else
-        // {
-        //     this.rows    = new NumberValue(0);
-        //     this.columns = new NumberValue(0);
-        // }
     
 
         this.setUpdateValues(parse,
         [
-            ['preview',         new ListValue(this.value.items.slice(0, Math.min(this.value.items.length, 10)))],
+            ['preview',         new ListValue(this.value.items.slice(0, Math.min(this.value.items.length, 11)))],
             ['rowSeparator',    rowSeparator             ],
             ['columnSeparator', columnSeparator          ],
             ['rows',            new NumberValue(nRows   )],
@@ -71717,9 +71743,11 @@ extends GOperator1
         }
     
 
+        console.log('this.value =', this.value);
         this.setUpdateValues(parse,
         [
-            ['value', this.value]
+            ['preview', new ListValue(this.value.items.slice(0, Math.min(this.value.items.length, 11)))]//,
+            //['value',   this.value]
         ]);
         
 
@@ -71732,6 +71760,7 @@ extends GOperator1
 
     evalItems(json)
     {
+        console.log('json =', json);
         let list = new ListValue();
 
 
@@ -71842,6 +71871,7 @@ extends GOperator
 
         this.setUpdateValues(parse,
         [
+            ['preview', this.value],
             ['value',   this.value],
             ['request', request   ]
         ]);
@@ -71921,7 +71951,8 @@ extends GOperator
 
         this.setUpdateValues(parse,
         [
-            ['path', path]
+            ['preview', this.value],
+            ['path',    path      ]
         ]);
         
         
@@ -87509,7 +87540,8 @@ function initGeneratorMenus()
         new MenuItem('Text',    null, {icon: iconText,     childMenu: menuString}),
         new MenuItem('Color',   null, {icon: iconVarColor, childMenu: menuColor }),
         new MenuItem('Layer',   null, {icon: iconEffects,  childMenu: menuLayer }),
-        new MenuItem('Shape',   null, {icon: iconShapes,   childMenu: menuShape })]);
+        new MenuItem('Shape',   null, {icon: iconShapes,   childMenu: menuShape }),
+        new MenuItem('Panel',   null, {icon: iconPanel,    createType: PANEL, callback: e => actionManager.do(getCreateNodeAction(PANEL, btnPanel.div, getCreateOptions(e)))})]);
 
                                       
     menuGraph = new Menu('Graph menu', false, false);
@@ -89150,15 +89182,15 @@ class GraphView
     {
         if (node.type == PANEL)
         {
-            node.div.style.left = (this.div.offsetWidth /2 - graph.currentPage.pan.x                 ) / graph.currentPage.zoom - defPanelWidth /2;
-            node.div.style.top  = (this.div.offsetHeight/2 - graph.currentPage.pan.y - getTopHeight()) / graph.currentPage.zoom - defPanelHeight/2;
+            node.div.style.left = (this.div.offsetWidth /2 - graph.currentPage.pan.x) / graph.currentPage.zoom - defPanelWidth /2;
+            node.div.style.top  = (this.div.offsetHeight/2 - graph.currentPage.pan.y) / graph.currentPage.zoom - defPanelHeight/2;
         }
         else
         {
             const nodeHeight = defHeaderHeight + node.params.length * defParamHeight;
             
-            node.div.style.left = (this.div.offsetWidth /2 - graph.currentPage.pan.x                 ) / graph.currentPage.zoom - defNodeWidth/2;
-            node.div.style.top  = (this.div.offsetHeight/2 - graph.currentPage.pan.y - getTopHeight()) / graph.currentPage.zoom - nodeHeight  /2;
+            node.div.style.left = (this.div.offsetWidth /2 - graph.currentPage.pan.x) / graph.currentPage.zoom - defNodeWidth/2;
+            node.div.style.top  = (this.div.offsetHeight/2 - graph.currentPage.pan.y) / graph.currentPage.zoom - nodeHeight  /2;
         }
     }
 
@@ -99977,26 +100009,17 @@ function idFromNodePath(path)
 
 function createHeaderTooltip(node)
 {
-    createTooltipSrc(node.header, node.header, () => ttText);
+    createTooltipSrc(node.header, node.header, () => ttText, () => node.showHeaderTooltip);
 
 
     node.header.addEventListener('pointerenter', e =>
     {
         if (  !currentTooltip
             && node.preview
-            && node.showHeaderTooltip)
+            && node.showHeaderTooltip === true)
         {
-            let strTooltip = '';
+            let strTooltip = node.preview.toPreviewString();
             
-            for (let i = 0; i < node.preview.items.length; i++)
-            {
-                if (i > 0) strTooltip += '<br/>';
-                strTooltip += node.preview.items[i].toSimpleString();
-            }
-
-            // if (node.length > node.preview.items.length) 
-            //     strTooltip = '<br/>. . .';
-            // else 
             if (strTooltip == '')
                 strTooltip = '. . .';
             
@@ -102531,8 +102554,9 @@ extends OperatorBase
     {
         super(LIST, 'list', 'list', iconList);
 
-        this.canDisable     = true;
-        this.variableInputs = true;
+        this.canDisable        = true;
+        this.variableInputs    = true;
+        this.showHeaderTooltip = true;
 
 
         this.addNewInput();
@@ -102589,7 +102613,6 @@ extends OperatorBase
     {
         super.updateValues(requestId, actionId, updateParamId, paramIds, values);
 
-        this.preview = values[paramIds.findIndex(id => id == 'preview')];
         const length = values[paramIds.findIndex(id => id == 'length' )];
         const type   = values[paramIds.findIndex(id => id == 'type'   )];
 
@@ -102736,8 +102759,8 @@ extends OperatorBase
     {
         super(SUBLIST, 'sublist', 'sublist', iconSublist);
 
-        this.canDisable  = true;
-        // this.iconOffsetY = 1;
+        this.canDisable        = true;
+        this.showHeaderTooltip = true;
         
 
         this.addInput (new Input (LIST_VALUES));
@@ -102787,7 +102810,6 @@ extends OperatorBase
 
     updateValues(requestId, actionId, updateParamId, paramIds, values)
     {
-        this.preview = values[paramIds.findIndex(id => id == 'preview')];
         const length = values[paramIds.findIndex(id => id == 'length')];
 
         if (length.value > 0)
@@ -102831,8 +102853,8 @@ extends OperatorBase
     {
         super(UNIQUE, 'unique', 'unique', iconUnique);
 
-        this.canDisable  = true;
-        // this.iconOffsetY = 1;
+        this.canDisable        = true;
+        this.showHeaderTooltip = true;
         
 
         this.addInput (new Input (LIST_VALUES));
@@ -102908,8 +102930,8 @@ extends OperatorBase
     {
         super(REVERSE_LIST, 'reverse', 'reverse', iconReverseList);
 
-        this.canDisable  = true;
-        // this.iconOffsetY = 1;
+        this.canDisable        = true;
+        this.showHeaderTooltip = true;
         
 
         this.addInput (new Input (LIST_VALUES));
@@ -102974,7 +102996,7 @@ extends OperatorBase
     {
         super(SORT, 'sort', 'sort', iconSort);
 
-        //this.iconOffsetY = 1;
+        this.showHeaderTooltip = true;
         
 
         this.addInput (new Input (LIST_VALUES));
@@ -103070,7 +103092,8 @@ extends OperatorBase
     {
         super(COLUMN, 'column', 'column', iconColumn);
 
-        this.iconOffsetY = 1;
+        this.iconOffsetY       = 1;
+        this.showHeaderTooltip = true;
         
 
         this.addInput (new Input (LIST_VALUES));
@@ -103159,8 +103182,9 @@ extends OperatorBase
         super(CELL, 'cell', 'cell', iconCell);
 
         //this.cached           = false;
-        this.alwaysSaveParams = true;
-        this.iconOffsetY      = 1;
+        this.alwaysSaveParams  = true;
+        this.iconOffsetY       = 1;
+        this.showHeaderTooltip = true;
 
 
         this.addInput(new Input(LIST_VALUES, getNodeInputValuesForUndo));
@@ -103233,7 +103257,8 @@ extends OperatorBase
         this.columns = values[paramIds.findIndex(id => id == 'columns')];
         this.rows    = values[paramIds.findIndex(id => id == 'rows'   )];
 
-        this.outputs[0].types = [type.value];
+        if (type)
+            this.outputs[0].types = [type.value];
     }
 
 
@@ -103256,30 +103281,17 @@ extends OperatorBase
     getHeaderColors(options = {})
     {
         const colors = super.getHeaderColors(options);
-
-        const inputTypes = this.connectedHeaderInputs.map(i => i.connectedOutput.types[0]);
-
-        const type = 
-            this.inputs[0].connected 
-            ? finalListTypeFromTypes(inputTypes)
-            : this.type;
-
-           
-        //const col = rgb_a(rgbFromType(type, this.active), 0.95);
-            
-        // colors.back = col;
-
+        const type   = this.outputs[0].types[0];
 
         colors.text   = isDark(colors.back) ? [1, 1, 1, 1] : [0, 0, 0, 1]; 
 
         const gray =
-               this.active
-            && (  !this.inputs[0].connected
-                || arraysIntersect(this.inputs[0].connectedOutput.types, [ANY_VALUE, LIST_VALUE]));
+                this.active
+            && !this.inputs[0].connected;
 
-        colors.input  = this.active ? rgb_a(colors.text, 0.4)  : rgb_a(rgbSaturateHsv(rgbFromType(type, true), 0.5), 0.8);
-        colors.output = gray        ? rgb_a(colors.text, 0.35) : rgb_a(rgbSaturateHsv(rgbFromType(type, true), 0.5), 0.7);
-        colors.wire   = rgbFromType(type, true);
+        colors.input  = gray ? rgb_a(colors.text, 0.4)  : rgb_a(rgbSaturateHsv(rgbFromType(type, true), 0.5), 0.8);
+        colors.output = gray ? rgb_a(colors.text, 0.35) : rgb_a(rgbSaturateHsv(rgbFromType(type, true), 0.5), 0.7);
+        colors.wire   = gray ? rgbFromType(ANY_VALUE, true) : rgbFromType(type, true);
 
         return colors;
     }
@@ -103583,8 +103595,8 @@ extends OperatorBase
     {
         super(SELECT, 'select', 'select', iconSelect);
 
-        //this.cached           = false;
-        this.alwaysSaveParams = true;
+        this.alwaysSaveParams  = true;
+        this.showHeaderTooltip = true;
 
 
         this.addInput(new Input(LIST_VALUES, getNodeInputValuesForUndo));
@@ -108375,8 +108387,6 @@ class   OpTextCSV
 extends OperatorBase
 {
     paramValue;
-    // paramRows;
-    // paramColumns;
     paramRowSeparator;
     paramColumnSeparator;
 
@@ -108386,21 +108396,18 @@ extends OperatorBase
     {
         super(TEXT_CSV, 'csv', 'csv', iconTextCSV);
 
-        this.iconOffsetY = 1;
+        this.iconOffsetY       = 1;
+        this.showHeaderTooltip = true;
 
 
         this.addInput(new Input([TEXT_VALUE]));
 
         this.addParam(this.paramValue           = new ListParam  ('value',           'table',     false, false, true));
-        // this.addParam(this.paramColumns         = new NumberParam('columns',         'columns',   true,  false, true, 0, 0));
-        // this.addParam(this.paramRows            = new NumberParam('rows',            'rows',      true,  false, true, 0, 0));
         this.addParam(this.paramRowSeparator    = new TextParam  ('rowSeparator',    'rows', true , true,  true, '\\n'));
         this.addParam(this.paramColumnSeparator = new TextParam  ('columnSeparator', 'columns', true , true,  true, ','));
 
         this.paramValue.itemName = '';
 
-        // this.paramRows           .divider = 0.5;
-        // this.paramColumns        .divider = 0.5;
         this.paramRowSeparator   .divider = 0.6;
         this.paramColumnSeparator.divider = 0.6;
     }
@@ -108475,7 +108482,8 @@ extends OperatorBase
     {
         super(TEXT_JSON, 'json', 'json', iconTextJson);
 
-        this.iconOffsetY = 1;
+        this.iconOffsetY       = 1;
+        this.showHeaderTooltip = true;
 
 
         this.addInput(new Input([TEXT_VALUE]));
@@ -108539,11 +108547,11 @@ extends ResizableOperatorWithValue
     {
         super(TEXT_FETCH, 'fetch', 'fetch', iconTextFetch, defNodeWidth, true);
 
-        this.canDisable       = true;
-        this.iconOffsetY      = -1;
-
-        this.alwaysLoadParams = true;
-        this.alwaysSaveParams = true;
+        this.canDisable        = true;
+        this.iconOffsetY       = -1;
+        this.alwaysLoadParams  = true;
+        this.alwaysSaveParams  = true;
+        this.showHeaderTooltip = true;
 
 
         this.addOutput(new Output([TEXT_VALUE], this.output_genRequest));
@@ -108674,11 +108682,11 @@ extends ResizableBase
     {
         super(TEXT_FILE, 'file', 'file', iconTextFile, defNodeWidth, true);
 
-        this.canDisable       = true;
-        this.iconOffsetY      = -1;
-
-        this.alwaysLoadParams = true;
-        this.alwaysSaveParams = true;
+        this.canDisable        = true;
+        this.iconOffsetY       = -1;
+        this.alwaysLoadParams  = true;
+        this.alwaysSaveParams  = true;
+        this.showHeaderTooltip = true;
 
 
         this.addOutput(new Output([TEXT_VALUE], this.output_genRequest));
@@ -116901,7 +116909,7 @@ extends OpShapeBase
 
     addNewInput()
     {
-        const newInput = new Input([SHAPE_LIST_VALUE, ...SHAPE_VALUES]);
+        const newInput = new Input([LIST_VALUE, SHAPE_LIST_VALUE, ...SHAPE_VALUES]);
         newInput.isNew = true;
 
         newInput.addEventListener('connect',    e => { onVariableConnectInput(e.detail.input); e.detail.input.isNew = false; });
@@ -120869,8 +120877,8 @@ extends Action
         {
             nodes[i].highlight = this.prevColorIndices[i];
 
-            if (node.type == PANEL) node.updateNode()
-            else                    node.updateBorder();
+            if (nodes[i].type == PANEL) nodes[i].updateNode()
+            else                        nodes[i].updateBorder();
         }
 
         uiSaveNodes(this.nodeIds);
@@ -125145,7 +125153,6 @@ function uiReturnFigGetPageData(msg)
 
 function uiReturnFigLoadNodesAndConns(msg)
 {
-    console.log('msg =', msg);
     if (settings.logRawLoadNodes)
     {
         for (const json of msg.nodeJson)
@@ -125644,7 +125651,7 @@ var currentTooltip       = null;
 
     
 
-function createTooltipSrc(source, ref, getTooltip)
+function createTooltipSrc(source, ref, getTooltip, canShow = null)
 {
     source.addEventListener('pointerenter', () =>
     {
@@ -125654,7 +125661,8 @@ function createTooltipSrc(source, ref, getTooltip)
 
         if (    tooltipTimer < 0
             &&  graph.currentPage.zoom >= settings.minZoomForParams
-            && !graphView.soloMode)
+            && !graphView.soloMode
+            && (!canShow || canShow()))
         {
             tooltipTimer = setTimeout(() =>
             {

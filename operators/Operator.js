@@ -1441,26 +1441,17 @@ function idFromNodePath(path)
 
 function createHeaderTooltip(node)
 {
-    createTooltipSrc(node.header, node.header, () => ttText);
+    createTooltipSrc(node.header, node.header, () => ttText, () => node.showHeaderTooltip);
 
 
     node.header.addEventListener('pointerenter', e =>
     {
         if (  !currentTooltip
             && node.preview
-            && node.showHeaderTooltip)
+            && node.showHeaderTooltip === true)
         {
-            let strTooltip = '';
+            let strTooltip = node.preview.toPreviewString();
             
-            for (let i = 0; i < node.preview.items.length; i++)
-            {
-                if (i > 0) strTooltip += '<br/>';
-                strTooltip += node.preview.items[i].toSimpleString();
-            }
-
-            // if (node.length > node.preview.items.length) 
-            //     strTooltip = '<br/>. . .';
-            // else 
             if (strTooltip == '')
                 strTooltip = '. . .';
             

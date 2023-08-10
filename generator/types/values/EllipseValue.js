@@ -121,15 +121,15 @@ extends ShapeValue
 
 
 
-    toSimpleString()
+    toPreviewString()
     {
-        return      this.x     .toSimpleString()
-            + ' ' + this.y     .toSimpleString()
-            + ' ' + this.width .toSimpleString()
-            + ' ' + this.height.toSimpleString()
-            + ' ' + this.from  .toSimpleString()
-            + ' ' + this.to    .toSimpleString()
-            + ' ' + this.inner .toSimpleString();
+        return      this.x     .toPreviewString()
+            + ' ' + this.y     .toPreviewString()
+            + ' ' + this.width .toPreviewString()
+            + ' ' + this.height.toPreviewString()
+            + ' ' + this.from  .toPreviewString()
+            + ' ' + this.to    .toPreviewString()
+            + ' ' + this.inner .toPreviewString();
     }
 
 

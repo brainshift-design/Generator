@@ -11,8 +11,8 @@ extends OperatorBase
     {
         super(SELECT, 'select', 'select', iconSelect);
 
-        //this.cached           = false;
-        this.alwaysSaveParams = true;
+        this.alwaysSaveParams  = true;
+        this.showHeaderTooltip = true;
 
 
         this.addInput(new Input(LIST_VALUES, getNodeInputValuesForUndo));

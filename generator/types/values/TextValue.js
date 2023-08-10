@@ -81,7 +81,7 @@ extends GValue
 
 
 
-    toSimpleString()
+    toPreviewString()
     {
         return this.value;
     }

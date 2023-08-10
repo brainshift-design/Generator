@@ -46,7 +46,7 @@ extends GValue
 
 
 
-    toSimpleString()
+    toPreviewString()
     {
         return 'mask';
     }

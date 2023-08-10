@@ -77,7 +77,7 @@ extends GOperator
 
         this.setUpdateValues(parse,
         [
-            ['preview', new ListValue(this.value.items.slice(0, Math.min(this.value.items.length, 10)))],
+            ['preview', new ListValue(this.value.items.slice(0, Math.min(this.value.items.length, 11)))],
             ['length',  new NumberValue(this.value.items.length)                                       ],
             ['columns', new NumberValue(maxColumns)                                                    ],
             ['column',  column                                                                         ],

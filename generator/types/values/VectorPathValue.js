@@ -74,13 +74,13 @@ extends ShapeValue
 
 
 
-    toSimpleString()
+    toPreviewString()
     {
-        return      this.points .toSimpleString()
-            + ' ' + this.closed .toSimpleString()
-            + ' ' + this.degree .toSimpleString()
-            + ' ' + this.winding.toSimpleString()
-            + ' ' + this.round  .toSimpleString();
+        return      this.points .toPreviewString()
+            + ' ' + this.closed .toPreviewString()
+            + ' ' + this.degree .toPreviewString()
+            + ' ' + this.winding.toPreviewString()
+            + ' ' + this.round  .toPreviewString();
     }
 
 

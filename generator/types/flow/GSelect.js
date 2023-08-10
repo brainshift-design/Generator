@@ -109,9 +109,10 @@ extends GOperator
 
         this.setUpdateValues(parse,
         [
-            ['type',   this.value ? new TextValue(this.value.type) : null],
-            ['length', new NumberValue(length)                           ],
-            ['index',  index                                             ]
+            ['preview', this.value                                        ],
+            ['type',    this.value ? new TextValue(this.value.type) : null],
+            ['length',  new NumberValue(length)                           ],
+            ['index',   index                                             ]
         ]);
 
 

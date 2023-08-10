@@ -82,7 +82,7 @@ extends GOperator1
 
         this.setUpdateValues(parse,
         [
-            ['preview', new ListValue(this.value.items.slice(0, Math.min(this.value.items.length, 10)))],
+            ['preview', new ListValue(this.value.items.slice(0, Math.min(this.value.items.length, 11)))],
             ['length',  new NumberValue(length)                                                        ], // used to set start and end maxima
             ['start',   start                                                                          ],
             ['end',     end                                                                            ]

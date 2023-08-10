@@ -163,7 +163,6 @@ function uiReturnFigGetPageData(msg)
 
 function uiReturnFigLoadNodesAndConns(msg)
 {
-    console.log('msg =', msg);
     if (settings.logRawLoadNodes)
     {
         for (const json of msg.nodeJson)

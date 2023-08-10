@@ -14,7 +14,7 @@ extends OperatorBase
     {
         super(SORT, 'sort', 'sort', iconSort);
 
-        //this.iconOffsetY = 1;
+        this.showHeaderTooltip = true;
         
 
         this.addInput (new Input (LIST_VALUES));

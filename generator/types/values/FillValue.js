@@ -109,15 +109,15 @@ extends GValue
 
 
 
-    toSimpleString()
+    toPreviewString()
     {
         const rgb = scaleRgb(this.color.toRgb());
 
-        return        new NumberValue(rgb[0]).toSimpleString()
-              + ' ' + new NumberValue(rgb[1]).toSimpleString()
-              + ' ' + new NumberValue(rgb[2]).toSimpleString()
-              + ' ' + this.opacity           .toSimpleString()
-              + ' ' + this.blend             .toSimpleString();
+        return        new NumberValue(rgb[0]).toPreviewString()
+              + ' ' + new NumberValue(rgb[1]).toPreviewString()
+              + ' ' + new NumberValue(rgb[2]).toPreviewString()
+              + ' ' + this.opacity           .toPreviewString()
+              + ' ' + this.blend             .toPreviewString();
     }
 
 

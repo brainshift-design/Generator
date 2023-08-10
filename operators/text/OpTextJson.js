@@ -9,7 +9,8 @@ extends OperatorBase
     {
         super(TEXT_JSON, 'json', 'json', iconTextJson);
 
-        this.iconOffsetY = 1;
+        this.iconOffsetY       = 1;
+        this.showHeaderTooltip = true;
 
 
         this.addInput(new Input([TEXT_VALUE]));

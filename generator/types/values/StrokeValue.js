@@ -123,15 +123,15 @@ extends GValue
 
 
 
-    toSimpleString()
+    toPreviewString()
     {
-        return      this.fills .toSimpleString()
-            + ' ' + this.weight.toSimpleString()
-            + ' ' + this.fit   .toSimpleString()
-            + ' ' + this.join  .toSimpleString()
-            + ' ' + this.miter .toSimpleString()
-            + ' ' + this.cap   .toSimpleString()
-            + ' ' + this.dashes.toSimpleString();
+        return      this.fills .toPreviewString()
+            + ' ' + this.weight.toPreviewString()
+            + ' ' + this.fit   .toPreviewString()
+            + ' ' + this.join  .toPreviewString()
+            + ' ' + this.miter .toPreviewString()
+            + ' ' + this.cap   .toPreviewString()
+            + ' ' + this.dashes.toPreviewString();
     }
 
 

@@ -2,8 +2,6 @@ class   OpTextCSV
 extends OperatorBase
 {
     paramValue;
-    // paramRows;
-    // paramColumns;
     paramRowSeparator;
     paramColumnSeparator;
 
@@ -13,21 +11,18 @@ extends OperatorBase
     {
         super(TEXT_CSV, 'csv', 'csv', iconTextCSV);
 
-        this.iconOffsetY = 1;
+        this.iconOffsetY       = 1;
+        this.showHeaderTooltip = true;
 
 
         this.addInput(new Input([TEXT_VALUE]));
 
         this.addParam(this.paramValue           = new ListParam  ('value',           'table',     false, false, true));
-        // this.addParam(this.paramColumns         = new NumberParam('columns',         'columns',   true,  false, true, 0, 0));
-        // this.addParam(this.paramRows            = new NumberParam('rows',            'rows',      true,  false, true, 0, 0));
         this.addParam(this.paramRowSeparator    = new TextParam  ('rowSeparator',    'rows', true , true,  true, '\\n'));
         this.addParam(this.paramColumnSeparator = new TextParam  ('columnSeparator', 'columns', true , true,  true, ','));
 
         this.paramValue.itemName = '';
 
-        // this.paramRows           .divider = 0.5;
-        // this.paramColumns        .divider = 0.5;
         this.paramRowSeparator   .divider = 0.6;
         this.paramColumnSeparator.divider = 0.6;
     }

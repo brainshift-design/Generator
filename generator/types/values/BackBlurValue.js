@@ -77,9 +77,9 @@ extends GValue
 
 
 
-    toSimpleString()
+    toPreviewString()
     {
-        return this.radius.toSimpleString();
+        return this.radius.toPreviewString();
     }
 
 

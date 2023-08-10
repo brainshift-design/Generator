@@ -104,7 +104,7 @@ extends GValue
 
 
 
-    toSimpleString()
+    toPreviewString()
     {
         return      this.start       .toString()
             + ' ' + this.end         .toString()
@@ -133,7 +133,7 @@ extends GValue
 
     toJsCode(gen)
     {
-        return '';//this.toSimpleString();
+        return '';//this.toPreviewString();
     }
 
 

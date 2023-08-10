@@ -9,7 +9,7 @@ var currentTooltip       = null;
 
     
 
-function createTooltipSrc(source, ref, getTooltip)
+function createTooltipSrc(source, ref, getTooltip, canShow = null)
 {
     source.addEventListener('pointerenter', () =>
     {
@@ -19,7 +19,8 @@ function createTooltipSrc(source, ref, getTooltip)
 
         if (    tooltipTimer < 0
             &&  graph.currentPage.zoom >= settings.minZoomForParams
-            && !graphView.soloMode)
+            && !graphView.soloMode
+            && (!canShow || canShow()))
         {
             tooltipTimer = setTimeout(() =>
             {

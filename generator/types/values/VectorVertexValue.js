@@ -126,13 +126,13 @@ extends GValue
 
 
 
-    toSimpleString()
+    toPreviewString()
     {
-        return      this.x    .toSimpleString()
-            + ' ' + this.y    .toSimpleString()
-            + ' ' + this.join .toSimpleString()
-            + ' ' + this.cap  .toSimpleString()
-            + ' ' + this.round.toSimpleString();
+        return      this.x    .toPreviewString()
+            + ' ' + this.y    .toPreviewString()
+            + ' ' + this.join .toPreviewString()
+            + ' ' + this.cap  .toPreviewString()
+            + ' ' + this.round.toPreviewString();
     }
 
 
@@ -166,7 +166,7 @@ extends GValue
 
     toJsCode(gen)
     {
-        return '';//this.toSimpleString();
+        return '';//this.toPreviewString();
     }
 
 

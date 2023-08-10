@@ -115,15 +115,15 @@ extends GValue
 
 
 
-    toSimpleString()
+    toPreviewString()
     {
-        return      this.x     .toSimpleString()
-            + ' ' + this.y     .toSimpleString()
-            + ' ' + this.blur  .toSimpleString()
-            + ' ' + this.spread.toSimpleString()
-            + ' ' + this.fill  .toSimpleString()
-            + ' ' + this.blend .toSimpleString()
-            + ' ' + this.behind.toSimpleString();
+        return      this.x     .toPreviewString()
+            + ' ' + this.y     .toPreviewString()
+            + ' ' + this.blur  .toPreviewString()
+            + ' ' + this.spread.toPreviewString()
+            + ' ' + this.fill  .toPreviewString()
+            + ' ' + this.blend .toPreviewString()
+            + ' ' + this.behind.toPreviewString();
     }
 
 

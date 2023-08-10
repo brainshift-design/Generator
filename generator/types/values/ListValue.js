@@ -140,20 +140,34 @@ extends GValue
 
 
 
-    toSimpleString()
+    toPreviewString()
     {
         if (!this.items)
             return '';
 
 
         let str = '';
-                
-        for (let i = 0; i < this.items.length; i++)
+
+        for (let i = 0; i < Math.min(this.items.length, 10); i++)
         {
-            if (i > 0) str += ', ';
-            str += this.items[i].toSimpleString();
+            if (i > 0) str += '<br/>';
+
+            const item = this.items[i];
+
+            if (LIST_VALUES.includes(item.type))
+            {
+                for (let j = 0; j < item.items.length; j++)
+                {
+                    if (j > 0) str += ', ';
+                    str += item.items[j].toPreviewString();
+                }
+            }
+            else
+                str += item.toPreviewString();
         }
 
+        if (this.items.length > 10) 
+            str += '<br/>. . .';
 
         return str;
     }

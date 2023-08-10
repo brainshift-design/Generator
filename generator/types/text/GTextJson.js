@@ -44,9 +44,11 @@ extends GOperator1
         }
     
 
+        console.log('this.value =', this.value);
         this.setUpdateValues(parse,
         [
-            ['value', this.value]
+            ['preview', new ListValue(this.value.items.slice(0, Math.min(this.value.items.length, 11)))]//,
+            //['value',   this.value]
         ]);
         
 
@@ -59,6 +61,7 @@ extends GOperator1
 
     evalItems(json)
     {
+        console.log('json =', json);
         let list = new ListValue();
 
 

@@ -76,7 +76,7 @@ extends GValue
 
 
 
-    toSimpleString()
+    toPreviewString()
     {
         if (!this.items)
             return '';
@@ -92,7 +92,7 @@ extends GValue
             const item = this.items[i];
 
             str += ' ' + item.type + ' ';
-            str += item.toSimpleString();
+            str += item.toPreviewString();
         }
 
 

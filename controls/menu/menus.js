@@ -708,7 +708,8 @@ function initGeneratorMenus()
         new MenuItem('Text',    null, {icon: iconText,     childMenu: menuString}),
         new MenuItem('Color',   null, {icon: iconVarColor, childMenu: menuColor }),
         new MenuItem('Layer',   null, {icon: iconEffects,  childMenu: menuLayer }),
-        new MenuItem('Shape',   null, {icon: iconShapes,   childMenu: menuShape })]);
+        new MenuItem('Shape',   null, {icon: iconShapes,   childMenu: menuShape }),
+        new MenuItem('Panel',   null, {icon: iconPanel,    createType: PANEL, callback: e => actionManager.do(getCreateNodeAction(PANEL, btnPanel.div, getCreateOptions(e)))})]);
 
                                       
     menuGraph = new Menu('Graph menu', false, false);

@@ -256,15 +256,15 @@ class GraphView
     {
         if (node.type == PANEL)
         {
-            node.div.style.left = (this.div.offsetWidth /2 - graph.currentPage.pan.x                 ) / graph.currentPage.zoom - defPanelWidth /2;
-            node.div.style.top  = (this.div.offsetHeight/2 - graph.currentPage.pan.y - getTopHeight()) / graph.currentPage.zoom - defPanelHeight/2;
+            node.div.style.left = (this.div.offsetWidth /2 - graph.currentPage.pan.x) / graph.currentPage.zoom - defPanelWidth /2;
+            node.div.style.top  = (this.div.offsetHeight/2 - graph.currentPage.pan.y) / graph.currentPage.zoom - defPanelHeight/2;
         }
         else
         {
             const nodeHeight = defHeaderHeight + node.params.length * defParamHeight;
             
-            node.div.style.left = (this.div.offsetWidth /2 - graph.currentPage.pan.x                 ) / graph.currentPage.zoom - defNodeWidth/2;
-            node.div.style.top  = (this.div.offsetHeight/2 - graph.currentPage.pan.y - getTopHeight()) / graph.currentPage.zoom - nodeHeight  /2;
+            node.div.style.left = (this.div.offsetWidth /2 - graph.currentPage.pan.x) / graph.currentPage.zoom - defNodeWidth/2;
+            node.div.style.top  = (this.div.offsetHeight/2 - graph.currentPage.pan.y) / graph.currentPage.zoom - nodeHeight  /2;
         }
     }
 

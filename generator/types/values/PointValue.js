@@ -99,12 +99,12 @@ extends GValue
 
 
 
-    toSimpleString()
+    toPreviewString()
     {
         return this.x.isValid()
             && this.y.isValid()
-            ?   '(' + this.x.toSimpleString()
-              + ', ' + this.y.toSimpleString()
+            ?   '(' + this.x.toPreviewString()
+              + ', ' + this.y.toPreviewString()
               + ')'
             : NAN_DISPLAY;
     }
@@ -140,7 +140,7 @@ extends GValue
 
     toJsCode(gen)
     {
-        return '';//this.toSimpleString();
+        return '';//this.toPreviewString();
     }
 
 

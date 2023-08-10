@@ -86,10 +86,10 @@ extends ShapeValue
 
 
 
-    toSimpleString()
+    toPreviewString()
     {
-        return      this.loops  .toSimpleString()
-            + ' ' + this.winding.toSimpleString();
+        return      this.loops  .toPreviewString()
+            + ' ' + this.winding.toPreviewString();
     }
 
 
@@ -111,7 +111,7 @@ extends ShapeValue
 
     toJsCode(gen)
     {
-        return '';//this.toSimpleString();
+        return '';//this.toPreviewString();
     }
 
 

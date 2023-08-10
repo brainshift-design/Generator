@@ -11,7 +11,8 @@ extends OperatorBase
     {
         super(COLUMN, 'column', 'column', iconColumn);
 
-        this.iconOffsetY = 1;
+        this.iconOffsetY       = 1;
+        this.showHeaderTooltip = true;
         
 
         this.addInput (new Input (LIST_VALUES));

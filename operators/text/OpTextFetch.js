@@ -11,11 +11,11 @@ extends ResizableOperatorWithValue
     {
         super(TEXT_FETCH, 'fetch', 'fetch', iconTextFetch, defNodeWidth, true);
 
-        this.canDisable       = true;
-        this.iconOffsetY      = -1;
-
-        this.alwaysLoadParams = true;
-        this.alwaysSaveParams = true;
+        this.canDisable        = true;
+        this.iconOffsetY       = -1;
+        this.alwaysLoadParams  = true;
+        this.alwaysSaveParams  = true;
+        this.showHeaderTooltip = true;
 
 
         this.addOutput(new Output([TEXT_VALUE], this.output_genRequest));

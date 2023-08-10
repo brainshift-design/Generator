@@ -73,11 +73,13 @@ extends GOperator
             this.value = NullValue.copy();
 
 
+        console.log('this.value =', this.value);
         this.setUpdateValues(parse,
         [
-            ['type',    new TextValue(this.value ? this.value.type : ANY_VALUE)],
-            ['columns', new NumberValue(columns)                               ],
-            ['rows',    new NumberValue(rows   )                               ]
+            ['preview', this.value                                        ],
+            ['type',    this.value ? new TextValue(this.value.type) : null],
+            ['columns', new NumberValue(columns)                          ],
+            ['rows',    new NumberValue(rows   )                          ]
         ]);
         
 

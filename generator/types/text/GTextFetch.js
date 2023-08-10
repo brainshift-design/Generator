@@ -67,6 +67,7 @@ extends GOperator
 
         this.setUpdateValues(parse,
         [
+            ['preview', this.value],
             ['value',   this.value],
             ['request', request   ]
         ]);

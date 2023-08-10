@@ -153,12 +153,12 @@ extends GValue
 
 
 
-    toSimpleString()
+    toPreviewString()
     {
-        return      this.space.toSimpleString()
-            + ' ' + this.c1   .toSimpleString()
-            + ' ' + this.c2   .toSimpleString()
-            + ' ' + this.c3   .toSimpleString();
+        return      this.space.toPreviewString()
+            + ' ' + this.c1   .toPreviewString()
+            + ' ' + this.c2   .toPreviewString()
+            + ' ' + this.c3   .toPreviewString();
     }
 
 
@@ -173,7 +173,7 @@ extends GValue
 
 
 
-    toSimpleString()
+    toPreviewString()
     {
         if (!this.isValid())
             return UNKNOWN_DISPLAY;

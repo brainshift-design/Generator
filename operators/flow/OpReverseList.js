@@ -9,8 +9,8 @@ extends OperatorBase
     {
         super(REVERSE_LIST, 'reverse', 'reverse', iconReverseList);
 
-        this.canDisable  = true;
-        // this.iconOffsetY = 1;
+        this.canDisable        = true;
+        this.showHeaderTooltip = true;
         
 
         this.addInput (new Input (LIST_VALUES));

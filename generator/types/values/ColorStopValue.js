@@ -75,10 +75,10 @@ extends GValue
 
 
 
-    toSimpleString()
+    toPreviewString()
     {
-        return      this.fill    .toSimpleString()
-            + ' ' + this.position.toSimpleString();
+        return      this.fill    .toPreviewString()
+            + ' ' + this.position.toPreviewString();
     }
 
 
