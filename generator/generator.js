@@ -366,6 +366,7 @@ function genUpdateValuesAndObjects(requestId, actionId, updateNodeId, updatePara
             styleChunk,
             nodeIds.length,
             nodeIds.length,
+            false,
             true,
             save);
     }

@@ -146,18 +146,18 @@ extends GShape
         this.value.objects = [];
 
 
-        if (   this.value.text
-            && this.value.x 
-            && this.value.y 
-            && this.value.width 
-            && this.value.height 
-            && this.value.font
-            && this.value.style
-            && this.value.size
-            && this.value.alignH
-            && this.value.alignV
-            && this.value.lineHeight
-            && this.value.letterSpacing)
+        if (   this.value.text         .isValid()
+            && this.value.x            .isValid()
+            && this.value.y            .isValid()
+            && this.value.width        .isValid()
+            && this.value.height       .isValid()
+            && this.value.font         .isValid()
+            && this.value.style        .isValid()
+            && this.value.size         .isValid()
+            && this.value.alignH       .isValid()
+            && this.value.alignV       .isValid()
+            && this.value.lineHeight   .isValid()
+            && this.value.letterSpacing.isValid())
         {
             let x = this.value.x     .value;
             let y = this.value.y     .value;

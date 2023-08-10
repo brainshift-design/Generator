@@ -2290,12 +2290,12 @@ function figUpdateObjects(figParent, genObjects, nodeIds = [], firstChunk = fals
     return __awaiter(this, void 0, void 0, function* () {
         let curNodeId = NULL;
         let figObjects = null;
-        _genIgnoreNodeIds.push(...nodeIds);
         // if (firstChunk)
         // {
         //     _genIgnoreNodeIds = [];
         //     _genIgnoreObjects = [];
         // }
+        _genIgnoreNodeIds.push(...nodeIds);
         for (const genObj of genObjects) {
             _genIgnoreObjects.push(genObj);
             if (genObj[FO_NODE_ID] != curNodeId) {
@@ -2358,7 +2358,7 @@ function figUpdateObjects(figParent, genObjects, nodeIds = [], firstChunk = fals
             point.parent.appendChild(point);
         // delete old content
         if (lastChunk) {
-            // console.log('_genIgnoreObjects =', [..._genIgnoreObjects]);
+            //console.log('_genIgnoreObjects =', [..._genIgnoreObjects]);
             figDeleteObjectsExcept(_genIgnoreNodeIds, _genIgnoreObjects);
             _genIgnoreNodeIds = [];
             _genIgnoreObjects = [];

@@ -11,16 +11,16 @@ extends OperatorBase
     {
         super(NUMBER_SEQUENCE, 'sequence', 'sequence', iconSequence);
 
-        this.cached      = false;
+        this.cached      =  false;
         this.iconOffsetY = -1;
-        this.canDisable  = true;
+        this.canDisable  =  true;
         
 
         this.addOutput(new Output([NUMBER_VALUE], this.output_genRequest));
 
         this.addParam(this.paramStart = new NumberParam('start', '[ start', true, true, true,  0));
-        this.addParam(this.paramEnd   = new NumberParam('end',   '] end',  true, true, true, 10));
-        this.addParam(this.paramStep  = new NumberParam('step',  'step',   true, true, true,  1));
+        this.addParam(this.paramEnd   = new NumberParam('end',   '] end',   true, true, true, 10));
+        this.addParam(this.paramStep  = new NumberParam('step',  'step',    true, true, true,  1));
     }
 
 

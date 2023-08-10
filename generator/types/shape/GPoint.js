@@ -84,8 +84,8 @@ extends GOperator1
         this.value.objects = [];
 
 
-        if (   this.value.x
-            && this.value.y)
+        if (   this.value.x.isValid()
+            && this.value.y.isValid())
         {
             const x = this.value.x.value;
             const y = this.value.y.value;

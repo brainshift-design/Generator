@@ -59,7 +59,11 @@ extends GOperator
         {
             const value = start.toNumber() + (this.options.enabled ? step.toNumber() * iteration : 0);
 
-            if (value < end.toNumber())
+            if (   step.toNumber() == 0
+                || step.toNumber() >  0 && start.toNumber() < end.toNumber()
+                                        && value < end.toNumber()
+                || step.toNumber() <  0 && start.toNumber() > end.toNumber()
+                                        && value > end.toNumber())
             {
                 this.value = new NumberValue(
                     start.toNumber() + (this.options.enabled ? step.toNumber() * iteration : 0),

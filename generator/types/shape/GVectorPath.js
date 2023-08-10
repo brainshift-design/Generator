@@ -119,10 +119,10 @@ extends GShape
 
 
         if (   points.length >= 2
-            && this.value.closed 
-            && this.value.degree 
-            && this.value.winding
-            && this.value.round)
+            && this.value.closed .isValid()
+            && this.value.degree .isValid()
+            && this.value.winding.isValid()
+            && this.value.round  .isValid())
         {
             const path = new FigmaVectorPath(
                 this.nodeId,

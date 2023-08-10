@@ -22645,7 +22645,11 @@ extends GOperator
         {
             const value = start.toNumber() + (this.options.enabled ? step.toNumber() * iteration : 0);
 
-            if (value < end.toNumber())
+            if (   step.toNumber() == 0
+                || step.toNumber() >  0 && start.toNumber() < end.toNumber()
+                                        && value < end.toNumber()
+                || step.toNumber() <  0 && start.toNumber() > end.toNumber()
+                                        && value > end.toNumber())
             {
                 this.value = new NumberValue(
                     start.toNumber() + (this.options.enabled ? step.toNumber() * iteration : 0),
@@ -31464,11 +31468,11 @@ extends GShape
         this.value.objects = [];
 
             
-        if (   this.value.x
-            && this.value.y
-            && this.value.width
-            && this.value.height
-            && this.value.round)
+        if (   this.value.x     .isValid()
+            && this.value.y     .isValid()
+            && this.value.width .isValid()
+            && this.value.height.isValid()
+            && this.value.round .isValid())
         {
             let   x = this.value.x     .value;
             let   y = this.value.y     .value;
@@ -31628,9 +31632,9 @@ extends GShape
         this.value.objects = [];
 
 
-        if (   this.value.x 
-            && this.value.y 
-            && this.value.width) 
+        if (   this.value.x    .isValid()
+            && this.value.y    .isValid()
+            && this.value.width.isValid()) 
         {
             let x = this.value.x    .value;
             let y = this.value.y    .value;
@@ -31784,10 +31788,10 @@ extends GShape
         this.value.objects = [];
 
 
-        if (   this.value.x 
-            && this.value.y 
-            && this.value.width 
-            && this.value.height) 
+        if (   this.value.x     .isValid()
+            && this.value.y     .isValid()
+            && this.value.width .isValid()
+            && this.value.height.isValid()) 
         {
             let   x = this.value.x     .value;
             let   y = this.value.y     .value;
@@ -32149,12 +32153,12 @@ extends GShape
         this.value.objects = [];
 
 
-        if (   this.value.x 
-            && this.value.y 
-            && this.value.width 
-            && this.value.height 
-            && this.value.round
-            && this.value.corners)
+        if (   this.value.x      .isValid()
+            && this.value.y      .isValid()
+            && this.value.width  .isValid()
+            && this.value.height .isValid()
+            && this.value.round  .isValid()
+            && this.value.corners.isValid())
         {
             let   x = this.value.x      .value;
             let   y = this.value.y      .value;
@@ -32347,13 +32351,13 @@ extends GShape
         this.value.objects = [];
 
 
-        if (   this.value.x 
-            && this.value.y 
-            && this.value.width 
-            && this.value.height 
-            && this.value.round
-            && this.value.points
-            && this.value.convex)
+        if (   this.value.x     .isValid()
+            && this.value.y     .isValid()
+            && this.value.width .isValid()
+            && this.value.height.isValid() 
+            && this.value.round .isValid()
+            && this.value.points.isValid()
+            && this.value.convex.isValid())
         {
             let   x = this.value.x     .value;
             let   y = this.value.y     .value;
@@ -32586,18 +32590,18 @@ extends GShape
         this.value.objects = [];
 
 
-        if (   this.value.text
-            && this.value.x 
-            && this.value.y 
-            && this.value.width 
-            && this.value.height 
-            && this.value.font
-            && this.value.style
-            && this.value.size
-            && this.value.alignH
-            && this.value.alignV
-            && this.value.lineHeight
-            && this.value.letterSpacing)
+        if (   this.value.text         .isValid()
+            && this.value.x            .isValid()
+            && this.value.y            .isValid()
+            && this.value.width        .isValid()
+            && this.value.height       .isValid()
+            && this.value.font         .isValid()
+            && this.value.style        .isValid()
+            && this.value.size         .isValid()
+            && this.value.alignH       .isValid()
+            && this.value.alignV       .isValid()
+            && this.value.lineHeight   .isValid()
+            && this.value.letterSpacing.isValid())
         {
             let x = this.value.x     .value;
             let y = this.value.y     .value;
@@ -32835,8 +32839,8 @@ extends GOperator1
         this.value.objects = [];
 
 
-        if (   this.value.x
-            && this.value.y)
+        if (   this.value.x.isValid()
+            && this.value.y.isValid())
         {
             const x = this.value.x.value;
             const y = this.value.y.value;
@@ -33018,10 +33022,10 @@ extends GShape
 
 
         if (   points.length >= 2
-            && this.value.closed 
-            && this.value.degree 
-            && this.value.winding
-            && this.value.round)
+            && this.value.closed .isValid()
+            && this.value.degree .isValid()
+            && this.value.winding.isValid()
+            && this.value.round  .isValid())
         {
             const path = new FigmaVectorPath(
                 this.nodeId,
@@ -37074,6 +37078,7 @@ function genUpdateValuesAndObjects(requestId, actionId, updateNodeId, updatePara
             styleChunk,
             nodeIds.length,
             nodeIds.length,
+            false,
             true,
             save);
     }
@@ -66243,7 +66248,11 @@ extends GOperator
         {
             const value = start.toNumber() + (this.options.enabled ? step.toNumber() * iteration : 0);
 
-            if (value < end.toNumber())
+            if (   step.toNumber() == 0
+                || step.toNumber() >  0 && start.toNumber() < end.toNumber()
+                                        && value < end.toNumber()
+                || step.toNumber() <  0 && start.toNumber() > end.toNumber()
+                                        && value > end.toNumber())
             {
                 this.value = new NumberValue(
                     start.toNumber() + (this.options.enabled ? step.toNumber() * iteration : 0),
@@ -75062,11 +75071,11 @@ extends GShape
         this.value.objects = [];
 
             
-        if (   this.value.x
-            && this.value.y
-            && this.value.width
-            && this.value.height
-            && this.value.round)
+        if (   this.value.x     .isValid()
+            && this.value.y     .isValid()
+            && this.value.width .isValid()
+            && this.value.height.isValid()
+            && this.value.round .isValid())
         {
             let   x = this.value.x     .value;
             let   y = this.value.y     .value;
@@ -75226,9 +75235,9 @@ extends GShape
         this.value.objects = [];
 
 
-        if (   this.value.x 
-            && this.value.y 
-            && this.value.width) 
+        if (   this.value.x    .isValid()
+            && this.value.y    .isValid()
+            && this.value.width.isValid()) 
         {
             let x = this.value.x    .value;
             let y = this.value.y    .value;
@@ -75382,10 +75391,10 @@ extends GShape
         this.value.objects = [];
 
 
-        if (   this.value.x 
-            && this.value.y 
-            && this.value.width 
-            && this.value.height) 
+        if (   this.value.x     .isValid()
+            && this.value.y     .isValid()
+            && this.value.width .isValid()
+            && this.value.height.isValid()) 
         {
             let   x = this.value.x     .value;
             let   y = this.value.y     .value;
@@ -75747,12 +75756,12 @@ extends GShape
         this.value.objects = [];
 
 
-        if (   this.value.x 
-            && this.value.y 
-            && this.value.width 
-            && this.value.height 
-            && this.value.round
-            && this.value.corners)
+        if (   this.value.x      .isValid()
+            && this.value.y      .isValid()
+            && this.value.width  .isValid()
+            && this.value.height .isValid()
+            && this.value.round  .isValid()
+            && this.value.corners.isValid())
         {
             let   x = this.value.x      .value;
             let   y = this.value.y      .value;
@@ -75945,13 +75954,13 @@ extends GShape
         this.value.objects = [];
 
 
-        if (   this.value.x 
-            && this.value.y 
-            && this.value.width 
-            && this.value.height 
-            && this.value.round
-            && this.value.points
-            && this.value.convex)
+        if (   this.value.x     .isValid()
+            && this.value.y     .isValid()
+            && this.value.width .isValid()
+            && this.value.height.isValid() 
+            && this.value.round .isValid()
+            && this.value.points.isValid()
+            && this.value.convex.isValid())
         {
             let   x = this.value.x     .value;
             let   y = this.value.y     .value;
@@ -76184,18 +76193,18 @@ extends GShape
         this.value.objects = [];
 
 
-        if (   this.value.text
-            && this.value.x 
-            && this.value.y 
-            && this.value.width 
-            && this.value.height 
-            && this.value.font
-            && this.value.style
-            && this.value.size
-            && this.value.alignH
-            && this.value.alignV
-            && this.value.lineHeight
-            && this.value.letterSpacing)
+        if (   this.value.text         .isValid()
+            && this.value.x            .isValid()
+            && this.value.y            .isValid()
+            && this.value.width        .isValid()
+            && this.value.height       .isValid()
+            && this.value.font         .isValid()
+            && this.value.style        .isValid()
+            && this.value.size         .isValid()
+            && this.value.alignH       .isValid()
+            && this.value.alignV       .isValid()
+            && this.value.lineHeight   .isValid()
+            && this.value.letterSpacing.isValid())
         {
             let x = this.value.x     .value;
             let y = this.value.y     .value;
@@ -76433,8 +76442,8 @@ extends GOperator1
         this.value.objects = [];
 
 
-        if (   this.value.x
-            && this.value.y)
+        if (   this.value.x.isValid()
+            && this.value.y.isValid())
         {
             const x = this.value.x.value;
             const y = this.value.y.value;
@@ -76616,10 +76625,10 @@ extends GShape
 
 
         if (   points.length >= 2
-            && this.value.closed 
-            && this.value.degree 
-            && this.value.winding
-            && this.value.round)
+            && this.value.closed .isValid()
+            && this.value.degree .isValid()
+            && this.value.winding.isValid()
+            && this.value.round  .isValid())
         {
             const path = new FigmaVectorPath(
                 this.nodeId,
@@ -104619,16 +104628,16 @@ extends OperatorBase
     {
         super(NUMBER_SEQUENCE, 'sequence', 'sequence', iconSequence);
 
-        this.cached      = false;
+        this.cached      =  false;
         this.iconOffsetY = -1;
-        this.canDisable  = true;
+        this.canDisable  =  true;
         
 
         this.addOutput(new Output([NUMBER_VALUE], this.output_genRequest));
 
         this.addParam(this.paramStart = new NumberParam('start', '[ start', true, true, true,  0));
-        this.addParam(this.paramEnd   = new NumberParam('end',   '] end',  true, true, true, 10));
-        this.addParam(this.paramStep  = new NumberParam('step',  'step',   true, true, true,  1));
+        this.addParam(this.paramEnd   = new NumberParam('end',   '] end',   true, true, true, 10));
+        this.addParam(this.paramStep  = new NumberParam('step',  'step',    true, true, true,  1));
     }
 
 

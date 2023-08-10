@@ -108,13 +108,13 @@ extends GShape
         this.value.objects = [];
 
 
-        if (   this.value.x 
-            && this.value.y 
-            && this.value.width 
-            && this.value.height 
-            && this.value.round
-            && this.value.points
-            && this.value.convex)
+        if (   this.value.x     .isValid()
+            && this.value.y     .isValid()
+            && this.value.width .isValid()
+            && this.value.height.isValid() 
+            && this.value.round .isValid()
+            && this.value.points.isValid()
+            && this.value.convex.isValid())
         {
             let   x = this.value.x     .value;
             let   y = this.value.y     .value;
