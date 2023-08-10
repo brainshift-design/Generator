@@ -41,7 +41,10 @@ extends GOperator
         this.updateValueObjects();
 
 
-        this.setUpdateValues(parse, [['', NullValue]]);
+        this.setUpdateValues(parse,
+        [
+            ['type', this.value ? new TextValue(this.value.type) : null],
+        ]);
 
 
         this.validate();
