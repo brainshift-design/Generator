@@ -109,9 +109,11 @@ NumberControl.prototype.initTextbox = function()
                     {
                         index = nodeAbove.params.length;
                         while (index >= 0
+                            && nodeAbove.params.length > 0 
                             && nodeAbove.params[--index].controls[0].readOnly); // ; on purpose
 
-                        if (nodeAbove.params[index].controls[0].showTextbox)
+                        if (   nodeAbove.params.length > 0
+                            && nodeAbove.params[index].controls[0].showTextbox)
                             nodeAbove.params[index].controls[0].showTextbox();
                     }
                 }
@@ -133,9 +135,11 @@ NumberControl.prototype.initTextbox = function()
                     {
                         index = -1;
                         while (index < nodeBelow.params.length-1
+                            && nodeBelow.params.length > 0
                             && nodeBelow.params[++index].controls[0].readOnly); // ; on purpose
 
-                        if (nodeBelow.params[index].controls[0].showTextbox)
+                        if (   nodeBelow.params.length > 0
+                            && nodeBelow.params[index].controls[0].showTextbox)
                             nodeBelow.params[index].controls[0].showTextbox();
                     }
                 }

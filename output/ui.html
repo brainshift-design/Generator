@@ -4849,9 +4849,7 @@ a
             <div id='whatsNewBody'>
                 <h1 style='margin-top: 20px;'>What's new</h1>
 
-                <p>•  End in Sequence is now optional</p>
-                <p>•  fixed list tooltip bug</p>
-                <p>•  fixed UI issues</p>
+                <p>•  fixed crash when tabbing through List node</p>
                 
                 <p><br/><br/><div id='chkHideWhatsNew'></div></p>
             </div>
@@ -5207,7 +5205,7 @@ a
 
 
 
-const generatorVersion = 187;
+const generatorVersion = 188;
 
 
 const MAX_INT32        = 2147483647;
@@ -47032,7 +47030,7 @@ onerror = (event, source, line, pos, error) =>
 };
 
 
-const generatorVersion = 187;
+const generatorVersion = 188;
 
 
 const MAX_INT32        = 2147483647;
@@ -82325,9 +82323,11 @@ NumberControl.prototype.initTextbox = function()
                     {
                         index = nodeAbove.params.length;
                         while (index >= 0
+                            && nodeAbove.params.length > 0 
                             && nodeAbove.params[--index].controls[0].readOnly); // ; on purpose
 
-                        if (nodeAbove.params[index].controls[0].showTextbox)
+                        if (   nodeAbove.params.length > 0
+                            && nodeAbove.params[index].controls[0].showTextbox)
                             nodeAbove.params[index].controls[0].showTextbox();
                     }
                 }
@@ -82349,9 +82349,11 @@ NumberControl.prototype.initTextbox = function()
                     {
                         index = -1;
                         while (index < nodeBelow.params.length-1
+                            && nodeBelow.params.length > 0
                             && nodeBelow.params[++index].controls[0].readOnly); // ; on purpose
 
-                        if (nodeBelow.params[index].controls[0].showTextbox)
+                        if (   nodeBelow.params.length > 0
+                            && nodeBelow.params[index].controls[0].showTextbox)
                             nodeBelow.params[index].controls[0].showTextbox();
                     }
                 }
@@ -127134,7 +127136,8 @@ function findNodeAbove(node)
 
         if (   n.div.offsetTop < node.div.offsetTop
             && n.div.offsetLeft < node.div.offsetLeft + node.div.offsetWidth
-            && n.div.offsetLeft + n.div.offsetWidth > node.div.offsetLeft)
+            && n.div.offsetLeft + n.div.offsetWidth > node.div.offsetLeft
+            && n.params.length > 0)
             nodesAbove.push(n);
     }
 
@@ -127157,7 +127160,8 @@ function findNodeBelow(node)
 
         if (   n.div.offsetTop + n.div.offsetHeight > node.div.offsetTop + node.div.offsetHeight
             && n.div.offsetLeft < node.div.offsetLeft + node.div.offsetWidth
-            && n.div.offsetLeft + n.div.offsetWidth > node.div.offsetLeft)
+            && n.div.offsetLeft + n.div.offsetWidth > node.div.offsetLeft
+            && n.params.length > 0)
             nodesBelow.push(n);
     }
 
