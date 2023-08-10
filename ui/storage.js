@@ -446,7 +446,7 @@ function finishLoading(_nodes)
     generatorStarted = true;
 
 
-    //enableFeatures(subscription != NULL, settings.enableBetaFeatures); 
+    enableFeatures(false);//subscription != NULL, settings.enableBetaFeatures); 
     
     graphView.update();
 

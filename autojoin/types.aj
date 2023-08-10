@@ -241,3 +241,4 @@
 
 
 ../generator/types/GComment.js
+../generator/types/GPanel.js

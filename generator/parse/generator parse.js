@@ -292,6 +292,7 @@ function genParse(parse, inParam = true)
     else if (parse.next == GROUP_PARAM            ) result = genParseGroupParam        (parse);
  
     else if (parse.next == COMMENT                ) result = genParseComment           (parse);
+    else if (parse.next == PANEL                  ) result = genParsePanel             (parse);
 
     else consoleError('unknown parse token \'' + parse.next + '\' @ ' + parse.pos);
 

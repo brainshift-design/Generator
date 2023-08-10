@@ -580,6 +580,7 @@ const GROUP_TYPES =
 
 
 const COMMENT       = 'CMNT';
+const PANEL         = 'PANEL';
 
 
 const ACTIVE        = 'ACT';

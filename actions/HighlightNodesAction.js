@@ -35,7 +35,9 @@ extends Action
         {
             this.prevColorIndices.push(node.highlight);
             node.highlight = this.newColorIndex;
-            node.updateBorder();
+            
+            if (node.type == PANEL) node.updateNode()
+            else                    node.updateBorder();
         }
 
         uiSaveNodes(this.nodeIds);
@@ -50,7 +52,9 @@ extends Action
         for (let i = 0; i < nodes.length; i++)
         {
             nodes[i].highlight = this.prevColorIndices[i];
-            nodes[i].updateBorder();
+
+            if (node.type == PANEL) node.updateNode()
+            else                    node.updateBorder();
         }
 
         uiSaveNodes(this.nodeIds);

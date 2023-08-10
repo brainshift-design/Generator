@@ -111,13 +111,6 @@ async function figUpdateObjects(figParent, genObjects, nodeIds = [], firstChunk 
     let figObjects = null;
 
 
-    // if (firstChunk)
-    // {
-    //     _genIgnoreNodeIds = [];
-    //     _genIgnoreObjects = [];
-    // }
-    
-
     _genIgnoreNodeIds.push(...nodeIds);
 
 
@@ -222,12 +215,10 @@ async function figUpdateObjects(figParent, genObjects, nodeIds = [], firstChunk 
 
     if (lastChunk)
     {
-        //console.log('_genIgnoreObjects =', [..._genIgnoreObjects]);
         figDeleteObjectsExcept(_genIgnoreNodeIds, _genIgnoreObjects);
 
         _genIgnoreNodeIds = [];
         _genIgnoreObjects = [];
-        // console.log('_genIgnoreObjects = [];');
     }
 }
 

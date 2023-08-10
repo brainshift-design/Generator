@@ -1,28 +1,3 @@
-function genParseComment(parse)
-{
-    const [, nodeId, options, ignore] = genParseNodeStart(parse);
-
-
-    const cmnt = new GComment(nodeId, options);
-
-    
-    if (parse.settings.logRequests) 
-        logReq(cmnt, parse, ignore);
-
-
-    if (ignore) 
-    {
-        genParseNodeEnd(parse, cmnt);
-        return parse.parsedNodes.find(n => n.nodeId == nodeId);
-    }
-
-
-    genParseNodeEnd(parse, cmnt);
-    return cmnt;
-}
-
-
-
 function genParseNull(parse)
 {
     const [, nodeId, options, ignore] = genParseNodeStart(parse);
@@ -916,4 +891,54 @@ function genParseTimer(parse)
 
     genParseNodeEnd(parse, timer);
     return timer;
+}
+
+
+
+function genParseComment(parse)
+{
+    const [, nodeId, options, ignore] = genParseNodeStart(parse);
+
+
+    const cmnt = new GComment(nodeId, options);
+
+    
+    if (parse.settings.logRequests) 
+        logReq(cmnt, parse, ignore);
+
+
+    if (ignore) 
+    {
+        genParseNodeEnd(parse, cmnt);
+        return parse.parsedNodes.find(n => n.nodeId == nodeId);
+    }
+
+
+    genParseNodeEnd(parse, cmnt);
+    return cmnt;
+}
+
+
+
+function genParsePanel(parse)
+{
+    const [, nodeId, options, ignore] = genParseNodeStart(parse);
+
+
+    const panel = new GPanel(nodeId, options);
+
+    
+    if (parse.settings.logRequests) 
+        logReq(panel, parse, ignore);
+
+
+    if (ignore) 
+    {
+        genParseNodeEnd(parse, panel);
+        return parse.parsedNodes.find(n => n.nodeId == nodeId);
+    }
+
+
+    genParseNodeEnd(parse, panel);
+    return panel;
 }

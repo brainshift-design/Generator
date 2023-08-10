@@ -19,7 +19,7 @@ function isConnKey(key) { return isTagKey(key, connTag); }
 function noPageTag(key) { return noTag(key, pageTag); }
 function noNodeTag(key) { return noTag(key, nodeTag); }
 function noConnTag(key) { return noTag(key, connTag); }
-const generatorVersion = 186;
+const generatorVersion = 187;
 const MAX_INT32 = 2147483647;
 const NULL = '';
 const HTAB = '  '; // half-tab
@@ -983,6 +983,7 @@ const GROUP_TYPES = [
     GROUP_PARAM
 ];
 const COMMENT = 'CMNT';
+const PANEL = 'PANEL';
 const ACTIVE = 'ACT';
 const BEFORE_ACTIVE = 'BEF';
 const DISABLED = 'DIS';
@@ -2290,11 +2291,6 @@ function figUpdateObjects(figParent, genObjects, nodeIds = [], firstChunk = fals
     return __awaiter(this, void 0, void 0, function* () {
         let curNodeId = NULL;
         let figObjects = null;
-        // if (firstChunk)
-        // {
-        //     _genIgnoreNodeIds = [];
-        //     _genIgnoreObjects = [];
-        // }
         _genIgnoreNodeIds.push(...nodeIds);
         for (const genObj of genObjects) {
             _genIgnoreObjects.push(genObj);
@@ -2358,11 +2354,9 @@ function figUpdateObjects(figParent, genObjects, nodeIds = [], firstChunk = fals
             point.parent.appendChild(point);
         // delete old content
         if (lastChunk) {
-            //console.log('_genIgnoreObjects =', [..._genIgnoreObjects]);
             figDeleteObjectsExcept(_genIgnoreNodeIds, _genIgnoreObjects);
             _genIgnoreNodeIds = [];
             _genIgnoreObjects = [];
-            // console.log('_genIgnoreObjects = [];');
         }
     });
 }

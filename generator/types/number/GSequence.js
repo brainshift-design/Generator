@@ -45,8 +45,8 @@ extends GOperator
 
 
         const start = (await this.start.eval(parse)).toValue();
-        const end   = (await this.end  .eval(parse)).toValue();
         const step  = (await this.step .eval(parse)).toValue();
+        const end   = (await this.end  .eval(parse)).toValue();
     
 
         const repeat    = parse.repeats.find(r => r.repeatId == this.loopId);
@@ -59,16 +59,21 @@ extends GOperator
         {
             const value = start.toNumber() + (this.options.enabled ? step.toNumber() * iteration : 0);
 
-            if (   step.toNumber() == 0
-                || step.toNumber() >  0 && start.toNumber() < end.toNumber()
-                                        && value < end.toNumber()
-                || step.toNumber() <  0 && start.toNumber() > end.toNumber()
-                                        && value > end.toNumber())
+            if (!end.isValid())
+                this.value = new NumberValue(value, Math.max(start.decimals, step.decimals));
+
+            else if (end.isValid()   
+                     && (   step.toNumber() == 0
+                         || step.toNumber() >  0 && start.toNumber() < end.toNumber()
+                                                 && value < end.toNumber()
+                         || step.toNumber() <  0 && start.toNumber() > end.toNumber()
+                                                 && value > end.toNumber()))
             {
                 this.value = new NumberValue(
                     start.toNumber() + (this.options.enabled ? step.toNumber() * iteration : 0),
                     Math.max(start.decimals, step.decimals));
             }
+
             else
                 this.value = NumberValue.NaN.copy();
         }
@@ -79,8 +84,8 @@ extends GOperator
         this.setUpdateValues(parse,
         [
             ['start', start],
-            ['end',   end  ],
-            ['step',  step ]
+            ['step',  step ],
+            ['end',   end  ]
         ]);
         
 
@@ -105,8 +110,8 @@ extends GOperator
         super.pushValueUpdates(parse);
 
         if (this.start) this.start.pushValueUpdates(parse);
-        if (this.end  ) this.end  .pushValueUpdates(parse);
         if (this.step ) this.step .pushValueUpdates(parse);
+        if (this.end  ) this.end  .pushValueUpdates(parse);
     }
 
 

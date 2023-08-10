@@ -1,16 +1,16 @@
-class GComment
+class GPanel
 extends GOperator
 {
     constructor(nodeId, options)
     {
-        super(COMMENT, nodeId, options);
+        super(PANEL, nodeId, options);
     }
 
 
     
     copy()
     {
-        const copy = new GComment(this.nodeId, this.options);
+        const copy = new GPanel(this.nodeId, this.options);
 
         copy.copyBase(this);
 

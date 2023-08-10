@@ -81,9 +81,10 @@ GraphView.prototype.updateSelectBox = function(shiftKey, ctrlKey)
 
         for (const node of graph.pageNodes)
         {
-            if (rectsIntersect(
-                    node.measureData.divBounds,
-                    selection))
+            if (   node.type != PANEL
+                && rectsIntersect(
+                       node.measureData.divBounds,
+                       selection))
                 selected.push(node);
         }
 

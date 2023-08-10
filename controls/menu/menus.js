@@ -12,6 +12,7 @@ var btnTemplate;
 var btnGroup;
 var btnHand;
 var btnComment;
+var btnPanel;
 var btnPage;
 var btnSolo;
 var btnZoom;
@@ -862,6 +863,17 @@ function initGeneratorMenus()
     //     updatePanMode(false);
     // }});
 
+    btnPanel = new MenuButton('Panel', null, {callback: () => 
+    {
+        const create = new CreateNodeAction(PANEL, btnPanel.div);
+        actionManager.do(create);
+
+        graphView.updateNodes([create.node]);
+        graphView.updateScrollWithBounds();
+
+        updatePanMode(false);
+    }});
+
 
     //menuBar.appendChild(createDiv('', 'groupName'));
 
@@ -931,6 +943,7 @@ function initGeneratorMenus()
     btnShape  .setIcon(iconShapes);
     btnHand   .setIcon(iconHand);
     //btnComment.setIcon(iconComment);
+    btnPanel  .setIcon(iconPanel);
     btnSolo   .setIcon(iconSolo);
 
 

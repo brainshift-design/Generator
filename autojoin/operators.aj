@@ -211,6 +211,7 @@
 
 
 ../operators/OpComment.js
+../operators/OpPanel.js
 
 
 ../Graph/GraphPage.js

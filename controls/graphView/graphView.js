@@ -254,20 +254,18 @@ class GraphView
 
     placeNewNode(node)
     {
-        const nodeHeight = defHeaderHeight + node.params.length * defParamHeight;
-        
-        //const btn = node._creatingButton;
-
-        // if (graphView.p)
-        // {
-        //     node.div.style.left = (graphView.p.x - graph.currentPage.pan.x                ) / graph.currentPage.zoom - defNodeWidth   /2;
-        //     node.div.style.top  = (graphView.p.y - graph.currentPage.pan.y - menuBarHeight) / graph.currentPage.zoom - defHeaderHeight/2;
-        // }
-        // else
-        // {
+        if (node.type == PANEL)
+        {
+            node.div.style.left = (this.div.offsetWidth /2 - graph.currentPage.pan.x                 ) / graph.currentPage.zoom - defPanelWidth/2;
+            node.div.style.top  = (this.div.offsetHeight/2 - graph.currentPage.pan.y - getTopHeight()) / graph.currentPage.zoom - defPanelHeight/2;
+        }
+        else
+        {
+            const nodeHeight = defHeaderHeight + node.params.length * defParamHeight;
+            
             node.div.style.left = (this.div.offsetWidth /2 - graph.currentPage.pan.x                 ) / graph.currentPage.zoom - defNodeWidth/2;
             node.div.style.top  = (this.div.offsetHeight/2 - graph.currentPage.pan.y - getTopHeight()) / graph.currentPage.zoom - nodeHeight/2;
-        // }
+        }
     }
 
 

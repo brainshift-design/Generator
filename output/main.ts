@@ -23,7 +23,7 @@ function noNodeTag(key) { return noTag(key, nodeTag); }
 function noConnTag(key) { return noTag(key, connTag); }
 
 
-const generatorVersion = 186;
+const generatorVersion = 187;
 
 
 const MAX_INT32        = 2147483647;
@@ -1579,6 +1579,7 @@ const GROUP_TYPES =
 
 
 const COMMENT       = 'CMNT';
+const PANEL         = 'PANEL';
 
 
 const ACTIVE        = 'ACT';
@@ -3435,13 +3436,6 @@ async function figUpdateObjects(figParent, genObjects, nodeIds = [], firstChunk 
     let figObjects = null;
 
 
-    // if (firstChunk)
-    // {
-    //     _genIgnoreNodeIds = [];
-    //     _genIgnoreObjects = [];
-    // }
-    
-
     _genIgnoreNodeIds.push(...nodeIds);
 
 
@@ -3546,12 +3540,10 @@ async function figUpdateObjects(figParent, genObjects, nodeIds = [], firstChunk 
 
     if (lastChunk)
     {
-        //console.log('_genIgnoreObjects =', [..._genIgnoreObjects]);
         figDeleteObjectsExcept(_genIgnoreNodeIds, _genIgnoreObjects);
 
         _genIgnoreNodeIds = [];
         _genIgnoreObjects = [];
-        // console.log('_genIgnoreObjects = [];');
     }
 }
 

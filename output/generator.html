@@ -4,7 +4,7 @@
 
 
 
-const generatorVersion = 186;
+const generatorVersion = 187;
 
 
 const MAX_INT32        = 2147483647;
@@ -4493,54 +4493,54 @@ function updateMenuItemShowOperationResults()
 
 
 
-// function enableFeatures(subscription, beta)
-// {
-//     updateElementDisplay(menuItemShowPages           .div, subscription);
-//     updateElementDisplay(menuPrefSep1                .div, subscription);
-//     updateElementDisplay(menuPrefSep2                .div, subscription);
-//     updateElementDisplay(menuItemEnableBetaFeatures  .div, subscription);
+function enableFeatures(subscription, beta)
+{
+    // updateElementDisplay(menuItemShowPages           .div, subscription);
+    // updateElementDisplay(menuPrefSep1                .div, subscription);
+    // updateElementDisplay(menuPrefSep2                .div, subscription);
+    // updateElementDisplay(menuItemEnableBetaFeatures  .div, subscription);
 
-//     updateElementDisplay(btnFlow                     .div, subscription);
-//     updateElementDisplay(btnText                     .div, subscription && beta);
-//     updateElementDisplay(btnShape                    .div, subscription && beta);
-//     //updateElementDisplay(btnGroup                    .div, subscription && beta);
+    // updateElementDisplay(btnFlow                     .div, subscription);
+    // updateElementDisplay(btnText                     .div, subscription && beta);
+    // updateElementDisplay(btnShape                    .div, subscription && beta);
+    // //updateElementDisplay(btnGroup                    .div, subscription && beta);
 
-//     updateElementDisplay(menuItemLogObjectUpdates    .div, subscription && beta);
+    // updateElementDisplay(menuItemLogObjectUpdates    .div, subscription && beta);
     
-//     //updateElementDisplay(menuItemList                .div, subscription && beta);
-//     updateElementDisplay(menuFlowSep1                .div, subscription && beta);
-//     updateElementDisplay(menuItemItems               .div, subscription);
-//     updateElementDisplay(menuFlowSep2                .div, subscription);
-//     //updateElementDisplay(menuItemSelect              .div, subscription);
-//     updateElementDisplay(menuItemCount               .div, subscription);
-//     //updateElementDisplay(menuFlowSep3                .div, subscription && beta);
-//     //updateElementDisplay(menuItemStart               .div, subscription && beta);
-//     updateElementDisplay(menuItemRepeat              .div, subscription && beta);
-//     // updateElementDisplay(menuItemCache               .div, subscription && beta);
-//     updateElementDisplay(menuItemCopy                .div, subscription && beta);
+    // //updateElementDisplay(menuItemList                .div, subscription && beta);
+    // updateElementDisplay(menuFlowSep1                .div, subscription && beta);
+    // updateElementDisplay(menuItemItems               .div, subscription);
+    // updateElementDisplay(menuFlowSep2                .div, subscription);
+    // //updateElementDisplay(menuItemSelect              .div, subscription);
+    // updateElementDisplay(menuItemCount               .div, subscription);
+    // //updateElementDisplay(menuFlowSep3                .div, subscription && beta);
+    // //updateElementDisplay(menuItemStart               .div, subscription && beta);
+    // updateElementDisplay(menuItemRepeat              .div, subscription && beta);
+    // // updateElementDisplay(menuItemCache               .div, subscription && beta);
+    // updateElementDisplay(menuItemCopy                .div, subscription && beta);
     
-//     updateElementDisplay(menuItemSequence              .div, subscription && beta);    
-//     updateElementDisplay(menuItemSolve               .div, subscription && beta);    
-//     updateElementDisplay(menuItemNumberSep1          .div, subscription && beta);
-//     updateElementDisplay(menuItemAnimate             .div, subscription && beta);    
+    // updateElementDisplay(menuItemSequence              .div, subscription && beta);    
+    // updateElementDisplay(menuItemSolve               .div, subscription && beta);    
+    // updateElementDisplay(menuItemNumberSep1          .div, subscription && beta);
+    // updateElementDisplay(menuItemAnimate             .div, subscription && beta);    
     
-//     updateElementDisplay(menuItemCorrectColor        .div, subscription);
-//     updateElementDisplay(menuItemColorSep1           .div, subscription);
-//     updateElementDisplay(menuItemColorblind          .div, subscription);
-//     //updateMenuItemDisplay(menuItemColorBlend        .div, beta);
+    // updateElementDisplay(menuItemCorrectColor        .div, subscription);
+    // updateElementDisplay(menuItemColorSep1           .div, subscription);
+    // updateElementDisplay(menuItemColorblind          .div, subscription);
+    // //updateMenuItemDisplay(menuItemColorBlend        .div, beta);
 
-//     //updateMenuItemDisplay(menuItemStyleFill         .div, subscription && beta);
-//     updateElementDisplay(menuItemLayerStroke         .div, subscription && beta);
-//     //updateMenuItemDisplay(menuItemStyleSep1         .div, subscription && beta);
+    // //updateMenuItemDisplay(menuItemStyleFill         .div, subscription && beta);
+    // updateElementDisplay(menuItemLayerStroke         .div, subscription && beta);
+    // //updateMenuItemDisplay(menuItemStyleSep1         .div, subscription && beta);
     
-//     //updateMenuItemDisplay(menuItemNodeCopyAsJsCode    .div, subscription && beta);
-//     updateElementDisplay(menuItemNodeCopyAsJsFunction.div, subscription && beta);
+    // //updateMenuItemDisplay(menuItemNodeCopyAsJsCode    .div, subscription && beta);
+    // updateElementDisplay(menuItemNodeCopyAsJsFunction.div, subscription && beta);
 
-//     // updateElementDisplay(shortcutCopyAsJavascript        , subscription && beta);
+    // // updateElementDisplay(shortcutCopyAsJavascript        , subscription && beta);
 
 
-//     graph.nodes.forEach(n => n.updateSubscribeStatus(subscription));
-// }
+    graph.nodes.forEach(n => n.updateSubscribeStatus(subscription));
+}
 
 
 
@@ -5198,6 +5198,7 @@ const GROUP_TYPES =
 
 
 const COMMENT       = 'CMNT';
+const PANEL         = 'PANEL';
 
 
 const ACTIVE        = 'ACT';
@@ -17430,8 +17431,8 @@ extends GOperator
 
 
         const start = (await this.start.eval(parse)).toValue();
-        const end   = (await this.end  .eval(parse)).toValue();
         const step  = (await this.step .eval(parse)).toValue();
+        const end   = (await this.end  .eval(parse)).toValue();
     
 
         const repeat    = parse.repeats.find(r => r.repeatId == this.loopId);
@@ -17444,16 +17445,21 @@ extends GOperator
         {
             const value = start.toNumber() + (this.options.enabled ? step.toNumber() * iteration : 0);
 
-            if (   step.toNumber() == 0
-                || step.toNumber() >  0 && start.toNumber() < end.toNumber()
-                                        && value < end.toNumber()
-                || step.toNumber() <  0 && start.toNumber() > end.toNumber()
-                                        && value > end.toNumber())
+            if (!end.isValid())
+                this.value = new NumberValue(value, Math.max(start.decimals, step.decimals));
+
+            else if (end.isValid()   
+                     && (   step.toNumber() == 0
+                         || step.toNumber() >  0 && start.toNumber() < end.toNumber()
+                                                 && value < end.toNumber()
+                         || step.toNumber() <  0 && start.toNumber() > end.toNumber()
+                                                 && value > end.toNumber()))
             {
                 this.value = new NumberValue(
                     start.toNumber() + (this.options.enabled ? step.toNumber() * iteration : 0),
                     Math.max(start.decimals, step.decimals));
             }
+
             else
                 this.value = NumberValue.NaN.copy();
         }
@@ -17464,8 +17470,8 @@ extends GOperator
         this.setUpdateValues(parse,
         [
             ['start', start],
-            ['end',   end  ],
-            ['step',  step ]
+            ['step',  step ],
+            ['end',   end  ]
         ]);
         
 
@@ -17490,8 +17496,8 @@ extends GOperator
         super.pushValueUpdates(parse);
 
         if (this.start) this.start.pushValueUpdates(parse);
-        if (this.end  ) this.end  .pushValueUpdates(parse);
         if (this.step ) this.step .pushValueUpdates(parse);
+        if (this.end  ) this.end  .pushValueUpdates(parse);
     }
 
 
@@ -31358,10 +31364,57 @@ extends GOperator
         this.value = NullValue.copy();
 
 
-        this.setUpdateValues(parse, 
-        [
-            ['value', this.value]
-        ]);
+        this.setUpdateValues(parse, [['', NullValue]]);
+        
+        
+        this.validate();
+
+        return this;
+    }
+
+
+
+    toValue()
+    {
+        return this.value
+             ? this.value.copy() 
+             : null;
+    }
+}
+
+
+
+class GPanel
+extends GOperator
+{
+    constructor(nodeId, options)
+    {
+        super(PANEL, nodeId, options);
+    }
+
+
+    
+    copy()
+    {
+        const copy = new GPanel(this.nodeId, this.options);
+
+        copy.copyBase(this);
+
+        return copy;
+    }
+
+
+
+    async eval(parse)
+    {
+        if (this.isCached())
+            return this;
+
+
+        this.value = NullValue.copy();
+
+
+        this.setUpdateValues(parse, [['', NullValue]]);
         
         
         this.validate();
@@ -32403,31 +32456,6 @@ function genParseColorBlend(parse)
 }
 
 
-function genParseComment(parse)
-{
-    const [, nodeId, options, ignore] = genParseNodeStart(parse);
-
-
-    const cmnt = new GComment(nodeId, options);
-
-    
-    if (parse.settings.logRequests) 
-        logReq(cmnt, parse, ignore);
-
-
-    if (ignore) 
-    {
-        genParseNodeEnd(parse, cmnt);
-        return parse.parsedNodes.find(n => n.nodeId == nodeId);
-    }
-
-
-    genParseNodeEnd(parse, cmnt);
-    return cmnt;
-}
-
-
-
 function genParseNull(parse)
 {
     const [, nodeId, options, ignore] = genParseNodeStart(parse);
@@ -33321,6 +33349,56 @@ function genParseTimer(parse)
 
     genParseNodeEnd(parse, timer);
     return timer;
+}
+
+
+
+function genParseComment(parse)
+{
+    const [, nodeId, options, ignore] = genParseNodeStart(parse);
+
+
+    const cmnt = new GComment(nodeId, options);
+
+    
+    if (parse.settings.logRequests) 
+        logReq(cmnt, parse, ignore);
+
+
+    if (ignore) 
+    {
+        genParseNodeEnd(parse, cmnt);
+        return parse.parsedNodes.find(n => n.nodeId == nodeId);
+    }
+
+
+    genParseNodeEnd(parse, cmnt);
+    return cmnt;
+}
+
+
+
+function genParsePanel(parse)
+{
+    const [, nodeId, options, ignore] = genParseNodeStart(parse);
+
+
+    const panel = new GPanel(nodeId, options);
+
+    
+    if (parse.settings.logRequests) 
+        logReq(panel, parse, ignore);
+
+
+    if (ignore) 
+    {
+        genParseNodeEnd(parse, panel);
+        return parse.parsedNodes.find(n => n.nodeId == nodeId);
+    }
+
+
+    genParseNodeEnd(parse, panel);
+    return panel;
 }
 
 
@@ -34716,8 +34794,8 @@ function genParseSequence(parse)
 
 
     seq.start = genParse(parse);
-    seq.end   = genParse(parse);
     seq.step  = genParse(parse);
+    seq.end   = genParse(parse);
 
 
     parse.nTab--;
@@ -38157,6 +38235,7 @@ function genParse(parse, inParam = true)
     else if (parse.next == GROUP_PARAM            ) result = genParseGroupParam        (parse);
  
     else if (parse.next == COMMENT                ) result = genParseComment           (parse);
+    else if (parse.next == PANEL                  ) result = genParsePanel             (parse);
 
     else consoleError('unknown parse token \'' + parse.next + '\' @ ' + parse.pos);
 

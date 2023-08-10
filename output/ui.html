@@ -4849,7 +4849,7 @@ a
             <div id='whatsNewBody'>
                 <h1 style='margin-top: 20px;'>What's new</h1>
 
-                <p>•  new nodes are now placed in the center of the window</p>
+                <p>•  End in Sequence is now optional</p>
                 
                 <p><br/><br/><div id='chkHideWhatsNew'></div></p>
             </div>
@@ -5205,7 +5205,7 @@ a
 
 
 
-const generatorVersion = 186;
+const generatorVersion = 187;
 
 
 const MAX_INT32        = 2147483647;
@@ -9694,54 +9694,54 @@ function updateMenuItemShowOperationResults()
 
 
 
-// function enableFeatures(subscription, beta)
-// {
-//     updateElementDisplay(menuItemShowPages           .div, subscription);
-//     updateElementDisplay(menuPrefSep1                .div, subscription);
-//     updateElementDisplay(menuPrefSep2                .div, subscription);
-//     updateElementDisplay(menuItemEnableBetaFeatures  .div, subscription);
+function enableFeatures(subscription, beta)
+{
+    // updateElementDisplay(menuItemShowPages           .div, subscription);
+    // updateElementDisplay(menuPrefSep1                .div, subscription);
+    // updateElementDisplay(menuPrefSep2                .div, subscription);
+    // updateElementDisplay(menuItemEnableBetaFeatures  .div, subscription);
 
-//     updateElementDisplay(btnFlow                     .div, subscription);
-//     updateElementDisplay(btnText                     .div, subscription && beta);
-//     updateElementDisplay(btnShape                    .div, subscription && beta);
-//     //updateElementDisplay(btnGroup                    .div, subscription && beta);
+    // updateElementDisplay(btnFlow                     .div, subscription);
+    // updateElementDisplay(btnText                     .div, subscription && beta);
+    // updateElementDisplay(btnShape                    .div, subscription && beta);
+    // //updateElementDisplay(btnGroup                    .div, subscription && beta);
 
-//     updateElementDisplay(menuItemLogObjectUpdates    .div, subscription && beta);
+    // updateElementDisplay(menuItemLogObjectUpdates    .div, subscription && beta);
     
-//     //updateElementDisplay(menuItemList                .div, subscription && beta);
-//     updateElementDisplay(menuFlowSep1                .div, subscription && beta);
-//     updateElementDisplay(menuItemItems               .div, subscription);
-//     updateElementDisplay(menuFlowSep2                .div, subscription);
-//     //updateElementDisplay(menuItemSelect              .div, subscription);
-//     updateElementDisplay(menuItemCount               .div, subscription);
-//     //updateElementDisplay(menuFlowSep3                .div, subscription && beta);
-//     //updateElementDisplay(menuItemStart               .div, subscription && beta);
-//     updateElementDisplay(menuItemRepeat              .div, subscription && beta);
-//     // updateElementDisplay(menuItemCache               .div, subscription && beta);
-//     updateElementDisplay(menuItemCopy                .div, subscription && beta);
+    // //updateElementDisplay(menuItemList                .div, subscription && beta);
+    // updateElementDisplay(menuFlowSep1                .div, subscription && beta);
+    // updateElementDisplay(menuItemItems               .div, subscription);
+    // updateElementDisplay(menuFlowSep2                .div, subscription);
+    // //updateElementDisplay(menuItemSelect              .div, subscription);
+    // updateElementDisplay(menuItemCount               .div, subscription);
+    // //updateElementDisplay(menuFlowSep3                .div, subscription && beta);
+    // //updateElementDisplay(menuItemStart               .div, subscription && beta);
+    // updateElementDisplay(menuItemRepeat              .div, subscription && beta);
+    // // updateElementDisplay(menuItemCache               .div, subscription && beta);
+    // updateElementDisplay(menuItemCopy                .div, subscription && beta);
     
-//     updateElementDisplay(menuItemSequence              .div, subscription && beta);    
-//     updateElementDisplay(menuItemSolve               .div, subscription && beta);    
-//     updateElementDisplay(menuItemNumberSep1          .div, subscription && beta);
-//     updateElementDisplay(menuItemAnimate             .div, subscription && beta);    
+    // updateElementDisplay(menuItemSequence              .div, subscription && beta);    
+    // updateElementDisplay(menuItemSolve               .div, subscription && beta);    
+    // updateElementDisplay(menuItemNumberSep1          .div, subscription && beta);
+    // updateElementDisplay(menuItemAnimate             .div, subscription && beta);    
     
-//     updateElementDisplay(menuItemCorrectColor        .div, subscription);
-//     updateElementDisplay(menuItemColorSep1           .div, subscription);
-//     updateElementDisplay(menuItemColorblind          .div, subscription);
-//     //updateMenuItemDisplay(menuItemColorBlend        .div, beta);
+    // updateElementDisplay(menuItemCorrectColor        .div, subscription);
+    // updateElementDisplay(menuItemColorSep1           .div, subscription);
+    // updateElementDisplay(menuItemColorblind          .div, subscription);
+    // //updateMenuItemDisplay(menuItemColorBlend        .div, beta);
 
-//     //updateMenuItemDisplay(menuItemStyleFill         .div, subscription && beta);
-//     updateElementDisplay(menuItemLayerStroke         .div, subscription && beta);
-//     //updateMenuItemDisplay(menuItemStyleSep1         .div, subscription && beta);
+    // //updateMenuItemDisplay(menuItemStyleFill         .div, subscription && beta);
+    // updateElementDisplay(menuItemLayerStroke         .div, subscription && beta);
+    // //updateMenuItemDisplay(menuItemStyleSep1         .div, subscription && beta);
     
-//     //updateMenuItemDisplay(menuItemNodeCopyAsJsCode    .div, subscription && beta);
-//     updateElementDisplay(menuItemNodeCopyAsJsFunction.div, subscription && beta);
+    // //updateMenuItemDisplay(menuItemNodeCopyAsJsCode    .div, subscription && beta);
+    // updateElementDisplay(menuItemNodeCopyAsJsFunction.div, subscription && beta);
 
-//     // updateElementDisplay(shortcutCopyAsJavascript        , subscription && beta);
+    // // updateElementDisplay(shortcutCopyAsJavascript        , subscription && beta);
 
 
-//     graph.nodes.forEach(n => n.updateSubscribeStatus(subscription));
-// }
+    graph.nodes.forEach(n => n.updateSubscribeStatus(subscription));
+}
 
 
 
@@ -10399,6 +10399,7 @@ const GROUP_TYPES =
 
 
 const COMMENT       = 'CMNT';
+const PANEL         = 'PANEL';
 
 
 const ACTIVE        = 'ACT';
@@ -22631,8 +22632,8 @@ extends GOperator
 
 
         const start = (await this.start.eval(parse)).toValue();
-        const end   = (await this.end  .eval(parse)).toValue();
         const step  = (await this.step .eval(parse)).toValue();
+        const end   = (await this.end  .eval(parse)).toValue();
     
 
         const repeat    = parse.repeats.find(r => r.repeatId == this.loopId);
@@ -22645,16 +22646,21 @@ extends GOperator
         {
             const value = start.toNumber() + (this.options.enabled ? step.toNumber() * iteration : 0);
 
-            if (   step.toNumber() == 0
-                || step.toNumber() >  0 && start.toNumber() < end.toNumber()
-                                        && value < end.toNumber()
-                || step.toNumber() <  0 && start.toNumber() > end.toNumber()
-                                        && value > end.toNumber())
+            if (!end.isValid())
+                this.value = new NumberValue(value, Math.max(start.decimals, step.decimals));
+
+            else if (end.isValid()   
+                     && (   step.toNumber() == 0
+                         || step.toNumber() >  0 && start.toNumber() < end.toNumber()
+                                                 && value < end.toNumber()
+                         || step.toNumber() <  0 && start.toNumber() > end.toNumber()
+                                                 && value > end.toNumber()))
             {
                 this.value = new NumberValue(
                     start.toNumber() + (this.options.enabled ? step.toNumber() * iteration : 0),
                     Math.max(start.decimals, step.decimals));
             }
+
             else
                 this.value = NumberValue.NaN.copy();
         }
@@ -22665,8 +22671,8 @@ extends GOperator
         this.setUpdateValues(parse,
         [
             ['start', start],
-            ['end',   end  ],
-            ['step',  step ]
+            ['step',  step ],
+            ['end',   end  ]
         ]);
         
 
@@ -22691,8 +22697,8 @@ extends GOperator
         super.pushValueUpdates(parse);
 
         if (this.start) this.start.pushValueUpdates(parse);
-        if (this.end  ) this.end  .pushValueUpdates(parse);
         if (this.step ) this.step .pushValueUpdates(parse);
+        if (this.end  ) this.end  .pushValueUpdates(parse);
     }
 
 
@@ -36559,10 +36565,57 @@ extends GOperator
         this.value = NullValue.copy();
 
 
-        this.setUpdateValues(parse, 
-        [
-            ['value', this.value]
-        ]);
+        this.setUpdateValues(parse, [['', NullValue]]);
+        
+        
+        this.validate();
+
+        return this;
+    }
+
+
+
+    toValue()
+    {
+        return this.value
+             ? this.value.copy() 
+             : null;
+    }
+}
+
+
+
+class GPanel
+extends GOperator
+{
+    constructor(nodeId, options)
+    {
+        super(PANEL, nodeId, options);
+    }
+
+
+    
+    copy()
+    {
+        const copy = new GPanel(this.nodeId, this.options);
+
+        copy.copyBase(this);
+
+        return copy;
+    }
+
+
+
+    async eval(parse)
+    {
+        if (this.isCached())
+            return this;
+
+
+        this.value = NullValue.copy();
+
+
+        this.setUpdateValues(parse, [['', NullValue]]);
         
         
         this.validate();
@@ -37604,31 +37657,6 @@ function genParseColorBlend(parse)
 }
 
 
-function genParseComment(parse)
-{
-    const [, nodeId, options, ignore] = genParseNodeStart(parse);
-
-
-    const cmnt = new GComment(nodeId, options);
-
-    
-    if (parse.settings.logRequests) 
-        logReq(cmnt, parse, ignore);
-
-
-    if (ignore) 
-    {
-        genParseNodeEnd(parse, cmnt);
-        return parse.parsedNodes.find(n => n.nodeId == nodeId);
-    }
-
-
-    genParseNodeEnd(parse, cmnt);
-    return cmnt;
-}
-
-
-
 function genParseNull(parse)
 {
     const [, nodeId, options, ignore] = genParseNodeStart(parse);
@@ -38522,6 +38550,56 @@ function genParseTimer(parse)
 
     genParseNodeEnd(parse, timer);
     return timer;
+}
+
+
+
+function genParseComment(parse)
+{
+    const [, nodeId, options, ignore] = genParseNodeStart(parse);
+
+
+    const cmnt = new GComment(nodeId, options);
+
+    
+    if (parse.settings.logRequests) 
+        logReq(cmnt, parse, ignore);
+
+
+    if (ignore) 
+    {
+        genParseNodeEnd(parse, cmnt);
+        return parse.parsedNodes.find(n => n.nodeId == nodeId);
+    }
+
+
+    genParseNodeEnd(parse, cmnt);
+    return cmnt;
+}
+
+
+
+function genParsePanel(parse)
+{
+    const [, nodeId, options, ignore] = genParseNodeStart(parse);
+
+
+    const panel = new GPanel(nodeId, options);
+
+    
+    if (parse.settings.logRequests) 
+        logReq(panel, parse, ignore);
+
+
+    if (ignore) 
+    {
+        genParseNodeEnd(parse, panel);
+        return parse.parsedNodes.find(n => n.nodeId == nodeId);
+    }
+
+
+    genParseNodeEnd(parse, panel);
+    return panel;
 }
 
 
@@ -39917,8 +39995,8 @@ function genParseSequence(parse)
 
 
     seq.start = genParse(parse);
-    seq.end   = genParse(parse);
     seq.step  = genParse(parse);
+    seq.end   = genParse(parse);
 
 
     parse.nTab--;
@@ -43358,6 +43436,7 @@ function genParse(parse, inParam = true)
     else if (parse.next == GROUP_PARAM            ) result = genParseGroupParam        (parse);
  
     else if (parse.next == COMMENT                ) result = genParseComment           (parse);
+    else if (parse.next == PANEL                  ) result = genParsePanel             (parse);
 
     else consoleError('unknown parse token \'' + parse.next + '\' @ ' + parse.pos);
 
@@ -46637,7 +46716,7 @@ onerror = (event, source, line, pos, error) =>
 };
 
 
-const generatorVersion = 186;
+const generatorVersion = 187;
 
 
 const MAX_INT32        = 2147483647;
@@ -54002,6 +54081,7 @@ const GROUP_TYPES =
 
 
 const COMMENT       = 'CMNT';
+const PANEL         = 'PANEL';
 
 
 const ACTIVE        = 'ACT';
@@ -66234,8 +66314,8 @@ extends GOperator
 
 
         const start = (await this.start.eval(parse)).toValue();
-        const end   = (await this.end  .eval(parse)).toValue();
         const step  = (await this.step .eval(parse)).toValue();
+        const end   = (await this.end  .eval(parse)).toValue();
     
 
         const repeat    = parse.repeats.find(r => r.repeatId == this.loopId);
@@ -66248,16 +66328,21 @@ extends GOperator
         {
             const value = start.toNumber() + (this.options.enabled ? step.toNumber() * iteration : 0);
 
-            if (   step.toNumber() == 0
-                || step.toNumber() >  0 && start.toNumber() < end.toNumber()
-                                        && value < end.toNumber()
-                || step.toNumber() <  0 && start.toNumber() > end.toNumber()
-                                        && value > end.toNumber())
+            if (!end.isValid())
+                this.value = new NumberValue(value, Math.max(start.decimals, step.decimals));
+
+            else if (end.isValid()   
+                     && (   step.toNumber() == 0
+                         || step.toNumber() >  0 && start.toNumber() < end.toNumber()
+                                                 && value < end.toNumber()
+                         || step.toNumber() <  0 && start.toNumber() > end.toNumber()
+                                                 && value > end.toNumber()))
             {
                 this.value = new NumberValue(
                     start.toNumber() + (this.options.enabled ? step.toNumber() * iteration : 0),
                     Math.max(start.decimals, step.decimals));
             }
+
             else
                 this.value = NumberValue.NaN.copy();
         }
@@ -66268,8 +66353,8 @@ extends GOperator
         this.setUpdateValues(parse,
         [
             ['start', start],
-            ['end',   end  ],
-            ['step',  step ]
+            ['step',  step ],
+            ['end',   end  ]
         ]);
         
 
@@ -66294,8 +66379,8 @@ extends GOperator
         super.pushValueUpdates(parse);
 
         if (this.start) this.start.pushValueUpdates(parse);
-        if (this.end  ) this.end  .pushValueUpdates(parse);
         if (this.step ) this.step .pushValueUpdates(parse);
+        if (this.end  ) this.end  .pushValueUpdates(parse);
     }
 
 
@@ -80162,10 +80247,57 @@ extends GOperator
         this.value = NullValue.copy();
 
 
-        this.setUpdateValues(parse, 
-        [
-            ['value', this.value]
-        ]);
+        this.setUpdateValues(parse, [['', NullValue]]);
+        
+        
+        this.validate();
+
+        return this;
+    }
+
+
+
+    toValue()
+    {
+        return this.value
+             ? this.value.copy() 
+             : null;
+    }
+}
+
+
+
+class GPanel
+extends GOperator
+{
+    constructor(nodeId, options)
+    {
+        super(PANEL, nodeId, options);
+    }
+
+
+    
+    copy()
+    {
+        const copy = new GPanel(this.nodeId, this.options);
+
+        copy.copyBase(this);
+
+        return copy;
+    }
+
+
+
+    async eval(parse)
+    {
+        if (this.isCached())
+            return this;
+
+
+        this.value = NullValue.copy();
+
+
+        this.setUpdateValues(parse, [['', NullValue]]);
         
         
         this.validate();
@@ -80495,54 +80627,54 @@ function updateMenuItemShowOperationResults()
 
 
 
-// function enableFeatures(subscription, beta)
-// {
-//     updateElementDisplay(menuItemShowPages           .div, subscription);
-//     updateElementDisplay(menuPrefSep1                .div, subscription);
-//     updateElementDisplay(menuPrefSep2                .div, subscription);
-//     updateElementDisplay(menuItemEnableBetaFeatures  .div, subscription);
+function enableFeatures(subscription, beta)
+{
+    // updateElementDisplay(menuItemShowPages           .div, subscription);
+    // updateElementDisplay(menuPrefSep1                .div, subscription);
+    // updateElementDisplay(menuPrefSep2                .div, subscription);
+    // updateElementDisplay(menuItemEnableBetaFeatures  .div, subscription);
 
-//     updateElementDisplay(btnFlow                     .div, subscription);
-//     updateElementDisplay(btnText                     .div, subscription && beta);
-//     updateElementDisplay(btnShape                    .div, subscription && beta);
-//     //updateElementDisplay(btnGroup                    .div, subscription && beta);
+    // updateElementDisplay(btnFlow                     .div, subscription);
+    // updateElementDisplay(btnText                     .div, subscription && beta);
+    // updateElementDisplay(btnShape                    .div, subscription && beta);
+    // //updateElementDisplay(btnGroup                    .div, subscription && beta);
 
-//     updateElementDisplay(menuItemLogObjectUpdates    .div, subscription && beta);
+    // updateElementDisplay(menuItemLogObjectUpdates    .div, subscription && beta);
     
-//     //updateElementDisplay(menuItemList                .div, subscription && beta);
-//     updateElementDisplay(menuFlowSep1                .div, subscription && beta);
-//     updateElementDisplay(menuItemItems               .div, subscription);
-//     updateElementDisplay(menuFlowSep2                .div, subscription);
-//     //updateElementDisplay(menuItemSelect              .div, subscription);
-//     updateElementDisplay(menuItemCount               .div, subscription);
-//     //updateElementDisplay(menuFlowSep3                .div, subscription && beta);
-//     //updateElementDisplay(menuItemStart               .div, subscription && beta);
-//     updateElementDisplay(menuItemRepeat              .div, subscription && beta);
-//     // updateElementDisplay(menuItemCache               .div, subscription && beta);
-//     updateElementDisplay(menuItemCopy                .div, subscription && beta);
+    // //updateElementDisplay(menuItemList                .div, subscription && beta);
+    // updateElementDisplay(menuFlowSep1                .div, subscription && beta);
+    // updateElementDisplay(menuItemItems               .div, subscription);
+    // updateElementDisplay(menuFlowSep2                .div, subscription);
+    // //updateElementDisplay(menuItemSelect              .div, subscription);
+    // updateElementDisplay(menuItemCount               .div, subscription);
+    // //updateElementDisplay(menuFlowSep3                .div, subscription && beta);
+    // //updateElementDisplay(menuItemStart               .div, subscription && beta);
+    // updateElementDisplay(menuItemRepeat              .div, subscription && beta);
+    // // updateElementDisplay(menuItemCache               .div, subscription && beta);
+    // updateElementDisplay(menuItemCopy                .div, subscription && beta);
     
-//     updateElementDisplay(menuItemSequence              .div, subscription && beta);    
-//     updateElementDisplay(menuItemSolve               .div, subscription && beta);    
-//     updateElementDisplay(menuItemNumberSep1          .div, subscription && beta);
-//     updateElementDisplay(menuItemAnimate             .div, subscription && beta);    
+    // updateElementDisplay(menuItemSequence              .div, subscription && beta);    
+    // updateElementDisplay(menuItemSolve               .div, subscription && beta);    
+    // updateElementDisplay(menuItemNumberSep1          .div, subscription && beta);
+    // updateElementDisplay(menuItemAnimate             .div, subscription && beta);    
     
-//     updateElementDisplay(menuItemCorrectColor        .div, subscription);
-//     updateElementDisplay(menuItemColorSep1           .div, subscription);
-//     updateElementDisplay(menuItemColorblind          .div, subscription);
-//     //updateMenuItemDisplay(menuItemColorBlend        .div, beta);
+    // updateElementDisplay(menuItemCorrectColor        .div, subscription);
+    // updateElementDisplay(menuItemColorSep1           .div, subscription);
+    // updateElementDisplay(menuItemColorblind          .div, subscription);
+    // //updateMenuItemDisplay(menuItemColorBlend        .div, beta);
 
-//     //updateMenuItemDisplay(menuItemStyleFill         .div, subscription && beta);
-//     updateElementDisplay(menuItemLayerStroke         .div, subscription && beta);
-//     //updateMenuItemDisplay(menuItemStyleSep1         .div, subscription && beta);
+    // //updateMenuItemDisplay(menuItemStyleFill         .div, subscription && beta);
+    // updateElementDisplay(menuItemLayerStroke         .div, subscription && beta);
+    // //updateMenuItemDisplay(menuItemStyleSep1         .div, subscription && beta);
     
-//     //updateMenuItemDisplay(menuItemNodeCopyAsJsCode    .div, subscription && beta);
-//     updateElementDisplay(menuItemNodeCopyAsJsFunction.div, subscription && beta);
+    // //updateMenuItemDisplay(menuItemNodeCopyAsJsCode    .div, subscription && beta);
+    // updateElementDisplay(menuItemNodeCopyAsJsFunction.div, subscription && beta);
 
-//     // updateElementDisplay(shortcutCopyAsJavascript        , subscription && beta);
+    // // updateElementDisplay(shortcutCopyAsJavascript        , subscription && beta);
 
 
-//     graph.nodes.forEach(n => n.updateSubscribeStatus(subscription));
-// }
+    graph.nodes.forEach(n => n.updateSubscribeStatus(subscription));
+}
 
 
 
@@ -84936,6 +85068,8 @@ const iconGroupParam        = '<svg width="11" height="11" viewBox="0 0 11 11" f
 const iconHand              = '<svg width="20" height="20" viewBox="0 0 20 20" fill="none" xmlns="http://www.w3.org/2000/svg"><path fill-rule="evenodd" clip-rule="evenodd" d="M1.85653 12.2494L1.8554 12.2484C1.32015 11.771 1.2929 10.8911 1.7976 10.3815C2.3023 9.87193 3.1824 9.89065 3.665 10.4213L3.67129 10.4282L3.67773 10.435L4.27294 11.0653L5.99999 12.8943V10.3788V4C5.99999 3.46423 6.46423 3 6.99999 3C7.16906 3 7.33572 3.04789 7.48718 3.13836L7.99999 3.44469V9H8.99999V4.04203V3V2.27986V2C8.99999 1.46423 9.46423 1 9.99999 1C10.4142 1 10.807 1.27942 10.9437 1.66905L11.0597 2H11V9H12V2.4661L12.4437 2.16905C12.6058 2.06052 12.804 2 13 2C13.5358 2 14 2.46423 14 3V4V4.27549V6.02711V9H15V5.43676L15.5084 5.13662C15.6583 5.04814 15.8261 5 16 5C16.5358 5 17 5.46423 17 6V13.5C17 15.6001 15.7227 17.6052 13.812 18.4904C11.8955 19.3783 9.56768 19.0654 7.95351 17.7039L1.85653 12.2494ZM15 4.27549V4V3.17508V3C15 1.91195 14.088 1 13 1C12.9434 1 12.8868 1.00246 12.8304 1.00733C12.4943 1.03638 12.1668 1.15099 11.8873 1.3381C11.7759 1.02046 11.5846 0.741833 11.341 0.522228C10.9792 0.195965 10.5019 0 9.99999 0C9.18005 0 8.46014 0.517876 8.15511 1.23874C8.05538 1.47446 7.99999 1.73188 7.99999 2V2.27986C7.70403 2.10307 7.36184 2.00018 7.00094 2H6.99999C5.91195 2 4.99999 2.91195 4.99999 4V8.92652V9.18641V9.20713V10.3788L4.40481 9.74846C4.2821 9.61355 4.14593 9.49706 3.99999 9.39906C3.11355 8.80379 1.86654 8.89082 1.08709 9.67785C0.179345 10.5944 0.227074 12.136 1.18978 12.9947L7.2972 18.4585C9.20886 20.0788 11.9586 20.4512 14.2324 19.3978C16.4971 18.3486 18 15.989 18 13.5V6C18 4.91195 17.088 4 16 4C15.6382 4 15.2958 4.10085 15 4.27549Z" fill="white"/></svg>';
 
 const iconComment           = '<svg width="18" height="17" viewBox="0 0 18 17" fill="none" xmlns="http://www.w3.org/2000/svg"><path fill-rule="evenodd" clip-rule="evenodd" d="M3.92701 11.5375L3.6897 11.045C3.24801 10.1283 3 9.09994 3 8.01086C3 4.14487 6.13401 1.01086 10 1.01086C13.866 1.01086 17 4.14487 17 8.01086C17 11.8769 13.866 15.0109 10 15.0109C8.89526 15.0109 7.85296 14.7557 6.92628 14.302L6.65842 14.1708L6.36249 14.2078L1.94388 14.7601L3.64047 12.0032L3.92701 11.5375ZM0.671856 14.9191L0 16.0109L1.27203 15.8519L6.48652 15.2001C7.5471 15.7194 8.73951 16.0109 10 16.0109C14.4183 16.0109 18 12.4292 18 8.01086C18 3.59258 14.4183 0.0108643 10 0.0108643C5.58172 0.0108643 2 3.59258 2 8.01086C2 9.25344 2.28329 10.4299 2.78881 11.4791L0.671856 14.9191Z" fill="white"/></svg>';
+const iconPanel             = '<svg width="18" height="17" viewBox="0 0 18 17" fill="none" xmlns="http://www.w3.org/2000/svg"><path fill-rule="evenodd" clip-rule="evenodd" d="M1.85164 16.7724L2.23469 15.8486C2.46912 15.9458 2.72697 16 3 16H3.91667V17H3C2.59323 17 2.20536 16.919 1.85164 16.7724ZM13.0833 17V16H14C14.273 16 14.5309 15.9458 14.7653 15.8486L15.1484 16.7724C14.7946 16.919 14.4068 17 14 17H13.0833ZM17 3.91667H16V3C16 2.72697 15.9458 2.46912 15.8486 2.23469L16.7724 1.85164C16.919 2.20536 17 2.59323 17 3V3.91667ZM3.91667 0H3C2.59323 0 2.20536 0.0809584 1.85164 0.227641L2.23469 1.15137C2.46912 1.05415 2.72697 1 3 1H3.91667V0ZM0 13.0833H1V14C1 14.273 1.05415 14.5309 1.15137 14.7653L0.227641 15.1484C0.0809584 14.7946 0 14.4068 0 14V13.0833ZM0 11.25H1V9.41667H0V11.25ZM0 7.58333H1V5.75H0V7.58333ZM0 3.91667H1V3C1 2.72697 1.05415 2.46912 1.15137 2.23469L0.227642 1.85164C0.0809585 2.20536 0 2.59323 0 3V3.91667ZM5.75 0V1H7.58333V0H5.75ZM9.41667 0V1H11.25V0H9.41667ZM13.0833 0V1H14C14.273 1 14.5309 1.05415 14.7653 1.15137L15.1484 0.227642C14.7946 0.0809585 14.4068 0 14 0H13.0833ZM17 5.75H16V7.58333H17V5.75ZM17 9.41667H16V11.25H17V9.41667ZM17 13.0833H16V14C16 14.273 15.9458 14.5309 15.8486 14.7653L16.7724 15.1484C16.919 14.7946 17 14.4068 17 14V13.0833ZM11.25 17V16H9.41667V17H11.25ZM7.58333 17V16H5.75V17H7.58333Z" fill="white"/></svg>';
+
 
 const iconWindowNormal      = '<svg width="15" height="12" viewBox="0 0 15 12" fill="none" xmlns="http://www.w3.org/2000/svg"><rect x="0.5" y="0.5" width="14" height="11" stroke="white"/><rect x="4" y="4" width="7" height="4" fill="white"/></svg>';
 const iconWindowMaximize    = '<svg width="15" height="12" viewBox="0 0 15 12" fill="none" xmlns="http://www.w3.org/2000/svg"><rect width="15" height="12" fill="white"/></svg>';
@@ -86046,6 +86180,7 @@ var btnTemplate;
 var btnGroup;
 var btnHand;
 var btnComment;
+var btnPanel;
 var btnPage;
 var btnSolo;
 var btnZoom;
@@ -86896,6 +87031,17 @@ function initGeneratorMenus()
     //     updatePanMode(false);
     // }});
 
+    btnPanel = new MenuButton('Panel', null, {callback: () => 
+    {
+        const create = new CreateNodeAction(PANEL, btnPanel.div);
+        actionManager.do(create);
+
+        graphView.updateNodes([create.node]);
+        graphView.updateScrollWithBounds();
+
+        updatePanMode(false);
+    }});
+
 
     //menuBar.appendChild(createDiv('', 'groupName'));
 
@@ -86965,6 +87111,7 @@ function initGeneratorMenus()
     btnShape  .setIcon(iconShapes);
     btnHand   .setIcon(iconHand);
     //btnComment.setIcon(iconComment);
+    btnPanel  .setIcon(iconPanel);
     btnSolo   .setIcon(iconSolo);
 
 
@@ -88368,20 +88515,18 @@ class GraphView
 
     placeNewNode(node)
     {
-        const nodeHeight = defHeaderHeight + node.params.length * defParamHeight;
-        
-        //const btn = node._creatingButton;
-
-        // if (graphView.p)
-        // {
-        //     node.div.style.left = (graphView.p.x - graph.currentPage.pan.x                ) / graph.currentPage.zoom - defNodeWidth   /2;
-        //     node.div.style.top  = (graphView.p.y - graph.currentPage.pan.y - menuBarHeight) / graph.currentPage.zoom - defHeaderHeight/2;
-        // }
-        // else
-        // {
+        if (node.type == PANEL)
+        {
+            node.div.style.left = (this.div.offsetWidth /2 - graph.currentPage.pan.x                 ) / graph.currentPage.zoom - defPanelWidth/2;
+            node.div.style.top  = (this.div.offsetHeight/2 - graph.currentPage.pan.y - getTopHeight()) / graph.currentPage.zoom - defPanelHeight/2;
+        }
+        else
+        {
+            const nodeHeight = defHeaderHeight + node.params.length * defParamHeight;
+            
             node.div.style.left = (this.div.offsetWidth /2 - graph.currentPage.pan.x                 ) / graph.currentPage.zoom - defNodeWidth/2;
             node.div.style.top  = (this.div.offsetHeight/2 - graph.currentPage.pan.y - getTopHeight()) / graph.currentPage.zoom - nodeHeight/2;
-        // }
+        }
     }
 
 
@@ -90082,9 +90227,10 @@ GraphView.prototype.updateSelectBox = function(shiftKey, ctrlKey)
 
         for (const node of graph.pageNodes)
         {
-            if (rectsIntersect(
-                    node.measureData.divBounds,
-                    selection))
+            if (   node.type != PANEL
+                && rectsIntersect(
+                       node.measureData.divBounds,
+                       selection))
                 selected.push(node);
         }
 
@@ -100159,21 +100305,22 @@ Operator.prototype.updateBorder = function()
         : 7 * (((1 / graph.currentPage.zoom - 1) / 3.5) + 1);
 
 
-    let highlight;
+    let highlight = 'transparent';
 
-    switch (this.highlight)
+    if (this.type != PANEL)
     {
-        case 0: highlight = 'transparent'; break;
-
-        case 1: highlight = darkMode ? '#f33a' : '#f006'; break;
-        case 2: highlight = darkMode ? '#f809' : '#f808'; break;
-        case 3: highlight = darkMode ? '#ff08' : '#dd0f'; break;
-        case 4: highlight = darkMode ? '#1e18' : '#0d09'; break;
-        case 5: highlight = darkMode ? '#27fd' : '#03f7'; break;
-        case 6: highlight = darkMode ? '#f2f9' : '#f0f7'; break;
-        case 7: highlight = darkMode ? '#fff8' : '#0007'; break;
+        switch (this.highlight)
+        {
+            case 1: highlight = darkMode ? '#f33a' : '#f006'; break;
+            case 2: highlight = darkMode ? '#f809' : '#f808'; break;
+            case 3: highlight = darkMode ? '#ff08' : '#dd0f'; break;
+            case 4: highlight = darkMode ? '#1e18' : '#0d09'; break;
+            case 5: highlight = darkMode ? '#27fd' : '#03f7'; break;
+            case 6: highlight = darkMode ? '#f2f9' : '#f0f7'; break;
+            case 7: highlight = darkMode ? '#fff8' : '#0007'; break;
+        }
     }
-
+    
 
     this.div.style.boxShadow = 
           (this._selected
@@ -104619,8 +104766,8 @@ class   OpSequence
 extends OperatorBase
 {
     paramStart;
-    paramEnd;
     paramStep;
+    paramEnd;
 
 
 
@@ -104635,9 +104782,9 @@ extends OperatorBase
 
         this.addOutput(new Output([NUMBER_VALUE], this.output_genRequest));
 
-        this.addParam(this.paramStart = new NumberParam('start', '[ start', true, true, true,  0));
-        this.addParam(this.paramEnd   = new NumberParam('end',   '] end',   true, true, true, 10));
-        this.addParam(this.paramStep  = new NumberParam('step',  'step',    true, true, true,  1));
+        this.addParam(this.paramStart = new NumberParam('start', '[ start', true, true, true, 0));
+        this.addParam(this.paramStep  = new NumberParam('step',  'step',    true, true, true, 1));
+        this.addParam(this.paramEnd   = new NumberParam('end',   '] end',   true, true, true, Number.NaN));
     }
 
 
@@ -104655,8 +104802,8 @@ extends OperatorBase
 
         
         request.push(...this.node.paramStart.genRequest(gen));
-        request.push(...this.node.paramEnd  .genRequest(gen));
         request.push(...this.node.paramStep .genRequest(gen));
+        request.push(...this.node.paramEnd  .genRequest(gen));
 
 
         gen.scope.pop();
@@ -104670,8 +104817,8 @@ extends OperatorBase
     updateParams()
     {
         this.paramStart.enableControlText(true, this.paramStart.isUnknown());
-        this.paramEnd  .enableControlText(true, this.paramEnd  .isUnknown());
         this.paramStep .enableControlText(true, this.paramStep .isUnknown());
+        this.paramEnd  .enableControlText(true, this.paramEnd  .isUnknown());
 
         this.updateParamControls();
     }
@@ -117081,6 +117228,91 @@ extends OperatorBase
 }
 
 
+const defPanelWidth  = 400;
+const defPanelHeight = 400;
+
+
+
+class   OpPanel
+extends ResizableBase
+{
+    constructor()
+    {
+        super(PANEL, 'panel', '', '');
+
+        this.alwaysLoadParams = true;
+        this.alwaysSaveParams = true;
+
+        this.inner.addEventListener('pointerdown', e => 
+        {
+            e.stopPropagation();
+            forwardEvent(e, graphView.div);
+        });
+
+
+        this.div.style.width  = 400;
+        this.div.style.height = 400;
+    }
+
+
+
+    genRequest(gen)
+    {
+        // 'this' is the node
+
+        gen.scope.push({
+            nodeId:  this.id, 
+            paramId: null });
+
+
+        const [request, ignore] = this.genRequestStart(gen);
+        if (ignore) return request;
+
+
+        gen.scope.pop();
+        pushUnique(gen.passedNodes, this);
+
+        return request;
+    }
+
+
+    updateHeader()
+    {
+        super.updateHeader();
+
+        this.div.style.zIndex = 0;
+
+
+        let background;
+
+        switch (this.highlight)
+        {
+            case 0: background = darkMode ? '#ffffff08' : '#00000008'; break;
+            case 1: background = darkMode ? '#ff33332d' : '#ff000028'; break;
+            case 2: background = darkMode ? '#ff880028' : '#f803';     break;
+            case 3: background = darkMode ? '#ffff0020' : '#cc04';     break;
+            case 4: background = darkMode ? '#1e12'     : '#0d04';     break;
+            case 5: background = darkMode ? '#2277ff33' : '#0033ff28'; break;
+            case 6: background = darkMode ? '#ff22ff26' : '#ff00ff28'; break;
+            case 7: background = darkMode ? '#fff3'     : '#0003';     break;
+        }
+
+        this.div.style.background = background;
+
+        this.header.style.boxShadow = '0 -1px 0 0 ' + (darkMode ? '#ffffff0b' : '#00000007') + ' inset';
+    }
+
+
+
+    updateRect(x, y, w, h, transform)
+    {
+        this.header.style.height = h;
+
+        super.updateRect(x, y, w, h, transform);
+    }
+}
+
+
 class GraphPage
 {
     id;
@@ -120027,7 +120259,9 @@ extends Action
         {
             this.prevColorIndices.push(node.highlight);
             node.highlight = this.newColorIndex;
-            node.updateBorder();
+            
+            if (node.type == PANEL) node.updateNode()
+            else                    node.updateBorder();
         }
 
         uiSaveNodes(this.nodeIds);
@@ -120042,7 +120276,9 @@ extends Action
         for (let i = 0; i < nodes.length; i++)
         {
             nodes[i].highlight = this.prevColorIndices[i];
-            nodes[i].updateBorder();
+
+            if (node.type == PANEL) node.updateNode()
+            else                    node.updateBorder();
         }
 
         uiSaveNodes(this.nodeIds);
@@ -124600,7 +124836,7 @@ function finishLoading(_nodes)
     generatorStarted = true;
 
 
-    //enableFeatures(subscription != NULL, settings.enableBetaFeatures); 
+    enableFeatures(false);//subscription != NULL, settings.enableBetaFeatures); 
     
     graphView.update();
 
@@ -125241,6 +125477,7 @@ function createNode(nodeType, creatingButton = null, createdNodeId = -1, options
         case GROUP_PARAM:             node = new OpGroupParam();        break;
 
         case COMMENT:                 node = new OpComment();           break;
+        case PANEL:                   node = new OpPanel();             break;
 
         default:                      consoleError('Graph.js/createNode() cannot create type ' + nodeType);
     }
