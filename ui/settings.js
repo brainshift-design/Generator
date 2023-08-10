@@ -298,8 +298,10 @@ function updateMenuItemShowOperationResults()
 
     nodes.forEach(n => 
     {
-        const rect = n.measureData.divOffset;
-        n.setRect(rect.x, rect.y, rect.w, rect.h, false);
+        const rectd = n.measureData.divOffset;
+        const recth = n.measureData.headerOffset;
+
+        n.setRect(rectd.x, rectd.y, recth.w, recth.h, false);
         n.updateNode();
     });
 

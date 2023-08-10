@@ -9686,8 +9686,10 @@ function updateMenuItemShowOperationResults()
 
     nodes.forEach(n => 
     {
-        const rect = n.measureData.divOffset;
-        n.setRect(rect.x, rect.y, rect.w, rect.h, false);
+        const rectd = n.measureData.divOffset;
+        const recth = n.measureData.headerOffset;
+
+        n.setRect(rectd.x, rectd.y, recth.w, recth.h, false);
         n.updateNode();
     });
 
@@ -81243,8 +81245,10 @@ function updateMenuItemShowOperationResults()
 
     nodes.forEach(n => 
     {
-        const rect = n.measureData.divOffset;
-        n.setRect(rect.x, rect.y, rect.w, rect.h, false);
+        const rectd = n.measureData.divOffset;
+        const recth = n.measureData.headerOffset;
+
+        n.setRect(rectd.x, rectd.y, recth.w, recth.h, false);
         n.updateNode();
     });
 
@@ -89143,7 +89147,7 @@ class GraphView
     {
         if (node.type == PANEL)
         {
-            node.div.style.left = (this.div.offsetWidth /2 - graph.currentPage.pan.x                 ) / graph.currentPage.zoom - defPanelWidth/2;
+            node.div.style.left = (this.div.offsetWidth /2 - graph.currentPage.pan.x                 ) / graph.currentPage.zoom - defPanelWidth /2;
             node.div.style.top  = (this.div.offsetHeight/2 - graph.currentPage.pan.y - getTopHeight()) / graph.currentPage.zoom - defPanelHeight/2;
         }
         else
@@ -89151,7 +89155,7 @@ class GraphView
             const nodeHeight = defHeaderHeight + node.params.length * defParamHeight;
             
             node.div.style.left = (this.div.offsetWidth /2 - graph.currentPage.pan.x                 ) / graph.currentPage.zoom - defNodeWidth/2;
-            node.div.style.top  = (this.div.offsetHeight/2 - graph.currentPage.pan.y - getTopHeight()) / graph.currentPage.zoom - nodeHeight/2;
+            node.div.style.top  = (this.div.offsetHeight/2 - graph.currentPage.pan.y - getTopHeight()) / graph.currentPage.zoom - nodeHeight  /2;
         }
     }
 
@@ -101347,7 +101351,7 @@ extends OperatorBase
             x,
             y,
             w, 
-            settings.showOperationResults ? h : h - defParamHeight, 
+            h + (this.params.length - (settings.showOperationResults ? 0 : 1)) * defParamHeight, //settings.showOperationResults ? h : h - defParamHeight, 
             updateTransform);
     }
 

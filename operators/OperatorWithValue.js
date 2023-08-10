@@ -23,7 +23,7 @@ extends OperatorBase
             x,
             y,
             w, 
-            settings.showOperationResults ? h : h - defParamHeight, 
+            h + (this.params.length - (settings.showOperationResults ? 0 : 1)) * defParamHeight, //settings.showOperationResults ? h : h - defParamHeight, 
             updateTransform);
     }
 
