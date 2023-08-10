@@ -146,7 +146,8 @@ extends GShape
         this.value.objects = [];
 
 
-        if (   this.value.text         .isValid()
+        if (   super.baseIsValid()   
+            && this.value.text         .isValid()
             && this.value.x            .isValid()
             && this.value.y            .isValid()
             && this.value.width        .isValid()

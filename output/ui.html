@@ -31561,6 +31561,13 @@ extends GShapeBase
 
 
 
+    baseIsValid()
+    {
+        return this.props.isValid();
+    }
+
+
+
     isCached()
     {
         return super.isCached()
@@ -31773,7 +31780,8 @@ extends GShape
         this.value.objects = [];
 
             
-        if (   this.value.x     .isValid()
+        if (   super.baseIsValid()   
+            && this.value.x     .isValid()
             && this.value.y     .isValid()
             && this.value.width .isValid()
             && this.value.height.isValid()
@@ -31937,7 +31945,8 @@ extends GShape
         this.value.objects = [];
 
 
-        if (   this.value.x    .isValid()
+        if (   super.baseIsValid()   
+            && this.value.x    .isValid()
             && this.value.y    .isValid()
             && this.value.width.isValid()) 
         {
@@ -32093,7 +32102,8 @@ extends GShape
         this.value.objects = [];
 
 
-        if (   this.value.x     .isValid()
+        if (   super.baseIsValid()   
+            && this.value.x     .isValid()
             && this.value.y     .isValid()
             && this.value.width .isValid()
             && this.value.height.isValid()) 
@@ -32268,7 +32278,8 @@ extends GShape
         this.value.objects = [];
 
 
-        if (   this.value.x     .isValid()    
+        if (   super.baseIsValid()   
+            && this.value.x     .isValid()    
             && this.value.y     .isValid()    
             && this.value.width .isValid()
             && this.value.height.isValid()
@@ -32458,7 +32469,8 @@ extends GShape
         this.value.objects = [];
 
 
-        if (   this.value.x      .isValid()
+        if (   super.baseIsValid()   
+            && this.value.x      .isValid()
             && this.value.y      .isValid()
             && this.value.width  .isValid()
             && this.value.height .isValid()
@@ -32656,7 +32668,8 @@ extends GShape
         this.value.objects = [];
 
 
-        if (   this.value.x     .isValid()
+        if (   super.baseIsValid()   
+            && this.value.x     .isValid()
             && this.value.y     .isValid()
             && this.value.width .isValid()
             && this.value.height.isValid() 
@@ -32895,7 +32908,8 @@ extends GShape
         this.value.objects = [];
 
 
-        if (   this.value.text         .isValid()
+        if (   super.baseIsValid()   
+            && this.value.text         .isValid()
             && this.value.x            .isValid()
             && this.value.y            .isValid()
             && this.value.width        .isValid()
@@ -33326,7 +33340,8 @@ extends GShape
         this.value.objects = [];
 
 
-        if (   points.length >= 2
+        if (   super.baseIsValid()   
+            && points.length >= 2
             && this.value.closed .isValid()
             && this.value.degree .isValid()
             && this.value.winding.isValid()
@@ -75540,6 +75555,13 @@ extends GShapeBase
 
 
 
+    baseIsValid()
+    {
+        return this.props.isValid();
+    }
+
+
+
     isCached()
     {
         return super.isCached()
@@ -75752,7 +75774,8 @@ extends GShape
         this.value.objects = [];
 
             
-        if (   this.value.x     .isValid()
+        if (   super.baseIsValid()   
+            && this.value.x     .isValid()
             && this.value.y     .isValid()
             && this.value.width .isValid()
             && this.value.height.isValid()
@@ -75916,7 +75939,8 @@ extends GShape
         this.value.objects = [];
 
 
-        if (   this.value.x    .isValid()
+        if (   super.baseIsValid()   
+            && this.value.x    .isValid()
             && this.value.y    .isValid()
             && this.value.width.isValid()) 
         {
@@ -76072,7 +76096,8 @@ extends GShape
         this.value.objects = [];
 
 
-        if (   this.value.x     .isValid()
+        if (   super.baseIsValid()   
+            && this.value.x     .isValid()
             && this.value.y     .isValid()
             && this.value.width .isValid()
             && this.value.height.isValid()) 
@@ -76247,7 +76272,8 @@ extends GShape
         this.value.objects = [];
 
 
-        if (   this.value.x     .isValid()    
+        if (   super.baseIsValid()   
+            && this.value.x     .isValid()    
             && this.value.y     .isValid()    
             && this.value.width .isValid()
             && this.value.height.isValid()
@@ -76437,7 +76463,8 @@ extends GShape
         this.value.objects = [];
 
 
-        if (   this.value.x      .isValid()
+        if (   super.baseIsValid()   
+            && this.value.x      .isValid()
             && this.value.y      .isValid()
             && this.value.width  .isValid()
             && this.value.height .isValid()
@@ -76635,7 +76662,8 @@ extends GShape
         this.value.objects = [];
 
 
-        if (   this.value.x     .isValid()
+        if (   super.baseIsValid()   
+            && this.value.x     .isValid()
             && this.value.y     .isValid()
             && this.value.width .isValid()
             && this.value.height.isValid() 
@@ -76874,7 +76902,8 @@ extends GShape
         this.value.objects = [];
 
 
-        if (   this.value.text         .isValid()
+        if (   super.baseIsValid()   
+            && this.value.text         .isValid()
             && this.value.x            .isValid()
             && this.value.y            .isValid()
             && this.value.width        .isValid()
@@ -77305,7 +77334,8 @@ extends GShape
         this.value.objects = [];
 
 
-        if (   points.length >= 2
+        if (   super.baseIsValid()   
+            && points.length >= 2
             && this.value.closed .isValid()
             && this.value.degree .isValid()
             && this.value.winding.isValid()

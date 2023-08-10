@@ -118,7 +118,8 @@ extends GShape
         this.value.objects = [];
 
 
-        if (   points.length >= 2
+        if (   super.baseIsValid()   
+            && points.length >= 2
             && this.value.closed .isValid()
             && this.value.degree .isValid()
             && this.value.winding.isValid()

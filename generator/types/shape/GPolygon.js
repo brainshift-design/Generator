@@ -100,7 +100,8 @@ extends GShape
         this.value.objects = [];
 
 
-        if (   this.value.x      .isValid()
+        if (   super.baseIsValid()   
+            && this.value.x      .isValid()
             && this.value.y      .isValid()
             && this.value.width  .isValid()
             && this.value.height .isValid()

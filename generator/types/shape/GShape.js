@@ -24,6 +24,13 @@ extends GShapeBase
 
 
 
+    baseIsValid()
+    {
+        return this.props.isValid();
+    }
+
+
+
     isCached()
     {
         return super.isCached()
