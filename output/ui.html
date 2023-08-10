@@ -4850,6 +4850,7 @@ a
                 <h1 style='margin-top: 20px;'>What's new</h1>
 
                 <p>•  fixed crash when tabbing through List node</p>
+                <p>•  fixed other bugs</p>
                 
                 <p><br/><br/><div id='chkHideWhatsNew'></div></p>
             </div>
@@ -81931,7 +81932,7 @@ extends Control
     
 
 
-    setMin(displayMin = Number.MIN_SAFE_INTEGER, min = displayMin)
+    setMin(displayMin = Number.MIN_SAFE_INTEGER, min = Number.MIN_SAFE_INTEGER)
     {
         this.min        = min;
         this.displayMin = displayMin;
@@ -81939,7 +81940,7 @@ extends Control
 
 
 
-    setMax(displayMax = Number.MAX_SAFE_INTEGER, max = displayMax)
+    setMax(displayMax = Number.MAX_SAFE_INTEGER, max = Number.MAX_SAFE_INTEGER)
     {
         this.max        = max;
         this.displayMax = displayMax;
@@ -116011,7 +116012,7 @@ extends OperatorBase
 
         this.addParam(this.paramCenterX    = new NumberParam('centerX',    'center X',    true, true, true, 50, 0, 100));
         this.addParam(this.paramCenterY    = new NumberParam('centerY',    'center Y',    true, true, true, 50, 0, 100));
-        this.addParam(this.paramShowCenter = new NumberParam('showCenter', 'show center', true, true, true, 0, 0, 1));
+        this.addParam(this.paramShowCenter = new NumberParam('showCenter', 'show center', true, true, true, 0,  0,   1));
 
 
         this.paramCenterX.controls[0].suffix = '%';
