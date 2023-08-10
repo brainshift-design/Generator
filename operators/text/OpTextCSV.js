@@ -7,8 +7,6 @@ extends OperatorBase
     paramRowSeparator;
     paramColumnSeparator;
 
-    preview = null;
-
 
 
     constructor()
@@ -32,9 +30,6 @@ extends OperatorBase
         // this.paramColumns        .divider = 0.5;
         this.paramRowSeparator   .divider = 0.6;
         this.paramColumnSeparator.divider = 0.6;
-
-
-        createListTooltip(this);
     }
 
 
@@ -76,8 +71,6 @@ extends OperatorBase
     {
         super.updateValues(requestId, actionId, updateParamId, paramIds, values);
 
-
-        this.preview  = values[paramIds.findIndex(id => id == 'preview')];
         const rows    = values[paramIds.findIndex(id => id == 'rows'   )];
         const columns = values[paramIds.findIndex(id => id == 'columns')];
 
@@ -90,11 +83,8 @@ extends OperatorBase
     {
         this.paramValue.enableControlText(false, this.isUnknown());
         
-        // this.paramRows           .enableControlText(false);
-        // this.paramColumns        .enableControlText(false);
         this.paramRowSeparator   .enableControlText(true );
         this.paramColumnSeparator.enableControlText(true );
-
 
         this.updateParamControls();
     }

@@ -3,7 +3,6 @@ extends OperatorBase
 {
     paramCounts;
 
-    preview = null;
     length;
 
 
@@ -22,9 +21,6 @@ extends OperatorBase
         this.addParam(this.paramCounts = new ListParam('counts', 'counts', false, false, true));
 
         this.paramCounts.itemName  = '';
-
-
-        createListTooltip(this);
     }
 
 
@@ -62,7 +58,6 @@ extends OperatorBase
     {
         super.updateValues(requestId, actionId, updateParamId, paramIds, values);
 
-        this.preview = values[paramIds.findIndex(id => id == 'preview')];
         const length = values[paramIds.findIndex(id => id == 'length')];
 
         this.length = length.value;

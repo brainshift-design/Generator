@@ -1,7 +1,6 @@
 class   OpList
 extends OperatorBase
 {
-    preview = null;
     length;
 
 
@@ -16,9 +15,6 @@ extends OperatorBase
 
         this.addNewInput();
         this.addOutput(new Output([LIST_VALUE], this.output_genRequest));
-
-
-        createListTooltip(this);
     }
     
     
@@ -112,45 +108,4 @@ extends OperatorBase
 
         return colors;
     }
-}
-
-
-
-function createListTooltip(node)
-{
-    createTooltipSrc(node.header, node.header, () => ttText);
-
-    
-    node.header.addEventListener('pointerenter', e =>
-    {
-        if (  !currentTooltip
-            && node.preview)
-        {
-            let strTooltip = '';
-            
-            for (let i = 0; i < node.preview.items.length; i++)
-            {
-                if (i > 0) strTooltip += '<br/>';
-                strTooltip += node.preview.items[i].toSimpleString();
-            }
-
-            // if (node.length > node.preview.items.length) 
-            //     strTooltip = '<br/>. . .';
-            // else 
-            if (strTooltip == '')
-                strTooltip = '. . .';
-            
-            initTextTooltip(strTooltip);
-        }
-    });
-
-
-    node.header.addEventListener('pointerdown', () =>
-    {
-        if (tooltipTimer)
-            clearTimeout(tooltipTimer);
-
-        if (currentTooltip) 
-            hideTooltip(currentTooltip);
-    });
 }

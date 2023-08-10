@@ -1,7 +1,6 @@
 class   OpReverseList
 extends OperatorBase
 {
-    preview = null;
     tableLength;
 
 
@@ -16,9 +15,6 @@ extends OperatorBase
 
         this.addInput (new Input (LIST_VALUES));
         this.addOutput(new Output([LIST_VALUE], this.output_genRequest));
-
-
-        createListTooltip(this);
     }
 
 
@@ -56,7 +52,6 @@ extends OperatorBase
     {
         super.updateValues(requestId, actionId, updateParamId, paramIds, values);
 
-        this.preview = values[paramIds.findIndex(id => id == 'preview')];
         const length = values[paramIds.findIndex(id => id == 'length' )];
 
         this.tableLength = length.value;

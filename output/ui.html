@@ -98617,6 +98617,10 @@ class Operator
     stripIdForCopy     = false; // one-time flag
     
 
+    showHeaderTooltip  = false;
+    preview            = null;
+
+
     defaultWidth;
     labelOffsetFactor;
 
@@ -98741,6 +98745,8 @@ class Operator
 
         if (progressBar)
             this.createProgressBar();
+
+        createHeaderTooltip(this);
 
 
         this.setName(name);
@@ -99969,6 +99975,47 @@ function idFromNodePath(path)
 
 
 
+function createHeaderTooltip(node)
+{
+    createTooltipSrc(node.header, node.header, () => ttText);
+
+
+    node.header.addEventListener('pointerenter', e =>
+    {
+        if (  !currentTooltip
+            && node.preview
+            && node.showHeaderTooltip)
+        {
+            let strTooltip = '';
+            
+            for (let i = 0; i < node.preview.items.length; i++)
+            {
+                if (i > 0) strTooltip += '<br/>';
+                strTooltip += node.preview.items[i].toSimpleString();
+            }
+
+            // if (node.length > node.preview.items.length) 
+            //     strTooltip = '<br/>. . .';
+            // else 
+            if (strTooltip == '')
+                strTooltip = '. . .';
+            
+            initTextTooltip(strTooltip);
+        }
+    });
+
+
+    node.header.addEventListener('pointerdown', () =>
+    {
+        if (tooltipTimer)
+            clearTimeout(tooltipTimer);
+
+        if (currentTooltip) 
+            hideTooltip(currentTooltip);
+    });
+}
+
+
 var  newReorderIndex = Number.NaN;
 var prevReorderIndex = Number.NaN;
 var  oldReorderIndex = Number.NaN;
@@ -100953,7 +101000,7 @@ Operator.prototype.updateBorder = function()
             case 7: highlight = darkMode ? '#fff8' : '#0007'; break;
         }
     }
-    
+
 
     this.div.style.boxShadow = 
           (this._selected
@@ -101256,6 +101303,9 @@ Operator.prototype.updateValues = function(requestId, actionId, updateParamId, p
             this.params[index].setValue(values[i], false, true, false);
         }
     }
+
+
+    this.preview = values[paramIds.findIndex(id => id == 'preview')];
 };
 
 
@@ -102473,7 +102523,6 @@ function OpTimer_onDisconnectInput(node)
 class   OpList
 extends OperatorBase
 {
-    preview = null;
     length;
 
 
@@ -102488,9 +102537,6 @@ extends OperatorBase
 
         this.addNewInput();
         this.addOutput(new Output([LIST_VALUE], this.output_genRequest));
-
-
-        createListTooltip(this);
     }
     
     
@@ -102588,46 +102634,6 @@ extends OperatorBase
 
 
 
-function createListTooltip(node)
-{
-    createTooltipSrc(node.header, node.header, () => ttText);
-
-    
-    node.header.addEventListener('pointerenter', e =>
-    {
-        if (  !currentTooltip
-            && node.preview)
-        {
-            let strTooltip = '';
-            
-            for (let i = 0; i < node.preview.items.length; i++)
-            {
-                if (i > 0) strTooltip += '<br/>';
-                strTooltip += node.preview.items[i].toSimpleString();
-            }
-
-            // if (node.length > node.preview.items.length) 
-            //     strTooltip = '<br/>. . .';
-            // else 
-            if (strTooltip == '')
-                strTooltip = '. . .';
-            
-            initTextTooltip(strTooltip);
-        }
-    });
-
-
-    node.header.addEventListener('pointerdown', () =>
-    {
-        if (tooltipTimer)
-            clearTimeout(tooltipTimer);
-
-        if (currentTooltip) 
-            hideTooltip(currentTooltip);
-    });
-}
-
-
 class   OpCondense
 extends OperatorBase
 {
@@ -102722,7 +102728,6 @@ extends OperatorBase
     paramStart;
     paramEnd;
 
-    preview = null;
     length;
 
 
@@ -102744,9 +102749,6 @@ extends OperatorBase
 
         this.paramStart.controls[0].allowEditDecimals = false;
         this.paramEnd  .controls[0].allowEditDecimals = false;
-
-
-        createListTooltip(this);
     }
 
 
@@ -102821,7 +102823,6 @@ extends OperatorBase
 {
     paramCounts;
 
-    preview = null;
     length;
 
 
@@ -102840,9 +102841,6 @@ extends OperatorBase
         this.addParam(this.paramCounts = new ListParam('counts', 'counts', false, false, true));
 
         this.paramCounts.itemName  = '';
-
-
-        createListTooltip(this);
     }
 
 
@@ -102880,7 +102878,6 @@ extends OperatorBase
     {
         super.updateValues(requestId, actionId, updateParamId, paramIds, values);
 
-        this.preview = values[paramIds.findIndex(id => id == 'preview')];
         const length = values[paramIds.findIndex(id => id == 'length')];
 
         this.length = length.value;
@@ -102903,7 +102900,6 @@ extends OperatorBase
 class   OpReverseList
 extends OperatorBase
 {
-    preview = null;
     tableLength;
 
 
@@ -102918,9 +102914,6 @@ extends OperatorBase
 
         this.addInput (new Input (LIST_VALUES));
         this.addOutput(new Output([LIST_VALUE], this.output_genRequest));
-
-
-        createListTooltip(this);
     }
 
 
@@ -102958,7 +102951,6 @@ extends OperatorBase
     {
         super.updateValues(requestId, actionId, updateParamId, paramIds, values);
 
-        this.preview = values[paramIds.findIndex(id => id == 'preview')];
         const length = values[paramIds.findIndex(id => id == 'length' )];
 
         this.tableLength = length.value;
@@ -102972,7 +102964,6 @@ extends OperatorBase
     paramColumn;
     paramReverse;
 
-    preview = null;
     tableLength;
 
     menuBoolReverse;
@@ -102998,9 +102989,6 @@ extends OperatorBase
         this.paramReverse.divider = 0.59;
 
         this.menuBoolReverse = createBoolMenu(this.paramReverse);
-
-
-        createListTooltip(this);
     }
 
 
@@ -103044,7 +103032,6 @@ extends OperatorBase
 
         //const column  = values[paramIds.findIndex(id => id == 'column')];
 
-        this.preview  = values[paramIds.findIndex(id => id == 'preview')];
         const length  = values[paramIds.findIndex(id => id == 'length' )];
         const columns = values[paramIds.findIndex(id => id == 'columns')];
 
@@ -103075,7 +103062,6 @@ extends OperatorBase
 {
     paramIndex;
 
-    preview = null;
     columnLength;
 
 
@@ -103094,9 +103080,6 @@ extends OperatorBase
 
         this.paramIndex.divider                       = 0.54;
         this.paramIndex.controls[0].allowEditDecimals = false;
-
-
-        createListTooltip(this);
     }
 
 
@@ -103137,7 +103120,6 @@ extends OperatorBase
         super.updateValues(requestId, actionId, updateParamId, paramIds, values);
 
 
-        this.preview  = values[paramIds.findIndex(id => id == 'preview')];
         const length  = values[paramIds.findIndex(id => id == 'length' )];
         const columns = values[paramIds.findIndex(id => id == 'columns')];
 
@@ -108398,8 +108380,6 @@ extends OperatorBase
     paramRowSeparator;
     paramColumnSeparator;
 
-    preview = null;
-
 
 
     constructor()
@@ -108423,9 +108403,6 @@ extends OperatorBase
         // this.paramColumns        .divider = 0.5;
         this.paramRowSeparator   .divider = 0.6;
         this.paramColumnSeparator.divider = 0.6;
-
-
-        createListTooltip(this);
     }
 
 
@@ -108467,8 +108444,6 @@ extends OperatorBase
     {
         super.updateValues(requestId, actionId, updateParamId, paramIds, values);
 
-
-        this.preview  = values[paramIds.findIndex(id => id == 'preview')];
         const rows    = values[paramIds.findIndex(id => id == 'rows'   )];
         const columns = values[paramIds.findIndex(id => id == 'columns')];
 
@@ -108481,11 +108456,8 @@ extends OperatorBase
     {
         this.paramValue.enableControlText(false, this.isUnknown());
         
-        // this.paramRows           .enableControlText(false);
-        // this.paramColumns        .enableControlText(false);
         this.paramRowSeparator   .enableControlText(true );
         this.paramColumnSeparator.enableControlText(true );
-
 
         this.updateParamControls();
     }
@@ -125173,6 +125145,7 @@ function uiReturnFigGetPageData(msg)
 
 function uiReturnFigLoadNodesAndConns(msg)
 {
+    console.log('msg =', msg);
     if (settings.logRawLoadNodes)
     {
         for (const json of msg.nodeJson)
@@ -125342,7 +125315,6 @@ function loadNodesAndConnsAsync(_nodes, _conns, setProgress)
             return res;
         });
     }
-
 
     promise.then(nodes => 
     {
@@ -125562,9 +125534,12 @@ function resolveConnections(nodes, _connections, first, last)
 function loadNodes(data, pasting)
 {
     const nodes = [];
-    
+   
     for (let i = 0; i < data.nodes.length; i++)
-        nodes.push(loadNode(data.nodes[i], pasting));
+    {
+        const node = loadNode(data.nodes[i], pasting);
+        nodes.push(node);
+    }
 
     return nodes;
 }
@@ -125574,8 +125549,8 @@ function loadNodes(data, pasting)
 function loadNode(_node, pasting)
 {
     // replace legacy
-    if (_node.type == 'EXPAND') _node.type = CONDENSE;
-    if (_node.type == 'DISTR')  _node.type = NUMBER_RANGE;
+    // if (_node.type == 'EXPAND') _node.type = CONDENSE;
+    // if (_node.type == 'DISTR' ) _node.type = NUMBER_RANGE;
 
 
     const node = createNode(_node.type);
@@ -126517,7 +126492,9 @@ function uiCopyNodes(nodeIds)
 
 function uiPasteNodes(nodesJson, loading, pasteConnected, x, y, updateNodes)
 {
-    //console.log(nodesJson);
+    //console.log('nodesJson =', nodesJson);
+    //console.log('x =', x);
+    //console.log('y =', y);
 
     graphView.pastingNodes = true;
 
@@ -126529,6 +126506,7 @@ function uiPasteNodes(nodesJson, loading, pasteConnected, x, y, updateNodes)
     try
     {
         const data = JSON.parse(nodesJson);
+        console.log('data =', data);
 
 
         if (   !isNaN(x) 

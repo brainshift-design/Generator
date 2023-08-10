@@ -163,6 +163,7 @@ function uiReturnFigGetPageData(msg)
 
 function uiReturnFigLoadNodesAndConns(msg)
 {
+    console.log('msg =', msg);
     if (settings.logRawLoadNodes)
     {
         for (const json of msg.nodeJson)
@@ -332,7 +333,6 @@ function loadNodesAndConnsAsync(_nodes, _conns, setProgress)
             return res;
         });
     }
-
 
     promise.then(nodes => 
     {
@@ -552,9 +552,12 @@ function resolveConnections(nodes, _connections, first, last)
 function loadNodes(data, pasting)
 {
     const nodes = [];
-    
+   
     for (let i = 0; i < data.nodes.length; i++)
-        nodes.push(loadNode(data.nodes[i], pasting));
+    {
+        const node = loadNode(data.nodes[i], pasting);
+        nodes.push(node);
+    }
 
     return nodes;
 }
@@ -564,8 +567,8 @@ function loadNodes(data, pasting)
 function loadNode(_node, pasting)
 {
     // replace legacy
-    if (_node.type == 'EXPAND') _node.type = CONDENSE;
-    if (_node.type == 'DISTR')  _node.type = NUMBER_RANGE;
+    // if (_node.type == 'EXPAND') _node.type = CONDENSE;
+    // if (_node.type == 'DISTR' ) _node.type = NUMBER_RANGE;
 
 
     const node = createNode(_node.type);

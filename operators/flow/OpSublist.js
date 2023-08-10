@@ -4,7 +4,6 @@ extends OperatorBase
     paramStart;
     paramEnd;
 
-    preview = null;
     length;
 
 
@@ -26,9 +25,6 @@ extends OperatorBase
 
         this.paramStart.controls[0].allowEditDecimals = false;
         this.paramEnd  .controls[0].allowEditDecimals = false;
-
-
-        createListTooltip(this);
     }
 
 

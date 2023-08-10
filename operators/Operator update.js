@@ -88,7 +88,7 @@ Operator.prototype.updateBorder = function()
             case 7: highlight = darkMode ? '#fff8' : '#0007'; break;
         }
     }
-    
+
 
     this.div.style.boxShadow = 
           (this._selected
@@ -391,6 +391,9 @@ Operator.prototype.updateValues = function(requestId, actionId, updateParamId, p
             this.params[index].setValue(values[i], false, true, false);
         }
     }
+
+
+    this.preview = values[paramIds.findIndex(id => id == 'preview')];
 };
 
 

@@ -384,7 +384,9 @@ function uiCopyNodes(nodeIds)
 
 function uiPasteNodes(nodesJson, loading, pasteConnected, x, y, updateNodes)
 {
-    //console.log(nodesJson);
+    //console.log('nodesJson =', nodesJson);
+    //console.log('x =', x);
+    //console.log('y =', y);
 
     graphView.pastingNodes = true;
 
@@ -396,6 +398,7 @@ function uiPasteNodes(nodesJson, loading, pasteConnected, x, y, updateNodes)
     try
     {
         const data = JSON.parse(nodesJson);
+        console.log('data =', data);
 
 
         if (   !isNaN(x) 

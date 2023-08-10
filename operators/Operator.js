@@ -81,6 +81,10 @@ class Operator
     stripIdForCopy     = false; // one-time flag
     
 
+    showHeaderTooltip  = false;
+    preview            = null;
+
+
     defaultWidth;
     labelOffsetFactor;
 
@@ -205,6 +209,8 @@ class Operator
 
         if (progressBar)
             this.createProgressBar();
+
+        createHeaderTooltip(this);
 
 
         this.setName(name);
@@ -1429,4 +1435,46 @@ function makeNodePath(node)
 function idFromNodePath(path)
 {
     return path.split('/').at(-1);
+}
+
+
+
+function createHeaderTooltip(node)
+{
+    createTooltipSrc(node.header, node.header, () => ttText);
+
+
+    node.header.addEventListener('pointerenter', e =>
+    {
+        if (  !currentTooltip
+            && node.preview
+            && node.showHeaderTooltip)
+        {
+            let strTooltip = '';
+            
+            for (let i = 0; i < node.preview.items.length; i++)
+            {
+                if (i > 0) strTooltip += '<br/>';
+                strTooltip += node.preview.items[i].toSimpleString();
+            }
+
+            // if (node.length > node.preview.items.length) 
+            //     strTooltip = '<br/>. . .';
+            // else 
+            if (strTooltip == '')
+                strTooltip = '. . .';
+            
+            initTextTooltip(strTooltip);
+        }
+    });
+
+
+    node.header.addEventListener('pointerdown', () =>
+    {
+        if (tooltipTimer)
+            clearTimeout(tooltipTimer);
+
+        if (currentTooltip) 
+            hideTooltip(currentTooltip);
+    });
 }
