@@ -307,6 +307,13 @@ class FigmaObject
         /* 9 */ 0 // for future use
         ];
     }
+
+
+
+    // isValid()
+    // {
+    //     return true;
+    // }
 }
 
 

@@ -17,7 +17,9 @@ function createTooltipSrc(source, ref, getTooltip)
             clearTimeout(tooltipTimer);
 
 
-        if (tooltipTimer < 0)
+        if (    tooltipTimer < 0
+            &&  graph.currentPage.zoom >= settings.minZoomForParams
+            && !graphView.soloMode)
         {
             tooltipTimer = setTimeout(() =>
             {

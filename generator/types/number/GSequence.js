@@ -66,10 +66,10 @@ extends GOperator
                     Math.max(start.decimals, step.decimals));
             }
             else
-                this.value = null;
+                this.value = NumberValue.NaN.copy();
         }
         else
-            this.value = NumberValue.NaN;
+            this.value = NumberValue.NaN.copy();
 
 
         this.setUpdateValues(parse,

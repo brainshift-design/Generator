@@ -19,9 +19,9 @@ function initFonts(fonts, uniqueFontNames)
 
 function genRequest(request, save)
 {
-    const requestId            = parseInt(request[0]);
-    const actionId             = parseInt(request[1]);
-    const set                  = parseInt(request[2]);
+    const requestId     = parseInt(request[0]);
+    const actionId      = parseInt(request[1]);
+    const set           = parseInt(request[2]);
 
     const settings =
     {
@@ -31,10 +31,10 @@ function genRequest(request, save)
     };
 
 
-    const updateNodeId         = request[3];
-    const updateParamId        = request[4];
+    const updateNodeId  = request[3];
+    const updateParamId = request[4];
 
-    const viewportZoom         = request[5];
+    const viewportZoom  = request[5];
 
 
     const parse = new Parse(
@@ -111,7 +111,6 @@ function genRequest(request, save)
                                     '1, 2',
                                     [12, 140, 233], 
                                     XFORM_SUFFIX));
-                        
                         }
                     }
                 }
@@ -239,10 +238,22 @@ function genUpdateValuesAndObjects(requestId, actionId, updateNodeId, updatePara
     const counts  = nodeIds.map(id => updateValues.filter(v => v.nodeId == id).length);
 
 
+    // genPostMessageToUi(
+    // {
+    //     cmd: 'uiForwardToFigma',
+    //     msg:  
+    //     {
+    //         cmd:          'figDeleteObjectsExcept',
+    //         nodeIds:       nodeIds,
+    //         ignoreObjects: updateObjects
+    //     }
+    // });
+
+
     // send updates in chunks
 
     const approxNodeChunkSize = 20;
-    const objChunkSize        = 50;
+    const objChunkSize        = 200;
     const styleChunkSize      = 20;
 
     
@@ -250,7 +261,7 @@ function genUpdateValuesAndObjects(requestId, actionId, updateNodeId, updatePara
     let o  = 0; // object
     let s  = 0; // style
 
-    let nc = 0; // node cunk count
+    let nc = 0; // node chunk count
     let oc = 0; // object chunk count
     let sc = 0; // style chunk count
 
@@ -260,6 +271,8 @@ function genUpdateValuesAndObjects(requestId, actionId, updateNodeId, updatePara
         styleChunk     = [];
 
     let nodeValChunkId = 0;
+
+    let isFirstChunk   = true;
         
 
     while (   n < nodeIds      .length
@@ -321,12 +334,15 @@ function genUpdateValuesAndObjects(requestId, actionId, updateNodeId, updatePara
                 styleChunk,
                 n,
                 nodeIds.length,
+                isFirstChunk,
                 isLastChunk,
                 save);
 
             nodeValChunk = [];  nc = 0;
             objChunk     = [];  oc = 0;
             styleChunk   = [];  sc = 0;
+
+            isFirstChunk = false;
         }
     }
 
@@ -363,7 +379,7 @@ function genUpdateValuesAndObjects(requestId, actionId, updateNodeId, updatePara
 
 
 
-function genQueueChunk(requestId, actionId, updateNodeId, updateParamId, nodeValChunkId, nodeValChunk, objChunk, styleChunk, updatedNodes, totalNodes, isLastChunk, save)
+function genQueueChunk(requestId, actionId, updateNodeId, updateParamId, nodeValChunkId, nodeValChunk, objChunk, styleChunk, updatedNodes, totalNodes, isFirstChunk, isLastChunk, save)
 {
     genQueueMessageToUi({
         cmd:          'uiUpdateValuesAndObjects',
@@ -377,6 +393,7 @@ function genQueueChunk(requestId, actionId, updateNodeId, updateParamId, nodeVal
         styles:        [...styleChunk  ],
         updatedNodes:  updatedNodes,
         totalNodes:    totalNodes,
+        isFirstChunk:  isFirstChunk,
         isLastChunk:   isLastChunk,
         save:          save
     });

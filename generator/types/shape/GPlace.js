@@ -56,6 +56,7 @@ extends GOperator
             this.value = null;//NullValue.copy();
 
 
+
         if (   position
             && position.isValid()
             && position.objects.length > 0)

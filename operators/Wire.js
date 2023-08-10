@@ -10,6 +10,14 @@ class Wire
     clientY;
 
 
+    elbowCircle0;
+    elbowCircle1;
+    elbowCircle2;
+    elbowCircle3;
+
+    midLine;
+
+
     svg;
     
     curve;
@@ -36,52 +44,73 @@ class Wire
 
     constructor(connection)
     {
-        this.connection             = connection;
- 
-        this.svg                    = createSvg('svg');
-        this.svg.style.position     = 'absolute';
-        this.svg.style.left         = 0;
-        this.svg.style.top          = 0;
-        this.svg.style.overflow     = 'hidden';
+        this.connection                  = connection;
+      
+        this.svg                         = createSvg('svg');
+        this.svg.style.position          = 'absolute';
+        this.svg.style.left              = 0;
+        this.svg.style.top               = 0;
+        this.svg.style.overflow          = 'hidden';
+          
+        this.curve                       = createSvg('path');
+        this.curve.style.position        = 'absolute';
+        this.curve.style.fill            = 'none';
+      
+        this.curve2                      = createSvg('path');
+        this.curve2.style.position       = 'absolute';
+        this.curve2.style.fill           = 'none';
+      
+        this.xp1                         = createSvg('path');
+        this.xp1.style.position          = 'absolute';
+        this.xp1.style.fill              = 'none';
+          
+        this.xp2                         = createSvg('path');
+        this.xp2.style.position          = 'absolute';
+        this.xp2.style.fill              = 'none';
+
+
+        this.outBall                     = createSvg('circle');
+        this.outBall.style.position      = 'absolute';
+         
+        this.inBall                      = createSvg('circle');
+        this.inBall.style.position       = 'absolute';
+         
+        this.arrow1                      = createSvg('polygon');
+        this.arrow1.style.position       = 'absolute';
      
-        this.curve                  = createSvg('path');
-        this.curve.style.position   = 'absolute';
-        this.curve.style.fill       = 'none';
- 
-        this.curve2                 = createSvg('path');
-        this.curve2.style.position  = 'absolute';
-        this.curve2.style.fill      = 'none';
- 
-        this.xp1                    = createSvg('path');
-        this.xp1.style.position     = 'absolute';
-        this.xp1.style.fill         = 'none';
-     
-        this.xp2                    = createSvg('path');
-        this.xp2.style.position     = 'absolute';
-        this.xp2.style.fill         = 'none';
+        this.arrow2                      = createSvg('polygon');
+        this.arrow2.style.position       = 'absolute';
 
 
-        this.outBall                = createSvg('circle');
-        this.outBall.style.position = 'absolute';
-    
-        this.inBall                 = createSvg('circle');
-        this.inBall.style.position  = 'absolute';
-    
-        this.arrow1                 = createSvg('polygon');
-        this.arrow1.style.position  = 'absolute';
+        this.elbowCircle0                = createSvg('circle');
+        this.elbowCircle0.style.position = 'absolute';
 
-        this.arrow2                 = createSvg('polygon');
-        this.arrow2.style.position  = 'absolute';
+        this.elbowCircle1                = createSvg('circle');
+        this.elbowCircle1.style.position = 'absolute';
+
+        this.elbowCircle2                = createSvg('circle');
+        this.elbowCircle2.style.position = 'absolute';
+
+        this.elbowCircle3                = createSvg('circle');
+        this.elbowCircle3.style.position = 'absolute';
+
+        this.midLine                     = createSvg('line');
+        this.midLine.style.position      = 'absolute';
 
 
-        this.svg.appendChild(this.curve  );
-        this.svg.appendChild(this.curve2 );
-        this.svg.appendChild(this.xp1    );
-        this.svg.appendChild(this.xp2    );
-        this.svg.appendChild(this.arrow1 );
-        this.svg.appendChild(this.arrow2 );
-        this.svg.appendChild(this.outBall);
-        this.svg.appendChild(this.inBall );
+        this.svg.appendChild(this.curve       );
+        this.svg.appendChild(this.curve2      );
+        this.svg.appendChild(this.xp1         );
+        this.svg.appendChild(this.xp2         );
+        this.svg.appendChild(this.arrow1      );
+        this.svg.appendChild(this.arrow2      );
+        this.svg.appendChild(this.outBall     );
+        this.svg.appendChild(this.inBall      );
+        // this.svg.appendChild(this.elbowCircle0);
+        // this.svg.appendChild(this.elbowCircle1);
+        // this.svg.appendChild(this.elbowCircle2);
+        // this.svg.appendChild(this.elbowCircle3);
+        // this.svg.appendChild(this.midLine     );
     }
 
 
@@ -175,6 +204,7 @@ class Wire
         this.updateInBall (        x2, y2);
         this.updateStyle  ();
 
+
         this.svg.setAttribute('width',  graphView.div.clientWidth);
         this.svg.setAttribute('height', graphView.div.clientHeight);
 
@@ -198,6 +228,37 @@ class Wire
         }
     
         
+        const senseElbow0 = 100;
+        const maxElbow0   = 40;
+        const nd          = Math.min(Math.max(-1, (x2 - x1) / senseElbow0), 0);
+        const diag        = 1 + Math.min((x2 - x1) / nozero(y2 - y1), 0.5);
+        const r0          = Math.min(Math.max(Math.abs(nd), diag) * maxElbow0, Math.abs(y2 - y1) / 6);
+        
+        const mx = (x1 + x2)/2;
+        const my = (y1 + y2)/2;
+
+        //const 
+
+
+        // this.elbowCircle0.setAttribute('cx',      x1);
+        // this.elbowCircle0.setAttribute('cy',      y1 + (y1 < y2 ? r0 : -r0));
+        // this.elbowCircle0.setAttribute('r',       r0);
+        // this.elbowCircle0.setAttribute('fill',   'none');
+        // this.elbowCircle0.setAttribute('stroke', '#FF6000');
+
+        // this.elbowCircle3.setAttribute('cx',      x2);
+        // this.elbowCircle3.setAttribute('cy',      y2 - (y1 < y2 ? r0 : -r0));
+        // this.elbowCircle3.setAttribute('r',       r0);
+        // this.elbowCircle3.setAttribute('fill',   'none');
+        // this.elbowCircle3.setAttribute('stroke', '#FF6000');
+
+        // this.midLine     .setAttribute('x1',      x1);
+        // this.midLine     .setAttribute('y1',      y1);
+        // this.midLine     .setAttribute('x2',      x2);
+        // this.midLine     .setAttribute('y2',      y2);
+        // this.midLine     .setAttribute('stroke', '#FF6000');
+
+
         const _x0 = x1;
         const _y0 = y1;
     

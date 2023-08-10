@@ -196,6 +196,9 @@ GraphView.prototype.createEvents = function()
                 clearTimeout(this.panZoomTimer); 
                 this.panZoomTimer = null;
             };
+
+
+            this.p = null;
         }
 
         else if (e.button == 0

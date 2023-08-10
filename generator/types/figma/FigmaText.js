@@ -147,4 +147,31 @@ extends FigmaShape
             /* 34 */ this.letterSpacing
         ];
     }
+
+
+
+    // isValid()
+    // {
+    //     return super.isValid()
+
+    //         && this.x
+    //         && this.y
+    //         && this.width
+    //         && this.height
+
+    //         && this.figWidth
+    //         && this.figHeight
+
+    //         && this.text
+
+    //         && this.font
+    //         && this.size
+    //         && this.style
+
+    //         && this.alignH
+    //         && this.alignV
+        
+    //         && this.lineHeight
+    //         && this.letterSpacing;
+    // }
 }

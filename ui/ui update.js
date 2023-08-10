@@ -1,4 +1,4 @@
-function uiUpdateValuesAndObjects(requestId, actionId, updateNodeId, updateParamId, values, objects, styles, updatedNodes, totalNodes, isLastChunk, save)
+function uiUpdateValuesAndObjects(requestId, actionId, updateNodeId, updateParamId, values, objects, styles, updatedNodes, totalNodes, isFirstChunk, isLastChunk, save)
 {
     if (requestId < lastRequestedId) 
         return;
@@ -93,6 +93,7 @@ function uiUpdateValuesAndObjects(requestId, actionId, updateNodeId, updateParam
             nodeIds:       nodes.map(n => n.id),
             objects:       [...objects],
             styles:        [...styles ],
+            firstChunk:    isFirstChunk,
             lastChunk:     isLastChunk 
         });
     }
@@ -162,5 +163,6 @@ function uiUpdateAnimateNodes()
 
     anims.forEach(n => n.updatePlayback(false));
 
-    pushUpdate(null, anims, false);
+    if (anims.length > 0)
+        pushUpdate(null, anims, false);
 }

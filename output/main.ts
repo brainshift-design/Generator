@@ -23,7 +23,7 @@ function noNodeTag(key) { return noTag(key, nodeTag); }
 function noConnTag(key) { return noTag(key, connTag); }
 
 
-const generatorVersion = 185;
+const generatorVersion = 186;
 
 
 const MAX_INT32        = 2147483647;
@@ -2499,7 +2499,7 @@ figma.ui.onmessage = function(msg)
             break;
      
         case 'figUpdateObjectsAndStyles':
-            figUpdateObjects(null, msg.objects, msg.nodeIds, msg.lastChunk);
+            figUpdateObjects(null, msg.objects, msg.nodeIds, msg.firstChunk, msg.lastChunk);
             figUpdateStyles(msg);
             break;
      
@@ -3429,7 +3429,7 @@ async function figUpdateObject(figObj, genObj)
 
 
 
-async function figUpdateObjects(figParent, genObjects, nodeIds = [], lastChunk = false)
+async function figUpdateObjects(figParent, genObjects, nodeIds = [], firstChunk = false, lastChunk = false)
 {
     let curNodeId  = NULL;
     let figObjects = null;
@@ -3438,12 +3438,19 @@ async function figUpdateObjects(figParent, genObjects, nodeIds = [], lastChunk =
     _genIgnoreNodeIds.push(...nodeIds);
 
 
+    // if (firstChunk)
+    // {
+    //     _genIgnoreNodeIds = [];
+    //     _genIgnoreObjects = [];
+    // }
+    
+
     for (const genObj of genObjects)
     {
         _genIgnoreObjects.push(genObj);
 
 
-        if (genObj[FO_NODE_ID] != curNodeId) //.nodeId
+        if (genObj[FO_NODE_ID] != curNodeId)
         {
             curNodeId  = genObj[FO_NODE_ID];
             
@@ -3453,9 +3460,9 @@ async function figUpdateObjects(figParent, genObjects, nodeIds = [], lastChunk =
             {
                 figObjectArrays.push(figObjects = 
                 {
-                    nodeId:   genObj[FO_NODE_ID], 
+                    nodeId:  genObj[FO_NODE_ID], 
                     //existing: genObj.existing,
-                    objects:  []
+                    objects: []
                 });
             }
         }
@@ -3477,7 +3484,9 @@ async function figUpdateObjects(figParent, genObjects, nodeIds = [], lastChunk =
 
         let figObj = objects.find(o => 
                o.removed
-            || o.getPluginData('objectId') == genObj[FO_OBJECT_ID])
+            || o.getPluginData('objectId') == genObj[FO_OBJECT_ID]);
+
+        // console.log('figObj =', figObj);
 
 
         if (   figObj != undefined
@@ -3537,10 +3546,12 @@ async function figUpdateObjects(figParent, genObjects, nodeIds = [], lastChunk =
 
     if (lastChunk)
     {
+        // console.log('_genIgnoreObjects =', [..._genIgnoreObjects]);
         figDeleteObjectsExcept(_genIgnoreNodeIds, _genIgnoreObjects);
 
         _genIgnoreNodeIds = [];
         _genIgnoreObjects = [];
+        // console.log('_genIgnoreObjects = [];');
     }
 }
 

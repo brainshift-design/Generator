@@ -254,28 +254,20 @@ class GraphView
 
     placeNewNode(node)
     {
-        const nodeRect = boundingRect(node.div);
+        const nodeHeight = defHeaderHeight + node.params.length * defParamHeight;
         
-        const btn = node._creatingButton;
+        //const btn = node._creatingButton;
 
-        if (graphView.p)
-        {
-            node.div.style.left = (graphView.p.x - graph.currentPage.pan.x                ) / graph.currentPage.zoom - defNodeWidth   /2;
-            node.div.style.top  = (graphView.p.y - graph.currentPage.pan.y - menuBarHeight) / graph.currentPage.zoom - defHeaderHeight/2;
-        }
-        else
-        {
-            if (btn)
-            {
-                node.div.style.left = (btn.offsetLeft + btn.offsetWidth/2 - graph.currentPage.pan.x) / graph.currentPage.zoom - nodeRect.width/2;
-                node.div.style.top  = (20 - graph.currentPage.pan.y) / graph.currentPage.zoom;
-            }
-            else
-            {
-                node.div.style.left = (this.div.offsetWidth /2 - graph.currentPage.pan.x                ) / graph.currentPage.zoom - nodeRect.width /2;
-                node.div.style.top  = (this.div.offsetHeight/2 - graph.currentPage.pan.y - getTopHeight()) / graph.currentPage.zoom - nodeRect.height/2;
-            }
-        }
+        // if (graphView.p)
+        // {
+        //     node.div.style.left = (graphView.p.x - graph.currentPage.pan.x                ) / graph.currentPage.zoom - defNodeWidth   /2;
+        //     node.div.style.top  = (graphView.p.y - graph.currentPage.pan.y - menuBarHeight) / graph.currentPage.zoom - defHeaderHeight/2;
+        // }
+        // else
+        // {
+            node.div.style.left = (this.div.offsetWidth /2 - graph.currentPage.pan.x                 ) / graph.currentPage.zoom - defNodeWidth/2;
+            node.div.style.top  = (this.div.offsetHeight/2 - graph.currentPage.pan.y - getTopHeight()) / graph.currentPage.zoom - nodeHeight/2;
+        // }
     }
 
 

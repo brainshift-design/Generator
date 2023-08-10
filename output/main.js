@@ -19,7 +19,7 @@ function isConnKey(key) { return isTagKey(key, connTag); }
 function noPageTag(key) { return noTag(key, pageTag); }
 function noNodeTag(key) { return noTag(key, nodeTag); }
 function noConnTag(key) { return noTag(key, connTag); }
-const generatorVersion = 185;
+const generatorVersion = 186;
 const MAX_INT32 = 2147483647;
 const NULL = '';
 const HTAB = '  '; // half-tab
@@ -1671,7 +1671,7 @@ figma.ui.onmessage = function (msg) {
             showIds = msg.showIds;
             break;
         case 'figUpdateObjectsAndStyles':
-            figUpdateObjects(null, msg.objects, msg.nodeIds, msg.lastChunk);
+            figUpdateObjects(null, msg.objects, msg.nodeIds, msg.firstChunk, msg.lastChunk);
             figUpdateStyles(msg);
             break;
         case 'figDeleteObjectsAndStyles':
@@ -2286,15 +2286,19 @@ function figUpdateObject(figObj, genObj) {
             updateDecoObject(figObj);
     });
 }
-function figUpdateObjects(figParent, genObjects, nodeIds = [], lastChunk = false) {
+function figUpdateObjects(figParent, genObjects, nodeIds = [], firstChunk = false, lastChunk = false) {
     return __awaiter(this, void 0, void 0, function* () {
         let curNodeId = NULL;
         let figObjects = null;
         _genIgnoreNodeIds.push(...nodeIds);
+        // if (firstChunk)
+        // {
+        //     _genIgnoreNodeIds = [];
+        //     _genIgnoreObjects = [];
+        // }
         for (const genObj of genObjects) {
             _genIgnoreObjects.push(genObj);
-            if (genObj[FO_NODE_ID] != curNodeId) //.nodeId
-             {
+            if (genObj[FO_NODE_ID] != curNodeId) {
                 curNodeId = genObj[FO_NODE_ID];
                 figObjects = figObjectArrays.find(a => a.nodeId == genObj[FO_NODE_ID]);
                 if (!figObjects) {
@@ -2317,6 +2321,7 @@ function figUpdateObjects(figParent, genObjects, nodeIds = [], lastChunk = false
                 : figObjects.objects;
             let figObj = objects.find(o => o.removed
                 || o.getPluginData('objectId') == genObj[FO_OBJECT_ID]);
+            // console.log('figObj =', figObj);
             if (figObj != undefined
                 && figObj != null
                 && figObj.removed) {
@@ -2353,9 +2358,11 @@ function figUpdateObjects(figParent, genObjects, nodeIds = [], lastChunk = false
             point.parent.appendChild(point);
         // delete old content
         if (lastChunk) {
+            // console.log('_genIgnoreObjects =', [..._genIgnoreObjects]);
             figDeleteObjectsExcept(_genIgnoreNodeIds, _genIgnoreObjects);
             _genIgnoreNodeIds = [];
             _genIgnoreObjects = [];
+            // console.log('_genIgnoreObjects = [];');
         }
     });
 }

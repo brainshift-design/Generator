@@ -61,8 +61,6 @@ function loadNodesAndConnsData(_pages, _nodes, _conns)
     {
         if (n1.key.split(' ')[1] < n2.key.split(' ')[1]) return -1;
         if (n1.key.split(' ')[1] > n2.key.split(' ')[1]) return  1;
-        // if (n1.y != n2.y) return parseFloat(n1.value.y) - parseFloat(n2.value.y);
-        // if (n1.x != n2.x) return parseFloat(n1.value.x) - parseFloat(n2.value.x);
         return 0;
     });
 

@@ -4849,14 +4849,7 @@ a
             <div id='whatsNewBody'>
                 <h1 style='margin-top: 20px;'>What's new</h1>
 
-                <p>•  improved how context menus appear close to the right edge of the window</p>
-                <p>•  objects centers are now shown in red</p>
-                <p>•  fixed Place node not transforming objects</p>
-                <p>•  added End parameter to Sequence...</p>
-                <p>•  added Text to color node</p>
-                <p>•  added preview tooltip to all list nodes</p>
-                <p>•  nodes in debug mode are now sorted alphabetically</p>
-                <p>•  fixed list node issues</p>
+                <p>•  new nodes are now placed in the center of the window</p>
                 
                 <p><br/><br/><div id='chkHideWhatsNew'></div></p>
             </div>
@@ -5212,7 +5205,7 @@ a
 
 
 
-const generatorVersion = 185;
+const generatorVersion = 186;
 
 
 const MAX_INT32        = 2147483647;
@@ -10932,6 +10925,13 @@ class FigmaObject
         /* 9 */ 0 // for future use
         ];
     }
+
+
+
+    // isValid()
+    // {
+    //     return true;
+    // }
 }
 
 
@@ -12810,6 +12810,33 @@ extends FigmaShape
             /* 34 */ this.letterSpacing
         ];
     }
+
+
+
+    // isValid()
+    // {
+    //     return super.isValid()
+
+    //         && this.x
+    //         && this.y
+    //         && this.width
+    //         && this.height
+
+    //         && this.figWidth
+    //         && this.figHeight
+
+    //         && this.text
+
+    //         && this.font
+    //         && this.size
+    //         && this.style
+
+    //         && this.alignH
+    //         && this.alignV
+        
+    //         && this.lineHeight
+    //         && this.letterSpacing;
+    // }
 }
 
 
@@ -22625,10 +22652,10 @@ extends GOperator
                     Math.max(start.decimals, step.decimals));
             }
             else
-                this.value = null;
+                this.value = NumberValue.NaN.copy();
         }
         else
-            this.value = NumberValue.NaN;
+            this.value = NumberValue.NaN.copy();
 
 
         this.setUpdateValues(parse,
@@ -36158,6 +36185,7 @@ extends GOperator
             this.value = null;//NullValue.copy();
 
 
+
         if (   position
             && position.isValid()
             && position.objects.length > 0)
@@ -36699,9 +36727,9 @@ function initFonts(fonts, uniqueFontNames)
 
 function genRequest(request, save)
 {
-    const requestId            = parseInt(request[0]);
-    const actionId             = parseInt(request[1]);
-    const set                  = parseInt(request[2]);
+    const requestId     = parseInt(request[0]);
+    const actionId      = parseInt(request[1]);
+    const set           = parseInt(request[2]);
 
     const settings =
     {
@@ -36711,10 +36739,10 @@ function genRequest(request, save)
     };
 
 
-    const updateNodeId         = request[3];
-    const updateParamId        = request[4];
+    const updateNodeId  = request[3];
+    const updateParamId = request[4];
 
-    const viewportZoom         = request[5];
+    const viewportZoom  = request[5];
 
 
     const parse = new Parse(
@@ -36791,7 +36819,6 @@ function genRequest(request, save)
                                     '1, 2',
                                     [12, 140, 233], 
                                     XFORM_SUFFIX));
-                        
                         }
                     }
                 }
@@ -36919,10 +36946,22 @@ function genUpdateValuesAndObjects(requestId, actionId, updateNodeId, updatePara
     const counts  = nodeIds.map(id => updateValues.filter(v => v.nodeId == id).length);
 
 
+    // genPostMessageToUi(
+    // {
+    //     cmd: 'uiForwardToFigma',
+    //     msg:  
+    //     {
+    //         cmd:          'figDeleteObjectsExcept',
+    //         nodeIds:       nodeIds,
+    //         ignoreObjects: updateObjects
+    //     }
+    // });
+
+
     // send updates in chunks
 
     const approxNodeChunkSize = 20;
-    const objChunkSize        = 50;
+    const objChunkSize        = 200;
     const styleChunkSize      = 20;
 
     
@@ -36930,7 +36969,7 @@ function genUpdateValuesAndObjects(requestId, actionId, updateNodeId, updatePara
     let o  = 0; // object
     let s  = 0; // style
 
-    let nc = 0; // node cunk count
+    let nc = 0; // node chunk count
     let oc = 0; // object chunk count
     let sc = 0; // style chunk count
 
@@ -36940,6 +36979,8 @@ function genUpdateValuesAndObjects(requestId, actionId, updateNodeId, updatePara
         styleChunk     = [];
 
     let nodeValChunkId = 0;
+
+    let isFirstChunk   = true;
         
 
     while (   n < nodeIds      .length
@@ -37001,12 +37042,15 @@ function genUpdateValuesAndObjects(requestId, actionId, updateNodeId, updatePara
                 styleChunk,
                 n,
                 nodeIds.length,
+                isFirstChunk,
                 isLastChunk,
                 save);
 
             nodeValChunk = [];  nc = 0;
             objChunk     = [];  oc = 0;
             styleChunk   = [];  sc = 0;
+
+            isFirstChunk = false;
         }
     }
 
@@ -37043,7 +37087,7 @@ function genUpdateValuesAndObjects(requestId, actionId, updateNodeId, updatePara
 
 
 
-function genQueueChunk(requestId, actionId, updateNodeId, updateParamId, nodeValChunkId, nodeValChunk, objChunk, styleChunk, updatedNodes, totalNodes, isLastChunk, save)
+function genQueueChunk(requestId, actionId, updateNodeId, updateParamId, nodeValChunkId, nodeValChunk, objChunk, styleChunk, updatedNodes, totalNodes, isFirstChunk, isLastChunk, save)
 {
     genQueueMessageToUi({
         cmd:          'uiUpdateValuesAndObjects',
@@ -37057,6 +37101,7 @@ function genQueueChunk(requestId, actionId, updateNodeId, updateParamId, nodeVal
         styles:        [...styleChunk  ],
         updatedNodes:  updatedNodes,
         totalNodes:    totalNodes,
+        isFirstChunk:  isFirstChunk,
         isLastChunk:   isLastChunk,
         save:          save
     });
@@ -46587,7 +46632,7 @@ onerror = (event, source, line, pos, error) =>
 };
 
 
-const generatorVersion = 185;
+const generatorVersion = 186;
 
 
 const MAX_INT32        = 2147483647;
@@ -54478,6 +54523,13 @@ class FigmaObject
         /* 9 */ 0 // for future use
         ];
     }
+
+
+
+    // isValid()
+    // {
+    //     return true;
+    // }
 }
 
 
@@ -56356,6 +56408,33 @@ extends FigmaShape
             /* 34 */ this.letterSpacing
         ];
     }
+
+
+
+    // isValid()
+    // {
+    //     return super.isValid()
+
+    //         && this.x
+    //         && this.y
+    //         && this.width
+    //         && this.height
+
+    //         && this.figWidth
+    //         && this.figHeight
+
+    //         && this.text
+
+    //         && this.font
+    //         && this.size
+    //         && this.style
+
+    //         && this.alignH
+    //         && this.alignV
+        
+    //         && this.lineHeight
+    //         && this.letterSpacing;
+    // }
 }
 
 
@@ -66171,10 +66250,10 @@ extends GOperator
                     Math.max(start.decimals, step.decimals));
             }
             else
-                this.value = null;
+                this.value = NumberValue.NaN.copy();
         }
         else
-            this.value = NumberValue.NaN;
+            this.value = NumberValue.NaN.copy();
 
 
         this.setUpdateValues(parse,
@@ -79704,6 +79783,7 @@ extends GOperator
             this.value = null;//NullValue.copy();
 
 
+
         if (   position
             && position.isValid()
             && position.objects.length > 0)
@@ -86796,16 +86876,16 @@ function initGeneratorMenus()
         updatePanMode(!panMode);
     }});
 
-    btnComment = new MenuButton('Add comment', null, {callback: () => 
-    {
-        const create = new CreateNodeAction(COMMENT, btnComment.div);
-        actionManager.do(create);
+    // btnComment = new MenuButton('Add comment', null, {callback: () => 
+    // {
+    //     const create = new CreateNodeAction(COMMENT, btnComment.div);
+    //     actionManager.do(create);
 
-        graphView.updateNodes([create.node]);
-        graphView.updateScrollWithBounds();
+    //     graphView.updateNodes([create.node]);
+    //     graphView.updateScrollWithBounds();
 
-        updatePanMode(false);
-    }});
+    //     updatePanMode(false);
+    // }});
 
 
     //menuBar.appendChild(createDiv('', 'groupName'));
@@ -86875,7 +86955,7 @@ function initGeneratorMenus()
     btnLayer  .setIcon(iconEffects);
     btnShape  .setIcon(iconShapes);
     btnHand   .setIcon(iconHand);
-    btnComment.setIcon(iconComment);
+    //btnComment.setIcon(iconComment);
     btnSolo   .setIcon(iconSolo);
 
 
@@ -88279,28 +88359,20 @@ class GraphView
 
     placeNewNode(node)
     {
-        const nodeRect = boundingRect(node.div);
+        const nodeHeight = defHeaderHeight + node.params.length * defParamHeight;
         
-        const btn = node._creatingButton;
+        //const btn = node._creatingButton;
 
-        if (graphView.p)
-        {
-            node.div.style.left = (graphView.p.x - graph.currentPage.pan.x                ) / graph.currentPage.zoom - defNodeWidth   /2;
-            node.div.style.top  = (graphView.p.y - graph.currentPage.pan.y - menuBarHeight) / graph.currentPage.zoom - defHeaderHeight/2;
-        }
-        else
-        {
-            if (btn)
-            {
-                node.div.style.left = (btn.offsetLeft + btn.offsetWidth/2 - graph.currentPage.pan.x) / graph.currentPage.zoom - nodeRect.width/2;
-                node.div.style.top  = (20 - graph.currentPage.pan.y) / graph.currentPage.zoom;
-            }
-            else
-            {
-                node.div.style.left = (this.div.offsetWidth /2 - graph.currentPage.pan.x                ) / graph.currentPage.zoom - nodeRect.width /2;
-                node.div.style.top  = (this.div.offsetHeight/2 - graph.currentPage.pan.y - getTopHeight()) / graph.currentPage.zoom - nodeRect.height/2;
-            }
-        }
+        // if (graphView.p)
+        // {
+        //     node.div.style.left = (graphView.p.x - graph.currentPage.pan.x                ) / graph.currentPage.zoom - defNodeWidth   /2;
+        //     node.div.style.top  = (graphView.p.y - graph.currentPage.pan.y - menuBarHeight) / graph.currentPage.zoom - defHeaderHeight/2;
+        // }
+        // else
+        // {
+            node.div.style.left = (this.div.offsetWidth /2 - graph.currentPage.pan.x                 ) / graph.currentPage.zoom - defNodeWidth/2;
+            node.div.style.top  = (this.div.offsetHeight/2 - graph.currentPage.pan.y - getTopHeight()) / graph.currentPage.zoom - nodeHeight/2;
+        // }
     }
 
 
@@ -89384,6 +89456,9 @@ GraphView.prototype.createEvents = function()
                 clearTimeout(this.panZoomTimer); 
                 this.panZoomTimer = null;
             };
+
+
+            this.p = null;
         }
 
         else if (e.button == 0
@@ -96981,6 +97056,14 @@ class Wire
     clientY;
 
 
+    elbowCircle0;
+    elbowCircle1;
+    elbowCircle2;
+    elbowCircle3;
+
+    midLine;
+
+
     svg;
     
     curve;
@@ -97007,52 +97090,73 @@ class Wire
 
     constructor(connection)
     {
-        this.connection             = connection;
- 
-        this.svg                    = createSvg('svg');
-        this.svg.style.position     = 'absolute';
-        this.svg.style.left         = 0;
-        this.svg.style.top          = 0;
-        this.svg.style.overflow     = 'hidden';
+        this.connection                  = connection;
+      
+        this.svg                         = createSvg('svg');
+        this.svg.style.position          = 'absolute';
+        this.svg.style.left              = 0;
+        this.svg.style.top               = 0;
+        this.svg.style.overflow          = 'hidden';
+          
+        this.curve                       = createSvg('path');
+        this.curve.style.position        = 'absolute';
+        this.curve.style.fill            = 'none';
+      
+        this.curve2                      = createSvg('path');
+        this.curve2.style.position       = 'absolute';
+        this.curve2.style.fill           = 'none';
+      
+        this.xp1                         = createSvg('path');
+        this.xp1.style.position          = 'absolute';
+        this.xp1.style.fill              = 'none';
+          
+        this.xp2                         = createSvg('path');
+        this.xp2.style.position          = 'absolute';
+        this.xp2.style.fill              = 'none';
+
+
+        this.outBall                     = createSvg('circle');
+        this.outBall.style.position      = 'absolute';
+         
+        this.inBall                      = createSvg('circle');
+        this.inBall.style.position       = 'absolute';
+         
+        this.arrow1                      = createSvg('polygon');
+        this.arrow1.style.position       = 'absolute';
      
-        this.curve                  = createSvg('path');
-        this.curve.style.position   = 'absolute';
-        this.curve.style.fill       = 'none';
- 
-        this.curve2                 = createSvg('path');
-        this.curve2.style.position  = 'absolute';
-        this.curve2.style.fill      = 'none';
- 
-        this.xp1                    = createSvg('path');
-        this.xp1.style.position     = 'absolute';
-        this.xp1.style.fill         = 'none';
-     
-        this.xp2                    = createSvg('path');
-        this.xp2.style.position     = 'absolute';
-        this.xp2.style.fill         = 'none';
+        this.arrow2                      = createSvg('polygon');
+        this.arrow2.style.position       = 'absolute';
 
 
-        this.outBall                = createSvg('circle');
-        this.outBall.style.position = 'absolute';
-    
-        this.inBall                 = createSvg('circle');
-        this.inBall.style.position  = 'absolute';
-    
-        this.arrow1                 = createSvg('polygon');
-        this.arrow1.style.position  = 'absolute';
+        this.elbowCircle0                = createSvg('circle');
+        this.elbowCircle0.style.position = 'absolute';
 
-        this.arrow2                 = createSvg('polygon');
-        this.arrow2.style.position  = 'absolute';
+        this.elbowCircle1                = createSvg('circle');
+        this.elbowCircle1.style.position = 'absolute';
+
+        this.elbowCircle2                = createSvg('circle');
+        this.elbowCircle2.style.position = 'absolute';
+
+        this.elbowCircle3                = createSvg('circle');
+        this.elbowCircle3.style.position = 'absolute';
+
+        this.midLine                     = createSvg('line');
+        this.midLine.style.position      = 'absolute';
 
 
-        this.svg.appendChild(this.curve  );
-        this.svg.appendChild(this.curve2 );
-        this.svg.appendChild(this.xp1    );
-        this.svg.appendChild(this.xp2    );
-        this.svg.appendChild(this.arrow1 );
-        this.svg.appendChild(this.arrow2 );
-        this.svg.appendChild(this.outBall);
-        this.svg.appendChild(this.inBall );
+        this.svg.appendChild(this.curve       );
+        this.svg.appendChild(this.curve2      );
+        this.svg.appendChild(this.xp1         );
+        this.svg.appendChild(this.xp2         );
+        this.svg.appendChild(this.arrow1      );
+        this.svg.appendChild(this.arrow2      );
+        this.svg.appendChild(this.outBall     );
+        this.svg.appendChild(this.inBall      );
+        // this.svg.appendChild(this.elbowCircle0);
+        // this.svg.appendChild(this.elbowCircle1);
+        // this.svg.appendChild(this.elbowCircle2);
+        // this.svg.appendChild(this.elbowCircle3);
+        // this.svg.appendChild(this.midLine     );
     }
 
 
@@ -97146,6 +97250,7 @@ class Wire
         this.updateInBall (        x2, y2);
         this.updateStyle  ();
 
+
         this.svg.setAttribute('width',  graphView.div.clientWidth);
         this.svg.setAttribute('height', graphView.div.clientHeight);
 
@@ -97169,6 +97274,37 @@ class Wire
         }
     
         
+        const senseElbow0 = 100;
+        const maxElbow0   = 40;
+        const nd          = Math.min(Math.max(-1, (x2 - x1) / senseElbow0), 0);
+        const diag        = 1 + Math.min((x2 - x1) / nozero(y2 - y1), 0.5);
+        const r0          = Math.min(Math.max(Math.abs(nd), diag) * maxElbow0, Math.abs(y2 - y1) / 6);
+        
+        const mx = (x1 + x2)/2;
+        const my = (y1 + y2)/2;
+
+        //const 
+
+
+        // this.elbowCircle0.setAttribute('cx',      x1);
+        // this.elbowCircle0.setAttribute('cy',      y1 + (y1 < y2 ? r0 : -r0));
+        // this.elbowCircle0.setAttribute('r',       r0);
+        // this.elbowCircle0.setAttribute('fill',   'none');
+        // this.elbowCircle0.setAttribute('stroke', '#FF6000');
+
+        // this.elbowCircle3.setAttribute('cx',      x2);
+        // this.elbowCircle3.setAttribute('cy',      y2 - (y1 < y2 ? r0 : -r0));
+        // this.elbowCircle3.setAttribute('r',       r0);
+        // this.elbowCircle3.setAttribute('fill',   'none');
+        // this.elbowCircle3.setAttribute('stroke', '#FF6000');
+
+        // this.midLine     .setAttribute('x1',      x1);
+        // this.midLine     .setAttribute('y1',      y1);
+        // this.midLine     .setAttribute('x2',      x2);
+        // this.midLine     .setAttribute('y2',      y2);
+        // this.midLine     .setAttribute('stroke', '#FF6000');
+
+
         const _x0 = x1;
         const _y0 = y1;
     
@@ -101633,6 +101769,7 @@ function createListTooltip(node)
 {
     createTooltipSrc(node.header, node.header, () => ttText);
 
+    
     node.header.addEventListener('pointerenter', e =>
     {
         if (  !currentTooltip
@@ -121605,8 +121742,6 @@ function loadNodesAndConnsData(_pages, _nodes, _conns)
     {
         if (n1.key.split(' ')[1] < n2.key.split(' ')[1]) return -1;
         if (n1.key.split(' ')[1] > n2.key.split(' ')[1]) return  1;
-        // if (n1.y != n2.y) return parseFloat(n1.value.y) - parseFloat(n2.value.y);
-        // if (n1.x != n2.x) return parseFloat(n1.value.x) - parseFloat(n2.value.x);
         return 0;
     });
 
@@ -124646,7 +124781,9 @@ function createTooltipSrc(source, ref, getTooltip)
             clearTimeout(tooltipTimer);
 
 
-        if (tooltipTimer < 0)
+        if (    tooltipTimer < 0
+            &&  graph.currentPage.zoom >= settings.minZoomForParams
+            && !graphView.soloMode)
         {
             tooltipTimer = setTimeout(() =>
             {
@@ -126455,7 +126592,7 @@ function createStyleIcon(rgba)
 }
 
 
-function uiUpdateValuesAndObjects(requestId, actionId, updateNodeId, updateParamId, values, objects, styles, updatedNodes, totalNodes, isLastChunk, save)
+function uiUpdateValuesAndObjects(requestId, actionId, updateNodeId, updateParamId, values, objects, styles, updatedNodes, totalNodes, isFirstChunk, isLastChunk, save)
 {
     if (requestId < lastRequestedId) 
         return;
@@ -126550,6 +126687,7 @@ function uiUpdateValuesAndObjects(requestId, actionId, updateNodeId, updateParam
             nodeIds:       nodes.map(n => n.id),
             objects:       [...objects],
             styles:        [...styles ],
+            firstChunk:    isFirstChunk,
             lastChunk:     isLastChunk 
         });
     }
@@ -126619,7 +126757,8 @@ function uiUpdateAnimateNodes()
 
     anims.forEach(n => n.updatePlayback(false));
 
-    pushUpdate(null, anims, false);
+    if (anims.length > 0)
+        pushUpdate(null, anims, false);
 }
 
 

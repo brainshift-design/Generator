@@ -120,6 +120,7 @@ function createListTooltip(node)
 {
     createTooltipSrc(node.header, node.header, () => ttText);
 
+    
     node.header.addEventListener('pointerenter', e =>
     {
         if (  !currentTooltip

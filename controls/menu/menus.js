@@ -851,16 +851,16 @@ function initGeneratorMenus()
         updatePanMode(!panMode);
     }});
 
-    btnComment = new MenuButton('Add comment', null, {callback: () => 
-    {
-        const create = new CreateNodeAction(COMMENT, btnComment.div);
-        actionManager.do(create);
+    // btnComment = new MenuButton('Add comment', null, {callback: () => 
+    // {
+    //     const create = new CreateNodeAction(COMMENT, btnComment.div);
+    //     actionManager.do(create);
 
-        graphView.updateNodes([create.node]);
-        graphView.updateScrollWithBounds();
+    //     graphView.updateNodes([create.node]);
+    //     graphView.updateScrollWithBounds();
 
-        updatePanMode(false);
-    }});
+    //     updatePanMode(false);
+    // }});
 
 
     //menuBar.appendChild(createDiv('', 'groupName'));
@@ -930,7 +930,7 @@ function initGeneratorMenus()
     btnLayer  .setIcon(iconEffects);
     btnShape  .setIcon(iconShapes);
     btnHand   .setIcon(iconHand);
-    btnComment.setIcon(iconComment);
+    //btnComment.setIcon(iconComment);
     btnSolo   .setIcon(iconSolo);
 
 
