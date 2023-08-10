@@ -98478,6 +98478,19 @@ class Operator
 
 
 
+    setHeight(h, updateTransform = true)
+    {
+        this.div.style.height = h + 'px';
+
+        if (updateTransform)
+        {
+            this.div.style.display = 'block';
+            this.updateTransform();
+        }
+    }
+
+
+
     showParamMenu(e, param, menu)
     {
         if (e.button == 2)
@@ -100856,6 +100869,27 @@ extends OperatorBase
 
 
 
+    setHeight(h, updateTransform = true)
+    {
+        const headerHeight = this.header.offsetHeight;//getStyleValue(this.header, 'height');
+
+        const paramHeight = 
+               this instanceof ResizableOperatorWithValue
+            && settings.showOperationResults 
+            ? defParamHeight 
+            : 0;
+
+        const _h = Math.max(parseFloat(headerHeight) + paramHeight, h);
+
+        super.setHeight(_h, updateTransform);
+        
+        this.updateSizers();
+    
+        this.inner.style.height = _h;
+    }
+
+
+
     updateSizers()
     {
         const edge   = Math.ceil(sizeBorderWidth / graph.currentPage.zoom);
@@ -102522,6 +102556,7 @@ extends ResizableBase
         this.scrollbar.down = false;
         this.scrollbar.sy   = Number.NaN;
         this.scrollbar.spy  = Number.NaN;
+        this.scrollbar.style.height = 0;
 
         this.div.appendChild(this.scrollbar);
 
@@ -102717,12 +102752,7 @@ extends ResizableBase
         super.updateValues(requestId, actionId, updateParamId, paramIds, values);
 
 
-        const rect = this.measureData.divOffset;
- 
-        if (this.scrollbar.style.display == 'none')
-            rect.h = defHeaderHeight + this.params.length * defParamHeight;
-        
-        this.setRect(rect.x, rect.y, rect.w, rect.h, false);
+        this.setHeight(defHeaderHeight + this.params.length * defParamHeight, false);
 
 
         for (const param of this.params)
@@ -123389,6 +123419,7 @@ generator.onmessage = function(e)
                 msg.styles,
                 msg.updatedNodes,
                 msg.totalNodes,
+                msg.isFirstChunk,
                 msg.isLastChunk,
                 msg.save);  
                 

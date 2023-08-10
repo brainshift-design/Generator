@@ -730,6 +730,19 @@ class Operator
 
 
 
+    setHeight(h, updateTransform = true)
+    {
+        this.div.style.height = h + 'px';
+
+        if (updateTransform)
+        {
+            this.div.style.display = 'block';
+            this.updateTransform();
+        }
+    }
+
+
+
     showParamMenu(e, param, menu)
     {
         if (e.button == 2)

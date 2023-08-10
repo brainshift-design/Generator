@@ -191,6 +191,7 @@ generator.onmessage = function(e)
                 msg.styles,
                 msg.updatedNodes,
                 msg.totalNodes,
+                msg.isFirstChunk,
                 msg.isLastChunk,
                 msg.save);  
                 

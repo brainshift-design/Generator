@@ -285,6 +285,27 @@ extends OperatorBase
 
 
 
+    setHeight(h, updateTransform = true)
+    {
+        const headerHeight = this.header.offsetHeight;//getStyleValue(this.header, 'height');
+
+        const paramHeight = 
+               this instanceof ResizableOperatorWithValue
+            && settings.showOperationResults 
+            ? defParamHeight 
+            : 0;
+
+        const _h = Math.max(parseFloat(headerHeight) + paramHeight, h);
+
+        super.setHeight(_h, updateTransform);
+        
+        this.updateSizers();
+    
+        this.inner.style.height = _h;
+    }
+
+
+
     updateSizers()
     {
         const edge   = Math.ceil(sizeBorderWidth / graph.currentPage.zoom);

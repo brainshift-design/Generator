@@ -39,6 +39,7 @@ extends ResizableBase
         this.scrollbar.down = false;
         this.scrollbar.sy   = Number.NaN;
         this.scrollbar.spy  = Number.NaN;
+        this.scrollbar.style.height = 0;
 
         this.div.appendChild(this.scrollbar);
 
@@ -234,12 +235,7 @@ extends ResizableBase
         super.updateValues(requestId, actionId, updateParamId, paramIds, values);
 
 
-        const rect = this.measureData.divOffset;
- 
-        if (this.scrollbar.style.display == 'none')
-            rect.h = defHeaderHeight + this.params.length * defParamHeight;
-        
-        this.setRect(rect.x, rect.y, rect.w, rect.h, false);
+        this.setHeight(defHeaderHeight + this.params.length * defParamHeight, false);
 
 
         for (const param of this.params)
