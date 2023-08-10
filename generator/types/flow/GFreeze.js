@@ -60,7 +60,7 @@ extends GOperator
 
         this.setUpdateValues(parse,
         [
-            ['', NullValue]
+            ['type', this.value ? new TextValue(this.value.type) : null],
         ]);
 
 

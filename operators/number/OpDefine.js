@@ -69,7 +69,7 @@ extends OperatorBase
         super.updateValues(requestId, actionId, updateParamId, paramIds, values);
 
         const type = values[paramIds.findIndex(id => id == 'type')];
-console.log('type =', type.value);
+
         this.outputs[0].types = [type.value];
     }
 

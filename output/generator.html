@@ -4,7 +4,7 @@
 
 
 
-const generatorVersion = 188;
+const generatorVersion = 189;
 
 
 const MAX_INT32        = 2147483647;
@@ -14821,7 +14821,7 @@ extends GOperator
 
         this.setUpdateValues(parse,
         [
-            ['', NullValue]
+            ['type', this.value ? new TextValue(this.value.type) : null],
         ]);
 
 
@@ -14922,7 +14922,7 @@ extends GOperator
 
         this.setUpdateValues(parse,
         [
-            ['', NullValue]
+            ['type', this.value ? new TextValue(this.value.type) : null],
         ]);
 
 
@@ -15934,7 +15934,6 @@ extends GOperator
             this.value = NullValue.copy();
 
 
-        console.log('this.value =', this.value);
         this.setUpdateValues(parse,
         [
             ['preview', this.value                                        ],
@@ -22534,7 +22533,7 @@ extends GOperator1
         }
     
 
-        console.log('this.value =', this.value);
+        // console.log('this.value =', this.value);
         this.setUpdateValues(parse,
         [
             ['preview', new ListValue(this.value.items.slice(0, Math.min(this.value.items.length, 11)))]//,

@@ -44,7 +44,7 @@ extends GOperator1
         }
     
 
-        console.log('this.value =', this.value);
+        // console.log('this.value =', this.value);
         this.setUpdateValues(parse,
         [
             ['preview', new ListValue(this.value.items.slice(0, Math.min(this.value.items.length, 11)))]//,

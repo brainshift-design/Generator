@@ -398,7 +398,6 @@ function uiPasteNodes(nodesJson, loading, pasteConnected, x, y, updateNodes)
     try
     {
         const data = JSON.parse(nodesJson);
-        console.log('data =', data);
 
 
         if (   !isNaN(x) 

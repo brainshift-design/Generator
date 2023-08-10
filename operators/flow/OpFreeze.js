@@ -27,6 +27,13 @@ extends OperatorBase
 
     
 
+    isOrPrecededByUncached()
+    {
+        return false;
+    }
+
+
+
     output_genRequest(gen)
     {
         // 'this' is the output
@@ -56,33 +63,32 @@ extends OperatorBase
 
 
 
+    updateValues(requestId, actionId, updateParamId, paramIds, values)
+    {
+        super.updateValues(requestId, actionId, updateParamId, paramIds, values);
+        
+        const type = values[paramIds.findIndex(id => id == 'type')];
+
+        if (type)
+            this.outputs[0].types = [type.value];
+    }
+
+
+
     getHeaderColors(options = {})
     {
         const colors = super.getHeaderColors(options);
-
-        const type = 
-            this.inputs[0].connected 
-            ? this.inputs[0].connectedOutput.node.type 
-            : this.type;
-
-        // colors.back = 
-        //     this.headerColor
-        //     ? this.headerColor
-        //     : this.inert
-        //     ? rgb_a(rgbDocumentBody, 0.95)
-        //     : rgb_a(rgbFromType(type, this.active), 0.95);
-
+        const type   = this.outputs[0].types[0];
 
         colors.text   = isDark(colors.back) ? [1, 1, 1, 1] : [0, 0, 0, 1]; 
 
         const gray =
-               this.active
-            && (  !this.inputs[0].connected
-                || arraysIntersect(this.inputs[0].connectedOutput.types, [ANY_VALUE, LIST_VALUE]));
+                this.active
+            && !this.inputs[0].connected;
 
         colors.input  = gray ? rgb_a(colors.text, 0.4)  : rgb_a(rgbSaturateHsv(rgbFromType(type, true), 0.5), 0.8);
         colors.output = gray ? rgb_a(colors.text, 0.35) : rgb_a(rgbSaturateHsv(rgbFromType(type, true), 0.5), 0.7);
-        colors.wire   = rgbFromType(type, true);
+        colors.wire   = gray ? rgbFromType(ANY_VALUE, true) : rgbFromType(type, true);
 
         return colors;
     }

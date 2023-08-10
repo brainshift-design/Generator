@@ -73,7 +73,6 @@ extends GOperator
             this.value = NullValue.copy();
 
 
-        console.log('this.value =', this.value);
         this.setUpdateValues(parse,
         [
             ['preview', this.value                                        ],

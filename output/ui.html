@@ -4849,9 +4849,7 @@ a
             <div id='whatsNewBody'>
                 <h1 style='margin-top: 20px;'>What's new</h1>
 
-                <p>•  fixed crash when tabbing through List node</p>
-                <p>•  improved header tooltips</p>
-                <p>•  fixed other bugs</p>
+                <p>•  wires after Freeze are now solid</p>
                 
                 <p><br/><br/><div id='chkHideWhatsNew'></div></p>
             </div>
@@ -5207,7 +5205,7 @@ a
 
 
 
-const generatorVersion = 188;
+const generatorVersion = 189;
 
 
 const MAX_INT32        = 2147483647;
@@ -20024,7 +20022,7 @@ extends GOperator
 
         this.setUpdateValues(parse,
         [
-            ['', NullValue]
+            ['type', this.value ? new TextValue(this.value.type) : null],
         ]);
 
 
@@ -20125,7 +20123,7 @@ extends GOperator
 
         this.setUpdateValues(parse,
         [
-            ['', NullValue]
+            ['type', this.value ? new TextValue(this.value.type) : null],
         ]);
 
 
@@ -21137,7 +21135,6 @@ extends GOperator
             this.value = NullValue.copy();
 
 
-        console.log('this.value =', this.value);
         this.setUpdateValues(parse,
         [
             ['preview', this.value                                        ],
@@ -27737,7 +27734,7 @@ extends GOperator1
         }
     
 
-        console.log('this.value =', this.value);
+        // console.log('this.value =', this.value);
         this.setUpdateValues(parse,
         [
             ['preview', new ListValue(this.value.items.slice(0, Math.min(this.value.items.length, 11)))]//,
@@ -47050,7 +47047,7 @@ onerror = (event, source, line, pos, error) =>
 };
 
 
-const generatorVersion = 188;
+const generatorVersion = 189;
 
 
 const MAX_INT32        = 2147483647;
@@ -64036,7 +64033,7 @@ extends GOperator
 
         this.setUpdateValues(parse,
         [
-            ['', NullValue]
+            ['type', this.value ? new TextValue(this.value.type) : null],
         ]);
 
 
@@ -64137,7 +64134,7 @@ extends GOperator
 
         this.setUpdateValues(parse,
         [
-            ['', NullValue]
+            ['type', this.value ? new TextValue(this.value.type) : null],
         ]);
 
 
@@ -65149,7 +65146,6 @@ extends GOperator
             this.value = NullValue.copy();
 
 
-        console.log('this.value =', this.value);
         this.setUpdateValues(parse,
         [
             ['preview', this.value                                        ],
@@ -71749,7 +71745,7 @@ extends GOperator1
         }
     
 
-        console.log('this.value =', this.value);
+        // console.log('this.value =', this.value);
         this.setUpdateValues(parse,
         [
             ['preview', new ListValue(this.value.items.slice(0, Math.min(this.value.items.length, 11)))]//,
@@ -102289,25 +102285,32 @@ extends OperatorBase
 
 
 
+    updateValues(requestId, actionId, updateParamId, paramIds, values)
+    {
+        super.updateValues(requestId, actionId, updateParamId, paramIds, values);
+        
+        const type = values[paramIds.findIndex(id => id == 'type')];
+
+        if (type)
+            this.outputs[0].types = [type.value];
+    }
+
+
+
     getHeaderColors(options = {})
     {
         const colors = super.getHeaderColors(options);
-
-        const type = 
-            this.inputs[0].connected 
-            ? this.inputs[0].connectedOutput.node.type 
-            : this.type;
+        const type   = this.outputs[0].types[0];
 
         colors.text   = isDark(colors.back) ? [1, 1, 1, 1] : [0, 0, 0, 1]; 
 
         const gray =
-               this.active
-            && (  !this.inputs[0].connected
-                || arraysIntersect(this.inputs[0].connectedOutput.types, [ANY_VALUE, LIST_VALUE]));
+                this.active
+            && !this.inputs[0].connected;
 
         colors.input  = gray ? rgb_a(colors.text, 0.4)  : rgb_a(rgbSaturateHsv(rgbFromType(type, true), 0.5), 0.8);
         colors.output = gray ? rgb_a(colors.text, 0.35) : rgb_a(rgbSaturateHsv(rgbFromType(type, true), 0.5), 0.7);
-        colors.wire   = rgbFromType(type, true);
+        colors.wire   = gray ? rgbFromType(ANY_VALUE, true) : rgbFromType(type, true);
 
         return colors;
     }
@@ -102357,6 +102360,13 @@ extends OperatorBase
 
     
 
+    isOrPrecededByUncached()
+    {
+        return false;
+    }
+
+
+
     output_genRequest(gen)
     {
         // 'this' is the output
@@ -102386,33 +102396,32 @@ extends OperatorBase
 
 
 
+    updateValues(requestId, actionId, updateParamId, paramIds, values)
+    {
+        super.updateValues(requestId, actionId, updateParamId, paramIds, values);
+        
+        const type = values[paramIds.findIndex(id => id == 'type')];
+
+        if (type)
+            this.outputs[0].types = [type.value];
+    }
+
+
+
     getHeaderColors(options = {})
     {
         const colors = super.getHeaderColors(options);
-
-        const type = 
-            this.inputs[0].connected 
-            ? this.inputs[0].connectedOutput.node.type 
-            : this.type;
-
-        // colors.back = 
-        //     this.headerColor
-        //     ? this.headerColor
-        //     : this.inert
-        //     ? rgb_a(rgbDocumentBody, 0.95)
-        //     : rgb_a(rgbFromType(type, this.active), 0.95);
-
+        const type   = this.outputs[0].types[0];
 
         colors.text   = isDark(colors.back) ? [1, 1, 1, 1] : [0, 0, 0, 1]; 
 
         const gray =
-               this.active
-            && (  !this.inputs[0].connected
-                || arraysIntersect(this.inputs[0].connectedOutput.types, [ANY_VALUE, LIST_VALUE]));
+                this.active
+            && !this.inputs[0].connected;
 
         colors.input  = gray ? rgb_a(colors.text, 0.4)  : rgb_a(rgbSaturateHsv(rgbFromType(type, true), 0.5), 0.8);
         colors.output = gray ? rgb_a(colors.text, 0.35) : rgb_a(rgbSaturateHsv(rgbFromType(type, true), 0.5), 0.7);
-        colors.wire   = rgbFromType(type, true);
+        colors.wire   = gray ? rgbFromType(ANY_VALUE, true) : rgbFromType(type, true);
 
         return colors;
     }
@@ -105293,7 +105302,7 @@ extends OperatorBase
         super.updateValues(requestId, actionId, updateParamId, paramIds, values);
 
         const type = values[paramIds.findIndex(id => id == 'type')];
-console.log('type =', type.value);
+
         this.outputs[0].types = [type.value];
     }
 
@@ -126527,7 +126536,6 @@ function uiPasteNodes(nodesJson, loading, pasteConnected, x, y, updateNodes)
     try
     {
         const data = JSON.parse(nodesJson);
-        console.log('data =', data);
 
 
         if (   !isNaN(x) 
