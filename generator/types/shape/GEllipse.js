@@ -165,6 +165,16 @@ extends GShape
     
 
     
+    isValid()
+    {
+        return super.isValid()
+            && this.from  && this.from .isValid()
+            && this.to    && this.to   .isValid()
+            && this.inner && this.inner.isValid();
+    }
+
+
+
     pushValueUpdates(parse)
     {
         super.pushValueUpdates(parse);

@@ -1,8 +1,6 @@
 class GPlace
-extends GOperator
+extends GOperator1
 {
-    input      = null;
-
     position   = null;
     transform  = null;
     showCenter = null;
@@ -21,9 +19,6 @@ extends GOperator
         const copy = new GPlace(this.nodeId, this.options);
 
         copy.copyBase(this);
-
-        if (this.input) 
-            copy.input = this.input.copy();
 
         if (this.position  ) copy.position   = this.position  .copy();
         if (this.transform ) copy.transform  = this.transform .copy();
@@ -158,19 +153,21 @@ extends GOperator
 
 
 
+    toValue()
+    {
+        return this.value
+             ? this.value.copy()
+             : null;
+    }
+    
+    
+    
     isValid()
     {
         return super.isValid()
-            && this.position  .isValid()
-            && this.transform .isValid()
-            && this.showCenter.isValid();
-    }
-
-
-
-    toValue()
-    {
-        return this.value.copy();
+            && this.position   && this.position  .isValid()
+            && this.transform  && this.transform .isValid()
+            && this.showCenter && this.showCenter.isValid();
     }
 
 
@@ -179,7 +176,6 @@ extends GOperator
     {
         super.pushValueUpdates(parse);
 
-        if (this.input     ) this.input     .pushValueUpdates(parse);
         if (this.position  ) this.position  .pushValueUpdates(parse);
         if (this.transform ) this.transform .pushValueUpdates(parse);
         if (this.showCenter) this.showCenter.pushValueUpdates(parse);
@@ -191,7 +187,6 @@ extends GOperator
     {
         super.invalidateInputs(from);
 
-        if (this.input     ) this.input     .invalidateInputs(from);
         if (this.position  ) this.position  .invalidateInputs(from);
         if (this.transform ) this.transform .invalidateInputs(from);
         if (this.showCenter) this.showCenter.invalidateInputs(from);

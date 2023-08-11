@@ -77,6 +77,15 @@ extends GOperator2
 
 
 
+    isValid()
+    {
+        return super.isValid()
+            && this.distance && this.distance.isValid()
+            && this.angle    && this.angle   .isValid();
+    }
+
+
+
     pushValueUpdates(parse)
     {
         super.pushValueUpdates(parse);

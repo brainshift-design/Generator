@@ -78,10 +78,8 @@ extends GOperator1
     isValid()
     {
         return super.isValid()
-            && this.centerX    .isValid()
-            && this.centerY    .isValid()
-            && this.showCenter .isValid()
-            && this.affectSpace.isValid();
+            && this.showCenter  && this.showCenter .isValid()
+            && this.affectSpace && this.affectSpace.isValid();
     }
 
 
@@ -90,8 +88,6 @@ extends GOperator1
     {
         super.pushValueUpdates(parse);
 
-        if (this.centerX    ) this.centerX    .pushValueUpdates(parse);
-        if (this.centerY    ) this.centerY    .pushValueUpdates(parse);
         if (this.showCenter ) this.showCenter .pushValueUpdates(parse);
         if (this.affectSpace) this.affectSpace.pushValueUpdates(parse);
     }
@@ -102,8 +98,6 @@ extends GOperator1
     {
         super.invalidateInputs(from);
 
-        if (this.centerX    ) this.centerX    .invalidateInputs(from);
-        if (this.centerY    ) this.centerY    .invalidateInputs(from);
         if (this.showCenter ) this.showCenter .invalidateInputs(from);
         if (this.affectSpace) this.affectSpace.invalidateInputs(from);
     }

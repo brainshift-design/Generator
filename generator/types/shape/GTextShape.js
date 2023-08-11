@@ -217,22 +217,18 @@ extends GShape
     isValid()
     {
         return super.isValid()
-            && this.text         .isValid()
-
-            && this.x            .isValid()
-            && this.y            .isValid()
-            && this.width        .isValid()
-            && this.height       .isValid()
-            
-            && this.font         .isValid()
-            && this.style        .isValid()
-            && this.size         .isValid()
-            
-            && this.alignH       .isValid()
-            && this.alignV       .isValid()
-            
-            && this.lineHeight   .isValid()
-            && this.letterSpacing.isValid();
+            && this.text          && this.text         .isValid()
+            && this.x             && this.x            .isValid()
+            && this.y             && this.y            .isValid()
+            && this.width         && this.width        .isValid()
+            && this.height        && this.height       .isValid()
+            && this.font          && this.font         .isValid()
+            && this.style         && this.style        .isValid()
+            && this.size          && this.size         .isValid()
+            && this.alignH        && this.alignH       .isValid()
+            && this.alignV        && this.alignV       .isValid()
+            && this.lineHeight    && this.lineHeight   .isValid()
+            && this.letterSpacing && this.letterSpacing.isValid();
     }
 
 

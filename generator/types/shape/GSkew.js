@@ -117,8 +117,8 @@ extends GAffine
     isValid()
     {
         return super.isValid()
-            && this.skewX.isValid()
-            && this.skewY.isValid();
+            && this.skewX && this.skewX.isValid()
+            && this.skewY && this.skewY.isValid();
     }
 
 

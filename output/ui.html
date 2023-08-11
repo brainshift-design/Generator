@@ -32044,7 +32044,7 @@ extends GShape
     isValid()
     {
         return super.isValid()
-            && this.round.isValid();
+            && this.round && this.round.isValid();
     }
 
 
@@ -32366,6 +32366,16 @@ extends GShape
     
 
     
+    isValid()
+    {
+        return super.isValid()
+            && this.from  && this.from .isValid()
+            && this.to    && this.to   .isValid()
+            && this.inner && this.inner.isValid();
+    }
+
+
+
     pushValueUpdates(parse)
     {
         super.pushValueUpdates(parse);
@@ -32545,8 +32555,8 @@ extends GShape
     isValid()
     {
         return super.isValid()
-            && this.round.isValid()
-            && this.bias .isValid();
+            && this.round && this.round.isValid()
+            && this.bias  && this.bias .isValid();
     }
 
 
@@ -32736,8 +32746,8 @@ extends GShape
     isValid()
     {
         return super.isValid()
-            && this.round  .isValid()
-            && this.corners.isValid();
+            && this.round   && this.round  .isValid()
+            && this.corners && this.corners.isValid();
     }
 
 
@@ -32935,9 +32945,9 @@ extends GShape
     isValid()
     {
         return super.isValid()
-            && this.round .isValid()
-            && this.points.isValid()
-            && this.convex.isValid();
+            && this.round  && this.round .isValid()
+            && this.points && this.points.isValid()
+            && this.convex && this.convex.isValid();
     }
 
 
@@ -33183,22 +33193,18 @@ extends GShape
     isValid()
     {
         return super.isValid()
-            && this.text         .isValid()
-
-            && this.x            .isValid()
-            && this.y            .isValid()
-            && this.width        .isValid()
-            && this.height       .isValid()
-            
-            && this.font         .isValid()
-            && this.style        .isValid()
-            && this.size         .isValid()
-            
-            && this.alignH       .isValid()
-            && this.alignV       .isValid()
-            
-            && this.lineHeight   .isValid()
-            && this.letterSpacing.isValid();
+            && this.text          && this.text         .isValid()
+            && this.x             && this.x            .isValid()
+            && this.y             && this.y            .isValid()
+            && this.width         && this.width        .isValid()
+            && this.height        && this.height       .isValid()
+            && this.font          && this.font         .isValid()
+            && this.style         && this.style        .isValid()
+            && this.size          && this.size         .isValid()
+            && this.alignH        && this.alignH       .isValid()
+            && this.alignV        && this.alignV       .isValid()
+            && this.lineHeight    && this.lineHeight   .isValid()
+            && this.letterSpacing && this.letterSpacing.isValid();
     }
 
 
@@ -33398,8 +33404,8 @@ extends GOperator1
     isValid()
     {
         return super.isValid()
-            && this.x.isValid()
-            && this.y.isValid();
+            && this.x && this.x.isValid()
+            && this.y && this.y.isValid();
     }
 
 
@@ -33603,11 +33609,11 @@ extends GShape
     isValid()
     {
         return super.isValid()
-            && this.points .isValid()
-            && this.closed .isValid()
-            && this.degree .isValid()
-            && this.winding.isValid()
-            && this.round  .isValid();
+            && this.points  && this.points .isValid()
+            && this.closed  && this.closed .isValid()
+            && this.degree  && this.degree .isValid()
+            && this.winding && this.winding.isValid()
+            && this.round   && this.round  .isValid();
     }
 
 
@@ -34774,9 +34780,9 @@ extends GShape
 
     isValid()
     {
-        return super        .isValid()
-            && this.round   .isValid()
-            && this.children.isValid();
+        return super.isValid()
+            && this.round    && this.round   .isValid()
+            && this.children && this.children.isValid();
     }
 
 
@@ -35186,14 +35192,9 @@ extends GShapeBase
 
     isValid()
     {
-        if (!super.isValid()) 
-            return false;
-
-        for (const input of this.inputs)
-            if (!input.isValid())
-                return false;
-
-        return true;
+        return super.isValid()
+            && !this.inputs.find(i => !i.isValid())
+            && this.retain && this.retain.isValid();
     }
 
 
@@ -35385,23 +35386,23 @@ extends GOperator1
 
 
 
-    isValid()
-    {
-        return super.isValid()
-            && this.x          .isValid()
-            && this.y          .isValid()
-            && this.moveType   .isValid()
-            && this.affectSpace.isValid()
-            && this.showCenter .isValid();
-    }
-
-
-
     toValue()
     {
         return this.value
-             ? this.value.copy()
-             : null;
+        ? this.value.copy()
+        : null;
+    }
+    
+    
+    
+    isValid()
+    {
+        return super.isValid()
+            && this.x           && this.x          .isValid()
+            && this.y           && this.y          .isValid()
+            && this.moveType    && this.moveType   .isValid()
+            && this.affectSpace && this.affectSpace.isValid()
+            && this.showCenter  && this.showCenter .isValid();
     }
 
 
@@ -35512,10 +35513,8 @@ extends GOperator1
     isValid()
     {
         return super.isValid()
-            && this.centerX    .isValid()
-            && this.centerY    .isValid()
-            && this.showCenter .isValid()
-            && this.affectSpace.isValid();
+            && this.showCenter  && this.showCenter .isValid()
+            && this.affectSpace && this.affectSpace.isValid();
     }
 
 
@@ -35524,8 +35523,6 @@ extends GOperator1
     {
         super.pushValueUpdates(parse);
 
-        if (this.centerX    ) this.centerX    .pushValueUpdates(parse);
-        if (this.centerY    ) this.centerY    .pushValueUpdates(parse);
         if (this.showCenter ) this.showCenter .pushValueUpdates(parse);
         if (this.affectSpace) this.affectSpace.pushValueUpdates(parse);
     }
@@ -35536,8 +35533,6 @@ extends GOperator1
     {
         super.invalidateInputs(from);
 
-        if (this.centerX    ) this.centerX    .invalidateInputs(from);
-        if (this.centerY    ) this.centerY    .invalidateInputs(from);
         if (this.showCenter ) this.showCenter .invalidateInputs(from);
         if (this.affectSpace) this.affectSpace.invalidateInputs(from);
     }
@@ -35643,19 +35638,19 @@ extends GAffine
 
 
 
-    isValid()
-    {
-        return super.isValid()
-            && this.angle.isValid();
-    }
-
-
-
     toValue()
     {
         return this.value
-             ? this.value.copy()
-             : null;
+        ? this.value.copy()
+        : null;
+    }
+    
+    
+    
+    isValid()
+    {
+        return super.isValid()
+            && this.angle && this.angle.isValid();
     }
 
 
@@ -35800,9 +35795,10 @@ extends GAffine
     isValid()
     {
         return super.isValid()
-            && this.scaleX     .isValid()
-            && this.scaleY     .isValid()
-            && this.affectStyle.isValid();
+            && this.scaleX        && this.scaleX       .isValid()
+            && this.scaleY        && this.scaleY       .isValid()
+            && this.affectCorners && this.affectCorners.isValid()
+            && this.affectStyle   && this.affectStyle  .isValid();
     }
 
 
@@ -35820,9 +35816,10 @@ extends GAffine
     {
         super.pushValueUpdates(parse);
 
-        if (this.scaleX     ) this.scaleX     .pushValueUpdates(parse);
-        if (this.scaleY     ) this.scaleY     .pushValueUpdates(parse);
-        if (this.affectStyle) this.affectStyle.pushValueUpdates(parse);
+        if (this.scaleX       ) this.scaleX       .pushValueUpdates(parse);
+        if (this.scaleY       ) this.scaleY       .pushValueUpdates(parse);
+        if (this.affectCorners) this.affectCorners.pushValueUpdates(parse);
+        if (this.affectStyle  ) this.affectStyle  .pushValueUpdates(parse);
     }
 
 
@@ -35831,9 +35828,10 @@ extends GAffine
     {
         super.invalidateInputs(from);
 
-        if (this.scaleX     ) this.scaleX     .invalidateInputs(from);
-        if (this.scaleY     ) this.scaleY     .invalidateInputs(from);
-        if (this.affectStyle) this.affectStyle.invalidateInputs(from);
+        if (this.scaleX       ) this.scaleX       .invalidateInputs(from);
+        if (this.scaleY       ) this.scaleY       .invalidateInputs(from);
+        if (this.affectCorners) this.affectCorners.invalidateInputs(from);
+        if (this.affectStyle  ) this.affectStyle  .invalidateInputs(from);
     }
 }
 
@@ -35957,8 +35955,8 @@ extends GAffine
     isValid()
     {
         return super.isValid()
-            && this.skewX.isValid()
-            && this.skewY.isValid();
+            && this.skewX && this.skewX.isValid()
+            && this.skewY && this.skewY.isValid();
     }
 
 
@@ -36107,21 +36105,21 @@ extends GOperator1
 
 
 
-    isValid()
-    {
-        return super.isValid()
-            && this.centerX   .isValid()
-            && this.centerY   .isValid()
-            && this.showCenter.isValid();
-    }
-
-
-
     toValue()
     {
         return this.value
-             ? this.value.copy()
-             : null;
+            ? this.value.copy()
+            : null;
+    }
+    
+    
+    
+    isValid()
+    {
+        return super.isValid()
+            && this.centerX    && this.centerX   .isValid()
+            && this.centerY    && this.centerY   .isValid()
+            && this.showCenter && this.showCenter.isValid();
     }
 
 
@@ -36255,19 +36253,19 @@ extends GOperator1
 
 
 
-    isValid()
-    {
-        return super.isValid()
-            && this.showCenter.isValid();
-    }
-
-
-
     toValue()
     {
         return this.value
-             ? this.value.copy()
-             : null;
+        ? this.value.copy()
+        : null;
+    }
+    
+    
+    
+    isValid()
+    {
+        return super.isValid()
+            && this.showCenter && this.showCenter.isValid();
     }
 
 
@@ -36365,6 +36363,15 @@ extends GOperator2
         this.validate();
 
         return this;
+    }
+
+
+
+    isValid()
+    {
+        return super.isValid()
+            && this.distance && this.distance.isValid()
+            && this.angle    && this.angle   .isValid();
     }
 
 
@@ -36493,6 +36500,16 @@ extends GOperator2
         this.validate();
 
         return this;
+    }
+
+
+
+    isValid()
+    {
+        return super.isValid()
+            && this.amount     && this.amount    .isValid()
+            && this.transform  && this.transform .isValid()
+            && this.showCenter && this.showCenter.isValid();
     }
 
 
@@ -36656,10 +36673,8 @@ extends GOperator2
 
 
 class GPlace
-extends GOperator
+extends GOperator1
 {
-    input      = null;
-
     position   = null;
     transform  = null;
     showCenter = null;
@@ -36678,9 +36693,6 @@ extends GOperator
         const copy = new GPlace(this.nodeId, this.options);
 
         copy.copyBase(this);
-
-        if (this.input) 
-            copy.input = this.input.copy();
 
         if (this.position  ) copy.position   = this.position  .copy();
         if (this.transform ) copy.transform  = this.transform .copy();
@@ -36815,19 +36827,21 @@ extends GOperator
 
 
 
+    toValue()
+    {
+        return this.value
+             ? this.value.copy()
+             : null;
+    }
+    
+    
+    
     isValid()
     {
         return super.isValid()
-            && this.position  .isValid()
-            && this.transform .isValid()
-            && this.showCenter.isValid();
-    }
-
-
-
-    toValue()
-    {
-        return this.value.copy();
+            && this.position   && this.position  .isValid()
+            && this.transform  && this.transform .isValid()
+            && this.showCenter && this.showCenter.isValid();
     }
 
 
@@ -36836,7 +36850,6 @@ extends GOperator
     {
         super.pushValueUpdates(parse);
 
-        if (this.input     ) this.input     .pushValueUpdates(parse);
         if (this.position  ) this.position  .pushValueUpdates(parse);
         if (this.transform ) this.transform .pushValueUpdates(parse);
         if (this.showCenter) this.showCenter.pushValueUpdates(parse);
@@ -36848,7 +36861,6 @@ extends GOperator
     {
         super.invalidateInputs(from);
 
-        if (this.input     ) this.input     .invalidateInputs(from);
         if (this.position  ) this.position  .invalidateInputs(from);
         if (this.transform ) this.transform .invalidateInputs(from);
         if (this.showCenter) this.showCenter.invalidateInputs(from);
@@ -76241,7 +76253,7 @@ extends GShape
     isValid()
     {
         return super.isValid()
-            && this.round.isValid();
+            && this.round && this.round.isValid();
     }
 
 
@@ -76563,6 +76575,16 @@ extends GShape
     
 
     
+    isValid()
+    {
+        return super.isValid()
+            && this.from  && this.from .isValid()
+            && this.to    && this.to   .isValid()
+            && this.inner && this.inner.isValid();
+    }
+
+
+
     pushValueUpdates(parse)
     {
         super.pushValueUpdates(parse);
@@ -76742,8 +76764,8 @@ extends GShape
     isValid()
     {
         return super.isValid()
-            && this.round.isValid()
-            && this.bias .isValid();
+            && this.round && this.round.isValid()
+            && this.bias  && this.bias .isValid();
     }
 
 
@@ -76933,8 +76955,8 @@ extends GShape
     isValid()
     {
         return super.isValid()
-            && this.round  .isValid()
-            && this.corners.isValid();
+            && this.round   && this.round  .isValid()
+            && this.corners && this.corners.isValid();
     }
 
 
@@ -77132,9 +77154,9 @@ extends GShape
     isValid()
     {
         return super.isValid()
-            && this.round .isValid()
-            && this.points.isValid()
-            && this.convex.isValid();
+            && this.round  && this.round .isValid()
+            && this.points && this.points.isValid()
+            && this.convex && this.convex.isValid();
     }
 
 
@@ -77380,22 +77402,18 @@ extends GShape
     isValid()
     {
         return super.isValid()
-            && this.text         .isValid()
-
-            && this.x            .isValid()
-            && this.y            .isValid()
-            && this.width        .isValid()
-            && this.height       .isValid()
-            
-            && this.font         .isValid()
-            && this.style        .isValid()
-            && this.size         .isValid()
-            
-            && this.alignH       .isValid()
-            && this.alignV       .isValid()
-            
-            && this.lineHeight   .isValid()
-            && this.letterSpacing.isValid();
+            && this.text          && this.text         .isValid()
+            && this.x             && this.x            .isValid()
+            && this.y             && this.y            .isValid()
+            && this.width         && this.width        .isValid()
+            && this.height        && this.height       .isValid()
+            && this.font          && this.font         .isValid()
+            && this.style         && this.style        .isValid()
+            && this.size          && this.size         .isValid()
+            && this.alignH        && this.alignH       .isValid()
+            && this.alignV        && this.alignV       .isValid()
+            && this.lineHeight    && this.lineHeight   .isValid()
+            && this.letterSpacing && this.letterSpacing.isValid();
     }
 
 
@@ -77595,8 +77613,8 @@ extends GOperator1
     isValid()
     {
         return super.isValid()
-            && this.x.isValid()
-            && this.y.isValid();
+            && this.x && this.x.isValid()
+            && this.y && this.y.isValid();
     }
 
 
@@ -77800,11 +77818,11 @@ extends GShape
     isValid()
     {
         return super.isValid()
-            && this.points .isValid()
-            && this.closed .isValid()
-            && this.degree .isValid()
-            && this.winding.isValid()
-            && this.round  .isValid();
+            && this.points  && this.points .isValid()
+            && this.closed  && this.closed .isValid()
+            && this.degree  && this.degree .isValid()
+            && this.winding && this.winding.isValid()
+            && this.round   && this.round  .isValid();
     }
 
 
@@ -78971,9 +78989,9 @@ extends GShape
 
     isValid()
     {
-        return super        .isValid()
-            && this.round   .isValid()
-            && this.children.isValid();
+        return super.isValid()
+            && this.round    && this.round   .isValid()
+            && this.children && this.children.isValid();
     }
 
 
@@ -79383,14 +79401,9 @@ extends GShapeBase
 
     isValid()
     {
-        if (!super.isValid()) 
-            return false;
-
-        for (const input of this.inputs)
-            if (!input.isValid())
-                return false;
-
-        return true;
+        return super.isValid()
+            && !this.inputs.find(i => !i.isValid())
+            && this.retain && this.retain.isValid();
     }
 
 
@@ -79582,23 +79595,23 @@ extends GOperator1
 
 
 
-    isValid()
-    {
-        return super.isValid()
-            && this.x          .isValid()
-            && this.y          .isValid()
-            && this.moveType   .isValid()
-            && this.affectSpace.isValid()
-            && this.showCenter .isValid();
-    }
-
-
-
     toValue()
     {
         return this.value
-             ? this.value.copy()
-             : null;
+        ? this.value.copy()
+        : null;
+    }
+    
+    
+    
+    isValid()
+    {
+        return super.isValid()
+            && this.x           && this.x          .isValid()
+            && this.y           && this.y          .isValid()
+            && this.moveType    && this.moveType   .isValid()
+            && this.affectSpace && this.affectSpace.isValid()
+            && this.showCenter  && this.showCenter .isValid();
     }
 
 
@@ -79709,10 +79722,8 @@ extends GOperator1
     isValid()
     {
         return super.isValid()
-            && this.centerX    .isValid()
-            && this.centerY    .isValid()
-            && this.showCenter .isValid()
-            && this.affectSpace.isValid();
+            && this.showCenter  && this.showCenter .isValid()
+            && this.affectSpace && this.affectSpace.isValid();
     }
 
 
@@ -79721,8 +79732,6 @@ extends GOperator1
     {
         super.pushValueUpdates(parse);
 
-        if (this.centerX    ) this.centerX    .pushValueUpdates(parse);
-        if (this.centerY    ) this.centerY    .pushValueUpdates(parse);
         if (this.showCenter ) this.showCenter .pushValueUpdates(parse);
         if (this.affectSpace) this.affectSpace.pushValueUpdates(parse);
     }
@@ -79733,8 +79742,6 @@ extends GOperator1
     {
         super.invalidateInputs(from);
 
-        if (this.centerX    ) this.centerX    .invalidateInputs(from);
-        if (this.centerY    ) this.centerY    .invalidateInputs(from);
         if (this.showCenter ) this.showCenter .invalidateInputs(from);
         if (this.affectSpace) this.affectSpace.invalidateInputs(from);
     }
@@ -79840,19 +79847,19 @@ extends GAffine
 
 
 
-    isValid()
-    {
-        return super.isValid()
-            && this.angle.isValid();
-    }
-
-
-
     toValue()
     {
         return this.value
-             ? this.value.copy()
-             : null;
+        ? this.value.copy()
+        : null;
+    }
+    
+    
+    
+    isValid()
+    {
+        return super.isValid()
+            && this.angle && this.angle.isValid();
     }
 
 
@@ -79997,9 +80004,10 @@ extends GAffine
     isValid()
     {
         return super.isValid()
-            && this.scaleX     .isValid()
-            && this.scaleY     .isValid()
-            && this.affectStyle.isValid();
+            && this.scaleX        && this.scaleX       .isValid()
+            && this.scaleY        && this.scaleY       .isValid()
+            && this.affectCorners && this.affectCorners.isValid()
+            && this.affectStyle   && this.affectStyle  .isValid();
     }
 
 
@@ -80017,9 +80025,10 @@ extends GAffine
     {
         super.pushValueUpdates(parse);
 
-        if (this.scaleX     ) this.scaleX     .pushValueUpdates(parse);
-        if (this.scaleY     ) this.scaleY     .pushValueUpdates(parse);
-        if (this.affectStyle) this.affectStyle.pushValueUpdates(parse);
+        if (this.scaleX       ) this.scaleX       .pushValueUpdates(parse);
+        if (this.scaleY       ) this.scaleY       .pushValueUpdates(parse);
+        if (this.affectCorners) this.affectCorners.pushValueUpdates(parse);
+        if (this.affectStyle  ) this.affectStyle  .pushValueUpdates(parse);
     }
 
 
@@ -80028,9 +80037,10 @@ extends GAffine
     {
         super.invalidateInputs(from);
 
-        if (this.scaleX     ) this.scaleX     .invalidateInputs(from);
-        if (this.scaleY     ) this.scaleY     .invalidateInputs(from);
-        if (this.affectStyle) this.affectStyle.invalidateInputs(from);
+        if (this.scaleX       ) this.scaleX       .invalidateInputs(from);
+        if (this.scaleY       ) this.scaleY       .invalidateInputs(from);
+        if (this.affectCorners) this.affectCorners.invalidateInputs(from);
+        if (this.affectStyle  ) this.affectStyle  .invalidateInputs(from);
     }
 }
 
@@ -80154,8 +80164,8 @@ extends GAffine
     isValid()
     {
         return super.isValid()
-            && this.skewX.isValid()
-            && this.skewY.isValid();
+            && this.skewX && this.skewX.isValid()
+            && this.skewY && this.skewY.isValid();
     }
 
 
@@ -80304,21 +80314,21 @@ extends GOperator1
 
 
 
-    isValid()
-    {
-        return super.isValid()
-            && this.centerX   .isValid()
-            && this.centerY   .isValid()
-            && this.showCenter.isValid();
-    }
-
-
-
     toValue()
     {
         return this.value
-             ? this.value.copy()
-             : null;
+            ? this.value.copy()
+            : null;
+    }
+    
+    
+    
+    isValid()
+    {
+        return super.isValid()
+            && this.centerX    && this.centerX   .isValid()
+            && this.centerY    && this.centerY   .isValid()
+            && this.showCenter && this.showCenter.isValid();
     }
 
 
@@ -80452,19 +80462,19 @@ extends GOperator1
 
 
 
-    isValid()
-    {
-        return super.isValid()
-            && this.showCenter.isValid();
-    }
-
-
-
     toValue()
     {
         return this.value
-             ? this.value.copy()
-             : null;
+        ? this.value.copy()
+        : null;
+    }
+    
+    
+    
+    isValid()
+    {
+        return super.isValid()
+            && this.showCenter && this.showCenter.isValid();
     }
 
 
@@ -80562,6 +80572,15 @@ extends GOperator2
         this.validate();
 
         return this;
+    }
+
+
+
+    isValid()
+    {
+        return super.isValid()
+            && this.distance && this.distance.isValid()
+            && this.angle    && this.angle   .isValid();
     }
 
 
@@ -80690,6 +80709,16 @@ extends GOperator2
         this.validate();
 
         return this;
+    }
+
+
+
+    isValid()
+    {
+        return super.isValid()
+            && this.amount     && this.amount    .isValid()
+            && this.transform  && this.transform .isValid()
+            && this.showCenter && this.showCenter.isValid();
     }
 
 
@@ -80853,10 +80882,8 @@ extends GOperator2
 
 
 class GPlace
-extends GOperator
+extends GOperator1
 {
-    input      = null;
-
     position   = null;
     transform  = null;
     showCenter = null;
@@ -80875,9 +80902,6 @@ extends GOperator
         const copy = new GPlace(this.nodeId, this.options);
 
         copy.copyBase(this);
-
-        if (this.input) 
-            copy.input = this.input.copy();
 
         if (this.position  ) copy.position   = this.position  .copy();
         if (this.transform ) copy.transform  = this.transform .copy();
@@ -81012,19 +81036,21 @@ extends GOperator
 
 
 
+    toValue()
+    {
+        return this.value
+             ? this.value.copy()
+             : null;
+    }
+    
+    
+    
     isValid()
     {
         return super.isValid()
-            && this.position  .isValid()
-            && this.transform .isValid()
-            && this.showCenter.isValid();
-    }
-
-
-
-    toValue()
-    {
-        return this.value.copy();
+            && this.position   && this.position  .isValid()
+            && this.transform  && this.transform .isValid()
+            && this.showCenter && this.showCenter.isValid();
     }
 
 
@@ -81033,7 +81059,6 @@ extends GOperator
     {
         super.pushValueUpdates(parse);
 
-        if (this.input     ) this.input     .pushValueUpdates(parse);
         if (this.position  ) this.position  .pushValueUpdates(parse);
         if (this.transform ) this.transform .pushValueUpdates(parse);
         if (this.showCenter) this.showCenter.pushValueUpdates(parse);
@@ -81045,7 +81070,6 @@ extends GOperator
     {
         super.invalidateInputs(from);
 
-        if (this.input     ) this.input     .invalidateInputs(from);
         if (this.position  ) this.position  .invalidateInputs(from);
         if (this.transform ) this.transform .invalidateInputs(from);
         if (this.showCenter) this.showCenter.invalidateInputs(from);

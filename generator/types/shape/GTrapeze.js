@@ -155,8 +155,8 @@ extends GShape
     isValid()
     {
         return super.isValid()
-            && this.round.isValid()
-            && this.bias .isValid();
+            && this.round && this.round.isValid()
+            && this.bias  && this.bias .isValid();
     }
 
 

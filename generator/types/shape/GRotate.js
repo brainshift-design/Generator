@@ -97,19 +97,19 @@ extends GAffine
 
 
 
-    isValid()
-    {
-        return super.isValid()
-            && this.angle.isValid();
-    }
-
-
-
     toValue()
     {
         return this.value
-             ? this.value.copy()
-             : null;
+        ? this.value.copy()
+        : null;
+    }
+    
+    
+    
+    isValid()
+    {
+        return super.isValid()
+            && this.angle && this.angle.isValid();
     }
 
 

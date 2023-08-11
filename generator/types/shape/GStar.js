@@ -171,9 +171,9 @@ extends GShape
     isValid()
     {
         return super.isValid()
-            && this.round .isValid()
-            && this.points.isValid()
-            && this.convex.isValid();
+            && this.round  && this.round .isValid()
+            && this.points && this.points.isValid()
+            && this.convex && this.convex.isValid();
     }
 
 

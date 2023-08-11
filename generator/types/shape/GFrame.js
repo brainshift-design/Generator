@@ -179,9 +179,9 @@ extends GShape
 
     isValid()
     {
-        return super        .isValid()
-            && this.round   .isValid()
-            && this.children.isValid();
+        return super.isValid()
+            && this.round    && this.round   .isValid()
+            && this.children && this.children.isValid();
     }
 
 

@@ -123,21 +123,21 @@ extends GOperator1
 
 
 
-    isValid()
-    {
-        return super.isValid()
-            && this.centerX   .isValid()
-            && this.centerY   .isValid()
-            && this.showCenter.isValid();
-    }
-
-
-
     toValue()
     {
         return this.value
-             ? this.value.copy()
-             : null;
+            ? this.value.copy()
+            : null;
+    }
+    
+    
+    
+    isValid()
+    {
+        return super.isValid()
+            && this.centerX    && this.centerX   .isValid()
+            && this.centerY    && this.centerY   .isValid()
+            && this.showCenter && this.showCenter.isValid();
     }
 
 

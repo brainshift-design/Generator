@@ -163,23 +163,23 @@ extends GOperator1
 
 
 
-    isValid()
-    {
-        return super.isValid()
-            && this.x          .isValid()
-            && this.y          .isValid()
-            && this.moveType   .isValid()
-            && this.affectSpace.isValid()
-            && this.showCenter .isValid();
-    }
-
-
-
     toValue()
     {
         return this.value
-             ? this.value.copy()
-             : null;
+        ? this.value.copy()
+        : null;
+    }
+    
+    
+    
+    isValid()
+    {
+        return super.isValid()
+            && this.x           && this.x          .isValid()
+            && this.y           && this.y          .isValid()
+            && this.moveType    && this.moveType   .isValid()
+            && this.affectSpace && this.affectSpace.isValid()
+            && this.showCenter  && this.showCenter .isValid();
     }
 
 

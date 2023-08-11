@@ -97,14 +97,9 @@ extends GShapeBase
 
     isValid()
     {
-        if (!super.isValid()) 
-            return false;
-
-        for (const input of this.inputs)
-            if (!input.isValid())
-                return false;
-
-        return true;
+        return super.isValid()
+            && !this.inputs.find(i => !i.isValid())
+            && this.retain && this.retain.isValid();
     }
 
 

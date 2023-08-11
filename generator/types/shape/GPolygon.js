@@ -163,8 +163,8 @@ extends GShape
     isValid()
     {
         return super.isValid()
-            && this.round  .isValid()
-            && this.corners.isValid();
+            && this.round   && this.round  .isValid()
+            && this.corners && this.corners.isValid();
     }
 
 

@@ -120,8 +120,8 @@ extends GOperator1
     isValid()
     {
         return super.isValid()
-            && this.x.isValid()
-            && this.y.isValid();
+            && this.x && this.x.isValid()
+            && this.y && this.y.isValid();
     }
 
 

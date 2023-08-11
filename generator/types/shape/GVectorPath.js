@@ -177,11 +177,11 @@ extends GShape
     isValid()
     {
         return super.isValid()
-            && this.points .isValid()
-            && this.closed .isValid()
-            && this.degree .isValid()
-            && this.winding.isValid()
-            && this.round  .isValid();
+            && this.points  && this.points .isValid()
+            && this.closed  && this.closed .isValid()
+            && this.degree  && this.degree .isValid()
+            && this.winding && this.winding.isValid()
+            && this.round   && this.round  .isValid();
     }
 
 

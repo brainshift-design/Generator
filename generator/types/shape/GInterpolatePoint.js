@@ -106,6 +106,16 @@ extends GOperator2
 
 
 
+    isValid()
+    {
+        return super.isValid()
+            && this.amount     && this.amount    .isValid()
+            && this.transform  && this.transform .isValid()
+            && this.showCenter && this.showCenter.isValid();
+    }
+
+
+
     pushValueUpdates(parse)
     {
         super.pushValueUpdates(parse);

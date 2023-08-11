@@ -120,9 +120,10 @@ extends GAffine
     isValid()
     {
         return super.isValid()
-            && this.scaleX     .isValid()
-            && this.scaleY     .isValid()
-            && this.affectStyle.isValid();
+            && this.scaleX        && this.scaleX       .isValid()
+            && this.scaleY        && this.scaleY       .isValid()
+            && this.affectCorners && this.affectCorners.isValid()
+            && this.affectStyle   && this.affectStyle  .isValid();
     }
 
 
@@ -140,9 +141,10 @@ extends GAffine
     {
         super.pushValueUpdates(parse);
 
-        if (this.scaleX     ) this.scaleX     .pushValueUpdates(parse);
-        if (this.scaleY     ) this.scaleY     .pushValueUpdates(parse);
-        if (this.affectStyle) this.affectStyle.pushValueUpdates(parse);
+        if (this.scaleX       ) this.scaleX       .pushValueUpdates(parse);
+        if (this.scaleY       ) this.scaleY       .pushValueUpdates(parse);
+        if (this.affectCorners) this.affectCorners.pushValueUpdates(parse);
+        if (this.affectStyle  ) this.affectStyle  .pushValueUpdates(parse);
     }
 
 
@@ -151,8 +153,9 @@ extends GAffine
     {
         super.invalidateInputs(from);
 
-        if (this.scaleX     ) this.scaleX     .invalidateInputs(from);
-        if (this.scaleY     ) this.scaleY     .invalidateInputs(from);
-        if (this.affectStyle) this.affectStyle.invalidateInputs(from);
+        if (this.scaleX       ) this.scaleX       .invalidateInputs(from);
+        if (this.scaleY       ) this.scaleY       .invalidateInputs(from);
+        if (this.affectCorners) this.affectCorners.invalidateInputs(from);
+        if (this.affectStyle  ) this.affectStyle  .invalidateInputs(from);
     }
 }
