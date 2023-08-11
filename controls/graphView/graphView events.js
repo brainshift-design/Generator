@@ -269,18 +269,25 @@ GraphView.prototype.createEvents = function()
         const dWheelY = e.deltaY / (touchpad ? 20 : 100);
 
 
+        const dragging = graph.currentPage.nodes.find(n => n.div.dragging === true);
+
+
         if (   e.ctrlKey //getCtrlKey(e)
             ||     panMode
                && !touchpad)
         {
-            let pos = point(
-                e.clientX, 
-                e.clientY - getTopHeight());
+            if (!dragging)
+            {
+                let pos = point(
+                    e.clientX, 
+                    e.clientY - getTopHeight());
 
-            const zoom = Math.max(0.0001, Math.pow(2, dZoom - dWheelY / (touchpad ? 4 : 10)));
-            const pan  = subv(graph.currentPage.pan, mulvs(subv(pos, graph.currentPage.pan), zoom / graph.currentPage.zoom - 1));
+                const zoom = Math.max(0.0001, Math.pow(2, dZoom - dWheelY / (touchpad ? 4 : 10)));
+                const pan  = subv(graph.currentPage.pan, mulvs(subv(pos, graph.currentPage.pan), zoom / graph.currentPage.zoom - 1));
 
-            graph.currentPage.setPanAndZoom(pan, zoom);
+                graph.currentPage.setPanAndZoom(pan, zoom);
+            }
+
 
             this.updateWheelTimer();
         }
@@ -308,6 +315,31 @@ GraphView.prototype.createEvents = function()
                     e.shiftKey);
             } 
 
+
+            if (dragging)
+            {
+                dragging.sx -= dPanX;
+                dragging.sy -= dPanY;
+                
+                dragging.header.dispatchEvent(new MouseEvent('pointermove', 
+                {
+                    bubbles:    true,
+                    cancelable: true,
+                    view:       window,
+                    detail:     0,
+                    screenX:    e.screenX,
+                    screenY:    e.screenY,
+                    clientX:    e.clientX,
+                    clientY:    e.clientY,
+                    ctrlKey:    e.ctrlKey,
+                    altKey:     e.altKey,
+                    shiftKey:   e.shiftKey,
+                    metaKey:    e.metaKey,
+                    button:     e.button,
+                    buttons:    e.buttons
+                }));
+            }
+            
 
             this.updateWheelTimer();
         }
