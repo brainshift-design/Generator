@@ -222,7 +222,7 @@ extends EventTarget
                this.param
             && this.param.type != COLOR_VALUE
             && this.param.type !=  FILL_VALUE
-            ? rgb_a(rgbFromType(this.param.type, true), 0.38)
+            ? rgb_a(rgbFromType(this.types[0], true), 0.38)
             : (darkMode
                ? this.colorDark
                : this.colorLight);

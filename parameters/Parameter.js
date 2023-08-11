@@ -258,7 +258,7 @@ extends EventTarget
         {
             this.output.colorLight =
             this.output.colorDark  = 
-            this.output.wireColor  = rgbFromType(this.type, true);
+            this.output.wireColor  = rgbFromType(this.output.types[0], true);
         }
     }
 

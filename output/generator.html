@@ -14773,9 +14773,18 @@ extends GOperator
         this.updateValueObjects();
 
 
+        const type = 
+            this.value
+            ? new TextValue(
+                LIST_VALUES.includes(this.value.type)
+                ? finalListTypeFromItems(this.value.items)
+                : this.value.type)
+            : TextValue.NaN;
+
+
         this.setUpdateValues(parse,
         [
-            ['type', this.value ? new TextValue(this.value.type) : null],
+            ['type', type]
         ]);
 
 
@@ -14859,9 +14868,18 @@ extends GOperator1
         this.updateValueObjects();
 
 
+        const type = 
+            this.value
+            ? new TextValue(
+                LIST_VALUES.includes(this.value.type)
+                ? finalListTypeFromItems(this.value.items)
+                : this.value.type)
+            : TextValue.NaN;
+
+
         this.setUpdateValues(parse,
         [
-            ['type', this.value ? new TextValue(this.value.type) : null],
+            ['type', type]
         ]);
 
 
@@ -14870,7 +14888,7 @@ extends GOperator1
         return this;
     }
 
-    
+
 
     toValue()
     {
@@ -14939,9 +14957,18 @@ extends GOperator1
         }
 
 
+        const type = 
+            this.value
+            ? new TextValue(
+                LIST_VALUES.includes(this.value.type)
+                ? finalListTypeFromItems(this.value.items)
+                : this.value.type)
+            : TextValue.NaN;
+
+
         this.setUpdateValues(parse,
         [
-            ['type', this.value ? new TextValue(this.value.type) : null],
+            ['type', type],
         ]);
 
 
@@ -15408,9 +15435,16 @@ extends GOperator1
         this.updateValueObjects();
 
 
+        const type = 
+            this.value
+            ? new TextValue(finalListTypeFromItems(this.value.items))
+            : TextValue.NaN;
+
+
         this.setUpdateValues(parse,
         [
             ['preview', new ListValue(this.value.items.slice(0, Math.min(this.value.items.length, 11)))],
+            ['type',    type                                                                           ],
             ['length',  new NumberValue(length)                                                        ], // used to set start and end maxima
             ['start',   start                                                                          ],
             ['end',     end                                                                            ]
@@ -15523,10 +15557,17 @@ extends GOperator1
         this.updateValueObjects();
 
 
+        const type = 
+            this.value
+            ? new TextValue(finalListTypeFromItems(this.value.items))
+            : TextValue.NaN;
+
+
         this.setUpdateValues(parse,
         [
             ['preview', new ListValue(this.value.items.slice(0, Math.min(this.value.items.length, 10)))],
-            ['length', new NumberValue(this.value.items.length)                                        ]
+            ['type',    type                                                                           ],
+            ['length',  new NumberValue(this.value.items.length)                                       ]
         ]);
         
 
@@ -15601,9 +15642,15 @@ extends GOperator1
         this.updateValueObjects();
 
 
+        const type = 
+            this.value
+            ? new TextValue(finalListTypeFromItems(this.value.items))
+            : TextValue.NaN;
+
         this.setUpdateValues(parse, 
         [
             ['preview', new ListValue(this.value.items.slice(0, Math.min(this.value.items.length, 10)))],
+            ['type',    type                                                                           ],
             ['length', new NumberValue(this.value.items.length)                                        ]
         ]); 
                
@@ -15692,9 +15739,16 @@ extends GOperator1
         }
 
 
+        const type = 
+            this.value
+            ? new TextValue(finalListTypeFromItems(this.value.items))
+            : TextValue.NaN;
+
+
         this.setUpdateValues(parse,
         [
             ['preview', new ListValue(this.value.items.slice(0, Math.min(this.value.items.length, 11)))],
+            ['type',    type                                                                           ],
             ['length',  new NumberValue(this.value.items.length)                                       ],
             ['columns', new NumberValue(maxColumns)                                                    ],
             ['column',  column                                                                         ],
@@ -15807,9 +15861,16 @@ extends GOperator1
         }
 
 
+        const type = 
+            this.value
+            ? new TextValue(finalListTypeFromItems(this.value.items))
+            : TextValue.NaN;
+
+
         this.setUpdateValues(parse,
         [
             ['preview', new ListValue(this.value.items.slice(0, Math.min(this.value.items.length, 11)))],
+            ['type',    type                                                                           ],
             ['length',  new NumberValue(this.value.items.length)                                       ],
             ['columns', new NumberValue(maxColumns)                                                    ],
             ['index',   index                                                                          ]
@@ -15940,12 +16001,21 @@ extends GOperator
             this.value = NullValue.copy();
 
 
+        const type = 
+            this.value
+            ? new TextValue(
+                LIST_VALUES.includes(this.value.type)
+                ? finalListTypeFromItems(this.value.items)
+                : this.value.type)
+            : TextValue.NaN;
+
+
         this.setUpdateValues(parse,
         [
-            ['preview', this.value                                        ],
-            ['type',    this.value ? new TextValue(this.value.type) : null],
-            ['columns', new NumberValue(columns)                          ],
-            ['rows',    new NumberValue(rows   )                          ]
+            ['preview', this.value              ],
+            ['type',    type                    ],
+            ['columns', new NumberValue(columns)],
+            ['rows',    new NumberValue(rows   )]
         ]);
         
 
@@ -16219,12 +16289,21 @@ extends GOperator
         }
 
 
+        const type = 
+            this.value
+            ? new TextValue(
+                LIST_VALUES.includes(this.value.type)
+                ? finalListTypeFromItems(this.value.items)
+                : this.value.type)
+            : TextValue.NaN;
+
+
         this.setUpdateValues(parse,
         [
-            ['preview', this.value                                        ],
-            ['type',    this.value ? new TextValue(this.value.type) : null],
-            ['length',  new NumberValue(length)                           ],
-            ['index',   index                                             ]
+            ['preview', this.value              ],
+            ['type',    type                    ],
+            ['length',  new NumberValue(length) ],
+            ['index',   index                   ]
         ]);
 
 

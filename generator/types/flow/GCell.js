@@ -73,12 +73,21 @@ extends GOperator
             this.value = NullValue.copy();
 
 
+        const type = 
+            this.value
+            ? new TextValue(
+                LIST_VALUES.includes(this.value.type)
+                ? finalListTypeFromItems(this.value.items)
+                : this.value.type)
+            : TextValue.NaN;
+
+
         this.setUpdateValues(parse,
         [
-            ['preview', this.value                                        ],
-            ['type',    this.value ? new TextValue(this.value.type) : null],
-            ['columns', new NumberValue(columns)                          ],
-            ['rows',    new NumberValue(rows   )                          ]
+            ['preview', this.value              ],
+            ['type',    type                    ],
+            ['columns', new NumberValue(columns)],
+            ['rows',    new NumberValue(rows   )]
         ]);
         
 

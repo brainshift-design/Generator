@@ -52,8 +52,15 @@ extends OperatorBase
     {
         super.updateValues(requestId, actionId, updateParamId, paramIds, values);
 
+        
         const length = values[paramIds.findIndex(id => id == 'length' )];
 
         this.tableLength = length.value;
+
+
+        const type  = values[paramIds.findIndex(id => id == 'type'  )];
+
+        if (type)
+            this.outputs[0].types = [type.value];
     }
 }

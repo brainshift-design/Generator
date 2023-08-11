@@ -53,9 +53,15 @@ extends GOperator1
         this.updateValueObjects();
 
 
+        const type = 
+            this.value
+            ? new TextValue(finalListTypeFromItems(this.value.items))
+            : TextValue.NaN;
+
         this.setUpdateValues(parse, 
         [
             ['preview', new ListValue(this.value.items.slice(0, Math.min(this.value.items.length, 10)))],
+            ['type',    type                                                                           ],
             ['length', new NumberValue(this.value.items.length)                                        ]
         ]); 
                

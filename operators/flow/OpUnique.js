@@ -64,6 +64,12 @@ extends OperatorBase
 
         const sep = settings.showNodeId ? ' ' : '  ';
         this.paramCounts.setName('counts' + sep + '[ ' + this.length + ' ]');
+
+
+        const type  = values[paramIds.findIndex(id => id == 'type'  )];
+
+        if (type)
+            this.outputs[0].types = [type.value];
     }
 
 

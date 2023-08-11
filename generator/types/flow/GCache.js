@@ -36,9 +36,18 @@ extends GOperator1
         this.updateValueObjects();
 
 
+        const type = 
+            this.value
+            ? new TextValue(
+                LIST_VALUES.includes(this.value.type)
+                ? finalListTypeFromItems(this.value.items)
+                : this.value.type)
+            : TextValue.NaN;
+
+
         this.setUpdateValues(parse,
         [
-            ['type', this.value ? new TextValue(this.value.type) : null],
+            ['type', type]
         ]);
 
 
@@ -47,7 +56,7 @@ extends GOperator1
         return this;
     }
 
-    
+
 
     toValue()
     {

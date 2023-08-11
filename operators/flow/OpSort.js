@@ -81,6 +81,12 @@ extends OperatorBase
             this.paramColumn.controls[0].setMax(columns.value-1);
         else
             this.paramColumn.controls[0].setMax();
+
+
+        const type = values[paramIds.findIndex(id => id == 'type')];
+
+        if (type)
+            this.outputs[0].types = [type.value];
     }
 
 
