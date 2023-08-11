@@ -82,7 +82,7 @@ extends GOperator
 
 
             if (   input
-                && this.options.enabled)            
+                && this.options.enabled)
             {
                 if (LIST_VALUES.includes(input.type))
                 {

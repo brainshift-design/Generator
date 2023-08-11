@@ -502,7 +502,7 @@ function resolveConnections(nodes, _connections, first, last)
 
 
     return new Promise(resolve => 
-        requestAnimationFrame(() => 
+        //requestAnimationFrame(() => 
         {
             for (let i = first; i < last; i++)
             {
@@ -543,7 +543,8 @@ function resolveConnections(nodes, _connections, first, last)
             }
 
             resolve();
-        }));
+        });
+        // /);
 }
 
 

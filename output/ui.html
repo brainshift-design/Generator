@@ -19766,7 +19766,7 @@ extends GOperator
                     
                     if (this.loop.type != NUMBER_VALUE)
                     {
-                        this.invalidateRepeat(parse, this.loop, this.nodeId);
+                        this.invalidateRepeat(parse, this.loop);
 
                         repeat.iteration = i;
                         repeat.total     = nRepeats;
@@ -19869,6 +19869,7 @@ extends GOperator
         if (this. input) this. input.pushValueUpdates(parse);
         if (this. count) this. count.pushValueUpdates(parse);
         if (this._while) this._while.pushValueUpdates(parse);
+        if (this. loop ) this. loop .pushValueUpdates(parse);
     }
 
 
@@ -19885,22 +19886,15 @@ extends GOperator
 
 
 
-    invalidateRepeat(parse, loop, nodeId)
+    invalidateRepeat(parse, loop)
     {
         if (loop.type == LIST)
         {
             for (const input of loop.inputs)
-                this.invalidateLoopInput(parse, input);
+                input.invalidateLoop(parse, this.nodeId);
         }
         else
-            this.invalidateLoopInput(parse, loop);
-    }
-
-
-
-    invalidateLoopInput(parse, input)
-    {
-        input.invalidateLoop(parse, this.nodeId);
+            loop.invalidateLoop(parse, this.nodeId);
     }
 
 
@@ -20029,12 +20023,8 @@ extends GOperator
 
 
 class GCache
-extends GOperator
+extends GOperator1
 {
-    input = null;
-
-
-
     constructor(nodeId, options)
     {
         super(CACHE, nodeId, options);
@@ -20049,7 +20039,6 @@ extends GOperator
         copy.copyBase(this);
 
         if (this.value) copy.value = this.value.copy();
-        if (this.input) copy.input = this.input.copy();
 
         return copy;
     }
@@ -20082,7 +20071,7 @@ extends GOperator
         return this;
     }
 
-
+    
 
     toValue()
     {
@@ -20090,41 +20079,14 @@ extends GOperator
              ? this.value.copy()
              : null;
     }
-
-
-
-    isValid()
-    {
-        return this.input && this.input.isValid();
-    }
-
-
-
-    pushValueUpdates(parse)
-    {
-        super.pushValueUpdates(parse);
-
-        if (this.input) this.input.pushValueUpdates(parse);
-    }
-
-
-
-    invalidateInputs(from)
-    {
-        super.invalidateInputs(from);
-
-        if (this.input) this.input.invalidateInputs(from);
-    }
 }
 
 
 
 class GFreeze
-extends GOperator
+extends GOperator1
 {
-    input  = null;
     frozen = false;
-
 
     loopId  = NULL;
 
@@ -20144,7 +20106,6 @@ extends GOperator
         copy.copyBase(this);
 
         if (this.value) copy.value = this.value.copy();
-        if (this.input) copy.input = this.input.copy();
 
         return copy;
     }
@@ -20197,31 +20158,6 @@ extends GOperator
         return this.value
              ? this.value.copy()
              : null;
-    }
-
-
-
-    isValid()
-    {
-        return this.input && this.input.isValid();
-    }
-
-
-
-    pushValueUpdates(parse)
-    {
-        super.pushValueUpdates(parse);
-
-        if (this.input) this.input.pushValueUpdates(parse);
-    }
-
-
-
-    invalidateInputs(from)
-    {
-        super.invalidateInputs(from);
-
-        if (this.input) this.input.invalidateInputs(from);
     }
 }
 
@@ -20421,7 +20357,7 @@ extends GOperator
 
 
             if (   input
-                && this.options.enabled)            
+                && this.options.enabled)
             {
                 if (LIST_VALUES.includes(input.type))
                 {
@@ -28151,7 +28087,6 @@ class GTextFile
 extends GOperator
 {
     cachedValue = null;
-    path        = null;
 
 
 
@@ -28169,7 +28104,6 @@ extends GOperator
         copy.copyBase(this);
 
         copy.cachedValue = this.cachedValue.copy();
-        copy.path        = this.path       .copy();
 
         return copy;
     }
@@ -28183,7 +28117,6 @@ extends GOperator
 
 
         const cachedValue = this.cachedValue ? (await this.cachedValue.eval(parse)).toValue() : null;
-        const path        = this.path        ? (await this.path       .eval(parse)).toValue() : null;
 
         
         genInitNodeProgress(this.nodeId);
@@ -64019,7 +63952,7 @@ extends GOperator
                     
                     if (this.loop.type != NUMBER_VALUE)
                     {
-                        this.invalidateRepeat(parse, this.loop, this.nodeId);
+                        this.invalidateRepeat(parse, this.loop);
 
                         repeat.iteration = i;
                         repeat.total     = nRepeats;
@@ -64122,6 +64055,7 @@ extends GOperator
         if (this. input) this. input.pushValueUpdates(parse);
         if (this. count) this. count.pushValueUpdates(parse);
         if (this._while) this._while.pushValueUpdates(parse);
+        if (this. loop ) this. loop .pushValueUpdates(parse);
     }
 
 
@@ -64138,22 +64072,15 @@ extends GOperator
 
 
 
-    invalidateRepeat(parse, loop, nodeId)
+    invalidateRepeat(parse, loop)
     {
         if (loop.type == LIST)
         {
             for (const input of loop.inputs)
-                this.invalidateLoopInput(parse, input);
+                input.invalidateLoop(parse, this.nodeId);
         }
         else
-            this.invalidateLoopInput(parse, loop);
-    }
-
-
-
-    invalidateLoopInput(parse, input)
-    {
-        input.invalidateLoop(parse, this.nodeId);
+            loop.invalidateLoop(parse, this.nodeId);
     }
 
 
@@ -64282,12 +64209,8 @@ extends GOperator
 
 
 class GCache
-extends GOperator
+extends GOperator1
 {
-    input = null;
-
-
-
     constructor(nodeId, options)
     {
         super(CACHE, nodeId, options);
@@ -64302,7 +64225,6 @@ extends GOperator
         copy.copyBase(this);
 
         if (this.value) copy.value = this.value.copy();
-        if (this.input) copy.input = this.input.copy();
 
         return copy;
     }
@@ -64335,7 +64257,7 @@ extends GOperator
         return this;
     }
 
-
+    
 
     toValue()
     {
@@ -64343,41 +64265,14 @@ extends GOperator
              ? this.value.copy()
              : null;
     }
-
-
-
-    isValid()
-    {
-        return this.input && this.input.isValid();
-    }
-
-
-
-    pushValueUpdates(parse)
-    {
-        super.pushValueUpdates(parse);
-
-        if (this.input) this.input.pushValueUpdates(parse);
-    }
-
-
-
-    invalidateInputs(from)
-    {
-        super.invalidateInputs(from);
-
-        if (this.input) this.input.invalidateInputs(from);
-    }
 }
 
 
 
 class GFreeze
-extends GOperator
+extends GOperator1
 {
-    input  = null;
     frozen = false;
-
 
     loopId  = NULL;
 
@@ -64397,7 +64292,6 @@ extends GOperator
         copy.copyBase(this);
 
         if (this.value) copy.value = this.value.copy();
-        if (this.input) copy.input = this.input.copy();
 
         return copy;
     }
@@ -64450,31 +64344,6 @@ extends GOperator
         return this.value
              ? this.value.copy()
              : null;
-    }
-
-
-
-    isValid()
-    {
-        return this.input && this.input.isValid();
-    }
-
-
-
-    pushValueUpdates(parse)
-    {
-        super.pushValueUpdates(parse);
-
-        if (this.input) this.input.pushValueUpdates(parse);
-    }
-
-
-
-    invalidateInputs(from)
-    {
-        super.invalidateInputs(from);
-
-        if (this.input) this.input.invalidateInputs(from);
     }
 }
 
@@ -64674,7 +64543,7 @@ extends GOperator
 
 
             if (   input
-                && this.options.enabled)            
+                && this.options.enabled)
             {
                 if (LIST_VALUES.includes(input.type))
                 {
@@ -72404,7 +72273,6 @@ class GTextFile
 extends GOperator
 {
     cachedValue = null;
-    path        = null;
 
 
 
@@ -72422,7 +72290,6 @@ extends GOperator
         copy.copyBase(this);
 
         copy.cachedValue = this.cachedValue.copy();
-        copy.path        = this.path       .copy();
 
         return copy;
     }
@@ -72436,7 +72303,6 @@ extends GOperator
 
 
         const cachedValue = this.cachedValue ? (await this.cachedValue.eval(parse)).toValue() : null;
-        const path        = this.path        ? (await this.path       .eval(parse)).toValue() : null;
 
         
         genInitNodeProgress(this.nodeId);
@@ -98345,6 +98211,13 @@ function parseConnectionJsonAndConnect(_conn, pasteConnected)
         ||  isDigit(inputId[0]) && parseInt(inputId) >= inputNode.inputs.length
         || !isDigit(inputId[0]) && !inputNode.params.find(p => p.id == inputId && p.input))
     {
+        // console.log('outputNode  =', outputNode );
+        // console.log('outputId    =', outputId   );
+        // console.log('outputOrder =', outputOrder);
+        // console.log('inputNode   =', inputNode  );
+        // console.log('inputNode.inputs =', [...inputNode.inputs]);
+        // console.log('inputId     =', inputId    );
+        
         uiError(
            'Cannot connect ' + connToString(_conn),
             {
@@ -101757,12 +101630,12 @@ Operator.prototype.updateHeaderLabelText = function()
 
     const sep = settings.showNodeId ? ' ' : '  ';
 
-         if (this.type == LIST        ) suffix = sep + '[ ' + this.length + ' ]';
-    else if (this.type == SUBLIST     ) suffix = sep + '[ ' + this.length + ' ]';
-    else if (this.type == COLUMN      ) suffix = sep + '[ ' + this.columnLength + ' ]';
-    else if (this.type == REVERSE_LIST) suffix = sep + '[ ' + this.tableLength + ' ]';
-    else if (this.type == SORT        ) suffix = sep + '[ ' + this.tableLength + ' ]';
-    else if (this.type == UNIQUE      ) suffix = sep + '[ ' + this.length + ' ]';
+         if (this.type == LIST        ) suffix = sep + '[ ' + this.length        + ' ]';
+    else if (this.type == SUBLIST     ) suffix = sep + '[ ' + this.length        + ' ]';
+    else if (this.type == COLUMN      ) suffix = sep + '[ ' + this.columnLength  + ' ]';
+    else if (this.type == REVERSE_LIST) suffix = sep + '[ ' + this.tableLength   + ' ]';
+    else if (this.type == SORT        ) suffix = sep + '[ ' + this.tableLength   + ' ]';
+    else if (this.type == UNIQUE      ) suffix = sep + '[ ' + this.length        + ' ]';
     else if (this.type == ITEMS       ) suffix = sep + '[ ' + this.params.length + ' ]';
     else                                suffix = this.cached ? '' : '...';
 
@@ -103173,15 +103046,15 @@ extends OperatorBase
     {
         super.updateValues(requestId, actionId, updateParamId, paramIds, values);
 
-        const length = values[paramIds.findIndex(id => id == 'length' )];
-        const type   = values[paramIds.findIndex(id => id == 'type'   )];
+        const length = values[paramIds.findIndex(id => id == 'length')];
+        const type   = values[paramIds.findIndex(id => id == 'type'  )];
 
-        if (   length 
-            && type)
-        {
+        if (length)
             this.length = length.value;
+    
+        if (type)
+        {
             consoleAssert(LIST_VALUES.includes(type.value));
-
             this.outputs[0].types = [type.value];
         }
     }
@@ -116629,7 +116502,7 @@ extends OperatorBase
         // this.iconOffsetY = -2;
 
         
-        this.addInput (new Input (SHAPE_VALUES));
+        this.addInput (new Input ([LIST_VALUE, SHAPE_LIST_VALUE, ...SHAPE_VALUES]));
         this.addOutput(new Output([SHAPE_VALUE], this.output_genRequest));
 
 
@@ -120568,7 +120441,8 @@ extends Action
                     const _inputNode = nodeFromId(_conn.inputNodeId);
                     const _input     = _inputNode.inputFromId(_conn.inputId);
 
-                    if (_input.canConnectFrom(_output))
+                    if (   _output
+                        && _input.canConnectFrom(_output))
                         createNodeAction_connect(this, _output, _inputNode, _conn.inputId, _conn.outputOrder);
                 }
             }
@@ -126162,7 +126036,7 @@ function resolveConnections(nodes, _connections, first, last)
 
 
     return new Promise(resolve => 
-        requestAnimationFrame(() => 
+        //requestAnimationFrame(() => 
         {
             for (let i = first; i < last; i++)
             {
@@ -126203,7 +126077,8 @@ function resolveConnections(nodes, _connections, first, last)
             }
 
             resolve();
-        }));
+        });
+        // /);
 }
 
 

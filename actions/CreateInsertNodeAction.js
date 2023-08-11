@@ -84,7 +84,8 @@ extends Action
                     const _inputNode = nodeFromId(_conn.inputNodeId);
                     const _input     = _inputNode.inputFromId(_conn.inputId);
 
-                    if (_input.canConnectFrom(_output))
+                    if (   _output
+                        && _input.canConnectFrom(_output))
                         createNodeAction_connect(this, _output, _inputNode, _conn.inputId, _conn.outputOrder);
                 }
             }

@@ -68,15 +68,15 @@ extends OperatorBase
     {
         super.updateValues(requestId, actionId, updateParamId, paramIds, values);
 
-        const length = values[paramIds.findIndex(id => id == 'length' )];
-        const type   = values[paramIds.findIndex(id => id == 'type'   )];
+        const length = values[paramIds.findIndex(id => id == 'length')];
+        const type   = values[paramIds.findIndex(id => id == 'type'  )];
 
-        if (   length 
-            && type)
-        {
+        if (length)
             this.length = length.value;
+    
+        if (type)
+        {
             consoleAssert(LIST_VALUES.includes(type.value));
-
             this.outputs[0].types = [type.value];
         }
     }

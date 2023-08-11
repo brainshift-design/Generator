@@ -91,6 +91,13 @@ function parseConnectionJsonAndConnect(_conn, pasteConnected)
         ||  isDigit(inputId[0]) && parseInt(inputId) >= inputNode.inputs.length
         || !isDigit(inputId[0]) && !inputNode.params.find(p => p.id == inputId && p.input))
     {
+        // console.log('outputNode  =', outputNode );
+        // console.log('outputId    =', outputId   );
+        // console.log('outputOrder =', outputOrder);
+        // console.log('inputNode   =', inputNode  );
+        // console.log('inputNode.inputs =', [...inputNode.inputs]);
+        // console.log('inputId     =', inputId    );
+        
         uiError(
            'Cannot connect ' + connToString(_conn),
             {

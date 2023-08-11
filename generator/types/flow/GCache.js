@@ -1,10 +1,6 @@
 class GCache
-extends GOperator
+extends GOperator1
 {
-    input = null;
-
-
-
     constructor(nodeId, options)
     {
         super(CACHE, nodeId, options);
@@ -19,7 +15,6 @@ extends GOperator
         copy.copyBase(this);
 
         if (this.value) copy.value = this.value.copy();
-        if (this.input) copy.input = this.input.copy();
 
         return copy;
     }
@@ -52,37 +47,12 @@ extends GOperator
         return this;
     }
 
-
+    
 
     toValue()
     {
         return this.value
              ? this.value.copy()
              : null;
-    }
-
-
-
-    isValid()
-    {
-        return this.input && this.input.isValid();
-    }
-
-
-
-    pushValueUpdates(parse)
-    {
-        super.pushValueUpdates(parse);
-
-        if (this.input) this.input.pushValueUpdates(parse);
-    }
-
-
-
-    invalidateInputs(from)
-    {
-        super.invalidateInputs(from);
-
-        if (this.input) this.input.invalidateInputs(from);
     }
 }

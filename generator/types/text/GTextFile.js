@@ -2,7 +2,6 @@ class GTextFile
 extends GOperator
 {
     cachedValue = null;
-    path        = null;
 
 
 
@@ -20,7 +19,6 @@ extends GOperator
         copy.copyBase(this);
 
         copy.cachedValue = this.cachedValue.copy();
-        copy.path        = this.path       .copy();
 
         return copy;
     }
@@ -34,7 +32,6 @@ extends GOperator
 
 
         const cachedValue = this.cachedValue ? (await this.cachedValue.eval(parse)).toValue() : null;
-        const path        = this.path        ? (await this.path       .eval(parse)).toValue() : null;
 
         
         genInitNodeProgress(this.nodeId);

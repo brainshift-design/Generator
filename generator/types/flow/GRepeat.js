@@ -117,7 +117,7 @@ extends GOperator
                     
                     if (this.loop.type != NUMBER_VALUE)
                     {
-                        this.invalidateRepeat(parse, this.loop, this.nodeId);
+                        this.invalidateRepeat(parse, this.loop);
 
                         repeat.iteration = i;
                         repeat.total     = nRepeats;
@@ -220,6 +220,7 @@ extends GOperator
         if (this. input) this. input.pushValueUpdates(parse);
         if (this. count) this. count.pushValueUpdates(parse);
         if (this._while) this._while.pushValueUpdates(parse);
+        if (this. loop ) this. loop .pushValueUpdates(parse);
     }
 
 
@@ -236,22 +237,15 @@ extends GOperator
 
 
 
-    invalidateRepeat(parse, loop, nodeId)
+    invalidateRepeat(parse, loop)
     {
         if (loop.type == LIST)
         {
             for (const input of loop.inputs)
-                this.invalidateLoopInput(parse, input);
+                input.invalidateLoop(parse, this.nodeId);
         }
         else
-            this.invalidateLoopInput(parse, loop);
-    }
-
-
-
-    invalidateLoopInput(parse, input)
-    {
-        input.invalidateLoop(parse, this.nodeId);
+            loop.invalidateLoop(parse, this.nodeId);
     }
 
 
