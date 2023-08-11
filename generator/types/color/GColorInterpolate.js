@@ -102,17 +102,25 @@ extends GOperator2
         if (   space <= 1
             || space >  6) // hex, rgb, okLab, lab, luv
         {
-            const r0 = Math.pow(col0[1], gamma);  const r1 = Math.pow(col1[1], gamma);
-            const g0 = Math.pow(col0[2], gamma);  const g1 = Math.pow(col1[2], gamma);
-            const b0 = Math.pow(col0[3], gamma);  const b1 = Math.pow(col1[3], gamma);
-
             gamma = Math.max(0.01, gamma);
+
+            const r0 = Math.sign(col0[1]) * Math.pow(Math.abs(col0[1]), gamma);  
+            const g0 = Math.sign(col0[2]) * Math.pow(Math.abs(col0[2]), gamma);  
+            const b0 = Math.sign(col0[3]) * Math.pow(Math.abs(col0[3]), gamma);  
+
+            const r1 = Math.sign(col1[1]) * Math.pow(Math.abs(col1[1]), gamma);
+            const g1 = Math.sign(col1[2]) * Math.pow(Math.abs(col1[2]), gamma);
+            const b1 = Math.sign(col1[3]) * Math.pow(Math.abs(col1[3]), gamma);
+
+            const r = lerp(r0, r1, f);        
+            const g = lerp(g0, g1, f);            
+            const b = lerp(b0, b1, f);        
 
             return [
                 colorSpace(space),
-                Math.pow(lerp(r0, r1, f), 1/gamma),
-                Math.pow(lerp(g0, g1, f), 1/gamma),
-                Math.pow(lerp(b0, b1, f), 1/gamma) ];
+                Math.sign(r) * Math.pow(Math.abs(r), 1/gamma),
+                Math.sign(g) * Math.pow(Math.abs(g), 1/gamma),
+                Math.sign(b) * Math.pow(Math.abs(b), 1/gamma) ];
         }
         else // hsv/hsl/hcl
         {

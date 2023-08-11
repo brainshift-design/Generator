@@ -442,8 +442,7 @@ NumberControl.prototype.initTextbox = function()
             if (success) 
             {
                 this.setValue(
-                       value.trim() != '' 
-                    && value.trim() != NAN_DISPLAY
+                    value.trim() != ''
                     ? val
                     : savedVal);
             }

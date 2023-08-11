@@ -15409,11 +15409,17 @@ extends GOperator1
                 length = input.items.length;
 
 
-                if (start.value < end.value)
+                const _end =
+                    end.isValid()
+                    ? end
+                    : new NumberValue(input.items.length);
+
+
+                if (start.value < _end.value)
                 {
                     if (this.options.enabled)
                     {
-                        for (let i = start.value; i < end.value; i++)
+                        for (let i = start.value; i < _end.value; i++)
                         {
                             const item = input.items[i];
                             
@@ -15443,11 +15449,12 @@ extends GOperator1
 
         this.setUpdateValues(parse,
         [
-            ['preview', new ListValue(this.value.items.slice(0, Math.min(this.value.items.length, 11)))],
-            ['type',    type                                                                           ],
-            ['length',  new NumberValue(length)                                                        ], // used to set start and end maxima
-            ['start',   start                                                                          ],
-            ['end',     end                                                                            ]
+            ['preview',    new ListValue(this.value.items.slice(0, Math.min(this.value.items.length, 11)))],
+            ['type',       type                                                                           ],
+            ['length',     new NumberValue(this.value.items.length)                                                        ], // used to set start and end maxima
+            ['fullLength', new NumberValue(length)                                                        ], // used to set start and end maxima
+            ['start',      start                                                                          ],
+            ['end',        end                                                                            ]
         ]);
         
 
@@ -21412,10 +21419,16 @@ extends GOperator1
             consoleAssert(this.value.type == TEXT_VALUE, 'this.value.type must be TEXT_VALUE');
                 
                 
-            if(start.value <= end.value)
+            const _end =
+                end.isValid()
+                ? end
+                : new NumberValue(input.value.length);
+
+
+            if (start.value <= _end.value)
             {
                 if (this.options.enabled)
-                    this.value.value = this.value.value.substring(start.value, end.value);
+                    this.value.value = this.value.value.substring(start.value, _end.value);
             }
             else
                 this.value = new TextValue();//TextValue.NaN;
@@ -24580,17 +24593,25 @@ extends GOperator2
         if (   space <= 1
             || space >  6) // hex, rgb, okLab, lab, luv
         {
-            const r0 = Math.pow(col0[1], gamma);  const r1 = Math.pow(col1[1], gamma);
-            const g0 = Math.pow(col0[2], gamma);  const g1 = Math.pow(col1[2], gamma);
-            const b0 = Math.pow(col0[3], gamma);  const b1 = Math.pow(col1[3], gamma);
-
             gamma = Math.max(0.01, gamma);
+
+            const r0 = Math.sign(col0[1]) * Math.pow(Math.abs(col0[1]), gamma);  
+            const g0 = Math.sign(col0[2]) * Math.pow(Math.abs(col0[2]), gamma);  
+            const b0 = Math.sign(col0[3]) * Math.pow(Math.abs(col0[3]), gamma);  
+
+            const r1 = Math.sign(col1[1]) * Math.pow(Math.abs(col1[1]), gamma);
+            const g1 = Math.sign(col1[2]) * Math.pow(Math.abs(col1[2]), gamma);
+            const b1 = Math.sign(col1[3]) * Math.pow(Math.abs(col1[3]), gamma);
+
+            const r = lerp(r0, r1, f);        
+            const g = lerp(g0, g1, f);            
+            const b = lerp(b0, b1, f);        
 
             return [
                 colorSpace(space),
-                Math.pow(lerp(r0, r1, f), 1/gamma),
-                Math.pow(lerp(g0, g1, f), 1/gamma),
-                Math.pow(lerp(b0, b1, f), 1/gamma) ];
+                Math.sign(r) * Math.pow(Math.abs(r), 1/gamma),
+                Math.sign(g) * Math.pow(Math.abs(g), 1/gamma),
+                Math.sign(b) * Math.pow(Math.abs(b), 1/gamma) ];
         }
         else // hsv/hsl/hcl
         {

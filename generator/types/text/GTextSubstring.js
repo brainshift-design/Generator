@@ -50,10 +50,16 @@ extends GOperator1
             consoleAssert(this.value.type == TEXT_VALUE, 'this.value.type must be TEXT_VALUE');
                 
                 
-            if(start.value <= end.value)
+            const _end =
+                end.isValid()
+                ? end
+                : new NumberValue(input.value.length);
+
+
+            if (start.value <= _end.value)
             {
                 if (this.options.enabled)
-                    this.value.value = this.value.value.substring(start.value, end.value);
+                    this.value.value = this.value.value.substring(start.value, _end.value);
             }
             else
                 this.value = new TextValue();//TextValue.NaN;

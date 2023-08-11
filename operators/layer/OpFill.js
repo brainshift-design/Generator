@@ -299,21 +299,14 @@ function updateFillHeader(node, colors)
     node.header.style.background = 'transparent';
 
 
-    // node.header.style.background = 
-    //     !rgbaIsNaN(colors.stripeBack)
-    //     ? rgba2style(colors.stripeBack) 
-    //     : rgba2style(rgb_a(rgbDocumentBody, 0.95));
+    node.header.style.background = 
+        !rgbaIsNaN(colors.stripeBack)
+        ? rgba2style(colors.stripeBack) 
+        : rgba2style(rgb_a(rgbDocumentBody, 0.95));
+
 
     const unknownBackStyle = darkMode ? '#444' : '#ccc';
 
-
-    // node.colorBack.backStyleLight =
-    // node.colorBack.backStyleDark  =
-    //     node.isUnknown()
-    //     ? unknownBackStyle
-    //     : rgbaIsOk(colors.stripeBack)
-    //       ? rgba2style(colors.stripeBack)
-    //       : 'transparent';
 
     node.colorBack.style.background = 
         node.isUnknown()

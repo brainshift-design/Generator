@@ -55,11 +55,17 @@ extends GOperator1
                 length = input.items.length;
 
 
-                if (start.value < end.value)
+                const _end =
+                    end.isValid()
+                    ? end
+                    : new NumberValue(input.items.length);
+
+
+                if (start.value < _end.value)
                 {
                     if (this.options.enabled)
                     {
-                        for (let i = start.value; i < end.value; i++)
+                        for (let i = start.value; i < _end.value; i++)
                         {
                             const item = input.items[i];
                             
@@ -89,11 +95,12 @@ extends GOperator1
 
         this.setUpdateValues(parse,
         [
-            ['preview', new ListValue(this.value.items.slice(0, Math.min(this.value.items.length, 11)))],
-            ['type',    type                                                                           ],
-            ['length',  new NumberValue(length)                                                        ], // used to set start and end maxima
-            ['start',   start                                                                          ],
-            ['end',     end                                                                            ]
+            ['preview',    new ListValue(this.value.items.slice(0, Math.min(this.value.items.length, 11)))],
+            ['type',       type                                                                           ],
+            ['length',     new NumberValue(this.value.items.length)                                                        ], // used to set start and end maxima
+            ['fullLength', new NumberValue(length)                                                        ], // used to set start and end maxima
+            ['start',      start                                                                          ],
+            ['end',        end                                                                            ]
         ]);
         
 
