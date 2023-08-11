@@ -1,8 +1,6 @@
 class GUnique
-extends GOperator
+extends GOperator1
 {
-    input  = null;
-
     counts = null;
 
 
@@ -83,19 +81,9 @@ extends GOperator
 
 
 
-    pushValueUpdates(parse)
+    isValid()
     {
-        super.pushValueUpdates(parse);
-
-        if (this.input) this.input.pushValueUpdates(parse);
-    }
-
-
-
-    invalidateInputs(from)
-    {
-        super.invalidateInputs(from);
-
-        if (this.input) this.input.invalidateInputs(from);
+        return super.isValid()
+            && this.counts && this.counts.isValid();
     }
 }

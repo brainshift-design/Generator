@@ -1,10 +1,6 @@
 class GReverseList
-extends GOperator
+extends GOperator1
 {
-    input  = null;
-
-
-    
     constructor(nodeId, options)
     {
         super(REVERSE_LIST, nodeId, options);
@@ -67,23 +63,5 @@ extends GOperator
         this.validate();
 
         return this;
-    }
-
-
-
-    pushValueUpdates(parse)
-    {
-        super.pushValueUpdates(parse);
-
-        if (this.input) this.input.pushValueUpdates(parse);
-    }
-
-
-
-    invalidateInputs(from)
-    {
-        super.invalidateInputs(from);
-
-        if (this.input) this.input.invalidateInputs(from);
     }
 }

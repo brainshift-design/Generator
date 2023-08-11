@@ -79,17 +79,8 @@ extends GOperator
 
         return this;
     }
-
-
-
-    pushValueUpdates(parse)
-    {
-        super.pushValueUpdates(parse);
-
-        if (this.input) this.input.pushValueUpdates(parse);
-    }
-
-
+    
+    
 
     paramFromId(paramId)
     {
@@ -103,6 +94,22 @@ extends GOperator
     toValue()
     {
         return this.value.copy();
+    }
+
+
+
+    isValid()
+    {
+        return this.input && this.input.isValid();
+    }
+
+
+
+    pushValueUpdates(parse)
+    {
+        super.pushValueUpdates(parse);
+
+        if (this.input) this.input.pushValueUpdates(parse);
     }
 
 

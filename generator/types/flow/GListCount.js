@@ -72,20 +72,28 @@ extends GOperator
 
 
 
+    // toValue()
+    // {
+    //     return this.value.copy();
+    // }
+
+
+
+    isValid()
+    {
+        return this.input && this.input.isValid()
+            && this.start && this.start.isValid();
+    }
+
+
+
     pushValueUpdates(parse)
     {
         super.pushValueUpdates(parse);
 
         if (this.input) this.input.pushValueUpdates(parse);
         if (this.start) this.start.pushValueUpdates(parse);
-    }
-
-
-
-    // toValue()
-    // {
-    //     return this.value.copy();
-    // }
+    }    
 
 
 

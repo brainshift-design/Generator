@@ -92,4 +92,14 @@ extends GOperatorBase2
 
         return this;
     }
+
+
+
+    isValid()
+    {
+        return super.isValid()
+            && this.first && this.first.isValid()
+            && this.last  && this.last .isValid()
+            && this.all   && this.all  .isValid();
+    }
 }

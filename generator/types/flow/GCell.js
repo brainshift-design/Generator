@@ -89,6 +89,15 @@ extends GOperator
 
 
 
+    isValid()
+    {
+        return super.isValid()
+            && this.column && this.column.isValid()
+            && this.row    && this.row   .isValid();
+    }
+
+
+
     pushValueUpdates(parse)
     {
         super.pushValueUpdates(parse);

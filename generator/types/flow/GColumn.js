@@ -83,6 +83,14 @@ extends GOperator1
 
 
 
+    isValid()
+    {
+        return super.isValid()
+            && this.index && this.index.isValid();
+    }
+
+
+
     pushValueUpdates(parse)
     {
         super.pushValueUpdates(parse);

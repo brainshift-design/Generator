@@ -1,7 +1,6 @@
 class GSort
-extends GOperator
+extends GOperator1
 {
-    input   = null;
     column  = null;
     reverse = null;
 
@@ -92,11 +91,19 @@ extends GOperator
 
 
 
+    isValid()
+    {
+        return super.isValid()
+            && this.column  && this.column .isValid()
+            && this.reverse && this.reverse.isValid();
+    }
+
+
+
     pushValueUpdates(parse)
     {
         super.pushValueUpdates(parse);
 
-        if (this.input  ) this.input  .pushValueUpdates(parse);
         if (this.column ) this.column .pushValueUpdates(parse);
         if (this.reverse) this.reverse.pushValueUpdates(parse);
     }
@@ -107,7 +114,6 @@ extends GOperator
     {
         super.invalidateInputs(from);
 
-        if (this.input  ) this.input  .invalidateInputs(from);
         if (this.column ) this.column .invalidateInputs(from);
         if (this.reverse) this.reverse.invalidateInputs(from);
     }

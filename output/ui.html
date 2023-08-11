@@ -13704,6 +13704,13 @@ extends GOperator
 
 
 
+    isValid()
+    {
+        return this.input && this.input.isValid();
+    }
+
+
+
     pushValueUpdates(parse)
     {
         super.pushValueUpdates(parse);
@@ -13745,6 +13752,14 @@ extends GOperator
         return super.isCached()
             && (!this.input0 || this.input0.isCached())
             && (!this.input1 || this.input1.isCached());
+    }
+
+
+
+    isValid()
+    {
+        return this.input0 && this.input0.isValid()
+            && this.input1 && this.input1.isValid();
     }
 
 
@@ -20445,6 +20460,13 @@ extends GOperator
 
 
 
+    isValid()
+    {
+        return !this.connectedInputs.find(i => !i.isValid());
+    }
+
+
+
     pushValueUpdates(parse)
     {
         super.pushValueUpdates(parse);
@@ -20646,6 +20668,15 @@ extends GOperator1
 
 
 
+    isValid()
+    {
+        return super.isValid()
+            && this.start && this.start.isValid()
+            && this.end   && this.end  .isValid();
+    }
+
+
+
     pushValueUpdates(parse)
     {
         super.pushValueUpdates(parse);
@@ -20668,10 +20699,8 @@ extends GOperator1
 
 
 class GUnique
-extends GOperator
+extends GOperator1
 {
-    input  = null;
-
     counts = null;
 
 
@@ -20752,32 +20781,18 @@ extends GOperator
 
 
 
-    pushValueUpdates(parse)
+    isValid()
     {
-        super.pushValueUpdates(parse);
-
-        if (this.input) this.input.pushValueUpdates(parse);
-    }
-
-
-
-    invalidateInputs(from)
-    {
-        super.invalidateInputs(from);
-
-        if (this.input) this.input.invalidateInputs(from);
+        return super.isValid()
+            && this.counts && this.counts.isValid();
     }
 }
 
 
 
 class GReverseList
-extends GOperator
+extends GOperator1
 {
-    input  = null;
-
-
-    
     constructor(nodeId, options)
     {
         super(REVERSE_LIST, nodeId, options);
@@ -20841,32 +20856,13 @@ extends GOperator
 
         return this;
     }
-
-
-
-    pushValueUpdates(parse)
-    {
-        super.pushValueUpdates(parse);
-
-        if (this.input) this.input.pushValueUpdates(parse);
-    }
-
-
-
-    invalidateInputs(from)
-    {
-        super.invalidateInputs(from);
-
-        if (this.input) this.input.invalidateInputs(from);
-    }
 }
 
 
 
 class GSort
-extends GOperator
+extends GOperator1
 {
-    input   = null;
     column  = null;
     reverse = null;
 
@@ -20957,11 +20953,19 @@ extends GOperator
 
 
 
+    isValid()
+    {
+        return super.isValid()
+            && this.column  && this.column .isValid()
+            && this.reverse && this.reverse.isValid();
+    }
+
+
+
     pushValueUpdates(parse)
     {
         super.pushValueUpdates(parse);
 
-        if (this.input  ) this.input  .pushValueUpdates(parse);
         if (this.column ) this.column .pushValueUpdates(parse);
         if (this.reverse) this.reverse.pushValueUpdates(parse);
     }
@@ -20972,7 +20976,6 @@ extends GOperator
     {
         super.invalidateInputs(from);
 
-        if (this.input  ) this.input  .invalidateInputs(from);
         if (this.column ) this.column .invalidateInputs(from);
         if (this.reverse) this.reverse.invalidateInputs(from);
     }
@@ -21060,6 +21063,14 @@ extends GOperator1
         this.validate();
 
         return this;
+    }
+
+
+
+    isValid()
+    {
+        return super.isValid()
+            && this.index && this.index.isValid();
     }
 
 
@@ -21189,6 +21200,15 @@ extends GOperator
 
 
 
+    isValid()
+    {
+        return super.isValid()
+            && this.column && this.column.isValid()
+            && this.row    && this.row   .isValid();
+    }
+
+
+
     pushValueUpdates(parse)
     {
         super.pushValueUpdates(parse);
@@ -21290,17 +21310,8 @@ extends GOperator
 
         return this;
     }
-
-
-
-    pushValueUpdates(parse)
-    {
-        super.pushValueUpdates(parse);
-
-        if (this.input) this.input.pushValueUpdates(parse);
-    }
-
-
+    
+    
 
     paramFromId(paramId)
     {
@@ -21314,6 +21325,22 @@ extends GOperator
     toValue()
     {
         return this.value.copy();
+    }
+
+
+
+    isValid()
+    {
+        return this.input && this.input.isValid();
+    }
+
+
+
+    pushValueUpdates(parse)
+    {
+        super.pushValueUpdates(parse);
+
+        if (this.input) this.input.pushValueUpdates(parse);
     }
 
 
@@ -21452,6 +21479,14 @@ extends GOperator
 
 
 
+    isValid()
+    {
+        return this.input && this.input.isValid()
+            && this.index && this.index.isValid();
+    }
+
+
+
     pushValueUpdates(parse)
     {
         super.pushValueUpdates(parse);
@@ -21546,20 +21581,28 @@ extends GOperator
 
 
 
+    // toValue()
+    // {
+    //     return this.value.copy();
+    // }
+
+
+
+    isValid()
+    {
+        return this.input && this.input.isValid()
+            && this.start && this.start.isValid();
+    }
+
+
+
     pushValueUpdates(parse)
     {
         super.pushValueUpdates(parse);
 
         if (this.input) this.input.pushValueUpdates(parse);
         if (this.start) this.start.pushValueUpdates(parse);
-    }
-
-
-
-    // toValue()
-    // {
-    //     return this.value.copy();
-    // }
+    }    
 
 
 
@@ -21666,6 +21709,16 @@ extends GOperatorBase2
         this.validate();
 
         return this;
+    }
+
+
+
+    isValid()
+    {
+        return super.isValid()
+            && this.first && this.first.isValid()
+            && this.last  && this.last .isValid()
+            && this.all   && this.all  .isValid();
     }
 }
 
@@ -22776,7 +22829,7 @@ extends GOperator
 
     isValid()
     {
-        return !this.connectedInputs.find(i => i.isValid());
+        return !this.connectedInputs.find(i => !i.isValid());
     }
 
 
@@ -57866,6 +57919,13 @@ extends GOperator
 
 
 
+    isValid()
+    {
+        return this.input && this.input.isValid();
+    }
+
+
+
     pushValueUpdates(parse)
     {
         super.pushValueUpdates(parse);
@@ -57907,6 +57967,14 @@ extends GOperator
         return super.isCached()
             && (!this.input0 || this.input0.isCached())
             && (!this.input1 || this.input1.isCached());
+    }
+
+
+
+    isValid()
+    {
+        return this.input0 && this.input0.isValid()
+            && this.input1 && this.input1.isValid();
     }
 
 
@@ -64607,6 +64675,13 @@ extends GOperator
 
 
 
+    isValid()
+    {
+        return !this.connectedInputs.find(i => !i.isValid());
+    }
+
+
+
     pushValueUpdates(parse)
     {
         super.pushValueUpdates(parse);
@@ -64808,6 +64883,15 @@ extends GOperator1
 
 
 
+    isValid()
+    {
+        return super.isValid()
+            && this.start && this.start.isValid()
+            && this.end   && this.end  .isValid();
+    }
+
+
+
     pushValueUpdates(parse)
     {
         super.pushValueUpdates(parse);
@@ -64830,10 +64914,8 @@ extends GOperator1
 
 
 class GUnique
-extends GOperator
+extends GOperator1
 {
-    input  = null;
-
     counts = null;
 
 
@@ -64914,32 +64996,18 @@ extends GOperator
 
 
 
-    pushValueUpdates(parse)
+    isValid()
     {
-        super.pushValueUpdates(parse);
-
-        if (this.input) this.input.pushValueUpdates(parse);
-    }
-
-
-
-    invalidateInputs(from)
-    {
-        super.invalidateInputs(from);
-
-        if (this.input) this.input.invalidateInputs(from);
+        return super.isValid()
+            && this.counts && this.counts.isValid();
     }
 }
 
 
 
 class GReverseList
-extends GOperator
+extends GOperator1
 {
-    input  = null;
-
-
-    
     constructor(nodeId, options)
     {
         super(REVERSE_LIST, nodeId, options);
@@ -65003,32 +65071,13 @@ extends GOperator
 
         return this;
     }
-
-
-
-    pushValueUpdates(parse)
-    {
-        super.pushValueUpdates(parse);
-
-        if (this.input) this.input.pushValueUpdates(parse);
-    }
-
-
-
-    invalidateInputs(from)
-    {
-        super.invalidateInputs(from);
-
-        if (this.input) this.input.invalidateInputs(from);
-    }
 }
 
 
 
 class GSort
-extends GOperator
+extends GOperator1
 {
-    input   = null;
     column  = null;
     reverse = null;
 
@@ -65119,11 +65168,19 @@ extends GOperator
 
 
 
+    isValid()
+    {
+        return super.isValid()
+            && this.column  && this.column .isValid()
+            && this.reverse && this.reverse.isValid();
+    }
+
+
+
     pushValueUpdates(parse)
     {
         super.pushValueUpdates(parse);
 
-        if (this.input  ) this.input  .pushValueUpdates(parse);
         if (this.column ) this.column .pushValueUpdates(parse);
         if (this.reverse) this.reverse.pushValueUpdates(parse);
     }
@@ -65134,7 +65191,6 @@ extends GOperator
     {
         super.invalidateInputs(from);
 
-        if (this.input  ) this.input  .invalidateInputs(from);
         if (this.column ) this.column .invalidateInputs(from);
         if (this.reverse) this.reverse.invalidateInputs(from);
     }
@@ -65222,6 +65278,14 @@ extends GOperator1
         this.validate();
 
         return this;
+    }
+
+
+
+    isValid()
+    {
+        return super.isValid()
+            && this.index && this.index.isValid();
     }
 
 
@@ -65351,6 +65415,15 @@ extends GOperator
 
 
 
+    isValid()
+    {
+        return super.isValid()
+            && this.column && this.column.isValid()
+            && this.row    && this.row   .isValid();
+    }
+
+
+
     pushValueUpdates(parse)
     {
         super.pushValueUpdates(parse);
@@ -65452,17 +65525,8 @@ extends GOperator
 
         return this;
     }
-
-
-
-    pushValueUpdates(parse)
-    {
-        super.pushValueUpdates(parse);
-
-        if (this.input) this.input.pushValueUpdates(parse);
-    }
-
-
+    
+    
 
     paramFromId(paramId)
     {
@@ -65476,6 +65540,22 @@ extends GOperator
     toValue()
     {
         return this.value.copy();
+    }
+
+
+
+    isValid()
+    {
+        return this.input && this.input.isValid();
+    }
+
+
+
+    pushValueUpdates(parse)
+    {
+        super.pushValueUpdates(parse);
+
+        if (this.input) this.input.pushValueUpdates(parse);
     }
 
 
@@ -65614,6 +65694,14 @@ extends GOperator
 
 
 
+    isValid()
+    {
+        return this.input && this.input.isValid()
+            && this.index && this.index.isValid();
+    }
+
+
+
     pushValueUpdates(parse)
     {
         super.pushValueUpdates(parse);
@@ -65708,20 +65796,28 @@ extends GOperator
 
 
 
+    // toValue()
+    // {
+    //     return this.value.copy();
+    // }
+
+
+
+    isValid()
+    {
+        return this.input && this.input.isValid()
+            && this.start && this.start.isValid();
+    }
+
+
+
     pushValueUpdates(parse)
     {
         super.pushValueUpdates(parse);
 
         if (this.input) this.input.pushValueUpdates(parse);
         if (this.start) this.start.pushValueUpdates(parse);
-    }
-
-
-
-    // toValue()
-    // {
-    //     return this.value.copy();
-    // }
+    }    
 
 
 
@@ -65828,6 +65924,16 @@ extends GOperatorBase2
         this.validate();
 
         return this;
+    }
+
+
+
+    isValid()
+    {
+        return super.isValid()
+            && this.first && this.first.isValid()
+            && this.last  && this.last .isValid()
+            && this.all   && this.all  .isValid();
     }
 }
 
@@ -66938,7 +67044,7 @@ extends GOperator
 
     isValid()
     {
-        return !this.connectedInputs.find(i => i.isValid());
+        return !this.connectedInputs.find(i => !i.isValid());
     }
 
 

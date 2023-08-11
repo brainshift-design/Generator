@@ -25,6 +25,14 @@ extends GOperator
 
 
 
+    isValid()
+    {
+        return this.input0 && this.input0.isValid()
+            && this.input1 && this.input1.isValid();
+    }
+
+
+
     pushValueUpdates(parse)
     {
         super.pushValueUpdates(parse);
