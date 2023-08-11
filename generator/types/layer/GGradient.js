@@ -143,14 +143,15 @@ extends GOperator
 
     isValid()
     {
-        return this.gradType.isValid()
-            && this.x       .isValid()
-            && this.y       .isValid()
-            && this.size    .isValid()
-            && this.angle   .isValid()
-            && this.aspect  .isValid()
-            && this.skew    .isValid()
-            && this.blend   .isValid();
+        return !this.inputs.find(i => !i.isValid())
+            && this.gradType && this.gradType.isValid()
+            && this.x        && this.x       .isValid()
+            && this.y        && this.y       .isValid()
+            && this.size     && this.size    .isValid()
+            && this.angle    && this.angle   .isValid()
+            && this.aspect   && this.aspect  .isValid()
+            && this.skew     && this.skew    .isValid()
+            && this.blend    && this.blend   .isValid();
     }
 
 

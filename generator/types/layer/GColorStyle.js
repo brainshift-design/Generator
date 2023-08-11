@@ -101,6 +101,13 @@ extends GOperator
 
 
 
+    isValid()
+    {
+        return this.genValue && this.genValue.isValid();
+    }
+
+
+
     pushValueUpdates(parse)
     {
         super.pushValueUpdates(parse);

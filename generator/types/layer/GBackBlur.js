@@ -77,7 +77,8 @@ extends GOperator1
 
     isValid()
     {
-        return this.radius.isValid();
+        return super.isValid()
+            && this.radius && this.radius.isValid();
     }
 
 

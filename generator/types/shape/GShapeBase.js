@@ -63,11 +63,10 @@ extends GOperator
 
     isValid()
     {
-        return super.isValid()
-            && this.x     .isValid()
-            && this.y     .isValid()
-            && this.width .isValid()
-            && this.height.isValid();
+        return this.x      && this.x     .isValid()
+            && this.y      && this.y     .isValid()
+            && this.width  && this.width .isValid()
+            && this.height && this.height.isValid();
     }
 
 

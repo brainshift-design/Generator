@@ -100,8 +100,9 @@ extends GOperator1
 
     isValid()
     {
-        return this.fill    .isValid()
-            && this.position.isValid();
+        return super.isValid()
+            && this.fill     && this.fill    .isValid()
+            && this.position && this.position.isValid();
     }
 
 

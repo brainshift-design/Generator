@@ -42,4 +42,11 @@ extends GOperator
     {
         return new LayerMaskValue(this.options.enabled);
     }
+
+
+
+    isValid()
+    {
+        return true;
+    }
 }

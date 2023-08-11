@@ -90,9 +90,10 @@ extends GOperator1
 
     isValid()
     {
-        return this.color  .isValid()
-            && this.opacity.isValid()
-            && this.blend  .isValid();
+        return super.isValid()
+            && this.color   && this.color  .isValid()
+            && this.opacity && this.opacity.isValid()
+            && this.blend   && this.blend  .isValid();
     }
 
 

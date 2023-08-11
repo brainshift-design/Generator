@@ -141,13 +141,14 @@ extends GOperator1
 
     isValid()
     {
-        return this.fills .isValid()
-            && this.weight.isValid()
-            && this.fit   .isValid()
-            && this.join  .isValid()
-            && this.miter .isValid()
-            && this.cap   .isValid()
-            && this.dashes.isValid();
+        return super.isValid()
+            && this.fills  && this.fills .isValid()
+            && this.weight && this.weight.isValid()
+            && this.fit    && this.fit   .isValid()
+            && this.join   && this.join  .isValid()
+            && this.miter  && this.miter .isValid()
+            && this.cap    && this.cap   .isValid()
+            && this.dashes && this.dashes.isValid();
     }
 
 

@@ -122,7 +122,8 @@ extends GShapeBase
     isValid()
     {
         return super.isValid()
-            && this.props.isValid();
+            && (!this.input || this.input.isValid())
+            && this.props && this.props.isValid();
     }
 
 

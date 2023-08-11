@@ -30406,6 +30406,13 @@ extends GOperator
 
 
 
+    isValid()
+    {
+        return this.genValue && this.genValue.isValid();
+    }
+
+
+
     pushValueUpdates(parse)
     {
         super.pushValueUpdates(parse);
@@ -30516,9 +30523,10 @@ extends GOperator1
 
     isValid()
     {
-        return this.color  .isValid()
-            && this.opacity.isValid()
-            && this.blend  .isValid();
+        return super.isValid()
+            && this.color   && this.color  .isValid()
+            && this.opacity && this.opacity.isValid()
+            && this.blend   && this.blend  .isValid();
     }
 
 
@@ -30647,8 +30655,9 @@ extends GOperator1
 
     isValid()
     {
-        return this.fill    .isValid()
-            && this.position.isValid();
+        return super.isValid()
+            && this.fill     && this.fill    .isValid()
+            && this.position && this.position.isValid();
     }
 
 
@@ -30818,14 +30827,15 @@ extends GOperator
 
     isValid()
     {
-        return this.gradType.isValid()
-            && this.x       .isValid()
-            && this.y       .isValid()
-            && this.size    .isValid()
-            && this.angle   .isValid()
-            && this.aspect  .isValid()
-            && this.skew    .isValid()
-            && this.blend   .isValid();
+        return !this.inputs.find(i => !i.isValid())
+            && this.gradType && this.gradType.isValid()
+            && this.x        && this.x       .isValid()
+            && this.y        && this.y       .isValid()
+            && this.size     && this.size    .isValid()
+            && this.angle    && this.angle   .isValid()
+            && this.aspect   && this.aspect  .isValid()
+            && this.skew     && this.skew    .isValid()
+            && this.blend    && this.blend   .isValid();
     }
 
 
@@ -30991,13 +31001,14 @@ extends GOperator1
 
     isValid()
     {
-        return this.fills .isValid()
-            && this.weight.isValid()
-            && this.fit   .isValid()
-            && this.join  .isValid()
-            && this.miter .isValid()
-            && this.cap   .isValid()
-            && this.dashes.isValid();
+        return super.isValid()
+            && this.fills  && this.fills .isValid()
+            && this.weight && this.weight.isValid()
+            && this.fit    && this.fit   .isValid()
+            && this.join   && this.join  .isValid()
+            && this.miter  && this.miter .isValid()
+            && this.cap    && this.cap   .isValid()
+            && this.dashes && this.dashes.isValid();
     }
 
 
@@ -31158,13 +31169,14 @@ extends GOperator1
 
     isValid()
     {
-        return this.x     .isValid()
-            && this.y     .isValid()
-            && this.blur  .isValid()
-            && this.spread.isValid()
-            && this.fill  .isValid()
-            && this.blend .isValid()
-            && this.behind.isValid();
+        return super.isValid()
+            && this.x      && this.x     .isValid()
+            && this.y      && this.y     .isValid()
+            && this.blur   && this.blur  .isValid()
+            && this.spread && this.spread.isValid()
+            && this.fill   && this.fill  .isValid()
+            && this.blend  && this.blend .isValid()
+            && this.behind && this.behind.isValid();
     }
 
 
@@ -31318,12 +31330,13 @@ extends GOperator1
 
     isValid()
     {
-        return this.x     .isValid()
-            && this.y     .isValid()
-            && this.blur  .isValid()
-            && this.spread.isValid()
-            && this.fill  .isValid()
-            && this.blend .isValid();
+        return super.isValid()
+            && this.x      && this.x     .isValid()
+            && this.y      && this.y     .isValid()
+            && this.blur   && this.blur  .isValid()
+            && this.spread && this.spread.isValid()
+            && this.fill   && this.fill  .isValid()
+            && this.blend  && this.blend .isValid();
     }
 
 
@@ -31435,7 +31448,8 @@ extends GOperator1
 
     isValid()
     {
-        return this.radius.isValid();
+        return super.isValid()
+            && this.radius && this.radius.isValid();
     }
 
 
@@ -31537,7 +31551,8 @@ extends GOperator1
 
     isValid()
     {
-        return this.radius.isValid();
+        return super.isValid()
+            && this.radius && this.radius.isValid();
     }
 
 
@@ -31603,6 +31618,13 @@ extends GOperator
     toValue()
     {
         return new LayerMaskValue(this.options.enabled);
+    }
+
+
+
+    isValid()
+    {
+        return true;
     }
 }
 
@@ -31672,11 +31694,10 @@ extends GOperator
 
     isValid()
     {
-        return super.isValid()
-            && this.x     .isValid()
-            && this.y     .isValid()
-            && this.width .isValid()
-            && this.height.isValid();
+        return this.x      && this.x     .isValid()
+            && this.y      && this.y     .isValid()
+            && this.width  && this.width .isValid()
+            && this.height && this.height.isValid();
     }
 
 
@@ -31841,7 +31862,8 @@ extends GShapeBase
     isValid()
     {
         return super.isValid()
-            && this.props.isValid();
+            && (!this.input || this.input.isValid())
+            && this.props && this.props.isValid();
     }
 
 
@@ -74581,6 +74603,13 @@ extends GOperator
 
 
 
+    isValid()
+    {
+        return this.genValue && this.genValue.isValid();
+    }
+
+
+
     pushValueUpdates(parse)
     {
         super.pushValueUpdates(parse);
@@ -74691,9 +74720,10 @@ extends GOperator1
 
     isValid()
     {
-        return this.color  .isValid()
-            && this.opacity.isValid()
-            && this.blend  .isValid();
+        return super.isValid()
+            && this.color   && this.color  .isValid()
+            && this.opacity && this.opacity.isValid()
+            && this.blend   && this.blend  .isValid();
     }
 
 
@@ -74822,8 +74852,9 @@ extends GOperator1
 
     isValid()
     {
-        return this.fill    .isValid()
-            && this.position.isValid();
+        return super.isValid()
+            && this.fill     && this.fill    .isValid()
+            && this.position && this.position.isValid();
     }
 
 
@@ -74993,14 +75024,15 @@ extends GOperator
 
     isValid()
     {
-        return this.gradType.isValid()
-            && this.x       .isValid()
-            && this.y       .isValid()
-            && this.size    .isValid()
-            && this.angle   .isValid()
-            && this.aspect  .isValid()
-            && this.skew    .isValid()
-            && this.blend   .isValid();
+        return !this.inputs.find(i => !i.isValid())
+            && this.gradType && this.gradType.isValid()
+            && this.x        && this.x       .isValid()
+            && this.y        && this.y       .isValid()
+            && this.size     && this.size    .isValid()
+            && this.angle    && this.angle   .isValid()
+            && this.aspect   && this.aspect  .isValid()
+            && this.skew     && this.skew    .isValid()
+            && this.blend    && this.blend   .isValid();
     }
 
 
@@ -75166,13 +75198,14 @@ extends GOperator1
 
     isValid()
     {
-        return this.fills .isValid()
-            && this.weight.isValid()
-            && this.fit   .isValid()
-            && this.join  .isValid()
-            && this.miter .isValid()
-            && this.cap   .isValid()
-            && this.dashes.isValid();
+        return super.isValid()
+            && this.fills  && this.fills .isValid()
+            && this.weight && this.weight.isValid()
+            && this.fit    && this.fit   .isValid()
+            && this.join   && this.join  .isValid()
+            && this.miter  && this.miter .isValid()
+            && this.cap    && this.cap   .isValid()
+            && this.dashes && this.dashes.isValid();
     }
 
 
@@ -75333,13 +75366,14 @@ extends GOperator1
 
     isValid()
     {
-        return this.x     .isValid()
-            && this.y     .isValid()
-            && this.blur  .isValid()
-            && this.spread.isValid()
-            && this.fill  .isValid()
-            && this.blend .isValid()
-            && this.behind.isValid();
+        return super.isValid()
+            && this.x      && this.x     .isValid()
+            && this.y      && this.y     .isValid()
+            && this.blur   && this.blur  .isValid()
+            && this.spread && this.spread.isValid()
+            && this.fill   && this.fill  .isValid()
+            && this.blend  && this.blend .isValid()
+            && this.behind && this.behind.isValid();
     }
 
 
@@ -75493,12 +75527,13 @@ extends GOperator1
 
     isValid()
     {
-        return this.x     .isValid()
-            && this.y     .isValid()
-            && this.blur  .isValid()
-            && this.spread.isValid()
-            && this.fill  .isValid()
-            && this.blend .isValid();
+        return super.isValid()
+            && this.x      && this.x     .isValid()
+            && this.y      && this.y     .isValid()
+            && this.blur   && this.blur  .isValid()
+            && this.spread && this.spread.isValid()
+            && this.fill   && this.fill  .isValid()
+            && this.blend  && this.blend .isValid();
     }
 
 
@@ -75610,7 +75645,8 @@ extends GOperator1
 
     isValid()
     {
-        return this.radius.isValid();
+        return super.isValid()
+            && this.radius && this.radius.isValid();
     }
 
 
@@ -75712,7 +75748,8 @@ extends GOperator1
 
     isValid()
     {
-        return this.radius.isValid();
+        return super.isValid()
+            && this.radius && this.radius.isValid();
     }
 
 
@@ -75778,6 +75815,13 @@ extends GOperator
     toValue()
     {
         return new LayerMaskValue(this.options.enabled);
+    }
+
+
+
+    isValid()
+    {
+        return true;
     }
 }
 
@@ -75847,11 +75891,10 @@ extends GOperator
 
     isValid()
     {
-        return super.isValid()
-            && this.x     .isValid()
-            && this.y     .isValid()
-            && this.width .isValid()
-            && this.height.isValid();
+        return this.x      && this.x     .isValid()
+            && this.y      && this.y     .isValid()
+            && this.width  && this.width .isValid()
+            && this.height && this.height.isValid();
     }
 
 
@@ -76016,7 +76059,8 @@ extends GShapeBase
     isValid()
     {
         return super.isValid()
-            && this.props.isValid();
+            && (!this.input || this.input.isValid())
+            && this.props && this.props.isValid();
     }
 
 

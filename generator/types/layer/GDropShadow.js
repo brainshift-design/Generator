@@ -124,13 +124,14 @@ extends GOperator1
 
     isValid()
     {
-        return this.x     .isValid()
-            && this.y     .isValid()
-            && this.blur  .isValid()
-            && this.spread.isValid()
-            && this.fill  .isValid()
-            && this.blend .isValid()
-            && this.behind.isValid();
+        return super.isValid()
+            && this.x      && this.x     .isValid()
+            && this.y      && this.y     .isValid()
+            && this.blur   && this.blur  .isValid()
+            && this.spread && this.spread.isValid()
+            && this.fill   && this.fill  .isValid()
+            && this.blend  && this.blend .isValid()
+            && this.behind && this.behind.isValid();
     }
 
 
