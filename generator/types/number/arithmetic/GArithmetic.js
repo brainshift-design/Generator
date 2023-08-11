@@ -18,7 +18,8 @@ extends GOperator
 
     isValid()
     {
-        return !this.inputs.find(i => !i.isValid());
+        return  this.inputs.length > 0
+            && !this.inputs.find(i => !i.isValid());
     }
 
 

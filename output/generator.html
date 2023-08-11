@@ -4,7 +4,7 @@
 
 
 
-const generatorVersion = 189;
+const generatorVersion = 191;
 
 
 const MAX_INT32        = 2147483647;
@@ -1097,6 +1097,27 @@ function isHexDigit(c)
     return c.length == 1
         && (   c >= 'A' && c <= 'F'
             || c >= 'a' && c <= 'f');
+}
+
+
+
+function decDigits(num) 
+{
+    if (typeof num !== 'number')
+        consoleError('Input must be a number');
+    
+    const strNum = num.toFixed(10);
+    const iDec   = strNum.indexOf('.');
+    
+    if (iDec === -1)
+        return 0;
+    
+    let count = 0;
+    for (let i = iDec + 1; i < strNum.length; i++)
+        if (strNum[i] !== '0')
+            count++;
+    
+    return count;
 }
 
 
@@ -15260,7 +15281,7 @@ extends GOperator
 
     isValid()
     {
-        return !this.connectedInputs.find(i => !i.isValid());
+        return !this.inputs.find(i => !i.isValid());
     }
 
 
@@ -16682,7 +16703,8 @@ extends GOperator
 
     isValid()
     {
-        return !this.inputs.find(i => !i.isValid());
+        return  this.inputs.length > 0
+            && !this.inputs.find(i => !i.isValid());
     }
 
 
@@ -19180,9 +19202,13 @@ extends GOperator1
                         if (operand.value == 0)
                             this.value = NumberValue.NaN;
                         else
+                        {
+                            const val = this.value.value / operand.value;
+
                             this.value = new NumberValue(
-                                this.value.value / operand.value,
-                                Math.max(this.value.decimals, operand.decimals));
+                                val, 
+                                Math.max(Math.max(this.value.decimals, operand.decimals)), decDigits(val));
+                        }
                         break;
 
                     case 4: 
@@ -19599,6 +19625,7 @@ async function evalDivideInputs(inputs, parse)
             for (let i = 1; i < val0.items.length; i++)
             {
                 const item = val0.items[i];
+                console.log('item =', item);
                 
                 if (item.type == NUMBER_VALUE)
                 {
@@ -19609,8 +19636,8 @@ async function evalDivideInputs(inputs, parse)
                         break; 
                     }
 
-                    value.decimals = Math.max(value.decimals, item.decimals);
-                    value.value    = floorTo(value.value / item.value, value.decimals);
+                    value.value    = value.value / item.value;
+                    value.decimals = Math.max(Math.max(value.decimals, item.decimals), decDigits(value.value));
                 }                    
             }
         }
@@ -19641,8 +19668,8 @@ async function evalDivideInputs(inputs, parse)
                             break; 
                         }
 
-                        value.decimals = Math.max(value.decimals, item.decimals);
-                        value.value    = floorTo(value.value / item.value, value.decimals);
+                        value.value    = value.value / item.value;
+                        value.decimals = Math.max(Math.max(value.decimals, item.decimals), decDigits(value.value));
                     }                    
                 }
             }
@@ -19658,9 +19685,9 @@ async function evalDivideInputs(inputs, parse)
                     value.decimals = 0;
                     break; 
                 }
-
-                value.decimals = Math.max(value.decimals, val.decimals);
-                value.value    = floorTo(value.value / val.value, value.decimals);
+    
+                value.value    = value.value / val.value;
+                value.decimals = Math.max(Math.max(value.decimals, val.decimals), decDigits(value.value));
             }
         }
     }
@@ -19745,7 +19772,7 @@ async function evalModuloInputs(inputs, parse)
                     }
 
                     value.decimals = Math.max(value.decimals, item.decimals);
-                    value.value    = floorTo(value.value % item.value, value.decimals);
+                    value.value    = value.value % item.value;
                 }                    
             }
         }

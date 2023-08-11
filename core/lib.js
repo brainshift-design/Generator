@@ -44,6 +44,27 @@ function isHexDigit(c)
 
 
 
+function decDigits(num) 
+{
+    if (typeof num !== 'number')
+        consoleError('Input must be a number');
+    
+    const strNum = num.toFixed(10);
+    const iDec   = strNum.indexOf('.');
+    
+    if (iDec === -1)
+        return 0;
+    
+    let count = 0;
+    for (let i = iDec + 1; i < strNum.length; i++)
+        if (strNum[i] !== '0')
+            count++;
+    
+    return count;
+}
+
+
+
 function isArrowKey(code)
 {
     return code == 'ArrowLeft'

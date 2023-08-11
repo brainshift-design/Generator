@@ -77,9 +77,13 @@ extends GOperator1
                         if (operand.value == 0)
                             this.value = NumberValue.NaN;
                         else
+                        {
+                            const val = this.value.value / operand.value;
+
                             this.value = new NumberValue(
-                                this.value.value / operand.value,
-                                Math.max(this.value.decimals, operand.decimals));
+                                val, 
+                                Math.max(Math.max(this.value.decimals, operand.decimals)), decDigits(val));
+                        }
                         break;
 
                     case 4: 

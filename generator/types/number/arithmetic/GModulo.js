@@ -73,7 +73,7 @@ async function evalModuloInputs(inputs, parse)
                     }
 
                     value.decimals = Math.max(value.decimals, item.decimals);
-                    value.value    = floorTo(value.value % item.value, value.decimals);
+                    value.value    = value.value % item.value;
                 }                    
             }
         }

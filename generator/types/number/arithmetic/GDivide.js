@@ -63,6 +63,7 @@ async function evalDivideInputs(inputs, parse)
             for (let i = 1; i < val0.items.length; i++)
             {
                 const item = val0.items[i];
+                console.log('item =', item);
                 
                 if (item.type == NUMBER_VALUE)
                 {
@@ -73,8 +74,8 @@ async function evalDivideInputs(inputs, parse)
                         break; 
                     }
 
-                    value.decimals = Math.max(value.decimals, item.decimals);
-                    value.value    = floorTo(value.value / item.value, value.decimals);
+                    value.value    = value.value / item.value;
+                    value.decimals = Math.max(Math.max(value.decimals, item.decimals), decDigits(value.value));
                 }                    
             }
         }
@@ -105,8 +106,8 @@ async function evalDivideInputs(inputs, parse)
                             break; 
                         }
 
-                        value.decimals = Math.max(value.decimals, item.decimals);
-                        value.value    = floorTo(value.value / item.value, value.decimals);
+                        value.value    = value.value / item.value;
+                        value.decimals = Math.max(Math.max(value.decimals, item.decimals), decDigits(value.value));
                     }                    
                 }
             }
@@ -122,9 +123,9 @@ async function evalDivideInputs(inputs, parse)
                     value.decimals = 0;
                     break; 
                 }
-
-                value.decimals = Math.max(value.decimals, val.decimals);
-                value.value    = floorTo(value.value / val.value, value.decimals);
+    
+                value.value    = value.value / val.value;
+                value.decimals = Math.max(Math.max(value.decimals, val.decimals), decDigits(value.value));
             }
         }
     }

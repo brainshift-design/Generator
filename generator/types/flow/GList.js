@@ -143,7 +143,7 @@ extends GOperator
 
     isValid()
     {
-        return !this.connectedInputs.find(i => !i.isValid());
+        return !this.inputs.find(i => !i.isValid());
     }
 
 
