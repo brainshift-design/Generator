@@ -20,14 +20,16 @@ extends OpColorBase
         this.iconOffsetY = 1;
         
 
-        this.colorBack      = createDiv('colorBack');
+        this.colorBack = createDiv('colorBack');
+        this.inner.insertBefore(this.colorBack, this.paramHolder);
+
+
         this.checkersHolder = createDiv('nodeHeaderCheckersHolder');
         this.checkers       = createDiv('nodeHeaderCheckers');
-
-        this.inner.appendChild(this.colorBack);
+        
+        this.checkersHolder.appendChild(this.checkers);
         this.inner.insertBefore(this.checkersHolder, this.header);
 
-        this.checkersHolder.appendChild(this.checkers);
 
 
         this.addInput (new Input ([FILL_VALUE], getNodeInputValuesForUndo, this.input_getBackInitValue));
@@ -163,11 +165,7 @@ extends OpColorBase
     {
         const colors = this.getHeaderColors({color: true});
 
-        colors.text = getTextColorFromBackColor(
-            colors.stripeBack, 
-            this.inputIsShape 
-            ? colors.stripeBack[3] 
-            : 1);
+        colors.text = getTextColorFromBackColor(colors.stripeBack, 1);
 
         colors.input  = rgb_a(colors.text, 0.2);
         colors.output = rgb_a(colors.text, 0.2);
@@ -176,10 +174,7 @@ extends OpColorBase
         this.paramColor.checkers.style.display = !rgbIsNaN(colors.back) ? 'inline-block' : 'none';
 
         if (this.paramOpacity.value.isValid())
-            this.paramColor.checkers.style.opacity = 
-                this.inputIsShape 
-                ? (100 - this.paramOpacity.value.toNumber()) + '%'
-                : 0;
+            this.checkersHolder.style.opacity = (100 - this.paramOpacity.value.toNumber()) + '%';
 
 
         // this.paramColor.controls[0]. backStyleLight = 
@@ -299,10 +294,10 @@ function updateFillHeader(node, colors)
     node.header.style.background = 'transparent';
 
 
-    node.header.style.background = 
-        !rgbaIsNaN(colors.stripeBack)
-        ? rgba2style(colors.stripeBack) 
-        : rgba2style(rgb_a(rgbDocumentBody, 0.95));
+    // node.header.style.background = 
+    //     !rgbaIsNaN(colors.stripeBack)
+    //     ? rgba2style(colors.stripeBack) 
+    //     : rgba2style(rgb_a(rgbDocumentBody, 0.95));
 
 
     const unknownBackStyle = darkMode ? '#444' : '#ccc';
@@ -358,36 +353,6 @@ function updateFillHeader(node, colors)
     node.outputs[0].colorLight =
     node.outputs[0].colorDark  = colors.output;
     node.outputs[0].wireColor  = colors.wire;
-
-
-    // node.updateWarningOverlay();
-    // node.updateWarningOverlayStyle(colors.back);
-
-
-    // node.header.style.background = 'transparent';
-
-    // const unknownBackStyle = darkMode ? '#444' : '#ccc';
-
-
-    // node.colorBack.style.background = 
-    //     node.isUnknown()
-    //     ? unknownBackStyle
-    //     : !rgbIsNaN(colors.stripeBack)
-    //       ? rgba2style(colors.stripeBack)
-    //       : rgba2style(rgb_a(rgbDocumentBody, 0.95));
-
-
-
-    // node.label.style.color = rgba2style(colors.text);
-
-     
-    // node. inputs[0].colorLight =
-    // node. inputs[0].colorDark  = colors.input;
-    // node. inputs[0].wireColor  = rgb_a(colors.wire);
-
-    // node.outputs[0].colorLight =
-    // node.outputs[0].colorDark  = colors.output; 
-    // node.outputs[0].wireColor  = rgb_a(colors.wire);
 
 
     if (node.isUnknown())

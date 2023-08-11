@@ -470,7 +470,7 @@ extends Parameter
                 rgbIsOk(colBack)
             && !this.forceShowWarning
             ? 'transparent'
-            : getWarningGradient(7.8, warnStyle2, warnStyle1);
+            : getWarningGradient(7.8, warnStyle1, warnStyle2);
 
 
         this._warningOverlay.style.backgroundPosition = '-3px 0';

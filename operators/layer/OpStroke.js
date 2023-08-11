@@ -216,7 +216,7 @@ extends OpColorBase
 
 
     //     this.updateWarningOverlay();
-    //     this.updateWarningOverlayStyle(colors.back, this.inputIsShape ? -1 : 45);
+    //     this.updateWarningOverlayStyle(colors.back, 45);
     // }
 
 

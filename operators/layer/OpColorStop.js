@@ -17,14 +17,15 @@ extends OpColorBase
         this.iconOffsetY = -1;
         
 
-        this.colorBack      = createDiv('colorBack');
+        this.colorBack = createDiv('colorBack');
+        this.inner.appendChild(this.colorBack, this.paramHolder);
+
+
         this.checkersHolder = createDiv('nodeHeaderCheckersHolder');
         this.checkers       = createDiv('nodeHeaderCheckers');
         
-        this.inner.appendChild(this.colorBack);
-        this.inner.insertBefore(this.checkersHolder, this.header);
-
         this.checkersHolder.appendChild(this.checkers);
+        this.inner.insertBefore(this.checkersHolder, this.header);
 
 
         this.addInput (new Input([COLOR_STOP_VALUE], getNodeInputValuesForUndo));
@@ -146,14 +147,16 @@ extends OpColorBase
         const colors = this.getHeaderColors();
 
 
-        this.header.style.background = 
-            !rgbaIsNaN(colors.stripeBack)
-            ? rgba2style(colors.stripeBack) 
-            : 'transparent';
+        const unknownBackStyle = darkMode ? '#444' : '#ccc';
+
+
+        this.header.style.background = 'transparent';
 
         this.colorBack.style.background = 
-            rgbIsOk(colors.stripeBack) //!rgbIsNaN(colors.back)
-            ? rgb2style(colors.stripeBack)
+            this.isUnknown()
+            ? unknownBackStyle
+            : !rgbIsNaN(colors.stripeBack)
+            ? rgba2style(colors.stripeBack)
             : rgba2style(rgb_a(rgbDocumentBody, 0.95));
 
 
@@ -179,10 +182,14 @@ extends OpColorBase
         this.checkers.style.width              = 'calc(100% + 3px)';
 
 
-        this.header.style.background = 
-            !rgbIsNaN(colors.stripeBack)
-            ? rgba2style(colors.stripeBack) 
-            : 'transparent';
+        if (this.paramFill.value.opacity.isValid())
+            this.checkersHolder.style.opacity = (100 - this.paramFill.value.opacity.toNumber()) + '%';
+
+
+        this.header.style.background = 'transparent';
+            // !rgbIsNaN(colors.stripeBack)
+            // ? rgba2style(colors.stripeBack) 
+            // : 'transparent';
 
 
         this.inputs[0] .colorLight = 
@@ -195,7 +202,7 @@ extends OpColorBase
 
 
         this.updateWarningOverlay();
-        this.updateWarningOverlayStyle(colors.back, this.inputIsShape ? -1 : 45);
+        this.updateWarningOverlayStyle(colors.back, 45);
     }
 
 
