@@ -17957,6 +17957,16 @@ extends GOperator
 
 
 
+    isValid()
+    {
+        return this.seed  .isValid()
+            && this.min   .isValid()
+            && this.max   .isValid()
+            && this.unique.isValid();
+    }
+
+
+
     pushValueUpdates(parse)
     {
         super.pushValueUpdates(parse);
@@ -26595,7 +26605,7 @@ extends GShape
         
         this.value.objects = [];
 
-            
+
         if (   super.baseIsValid()   
             && this.value.x     .isValid()
             && this.value.y     .isValid()

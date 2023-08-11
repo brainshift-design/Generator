@@ -93,7 +93,7 @@ extends GShape
         
         this.value.objects = [];
 
-            
+
         if (   super.baseIsValid()   
             && this.value.x     .isValid()
             && this.value.y     .isValid()

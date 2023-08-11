@@ -123,6 +123,16 @@ extends GOperator
 
 
 
+    isValid()
+    {
+        return this.seed  .isValid()
+            && this.min   .isValid()
+            && this.max   .isValid()
+            && this.unique.isValid();
+    }
+
+
+
     pushValueUpdates(parse)
     {
         super.pushValueUpdates(parse);

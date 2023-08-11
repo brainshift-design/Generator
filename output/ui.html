@@ -4850,6 +4850,7 @@ a
                 <h1 style='margin-top: 20px;'>What's new</h1>
 
                 <p>•  wires after Freeze are now solid</p>
+                <p>•  UI improvements</p>
                 
                 <p><br/><br/><div id='chkHideWhatsNew'></div></p>
             </div>
@@ -23158,6 +23159,16 @@ extends GOperator
 
 
 
+    isValid()
+    {
+        return this.seed  .isValid()
+            && this.min   .isValid()
+            && this.max   .isValid()
+            && this.unique.isValid();
+    }
+
+
+
     pushValueUpdates(parse)
     {
         super.pushValueUpdates(parse);
@@ -31796,7 +31807,7 @@ extends GShape
         
         this.value.objects = [];
 
-            
+
         if (   super.baseIsValid()   
             && this.value.x     .isValid()
             && this.value.y     .isValid()
@@ -67169,6 +67180,16 @@ extends GOperator
 
 
 
+    isValid()
+    {
+        return this.seed  .isValid()
+            && this.min   .isValid()
+            && this.max   .isValid()
+            && this.unique.isValid();
+    }
+
+
+
     pushValueUpdates(parse)
     {
         super.pushValueUpdates(parse);
@@ -75807,7 +75828,7 @@ extends GShape
         
         this.value.objects = [];
 
-            
+
         if (   super.baseIsValid()   
             && this.value.x     .isValid()
             && this.value.y     .isValid()
