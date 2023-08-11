@@ -57,11 +57,18 @@ extends GOperator
 
 
 
+    isValid()
+    {
+        return this.path && this.path.isValid();
+    }
+
+
+
     pushValueUpdates(parse)
     {
         super.pushValueUpdates(parse);
 
-        //if (this.path) this.path.pushValueUpdates(parse);
+        if (this.path) this.path.pushValueUpdates(parse);
     }
 
 
@@ -70,7 +77,7 @@ extends GOperator
     {
         super.invalidateInputs(from);
 
-        //if (this.path) this.path.invalidateInputs(from);
+        if (this.path) this.path.invalidateInputs(from);
 
         //this.cachedValue = new TextValue();
     }

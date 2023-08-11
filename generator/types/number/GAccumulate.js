@@ -80,6 +80,14 @@ extends GNumberType1
 
 
 
+    isValid()
+    {
+        return super.isValid()
+            && (this.when ? this.when.isValid() : false);
+    }
+
+
+
     pushValueUpdates(parse)
     {
         super.pushValueUpdates(parse);

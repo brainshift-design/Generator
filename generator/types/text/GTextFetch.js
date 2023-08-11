@@ -80,6 +80,13 @@ extends GOperator
 
 
 
+    isValid()
+    {
+        return this.request && this.request.isValid();
+    }
+
+
+
     pushValueUpdates(parse)
     {
         super.pushValueUpdates(parse);

@@ -150,6 +150,17 @@ extends GOperator
 
 
 
+    isValid()
+    {
+        return this.from  .isValid()
+            && this.start .isValid()
+            && this.end   .isValid()
+            && this.spread.isValid()
+            && this.bias  .isValid();
+    }
+
+
+
     pushValueUpdates(parse)
     {
         super.pushValueUpdates(parse);

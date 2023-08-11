@@ -149,6 +149,19 @@ extends GOperator
 
 
 
+    isValid()
+    {
+        return this.seed       .isValid()
+            && this.min        .isValid()
+            && this.max        .isValid()
+            && this.scale      .isValid()
+            && this.offset     .isValid()
+            && this.interpolate.isValid()
+            && this.detail     .isValid();
+    }
+
+
+
     pushValueUpdates(parse)
     {
         super.pushValueUpdates(parse);

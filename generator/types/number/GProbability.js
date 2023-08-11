@@ -86,17 +86,21 @@ extends GOperator
 
 
 
+    isValid()
+    {
+        return this.seed  .isValid()
+            && this.chance.isValid()
+            && this.max   .isValid();
+    }
+
+
+
     pushValueUpdates(parse)
     {
         super.pushValueUpdates(parse);
 
-        if (this.seed       ) this.seed       .pushValueUpdates(parse);
-        if (this.chance     ) this.chance     .pushValueUpdates(parse);
-        if (this.max        ) this.max        .pushValueUpdates(parse);
-        if (this.scale      ) this.scale      .pushValueUpdates(parse);
-        if (this.interpolate) this.interpolate.pushValueUpdates(parse);
-        if (this.offset     ) this.offset     .pushValueUpdates(parse);
-        if (this.detail     ) this.detail     .pushValueUpdates(parse);
+        if (this.seed  ) this.seed  .pushValueUpdates(parse);
+        if (this.chance) this.chance.pushValueUpdates(parse);
     }
 
 
@@ -105,12 +109,7 @@ extends GOperator
     {
         super.invalidateInputs(from);
 
-        if (this.seed       ) this.seed       .invalidateInputs(from);
-        if (this.chance     ) this.chance     .invalidateInputs(from);
-        if (this.max        ) this.max        .invalidateInputs(from);
-        if (this.scale      ) this.scale      .invalidateInputs(from);
-        if (this.interpolate) this.interpolate.invalidateInputs(from);
-        if (this.offset     ) this.offset     .invalidateInputs(from);
-        if (this.detail     ) this.detail     .invalidateInputs(from);
+        if (this.seed  ) this.seed  .invalidateInputs(from);
+        if (this.chance) this.chance.invalidateInputs(from);
     }
 }

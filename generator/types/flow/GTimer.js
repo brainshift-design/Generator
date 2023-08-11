@@ -79,6 +79,14 @@ extends GOperator
 
 
 
+    isValid()
+    {
+        return this.input && this.input.isValid()
+            && this.delay && this.delay.isValid();
+    }
+
+
+
     pushValueUpdates(parse)
     {
         super.pushValueUpdates(parse);

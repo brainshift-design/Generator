@@ -19583,8 +19583,8 @@ extends GOperator
 
     isValid()
     {
-        return super.isValid()
-            && this.feedback.isValid();
+        return this.input    && this.input   .isValid()
+            && this.feedback && this.feedback.isValid();
     }
 
 
@@ -19818,6 +19818,15 @@ extends GOperator
 
 
 
+    isValid()
+    {
+        return this. input && this. input.isValid()
+            && this. count && this. count.isValid()
+            && this._while && this._while.isValid();
+    }
+
+
+
     pushValueUpdates(parse)
     {
         super.pushValueUpdates(parse);
@@ -19825,7 +19834,6 @@ extends GOperator
         if (this. input) this. input.pushValueUpdates(parse);
         if (this. count) this. count.pushValueUpdates(parse);
         if (this._while) this._while.pushValueUpdates(parse);
-        //if (this. loop ) this. loop .pushValueUpdates(parse);
     }
 
 
@@ -19837,7 +19845,7 @@ extends GOperator
         if (this. input) this. input.invalidateInputs(from);
         if (this. count) this. count.invalidateInputs(from);
         if (this._while) this._while.invalidateInputs(from);
-        //if (this. loop ) this. loop .invalidateInputs(from);
+        if (this. loop ) this. loop .invalidateInputs(from);
     }
 
 
@@ -19959,6 +19967,13 @@ extends GOperator
 
 
 
+    isValid()
+    {
+        return this.input && this.input.isValid();
+    }
+
+
+
     pushValueUpdates(parse)
     {
         super.pushValueUpdates(parse);
@@ -20039,6 +20054,13 @@ extends GOperator
         return this.value
              ? this.value.copy()
              : null;
+    }
+
+
+
+    isValid()
+    {
+        return this.input && this.input.isValid();
     }
 
 
@@ -20144,6 +20166,13 @@ extends GOperator
 
 
 
+    isValid()
+    {
+        return this.input && this.input.isValid();
+    }
+
+
+
     pushValueUpdates(parse)
     {
         super.pushValueUpdates(parse);
@@ -20240,6 +20269,14 @@ extends GOperator
     toValue()
     {
         return this.value.copy();
+    }
+
+
+
+    isValid()
+    {
+        return this.input && this.input.isValid()
+            && this.delay && this.delay.isValid();
     }
 
 
@@ -21722,13 +21759,31 @@ extends GOperator
         this.setUpdateValues(parse,
         [
             ['type',      new TextValue(this.value ? this.value.type : ANY_VALUE)],
-            ['condition', cond                          ]
+            ['condition', cond                                                   ]
         ]);
         
         
         this.validate();
 
         return this;
+    }
+
+
+
+    toValue()
+    {
+        return this.value
+             ? this.value.copy() 
+             : null;
+    }
+
+
+
+    isValid()
+    {
+        return this.input0    && this.input0   .isValid()
+            && this.input1    && this.input1   .isValid()
+            && this.condition && this.condition.isValid();
     }
 
 
@@ -21740,16 +21795,7 @@ extends GOperator
         if (this.input0   ) this.input0   .pushValueUpdates(parse);
         if (this.input1   ) this.input1   .pushValueUpdates(parse);
         if (this.condition) this.condition.pushValueUpdates(parse);
-    }
-
-
-
-    toValue()
-    {
-        return this.value
-             ? this.value.copy() 
-             : null;
-    }
+    }    
 
 
 
@@ -21805,6 +21851,15 @@ extends GOperator
         return super.isCached()
             && (  !this.input 
                 || this.input.isCached());
+    }
+
+
+
+    isValid()
+    {
+        return this.input 
+             ? this.input.isValid() 
+             : false;
     }
 
 
@@ -22518,9 +22573,9 @@ extends GOperator
     copy()
     {
         const copy = new GLimits(this.nodeId, this.options);
-
+        
         copy.copyBase(this);
-
+        
         copy.seconds   = this.seconds  .copy();
         copy.minutes   = this.minutes  .copy();
         copy.hours     = this.hours    .copy();
@@ -22530,6 +22585,20 @@ extends GOperator
         copy.year      = this.year     .copy();
 
         return copy;
+    }    
+    
+    
+    
+    isCached()
+    {
+        return super.isCached()
+            && (!this.year      || this.year     .isCached())
+            && (!this.month     || this.month    .isCached())
+            && (!this.date      || this.date     .isCached())
+            && (!this.dayOfWeek || this.dayOfWeek.isCached())
+            && (!this.hours     || this.hours    .isCached())
+            && (!this.minutes   || this.minutes  .isCached())
+            && (!this.seconds   || this.seconds  .isCached())
     }
 
 
@@ -22565,13 +22634,26 @@ extends GOperator
                 ['date',      date     ],
                 ['month',     month    ],
                 ['year',      year     ]
-            ]);
-        }
+            ]);    
+        }    
 
         
         this.validate();
 
         return this;
+    }    
+
+
+
+    isValid()
+    {
+        return this.year      && this.year     .isValid()
+            && this.month     && this.month    .isValid()
+            && this.date      && this.date     .isValid()
+            && this.dayOfWeek && this.dayOfWeek.isValid()
+            && this.hours     && this.hours    .isValid()
+            && this.minutes   && this.minutes  .isValid()
+            && this.seconds   && this.seconds  .isValid();
     }
 
 
@@ -22587,21 +22669,7 @@ extends GOperator
         if (this.hours    ) this.hours    .pushValueUpdates(parse);
         if (this.minutes  ) this.minutes  .pushValueUpdates(parse);
         if (this.seconds  ) this.seconds  .pushValueUpdates(parse);
-    }
-
-
-
-    isCached()
-    {
-        return super.isCached()
-            && (!this.year      || this.year     .isCached())
-            && (!this.month     || this.month    .isCached())
-            && (!this.date      || this.date     .isCached())
-            && (!this.dayOfWeek || this.dayOfWeek.isCached())
-            && (!this.hours     || this.hours    .isCached())
-            && (!this.minutes   || this.minutes  .isCached())
-            && (!this.seconds   || this.seconds  .isCached())
-    }
+    }    
 
 
 
@@ -22702,6 +22770,13 @@ extends GOperator
         return this.value
              ? this.value.copy()
              : null;
+    }
+
+
+
+    isValid()
+    {
+        return !this.connectedInputs.find(i => i.isValid());
     }
 
 
@@ -22877,6 +22952,17 @@ extends GOperator
 
 
 
+    isValid()
+    {
+        return this.from  .isValid()
+            && this.start .isValid()
+            && this.end   .isValid()
+            && this.spread.isValid()
+            && this.bias  .isValid();
+    }
+
+
+
     pushValueUpdates(parse)
     {
         super.pushValueUpdates(parse);
@@ -23007,6 +23093,15 @@ extends GOperator
         return this.value
              ? this.value.copy()
              : null;
+    }
+
+
+
+    isValid()
+    {
+        return this.start && this.start.isValid()
+            && this.step  && this.step .isValid()
+            && (!this.end || this.end.isValid());
     }
 
 
@@ -23354,6 +23449,19 @@ extends GOperator
 
 
 
+    isValid()
+    {
+        return this.seed       .isValid()
+            && this.min        .isValid()
+            && this.max        .isValid()
+            && this.scale      .isValid()
+            && this.offset     .isValid()
+            && this.interpolate.isValid()
+            && this.detail     .isValid();
+    }
+
+
+
     pushValueUpdates(parse)
     {
         super.pushValueUpdates(parse);
@@ -23473,17 +23581,21 @@ extends GOperator
 
 
 
+    isValid()
+    {
+        return this.seed  .isValid()
+            && this.chance.isValid()
+            && this.max   .isValid();
+    }
+
+
+
     pushValueUpdates(parse)
     {
         super.pushValueUpdates(parse);
 
-        if (this.seed       ) this.seed       .pushValueUpdates(parse);
-        if (this.chance     ) this.chance     .pushValueUpdates(parse);
-        if (this.max        ) this.max        .pushValueUpdates(parse);
-        if (this.scale      ) this.scale      .pushValueUpdates(parse);
-        if (this.interpolate) this.interpolate.pushValueUpdates(parse);
-        if (this.offset     ) this.offset     .pushValueUpdates(parse);
-        if (this.detail     ) this.detail     .pushValueUpdates(parse);
+        if (this.seed  ) this.seed  .pushValueUpdates(parse);
+        if (this.chance) this.chance.pushValueUpdates(parse);
     }
 
 
@@ -23492,13 +23604,8 @@ extends GOperator
     {
         super.invalidateInputs(from);
 
-        if (this.seed       ) this.seed       .invalidateInputs(from);
-        if (this.chance     ) this.chance     .invalidateInputs(from);
-        if (this.max        ) this.max        .invalidateInputs(from);
-        if (this.scale      ) this.scale      .invalidateInputs(from);
-        if (this.interpolate) this.interpolate.invalidateInputs(from);
-        if (this.offset     ) this.offset     .invalidateInputs(from);
-        if (this.detail     ) this.detail     .invalidateInputs(from);
+        if (this.seed  ) this.seed  .invalidateInputs(from);
+        if (this.chance) this.chance.invalidateInputs(from);
     }
 }
 
@@ -23582,6 +23689,14 @@ extends GNumberType1
         return this.value
              ? this.value.copy()
              : null;
+    }
+
+
+
+    isValid()
+    {
+        return super.isValid()
+            && (this.when ? this.when.isValid() : false);
     }
 
 
@@ -24033,6 +24148,18 @@ extends GOperator
         this.validate();
 
         return this;
+    }
+
+
+
+    isValid()
+    {
+        return this.from   && this.from  .isValid()
+            && this.to     && this.to    .isValid()
+            && this.curve  && this.curve .isValid()
+            && this.repeat && this.repeat.isValid()
+            && this.length && this.length.isValid()
+            && this.time   && this.time  .isValid();
     }
 
 
@@ -27886,6 +28013,13 @@ extends GOperator
 
 
 
+    isValid()
+    {
+        return this.request && this.request.isValid();
+    }
+
+
+
     pushValueUpdates(parse)
     {
         super.pushValueUpdates(parse);
@@ -27965,11 +28099,18 @@ extends GOperator
 
 
 
+    isValid()
+    {
+        return this.path && this.path.isValid();
+    }
+
+
+
     pushValueUpdates(parse)
     {
         super.pushValueUpdates(parse);
 
-        //if (this.path) this.path.pushValueUpdates(parse);
+        if (this.path) this.path.pushValueUpdates(parse);
     }
 
 
@@ -27978,7 +28119,7 @@ extends GOperator
     {
         super.invalidateInputs(from);
 
-        //if (this.path) this.path.invalidateInputs(from);
+        if (this.path) this.path.invalidateInputs(from);
 
         //this.cachedValue = new TextValue();
     }
@@ -63604,8 +63745,8 @@ extends GOperator
 
     isValid()
     {
-        return super.isValid()
-            && this.feedback.isValid();
+        return this.input    && this.input   .isValid()
+            && this.feedback && this.feedback.isValid();
     }
 
 
@@ -63839,6 +63980,15 @@ extends GOperator
 
 
 
+    isValid()
+    {
+        return this. input && this. input.isValid()
+            && this. count && this. count.isValid()
+            && this._while && this._while.isValid();
+    }
+
+
+
     pushValueUpdates(parse)
     {
         super.pushValueUpdates(parse);
@@ -63846,7 +63996,6 @@ extends GOperator
         if (this. input) this. input.pushValueUpdates(parse);
         if (this. count) this. count.pushValueUpdates(parse);
         if (this._while) this._while.pushValueUpdates(parse);
-        //if (this. loop ) this. loop .pushValueUpdates(parse);
     }
 
 
@@ -63858,7 +64007,7 @@ extends GOperator
         if (this. input) this. input.invalidateInputs(from);
         if (this. count) this. count.invalidateInputs(from);
         if (this._while) this._while.invalidateInputs(from);
-        //if (this. loop ) this. loop .invalidateInputs(from);
+        if (this. loop ) this. loop .invalidateInputs(from);
     }
 
 
@@ -63980,6 +64129,13 @@ extends GOperator
 
 
 
+    isValid()
+    {
+        return this.input && this.input.isValid();
+    }
+
+
+
     pushValueUpdates(parse)
     {
         super.pushValueUpdates(parse);
@@ -64060,6 +64216,13 @@ extends GOperator
         return this.value
              ? this.value.copy()
              : null;
+    }
+
+
+
+    isValid()
+    {
+        return this.input && this.input.isValid();
     }
 
 
@@ -64165,6 +64328,13 @@ extends GOperator
 
 
 
+    isValid()
+    {
+        return this.input && this.input.isValid();
+    }
+
+
+
     pushValueUpdates(parse)
     {
         super.pushValueUpdates(parse);
@@ -64261,6 +64431,14 @@ extends GOperator
     toValue()
     {
         return this.value.copy();
+    }
+
+
+
+    isValid()
+    {
+        return this.input && this.input.isValid()
+            && this.delay && this.delay.isValid();
     }
 
 
@@ -65743,13 +65921,31 @@ extends GOperator
         this.setUpdateValues(parse,
         [
             ['type',      new TextValue(this.value ? this.value.type : ANY_VALUE)],
-            ['condition', cond                          ]
+            ['condition', cond                                                   ]
         ]);
         
         
         this.validate();
 
         return this;
+    }
+
+
+
+    toValue()
+    {
+        return this.value
+             ? this.value.copy() 
+             : null;
+    }
+
+
+
+    isValid()
+    {
+        return this.input0    && this.input0   .isValid()
+            && this.input1    && this.input1   .isValid()
+            && this.condition && this.condition.isValid();
     }
 
 
@@ -65761,16 +65957,7 @@ extends GOperator
         if (this.input0   ) this.input0   .pushValueUpdates(parse);
         if (this.input1   ) this.input1   .pushValueUpdates(parse);
         if (this.condition) this.condition.pushValueUpdates(parse);
-    }
-
-
-
-    toValue()
-    {
-        return this.value
-             ? this.value.copy() 
-             : null;
-    }
+    }    
 
 
 
@@ -65826,6 +66013,15 @@ extends GOperator
         return super.isCached()
             && (  !this.input 
                 || this.input.isCached());
+    }
+
+
+
+    isValid()
+    {
+        return this.input 
+             ? this.input.isValid() 
+             : false;
     }
 
 
@@ -66539,9 +66735,9 @@ extends GOperator
     copy()
     {
         const copy = new GLimits(this.nodeId, this.options);
-
+        
         copy.copyBase(this);
-
+        
         copy.seconds   = this.seconds  .copy();
         copy.minutes   = this.minutes  .copy();
         copy.hours     = this.hours    .copy();
@@ -66551,6 +66747,20 @@ extends GOperator
         copy.year      = this.year     .copy();
 
         return copy;
+    }    
+    
+    
+    
+    isCached()
+    {
+        return super.isCached()
+            && (!this.year      || this.year     .isCached())
+            && (!this.month     || this.month    .isCached())
+            && (!this.date      || this.date     .isCached())
+            && (!this.dayOfWeek || this.dayOfWeek.isCached())
+            && (!this.hours     || this.hours    .isCached())
+            && (!this.minutes   || this.minutes  .isCached())
+            && (!this.seconds   || this.seconds  .isCached())
     }
 
 
@@ -66586,13 +66796,26 @@ extends GOperator
                 ['date',      date     ],
                 ['month',     month    ],
                 ['year',      year     ]
-            ]);
-        }
+            ]);    
+        }    
 
         
         this.validate();
 
         return this;
+    }    
+
+
+
+    isValid()
+    {
+        return this.year      && this.year     .isValid()
+            && this.month     && this.month    .isValid()
+            && this.date      && this.date     .isValid()
+            && this.dayOfWeek && this.dayOfWeek.isValid()
+            && this.hours     && this.hours    .isValid()
+            && this.minutes   && this.minutes  .isValid()
+            && this.seconds   && this.seconds  .isValid();
     }
 
 
@@ -66608,21 +66831,7 @@ extends GOperator
         if (this.hours    ) this.hours    .pushValueUpdates(parse);
         if (this.minutes  ) this.minutes  .pushValueUpdates(parse);
         if (this.seconds  ) this.seconds  .pushValueUpdates(parse);
-    }
-
-
-
-    isCached()
-    {
-        return super.isCached()
-            && (!this.year      || this.year     .isCached())
-            && (!this.month     || this.month    .isCached())
-            && (!this.date      || this.date     .isCached())
-            && (!this.dayOfWeek || this.dayOfWeek.isCached())
-            && (!this.hours     || this.hours    .isCached())
-            && (!this.minutes   || this.minutes  .isCached())
-            && (!this.seconds   || this.seconds  .isCached())
-    }
+    }    
 
 
 
@@ -66723,6 +66932,13 @@ extends GOperator
         return this.value
              ? this.value.copy()
              : null;
+    }
+
+
+
+    isValid()
+    {
+        return !this.connectedInputs.find(i => i.isValid());
     }
 
 
@@ -66898,6 +67114,17 @@ extends GOperator
 
 
 
+    isValid()
+    {
+        return this.from  .isValid()
+            && this.start .isValid()
+            && this.end   .isValid()
+            && this.spread.isValid()
+            && this.bias  .isValid();
+    }
+
+
+
     pushValueUpdates(parse)
     {
         super.pushValueUpdates(parse);
@@ -67028,6 +67255,15 @@ extends GOperator
         return this.value
              ? this.value.copy()
              : null;
+    }
+
+
+
+    isValid()
+    {
+        return this.start && this.start.isValid()
+            && this.step  && this.step .isValid()
+            && (!this.end || this.end.isValid());
     }
 
 
@@ -67375,6 +67611,19 @@ extends GOperator
 
 
 
+    isValid()
+    {
+        return this.seed       .isValid()
+            && this.min        .isValid()
+            && this.max        .isValid()
+            && this.scale      .isValid()
+            && this.offset     .isValid()
+            && this.interpolate.isValid()
+            && this.detail     .isValid();
+    }
+
+
+
     pushValueUpdates(parse)
     {
         super.pushValueUpdates(parse);
@@ -67494,17 +67743,21 @@ extends GOperator
 
 
 
+    isValid()
+    {
+        return this.seed  .isValid()
+            && this.chance.isValid()
+            && this.max   .isValid();
+    }
+
+
+
     pushValueUpdates(parse)
     {
         super.pushValueUpdates(parse);
 
-        if (this.seed       ) this.seed       .pushValueUpdates(parse);
-        if (this.chance     ) this.chance     .pushValueUpdates(parse);
-        if (this.max        ) this.max        .pushValueUpdates(parse);
-        if (this.scale      ) this.scale      .pushValueUpdates(parse);
-        if (this.interpolate) this.interpolate.pushValueUpdates(parse);
-        if (this.offset     ) this.offset     .pushValueUpdates(parse);
-        if (this.detail     ) this.detail     .pushValueUpdates(parse);
+        if (this.seed  ) this.seed  .pushValueUpdates(parse);
+        if (this.chance) this.chance.pushValueUpdates(parse);
     }
 
 
@@ -67513,13 +67766,8 @@ extends GOperator
     {
         super.invalidateInputs(from);
 
-        if (this.seed       ) this.seed       .invalidateInputs(from);
-        if (this.chance     ) this.chance     .invalidateInputs(from);
-        if (this.max        ) this.max        .invalidateInputs(from);
-        if (this.scale      ) this.scale      .invalidateInputs(from);
-        if (this.interpolate) this.interpolate.invalidateInputs(from);
-        if (this.offset     ) this.offset     .invalidateInputs(from);
-        if (this.detail     ) this.detail     .invalidateInputs(from);
+        if (this.seed  ) this.seed  .invalidateInputs(from);
+        if (this.chance) this.chance.invalidateInputs(from);
     }
 }
 
@@ -67603,6 +67851,14 @@ extends GNumberType1
         return this.value
              ? this.value.copy()
              : null;
+    }
+
+
+
+    isValid()
+    {
+        return super.isValid()
+            && (this.when ? this.when.isValid() : false);
     }
 
 
@@ -68054,6 +68310,18 @@ extends GOperator
         this.validate();
 
         return this;
+    }
+
+
+
+    isValid()
+    {
+        return this.from   && this.from  .isValid()
+            && this.to     && this.to    .isValid()
+            && this.curve  && this.curve .isValid()
+            && this.repeat && this.repeat.isValid()
+            && this.length && this.length.isValid()
+            && this.time   && this.time  .isValid();
     }
 
 
@@ -71907,6 +72175,13 @@ extends GOperator
 
 
 
+    isValid()
+    {
+        return this.request && this.request.isValid();
+    }
+
+
+
     pushValueUpdates(parse)
     {
         super.pushValueUpdates(parse);
@@ -71986,11 +72261,18 @@ extends GOperator
 
 
 
+    isValid()
+    {
+        return this.path && this.path.isValid();
+    }
+
+
+
     pushValueUpdates(parse)
     {
         super.pushValueUpdates(parse);
 
-        //if (this.path) this.path.pushValueUpdates(parse);
+        if (this.path) this.path.pushValueUpdates(parse);
     }
 
 
@@ -71999,7 +72281,7 @@ extends GOperator
     {
         super.invalidateInputs(from);
 
-        //if (this.path) this.path.invalidateInputs(from);
+        if (this.path) this.path.invalidateInputs(from);
 
         //this.cachedValue = new TextValue();
     }

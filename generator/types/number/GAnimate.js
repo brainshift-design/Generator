@@ -126,6 +126,18 @@ extends GOperator
 
 
 
+    isValid()
+    {
+        return this.from   && this.from  .isValid()
+            && this.to     && this.to    .isValid()
+            && this.curve  && this.curve .isValid()
+            && this.repeat && this.repeat.isValid()
+            && this.length && this.length.isValid()
+            && this.time   && this.time  .isValid();
+    }
+
+
+
     pushValueUpdates(parse)
     {
         super.pushValueUpdates(parse);

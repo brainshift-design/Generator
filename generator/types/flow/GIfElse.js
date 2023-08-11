@@ -87,13 +87,31 @@ extends GOperator
         this.setUpdateValues(parse,
         [
             ['type',      new TextValue(this.value ? this.value.type : ANY_VALUE)],
-            ['condition', cond                          ]
+            ['condition', cond                                                   ]
         ]);
         
         
         this.validate();
 
         return this;
+    }
+
+
+
+    toValue()
+    {
+        return this.value
+             ? this.value.copy() 
+             : null;
+    }
+
+
+
+    isValid()
+    {
+        return this.input0    && this.input0   .isValid()
+            && this.input1    && this.input1   .isValid()
+            && this.condition && this.condition.isValid();
     }
 
 
@@ -105,16 +123,7 @@ extends GOperator
         if (this.input0   ) this.input0   .pushValueUpdates(parse);
         if (this.input1   ) this.input1   .pushValueUpdates(parse);
         if (this.condition) this.condition.pushValueUpdates(parse);
-    }
-
-
-
-    toValue()
-    {
-        return this.value
-             ? this.value.copy() 
-             : null;
-    }
+    }    
 
 
 

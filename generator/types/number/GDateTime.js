@@ -21,9 +21,9 @@ extends GOperator
     copy()
     {
         const copy = new GLimits(this.nodeId, this.options);
-
+        
         copy.copyBase(this);
-
+        
         copy.seconds   = this.seconds  .copy();
         copy.minutes   = this.minutes  .copy();
         copy.hours     = this.hours    .copy();
@@ -33,6 +33,20 @@ extends GOperator
         copy.year      = this.year     .copy();
 
         return copy;
+    }    
+    
+    
+    
+    isCached()
+    {
+        return super.isCached()
+            && (!this.year      || this.year     .isCached())
+            && (!this.month     || this.month    .isCached())
+            && (!this.date      || this.date     .isCached())
+            && (!this.dayOfWeek || this.dayOfWeek.isCached())
+            && (!this.hours     || this.hours    .isCached())
+            && (!this.minutes   || this.minutes  .isCached())
+            && (!this.seconds   || this.seconds  .isCached())
     }
 
 
@@ -68,13 +82,26 @@ extends GOperator
                 ['date',      date     ],
                 ['month',     month    ],
                 ['year',      year     ]
-            ]);
-        }
+            ]);    
+        }    
 
         
         this.validate();
 
         return this;
+    }    
+
+
+
+    isValid()
+    {
+        return this.year      && this.year     .isValid()
+            && this.month     && this.month    .isValid()
+            && this.date      && this.date     .isValid()
+            && this.dayOfWeek && this.dayOfWeek.isValid()
+            && this.hours     && this.hours    .isValid()
+            && this.minutes   && this.minutes  .isValid()
+            && this.seconds   && this.seconds  .isValid();
     }
 
 
@@ -90,21 +117,7 @@ extends GOperator
         if (this.hours    ) this.hours    .pushValueUpdates(parse);
         if (this.minutes  ) this.minutes  .pushValueUpdates(parse);
         if (this.seconds  ) this.seconds  .pushValueUpdates(parse);
-    }
-
-
-
-    isCached()
-    {
-        return super.isCached()
-            && (!this.year      || this.year     .isCached())
-            && (!this.month     || this.month    .isCached())
-            && (!this.date      || this.date     .isCached())
-            && (!this.dayOfWeek || this.dayOfWeek.isCached())
-            && (!this.hours     || this.hours    .isCached())
-            && (!this.minutes   || this.minutes  .isCached())
-            && (!this.seconds   || this.seconds  .isCached())
-    }
+    }    
 
 
 

@@ -23,6 +23,15 @@ extends GOperator
 
 
 
+    isValid()
+    {
+        return this.input 
+             ? this.input.isValid() 
+             : false;
+    }
+
+
+
     pushValueUpdates(parse)
     {
         super.pushValueUpdates(parse);

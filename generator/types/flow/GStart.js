@@ -121,8 +121,8 @@ extends GOperator
 
     isValid()
     {
-        return super.isValid()
-            && this.feedback.isValid();
+        return this.input    && this.input   .isValid()
+            && this.feedback && this.feedback.isValid();
     }
 
 

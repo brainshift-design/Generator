@@ -105,6 +105,15 @@ extends GOperator
 
 
 
+    isValid()
+    {
+        return this.start && this.start.isValid()
+            && this.step  && this.step .isValid()
+            && (!this.end || this.end.isValid());
+    }
+
+
+
     pushValueUpdates(parse)
     {
         super.pushValueUpdates(parse);
