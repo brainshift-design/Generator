@@ -13729,7 +13729,7 @@ extends GOperator
 }
 
 
-class GOperatorBase2
+class GOperator2
 extends GOperator
 {
     input0 = null;
@@ -21617,7 +21617,7 @@ extends GOperator
 
 
 class GContains
-extends GOperatorBase2
+extends GOperator2
 {
     first;
     last;
@@ -21864,77 +21864,6 @@ extends GOperator
 
 
 
-// class GNumberType
-// extends GOperator
-// {
-//     // copyBase(base)
-//     // {
-//     //     super.copyBase(base);
-
-//     //     if (base.value) this.value = base.value.copy();
-//     // }
-
-
-
-//     toValue()
-//     {
-//         return this.value.copy();
-//     }
-// }
-
-
-class GNumberType1
-extends GOperator
-{
-    input = null;
-
-
-
-    copyBase(base)
-    {
-        super.copyBase(base);
-
-        if (base.input) this.input = base.input.copy();
-    }
-
-
-
-    isCached()
-    {
-        return super.isCached()
-            && (  !this.input 
-                || this.input.isCached());
-    }
-
-
-
-    isValid()
-    {
-        return this.input 
-             ? this.input.isValid() 
-             : false;
-    }
-
-
-
-    pushValueUpdates(parse)
-    {
-        super.pushValueUpdates(parse);
-
-        if (this.input) this.input.pushValueUpdates(parse);
-    }
-
-
-
-    invalidateInputs(from)
-    {
-        super.invalidateInputs(from);
-
-        if (this.input) this.input.invalidateInputs(from);
-    }
-}
-
-
 class GArithmetic
 extends GOperator
 {
@@ -21980,7 +21909,7 @@ extends GOperator
 
 
 class GNumber
-extends GNumberType1
+extends GOperator1
 {
     constructor(nodeId, options)
     {
@@ -22031,7 +21960,7 @@ extends GNumberType1
 
 
 class GSign
-extends GNumberType1
+extends GOperator1
 {
     constructor(nodeId, options)
     {
@@ -22086,7 +22015,7 @@ extends GNumberType1
 
 
 class GAbsolute
-extends GNumberType1
+extends GOperator1
 {
     constructor(nodeId, options)
     {
@@ -22139,7 +22068,7 @@ extends GNumberType1
 
 
 class GRound
-extends GNumberType1
+extends GOperator1
 {
     type;
     decimals;
@@ -22422,7 +22351,7 @@ async function evalMinMaxInputs(inputs, op, parse)
 
 
 class GLimits
-extends GNumberType1
+extends GOperator1
 {
     min;
     max;
@@ -23697,7 +23626,7 @@ extends GOperator
 
 
 class GAccumulate
-extends GNumberType1
+extends GOperator1
 {
     current;
     when;
@@ -23817,7 +23746,7 @@ extends GNumberType1
 
 
 class GInterpolate
-extends GOperatorBase2
+extends GOperator2
 {
     amount;
 
@@ -23915,7 +23844,7 @@ extends GOperatorBase2
 
 
 class GSolve
-extends GNumberType1
+extends GOperator1
 {
     current;
     target;
@@ -24368,7 +24297,7 @@ extends GArithmetic
 
 
 class GSimpleMath
-extends GNumberType1
+extends GOperator1
 {
     operation;
     operand;
@@ -25725,7 +25654,7 @@ async function evalXorInputs(inputs, parse)
 
 
 class GCondition
-extends GNumberType1
+extends GOperator1
 {
     operation;
     operand;
@@ -25835,7 +25764,7 @@ async function evalConditionInputs(input0, input1, op, parse)
 
 
 class GEqual
-extends GOperatorBase2
+extends GOperator2
 {
     constructor(nodeId, options)
     {
@@ -25879,7 +25808,7 @@ extends GOperatorBase2
 
 
 class GNotEqual
-extends GOperatorBase2
+extends GOperator2
 {
     constructor(nodeId, options)
     {
@@ -25922,7 +25851,7 @@ extends GOperatorBase2
 
 
 class GLess
-extends GOperatorBase2
+extends GOperator2
 {
     constructor(nodeId, options)
     {
@@ -25965,7 +25894,7 @@ extends GOperatorBase2
 
 
 class GLessOrEqual
-extends GOperatorBase2
+extends GOperator2
 {
     constructor(nodeId, options)
     {
@@ -26009,7 +25938,7 @@ extends GOperatorBase2
 
 
 class GGreater
-extends GOperatorBase2
+extends GOperator2
 {
     constructor(nodeId, options)
     {
@@ -26052,7 +25981,7 @@ extends GOperatorBase2
 
 
 class GGreaterOrEqual
-extends GOperatorBase2
+extends GOperator2
 {
     constructor(nodeId, options)
     {
@@ -26099,7 +26028,7 @@ extends GOperatorBase2
 
 
 class GTrig
-extends GNumberType1
+extends GOperator1
 {
     function;
 
@@ -26185,7 +26114,7 @@ extends GNumberType1
 
 
 class GSine
-extends GNumberType1
+extends GOperator1
 {
     constructor(nodeId, options)
     {
@@ -26248,7 +26177,7 @@ async function evalSine(input, parse)
 
 
 class GCosine
-extends GNumberType1
+extends GOperator1
 {
     constructor(nodeId, options)
     {
@@ -26304,7 +26233,7 @@ async function evalCosine(input, parse)
 
 
 class GTangent
-extends GNumberType1
+extends GOperator1
 {
     constructor(nodeId, options)
     {
@@ -26359,70 +26288,8 @@ async function evalTangent(input, parse)
 }
 
 
-// class GTextType
-// extends GOperator
-// {
-//     // copyBase(src)
-//     // {
-//     //     super.copyBase(src);
-
-//     //     if (src.value) this.value = src.value.copy();
-//     // }
-
-
-
-//     toValue()
-//     {
-//         return this.value.copy();
-//     }
-// }
-
-
-class GTextType1
-extends GOperator
-{
-    input = null;
-
-
-
-    copyBase(base)
-    {
-        super.copyBase(base);
-
-        if (base.input) this.input = base.input.copy();
-    }
-
-
-
-    isCached()
-    {
-        return super.isCached()
-            && (  !this.input 
-                || this.input.isCached());
-    }
-
-
-
-    pushValueUpdates(parse)
-    {
-        super.pushValueUpdates(parse);
-
-        if (this.input) this.input.pushValueUpdates(parse);
-    }
-
-
-
-    invalidateInputs(from)
-    {
-        super.invalidateInputs(from);
-
-        if (this.input) this.input.invalidateInputs(from);
-    }
-}
-
-
 class GText
-extends GTextType1
+extends GOperator1
 {
     constructor(nodeId, options)
     {
@@ -26536,7 +26403,7 @@ extends GOperator1
 
 
 class GTextTrim
-extends GTextType1
+extends GOperator1
 {
     start;
     end;
@@ -26606,6 +26473,15 @@ extends GTextType1
 
 
 
+    isValid()
+    {
+        return super.isValid()
+            && this.start && this.start.isValid()
+            && this.end   && this.end  .isValid();
+    }
+
+
+
     pushValueUpdates(parse)
     {
         super.pushValueUpdates(parse);
@@ -26628,7 +26504,7 @@ extends GTextType1
 
 
 class GTextSubstring
-extends GTextType1
+extends GOperator1
 {
     start;
     end;
@@ -26707,6 +26583,15 @@ extends GTextType1
 
 
 
+    isValid()
+    {
+        return super.isValid()
+            && this.start && this.start.isValid()
+            && this.end   && this.end  .isValid();
+    }
+
+
+
     pushValueUpdates(parse)
     {
         super.pushValueUpdates(parse);
@@ -26729,7 +26614,7 @@ extends GTextType1
 
 
 class GTextContains
-extends GOperatorBase2
+extends GOperator2
 {
     first;
     last;
@@ -26826,11 +26711,21 @@ extends GOperatorBase2
 
         return this;
     }
+
+
+
+    isValid()
+    {
+        return super.isValid()
+            && this.first && this.first.isValid()
+            && this.last  && this.last .isValid()
+            && this.all   && this.all  .isValid();
+    }
 }
 
 
 class GTextCase
-extends GTextType1
+extends GOperator1
 {
     case;
 
@@ -26929,6 +26824,14 @@ extends GTextType1
 
 
 
+    isValid()
+    {
+        return super.isValid()
+            && this.case && this.case.isValid();
+    }
+
+
+
     pushValueUpdates(parse)
     {
         super.pushValueUpdates(parse);
@@ -26949,10 +26852,8 @@ extends GTextType1
 
 
 class GNumberToText
-extends GOperator
+extends GOperator1
 {
-    input;
-
     number;
     format;
 
@@ -26971,10 +26872,7 @@ extends GOperator
 
         copy.copyBase(this);
 
-        if (this.input) 
-            copy.input = this.input.copy();
-
-        copy.format = this.format.copy();
+        if (this.format) copy.format = this.format.copy();
 
         return copy;
     }
@@ -27028,11 +26926,18 @@ extends GOperator
 
 
 
+    isValid()
+    {
+        return super.isValid()
+            && this.format && this.format.isValid();
+    }
+
+
+
     pushValueUpdates(parse)
     {
         super.pushValueUpdates(parse);
 
-        if (this.input ) this.input .pushValueUpdates(parse);
         if (this.format) this.format.pushValueUpdates(parse);
     }
 
@@ -27042,7 +26947,6 @@ extends GOperator
     {
         super.invalidateInputs(from);
 
-        if (this.input ) this.input .invalidateInputs(from);
         if (this.format) this.format.invalidateInputs(from);
     }
 }
@@ -27050,10 +26954,8 @@ extends GOperator
 
 
 class GTextToNumber
-extends GOperator
+extends GOperator1
 {
-    input;
-
     format;
 
 
@@ -27071,10 +26973,7 @@ extends GOperator
 
         copy.copyBase(this);
 
-        if (this.input) 
-            copy.input = this.input.copy();
-
-        copy.format = this.format.copy();
+        if (this.format) copy.format = this.format.copy();
 
         return copy;
     }
@@ -27128,11 +27027,18 @@ extends GOperator
 
 
 
+    isValid()
+    {
+        return super.isValid()
+            && this.format && this.format.isValid();
+    }
+
+
+
     pushValueUpdates(parse)
     {
         super.pushValueUpdates(parse);
 
-        if (this.input)  this.input .pushValueUpdates(parse);
         if (this.format) this.format.pushValueUpdates(parse);
     }
 
@@ -27142,7 +27048,6 @@ extends GOperator
     {
         super.invalidateInputs(from);
 
-        if (this.input)  this.input .invalidateInputs(from);
         if (this.format) this.format.invalidateInputs(from);
     }
 }
@@ -27150,12 +27055,8 @@ extends GOperator
 
 
 class GTextToColor
-extends GOperator
+extends GOperator1
 {
-    input;
-
-
-    
     constructor(nodeId, options)
     {
         super(TEXT_TO_COLOR, nodeId, options);
@@ -27168,9 +27069,6 @@ extends GOperator
         const copy = new GTextToColor(this.nodeId, this.options);
 
         copy.copyBase(this);
-
-        if (this.input) 
-            copy.input = this.input.copy();
 
         return copy;
     }
@@ -27208,30 +27106,12 @@ extends GOperator
 
         return this;
     }
-
-
-
-    pushValueUpdates(parse)
-    {
-        super.pushValueUpdates(parse);
-
-        if (this.input) this.input.pushValueUpdates(parse);
-    }
-
-
-
-    invalidateInputs(from)
-    {
-        super.invalidateInputs(from);
-
-        if (this.input) this.input.invalidateInputs(from);
-    }
 }
 
 
 
 class GTextCharacter
-extends GTextType1
+extends GOperator1
 {
     code;
 
@@ -27283,6 +27163,14 @@ extends GTextType1
 
 
 
+    isValid()
+    {
+        return super.isValid()
+            && this.code && this.code.isValid();
+    }
+
+
+
     pushValueUpdates(parse)
     {
         super.pushValueUpdates(parse);
@@ -27303,7 +27191,7 @@ extends GTextType1
 
 
 class GTextReplace
-extends GTextType1
+extends GOperator1
 {
     what;
     with;
@@ -27368,6 +27256,15 @@ extends GTextType1
         this.validate();
 
         return this;
+    }
+
+
+
+    isValid()
+    {
+        return super.isValid()
+            && this.what && this.what.isValid()
+            && this.with && this.with.isValid();
     }
 
 
@@ -27458,6 +27355,14 @@ extends GOperator
 
 
 
+    isValid()
+    {
+        return !this.inputs.find(i => !i.isValid())
+            && this.with && this.with.isValid();
+    }
+
+
+
     pushValueUpdates(parse)
     {
         super.pushValueUpdates(parse);
@@ -27524,7 +27429,7 @@ async function evalJoinInputs(inputs, _with, parse)
 
 
 class GTextPad
-extends GTextType1
+extends GOperator1
 {
     startPad;
     startCount;
@@ -27605,6 +27510,17 @@ extends GTextType1
         this.validate();
 
         return this;
+    }
+
+
+
+    isValid()
+    {
+        return super.isValid()
+            && this.startPad   && this.startPad  .isValid()
+            && this.startCount && this.startCount.isValid()
+            && this.endPad     && this.endPad    .isValid()
+            && this.endCount   && this.endCount  .isValid();
     }
 
 
@@ -27706,11 +27622,18 @@ extends GOperator1
 
 
 
+    isValid()
+    {
+        return super.isValid()
+            && this.separator && this.separator.isValid();
+    }
+
+
+
     pushValueUpdates(parse)
     {
         super.pushValueUpdates(parse);
 
-        //if (this.value    ) this.value    .pushValueUpdates(parse);
         if (this.separator) this.separator.pushValueUpdates(parse);
     }
 
@@ -27720,7 +27643,6 @@ extends GOperator1
     {
         super.invalidateInputs(from);
 
-        //if (this.value    ) this.value    .invalidateInputs(from);
         if (this.separator) this.separator.invalidateInputs(from);
     }
 }
@@ -27728,7 +27650,7 @@ extends GOperator1
 
 
 class GTextCompare
-extends GOperatorBase2
+extends GOperator2
 {
     operation;
 
@@ -27788,6 +27710,14 @@ extends GOperatorBase2
         this.validate();
 
         return this;
+    }
+
+
+
+    isValid()
+    {
+        return super.isValid()
+            && this.operation && this.operation.isValid();
     }
 
 
@@ -27926,6 +27856,15 @@ extends GOperator1
         this.validate();
 
         return this;
+    }
+
+
+
+    isValid()
+    {
+        return super.isValid()
+            && this.rowSeparator    && this.rowSeparator   .isValid()
+            && this.columnSeparator && this.columnSeparator.isValid();
     }
 
 
@@ -36381,7 +36320,7 @@ extends GOperator1
 
 
 class GMeasurePoints
-extends GOperatorBase2
+extends GOperator2
 {
     distance = null;
     angle    = null;
@@ -36480,7 +36419,7 @@ extends GOperatorBase2
 
 
 class GInterpolatePoint
-extends GOperatorBase2
+extends GOperator2
 {
     amount     = null;
     transform  = null;
@@ -36610,7 +36549,7 @@ extends GOperatorBase2
 
 
 class GPointOnPath
-extends GOperatorBase2
+extends GOperator2
 {
     measure    = null;
     amount     = null;
@@ -58016,7 +57955,7 @@ extends GOperator
 }
 
 
-class GOperatorBase2
+class GOperator2
 extends GOperator
 {
     input0 = null;
@@ -65904,7 +65843,7 @@ extends GOperator
 
 
 class GContains
-extends GOperatorBase2
+extends GOperator2
 {
     first;
     last;
@@ -66151,77 +66090,6 @@ extends GOperator
 
 
 
-// class GNumberType
-// extends GOperator
-// {
-//     // copyBase(base)
-//     // {
-//     //     super.copyBase(base);
-
-//     //     if (base.value) this.value = base.value.copy();
-//     // }
-
-
-
-//     toValue()
-//     {
-//         return this.value.copy();
-//     }
-// }
-
-
-class GNumberType1
-extends GOperator
-{
-    input = null;
-
-
-
-    copyBase(base)
-    {
-        super.copyBase(base);
-
-        if (base.input) this.input = base.input.copy();
-    }
-
-
-
-    isCached()
-    {
-        return super.isCached()
-            && (  !this.input 
-                || this.input.isCached());
-    }
-
-
-
-    isValid()
-    {
-        return this.input 
-             ? this.input.isValid() 
-             : false;
-    }
-
-
-
-    pushValueUpdates(parse)
-    {
-        super.pushValueUpdates(parse);
-
-        if (this.input) this.input.pushValueUpdates(parse);
-    }
-
-
-
-    invalidateInputs(from)
-    {
-        super.invalidateInputs(from);
-
-        if (this.input) this.input.invalidateInputs(from);
-    }
-}
-
-
 class GArithmetic
 extends GOperator
 {
@@ -66267,7 +66135,7 @@ extends GOperator
 
 
 class GNumber
-extends GNumberType1
+extends GOperator1
 {
     constructor(nodeId, options)
     {
@@ -66318,7 +66186,7 @@ extends GNumberType1
 
 
 class GSign
-extends GNumberType1
+extends GOperator1
 {
     constructor(nodeId, options)
     {
@@ -66373,7 +66241,7 @@ extends GNumberType1
 
 
 class GAbsolute
-extends GNumberType1
+extends GOperator1
 {
     constructor(nodeId, options)
     {
@@ -66426,7 +66294,7 @@ extends GNumberType1
 
 
 class GRound
-extends GNumberType1
+extends GOperator1
 {
     type;
     decimals;
@@ -66709,7 +66577,7 @@ async function evalMinMaxInputs(inputs, op, parse)
 
 
 class GLimits
-extends GNumberType1
+extends GOperator1
 {
     min;
     max;
@@ -67984,7 +67852,7 @@ extends GOperator
 
 
 class GAccumulate
-extends GNumberType1
+extends GOperator1
 {
     current;
     when;
@@ -68104,7 +67972,7 @@ extends GNumberType1
 
 
 class GInterpolate
-extends GOperatorBase2
+extends GOperator2
 {
     amount;
 
@@ -68202,7 +68070,7 @@ extends GOperatorBase2
 
 
 class GSolve
-extends GNumberType1
+extends GOperator1
 {
     current;
     target;
@@ -68655,7 +68523,7 @@ extends GArithmetic
 
 
 class GSimpleMath
-extends GNumberType1
+extends GOperator1
 {
     operation;
     operand;
@@ -70012,7 +69880,7 @@ async function evalXorInputs(inputs, parse)
 
 
 class GCondition
-extends GNumberType1
+extends GOperator1
 {
     operation;
     operand;
@@ -70122,7 +69990,7 @@ async function evalConditionInputs(input0, input1, op, parse)
 
 
 class GEqual
-extends GOperatorBase2
+extends GOperator2
 {
     constructor(nodeId, options)
     {
@@ -70166,7 +70034,7 @@ extends GOperatorBase2
 
 
 class GNotEqual
-extends GOperatorBase2
+extends GOperator2
 {
     constructor(nodeId, options)
     {
@@ -70209,7 +70077,7 @@ extends GOperatorBase2
 
 
 class GLess
-extends GOperatorBase2
+extends GOperator2
 {
     constructor(nodeId, options)
     {
@@ -70252,7 +70120,7 @@ extends GOperatorBase2
 
 
 class GLessOrEqual
-extends GOperatorBase2
+extends GOperator2
 {
     constructor(nodeId, options)
     {
@@ -70296,7 +70164,7 @@ extends GOperatorBase2
 
 
 class GGreater
-extends GOperatorBase2
+extends GOperator2
 {
     constructor(nodeId, options)
     {
@@ -70339,7 +70207,7 @@ extends GOperatorBase2
 
 
 class GGreaterOrEqual
-extends GOperatorBase2
+extends GOperator2
 {
     constructor(nodeId, options)
     {
@@ -70386,7 +70254,7 @@ extends GOperatorBase2
 
 
 class GTrig
-extends GNumberType1
+extends GOperator1
 {
     function;
 
@@ -70472,7 +70340,7 @@ extends GNumberType1
 
 
 class GSine
-extends GNumberType1
+extends GOperator1
 {
     constructor(nodeId, options)
     {
@@ -70535,7 +70403,7 @@ async function evalSine(input, parse)
 
 
 class GCosine
-extends GNumberType1
+extends GOperator1
 {
     constructor(nodeId, options)
     {
@@ -70591,7 +70459,7 @@ async function evalCosine(input, parse)
 
 
 class GTangent
-extends GNumberType1
+extends GOperator1
 {
     constructor(nodeId, options)
     {
@@ -70646,70 +70514,8 @@ async function evalTangent(input, parse)
 }
 
 
-// class GTextType
-// extends GOperator
-// {
-//     // copyBase(src)
-//     // {
-//     //     super.copyBase(src);
-
-//     //     if (src.value) this.value = src.value.copy();
-//     // }
-
-
-
-//     toValue()
-//     {
-//         return this.value.copy();
-//     }
-// }
-
-
-class GTextType1
-extends GOperator
-{
-    input = null;
-
-
-
-    copyBase(base)
-    {
-        super.copyBase(base);
-
-        if (base.input) this.input = base.input.copy();
-    }
-
-
-
-    isCached()
-    {
-        return super.isCached()
-            && (  !this.input 
-                || this.input.isCached());
-    }
-
-
-
-    pushValueUpdates(parse)
-    {
-        super.pushValueUpdates(parse);
-
-        if (this.input) this.input.pushValueUpdates(parse);
-    }
-
-
-
-    invalidateInputs(from)
-    {
-        super.invalidateInputs(from);
-
-        if (this.input) this.input.invalidateInputs(from);
-    }
-}
-
-
 class GText
-extends GTextType1
+extends GOperator1
 {
     constructor(nodeId, options)
     {
@@ -70823,7 +70629,7 @@ extends GOperator1
 
 
 class GTextTrim
-extends GTextType1
+extends GOperator1
 {
     start;
     end;
@@ -70893,6 +70699,15 @@ extends GTextType1
 
 
 
+    isValid()
+    {
+        return super.isValid()
+            && this.start && this.start.isValid()
+            && this.end   && this.end  .isValid();
+    }
+
+
+
     pushValueUpdates(parse)
     {
         super.pushValueUpdates(parse);
@@ -70915,7 +70730,7 @@ extends GTextType1
 
 
 class GTextSubstring
-extends GTextType1
+extends GOperator1
 {
     start;
     end;
@@ -70994,6 +70809,15 @@ extends GTextType1
 
 
 
+    isValid()
+    {
+        return super.isValid()
+            && this.start && this.start.isValid()
+            && this.end   && this.end  .isValid();
+    }
+
+
+
     pushValueUpdates(parse)
     {
         super.pushValueUpdates(parse);
@@ -71016,7 +70840,7 @@ extends GTextType1
 
 
 class GTextContains
-extends GOperatorBase2
+extends GOperator2
 {
     first;
     last;
@@ -71113,11 +70937,21 @@ extends GOperatorBase2
 
         return this;
     }
+
+
+
+    isValid()
+    {
+        return super.isValid()
+            && this.first && this.first.isValid()
+            && this.last  && this.last .isValid()
+            && this.all   && this.all  .isValid();
+    }
 }
 
 
 class GTextCase
-extends GTextType1
+extends GOperator1
 {
     case;
 
@@ -71216,6 +71050,14 @@ extends GTextType1
 
 
 
+    isValid()
+    {
+        return super.isValid()
+            && this.case && this.case.isValid();
+    }
+
+
+
     pushValueUpdates(parse)
     {
         super.pushValueUpdates(parse);
@@ -71236,10 +71078,8 @@ extends GTextType1
 
 
 class GNumberToText
-extends GOperator
+extends GOperator1
 {
-    input;
-
     number;
     format;
 
@@ -71258,10 +71098,7 @@ extends GOperator
 
         copy.copyBase(this);
 
-        if (this.input) 
-            copy.input = this.input.copy();
-
-        copy.format = this.format.copy();
+        if (this.format) copy.format = this.format.copy();
 
         return copy;
     }
@@ -71315,11 +71152,18 @@ extends GOperator
 
 
 
+    isValid()
+    {
+        return super.isValid()
+            && this.format && this.format.isValid();
+    }
+
+
+
     pushValueUpdates(parse)
     {
         super.pushValueUpdates(parse);
 
-        if (this.input ) this.input .pushValueUpdates(parse);
         if (this.format) this.format.pushValueUpdates(parse);
     }
 
@@ -71329,7 +71173,6 @@ extends GOperator
     {
         super.invalidateInputs(from);
 
-        if (this.input ) this.input .invalidateInputs(from);
         if (this.format) this.format.invalidateInputs(from);
     }
 }
@@ -71337,10 +71180,8 @@ extends GOperator
 
 
 class GTextToNumber
-extends GOperator
+extends GOperator1
 {
-    input;
-
     format;
 
 
@@ -71358,10 +71199,7 @@ extends GOperator
 
         copy.copyBase(this);
 
-        if (this.input) 
-            copy.input = this.input.copy();
-
-        copy.format = this.format.copy();
+        if (this.format) copy.format = this.format.copy();
 
         return copy;
     }
@@ -71415,11 +71253,18 @@ extends GOperator
 
 
 
+    isValid()
+    {
+        return super.isValid()
+            && this.format && this.format.isValid();
+    }
+
+
+
     pushValueUpdates(parse)
     {
         super.pushValueUpdates(parse);
 
-        if (this.input)  this.input .pushValueUpdates(parse);
         if (this.format) this.format.pushValueUpdates(parse);
     }
 
@@ -71429,7 +71274,6 @@ extends GOperator
     {
         super.invalidateInputs(from);
 
-        if (this.input)  this.input .invalidateInputs(from);
         if (this.format) this.format.invalidateInputs(from);
     }
 }
@@ -71437,12 +71281,8 @@ extends GOperator
 
 
 class GTextToColor
-extends GOperator
+extends GOperator1
 {
-    input;
-
-
-    
     constructor(nodeId, options)
     {
         super(TEXT_TO_COLOR, nodeId, options);
@@ -71455,9 +71295,6 @@ extends GOperator
         const copy = new GTextToColor(this.nodeId, this.options);
 
         copy.copyBase(this);
-
-        if (this.input) 
-            copy.input = this.input.copy();
 
         return copy;
     }
@@ -71495,30 +71332,12 @@ extends GOperator
 
         return this;
     }
-
-
-
-    pushValueUpdates(parse)
-    {
-        super.pushValueUpdates(parse);
-
-        if (this.input) this.input.pushValueUpdates(parse);
-    }
-
-
-
-    invalidateInputs(from)
-    {
-        super.invalidateInputs(from);
-
-        if (this.input) this.input.invalidateInputs(from);
-    }
 }
 
 
 
 class GTextCharacter
-extends GTextType1
+extends GOperator1
 {
     code;
 
@@ -71570,6 +71389,14 @@ extends GTextType1
 
 
 
+    isValid()
+    {
+        return super.isValid()
+            && this.code && this.code.isValid();
+    }
+
+
+
     pushValueUpdates(parse)
     {
         super.pushValueUpdates(parse);
@@ -71590,7 +71417,7 @@ extends GTextType1
 
 
 class GTextReplace
-extends GTextType1
+extends GOperator1
 {
     what;
     with;
@@ -71655,6 +71482,15 @@ extends GTextType1
         this.validate();
 
         return this;
+    }
+
+
+
+    isValid()
+    {
+        return super.isValid()
+            && this.what && this.what.isValid()
+            && this.with && this.with.isValid();
     }
 
 
@@ -71745,6 +71581,14 @@ extends GOperator
 
 
 
+    isValid()
+    {
+        return !this.inputs.find(i => !i.isValid())
+            && this.with && this.with.isValid();
+    }
+
+
+
     pushValueUpdates(parse)
     {
         super.pushValueUpdates(parse);
@@ -71811,7 +71655,7 @@ async function evalJoinInputs(inputs, _with, parse)
 
 
 class GTextPad
-extends GTextType1
+extends GOperator1
 {
     startPad;
     startCount;
@@ -71892,6 +71736,17 @@ extends GTextType1
         this.validate();
 
         return this;
+    }
+
+
+
+    isValid()
+    {
+        return super.isValid()
+            && this.startPad   && this.startPad  .isValid()
+            && this.startCount && this.startCount.isValid()
+            && this.endPad     && this.endPad    .isValid()
+            && this.endCount   && this.endCount  .isValid();
     }
 
 
@@ -71993,11 +71848,18 @@ extends GOperator1
 
 
 
+    isValid()
+    {
+        return super.isValid()
+            && this.separator && this.separator.isValid();
+    }
+
+
+
     pushValueUpdates(parse)
     {
         super.pushValueUpdates(parse);
 
-        //if (this.value    ) this.value    .pushValueUpdates(parse);
         if (this.separator) this.separator.pushValueUpdates(parse);
     }
 
@@ -72007,7 +71869,6 @@ extends GOperator1
     {
         super.invalidateInputs(from);
 
-        //if (this.value    ) this.value    .invalidateInputs(from);
         if (this.separator) this.separator.invalidateInputs(from);
     }
 }
@@ -72015,7 +71876,7 @@ extends GOperator1
 
 
 class GTextCompare
-extends GOperatorBase2
+extends GOperator2
 {
     operation;
 
@@ -72075,6 +71936,14 @@ extends GOperatorBase2
         this.validate();
 
         return this;
+    }
+
+
+
+    isValid()
+    {
+        return super.isValid()
+            && this.operation && this.operation.isValid();
     }
 
 
@@ -72213,6 +72082,15 @@ extends GOperator1
         this.validate();
 
         return this;
+    }
+
+
+
+    isValid()
+    {
+        return super.isValid()
+            && this.rowSeparator    && this.rowSeparator   .isValid()
+            && this.columnSeparator && this.columnSeparator.isValid();
     }
 
 
@@ -80668,7 +80546,7 @@ extends GOperator1
 
 
 class GMeasurePoints
-extends GOperatorBase2
+extends GOperator2
 {
     distance = null;
     angle    = null;
@@ -80767,7 +80645,7 @@ extends GOperatorBase2
 
 
 class GInterpolatePoint
-extends GOperatorBase2
+extends GOperator2
 {
     amount     = null;
     transform  = null;
@@ -80897,7 +80775,7 @@ extends GOperatorBase2
 
 
 class GPointOnPath
-extends GOperatorBase2
+extends GOperator2
 {
     measure    = null;
     amount     = null;

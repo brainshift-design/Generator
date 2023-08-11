@@ -104,6 +104,15 @@ extends GOperator1
 
 
 
+    isValid()
+    {
+        return super.isValid()
+            && this.rowSeparator    && this.rowSeparator   .isValid()
+            && this.columnSeparator && this.columnSeparator.isValid();
+    }
+
+
+
     pushValueUpdates(parse)
     {
         super.pushValueUpdates(parse);

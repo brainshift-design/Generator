@@ -70,11 +70,18 @@ extends GOperator1
 
 
 
+    isValid()
+    {
+        return super.isValid()
+            && this.separator && this.separator.isValid();
+    }
+
+
+
     pushValueUpdates(parse)
     {
         super.pushValueUpdates(parse);
 
-        //if (this.value    ) this.value    .pushValueUpdates(parse);
         if (this.separator) this.separator.pushValueUpdates(parse);
     }
 
@@ -84,7 +91,6 @@ extends GOperator1
     {
         super.invalidateInputs(from);
 
-        //if (this.value    ) this.value    .invalidateInputs(from);
         if (this.separator) this.separator.invalidateInputs(from);
     }
 }

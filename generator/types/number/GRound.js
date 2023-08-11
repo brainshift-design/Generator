@@ -1,5 +1,5 @@
 class GRound
-extends GNumberType1
+extends GOperator1
 {
     type;
     decimals;

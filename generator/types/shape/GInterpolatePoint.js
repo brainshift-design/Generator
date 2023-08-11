@@ -1,5 +1,5 @@
 class GInterpolatePoint
-extends GOperatorBase2
+extends GOperator2
 {
     amount     = null;
     transform  = null;

@@ -1,5 +1,5 @@
 class GTextCharacter
-extends GTextType1
+extends GOperator1
 {
     code;
 
@@ -47,6 +47,14 @@ extends GTextType1
         this.validate();
 
         return this;
+    }
+
+
+
+    isValid()
+    {
+        return super.isValid()
+            && this.code && this.code.isValid();
     }
 
 

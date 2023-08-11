@@ -1,5 +1,5 @@
 class GTrig
-extends GNumberType1
+extends GOperator1
 {
     function;
 

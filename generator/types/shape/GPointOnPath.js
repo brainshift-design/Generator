@@ -1,5 +1,5 @@
 class GPointOnPath
-extends GOperatorBase2
+extends GOperator2
 {
     measure    = null;
     amount     = null;

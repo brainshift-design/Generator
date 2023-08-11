@@ -1,5 +1,5 @@
 class GCondition
-extends GNumberType1
+extends GOperator1
 {
     operation;
     operand;

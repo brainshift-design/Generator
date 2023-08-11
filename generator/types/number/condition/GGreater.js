@@ -1,5 +1,5 @@
 class GGreater
-extends GOperatorBase2
+extends GOperator2
 {
     constructor(nodeId, options)
     {

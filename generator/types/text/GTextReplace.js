@@ -1,5 +1,5 @@
 class GTextReplace
-extends GTextType1
+extends GOperator1
 {
     what;
     with;
@@ -64,6 +64,15 @@ extends GTextType1
         this.validate();
 
         return this;
+    }
+
+
+
+    isValid()
+    {
+        return super.isValid()
+            && this.what && this.what.isValid()
+            && this.with && this.with.isValid();
     }
 
 

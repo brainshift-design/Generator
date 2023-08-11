@@ -1,5 +1,5 @@
 class GTextCase
-extends GTextType1
+extends GOperator1
 {
     case;
 
@@ -94,6 +94,14 @@ extends GTextType1
         this.validate();
 
         return this;
+    }
+
+
+
+    isValid()
+    {
+        return super.isValid()
+            && this.case && this.case.isValid();
     }
 
 

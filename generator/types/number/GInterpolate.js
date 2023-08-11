@@ -1,5 +1,5 @@
 class GInterpolate
-extends GOperatorBase2
+extends GOperator2
 {
     amount;
 

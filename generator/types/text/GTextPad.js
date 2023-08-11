@@ -1,5 +1,5 @@
 class GTextPad
-extends GTextType1
+extends GOperator1
 {
     startPad;
     startCount;
@@ -80,6 +80,17 @@ extends GTextType1
         this.validate();
 
         return this;
+    }
+
+
+
+    isValid()
+    {
+        return super.isValid()
+            && this.startPad   && this.startPad  .isValid()
+            && this.startCount && this.startCount.isValid()
+            && this.endPad     && this.endPad    .isValid()
+            && this.endCount   && this.endCount  .isValid();
     }
 
 

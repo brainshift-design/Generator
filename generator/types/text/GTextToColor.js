@@ -1,10 +1,6 @@
 class GTextToColor
-extends GOperator
+extends GOperator1
 {
-    input;
-
-
-    
     constructor(nodeId, options)
     {
         super(TEXT_TO_COLOR, nodeId, options);
@@ -17,9 +13,6 @@ extends GOperator
         const copy = new GTextToColor(this.nodeId, this.options);
 
         copy.copyBase(this);
-
-        if (this.input) 
-            copy.input = this.input.copy();
 
         return copy;
     }
@@ -56,23 +49,5 @@ extends GOperator
         this.validate();
 
         return this;
-    }
-
-
-
-    pushValueUpdates(parse)
-    {
-        super.pushValueUpdates(parse);
-
-        if (this.input) this.input.pushValueUpdates(parse);
-    }
-
-
-
-    invalidateInputs(from)
-    {
-        super.invalidateInputs(from);
-
-        if (this.input) this.input.invalidateInputs(from);
     }
 }

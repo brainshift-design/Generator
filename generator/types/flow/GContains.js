@@ -1,5 +1,5 @@
 class GContains
-extends GOperatorBase2
+extends GOperator2
 {
     first;
     last;

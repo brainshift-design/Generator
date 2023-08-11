@@ -1,5 +1,5 @@
 class GMeasurePoints
-extends GOperatorBase2
+extends GOperator2
 {
     distance = null;
     angle    = null;

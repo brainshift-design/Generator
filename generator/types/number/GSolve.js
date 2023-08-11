@@ -1,5 +1,5 @@
 class GSolve
-extends GNumberType1
+extends GOperator1
 {
     current;
     target;

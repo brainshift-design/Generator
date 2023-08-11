@@ -1,5 +1,5 @@
 class GLessOrEqual
-extends GOperatorBase2
+extends GOperator2
 {
     constructor(nodeId, options)
     {

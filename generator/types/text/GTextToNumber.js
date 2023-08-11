@@ -1,8 +1,6 @@
 class GTextToNumber
-extends GOperator
+extends GOperator1
 {
-    input;
-
     format;
 
 
@@ -20,10 +18,7 @@ extends GOperator
 
         copy.copyBase(this);
 
-        if (this.input) 
-            copy.input = this.input.copy();
-
-        copy.format = this.format.copy();
+        if (this.format) copy.format = this.format.copy();
 
         return copy;
     }
@@ -77,11 +72,18 @@ extends GOperator
 
 
 
+    isValid()
+    {
+        return super.isValid()
+            && this.format && this.format.isValid();
+    }
+
+
+
     pushValueUpdates(parse)
     {
         super.pushValueUpdates(parse);
 
-        if (this.input)  this.input .pushValueUpdates(parse);
         if (this.format) this.format.pushValueUpdates(parse);
     }
 
@@ -91,7 +93,6 @@ extends GOperator
     {
         super.invalidateInputs(from);
 
-        if (this.input)  this.input .invalidateInputs(from);
         if (this.format) this.format.invalidateInputs(from);
     }
 }

@@ -1,5 +1,5 @@
 class GNumber
-extends GNumberType1
+extends GOperator1
 {
     constructor(nodeId, options)
     {

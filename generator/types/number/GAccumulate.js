@@ -1,5 +1,5 @@
 class GAccumulate
-extends GNumberType1
+extends GOperator1
 {
     current;
     when;

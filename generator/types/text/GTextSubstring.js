@@ -1,5 +1,5 @@
 class GTextSubstring
-extends GTextType1
+extends GOperator1
 {
     start;
     end;
@@ -74,6 +74,15 @@ extends GTextType1
         this.validate();
 
         return this;
+    }
+
+
+
+    isValid()
+    {
+        return super.isValid()
+            && this.start && this.start.isValid()
+            && this.end   && this.end  .isValid();
     }
 
 

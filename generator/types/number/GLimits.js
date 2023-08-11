@@ -1,5 +1,5 @@
 class GLimits
-extends GNumberType1
+extends GOperator1
 {
     min;
     max;

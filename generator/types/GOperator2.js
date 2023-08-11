@@ -1,4 +1,4 @@
-class GOperatorBase2
+class GOperator2
 extends GOperator
 {
     input0 = null;

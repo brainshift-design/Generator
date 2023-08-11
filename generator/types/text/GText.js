@@ -1,5 +1,5 @@
 class GText
-extends GTextType1
+extends GOperator1
 {
     constructor(nodeId, options)
     {

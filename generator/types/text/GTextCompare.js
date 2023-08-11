@@ -1,5 +1,5 @@
 class GTextCompare
-extends GOperatorBase2
+extends GOperator2
 {
     operation;
 
@@ -59,6 +59,14 @@ extends GOperatorBase2
         this.validate();
 
         return this;
+    }
+
+
+
+    isValid()
+    {
+        return super.isValid()
+            && this.operation && this.operation.isValid();
     }
 
 

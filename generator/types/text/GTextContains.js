@@ -1,5 +1,5 @@
 class GTextContains
-extends GOperatorBase2
+extends GOperator2
 {
     first;
     last;
@@ -95,5 +95,15 @@ extends GOperatorBase2
         this.validate();
 
         return this;
+    }
+
+
+
+    isValid()
+    {
+        return super.isValid()
+            && this.first && this.first.isValid()
+            && this.last  && this.last .isValid()
+            && this.all   && this.all  .isValid();
     }
 }
