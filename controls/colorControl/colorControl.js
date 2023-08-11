@@ -163,7 +163,7 @@ extends Control
         this.param.divName.style.color = !isDark(this.value.toRgb()) ? this.textStyleDark : this.textStyleLight;
         this.param.divName.style.opacity = 0.5;
         
-        this.textbox.style.background = 'transparent';
+        //this.textbox.style.background = 'transparent';
 
         this.divValue.style.color = 
         this.textbox .style.color = 
@@ -176,14 +176,9 @@ extends Control
 
     updateText()
     {
-        this.divValue.innerHTML = 
-               this.value.isValid()
-            && rgbIsValid(this.value.toRgb())
-            ? rgb2hex(this.value.toRgb())
-            : UNKNOWN_DISPLAY;
+        this.divValue.innerHTML = this.getValueText();
 
         this.textbox.value = this.divValue.innerText;
-
         
         this.divValue.style.position = 'static';    
         this.divValue.style.width    = 'fit-content';    
@@ -193,6 +188,20 @@ extends Control
             ? '4px auto 0 3px'
             : '4px auto 0 auto';
     };
+
+
+
+    getValueText()
+    {
+        if (this.valueText != '')
+            return this.valueText;
+
+        else
+            return this.value.isValid()
+                && rgbIsValid(this.value.toRgb())
+                ? rgb2hex(this.value.toRgb())
+                : UNKNOWN_DISPLAY;
+    }
 
 
 

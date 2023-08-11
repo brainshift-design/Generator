@@ -310,6 +310,11 @@ extends Parameter
 
     updateControls()
     {
+        this.showColorBack = 
+               !this.isUnknown() 
+            && !this.node.isUnknown();
+
+
         const noColor = 
             darkMode
             ? rgbNoColorDark
@@ -370,19 +375,53 @@ extends Parameter
 
 
 
-    enableControlText(enable)
+    enableControlText(enable, unknown = false)
     {
         enable &= 
                !this.input 
             || !this.input.connected;
 
+        //enableElementText(this.divName, enable, false);
         enableElementText(this.controls[0].div, enable);
         
         this.controls[0].readOnly = !enable;
+
+        this.updateValueText();
+
+
+        this.controls[0].valueText = 
+               unknown
+            ||    this.input 
+               && this.input.isUncached()
+               && this.node.hasMultipliedOutputs()
+               //&& this.output && this.output.isMultiplied()
+            ? UNKNOWN_DISPLAY
+            : '';
     }
     
     
     
+    updateValueText()
+    {
+        let unknown = false;
+
+        if (   this.input
+            && this.input.connected)
+        {
+            if (   this.input.isUncached()
+                && this.node.hasMultipliedOutputs())
+                unknown = true;
+        }
+
+
+        if (unknown)
+            this.controls[0].valueText = UNKNOWN_DISPLAY;
+
+        this.controls[0].showBar = !unknown;
+    }
+
+
+
     updateWarningOverlay() 
     {
         //console.log(this.id + '.updateWarningOverlay()');

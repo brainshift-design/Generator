@@ -695,6 +695,7 @@ function updateColorHeader(node, colors)
 {
     node.header.style.background = 'transparent';
 
+    
     const unknownBackStyle = darkMode ? '#444' : '#ccc';
 
 

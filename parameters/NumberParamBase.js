@@ -161,7 +161,8 @@ extends Parameter
 
         this.controls[0].valueText = 
                unknown
-            ||    this.input  && this.input .isUncached()
+            ||    this.input  
+               && this.input.isUncached()
                && this.node.hasMultipliedOutputs()
                //&& this.output && this.output.isMultiplied()
             ? UNKNOWN_DISPLAY
