@@ -310,6 +310,9 @@ extends Parameter
 
     updateControls()
     {
+        this.updateWarningOverlay();
+
+
         this.showColorBack = 
                !this.isUnknown() 
             && !this.node.isUnknown();
