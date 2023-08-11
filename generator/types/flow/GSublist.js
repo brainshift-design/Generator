@@ -49,7 +49,8 @@ extends GOperator1
             const input = (await this.input.eval(parse)).toValue();
 
             
-            if (input)
+            if (   input
+                && input.items)
             {
                 length = input.items.length;
 
@@ -73,7 +74,7 @@ extends GOperator1
                 }
             }
             else
-                this.value = NullValue.copy();
+                this.value = ListValue.NaN.copy();//NullValue.copy();
         }
 
 
