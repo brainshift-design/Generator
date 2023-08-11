@@ -74,7 +74,7 @@ extends GOperator1
                 }
             }
             else
-                this.value = ListValue.NaN.copy();//NullValue.copy();
+                this.value = ListValue.NaN.copy();
         }
 
 

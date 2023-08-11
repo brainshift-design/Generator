@@ -15465,7 +15465,7 @@ extends GOperator1
                 }
             }
             else
-                this.value = ListValue.NaN.copy();//NullValue.copy();
+                this.value = ListValue.NaN.copy();
         }
 
 
@@ -15659,7 +15659,7 @@ extends GOperator1
                 this.value = input.copy();
         }
         else
-            this.value = new ListValue();//TextValue.NaN;
+            this.value = ListValue.NaN.copy();
 
 
         this.updateValueObjects();
