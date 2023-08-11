@@ -58,6 +58,14 @@ extends GNumberType1
 
 
 
+    isValid()
+    {
+        return super.isValid()
+            && this.function && this.function.isValid();
+    }
+
+
+
     pushValueUpdates(parse)
     {
         super.pushValueUpdates(parse);

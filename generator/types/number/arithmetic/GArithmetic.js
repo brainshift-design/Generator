@@ -16,6 +16,13 @@ extends GOperator
 
 
 
+    isValid()
+    {
+        return !this.inputs.find(i => !i.isValid());
+    }
+
+
+
     pushValueUpdates(parse)
     {
         super.pushValueUpdates(parse);

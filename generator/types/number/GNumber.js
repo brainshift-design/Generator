@@ -46,12 +46,4 @@ extends GNumberType1
 
         return this;
     }
-
-
-
-    isValid()
-    {
-        return !isNaN(this.value)
-            && !isNaN(this.decimals);
-    }
 }

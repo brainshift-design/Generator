@@ -80,6 +80,15 @@ extends GNumberType1
 
 
 
+    isValid()
+    {
+        return super.isValid()
+            && this.type     && this.type    .isValid()
+            && this.decimals && this.decimals.isValid();
+    }
+
+
+
     pushValueUpdates(parse)
     {
         super.pushValueUpdates(parse);

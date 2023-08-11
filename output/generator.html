@@ -16751,6 +16751,13 @@ extends GOperator
 
 
 
+    isValid()
+    {
+        return !this.inputs.find(i => !i.isValid());
+    }
+
+
+
     pushValueUpdates(parse)
     {
         super.pushValueUpdates(parse);
@@ -16817,14 +16824,6 @@ extends GNumberType1
         this.validate();
 
         return this;
-    }
-
-
-
-    isValid()
-    {
-        return !isNaN(this.value)
-            && !isNaN(this.decimals);
     }
 }
 
@@ -17019,6 +17018,15 @@ extends GNumberType1
 
 
 
+    isValid()
+    {
+        return super.isValid()
+            && this.type     && this.type    .isValid()
+            && this.decimals && this.decimals.isValid();
+    }
+
+
+
     pushValueUpdates(parse)
     {
         super.pushValueUpdates(parse);
@@ -17092,6 +17100,14 @@ extends GArithmetic
         this.validate();
 
         return this;
+    }
+
+
+
+    isValid()
+    {
+        return super.isValid()
+            && this.operation && this.operation.isValid();
     }
 
 
@@ -17291,6 +17307,15 @@ extends GNumberType1
 
 
 
+    isValid()
+    {
+        return super.isValid()
+            && this.min && this.min.isValid()
+            && this.max && this.max.isValid();
+    }
+
+
+
     pushValueUpdates(parse)
     {
         super.pushValueUpdates(parse);
@@ -17378,6 +17403,13 @@ extends GOperator
         this.validate();
 
         return this;
+    }
+
+
+
+    isValid()
+    {
+        return this.constant && this.constant.isValid();
     }
 
 
@@ -18583,11 +18615,8 @@ extends GNumberType1
 
 
 class GInterpolate
-extends GOperator
+extends GOperatorBase2
 {
-    input0 = null;
-    input1 = null;
-
     amount;
 
 
@@ -18604,21 +18633,9 @@ extends GOperator
 
         copy.copyBase(this);
 
-        if (this.input0) copy.input0 = this.input0.copy();
-        if (this.input1) copy.input1 = this.input1.copy();
-
         copy.amount = this.amount.copy();
 
         return copy;
-    }
-
-
-
-    isCached()
-    {
-        return super.isCached()
-            && (!this.input0 || this.input0.isCached())
-            && (!this.input1 || this.input1.isCached());
     }
 
 
@@ -18668,12 +18685,18 @@ extends GOperator
 
 
 
+    isValid()
+    {
+        return super.isValid()
+            && this.amount && this.amount.isValid();
+    }
+
+
+
     pushValueUpdates(parse)
     {
         super.pushValueUpdates(parse);
 
-        if (this.input0) this.input0.pushValueUpdates(parse);
-        if (this.input1) this.input1.pushValueUpdates(parse);
         if (this.amount) this.amount.pushValueUpdates(parse);
     }
 
@@ -18683,8 +18706,6 @@ extends GOperator
     {
         super.invalidateInputs(from);
 
-        if (this.input0) this.input0.invalidateInputs(from);
-        if (this.input1) this.input1.invalidateInputs(from);
         if (this.amount) this.amount.invalidateInputs(from);
     }
 }
@@ -18846,6 +18867,15 @@ extends GNumberType1
         this.validate();
 
         return this;
+    }
+
+
+
+    isValid()
+    {
+        return super.isValid()
+            && this.current && this.current.isValid()
+            && this.target  && this.target .isValid();
     }
 
 
@@ -19108,6 +19138,14 @@ extends GArithmetic
 
 
 
+    isValid()
+    {
+        return super.isValid()
+            && this.operation && this.operation.isValid();
+    }
+
+
+
     pushValueUpdates(parse)
     {
         super.pushValueUpdates(parse);
@@ -19240,6 +19278,15 @@ extends GNumberType1
         this.validate();
 
         return this;
+    }
+
+
+
+    isValid()
+    {
+        return super.isValid()
+            && this.operation && this.operation.isValid()
+            && this.operand   && this.operand  .isValid();
     }
 
 
@@ -19998,6 +20045,14 @@ extends GArithmetic
 
 
 
+    isValid()
+    {
+        return super.isValid()
+            && this.operation && this.operation.isValid();
+    }
+
+
+
     pushValueUpdates(parse)
     {
         super.pushValueUpdates(parse);
@@ -20529,7 +20584,16 @@ extends GNumberType1
 
         this.validate();
 
-        return this;
+    return this;
+    }
+
+
+
+    isValid()
+    {
+        return super.isValid()
+            && this.operation && this.operation.isValid()
+            && this.operand   && this.operand  .isValid();
     }
 
 
@@ -20888,6 +20952,14 @@ extends GNumberType1
         this.validate();
 
         return this;
+    }
+
+
+
+    isValid()
+    {
+        return super.isValid()
+            && this.function && this.function.isValid();
     }
 
 
@@ -23807,10 +23879,10 @@ extends GColorType1
 
     isValid()
     {
-        return this.space.isValid()
-            && this.c1   .isValid()
-            && this.c2   .isValid()
-            && this.c3   .isValid();
+        return this.space && this.space.isValid()
+            && this.c1    && this.c1   .isValid()
+            && this.c2    && this.c2   .isValid()
+            && this.c3    && this.c3   .isValid();
     }
 
 

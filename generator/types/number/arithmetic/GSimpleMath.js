@@ -115,6 +115,15 @@ extends GNumberType1
 
 
 
+    isValid()
+    {
+        return super.isValid()
+            && this.operation && this.operation.isValid()
+            && this.operand   && this.operand  .isValid();
+    }
+
+
+
     pushValueUpdates(parse)
     {
         super.pushValueUpdates(parse);

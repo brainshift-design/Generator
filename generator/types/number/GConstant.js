@@ -66,6 +66,13 @@ extends GOperator
 
 
 
+    isValid()
+    {
+        return this.constant && this.constant.isValid();
+    }
+
+
+
     pushValueUpdates(parse)
     {
         super.pushValueUpdates(parse);

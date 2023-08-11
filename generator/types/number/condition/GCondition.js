@@ -60,7 +60,16 @@ extends GNumberType1
 
         this.validate();
 
-        return this;
+    return this;
+    }
+
+
+
+    isValid()
+    {
+        return super.isValid()
+            && this.operation && this.operation.isValid()
+            && this.operand   && this.operand  .isValid();
     }
 
 

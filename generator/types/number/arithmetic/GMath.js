@@ -62,6 +62,14 @@ extends GArithmetic
 
 
 
+    isValid()
+    {
+        return super.isValid()
+            && this.operation && this.operation.isValid();
+    }
+
+
+
     pushValueUpdates(parse)
     {
         super.pushValueUpdates(parse);
