@@ -19,8 +19,8 @@ extends Action
 
         this.nodeId  = nodeId;
 
-        this.oldRect = Rect.fromTypical(oldRect);
-        this.newRect = Rect.fromTypical(newRect);
+        this.oldRect = Rect.fromRect(oldRect);
+        this.newRect = Rect.fromRect(newRect);
     }
 
 

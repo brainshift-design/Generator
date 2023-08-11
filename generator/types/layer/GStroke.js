@@ -141,7 +141,7 @@ extends GOperator1
 
     isValid()
     {
-        return super.isValid()
+        return (!this.input || this.input.isValid())
             && this.fills  && this.fills .isValid()
             && this.weight && this.weight.isValid()
             && this.fit    && this.fit   .isValid()

@@ -186,7 +186,7 @@ extends GOperator1
 
     isValid()
     {
-        return super.isValid()
+        return (!this.input || this.input.isValid())
             && this.space && this.space.isValid()
             && this.c1    && this.c1   .isValid()
             && this.c2    && this.c2   .isValid()

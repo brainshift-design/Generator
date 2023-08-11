@@ -22,6 +22,33 @@ extends ResizableBase
 
         this.div.style.width  = 400;
         this.div.style.height = 400;
+
+
+        this.header.addEventListener('dblclick', e =>
+        {
+            e.preventDefault();
+            e.stopImmediatePropagation();
+
+
+            if (e.button != 0)
+                return;
+
+
+
+            const nodes = [];
+
+            for (const node of graph.currentPage.nodes)
+            {
+                if (rectInside(
+                        node.measureData.divOffset,
+                        this.measureData.divOffset))
+                    nodes.push(node);
+            }
+
+            graphView.selectedNodes = [
+                ...graphView.selectedNodes,
+                ...nodes ];
+        });
     }
 
 

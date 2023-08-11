@@ -170,7 +170,7 @@ GraphView.prototype.createEvents = function()
                         this.measureData.clientRect.width  - 2,
                         this.measureData.clientRect.height - 5);
 
-                    const selection = Rect.fromTypical(this.selectionRect);
+                    const selection = Rect.fromRect(this.selectionRect);
 
 
                     this.oldZoom = graph.currentPage.zoom;

@@ -116,7 +116,7 @@ GraphView.prototype.updateZoomSelection = function(x, y)
 
 GraphView.prototype.updateZoomSelectBox = function()
 {
-    const selection = Rect.fromTypical(this.selectionRect);
+    const selection = Rect.fromRect(this.selectionRect);
 
     selectBox.style.left   = selection.x + Math.min(selection.w, 0);
     selectBox.style.top    = selection.y + Math.min(selection.h, 0);

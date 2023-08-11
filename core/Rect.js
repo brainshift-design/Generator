@@ -60,9 +60,9 @@ class Rect
 
 
 
-    static fromTypical(typ)
+    static fromRect(rect)
     {
-        return new Rect(typ.x, typ.y, typ.width, typ.height); 
+        return new Rect(rect.x, rect.y, rect.width, rect.height); 
     }
 
 

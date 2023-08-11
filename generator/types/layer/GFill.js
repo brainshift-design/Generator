@@ -90,7 +90,7 @@ extends GOperator1
 
     isValid()
     {
-        return super.isValid()
+        return (!this.input || this.input.isValid())
             && this.color   && this.color  .isValid()
             && this.opacity && this.opacity.isValid()
             && this.blend   && this.blend  .isValid();

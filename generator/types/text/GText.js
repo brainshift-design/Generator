@@ -50,6 +50,15 @@ extends GOperator1
 
     isValid()
     {
-        return this.value != NAN_CHAR;
+        return   !this.input
+               && this.value != NAN_CHAR 
+            || this.input.isValid();
+    }
+
+
+
+    isValid()
+    {
+        return ;
     }
 }

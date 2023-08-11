@@ -4850,7 +4850,7 @@ a
                 <h1 style='margin-top: 20px;'>What's new</h1>
 
                 <p>•  wires after Freeze are now solid</p>
-                <p>•  UI improvements</p>
+                <p>•  double clicking on panel header now selects all nodes in it</p>
                 
                 <p><br/><br/><div id='chkHideWhatsNew'></div></p>
             </div>
@@ -7651,9 +7651,9 @@ class Rect
 
 
 
-    static fromTypical(typ)
+    static fromRect(rect)
     {
-        return new Rect(typ.x, typ.y, typ.width, typ.height); 
+        return new Rect(rect.x, rect.y, rect.width, rect.height); 
     }
 
 
@@ -21956,6 +21956,13 @@ extends GOperator1
 
         return this;
     }
+
+
+
+    isValid()
+    {
+        return !this.input || this.input.isValid();
+    }
 }
 
 
@@ -26340,7 +26347,16 @@ extends GOperator1
 
     isValid()
     {
-        return this.value != NAN_CHAR;
+        return   !this.input
+               && this.value != NAN_CHAR 
+            || this.input.isValid();
+    }
+
+
+
+    isValid()
+    {
+        return ;
     }
 }
 
@@ -28911,7 +28927,7 @@ extends GOperator1
 
     isValid()
     {
-        return super.isValid()
+        return (!this.input || this.input.isValid())
             && this.space && this.space.isValid()
             && this.c1    && this.c1   .isValid()
             && this.c2    && this.c2   .isValid()
@@ -30523,7 +30539,7 @@ extends GOperator1
 
     isValid()
     {
-        return super.isValid()
+        return (!this.input || this.input.isValid())
             && this.color   && this.color  .isValid()
             && this.opacity && this.opacity.isValid()
             && this.blend   && this.blend  .isValid();
@@ -30655,7 +30671,7 @@ extends GOperator1
 
     isValid()
     {
-        return super.isValid()
+        return (!this.input || this.input.isValid())
             && this.fill     && this.fill    .isValid()
             && this.position && this.position.isValid();
     }
@@ -31001,7 +31017,7 @@ extends GOperator1
 
     isValid()
     {
-        return super.isValid()
+        return (!this.input || this.input.isValid())
             && this.fills  && this.fills .isValid()
             && this.weight && this.weight.isValid()
             && this.fit    && this.fit   .isValid()
@@ -49691,9 +49707,9 @@ class Rect
 
 
 
-    static fromTypical(typ)
+    static fromRect(rect)
     {
-        return new Rect(typ.x, typ.y, typ.width, typ.height); 
+        return new Rect(rect.x, rect.y, rect.width, rect.height); 
     }
 
 
@@ -66165,6 +66181,13 @@ extends GOperator1
 
         return this;
     }
+
+
+
+    isValid()
+    {
+        return !this.input || this.input.isValid();
+    }
 }
 
 
@@ -70549,7 +70572,16 @@ extends GOperator1
 
     isValid()
     {
-        return this.value != NAN_CHAR;
+        return   !this.input
+               && this.value != NAN_CHAR 
+            || this.input.isValid();
+    }
+
+
+
+    isValid()
+    {
+        return ;
     }
 }
 
@@ -73120,7 +73152,7 @@ extends GOperator1
 
     isValid()
     {
-        return super.isValid()
+        return (!this.input || this.input.isValid())
             && this.space && this.space.isValid()
             && this.c1    && this.c1   .isValid()
             && this.c2    && this.c2   .isValid()
@@ -74732,7 +74764,7 @@ extends GOperator1
 
     isValid()
     {
-        return super.isValid()
+        return (!this.input || this.input.isValid())
             && this.color   && this.color  .isValid()
             && this.opacity && this.opacity.isValid()
             && this.blend   && this.blend  .isValid();
@@ -74864,7 +74896,7 @@ extends GOperator1
 
     isValid()
     {
-        return super.isValid()
+        return (!this.input || this.input.isValid())
             && this.fill     && this.fill    .isValid()
             && this.position && this.position.isValid();
     }
@@ -75210,7 +75242,7 @@ extends GOperator1
 
     isValid()
     {
-        return super.isValid()
+        return (!this.input || this.input.isValid())
             && this.fills  && this.fills .isValid()
             && this.weight && this.weight.isValid()
             && this.fit    && this.fit   .isValid()
@@ -90657,7 +90689,7 @@ GraphView.prototype.createEvents = function()
                         this.measureData.clientRect.width  - 2,
                         this.measureData.clientRect.height - 5);
 
-                    const selection = Rect.fromTypical(this.selectionRect);
+                    const selection = Rect.fromRect(this.selectionRect);
 
 
                     this.oldZoom = graph.currentPage.zoom;
@@ -91043,7 +91075,7 @@ GraphView.prototype.updateZoomSelection = function(x, y)
 
 GraphView.prototype.updateZoomSelectBox = function()
 {
-    const selection = Rect.fromTypical(this.selectionRect);
+    const selection = Rect.fromRect(this.selectionRect);
 
     selectBox.style.left   = selection.x + Math.min(selection.w, 0);
     selectBox.style.top    = selection.y + Math.min(selection.h, 0);
@@ -100929,6 +100961,11 @@ Operator.prototype.createHeader = function()
     {
         e.stopPropagation();
 
+
+        if (this.type == PANEL)
+            return;
+
+            
         if (getCtrlKey(e))
             this.showLabelTextbox();
 
@@ -118403,6 +118440,33 @@ extends ResizableBase
 
         this.div.style.width  = 400;
         this.div.style.height = 400;
+
+
+        this.header.addEventListener('dblclick', e =>
+        {
+            e.preventDefault();
+            e.stopImmediatePropagation();
+
+
+            if (e.button != 0)
+                return;
+
+
+
+            const nodes = [];
+
+            for (const node of graph.currentPage.nodes)
+            {
+                if (rectInside(
+                        node.measureData.divOffset,
+                        this.measureData.divOffset))
+                    nodes.push(node);
+            }
+
+            graphView.selectedNodes = [
+                ...graphView.selectedNodes,
+                ...nodes ];
+        });
     }
 
 
@@ -122600,8 +122664,8 @@ extends Action
 
         this.nodeId  = nodeId;
 
-        this.oldRect = Rect.fromTypical(oldRect);
-        this.newRect = Rect.fromTypical(newRect);
+        this.oldRect = Rect.fromRect(oldRect);
+        this.newRect = Rect.fromRect(newRect);
     }
 
 

@@ -100,7 +100,7 @@ extends GOperator1
 
     isValid()
     {
-        return super.isValid()
+        return (!this.input || this.input.isValid())
             && this.fill     && this.fill    .isValid()
             && this.position && this.position.isValid();
     }

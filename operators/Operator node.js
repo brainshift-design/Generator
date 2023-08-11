@@ -440,6 +440,11 @@ Operator.prototype.createHeader = function()
     {
         e.stopPropagation();
 
+
+        if (this.type == PANEL)
+            return;
+
+            
         if (getCtrlKey(e))
             this.showLabelTextbox();
 

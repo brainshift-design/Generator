@@ -46,4 +46,11 @@ extends GOperator1
 
         return this;
     }
+
+
+
+    isValid()
+    {
+        return !this.input || this.input.isValid();
+    }
 }
