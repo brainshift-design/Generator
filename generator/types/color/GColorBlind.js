@@ -1,5 +1,5 @@
 class GColorBlind
-extends GColorType1
+extends GOperator1
 {
     l;
     m;
@@ -85,6 +85,16 @@ extends GColorType1
         this.validate();
 
         return this;
+    }
+
+
+
+    isValid()
+    {
+        return super.isValid()
+            && this.l && this.l.isValid()
+            && this.m && this.m.isValid()
+            && this.s && this.s.isValid();
     }
 
 

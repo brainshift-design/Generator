@@ -1,5 +1,5 @@
 class GColorInterpolate
-extends GColorType2
+extends GOperator2
 {
     space;
     amount;
@@ -126,6 +126,16 @@ extends GColorType2
                 lerp(c0, c1, f),
                 lerp(l0, l1, f) ];
         }
+    }
+
+
+
+    isValid()
+    {
+        return super.isValid()
+            && this.space  && this.space .isValid()
+            && this.amount && this.amount.isValid()
+            && this.gamma  && this.gamma .isValid();
     }
 
 

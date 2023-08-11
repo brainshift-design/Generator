@@ -160,10 +160,6 @@
 
 ../generator/types/color/color correction.js
 
-../generator/types/color/GColorType.js
-../generator/types/color/GColorType1.js
-../generator/types/color/GColorType2.js
-
 ../generator/types/color/GColor.js
 ../generator/types/color/GValidColor.js
 ../generator/types/color/GCorrectColor.js

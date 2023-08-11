@@ -1,5 +1,5 @@
 class GCorrectColor
-extends GColorType1
+extends GOperator1
 {
     order        = null;
     margin1      = null;
@@ -182,6 +182,17 @@ extends GColorType1
         this.validate();
 
         return this;
+    }
+
+
+
+    isValid()
+    {
+        return super.isValid()
+            && this.order   && this.order  .isValid()
+            && this.margin1 && this.margin1.isValid()
+            && this.margin2 && this.margin2.isValid()
+            && this.margin3 && this.margin3.isValid();
     }
 
 

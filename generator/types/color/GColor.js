@@ -1,5 +1,5 @@
 class GColor
-extends GColorType1
+extends GOperator1
 {
     space   = null;
     c1      = null;
@@ -186,7 +186,8 @@ extends GColorType1
 
     isValid()
     {
-        return this.space && this.space.isValid()
+        return super.isValid()
+            && this.space && this.space.isValid()
             && this.c1    && this.c1   .isValid()
             && this.c2    && this.c2   .isValid()
             && this.c3    && this.c3   .isValid();

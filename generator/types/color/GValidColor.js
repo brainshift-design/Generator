@@ -1,5 +1,5 @@
 class GValidColor
-extends GColorType1
+extends GOperator1
 {
     quality      = null;
 
@@ -126,6 +126,14 @@ extends GColorType1
         this.validate();
 
         return this;
+    }
+
+
+
+    isValid()
+    {
+        return super.isValid()
+            && this.quality && this.quality.isValid();
     }
 
 

@@ -1,5 +1,5 @@
 class GColorContrast
-extends GColorType2
+extends GOperator2
 {
     standard;
     contrast;
@@ -135,6 +135,15 @@ extends GColorType2
         this.validate();
 
         return this;
+    }
+
+
+
+    isValid()
+    {
+        return super.isValid()
+            && this.standard && this.standard.isValid()
+            && this.contrast && this.contrast.isValid();
     }
 
 

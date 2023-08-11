@@ -28723,117 +28723,8 @@ function getColorCorrections(colorSpace)
 }
 
 
-// class GColorType
-// extends GOperator
-// {
-//     // copyBase(base)
-//     // {
-//     //     super.copyBase(base);
-
-//     //     if (base.value) this.value = base.value.copy();
-//     // }
-
-
-
-//     toValue()
-//     {
-//         return this.value.copy();
-//     }
-// }
-
-
-class GColorType1
-extends GOperator
-{
-    input = null;
-
-
-
-    copyBase(base)
-    {
-        super.copyBase(base);
-
-        if (base.input) this.input = base.input.copy();
-    }
-
-
-
-    isCached()
-    {
-        return super.isCached()
-            && (  !this.input 
-                || this.input.isCached());
-    }
-
-
-
-    pushValueUpdates(parse)
-    {
-        super.pushValueUpdates(parse);
-
-        if (this.input) this.input.pushValueUpdates(parse);
-    }
-
-
-
-    invalidateInputs(from)
-    {
-        super.invalidateInputs(from);
-
-        if (this.input) this.input.invalidateInputs(from);
-    }
-}
-
-
-class GColorType2
-extends GOperator
-{
-    input0 = null;
-    input1 = null;
-
-
-
-    copyBase(base)
-    {
-        super.copyBase(base);
-
-        if (base.input0) this.input0 = base.input0.copy();
-        if (base.input1) this.input1 = base.input1.copy();
-    }
-
-
-
-    isCached()
-    {
-        return super.isCached()
-            && (!this.input0 || this.input0.isCached())
-            && (!this.input1 || this.input1.isCached());
-    }
-
-
-
-    pushValueUpdates(parse)
-    {
-        super.pushValueUpdates(parse);
-
-        if (this.input0) this.input0.pushValueUpdates(parse);
-        if (this.input1) this.input1.pushValueUpdates(parse);
-    }
-
-
-
-    invalidateInputs(from)
-    {
-        super.invalidateInputs(from);
-
-        if (this.input0) this.input0.invalidateInputs(from);
-        if (this.input1) this.input1.invalidateInputs(from);
-    }
-}
-
-
 class GColor
-extends GColorType1
+extends GOperator1
 {
     space   = null;
     c1      = null;
@@ -29020,7 +28911,8 @@ extends GColorType1
 
     isValid()
     {
-        return this.space && this.space.isValid()
+        return super.isValid()
+            && this.space && this.space.isValid()
             && this.c1    && this.c1   .isValid()
             && this.c2    && this.c2   .isValid()
             && this.c3    && this.c3   .isValid();
@@ -29053,7 +28945,7 @@ extends GColorType1
 
 
 class GValidColor
-extends GColorType1
+extends GOperator1
 {
     quality      = null;
 
@@ -29184,6 +29076,14 @@ extends GColorType1
 
 
 
+    isValid()
+    {
+        return super.isValid()
+            && this.quality && this.quality.isValid();
+    }
+
+
+
     pushValueUpdates(parse)
     {
         super.pushValueUpdates(parse);
@@ -29204,7 +29104,7 @@ extends GColorType1
 
 
 class GCorrectColor
-extends GColorType1
+extends GOperator1
 {
     order        = null;
     margin1      = null;
@@ -29391,6 +29291,17 @@ extends GColorType1
 
 
 
+    isValid()
+    {
+        return super.isValid()
+            && this.order   && this.order  .isValid()
+            && this.margin1 && this.margin1.isValid()
+            && this.margin2 && this.margin2.isValid()
+            && this.margin3 && this.margin3.isValid();
+    }
+
+
+
     pushValueUpdates(parse)
     {
         super.pushValueUpdates(parse);
@@ -29417,7 +29328,7 @@ extends GColorType1
 
 
 class GColorContrast
-extends GColorType2
+extends GOperator2
 {
     standard;
     contrast;
@@ -29557,6 +29468,15 @@ extends GColorType2
 
 
 
+    isValid()
+    {
+        return super.isValid()
+            && this.standard && this.standard.isValid()
+            && this.contrast && this.contrast.isValid();
+    }
+
+
+
     pushValueUpdates(parse)
     {
         super.pushValueUpdates(parse);
@@ -29579,7 +29499,7 @@ extends GColorType2
 
 
 class GColorBlind
-extends GColorType1
+extends GOperator1
 {
     l;
     m;
@@ -29669,6 +29589,16 @@ extends GColorType1
 
 
 
+    isValid()
+    {
+        return super.isValid()
+            && this.l && this.l.isValid()
+            && this.m && this.m.isValid()
+            && this.s && this.s.isValid();
+    }
+
+
+
     pushValueUpdates(parse)
     {
         super.pushValueUpdates(parse);
@@ -29693,7 +29623,7 @@ extends GColorType1
 
 
 class GColorInterpolate
-extends GColorType2
+extends GOperator2
 {
     space;
     amount;
@@ -29824,6 +29754,16 @@ extends GColorType2
 
 
 
+    isValid()
+    {
+        return super.isValid()
+            && this.space  && this.space .isValid()
+            && this.amount && this.amount.isValid()
+            && this.gamma  && this.gamma .isValid();
+    }
+
+
+
     pushValueUpdates(parse)
     {
         super.pushValueUpdates(parse);
@@ -29848,7 +29788,7 @@ extends GColorType2
 
 
 class GColorBlend
-extends GColorType2
+extends GOperator2
 {
     mode;
     opacity;
@@ -29960,6 +29900,15 @@ extends GColorType2
             case 14: return blendColor     (col0, col1, opacity);
             case 15: return blendLuminosity(col0, col1, opacity);
         }
+    }
+
+
+
+    isValid()
+    {
+        return super.isValid()
+            && this.mode    && this.mode   .isValid()
+            && this.opacity && this.opacity.isValid();
     }
 
 
@@ -72949,117 +72898,8 @@ function getColorCorrections(colorSpace)
 }
 
 
-// class GColorType
-// extends GOperator
-// {
-//     // copyBase(base)
-//     // {
-//     //     super.copyBase(base);
-
-//     //     if (base.value) this.value = base.value.copy();
-//     // }
-
-
-
-//     toValue()
-//     {
-//         return this.value.copy();
-//     }
-// }
-
-
-class GColorType1
-extends GOperator
-{
-    input = null;
-
-
-
-    copyBase(base)
-    {
-        super.copyBase(base);
-
-        if (base.input) this.input = base.input.copy();
-    }
-
-
-
-    isCached()
-    {
-        return super.isCached()
-            && (  !this.input 
-                || this.input.isCached());
-    }
-
-
-
-    pushValueUpdates(parse)
-    {
-        super.pushValueUpdates(parse);
-
-        if (this.input) this.input.pushValueUpdates(parse);
-    }
-
-
-
-    invalidateInputs(from)
-    {
-        super.invalidateInputs(from);
-
-        if (this.input) this.input.invalidateInputs(from);
-    }
-}
-
-
-class GColorType2
-extends GOperator
-{
-    input0 = null;
-    input1 = null;
-
-
-
-    copyBase(base)
-    {
-        super.copyBase(base);
-
-        if (base.input0) this.input0 = base.input0.copy();
-        if (base.input1) this.input1 = base.input1.copy();
-    }
-
-
-
-    isCached()
-    {
-        return super.isCached()
-            && (!this.input0 || this.input0.isCached())
-            && (!this.input1 || this.input1.isCached());
-    }
-
-
-
-    pushValueUpdates(parse)
-    {
-        super.pushValueUpdates(parse);
-
-        if (this.input0) this.input0.pushValueUpdates(parse);
-        if (this.input1) this.input1.pushValueUpdates(parse);
-    }
-
-
-
-    invalidateInputs(from)
-    {
-        super.invalidateInputs(from);
-
-        if (this.input0) this.input0.invalidateInputs(from);
-        if (this.input1) this.input1.invalidateInputs(from);
-    }
-}
-
-
 class GColor
-extends GColorType1
+extends GOperator1
 {
     space   = null;
     c1      = null;
@@ -73246,7 +73086,8 @@ extends GColorType1
 
     isValid()
     {
-        return this.space && this.space.isValid()
+        return super.isValid()
+            && this.space && this.space.isValid()
             && this.c1    && this.c1   .isValid()
             && this.c2    && this.c2   .isValid()
             && this.c3    && this.c3   .isValid();
@@ -73279,7 +73120,7 @@ extends GColorType1
 
 
 class GValidColor
-extends GColorType1
+extends GOperator1
 {
     quality      = null;
 
@@ -73410,6 +73251,14 @@ extends GColorType1
 
 
 
+    isValid()
+    {
+        return super.isValid()
+            && this.quality && this.quality.isValid();
+    }
+
+
+
     pushValueUpdates(parse)
     {
         super.pushValueUpdates(parse);
@@ -73430,7 +73279,7 @@ extends GColorType1
 
 
 class GCorrectColor
-extends GColorType1
+extends GOperator1
 {
     order        = null;
     margin1      = null;
@@ -73617,6 +73466,17 @@ extends GColorType1
 
 
 
+    isValid()
+    {
+        return super.isValid()
+            && this.order   && this.order  .isValid()
+            && this.margin1 && this.margin1.isValid()
+            && this.margin2 && this.margin2.isValid()
+            && this.margin3 && this.margin3.isValid();
+    }
+
+
+
     pushValueUpdates(parse)
     {
         super.pushValueUpdates(parse);
@@ -73643,7 +73503,7 @@ extends GColorType1
 
 
 class GColorContrast
-extends GColorType2
+extends GOperator2
 {
     standard;
     contrast;
@@ -73783,6 +73643,15 @@ extends GColorType2
 
 
 
+    isValid()
+    {
+        return super.isValid()
+            && this.standard && this.standard.isValid()
+            && this.contrast && this.contrast.isValid();
+    }
+
+
+
     pushValueUpdates(parse)
     {
         super.pushValueUpdates(parse);
@@ -73805,7 +73674,7 @@ extends GColorType2
 
 
 class GColorBlind
-extends GColorType1
+extends GOperator1
 {
     l;
     m;
@@ -73895,6 +73764,16 @@ extends GColorType1
 
 
 
+    isValid()
+    {
+        return super.isValid()
+            && this.l && this.l.isValid()
+            && this.m && this.m.isValid()
+            && this.s && this.s.isValid();
+    }
+
+
+
     pushValueUpdates(parse)
     {
         super.pushValueUpdates(parse);
@@ -73919,7 +73798,7 @@ extends GColorType1
 
 
 class GColorInterpolate
-extends GColorType2
+extends GOperator2
 {
     space;
     amount;
@@ -74050,6 +73929,16 @@ extends GColorType2
 
 
 
+    isValid()
+    {
+        return super.isValid()
+            && this.space  && this.space .isValid()
+            && this.amount && this.amount.isValid()
+            && this.gamma  && this.gamma .isValid();
+    }
+
+
+
     pushValueUpdates(parse)
     {
         super.pushValueUpdates(parse);
@@ -74074,7 +73963,7 @@ extends GColorType2
 
 
 class GColorBlend
-extends GColorType2
+extends GOperator2
 {
     mode;
     opacity;
@@ -74186,6 +74075,15 @@ extends GColorType2
             case 14: return blendColor     (col0, col1, opacity);
             case 15: return blendLuminosity(col0, col1, opacity);
         }
+    }
+
+
+
+    isValid()
+    {
+        return super.isValid()
+            && this.mode    && this.mode   .isValid()
+            && this.opacity && this.opacity.isValid();
     }
 
 

@@ -1,5 +1,5 @@
 class GColorBlend
-extends GColorType2
+extends GOperator2
 {
     mode;
     opacity;
@@ -111,6 +111,15 @@ extends GColorType2
             case 14: return blendColor     (col0, col1, opacity);
             case 15: return blendLuminosity(col0, col1, opacity);
         }
+    }
+
+
+
+    isValid()
+    {
+        return super.isValid()
+            && this.mode    && this.mode   .isValid()
+            && this.opacity && this.opacity.isValid();
     }
 
 
