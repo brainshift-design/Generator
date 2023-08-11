@@ -125,10 +125,10 @@ extends GOperator
 
     isValid()
     {
-        return this.seed  .isValid()
-            && this.min   .isValid()
-            && this.max   .isValid()
-            && this.unique.isValid();
+        return this.seed   && this.seed  .isValid()
+            && this.min    && this.min   .isValid()
+            && this.max    && this.max   .isValid()
+            && this.unique && this.unique.isValid();
     }
 
 

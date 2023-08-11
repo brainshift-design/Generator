@@ -23007,11 +23007,11 @@ extends GOperator
 
     isValid()
     {
-        return this.from  .isValid()
-            && this.start .isValid()
-            && this.end   .isValid()
-            && this.spread.isValid()
-            && this.bias  .isValid();
+        return this.from   && this.from  .isValid()
+            && this.start  && this.start .isValid()
+            && this.end    && this.end   .isValid()
+            && this.spread && this.spread.isValid()
+            && this.bias   && this.bias  .isValid();
     }
 
 
@@ -23309,10 +23309,10 @@ extends GOperator
 
     isValid()
     {
-        return this.seed  .isValid()
-            && this.min   .isValid()
-            && this.max   .isValid()
-            && this.unique.isValid();
+        return this.seed   && this.seed  .isValid()
+            && this.min    && this.min   .isValid()
+            && this.max    && this.max   .isValid()
+            && this.unique && this.unique.isValid();
     }
 
 
@@ -23504,13 +23504,13 @@ extends GOperator
 
     isValid()
     {
-        return this.seed       .isValid()
-            && this.min        .isValid()
-            && this.max        .isValid()
-            && this.scale      .isValid()
-            && this.offset     .isValid()
-            && this.interpolate.isValid()
-            && this.detail     .isValid();
+        return this.seed        && this.seed       .isValid()
+            && this.min         && this.min        .isValid()
+            && this.max         && this.max        .isValid()
+            && this.scale       && this.scale      .isValid()
+            && this.offset      && this.offset     .isValid()
+            && this.interpolate && this.interpolate.isValid()
+            && this.detail      && this.detail     .isValid();
     }
 
 
@@ -23636,9 +23636,9 @@ extends GOperator
 
     isValid()
     {
-        return this.seed  .isValid()
-            && this.chance.isValid()
-            && this.max   .isValid();
+        return this.seed   && this.seed  .isValid()
+            && this.chance && this.chance.isValid()
+            && this.max    && this.max   .isValid();
     }
 
 
@@ -23749,7 +23749,7 @@ extends GNumberType1
     isValid()
     {
         return super.isValid()
-            && (this.when ? this.when.isValid() : false);
+            && this.when && this.when.isValid();
     }
 
 
@@ -67222,11 +67222,11 @@ extends GOperator
 
     isValid()
     {
-        return this.from  .isValid()
-            && this.start .isValid()
-            && this.end   .isValid()
-            && this.spread.isValid()
-            && this.bias  .isValid();
+        return this.from   && this.from  .isValid()
+            && this.start  && this.start .isValid()
+            && this.end    && this.end   .isValid()
+            && this.spread && this.spread.isValid()
+            && this.bias   && this.bias  .isValid();
     }
 
 
@@ -67524,10 +67524,10 @@ extends GOperator
 
     isValid()
     {
-        return this.seed  .isValid()
-            && this.min   .isValid()
-            && this.max   .isValid()
-            && this.unique.isValid();
+        return this.seed   && this.seed  .isValid()
+            && this.min    && this.min   .isValid()
+            && this.max    && this.max   .isValid()
+            && this.unique && this.unique.isValid();
     }
 
 
@@ -67719,13 +67719,13 @@ extends GOperator
 
     isValid()
     {
-        return this.seed       .isValid()
-            && this.min        .isValid()
-            && this.max        .isValid()
-            && this.scale      .isValid()
-            && this.offset     .isValid()
-            && this.interpolate.isValid()
-            && this.detail     .isValid();
+        return this.seed        && this.seed       .isValid()
+            && this.min         && this.min        .isValid()
+            && this.max         && this.max        .isValid()
+            && this.scale       && this.scale      .isValid()
+            && this.offset      && this.offset     .isValid()
+            && this.interpolate && this.interpolate.isValid()
+            && this.detail      && this.detail     .isValid();
     }
 
 
@@ -67851,9 +67851,9 @@ extends GOperator
 
     isValid()
     {
-        return this.seed  .isValid()
-            && this.chance.isValid()
-            && this.max   .isValid();
+        return this.seed   && this.seed  .isValid()
+            && this.chance && this.chance.isValid()
+            && this.max    && this.max   .isValid();
     }
 
 
@@ -67964,7 +67964,7 @@ extends GNumberType1
     isValid()
     {
         return super.isValid()
-            && (this.when ? this.when.isValid() : false);
+            && this.when && this.when.isValid();
     }
 
 

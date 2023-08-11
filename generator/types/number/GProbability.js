@@ -88,9 +88,9 @@ extends GOperator
 
     isValid()
     {
-        return this.seed  .isValid()
-            && this.chance.isValid()
-            && this.max   .isValid();
+        return this.seed   && this.seed  .isValid()
+            && this.chance && this.chance.isValid()
+            && this.max    && this.max   .isValid();
     }
 
 

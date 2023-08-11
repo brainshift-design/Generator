@@ -152,11 +152,11 @@ extends GOperator
 
     isValid()
     {
-        return this.from  .isValid()
-            && this.start .isValid()
-            && this.end   .isValid()
-            && this.spread.isValid()
-            && this.bias  .isValid();
+        return this.from   && this.from  .isValid()
+            && this.start  && this.start .isValid()
+            && this.end    && this.end   .isValid()
+            && this.spread && this.spread.isValid()
+            && this.bias   && this.bias  .isValid();
     }
 
 

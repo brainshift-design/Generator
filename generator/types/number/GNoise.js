@@ -151,13 +151,13 @@ extends GOperator
 
     isValid()
     {
-        return this.seed       .isValid()
-            && this.min        .isValid()
-            && this.max        .isValid()
-            && this.scale      .isValid()
-            && this.offset     .isValid()
-            && this.interpolate.isValid()
-            && this.detail     .isValid();
+        return this.seed        && this.seed       .isValid()
+            && this.min         && this.min        .isValid()
+            && this.max         && this.max        .isValid()
+            && this.scale       && this.scale      .isValid()
+            && this.offset      && this.offset     .isValid()
+            && this.interpolate && this.interpolate.isValid()
+            && this.detail      && this.detail     .isValid();
     }
 
 

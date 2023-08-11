@@ -83,7 +83,7 @@ extends GNumberType1
     isValid()
     {
         return super.isValid()
-            && (this.when ? this.when.isValid() : false);
+            && this.when && this.when.isValid();
     }
 
 
