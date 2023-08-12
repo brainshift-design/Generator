@@ -100664,7 +100664,10 @@ function createHeaderTooltip(node)
             && node.preview
             && node.showHeaderTooltip === true)
         {
-            let strTooltip = node.preview.toPreviewString();
+            let strTooltip = 
+                node.isUnknown()
+                ? NAN_DISPLAY
+                : node.preview.toPreviewString();
             
             if (strTooltip == '')
                 strTooltip = '. . .';
