@@ -82,7 +82,8 @@ extends OperatorBase
                 e.stopImmediatePropagation();
 
 
-                if (graph.currentPage.zoom < settings.minZoomForParams)
+                if (   graph.currentPage.zoom < settings.minZoomForParams
+                    && this.type != PANEL)
                 {
                     forwardEvent(e, this.header);
                     return;
@@ -308,7 +309,7 @@ extends OperatorBase
 
     updateSizers()
     {
-        const edge   = Math.ceil(sizeBorderWidth / graph.currentPage.zoom);
+        const edge   = Math.max(Math.ceil(sizeBorderWidth / graph.currentPage.zoom), 2);
         const corner = Math.max(sizeBorderWidth, edge);
 
         this.sizerL .style.width  = edge; 
@@ -330,7 +331,9 @@ extends OperatorBase
         this.sizerBR.style.height = corner; 
 
 
-        const canReact = graph.currentPage.zoom >= settings.minZoomForParams;
+        const canReact = 
+               graph.currentPage.zoom >= settings.minZoomForParams
+            || this.type == PANEL;
 
         this.sizerL.style.cursor  = canReact ? 'ew-resize'   : 'default';
         this.sizerR.style.cursor  = canReact ? 'ew-resize'   : 'default';

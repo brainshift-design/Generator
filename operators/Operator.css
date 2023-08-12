@@ -479,6 +479,7 @@
     position:   absolute;
     background: var(--edgeBack);
     z-index:    10000;
+    /* box-shadow: 0 0 0 1px green inset; */
 }
 
 
@@ -517,6 +518,7 @@
     height:     var(--sizeBorderWidth);
     background: var(--cornerBack);
     z-index:    10000;
+    /* box-shadow: 0 0 0 1px yellow inset; */
 }
 
 
