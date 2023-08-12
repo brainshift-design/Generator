@@ -285,6 +285,9 @@ extends EventTarget
                 
                 if (createAction)
                 {
+                    // if (isGenerating)
+                    //     stopGenerate = true;
+
                     actionManager.do(
                         new SetParamValueAction(this, value), 
                           !isEmpty(actionManager.actions)

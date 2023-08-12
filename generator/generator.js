@@ -40,6 +40,7 @@ function genRequest(request, save)
     const parse = new Parse(
         request, 
         6,
+        requestId,
         updateNodeId, 
         updateParamId, 
         viewportZoom,
@@ -63,9 +64,17 @@ function genRequest(request, save)
 
     (async () =>
     {
-        for (const node of    paramNodes) await node.eval(parse);
-        for (const node of topLevelNodes) await node.eval(parse);
+        for (const node of paramNodes) { await node.eval(parse); if (parse.stopGenerate) break; } 
 
+        if (!parse.stopGenerate) 
+            for (const node of topLevelNodes) { await node.eval(parse); if (parse.stopGenerate) break; }
+        
+        genQueueMessageToUi({cmd: 'uiEndGlobalProgress'});
+
+
+        if (parse.stopGenerate) return;
+
+        
         for (const node of topLevelNodes) node.pushValueUpdates(parse);
 
         
@@ -275,7 +284,11 @@ function genUpdateValuesAndObjects(requestId, actionId, updateNodeId, updatePara
     let isFirstChunk   = true;
         
 
-    genQueueMessageToUi({cmd: 'uiInitGlobalProgress'});
+    genQueueMessageToUi(
+    {
+        cmd:      'uiInitGlobalProgress',
+        requestId: requestId
+    });
 
 
     while (   n < nodeIds      .length
@@ -373,9 +386,6 @@ function genUpdateValuesAndObjects(requestId, actionId, updateNodeId, updatePara
             true,
             save);
     }
-
-
-    genQueueMessageToUi({cmd: 'uiEndGlobalProgress'});
 
 
     genQueueMessageToUi({
@@ -479,6 +489,46 @@ async function genGetObjectSizeFromFigma(obj)
                 
                 const { objectId, width, height } = msg;
                 resolve({ objectId, width, height });
+
+                self.removeEventListener('message', handleMessage);
+            }
+        }
+
+        self.addEventListener('message', handleMessage);
+    });
+}
+
+
+
+async function genGetValueFromUi(key) 
+{
+    return new Promise((resolve, reject) => 
+    {
+        const timeout = 1000;
+
+        genPostMessageToUi(
+        {
+            cmd: 'uiGetValue',
+            key:  key 
+        });
+
+        const timeoutId = setTimeout(() => 
+            reject(new Error('Timeout: Result not received within the specified time')),
+            timeout);
+
+        function handleMessage(event) 
+        {
+            const msg = JSON.parse(event.data);
+
+            if (msg.cmd === 'returnUiGetValue') 
+            {
+                clearTimeout(timeoutId);
+
+                resolve(
+                { 
+                    key:   msg.key, 
+                    value: msg.value 
+                });
 
                 self.removeEventListener('message', handleMessage);
             }

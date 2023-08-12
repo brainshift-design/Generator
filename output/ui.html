@@ -4867,6 +4867,7 @@ a
                 <p>•  panels can now have names</p>
                 <p>•  shape lists are now passed downstream correctly</p>
                 <p>•  added global progress bar</p>
+                <p>•  spelling mistakes are now allowed in search</p>
                 <p>•  fixed UI issues</p>
                 
                 <p><br/><br/><div id='chkHideWhatsNew'></div></p>
@@ -19860,7 +19861,12 @@ extends GOperator
 
 
                     if (parse.repeats.length == 1)
+                    {
                         parse.currentProgress++;
+                        
+                        const stopGenerate = await genGetValueFromUi('stopGenerate');
+                        if (stopGenerate.value === true) { parse.stopGenerate = true; break; }
+                    }
 
 
                     if (showProgress)
@@ -37501,6 +37507,7 @@ function genRequest(request, save)
     const parse = new Parse(
         request, 
         6,
+        requestId,
         updateNodeId, 
         updateParamId, 
         viewportZoom,
@@ -37524,9 +37531,17 @@ function genRequest(request, save)
 
     (async () =>
     {
-        for (const node of    paramNodes) await node.eval(parse);
-        for (const node of topLevelNodes) await node.eval(parse);
+        for (const node of paramNodes) { await node.eval(parse); if (parse.stopGenerate) break; } 
 
+        if (!parse.stopGenerate) 
+            for (const node of topLevelNodes) { await node.eval(parse); if (parse.stopGenerate) break; }
+        
+        genQueueMessageToUi({cmd: 'uiEndGlobalProgress'});
+
+
+        if (parse.stopGenerate) return;
+
+        
         for (const node of topLevelNodes) node.pushValueUpdates(parse);
 
         
@@ -37736,7 +37751,11 @@ function genUpdateValuesAndObjects(requestId, actionId, updateNodeId, updatePara
     let isFirstChunk   = true;
         
 
-    genQueueMessageToUi({cmd: 'uiInitGlobalProgress'});
+    genQueueMessageToUi(
+    {
+        cmd:      'uiInitGlobalProgress',
+        requestId: requestId
+    });
 
 
     while (   n < nodeIds      .length
@@ -37834,9 +37853,6 @@ function genUpdateValuesAndObjects(requestId, actionId, updateNodeId, updatePara
             true,
             save);
     }
-
-
-    genQueueMessageToUi({cmd: 'uiEndGlobalProgress'});
 
 
     genQueueMessageToUi({
@@ -37949,6 +37965,45 @@ async function genGetObjectSizeFromFigma(obj)
     });
 }
 
+
+
+async function genGetValueFromUi(key) 
+{
+    return new Promise((resolve, reject) => 
+    {
+        const timeout = 1000;
+
+        genPostMessageToUi(
+        {
+            cmd: 'uiGetValue',
+            key:  key 
+        });
+
+        const timeoutId = setTimeout(() => 
+            reject(new Error('Timeout: Result not received within the specified time')),
+            timeout);
+
+        function handleMessage(event) 
+        {
+            const msg = JSON.parse(event.data);
+
+            if (msg.cmd === 'returnUiGetValue') 
+            {
+                clearTimeout(timeoutId);
+
+                resolve(
+                { 
+                    key:   msg.key, 
+                    value: msg.value 
+                });
+
+                self.removeEventListener('message', handleMessage);
+            }
+        }
+
+        self.addEventListener('message', handleMessage);
+    });
+}
 
 
 function genParseColorValue(parse)
@@ -43859,6 +43914,7 @@ function genParseTextFile(parse)
 class Parse
 {
     request;
+    requestId;
     
     pos; 
     so;
@@ -43892,6 +43948,8 @@ class Parse
 
     repeats       = [];
 
+    stopGenerate  = false;
+    
 
     paramNodeIds  = [];
 
@@ -43913,7 +43971,7 @@ class Parse
 
 
 
-    constructor(request, firstPos, updateNodeId, updateParamId, viewportZoom, settings, save)
+    constructor(request, firstPos, requestId, updateNodeId, updateParamId, viewportZoom, settings, save)
     {
         this.request       = request;
           
@@ -64238,7 +64296,12 @@ extends GOperator
 
 
                     if (parse.repeats.length == 1)
+                    {
                         parse.currentProgress++;
+                        
+                        const stopGenerate = await genGetValueFromUi('stopGenerate');
+                        if (stopGenerate.value === true) { parse.stopGenerate = true; break; }
+                    }
 
 
                     if (showProgress)
@@ -91049,6 +91112,9 @@ GraphView.prototype.createEvents = function()
         if (    e.button == 0
             && !e.shiftKey)
         {
+            stopGenerate = true;
+
+            
             const activeNodes = [];
 
             for (const node of graph.nodes)
@@ -92307,6 +92373,9 @@ extends EventTarget
                 
                 if (createAction)
                 {
+                    // if (isGenerating)
+                    //     stopGenerate = true;
+
                     actionManager.do(
                         new SetParamValueAction(this, value), 
                           !isEmpty(actionManager.actions)
@@ -93380,13 +93449,11 @@ extends Parameter
             if (   e.detail.value.trim() != ''
                 && e.detail.value != e.detail.oldValue)
             {
-                const LD = 2; // levenshtein distance
-
                 const colorName = e.detail.value.toLowerCase();
 
                 if (   colorName == 'rnd'
                     || colorName == 'random'
-                    || getEditDistance(colorName, 'random') <= LD)
+                    || getEditDistance(colorName, 'random') <= 2)
                 {
                     skipRandom(Date.now() % 10);  const r = Math.random();
                     skipRandom(Date.now() % 10);  const g = Math.random();
@@ -93397,7 +93464,7 @@ extends Parameter
                 else
                 {
                                let webColor = webColors.find(wc => wc.name.toLowerCase() == colorName);
-                    if (!webColor) webColor = webColors.find(wc => getEditDistance(wc.name.toLowerCase(), colorName) <= LD);
+                    if (!webColor) webColor = webColors.find(wc => getEditDistance(wc.name.toLowerCase(), colorName) <= 2);
                     
                     if (webColor) e.detail.value = webColor.color;
 
@@ -115673,18 +115740,18 @@ extends OpShape
         super.updateParams();
 
 
-        this.paramText         .enableControlText(false, this.paramText         .isUnknown());
-        this.paramX            .enableControlText(false, this.paramX            .isUnknown());
-        this.paramY            .enableControlText(false, this.paramY            .isUnknown());
+        this.paramText         .enableControlText(true, this.paramText         .isUnknown());
+        this.paramX            .enableControlText(true, this.paramX            .isUnknown());
+        this.paramY            .enableControlText(true, this.paramY            .isUnknown());
         this.paramWidth        .enableControlText(false, this.paramWidth        .isUnknown());
         this.paramHeight       .enableControlText(false, this.paramHeight       .isUnknown());
-        this.paramFont         .enableControlText(false, this.paramFont         .isUnknown());
-        this.paramSize         .enableControlText(false, this.paramSize         .isUnknown());
-        this.paramStyle        .enableControlText(false, this.paramStyle        .isUnknown());
-        this.paramAlignH       .enableControlText(false, this.paramAlignH       .isUnknown());
-        this.paramAlignV       .enableControlText(false, this.paramAlignV       .isUnknown());
-        this.paramLineHeight   .enableControlText(false, this.paramLineHeight   .isUnknown());
-        this.paramLetterSpacing.enableControlText(false, this.paramLetterSpacing.isUnknown());
+        this.paramFont         .enableControlText(true, this.paramFont         .isUnknown());
+        this.paramSize         .enableControlText(true, this.paramSize         .isUnknown());
+        this.paramStyle        .enableControlText(true, this.paramStyle        .isUnknown());
+        this.paramAlignH       .enableControlText(true, this.paramAlignH       .isUnknown());
+        this.paramAlignV       .enableControlText(true, this.paramAlignV       .isUnknown());
+        this.paramLineHeight   .enableControlText(true, this.paramLineHeight   .isUnknown());
+        this.paramLetterSpacing.enableControlText(true, this.paramLetterSpacing.isUnknown());
 
 
         this.updateStyleParam();
@@ -124732,7 +124799,6 @@ document.addEventListener('keydown', e =>
         if (!isEmpty(currentMenus))
             hideAllMenus();
 
-
         else if (graphView.tempConn)
         {
             if (graphView.savedConn)
@@ -124758,6 +124824,9 @@ document.addEventListener('keydown', e =>
 
         else if (!isEmpty(graphView.selectedNodes))
             graphView.deselectAllNodes(e.shiftKey);
+
+        else
+            stopGenerate = true;
     }
 
     //
@@ -125310,8 +125379,10 @@ generator.onmessage = function(e)
         case 'uiUpdateNodeProgress': nodeFromId(msg.nodeId).updateProgress(msg); break;
         case 'uiEndNodeProgress':    nodeFromId(msg.nodeId).endProgress();       break;
 
-        case 'uiInitGlobalProgress': uiInitGlobalProgress();                     break;
+        case 'uiInitGlobalProgress': uiInitGlobalProgress(msg.requestId);        break;
         case 'uiEndGlobalProgress':  uiEndGlobalProgress();                      break;
+  
+        case 'uiGetValue':           uiGetValue(msg.key);                        break;
         
         case 'uiForwardToFigma':     uiPostMessageToFigma(msg.msg);              break;
     }
@@ -125662,7 +125733,15 @@ function initSearchBox(query)
             for (const node of graph.currentPage.nodes)
             {
                 if (node.name.toLowerCase().includes(query.toLowerCase()))
+                {
+                    node.foundExact = 0;
                     search.found.push(node);
+                }
+                else if (includesSimilar(node.name.toLowerCase(), query.toLowerCase(), 1))
+                {
+                    node.foundExact = 1;
+                    search.found.push(node);
+                }
             }
         }
         else
@@ -125675,7 +125754,16 @@ function initSearchBox(query)
                 {
                     if (   item.name.toLowerCase().includes(query.toLowerCase())
                         && item.callback)
+                    {
+                        item.foundExact = 0;
                         search.found.push(item);
+                    }
+                    else if (includesSimilar(item.name.toLowerCase(), query.toLowerCase(), 1)
+                          && item.callback)
+                    {
+                        item.foundExact = 1;
+                        search.found.push(item);
+                    }
                 }
             }
         }
@@ -125683,17 +125771,23 @@ function initSearchBox(query)
 
         search.found.sort((_a, _b) => 
         {
-            const a = _a.name.toLowerCase().replaceAll(' . . .', '').replaceAll('. . . ', '').replaceAll('...', '');
-            const b = _b.name.toLowerCase().replaceAll(' . . .', '').replaceAll('. . . ', '').replaceAll('...', '');
+            const a  = _a.name.toLowerCase().replaceAll(' . . .', '').replaceAll('. . . ', '').replaceAll('...', '');
+            const b  = _b.name.toLowerCase().replaceAll(' . . .', '').replaceAll('. . . ', '').replaceAll('...', '');
+
+            const ea = _a.foundExact;
+            const eb = _b.foundExact;
 
             const qa = a.indexOf(query);
             const qb = b.indexOf(query);
 
+            if (ea < eb) return -1;
+            if (ea > eb) return  1;
+
             if (qa < qb) return -1;
             if (qa > qb) return  1;
-
-            if (a < b) return -1;
-            if (a > b) return  1;
+ 
+            if (a  < b ) return -1;
+            if (a  > b ) return  1;
 
             return 0;
         });
@@ -128517,6 +128611,11 @@ function createStyleIcon(rgba)
 }
 
 
+var isGenerating = false;
+var stopGenerate = null;
+
+
+
 function uiUpdateValuesAndObjects(requestId, actionId, updateNodeId, updateParamId, values, objects, styles, updatedNodes, totalNodes, isFirstChunk, isLastChunk, save)
 {
     if (requestId < lastRequestedId) 
@@ -128688,10 +128787,12 @@ function uiUpdateAnimateNodes()
 
 
 
-function uiInitGlobalProgress()
+function uiInitGlobalProgress(requestId)
 {
     commonProgressBar.style.width   = 0;
     commonProgressBar.style.display = 'block';
+
+    isGenerating = true;
 }
 
 
@@ -128708,7 +128809,31 @@ function uiUpdateGlobalProgress(progress)
 function uiEndGlobalProgress()
 {
     commonProgressBar.style.display = 'none';
+
+    isGenerating = false;
 }
+
+
+
+function uiGetValue(key)
+{
+    switch (key)
+    {
+        case 'stopGenerate':  
+        {
+            uiPostMessageToGenerator(
+            {
+                cmd:  'returnUiGetValue',
+                key:   key,
+                value: stopGenerate
+            });
+
+            stopGenerate = false;
+            break;
+        }
+    }
+}
+
 
 
 const defNodeWidth          = 114;

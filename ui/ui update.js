@@ -1,3 +1,8 @@
+var isGenerating = false;
+var stopGenerate = null;
+
+
+
 function uiUpdateValuesAndObjects(requestId, actionId, updateNodeId, updateParamId, values, objects, styles, updatedNodes, totalNodes, isFirstChunk, isLastChunk, save)
 {
     if (requestId < lastRequestedId) 
@@ -169,10 +174,12 @@ function uiUpdateAnimateNodes()
 
 
 
-function uiInitGlobalProgress()
+function uiInitGlobalProgress(requestId)
 {
     commonProgressBar.style.width   = 0;
     commonProgressBar.style.display = 'block';
+
+    isGenerating = true;
 }
 
 
@@ -189,4 +196,27 @@ function uiUpdateGlobalProgress(progress)
 function uiEndGlobalProgress()
 {
     commonProgressBar.style.display = 'none';
+
+    isGenerating = false;
+}
+
+
+
+function uiGetValue(key)
+{
+    switch (key)
+    {
+        case 'stopGenerate':  
+        {
+            uiPostMessageToGenerator(
+            {
+                cmd:  'returnUiGetValue',
+                key:   key,
+                value: stopGenerate
+            });
+
+            stopGenerate = false;
+            break;
+        }
+    }
 }

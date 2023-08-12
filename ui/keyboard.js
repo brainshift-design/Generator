@@ -190,7 +190,6 @@ document.addEventListener('keydown', e =>
         if (!isEmpty(currentMenus))
             hideAllMenus();
 
-
         else if (graphView.tempConn)
         {
             if (graphView.savedConn)
@@ -216,6 +215,9 @@ document.addEventListener('keydown', e =>
 
         else if (!isEmpty(graphView.selectedNodes))
             graphView.deselectAllNodes(e.shiftKey);
+
+        else
+            stopGenerate = true;
     }
 
     //

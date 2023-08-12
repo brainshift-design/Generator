@@ -201,8 +201,10 @@ generator.onmessage = function(e)
         case 'uiUpdateNodeProgress': nodeFromId(msg.nodeId).updateProgress(msg); break;
         case 'uiEndNodeProgress':    nodeFromId(msg.nodeId).endProgress();       break;
 
-        case 'uiInitGlobalProgress': uiInitGlobalProgress();                     break;
+        case 'uiInitGlobalProgress': uiInitGlobalProgress(msg.requestId);        break;
         case 'uiEndGlobalProgress':  uiEndGlobalProgress();                      break;
+  
+        case 'uiGetValue':           uiGetValue(msg.key);                        break;
         
         case 'uiForwardToFigma':     uiPostMessageToFigma(msg.msg);              break;
     }

@@ -62,7 +62,15 @@ function initSearchBox(query)
             for (const node of graph.currentPage.nodes)
             {
                 if (node.name.toLowerCase().includes(query.toLowerCase()))
+                {
+                    node.foundExact = 0;
                     search.found.push(node);
+                }
+                else if (includesSimilar(node.name.toLowerCase(), query.toLowerCase(), 1))
+                {
+                    node.foundExact = 1;
+                    search.found.push(node);
+                }
             }
         }
         else
@@ -75,7 +83,16 @@ function initSearchBox(query)
                 {
                     if (   item.name.toLowerCase().includes(query.toLowerCase())
                         && item.callback)
+                    {
+                        item.foundExact = 0;
                         search.found.push(item);
+                    }
+                    else if (includesSimilar(item.name.toLowerCase(), query.toLowerCase(), 1)
+                          && item.callback)
+                    {
+                        item.foundExact = 1;
+                        search.found.push(item);
+                    }
                 }
             }
         }
@@ -83,17 +100,23 @@ function initSearchBox(query)
 
         search.found.sort((_a, _b) => 
         {
-            const a = _a.name.toLowerCase().replaceAll(' . . .', '').replaceAll('. . . ', '').replaceAll('...', '');
-            const b = _b.name.toLowerCase().replaceAll(' . . .', '').replaceAll('. . . ', '').replaceAll('...', '');
+            const a  = _a.name.toLowerCase().replaceAll(' . . .', '').replaceAll('. . . ', '').replaceAll('...', '');
+            const b  = _b.name.toLowerCase().replaceAll(' . . .', '').replaceAll('. . . ', '').replaceAll('...', '');
+
+            const ea = _a.foundExact;
+            const eb = _b.foundExact;
 
             const qa = a.indexOf(query);
             const qb = b.indexOf(query);
 
+            if (ea < eb) return -1;
+            if (ea > eb) return  1;
+
             if (qa < qb) return -1;
             if (qa > qb) return  1;
-
-            if (a < b) return -1;
-            if (a > b) return  1;
+ 
+            if (a  < b ) return -1;
+            if (a  > b ) return  1;
 
             return 0;
         });

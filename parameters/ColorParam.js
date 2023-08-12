@@ -103,13 +103,11 @@ extends Parameter
             if (   e.detail.value.trim() != ''
                 && e.detail.value != e.detail.oldValue)
             {
-                const LD = 2; // levenshtein distance
-
                 const colorName = e.detail.value.toLowerCase();
 
                 if (   colorName == 'rnd'
                     || colorName == 'random'
-                    || getEditDistance(colorName, 'random') <= LD)
+                    || getEditDistance(colorName, 'random') <= 2)
                 {
                     skipRandom(Date.now() % 10);  const r = Math.random();
                     skipRandom(Date.now() % 10);  const g = Math.random();
@@ -120,7 +118,7 @@ extends Parameter
                 else
                 {
                                let webColor = webColors.find(wc => wc.name.toLowerCase() == colorName);
-                    if (!webColor) webColor = webColors.find(wc => getEditDistance(wc.name.toLowerCase(), colorName) <= LD);
+                    if (!webColor) webColor = webColors.find(wc => getEditDistance(wc.name.toLowerCase(), colorName) <= 2);
                     
                     if (webColor) e.detail.value = webColor.color;
 

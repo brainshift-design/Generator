@@ -1,6 +1,7 @@
 class Parse
 {
     request;
+    requestId;
     
     pos; 
     so;
@@ -34,6 +35,8 @@ class Parse
 
     repeats       = [];
 
+    stopGenerate  = false;
+    
 
     paramNodeIds  = [];
 
@@ -55,7 +58,7 @@ class Parse
 
 
 
-    constructor(request, firstPos, updateNodeId, updateParamId, viewportZoom, settings, save)
+    constructor(request, firstPos, requestId, updateNodeId, updateParamId, viewportZoom, settings, save)
     {
         this.request       = request;
           

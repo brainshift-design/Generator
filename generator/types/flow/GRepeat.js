@@ -158,7 +158,12 @@ extends GOperator
 
 
                     if (parse.repeats.length == 1)
+                    {
                         parse.currentProgress++;
+                        
+                        const stopGenerate = await genGetValueFromUi('stopGenerate');
+                        if (stopGenerate.value === true) { parse.stopGenerate = true; break; }
+                    }
 
 
                     if (showProgress)

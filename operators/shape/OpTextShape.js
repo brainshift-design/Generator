@@ -83,18 +83,18 @@ extends OpShape
         super.updateParams();
 
 
-        this.paramText         .enableControlText(false, this.paramText         .isUnknown());
-        this.paramX            .enableControlText(false, this.paramX            .isUnknown());
-        this.paramY            .enableControlText(false, this.paramY            .isUnknown());
+        this.paramText         .enableControlText(true, this.paramText         .isUnknown());
+        this.paramX            .enableControlText(true, this.paramX            .isUnknown());
+        this.paramY            .enableControlText(true, this.paramY            .isUnknown());
         this.paramWidth        .enableControlText(false, this.paramWidth        .isUnknown());
         this.paramHeight       .enableControlText(false, this.paramHeight       .isUnknown());
-        this.paramFont         .enableControlText(false, this.paramFont         .isUnknown());
-        this.paramSize         .enableControlText(false, this.paramSize         .isUnknown());
-        this.paramStyle        .enableControlText(false, this.paramStyle        .isUnknown());
-        this.paramAlignH       .enableControlText(false, this.paramAlignH       .isUnknown());
-        this.paramAlignV       .enableControlText(false, this.paramAlignV       .isUnknown());
-        this.paramLineHeight   .enableControlText(false, this.paramLineHeight   .isUnknown());
-        this.paramLetterSpacing.enableControlText(false, this.paramLetterSpacing.isUnknown());
+        this.paramFont         .enableControlText(true, this.paramFont         .isUnknown());
+        this.paramSize         .enableControlText(true, this.paramSize         .isUnknown());
+        this.paramStyle        .enableControlText(true, this.paramStyle        .isUnknown());
+        this.paramAlignH       .enableControlText(true, this.paramAlignH       .isUnknown());
+        this.paramAlignV       .enableControlText(true, this.paramAlignV       .isUnknown());
+        this.paramLineHeight   .enableControlText(true, this.paramLineHeight   .isUnknown());
+        this.paramLetterSpacing.enableControlText(true, this.paramLetterSpacing.isUnknown());
 
 
         this.updateStyleParam();
