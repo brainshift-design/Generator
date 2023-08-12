@@ -160,15 +160,16 @@ extends GValue
             const item = this.items[i];
 
             if (LIST_VALUES.includes(item.type))
-            {
-                for (let j = 0; j < item.items.length; j++)
-                {
-                    if (j > 0) 
-                        str += ', ';
+                str += 'list [' + item.items.length + ']';
+            // {
+            //     for (let j = 0; j < item.items.length; j++)
+            //     {
+            //         if (j > 0) 
+            //             str += ', ';
                     
-                    str += item.items[j].toPreviewString();
-                }
-            }
+            //         str += item.items[j].toPreviewString();
+            //     }
+            // }
             else
                 str += item.toPreviewString();
         }
@@ -237,8 +238,7 @@ function parseListValue(str, i = -1)
     for (let j = 0; j < nInputs; j++)
     {
         const type = str[i++];
-        console.log('type =', type);
-        
+
         switch (type)
         {
             case         LIST_VALUE:  
@@ -329,7 +329,7 @@ function finalTypeFromTypes(types)
             _type = type;
 
         else if (_type != type
-              ||     SHAPE_VALUES.includes(_type) 
+                 &&  SHAPE_VALUES.includes(_type) 
                  && !SHAPE_VALUES.includes( type))
         { 
             _type = ANY_VALUE;
