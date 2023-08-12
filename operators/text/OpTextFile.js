@@ -18,6 +18,7 @@ extends ResizableBase
         this.alwaysLoadParams  = true;
         this.alwaysSaveParams  = true;
         this.showHeaderTooltip = true;
+        this.alwaysShowIcon    = true;
 
 
         this.addOutput(new Output([TEXT_VALUE], this.output_genRequest));

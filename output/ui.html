@@ -14533,7 +14533,22 @@ extends GValue
 
     toPreviewString()
     {
-        return this.value;
+        const lines = this.value.split('\n');
+
+        let str = '';
+
+        for (let i = 0; i < Math.min(lines.length, 10); i++)
+        {
+            if (i > 0)
+                str += '\n';
+
+            str += lines[i];
+        }
+
+        if (lines.length > 10)
+            str += '\n. . .';
+        
+        return str;
     }
 
 
@@ -28207,6 +28222,8 @@ extends GOperator
 class GTextFile
 extends GOperator
 {
+    path;
+    
     cachedValue = null;
 
 
@@ -28238,6 +28255,7 @@ extends GOperator
 
 
         const cachedValue = this.cachedValue ? (await this.cachedValue.eval(parse)).toValue() : null;
+        const path        = this.path        ? (await this.path       .eval(parse)).toValue() : null;
 
         
         genInitNodeProgress(this.nodeId);
@@ -58844,7 +58862,22 @@ extends GValue
 
     toPreviewString()
     {
-        return this.value;
+        const lines = this.value.split('\n');
+
+        let str = '';
+
+        for (let i = 0; i < Math.min(lines.length, 10); i++)
+        {
+            if (i > 0)
+                str += '\n';
+
+            str += lines[i];
+        }
+
+        if (lines.length > 10)
+            str += '\n. . .';
+        
+        return str;
     }
 
 
@@ -72518,6 +72551,8 @@ extends GOperator
 class GTextFile
 extends GOperator
 {
+    path;
+    
     cachedValue = null;
 
 
@@ -72549,6 +72584,7 @@ extends GOperator
 
 
         const cachedValue = this.cachedValue ? (await this.cachedValue.eval(parse)).toValue() : null;
+        const path        = this.path        ? (await this.path       .eval(parse)).toValue() : null;
 
         
         genInitNodeProgress(this.nodeId);
@@ -99327,6 +99363,8 @@ class Operator
     alwaysLoadParams   = false;
     alwaysSaveParams   = false;
 
+    alwaysShowIcon     = false;
+    
     saveParams         = true;  // master switch to not save any params
 
     canDisable         = false;
@@ -101907,7 +101945,8 @@ Operator.prototype.updateIcon = function()
     this.divIcon.style.top     = (this.iconOffsetY * Math.min(graph.currentPage.zoom, 1)).toString() + 'px';
     this.divIcon.style.display = 
            this.icon != '' 
-        && settings.showNodeIcons
+        && (   settings.showNodeIcons
+            || this.alwaysShowIcon)
         ? 'inline' 
         : 'none';
 }
@@ -109465,6 +109504,7 @@ extends ResizableBase
         this.alwaysLoadParams  = true;
         this.alwaysSaveParams  = true;
         this.showHeaderTooltip = true;
+        this.alwaysShowIcon    = true;
 
 
         this.addOutput(new Output([TEXT_VALUE], this.output_genRequest));

@@ -83,7 +83,22 @@ extends GValue
 
     toPreviewString()
     {
-        return this.value;
+        const lines = this.value.split('\n');
+
+        let str = '';
+
+        for (let i = 0; i < Math.min(lines.length, 10); i++)
+        {
+            if (i > 0)
+                str += '\n';
+
+            str += lines[i];
+        }
+
+        if (lines.length > 10)
+            str += '\n. . .';
+        
+        return str;
     }
 
 
