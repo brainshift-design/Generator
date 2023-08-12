@@ -80,6 +80,9 @@ extends GOperator1
                 this.temp = new NumberValue(Number.MIN_SAFE_INTEGER);
 
 
+                parse.totalProgress += maxIter;
+
+
                 while (iter++ < maxIter)
                 {
                     this.temp.value += step;
@@ -112,12 +115,17 @@ extends GOperator1
                     prevDiff = diff;
 
 
-                    genUpdateNodeProgress(this.nodeId, iter / maxIter);
+                    parse.currentProgress++;
+
+
+                    genUpdateNodeProgress(parse, this.nodeId, iter / maxIter);
                 }
 
 
                 if (iter < maxIter)
                 {
+                    parse.currentProgress += maxIter - iter;
+
                     input = (await this.input.eval(parse)).toValue();
                     this.value = input;
                 }

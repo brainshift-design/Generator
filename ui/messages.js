@@ -197,10 +197,14 @@ generator.onmessage = function(e)
                 
             break;
         
-        case 'uiInitNodeProgress':   nodeFromId(msg.nodeId).initProgress();                break;
-        case 'uiUpdateNodeProgress': nodeFromId(msg.nodeId).updateProgress(msg.progress);  break;
+        case 'uiInitNodeProgress':   nodeFromId(msg.nodeId).initProgress();      break;
+        case 'uiUpdateNodeProgress': nodeFromId(msg.nodeId).updateProgress(msg); break;
+        case 'uiEndNodeProgress':    nodeFromId(msg.nodeId).endProgress();       break;
+
+        case 'uiInitGlobalProgress': uiInitGlobalProgress();                     break;
+        case 'uiEndGlobalProgress':  uiEndGlobalProgress();                      break;
         
-        case 'uiForwardToFigma':     uiPostMessageToFigma(msg.msg);                                        break;
+        case 'uiForwardToFigma':     uiPostMessageToFigma(msg.msg);              break;
     }
 };
 
@@ -213,7 +217,7 @@ function logGenToUi(msg)
     if (msg.cmd == 'uiEndGenMessage')
         _msg += ': ' + msg.msgCmd;
 
-    console.log('%c%sUI ◄-- GEN '+_msg, 'background: #ca0; color: white;', '\n                        ');
+    console.log('%c%sUI ◄-- GEN '+_msg, 'background: #ca0; color: white;', '\n');
 }
 
 

@@ -25,6 +25,8 @@ class Parse
 
     viewportZoom;
 
+    currentProgress = 0;
+    totalProgress   = 0;
 
     scope         = []; // current parse stack
     parsedNodes   = []; // must be evaluated to create the value updates

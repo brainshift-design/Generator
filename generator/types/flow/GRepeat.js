@@ -98,6 +98,9 @@ extends GOperator
                 
                 parse.repeats.push(repeat);
 
+                if (parse.repeats.length == 1)
+                    parse.totalProgress += nRepeats;
+
 
                 for (let i = 0, o = 0; i < nRepeats; i++)
                 {
@@ -154,8 +157,12 @@ extends GOperator
                     }
 
 
+                    if (parse.repeats.length == 1)
+                        parse.currentProgress++;
+
+
                     if (showProgress)
-                        genUpdateNodeProgress(this.nodeId, i / nRepeats);
+                        genUpdateNodeProgress(parse, this.nodeId, i / nRepeats);
                 }
 
 
@@ -164,6 +171,9 @@ extends GOperator
                     clearTimeout(this.startTimer);
                     this.startTimer = -1;
                 }
+
+
+                genEndNodeProgress(this.nodeId);
 
 
                 consoleAssert(parse.repeats.at(-1) == repeat, 'invalid nested repeat \'' + this.nodeId + '\'');

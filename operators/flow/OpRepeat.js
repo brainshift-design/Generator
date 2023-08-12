@@ -82,7 +82,7 @@ extends OperatorBase
             ? [type.value]
             : [LIST_VALUE];
 
-        this.endNodeProgress();
+        this.endProgress();
     }
 
 

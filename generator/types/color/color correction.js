@@ -14,7 +14,8 @@ class ColorCorrection
 
 
 
-function findCorrection(nodeId,
+function findCorrection(parse,
+                        nodeId,
                         color,
                         order,       margin1, margin2, margin3,
                         lockedOrder, locked1, locked2, locked3) 
@@ -35,6 +36,10 @@ function findCorrection(nodeId,
 
 
     let d = 1;
+
+
+    parse.totalProgress += 1024;
+
 
     //dLoop:
     while (d > 1/1024)
@@ -70,6 +75,7 @@ function findCorrection(nodeId,
             closest2,
             closest3,
             progress ] = findCorrectionInOrder(
+                parse,
                 nodeId,
                 refOklab,
                 _order, 
@@ -87,6 +93,9 @@ function findCorrection(nodeId,
 
         
         d /= 2;
+
+
+        parse.currentProgress++;
     }
 
 
@@ -122,7 +131,8 @@ function findCorrection(nodeId,
 
 
 
-function findCorrectionInOrder(nodeId,
+function findCorrectionInOrder(parse,
+                               nodeId,
                                refOklab,
                                order, 
                                lockedOrder, 
@@ -178,8 +188,7 @@ function findCorrectionInOrder(nodeId,
         }
 
         
-        //if (!stopGenerate)
-            genUpdateNodeProgress(nodeId, progress / total);
+        genUpdateNodeProgress(parse, nodeId, progress / total);
     }
 
     

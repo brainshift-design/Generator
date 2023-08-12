@@ -85,7 +85,7 @@ extends ResizableOperatorWithValue
         
         super.updateValues(requestId, actionId, updateParamId, paramIds, values);
         
-        this.endNodeProgress();
+        this.endProgress();
     }
 
 

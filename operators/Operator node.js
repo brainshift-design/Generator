@@ -522,15 +522,19 @@ Operator.prototype.initProgress = function()
 
 
 
-Operator.prototype.updateProgress = function(progress)
+Operator.prototype.updateProgress = function(msg)
 {
+    const progress = msg.progress;
+
     this.progressBar.style.left  = (   progress  * 100) + '%';
     this.progressBar.style.width = ((1-progress) * 100) + '%';
+
+    uiUpdateGlobalProgress(msg.globalProgress);
 };
 
 
 
-Operator.prototype.endNodeProgress = function()
+Operator.prototype.endProgress = function()
 {
     this.progressWrapper.style.display = 'none';
 };

@@ -275,6 +275,9 @@ function genUpdateValuesAndObjects(requestId, actionId, updateNodeId, updatePara
     let isFirstChunk   = true;
         
 
+    genQueueMessageToUi({cmd: 'uiInitGlobalProgress'});
+
+
     while (   n < nodeIds      .length
            || o < updateObjects.length
            || s < updateStyles .length)
@@ -372,6 +375,9 @@ function genUpdateValuesAndObjects(requestId, actionId, updateNodeId, updatePara
     }
 
 
+    genQueueMessageToUi({cmd: 'uiEndGlobalProgress'});
+
+
     genQueueMessageToUi({
         cmd: 'uiForwardToFigma',
         msg: {cmd: 'figCommitUndo'}
@@ -418,19 +424,31 @@ function genInitNodeProgress(nodeId)
 
 
 
-function genUpdateNodeProgress(nodeId, progress)
+function genUpdateNodeProgress(parse, nodeId, progress)
 {
     genQueueMessageToUi(
     {
-        cmd:     'uiUpdateNodeProgress',
-        nodeId:   nodeId,
-        progress: progress
+        cmd:           'uiUpdateNodeProgress',
+        nodeId:         nodeId,
+        progress:       progress,
+        globalProgress: parse.currentProgress / parse.totalProgress
     });
 }
 
 
 
-                
+function genEndNodeProgress(nodeId, endGlobal)
+{
+    genQueueMessageToUi(
+    {
+        cmd:      'uiEndNodeProgress',
+        nodeId:    nodeId,
+        endGlobal: endGlobal
+    });
+}
+
+
+
 async function genGetObjectSizeFromFigma(obj) 
 {
     return new Promise((resolve, reject) => 

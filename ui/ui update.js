@@ -166,3 +166,27 @@ function uiUpdateAnimateNodes()
     if (anims.length > 0)
         pushUpdate(null, anims, false);
 }
+
+
+
+function uiInitGlobalProgress()
+{
+    commonProgressBar.style.width   = 0;
+    commonProgressBar.style.display = 'block';
+}
+
+
+
+function uiUpdateGlobalProgress(progress)
+{
+    commonProgressBar.style.top     = (graphView.loadingNodes ? 0 : 40) + 'px';
+    commonProgressBar.style.width   = (progress * 100) + '%';
+    commonProgressBar.style.display = 'block';
+}
+
+
+
+function uiEndGlobalProgress()
+{
+    commonProgressBar.style.display = 'none';
+}

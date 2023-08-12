@@ -85,6 +85,7 @@ extends GOperator1
                     closest1,
                     closest2,
                     closest3 ] = findCorrection(
+                        parse,
                         this.nodeId,
                         inputColor, 
                         order, margin1, margin2, margin3, 

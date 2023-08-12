@@ -236,6 +236,16 @@
 
 
 
+#commonProgressBar
+{
+    display:          none;
+    background-color: var(--figma-color-bg-brand);
+    height:           5px;
+    position:         absolute;
+    left:             0;
+    top:              40px;
+    z-index:          20;
+}
 
 
 #loadingOverlay
@@ -4640,6 +4650,9 @@ a
 </div>
 
 
+<div id='commonProgressBar'></div>
+
+
 <div id='debugInfo'></div>
 
 
@@ -4853,6 +4866,7 @@ a
 
                 <p>•  panels can now have names</p>
                 <p>•  shape lists are now passed downstream correctly</p>
+                <p>•  added global progress bar</p>
                 <p>•  fixed UI issues</p>
                 
                 <p><br/><br/><div id='chkHideWhatsNew'></div></p>
@@ -19786,6 +19800,9 @@ extends GOperator
                 
                 parse.repeats.push(repeat);
 
+                if (parse.repeats.length == 1)
+                    parse.totalProgress += nRepeats;
+
 
                 for (let i = 0, o = 0; i < nRepeats; i++)
                 {
@@ -19842,8 +19859,12 @@ extends GOperator
                     }
 
 
+                    if (parse.repeats.length == 1)
+                        parse.currentProgress++;
+
+
                     if (showProgress)
-                        genUpdateNodeProgress(this.nodeId, i / nRepeats);
+                        genUpdateNodeProgress(parse, this.nodeId, i / nRepeats);
                 }
 
 
@@ -19852,6 +19873,9 @@ extends GOperator
                     clearTimeout(this.startTimer);
                     this.startTimer = -1;
                 }
+
+
+                genEndNodeProgress(this.nodeId);
 
 
                 consoleAssert(parse.repeats.at(-1) == repeat, 'invalid nested repeat \'' + this.nodeId + '\'');
@@ -24020,6 +24044,9 @@ extends GOperator1
                 this.temp = new NumberValue(Number.MIN_SAFE_INTEGER);
 
 
+                parse.totalProgress += maxIter;
+
+
                 while (iter++ < maxIter)
                 {
                     this.temp.value += step;
@@ -24052,12 +24079,17 @@ extends GOperator1
                     prevDiff = diff;
 
 
-                    genUpdateNodeProgress(this.nodeId, iter / maxIter);
+                    parse.currentProgress++;
+
+
+                    genUpdateNodeProgress(parse, this.nodeId, iter / maxIter);
                 }
 
 
                 if (iter < maxIter)
                 {
+                    parse.currentProgress += maxIter - iter;
+
                     input = (await this.input.eval(parse)).toValue();
                     this.value = input;
                 }
@@ -28321,7 +28353,8 @@ class ColorCorrection
 
 
 
-function findCorrection(nodeId,
+function findCorrection(parse,
+                        nodeId,
                         color,
                         order,       margin1, margin2, margin3,
                         lockedOrder, locked1, locked2, locked3) 
@@ -28342,6 +28375,10 @@ function findCorrection(nodeId,
 
 
     let d = 1;
+
+
+    parse.totalProgress += 1024;
+
 
     //dLoop:
     while (d > 1/1024)
@@ -28377,6 +28414,7 @@ function findCorrection(nodeId,
             closest2,
             closest3,
             progress ] = findCorrectionInOrder(
+                parse,
                 nodeId,
                 refOklab,
                 _order, 
@@ -28394,6 +28432,9 @@ function findCorrection(nodeId,
 
         
         d /= 2;
+
+
+        parse.currentProgress++;
     }
 
 
@@ -28429,7 +28470,8 @@ function findCorrection(nodeId,
 
 
 
-function findCorrectionInOrder(nodeId,
+function findCorrectionInOrder(parse,
+                               nodeId,
                                refOklab,
                                order, 
                                lockedOrder, 
@@ -28485,8 +28527,7 @@ function findCorrectionInOrder(nodeId,
         }
 
         
-        //if (!stopGenerate)
-            genUpdateNodeProgress(nodeId, progress / total);
+        genUpdateNodeProgress(parse, nodeId, progress / total);
     }
 
     
@@ -29142,6 +29183,7 @@ extends GOperator1
                         closest1,
                         closest2,
                         closest3 ] = findCorrection(
+                            parse,
                             this.nodeId,
                             inputColor, 
                             quality, null,  null,  null, 
@@ -29305,6 +29347,7 @@ extends GOperator1
                     closest1,
                     closest2,
                     closest3 ] = findCorrection(
+                        parse,
                         this.nodeId,
                         inputColor, 
                         order, margin1, margin2, margin3, 
@@ -37693,6 +37736,9 @@ function genUpdateValuesAndObjects(requestId, actionId, updateNodeId, updatePara
     let isFirstChunk   = true;
         
 
+    genQueueMessageToUi({cmd: 'uiInitGlobalProgress'});
+
+
     while (   n < nodeIds      .length
            || o < updateObjects.length
            || s < updateStyles .length)
@@ -37790,6 +37836,9 @@ function genUpdateValuesAndObjects(requestId, actionId, updateNodeId, updatePara
     }
 
 
+    genQueueMessageToUi({cmd: 'uiEndGlobalProgress'});
+
+
     genQueueMessageToUi({
         cmd: 'uiForwardToFigma',
         msg: {cmd: 'figCommitUndo'}
@@ -37836,19 +37885,31 @@ function genInitNodeProgress(nodeId)
 
 
 
-function genUpdateNodeProgress(nodeId, progress)
+function genUpdateNodeProgress(parse, nodeId, progress)
 {
     genQueueMessageToUi(
     {
-        cmd:     'uiUpdateNodeProgress',
-        nodeId:   nodeId,
-        progress: progress
+        cmd:           'uiUpdateNodeProgress',
+        nodeId:         nodeId,
+        progress:       progress,
+        globalProgress: parse.currentProgress / parse.totalProgress
     });
 }
 
 
 
-                
+function genEndNodeProgress(nodeId, endGlobal)
+{
+    genQueueMessageToUi(
+    {
+        cmd:      'uiEndNodeProgress',
+        nodeId:    nodeId,
+        endGlobal: endGlobal
+    });
+}
+
+
+
 async function genGetObjectSizeFromFigma(obj) 
 {
     return new Promise((resolve, reject) => 
@@ -43822,6 +43883,8 @@ class Parse
 
     viewportZoom;
 
+    currentProgress = 0;
+    totalProgress   = 0;
 
     scope         = []; // current parse stack
     parsedNodes   = []; // must be evaluated to create the value updates
@@ -64115,6 +64178,9 @@ extends GOperator
                 
                 parse.repeats.push(repeat);
 
+                if (parse.repeats.length == 1)
+                    parse.totalProgress += nRepeats;
+
 
                 for (let i = 0, o = 0; i < nRepeats; i++)
                 {
@@ -64171,8 +64237,12 @@ extends GOperator
                     }
 
 
+                    if (parse.repeats.length == 1)
+                        parse.currentProgress++;
+
+
                     if (showProgress)
-                        genUpdateNodeProgress(this.nodeId, i / nRepeats);
+                        genUpdateNodeProgress(parse, this.nodeId, i / nRepeats);
                 }
 
 
@@ -64181,6 +64251,9 @@ extends GOperator
                     clearTimeout(this.startTimer);
                     this.startTimer = -1;
                 }
+
+
+                genEndNodeProgress(this.nodeId);
 
 
                 consoleAssert(parse.repeats.at(-1) == repeat, 'invalid nested repeat \'' + this.nodeId + '\'');
@@ -68349,6 +68422,9 @@ extends GOperator1
                 this.temp = new NumberValue(Number.MIN_SAFE_INTEGER);
 
 
+                parse.totalProgress += maxIter;
+
+
                 while (iter++ < maxIter)
                 {
                     this.temp.value += step;
@@ -68381,12 +68457,17 @@ extends GOperator1
                     prevDiff = diff;
 
 
-                    genUpdateNodeProgress(this.nodeId, iter / maxIter);
+                    parse.currentProgress++;
+
+
+                    genUpdateNodeProgress(parse, this.nodeId, iter / maxIter);
                 }
 
 
                 if (iter < maxIter)
                 {
+                    parse.currentProgress += maxIter - iter;
+
                     input = (await this.input.eval(parse)).toValue();
                     this.value = input;
                 }
@@ -72650,7 +72731,8 @@ class ColorCorrection
 
 
 
-function findCorrection(nodeId,
+function findCorrection(parse,
+                        nodeId,
                         color,
                         order,       margin1, margin2, margin3,
                         lockedOrder, locked1, locked2, locked3) 
@@ -72671,6 +72753,10 @@ function findCorrection(nodeId,
 
 
     let d = 1;
+
+
+    parse.totalProgress += 1024;
+
 
     //dLoop:
     while (d > 1/1024)
@@ -72706,6 +72792,7 @@ function findCorrection(nodeId,
             closest2,
             closest3,
             progress ] = findCorrectionInOrder(
+                parse,
                 nodeId,
                 refOklab,
                 _order, 
@@ -72723,6 +72810,9 @@ function findCorrection(nodeId,
 
         
         d /= 2;
+
+
+        parse.currentProgress++;
     }
 
 
@@ -72758,7 +72848,8 @@ function findCorrection(nodeId,
 
 
 
-function findCorrectionInOrder(nodeId,
+function findCorrectionInOrder(parse,
+                               nodeId,
                                refOklab,
                                order, 
                                lockedOrder, 
@@ -72814,8 +72905,7 @@ function findCorrectionInOrder(nodeId,
         }
 
         
-        //if (!stopGenerate)
-            genUpdateNodeProgress(nodeId, progress / total);
+        genUpdateNodeProgress(parse, nodeId, progress / total);
     }
 
     
@@ -73471,6 +73561,7 @@ extends GOperator1
                         closest1,
                         closest2,
                         closest3 ] = findCorrection(
+                            parse,
                             this.nodeId,
                             inputColor, 
                             quality, null,  null,  null, 
@@ -73634,6 +73725,7 @@ extends GOperator1
                     closest1,
                     closest2,
                     closest3 ] = findCorrection(
+                        parse,
                         this.nodeId,
                         inputColor, 
                         order, margin1, margin2, margin3, 
@@ -101303,15 +101395,19 @@ Operator.prototype.initProgress = function()
 
 
 
-Operator.prototype.updateProgress = function(progress)
+Operator.prototype.updateProgress = function(msg)
 {
+    const progress = msg.progress;
+
     this.progressBar.style.left  = (   progress  * 100) + '%';
     this.progressBar.style.width = ((1-progress) * 100) + '%';
+
+    uiUpdateGlobalProgress(msg.globalProgress);
 };
 
 
 
-Operator.prototype.endNodeProgress = function()
+Operator.prototype.endProgress = function()
 {
     this.progressWrapper.style.display = 'none';
 };
@@ -102837,7 +102933,7 @@ extends OperatorBase
             ? [type.value]
             : [LIST_VALUE];
 
-        this.endNodeProgress();
+        this.endProgress();
     }
 
 
@@ -106718,7 +106814,7 @@ extends OperatorWithValue
     {
         super.updateValues(requestId, actionId, updateParamId, paramIds, values);
         
-        this.endNodeProgress();
+        this.endProgress();
     }
 
 
@@ -109438,7 +109534,7 @@ extends ResizableOperatorWithValue
         
         super.updateValues(requestId, actionId, updateParamId, paramIds, values);
         
-        this.endNodeProgress();
+        this.endProgress();
     }
 
 
@@ -109626,7 +109722,7 @@ extends ResizableBase
         
         super.updateValues(requestId, actionId, updateParamId, paramIds, values);
         
-        this.endNodeProgress();
+        this.endProgress();
     }
 
 
@@ -111759,7 +111855,7 @@ extends OpColorBase
 
 
         this.initCorrections(this._color[0]);
-        this.endNodeProgress();
+        this.endProgress();
 
 
         super.updateValues(requestId, actionId, updateParamId, paramIds, values);
@@ -111988,7 +112084,7 @@ extends OpColorBase
 
 
         this.initCorrections(this._color[0]);
-        this.endNodeProgress();
+        this.endProgress();
 
 
         super.updateValues(requestId, actionId, updateParamId, paramIds, values);
@@ -125210,10 +125306,14 @@ generator.onmessage = function(e)
                 
             break;
         
-        case 'uiInitNodeProgress':   nodeFromId(msg.nodeId).initProgress();                break;
-        case 'uiUpdateNodeProgress': nodeFromId(msg.nodeId).updateProgress(msg.progress);  break;
+        case 'uiInitNodeProgress':   nodeFromId(msg.nodeId).initProgress();      break;
+        case 'uiUpdateNodeProgress': nodeFromId(msg.nodeId).updateProgress(msg); break;
+        case 'uiEndNodeProgress':    nodeFromId(msg.nodeId).endProgress();       break;
+
+        case 'uiInitGlobalProgress': uiInitGlobalProgress();                     break;
+        case 'uiEndGlobalProgress':  uiEndGlobalProgress();                      break;
         
-        case 'uiForwardToFigma':     uiPostMessageToFigma(msg.msg);                                        break;
+        case 'uiForwardToFigma':     uiPostMessageToFigma(msg.msg);              break;
     }
 };
 
@@ -125226,7 +125326,7 @@ function logGenToUi(msg)
     if (msg.cmd == 'uiEndGenMessage')
         _msg += ': ' + msg.msgCmd;
 
-    console.log('%c%sUI ◄-- GEN '+_msg, 'background: #ca0; color: white;', '\n                        ');
+    console.log('%c%sUI ◄-- GEN '+_msg, 'background: #ca0; color: white;', '\n');
 }
 
 
@@ -128584,6 +128684,30 @@ function uiUpdateAnimateNodes()
 
     if (anims.length > 0)
         pushUpdate(null, anims, false);
+}
+
+
+
+function uiInitGlobalProgress()
+{
+    commonProgressBar.style.width   = 0;
+    commonProgressBar.style.display = 'block';
+}
+
+
+
+function uiUpdateGlobalProgress(progress)
+{
+    commonProgressBar.style.top     = (graphView.loadingNodes ? 0 : 40) + 'px';
+    commonProgressBar.style.width   = (progress * 100) + '%';
+    commonProgressBar.style.display = 'block';
+}
+
+
+
+function uiEndGlobalProgress()
+{
+    commonProgressBar.style.display = 'none';
 }
 
 

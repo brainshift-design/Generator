@@ -97,7 +97,7 @@ extends OpColorBase
 
 
         this.initCorrections(this._color[0]);
-        this.endNodeProgress();
+        this.endProgress();
 
 
         super.updateValues(requestId, actionId, updateParamId, paramIds, values);
