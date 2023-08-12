@@ -83,8 +83,18 @@ extends OpShape
         super.updateParams();
 
 
-        this.paramWidth .enableControlText(false);
-        this.paramHeight.enableControlText(false);
+        this.paramText         .enableControlText(false, this.paramText         .isUnknown());
+        this.paramX            .enableControlText(false, this.paramX            .isUnknown());
+        this.paramY            .enableControlText(false, this.paramY            .isUnknown());
+        this.paramWidth        .enableControlText(false, this.paramWidth        .isUnknown());
+        this.paramHeight       .enableControlText(false, this.paramHeight       .isUnknown());
+        this.paramFont         .enableControlText(false, this.paramFont         .isUnknown());
+        this.paramSize         .enableControlText(false, this.paramSize         .isUnknown());
+        this.paramStyle        .enableControlText(false, this.paramStyle        .isUnknown());
+        this.paramAlignH       .enableControlText(false, this.paramAlignH       .isUnknown());
+        this.paramAlignV       .enableControlText(false, this.paramAlignV       .isUnknown());
+        this.paramLineHeight   .enableControlText(false, this.paramLineHeight   .isUnknown());
+        this.paramLetterSpacing.enableControlText(false, this.paramLetterSpacing.isUnknown());
 
 
         this.updateStyleParam();

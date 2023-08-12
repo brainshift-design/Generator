@@ -164,8 +164,7 @@ extends EventTarget
     {
         return this.input
             && this.input.isUncached()
-            && this.output
-            && this.output.isMultiplied();
+            && this.node.hasMultipliedOutputs();
     }
 
 
