@@ -10,7 +10,7 @@ extends OperatorBase
 
     constructor()
     {
-        super(RESET_XFORM, 'reset', 'reset', iconResetXform);
+        super(RESET_XFORM, 'reset', 'reset space', iconResetXform);
 
         this.canDisable  = true;
         this.iconOffsetY = -1;

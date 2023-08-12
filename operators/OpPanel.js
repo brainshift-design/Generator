@@ -12,6 +12,8 @@ extends ResizableBase
 
         this.alwaysLoadParams = true;
         this.alwaysSaveParams = true;
+        this.allowEmptyName   = true;
+
 
         this.inner.addEventListener('pointerdown', e => 
         {
@@ -33,21 +35,25 @@ extends ResizableBase
             if (e.button != 0)
                 return;
 
-
-
-            const nodes = [];
-
-            for (const node of graph.currentPage.nodes)
+            if (getCtrlKey(e))
+                this.showLabelTextbox();
+    
+            else
             {
-                if (rectInside(
-                        node.measureData.divOffset,
-                        this.measureData.divOffset))
-                    nodes.push(node);
-            }
+                const nodes = [];
 
-            graphView.selectedNodes = [
-                ...graphView.selectedNodes,
-                ...nodes ];
+                for (const node of graph.currentPage.nodes)
+                {
+                    if (rectInside(
+                            node.measureData.divOffset,
+                            this.measureData.divOffset))
+                        nodes.push(node);
+                }
+
+                graphView.selectedNodes = [
+                    ...graphView.selectedNodes,
+                    ...nodes ];
+            }
         });
     }
 
@@ -96,7 +102,26 @@ extends ResizableBase
 
         this.div.style.background = background;
 
-        this.header.style.boxShadow = '0 -1px 0 0 ' + (darkMode ? '#ffffff0b' : '#00000007') + ' inset';
+        this.header.style.height     = defHeaderHeight / Math.min(1, graph.currentPage.zoom * 2.5);
+        this.header.style.background = darkMode ? '#ffffff04' : '#00000004';
+    }
+
+
+
+    updateHeaderLabel()
+    {
+        super.updateHeaderLabel();
+
+        const fontHeight = 11 / Math.min(1, graph.currentPage.zoom);
+
+        this.labelText.style.fontSize   = fontHeight; 
+        this.labelText.style.height     = fontHeight + 'px'; 
+        this.labelText.style.lineHeight = fontHeight + 'px'; 
+
+        this.label    .style.lineHeight = fontHeight + 'px';
+        this.label    .style.height     = fontHeight + 'px';
+
+        this.textbox  .style.fontSize   = fontHeight;
     }
 
 
@@ -106,5 +131,16 @@ extends ResizableBase
         this.header.style.height = h;
 
         super.updateRect(x, y, w, h, transform);
+    }
+
+
+
+    getHeaderColors()
+    {
+        const colors = super.getHeaderColors();
+
+        colors.text = darkMode ? hex2rgba('#fff6') : hex2rgba('#0006');
+
+        return colors;
     }
 }

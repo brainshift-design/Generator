@@ -128,7 +128,8 @@ Operator.prototype.initLabelTextbox = function()
 
         if (success) 
         {
-            if (   enteredValue != ''
+            if (   (   enteredValue != ''
+                    || this.allowEmptyName) 
                 && enteredValue != savedValue)
             {
                 const newName = this.textbox.value;

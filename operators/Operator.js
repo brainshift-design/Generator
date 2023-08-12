@@ -80,6 +80,8 @@ class Operator
 
     stripIdForCopy     = false; // one-time flag
     
+    allowEmptyName     = false;
+    
 
     showHeaderTooltip  = false;
     preview            = null;
