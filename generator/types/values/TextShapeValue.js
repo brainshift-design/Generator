@@ -156,8 +156,9 @@ extends ShapeValue
             + ' ' + this.alignH       .toString()
             + ' ' + this.alignV       .toString()
             + ' ' + this.lineHeight   .toString()
-            + ' ' + this.letterSpacing.toString();
-    }
+            + ' ' + this.letterSpacing.toString()
+            + ' ' + super.toString();
+        }
 
 
 

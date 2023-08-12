@@ -116,7 +116,8 @@ extends ShapeValue
             + ' ' + this.height.toString()
             + ' ' + this.round .toString()
             + ' ' + this.points.toString()
-            + ' ' + this.convex.toString();
+            + ' ' + this.convex.toString()
+            + ' ' + super.toString();
     }
 
 

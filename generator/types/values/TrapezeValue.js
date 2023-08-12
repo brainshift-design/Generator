@@ -75,7 +75,8 @@ extends ShapeValue
             + ' ' + this.width .toString()
             + ' ' + this.height.toString()
             + ' ' + this.round .toString()
-            + ' ' + this.bias  .toString();
+            + ' ' + this.bias  .toString()
+            + ' ' + super.toString();
     }
 
 

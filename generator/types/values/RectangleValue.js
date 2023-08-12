@@ -69,18 +69,20 @@ extends ShapeValue
             + ' ' + this.y     .toString()
             + ' ' + this.width .toString()
             + ' ' + this.height.toString()
-            + ' ' + this.round .toString();
+            + ' ' + this.round .toString()
+            + ' ' + super.toString();
     }
 
 
 
     toPreviewString()
     {
-        return      this.x     .toPreviewString()
-            + ' ' + this.y     .toPreviewString()
-            + ' ' + this.width .toPreviewString()
-            + ' ' + this.height.toPreviewString()
-            + ' ' + this.round .toPreviewString();
+        return 'rectangle';
+            // + ' ' + this.x     .toPreviewString()
+            // + ' ' + this.y     .toPreviewString()
+            // + ' ' + this.width .toPreviewString()
+            // + ' ' + this.height.toPreviewString()
+            // + ' ' + this.round .toPreviewString();
     }
 
 

@@ -4868,7 +4868,7 @@ a
 
     <input id='searchText' 
            type='text' 
-           placeholder="Search menu,&nbsp;&nbsp;'/' to search nodes" 
+           placeholder="Search menus,&nbsp;&nbsp;'/' to search nodes" 
            spellcheck='false'
            autocomplete='off' />
 
@@ -13424,7 +13424,10 @@ function parseValueFromType(type, value)
 {
     switch (type)
     {
-        case           LIST_VALUE: return parseListValue         (value)[0];
+        case           LIST_VALUE: 
+        case    NUMBER_LIST_VALUE: 
+        case      TEXT_LIST_VALUE: 
+        case     SHAPE_LIST_VALUE: return parseListValue         (value)[0];
 
         case         NUMBER_VALUE: return parseNumberValue       (value)[0];
         case           TEXT_VALUE: return parseTextValue         (value)[0];
@@ -14060,11 +14063,16 @@ extends GValue
             return '';
 
 
+        const nItems = Math.min(this.items.length, 10);
+
+
         let str = '';
 
-        for (let i = 0; i < Math.min(this.items.length, 10); i++)
+        for (let i = 0; i < nItems; i++)
         {
-            if (i > 0) str += '<br/>';
+            if (i > 0) 
+                str += '<br/>';
+
 
             const item = this.items[i];
 
@@ -14072,7 +14080,9 @@ extends GValue
             {
                 for (let j = 0; j < item.items.length; j++)
                 {
-                    if (j > 0) str += ', ';
+                    if (j > 0) 
+                        str += ', ';
+                    
                     str += item.items[j].toPreviewString();
                 }
             }
@@ -14082,7 +14092,7 @@ extends GValue
 
         if (this.items.length > 10) 
             str += '<br/>. . .';
-
+        
         return str;
     }
 
@@ -14133,18 +14143,18 @@ function parseListValue(str, i = -1)
         i   = 0;
     }
         
-
-    const iStart = i;
-
-    const list = new ListValue();
     
-
+    const iStart  = i;
     const nInputs = parseInt(str[i++]);
+    
+    
+    const list = new ListValue();
 
 
     for (let j = 0; j < nInputs; j++)
     {
         const type = str[i++];
+        console.log('type =', type);
         
         switch (type)
         {
@@ -14170,13 +14180,13 @@ function parseListValue(str, i = -1)
             case    RECTANGLE_VALUE: { const rect    = parseRectangleValue   (str, i);  i += rect   [1];  list.items.push(rect   [0]);  break; }
             case         LINE_VALUE: { const line    = parseLineValue        (str, i);  i += line   [1];  list.items.push(line   [0]);  break; }
             case      ELLIPSE_VALUE: { const ellipse = parseEllipseValue     (str, i);  i += ellipse[1];  list.items.push(ellipse[0]);  break; }
-            case      TRAPEZE_VALUE: { const ellipse = parseTrapezeValue     (str, i);  i += ellipse[1];  list.items.push(ellipse[0]);  break; }
+            case      TRAPEZE_VALUE: { const trapeze = parseTrapezeValue     (str, i);  i += trapeze[1];  list.items.push(trapeze[0]);  break; }
             case      POLYGON_VALUE: { const poly    = parsePolygonValue     (str, i);  i += poly   [1];  list.items.push(poly   [0]);  break; }
             case         STAR_VALUE: { const star    = parseStarValue        (str, i);  i += star   [1];  list.items.push(star   [0]);  break; }
             case   TEXT_SHAPE_VALUE: { const text    = parseTextShapeValue   (str, i);  i += text   [1];  list.items.push(text   [0]);  break; }
             case        POINT_VALUE: { const point   = parsePointValue       (str, i);  i += point  [1];  list.items.push(point  [0]);  break; }
             case  VECTOR_PATH_VALUE: { const path    = parseVectorPathValue  (str, i);  i += path   [1];  list.items.push(path   [0]);  break; }
-            case      BOOLEAN_VALUE: { const group   = parseShapeBooleanValue(str, i);  i += group  [1];  list.items.push(group  [0]);  break; }
+            case      BOOLEAN_VALUE: { const bool    = parseShapeBooleanValue(str, i);  i += bool   [1];  list.items.push(bool   [0]);  break; }
             case  SHAPE_GROUP_VALUE: { const group   = parseShapeGroupValue  (str, i);  i += group  [1];  list.items.push(group  [0]);  break; }
             case        FRAME_VALUE: { const frame   = parseFrameValue       (str, i);  i += frame  [1];  list.items.push(frame  [0]);  break; }
         }
@@ -14252,8 +14262,8 @@ function finalTypeFromTypes(types)
 
 function finalListTypeFromTypes(types)
 {
+    //console.log('types =', types);
     let _type = finalTypeFromTypes(types);
-
     
          if (  _type == NUMBER_VALUE || _type == NUMBER_LIST_VALUE)  return NUMBER_LIST_VALUE;
     else if (  _type ==   TEXT_VALUE || _type ==   TEXT_LIST_VALUE)  return   TEXT_LIST_VALUE;
@@ -16522,18 +16532,20 @@ extends ShapeValue
             + ' ' + this.y     .toString()
             + ' ' + this.width .toString()
             + ' ' + this.height.toString()
-            + ' ' + this.round .toString();
+            + ' ' + this.round .toString()
+            + ' ' + super.toString();
     }
 
 
 
     toPreviewString()
     {
-        return      this.x     .toPreviewString()
-            + ' ' + this.y     .toPreviewString()
-            + ' ' + this.width .toPreviewString()
-            + ' ' + this.height.toPreviewString()
-            + ' ' + this.round .toPreviewString();
+        return 'rectangle';
+            // + ' ' + this.x     .toPreviewString()
+            // + ' ' + this.y     .toPreviewString()
+            // + ' ' + this.width .toPreviewString()
+            // + ' ' + this.height.toPreviewString()
+            // + ' ' + this.round .toPreviewString();
     }
 
 
@@ -16717,7 +16729,8 @@ extends ShapeValue
     {
         return      this.x    .toString()
             + ' ' + this.y    .toString()
-            + ' ' + this.width.toString();
+            + ' ' + this.width.toString()
+            + ' ' + super.toString();
     }
 
 
@@ -16903,20 +16916,22 @@ extends ShapeValue
             + ' ' + this.height.toString()
             + ' ' + this.from  .toString()
             + ' ' + this.to    .toString()
-            + ' ' + this.inner .toString();
+            + ' ' + this.inner .toString()
+            + ' ' + super.toString();
     }
 
 
 
     toPreviewString()
     {
-        return      this.x     .toPreviewString()
-            + ' ' + this.y     .toPreviewString()
-            + ' ' + this.width .toPreviewString()
-            + ' ' + this.height.toPreviewString()
-            + ' ' + this.from  .toPreviewString()
-            + ' ' + this.to    .toPreviewString()
-            + ' ' + this.inner .toPreviewString();
+        return 'ellipse';
+            // + ' ' + this.x     .toPreviewString()
+            // + ' ' + this.y     .toPreviewString()
+            // + ' ' + this.width .toPreviewString()
+            // + ' ' + this.height.toPreviewString()
+            // + ' ' + this.inner .toPreviewString() + '%'
+            // + ' ' + this.from  .toPreviewString() + '°'
+            // + ' ' + this.to    .toPreviewString() + '°';
     }
 
 
@@ -17068,7 +17083,8 @@ extends ShapeValue
             + ' ' + this.width .toString()
             + ' ' + this.height.toString()
             + ' ' + this.round .toString()
-            + ' ' + this.bias  .toString();
+            + ' ' + this.bias  .toString()
+            + ' ' + super.toString();
     }
 
 
@@ -17294,7 +17310,8 @@ extends ShapeValue
             + ' ' + this.width  .toString()
             + ' ' + this.height .toString()
             + ' ' + this.round  .toString()
-            + ' ' + this.corners.toString();
+            + ' ' + this.corners.toString()
+            + ' ' + super.toString();
     }
 
 
@@ -17495,7 +17512,8 @@ extends ShapeValue
             + ' ' + this.height.toString()
             + ' ' + this.round .toString()
             + ' ' + this.points.toString()
-            + ' ' + this.convex.toString();
+            + ' ' + this.convex.toString()
+            + ' ' + super.toString();
     }
 
 
@@ -17741,8 +17759,9 @@ extends ShapeValue
             + ' ' + this.alignH       .toString()
             + ' ' + this.alignV       .toString()
             + ' ' + this.lineHeight   .toString()
-            + ' ' + this.letterSpacing.toString();
-    }
+            + ' ' + this.letterSpacing.toString()
+            + ' ' + super.toString();
+        }
 
 
 
@@ -18134,7 +18153,8 @@ extends ShapeValue
             + ' ' + this.closed .toString()
             + ' ' + this.degree .toString()
             + ' ' + this.winding.toString()
-            + ' ' + this.round  .toString();
+            + ' ' + this.round  .toString()
+            + ' ' + super.toString();
     }
 
 
@@ -20424,11 +20444,15 @@ extends GOperator
         }
 
 
+        const preview = new ListValue(this.value.items.slice(0, Math.min(this.value.items.length, 10)));
+        const length  = new NumberValue(this.value.items.length);
+        const type    = new TextValue(finalListTypeFromItems(this.value.items));
+        
         this.setUpdateValues(parse,
         [
-            ['preview', new ListValue(this.value.items.slice(0, Math.min(this.value.items.length, 10)))],
-            ['length',  new NumberValue(this.value.items.length)                                       ],
-            ['type',    new TextValue(finalListTypeFromItems(this.value.items))                        ]
+            ['preview', preview],
+            ['length',  length ],
+            ['type',    type   ]
         ]);
 
 
@@ -57710,7 +57734,10 @@ function parseValueFromType(type, value)
 {
     switch (type)
     {
-        case           LIST_VALUE: return parseListValue         (value)[0];
+        case           LIST_VALUE: 
+        case    NUMBER_LIST_VALUE: 
+        case      TEXT_LIST_VALUE: 
+        case     SHAPE_LIST_VALUE: return parseListValue         (value)[0];
 
         case         NUMBER_VALUE: return parseNumberValue       (value)[0];
         case           TEXT_VALUE: return parseTextValue         (value)[0];
@@ -58346,11 +58373,16 @@ extends GValue
             return '';
 
 
+        const nItems = Math.min(this.items.length, 10);
+
+
         let str = '';
 
-        for (let i = 0; i < Math.min(this.items.length, 10); i++)
+        for (let i = 0; i < nItems; i++)
         {
-            if (i > 0) str += '<br/>';
+            if (i > 0) 
+                str += '<br/>';
+
 
             const item = this.items[i];
 
@@ -58358,7 +58390,9 @@ extends GValue
             {
                 for (let j = 0; j < item.items.length; j++)
                 {
-                    if (j > 0) str += ', ';
+                    if (j > 0) 
+                        str += ', ';
+                    
                     str += item.items[j].toPreviewString();
                 }
             }
@@ -58368,7 +58402,7 @@ extends GValue
 
         if (this.items.length > 10) 
             str += '<br/>. . .';
-
+        
         return str;
     }
 
@@ -58419,18 +58453,18 @@ function parseListValue(str, i = -1)
         i   = 0;
     }
         
-
-    const iStart = i;
-
-    const list = new ListValue();
     
-
+    const iStart  = i;
     const nInputs = parseInt(str[i++]);
+    
+    
+    const list = new ListValue();
 
 
     for (let j = 0; j < nInputs; j++)
     {
         const type = str[i++];
+        console.log('type =', type);
         
         switch (type)
         {
@@ -58456,13 +58490,13 @@ function parseListValue(str, i = -1)
             case    RECTANGLE_VALUE: { const rect    = parseRectangleValue   (str, i);  i += rect   [1];  list.items.push(rect   [0]);  break; }
             case         LINE_VALUE: { const line    = parseLineValue        (str, i);  i += line   [1];  list.items.push(line   [0]);  break; }
             case      ELLIPSE_VALUE: { const ellipse = parseEllipseValue     (str, i);  i += ellipse[1];  list.items.push(ellipse[0]);  break; }
-            case      TRAPEZE_VALUE: { const ellipse = parseTrapezeValue     (str, i);  i += ellipse[1];  list.items.push(ellipse[0]);  break; }
+            case      TRAPEZE_VALUE: { const trapeze = parseTrapezeValue     (str, i);  i += trapeze[1];  list.items.push(trapeze[0]);  break; }
             case      POLYGON_VALUE: { const poly    = parsePolygonValue     (str, i);  i += poly   [1];  list.items.push(poly   [0]);  break; }
             case         STAR_VALUE: { const star    = parseStarValue        (str, i);  i += star   [1];  list.items.push(star   [0]);  break; }
             case   TEXT_SHAPE_VALUE: { const text    = parseTextShapeValue   (str, i);  i += text   [1];  list.items.push(text   [0]);  break; }
             case        POINT_VALUE: { const point   = parsePointValue       (str, i);  i += point  [1];  list.items.push(point  [0]);  break; }
             case  VECTOR_PATH_VALUE: { const path    = parseVectorPathValue  (str, i);  i += path   [1];  list.items.push(path   [0]);  break; }
-            case      BOOLEAN_VALUE: { const group   = parseShapeBooleanValue(str, i);  i += group  [1];  list.items.push(group  [0]);  break; }
+            case      BOOLEAN_VALUE: { const bool    = parseShapeBooleanValue(str, i);  i += bool   [1];  list.items.push(bool   [0]);  break; }
             case  SHAPE_GROUP_VALUE: { const group   = parseShapeGroupValue  (str, i);  i += group  [1];  list.items.push(group  [0]);  break; }
             case        FRAME_VALUE: { const frame   = parseFrameValue       (str, i);  i += frame  [1];  list.items.push(frame  [0]);  break; }
         }
@@ -58538,8 +58572,8 @@ function finalTypeFromTypes(types)
 
 function finalListTypeFromTypes(types)
 {
+    //console.log('types =', types);
     let _type = finalTypeFromTypes(types);
-
     
          if (  _type == NUMBER_VALUE || _type == NUMBER_LIST_VALUE)  return NUMBER_LIST_VALUE;
     else if (  _type ==   TEXT_VALUE || _type ==   TEXT_LIST_VALUE)  return   TEXT_LIST_VALUE;
@@ -60808,18 +60842,20 @@ extends ShapeValue
             + ' ' + this.y     .toString()
             + ' ' + this.width .toString()
             + ' ' + this.height.toString()
-            + ' ' + this.round .toString();
+            + ' ' + this.round .toString()
+            + ' ' + super.toString();
     }
 
 
 
     toPreviewString()
     {
-        return      this.x     .toPreviewString()
-            + ' ' + this.y     .toPreviewString()
-            + ' ' + this.width .toPreviewString()
-            + ' ' + this.height.toPreviewString()
-            + ' ' + this.round .toPreviewString();
+        return 'rectangle';
+            // + ' ' + this.x     .toPreviewString()
+            // + ' ' + this.y     .toPreviewString()
+            // + ' ' + this.width .toPreviewString()
+            // + ' ' + this.height.toPreviewString()
+            // + ' ' + this.round .toPreviewString();
     }
 
 
@@ -61003,7 +61039,8 @@ extends ShapeValue
     {
         return      this.x    .toString()
             + ' ' + this.y    .toString()
-            + ' ' + this.width.toString();
+            + ' ' + this.width.toString()
+            + ' ' + super.toString();
     }
 
 
@@ -61189,20 +61226,22 @@ extends ShapeValue
             + ' ' + this.height.toString()
             + ' ' + this.from  .toString()
             + ' ' + this.to    .toString()
-            + ' ' + this.inner .toString();
+            + ' ' + this.inner .toString()
+            + ' ' + super.toString();
     }
 
 
 
     toPreviewString()
     {
-        return      this.x     .toPreviewString()
-            + ' ' + this.y     .toPreviewString()
-            + ' ' + this.width .toPreviewString()
-            + ' ' + this.height.toPreviewString()
-            + ' ' + this.from  .toPreviewString()
-            + ' ' + this.to    .toPreviewString()
-            + ' ' + this.inner .toPreviewString();
+        return 'ellipse';
+            // + ' ' + this.x     .toPreviewString()
+            // + ' ' + this.y     .toPreviewString()
+            // + ' ' + this.width .toPreviewString()
+            // + ' ' + this.height.toPreviewString()
+            // + ' ' + this.inner .toPreviewString() + '%'
+            // + ' ' + this.from  .toPreviewString() + '°'
+            // + ' ' + this.to    .toPreviewString() + '°';
     }
 
 
@@ -61354,7 +61393,8 @@ extends ShapeValue
             + ' ' + this.width .toString()
             + ' ' + this.height.toString()
             + ' ' + this.round .toString()
-            + ' ' + this.bias  .toString();
+            + ' ' + this.bias  .toString()
+            + ' ' + super.toString();
     }
 
 
@@ -61580,7 +61620,8 @@ extends ShapeValue
             + ' ' + this.width  .toString()
             + ' ' + this.height .toString()
             + ' ' + this.round  .toString()
-            + ' ' + this.corners.toString();
+            + ' ' + this.corners.toString()
+            + ' ' + super.toString();
     }
 
 
@@ -61781,7 +61822,8 @@ extends ShapeValue
             + ' ' + this.height.toString()
             + ' ' + this.round .toString()
             + ' ' + this.points.toString()
-            + ' ' + this.convex.toString();
+            + ' ' + this.convex.toString()
+            + ' ' + super.toString();
     }
 
 
@@ -62027,8 +62069,9 @@ extends ShapeValue
             + ' ' + this.alignH       .toString()
             + ' ' + this.alignV       .toString()
             + ' ' + this.lineHeight   .toString()
-            + ' ' + this.letterSpacing.toString();
-    }
+            + ' ' + this.letterSpacing.toString()
+            + ' ' + super.toString();
+        }
 
 
 
@@ -62420,7 +62463,8 @@ extends ShapeValue
             + ' ' + this.closed .toString()
             + ' ' + this.degree .toString()
             + ' ' + this.winding.toString()
-            + ' ' + this.round  .toString();
+            + ' ' + this.round  .toString()
+            + ' ' + super.toString();
     }
 
 
@@ -64710,11 +64754,15 @@ extends GOperator
         }
 
 
+        const preview = new ListValue(this.value.items.slice(0, Math.min(this.value.items.length, 10)));
+        const length  = new NumberValue(this.value.items.length);
+        const type    = new TextValue(finalListTypeFromItems(this.value.items));
+        
         this.setUpdateValues(parse,
         [
-            ['preview', new ListValue(this.value.items.slice(0, Math.min(this.value.items.length, 10)))],
-            ['length',  new NumberValue(this.value.items.length)                                       ],
-            ['type',    new TextValue(finalListTypeFromItems(this.value.items))                        ]
+            ['preview', preview],
+            ['length',  length ],
+            ['type',    type   ]
         ]);
 
 
@@ -103293,7 +103341,7 @@ extends OperatorBase
     updateValues(requestId, actionId, updateParamId, paramIds, values)
     {
         super.updateValues(requestId, actionId, updateParamId, paramIds, values);
-
+        
         const length = values[paramIds.findIndex(id => id == 'length')];
         const type   = values[paramIds.findIndex(id => id == 'type'  )];
 

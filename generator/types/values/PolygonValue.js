@@ -108,7 +108,8 @@ extends ShapeValue
             + ' ' + this.width  .toString()
             + ' ' + this.height .toString()
             + ' ' + this.round  .toString()
-            + ' ' + this.corners.toString();
+            + ' ' + this.corners.toString()
+            + ' ' + super.toString();
     }
 
 

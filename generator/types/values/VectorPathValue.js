@@ -69,7 +69,8 @@ extends ShapeValue
             + ' ' + this.closed .toString()
             + ' ' + this.degree .toString()
             + ' ' + this.winding.toString()
-            + ' ' + this.round  .toString();
+            + ' ' + this.round  .toString()
+            + ' ' + super.toString();
     }
 
 

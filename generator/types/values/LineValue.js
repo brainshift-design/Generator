@@ -84,7 +84,8 @@ extends ShapeValue
     {
         return      this.x    .toString()
             + ' ' + this.y    .toString()
-            + ' ' + this.width.toString();
+            + ' ' + this.width.toString()
+            + ' ' + super.toString();
     }
 
 

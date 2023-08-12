@@ -113,7 +113,10 @@ function parseValueFromType(type, value)
 {
     switch (type)
     {
-        case           LIST_VALUE: return parseListValue         (value)[0];
+        case           LIST_VALUE: 
+        case    NUMBER_LIST_VALUE: 
+        case      TEXT_LIST_VALUE: 
+        case     SHAPE_LIST_VALUE: return parseListValue         (value)[0];
 
         case         NUMBER_VALUE: return parseNumberValue       (value)[0];
         case           TEXT_VALUE: return parseTextValue         (value)[0];

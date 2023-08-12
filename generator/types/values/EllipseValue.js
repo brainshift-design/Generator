@@ -116,20 +116,22 @@ extends ShapeValue
             + ' ' + this.height.toString()
             + ' ' + this.from  .toString()
             + ' ' + this.to    .toString()
-            + ' ' + this.inner .toString();
+            + ' ' + this.inner .toString()
+            + ' ' + super.toString();
     }
 
 
 
     toPreviewString()
     {
-        return      this.x     .toPreviewString()
-            + ' ' + this.y     .toPreviewString()
-            + ' ' + this.width .toPreviewString()
-            + ' ' + this.height.toPreviewString()
-            + ' ' + this.from  .toPreviewString()
-            + ' ' + this.to    .toPreviewString()
-            + ' ' + this.inner .toPreviewString();
+        return 'ellipse';
+            // + ' ' + this.x     .toPreviewString()
+            // + ' ' + this.y     .toPreviewString()
+            // + ' ' + this.width .toPreviewString()
+            // + ' ' + this.height.toPreviewString()
+            // + ' ' + this.inner .toPreviewString() + '%'
+            // + ' ' + this.from  .toPreviewString() + '°'
+            // + ' ' + this.to    .toPreviewString() + '°';
     }
 
 

@@ -119,11 +119,15 @@ extends GOperator
         }
 
 
+        const preview = new ListValue(this.value.items.slice(0, Math.min(this.value.items.length, 10)));
+        const length  = new NumberValue(this.value.items.length);
+        const type    = new TextValue(finalListTypeFromItems(this.value.items));
+        
         this.setUpdateValues(parse,
         [
-            ['preview', new ListValue(this.value.items.slice(0, Math.min(this.value.items.length, 10)))],
-            ['length',  new NumberValue(this.value.items.length)                                       ],
-            ['type',    new TextValue(finalListTypeFromItems(this.value.items))                        ]
+            ['preview', preview],
+            ['length',  length ],
+            ['type',    type   ]
         ]);
 
 
