@@ -61,7 +61,10 @@ extends Parameter
         
         this._warningOverlay = createDiv('colorValueWarningOverlay');
         this._warningOverlay.style.zIndex  = 21;
+
         
+        this.controls[0].backStyleLight    = 
+        this.controls[0].backStyleDark     = 'transparent';
         
         
         this.checkers                      = createDiv();
@@ -313,8 +316,9 @@ extends Parameter
         this.updateWarningOverlay();
 
 
-        this.showColorBack = 
-               !this.isUnknown() 
+        const showColorBack = 
+                this.showColorBack
+            && !this.isUnknown() 
             && !this.node.isUnknown();
 
 
@@ -331,12 +335,9 @@ extends Parameter
         const rgbText   = getTextColorFromBackColor(rgbStripe);
 
 
-        this.controls[0].backStyleLight = 
-        this.controls[0].backStyleDark  = 'transparent';
-            
         this.controls[0].textStyleLight = 
         this.controls[0].textStyleDark  = 
-            this.showColorBack
+            showColorBack
             ? rgba2style(rgbText)
             : darkMode
               ? this.textStyleDark
@@ -362,7 +363,7 @@ extends Parameter
 
 
         this.div.style.background = 
-            this.showColorBack
+            showColorBack
             ? rgb2style(rgbBack)
             : darkMode
               ? this.backStyleDark
