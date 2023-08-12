@@ -4849,10 +4849,7 @@ a
             <div id='whatsNewBody'>
                 <h1 style='margin-top: 20px;'>What's new</h1>
 
-                <p>•  fixed data color not shown in list wires</p>
-                <p>•  dragged nodes now move correctly when scrolling with mouse wheel</p>
-                <p>•  Sublist and Substring now work line in JS, End = ? means until the end of the string</p>
-                <p>•  fixed various bugs</p>
+                <p>•  fixed UI issues</p>
                 
                 <p><br/><br/><div id='chkHideWhatsNew'></div></p>
             </div>
@@ -4860,7 +4857,7 @@ a
         <div class='dialogScrollbar' id='whatsNewScrollbarY'></div>
     </div>
 
-</div>\
+</div>
 
 
 <div id='search'>
@@ -5208,7 +5205,7 @@ a
 
 
 
-const generatorVersion = 191;
+const generatorVersion = 192;
 
 
 const MAX_INT32        = 2147483647;
@@ -47325,7 +47322,7 @@ onerror = (event, source, line, pos, error) =>
 };
 
 
-const generatorVersion = 191;
+const generatorVersion = 192;
 
 
 const MAX_INT32        = 2147483647;
@@ -93883,7 +93880,7 @@ extends Parameter
 
     updateControls()
     {
-        super.updateControls();
+        this.updateWarningOverlay();
 
 
         checkParamVisible(this);
@@ -93902,10 +93899,7 @@ extends Parameter
         const rgbaText   = getTextColorFromBackColor(rgbaStripe, rgba[3]);
 
 
-        this.updateWarningOverlay();
-
-
-        if (this.input)
+         if (this.input)
         {
             this.input.colorLight  = 
             this.input.colorDark   = rgb_a(rgbaText, 0.2);
@@ -93918,6 +93912,24 @@ extends Parameter
             this.output.colorDark  = rgb_a(rgbaText, 0.2);
             this.output.wireColor  = !rgbaIsNaN(rgbaBack) ? rgbaBack : noColor;
         }
+
+
+        this.controls[0].backStyleLight           = 
+        this.controls[0].backStyleDark            = 'transparent';
+               
+        this.controls[0].textStyleLight           = 
+        this.controls[0].textStyleDark            = rgba2style(rgbaText);
+      
+      
+        this.controls[1].backStyleLight           = 
+        this.controls[1].backStyleDark            = 'transparent';
+   
+   
+        this.controls[1].textStyleLight           = 
+        this.controls[1].textStyleDark            = rgba2style(rgbaText);
+
+
+        super.updateControls();
 
 
         this.checkers.style.background =
@@ -93938,20 +93950,6 @@ extends Parameter
         this.checkers.style.width                 = 'calc(100% + 3.5px)';
               
               
-        this.controls[0].backStyleLight           = 
-        this.controls[0].backStyleDark            = 'transparent';
-               
-        this.controls[0].textStyleLight           = 
-        this.controls[0].textStyleDark            = rgba2style(rgbaText);
-      
-      
-        this.controls[1].backStyleLight           = 
-        this.controls[1].backStyleDark            = 'transparent';
-   
-   
-        this.controls[1].textStyleLight           = 
-        this.controls[1].textStyleDark            = rgba2style(rgbaText);
-   
         this.controls[0].div.style.position       = 'absolute';
         this.controls[1].div.style.position       = 'absolute';
    

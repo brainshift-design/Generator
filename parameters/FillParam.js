@@ -295,7 +295,7 @@ extends Parameter
 
     updateControls()
     {
-        super.updateControls();
+        this.updateWarningOverlay();
 
 
         checkParamVisible(this);
@@ -314,10 +314,7 @@ extends Parameter
         const rgbaText   = getTextColorFromBackColor(rgbaStripe, rgba[3]);
 
 
-        this.updateWarningOverlay();
-
-
-        if (this.input)
+         if (this.input)
         {
             this.input.colorLight  = 
             this.input.colorDark   = rgb_a(rgbaText, 0.2);
@@ -330,6 +327,24 @@ extends Parameter
             this.output.colorDark  = rgb_a(rgbaText, 0.2);
             this.output.wireColor  = !rgbaIsNaN(rgbaBack) ? rgbaBack : noColor;
         }
+
+
+        this.controls[0].backStyleLight           = 
+        this.controls[0].backStyleDark            = 'transparent';
+               
+        this.controls[0].textStyleLight           = 
+        this.controls[0].textStyleDark            = rgba2style(rgbaText);
+      
+      
+        this.controls[1].backStyleLight           = 
+        this.controls[1].backStyleDark            = 'transparent';
+   
+   
+        this.controls[1].textStyleLight           = 
+        this.controls[1].textStyleDark            = rgba2style(rgbaText);
+
+
+        super.updateControls();
 
 
         this.checkers.style.background =
@@ -350,20 +365,6 @@ extends Parameter
         this.checkers.style.width                 = 'calc(100% + 3.5px)';
               
               
-        this.controls[0].backStyleLight           = 
-        this.controls[0].backStyleDark            = 'transparent';
-               
-        this.controls[0].textStyleLight           = 
-        this.controls[0].textStyleDark            = rgba2style(rgbaText);
-      
-      
-        this.controls[1].backStyleLight           = 
-        this.controls[1].backStyleDark            = 'transparent';
-   
-   
-        this.controls[1].textStyleLight           = 
-        this.controls[1].textStyleDark            = rgba2style(rgbaText);
-   
         this.controls[0].div.style.position       = 'absolute';
         this.controls[1].div.style.position       = 'absolute';
    
