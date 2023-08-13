@@ -25,8 +25,6 @@ onmessage = function(e)
 
         //case 'genFetchResponse':     genFetchResponse(msg.result, msg.response); break;
 
-        //case 'genStopGenerate':      genStopGenerate (msg); break;
-        
         case 'genEndUiMessage':        genEndUiMessage (msg.msgCmd); break;
         case 'genEndFigMessage':       genEndFigMessage();           break;
 

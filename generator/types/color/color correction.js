@@ -188,7 +188,8 @@ function findCorrectionInOrder(parse,
         }
 
         
-        genUpdateNodeProgress(parse, nodeId, progress / total);
+        //if (!stopGenerate)
+            genUpdateNodeProgress(parse, nodeId, progress / total);
     }
 
     

@@ -4864,7 +4864,8 @@ a
             <div id='whatsNewBody'>
                 <h1 style='margin-top: 20px;'>What's new</h1>
 
-                <p>•  </p>
+                <p>•  improved performance</p>
+                <p>•  Ctrl/Cmd+Enter now reactivates currently active nodes</p>
                 
                 <p><br/><br/><div id='chkHideWhatsNew'></div></p>
             </div>
@@ -4914,6 +4915,7 @@ a
         <div class='keyboardPage' id='keyboardPageMenu'>
             <div class='keyboardGroup'>
                 <div class='keyboardShortcut'><div class='shortcutAction'>Keep menu open</div><div class='shortcutKeys'><div class='shortcutKeys'><div class='shortcutKey'>Shift</div><div class='shortcutEvent'>click</div></div></div></div>
+                <div class='keyboardShortcut'><div class='shortcutAction'>Search menus and nodes</div><div class='shortcutKeys'><div class='shortcutKeys'><div class='shortcutKey'>Ctrl</div><div class='shortcutKey shortcutChar'>/</div></div></div></div>
                 <div class='keyboardShortcut'></div>
                 <div class='keyboardInfo'>Click a node menu to create a node under<br/>the menu button. Drag the menu to directly<br/>move the new node.</div>
             </div>
@@ -4981,6 +4983,7 @@ a
                 <div class='keyboardShortcut'><div class='shortcutAction'>Insert node into branch</div><div class='shortcutKeys'><div class='shortcutKeys'><div class='shortcutKey'>Ctrl</div><div class='shortcutKey'>menu</div></div></div></div>
                 <div class='keyboardShortcut'><div class='shortcutAction'>Connect node in new branch</div><div class='shortcutKeys'><div class='shortcutKeys'><div class='shortcutKey newBranch1'>Ctrl</div><div class='shortcutKey newBranch2'>Alt</div><div class='shortcutKey'>menu</div></div></div></div>
                 <div class='keyboardShortcut'><div class='shortcutAction'>Create random color</div><div class='shortcutKeys'><div class='shortcutKeys'><div class='shortcutKey'>Alt</div><div class='shortcutKey'>Color menu</div></div></div></div>
+                <div class='keyboardShortcut'><div class='shortcutAction'>Reactivate active nodes</div><div class='shortcutKeys'><div class='shortcutKeys'><div class='shortcutKey'>Ctrl</div><div class='shortcutKey'>Enter</div></div></div></div>
             </div>
             <div class='keyboardGroup nextGroup'>
                 <div class='keyboardShortcut'><div class='shortcutAction'>Rename</div><div class='shortcutKeys'><div class='shortcutKeys'><div class='shortcutKey'>Shift</div><div class='shortcutKey shortcutChar'>R</div></div></div></div>
@@ -19860,8 +19863,13 @@ extends GOperator
                     {
                         parse.currentProgress++;
                         
-                        const stopGenerate = await genGetValueFromUi('stopGenerate');
-                        if (stopGenerate.value === true) { parse.stopGenerate = true; break; }
+                        const stopRequestId = await genGetValueFromUi('stopRequestId');
+
+                        if (stopRequestId.value == parse.requestId) 
+                        { 
+                            parse.stopGenerate = true;
+                            break; 
+                        }
                     }
 
 
@@ -28531,7 +28539,8 @@ function findCorrectionInOrder(parse,
         }
 
         
-        genUpdateNodeProgress(parse, nodeId, progress / total);
+        //if (!stopGenerate)
+            genUpdateNodeProgress(parse, nodeId, progress / total);
     }
 
     
@@ -37362,8 +37371,6 @@ onmessage = function(e)
 
         //case 'genFetchResponse':     genFetchResponse(msg.result, msg.response); break;
 
-        //case 'genStopGenerate':      genStopGenerate (msg); break;
-        
         case 'genEndUiMessage':        genEndUiMessage (msg.msgCmd); break;
         case 'genEndFigMessage':       genEndFigMessage();           break;
 
@@ -37470,8 +37477,6 @@ var lastUpdateValues   =  [];
 var lastUpdateObjects  =  [];
 var lastUpdateStyles   =  [];
 
-//var stopGenerate       =  false;
-
 
 
 function initFonts(fonts, uniqueFontNames)
@@ -37529,18 +37534,31 @@ function genRequest(request, save)
 
     (async () =>
     {
-        for (const node of paramNodes) { await node.eval(parse); if (parse.stopGenerate) break; } 
+        for (const node of paramNodes) 
+        { 
+            await node.eval(parse);
+            if (parse.stopGenerate) break; 
+        } 
+
 
         if (!parse.stopGenerate) 
-            for (const node of topLevelNodes) { await node.eval(parse); if (parse.stopGenerate) break; }
-        
+        {
+            for (const node of topLevelNodes) 
+            { 
+                await node.eval(parse); 
+                if (parse.stopGenerate) break; 
+            }
+        }
+
+
         genQueueMessageToUi({cmd: 'uiEndGlobalProgress'});
 
 
         if (parse.stopGenerate) return;
 
         
-        for (const node of topLevelNodes) node.pushValueUpdates(parse);
+        for (const node of topLevelNodes) 
+            node.pushValueUpdates(parse);
 
         
         for (const node of parse.parsedNodes)
@@ -37603,16 +37621,13 @@ function genRequest(request, save)
             save);
     })();
 
-    //stopGenerate = false;
+
+    genPostMessageToUi(
+    {
+        cmd:      'endRequest',
+        requestId: requestId
+    });
 }
-
-
-
-// function genStopGenerate(msg)
-// {
-//     console.log('%cSTOP', 'color: white; background: #080;');
-//     stopGenerate = true;
-// }
 
 
 
@@ -43935,7 +43950,7 @@ class Parse
     repeats       = [];
 
     stopGenerate  = false;
-    
+
 
     paramNodeIds  = [];
 
@@ -43960,6 +43975,7 @@ class Parse
     constructor(request, firstPos, requestId, updateNodeId, updateParamId, viewportZoom, settings, save)
     {
         this.request       = request;
+        this.requestId     = requestId;
           
         this.pos           = firstPos; 
         this.so            = 0;
@@ -64285,8 +64301,13 @@ extends GOperator
                     {
                         parse.currentProgress++;
                         
-                        const stopGenerate = await genGetValueFromUi('stopGenerate');
-                        if (stopGenerate.value === true) { parse.stopGenerate = true; break; }
+                        const stopRequestId = await genGetValueFromUi('stopRequestId');
+
+                        if (stopRequestId.value == parse.requestId) 
+                        { 
+                            parse.stopGenerate = true;
+                            break; 
+                        }
                     }
 
 
@@ -72956,7 +72977,8 @@ function findCorrectionInOrder(parse,
         }
 
         
-        genUpdateNodeProgress(parse, nodeId, progress / total);
+        //if (!stopGenerate)
+            genUpdateNodeProgress(parse, nodeId, progress / total);
     }
 
     
@@ -91100,7 +91122,7 @@ GraphView.prototype.createEvents = function()
         if (    e.button == 0
             && !e.shiftKey)
         {
-            stopGenerate = true;
+            stopRequestId = curRequestId;
 
             
             const activeNodes = [];
@@ -92361,8 +92383,8 @@ extends EventTarget
                 
                 if (createAction)
                 {
-                    // if (isGenerating)
-                    //     stopGenerate = true;
+                    //if (isGenerating)
+                        stopRequestId = curRequestId;
 
                     actionManager.do(
                         new SetParamValueAction(this, value), 
@@ -118942,8 +118964,13 @@ extends ResizableBase
         });
 
 
-        this.div.style.width  = 400;
-        this.div.style.height = 400;
+        this.div         .style.width    = 400;
+        this.div         .style.height   = 400;
+
+        this.header      .style.overflow = 'visible';
+        this.labelWrapper.style.overflow = 'visible';
+        this.label       .style.overflow = 'visible';
+        this.labelText   .style.overflow = 'visible';
 
 
         this.header.addEventListener('dblclick', e =>
@@ -119034,14 +119061,14 @@ extends ResizableBase
 
         const fontHeight = 11 / Math.min(1, graph.currentPage.zoom);
 
-        this.labelText.style.fontSize   = fontHeight; 
-        this.labelText.style.height     = fontHeight + 'px'; 
-        this.labelText.style.lineHeight = fontHeight + 'px'; 
+        this.labelText   .style.fontSize   = fontHeight; 
+        this.textbox     .style.fontSize   = fontHeight;
+        
+        this.label       .style.lineHeight = fontHeight + 'px';
+        this.label       .style.height     = fontHeight + 'px';
 
-        this.label    .style.lineHeight = fontHeight + 'px';
-        this.label    .style.height     = fontHeight + 'px';
-
-        this.textbox  .style.fontSize   = fontHeight;
+        this.labelText   .style.lineHeight = fontHeight + 'px'; 
+        this.labelText   .style.height     = fontHeight + 'px'; 
     }
 
 
@@ -124877,7 +124904,7 @@ document.addEventListener('keydown', e =>
             graphView.deselectAllNodes(e.shiftKey);
 
         else
-            stopGenerate = true;
+            stopRequestId = curRequestId;
     }
 
     //
@@ -124927,6 +124954,14 @@ document.addEventListener('keydown', e =>
             graphView.spaceDown = true;
             setCursor(panCursor);
         }
+    }
+
+    else if (e.code == 'Enter'
+          && getCtrlKey(e))
+    {
+        actionManager.do(new MakeActiveNodesAction(
+            graph.nodes.filter(n => n.active).map(n => n.nodeId), 
+            false));
     }
 
     else if (e.key == 'Shift')
@@ -125409,6 +125444,8 @@ generator.onmessage = function(e)
     {
         case 'uiEndGenMessage': uiEndGenMessage(); break;
         
+        case 'uiEndRequest':    uiEndRequest(msg.requestId); break;
+
         case 'uiUpdateValuesAndObjects': 
             uiUpdateValuesAndObjects(
                 parseInt(msg.requestId), 
@@ -125550,6 +125587,8 @@ function setAutoCursor()
 var nextRequestId   =  0;
 var lastRequestedId = -1;
 
+var curRequestId    = null;
+
 
 
 function pushUpdate(action, nodes, save = true)
@@ -125593,14 +125632,20 @@ function pushUpdateFromParam(action, nodes, param, save = true)
         actionManager.updateActions.push(action);
         
 
-    lastRequestedId = nextRequestId++;
-
+    if (!curRequestId)
+    {
+        lastRequestedId = nextRequestId++;
+        curRequestId    = lastRequestedId;
+    }
+    
     const request = 
     [
-        lastRequestedId,
+        curRequestId,
         action ? action.id : -1,
         set.toString()
     ];
+
+
 
 
     if (param) request.push(param.node.id, param.id);
@@ -125626,13 +125671,6 @@ function pushUpdateFromParam(action, nodes, param, save = true)
 
     const progressNodes = [];
     nodes.forEach(n => pushUnique(progressNodes, getProgressNodesAfterNode(n)));
-
-
-    // if (!isEmpty(progressNodes))
-    // {
-    //     //genMessages = [];
-    //     uiPostMessageToGenerator({cmd: 'genStopGenerate'});
-    // }
 
 
     const gen = createGenObject(
@@ -125717,6 +125755,14 @@ function getNodeRequest(node, gen)
 
 
     return request;
+}
+
+
+
+function uiEndRequest(requestId)
+{
+    consoleAssert(curRequestId == requestId);
+    curRequestId = null;
 }
 
 
@@ -128662,8 +128708,8 @@ function createStyleIcon(rgba)
 }
 
 
-var isGenerating = false;
-var stopGenerate = null;
+var isGenerating  = false;
+var stopRequestId = null;
 
 
 
@@ -128870,16 +128916,16 @@ function uiGetValue(key)
 {
     switch (key)
     {
-        case 'stopGenerate':  
+        case 'stopRequestId':  
         {
             uiPostMessageToGenerator(
             {
                 cmd:  'returnUiGetValue',
                 key:   key,
-                value: stopGenerate
+                value: stopRequestId
             });
 
-            stopGenerate = false;
+            stopRequestId = null;
             break;
         }
     }

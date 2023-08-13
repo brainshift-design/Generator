@@ -1,5 +1,5 @@
-var isGenerating = false;
-var stopGenerate = null;
+var isGenerating  = false;
+var stopRequestId = null;
 
 
 
@@ -206,16 +206,16 @@ function uiGetValue(key)
 {
     switch (key)
     {
-        case 'stopGenerate':  
+        case 'stopRequestId':  
         {
             uiPostMessageToGenerator(
             {
                 cmd:  'returnUiGetValue',
                 key:   key,
-                value: stopGenerate
+                value: stopRequestId
             });
 
-            stopGenerate = false;
+            stopRequestId = null;
             break;
         }
     }

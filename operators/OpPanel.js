@@ -22,8 +22,13 @@ extends ResizableBase
         });
 
 
-        this.div.style.width  = 400;
-        this.div.style.height = 400;
+        this.div         .style.width    = 400;
+        this.div         .style.height   = 400;
+
+        this.header      .style.overflow = 'visible';
+        this.labelWrapper.style.overflow = 'visible';
+        this.label       .style.overflow = 'visible';
+        this.labelText   .style.overflow = 'visible';
 
 
         this.header.addEventListener('dblclick', e =>
@@ -114,14 +119,14 @@ extends ResizableBase
 
         const fontHeight = 11 / Math.min(1, graph.currentPage.zoom);
 
-        this.labelText.style.fontSize   = fontHeight; 
-        this.labelText.style.height     = fontHeight + 'px'; 
-        this.labelText.style.lineHeight = fontHeight + 'px'; 
+        this.labelText   .style.fontSize   = fontHeight; 
+        this.textbox     .style.fontSize   = fontHeight;
+        
+        this.label       .style.lineHeight = fontHeight + 'px';
+        this.label       .style.height     = fontHeight + 'px';
 
-        this.label    .style.lineHeight = fontHeight + 'px';
-        this.label    .style.height     = fontHeight + 'px';
-
-        this.textbox  .style.fontSize   = fontHeight;
+        this.labelText   .style.lineHeight = fontHeight + 'px'; 
+        this.labelText   .style.height     = fontHeight + 'px'; 
     }
 
 

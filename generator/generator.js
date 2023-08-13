@@ -5,8 +5,6 @@ var lastUpdateValues   =  [];
 var lastUpdateObjects  =  [];
 var lastUpdateStyles   =  [];
 
-//var stopGenerate       =  false;
-
 
 
 function initFonts(fonts, uniqueFontNames)
@@ -64,18 +62,31 @@ function genRequest(request, save)
 
     (async () =>
     {
-        for (const node of paramNodes) { await node.eval(parse); if (parse.stopGenerate) break; } 
+        for (const node of paramNodes) 
+        { 
+            await node.eval(parse);
+            if (parse.stopGenerate) break; 
+        } 
+
 
         if (!parse.stopGenerate) 
-            for (const node of topLevelNodes) { await node.eval(parse); if (parse.stopGenerate) break; }
-        
+        {
+            for (const node of topLevelNodes) 
+            { 
+                await node.eval(parse); 
+                if (parse.stopGenerate) break; 
+            }
+        }
+
+
         genQueueMessageToUi({cmd: 'uiEndGlobalProgress'});
 
 
         if (parse.stopGenerate) return;
 
         
-        for (const node of topLevelNodes) node.pushValueUpdates(parse);
+        for (const node of topLevelNodes) 
+            node.pushValueUpdates(parse);
 
         
         for (const node of parse.parsedNodes)
@@ -138,16 +149,13 @@ function genRequest(request, save)
             save);
     })();
 
-    //stopGenerate = false;
+
+    genPostMessageToUi(
+    {
+        cmd:      'endRequest',
+        requestId: requestId
+    });
 }
-
-
-
-// function genStopGenerate(msg)
-// {
-//     console.log('%cSTOP', 'color: white; background: #080;');
-//     stopGenerate = true;
-// }
 
 
 

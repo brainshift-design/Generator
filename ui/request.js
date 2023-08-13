@@ -1,6 +1,8 @@
 var nextRequestId   =  0;
 var lastRequestedId = -1;
 
+var curRequestId    = null;
+
 
 
 function pushUpdate(action, nodes, save = true)
@@ -44,14 +46,20 @@ function pushUpdateFromParam(action, nodes, param, save = true)
         actionManager.updateActions.push(action);
         
 
-    lastRequestedId = nextRequestId++;
-
+    if (!curRequestId)
+    {
+        lastRequestedId = nextRequestId++;
+        curRequestId    = lastRequestedId;
+    }
+    
     const request = 
     [
-        lastRequestedId,
+        curRequestId,
         action ? action.id : -1,
         set.toString()
     ];
+
+
 
 
     if (param) request.push(param.node.id, param.id);
@@ -77,13 +85,6 @@ function pushUpdateFromParam(action, nodes, param, save = true)
 
     const progressNodes = [];
     nodes.forEach(n => pushUnique(progressNodes, getProgressNodesAfterNode(n)));
-
-
-    // if (!isEmpty(progressNodes))
-    // {
-    //     //genMessages = [];
-    //     uiPostMessageToGenerator({cmd: 'genStopGenerate'});
-    // }
 
 
     const gen = createGenObject(
@@ -168,4 +169,12 @@ function getNodeRequest(node, gen)
 
 
     return request;
+}
+
+
+
+function uiEndRequest(requestId)
+{
+    consoleAssert(curRequestId == requestId);
+    curRequestId = null;
 }

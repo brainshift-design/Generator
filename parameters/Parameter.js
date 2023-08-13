@@ -285,8 +285,8 @@ extends EventTarget
                 
                 if (createAction)
                 {
-                    // if (isGenerating)
-                    //     stopGenerate = true;
+                    //if (isGenerating)
+                        stopRequestId = curRequestId;
 
                     actionManager.do(
                         new SetParamValueAction(this, value), 

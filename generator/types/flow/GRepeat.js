@@ -161,8 +161,13 @@ extends GOperator
                     {
                         parse.currentProgress++;
                         
-                        const stopGenerate = await genGetValueFromUi('stopGenerate');
-                        if (stopGenerate.value === true) { parse.stopGenerate = true; break; }
+                        const stopRequestId = await genGetValueFromUi('stopRequestId');
+
+                        if (stopRequestId.value == parse.requestId) 
+                        { 
+                            parse.stopGenerate = true;
+                            break; 
+                        }
                     }
 
 

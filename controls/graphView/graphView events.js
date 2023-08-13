@@ -228,7 +228,7 @@ GraphView.prototype.createEvents = function()
         if (    e.button == 0
             && !e.shiftKey)
         {
-            stopGenerate = true;
+            stopRequestId = curRequestId;
 
             
             const activeNodes = [];

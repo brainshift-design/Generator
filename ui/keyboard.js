@@ -217,7 +217,7 @@ document.addEventListener('keydown', e =>
             graphView.deselectAllNodes(e.shiftKey);
 
         else
-            stopGenerate = true;
+            stopRequestId = curRequestId;
     }
 
     //
@@ -267,6 +267,14 @@ document.addEventListener('keydown', e =>
             graphView.spaceDown = true;
             setCursor(panCursor);
         }
+    }
+
+    else if (e.code == 'Enter'
+          && getCtrlKey(e))
+    {
+        actionManager.do(new MakeActiveNodesAction(
+            graph.nodes.filter(n => n.active).map(n => n.nodeId), 
+            false));
     }
 
     else if (e.key == 'Shift')
