@@ -19,7 +19,7 @@ extends NumberParamBase
                 options,
                 defaultValue = 0)
     {
-        super(NUMBER_VALUE, id, name);
+        super(NUMBER_VALUE, id, name, showName);
 
         this.controls[0] = new NumberControl(
             this,
@@ -34,21 +34,23 @@ extends NumberParamBase
 
         this.controls[0].div.zIndex = 0;
 
-        this.controls[0].div.style.display = 'inline-block';
-        this.controls[0].div.style.width   = '100%';
+        // this.controls[0].div.style.display = 'inline-block';
+        // this.controls[0].div.style.width   = '100%';
 
        
         this.defaultValue = new NumberValue(defaultValue);
 
 
+        this.controls[0].successOnFocusOut = true;
+
+        this.controls[0].div.zIndex = 0;
+        this.divControls.appendChild(this.controls[0].div);
+
+
         this.setOptions(options);
 
         this.controls[0].allowEditDecimals = false;
-
-        this.controls[0].successOnFocusOut = true;
         this.controls[0].barTop            = 0.8;
-
-        this.divControls.appendChild(this.controls[0].div);
 
 
         if (hasInput)  this.initInput([NUMBER_VALUE], getParamInputValuesForUndo, this.input_getBackInitValue);

@@ -66,7 +66,7 @@ extends GOperator
                 this.value = new NumberValue(
                     from.value + (to.value - from.value) * time.value / length.value,
                     maxDec);
-    
+
                 break;
             }
             case 2: 
@@ -110,12 +110,12 @@ extends GOperator
 
         this.setUpdateValues(parse,
         [
-            ['from',   from      ],
-            ['to',     to        ],
-            ['curve',  curve     ],
-            ['repeat', repeat    ],
-            ['length', length    ],
-            ['time',   time      ]
+            ['from',   from  ],
+            ['to',     to    ],
+            ['curve',  curve ],
+            ['repeat', repeat],
+            ['length', length],
+            ['time',   time  ]
         ]);
         
 

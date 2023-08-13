@@ -25,11 +25,11 @@ extends OperatorBase
         this.addOutput(new Output([SHAPE_VALUE], this.output_genRequest));
 
 
-        this.addParam(this.paramX           = new NumberParam('x',           'X',          true, true, true));
-        this.addParam(this.paramY           = new NumberParam('y',           'Y',          true, true, true));
-        this.addParam(this.paramMoveType    = new SelectParam('moveType',    'type',       true, true, true, ['position', 'vector'], 0));
-        this.addParam(this.paramAffectSpace = new NumberParam('affectSpace', 'move space', true, true, true, 1, 0, 1));
-        this.addParam(this.paramShowCenter  = new NumberParam('showCenter',  'show center', true, true, true, 0, 0, 1));
+        this.addParam(this.paramX           = new NumberParam('x',           'X',           true,  true, true));
+        this.addParam(this.paramY           = new NumberParam('y',           'Y',           true,  true, true));
+        this.addParam(this.paramMoveType    = new SelectParam('moveType',    'type',        false, true, true, ['position', 'vector'], 0));
+        this.addParam(this.paramAffectSpace = new NumberParam('affectSpace', 'move space',  true,  true, true, 1, 0, 1));
+        this.addParam(this.paramShowCenter  = new NumberParam('showCenter',  'show center', true,  true, true, 0, 0, 1));
 
 
         this.paramShowCenter .controls[0].allowEditDecimals = false;
@@ -37,6 +37,7 @@ extends OperatorBase
         
         this.paramShowCenter .divider = 0.68;
         this.paramAffectSpace.divider = 0.68;
+        this.paramMoveType   .divider = 0.4;
 
 
         this.menuBoolShowCenter  = createBoolMenu(this.paramShowCenter );
@@ -101,8 +102,9 @@ extends OperatorBase
         this.paramY.setName(vector ? 'angle' : 'Y');
         this.paramY.divider = vector ? 0.55 : 0.45;
 
-        this.paramY.controls[0].suffix    = vector ? '°' : '';
-        this.paramY.controls[0].wrapValue = vector;
+        this.paramY.controls[0].suffix        = vector ? '°' : '';
+        this.paramY.controls[0].suffixOffsetY = vector ? -4  : 0;
+        this.paramY.controls[0].wrapValue     = vector;
 
         this.paramY.controls[0].setMin(vector ?   0 : Number.MIN_SAFE_INTEGER);
         this.paramY.controls[0].setMax(vector ? 360 : Number.MAX_SAFE_INTEGER);

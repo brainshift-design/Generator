@@ -4866,6 +4866,7 @@ a
 
                 <p>•  improved performance</p>
                 <p>•  Ctrl/Cmd+Enter now reactivates currently active nodes</p>
+                <p>•  small UI improvements</p>
                 
                 <p><br/><br/><div id='chkHideWhatsNew'></div></p>
             </div>
@@ -13661,7 +13662,9 @@ extends GNode
             else     this.updateValues = [...values];
         }
         else if (!add)
+        {
             this.updateValues = [];
+        }
     }
 
 
@@ -22921,7 +22924,7 @@ extends GOperator
 
     isValid()
     {
-        return !this.connectedInputs.find(i => !i.isValid());
+        return !this.inputs.find(i => !i.isValid());
     }
 
 
@@ -24243,7 +24246,7 @@ extends GOperator
                 this.value = new NumberValue(
                     from.value + (to.value - from.value) * time.value / length.value,
                     maxDec);
-    
+
                 break;
             }
             case 2: 
@@ -24287,12 +24290,12 @@ extends GOperator
 
         this.setUpdateValues(parse,
         [
-            ['from',   from      ],
-            ['to',     to        ],
-            ['curve',  curve     ],
-            ['repeat', repeat    ],
-            ['length', length    ],
-            ['time',   time      ]
+            ['from',   from  ],
+            ['to',     to    ],
+            ['curve',  curve ],
+            ['repeat', repeat],
+            ['length', length],
+            ['time',   time  ]
         ]);
         
 
@@ -37532,6 +37535,7 @@ function genRequest(request, save)
     const    paramNodes = parse.paramNodeIds.map(id => parse.parsedNodes.find(n => n.nodeId == id));
     const topLevelNodes = parse.parsedNodes.filter(n => n.topLevel);
 
+
     (async () =>
     {
         for (const node of paramNodes) 
@@ -37559,7 +37563,7 @@ function genRequest(request, save)
         
         for (const node of topLevelNodes) 
             node.pushValueUpdates(parse);
-
+        
         
         for (const node of parse.parsedNodes)
         {
@@ -37619,14 +37623,14 @@ function genRequest(request, save)
             parse.updateObjects,
             parse.updateStyles,
             save);
+
+
+        genPostMessageToUi(
+            {
+                cmd:      'endRequest',
+                requestId: requestId
+            });
     })();
-
-
-    genPostMessageToUi(
-    {
-        cmd:      'endRequest',
-        requestId: requestId
-    });
 }
 
 
@@ -37636,10 +37640,9 @@ function genPushUpdateValue(parse, nodeId, paramId, value)
     if (!value)
         return;
     
-
-    if (  !parse.save
-        && value.hasInitValue())
-        return;
+    // if (  !parse.save
+    //     && value.hasInitValue())
+    //     return;
 
     
     removeFromArrayWhere(parse.updateValues, v =>
@@ -46722,6 +46725,8 @@ function switchToHs_Controls(node, v_or_l)
         'S',    0, hs_Scale[1], 
         v_or_l, 0, hs_Scale[2]);  
 
+    node.param1.controls[0].suffixOffsetY = -4;
+
     node.param2.controls[0].min = 
     node.param3.controls[0].min = Number.MIN_SAFE_INTEGER; // allow extrapolation
 
@@ -46739,6 +46744,8 @@ function switchToHclControls(node, scale)
         'H', 0, scale[0], '°', true,  
         'C', 0, scale[1], 
         'L', 0, scale[2]);  
+
+    node.param1.controls[0].suffixOffsetY = -4;
 
     node.param2.controls[0].min = 
     node.param3.controls[0].min = Number.MIN_SAFE_INTEGER; // allow extrapolation
@@ -46806,6 +46813,8 @@ function switchToControls(node, c1, c1min, c1max, c1suffix, c1wrap, c2, c2min, c
     node.param1.updateControls();
     node.param2.updateControls();
     node.param3.updateControls();
+
+    node.param1.controls[0].suffixOffsetY = 0;
 }
 
 
@@ -58099,7 +58108,9 @@ extends GNode
             else     this.updateValues = [...values];
         }
         else if (!add)
+        {
             this.updateValues = [];
+        }
     }
 
 
@@ -67359,7 +67370,7 @@ extends GOperator
 
     isValid()
     {
-        return !this.connectedInputs.find(i => !i.isValid());
+        return !this.inputs.find(i => !i.isValid());
     }
 
 
@@ -68681,7 +68692,7 @@ extends GOperator
                 this.value = new NumberValue(
                     from.value + (to.value - from.value) * time.value / length.value,
                     maxDec);
-    
+
                 break;
             }
             case 2: 
@@ -68725,12 +68736,12 @@ extends GOperator
 
         this.setUpdateValues(parse,
         [
-            ['from',   from      ],
-            ['to',     to        ],
-            ['curve',  curve     ],
-            ['repeat', repeat    ],
-            ['length', length    ],
-            ['time',   time      ]
+            ['from',   from  ],
+            ['to',     to    ],
+            ['curve',  curve ],
+            ['repeat', repeat],
+            ['length', length],
+            ['time',   time  ]
         ]);
         
 
@@ -82529,7 +82540,7 @@ extends Control
 
     acc;
      
-    dec;
+    decimals;
     displayDec;
     
     
@@ -82541,6 +82552,7 @@ extends Control
                
     suffix;
     valueCanContainSuffix = false;
+    suffixOffsetY         = 0;
      
     dragReverse           = false;
     dragScale;
@@ -82629,7 +82641,7 @@ extends Control
     
         this.acc                   = acc;
          
-        this.dec                   =
+        this.decimals                   =
         this.displayDec            = dec;
              
         this.valueScale            = 1;
@@ -82788,7 +82800,7 @@ extends Control
 
     setDecimals(dec, dspDec = dec)
     {
-        this.dec        = dec;
+        this.decimals        = dec;
         this.displayDec = dspDec;
     }
 
@@ -82926,7 +82938,7 @@ extends Control
                   valueText 
                 + (valueText == UNKNOWN_DISPLAY
                    ? ''
-                   : this.suffix);
+                   : '<span style="font-size: 8px; opacity: 50%; font-weight: 200; position: relative; top: ' + this.suffixOffsetY + 'px;">&nbsp;' + this.suffix + '</span>');
         }
 
 
@@ -83352,7 +83364,7 @@ NumberControl.prototype.initTextbox = function()
         //         e.preventDefault();
 
         //     if (    e.key == '.'
-        //         &&  this.dec == 0
+        //         &&  this.decimals == 0
         //         && !this.allowEditDecimals)
         //         e.preventDefault();
                 
@@ -83956,7 +83968,7 @@ NumberControl.prototype.initEvents = function()
                 {
                     const dx       = this.movedX * (this.dragReverse ? -1 : 1);
                     const adaptive = 10 * Math.pow(Math.abs(dx), this.acc);
-                    const grain    = Math.pow(10, -this.dec);
+                    const grain    = Math.pow(10, -this.decimals);
                     const drag     = grain * sqr(this.dragScale);
 
                     const val      = this.startValue + dx * drag * adaptive;
@@ -84266,7 +84278,7 @@ NumberControl.prototype.initEvents = function()
 
                 this.oldValue = this.value;
 
-                const dec = Math.pow(10, -this.dec);
+                const dec = Math.pow(10, -this.decimals);
 
                 const val =
                     touchpad
@@ -86047,7 +86059,7 @@ ColorControl.prototype.initEvents = function()
 
                 // this.oldValue = this.value;
 
-                // const dec = Math.pow(10, -this.dec);
+                // const dec = Math.pow(10, -this.decimals);
 
                 // const val =
                 //     touchpad
@@ -89062,7 +89074,7 @@ function initMenuSelectTextbox(select)
     
         select.textbox.style.textAlign = 'center';
     
-        select.textbox.value = numToString(select.value, select.dec);
+        select.textbox.value = numToString(select.value, select.decimals);
         select.textbox.savedValue = select.textbox.value;
         
         select.parentNode.appendChild(select.textbox);
@@ -92888,7 +92900,7 @@ extends NumberParamBase
                 options,
                 defaultValue = 0)
     {
-        super(NUMBER_VALUE, id, name);
+        super(NUMBER_VALUE, id, name, showName);
 
         this.controls[0] = new NumberControl(
             this,
@@ -92903,21 +92915,23 @@ extends NumberParamBase
 
         this.controls[0].div.zIndex = 0;
 
-        this.controls[0].div.style.display = 'inline-block';
-        this.controls[0].div.style.width   = '100%';
+        // this.controls[0].div.style.display = 'inline-block';
+        // this.controls[0].div.style.width   = '100%';
 
        
         this.defaultValue = new NumberValue(defaultValue);
 
 
+        this.controls[0].successOnFocusOut = true;
+
+        this.controls[0].div.zIndex = 0;
+        this.divControls.appendChild(this.controls[0].div);
+
+
         this.setOptions(options);
 
         this.controls[0].allowEditDecimals = false;
-
-        this.controls[0].successOnFocusOut = true;
         this.controls[0].barTop            = 0.8;
-
-        this.divControls.appendChild(this.controls[0].div);
 
 
         if (hasInput)  this.initInput([NUMBER_VALUE], getParamInputValuesForUndo, this.input_getBackInitValue);
@@ -93945,7 +93959,7 @@ extends Parameter
         { 
             this.setValue(new FillValue(
                 this.controls[0].value, 
-                new NumberValue(this.controls[1].value, this.controls[1].dec)), 
+                new NumberValue(this.controls[1].value, this.controls[1].decimals)), 
                 true, false);
 
             this.changing = true;
@@ -94008,7 +94022,7 @@ extends Parameter
         {
             this.setValue(new FillValue(
                 this.controls[0].value, 
-                new NumberValue(this.controls[1].value, this.controls[1].dec)), 
+                new NumberValue(this.controls[1].value, this.controls[1].decimals)), 
                 true, false);
 
             this.changing = true;
@@ -103395,6 +103409,7 @@ extends OperatorBase
         this.addParam(this.paramDelay = new NumberParam('delay', 'delay', true, true, true, 5, 0));
 
         this.paramDelay.controls[0].suffix = ' sec';
+        this.paramDelay.divider            = 0.45;
     }
 
 
@@ -107013,19 +107028,19 @@ extends OperatorBase //WithValue
         this.addOutput(new Output([NUMBER_VALUE], this.output_genRequest));
 
         //this.addParam(this.paramValue);
-        this.addParam(this.paramFrom   = new NumberParam('from',   'from',   true,  true, true, 0, Number.MIN_SAFE_INTEGER, Number.MAX_SAFE_INTEGER, 2));
-        this.addParam(this.paramTo     = new NumberParam('to',     'to',     true,  true, true, 1, Number.MIN_SAFE_INTEGER, Number.MAX_SAFE_INTEGER, 2));
+        this.addParam(this.paramFrom   = new NumberParam('from',   'from',   true,  true, true, 0, Number.MIN_SAFE_INTEGER, Number.MAX_SAFE_INTEGER, 0));
+        this.addParam(this.paramTo     = new NumberParam('to',     'to',     true,  true, true, 1, Number.MIN_SAFE_INTEGER, Number.MAX_SAFE_INTEGER, 0));
         this.addParam(this.paramRepeat = new SelectParam('repeat', 'repeat', false, true, true, ['once', 'repeat', 'ping-pong']));
-        this.addParam(this.paramCurve  = new SelectParam('curve',  'curve',  false, true, true, ['step', 'linear', 'ease in', 'ease out', 'smooth'], 1));
-        this.addParam(this.paramLength = new NumberParam('length', 'length', true,  true, true, 1, 0, Number.MAX_SAFE_INTEGER, 1));
-        this.addParam(this.paramTime   = new NumberParam('time',   'time',   true,  true, true, 0, 0));
+        this.addParam(this.paramCurve  = new SelectParam('curve',  'curve',  true,  true, true, ['step', 'linear', 'ease in', 'ease out', 'smooth'], 1));
+        this.addParam(this.paramLength = new NumberParam('length', 'length', true,  true, true, 5, 0, Number.MAX_SAFE_INTEGER, 0));
+        this.addParam(this.paramTime   = new NumberParam('time',   'time',   true,  true, true, 0, 0, Number.MAX_SAFE_INTEGER, 1));
 
 
         this.paramLength.controls[0].suffix = ' sec';
         this.paramTime  .controls[0].suffix = ' sec';
 
 
-        this.btnPlay = createDiv('btnAnimatePlay');
+        this.btnPlay      = createDiv('btnAnimatePlay');
         this.btnPlay.over = false;
         this.btnPlay.down = false;
 
@@ -107065,7 +107080,10 @@ extends OperatorBase //WithValue
                     const length = this.paramLength.value.value;
 
                     if (time >= length)
-                        this.paramTime.setValue(new NumberValue(0), false, true, false);
+                    {
+                        this.paramTime.setValue(new NumberValue(0), false, false, false);
+                        this.paramTimeStart = 0;
+                    }
                         
                     this.updatePlayback();
                 }
@@ -107077,7 +107095,13 @@ extends OperatorBase //WithValue
 
         this.label.insertBefore(this.btnPlay, this.labelText);
 
-        this.setAllParamDividers(0.44);
+
+        this.paramFrom  .divider = 0.48;
+        this.paramTo    .divider = 0.48;
+        this.paramRepeat.divider = 0.48;
+        this.paramCurve .divider = 0.48;
+        this.paramLength.divider = 0.48;
+        this.paramTime  .divider = 0.48;
 
 
         this.paramTime.controls[0].addEventListener('change', e =>
@@ -107133,15 +107157,15 @@ extends OperatorBase //WithValue
     updateParams()
     {
         //this.paramValue .enableControlText(false);
-        this.paramFrom  .enableControlText(true);
-        this.paramTo    .enableControlText(true);
-        this.paramCurve .enableControlText(true);
-        this.paramRepeat.enableControlText(true);
-        this.paramLength.enableControlText(true);
-        this.paramTime  .enableControlText(true);
+        this.paramFrom  .enableControlText(true, this.paramFrom  .isUnknown());
+        this.paramTo    .enableControlText(true, this.paramTo    .isUnknown());
+        this.paramCurve .enableControlText(true, this.paramCurve .isUnknown());
+        this.paramRepeat.enableControlText(true, this.paramRepeat.isUnknown());
+        this.paramLength.enableControlText(true, this.paramLength.isUnknown());
+        this.paramTime  .enableControlText(true, this.paramTime  .isUnknown());
 
         this.paramTime.controls[0].setMax(this.paramLength.value.value);
-        this.paramTime.controls[0].setDecimals(this.paramLength.controls[0].dec);
+        //this.paramTime.controls[0].setDecimals(this.paramLength.controls[0].decimals);
 
         this.updateParamControls();
     }
@@ -107161,14 +107185,8 @@ extends OperatorBase //WithValue
     {
         const colors = this.getHeaderColors();
 
-        const rgba       = rgb_a(rgbFromType(ANY_VALUE));
-        //const rgbaStripe = rgb_a(getStripeBackColor(rgba), rgba[3]);
-
         const headerStyle = rgba2style(
             rgb_a(
-                //rgbFromType(ANY_VALUE) //this.paramValue.value.isValid()
-                //? (isDark(rgbaStripe) ? [1, 1, 1] : [0, 0, 0])
-                //: 
                 colors.text, 
                 this.btnPlay.down 
                 ? 1 
@@ -110316,9 +110334,9 @@ extends OpColorBase
         });
 
 
-        this.param1.setValue(new NumberValue(roundTo(this._color[1] * rgbFactor[0], this.param1.controls[0].dec)), false, true, false);
-        this.param2.setValue(new NumberValue(roundTo(this._color[2] * rgbFactor[1], this.param2.controls[0].dec)), false, true, false);
-        this.param3.setValue(new NumberValue(roundTo(this._color[3] * rgbFactor[2], this.param3.controls[0].dec)), false, true, false);
+        this.param1.setValue(new NumberValue(roundTo(this._color[1] * rgbFactor[0], this.param1.controls[0].decimals)), false, true, false);
+        this.param2.setValue(new NumberValue(roundTo(this._color[2] * rgbFactor[1], this.param2.controls[0].decimals)), false, true, false);
+        this.param3.setValue(new NumberValue(roundTo(this._color[3] * rgbFactor[2], this.param3.controls[0].decimals)), false, true, false);
 
 
         this.paramSpace.controls[0].barTop = 0.8;
@@ -111143,6 +111161,8 @@ function switchToHs_Controls(node, v_or_l)
         'S',    0, hs_Scale[1], 
         v_or_l, 0, hs_Scale[2]);  
 
+    node.param1.controls[0].suffixOffsetY = -4;
+
     node.param2.controls[0].min = 
     node.param3.controls[0].min = Number.MIN_SAFE_INTEGER; // allow extrapolation
 
@@ -111160,6 +111180,8 @@ function switchToHclControls(node, scale)
         'H', 0, scale[0], '°', true,  
         'C', 0, scale[1], 
         'L', 0, scale[2]);  
+
+    node.param1.controls[0].suffixOffsetY = -4;
 
     node.param2.controls[0].min = 
     node.param3.controls[0].min = Number.MIN_SAFE_INTEGER; // allow extrapolation
@@ -111227,6 +111249,8 @@ function switchToControls(node, c1, c1min, c1max, c1suffix, c1wrap, c2, c2min, c
     node.param1.updateControls();
     node.param2.updateControls();
     node.param3.updateControls();
+
+    node.param1.controls[0].suffixOffsetY = 0;
 }
 
 
@@ -114478,6 +114502,7 @@ extends OpColorBase
         this.paramMiter .divider = 0.43;
 
         this.paramMiter.controls[0].setSuffix('°', true);
+        this.paramMiter.controls[0].suffixOffsetY = -4;
         this.paramMiter.canShow = () => this.paramJoin.value == 0;
 
         this.paramDashes.controls[0].textbox.defPlaceholder = 'solid';
@@ -115503,8 +115528,11 @@ extends OpShape
         this.paramTo   .controls[0].setSuffix('°', true);
         this.paramInner.controls[0].setSuffix('%', true);
 
-        this.paramFrom .controls[0].wrapValue   = true;
-        this.paramTo   .controls[0].wrapValue   = true;
+        this.paramFrom .controls[0].wrapValue     = true;
+        this.paramTo   .controls[0].wrapValue     = true;
+
+        this.paramFrom .controls[0].suffixOffsetY = -4;
+        this.paramTo   .controls[0].suffixOffsetY = -4;
 
 
         this.addBaseParams();
@@ -115760,18 +115788,18 @@ extends OpShape
         const interIndex = figUniqueFontNames.findIndex(f => f == 'Inter');
 
       
-        this.addParam(this.paramText          = new   TextParam('text',          '',       false, true, true));
-        this.addParam(this.paramX             = new NumberParam('x',             'X',      true,  true, true, 0));
-        this.addParam(this.paramY             = new NumberParam('y',             'Y',      true,  true, true, 0));
-        this.addParam(this.paramWidth         = new NumberParam('width',         'width',  true,  true, true, 0));
-        this.addParam(this.paramHeight        = new NumberParam('height',        'height', true,  true, true, 0));
-        this.addParam(this.paramFont          = new SelectParam('font',          'font',   false, true, true, figUniqueFontNames, interIndex));
-        this.addParam(this.paramSize          = new NumberParam('size',          'size',   true,  true, true,  12, 1));
-        this.addParam(this.paramStyle         = new SelectParam('style',         'style',  false, true, true, [''], 0));
-        this.addParam(this.paramAlignH        = new SelectParam('alignH',        'align',  true,  true, true, ['left', 'center', 'right', 'justify'], 0));
-        this.addParam(this.paramAlignV        = new SelectParam('alignV',        'align',  true,  true, true, ['bottom', 'middle', 'top'], 1));
-        this.addParam(this.paramLineHeight    = new NumberParam('lineHeight',    'line',   true,  true, true, 100));
-        this.addParam(this.paramLetterSpacing = new NumberParam('letterSpacing', 'letter', true,  true, true, 0));
+        this.addParam(this.paramText          = new   TextParam('text',          '',        false, true, true));
+        this.addParam(this.paramX             = new NumberParam('x',             'X',       true,  true, true, 0));
+        this.addParam(this.paramY             = new NumberParam('y',             'Y',       true,  true, true, 0));
+        this.addParam(this.paramWidth         = new NumberParam('width',         'width',   true,  true, true, 0));
+        this.addParam(this.paramHeight        = new NumberParam('height',        'height',  true,  true, true, 0));
+        this.addParam(this.paramFont          = new SelectParam('font',          'font',    true,  true, true, figUniqueFontNames, interIndex));
+        this.addParam(this.paramSize          = new NumberParam('size',          'size',    true,  true, true,  12, 1));
+        this.addParam(this.paramStyle         = new SelectParam('style',         'style',   true,  true, true, [''], 0));
+        this.addParam(this.paramAlignH        = new SelectParam('alignH',        'align H', true,  true, true, ['left', 'center', 'right', 'justify'], 0));
+        this.addParam(this.paramAlignV        = new SelectParam('alignV',        'align V', true,  true, true, ['bottom', 'middle', 'top'], 1));
+        this.addParam(this.paramLineHeight    = new NumberParam('lineHeight',    'line',    true,  true, true, 100));
+        this.addParam(this.paramLetterSpacing = new NumberParam('letterSpacing', 'letter',  true,  true, true, 0));
 
 
         this.paramText.controls[0].textbox.style.textAlign = 'center';
@@ -116680,11 +116708,11 @@ extends OperatorBase
         this.addOutput(new Output([SHAPE_VALUE], this.output_genRequest));
 
 
-        this.addParam(this.paramX           = new NumberParam('x',           'X',          true, true, true));
-        this.addParam(this.paramY           = new NumberParam('y',           'Y',          true, true, true));
-        this.addParam(this.paramMoveType    = new SelectParam('moveType',    'type',       true, true, true, ['position', 'vector'], 0));
-        this.addParam(this.paramAffectSpace = new NumberParam('affectSpace', 'move space', true, true, true, 1, 0, 1));
-        this.addParam(this.paramShowCenter  = new NumberParam('showCenter',  'show center', true, true, true, 0, 0, 1));
+        this.addParam(this.paramX           = new NumberParam('x',           'X',           true,  true, true));
+        this.addParam(this.paramY           = new NumberParam('y',           'Y',           true,  true, true));
+        this.addParam(this.paramMoveType    = new SelectParam('moveType',    'type',        false, true, true, ['position', 'vector'], 0));
+        this.addParam(this.paramAffectSpace = new NumberParam('affectSpace', 'move space',  true,  true, true, 1, 0, 1));
+        this.addParam(this.paramShowCenter  = new NumberParam('showCenter',  'show center', true,  true, true, 0, 0, 1));
 
 
         this.paramShowCenter .controls[0].allowEditDecimals = false;
@@ -116692,6 +116720,7 @@ extends OperatorBase
         
         this.paramShowCenter .divider = 0.68;
         this.paramAffectSpace.divider = 0.68;
+        this.paramMoveType   .divider = 0.4;
 
 
         this.menuBoolShowCenter  = createBoolMenu(this.paramShowCenter );
@@ -116756,8 +116785,9 @@ extends OperatorBase
         this.paramY.setName(vector ? 'angle' : 'Y');
         this.paramY.divider = vector ? 0.55 : 0.45;
 
-        this.paramY.controls[0].suffix    = vector ? '°' : '';
-        this.paramY.controls[0].wrapValue = vector;
+        this.paramY.controls[0].suffix        = vector ? '°' : '';
+        this.paramY.controls[0].suffixOffsetY = vector ? -4  : 0;
+        this.paramY.controls[0].wrapValue     = vector;
 
         this.paramY.controls[0].setMin(vector ?   0 : Number.MIN_SAFE_INTEGER);
         this.paramY.controls[0].setMax(vector ? 360 : Number.MAX_SAFE_INTEGER);
@@ -116847,9 +116877,10 @@ extends OpAffine
 
         this.addParam(this.paramAngle = new NumberParam('angle', 'angle', true, true, true, 0));
 
-        this.paramAngle.controls[0].suffix      = '°';
-        this.paramAngle.controls[0].dragReverse = true;
-        this.paramAngle.divider                 = 0.55;
+        this.paramAngle.controls[0].suffix        = '°';
+        this.paramAngle.controls[0].suffixOffsetY = -4;
+        this.paramAngle.controls[0].dragReverse   = true;
+        this.paramAngle.divider                   = 0.55;
 
 
         this.addBaseParams('rotate');
@@ -117386,6 +117417,7 @@ extends OpShapeBase
 
 
         this.paramAngle.controls[0].setSuffix('°', true);
+        this.paramAngle.controls[0].suffixOffsetY = -4;
 
         this.paramDistance.controls[0].setDecimals(10, 0);
         this.paramAngle   .controls[0].setDecimals(10, 0);

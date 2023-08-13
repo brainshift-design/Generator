@@ -27,6 +27,7 @@ extends OperatorBase
         this.addParam(this.paramDelay = new NumberParam('delay', 'delay', true, true, true, 5, 0));
 
         this.paramDelay.controls[0].suffix = ' sec';
+        this.paramDelay.divider            = 0.45;
     }
 
 

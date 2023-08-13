@@ -346,7 +346,7 @@ ColorControl.prototype.initEvents = function()
 
                 // this.oldValue = this.value;
 
-                // const dec = Math.pow(10, -this.dec);
+                // const dec = Math.pow(10, -this.decimals);
 
                 // const val =
                 //     touchpad

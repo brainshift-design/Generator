@@ -36,8 +36,11 @@ extends OpShape
         this.paramTo   .controls[0].setSuffix('°', true);
         this.paramInner.controls[0].setSuffix('%', true);
 
-        this.paramFrom .controls[0].wrapValue   = true;
-        this.paramTo   .controls[0].wrapValue   = true;
+        this.paramFrom .controls[0].wrapValue     = true;
+        this.paramTo   .controls[0].wrapValue     = true;
+
+        this.paramFrom .controls[0].suffixOffsetY = -4;
+        this.paramTo   .controls[0].suffixOffsetY = -4;
 
 
         this.addBaseParams();

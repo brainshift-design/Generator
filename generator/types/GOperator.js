@@ -88,7 +88,9 @@ extends GNode
             else     this.updateValues = [...values];
         }
         else if (!add)
+        {
             this.updateValues = [];
+        }
     }
 
 

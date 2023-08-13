@@ -299,7 +299,7 @@ NumberControl.prototype.initTextbox = function()
         //         e.preventDefault();
 
         //     if (    e.key == '.'
-        //         &&  this.dec == 0
+        //         &&  this.decimals == 0
         //         && !this.allowEditDecimals)
         //         e.preventDefault();
                 

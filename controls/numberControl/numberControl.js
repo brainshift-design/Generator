@@ -27,7 +27,7 @@ extends Control
 
     acc;
      
-    dec;
+    decimals;
     displayDec;
     
     
@@ -39,6 +39,7 @@ extends Control
                
     suffix;
     valueCanContainSuffix = false;
+    suffixOffsetY         = 0;
      
     dragReverse           = false;
     dragScale;
@@ -127,7 +128,7 @@ extends Control
     
         this.acc                   = acc;
          
-        this.dec                   =
+        this.decimals                   =
         this.displayDec            = dec;
              
         this.valueScale            = 1;
@@ -286,7 +287,7 @@ extends Control
 
     setDecimals(dec, dspDec = dec)
     {
-        this.dec        = dec;
+        this.decimals        = dec;
         this.displayDec = dspDec;
     }
 
@@ -424,7 +425,7 @@ extends Control
                   valueText 
                 + (valueText == UNKNOWN_DISPLAY
                    ? ''
-                   : this.suffix);
+                   : '<span style="font-size: 8px; opacity: 50%; font-weight: 200; position: relative; top: ' + this.suffixOffsetY + 'px;">&nbsp;' + this.suffix + '</span>');
         }
 
 

@@ -160,6 +160,8 @@ function switchToHs_Controls(node, v_or_l)
         'S',    0, hs_Scale[1], 
         v_or_l, 0, hs_Scale[2]);  
 
+    node.param1.controls[0].suffixOffsetY = -4;
+
     node.param2.controls[0].min = 
     node.param3.controls[0].min = Number.MIN_SAFE_INTEGER; // allow extrapolation
 
@@ -177,6 +179,8 @@ function switchToHclControls(node, scale)
         'H', 0, scale[0], '°', true,  
         'C', 0, scale[1], 
         'L', 0, scale[2]);  
+
+    node.param1.controls[0].suffixOffsetY = -4;
 
     node.param2.controls[0].min = 
     node.param3.controls[0].min = Number.MIN_SAFE_INTEGER; // allow extrapolation
@@ -244,6 +248,8 @@ function switchToControls(node, c1, c1min, c1max, c1suffix, c1wrap, c2, c2min, c
     node.param1.updateControls();
     node.param2.updateControls();
     node.param3.updateControls();
+
+    node.param1.controls[0].suffixOffsetY = 0;
 }
 
 

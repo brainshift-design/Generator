@@ -53,6 +53,7 @@ extends OpColorBase
         this.paramMiter .divider = 0.43;
 
         this.paramMiter.controls[0].setSuffix('°', true);
+        this.paramMiter.controls[0].suffixOffsetY = -4;
         this.paramMiter.canShow = () => this.paramJoin.value == 0;
 
         this.paramDashes.controls[0].textbox.defPlaceholder = 'solid';

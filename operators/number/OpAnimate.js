@@ -30,19 +30,19 @@ extends OperatorBase //WithValue
         this.addOutput(new Output([NUMBER_VALUE], this.output_genRequest));
 
         //this.addParam(this.paramValue);
-        this.addParam(this.paramFrom   = new NumberParam('from',   'from',   true,  true, true, 0, Number.MIN_SAFE_INTEGER, Number.MAX_SAFE_INTEGER, 2));
-        this.addParam(this.paramTo     = new NumberParam('to',     'to',     true,  true, true, 1, Number.MIN_SAFE_INTEGER, Number.MAX_SAFE_INTEGER, 2));
+        this.addParam(this.paramFrom   = new NumberParam('from',   'from',   true,  true, true, 0, Number.MIN_SAFE_INTEGER, Number.MAX_SAFE_INTEGER, 0));
+        this.addParam(this.paramTo     = new NumberParam('to',     'to',     true,  true, true, 1, Number.MIN_SAFE_INTEGER, Number.MAX_SAFE_INTEGER, 0));
         this.addParam(this.paramRepeat = new SelectParam('repeat', 'repeat', false, true, true, ['once', 'repeat', 'ping-pong']));
-        this.addParam(this.paramCurve  = new SelectParam('curve',  'curve',  false, true, true, ['step', 'linear', 'ease in', 'ease out', 'smooth'], 1));
-        this.addParam(this.paramLength = new NumberParam('length', 'length', true,  true, true, 1, 0, Number.MAX_SAFE_INTEGER, 1));
-        this.addParam(this.paramTime   = new NumberParam('time',   'time',   true,  true, true, 0, 0));
+        this.addParam(this.paramCurve  = new SelectParam('curve',  'curve',  true,  true, true, ['step', 'linear', 'ease in', 'ease out', 'smooth'], 1));
+        this.addParam(this.paramLength = new NumberParam('length', 'length', true,  true, true, 5, 0, Number.MAX_SAFE_INTEGER, 0));
+        this.addParam(this.paramTime   = new NumberParam('time',   'time',   true,  true, true, 0, 0, Number.MAX_SAFE_INTEGER, 1));
 
 
         this.paramLength.controls[0].suffix = ' sec';
         this.paramTime  .controls[0].suffix = ' sec';
 
 
-        this.btnPlay = createDiv('btnAnimatePlay');
+        this.btnPlay      = createDiv('btnAnimatePlay');
         this.btnPlay.over = false;
         this.btnPlay.down = false;
 
@@ -82,7 +82,10 @@ extends OperatorBase //WithValue
                     const length = this.paramLength.value.value;
 
                     if (time >= length)
-                        this.paramTime.setValue(new NumberValue(0), false, true, false);
+                    {
+                        this.paramTime.setValue(new NumberValue(0), false, false, false);
+                        this.paramTimeStart = 0;
+                    }
                         
                     this.updatePlayback();
                 }
@@ -94,7 +97,13 @@ extends OperatorBase //WithValue
 
         this.label.insertBefore(this.btnPlay, this.labelText);
 
-        this.setAllParamDividers(0.44);
+
+        this.paramFrom  .divider = 0.48;
+        this.paramTo    .divider = 0.48;
+        this.paramRepeat.divider = 0.48;
+        this.paramCurve .divider = 0.48;
+        this.paramLength.divider = 0.48;
+        this.paramTime  .divider = 0.48;
 
 
         this.paramTime.controls[0].addEventListener('change', e =>
@@ -150,15 +159,15 @@ extends OperatorBase //WithValue
     updateParams()
     {
         //this.paramValue .enableControlText(false);
-        this.paramFrom  .enableControlText(true);
-        this.paramTo    .enableControlText(true);
-        this.paramCurve .enableControlText(true);
-        this.paramRepeat.enableControlText(true);
-        this.paramLength.enableControlText(true);
-        this.paramTime  .enableControlText(true);
+        this.paramFrom  .enableControlText(true, this.paramFrom  .isUnknown());
+        this.paramTo    .enableControlText(true, this.paramTo    .isUnknown());
+        this.paramCurve .enableControlText(true, this.paramCurve .isUnknown());
+        this.paramRepeat.enableControlText(true, this.paramRepeat.isUnknown());
+        this.paramLength.enableControlText(true, this.paramLength.isUnknown());
+        this.paramTime  .enableControlText(true, this.paramTime  .isUnknown());
 
         this.paramTime.controls[0].setMax(this.paramLength.value.value);
-        this.paramTime.controls[0].setDecimals(this.paramLength.controls[0].dec);
+        //this.paramTime.controls[0].setDecimals(this.paramLength.controls[0].decimals);
 
         this.updateParamControls();
     }
@@ -178,14 +187,8 @@ extends OperatorBase //WithValue
     {
         const colors = this.getHeaderColors();
 
-        const rgba       = rgb_a(rgbFromType(ANY_VALUE));
-        //const rgbaStripe = rgb_a(getStripeBackColor(rgba), rgba[3]);
-
         const headerStyle = rgba2style(
             rgb_a(
-                //rgbFromType(ANY_VALUE) //this.paramValue.value.isValid()
-                //? (isDark(rgbaStripe) ? [1, 1, 1] : [0, 0, 0])
-                //: 
                 colors.text, 
                 this.btnPlay.down 
                 ? 1 

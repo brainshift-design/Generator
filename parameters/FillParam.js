@@ -101,7 +101,7 @@ extends Parameter
         { 
             this.setValue(new FillValue(
                 this.controls[0].value, 
-                new NumberValue(this.controls[1].value, this.controls[1].dec)), 
+                new NumberValue(this.controls[1].value, this.controls[1].decimals)), 
                 true, false);
 
             this.changing = true;
@@ -164,7 +164,7 @@ extends Parameter
         {
             this.setValue(new FillValue(
                 this.controls[0].value, 
-                new NumberValue(this.controls[1].value, this.controls[1].dec)), 
+                new NumberValue(this.controls[1].value, this.controls[1].decimals)), 
                 true, false);
 
             this.changing = true;

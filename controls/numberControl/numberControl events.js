@@ -259,7 +259,7 @@ NumberControl.prototype.initEvents = function()
                 {
                     const dx       = this.movedX * (this.dragReverse ? -1 : 1);
                     const adaptive = 10 * Math.pow(Math.abs(dx), this.acc);
-                    const grain    = Math.pow(10, -this.dec);
+                    const grain    = Math.pow(10, -this.decimals);
                     const drag     = grain * sqr(this.dragScale);
 
                     const val      = this.startValue + dx * drag * adaptive;
@@ -569,7 +569,7 @@ NumberControl.prototype.initEvents = function()
 
                 this.oldValue = this.value;
 
-                const dec = Math.pow(10, -this.dec);
+                const dec = Math.pow(10, -this.decimals);
 
                 const val =
                     touchpad

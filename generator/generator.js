@@ -60,6 +60,7 @@ function genRequest(request, save)
     const    paramNodes = parse.paramNodeIds.map(id => parse.parsedNodes.find(n => n.nodeId == id));
     const topLevelNodes = parse.parsedNodes.filter(n => n.topLevel);
 
+
     (async () =>
     {
         for (const node of paramNodes) 
@@ -87,7 +88,7 @@ function genRequest(request, save)
         
         for (const node of topLevelNodes) 
             node.pushValueUpdates(parse);
-
+        
         
         for (const node of parse.parsedNodes)
         {
@@ -147,14 +148,14 @@ function genRequest(request, save)
             parse.updateObjects,
             parse.updateStyles,
             save);
+
+
+        genPostMessageToUi(
+            {
+                cmd:      'endRequest',
+                requestId: requestId
+            });
     })();
-
-
-    genPostMessageToUi(
-    {
-        cmd:      'endRequest',
-        requestId: requestId
-    });
 }
 
 
@@ -164,10 +165,9 @@ function genPushUpdateValue(parse, nodeId, paramId, value)
     if (!value)
         return;
     
-
-    if (  !parse.save
-        && value.hasInitValue())
-        return;
+    // if (  !parse.save
+    //     && value.hasInitValue())
+    //     return;
 
     
     removeFromArrayWhere(parse.updateValues, v =>
