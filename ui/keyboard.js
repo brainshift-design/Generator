@@ -28,6 +28,16 @@ document.addEventListener('keydown', e =>
         uiRestartGenerator(true);
     }
 
+    // hand tool
+    if (    e.code == 'KeyH'
+        && !getCtrlKey(e)
+        && !e.altKey
+        && !e.shiftKey)
+    {
+        e.preventDefault();
+        updatePanMode(!panMode);
+    }
+
     // save to file
     else if (   e.code == 'KeyS'
         &&  getCtrlKey(e)

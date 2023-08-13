@@ -848,7 +848,7 @@ function initGeneratorMenus()
     //     updatePanMode(false);
     // }});
     
-    btnHand = new MenuButton('Hand tool', null, {callback: () => 
+    btnHand = new MenuButton('Hand tool&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<span style="color: #888; font-weight: 500;">H</span>', null, {callback: () => 
     { 
         updatePanMode(!panMode);
     }});
@@ -1087,6 +1087,8 @@ function updatePanMode(enabled)
     panMode = enabled;  
     currentMenuButton = panMode ? btnHand : null;
     btnHand.update();
+
+    setCursor(panMode ? panCursor : 'default');
 }
 
 

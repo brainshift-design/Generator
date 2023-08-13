@@ -258,8 +258,8 @@ extends OpColorBase
         }
         else
         {
-            colors.back       = rgb_a(colors.back,       opacity);
-            colors.stripeBack = rgb_a(colors.stripeBack, opacity);
+            colors.back       = !rgbIsNaN(colors.back      ) && !isNaN(opacity) ? rgb_a(colors.back,       opacity) : rgbDocumentBody;
+            colors.stripeBack = !rgbIsNaN(colors.stripeBack) && !isNaN(opacity) ? rgb_a(colors.stripeBack, opacity) : rgbDocumentBody;
             colors.text       = getTextColorFromBackColor(colors.stripeBack, colors.back[3]);
             colors.wire       = 
                 !rgbaIsNaN(colors.stripeBack)
@@ -284,6 +284,38 @@ extends OpColorBase
         this.paramBlend  .enableControlText(enable, this.paramBlend  .isUnknown());
 
         this.updateParamControls();
+    }
+
+
+
+    updateWarningOverlay() 
+    {
+        //console.log(this.id + '.updateWarningOverlay()');
+
+        const colors = this.getHeaderColors();
+        
+
+        if (   !rgbaIsNaN(colors.back)
+            && !rgbaIsNaN(colors.stripeBack)
+            && this.paramOpacity.value.isValid())
+        {
+            console.log('1');
+            if (  !rgbIsValid(colors.back)
+                || this.forceShowWarning)
+            {
+                if (!this.forceShowWarning)
+                    this.warningStyle = getDefaultWarningStyle(colors.back);
+
+                this.updateWarningOverlayStyle(colors.back);
+            }
+            else
+                this._warningOverlay.style.display = 'none';
+        }
+        else
+        {
+            this.warningStyle = getDefaultWarningStyle(colors.back);
+            this.updateWarningOverlayStyle(colors.back);
+        }
     }
 }
 

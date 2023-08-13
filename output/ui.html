@@ -46116,10 +46116,10 @@ function getStripeBackColor(rgbBack)
 
 
 
-function getDefaultWarningStyle(rgb)
+function getDefaultWarningStyle(rgba)
 {
-    return !rgbIsNaN(rgb)
-         ? (isDark(rgb)  ? '#ffffff29' : '#00000022')
+    return !rgbaIsNaN(rgba)
+         ? (isDark(rgba)  ? '#ffffff29' : '#00000022')
          : (darkMode ? '#ffffff08' : '#00000006'); 
 }
 
@@ -53302,10 +53302,10 @@ function getStripeBackColor(rgbBack)
 
 
 
-function getDefaultWarningStyle(rgb)
+function getDefaultWarningStyle(rgba)
 {
-    return !rgbIsNaN(rgb)
-         ? (isDark(rgb)  ? '#ffffff29' : '#00000022')
+    return !rgbaIsNaN(rgba)
+         ? (isDark(rgba)  ? '#ffffff29' : '#00000022')
          : (darkMode ? '#ffffff08' : '#00000006'); 
 }
 
@@ -88509,7 +88509,7 @@ function initGeneratorMenus()
     //     updatePanMode(false);
     // }});
     
-    btnHand = new MenuButton('Hand tool', null, {callback: () => 
+    btnHand = new MenuButton('Hand tool&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<span style="color: #888; font-weight: 500;">H</span>', null, {callback: () => 
     { 
         updatePanMode(!panMode);
     }});
@@ -88748,6 +88748,8 @@ function updatePanMode(enabled)
     panMode = enabled;  
     currentMenuButton = panMode ? btnHand : null;
     btnHand.update();
+
+    setCursor(panMode ? panCursor : 'default');
 }
 
 
@@ -93734,7 +93736,9 @@ extends Parameter
 
         this.div.style.background = 
             showColorBack
-            ? rgb2style(rgbBack)
+            ? (!rgbIsNaN(rgbBack)
+               ? rgb2style(rgbBack)
+               : rgb2style(rgbDocumentBody))
             : darkMode
               ? this.backStyleDark
               : this.backStyleLight;
@@ -113923,8 +113927,8 @@ extends OpColorBase
         }
         else
         {
-            colors.back       = rgb_a(colors.back,       opacity);
-            colors.stripeBack = rgb_a(colors.stripeBack, opacity);
+            colors.back       = !rgbIsNaN(colors.back      ) && !isNaN(opacity) ? rgb_a(colors.back,       opacity) : rgbDocumentBody;
+            colors.stripeBack = !rgbIsNaN(colors.stripeBack) && !isNaN(opacity) ? rgb_a(colors.stripeBack, opacity) : rgbDocumentBody;
             colors.text       = getTextColorFromBackColor(colors.stripeBack, colors.back[3]);
             colors.wire       = 
                 !rgbaIsNaN(colors.stripeBack)
@@ -113949,6 +113953,38 @@ extends OpColorBase
         this.paramBlend  .enableControlText(enable, this.paramBlend  .isUnknown());
 
         this.updateParamControls();
+    }
+
+
+
+    updateWarningOverlay() 
+    {
+        //console.log(this.id + '.updateWarningOverlay()');
+
+        const colors = this.getHeaderColors();
+        
+
+        if (   !rgbaIsNaN(colors.back)
+            && !rgbaIsNaN(colors.stripeBack)
+            && this.paramOpacity.value.isValid())
+        {
+            console.log('1');
+            if (  !rgbIsValid(colors.back)
+                || this.forceShowWarning)
+            {
+                if (!this.forceShowWarning)
+                    this.warningStyle = getDefaultWarningStyle(colors.back);
+
+                this.updateWarningOverlayStyle(colors.back);
+            }
+            else
+                this._warningOverlay.style.display = 'none';
+        }
+        else
+        {
+            this.warningStyle = getDefaultWarningStyle(colors.back);
+            this.updateWarningOverlayStyle(colors.back);
+        }
     }
 }
 
@@ -124754,6 +124790,16 @@ document.addEventListener('keydown', e =>
     {
         e.preventDefault();
         uiRestartGenerator(true);
+    }
+
+    // hand tool
+    if (    e.code == 'KeyH'
+        && !getCtrlKey(e)
+        && !e.altKey
+        && !e.shiftKey)
+    {
+        e.preventDefault();
+        updatePanMode(!panMode);
     }
 
     // save to file

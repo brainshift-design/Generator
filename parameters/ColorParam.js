@@ -362,7 +362,9 @@ extends Parameter
 
         this.div.style.background = 
             showColorBack
-            ? rgb2style(rgbBack)
+            ? (!rgbIsNaN(rgbBack)
+               ? rgb2style(rgbBack)
+               : rgb2style(rgbDocumentBody))
             : darkMode
               ? this.backStyleDark
               : this.backStyleLight;

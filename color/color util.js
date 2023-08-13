@@ -478,10 +478,10 @@ function getStripeBackColor(rgbBack)
 
 
 
-function getDefaultWarningStyle(rgb)
+function getDefaultWarningStyle(rgba)
 {
-    return !rgbIsNaN(rgb)
-         ? (isDark(rgb)  ? '#ffffff29' : '#00000022')
+    return !rgbaIsNaN(rgba)
+         ? (isDark(rgba)  ? '#ffffff29' : '#00000022')
          : (darkMode ? '#ffffff08' : '#00000006'); 
 }
 
