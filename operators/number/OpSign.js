@@ -7,7 +7,6 @@ extends OperatorWithValue
 
         this.canDisable  = true;
         this.iconOffsetY = 1;
-        
 
         this.addInput (new Input (NUMBER_TYPES));
         this.addOutput(new Output([NUMBER_VALUE], this.output_genRequest));

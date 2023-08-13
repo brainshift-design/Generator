@@ -39,7 +39,13 @@ Operator.prototype.updateNode = function()
     this.updateSubscribe();
 
 
-    if (  !isEmpty(this.params.filter(p => p.isVisible()))
+    const visibleParams = this.params.filter(p => 
+           p.isVisible()
+        && (  !p.isResult
+            || settings.showOperationResults));
+
+    
+    if (  !isEmpty(visibleParams)
         || this.sharpBottomCorners)
     {
         this.div   .style.borderBottomLeftRadius  = '0px';        

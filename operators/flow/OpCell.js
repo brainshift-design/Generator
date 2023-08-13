@@ -25,11 +25,11 @@ extends OperatorBase
         this.addParam(this.paramColumn = new NumberParam('column', 'column', true, true, false, 0, 0));
         this.addParam(this.paramRow    = new NumberParam('row',    'row',    true, true, false, 0, 0));
 
-        this.paramColumn.divider                       = 0.6;
         this.paramColumn.controls[0].allowEditDecimals = false;
-
-        this.paramRow.divider                       = 0.6;
-        this.paramRow.controls[0].allowEditDecimals = false;
+        this.paramRow   .controls[0].allowEditDecimals = false;
+        
+        this.paramColumn.divider                       = 0.55;
+        this.paramRow   .divider                       = 0.55;
 
 
         this.columns = new NumberValue(0);

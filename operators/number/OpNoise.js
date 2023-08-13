@@ -22,13 +22,13 @@ extends OperatorBase
         
         this.addOutput(new Output([NUMBER_VALUE], this.output_genRequest));
 
-        this.addParam(this.paramSeed        = new NumberParam('seed',        'seed',         true,  true, true, Math.floor(Math.random() * 10000), 0, 0x7fffffff));
-        this.addParam(this.paramMin         = new NumberParam('min',         'min',          true,  true, true,   0));
-        this.addParam(this.paramMax         = new NumberParam('max',         'max',          true,  true, true, 255));
-        this.addParam(this.paramScale       = new NumberParam('scale',       'scale',        true,  true, true, 1, 1));
-        this.addParam(this.paramOffset      = new NumberParam('offset',      'offset',       true,  true, true, 0, 0));
-        this.addParam(this.paramInterpolate = new SelectParam('interpolate', 'interpolate',  false, true, true, ['step', 'linear', 'cosine'], 2));
-        this.addParam(this.paramDetail      = new NumberParam('detail',      'detail',       true,  true, true, 1, 1));
+        this.addParam(this.paramSeed        = new NumberParam('seed',        'seed',    true,  true, true, Math.floor(Math.random() * 10000), 0, 0x7fffffff));
+        this.addParam(this.paramMin         = new NumberParam('min',         'min',     true,  true, true,   0));
+        this.addParam(this.paramMax         = new NumberParam('max',         'max',     true,  true, true, 255));
+        this.addParam(this.paramScale       = new NumberParam('scale',       'scale',   true,  true, true, 1, 1));
+        this.addParam(this.paramOffset      = new NumberParam('offset',      'offset',  true,  true, true, 0, 0));
+        this.addParam(this.paramInterpolate = new SelectParam('interpolate', 'blend',   true,  true, true, ['step', 'linear', 'cosine'], 2));
+        this.addParam(this.paramDetail      = new NumberParam('detail',      'detail',  true,  true, true, 1, 1));
 
         this.paramSeed.controls[0].allowEditDecimals = false;
         this.paramSeed.isDefault = () => false;
@@ -36,6 +36,8 @@ extends OperatorBase
         this.paramScale .controls[0].setDecimals(1);
         this.paramOffset.controls[0].setDecimals(1);
         this.paramDetail.controls[0].allowEditDecimals = false;
+
+        this.setAllParamDividers(0.45);
     }
 
 
