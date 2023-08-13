@@ -37712,23 +37712,11 @@ function genUpdateValuesAndObjects(requestId, actionId, updateNodeId, updatePara
     const counts  = nodeIds.map(id => updateValues.filter(v => v.nodeId == id).length);
 
 
-    // genPostMessageToUi(
-    // {
-    //     cmd: 'uiForwardToFigma',
-    //     msg:  
-    //     {
-    //         cmd:          'figDeleteObjectsExcept',
-    //         nodeIds:       nodeIds,
-    //         ignoreObjects: updateObjects
-    //     }
-    // });
-
-
     // send updates in chunks
 
-    const approxNodeChunkSize = 20;
-    const objChunkSize        = 200;
-    const styleChunkSize      = 20;
+    const approxNodeChunkSize = 1000000;//20;
+    const objChunkSize        = 1000000;//200;
+    const styleChunkSize      = 1000000;//20;
 
     
     let n  = 0; // node
