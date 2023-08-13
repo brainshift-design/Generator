@@ -216,6 +216,10 @@ function uiGetValue(key)
             });
 
             stopRequestId = null;
+
+            if (graphView.loadingNodes)
+                restartLoadingTimer();
+            
             break;
         }
     }

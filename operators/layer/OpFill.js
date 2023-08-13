@@ -299,7 +299,6 @@ extends OpColorBase
             && !rgbaIsNaN(colors.stripeBack)
             && this.paramOpacity.value.isValid())
         {
-            console.log('1');
             if (  !rgbIsValid(colors.back)
                 || this.forceShowWarning)
             {
