@@ -50,12 +50,13 @@ extends OpColorBase
         this.addParam(this.paramBlend  = new SelectParam('blend',  'blend',  false, true, true, BlendModes.map(bm => bm[1]), 0));
 
 
-        this.paramX     .controls[0].suffix = '%';
-        this.paramY     .controls[0].suffix = '%';
-        this.paramSize  .controls[0].suffix = '%';
-        this.paramAngle .controls[0].suffix = '°';
-        this.paramAspect.controls[0].suffix = '%';
-        this.paramSkew  .controls[0].suffix = '%';
+        this.paramX     .controls[0].suffix        = '%';
+        this.paramY     .controls[0].suffix        = '%';
+        this.paramSize  .controls[0].suffix        = '%';
+        this.paramAngle .controls[0].suffix        = '°';
+        this.paramAngle .controls[0].suffixOffsetY = -4;
+        this.paramAspect.controls[0].suffix        = '%';
+        this.paramSkew  .controls[0].suffix        = '%';
     }
     
     

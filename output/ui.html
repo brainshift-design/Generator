@@ -108864,7 +108864,7 @@ extends OperatorWithValue
         this.addOutput(new Output([TEXT_VALUE], this.output_genRequest));
 
         this.addParam(this.paramValue);
-        this.addParam(this.paramCase = new SelectParam('case', 'case', false, true, true, ['lower', 'Capital first', 'Capital All', 'UPPER'], 1));
+        this.addParam(this.paramCase = new SelectParam('case', 'case', false, true, true, ['lower', 'First capital', 'All Capitals', 'UPPER'], 1));
 
         setControlFont(this.paramValue.controls[0].textbox, 'Roboto Mono', 10, 'center');
     }
@@ -114410,12 +114410,13 @@ extends OpColorBase
         this.addParam(this.paramBlend  = new SelectParam('blend',  'blend',  false, true, true, BlendModes.map(bm => bm[1]), 0));
 
 
-        this.paramX     .controls[0].suffix = '%';
-        this.paramY     .controls[0].suffix = '%';
-        this.paramSize  .controls[0].suffix = '%';
-        this.paramAngle .controls[0].suffix = '°';
-        this.paramAspect.controls[0].suffix = '%';
-        this.paramSkew  .controls[0].suffix = '%';
+        this.paramX     .controls[0].suffix        = '%';
+        this.paramY     .controls[0].suffix        = '%';
+        this.paramSize  .controls[0].suffix        = '%';
+        this.paramAngle .controls[0].suffix        = '°';
+        this.paramAngle .controls[0].suffixOffsetY = -4;
+        this.paramAspect.controls[0].suffix        = '%';
+        this.paramSkew  .controls[0].suffix        = '%';
     }
     
     
@@ -114549,7 +114550,7 @@ extends OpColorBase
         this.paramMiter.controls[0].suffixOffsetY = -4;
         this.paramMiter.canShow = () => this.paramJoin.value == 0;
 
-        this.paramDashes.controls[0].textbox.defPlaceholder = 'solid';
+        this.paramDashes.controls[0].textbox.defPlaceholder = 'no dashes';
     }
     
     
@@ -114813,12 +114814,14 @@ extends OperatorBase
         this.addParam(this.paramBlur   = new NumberParam('blur',   'blur',        true,  true, true, 4, 0));
         this.addParam(this.paramSpread = new NumberParam('spread', 'spread',      true,  true, true, 0));
         this.addParam(this.paramFill   = new FillParam  ('fill',   'fill',        false, true, true, new FillValue(ColorValue.fromRgb([0, 0, 0]), new NumberValue(25))));
-        this.addParam(this.paramBlend  = new SelectParam('blend',  'blend',       false, true, true, BlendModes.map(bm => bm[1]), 0));
+        this.addParam(this.paramBlend  = new SelectParam('blend',  'blend',       false,  true, true, BlendModes.map(bm => bm[1]), 0));
         this.addParam(this.paramBehind = new NumberParam('behind', 'show behind', true,  true, true, 0, 0, 1));
 
 
         this.setAllParamDividers(0.55);
+
         this.paramBehind.divider = 0.71;
+        //this.paramBlend .divider = 0.42;
     }
     
     
@@ -115832,18 +115835,18 @@ extends OpShape
         const interIndex = figUniqueFontNames.findIndex(f => f == 'Inter');
 
       
-        this.addParam(this.paramText          = new   TextParam('text',          '',        false, true, true));
-        this.addParam(this.paramX             = new NumberParam('x',             'X',       true,  true, true, 0));
-        this.addParam(this.paramY             = new NumberParam('y',             'Y',       true,  true, true, 0));
-        this.addParam(this.paramWidth         = new NumberParam('width',         'width',   true,  true, true, 0));
-        this.addParam(this.paramHeight        = new NumberParam('height',        'height',  true,  true, true, 0));
-        this.addParam(this.paramFont          = new SelectParam('font',          'font',    true,  true, true, figUniqueFontNames, interIndex));
-        this.addParam(this.paramSize          = new NumberParam('size',          'size',    true,  true, true,  12, 1));
-        this.addParam(this.paramStyle         = new SelectParam('style',         'style',   true,  true, true, [''], 0));
-        this.addParam(this.paramAlignH        = new SelectParam('alignH',        'align H', true,  true, true, ['left', 'center', 'right', 'justify'], 0));
-        this.addParam(this.paramAlignV        = new SelectParam('alignV',        'align V', true,  true, true, ['bottom', 'middle', 'top'], 1));
-        this.addParam(this.paramLineHeight    = new NumberParam('lineHeight',    'line',    true,  true, true, 100));
-        this.addParam(this.paramLetterSpacing = new NumberParam('letterSpacing', 'letter',  true,  true, true, 0));
+        this.addParam(this.paramText          = new   TextParam('text',          '',         false, true, true));
+        this.addParam(this.paramX             = new NumberParam('x',             'X',        true,  true, true, 0));
+        this.addParam(this.paramY             = new NumberParam('y',             'Y',        true,  true, true, 0));
+        this.addParam(this.paramWidth         = new NumberParam('width',         'width',    true,  true, true, 0));
+        this.addParam(this.paramHeight        = new NumberParam('height',        'height',   true,  true, true, 0));
+        this.addParam(this.paramFont          = new SelectParam('font',          'font',     true,  true, true, figUniqueFontNames, interIndex));
+        this.addParam(this.paramSize          = new NumberParam('size',          'size',     true,  true, true,  12, 1));
+        this.addParam(this.paramStyle         = new SelectParam('style',         'style',    false, true, true, [''], 0));
+        this.addParam(this.paramAlignH        = new SelectParam('alignH',        'align H',  true,  true, true, ['left', 'center', 'right', 'justify'], 0));
+        this.addParam(this.paramAlignV        = new SelectParam('alignV',        'align V',  true,  true, true, ['bottom', 'middle', 'top'], 1));
+        this.addParam(this.paramLineHeight    = new NumberParam('lineHeight',    'line ↕',   true,  true, true, 100));
+        this.addParam(this.paramLetterSpacing = new NumberParam('letterSpacing', 'letter ↔', true,  true, true, 0));
 
 
         this.paramText.controls[0].textbox.style.textAlign = 'center';
@@ -116123,7 +116126,7 @@ extends OpShape
         this.addParam(this.paramPoints  = new ListParam  ('points',  'points',  false, true, true));
         this.addParam(this.paramClosed  = new SelectParam('closed',  'closed',  false, true, true, ['open', 'closed'], 0));
         this.addParam(this.paramDegree  = new SelectParam('degree',  'degree',  false, true, true, ['linear', 'quadratic', 'cubic', 'smooth', 'sine X', 'sine Y'], 3));
-        this.addParam(this.paramWinding = new SelectParam('winding', 'winding', false, true, true, ['even-odd', 'non-zero']));
+        this.addParam(this.paramWinding = new SelectParam('winding', 'wind',    true,  true, true, ['even-odd', 'non-zero']));
         this.addParam(this.paramRound   = new NumberParam('round',   'round',   true,  true, true, 0, 0));
 
         
@@ -116136,7 +116139,8 @@ extends OpShape
         this.paramDegree.reverseMenu =  true;
 
         
-        this.paramRound.divider = 0.565;
+        this.paramWinding.divider = 0.38;
+        this.paramRound  .divider = 0.565;
 
 
         this.addBaseParams();
