@@ -3,6 +3,8 @@ extends OperatorBase
 {
     paramValue;
 
+    length;
+
 
 
     constructor()
@@ -17,7 +19,7 @@ extends OperatorBase
 
         this.addParam(this.paramValue = new ListParam('value', 'values', false, false, true));
 
-        this.paramValue.itemName = 'value';
+        this.paramValue.itemName = '';
     }
 
 
@@ -48,6 +50,17 @@ extends OperatorBase
         pushUnique(gen.passedNodes, this);
 
         return request;
+    }
+
+
+
+    updateValues(requestId, actionId, updateParamId, paramIds, values)
+    {
+        super.updateValues(requestId, actionId, updateParamId, paramIds, values);
+
+        const length = values[paramIds.findIndex(id => id == 'length')];
+
+        this.paramValue.setName('values [ ' + length.value + ' ]');
     }
 
 
