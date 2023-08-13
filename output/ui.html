@@ -14097,16 +14097,16 @@ extends GValue
             const item = this.items[i];
 
             if (LIST_VALUES.includes(item.type))
-                str += 'list [' + item.items.length + ']';
-            // {
-            //     for (let j = 0; j < item.items.length; j++)
-            //     {
-            //         if (j > 0) 
-            //             str += ', ';
+                // str += 'list [' + item.items.length + ']';
+            {
+                for (let j = 0; j < item.items.length; j++)
+                {
+                    if (j > 0) 
+                        str += ', ';
                     
-            //         str += item.items[j].toPreviewString();
-            //     }
-            // }
+                    str += item.items[j].toPreviewString();
+                }
+            }
             else
                 str += item.toPreviewString();
         }
@@ -58543,16 +58543,16 @@ extends GValue
             const item = this.items[i];
 
             if (LIST_VALUES.includes(item.type))
-                str += 'list [' + item.items.length + ']';
-            // {
-            //     for (let j = 0; j < item.items.length; j++)
-            //     {
-            //         if (j > 0) 
-            //             str += ', ';
+                // str += 'list [' + item.items.length + ']';
+            {
+                for (let j = 0; j < item.items.length; j++)
+                {
+                    if (j > 0) 
+                        str += ', ';
                     
-            //         str += item.items[j].toPreviewString();
-            //     }
-            // }
+                    str += item.items[j].toPreviewString();
+                }
+            }
             else
                 str += item.toPreviewString();
         }
@@ -99556,7 +99556,7 @@ class Operator
     alwaysSaveParams   = false;
 
     alwaysShowIcon     = false;
-    
+
     saveParams         = true;  // master switch to not save any params
 
     canDisable         = false;
@@ -100944,16 +100944,15 @@ function createHeaderTooltip(node)
     node.header.addEventListener('pointerenter', e =>
     {
         if (  !currentTooltip
-            && node.preview
-            && node.showHeaderTooltip === true)
+            && node.preview)
         {
             let strTooltip = 
                 node.isUnknown()
                 ? NAN_DISPLAY
                 : node.preview.toPreviewString();
-            
-            if (strTooltip == '')
-                strTooltip = '. . .';
+
+            if (   node.showHeaderTooltip === true
+                && strTooltip != '')
             
             initTextTooltip(strTooltip);
         }

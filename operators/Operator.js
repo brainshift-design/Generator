@@ -63,7 +63,7 @@ class Operator
     alwaysSaveParams   = false;
 
     alwaysShowIcon     = false;
-    
+
     saveParams         = true;  // master switch to not save any params
 
     canDisable         = false;
@@ -1451,16 +1451,15 @@ function createHeaderTooltip(node)
     node.header.addEventListener('pointerenter', e =>
     {
         if (  !currentTooltip
-            && node.preview
-            && node.showHeaderTooltip === true)
+            && node.preview)
         {
             let strTooltip = 
                 node.isUnknown()
                 ? NAN_DISPLAY
                 : node.preview.toPreviewString();
-            
-            if (strTooltip == '')
-                strTooltip = '. . .';
+
+            if (   node.showHeaderTooltip === true
+                && strTooltip != '')
             
             initTextTooltip(strTooltip);
         }

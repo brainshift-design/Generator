@@ -8875,16 +8875,16 @@ extends GValue
             const item = this.items[i];
 
             if (LIST_VALUES.includes(item.type))
-                str += 'list [' + item.items.length + ']';
-            // {
-            //     for (let j = 0; j < item.items.length; j++)
-            //     {
-            //         if (j > 0) 
-            //             str += ', ';
+                // str += 'list [' + item.items.length + ']';
+            {
+                for (let j = 0; j < item.items.length; j++)
+                {
+                    if (j > 0) 
+                        str += ', ';
                     
-            //         str += item.items[j].toPreviewString();
-            //     }
-            // }
+                    str += item.items[j].toPreviewString();
+                }
+            }
             else
                 str += item.toPreviewString();
         }
