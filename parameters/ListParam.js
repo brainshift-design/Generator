@@ -186,6 +186,9 @@ extends Parameter
 
         this.controls[0].textbox.value = value;
 
+        if (this.output)
+            this.output.types = [finalListTypeFromItems(this.value.items)];
+
 
         super.updateControls();
     }

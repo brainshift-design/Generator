@@ -4864,11 +4864,7 @@ a
             <div id='whatsNewBody'>
                 <h1 style='margin-top: 20px;'>What's new</h1>
 
-                <p>•  panels can now have names</p>
-                <p>•  shape lists are now passed downstream correctly</p>
-                <p>•  added global progress bar</p>
-                <p>•  spelling mistakes are now allowed in search</p>
-                <p>•  fixed UI issues</p>
+                <p>•  </p>
                 
                 <p><br/><br/><div id='chkHideWhatsNew'></div></p>
             </div>
@@ -5224,7 +5220,7 @@ a
 
 
 
-const generatorVersion = 192;
+const generatorVersion = 193;
 
 
 const MAX_INT32        = 2147483647;
@@ -21021,6 +21017,8 @@ extends GOperator1
         }
 
 
+        const preview = new ListValue(this.value.items.slice(0, Math.min(this.value.items.length, 11)));
+
         const type = 
             this.value
             ? new TextValue(finalListTypeFromItems(this.value.items))
@@ -21029,12 +21027,12 @@ extends GOperator1
 
         this.setUpdateValues(parse,
         [
-            ['preview', new ListValue(this.value.items.slice(0, Math.min(this.value.items.length, 11)))],
-            ['type',    type                                                                           ],
-            ['length',  new NumberValue(this.value.items.length)                                       ],
-            ['columns', new NumberValue(maxColumns)                                                    ],
-            ['column',  column                                                                         ],
-            ['reverse', reverse                                                                        ]
+            ['preview', preview                                 ],
+            ['type',    type                                    ],
+            ['length',  new NumberValue(this.value.items.length)],
+            ['columns', new NumberValue(maxColumns)             ],
+            ['column',  column                                  ],
+            ['reverse', reverse                                 ]
         ]);
         
 
@@ -47490,7 +47488,7 @@ onerror = (event, source, line, pos, error) =>
 };
 
 
-const generatorVersion = 192;
+const generatorVersion = 193;
 
 
 const MAX_INT32        = 2147483647;
@@ -65456,6 +65454,8 @@ extends GOperator1
         }
 
 
+        const preview = new ListValue(this.value.items.slice(0, Math.min(this.value.items.length, 11)));
+
         const type = 
             this.value
             ? new TextValue(finalListTypeFromItems(this.value.items))
@@ -65464,12 +65464,12 @@ extends GOperator1
 
         this.setUpdateValues(parse,
         [
-            ['preview', new ListValue(this.value.items.slice(0, Math.min(this.value.items.length, 11)))],
-            ['type',    type                                                                           ],
-            ['length',  new NumberValue(this.value.items.length)                                       ],
-            ['columns', new NumberValue(maxColumns)                                                    ],
-            ['column',  column                                                                         ],
-            ['reverse', reverse                                                                        ]
+            ['preview', preview                                 ],
+            ['type',    type                                    ],
+            ['length',  new NumberValue(this.value.items.length)],
+            ['columns', new NumberValue(maxColumns)             ],
+            ['column',  column                                  ],
+            ['reverse', reverse                                 ]
         ]);
         
 
@@ -95082,6 +95082,9 @@ extends Parameter
 
         this.controls[0].textbox.value = value;
 
+        if (this.output)
+            this.output.types = [finalListTypeFromItems(this.value.items)];
+
 
         super.updateControls();
     }
@@ -103877,6 +103880,26 @@ extends OperatorBase
 
         this.updateParamControls();
     }
+
+
+
+    getHeaderColors(options = {})
+    {
+        const colors = super.getHeaderColors(options);
+        const type   = this.outputs[0].types[0];
+
+        colors.text  = isDark(colors.back) ? [1, 1, 1, 1] : [0, 0, 0, 1]; 
+
+        const gray =
+               this.active
+            && this.outputs[0].types[0] == LIST_VALUE;
+
+        colors.input  = this.active ? rgb_a(colors.text, 0.4)  : rgb_a(rgbSaturateHsv(rgbFromType(type, true), 0.5), 0.8);
+        colors.output = gray        ? rgb_a(colors.text, 0.35) : rgb_a(rgbSaturateHsv(rgbFromType(type, true), 0.5), 0.7);
+        colors.wire   = rgbFromType(type, true);
+
+        return colors;
+    }
 }
 
 
@@ -103944,6 +103967,26 @@ extends OperatorBase
 
         if (type)
             this.outputs[0].types = [type.value];
+    }
+
+
+
+    getHeaderColors(options = {})
+    {
+        const colors = super.getHeaderColors(options);
+        const type   = this.outputs[0].types[0];
+
+        colors.text  = isDark(colors.back) ? [1, 1, 1, 1] : [0, 0, 0, 1]; 
+
+        const gray =
+               this.active
+            && this.outputs[0].types[0] == LIST_VALUE;
+
+        colors.input  = this.active ? rgb_a(colors.text, 0.4)  : rgb_a(rgbSaturateHsv(rgbFromType(type, true), 0.5), 0.8);
+        colors.output = gray        ? rgb_a(colors.text, 0.35) : rgb_a(rgbSaturateHsv(rgbFromType(type, true), 0.5), 0.7);
+        colors.wire   = rgbFromType(type, true);
+
+        return colors;
     }
 }
 
@@ -104049,6 +104092,26 @@ extends OperatorBase
         updateParamConditionText(this.paramReverse, this.paramReverse.isUnknown(), false, 1);
 
         this.updateParamControls();
+    }
+
+
+
+    getHeaderColors(options = {})
+    {
+        const colors = super.getHeaderColors(options);
+        const type   = this.outputs[0].types[0];
+
+        colors.text  = isDark(colors.back) ? [1, 1, 1, 1] : [0, 0, 0, 1]; 
+
+        const gray =
+               this.active
+            && this.outputs[0].types[0] == LIST_VALUE;
+
+        colors.input  = this.active ? rgb_a(colors.text, 0.4)  : rgb_a(rgbSaturateHsv(rgbFromType(type, true), 0.5), 0.8);
+        colors.output = gray        ? rgb_a(colors.text, 0.35) : rgb_a(rgbSaturateHsv(rgbFromType(type, true), 0.5), 0.7);
+        colors.wire   = rgbFromType(type, true);
+
+        return colors;
     }
 }
 

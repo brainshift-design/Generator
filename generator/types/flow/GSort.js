@@ -74,6 +74,8 @@ extends GOperator1
         }
 
 
+        const preview = new ListValue(this.value.items.slice(0, Math.min(this.value.items.length, 11)));
+
         const type = 
             this.value
             ? new TextValue(finalListTypeFromItems(this.value.items))
@@ -82,12 +84,12 @@ extends GOperator1
 
         this.setUpdateValues(parse,
         [
-            ['preview', new ListValue(this.value.items.slice(0, Math.min(this.value.items.length, 11)))],
-            ['type',    type                                                                           ],
-            ['length',  new NumberValue(this.value.items.length)                                       ],
-            ['columns', new NumberValue(maxColumns)                                                    ],
-            ['column',  column                                                                         ],
-            ['reverse', reverse                                                                        ]
+            ['preview', preview                                 ],
+            ['type',    type                                    ],
+            ['length',  new NumberValue(this.value.items.length)],
+            ['columns', new NumberValue(maxColumns)             ],
+            ['column',  column                                  ],
+            ['reverse', reverse                                 ]
         ]);
         
 
