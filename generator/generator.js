@@ -151,10 +151,10 @@ function genRequest(request, save)
 
 
         genPostMessageToUi(
-            {
-                cmd:      'endRequest',
-                requestId: requestId
-            });
+        {
+            cmd:      'uiEndRequest',
+            requestId: requestId
+        });
     })();
 }
 

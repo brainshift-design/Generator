@@ -50,8 +50,10 @@ extends OpColorBase
         this.paramFills.listTypes = [COLOR_VALUE, FILL_VALUE, GRADIENT_VALUE];
         this.paramFills.input.types.push(...this.paramFills.listTypes);
 
-        this.paramWeight.divider = 0.55;
-        this.paramMiter .divider = 0.43;
+        // this.paramWeight.divider = 0.55;
+        // this.paramMiter .divider = 0.43;
+
+        this.setAllParamDividers(0.45);
 
         this.paramMiter.controls[0].setSuffix('°', true);
         this.paramMiter.controls[0].suffixOffsetY = -4;
