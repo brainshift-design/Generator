@@ -13313,6 +13313,13 @@ class GNode
 
 
 
+    invalidateRepeat(parse, nodeId)
+    {
+        this.invalidateLoop(parse, nodeId);
+    }
+
+
+
     invalidateLoop(parse, nodeId)
     {
         let _this = this;
@@ -19825,9 +19832,9 @@ extends GOperator
                     }
 
                     
-                    if (this.loop.type != NUMBER_VALUE)
+                    if (this.loop.type != NUMBER_VALUE) // connected
                     {
-                        this.invalidateRepeat(parse, this.loop);
+                        this.loop.invalidateRepeat(parse, this.nodeId);
 
                         repeat.iteration = i;
                         repeat.total     = nRepeats;
@@ -19870,7 +19877,8 @@ extends GOperator
                         
                         const stopRequestId = await genGetValueFromUi('stopRequestId');
 
-                        if (stopRequestId.value == parse.requestId) 
+                        if (   parse.requestId == stopRequestId.value
+                            || curRequestIds.includes(parse.requestId)) 
                         { 
                             parse.stopGenerate = true;
                             break; 
@@ -19960,19 +19968,6 @@ extends GOperator
         if (this. count) this. count.invalidateInputs(from);
         if (this._while) this._while.invalidateInputs(from);
         if (this. loop ) this. loop .invalidateInputs(from);
-    }
-
-
-
-    invalidateRepeat(parse, loop)
-    {
-        if (loop.type == LIST)
-        {
-            for (const input of loop.inputs)
-                input.invalidateLoop(parse, this.nodeId);
-        }
-        else
-            loop.invalidateLoop(parse, this.nodeId);
     }
 
 
@@ -20547,6 +20542,13 @@ extends GOperator
         super.invalidateInputs(from);
 
         this.inputs.forEach(i => i.invalidateInputs(from));
+    }
+
+
+
+    invalidateRepeat(parse, nodeId)
+    {
+        this.inputs.forEach(i => i.invalidateRepeat(parse, nodeId));
     }
 }
 
@@ -23293,6 +23295,7 @@ extends GOperator
     lastValue1   = -1;
     lastValue2   = -1;
     randomOffset =  0;
+    uniqueOffset =  0;
 
     loopId       = NULL;
 
@@ -23348,7 +23351,7 @@ extends GOperator
 
 
         this.value = new NumberValue(
-            min.value + this.random.get(iteration + this.randomOffset) * (max.value - min.value), 
+            min.value + this.random.get(iteration + ++this.randomOffset + this.uniqueOffset) * (max.value - min.value), 
             Math.max(min.decimals, max.decimals));
 
 
@@ -23360,7 +23363,7 @@ extends GOperator
             while (this.value.toNumber() == this.lastValue1
                 && this.randomUnique.get(iteration) < _unique)
                 this.value = new NumberValue(
-                    min.value + this.random.get(iteration + ++this.randomOffset) * (max.value - min.value),
+                    min.value + this.random.get(iteration + this.randomOffset + ++this.uniqueOffset) * (max.value - min.value),
                     Math.max(min.decimals, max.decimals));
         }
 
@@ -23370,7 +23373,7 @@ extends GOperator
                     || this.value.toNumber() == this.lastValue2)
                 && this.randomUnique.get(iteration) < Math.max(_unique - 1))
                 this.value = new NumberValue(
-                    min.value + this.random.get(iteration + ++this.randomOffset) * (max.value - min.value),
+                    min.value + this.random.get(iteration + this.randomOffset + ++this.uniqueOffset) * (max.value - min.value),
                     Math.max(min.decimals, max.decimals));
         }        
 
@@ -23443,6 +23446,7 @@ extends GOperator
         super.invalidateLoop(parse, nodeId);
 
         this.randomOffset = 0;
+        this.uniqueOffset = 0;
     }
 }
 
@@ -28397,17 +28401,17 @@ function findCorrection(parse,
     parse.totalProgress += 1024;
 
 
-    //dLoop:
+    dLoop:
     while (d > 1/1024)
     {
-        //if (stopGenerate) break dLoop;
+        if (parse.stop()) break dLoop;
 
         let _closestColor = [...closestColor];
 
 
         for (let _order = 0; _order < 6; _order++)
         {
-            //if (stopGenerate) break dLoop;
+            if (parse.stop()) break dLoop;
 
             closestColor = [..._closestColor];
 
@@ -28455,8 +28459,8 @@ function findCorrection(parse,
     }
 
 
-    //if (!stopGenerate)
-    //{
+    if (!parse.stop())
+    {
         // reduce closest to necessary minimums
 
         const closestRgb = getCorrectedColor(color, closestOrder, closest1, closest2, closest3)[2];
@@ -28472,12 +28476,9 @@ function findCorrection(parse,
         closest1 = Math.max(0, c1);
         closest2 = Math.max(0, c2);
         closest3 = Math.max(0, c3);
-    //}
+    }
 
     
-    //stopGenerate = false;
-
-
     return [
         closestOrder,
         closest1,
@@ -28512,15 +28513,15 @@ function findCorrectionInOrder(parse,
     cLoop:
     for (let m1 = start1; m1 < end1; m1 += (end1-start1)/nSteps1)
     {
-        //if (stopGenerate) break cLoop;
+       if (parse.stop()) break cLoop;
 
         for (let m2 = start2; m2 < end2; m2 += (end2-start2)/nSteps2)
         {
-            //if (stopGenerate) break cLoop;
+            if (parse.stop()) break cLoop;
 
             for (let m3 = start3; m3 < end3; m3 += (end3-start3)/nSteps3)
             {
-                //if (stopGenerate) break cLoop;
+                if (parse.stop()) break cLoop;
 
                 const [_color, _oklab, _rgb] = getCorrectedColor(color, order, m1, m2, m3);
 
@@ -28544,8 +28545,7 @@ function findCorrectionInOrder(parse,
         }
 
         
-        //if (!stopGenerate)
-            genUpdateNodeProgress(parse, nodeId, progress / total);
+        genUpdateNodeProgress(parse, nodeId, progress / total);
     }
 
     
@@ -29208,8 +29208,8 @@ extends GOperator1
                             false,   false, false, false); 
 
                             
-                        //if (!stopGenerate)
-                        //{
+                        if (!stopGenerate)
+                        {
                             if (   closestOrder >= 0 
                                 && closestOrder <  6)
                             {
@@ -29226,7 +29226,7 @@ extends GOperator1
                             {
                                 this.value = ColorValue.NaN;
                             }
-                        //}
+                        }
                     }
                 //}
             }
@@ -29375,8 +29375,8 @@ extends GOperator1
                         this.margin3 != null); 
 
                         
-                    //if (!stopGenerate)
-                    //{
+                    if (!parse.stop())
+                    {
                         if (   closestOrder >= 0 
                             && closestOrder <  6)
                         {
@@ -29420,7 +29420,7 @@ extends GOperator1
                                 ['value',   ColorValue .NaN]
                             ]);
                         }
-                    //}
+                    }
                 //}
             }
             else
@@ -37494,6 +37494,9 @@ var lastUpdateObjects  =  [];
 var lastUpdateStyles   =  [];
 
 
+var curRequestIds      = [];
+
+
 
 function initFonts(fonts, uniqueFontNames)
 {
@@ -37508,6 +37511,9 @@ function genRequest(request, save)
     const requestId     = parseInt(request[0]);
     const actionId      = parseInt(request[1]);
     const set           = parseInt(request[2]);
+
+    curRequestIds.push(requestId);
+
 
     const settings =
     {
@@ -37554,24 +37560,39 @@ function genRequest(request, save)
         for (const node of paramNodes) 
         { 
             await node.eval(parse);
-            if (parse.stopGenerate) break; 
-        } 
+
+            if (parse.stop()) 
+            {
+                genQueueMessageToUi({cmd: 'uiEndGlobalProgress'});
+                return; 
+            }
+    } 
 
 
-        if (!parse.stopGenerate) 
+        if (!parse.stop()) 
         {
             for (const node of topLevelNodes) 
             { 
                 await node.eval(parse); 
-                if (parse.stopGenerate) break; 
+
+                if (parse.stop()) 
+                {
+                    genQueueMessageToUi({cmd: 'uiEndGlobalProgress'});
+                    return; 
+                }
             }
+        }
+        else
+        {
+            genQueueMessageToUi({cmd: 'uiEndGlobalProgress'});
+            return;
         }
 
 
         genQueueMessageToUi({cmd: 'uiEndGlobalProgress'});
 
 
-        if (parse.stopGenerate) return;
+        if (parse.stop()) return;
 
         
         for (const node of topLevelNodes) 
@@ -44024,6 +44045,19 @@ class Parse
         return isEmpty(this.repeats)
             ||    this.repeats.length == 1
                && this.repeats[0].iteration == this.repeats[0].total-1;
+    }
+
+
+
+    stop()
+    {
+        if (curRequestIds.includes(this.requestId))
+        {
+            removeFromArray(curRequestIds, this.requestId);
+            true;
+        }
+
+        return this.stopGenerate;
     }
 }
 
@@ -57770,6 +57804,13 @@ class GNode
 
 
 
+    invalidateRepeat(parse, nodeId)
+    {
+        this.invalidateLoop(parse, nodeId);
+    }
+
+
+
     invalidateLoop(parse, nodeId)
     {
         let _this = this;
@@ -64282,9 +64323,9 @@ extends GOperator
                     }
 
                     
-                    if (this.loop.type != NUMBER_VALUE)
+                    if (this.loop.type != NUMBER_VALUE) // connected
                     {
-                        this.invalidateRepeat(parse, this.loop);
+                        this.loop.invalidateRepeat(parse, this.nodeId);
 
                         repeat.iteration = i;
                         repeat.total     = nRepeats;
@@ -64327,7 +64368,8 @@ extends GOperator
                         
                         const stopRequestId = await genGetValueFromUi('stopRequestId');
 
-                        if (stopRequestId.value == parse.requestId) 
+                        if (   parse.requestId == stopRequestId.value
+                            || curRequestIds.includes(parse.requestId)) 
                         { 
                             parse.stopGenerate = true;
                             break; 
@@ -64417,19 +64459,6 @@ extends GOperator
         if (this. count) this. count.invalidateInputs(from);
         if (this._while) this._while.invalidateInputs(from);
         if (this. loop ) this. loop .invalidateInputs(from);
-    }
-
-
-
-    invalidateRepeat(parse, loop)
-    {
-        if (loop.type == LIST)
-        {
-            for (const input of loop.inputs)
-                input.invalidateLoop(parse, this.nodeId);
-        }
-        else
-            loop.invalidateLoop(parse, this.nodeId);
     }
 
 
@@ -65004,6 +65033,13 @@ extends GOperator
         super.invalidateInputs(from);
 
         this.inputs.forEach(i => i.invalidateInputs(from));
+    }
+
+
+
+    invalidateRepeat(parse, nodeId)
+    {
+        this.inputs.forEach(i => i.invalidateRepeat(parse, nodeId));
     }
 }
 
@@ -67750,6 +67786,7 @@ extends GOperator
     lastValue1   = -1;
     lastValue2   = -1;
     randomOffset =  0;
+    uniqueOffset =  0;
 
     loopId       = NULL;
 
@@ -67805,7 +67842,7 @@ extends GOperator
 
 
         this.value = new NumberValue(
-            min.value + this.random.get(iteration + this.randomOffset) * (max.value - min.value), 
+            min.value + this.random.get(iteration + ++this.randomOffset + this.uniqueOffset) * (max.value - min.value), 
             Math.max(min.decimals, max.decimals));
 
 
@@ -67817,7 +67854,7 @@ extends GOperator
             while (this.value.toNumber() == this.lastValue1
                 && this.randomUnique.get(iteration) < _unique)
                 this.value = new NumberValue(
-                    min.value + this.random.get(iteration + ++this.randomOffset) * (max.value - min.value),
+                    min.value + this.random.get(iteration + this.randomOffset + ++this.uniqueOffset) * (max.value - min.value),
                     Math.max(min.decimals, max.decimals));
         }
 
@@ -67827,7 +67864,7 @@ extends GOperator
                     || this.value.toNumber() == this.lastValue2)
                 && this.randomUnique.get(iteration) < Math.max(_unique - 1))
                 this.value = new NumberValue(
-                    min.value + this.random.get(iteration + ++this.randomOffset) * (max.value - min.value),
+                    min.value + this.random.get(iteration + this.randomOffset + ++this.uniqueOffset) * (max.value - min.value),
                     Math.max(min.decimals, max.decimals));
         }        
 
@@ -67900,6 +67937,7 @@ extends GOperator
         super.invalidateLoop(parse, nodeId);
 
         this.randomOffset = 0;
+        this.uniqueOffset = 0;
     }
 }
 
@@ -72854,17 +72892,17 @@ function findCorrection(parse,
     parse.totalProgress += 1024;
 
 
-    //dLoop:
+    dLoop:
     while (d > 1/1024)
     {
-        //if (stopGenerate) break dLoop;
+        if (parse.stop()) break dLoop;
 
         let _closestColor = [...closestColor];
 
 
         for (let _order = 0; _order < 6; _order++)
         {
-            //if (stopGenerate) break dLoop;
+            if (parse.stop()) break dLoop;
 
             closestColor = [..._closestColor];
 
@@ -72912,8 +72950,8 @@ function findCorrection(parse,
     }
 
 
-    //if (!stopGenerate)
-    //{
+    if (!parse.stop())
+    {
         // reduce closest to necessary minimums
 
         const closestRgb = getCorrectedColor(color, closestOrder, closest1, closest2, closest3)[2];
@@ -72929,12 +72967,9 @@ function findCorrection(parse,
         closest1 = Math.max(0, c1);
         closest2 = Math.max(0, c2);
         closest3 = Math.max(0, c3);
-    //}
+    }
 
     
-    //stopGenerate = false;
-
-
     return [
         closestOrder,
         closest1,
@@ -72969,15 +73004,15 @@ function findCorrectionInOrder(parse,
     cLoop:
     for (let m1 = start1; m1 < end1; m1 += (end1-start1)/nSteps1)
     {
-        //if (stopGenerate) break cLoop;
+       if (parse.stop()) break cLoop;
 
         for (let m2 = start2; m2 < end2; m2 += (end2-start2)/nSteps2)
         {
-            //if (stopGenerate) break cLoop;
+            if (parse.stop()) break cLoop;
 
             for (let m3 = start3; m3 < end3; m3 += (end3-start3)/nSteps3)
             {
-                //if (stopGenerate) break cLoop;
+                if (parse.stop()) break cLoop;
 
                 const [_color, _oklab, _rgb] = getCorrectedColor(color, order, m1, m2, m3);
 
@@ -73001,8 +73036,7 @@ function findCorrectionInOrder(parse,
         }
 
         
-        //if (!stopGenerate)
-            genUpdateNodeProgress(parse, nodeId, progress / total);
+        genUpdateNodeProgress(parse, nodeId, progress / total);
     }
 
     
@@ -73665,8 +73699,8 @@ extends GOperator1
                             false,   false, false, false); 
 
                             
-                        //if (!stopGenerate)
-                        //{
+                        if (!stopGenerate)
+                        {
                             if (   closestOrder >= 0 
                                 && closestOrder <  6)
                             {
@@ -73683,7 +73717,7 @@ extends GOperator1
                             {
                                 this.value = ColorValue.NaN;
                             }
-                        //}
+                        }
                     }
                 //}
             }
@@ -73832,8 +73866,8 @@ extends GOperator1
                         this.margin3 != null); 
 
                         
-                    //if (!stopGenerate)
-                    //{
+                    if (!parse.stop())
+                    {
                         if (   closestOrder >= 0 
                             && closestOrder <  6)
                         {
@@ -73877,7 +73911,7 @@ extends GOperator1
                                 ['value',   ColorValue .NaN]
                             ]);
                         }
-                    //}
+                    }
                 //}
             }
             else
@@ -125923,7 +125957,7 @@ function getNodeRequest(node, gen)
 
 function uiEndRequest(requestId)
 {
-    consoleAssert(curRequestId == requestId);
+    //consoleAssert(curRequestId == requestId);
     curRequestId = null;
 }
 
@@ -126869,8 +126903,8 @@ function resolveConnections(nodes, _connections, first, last)
     _connections.sort((c1, c2) =>
     {
         if (c1.inputNodeId != c2.inputNodeId) return c1.inputNodeId - c2.inputNodeId;
-        if (c1.outputOrder != c2.outputOrder) return c1.outputOrder - c2.outputOrder;
         if (c1.inputId     != c2.inputId    ) return c1.inputId     - c2.inputId;
+        if (c1.outputOrder != c2.outputOrder) return c1.outputOrder - c2.outputOrder;
         return 0;
     });
 

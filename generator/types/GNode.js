@@ -107,6 +107,13 @@ class GNode
 
 
 
+    invalidateRepeat(parse, nodeId)
+    {
+        this.invalidateLoop(parse, nodeId);
+    }
+
+
+
     invalidateLoop(parse, nodeId)
     {
         let _this = this;

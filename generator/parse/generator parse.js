@@ -95,6 +95,19 @@ class Parse
             ||    this.repeats.length == 1
                && this.repeats[0].iteration == this.repeats[0].total-1;
     }
+
+
+
+    stop()
+    {
+        if (curRequestIds.includes(this.requestId))
+        {
+            removeFromArray(curRequestIds, this.requestId);
+            true;
+        }
+
+        return this.stopGenerate;
+    }
 }
 
 

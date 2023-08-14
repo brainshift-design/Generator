@@ -95,8 +95,8 @@ extends GOperator1
                         this.margin3 != null); 
 
                         
-                    //if (!stopGenerate)
-                    //{
+                    if (!parse.stop())
+                    {
                         if (   closestOrder >= 0 
                             && closestOrder <  6)
                         {
@@ -140,7 +140,7 @@ extends GOperator1
                                 ['value',   ColorValue .NaN]
                             ]);
                         }
-                    //}
+                    }
                 //}
             }
             else

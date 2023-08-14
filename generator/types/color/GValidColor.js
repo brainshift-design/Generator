@@ -88,8 +88,8 @@ extends GOperator1
                             false,   false, false, false); 
 
                             
-                        //if (!stopGenerate)
-                        //{
+                        if (!stopGenerate)
+                        {
                             if (   closestOrder >= 0 
                                 && closestOrder <  6)
                             {
@@ -106,7 +106,7 @@ extends GOperator1
                             {
                                 this.value = ColorValue.NaN;
                             }
-                        //}
+                        }
                     }
                 //}
             }

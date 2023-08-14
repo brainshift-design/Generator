@@ -41,17 +41,17 @@ function findCorrection(parse,
     parse.totalProgress += 1024;
 
 
-    //dLoop:
+    dLoop:
     while (d > 1/1024)
     {
-        //if (stopGenerate) break dLoop;
+        if (parse.stop()) break dLoop;
 
         let _closestColor = [...closestColor];
 
 
         for (let _order = 0; _order < 6; _order++)
         {
-            //if (stopGenerate) break dLoop;
+            if (parse.stop()) break dLoop;
 
             closestColor = [..._closestColor];
 
@@ -99,8 +99,8 @@ function findCorrection(parse,
     }
 
 
-    //if (!stopGenerate)
-    //{
+    if (!parse.stop())
+    {
         // reduce closest to necessary minimums
 
         const closestRgb = getCorrectedColor(color, closestOrder, closest1, closest2, closest3)[2];
@@ -116,12 +116,9 @@ function findCorrection(parse,
         closest1 = Math.max(0, c1);
         closest2 = Math.max(0, c2);
         closest3 = Math.max(0, c3);
-    //}
+    }
 
     
-    //stopGenerate = false;
-
-
     return [
         closestOrder,
         closest1,
@@ -156,15 +153,15 @@ function findCorrectionInOrder(parse,
     cLoop:
     for (let m1 = start1; m1 < end1; m1 += (end1-start1)/nSteps1)
     {
-        //if (stopGenerate) break cLoop;
+       if (parse.stop()) break cLoop;
 
         for (let m2 = start2; m2 < end2; m2 += (end2-start2)/nSteps2)
         {
-            //if (stopGenerate) break cLoop;
+            if (parse.stop()) break cLoop;
 
             for (let m3 = start3; m3 < end3; m3 += (end3-start3)/nSteps3)
             {
-                //if (stopGenerate) break cLoop;
+                if (parse.stop()) break cLoop;
 
                 const [_color, _oklab, _rgb] = getCorrectedColor(color, order, m1, m2, m3);
 
@@ -188,8 +185,7 @@ function findCorrectionInOrder(parse,
         }
 
         
-        //if (!stopGenerate)
-            genUpdateNodeProgress(parse, nodeId, progress / total);
+        genUpdateNodeProgress(parse, nodeId, progress / total);
     }
 
     

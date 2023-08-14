@@ -118,9 +118,9 @@ extends GOperator
                     }
 
                     
-                    if (this.loop.type != NUMBER_VALUE)
+                    if (this.loop.type != NUMBER_VALUE) // connected
                     {
-                        this.invalidateRepeat(parse, this.loop);
+                        this.loop.invalidateRepeat(parse, this.nodeId);
 
                         repeat.iteration = i;
                         repeat.total     = nRepeats;
@@ -163,7 +163,8 @@ extends GOperator
                         
                         const stopRequestId = await genGetValueFromUi('stopRequestId');
 
-                        if (stopRequestId.value == parse.requestId) 
+                        if (   parse.requestId == stopRequestId.value
+                            || curRequestIds.includes(parse.requestId)) 
                         { 
                             parse.stopGenerate = true;
                             break; 
@@ -253,19 +254,6 @@ extends GOperator
         if (this. count) this. count.invalidateInputs(from);
         if (this._while) this._while.invalidateInputs(from);
         if (this. loop ) this. loop .invalidateInputs(from);
-    }
-
-
-
-    invalidateRepeat(parse, loop)
-    {
-        if (loop.type == LIST)
-        {
-            for (const input of loop.inputs)
-                input.invalidateLoop(parse, this.nodeId);
-        }
-        else
-            loop.invalidateLoop(parse, this.nodeId);
     }
 
 

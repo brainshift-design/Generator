@@ -12,6 +12,7 @@ extends GOperator
     lastValue1   = -1;
     lastValue2   = -1;
     randomOffset =  0;
+    uniqueOffset =  0;
 
     loopId       = NULL;
 
@@ -67,7 +68,7 @@ extends GOperator
 
 
         this.value = new NumberValue(
-            min.value + this.random.get(iteration + this.randomOffset) * (max.value - min.value), 
+            min.value + this.random.get(iteration + ++this.randomOffset + this.uniqueOffset) * (max.value - min.value), 
             Math.max(min.decimals, max.decimals));
 
 
@@ -79,7 +80,7 @@ extends GOperator
             while (this.value.toNumber() == this.lastValue1
                 && this.randomUnique.get(iteration) < _unique)
                 this.value = new NumberValue(
-                    min.value + this.random.get(iteration + ++this.randomOffset) * (max.value - min.value),
+                    min.value + this.random.get(iteration + this.randomOffset + ++this.uniqueOffset) * (max.value - min.value),
                     Math.max(min.decimals, max.decimals));
         }
 
@@ -89,7 +90,7 @@ extends GOperator
                     || this.value.toNumber() == this.lastValue2)
                 && this.randomUnique.get(iteration) < Math.max(_unique - 1))
                 this.value = new NumberValue(
-                    min.value + this.random.get(iteration + ++this.randomOffset) * (max.value - min.value),
+                    min.value + this.random.get(iteration + this.randomOffset + ++this.uniqueOffset) * (max.value - min.value),
                     Math.max(min.decimals, max.decimals));
         }        
 
@@ -162,5 +163,6 @@ extends GOperator
         super.invalidateLoop(parse, nodeId);
 
         this.randomOffset = 0;
+        this.uniqueOffset = 0;
     }
 }

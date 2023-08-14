@@ -175,6 +175,6 @@ function getNodeRequest(node, gen)
 
 function uiEndRequest(requestId)
 {
-    consoleAssert(curRequestId == requestId);
+    //consoleAssert(curRequestId == requestId);
     curRequestId = null;
 }

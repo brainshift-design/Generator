@@ -6,6 +6,9 @@ var lastUpdateObjects  =  [];
 var lastUpdateStyles   =  [];
 
 
+var curRequestIds      = [];
+
+
 
 function initFonts(fonts, uniqueFontNames)
 {
@@ -20,6 +23,9 @@ function genRequest(request, save)
     const requestId     = parseInt(request[0]);
     const actionId      = parseInt(request[1]);
     const set           = parseInt(request[2]);
+
+    curRequestIds.push(requestId);
+
 
     const settings =
     {
@@ -66,24 +72,39 @@ function genRequest(request, save)
         for (const node of paramNodes) 
         { 
             await node.eval(parse);
-            if (parse.stopGenerate) break; 
-        } 
+
+            if (parse.stop()) 
+            {
+                genQueueMessageToUi({cmd: 'uiEndGlobalProgress'});
+                return; 
+            }
+    } 
 
 
-        if (!parse.stopGenerate) 
+        if (!parse.stop()) 
         {
             for (const node of topLevelNodes) 
             { 
                 await node.eval(parse); 
-                if (parse.stopGenerate) break; 
+
+                if (parse.stop()) 
+                {
+                    genQueueMessageToUi({cmd: 'uiEndGlobalProgress'});
+                    return; 
+                }
             }
+        }
+        else
+        {
+            genQueueMessageToUi({cmd: 'uiEndGlobalProgress'});
+            return;
         }
 
 
         genQueueMessageToUi({cmd: 'uiEndGlobalProgress'});
 
 
-        if (parse.stopGenerate) return;
+        if (parse.stop()) return;
 
         
         for (const node of topLevelNodes) 

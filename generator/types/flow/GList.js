@@ -168,4 +168,11 @@ extends GOperator
 
         this.inputs.forEach(i => i.invalidateInputs(from));
     }
+
+
+
+    invalidateRepeat(parse, nodeId)
+    {
+        this.inputs.forEach(i => i.invalidateRepeat(parse, nodeId));
+    }
 }
