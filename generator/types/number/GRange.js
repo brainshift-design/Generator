@@ -55,7 +55,7 @@ extends GOperator
     
 
         const repeat    = parse.repeats.find(r => r.repeatId == this.loopId);
-        const iteration = repeat ? repeat.iteration : this.iteration;
+        const iteration = repeat ? repeat.iteration : 0;
 
 
         let delta = end.toNumber() - start.toNumber();

@@ -44,9 +44,6 @@ extends GOperator1
         {
             const input = (await this.input.eval(parse)).toValue();
 
-            //const repeat    = parse.repeats.find(r => r.repeatId == this.loopId);
-            //const iteration = repeat ? repeat.iteration : this.iteration;
-
             if (when.value == 0)
                 this.value = this.current.copy();
 

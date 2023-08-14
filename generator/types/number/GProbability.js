@@ -7,7 +7,8 @@ extends GOperator
     random = null;
 
 
-    loopId = NULL;
+    iteration = 0;
+    loopId    = NULL;
 
 
 
@@ -49,9 +50,7 @@ extends GOperator
             this.random = new Random(seed.value);
 
 
-        
-        const repeat    = parse.repeats.find(r => r.repeatId == this.loopId);
-        const iteration = repeat ? repeat.iteration : this.iteration;
+        const iteration = this.iteration++;
 
 
         const r = 
@@ -111,5 +110,14 @@ extends GOperator
 
         if (this.seed  ) this.seed  .invalidateInputs(from);
         if (this.chance) this.chance.invalidateInputs(from);
+    }
+
+
+
+    invalidateLoop(parse, nodeId)
+    {
+        //super.invalidateLoop(parse, nodeId);
+
+        this.iteration = 0;
     }
 }

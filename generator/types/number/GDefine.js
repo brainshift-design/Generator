@@ -4,7 +4,8 @@ extends GOperator
     inputs = [];
 
 
-    loopId = NULL;
+    iteration = 0;
+    loopId    = NULL;
 
 
 
@@ -54,9 +55,8 @@ extends GOperator
         }
             
 
-        const repeat    = parse.repeats.find(r => r.repeatId == this.loopId);
-        const iteration = repeat ? repeat.iteration : this.iteration;
- 
+        const iteration = this.iteration++;
+
 
         this.value = _values[iteration % _values.length];
 
@@ -104,5 +104,14 @@ extends GOperator
         super.invalidateInputs(from);
 
         this.inputs.forEach(i => i.invalidateInputs(from));
+    }
+
+
+
+    invalidateLoop(parse, nodeId)
+    {
+        super.invalidateLoop(parse, nodeId);
+
+        this.iteration = 0;
     }
 }

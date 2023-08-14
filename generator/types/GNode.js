@@ -10,7 +10,6 @@ class GNode
     listId       = -1;
     uniqueId;
 
-    iteration    = 0;
 
     options      = {};
     data         = {}; // for type conversion info
@@ -90,7 +89,6 @@ class GNode
     validate()
     {
         this.valid = true;
-        this.iteration++;
     }
 
 
@@ -116,12 +114,12 @@ class GNode
 
     invalidateLoop(parse, nodeId)
     {
-        let _this = this;
+        //let _this = this;
 
-        if (_this.type == PARAM)
-            _this = parse.parsedNodes.find(n => n.nodeId == _this.nodeId);
+        // if (_this.type == PARAM)
+        //     _this = parse.parsedNodes.find(n => n.nodeId == _this.nodeId);
 
-        _this.valid  = false;
-        _this.loopId = nodeId;
+        this.valid  = false;
+        this.loopId = nodeId;
     }
 }

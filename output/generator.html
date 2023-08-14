@@ -7994,7 +7994,6 @@ class GNode
     listId       = -1;
     uniqueId;
 
-    iteration    = 0;
 
     options      = {};
     data         = {}; // for type conversion info
@@ -8074,7 +8073,6 @@ class GNode
     validate()
     {
         this.valid = true;
-        this.iteration++;
     }
 
 
@@ -8100,13 +8098,13 @@ class GNode
 
     invalidateLoop(parse, nodeId)
     {
-        let _this = this;
+        //let _this = this;
 
-        if (_this.type == PARAM)
-            _this = parse.parsedNodes.find(n => n.nodeId == _this.nodeId);
+        // if (_this.type == PARAM)
+        //     _this = parse.parsedNodes.find(n => n.nodeId == _this.nodeId);
 
-        _this.valid  = false;
-        _this.loopId = nodeId;
+        this.valid  = false;
+        this.loopId = nodeId;
     }
 }
 
@@ -14885,6 +14883,10 @@ extends GOperator
 class GCache
 extends GOperator1
 {
+    cachedValue = null;
+
+
+
     constructor(nodeId, options)
     {
         super(CACHE, nodeId, options);
@@ -14911,10 +14913,17 @@ extends GOperator1
             return this;
 
 
-        this.value = 
-            this.input 
-            ? (await this.input.eval(parse)).toValue() 
-            : NullValue;
+        if (!this.cachedValue)
+        {
+            this.value = 
+                this.input 
+                ? (await this.input.eval(parse)).toValue() 
+                : NullValue;
+
+            this.cachedValue = this.value.copy();
+        }
+        else
+            this.value = this.cachedValue.copy();
 
 
         this.updateValueObjects();
@@ -14947,6 +14956,15 @@ extends GOperator1
         return this.value
              ? this.value.copy()
              : null;
+    }
+
+
+
+    invalidateInputs(from)
+    {
+        super.invalidateInputs(from);
+
+        this.cachedValue = null;
     }
 }
 
@@ -17625,7 +17643,8 @@ extends GOperator
     inputs = [];
 
 
-    loopId = NULL;
+    iteration = 0;
+    loopId    = NULL;
 
 
 
@@ -17675,9 +17694,8 @@ extends GOperator
         }
             
 
-        const repeat    = parse.repeats.find(r => r.repeatId == this.loopId);
-        const iteration = repeat ? repeat.iteration : this.iteration;
- 
+        const iteration = this.iteration++;
+
 
         this.value = _values[iteration % _values.length];
 
@@ -17725,6 +17743,15 @@ extends GOperator
         super.invalidateInputs(from);
 
         this.inputs.forEach(i => i.invalidateInputs(from));
+    }
+
+
+
+    invalidateLoop(parse, nodeId)
+    {
+        super.invalidateLoop(parse, nodeId);
+
+        this.iteration = 0;
     }
 }
 
@@ -17787,7 +17814,7 @@ extends GOperator
     
 
         const repeat    = parse.repeats.find(r => r.repeatId == this.loopId);
-        const iteration = repeat ? repeat.iteration : this.iteration;
+        const iteration = repeat ? repeat.iteration : 0;
 
 
         let delta = end.toNumber() - start.toNumber();
@@ -17929,7 +17956,8 @@ extends GOperator
 
     current;
 
-    loopId = NULL;
+    iteration = 0;
+    loopId    = NULL;
 
 
 
@@ -17971,8 +17999,7 @@ extends GOperator
         const end   = (await this.end  .eval(parse)).toValue();
     
 
-        const repeat    = parse.repeats.find(r => r.repeatId == this.loopId);
-        const iteration = repeat ? repeat.iteration : this.iteration;
+        const iteration = this.iteration++;
 
 
         if (   start
@@ -18055,6 +18082,15 @@ extends GOperator
         if (this.end  ) this.end  .invalidateInputs(from);
         if (this.step ) this.step .invalidateInputs(from);
     }
+
+
+
+    invalidateLoop(parse, nodeId)
+    {
+        super.invalidateLoop(parse, nodeId);
+
+        this.iteration = 0;
+    }
 }
 
 
@@ -18072,9 +18108,9 @@ extends GOperator
 
     lastValue1   = -1;
     lastValue2   = -1;
-    randomOffset =  0;
     uniqueOffset =  0;
 
+    iteration    = 0;
     loopId       = NULL;
 
 
@@ -18109,7 +18145,7 @@ extends GOperator
         if (this.isCached())
             return this;
 
-
+            
         const seed   = (await this.seed  .eval(parse)).toValue();
         const min    = (await this.min   .eval(parse)).toValue();
         const max    = (await this.max   .eval(parse)).toValue();
@@ -18124,12 +18160,11 @@ extends GOperator
         }
 
 
-        const repeat    = parse.repeats.find(r => r.repeatId == this.loopId);
-        const iteration = repeat ? repeat.iteration : this.iteration;
+        const iteration = this.iteration++;
 
 
         this.value = new NumberValue(
-            min.value + this.random.get(iteration + this.randomOffset + this.uniqueOffset) * (max.value - min.value), 
+            min.value + this.random.get(iteration + this.uniqueOffset) * (max.value - min.value), 
             Math.max(min.decimals, max.decimals));
 
 
@@ -18141,7 +18176,7 @@ extends GOperator
             while (this.value.toNumber() == this.lastValue1
                 && this.randomUnique.get(iteration) < _unique)
                 this.value = new NumberValue(
-                    min.value + this.random.get(iteration + this.randomOffset + ++this.uniqueOffset) * (max.value - min.value),
+                    min.value + this.random.get(iteration + ++this.uniqueOffset) * (max.value - min.value),
                     Math.max(min.decimals, max.decimals));
         }
 
@@ -18151,7 +18186,7 @@ extends GOperator
                     || this.value.toNumber() == this.lastValue2)
                 && this.randomUnique.get(iteration) < Math.max(_unique - 1))
                 this.value = new NumberValue(
-                    min.value + this.random.get(iteration + this.randomOffset + ++this.uniqueOffset) * (max.value - min.value),
+                    min.value + this.random.get(iteration + ++this.uniqueOffset) * (max.value - min.value),
                     Math.max(min.decimals, max.decimals));
         }        
 
@@ -18223,8 +18258,8 @@ extends GOperator
     {
         super.invalidateLoop(parse, nodeId);
 
-        this.randomOffset = 0;
         this.uniqueOffset = 0;
+        this.iteration    = 0;
     }
 }
 
@@ -18241,10 +18276,10 @@ extends GOperator
     offset;
     detail;
 
-    random = null;
+    random    = null;
 
-
-    loopId = NULL;
+    iteration = 0;
+    loopId    = NULL;
 
 
 
@@ -18297,8 +18332,7 @@ extends GOperator
 
 
         
-        const repeat    = parse.repeats.find(r => r.repeatId == this.loopId);
-        const iteration = repeat ? repeat.iteration : this.iteration;
+        const iteration = this.iteration++;
 
 
         
@@ -18421,6 +18455,15 @@ extends GOperator
         if (this.interpolate) this.interpolate.invalidateInputs(from);
         if (this.detail     ) this.detail     .invalidateInputs(from);
     }
+
+
+
+    invalidateLoop(parse, nodeId)
+    {
+        super.invalidateLoop(parse, nodeId);
+
+        this.iteration = 0;
+    }
 }
 
 
@@ -18434,7 +18477,8 @@ extends GOperator
     random = null;
 
 
-    loopId = NULL;
+    iteration = 0;
+    loopId    = NULL;
 
 
 
@@ -18476,9 +18520,7 @@ extends GOperator
             this.random = new Random(seed.value);
 
 
-        
-        const repeat    = parse.repeats.find(r => r.repeatId == this.loopId);
-        const iteration = repeat ? repeat.iteration : this.iteration;
+        const iteration = this.iteration++;
 
 
         const r = 
@@ -18539,6 +18581,15 @@ extends GOperator
         if (this.seed  ) this.seed  .invalidateInputs(from);
         if (this.chance) this.chance.invalidateInputs(from);
     }
+
+
+
+    invalidateLoop(parse, nodeId)
+    {
+        //super.invalidateLoop(parse, nodeId);
+
+        this.iteration = 0;
+    }
 }
 
 
@@ -18588,9 +18639,6 @@ extends GOperator1
         if (this.input)
         {
             const input = (await this.input.eval(parse)).toValue();
-
-            //const repeat    = parse.repeats.find(r => r.repeatId == this.loopId);
-            //const iteration = repeat ? repeat.iteration : this.iteration;
 
             if (when.value == 0)
                 this.value = this.current.copy();

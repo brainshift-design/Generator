@@ -1,6 +1,10 @@
 class GCache
 extends GOperator1
 {
+    cachedValue = null;
+
+
+
     constructor(nodeId, options)
     {
         super(CACHE, nodeId, options);
@@ -27,10 +31,17 @@ extends GOperator1
             return this;
 
 
-        this.value = 
-            this.input 
-            ? (await this.input.eval(parse)).toValue() 
-            : NullValue;
+        if (!this.cachedValue)
+        {
+            this.value = 
+                this.input 
+                ? (await this.input.eval(parse)).toValue() 
+                : NullValue;
+
+            this.cachedValue = this.value.copy();
+        }
+        else
+            this.value = this.cachedValue.copy();
 
 
         this.updateValueObjects();
@@ -63,5 +74,14 @@ extends GOperator1
         return this.value
              ? this.value.copy()
              : null;
+    }
+
+
+
+    invalidateInputs(from)
+    {
+        super.invalidateInputs(from);
+
+        this.cachedValue = null;
     }
 }
