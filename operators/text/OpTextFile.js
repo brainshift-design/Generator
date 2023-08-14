@@ -54,8 +54,13 @@ extends ResizableBase
 
             getLocalFile(file => 
             {
+                const filePath = new TextValue(
+                    file.path != '' 
+                    ? file.path 
+                    : file.name);
+
                 this.file = file;
-                this.paramPath.setValue(new TextValue(file.path), false, true);
+                this.paramPath.setValue(filePath, false, true);
                 this.updateCachedValue(true);
             });
             

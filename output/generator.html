@@ -18129,7 +18129,7 @@ extends GOperator
 
 
         this.value = new NumberValue(
-            min.value + this.random.get(iteration + ++this.randomOffset + this.uniqueOffset) * (max.value - min.value), 
+            min.value + this.random.get(iteration + this.randomOffset + this.uniqueOffset) * (max.value - min.value), 
             Math.max(min.decimals, max.decimals));
 
 

@@ -1460,8 +1460,7 @@ function createHeaderTooltip(node)
 
             if (   node.showHeaderTooltip === true
                 && strTooltip != '')
-            
-            initTextTooltip(strTooltip);
+                initTextTooltip(strTooltip);
         }
     });
 
