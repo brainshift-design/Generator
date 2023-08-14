@@ -285,7 +285,7 @@ extends EventTarget
                 
                 if (createAction)
                 {
-                    //if (isGenerating)
+                    if (isGenerating)
                         stopRequestId = curRequestId;
 
                     actionManager.do(

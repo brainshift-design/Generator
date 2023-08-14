@@ -81,18 +81,26 @@ extends GOperator1
         }
 
 
-        this.setUpdateValues(parse,
-        [
-            ['value', this.value]
-        ]);
-        
-
+        if (!this.fills ) this.fills  = this.value.fills .copy();
         if (!this.weight) this.weight = this.value.weight.copy();
         if (!this.fit   ) this.fit    = this.value.fit   .copy();
         if (!this.join  ) this.join   = this.value.join  .copy();
         if (!this.miter ) this.miter  = this.value.miter .copy();
         if (!this.cap   ) this.cap    = this.value.cap   .copy();
         if (!this.dashes) this.dashes = this.value.dashes.copy();
+
+
+        this.setUpdateValues(parse,
+            [
+                ['value',  this.value],
+                ['fills',  fills     ],
+                ['weight', weight    ],
+                ['fit',    fit       ],
+                ['join',   join      ],
+                ['miter',  miter     ],
+                ['cap',    cap       ],
+                ['dashes', dashes    ]
+            ]);
 
 
         this.validate();

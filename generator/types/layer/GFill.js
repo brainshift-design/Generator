@@ -60,7 +60,10 @@ extends GOperator1
 
         this.setUpdateValues(parse,
         [
-            ['value', this.value]
+            ['value',   this.value],
+            ['color',   color     ],
+            ['opacity', opacity   ],
+            ['blend',   blend     ]
         ]);
         
 

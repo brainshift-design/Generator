@@ -25,7 +25,7 @@ extends OpColorBase
 
 
         this.checkersHolder = createDiv('nodeHeaderCheckersHolder');
-        this.checkers       = createDiv('nodeHeaderCheckers');
+        this.checkers       = createDiv('nodeHeaderCheckers'      );
         
         this.checkersHolder.appendChild(this.checkers);
         this.inner.insertBefore(this.checkersHolder, this.header);
@@ -42,6 +42,7 @@ extends OpColorBase
 
 
         this.paramColor.isNodeValue = true;
+        this.paramColor.controls[0].textbox.style.background = 'transparent';
         
         this.paramOpacity.controls[0].suffix = '%';
 
@@ -136,27 +137,24 @@ extends OpColorBase
 
     updateValues(requestId, actionId, updateParamId, paramIds, values)
     {
+        super.updateValues(requestId, actionId, updateParamId, paramIds, values);
+
         const value = values[paramIds.findIndex(id => id == 'value')];
 
-        this.paramColor  .setValue(value.color,   false, true, false);
-        this.paramOpacity.setValue(value.opacity, false, true, false);
-        this.paramBlend  .setValue(value.blend,   false, true, false);
+        // this.paramColor  .setValue(value.color,   false, true, false);
+        // this.paramOpacity.setValue(value.opacity, false, true, false);
+        // this.paramBlend  .setValue(value.blend,   false, true, false);
  
-
         this._color = 
             value.color.isValid()
             ? value.color.toDataColor()
             : dataColor_NaN;
-
 
         this.outputs[0].types =
                this.inputs[0].connected
             && this.inputs[0].connectedOutput.supportsTypes(SHAPE_TYPES)
             ? [...this.inputs[0].connectedOutput.types, FILL_VALUE]
             : [FILL_VALUE];
-
-
-        //super.updateValues(requestId, actionId, updateParamId, paramIds, values);
     }
 
 
@@ -258,7 +256,7 @@ extends OpColorBase
         }
         else
         {
-            colors.back       = !rgbIsNaN(colors.back      ) && !isNaN(opacity) ? rgb_a(colors.back,       opacity) : rgbDocumentBody;
+            colors.back       = !rgbIsNaN(colors.back      ) && !isNaN(opacity) ? rgb_a(colors.back,       opacity) : rgb_NaN;//rgbDocumentBody;
             colors.stripeBack = !rgbIsNaN(colors.stripeBack) && !isNaN(opacity) ? rgb_a(colors.stripeBack, opacity) : rgbDocumentBody;
             colors.text       = getTextColorFromBackColor(colors.stripeBack, colors.back[3]);
             colors.wire       = 
@@ -294,13 +292,13 @@ extends OpColorBase
 
         const colors = this.getHeaderColors();
         
-
-        if (   !rgbaIsNaN(colors.back)
-            && !rgbaIsNaN(colors.stripeBack)
+            
+        if (   !rgbIsNaN(colors.back)
             && this.paramOpacity.value.isValid())
         {
-            if (  !rgbIsValid(colors.back)
-                || this.forceShowWarning)
+            if (    rgbIsNaN(colors.back)
+                || !this.paramOpacity.value.isValid()
+                ||  this.forceShowWarning)
             {
                 if (!this.forceShowWarning)
                     this.warningStyle = getDefaultWarningStyle(colors.back);
@@ -322,24 +320,18 @@ extends OpColorBase
 
 function updateFillHeader(node, colors)
 {
-    node.header.style.background = 'transparent';
-
-
-    // node.header.style.background = 
-    //     !rgbaIsNaN(colors.stripeBack)
-    //     ? rgba2style(colors.stripeBack) 
-    //     : rgba2style(rgb_a(rgbDocumentBody, 0.95));
-
-
     const unknownBackStyle = darkMode ? '#444' : '#ccc';
 
+    
+    node.header.style.background = 'transparent';
 
     node.colorBack.style.background = 
         node.isUnknown()
         ? unknownBackStyle
-        : !rgbIsNaN(colors.stripeBack)
-          ? rgba2style(colors.stripeBack)
-          : rgba2style(rgb_a(rgbDocumentBody, 0.95));
+        : (  !rgbIsNaN(colors.stripeBack)
+           && node.paramOpacity.value.isValid()
+           ? rgba2style(colors.stripeBack)
+           : rgba2style(rgb_a(rgbDocumentBody, 0.95)));
 
     node.colorBack.style.backgroundImage = 
         node.isUnknown()
@@ -352,7 +344,8 @@ function updateFillHeader(node, colors)
     node.colorBack.style.backgroundRepeat   = 'no-repeat';
 
 
-    if (node.isUnknown())
+    if (    node.isUnknown()
+        || !node.paramOpacity.value.isValid())
         node.checkers.style.display = 'none';
 
     else
@@ -397,7 +390,8 @@ function updateFillHeader(node, colors)
             : [0, 0, 0, 0.12];
 
         node.warningStyle = 
-            rgbIsValid(colors.back) 
+               rgbIsValid(colors.back) 
+            && node.paramOpacity.value.isValid()
             ? 'transparent' 
             :  rgba2style(colWarning);
 

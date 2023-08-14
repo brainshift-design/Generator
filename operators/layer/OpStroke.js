@@ -22,14 +22,15 @@ extends OpColorBase
         this.iconOffsetY = 1;
         
 
-        this.colorBack      = createDiv('colorBack');
+        this.colorBack = createDiv('colorBack');
+        this.inner.insertBefore(this.colorBack, this.paramHolder);
+        
         this.checkersHolder = createDiv('nodeHeaderCheckersHolder');
         this.checkers       = createDiv('nodeHeaderCheckers');
         
-        this.inner.appendChild(this.colorBack);
+        this.checkersHolder.appendChild(this.checkers);
         this.inner.insertBefore(this.checkersHolder, this.header);
 
-        this.checkersHolder.appendChild(this.checkers);
 
 
         this.addInput (new Input ([STROKE_VALUE], getNodeInputValuesForUndo));
@@ -135,90 +136,89 @@ extends OpColorBase
 
     updateValues(requestId, actionId, updateParamId, paramIds, values)
     {
+        super.updateValues(requestId, actionId, updateParamId, paramIds, values);
+
         this.outputs[0].types =
                this.inputs[0].connected
             && this.inputs[0].connectedOutput.supportsTypes(SHAPE_TYPES)
             ? [...this.inputs[0].connectedOutput.types, STROKE_VALUE]
             : [STROKE_VALUE];
-
-
-            const value = values[paramIds.findIndex(id => id == 'value')];
-
-            this.paramFills .setValue(value.fills,  false, true, false);
-            this.paramWeight.setValue(value.weight, false, true, false);
-            this.paramFit   .setValue(value.fit,    false, true, false);
-            this.paramJoin  .setValue(value.join,   false, true, false);
-            this.paramMiter .setValue(value.miter,  false, true, false);
-            this.paramCap   .setValue(value.cap,    false, true, false);
-            this.paramDashes.setValue(value.dashes, false, true, false);
-
-
-            // super.updateValues(requestId, actionId, updateParamId, paramIds, values);
     }
 
 
 
-    // updateHeader()
-    // {
-    //     //console.log(this.id + '.OpStroke.updateHeader()');
+    updateHeader()
+    {
+        //console.log(this.id + '.OpStroke.updateHeader()');
 
-    //     Operator.prototype.updateHeader.call(this);
-
-
-    //     const colors = this.getHeaderColors();
+        Operator.prototype.updateHeader.call(this);
 
 
-    //     this.header.style.background = 
-    //         !rgbaIsNaN(colors.stripeBack)
-    //         ? rgba2style(colors.stripeBack) 
-    //         : 'transparent';
+        const colors           = this.getHeaderColors();
 
-    //     this.colorBack.style.background = 
-    //         rgbIsOk(colors.stripeBack) //!rgbIsNaN(colors.back)
-    //         ? rgb2style(colors.stripeBack)
-    //         : rgba2style(rgb_a(rgbDocumentBody, 0.95));
+        const unknownBackStyle = darkMode ? '#444' : '#ccc';
 
 
-    //     this.colorBack.style.height = this.measureData.headerOffset.height;
+        this.header.style.background = 'transparent';
 
+        this.colorBack.style.background = 
+            this.isUnknown()
+            ? unknownBackStyle
+            : (!rgbIsNaN(colors.stripeBack) //!rgbIsNaN(colors.back)
+               ? rgba2style(colors.stripeBack)
+               : rgba2style(rgb_a(rgbDocumentBody, 0.95)));
+
+
+        this.colorBack.style.height = this.measureData.headerOffset.height;
+
+        
+        const fills = this.paramFills.value.items;
             
-    //     this.checkers.style.height = this.header.offsetHeight;
+        if (    this.isUnknown()
+            ||  fills.length == 0
+            || !fills[0].isValid())
+            this.checkers.style.display = 'none';
 
-    //     this.checkers.style.background =
-    //         darkMode
-    //         ?   'linear-gradient(45deg, #222 25%, transparent 25%, transparent 75%, #222 75%), '
-    //           + 'linear-gradient(45deg, #222 25%, transparent 25%, transparent 75%, #222 75%)'
-    //         :   'linear-gradient(45deg, #ddd 25%, transparent 25%, transparent 75%, #ddd 75%), '
-    //           + 'linear-gradient(45deg, #ddd 25%, transparent 25%, transparent 75%, #ddd 75%)';
+        else
+        {
+            this.checkers.style.height = this.header.offsetHeight;
 
-    //     this.checkers.style.display            = !rgbIsNaN(colors.back) ? 'inline-block' : 'none';
-    //     this.checkers.style.backgroundColor    = darkMode ? '#444' : '#fff';
+            this.checkers.style.background =
+                darkMode
+                ?   'linear-gradient(45deg, #222 25%, transparent 25%, transparent 75%, #222 75%), '
+                  + 'linear-gradient(45deg, #222 25%, transparent 25%, transparent 75%, #222 75%)'
+                :   'linear-gradient(45deg, #ddd 25%, transparent 25%, transparent 75%, #ddd 75%), '
+                  + 'linear-gradient(45deg, #ddd 25%, transparent 25%, transparent 75%, #ddd 75%)';
 
-    //     this.checkers.style.backgroundSize     = '22px 22px';
-    //     this.checkers.style.backgroundPosition = '0 0, 11px 11px';
-                        
-    //     this.checkers.style.left               = '-3px';
-    //     this.checkers.style.width              = 'calc(100% + 3px)';
+            this.checkers.style.display            = !rgbIsNaN(colors.stripeBack) ? 'inline-block' : 'none';
+            this.checkers.style.backgroundColor    = darkMode ? '#444' : '#fff';
 
-
-    //     this.header.style.background = 
-    //         !rgbIsNaN(colors.stripeBack)
-    //         ? rgba2style(colors.stripeBack) 
-    //         : 'transparent';
-
-
-    //     this.inputs[0] .colorLight = 
-    //     this.inputs[0] .colorDark  = colors.input;
-    //     this.inputs[0] .wireColor  = colors.wire;
-
-    //     this.outputs[0].colorLight =
-    //     this.outputs[0].colorDark  = colors.output;
-    //     this.outputs[0].wireColor  = colors.wire;
+            this.checkers.style.backgroundSize     = '22px 22px';
+            this.checkers.style.backgroundPosition = '0 0, 11px 11px';
+                            
+            this.checkers.style.left               = '-3px';
+            this.checkers.style.width              = 'calc(100% + 3px)';
+        }
 
 
-    //     this.updateWarningOverlay();
-    //     this.updateWarningOverlayStyle(colors.back, 45);
-    // }
+        // this.header.style.background = 
+        //     !rgbIsNaN(colors.stripeBack)
+        //     ? rgba2style(colors.stripeBack) 
+        //     : 'transparent';
+
+
+        this.inputs[0] .colorLight = 
+        this.inputs[0] .colorDark  = colors.input;
+        this.inputs[0] .wireColor  = colors.wire;
+
+        this.outputs[0].colorLight =
+        this.outputs[0].colorDark  = colors.output;
+        this.outputs[0].wireColor  = colors.wire;
+
+
+        this.updateWarningOverlay();
+        this.updateWarningOverlayStyle(colors.back, 45);
+    }
 
 
 
@@ -246,37 +246,78 @@ extends OpColorBase
         this.paramJoin  .enableControlText(enable,      this.paramJoin  .isUnknown());
         this.paramMiter .enableControlText(enable,      this.paramMiter .isUnknown());
 
+
+        const fills = this.paramFills.value.items;
+
+        if (   fills.length > 0
+            && fills[0].isValid())
+            this.checkersHolder.style.opacity = (100 - fills[0].opacity.toNumber()) + '%';
+
+
         this.updateParamControls();
     }
 
     
 
-    // getHeaderColors(options = {})
-    // {
-    //     const colors = super.getHeaderColors();
+    getHeaderColors(options = {})
+    {
+        const colors = super.getHeaderColors();
+        const fills  = this.paramFills.value.items;
 
-    //     if (this.paramFills.value)
-    //     {
-    //         colors.back       = rgb_a(colors.back, this.paramFills.value.opacity.value/100);
-    //         colors.stripeBack = rgb_a(colors.stripeBack, this.paramFills.value.opacity.value/100);
-    //         colors.text       = getTextColorFromBackColor(colors.stripeBack, this.paramFills.value.opacity.value/100);
-    //         colors.input      = rgb_a(colors.text, 0.2);
-    //         colors.output     = rgb_a(colors.text, 0.2);
 
-    //         colors.wire = 
-    //             !rgbaIsNaN(colors.stripeBack)
-    //             ? colors.stripeBack
-    //             : rgbFromType(ANY_VALUE, true);
-    //     }
-    //     else
-    //     {
-    //         colors.back = document
-    //     }
+        if (   fills.length > 0
+            && fills[0].isValid())
+        {
+            colors.back       = fills[0].isValid() ? fills[0].toRgba() : rgba_NaN;
+            colors.stripeBack = fills[0].isValid() ? fills[0].toRgba() : rgba_NaN;
+            colors.text       = getTextColorFromBackColor(colors.stripeBack, fills[0].opacity.value/100);
+            colors.input      = rgb_a(colors.text, 0.2);
+            colors.output     = rgb_a(colors.text, 0.2);
+
+            colors.wire = 
+                !rgbaIsNaN(colors.stripeBack)
+                ? colors.stripeBack
+                : rgbFromType(ANY_VALUE, true);
+        }
+        else
+        {
+            colors.back = rgbDocumentBody;
+        }
 
         
 
-    //     return colors;
-    // }
+        return colors;
+    }
+
+
+
+    updateWarningOverlay() 
+    {
+        //console.log(this.id + '.updateWarningOverlay()');
+
+        const colors = this.getHeaderColors();
+        
+            
+        if (this.paramFills.value.isValid())
+        {
+            if (    rgbIsNaN(colors.back)
+                || !this.paramFills.value.isValid()
+                ||  this.forceShowWarning)
+            {
+                if (!this.forceShowWarning)
+                    this.warningStyle = getDefaultWarningStyle(colors.back);
+
+                this.updateWarningOverlayStyle(colors.back);
+            }
+            else
+                this._warningOverlay.style.display = 'none';
+        }
+        else
+        {
+            this.warningStyle = getDefaultWarningStyle(colors.back);
+            this.updateWarningOverlayStyle(colors.back);
+        }
+    }
 
 
 
