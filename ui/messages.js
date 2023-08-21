@@ -242,7 +242,9 @@ function uiEndGenMessage()
 function uiQueueMessageToGenerator(msg)
 {
     genMessages.push(msg);
-    uiPostNextMessageToGenerator();
+    
+    if (!genMessagePosted)
+        uiPostNextMessageToGenerator();
 }
 
 
@@ -260,8 +262,8 @@ function uiPostNextMessageToGenerator()
         // move along the queue since only the last message is important
         while (genMessages.length > 1
             && genMessages[1].cmd        == msg.cmd
-            && genMessages[1].request[2] == msg.request[2]
-            && genMessages[1].request[3] == msg.request[3])
+            && genMessages[1].request[3] == msg.request[3]
+            && genMessages[1].request[4] == msg.request[4])
         {
             genMessages.shift();
             msg = genMessages[0];

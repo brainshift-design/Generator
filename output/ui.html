@@ -4867,6 +4867,7 @@ a
                 <p>•  improved performance</p>
                 <p>•  long repeat calculations can now be aborted</p>
                 <p>•  Ctrl/Cmd+Enter now reactivates currently active nodes</p>
+                <p>•  simplified sets, now they generate only one value per loop iteration</p>
                 <p>•  small UI improvements</p>
                 <p>•  fixed various node bugs</p>
                 
@@ -37398,28 +37399,43 @@ var figUniqueFontNames  = [];
 // --> from UI
 ///////////////////////////////////////////////////////////////////////////////////////////////////
 
+var lastMessage = null;
+
+
 onmessage = function(e)
 {
     const msg = JSON.parse(e.data);
 
 
-    // processMessage(msg).next();
-    switch (msg.cmd)
+    if (msg.cmd == 'returnUiGetValue') // ignore this message in the queue
+        return;
+    
+
+    if (msg.cmd == 'genRequest')
     {
-        case 'initFonts':              initFonts(msg.fonts, msg.uniqueFontNames); break;
-     
-        case 'genRequest':             genRequest(msg.request, msg.save); break;
+        if (   lastMessage
+            && lastMessage.cmd == 'genRequest')
+            return;
 
-        //case 'genFetchResponse':     genFetchResponse(msg.result, msg.response); break;
 
-        case 'genEndUiMessage':        genEndUiMessage (msg.msgCmd); break;
-        case 'genEndFigMessage':       genEndFigMessage();           break;
+        genRequest(msg.request, msg.save);         
+    }
+    else
+    {
+        switch (msg.cmd)
+        {
+            case 'initFonts':        initFonts(msg.fonts, msg.uniqueFontNames); break;
+        
+            case 'genEndUiMessage':  genEndUiMessage (msg.msgCmd);              break;
+            case 'genEndFigMessage': genEndFigMessage();                        break;
+        }
 
-        // case 'returnFigGetObjectSize': genReturnFigGetObjectSize(msg.objectId, msg.width, msg.height); break;
+        lastMessage = null;
     }
 
 
-    genPostMessageToUi({
+    genPostMessageToUi(
+    {
         cmd:   'uiEndGenMessage',
         msgCmd: msg.cmd
     });
@@ -37588,10 +37604,11 @@ function genRequest(request, save)
 
             if (parse.stop()) 
             {
-                genQueueMessageToUi({cmd: 'uiEndGlobalProgress'});
+                genPostMessageToUi({cmd: 'uiEndRequest', requestId: requestId});
+                genPostMessageToUi({cmd: 'uiEndGlobalProgress'});
                 return; 
             }
-    } 
+        } 
 
 
         if (!parse.stop()) 
@@ -37602,14 +37619,16 @@ function genRequest(request, save)
 
                 if (parse.stop()) 
                 {
-                    genQueueMessageToUi({cmd: 'uiEndGlobalProgress'});
+                    genPostMessageToUi({cmd: 'uiEndRequest', requestId: requestId});
+                    genPostMessageToUi({cmd: 'uiEndGlobalProgress'});
                     return; 
                 }
             }
         }
         else
         {
-            genQueueMessageToUi({cmd: 'uiEndGlobalProgress'});
+            genPostMessageToUi({cmd: 'uiEndRequest', requestId: requestId});
+            genPostMessageToUi({cmd: 'uiEndGlobalProgress'});
             return;
         }
 
@@ -84775,17 +84794,7 @@ TextControl.prototype.initTextarea = function(textbox)
 
     this.textbox.addEventListener('input', e =>
     {
-        //console.log('this.textbox.managing =', this.textbox.managing);
-        this.setValue(
-            this.textbox.value, 
-            true, //!this.textbox.managing, 
-            true);
-
-        //this.textbox.managing = false;
-
-        // if (this.param) this.param.changing = true;
-        // if (this.confirmTimer) clearTimeout(this.confirmTimer);
-        // this.confirmTimer = setTimeout(() => controlTimer_confirm(this), 400);
+        this.setValue(this.textbox.value, true, true);
     });
 
 
@@ -125756,7 +125765,9 @@ function uiEndGenMessage()
 function uiQueueMessageToGenerator(msg)
 {
     genMessages.push(msg);
-    uiPostNextMessageToGenerator();
+    
+    if (!genMessagePosted)
+        uiPostNextMessageToGenerator();
 }
 
 
@@ -125774,8 +125785,8 @@ function uiPostNextMessageToGenerator()
         // move along the queue since only the last message is important
         while (genMessages.length > 1
             && genMessages[1].cmd        == msg.cmd
-            && genMessages[1].request[2] == msg.request[2]
-            && genMessages[1].request[3] == msg.request[3])
+            && genMessages[1].request[3] == msg.request[3]
+            && genMessages[1].request[4] == msg.request[4])
         {
             genMessages.shift();
             msg = genMessages[0];
@@ -126958,7 +126969,7 @@ function resolveConnections(nodes, _connections, first, last)
     {
         if (c1.inputNodeId != c2.inputNodeId) return c1.inputNodeId - c2.inputNodeId;
         if (c1.inputId     != c2.inputId    ) return c1.inputId     - c2.inputId;
-        if (c1.outputOrder != c2.outputOrder) return c1.outputOrder - c2.outputOrder;
+        //if (c1.outputOrder != c2.outputOrder) return c1.outputOrder - c2.outputOrder;
         return 0;
     });
 

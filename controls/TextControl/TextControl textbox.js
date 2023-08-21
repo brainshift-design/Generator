@@ -137,17 +137,7 @@ TextControl.prototype.initTextarea = function(textbox)
 
     this.textbox.addEventListener('input', e =>
     {
-        //console.log('this.textbox.managing =', this.textbox.managing);
-        this.setValue(
-            this.textbox.value, 
-            true, //!this.textbox.managing, 
-            true);
-
-        //this.textbox.managing = false;
-
-        // if (this.param) this.param.changing = true;
-        // if (this.confirmTimer) clearTimeout(this.confirmTimer);
-        // this.confirmTimer = setTimeout(() => controlTimer_confirm(this), 400);
+        this.setValue(this.textbox.value, true, true);
     });
 
 

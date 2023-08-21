@@ -11,28 +11,43 @@ var figUniqueFontNames  = [];
 // --> from UI
 ///////////////////////////////////////////////////////////////////////////////////////////////////
 
+var lastMessage = null;
+
+
 onmessage = function(e)
 {
     const msg = JSON.parse(e.data);
 
 
-    // processMessage(msg).next();
-    switch (msg.cmd)
+    if (msg.cmd == 'returnUiGetValue') // ignore this message in the queue
+        return;
+    
+
+    if (msg.cmd == 'genRequest')
     {
-        case 'initFonts':              initFonts(msg.fonts, msg.uniqueFontNames); break;
-     
-        case 'genRequest':             genRequest(msg.request, msg.save); break;
+        if (   lastMessage
+            && lastMessage.cmd == 'genRequest')
+            return;
 
-        //case 'genFetchResponse':     genFetchResponse(msg.result, msg.response); break;
 
-        case 'genEndUiMessage':        genEndUiMessage (msg.msgCmd); break;
-        case 'genEndFigMessage':       genEndFigMessage();           break;
+        genRequest(msg.request, msg.save);         
+    }
+    else
+    {
+        switch (msg.cmd)
+        {
+            case 'initFonts':        initFonts(msg.fonts, msg.uniqueFontNames); break;
+        
+            case 'genEndUiMessage':  genEndUiMessage (msg.msgCmd);              break;
+            case 'genEndFigMessage': genEndFigMessage();                        break;
+        }
 
-        // case 'returnFigGetObjectSize': genReturnFigGetObjectSize(msg.objectId, msg.width, msg.height); break;
+        lastMessage = null;
     }
 
 
-    genPostMessageToUi({
+    genPostMessageToUi(
+    {
         cmd:   'uiEndGenMessage',
         msgCmd: msg.cmd
     });

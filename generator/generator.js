@@ -75,10 +75,11 @@ function genRequest(request, save)
 
             if (parse.stop()) 
             {
-                genQueueMessageToUi({cmd: 'uiEndGlobalProgress'});
+                genPostMessageToUi({cmd: 'uiEndRequest', requestId: requestId});
+                genPostMessageToUi({cmd: 'uiEndGlobalProgress'});
                 return; 
             }
-    } 
+        } 
 
 
         if (!parse.stop()) 
@@ -89,14 +90,16 @@ function genRequest(request, save)
 
                 if (parse.stop()) 
                 {
-                    genQueueMessageToUi({cmd: 'uiEndGlobalProgress'});
+                    genPostMessageToUi({cmd: 'uiEndRequest', requestId: requestId});
+                    genPostMessageToUi({cmd: 'uiEndGlobalProgress'});
                     return; 
                 }
             }
         }
         else
         {
-            genQueueMessageToUi({cmd: 'uiEndGlobalProgress'});
+            genPostMessageToUi({cmd: 'uiEndRequest', requestId: requestId});
+            genPostMessageToUi({cmd: 'uiEndGlobalProgress'});
             return;
         }
 
