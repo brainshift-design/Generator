@@ -6,7 +6,8 @@ var figStyleArrays  = new Array(); // [ {nodeId, [styles]}  ]
 function figDeleteObjectsFromNodeIds(nodeIds)
 {
     for (let i = figPoints.length-1; i >= 0; i--)
-        if (nodeIds.includes(figPoints[i].getPluginData('nodeId')))
+        if (  !figPoints[i].removed
+            && nodeIds.includes(figPoints[i].getPluginData('nodeId')))
             figPoints.splice(i, 1);
 
     for (let i = figEmptyObjects.length-1; i >= 0; i--)
@@ -27,6 +28,9 @@ function figDeleteAllObjects(forceDelete = false)
 {
     for (const obj of figma.currentPage.children)
     {
+        if (obj.removed)
+            continue;
+
         if (    obj.getPluginData('objectId') != ''
             && (   obj.getPluginData('retain') == '0'
                 || forceDelete)

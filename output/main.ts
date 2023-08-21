@@ -2171,7 +2171,8 @@ var figStyleArrays  = new Array(); // [ {nodeId, [styles]}  ]
 function figDeleteObjectsFromNodeIds(nodeIds)
 {
     for (let i = figPoints.length-1; i >= 0; i--)
-        if (nodeIds.includes(figPoints[i].getPluginData('nodeId')))
+        if (  !figPoints[i].removed
+            && nodeIds.includes(figPoints[i].getPluginData('nodeId')))
             figPoints.splice(i, 1);
 
     for (let i = figEmptyObjects.length-1; i >= 0; i--)
@@ -2192,6 +2193,9 @@ function figDeleteAllObjects(forceDelete = false)
 {
     for (const obj of figma.currentPage.children)
     {
+        if (obj.removed)
+            continue;
+
         if (    obj.getPluginData('objectId') != ''
             && (   obj.getPluginData('retain') == '0'
                 || forceDelete)
@@ -3504,7 +3508,8 @@ async function figUpdateObjects(figParent, genObjects, nodeIds = [], firstChunk 
             || figObj.removed) // no existing object, create new one
             await figCreateObject(genObj, addObject);
 
-        else if (figObj.getPluginData('type') == genObj[FO_TYPE].toString()) // update existing object
+        else if (!figObj.removed
+               && figObj.getPluginData('type') == genObj[FO_TYPE].toString()) // update existing object
             await figUpdateObject(figObj, genObj);
     
         else // delete existing object, create new one
@@ -3529,7 +3534,7 @@ async function figUpdateObjects(figParent, genObjects, nodeIds = [], firstChunk 
     {
         for (const figObj of figParent.children)
             if (    figObj.removed
-                && !genObjects.find(o => o[FO_OBJECT_ID] == figObj.getPluginData('objectId')))
+                || !genObjects.find(o => o[FO_OBJECT_ID] == figObj.getPluginData('objectId')))
                 figObj.remove();
     }
 

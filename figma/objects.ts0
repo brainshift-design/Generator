@@ -179,7 +179,8 @@ async function figUpdateObjects(figParent, genObjects, nodeIds = [], firstChunk 
             || figObj.removed) // no existing object, create new one
             await figCreateObject(genObj, addObject);
 
-        else if (figObj.getPluginData('type') == genObj[FO_TYPE].toString()) // update existing object
+        else if (!figObj.removed
+               && figObj.getPluginData('type') == genObj[FO_TYPE].toString()) // update existing object
             await figUpdateObject(figObj, genObj);
     
         else // delete existing object, create new one
@@ -204,7 +205,7 @@ async function figUpdateObjects(figParent, genObjects, nodeIds = [], firstChunk 
     {
         for (const figObj of figParent.children)
             if (    figObj.removed
-                && !genObjects.find(o => o[FO_OBJECT_ID] == figObj.getPluginData('objectId')))
+                || !genObjects.find(o => o[FO_OBJECT_ID] == figObj.getPluginData('objectId')))
                 figObj.remove();
     }
 
