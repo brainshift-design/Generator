@@ -123,10 +123,10 @@ extends GAffine
 
 
 
-    invalidateInputs(from)
+    invalidateInputs(parse, from)
     {
-        super.invalidateInputs(from)
+        super.invalidateInputs(parse, from)
 
-        if (this.angle) this.angle.invalidateInputs(from);
+        if (this.angle) this.angle.invalidateInputs(parse, from);
     }
 }

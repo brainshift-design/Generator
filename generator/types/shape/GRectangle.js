@@ -168,10 +168,10 @@ extends GShape
 
 
 
-    invalidateInputs(from)
+    invalidateInputs(parse, from)
     {
-        super.invalidateInputs(from);
+        super.invalidateInputs(parse, from);
 
-        if (this.round) this.round.invalidateInputs(from);
+        if (this.round) this.round.invalidateInputs(parse, from);
     }
 }

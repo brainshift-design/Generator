@@ -286,21 +286,21 @@ extends GShape
 
 
 
-    invalidateInputs(from)
+    invalidateInputs(parse, from)
     {
-        super.invalidateInputs(from);
+        super.invalidateInputs(parse, from);
         
-        if (this.text         ) this.text         .invalidateInputs(from);
-        if (this.x            ) this.x            .invalidateInputs(from);
-        if (this.y            ) this.y            .invalidateInputs(from);
-        if (this.width        ) this.width        .invalidateInputs(from);
-        if (this.height       ) this.height       .invalidateInputs(from);
-        if (this.font         ) this.font         .invalidateInputs(from);
-        if (this.style        ) this.style        .invalidateInputs(from);
-        if (this.size         ) this.size         .invalidateInputs(from);
-        if (this.alignH       ) this.alignH       .invalidateInputs(from);
-        if (this.alignV       ) this.alignV       .invalidateInputs(from);
-        if (this.lineHeight   ) this.lineHeight   .invalidateInputs(from);
-        if (this.letterSpacing) this.letterSpacing.invalidateInputs(from);
+        if (this.text         ) this.text         .invalidateInputs(parse, from);
+        if (this.x            ) this.x            .invalidateInputs(parse, from);
+        if (this.y            ) this.y            .invalidateInputs(parse, from);
+        if (this.width        ) this.width        .invalidateInputs(parse, from);
+        if (this.height       ) this.height       .invalidateInputs(parse, from);
+        if (this.font         ) this.font         .invalidateInputs(parse, from);
+        if (this.style        ) this.style        .invalidateInputs(parse, from);
+        if (this.size         ) this.size         .invalidateInputs(parse, from);
+        if (this.alignH       ) this.alignH       .invalidateInputs(parse, from);
+        if (this.alignV       ) this.alignV       .invalidateInputs(parse, from);
+        if (this.lineHeight   ) this.lineHeight   .invalidateInputs(parse, from);
+        if (this.letterSpacing) this.letterSpacing.invalidateInputs(parse, from);
     }
 }

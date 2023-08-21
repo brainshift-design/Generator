@@ -79,9 +79,9 @@ extends GOperator
         {
             const sd = delta ? start.value/delta : 0;
 
-                 if (from.value == 2) f = sd + repeat.index/repeat.total;
-            else if (from.value == 1) f = sd + (repeat.total > 1 ? repeat.index/(repeat.total-1) : 0);
-            else if (from.value == 0) f = sd + repeat.index/repeat.total;
+                 if (from.value == 2) f = sd + iteration/repeat.total;
+            else if (from.value == 1) f = sd + (repeat.total > 1 ? iteration/(repeat.total-1) : 0);
+            else if (from.value == 0) f = sd + iteration/repeat.total;
         }
         else
             f = 0;
@@ -171,14 +171,14 @@ extends GOperator
 
 
 
-    invalidateInputs(from)
+    invalidateInputs(parse, from)
     {
-        super.invalidateInputs(from);
+        super.invalidateInputs(parse, from);
 
-        if (this.from  ) this.from  .invalidateInputs(from);
-        if (this.start ) this.start .invalidateInputs(from);
-        if (this.end   ) this.end   .invalidateInputs(from);
-        if (this.spread) this.spread.invalidateInputs(from);
-        if (this.bias  ) this.bias  .invalidateInputs(from);
+        if (this.from  ) this.from  .invalidateInputs(parse, from);
+        if (this.start ) this.start .invalidateInputs(parse, from);
+        if (this.end   ) this.end   .invalidateInputs(parse, from);
+        if (this.spread) this.spread.invalidateInputs(parse, from);
+        if (this.bias  ) this.bias  .invalidateInputs(parse, from);
     }
 }

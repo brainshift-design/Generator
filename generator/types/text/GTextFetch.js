@@ -96,11 +96,11 @@ extends GOperator
 
 
 
-    invalidateInputs(from)
+    invalidateInputs(parse, from)
     {
-        super.invalidateInputs(from);
+        super.invalidateInputs(parse, from);
 
-        if (this.request) this.request.invalidateInputs(from);
+        if (this.request) this.request.invalidateInputs(parse, from);
 
         this.cachedValue = new TextValue();
     }

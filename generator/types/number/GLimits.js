@@ -106,12 +106,12 @@ extends GOperator1
 
 
 
-    invalidateInputs(from)
+    invalidateInputs(parse, from)
     {
-        super.invalidateInputs(from);
+        super.invalidateInputs(parse, from);
 
-        if (this.input) this.input.invalidateInputs(from);
-        if (this.min  ) this.min  .invalidateInputs(from);
-        if (this.max  ) this.max  .invalidateInputs(from);
+        if (this.input) this.input.invalidateInputs(parse, from);
+        if (this.min  ) this.min  .invalidateInputs(parse, from);
+        if (this.max  ) this.max  .invalidateInputs(parse, from);
     }
 }

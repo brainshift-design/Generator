@@ -96,11 +96,11 @@ extends GOperator2
 
 
 
-    invalidateInputs(from)
+    invalidateInputs(parse, from)
     {
-        super.invalidateInputs(from);
+        super.invalidateInputs(parse, from);
 
-        if (this.distance) this.distance.invalidateInputs(from);
-        if (this.angle   ) this.angle   .invalidateInputs(from);
+        if (this.distance) this.distance.invalidateInputs(parse, from);
+        if (this.angle   ) this.angle   .invalidateInputs(parse, from);
     }
 }

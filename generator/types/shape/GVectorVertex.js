@@ -162,14 +162,14 @@ extends GOperator1
 
 
 
-    invalidateInputs(from)
+    invalidateInputs(parse, from)
     {
-        super.invalidateInputs(from);
+        super.invalidateInputs(parse, from);
 
-        if (this.x    ) this.x    .invalidateInputs(from);
-        if (this.y    ) this.y    .invalidateInputs(from);
-        if (this.join ) this.join .invalidateInputs(from);
-        if (this.cap  ) this.cap  .invalidateInputs(from);
-        if (this.round) this.round.invalidateInputs(from);
+        if (this.x    ) this.x    .invalidateInputs(parse, from);
+        if (this.y    ) this.y    .invalidateInputs(parse, from);
+        if (this.join ) this.join .invalidateInputs(parse, from);
+        if (this.cap  ) this.cap  .invalidateInputs(parse, from);
+        if (this.round) this.round.invalidateInputs(parse, from);
     }
 }

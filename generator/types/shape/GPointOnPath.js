@@ -122,13 +122,13 @@ extends GOperator2
 
 
 
-    invalidateInputs(from)
+    invalidateInputs(parse, from)
     {
-        super.invalidateInputs(from);
+        super.invalidateInputs(parse, from);
 
-        if (this.measure   ) this.measure   .invalidateInputs(from);
-        if (this.amount    ) this.amount    .invalidateInputs(from);
-        if (this.transform ) this.transform .invalidateInputs(from);
-        if (this.showCenter) this.showCenter.invalidateInputs(from);
+        if (this.measure   ) this.measure   .invalidateInputs(parse, from);
+        if (this.amount    ) this.amount    .invalidateInputs(parse, from);
+        if (this.transform ) this.transform .invalidateInputs(parse, from);
+        if (this.showCenter) this.showCenter.invalidateInputs(parse, from);
     }
 }

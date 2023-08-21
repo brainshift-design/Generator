@@ -107,13 +107,13 @@ extends GOperator1
 
 
 
-    invalidateInputs(from)
+    invalidateInputs(parse, from)
     {
-        super.invalidateInputs(from);
+        super.invalidateInputs(parse, from);
 
-        if (this.startPad  ) this.startPad  .invalidateInputs(from);
-        if (this.startCount) this.startCount.invalidateInputs(from);
-        if (this.endPad    ) this.endPad    .invalidateInputs(from);
-        if (this.endCount  ) this.endCount  .invalidateInputs(from);
+        if (this.startPad  ) this.startPad  .invalidateInputs(parse, from);
+        if (this.startCount) this.startCount.invalidateInputs(parse, from);
+        if (this.endPad    ) this.endPad    .invalidateInputs(parse, from);
+        if (this.endCount  ) this.endCount  .invalidateInputs(parse, from);
     }
 }

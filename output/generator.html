@@ -8082,12 +8082,13 @@ class GNode
 
 
 
-    invalidateInputs(from)
+    invalidateInputs(parse, from)
     {
-        if (    this.options
-            &&  this.options.unknown)
-            //&& !this.options.cached)
+        if (   this.options
+            && this.options.unknown)
             this.valid = false;
+
+        this.iterateLoop(parse);
 
         return true;
     }
@@ -8096,39 +8097,35 @@ class GNode
 
     initLoop(parse, nodeId)
     {
-        let _this = this;
-
-        if (_this.type == PARAM)
-            _this = parse.parsedNodes.find(n => n.nodeId == _this.nodeId);
-
-        _this.loopId    = nodeId;
-        _this.iteration = 0;
+        this.loopId    = nodeId;
+        this.iteration = 0;
     }
 
 
 
     invalidateLoop(parse, nodeId)
     {
-        let _this = this;
+        this.valid = false;
+    }
 
-        if (_this.type == PARAM)
-            _this = parse.parsedNodes.find(n => n.nodeId == _this.nodeId);
 
-        _this.valid = false;
+
+    iterateLoop(parse)
+    {
+        const repeatIndex = parse.repeats.findIndex(r => r.repeatId == this.loopId);
+        
+        if (   repeatIndex < 0
+            || repeatIndex == parse.repeats.length-1)
+            this.iteration++;
     }
 
 
 
     resetLoop(parse, nodeId)
     {
-        let _this = this;
-
-        if (_this.type == PARAM)
-            _this = parse.parsedNodes.find(n => n.nodeId == _this.nodeId);
-
-        _this.valid     = false;
-        _this.iteration = 0;
-    }
+        this.valid     = false;
+        this.iteration = 0;
+    }    
 }
 
 
@@ -8464,7 +8461,7 @@ extends GNode
     {
         if (    parse.repeats.length == 0
             || !this.options.unknown
-            ||  parse.repeats.at(-1).index == parse.repeats.at(-1).total-1)
+            ||  parse.repeats.at(-1).iteration == parse.repeats.at(-1).total-1)
         {
             if (add) this.updateValues.push(...values);
             else     this.updateValues = [...values];
@@ -8572,11 +8569,11 @@ extends GOperator
 
 
 
-    invalidateInputs(from)
+    invalidateInputs(parse, from)
     {
-        super.invalidateInputs(from);
+        super.invalidateInputs(parse, from);
 
-        if (this.input) this.input.invalidateInputs(from);
+        if (this.input) this.input.invalidateInputs(parse, from);
     }
 }
 
@@ -8626,12 +8623,12 @@ extends GOperator
 
 
 
-    invalidateInputs(from)
+    invalidateInputs(parse, from)
     {
-        super.invalidateInputs(from);
+        super.invalidateInputs(parse, from);
 
-        if (this.input0) this.input0.invalidateInputs(from);
-        if (this.input1) this.input1.invalidateInputs(from);
+        if (this.input0) this.input0.invalidateInputs(parse, from);
+        if (this.input1) this.input1.invalidateInputs(parse, from);
     }
 }
 
@@ -8732,11 +8729,35 @@ extends GOperator
 
 
     
-    invalidateInputs(from)
+    invalidateInputs(parse, from)
     {
-        super.invalidateInputs(from);
+        super.invalidateInputs(parse, from);
 
-        if (this.node) this.node.invalidateInputs(from);
+        if (this.node) this.node.invalidateInputs(parse, from);
+    }
+
+
+
+    initLoop(parse, nodeId)
+    {
+        const node = parse.parsedNodes.find(n => n.nodeId == this.nodeId);
+        node.initLoop(parse, nodeId);
+    }
+
+
+
+    invalidateLoop(parse, nodeId)
+    {
+        const node = parse.parsedNodes.find(n => n.nodeId == this.nodeId);
+        node.invalidateLoop(parse, nodeId);
+    }
+
+
+
+    resetLoop(parse, nodeId)
+    {
+        const node = parse.parsedNodes.find(n => n.nodeId == this.nodeId);
+        node.resetLoop(parse, nodeId);
     }
 }
 
@@ -14498,14 +14519,14 @@ extends GOperator
 
 
 
-    invalidateInputs(from)
+    invalidateInputs(parse, from)
     {
-        super.invalidateInputs(from);
+        super.invalidateInputs(parse, from);
 
         this.from = from;
 
-        if (this.input   ) this.input   .invalidateInputs(from);
-        if (this.feedback) this.feedback.invalidateInputs(from);
+        if (this.input   ) this.input   .invalidateInputs(parse, from);
+        if (this.feedback) this.feedback.invalidateInputs(parse, from);
     }
 }
 
@@ -14514,12 +14535,11 @@ extends GOperator
 class GRepeat
 extends GOperator
 {
-    input       = null;
+    input = null;
 
-    count       = null;
-   _while       = null;
-    iterateLoop = null;
-    resetLoop   = null;
+    count = null;
+   _while = null;
+    loop  = null;
 
     iterationObjects = [];
 
@@ -14540,11 +14560,10 @@ extends GOperator
 
         if (this.input) copy.input = this.input.copy();
 
-        copy. value       = this. value      .copy();
-        copy. count       = this. count      .copy();
-        copy._while       = this._while      .copy();
-        copy. iterateLoop = this. iterateLoop.copy();
-        copy. resetLoop   = this. resetLoop  .copy();
+        copy. value = this. value      .copy();
+        copy. count = this. count      .copy();
+        copy._while = this._while      .copy();
+        copy. loop  = this. loop.copy();
 
         return copy;
     }
@@ -14566,10 +14585,9 @@ extends GOperator
             return this;
             
 
-        let   count       = (await this.count.eval(parse)).toValue();
-        let  _while       = new NumberValue(1);
-        const iterateLoop = (await this.iterateLoop.eval(parse)).toValue();
-        const resetLoop   = (await this.resetLoop  .eval(parse)).toValue();
+        let   count = (await this.count.eval(parse)).toValue();
+        let  _while = new NumberValue(1);
+        const loop  = (await this.loop.eval(parse)).toValue();
 
 
         count = 
@@ -14578,20 +14596,10 @@ extends GOperator
             : new NumberValue(0);
 
 
-        if (this.iterateLoop.type != NUMBER_VALUE) assertVolatile(this.iterateLoop, this);
-        if (this.resetLoop  .type != NUMBER_VALUE) assertVolatile(this.resetLoop,   this);
+        if (this.loop.type != NUMBER_VALUE) assertVolatile(this.loop, this);
 
 
         this.value = new ListValue();
-
-
-        let repeat =
-        {
-            repeatId:  this.nodeId,
-            index:     0,
-            iteration: 0,
-            total:     1
-        };
 
 
         if (count.value > 0)
@@ -14609,7 +14617,13 @@ extends GOperator
                     ? count.value 
                     : 1;
                 
-                repeat.total = nRepeats;
+
+                let repeat =
+                {
+                    repeatId:  this.nodeId,
+                    iteration: 0,
+                    total:     nRepeats
+                };
 
                     
                 parse.repeats.push(repeat);
@@ -14618,8 +14632,8 @@ extends GOperator
                     parse.totalProgress += nRepeats;
 
 
-                if (this.iterateLoop.type != NUMBER_VALUE) this.iterateLoop.initLoop(parse, this.nodeId);
-                if (this.resetLoop  .type != NUMBER_VALUE) this.resetLoop  .initLoop(parse, this.nodeId);
+                if (this.loop.type != NUMBER_VALUE) 
+                    this.loop.initLoop(parse, this.nodeId);
 
 
                 for (let i = 0, o = 0; i < nRepeats; i++)
@@ -14638,14 +14652,9 @@ extends GOperator
                     }
 
 
-                    repeat.index = i;
-                    repeat.iteration++;
+                    repeat.iteration = i;
 
-                    if (this.iterateLoop.type != NUMBER_VALUE)
-                        this.iterateLoop.invalidateLoop(parse, this.nodeId);
-                    
-                    
-                    this.input.invalidateInputs(this);
+                    this.input.invalidateInputs(parse, this);
                     
 
                     const input = (await this.input.eval(parse)).toValue();
@@ -14695,11 +14704,8 @@ extends GOperator
                 }
 
 
-                if (this.resetLoop.type != NUMBER_VALUE)
-                {
-                    //repeat.iteration = 0;
-                    this.resetLoop.resetLoop(parse, this.nodeId);
-                }
+                if (this.loop.type != NUMBER_VALUE)
+                    this.loop.resetLoop(parse, this.nodeId);
 
 
                 if (this.startTimer > -1)
@@ -14763,24 +14769,22 @@ extends GOperator
     {
         super.pushValueUpdates(parse);
 
-        if (this. input      ) this. input      .pushValueUpdates(parse);
-        if (this. count      ) this. count      .pushValueUpdates(parse);
-        if (this._while      ) this._while      .pushValueUpdates(parse);
-        if (this. iterateLoop) this. iterateLoop.pushValueUpdates(parse);
-        if (this. resetLoop  ) this. resetLoop  .pushValueUpdates(parse);
+        if (this. input) this. input.pushValueUpdates(parse);
+        if (this. count) this. count.pushValueUpdates(parse);
+        if (this._while) this._while.pushValueUpdates(parse);
+        if (this. loop ) this. loop .pushValueUpdates(parse);
     }
 
 
 
-    invalidateInputs(from)
+    invalidateInputs(parse, from)
     {
-        super.invalidateInputs(from);
+        super.invalidateInputs(parse, from);
 
-        if (this. input      ) this. input      .invalidateInputs(from);
-        if (this. count      ) this. count      .invalidateInputs(from);
-        if (this._while      ) this._while      .invalidateInputs(from);
-        if (this. iterateLoop) this. iterateLoop.invalidateInputs(from);
-        if (this. resetLoop  ) this. resetLoop  .invalidateInputs(from);
+        if (this. input) this. input.invalidateInputs(parse, from);
+        if (this. count) this. count.invalidateInputs(parse, from);
+        if (this._while) this._while.invalidateInputs(parse, from);
+        if (this. loop ) this. loop .invalidateInputs(parse, from);
     }
 }
 
@@ -14892,11 +14896,11 @@ extends GOperator
 
 
 
-    invalidateInputs(from)
+    invalidateInputs(parse, from)
     {
-        super.invalidateInputs(from);
+        super.invalidateInputs(parse, from);
 
-        if (this.input) this.input.invalidateInputs(from);
+        if (this.input) this.input.invalidateInputs(parse, from);
     }
 }
 
@@ -14982,9 +14986,9 @@ extends GOperator1
 
 
 
-    invalidateInputs(from)
+    invalidateInputs(parse, from)
     {
-        super.invalidateInputs(from);
+        super.invalidateInputs(parse, from);
 
         this.cachedValue = null;
     }
@@ -15180,12 +15184,12 @@ extends GOperator
 
 
 
-    invalidateInputs(from)
+    invalidateInputs(parse, from)
     {
-        super.invalidateInputs(from);
+        super.invalidateInputs(parse, from);
 
-        if (this.input) this.input.invalidateInputs(from);
-        if (this.delay) this.delay.invalidateInputs(from);
+        if (this.input) this.input.invalidateInputs(parse, from);
+        if (this.delay) this.delay.invalidateInputs(parse, from);
     }
 }
 
@@ -15355,11 +15359,11 @@ extends GOperator
 
 
 
-    invalidateInputs(from)
+    invalidateInputs(parse, from)
     {
-        super.invalidateInputs(from);
+        super.invalidateInputs(parse, from);
 
-        this.inputs.forEach(i => i.invalidateInputs(from));
+        this.inputs.forEach(i => i.invalidateInputs(parse, from));
     }
 
 
@@ -15602,12 +15606,12 @@ extends GOperator1
 
 
 
-    invalidateInputs(from)
+    invalidateInputs(parse, from)
     {
-        super.invalidateInputs(from);
+        super.invalidateInputs(parse, from);
 
-        if (this.start) this.start.invalidateInputs(from);
-        if (this.end  ) this.end  .invalidateInputs(from);
+        if (this.start) this.start.invalidateInputs(parse, from);
+        if (this.end  ) this.end  .invalidateInputs(parse, from);
     }
 }
 
@@ -15909,12 +15913,12 @@ extends GOperator1
 
 
 
-    invalidateInputs(from)
+    invalidateInputs(parse, from)
     {
-        super.invalidateInputs(from);
+        super.invalidateInputs(parse, from);
 
-        if (this.column ) this.column .invalidateInputs(from);
-        if (this.reverse) this.reverse.invalidateInputs(from);
+        if (this.column ) this.column .invalidateInputs(parse, from);
+        if (this.reverse) this.reverse.invalidateInputs(parse, from);
     }
 }
 
@@ -16028,11 +16032,11 @@ extends GOperator1
 
 
 
-    invalidateInputs(from)
+    invalidateInputs(parse, from)
     {
-        super.invalidateInputs(from);
+        super.invalidateInputs(parse, from);
 
-        if (this.index) this.index.invalidateInputs(from);
+        if (this.index) this.index.invalidateInputs(parse, from);
     }
 }
 
@@ -16172,12 +16176,12 @@ extends GOperator
 
 
 
-    invalidateInputs(from)
+    invalidateInputs(parse, from)
     {
-        super.invalidateInputs(from);
+        super.invalidateInputs(parse, from);
 
-        if (this.column) this.column.invalidateInputs(from);
-        if (this.row   ) this.row   .invalidateInputs(from);
+        if (this.column) this.column.invalidateInputs(parse, from);
+        if (this.row   ) this.row   .invalidateInputs(parse, from);
     }
 }
 
@@ -16298,11 +16302,11 @@ extends GOperator
 
 
 
-    invalidateInputs(from)
+    invalidateInputs(parse, from)
     {
-        super.invalidateInputs(from);
+        super.invalidateInputs(parse, from);
 
-        if (this.input) this.input.invalidateInputs(from);
+        if (this.input) this.input.invalidateInputs(parse, from);
     }
 }
 
@@ -16459,12 +16463,12 @@ extends GOperator
 
 
 
-    invalidateInputs(from)
+    invalidateInputs(parse, from)
     {
-        super.invalidateInputs(from);
+        super.invalidateInputs(parse, from);
 
-        if (this.input) this.input.invalidateInputs(from);
-        if (this.index) this.index.invalidateInputs(from);
+        if (this.input) this.input.invalidateInputs(parse, from);
+        if (this.index) this.index.invalidateInputs(parse, from);
     }
 }
 
@@ -16568,12 +16572,12 @@ extends GOperator
 
 
 
-    invalidateInputs(from)
+    invalidateInputs(parse, from)
     {
-        super.invalidateInputs(from);
+        super.invalidateInputs(parse, from);
 
-        if (this.input) this.input.invalidateInputs(from);
-        if (this.start) this.start.invalidateInputs(from);
+        if (this.input) this.input.invalidateInputs(parse, from);
+        if (this.start) this.start.invalidateInputs(parse, from);
     }
 }
 
@@ -16814,13 +16818,13 @@ extends GOperator
 
 
 
-    invalidateInputs(from)
+    invalidateInputs(parse, from)
     {
-        super.invalidateInputs(from);
+        super.invalidateInputs(parse, from);
 
-        if (this.input0   ) this.input0   .invalidateInputs(from);
-        if (this.input1   ) this.input1   .invalidateInputs(from);
-        if (this.condition) this.condition.invalidateInputs(from);
+        if (this.input0   ) this.input0   .invalidateInputs(parse, from);
+        if (this.input1   ) this.input1   .invalidateInputs(parse, from);
+        if (this.condition) this.condition.invalidateInputs(parse, from);
     }
 }
 
@@ -16861,11 +16865,11 @@ extends GOperator
 
 
 
-    invalidateInputs(from)
+    invalidateInputs(parse, from)
     {
-        super.invalidateInputs(from);
+        super.invalidateInputs(parse, from);
 
-        this.inputs.forEach(i => i.invalidateInputs(from));
+        this.inputs.forEach(i => i.invalidateInputs(parse, from));
     }
 }
 
@@ -17138,12 +17142,12 @@ extends GOperator1
 
 
 
-    invalidateInputs(from)
+    invalidateInputs(parse, from)
     {
-        super.invalidateInputs(from);
+        super.invalidateInputs(parse, from);
 
-        if (this.type    ) this.type    .invalidateInputs(from);
-        if (this.decimals) this.decimals.invalidateInputs(from);
+        if (this.type    ) this.type    .invalidateInputs(parse, from);
+        if (this.decimals) this.decimals.invalidateInputs(parse, from);
     }
 }
 
@@ -17222,11 +17226,11 @@ extends GArithmetic
 
 
 
-    invalidateInputs(from)
+    invalidateInputs(parse, from)
     {
-        super.invalidateInputs(from);
+        super.invalidateInputs(parse, from);
 
-        if (this.operation) this.operation.invalidateInputs(from);
+        if (this.operation) this.operation.invalidateInputs(parse, from);
     }
 }
 
@@ -17428,13 +17432,13 @@ extends GOperator1
 
 
 
-    invalidateInputs(from)
+    invalidateInputs(parse, from)
     {
-        super.invalidateInputs(from);
+        super.invalidateInputs(parse, from);
 
-        if (this.input) this.input.invalidateInputs(from);
-        if (this.min  ) this.min  .invalidateInputs(from);
-        if (this.max  ) this.max  .invalidateInputs(from);
+        if (this.input) this.input.invalidateInputs(parse, from);
+        if (this.min  ) this.min  .invalidateInputs(parse, from);
+        if (this.max  ) this.max  .invalidateInputs(parse, from);
     }
 }
 
@@ -17524,11 +17528,11 @@ extends GOperator
 
 
 
-    invalidateInputs(from)
+    invalidateInputs(parse, from)
     {
-        super.invalidateInputs(from);
+        super.invalidateInputs(parse, from);
 
-        if (this.constant) this.constant.invalidateInputs(from);
+        if (this.constant) this.constant.invalidateInputs(parse, from);
     }
 }
 
@@ -17657,17 +17661,17 @@ extends GOperator
 
 
 
-    invalidateInputs(from)
+    invalidateInputs(parse, from)
     {
-        super.invalidateInputs(from);
+        super.invalidateInputs(parse, from);
 
-        if (this.year     ) this.year     .invalidateInputs(from);
-        if (this.month    ) this.month    .invalidateInputs(from);
-        if (this.date     ) this.date     .invalidateInputs(from);
-        if (this.dayOfWeek) this.dayOfWeek.invalidateInputs(from);
-        if (this.hours    ) this.hours    .invalidateInputs(from);
-        if (this.minutes  ) this.minutes  .invalidateInputs(from);
-        if (this.seconds  ) this.seconds  .invalidateInputs(from);
+        if (this.year     ) this.year     .invalidateInputs(parse, from);
+        if (this.month    ) this.month    .invalidateInputs(parse, from);
+        if (this.date     ) this.date     .invalidateInputs(parse, from);
+        if (this.dayOfWeek) this.dayOfWeek.invalidateInputs(parse, from);
+        if (this.hours    ) this.hours    .invalidateInputs(parse, from);
+        if (this.minutes  ) this.minutes  .invalidateInputs(parse, from);
+        if (this.seconds  ) this.seconds  .invalidateInputs(parse, from);
     }
 }
 
@@ -17726,11 +17730,7 @@ extends GOperator
         }
             
 
-        const repeat    = parse.repeats.find(r => r.repeatId == this.loopId);
-        const iteration = repeat ? repeat.iteration : this.iteration++;
-
-
-        this.value = _values[iteration % _values.length];
+        this.value = _values[this.iteration % _values.length];
 
 
         this.setUpdateValues(parse,
@@ -17771,11 +17771,11 @@ extends GOperator
 
 
 
-    invalidateInputs(from)
+    invalidateInputs(parse, from)
     {
-        super.invalidateInputs(from);
+        super.invalidateInputs(parse, from);
 
-        this.inputs.forEach(i => i.invalidateInputs(from));
+        this.inputs.forEach(i => i.invalidateInputs(parse, from));
     }
 }
 
@@ -17862,9 +17862,9 @@ extends GOperator
         {
             const sd = delta ? start.value/delta : 0;
 
-                 if (from.value == 2) f = sd + repeat.index/repeat.total;
-            else if (from.value == 1) f = sd + (repeat.total > 1 ? repeat.index/(repeat.total-1) : 0);
-            else if (from.value == 0) f = sd + repeat.index/repeat.total;
+                 if (from.value == 2) f = sd + iteration/repeat.total;
+            else if (from.value == 1) f = sd + (repeat.total > 1 ? iteration/(repeat.total-1) : 0);
+            else if (from.value == 0) f = sd + iteration/repeat.total;
         }
         else
             f = 0;
@@ -17954,15 +17954,15 @@ extends GOperator
 
 
 
-    invalidateInputs(from)
+    invalidateInputs(parse, from)
     {
-        super.invalidateInputs(from);
+        super.invalidateInputs(parse, from);
 
-        if (this.from  ) this.from  .invalidateInputs(from);
-        if (this.start ) this.start .invalidateInputs(from);
-        if (this.end   ) this.end   .invalidateInputs(from);
-        if (this.spread) this.spread.invalidateInputs(from);
-        if (this.bias  ) this.bias  .invalidateInputs(from);
+        if (this.from  ) this.from  .invalidateInputs(parse, from);
+        if (this.start ) this.start .invalidateInputs(parse, from);
+        if (this.end   ) this.end   .invalidateInputs(parse, from);
+        if (this.spread) this.spread.invalidateInputs(parse, from);
+        if (this.bias  ) this.bias  .invalidateInputs(parse, from);
     }
 }
 
@@ -17972,8 +17972,8 @@ class GSequence
 extends GOperator
 {
     start;
-    end;
     step;
+    end;
 
     current;
 
@@ -17993,8 +17993,8 @@ extends GOperator
         copy.copyBase(this);
 
         if (this.start  ) copy.start   = this.start  .copy();
-        if (this.end    ) copy.end     = this.end    .copy();
         if (this.step   ) copy.step    = this.step   .copy();
+        if (this.end    ) copy.end     = this.end    .copy();
 
         if (this.current) copy.current = this.current.copy();
 
@@ -18017,15 +18017,11 @@ extends GOperator
         const end   = (await this.end  .eval(parse)).toValue();
     
 
-        const repeat    = parse.repeats.find(r => r.repeatId == this.loopId);
-        const iteration = repeat ? repeat.iteration : this.iteration++;
-
-        
         if (   start
             && end
             && step)
         {
-            const value = start.toNumber() + (this.options.enabled ? step.toNumber() * iteration : 0);
+            const value = start.toNumber() + (this.options.enabled ? step.toNumber() * this.iteration : 0);
 
             if (!end.isValid())
                 this.value = new NumberValue(value, Math.max(start.decimals, step.decimals));
@@ -18038,7 +18034,7 @@ extends GOperator
                                                  && value > end.toNumber()))
             {
                 this.value = new NumberValue(
-                    start.toNumber() + (this.options.enabled ? step.toNumber() * iteration : 0),
+                    start.toNumber() + (this.options.enabled ? step.toNumber() * this.iteration : 0),
                     Math.max(start.decimals, step.decimals));
             }
 
@@ -18093,13 +18089,13 @@ extends GOperator
 
 
 
-    invalidateInputs(from)
+    invalidateInputs(parse, from)
     {
-        super.invalidateInputs(from);
+        super.invalidateInputs(parse, from);
 
-        if (this.start) this.start.invalidateInputs(from);
-        if (this.end  ) this.end  .invalidateInputs(from);
-        if (this.step ) this.step .invalidateInputs(from);
+        if (this.start) this.start.invalidateInputs(parse, from);
+        if (this.end  ) this.end  .invalidateInputs(parse, from);
+        if (this.step ) this.step .invalidateInputs(parse, from);
     }
 }
 
@@ -18167,12 +18163,9 @@ extends GOperator
         }
 
 
-        const repeat    = parse.repeats.find(r => r.repeatId == this.loopId);
-        const iteration = repeat ? repeat.iteration : this.iteration++;
 
-        
         this.value = new NumberValue(
-            min.value + this.random.get(iteration + this.uniqueOffset) * (max.value - min.value), 
+            min.value + this.random.get(this.iteration + this.uniqueOffset) * (max.value - min.value), 
             Math.max(min.decimals, max.decimals));
 
             
@@ -18182,9 +18175,9 @@ extends GOperator
         if (max.value - min.value >= 1)
         {
             while (this.value.toNumber() == this.lastValue1
-                && this.randomUnique.get(iteration) < _unique)
+                && this.randomUnique.get(this.iteration) < _unique)
                 this.value = new NumberValue(
-                    min.value + this.random.get(iteration + ++this.uniqueOffset) * (max.value - min.value),
+                    min.value + this.random.get(this.iteration + ++this.uniqueOffset) * (max.value - min.value),
                     Math.max(min.decimals, max.decimals));
         }
 
@@ -18192,9 +18185,9 @@ extends GOperator
         {
             while ((   this.value.toNumber() == this.lastValue1
                     || this.value.toNumber() == this.lastValue2)
-                && this.randomUnique.get(iteration) < Math.max(_unique - 1))
+                && this.randomUnique.get(this.iteration) < Math.max(_unique - 1))
                 this.value = new NumberValue(
-                    min.value + this.random.get(iteration + ++this.uniqueOffset) * (max.value - min.value),
+                    min.value + this.random.get(this.iteration + ++this.uniqueOffset) * (max.value - min.value),
                     Math.max(min.decimals, max.decimals));
         }        
 
@@ -18250,14 +18243,14 @@ extends GOperator
 
 
 
-    invalidateInputs(from)
+    invalidateInputs(parse, from)
     {
-        super.invalidateInputs(from);
+        super.invalidateInputs(parse, from);
 
-        if (this.seed  ) this.seed  .invalidateInputs(from);
-        if (this.min   ) this.min   .invalidateInputs(from);
-        if (this.max   ) this.max   .invalidateInputs(from);
-        if (this.unique) this.unique.invalidateInputs(from);
+        if (this.seed  ) this.seed  .invalidateInputs(parse, from);
+        if (this.min   ) this.min   .invalidateInputs(parse, from);
+        if (this.max   ) this.max   .invalidateInputs(parse, from);
+        if (this.unique) this.unique.invalidateInputs(parse, from);
     }
 
 
@@ -18343,12 +18336,6 @@ extends GOperator
             || this.random.seed != seed.value)
             this.random = new Random(seed.value);
 
-
-        
-        const repeat    = parse.repeats.find(r => r.repeatId == this.loopId);
-        const iteration = repeat ? repeat.iteration : this.iteration++;
-    
-
         
         let size  = 1;
         let power = 1;
@@ -18365,7 +18352,7 @@ extends GOperator
             
             for (let c = 0; c < detail.value; c++)
             {
-                const i = iteration / (scale.value * size) + offset.value;
+                const i = this.iteration / (scale.value * size) + offset.value;
                 
                 const i0 = Math.floor(i);
                 const i1 = Math.ceil (i);
@@ -18457,17 +18444,17 @@ extends GOperator
 
 
 
-    invalidateInputs(from)
+    invalidateInputs(parse, from)
     {
-        super.invalidateInputs(from);
+        super.invalidateInputs(parse, from);
 
-        if (this.seed       ) this.seed       .invalidateInputs(from);
-        if (this.min        ) this.min        .invalidateInputs(from);
-        if (this.max        ) this.max        .invalidateInputs(from);
-        if (this.scale      ) this.scale      .invalidateInputs(from);
-        if (this.offset     ) this.offset     .invalidateInputs(from);
-        if (this.interpolate) this.interpolate.invalidateInputs(from);
-        if (this.detail     ) this.detail     .invalidateInputs(from);
+        if (this.seed       ) this.seed       .invalidateInputs(parse, from);
+        if (this.min        ) this.min        .invalidateInputs(parse, from);
+        if (this.max        ) this.max        .invalidateInputs(parse, from);
+        if (this.scale      ) this.scale      .invalidateInputs(parse, from);
+        if (this.offset     ) this.offset     .invalidateInputs(parse, from);
+        if (this.interpolate) this.interpolate.invalidateInputs(parse, from);
+        if (this.detail     ) this.detail     .invalidateInputs(parse, from);
     }
 }
 
@@ -18521,13 +18508,9 @@ extends GOperator
             this.random = new Random(seed.value);
 
 
-        const repeat    = parse.repeats.find(r => r.repeatId == this.loopId);
-        const iteration = repeat ? repeat.iteration : this.iteration++;
-    
-
         const r = 
             this.options.enabled
-            ? (this.random.get(iteration) > 1 - chance.value/100 ? 1 : 0)
+            ? (this.random.get(this.iteration) > 1 - chance.value/100 ? 1 : 0)
             : 0;
 
 
@@ -18576,12 +18559,12 @@ extends GOperator
 
 
 
-    invalidateInputs(from)
+    invalidateInputs(parse, from)
     {
-        super.invalidateInputs(from);
+        super.invalidateInputs(parse, from);
 
-        if (this.seed  ) this.seed  .invalidateInputs(from);
-        if (this.chance) this.chance.invalidateInputs(from);
+        if (this.seed  ) this.seed  .invalidateInputs(parse, from);
+        if (this.chance) this.chance.invalidateInputs(parse, from);
     }
 }
 
@@ -18682,12 +18665,12 @@ extends GOperator
 
 
 
-    invalidateInputs(from)
+    invalidateInputs(parse, from)
     {
-        super.invalidateInputs(from);
+        super.invalidateInputs(parse, from);
 
-        if (this.start) this.start.invalidateInputs(from);
-        if (this.step ) this.step .invalidateInputs(from);
+        if (this.start) this.start.invalidateInputs(parse, from);
+        if (this.step ) this.step .invalidateInputs(parse, from);
     }
 
 
@@ -18790,11 +18773,11 @@ extends GOperator2
 
 
 
-    invalidateInputs(from)
+    invalidateInputs(parse, from)
     {
-        super.invalidateInputs(from);
+        super.invalidateInputs(parse, from);
 
-        if (this.amount) this.amount.invalidateInputs(from);
+        if (this.amount) this.amount.invalidateInputs(parse, from);
     }
 }
 
@@ -18990,12 +18973,12 @@ extends GOperator1
 
 
 
-    invalidateInputs(from)
+    invalidateInputs(parse, from)
     {
-        super.invalidateInputs(from);
+        super.invalidateInputs(parse, from);
 
-        if (this.current) this.current.invalidateInputs(from);
-        if (this.target ) this.target .invalidateInputs(from);
+        if (this.current) this.current.invalidateInputs(parse, from);
+        if (this.target ) this.target .invalidateInputs(parse, from);
     }
 }
 
@@ -19155,16 +19138,16 @@ extends GOperator
 
 
 
-    invalidateInputs(from)
+    invalidateInputs(parse, from)
     {
-        super.invalidateInputs(from);
+        super.invalidateInputs(parse, from);
 
-        if (this.from  ) this.from  .invalidateInputs(from);
-        if (this.to    ) this.to    .invalidateInputs(from);
-        if (this.curve ) this.curve .invalidateInputs(from);
-        if (this.repeat) this.repeat.invalidateInputs(from);
-        if (this.length) this.length.invalidateInputs(from);
-        if (this.time  ) this.time  .invalidateInputs(from);
+        if (this.from  ) this.from  .invalidateInputs(parse, from);
+        if (this.to    ) this.to    .invalidateInputs(parse, from);
+        if (this.curve ) this.curve .invalidateInputs(parse, from);
+        if (this.repeat) this.repeat.invalidateInputs(parse, from);
+        if (this.length) this.length.invalidateInputs(parse, from);
+        if (this.time  ) this.time  .invalidateInputs(parse, from);
     }
 }
 
@@ -19251,11 +19234,11 @@ extends GArithmetic
 
 
 
-    invalidateInputs(from)
+    invalidateInputs(parse, from)
     {
-        super.invalidateInputs(from);
+        super.invalidateInputs(parse, from);
 
-        if (this.operation) this.operation.invalidateInputs(from);
+        if (this.operation) this.operation.invalidateInputs(parse, from);
     }
 }
 
@@ -19401,12 +19384,12 @@ extends GOperator1
 
 
 
-    invalidateInputs(from)
+    invalidateInputs(parse, from)
     {
-        super.invalidateInputs(from);
+        super.invalidateInputs(parse, from);
 
-        if (this.operation) this.operation.invalidateInputs(from);
-        if (this.operand  ) this.operand  .invalidateInputs(from);
+        if (this.operation) this.operation.invalidateInputs(parse, from);
+        if (this.operand  ) this.operand  .invalidateInputs(parse, from);
     }
 }
 
@@ -20163,11 +20146,11 @@ extends GArithmetic
 
 
 
-    invalidateInputs(from)
+    invalidateInputs(parse, from)
     {
-        super.invalidateInputs(from);
+        super.invalidateInputs(parse, from);
 
-        if (this.operation) this.operation.invalidateInputs(from);
+        if (this.operation) this.operation.invalidateInputs(parse, from);
     }
 }
 
@@ -20709,12 +20692,12 @@ extends GOperator1
 
 
 
-    invalidateInputs(from)
+    invalidateInputs(parse, from)
     {
-        super.invalidateInputs(from);
+        super.invalidateInputs(parse, from);
 
-        if (this.operation) this.operation.invalidateInputs(from);
-        if (this.operand  ) this.operand  .invalidateInputs(from);
+        if (this.operation) this.operation.invalidateInputs(parse, from);
+        if (this.operand  ) this.operand  .invalidateInputs(parse, from);
     }
 }
 
@@ -21074,11 +21057,11 @@ extends GOperator1
 
 
 
-    invalidateInputs(from)
+    invalidateInputs(parse, from)
     {
-        super.invalidateInputs(from);
+        super.invalidateInputs(parse, from);
 
-        if (this.function) this.function.invalidateInputs(from);
+        if (this.function) this.function.invalidateInputs(parse, from);
     }
 }
 
@@ -21471,12 +21454,12 @@ extends GOperator1
 
 
 
-    invalidateInputs(from)
+    invalidateInputs(parse, from)
     {
-        super.invalidateInputs(from);
+        super.invalidateInputs(parse, from);
 
-        if (this.start) this.start.invalidateInputs(from);
-        if (this.end  ) this.end  .invalidateInputs(from);
+        if (this.start) this.start.invalidateInputs(parse, from);
+        if (this.end  ) this.end  .invalidateInputs(parse, from);
     }
 }
 
@@ -21587,12 +21570,12 @@ extends GOperator1
 
 
 
-    invalidateInputs(from)
+    invalidateInputs(parse, from)
     {
-        super.invalidateInputs(from);
+        super.invalidateInputs(parse, from);
 
-        if (this.start) this.start.invalidateInputs(from);
-        if (this.end  ) this.end  .invalidateInputs(from);
+        if (this.start) this.start.invalidateInputs(parse, from);
+        if (this.end  ) this.end  .invalidateInputs(parse, from);
     }
 }
 
@@ -21826,11 +21809,11 @@ extends GOperator1
 
 
 
-    invalidateInputs(from)
+    invalidateInputs(parse, from)
     {
-        super.invalidateInputs(from);
+        super.invalidateInputs(parse, from);
 
-        if (this.case ) this.case .invalidateInputs(from);
+        if (this.case ) this.case .invalidateInputs(parse, from);
     }
 }
 
@@ -21928,11 +21911,11 @@ extends GOperator1
 
 
 
-    invalidateInputs(from)
+    invalidateInputs(parse, from)
     {
-        super.invalidateInputs(from);
+        super.invalidateInputs(parse, from);
 
-        if (this.format) this.format.invalidateInputs(from);
+        if (this.format) this.format.invalidateInputs(parse, from);
     }
 }
 
@@ -22029,11 +22012,11 @@ extends GOperator1
 
 
 
-    invalidateInputs(from)
+    invalidateInputs(parse, from)
     {
-        super.invalidateInputs(from);
+        super.invalidateInputs(parse, from);
 
-        if (this.format) this.format.invalidateInputs(from);
+        if (this.format) this.format.invalidateInputs(parse, from);
     }
 }
 
@@ -22165,11 +22148,11 @@ extends GOperator1
 
 
 
-    invalidateInputs(from)
+    invalidateInputs(parse, from)
     {
-        super.invalidateInputs(from);
+        super.invalidateInputs(parse, from);
 
-        if (this.code) this.code.invalidateInputs(from);
+        if (this.code) this.code.invalidateInputs(parse, from);
     }
 }
 
@@ -22264,12 +22247,12 @@ extends GOperator1
 
 
 
-    invalidateInputs(from)
+    invalidateInputs(parse, from)
     {
-        super.invalidateInputs(from);
+        super.invalidateInputs(parse, from);
 
-        if (this.what ) this.what .invalidateInputs(from);
-        if (this.with ) this.with .invalidateInputs(from);
+        if (this.what ) this.what .invalidateInputs(parse, from);
+        if (this.with ) this.with .invalidateInputs(parse, from);
     }
 }
 
@@ -22357,11 +22340,11 @@ extends GOperator
 
 
 
-    invalidateInputs(from)
+    invalidateInputs(parse, from)
     {
-        super.invalidateInputs(from);
+        super.invalidateInputs(parse, from);
 
-        this.inputs.forEach(i => i.invalidateInputs(from));
+        this.inputs.forEach(i => i.invalidateInputs(parse, from));
     }
 }
 
@@ -22522,14 +22505,14 @@ extends GOperator1
 
 
 
-    invalidateInputs(from)
+    invalidateInputs(parse, from)
     {
-        super.invalidateInputs(from);
+        super.invalidateInputs(parse, from);
 
-        if (this.startPad  ) this.startPad  .invalidateInputs(from);
-        if (this.startCount) this.startCount.invalidateInputs(from);
-        if (this.endPad    ) this.endPad    .invalidateInputs(from);
-        if (this.endCount  ) this.endCount  .invalidateInputs(from);
+        if (this.startPad  ) this.startPad  .invalidateInputs(parse, from);
+        if (this.startCount) this.startCount.invalidateInputs(parse, from);
+        if (this.endPad    ) this.endPad    .invalidateInputs(parse, from);
+        if (this.endCount  ) this.endCount  .invalidateInputs(parse, from);
     }
 }
 
@@ -22624,11 +22607,11 @@ extends GOperator1
 
 
 
-    invalidateInputs(from)
+    invalidateInputs(parse, from)
     {
-        super.invalidateInputs(from);
+        super.invalidateInputs(parse, from);
 
-        if (this.separator) this.separator.invalidateInputs(from);
+        if (this.separator) this.separator.invalidateInputs(parse, from);
     }
 }
 
@@ -22716,11 +22699,11 @@ extends GOperator2
 
 
 
-    invalidateInputs(from)
+    invalidateInputs(parse, from)
     {
-        super.invalidateInputs(from);
+        super.invalidateInputs(parse, from);
 
-        if (this.operation) this.operation.invalidateInputs(from);
+        if (this.operation) this.operation.invalidateInputs(parse, from);
     }
 }
 
@@ -22864,12 +22847,12 @@ extends GOperator1
 
 
 
-    invalidateInputs(from)
+    invalidateInputs(parse, from)
     {
-        super.invalidateInputs(from);
+        super.invalidateInputs(parse, from);
 
-        if (this.rowSeparator   ) this.rowSeparator   .invalidateInputs(from);
-        if (this.columnSeparator) this.columnSeparator.invalidateInputs(from);
+        if (this.rowSeparator   ) this.rowSeparator   .invalidateInputs(parse, from);
+        if (this.columnSeparator) this.columnSeparator.invalidateInputs(parse, from);
     }
 }
 
@@ -23078,11 +23061,11 @@ extends GOperator
 
 
 
-    invalidateInputs(from)
+    invalidateInputs(parse, from)
     {
-        super.invalidateInputs(from);
+        super.invalidateInputs(parse, from);
 
-        if (this.request) this.request.invalidateInputs(from);
+        if (this.request) this.request.invalidateInputs(parse, from);
 
         this.cachedValue = new TextValue();
     }
@@ -23164,11 +23147,11 @@ extends GOperator
 
 
 
-    invalidateInputs(from)
+    invalidateInputs(parse, from)
     {
-        super.invalidateInputs(from);
+        super.invalidateInputs(parse, from);
 
-        if (this.path) this.path.invalidateInputs(from);
+        if (this.path) this.path.invalidateInputs(parse, from);
 
         //this.cachedValue = new TextValue();
     }
@@ -23923,14 +23906,14 @@ extends GOperator1
 
 
 
-    invalidateInputs(from)
+    invalidateInputs(parse, from)
     {
-        super.invalidateInputs(from);
+        super.invalidateInputs(parse, from);
 
-        if (this.space) this.space.invalidateInputs(from);
-        if (this.c1   ) this.c1   .invalidateInputs(from);
-        if (this.c2   ) this.c2   .invalidateInputs(from);
-        if (this.c3   ) this.c3   .invalidateInputs(from);
+        if (this.space) this.space.invalidateInputs(parse, from);
+        if (this.c1   ) this.c1   .invalidateInputs(parse, from);
+        if (this.c2   ) this.c2   .invalidateInputs(parse, from);
+        if (this.c3   ) this.c3   .invalidateInputs(parse, from);
     }
 }
 
@@ -24085,11 +24068,11 @@ extends GOperator1
 
 
 
-    invalidateInputs(from)
+    invalidateInputs(parse, from)
     {
-        super.invalidateInputs(from);
+        super.invalidateInputs(parse, from);
 
-        if (this.quality) this.quality.invalidateInputs(from);
+        if (this.quality) this.quality.invalidateInputs(parse, from);
     }
 }
 
@@ -24307,14 +24290,14 @@ extends GOperator1
 
 
 
-    invalidateInputs(from)
+    invalidateInputs(parse, from)
     {
-        super.invalidateInputs(from);
+        super.invalidateInputs(parse, from);
 
-        if (this.order  ) this.order  .invalidateInputs(from);
-        if (this.margin1) this.margin1.invalidateInputs(from);
-        if (this.margin2) this.margin2.invalidateInputs(from);
-        if (this.margin3) this.margin3.invalidateInputs(from);
+        if (this.order  ) this.order  .invalidateInputs(parse, from);
+        if (this.margin1) this.margin1.invalidateInputs(parse, from);
+        if (this.margin2) this.margin2.invalidateInputs(parse, from);
+        if (this.margin3) this.margin3.invalidateInputs(parse, from);
     }
 }
 
@@ -24480,12 +24463,12 @@ extends GOperator2
 
 
 
-    invalidateInputs(from)
+    invalidateInputs(parse, from)
     {
-        super.invalidateInputs(from);
+        super.invalidateInputs(parse, from);
 
-        if (this.standard) this.standard.invalidateInputs(from);
-        if (this.contrast) this.contrast.invalidateInputs(from);
+        if (this.standard) this.standard.invalidateInputs(parse, from);
+        if (this.contrast) this.contrast.invalidateInputs(parse, from);
     }
 }
 
@@ -24603,13 +24586,13 @@ extends GOperator1
 
 
 
-    invalidateInputs(from)
+    invalidateInputs(parse, from)
     {
-        super.invalidateInputs(from);
+        super.invalidateInputs(parse, from);
 
-        if (this.l) this.l.invalidateInputs(from);
-        if (this.m) this.m.invalidateInputs(from);
-        if (this.s) this.s.invalidateInputs(from);
+        if (this.l) this.l.invalidateInputs(parse, from);
+        if (this.m) this.m.invalidateInputs(parse, from);
+        if (this.s) this.s.invalidateInputs(parse, from);
     }
 }
 
@@ -24776,13 +24759,13 @@ extends GOperator2
 
 
 
-    invalidateInputs(from)
+    invalidateInputs(parse, from)
     {
-        super.invalidateInputs(from);
+        super.invalidateInputs(parse, from);
 
-        if (this.space ) this.space .invalidateInputs(from);
-        if (this.amount) this.amount.invalidateInputs(from);
-        if (this.gamma ) this.gamma .invalidateInputs(from);
+        if (this.space ) this.space .invalidateInputs(parse, from);
+        if (this.amount) this.amount.invalidateInputs(parse, from);
+        if (this.gamma ) this.gamma .invalidateInputs(parse, from);
     }
 }
 
@@ -24924,12 +24907,12 @@ extends GOperator2
 
 
 
-    invalidateInputs(from)
+    invalidateInputs(parse, from)
     {
-        super.invalidateInputs(from);
+        super.invalidateInputs(parse, from);
 
-        if (this.mode   ) this.mode   .invalidateInputs(from);
-        if (this.opacity) this.opacity.invalidateInputs(from);
+        if (this.mode   ) this.mode   .invalidateInputs(parse, from);
+        if (this.opacity) this.opacity.invalidateInputs(parse, from);
     }
 }
 
@@ -25423,11 +25406,11 @@ extends GOperator
 
 
 
-    invalidateInputs(from)
+    invalidateInputs(parse, from)
     {
-        super.invalidateInputs(from);
+        super.invalidateInputs(parse, from);
 
-        if (this.genValue) this.genValue.invalidateInputs(from);
+        if (this.genValue) this.genValue.invalidateInputs(parse, from);
     }
 }
 
@@ -25546,13 +25529,13 @@ extends GOperator1
     
     
     
-    invalidateInputs(from)
+    invalidateInputs(parse, from)
     {
-        super.invalidateInputs(from);
+        super.invalidateInputs(parse, from);
 
-        if (this.color  ) this.color  .invalidateInputs(from);
-        if (this.opacity) this.opacity.invalidateInputs(from);
-        if (this.blend  ) this.blend  .invalidateInputs(from);
+        if (this.color  ) this.color  .invalidateInputs(parse, from);
+        if (this.opacity) this.opacity.invalidateInputs(parse, from);
+        if (this.blend  ) this.blend  .invalidateInputs(parse, from);
     }
 }
 
@@ -25676,12 +25659,12 @@ extends GOperator1
 
     
     
-    invalidateInputs(from)
+    invalidateInputs(parse, from)
     {
-        super.invalidateInputs(from);
+        super.invalidateInputs(parse, from);
 
-        if (this.fill    ) this.fill    .invalidateInputs(from);
-        if (this.position) this.position.invalidateInputs(from);
+        if (this.fill    ) this.fill    .invalidateInputs(parse, from);
+        if (this.position) this.position.invalidateInputs(parse, from);
     }
 }
 
@@ -25844,20 +25827,20 @@ extends GOperator
 
 
 
-    invalidateInputs(from)
+    invalidateInputs(parse, from)
     {
-        super.invalidateInputs(from);
+        super.invalidateInputs(parse, from);
 
-        this.inputs.forEach(i => i.invalidateInputs(from));
+        this.inputs.forEach(i => i.invalidateInputs(parse, from));
         
-        if (this.gradType) this.gradType.invalidateInputs(from);
-        if (this.x       ) this.x       .invalidateInputs(from);
-        if (this.y       ) this.y       .invalidateInputs(from);
-        if (this.size    ) this.size    .invalidateInputs(from);
-        if (this.angle   ) this.angle   .invalidateInputs(from);
-        if (this.aspect  ) this.aspect  .invalidateInputs(from);
-        if (this.skew    ) this.skew    .invalidateInputs(from);
-        if (this.blend   ) this.blend   .invalidateInputs(from);
+        if (this.gradType) this.gradType.invalidateInputs(parse, from);
+        if (this.x       ) this.x       .invalidateInputs(parse, from);
+        if (this.y       ) this.y       .invalidateInputs(parse, from);
+        if (this.size    ) this.size    .invalidateInputs(parse, from);
+        if (this.angle   ) this.angle   .invalidateInputs(parse, from);
+        if (this.aspect  ) this.aspect  .invalidateInputs(parse, from);
+        if (this.skew    ) this.skew    .invalidateInputs(parse, from);
+        if (this.blend   ) this.blend   .invalidateInputs(parse, from);
     }
 }
 
@@ -26040,17 +26023,17 @@ extends GOperator1
     
     
 
-    invalidateInputs(from)
+    invalidateInputs(parse, from)
     {
-        super.invalidateInputs(from);
+        super.invalidateInputs(parse, from);
 
-        if (this.fills ) this.fills .invalidateInputs(from);
-        if (this.weight) this.weight.invalidateInputs(from);
-        if (this.fit   ) this.fit   .invalidateInputs(from);
-        if (this.join  ) this.join  .invalidateInputs(from);
-        if (this.miter ) this.miter .invalidateInputs(from);
-        if (this.cap   ) this.cap   .invalidateInputs(from);
-        if (this.dashes) this.dashes.invalidateInputs(from);
+        if (this.fills ) this.fills .invalidateInputs(parse, from);
+        if (this.weight) this.weight.invalidateInputs(parse, from);
+        if (this.fit   ) this.fit   .invalidateInputs(parse, from);
+        if (this.join  ) this.join  .invalidateInputs(parse, from);
+        if (this.miter ) this.miter .invalidateInputs(parse, from);
+        if (this.cap   ) this.cap   .invalidateInputs(parse, from);
+        if (this.dashes) this.dashes.invalidateInputs(parse, from);
     }
 }
 
@@ -26208,17 +26191,17 @@ extends GOperator1
     
     
     
-   invalidateInputs(from)
+   invalidateInputs(parse, from)
     {
-        super.invalidateInputs(from);
+        super.invalidateInputs(parse, from);
 
-        if (this.x     ) this.x     .invalidateInputs(from);
-        if (this.y     ) this.y     .invalidateInputs(from);
-        if (this.blur  ) this.blur  .invalidateInputs(from);
-        if (this.spread) this.spread.invalidateInputs(from);
-        if (this.fill  ) this.fill  .invalidateInputs(from);
-        if (this.blend ) this.blend .invalidateInputs(from);
-        if (this.behind) this.behind.invalidateInputs(from);
+        if (this.x     ) this.x     .invalidateInputs(parse, from);
+        if (this.y     ) this.y     .invalidateInputs(parse, from);
+        if (this.blur  ) this.blur  .invalidateInputs(parse, from);
+        if (this.spread) this.spread.invalidateInputs(parse, from);
+        if (this.fill  ) this.fill  .invalidateInputs(parse, from);
+        if (this.blend ) this.blend .invalidateInputs(parse, from);
+        if (this.behind) this.behind.invalidateInputs(parse, from);
     }
 }
 
@@ -26367,16 +26350,16 @@ extends GOperator1
     
     
     
-    invalidateInputs(from)
+    invalidateInputs(parse, from)
     {
-        super.invalidateInputs(from);
+        super.invalidateInputs(parse, from);
 
-        if (this.x     ) this.x     .invalidateInputs(from);
-        if (this.y     ) this.y     .invalidateInputs(from);
-        if (this.blur  ) this.blur  .invalidateInputs(from);
-        if (this.spread) this.spread.invalidateInputs(from);
-        if (this.fill  ) this.fill  .invalidateInputs(from);
-        if (this.blend ) this.blend .invalidateInputs(from);
+        if (this.x     ) this.x     .invalidateInputs(parse, from);
+        if (this.y     ) this.y     .invalidateInputs(parse, from);
+        if (this.blur  ) this.blur  .invalidateInputs(parse, from);
+        if (this.spread) this.spread.invalidateInputs(parse, from);
+        if (this.fill  ) this.fill  .invalidateInputs(parse, from);
+        if (this.blend ) this.blend .invalidateInputs(parse, from);
     }
 }
 
@@ -26475,11 +26458,11 @@ extends GOperator1
     
     
     
-    invalidateInputs(from)
+    invalidateInputs(parse, from)
     {
-        super.invalidateInputs(from);
+        super.invalidateInputs(parse, from);
 
-        if (this.radius) this.radius.invalidateInputs(from);
+        if (this.radius) this.radius.invalidateInputs(parse, from);
     }
 }
 
@@ -26578,11 +26561,11 @@ extends GOperator1
     
     
     
-    invalidateInputs(from)
+    invalidateInputs(parse, from)
     {
-        super.invalidateInputs(from);
+        super.invalidateInputs(parse, from);
 
-        if (this.radius) this.radius.invalidateInputs(from);
+        if (this.radius) this.radius.invalidateInputs(parse, from);
     }
 }
 
@@ -26714,14 +26697,14 @@ extends GOperator
 
 
 
-    invalidateInputs(from)
+    invalidateInputs(parse, from)
     {
-        super.invalidateInputs(from);
+        super.invalidateInputs(parse, from);
 
-        if (this.x     ) this.x     .invalidateInputs(from);
-        if (this.y     ) this.y     .invalidateInputs(from);
-        if (this.width ) this.width .invalidateInputs(from);
-        if (this.height) this.height.invalidateInputs(from);
+        if (this.x     ) this.x     .invalidateInputs(parse, from);
+        if (this.y     ) this.y     .invalidateInputs(parse, from);
+        if (this.width ) this.width .invalidateInputs(parse, from);
+        if (this.height) this.height.invalidateInputs(parse, from);
     }
 }
 
@@ -26890,12 +26873,12 @@ extends GShapeBase
 
 
     
-    invalidateInputs(from)
+    invalidateInputs(parse, from)
     {
-        super.invalidateInputs(from);
+        super.invalidateInputs(parse, from);
 
-        if (this.input) this.input.invalidateInputs(from);
-        if (this.props) this.props.invalidateInputs(from);
+        if (this.input) this.input.invalidateInputs(parse, from);
+        if (this.props) this.props.invalidateInputs(parse, from);
     }
 }
 
@@ -27070,11 +27053,11 @@ extends GShape
 
 
 
-    invalidateInputs(from)
+    invalidateInputs(parse, from)
     {
-        super.invalidateInputs(from);
+        super.invalidateInputs(parse, from);
 
-        if (this.round) this.round.invalidateInputs(from);
+        if (this.round) this.round.invalidateInputs(parse, from);
     }
 }
 
@@ -27402,13 +27385,13 @@ extends GShape
 
    
         
-    invalidateInputs(from)
+    invalidateInputs(parse, from)
     {
-        super.invalidateInputs(from);
+        super.invalidateInputs(parse, from);
 
-        if (this.from ) this.from .invalidateInputs(from);
-        if (this.to   ) this.to   .invalidateInputs(from);
-        if (this.inner) this.inner.invalidateInputs(from);
+        if (this.from ) this.from .invalidateInputs(parse, from);
+        if (this.to   ) this.to   .invalidateInputs(parse, from);
+        if (this.inner) this.inner.invalidateInputs(parse, from);
     }
 }
 
@@ -27586,12 +27569,12 @@ extends GShape
 
 
 
-    invalidateInputs(from)
+    invalidateInputs(parse, from)
     {
-        super.invalidateInputs(from);
+        super.invalidateInputs(parse, from);
 
-        if (this.round) this.round.invalidateInputs(from);
-        if (this.bias ) this.bias .invalidateInputs(from);
+        if (this.round) this.round.invalidateInputs(parse, from);
+        if (this.bias ) this.bias .invalidateInputs(parse, from);
     }
 }
 
@@ -27777,12 +27760,12 @@ extends GShape
 
 
 
-    invalidateInputs(from)
+    invalidateInputs(parse, from)
     {
-        super.invalidateInputs(from);
+        super.invalidateInputs(parse, from);
 
-        if (this.round  ) this.round  .invalidateInputs(from);
-        if (this.corners) this.corners.invalidateInputs(from);
+        if (this.round  ) this.round  .invalidateInputs(parse, from);
+        if (this.corners) this.corners.invalidateInputs(parse, from);
     }
 }
 
@@ -27978,13 +27961,13 @@ extends GShape
 
 
 
-    invalidateInputs(from)
+    invalidateInputs(parse, from)
     {
-        super.invalidateInputs(from);
+        super.invalidateInputs(parse, from);
 
-        if (this.round ) this.round .invalidateInputs(from);
-        if (this.points) this.points.invalidateInputs(from);
-        if (this.convex) this.convex.invalidateInputs(from);
+        if (this.round ) this.round .invalidateInputs(parse, from);
+        if (this.points) this.points.invalidateInputs(parse, from);
+        if (this.convex) this.convex.invalidateInputs(parse, from);
     }
 }
 
@@ -28277,22 +28260,22 @@ extends GShape
 
 
 
-    invalidateInputs(from)
+    invalidateInputs(parse, from)
     {
-        super.invalidateInputs(from);
+        super.invalidateInputs(parse, from);
         
-        if (this.text         ) this.text         .invalidateInputs(from);
-        if (this.x            ) this.x            .invalidateInputs(from);
-        if (this.y            ) this.y            .invalidateInputs(from);
-        if (this.width        ) this.width        .invalidateInputs(from);
-        if (this.height       ) this.height       .invalidateInputs(from);
-        if (this.font         ) this.font         .invalidateInputs(from);
-        if (this.style        ) this.style        .invalidateInputs(from);
-        if (this.size         ) this.size         .invalidateInputs(from);
-        if (this.alignH       ) this.alignH       .invalidateInputs(from);
-        if (this.alignV       ) this.alignV       .invalidateInputs(from);
-        if (this.lineHeight   ) this.lineHeight   .invalidateInputs(from);
-        if (this.letterSpacing) this.letterSpacing.invalidateInputs(from);
+        if (this.text         ) this.text         .invalidateInputs(parse, from);
+        if (this.x            ) this.x            .invalidateInputs(parse, from);
+        if (this.y            ) this.y            .invalidateInputs(parse, from);
+        if (this.width        ) this.width        .invalidateInputs(parse, from);
+        if (this.height       ) this.height       .invalidateInputs(parse, from);
+        if (this.font         ) this.font         .invalidateInputs(parse, from);
+        if (this.style        ) this.style        .invalidateInputs(parse, from);
+        if (this.size         ) this.size         .invalidateInputs(parse, from);
+        if (this.alignH       ) this.alignH       .invalidateInputs(parse, from);
+        if (this.alignV       ) this.alignV       .invalidateInputs(parse, from);
+        if (this.lineHeight   ) this.lineHeight   .invalidateInputs(parse, from);
+        if (this.letterSpacing) this.letterSpacing.invalidateInputs(parse, from);
     }
 }
 
@@ -28435,12 +28418,12 @@ extends GOperator1
 
 
 
-    invalidateInputs(from)
+    invalidateInputs(parse, from)
     {
-        super.invalidateInputs(from);
+        super.invalidateInputs(parse, from);
 
-        if (this.x) this.x.invalidateInputs(from);
-        if (this.y) this.y.invalidateInputs(from);
+        if (this.x) this.x.invalidateInputs(parse, from);
+        if (this.y) this.y.invalidateInputs(parse, from);
     }
 }
 
@@ -28646,15 +28629,15 @@ extends GShape
 
 
 
-    invalidateInputs(from)
+    invalidateInputs(parse, from)
     {
-        super.invalidateInputs(from);
+        super.invalidateInputs(parse, from);
 
-        if (this.points ) this.points .invalidateInputs(from);
-        if (this.closed ) this.closed .invalidateInputs(from);
-        if (this.degree ) this.degree .invalidateInputs(from);
-        if (this.winding) this.winding.invalidateInputs(from);
-        if (this.round  ) this.round  .invalidateInputs(from);
+        if (this.points ) this.points .invalidateInputs(parse, from);
+        if (this.closed ) this.closed .invalidateInputs(parse, from);
+        if (this.degree ) this.degree .invalidateInputs(parse, from);
+        if (this.winding) this.winding.invalidateInputs(parse, from);
+        if (this.round  ) this.round  .invalidateInputs(parse, from);
     }
 }
 
@@ -28823,15 +28806,15 @@ extends GOperator1
 
 
 
-    invalidateInputs(from)
+    invalidateInputs(parse, from)
     {
-        super.invalidateInputs(from);
+        super.invalidateInputs(parse, from);
 
-        if (this.x    ) this.x    .invalidateInputs(from);
-        if (this.y    ) this.y    .invalidateInputs(from);
-        if (this.join ) this.join .invalidateInputs(from);
-        if (this.cap  ) this.cap  .invalidateInputs(from);
-        if (this.round) this.round.invalidateInputs(from);
+        if (this.x    ) this.x    .invalidateInputs(parse, from);
+        if (this.y    ) this.y    .invalidateInputs(parse, from);
+        if (this.join ) this.join .invalidateInputs(parse, from);
+        if (this.cap  ) this.cap  .invalidateInputs(parse, from);
+        if (this.round) this.round.invalidateInputs(parse, from);
     }
 }
 
@@ -28991,14 +28974,14 @@ extends GOperator1
 
 
 
-    invalidateInputs(from)
+    invalidateInputs(parse, from)
     {
-        super.invalidateInputs(from);
+        super.invalidateInputs(parse, from);
 
-        if (this.input0      ) this.input0      .invalidateInputs(from);
-        if (this.input1      ) this.input1      .invalidateInputs(from);
-        if (this.startTangent) this.startTangent.invalidateInputs(from);
-        if (this.endTangent  ) this.endTangent  .invalidateInputs(from);
+        if (this.input0      ) this.input0      .invalidateInputs(parse, from);
+        if (this.input1      ) this.input1      .invalidateInputs(parse, from);
+        if (this.startTangent) this.startTangent.invalidateInputs(parse, from);
+        if (this.endTangent  ) this.endTangent  .invalidateInputs(parse, from);
     }
 }
 
@@ -29233,14 +29216,14 @@ extends GShape
 
 
 
-    invalidateInputs(from)
+    invalidateInputs(parse, from)
     {
-        super.invalidateInputs(from);
+        super.invalidateInputs(parse, from);
 
-        this.inputs.forEach(i => i.invalidateInputs(from));
+        this.inputs.forEach(i => i.invalidateInputs(parse, from));
 
-        if (this.winding) this.winding.invalidateInputs(from);
-        if (this.props  ) this.props  .invalidateInputs(from);
+        if (this.winding) this.winding.invalidateInputs(parse, from);
+        if (this.props  ) this.props  .invalidateInputs(parse, from);
     }
 }
 
@@ -29425,9 +29408,9 @@ extends GShape
 
 
 
-    invalidateInputs(from)
+    invalidateInputs(parse, from)
     {
-        super.invalidateInputs(from);
+        super.invalidateInputs(parse, from);
 
         this.inputs.forEach(i => i.pushValueUpdates(parse));
     }
@@ -29605,11 +29588,11 @@ extends GShapeBase
 
 
 
-    invalidateInputs(from)
+    invalidateInputs(parse, from)
     {
-        super.invalidateInputs(from);
+        super.invalidateInputs(parse, from);
 
-        this.inputs.forEach(i => i.invalidateInputs(from));
+        this.inputs.forEach(i => i.invalidateInputs(parse, from));
     }
 }
 
@@ -29812,12 +29795,12 @@ extends GShape
 
 
 
-    invalidateInputs(from)
+    invalidateInputs(parse, from)
     {
-        super.invalidateInputs(from);
+        super.invalidateInputs(parse, from);
 
-        if (this.round   ) this.round   .invalidateInputs(from);
-        if (this.children) this.children.invalidateInputs(from);
+        if (this.round   ) this.round   .invalidateInputs(parse, from);
+        if (this.children) this.children.invalidateInputs(parse, from);
     }
 }
 
@@ -30086,12 +30069,12 @@ extends GShapeBase
 
 
 
-    invalidateInputs(from)
+    invalidateInputs(parse, from)
     {
-        super.invalidateInputs(from);
+        super.invalidateInputs(parse, from);
 
-        if (this.input   ) this.input   .invalidateInputs(from);
-        if (this.children) this.children.invalidateInputs(from);
+        if (this.input   ) this.input   .invalidateInputs(parse, from);
+        if (this.children) this.children.invalidateInputs(parse, from);
     }
 }
 
@@ -30225,13 +30208,13 @@ extends GShapeBase
 
 
 
-    invalidateInputs(from)
+    invalidateInputs(parse, from)
     {
-        super.invalidateInputs(from);
+        super.invalidateInputs(parse, from);
 
-        this.inputs.forEach(i => i.invalidateInputs(from));
+        this.inputs.forEach(i => i.invalidateInputs(parse, from));
 
-        if (this.retain) this.retain.invalidateInputs(from);
+        if (this.retain) this.retain.invalidateInputs(parse, from);
     }
 }
 
@@ -30435,15 +30418,15 @@ extends GOperator1
 
 
 
-   invalidateInputs(from)
+   invalidateInputs(parse, from)
     {
-        super.invalidateInputs(from);
+        super.invalidateInputs(parse, from);
 
-        if (this.x          ) this.x          .invalidateInputs(from);
-        if (this.y          ) this.y          .invalidateInputs(from);
-        if (this.moveType   ) this.moveType   .invalidateInputs(from);
-        if (this.affectSpace) this.affectSpace.invalidateInputs(from);
-        if (this.showCenter ) this.showCenter .invalidateInputs(from);
+        if (this.x          ) this.x          .invalidateInputs(parse, from);
+        if (this.y          ) this.y          .invalidateInputs(parse, from);
+        if (this.moveType   ) this.moveType   .invalidateInputs(parse, from);
+        if (this.affectSpace) this.affectSpace.invalidateInputs(parse, from);
+        if (this.showCenter ) this.showCenter .invalidateInputs(parse, from);
     }
 }
 
@@ -30544,12 +30527,12 @@ extends GOperator1
 
 
 
-    invalidateInputs(from)
+    invalidateInputs(parse, from)
     {
-        super.invalidateInputs(from);
+        super.invalidateInputs(parse, from);
 
-        if (this.showCenter ) this.showCenter .invalidateInputs(from);
-        if (this.affectSpace) this.affectSpace.invalidateInputs(from);
+        if (this.showCenter ) this.showCenter .invalidateInputs(parse, from);
+        if (this.affectSpace) this.affectSpace.invalidateInputs(parse, from);
     }
 }
 
@@ -30679,11 +30662,11 @@ extends GAffine
 
 
 
-    invalidateInputs(from)
+    invalidateInputs(parse, from)
     {
-        super.invalidateInputs(from)
+        super.invalidateInputs(parse, from)
 
-        if (this.angle) this.angle.invalidateInputs(from);
+        if (this.angle) this.angle.invalidateInputs(parse, from);
     }
 }
 
@@ -30839,14 +30822,14 @@ extends GAffine
 
 
 
-    invalidateInputs(from)
+    invalidateInputs(parse, from)
     {
-        super.invalidateInputs(from);
+        super.invalidateInputs(parse, from);
 
-        if (this.scaleX       ) this.scaleX       .invalidateInputs(from);
-        if (this.scaleY       ) this.scaleY       .invalidateInputs(from);
-        if (this.affectCorners) this.affectCorners.invalidateInputs(from);
-        if (this.affectStyle  ) this.affectStyle  .invalidateInputs(from);
+        if (this.scaleX       ) this.scaleX       .invalidateInputs(parse, from);
+        if (this.scaleY       ) this.scaleY       .invalidateInputs(parse, from);
+        if (this.affectCorners) this.affectCorners.invalidateInputs(parse, from);
+        if (this.affectStyle  ) this.affectStyle  .invalidateInputs(parse, from);
     }
 }
 
@@ -30976,12 +30959,12 @@ extends GAffine
 
 
 
-    invalidateInputs(from)
+    invalidateInputs(parse, from)
     {
-        super.invalidateInputs(from);
+        super.invalidateInputs(parse, from);
 
-        if (this.skewX) this.skewX.invalidateInputs(from);
-        if (this.skewY) this.skewY.invalidateInputs(from);
+        if (this.skewX) this.skewX.invalidateInputs(parse, from);
+        if (this.skewY) this.skewY.invalidateInputs(parse, from);
     }
 
 
@@ -31150,13 +31133,13 @@ extends GOperator1
 
 
 
-   invalidateInputs(from)
+   invalidateInputs(parse, from)
     {
-        super.invalidateInputs(from);
+        super.invalidateInputs(parse, from);
 
-        if (this.centerX   ) this.centerX   .invalidateInputs(from);
-        if (this.centerY   ) this.centerY   .invalidateInputs(from);
-        if (this.showCenter) this.showCenter.invalidateInputs(from);
+        if (this.centerX   ) this.centerX   .invalidateInputs(parse, from);
+        if (this.centerY   ) this.centerY   .invalidateInputs(parse, from);
+        if (this.showCenter) this.showCenter.invalidateInputs(parse, from);
     }
 }
 
@@ -31294,11 +31277,11 @@ extends GOperator1
 
 
 
-   invalidateInputs(from)
+   invalidateInputs(parse, from)
     {
-        super.invalidateInputs(from);
+        super.invalidateInputs(parse, from);
 
-        if (this.showCenter) this.showCenter.invalidateInputs(from);
+        if (this.showCenter) this.showCenter.invalidateInputs(parse, from);
     }
 }
 
@@ -31401,12 +31384,12 @@ extends GOperator2
 
 
 
-    invalidateInputs(from)
+    invalidateInputs(parse, from)
     {
-        super.invalidateInputs(from);
+        super.invalidateInputs(parse, from);
 
-        if (this.distance) this.distance.invalidateInputs(from);
-        if (this.angle   ) this.angle   .invalidateInputs(from);
+        if (this.distance) this.distance.invalidateInputs(parse, from);
+        if (this.angle   ) this.angle   .invalidateInputs(parse, from);
     }
 }
 
@@ -31540,13 +31523,13 @@ extends GOperator2
 
 
 
-    invalidateInputs(from)
+    invalidateInputs(parse, from)
     {
-        super.invalidateInputs(from);
+        super.invalidateInputs(parse, from);
 
-        if (this.amount    ) this.amount    .invalidateInputs(from);
-        if (this.transform ) this.transform .invalidateInputs(from);
-        if (this.showCenter) this.showCenter.invalidateInputs(from);
+        if (this.amount    ) this.amount    .invalidateInputs(parse, from);
+        if (this.transform ) this.transform .invalidateInputs(parse, from);
+        if (this.showCenter) this.showCenter.invalidateInputs(parse, from);
     }
 }
 
@@ -31675,14 +31658,14 @@ extends GOperator2
 
 
 
-    invalidateInputs(from)
+    invalidateInputs(parse, from)
     {
-        super.invalidateInputs(from);
+        super.invalidateInputs(parse, from);
 
-        if (this.measure   ) this.measure   .invalidateInputs(from);
-        if (this.amount    ) this.amount    .invalidateInputs(from);
-        if (this.transform ) this.transform .invalidateInputs(from);
-        if (this.showCenter) this.showCenter.invalidateInputs(from);
+        if (this.measure   ) this.measure   .invalidateInputs(parse, from);
+        if (this.amount    ) this.amount    .invalidateInputs(parse, from);
+        if (this.transform ) this.transform .invalidateInputs(parse, from);
+        if (this.showCenter) this.showCenter.invalidateInputs(parse, from);
     }
 }
 
@@ -31872,13 +31855,13 @@ extends GOperator1
 
 
 
-    invalidateInputs(from)
+    invalidateInputs(parse, from)
     {
-        super.invalidateInputs(from);
+        super.invalidateInputs(parse, from);
 
-        if (this.position  ) this.position  .invalidateInputs(from);
-        if (this.transform ) this.transform .invalidateInputs(from);
-        if (this.showCenter) this.showCenter.invalidateInputs(from);
+        if (this.position  ) this.position  .invalidateInputs(parse, from);
+        if (this.transform ) this.transform .invalidateInputs(parse, from);
+        if (this.showCenter) this.showCenter.invalidateInputs(parse, from);
     }
 }
 
@@ -31978,12 +31961,12 @@ extends GOperator
 
 
 
-    invalidateInputs(from)
+    invalidateInputs(parse, from)
     {
-        super.invalidateInputs(from);
+        super.invalidateInputs(parse, from);
 
-        this.inputs.forEach(i => i.invalidateInputs(from))
-        this.params.forEach(p => p.invalidateInputs(from))
+        this.inputs.forEach(i => i.invalidateInputs(parse, from))
+        this.params.forEach(p => p.invalidateInputs(parse, from))
     }
 }
 
@@ -32071,11 +32054,11 @@ extends GOperator
 
 
 
-    invalidateInputs(from)
+    invalidateInputs(parse, from)
     {
-        super.invalidateInputs(from);
+        super.invalidateInputs(parse, from);
 
-        if (this.input) this.input.invalidateInputs(from);
+        if (this.input) this.input.invalidateInputs(parse, from);
     }
 }
 
@@ -34032,10 +34015,9 @@ function genParseRepeat(parse)
     if (nInputs == 1)
         repeat.input = genParse(parse);
 
-    repeat. count       = genParse(parse);
-    repeat._while       = genParse(parse);
-    repeat. iterateLoop = genParse(parse);  // don't set target here
-    repeat.   resetLoop = genParse(parse);  // don't set target here
+    repeat. count = genParse(parse);
+    repeat._while = genParse(parse);
+    repeat. loop  = genParse(parse);  // don't set target here
 
 
     parse.nTab--;

@@ -75,10 +75,10 @@ extends GOperator1
 
 
 
-    invalidateInputs(from)
+    invalidateInputs(parse, from)
     {
-        super.invalidateInputs(from);
+        super.invalidateInputs(parse, from);
 
-        if (this.function) this.function.invalidateInputs(from);
+        if (this.function) this.function.invalidateInputs(parse, from);
     }
 }

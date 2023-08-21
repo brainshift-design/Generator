@@ -123,12 +123,12 @@ extends GAffine
 
 
 
-    invalidateInputs(from)
+    invalidateInputs(parse, from)
     {
-        super.invalidateInputs(from);
+        super.invalidateInputs(parse, from);
 
-        if (this.skewX) this.skewX.invalidateInputs(from);
-        if (this.skewY) this.skewY.invalidateInputs(from);
+        if (this.skewX) this.skewX.invalidateInputs(parse, from);
+        if (this.skewY) this.skewY.invalidateInputs(parse, from);
     }
 
 

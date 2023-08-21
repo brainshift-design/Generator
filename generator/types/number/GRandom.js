@@ -60,12 +60,9 @@ extends GOperator
         }
 
 
-        const repeat    = parse.repeats.find(r => r.repeatId == this.loopId);
-        const iteration = repeat ? repeat.iteration : this.iteration++;
 
-        
         this.value = new NumberValue(
-            min.value + this.random.get(iteration + this.uniqueOffset) * (max.value - min.value), 
+            min.value + this.random.get(this.iteration + this.uniqueOffset) * (max.value - min.value), 
             Math.max(min.decimals, max.decimals));
 
             
@@ -75,9 +72,9 @@ extends GOperator
         if (max.value - min.value >= 1)
         {
             while (this.value.toNumber() == this.lastValue1
-                && this.randomUnique.get(iteration) < _unique)
+                && this.randomUnique.get(this.iteration) < _unique)
                 this.value = new NumberValue(
-                    min.value + this.random.get(iteration + ++this.uniqueOffset) * (max.value - min.value),
+                    min.value + this.random.get(this.iteration + ++this.uniqueOffset) * (max.value - min.value),
                     Math.max(min.decimals, max.decimals));
         }
 
@@ -85,9 +82,9 @@ extends GOperator
         {
             while ((   this.value.toNumber() == this.lastValue1
                     || this.value.toNumber() == this.lastValue2)
-                && this.randomUnique.get(iteration) < Math.max(_unique - 1))
+                && this.randomUnique.get(this.iteration) < Math.max(_unique - 1))
                 this.value = new NumberValue(
-                    min.value + this.random.get(iteration + ++this.uniqueOffset) * (max.value - min.value),
+                    min.value + this.random.get(this.iteration + ++this.uniqueOffset) * (max.value - min.value),
                     Math.max(min.decimals, max.decimals));
         }        
 
@@ -143,14 +140,14 @@ extends GOperator
 
 
 
-    invalidateInputs(from)
+    invalidateInputs(parse, from)
     {
-        super.invalidateInputs(from);
+        super.invalidateInputs(parse, from);
 
-        if (this.seed  ) this.seed  .invalidateInputs(from);
-        if (this.min   ) this.min   .invalidateInputs(from);
-        if (this.max   ) this.max   .invalidateInputs(from);
-        if (this.unique) this.unique.invalidateInputs(from);
+        if (this.seed  ) this.seed  .invalidateInputs(parse, from);
+        if (this.min   ) this.min   .invalidateInputs(parse, from);
+        if (this.max   ) this.max   .invalidateInputs(parse, from);
+        if (this.unique) this.unique.invalidateInputs(parse, from);
     }
 
 

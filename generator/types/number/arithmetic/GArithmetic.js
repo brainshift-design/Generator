@@ -33,10 +33,10 @@ extends GOperator
 
 
 
-    invalidateInputs(from)
+    invalidateInputs(parse, from)
     {
-        super.invalidateInputs(from);
+        super.invalidateInputs(parse, from);
 
-        this.inputs.forEach(i => i.invalidateInputs(from));
+        this.inputs.forEach(i => i.invalidateInputs(parse, from));
     }
 }

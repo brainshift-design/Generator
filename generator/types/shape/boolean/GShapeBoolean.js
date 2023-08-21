@@ -162,11 +162,11 @@ extends GShapeBase
 
 
 
-    invalidateInputs(from)
+    invalidateInputs(parse, from)
     {
-        super.invalidateInputs(from);
+        super.invalidateInputs(parse, from);
 
-        if (this.input   ) this.input   .invalidateInputs(from);
-        if (this.children) this.children.invalidateInputs(from);
+        if (this.input   ) this.input   .invalidateInputs(parse, from);
+        if (this.children) this.children.invalidateInputs(parse, from);
     }
 }

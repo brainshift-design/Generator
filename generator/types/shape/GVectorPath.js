@@ -199,14 +199,14 @@ extends GShape
 
 
 
-    invalidateInputs(from)
+    invalidateInputs(parse, from)
     {
-        super.invalidateInputs(from);
+        super.invalidateInputs(parse, from);
 
-        if (this.points ) this.points .invalidateInputs(from);
-        if (this.closed ) this.closed .invalidateInputs(from);
-        if (this.degree ) this.degree .invalidateInputs(from);
-        if (this.winding) this.winding.invalidateInputs(from);
-        if (this.round  ) this.round  .invalidateInputs(from);
+        if (this.points ) this.points .invalidateInputs(parse, from);
+        if (this.closed ) this.closed .invalidateInputs(parse, from);
+        if (this.degree ) this.degree .invalidateInputs(parse, from);
+        if (this.winding) this.winding.invalidateInputs(parse, from);
+        if (this.round  ) this.round  .invalidateInputs(parse, from);
     }
 }

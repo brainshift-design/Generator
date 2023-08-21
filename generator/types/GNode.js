@@ -98,12 +98,13 @@ class GNode
 
 
 
-    invalidateInputs(from)
+    invalidateInputs(parse, from)
     {
-        if (    this.options
-            &&  this.options.unknown)
-            //&& !this.options.cached)
+        if (   this.options
+            && this.options.unknown)
             this.valid = false;
+
+        this.iterateLoop(parse);
 
         return true;
     }
@@ -112,37 +113,33 @@ class GNode
 
     initLoop(parse, nodeId)
     {
-        let _this = this;
-
-        if (_this.type == PARAM)
-            _this = parse.parsedNodes.find(n => n.nodeId == _this.nodeId);
-
-        _this.loopId    = nodeId;
-        _this.iteration = 0;
+        this.loopId    = nodeId;
+        this.iteration = 0;
     }
 
 
 
     invalidateLoop(parse, nodeId)
     {
-        let _this = this;
+        this.valid = false;
+    }
 
-        if (_this.type == PARAM)
-            _this = parse.parsedNodes.find(n => n.nodeId == _this.nodeId);
 
-        _this.valid = false;
+
+    iterateLoop(parse)
+    {
+        const repeatIndex = parse.repeats.findIndex(r => r.repeatId == this.loopId);
+        
+        if (   repeatIndex < 0
+            || repeatIndex == parse.repeats.length-1)
+            this.iteration++;
     }
 
 
 
     resetLoop(parse, nodeId)
     {
-        let _this = this;
-
-        if (_this.type == PARAM)
-            _this = parse.parsedNodes.find(n => n.nodeId == _this.nodeId);
-
-        _this.valid     = false;
-        _this.iteration = 0;
-    }
+        this.valid     = false;
+        this.iteration = 0;
+    }    
 }

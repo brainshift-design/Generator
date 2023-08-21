@@ -51,11 +51,7 @@ extends GOperator
         }
             
 
-        const repeat    = parse.repeats.find(r => r.repeatId == this.loopId);
-        const iteration = repeat ? repeat.iteration : this.iteration++;
-
-
-        this.value = _values[iteration % _values.length];
+        this.value = _values[this.iteration % _values.length];
 
 
         this.setUpdateValues(parse,
@@ -96,10 +92,10 @@ extends GOperator
 
 
 
-    invalidateInputs(from)
+    invalidateInputs(parse, from)
     {
-        super.invalidateInputs(from);
+        super.invalidateInputs(parse, from);
 
-        this.inputs.forEach(i => i.invalidateInputs(from));
+        this.inputs.forEach(i => i.invalidateInputs(parse, from));
     }
 }

@@ -94,10 +94,34 @@ extends GOperator
 
 
     
-    invalidateInputs(from)
+    invalidateInputs(parse, from)
     {
-        super.invalidateInputs(from);
+        super.invalidateInputs(parse, from);
 
-        if (this.node) this.node.invalidateInputs(from);
+        if (this.node) this.node.invalidateInputs(parse, from);
+    }
+
+
+
+    initLoop(parse, nodeId)
+    {
+        const node = parse.parsedNodes.find(n => n.nodeId == this.nodeId);
+        node.initLoop(parse, nodeId);
+    }
+
+
+
+    invalidateLoop(parse, nodeId)
+    {
+        const node = parse.parsedNodes.find(n => n.nodeId == this.nodeId);
+        node.invalidateLoop(parse, nodeId);
+    }
+
+
+
+    resetLoop(parse, nodeId)
+    {
+        const node = parse.parsedNodes.find(n => n.nodeId == this.nodeId);
+        node.resetLoop(parse, nodeId);
     }
 }

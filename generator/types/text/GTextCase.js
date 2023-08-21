@@ -115,10 +115,10 @@ extends GOperator1
 
 
 
-    invalidateInputs(from)
+    invalidateInputs(parse, from)
     {
-        super.invalidateInputs(from);
+        super.invalidateInputs(parse, from);
 
-        if (this.case ) this.case .invalidateInputs(from);
+        if (this.case ) this.case .invalidateInputs(parse, from);
     }
 }

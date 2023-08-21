@@ -134,11 +134,11 @@ extends GOperator2
 
 
 
-    invalidateInputs(from)
+    invalidateInputs(parse, from)
     {
-        super.invalidateInputs(from);
+        super.invalidateInputs(parse, from);
 
-        if (this.mode   ) this.mode   .invalidateInputs(from);
-        if (this.opacity) this.opacity.invalidateInputs(from);
+        if (this.mode   ) this.mode   .invalidateInputs(parse, from);
+        if (this.opacity) this.opacity.invalidateInputs(parse, from);
     }
 }

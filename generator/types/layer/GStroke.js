@@ -176,16 +176,16 @@ extends GOperator1
     
     
 
-    invalidateInputs(from)
+    invalidateInputs(parse, from)
     {
-        super.invalidateInputs(from);
+        super.invalidateInputs(parse, from);
 
-        if (this.fills ) this.fills .invalidateInputs(from);
-        if (this.weight) this.weight.invalidateInputs(from);
-        if (this.fit   ) this.fit   .invalidateInputs(from);
-        if (this.join  ) this.join  .invalidateInputs(from);
-        if (this.miter ) this.miter .invalidateInputs(from);
-        if (this.cap   ) this.cap   .invalidateInputs(from);
-        if (this.dashes) this.dashes.invalidateInputs(from);
+        if (this.fills ) this.fills .invalidateInputs(parse, from);
+        if (this.weight) this.weight.invalidateInputs(parse, from);
+        if (this.fit   ) this.fit   .invalidateInputs(parse, from);
+        if (this.join  ) this.join  .invalidateInputs(parse, from);
+        if (this.miter ) this.miter .invalidateInputs(parse, from);
+        if (this.cap   ) this.cap   .invalidateInputs(parse, from);
+        if (this.dashes) this.dashes.invalidateInputs(parse, from);
     }
 }

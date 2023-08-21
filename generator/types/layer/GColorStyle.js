@@ -117,10 +117,10 @@ extends GOperator
 
 
 
-    invalidateInputs(from)
+    invalidateInputs(parse, from)
     {
-        super.invalidateInputs(from);
+        super.invalidateInputs(parse, from);
 
-        if (this.genValue) this.genValue.invalidateInputs(from);
+        if (this.genValue) this.genValue.invalidateInputs(parse, from);
     }
 }

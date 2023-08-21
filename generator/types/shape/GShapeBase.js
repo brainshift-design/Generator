@@ -71,14 +71,14 @@ extends GOperator
 
 
 
-    invalidateInputs(from)
+    invalidateInputs(parse, from)
     {
-        super.invalidateInputs(from);
+        super.invalidateInputs(parse, from);
 
-        if (this.x     ) this.x     .invalidateInputs(from);
-        if (this.y     ) this.y     .invalidateInputs(from);
-        if (this.width ) this.width .invalidateInputs(from);
-        if (this.height) this.height.invalidateInputs(from);
+        if (this.x     ) this.x     .invalidateInputs(parse, from);
+        if (this.y     ) this.y     .invalidateInputs(parse, from);
+        if (this.width ) this.width .invalidateInputs(parse, from);
+        if (this.height) this.height.invalidateInputs(parse, from);
     }
 }
 

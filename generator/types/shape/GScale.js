@@ -149,13 +149,13 @@ extends GAffine
 
 
 
-    invalidateInputs(from)
+    invalidateInputs(parse, from)
     {
-        super.invalidateInputs(from);
+        super.invalidateInputs(parse, from);
 
-        if (this.scaleX       ) this.scaleX       .invalidateInputs(from);
-        if (this.scaleY       ) this.scaleY       .invalidateInputs(from);
-        if (this.affectCorners) this.affectCorners.invalidateInputs(from);
-        if (this.affectStyle  ) this.affectStyle  .invalidateInputs(from);
+        if (this.scaleX       ) this.scaleX       .invalidateInputs(parse, from);
+        if (this.scaleY       ) this.scaleY       .invalidateInputs(parse, from);
+        if (this.affectCorners) this.affectCorners.invalidateInputs(parse, from);
+        if (this.affectStyle  ) this.affectStyle  .invalidateInputs(parse, from);
     }
 }

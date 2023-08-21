@@ -99,11 +99,11 @@ extends GOperator1
 
 
 
-    invalidateInputs(from)
+    invalidateInputs(parse, from)
     {
-        super.invalidateInputs(from);
+        super.invalidateInputs(parse, from);
 
-        if (this.type    ) this.type    .invalidateInputs(from);
-        if (this.decimals) this.decimals.invalidateInputs(from);
+        if (this.type    ) this.type    .invalidateInputs(parse, from);
+        if (this.decimals) this.decimals.invalidateInputs(parse, from);
     }
 }

@@ -84,12 +84,12 @@ extends GOperator1
 
 
 
-    invalidateInputs(from)
+    invalidateInputs(parse, from)
     {
-        super.invalidateInputs(from);
+        super.invalidateInputs(parse, from);
 
-        if (this.operation) this.operation.invalidateInputs(from);
-        if (this.operand  ) this.operand  .invalidateInputs(from);
+        if (this.operation) this.operation.invalidateInputs(parse, from);
+        if (this.operand  ) this.operand  .invalidateInputs(parse, from);
     }
 }
 

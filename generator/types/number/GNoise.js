@@ -60,12 +60,6 @@ extends GOperator
             || this.random.seed != seed.value)
             this.random = new Random(seed.value);
 
-
-        
-        const repeat    = parse.repeats.find(r => r.repeatId == this.loopId);
-        const iteration = repeat ? repeat.iteration : this.iteration++;
-    
-
         
         let size  = 1;
         let power = 1;
@@ -82,7 +76,7 @@ extends GOperator
             
             for (let c = 0; c < detail.value; c++)
             {
-                const i = iteration / (scale.value * size) + offset.value;
+                const i = this.iteration / (scale.value * size) + offset.value;
                 
                 const i0 = Math.floor(i);
                 const i1 = Math.ceil (i);
@@ -174,16 +168,16 @@ extends GOperator
 
 
 
-    invalidateInputs(from)
+    invalidateInputs(parse, from)
     {
-        super.invalidateInputs(from);
+        super.invalidateInputs(parse, from);
 
-        if (this.seed       ) this.seed       .invalidateInputs(from);
-        if (this.min        ) this.min        .invalidateInputs(from);
-        if (this.max        ) this.max        .invalidateInputs(from);
-        if (this.scale      ) this.scale      .invalidateInputs(from);
-        if (this.offset     ) this.offset     .invalidateInputs(from);
-        if (this.interpolate) this.interpolate.invalidateInputs(from);
-        if (this.detail     ) this.detail     .invalidateInputs(from);
+        if (this.seed       ) this.seed       .invalidateInputs(parse, from);
+        if (this.min        ) this.min        .invalidateInputs(parse, from);
+        if (this.max        ) this.max        .invalidateInputs(parse, from);
+        if (this.scale      ) this.scale      .invalidateInputs(parse, from);
+        if (this.offset     ) this.offset     .invalidateInputs(parse, from);
+        if (this.interpolate) this.interpolate.invalidateInputs(parse, from);
+        if (this.detail     ) this.detail     .invalidateInputs(parse, from);
     }
 }

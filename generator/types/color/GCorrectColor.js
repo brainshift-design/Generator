@@ -210,13 +210,13 @@ extends GOperator1
 
 
 
-    invalidateInputs(from)
+    invalidateInputs(parse, from)
     {
-        super.invalidateInputs(from);
+        super.invalidateInputs(parse, from);
 
-        if (this.order  ) this.order  .invalidateInputs(from);
-        if (this.margin1) this.margin1.invalidateInputs(from);
-        if (this.margin2) this.margin2.invalidateInputs(from);
-        if (this.margin3) this.margin3.invalidateInputs(from);
+        if (this.order  ) this.order  .invalidateInputs(parse, from);
+        if (this.margin1) this.margin1.invalidateInputs(parse, from);
+        if (this.margin2) this.margin2.invalidateInputs(parse, from);
+        if (this.margin3) this.margin3.invalidateInputs(parse, from);
     }
 }

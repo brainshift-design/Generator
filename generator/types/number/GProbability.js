@@ -46,13 +46,9 @@ extends GOperator
             this.random = new Random(seed.value);
 
 
-        const repeat    = parse.repeats.find(r => r.repeatId == this.loopId);
-        const iteration = repeat ? repeat.iteration : this.iteration++;
-    
-
         const r = 
             this.options.enabled
-            ? (this.random.get(iteration) > 1 - chance.value/100 ? 1 : 0)
+            ? (this.random.get(this.iteration) > 1 - chance.value/100 ? 1 : 0)
             : 0;
 
 
@@ -101,11 +97,11 @@ extends GOperator
 
 
 
-    invalidateInputs(from)
+    invalidateInputs(parse, from)
     {
-        super.invalidateInputs(from);
+        super.invalidateInputs(parse, from);
 
-        if (this.seed  ) this.seed  .invalidateInputs(from);
-        if (this.chance) this.chance.invalidateInputs(from);
+        if (this.seed  ) this.seed  .invalidateInputs(parse, from);
+        if (this.chance) this.chance.invalidateInputs(parse, from);
     }
 }
