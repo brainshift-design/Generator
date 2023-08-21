@@ -142,6 +142,8 @@ class Wire
             }
         }
 
+        // console.log('input.wireColor =',  input  ? input .wireColor : 'null');
+        // console.log('output.wireColor =', output ? output.wireColor : 'null');
 
         if (   output)
 //            && arraysIntersect(output.types, [COLOR_VALUE, FILL_VALUE, COLOR_STOP_VALUE, STROKE_VALUE]))
@@ -487,7 +489,7 @@ class Wire
     {
         const conn  = this.connection;
         let   color = rgb_a(this.getColor());
-    
+
 
         const l = rgb2hclok(color)[2];
         

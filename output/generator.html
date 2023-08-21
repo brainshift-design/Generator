@@ -1021,7 +1021,12 @@ function rgbFromTypeMode(type, active, mode)
 
     switch (type)
     {
-        case COLOR_VALUE:           
+        case COLOR_VALUE:      
+        case FILL_VALUE:
+        case STROKE_VALUE:
+        case COLOR_STOP_VALUE:
+        case GRADIENT_VALUE:
+
         case COLOR:           
         case COLOR_INTERPOLATE:
         case CORRECT_COLOR:
@@ -1029,20 +1034,15 @@ function rgbFromTypeMode(type, active, mode)
         case COLORBLIND:
         case COLOR_BLEND:
 
-        case COLOR_STOP_VALUE:
         case COLOR_STOP:
-        case GRADIENT_VALUE:
         case GRADIENT:
 
             return active 
                 ? (mode ? rgbActiveFlowDark   : rgbActiveFlowLight)
                 : (mode ? rgbFlowDark         : rgbFlowLight      );
-            // return active 
-            //      ? rgbActiveColor  
-            //      : rgbColor;
     }
 
-    return 'magenta';
+    return [0xff, 0, 0xff];
 }
 
 

@@ -6244,7 +6244,12 @@ function rgbFromTypeMode(type, active, mode)
 
     switch (type)
     {
-        case COLOR_VALUE:           
+        case COLOR_VALUE:      
+        case FILL_VALUE:
+        case STROKE_VALUE:
+        case COLOR_STOP_VALUE:
+        case GRADIENT_VALUE:
+
         case COLOR:           
         case COLOR_INTERPOLATE:
         case CORRECT_COLOR:
@@ -6252,20 +6257,15 @@ function rgbFromTypeMode(type, active, mode)
         case COLORBLIND:
         case COLOR_BLEND:
 
-        case COLOR_STOP_VALUE:
         case COLOR_STOP:
-        case GRADIENT_VALUE:
         case GRADIENT:
 
             return active 
                 ? (mode ? rgbActiveFlowDark   : rgbActiveFlowLight)
                 : (mode ? rgbFlowDark         : rgbFlowLight      );
-            // return active 
-            //      ? rgbActiveColor  
-            //      : rgbColor;
     }
 
-    return 'magenta';
+    return [0xff, 0, 0xff];
 }
 
 
@@ -48609,7 +48609,12 @@ function rgbFromTypeMode(type, active, mode)
 
     switch (type)
     {
-        case COLOR_VALUE:           
+        case COLOR_VALUE:      
+        case FILL_VALUE:
+        case STROKE_VALUE:
+        case COLOR_STOP_VALUE:
+        case GRADIENT_VALUE:
+
         case COLOR:           
         case COLOR_INTERPOLATE:
         case CORRECT_COLOR:
@@ -48617,20 +48622,15 @@ function rgbFromTypeMode(type, active, mode)
         case COLORBLIND:
         case COLOR_BLEND:
 
-        case COLOR_STOP_VALUE:
         case COLOR_STOP:
-        case GRADIENT_VALUE:
         case GRADIENT:
 
             return active 
                 ? (mode ? rgbActiveFlowDark   : rgbActiveFlowLight)
                 : (mode ? rgbFlowDark         : rgbFlowLight      );
-            // return active 
-            //      ? rgbActiveColor  
-            //      : rgbColor;
     }
 
-    return 'magenta';
+    return [0xff, 0, 0xff];
 }
 
 
@@ -83709,7 +83709,7 @@ class NumberControlRange
     bottom;
 
 
-    constructor(start, end = start, background = 'magenta', top = 0, bottom = 1)
+    constructor(start, end = start, background = '#f0f', top = 0, bottom = 1)
     {
         this.start      = start;
         this.end        = end;
@@ -93696,72 +93696,6 @@ extends Parameter
 
 
 
-    // updateControls()
-    // {
-    //     this.updateWarningOverlay();
-
-
-    //     const noColor = 
-    //         darkMode
-    //         ? rgbNoColorDark
-    //         : rgbNoColorLight;
-
-
-    //     const rgb        = this.value.toRgb();
-    //     const rgbaStripe = rgb_a(getStripeBackColor(rgb));
-    //     const rgbaText   = getTextColorFromBackColor(rgbaStripe, 1);
-        
-
-    //     if (this.showColorBack)
-    //     {
-    //         this.controls[0].backStyleLight  =
-    //         this.controls[0].backStyleDark   = rgba2style(rgbaStripe);
-
-    //         this.controls[0].valueStyleLight = 
-    //         this.controls[0].valueStyleDark  = 'transparent';
-
-    //         this.controls[0].textStyleLight  = 
-    //         this.controls[0].textStyleDark   = rgba2style(rgbaText);
-    //     }
-
-    //     console.log('rgbaText =', rgbaText);
-    //     if (this.input)
-    //     {
-    //         this.input.colorLight  = 
-    //         this.input.colorDark   =  rgb_a(rgbaText, 0.2);
-    //         this.input.wireColor   = !rgbIsNaN(rgbaStripe) ? rgbaStripe : noColor;
-    //     }
-
-    //     if (this.output)
-    //     {
-    //         this.output.colorLight =
-    //         this.output.colorDark  =  rgb_a(rgbaText, 0.2);
-    //         this.output.wireColor  = !rgbIsNaN(rgbaStripe) ? rgbaStripe : noColor;
-    //     }
-
-
-    //     this.checkers.style.background = 
-    //         darkMode
-    //         ?   'linear-gradient(45deg, #222 25%, transparent 25%, transparent 75%, #222 75%), '
-    //           + 'linear-gradient(45deg, #222 25%, transparent 25%, transparent 75%, #222 75%)'
-    //         :   'linear-gradient(45deg, #ddd 25%, transparent 25%, transparent 75%, #ddd 75%), '
-    //           + 'linear-gradient(45deg, #ddd 25%, transparent 25%, transparent 75%, #ddd 75%)';
-
-
-    //     this.checkers.style.backgroundColor    = darkMode ? '#444' : '#fff';
-
-    //     this.checkers.style.backgroundSize     = '22px 22px';
-    //     this.checkers.style.backgroundPosition = '0 0, 11px 11px';
-
-    //     this.checkers.style.left               = '-3.5px';
-    //     this.checkers.style.width              = 'calc(100% + 3.5px)';
-
-
-    //     super.updateControls();
-    // }
-
-
-
     genRequest(gen)
     {
         // this function exists because a parameter without an output
@@ -94294,37 +94228,37 @@ extends Parameter
         const rgbaText   = getTextColorFromBackColor(rgbaStripe, rgba[3]);
 
 
-         if (this.input)
+        this.controls[0].backStyleLight = 
+        this.controls[0].backStyleDark  = 'transparent';
+               
+        this.controls[0].textStyleLight = 
+        this.controls[0].textStyleDark  = rgba2style(rgbaText);
+      
+      
+        this.controls[1].backStyleLight = 
+        this.controls[1].backStyleDark  = 'transparent';
+   
+   
+        this.controls[1].textStyleLight = 
+        this.controls[1].textStyleDark  = rgba2style(rgbaText);
+
+
+        super.updateControls();
+
+
+        if (this.input)
         {
             this.input.colorLight  = 
             this.input.colorDark   = rgb_a(rgbaText, 0.2);
-            this.input.wireColor   = !rgbaIsNaN(rgbaBack) ? rgbaBack : noColor;
+            this.input.wireColor   = !rgbaIsNaN(rgbaStripe) ? rgbaStripe : noColor;
         }
 
         if (this.output)
         {
             this.output.colorLight =
             this.output.colorDark  = rgb_a(rgbaText, 0.2);
-            this.output.wireColor  = !rgbaIsNaN(rgbaBack) ? rgbaBack : noColor;
+            this.output.wireColor  = !rgbaIsNaN(rgbaStripe) ? rgbaStripe : noColor;
         }
-
-
-        this.controls[0].backStyleLight           = 
-        this.controls[0].backStyleDark            = 'transparent';
-               
-        this.controls[0].textStyleLight           = 
-        this.controls[0].textStyleDark            = rgba2style(rgbaText);
-      
-      
-        this.controls[1].backStyleLight           = 
-        this.controls[1].backStyleDark            = 'transparent';
-   
-   
-        this.controls[1].textStyleLight           = 
-        this.controls[1].textStyleDark            = rgba2style(rgbaText);
-
-
-        super.updateControls();
 
 
         this.checkers.style.background =
@@ -99049,6 +98983,8 @@ class Wire
             }
         }
 
+        // console.log('input.wireColor =',  input  ? input .wireColor : 'null');
+        // console.log('output.wireColor =', output ? output.wireColor : 'null');
 
         if (   output)
 //            && arraysIntersect(output.types, [COLOR_VALUE, FILL_VALUE, COLOR_STOP_VALUE, STROKE_VALUE]))
@@ -99394,7 +99330,7 @@ class Wire
     {
         const conn  = this.connection;
         let   color = rgb_a(this.getColor());
-    
+
 
         const l = rgb2hclok(color)[2];
         
@@ -114097,9 +114033,8 @@ extends OpColorBase
         if (   !rgbIsNaN(colors.back)
             && this.paramOpacity.value.isValid())
         {
-            if (    rgbIsNaN(colors.back)
-                || !this.paramOpacity.value.isValid()
-                ||  this.forceShowWarning)
+            if (  !this.paramOpacity.value.isValid()
+                || this.forceShowWarning)
             {
                 if (!this.forceShowWarning)
                     this.warningStyle = getDefaultWarningStyle(colors.back);
@@ -114670,8 +114605,6 @@ extends OpColorBase
         this.paramFills.listTypes = [COLOR_VALUE, FILL_VALUE, GRADIENT_VALUE];
         this.paramFills.input.types.push(...this.paramFills.listTypes);
 
-        // this.paramWeight.divider = 0.55;
-        // this.paramMiter .divider = 0.43;
 
         this.setAllParamDividers(0.45);
 
@@ -114903,7 +114836,7 @@ extends OpColorBase
         }
         else
         {
-            colors.back = rgbDocumentBody;
+            colors.stripeBack = rgbDocumentBody;
         }
 
         
@@ -114920,11 +114853,11 @@ extends OpColorBase
         const colors = this.getHeaderColors();
         
             
-        if (this.paramFills.value.isValid())
+        if (  !rgbIsNaN(colors.back)
+            && this.paramFills.value.isValid())
         {
-            if (    rgbIsNaN(colors.back)
-                || !this.paramFills.value.isValid()
-                ||  this.forceShowWarning)
+            if (  !this.paramFills.value.isValid()
+                || this.forceShowWarning)
             {
                 if (!this.forceShowWarning)
                     this.warningStyle = getDefaultWarningStyle(colors.back);

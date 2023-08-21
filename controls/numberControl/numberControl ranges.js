@@ -9,7 +9,7 @@ class NumberControlRange
     bottom;
 
 
-    constructor(start, end = start, background = 'magenta', top = 0, bottom = 1)
+    constructor(start, end = start, background = '#f0f', top = 0, bottom = 1)
     {
         this.start      = start;
         this.end        = end;

@@ -296,9 +296,8 @@ extends OpColorBase
         if (   !rgbIsNaN(colors.back)
             && this.paramOpacity.value.isValid())
         {
-            if (    rgbIsNaN(colors.back)
-                || !this.paramOpacity.value.isValid()
-                ||  this.forceShowWarning)
+            if (  !this.paramOpacity.value.isValid()
+                || this.forceShowWarning)
             {
                 if (!this.forceShowWarning)
                     this.warningStyle = getDefaultWarningStyle(colors.back);

@@ -314,37 +314,37 @@ extends Parameter
         const rgbaText   = getTextColorFromBackColor(rgbaStripe, rgba[3]);
 
 
-         if (this.input)
+        this.controls[0].backStyleLight = 
+        this.controls[0].backStyleDark  = 'transparent';
+               
+        this.controls[0].textStyleLight = 
+        this.controls[0].textStyleDark  = rgba2style(rgbaText);
+      
+      
+        this.controls[1].backStyleLight = 
+        this.controls[1].backStyleDark  = 'transparent';
+   
+   
+        this.controls[1].textStyleLight = 
+        this.controls[1].textStyleDark  = rgba2style(rgbaText);
+
+
+        super.updateControls();
+
+
+        if (this.input)
         {
             this.input.colorLight  = 
             this.input.colorDark   = rgb_a(rgbaText, 0.2);
-            this.input.wireColor   = !rgbaIsNaN(rgbaBack) ? rgbaBack : noColor;
+            this.input.wireColor   = !rgbaIsNaN(rgbaStripe) ? rgbaStripe : noColor;
         }
 
         if (this.output)
         {
             this.output.colorLight =
             this.output.colorDark  = rgb_a(rgbaText, 0.2);
-            this.output.wireColor  = !rgbaIsNaN(rgbaBack) ? rgbaBack : noColor;
+            this.output.wireColor  = !rgbaIsNaN(rgbaStripe) ? rgbaStripe : noColor;
         }
-
-
-        this.controls[0].backStyleLight           = 
-        this.controls[0].backStyleDark            = 'transparent';
-               
-        this.controls[0].textStyleLight           = 
-        this.controls[0].textStyleDark            = rgba2style(rgbaText);
-      
-      
-        this.controls[1].backStyleLight           = 
-        this.controls[1].backStyleDark            = 'transparent';
-   
-   
-        this.controls[1].textStyleLight           = 
-        this.controls[1].textStyleDark            = rgba2style(rgbaText);
-
-
-        super.updateControls();
 
 
         this.checkers.style.background =

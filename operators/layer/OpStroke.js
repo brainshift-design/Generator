@@ -50,8 +50,6 @@ extends OpColorBase
         this.paramFills.listTypes = [COLOR_VALUE, FILL_VALUE, GRADIENT_VALUE];
         this.paramFills.input.types.push(...this.paramFills.listTypes);
 
-        // this.paramWeight.divider = 0.55;
-        // this.paramMiter .divider = 0.43;
 
         this.setAllParamDividers(0.45);
 
@@ -283,7 +281,7 @@ extends OpColorBase
         }
         else
         {
-            colors.back = rgbDocumentBody;
+            colors.stripeBack = rgbDocumentBody;
         }
 
         
@@ -300,11 +298,11 @@ extends OpColorBase
         const colors = this.getHeaderColors();
         
             
-        if (this.paramFills.value.isValid())
+        if (  !rgbIsNaN(colors.back)
+            && this.paramFills.value.isValid())
         {
-            if (    rgbIsNaN(colors.back)
-                || !this.paramFills.value.isValid()
-                ||  this.forceShowWarning)
+            if (  !this.paramFills.value.isValid()
+                || this.forceShowWarning)
             {
                 if (!this.forceShowWarning)
                     this.warningStyle = getDefaultWarningStyle(colors.back);
