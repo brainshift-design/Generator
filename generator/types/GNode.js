@@ -7,15 +7,20 @@ class GNode
 
     valid; // has been evaluated
 
-    listId       = -1;
+    listId        = -1;
     uniqueId;
 
 
-    options      = {};
-    data         = {}; // for type conversion info
+    options       = {};
+    data          = {}; // for type conversion info
 
 
-    updateValues = [];
+    updateValues  = [];
+
+
+    loopId        = NULL;
+
+    iteration     = 0;
 
 
 
@@ -105,21 +110,39 @@ class GNode
 
 
 
-    invalidateRepeat(parse, nodeId)
+    initLoop(parse, nodeId)
     {
-        this.invalidateLoop(parse, nodeId);
+        let _this = this;
+
+        if (_this.type == PARAM)
+            _this = parse.parsedNodes.find(n => n.nodeId == _this.nodeId);
+
+        _this.loopId    = nodeId;
+        _this.iteration = 0;
     }
 
 
 
     invalidateLoop(parse, nodeId)
     {
-        //let _this = this;
+        let _this = this;
 
-        // if (_this.type == PARAM)
-        //     _this = parse.parsedNodes.find(n => n.nodeId == _this.nodeId);
+        if (_this.type == PARAM)
+            _this = parse.parsedNodes.find(n => n.nodeId == _this.nodeId);
 
-        this.valid  = false;
-        this.loopId = nodeId;
+        _this.valid = false;
+    }
+
+
+
+    resetLoop(parse, nodeId)
+    {
+        let _this = this;
+
+        if (_this.type == PARAM)
+            _this = parse.parsedNodes.find(n => n.nodeId == _this.nodeId);
+
+        _this.valid     = false;
+        _this.iteration = 0;
     }
 }

@@ -1,10 +1,8 @@
 class GAccumulate
-extends GOperator1
+extends GOperator
 {
     current;
     when;
-
-    loopId = NULL;
 
 
 
@@ -105,9 +103,9 @@ extends GOperator1
 
 
 
-    invalidateLoop(parse, nodeId)
+    resetLoop(parse, nodeId)
     {
-        super.invalidateLoop(parse, nodeId);
+        super.resetLoop(parse, nodeId);
 
         this.current = new NumberValue(0);
     }

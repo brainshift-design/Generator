@@ -13,9 +13,6 @@ extends GOperator
     lastValue2   = -1;
     uniqueOffset =  0;
 
-    iteration    = 0;
-    loopId       = NULL;
-
 
 
     constructor(nodeId, options)
@@ -63,14 +60,15 @@ extends GOperator
         }
 
 
-        const iteration = this.iteration++;
+        const repeat    = parse.repeats.find(r => r.repeatId == this.loopId);
+        const iteration = repeat ? repeat.iteration : this.iteration++;
 
-
+        
         this.value = new NumberValue(
             min.value + this.random.get(iteration + this.uniqueOffset) * (max.value - min.value), 
             Math.max(min.decimals, max.decimals));
 
-
+            
         const _unique = unique.value/100;
         
 
@@ -157,11 +155,19 @@ extends GOperator
 
 
 
-    invalidateLoop(parse, nodeId)
+    initLoop(parse, nodeId)
     {
-        super.invalidateLoop(parse, nodeId);
+        super.initLoop(parse, nodeId);
 
         this.uniqueOffset = 0;
-        this.iteration    = 0;
+    }
+
+
+
+    resetLoop(parse, nodeId)
+    {
+        super.resetLoop(parse, nodeId);
+
+        this.uniqueOffset = 0;
     }
 }

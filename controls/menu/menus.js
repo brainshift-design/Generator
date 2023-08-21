@@ -331,7 +331,7 @@ function initGeneratorMenus()
 
     menuMainDebug = new Menu('Debug', false);
     menuMainDebug.addItems([
-    menuItemShowNodeId = new MenuItem('Show IDs', null,
+    menuItemShowNodeId = new MenuItem('Show node IDs', null,
                         {
                             checkCallback: () => settings.showNodeId, 
                             callback:      () => 

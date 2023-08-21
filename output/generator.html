@@ -7991,15 +7991,20 @@ class GNode
 
     valid; // has been evaluated
 
-    listId       = -1;
+    listId        = -1;
     uniqueId;
 
 
-    options      = {};
-    data         = {}; // for type conversion info
+    options       = {};
+    data          = {}; // for type conversion info
 
 
-    updateValues = [];
+    updateValues  = [];
+
+
+    loopId        = NULL;
+
+    iteration     = 0;
 
 
 
@@ -8089,22 +8094,40 @@ class GNode
 
 
 
-    invalidateRepeat(parse, nodeId)
+    initLoop(parse, nodeId)
     {
-        this.invalidateLoop(parse, nodeId);
+        let _this = this;
+
+        if (_this.type == PARAM)
+            _this = parse.parsedNodes.find(n => n.nodeId == _this.nodeId);
+
+        _this.loopId    = nodeId;
+        _this.iteration = 0;
     }
 
 
 
     invalidateLoop(parse, nodeId)
     {
-        //let _this = this;
+        let _this = this;
 
-        // if (_this.type == PARAM)
-        //     _this = parse.parsedNodes.find(n => n.nodeId == _this.nodeId);
+        if (_this.type == PARAM)
+            _this = parse.parsedNodes.find(n => n.nodeId == _this.nodeId);
 
-        this.valid  = false;
-        this.loopId = nodeId;
+        _this.valid = false;
+    }
+
+
+
+    resetLoop(parse, nodeId)
+    {
+        let _this = this;
+
+        if (_this.type == PARAM)
+            _this = parse.parsedNodes.find(n => n.nodeId == _this.nodeId);
+
+        _this.valid     = false;
+        _this.iteration = 0;
     }
 }
 
@@ -8441,7 +8464,7 @@ extends GNode
     {
         if (    parse.repeats.length == 0
             || !this.options.unknown
-            ||  parse.repeats.at(-1).iteration == parse.repeats.at(-1).total-1)
+            ||  parse.repeats.at(-1).index == parse.repeats.at(-1).total-1)
         {
             if (add) this.updateValues.push(...values);
             else     this.updateValues = [...values];
@@ -14491,11 +14514,12 @@ extends GOperator
 class GRepeat
 extends GOperator
 {
-    input = null;
+    input       = null;
 
-    count = null;
-   _while = null;
-    loop  = null;
+    count       = null;
+   _while       = null;
+    iterateLoop = null;
+    resetLoop   = null;
 
     iterationObjects = [];
 
@@ -14516,10 +14540,11 @@ extends GOperator
 
         if (this.input) copy.input = this.input.copy();
 
-        copy. value = this. value.copy();
-        copy. count = this. count.copy();
-        copy._while = this._while.copy();
-        copy. loop  = this. loop .copy();
+        copy. value       = this. value      .copy();
+        copy. count       = this. count      .copy();
+        copy._while       = this._while      .copy();
+        copy. iterateLoop = this. iterateLoop.copy();
+        copy. resetLoop   = this. resetLoop  .copy();
 
         return copy;
     }
@@ -14541,9 +14566,10 @@ extends GOperator
             return this;
             
 
-        let   count = (await this. count.eval(parse)).toValue();
-        let  _while = new NumberValue(1);
-        const loop  = (await this. loop .eval(parse)).toValue();
+        let   count       = (await this.count.eval(parse)).toValue();
+        let  _while       = new NumberValue(1);
+        const iterateLoop = (await this.iterateLoop.eval(parse)).toValue();
+        const resetLoop   = (await this.resetLoop  .eval(parse)).toValue();
 
 
         count = 
@@ -14552,11 +14578,8 @@ extends GOperator
             : new NumberValue(0);
 
 
-        if (this.loop.type != NUMBER_VALUE)
-        {
-            assertVolatile(this);
-            this.setRepeatCount(this.loop, count.value);
-        }
+        if (this.iterateLoop.type != NUMBER_VALUE) assertVolatile(this.iterateLoop, this);
+        if (this.resetLoop  .type != NUMBER_VALUE) assertVolatile(this.resetLoop,   this);
 
 
         this.value = new ListValue();
@@ -14565,6 +14588,7 @@ extends GOperator
         let repeat =
         {
             repeatId:  this.nodeId,
+            index:     0,
             iteration: 0,
             total:     1
         };
@@ -14585,11 +14609,17 @@ extends GOperator
                     ? count.value 
                     : 1;
                 
-                
+                repeat.total = nRepeats;
+
+                    
                 parse.repeats.push(repeat);
 
                 if (parse.repeats.length == 1)
                     parse.totalProgress += nRepeats;
+
+
+                if (this.iterateLoop.type != NUMBER_VALUE) this.iterateLoop.initLoop(parse, this.nodeId);
+                if (this.resetLoop  .type != NUMBER_VALUE) this.resetLoop  .initLoop(parse, this.nodeId);
 
 
                 for (let i = 0, o = 0; i < nRepeats; i++)
@@ -14607,14 +14637,12 @@ extends GOperator
                         showProgress = true;
                     }
 
-                    
-                    if (this.loop.type != NUMBER_VALUE) // connected
-                    {
-                        this.loop.invalidateRepeat(parse, this.nodeId);
 
-                        repeat.iteration = i;
-                        repeat.total     = nRepeats;
-                    }
+                    repeat.index = i;
+                    repeat.iteration++;
+
+                    if (this.iterateLoop.type != NUMBER_VALUE)
+                        this.iterateLoop.invalidateLoop(parse, this.nodeId);
                     
                     
                     this.input.invalidateInputs(this);
@@ -14664,6 +14692,13 @@ extends GOperator
 
                     if (showProgress)
                         genUpdateNodeProgress(parse, this.nodeId, i / nRepeats);
+                }
+
+
+                if (this.resetLoop.type != NUMBER_VALUE)
+                {
+                    //repeat.iteration = 0;
+                    this.resetLoop.resetLoop(parse, this.nodeId);
                 }
 
 
@@ -14728,10 +14763,11 @@ extends GOperator
     {
         super.pushValueUpdates(parse);
 
-        if (this. input) this. input.pushValueUpdates(parse);
-        if (this. count) this. count.pushValueUpdates(parse);
-        if (this._while) this._while.pushValueUpdates(parse);
-        if (this. loop ) this. loop .pushValueUpdates(parse);
+        if (this. input      ) this. input      .pushValueUpdates(parse);
+        if (this. count      ) this. count      .pushValueUpdates(parse);
+        if (this._while      ) this._while      .pushValueUpdates(parse);
+        if (this. iterateLoop) this. iterateLoop.pushValueUpdates(parse);
+        if (this. resetLoop  ) this. resetLoop  .pushValueUpdates(parse);
     }
 
 
@@ -14740,42 +14776,28 @@ extends GOperator
     {
         super.invalidateInputs(from);
 
-        if (this. input) this. input.invalidateInputs(from);
-        if (this. count) this. count.invalidateInputs(from);
-        if (this._while) this._while.invalidateInputs(from);
-        if (this. loop ) this. loop .invalidateInputs(from);
-    }
-
-
-
-    setRepeatCount(loop, count)
-    {
-        if (loop.type == LIST)
-        {
-            for (const input of loop.inputs)
-                this.setRepeatCount(input, count);
-        }
-        else
-        {
-            loop.repeatCount = count;
-        }
+        if (this. input      ) this. input      .invalidateInputs(from);
+        if (this. count      ) this. count      .invalidateInputs(from);
+        if (this._while      ) this._while      .invalidateInputs(from);
+        if (this. iterateLoop) this. iterateLoop.invalidateInputs(from);
+        if (this. resetLoop  ) this. resetLoop  .invalidateInputs(from);
     }
 }
 
 
 
-function assertVolatile(node)
+function assertVolatile(loop, node)
 {
     consoleAssert(
-           node.loop.type == DEFINE
-        || node.loop.type == FREEZE
-        || node.loop.type == NUMBER_RANGE
-        || node.loop.type == NUMBER_SEQUENCE
-        || node.loop.type == NUMBER_RANDOM
-        || node.loop.type == NUMBER_NOISE
-        || node.loop.type == NUMBER_PROBABILITY
-        || node.loop.type == LIST
-        || node.loop.type == PARAM, // for OpStart
+           loop.type == DEFINE
+        || loop.type == FREEZE
+        || loop.type == NUMBER_RANGE
+        || loop.type == NUMBER_SEQUENCE
+        || loop.type == NUMBER_RANDOM
+        || loop.type == NUMBER_NOISE
+        || loop.type == NUMBER_PROBABILITY
+        || loop.type == LIST
+        || loop.type == PARAM, // for OpStart
         'only volatile types can be repeated');
 }
 
@@ -15342,9 +15364,23 @@ extends GOperator
 
 
 
-    invalidateRepeat(parse, nodeId)
+    initLoop(parse, loopId)
     {
-        this.inputs.forEach(i => i.invalidateRepeat(parse, nodeId));
+        this.inputs.forEach(i => i.initLoop(parse, loopId));
+    }
+
+
+
+    invalidateLoop(parse, nodeId)
+    {
+        this.inputs.forEach(i => i.invalidateLoop(parse, nodeId));
+    }
+
+
+
+    resetLoop(parse, nodeId)
+    {
+        this.inputs.forEach(i => i.resetLoop(parse, nodeId));
     }
 }
 
@@ -17643,10 +17679,6 @@ extends GOperator
     inputs = [];
 
 
-    iteration = 0;
-    loopId    = NULL;
-
-
 
     constructor(nodeId, options)
     {
@@ -17694,7 +17726,8 @@ extends GOperator
         }
             
 
-        const iteration = this.iteration++;
+        const repeat    = parse.repeats.find(r => r.repeatId == this.loopId);
+        const iteration = repeat ? repeat.iteration : this.iteration++;
 
 
         this.value = _values[iteration % _values.length];
@@ -17744,15 +17777,6 @@ extends GOperator
 
         this.inputs.forEach(i => i.invalidateInputs(from));
     }
-
-
-
-    invalidateLoop(parse, nodeId)
-    {
-        super.invalidateLoop(parse, nodeId);
-
-        this.iteration = 0;
-    }
 }
 
 
@@ -17765,9 +17789,6 @@ extends GOperator
     end;
     spread;
     bias;
-
-
-    loopId = NULL;
 
 
 
@@ -17841,9 +17862,9 @@ extends GOperator
         {
             const sd = delta ? start.value/delta : 0;
 
-                 if (from.value == 2) f = sd + iteration/repeat.total;
-            else if (from.value == 1) f = sd + (repeat.total > 1 ? iteration/(repeat.total-1) : 0);
-            else if (from.value == 0) f = sd + iteration/repeat.total;
+                 if (from.value == 2) f = sd + repeat.index/repeat.total;
+            else if (from.value == 1) f = sd + (repeat.total > 1 ? repeat.index/(repeat.total-1) : 0);
+            else if (from.value == 0) f = sd + repeat.index/repeat.total;
         }
         else
             f = 0;
@@ -17956,9 +17977,6 @@ extends GOperator
 
     current;
 
-    iteration = 0;
-    loopId    = NULL;
-
 
 
     constructor(nodeId, options)
@@ -17999,9 +18017,10 @@ extends GOperator
         const end   = (await this.end  .eval(parse)).toValue();
     
 
-        const iteration = this.iteration++;
+        const repeat    = parse.repeats.find(r => r.repeatId == this.loopId);
+        const iteration = repeat ? repeat.iteration : this.iteration++;
 
-
+        
         if (   start
             && end
             && step)
@@ -18082,15 +18101,6 @@ extends GOperator
         if (this.end  ) this.end  .invalidateInputs(from);
         if (this.step ) this.step .invalidateInputs(from);
     }
-
-
-
-    invalidateLoop(parse, nodeId)
-    {
-        super.invalidateLoop(parse, nodeId);
-
-        this.iteration = 0;
-    }
 }
 
 
@@ -18109,9 +18119,6 @@ extends GOperator
     lastValue1   = -1;
     lastValue2   = -1;
     uniqueOffset =  0;
-
-    iteration    = 0;
-    loopId       = NULL;
 
 
 
@@ -18160,14 +18167,15 @@ extends GOperator
         }
 
 
-        const iteration = this.iteration++;
+        const repeat    = parse.repeats.find(r => r.repeatId == this.loopId);
+        const iteration = repeat ? repeat.iteration : this.iteration++;
 
-
+        
         this.value = new NumberValue(
             min.value + this.random.get(iteration + this.uniqueOffset) * (max.value - min.value), 
             Math.max(min.decimals, max.decimals));
 
-
+            
         const _unique = unique.value/100;
         
 
@@ -18254,12 +18262,20 @@ extends GOperator
 
 
 
-    invalidateLoop(parse, nodeId)
+    initLoop(parse, nodeId)
     {
-        super.invalidateLoop(parse, nodeId);
+        super.initLoop(parse, nodeId);
 
         this.uniqueOffset = 0;
-        this.iteration    = 0;
+    }
+
+
+
+    resetLoop(parse, nodeId)
+    {
+        super.resetLoop(parse, nodeId);
+
+        this.uniqueOffset = 0;
     }
 }
 
@@ -18276,10 +18292,7 @@ extends GOperator
     offset;
     detail;
 
-    random    = null;
-
-    iteration = 0;
-    loopId    = NULL;
+    random = null;
 
 
 
@@ -18332,8 +18345,9 @@ extends GOperator
 
 
         
-        const iteration = this.iteration++;
-
+        const repeat    = parse.repeats.find(r => r.repeatId == this.loopId);
+        const iteration = repeat ? repeat.iteration : this.iteration++;
+    
 
         
         let size  = 1;
@@ -18455,15 +18469,6 @@ extends GOperator
         if (this.interpolate) this.interpolate.invalidateInputs(from);
         if (this.detail     ) this.detail     .invalidateInputs(from);
     }
-
-
-
-    invalidateLoop(parse, nodeId)
-    {
-        super.invalidateLoop(parse, nodeId);
-
-        this.iteration = 0;
-    }
 }
 
 
@@ -18475,10 +18480,6 @@ extends GOperator
     chance;
 
     random = null;
-
-
-    iteration = 0;
-    loopId    = NULL;
 
 
 
@@ -18520,8 +18521,9 @@ extends GOperator
             this.random = new Random(seed.value);
 
 
-        const iteration = this.iteration++;
-
+        const repeat    = parse.repeats.find(r => r.repeatId == this.loopId);
+        const iteration = repeat ? repeat.iteration : this.iteration++;
+    
 
         const r = 
             this.options.enabled
@@ -18581,26 +18583,15 @@ extends GOperator
         if (this.seed  ) this.seed  .invalidateInputs(from);
         if (this.chance) this.chance.invalidateInputs(from);
     }
-
-
-
-    invalidateLoop(parse, nodeId)
-    {
-        //super.invalidateLoop(parse, nodeId);
-
-        this.iteration = 0;
-    }
 }
 
 
 
 class GAccumulate
-extends GOperator1
+extends GOperator
 {
     current;
     when;
-
-    loopId = NULL;
 
 
 
@@ -18701,9 +18692,9 @@ extends GOperator1
 
 
 
-    invalidateLoop(parse, nodeId)
+    resetLoop(parse, nodeId)
     {
-        super.invalidateLoop(parse, nodeId);
+        super.resetLoop(parse, nodeId);
 
         this.current = new NumberValue(0);
     }
@@ -27293,7 +27284,10 @@ extends GShape
         }
 
 
-        this.setUpdateValues(parse, [['value', this.value]]);
+        this.setUpdateValues(parse, 
+        [
+            ['value', this.value]
+        ]);
 
 
         await this.evalShapeBase(parse);
@@ -34038,9 +34032,10 @@ function genParseRepeat(parse)
     if (nInputs == 1)
         repeat.input = genParse(parse);
 
-    repeat. count = genParse(parse);
-    repeat._while = genParse(parse);
-    repeat. loop  = genParse(parse);  // don't set target here
+    repeat. count       = genParse(parse);
+    repeat._while       = genParse(parse);
+    repeat. iterateLoop = genParse(parse);  // don't set target here
+    repeat.   resetLoop = genParse(parse);  // don't set target here
 
 
     parse.nTab--;

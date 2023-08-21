@@ -82,7 +82,7 @@ extends GNode
     {
         if (    parse.repeats.length == 0
             || !this.options.unknown
-            ||  parse.repeats.at(-1).iteration == parse.repeats.at(-1).total-1)
+            ||  parse.repeats.at(-1).index == parse.repeats.at(-1).total-1)
         {
             if (add) this.updateValues.push(...values);
             else     this.updateValues = [...values];

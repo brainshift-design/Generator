@@ -171,8 +171,22 @@ extends GOperator
 
 
 
-    invalidateRepeat(parse, nodeId)
+    initLoop(parse, loopId)
     {
-        this.inputs.forEach(i => i.invalidateRepeat(parse, nodeId));
+        this.inputs.forEach(i => i.initLoop(parse, loopId));
+    }
+
+
+
+    invalidateLoop(parse, nodeId)
+    {
+        this.inputs.forEach(i => i.invalidateLoop(parse, nodeId));
+    }
+
+
+
+    resetLoop(parse, nodeId)
+    {
+        this.inputs.forEach(i => i.resetLoop(parse, nodeId));
     }
 }

@@ -7,10 +7,6 @@ extends GOperator
     random = null;
 
 
-    iteration = 0;
-    loopId    = NULL;
-
-
 
     constructor(nodeId, options)
     {
@@ -50,8 +46,9 @@ extends GOperator
             this.random = new Random(seed.value);
 
 
-        const iteration = this.iteration++;
-
+        const repeat    = parse.repeats.find(r => r.repeatId == this.loopId);
+        const iteration = repeat ? repeat.iteration : this.iteration++;
+    
 
         const r = 
             this.options.enabled
@@ -110,14 +107,5 @@ extends GOperator
 
         if (this.seed  ) this.seed  .invalidateInputs(from);
         if (this.chance) this.chance.invalidateInputs(from);
-    }
-
-
-
-    invalidateLoop(parse, nodeId)
-    {
-        //super.invalidateLoop(parse, nodeId);
-
-        this.iteration = 0;
     }
 }

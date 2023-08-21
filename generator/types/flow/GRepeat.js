@@ -1,11 +1,12 @@
 class GRepeat
 extends GOperator
 {
-    input = null;
+    input       = null;
 
-    count = null;
-   _while = null;
-    loop  = null;
+    count       = null;
+   _while       = null;
+    iterateLoop = null;
+    resetLoop   = null;
 
     iterationObjects = [];
 
@@ -26,10 +27,11 @@ extends GOperator
 
         if (this.input) copy.input = this.input.copy();
 
-        copy. value = this. value.copy();
-        copy. count = this. count.copy();
-        copy._while = this._while.copy();
-        copy. loop  = this. loop .copy();
+        copy. value       = this. value      .copy();
+        copy. count       = this. count      .copy();
+        copy._while       = this._while      .copy();
+        copy. iterateLoop = this. iterateLoop.copy();
+        copy. resetLoop   = this. resetLoop  .copy();
 
         return copy;
     }
@@ -51,9 +53,10 @@ extends GOperator
             return this;
             
 
-        let   count = (await this. count.eval(parse)).toValue();
-        let  _while = new NumberValue(1);
-        const loop  = (await this. loop .eval(parse)).toValue();
+        let   count       = (await this.count.eval(parse)).toValue();
+        let  _while       = new NumberValue(1);
+        const iterateLoop = (await this.iterateLoop.eval(parse)).toValue();
+        const resetLoop   = (await this.resetLoop  .eval(parse)).toValue();
 
 
         count = 
@@ -62,11 +65,8 @@ extends GOperator
             : new NumberValue(0);
 
 
-        if (this.loop.type != NUMBER_VALUE)
-        {
-            assertVolatile(this);
-            this.setRepeatCount(this.loop, count.value);
-        }
+        if (this.iterateLoop.type != NUMBER_VALUE) assertVolatile(this.iterateLoop, this);
+        if (this.resetLoop  .type != NUMBER_VALUE) assertVolatile(this.resetLoop,   this);
 
 
         this.value = new ListValue();
@@ -75,6 +75,7 @@ extends GOperator
         let repeat =
         {
             repeatId:  this.nodeId,
+            index:     0,
             iteration: 0,
             total:     1
         };
@@ -95,11 +96,17 @@ extends GOperator
                     ? count.value 
                     : 1;
                 
-                
+                repeat.total = nRepeats;
+
+                    
                 parse.repeats.push(repeat);
 
                 if (parse.repeats.length == 1)
                     parse.totalProgress += nRepeats;
+
+
+                if (this.iterateLoop.type != NUMBER_VALUE) this.iterateLoop.initLoop(parse, this.nodeId);
+                if (this.resetLoop  .type != NUMBER_VALUE) this.resetLoop  .initLoop(parse, this.nodeId);
 
 
                 for (let i = 0, o = 0; i < nRepeats; i++)
@@ -117,14 +124,12 @@ extends GOperator
                         showProgress = true;
                     }
 
-                    
-                    if (this.loop.type != NUMBER_VALUE) // connected
-                    {
-                        this.loop.invalidateRepeat(parse, this.nodeId);
 
-                        repeat.iteration = i;
-                        repeat.total     = nRepeats;
-                    }
+                    repeat.index = i;
+                    repeat.iteration++;
+
+                    if (this.iterateLoop.type != NUMBER_VALUE)
+                        this.iterateLoop.invalidateLoop(parse, this.nodeId);
                     
                     
                     this.input.invalidateInputs(this);
@@ -174,6 +179,13 @@ extends GOperator
 
                     if (showProgress)
                         genUpdateNodeProgress(parse, this.nodeId, i / nRepeats);
+                }
+
+
+                if (this.resetLoop.type != NUMBER_VALUE)
+                {
+                    //repeat.iteration = 0;
+                    this.resetLoop.resetLoop(parse, this.nodeId);
                 }
 
 
@@ -238,10 +250,11 @@ extends GOperator
     {
         super.pushValueUpdates(parse);
 
-        if (this. input) this. input.pushValueUpdates(parse);
-        if (this. count) this. count.pushValueUpdates(parse);
-        if (this._while) this._while.pushValueUpdates(parse);
-        if (this. loop ) this. loop .pushValueUpdates(parse);
+        if (this. input      ) this. input      .pushValueUpdates(parse);
+        if (this. count      ) this. count      .pushValueUpdates(parse);
+        if (this._while      ) this._while      .pushValueUpdates(parse);
+        if (this. iterateLoop) this. iterateLoop.pushValueUpdates(parse);
+        if (this. resetLoop  ) this. resetLoop  .pushValueUpdates(parse);
     }
 
 
@@ -250,41 +263,27 @@ extends GOperator
     {
         super.invalidateInputs(from);
 
-        if (this. input) this. input.invalidateInputs(from);
-        if (this. count) this. count.invalidateInputs(from);
-        if (this._while) this._while.invalidateInputs(from);
-        if (this. loop ) this. loop .invalidateInputs(from);
-    }
-
-
-
-    setRepeatCount(loop, count)
-    {
-        if (loop.type == LIST)
-        {
-            for (const input of loop.inputs)
-                this.setRepeatCount(input, count);
-        }
-        else
-        {
-            loop.repeatCount = count;
-        }
+        if (this. input      ) this. input      .invalidateInputs(from);
+        if (this. count      ) this. count      .invalidateInputs(from);
+        if (this._while      ) this._while      .invalidateInputs(from);
+        if (this. iterateLoop) this. iterateLoop.invalidateInputs(from);
+        if (this. resetLoop  ) this. resetLoop  .invalidateInputs(from);
     }
 }
 
 
 
-function assertVolatile(node)
+function assertVolatile(loop, node)
 {
     consoleAssert(
-           node.loop.type == DEFINE
-        || node.loop.type == FREEZE
-        || node.loop.type == NUMBER_RANGE
-        || node.loop.type == NUMBER_SEQUENCE
-        || node.loop.type == NUMBER_RANDOM
-        || node.loop.type == NUMBER_NOISE
-        || node.loop.type == NUMBER_PROBABILITY
-        || node.loop.type == LIST
-        || node.loop.type == PARAM, // for OpStart
+           loop.type == DEFINE
+        || loop.type == FREEZE
+        || loop.type == NUMBER_RANGE
+        || loop.type == NUMBER_SEQUENCE
+        || loop.type == NUMBER_RANDOM
+        || loop.type == NUMBER_NOISE
+        || loop.type == NUMBER_PROBABILITY
+        || loop.type == LIST
+        || loop.type == PARAM, // for OpStart
         'only volatile types can be repeated');
 }

@@ -9,10 +9,7 @@ extends GOperator
     offset;
     detail;
 
-    random    = null;
-
-    iteration = 0;
-    loopId    = NULL;
+    random = null;
 
 
 
@@ -65,8 +62,9 @@ extends GOperator
 
 
         
-        const iteration = this.iteration++;
-
+        const repeat    = parse.repeats.find(r => r.repeatId == this.loopId);
+        const iteration = repeat ? repeat.iteration : this.iteration++;
+    
 
         
         let size  = 1;
@@ -187,14 +185,5 @@ extends GOperator
         if (this.offset     ) this.offset     .invalidateInputs(from);
         if (this.interpolate) this.interpolate.invalidateInputs(from);
         if (this.detail     ) this.detail     .invalidateInputs(from);
-    }
-
-
-
-    invalidateLoop(parse, nodeId)
-    {
-        super.invalidateLoop(parse, nodeId);
-
-        this.iteration = 0;
     }
 }
