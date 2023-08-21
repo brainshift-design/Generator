@@ -6242,6 +6242,7 @@ function rgbFromTypeMode(type, active, mode)
             ? (mode ? rgbActiveFlowDark   : rgbActiveFlowLight)
             : (mode ? rgbFlowDark         : rgbFlowLight      );
 
+
     switch (type)
     {
         case COLOR_VALUE:      
@@ -6265,6 +6266,7 @@ function rgbFromTypeMode(type, active, mode)
                 : (mode ? rgbFlowDark         : rgbFlowLight      );
     }
 
+    
     return [0xff, 0, 0xff];
 }
 
@@ -48607,6 +48609,7 @@ function rgbFromTypeMode(type, active, mode)
             ? (mode ? rgbActiveFlowDark   : rgbActiveFlowLight)
             : (mode ? rgbFlowDark         : rgbFlowLight      );
 
+
     switch (type)
     {
         case COLOR_VALUE:      
@@ -48630,6 +48633,7 @@ function rgbFromTypeMode(type, active, mode)
                 : (mode ? rgbFlowDark         : rgbFlowLight      );
     }
 
+    
     return [0xff, 0, 0xff];
 }
 
@@ -98983,15 +98987,11 @@ class Wire
             }
         }
 
-        // console.log('input.wireColor =',  input  ? input .wireColor : 'null');
-        // console.log('output.wireColor =', output ? output.wireColor : 'null');
 
-        if (   output)
-//            && arraysIntersect(output.types, [COLOR_VALUE, FILL_VALUE, COLOR_STOP_VALUE, STROKE_VALUE]))
+        if (output)
             return output.wireColor;
 
-        else if ( input)
-  //            && arraysIntersect(input.types, [COLOR_VALUE, FILL_VALUE, COLOR_STOP_VALUE, STROKE_VALUE]))
+        else if (input)
             return input.wireColor;
 
         else if (!isEmpty(types))

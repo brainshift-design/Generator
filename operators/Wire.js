@@ -142,15 +142,11 @@ class Wire
             }
         }
 
-        // console.log('input.wireColor =',  input  ? input .wireColor : 'null');
-        // console.log('output.wireColor =', output ? output.wireColor : 'null');
 
-        if (   output)
-//            && arraysIntersect(output.types, [COLOR_VALUE, FILL_VALUE, COLOR_STOP_VALUE, STROKE_VALUE]))
+        if (output)
             return output.wireColor;
 
-        else if ( input)
-  //            && arraysIntersect(input.types, [COLOR_VALUE, FILL_VALUE, COLOR_STOP_VALUE, STROKE_VALUE]))
+        else if (input)
             return input.wireColor;
 
         else if (!isEmpty(types))

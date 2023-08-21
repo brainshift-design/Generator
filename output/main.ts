@@ -3464,7 +3464,8 @@ async function figUpdateObjects(figParent, genObjects, nodeIds = [], firstChunk 
 
         const addObject = figObj =>
         {
-            if (figParent) 
+            if (    figParent
+                && !figParent.removed) 
                 figParent.appendChild(figObj);
             else
                 figObjects.objects.push(figObj);
@@ -3472,7 +3473,8 @@ async function figUpdateObjects(figParent, genObjects, nodeIds = [], firstChunk 
 
 
         let objects =
-            figParent
+                figParent
+            && !figParent.removed
             ? figParent.children
             : figObjects.objects;
 
@@ -3522,10 +3524,12 @@ async function figUpdateObjects(figParent, genObjects, nodeIds = [], firstChunk 
 
     // delete removed objects from parent
     
-    if (figParent)
+    if (    figParent
+        && !figParent.removed)
     {
         for (const figObj of figParent.children)
-            if (!genObjects.find(o => o[FO_OBJECT_ID] == figObj.getPluginData('objectId')))
+            if (    figObj.removed
+                && !genObjects.find(o => o[FO_OBJECT_ID] == figObj.getPluginData('objectId')))
                 figObj.remove();
     }
 
@@ -3533,7 +3537,9 @@ async function figUpdateObjects(figParent, genObjects, nodeIds = [], firstChunk 
     // put points on top
     
     for (const point of figPoints)
-        point.parent.appendChild(point);
+        if (   !point.removed
+            && !point.parent.removed)
+            point.parent.appendChild(point);
 
 
     // delete old content
@@ -4324,9 +4330,10 @@ function setObjectTransform(figObj, genObj, setSize = true, noHeight = 0.01)
             ? genObj[FO_FIG_HEIGHT]
             : genObj[FO_HEIGHT]
     
-        figObj.resizeWithoutConstraints(
-                     Math.max(0.01, scaleX),
-            height ? Math.max(0.01, scaleY) : noHeight);
+        if (!figObj.removed)
+            figObj.resizeWithoutConstraints(
+                         Math.max(0.01, scaleX),
+                height ? Math.max(0.01, scaleY) : noHeight);
     }
 }
 
@@ -4334,6 +4341,10 @@ function setObjectTransform(figObj, genObj, setSize = true, noHeight = 0.01)
  
 function setPointTransform(figPoint, genPoint)
 {
+    if (figPoint.removed)
+        return;
+
+
     figPoint.resizeWithoutConstraints(0.01, 0.01);
 
 
@@ -4351,7 +4362,8 @@ function setPointTransform(figPoint, genPoint)
 
 function updateExistingPointTransform(figPoint)
 {
-    figPoint.resizeWithoutConstraints(0.01, 0.01);
+    if (!figPoint.removed)
+        figPoint.resizeWithoutConstraints(0.01, 0.01);
 }
 
 
@@ -4694,6 +4706,10 @@ function updatePointObject_(figPoint, genPoint)
 
 function updatePointStyles(figPoint)
 {
+    if (figPoint.removed) 
+        return;
+
+        
     const isCenter   = parseBool(figPoint.getPluginData('isCenter'));
     const isSelected = figma.currentPage.selection.includes(figPoint);
 

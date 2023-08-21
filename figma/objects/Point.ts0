@@ -79,6 +79,10 @@ function updatePointObject_(figPoint, genPoint)
 
 function updatePointStyles(figPoint)
 {
+    if (figPoint.removed) 
+        return;
+
+        
     const isCenter   = parseBool(figPoint.getPluginData('isCenter'));
     const isSelected = figma.currentPage.selection.includes(figPoint);
 

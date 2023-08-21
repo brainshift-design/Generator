@@ -139,7 +139,8 @@ async function figUpdateObjects(figParent, genObjects, nodeIds = [], firstChunk 
 
         const addObject = figObj =>
         {
-            if (figParent) 
+            if (    figParent
+                && !figParent.removed) 
                 figParent.appendChild(figObj);
             else
                 figObjects.objects.push(figObj);
@@ -147,7 +148,8 @@ async function figUpdateObjects(figParent, genObjects, nodeIds = [], firstChunk 
 
 
         let objects =
-            figParent
+                figParent
+            && !figParent.removed
             ? figParent.children
             : figObjects.objects;
 
@@ -197,10 +199,12 @@ async function figUpdateObjects(figParent, genObjects, nodeIds = [], firstChunk 
 
     // delete removed objects from parent
     
-    if (figParent)
+    if (    figParent
+        && !figParent.removed)
     {
         for (const figObj of figParent.children)
-            if (!genObjects.find(o => o[FO_OBJECT_ID] == figObj.getPluginData('objectId')))
+            if (    figObj.removed
+                && !genObjects.find(o => o[FO_OBJECT_ID] == figObj.getPluginData('objectId')))
                 figObj.remove();
     }
 
@@ -208,7 +212,9 @@ async function figUpdateObjects(figParent, genObjects, nodeIds = [], firstChunk 
     // put points on top
     
     for (const point of figPoints)
-        point.parent.appendChild(point);
+        if (   !point.removed
+            && !point.parent.removed)
+            point.parent.appendChild(point);
 
 
     // delete old content

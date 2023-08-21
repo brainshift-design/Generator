@@ -39,6 +39,7 @@ function rgbFromTypeMode(type, active, mode)
             ? (mode ? rgbActiveFlowDark   : rgbActiveFlowLight)
             : (mode ? rgbFlowDark         : rgbFlowLight      );
 
+
     switch (type)
     {
         case COLOR_VALUE:      
@@ -62,6 +63,7 @@ function rgbFromTypeMode(type, active, mode)
                 : (mode ? rgbFlowDark         : rgbFlowLight      );
     }
 
+    
     return [0xff, 0, 0xff];
 }
 
