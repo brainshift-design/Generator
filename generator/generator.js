@@ -455,14 +455,15 @@ function genInitNodeProgress(nodeId)
 
 
 
-function genUpdateNodeProgress(parse, nodeId, progress)
+function genUpdateNodeProgress(parse, nodeId, progress, updateGlobal = true)
 {
     genQueueMessageToUi(
     {
         cmd:           'uiUpdateNodeProgress',
         nodeId:         nodeId,
         progress:       progress,
-        globalProgress: parse.currentProgress / parse.totalProgress
+        globalProgress: parse.currentProgress / parse.totalProgress,
+        updateGlobal:   updateGlobal
     });
 }
 

@@ -80,7 +80,7 @@ extends GOperator1
                       [ closestOrder,
                         closest1,
                         closest2,
-                        closest3 ] = findCorrection(
+                        closest3 ] = await findCorrection(
                             parse,
                             this.nodeId,
                             inputColor, 

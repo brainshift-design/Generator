@@ -14,7 +14,7 @@ class ColorCorrection
 
 
 
-function findCorrection(parse,
+async function findCorrection(parse,
                         nodeId,
                         color,
                         order,       margin1, margin2, margin3,
@@ -34,10 +34,9 @@ function findCorrection(parse,
     let progress = 0,
         total    = 6 * Math.pow(2, Tau);
 
-
+        
     let d = 1;
-
-
+        
     parse.totalProgress += 1024;
 
 
@@ -74,7 +73,7 @@ function findCorrection(parse,
             closest1,
             closest2,
             closest3,
-            progress ] = findCorrectionInOrder(
+            progress ] = await findCorrectionInOrder(
                 parse,
                 nodeId,
                 refOklab,
@@ -91,6 +90,10 @@ function findCorrection(parse,
                 total);
         }
 
+
+        if (parse.stopGenerate)
+            break;
+
         
         d /= 2;
 
@@ -99,7 +102,8 @@ function findCorrection(parse,
     }
 
 
-    if (!parse.stop())
+    if (   !parse.stop()
+        && !parse.stopGenerate)
     {
         // reduce closest to necessary minimums
 
@@ -128,20 +132,20 @@ function findCorrection(parse,
 
 
 
-function findCorrectionInOrder(parse,
-                               nodeId,
-                               refOklab,
-                               order, 
-                               lockedOrder, 
-                               locked1,  locked2,  locked3,
-                               closest1, closest2, closest3,
-                               start1,   start2,   start3, 
-                               end1,     end2,     end3,
-                               closestColor,
-                               closestOklab,
-                               closestOrder,
-                               progress,
-                               total)
+async function findCorrectionInOrder(parse,
+                                     nodeId,
+                                     refOklab,
+                                     order, 
+                                     lockedOrder, 
+                                     locked1,  locked2,  locked3,
+                                     closest1, closest2, closest3,
+                                     start1,   start2,   start3, 
+                                     end1,     end2,     end3,
+                                     closestColor,
+                                     closestOklab,
+                                     closestOrder,
+                                     progress,
+                                     total)
 {
     const color = [...closestColor];
     
@@ -185,7 +189,20 @@ function findCorrectionInOrder(parse,
         }
 
         
-        genUpdateNodeProgress(parse, nodeId, progress / total);
+        if (parse.repeats.length == 1)
+        {
+            const stopRequestId = await genGetValueFromUi('stopRequestId');
+
+            if (   parse.requestId == stopRequestId.value
+                || curRequestIds.includes(parse.requestId)) 
+            { 
+                parse.stopGenerate = true;
+                break; 
+            }
+        }
+
+
+        genUpdateNodeProgress(parse, nodeId, progress / total, false);
     }
 
     

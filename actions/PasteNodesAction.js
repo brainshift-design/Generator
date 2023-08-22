@@ -41,7 +41,7 @@ extends Action
 
         this.isDuplicate     = isDuplicate;
         this.isLoading       = isLoading;
-        
+
         this.x               = x;
         this.y               = y;
     }
@@ -53,12 +53,6 @@ extends Action
         this.prevSelectedNodeIds = graphView.selectedNodes.map(n => n.id);
 
 
-        // this.oldActiveNodeIds = [];
-
-        // for (const nodeId of this.prevSelectedNodeIds)
-        //     pushUnique(this.oldActiveNodeIds, graph.currentPage.nodes.filter(n => n.active));//getActiveNodesFromNodeId(nodeId).map(n => n.id));
-
-
         const [nodes, _conns] = uiPasteNodes(this.copiedNodesJson, true, this.pasteConnected, this.x, this.y, updateNodes);
 
         pushUnique(this.newConnectionData, _conns);
@@ -67,8 +61,7 @@ extends Action
         const terminals = getTerminalsInNodes(nodes);
 
         for (const terminal of terminals)
-            if (terminal.active)//!getActiveFromNode(terminal))
-                uiMakeNodeActive(terminal);
+            if (terminal.active) uiMakeNodeActive(terminal);
 
 
         for (const conn of _conns)
@@ -118,13 +111,6 @@ extends Action
         pasteOffset.y -= pasteOffsetDelta.y;
 
         graphView.selectedNodes = graph.nodes.filter(n => this.prevSelectedNodeIds.includes(n.id));
-
-
-        // let oldActiveNodeIds = [...this.oldActiveNodeIds];
-        // oldActiveNodeIds.sort((x, y) => (nodeFromId(x) === nodeFromId(y)) ? 0 : nodeFromId(y).isOrFollows(nodeFromId(x)) ? -1 : 1);
-
-        // for (const id of oldActiveNodeIds)
-        //     uiMakeNodeActive(nodeFromId(id));
     }
 
 

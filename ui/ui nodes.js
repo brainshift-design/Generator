@@ -1,3 +1,7 @@
+var importZoomToNodes = false;
+
+
+
 function idFromNode(node)
 {
     return node ? node.id : '';
@@ -935,7 +939,8 @@ function uiImportFromLocalFile()
 {
     loadFromLocalFile(json => 
     {
-        actionManager.do(new PasteNodesAction(json, false, false, true));
+        importZoomToNodes = true;
+        actionManager.do(new PasteNodesAction(json, false, false, true, Number.NaN, Number.NaN, true));
     });
 }
 

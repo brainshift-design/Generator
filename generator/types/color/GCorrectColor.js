@@ -84,7 +84,7 @@ extends GOperator1
                   [ closestOrder,
                     closest1,
                     closest2,
-                    closest3 ] = findCorrection(
+                    closest3 ] = await findCorrection(
                         parse,
                         this.nodeId,
                         inputColor, 
@@ -95,7 +95,8 @@ extends GOperator1
                         this.margin3 != null); 
 
                         
-                    if (!parse.stop())
+                    if (   !parse.stop()
+                        && !parse.stopGenerate)
                     {
                         if (   closestOrder >= 0 
                             && closestOrder <  6)
@@ -123,23 +124,40 @@ extends GOperator1
                                 ['value',   this.value                   ]
                             ]);
                         }
-                        else
-                        {
-                            this.order   = NumberValue.NaN;
-                            this.margin1 = NumberValue.NaN;
-                            this.margin2 = NumberValue.NaN;
-                            this.margin3 = NumberValue.NaN;
-                            this.value   = ColorValue .NaN;
+                        // else
+                        // {
+                        //     this.order   = NumberValue.NaN;
+                        //     this.margin1 = NumberValue.NaN;
+                        //     this.margin2 = NumberValue.NaN;
+                        //     this.margin3 = NumberValue.NaN;
+                        //     this.value   = ColorValue .NaN;
 
-                            this.setUpdateValues(parse,
-                            [
-                                ['order',   NumberValue.NaN],
-                                ['margin1', NumberValue.NaN],
-                                ['margin2', NumberValue.NaN],
-                                ['margin3', NumberValue.NaN],
-                                ['value',   ColorValue .NaN]
-                            ]);
-                        }
+                        //     this.setUpdateValues(parse,
+                        //     [
+                        //         ['order',   NumberValue.NaN],
+                        //         ['margin1', NumberValue.NaN],
+                        //         ['margin2', NumberValue.NaN],
+                        //         ['margin3', NumberValue.NaN],
+                        //         ['value',   ColorValue .NaN]
+                        //     ]);
+                        // }
+                    }
+                    else
+                    {
+                        this.order   = NumberValue.NaN;
+                        this.margin1 = NumberValue.NaN;
+                        this.margin2 = NumberValue.NaN;
+                        this.margin3 = NumberValue.NaN;
+                        this.value   = input;
+        
+                        this.setUpdateValues(parse,
+                        [
+                            ['order'  , this.order  ],
+                            ['margin1', this.margin1],
+                            ['margin2', this.margin2],
+                            ['margin3', this.margin3],
+                            ['value',   this.value  ]
+                        ]);
                     }
                 //}
             }

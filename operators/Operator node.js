@@ -537,6 +537,7 @@ Operator.prototype.updateProgress = function(msg)
 
 Operator.prototype.endProgress = function()
 {
+    this.progressBar    .style.width   = 0;
     this.progressWrapper.style.display = 'none';
 };
 
