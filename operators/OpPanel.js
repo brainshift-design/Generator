@@ -27,6 +27,9 @@ extends ResizableBase
         this.div         .style.width    = 400;
         this.div         .style.height   = 400;
 
+        this.width                       = 400;
+        this.height                      = 400;
+
         this.header      .style.overflow = 'visible';
         this.labelWrapper.style.overflow = 'visible';
         this.label       .style.overflow = 'visible';
@@ -63,6 +66,16 @@ extends ResizableBase
                     ...nodes ];
             }
         });
+    }
+
+
+
+    setRect(x, y, w, h, updateTransform = true)
+    {
+        super.setRect(x, y, w, h, updateTransform);
+
+        this.width  = w;
+        this.height = h;
     }
 
 
@@ -150,5 +163,35 @@ extends ResizableBase
         colors.text = darkMode ? hex2rgba('#fff6') : hex2rgba('#0006');
 
         return colors;
+    }
+
+
+
+    toJsonBase(nTab = 0) 
+    {
+        let   pos = ' '.repeat(nTab);
+        const tab = HTAB;
+
+        let json = Operator.prototype.toJsonBase.call(this, nTab);
+
+        json += 
+              ',\n' + pos + tab + '"width": "'  + this.width  + '"'
+            + ',\n' + pos + tab + '"height": "' + this.height + '"';
+
+        return json;
+    }
+
+
+
+    loadParams(_node, pasting)
+    {
+        super.loadParams(_node, pasting);
+
+        if (   _node.width
+            && _node.height)
+        {
+            this.width  = parseFloat(_node.width );
+            this.height = parseFloat(_node.height);
+        }
     }
 }
