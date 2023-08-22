@@ -67,7 +67,7 @@
     -----------------------------------------------------------------------------------------------------------------
     
 *            Shift              Adjust value                Allow values beyond visible limits
-*        Alt                    Hover over node             Solo node
+*        Alt                    Hover over node             Focus node
     
     
     

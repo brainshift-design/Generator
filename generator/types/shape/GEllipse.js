@@ -161,7 +161,11 @@ extends GShape
             this.inner .toValue());
 
         ellipse.props   = this.props.toValue();
-        ellipse.objects = this.value.objects.map(o => o.copy());
+
+        ellipse.objects = 
+            this.value.objects
+            ? this.value.objects.map(o => o.copy())
+            : [];
         
         return ellipse;
     }

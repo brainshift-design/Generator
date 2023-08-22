@@ -118,7 +118,8 @@ function genRequest(request, save)
         {
             if (node.options.active === true)
             {
-                if (node.value)
+                if (   node.value
+                    && node.value.objects)
                     node.value.objects.forEach(o => genPushUpdateObject(parse, o));
 
                 if (node.colorStyle) 
@@ -141,9 +142,9 @@ function genRequest(request, save)
                             && obj.xp1
                             && obj.xp2)
                         {
-                            const xp0 = obj.xp0.toPoint();
-                            const xp1 = obj.xp1.toPoint();
-                            const xp2 = obj.xp2.toPoint();
+                            const xp0 = clone(obj.xp0);//.toPoint();
+                            const xp1 = clone(obj.xp1);//.toPoint();
+                            const xp2 = clone(obj.xp2);//.toPoint();
                             const xp3 = addv(xp2, subv(xp1, xp0));
 
                             genPushUpdateObject(

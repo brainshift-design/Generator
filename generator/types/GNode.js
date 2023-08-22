@@ -10,25 +10,25 @@ class GNode
     listId        = -1;
     uniqueId;
 
-
-    options       = {};
-    data          = {}; // for type conversion info
-
-
-    updateValues  = [];
-
+    cached        = true;
+    unknown       = false;
 
     loopId        = NULL;
 
     iteration     = 0;
 
 
+    updateValues  = null;
+
+
 
     constructor(type, options) 
     {
-        this.type     = type;
-        this.options  = options;
+        this.type    = type;
 
+        if (options && options.cached ) this.cached  = options.cached;
+        if (options && options.unknown) this.unknown = options.unknown;
+     
         this.uniqueId = GNode.nextUniqueId++;
     }
 
@@ -44,7 +44,6 @@ class GNode
 
     copyBase(base)
     {
-        this.options  = clone(base.options);
         this.data     = clone(base.data   );
 
         this.uniqueId = base.uniqueId;
@@ -80,17 +79,6 @@ class GNode
 
 
     
-    pushValueUpdates(parse)
-    {
-        for (const value of this.updateValues)
-            genPushUpdateValue(parse, this.nodeId, value[0], value[1]);
-
-        if (this.isValid())
-            this.updateValues = [];
-    }
-
-
-
     validate()
     {
         this.valid = true;
@@ -98,10 +86,16 @@ class GNode
 
 
 
+    pushValueUpdates(parse)
+    {
+
+    }
+
+
+
     invalidateInputs(parse, from)
     {
-        if (   this.options
-            && this.options.unknown)
+        if (this.unknown)
             this.valid = false;
 
         this.iterateLoop(parse);

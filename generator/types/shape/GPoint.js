@@ -57,7 +57,7 @@ extends GOperator1
                 y);
         }
 
-       
+
         await this.evalObjects(parse);
 
 
@@ -110,7 +110,10 @@ extends GOperator1
             this.x.toValue(),
             this.y.toValue());
 
-        point.objects = this.value.objects.map(o => o.copy());
+        point.objects = 
+            this.value.objects
+            ? this.value.objects.map(o => o.copy())
+            : [];
 
         return point;
     }
@@ -130,8 +133,8 @@ extends GOperator1
     {
         super.pushValueUpdates(parse);
 
-        if (this.x) this.x.pushValueUpdates(parse);
-        if (this.y) this.y.pushValueUpdates(parse);
+        if (this.x && this.x.updateValue) this.x.pushValueUpdates(parse);
+        if (this.y && this.y.updateValue) this.y.pushValueUpdates(parse);
     }
 
 

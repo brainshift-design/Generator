@@ -48,11 +48,11 @@ document.addEventListener('keydown', e =>
         uiSaveSelectionToLocalFile();
     }
 
-    // solo mode
-    else if (   e.code == 'KeyS'
+    // focus mode
+    else if (   e.code == 'KeyF'
         && !getCtrlKey(e)
         && !e.shiftKey
-        && e.altKey)
+        &&  e.altKey)
     {
         e.preventDefault();
         updateSoloMode(!graphView.soloMode);

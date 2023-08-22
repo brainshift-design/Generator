@@ -71,8 +71,9 @@ extends GOperator
         //this.updateValues.push(['value', this.value]); // first so it can be separated out in OpItems
 
 
-        for (let j = 0; j < this.value.objects.length; j++)
-            this.value.objects[j].nodeId = this.nodeId;
+        if (this.value.objects)
+            for (let j = 0; j < this.value.objects.length; j++)
+                this.value.objects[j].nodeId = this.nodeId;
 
 
         this.validate();

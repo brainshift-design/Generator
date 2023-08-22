@@ -53,15 +53,16 @@ extends GOperator1
 
 
         if (   position
-            && position.isValid()
-            && position.objects.length > 0)
+            && position.isValid())
+            // && position.objects
+            // && position.objects.length > 0)
         {
-            const p0 = point(
-                position.objects[0].x, 
-                position.objects[0].y);
+            const p0 = position.toPoint();//point(
+                // position/*.objects[0]*/.x, 
+                // position/*.objects[0]*/.y);
 
-            const p1 = addv(p0, subv(position.objects[0].sp1, position.objects[0].sp0));
-            const p2 = addv(p0, subv(position.objects[0].sp2, position.objects[0].sp0));
+            const p1 = addv(p0, subv(position/*.objects[0]*/.sp1, position/*.objects[0]*/.sp0));
+            const p2 = addv(p0, subv(position/*.objects[0]*/.sp2, position/*.objects[0]*/.sp0));
 
             await this.evalObjects(
                 parse, 

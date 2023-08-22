@@ -44,6 +44,8 @@ extends ShapeValue
         this.alignV        = alignV;
         this.lineHeight    = lineHeight;
         this.letterSpacing = letterSpacing;
+
+        this.objects       = [];
     }
 
 

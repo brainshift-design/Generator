@@ -69,7 +69,10 @@ extends GOperator1
             {
                 const row = input.items[i];
                 this.value.items.push(row.copy());
-                this.value.objects.push(...row.objects);
+
+                if (   row.objects
+                    && this.value.objects)
+                    this.value.objects.push(...row.objects);
             }
         }
 

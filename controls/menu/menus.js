@@ -347,15 +347,15 @@ function initGeneratorMenus()
                                 pushUpdate(null, graph.nodes.filter(n => n.active));
                             }
                         }),
-    menuItemShowTransformPoints = new MenuItem('Show transforms', null,
-                        {
-                            checkCallback: () => settings.showTransformPoints, 
-                            callback:      () => 
-                            {
-                                updateSettingAndMenu('showTransformPoints', true, !settings.showTransformPoints);
-                                pushUpdate(null, graph.nodes.filter(n => n.active));
-                            }
-                        }),
+    // menuItemShowTransformPoints = new MenuItem('Show transforms', null,
+    //                     {
+    //                         checkCallback: () => settings.showTransformPoints, 
+    //                         callback:      () => 
+    //                         {
+    //                             updateSettingAndMenu('showTransformPoints', true, !settings.showTransformPoints);
+    //                             pushUpdate(null, graph.nodes.filter(n => n.active));
+    //                         }
+    //                     }),
     menuItemEnableAsserts = new MenuItem('Enable asserts', null,
                          {
                              checkCallback: () => settings.enableAsserts, 
@@ -897,7 +897,7 @@ function initGeneratorMenus()
 
 
 
-    btnSolo = new MenuButton('Solo mode&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<span style="color: #888; font-weight: 500;">'+osAlt()+'S</span>', null, {callback: () => 
+    btnSolo = new MenuButton('Focus on node&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<span style="color: #888; font-weight: 500;">'+osAlt()+'F</span>', null, {callback: () => 
     {
         updateSoloMode(!graphView.soloMode);
     }});

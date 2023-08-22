@@ -17,6 +17,8 @@ extends GValue
         super(type);
 
         this.nodeId = nodeId; 
+
+        this.objects = [];
     }
 
 
@@ -25,9 +27,11 @@ extends GValue
     {
         super.copyBase(base);
         
-        this.nodeId = base.nodeId;
+        this.nodeId  = base.nodeId;
 
-        if (base.propss) this.props = base.props.copy();
+        this.objects = base.objects.map(o => o.copy());
+
+        if (base.props) this.props = base.props.copy();
     }
 
 

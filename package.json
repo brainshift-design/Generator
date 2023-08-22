@@ -11,7 +11,7 @@
     "lint": "eslint ./"
   },
   "devDependencies": {
-    "@figma/plugin-typings": "^1.64.0",
+    "@figma/plugin-typings": "^1.75.0",
     "eslint": "^8.14.0"
   }
 }

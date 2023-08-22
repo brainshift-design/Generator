@@ -8,6 +8,8 @@ extends GNode
 
     value;
 
+    options       = {};
+
     updateValues  = [];
     feedbackValue = null; // () => {}
 
@@ -20,6 +22,8 @@ extends GNode
 
         this.nodeId   = nodeId;
         this.nodeName = options.nodeName;
+
+        this.options = clone(options);
 
         this.valid    = false;
         this.topLevel = false;
@@ -35,6 +39,8 @@ extends GNode
         
         this.nodeId   = base.nodeId;
         this.nodeName = base.nodeName;
+
+        this.options  = clone(base.options);
 
         this.valid    = base.valid;
         this.topLevel = base.topLevel;
@@ -81,7 +87,7 @@ extends GNode
     setUpdateValues(parse, values, add = false)
     {
         if (    parse.repeats.length == 0
-            || !this.options.unknown
+            || !this.unknown
             ||  parse.repeats.at(-1).iteration == parse.repeats.at(-1).total-1)
         {
             if (add) this.updateValues.push(...values);
@@ -117,9 +123,24 @@ extends GNode
     
     
     
+    pushValueUpdates(parse)
+    {
+        if (!this.updateValues)
+            return;
+
+        for (const value of this.updateValues)
+            genPushUpdateValue(parse, this.nodeId, value[0], value[1]);
+
+        if (this.isValid())
+            this.updateValues = [];
+    }
+
+
+
     updateValueObjects()
     {
-        if (!this.value)
+        if (   !this.value
+            || !this.value.objects)
             return;
 
 
@@ -141,9 +162,4 @@ extends GNode
              ? this.value.copy()
              : null;
     }
-    // toValue()
-    // {
-    //     consoleError('cannot call abstract method GOperator.toValue()');
-    //     return null;
-    // }
 }

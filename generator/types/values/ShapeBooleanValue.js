@@ -13,7 +13,10 @@ extends ShapeValue
         this.operation = operation;
         this.children  = children;
 
-        this.objects   = children.objects.map(o => o.copy());
+        this.objects = 
+            children.objects
+            ? children.objects.map(o => o.copy())
+            : null;
     }
 
 

@@ -257,8 +257,12 @@ extends GShape
             this.letterSpacing.toValue());
 
             
-        text.props   = this.props.toValue();
-        text.objects = this.value.objects.map(o => o.copy());
+        text.props = this.props.toValue();
+
+        text.objects = 
+            this.value.objects
+            ? this.value.objects.map(o => o.copy())
+            : [];
 
         
         return text;

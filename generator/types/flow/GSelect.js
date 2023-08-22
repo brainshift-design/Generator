@@ -77,15 +77,18 @@ extends GOperator
                 {
                     this.value = input.items[index.value].copy();
                 
-                    for (const obj of this.value.objects)
+                    if (this.value.objects)
                     {
-                        obj.nodeId = this.nodeId;
-                        obj.listId = -1;
+                        for (const obj of this.value.objects)
+                        {
+                            obj.nodeId = this.nodeId;
+                            obj.listId = -1;
 
-                        if (obj.objectId != NULL) 
-                            obj.objectId += '/';
+                            if (obj.objectId != NULL) 
+                                obj.objectId += '/';
 
-                        obj.objectId += index.value.toString();
+                            obj.objectId += index.value.toString();
+                        }
                     }
                 }
                 else

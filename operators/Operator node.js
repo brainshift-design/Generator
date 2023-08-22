@@ -32,7 +32,8 @@ Operator.prototype.createNode = function()
         graphView.overNode = this;
         
         if (   graphView.soloMode
-            && graphView._soloNode != this) 
+            && graphView._soloNode != this
+            && this.type != PANEL) 
             graphView.soloNode(this);
         
         this.updateNode();

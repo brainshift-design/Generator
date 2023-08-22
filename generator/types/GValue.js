@@ -3,7 +3,7 @@ extends GNode
 {
     valueId;
 
-    objects = [];
+    objects = null;
 
 
 
@@ -30,7 +30,6 @@ extends GNode
         
         this.valueId = base.valueId;
 
-        this.objects = base.objects.map(o => o.copy());
         //this.copyObjects(base.objects);
     }
 

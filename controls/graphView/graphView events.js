@@ -239,6 +239,9 @@ GraphView.prototype.createEvents = function()
                 {
                     uiMakeNodePassive(node);
                     activeNodes.push(node);
+
+                    if (node.type == ITEMS)
+                        pushUpdate(null, [node]);
                 }
             }
 

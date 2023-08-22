@@ -41,7 +41,7 @@ extends GOperator1
         {
             const input = (await this.input.eval(parse)).toValue();
 
-
+            
             if (this.options.enabled)
             {
                 // if (   !isValid(this.value) 
@@ -88,7 +88,7 @@ extends GOperator1
                             false,   false, false, false); 
 
                             
-                        if (!stopGenerate)
+                        if (!parse.stopGenerate)
                         {
                             if (   closestOrder >= 0 
                                 && closestOrder <  6)

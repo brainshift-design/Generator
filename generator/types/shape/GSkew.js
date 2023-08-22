@@ -104,6 +104,24 @@ extends GAffine
 
 
 
+    isValid()
+    {
+        return super.isValid()
+            && this.skewX && this.skewX.isValid()
+            && this.skewY && this.skewY.isValid();
+    }
+
+
+
+    toValue()
+    {
+        return this.value
+             ? this.value.copy()
+             : null;
+    }
+
+
+
     pushValueUpdates(parse)
     {
         super.pushValueUpdates(parse);GVectorPath
@@ -114,29 +132,11 @@ extends GAffine
 
 
 
-    isValid()
-    {
-        return super.isValid()
-            && this.skewX && this.skewX.isValid()
-            && this.skewY && this.skewY.isValid();
-    }
-
-
-
     invalidateInputs(parse, from)
     {
         super.invalidateInputs(parse, from);
 
         if (this.skewX) this.skewX.invalidateInputs(parse, from);
         if (this.skewY) this.skewY.invalidateInputs(parse, from);
-    }
-
-
-
-    toValue()
-    {
-        return this.value
-             ? this.value.copy()
-             : null;
     }
 }

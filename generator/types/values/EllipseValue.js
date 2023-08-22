@@ -22,13 +22,13 @@ extends ShapeValue
     {
         super(ELLIPSE_VALUE, nodeId);
 
-        this.x      = x;
-        this.y      = y;
-        this.width  = width;
-        this.height = height;
-        this.from   = from;
-        this.to     = to;
-        this.inner  = inner;
+        this.x       = x;
+        this.y       = y;
+        this.width   = width;
+        this.height  = height;
+        this.from    = from;
+        this.to      = to;
+        this.inner   = inner;
     }
 
 

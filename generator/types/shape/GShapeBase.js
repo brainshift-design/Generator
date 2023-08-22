@@ -41,18 +41,6 @@ extends GOperator
 
 
 
-    pushValueUpdates(parse)
-    {
-        super.pushValueUpdates(parse);
-
-        if (this.x     ) this.x     .pushValueUpdates(parse);
-        if (this.y     ) this.y     .pushValueUpdates(parse);
-        if (this.width ) this.width .pushValueUpdates(parse);
-        if (this.height) this.height.pushValueUpdates(parse);
-    }
-
-
-    
     evalStyle(options = {})
     {
         // for (const style of this.styles)
@@ -71,6 +59,18 @@ extends GOperator
 
 
 
+    pushValueUpdates(parse)
+    {
+        super.pushValueUpdates(parse);
+
+        if (this.x     ) this.x     .pushValueUpdates(parse);
+        if (this.y     ) this.y     .pushValueUpdates(parse);
+        if (this.width ) this.width .pushValueUpdates(parse);
+        if (this.height) this.height.pushValueUpdates(parse);
+    }
+
+
+    
     invalidateInputs(parse, from)
     {
         super.invalidateInputs(parse, from);

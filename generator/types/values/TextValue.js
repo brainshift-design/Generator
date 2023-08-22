@@ -19,8 +19,10 @@ extends GValue
         }
 
         
-        this.value     = val;
-        this.initValue = val;
+        this.value        = val;
+        this.initValue    = val;
+
+        // this.updateValues = [];
     }
 
 

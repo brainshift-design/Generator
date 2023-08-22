@@ -17,8 +17,11 @@ extends GValue
 
             for (const item of items)
             {
-                this.items  .push(item.copy());
-                this.objects.push(...item.objects.map(o => o.copy()));
+                this.items.push(item.copy());
+
+                if (   this.objects
+                    && item.objects)
+                    this.objects.push(...item.objects.map(o => o.copy()));
             }
         }
     }

@@ -6,6 +6,10 @@ extends GValue
     x;
     y;
 
+    sp0 = null; //  sp0 ------- sp1 
+    sp1 = null; //   |
+    sp2 = null; //  sp2
+
 
 
     constructor(nodeId,
@@ -14,10 +18,12 @@ extends GValue
     {
         super(POINT_VALUE);
 
-        this.nodeId = nodeId;
+        this.nodeId  = nodeId;
 
-        this.x      = x;
-        this.y      = y;
+        this.x       = x;
+        this.y       = y;
+
+        this.createDefaultSpace();
     }
 
 
@@ -31,6 +37,10 @@ extends GValue
 
         copy.copyBase(this);
 
+        copy.sp0 = clone(this.sp0);
+        copy.sp1 = clone(this.sp1);
+        copy.sp2 = clone(this.sp2);
+
         return copy;
     }
 
@@ -41,6 +51,24 @@ extends GValue
         return p
             && this.x.equals(p.x)
             && this.y.equals(p.y);
+    }
+
+
+
+    createDefaultSpace(cx = 0, cy = 0)
+    {
+        this.sp0 = point(cx,   cy  );
+        this.sp1 = point(cx+1, cy  );
+        this.sp2 = point(cx,   cy+1);
+    }
+
+
+
+    applySpaceTransform(xform, space)
+    {
+        this.sp0 = transformPoint(this.sp0, xform, space);
+        this.sp1 = transformPoint(this.sp1, xform, space);
+        this.sp2 = transformPoint(this.sp2, xform, space);
     }
 
 
