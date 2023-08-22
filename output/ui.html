@@ -88864,7 +88864,7 @@ function initGeneratorMenus()
 
 
 
-    btnSolo = new MenuButton('Focus on node&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<span style="color: #888; font-weight: 500;">'+osAlt()+'F</span>', null, {callback: () => 
+    btnSolo = new MenuButton('Focus&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<span style="color: #888; font-weight: 500;">'+osAlt()+'F</span>', null, {callback: () => 
     {
         updateSoloMode(!graphView.soloMode);
     }});
@@ -90106,6 +90106,9 @@ class GraphView
     selecting      = false;
     selectionRect  = Rect.NaN;
 
+    startedInPanel = false;
+
+    
     btn1down       = false; // this is to help deal with mouse wheels that send X values as
                              // sometimes a MMB press is followed by wheelX as a "deeper" middle-click
 
@@ -92067,7 +92070,8 @@ GraphView.prototype.updateSelectBox = function(shiftKey, ctrlKey)
 
         for (const node of graph.pageNodes)
         {
-            if (   node.type != PANEL
+            if (   (    node.type != PANEL
+                    || !graphView.startedInPanel)
                 && rectsIntersect(
                        node.measureData.divBounds,
                        selection))
@@ -92126,6 +92130,9 @@ GraphView.prototype.endSelection = function(pointerId)
 
     this.selectionRect.w = Number.NaN;
     this.selectionRect.h = Number.NaN;
+
+
+    graphView.startedInPanel = false;
 };
 
 
@@ -119332,8 +119339,10 @@ extends ResizableBase
         this.inner.addEventListener('pointerdown', e => 
         {
             e.stopPropagation();
+            graphView.startedInPanel = true;
             forwardEvent(e, graphView.div);
         });
+
 
 
         this.div         .style.width    = 400;
@@ -119343,6 +119352,7 @@ extends ResizableBase
         this.labelWrapper.style.overflow = 'visible';
         this.label       .style.overflow = 'visible';
         this.labelText   .style.overflow = 'visible';
+
 
 
         this.header.addEventListener('dblclick', e =>

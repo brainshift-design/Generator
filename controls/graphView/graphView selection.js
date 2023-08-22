@@ -81,7 +81,8 @@ GraphView.prototype.updateSelectBox = function(shiftKey, ctrlKey)
 
         for (const node of graph.pageNodes)
         {
-            if (   node.type != PANEL
+            if (   (    node.type != PANEL
+                    || !graphView.startedInPanel)
                 && rectsIntersect(
                        node.measureData.divBounds,
                        selection))
@@ -140,6 +141,9 @@ GraphView.prototype.endSelection = function(pointerId)
 
     this.selectionRect.w = Number.NaN;
     this.selectionRect.h = Number.NaN;
+
+
+    graphView.startedInPanel = false;
 };
 
 

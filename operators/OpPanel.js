@@ -18,8 +18,10 @@ extends ResizableBase
         this.inner.addEventListener('pointerdown', e => 
         {
             e.stopPropagation();
+            graphView.startedInPanel = true;
             forwardEvent(e, graphView.div);
         });
+
 
 
         this.div         .style.width    = 400;
@@ -29,6 +31,7 @@ extends ResizableBase
         this.labelWrapper.style.overflow = 'visible';
         this.label       .style.overflow = 'visible';
         this.labelText   .style.overflow = 'visible';
+
 
 
         this.header.addEventListener('dblclick', e =>
