@@ -164,7 +164,7 @@ extends GOperator1
             fromSpace, 
             getNormalColorValue(color.c1.value, fromSpace, 0),
             getNormalColorValue(color.c2.value, fromSpace, 1),
-            getNormalColorValue(color.c3.value, fromSpace, 2)];
+            getNormalColorValue(color.c3.value, fromSpace, 2) ];
 
         col = getScaledDataColor(convertDataColorToSpace(col, toSpace));
 

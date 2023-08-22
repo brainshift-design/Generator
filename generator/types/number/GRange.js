@@ -120,7 +120,6 @@ extends GOperator
             start.toNumber() + startOffset + delta * f,
             Math.max(start.decimals, end.decimals));
 
-            
         this.setUpdateValues(parse,
         [
             ['from',   from  ],

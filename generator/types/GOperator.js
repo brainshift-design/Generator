@@ -87,6 +87,7 @@ extends GNode
     setUpdateValues(parse, values, add = false)
     {
         if (    parse.repeats.length == 0
+            ||  this.unknown && parse.repeats[0].total == 0
             || !this.unknown
             ||  parse.repeats.at(-1).iteration == parse.repeats.at(-1).total-1)
         {

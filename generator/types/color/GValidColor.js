@@ -41,7 +41,7 @@ extends GOperator1
         {
             const input = (await this.input.eval(parse)).toValue();
 
-            
+
             if (this.options.enabled)
             {
                 // if (   !isValid(this.value) 
@@ -116,14 +116,15 @@ extends GOperator1
         else
             this.value = ColorValue.NaN;
 
-            
+
+        
         this.setUpdateValues(parse,
         [
             ['value',   this.value],
             ['quality', quality   ]
         ]);
-        
 
+        
         this.validate();
 
         return this;

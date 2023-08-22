@@ -69,128 +69,134 @@ extends GOperator
         this.value.objects = [];
 
 
-        if (   count.value > 0
-            && this.input
-            && this.input.isValid())
+        if (count.value > 0)
         {
-            const startTime    = Date.now();
-            let   showProgress = false;
-
-
-            const nRepeats = 
-                    this.options.enabled 
-                && (   this.options.active
-                    || this.options.beforeActive)
-                ? count.value 
-                : 0;//1;
-            
-
-            let repeat =
+            if (   this.input
+                && this.input.isValid())
             {
-                repeatId:  this.nodeId,
-                iteration: 0,
-                total:     nRepeats
-            };
+                const startTime    = Date.now();
+                let   showProgress = false;
 
+
+                const nRepeats = 
+                       this.options.enabled 
+                    && (   this.options.active
+                        || this.options.beforeActive)
+                    ? count.value 
+                    : 0;//1;
                 
-            parse.repeats.push(repeat);
 
-            if (parse.repeats.length == 1)
-                parse.totalProgress += nRepeats;
-
-
-            if (this.loop.type != NUMBER_VALUE) 
-                this.loop.initLoop(parse, this.nodeId);
-
-
-            for (let i = 0, o = 0; i < nRepeats; i++)
-            {
-                _while = (await this._while.eval(parse)).toValue();
-
-                if (_while.value == 0)
-                    break;
-
-
-                if (  !showProgress
-                    && Date.now() - startTime > 50)
+                let repeat =
                 {
-                    genInitNodeProgress(this.nodeId);
-                    showProgress = true;
-                }
+                    repeatId:  this.nodeId,
+                    iteration: 0,
+                    total:     nRepeats
+                };
 
-
-                repeat.iteration = i;
-
-                this.input.invalidateInputs(parse, this);
-                
-
-                const input = (await this.input.eval(parse)).toValue();
-
-
-                if (input)
-                {
-                    this.value.items.push(input.copy());
-
-
-                    this.iterationObjects = [];
-                
-                    if (this.input.value.objects)
-                    {
-                        for (let j = 0; j < this.input.value.objects.length; j++, o++)
-                        {
-                            const obj = copyFigmaObject(this.input.value.objects[j]);
-
-                            this.iterationObjects.push(obj.copy());
-
-                            obj.nodeId      = this.nodeId;
-                            obj.listId      = i;
-
-                            obj.objectId    = obj.objectId + OBJECT_SEPARATOR + this.nodeId + ':' + (o+1).toString();
-                            obj.objectName += ' ' + (o+1).toString();
-
-                            if (this.value.objects)
-                                this.value.objects.push(obj);
-                        }
-                    }
-                }
-
+                    
+                parse.repeats.push(repeat);
 
                 if (parse.repeats.length == 1)
-                {
-                    parse.currentProgress++;
-                    
-                    const stopRequestId = await genGetValueFromUi('stopRequestId');
+                    parse.totalProgress += nRepeats;
 
-                    if (   parse.requestId == stopRequestId.value
-                        || curRequestIds.includes(parse.requestId)) 
-                    { 
-                        parse.stopGenerate = true;
-                        break; 
+
+                if (this.loop.type != NUMBER_VALUE) 
+                    this.loop.initLoop(parse, this.nodeId);
+
+
+                for (let i = 0, o = 0; i < Math.max(1, nRepeats); i++)
+                {
+                    _while = (await this._while.eval(parse)).toValue();
+
+                    if (_while.value == 0)
+                        break;
+
+
+                    if (  !showProgress
+                        && Date.now() - startTime > 50)
+                    {
+                        genInitNodeProgress(this.nodeId);
+                        showProgress = true;
                     }
+
+
+                    repeat.iteration = i;
+
+                    this.input.invalidateInputs(parse, this);
+                    
+
+                    const input = (await this.input.eval(parse)).toValue();
+
+
+                    if (   input
+                        && nRepeats > 0)
+                    {
+                        this.value.items.push(input.copy());
+
+
+                        this.iterationObjects = [];
+                    
+                        if (this.input.value.objects)
+                        {
+                            for (let j = 0; j < this.input.value.objects.length; j++, o++)
+                            {
+                                const obj = copyFigmaObject(this.input.value.objects[j]);
+
+                                this.iterationObjects.push(obj.copy());
+
+                                obj.nodeId      = this.nodeId;
+                                obj.listId      = i;
+
+                                obj.objectId    = obj.objectId + OBJECT_SEPARATOR + this.nodeId + ':' + (o+1).toString();
+                                obj.objectName += ' ' + (o+1).toString();
+
+                                if (this.value.objects)
+                                    this.value.objects.push(obj);
+                            }
+                        }
+                    }
+
+
+                    if (parse.repeats.length == 1)
+                    {
+                        parse.currentProgress++;
+                        
+                        const stopRequestId = await genGetValueFromUi('stopRequestId');
+
+                        if (   parse.requestId == stopRequestId.value
+                            || curRequestIds.includes(parse.requestId)) 
+                        { 
+                            parse.stopGenerate = true;
+                            break; 
+                        }
+                    }
+
+
+                    if (showProgress)
+                        genUpdateNodeProgress(parse, this.nodeId, i / nRepeats);
                 }
 
 
-                if (showProgress)
-                    genUpdateNodeProgress(parse, this.nodeId, i / nRepeats);
+                if (this.loop.type != NUMBER_VALUE)
+                    this.loop.resetLoop(parse, this.nodeId);
+
+
+                if (this.startTimer > -1)
+                {
+                    clearTimeout(this.startTimer);
+                    this.startTimer = -1;
+                }
+
+
+                genEndNodeProgress(this.nodeId);
+
+
+                consoleAssert(parse.repeats.at(-1) == repeat, 'invalid nested repeat \'' + this.nodeId + '\'');
+                parse.repeats.pop();
             }
-
-
-            if (this.loop.type != NUMBER_VALUE)
-                this.loop.resetLoop(parse, this.nodeId);
-
-
-            if (this.startTimer > -1)
-            {
-                clearTimeout(this.startTimer);
-                this.startTimer = -1;
-            }
-
-
-            genEndNodeProgress(this.nodeId);
-
-
-            consoleAssert(parse.repeats.at(-1) == repeat, 'invalid nested repeat \'' + this.nodeId + '\'');
-            parse.repeats.pop();
+            else
+                if (this.input)
+                    await this.input.eval(parse);
         }
         else
         {
