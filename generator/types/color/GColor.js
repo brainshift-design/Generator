@@ -50,7 +50,8 @@ extends GOperator1
         let   c2    = this.c2    ? (await this.c2   .eval(parse)).toValue()             : null;
         let   c3    = this.c3    ? (await this.c3   .eval(parse)).toValue()             : null;
 
-console.log('COLOR c3 =', c3.value);
+        //console.log('COLOR c3 =', c3.value);
+        
         if (this.input)
         {
             const input = (await this.input.eval(parse)).toValue();

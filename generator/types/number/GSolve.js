@@ -66,18 +66,15 @@ extends GOperator1
                 let   prevDiff  = 0;
 
 
-                let   start     = input.copy();
-                let   step      = Number.MAX_SAFE_INTEGER;
+                let   temp      = 0;
+                let   step      = Number.MAX_SAFE_INTEGER/2;
 
 
-                const maxIter = 1000;
                 let   iter    = 0;
+                const maxIter = 1000;
                 
 
                 genInitNodeProgress(this.nodeId);
-
-
-                this.temp = new NumberValue(Number.MIN_SAFE_INTEGER);
 
 
                 parse.totalProgress += maxIter;
@@ -85,30 +82,16 @@ extends GOperator1
 
                 while (iter++ < maxIter)
                 {
-                    // console.log('step =', step);
-                    // console.log('diff =', diff);
-                    // console.log('prevDiff =', prevDiff);
-                    
-                    this.temp.value += step;
+                    temp += step;
 
-                    // console.log('this.temp.value =', this.temp.value);
-                    // console.log('');
 
-                    //console.log('this.input.type =', this.input.type);
                     if (this.input.type == PARAM)
-                        this.input.node[this.input.paramId].value = this.temp.value;
-                    // else
-                    //     this.input.value = this.temp.value;
+                        this.input.node[this.input.paramId].value = temp;
 
                         
                     this.current.invalidateInputs(parse, this);
                     current = (await this.current.eval(parse)).toValue();
 
-
-                    // console.log('this.temp.value =', this.temp.value);
-                    // console.log('target.value =', target.value);
-                    // console.log('current.value =', current.value);
-                    // console.log('');
 
                     if (!current.isValid())
                         diff = Number.MAX_SAFE_INTEGER;
@@ -121,7 +104,12 @@ extends GOperator1
 
                     if (   Math.abs (diff) >  Math.abs (prevDiff)
                         || Math.sign(diff) != Math.sign(prevDiff))
-                        step /= -3; //= -Math.sign(step) * Math.pow(Math.abs(step), 0.75);
+                        step /= -2; //= -Math.sign(step) * Math.pow(Math.abs(step), 0.75);
+
+
+                    console.log('step =', step);
+                    console.log('diff =', diff);
+    
 
                     prevDiff = diff;
 
@@ -143,7 +131,6 @@ extends GOperator1
                 else
                 {
                     this.value = NumberValue.NaN;
-                    genPushUpdateValue(parse, this.input.nodeId, 'value', start);
                     console.warn('max solve iterations');
                 }
             }

@@ -122,6 +122,50 @@ extends GNode
     
     
     
+    invalidateInputs(parse, from)
+    {
+        super.invalidateInputs(parse, from);
+
+        //if (this.unknown)
+            this.valid = false;
+    }
+
+
+
+    initLoop(parse, nodeId)
+    {
+        this.loopId    = nodeId;
+        this.iteration = 0;
+    }
+
+
+
+    invalidateLoop(parse, nodeId)
+    {
+        this.valid = false;
+    }
+
+
+
+    iterateLoop(parse)
+    {
+        const repeatIndex = parse.repeats.findIndex(r => r.repeatId == this.loopId);
+        
+        if (   repeatIndex < 0
+            || repeatIndex == parse.repeats.length-1)
+            this.iteration++;
+    }
+
+
+
+    resetLoop(parse, nodeId)
+    {
+        this.valid     = false;
+        this.iteration = 0;
+    }    
+
+
+
     pushValueUpdates(parse)
     {
         if (!this.updateValues)
