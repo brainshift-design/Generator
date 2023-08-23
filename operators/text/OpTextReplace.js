@@ -69,7 +69,7 @@ extends OperatorWithValue
     updateParams()
     {
         this.paramValue.enableControlText(true, this.isUnknown());
-        // this.paramValue.controls[0].valueText = this.isUnknown() ? UNKNOWN_DISPLAY : '';
+        // this.paramValue.controls[0].valueText = this.isUnknown() ? UNKNOWN_DISPLAY : null;
 
         this.paramWhat.enableControlText(true);
         this.paramWith.enableControlText(true);

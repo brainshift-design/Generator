@@ -48,7 +48,7 @@ const settings =
     logRawRequests:                false, 
     logRawValues:                  false,
 
-    lastValidCheck:                ''
+    sessionId:                     ''
 };
 
 
@@ -104,7 +104,7 @@ function updateSetting(settingName, value)
         case 'logRawRequests':                settings.logRawRequests                = value;  break;
         case 'logRawValues':                  settings.logRawValues                  = value;  break;
 
-        case 'lastValidCheck':                settings.lastValidCheck                = value;  break;
+        case 'sessionId':                     settings.sessionId                     = value;  break;
     } 
 }
 
@@ -310,53 +310,26 @@ function updateMenuItemShowOperationResults()
 
 
 
-function enableFeatures(subscription, beta)
+function enableFeatures(sub, beta = false)
 {
-    // updateElementDisplay(menuItemShowPages           .div, subscription);
-    // updateElementDisplay(menuPrefSep1                .div, subscription);
-    // updateElementDisplay(menuPrefSep2                .div, subscription);
-    // updateElementDisplay(menuItemEnableBetaFeatures  .div, subscription);
+    menuItemSaveToFile.enabled = sub;  menuItemSaveToFile.update();
 
-    // updateElementDisplay(btnFlow                     .div, subscription);
-    // updateElementDisplay(btnText                     .div, subscription && beta);
-    // updateElementDisplay(btnShape                    .div, subscription && beta);
-    // //updateElementDisplay(btnGroup                    .div, subscription && beta);
+    menuItemTimer       .enabled = sub;  menuItemTimer       .update();
+    menuItemAnimate     .enabled = sub;  menuItemAnimate     .update();
+    menuItemFetch       .enabled = sub;  menuItemFetch       .update();
+    menuItemTextFile    .enabled = sub;  menuItemTextFile    .update();
 
-    // updateElementDisplay(menuItemLogObjectUpdates    .div, subscription && beta);
+    menuItemDateTime    .enabled = sub;  menuItemDateTime    .update();
+    menuItemSolve       .enabled = sub;  menuItemSolve       .update();
+
+    menuItemTextJson    .enabled = sub;  menuItemTextJson    .update();
+
+    menuItemCorrectColor.enabled = sub;  menuItemCorrectColor.update();
+
+    menuItemShapeRender .enabled = sub;  menuItemShapeRender .update();
+
     
-    // //updateElementDisplay(menuItemList                .div, subscription && beta);
-    // updateElementDisplay(menuFlowSep1                .div, subscription && beta);
-    // updateElementDisplay(menuItemItems               .div, subscription);
-    // updateElementDisplay(menuFlowSep2                .div, subscription);
-    // //updateElementDisplay(menuItemSelect              .div, subscription);
-    // updateElementDisplay(menuItemCount               .div, subscription);
-    // //updateElementDisplay(menuFlowSep3                .div, subscription && beta);
-    // //updateElementDisplay(menuItemStart               .div, subscription && beta);
-    // updateElementDisplay(menuItemRepeat              .div, subscription && beta);
-    // // updateElementDisplay(menuItemCache               .div, subscription && beta);
-    // updateElementDisplay(menuItemCopy                .div, subscription && beta);
-    
-    // updateElementDisplay(menuItemSequence              .div, subscription && beta);    
-    // updateElementDisplay(menuItemSolve               .div, subscription && beta);    
-    // updateElementDisplay(menuItemNumberSep1          .div, subscription && beta);
-    // updateElementDisplay(menuItemAnimate             .div, subscription && beta);    
-    
-    // updateElementDisplay(menuItemCorrectColor        .div, subscription);
-    // updateElementDisplay(menuItemColorSep1           .div, subscription);
-    // updateElementDisplay(menuItemColorblind          .div, subscription);
-    // //updateMenuItemDisplay(menuItemColorBlend        .div, beta);
-
-    // //updateMenuItemDisplay(menuItemStyleFill         .div, subscription && beta);
-    // updateElementDisplay(menuItemLayerStroke         .div, subscription && beta);
-    // //updateMenuItemDisplay(menuItemStyleSep1         .div, subscription && beta);
-    
-    // //updateMenuItemDisplay(menuItemNodeCopyAsJsCode    .div, subscription && beta);
-    // updateElementDisplay(menuItemNodeCopyAsJsFunction.div, subscription && beta);
-
-    // // updateElementDisplay(shortcutCopyAsJavascript        , subscription && beta);
-
-
-    graph.nodes.forEach(n => n.updateSubscribeStatus(subscription));
+    graph.nodes.forEach(n => n.updateSubscribeStatus(sub));
 }
 
 
@@ -429,5 +402,5 @@ function loadLocalSettings()
     uiGetLocalData('logRawRequests'               );
     uiGetLocalData('logRawValues'                 );
 
-    uiGetLocalData('lastValidCheck'               );
+    uiGetLocalData('sessionId'                    );
 }

@@ -407,3 +407,22 @@ function normalAngle(angle)
 
     return angle; // [0, Tau|
 }
+
+
+
+function dot3(m, v) 
+{
+    const result = [];
+
+    for (let i = 0; i < m.length; i++) 
+    {
+        let sum = 0;
+
+        for (let j = 0; j < v.length; j++) 
+            sum += m[i][j] * v[j];
+
+        result.push(sum);
+    }
+   
+    return result;
+}

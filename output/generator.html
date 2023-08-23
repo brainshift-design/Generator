@@ -1654,6 +1654,25 @@ function normalAngle(angle)
 }
 
 
+
+function dot3(m, v) 
+{
+    const result = [];
+
+    for (let i = 0; i < m.length; i++) 
+    {
+        let sum = 0;
+
+        for (let j = 0; j < v.length; j++) 
+            sum += m[i][j] * v[j];
+
+        result.push(sum);
+    }
+   
+    return result;
+}
+
+
 const point_NaN = point(Number.NaN, Number.NaN);
 
 
@@ -3868,65 +3887,79 @@ const webColors = [
 ];
 
 
+var _clipboard = '';
+
+
+
 function writeTextToClipboard(str) 
 {
-    if (   navigator.clipboard 
-        && window.isSecureContext) 
-        return navigator.clipboard.writeText(str);
-
-    else 
+    if (subscribed())
     {
-        const prevActive = document.activeElement;
-        const textArea   = document.createElement('textarea');
+        if (   navigator.clipboard 
+            && window.isSecureContext) 
+            return navigator.clipboard.writeText(str);
 
-        textArea.value = str;
-
-        textArea.style.position = 'fixed';
-        textArea.style.left     = '-999999px';
-        textArea.style.top      = '-999999px';
-        
-        document.body.appendChild(textArea);
-        
-        textArea.focus();
-        textArea.select();
-        
-        return new Promise((res, rej) => 
+        else 
         {
-            document.execCommand('copy') ? res() : rej();
-            textArea.remove();
+            const prevActive = document.activeElement;
+            const textArea   = document.createElement('textarea');
 
-            prevActive.focus();
-        });
+            textArea.value = str;
+
+            textArea.style.position = 'fixed';
+            textArea.style.left     = '-999999px';
+            textArea.style.top      = '-999999px';
+            
+            document.body.appendChild(textArea);
+            
+            textArea.focus();
+            textArea.select();
+            
+            return new Promise((res, rej) => 
+            {
+                document.execCommand('copy') ? res() : rej();
+                textArea.remove();
+
+                prevActive.focus();
+            });
+        }
     }
+    else
+        _clipboard = str;
 }
 
 
 
 function readTextFromClipboard() 
 {
-    if (   navigator.clipboard 
-        && window.isSecureContext) 
-        return navigator.clipboard.readText();
-
-    else 
+    if (subscribed())
     {
-        let textArea = document.createElement('textarea');
+        if (   navigator.clipboard 
+            && window.isSecureContext) 
+            return navigator.clipboard.readText();
 
-        textArea.style.position = 'fixed';
-        textArea.style.left     = '-999999px';
-        textArea.style.top      = '-999999px';
-        
-        document.body.appendChild(textArea);
-        
-        textArea.focus();
-        textArea.select();
-        
-        return new Promise((res, rej) => 
+        else 
         {
-            document.execCommand('paste') ? res(textArea.value) : rej();
-            textArea.remove();
-        });
+            let textArea = document.createElement('textarea');
+
+            textArea.style.position = 'fixed';
+            textArea.style.left     = '-999999px';
+            textArea.style.top      = '-999999px';
+            
+            document.body.appendChild(textArea);
+            
+            textArea.focus();
+            textArea.select();
+            
+            return new Promise((res, rej) => 
+            {
+                document.execCommand('paste') ? res(textArea.value) : rej();
+                textArea.remove();
+            });
+        }
     }
+    else
+        return _clipboard;
 }
 
 
@@ -4256,7 +4289,7 @@ const settings =
     logRawRequests:                false, 
     logRawValues:                  false,
 
-    lastValidCheck:                ''
+    sessionId:                     ''
 };
 
 
@@ -4312,7 +4345,7 @@ function updateSetting(settingName, value)
         case 'logRawRequests':                settings.logRawRequests                = value;  break;
         case 'logRawValues':                  settings.logRawValues                  = value;  break;
 
-        case 'lastValidCheck':                settings.lastValidCheck                = value;  break;
+        case 'sessionId':                     settings.sessionId                     = value;  break;
     } 
 }
 
@@ -4518,53 +4551,26 @@ function updateMenuItemShowOperationResults()
 
 
 
-function enableFeatures(subscription, beta)
+function enableFeatures(sub, beta = false)
 {
-    // updateElementDisplay(menuItemShowPages           .div, subscription);
-    // updateElementDisplay(menuPrefSep1                .div, subscription);
-    // updateElementDisplay(menuPrefSep2                .div, subscription);
-    // updateElementDisplay(menuItemEnableBetaFeatures  .div, subscription);
+    menuItemSaveToFile.enabled = sub;  menuItemSaveToFile.update();
 
-    // updateElementDisplay(btnFlow                     .div, subscription);
-    // updateElementDisplay(btnText                     .div, subscription && beta);
-    // updateElementDisplay(btnShape                    .div, subscription && beta);
-    // //updateElementDisplay(btnGroup                    .div, subscription && beta);
+    menuItemTimer       .enabled = sub;  menuItemTimer       .update();
+    menuItemAnimate     .enabled = sub;  menuItemAnimate     .update();
+    menuItemFetch       .enabled = sub;  menuItemFetch       .update();
+    menuItemTextFile    .enabled = sub;  menuItemTextFile    .update();
 
-    // updateElementDisplay(menuItemLogObjectUpdates    .div, subscription && beta);
+    menuItemDateTime    .enabled = sub;  menuItemDateTime    .update();
+    menuItemSolve       .enabled = sub;  menuItemSolve       .update();
+
+    menuItemTextJson    .enabled = sub;  menuItemTextJson    .update();
+
+    menuItemCorrectColor.enabled = sub;  menuItemCorrectColor.update();
+
+    menuItemShapeRender .enabled = sub;  menuItemShapeRender .update();
+
     
-    // //updateElementDisplay(menuItemList                .div, subscription && beta);
-    // updateElementDisplay(menuFlowSep1                .div, subscription && beta);
-    // updateElementDisplay(menuItemItems               .div, subscription);
-    // updateElementDisplay(menuFlowSep2                .div, subscription);
-    // //updateElementDisplay(menuItemSelect              .div, subscription);
-    // updateElementDisplay(menuItemCount               .div, subscription);
-    // //updateElementDisplay(menuFlowSep3                .div, subscription && beta);
-    // //updateElementDisplay(menuItemStart               .div, subscription && beta);
-    // updateElementDisplay(menuItemRepeat              .div, subscription && beta);
-    // // updateElementDisplay(menuItemCache               .div, subscription && beta);
-    // updateElementDisplay(menuItemCopy                .div, subscription && beta);
-    
-    // updateElementDisplay(menuItemSequence              .div, subscription && beta);    
-    // updateElementDisplay(menuItemSolve               .div, subscription && beta);    
-    // updateElementDisplay(menuItemNumberSep1          .div, subscription && beta);
-    // updateElementDisplay(menuItemAnimate             .div, subscription && beta);    
-    
-    // updateElementDisplay(menuItemCorrectColor        .div, subscription);
-    // updateElementDisplay(menuItemColorSep1           .div, subscription);
-    // updateElementDisplay(menuItemColorblind          .div, subscription);
-    // //updateMenuItemDisplay(menuItemColorBlend        .div, beta);
-
-    // //updateMenuItemDisplay(menuItemStyleFill         .div, subscription && beta);
-    // updateElementDisplay(menuItemLayerStroke         .div, subscription && beta);
-    // //updateMenuItemDisplay(menuItemStyleSep1         .div, subscription && beta);
-    
-    // //updateMenuItemDisplay(menuItemNodeCopyAsJsCode    .div, subscription && beta);
-    // updateElementDisplay(menuItemNodeCopyAsJsFunction.div, subscription && beta);
-
-    // // updateElementDisplay(shortcutCopyAsJavascript        , subscription && beta);
-
-
-    graph.nodes.forEach(n => n.updateSubscribeStatus(subscription));
+    graph.nodes.forEach(n => n.updateSubscribeStatus(sub));
 }
 
 
@@ -4637,7 +4643,7 @@ function loadLocalSettings()
     uiGetLocalData('logRawRequests'               );
     uiGetLocalData('logRawValues'                 );
 
-    uiGetLocalData('lastValidCheck'               );
+    uiGetLocalData('sessionId'                    );
 }
 
 
@@ -4901,6 +4907,7 @@ const COLOR_VALUE        = 'COL#';
 const COLOR              = 'COL';   
 const VALID_COLOR        = 'CVAL';  
 const CORRECT_COLOR      = 'CCOR';  
+const COLOR_CONVERT_P3   = 'COLP3';
 const COLOR_CONTRAST     = 'CCNT';  
 const COLORBLIND         = 'BLND';  
 const COLOR_INTERPOLATE  = 'CLERP'; 
@@ -4912,6 +4919,7 @@ const COLOR_TYPES =
     COLOR_VALUE,
     COLOR,
     CORRECT_COLOR,
+    COLOR_CONVERT_P3,
     COLORBLIND,
     COLOR_INTERPOLATE,
     COLOR_BLEND
@@ -8391,11 +8399,9 @@ extends GNode
 
     value;
 
-    options       = {};
+    options      = {};
 
-    updateValues  = [];
-    feedbackValue = null; // () => {}
-
+    updateValues = [];
 
    
     
@@ -8692,11 +8698,7 @@ extends GOperator
         consoleAssert(this.node, 'can\'t find parameter node \'' + this.nodeId + '\'');
 
 
-        //this.param.feedbackValue = this.feedbackValue;
-
-        this.node.feedbackValue = this.feedbackValue;
         await this.node.eval(parse);
-        this.node.feedbackValue = null;
 
 
         this.param = this.node.paramFromId(this.paramId);
@@ -8707,21 +8709,13 @@ extends GOperator
         
         if (isValid(this.param))
         {
-            // if (   this.feedbackValue)
-            //     //&& this.param.type == NUMBER_VALUE)
-            //     this.param = this.feedbackValue();
-            
             const value = (await this.param.eval(parse)).toValue();
             this.value = value;
             
-            //this.param.feedbackValue = null;
             return this.value;
         }
         else
-        {
-            //this.param.feedbackValue = null;
             return this.value = NullValue.copy();
-        }
     }
 
 
@@ -16997,10 +16991,6 @@ extends GOperator1
             this.value = NumberValue.NaN;
 
 
-        if (this.feedbackValue)
-            this.value = this.feedbackValue();
-
-
         this.setUpdateValues(parse, [['value', this.value]]);
 
 
@@ -17476,10 +17466,6 @@ extends GOperator1
         }
         else
             this.value = NumberValue.NaN;
-
-
-        if (this.feedbackValue)
-            this.value = this.feedbackValue();
 
 
         this.setUpdateValues(parse,
@@ -18932,7 +18918,7 @@ extends GOperator1
             {
                 const diffStart = target.value - current.value;
                 let   diff      = diffStart;
-                let   prevDiff  = diffStart;
+                let   prevDiff  = 0;
 
 
                 let   start     = input.copy();
@@ -18954,32 +18940,43 @@ extends GOperator1
 
                 while (iter++ < maxIter)
                 {
+                    // console.log('step =', step);
+                    // console.log('diff =', diff);
+                    // console.log('prevDiff =', prevDiff);
+                    
                     this.temp.value += step;
+
                     // console.log('this.temp.value =', this.temp.value);
-                    //console.log('diff =', step);
-                    console.log('step =', step);
+                    // console.log('');
 
-                    this.input.feedbackValue = this.getFeedbackValue;
-                    this.input.valid = false;
+                    //console.log('this.input.type =', this.input.type);
+                    if (this.input.type == PARAM)
+                        this.input.node[this.input.paramId].value = this.temp.value;
+                    // else
+                    //     this.input.value = this.temp.value;
 
-                    // if (this.input.type == PARAM)
-                    //     this.input.node.valid = false;
                         
+                    this.current.invalidateInputs(parse, this);
                     current = (await this.current.eval(parse)).toValue();
 
-                    this.input.feedbackValue = null;
 
+                    // console.log('this.temp.value =', this.temp.value);
+                    // console.log('target.value =', target.value);
+                    // console.log('current.value =', current.value);
+                    // console.log('');
 
-                    diff = target.value - current.value;
+                    if (!current.isValid())
+                        diff = Number.MAX_SAFE_INTEGER;
+                    else
+                        diff = target.value - current.value;
 
-                    if (   /*Math.abs(diff) < 0.0000001
-                        && */Math.abs(step) < 0.0000001)
+                    if (Math.abs(diff) < 0.0000001)
                         break;
                         
 
                     if (   Math.abs (diff) >  Math.abs (prevDiff)
                         || Math.sign(diff) != Math.sign(prevDiff))
-                        step /= -2;
+                        step /= -3; //= -Math.sign(step) * Math.pow(Math.abs(step), 0.75);
 
                     prevDiff = diff;
 
@@ -19002,7 +18999,7 @@ extends GOperator1
                 {
                     this.value = NumberValue.NaN;
                     genPushUpdateValue(parse, this.input.nodeId, 'value', start);
-                    console.log('max solve iterations');
+                    console.warn('max solve iterations');
                 }
             }
             else
@@ -19021,7 +19018,7 @@ extends GOperator1
 
         this.setUpdateValues(parse,
         [
-            ['value',   this.value],
+            //['value',   this.value],
             ['current', current   ],
             ['target',  target    ]
         ]);
@@ -19050,10 +19047,6 @@ extends GOperator1
         if (this.current) this.current.pushValueUpdates(parse);
         if (this.target ) this.target .pushValueUpdates(parse);
     }
-
-
-
-    getFeedbackValue = () => this.temp.copy();
 
 
 
@@ -23850,7 +23843,7 @@ extends GOperator1
         let   c2    = this.c2    ? (await this.c2   .eval(parse)).toValue()             : null;
         let   c3    = this.c3    ? (await this.c3   .eval(parse)).toValue()             : null;
 
-
+console.log('COLOR c3 =', c3.value);
         if (this.input)
         {
             const input = (await this.input.eval(parse)).toValue();
@@ -24591,6 +24584,9 @@ extends GOperator2
         if (this.contrast) this.contrast.invalidateInputs(parse, from);
     }
 }
+
+
+
 
 
 
@@ -40512,6 +40508,33 @@ function luv2hcluv(luv)
 function rgb2hcluv(rgb, cs = sRGB)
 {
     return luv2hcluv(rgb2luv(rgb, cs));
+}
+
+
+function srgb2p3(rgb)
+{
+    const p3 = 
+        [ [0.4865709486482162, 0.26566769316909306, 0.1982172852343625 ],
+          [0.2289745640697488, 0.6917385218365064,  0.07928691409374425],
+          [0,                  0.04511338185890264, 1.043944368900976  ] ];
+
+    rgb = sRGB.degamma(rgb);
+
+    return dot3(p3, rgb);
+}
+
+
+
+function p32srgb(rgb) 
+{
+    const invp3 = 
+        [ [ 2.493496911941425,   -0.9313836179191239, -0.40271078445071684 ],
+          [-0.8294889695615747,   1.7626640603183465,  0.023624685841943577],
+          [ 0.03584583024378447, -0.07617238926804182, 0.9568845240076872  ] ];
+  
+    rgb = dot3(invp3, rgb);
+  
+    return sRGB.regamma(rgb);
 }
 
 

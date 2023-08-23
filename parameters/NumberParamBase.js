@@ -58,14 +58,6 @@ extends Parameter
 
 
 
-    showValue(show)
-    {
-        this.controls[0].showValue = show;
-        this.controls[0].update();
-    }
-
-
-
     isVisible()
     {
         return this.controls[0].div.style.display != 'none';

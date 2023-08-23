@@ -36,11 +36,7 @@ extends GOperator
         consoleAssert(this.node, 'can\'t find parameter node \'' + this.nodeId + '\'');
 
 
-        //this.param.feedbackValue = this.feedbackValue;
-
-        this.node.feedbackValue = this.feedbackValue;
         await this.node.eval(parse);
-        this.node.feedbackValue = null;
 
 
         this.param = this.node.paramFromId(this.paramId);
@@ -51,21 +47,13 @@ extends GOperator
         
         if (isValid(this.param))
         {
-            // if (   this.feedbackValue)
-            //     //&& this.param.type == NUMBER_VALUE)
-            //     this.param = this.feedbackValue();
-            
             const value = (await this.param.eval(parse)).toValue();
             this.value = value;
             
-            //this.param.feedbackValue = null;
             return this.value;
         }
         else
-        {
-            //this.param.feedbackValue = null;
             return this.value = NullValue.copy();
-        }
     }
 
 

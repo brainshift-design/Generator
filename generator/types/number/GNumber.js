@@ -35,10 +35,6 @@ extends GOperator1
             this.value = NumberValue.NaN;
 
 
-        if (this.feedbackValue)
-            this.value = this.feedbackValue();
-
-
         this.setUpdateValues(parse, [['value', this.value]]);
 
 

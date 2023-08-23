@@ -1,5 +1,5 @@
 class   OpSolve
-extends OperatorWithValue
+extends OperatorBase
 {
     paramCurrent;
     paramTarget;
@@ -19,12 +19,12 @@ extends OperatorWithValue
         this.inputs[0].feedback = true;
 
 
-        this.addParam(this.paramValue);
         this.addParam(this.paramCurrent = new NumberParam('current', 'current', true,  true,  true, Number.NaN));
         this.addParam(this.paramTarget  = new NumberParam('target',  'target',  true,  true,  true));
 
 
-        this.setAllParamDividers(0.53);
+        this.paramCurrent.divider = 0.5;
+        this.paramTarget .divider = 0.5;
     }
 
 
@@ -72,7 +72,9 @@ extends OperatorWithValue
 
     updateParams()
     {
-        this.paramValue  .enableControlText(false, this.isUnknown());
+        if (!this.paramCurrent.input.connected)
+            this.paramCurrent.setValue(NumberValue.NaN, null, true, false);
+
         this.paramCurrent.enableControlText(false, this.isUnknown());
         this.paramTarget .enableControlText(true);
 

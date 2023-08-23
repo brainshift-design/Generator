@@ -1,4 +1,3 @@
-
 var generatorStarted = false;
 
 
@@ -12,6 +11,10 @@ var allUpdateNodes   = [];
 
 
 
+var currentSessionId = '';
+
+
+
 // uiClearAllLocalData();
 //uiQueueMessageToFigma({cmd: 'figLogAllLocalData', darkMode: darkMode});
 
@@ -22,7 +25,7 @@ var allUpdateNodes   = [];
 // uiClearLocalData('showWhatsNew');
 
 //uiSetLocalData('enableBetaFeatures', 'true');
-//uiSetLocalData('lastValidCheck', '');
+//uiSetLocalData('sessionId', '');
 //uiSetLocalData('logLoading', 'true');
 
 //uiRemoveConnsToNodes(['num3']);
@@ -38,8 +41,8 @@ var allUpdateNodes   = [];
 
 
 
-var currentUser = null;
-var subscription  = NULL;
+var currentUser  = null;
+
 
 
 const generator = new Worker(
@@ -103,6 +106,9 @@ async function uiReturnFigStartGenerator(msg)
     initThemeColors();
     initKeyboardPanel();
     initWindowSizers();
+
+
+    validateInit();
 }
 
 
@@ -116,51 +122,54 @@ function initGenerator()
     uiQueueMessageToFigma({
         cmd:     'figLoadNodesAndConns',
         dataMode: settings.dataMode });
+
+    enableFeatures(subscribed());
 }
 
 
 
-function validateInit(lastValidCheck)
+function createSessionId()
 {
-    const date  = getCurrentDateString();
-    const hash  = hashLicenseString(currentUser.id + date, licenseHashSize);
-    const enc   = sign(hash, licenseKeys.private);
-    const today = arrayToBase32(enc);
+    const date = getCurrentDateString();
+    const hash = hashLicenseString(currentUser.id + date, licenseHashSize);
+    const enc  = sign(hash, licenseKeys.private);
+    
+    return arrayToBase32(enc);
+}
 
 
-    if (lastValidCheck == today)
-    {
-        initGenerator();
-        return;
-    }
+
+function subscribed()
+{
+    return currentSessionId == createSessionId();
+}
 
 
+
+function validateInit()
+{
     try
     {
-        checkTrialExists()
-            .then(trialExists => 
+        checkSubActive().then(subActive => 
+        {
+            if (subActive) 
+            {
+                currentSessionId = createSessionId();
+                initGenerator();
+            }
+
+            else checkTrialExists().then(trialExists => 
             {
                 if (trialExists)
-                {
-                    checkSubOrTrialActive()
-                        .then(subOrTrialActive => 
-                        {
-                            if (subOrTrialActive) 
-                            {
-                                uiSetLocalData('lastValidCheck', today);
-                                initGenerator();
-                            }
-                            else
-                                showSubscriptionDialog(false);
-                        });
-                }
+                    initGenerator();
                 else
                     showEulaDialog();
             });
+        });
     }
     catch (e)
     {
-        crashAssert(false, 'Error connecting to license server...', false);
+        console.error('Error connecting to license server...');
         console.error(e);
     }
 }

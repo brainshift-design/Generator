@@ -149,9 +149,9 @@
 {
     display:             block;
     position:            absolute;
-    width:               2px;
+    width:               3px;
     height:              12px;
-    left:                1px;
+    left:                0px;
     top:                 50%;
     transform:           translateY(-50%);
     background:          transparent;

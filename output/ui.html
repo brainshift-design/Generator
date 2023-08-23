@@ -2669,7 +2669,7 @@ a
     left:           50%;
     transform:      translateX(-50%);
 
-    top:            162px;
+    top:            158px;
 }
 
 
@@ -2951,9 +2951,9 @@ a
 {
     display:             block;
     position:            absolute;
-    width:               2px;
+    width:               3px;
     height:              12px;
-    left:                1px;
+    left:                0px;
     top:                 50%;
     transform:           translateY(-50%);
     background:          transparent;
@@ -6878,6 +6878,25 @@ function normalAngle(angle)
 }
 
 
+
+function dot3(m, v) 
+{
+    const result = [];
+
+    for (let i = 0; i < m.length; i++) 
+    {
+        let sum = 0;
+
+        for (let j = 0; j < v.length; j++) 
+            sum += m[i][j] * v[j];
+
+        result.push(sum);
+    }
+   
+    return result;
+}
+
+
 const point_NaN = point(Number.NaN, Number.NaN);
 
 
@@ -9092,65 +9111,79 @@ const webColors = [
 ];
 
 
+var _clipboard = '';
+
+
+
 function writeTextToClipboard(str) 
 {
-    if (   navigator.clipboard 
-        && window.isSecureContext) 
-        return navigator.clipboard.writeText(str);
-
-    else 
+    if (subscribed())
     {
-        const prevActive = document.activeElement;
-        const textArea   = document.createElement('textarea');
+        if (   navigator.clipboard 
+            && window.isSecureContext) 
+            return navigator.clipboard.writeText(str);
 
-        textArea.value = str;
-
-        textArea.style.position = 'fixed';
-        textArea.style.left     = '-999999px';
-        textArea.style.top      = '-999999px';
-        
-        document.body.appendChild(textArea);
-        
-        textArea.focus();
-        textArea.select();
-        
-        return new Promise((res, rej) => 
+        else 
         {
-            document.execCommand('copy') ? res() : rej();
-            textArea.remove();
+            const prevActive = document.activeElement;
+            const textArea   = document.createElement('textarea');
 
-            prevActive.focus();
-        });
+            textArea.value = str;
+
+            textArea.style.position = 'fixed';
+            textArea.style.left     = '-999999px';
+            textArea.style.top      = '-999999px';
+            
+            document.body.appendChild(textArea);
+            
+            textArea.focus();
+            textArea.select();
+            
+            return new Promise((res, rej) => 
+            {
+                document.execCommand('copy') ? res() : rej();
+                textArea.remove();
+
+                prevActive.focus();
+            });
+        }
     }
+    else
+        _clipboard = str;
 }
 
 
 
 function readTextFromClipboard() 
 {
-    if (   navigator.clipboard 
-        && window.isSecureContext) 
-        return navigator.clipboard.readText();
-
-    else 
+    if (subscribed())
     {
-        let textArea = document.createElement('textarea');
+        if (   navigator.clipboard 
+            && window.isSecureContext) 
+            return navigator.clipboard.readText();
 
-        textArea.style.position = 'fixed';
-        textArea.style.left     = '-999999px';
-        textArea.style.top      = '-999999px';
-        
-        document.body.appendChild(textArea);
-        
-        textArea.focus();
-        textArea.select();
-        
-        return new Promise((res, rej) => 
+        else 
         {
-            document.execCommand('paste') ? res(textArea.value) : rej();
-            textArea.remove();
-        });
+            let textArea = document.createElement('textarea');
+
+            textArea.style.position = 'fixed';
+            textArea.style.left     = '-999999px';
+            textArea.style.top      = '-999999px';
+            
+            document.body.appendChild(textArea);
+            
+            textArea.focus();
+            textArea.select();
+            
+            return new Promise((res, rej) => 
+            {
+                document.execCommand('paste') ? res(textArea.value) : rej();
+                textArea.remove();
+            });
+        }
     }
+    else
+        return _clipboard;
 }
 
 
@@ -9480,7 +9513,7 @@ const settings =
     logRawRequests:                false, 
     logRawValues:                  false,
 
-    lastValidCheck:                ''
+    sessionId:                     ''
 };
 
 
@@ -9536,7 +9569,7 @@ function updateSetting(settingName, value)
         case 'logRawRequests':                settings.logRawRequests                = value;  break;
         case 'logRawValues':                  settings.logRawValues                  = value;  break;
 
-        case 'lastValidCheck':                settings.lastValidCheck                = value;  break;
+        case 'sessionId':                     settings.sessionId                     = value;  break;
     } 
 }
 
@@ -9742,53 +9775,26 @@ function updateMenuItemShowOperationResults()
 
 
 
-function enableFeatures(subscription, beta)
+function enableFeatures(sub, beta = false)
 {
-    // updateElementDisplay(menuItemShowPages           .div, subscription);
-    // updateElementDisplay(menuPrefSep1                .div, subscription);
-    // updateElementDisplay(menuPrefSep2                .div, subscription);
-    // updateElementDisplay(menuItemEnableBetaFeatures  .div, subscription);
+    menuItemSaveToFile.enabled = sub;  menuItemSaveToFile.update();
 
-    // updateElementDisplay(btnFlow                     .div, subscription);
-    // updateElementDisplay(btnText                     .div, subscription && beta);
-    // updateElementDisplay(btnShape                    .div, subscription && beta);
-    // //updateElementDisplay(btnGroup                    .div, subscription && beta);
+    menuItemTimer       .enabled = sub;  menuItemTimer       .update();
+    menuItemAnimate     .enabled = sub;  menuItemAnimate     .update();
+    menuItemFetch       .enabled = sub;  menuItemFetch       .update();
+    menuItemTextFile    .enabled = sub;  menuItemTextFile    .update();
 
-    // updateElementDisplay(menuItemLogObjectUpdates    .div, subscription && beta);
+    menuItemDateTime    .enabled = sub;  menuItemDateTime    .update();
+    menuItemSolve       .enabled = sub;  menuItemSolve       .update();
+
+    menuItemTextJson    .enabled = sub;  menuItemTextJson    .update();
+
+    menuItemCorrectColor.enabled = sub;  menuItemCorrectColor.update();
+
+    menuItemShapeRender .enabled = sub;  menuItemShapeRender .update();
+
     
-    // //updateElementDisplay(menuItemList                .div, subscription && beta);
-    // updateElementDisplay(menuFlowSep1                .div, subscription && beta);
-    // updateElementDisplay(menuItemItems               .div, subscription);
-    // updateElementDisplay(menuFlowSep2                .div, subscription);
-    // //updateElementDisplay(menuItemSelect              .div, subscription);
-    // updateElementDisplay(menuItemCount               .div, subscription);
-    // //updateElementDisplay(menuFlowSep3                .div, subscription && beta);
-    // //updateElementDisplay(menuItemStart               .div, subscription && beta);
-    // updateElementDisplay(menuItemRepeat              .div, subscription && beta);
-    // // updateElementDisplay(menuItemCache               .div, subscription && beta);
-    // updateElementDisplay(menuItemCopy                .div, subscription && beta);
-    
-    // updateElementDisplay(menuItemSequence              .div, subscription && beta);    
-    // updateElementDisplay(menuItemSolve               .div, subscription && beta);    
-    // updateElementDisplay(menuItemNumberSep1          .div, subscription && beta);
-    // updateElementDisplay(menuItemAnimate             .div, subscription && beta);    
-    
-    // updateElementDisplay(menuItemCorrectColor        .div, subscription);
-    // updateElementDisplay(menuItemColorSep1           .div, subscription);
-    // updateElementDisplay(menuItemColorblind          .div, subscription);
-    // //updateMenuItemDisplay(menuItemColorBlend        .div, beta);
-
-    // //updateMenuItemDisplay(menuItemStyleFill         .div, subscription && beta);
-    // updateElementDisplay(menuItemLayerStroke         .div, subscription && beta);
-    // //updateMenuItemDisplay(menuItemStyleSep1         .div, subscription && beta);
-    
-    // //updateMenuItemDisplay(menuItemNodeCopyAsJsCode    .div, subscription && beta);
-    // updateElementDisplay(menuItemNodeCopyAsJsFunction.div, subscription && beta);
-
-    // // updateElementDisplay(shortcutCopyAsJavascript        , subscription && beta);
-
-
-    graph.nodes.forEach(n => n.updateSubscribeStatus(subscription));
+    graph.nodes.forEach(n => n.updateSubscribeStatus(sub));
 }
 
 
@@ -9861,7 +9867,7 @@ function loadLocalSettings()
     uiGetLocalData('logRawRequests'               );
     uiGetLocalData('logRawValues'                 );
 
-    uiGetLocalData('lastValidCheck'               );
+    uiGetLocalData('sessionId'                    );
 }
 
 
@@ -10125,6 +10131,7 @@ const COLOR_VALUE        = 'COL#';
 const COLOR              = 'COL';   
 const VALID_COLOR        = 'CVAL';  
 const CORRECT_COLOR      = 'CCOR';  
+const COLOR_CONVERT_P3   = 'COLP3';
 const COLOR_CONTRAST     = 'CCNT';  
 const COLORBLIND         = 'BLND';  
 const COLOR_INTERPOLATE  = 'CLERP'; 
@@ -10136,6 +10143,7 @@ const COLOR_TYPES =
     COLOR_VALUE,
     COLOR,
     CORRECT_COLOR,
+    COLOR_CONVERT_P3,
     COLORBLIND,
     COLOR_INTERPOLATE,
     COLOR_BLEND
@@ -13615,11 +13623,9 @@ extends GNode
 
     value;
 
-    options       = {};
+    options      = {};
 
-    updateValues  = [];
-    feedbackValue = null; // () => {}
-
+    updateValues = [];
 
    
     
@@ -13916,11 +13922,7 @@ extends GOperator
         consoleAssert(this.node, 'can\'t find parameter node \'' + this.nodeId + '\'');
 
 
-        //this.param.feedbackValue = this.feedbackValue;
-
-        this.node.feedbackValue = this.feedbackValue;
         await this.node.eval(parse);
-        this.node.feedbackValue = null;
 
 
         this.param = this.node.paramFromId(this.paramId);
@@ -13931,21 +13933,13 @@ extends GOperator
         
         if (isValid(this.param))
         {
-            // if (   this.feedbackValue)
-            //     //&& this.param.type == NUMBER_VALUE)
-            //     this.param = this.feedbackValue();
-            
             const value = (await this.param.eval(parse)).toValue();
             this.value = value;
             
-            //this.param.feedbackValue = null;
             return this.value;
         }
         else
-        {
-            //this.param.feedbackValue = null;
             return this.value = NullValue.copy();
-        }
     }
 
 
@@ -22221,10 +22215,6 @@ extends GOperator1
             this.value = NumberValue.NaN;
 
 
-        if (this.feedbackValue)
-            this.value = this.feedbackValue();
-
-
         this.setUpdateValues(parse, [['value', this.value]]);
 
 
@@ -22700,10 +22690,6 @@ extends GOperator1
         }
         else
             this.value = NumberValue.NaN;
-
-
-        if (this.feedbackValue)
-            this.value = this.feedbackValue();
 
 
         this.setUpdateValues(parse,
@@ -24156,7 +24142,7 @@ extends GOperator1
             {
                 const diffStart = target.value - current.value;
                 let   diff      = diffStart;
-                let   prevDiff  = diffStart;
+                let   prevDiff  = 0;
 
 
                 let   start     = input.copy();
@@ -24178,32 +24164,43 @@ extends GOperator1
 
                 while (iter++ < maxIter)
                 {
+                    // console.log('step =', step);
+                    // console.log('diff =', diff);
+                    // console.log('prevDiff =', prevDiff);
+                    
                     this.temp.value += step;
+
                     // console.log('this.temp.value =', this.temp.value);
-                    //console.log('diff =', step);
-                    console.log('step =', step);
+                    // console.log('');
 
-                    this.input.feedbackValue = this.getFeedbackValue;
-                    this.input.valid = false;
+                    //console.log('this.input.type =', this.input.type);
+                    if (this.input.type == PARAM)
+                        this.input.node[this.input.paramId].value = this.temp.value;
+                    // else
+                    //     this.input.value = this.temp.value;
 
-                    // if (this.input.type == PARAM)
-                    //     this.input.node.valid = false;
                         
+                    this.current.invalidateInputs(parse, this);
                     current = (await this.current.eval(parse)).toValue();
 
-                    this.input.feedbackValue = null;
 
+                    // console.log('this.temp.value =', this.temp.value);
+                    // console.log('target.value =', target.value);
+                    // console.log('current.value =', current.value);
+                    // console.log('');
 
-                    diff = target.value - current.value;
+                    if (!current.isValid())
+                        diff = Number.MAX_SAFE_INTEGER;
+                    else
+                        diff = target.value - current.value;
 
-                    if (   /*Math.abs(diff) < 0.0000001
-                        && */Math.abs(step) < 0.0000001)
+                    if (Math.abs(diff) < 0.0000001)
                         break;
                         
 
                     if (   Math.abs (diff) >  Math.abs (prevDiff)
                         || Math.sign(diff) != Math.sign(prevDiff))
-                        step /= -2;
+                        step /= -3; //= -Math.sign(step) * Math.pow(Math.abs(step), 0.75);
 
                     prevDiff = diff;
 
@@ -24226,7 +24223,7 @@ extends GOperator1
                 {
                     this.value = NumberValue.NaN;
                     genPushUpdateValue(parse, this.input.nodeId, 'value', start);
-                    console.log('max solve iterations');
+                    console.warn('max solve iterations');
                 }
             }
             else
@@ -24245,7 +24242,7 @@ extends GOperator1
 
         this.setUpdateValues(parse,
         [
-            ['value',   this.value],
+            //['value',   this.value],
             ['current', current   ],
             ['target',  target    ]
         ]);
@@ -24274,10 +24271,6 @@ extends GOperator1
         if (this.current) this.current.pushValueUpdates(parse);
         if (this.target ) this.target .pushValueUpdates(parse);
     }
-
-
-
-    getFeedbackValue = () => this.temp.copy();
 
 
 
@@ -29074,7 +29067,7 @@ extends GOperator1
         let   c2    = this.c2    ? (await this.c2   .eval(parse)).toValue()             : null;
         let   c3    = this.c3    ? (await this.c3   .eval(parse)).toValue()             : null;
 
-
+console.log('COLOR c3 =', c3.value);
         if (this.input)
         {
             const input = (await this.input.eval(parse)).toValue();
@@ -29815,6 +29808,9 @@ extends GOperator2
         if (this.contrast) this.contrast.invalidateInputs(parse, from);
     }
 }
+
+
+
 
 
 
@@ -45739,6 +45735,33 @@ function rgb2hcluv(rgb, cs = sRGB)
 }
 
 
+function srgb2p3(rgb)
+{
+    const p3 = 
+        [ [0.4865709486482162, 0.26566769316909306, 0.1982172852343625 ],
+          [0.2289745640697488, 0.6917385218365064,  0.07928691409374425],
+          [0,                  0.04511338185890264, 1.043944368900976  ] ];
+
+    rgb = sRGB.degamma(rgb);
+
+    return dot3(p3, rgb);
+}
+
+
+
+function p32srgb(rgb) 
+{
+    const invp3 = 
+        [ [ 2.493496911941425,   -0.9313836179191239, -0.40271078445071684 ],
+          [-0.8294889695615747,   1.7626640603183465,  0.023624685841943577],
+          [ 0.03584583024378447, -0.07617238926804182, 0.9568845240076872  ] ];
+  
+    rgb = dot3(invp3, rgb);
+  
+    return sRGB.regamma(rgb);
+}
+
+
 const ColorSpaces = 
 [
     ['hex',   'Hex'   ],
@@ -49381,6 +49404,25 @@ function normalAngle(angle)
 }
 
 
+
+function dot3(m, v) 
+{
+    const result = [];
+
+    for (let i = 0; i < m.length; i++) 
+    {
+        let sum = 0;
+
+        for (let j = 0; j < v.length; j++) 
+            sum += m[i][j] * v[j];
+
+        result.push(sum);
+    }
+   
+    return result;
+}
+
+
 const point_NaN = point(Number.NaN, Number.NaN);
 
 
@@ -51595,65 +51637,79 @@ const webColors = [
 ];
 
 
+var _clipboard = '';
+
+
+
 function writeTextToClipboard(str) 
 {
-    if (   navigator.clipboard 
-        && window.isSecureContext) 
-        return navigator.clipboard.writeText(str);
-
-    else 
+    if (subscribed())
     {
-        const prevActive = document.activeElement;
-        const textArea   = document.createElement('textarea');
+        if (   navigator.clipboard 
+            && window.isSecureContext) 
+            return navigator.clipboard.writeText(str);
 
-        textArea.value = str;
-
-        textArea.style.position = 'fixed';
-        textArea.style.left     = '-999999px';
-        textArea.style.top      = '-999999px';
-        
-        document.body.appendChild(textArea);
-        
-        textArea.focus();
-        textArea.select();
-        
-        return new Promise((res, rej) => 
+        else 
         {
-            document.execCommand('copy') ? res() : rej();
-            textArea.remove();
+            const prevActive = document.activeElement;
+            const textArea   = document.createElement('textarea');
 
-            prevActive.focus();
-        });
+            textArea.value = str;
+
+            textArea.style.position = 'fixed';
+            textArea.style.left     = '-999999px';
+            textArea.style.top      = '-999999px';
+            
+            document.body.appendChild(textArea);
+            
+            textArea.focus();
+            textArea.select();
+            
+            return new Promise((res, rej) => 
+            {
+                document.execCommand('copy') ? res() : rej();
+                textArea.remove();
+
+                prevActive.focus();
+            });
+        }
     }
+    else
+        _clipboard = str;
 }
 
 
 
 function readTextFromClipboard() 
 {
-    if (   navigator.clipboard 
-        && window.isSecureContext) 
-        return navigator.clipboard.readText();
-
-    else 
+    if (subscribed())
     {
-        let textArea = document.createElement('textarea');
+        if (   navigator.clipboard 
+            && window.isSecureContext) 
+            return navigator.clipboard.readText();
 
-        textArea.style.position = 'fixed';
-        textArea.style.left     = '-999999px';
-        textArea.style.top      = '-999999px';
-        
-        document.body.appendChild(textArea);
-        
-        textArea.focus();
-        textArea.select();
-        
-        return new Promise((res, rej) => 
+        else 
         {
-            document.execCommand('paste') ? res(textArea.value) : rej();
-            textArea.remove();
-        });
+            let textArea = document.createElement('textarea');
+
+            textArea.style.position = 'fixed';
+            textArea.style.left     = '-999999px';
+            textArea.style.top      = '-999999px';
+            
+            document.body.appendChild(textArea);
+            
+            textArea.focus();
+            textArea.select();
+            
+            return new Promise((res, rej) => 
+            {
+                document.execCommand('paste') ? res(textArea.value) : rej();
+                textArea.remove();
+            });
+        }
     }
+    else
+        return _clipboard;
 }
 
 
@@ -52925,6 +52981,33 @@ function luv2hcluv(luv)
 function rgb2hcluv(rgb, cs = sRGB)
 {
     return luv2hcluv(rgb2luv(rgb, cs));
+}
+
+
+function srgb2p3(rgb)
+{
+    const p3 = 
+        [ [0.4865709486482162, 0.26566769316909306, 0.1982172852343625 ],
+          [0.2289745640697488, 0.6917385218365064,  0.07928691409374425],
+          [0,                  0.04511338185890264, 1.043944368900976  ] ];
+
+    rgb = sRGB.degamma(rgb);
+
+    return dot3(p3, rgb);
+}
+
+
+
+function p32srgb(rgb) 
+{
+    const invp3 = 
+        [ [ 2.493496911941425,   -0.9313836179191239, -0.40271078445071684 ],
+          [-0.8294889695615747,   1.7626640603183465,  0.023624685841943577],
+          [ 0.03584583024378447, -0.07617238926804182, 0.9568845240076872  ] ];
+  
+    rgb = dot3(invp3, rgb);
+  
+    return sRGB.regamma(rgb);
 }
 
 
@@ -54798,6 +54881,7 @@ const COLOR_VALUE        = 'COL#';
 const COLOR              = 'COL';   
 const VALID_COLOR        = 'CVAL';  
 const CORRECT_COLOR      = 'CCOR';  
+const COLOR_CONVERT_P3   = 'COLP3';
 const COLOR_CONTRAST     = 'CCNT';  
 const COLORBLIND         = 'BLND';  
 const COLOR_INTERPOLATE  = 'CLERP'; 
@@ -54809,6 +54893,7 @@ const COLOR_TYPES =
     COLOR_VALUE,
     COLOR,
     CORRECT_COLOR,
+    COLOR_CONVERT_P3,
     COLORBLIND,
     COLOR_INTERPOLATE,
     COLOR_BLEND
@@ -58288,11 +58373,9 @@ extends GNode
 
     value;
 
-    options       = {};
+    options      = {};
 
-    updateValues  = [];
-    feedbackValue = null; // () => {}
-
+    updateValues = [];
 
    
     
@@ -58589,11 +58672,7 @@ extends GOperator
         consoleAssert(this.node, 'can\'t find parameter node \'' + this.nodeId + '\'');
 
 
-        //this.param.feedbackValue = this.feedbackValue;
-
-        this.node.feedbackValue = this.feedbackValue;
         await this.node.eval(parse);
-        this.node.feedbackValue = null;
 
 
         this.param = this.node.paramFromId(this.paramId);
@@ -58604,21 +58683,13 @@ extends GOperator
         
         if (isValid(this.param))
         {
-            // if (   this.feedbackValue)
-            //     //&& this.param.type == NUMBER_VALUE)
-            //     this.param = this.feedbackValue();
-            
             const value = (await this.param.eval(parse)).toValue();
             this.value = value;
             
-            //this.param.feedbackValue = null;
             return this.value;
         }
         else
-        {
-            //this.param.feedbackValue = null;
             return this.value = NullValue.copy();
-        }
     }
 
 
@@ -66894,10 +66965,6 @@ extends GOperator1
             this.value = NumberValue.NaN;
 
 
-        if (this.feedbackValue)
-            this.value = this.feedbackValue();
-
-
         this.setUpdateValues(parse, [['value', this.value]]);
 
 
@@ -67373,10 +67440,6 @@ extends GOperator1
         }
         else
             this.value = NumberValue.NaN;
-
-
-        if (this.feedbackValue)
-            this.value = this.feedbackValue();
 
 
         this.setUpdateValues(parse,
@@ -68829,7 +68892,7 @@ extends GOperator1
             {
                 const diffStart = target.value - current.value;
                 let   diff      = diffStart;
-                let   prevDiff  = diffStart;
+                let   prevDiff  = 0;
 
 
                 let   start     = input.copy();
@@ -68851,32 +68914,43 @@ extends GOperator1
 
                 while (iter++ < maxIter)
                 {
+                    // console.log('step =', step);
+                    // console.log('diff =', diff);
+                    // console.log('prevDiff =', prevDiff);
+                    
                     this.temp.value += step;
+
                     // console.log('this.temp.value =', this.temp.value);
-                    //console.log('diff =', step);
-                    console.log('step =', step);
+                    // console.log('');
 
-                    this.input.feedbackValue = this.getFeedbackValue;
-                    this.input.valid = false;
+                    //console.log('this.input.type =', this.input.type);
+                    if (this.input.type == PARAM)
+                        this.input.node[this.input.paramId].value = this.temp.value;
+                    // else
+                    //     this.input.value = this.temp.value;
 
-                    // if (this.input.type == PARAM)
-                    //     this.input.node.valid = false;
                         
+                    this.current.invalidateInputs(parse, this);
                     current = (await this.current.eval(parse)).toValue();
 
-                    this.input.feedbackValue = null;
 
+                    // console.log('this.temp.value =', this.temp.value);
+                    // console.log('target.value =', target.value);
+                    // console.log('current.value =', current.value);
+                    // console.log('');
 
-                    diff = target.value - current.value;
+                    if (!current.isValid())
+                        diff = Number.MAX_SAFE_INTEGER;
+                    else
+                        diff = target.value - current.value;
 
-                    if (   /*Math.abs(diff) < 0.0000001
-                        && */Math.abs(step) < 0.0000001)
+                    if (Math.abs(diff) < 0.0000001)
                         break;
                         
 
                     if (   Math.abs (diff) >  Math.abs (prevDiff)
                         || Math.sign(diff) != Math.sign(prevDiff))
-                        step /= -2;
+                        step /= -3; //= -Math.sign(step) * Math.pow(Math.abs(step), 0.75);
 
                     prevDiff = diff;
 
@@ -68899,7 +68973,7 @@ extends GOperator1
                 {
                     this.value = NumberValue.NaN;
                     genPushUpdateValue(parse, this.input.nodeId, 'value', start);
-                    console.log('max solve iterations');
+                    console.warn('max solve iterations');
                 }
             }
             else
@@ -68918,7 +68992,7 @@ extends GOperator1
 
         this.setUpdateValues(parse,
         [
-            ['value',   this.value],
+            //['value',   this.value],
             ['current', current   ],
             ['target',  target    ]
         ]);
@@ -68947,10 +69021,6 @@ extends GOperator1
         if (this.current) this.current.pushValueUpdates(parse);
         if (this.target ) this.target .pushValueUpdates(parse);
     }
-
-
-
-    getFeedbackValue = () => this.temp.copy();
 
 
 
@@ -73747,7 +73817,7 @@ extends GOperator1
         let   c2    = this.c2    ? (await this.c2   .eval(parse)).toValue()             : null;
         let   c3    = this.c3    ? (await this.c3   .eval(parse)).toValue()             : null;
 
-
+console.log('COLOR c3 =', c3.value);
         if (this.input)
         {
             const input = (await this.input.eval(parse)).toValue();
@@ -74488,6 +74558,9 @@ extends GOperator2
         if (this.contrast) this.contrast.invalidateInputs(parse, from);
     }
 }
+
+
+
 
 
 
@@ -82245,7 +82318,7 @@ const settings =
     logRawRequests:                false, 
     logRawValues:                  false,
 
-    lastValidCheck:                ''
+    sessionId:                     ''
 };
 
 
@@ -82301,7 +82374,7 @@ function updateSetting(settingName, value)
         case 'logRawRequests':                settings.logRawRequests                = value;  break;
         case 'logRawValues':                  settings.logRawValues                  = value;  break;
 
-        case 'lastValidCheck':                settings.lastValidCheck                = value;  break;
+        case 'sessionId':                     settings.sessionId                     = value;  break;
     } 
 }
 
@@ -82507,53 +82580,26 @@ function updateMenuItemShowOperationResults()
 
 
 
-function enableFeatures(subscription, beta)
+function enableFeatures(sub, beta = false)
 {
-    // updateElementDisplay(menuItemShowPages           .div, subscription);
-    // updateElementDisplay(menuPrefSep1                .div, subscription);
-    // updateElementDisplay(menuPrefSep2                .div, subscription);
-    // updateElementDisplay(menuItemEnableBetaFeatures  .div, subscription);
+    menuItemSaveToFile.enabled = sub;  menuItemSaveToFile.update();
 
-    // updateElementDisplay(btnFlow                     .div, subscription);
-    // updateElementDisplay(btnText                     .div, subscription && beta);
-    // updateElementDisplay(btnShape                    .div, subscription && beta);
-    // //updateElementDisplay(btnGroup                    .div, subscription && beta);
+    menuItemTimer       .enabled = sub;  menuItemTimer       .update();
+    menuItemAnimate     .enabled = sub;  menuItemAnimate     .update();
+    menuItemFetch       .enabled = sub;  menuItemFetch       .update();
+    menuItemTextFile    .enabled = sub;  menuItemTextFile    .update();
 
-    // updateElementDisplay(menuItemLogObjectUpdates    .div, subscription && beta);
+    menuItemDateTime    .enabled = sub;  menuItemDateTime    .update();
+    menuItemSolve       .enabled = sub;  menuItemSolve       .update();
+
+    menuItemTextJson    .enabled = sub;  menuItemTextJson    .update();
+
+    menuItemCorrectColor.enabled = sub;  menuItemCorrectColor.update();
+
+    menuItemShapeRender .enabled = sub;  menuItemShapeRender .update();
+
     
-    // //updateElementDisplay(menuItemList                .div, subscription && beta);
-    // updateElementDisplay(menuFlowSep1                .div, subscription && beta);
-    // updateElementDisplay(menuItemItems               .div, subscription);
-    // updateElementDisplay(menuFlowSep2                .div, subscription);
-    // //updateElementDisplay(menuItemSelect              .div, subscription);
-    // updateElementDisplay(menuItemCount               .div, subscription);
-    // //updateElementDisplay(menuFlowSep3                .div, subscription && beta);
-    // //updateElementDisplay(menuItemStart               .div, subscription && beta);
-    // updateElementDisplay(menuItemRepeat              .div, subscription && beta);
-    // // updateElementDisplay(menuItemCache               .div, subscription && beta);
-    // updateElementDisplay(menuItemCopy                .div, subscription && beta);
-    
-    // updateElementDisplay(menuItemSequence              .div, subscription && beta);    
-    // updateElementDisplay(menuItemSolve               .div, subscription && beta);    
-    // updateElementDisplay(menuItemNumberSep1          .div, subscription && beta);
-    // updateElementDisplay(menuItemAnimate             .div, subscription && beta);    
-    
-    // updateElementDisplay(menuItemCorrectColor        .div, subscription);
-    // updateElementDisplay(menuItemColorSep1           .div, subscription);
-    // updateElementDisplay(menuItemColorblind          .div, subscription);
-    // //updateMenuItemDisplay(menuItemColorBlend        .div, beta);
-
-    // //updateMenuItemDisplay(menuItemStyleFill         .div, subscription && beta);
-    // updateElementDisplay(menuItemLayerStroke         .div, subscription && beta);
-    // //updateMenuItemDisplay(menuItemStyleSep1         .div, subscription && beta);
-    
-    // //updateMenuItemDisplay(menuItemNodeCopyAsJsCode    .div, subscription && beta);
-    // updateElementDisplay(menuItemNodeCopyAsJsFunction.div, subscription && beta);
-
-    // // updateElementDisplay(shortcutCopyAsJavascript        , subscription && beta);
-
-
-    graph.nodes.forEach(n => n.updateSubscribeStatus(subscription));
+    graph.nodes.forEach(n => n.updateSubscribeStatus(sub));
 }
 
 
@@ -82626,7 +82672,7 @@ function loadLocalSettings()
     uiGetLocalData('logRawRequests'               );
     uiGetLocalData('logRawValues'                 );
 
-    uiGetLocalData('lastValidCheck'               );
+    uiGetLocalData('sessionId'                    );
 }
 
 
@@ -88168,6 +88214,9 @@ var menuItemShowNodeId;
 var menuItemShowTransformPoints;
 var menuItemEnableAsserts;
 
+var menuFileSep1;
+var menuItemSaveToFile;
+
 var menuItemDebug;
 var menuItemDebugLog;
 
@@ -88188,17 +88237,25 @@ var menuFlowSep3;
 var menuItemStart;
 var menuItemRepeat;
 var menuFlowSep4;
-var menuItemTimer;
 var menuItemNull;
 var menuItemCache;
 var menuItemFreeze;
+var menuItemTimer;
+var menuFlowSep5;
+var menuItemAnimate;  
+var menuItemFetch;
+var menuItemTextFile;
 
 var menuItemArray;
 var menuItemRange;
 var menuItemSequence;
+
+var menuItemDateTime;
+
+var menuNumberSep1;
 var menuItemSolve;  
-var menuItemAnimate;  
-var menuItemNumberSep1;
+
+var menuItemTextJson;
 
 var menuItemColor;
 var menuItemCorrectColor;
@@ -88219,6 +88276,7 @@ var menuItemStyleSep2;
 
 var menuItemShapeSep1;
 var menuItemShapeSelected;
+var menuItemShapeRender;
 
 var menuItemManageTemplates;
 
@@ -88298,9 +88356,9 @@ function initGeneratorMenus()
 
     menuMainFile = new Menu('File', false);
     menuMainFile.addItems([
-        new MenuItem('Import from file...',      null, {callback: () => { hideAllMenus(); uiImportFromLocalFile(); }}),
-        new MenuItem('',                         null, {separator: true}),    
-        new MenuItem('Save selected to file...', null, {shortcut: osCtrlShift() + 'S', callback: () => { hideAllMenus(); uiSaveSelectionToLocalFile(); }})]);
+                             new MenuItem('Import from file...',      null, {callback: () => { hideAllMenus(); uiImportFromLocalFile(); }}),
+        menuFileSep1       = new MenuItem('',                         null, {separator: true}),    
+        menuItemSaveToFile = new MenuItem('Save selected to file...', null, {shortcut: osCtrlShift() + 'S', callback: () => { hideAllMenus(); uiSaveSelectionToLocalFile(); }})]);
 
 
     menuMainPreferences = new Menu('Preferences', false);
@@ -88311,7 +88369,7 @@ function initGeneratorMenus()
         menuItemShowOperationResults   = new MenuItem('Show operation results',        null, {checkCallback: () => settings.showOperationResults,   callback: () => { updateSettingAndMenu('showOperationResults',   true, !settings.showOperationResults);   updateMenuItemShowOperationResults();   }}),
         menuItemShowNodeIcons          = new MenuItem('Show node icons',               null, {checkCallback: () => settings.showNodeIcons,          callback: () => { updateSettingAndMenu('showNodeIcons',          true, !settings.showNodeIcons);          updateMenuItemShowNodeIcons();          }}),
         menuItemShowBoolValues         = new MenuItem('Show boolean values as   ✓ ✗', null, {checkCallback: () => settings.showBoolValues,         callback: () => { updateSettingAndMenu('showBoolValues',         true, !settings.showBoolValues);         updateMenuItemShowBoolValues();         }}),
-        menuItemShowColorLegendInMenus = new MenuItem('Show color legend in menus',    null, {checkCallback: () => settings.showColorLegendInMenus, callback: () => { updateSettingAndMenu('showColorLegendInMenus', true, !settings.showColorLegendInMenus); updateMenuItemShowColorLegendInMenus(); }}),
+        //menuItemShowColorLegendInMenus = new MenuItem('Show color legend in menus',    null, {checkCallback: () => settings.showColorLegendInMenus, callback: () => { updateSettingAndMenu('showColorLegendInMenus', true, !settings.showColorLegendInMenus); updateMenuItemShowColorLegendInMenus(); }}),
                                          new MenuItem('',                              null, {separator: true}),    
         menuItemShowTooltips           = new MenuItem('Show tooltips',                 null, {childMenu: menuShowTooltips}),
         menuItemShowClearUndoWarning   = new MenuItem('Show clear undo warning',       null, {checkCallback: () => settings.showClearUndoWarning,   callback: () => { updateSettingAndMenu('showClearUndoWarning',   true, !settings.showClearUndoWarning);                                           }}),
@@ -88446,23 +88504,21 @@ function initGeneratorMenus()
 
     menuFlow = new Menu('Flow', true, false);
     menuFlow.addItems([
-        menuItemStart   = new MenuItem('Start. . .',        null, {icon: iconStart,     createType: START,            callback: e => actionManager.do(getCreateNodeAction(START,           btnFlow.div, getCreateOptions(e)))}),
-        menuItemRepeat  = new MenuItem('. . . Repeat',      null, {icon: iconRepeat,    createType: REPEAT,           callback: e => actionManager.do(getCreateNodeAction(REPEAT,          btnFlow.div, getCreateOptions(e)))}),
-                          new MenuItem('',                  null, {separator: true}),
-        menuItemIfElse  = new MenuItem('I&hairsp;f / else', null, {icon: iconIfElse,    createType: IF_ELSE,          callback: e => actionManager.do(getCreateNodeAction(IF_ELSE,         btnFlow.div, getCreateOptions(e))), disambiguate: true}),
-        menuItemSelect  = new MenuItem('Select',            null, {icon: iconSelect,      createType: SELECT,         callback: e => actionManager.do(getCreateNodeAction(SELECT,          btnFlow.div, getCreateOptions(e)))}),
-                          new MenuItem('',                  null, {separator: true}),
-        menuItemNull    = new MenuItem('Null',              null, {icon: iconNull,      createType: NULL_NODE,        callback: e => actionManager.do(getCreateNodeAction(NULL_NODE,       btnFlow.div, getCreateOptions(e)))}),
-        menuItemCache   = new MenuItem('Cache',             null, {icon: iconCache,     createType: CACHE,            callback: e => actionManager.do(getCreateNodeAction(CACHE,           btnFlow.div, getCreateOptions(e)))}),
-        menuItemFreeze  = new MenuItem('Freeze . . .',      null, {icon: iconFreeze,    createType: FREEZE,           callback: e => actionManager.do(getCreateNodeAction(FREEZE,          btnFlow.div, getCreateOptions(e)))}),
-                          new MenuItem('',                  null, {separator: true}),
-        menuItemTimer   = new MenuItem('Timer ',            null, {icon: iconTimer,     createType: TIMER,            callback: e => actionManager.do(getCreateNodeAction(TIMER,           btnFlow.div, getCreateOptions(e)))}),
-        menuItemAnimate = new MenuItem('Animate',           null, {icon: iconAnimate,   createType: NUMBER_ANIMATE,   callback: e => actionManager.do(getCreateNodeAction(NUMBER_ANIMATE,  btnFlow.div, getCreateOptions(e)))}),
-                          new MenuItem('',                  null, {separator: true}),
-                          new MenuItem('Date & time',       null, {icon: iconDateTime,  createType: NUMBER_DATETIME,  callback: e => actionManager.do(getCreateNodeAction(NUMBER_DATETIME, btnFlow.div, getCreateOptions(e)))}),
-        menuFlowSep4    = new MenuItem('',                  null, {separator: true}),
-                          new MenuItem('Fetch',             null, {icon: iconTextFetch, createType: TEXT_FETCH,       callback: e => actionManager.do(getCreateNodeAction(TEXT_FETCH,      btnFlow.div, getCreateOptions(e)))}),
-                          new MenuItem('Text file',         null, {icon: iconTextFile,  createType: TEXT_FILE,        callback: e => actionManager.do(getCreateNodeAction(TEXT_FILE,       btnFlow.div, getCreateOptions(e)))})]);
+        menuItemStart    = new MenuItem('Start. . .',        null, {icon: iconStart,     createType: START,            callback: e => actionManager.do(getCreateNodeAction(START,           btnFlow.div, getCreateOptions(e)))}),
+        menuItemRepeat   = new MenuItem('. . . Repeat',      null, {icon: iconRepeat,    createType: REPEAT,           callback: e => actionManager.do(getCreateNodeAction(REPEAT,          btnFlow.div, getCreateOptions(e)))}),
+                           new MenuItem('',                  null, {separator: true}),
+        menuItemIfElse   = new MenuItem('I&hairsp;f / else', null, {icon: iconIfElse,    createType: IF_ELSE,          callback: e => actionManager.do(getCreateNodeAction(IF_ELSE,         btnFlow.div, getCreateOptions(e))), disambiguate: true}),
+        menuItemSelect   = new MenuItem('Select',            null, {icon: iconSelect,      createType: SELECT,         callback: e => actionManager.do(getCreateNodeAction(SELECT,          btnFlow.div, getCreateOptions(e)))}),
+                           new MenuItem('',                  null, {separator: true}),
+        menuItemNull     = new MenuItem('Null',              null, {icon: iconNull,      createType: NULL_NODE,        callback: e => actionManager.do(getCreateNodeAction(NULL_NODE,       btnFlow.div, getCreateOptions(e)))}),
+        menuItemCache    = new MenuItem('Cache',             null, {icon: iconCache,     createType: CACHE,            callback: e => actionManager.do(getCreateNodeAction(CACHE,           btnFlow.div, getCreateOptions(e)))}),
+        menuItemFreeze   = new MenuItem('Freeze . . .',      null, {icon: iconFreeze,    createType: FREEZE,           callback: e => actionManager.do(getCreateNodeAction(FREEZE,          btnFlow.div, getCreateOptions(e)))}),
+                           new MenuItem('',                  null, {separator: true}),
+        menuItemTimer    = new MenuItem('Timer ',            null, {icon: iconTimer,     createType: TIMER,            callback: e => actionManager.do(getCreateNodeAction(TIMER,           btnFlow.div, getCreateOptions(e)))}),
+        menuItemAnimate  = new MenuItem('Animate',           null, {icon: iconAnimate,   createType: NUMBER_ANIMATE,   callback: e => actionManager.do(getCreateNodeAction(NUMBER_ANIMATE,  btnFlow.div, getCreateOptions(e)))}),
+        menuFlowSep5     = new MenuItem('',                  null, {separator: true}),
+        menuItemFetch    = new MenuItem('Fetch',             null, {icon: iconTextFetch, createType: TEXT_FETCH,       callback: e => actionManager.do(getCreateNodeAction(TEXT_FETCH,      btnFlow.div, getCreateOptions(e)))}),
+        menuItemTextFile = new MenuItem('Text file',         null, {icon: iconTextFile,  createType: TEXT_FILE,        callback: e => actionManager.do(getCreateNodeAction(TEXT_FILE,       btnFlow.div, getCreateOptions(e)))})]);
     
 
     menuData = new Menu('Data', true, false);
@@ -88536,13 +88592,14 @@ function initGeneratorMenus()
     
     menuFunctions = new Menu('Functions', true, false);
     menuFunctions.addItems([
-        new MenuItem('Constant',  null, {icon: iconConstant,    createType: NUMBER_CONSTANT, callback: e => actionManager.do(getCreateNodeAction(NUMBER_CONSTANT,    btnNumber.div, getCreateOptions(e)))}),
-        new MenuItem('',          null, {separator: true}),
-        new MenuItem('Sign',      null, {icon: iconSign,        createType: NUMBER_SIGN,     callback: e => actionManager.do(getCreateNodeAction(NUMBER_SIGN,        btnNumber.div, getCreateOptions(e)))}),
-        new MenuItem('Absolute',  null, {icon: iconAbsolute,    createType: NUMBER_ABSOLUTE, callback: e => actionManager.do(getCreateNodeAction(NUMBER_ABSOLUTE,    btnNumber.div, getCreateOptions(e)))}),
-        new MenuItem('Round',     null, {icon: iconRound,       createType: NUMBER_ROUND,    callback: e => actionManager.do(getCreateNodeAction(NUMBER_ROUND,       btnNumber.div, getCreateOptions(e)))}),
-        new MenuItem('Min / max', null, {icon: iconMinMax,      createType: NUMBER_MINMAX,   callback: e => actionManager.do(getCreateNodeAction(NUMBER_MINMAX,      btnNumber.div, getCreateOptions(e)))}),
-        new MenuItem('Limits',    null, {icon: iconLimits,      createType: NUMBER_LIMITS,   callback: e => actionManager.do(getCreateNodeAction(NUMBER_LIMITS,      btnNumber.div, getCreateOptions(e)))})]);
+                           new MenuItem('Sign',        null, {icon: iconSign,      createType: NUMBER_SIGN,     callback: e => actionManager.do(getCreateNodeAction(NUMBER_SIGN,     btnNumber.div, getCreateOptions(e)))}),
+                           new MenuItem('Absolute',    null, {icon: iconAbsolute,  createType: NUMBER_ABSOLUTE, callback: e => actionManager.do(getCreateNodeAction(NUMBER_ABSOLUTE, btnNumber.div, getCreateOptions(e)))}),
+                           new MenuItem('Round',       null, {icon: iconRound,     createType: NUMBER_ROUND,    callback: e => actionManager.do(getCreateNodeAction(NUMBER_ROUND,    btnNumber.div, getCreateOptions(e)))}),
+                           new MenuItem('Min / max',   null, {icon: iconMinMax,    createType: NUMBER_MINMAX,   callback: e => actionManager.do(getCreateNodeAction(NUMBER_MINMAX,   btnNumber.div, getCreateOptions(e)))}),
+                           new MenuItem('Limits',      null, {icon: iconLimits,    createType: NUMBER_LIMITS,   callback: e => actionManager.do(getCreateNodeAction(NUMBER_LIMITS,   btnNumber.div, getCreateOptions(e)))}),  new MenuItem('', null, {separator: true}),
+                           new MenuItem('Constant',    null, {icon: iconConstant,  createType: NUMBER_CONSTANT, callback: e => actionManager.do(getCreateNodeAction(NUMBER_CONSTANT, btnNumber.div, getCreateOptions(e)))}),
+                           new MenuItem('',            null, {separator: true}),
+        menuItemDateTime = new MenuItem('Date & time', null, {icon: iconDateTime,  createType: NUMBER_DATETIME, callback: e => actionManager.do(getCreateNodeAction(NUMBER_DATETIME, btnNumber.div, getCreateOptions(e)))})]);
         
 
     menuConvert = new Menu('Text', true, false);
@@ -88557,39 +88614,40 @@ function initGeneratorMenus()
 
     menuNumber = new Menu('Numbers', true, false);
     menuNumber.addItems([
-                        new MenuItem('Number',        null,                 {icon: iconNumber,      createType: NUMBER, callback: e => actionManager.do(getCreateNodeAction(NUMBER,             btnNumber.div, getCreateOptions(e)))}),
-                        new MenuItem('',              null,                 {separator: true}),
-                        new MenuItem('Basic',         null,                 {icon: iconRound,       childMenu: menuFunctions}),
-                        new MenuItem('',              null,                 {separator: true}),
-                        new MenuItem('Math',          null,                 {icon: iconMath,        childMenu: menuMath,          createType: NUMBER_SIMPLE_MATH, callback: e => actionManager.do(getCreateNodeAction(NUMBER_SIMPLE_MATH, btnNumber.div, getCreateOptions(e)))}),
-                        new MenuItem('Boolean',       null,                 {icon: iconBoolean,     /*childMenu: menuBoolean,  */ createType: NUMBER_BOOLEAN,     callback: e => actionManager.do(getCreateNodeAction(NUMBER_BOOLEAN,     btnNumber.div, getCreateOptions(e)))}),
-                        new MenuItem('Conditional',   null,                 {icon: iconCondition,   /*childMenu: menuCondition,*/ createType: NUMBER_CONDITION,   callback: e => actionManager.do(getCreateNodeAction(NUMBER_CONDITION,   btnNumber.div, getCreateOptions(e)))}),
-                        new MenuItem('Trigonometric', null,                 {icon: iconSine,        /*childMenu: menuTrig,     */ createType: NUMBER_TRIG,        callback: e => actionManager.do(getCreateNodeAction(NUMBER_TRIG,        btnNumber.div, getCreateOptions(e)))}),
-                        new MenuItem('',              null,                 {separator: true}),
-                        new MenuItem('Interpolate',   'Interpolate number', {icon: iconInterpolate, createType: NUMBER_INTERPOLATE, callback: e => actionManager.do(getCreateNodeAction(NUMBER_INTERPOLATE, btnNumber.div, getCreateOptions(e)))}),
-        menuItemSolve = new MenuItem('Solve',         null,                 {icon: iconSolve,       createType: NUMBER_SOLVE,       callback: e => actionManager.do(getCreateNodeAction(NUMBER_SOLVE,       btnNumber.div, getCreateOptions(e)))})]);
+                         new MenuItem('Number',        null,                 {icon: iconNumber,      createType: NUMBER, callback: e => actionManager.do(getCreateNodeAction(NUMBER,             btnNumber.div, getCreateOptions(e)))}),
+                         new MenuItem('',              null,                 {separator: true}),
+                         new MenuItem('Value',         null,                 {icon: iconRound,       childMenu: menuFunctions}),
+                         new MenuItem('',              null,                 {separator: true}),
+                         new MenuItem('Math',          null,                 {icon: iconMath,        childMenu: menuMath,          createType: NUMBER_SIMPLE_MATH, callback: e => actionManager.do(getCreateNodeAction(NUMBER_SIMPLE_MATH, btnNumber.div, getCreateOptions(e)))}),
+                         new MenuItem('Boolean',       null,                 {icon: iconBoolean,     /*childMenu: menuBoolean,  */ createType: NUMBER_BOOLEAN,     callback: e => actionManager.do(getCreateNodeAction(NUMBER_BOOLEAN,     btnNumber.div, getCreateOptions(e)))}),
+                         new MenuItem('Conditional',   null,                 {icon: iconCondition,   /*childMenu: menuCondition,*/ createType: NUMBER_CONDITION,   callback: e => actionManager.do(getCreateNodeAction(NUMBER_CONDITION,   btnNumber.div, getCreateOptions(e)))}),
+                         new MenuItem('Trigonometric', null,                 {icon: iconSine,        /*childMenu: menuTrig,     */ createType: NUMBER_TRIG,        callback: e => actionManager.do(getCreateNodeAction(NUMBER_TRIG,        btnNumber.div, getCreateOptions(e)))}),
+                         new MenuItem('',              null,                 {separator: true}),
+                         new MenuItem('Interpolate',   'Interpolate number', {icon: iconInterpolate, createType: NUMBER_INTERPOLATE, callback: e => actionManager.do(getCreateNodeAction(NUMBER_INTERPOLATE, btnNumber.div, getCreateOptions(e)))}),
+        menuNumberSep1 = new MenuItem('',              null,                 {separator: true}),
+        menuItemSolve  = new MenuItem('Solve',         null,                 {icon: iconSolve,       createType: NUMBER_SOLVE,       callback: e => actionManager.do(getCreateNodeAction(NUMBER_SOLVE,       btnNumber.div, getCreateOptions(e)))})]);
         
     
     menuString = new Menu('Text', true, false);
     menuString.addItems([
-        new MenuItem('Text',       null,            {icon: iconText,          createType: TEXT,           callback: e => actionManager.do(getCreateNodeAction(TEXT,           btnText.div, getCreateOptions(e)))}),
-        new MenuItem('',           null,            {separator: true}),
-        new MenuItem('Length',     null,            {icon: iconTextLength,    createType: TEXT_LENGTH,    callback: e => actionManager.do(getCreateNodeAction(TEXT_LENGTH,    btnText.div, getCreateOptions(e)))}),
-        new MenuItem('Compare',    null,            {icon: iconTextCompare,   createType: TEXT_COMPARE,   callback: e => actionManager.do(getCreateNodeAction(TEXT_COMPARE,   btnText.div, getCreateOptions(e)))}),
-        new MenuItem('Contains',   'Text contains', {icon: iconTextContains,  createType: TEXT_CONTAINS,  callback: e => actionManager.do(getCreateNodeAction(TEXT_CONTAINS,  btnText.div, getCreateOptions(e)))}),
-        new MenuItem('',           null,            {separator: true}),
-        new MenuItem('Trim',       null,            {icon: iconTextTrim,      createType: TEXT_TRIM,      callback: e => actionManager.do(getCreateNodeAction(TEXT_TRIM,      btnText.div, getCreateOptions(e)))}),
-        new MenuItem('Spl it',     null,            {icon: iconTextSplit,     createType: TEXT_SPLIT,     callback: e => actionManager.do(getCreateNodeAction(TEXT_SPLIT,     btnText.div, getCreateOptions(e)))}),
-        new MenuItem('Join',       null,            {icon: iconTextJoin,      createType: TEXT_JOIN,      callback: e => actionManager.do(getCreateNodeAction(TEXT_JOIN,      btnText.div, getCreateOptions(e)))}),
-        new MenuItem('Substring',  null,            {icon: iconTextSubstring, createType: TEXT_SUBSTRING, callback: e => actionManager.do(getCreateNodeAction(TEXT_SUBSTRING, btnText.div, getCreateOptions(e)))}),
-        new MenuItem('Case',       null,            {icon: iconTextCase,      createType: TEXT_CASE,      callback: e => actionManager.do(getCreateNodeAction(TEXT_CASE,      btnText.div, getCreateOptions(e)))}),
-        new MenuItem('Replace',    null,            {icon: iconTextReplace,   createType: TEXT_REPLACE,   callback: e => actionManager.do(getCreateNodeAction(TEXT_REPLACE,   btnText.div, getCreateOptions(e)))}),
-        new MenuItem('Pad',        null,            {icon: iconTextPad,       createType: TEXT_PAD,       callback: e => actionManager.do(getCreateNodeAction(TEXT_PAD,       btnText.div, getCreateOptions(e)))}),
-        new MenuItem('',           null,            {separator: true}),
-        new MenuItem('Parse CSV',  null,            {icon: iconTextCSV,       createType: TEXT_CSV,       callback: e => actionManager.do(getCreateNodeAction(TEXT_CSV,       btnText.div, getCreateOptions(e)))}),
-        new MenuItem('Parse JSON', null,            {icon: iconTextJson,      createType: TEXT_JSON,      callback: e => actionManager.do(getCreateNodeAction(TEXT_JSON,      btnText.div, getCreateOptions(e)))}),
-        new MenuItem('',           null,            {separator: true}),
-        new MenuItem('Convert',    null,            {icon: iconNumberToText, childMenu: menuConvert})]);
+                           new MenuItem('Text',       null,            {icon: iconText,          createType: TEXT,           callback: e => actionManager.do(getCreateNodeAction(TEXT,           btnText.div, getCreateOptions(e)))}),
+                           new MenuItem('',           null,            {separator: true}),
+                           new MenuItem('Length',     null,            {icon: iconTextLength,    createType: TEXT_LENGTH,    callback: e => actionManager.do(getCreateNodeAction(TEXT_LENGTH,    btnText.div, getCreateOptions(e)))}),
+                           new MenuItem('Compare',    null,            {icon: iconTextCompare,   createType: TEXT_COMPARE,   callback: e => actionManager.do(getCreateNodeAction(TEXT_COMPARE,   btnText.div, getCreateOptions(e)))}),
+                           new MenuItem('Contains',   'Text contains', {icon: iconTextContains,  createType: TEXT_CONTAINS,  callback: e => actionManager.do(getCreateNodeAction(TEXT_CONTAINS,  btnText.div, getCreateOptions(e)))}),
+                           new MenuItem('',           null,            {separator: true}),
+                           new MenuItem('Trim',       null,            {icon: iconTextTrim,      createType: TEXT_TRIM,      callback: e => actionManager.do(getCreateNodeAction(TEXT_TRIM,      btnText.div, getCreateOptions(e)))}),
+                           new MenuItem('Spl it',     null,            {icon: iconTextSplit,     createType: TEXT_SPLIT,     callback: e => actionManager.do(getCreateNodeAction(TEXT_SPLIT,     btnText.div, getCreateOptions(e)))}),
+                           new MenuItem('Join',       null,            {icon: iconTextJoin,      createType: TEXT_JOIN,      callback: e => actionManager.do(getCreateNodeAction(TEXT_JOIN,      btnText.div, getCreateOptions(e)))}),
+                           new MenuItem('Substring',  null,            {icon: iconTextSubstring, createType: TEXT_SUBSTRING, callback: e => actionManager.do(getCreateNodeAction(TEXT_SUBSTRING, btnText.div, getCreateOptions(e)))}),
+                           new MenuItem('Case',       null,            {icon: iconTextCase,      createType: TEXT_CASE,      callback: e => actionManager.do(getCreateNodeAction(TEXT_CASE,      btnText.div, getCreateOptions(e)))}),
+                           new MenuItem('Replace',    null,            {icon: iconTextReplace,   createType: TEXT_REPLACE,   callback: e => actionManager.do(getCreateNodeAction(TEXT_REPLACE,   btnText.div, getCreateOptions(e)))}),
+                           new MenuItem('Pad',        null,            {icon: iconTextPad,       createType: TEXT_PAD,       callback: e => actionManager.do(getCreateNodeAction(TEXT_PAD,       btnText.div, getCreateOptions(e)))}),
+                           new MenuItem('',           null,            {separator: true}),
+                           new MenuItem('Parse CSV',  null,            {icon: iconTextCSV,       createType: TEXT_CSV,       callback: e => actionManager.do(getCreateNodeAction(TEXT_CSV,       btnText.div, getCreateOptions(e)))}),
+        menuItemTextJson = new MenuItem('Parse JSON', null,            {icon: iconTextJson,      createType: TEXT_JSON,      callback: e => actionManager.do(getCreateNodeAction(TEXT_JSON,      btnText.div, getCreateOptions(e)))}),
+                           new MenuItem('',           null,            {separator: true}),
+                           new MenuItem('Convert',    null,            {icon: iconNumberToText, childMenu: menuConvert})]);
 
 
     menuColorStyle = new Menu('Color style', true, false);
@@ -88605,6 +88663,7 @@ function initGeneratorMenus()
         menuItemCorrectColor = new MenuItem('Correct color', null,                {icon: iconCorrectColor,     callback: e => actionManager.do(getCreateNodeAction(CORRECT_COLOR,     btnColor.div, getCreateOptions(e)))}),
         menuItemColorSep1    = new MenuItem('',              null,                {separator: true}),
                                new MenuItem('Web contrast',  null,                {icon: iconWebContrast,      callback: e => actionManager.do(getCreateNodeAction(COLOR_CONTRAST,    btnColor.div, getCreateOptions(e)))}),
+                               new MenuItem('',              null,                {separator: true}),
         menuItemColorblind   = new MenuItem('Colorblind',    null,                {icon: iconColorblind,       callback: e => actionManager.do(getCreateNodeAction(COLORBLIND,        btnColor.div, getCreateOptions(e)))}),
                                new MenuItem('',              null,                {separator: true}),
                                new MenuItem('Interpolate',   'Interpolate color', {icon: iconColorInterpolate, callback: e => actionManager.do(getCreateNodeAction(COLOR_INTERPOLATE, btnColor.div, getCreateOptions(e)))}),
@@ -88703,7 +88762,7 @@ function initGeneratorMenus()
         menuItemShapeSep1     = new MenuItem('',          null,   {separator: true}),
                                 new MenuItem('Transform', null,   {icon: iconMove, childMenu: menuTransform}),
                                 new MenuItem('',          null,   {separator: true}),
-                                new MenuItem('Render',    null,   {icon: iconRenderDown, createType: RENDER, callback: e => actionManager.do(getCreateNodeAction(RENDER,       btnShape.div, getCreateOptions(e)))})]);
+        menuItemShapeRender   = new MenuItem('Render',    null,   {icon: iconRenderDown, createType: RENDER, callback: e => actionManager.do(getCreateNodeAction(RENDER,       btnShape.div, getCreateOptions(e)))})]);
 
 
     menuTemplate = new Menu('Templates', true, false);
@@ -92982,14 +93041,6 @@ extends Parameter
         
         this.oldValue = this.value.copy();
     }    
-
-
-
-    showValue(show)
-    {
-        this.controls[0].showValue = show;
-        this.controls[0].update();
-    }
 
 
 
@@ -105741,7 +105792,7 @@ extends OperatorBase
         
         this.paramValue.enableControlText(!input.connected);
 
-        this.paramValue.controls[0].valueText =  this.isUnknown() ? UNKNOWN_DISPLAY : '';
+        this.paramValue.controls[0].valueText =  this.isUnknown() ? UNKNOWN_DISPLAY : null;
         this.paramValue.controls[0].showBar   = !this.isUnknown();
 
 
@@ -107239,7 +107290,7 @@ extends OperatorBase
     updateParams()
     {
         this.paramValue.enableControlText(false, this.isUnknown());
-        //this.paramValue.controls[0].valueText = this.isUnknown() ? UNKNOWN_DISPLAY : '';
+        //this.paramValue.controls[0].valueText = this.isUnknown() ? UNKNOWN_DISPLAY : null;
 
         this.paramFormat.enableControlText(true);
 
@@ -107249,7 +107300,7 @@ extends OperatorBase
 
 
 class   OpSolve
-extends OperatorWithValue
+extends OperatorBase
 {
     paramCurrent;
     paramTarget;
@@ -107269,12 +107320,12 @@ extends OperatorWithValue
         this.inputs[0].feedback = true;
 
 
-        this.addParam(this.paramValue);
         this.addParam(this.paramCurrent = new NumberParam('current', 'current', true,  true,  true, Number.NaN));
         this.addParam(this.paramTarget  = new NumberParam('target',  'target',  true,  true,  true));
 
 
-        this.setAllParamDividers(0.53);
+        this.paramCurrent.divider = 0.5;
+        this.paramTarget .divider = 0.5;
     }
 
 
@@ -107322,7 +107373,9 @@ extends OperatorWithValue
 
     updateParams()
     {
-        this.paramValue  .enableControlText(false, this.isUnknown());
+        if (!this.paramCurrent.input.connected)
+            this.paramCurrent.setValue(NumberValue.NaN, null, true, false);
+
         this.paramCurrent.enableControlText(false, this.isUnknown());
         this.paramTarget .enableControlText(true);
 
@@ -107853,7 +107906,7 @@ extends OperatorWithValue
     {
         this.paramValue.enableControlText(false);
                 
-        this.paramValue.controls[0].valueText =  this.isUnknown() ? UNKNOWN_DISPLAY : '';
+        this.paramValue.controls[0].valueText =  this.isUnknown() ? UNKNOWN_DISPLAY : null;
         this.paramValue.controls[0].showBar   = !this.isUnknown();
 
         this.updateParamControls();
@@ -108973,7 +109026,7 @@ extends OperatorWithValue
     updateParams()
     {
         this.paramValue.enableControlText(true);
-        this.paramValue.controls[0].valueText = this.isUnknown() ? UNKNOWN_DISPLAY : '';
+        this.paramValue.controls[0].valueText = this.isUnknown() ? UNKNOWN_DISPLAY : null;
 
         this.paramStart.enableControlText(true);
         this.paramEnd  .enableControlText(true);
@@ -109073,7 +109126,7 @@ extends OperatorWithValue
     updateParams()
     {
         this.paramValue.enableControlText(true, this.isUnknown());
-        // this.paramValue.controls[0].valueText = this.isUnknown() ? UNKNOWN_DISPLAY : '';
+        // this.paramValue.controls[0].valueText = this.isUnknown() ? UNKNOWN_DISPLAY : null;
 
         this.paramStart.enableControlText(true);
         this.paramEnd  .enableControlText(true);
@@ -109238,7 +109291,7 @@ extends OperatorWithValue
     updateParams()
     {
         this.paramValue.enableControlText(true, this.isUnknown());
-        // this.paramValue.controls[0].valueText = this.isUnknown() ? UNKNOWN_DISPLAY : '';
+        // this.paramValue.controls[0].valueText = this.isUnknown() ? UNKNOWN_DISPLAY : null;
 
         this.paramCase.enableControlText(true);
 
@@ -109311,7 +109364,7 @@ extends OperatorWithValue
     updateParams()
     {
         this.paramValue.enableControlText(false);
-        this.paramValue.controls[0].valueText = this.isUnknown() ? UNKNOWN_DISPLAY : '';
+        this.paramValue.controls[0].valueText = this.isUnknown() ? UNKNOWN_DISPLAY : null;
 
         this.paramCode .enableControlText(true);
 
@@ -109391,7 +109444,7 @@ extends OperatorWithValue
     updateParams()
     {
         this.paramValue.enableControlText(true, this.isUnknown());
-        // this.paramValue.controls[0].valueText = this.isUnknown() ? UNKNOWN_DISPLAY : '';
+        // this.paramValue.controls[0].valueText = this.isUnknown() ? UNKNOWN_DISPLAY : null;
 
         this.paramWhat.enableControlText(true);
         this.paramWith.enableControlText(true);
@@ -109625,7 +109678,7 @@ extends OperatorWithValue
     updateParams()
     {
         this.paramValue.enableControlText(true, this.isUnknown());
-        // this.paramValue.controls[0].valueText = this.isUnknown() ? UNKNOWN_DISPLAY : '';
+        // this.paramValue.controls[0].valueText = this.isUnknown() ? UNKNOWN_DISPLAY : null;
 
         this.paramStartPad  .enableControlText(true);
         this.paramStartCount.enableControlText(true);
@@ -110059,7 +110112,7 @@ extends ResizableOperatorWithValue
     updateParams()
     {
         this.paramValue.enableControlText(true, this.isUnknown());
-        // this.paramValue.controls[0].valueText = this.isUnknown() ? UNKNOWN_DISPLAY : '';
+        // this.paramValue.controls[0].valueText = this.isUnknown() ? UNKNOWN_DISPLAY : null;
 
         this.paramRequest.enableControlText(true);
 
@@ -112821,6 +112874,156 @@ function makeOptions(c)
 
 
 
+class   OpConvertP3
+extends OpColorBase
+{
+    paramFrom;
+
+    corrections = [];
+
+
+    colorBack;
+
+
+
+    constructor()
+    {
+        super(COLOR_CONVERT_P3, 'convert', 'convert', iconConvertP3, true);
+
+        this.canDisable  = true;
+        this.slow        = true;
+        this.iconOffsetY = -1;
+
+        
+        this.colorBack = createDiv('colorBack');
+        this.inner.insertBefore(this.colorBack, this.paramHolder);
+
+
+        this.addInput(new Input(COLOR_TYPES));
+        this.addOutput(new Output([COLOR_VALUE], this.output_genRequest));
+
+        this.alwaysSaveParams = true;
+
+        
+        this.addParam(this.paramFrom = new SelectParam('from', '', false, true, true, ['sRGB ⟶ P3', 'P3 ⟶ sRGB'], 0));
+
+
+        this.header.connectionPadding = 18;
+    }
+
+
+
+    output_genRequest(gen)
+    {
+        // 'this' is the output
+
+        gen.scope.push({
+            nodeId:  this.node.id, 
+            paramId: NULL });
+
+
+        const [request, ignore] = this.node.genRequestStart(gen, 0);
+        if (ignore) return request;
+
+
+        const input = this.node.inputs[0];
+
+
+        request.push(input.connected ? 1 : 0);
+
+        if (input.connected)
+            request.push(...pushInputOrParam(input, gen));
+
+
+        request.push(...this.node.paramFrom.genRequest(gen));
+
+
+        gen.scope.pop();
+        pushUnique(gen.passedNodes, this.node);
+
+        return request;
+    }
+
+
+
+    updateValues(requestId, actionId, updateParamId, paramIds, values)
+    {
+        const col = values[paramIds.findIndex(id => id == 'value')];
+
+        this._color = 
+            col
+            ? col.toDataColor()
+            : dataColor_NaN;
+
+
+        this.initCorrections(this._color[0]);
+        this.endProgress();
+
+
+        super.updateValues(requestId, actionId, updateParamId, paramIds, values);
+    }
+
+
+
+    updateHeader()
+    {
+        super.updateHeader();
+
+        const colors = this.getHeaderColors();
+        updateColorHeader(this, colors);
+    }
+
+
+
+    getHeaderColors()
+    {
+        const colors = super.getHeaderColors();
+
+        if (this.isUnknown())
+        {
+            colors.text = darkMode ? hex2rgb('fff8') : hex2rgb('0008');
+            colors.wire = darkMode ? hex2rgb('888f') : hex2rgb('aaaf');
+        }
+                
+        return colors;
+    }
+
+
+
+    isConnected()
+    {
+        return this.inputs[0].connected;
+    }
+
+
+
+    toJsonBase(nTab = 0) 
+    {
+        let   pos = ' '.repeat(nTab);
+        const tab = HTAB;
+
+        return super.toJsonBase(nTab)
+             + ',\n' + pos + tab + '"_color": "' + ColorValue.fromDataColor(this._color).toString() + '"';
+    }
+
+
+
+    loadParams(_node, pasting)
+    {
+        if (_node._color != undefined)
+        {
+            this._color = parseColorValue(_node._color)[0].toDataColor();
+            this.valid = true;
+        }
+
+        if (!dataColorIsValid(this._color))
+            this.initProgress();
+
+        super.loadParams(_node, pasting);
+    }
+}
+
+
 const rgb2dark1  = [255/255,  64/255,  96/255];
 const rgb2dark2  = [255/255, 255/255,  0/255];
 const rgb2dark3  = [ 64/255, 220/255, 64/255];
@@ -113847,7 +114050,7 @@ extends OperatorBase
 
         this.paramValue.enableControlText(enabled, this.isUnknown());
 
-        // // this.paramValue.controls[0].valueText =  this.isUnknown() ? UNKNOWN_DISPLAY : '';
+        // // this.paramValue.controls[0].valueText =  this.isUnknown() ? UNKNOWN_DISPLAY : null;
         // this.paramValue.controls[0].showBar   = false;//!this.isUnknown();
 
 
@@ -125001,7 +125204,6 @@ document.addEventListener("drop", async e =>
 
 
 
-
 var generatorStarted = false;
 
 
@@ -125015,6 +125217,10 @@ var allUpdateNodes   = [];
 
 
 
+var currentSessionId = '';
+
+
+
 // uiClearAllLocalData();
 //uiQueueMessageToFigma({cmd: 'figLogAllLocalData', darkMode: darkMode});
 
@@ -125025,7 +125231,7 @@ var allUpdateNodes   = [];
 // uiClearLocalData('showWhatsNew');
 
 //uiSetLocalData('enableBetaFeatures', 'true');
-//uiSetLocalData('lastValidCheck', '');
+//uiSetLocalData('sessionId', '');
 //uiSetLocalData('logLoading', 'true');
 
 //uiRemoveConnsToNodes(['num3']);
@@ -125041,8 +125247,8 @@ var allUpdateNodes   = [];
 
 
 
-var currentUser = null;
-var subscription  = NULL;
+var currentUser  = null;
+
 
 
 const generator = new Worker(
@@ -125106,6 +125312,9 @@ async function uiReturnFigStartGenerator(msg)
     initThemeColors();
     initKeyboardPanel();
     initWindowSizers();
+
+
+    validateInit();
 }
 
 
@@ -125119,51 +125328,54 @@ function initGenerator()
     uiQueueMessageToFigma({
         cmd:     'figLoadNodesAndConns',
         dataMode: settings.dataMode });
+
+    enableFeatures(subscribed());
 }
 
 
 
-function validateInit(lastValidCheck)
+function createSessionId()
 {
-    const date  = getCurrentDateString();
-    const hash  = hashLicenseString(currentUser.id + date, licenseHashSize);
-    const enc   = sign(hash, licenseKeys.private);
-    const today = arrayToBase32(enc);
+    const date = getCurrentDateString();
+    const hash = hashLicenseString(currentUser.id + date, licenseHashSize);
+    const enc  = sign(hash, licenseKeys.private);
+    
+    return arrayToBase32(enc);
+}
 
 
-    if (lastValidCheck == today)
-    {
-        initGenerator();
-        return;
-    }
+
+function subscribed()
+{
+    return currentSessionId == createSessionId();
+}
 
 
+
+function validateInit()
+{
     try
     {
-        checkTrialExists()
-            .then(trialExists => 
+        checkSubActive().then(subActive => 
+        {
+            if (subActive) 
+            {
+                currentSessionId = createSessionId();
+                initGenerator();
+            }
+
+            else checkTrialExists().then(trialExists => 
             {
                 if (trialExists)
-                {
-                    checkSubOrTrialActive()
-                        .then(subOrTrialActive => 
-                        {
-                            if (subOrTrialActive) 
-                            {
-                                uiSetLocalData('lastValidCheck', today);
-                                initGenerator();
-                            }
-                            else
-                                showSubscriptionDialog(false);
-                        });
-                }
+                    initGenerator();
                 else
                     showEulaDialog();
             });
+        });
     }
     catch (e)
     {
-        crashAssert(false, 'Error connecting to license server...', false);
+        console.error('Error connecting to license server...');
         console.error(e);
     }
 }
@@ -126600,7 +126812,28 @@ function checkTrialExists()
         })
         .catch(e =>
         {
-            consoleError(e);
+            console.error(e);
+            throw e;
+        });
+}
+
+
+
+function checkSubActive()
+{
+    return postToServer(
+        {
+            action: 'getSubActive',
+            userId:  currentUser.id
+        })
+        .then(response => 
+        {
+            consoleAssert(response, 'invalid response from server @ checkSubActive()');
+            return response ? response.result : false;
+        })
+        .catch(e =>
+        {
+            console.error(e);
             throw e;
         });
 }
@@ -126621,7 +126854,7 @@ function checkSubOrTrialActive()
         })
         .catch(e =>
         {
-            consoleError(e);
+            console.error(e);
             throw e;
         });
 }
@@ -126642,7 +126875,7 @@ function checkRemainingTrialDays()
         })
         .catch(e =>
         {
-            consoleError(e);
+            console.error(e);
             throw e;
         });
 }
@@ -126870,10 +127103,6 @@ async function uiReturnFigGetLocalData(msg)
     if (   msg.key == 'logLoading'
         && settings.logLoading)
         uiLogAllSavedNodesAndConns();
-
-
-    if (msg.key == 'lastValidCheck')
-        validateInit(msg.value);
 }
 
 
@@ -127175,8 +127404,6 @@ function finishLoading(_nodes)
     generatorStarted = true;
 
 
-    enableFeatures(false);//subscription != NULL, settings.enableBetaFeatures); 
-    
     graphView.update();
 
     
@@ -130794,33 +131021,13 @@ async function updateLicenseInfo()
     {
         const daysLeft = formatDaysLeft(lastSub.daysLeft);
 
-        licenseInfo.innerHTML            = daysLeft + ' of your subscription.';
+        licenseInfo.innerHTML            = daysLeft + ' of your Pro subscription.';
      
         licenseInfo.style.top            = '55%';
         licenseInfo.style.transform      = 'translateX(-50%) translateY(-50%)';
 
         // aboutUserId.style.display = 'none';
         btnSubscribe      .style.display = 'none';
-
-        subscriptionClose.style.display  = 'inline-block';
-
-        if (checkoutTimer >= 0)
-            clearInterval(checkoutTimer);
-    }
-    else if (trialDaysLeft > 0)
-    {
-        const daysLeft = formatDaysLeft(trialDaysLeft);
-
-        licenseInfo.innerHTML            = daysLeft + ' of your free trial.';
-     
-        licenseInfo.style.top            = '40%';
-        licenseInfo.style.transform      = 'translateX(-50%) translateY(-50%)';
-
-        // aboutUserId.style.display = 'none';
-        btnSubscribe      .style.display = 'block';
-        btnSubscribe      .style.top     = '148px';
-
-        subscriptionClose.style.display  = 'inline-block';
 
         if (checkoutTimer >= 0)
             clearInterval(checkoutTimer);
@@ -130848,15 +131055,15 @@ async function updateLicenseInfo()
 
         const subOrTrial = lastSub ? 'subscription' : 'free trial';
 
-        licenseInfo.innerHTML            = 'Your ' + subOrTrial + ' ' + expired + '.<br/><br/>Please subscribe to continue using Generator.';
+        //licenseInfo.innerHTML            = 'Your ' + subOrTrial + ' ' + expired + '.<br/><br/>Please subscribe to continue using Generator.';
+        
+        licenseInfo.innerHTML            = 'If Generator is useful to you,<br/>subscribe to access Pro features<br/>and support further development.';
 
         licenseInfo.style.top            = '70px';
         licenseInfo.style.transform      = 'translateX(-50%)';
 
         // aboutUserId.style.display = 'none';
         btnSubscribe      .style.display = 'block';
-
-        subscriptionClose.style.display  = 'none';
     }
 }
 

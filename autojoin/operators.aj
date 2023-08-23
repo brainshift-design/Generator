@@ -145,6 +145,7 @@
 ../operators/color/OpColor convert.js
 ../operators/color/OpValidColor.js
 ../operators/color/OpCorrectColor.js
+../operators/color/OpConvertP3.js
 ../operators/color/OpColorContrast.js
 ../operators/color/OpColorblind.js
 ../operators/color/OpColorInterpolate.js

@@ -10,6 +10,7 @@
 ../color/spaces/oklab.js
 ../color/spaces/polar.js
 ../color/spaces/hcl.js
+../color/spaces/p3.js
 
 ../color/Color.js
 

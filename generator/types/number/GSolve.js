@@ -63,7 +63,7 @@ extends GOperator1
             {
                 const diffStart = target.value - current.value;
                 let   diff      = diffStart;
-                let   prevDiff  = diffStart;
+                let   prevDiff  = 0;
 
 
                 let   start     = input.copy();
@@ -85,32 +85,43 @@ extends GOperator1
 
                 while (iter++ < maxIter)
                 {
+                    // console.log('step =', step);
+                    // console.log('diff =', diff);
+                    // console.log('prevDiff =', prevDiff);
+                    
                     this.temp.value += step;
+
                     // console.log('this.temp.value =', this.temp.value);
-                    //console.log('diff =', step);
-                    console.log('step =', step);
+                    // console.log('');
 
-                    this.input.feedbackValue = this.getFeedbackValue;
-                    this.input.valid = false;
+                    //console.log('this.input.type =', this.input.type);
+                    if (this.input.type == PARAM)
+                        this.input.node[this.input.paramId].value = this.temp.value;
+                    // else
+                    //     this.input.value = this.temp.value;
 
-                    // if (this.input.type == PARAM)
-                    //     this.input.node.valid = false;
                         
+                    this.current.invalidateInputs(parse, this);
                     current = (await this.current.eval(parse)).toValue();
 
-                    this.input.feedbackValue = null;
 
+                    // console.log('this.temp.value =', this.temp.value);
+                    // console.log('target.value =', target.value);
+                    // console.log('current.value =', current.value);
+                    // console.log('');
 
-                    diff = target.value - current.value;
+                    if (!current.isValid())
+                        diff = Number.MAX_SAFE_INTEGER;
+                    else
+                        diff = target.value - current.value;
 
-                    if (   /*Math.abs(diff) < 0.0000001
-                        && */Math.abs(step) < 0.0000001)
+                    if (Math.abs(diff) < 0.0000001)
                         break;
                         
 
                     if (   Math.abs (diff) >  Math.abs (prevDiff)
                         || Math.sign(diff) != Math.sign(prevDiff))
-                        step /= -2;
+                        step /= -3; //= -Math.sign(step) * Math.pow(Math.abs(step), 0.75);
 
                     prevDiff = diff;
 
@@ -133,7 +144,7 @@ extends GOperator1
                 {
                     this.value = NumberValue.NaN;
                     genPushUpdateValue(parse, this.input.nodeId, 'value', start);
-                    console.log('max solve iterations');
+                    console.warn('max solve iterations');
                 }
             }
             else
@@ -152,7 +163,7 @@ extends GOperator1
 
         this.setUpdateValues(parse,
         [
-            ['value',   this.value],
+            //['value',   this.value],
             ['current', current   ],
             ['target',  target    ]
         ]);
@@ -181,10 +192,6 @@ extends GOperator1
         if (this.current) this.current.pushValueUpdates(parse);
         if (this.target ) this.target .pushValueUpdates(parse);
     }
-
-
-
-    getFeedbackValue = () => this.temp.copy();
 
 
 

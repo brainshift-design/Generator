@@ -8,11 +8,9 @@ extends GNode
 
     value;
 
-    options       = {};
+    options      = {};
 
-    updateValues  = [];
-    feedbackValue = null; // () => {}
-
+    updateValues = [];
 
    
     

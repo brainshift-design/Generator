@@ -92,33 +92,13 @@ async function updateLicenseInfo()
     {
         const daysLeft = formatDaysLeft(lastSub.daysLeft);
 
-        licenseInfo.innerHTML            = daysLeft + ' of your subscription.';
+        licenseInfo.innerHTML            = daysLeft + ' of your Pro subscription.';
      
         licenseInfo.style.top            = '55%';
         licenseInfo.style.transform      = 'translateX(-50%) translateY(-50%)';
 
         // aboutUserId.style.display = 'none';
         btnSubscribe      .style.display = 'none';
-
-        subscriptionClose.style.display  = 'inline-block';
-
-        if (checkoutTimer >= 0)
-            clearInterval(checkoutTimer);
-    }
-    else if (trialDaysLeft > 0)
-    {
-        const daysLeft = formatDaysLeft(trialDaysLeft);
-
-        licenseInfo.innerHTML            = daysLeft + ' of your free trial.';
-     
-        licenseInfo.style.top            = '40%';
-        licenseInfo.style.transform      = 'translateX(-50%) translateY(-50%)';
-
-        // aboutUserId.style.display = 'none';
-        btnSubscribe      .style.display = 'block';
-        btnSubscribe      .style.top     = '148px';
-
-        subscriptionClose.style.display  = 'inline-block';
 
         if (checkoutTimer >= 0)
             clearInterval(checkoutTimer);
@@ -146,15 +126,15 @@ async function updateLicenseInfo()
 
         const subOrTrial = lastSub ? 'subscription' : 'free trial';
 
-        licenseInfo.innerHTML            = 'Your ' + subOrTrial + ' ' + expired + '.<br/><br/>Please subscribe to continue using Generator.';
+        //licenseInfo.innerHTML            = 'Your ' + subOrTrial + ' ' + expired + '.<br/><br/>Please subscribe to continue using Generator.';
+        
+        licenseInfo.innerHTML            = 'If Generator is useful to you,<br/>subscribe to access Pro features<br/>and support further development.';
 
         licenseInfo.style.top            = '70px';
         licenseInfo.style.transform      = 'translateX(-50%)';
 
         // aboutUserId.style.display = 'none';
         btnSubscribe      .style.display = 'block';
-
-        subscriptionClose.style.display  = 'none';
     }
 }
 

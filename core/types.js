@@ -258,6 +258,7 @@ const COLOR_VALUE        = 'COL#';
 const COLOR              = 'COL';   
 const VALID_COLOR        = 'CVAL';  
 const CORRECT_COLOR      = 'CCOR';  
+const COLOR_CONVERT_P3   = 'COLP3';
 const COLOR_CONTRAST     = 'CCNT';  
 const COLORBLIND         = 'BLND';  
 const COLOR_INTERPOLATE  = 'CLERP'; 
@@ -269,6 +270,7 @@ const COLOR_TYPES =
     COLOR_VALUE,
     COLOR,
     CORRECT_COLOR,
+    COLOR_CONVERT_P3,
     COLORBLIND,
     COLOR_INTERPOLATE,
     COLOR_BLEND

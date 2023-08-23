@@ -140,10 +140,6 @@ async function uiReturnFigGetLocalData(msg)
     if (   msg.key == 'logLoading'
         && settings.logLoading)
         uiLogAllSavedNodesAndConns();
-
-
-    if (msg.key == 'lastValidCheck')
-        validateInit(msg.value);
 }
 
 
@@ -445,8 +441,6 @@ function finishLoading(_nodes)
     generatorStarted = true;
 
 
-    enableFeatures(false);//subscription != NULL, settings.enableBetaFeatures); 
-    
     graphView.update();
 
     

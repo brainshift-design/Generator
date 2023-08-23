@@ -12,7 +12,28 @@ function checkTrialExists()
         })
         .catch(e =>
         {
-            consoleError(e);
+            console.error(e);
+            throw e;
+        });
+}
+
+
+
+function checkSubActive()
+{
+    return postToServer(
+        {
+            action: 'getSubActive',
+            userId:  currentUser.id
+        })
+        .then(response => 
+        {
+            consoleAssert(response, 'invalid response from server @ checkSubActive()');
+            return response ? response.result : false;
+        })
+        .catch(e =>
+        {
+            console.error(e);
             throw e;
         });
 }
@@ -33,7 +54,7 @@ function checkSubOrTrialActive()
         })
         .catch(e =>
         {
-            consoleError(e);
+            console.error(e);
             throw e;
         });
 }
@@ -54,7 +75,7 @@ function checkRemainingTrialDays()
         })
         .catch(e =>
         {
-            consoleError(e);
+            console.error(e);
             throw e;
         });
 }
