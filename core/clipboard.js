@@ -70,5 +70,5 @@ function readTextFromClipboard()
         }
     }
     else
-        return _clipboard;
+        return new Promise((res, rej) => res(_clipboard));
 }

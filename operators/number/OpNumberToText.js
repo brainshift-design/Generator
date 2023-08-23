@@ -57,7 +57,7 @@ extends OperatorBase
     updateParams()
     {
         this.paramValue.enableControlText(false, this.isUnknown());
-        //this.paramValue.controls[0].valueText = this.isUnknown() ? UNKNOWN_DISPLAY : null;
+        //this.paramValue.controls[0].valueText = this.isUnknown() ? UNKNOWN_DISPLAY : '';
 
         this.paramFormat.enableControlText(true);
 

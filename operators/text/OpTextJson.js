@@ -11,6 +11,7 @@ extends OperatorBase
     {
         super(TEXT_JSON, 'json', 'json', iconTextJson);
 
+        this.subscription      = true;
         this.iconOffsetY       = 1;
         this.showHeaderTooltip = true;
 

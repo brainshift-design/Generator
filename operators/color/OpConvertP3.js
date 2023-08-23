@@ -11,9 +11,10 @@ extends OpColorBase
     {
         super(COLOR_CONVERT_P3, 'convert', 'convert', iconConvertP3, true);
 
-        this.canDisable  = true;
-        this.slow        = true;
-        this.iconOffsetY = -1;
+        this.subscription = true;
+        this.canDisable   = true;
+        this.slow         = true;
+        this.iconOffsetY  = -1;
 
         
         this.colorBack = createDiv('colorBack');

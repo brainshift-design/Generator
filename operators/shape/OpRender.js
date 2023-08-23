@@ -14,6 +14,7 @@ extends OpShapeBase
     {
         super(RENDER, 'render', 'render', '');
 
+        this.subscription   = true;
         this.variableInputs = true;
         this.canDisable     = true;
         this.iconOffsetY    = -1;

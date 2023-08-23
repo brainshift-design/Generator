@@ -3977,7 +3977,7 @@ function readTextFromClipboard()
         }
     }
     else
-        return _clipboard;
+        return new Promise((res, rej) => res(_clipboard));
 }
 
 
@@ -18982,8 +18982,8 @@ extends GOperator1
                 let   step      = Number.MAX_SAFE_INTEGER/2;
 
 
-                let   iter    = 0;
-                const maxIter = 1000;
+                let   iter      = 0;
+                const maxIter   = 1000;
                 
 
                 genInitNodeProgress(this.nodeId);
@@ -40687,9 +40687,9 @@ function rgb2hcluv(rgb, cs = sRGB)
 function srgb2p3(rgb)
 {
     const p3 = 
-        [ [0.8225, 0.1774, 0      ],
-          [0.0332, 0.9669, 0      ],
-          [0.0171, 0.0724, 0.9108 ] ];
+        [ [ 0.8225, 0.1774, 0      ],
+          [ 0.0332, 0.9669, 0      ],
+          [ 0.0171, 0.0724, 0.9108 ] ];
 
     rgb = degamma(rgb);
 

@@ -178,18 +178,18 @@ Operator.prototype.updateSubscribe = function()
 
 Operator.prototype.updateSubscribeStatus = function(subscribed)
 {
-    const sub = 
-            subscribed
-        || !this.subscription;
+    const showSub = 
+            this.subscription
+        && !subscribed;
 
 
-    this.subscribeCover.style.display = !sub ? 'block' : 'none';
-    this.subscribeLabel.style.display = !sub ? 'block' : 'none';
+    this.subscribeCover.style.display = showSub ? 'block' : 'none';
+    this.subscribeLabel.style.display = showSub ? 'block' : 'none';
 
-    this.inner.style.opacity = !sub ? '50%' : '100%';
+    this.inner.style.opacity = showSub ? '50%' : '100%';
 
 
-    if (!sub)
+    if (!showSub)
         this.updateSubscribe();
 }
 

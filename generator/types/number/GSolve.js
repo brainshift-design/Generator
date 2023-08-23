@@ -70,8 +70,8 @@ extends GOperator1
                 let   step      = Number.MAX_SAFE_INTEGER/2;
 
 
-                let   iter    = 0;
-                const maxIter = 1000;
+                let   iter      = 0;
+                const maxIter   = 1000;
                 
 
                 genInitNodeProgress(this.nodeId);

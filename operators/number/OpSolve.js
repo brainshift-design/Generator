@@ -10,7 +10,8 @@ extends OperatorBase
     {
         super(NUMBER_SOLVE, 'solve', 'solve', iconSolve, defNodeWidth, true);
 
-        this.canDisable = true;
+        this.subscription = true;
+        this.canDisable   = true;
         
 
         this.addInput (new Input (NUMBER_TYPES));

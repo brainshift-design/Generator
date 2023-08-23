@@ -23,8 +23,10 @@ extends OperatorBase //WithValue
     {
         super(NUMBER_ANIMATE, 'anim', 'animate', '');
 
+
+        this.subscription = true;
+        this.iconOffsetY  = -1;
         //this.cached = false;
-        this.iconOffsetY = -1;
         
 
         this.addOutput(new Output([NUMBER_VALUE], this.output_genRequest));

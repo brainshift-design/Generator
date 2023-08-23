@@ -11,6 +11,7 @@ extends ResizableOperatorWithValue
     {
         super(TEXT_FETCH, 'fetch', 'fetch', iconTextFetch, defNodeWidth, true);
 
+        this.subscription      = true;
         this.canDisable        = true;
         this.iconOffsetY       = -1;
         this.alwaysLoadParams  = true;
@@ -93,7 +94,7 @@ extends ResizableOperatorWithValue
     updateParams()
     {
         this.paramValue.enableControlText(true, this.isUnknown());
-        // this.paramValue.controls[0].valueText = this.isUnknown() ? UNKNOWN_DISPLAY : null;
+        // this.paramValue.controls[0].valueText = this.isUnknown() ? UNKNOWN_DISPLAY : '';
 
         this.paramRequest.enableControlText(true);
 

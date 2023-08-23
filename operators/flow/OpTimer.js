@@ -12,8 +12,9 @@ extends OperatorBase
     {
         super(TIMER, 'timer', 'timer', iconTimer);
 
-        this.canDisable  = true;
-        this.iconOffsetY = -2;
+        this.subscription = true;
+        this.canDisable   = true;
+        this.iconOffsetY  = -2;
         
 
         this.addInput (new Input(ALL_VALUES));
