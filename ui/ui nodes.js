@@ -1012,7 +1012,7 @@ function findNodeAbove(node)
         if (   n.div.offsetTop < node.div.offsetTop
             && n.div.offsetLeft < node.div.offsetLeft + node.div.offsetWidth
             && n.div.offsetLeft + n.div.offsetWidth > node.div.offsetLeft
-            && n.params.length > 0)
+            && n.params.filter(p => !p.readOnly).length > 0)
             nodesAbove.push(n);
     }
 
@@ -1036,7 +1036,7 @@ function findNodeBelow(node)
         if (   n.div.offsetTop + n.div.offsetHeight > node.div.offsetTop + node.div.offsetHeight
             && n.div.offsetLeft < node.div.offsetLeft + node.div.offsetWidth
             && n.div.offsetLeft + n.div.offsetWidth > node.div.offsetLeft
-            && n.params.length > 0)
+            && n.params.filter(p => !p.readOnly).length > 0)
             nodesBelow.push(n);
     }
 

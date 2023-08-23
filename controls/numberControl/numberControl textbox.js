@@ -94,28 +94,19 @@ NumberControl.prototype.initTextbox = function()
                 if (   e.shiftKey 
                     && index > 0)
                 {
-                    while (index >= 0
+                    while (index > 0
                         && params[--index].controls[0].readOnly); // ; on purpose
 
-                    if (params[index].controls[0].showTextbox)
+                    if (   index >= 0
+                        && params[index].controls[0].showTextbox)
                         params[index].controls[0].showTextbox();
+                    else
+                        findParamAbove(this.param.node);
                 }
                 else if (   e.shiftKey 
                     && index == 0)
                 {
-                    const nodeAbove = findNodeAbove(this.param.node);
-
-                    if (nodeAbove)
-                    {
-                        index = nodeAbove.params.length;
-                        while (index >= 0
-                            && nodeAbove.params.length > 0 
-                            && nodeAbove.params[--index].controls[0].readOnly); // ; on purpose
-
-                        if (   nodeAbove.params.length > 0
-                            && nodeAbove.params[index].controls[0].showTextbox)
-                            nodeAbove.params[index].controls[0].showTextbox();
-                    }
+                    findParamAbove(this.param.node);
                 }
                 else if (!e.shiftKey 
                       && index < params.length-1) 
@@ -123,25 +114,16 @@ NumberControl.prototype.initTextbox = function()
                     while (index < params.length-1
                         && params[++index].controls[0].readOnly); // ; on purpose
 
-                    if (params[index].controls[0].showTextbox)
+                    if (   index < params.length
+                        && params[index].controls[0].showTextbox)
                         params[index].controls[0].showTextbox();
+                    else
+                        findParamBelow(this.param.node);
                 }
                 else if (!e.shiftKey 
                       && index == params.length-1) 
                 {
-                    const nodeBelow = findNodeBelow(this.param.node);
-
-                    if (nodeBelow)
-                    {
-                        index = -1;
-                        while (index < nodeBelow.params.length-1
-                            && nodeBelow.params.length > 0
-                            && nodeBelow.params[++index].controls[0].readOnly); // ; on purpose
-
-                        if (   nodeBelow.params.length > 0
-                            && nodeBelow.params[index].controls[0].showTextbox)
-                            nodeBelow.params[index].controls[0].showTextbox();
-                    }
+                    findParamBelow(this.param.node);
                 }
             }
         }
@@ -504,3 +486,43 @@ NumberControl.prototype.updateTextbox = function()
         
     this.textbox.savedValue = this.textbox.value;
 };
+
+
+
+function findParamAbove(node)
+{
+    const nodeAbove = findNodeAbove(node);
+
+    if (nodeAbove)
+    {
+        let index = nodeAbove.params.length;
+
+        while (index > 0
+            && nodeAbove.params.length > 0 
+            && nodeAbove.params[--index].controls[0].readOnly); // ; on purpose
+
+        if (   index >= 0
+            && nodeAbove.params[index].controls[0].showTextbox)
+            nodeAbove.params[index].controls[0].showTextbox();
+    }
+}
+
+
+
+function findParamBelow(node)
+{
+    const nodeBelow = findNodeBelow(node);
+
+    if (nodeBelow)
+    {
+        let index = -1;
+
+        while (index < nodeBelow.params.length-1
+            && nodeBelow.params.length > 0
+            && nodeBelow.params[++index].controls[0].readOnly); // ; on purpose
+
+        if (   index < nodeBelow.params.length
+            && nodeBelow.params[index].controls[0].showTextbox)
+            nodeBelow.params[index].controls[0].showTextbox();
+    }
+}
