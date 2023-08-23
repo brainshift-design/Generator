@@ -81,6 +81,9 @@ extends OpColorBase
 
     output_genRequest(gen)
     {
+        // 'this' is the output
+
+
         // console.trace();
         if (gen.passedNodes.includes(this.node))
         {
@@ -90,8 +93,6 @@ extends OpColorBase
                 this.node.name];
         }
 
-
-        // 'this' is the output
 
         gen.scope.push({
             nodeId:  this.node.id, 
@@ -247,7 +248,7 @@ extends OpColorBase
         const colors = super.getHeaderColors();
 
         colors.text = this._rgbText;
-        //colors.back = this._rgbBack;
+        colors.wire = this._rgbText;
 
         return colors;
     }

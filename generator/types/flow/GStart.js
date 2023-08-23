@@ -83,7 +83,10 @@ extends GOperator
             && repeat.iteration > 0
             && options.feedback
             ? this.from.iterationObjects 
-            : (this.input ? this.input.value.objects : []),
+            : (   this.input 
+               && this.input.value.objects 
+               ? this.input.value.objects 
+               : []),
             repeat 
             ? repeat.iteration.toString()
             : '');

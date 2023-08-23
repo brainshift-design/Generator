@@ -1,8 +1,8 @@
 class GColorContrast
 extends GOperator2
 {
-    standard;
-    contrast;
+    standard = null;
+    contrast = null;
 
 
     constructor(nodeId, options)
@@ -49,8 +49,6 @@ extends GOperator2
             if (   input0.isValid()
                 && input1.isValid())
             {
-                this.value = input1;
-                
                 if (   dataColorIsValid(input0.toDataColor())
                     && dataColorIsValid(input1.toDataColor()))
                 {
@@ -69,10 +67,10 @@ extends GOperator2
                     this.contrast = NumberValue.NaN;
             }
             else
-            {
-                this.value    = ColorValue.NaN;
                 this.contrast = NumberValue.NaN;
-            }
+
+
+            this.value = input0 ? input0.copy() : ColorValue.NaN;
 
 
             this.setUpdateValues(parse,
@@ -92,7 +90,7 @@ extends GOperator2
                 ['back', ColorValue.NaN                            ]
             ]);
             
-            this.value    = ColorValue.NaN;
+            this.value    = input0.copy();
             this.contrast = NumberValue.NaN;
         }
 
@@ -106,7 +104,7 @@ extends GOperator2
                 ['back', input1.isValid() ? input1 : ColorValue.NaN]
             ]);
 
-            this.value    = input1.isValid() ? input1 : ColorValue.NaN;
+            this.value    = ColorValue.NaN;
             this.contrast = NumberValue.NaN;
         }
 
@@ -143,7 +141,7 @@ extends GOperator2
     {
         return super.isValid()
             && this.standard && this.standard.isValid()
-            && this.contrast && this.contrast.isValid();
+            && (!this.contrast || this.contrast.isValid());
     }
 
 

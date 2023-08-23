@@ -13796,6 +13796,15 @@ extends GNode
 
 
 
+    toValue()
+    {
+        return this.value
+             ? this.value.copy()
+             : null;
+    }
+
+
+
     pushValueUpdates(parse)
     {
         if (!this.updateValues)
@@ -13825,15 +13834,6 @@ extends GNode
             obj.objectId = obj.objectId + OBJECT_SEPARATOR + this.nodeId;
             obj.listId   = -1;
         }
-    }
-
-
-
-    toValue()
-    {
-        return this.value
-             ? this.value.copy()
-             : null;
     }
 }
 
@@ -19809,7 +19809,10 @@ extends GOperator
             && repeat.iteration > 0
             && options.feedback
             ? this.from.iterationObjects 
-            : (this.input ? this.input.value.objects : []),
+            : (   this.input 
+               && this.input.value.objects 
+               ? this.input.value.objects 
+               : []),
             repeat 
             ? repeat.iteration.toString()
             : '');
@@ -19877,10 +19880,8 @@ extends GOperator
 
 
 class GRepeat
-extends GOperator
+extends GOperator1
 {
-    input = null;
-
     count = null;
    _while = null;
     loop  = null;
@@ -19902,26 +19903,15 @@ extends GOperator
 
         copy.copyBase(this);
 
-        if (this.input) copy.input = this.input.copy();
-
-        copy. value = this. value      .copy();
-        copy. count = this. count      .copy();
-        copy._while = this._while      .copy();
-        copy. loop  = this. loop.copy();
+        copy. value = this. value.copy();
+        copy. count = this. count.copy();
+        copy._while = this._while.copy();
+        copy. loop  = this. loop .copy();
 
         return copy;
     }
 
 
-
-    isCached()
-    {
-        return super.isCached()
-            && (  !this.input 
-                || this.input.isCached());
-    }
-
-    
 
     async eval(parse)
     {
@@ -19949,8 +19939,10 @@ extends GOperator
 
         if (count.value > 0)
         {
-            if (   this.input
-                && this.input.isValid())
+            //console.log('this.input =', this.input);
+            //console.log('this.input.isValid() =', this.input.isValid());
+            if (this.input)
+                //&& this.input.isValid())
             {
                 const startTime    = Date.now();
                 let   showProgress = false;
@@ -19984,6 +19976,7 @@ extends GOperator
 
                 for (let i = 0, o = 0; i < Math.max(1, nRepeats); i++)
                 {
+                    //console.log('repeat');
                     _while = (await this._while.eval(parse)).toValue();
 
                     if (_while.value == 0)
@@ -20072,9 +20065,8 @@ extends GOperator
                 consoleAssert(parse.repeats.at(-1) == repeat, 'invalid nested repeat \'' + this.nodeId + '\'');
                 parse.repeats.pop();
             }
-            else
-                if (this.input)
-                    await this.input.eval(parse);
+            else if (this.input)
+                await this.input.eval(parse);
         }
         else
         {
@@ -20112,7 +20104,7 @@ extends GOperator
 
     isValid()
     {
-        return this. input && this. input.isValid()
+        return super.isValid()
             && this. count && this. count.isValid()
             && this._while && this._while.isValid();
     }
@@ -20123,7 +20115,6 @@ extends GOperator
     {
         super.pushValueUpdates(parse);
 
-        if (this. input) this. input.pushValueUpdates(parse);
         if (this. count) this. count.pushValueUpdates(parse);
         if (this._while) this._while.pushValueUpdates(parse);
         if (this. loop ) this. loop .pushValueUpdates(parse);
@@ -20135,7 +20126,6 @@ extends GOperator
     {
         super.invalidateInputs(parse, from);
 
-        if (this. input) this. input.invalidateInputs(parse, from);
         if (this. count) this. count.invalidateInputs(parse, from);
         if (this._while) this._while.invalidateInputs(parse, from);
         if (this. loop ) this. loop .invalidateInputs(parse, from);
@@ -24241,12 +24231,8 @@ extends GOperator1
 
                     if (   Math.abs (diff) >  Math.abs (prevDiff)
                         || Math.sign(diff) != Math.sign(prevDiff))
-                        step /= -2; //= -Math.sign(step) * Math.pow(Math.abs(step), 0.75);
+                        step /= -2;
 
-
-                    //console.log('step =', step);
-                    //console.log('diff =', diff);
-    
 
                     prevDiff = diff;
 
@@ -29119,7 +29105,8 @@ extends GOperator1
             const input = (await this.input.eval(parse)).toValue();
 
             
-            if (input.isValid())
+            if (   input.isValid()
+                && this.input.type != START)
             {
                 if (this.options.enabled)
                 {
@@ -29689,8 +29676,8 @@ extends GOperator1
 class GColorContrast
 extends GOperator2
 {
-    standard;
-    contrast;
+    standard = null;
+    contrast = null;
 
 
     constructor(nodeId, options)
@@ -29737,8 +29724,6 @@ extends GOperator2
             if (   input0.isValid()
                 && input1.isValid())
             {
-                this.value = input1;
-                
                 if (   dataColorIsValid(input0.toDataColor())
                     && dataColorIsValid(input1.toDataColor()))
                 {
@@ -29757,10 +29742,10 @@ extends GOperator2
                     this.contrast = NumberValue.NaN;
             }
             else
-            {
-                this.value    = ColorValue.NaN;
                 this.contrast = NumberValue.NaN;
-            }
+
+
+            this.value = input0 ? input0.copy() : ColorValue.NaN;
 
 
             this.setUpdateValues(parse,
@@ -29780,7 +29765,7 @@ extends GOperator2
                 ['back', ColorValue.NaN                            ]
             ]);
             
-            this.value    = ColorValue.NaN;
+            this.value    = input0.copy();
             this.contrast = NumberValue.NaN;
         }
 
@@ -29794,7 +29779,7 @@ extends GOperator2
                 ['back', input1.isValid() ? input1 : ColorValue.NaN]
             ]);
 
-            this.value    = input1.isValid() ? input1 : ColorValue.NaN;
+            this.value    = ColorValue.NaN;
             this.contrast = NumberValue.NaN;
         }
 
@@ -29831,7 +29816,7 @@ extends GOperator2
     {
         return super.isValid()
             && this.standard && this.standard.isValid()
-            && this.contrast && this.contrast.isValid();
+            && (!this.contrast || this.contrast.isValid());
     }
 
 
@@ -58714,6 +58699,15 @@ extends GNode
 
 
 
+    toValue()
+    {
+        return this.value
+             ? this.value.copy()
+             : null;
+    }
+
+
+
     pushValueUpdates(parse)
     {
         if (!this.updateValues)
@@ -58743,15 +58737,6 @@ extends GNode
             obj.objectId = obj.objectId + OBJECT_SEPARATOR + this.nodeId;
             obj.listId   = -1;
         }
-    }
-
-
-
-    toValue()
-    {
-        return this.value
-             ? this.value.copy()
-             : null;
     }
 }
 
@@ -64727,7 +64712,10 @@ extends GOperator
             && repeat.iteration > 0
             && options.feedback
             ? this.from.iterationObjects 
-            : (this.input ? this.input.value.objects : []),
+            : (   this.input 
+               && this.input.value.objects 
+               ? this.input.value.objects 
+               : []),
             repeat 
             ? repeat.iteration.toString()
             : '');
@@ -64795,10 +64783,8 @@ extends GOperator
 
 
 class GRepeat
-extends GOperator
+extends GOperator1
 {
-    input = null;
-
     count = null;
    _while = null;
     loop  = null;
@@ -64820,26 +64806,15 @@ extends GOperator
 
         copy.copyBase(this);
 
-        if (this.input) copy.input = this.input.copy();
-
-        copy. value = this. value      .copy();
-        copy. count = this. count      .copy();
-        copy._while = this._while      .copy();
-        copy. loop  = this. loop.copy();
+        copy. value = this. value.copy();
+        copy. count = this. count.copy();
+        copy._while = this._while.copy();
+        copy. loop  = this. loop .copy();
 
         return copy;
     }
 
 
-
-    isCached()
-    {
-        return super.isCached()
-            && (  !this.input 
-                || this.input.isCached());
-    }
-
-    
 
     async eval(parse)
     {
@@ -64867,8 +64842,10 @@ extends GOperator
 
         if (count.value > 0)
         {
-            if (   this.input
-                && this.input.isValid())
+            //console.log('this.input =', this.input);
+            //console.log('this.input.isValid() =', this.input.isValid());
+            if (this.input)
+                //&& this.input.isValid())
             {
                 const startTime    = Date.now();
                 let   showProgress = false;
@@ -64902,6 +64879,7 @@ extends GOperator
 
                 for (let i = 0, o = 0; i < Math.max(1, nRepeats); i++)
                 {
+                    //console.log('repeat');
                     _while = (await this._while.eval(parse)).toValue();
 
                     if (_while.value == 0)
@@ -64990,9 +64968,8 @@ extends GOperator
                 consoleAssert(parse.repeats.at(-1) == repeat, 'invalid nested repeat \'' + this.nodeId + '\'');
                 parse.repeats.pop();
             }
-            else
-                if (this.input)
-                    await this.input.eval(parse);
+            else if (this.input)
+                await this.input.eval(parse);
         }
         else
         {
@@ -65030,7 +65007,7 @@ extends GOperator
 
     isValid()
     {
-        return this. input && this. input.isValid()
+        return super.isValid()
             && this. count && this. count.isValid()
             && this._while && this._while.isValid();
     }
@@ -65041,7 +65018,6 @@ extends GOperator
     {
         super.pushValueUpdates(parse);
 
-        if (this. input) this. input.pushValueUpdates(parse);
         if (this. count) this. count.pushValueUpdates(parse);
         if (this._while) this._while.pushValueUpdates(parse);
         if (this. loop ) this. loop .pushValueUpdates(parse);
@@ -65053,7 +65029,6 @@ extends GOperator
     {
         super.invalidateInputs(parse, from);
 
-        if (this. input) this. input.invalidateInputs(parse, from);
         if (this. count) this. count.invalidateInputs(parse, from);
         if (this._while) this._while.invalidateInputs(parse, from);
         if (this. loop ) this. loop .invalidateInputs(parse, from);
@@ -69159,12 +69134,8 @@ extends GOperator1
 
                     if (   Math.abs (diff) >  Math.abs (prevDiff)
                         || Math.sign(diff) != Math.sign(prevDiff))
-                        step /= -2; //= -Math.sign(step) * Math.pow(Math.abs(step), 0.75);
+                        step /= -2;
 
-
-                    //console.log('step =', step);
-                    //console.log('diff =', diff);
-    
 
                     prevDiff = diff;
 
@@ -74037,7 +74008,8 @@ extends GOperator1
             const input = (await this.input.eval(parse)).toValue();
 
             
-            if (input.isValid())
+            if (   input.isValid()
+                && this.input.type != START)
             {
                 if (this.options.enabled)
                 {
@@ -74607,8 +74579,8 @@ extends GOperator1
 class GColorContrast
 extends GOperator2
 {
-    standard;
-    contrast;
+    standard = null;
+    contrast = null;
 
 
     constructor(nodeId, options)
@@ -74655,8 +74627,6 @@ extends GOperator2
             if (   input0.isValid()
                 && input1.isValid())
             {
-                this.value = input1;
-                
                 if (   dataColorIsValid(input0.toDataColor())
                     && dataColorIsValid(input1.toDataColor()))
                 {
@@ -74675,10 +74645,10 @@ extends GOperator2
                     this.contrast = NumberValue.NaN;
             }
             else
-            {
-                this.value    = ColorValue.NaN;
                 this.contrast = NumberValue.NaN;
-            }
+
+
+            this.value = input0 ? input0.copy() : ColorValue.NaN;
 
 
             this.setUpdateValues(parse,
@@ -74698,7 +74668,7 @@ extends GOperator2
                 ['back', ColorValue.NaN                            ]
             ]);
             
-            this.value    = ColorValue.NaN;
+            this.value    = input0.copy();
             this.contrast = NumberValue.NaN;
         }
 
@@ -74712,7 +74682,7 @@ extends GOperator2
                 ['back', input1.isValid() ? input1 : ColorValue.NaN]
             ]);
 
-            this.value    = input1.isValid() ? input1 : ColorValue.NaN;
+            this.value    = ColorValue.NaN;
             this.contrast = NumberValue.NaN;
         }
 
@@ -74749,7 +74719,7 @@ extends GOperator2
     {
         return super.isValid()
             && this.standard && this.standard.isValid()
-            && this.contrast && this.contrast.isValid();
+            && (!this.contrast || this.contrast.isValid());
     }
 
 
@@ -113429,6 +113399,9 @@ extends OpColorBase
 
     output_genRequest(gen)
     {
+        // 'this' is the output
+
+
         // console.trace();
         if (gen.passedNodes.includes(this.node))
         {
@@ -113438,8 +113411,6 @@ extends OpColorBase
                 this.node.name];
         }
 
-
-        // 'this' is the output
 
         gen.scope.push({
             nodeId:  this.node.id, 
@@ -113595,7 +113566,7 @@ extends OpColorBase
         const colors = super.getHeaderColors();
 
         colors.text = this._rgbText;
-        //colors.back = this._rgbBack;
+        colors.wire = this._rgbText;
 
         return colors;
     }

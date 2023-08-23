@@ -166,6 +166,15 @@ extends GNode
 
 
 
+    toValue()
+    {
+        return this.value
+             ? this.value.copy()
+             : null;
+    }
+
+
+
     pushValueUpdates(parse)
     {
         if (!this.updateValues)
@@ -195,14 +204,5 @@ extends GNode
             obj.objectId = obj.objectId + OBJECT_SEPARATOR + this.nodeId;
             obj.listId   = -1;
         }
-    }
-
-
-
-    toValue()
-    {
-        return this.value
-             ? this.value.copy()
-             : null;
     }
 }

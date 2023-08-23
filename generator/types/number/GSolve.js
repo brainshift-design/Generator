@@ -103,12 +103,8 @@ extends GOperator1
 
                     if (   Math.abs (diff) >  Math.abs (prevDiff)
                         || Math.sign(diff) != Math.sign(prevDiff))
-                        step /= -2; //= -Math.sign(step) * Math.pow(Math.abs(step), 0.75);
+                        step /= -2;
 
-
-                    //console.log('step =', step);
-                    //console.log('diff =', diff);
-    
 
                     prevDiff = diff;
 

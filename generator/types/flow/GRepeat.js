@@ -1,8 +1,6 @@
 class GRepeat
-extends GOperator
+extends GOperator1
 {
-    input = null;
-
     count = null;
    _while = null;
     loop  = null;
@@ -24,26 +22,15 @@ extends GOperator
 
         copy.copyBase(this);
 
-        if (this.input) copy.input = this.input.copy();
-
-        copy. value = this. value      .copy();
-        copy. count = this. count      .copy();
-        copy._while = this._while      .copy();
-        copy. loop  = this. loop.copy();
+        copy. value = this. value.copy();
+        copy. count = this. count.copy();
+        copy._while = this._while.copy();
+        copy. loop  = this. loop .copy();
 
         return copy;
     }
 
 
-
-    isCached()
-    {
-        return super.isCached()
-            && (  !this.input 
-                || this.input.isCached());
-    }
-
-    
 
     async eval(parse)
     {
@@ -71,8 +58,10 @@ extends GOperator
 
         if (count.value > 0)
         {
-            if (   this.input
-                && this.input.isValid())
+            //console.log('this.input =', this.input);
+            //console.log('this.input.isValid() =', this.input.isValid());
+            if (this.input)
+                //&& this.input.isValid())
             {
                 const startTime    = Date.now();
                 let   showProgress = false;
@@ -106,6 +95,7 @@ extends GOperator
 
                 for (let i = 0, o = 0; i < Math.max(1, nRepeats); i++)
                 {
+                    //console.log('repeat');
                     _while = (await this._while.eval(parse)).toValue();
 
                     if (_while.value == 0)
@@ -194,9 +184,8 @@ extends GOperator
                 consoleAssert(parse.repeats.at(-1) == repeat, 'invalid nested repeat \'' + this.nodeId + '\'');
                 parse.repeats.pop();
             }
-            else
-                if (this.input)
-                    await this.input.eval(parse);
+            else if (this.input)
+                await this.input.eval(parse);
         }
         else
         {
@@ -234,7 +223,7 @@ extends GOperator
 
     isValid()
     {
-        return this. input && this. input.isValid()
+        return super.isValid()
             && this. count && this. count.isValid()
             && this._while && this._while.isValid();
     }
@@ -245,7 +234,6 @@ extends GOperator
     {
         super.pushValueUpdates(parse);
 
-        if (this. input) this. input.pushValueUpdates(parse);
         if (this. count) this. count.pushValueUpdates(parse);
         if (this._while) this._while.pushValueUpdates(parse);
         if (this. loop ) this. loop .pushValueUpdates(parse);
@@ -257,7 +245,6 @@ extends GOperator
     {
         super.invalidateInputs(parse, from);
 
-        if (this. input) this. input.invalidateInputs(parse, from);
         if (this. count) this. count.invalidateInputs(parse, from);
         if (this._while) this._while.invalidateInputs(parse, from);
         if (this. loop ) this. loop .invalidateInputs(parse, from);

@@ -57,7 +57,8 @@ extends GOperator1
             const input = (await this.input.eval(parse)).toValue();
 
             
-            if (input.isValid())
+            if (   input.isValid()
+                && this.input.type != START)
             {
                 if (this.options.enabled)
                 {
