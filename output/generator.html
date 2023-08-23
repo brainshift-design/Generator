@@ -4590,8 +4590,8 @@ function enableFeatures(sub, beta = false)
 
 function enableSubscribedMenuItem(menuItem, sub)
 {
-    menuItem.enabled   = sub;  
-    menuItem.subscribe = true;    
+    menuItem.enabled   =  sub;  
+    menuItem.subscribe = !sub;    
     menuItem.update();
 }
 
@@ -8192,15 +8192,16 @@ extends GNode
         
         this.valueId = base.valueId;
 
-        //this.copyObjects(base.objects);
+        if (base.objects)
+            this.copyObjects(base.objects);
     }
 
 
 
-    // copyObjects(objects)
-    // {
-    //     this.objects = objects.map(o => o.copy());
-    // }
+    copyObjects(objects)
+    {
+        this.objects = objects.map(o => o.copy());
+    }
 
 
 
@@ -8429,7 +8430,7 @@ extends GNode
         this.nodeId   = nodeId;
         this.nodeName = options.nodeName;
 
-        this.options = clone(options);
+        this.options  = clone(options);
 
         this.valid    = false;
         this.topLevel = false;
@@ -8513,7 +8514,6 @@ extends GNode
         const objects = getValidObjects(value);
         const copies  = [];
                         
-        
         for (let i = 0; i < objects.length; i++)//, o++)
         {
             const obj = copyFigmaObject(objects[i]);

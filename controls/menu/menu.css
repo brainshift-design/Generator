@@ -203,7 +203,6 @@
     font-weight: 500;
     top:        -5px;
     filter:      grayscale(); /* disables cleartype to match Figma */
-    /* box-shadow: 0 0 0 1px yellow inset; */
 }
 
 
@@ -218,20 +217,18 @@
     visibility:          hidden;
     position:            absolute;
     right:               0;
-    /* box-shadow:          0 0 0 1px green inset; */
 }
 
 
 .menuItemShortcut
 {
-    display:                 inline-block;
-    position:                absolute;
-    right:                   16px;
-    transform:               translateY(5px);
-    font-variant-alternates: stylistic(), styleset();
+    display:                  inline-block;
+    position:                 absolute;
+    right:                    16px;
+    transform:                translateY(5px);
+    font-variant-alternates:  stylistic(), styleset();
     font-feature-settings:   'salt' on, 'ss02' on;
-    filter:                  grayscale(); /* disables cleartype to match Figma */
-    /* box-shadow: 0 0 0 1px green inset; */
+    filter:                   grayscale(); /* disables cleartype to match Figma */
 }
 
 

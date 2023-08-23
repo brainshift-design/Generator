@@ -3005,7 +3005,6 @@ a
     font-weight: 500;
     top:        -5px;
     filter:      grayscale(); /* disables cleartype to match Figma */
-    /* box-shadow: 0 0 0 1px yellow inset; */
 }
 
 
@@ -3020,20 +3019,18 @@ a
     visibility:          hidden;
     position:            absolute;
     right:               0;
-    /* box-shadow:          0 0 0 1px green inset; */
 }
 
 
 .menuItemShortcut
 {
-    display:                 inline-block;
-    position:                absolute;
-    right:                   16px;
-    transform:               translateY(5px);
-    font-variant-alternates: stylistic(), styleset();
+    display:                  inline-block;
+    position:                 absolute;
+    right:                    16px;
+    transform:                translateY(5px);
+    font-variant-alternates:  stylistic(), styleset();
     font-feature-settings:   'salt' on, 'ss02' on;
-    filter:                  grayscale(); /* disables cleartype to match Figma */
-    /* box-shadow: 0 0 0 1px green inset; */
+    filter:                   grayscale(); /* disables cleartype to match Figma */
 }
 
 
@@ -9831,8 +9828,8 @@ function enableFeatures(sub, beta = false)
 
 function enableSubscribedMenuItem(menuItem, sub)
 {
-    menuItem.enabled   = sub;  
-    menuItem.subscribe = true;    
+    menuItem.enabled   =  sub;  
+    menuItem.subscribe = !sub;    
     menuItem.update();
 }
 
@@ -13433,15 +13430,16 @@ extends GNode
         
         this.valueId = base.valueId;
 
-        //this.copyObjects(base.objects);
+        if (base.objects)
+            this.copyObjects(base.objects);
     }
 
 
 
-    // copyObjects(objects)
-    // {
-    //     this.objects = objects.map(o => o.copy());
-    // }
+    copyObjects(objects)
+    {
+        this.objects = objects.map(o => o.copy());
+    }
 
 
 
@@ -13670,7 +13668,7 @@ extends GNode
         this.nodeId   = nodeId;
         this.nodeName = options.nodeName;
 
-        this.options = clone(options);
+        this.options  = clone(options);
 
         this.valid    = false;
         this.topLevel = false;
@@ -13754,7 +13752,6 @@ extends GNode
         const objects = getValidObjects(value);
         const copies  = [];
                         
-        
         for (let i = 0; i < objects.length; i++)//, o++)
         {
             const obj = copyFigmaObject(objects[i]);
@@ -58497,15 +58494,16 @@ extends GNode
         
         this.valueId = base.valueId;
 
-        //this.copyObjects(base.objects);
+        if (base.objects)
+            this.copyObjects(base.objects);
     }
 
 
 
-    // copyObjects(objects)
-    // {
-    //     this.objects = objects.map(o => o.copy());
-    // }
+    copyObjects(objects)
+    {
+        this.objects = objects.map(o => o.copy());
+    }
 
 
 
@@ -58734,7 +58732,7 @@ extends GNode
         this.nodeId   = nodeId;
         this.nodeName = options.nodeName;
 
-        this.options = clone(options);
+        this.options  = clone(options);
 
         this.valid    = false;
         this.topLevel = false;
@@ -58818,7 +58816,6 @@ extends GNode
         const objects = getValidObjects(value);
         const copies  = [];
                         
-        
         for (let i = 0; i < objects.length; i++)//, o++)
         {
             const obj = copyFigmaObject(objects[i]);
@@ -83172,8 +83169,8 @@ function enableFeatures(sub, beta = false)
 
 function enableSubscribedMenuItem(menuItem, sub)
 {
-    menuItem.enabled   = sub;  
-    menuItem.subscribe = true;    
+    menuItem.enabled   =  sub;  
+    menuItem.subscribe = !sub;    
     menuItem.update();
 }
 
@@ -88697,8 +88694,8 @@ class MenuItem
         this.divCheck    .style.visibility = this.checked   ? 'visible'      : 'hidden';
         this.div         .style.opacity    = this.enabled   ? '100%'         : '40%';
 
-        this.divShortcut.style.display     = this.subscribe ? 'none'         : 'inline-block';
-        this.divSubscribe.style.display    = this.subscribe ? 'inline-block' : 'none';
+        this.divShortcut .style.display    = this.subscribe === true ? 'none'         : 'inline-block';
+        this.divSubscribe.style.display    = this.subscribe === true ? 'inline-block' : 'none';
 
         this.updateLegend();
     }

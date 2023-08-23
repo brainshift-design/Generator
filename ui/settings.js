@@ -331,8 +331,8 @@ function enableFeatures(sub, beta = false)
 
 function enableSubscribedMenuItem(menuItem, sub)
 {
-    menuItem.enabled   = sub;  
-    menuItem.subscribe = true;    
+    menuItem.enabled   =  sub;  
+    menuItem.subscribe = !sub;    
     menuItem.update();
 }
 

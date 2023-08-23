@@ -425,8 +425,8 @@ class MenuItem
         this.divCheck    .style.visibility = this.checked   ? 'visible'      : 'hidden';
         this.div         .style.opacity    = this.enabled   ? '100%'         : '40%';
 
-        this.divShortcut.style.display     = this.subscribe ? 'none'         : 'inline-block';
-        this.divSubscribe.style.display    = this.subscribe ? 'inline-block' : 'none';
+        this.divShortcut .style.display    = this.subscribe === true ? 'none'         : 'inline-block';
+        this.divSubscribe.style.display    = this.subscribe === true ? 'inline-block' : 'none';
 
         this.updateLegend();
     }

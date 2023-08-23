@@ -21,7 +21,7 @@ extends GNode
         this.nodeId   = nodeId;
         this.nodeName = options.nodeName;
 
-        this.options = clone(options);
+        this.options  = clone(options);
 
         this.valid    = false;
         this.topLevel = false;
@@ -105,7 +105,6 @@ extends GNode
         const objects = getValidObjects(value);
         const copies  = [];
                         
-        
         for (let i = 0; i < objects.length; i++)//, o++)
         {
             const obj = copyFigmaObject(objects[i]);
