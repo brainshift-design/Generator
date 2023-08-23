@@ -113590,19 +113590,15 @@ extends OpColorBase
 
 
 
-    // updateHeader()
-    // {
-    //     super.updateHeader();
+    getHeaderColors()
+    {
+        const colors = super.getHeaderColors();
 
+        colors.text = this._rgbText;
+        //colors.back = this._rgbBack;
 
-    //     this.outputs[0].lightColor =
-    //     this.outputs[0]. darkColor =
-    //     this.outputs[0]. wireColor = this._rgbText;
-
-    //     // this.outputs[1].lightColor =
-    //     // this.outputs[1]. darkColor =
-    //     // this.outputs[1]. wireColor = this._rgbBack;
-    // }
+        return colors;
+    }
 
 
 
