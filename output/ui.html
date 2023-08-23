@@ -9812,25 +9812,28 @@ function updateMenuItemShowOperationResults()
 
 function enableFeatures(sub, beta = false)
 {
-    menuItemSaveToFile  .enabled = sub;  menuItemSaveToFile  .subscribe = true;    menuItemSaveToFile.update();
-
-    menuItemTimer       .enabled = sub;  menuItemTimer       .subscribe = true;    menuItemTimer       .update();
-    menuItemAnimate     .enabled = sub;  menuItemAnimate     .subscribe = true;    menuItemAnimate     .update();
-    menuItemFetch       .enabled = sub;  menuItemFetch       .subscribe = true;    menuItemFetch       .update();
-    menuItemTextFile    .enabled = sub;  menuItemTextFile    .subscribe = true;    menuItemTextFile    .update();
-
-    menuItemDateTime    .enabled = sub;  menuItemDateTime    .subscribe = true;    menuItemDateTime    .update();
-    menuItemSolve       .enabled = sub;  menuItemSolve       .subscribe = true;    menuItemSolve       .update();
-
-    menuItemTextJson    .enabled = sub;  menuItemTextJson    .subscribe = true;    menuItemTextJson    .update();
-
-    menuItemCorrectColor.enabled = sub;  menuItemCorrectColor.subscribe = true;    menuItemCorrectColor.update();
-    menuItemConvertToP3 .enabled = sub;  menuItemConvertToP3 .subscribe = true;    menuItemConvertToP3 .update();
-
-    menuItemShapeRender .enabled = sub;  menuItemShapeRender .subscribe = true;    menuItemShapeRender .update();
-
+    enableSubscribedMenuItem(menuItemSaveToFile,   sub);
+    enableSubscribedMenuItem(menuItemTimer,        sub);
+    enableSubscribedMenuItem(menuItemAnimate,      sub);
+    enableSubscribedMenuItem(menuItemFetch,        sub);
+    enableSubscribedMenuItem(menuItemTextFile,     sub);
+    enableSubscribedMenuItem(menuItemDateTime,     sub);
+    enableSubscribedMenuItem(menuItemSolve,        sub);
+    enableSubscribedMenuItem(menuItemTextJson,     sub);
+    enableSubscribedMenuItem(menuItemCorrectColor, sub);
+    enableSubscribedMenuItem(menuItemConvertToP3,  sub);
+    enableSubscribedMenuItem(menuItemShapeRender,  sub);
 
     graph.nodes.forEach(n => n.updateSubscribeStatus(sub));
+}
+
+
+
+function enableSubscribedMenuItem(menuItem, sub)
+{
+    menuItem.enabled   = sub;  
+    menuItem.subscribe = true;    
+    menuItem.update();
 }
 
 
@@ -83150,25 +83153,28 @@ function updateMenuItemShowOperationResults()
 
 function enableFeatures(sub, beta = false)
 {
-    menuItemSaveToFile  .enabled = sub;  menuItemSaveToFile  .subscribe = true;    menuItemSaveToFile.update();
-
-    menuItemTimer       .enabled = sub;  menuItemTimer       .subscribe = true;    menuItemTimer       .update();
-    menuItemAnimate     .enabled = sub;  menuItemAnimate     .subscribe = true;    menuItemAnimate     .update();
-    menuItemFetch       .enabled = sub;  menuItemFetch       .subscribe = true;    menuItemFetch       .update();
-    menuItemTextFile    .enabled = sub;  menuItemTextFile    .subscribe = true;    menuItemTextFile    .update();
-
-    menuItemDateTime    .enabled = sub;  menuItemDateTime    .subscribe = true;    menuItemDateTime    .update();
-    menuItemSolve       .enabled = sub;  menuItemSolve       .subscribe = true;    menuItemSolve       .update();
-
-    menuItemTextJson    .enabled = sub;  menuItemTextJson    .subscribe = true;    menuItemTextJson    .update();
-
-    menuItemCorrectColor.enabled = sub;  menuItemCorrectColor.subscribe = true;    menuItemCorrectColor.update();
-    menuItemConvertToP3 .enabled = sub;  menuItemConvertToP3 .subscribe = true;    menuItemConvertToP3 .update();
-
-    menuItemShapeRender .enabled = sub;  menuItemShapeRender .subscribe = true;    menuItemShapeRender .update();
-
+    enableSubscribedMenuItem(menuItemSaveToFile,   sub);
+    enableSubscribedMenuItem(menuItemTimer,        sub);
+    enableSubscribedMenuItem(menuItemAnimate,      sub);
+    enableSubscribedMenuItem(menuItemFetch,        sub);
+    enableSubscribedMenuItem(menuItemTextFile,     sub);
+    enableSubscribedMenuItem(menuItemDateTime,     sub);
+    enableSubscribedMenuItem(menuItemSolve,        sub);
+    enableSubscribedMenuItem(menuItemTextJson,     sub);
+    enableSubscribedMenuItem(menuItemCorrectColor, sub);
+    enableSubscribedMenuItem(menuItemConvertToP3,  sub);
+    enableSubscribedMenuItem(menuItemShapeRender,  sub);
 
     graph.nodes.forEach(n => n.updateSubscribeStatus(sub));
+}
+
+
+
+function enableSubscribedMenuItem(menuItem, sub)
+{
+    menuItem.enabled   = sub;  
+    menuItem.subscribe = true;    
+    menuItem.update();
 }
 
 
@@ -88691,6 +88697,7 @@ class MenuItem
         this.divCheck    .style.visibility = this.checked   ? 'visible'      : 'hidden';
         this.div         .style.opacity    = this.enabled   ? '100%'         : '40%';
 
+        this.divShortcut.style.display     = this.subscribe ? 'none'         : 'inline-block';
         this.divSubscribe.style.display    = this.subscribe ? 'inline-block' : 'none';
 
         this.updateLegend();
