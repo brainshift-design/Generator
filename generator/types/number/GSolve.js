@@ -49,7 +49,7 @@ extends GOperator1
 
 
         if (   this.input
-            && current.isValid()
+            //&& current.isValid()
             && target .isValid())
         {
             let input = (await this.input.eval(parse)).toValue();
@@ -87,7 +87,6 @@ extends GOperator1
 
                     if (this.input.type == PARAM)
                         this.input.node[this.input.paramId].value = temp;
-
                         
                     this.current.invalidateInputs(parse, this);
                     current = (await this.current.eval(parse)).toValue();
