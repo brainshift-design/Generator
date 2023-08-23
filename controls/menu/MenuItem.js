@@ -29,6 +29,8 @@ class MenuItem
 
     arrowWidth    = 48;
 
+    showSubscribe = false;
+
 
     div;
     divHighlight;
@@ -39,6 +41,8 @@ class MenuItem
     divName;
     divExpand;
     divShortcut;
+    divSubscribe;
+
 
     divSeparator;
 
@@ -94,6 +98,7 @@ class MenuItem
         this.divName      = createDiv('menuItemName'     );
         this.divExpand    = createDiv('menuItemExpand'   );
         this.divShortcut  = createDiv('menuItemShortcut' );
+        this.divSubscribe = createDiv('menuItemSubscribe');
 
         this.divSeparator = createDiv('menuSeparator'    );
 
@@ -111,7 +116,8 @@ class MenuItem
         this.setIcon(this.icon);
 
     
-        this.divShortcut.innerHTML = this.shortcut;
+        this.divShortcut .innerHTML = this.shortcut;
+        this.divSubscribe.innerHTML = 'SUBSCRIBE';
 
     
         this.divHighlight.style.zIndex = -2;
@@ -128,6 +134,7 @@ class MenuItem
             this.div.appendChild(this.divName     );
             this.div.appendChild(this.divExpand   );
             this.div.appendChild(this.divShortcut );
+            this.div.appendChild(this.divSubscribe);
         }
         else
             this.div.appendChild(this.divSeparator);
@@ -415,8 +422,10 @@ class MenuItem
             ? 'var(--figma-color-bg-brand)'
             : 'transparent';
 
-        this.divCheck.style.visibility = this.checked ? 'visible' : 'hidden';
-        this.div     .style.opacity    = this.enabled ? '100%'    : '40%';
+        this.divCheck    .style.visibility = this.checked   ? 'visible'      : 'hidden';
+        this.div         .style.opacity    = this.enabled   ? '100%'         : '40%';
+
+        this.divSubscribe.style.display    = this.subscribe ? 'inline-block' : 'none';
 
         this.updateLegend();
     }

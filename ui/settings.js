@@ -312,22 +312,22 @@ function updateMenuItemShowOperationResults()
 
 function enableFeatures(sub, beta = false)
 {
-    menuItemSaveToFile.enabled = sub;  menuItemSaveToFile.update();
+    menuItemSaveToFile  .enabled = sub;  menuItemSaveToFile  .subscribe = true;    menuItemSaveToFile.update();
 
-    menuItemTimer       .enabled = sub;  menuItemTimer       .update();
-    menuItemAnimate     .enabled = sub;  menuItemAnimate     .update();
-    menuItemFetch       .enabled = sub;  menuItemFetch       .update();
-    menuItemTextFile    .enabled = sub;  menuItemTextFile    .update();
+    menuItemTimer       .enabled = sub;  menuItemTimer       .subscribe = true;    menuItemTimer       .update();
+    menuItemAnimate     .enabled = sub;  menuItemAnimate     .subscribe = true;    menuItemAnimate     .update();
+    menuItemFetch       .enabled = sub;  menuItemFetch       .subscribe = true;    menuItemFetch       .update();
+    menuItemTextFile    .enabled = sub;  menuItemTextFile    .subscribe = true;    menuItemTextFile    .update();
 
-    menuItemDateTime    .enabled = sub;  menuItemDateTime    .update();
-    menuItemSolve       .enabled = sub;  menuItemSolve       .update();
+    menuItemDateTime    .enabled = sub;  menuItemDateTime    .subscribe = true;    menuItemDateTime    .update();
+    menuItemSolve       .enabled = sub;  menuItemSolve       .subscribe = true;    menuItemSolve       .update();
 
-    menuItemTextJson    .enabled = sub;  menuItemTextJson    .update();
+    menuItemTextJson    .enabled = sub;  menuItemTextJson    .subscribe = true;    menuItemTextJson    .update();
 
-    menuItemCorrectColor.enabled = sub;  menuItemCorrectColor.update();
-    menuItemConvertToP3 .enabled = sub;  menuItemConvertToP3 .update();
+    menuItemCorrectColor.enabled = sub;  menuItemCorrectColor.subscribe = true;    menuItemCorrectColor.update();
+    menuItemConvertToP3 .enabled = sub;  menuItemConvertToP3 .subscribe = true;    menuItemConvertToP3 .update();
 
-    menuItemShapeRender .enabled = sub;  menuItemShapeRender .update();
+    menuItemShapeRender .enabled = sub;  menuItemShapeRender .subscribe = true;    menuItemShapeRender .update();
 
 
     graph.nodes.forEach(n => n.updateSubscribeStatus(sub));
