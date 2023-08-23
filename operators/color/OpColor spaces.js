@@ -86,9 +86,20 @@ function scaleColor(col, space)
 
 
 
+function normalizeRgb(rgb)
+{
+    return [ rgb[0] / 255,
+             rgb[1] / 255,
+             rgb[2] / 255 ];
+}
+
+
+
 function scaleRgb(rgb)
 {
-    return scaleColor(rgb, 'rgb');
+    return [ Math.round(rgb[0] * 255),
+             Math.round(rgb[1] * 255),
+             Math.round(rgb[2] * 255) ];
 }
 
 

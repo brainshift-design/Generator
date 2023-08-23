@@ -3154,6 +3154,24 @@ function includesSimilar(str, sub, levenshteinDistance)
 }
 
 
+
+function degamma(rgb, cs = sRGB)
+{
+    return [ cs.degamma(rgb[0]),
+             cs.degamma(rgb[1]),
+             cs.degamma(rgb[2]) ];
+}
+
+
+
+function regamma(rgb, cs = sRGB)
+{
+    return [ cs.regamma(rgb[0]),
+             cs.regamma(rgb[1]),
+             cs.regamma(rgb[2]) ];
+}
+
+
 "use strict";
 
 // Base64 / binary data / UTF-8 strings utilities
@@ -4566,10 +4584,11 @@ function enableFeatures(sub, beta = false)
     menuItemTextJson    .enabled = sub;  menuItemTextJson    .update();
 
     menuItemCorrectColor.enabled = sub;  menuItemCorrectColor.update();
+    menuItemConvertToP3 .enabled = sub;  menuItemConvertToP3 .update();
 
     menuItemShapeRender .enabled = sub;  menuItemShapeRender .update();
 
-    
+
     graph.nodes.forEach(n => n.updateSubscribeStatus(sub));
 }
 
@@ -19000,8 +19019,8 @@ extends GOperator1
                         step /= -2; //= -Math.sign(step) * Math.pow(Math.abs(step), 0.75);
 
 
-                    console.log('step =', step);
-                    console.log('diff =', diff);
+                    //console.log('step =', step);
+                    //console.log('diff =', diff);
     
 
                     prevDiff = diff;
@@ -24613,6 +24632,100 @@ extends GOperator2
 
 
 
+class GConvertP3
+extends GOperator1
+{
+    from = null;
+
+
+
+    constructor(nodeId, options)
+    {
+        super(COLOR_CONVERT_P3, nodeId, options);
+    }
+
+
+    
+    copy()
+    {
+        const copy = new GConvertP3(this.nodeId, this.options);
+
+        copy.copyBase(this);
+
+        if (this.value) copy.value = this.value.copy();
+        if (this.from ) copy.from  = this.from .copy();
+
+        return copy;
+    }
+
+
+
+    async eval(parse)
+    {
+        if (this.isCached())
+            return this;
+
+
+        const from = this.from ? (await this.from.eval(parse)).toValue().toInteger() : null;
+
+
+        if (this.input)
+        {
+            const input = (await this.input.eval(parse)).toValue();
+
+            if (this.options.enabled)
+            {
+                this.value = ColorValue.fromRgb(
+                    from.value == 0 
+                    ? scaleRgb(srgb2p3(input.toRgb()))
+                    : scaleRgb(p32srgb(input.toRgb())));
+            }
+            else
+                this.value = input;
+        }
+        else
+            this.value = ColorValue.NaN;
+
+
+        
+        this.setUpdateValues(parse,
+        [
+            ['value',   this.value],
+            ['quality', from      ]
+        ]);
+
+        
+        this.validate();
+
+        return this;
+    }
+
+
+
+    isValid()
+    {
+        return super.isValid()
+            && this.from && this.from.isValid();
+    }
+
+
+
+    pushValueUpdates(parse)
+    {
+        super.pushValueUpdates(parse);
+
+        if (this.from) this.from.pushValueUpdates(parse);
+    }
+
+
+
+    invalidateInputs(parse, from)
+    {
+        super.invalidateInputs(parse, from);
+
+        if (this.from) this.from.invalidateInputs(parse, from);
+    }
+}
 
 
 
@@ -33282,6 +33395,53 @@ function genParseColorContrast(parse)
 
 
 
+function genParseColorConvertP3(parse)
+{
+    const [, nodeId, options, ignore] = genParseNodeStart(parse);
+
+
+    const convert = new GConvertP3(nodeId, options);
+
+
+    let nInputs = -1;
+
+    if (!ignore)
+    {
+        nInputs = parseInt(parse.move());
+        consoleAssert(nInputs => 0 && nInputs <= 1, 'nInputs must be [0, 1]');
+    }
+
+
+    if (parse.settings.logRequests) 
+        logReq(convert, parse, ignore, nInputs);
+
+
+    if (ignore) 
+    {
+        genParseNodeEnd(parse, convert);
+        return parse.parsedNodes.find(n => n.nodeId == nodeId);
+    }
+
+
+    parse.nTab++;
+
+
+    if (nInputs == 1)
+        convert.input = genParse(parse);
+
+
+    convert.from = genParse(parse);
+
+
+    parse.nTab--;
+
+
+    genParseNodeEnd(parse, convert);
+    return convert;
+}
+
+
+
 function genParseColorBlind(parse)
 {
     const [, nodeId, options, ignore] = genParseNodeStart(parse);
@@ -39157,6 +39317,7 @@ function genParse(parse, inParam = true)
     else if (parse.next == VALID_COLOR            ) result = genParseValidColor        (parse);
     else if (parse.next == CORRECT_COLOR          ) result = genParseCorrectColor      (parse);
     else if (parse.next == COLOR_CONTRAST         ) result = genParseColorContrast     (parse);
+    else if (parse.next == COLOR_CONVERT_P3       ) result = genParseColorConvertP3    (parse);
     else if (parse.next == COLORBLIND             ) result = genParseColorBlind        (parse);
     else if (parse.next == COLOR_INTERPOLATE      ) result = genParseColorInterpolate  (parse);
     else if (parse.next == COLOR_BLEND            ) result = genParseColorBlend        (parse);
@@ -40103,12 +40264,7 @@ function rgb2xyz(rgb, cs = sRGB)
 
 function rgb2xyz_(r, g, b, cs = sRGB)
 { 
-    let rgb = [
-        cs.degamma(r),
-        cs.degamma(g),
-        cs.degamma(b) ];
-
-    return lrgb2xyz(rgb, cs);
+    return lrgb2xyz(degamma(rgb, cs), cs);
 }    
 
 
@@ -40122,12 +40278,7 @@ function lrgb2xyz(rgb, cs = sRGB)
 
 function xyz2rgb(xyz, cs = sRGB)
 {
-    let rgb = xyz2lrgb(xyz, cs);
-
-    return [
-        cs.regamma(rgb[0]),
-        cs.regamma(rgb[1]),
-        cs.regamma(rgb[2]) ];
+    return regamma(xyz2lrgb(xyz, cs), cs);
 }
 
 
@@ -40136,10 +40287,6 @@ function xyz2lrgb(xyz, cs = sRGB)
 {
     return mulv3m3(xyz, cs.xyz2lin);
 }
-
-
-
-
 
 
 function rgb2luv(rgb, cs = sRGB)
@@ -40540,13 +40687,13 @@ function rgb2hcluv(rgb, cs = sRGB)
 function srgb2p3(rgb)
 {
     const p3 = 
-        [ [0.4865709486482162, 0.26566769316909306, 0.1982172852343625 ],
-          [0.2289745640697488, 0.6917385218365064,  0.07928691409374425],
-          [0,                  0.04511338185890264, 1.043944368900976  ] ];
+        [ [0.8225, 0.1774, 0      ],
+          [0.0332, 0.9669, 0      ],
+          [0.0171, 0.0724, 0.9108 ] ];
 
-    rgb = sRGB.degamma(rgb);
+    rgb = degamma(rgb);
 
-    return dot3(p3, rgb);
+    return regamma(dot3(p3, rgb));
 }
 
 
@@ -40554,13 +40701,13 @@ function srgb2p3(rgb)
 function p32srgb(rgb) 
 {
     const invp3 = 
-        [ [ 2.493496911941425,   -0.9313836179191239, -0.40271078445071684 ],
-          [-0.8294889695615747,   1.7626640603183465,  0.023624685841943577],
-          [ 0.03584583024378447, -0.07617238926804182, 0.9568845240076872  ] ];
+        [ [ 1.2249, -0.2247, 0      ],
+          [-0.0420,  1.0419, 0      ],
+          [-0.0197, -0.0786, 1.0979 ] ];
   
-    rgb = dot3(invp3, rgb);
+    rgb = dot3(invp3, degamma(rgb));
   
-    return sRGB.regamma(rgb);
+    return regamma(rgb);
 }
 
 
@@ -41706,9 +41853,20 @@ function scaleColor(col, space)
 
 
 
+function normalizeRgb(rgb)
+{
+    return [ rgb[0] / 255,
+             rgb[1] / 255,
+             rgb[2] / 255 ];
+}
+
+
+
 function scaleRgb(rgb)
 {
-    return scaleColor(rgb, 'rgb');
+    return [ Math.round(rgb[0] * 255),
+             Math.round(rgb[1] * 255),
+             Math.round(rgb[2] * 255) ];
 }
 
 

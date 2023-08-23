@@ -107,8 +107,8 @@ extends GOperator1
                         step /= -2; //= -Math.sign(step) * Math.pow(Math.abs(step), 0.75);
 
 
-                    console.log('step =', step);
-                    console.log('diff =', diff);
+                    //console.log('step =', step);
+                    //console.log('diff =', diff);
     
 
                     prevDiff = diff;

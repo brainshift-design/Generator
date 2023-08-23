@@ -502,3 +502,21 @@ function includesSimilar(str, sub, levenshteinDistance)
             return true;
     }
 }
+
+
+
+function degamma(rgb, cs = sRGB)
+{
+    return [ cs.degamma(rgb[0]),
+             cs.degamma(rgb[1]),
+             cs.degamma(rgb[2]) ];
+}
+
+
+
+function regamma(rgb, cs = sRGB)
+{
+    return [ cs.regamma(rgb[0]),
+             cs.regamma(rgb[1]),
+             cs.regamma(rgb[2]) ];
+}

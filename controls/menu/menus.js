@@ -161,6 +161,7 @@ var menuItemTextJson;
 
 var menuItemColor;
 var menuItemCorrectColor;
+var menuItemConvertToP3;
 var menuItemColorSep1;
 var menuItemColorblind;
 var menuItemColorBlend;
@@ -563,6 +564,7 @@ function initGeneratorMenus()
                                new MenuItem('',              null,                {separator: true}),
                                new MenuItem('Valid sRGB',    null,                {icon: iconValidColor,       callback: e => actionManager.do(getCreateNodeAction(VALID_COLOR,       btnColor.div, getCreateOptions(e)))}),
         menuItemCorrectColor = new MenuItem('Correct color', null,                {icon: iconCorrectColor,     callback: e => actionManager.do(getCreateNodeAction(CORRECT_COLOR,     btnColor.div, getCreateOptions(e)))}),
+        menuItemConvertToP3  = new MenuItem('sRGB ⟷ P3',    null,                {icon: iconConvertP3,        callback: e => actionManager.do(getCreateNodeAction(COLOR_CONVERT_P3,  btnColor.div, getCreateOptions(e)))}),
         menuItemColorSep1    = new MenuItem('',              null,                {separator: true}),
                                new MenuItem('Web contrast',  null,                {icon: iconWebContrast,      callback: e => actionManager.do(getCreateNodeAction(COLOR_CONTRAST,    btnColor.div, getCreateOptions(e)))}),
                                new MenuItem('',              null,                {separator: true}),

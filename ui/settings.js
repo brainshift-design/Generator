@@ -325,10 +325,11 @@ function enableFeatures(sub, beta = false)
     menuItemTextJson    .enabled = sub;  menuItemTextJson    .update();
 
     menuItemCorrectColor.enabled = sub;  menuItemCorrectColor.update();
+    menuItemConvertToP3 .enabled = sub;  menuItemConvertToP3 .update();
 
     menuItemShapeRender .enabled = sub;  menuItemShapeRender .update();
 
-    
+
     graph.nodes.forEach(n => n.updateSubscribeStatus(sub));
 }
 

@@ -4864,13 +4864,15 @@ a
             <div id='whatsNewBody'>
                 <h1 style='margin-top: 20px;'>What's new</h1>
 
+                <p>•  switched to freemium model with some pro features only for subscribers</p>
                 <p>•  improved performance</p>
                 <p>•  long repeat calculations can now be aborted</p>
                 <p>•  Ctrl/Cmd+Enter now reactivates currently active nodes</p>
                 <p>•  simplified sets, now they generate only one value per loop iteration</p>
-                <p>•  small UI improvements</p>
                 <p>•  panels are no longer highlighted in Focus mode</p>
+                <p>•  added sRGB ⟷ P3 conversion</p>
                 <p>•  fixed various node bugs</p>
+                <p>•  small UI improvements</p>
                 
                 <p><br/><br/><div id='chkHideWhatsNew'></div></p>
             </div>
@@ -8378,6 +8380,24 @@ function includesSimilar(str, sub, levenshteinDistance)
 }
 
 
+
+function degamma(rgb, cs = sRGB)
+{
+    return [ cs.degamma(rgb[0]),
+             cs.degamma(rgb[1]),
+             cs.degamma(rgb[2]) ];
+}
+
+
+
+function regamma(rgb, cs = sRGB)
+{
+    return [ cs.regamma(rgb[0]),
+             cs.regamma(rgb[1]),
+             cs.regamma(rgb[2]) ];
+}
+
+
 "use strict";
 
 // Base64 / binary data / UTF-8 strings utilities
@@ -9790,10 +9810,11 @@ function enableFeatures(sub, beta = false)
     menuItemTextJson    .enabled = sub;  menuItemTextJson    .update();
 
     menuItemCorrectColor.enabled = sub;  menuItemCorrectColor.update();
+    menuItemConvertToP3 .enabled = sub;  menuItemConvertToP3 .update();
 
     menuItemShapeRender .enabled = sub;  menuItemShapeRender .update();
 
-    
+
     graph.nodes.forEach(n => n.updateSubscribeStatus(sub));
 }
 
@@ -24224,8 +24245,8 @@ extends GOperator1
                         step /= -2; //= -Math.sign(step) * Math.pow(Math.abs(step), 0.75);
 
 
-                    console.log('step =', step);
-                    console.log('diff =', diff);
+                    //console.log('step =', step);
+                    //console.log('diff =', diff);
     
 
                     prevDiff = diff;
@@ -29837,6 +29858,100 @@ extends GOperator2
 
 
 
+class GConvertP3
+extends GOperator1
+{
+    from = null;
+
+
+
+    constructor(nodeId, options)
+    {
+        super(COLOR_CONVERT_P3, nodeId, options);
+    }
+
+
+    
+    copy()
+    {
+        const copy = new GConvertP3(this.nodeId, this.options);
+
+        copy.copyBase(this);
+
+        if (this.value) copy.value = this.value.copy();
+        if (this.from ) copy.from  = this.from .copy();
+
+        return copy;
+    }
+
+
+
+    async eval(parse)
+    {
+        if (this.isCached())
+            return this;
+
+
+        const from = this.from ? (await this.from.eval(parse)).toValue().toInteger() : null;
+
+
+        if (this.input)
+        {
+            const input = (await this.input.eval(parse)).toValue();
+
+            if (this.options.enabled)
+            {
+                this.value = ColorValue.fromRgb(
+                    from.value == 0 
+                    ? scaleRgb(srgb2p3(input.toRgb()))
+                    : scaleRgb(p32srgb(input.toRgb())));
+            }
+            else
+                this.value = input;
+        }
+        else
+            this.value = ColorValue.NaN;
+
+
+        
+        this.setUpdateValues(parse,
+        [
+            ['value',   this.value],
+            ['quality', from      ]
+        ]);
+
+        
+        this.validate();
+
+        return this;
+    }
+
+
+
+    isValid()
+    {
+        return super.isValid()
+            && this.from && this.from.isValid();
+    }
+
+
+
+    pushValueUpdates(parse)
+    {
+        super.pushValueUpdates(parse);
+
+        if (this.from) this.from.pushValueUpdates(parse);
+    }
+
+
+
+    invalidateInputs(parse, from)
+    {
+        super.invalidateInputs(parse, from);
+
+        if (this.from) this.from.invalidateInputs(parse, from);
+    }
+}
 
 
 
@@ -38506,6 +38621,53 @@ function genParseColorContrast(parse)
 
 
 
+function genParseColorConvertP3(parse)
+{
+    const [, nodeId, options, ignore] = genParseNodeStart(parse);
+
+
+    const convert = new GConvertP3(nodeId, options);
+
+
+    let nInputs = -1;
+
+    if (!ignore)
+    {
+        nInputs = parseInt(parse.move());
+        consoleAssert(nInputs => 0 && nInputs <= 1, 'nInputs must be [0, 1]');
+    }
+
+
+    if (parse.settings.logRequests) 
+        logReq(convert, parse, ignore, nInputs);
+
+
+    if (ignore) 
+    {
+        genParseNodeEnd(parse, convert);
+        return parse.parsedNodes.find(n => n.nodeId == nodeId);
+    }
+
+
+    parse.nTab++;
+
+
+    if (nInputs == 1)
+        convert.input = genParse(parse);
+
+
+    convert.from = genParse(parse);
+
+
+    parse.nTab--;
+
+
+    genParseNodeEnd(parse, convert);
+    return convert;
+}
+
+
+
 function genParseColorBlind(parse)
 {
     const [, nodeId, options, ignore] = genParseNodeStart(parse);
@@ -44381,6 +44543,7 @@ function genParse(parse, inParam = true)
     else if (parse.next == VALID_COLOR            ) result = genParseValidColor        (parse);
     else if (parse.next == CORRECT_COLOR          ) result = genParseCorrectColor      (parse);
     else if (parse.next == COLOR_CONTRAST         ) result = genParseColorContrast     (parse);
+    else if (parse.next == COLOR_CONVERT_P3       ) result = genParseColorConvertP3    (parse);
     else if (parse.next == COLORBLIND             ) result = genParseColorBlind        (parse);
     else if (parse.next == COLOR_INTERPOLATE      ) result = genParseColorInterpolate  (parse);
     else if (parse.next == COLOR_BLEND            ) result = genParseColorBlend        (parse);
@@ -45327,12 +45490,7 @@ function rgb2xyz(rgb, cs = sRGB)
 
 function rgb2xyz_(r, g, b, cs = sRGB)
 { 
-    let rgb = [
-        cs.degamma(r),
-        cs.degamma(g),
-        cs.degamma(b) ];
-
-    return lrgb2xyz(rgb, cs);
+    return lrgb2xyz(degamma(rgb, cs), cs);
 }    
 
 
@@ -45346,12 +45504,7 @@ function lrgb2xyz(rgb, cs = sRGB)
 
 function xyz2rgb(xyz, cs = sRGB)
 {
-    let rgb = xyz2lrgb(xyz, cs);
-
-    return [
-        cs.regamma(rgb[0]),
-        cs.regamma(rgb[1]),
-        cs.regamma(rgb[2]) ];
+    return regamma(xyz2lrgb(xyz, cs), cs);
 }
 
 
@@ -45360,10 +45513,6 @@ function xyz2lrgb(xyz, cs = sRGB)
 {
     return mulv3m3(xyz, cs.xyz2lin);
 }
-
-
-
-
 
 
 function rgb2luv(rgb, cs = sRGB)
@@ -45764,13 +45913,13 @@ function rgb2hcluv(rgb, cs = sRGB)
 function srgb2p3(rgb)
 {
     const p3 = 
-        [ [0.4865709486482162, 0.26566769316909306, 0.1982172852343625 ],
-          [0.2289745640697488, 0.6917385218365064,  0.07928691409374425],
-          [0,                  0.04511338185890264, 1.043944368900976  ] ];
+        [ [0.8225, 0.1774, 0      ],
+          [0.0332, 0.9669, 0      ],
+          [0.0171, 0.0724, 0.9108 ] ];
 
-    rgb = sRGB.degamma(rgb);
+    rgb = degamma(rgb);
 
-    return dot3(p3, rgb);
+    return regamma(dot3(p3, rgb));
 }
 
 
@@ -45778,13 +45927,13 @@ function srgb2p3(rgb)
 function p32srgb(rgb) 
 {
     const invp3 = 
-        [ [ 2.493496911941425,   -0.9313836179191239, -0.40271078445071684 ],
-          [-0.8294889695615747,   1.7626640603183465,  0.023624685841943577],
-          [ 0.03584583024378447, -0.07617238926804182, 0.9568845240076872  ] ];
+        [ [ 1.2249, -0.2247, 0      ],
+          [-0.0420,  1.0419, 0      ],
+          [-0.0197, -0.0786, 1.0979 ] ];
   
-    rgb = dot3(invp3, rgb);
+    rgb = dot3(invp3, degamma(rgb));
   
-    return sRGB.regamma(rgb);
+    return regamma(rgb);
 }
 
 
@@ -46930,9 +47079,20 @@ function scaleColor(col, space)
 
 
 
+function normalizeRgb(rgb)
+{
+    return [ rgb[0] / 255,
+             rgb[1] / 255,
+             rgb[2] / 255 ];
+}
+
+
+
 function scaleRgb(rgb)
 {
-    return scaleColor(rgb, 'rgb');
+    return [ Math.round(rgb[0] * 255),
+             Math.round(rgb[1] * 255),
+             Math.round(rgb[2] * 255) ];
 }
 
 
@@ -50930,6 +51090,24 @@ function includesSimilar(str, sub, levenshteinDistance)
 }
 
 
+
+function degamma(rgb, cs = sRGB)
+{
+    return [ cs.degamma(rgb[0]),
+             cs.degamma(rgb[1]),
+             cs.degamma(rgb[2]) ];
+}
+
+
+
+function regamma(rgb, cs = sRGB)
+{
+    return [ cs.regamma(rgb[0]),
+             cs.regamma(rgb[1]),
+             cs.regamma(rgb[2]) ];
+}
+
+
 "use strict";
 
 // Base64 / binary data / UTF-8 strings utilities
@@ -52576,12 +52754,7 @@ function rgb2xyz(rgb, cs = sRGB)
 
 function rgb2xyz_(r, g, b, cs = sRGB)
 { 
-    let rgb = [
-        cs.degamma(r),
-        cs.degamma(g),
-        cs.degamma(b) ];
-
-    return lrgb2xyz(rgb, cs);
+    return lrgb2xyz(degamma(rgb, cs), cs);
 }    
 
 
@@ -52595,12 +52768,7 @@ function lrgb2xyz(rgb, cs = sRGB)
 
 function xyz2rgb(xyz, cs = sRGB)
 {
-    let rgb = xyz2lrgb(xyz, cs);
-
-    return [
-        cs.regamma(rgb[0]),
-        cs.regamma(rgb[1]),
-        cs.regamma(rgb[2]) ];
+    return regamma(xyz2lrgb(xyz, cs), cs);
 }
 
 
@@ -52609,10 +52777,6 @@ function xyz2lrgb(xyz, cs = sRGB)
 {
     return mulv3m3(xyz, cs.xyz2lin);
 }
-
-
-
-
 
 
 function rgb2luv(rgb, cs = sRGB)
@@ -53013,13 +53177,13 @@ function rgb2hcluv(rgb, cs = sRGB)
 function srgb2p3(rgb)
 {
     const p3 = 
-        [ [0.4865709486482162, 0.26566769316909306, 0.1982172852343625 ],
-          [0.2289745640697488, 0.6917385218365064,  0.07928691409374425],
-          [0,                  0.04511338185890264, 1.043944368900976  ] ];
+        [ [0.8225, 0.1774, 0      ],
+          [0.0332, 0.9669, 0      ],
+          [0.0171, 0.0724, 0.9108 ] ];
 
-    rgb = sRGB.degamma(rgb);
+    rgb = degamma(rgb);
 
-    return dot3(p3, rgb);
+    return regamma(dot3(p3, rgb));
 }
 
 
@@ -53027,13 +53191,13 @@ function srgb2p3(rgb)
 function p32srgb(rgb) 
 {
     const invp3 = 
-        [ [ 2.493496911941425,   -0.9313836179191239, -0.40271078445071684 ],
-          [-0.8294889695615747,   1.7626640603183465,  0.023624685841943577],
-          [ 0.03584583024378447, -0.07617238926804182, 0.9568845240076872  ] ];
+        [ [ 1.2249, -0.2247, 0      ],
+          [-0.0420,  1.0419, 0      ],
+          [-0.0197, -0.0786, 1.0979 ] ];
   
-    rgb = dot3(invp3, rgb);
+    rgb = dot3(invp3, degamma(rgb));
   
-    return sRGB.regamma(rgb);
+    return regamma(rgb);
 }
 
 
@@ -69000,8 +69164,8 @@ extends GOperator1
                         step /= -2; //= -Math.sign(step) * Math.pow(Math.abs(step), 0.75);
 
 
-                    console.log('step =', step);
-                    console.log('diff =', diff);
+                    //console.log('step =', step);
+                    //console.log('diff =', diff);
     
 
                     prevDiff = diff;
@@ -74613,6 +74777,100 @@ extends GOperator2
 
 
 
+class GConvertP3
+extends GOperator1
+{
+    from = null;
+
+
+
+    constructor(nodeId, options)
+    {
+        super(COLOR_CONVERT_P3, nodeId, options);
+    }
+
+
+    
+    copy()
+    {
+        const copy = new GConvertP3(this.nodeId, this.options);
+
+        copy.copyBase(this);
+
+        if (this.value) copy.value = this.value.copy();
+        if (this.from ) copy.from  = this.from .copy();
+
+        return copy;
+    }
+
+
+
+    async eval(parse)
+    {
+        if (this.isCached())
+            return this;
+
+
+        const from = this.from ? (await this.from.eval(parse)).toValue().toInteger() : null;
+
+
+        if (this.input)
+        {
+            const input = (await this.input.eval(parse)).toValue();
+
+            if (this.options.enabled)
+            {
+                this.value = ColorValue.fromRgb(
+                    from.value == 0 
+                    ? scaleRgb(srgb2p3(input.toRgb()))
+                    : scaleRgb(p32srgb(input.toRgb())));
+            }
+            else
+                this.value = input;
+        }
+        else
+            this.value = ColorValue.NaN;
+
+
+        
+        this.setUpdateValues(parse,
+        [
+            ['value',   this.value],
+            ['quality', from      ]
+        ]);
+
+        
+        this.validate();
+
+        return this;
+    }
+
+
+
+    isValid()
+    {
+        return super.isValid()
+            && this.from && this.from.isValid();
+    }
+
+
+
+    pushValueUpdates(parse)
+    {
+        super.pushValueUpdates(parse);
+
+        if (this.from) this.from.pushValueUpdates(parse);
+    }
+
+
+
+    invalidateInputs(parse, from)
+    {
+        super.invalidateInputs(parse, from);
+
+        if (this.from) this.from.invalidateInputs(parse, from);
+    }
+}
 
 
 
@@ -82647,10 +82905,11 @@ function enableFeatures(sub, beta = false)
     menuItemTextJson    .enabled = sub;  menuItemTextJson    .update();
 
     menuItemCorrectColor.enabled = sub;  menuItemCorrectColor.update();
+    menuItemConvertToP3 .enabled = sub;  menuItemConvertToP3 .update();
 
     menuItemShapeRender .enabled = sub;  menuItemShapeRender .update();
 
-    
+
     graph.nodes.forEach(n => n.updateSubscribeStatus(sub));
 }
 
@@ -86973,6 +87232,7 @@ const iconRandomColor       = '<svg width="13" height="15" viewBox="0 0 13 15" f
 const iconValidColor        = '<svg width="17" height="15" viewBox="-1 0 17 15" fill="none" xmlns="http://www.w3.org/2000/svg"><path d="M11.8409 11.5662C10.7465 12.7498 9.18038 13.4909 7.44118 13.4909C4.13249 13.4909 1.45027 10.8087 1.45027 7.5C1.45027 4.19131 4.13249 1.50909 7.44118 1.50909C8.66322 1.50909 9.80806 2.02212 10.7556 2.65033" stroke="white" stroke-width="1.2"/><path fill-rule="evenodd" clip-rule="evenodd" d="M15.6832 3.62548L9.18921 10.1195L5.38744 6.31769L6.52965 5.17548L9.18921 7.83504L14.5411 2.48326L15.6832 3.62548Z" fill="white"/></svg>';
 const iconCorrectColor      = '<svg width="14" height="15" viewBox="0 0 14 15" fill="none" xmlns="http://www.w3.org/2000/svg"><path d="M11.9123 3.43385C10.8179 2.2502 9.25181 1.50909 7.51261 1.50909C4.20392 1.50909 1.5217 4.19132 1.5217 7.5C1.5217 10.8087 4.20392 13.4909 7.51261 13.4909C9.25181 13.4909 10.8179 12.7498 11.9123 11.5662" stroke="white" stroke-width="1.2"/><path d="M6.97348 10.659L7.06123 8.24587L5.02106 9.54017L4.49457 8.61881L6.64443 7.5L4.49457 6.3812L5.02106 5.45983L7.06123 6.75414L6.97348 4.34103H8.02648L7.93873 6.75414L9.9789 5.45983L10.5054 6.3812L8.35554 7.5L10.5054 8.61881L9.9789 9.54017L7.93873 8.24587L8.02648 10.659H6.97348Z" fill="white"/></svg>';
 const iconWebContrast       = '<svg width="16" height="16" viewBox="0 0 16 16" fill="none" xmlns="http://www.w3.org/2000/svg"><path d="M12 4H8V12H10V11H9V5H11V6.267H12V4Z" fill="white"/><path d="M12 4H8V12H10V11H9V5H11V6.267H12V4Z" fill="white"/><path d="M12 4H8V12H10V11H9V5H11V6.267H12V4Z" fill="white"/><path fill-rule="evenodd" clip-rule="evenodd" d="M0 1.5C0 0.671573 0.671573 0 1.5 0H14.5C15.3284 0 16 0.671573 16 1.5V14.5C16 15.3284 15.3284 16 14.5 16H1.5C0.671573 16 0 15.3284 0 14.5V1.5ZM8 1H14.5C14.7761 1 15 1.22386 15 1.5V14.5C15 14.7761 14.7761 15 14.5 15H8V12.4H5.47075V11H6.8V5.4H5.22306V6.93713H3.80043V4H8V1Z" fill="white"/></svg>';
+const iconConvertP3         = '<svg width="18" height="19" viewBox="0 0 18 19" fill="none" xmlns="http://www.w3.org/2000/svg"><path fill-rule="evenodd" clip-rule="evenodd" d="M5.17915 -0.0377197L18.0066 11.6743L0.71743 18.9246L5.17915 -0.0377197ZM5.82085 2.03772L2.28256 17.0754L15.9934 11.3257L5.82085 2.03772ZM6.43319 4.47979L13.4432 10.7967L3.27472 16.0344L6.43319 4.47979ZM7 6.5L5 14L11.5 10.5L7 6.5Z" fill="white"/></svg>';
 const iconColorblind        = '<svg width="21" height="21" viewBox="0 0 21 21" fill="none" xmlns="http://www.w3.org/2000/svg"><path d="M10.5 19.5371C15.491 19.5371 19.5371 15.491 19.5371 10.5C19.5371 5.50898 15.491 1.46295 10.5 1.46295C5.50898 1.46295 1.46295 5.50898 1.46295 10.5C1.46295 15.491 5.50898 19.5371 10.5 19.5371Z" stroke="white"/><path fill-rule="evenodd" clip-rule="evenodd" d="M9.37288 4.83079C9.73798 4.75856 10.1149 4.7208 10.5 4.7208C10.8851 4.7208 11.262 4.75856 11.6271 4.83079L11.3554 6.20417C11.0793 6.14955 10.7934 6.1208 10.5 6.1208C10.2066 6.1208 9.92068 6.14955 9.64458 6.20417L9.37288 4.83079ZM5.69463 7.2885C6.11636 6.65857 6.65856 6.11636 7.28849 5.69464L8.06734 6.85799C7.58948 7.17791 7.17791 7.58948 6.85799 8.06734L5.69463 7.2885ZM13.7115 5.69464C14.3414 6.11636 14.8836 6.65857 15.3054 7.2885L14.142 8.06734C13.8221 7.58948 13.4105 7.17791 12.9327 6.85799L13.7115 5.69464ZM16.1692 9.37289C16.2414 9.73799 16.2792 10.1149 16.2792 10.5C16.2792 10.8851 16.2414 11.262 16.1692 11.6271L14.7958 11.3554C14.8504 11.0793 14.8792 10.7934 14.8792 10.5C14.8792 10.2066 14.8504 9.92068 14.7958 9.64458L16.1692 9.37289ZM4.7208 10.5C4.7208 10.1149 4.75856 9.73799 4.83078 9.37289L6.20417 9.64458C6.14955 9.92068 6.1208 10.2066 6.1208 10.5C6.1208 10.7934 6.14955 11.0793 6.20417 11.3554L4.83078 11.6271C4.75856 11.262 4.7208 10.8851 4.7208 10.5ZM7.28849 15.3054C6.65856 14.8836 6.11636 14.3414 5.69463 13.7115L6.85799 12.9327C7.17791 13.4105 7.58948 13.8221 8.06734 14.142L7.28849 15.3054ZM15.3054 13.7115C14.8836 14.3414 14.3414 14.8836 13.7115 15.3054L12.9327 14.142C13.4105 13.8221 13.8221 13.4105 14.142 12.9327L15.3054 13.7115ZM10.5 16.2792C10.1149 16.2792 9.73798 16.2414 9.37288 16.1692L9.64458 14.7958C9.92068 14.8505 10.2066 14.8792 10.5 14.8792C10.7934 14.8792 11.0793 14.8505 11.3554 14.7958L11.6271 16.1692C11.262 16.2414 10.8851 16.2792 10.5 16.2792Z" fill="white"/><path d="M10.5 11.9909C11.3234 11.9909 11.9909 11.3234 11.9909 10.5C11.9909 9.6766 11.3234 9.0091 10.5 9.0091C9.6766 9.0091 9.0091 9.6766 9.0091 10.5C9.0091 11.3234 9.6766 11.9909 10.5 11.9909Z" fill="white"/></svg>';
 const iconColorInterpolate  = '<svg width="18" height="19" viewBox="0 0 18 19" fill="none" xmlns="http://www.w3.org/2000/svg"><circle cx="9.5" cy="2.5" r="2.5" fill="white" fill-opacity="0.1"/><circle cx="9.5" cy="2.5" r="2" stroke="white" stroke-opacity="0.4"/><circle cx="2.5" cy="9.5" r="2.5" fill="white" fill-opacity="0.4"/><circle cx="2.5" cy="9.5" r="2" stroke="white" stroke-opacity="0.61"/><circle cx="9.5" cy="16.5" r="2.5" fill="white" fill-opacity="0.8"/><circle cx="9.5" cy="16.5" r="2" stroke="white" stroke-opacity="0.9"/><circle cx="14.5" cy="14.5" r="2" fill="white" stroke="white"/><circle cx="14.5" cy="4.5" r="2" stroke="white" stroke-opacity="0.4"/><circle cx="4.5" cy="14.5" r="2.5" fill="white" fill-opacity="0.6"/><circle cx="4.5" cy="14.5" r="2" stroke="white" stroke-opacity="0.8"/><circle cx="4.5" cy="4.5" r="2.5" fill="white" fill-opacity="0.2"/><circle cx="4.5" cy="4.5" r="2" stroke="white" stroke-opacity="0.55"/></svg>';
 const iconColorBlend        = '<svg width="14" height="15" viewBox="-1 0 14 15" fill="none" xmlns="http://www.w3.org/2000/svg"><path d="M-4.02642e-07 9C-5.48785e-07 10.5913 0.63214 12.1174 1.75736 13.2426C2.88258 14.3679 4.4087 15 6 15C7.5913 15 9.11742 14.3679 10.2426 13.2426C11.3679 12.1174 12 10.5913 12 9L6 9L-4.02642e-07 9Z" fill="white"/><path d="M0.499999 9.2647C0.499999 7.80555 0.917848 6.69229 1.85417 5.39097C2.66503 4.26403 3.84136 3.02592 5.4562 1.32626C5.64008 1.13273 5.82964 0.933209 6.02499 0.727189C6.22035 0.933214 6.40992 1.13274 6.5938 1.32628C8.20864 3.02593 9.38496 4.26403 10.1958 5.39097C11.1321 6.69229 11.55 7.80555 11.55 9.26471C11.55 12.1331 9.09987 14.5 6.02499 14.5C2.95012 14.5 0.499998 12.1331 0.499999 9.2647Z" stroke="white"/></svg>';
@@ -88311,6 +88571,7 @@ var menuItemTextJson;
 
 var menuItemColor;
 var menuItemCorrectColor;
+var menuItemConvertToP3;
 var menuItemColorSep1;
 var menuItemColorblind;
 var menuItemColorBlend;
@@ -88713,6 +88974,7 @@ function initGeneratorMenus()
                                new MenuItem('',              null,                {separator: true}),
                                new MenuItem('Valid sRGB',    null,                {icon: iconValidColor,       callback: e => actionManager.do(getCreateNodeAction(VALID_COLOR,       btnColor.div, getCreateOptions(e)))}),
         menuItemCorrectColor = new MenuItem('Correct color', null,                {icon: iconCorrectColor,     callback: e => actionManager.do(getCreateNodeAction(CORRECT_COLOR,     btnColor.div, getCreateOptions(e)))}),
+        menuItemConvertToP3  = new MenuItem('sRGB ⟷ P3',    null,                {icon: iconConvertP3,        callback: e => actionManager.do(getCreateNodeAction(COLOR_CONVERT_P3,  btnColor.div, getCreateOptions(e)))}),
         menuItemColorSep1    = new MenuItem('',              null,                {separator: true}),
                                new MenuItem('Web contrast',  null,                {icon: iconWebContrast,      callback: e => actionManager.do(getCreateNodeAction(COLOR_CONTRAST,    btnColor.div, getCreateOptions(e)))}),
                                new MenuItem('',              null,                {separator: true}),
@@ -111556,9 +111818,20 @@ function scaleColor(col, space)
 
 
 
+function normalizeRgb(rgb)
+{
+    return [ rgb[0] / 255,
+             rgb[1] / 255,
+             rgb[2] / 255 ];
+}
+
+
+
 function scaleRgb(rgb)
 {
-    return scaleColor(rgb, 'rgb');
+    return [ Math.round(rgb[0] * 255),
+             Math.round(rgb[1] * 255),
+             Math.round(rgb[2] * 255) ];
 }
 
 
@@ -112931,9 +113204,6 @@ extends OpColorBase
 {
     paramFrom;
 
-    corrections = [];
-
-
     colorBack;
 
 
@@ -113008,10 +113278,6 @@ extends OpColorBase
             : dataColor_NaN;
 
 
-        this.initCorrections(this._color[0]);
-        this.endProgress();
-
-
         super.updateValues(requestId, actionId, updateParamId, paramIds, values);
     }
 
@@ -113067,9 +113333,6 @@ extends OpColorBase
             this._color = parseColorValue(_node._color)[0].toDataColor();
             this.valid = true;
         }
-
-        if (!dataColorIsValid(this._color))
-            this.initProgress();
 
         super.loadParams(_node, pasting);
     }
@@ -128042,6 +128305,7 @@ function createNode(nodeType, creatingButton = null, createdNodeId = -1, options
         case VALID_COLOR:             node = new OpValidColor();        break;
         case CORRECT_COLOR:           node = new OpCorrectColor();      break;
         case COLOR_CONTRAST:          node = new OpColorContrast();     break;
+        case COLOR_CONVERT_P3:        node = new OpConvertP3();         break;
         case COLORBLIND:              node = new OpColorBlind();        break;
         case COLOR_INTERPOLATE:       node = new OpColorInterpolate();  break;
         case COLOR_BLEND:             node = new OpColorBlend();        break;

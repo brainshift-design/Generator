@@ -98,6 +98,7 @@ function createNode(nodeType, creatingButton = null, createdNodeId = -1, options
         case VALID_COLOR:             node = new OpValidColor();        break;
         case CORRECT_COLOR:           node = new OpCorrectColor();      break;
         case COLOR_CONTRAST:          node = new OpColorContrast();     break;
+        case COLOR_CONVERT_P3:        node = new OpConvertP3();         break;
         case COLORBLIND:              node = new OpColorBlind();        break;
         case COLOR_INTERPOLATE:       node = new OpColorInterpolate();  break;
         case COLOR_BLEND:             node = new OpColorBlend();        break;

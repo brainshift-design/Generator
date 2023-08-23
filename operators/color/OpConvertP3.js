@@ -3,9 +3,6 @@ extends OpColorBase
 {
     paramFrom;
 
-    corrections = [];
-
-
     colorBack;
 
 
@@ -80,10 +77,6 @@ extends OpColorBase
             : dataColor_NaN;
 
 
-        this.initCorrections(this._color[0]);
-        this.endProgress();
-
-
         super.updateValues(requestId, actionId, updateParamId, paramIds, values);
     }
 
@@ -139,9 +132,6 @@ extends OpColorBase
             this._color = parseColorValue(_node._color)[0].toDataColor();
             this.valid = true;
         }
-
-        if (!dataColorIsValid(this._color))
-            this.initProgress();
 
         super.loadParams(_node, pasting);
     }
