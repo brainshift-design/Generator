@@ -71,7 +71,7 @@ extends GValue
 
     toJson()
     {
-        return encodeURIComponent(this.value);
+        return this.value ? encodeURIComponent(this.value) : '?';
     }
 
 

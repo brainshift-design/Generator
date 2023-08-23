@@ -51,6 +51,7 @@
 ../operators/flow/OpCache.js
 ../operators/flow/OpFreeze.js
 ../operators/flow/OpTimer.js
+../operators/flow/OpValueName.js
 
 ../operators/flow/OpList.js
 ../operators/flow/OpCondense.js

@@ -1010,7 +1010,7 @@ const REPEAT                  = 'REPT';
 const CACHE                   = 'CACHE';
 const FREEZE                  = 'FRZ';
 const TIMER                   = 'TIMER';
-
+const VALUE_NAME              = 'VNAME';
 
 const LIST                    = 'LIST';
 const CONDENSE                = 'CDENSE';
@@ -1080,7 +1080,8 @@ const FLOW_TYPES =
     DEFINE,
     CACHE,
     FREEZE,
-    TIMER
+    TIMER,
+    VALUE_NAME
 ];
 
 

@@ -151,6 +151,7 @@ function genParse(parse, inParam = true)
     else if (parse.next == DEFINE                 ) result = genParseDefine            (parse);
     else if (parse.next == FREEZE                 ) result = genParseFreeze            (parse);
     else if (parse.next == TIMER                  ) result = genParseTimer             (parse);
+    else if (parse.next == VALUE_NAME             ) result = genParseValueName         (parse);
      
     else if (parse.next == NUMBER_VALUE           ) result = genParseNumValue          (parse);
     else if (parse.next == NUMBER                 ) result = genParseNumber            (parse);

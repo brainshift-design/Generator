@@ -58,7 +58,7 @@ extends GOperator1
         else
             this.value = TextValue.NaN;
 
-
+            
         this.setUpdateValues(parse,
         [
             ['value',  this.value],

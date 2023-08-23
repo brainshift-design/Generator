@@ -133,7 +133,7 @@ Operator.prototype.updateHeader = function()
 Operator.prototype.updateParams = function()
 {
     for (const param of this.params)
-        param.enableControlText(true);
+        param.enableControlText(true, param.isUnknown());
 
     this.updateParamControls();
 }

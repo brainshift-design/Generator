@@ -10,6 +10,7 @@ function createNode(nodeType, creatingButton = null, createdNodeId = -1, options
         case CACHE:                   node = new OpCache();             break;
         case FREEZE:                  node = new OpFreeze();            break;
         case TIMER:                   node = new OpTimer();             break;
+        case VALUE_NAME:              node = new OpValueName();         break;
 
         case LIST:                    node = new OpList();              break;
         case CONDENSE:                node = new OpCondense();          break;

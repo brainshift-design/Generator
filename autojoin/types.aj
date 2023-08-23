@@ -72,6 +72,7 @@
 ../generator/types/flow/GCache.js
 ../generator/types/flow/GFreeze.js
 ../generator/types/flow/GTimer.js
+../generator/types/flow/GValueName.js
 
 ../generator/types/flow/GList.js
 ../generator/types/flow/GCondense.js
