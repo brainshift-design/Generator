@@ -210,6 +210,31 @@
 .subscribeLabel
 {
     font-family:    Inter;
+    font-size:      26px;
+    font-weight:    700;
+    color:          var(--figma-color-bg-brand);
+    opacity:        50%;
+    position:       absolute;
+    left:           50%;
+    top:            50%;
+    pointer-events: none;
+    z-index:        100000;
+    transform:      translateX(-50%)
+                    translateY(-50%)
+                    rotate(-45deg);
+    display:        none;
+    padding-left:   8px;
+    padding-right:  8px;
+    padding-top:    4px;
+    padding-bottom: 4px;
+    border-radius:  8px;
+    box-shadoW:     0 0 0 1px var(--figma-color-bg-brand) inset;
+}
+
+
+/* .subscribeLabel
+{
+    font-family:    Inter;
     font-size:      16px;
     font-weight:    700;
     color:          #e88b;
@@ -224,7 +249,7 @@
     display:        none;
 }
 
-
+ */
 .colorWarningOverlay
 {
     width:            100%;

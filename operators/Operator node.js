@@ -71,7 +71,7 @@ Operator.prototype.createNode = function()
     this.subscribeCover.addEventListener('pointermove',  e => { e.preventDefault(); e.stopImmediatePropagation(); });
 
     this.subscribeLabel = createDiv('subscribeLabel');
-    this.subscribeLabel.innerHTML = 'SUBSCRIBE';
+    this.subscribeLabel.innerHTML = 'PRO';
 
     this.div.appendChild(this.subscribeCover);
     this.div.appendChild(this.subscribeLabel);
