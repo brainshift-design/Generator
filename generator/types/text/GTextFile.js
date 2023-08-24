@@ -81,4 +81,13 @@ extends GOperator
 
         //this.cachedValue = new TextValue();
     }
+
+
+
+    iterateLoop(parse)
+    {
+        super.iterateLoop(parse);
+
+        if (this.path) this.path.iterateLoop(parse);
+    }
 }

@@ -160,4 +160,14 @@ extends GOperator
         if (this.input) this.input.invalidateInputs(parse, from);
         if (this.index) this.index.invalidateInputs(parse, from);
     }
+
+
+
+    iterateLoop(parse)
+    {
+        super.iterateLoop(parse);
+
+        if (this.input) this.input.iterateLoop(parse);
+        if (this.index) this.index.iterateLoop(parse);
+    }
 }

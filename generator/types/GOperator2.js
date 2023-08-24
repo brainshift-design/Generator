@@ -50,4 +50,14 @@ extends GOperator
         if (this.input0) this.input0.invalidateInputs(parse, from);
         if (this.input1) this.input1.invalidateInputs(parse, from);
     }
+
+
+
+    iterateLoop(parse)
+    {
+        super.iterateLoop(parse);
+
+        if (this.input0) this.input0.iterateLoop(parse);
+        if (this.input1) this.input1.iterateLoop(parse);
+    }
 }

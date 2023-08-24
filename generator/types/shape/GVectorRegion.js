@@ -237,4 +237,16 @@ extends GShape
         if (this.winding) this.winding.invalidateInputs(parse, from);
         if (this.props  ) this.props  .invalidateInputs(parse, from);
     }
+
+
+
+    iterateLoop(parse)
+    {
+        super.iterateLoop(parse);
+
+        this.inputs.forEach(i => i.iterateLoop(parse));
+
+        if (this.winding) this.winding.iterateLoop(parse);
+        if (this.props  ) this.props  .iterateLoop(parse);
+    }
 }

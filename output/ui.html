@@ -13362,8 +13362,6 @@ class GNode
         if (this.unknown)
             this.valid = false;
 
-        this.iterateLoop(parse);
-
         return true;
     }
 
@@ -13901,6 +13899,15 @@ extends GOperator
 
         if (this.input) this.input.invalidateInputs(parse, from);
     }
+
+
+
+    iterateLoop(parse)
+    {
+        super.iterateLoop(parse);
+
+        if (this.input) this.input.iterateLoop(parse);
+    }
 }
 
 
@@ -13955,6 +13962,16 @@ extends GOperator
 
         if (this.input0) this.input0.invalidateInputs(parse, from);
         if (this.input1) this.input1.invalidateInputs(parse, from);
+    }
+
+
+
+    iterateLoop(parse)
+    {
+        super.iterateLoop(parse);
+
+        if (this.input0) this.input0.iterateLoop(parse);
+        if (this.input1) this.input1.iterateLoop(parse);
     }
 }
 
@@ -14064,6 +14081,14 @@ extends GOperator
     {
         const node = parse.parsedNodes.find(n => n.nodeId == this.nodeId);
         node.invalidateLoop(parse, nodeId);
+    }
+
+
+
+    iterateLoop(parse)
+    {
+        const node = parse.parsedNodes.find(n => n.nodeId == this.nodeId);
+        node.iterateLoop(parse);
     }
 
 
@@ -14684,7 +14709,7 @@ extends GValue
 
     toJson()
     {
-        return this.value ? encodeURIComponent(this.value) : '?';
+        return encodeURIComponent(this.value);
     }
 
 
@@ -14734,7 +14759,7 @@ extends GValue
 
 
 
-    static NaN = Object.freeze(new TextValue(null));
+    static NaN = Object.freeze(new TextValue());
 }
 
 
@@ -19891,6 +19916,16 @@ extends GOperator
         if (this.input   ) this.input   .invalidateInputs(parse, from);
         if (this.feedback) this.feedback.invalidateInputs(parse, from);
     }
+
+
+
+    iterateLoop(parse)
+    {
+        super.iterateLoop(parse);
+
+        if (this.input   ) this.input   .iterateLoop(parse);
+        if (this.feedback) this.feedback.iterateLoop(parse);
+    }
 }
 
 
@@ -19955,8 +19990,6 @@ extends GOperator1
 
         if (count.value > 0)
         {
-            //console.log('this.input =', this.input);
-            //console.log('this.input.isValid() =', this.input.isValid());
             if (this.input)
                 //&& this.input.isValid())
             {
@@ -19969,7 +20002,7 @@ extends GOperator1
                     && (   this.options.active
                         || this.options.beforeActive)
                     ? count.value 
-                    : 0;//1;
+                    : 0;
                 
 
                 let repeat =
@@ -20042,6 +20075,9 @@ extends GOperator1
                             }
                         }
                     }
+
+
+                    this.input.iterateLoop(parse);
 
 
                     if (parse.repeats.length == 1)
@@ -20145,6 +20181,17 @@ extends GOperator1
         if (this. count) this. count.invalidateInputs(parse, from);
         if (this._while) this._while.invalidateInputs(parse, from);
         if (this. loop ) this. loop .invalidateInputs(parse, from);
+    }
+
+
+
+    iterateLoop(parse)
+    {
+        super.iterateLoop(parse);
+
+        if (this. count) this. count.iterateLoop(parse);
+        if (this._while) this._while.iterateLoop(parse);
+        if (this. loop ) this. loop .iterateLoop(parse);
     }
 }
 
@@ -20261,6 +20308,15 @@ extends GOperator
         super.invalidateInputs(parse, from);
 
         if (this.input) this.input.invalidateInputs(parse, from);
+    }
+
+
+
+    iterateLoop(parse)
+    {
+        super.iterateLoop(parse);
+
+        if (this.input) this.input.iterateLoop(parse);
     }
 }
 
@@ -20551,6 +20607,16 @@ extends GOperator
         if (this.input) this.input.invalidateInputs(parse, from);
         if (this.delay) this.delay.invalidateInputs(parse, from);
     }
+
+
+
+    iterateLoop(parse)
+    {
+        super.iterateLoop(parse);
+
+        if (this.input) this.input.iterateLoop(parse);
+        if (this.delay) this.delay.iterateLoop(parse);
+    }
 }
 
 
@@ -20663,6 +20729,16 @@ extends GOperator
 
         if (this.input) this.input.invalidateInputs(parse, from);
         if (this.name ) this.name .invalidateInputs(parse, from);
+    }
+
+
+
+    iterateLoop(parse)
+    {
+        super.iterateLoop(parse);
+
+        if (this.input) this.input.iterateLoop(parse);
+        if (this.name ) this.name .iterateLoop(parse);
     }
 }
 
@@ -20851,6 +20927,13 @@ extends GOperator
     invalidateLoop(parse, nodeId)
     {
         this.inputs.forEach(i => i.invalidateLoop(parse, nodeId));
+    }
+
+
+
+    iterateLoop(parse)
+    {
+        this.inputs.forEach(i => i.iterateLoop(parse));
     }
 
 
@@ -21086,6 +21169,16 @@ extends GOperator1
 
         if (this.start) this.start.invalidateInputs(parse, from);
         if (this.end  ) this.end  .invalidateInputs(parse, from);
+    }
+
+
+
+    iterateLoop(parse)
+    {
+        super.iterateLoop(parse);
+
+        if (this.start) this.start.iterateLoop(parse);
+        if (this.end  ) this.end  .iterateLoop(parse);
     }
 }
 
@@ -21397,6 +21490,16 @@ extends GOperator1
         if (this.column ) this.column .invalidateInputs(parse, from);
         if (this.reverse) this.reverse.invalidateInputs(parse, from);
     }
+
+
+
+    iterateLoop(parse)
+    {
+        super.iterateLoop(parse);
+
+        if (this.column ) this.column .iterateLoop(parse);
+        if (this.reverse) this.reverse.iterateLoop(parse);
+    }
 }
 
 
@@ -21458,8 +21561,11 @@ extends GOperator1
 
                         if (index.value < row.items.length)
                         {
-                            this.value.items  .push(row.items[index.value].copy());
-                            this.value.objects.push(...row.items[index.value].objects);
+                            this.value.items.push(row.items[index.value].copy());
+
+                            if (   this.value.objects 
+                                && row.items[index.value].objects)
+                                this.value.objects.push(...row.items[index.value].objects);
                         }
                     }
                 }
@@ -21514,6 +21620,15 @@ extends GOperator1
         super.invalidateInputs(parse, from);
 
         if (this.index) this.index.invalidateInputs(parse, from);
+    }
+
+
+
+    iterateLoop(parse)
+    {
+        super.iterateLoop(parse);
+
+        if (this.index) this.index.iterateLoop(parse);
     }
 }
 
@@ -21660,6 +21775,16 @@ extends GOperator
         if (this.column) this.column.invalidateInputs(parse, from);
         if (this.row   ) this.row   .invalidateInputs(parse, from);
     }
+
+
+
+    iterateLoop(parse)
+    {
+        super.iterateLoop(parse);
+
+        if (this.column) this.column.iterateLoop(parse);
+        if (this.row   ) this.row   .iterateLoop(parse);
+    }
 }
 
 
@@ -21785,6 +21910,15 @@ extends GOperator
         super.invalidateInputs(parse, from);
 
         if (this.input) this.input.invalidateInputs(parse, from);
+    }
+
+
+
+    iterateLoop(parse)
+    {
+        super.iterateLoop(parse);
+
+        if (this.input) this.input.iterateLoop(parse);
     }
 }
 
@@ -21951,6 +22085,16 @@ extends GOperator
         if (this.input) this.input.invalidateInputs(parse, from);
         if (this.index) this.index.invalidateInputs(parse, from);
     }
+
+
+
+    iterateLoop(parse)
+    {
+        super.iterateLoop(parse);
+
+        if (this.input) this.input.iterateLoop(parse);
+        if (this.index) this.index.iterateLoop(parse);
+    }
 }
 
 
@@ -22060,6 +22204,16 @@ extends GOperator
         if (this.input) this.input.invalidateInputs(parse, from);
         if (this.start) this.start.invalidateInputs(parse, from);
     }
+
+
+
+    iterateLoop(parse)
+    {
+        super.iterateLoop(parse);
+
+        if (this.input) this.input.iterateLoop(parse);
+        if (this.start) this.start.iterateLoop(parse);
+    }    
 }
 
 
@@ -22307,6 +22461,17 @@ extends GOperator
         if (this.input1   ) this.input1   .invalidateInputs(parse, from);
         if (this.condition) this.condition.invalidateInputs(parse, from);
     }
+
+
+
+    iterateLoop(parse)
+    {
+        super.iterateLoop(parse);
+
+        if (this.input0   ) this.input0   .iterateLoop(parse);
+        if (this.input1   ) this.input1   .iterateLoop(parse);
+        if (this.condition) this.condition.iterateLoop(parse);
+    }    
 }
 
 
@@ -22351,6 +22516,15 @@ extends GOperator
         super.invalidateInputs(parse, from);
 
         this.inputs.forEach(i => i.invalidateInputs(parse, from));
+    }
+
+
+
+    iterateLoop(parse)
+    {
+        super.iterateLoop(parse);
+
+        this.inputs.forEach(i => i.iterateLoop(parse));
     }
 }
 
@@ -22626,6 +22800,16 @@ extends GOperator1
         if (this.type    ) this.type    .invalidateInputs(parse, from);
         if (this.decimals) this.decimals.invalidateInputs(parse, from);
     }
+
+
+
+    iterateLoop(parse)
+    {
+        super.iterateLoop(parse);
+
+        if (this.type    ) this.type    .iterateLoop(parse);
+        if (this.decimals) this.decimals.iterateLoop(parse);
+    }
 }
 
 
@@ -22708,6 +22892,15 @@ extends GArithmetic
         super.invalidateInputs(parse, from);
 
         if (this.operation) this.operation.invalidateInputs(parse, from);
+    }
+
+
+
+    iterateLoop(parse)
+    {
+        super.iterateLoop(parse);
+
+        if (this.operation) this.operation.iterateLoop(parse);
     }
 }
 
@@ -22913,6 +23106,17 @@ extends GOperator1
         if (this.min  ) this.min  .invalidateInputs(parse, from);
         if (this.max  ) this.max  .invalidateInputs(parse, from);
     }
+
+
+
+    iterateLoop(parse)
+    {
+        super.iterateLoop(parse);
+
+        if (this.input) this.input.iterateLoop(parse);
+        if (this.min  ) this.min  .iterateLoop(parse);
+        if (this.max  ) this.max  .iterateLoop(parse);
+    }
 }
 
 
@@ -23006,6 +23210,15 @@ extends GOperator
         super.invalidateInputs(parse, from);
 
         if (this.constant) this.constant.invalidateInputs(parse, from);
+    }
+
+
+
+    iterateLoop(parse)
+    {
+        super.iterateLoop(parse);
+
+        if (this.constant) this.constant.iterateLoop(parse);
     }
 }
 
@@ -23146,6 +23359,21 @@ extends GOperator
         if (this.minutes  ) this.minutes  .invalidateInputs(parse, from);
         if (this.seconds  ) this.seconds  .invalidateInputs(parse, from);
     }
+
+
+
+    iterateLoop(parse)
+    {
+        super.iterateLoop(parse);
+
+        if (this.year     ) this.year     .iterateLoop(parse);
+        if (this.month    ) this.month    .iterateLoop(parse);
+        if (this.date     ) this.date     .iterateLoop(parse);
+        if (this.dayOfWeek) this.dayOfWeek.iterateLoop(parse);
+        if (this.hours    ) this.hours    .iterateLoop(parse);
+        if (this.minutes  ) this.minutes  .iterateLoop(parse);
+        if (this.seconds  ) this.seconds  .iterateLoop(parse);
+    }    
 }
 
 
@@ -23249,6 +23477,15 @@ extends GOperator
         super.invalidateInputs(parse, from);
 
         this.inputs.forEach(i => i.invalidateInputs(parse, from));
+    }
+
+
+
+    iterateLoop(parse)
+    {
+        super.iterateLoop(parse);
+
+        this.inputs.forEach(i => i.iterateLoop(parse));
     }
 }
 
@@ -23436,6 +23673,19 @@ extends GOperator
         if (this.spread) this.spread.invalidateInputs(parse, from);
         if (this.bias  ) this.bias  .invalidateInputs(parse, from);
     }
+
+
+
+    iterateLoop(parse)
+    {
+        super.iterateLoop(parse);
+
+        if (this.from  ) this.from  .iterateLoop(parse);
+        if (this.start ) this.start .iterateLoop(parse);
+        if (this.end   ) this.end   .iterateLoop(parse);
+        if (this.spread) this.spread.iterateLoop(parse);
+        if (this.bias  ) this.bias  .iterateLoop(parse);
+    }
 }
 
 
@@ -23494,6 +23744,7 @@ extends GOperator
             && step)
         {
             const value = start.toNumber() + (this.options.enabled ? step.toNumber() * this.iteration : 0);
+
 
             if (!end.isValid())
                 this.value = new NumberValue(value, Math.max(start.decimals, step.decimals));
@@ -23568,6 +23819,17 @@ extends GOperator
         if (this.start) this.start.invalidateInputs(parse, from);
         if (this.end  ) this.end  .invalidateInputs(parse, from);
         if (this.step ) this.step .invalidateInputs(parse, from);
+    }
+
+
+
+    iterateLoop(parse)
+    {
+        super.iterateLoop(parse);
+
+        if (this.start) this.start.iterateLoop(parse);
+        if (this.step ) this.step .iterateLoop(parse);
+        if (this.end  ) this.end  .iterateLoop(parse);
     }
 }
 
@@ -23723,6 +23985,18 @@ extends GOperator
         if (this.min   ) this.min   .invalidateInputs(parse, from);
         if (this.max   ) this.max   .invalidateInputs(parse, from);
         if (this.unique) this.unique.invalidateInputs(parse, from);
+    }
+
+
+
+    iterateLoop(parse)
+    {
+        super.iterateLoop(parse);
+
+        if (this.seed  ) this.seed  .iterateLoop(parse);
+        if (this.min   ) this.min   .iterateLoop(parse);
+        if (this.max   ) this.max   .iterateLoop(parse);
+        if (this.unique) this.unique.iterateLoop(parse);
     }
 
 
@@ -23928,6 +24202,21 @@ extends GOperator
         if (this.interpolate) this.interpolate.invalidateInputs(parse, from);
         if (this.detail     ) this.detail     .invalidateInputs(parse, from);
     }
+
+
+
+    iterateLoop(parse)
+    {
+        super.iterateLoop(parse);
+
+        if (this.seed       ) this.seed       .iterateLoop(parse);
+        if (this.min        ) this.min        .iterateLoop(parse);
+        if (this.max        ) this.max        .iterateLoop(parse);
+        if (this.scale      ) this.scale      .iterateLoop(parse);
+        if (this.offset     ) this.offset     .iterateLoop(parse);
+        if (this.interpolate) this.interpolate.iterateLoop(parse);
+        if (this.detail     ) this.detail     .iterateLoop(parse);
+    }
 }
 
 
@@ -24038,6 +24327,16 @@ extends GOperator
         if (this.seed  ) this.seed  .invalidateInputs(parse, from);
         if (this.chance) this.chance.invalidateInputs(parse, from);
     }
+
+
+
+    iterateLoop(parse)
+    {
+        super.iterateLoop(parse);
+
+        if (this.seed  ) this.seed  .iterateLoop(parse);
+        if (this.chance) this.chance.iterateLoop(parse);
+    }
 }
 
 
@@ -24147,6 +24446,16 @@ extends GOperator
 
 
 
+    iterateLoop(parse)
+    {
+        super.iterateLoop(parse);
+
+        if (this.start) this.start.iterateLoop(parse);
+        if (this.step ) this.step .iterateLoop(parse);
+    }
+
+
+
     resetLoop(parse, nodeId)
     {
         super.resetLoop(parse, nodeId);
@@ -24250,6 +24559,15 @@ extends GOperator2
         super.invalidateInputs(parse, from);
 
         if (this.amount) this.amount.invalidateInputs(parse, from);
+    }
+
+
+
+    iterateLoop(parse)
+    {
+        super.iterateLoop(parse);
+
+        if (this.amount) this.amount.iterateLoop(parse);
     }
 }
 
@@ -24441,6 +24759,16 @@ extends GOperator1
         if (this.current) this.current.invalidateInputs(parse, from);
         if (this.target ) this.target .invalidateInputs(parse, from);
     }
+
+
+
+    iterateLoop(parse)
+    {
+        super.iterateLoop(parse);
+
+        if (this.current) this.current.iterateLoop(parse);
+        if (this.target ) this.target .iterateLoop(parse);
+    }
 }
 
 
@@ -24610,6 +24938,20 @@ extends GOperator
         if (this.length) this.length.invalidateInputs(parse, from);
         if (this.time  ) this.time  .invalidateInputs(parse, from);
     }
+
+
+
+    iterateLoop(parse)
+    {
+        super.iterateLoop(parse);
+
+        if (this.from  ) this.from  .iterateLoop(parse);
+        if (this.to    ) this.to    .iterateLoop(parse);
+        if (this.curve ) this.curve .iterateLoop(parse);
+        if (this.repeat) this.repeat.iterateLoop(parse);
+        if (this.length) this.length.iterateLoop(parse);
+        if (this.time  ) this.time  .iterateLoop(parse);
+    }
 }
 
 
@@ -24700,6 +25042,15 @@ extends GArithmetic
         super.invalidateInputs(parse, from);
 
         if (this.operation) this.operation.invalidateInputs(parse, from);
+    }
+
+
+
+    iterateLoop(parse)
+    {
+        super.iterateLoop(parse);
+
+        if (this.operation) this.operation.iterateLoop(parse);
     }
 }
 
@@ -24851,6 +25202,16 @@ extends GOperator1
 
         if (this.operation) this.operation.invalidateInputs(parse, from);
         if (this.operand  ) this.operand  .invalidateInputs(parse, from);
+    }
+
+
+
+    iterateLoop(parse)
+    {
+        super.iterateLoop(parse);
+
+        if (this.operation) this.operation.iterateLoop(parse);
+        if (this.operand  ) this.operand  .iterateLoop(parse);
     }
 }
 
@@ -25613,6 +25974,15 @@ extends GArithmetic
 
         if (this.operation) this.operation.invalidateInputs(parse, from);
     }
+
+
+
+    iterateLoop(parse)
+    {
+        super.iterateLoop(parse);
+
+        if (this.operation) this.operation.iterateLoop(parse);
+    }
 }
 
 
@@ -26160,6 +26530,16 @@ extends GOperator1
         if (this.operation) this.operation.invalidateInputs(parse, from);
         if (this.operand  ) this.operand  .invalidateInputs(parse, from);
     }
+
+
+
+    iterateLoop(parse)
+    {
+        super.iterateLoop(parse);
+
+        if (this.operation) this.operation.iterateLoop(parse);
+        if (this.operand  ) this.operand  .iterateLoop(parse);
+    }
 }
 
 
@@ -26523,6 +26903,15 @@ extends GOperator1
         super.invalidateInputs(parse, from);
 
         if (this.function) this.function.invalidateInputs(parse, from);
+    }
+
+
+
+    iterateLoop(parse)
+    {
+        super.iterateLoop(parse);
+
+        if (this.function) this.function.iterateLoop(parse);
     }
 }
 
@@ -26922,6 +27311,16 @@ extends GOperator1
         if (this.start) this.start.invalidateInputs(parse, from);
         if (this.end  ) this.end  .invalidateInputs(parse, from);
     }
+
+
+
+    iterateLoop(parse)
+    {
+        super.iterateLoop(parse);
+
+        if (this.start) this.start.iterateLoop(parse);
+        if (this.end  ) this.end  .iterateLoop(parse);
+    }
 }
 
 
@@ -27031,12 +27430,22 @@ extends GOperator1
 
 
 
-    invalidateInputs(parse, from)
+    pushValueUpdates(parse)
     {
-        super.invalidateInputs(parse, from);
+        super.pushValueUpdates(parse);
 
-        if (this.start) this.start.invalidateInputs(parse, from);
-        if (this.end  ) this.end  .invalidateInputs(parse, from);
+        if (this.start) this.start.pushValueUpdates(parse);
+        if (this.end  ) this.end  .pushValueUpdates(parse);
+    }
+
+
+
+    iterateLoop(parse, from)
+    {
+        super.iterateLoop(parse, from);
+
+        if (this.start) this.start.iterateLoop(parse, from);
+        if (this.end  ) this.end  .iterateLoop(parse, from);
     }
 }
 
@@ -27265,7 +27674,7 @@ extends GOperator1
     {
         super.pushValueUpdates(parse);
 
-        if (this.case ) this.case .pushValueUpdates(parse);
+        if (this.case) this.case.pushValueUpdates(parse);
     }
 
 
@@ -27274,7 +27683,16 @@ extends GOperator1
     {
         super.invalidateInputs(parse, from);
 
-        if (this.case ) this.case .invalidateInputs(parse, from);
+        if (this.case) this.case.invalidateInputs(parse, from);
+    }
+
+
+
+    iterateLoop(parse)
+    {
+        super.iterateLoop(parse);
+
+        if (this.case) this.case.iterateLoop(parse);
     }
 }
 
@@ -27378,6 +27796,15 @@ extends GOperator1
 
         if (this.format) this.format.invalidateInputs(parse, from);
     }
+
+
+
+    iterateLoop(parse)
+    {
+        super.iterateLoop(parse);
+
+        if (this.format) this.format.iterateLoop(parse);
+    }
 }
 
 
@@ -27436,7 +27863,7 @@ extends GOperator1
                     break;
             }
 
-            this.value = new NumberValue(num);
+            this.value = new NumberValue(num, decDigits(num));
         }
         else
             this.value = NumberValue.NaN;
@@ -27478,6 +27905,15 @@ extends GOperator1
         super.invalidateInputs(parse, from);
 
         if (this.format) this.format.invalidateInputs(parse, from);
+    }
+
+
+
+    iterateLoop(parse)
+    {
+        super.iterateLoop(parse);
+
+        if (this.format) this.format.iterateLoop(parse);
     }
 }
 
@@ -27615,6 +28051,15 @@ extends GOperator1
 
         if (this.code) this.code.invalidateInputs(parse, from);
     }
+
+
+
+    iterateLoop(parse)
+    {
+        super.iterateLoop(parse);
+
+        if (this.code) this.code.iterateLoop(parse);
+    }
 }
 
 
@@ -27702,8 +28147,8 @@ extends GOperator1
     {
         super.pushValueUpdates(parse);
 
-        if (this.what ) this.what .pushValueUpdates(parse);
-        if (this.with ) this.with .pushValueUpdates(parse);
+        if (this.what) this.what.pushValueUpdates(parse);
+        if (this.with) this.with.pushValueUpdates(parse);
     }
 
 
@@ -27712,8 +28157,18 @@ extends GOperator1
     {
         super.invalidateInputs(parse, from);
 
-        if (this.what ) this.what .invalidateInputs(parse, from);
-        if (this.with ) this.with .invalidateInputs(parse, from);
+        if (this.what) this.what.invalidateInputs(parse, from);
+        if (this.with) this.with.invalidateInputs(parse, from);
+    }
+
+
+
+    iterateLoop(parse)
+    {
+        super.iterateLoop(parse);
+
+        if (this.what) this.what.iterateLoop(parse);
+        if (this.with) this.with.iterateLoop(parse);
     }
 }
 
@@ -27806,6 +28261,15 @@ extends GOperator
         super.invalidateInputs(parse, from);
 
         this.inputs.forEach(i => i.invalidateInputs(parse, from));
+    }
+
+
+
+    iterateLoop(parse)
+    {
+        super.iterateLoop(parse);
+
+        this.inputs.forEach(i => i.iterateLoop(parse));
     }
 }
 
@@ -27975,6 +28439,18 @@ extends GOperator1
         if (this.endPad    ) this.endPad    .invalidateInputs(parse, from);
         if (this.endCount  ) this.endCount  .invalidateInputs(parse, from);
     }
+
+
+
+    iterateLoop(parse)
+    {
+        super.iterateLoop(parse);
+
+        if (this.startPad  ) this.startPad  .iterateLoop(parse);
+        if (this.startCount) this.startCount.iterateLoop(parse);
+        if (this.endPad    ) this.endPad    .iterateLoop(parse);
+        if (this.endCount  ) this.endCount  .iterateLoop(parse);
+    }
 }
 
 
@@ -28074,6 +28550,15 @@ extends GOperator1
 
         if (this.separator) this.separator.invalidateInputs(parse, from);
     }
+
+
+
+    iterateLoop(parse)
+    {
+        super.iterateLoop(parse);
+
+        if (this.separator) this.separator.iterateLoop(parse);
+    }
 }
 
 
@@ -28165,6 +28650,15 @@ extends GOperator2
         super.invalidateInputs(parse, from);
 
         if (this.operation) this.operation.invalidateInputs(parse, from);
+    }
+
+
+
+    iterateLoop(parse)
+    {
+        super.iterateLoop(parse);
+
+        if (this.operation) this.operation.iterateLoop(parse);
     }
 }
 
@@ -28314,6 +28808,16 @@ extends GOperator1
 
         if (this.rowSeparator   ) this.rowSeparator   .invalidateInputs(parse, from);
         if (this.columnSeparator) this.columnSeparator.invalidateInputs(parse, from);
+    }
+
+
+
+    iterateLoop(parse)
+    {
+        super.iterateLoop(parse);
+
+        if (this.rowSeparator   ) this.rowSeparator   .iterateLoop(parse);
+        if (this.columnSeparator) this.columnSeparator.iterateLoop(parse);
     }
 }
 
@@ -28530,6 +29034,15 @@ extends GOperator
 
         this.cachedValue = new TextValue();
     }
+
+
+
+    iterateLoop(parse)
+    {
+        super.iterateLoop(parse);
+
+        if (this.request) this.request.iterateLoop(parse);
+    }
 }
 
 
@@ -28615,6 +29128,15 @@ extends GOperator
         if (this.path) this.path.invalidateInputs(parse, from);
 
         //this.cachedValue = new TextValue();
+    }
+
+
+
+    iterateLoop(parse)
+    {
+        super.iterateLoop(parse);
+
+        if (this.path) this.path.iterateLoop(parse);
     }
 }
 
@@ -29395,6 +29917,18 @@ extends GOperator1
         if (this.c2   ) this.c2   .invalidateInputs(parse, from);
         if (this.c3   ) this.c3   .invalidateInputs(parse, from);
     }
+
+
+
+    iterateLoop(parse)
+    {
+        super.iterateLoop(parse);
+
+        if (this.space) this.space.iterateLoop(parse);
+        if (this.c1   ) this.c1   .iterateLoop(parse);
+        if (this.c2   ) this.c2   .iterateLoop(parse);
+        if (this.c3   ) this.c3   .iterateLoop(parse);
+    }
 }
 
 
@@ -29554,6 +30088,15 @@ extends GOperator1
         super.invalidateInputs(parse, from);
 
         if (this.quality) this.quality.invalidateInputs(parse, from);
+    }
+
+
+
+    iterateLoop(parse)
+    {
+        super.iterateLoop(parse);
+
+        if (this.quality) this.quality.iterateLoop(parse);
     }
 }
 
@@ -29798,6 +30341,18 @@ extends GOperator1
         if (this.margin2) this.margin2.invalidateInputs(parse, from);
         if (this.margin3) this.margin3.invalidateInputs(parse, from);
     }
+
+
+
+    iterateLoop(parse)
+    {
+        super.iterateLoop(parse);
+
+        if (this.order  ) this.order  .iterateLoop(parse);
+        if (this.margin1) this.margin1.iterateLoop(parse);
+        if (this.margin2) this.margin2.iterateLoop(parse);
+        if (this.margin3) this.margin3.iterateLoop(parse);
+    }
 }
 
 
@@ -29967,6 +30522,16 @@ extends GOperator2
         if (this.standard) this.standard.invalidateInputs(parse, from);
         if (this.contrast) this.contrast.invalidateInputs(parse, from);
     }
+
+
+
+    iterateLoop(parse)
+    {
+        super.iterateLoop(parse);
+
+        if (this.standard) this.standard.iterateLoop(parse);
+        if (this.contrast) this.contrast.iterateLoop(parse);
+    }
 }
 
 
@@ -30063,6 +30628,15 @@ extends GOperator1
         super.invalidateInputs(parse, from);
 
         if (this.from) this.from.invalidateInputs(parse, from);
+    }
+
+
+
+    iterateLoop(parse)
+    {
+        super.iterateLoop(parse);
+
+        if (this.from) this.from.iterateLoop(parse);
     }
 }
 
@@ -30187,6 +30761,17 @@ extends GOperator1
         if (this.l) this.l.invalidateInputs(parse, from);
         if (this.m) this.m.invalidateInputs(parse, from);
         if (this.s) this.s.invalidateInputs(parse, from);
+    }
+
+
+
+    iterateLoop(parse)
+    {
+        super.iterateLoop(parse);
+
+        if (this.l) this.l.iterateLoop(parse);
+        if (this.m) this.m.iterateLoop(parse);
+        if (this.s) this.s.iterateLoop(parse);
     }
 }
 
@@ -30361,6 +30946,17 @@ extends GOperator2
         if (this.amount) this.amount.invalidateInputs(parse, from);
         if (this.gamma ) this.gamma .invalidateInputs(parse, from);
     }
+
+
+
+    iterateLoop(parse)
+    {
+        super.iterateLoop(parse);
+
+        if (this.space ) this.space .iterateLoop(parse);
+        if (this.amount) this.amount.iterateLoop(parse);
+        if (this.gamma ) this.gamma .iterateLoop(parse);
+    }
 }
 
 
@@ -30507,6 +31103,16 @@ extends GOperator2
 
         if (this.mode   ) this.mode   .invalidateInputs(parse, from);
         if (this.opacity) this.opacity.invalidateInputs(parse, from);
+    }
+
+
+
+    iterateLoop(parse)
+    {
+        super.iterateLoop(parse);
+
+        if (this.mode   ) this.mode   .iterateLoop(parse);
+        if (this.opacity) this.opacity.iterateLoop(parse);
     }
 }
 
@@ -31006,6 +31612,15 @@ extends GOperator
 
         if (this.genValue) this.genValue.invalidateInputs(parse, from);
     }
+
+
+
+    iterateLoop(parse)
+    {
+        super.iterateLoop(parse);
+
+        if (this.genValue) this.genValue.iterateLoop(parse);
+    }
 }
 
 
@@ -31130,6 +31745,17 @@ extends GOperator1
         if (this.color  ) this.color  .invalidateInputs(parse, from);
         if (this.opacity) this.opacity.invalidateInputs(parse, from);
         if (this.blend  ) this.blend  .invalidateInputs(parse, from);
+    }
+
+
+
+    iterateLoop(parse)
+    {
+        super.iterateLoop(parse);
+
+        if (this.color  ) this.color  .iterateLoop(parse);
+        if (this.opacity) this.opacity.iterateLoop(parse);
+        if (this.blend  ) this.blend  .iterateLoop(parse);
     }
 }
 
@@ -31260,6 +31886,16 @@ extends GOperator1
         if (this.fill    ) this.fill    .invalidateInputs(parse, from);
         if (this.position) this.position.invalidateInputs(parse, from);
     }
+
+
+
+    iterateLoop(parse)
+    {
+        super.iterateLoop(parse);
+
+        if (this.fill    ) this.fill    .iterateLoop(parse);
+        if (this.position) this.position.iterateLoop(parse);
+    }
 }
 
 
@@ -31365,23 +32001,6 @@ extends GOperator
         return this;
     }
 
-
-
-    pushValueUpdates(parse)
-    {
-        super.pushValueUpdates(parse);
-
-        this.inputs.forEach(i => i.pushValueUpdates(parse));
-
-        if (this.gradType) this.gradType.pushValueUpdates(parse);
-        if (this.x       ) this.x       .pushValueUpdates(parse);
-        if (this.y       ) this.y       .pushValueUpdates(parse);
-        if (this.size    ) this.size    .pushValueUpdates(parse);
-        if (this.angle   ) this.angle   .pushValueUpdates(parse);
-        if (this.aspect  ) this.aspect  .pushValueUpdates(parse);
-        if (this.skew    ) this.skew    .pushValueUpdates(parse);
-        if (this.blend   ) this.blend   .pushValueUpdates(parse);
-    }    
     
     
     toValue()
@@ -31421,6 +32040,24 @@ extends GOperator
 
 
 
+    pushValueUpdates(parse)
+    {
+        super.pushValueUpdates(parse);
+
+        this.inputs.forEach(i => i.pushValueUpdates(parse));
+
+        if (this.gradType) this.gradType.pushValueUpdates(parse);
+        if (this.x       ) this.x       .pushValueUpdates(parse);
+        if (this.y       ) this.y       .pushValueUpdates(parse);
+        if (this.size    ) this.size    .pushValueUpdates(parse);
+        if (this.angle   ) this.angle   .pushValueUpdates(parse);
+        if (this.aspect  ) this.aspect  .pushValueUpdates(parse);
+        if (this.skew    ) this.skew    .pushValueUpdates(parse);
+        if (this.blend   ) this.blend   .pushValueUpdates(parse);
+    }    
+
+
+
     invalidateInputs(parse, from)
     {
         super.invalidateInputs(parse, from);
@@ -31436,6 +32073,24 @@ extends GOperator
         if (this.skew    ) this.skew    .invalidateInputs(parse, from);
         if (this.blend   ) this.blend   .invalidateInputs(parse, from);
     }
+
+
+
+    iterateLoop(parse)
+    {
+        super.iterateLoop(parse);
+
+        this.inputs.forEach(i => i.iterateLoop(parse));
+
+        if (this.gradType) this.gradType.iterateLoop(parse);
+        if (this.x       ) this.x       .iterateLoop(parse);
+        if (this.y       ) this.y       .iterateLoop(parse);
+        if (this.size    ) this.size    .iterateLoop(parse);
+        if (this.angle   ) this.angle   .iterateLoop(parse);
+        if (this.aspect  ) this.aspect  .iterateLoop(parse);
+        if (this.skew    ) this.skew    .iterateLoop(parse);
+        if (this.blend   ) this.blend   .iterateLoop(parse);
+    }    
 }
 
 
@@ -31629,6 +32284,21 @@ extends GOperator1
         if (this.cap   ) this.cap   .invalidateInputs(parse, from);
         if (this.dashes) this.dashes.invalidateInputs(parse, from);
     }
+
+
+
+    iterateLoop(parse)
+    {
+        super.iterateLoop(parse);
+
+        if (this.fills ) this.fills .iterateLoop(parse);
+        if (this.weight) this.weight.iterateLoop(parse);
+        if (this.fit   ) this.fit   .iterateLoop(parse);
+        if (this.join  ) this.join  .iterateLoop(parse);
+        if (this.miter ) this.miter .iterateLoop(parse);
+        if (this.cap   ) this.cap   .iterateLoop(parse);
+        if (this.dashes) this.dashes.iterateLoop(parse);
+    }    
 }
 
 
@@ -31797,6 +32467,21 @@ extends GOperator1
         if (this.blend ) this.blend .invalidateInputs(parse, from);
         if (this.behind) this.behind.invalidateInputs(parse, from);
     }
+
+
+
+    iterateLoop(parse)
+    {
+        super.iterateLoop(parse);
+
+        if (this.x     ) this.x     .iterateLoop(parse);
+        if (this.y     ) this.y     .iterateLoop(parse);
+        if (this.blur  ) this.blur  .iterateLoop(parse);
+        if (this.spread) this.spread.iterateLoop(parse);
+        if (this.fill  ) this.fill  .iterateLoop(parse);
+        if (this.blend ) this.blend .iterateLoop(parse);
+        if (this.behind) this.behind.iterateLoop(parse);
+    }
 }
 
 
@@ -31955,6 +32640,20 @@ extends GOperator1
         if (this.fill  ) this.fill  .invalidateInputs(parse, from);
         if (this.blend ) this.blend .invalidateInputs(parse, from);
     }
+
+
+
+    iterateLoop(parse)
+    {
+        super.iterateLoop(parse);
+
+        if (this.x     ) this.x     .iterateLoop(parse);
+        if (this.y     ) this.y     .iterateLoop(parse);
+        if (this.blur  ) this.blur  .iterateLoop(parse);
+        if (this.spread) this.spread.iterateLoop(parse);
+        if (this.fill  ) this.fill  .iterateLoop(parse);
+        if (this.blend ) this.blend .iterateLoop(parse);
+    }
 }
 
 
@@ -32058,6 +32757,15 @@ extends GOperator1
 
         if (this.radius) this.radius.invalidateInputs(parse, from);
     }
+
+
+
+    iterateLoop(parse)
+    {
+        super.iterateLoop(parse);
+
+        if (this.radius) this.radius.iterateLoop(parse);
+    }
 }
 
 
@@ -32160,6 +32868,15 @@ extends GOperator1
         super.invalidateInputs(parse, from);
 
         if (this.radius) this.radius.invalidateInputs(parse, from);
+    }
+
+
+
+    iterateLoop(parse)
+    {
+        super.iterateLoop(parse);
+
+        if (this.radius) this.radius.iterateLoop(parse);
     }
 }
 
@@ -32299,6 +33016,18 @@ extends GOperator
         if (this.y     ) this.y     .invalidateInputs(parse, from);
         if (this.width ) this.width .invalidateInputs(parse, from);
         if (this.height) this.height.invalidateInputs(parse, from);
+    }
+
+
+
+    iterateLoop(parse)
+    {
+        super.iterateLoop(parse);
+
+        if (this.x     ) this.x     .iterateLoop(parse);
+        if (this.y     ) this.y     .iterateLoop(parse);
+        if (this.width ) this.width .iterateLoop(parse);
+        if (this.height) this.height.iterateLoop(parse);
     }
 }
 
@@ -32473,6 +33202,16 @@ extends GShapeBase
 
         if (this.input) this.input.invalidateInputs(parse, from);
         if (this.props) this.props.invalidateInputs(parse, from);
+    }
+
+
+
+    iterateLoop(parse)
+    {
+        super.iterateLoop(parse);
+
+        if (this.input) this.input.iterateLoop(parse);
+        if (this.props) this.props.iterateLoop(parse);
     }
 }
 
@@ -32655,6 +33394,15 @@ extends GShape
         super.invalidateInputs(parse, from);
 
         if (this.round) this.round.invalidateInputs(parse, from);
+    }
+
+
+
+    iterateLoop(parse)
+    {
+        super.iterateLoop(parse);
+
+        if (this.round) this.round.iterateLoop(parse);
     }
 }
 
@@ -32994,6 +33742,17 @@ extends GShape
         if (this.to   ) this.to   .invalidateInputs(parse, from);
         if (this.inner) this.inner.invalidateInputs(parse, from);
     }
+
+
+
+    iterateLoop(parse)
+    {
+        super.iterateLoop(parse);
+ 
+        if (this.from ) this.from .iterateLoop(parse);
+        if (this.to   ) this.to   .iterateLoop(parse);
+        if (this.inner) this.inner.iterateLoop(parse);
+    }
 }
 
 
@@ -33176,6 +33935,16 @@ extends GShape
 
         if (this.round) this.round.invalidateInputs(parse, from);
         if (this.bias ) this.bias .invalidateInputs(parse, from);
+    }
+
+
+
+    iterateLoop(parse)
+    {
+        super.iterateLoop(parse);
+
+        if (this.round) this.round.iterateLoop(parse);
+        if (this.bias ) this.bias .iterateLoop(parse);
     }
 }
 
@@ -33367,6 +34136,16 @@ extends GShape
 
         if (this.round  ) this.round  .invalidateInputs(parse, from);
         if (this.corners) this.corners.invalidateInputs(parse, from);
+    }
+
+
+
+    iterateLoop(parse)
+    {
+        super.iterateLoop(parse);
+
+        if (this.round  ) this.round  .iterateLoop(parse);
+        if (this.corners) this.corners.iterateLoop(parse);
     }
 }
 
@@ -33569,6 +34348,17 @@ extends GShape
         if (this.round ) this.round .invalidateInputs(parse, from);
         if (this.points) this.points.invalidateInputs(parse, from);
         if (this.convex) this.convex.invalidateInputs(parse, from);
+    }
+
+
+
+    iterateLoop(parse)
+    {
+        super.iterateLoop(parse);
+
+        if (this.round ) this.round .iterateLoop(parse);
+        if (this.points) this.points.iterateLoop(parse);
+        if (this.convex) this.convex.iterateLoop(parse);
     }
 }
 
@@ -33882,6 +34672,26 @@ extends GShape
         if (this.lineHeight   ) this.lineHeight   .invalidateInputs(parse, from);
         if (this.letterSpacing) this.letterSpacing.invalidateInputs(parse, from);
     }
+
+
+
+    iterateLoop(parse)
+    {
+        super.iterateLoop(parse);
+        
+        if (this.text         ) this.text         .iterateLoop(parse);
+        if (this.x            ) this.x            .iterateLoop(parse);
+        if (this.y            ) this.y            .iterateLoop(parse);
+        if (this.width        ) this.width        .iterateLoop(parse);
+        if (this.height       ) this.height       .iterateLoop(parse);
+        if (this.font         ) this.font         .iterateLoop(parse);
+        if (this.style        ) this.style        .iterateLoop(parse);
+        if (this.size         ) this.size         .iterateLoop(parse);
+        if (this.alignH       ) this.alignH       .iterateLoop(parse);
+        if (this.alignV       ) this.alignV       .iterateLoop(parse);
+        if (this.lineHeight   ) this.lineHeight   .iterateLoop(parse);
+        if (this.letterSpacing) this.letterSpacing.iterateLoop(parse);
+    }
 }
 
 
@@ -34032,6 +34842,16 @@ extends GOperator1
 
         if (this.x) this.x.invalidateInputs(parse, from);
         if (this.y) this.y.invalidateInputs(parse, from);
+    }
+
+
+
+    iterateLoop(parse)
+    {
+        super.iterateLoop(parse);
+
+        if (this.x && this.x.updateValue) this.x.iterateLoop(parse);
+        if (this.y && this.y.updateValue) this.y.iterateLoop(parse);
     }
 }
 
@@ -34247,6 +35067,19 @@ extends GShape
         if (this.winding) this.winding.invalidateInputs(parse, from);
         if (this.round  ) this.round  .invalidateInputs(parse, from);
     }
+
+
+
+    iterateLoop(parse)
+    {
+        super.iterateLoop(parse);
+
+        if (this.points ) this.points .iterateLoop(parse);
+        if (this.closed ) this.closed .iterateLoop(parse);
+        if (this.degree ) this.degree .iterateLoop(parse);
+        if (this.winding) this.winding.iterateLoop(parse);
+        if (this.round  ) this.round  .iterateLoop(parse);
+    }
 }
 
 
@@ -34424,6 +35257,19 @@ extends GOperator1
         if (this.cap  ) this.cap  .invalidateInputs(parse, from);
         if (this.round) this.round.invalidateInputs(parse, from);
     }
+
+
+
+    iterateLoop(parse)
+    {
+        super.iterateLoop(parse);
+
+        if (this.x    ) this.x    .iterateLoop(parse);
+        if (this.y    ) this.y    .iterateLoop(parse);
+        if (this.join ) this.join .iterateLoop(parse);
+        if (this.cap  ) this.cap  .iterateLoop(parse);
+        if (this.round) this.round.iterateLoop(parse);
+    }
 }
 
 
@@ -34590,6 +35436,18 @@ extends GOperator1
         if (this.input1      ) this.input1      .invalidateInputs(parse, from);
         if (this.startTangent) this.startTangent.invalidateInputs(parse, from);
         if (this.endTangent  ) this.endTangent  .invalidateInputs(parse, from);
+    }
+
+
+
+    iterateLoop(parse)
+    {
+        super.iterateLoop(parse);
+
+        if (this.input0      ) this.input0      .iterateLoop(parse);
+        if (this.input1      ) this.input1      .iterateLoop(parse);
+        if (this.startTangent) this.startTangent.iterateLoop(parse);
+        if (this.endTangent  ) this.endTangent  .iterateLoop(parse);
     }
 }
 
@@ -34833,6 +35691,18 @@ extends GShape
         if (this.winding) this.winding.invalidateInputs(parse, from);
         if (this.props  ) this.props  .invalidateInputs(parse, from);
     }
+
+
+
+    iterateLoop(parse)
+    {
+        super.iterateLoop(parse);
+
+        this.inputs.forEach(i => i.iterateLoop(parse));
+
+        if (this.winding) this.winding.iterateLoop(parse);
+        if (this.props  ) this.props  .iterateLoop(parse);
+    }
 }
 
 
@@ -35022,6 +35892,15 @@ extends GShape
 
         this.inputs.forEach(i => i.pushValueUpdates(parse));
     }
+
+
+
+    iterateLoop(parse)
+    {
+        super.iterateLoop(parse);
+
+        this.inputs.forEach(i => i.iterateLoop(parse));
+    }
 }
 
 
@@ -35166,15 +36045,6 @@ extends GShapeBase
 
 
 
-    pushValueUpdates(parse)
-    {
-        super.pushValueUpdates(parse);
-
-        this.inputs.forEach(i => i.pushValueUpdates(parse));
-    }
-
-
-
     toValue()
     {
         return this.value.copy();
@@ -35196,11 +36066,29 @@ extends GShapeBase
 
 
 
+    pushValueUpdates(parse)
+    {
+        super.pushValueUpdates(parse);
+
+        this.inputs.forEach(i => i.pushValueUpdates(parse));
+    }
+
+
+
     invalidateInputs(parse, from)
     {
         super.invalidateInputs(parse, from);
 
         this.inputs.forEach(i => i.invalidateInputs(parse, from));
+    }
+
+
+
+    iterateLoop(parse)
+    {
+        super.iterateLoop(parse);
+
+        this.inputs.forEach(i => i.iterateLoop(parse));
     }
 }
 
@@ -35409,6 +36297,16 @@ extends GShape
 
         if (this.round   ) this.round   .invalidateInputs(parse, from);
         if (this.children) this.children.invalidateInputs(parse, from);
+    }
+
+
+
+    iterateLoop(parse)
+    {
+        super.iterateLoop(parse);
+
+        if (this.round   ) this.round   .iterateLoop(parse);
+        if (this.children) this.children.iterateLoop(parse);
     }
 }
 
@@ -35652,16 +36550,6 @@ extends GShapeBase
 
 
 
-    pushValueUpdates(parse)
-    {
-        super.pushValueUpdates(parse);
-
-        if (this.input   ) this.input   .pushValueUpdates(parse);
-        if (this.children) this.children.pushValueUpdates(parse);
-    }
-
-
-
     toValue()
     {
         return this.value.copy();
@@ -35677,12 +36565,32 @@ extends GShapeBase
 
 
 
+    pushValueUpdates(parse)
+    {
+        super.pushValueUpdates(parse);
+
+        if (this.input   ) this.input   .pushValueUpdates(parse);
+        if (this.children) this.children.pushValueUpdates(parse);
+    }
+
+
+
     invalidateInputs(parse, from)
     {
         super.invalidateInputs(parse, from);
 
         if (this.input   ) this.input   .invalidateInputs(parse, from);
         if (this.children) this.children.invalidateInputs(parse, from);
+    }
+
+
+
+    iterateLoop(parse)
+    {
+        super.iterateLoop(parse);
+
+        if (this.input   ) this.input   .iterateLoop(parse);
+        if (this.children) this.children.iterateLoop(parse);
     }
 }
 
@@ -35823,6 +36731,17 @@ extends GShapeBase
         this.inputs.forEach(i => i.invalidateInputs(parse, from));
 
         if (this.retain) this.retain.invalidateInputs(parse, from);
+    }
+
+
+
+    iterateLoop(parse)
+    {
+        super.iterateLoop(parse);
+
+        this.inputs.forEach(i => i.iterateLoop(parse));
+
+        if (this.retain) this.retain.iterateLoop(parse);
     }
 }
 
@@ -36036,6 +36955,19 @@ extends GOperator1
         if (this.affectSpace) this.affectSpace.invalidateInputs(parse, from);
         if (this.showCenter ) this.showCenter .invalidateInputs(parse, from);
     }
+
+
+
+    iterateLoop(parse)
+    {
+        super.iterateLoop(parse);
+
+        if (this.x          ) this.x          .iterateLoop(parse);
+        if (this.y          ) this.y          .iterateLoop(parse);
+        if (this.moveType   ) this.moveType   .iterateLoop(parse);
+        if (this.affectSpace) this.affectSpace.iterateLoop(parse);
+        if (this.showCenter ) this.showCenter .iterateLoop(parse);
+    }
 }
 
 
@@ -36141,6 +37073,16 @@ extends GOperator1
 
         if (this.showCenter ) this.showCenter .invalidateInputs(parse, from);
         if (this.affectSpace) this.affectSpace.invalidateInputs(parse, from);
+    }
+
+
+
+    iterateLoop(parse)
+    {
+        super.iterateLoop(parse);
+
+        if (this.showCenter ) this.showCenter .iterateLoop(parse);
+        if (this.affectSpace) this.affectSpace.iterateLoop(parse);
     }
 }
 
@@ -36275,6 +37217,15 @@ extends GAffine
         super.invalidateInputs(parse, from)
 
         if (this.angle) this.angle.invalidateInputs(parse, from);
+    }
+
+
+
+    iterateLoop(parse)
+    {
+        super.iterateLoop(parse);
+
+        if (this.angle) this.angle.iterateLoop(parse);
     }
 }
 
@@ -36439,6 +37390,18 @@ extends GAffine
         if (this.affectCorners) this.affectCorners.invalidateInputs(parse, from);
         if (this.affectStyle  ) this.affectStyle  .invalidateInputs(parse, from);
     }
+
+
+
+    iterateLoop(parse)
+    {
+        super.iterateLoop(parse);
+
+        if (this.scaleX       ) this.scaleX       .iterateLoop(parse);
+        if (this.scaleY       ) this.scaleY       .iterateLoop(parse);
+        if (this.affectCorners) this.affectCorners.iterateLoop(parse);
+        if (this.affectStyle  ) this.affectStyle  .iterateLoop(parse);
+    }
 }
 
 
@@ -36582,6 +37545,16 @@ extends GAffine
 
         if (this.skewX) this.skewX.invalidateInputs(parse, from);
         if (this.skewY) this.skewY.invalidateInputs(parse, from);
+    }
+
+
+
+    iterateLoop(parse)
+    {
+        super.iterateLoop(parse);GVectorPath
+
+        if (this.skewX) this.skewX.iterateLoop(parse);
+        if (this.skewY) this.skewY.iterateLoop(parse);
     }
 }
 
@@ -36749,6 +37722,17 @@ extends GOperator1
         if (this.centerY   ) this.centerY   .invalidateInputs(parse, from);
         if (this.showCenter) this.showCenter.invalidateInputs(parse, from);
     }
+
+
+
+    iterateLoop(parse)
+    {
+        super.iterateLoop(parse);
+
+        if (this.centerX   ) this.centerX   .iterateLoop(parse);
+        if (this.centerY   ) this.centerY   .iterateLoop(parse);
+        if (this.showCenter) this.showCenter.iterateLoop(parse);
+    }
 }
 
 
@@ -36891,6 +37875,15 @@ extends GOperator1
 
         if (this.showCenter) this.showCenter.invalidateInputs(parse, from);
     }
+
+
+
+    iterateLoop(parse)
+    {
+        super.iterateLoop(parse);
+
+        if (this.showCenter) this.showCenter.iterateLoop(parse);
+    }
 }
 
 
@@ -36998,6 +37991,16 @@ extends GOperator2
 
         if (this.distance) this.distance.invalidateInputs(parse, from);
         if (this.angle   ) this.angle   .invalidateInputs(parse, from);
+    }
+
+
+
+    iterateLoop(parse)
+    {
+        super.iterateLoop(parse);
+
+        if (this.distance) this.distance.iterateLoop(parse);
+        if (this.angle   ) this.angle   .iterateLoop(parse);
     }
 }
 
@@ -37139,6 +38142,17 @@ extends GOperator2
         if (this.transform ) this.transform .invalidateInputs(parse, from);
         if (this.showCenter) this.showCenter.invalidateInputs(parse, from);
     }
+
+
+
+    iterateLoop(parse)
+    {
+        super.iterateLoop(parse);
+
+        if (this.amount    ) this.amount    .iterateLoop(parse);
+        if (this.transform ) this.transform .iterateLoop(parse);
+        if (this.showCenter) this.showCenter.iterateLoop(parse);
+    }
 }
 
 
@@ -37274,6 +38288,18 @@ extends GOperator2
         if (this.amount    ) this.amount    .invalidateInputs(parse, from);
         if (this.transform ) this.transform .invalidateInputs(parse, from);
         if (this.showCenter) this.showCenter.invalidateInputs(parse, from);
+    }
+
+
+
+    iterateLoop(parse)
+    {
+        super.iterateLoop(parse);
+
+        if (this.measure   ) this.measure   .iterateLoop(parse);
+        if (this.amount    ) this.amount    .iterateLoop(parse);
+        if (this.transform ) this.transform .iterateLoop(parse);
+        if (this.showCenter) this.showCenter.iterateLoop(parse);
     }
 }
 
@@ -37472,6 +38498,17 @@ extends GOperator1
         if (this.transform ) this.transform .invalidateInputs(parse, from);
         if (this.showCenter) this.showCenter.invalidateInputs(parse, from);
     }
+
+
+
+    iterateLoop(parse)
+    {
+        super.iterateLoop(parse);
+
+        if (this.position  ) this.position  .iterateLoop(parse);
+        if (this.transform ) this.transform .iterateLoop(parse);
+        if (this.showCenter) this.showCenter.iterateLoop(parse);
+    }
 }
 
 
@@ -37570,12 +38607,32 @@ extends GOperator
 
 
 
+    pushValueUpdates(parse)
+    {
+        super.pushValueUpdates(parse);
+
+        this.inputs.forEach(i => i.pushValueUpdates(parse))
+        this.params.forEach(p => p.pushValueUpdates(parse))
+    }
+
+
+
     invalidateInputs(parse, from)
     {
         super.invalidateInputs(parse, from);
 
         this.inputs.forEach(i => i.invalidateInputs(parse, from))
         this.params.forEach(p => p.invalidateInputs(parse, from))
+    }
+
+
+
+    iterateLoop(parse)
+    {
+        super.iterateLoop(parse);
+
+        this.inputs.forEach(i => i.iterateLoop(parse))
+        this.params.forEach(p => p.iterateLoop(parse))
     }
 }
 
@@ -37663,11 +38720,29 @@ extends GOperator
 
 
 
+    pushValueUpdates(parse)
+    {
+        super.pushValueUpdates(parse);
+
+        if (this.input) this.input.pushValueUpdates(parse);
+    }
+
+
+
     invalidateInputs(parse, from)
     {
         super.invalidateInputs(parse, from);
 
         if (this.input) this.input.invalidateInputs(parse, from);
+    }
+
+
+
+    iterateLoop(parse)
+    {
+        super.iterateLoop(parse);
+
+        if (this.input) this.input.iterateLoop(parse);
     }
 }
 
@@ -58426,8 +59501,6 @@ class GNode
         if (this.unknown)
             this.valid = false;
 
-        this.iterateLoop(parse);
-
         return true;
     }
 
@@ -58965,6 +60038,15 @@ extends GOperator
 
         if (this.input) this.input.invalidateInputs(parse, from);
     }
+
+
+
+    iterateLoop(parse)
+    {
+        super.iterateLoop(parse);
+
+        if (this.input) this.input.iterateLoop(parse);
+    }
 }
 
 
@@ -59019,6 +60101,16 @@ extends GOperator
 
         if (this.input0) this.input0.invalidateInputs(parse, from);
         if (this.input1) this.input1.invalidateInputs(parse, from);
+    }
+
+
+
+    iterateLoop(parse)
+    {
+        super.iterateLoop(parse);
+
+        if (this.input0) this.input0.iterateLoop(parse);
+        if (this.input1) this.input1.iterateLoop(parse);
     }
 }
 
@@ -59128,6 +60220,14 @@ extends GOperator
     {
         const node = parse.parsedNodes.find(n => n.nodeId == this.nodeId);
         node.invalidateLoop(parse, nodeId);
+    }
+
+
+
+    iterateLoop(parse)
+    {
+        const node = parse.parsedNodes.find(n => n.nodeId == this.nodeId);
+        node.iterateLoop(parse);
     }
 
 
@@ -59748,7 +60848,7 @@ extends GValue
 
     toJson()
     {
-        return this.value ? encodeURIComponent(this.value) : '?';
+        return encodeURIComponent(this.value);
     }
 
 
@@ -59798,7 +60898,7 @@ extends GValue
 
 
 
-    static NaN = Object.freeze(new TextValue(null));
+    static NaN = Object.freeze(new TextValue());
 }
 
 
@@ -64955,6 +66055,16 @@ extends GOperator
         if (this.input   ) this.input   .invalidateInputs(parse, from);
         if (this.feedback) this.feedback.invalidateInputs(parse, from);
     }
+
+
+
+    iterateLoop(parse)
+    {
+        super.iterateLoop(parse);
+
+        if (this.input   ) this.input   .iterateLoop(parse);
+        if (this.feedback) this.feedback.iterateLoop(parse);
+    }
 }
 
 
@@ -65019,8 +66129,6 @@ extends GOperator1
 
         if (count.value > 0)
         {
-            //console.log('this.input =', this.input);
-            //console.log('this.input.isValid() =', this.input.isValid());
             if (this.input)
                 //&& this.input.isValid())
             {
@@ -65033,7 +66141,7 @@ extends GOperator1
                     && (   this.options.active
                         || this.options.beforeActive)
                     ? count.value 
-                    : 0;//1;
+                    : 0;
                 
 
                 let repeat =
@@ -65106,6 +66214,9 @@ extends GOperator1
                             }
                         }
                     }
+
+
+                    this.input.iterateLoop(parse);
 
 
                     if (parse.repeats.length == 1)
@@ -65209,6 +66320,17 @@ extends GOperator1
         if (this. count) this. count.invalidateInputs(parse, from);
         if (this._while) this._while.invalidateInputs(parse, from);
         if (this. loop ) this. loop .invalidateInputs(parse, from);
+    }
+
+
+
+    iterateLoop(parse)
+    {
+        super.iterateLoop(parse);
+
+        if (this. count) this. count.iterateLoop(parse);
+        if (this._while) this._while.iterateLoop(parse);
+        if (this. loop ) this. loop .iterateLoop(parse);
     }
 }
 
@@ -65325,6 +66447,15 @@ extends GOperator
         super.invalidateInputs(parse, from);
 
         if (this.input) this.input.invalidateInputs(parse, from);
+    }
+
+
+
+    iterateLoop(parse)
+    {
+        super.iterateLoop(parse);
+
+        if (this.input) this.input.iterateLoop(parse);
     }
 }
 
@@ -65615,6 +66746,16 @@ extends GOperator
         if (this.input) this.input.invalidateInputs(parse, from);
         if (this.delay) this.delay.invalidateInputs(parse, from);
     }
+
+
+
+    iterateLoop(parse)
+    {
+        super.iterateLoop(parse);
+
+        if (this.input) this.input.iterateLoop(parse);
+        if (this.delay) this.delay.iterateLoop(parse);
+    }
 }
 
 
@@ -65727,6 +66868,16 @@ extends GOperator
 
         if (this.input) this.input.invalidateInputs(parse, from);
         if (this.name ) this.name .invalidateInputs(parse, from);
+    }
+
+
+
+    iterateLoop(parse)
+    {
+        super.iterateLoop(parse);
+
+        if (this.input) this.input.iterateLoop(parse);
+        if (this.name ) this.name .iterateLoop(parse);
     }
 }
 
@@ -65915,6 +67066,13 @@ extends GOperator
     invalidateLoop(parse, nodeId)
     {
         this.inputs.forEach(i => i.invalidateLoop(parse, nodeId));
+    }
+
+
+
+    iterateLoop(parse)
+    {
+        this.inputs.forEach(i => i.iterateLoop(parse));
     }
 
 
@@ -66150,6 +67308,16 @@ extends GOperator1
 
         if (this.start) this.start.invalidateInputs(parse, from);
         if (this.end  ) this.end  .invalidateInputs(parse, from);
+    }
+
+
+
+    iterateLoop(parse)
+    {
+        super.iterateLoop(parse);
+
+        if (this.start) this.start.iterateLoop(parse);
+        if (this.end  ) this.end  .iterateLoop(parse);
     }
 }
 
@@ -66461,6 +67629,16 @@ extends GOperator1
         if (this.column ) this.column .invalidateInputs(parse, from);
         if (this.reverse) this.reverse.invalidateInputs(parse, from);
     }
+
+
+
+    iterateLoop(parse)
+    {
+        super.iterateLoop(parse);
+
+        if (this.column ) this.column .iterateLoop(parse);
+        if (this.reverse) this.reverse.iterateLoop(parse);
+    }
 }
 
 
@@ -66522,8 +67700,11 @@ extends GOperator1
 
                         if (index.value < row.items.length)
                         {
-                            this.value.items  .push(row.items[index.value].copy());
-                            this.value.objects.push(...row.items[index.value].objects);
+                            this.value.items.push(row.items[index.value].copy());
+
+                            if (   this.value.objects 
+                                && row.items[index.value].objects)
+                                this.value.objects.push(...row.items[index.value].objects);
                         }
                     }
                 }
@@ -66578,6 +67759,15 @@ extends GOperator1
         super.invalidateInputs(parse, from);
 
         if (this.index) this.index.invalidateInputs(parse, from);
+    }
+
+
+
+    iterateLoop(parse)
+    {
+        super.iterateLoop(parse);
+
+        if (this.index) this.index.iterateLoop(parse);
     }
 }
 
@@ -66724,6 +67914,16 @@ extends GOperator
         if (this.column) this.column.invalidateInputs(parse, from);
         if (this.row   ) this.row   .invalidateInputs(parse, from);
     }
+
+
+
+    iterateLoop(parse)
+    {
+        super.iterateLoop(parse);
+
+        if (this.column) this.column.iterateLoop(parse);
+        if (this.row   ) this.row   .iterateLoop(parse);
+    }
 }
 
 
@@ -66849,6 +68049,15 @@ extends GOperator
         super.invalidateInputs(parse, from);
 
         if (this.input) this.input.invalidateInputs(parse, from);
+    }
+
+
+
+    iterateLoop(parse)
+    {
+        super.iterateLoop(parse);
+
+        if (this.input) this.input.iterateLoop(parse);
     }
 }
 
@@ -67015,6 +68224,16 @@ extends GOperator
         if (this.input) this.input.invalidateInputs(parse, from);
         if (this.index) this.index.invalidateInputs(parse, from);
     }
+
+
+
+    iterateLoop(parse)
+    {
+        super.iterateLoop(parse);
+
+        if (this.input) this.input.iterateLoop(parse);
+        if (this.index) this.index.iterateLoop(parse);
+    }
 }
 
 
@@ -67124,6 +68343,16 @@ extends GOperator
         if (this.input) this.input.invalidateInputs(parse, from);
         if (this.start) this.start.invalidateInputs(parse, from);
     }
+
+
+
+    iterateLoop(parse)
+    {
+        super.iterateLoop(parse);
+
+        if (this.input) this.input.iterateLoop(parse);
+        if (this.start) this.start.iterateLoop(parse);
+    }    
 }
 
 
@@ -67371,6 +68600,17 @@ extends GOperator
         if (this.input1   ) this.input1   .invalidateInputs(parse, from);
         if (this.condition) this.condition.invalidateInputs(parse, from);
     }
+
+
+
+    iterateLoop(parse)
+    {
+        super.iterateLoop(parse);
+
+        if (this.input0   ) this.input0   .iterateLoop(parse);
+        if (this.input1   ) this.input1   .iterateLoop(parse);
+        if (this.condition) this.condition.iterateLoop(parse);
+    }    
 }
 
 
@@ -67415,6 +68655,15 @@ extends GOperator
         super.invalidateInputs(parse, from);
 
         this.inputs.forEach(i => i.invalidateInputs(parse, from));
+    }
+
+
+
+    iterateLoop(parse)
+    {
+        super.iterateLoop(parse);
+
+        this.inputs.forEach(i => i.iterateLoop(parse));
     }
 }
 
@@ -67690,6 +68939,16 @@ extends GOperator1
         if (this.type    ) this.type    .invalidateInputs(parse, from);
         if (this.decimals) this.decimals.invalidateInputs(parse, from);
     }
+
+
+
+    iterateLoop(parse)
+    {
+        super.iterateLoop(parse);
+
+        if (this.type    ) this.type    .iterateLoop(parse);
+        if (this.decimals) this.decimals.iterateLoop(parse);
+    }
 }
 
 
@@ -67772,6 +69031,15 @@ extends GArithmetic
         super.invalidateInputs(parse, from);
 
         if (this.operation) this.operation.invalidateInputs(parse, from);
+    }
+
+
+
+    iterateLoop(parse)
+    {
+        super.iterateLoop(parse);
+
+        if (this.operation) this.operation.iterateLoop(parse);
     }
 }
 
@@ -67977,6 +69245,17 @@ extends GOperator1
         if (this.min  ) this.min  .invalidateInputs(parse, from);
         if (this.max  ) this.max  .invalidateInputs(parse, from);
     }
+
+
+
+    iterateLoop(parse)
+    {
+        super.iterateLoop(parse);
+
+        if (this.input) this.input.iterateLoop(parse);
+        if (this.min  ) this.min  .iterateLoop(parse);
+        if (this.max  ) this.max  .iterateLoop(parse);
+    }
 }
 
 
@@ -68070,6 +69349,15 @@ extends GOperator
         super.invalidateInputs(parse, from);
 
         if (this.constant) this.constant.invalidateInputs(parse, from);
+    }
+
+
+
+    iterateLoop(parse)
+    {
+        super.iterateLoop(parse);
+
+        if (this.constant) this.constant.iterateLoop(parse);
     }
 }
 
@@ -68210,6 +69498,21 @@ extends GOperator
         if (this.minutes  ) this.minutes  .invalidateInputs(parse, from);
         if (this.seconds  ) this.seconds  .invalidateInputs(parse, from);
     }
+
+
+
+    iterateLoop(parse)
+    {
+        super.iterateLoop(parse);
+
+        if (this.year     ) this.year     .iterateLoop(parse);
+        if (this.month    ) this.month    .iterateLoop(parse);
+        if (this.date     ) this.date     .iterateLoop(parse);
+        if (this.dayOfWeek) this.dayOfWeek.iterateLoop(parse);
+        if (this.hours    ) this.hours    .iterateLoop(parse);
+        if (this.minutes  ) this.minutes  .iterateLoop(parse);
+        if (this.seconds  ) this.seconds  .iterateLoop(parse);
+    }    
 }
 
 
@@ -68313,6 +69616,15 @@ extends GOperator
         super.invalidateInputs(parse, from);
 
         this.inputs.forEach(i => i.invalidateInputs(parse, from));
+    }
+
+
+
+    iterateLoop(parse)
+    {
+        super.iterateLoop(parse);
+
+        this.inputs.forEach(i => i.iterateLoop(parse));
     }
 }
 
@@ -68500,6 +69812,19 @@ extends GOperator
         if (this.spread) this.spread.invalidateInputs(parse, from);
         if (this.bias  ) this.bias  .invalidateInputs(parse, from);
     }
+
+
+
+    iterateLoop(parse)
+    {
+        super.iterateLoop(parse);
+
+        if (this.from  ) this.from  .iterateLoop(parse);
+        if (this.start ) this.start .iterateLoop(parse);
+        if (this.end   ) this.end   .iterateLoop(parse);
+        if (this.spread) this.spread.iterateLoop(parse);
+        if (this.bias  ) this.bias  .iterateLoop(parse);
+    }
 }
 
 
@@ -68558,6 +69883,7 @@ extends GOperator
             && step)
         {
             const value = start.toNumber() + (this.options.enabled ? step.toNumber() * this.iteration : 0);
+
 
             if (!end.isValid())
                 this.value = new NumberValue(value, Math.max(start.decimals, step.decimals));
@@ -68632,6 +69958,17 @@ extends GOperator
         if (this.start) this.start.invalidateInputs(parse, from);
         if (this.end  ) this.end  .invalidateInputs(parse, from);
         if (this.step ) this.step .invalidateInputs(parse, from);
+    }
+
+
+
+    iterateLoop(parse)
+    {
+        super.iterateLoop(parse);
+
+        if (this.start) this.start.iterateLoop(parse);
+        if (this.step ) this.step .iterateLoop(parse);
+        if (this.end  ) this.end  .iterateLoop(parse);
     }
 }
 
@@ -68787,6 +70124,18 @@ extends GOperator
         if (this.min   ) this.min   .invalidateInputs(parse, from);
         if (this.max   ) this.max   .invalidateInputs(parse, from);
         if (this.unique) this.unique.invalidateInputs(parse, from);
+    }
+
+
+
+    iterateLoop(parse)
+    {
+        super.iterateLoop(parse);
+
+        if (this.seed  ) this.seed  .iterateLoop(parse);
+        if (this.min   ) this.min   .iterateLoop(parse);
+        if (this.max   ) this.max   .iterateLoop(parse);
+        if (this.unique) this.unique.iterateLoop(parse);
     }
 
 
@@ -68992,6 +70341,21 @@ extends GOperator
         if (this.interpolate) this.interpolate.invalidateInputs(parse, from);
         if (this.detail     ) this.detail     .invalidateInputs(parse, from);
     }
+
+
+
+    iterateLoop(parse)
+    {
+        super.iterateLoop(parse);
+
+        if (this.seed       ) this.seed       .iterateLoop(parse);
+        if (this.min        ) this.min        .iterateLoop(parse);
+        if (this.max        ) this.max        .iterateLoop(parse);
+        if (this.scale      ) this.scale      .iterateLoop(parse);
+        if (this.offset     ) this.offset     .iterateLoop(parse);
+        if (this.interpolate) this.interpolate.iterateLoop(parse);
+        if (this.detail     ) this.detail     .iterateLoop(parse);
+    }
 }
 
 
@@ -69102,6 +70466,16 @@ extends GOperator
         if (this.seed  ) this.seed  .invalidateInputs(parse, from);
         if (this.chance) this.chance.invalidateInputs(parse, from);
     }
+
+
+
+    iterateLoop(parse)
+    {
+        super.iterateLoop(parse);
+
+        if (this.seed  ) this.seed  .iterateLoop(parse);
+        if (this.chance) this.chance.iterateLoop(parse);
+    }
 }
 
 
@@ -69211,6 +70585,16 @@ extends GOperator
 
 
 
+    iterateLoop(parse)
+    {
+        super.iterateLoop(parse);
+
+        if (this.start) this.start.iterateLoop(parse);
+        if (this.step ) this.step .iterateLoop(parse);
+    }
+
+
+
     resetLoop(parse, nodeId)
     {
         super.resetLoop(parse, nodeId);
@@ -69314,6 +70698,15 @@ extends GOperator2
         super.invalidateInputs(parse, from);
 
         if (this.amount) this.amount.invalidateInputs(parse, from);
+    }
+
+
+
+    iterateLoop(parse)
+    {
+        super.iterateLoop(parse);
+
+        if (this.amount) this.amount.iterateLoop(parse);
     }
 }
 
@@ -69505,6 +70898,16 @@ extends GOperator1
         if (this.current) this.current.invalidateInputs(parse, from);
         if (this.target ) this.target .invalidateInputs(parse, from);
     }
+
+
+
+    iterateLoop(parse)
+    {
+        super.iterateLoop(parse);
+
+        if (this.current) this.current.iterateLoop(parse);
+        if (this.target ) this.target .iterateLoop(parse);
+    }
 }
 
 
@@ -69674,6 +71077,20 @@ extends GOperator
         if (this.length) this.length.invalidateInputs(parse, from);
         if (this.time  ) this.time  .invalidateInputs(parse, from);
     }
+
+
+
+    iterateLoop(parse)
+    {
+        super.iterateLoop(parse);
+
+        if (this.from  ) this.from  .iterateLoop(parse);
+        if (this.to    ) this.to    .iterateLoop(parse);
+        if (this.curve ) this.curve .iterateLoop(parse);
+        if (this.repeat) this.repeat.iterateLoop(parse);
+        if (this.length) this.length.iterateLoop(parse);
+        if (this.time  ) this.time  .iterateLoop(parse);
+    }
 }
 
 
@@ -69764,6 +71181,15 @@ extends GArithmetic
         super.invalidateInputs(parse, from);
 
         if (this.operation) this.operation.invalidateInputs(parse, from);
+    }
+
+
+
+    iterateLoop(parse)
+    {
+        super.iterateLoop(parse);
+
+        if (this.operation) this.operation.iterateLoop(parse);
     }
 }
 
@@ -69915,6 +71341,16 @@ extends GOperator1
 
         if (this.operation) this.operation.invalidateInputs(parse, from);
         if (this.operand  ) this.operand  .invalidateInputs(parse, from);
+    }
+
+
+
+    iterateLoop(parse)
+    {
+        super.iterateLoop(parse);
+
+        if (this.operation) this.operation.iterateLoop(parse);
+        if (this.operand  ) this.operand  .iterateLoop(parse);
     }
 }
 
@@ -70677,6 +72113,15 @@ extends GArithmetic
 
         if (this.operation) this.operation.invalidateInputs(parse, from);
     }
+
+
+
+    iterateLoop(parse)
+    {
+        super.iterateLoop(parse);
+
+        if (this.operation) this.operation.iterateLoop(parse);
+    }
 }
 
 
@@ -71224,6 +72669,16 @@ extends GOperator1
         if (this.operation) this.operation.invalidateInputs(parse, from);
         if (this.operand  ) this.operand  .invalidateInputs(parse, from);
     }
+
+
+
+    iterateLoop(parse)
+    {
+        super.iterateLoop(parse);
+
+        if (this.operation) this.operation.iterateLoop(parse);
+        if (this.operand  ) this.operand  .iterateLoop(parse);
+    }
 }
 
 
@@ -71587,6 +73042,15 @@ extends GOperator1
         super.invalidateInputs(parse, from);
 
         if (this.function) this.function.invalidateInputs(parse, from);
+    }
+
+
+
+    iterateLoop(parse)
+    {
+        super.iterateLoop(parse);
+
+        if (this.function) this.function.iterateLoop(parse);
     }
 }
 
@@ -71986,6 +73450,16 @@ extends GOperator1
         if (this.start) this.start.invalidateInputs(parse, from);
         if (this.end  ) this.end  .invalidateInputs(parse, from);
     }
+
+
+
+    iterateLoop(parse)
+    {
+        super.iterateLoop(parse);
+
+        if (this.start) this.start.iterateLoop(parse);
+        if (this.end  ) this.end  .iterateLoop(parse);
+    }
 }
 
 
@@ -72095,12 +73569,22 @@ extends GOperator1
 
 
 
-    invalidateInputs(parse, from)
+    pushValueUpdates(parse)
     {
-        super.invalidateInputs(parse, from);
+        super.pushValueUpdates(parse);
 
-        if (this.start) this.start.invalidateInputs(parse, from);
-        if (this.end  ) this.end  .invalidateInputs(parse, from);
+        if (this.start) this.start.pushValueUpdates(parse);
+        if (this.end  ) this.end  .pushValueUpdates(parse);
+    }
+
+
+
+    iterateLoop(parse, from)
+    {
+        super.iterateLoop(parse, from);
+
+        if (this.start) this.start.iterateLoop(parse, from);
+        if (this.end  ) this.end  .iterateLoop(parse, from);
     }
 }
 
@@ -72329,7 +73813,7 @@ extends GOperator1
     {
         super.pushValueUpdates(parse);
 
-        if (this.case ) this.case .pushValueUpdates(parse);
+        if (this.case) this.case.pushValueUpdates(parse);
     }
 
 
@@ -72338,7 +73822,16 @@ extends GOperator1
     {
         super.invalidateInputs(parse, from);
 
-        if (this.case ) this.case .invalidateInputs(parse, from);
+        if (this.case) this.case.invalidateInputs(parse, from);
+    }
+
+
+
+    iterateLoop(parse)
+    {
+        super.iterateLoop(parse);
+
+        if (this.case) this.case.iterateLoop(parse);
     }
 }
 
@@ -72442,6 +73935,15 @@ extends GOperator1
 
         if (this.format) this.format.invalidateInputs(parse, from);
     }
+
+
+
+    iterateLoop(parse)
+    {
+        super.iterateLoop(parse);
+
+        if (this.format) this.format.iterateLoop(parse);
+    }
 }
 
 
@@ -72500,7 +74002,7 @@ extends GOperator1
                     break;
             }
 
-            this.value = new NumberValue(num);
+            this.value = new NumberValue(num, decDigits(num));
         }
         else
             this.value = NumberValue.NaN;
@@ -72542,6 +74044,15 @@ extends GOperator1
         super.invalidateInputs(parse, from);
 
         if (this.format) this.format.invalidateInputs(parse, from);
+    }
+
+
+
+    iterateLoop(parse)
+    {
+        super.iterateLoop(parse);
+
+        if (this.format) this.format.iterateLoop(parse);
     }
 }
 
@@ -72679,6 +74190,15 @@ extends GOperator1
 
         if (this.code) this.code.invalidateInputs(parse, from);
     }
+
+
+
+    iterateLoop(parse)
+    {
+        super.iterateLoop(parse);
+
+        if (this.code) this.code.iterateLoop(parse);
+    }
 }
 
 
@@ -72766,8 +74286,8 @@ extends GOperator1
     {
         super.pushValueUpdates(parse);
 
-        if (this.what ) this.what .pushValueUpdates(parse);
-        if (this.with ) this.with .pushValueUpdates(parse);
+        if (this.what) this.what.pushValueUpdates(parse);
+        if (this.with) this.with.pushValueUpdates(parse);
     }
 
 
@@ -72776,8 +74296,18 @@ extends GOperator1
     {
         super.invalidateInputs(parse, from);
 
-        if (this.what ) this.what .invalidateInputs(parse, from);
-        if (this.with ) this.with .invalidateInputs(parse, from);
+        if (this.what) this.what.invalidateInputs(parse, from);
+        if (this.with) this.with.invalidateInputs(parse, from);
+    }
+
+
+
+    iterateLoop(parse)
+    {
+        super.iterateLoop(parse);
+
+        if (this.what) this.what.iterateLoop(parse);
+        if (this.with) this.with.iterateLoop(parse);
     }
 }
 
@@ -72870,6 +74400,15 @@ extends GOperator
         super.invalidateInputs(parse, from);
 
         this.inputs.forEach(i => i.invalidateInputs(parse, from));
+    }
+
+
+
+    iterateLoop(parse)
+    {
+        super.iterateLoop(parse);
+
+        this.inputs.forEach(i => i.iterateLoop(parse));
     }
 }
 
@@ -73039,6 +74578,18 @@ extends GOperator1
         if (this.endPad    ) this.endPad    .invalidateInputs(parse, from);
         if (this.endCount  ) this.endCount  .invalidateInputs(parse, from);
     }
+
+
+
+    iterateLoop(parse)
+    {
+        super.iterateLoop(parse);
+
+        if (this.startPad  ) this.startPad  .iterateLoop(parse);
+        if (this.startCount) this.startCount.iterateLoop(parse);
+        if (this.endPad    ) this.endPad    .iterateLoop(parse);
+        if (this.endCount  ) this.endCount  .iterateLoop(parse);
+    }
 }
 
 
@@ -73138,6 +74689,15 @@ extends GOperator1
 
         if (this.separator) this.separator.invalidateInputs(parse, from);
     }
+
+
+
+    iterateLoop(parse)
+    {
+        super.iterateLoop(parse);
+
+        if (this.separator) this.separator.iterateLoop(parse);
+    }
 }
 
 
@@ -73229,6 +74789,15 @@ extends GOperator2
         super.invalidateInputs(parse, from);
 
         if (this.operation) this.operation.invalidateInputs(parse, from);
+    }
+
+
+
+    iterateLoop(parse)
+    {
+        super.iterateLoop(parse);
+
+        if (this.operation) this.operation.iterateLoop(parse);
     }
 }
 
@@ -73378,6 +74947,16 @@ extends GOperator1
 
         if (this.rowSeparator   ) this.rowSeparator   .invalidateInputs(parse, from);
         if (this.columnSeparator) this.columnSeparator.invalidateInputs(parse, from);
+    }
+
+
+
+    iterateLoop(parse)
+    {
+        super.iterateLoop(parse);
+
+        if (this.rowSeparator   ) this.rowSeparator   .iterateLoop(parse);
+        if (this.columnSeparator) this.columnSeparator.iterateLoop(parse);
     }
 }
 
@@ -73594,6 +75173,15 @@ extends GOperator
 
         this.cachedValue = new TextValue();
     }
+
+
+
+    iterateLoop(parse)
+    {
+        super.iterateLoop(parse);
+
+        if (this.request) this.request.iterateLoop(parse);
+    }
 }
 
 
@@ -73679,6 +75267,15 @@ extends GOperator
         if (this.path) this.path.invalidateInputs(parse, from);
 
         //this.cachedValue = new TextValue();
+    }
+
+
+
+    iterateLoop(parse)
+    {
+        super.iterateLoop(parse);
+
+        if (this.path) this.path.iterateLoop(parse);
     }
 }
 
@@ -74459,6 +76056,18 @@ extends GOperator1
         if (this.c2   ) this.c2   .invalidateInputs(parse, from);
         if (this.c3   ) this.c3   .invalidateInputs(parse, from);
     }
+
+
+
+    iterateLoop(parse)
+    {
+        super.iterateLoop(parse);
+
+        if (this.space) this.space.iterateLoop(parse);
+        if (this.c1   ) this.c1   .iterateLoop(parse);
+        if (this.c2   ) this.c2   .iterateLoop(parse);
+        if (this.c3   ) this.c3   .iterateLoop(parse);
+    }
 }
 
 
@@ -74618,6 +76227,15 @@ extends GOperator1
         super.invalidateInputs(parse, from);
 
         if (this.quality) this.quality.invalidateInputs(parse, from);
+    }
+
+
+
+    iterateLoop(parse)
+    {
+        super.iterateLoop(parse);
+
+        if (this.quality) this.quality.iterateLoop(parse);
     }
 }
 
@@ -74862,6 +76480,18 @@ extends GOperator1
         if (this.margin2) this.margin2.invalidateInputs(parse, from);
         if (this.margin3) this.margin3.invalidateInputs(parse, from);
     }
+
+
+
+    iterateLoop(parse)
+    {
+        super.iterateLoop(parse);
+
+        if (this.order  ) this.order  .iterateLoop(parse);
+        if (this.margin1) this.margin1.iterateLoop(parse);
+        if (this.margin2) this.margin2.iterateLoop(parse);
+        if (this.margin3) this.margin3.iterateLoop(parse);
+    }
 }
 
 
@@ -75031,6 +76661,16 @@ extends GOperator2
         if (this.standard) this.standard.invalidateInputs(parse, from);
         if (this.contrast) this.contrast.invalidateInputs(parse, from);
     }
+
+
+
+    iterateLoop(parse)
+    {
+        super.iterateLoop(parse);
+
+        if (this.standard) this.standard.iterateLoop(parse);
+        if (this.contrast) this.contrast.iterateLoop(parse);
+    }
 }
 
 
@@ -75127,6 +76767,15 @@ extends GOperator1
         super.invalidateInputs(parse, from);
 
         if (this.from) this.from.invalidateInputs(parse, from);
+    }
+
+
+
+    iterateLoop(parse)
+    {
+        super.iterateLoop(parse);
+
+        if (this.from) this.from.iterateLoop(parse);
     }
 }
 
@@ -75251,6 +76900,17 @@ extends GOperator1
         if (this.l) this.l.invalidateInputs(parse, from);
         if (this.m) this.m.invalidateInputs(parse, from);
         if (this.s) this.s.invalidateInputs(parse, from);
+    }
+
+
+
+    iterateLoop(parse)
+    {
+        super.iterateLoop(parse);
+
+        if (this.l) this.l.iterateLoop(parse);
+        if (this.m) this.m.iterateLoop(parse);
+        if (this.s) this.s.iterateLoop(parse);
     }
 }
 
@@ -75425,6 +77085,17 @@ extends GOperator2
         if (this.amount) this.amount.invalidateInputs(parse, from);
         if (this.gamma ) this.gamma .invalidateInputs(parse, from);
     }
+
+
+
+    iterateLoop(parse)
+    {
+        super.iterateLoop(parse);
+
+        if (this.space ) this.space .iterateLoop(parse);
+        if (this.amount) this.amount.iterateLoop(parse);
+        if (this.gamma ) this.gamma .iterateLoop(parse);
+    }
 }
 
 
@@ -75571,6 +77242,16 @@ extends GOperator2
 
         if (this.mode   ) this.mode   .invalidateInputs(parse, from);
         if (this.opacity) this.opacity.invalidateInputs(parse, from);
+    }
+
+
+
+    iterateLoop(parse)
+    {
+        super.iterateLoop(parse);
+
+        if (this.mode   ) this.mode   .iterateLoop(parse);
+        if (this.opacity) this.opacity.iterateLoop(parse);
     }
 }
 
@@ -76070,6 +77751,15 @@ extends GOperator
 
         if (this.genValue) this.genValue.invalidateInputs(parse, from);
     }
+
+
+
+    iterateLoop(parse)
+    {
+        super.iterateLoop(parse);
+
+        if (this.genValue) this.genValue.iterateLoop(parse);
+    }
 }
 
 
@@ -76194,6 +77884,17 @@ extends GOperator1
         if (this.color  ) this.color  .invalidateInputs(parse, from);
         if (this.opacity) this.opacity.invalidateInputs(parse, from);
         if (this.blend  ) this.blend  .invalidateInputs(parse, from);
+    }
+
+
+
+    iterateLoop(parse)
+    {
+        super.iterateLoop(parse);
+
+        if (this.color  ) this.color  .iterateLoop(parse);
+        if (this.opacity) this.opacity.iterateLoop(parse);
+        if (this.blend  ) this.blend  .iterateLoop(parse);
     }
 }
 
@@ -76324,6 +78025,16 @@ extends GOperator1
         if (this.fill    ) this.fill    .invalidateInputs(parse, from);
         if (this.position) this.position.invalidateInputs(parse, from);
     }
+
+
+
+    iterateLoop(parse)
+    {
+        super.iterateLoop(parse);
+
+        if (this.fill    ) this.fill    .iterateLoop(parse);
+        if (this.position) this.position.iterateLoop(parse);
+    }
 }
 
 
@@ -76429,23 +78140,6 @@ extends GOperator
         return this;
     }
 
-
-
-    pushValueUpdates(parse)
-    {
-        super.pushValueUpdates(parse);
-
-        this.inputs.forEach(i => i.pushValueUpdates(parse));
-
-        if (this.gradType) this.gradType.pushValueUpdates(parse);
-        if (this.x       ) this.x       .pushValueUpdates(parse);
-        if (this.y       ) this.y       .pushValueUpdates(parse);
-        if (this.size    ) this.size    .pushValueUpdates(parse);
-        if (this.angle   ) this.angle   .pushValueUpdates(parse);
-        if (this.aspect  ) this.aspect  .pushValueUpdates(parse);
-        if (this.skew    ) this.skew    .pushValueUpdates(parse);
-        if (this.blend   ) this.blend   .pushValueUpdates(parse);
-    }    
     
     
     toValue()
@@ -76485,6 +78179,24 @@ extends GOperator
 
 
 
+    pushValueUpdates(parse)
+    {
+        super.pushValueUpdates(parse);
+
+        this.inputs.forEach(i => i.pushValueUpdates(parse));
+
+        if (this.gradType) this.gradType.pushValueUpdates(parse);
+        if (this.x       ) this.x       .pushValueUpdates(parse);
+        if (this.y       ) this.y       .pushValueUpdates(parse);
+        if (this.size    ) this.size    .pushValueUpdates(parse);
+        if (this.angle   ) this.angle   .pushValueUpdates(parse);
+        if (this.aspect  ) this.aspect  .pushValueUpdates(parse);
+        if (this.skew    ) this.skew    .pushValueUpdates(parse);
+        if (this.blend   ) this.blend   .pushValueUpdates(parse);
+    }    
+
+
+
     invalidateInputs(parse, from)
     {
         super.invalidateInputs(parse, from);
@@ -76500,6 +78212,24 @@ extends GOperator
         if (this.skew    ) this.skew    .invalidateInputs(parse, from);
         if (this.blend   ) this.blend   .invalidateInputs(parse, from);
     }
+
+
+
+    iterateLoop(parse)
+    {
+        super.iterateLoop(parse);
+
+        this.inputs.forEach(i => i.iterateLoop(parse));
+
+        if (this.gradType) this.gradType.iterateLoop(parse);
+        if (this.x       ) this.x       .iterateLoop(parse);
+        if (this.y       ) this.y       .iterateLoop(parse);
+        if (this.size    ) this.size    .iterateLoop(parse);
+        if (this.angle   ) this.angle   .iterateLoop(parse);
+        if (this.aspect  ) this.aspect  .iterateLoop(parse);
+        if (this.skew    ) this.skew    .iterateLoop(parse);
+        if (this.blend   ) this.blend   .iterateLoop(parse);
+    }    
 }
 
 
@@ -76693,6 +78423,21 @@ extends GOperator1
         if (this.cap   ) this.cap   .invalidateInputs(parse, from);
         if (this.dashes) this.dashes.invalidateInputs(parse, from);
     }
+
+
+
+    iterateLoop(parse)
+    {
+        super.iterateLoop(parse);
+
+        if (this.fills ) this.fills .iterateLoop(parse);
+        if (this.weight) this.weight.iterateLoop(parse);
+        if (this.fit   ) this.fit   .iterateLoop(parse);
+        if (this.join  ) this.join  .iterateLoop(parse);
+        if (this.miter ) this.miter .iterateLoop(parse);
+        if (this.cap   ) this.cap   .iterateLoop(parse);
+        if (this.dashes) this.dashes.iterateLoop(parse);
+    }    
 }
 
 
@@ -76861,6 +78606,21 @@ extends GOperator1
         if (this.blend ) this.blend .invalidateInputs(parse, from);
         if (this.behind) this.behind.invalidateInputs(parse, from);
     }
+
+
+
+    iterateLoop(parse)
+    {
+        super.iterateLoop(parse);
+
+        if (this.x     ) this.x     .iterateLoop(parse);
+        if (this.y     ) this.y     .iterateLoop(parse);
+        if (this.blur  ) this.blur  .iterateLoop(parse);
+        if (this.spread) this.spread.iterateLoop(parse);
+        if (this.fill  ) this.fill  .iterateLoop(parse);
+        if (this.blend ) this.blend .iterateLoop(parse);
+        if (this.behind) this.behind.iterateLoop(parse);
+    }
 }
 
 
@@ -77019,6 +78779,20 @@ extends GOperator1
         if (this.fill  ) this.fill  .invalidateInputs(parse, from);
         if (this.blend ) this.blend .invalidateInputs(parse, from);
     }
+
+
+
+    iterateLoop(parse)
+    {
+        super.iterateLoop(parse);
+
+        if (this.x     ) this.x     .iterateLoop(parse);
+        if (this.y     ) this.y     .iterateLoop(parse);
+        if (this.blur  ) this.blur  .iterateLoop(parse);
+        if (this.spread) this.spread.iterateLoop(parse);
+        if (this.fill  ) this.fill  .iterateLoop(parse);
+        if (this.blend ) this.blend .iterateLoop(parse);
+    }
 }
 
 
@@ -77122,6 +78896,15 @@ extends GOperator1
 
         if (this.radius) this.radius.invalidateInputs(parse, from);
     }
+
+
+
+    iterateLoop(parse)
+    {
+        super.iterateLoop(parse);
+
+        if (this.radius) this.radius.iterateLoop(parse);
+    }
 }
 
 
@@ -77224,6 +79007,15 @@ extends GOperator1
         super.invalidateInputs(parse, from);
 
         if (this.radius) this.radius.invalidateInputs(parse, from);
+    }
+
+
+
+    iterateLoop(parse)
+    {
+        super.iterateLoop(parse);
+
+        if (this.radius) this.radius.iterateLoop(parse);
     }
 }
 
@@ -77363,6 +79155,18 @@ extends GOperator
         if (this.y     ) this.y     .invalidateInputs(parse, from);
         if (this.width ) this.width .invalidateInputs(parse, from);
         if (this.height) this.height.invalidateInputs(parse, from);
+    }
+
+
+
+    iterateLoop(parse)
+    {
+        super.iterateLoop(parse);
+
+        if (this.x     ) this.x     .iterateLoop(parse);
+        if (this.y     ) this.y     .iterateLoop(parse);
+        if (this.width ) this.width .iterateLoop(parse);
+        if (this.height) this.height.iterateLoop(parse);
     }
 }
 
@@ -77537,6 +79341,16 @@ extends GShapeBase
 
         if (this.input) this.input.invalidateInputs(parse, from);
         if (this.props) this.props.invalidateInputs(parse, from);
+    }
+
+
+
+    iterateLoop(parse)
+    {
+        super.iterateLoop(parse);
+
+        if (this.input) this.input.iterateLoop(parse);
+        if (this.props) this.props.iterateLoop(parse);
     }
 }
 
@@ -77719,6 +79533,15 @@ extends GShape
         super.invalidateInputs(parse, from);
 
         if (this.round) this.round.invalidateInputs(parse, from);
+    }
+
+
+
+    iterateLoop(parse)
+    {
+        super.iterateLoop(parse);
+
+        if (this.round) this.round.iterateLoop(parse);
     }
 }
 
@@ -78058,6 +79881,17 @@ extends GShape
         if (this.to   ) this.to   .invalidateInputs(parse, from);
         if (this.inner) this.inner.invalidateInputs(parse, from);
     }
+
+
+
+    iterateLoop(parse)
+    {
+        super.iterateLoop(parse);
+ 
+        if (this.from ) this.from .iterateLoop(parse);
+        if (this.to   ) this.to   .iterateLoop(parse);
+        if (this.inner) this.inner.iterateLoop(parse);
+    }
 }
 
 
@@ -78240,6 +80074,16 @@ extends GShape
 
         if (this.round) this.round.invalidateInputs(parse, from);
         if (this.bias ) this.bias .invalidateInputs(parse, from);
+    }
+
+
+
+    iterateLoop(parse)
+    {
+        super.iterateLoop(parse);
+
+        if (this.round) this.round.iterateLoop(parse);
+        if (this.bias ) this.bias .iterateLoop(parse);
     }
 }
 
@@ -78431,6 +80275,16 @@ extends GShape
 
         if (this.round  ) this.round  .invalidateInputs(parse, from);
         if (this.corners) this.corners.invalidateInputs(parse, from);
+    }
+
+
+
+    iterateLoop(parse)
+    {
+        super.iterateLoop(parse);
+
+        if (this.round  ) this.round  .iterateLoop(parse);
+        if (this.corners) this.corners.iterateLoop(parse);
     }
 }
 
@@ -78633,6 +80487,17 @@ extends GShape
         if (this.round ) this.round .invalidateInputs(parse, from);
         if (this.points) this.points.invalidateInputs(parse, from);
         if (this.convex) this.convex.invalidateInputs(parse, from);
+    }
+
+
+
+    iterateLoop(parse)
+    {
+        super.iterateLoop(parse);
+
+        if (this.round ) this.round .iterateLoop(parse);
+        if (this.points) this.points.iterateLoop(parse);
+        if (this.convex) this.convex.iterateLoop(parse);
     }
 }
 
@@ -78946,6 +80811,26 @@ extends GShape
         if (this.lineHeight   ) this.lineHeight   .invalidateInputs(parse, from);
         if (this.letterSpacing) this.letterSpacing.invalidateInputs(parse, from);
     }
+
+
+
+    iterateLoop(parse)
+    {
+        super.iterateLoop(parse);
+        
+        if (this.text         ) this.text         .iterateLoop(parse);
+        if (this.x            ) this.x            .iterateLoop(parse);
+        if (this.y            ) this.y            .iterateLoop(parse);
+        if (this.width        ) this.width        .iterateLoop(parse);
+        if (this.height       ) this.height       .iterateLoop(parse);
+        if (this.font         ) this.font         .iterateLoop(parse);
+        if (this.style        ) this.style        .iterateLoop(parse);
+        if (this.size         ) this.size         .iterateLoop(parse);
+        if (this.alignH       ) this.alignH       .iterateLoop(parse);
+        if (this.alignV       ) this.alignV       .iterateLoop(parse);
+        if (this.lineHeight   ) this.lineHeight   .iterateLoop(parse);
+        if (this.letterSpacing) this.letterSpacing.iterateLoop(parse);
+    }
 }
 
 
@@ -79096,6 +80981,16 @@ extends GOperator1
 
         if (this.x) this.x.invalidateInputs(parse, from);
         if (this.y) this.y.invalidateInputs(parse, from);
+    }
+
+
+
+    iterateLoop(parse)
+    {
+        super.iterateLoop(parse);
+
+        if (this.x && this.x.updateValue) this.x.iterateLoop(parse);
+        if (this.y && this.y.updateValue) this.y.iterateLoop(parse);
     }
 }
 
@@ -79311,6 +81206,19 @@ extends GShape
         if (this.winding) this.winding.invalidateInputs(parse, from);
         if (this.round  ) this.round  .invalidateInputs(parse, from);
     }
+
+
+
+    iterateLoop(parse)
+    {
+        super.iterateLoop(parse);
+
+        if (this.points ) this.points .iterateLoop(parse);
+        if (this.closed ) this.closed .iterateLoop(parse);
+        if (this.degree ) this.degree .iterateLoop(parse);
+        if (this.winding) this.winding.iterateLoop(parse);
+        if (this.round  ) this.round  .iterateLoop(parse);
+    }
 }
 
 
@@ -79488,6 +81396,19 @@ extends GOperator1
         if (this.cap  ) this.cap  .invalidateInputs(parse, from);
         if (this.round) this.round.invalidateInputs(parse, from);
     }
+
+
+
+    iterateLoop(parse)
+    {
+        super.iterateLoop(parse);
+
+        if (this.x    ) this.x    .iterateLoop(parse);
+        if (this.y    ) this.y    .iterateLoop(parse);
+        if (this.join ) this.join .iterateLoop(parse);
+        if (this.cap  ) this.cap  .iterateLoop(parse);
+        if (this.round) this.round.iterateLoop(parse);
+    }
 }
 
 
@@ -79654,6 +81575,18 @@ extends GOperator1
         if (this.input1      ) this.input1      .invalidateInputs(parse, from);
         if (this.startTangent) this.startTangent.invalidateInputs(parse, from);
         if (this.endTangent  ) this.endTangent  .invalidateInputs(parse, from);
+    }
+
+
+
+    iterateLoop(parse)
+    {
+        super.iterateLoop(parse);
+
+        if (this.input0      ) this.input0      .iterateLoop(parse);
+        if (this.input1      ) this.input1      .iterateLoop(parse);
+        if (this.startTangent) this.startTangent.iterateLoop(parse);
+        if (this.endTangent  ) this.endTangent  .iterateLoop(parse);
     }
 }
 
@@ -79897,6 +81830,18 @@ extends GShape
         if (this.winding) this.winding.invalidateInputs(parse, from);
         if (this.props  ) this.props  .invalidateInputs(parse, from);
     }
+
+
+
+    iterateLoop(parse)
+    {
+        super.iterateLoop(parse);
+
+        this.inputs.forEach(i => i.iterateLoop(parse));
+
+        if (this.winding) this.winding.iterateLoop(parse);
+        if (this.props  ) this.props  .iterateLoop(parse);
+    }
 }
 
 
@@ -80086,6 +82031,15 @@ extends GShape
 
         this.inputs.forEach(i => i.pushValueUpdates(parse));
     }
+
+
+
+    iterateLoop(parse)
+    {
+        super.iterateLoop(parse);
+
+        this.inputs.forEach(i => i.iterateLoop(parse));
+    }
 }
 
 
@@ -80230,15 +82184,6 @@ extends GShapeBase
 
 
 
-    pushValueUpdates(parse)
-    {
-        super.pushValueUpdates(parse);
-
-        this.inputs.forEach(i => i.pushValueUpdates(parse));
-    }
-
-
-
     toValue()
     {
         return this.value.copy();
@@ -80260,11 +82205,29 @@ extends GShapeBase
 
 
 
+    pushValueUpdates(parse)
+    {
+        super.pushValueUpdates(parse);
+
+        this.inputs.forEach(i => i.pushValueUpdates(parse));
+    }
+
+
+
     invalidateInputs(parse, from)
     {
         super.invalidateInputs(parse, from);
 
         this.inputs.forEach(i => i.invalidateInputs(parse, from));
+    }
+
+
+
+    iterateLoop(parse)
+    {
+        super.iterateLoop(parse);
+
+        this.inputs.forEach(i => i.iterateLoop(parse));
     }
 }
 
@@ -80473,6 +82436,16 @@ extends GShape
 
         if (this.round   ) this.round   .invalidateInputs(parse, from);
         if (this.children) this.children.invalidateInputs(parse, from);
+    }
+
+
+
+    iterateLoop(parse)
+    {
+        super.iterateLoop(parse);
+
+        if (this.round   ) this.round   .iterateLoop(parse);
+        if (this.children) this.children.iterateLoop(parse);
     }
 }
 
@@ -80716,16 +82689,6 @@ extends GShapeBase
 
 
 
-    pushValueUpdates(parse)
-    {
-        super.pushValueUpdates(parse);
-
-        if (this.input   ) this.input   .pushValueUpdates(parse);
-        if (this.children) this.children.pushValueUpdates(parse);
-    }
-
-
-
     toValue()
     {
         return this.value.copy();
@@ -80741,12 +82704,32 @@ extends GShapeBase
 
 
 
+    pushValueUpdates(parse)
+    {
+        super.pushValueUpdates(parse);
+
+        if (this.input   ) this.input   .pushValueUpdates(parse);
+        if (this.children) this.children.pushValueUpdates(parse);
+    }
+
+
+
     invalidateInputs(parse, from)
     {
         super.invalidateInputs(parse, from);
 
         if (this.input   ) this.input   .invalidateInputs(parse, from);
         if (this.children) this.children.invalidateInputs(parse, from);
+    }
+
+
+
+    iterateLoop(parse)
+    {
+        super.iterateLoop(parse);
+
+        if (this.input   ) this.input   .iterateLoop(parse);
+        if (this.children) this.children.iterateLoop(parse);
     }
 }
 
@@ -80887,6 +82870,17 @@ extends GShapeBase
         this.inputs.forEach(i => i.invalidateInputs(parse, from));
 
         if (this.retain) this.retain.invalidateInputs(parse, from);
+    }
+
+
+
+    iterateLoop(parse)
+    {
+        super.iterateLoop(parse);
+
+        this.inputs.forEach(i => i.iterateLoop(parse));
+
+        if (this.retain) this.retain.iterateLoop(parse);
     }
 }
 
@@ -81100,6 +83094,19 @@ extends GOperator1
         if (this.affectSpace) this.affectSpace.invalidateInputs(parse, from);
         if (this.showCenter ) this.showCenter .invalidateInputs(parse, from);
     }
+
+
+
+    iterateLoop(parse)
+    {
+        super.iterateLoop(parse);
+
+        if (this.x          ) this.x          .iterateLoop(parse);
+        if (this.y          ) this.y          .iterateLoop(parse);
+        if (this.moveType   ) this.moveType   .iterateLoop(parse);
+        if (this.affectSpace) this.affectSpace.iterateLoop(parse);
+        if (this.showCenter ) this.showCenter .iterateLoop(parse);
+    }
 }
 
 
@@ -81205,6 +83212,16 @@ extends GOperator1
 
         if (this.showCenter ) this.showCenter .invalidateInputs(parse, from);
         if (this.affectSpace) this.affectSpace.invalidateInputs(parse, from);
+    }
+
+
+
+    iterateLoop(parse)
+    {
+        super.iterateLoop(parse);
+
+        if (this.showCenter ) this.showCenter .iterateLoop(parse);
+        if (this.affectSpace) this.affectSpace.iterateLoop(parse);
     }
 }
 
@@ -81339,6 +83356,15 @@ extends GAffine
         super.invalidateInputs(parse, from)
 
         if (this.angle) this.angle.invalidateInputs(parse, from);
+    }
+
+
+
+    iterateLoop(parse)
+    {
+        super.iterateLoop(parse);
+
+        if (this.angle) this.angle.iterateLoop(parse);
     }
 }
 
@@ -81503,6 +83529,18 @@ extends GAffine
         if (this.affectCorners) this.affectCorners.invalidateInputs(parse, from);
         if (this.affectStyle  ) this.affectStyle  .invalidateInputs(parse, from);
     }
+
+
+
+    iterateLoop(parse)
+    {
+        super.iterateLoop(parse);
+
+        if (this.scaleX       ) this.scaleX       .iterateLoop(parse);
+        if (this.scaleY       ) this.scaleY       .iterateLoop(parse);
+        if (this.affectCorners) this.affectCorners.iterateLoop(parse);
+        if (this.affectStyle  ) this.affectStyle  .iterateLoop(parse);
+    }
 }
 
 
@@ -81646,6 +83684,16 @@ extends GAffine
 
         if (this.skewX) this.skewX.invalidateInputs(parse, from);
         if (this.skewY) this.skewY.invalidateInputs(parse, from);
+    }
+
+
+
+    iterateLoop(parse)
+    {
+        super.iterateLoop(parse);GVectorPath
+
+        if (this.skewX) this.skewX.iterateLoop(parse);
+        if (this.skewY) this.skewY.iterateLoop(parse);
     }
 }
 
@@ -81813,6 +83861,17 @@ extends GOperator1
         if (this.centerY   ) this.centerY   .invalidateInputs(parse, from);
         if (this.showCenter) this.showCenter.invalidateInputs(parse, from);
     }
+
+
+
+    iterateLoop(parse)
+    {
+        super.iterateLoop(parse);
+
+        if (this.centerX   ) this.centerX   .iterateLoop(parse);
+        if (this.centerY   ) this.centerY   .iterateLoop(parse);
+        if (this.showCenter) this.showCenter.iterateLoop(parse);
+    }
 }
 
 
@@ -81955,6 +84014,15 @@ extends GOperator1
 
         if (this.showCenter) this.showCenter.invalidateInputs(parse, from);
     }
+
+
+
+    iterateLoop(parse)
+    {
+        super.iterateLoop(parse);
+
+        if (this.showCenter) this.showCenter.iterateLoop(parse);
+    }
 }
 
 
@@ -82062,6 +84130,16 @@ extends GOperator2
 
         if (this.distance) this.distance.invalidateInputs(parse, from);
         if (this.angle   ) this.angle   .invalidateInputs(parse, from);
+    }
+
+
+
+    iterateLoop(parse)
+    {
+        super.iterateLoop(parse);
+
+        if (this.distance) this.distance.iterateLoop(parse);
+        if (this.angle   ) this.angle   .iterateLoop(parse);
     }
 }
 
@@ -82203,6 +84281,17 @@ extends GOperator2
         if (this.transform ) this.transform .invalidateInputs(parse, from);
         if (this.showCenter) this.showCenter.invalidateInputs(parse, from);
     }
+
+
+
+    iterateLoop(parse)
+    {
+        super.iterateLoop(parse);
+
+        if (this.amount    ) this.amount    .iterateLoop(parse);
+        if (this.transform ) this.transform .iterateLoop(parse);
+        if (this.showCenter) this.showCenter.iterateLoop(parse);
+    }
 }
 
 
@@ -82338,6 +84427,18 @@ extends GOperator2
         if (this.amount    ) this.amount    .invalidateInputs(parse, from);
         if (this.transform ) this.transform .invalidateInputs(parse, from);
         if (this.showCenter) this.showCenter.invalidateInputs(parse, from);
+    }
+
+
+
+    iterateLoop(parse)
+    {
+        super.iterateLoop(parse);
+
+        if (this.measure   ) this.measure   .iterateLoop(parse);
+        if (this.amount    ) this.amount    .iterateLoop(parse);
+        if (this.transform ) this.transform .iterateLoop(parse);
+        if (this.showCenter) this.showCenter.iterateLoop(parse);
     }
 }
 
@@ -82536,6 +84637,17 @@ extends GOperator1
         if (this.transform ) this.transform .invalidateInputs(parse, from);
         if (this.showCenter) this.showCenter.invalidateInputs(parse, from);
     }
+
+
+
+    iterateLoop(parse)
+    {
+        super.iterateLoop(parse);
+
+        if (this.position  ) this.position  .iterateLoop(parse);
+        if (this.transform ) this.transform .iterateLoop(parse);
+        if (this.showCenter) this.showCenter.iterateLoop(parse);
+    }
 }
 
 
@@ -82634,12 +84746,32 @@ extends GOperator
 
 
 
+    pushValueUpdates(parse)
+    {
+        super.pushValueUpdates(parse);
+
+        this.inputs.forEach(i => i.pushValueUpdates(parse))
+        this.params.forEach(p => p.pushValueUpdates(parse))
+    }
+
+
+
     invalidateInputs(parse, from)
     {
         super.invalidateInputs(parse, from);
 
         this.inputs.forEach(i => i.invalidateInputs(parse, from))
         this.params.forEach(p => p.invalidateInputs(parse, from))
+    }
+
+
+
+    iterateLoop(parse)
+    {
+        super.iterateLoop(parse);
+
+        this.inputs.forEach(i => i.iterateLoop(parse))
+        this.params.forEach(p => p.iterateLoop(parse))
     }
 }
 
@@ -82727,11 +84859,29 @@ extends GOperator
 
 
 
+    pushValueUpdates(parse)
+    {
+        super.pushValueUpdates(parse);
+
+        if (this.input) this.input.pushValueUpdates(parse);
+    }
+
+
+
     invalidateInputs(parse, from)
     {
         super.invalidateInputs(parse, from);
 
         if (this.input) this.input.invalidateInputs(parse, from);
+    }
+
+
+
+    iterateLoop(parse)
+    {
+        super.iterateLoop(parse);
+
+        if (this.input) this.input.iterateLoop(parse);
     }
 }
 
@@ -87424,7 +89574,7 @@ const iconNull              = '<svg width="9" height="15" viewBox="0 0 9 15" fil
 const iconCache             = '<svg width="16" height="11" viewBox="0 0 16 11" fill="none" xmlns="http://www.w3.org/2000/svg"><path d="M2.30354 1C1.68389 1.65376 1.20536 2.44219 0.906305 3.31653C0.435625 4.69266 0.437375 6.20022 0.911255 7.59282C1.21859 8.49597 1.71272 9.31613 2.35271 10" stroke="white"/><path d="M12.7415 1C13.3612 1.65376 13.8397 2.44219 14.1387 3.31653C14.6094 4.69266 14.6077 6.20022 14.1338 7.59282C13.8265 8.49597 13.3323 9.31613 12.6923 10" stroke="white"/><circle cx="1.5" cy="1.5" r="1.5" transform="matrix(-1 0 0 1 9 4)" fill="white"/></svg>';
 const iconFreeze            = '<svg width="18" height="11" viewBox="0 0 18 11" fill="none" xmlns="http://www.w3.org/2000/svg"><path d="M17.0334 0V11H14.0334V10H16.0667L16.0334 1H14L14.0334 0H17.0334Z" fill="white"/><path d="M0 11V0H3V1H0.966639V10H3V11H0Z" fill="white"/><path fill-rule="evenodd" clip-rule="evenodd" d="M12.9143 6.37823L11.4429 6.08713C11.4802 5.89844 11.5 5.70228 11.5 5.5C11.5 5.29772 11.4802 5.10156 11.4429 4.91287L12.9143 4.62177C12.9705 4.90581 13 5.19947 13 5.5C13 5.80053 12.9705 6.09419 12.9143 6.37823ZM12.242 2.99973L10.9956 3.83421C10.7761 3.50641 10.4936 3.22387 10.1658 3.00441L11.0003 1.75796C11.491 2.08649 11.9135 2.509 12.242 2.99973ZM9.37823 1.08565L9.08713 2.55714C8.89844 2.51981 8.70228 2.5 8.5 2.5C8.29772 2.5 8.10156 2.51981 7.91287 2.55714L7.62177 1.08565C7.90581 1.02946 8.19947 1 8.5 1C8.80053 1 9.09419 1.02946 9.37823 1.08565ZM5.99973 1.75796L6.83421 3.00441C6.50641 3.22387 6.22387 3.50641 6.00441 3.83421L4.75796 2.99973C5.08649 2.509 5.509 2.08649 5.99973 1.75796ZM4.08565 4.62177C4.02946 4.90581 4 5.19947 4 5.5C4 5.80053 4.02946 6.09419 4.08565 6.37823L5.55714 6.08713C5.51981 5.89844 5.5 5.70228 5.5 5.5C5.5 5.29772 5.51981 5.10156 5.55714 4.91287L4.08565 4.62177ZM4.75796 8.00027L6.00441 7.16579C6.22387 7.49359 6.50641 7.77613 6.83421 7.99559L5.99973 9.24204C5.509 8.91351 5.08649 8.491 4.75796 8.00027ZM7.62177 9.91435L7.91287 8.44286C8.10156 8.48019 8.29772 8.5 8.5 8.5C8.70228 8.5 8.89844 8.48019 9.08713 8.44286L9.37823 9.91435C9.09419 9.97054 8.80053 10 8.5 10C8.19947 10 7.90581 9.97054 7.62177 9.91435ZM11.0003 9.24204L10.1658 7.99559C10.4936 7.77613 10.7761 7.49359 10.9956 7.16579L12.242 8.00027C11.9135 8.491 11.491 8.91351 11.0003 9.24204Z" fill="white"/></svg>';
 const iconTimer             = '<svg width="13" height="18" viewBox="0 -1 13 18" fill="none" xmlns="http://www.w3.org/2000/svg"><path fill-rule="evenodd" clip-rule="evenodd" d="M9 0H4L4 2H5.5V4.07645C2.38491 4.55745 0 7.25021 0 10.5C0 14.0899 2.91015 17 6.5 17C10.0899 17 13 14.0899 13 10.5C13 7.25021 10.6151 4.55745 7.5 4.07645V2L9 2V0ZM6.5 5C3.46243 5 1 7.46243 1 10.5C1 13.5376 3.46243 16 6.5 16C9.53757 16 12 13.5376 12 10.5C12 7.46243 9.53757 5 6.5 5Z" fill="white"/><path d="M6.65821 9.51244L9.70667 6.46399L10.6001 7.35747L7.49915 10.4585C7.49972 10.4722 7.5 10.4861 7.5 10.5C7.5 11.0523 7.05229 11.5 6.5 11.5C5.94771 11.5 5.5 11.0523 5.5 10.5C5.5 9.94771 5.94771 9.5 6.5 9.5C6.55384 9.5 6.60668 9.50425 6.65821 9.51244Z" fill="white"/></svg>';
-const iconValueName         = '<svg width="18" height="7" viewBox="0 0 18 7" fill="none" xmlns="http://www.w3.org/2000/svg"><rect x="4" y="5.02722" width="9" height="1" fill="white"/><path d="M17.4077 0L17.4077 1.14446C17.4077 1.47359 17.3487 1.8158 17.2307 2.17111C17.1091 2.53015 16.9446 2.86863 16.7371 3.18654C16.5261 3.50818 16.29 3.77934 16.029 4L15.1277 3.3885C15.3387 3.05563 15.5157 2.70781 15.6588 2.34502C15.7983 1.98597 15.8662 1.58953 15.8627 1.15568L15.8627 -1.35074e-07L17.4077 0ZM2.40162 -1.31187e-06L2.40162 1.14446C2.40162 1.47358 2.34261 1.8158 2.22458 2.17111C2.10298 2.53015 1.93846 2.86863 1.73102 3.18653C1.52 3.50818 1.28395 3.77933 1.02287 4L0.121576 3.3885C0.332592 3.05563 0.509633 2.70781 0.652695 2.34502C0.79218 1.98597 0.860135 1.58953 0.856558 1.15568L0.856558 -1.44695e-06L2.40162 -1.31187e-06Z" fill="white"/></svg>';
+const iconValueName         = '<svg width="15" height="6" viewBox="0 0 15 6" fill="none" xmlns="http://www.w3.org/2000/svg"><rect x="4" y="5" width="7" height="1" fill="white"/><path d="M14.28 1.14446L14.28 0L12.735 -1.35074e-07L12.735 1.15568C12.7385 1.58953 12.6706 1.98597 12.5311 2.34502C12.388 2.70781 12.211 3.05563 12 3.3885L12.9013 4C13.1624 3.77934 13.3984 3.50818 13.6094 3.18654C13.8169 2.86863 13.9814 2.53015 14.103 2.17111C14.221 1.8158 14.28 1.47359 14.28 1.14446Z" fill="white"/><path d="M3.22168 1.14446L3.22168 0L1.67662 -1.35074e-07L1.67662 1.15568C1.68019 1.58953 1.61224 1.98597 1.47275 2.34502C1.32969 2.70781 1.15265 3.05563 0.941637 3.3885L1.84292 4C2.10401 3.77934 2.34006 3.50818 2.55108 3.18654C2.75852 2.86863 2.92304 2.53015 3.04464 2.17111C3.16267 1.8158 3.22168 1.47359 3.22168 1.14446Z" fill="white"/></svg>';
 
 const iconList              = '<svg width="12" height="9" viewBox="0 0 12 9" fill="none" xmlns="http://www.w3.org/2000/svg"><rect width="9" height="1" fill="white"/><rect y="4" width="9" height="1" fill="white"/><rect y="8" width="9" height="1" fill="white"/></svg>';
 const iconCondense          = '<svg width="13" height="9" viewBox="0 0 13 9" fill="none" xmlns="http://www.w3.org/2000/svg"><rect width="5" height="1" fill="white"/><rect y="8" width="5" height="1" fill="white"/><rect y="4" width="13" height="1" fill="white"/><rect x="4.99963" width="5.52856" height="1" transform="rotate(49.2368 4.99963 0)" fill="white"/><rect width="5.52856" height="1" transform="matrix(0.652935 -0.757414 -0.757414 -0.652935 4.99963 8.98938)" fill="white"/></svg>';
@@ -89115,13 +91265,10 @@ function initGeneratorMenus()
         menuItemRepeat   = new MenuItem('. . . Repeat',      null, {icon: iconRepeat,    createType: REPEAT,           callback: e => actionManager.do(getCreateNodeAction(REPEAT,          btnFlow.div, getCreateOptions(e)))}),
                            new MenuItem('',                  null, {separator: true}),
         menuItemIfElse   = new MenuItem('I&hairsp;f / else', null, {icon: iconIfElse,    createType: IF_ELSE,          callback: e => actionManager.do(getCreateNodeAction(IF_ELSE,         btnFlow.div, getCreateOptions(e))), disambiguate: true}),
-        menuItemSelect   = new MenuItem('Select',            null, {icon: iconSelect,    createType: SELECT,           callback: e => actionManager.do(getCreateNodeAction(SELECT,          btnFlow.div, getCreateOptions(e)))}),
-                           new MenuItem('',                  null, {separator: true}),
-                           new MenuItem('Value name',        null, {icon: iconValueName, createType: VALUE_NAME,       callback: e => actionManager.do(getCreateNodeAction(VALUE_NAME,      btnFlow.div, getCreateOptions(e)))}),
                            new MenuItem('',                  null, {separator: true}),
         menuItemNull     = new MenuItem('Null',              null, {icon: iconNull,      createType: NULL_NODE,        callback: e => actionManager.do(getCreateNodeAction(NULL_NODE,       btnFlow.div, getCreateOptions(e)))}),
-        menuItemCache    = new MenuItem('Cache',             null, {icon: iconCache,     createType: CACHE,            callback: e => actionManager.do(getCreateNodeAction(CACHE,           btnFlow.div, getCreateOptions(e)))}),
-        menuItemFreeze   = new MenuItem('Freeze . . .',      null, {icon: iconFreeze,    createType: FREEZE,           callback: e => actionManager.do(getCreateNodeAction(FREEZE,          btnFlow.div, getCreateOptions(e)))}),
+        // menuItemCache    = new MenuItem('Cache',             null, {icon: iconCache,     createType: CACHE,            callback: e => actionManager.do(getCreateNodeAction(CACHE,           btnFlow.div, getCreateOptions(e)))}),
+        menuItemFreeze   = new MenuItem('Cache. . .',        null, {icon: iconFreeze,    createType: FREEZE,           callback: e => actionManager.do(getCreateNodeAction(FREEZE,          btnFlow.div, getCreateOptions(e)))}),
                            new MenuItem('',                  null, {separator: true}),
         menuItemTimer    = new MenuItem('Timer ',            null, {icon: iconTimer,     createType: TIMER,            callback: e => actionManager.do(getCreateNodeAction(TIMER,           btnFlow.div, getCreateOptions(e)))}),
         menuItemAnimate  = new MenuItem('Animate',           null, {icon: iconAnimate,   createType: NUMBER_ANIMATE,   callback: e => actionManager.do(getCreateNodeAction(NUMBER_ANIMATE,  btnFlow.div, getCreateOptions(e)))}),
@@ -89132,22 +91279,24 @@ function initGeneratorMenus()
 
     menuData = new Menu('Data', true, false);
     menuData.addItems([
-        menuItemList   = new MenuItem('List',         null,            {icon: iconList,        createType: LIST,         callback: e => actionManager.do(getCreateNodeAction(LIST,          btnData.div, getCreateOptions(e)))}),
-        menuFlowSep1   = new MenuItem('',             null,            {separator: true}),     
-        menuItemItems  = new MenuItem('Items',        null,            {icon: iconItems,       createType: ITEMS,        callback: e => actionManager.do(getCreateNodeAction(ITEMS,         btnData.div, getCreateOptions(e)))}),
-        menuItemCount  = new MenuItem('Count',        null,            {icon: iconCount,       createType: LIST_COUNT,   callback: e => actionManager.do(getCreateNodeAction(LIST_COUNT,    btnData.div, getCreateOptions(e)))}),
-                         new MenuItem('Contains',     'List contains', {icon: iconContains,    createType: CONTAINS,     callback: e => actionManager.do(getCreateNodeAction(CONTAINS,      btnData.div, getCreateOptions(e))), disambiguate: true}),
-                         new MenuItem('',             null,            {separator: true}),     
-                         new MenuItem('Sublist',      null,            {icon: iconSublist,     createType: SUBLIST,      callback: e => actionManager.do(getCreateNodeAction(SUBLIST,       btnData.div, getCreateOptions(e)))}),
-                         new MenuItem('Unique',       null,            {icon: iconUnique,      createType: UNIQUE,       callback: e => actionManager.do(getCreateNodeAction(UNIQUE,        btnData.div, getCreateOptions(e)))}),
-                         new MenuItem('',             null,            {separator: true}),     
-                         new MenuItem('Reverse',      null,            {icon: iconReverseList, createType: REVERSE_LIST, callback: e => actionManager.do(getCreateNodeAction(REVERSE_LIST,  btnData.div, getCreateOptions(e)))}),
-                         new MenuItem('Sort',         null,            {icon: iconSort,        createType: SORT,         callback: e => actionManager.do(getCreateNodeAction(SORT,          btnData.div, getCreateOptions(e)))}),
-                         new MenuItem('',             null,            {separator: true}),     
-                         new MenuItem('Column',       null,            {icon: iconColumn,      createType: COLUMN,       callback: e => actionManager.do(getCreateNodeAction(COLUMN,        btnData.div, getCreateOptions(e)))}),
-                         new MenuItem('Cell',         null,            {icon: iconCell,        createType: CELL,         callback: e => actionManager.do(getCreateNodeAction(CELL,          btnData.div, getCreateOptions(e)))}),
-                         new MenuItem('',             null,            {separator: true}),     
-                         new MenuItem('List as item', null,            {icon: iconCondense,    createType: CONDENSE,     callback: e => actionManager.do(getCreateNodeAction(CONDENSE,      btnData.div, getCreateOptions(e)))})]);
+        menuItemList     = new MenuItem('List',         null,            {icon: iconList,        createType: LIST,         callback: e => actionManager.do(getCreateNodeAction(LIST,          btnData.div, getCreateOptions(e)))}),
+        menuFlowSep1     = new MenuItem('',             null,            {separator: true}),     
+        menuItemItems    = new MenuItem('Items',        null,            {icon: iconItems,       createType: ITEMS,        callback: e => actionManager.do(getCreateNodeAction(ITEMS,         btnData.div, getCreateOptions(e)))}),
+        menuItemCount    = new MenuItem('Count',        null,            {icon: iconCount,       createType: LIST_COUNT,   callback: e => actionManager.do(getCreateNodeAction(LIST_COUNT,    btnData.div, getCreateOptions(e)))}),
+                           new MenuItem('Contains',     'List contains', {icon: iconContains,    createType: CONTAINS,     callback: e => actionManager.do(getCreateNodeAction(CONTAINS,      btnData.div, getCreateOptions(e))), disambiguate: true}),
+                           new MenuItem('',             null,            {separator: true}),     
+        menuItemSelect   = new MenuItem('Select',       null,            {icon: iconSelect,      createType: SELECT,       callback: e => actionManager.do(getCreateNodeAction(SELECT,        btnData.div, getCreateOptions(e)))}),
+                           new MenuItem('Sublist',      null,            {icon: iconSublist,     createType: SUBLIST,      callback: e => actionManager.do(getCreateNodeAction(SUBLIST,       btnData.div, getCreateOptions(e)))}),
+                           new MenuItem('Unique',       null,            {icon: iconUnique,      createType: UNIQUE,       callback: e => actionManager.do(getCreateNodeAction(UNIQUE,        btnData.div, getCreateOptions(e)))}),
+                           new MenuItem('',             null,            {separator: true}),     
+                           new MenuItem('Reverse',      null,            {icon: iconReverseList, createType: REVERSE_LIST, callback: e => actionManager.do(getCreateNodeAction(REVERSE_LIST,  btnData.div, getCreateOptions(e)))}),
+                           new MenuItem('Sort',         null,            {icon: iconSort,        createType: SORT,         callback: e => actionManager.do(getCreateNodeAction(SORT,          btnData.div, getCreateOptions(e)))}),
+                           new MenuItem('',             null,            {separator: true}),     
+                           new MenuItem('Column',       null,            {icon: iconColumn,      createType: COLUMN,       callback: e => actionManager.do(getCreateNodeAction(COLUMN,        btnData.div, getCreateOptions(e)))}),
+                           new MenuItem('Cell',         null,            {icon: iconCell,        createType: CELL,         callback: e => actionManager.do(getCreateNodeAction(CELL,          btnData.div, getCreateOptions(e)))}),
+                           new MenuItem('',             null,            {separator: true}),     
+                           new MenuItem('List as item', null,            {icon: iconCondense,    createType: CONDENSE,     callback: e => actionManager.do(getCreateNodeAction(CONDENSE,      btnData.div, getCreateOptions(e)))}),
+                           new MenuItem('Value name',   null,            {icon: iconValueName,   createType: VALUE_NAME,   callback: e => actionManager.do(getCreateNodeAction(VALUE_NAME,    btnData.div, getCreateOptions(e)))})]);
     
 
     menuSets = new Menu('Sets...', true, false);
@@ -104280,7 +106429,7 @@ extends OperatorBase
 {
     constructor()
     {
-        super(FREEZE, 'freeze', 'freeze', iconFreeze);
+        super(FREEZE, 'cache', 'cache', iconFreeze);
 
         this.cached      = false;
         this.canDisable  = true;

@@ -101,4 +101,14 @@ extends GOperator1
         if (this.showCenter ) this.showCenter .invalidateInputs(parse, from);
         if (this.affectSpace) this.affectSpace.invalidateInputs(parse, from);
     }
+
+
+
+    iterateLoop(parse)
+    {
+        super.iterateLoop(parse);
+
+        if (this.showCenter ) this.showCenter .iterateLoop(parse);
+        if (this.affectSpace) this.affectSpace.iterateLoop(parse);
+    }
 }

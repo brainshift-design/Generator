@@ -155,4 +155,13 @@ extends GOperator1
 
         if (this.quality) this.quality.invalidateInputs(parse, from);
     }
+
+
+
+    iterateLoop(parse)
+    {
+        super.iterateLoop(parse);
+
+        if (this.quality) this.quality.iterateLoop(parse);
+    }
 }

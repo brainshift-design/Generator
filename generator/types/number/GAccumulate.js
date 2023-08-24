@@ -103,6 +103,16 @@ extends GOperator
 
 
 
+    iterateLoop(parse)
+    {
+        super.iterateLoop(parse);
+
+        if (this.start) this.start.iterateLoop(parse);
+        if (this.step ) this.step .iterateLoop(parse);
+    }
+
+
+
     resetLoop(parse, nodeId)
     {
         super.resetLoop(parse, nodeId);

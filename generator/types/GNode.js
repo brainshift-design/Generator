@@ -98,8 +98,6 @@ class GNode
         if (this.unknown)
             this.valid = false;
 
-        this.iterateLoop(parse);
-
         return true;
     }
 

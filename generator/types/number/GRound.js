@@ -106,4 +106,14 @@ extends GOperator1
         if (this.type    ) this.type    .invalidateInputs(parse, from);
         if (this.decimals) this.decimals.invalidateInputs(parse, from);
     }
+
+
+
+    iterateLoop(parse)
+    {
+        super.iterateLoop(parse);
+
+        if (this.type    ) this.type    .iterateLoop(parse);
+        if (this.decimals) this.decimals.iterateLoop(parse);
+    }
 }

@@ -100,23 +100,6 @@ extends GOperator
         return this;
     }
 
-
-
-    pushValueUpdates(parse)
-    {
-        super.pushValueUpdates(parse);
-
-        this.inputs.forEach(i => i.pushValueUpdates(parse));
-
-        if (this.gradType) this.gradType.pushValueUpdates(parse);
-        if (this.x       ) this.x       .pushValueUpdates(parse);
-        if (this.y       ) this.y       .pushValueUpdates(parse);
-        if (this.size    ) this.size    .pushValueUpdates(parse);
-        if (this.angle   ) this.angle   .pushValueUpdates(parse);
-        if (this.aspect  ) this.aspect  .pushValueUpdates(parse);
-        if (this.skew    ) this.skew    .pushValueUpdates(parse);
-        if (this.blend   ) this.blend   .pushValueUpdates(parse);
-    }    
     
     
     toValue()
@@ -156,6 +139,24 @@ extends GOperator
 
 
 
+    pushValueUpdates(parse)
+    {
+        super.pushValueUpdates(parse);
+
+        this.inputs.forEach(i => i.pushValueUpdates(parse));
+
+        if (this.gradType) this.gradType.pushValueUpdates(parse);
+        if (this.x       ) this.x       .pushValueUpdates(parse);
+        if (this.y       ) this.y       .pushValueUpdates(parse);
+        if (this.size    ) this.size    .pushValueUpdates(parse);
+        if (this.angle   ) this.angle   .pushValueUpdates(parse);
+        if (this.aspect  ) this.aspect  .pushValueUpdates(parse);
+        if (this.skew    ) this.skew    .pushValueUpdates(parse);
+        if (this.blend   ) this.blend   .pushValueUpdates(parse);
+    }    
+
+
+
     invalidateInputs(parse, from)
     {
         super.invalidateInputs(parse, from);
@@ -171,4 +172,22 @@ extends GOperator
         if (this.skew    ) this.skew    .invalidateInputs(parse, from);
         if (this.blend   ) this.blend   .invalidateInputs(parse, from);
     }
+
+
+
+    iterateLoop(parse)
+    {
+        super.iterateLoop(parse);
+
+        this.inputs.forEach(i => i.iterateLoop(parse));
+
+        if (this.gradType) this.gradType.iterateLoop(parse);
+        if (this.x       ) this.x       .iterateLoop(parse);
+        if (this.y       ) this.y       .iterateLoop(parse);
+        if (this.size    ) this.size    .iterateLoop(parse);
+        if (this.angle   ) this.angle   .iterateLoop(parse);
+        if (this.aspect  ) this.aspect  .iterateLoop(parse);
+        if (this.skew    ) this.skew    .iterateLoop(parse);
+        if (this.blend   ) this.blend   .iterateLoop(parse);
+    }    
 }

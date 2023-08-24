@@ -139,4 +139,14 @@ extends GAffine
         if (this.skewX) this.skewX.invalidateInputs(parse, from);
         if (this.skewY) this.skewY.invalidateInputs(parse, from);
     }
+
+
+
+    iterateLoop(parse)
+    {
+        super.iterateLoop(parse);GVectorPath
+
+        if (this.skewX) this.skewX.iterateLoop(parse);
+        if (this.skewY) this.skewY.iterateLoop(parse);
+    }
 }

@@ -209,4 +209,17 @@ extends GShape
         if (this.winding) this.winding.invalidateInputs(parse, from);
         if (this.round  ) this.round  .invalidateInputs(parse, from);
     }
+
+
+
+    iterateLoop(parse)
+    {
+        super.iterateLoop(parse);
+
+        if (this.points ) this.points .iterateLoop(parse);
+        if (this.closed ) this.closed .iterateLoop(parse);
+        if (this.degree ) this.degree .iterateLoop(parse);
+        if (this.winding) this.winding.iterateLoop(parse);
+        if (this.round  ) this.round  .iterateLoop(parse);
+    }
 }

@@ -104,4 +104,13 @@ extends GOperator
 
         this.cachedValue = new TextValue();
     }
+
+
+
+    iterateLoop(parse)
+    {
+        super.iterateLoop(parse);
+
+        if (this.request) this.request.iterateLoop(parse);
+    }
 }

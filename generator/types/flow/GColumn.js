@@ -56,8 +56,11 @@ extends GOperator1
 
                         if (index.value < row.items.length)
                         {
-                            this.value.items  .push(row.items[index.value].copy());
-                            this.value.objects.push(...row.items[index.value].objects);
+                            this.value.items.push(row.items[index.value].copy());
+
+                            if (   this.value.objects 
+                                && row.items[index.value].objects)
+                                this.value.objects.push(...row.items[index.value].objects);
                         }
                     }
                 }
@@ -112,6 +115,15 @@ extends GOperator1
         super.invalidateInputs(parse, from);
 
         if (this.index) this.index.invalidateInputs(parse, from);
+    }
+
+
+
+    iterateLoop(parse)
+    {
+        super.iterateLoop(parse);
+
+        if (this.index) this.index.iterateLoop(parse);
     }
 }
 

@@ -124,4 +124,14 @@ extends GOperator1
         if (this.fill    ) this.fill    .invalidateInputs(parse, from);
         if (this.position) this.position.invalidateInputs(parse, from);
     }
+
+
+
+    iterateLoop(parse)
+    {
+        super.iterateLoop(parse);
+
+        if (this.fill    ) this.fill    .iterateLoop(parse);
+        if (this.position) this.position.iterateLoop(parse);
+    }
 }

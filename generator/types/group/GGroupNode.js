@@ -70,11 +70,31 @@ extends GOperator
 
 
 
+    pushValueUpdates(parse)
+    {
+        super.pushValueUpdates(parse);
+
+        this.inputs.forEach(i => i.pushValueUpdates(parse))
+        this.params.forEach(p => p.pushValueUpdates(parse))
+    }
+
+
+
     invalidateInputs(parse, from)
     {
         super.invalidateInputs(parse, from);
 
         this.inputs.forEach(i => i.invalidateInputs(parse, from))
         this.params.forEach(p => p.invalidateInputs(parse, from))
+    }
+
+
+
+    iterateLoop(parse)
+    {
+        super.iterateLoop(parse);
+
+        this.inputs.forEach(i => i.iterateLoop(parse))
+        this.params.forEach(p => p.iterateLoop(parse))
     }
 }

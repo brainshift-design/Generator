@@ -52,7 +52,7 @@ extends GOperator1
                     break;
             }
 
-            this.value = new NumberValue(num);
+            this.value = new NumberValue(num, decDigits(num));
         }
         else
             this.value = NumberValue.NaN;
@@ -94,5 +94,14 @@ extends GOperator1
         super.invalidateInputs(parse, from);
 
         if (this.format) this.format.invalidateInputs(parse, from);
+    }
+
+
+
+    iterateLoop(parse)
+    {
+        super.iterateLoop(parse);
+
+        if (this.format) this.format.iterateLoop(parse);
     }
 }

@@ -98,4 +98,13 @@ extends GOperator1
 
         if (this.radius) this.radius.invalidateInputs(parse, from);
     }
+
+
+
+    iterateLoop(parse)
+    {
+        super.iterateLoop(parse);
+
+        if (this.radius) this.radius.iterateLoop(parse);
+    }
 }

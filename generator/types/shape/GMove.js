@@ -207,4 +207,17 @@ extends GOperator1
         if (this.affectSpace) this.affectSpace.invalidateInputs(parse, from);
         if (this.showCenter ) this.showCenter .invalidateInputs(parse, from);
     }
+
+
+
+    iterateLoop(parse)
+    {
+        super.iterateLoop(parse);
+
+        if (this.x          ) this.x          .iterateLoop(parse);
+        if (this.y          ) this.y          .iterateLoop(parse);
+        if (this.moveType   ) this.moveType   .iterateLoop(parse);
+        if (this.affectSpace) this.affectSpace.iterateLoop(parse);
+        if (this.showCenter ) this.showCenter .iterateLoop(parse);
+    }
 }

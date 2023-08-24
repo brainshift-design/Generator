@@ -139,15 +139,6 @@ extends GShapeBase
 
 
 
-    pushValueUpdates(parse)
-    {
-        super.pushValueUpdates(parse);
-
-        this.inputs.forEach(i => i.pushValueUpdates(parse));
-    }
-
-
-
     toValue()
     {
         return this.value.copy();
@@ -169,10 +160,28 @@ extends GShapeBase
 
 
 
+    pushValueUpdates(parse)
+    {
+        super.pushValueUpdates(parse);
+
+        this.inputs.forEach(i => i.pushValueUpdates(parse));
+    }
+
+
+
     invalidateInputs(parse, from)
     {
         super.invalidateInputs(parse, from);
 
         this.inputs.forEach(i => i.invalidateInputs(parse, from));
+    }
+
+
+
+    iterateLoop(parse)
+    {
+        super.iterateLoop(parse);
+
+        this.inputs.forEach(i => i.iterateLoop(parse));
     }
 }

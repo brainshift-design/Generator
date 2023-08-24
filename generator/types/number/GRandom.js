@@ -152,6 +152,18 @@ extends GOperator
 
 
 
+    iterateLoop(parse)
+    {
+        super.iterateLoop(parse);
+
+        if (this.seed  ) this.seed  .iterateLoop(parse);
+        if (this.min   ) this.min   .iterateLoop(parse);
+        if (this.max   ) this.max   .iterateLoop(parse);
+        if (this.unique) this.unique.iterateLoop(parse);
+    }
+
+
+
     initLoop(parse, nodeId)
     {
         super.initLoop(parse, nodeId);

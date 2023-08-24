@@ -98,4 +98,13 @@ extends GOperator
 
         this.inputs.forEach(i => i.invalidateInputs(parse, from));
     }
+
+
+
+    iterateLoop(parse)
+    {
+        super.iterateLoop(parse);
+
+        this.inputs.forEach(i => i.iterateLoop(parse));
+    }
 }

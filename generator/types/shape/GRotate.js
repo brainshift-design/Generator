@@ -129,4 +129,13 @@ extends GAffine
 
         if (this.angle) this.angle.invalidateInputs(parse, from);
     }
+
+
+
+    iterateLoop(parse)
+    {
+        super.iterateLoop(parse);
+
+        if (this.angle) this.angle.iterateLoop(parse);
+    }
 }

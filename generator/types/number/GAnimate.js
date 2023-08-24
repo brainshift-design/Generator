@@ -163,4 +163,18 @@ extends GOperator
         if (this.length) this.length.invalidateInputs(parse, from);
         if (this.time  ) this.time  .invalidateInputs(parse, from);
     }
+
+
+
+    iterateLoop(parse)
+    {
+        super.iterateLoop(parse);
+
+        if (this.from  ) this.from  .iterateLoop(parse);
+        if (this.to    ) this.to    .iterateLoop(parse);
+        if (this.curve ) this.curve .iterateLoop(parse);
+        if (this.repeat) this.repeat.iterateLoop(parse);
+        if (this.length) this.length.iterateLoop(parse);
+        if (this.time  ) this.time  .iterateLoop(parse);
+    }
 }

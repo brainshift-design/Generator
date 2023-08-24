@@ -83,4 +83,13 @@ extends GArithmetic
 
         if (this.operation) this.operation.invalidateInputs(parse, from);
     }
+
+
+
+    iterateLoop(parse)
+    {
+        super.iterateLoop(parse);
+
+        if (this.operation) this.operation.iterateLoop(parse);
+    }
 }

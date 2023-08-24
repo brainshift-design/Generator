@@ -133,4 +133,19 @@ extends GOperator
         if (this.minutes  ) this.minutes  .invalidateInputs(parse, from);
         if (this.seconds  ) this.seconds  .invalidateInputs(parse, from);
     }
+
+
+
+    iterateLoop(parse)
+    {
+        super.iterateLoop(parse);
+
+        if (this.year     ) this.year     .iterateLoop(parse);
+        if (this.month    ) this.month    .iterateLoop(parse);
+        if (this.date     ) this.date     .iterateLoop(parse);
+        if (this.dayOfWeek) this.dayOfWeek.iterateLoop(parse);
+        if (this.hours    ) this.hours    .iterateLoop(parse);
+        if (this.minutes  ) this.minutes  .iterateLoop(parse);
+        if (this.seconds  ) this.seconds  .iterateLoop(parse);
+    }    
 }

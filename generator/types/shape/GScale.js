@@ -158,4 +158,16 @@ extends GAffine
         if (this.affectCorners) this.affectCorners.invalidateInputs(parse, from);
         if (this.affectStyle  ) this.affectStyle  .invalidateInputs(parse, from);
     }
+
+
+
+    iterateLoop(parse)
+    {
+        super.iterateLoop(parse);
+
+        if (this.scaleX       ) this.scaleX       .iterateLoop(parse);
+        if (this.scaleY       ) this.scaleY       .iterateLoop(parse);
+        if (this.affectCorners) this.affectCorners.iterateLoop(parse);
+        if (this.affectStyle  ) this.affectStyle  .iterateLoop(parse);
+    }
 }

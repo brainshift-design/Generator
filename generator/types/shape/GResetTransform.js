@@ -137,4 +137,13 @@ extends GOperator1
 
         if (this.showCenter) this.showCenter.invalidateInputs(parse, from);
     }
+
+
+
+    iterateLoop(parse)
+    {
+        super.iterateLoop(parse);
+
+        if (this.showCenter) this.showCenter.iterateLoop(parse);
+    }
 }

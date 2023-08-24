@@ -123,4 +123,13 @@ extends GOperator
 
         if (this.genValue) this.genValue.invalidateInputs(parse, from);
     }
+
+
+
+    iterateLoop(parse)
+    {
+        super.iterateLoop(parse);
+
+        if (this.genValue) this.genValue.iterateLoop(parse);
+    }
 }

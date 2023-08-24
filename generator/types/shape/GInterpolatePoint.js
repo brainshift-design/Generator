@@ -135,4 +135,15 @@ extends GOperator2
         if (this.transform ) this.transform .invalidateInputs(parse, from);
         if (this.showCenter) this.showCenter.invalidateInputs(parse, from);
     }
+
+
+
+    iterateLoop(parse)
+    {
+        super.iterateLoop(parse);
+
+        if (this.amount    ) this.amount    .iterateLoop(parse);
+        if (this.transform ) this.transform .iterateLoop(parse);
+        if (this.showCenter) this.showCenter.iterateLoop(parse);
+    }
 }

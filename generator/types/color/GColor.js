@@ -218,4 +218,16 @@ extends GOperator1
         if (this.c2   ) this.c2   .invalidateInputs(parse, from);
         if (this.c3   ) this.c3   .invalidateInputs(parse, from);
     }
+
+
+
+    iterateLoop(parse)
+    {
+        super.iterateLoop(parse);
+
+        if (this.space) this.space.iterateLoop(parse);
+        if (this.c1   ) this.c1   .iterateLoop(parse);
+        if (this.c2   ) this.c2   .iterateLoop(parse);
+        if (this.c3   ) this.c3   .iterateLoop(parse);
+    }
 }

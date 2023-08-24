@@ -103,4 +103,14 @@ extends GOperator2
         if (this.distance) this.distance.invalidateInputs(parse, from);
         if (this.angle   ) this.angle   .invalidateInputs(parse, from);
     }
+
+
+
+    iterateLoop(parse)
+    {
+        super.iterateLoop(parse);
+
+        if (this.distance) this.distance.iterateLoop(parse);
+        if (this.angle   ) this.angle   .iterateLoop(parse);
+    }
 }

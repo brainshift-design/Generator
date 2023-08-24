@@ -237,4 +237,16 @@ extends GOperator1
         if (this.margin2) this.margin2.invalidateInputs(parse, from);
         if (this.margin3) this.margin3.invalidateInputs(parse, from);
     }
+
+
+
+    iterateLoop(parse)
+    {
+        super.iterateLoop(parse);
+
+        if (this.order  ) this.order  .iterateLoop(parse);
+        if (this.margin1) this.margin1.iterateLoop(parse);
+        if (this.margin2) this.margin2.iterateLoop(parse);
+        if (this.margin3) this.margin3.iterateLoop(parse);
+    }
 }

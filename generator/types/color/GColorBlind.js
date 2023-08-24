@@ -118,4 +118,15 @@ extends GOperator1
         if (this.m) this.m.invalidateInputs(parse, from);
         if (this.s) this.s.invalidateInputs(parse, from);
     }
+
+
+
+    iterateLoop(parse)
+    {
+        super.iterateLoop(parse);
+
+        if (this.l) this.l.iterateLoop(parse);
+        if (this.m) this.m.iterateLoop(parse);
+        if (this.s) this.s.iterateLoop(parse);
+    }
 }

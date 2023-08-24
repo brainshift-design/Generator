@@ -123,4 +123,15 @@ extends GShapeBase
 
         if (this.retain) this.retain.invalidateInputs(parse, from);
     }
+
+
+
+    iterateLoop(parse)
+    {
+        super.iterateLoop(parse);
+
+        this.inputs.forEach(i => i.iterateLoop(parse));
+
+        if (this.retain) this.retain.iterateLoop(parse);
+    }
 }

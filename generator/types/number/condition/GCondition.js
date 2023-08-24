@@ -91,6 +91,16 @@ extends GOperator1
         if (this.operation) this.operation.invalidateInputs(parse, from);
         if (this.operand  ) this.operand  .invalidateInputs(parse, from);
     }
+
+
+
+    iterateLoop(parse)
+    {
+        super.iterateLoop(parse);
+
+        if (this.operation) this.operation.iterateLoop(parse);
+        if (this.operand  ) this.operand  .iterateLoop(parse);
+    }
 }
 
 

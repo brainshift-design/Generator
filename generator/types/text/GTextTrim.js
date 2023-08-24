@@ -95,4 +95,14 @@ extends GOperator1
         if (this.start) this.start.invalidateInputs(parse, from);
         if (this.end  ) this.end  .invalidateInputs(parse, from);
     }
+
+
+
+    iterateLoop(parse)
+    {
+        super.iterateLoop(parse);
+
+        if (this.start) this.start.iterateLoop(parse);
+        if (this.end  ) this.end  .iterateLoop(parse);
+    }
 }

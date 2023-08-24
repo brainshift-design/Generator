@@ -110,7 +110,7 @@ extends GOperator1
     {
         super.pushValueUpdates(parse);
 
-        if (this.case ) this.case .pushValueUpdates(parse);
+        if (this.case) this.case.pushValueUpdates(parse);
     }
 
 
@@ -119,6 +119,15 @@ extends GOperator1
     {
         super.invalidateInputs(parse, from);
 
-        if (this.case ) this.case .invalidateInputs(parse, from);
+        if (this.case) this.case.invalidateInputs(parse, from);
+    }
+
+
+
+    iterateLoop(parse)
+    {
+        super.iterateLoop(parse);
+
+        if (this.case) this.case.iterateLoop(parse);
     }
 }

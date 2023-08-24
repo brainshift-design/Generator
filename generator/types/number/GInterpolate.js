@@ -92,4 +92,13 @@ extends GOperator2
 
         if (this.amount) this.amount.invalidateInputs(parse, from);
     }
+
+
+
+    iterateLoop(parse)
+    {
+        super.iterateLoop(parse);
+
+        if (this.amount) this.amount.iterateLoop(parse);
+    }
 }

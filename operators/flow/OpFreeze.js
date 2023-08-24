@@ -3,7 +3,7 @@ extends OperatorBase
 {
     constructor()
     {
-        super(FREEZE, 'freeze', 'freeze', iconFreeze);
+        super(FREEZE, 'cache', 'cache', iconFreeze);
 
         this.cached      = false;
         this.canDisable  = true;

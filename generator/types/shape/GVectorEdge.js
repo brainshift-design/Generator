@@ -162,4 +162,16 @@ extends GOperator1
         if (this.startTangent) this.startTangent.invalidateInputs(parse, from);
         if (this.endTangent  ) this.endTangent  .invalidateInputs(parse, from);
     }
+
+
+
+    iterateLoop(parse)
+    {
+        super.iterateLoop(parse);
+
+        if (this.input0      ) this.input0      .iterateLoop(parse);
+        if (this.input1      ) this.input1      .iterateLoop(parse);
+        if (this.startTangent) this.startTangent.iterateLoop(parse);
+        if (this.endTangent  ) this.endTangent  .iterateLoop(parse);
+    }
 }

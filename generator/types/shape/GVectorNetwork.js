@@ -184,4 +184,13 @@ extends GShape
 
         this.inputs.forEach(i => i.pushValueUpdates(parse));
     }
+
+
+
+    iterateLoop(parse)
+    {
+        super.iterateLoop(parse);
+
+        this.inputs.forEach(i => i.iterateLoop(parse));
+    }
 }

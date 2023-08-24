@@ -81,4 +81,13 @@ extends GOperator1
 
         if (this.function) this.function.invalidateInputs(parse, from);
     }
+
+
+
+    iterateLoop(parse)
+    {
+        super.iterateLoop(parse);
+
+        if (this.function) this.function.iterateLoop(parse);
+    }
 }

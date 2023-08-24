@@ -180,4 +180,17 @@ extends GOperator
         if (this.spread) this.spread.invalidateInputs(parse, from);
         if (this.bias  ) this.bias  .invalidateInputs(parse, from);
     }
+
+
+
+    iterateLoop(parse)
+    {
+        super.iterateLoop(parse);
+
+        if (this.from  ) this.from  .iterateLoop(parse);
+        if (this.start ) this.start .iterateLoop(parse);
+        if (this.end   ) this.end   .iterateLoop(parse);
+        if (this.spread) this.spread.iterateLoop(parse);
+        if (this.bias  ) this.bias  .iterateLoop(parse);
+    }
 }

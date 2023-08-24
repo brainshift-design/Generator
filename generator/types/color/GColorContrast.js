@@ -163,4 +163,14 @@ extends GOperator2
         if (this.standard) this.standard.invalidateInputs(parse, from);
         if (this.contrast) this.contrast.invalidateInputs(parse, from);
     }
+
+
+
+    iterateLoop(parse)
+    {
+        super.iterateLoop(parse);
+
+        if (this.standard) this.standard.iterateLoop(parse);
+        if (this.contrast) this.contrast.iterateLoop(parse);
+    }
 }

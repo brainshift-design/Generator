@@ -71,7 +71,7 @@ extends GValue
 
     toJson()
     {
-        return this.value ? encodeURIComponent(this.value) : '?';
+        return encodeURIComponent(this.value);
     }
 
 
@@ -121,7 +121,7 @@ extends GValue
 
 
 
-    static NaN = Object.freeze(new TextValue(null));
+    static NaN = Object.freeze(new TextValue());
 }
 
 

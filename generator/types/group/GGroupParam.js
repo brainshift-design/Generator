@@ -80,10 +80,28 @@ extends GOperator
 
 
 
+    pushValueUpdates(parse)
+    {
+        super.pushValueUpdates(parse);
+
+        if (this.input) this.input.pushValueUpdates(parse);
+    }
+
+
+
     invalidateInputs(parse, from)
     {
         super.invalidateInputs(parse, from);
 
         if (this.input) this.input.invalidateInputs(parse, from);
+    }
+
+
+
+    iterateLoop(parse)
+    {
+        super.iterateLoop(parse);
+
+        if (this.input) this.input.iterateLoop(parse);
     }
 }

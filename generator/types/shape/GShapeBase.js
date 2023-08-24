@@ -80,6 +80,18 @@ extends GOperator
         if (this.width ) this.width .invalidateInputs(parse, from);
         if (this.height) this.height.invalidateInputs(parse, from);
     }
+
+
+
+    iterateLoop(parse)
+    {
+        super.iterateLoop(parse);
+
+        if (this.x     ) this.x     .iterateLoop(parse);
+        if (this.y     ) this.y     .iterateLoop(parse);
+        if (this.width ) this.width .iterateLoop(parse);
+        if (this.height) this.height.iterateLoop(parse);
+    }
 }
 
 

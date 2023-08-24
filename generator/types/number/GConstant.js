@@ -88,4 +88,13 @@ extends GOperator
 
         if (this.constant) this.constant.invalidateInputs(parse, from);
     }
+
+
+
+    iterateLoop(parse)
+    {
+        super.iterateLoop(parse);
+
+        if (this.constant) this.constant.iterateLoop(parse);
+    }
 }

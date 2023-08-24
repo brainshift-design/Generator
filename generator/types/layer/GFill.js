@@ -120,4 +120,15 @@ extends GOperator1
         if (this.opacity) this.opacity.invalidateInputs(parse, from);
         if (this.blend  ) this.blend  .invalidateInputs(parse, from);
     }
+
+
+
+    iterateLoop(parse)
+    {
+        super.iterateLoop(parse);
+
+        if (this.color  ) this.color  .iterateLoop(parse);
+        if (this.opacity) this.opacity.iterateLoop(parse);
+        if (this.blend  ) this.blend  .iterateLoop(parse);
+    }
 }

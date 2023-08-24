@@ -130,4 +130,14 @@ extends GOperator1
         if (this.rowSeparator   ) this.rowSeparator   .invalidateInputs(parse, from);
         if (this.columnSeparator) this.columnSeparator.invalidateInputs(parse, from);
     }
+
+
+
+    iterateLoop(parse)
+    {
+        super.iterateLoop(parse);
+
+        if (this.rowSeparator   ) this.rowSeparator   .iterateLoop(parse);
+        if (this.columnSeparator) this.columnSeparator.iterateLoop(parse);
+    }
 }

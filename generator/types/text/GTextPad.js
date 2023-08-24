@@ -116,4 +116,16 @@ extends GOperator1
         if (this.endPad    ) this.endPad    .invalidateInputs(parse, from);
         if (this.endCount  ) this.endCount  .invalidateInputs(parse, from);
     }
+
+
+
+    iterateLoop(parse)
+    {
+        super.iterateLoop(parse);
+
+        if (this.startPad  ) this.startPad  .iterateLoop(parse);
+        if (this.startCount) this.startCount.iterateLoop(parse);
+        if (this.endPad    ) this.endPad    .iterateLoop(parse);
+        if (this.endCount  ) this.endCount  .iterateLoop(parse);
+    }
 }

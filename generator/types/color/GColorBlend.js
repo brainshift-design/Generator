@@ -141,4 +141,14 @@ extends GOperator2
         if (this.mode   ) this.mode   .invalidateInputs(parse, from);
         if (this.opacity) this.opacity.invalidateInputs(parse, from);
     }
+
+
+
+    iterateLoop(parse)
+    {
+        super.iterateLoop(parse);
+
+        if (this.mode   ) this.mode   .iterateLoop(parse);
+        if (this.opacity) this.opacity.iterateLoop(parse);
+    }
 }

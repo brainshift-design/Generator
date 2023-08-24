@@ -307,4 +307,24 @@ extends GShape
         if (this.lineHeight   ) this.lineHeight   .invalidateInputs(parse, from);
         if (this.letterSpacing) this.letterSpacing.invalidateInputs(parse, from);
     }
+
+
+
+    iterateLoop(parse)
+    {
+        super.iterateLoop(parse);
+        
+        if (this.text         ) this.text         .iterateLoop(parse);
+        if (this.x            ) this.x            .iterateLoop(parse);
+        if (this.y            ) this.y            .iterateLoop(parse);
+        if (this.width        ) this.width        .iterateLoop(parse);
+        if (this.height       ) this.height       .iterateLoop(parse);
+        if (this.font         ) this.font         .iterateLoop(parse);
+        if (this.style        ) this.style        .iterateLoop(parse);
+        if (this.size         ) this.size         .iterateLoop(parse);
+        if (this.alignH       ) this.alignH       .iterateLoop(parse);
+        if (this.alignV       ) this.alignV       .iterateLoop(parse);
+        if (this.lineHeight   ) this.lineHeight   .iterateLoop(parse);
+        if (this.letterSpacing) this.letterSpacing.iterateLoop(parse);
+    }
 }

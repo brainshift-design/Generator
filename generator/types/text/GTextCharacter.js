@@ -74,4 +74,13 @@ extends GOperator1
 
         if (this.code) this.code.invalidateInputs(parse, from);
     }
+
+
+
+    iterateLoop(parse)
+    {
+        super.iterateLoop(parse);
+
+        if (this.code) this.code.iterateLoop(parse);
+    }
 }

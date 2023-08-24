@@ -110,4 +110,15 @@ extends GOperator1
         if (this.min  ) this.min  .invalidateInputs(parse, from);
         if (this.max  ) this.max  .invalidateInputs(parse, from);
     }
+
+
+
+    iterateLoop(parse)
+    {
+        super.iterateLoop(parse);
+
+        if (this.input) this.input.iterateLoop(parse);
+        if (this.min  ) this.min  .iterateLoop(parse);
+        if (this.max  ) this.max  .iterateLoop(parse);
+    }
 }

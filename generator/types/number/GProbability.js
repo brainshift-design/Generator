@@ -104,4 +104,14 @@ extends GOperator
         if (this.seed  ) this.seed  .invalidateInputs(parse, from);
         if (this.chance) this.chance.invalidateInputs(parse, from);
     }
+
+
+
+    iterateLoop(parse)
+    {
+        super.iterateLoop(parse);
+
+        if (this.seed  ) this.seed  .iterateLoop(parse);
+        if (this.chance) this.chance.iterateLoop(parse);
+    }
 }

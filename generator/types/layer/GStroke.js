@@ -188,4 +188,19 @@ extends GOperator1
         if (this.cap   ) this.cap   .invalidateInputs(parse, from);
         if (this.dashes) this.dashes.invalidateInputs(parse, from);
     }
+
+
+
+    iterateLoop(parse)
+    {
+        super.iterateLoop(parse);
+
+        if (this.fills ) this.fills .iterateLoop(parse);
+        if (this.weight) this.weight.iterateLoop(parse);
+        if (this.fit   ) this.fit   .iterateLoop(parse);
+        if (this.join  ) this.join  .iterateLoop(parse);
+        if (this.miter ) this.miter .iterateLoop(parse);
+        if (this.cap   ) this.cap   .iterateLoop(parse);
+        if (this.dashes) this.dashes.iterateLoop(parse);
+    }    
 }

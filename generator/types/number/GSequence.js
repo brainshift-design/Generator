@@ -53,6 +53,7 @@ extends GOperator
         {
             const value = start.toNumber() + (this.options.enabled ? step.toNumber() * this.iteration : 0);
 
+
             if (!end.isValid())
                 this.value = new NumberValue(value, Math.max(start.decimals, step.decimals));
 
@@ -126,5 +127,16 @@ extends GOperator
         if (this.start) this.start.invalidateInputs(parse, from);
         if (this.end  ) this.end  .invalidateInputs(parse, from);
         if (this.step ) this.step .invalidateInputs(parse, from);
+    }
+
+
+
+    iterateLoop(parse)
+    {
+        super.iterateLoop(parse);
+
+        if (this.start) this.start.iterateLoop(parse);
+        if (this.step ) this.step .iterateLoop(parse);
+        if (this.end  ) this.end  .iterateLoop(parse);
     }
 }

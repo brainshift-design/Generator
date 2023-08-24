@@ -167,4 +167,15 @@ extends GOperator2
         if (this.amount) this.amount.invalidateInputs(parse, from);
         if (this.gamma ) this.gamma .invalidateInputs(parse, from);
     }
+
+
+
+    iterateLoop(parse)
+    {
+        super.iterateLoop(parse);
+
+        if (this.space ) this.space .iterateLoop(parse);
+        if (this.amount) this.amount.iterateLoop(parse);
+        if (this.gamma ) this.gamma .iterateLoop(parse);
+    }
 }

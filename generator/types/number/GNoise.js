@@ -180,4 +180,19 @@ extends GOperator
         if (this.interpolate) this.interpolate.invalidateInputs(parse, from);
         if (this.detail     ) this.detail     .invalidateInputs(parse, from);
     }
+
+
+
+    iterateLoop(parse)
+    {
+        super.iterateLoop(parse);
+
+        if (this.seed       ) this.seed       .iterateLoop(parse);
+        if (this.min        ) this.min        .iterateLoop(parse);
+        if (this.max        ) this.max        .iterateLoop(parse);
+        if (this.scale      ) this.scale      .iterateLoop(parse);
+        if (this.offset     ) this.offset     .iterateLoop(parse);
+        if (this.interpolate) this.interpolate.iterateLoop(parse);
+        if (this.detail     ) this.detail     .iterateLoop(parse);
+    }
 }

@@ -145,4 +145,14 @@ extends GShapeBase
         if (this.input) this.input.invalidateInputs(parse, from);
         if (this.props) this.props.invalidateInputs(parse, from);
     }
+
+
+
+    iterateLoop(parse)
+    {
+        super.iterateLoop(parse);
+
+        if (this.input) this.input.iterateLoop(parse);
+        if (this.props) this.props.iterateLoop(parse);
+    }
 }

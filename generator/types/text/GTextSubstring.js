@@ -103,11 +103,21 @@ extends GOperator1
 
 
 
-    invalidateInputs(parse, from)
+    pushValueUpdates(parse)
     {
-        super.invalidateInputs(parse, from);
+        super.pushValueUpdates(parse);
 
-        if (this.start) this.start.invalidateInputs(parse, from);
-        if (this.end  ) this.end  .invalidateInputs(parse, from);
+        if (this.start) this.start.pushValueUpdates(parse);
+        if (this.end  ) this.end  .pushValueUpdates(parse);
+    }
+
+
+
+    iterateLoop(parse, from)
+    {
+        super.iterateLoop(parse, from);
+
+        if (this.start) this.start.iterateLoop(parse, from);
+        if (this.end  ) this.end  .iterateLoop(parse, from);
     }
 }

@@ -201,4 +201,15 @@ extends GShape
         if (this.to   ) this.to   .invalidateInputs(parse, from);
         if (this.inner) this.inner.invalidateInputs(parse, from);
     }
+
+
+
+    iterateLoop(parse)
+    {
+        super.iterateLoop(parse);
+ 
+        if (this.from ) this.from .iterateLoop(parse);
+        if (this.to   ) this.to   .iterateLoop(parse);
+        if (this.inner) this.inner.iterateLoop(parse);
+    }
 }

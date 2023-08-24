@@ -107,6 +107,14 @@ extends GOperator
 
 
 
+    iterateLoop(parse)
+    {
+        const node = parse.parsedNodes.find(n => n.nodeId == this.nodeId);
+        node.iterateLoop(parse);
+    }
+
+
+
     resetLoop(parse, nodeId)
     {
         const node = parse.parsedNodes.find(n => n.nodeId == this.nodeId);

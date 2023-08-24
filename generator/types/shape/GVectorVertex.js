@@ -172,4 +172,17 @@ extends GOperator1
         if (this.cap  ) this.cap  .invalidateInputs(parse, from);
         if (this.round) this.round.invalidateInputs(parse, from);
     }
+
+
+
+    iterateLoop(parse)
+    {
+        super.iterateLoop(parse);
+
+        if (this.x    ) this.x    .iterateLoop(parse);
+        if (this.y    ) this.y    .iterateLoop(parse);
+        if (this.join ) this.join .iterateLoop(parse);
+        if (this.cap  ) this.cap  .iterateLoop(parse);
+        if (this.round) this.round.iterateLoop(parse);
+    }
 }

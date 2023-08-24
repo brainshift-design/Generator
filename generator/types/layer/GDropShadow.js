@@ -163,4 +163,19 @@ extends GOperator1
         if (this.blend ) this.blend .invalidateInputs(parse, from);
         if (this.behind) this.behind.invalidateInputs(parse, from);
     }
+
+
+
+    iterateLoop(parse)
+    {
+        super.iterateLoop(parse);
+
+        if (this.x     ) this.x     .iterateLoop(parse);
+        if (this.y     ) this.y     .iterateLoop(parse);
+        if (this.blur  ) this.blur  .iterateLoop(parse);
+        if (this.spread) this.spread.iterateLoop(parse);
+        if (this.fill  ) this.fill  .iterateLoop(parse);
+        if (this.blend ) this.blend .iterateLoop(parse);
+        if (this.behind) this.behind.iterateLoop(parse);
+    }
 }

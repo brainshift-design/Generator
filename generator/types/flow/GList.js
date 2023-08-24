@@ -185,6 +185,13 @@ extends GOperator
 
 
 
+    iterateLoop(parse)
+    {
+        this.inputs.forEach(i => i.iterateLoop(parse));
+    }
+
+
+
     resetLoop(parse, nodeId)
     {
         this.inputs.forEach(i => i.resetLoop(parse, nodeId));

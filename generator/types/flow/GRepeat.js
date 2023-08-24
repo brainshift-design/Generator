@@ -58,8 +58,6 @@ extends GOperator1
 
         if (count.value > 0)
         {
-            //console.log('this.input =', this.input);
-            //console.log('this.input.isValid() =', this.input.isValid());
             if (this.input)
                 //&& this.input.isValid())
             {
@@ -72,7 +70,7 @@ extends GOperator1
                     && (   this.options.active
                         || this.options.beforeActive)
                     ? count.value 
-                    : 0;//1;
+                    : 0;
                 
 
                 let repeat =
@@ -145,6 +143,9 @@ extends GOperator1
                             }
                         }
                     }
+
+
+                    this.input.iterateLoop(parse);
 
 
                     if (parse.repeats.length == 1)
@@ -248,6 +249,17 @@ extends GOperator1
         if (this. count) this. count.invalidateInputs(parse, from);
         if (this._while) this._while.invalidateInputs(parse, from);
         if (this. loop ) this. loop .invalidateInputs(parse, from);
+    }
+
+
+
+    iterateLoop(parse)
+    {
+        super.iterateLoop(parse);
+
+        if (this. count) this. count.iterateLoop(parse);
+        if (this._while) this._while.iterateLoop(parse);
+        if (this. loop ) this. loop .iterateLoop(parse);
     }
 }
 

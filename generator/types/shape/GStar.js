@@ -197,4 +197,15 @@ extends GShape
         if (this.points) this.points.invalidateInputs(parse, from);
         if (this.convex) this.convex.invalidateInputs(parse, from);
     }
+
+
+
+    iterateLoop(parse)
+    {
+        super.iterateLoop(parse);
+
+        if (this.round ) this.round .iterateLoop(parse);
+        if (this.points) this.points.iterateLoop(parse);
+        if (this.convex) this.convex.iterateLoop(parse);
+    }
 }

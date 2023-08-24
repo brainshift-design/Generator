@@ -81,8 +81,8 @@ extends GOperator1
     {
         super.pushValueUpdates(parse);
 
-        if (this.what ) this.what .pushValueUpdates(parse);
-        if (this.with ) this.with .pushValueUpdates(parse);
+        if (this.what) this.what.pushValueUpdates(parse);
+        if (this.with) this.with.pushValueUpdates(parse);
     }
 
 
@@ -91,7 +91,17 @@ extends GOperator1
     {
         super.invalidateInputs(parse, from);
 
-        if (this.what ) this.what .invalidateInputs(parse, from);
-        if (this.with ) this.with .invalidateInputs(parse, from);
+        if (this.what) this.what.invalidateInputs(parse, from);
+        if (this.with) this.with.invalidateInputs(parse, from);
+    }
+
+
+
+    iterateLoop(parse)
+    {
+        super.iterateLoop(parse);
+
+        if (this.what) this.what.iterateLoop(parse);
+        if (this.with) this.with.iterateLoop(parse);
     }
 }

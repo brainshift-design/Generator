@@ -177,4 +177,13 @@ extends GShape
 
         if (this.round) this.round.invalidateInputs(parse, from);
     }
+
+
+
+    iterateLoop(parse)
+    {
+        super.iterateLoop(parse);
+
+        if (this.round) this.round.iterateLoop(parse);
+    }
 }

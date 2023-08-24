@@ -161,4 +161,15 @@ extends GOperator1
         if (this.centerY   ) this.centerY   .invalidateInputs(parse, from);
         if (this.showCenter) this.showCenter.invalidateInputs(parse, from);
     }
+
+
+
+    iterateLoop(parse)
+    {
+        super.iterateLoop(parse);
+
+        if (this.centerX   ) this.centerX   .iterateLoop(parse);
+        if (this.centerY   ) this.centerY   .iterateLoop(parse);
+        if (this.showCenter) this.showCenter.iterateLoop(parse);
+    }
 }
