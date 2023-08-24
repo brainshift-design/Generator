@@ -8042,6 +8042,7 @@ class GNode
     loopId        = NULL;
 
     iteration     = 0;
+    iterated      = false;
 
 
     updateValues  = null;
@@ -8489,24 +8490,6 @@ extends GNode
 
 
 
-    setUpdateValues(parse, values, add = false)
-    {
-        if (    parse.repeats.length == 0
-            ||  this.unknown && parse.repeats[0].total == 0
-            || !this.unknown
-            ||  parse.repeats.at(-1).iteration == parse.repeats.at(-1).total-1)
-        {
-            if (add) this.updateValues.push(...values);
-            else     this.updateValues = [...values];
-        }
-        else if (!add)
-        {
-            this.updateValues = [];
-        }
-    }
-
-
-
     copyObjects(value, listId = -1)
     {
         const objects = getValidObjects(value);
@@ -8534,6 +8517,8 @@ extends GNode
 
         //if (this.unknown)
             this.valid = false;
+
+        this.iterated = false;
     }
 
 
@@ -8557,9 +8542,13 @@ extends GNode
     {
         const repeatIndex = parse.repeats.findIndex(r => r.repeatId == this.loopId);
         
-        if (   repeatIndex < 0
-            || repeatIndex == parse.repeats.length-1)
+        if (   (   repeatIndex < 0
+                || repeatIndex == parse.repeats.length-1)
+            && !this.iterated)
+        {
             this.iteration++;
+            this.iterated = true;
+        }
     }
 
 
@@ -8577,6 +8566,41 @@ extends GNode
         return this.value
              ? this.value.copy()
              : null;
+    }
+
+
+
+    setUpdateValues(parse, values, add = false)
+    {
+        // if (this.nodeId == 'num')
+        // {
+        //     console.log('parse.repeats.length =', parse.repeats.length);
+        //     console.log('this.unknown =', this.unknown);
+
+        //     if (parse.repeats.length > 0)
+        //         console.log('parse.repeats[0].total == 0 =', parse.repeats[0].total == 0);
+
+        //     console.log('parse.repeats.length =', parse.repeats.length);
+            
+        //     if (parse.repeats.length > 0)
+        //         console.log('parse.repeats.at(-1) =', parse.repeats.at(-1));
+        // }
+
+        if (    parse.repeats.length == 0
+            ||  this.unknown && parse.repeats[0].total == 0
+            || !this.unknown
+            ||  parse.repeats.at(-1).iteration == parse.repeats.at(-1).total-1)
+        {
+            // if (this.nodeId == 'num') console.log('1');
+            // if (this.nodeId == 'num') console.log('values =', [...values]);
+            if (add) this.updateValues.push(...values);
+            else     this.updateValues = [...values];
+        }
+        else if (!add)
+        {
+            // if (this.nodeId == 'num') console.log('2');
+            this.updateValues = [];
+        }
     }
 
 
@@ -15117,7 +15141,10 @@ extends GOperator1
             return this;
 
 
-        if (!this.cachedValue)
+        if (this.cachedValue)
+            this.value = this.cachedValue.copy();
+
+        else
         {
             this.value = 
                 this.input 
@@ -15126,8 +15153,6 @@ extends GOperator1
 
             this.cachedValue = this.value.copy();
         }
-        else
-            this.value = this.cachedValue.copy();
 
 
         this.updateValueObjects();
@@ -15170,6 +15195,15 @@ extends GOperator1
 
         this.cachedValue = null;
     }
+
+
+
+    // iterateLoop(parse)
+    // {
+    //     super.iterateLoop(parse);
+
+    //     this.cachedValue = null;
+    // }
 }
 
 
@@ -15225,7 +15259,6 @@ extends GOperator1
                 : NullValue;
 
             this.frozen = true;
-
 
             this.updateValueObjects();
         }
@@ -17320,7 +17353,7 @@ extends GOperator1
         if (this.isCached())
             return this;
 
-        
+
         if (this.input)
             this.value = (await this.input.eval(parse)).toValue();
         else if (this.value)
@@ -17329,7 +17362,10 @@ extends GOperator1
             this.value = NumberValue.NaN;
 
 
-        this.setUpdateValues(parse, [['value', this.value]]);
+        this.setUpdateValues(parse, 
+        [
+            ['value', this.value]
+        ]);
 
 
         this.validate();
@@ -18507,6 +18543,7 @@ extends GOperator
         {
             const value = start.toNumber() + (this.options.enabled ? step.toNumber() * this.iteration : 0);
 
+            // console.log('sequence');
 
             if (!end.isValid())
                 this.value = new NumberValue(value, Math.max(start.decimals, step.decimals));
@@ -29592,8 +29629,8 @@ extends GOperator1
     {
         super.pushValueUpdates(parse);
 
-        if (this.x && this.x.updateValue) this.x.pushValueUpdates(parse);
-        if (this.y && this.y.updateValue) this.y.pushValueUpdates(parse);
+        if (this.x) this.x.pushValueUpdates(parse);
+        if (this.y) this.y.pushValueUpdates(parse);
     }
 
 
@@ -29612,8 +29649,8 @@ extends GOperator1
     {
         super.iterateLoop(parse);
 
-        if (this.x && this.x.updateValue) this.x.iterateLoop(parse);
-        if (this.y && this.y.updateValue) this.y.iterateLoop(parse);
+        if (this.x) this.x.iterateLoop(parse);
+        if (this.y) this.y.iterateLoop(parse);
     }
 }
 

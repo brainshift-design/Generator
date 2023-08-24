@@ -4811,11 +4811,11 @@ a
             <div id='eulaWatermark'>◦<span style="font-weight: 700; position: relative; top: 0.06em;">G</span>•</div>
 
             <div id='eulaBody'>
-                <p style='margin-top: 40px; margin-bottom: 35px;'><span class='bold'>By installing and using Generator you agree to the following terms:</span></p>
+                <p style='margin-top: 40px; margin-bottom: 35px;'><span class='bold'>By using Generator you agree to the following terms:</span></p>
 
                 <ol>
                     <li><span class='bold'>Grant of License:</span> You are granted a limited, non-transferable license to use Generator for personal or commercial purposes.</li>
-                    <li><span class='bold'>Subscription and Free Trial:</span> Generator operates on a monthly subscription basis. A free one-week trial period is available before the subscription begins. By subscribing, you agree to the subscription fees and terms.</li>
+                    <li><span class='bold'>Free Use and Subscription:</span> The core features of Generator are available for free. Pro features are available exclusively to subscribers. By subscribing, you agree to the subscription fees and terms.</li>
                     <li><span class="bold">License Validity and Subscription Dates:</span> All license and subscription dates will be converted to Coordinated Universal Time (UTC) for consistency across different time zones.</li>
                     <li><span class='bold'>Intellectual Property:</span> Generator and its associated intellectual property rights are owned by Brainshift.</li>
                     <li><span class='bold'>Updates and Support:</span> Brainshift may provide updates or support for Generator at its discretion.</li>
@@ -4828,7 +4828,7 @@ a
                     <li><span class='bold'>Entire Agreement:</span> This EULA constitutes the entire agreement between you and Brainshift.</li>
                 </ol>
                
-                <p><div class='button' id='btnStartTrial' onclick='hideAllMenus(); btnStartTrial.blur(); hideEulaDialog(); startFreeTrial();'>Start free trial</div></p>
+                <p><div class='button' id='btnStartTrial' onclick='hideAllMenus(); btnStartTrial.blur(); hideEulaDialog(); startFreeTrial();'>I agree</div></p>
             </div>
         </div>
         <div class='dialogScrollbar' id='eulaScrollbarY'></div>
@@ -13280,6 +13280,7 @@ class GNode
     loopId        = NULL;
 
     iteration     = 0;
+    iterated      = false;
 
 
     updateValues  = null;
@@ -13727,24 +13728,6 @@ extends GNode
 
 
 
-    setUpdateValues(parse, values, add = false)
-    {
-        if (    parse.repeats.length == 0
-            ||  this.unknown && parse.repeats[0].total == 0
-            || !this.unknown
-            ||  parse.repeats.at(-1).iteration == parse.repeats.at(-1).total-1)
-        {
-            if (add) this.updateValues.push(...values);
-            else     this.updateValues = [...values];
-        }
-        else if (!add)
-        {
-            this.updateValues = [];
-        }
-    }
-
-
-
     copyObjects(value, listId = -1)
     {
         const objects = getValidObjects(value);
@@ -13772,6 +13755,8 @@ extends GNode
 
         //if (this.unknown)
             this.valid = false;
+
+        this.iterated = false;
     }
 
 
@@ -13795,9 +13780,13 @@ extends GNode
     {
         const repeatIndex = parse.repeats.findIndex(r => r.repeatId == this.loopId);
         
-        if (   repeatIndex < 0
-            || repeatIndex == parse.repeats.length-1)
+        if (   (   repeatIndex < 0
+                || repeatIndex == parse.repeats.length-1)
+            && !this.iterated)
+        {
             this.iteration++;
+            this.iterated = true;
+        }
     }
 
 
@@ -13815,6 +13804,41 @@ extends GNode
         return this.value
              ? this.value.copy()
              : null;
+    }
+
+
+
+    setUpdateValues(parse, values, add = false)
+    {
+        // if (this.nodeId == 'num')
+        // {
+        //     console.log('parse.repeats.length =', parse.repeats.length);
+        //     console.log('this.unknown =', this.unknown);
+
+        //     if (parse.repeats.length > 0)
+        //         console.log('parse.repeats[0].total == 0 =', parse.repeats[0].total == 0);
+
+        //     console.log('parse.repeats.length =', parse.repeats.length);
+            
+        //     if (parse.repeats.length > 0)
+        //         console.log('parse.repeats.at(-1) =', parse.repeats.at(-1));
+        // }
+
+        if (    parse.repeats.length == 0
+            ||  this.unknown && parse.repeats[0].total == 0
+            || !this.unknown
+            ||  parse.repeats.at(-1).iteration == parse.repeats.at(-1).total-1)
+        {
+            // if (this.nodeId == 'num') console.log('1');
+            // if (this.nodeId == 'num') console.log('values =', [...values]);
+            if (add) this.updateValues.push(...values);
+            else     this.updateValues = [...values];
+        }
+        else if (!add)
+        {
+            // if (this.nodeId == 'num') console.log('2');
+            this.updateValues = [];
+        }
     }
 
 
@@ -20355,7 +20379,10 @@ extends GOperator1
             return this;
 
 
-        if (!this.cachedValue)
+        if (this.cachedValue)
+            this.value = this.cachedValue.copy();
+
+        else
         {
             this.value = 
                 this.input 
@@ -20364,8 +20391,6 @@ extends GOperator1
 
             this.cachedValue = this.value.copy();
         }
-        else
-            this.value = this.cachedValue.copy();
 
 
         this.updateValueObjects();
@@ -20408,6 +20433,15 @@ extends GOperator1
 
         this.cachedValue = null;
     }
+
+
+
+    // iterateLoop(parse)
+    // {
+    //     super.iterateLoop(parse);
+
+    //     this.cachedValue = null;
+    // }
 }
 
 
@@ -20463,7 +20497,6 @@ extends GOperator1
                 : NullValue;
 
             this.frozen = true;
-
 
             this.updateValueObjects();
         }
@@ -22558,7 +22591,7 @@ extends GOperator1
         if (this.isCached())
             return this;
 
-        
+
         if (this.input)
             this.value = (await this.input.eval(parse)).toValue();
         else if (this.value)
@@ -22567,7 +22600,10 @@ extends GOperator1
             this.value = NumberValue.NaN;
 
 
-        this.setUpdateValues(parse, [['value', this.value]]);
+        this.setUpdateValues(parse, 
+        [
+            ['value', this.value]
+        ]);
 
 
         this.validate();
@@ -23745,6 +23781,7 @@ extends GOperator
         {
             const value = start.toNumber() + (this.options.enabled ? step.toNumber() * this.iteration : 0);
 
+            // console.log('sequence');
 
             if (!end.isValid())
                 this.value = new NumberValue(value, Math.max(start.decimals, step.decimals));
@@ -34830,8 +34867,8 @@ extends GOperator1
     {
         super.pushValueUpdates(parse);
 
-        if (this.x && this.x.updateValue) this.x.pushValueUpdates(parse);
-        if (this.y && this.y.updateValue) this.y.pushValueUpdates(parse);
+        if (this.x) this.x.pushValueUpdates(parse);
+        if (this.y) this.y.pushValueUpdates(parse);
     }
 
 
@@ -34850,8 +34887,8 @@ extends GOperator1
     {
         super.iterateLoop(parse);
 
-        if (this.x && this.x.updateValue) this.x.iterateLoop(parse);
-        if (this.y && this.y.updateValue) this.y.iterateLoop(parse);
+        if (this.x) this.x.iterateLoop(parse);
+        if (this.y) this.y.iterateLoop(parse);
     }
 }
 
@@ -59419,6 +59456,7 @@ class GNode
     loopId        = NULL;
 
     iteration     = 0;
+    iterated      = false;
 
 
     updateValues  = null;
@@ -59866,24 +59904,6 @@ extends GNode
 
 
 
-    setUpdateValues(parse, values, add = false)
-    {
-        if (    parse.repeats.length == 0
-            ||  this.unknown && parse.repeats[0].total == 0
-            || !this.unknown
-            ||  parse.repeats.at(-1).iteration == parse.repeats.at(-1).total-1)
-        {
-            if (add) this.updateValues.push(...values);
-            else     this.updateValues = [...values];
-        }
-        else if (!add)
-        {
-            this.updateValues = [];
-        }
-    }
-
-
-
     copyObjects(value, listId = -1)
     {
         const objects = getValidObjects(value);
@@ -59911,6 +59931,8 @@ extends GNode
 
         //if (this.unknown)
             this.valid = false;
+
+        this.iterated = false;
     }
 
 
@@ -59934,9 +59956,13 @@ extends GNode
     {
         const repeatIndex = parse.repeats.findIndex(r => r.repeatId == this.loopId);
         
-        if (   repeatIndex < 0
-            || repeatIndex == parse.repeats.length-1)
+        if (   (   repeatIndex < 0
+                || repeatIndex == parse.repeats.length-1)
+            && !this.iterated)
+        {
             this.iteration++;
+            this.iterated = true;
+        }
     }
 
 
@@ -59954,6 +59980,41 @@ extends GNode
         return this.value
              ? this.value.copy()
              : null;
+    }
+
+
+
+    setUpdateValues(parse, values, add = false)
+    {
+        // if (this.nodeId == 'num')
+        // {
+        //     console.log('parse.repeats.length =', parse.repeats.length);
+        //     console.log('this.unknown =', this.unknown);
+
+        //     if (parse.repeats.length > 0)
+        //         console.log('parse.repeats[0].total == 0 =', parse.repeats[0].total == 0);
+
+        //     console.log('parse.repeats.length =', parse.repeats.length);
+            
+        //     if (parse.repeats.length > 0)
+        //         console.log('parse.repeats.at(-1) =', parse.repeats.at(-1));
+        // }
+
+        if (    parse.repeats.length == 0
+            ||  this.unknown && parse.repeats[0].total == 0
+            || !this.unknown
+            ||  parse.repeats.at(-1).iteration == parse.repeats.at(-1).total-1)
+        {
+            // if (this.nodeId == 'num') console.log('1');
+            // if (this.nodeId == 'num') console.log('values =', [...values]);
+            if (add) this.updateValues.push(...values);
+            else     this.updateValues = [...values];
+        }
+        else if (!add)
+        {
+            // if (this.nodeId == 'num') console.log('2');
+            this.updateValues = [];
+        }
     }
 
 
@@ -66494,7 +66555,10 @@ extends GOperator1
             return this;
 
 
-        if (!this.cachedValue)
+        if (this.cachedValue)
+            this.value = this.cachedValue.copy();
+
+        else
         {
             this.value = 
                 this.input 
@@ -66503,8 +66567,6 @@ extends GOperator1
 
             this.cachedValue = this.value.copy();
         }
-        else
-            this.value = this.cachedValue.copy();
 
 
         this.updateValueObjects();
@@ -66547,6 +66609,15 @@ extends GOperator1
 
         this.cachedValue = null;
     }
+
+
+
+    // iterateLoop(parse)
+    // {
+    //     super.iterateLoop(parse);
+
+    //     this.cachedValue = null;
+    // }
 }
 
 
@@ -66602,7 +66673,6 @@ extends GOperator1
                 : NullValue;
 
             this.frozen = true;
-
 
             this.updateValueObjects();
         }
@@ -68697,7 +68767,7 @@ extends GOperator1
         if (this.isCached())
             return this;
 
-        
+
         if (this.input)
             this.value = (await this.input.eval(parse)).toValue();
         else if (this.value)
@@ -68706,7 +68776,10 @@ extends GOperator1
             this.value = NumberValue.NaN;
 
 
-        this.setUpdateValues(parse, [['value', this.value]]);
+        this.setUpdateValues(parse, 
+        [
+            ['value', this.value]
+        ]);
 
 
         this.validate();
@@ -69884,6 +69957,7 @@ extends GOperator
         {
             const value = start.toNumber() + (this.options.enabled ? step.toNumber() * this.iteration : 0);
 
+            // console.log('sequence');
 
             if (!end.isValid())
                 this.value = new NumberValue(value, Math.max(start.decimals, step.decimals));
@@ -80969,8 +81043,8 @@ extends GOperator1
     {
         super.pushValueUpdates(parse);
 
-        if (this.x && this.x.updateValue) this.x.pushValueUpdates(parse);
-        if (this.y && this.y.updateValue) this.y.pushValueUpdates(parse);
+        if (this.x) this.x.pushValueUpdates(parse);
+        if (this.y) this.y.pushValueUpdates(parse);
     }
 
 
@@ -80989,8 +81063,8 @@ extends GOperator1
     {
         super.iterateLoop(parse);
 
-        if (this.x && this.x.updateValue) this.x.iterateLoop(parse);
-        if (this.y && this.y.updateValue) this.y.iterateLoop(parse);
+        if (this.x) this.x.iterateLoop(parse);
+        if (this.y) this.y.iterateLoop(parse);
     }
 }
 
@@ -91264,11 +91338,11 @@ function initGeneratorMenus()
         menuItemStart    = new MenuItem('Start. . .',        null, {icon: iconStart,     createType: START,            callback: e => actionManager.do(getCreateNodeAction(START,           btnFlow.div, getCreateOptions(e)))}),
         menuItemRepeat   = new MenuItem('. . . Repeat',      null, {icon: iconRepeat,    createType: REPEAT,           callback: e => actionManager.do(getCreateNodeAction(REPEAT,          btnFlow.div, getCreateOptions(e)))}),
                            new MenuItem('',                  null, {separator: true}),
-        menuItemIfElse   = new MenuItem('I&hairsp;f / else', null, {icon: iconIfElse,    createType: IF_ELSE,          callback: e => actionManager.do(getCreateNodeAction(IF_ELSE,         btnFlow.div, getCreateOptions(e))), disambiguate: true}),
-                           new MenuItem('',                  null, {separator: true}),
         menuItemNull     = new MenuItem('Null',              null, {icon: iconNull,      createType: NULL_NODE,        callback: e => actionManager.do(getCreateNodeAction(NULL_NODE,       btnFlow.div, getCreateOptions(e)))}),
-        // menuItemCache    = new MenuItem('Cache',             null, {icon: iconCache,     createType: CACHE,            callback: e => actionManager.do(getCreateNodeAction(CACHE,           btnFlow.div, getCreateOptions(e)))}),
-        menuItemFreeze   = new MenuItem('Cache. . .',        null, {icon: iconFreeze,    createType: FREEZE,           callback: e => actionManager.do(getCreateNodeAction(FREEZE,          btnFlow.div, getCreateOptions(e)))}),
+                           new MenuItem('',                  null, {separator: true}),
+        menuItemIfElse   = new MenuItem('I&hairsp;f / else', null, {icon: iconIfElse,    createType: IF_ELSE,          callback: e => actionManager.do(getCreateNodeAction(IF_ELSE,         btnFlow.div, getCreateOptions(e))), disambiguate: true}),
+        //menuItemCache    = new MenuItem('Cache',             null, {icon: iconCache,     createType: CACHE,            callback: e => actionManager.do(getCreateNodeAction(CACHE,           btnFlow.div, getCreateOptions(e)))}),
+        //menuItemFreeze   = new MenuItem('Freeze. . .',       null, {icon: iconFreeze,    createType: FREEZE,           callback: e => actionManager.do(getCreateNodeAction(FREEZE,          btnFlow.div, getCreateOptions(e)))}),
                            new MenuItem('',                  null, {separator: true}),
         menuItemTimer    = new MenuItem('Timer ',            null, {icon: iconTimer,     createType: TIMER,            callback: e => actionManager.do(getCreateNodeAction(TIMER,           btnFlow.div, getCreateOptions(e)))}),
         menuItemAnimate  = new MenuItem('Animate',           null, {icon: iconAnimate,   createType: NUMBER_ANIMATE,   callback: e => actionManager.do(getCreateNodeAction(NUMBER_ANIMATE,  btnFlow.div, getCreateOptions(e)))}),
@@ -103524,8 +103598,11 @@ class Operator
     hasMultipliedOutputs()
     {
         for (const output of this.outputs)
-            if (output.isMultiplied())
-                return true;
+            for (const input of output.connectedInputs)
+                if (input.node.isOrFollowedByMultiplier())
+                    return true;
+            // if (output.isMultiplied())
+            //     return true;
 
         return false;
     }
@@ -105300,10 +105377,10 @@ Operator.prototype.updateIcon = function()
 
 Operator.prototype.updateHeaderLabelText = function()
 {
-    const prefix = 
-        this.type == REPEAT 
-        ? '...' 
-        : '';
+    const prefix = '';
+        // this.type == REPEAT 
+        // ? '...' 
+        // : '';
     
     let suffix;
 
@@ -106197,8 +106274,7 @@ extends OperatorBase
 
 
         const arrowStyle = darkMode ? 'white' : 'black';
-        this.paramLoop.controls[0].valueText = '<svg width="14" height="12" viewBox="0 -1 14 12" fill="none" xmlns="http://www.w3.org/2000/svg"><path fill-rule="evenodd" clip-rule="evenodd" d="M13 0H14L14 2C14 4.76142 11.7614 7 8.99999 7H1V6H8.99999C11.2091 6 13 4.20914 13 2L13 0Z" fill="' + arrowStyle + '"/><rect width="4.97369" height="1" transform="matrix(0.707107 -0.707107 -0.707107 -0.707107 0.712646 7.224)" fill="' + arrowStyle + '"/><rect width="5" height="1" transform="matrix(0.707107 0.707107 0.707107 -0.707107 0 6.54858)" fill="' + arrowStyle + '"/></svg>';
-
+        this.paramLoop.controls[0].valueText = '<svg width="24" height="11" viewBox="0 0 24 11" fill="none" xmlns="http://www.w3.org/2000/svg"><path fill-rule="evenodd" clip-rule="evenodd" d="M22.991 0H23.991L23.991 2C23.991 4.76142 21.7524 7 18.991 7H10.991V6H18.991C21.2001 6 22.991 4.20914 22.991 2L22.991 0Z" fill="'+arrowStyle+'"/><rect width="4.97369" height="1" transform="matrix(0.707107 -0.707107 -0.707107 -0.707107 10.7036 7.224)" fill="'+arrowStyle+'"/><rect width="5" height="1" transform="matrix(0.707107 0.707107 0.707107 -0.707107 9.99097 6.54858)" fill="'+arrowStyle+'"/><circle cx="0.5" cy="6.5" r="0.5" fill="'+arrowStyle+'"/><circle cx="3.5" cy="6.5" r="0.5" fill="'+arrowStyle+'"/><circle cx="6.5" cy="6.5" r="0.5" fill="'+arrowStyle+'"/></svg>';
         this.updateParamControls();
     }
 
@@ -106429,7 +106505,7 @@ extends OperatorBase
 {
     constructor()
     {
-        super(FREEZE, 'cache', 'cache', iconFreeze);
+        super(FREEZE, 'freeze', 'freeze', iconFreeze);
 
         this.cached      = false;
         this.canDisable  = true;
@@ -120216,7 +120292,7 @@ extends OperatorBase
         this.iconOffsetY = -2;
 
         
-        this.addInput (new Input (SHAPE_VALUES));
+        this.addInput (new Input ([...SHAPE_VALUES, SHAPE_LIST_VALUE, LIST_VALUE]));
         this.addOutput(new Output([SHAPE_VALUE], this.output_genRequest));
 
 
@@ -120331,7 +120407,7 @@ extends OperatorBase
         this.iconOffsetY = -1;
 
         
-        this.addInput (new Input ([...SHAPE_VALUES, LIST_VALUE]));
+        this.addInput (new Input ([...SHAPE_VALUES, SHAPE_LIST_VALUE, LIST_VALUE]));
         this.addOutput(new Output([SHAPE_VALUE], this.output_genRequest));
 
         this.inputs[0].addEventListener('connect',    () => OpAffine_onConnectInput   (this));
@@ -122603,7 +122679,7 @@ extends ResizableBase
             case 2: background = darkMode ? '#ff880028' : '#f803';     break;
             case 3: background = darkMode ? '#ffff0020' : '#cc04';     break;
             case 4: background = darkMode ? '#1e12'     : '#0d04';     break;
-            case 5: background = darkMode ? '#2277ff33' : '#0033ff28'; break;
+            case 5: background = darkMode ? '#2277ff33' : '#0066ff28'; break;
             case 6: background = darkMode ? '#ff22ff26' : '#ff00ff28'; break;
             case 7: background = darkMode ? '#fff3'     : '#0003';     break;
         }
@@ -128191,7 +128267,7 @@ async function uiReturnFigStartGenerator(msg)
     initWindowSizers();
 
 
-    validateInit();
+    validateInit(msg.eulaRead);
 }
 
 
@@ -128229,7 +128305,7 @@ function subscribed()
 
 
 
-function validateInit()
+function validateInit(eulaRead)
 {
     try
     {
@@ -128238,16 +128314,21 @@ function validateInit()
             if (subActive) 
             {
                 currentSessionId = createSessionId();
-                initGenerator();
+                //initGenerator();
             }
 
-            else checkTrialExists().then(trialExists => 
-            {
-                if (trialExists)
-                    initGenerator();
-                else
-                    showEulaDialog();
-            });
+            // else checkTrialExists().then(trialExists => 
+            // {
+            //     if (trialExists)
+            //         initGenerator();
+            //     else
+            //         showEulaDialog();
+            // });
+
+            if (!eulaRead)
+                showEulaDialog();
+            else
+                initGenerator();
         });
     }
     catch (e)
@@ -129785,6 +129866,9 @@ function checkLastSub()
 
 function startFreeTrial()
 {
+    uiSetLocalData('eulaRead', 'true');
+
+    
     postToServer(
     {
         action: 'createTrial',

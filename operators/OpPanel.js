@@ -116,7 +116,7 @@ extends ResizableBase
             case 2: background = darkMode ? '#ff880028' : '#f803';     break;
             case 3: background = darkMode ? '#ffff0020' : '#cc04';     break;
             case 4: background = darkMode ? '#1e12'     : '#0d04';     break;
-            case 5: background = darkMode ? '#2277ff33' : '#0033ff28'; break;
+            case 5: background = darkMode ? '#2277ff33' : '#0066ff28'; break;
             case 6: background = darkMode ? '#ff22ff26' : '#ff00ff28'; break;
             case 7: background = darkMode ? '#fff3'     : '#0003';     break;
         }

@@ -82,24 +82,6 @@ extends GNode
 
 
 
-    setUpdateValues(parse, values, add = false)
-    {
-        if (    parse.repeats.length == 0
-            ||  this.unknown && parse.repeats[0].total == 0
-            || !this.unknown
-            ||  parse.repeats.at(-1).iteration == parse.repeats.at(-1).total-1)
-        {
-            if (add) this.updateValues.push(...values);
-            else     this.updateValues = [...values];
-        }
-        else if (!add)
-        {
-            this.updateValues = [];
-        }
-    }
-
-
-
     copyObjects(value, listId = -1)
     {
         const objects = getValidObjects(value);
@@ -127,6 +109,8 @@ extends GNode
 
         //if (this.unknown)
             this.valid = false;
+
+        this.iterated = false;
     }
 
 
@@ -150,9 +134,13 @@ extends GNode
     {
         const repeatIndex = parse.repeats.findIndex(r => r.repeatId == this.loopId);
         
-        if (   repeatIndex < 0
-            || repeatIndex == parse.repeats.length-1)
+        if (   (   repeatIndex < 0
+                || repeatIndex == parse.repeats.length-1)
+            && !this.iterated)
+        {
             this.iteration++;
+            this.iterated = true;
+        }
     }
 
 
@@ -170,6 +158,41 @@ extends GNode
         return this.value
              ? this.value.copy()
              : null;
+    }
+
+
+
+    setUpdateValues(parse, values, add = false)
+    {
+        // if (this.nodeId == 'num')
+        // {
+        //     console.log('parse.repeats.length =', parse.repeats.length);
+        //     console.log('this.unknown =', this.unknown);
+
+        //     if (parse.repeats.length > 0)
+        //         console.log('parse.repeats[0].total == 0 =', parse.repeats[0].total == 0);
+
+        //     console.log('parse.repeats.length =', parse.repeats.length);
+            
+        //     if (parse.repeats.length > 0)
+        //         console.log('parse.repeats.at(-1) =', parse.repeats.at(-1));
+        // }
+
+        if (    parse.repeats.length == 0
+            ||  this.unknown && parse.repeats[0].total == 0
+            || !this.unknown
+            ||  parse.repeats.at(-1).iteration == parse.repeats.at(-1).total-1)
+        {
+            // if (this.nodeId == 'num') console.log('1');
+            // if (this.nodeId == 'num') console.log('values =', [...values]);
+            if (add) this.updateValues.push(...values);
+            else     this.updateValues = [...values];
+        }
+        else if (!add)
+        {
+            // if (this.nodeId == 'num') console.log('2');
+            this.updateValues = [];
+        }
     }
 
 

@@ -1340,12 +1340,14 @@ function figStartGenerator() {
             figma.ui.show();
             const fonts = yield figma.listAvailableFontsAsync();
             // console.log('figma fonts =', fonts);
+            const eulaRead = (yield figma.clientStorage.getAsync('eulaRead')) === 'true';
             figPostMessageToUi({
                 cmd: 'uiReturnFigStartGenerator',
                 currentUser: figma.currentUser,
                 viewportRect: figma.viewport.bounds,
                 viewportZoom: figma.viewport.zoom,
-                fonts: fonts
+                fonts: fonts,
+                eulaRead: eulaRead
             });
         });
     })();

@@ -50,7 +50,6 @@ extends GOperator1
 
             this.frozen = true;
 
-
             this.updateValueObjects();
         }
 

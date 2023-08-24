@@ -108,7 +108,7 @@ async function uiReturnFigStartGenerator(msg)
     initWindowSizers();
 
 
-    validateInit();
+    validateInit(msg.eulaRead);
 }
 
 
@@ -146,7 +146,7 @@ function subscribed()
 
 
 
-function validateInit()
+function validateInit(eulaRead)
 {
     try
     {
@@ -155,16 +155,21 @@ function validateInit()
             if (subActive) 
             {
                 currentSessionId = createSessionId();
-                initGenerator();
+                //initGenerator();
             }
 
-            else checkTrialExists().then(trialExists => 
-            {
-                if (trialExists)
-                    initGenerator();
-                else
-                    showEulaDialog();
-            });
+            // else checkTrialExists().then(trialExists => 
+            // {
+            //     if (trialExists)
+            //         initGenerator();
+            //     else
+            //         showEulaDialog();
+            // });
+
+            if (!eulaRead)
+                showEulaDialog();
+            else
+                initGenerator();
         });
     }
     catch (e)

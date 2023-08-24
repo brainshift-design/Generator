@@ -16,6 +16,7 @@ class GNode
     loopId        = NULL;
 
     iteration     = 0;
+    iterated      = false;
 
 
     updateValues  = null;

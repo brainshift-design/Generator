@@ -18,7 +18,7 @@ extends OperatorBase
         this.iconOffsetY = -1;
 
         
-        this.addInput (new Input ([...SHAPE_VALUES, LIST_VALUE]));
+        this.addInput (new Input ([...SHAPE_VALUES, SHAPE_LIST_VALUE, LIST_VALUE]));
         this.addOutput(new Output([SHAPE_VALUE], this.output_genRequest));
 
         this.inputs[0].addEventListener('connect',    () => OpAffine_onConnectInput   (this));

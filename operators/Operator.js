@@ -888,8 +888,11 @@ class Operator
     hasMultipliedOutputs()
     {
         for (const output of this.outputs)
-            if (output.isMultiplied())
-                return true;
+            for (const input of output.connectedInputs)
+                if (input.node.isOrFollowedByMultiplier())
+                    return true;
+            // if (output.isMultiplied())
+            //     return true;
 
         return false;
     }

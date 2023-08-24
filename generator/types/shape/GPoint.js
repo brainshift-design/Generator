@@ -133,8 +133,8 @@ extends GOperator1
     {
         super.pushValueUpdates(parse);
 
-        if (this.x && this.x.updateValue) this.x.pushValueUpdates(parse);
-        if (this.y && this.y.updateValue) this.y.pushValueUpdates(parse);
+        if (this.x) this.x.pushValueUpdates(parse);
+        if (this.y) this.y.pushValueUpdates(parse);
     }
 
 
@@ -153,7 +153,7 @@ extends GOperator1
     {
         super.iterateLoop(parse);
 
-        if (this.x && this.x.updateValue) this.x.iterateLoop(parse);
-        if (this.y && this.y.updateValue) this.y.iterateLoop(parse);
+        if (this.x) this.x.iterateLoop(parse);
+        if (this.y) this.y.iterateLoop(parse);
     }
 }

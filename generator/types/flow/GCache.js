@@ -31,7 +31,10 @@ extends GOperator1
             return this;
 
 
-        if (!this.cachedValue)
+        if (this.cachedValue)
+            this.value = this.cachedValue.copy();
+
+        else
         {
             this.value = 
                 this.input 
@@ -40,8 +43,6 @@ extends GOperator1
 
             this.cachedValue = this.value.copy();
         }
-        else
-            this.value = this.cachedValue.copy();
 
 
         this.updateValueObjects();
@@ -84,4 +85,13 @@ extends GOperator1
 
         this.cachedValue = null;
     }
+
+
+
+    // iterateLoop(parse)
+    // {
+    //     super.iterateLoop(parse);
+
+    //     this.cachedValue = null;
+    // }
 }

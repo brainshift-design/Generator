@@ -2120,13 +2120,16 @@ function figStartGenerator()
         const fonts = await figma.listAvailableFontsAsync();
         // console.log('figma fonts =', fonts);
  
+        const eulaRead = (await figma.clientStorage.getAsync('eulaRead')) === 'true';
 
+        
         figPostMessageToUi({
             cmd:         'uiReturnFigStartGenerator',
             currentUser:  figma.currentUser,
             viewportRect: figma.viewport.bounds,
             viewportZoom: figma.viewport.zoom,
-            fonts:        fonts });
+            fonts:        fonts,
+            eulaRead:     eulaRead });
     })();
 }
 

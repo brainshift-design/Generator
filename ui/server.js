@@ -108,6 +108,9 @@ function checkLastSub()
 
 function startFreeTrial()
 {
+    uiSetLocalData('eulaRead', 'true');
+
+    
     postToServer(
     {
         action: 'createTrial',

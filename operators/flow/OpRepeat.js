@@ -97,8 +97,7 @@ extends OperatorBase
 
 
         const arrowStyle = darkMode ? 'white' : 'black';
-        this.paramLoop.controls[0].valueText = '<svg width="14" height="12" viewBox="0 -1 14 12" fill="none" xmlns="http://www.w3.org/2000/svg"><path fill-rule="evenodd" clip-rule="evenodd" d="M13 0H14L14 2C14 4.76142 11.7614 7 8.99999 7H1V6H8.99999C11.2091 6 13 4.20914 13 2L13 0Z" fill="' + arrowStyle + '"/><rect width="4.97369" height="1" transform="matrix(0.707107 -0.707107 -0.707107 -0.707107 0.712646 7.224)" fill="' + arrowStyle + '"/><rect width="5" height="1" transform="matrix(0.707107 0.707107 0.707107 -0.707107 0 6.54858)" fill="' + arrowStyle + '"/></svg>';
-
+        this.paramLoop.controls[0].valueText = '<svg width="24" height="11" viewBox="0 0 24 11" fill="none" xmlns="http://www.w3.org/2000/svg"><path fill-rule="evenodd" clip-rule="evenodd" d="M22.991 0H23.991L23.991 2C23.991 4.76142 21.7524 7 18.991 7H10.991V6H18.991C21.2001 6 22.991 4.20914 22.991 2L22.991 0Z" fill="'+arrowStyle+'"/><rect width="4.97369" height="1" transform="matrix(0.707107 -0.707107 -0.707107 -0.707107 10.7036 7.224)" fill="'+arrowStyle+'"/><rect width="5" height="1" transform="matrix(0.707107 0.707107 0.707107 -0.707107 9.99097 6.54858)" fill="'+arrowStyle+'"/><circle cx="0.5" cy="6.5" r="0.5" fill="'+arrowStyle+'"/><circle cx="3.5" cy="6.5" r="0.5" fill="'+arrowStyle+'"/><circle cx="6.5" cy="6.5" r="0.5" fill="'+arrowStyle+'"/></svg>';
         this.updateParamControls();
     }
 

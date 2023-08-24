@@ -26,7 +26,7 @@ extends GOperator1
         if (this.isCached())
             return this;
 
-        
+
         if (this.input)
             this.value = (await this.input.eval(parse)).toValue();
         else if (this.value)
@@ -35,7 +35,10 @@ extends GOperator1
             this.value = NumberValue.NaN;
 
 
-        this.setUpdateValues(parse, [['value', this.value]]);
+        this.setUpdateValues(parse, 
+        [
+            ['value', this.value]
+        ]);
 
 
         this.validate();
