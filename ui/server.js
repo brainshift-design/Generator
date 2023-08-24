@@ -106,11 +106,32 @@ function checkLastSub()
 
 
 
+function manageLastSub(userId, enable)
+{
+    return postToServer(
+        {
+            action: 'manageLastSub',
+            userId:  userId,
+            state:   enable ? 1 : 0
+        })
+        .then(response =>
+        {
+            return response;
+        })
+        .catch(e =>
+        {
+            console.error(e);
+            throw e;
+        });
+}
+
+
+
 function startFreeTrial()
 {
     uiSetLocalData('eulaRead', 'true');
 
-    
+
     postToServer(
     {
         action: 'createTrial',

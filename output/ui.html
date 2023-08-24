@@ -3036,15 +3036,18 @@ a
 
 .menuItemSubscribe
 {
-    display:     inline-block;
-    position:    absolute;
-    right:       16px;
-    font-size:   11px;
-    font-weight: 700;
-    color:       #e88b;
-    transform:   translateY(6px);
-    background:  #1e1e1e;
-    box-shadow:  0 0 5px 5px #1e1e1e;
+    display:       inline-block;
+    position:      absolute;
+    right:         16px;
+    font-size:     11px;
+    font-weight:   700;
+    color:         #09f;
+    transform:     translateY(6px);
+    background:    #1e1e1e;
+    box-shadow:    0 0 0 1px var(--figma-color-bg-brand) inset;
+    padding-left:  5px;
+    padding-right: 5px;
+    border-radius: 5px;
 }
 
 
@@ -90610,7 +90613,7 @@ class MenuItem
 
     
         this.divShortcut .innerHTML = this.shortcut;
-        this.divSubscribe.innerHTML = 'SUBSCRIBE';
+        this.divSubscribe.innerHTML = 'PRO';
 
     
         this.divHighlight.style.zIndex = -2;
@@ -128245,6 +128248,8 @@ async function uiReturnFigStartGenerator(msg)
 {
     currentUser = msg.currentUser;
 
+    //manageLastSub(currentUser.id, false);
+    
 
     loadLocalSettings();
 
@@ -129869,11 +129874,32 @@ function checkLastSub()
 
 
 
+function manageLastSub(userId, enable)
+{
+    return postToServer(
+        {
+            action: 'manageLastSub',
+            userId:  userId,
+            state:   enable ? 1 : 0
+        })
+        .then(response =>
+        {
+            return response;
+        })
+        .catch(e =>
+        {
+            console.error(e);
+            throw e;
+        });
+}
+
+
+
 function startFreeTrial()
 {
     uiSetLocalData('eulaRead', 'true');
 
-    
+
     postToServer(
     {
         action: 'createTrial',

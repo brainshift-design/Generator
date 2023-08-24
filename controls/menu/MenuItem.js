@@ -117,7 +117,7 @@ class MenuItem
 
     
         this.divShortcut .innerHTML = this.shortcut;
-        this.divSubscribe.innerHTML = 'SUBSCRIBE';
+        this.divSubscribe.innerHTML = 'PRO';
 
     
         this.divHighlight.style.zIndex = -2;

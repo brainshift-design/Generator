@@ -81,6 +81,8 @@ async function uiReturnFigStartGenerator(msg)
 {
     currentUser = msg.currentUser;
 
+    //manageLastSub(currentUser.id, false);
+    
 
     loadLocalSettings();
 
