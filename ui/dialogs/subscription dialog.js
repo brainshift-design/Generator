@@ -11,34 +11,38 @@ function onSubscribeClick()
         30), licenseKeys.private));
 
 
-    const response = postToServer(
+    postToServer(
     {
         action: 'createCheckout',
         userId:  currentUser.id,
         session: checkoutSession
-    }); 
-    
-
-    if (   response
-        && response.result)
-    {
-        window.open('https://brainshift.design/generator/checkout.html?' + checkoutSession, '_blank');
-
-        checkoutTimer = setInterval(() => 
+    })
+    .then(response =>
+    {    
+        console.log('response.result =', response.result);
+        if (   response
+            && response.result)
         {
-            checkLastSub().then(lastSub =>
+            window.open('https://brainshift.design/generator/checkout.html?' + checkoutSession, '_blank');
+
+            checkoutTimer = setInterval(() => 
             {
-                if (   lastSub
-                    && lastSub.daysLeft > 0)
-                    uiRestartGenerator(false);
-            });
-        }, 
-        4000);
-    }
-    else
+                checkLastSub().then(lastSub =>
+                {
+                    if (   lastSub
+                        && lastSub.daysLeft > 0)
+                        uiRestartGenerator(false);
+                });
+            }, 
+            4000);
+        }
+        else
+            console.error('Could not create Generator checkout session.')
+    })
+    .catch(error =>
     {
-        console.error('Could not create create Generator checkout session.')
-    }
+        console.error('Could not create Generator checkout session.')
+    });
 }
 
 
