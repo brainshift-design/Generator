@@ -6,6 +6,10 @@ const sizeBorderWidth   = 4;
 class   ResizableBase
 extends OperatorBase
 {
+    width;
+    height;
+
+
     sizerL;
     sizerR;
     sizerT;
@@ -21,6 +25,9 @@ extends OperatorBase
     constructor(type, id, name, icon, defWidth = defNodeWidth, progressBar = false)
     {
         super(type, id, name, icon, defWidth, progressBar);
+
+        this.width  = defWidth;
+        this.height = defHeaderHeight;
 
         this.initSizers();
     }
@@ -279,6 +286,9 @@ extends OperatorBase
 
         super.setRect(x, y, _w, _h, updateTransform);
         
+        this.width  = _w;
+        this.height = _h;
+
         this.updateSizers();
     
         this.inner.style.height = _h;
@@ -300,8 +310,10 @@ extends OperatorBase
 
         super.setHeight(_h, updateTransform);
         
+        this.height = _h;
+        
         this.updateSizers();
-    
+
         this.inner.style.height = _h;
     }
 
@@ -356,8 +368,8 @@ extends OperatorBase
         let json = super.toJsonBase(nTab);
 
         json += 
-              ',\n' + pos + tab + '"width": "'  + this.div.offsetWidth  + '"'
-            + ',\n' + pos + tab + '"height": "' + this.div.offsetHeight + '"';
+              ',\n' + pos + tab + '"width": "'  + this.width  + '"'
+            + ',\n' + pos + tab + '"height": "' + this.height + '"';
 
         return json;
     }
@@ -371,6 +383,9 @@ extends OperatorBase
         if (   _node.width
             && _node.height)
         {
+            this.width  = parseFloat(_node.width );
+            this.height = parseFloat(_node.height);
+
             this.setRect(
                 parseFloat(_node.x     ), 
                 parseFloat(_node.y     ), 

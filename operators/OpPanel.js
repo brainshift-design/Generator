@@ -70,16 +70,6 @@ extends ResizableBase
 
 
 
-    setRect(x, y, w, h, updateTransform = true)
-    {
-        super.setRect(x, y, w, h, updateTransform);
-
-        this.width  = w;
-        this.height = h;
-    }
-
-
-
     genRequest(gen)
     {
         // 'this' is the node
@@ -167,31 +157,31 @@ extends ResizableBase
 
 
 
-    toJsonBase(nTab = 0) 
-    {
-        let   pos = ' '.repeat(nTab);
-        const tab = HTAB;
+    // toJsonBase(nTab = 0) 
+    // {
+    //     let   pos = ' '.repeat(nTab);
+    //     const tab = HTAB;
 
-        let json = Operator.prototype.toJsonBase.call(this, nTab);
+    //     let json = Operator.prototype.toJsonBase.call(this, nTab);
 
-        json += 
-              ',\n' + pos + tab + '"width": "'  + this.width  + '"'
-            + ',\n' + pos + tab + '"height": "' + this.height + '"';
+    //     json += 
+    //           ',\n' + pos + tab + '"width": "'  + this.width  + '"'
+    //         + ',\n' + pos + tab + '"height": "' + this.height + '"';
 
-        return json;
-    }
+    //     return json;
+    // }
 
 
 
-    loadParams(_node, pasting)
-    {
-        super.loadParams(_node, pasting);
+    // loadParams(_node, pasting)
+    // {
+    //     super.loadParams(_node, pasting);
 
-        if (   _node.width
-            && _node.height)
-        {
-            this.width  = parseFloat(_node.width );
-            this.height = parseFloat(_node.height);
-        }
-    }
+    //     if (   _node.width
+    //         && _node.height)
+    //     {
+    //         this.width  = parseFloat(_node.width );
+    //         this.height = parseFloat(_node.height);
+    //     }
+    // }
 }
