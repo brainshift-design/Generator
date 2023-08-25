@@ -6,6 +6,8 @@ extends OperatorBase
 
     length;
 
+    _connected = false;
+
 
 
     constructor()
@@ -25,6 +27,8 @@ extends OperatorBase
 
         this.paramStart.controls[0].allowEditDecimals = false;
         this.paramEnd  .controls[0].allowEditDecimals = false;
+
+        this.inputs[0].addEventListener('disconnect', () => OpSublist_onDisconnectInput(this));
     }
 
 
@@ -89,6 +93,15 @@ extends OperatorBase
 
 
         super.updateValues(requestId, actionId, updateParamId, paramIds, values);
+
+
+        if (  !this._connected
+            && this.inputs[0].connected
+            && this.paramStart.value.value == this.paramEnd.value.value)
+        {
+            this.paramEnd.setValue(fullLength, false, true, false);
+            this._connected = true;
+        }
     }
 
 
@@ -120,4 +133,36 @@ extends OperatorBase
 
         return colors;
     }
+
+
+
+    toJsonBase(nTab = 0) 
+    {
+        let   pos = ' '.repeat(nTab);
+        const tab = HTAB;
+
+        let json = super.toJsonBase(nTab);
+
+        json += 
+              ',\n' + pos + tab + '"_connected": "'  + this._connected + '"';
+
+        return json;
+    }
+
+
+
+    loadParams(_node, pasting)
+    {
+        super.loadParams(_node, pasting);
+
+        if (_node._connected)
+            this._connected = parseBool(_node._connected);
+    }
+}
+
+
+
+function OpSublist_onDisconnectInput(node)
+{
+    node._connected = false;
 }

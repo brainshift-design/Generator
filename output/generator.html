@@ -14816,7 +14816,6 @@ extends GOperator1
                     if (_while.value == 0)
                         break;
                 
-                    console.log('repeat 1');
 
                     if (  !showProgress
                         && Date.now() - startTime > 50)
@@ -14825,13 +14824,11 @@ extends GOperator1
                         showProgress = true;
                     }
 
-                    console.log('repeat 2');
 
                     repeat.iteration = i;
 
                     this.input.invalidateInputs(parse, this);
                     
-                    console.log('repeat 3');
 
                     const input = (await this.input.eval(parse)).toValue();
 
@@ -14841,7 +14838,6 @@ extends GOperator1
                     {
                         this.value.items.push(input.copy());
 
-                        console.log('repeat 4');
 
                         this.iterationObjects = [];
                     
@@ -14866,14 +14862,11 @@ extends GOperator1
                     }
 
 
-                    console.log('repeat 5');
                     this.input.iterateLoop(parse);
-                    console.log('repeat 6');
 
 
                     if (parse.repeats.length == 1)
                     {
-                        console.log('repeat 7');
                         parse.currentProgress++;
                         
                         const stopRequestId = await genGetValueFromUi('stopRequestId');
@@ -14887,7 +14880,6 @@ extends GOperator1
                     //     }
                     }
 
-                    console.log('repeat 8');
 
                     if (showProgress)
                         genUpdateNodeProgress(parse, this.nodeId, i / nRepeats);
@@ -16640,44 +16632,31 @@ extends GOperator
         if (    this.value.isValid()
             && !isEmpty(this.value.items))
         {
-            // console.log('this.value.items =', this.value.items);
-            console.log('this.value.items.length =', this.value.items.length);
             for (let i = 0; i < this.value.items.length; i++)
             {
                 const item = this.value.items[i];
-                // console.log('item =', item);
                 
                 let valueId = 
                     item.valueId.trim() != ''
                     ? item.valueId
                     : i.toString();
-                // console.log('valueId =', valueId);
 
                 valueId = getNewNumberId(
                     valueId,
                     id => this.value.items.find(i => 
                            i != item 
                         && i.valueId == id));
-                // console.log('valueId =', valueId);
 
                 Object.assign(this, {[valueId]: item});
-                // console.log('1');
                 this.setUpdateValues(parse, [[valueId, item]], true);
-                // console.log('2');
 
                 item.sortId = i;
-                // console.log('3');
-                // console.log('');
             }
 
             this.updateValues.sort((a, b) => a.sortId - b.sortId);
         }
         else
             this.setUpdateValues(parse, [['', NullValue]], true);
-
-
-        console.log('this.value =', this.value);
-        //this.updateValues.push(['value', this.value]); // first so it can be separated out in OpList
 
 
         if (this.value.objects)
@@ -33880,9 +33859,8 @@ function genRequest(request, save)
 
     const    paramNodes = parse.paramNodeIds.map(id => parse.parsedNodes.find(n => n.nodeId == id));
     const topLevelNodes = parse.parsedNodes.filter(n => n.topLevel);
-console.log('paramNodes =', paramNodes);
-console.log('topLevelNodes =', topLevelNodes);
 
+    
     (async () =>
     {
         for (const node of paramNodes) 

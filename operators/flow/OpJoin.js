@@ -12,7 +12,6 @@ extends OperatorBase
         this.canDisable        = true;
         this.variableInputs    = true;
         this.showHeaderTooltip = true;
-        this.iconOffsetY       = 1;
 
 
         this.addNewInput();

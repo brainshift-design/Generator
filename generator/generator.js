@@ -65,9 +65,8 @@ function genRequest(request, save)
 
     const    paramNodes = parse.paramNodeIds.map(id => parse.parsedNodes.find(n => n.nodeId == id));
     const topLevelNodes = parse.parsedNodes.filter(n => n.topLevel);
-console.log('paramNodes =', paramNodes);
-console.log('topLevelNodes =', topLevelNodes);
 
+    
     (async () =>
     {
         for (const node of paramNodes) 

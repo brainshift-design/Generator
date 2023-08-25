@@ -98,7 +98,6 @@ extends GOperator1
                     if (_while.value == 0)
                         break;
                 
-                    console.log('repeat 1');
 
                     if (  !showProgress
                         && Date.now() - startTime > 50)
@@ -107,13 +106,11 @@ extends GOperator1
                         showProgress = true;
                     }
 
-                    console.log('repeat 2');
 
                     repeat.iteration = i;
 
                     this.input.invalidateInputs(parse, this);
                     
-                    console.log('repeat 3');
 
                     const input = (await this.input.eval(parse)).toValue();
 
@@ -123,7 +120,6 @@ extends GOperator1
                     {
                         this.value.items.push(input.copy());
 
-                        console.log('repeat 4');
 
                         this.iterationObjects = [];
                     
@@ -148,14 +144,11 @@ extends GOperator1
                     }
 
 
-                    console.log('repeat 5');
                     this.input.iterateLoop(parse);
-                    console.log('repeat 6');
 
 
                     if (parse.repeats.length == 1)
                     {
-                        console.log('repeat 7');
                         parse.currentProgress++;
                         
                         const stopRequestId = await genGetValueFromUi('stopRequestId');
@@ -169,7 +162,6 @@ extends GOperator1
                     //     }
                     }
 
-                    console.log('repeat 8');
 
                     if (showProgress)
                         genUpdateNodeProgress(parse, this.nodeId, i / nRepeats);
