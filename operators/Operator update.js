@@ -295,8 +295,8 @@ Operator.prototype.updateHeaderLabelText = function()
     else if (this.type == REVERSE_LIST) suffix = sep + '[ ' + this.tableLength   + ' ]';
     else if (this.type == SORT        ) suffix = sep + '[ ' + this.tableLength   + ' ]';
     else if (this.type == UNIQUE      ) suffix = sep + '[ ' + this.length        + ' ]';
-    else if (this.type == LIST       ) suffix = sep + '[ ' + this.params.length + ' ]';
-    else                                suffix = this.cached || this.type == FEEDBACK ? '' : '...';
+    else if (this.type == LIST        ) suffix = sep + '[ ' + this.params.length + ' ]';
+    else                                suffix = this.cached || this.type == FEEDBACK ? '' : (settings.showNodeId ? '...' : ' . . .');
 
 
     suffix += this.suffix;

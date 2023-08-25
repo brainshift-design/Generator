@@ -83,6 +83,7 @@ extends GOperator
             this.setUpdateValues(parse, [['', NullValue]], true);
 
 
+        console.log('this.value =', this.value);
         //this.updateValues.push(['value', this.value]); // first so it can be separated out in OpList
 
 
