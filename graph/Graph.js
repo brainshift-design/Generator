@@ -42,9 +42,8 @@ class Graph
         node.graph = this;
 
         node.id = getNewNumberId(
-            this.nodes, 
-            id => this.nodes.find(n => n.id == id), 
-            node.id);
+            node.id,
+            id => this.nodes.find(n => n.id == id));
 
         this.nodes.push(node);
         graphView.div.appendChild(node.div);

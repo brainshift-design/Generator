@@ -76,7 +76,7 @@ extends GOperator
             
             for (let c = 0; c < detail.value; c++)
             {
-                const i = this.iteration / (scale.value * size) + offset.value;
+                const i = this.iteration / (Math.max(0.000001, scale.value) * size) + offset.value;
                 
                 const i0 = Math.floor(i);
                 const i1 = Math.ceil (i);

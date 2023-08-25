@@ -81,7 +81,7 @@ async function uiReturnFigStartGenerator(msg)
 {
     currentUser = msg.currentUser;
 
-    //manageLastSub(currentUser.id, false);
+    //manageLastSub(currentUser.id, true);
     
 
     loadLocalSettings();
@@ -125,7 +125,8 @@ function initGenerator()
         cmd:     'figLoadNodesAndConns',
         dataMode: settings.dataMode });
 
-    enableFeatures(subscribed());
+    if (!settings.dataMode)
+        enableFeatures(subscribed());
 }
 
 

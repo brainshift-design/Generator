@@ -8168,7 +8168,7 @@ function simpleIntHash(x)
 
 
 
-function getNewNumberId(nodes, checkExists, curId, id = curId, join = '')
+function getNewNumberId(curId, checkExists, id = curId, join = '')
 {
     if (!checkExists(id))
         return id;
@@ -20079,12 +20079,12 @@ extends GOperator1
 
                 for (let i = 0, o = 0; i < Math.max(1, nRepeats); i++)
                 {
-                    //console.log('repeat');
                     _while = (await this._while.eval(parse)).toValue();
-
+                    
                     if (_while.value == 0)
                         break;
-
+                
+                    console.log('repeat');
 
                     if (  !showProgress
                         && Date.now() - startTime > 50)
@@ -21900,19 +21900,34 @@ extends GOperator
         if (    this.value.isValid()
             && !isEmpty(this.value.items))
         {
+            // console.log('this.value.items =', this.value.items);
+            console.log('this.value.items.length =', this.value.items.length);
             for (let i = 0; i < this.value.items.length; i++)
             {
                 const item = this.value.items[i];
-
-                const valueId = 
-                    item.valueId != ''
+                // console.log('item =', item);
+                
+                let valueId = 
+                    item.valueId.trim() != ''
                     ? item.valueId
-                    : i;//'item' + i;
+                    : i.toString();
+                // console.log('valueId =', valueId);
+
+                valueId = getNewNumberId(
+                    valueId,
+                    id => this.value.items.find(i => 
+                           i != item 
+                        && i.valueId == id));
+                // console.log('valueId =', valueId);
 
                 Object.assign(this, {[valueId]: item});
+                // console.log('1');
                 this.setUpdateValues(parse, [[valueId, item]], true);
+                // console.log('2');
 
                 item.sortId = i;
+                // console.log('3');
+                // console.log('');
             }
 
             this.updateValues.sort((a, b) => a.sortId - b.sortId);
@@ -21938,9 +21953,11 @@ extends GOperator
 
     paramFromId(paramId)
     {
-        return paramId != 'value'
-              ? this.value.items.find(i => i.valueId == paramId) //this[paramId]
-              : null;
+        return this.value
+            && this.value.items
+            && paramId != 'value'
+            ? this.value.items.find(i => i.valueId == paramId) //this[paramId]
+            : null;
     }
 
 
@@ -24165,7 +24182,7 @@ extends GOperator
             
             for (let c = 0; c < detail.value; c++)
             {
-                const i = this.iteration / (scale.value * size) + offset.value;
+                const i = this.iteration / (Math.max(0.000001, scale.value) * size) + offset.value;
                 
                 const i0 = Math.floor(i);
                 const i1 = Math.ceil (i);
@@ -39122,7 +39139,8 @@ function genRequest(request, save)
 
     const    paramNodes = parse.paramNodeIds.map(id => parse.parsedNodes.find(n => n.nodeId == id));
     const topLevelNodes = parse.parsedNodes.filter(n => n.topLevel);
-
+console.log('paramNodes =', paramNodes);
+console.log('topLevelNodes =', topLevelNodes);
 
     (async () =>
     {
@@ -52138,7 +52156,7 @@ function simpleIntHash(x)
 
 
 
-function getNewNumberId(nodes, checkExists, curId, id = curId, join = '')
+function getNewNumberId(curId, checkExists, id = curId, join = '')
 {
     if (!checkExists(id))
         return id;
@@ -66255,12 +66273,12 @@ extends GOperator1
 
                 for (let i = 0, o = 0; i < Math.max(1, nRepeats); i++)
                 {
-                    //console.log('repeat');
                     _while = (await this._while.eval(parse)).toValue();
-
+                    
                     if (_while.value == 0)
                         break;
-
+                
+                    console.log('repeat');
 
                     if (  !showProgress
                         && Date.now() - startTime > 50)
@@ -68076,19 +68094,34 @@ extends GOperator
         if (    this.value.isValid()
             && !isEmpty(this.value.items))
         {
+            // console.log('this.value.items =', this.value.items);
+            console.log('this.value.items.length =', this.value.items.length);
             for (let i = 0; i < this.value.items.length; i++)
             {
                 const item = this.value.items[i];
-
-                const valueId = 
-                    item.valueId != ''
+                // console.log('item =', item);
+                
+                let valueId = 
+                    item.valueId.trim() != ''
                     ? item.valueId
-                    : i;//'item' + i;
+                    : i.toString();
+                // console.log('valueId =', valueId);
+
+                valueId = getNewNumberId(
+                    valueId,
+                    id => this.value.items.find(i => 
+                           i != item 
+                        && i.valueId == id));
+                // console.log('valueId =', valueId);
 
                 Object.assign(this, {[valueId]: item});
+                // console.log('1');
                 this.setUpdateValues(parse, [[valueId, item]], true);
+                // console.log('2');
 
                 item.sortId = i;
+                // console.log('3');
+                // console.log('');
             }
 
             this.updateValues.sort((a, b) => a.sortId - b.sortId);
@@ -68114,9 +68147,11 @@ extends GOperator
 
     paramFromId(paramId)
     {
-        return paramId != 'value'
-              ? this.value.items.find(i => i.valueId == paramId) //this[paramId]
-              : null;
+        return this.value
+            && this.value.items
+            && paramId != 'value'
+            ? this.value.items.find(i => i.valueId == paramId) //this[paramId]
+            : null;
     }
 
 
@@ -70341,7 +70376,7 @@ extends GOperator
             
             for (let c = 0; c < detail.value; c++)
             {
-                const i = this.iteration / (scale.value * size) + offset.value;
+                const i = this.iteration / (Math.max(0.000001, scale.value) * size) + offset.value;
                 
                 const i0 = Math.floor(i);
                 const i1 = Math.ceil (i);
@@ -105423,7 +105458,7 @@ Operator.prototype.updateHeaderLabelText = function()
     else if (this.type == SORT        ) suffix = sep + '[ ' + this.tableLength   + ' ]';
     else if (this.type == UNIQUE      ) suffix = sep + '[ ' + this.length        + ' ]';
     else if (this.type == ITEMS       ) suffix = sep + '[ ' + this.params.length + ' ]';
-    else                                suffix = this.cached ? '' : '...';
+    else                                suffix = this.cached || this.type == START ? '' : '...';
 
 
     suffix += this.suffix;
@@ -106197,7 +106232,7 @@ extends OperatorBase
 
         const arrowStyle = darkMode ? 'white' : 'black';
 
-        this.paramFrom.controls[0].valueText = '<svg width="14" height="9" viewBox="0 0 14 9" fill="none" xmlns="http://www.w3.org/2000/svg"><path d="M3.53553 0L0 3.53553L0.707107 4.24264L3.00001 1.94974V4C3.00001 6.76142 5.23859 9 8.00001 9H14V8H8.00001C5.79087 8 4.00001 6.20914 4.00001 4L4.00001 1.85242L6.37717 4.22958L7.08428 3.52247L3.56735 0.00553989L3.55421 0.0186768L3.53553 0Z" fill="' + arrowStyle + '"/></svg>';
+        this.paramFrom.controls[0].valueText = '<svg width="25" height="9" viewBox="0 0 25 9" fill="none" xmlns="http://www.w3.org/2000/svg"><path d="M3.53553 0L0 3.53553L0.707107 4.24264L3.00001 1.94974V4C3.00001 6.76142 5.23859 9 8.00001 9H12V8H8.00001C5.79087 8 4.00001 6.20914 4.00001 4L4.00001 1.85242L6.37717 4.22958L7.08428 3.52247L3.56735 0.00553989L3.55421 0.0186768L3.53553 0Z" fill="' + arrowStyle + '"/><circle cx="16.5" cy="8.5" r="0.5" fill="' + arrowStyle + '"/><circle cx="20.5" cy="8.5" r="0.5" fill="' + arrowStyle + '"/><circle cx="24.5" cy="8.5" r="0.5" fill="' + arrowStyle + '"/></svg>';
 
         this.updateParamControls();
     }
@@ -106319,7 +106354,8 @@ extends OperatorBase
 
 
         const arrowStyle = darkMode ? 'white' : 'black';
-        this.paramLoop.controls[0].valueText = '<svg width="24" height="11" viewBox="0 0 24 11" fill="none" xmlns="http://www.w3.org/2000/svg"><path fill-rule="evenodd" clip-rule="evenodd" d="M22.991 0H23.991L23.991 2C23.991 4.76142 21.7524 7 18.991 7H10.991V6H18.991C21.2001 6 22.991 4.20914 22.991 2L22.991 0Z" fill="'+arrowStyle+'"/><rect width="4.97369" height="1" transform="matrix(0.707107 -0.707107 -0.707107 -0.707107 10.7036 7.224)" fill="'+arrowStyle+'"/><rect width="5" height="1" transform="matrix(0.707107 0.707107 0.707107 -0.707107 9.99097 6.54858)" fill="'+arrowStyle+'"/><circle cx="0.5" cy="6.5" r="0.5" fill="'+arrowStyle+'"/><circle cx="3.5" cy="6.5" r="0.5" fill="'+arrowStyle+'"/><circle cx="6.5" cy="6.5" r="0.5" fill="'+arrowStyle+'"/></svg>';
+        this.paramLoop.controls[0].valueText = '<svg width="25" height="11" viewBox="0 0 25 11" fill="none" xmlns="http://www.w3.org/2000/svg"><path fill-rule="evenodd" clip-rule="evenodd" d="M23.991 0H24.991L24.991 2C24.991 4.76142 22.7524 7 19.991 7H14V6H19.991C22.2001 6 23.991 4.20914 23.991 2L23.991 0Z" fill="'+arrowStyle+'"/><rect width="4.97369" height="1" transform="matrix(0.707107 -0.707107 -0.707107 -0.707107 13.7036 7.224)" fill="'+arrowStyle+'"/><rect width="5" height="1" transform="matrix(0.707107 0.707107 0.707107 -0.707107 12.991 6.54858)" fill="'+arrowStyle+'"/><circle cx="0.5" cy="6.5" r="0.5" fill="'+arrowStyle+'"/><circle cx="4.5" cy="6.5" r="0.5" fill="'+arrowStyle+'"/><circle cx="8.5" cy="6.5" r="0.5" fill="'+arrowStyle+'"/></svg>';
+
         this.updateParamControls();
     }
 
@@ -109988,7 +110024,7 @@ extends OperatorBase
         this.addParam(this.paramSeed        = new NumberParam('seed',        'seed',    true,  true, true, Math.floor(Math.random() * 10000), 0, 0x7fffffff));
         this.addParam(this.paramMin         = new NumberParam('min',         'min',     true,  true, true,   0));
         this.addParam(this.paramMax         = new NumberParam('max',         'max',     true,  true, true, 255));
-        this.addParam(this.paramScale       = new NumberParam('scale',       'scale',   true,  true, true, 1, 1));
+        this.addParam(this.paramScale       = new NumberParam('scale',       'scale',   true,  true, true, 1, 0));
         this.addParam(this.paramOffset      = new NumberParam('offset',      'offset',  true,  true, true, 0, 0));
         this.addParam(this.paramInterpolate = new SelectParam('interpolate', 'blend',   true,  true, true, ['step', 'linear', 'cosine'], 2));
         this.addParam(this.paramDetail      = new NumberParam('detail',      'detail',  true,  true, true, 1, 1));
@@ -122228,9 +122264,8 @@ extends OperatorBase
                 && n != this);
 
             newName = getNewNumberId(
-                paramNodes, 
-                name => paramNodes.find(n => n.name == name), 
                 newName, 
+                name => paramNodes.find(n => n.name == name), 
                 newName, 
                 '');
 
@@ -123104,9 +123139,8 @@ class Graph
         node.graph = this;
 
         node.id = getNewNumberId(
-            this.nodes, 
-            id => this.nodes.find(n => n.id == id), 
-            node.id);
+            node.id,
+            id => this.nodes.find(n => n.id == id));
 
         this.nodes.push(node);
         graphView.div.appendChild(node.div);
@@ -123818,14 +123852,12 @@ Graph.prototype.createPage = function(name, add = true)
 Graph.prototype.addPage = function(page)
 {
     page.id = getNewNumberId(
-        graph.pages, 
-        id => graph.pages.find(p => p.id == id), 
-        page.id);
+        page.id,
+        id => graph.pages.find(p => p.id == id));
 
     page.name = getNewNumberId(
-        graph.pages, 
-        name => graph.pages.find(p => p.name == name), 
         page.name, 
+        name => graph.pages.find(p => p.name == name), 
         page.name, 
         ' ');
 
@@ -128275,7 +128307,7 @@ async function uiReturnFigStartGenerator(msg)
 {
     currentUser = msg.currentUser;
 
-    //manageLastSub(currentUser.id, false);
+    //manageLastSub(currentUser.id, true);
     
 
     loadLocalSettings();
@@ -128319,7 +128351,8 @@ function initGenerator()
         cmd:     'figLoadNodesAndConns',
         dataMode: settings.dataMode });
 
-    enableFeatures(subscribed());
+    if (!settings.dataMode)
+        enableFeatures(subscribed());
 }
 
 

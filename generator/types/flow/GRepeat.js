@@ -93,12 +93,12 @@ extends GOperator1
 
                 for (let i = 0, o = 0; i < Math.max(1, nRepeats); i++)
                 {
-                    //console.log('repeat');
                     _while = (await this._while.eval(parse)).toValue();
-
+                    
                     if (_while.value == 0)
                         break;
-
+                
+                    console.log('repeat');
 
                     if (  !showProgress
                         && Date.now() - startTime > 50)

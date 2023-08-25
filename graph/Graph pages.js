@@ -15,14 +15,12 @@ Graph.prototype.createPage = function(name, add = true)
 Graph.prototype.addPage = function(page)
 {
     page.id = getNewNumberId(
-        graph.pages, 
-        id => graph.pages.find(p => p.id == id), 
-        page.id);
+        page.id,
+        id => graph.pages.find(p => p.id == id));
 
     page.name = getNewNumberId(
-        graph.pages, 
-        name => graph.pages.find(p => p.name == name), 
         page.name, 
+        name => graph.pages.find(p => p.name == name), 
         page.name, 
         ' ');
 

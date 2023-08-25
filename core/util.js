@@ -250,7 +250,7 @@ function simpleIntHash(x)
 
 
 
-function getNewNumberId(nodes, checkExists, curId, id = curId, join = '')
+function getNewNumberId(curId, checkExists, id = curId, join = '')
 {
     if (!checkExists(id))
         return id;

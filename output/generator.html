@@ -2900,7 +2900,7 @@ function simpleIntHash(x)
 
 
 
-function getNewNumberId(nodes, checkExists, curId, id = curId, join = '')
+function getNewNumberId(curId, checkExists, id = curId, join = '')
 {
     if (!checkExists(id))
         return id;
@@ -14811,12 +14811,12 @@ extends GOperator1
 
                 for (let i = 0, o = 0; i < Math.max(1, nRepeats); i++)
                 {
-                    //console.log('repeat');
                     _while = (await this._while.eval(parse)).toValue();
-
+                    
                     if (_while.value == 0)
                         break;
-
+                
+                    console.log('repeat');
 
                     if (  !showProgress
                         && Date.now() - startTime > 50)
@@ -16632,19 +16632,34 @@ extends GOperator
         if (    this.value.isValid()
             && !isEmpty(this.value.items))
         {
+            // console.log('this.value.items =', this.value.items);
+            console.log('this.value.items.length =', this.value.items.length);
             for (let i = 0; i < this.value.items.length; i++)
             {
                 const item = this.value.items[i];
-
-                const valueId = 
-                    item.valueId != ''
+                // console.log('item =', item);
+                
+                let valueId = 
+                    item.valueId.trim() != ''
                     ? item.valueId
-                    : i;//'item' + i;
+                    : i.toString();
+                // console.log('valueId =', valueId);
+
+                valueId = getNewNumberId(
+                    valueId,
+                    id => this.value.items.find(i => 
+                           i != item 
+                        && i.valueId == id));
+                // console.log('valueId =', valueId);
 
                 Object.assign(this, {[valueId]: item});
+                // console.log('1');
                 this.setUpdateValues(parse, [[valueId, item]], true);
+                // console.log('2');
 
                 item.sortId = i;
+                // console.log('3');
+                // console.log('');
             }
 
             this.updateValues.sort((a, b) => a.sortId - b.sortId);
@@ -16670,9 +16685,11 @@ extends GOperator
 
     paramFromId(paramId)
     {
-        return paramId != 'value'
-              ? this.value.items.find(i => i.valueId == paramId) //this[paramId]
-              : null;
+        return this.value
+            && this.value.items
+            && paramId != 'value'
+            ? this.value.items.find(i => i.valueId == paramId) //this[paramId]
+            : null;
     }
 
 
@@ -18897,7 +18914,7 @@ extends GOperator
             
             for (let c = 0; c < detail.value; c++)
             {
-                const i = this.iteration / (scale.value * size) + offset.value;
+                const i = this.iteration / (Math.max(0.000001, scale.value) * size) + offset.value;
                 
                 const i0 = Math.floor(i);
                 const i1 = Math.ceil (i);
@@ -33854,7 +33871,8 @@ function genRequest(request, save)
 
     const    paramNodes = parse.paramNodeIds.map(id => parse.parsedNodes.find(n => n.nodeId == id));
     const topLevelNodes = parse.parsedNodes.filter(n => n.topLevel);
-
+console.log('paramNodes =', paramNodes);
+console.log('topLevelNodes =', topLevelNodes);
 
     (async () =>
     {

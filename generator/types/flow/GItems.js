@@ -47,19 +47,34 @@ extends GOperator
         if (    this.value.isValid()
             && !isEmpty(this.value.items))
         {
+            // console.log('this.value.items =', this.value.items);
+            console.log('this.value.items.length =', this.value.items.length);
             for (let i = 0; i < this.value.items.length; i++)
             {
                 const item = this.value.items[i];
-
-                const valueId = 
-                    item.valueId != ''
+                // console.log('item =', item);
+                
+                let valueId = 
+                    item.valueId.trim() != ''
                     ? item.valueId
-                    : i;//'item' + i;
+                    : i.toString();
+                // console.log('valueId =', valueId);
+
+                valueId = getNewNumberId(
+                    valueId,
+                    id => this.value.items.find(i => 
+                           i != item 
+                        && i.valueId == id));
+                // console.log('valueId =', valueId);
 
                 Object.assign(this, {[valueId]: item});
+                // console.log('1');
                 this.setUpdateValues(parse, [[valueId, item]], true);
+                // console.log('2');
 
                 item.sortId = i;
+                // console.log('3');
+                // console.log('');
             }
 
             this.updateValues.sort((a, b) => a.sortId - b.sortId);
@@ -85,9 +100,11 @@ extends GOperator
 
     paramFromId(paramId)
     {
-        return paramId != 'value'
-              ? this.value.items.find(i => i.valueId == paramId) //this[paramId]
-              : null;
+        return this.value
+            && this.value.items
+            && paramId != 'value'
+            ? this.value.items.find(i => i.valueId == paramId) //this[paramId]
+            : null;
     }
 
 

@@ -296,7 +296,7 @@ Operator.prototype.updateHeaderLabelText = function()
     else if (this.type == SORT        ) suffix = sep + '[ ' + this.tableLength   + ' ]';
     else if (this.type == UNIQUE      ) suffix = sep + '[ ' + this.length        + ' ]';
     else if (this.type == ITEMS       ) suffix = sep + '[ ' + this.params.length + ' ]';
-    else                                suffix = this.cached ? '' : '...';
+    else                                suffix = this.cached || this.type == START ? '' : '...';
 
 
     suffix += this.suffix;

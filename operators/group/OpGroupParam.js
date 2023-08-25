@@ -304,9 +304,8 @@ extends OperatorBase
                 && n != this);
 
             newName = getNewNumberId(
-                paramNodes, 
-                name => paramNodes.find(n => n.name == name), 
                 newName, 
+                name => paramNodes.find(n => n.name == name), 
                 newName, 
                 '');
 
