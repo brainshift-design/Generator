@@ -128,9 +128,9 @@ var menuItemHelp;
 //var menuItemEnableBetaFeatures;
 
 
-var menuItemList;  
+var menuItemJoin;  
 var menuFlowSep1;
-var menuItemItems;
+var menuItemList;
 var menuItemSelect;
 var menuItemCount;
 var menuItemIfElse;
@@ -405,16 +405,17 @@ function initGeneratorMenus()
         menuItemHelp  = new MenuItem('Help and subscription', null, {childMenu: menuMainHelp })]);
 
 
-    menuFlow = new Menu('Flow', true, false);
+menuFlow = new Menu('Flow', true, false);
     menuFlow.addItems([
-        menuItemStart    = new MenuItem('Start. . .',        null, {icon: iconStart,     createType: START,            callback: e => actionManager.do(getCreateNodeAction(START,           btnFlow.div, getCreateOptions(e)))}),
-        menuItemRepeat   = new MenuItem('. . . Repeat',      null, {icon: iconRepeat,    createType: REPEAT,           callback: e => actionManager.do(getCreateNodeAction(REPEAT,          btnFlow.div, getCreateOptions(e)))}),
+        menuItemNull     = new MenuItem('Null',              null, {icon: iconNull,      createType: NULL_NODE,        callback: e => actionManager.do(getCreateNodeAction(NULL_NODE,       btnFlow.div, getCreateOptions(e)))}),
                            new MenuItem('',                  null, {separator: true}),
         menuItemIfElse   = new MenuItem('I&hairsp;f / else', null, {icon: iconIfElse,    createType: IF_ELSE,          callback: e => actionManager.do(getCreateNodeAction(IF_ELSE,         btnFlow.div, getCreateOptions(e))), disambiguate: true}),
                            new MenuItem('',                  null, {separator: true}),
-        menuItemNull     = new MenuItem('Null',              null, {icon: iconNull,      createType: NULL_NODE,        callback: e => actionManager.do(getCreateNodeAction(NULL_NODE,       btnFlow.div, getCreateOptions(e)))}),
+        menuItemStart    = new MenuItem('Start. . .',        null, {icon: iconStart,     createType: FEEDBACK,            callback: e => actionManager.do(getCreateNodeAction(FEEDBACK,           btnFlow.div, getCreateOptions(e)))}),
+        menuItemRepeat   = new MenuItem('. . . Repeat',      null, {icon: iconRepeat,    createType: REPEAT,           callback: e => actionManager.do(getCreateNodeAction(REPEAT,          btnFlow.div, getCreateOptions(e)))}),
+                           new MenuItem('',                  null, {separator: true}),
         menuItemFreeze   = new MenuItem('Freeze. . .',       null, {icon: iconFreeze,    createType: FREEZE,           callback: e => actionManager.do(getCreateNodeAction(FREEZE,          btnFlow.div, getCreateOptions(e)))}),
-        //menuItemCache    = new MenuItem('Cache',             null, {icon: iconCache,     createType: CACHE,            callback: e => actionManager.do(getCreateNodeAction(CACHE,           btnFlow.div, getCreateOptions(e)))}),
+        //menuItemCache    = new MenuItem('Cache',           null, {icon: iconCache,     createType: CACHE,            callback: e => actionManager.do(getCreateNodeAction(CACHE,           btnFlow.div, getCreateOptions(e)))}),
                            new MenuItem('',                  null, {separator: true}),
         menuItemTimer    = new MenuItem('Timer ',            null, {icon: iconTimer,     createType: TIMER,            callback: e => actionManager.do(getCreateNodeAction(TIMER,           btnFlow.div, getCreateOptions(e)))}),
         menuItemAnimate  = new MenuItem('Animate',           null, {icon: iconAnimate,   createType: NUMBER_ANIMATE,   callback: e => actionManager.do(getCreateNodeAction(NUMBER_ANIMATE,  btnFlow.div, getCreateOptions(e)))}),
@@ -426,8 +427,6 @@ function initGeneratorMenus()
     menuData = new Menu('Data', true, false);
     menuData.addItems([
         menuItemList     = new MenuItem('List',         null,            {icon: iconList,        createType: LIST,         callback: e => actionManager.do(getCreateNodeAction(LIST,          btnData.div, getCreateOptions(e)))}),
-        menuFlowSep1     = new MenuItem('',             null,            {separator: true}),     
-        menuItemItems    = new MenuItem('Items',        null,            {icon: iconItems,       createType: ITEMS,        callback: e => actionManager.do(getCreateNodeAction(ITEMS,         btnData.div, getCreateOptions(e)))}),
         menuItemCount    = new MenuItem('Count',        null,            {icon: iconCount,       createType: LIST_COUNT,   callback: e => actionManager.do(getCreateNodeAction(LIST_COUNT,    btnData.div, getCreateOptions(e)))}),
                            new MenuItem('Contains',     'List contains', {icon: iconContains,    createType: CONTAINS,     callback: e => actionManager.do(getCreateNodeAction(CONTAINS,      btnData.div, getCreateOptions(e))), disambiguate: true}),
                            new MenuItem('',             null,            {separator: true}),     
@@ -435,6 +434,7 @@ function initGeneratorMenus()
                            new MenuItem('Sublist',      null,            {icon: iconSublist,     createType: SUBLIST,      callback: e => actionManager.do(getCreateNodeAction(SUBLIST,       btnData.div, getCreateOptions(e)))}),
                            new MenuItem('Unique',       null,            {icon: iconUnique,      createType: UNIQUE,       callback: e => actionManager.do(getCreateNodeAction(UNIQUE,        btnData.div, getCreateOptions(e)))}),
                            new MenuItem('',             null,            {separator: true}),     
+        menuItemJoin     = new MenuItem('Join',         null,            {icon: iconJoin,        createType: JOIN,         callback: e => actionManager.do(getCreateNodeAction(JOIN,          btnData.div, getCreateOptions(e)))}),
                            new MenuItem('Reverse',      null,            {icon: iconReverseList, createType: REVERSE_LIST, callback: e => actionManager.do(getCreateNodeAction(REVERSE_LIST,  btnData.div, getCreateOptions(e)))}),
                            new MenuItem('Sort',         null,            {icon: iconSort,        createType: SORT,         callback: e => actionManager.do(getCreateNodeAction(SORT,          btnData.div, getCreateOptions(e)))}),
                            new MenuItem('',             null,            {separator: true}),     
@@ -590,12 +590,12 @@ function initGeneratorMenus()
     
     menuStyles = new Menu('Styles', true, false);
     menuStyles.addItems([
-        new MenuItem('Color style', null, {icon: iconColorStyle, createType: START, callback: e => actionManager.do(getCreateNodeAction(COLOR_STYLE, btnLayer.div, getCreateOptions(e, {existing: true})))})]);
+        new MenuItem('Color style', null, {icon: iconColorStyle, createType: FEEDBACK, callback: e => actionManager.do(getCreateNodeAction(COLOR_STYLE, btnLayer.div, getCreateOptions(e, {existing: true})))})]);
     
     
     menuVariables = new Menu('Variables', true, false);
     menuVariables.addItems([
-        new MenuItem('Number', null, {icon: iconVarNumber, createType: START, callback: e => actionManager.do(getCreateNodeAction(VAR_NUMBER, btnLayer.div, getCreateOptions(e, {existing: true})))})]);
+        new MenuItem('Number', null, {icon: iconVarNumber, createType: FEEDBACK, callback: e => actionManager.do(getCreateNodeAction(VAR_NUMBER, btnLayer.div, getCreateOptions(e, {existing: true})))})]);
     
     
     menuLayer = new Menu('Style', true, false);
@@ -624,10 +624,10 @@ function initGeneratorMenus()
         new MenuItem('',                  null,          {separator: true}),
         new MenuItem('Measure points',    null,          {icon: iconMeasurePoints,    createType: MEASURE_POINTS,    callback: e => actionManager.do(getCreateNodeAction(MEASURE_POINTS,    btnShape.div, getCreateOptions(e)))})]);
         // new MenuItem('',        null, {separator: true}),
-        // new MenuItem('Vertex',  null, {icon: iconVectorVertex,  createType: START, callback: e => actionManager.do(getCreateNodeAction(VECTOR_VERTEX,  btnShape.div, getCreateOptions(e)))}),
-        // new MenuItem('Edge',    null, {icon: iconVectorEdge,    createType: START, callback: e => actionManager.do(getCreateNodeAction(VECTOR_EDGE,    btnShape.div, getCreateOptions(e)))}),
-        // new MenuItem('Region',  null, {icon: iconVectorRegion,  createType: START, callback: e => actionManager.do(getCreateNodeAction(VECTOR_REGION,  btnShape.div, getCreateOptions(e)))}),
-        // new MenuItem('Network', null, {icon: iconVectorNetwork, createType: START, callback: e => actionManager.do(getCreateNodeAction(VECTOR_NETWORK, btnShape.div, getCreateOptions(e)))})]);
+        // new MenuItem('Vertex',  null, {icon: iconVectorVertex,  createType: VERTEX, callback: e => actionManager.do(getCreateNodeAction(VECTOR_VERTEX,  btnShape.div, getCreateOptions(e)))}),
+        // new MenuItem('Edge',    null, {icon: iconVectorEdge,    createType: VECTOR_EDGE, callback: e => actionManager.do(getCreateNodeAction(VECTOR_EDGE,    btnShape.div, getCreateOptions(e)))}),
+        // new MenuItem('Region',  null, {icon: iconVectorRegion,  createType: VECTOR_REGION, callback: e => actionManager.do(getCreateNodeAction(VECTOR_REGION,  btnShape.div, getCreateOptions(e)))}),
+        // new MenuItem('Network', null, {icon: iconVectorNetwork, createType: VECTOR_NETWORK, callback: e => actionManager.do(getCreateNodeAction(VECTOR_NETWORK, btnShape.div, getCreateOptions(e)))})]);
 
 
     menuShapes = new Menu('Shapes', true, false);
@@ -718,7 +718,7 @@ function initGeneratorMenus()
     wholeMenu = new Menu('Create node...', true, false);
     wholeMenu.addItems([
         new MenuItem('Flow',    null, {icon: iconFlow,     childMenu: menuFlow  }),
-        new MenuItem('Data',    null, {icon: iconList,     childMenu: menuData  }),
+        new MenuItem('Data',    null, {icon: iconJoin,     childMenu: menuData  }),
         new MenuItem('Sets...', null, {icon: iconSequence, childMenu: menuSets  }),
         new MenuItem('Number',  null, {icon: iconNumber,   childMenu: menuNumber}),
         new MenuItem('Text',    null, {icon: iconText,     childMenu: menuString}),
@@ -953,6 +953,7 @@ function initGeneratorMenus()
 
 
     btnFlow   .setIcon(iconFlow);
+    btnData   .setIcon(iconData);
     btnSets   .setIcon(iconSequence);
     btnMain   .setIcon(iconGenerator);
     btnColor  .setIcon(iconVarColor);

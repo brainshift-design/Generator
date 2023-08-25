@@ -8,7 +8,7 @@ extends OperatorBase
 
     constructor()
     {
-        super(START, 'start', 'start', iconStart);
+        super(FEEDBACK, 'feedback', 'feedback', iconStart);
 
         this.cached     = false;
         this.canDisable = true;
@@ -18,14 +18,14 @@ extends OperatorBase
         this.addOutput(new Output([ANY_VALUE], this.output_genRequest));
 
 
-        this.addParam(this.paramFeedback = new NumberParam('feedback', 'feedback', true,  true,  true, 0, 0, 1));
-        this.addParam(this.paramFrom     = new NumberParam('from',     '',         false, false, true));
+        this.addParam(this.paramFeedback   = new NumberParam('feedback',  'feedback',  true,  true,  true, 0, 0, 1));
+        this.addParam(this.paramFrom      = new NumberParam('from',      '',          false, false, true));
 
         
         this.paramFeedback.divider = 0.64;
 
 
-        this.inputs[0].addEventListener('connect',    () => OpStart_onConnectInput(this));
+        this.inputs[0].addEventListener('connect',    () => OpStart_onConnectInput   (this));
         this.inputs[0].addEventListener('disconnect', () => OpStart_onDisconnectInput(this));
     }
 

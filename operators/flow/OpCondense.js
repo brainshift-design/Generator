@@ -3,10 +3,10 @@ extends OperatorBase
 {
     constructor()
     {
-        super(CONDENSE, 'asItem', 'as item', iconCondense);
+        super(CONDENSE, 'listAsItem', 'list as item', iconCondense);
 
         this.canDisable  = true;
-        // this.iconOffsetY = 1;
+        this.iconOffsetY = -1;
         
 
         this.addInput (new Input (LIST_VALUES));

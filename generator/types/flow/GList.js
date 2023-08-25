@@ -1,9 +1,7 @@
 class GList
 extends GOperator
 {
-    inputs = [];
-
-    value;
+    input = null;
 
 
 
@@ -13,28 +11,23 @@ extends GOperator
     }
 
 
-    
+
     copy()
     {
         const copy = new GList(this.nodeId, this.options);
-
+        
         copy.copyBase(this);
 
-        copy.inputs = this.inputs.map(i => i.copy());
-        copy.value  = this.value.copy();
+        if (this.input) 
+            copy.input = this.input.copy();
+        
+        for (const key of this.keys())
+        {
+            if (this[key] instanceof GValue)
+                Object.assign(copy, {[key]: this[key]});
+        }
 
         return copy;
-    }
-
-
-
-    isCached()
-    {
-        for (const input of this.inputs)
-            if (!input.isCached())
-                return false;
-
-        return super.isCached();
     }
 
 
@@ -45,96 +38,73 @@ extends GOperator
             return this;
 
 
-        this.value = new ListValue();
-
-        this.value.objects = [];
+        this.value = this.input ? (await this.input.eval(parse)).toValue() : ListValue.NaN;
 
 
-        for (let i = 0, o = 0; i < this.inputs.length; i++)
-        {
-            await this.inputs[i].eval(parse);
-            
-            
-            // first copy the input objects
-            // to display when list is the active node
-
-            // if (   this.options.enabled
-            //     && this.inputs[i].value)
-            // {
-            //     const objects = getValidObjects(this.inputs[i].value);
-                
-            //     for (let j = 0; j < objects.length; j++, o++)
-            //     {
-            //         const obj = objects[j];//copyFigmaObject(objects[j]);
-
-            //         obj.nodeId   = this.nodeId;
-            //         obj.objectId = obj.objectId + OBJECT_SEPARATOR + this.nodeId;
-            //         obj.listId   = i;
-
-            //         //this.value.objects.push(obj);
-            //     }
-            // }
-
-
-            // now create the output value
-
-            const input = this.inputs[i].toValue();
-
-
-            if (   input
-                && this.options.enabled)
-            {
-                if (LIST_VALUES.includes(input.type))
-                {
-                    if (input.condensed === true)
-                        this.value.items.push(input.copy());
-                    else
-                    {
-                        for (const item of input.items)
-                            this.value.items.push(item.copy());   
-                    }
-                }
-                else
-                    this.value.items.push(input.copy());
-            }
-
-
-            this.value.objects.push(...this.copyObjects(input, i));
-        }
-
-
-        // reset object space
-
-        const bounds = getObjBounds(this.value.objects);
-
-        const singlePoint =
-               this.value.objects.length  == 1 
-            && this.value.objects[0].type == POINT;
-
-
-        for (const obj of this.value.objects)
-        {
-            obj.createDefaultSpace(obj.sp0.x, obj.sp0.y);
-            obj.resetSpace(bounds, singlePoint);
-        }
-
-
-        const preview = new ListValue(this.value.items.slice(0, Math.min(this.value.items.length, 10)));
-        const length  = new NumberValue(this.value.items.length);
-        const type    = new TextValue(finalListTypeFromItems(this.value.items));
+        this.updateValues = [];
 
         
-        this.setUpdateValues(parse,
-        [
-            ['preview', preview],
-            ['length',  length ],
-            ['type',    type   ]
-        ]);
+        if (    this.value.isValid()
+            && !isEmpty(this.value.items))
+        {
+            // console.log('this.value.items =', this.value.items);
+            console.log('this.value.items.length =', this.value.items.length);
+            for (let i = 0; i < this.value.items.length; i++)
+            {
+                const item = this.value.items[i];
+                // console.log('item =', item);
+                
+                let valueId = 
+                    item.valueId.trim() != ''
+                    ? item.valueId
+                    : i.toString();
+                // console.log('valueId =', valueId);
+
+                valueId = getNewNumberId(
+                    valueId,
+                    id => this.value.items.find(i => 
+                           i != item 
+                        && i.valueId == id));
+                // console.log('valueId =', valueId);
+
+                Object.assign(this, {[valueId]: item});
+                // console.log('1');
+                this.setUpdateValues(parse, [[valueId, item]], true);
+                // console.log('2');
+
+                item.sortId = i;
+                // console.log('3');
+                // console.log('');
+            }
+
+            this.updateValues.sort((a, b) => a.sortId - b.sortId);
+        }
+        else
+            this.setUpdateValues(parse, [['', NullValue]], true);
+
+
+        //this.updateValues.push(['value', this.value]); // first so it can be separated out in OpList
+
+
+        if (this.value.objects)
+            for (let j = 0; j < this.value.objects.length; j++)
+                this.value.objects[j].nodeId = this.nodeId;
 
 
         this.validate();
 
         return this;
+    }
+    
+    
+
+    paramFromId(paramId)
+    {
+        return this.value
+            && this.value.items
+            && paramId != 'value'
+            ? this.value.items.find(i => i.valueId == paramId) //this[paramId]
+            : null;
     }
 
 
@@ -148,7 +118,7 @@ extends GOperator
 
     isValid()
     {
-        return !this.inputs.find(i => !i.isValid());
+        return this.input && this.input.isValid();
     }
 
 
@@ -157,7 +127,7 @@ extends GOperator
     {
         super.pushValueUpdates(parse);
 
-        this.inputs.forEach(i => i.pushValueUpdates(parse));
+        if (this.input) this.input.pushValueUpdates(parse);
     }
 
 
@@ -166,34 +136,15 @@ extends GOperator
     {
         super.invalidateInputs(parse, from);
 
-        this.inputs.forEach(i => i.invalidateInputs(parse, from));
-    }
-
-
-
-    initLoop(parse, loopId)
-    {
-        this.inputs.forEach(i => i.initLoop(parse, loopId));
-    }
-
-
-
-    invalidateLoop(parse, nodeId)
-    {
-        this.inputs.forEach(i => i.invalidateLoop(parse, nodeId));
+        if (this.input) this.input.invalidateInputs(parse, from);
     }
 
 
 
     iterateLoop(parse)
     {
-        this.inputs.forEach(i => i.iterateLoop(parse));
-    }
+        super.iterateLoop(parse);
 
-
-
-    resetLoop(parse, nodeId)
-    {
-        this.inputs.forEach(i => i.resetLoop(parse, nodeId));
+        if (this.input) this.input.iterateLoop(parse);
     }
 }

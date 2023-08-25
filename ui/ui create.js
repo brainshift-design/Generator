@@ -5,16 +5,16 @@ function createNode(nodeType, creatingButton = null, createdNodeId = -1, options
     switch (nodeType)
     {
         case NULL_NODE:               node = new OpNull();              break;
-        case START:                   node = new OpStart();             break;
+        case FEEDBACK:                node = new OpStart();             break;
         case REPEAT:                  node = new OpRepeat();            break;
         case CACHE:                   node = new OpCache();             break;
         case FREEZE:                  node = new OpFreeze();            break;
         case TIMER:                   node = new OpTimer();             break;
         case VALUE_NAME:              node = new OpValueName();         break;
 
-        case LIST:                    node = new OpList();              break;
+        case JOIN:                    node = new OpJoin();              break;
         case CONDENSE:                node = new OpCondense();          break;
-        case ITEMS:                   node = new OpItems();             break;
+        case LIST:                    node = new OpList();              break;
         case LIST_COUNT:              node = new OpListCount();         break;
         case SELECT:                  node = new OpSelect();            break;
         case CONTAINS:                node = new OpContains();          break;

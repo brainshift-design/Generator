@@ -53,7 +53,7 @@
 ../operators/flow/OpTimer.js
 ../operators/flow/OpValueName.js
 
-../operators/flow/OpList.js
+../operators/flow/OpJoin.js
 ../operators/flow/OpCondense.js
 ../operators/flow/OpSublist.js
 ../operators/flow/OpUnique.js
@@ -61,7 +61,7 @@
 ../operators/flow/OpSort.js
 ../operators/flow/OpColumn.js
 ../operators/flow/OpCell.js
-../operators/flow/OpItems.js
+../operators/flow/OpList.js
 ../operators/flow/OpSelect.js
 ../operators/flow/OpListCount.js
 ../operators/flow/OpContains.js

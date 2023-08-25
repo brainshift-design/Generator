@@ -4677,14 +4677,14 @@ const  SHAPE_LIST_VALUE       = 'SLIST#';
 
 
 const NULL_NODE               = 'NULL';
-const START                   = 'START';
+const FEEDBACK                = 'FEEDBACK';
 const REPEAT                  = 'REPT';
 const CACHE                   = 'CACHE';
 const FREEZE                  = 'FRZ';
 const TIMER                   = 'TIMER';
 const VALUE_NAME              = 'VNAME';
 
-const LIST                    = 'LIST';
+const JOIN                    = 'JOIN';
 const CONDENSE                = 'CDENSE';
 const SUBLIST                 = 'SUBLST';
 const UNIQUE                  = 'UNIQ';
@@ -4692,7 +4692,7 @@ const REVERSE_LIST            = 'REVLST';
 const SORT                    = 'SORT';
 const COLUMN                  = 'CLMN';
 const CELL                    = 'CELL';
-const ITEMS                   = 'ITEMS';
+const LIST                    = 'LIST';
 const LIST_COUNT              = 'COUNT';
 const CONTAINS                = 'LCONT';
 const SELECT                  = 'SEL';
@@ -4710,9 +4710,9 @@ const LIST_TYPES =
     NUMBER_LIST_VALUE,
     TEXT_LIST_VALUE,
     SHAPE_LIST_VALUE,
-    LIST,
+    JOIN,
     SUBLIST,
-    //ITEMS,
+    LIST,
     LIST_COUNT,
     CONTAINS,
     REPEAT
@@ -4742,11 +4742,11 @@ const FLOW_TYPES =
     COLUMN,
     SORT,
     CELL,
-    ITEMS,
+    LIST,
     SELECT,
     IF_ELSE,
     FILTER,
-    START,
+    FEEDBACK,
     REPEAT,
     //FOREACH,
     DEFINE,
@@ -8805,7 +8805,7 @@ extends GOperator
 
         this.param = this.node.paramFromId(this.paramId);
 
-        if (this.node.type == ITEMS)
+        if (this.node.type == LIST)
             this.param = this.node[this.paramId];
 
         
@@ -14565,7 +14565,7 @@ extends GOperator
 
     constructor(nodeId, options)
     {
-        super(START, nodeId, options);
+        super(FEEDBACK, nodeId, options);
     }
 
 
@@ -14993,7 +14993,7 @@ function assertVolatile(loop, node)
         || loop.type == NUMBER_RANDOM
         || loop.type == NUMBER_NOISE
         || loop.type == NUMBER_PROBABILITY
-        || loop.type == LIST
+        || loop.type == JOIN
         || loop.type == PARAM, // for OpStart
         'only volatile types can be repeated');
 }
@@ -15539,7 +15539,7 @@ extends GOperator
 
 
 
-class GList
+class GJoin
 extends GOperator
 {
     inputs = [];
@@ -15550,14 +15550,14 @@ extends GOperator
 
     constructor(nodeId, options)
     {
-        super(LIST, nodeId, options);
+        super(JOIN, nodeId, options);
     }
 
 
     
     copy()
     {
-        const copy = new GList(this.nodeId, this.options);
+        const copy = new GJoin(this.nodeId, this.options);
 
         copy.copyBase(this);
 
@@ -16583,7 +16583,7 @@ extends GOperator
 }
 
 
-class GItems
+class GList
 extends GOperator
 {
     input = null;
@@ -16592,14 +16592,14 @@ extends GOperator
 
     constructor(nodeId, options)
     {
-        super(ITEMS, nodeId, options);
+        super(LIST, nodeId, options);
     }
 
 
 
     copy()
     {
-        const copy = new GItems(this.nodeId, this.options);
+        const copy = new GList(this.nodeId, this.options);
         
         copy.copyBase(this);
 
@@ -16668,7 +16668,7 @@ extends GOperator
             this.setUpdateValues(parse, [['', NullValue]], true);
 
 
-        //this.updateValues.push(['value', this.value]); // first so it can be separated out in OpItems
+        //this.updateValues.push(['value', this.value]); // first so it can be separated out in OpList
 
 
         if (this.value.objects)
@@ -24573,7 +24573,7 @@ extends GOperator1
 
             
             if (   input.isValid()
-                && this.input.type != START)
+                && this.input.type != FEEDBACK)
             {
                 if (this.options.enabled)
                 {
@@ -34893,12 +34893,12 @@ function genParseListValue(parse)
 
 
 
-function genParseList(parse)
+function genParseJoin(parse)
 {
     const [, nodeId, options, ignore] = genParseNodeStart(parse);
 
 
-    const list = new GList(nodeId, options);
+    const list = new GJoin(nodeId, options);
 
     
     let nInputs = 0;
@@ -35253,12 +35253,12 @@ function genParseCell(parse)
 
 
 
-function genParseItems(parse)
+function genParseList(parse)
 {
     const [, nodeId, options, ignore] = genParseNodeStart(parse);
 
 
-    const items = new GItems(nodeId, options);
+    const list = new GList(nodeId, options);
 
     
     let nInputs = -1;
@@ -35271,12 +35271,12 @@ function genParseItems(parse)
 
 
     if (parse.settings.logRequests) 
-        logReq(items, parse, ignore, nInputs);
+        logReq(list, parse, ignore, nInputs);
 
 
     if (ignore) 
     {
-        genParseNodeEnd(parse, items);
+        genParseNodeEnd(parse, list);
         return parse.parsedNodes.find(n => n.nodeId == nodeId);
     }
 
@@ -35285,14 +35285,14 @@ function genParseItems(parse)
 
 
     if (nInputs == 1)
-        items.input = genParse(parse);
+        list.input = genParse(parse);
 
 
     parse.nTab--;
 
 
-    genParseNodeEnd(parse, items);
-    return items;
+    genParseNodeEnd(parse, list);
+    return list;
 }
 
 
@@ -35508,7 +35508,7 @@ function genParseStart(parse)
     const [, nodeId, options, ignore] = genParseNodeStart(parse);
 
 
-    const start = new GStart(nodeId, options);
+    const feedback = new GStart(nodeId, options);
 
 
     let nInputs = -1;
@@ -35521,12 +35521,12 @@ function genParseStart(parse)
 
 
     if (parse.settings.logRequests) 
-        logReq(start, parse, ignore, nInputs);
+        logReq(feedback, parse, ignore, nInputs);
 
 
     if (ignore) 
     {
-        genParseNodeEnd(parse, start);
+        genParseNodeEnd(parse, feedback);
         return parse.parsedNodes.find(n => n.nodeId == nodeId);
     }
 
@@ -35535,16 +35535,16 @@ function genParseStart(parse)
 
 
     if (nInputs == 1)
-        start.input = genParse(parse);
+        feedback.input = genParse(parse);
 
-    start.feedback = genParse(parse);
+    feedback.feedback = genParse(parse);
 
 
     parse.nTab--;
 
 
-    genParseNodeEnd(parse, start);
-    return start;
+    genParseNodeEnd(parse, feedback);
+    return feedback;
 }
 
 
@@ -40500,7 +40500,7 @@ function genParse(parse, inParam = true)
  
     else if (parse.next == NULL_NODE              ) result = genParseNull              (parse);
 
-    else if (parse.next == LIST                   ) result = genParseList              (parse);
+    else if (parse.next == JOIN                   ) result = genParseJoin              (parse);
     else if (parse.next == CONDENSE               ) result = genParseCondense          (parse);
     else if (parse.next == SUBLIST                ) result = genParseSublist           (parse);
     else if (parse.next == UNIQUE                 ) result = genParseUnique            (parse);
@@ -40508,12 +40508,12 @@ function genParse(parse, inParam = true)
     else if (parse.next == SORT                   ) result = genParseSort              (parse);
     else if (parse.next == COLUMN                 ) result = genParseColumn            (parse);
     else if (parse.next == CELL                   ) result = genParseCell              (parse);
-    else if (parse.next == ITEMS                  ) result = genParseItems             (parse);
+    else if (parse.next == LIST                   ) result = genParseList              (parse);
     else if (parse.next == SELECT                 ) result = genParseSelect            (parse);
     else if (parse.next == LIST_COUNT             ) result = genParseListCount         (parse);
     else if (parse.next == CONTAINS               ) result = genParseListContains      (parse);
     else if (parse.next == IF_ELSE                ) result = genParseIfElse            (parse);
-    else if (parse.next == START                  ) result = genParseStart             (parse);
+    else if (parse.next == FEEDBACK               ) result = genParseStart          (parse);
     else if (parse.next == REPEAT                 ) result = genParseRepeat            (parse);
     else if (parse.next == CACHE                  ) result = genParseCache             (parse);
     else if (parse.next == DEFINE                 ) result = genParseDefine            (parse);

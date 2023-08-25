@@ -538,13 +538,13 @@ const NUMBER_LIST_VALUE = 'NLIST#';
 const TEXT_LIST_VALUE = 'TLIST#';
 const SHAPE_LIST_VALUE = 'SLIST#';
 const NULL_NODE = 'NULL';
-const START = 'START';
+const FEEDBACK = 'FEEDBACK';
 const REPEAT = 'REPT';
 const CACHE = 'CACHE';
 const FREEZE = 'FRZ';
 const TIMER = 'TIMER';
 const VALUE_NAME = 'VNAME';
-const LIST = 'LIST';
+const JOIN = 'JOIN';
 const CONDENSE = 'CDENSE';
 const SUBLIST = 'SUBLST';
 const UNIQUE = 'UNIQ';
@@ -552,7 +552,7 @@ const REVERSE_LIST = 'REVLST';
 const SORT = 'SORT';
 const COLUMN = 'CLMN';
 const CELL = 'CELL';
-const ITEMS = 'ITEMS';
+const LIST = 'LIST';
 const LIST_COUNT = 'COUNT';
 const CONTAINS = 'LCONT';
 const SELECT = 'SEL';
@@ -565,9 +565,9 @@ const LIST_TYPES = [
     NUMBER_LIST_VALUE,
     TEXT_LIST_VALUE,
     SHAPE_LIST_VALUE,
-    LIST,
+    JOIN,
     SUBLIST,
-    //ITEMS,
+    LIST,
     LIST_COUNT,
     CONTAINS,
     REPEAT
@@ -589,11 +589,11 @@ const FLOW_TYPES = [
     COLUMN,
     SORT,
     CELL,
-    ITEMS,
+    LIST,
     SELECT,
     IF_ELSE,
     FILTER,
-    START,
+    FEEDBACK,
     REPEAT,
     //FOREACH,
     DEFINE,

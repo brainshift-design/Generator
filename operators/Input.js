@@ -224,7 +224,7 @@ extends EventTarget
             return true;
 
         if (!this.param
-            && this.node.type == LIST
+            && this.node.type == JOIN
             && this.node.outputs[0].connectedInputs.find(i => i.isLoop()))
             return true;
 

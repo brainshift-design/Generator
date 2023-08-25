@@ -240,7 +240,7 @@ GraphView.prototype.createEvents = function()
                     uiMakeNodePassive(node);
                     activeNodes.push(node);
 
-                    if (node.type == ITEMS)
+                    if (node.type == LIST)
                         pushUpdate(null, [node]);
                 }
             }

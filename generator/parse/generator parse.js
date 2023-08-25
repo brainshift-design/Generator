@@ -132,7 +132,7 @@ function genParse(parse, inParam = true)
  
     else if (parse.next == NULL_NODE              ) result = genParseNull              (parse);
 
-    else if (parse.next == LIST                   ) result = genParseList              (parse);
+    else if (parse.next == JOIN                   ) result = genParseJoin              (parse);
     else if (parse.next == CONDENSE               ) result = genParseCondense          (parse);
     else if (parse.next == SUBLIST                ) result = genParseSublist           (parse);
     else if (parse.next == UNIQUE                 ) result = genParseUnique            (parse);
@@ -140,12 +140,12 @@ function genParse(parse, inParam = true)
     else if (parse.next == SORT                   ) result = genParseSort              (parse);
     else if (parse.next == COLUMN                 ) result = genParseColumn            (parse);
     else if (parse.next == CELL                   ) result = genParseCell              (parse);
-    else if (parse.next == ITEMS                  ) result = genParseItems             (parse);
+    else if (parse.next == LIST                   ) result = genParseList              (parse);
     else if (parse.next == SELECT                 ) result = genParseSelect            (parse);
     else if (parse.next == LIST_COUNT             ) result = genParseListCount         (parse);
     else if (parse.next == CONTAINS               ) result = genParseListContains      (parse);
     else if (parse.next == IF_ELSE                ) result = genParseIfElse            (parse);
-    else if (parse.next == START                  ) result = genParseStart             (parse);
+    else if (parse.next == FEEDBACK               ) result = genParseStart          (parse);
     else if (parse.next == REPEAT                 ) result = genParseRepeat            (parse);
     else if (parse.next == CACHE                  ) result = genParseCache             (parse);
     else if (parse.next == DEFINE                 ) result = genParseDefine            (parse);

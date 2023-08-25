@@ -56,12 +56,12 @@ function genParseListValue(parse)
 
 
 
-function genParseList(parse)
+function genParseJoin(parse)
 {
     const [, nodeId, options, ignore] = genParseNodeStart(parse);
 
 
-    const list = new GList(nodeId, options);
+    const list = new GJoin(nodeId, options);
 
     
     let nInputs = 0;
@@ -416,12 +416,12 @@ function genParseCell(parse)
 
 
 
-function genParseItems(parse)
+function genParseList(parse)
 {
     const [, nodeId, options, ignore] = genParseNodeStart(parse);
 
 
-    const items = new GItems(nodeId, options);
+    const list = new GList(nodeId, options);
 
     
     let nInputs = -1;
@@ -434,12 +434,12 @@ function genParseItems(parse)
 
 
     if (parse.settings.logRequests) 
-        logReq(items, parse, ignore, nInputs);
+        logReq(list, parse, ignore, nInputs);
 
 
     if (ignore) 
     {
-        genParseNodeEnd(parse, items);
+        genParseNodeEnd(parse, list);
         return parse.parsedNodes.find(n => n.nodeId == nodeId);
     }
 
@@ -448,14 +448,14 @@ function genParseItems(parse)
 
 
     if (nInputs == 1)
-        items.input = genParse(parse);
+        list.input = genParse(parse);
 
 
     parse.nTab--;
 
 
-    genParseNodeEnd(parse, items);
-    return items;
+    genParseNodeEnd(parse, list);
+    return list;
 }
 
 
@@ -671,7 +671,7 @@ function genParseStart(parse)
     const [, nodeId, options, ignore] = genParseNodeStart(parse);
 
 
-    const start = new GStart(nodeId, options);
+    const feedback = new GStart(nodeId, options);
 
 
     let nInputs = -1;
@@ -684,12 +684,12 @@ function genParseStart(parse)
 
 
     if (parse.settings.logRequests) 
-        logReq(start, parse, ignore, nInputs);
+        logReq(feedback, parse, ignore, nInputs);
 
 
     if (ignore) 
     {
-        genParseNodeEnd(parse, start);
+        genParseNodeEnd(parse, feedback);
         return parse.parsedNodes.find(n => n.nodeId == nodeId);
     }
 
@@ -698,16 +698,16 @@ function genParseStart(parse)
 
 
     if (nInputs == 1)
-        start.input = genParse(parse);
+        feedback.input = genParse(parse);
 
-    start.feedback = genParse(parse);
+    feedback.feedback = genParse(parse);
 
 
     parse.nTab--;
 
 
-    genParseNodeEnd(parse, start);
-    return start;
+    genParseNodeEnd(parse, feedback);
+    return feedback;
 }
 
 

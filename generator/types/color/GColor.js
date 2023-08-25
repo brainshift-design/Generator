@@ -58,7 +58,7 @@ extends GOperator1
 
             
             if (   input.isValid()
-                && this.input.type != START)
+                && this.input.type != FEEDBACK)
             {
                 if (this.options.enabled)
                 {
