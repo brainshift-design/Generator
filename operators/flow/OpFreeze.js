@@ -5,7 +5,7 @@ extends OperatorBase
     {
         super(FREEZE, 'freeze', 'freeze', iconFreeze);
 
-        this.cached      = false;
+        //this.cached      = false;
         this.canDisable  = true;
         this.iconOffsetY = 1;
 
