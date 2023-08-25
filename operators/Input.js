@@ -216,6 +216,23 @@ extends EventTarget
 
 
 
+    isLoop()
+    {
+        if (   this.param
+            && this.param.id  == 'loop'
+            && this.node.type == REPEAT)
+            return true;
+
+        if (!this.param
+            && this.node.type == LIST
+            && this.node.outputs[0].connectedInputs.find(i => i.isLoop()))
+            return true;
+
+        return false;
+    }
+
+
+
     updateMeasureData()
     {
         this.measureData = 

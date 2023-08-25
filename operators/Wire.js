@@ -143,7 +143,10 @@ class Wire
         }
 
 
-        if (output)
+        if (this.isReset)
+            return rgb_a(rgbFromType(ANY_VALUE, true));
+
+        else if (output)
             return output.wireColor;
 
         else if (input)
@@ -484,7 +487,13 @@ class Wire
     updateStyle()
     {
         const conn  = this.connection;
-        let   color = rgb_a(this.getColor());
+
+        this.isReset = 
+               conn.input 
+            && conn.input.isLoop();
+
+
+        let color = rgb_a(this.getColor());
 
 
         const l = rgb2hclok(color)[2];
@@ -623,7 +632,8 @@ class Wire
         const dash = Math.max(1.5, 2.7 * graph.currentPage.zoom);
 
         this.curve.style.strokeDasharray = 
-            unknown 
+               unknown 
+            || this.isReset
             ? dash + ' ' + dash 
             : '0';
     
