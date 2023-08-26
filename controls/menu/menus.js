@@ -571,8 +571,7 @@ menuFlow = new Menu('Flow', true, false);
                                new MenuItem('Interpolate',   'Interpolate color', {icon: iconColorInterpolate, callback: e => actionManager.do(getCreateNodeAction(COLOR_INTERPOLATE, btnColor.div, getCreateOptions(e)))}),
         menuItemColorBlend   = new MenuItem('Blend',         null,                {icon: iconColorBlend,       callback: e => actionManager.do(getCreateNodeAction(COLOR_BLEND,       btnColor.div, getCreateOptions(e)))}),
         menuItemColorSep1    = new MenuItem('',              null,                {separator: true}),
-                               new MenuItem('Web contrast',  null,                {icon: iconWebContrast,      callback: e => actionManager.do(getCreateNodeAction(COLOR_CONTRAST,    btnColor.div, getCreateOptions(e)))}),
-                               new MenuItem('',              null,                {separator: true}),
+                               new MenuItem('Contrast',      null,                {icon: iconWebContrast,      callback: e => actionManager.do(getCreateNodeAction(COLOR_CONTRAST,    btnColor.div, getCreateOptions(e)))}),
         menuItemColorblind   = new MenuItem('Colorblind',    null,                {icon: iconColorblind,       callback: e => actionManager.do(getCreateNodeAction(COLORBLIND,        btnColor.div, getCreateOptions(e)))})]);
 
     menuColor.init = () => 

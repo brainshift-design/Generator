@@ -91540,8 +91540,7 @@ menuFlow = new Menu('Flow', true, false);
                                new MenuItem('Interpolate',   'Interpolate color', {icon: iconColorInterpolate, callback: e => actionManager.do(getCreateNodeAction(COLOR_INTERPOLATE, btnColor.div, getCreateOptions(e)))}),
         menuItemColorBlend   = new MenuItem('Blend',         null,                {icon: iconColorBlend,       callback: e => actionManager.do(getCreateNodeAction(COLOR_BLEND,       btnColor.div, getCreateOptions(e)))}),
         menuItemColorSep1    = new MenuItem('',              null,                {separator: true}),
-                               new MenuItem('Web contrast',  null,                {icon: iconWebContrast,      callback: e => actionManager.do(getCreateNodeAction(COLOR_CONTRAST,    btnColor.div, getCreateOptions(e)))}),
-                               new MenuItem('',              null,                {separator: true}),
+                               new MenuItem('Contrast',      null,                {icon: iconWebContrast,      callback: e => actionManager.do(getCreateNodeAction(COLOR_CONTRAST,    btnColor.div, getCreateOptions(e)))}),
         menuItemColorblind   = new MenuItem('Colorblind',    null,                {icon: iconColorblind,       callback: e => actionManager.do(getCreateNodeAction(COLORBLIND,        btnColor.div, getCreateOptions(e)))})]);
 
     menuColor.init = () => 
@@ -116657,9 +116656,9 @@ extends OpColorBase
             const mDisplay     = valM >= 1 ? 'block' : 'none';
             const mBorderStyle = valM == 2 ? 'solid' : 'dashed';
 
-            this.ringM.style.width        = '8px';
-            this.ringM.style.height       = '8px';
-            this.ringM.style.borderRadius = '8px';
+            this.ringM.style.width        = '9px';
+            this.ringM.style.height       = '9px';
+            this.ringM.style.borderRadius = '9px';
             this.ringM.style.border       = '1.5px solid ' + ringStyle;
             this.ringM.style.background   = 'none';
             this.ringM.style.display      = mDisplay;

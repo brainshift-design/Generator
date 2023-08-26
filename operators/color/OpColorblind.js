@@ -197,9 +197,9 @@ extends OpColorBase
             const mDisplay     = valM >= 1 ? 'block' : 'none';
             const mBorderStyle = valM == 2 ? 'solid' : 'dashed';
 
-            this.ringM.style.width        = '8px';
-            this.ringM.style.height       = '8px';
-            this.ringM.style.borderRadius = '8px';
+            this.ringM.style.width        = '9px';
+            this.ringM.style.height       = '9px';
+            this.ringM.style.borderRadius = '9px';
             this.ringM.style.border       = '1.5px solid ' + ringStyle;
             this.ringM.style.background   = 'none';
             this.ringM.style.display      = mDisplay;
