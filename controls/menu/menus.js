@@ -41,6 +41,7 @@ var menuNumber;
 var menuSets;
 var menuString;
 var menuConvert;
+var menuTextData;
 var menuColor;
 var menuColorStyle;
 var menuLayer;
@@ -143,7 +144,7 @@ var menuItemNull;
 var menuItemCache;
 var menuItemFreeze;
 var menuItemTimer;
-var menuFlowSep5;
+var menuTextDataSep1;
 var menuItemAnimate;  
 var menuItemFetch;
 var menuItemTextFile;
@@ -418,10 +419,7 @@ menuFlow = new Menu('Flow', true, false);
         //menuItemCache    = new MenuItem('Cache',           null, {icon: iconCache,     createType: CACHE,            callback: e => actionManager.do(getCreateNodeAction(CACHE,           btnFlow.div, getCreateOptions(e)))}),
                            new MenuItem('',                  null, {separator: true}),
         menuItemTimer    = new MenuItem('Timer ',            null, {icon: iconTimer,     createType: TIMER,            callback: e => actionManager.do(getCreateNodeAction(TIMER,           btnFlow.div, getCreateOptions(e)))}),
-        menuItemAnimate  = new MenuItem('Animate',           null, {icon: iconAnimate,   createType: NUMBER_ANIMATE,   callback: e => actionManager.do(getCreateNodeAction(NUMBER_ANIMATE,  btnFlow.div, getCreateOptions(e)))}),
-        menuFlowSep5     = new MenuItem('',                  null, {separator: true}),
-        menuItemFetch    = new MenuItem('Fetch',             null, {icon: iconTextFetch, createType: TEXT_FETCH,       callback: e => actionManager.do(getCreateNodeAction(TEXT_FETCH,      btnFlow.div, getCreateOptions(e)))}),
-        menuItemTextFile = new MenuItem('Text file',         null, {icon: iconTextFile,  createType: TEXT_FILE,        callback: e => actionManager.do(getCreateNodeAction(TEXT_FILE,       btnFlow.div, getCreateOptions(e)))})]);
+        menuItemAnimate  = new MenuItem('Animate',           null, {icon: iconAnimate,   createType: NUMBER_ANIMATE,   callback: e => actionManager.do(getCreateNodeAction(NUMBER_ANIMATE,  btnFlow.div, getCreateOptions(e)))})]);
     
 
     menuData = new Menu('Data', true, false);
@@ -517,6 +515,15 @@ menuFlow = new Menu('Flow', true, false);
         new MenuItem('Unicode to character', null, {icon: iconTextCharacter, createType: TEXT_CHAR,      callback: e => actionManager.do(getCreateNodeAction(TEXT_CHAR,      btnText.div, getCreateOptions(e)))})]);
     
 
+    menuTextData = new Menu('Data', true, false);
+    menuTextData.addItems([
+        menuItemFetch    = new MenuItem('Fetch',      null, {icon: iconTextFetch, createType: TEXT_FETCH,       callback: e => actionManager.do(getCreateNodeAction(TEXT_FETCH,      btnText.div, getCreateOptions(e)))}),
+        menuItemTextFile = new MenuItem('Text file',  null, {icon: iconTextFile,  createType: TEXT_FILE,        callback: e => actionManager.do(getCreateNodeAction(TEXT_FILE,       btnText.div, getCreateOptions(e)))}),
+        menuTextDataSep1 = new MenuItem('',           null, {separator: true}),
+                           new MenuItem('Parse CSV',  null, {icon: iconTextCSV,       createType: TEXT_CSV,       callback: e => actionManager.do(getCreateNodeAction(TEXT_CSV,      btnText.div, getCreateOptions(e)))}),
+        menuItemTextJson = new MenuItem('Parse JSON', null, {icon: iconTextJson,      createType: TEXT_JSON,      callback: e => actionManager.do(getCreateNodeAction(TEXT_JSON,     btnText.div, getCreateOptions(e)))})]);
+    
+
     menuNumber = new Menu('Numbers', true, false);
     menuNumber.addItems([
                          new MenuItem('Number',        null,                 {icon: iconNumber,      createType: NUMBER, callback: e => actionManager.do(getCreateNodeAction(NUMBER,             btnNumber.div, getCreateOptions(e)))}),
@@ -549,10 +556,8 @@ menuFlow = new Menu('Flow', true, false);
                            new MenuItem('Replace',    null,            {icon: iconTextReplace,   createType: TEXT_REPLACE,   callback: e => actionManager.do(getCreateNodeAction(TEXT_REPLACE,   btnText.div, getCreateOptions(e)))}),
                            new MenuItem('Pad',        null,            {icon: iconTextPad,       createType: TEXT_PAD,       callback: e => actionManager.do(getCreateNodeAction(TEXT_PAD,       btnText.div, getCreateOptions(e)))}),
                            new MenuItem('',           null,            {separator: true}),
-                           new MenuItem('Parse CSV',  null,            {icon: iconTextCSV,       createType: TEXT_CSV,       callback: e => actionManager.do(getCreateNodeAction(TEXT_CSV,       btnText.div, getCreateOptions(e)))}),
-        menuItemTextJson = new MenuItem('Parse JSON', null,            {icon: iconTextJson,      createType: TEXT_JSON,      callback: e => actionManager.do(getCreateNodeAction(TEXT_JSON,      btnText.div, getCreateOptions(e)))}),
-                           new MenuItem('',           null,            {separator: true}),
-                           new MenuItem('Convert',    null,            {icon: iconNumberToText, childMenu: menuConvert})]);
+                           new MenuItem('Convert',    null,            {icon: iconNumberToText, childMenu: menuConvert}),
+                           new MenuItem('Data',       null,            {icon: iconTextFile,     childMenu: menuTextData})]);
 
 
     menuColorStyle = new Menu('Color style', true, false);
