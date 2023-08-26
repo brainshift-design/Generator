@@ -73,7 +73,10 @@ extends GShape
         }
 
              
-        this.setUpdateValues(parse, [['value', this.value]]);
+        this.setUpdateValues(parse, 
+        [
+            ['value', this.value]
+        ]);
 
 
         await this.evalShapeBase(parse);
@@ -101,7 +104,7 @@ extends GShape
 
    async evalObjects(parse, options = {})
    {
-       if (!this.options.enabled)
+        if (!this.options.enabled)
            return;
            
            

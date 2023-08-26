@@ -77,6 +77,10 @@ extends GOperator
             this.value = NumberValue.NaN.copy();
 
 
+        // if (this.nodeId == 'sequence3')
+        //     console.log('this.value =', this.value);
+
+
         this.setUpdateValues(parse,
         [
             ['start', start],
@@ -104,8 +108,7 @@ extends GOperator
     isValid()
     {
         return this.start && this.start.isValid()
-            && this.step  && this.step .isValid()
-            && (!this.end || this.end.isValid());
+            && this.step  && this.step .isValid();
     }
 
 

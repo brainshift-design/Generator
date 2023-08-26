@@ -30,6 +30,7 @@ var currentSessionId = '';
 
 //uiRemoveConnsToNodes(['num3']);
 //uiRemoveSavedNodesAndConns(['color']);
+
 //uiRemovePluginDataFromAllLocalStyles();
 
 //uiCleanAllIds();
@@ -144,7 +145,7 @@ function createSessionId()
 
 function subscribed()
 {
-    return currentSessionId == createSessionId();
+    return true;//currentSessionId == createSessionId();
 }
 
 

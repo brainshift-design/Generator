@@ -90,17 +90,21 @@ extends GOperator1
         if (!this.dashes) this.dashes = this.value.dashes.copy();
 
 
+        // if (this.nodeId == 'stroke')
+        //     console.log('this.value =', this.value);
+
+
         this.setUpdateValues(parse,
-            [
-                ['value',  this.value],
-                ['fills',  fills     ],
-                ['weight', weight    ],
-                ['fit',    fit       ],
-                ['join',   join      ],
-                ['miter',  miter     ],
-                ['cap',    cap       ],
-                ['dashes', dashes    ]
-            ]);
+        [
+            ['value',  this.value],
+            ['fills',  fills     ],
+            ['weight', weight    ],
+            ['fit',    fit       ],
+            ['join',   join      ],
+            ['miter',  miter     ],
+            ['cap',    cap       ],
+            ['dashes', dashes    ]
+        ]);
 
 
         this.validate();

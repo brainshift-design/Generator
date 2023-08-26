@@ -148,7 +148,7 @@
 
 
 
-/* #subscriptionInputBack
+#subscriptionInputBack
 {
     font-family:   'Roboto Mono';
     font-size:      16px;
@@ -169,11 +169,11 @@
     pointer-events: none;
 
     box-shadow:  0 0 0 1px red inset; 
-} */
+}
 
 
 
-/* #subscriptionInput
+#subscriptionInput
 {
     font-family:   'Roboto Mono';
     font-size:      16px;
@@ -194,13 +194,26 @@
     top:            114px;
 
     transform:      translateX(-50%);
-} */
+}
 
 
 #subscriptionInput:disabled
 {
     color: var(--figma-color-bg-disabled);
 }
+
+
+#validateProductKeyButton
+{
+    width:          138px;
+
+    position:       absolute;
+    left:           50%;
+    transform:      translateX(-50%);
+
+    top:            147px;
+}
+
 
 
 #subscribeWebsite

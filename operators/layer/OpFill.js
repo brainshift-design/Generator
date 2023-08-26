@@ -141,9 +141,9 @@ extends OpColorBase
 
         const value = values[paramIds.findIndex(id => id == 'value')];
 
-        // this.paramColor  .setValue(value.color,   false, true, false);
-        // this.paramOpacity.setValue(value.opacity, false, true, false);
-        // this.paramBlend  .setValue(value.blend,   false, true, false);
+        this.paramColor  .setValue(value.color,   false, true, false);
+        this.paramOpacity.setValue(value.opacity, false, true, false);
+        this.paramBlend  .setValue(value.blend,   false, true, false);
  
         this._color = 
             value.color.isValid()
