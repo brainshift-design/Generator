@@ -15,10 +15,10 @@ function createLicenseKey(license)
 
 
 
-function createLicenseFromData(userId, tier, lastDate) // DDMMYYYY
+function createLicenseFromData(email, tier, lastDate) // DDMMYYYY
 {
     return createLicense(
-        userId,
+        email,
         tier,
         parseInt(lastDate.substring(0, 2)),
         parseInt(lastDate.substring(2, 4)),
@@ -27,10 +27,10 @@ function createLicenseFromData(userId, tier, lastDate) // DDMMYYYY
 
 
 
-function createLicense(userId, tier, lastDay, lastMonth, lastYear)
+function createLicense(email, tier, lastDay, lastMonth, lastYear)
 {
     return {
-        userId:    userId,
+        email:     email,
         tier:      tier, // 0 = free trial, 1+ = subscription
         lastDay:   lastDay,
         lastMonth: lastMonth,
@@ -42,7 +42,7 @@ function createLicense(userId, tier, lastDay, lastMonth, lastYear)
 
 function createLicenseString(license)
 {
-    return license.userId
+    return prepareEmail(license.email)
          + createLicenseInfoString(license);
 }
 
@@ -75,9 +75,9 @@ function createLicenseDataString(license)
     }
 
 
-    const compData = (comp1 + comp2 + comp3).substring(0, license.userId.length)
+    const compData = (comp1 + comp2 + comp3).substring(0, license.email.length)
 
-    return compactLicenseDataString(license.userId, compData);
+    return compactLicenseDataString(license.email, compData);
 }
 
 
@@ -99,17 +99,17 @@ function getLicenseCompData(license)
     }
 
 
-    return (comp1 + comp2 + comp3).substring(0, license.userId.length)
+    return (comp1 + comp2 + comp3).substring(0, license.email.length)
 }
 
 
 
-function compactLicenseDataString(userId, str)
+function compactLicenseDataString(email, str)
 {
-    let comp = new Uint8Array(userId.length);
+    let comp = new Uint8Array(email.length);
 
     for (let i = 0; i < comp.length; i++)
-        comp[i] = (userId.charCodeAt(i) ^ str.charCodeAt(i)) % 0x100;
+        comp[i] = (email.charCodeAt(i) ^ str.charCodeAt(i)) % 0x100;
 
     return arrayToBase32(comp);
 }
@@ -145,15 +145,19 @@ function hashLicenseString(str, nBytes)
 
 
 
-function validateLicense(userId, licenseKey)
+function validateLicense(email, licenseKey)
 {
+    if (email.trim() == '')
+        return null;
+
+
     const now = new Date(Date.now());
 
 
     for (let tier = 0; tier <= 1; tier++)
     {
         const license = createLicense(
-            userId,
+            email,
             tier,
             now.getDate(),
             now.getMonth()+1, // months start at 0
@@ -207,7 +211,7 @@ function validateLicenseKey(license, key, rec = false)
 
         if (lastIndex > 0)
         {
-            lowerKey = replaceInStringAt(lowerKey, lowerKey.length-1, base32chars[lastIndex-1]);
+            lowerKey = lowerKey.replaceAt(lowerKey.length-1, base32chars[lastIndex-1]);
 
             if (validateLicenseKey(license, lowerKey, true))
                 return false; // guard against the last bit
@@ -217,3 +221,50 @@ function validateLicenseKey(license, key, rec = false)
 
     return valid;
 }
+
+
+
+function prepareEmail(email)
+{
+    for (let i = email.length, j = 0; i < 18; i++, j++)
+        email += String(j % 10);
+
+
+    var cp = [];
+    for (let i = 0; i < 18; i++)
+        cp.push(0);
+
+    
+    let j = 0;
+    while (j < email.length)
+    {
+        for (let i = 0; i < 18 && j*18+i < email.length; i++)
+            cp[i] = cp[i] ^ email.codePointAt(j*18+i);
+
+        j++;
+    }
+
+
+    email = '';
+    for (let i = 0; i < 18; i++)
+        email += String.fromCodePoint(cp[i]);
+
+
+    console.log('email =', email);
+    return email;
+}
+
+
+
+function todayPlus(months = 0) 
+{
+    let date  = new Date();
+
+    date.setUTCMonth(date.getUTCMonth() + months);
+    
+    const day   = String(date.getUTCDate()).padStart(2, '0');
+    const month = String(date.getUTCMonth() + 1).padStart(2, '0');
+    const year  = date.getUTCFullYear();
+  
+    return day + month + year;
+  }

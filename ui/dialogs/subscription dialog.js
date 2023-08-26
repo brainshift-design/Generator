@@ -1,4 +1,5 @@
-var subscription            = NULL;
+var productKey              = NULL;
+
 var checkoutTimer           = -1;
 var subscriptionDialogShown = false;
 

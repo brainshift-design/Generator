@@ -2781,12 +2781,12 @@ function clearChildren(parent)
 
 
 
-function replaceInStringAt(str, index, replace)
-{
-    return str.substring(0, index) 
-         + replace 
-         + str.substring(index + replace.length);
-}
+// function replaceInStringAt(str, index, replace)
+// {
+//     return str.substring(0, index) 
+//          + replace 
+//          + str.substring(index + replace.length);
+// }
 
 
 
@@ -3169,6 +3169,15 @@ function regamma(rgb, cs = sRGB)
     return [ cs.regamma(rgb[0]),
              cs.regamma(rgb[1]),
              cs.regamma(rgb[2]) ];
+}
+
+
+
+String.prototype.replaceAt = function(index, replacement) 
+{
+    return this.substring(0, index) 
+         + replacement 
+         + this.substring(index+1);// + replacement.length);
 }
 
 

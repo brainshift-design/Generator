@@ -199,16 +199,16 @@ Operator.prototype.updateMeasureData = function()
 {
     this.measureData = 
     {
-        divBounds:          boundingRect(this.div),
-        divOffset:          offsetRect  (this.div),
-        innerOffset:        offsetRect  (this.inner),
-        paramOffset:        offsetRect  (this.paramHolder),
-        headerOffset:       offsetRect  (this.header),
-        labelWrapperBounds: boundingRect(this.labelWrapper),
-        labelWrapperOffset: offsetRect  (this.labelWrapper),
-        labelBounds:        boundingRect(this.label),
-        labelOffset:        offsetRect  (this.label),
-        disabledOffset:     offsetRect  (this.divDisabled),
+        divBounds:          boundingRect(this.div           ),
+        divOffset:          offsetRect  (this.div           ),
+        innerOffset:        offsetRect  (this.inner         ),
+        paramOffset:        offsetRect  (this.paramHolder   ),
+        headerOffset:       offsetRect  (this.header        ),
+        labelWrapperBounds: boundingRect(this.labelWrapper  ),
+        labelWrapperOffset: offsetRect  (this.labelWrapper  ),
+        labelBounds:        boundingRect(this.label         ),
+        labelOffset:        offsetRect  (this.label         ),
+        disabledOffset:     offsetRect  (this.divDisabled   ),
         subscribeOffset:    offsetRect  (this.subscribeLabel)
     };
 
