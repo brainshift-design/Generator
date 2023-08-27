@@ -312,25 +312,27 @@ function updateMenuItemShowOperationResults()
 
 function enableFeatures(sub, beta = false)
 {
-    enableSubscribedMenuItem(menuItemSaveToFile,   sub);
-    enableSubscribedMenuItem(menuItemTimer,        sub);
-    enableSubscribedMenuItem(menuItemAnimate,      sub);
-    enableSubscribedMenuItem(menuItemFetch,        sub);
-    enableSubscribedMenuItem(menuItemTextFile,     sub);
-    enableSubscribedMenuItem(menuItemDateTime,     sub);
-    enableSubscribedMenuItem(menuItemSolve,        sub);
-    enableSubscribedMenuItem(menuItemTextJson,     sub);
-    enableSubscribedMenuItem(menuItemCorrectColor, sub);
-    enableSubscribedMenuItem(menuItemConvertToP3,  sub);
-    enableSubscribedMenuItem(menuItemShapeRender,  sub);
+    enableMenuItem(menuItemSaveToFile,   sub);
+    enableMenuItem(menuItemTimer,        sub);
+    enableMenuItem(menuItemAnimate,      sub);
+    enableMenuItem(menuItemFetch,        sub);
+    enableMenuItem(menuItemTextFile,     sub);
+    enableMenuItem(menuItemDateTime,     sub);
+    enableMenuItem(menuItemSolve,        sub);
+    enableMenuItem(menuItemTextJson,     sub);
+    enableMenuItem(menuItemCorrectColor, sub);
+    enableMenuItem(menuItemConvertToP3,  sub);
+    enableMenuItem(menuItemShapeRender,  sub);
 
     graph.nodes.forEach(n => n.updateSubscribeStatus(sub));
 }
 
 
 
-function enableSubscribedMenuItem(menuItem, sub)
+function enableMenuItem(menuItem, sub)
 {
+    if (!menuItem) return;
+
     menuItem.enabled   =  sub;  
     menuItem.subscribe = !sub;    
     menuItem.update();

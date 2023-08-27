@@ -113,7 +113,7 @@ extends GShape
             let   w = this.value.width  .value;
             let   h = this.value.height .value;
             const r = Math.max(0, this.value.round.value);
-            const c = this.value.corners.value;
+            const c = Math.max(3, Math.floor(this.value.corners.value));
 
 
             [x, y, w, h, , ] = validateObjectRect(x, y, w, h);

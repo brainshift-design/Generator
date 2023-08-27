@@ -125,7 +125,7 @@ extends GShape
             let   w = this.value.width .value;
             let   h = this.value.height.value;
             const r = Math.max(0, this.value.round.value);
-            const p = this.value.points.value;
+            const p = Math.max(3, Math.floor(this.value.points.value));
             const c = this.value.convex.value;
 
 

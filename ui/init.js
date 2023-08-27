@@ -154,27 +154,29 @@ function validateInit(eulaRead)
 {
     try
     {
-        checkSubActive().then(subActive => 
-        {
-            if (subActive) 
-            {
-                currentSessionId = createSessionId();
-                //initGenerator();
-            }
+        // checkSubActive().then(subActive => 
+        // {
+        //     if (subActive) 
+        //     {
+        //         currentSessionId = createSessionId();
+        //         //initGenerator();
+        //     }
 
-            // else checkTrialExists().then(trialExists => 
-            // {
-            //     if (trialExists)
-            //         initGenerator();
-            //     else
-            //         showEulaDialog();
-            // });
+        //     // else checkTrialExists().then(trialExists => 
+        //     // {
+        //     //     if (trialExists)
+        //     //         initGenerator();
+        //     //     else
+        //     //         showEulaDialog();
+        //     // });
 
-            if (!eulaRead)
-                showEulaDialog();
-            else
-                initGenerator();
-        });
+        //     if (!eulaRead)
+        //         showEulaDialog();
+        //     else
+        //         initGenerator();
+        // });
+
+        initGenerator();
     }
     catch (e)
     {

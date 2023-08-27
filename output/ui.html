@@ -9873,25 +9873,27 @@ function updateMenuItemShowOperationResults()
 
 function enableFeatures(sub, beta = false)
 {
-    enableSubscribedMenuItem(menuItemSaveToFile,   sub);
-    enableSubscribedMenuItem(menuItemTimer,        sub);
-    enableSubscribedMenuItem(menuItemAnimate,      sub);
-    enableSubscribedMenuItem(menuItemFetch,        sub);
-    enableSubscribedMenuItem(menuItemTextFile,     sub);
-    enableSubscribedMenuItem(menuItemDateTime,     sub);
-    enableSubscribedMenuItem(menuItemSolve,        sub);
-    enableSubscribedMenuItem(menuItemTextJson,     sub);
-    enableSubscribedMenuItem(menuItemCorrectColor, sub);
-    enableSubscribedMenuItem(menuItemConvertToP3,  sub);
-    enableSubscribedMenuItem(menuItemShapeRender,  sub);
+    enableMenuItem(menuItemSaveToFile,   sub);
+    enableMenuItem(menuItemTimer,        sub);
+    enableMenuItem(menuItemAnimate,      sub);
+    enableMenuItem(menuItemFetch,        sub);
+    enableMenuItem(menuItemTextFile,     sub);
+    enableMenuItem(menuItemDateTime,     sub);
+    enableMenuItem(menuItemSolve,        sub);
+    enableMenuItem(menuItemTextJson,     sub);
+    enableMenuItem(menuItemCorrectColor, sub);
+    enableMenuItem(menuItemConvertToP3,  sub);
+    enableMenuItem(menuItemShapeRender,  sub);
 
     graph.nodes.forEach(n => n.updateSubscribeStatus(sub));
 }
 
 
 
-function enableSubscribedMenuItem(menuItem, sub)
+function enableMenuItem(menuItem, sub)
 {
+    if (!menuItem) return;
+
     menuItem.enabled   =  sub;  
     menuItem.subscribe = !sub;    
     menuItem.update();
@@ -34177,7 +34179,7 @@ extends GShape
             let   w = this.value.width  .value;
             let   h = this.value.height .value;
             const r = Math.max(0, this.value.round.value);
-            const c = this.value.corners.value;
+            const c = Math.max(3, Math.floor(this.value.corners.value));
 
 
             [x, y, w, h, , ] = validateObjectRect(x, y, w, h);
@@ -34390,7 +34392,7 @@ extends GShape
             let   w = this.value.width .value;
             let   h = this.value.height.value;
             const r = Math.max(0, this.value.round.value);
-            const p = this.value.points.value;
+            const p = Math.max(3, Math.floor(this.value.points.value));
             const c = this.value.convex.value;
 
 
@@ -80428,7 +80430,7 @@ extends GShape
             let   w = this.value.width  .value;
             let   h = this.value.height .value;
             const r = Math.max(0, this.value.round.value);
-            const c = this.value.corners.value;
+            const c = Math.max(3, Math.floor(this.value.corners.value));
 
 
             [x, y, w, h, , ] = validateObjectRect(x, y, w, h);
@@ -80641,7 +80643,7 @@ extends GShape
             let   w = this.value.width .value;
             let   h = this.value.height.value;
             const r = Math.max(0, this.value.round.value);
-            const p = this.value.points.value;
+            const p = Math.max(3, Math.floor(this.value.points.value));
             const c = this.value.convex.value;
 
 
@@ -85528,25 +85530,27 @@ function updateMenuItemShowOperationResults()
 
 function enableFeatures(sub, beta = false)
 {
-    enableSubscribedMenuItem(menuItemSaveToFile,   sub);
-    enableSubscribedMenuItem(menuItemTimer,        sub);
-    enableSubscribedMenuItem(menuItemAnimate,      sub);
-    enableSubscribedMenuItem(menuItemFetch,        sub);
-    enableSubscribedMenuItem(menuItemTextFile,     sub);
-    enableSubscribedMenuItem(menuItemDateTime,     sub);
-    enableSubscribedMenuItem(menuItemSolve,        sub);
-    enableSubscribedMenuItem(menuItemTextJson,     sub);
-    enableSubscribedMenuItem(menuItemCorrectColor, sub);
-    enableSubscribedMenuItem(menuItemConvertToP3,  sub);
-    enableSubscribedMenuItem(menuItemShapeRender,  sub);
+    enableMenuItem(menuItemSaveToFile,   sub);
+    enableMenuItem(menuItemTimer,        sub);
+    enableMenuItem(menuItemAnimate,      sub);
+    enableMenuItem(menuItemFetch,        sub);
+    enableMenuItem(menuItemTextFile,     sub);
+    enableMenuItem(menuItemDateTime,     sub);
+    enableMenuItem(menuItemSolve,        sub);
+    enableMenuItem(menuItemTextJson,     sub);
+    enableMenuItem(menuItemCorrectColor, sub);
+    enableMenuItem(menuItemConvertToP3,  sub);
+    enableMenuItem(menuItemShapeRender,  sub);
 
     graph.nodes.forEach(n => n.updateSubscribeStatus(sub));
 }
 
 
 
-function enableSubscribedMenuItem(menuItem, sub)
+function enableMenuItem(menuItem, sub)
 {
+    if (!menuItem) return;
+
     menuItem.enabled   =  sub;  
     menuItem.subscribe = !sub;    
     menuItem.update();
@@ -128539,27 +128543,29 @@ function validateInit(eulaRead)
 {
     try
     {
-        checkSubActive().then(subActive => 
-        {
-            if (subActive) 
-            {
-                currentSessionId = createSessionId();
-                //initGenerator();
-            }
+        // checkSubActive().then(subActive => 
+        // {
+        //     if (subActive) 
+        //     {
+        //         currentSessionId = createSessionId();
+        //         //initGenerator();
+        //     }
 
-            // else checkTrialExists().then(trialExists => 
-            // {
-            //     if (trialExists)
-            //         initGenerator();
-            //     else
-            //         showEulaDialog();
-            // });
+        //     // else checkTrialExists().then(trialExists => 
+        //     // {
+        //     //     if (trialExists)
+        //     //         initGenerator();
+        //     //     else
+        //     //         showEulaDialog();
+        //     // });
 
-            if (!eulaRead)
-                showEulaDialog();
-            else
-                initGenerator();
-        });
+        //     if (!eulaRead)
+        //         showEulaDialog();
+        //     else
+        //         initGenerator();
+        // });
+
+        initGenerator();
     }
     catch (e)
     {
