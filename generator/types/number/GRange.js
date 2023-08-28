@@ -55,7 +55,7 @@ extends GOperator
         const iteration = repeat ? repeat.iteration : 0;
 
 
-        let delta = end.toNumber() - start.toNumber();
+        let delta = end.value - start.value;
 
         let step = 
                repeat
@@ -94,7 +94,7 @@ extends GOperator
 
             case 1:
             {
-                const b = bias.toNumber() / 50;
+                const b = bias.value / 50;
 
                 f = 
                     b >= 0
@@ -105,7 +105,7 @@ extends GOperator
             }
             case 2:
             {
-                const b = bias.toNumber() / 50;
+                const b = bias.value / 50;
 
                      if (b >= 0 && f >= 0.5) f = 1 - Math.pow((1-f)*2, 1+b) / 2;
                 else if (b >= 0 && f <  0.5) f = Math.pow(f*2, 1+b) / 2;
@@ -117,7 +117,7 @@ extends GOperator
 
 
         this.value = new NumberValue(
-            start.toNumber() + startOffset + delta * f,
+            start.value + startOffset + delta * f,
             Math.max(start.decimals, end.decimals));
 
         this.setUpdateValues(parse,

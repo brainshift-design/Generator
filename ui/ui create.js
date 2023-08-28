@@ -76,6 +76,8 @@ function createNode(nodeType, creatingButton = null, createdNodeId = -1, options
         case NUMBER_COS:              node = new OpCosine();            break;
         case NUMBER_TAN:              node = new OpTangent();           break;
 
+        case CONVERT_ANGLE:           node = new OpConvertAngle();      break;
+
         case TEXT:                    node = new OpText();              break;
         case TEXT_LENGTH:             node = new OpTextLength();        break;
         case TEXT_TRIM:               node = new OpTextTrim();          break;

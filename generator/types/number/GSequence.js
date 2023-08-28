@@ -51,7 +51,7 @@ extends GOperator
             && end
             && step)
         {
-            const value = start.toNumber() + (this.options.enabled ? step.toNumber() * this.iteration : 0);
+            const value = start.value + (this.options.enabled ? step.value * this.iteration : 0);
 
             // console.log('sequence');
 
@@ -59,14 +59,14 @@ extends GOperator
                 this.value = new NumberValue(value, Math.max(start.decimals, step.decimals));
 
             else if (end.isValid()   
-                     && (   step.toNumber() == 0
-                         || step.toNumber() >  0 && start.toNumber() < end.toNumber()
-                                                 && value < end.toNumber()
-                         || step.toNumber() <  0 && start.toNumber() > end.toNumber()
-                                                 && value > end.toNumber()))
+                     && (   step.value == 0
+                         || step.value >  0 && start.value < end.value
+                                            &&       value < end.value
+                         || step.value <  0 && start.value > end.value
+                                            &&       value > end.value))
             {
                 this.value = new NumberValue(
-                    start.toNumber() + (this.options.enabled ? step.toNumber() * this.iteration : 0),
+                    start.value + (this.options.enabled ? step.value * this.iteration : 0),
                     Math.max(start.decimals, step.decimals));
             }
 

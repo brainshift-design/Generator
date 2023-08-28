@@ -133,6 +133,7 @@ const NUMBER_SIN              = 'SIN';
 const NUMBER_COS              = 'COS';   
 const NUMBER_TAN              = 'TAN';   
 
+const CONVERT_ANGLE           = 'CNVANG';
 
 const MATH_TYPES =
 [
@@ -226,7 +227,9 @@ const NUMBER_TYPES =
     ...MATH_TYPES,
     ...NUMBER_BOOLEAN_TYPES,
     ...CONDITION_TYPES,
-    ...TRIG_TYPES
+    ...TRIG_TYPES,
+
+    CONVERT_ANGLE
 ];
 
 

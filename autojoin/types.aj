@@ -138,6 +138,8 @@
 ../generator/types/number/trigonometric/GCosine.js
 ../generator/types/number/trigonometric/GTangent.js
 
+../generator/types/number/GConvertAngle.js
+
 
 ../generator/types/text/GText.js
 ../generator/types/text/GTextLength.js

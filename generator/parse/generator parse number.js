@@ -478,6 +478,52 @@ function genParseArithmetic(parse, newNode)
 
 
 
+function genParseConvertAngle(parse)
+{
+    const [, nodeId, options, ignore] = genParseNodeStart(parse);
+
+
+    const convert = new GConvertAngle(nodeId, options);
+   
+
+    let nInputs = -1;
+    
+    if (!ignore)
+    {
+        nInputs = parseInt(parse.move());
+        consoleAssert(nInputs == 0 || nInputs == 1, 'nInputs must be [0, 1]');
+    }
+
+    
+    if (parse.settings.logRequests) 
+        logReq(convert, parse, ignore, nInputs);
+
+
+    if (ignore) 
+    {
+        genParseNodeEnd(parse, convert);
+        return parse.parsedNodes.find(n => n.nodeId == nodeId);
+    }
+
+
+    parse.nTab++;
+
+
+    if (nInputs == 1)
+        convert.input = genParse(parse);
+
+    convert.from = genParse(parse);
+
+    
+    parse.nTab--;
+
+
+    genParseNodeEnd(parse, convert);
+    return convert;
+}
+
+
+
 function genParseDefine(parse)
 {
     const [, nodeId, options, ignore] = genParseNodeStart(parse);

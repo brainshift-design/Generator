@@ -74,6 +74,7 @@
 ../operators/number/OpMinMax.js
 ../operators/number/OpLimits.js
 ../operators/number/OpConstant.js
+
 ../operators/number/OpDateTime.js
 ../operators/number/OpDefine.js
 ../operators/number/OpRange.js
@@ -118,6 +119,8 @@
 ../operators/number/trigonometric/OpSine.js
 ../operators/number/trigonometric/OpCosine.js
 ../operators/number/trigonometric/OpTangent.js
+
+../operators/number/OpConvertAngle.js
 
 
 ../operators/text/OpText.js

@@ -40,7 +40,8 @@ var menuData;
 var menuNumber;
 var menuSets;
 var menuString;
-var menuConvert;
+var menuConvertNumber;
+var menuConvertText;
 var menuTextData;
 var menuColor;
 var menuColorStyle;
@@ -505,14 +506,19 @@ menuFlow = new Menu('Flow', true, false);
         menuItemDateTime = new MenuItem('Date & time', null, {icon: iconDateTime,  createType: NUMBER_DATETIME, callback: e => actionManager.do(getCreateNodeAction(NUMBER_DATETIME, btnNumber.div, getCreateOptions(e)))})]);
         
 
-    menuConvert = new Menu('Text', true, false);
-    menuConvert.addItems([
-        new MenuItem('Text to number',       null, {icon: iconTextToNumber,  createType: TEXT_TO_NUMBER, callback: e => actionManager.do(getCreateNodeAction(TEXT_TO_NUMBER, btnText.div, getCreateOptions(e)))}),
-        new MenuItem('Text to color',        null, {icon: iconTextToColor,   createType: TEXT_TO_COLOR,  callback: e => actionManager.do(getCreateNodeAction(TEXT_TO_COLOR,  btnText.div, getCreateOptions(e)))}),
+    menuConvertNumber = new Menu('Convert number', true, false);
+    menuConvertNumber.addItems([
+        new MenuItem('Degrees ⟷ Radians', null, {icon: iconConvertAngle,  createType: CONVERT_ANGLE, callback: e => actionManager.do(getCreateNodeAction(CONVERT_ANGLE, btnNumber.div, getCreateOptions(e)))})]);
+    
+
+    menuConvertText = new Menu('Convert text', true, false);
+    menuConvertText.addItems([
+        new MenuItem('Text ⟶ Number',       null, {icon: iconTextToNumber,  createType: TEXT_TO_NUMBER, callback: e => actionManager.do(getCreateNodeAction(TEXT_TO_NUMBER, btnText.div, getCreateOptions(e)))}),
+        new MenuItem('Text ⟶ Color',        null, {icon: iconTextToColor,   createType: TEXT_TO_COLOR,  callback: e => actionManager.do(getCreateNodeAction(TEXT_TO_COLOR,  btnText.div, getCreateOptions(e)))}),
         new MenuItem('',                     null, {separator: true}),
-        new MenuItem('Number to text',       null, {icon: iconNumberToText,  createType: NUMBER_TO_TEXT, callback: e => actionManager.do(getCreateNodeAction(NUMBER_TO_TEXT, btnText.div, getCreateOptions(e)))}),
+        new MenuItem('Number ⟶ Text',       null, {icon: iconNumberToText,  createType: NUMBER_TO_TEXT, callback: e => actionManager.do(getCreateNodeAction(NUMBER_TO_TEXT, btnText.div, getCreateOptions(e)))}),
         new MenuItem('',                     null, {separator: true}),
-        new MenuItem('Unicode to character', null, {icon: iconTextCharacter, createType: TEXT_CHAR,      callback: e => actionManager.do(getCreateNodeAction(TEXT_CHAR,      btnText.div, getCreateOptions(e)))})]);
+        new MenuItem('Unicode ⟶ Character', null, {icon: iconTextCharacter, createType: TEXT_CHAR,      callback: e => actionManager.do(getCreateNodeAction(TEXT_CHAR,      btnText.div, getCreateOptions(e)))})]);
     
 
     menuTextData = new Menu('Data', true, false);
@@ -536,7 +542,8 @@ menuFlow = new Menu('Flow', true, false);
                          new MenuItem('Trigonometric', null,                 {icon: iconSine,        /*childMenu: menuTrig,     */ createType: NUMBER_TRIG,        callback: e => actionManager.do(getCreateNodeAction(NUMBER_TRIG,        btnNumber.div, getCreateOptions(e)))}),
                          new MenuItem('',              null,                 {separator: true}),
                          new MenuItem('Interpolate',   'Interpolate number', {icon: iconInterpolate, createType: NUMBER_INTERPOLATE, callback: e => actionManager.do(getCreateNodeAction(NUMBER_INTERPOLATE, btnNumber.div, getCreateOptions(e)))}),
-        menuNumberSep1 = new MenuItem('',              null,                 {separator: true}),
+                         new MenuItem('Convert',       null,                 {icon: iconConvert,     childMenu: menuConvertNumber}),
+                         menuNumberSep1 = new MenuItem('',              null,                 {separator: true}),
         menuItemSolve  = new MenuItem('Solve',         null,                 {icon: iconSolve,       createType: NUMBER_SOLVE,       callback: e => actionManager.do(getCreateNodeAction(NUMBER_SOLVE,       btnNumber.div, getCreateOptions(e)))})]);
         
     
@@ -556,7 +563,7 @@ menuFlow = new Menu('Flow', true, false);
                            new MenuItem('Replace',    null,            {icon: iconTextReplace,   createType: TEXT_REPLACE,   callback: e => actionManager.do(getCreateNodeAction(TEXT_REPLACE,   btnText.div, getCreateOptions(e)))}),
                            new MenuItem('Pad',        null,            {icon: iconTextPad,       createType: TEXT_PAD,       callback: e => actionManager.do(getCreateNodeAction(TEXT_PAD,       btnText.div, getCreateOptions(e)))}),
                            new MenuItem('',           null,            {separator: true}),
-                           new MenuItem('Convert',    null,            {icon: iconNumberToText, childMenu: menuConvert}),
+                           new MenuItem('Convert',    null,            {icon: iconConvert,      childMenu: menuConvertText}),
                            new MenuItem('Data',       null,            {icon: iconTextFile,     childMenu: menuTextData})]);
 
 
@@ -978,7 +985,8 @@ menuFlow = new Menu('Flow', true, false);
         menuNumber,
         menuFunctions,
         menuMath,
-        menuConvert,
+        menuConvertNumber,
+        menuConvertText,
         menuString,
         menuColor,
         menuLayer,
