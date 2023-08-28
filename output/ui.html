@@ -27088,7 +27088,9 @@ async function evalSine(input, parse)
 
     let value = (await input.eval(parse)).toValue();
 
-    value = new NumberValue(Math.sin(value.value, 10));
+    const val = Math.sin(value.value);
+
+    value = new NumberValue(val, decDigits(val));
 
     return value;
 }
@@ -27144,7 +27146,9 @@ async function evalCosine(input, parse)
 
     let value = (await input.eval(parse)).toValue();
 
-    value = new NumberValue(Math.cos(value.value, 10));
+    const val = Math.cos(value.value);
+
+    value = new NumberValue(val, decDigits(val));
 
     return value;
 }
@@ -27200,7 +27204,9 @@ async function evalTangent(input, parse)
 
     let value = (await input.eval(parse)).toValue();
 
-    value = new NumberValue(Math.tan(value.value, 10));
+    const val = Math.tan(value.value);
+    
+    value = new NumberValue(val, decDigits(val));
 
     return value;
 }
@@ -27262,12 +27268,11 @@ extends GOperator1
                     case 1: this.value.value = this.value.value/Tau * 360; break;
                 }
             }
+
+            this.value.decimals = decDigits(this.value.value);
         }
         else
             this.value = NumberValue.NaN;
-
-
-        this.value.decimals = decDigits(this.value.value);
 
 
         this.setUpdateValues(parse,
@@ -73504,7 +73509,9 @@ async function evalSine(input, parse)
 
     let value = (await input.eval(parse)).toValue();
 
-    value = new NumberValue(Math.sin(value.value, 10));
+    const val = Math.sin(value.value);
+
+    value = new NumberValue(val, decDigits(val));
 
     return value;
 }
@@ -73560,7 +73567,9 @@ async function evalCosine(input, parse)
 
     let value = (await input.eval(parse)).toValue();
 
-    value = new NumberValue(Math.cos(value.value, 10));
+    const val = Math.cos(value.value);
+
+    value = new NumberValue(val, decDigits(val));
 
     return value;
 }
@@ -73616,7 +73625,9 @@ async function evalTangent(input, parse)
 
     let value = (await input.eval(parse)).toValue();
 
-    value = new NumberValue(Math.tan(value.value, 10));
+    const val = Math.tan(value.value);
+    
+    value = new NumberValue(val, decDigits(val));
 
     return value;
 }
@@ -73678,12 +73689,11 @@ extends GOperator1
                     case 1: this.value.value = this.value.value/Tau * 360; break;
                 }
             }
+
+            this.value.decimals = decDigits(this.value.value);
         }
         else
             this.value = NumberValue.NaN;
-
-
-        this.value.decimals = decDigits(this.value.value);
 
 
         this.setUpdateValues(parse,

@@ -48,7 +48,9 @@ async function evalCosine(input, parse)
 
     let value = (await input.eval(parse)).toValue();
 
-    value = new NumberValue(Math.cos(value.value, 10));
+    const val = Math.cos(value.value);
+
+    value = new NumberValue(val, decDigits(val));
 
     return value;
 }

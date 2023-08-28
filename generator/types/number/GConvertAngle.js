@@ -54,12 +54,11 @@ extends GOperator1
                     case 1: this.value.value = this.value.value/Tau * 360; break;
                 }
             }
+
+            this.value.decimals = decDigits(this.value.value);
         }
         else
             this.value = NumberValue.NaN;
-
-
-        this.value.decimals = decDigits(this.value.value);
 
 
         this.setUpdateValues(parse,

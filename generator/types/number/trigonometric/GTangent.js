@@ -48,7 +48,9 @@ async function evalTangent(input, parse)
 
     let value = (await input.eval(parse)).toValue();
 
-    value = new NumberValue(Math.tan(value.value, 10));
+    const val = Math.tan(value.value);
+    
+    value = new NumberValue(val, decDigits(val));
 
     return value;
 }

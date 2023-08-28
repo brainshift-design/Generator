@@ -55,7 +55,9 @@ async function evalSine(input, parse)
 
     let value = (await input.eval(parse)).toValue();
 
-    value = new NumberValue(Math.sin(value.value, 10));
+    const val = Math.sin(value.value);
+
+    value = new NumberValue(val, decDigits(val));
 
     return value;
 }
