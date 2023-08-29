@@ -4,7 +4,7 @@
 
 
 
-const generatorVersion = 193;
+const generatorVersion = 194;
 
 
 const MAX_INT32        = 2147483647;
@@ -10282,6 +10282,15 @@ extends GValue
 
 
 
+    toRgba()
+    {
+        return this.stops.length > 0
+             ? this.stops[0].fill.toRgba()
+             : rgba_NaN;
+    }
+
+
+    
     toPreviewString()
     {
         return      this.stops   .toPreviewString()

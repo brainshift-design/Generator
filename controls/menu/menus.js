@@ -523,11 +523,11 @@ menuFlow = new Menu('Flow', true, false);
 
     menuTextData = new Menu('Data', true, false);
     menuTextData.addItems([
-        menuItemFetch    = new MenuItem('Fetch',      null, {icon: iconTextFetch, createType: TEXT_FETCH,       callback: e => actionManager.do(getCreateNodeAction(TEXT_FETCH,      btnText.div, getCreateOptions(e)))}),
         menuItemTextFile = new MenuItem('Text file',  null, {icon: iconTextFile,  createType: TEXT_FILE,        callback: e => actionManager.do(getCreateNodeAction(TEXT_FILE,       btnText.div, getCreateOptions(e)))}),
+        menuItemFetch    = new MenuItem('Fetch',      null, {icon: iconTextFetch, createType: TEXT_FETCH,       callback: e => actionManager.do(getCreateNodeAction(TEXT_FETCH,      btnText.div, getCreateOptions(e)))}),
         menuTextDataSep1 = new MenuItem('',           null, {separator: true}),
-                           new MenuItem('Parse CSV',  null, {icon: iconTextCSV,       createType: TEXT_CSV,       callback: e => actionManager.do(getCreateNodeAction(TEXT_CSV,      btnText.div, getCreateOptions(e)))}),
-        menuItemTextJson = new MenuItem('Parse JSON', null, {icon: iconTextJson,      createType: TEXT_JSON,      callback: e => actionManager.do(getCreateNodeAction(TEXT_JSON,     btnText.div, getCreateOptions(e)))})]);
+        menuItemTextJson = new MenuItem('Parse JSON', null, {icon: iconTextJson,      createType: TEXT_JSON,      callback: e => actionManager.do(getCreateNodeAction(TEXT_JSON,     btnText.div, getCreateOptions(e)))}),
+                           new MenuItem('Parse CSV',  null, {icon: iconTextCSV,       createType: TEXT_CSV,       callback: e => actionManager.do(getCreateNodeAction(TEXT_CSV,      btnText.div, getCreateOptions(e)))})]);
     
 
     menuNumber = new Menu('Numbers', true, false);

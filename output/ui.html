@@ -4929,18 +4929,7 @@ a
             <div id='whatsNewBody'>
                 <h1 style='margin-top: 20px;'>What's new</h1>
 
-                <p>•  switched to freemium model with some pro features only for subscribers</p>
-                <p>•  improved performance</p>
-                <p>•  renamed List⟶Join and Items⟶List</p>
-                <p>•  long repeat calculations can now be aborted</p>
-                <p>•  Ctrl/Cmd+Enter now reactivates currently active nodes</p>
-                <p>•  simplified sets, now they generate only one value per loop iteration</p>
-                <p>•  panels are no longer highlighted in Focus mode</p>
-                <p>•  added sRGB ⟷ P3 conversion</p>
-                <p>•  added Value Name node to set value names in lists</p>
-                <p>•  added degrees ⟷ radians conversion</p>
-                <p>•  fixed various node bugs</p>
-                <p>•  small UI improvements</p>
+                <p>•  fixed UI bugs</p>
                 
                 <p><br/><br/><div id='chkHideWhatsNew'></div></p>
             </div>
@@ -5298,7 +5287,7 @@ a
 
 
 
-const generatorVersion = 193;
+const generatorVersion = 194;
 
 
 const MAX_INT32        = 2147483647;
@@ -15576,6 +15565,15 @@ extends GValue
 
 
 
+    toRgba()
+    {
+        return this.stops.length > 0
+             ? this.stops[0].fill.toRgba()
+             : rgba_NaN;
+    }
+
+
+    
     toPreviewString()
     {
         return      this.stops   .toPreviewString()
@@ -49464,7 +49462,7 @@ onerror = (event, source, line, pos, error) =>
 };
 
 
-const generatorVersion = 193;
+const generatorVersion = 194;
 
 
 const MAX_INT32        = 2147483647;
@@ -61997,6 +61995,15 @@ extends GValue
 
 
 
+    toRgba()
+    {
+        return this.stops.length > 0
+             ? this.stops[0].fill.toRgba()
+             : rgba_NaN;
+    }
+
+
+    
     toPreviewString()
     {
         return      this.stops   .toPreviewString()
@@ -91905,11 +91912,11 @@ menuFlow = new Menu('Flow', true, false);
 
     menuTextData = new Menu('Data', true, false);
     menuTextData.addItems([
-        menuItemFetch    = new MenuItem('Fetch',      null, {icon: iconTextFetch, createType: TEXT_FETCH,       callback: e => actionManager.do(getCreateNodeAction(TEXT_FETCH,      btnText.div, getCreateOptions(e)))}),
         menuItemTextFile = new MenuItem('Text file',  null, {icon: iconTextFile,  createType: TEXT_FILE,        callback: e => actionManager.do(getCreateNodeAction(TEXT_FILE,       btnText.div, getCreateOptions(e)))}),
+        menuItemFetch    = new MenuItem('Fetch',      null, {icon: iconTextFetch, createType: TEXT_FETCH,       callback: e => actionManager.do(getCreateNodeAction(TEXT_FETCH,      btnText.div, getCreateOptions(e)))}),
         menuTextDataSep1 = new MenuItem('',           null, {separator: true}),
-                           new MenuItem('Parse CSV',  null, {icon: iconTextCSV,       createType: TEXT_CSV,       callback: e => actionManager.do(getCreateNodeAction(TEXT_CSV,      btnText.div, getCreateOptions(e)))}),
-        menuItemTextJson = new MenuItem('Parse JSON', null, {icon: iconTextJson,      createType: TEXT_JSON,      callback: e => actionManager.do(getCreateNodeAction(TEXT_JSON,     btnText.div, getCreateOptions(e)))})]);
+        menuItemTextJson = new MenuItem('Parse JSON', null, {icon: iconTextJson,      createType: TEXT_JSON,      callback: e => actionManager.do(getCreateNodeAction(TEXT_JSON,     btnText.div, getCreateOptions(e)))}),
+                           new MenuItem('Parse CSV',  null, {icon: iconTextCSV,       createType: TEXT_CSV,       callback: e => actionManager.do(getCreateNodeAction(TEXT_CSV,      btnText.div, getCreateOptions(e)))})]);
     
 
     menuNumber = new Menu('Numbers', true, false);
@@ -118961,7 +118968,7 @@ extends OpColorBase
 
         if (   fills.length > 0
             && fills[0].isValid())
-            this.checkersHolder.style.opacity = (100 - fills[0].opacity.toNumber()) + '%';
+            this.checkersHolder.style.opacity = (100 - fills[0].toRgba()[3]*100) + '%';
 
 
         this.updateParamControls();
@@ -118974,13 +118981,12 @@ extends OpColorBase
         const colors = super.getHeaderColors();
         const fills  = this.paramFills.value.items;
 
-
         if (   fills.length > 0
             && fills[0].isValid())
         {
             colors.back       = fills[0].isValid() ? fills[0].toRgba() : rgba_NaN;
             colors.stripeBack = fills[0].isValid() ? fills[0].toRgba() : rgba_NaN;
-            colors.text       = getTextColorFromBackColor(colors.stripeBack, fills[0].opacity.value/100);
+            colors.text       = getTextColorFromBackColor(colors.stripeBack, fills[0].toRgba()[3]);
             colors.input      = rgb_a(colors.text, 0.2);
             colors.output     = rgb_a(colors.text, 0.2);
 
@@ -129007,7 +129013,7 @@ function createSessionId()
 
 function subscribed()
 {
-    return true;//currentSessionId == createSessionId();
+    return false;//currentSessionId == createSessionId();
 }
 
 

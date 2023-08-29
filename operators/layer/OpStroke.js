@@ -251,7 +251,7 @@ extends OpColorBase
 
         if (   fills.length > 0
             && fills[0].isValid())
-            this.checkersHolder.style.opacity = (100 - fills[0].opacity.toNumber()) + '%';
+            this.checkersHolder.style.opacity = (100 - fills[0].toRgba()[3]*100) + '%';
 
 
         this.updateParamControls();
@@ -264,13 +264,12 @@ extends OpColorBase
         const colors = super.getHeaderColors();
         const fills  = this.paramFills.value.items;
 
-
         if (   fills.length > 0
             && fills[0].isValid())
         {
             colors.back       = fills[0].isValid() ? fills[0].toRgba() : rgba_NaN;
             colors.stripeBack = fills[0].isValid() ? fills[0].toRgba() : rgba_NaN;
-            colors.text       = getTextColorFromBackColor(colors.stripeBack, fills[0].opacity.value/100);
+            colors.text       = getTextColorFromBackColor(colors.stripeBack, fills[0].toRgba()[3]);
             colors.input      = rgb_a(colors.text, 0.2);
             colors.output     = rgb_a(colors.text, 0.2);
 

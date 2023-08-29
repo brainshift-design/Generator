@@ -120,6 +120,15 @@ extends GValue
 
 
 
+    toRgba()
+    {
+        return this.stops.length > 0
+             ? this.stops[0].fill.toRgba()
+             : rgba_NaN;
+    }
+
+
+    
     toPreviewString()
     {
         return      this.stops   .toPreviewString()
