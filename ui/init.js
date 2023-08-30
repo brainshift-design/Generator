@@ -125,9 +125,6 @@ function initGenerator()
     uiQueueMessageToFigma({
         cmd:     'figLoadNodesAndConns',
         dataMode: settings.dataMode });
-
-    // if (!settings.dataMode)
-    //     enableFeatures(subscribed());
 }
 
 

@@ -170,26 +170,23 @@ Operator.prototype.updateSubscribe = function()
     if (!this.measureData)
         return;
 
-    this.subscribeCover.style.top    = this.measureData.headerOffset.height;
-    this.subscribeCover.style.height = this.measureData.divOffset.height - this.measureData.headerOffset.height;
+    this.proCover.style.top    = this.measureData.headerOffset.height;
+    this.proCover.style.height = this.measureData.divOffset.height - this.measureData.headerOffset.height;
 }
 
 
 
 Operator.prototype.updateSubscribeStatus = function(sub)
 {
-    const showSub = 
-            this.subscription
-        && !sub;
+    sub = sub || !this.subscription;
 
 
-    this.subscribeCover.style.display = showSub ? 'block' : 'none';
-    this.subscribeLabel.style.display = showSub ? 'block' : 'none';
+    this.proCover.style.display = sub ? 'none' : 'block';
+    this.proLabel.style.display = sub ? 'none' : 'block';
 
-    this.inner.style.opacity = showSub ? '50%' : '100%';
+    this.inner   .style.opacity = sub ? '100%' : '50%';
 
-
-    if (!showSub)
+    if (sub)
         this.updateSubscribe();
 }
 
@@ -209,7 +206,7 @@ Operator.prototype.updateMeasureData = function()
         labelBounds:        boundingRect(this.label         ),
         labelOffset:        offsetRect  (this.label         ),
         disabledOffset:     offsetRect  (this.divDisabled   ),
-        subscribeOffset:    offsetRect  (this.subscribeLabel)
+        subscribeOffset:    offsetRect  (this.proLabel)
     };
 
     this.params
@@ -296,7 +293,7 @@ Operator.prototype.updateHeaderLabelText = function()
     else if (this.type == SORT        ) suffix = sep + '[ ' + this.tableLength   + ' ]';
     else if (this.type == UNIQUE      ) suffix = sep + '[ ' + this.length        + ' ]';
     else if (this.type == LIST        ) suffix = sep + '[ ' + this.params.length + ' ]';
-    else                                suffix = this.cached || this.type == FEEDBACK ? '' : (settings.showNodeId ? '...' : ' . . .');
+    else                                suffix = this.cached || this.type == START ? '' : (settings.showNodeId ? '...' : ' . . .');
 
 
     suffix += this.suffix;

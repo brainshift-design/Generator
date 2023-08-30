@@ -8,7 +8,7 @@ extends OperatorBase
 
     constructor()
     {
-        super(FEEDBACK, 'feedback', 'feedback', iconStart);
+        super(START, 'start', 'start', iconStart);
 
         this.cached     = false;
         this.canDisable = true;

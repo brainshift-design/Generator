@@ -4689,7 +4689,7 @@ const  SHAPE_LIST_VALUE       = 'SLIST#';
 
 
 const NULL_NODE               = 'NULL';
-const FEEDBACK                = 'FEEDBACK';
+const START                   = 'START';
 const REPEAT                  = 'REPT';
 const CACHE                   = 'CACHE';
 const FREEZE                  = 'FRZ';
@@ -4758,7 +4758,7 @@ const FLOW_TYPES =
     SELECT,
     IF_ELSE,
     FILTER,
-    FEEDBACK,
+    START,
     REPEAT,
     //FOREACH,
     DEFINE,
@@ -14589,7 +14589,7 @@ extends GOperator
 
     constructor(nodeId, options)
     {
-        super(FEEDBACK, nodeId, options);
+        super(START, nodeId, options);
     }
 
 
@@ -24707,7 +24707,7 @@ extends GOperator1
 
             
             if (   input.isValid()
-                && this.input.type != FEEDBACK)
+                && this.input.type != START)
             {
                 if (this.options.enabled)
                 {
@@ -40699,7 +40699,7 @@ function genParse(parse, inParam = true)
     else if (parse.next == LIST_COUNT             ) result = genParseListCount         (parse);
     else if (parse.next == CONTAINS               ) result = genParseListContains      (parse);
     else if (parse.next == IF_ELSE                ) result = genParseIfElse            (parse);
-    else if (parse.next == FEEDBACK               ) result = genParseStart          (parse);
+    else if (parse.next == START               ) result = genParseStart          (parse);
     else if (parse.next == REPEAT                 ) result = genParseRepeat            (parse);
     else if (parse.next == CACHE                  ) result = genParseCache             (parse);
     else if (parse.next == DEFINE                 ) result = genParseDefine            (parse);

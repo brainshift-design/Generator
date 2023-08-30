@@ -64,17 +64,17 @@ Operator.prototype.createNode = function()
     this.inner.appendChild(this.paramHolder);
 
 
-    this.subscribeCover = createDiv('subscribeCover');
+    this.proCover = createDiv('proCover');
 
-    this.subscribeCover.addEventListener('pointerenter', e => { e.preventDefault(); e.stopImmediatePropagation(); });
-    this.subscribeCover.addEventListener('pointermove',  e => { e.preventDefault(); e.stopImmediatePropagation(); });
-    this.subscribeCover.addEventListener('pointermove',  e => { e.preventDefault(); e.stopImmediatePropagation(); });
+    this.proCover.addEventListener('pointerenter', e => { e.preventDefault(); e.stopImmediatePropagation(); });
+    this.proCover.addEventListener('pointermove',  e => { e.preventDefault(); e.stopImmediatePropagation(); });
+    this.proCover.addEventListener('pointermove',  e => { e.preventDefault(); e.stopImmediatePropagation(); });
 
-    this.subscribeLabel = createDiv('subscribeLabel');
-    this.subscribeLabel.innerHTML = 'PRO';
+    this.proLabel = createDiv('proLabel');
+    this.proLabel.innerHTML = 'PRO';
 
-    this.div.appendChild(this.subscribeCover);
-    this.div.appendChild(this.subscribeLabel);
+    this.div.appendChild(this.proCover);
+    this.div.appendChild(this.proLabel);
 }     
 
 

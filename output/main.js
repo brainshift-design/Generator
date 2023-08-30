@@ -538,7 +538,7 @@ const NUMBER_LIST_VALUE = 'NLIST#';
 const TEXT_LIST_VALUE = 'TLIST#';
 const SHAPE_LIST_VALUE = 'SLIST#';
 const NULL_NODE = 'NULL';
-const FEEDBACK = 'FEEDBACK';
+const START = 'START';
 const REPEAT = 'REPT';
 const CACHE = 'CACHE';
 const FREEZE = 'FRZ';
@@ -593,7 +593,7 @@ const FLOW_TYPES = [
     SELECT,
     IF_ELSE,
     FILTER,
-    FEEDBACK,
+    START,
     REPEAT,
     //FOREACH,
     DEFINE,

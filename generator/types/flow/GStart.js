@@ -12,7 +12,7 @@ extends GOperator
 
     constructor(nodeId, options)
     {
-        super(FEEDBACK, nodeId, options);
+        super(START, nodeId, options);
     }
 
 

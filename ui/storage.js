@@ -267,7 +267,7 @@ function uiReturnFigLoadNodesAndConns(msg)
 
     _n.sort((a, b) => a.value.z - b.value.z);
 
-
+    
     if (settings.dataMode)
     {
         menuBar.style.display = 'none';
@@ -554,6 +554,7 @@ function loadNodes(data, pasting)
    
     for (let i = 0; i < data.nodes.length; i++)
     {
+        //console.log('data.nodes['+i+'] =', data.nodes[i]);
         const node = loadNode(data.nodes[i], pasting);
         nodes.push(node);
     }
@@ -566,8 +567,8 @@ function loadNodes(data, pasting)
 function loadNode(_node, pasting)
 {
     // replace legacy
-    // if (_node.type == 'EXPAND') _node.type = CONDENSE;
-    // if (_node.type == 'DISTR' ) _node.type = NUMBER_RANGE;
+    if (_node.type == 'LIST') _node.type = JOIN;
+    if (_node.type == 'ITEMS' ) _node.type = LIST;
 
 
     const node = createNode(_node.type);

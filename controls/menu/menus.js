@@ -413,7 +413,7 @@ menuFlow = new Menu('Flow', true, false);
                            new MenuItem('',                  null, {separator: true}),
         menuItemIfElse   = new MenuItem('I&hairsp;f / else', null, {icon: iconIfElse,    createType: IF_ELSE,          callback: e => actionManager.do(getCreateNodeAction(IF_ELSE,         btnFlow.div, getCreateOptions(e))), disambiguate: true}),
                            new MenuItem('',                  null, {separator: true}),
-        menuItemStart    = new MenuItem('Start. . .',        null, {icon: iconStart,     createType: FEEDBACK,            callback: e => actionManager.do(getCreateNodeAction(FEEDBACK,           btnFlow.div, getCreateOptions(e)))}),
+        menuItemStart    = new MenuItem('Start. . .',        null, {icon: iconStart,     createType: START,            callback: e => actionManager.do(getCreateNodeAction(START,           btnFlow.div, getCreateOptions(e)))}),
         menuItemRepeat   = new MenuItem('. . . Repeat',      null, {icon: iconRepeat,    createType: REPEAT,           callback: e => actionManager.do(getCreateNodeAction(REPEAT,          btnFlow.div, getCreateOptions(e)))}),
                            new MenuItem('',                  null, {separator: true}),
         menuItemFreeze   = new MenuItem('Freeze. . .',       null, {icon: iconFreeze,    createType: FREEZE,           callback: e => actionManager.do(getCreateNodeAction(FREEZE,          btnFlow.div, getCreateOptions(e)))}),
@@ -602,12 +602,12 @@ menuFlow = new Menu('Flow', true, false);
     
     menuStyles = new Menu('Styles', true, false);
     menuStyles.addItems([
-        new MenuItem('Color style', null, {icon: iconColorStyle, createType: FEEDBACK, callback: e => actionManager.do(getCreateNodeAction(COLOR_STYLE, btnLayer.div, getCreateOptions(e, {existing: true})))})]);
+        new MenuItem('Color style', null, {icon: iconColorStyle, createType: START, callback: e => actionManager.do(getCreateNodeAction(COLOR_STYLE, btnLayer.div, getCreateOptions(e, {existing: true})))})]);
     
     
     menuVariables = new Menu('Variables', true, false);
     menuVariables.addItems([
-        new MenuItem('Number', null, {icon: iconVarNumber, createType: FEEDBACK, callback: e => actionManager.do(getCreateNodeAction(VAR_NUMBER, btnLayer.div, getCreateOptions(e, {existing: true})))})]);
+        new MenuItem('Number', null, {icon: iconVarNumber, createType: START, callback: e => actionManager.do(getCreateNodeAction(VAR_NUMBER, btnLayer.div, getCreateOptions(e, {existing: true})))})]);
     
     
     menuLayer = new Menu('Style', true, false);

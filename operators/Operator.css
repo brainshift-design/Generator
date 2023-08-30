@@ -195,7 +195,7 @@
 }
 
 
-.subscribeCover
+.proCover
 {
     background: transparent;
     position:   absolute;
@@ -207,7 +207,7 @@
 
 
 
-.subscribeLabel
+.proLabel
 {
     font-family:    Inter;
     font-size:      26px;
@@ -232,7 +232,7 @@
 }
 
 
-/* .subscribeLabel
+/* .proLabel
 {
     font-family:    Inter;
     font-size:      16px;

@@ -125,8 +125,8 @@ class Operator
 
     paramHolder;
 
-    subscribeCover;
-    subscribeLabel;
+    proCover;
+    proLabel;
 
     reorderArrows;
     showReorderArrows  = false;
