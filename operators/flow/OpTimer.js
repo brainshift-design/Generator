@@ -21,8 +21,8 @@ extends OperatorBase
         this.addOutput(new Output([ANY_VALUE], this.output_genRequest));
 
 
-        this.inputs[0].addEventListener('connect',    () => OpCopy_onConnectInput(this));
-        this.inputs[0].addEventListener('disconnect', () => OpCopy_onDisconnectInput(this));
+        this.inputs[0].addEventListener('connect',    () => OpTimer_onConnectInput(this));
+        this.inputs[0].addEventListener('disconnect', () => OpTimer_onDisconnectInput(this));
 
 
         this.addParam(this.paramDelay = new NumberParam('delay', 'delay', true, true, true, 5, 0));
@@ -98,6 +98,26 @@ extends OperatorBase
         this.paramDelay.enableControlText(true);
     
         this.updateParamControls();
+    }
+
+
+
+    getHeaderColors(options = {})
+    {
+        const colors = super.getHeaderColors(options);
+        const type   = this.outputs[0].types[0];
+
+        colors.text  = isDark(colors.back) ? [1, 1, 1, 1] : [0, 0, 0, 1]; 
+
+        const gray =
+                this.active
+            && !this.inputs[0].connected;
+
+        colors.input  = gray ? rgb_a(colors.text, 0.4)  : rgb_a(rgbSaturateHsv(rgbFromType(type, true), 0.5), 0.8);
+        colors.output = gray ? rgb_a(colors.text, 0.35) : rgb_a(rgbSaturateHsv(rgbFromType(type, true), 0.5), 0.7);
+        colors.wire   = gray ? rgbFromType(ANY_VALUE, true) : rgbFromType(type, true);
+
+        return colors;
     }
 
 

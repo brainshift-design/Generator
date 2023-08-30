@@ -17,9 +17,9 @@ extends OperatorBase
     {
         super(NUMBER_DATETIME, 'dateTime', 'date & time', iconDateTime);
 
-        this.canDisable  = true;
-        this.iconOffsetY = -4;
-        
+        this.canDisable   = true;
+        this.iconOffsetY  = -4;
+        this.subscription = true;
 
         this.addParam(this.paramHours     = new NumberParam('hours',     'hours',    true,  true,  true, 0, 0,  23));
         this.addParam(this.paramMinutes   = new NumberParam('minutes',   'minutes',  true,  true,  true, 0, 0,  59));

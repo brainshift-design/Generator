@@ -4929,6 +4929,7 @@ a
             <div id='whatsNewBody'>
                 <h1 style='margin-top: 20px;'>What's new</h1>
 
+                <p>•  fixed bug in Timer node</p>
                 <p>•  fixed UI bugs</p>
                 
                 <p><br/><br/><div id='chkHideWhatsNew'></div></p>
@@ -107151,8 +107152,8 @@ extends OperatorBase
         this.addOutput(new Output([ANY_VALUE], this.output_genRequest));
 
 
-        this.inputs[0].addEventListener('connect',    () => OpCopy_onConnectInput(this));
-        this.inputs[0].addEventListener('disconnect', () => OpCopy_onDisconnectInput(this));
+        this.inputs[0].addEventListener('connect',    () => OpTimer_onConnectInput(this));
+        this.inputs[0].addEventListener('disconnect', () => OpTimer_onDisconnectInput(this));
 
 
         this.addParam(this.paramDelay = new NumberParam('delay', 'delay', true, true, true, 5, 0));
@@ -107228,6 +107229,26 @@ extends OperatorBase
         this.paramDelay.enableControlText(true);
     
         this.updateParamControls();
+    }
+
+
+
+    getHeaderColors(options = {})
+    {
+        const colors = super.getHeaderColors(options);
+        const type   = this.outputs[0].types[0];
+
+        colors.text  = isDark(colors.back) ? [1, 1, 1, 1] : [0, 0, 0, 1]; 
+
+        const gray =
+                this.active
+            && !this.inputs[0].connected;
+
+        colors.input  = gray ? rgb_a(colors.text, 0.4)  : rgb_a(rgbSaturateHsv(rgbFromType(type, true), 0.5), 0.8);
+        colors.output = gray ? rgb_a(colors.text, 0.35) : rgb_a(rgbSaturateHsv(rgbFromType(type, true), 0.5), 0.7);
+        colors.wire   = gray ? rgbFromType(ANY_VALUE, true) : rgbFromType(type, true);
+
+        return colors;
     }
 
 
@@ -110064,9 +110085,9 @@ extends OperatorBase
     {
         super(NUMBER_DATETIME, 'dateTime', 'date & time', iconDateTime);
 
-        this.canDisable  = true;
-        this.iconOffsetY = -4;
-        
+        this.canDisable   = true;
+        this.iconOffsetY  = -4;
+        this.subscription = true;
 
         this.addParam(this.paramHours     = new NumberParam('hours',     'hours',    true,  true,  true, 0, 0,  23));
         this.addParam(this.paramMinutes   = new NumberParam('minutes',   'minutes',  true,  true,  true, 0, 0,  59));
@@ -129010,7 +129031,7 @@ function createSessionId()
 
 function subscribed()
 {
-    return false;//currentSessionId == createSessionId();
+    return true;//currentSessionId == createSessionId();
 }
 
 
