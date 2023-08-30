@@ -3086,7 +3086,7 @@ a
 #menuBar
 {
     display:          flex;
-    height:           40px;
+    height:           39px;
     background-color: #2c2c2c;
     /* border-bottom:    1px solid var(--figma-color-bg-tertiary); */
     padding:          0;
@@ -9882,10 +9882,11 @@ function enableFeatures(sub, beta = false)
 
 function enableMenuItem(menuItem, sub)
 {
-    if (!menuItem) return;
+    //if (!menuItem) return;
 
-    menuItem.enabled   =  sub;  
-    menuItem.subscribe = !sub;    
+    menuItem.enabled = sub;
+    menuItem.sub     = sub;
+
     menuItem.update();
 }
 
@@ -85849,10 +85850,11 @@ function enableFeatures(sub, beta = false)
 
 function enableMenuItem(menuItem, sub)
 {
-    if (!menuItem) return;
+    //if (!menuItem) return;
 
-    menuItem.enabled   =  sub;  
-    menuItem.subscribe = !sub;    
+    menuItem.enabled = sub;
+    menuItem.sub     = sub;
+
     menuItem.update();
 }
 
@@ -90964,6 +90966,7 @@ class MenuItem
     name          = '';
     searchName    = '';
     shortcut      = '';
+    sub           = true;
 
     callback      = null;
     checkCallback = null;
@@ -90995,7 +90998,7 @@ class MenuItem
     divName;
     divExpand;
     divShortcut;
-    divSubscribe;
+    divPro;
 
 
     divSeparator;
@@ -91052,7 +91055,7 @@ class MenuItem
         this.divName      = createDiv('menuItemName'     );
         this.divExpand    = createDiv('menuItemExpand'   );
         this.divShortcut  = createDiv('menuItemShortcut' );
-        this.divSubscribe = createDiv('menuItemSubscribe');
+        this.divPro = createDiv('menuItemSubscribe');
 
         this.divSeparator = createDiv('menuSeparator'    );
 
@@ -91071,7 +91074,7 @@ class MenuItem
 
     
         this.divShortcut .innerHTML = this.shortcut;
-        this.divSubscribe.innerHTML = 'PRO';
+        this.divPro.innerHTML = 'PRO';
 
     
         this.divHighlight.style.zIndex = -2;
@@ -91088,7 +91091,7 @@ class MenuItem
             this.div.appendChild(this.divName     );
             this.div.appendChild(this.divExpand   );
             this.div.appendChild(this.divShortcut );
-            this.div.appendChild(this.divSubscribe);
+            this.div.appendChild(this.divPro);
         }
         else
             this.div.appendChild(this.divSeparator);
@@ -91379,8 +91382,8 @@ class MenuItem
         this.divCheck    .style.visibility = this.checked   ? 'visible'      : 'hidden';
         this.div         .style.opacity    = this.enabled   ? '100%'         : '40%';
 
-        this.divShortcut .style.display    = this.subscribe === true ? 'none'         : 'inline-block';
-        this.divSubscribe.style.display    = this.subscribe === true ? 'inline-block' : 'none';
+        this.divShortcut.style.display    = this.sub ? 'inline-block' : 'none';
+        this.divPro     .style.display    = this.sub ? 'none'         : 'inline-block';
 
         this.updateLegend();
     }
@@ -105774,11 +105777,11 @@ Operator.prototype.updateSubscribe = function()
 
 
 
-Operator.prototype.updateSubscribeStatus = function(subscribed)
+Operator.prototype.updateSubscribeStatus = function(sub)
 {
     const showSub = 
             this.subscription
-        && !subscribed;
+        && !sub;
 
 
     this.subscribeCover.style.display = showSub ? 'block' : 'none';
@@ -128994,8 +128997,8 @@ function initGenerator()
         cmd:     'figLoadNodesAndConns',
         dataMode: settings.dataMode });
 
-    if (!settings.dataMode)
-        enableFeatures(subscribed());
+    // if (!settings.dataMode)
+    //     enableFeatures(subscribed());
 }
 
 
@@ -129038,13 +129041,11 @@ function validateInit(eulaRead)
         //     //         showEulaDialog();
         //     // });
 
-        //     if (!eulaRead)
-        //         showEulaDialog();
-        //     else
-        //         initGenerator();
+            if (!eulaRead)
+                showEulaDialog();
+            else
+                initGenerator();
         // });
-
-        initGenerator();
     }
     catch (e)
     {
@@ -130790,7 +130791,7 @@ async function uiReturnFigGetLocalData(msg)
     if (!settings.dataMode)
     {
         // if (msg.key == 'enableBetaFeatures')
-        //     enableFeatures(true, settings.enableBetaFeatures); 
+            //enableFeatures(true, settings.enableBetaFeatures); 
 
         if (msg.key == 'showDebugMenu')
             updateMenuItemShowDebugMenu();
@@ -131098,6 +131099,11 @@ function finishLoading(_nodes)
     graphView.canUpdateNodes = true;
     graphView.updateShowWires(false);
 
+
+    if (!settings.dataMode)
+        enableFeatures(subscribed());
+
+        
     generatorStarted = true;
 
 
@@ -132733,10 +132739,15 @@ function uiImportFromLocalFile()
 
 function uiSaveSelectionToLocalFile()
 {
-    if (isEmpty(graphView.selectedNodes))
+    if (!subscribed())
         return;
+
+    const nodes = 
+        !isEmpty(graphView.selectedNodes)
+        ? graphView.selectedNodes
+        : graph.pages[0].nodes;
         
-    const json = uiCopyNodes(graphView.selectedNodes.map(n => n.id));
+    const json = uiCopyNodes(nodes.map(n => n.id));
 
     saveToLocalFile(json, 'selection.gen', 'text/plain');
 }
@@ -133294,10 +133305,14 @@ function uiUpdateValuesAndObjects(requestId, actionId, updateNodeId, updateParam
         }
 
 
-        if (   graphView.loadingNodes
-            || graphView.creatingNodes
-            || graphView.pastingNodes)
-            enableFeatures(subscribed());
+        // if (   (   graphView.loadingNodes
+        //         || graphView.creatingNodes
+        //         || graphView.pastingNodes)
+        //     && !settings.dataMode)
+        // {
+        //     console.log('enable');
+        //     enableFeatures(subscribed());
+        // }
 
             
         if (importZoomToNodes)
@@ -134760,7 +134775,7 @@ subscriptionInput.addEventListener('pointerdown', e =>
     {
         setDefaultSubscriptionInput(); 
 
-        const subscribed = 
+        const sub = 
                subscription != NULL
             && (      subscriptionInput.selectionStart == subscriptionInput.selectionEnd
                    && subscriptionInput.value == subscription
@@ -134771,8 +134786,8 @@ subscriptionInput.addEventListener('pointerdown', e =>
             e.preventDefault();
             e.stopPropagation();
 
-            updateElementDisplay(menuItemLicenseSep1  .div, subscribed);
-            updateElementDisplay(menuItemLicenseRemove.div, subscribed);
+            updateElementDisplay(menuItemLicenseSep1  .div, sub);
+            updateElementDisplay(menuItemLicenseRemove.div, sub);
 
             menuRemoveLicense.showAt(e.clientX, e.clientY, false, false);
         }
@@ -134847,7 +134862,7 @@ function tryValidateLicense(key)
         subscription = key;
         uiSetLocalData('subscription', key);
 
-        enableFeatures(subscription != NULL, settings.enableBetaFeatures);
+        enableFeatures(subscribed()/*subscription != NULL*/, settings.enableBetaFeatures);
         
         setDisabledSubscriptionInput();
         updateLicenseInfo(license);

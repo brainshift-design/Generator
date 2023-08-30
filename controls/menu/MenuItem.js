@@ -10,6 +10,7 @@ class MenuItem
     name          = '';
     searchName    = '';
     shortcut      = '';
+    sub           = true;
 
     callback      = null;
     checkCallback = null;
@@ -41,7 +42,7 @@ class MenuItem
     divName;
     divExpand;
     divShortcut;
-    divSubscribe;
+    divPro;
 
 
     divSeparator;
@@ -98,7 +99,7 @@ class MenuItem
         this.divName      = createDiv('menuItemName'     );
         this.divExpand    = createDiv('menuItemExpand'   );
         this.divShortcut  = createDiv('menuItemShortcut' );
-        this.divSubscribe = createDiv('menuItemSubscribe');
+        this.divPro = createDiv('menuItemSubscribe');
 
         this.divSeparator = createDiv('menuSeparator'    );
 
@@ -117,7 +118,7 @@ class MenuItem
 
     
         this.divShortcut .innerHTML = this.shortcut;
-        this.divSubscribe.innerHTML = 'PRO';
+        this.divPro.innerHTML = 'PRO';
 
     
         this.divHighlight.style.zIndex = -2;
@@ -134,7 +135,7 @@ class MenuItem
             this.div.appendChild(this.divName     );
             this.div.appendChild(this.divExpand   );
             this.div.appendChild(this.divShortcut );
-            this.div.appendChild(this.divSubscribe);
+            this.div.appendChild(this.divPro);
         }
         else
             this.div.appendChild(this.divSeparator);
@@ -425,8 +426,8 @@ class MenuItem
         this.divCheck    .style.visibility = this.checked   ? 'visible'      : 'hidden';
         this.div         .style.opacity    = this.enabled   ? '100%'         : '40%';
 
-        this.divShortcut .style.display    = this.subscribe === true ? 'none'         : 'inline-block';
-        this.divSubscribe.style.display    = this.subscribe === true ? 'inline-block' : 'none';
+        this.divShortcut.style.display    = this.sub ? 'inline-block' : 'none';
+        this.divPro     .style.display    = this.sub ? 'none'         : 'inline-block';
 
         this.updateLegend();
     }

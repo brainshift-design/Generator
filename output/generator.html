@@ -4599,10 +4599,11 @@ function enableFeatures(sub, beta = false)
 
 function enableMenuItem(menuItem, sub)
 {
-    if (!menuItem) return;
+    //if (!menuItem) return;
 
-    menuItem.enabled   =  sub;  
-    menuItem.subscribe = !sub;    
+    menuItem.enabled = sub;
+    menuItem.sub     = sub;
+
     menuItem.update();
 }
 

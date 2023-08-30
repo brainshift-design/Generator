@@ -126,8 +126,8 @@ function initGenerator()
         cmd:     'figLoadNodesAndConns',
         dataMode: settings.dataMode });
 
-    if (!settings.dataMode)
-        enableFeatures(subscribed());
+    // if (!settings.dataMode)
+    //     enableFeatures(subscribed());
 }
 
 
@@ -170,13 +170,11 @@ function validateInit(eulaRead)
         //     //         showEulaDialog();
         //     // });
 
-        //     if (!eulaRead)
-        //         showEulaDialog();
-        //     else
-        //         initGenerator();
+            if (!eulaRead)
+                showEulaDialog();
+            else
+                initGenerator();
         // });
-
-        initGenerator();
     }
     catch (e)
     {

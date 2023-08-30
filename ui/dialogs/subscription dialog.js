@@ -124,7 +124,7 @@ subscriptionInput.addEventListener('pointerdown', e =>
     {
         setDefaultSubscriptionInput(); 
 
-        const subscribed = 
+        const sub = 
                subscription != NULL
             && (      subscriptionInput.selectionStart == subscriptionInput.selectionEnd
                    && subscriptionInput.value == subscription
@@ -135,8 +135,8 @@ subscriptionInput.addEventListener('pointerdown', e =>
             e.preventDefault();
             e.stopPropagation();
 
-            updateElementDisplay(menuItemLicenseSep1  .div, subscribed);
-            updateElementDisplay(menuItemLicenseRemove.div, subscribed);
+            updateElementDisplay(menuItemLicenseSep1  .div, sub);
+            updateElementDisplay(menuItemLicenseRemove.div, sub);
 
             menuRemoveLicense.showAt(e.clientX, e.clientY, false, false);
         }
@@ -211,7 +211,7 @@ function tryValidateLicense(key)
         subscription = key;
         uiSetLocalData('subscription', key);
 
-        enableFeatures(subscription != NULL, settings.enableBetaFeatures);
+        enableFeatures(subscribed()/*subscription != NULL*/, settings.enableBetaFeatures);
         
         setDisabledSubscriptionInput();
         updateLicenseInfo(license);

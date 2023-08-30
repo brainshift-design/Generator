@@ -948,10 +948,15 @@ function uiImportFromLocalFile()
 
 function uiSaveSelectionToLocalFile()
 {
-    if (isEmpty(graphView.selectedNodes))
+    if (!subscribed())
         return;
+
+    const nodes = 
+        !isEmpty(graphView.selectedNodes)
+        ? graphView.selectedNodes
+        : graph.pages[0].nodes;
         
-    const json = uiCopyNodes(graphView.selectedNodes.map(n => n.id));
+    const json = uiCopyNodes(nodes.map(n => n.id));
 
     saveToLocalFile(json, 'selection.gen', 'text/plain');
 }

@@ -130,7 +130,7 @@ async function uiReturnFigGetLocalData(msg)
     if (!settings.dataMode)
     {
         // if (msg.key == 'enableBetaFeatures')
-        //     enableFeatures(true, settings.enableBetaFeatures); 
+            //enableFeatures(true, settings.enableBetaFeatures); 
 
         if (msg.key == 'showDebugMenu')
             updateMenuItemShowDebugMenu();
@@ -438,6 +438,11 @@ function finishLoading(_nodes)
     graphView.canUpdateNodes = true;
     graphView.updateShowWires(false);
 
+
+    if (!settings.dataMode)
+        enableFeatures(subscribed());
+
+        
     generatorStarted = true;
 
 
