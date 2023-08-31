@@ -13,7 +13,9 @@ function uiReturnFigLinkNodeToVariable(msg)
 {
     const node = nodeFromId(msg.nodeId);
 
-    node.updateValueParam(msg.type);
+    node.updateValueParam(msg.type, msg.values);
+
+    pushUpdate(null, [node]);
 }
 
 
@@ -73,17 +75,13 @@ function uiLinkNodeToVariable(node, variableId, variableName)
     node.linkedVariableId   = variableId;
     node.linkedVariableName = variableName;
 
-
     if (variableName != NULL)
         node.name = variableName;
-
-    pushUpdate(null, [node]);
-
 
     uiQueueMessageToFigma(
     {
         cmd:       'figLinkNodeToVariable',
-        variableId: variableId,
-        nodeId:     node.id 
+        nodeId:     node.id,
+        variableId: variableId
     });
 }

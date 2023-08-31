@@ -81,7 +81,7 @@ extends GOperator1
             ['preview', new ListValue(this.value.items.slice(0, Math.min(this.value.items.length, 11)))],
             ['type',    type                                                                           ],
             ['length',  new NumberValue(this.value.items.length)                                       ],
-            ['columns', new NumberValue(maxColumns)                                                    ],
+            ['columns', new NumberValue(maxColumns, 0)                                                 ],
             ['index',   index                                                                          ]
         ]);
         

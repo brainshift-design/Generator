@@ -47,6 +47,7 @@ class Operator
     inert; // doesn't eval inputs if values exist
     slow;  // takes a while to finish operation, shows a progress bar
 
+    canRename          = true;
     renamed            = false;     
 
 

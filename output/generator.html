@@ -9257,7 +9257,7 @@ extends GValue
 
 
 
-    constructor(val = Number.NaN, dec = 0)
+    constructor(val = Number.NaN, dec = -1)
     {
         super(NUMBER_VALUE);
 
@@ -9267,7 +9267,12 @@ extends GValue
 
         this.value     = val;
         this.initValue = val;
-        this.decimals  = dec;
+        
+        this.decimals = 
+              !isNaN(this.value) 
+            && dec == -1 
+            ? decDigits(this.value) 
+            : 0;
     }
 
 
@@ -16528,7 +16533,7 @@ extends GOperator1
             ['preview', new ListValue(this.value.items.slice(0, Math.min(this.value.items.length, 11)))],
             ['type',    type                                                                           ],
             ['length',  new NumberValue(this.value.items.length)                                       ],
-            ['columns', new NumberValue(maxColumns)                                                    ],
+            ['columns', new NumberValue(maxColumns, 0)                                                 ],
             ['index',   index                                                                          ]
         ]);
         
@@ -16677,10 +16682,10 @@ extends GOperator
 
         this.setUpdateValues(parse,
         [
-            ['preview', this.value              ],
-            ['type',    type                    ],
-            ['columns', new NumberValue(columns)],
-            ['rows',    new NumberValue(rows   )]
+            ['preview', this.value                 ],
+            ['type',    type                       ],
+            ['columns', new NumberValue(columns, 0)],
+            ['rows',    new NumberValue(rows   , 0)]
         ]);
         
 
@@ -18122,7 +18127,7 @@ extends GOperator
         }
 
 
-        this.value = new NumberValue(value, 10);
+        this.value = new NumberValue(value);
 
         
         this.setUpdateValues(parse,

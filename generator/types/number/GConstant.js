@@ -49,7 +49,7 @@ extends GOperator
         }
 
 
-        this.value = new NumberValue(value, 10);
+        this.value = new NumberValue(value);
 
         
         this.setUpdateValues(parse,

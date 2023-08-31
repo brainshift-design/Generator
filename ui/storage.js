@@ -421,6 +421,14 @@ function loadConnectionsAsync(_nodes, _conns, loadedNodes, setProgress)
 
 function finishLoading(_nodes)
 {
+    _nodes
+        .filter(n => n.type == VARIABLE)
+        .forEach(n => uiLinkNodeToVariable(
+            nodeFromId(n.id),
+            n.linkedVariableId,
+            ''));
+
+
     if (isEmpty(_nodes))
     {
         graphView.creatingNodes  = false;

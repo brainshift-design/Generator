@@ -14590,7 +14590,7 @@ extends GValue
 
 
 
-    constructor(val = Number.NaN, dec = 0)
+    constructor(val = Number.NaN, dec = -1)
     {
         super(NUMBER_VALUE);
 
@@ -14600,7 +14600,12 @@ extends GValue
 
         this.value     = val;
         this.initValue = val;
-        this.decimals  = dec;
+        
+        this.decimals = 
+              !isNaN(this.value) 
+            && dec == -1 
+            ? decDigits(this.value) 
+            : 0;
     }
 
 
@@ -21861,7 +21866,7 @@ extends GOperator1
             ['preview', new ListValue(this.value.items.slice(0, Math.min(this.value.items.length, 11)))],
             ['type',    type                                                                           ],
             ['length',  new NumberValue(this.value.items.length)                                       ],
-            ['columns', new NumberValue(maxColumns)                                                    ],
+            ['columns', new NumberValue(maxColumns, 0)                                                 ],
             ['index',   index                                                                          ]
         ]);
         
@@ -22010,10 +22015,10 @@ extends GOperator
 
         this.setUpdateValues(parse,
         [
-            ['preview', this.value              ],
-            ['type',    type                    ],
-            ['columns', new NumberValue(columns)],
-            ['rows',    new NumberValue(rows   )]
+            ['preview', this.value                 ],
+            ['type',    type                       ],
+            ['columns', new NumberValue(columns, 0)],
+            ['rows',    new NumberValue(rows   , 0)]
         ]);
         
 
@@ -23455,7 +23460,7 @@ extends GOperator
         }
 
 
-        this.value = new NumberValue(value, 10);
+        this.value = new NumberValue(value);
 
         
         this.setUpdateValues(parse,
@@ -61187,7 +61192,7 @@ extends GValue
 
 
 
-    constructor(val = Number.NaN, dec = 0)
+    constructor(val = Number.NaN, dec = -1)
     {
         super(NUMBER_VALUE);
 
@@ -61197,7 +61202,12 @@ extends GValue
 
         this.value     = val;
         this.initValue = val;
-        this.decimals  = dec;
+        
+        this.decimals = 
+              !isNaN(this.value) 
+            && dec == -1 
+            ? decDigits(this.value) 
+            : 0;
     }
 
 
@@ -68458,7 +68468,7 @@ extends GOperator1
             ['preview', new ListValue(this.value.items.slice(0, Math.min(this.value.items.length, 11)))],
             ['type',    type                                                                           ],
             ['length',  new NumberValue(this.value.items.length)                                       ],
-            ['columns', new NumberValue(maxColumns)                                                    ],
+            ['columns', new NumberValue(maxColumns, 0)                                                 ],
             ['index',   index                                                                          ]
         ]);
         
@@ -68607,10 +68617,10 @@ extends GOperator
 
         this.setUpdateValues(parse,
         [
-            ['preview', this.value              ],
-            ['type',    type                    ],
-            ['columns', new NumberValue(columns)],
-            ['rows',    new NumberValue(rows   )]
+            ['preview', this.value                 ],
+            ['type',    type                       ],
+            ['columns', new NumberValue(columns, 0)],
+            ['rows',    new NumberValue(rows   , 0)]
         ]);
         
 
@@ -70052,7 +70062,7 @@ extends GOperator
         }
 
 
-        this.value = new NumberValue(value, 10);
+        this.value = new NumberValue(value);
 
         
         this.setUpdateValues(parse,
@@ -103606,6 +103616,7 @@ class Operator
     inert; // doesn't eval inputs if values exist
     slow;  // takes a while to finish operation, shows a progress bar
 
+    canRename          = true;
     renamed            = false;     
 
 
@@ -105481,7 +105492,8 @@ Operator.prototype.createHeader = function()
         e.stopPropagation();
 
 
-        if (this.type == PANEL)
+        if (    this.type == PANEL
+            || !this.canRename)
             return;
 
             
@@ -107264,14 +107276,16 @@ extends OperatorBase
     paramValue;
 
 
-    linkedVariableId   = NULL;
-    linkedVariableName = NULL;
+    linkedVariableId = NULL;
 
 
 
     constructor(options = {})
     {
         super(VARIABLE, 'variable', 'variable', iconVarNumber);
+
+
+        this.canRename = false;
 
 
         this.resetValueParam();
@@ -107364,11 +107378,14 @@ extends OperatorBase
 
 
 
-    updateValueParam(resolvedType)
+    updateValueParam(resolvedType, values)
     {
         let type;
+        let value;
+
         let icon;
         let iconOffsetY = 0;
+
 
         switch (resolvedType)
         {
@@ -107384,7 +107401,24 @@ extends OperatorBase
             this.removeAllParams();
             this.createAndAddParamByType(type, 'value', false, true, true);
 
-            this.icon = icon;
+            this.icon        = icon;
+            this.iconOffsetY = iconOffsetY;
+        }
+
+
+        if (values.length > 0)
+        {
+            const val = values[0];
+
+            switch (resolvedType)
+            {
+                case 'FLOAT':   value = new NumberValue(val);                      break;
+                case 'BOOLEAN': value = new NumberValue(val, 0);                   break;
+                case 'STRING':  value = new TextValue(val);                        break;
+                case 'COLOR':   value = ColorValue.create(1, val.r, val.g, val.b); break;
+            }
+console.log('value =', value);
+            this.paramValue.setValue(value, false, true, false);
         }
     }
 
@@ -107396,7 +107430,7 @@ extends OperatorBase
             //   !this.existing 
             // || this.linkedVariableId != NULL;
 
-        this.paramValue.enableControlText(enabled, this.isUnknown());
+        this.paramValue.enableControlText(enabled, this.paramValue.isUnknown());
 
         // // this.paramValue.controls[0].valueText =  this.isUnknown() ? UNKNOWN_DISPLAY : '';
         // this.paramValue.controls[0].showBar   = false;//!this.isUnknown();
@@ -107476,7 +107510,7 @@ extends OperatorBase
         const tab = HTAB;
 
         return super.toJsonBase(nTab)
-             + ',\n' + pos + tab + '"linkedVariableId": "' + this.linkedVariableId          + '"';
+             + ',\n' + pos + tab + '"linkedVariableId": "' + this.linkedVariableId + '"';
     }
 
 
@@ -107485,15 +107519,14 @@ extends OperatorBase
     {
         if (!pasting)
         {
-            this.linkedVariableId = _node.linkedVariableId;
-     
             super.loadParams(_node, pasting);
+            
+            this.linkedVariableId = _node.linkedVariableId;
         }
         else
         {
-            this.name               = this.defName;
-            this.linkedVariableId   = NULL;
-            this.linkedVariableName = '';
+            this.name             = this.defName;
+            this.linkedVariableId = NULL;
         }
     }
 }
@@ -131777,6 +131810,14 @@ function loadConnectionsAsync(_nodes, _conns, loadedNodes, setProgress)
 
 function finishLoading(_nodes)
 {
+    _nodes
+        .filter(n => n.type == VARIABLE)
+        .forEach(n => uiLinkNodeToVariable(
+            nodeFromId(n.id),
+            n.linkedVariableId,
+            ''));
+
+
     if (isEmpty(_nodes))
     {
         graphView.creatingNodes  = false;
@@ -134118,7 +134159,9 @@ function uiReturnFigLinkNodeToVariable(msg)
 {
     const node = nodeFromId(msg.nodeId);
 
-    node.updateValueParam(msg.type);
+    node.updateValueParam(msg.type, msg.values);
+
+    pushUpdate(null, [node]);
 }
 
 
@@ -134178,18 +134221,14 @@ function uiLinkNodeToVariable(node, variableId, variableName)
     node.linkedVariableId   = variableId;
     node.linkedVariableName = variableName;
 
-
     if (variableName != NULL)
         node.name = variableName;
-
-    pushUpdate(null, [node]);
-
 
     uiQueueMessageToFigma(
     {
         cmd:       'figLinkNodeToVariable',
-        variableId: variableId,
-        nodeId:     node.id 
+        nodeId:     node.id,
+        variableId: variableId
     });
 }
 

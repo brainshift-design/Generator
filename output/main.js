@@ -2840,11 +2840,20 @@ function figLinkNodeToVariable(nodeId, varId) {
 }
 function figLinkVariable(localVars, nodeId, varId) {
     const variable = localVars.find(v => v.id == varId);
+    console.log('nodeId =', nodeId);
+    console.log('varId =', varId);
+    console.log('variable =', variable);
+    console.log('');
+    const collection = figma.variables.getVariableCollectionById(variable.variableCollectionId);
+    const values = [];
+    for (const mode of collection.modes)
+        values.push(variable.valuesByMode[mode.modeId]);
     figPostMessageToUi({
         cmd: 'uiReturnFigLinkNodeToVariable',
         nodeId: nodeId,
         variableId: variable.id,
-        type: variable.resolvedType
+        type: variable.resolvedType,
+        values: values
     });
     return variable;
 }

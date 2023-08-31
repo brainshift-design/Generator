@@ -84,10 +84,10 @@ extends GOperator
 
         this.setUpdateValues(parse,
         [
-            ['preview', this.value              ],
-            ['type',    type                    ],
-            ['columns', new NumberValue(columns)],
-            ['rows',    new NumberValue(rows   )]
+            ['preview', this.value                 ],
+            ['type',    type                       ],
+            ['columns', new NumberValue(columns, 0)],
+            ['rows',    new NumberValue(rows   , 0)]
         ]);
         
 

@@ -4,14 +4,16 @@ extends OperatorBase
     paramValue;
 
 
-    linkedVariableId   = NULL;
-    linkedVariableName = NULL;
+    linkedVariableId = NULL;
 
 
 
     constructor(options = {})
     {
         super(VARIABLE, 'variable', 'variable', iconVarNumber);
+
+
+        this.canRename = false;
 
 
         this.resetValueParam();
@@ -104,11 +106,14 @@ extends OperatorBase
 
 
 
-    updateValueParam(resolvedType)
+    updateValueParam(resolvedType, values)
     {
         let type;
+        let value;
+
         let icon;
         let iconOffsetY = 0;
+
 
         switch (resolvedType)
         {
@@ -124,7 +129,24 @@ extends OperatorBase
             this.removeAllParams();
             this.createAndAddParamByType(type, 'value', false, true, true);
 
-            this.icon = icon;
+            this.icon        = icon;
+            this.iconOffsetY = iconOffsetY;
+        }
+
+
+        if (values.length > 0)
+        {
+            const val = values[0];
+
+            switch (resolvedType)
+            {
+                case 'FLOAT':   value = new NumberValue(val);                      break;
+                case 'BOOLEAN': value = new NumberValue(val, 0);                   break;
+                case 'STRING':  value = new TextValue(val);                        break;
+                case 'COLOR':   value = ColorValue.create(1, val.r, val.g, val.b); break;
+            }
+console.log('value =', value);
+            this.paramValue.setValue(value, false, true, false);
         }
     }
 
@@ -136,7 +158,7 @@ extends OperatorBase
             //   !this.existing 
             // || this.linkedVariableId != NULL;
 
-        this.paramValue.enableControlText(enabled, this.isUnknown());
+        this.paramValue.enableControlText(enabled, this.paramValue.isUnknown());
 
         // // this.paramValue.controls[0].valueText =  this.isUnknown() ? UNKNOWN_DISPLAY : '';
         // this.paramValue.controls[0].showBar   = false;//!this.isUnknown();
@@ -216,7 +238,7 @@ extends OperatorBase
         const tab = HTAB;
 
         return super.toJsonBase(nTab)
-             + ',\n' + pos + tab + '"linkedVariableId": "' + this.linkedVariableId          + '"';
+             + ',\n' + pos + tab + '"linkedVariableId": "' + this.linkedVariableId + '"';
     }
 
 
@@ -225,15 +247,14 @@ extends OperatorBase
     {
         if (!pasting)
         {
-            this.linkedVariableId = _node.linkedVariableId;
-     
             super.loadParams(_node, pasting);
+            
+            this.linkedVariableId = _node.linkedVariableId;
         }
         else
         {
-            this.name               = this.defName;
-            this.linkedVariableId   = NULL;
-            this.linkedVariableName = '';
+            this.name             = this.defName;
+            this.linkedVariableId = NULL;
         }
     }
 }

@@ -7,7 +7,7 @@ extends GValue
 
 
 
-    constructor(val = Number.NaN, dec = 0)
+    constructor(val = Number.NaN, dec = -1)
     {
         super(NUMBER_VALUE);
 
@@ -17,7 +17,12 @@ extends GValue
 
         this.value     = val;
         this.initValue = val;
-        this.decimals  = dec;
+        
+        this.decimals = 
+              !isNaN(this.value) 
+            && dec == -1 
+            ? decDigits(this.value) 
+            : 0;
     }
 
 
