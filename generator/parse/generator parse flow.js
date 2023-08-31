@@ -68,9 +68,9 @@ function genParseVariable(parse)
 
 
     variable.id       = parse.move();
-    variable.name     = options.nodeName;
+    //variable.name     = options.nodeName;
     
-    variable.genValue = genParse(parse);
+    variable.varValue = genParse(parse);
 
     
     parse.nTab--;

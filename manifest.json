@@ -10,5 +10,6 @@
   {
     "allowedDomains": ["*"],
     "reasoning":      "Generator lets the user fetch data from web APIs."
-  }
+  },
+  "documentAccess": "incremental"
 }

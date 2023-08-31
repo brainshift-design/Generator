@@ -1,5 +1,5 @@
 class   OpVariable
-extends OperatorBase
+extends ResizableBase
 {
     paramValue;
 
@@ -127,7 +127,7 @@ extends OperatorBase
         if (this.paramValue.type != type)
         {
             this.removeAllParams();
-            this.createAndAddParamByType(type, 'value', false, true, true);
+            this.paramValue = this.createAndAddParamByType(type, 'value', false, true, true);
 
             this.icon        = icon;
             this.iconOffsetY = iconOffsetY;
@@ -143,9 +143,17 @@ extends OperatorBase
                 case 'FLOAT':   value = new NumberValue(val);                      break;
                 case 'BOOLEAN': value = new NumberValue(val, 0);                   break;
                 case 'STRING':  value = new TextValue(val);                        break;
-                case 'COLOR':   value = ColorValue.create(1, val.r, val.g, val.b); break;
+
+                case 'COLOR':
+                    value = ColorValue.create(
+                        1, 
+                        Math.round(val.r * 0xff), 
+                        Math.round(val.g * 0xff), 
+                        Math.round(val.b * 0xff)); 
+                    
+                    break;
             }
-console.log('value =', value);
+
             this.paramValue.setValue(value, false, true, false);
         }
     }
@@ -158,7 +166,7 @@ console.log('value =', value);
             //   !this.existing 
             // || this.linkedVariableId != NULL;
 
-        this.paramValue.enableControlText(enabled, this.paramValue.isUnknown());
+        this.paramValue.enableControlText(false, this.paramValue.isUnknown());
 
         // // this.paramValue.controls[0].valueText =  this.isUnknown() ? UNKNOWN_DISPLAY : '';
         // this.paramValue.controls[0].showBar   = false;//!this.isUnknown();

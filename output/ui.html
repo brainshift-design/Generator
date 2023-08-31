@@ -20461,8 +20461,8 @@ extends GOperator
 {
     id;
 
-    variable;
-    genValue;
+    //variable;
+    varValue;
 
     //existing;
     linked;
@@ -20483,8 +20483,8 @@ extends GOperator
         const copy = new GColorStyle(this.nodeId, this.options);
 
         copy.id       = this.id;
-        copy.variable = this.variable.copy();
-        copy.genValue = this.genValue.copy();
+        //copy.variable = this.variable.copy();
+        copy.genValue = this.varValue.copy();
         
         //copy.existing   = this.existing;
         copy.linked   = this.linked;
@@ -20500,7 +20500,7 @@ extends GOperator
             return this;
 
         
-        this.value = (await this.genValue.eval(parse)).toValue();
+        this.value = (await this.varValue.eval(parse)).toValue();
 
 
         // if (   this.value.isValid()
@@ -20517,7 +20517,7 @@ extends GOperator
         //     this.evalStyle({rgba: rgbaStripe});
         // }
         // else
-            this.value = NullValue;
+            // this.value = NullValue;
 
 
         this.setUpdateValues(parse,
@@ -20561,7 +20561,7 @@ extends GOperator
 
     isValid()
     {
-        return this.genValue && this.genValue.isValid();
+        return this.varValue && this.varValue.isValid();
     }
 
 
@@ -20570,7 +20570,7 @@ extends GOperator
     {
         super.pushValueUpdates(parse);
 
-        if (this.genValue) this.genValue.pushValueUpdates(parse);
+        if (this.varValue) this.varValue.pushValueUpdates(parse);
     }
 
 
@@ -20579,7 +20579,7 @@ extends GOperator
     {
         super.invalidateInputs(parse, from);
 
-        if (this.genValue) this.genValue.invalidateInputs(parse, from);
+        if (this.varValue) this.varValue.invalidateInputs(parse, from);
     }
 
 
@@ -20588,7 +20588,7 @@ extends GOperator
     {
         super.iterateLoop(parse);
 
-        if (this.genValue) this.genValue.iterateLoop(parse);
+        if (this.varValue) this.varValue.iterateLoop(parse);
     }
 }
 
@@ -40506,9 +40506,9 @@ function genParseVariable(parse)
 
 
     variable.id       = parse.move();
-    variable.name     = options.nodeName;
+    //variable.name     = options.nodeName;
     
-    variable.genValue = genParse(parse);
+    variable.varValue = genParse(parse);
 
     
     parse.nTab--;
@@ -67063,8 +67063,8 @@ extends GOperator
 {
     id;
 
-    variable;
-    genValue;
+    //variable;
+    varValue;
 
     //existing;
     linked;
@@ -67085,8 +67085,8 @@ extends GOperator
         const copy = new GColorStyle(this.nodeId, this.options);
 
         copy.id       = this.id;
-        copy.variable = this.variable.copy();
-        copy.genValue = this.genValue.copy();
+        //copy.variable = this.variable.copy();
+        copy.genValue = this.varValue.copy();
         
         //copy.existing   = this.existing;
         copy.linked   = this.linked;
@@ -67102,7 +67102,7 @@ extends GOperator
             return this;
 
         
-        this.value = (await this.genValue.eval(parse)).toValue();
+        this.value = (await this.varValue.eval(parse)).toValue();
 
 
         // if (   this.value.isValid()
@@ -67119,7 +67119,7 @@ extends GOperator
         //     this.evalStyle({rgba: rgbaStripe});
         // }
         // else
-            this.value = NullValue;
+            // this.value = NullValue;
 
 
         this.setUpdateValues(parse,
@@ -67163,7 +67163,7 @@ extends GOperator
 
     isValid()
     {
-        return this.genValue && this.genValue.isValid();
+        return this.varValue && this.varValue.isValid();
     }
 
 
@@ -67172,7 +67172,7 @@ extends GOperator
     {
         super.pushValueUpdates(parse);
 
-        if (this.genValue) this.genValue.pushValueUpdates(parse);
+        if (this.varValue) this.varValue.pushValueUpdates(parse);
     }
 
 
@@ -67181,7 +67181,7 @@ extends GOperator
     {
         super.invalidateInputs(parse, from);
 
-        if (this.genValue) this.genValue.invalidateInputs(parse, from);
+        if (this.varValue) this.varValue.invalidateInputs(parse, from);
     }
 
 
@@ -67190,7 +67190,7 @@ extends GOperator
     {
         super.iterateLoop(parse);
 
-        if (this.genValue) this.genValue.iterateLoop(parse);
+        if (this.varValue) this.varValue.iterateLoop(parse);
     }
 }
 
@@ -107271,7 +107271,7 @@ function OpNull_onDisconnectInput(node)
 
 
 class   OpVariable
-extends OperatorBase
+extends ResizableBase
 {
     paramValue;
 
@@ -107399,7 +107399,7 @@ extends OperatorBase
         if (this.paramValue.type != type)
         {
             this.removeAllParams();
-            this.createAndAddParamByType(type, 'value', false, true, true);
+            this.paramValue = this.createAndAddParamByType(type, 'value', false, true, true);
 
             this.icon        = icon;
             this.iconOffsetY = iconOffsetY;
@@ -107415,9 +107415,17 @@ extends OperatorBase
                 case 'FLOAT':   value = new NumberValue(val);                      break;
                 case 'BOOLEAN': value = new NumberValue(val, 0);                   break;
                 case 'STRING':  value = new TextValue(val);                        break;
-                case 'COLOR':   value = ColorValue.create(1, val.r, val.g, val.b); break;
+
+                case 'COLOR':
+                    value = ColorValue.create(
+                        1, 
+                        Math.round(val.r * 0xff), 
+                        Math.round(val.g * 0xff), 
+                        Math.round(val.b * 0xff)); 
+                    
+                    break;
             }
-console.log('value =', value);
+
             this.paramValue.setValue(value, false, true, false);
         }
     }
@@ -107430,7 +107438,7 @@ console.log('value =', value);
             //   !this.existing 
             // || this.linkedVariableId != NULL;
 
-        this.paramValue.enableControlText(enabled, this.paramValue.isUnknown());
+        this.paramValue.enableControlText(false, this.paramValue.isUnknown());
 
         // // this.paramValue.controls[0].valueText =  this.isUnknown() ? UNKNOWN_DISPLAY : '';
         // this.paramValue.controls[0].showBar   = false;//!this.isUnknown();
@@ -131721,6 +131729,14 @@ function loadNodesAndConnsAsync(_nodes, _conns, setProgress)
     promise.then(nodes => 
     {
         graph.addNodes(nodes, false, false);
+        
+        nodes
+            .filter(n => n.type == VARIABLE)
+            .forEach(n => uiLinkNodeToVariable(
+                n,
+                n.linkedVariableId,
+                ''));
+
         loadConnectionsAsync(_nodes, _conns, nodes, setProgress);    
     });
 }
@@ -131810,14 +131826,6 @@ function loadConnectionsAsync(_nodes, _conns, loadedNodes, setProgress)
 
 function finishLoading(_nodes)
 {
-    _nodes
-        .filter(n => n.type == VARIABLE)
-        .forEach(n => uiLinkNodeToVariable(
-            nodeFromId(n.id),
-            n.linkedVariableId,
-            ''));
-
-
     if (isEmpty(_nodes))
     {
         graphView.creatingNodes  = false;

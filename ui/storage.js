@@ -332,6 +332,14 @@ function loadNodesAndConnsAsync(_nodes, _conns, setProgress)
     promise.then(nodes => 
     {
         graph.addNodes(nodes, false, false);
+        
+        nodes
+            .filter(n => n.type == VARIABLE)
+            .forEach(n => uiLinkNodeToVariable(
+                n,
+                n.linkedVariableId,
+                ''));
+
         loadConnectionsAsync(_nodes, _conns, nodes, setProgress);    
     });
 }
@@ -421,14 +429,6 @@ function loadConnectionsAsync(_nodes, _conns, loadedNodes, setProgress)
 
 function finishLoading(_nodes)
 {
-    _nodes
-        .filter(n => n.type == VARIABLE)
-        .forEach(n => uiLinkNodeToVariable(
-            nodeFromId(n.id),
-            n.linkedVariableId,
-            ''));
-
-
     if (isEmpty(_nodes))
     {
         graphView.creatingNodes  = false;

@@ -3,8 +3,8 @@ extends GOperator
 {
     id;
 
-    variable;
-    genValue;
+    //variable;
+    varValue;
 
     //existing;
     linked;
@@ -25,8 +25,8 @@ extends GOperator
         const copy = new GColorStyle(this.nodeId, this.options);
 
         copy.id       = this.id;
-        copy.variable = this.variable.copy();
-        copy.genValue = this.genValue.copy();
+        //copy.variable = this.variable.copy();
+        copy.genValue = this.varValue.copy();
         
         //copy.existing   = this.existing;
         copy.linked   = this.linked;
@@ -42,7 +42,7 @@ extends GOperator
             return this;
 
         
-        this.value = (await this.genValue.eval(parse)).toValue();
+        this.value = (await this.varValue.eval(parse)).toValue();
 
 
         // if (   this.value.isValid()
@@ -59,7 +59,7 @@ extends GOperator
         //     this.evalStyle({rgba: rgbaStripe});
         // }
         // else
-            this.value = NullValue;
+            // this.value = NullValue;
 
 
         this.setUpdateValues(parse,
@@ -103,7 +103,7 @@ extends GOperator
 
     isValid()
     {
-        return this.genValue && this.genValue.isValid();
+        return this.varValue && this.varValue.isValid();
     }
 
 
@@ -112,7 +112,7 @@ extends GOperator
     {
         super.pushValueUpdates(parse);
 
-        if (this.genValue) this.genValue.pushValueUpdates(parse);
+        if (this.varValue) this.varValue.pushValueUpdates(parse);
     }
 
 
@@ -121,7 +121,7 @@ extends GOperator
     {
         super.invalidateInputs(parse, from);
 
-        if (this.genValue) this.genValue.invalidateInputs(parse, from);
+        if (this.varValue) this.varValue.invalidateInputs(parse, from);
     }
 
 
@@ -130,6 +130,6 @@ extends GOperator
     {
         super.iterateLoop(parse);
 
-        if (this.genValue) this.genValue.iterateLoop(parse);
+        if (this.varValue) this.varValue.iterateLoop(parse);
     }
 }
