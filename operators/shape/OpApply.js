@@ -9,7 +9,7 @@ extends OpShape
 
         
         this.addInput (this.createInputForObjects(SHAPE_VALUES, getNodeInputValuesForUndo));
-        this.addOutput(new Output([SHAPE_VALUE], this.output_genRequest));
+        this.addOutput(new Output([...SHAPE_VALUES, SHAPE_LIST_VALUE], this.output_genRequest));
 
 
         this.addBaseParams();

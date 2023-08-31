@@ -48,6 +48,7 @@
 ../operators/flow/OpStart.js
 ../operators/flow/OpRepeat.js
 ../operators/flow/OpNull.js
+../operators/flow/OpVariable.js
 ../operators/flow/OpCache.js
 ../operators/flow/OpFreeze.js
 ../operators/flow/OpTimer.js

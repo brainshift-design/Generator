@@ -7,7 +7,7 @@ extends OperatorBase
 
     constructor()
     {
-        super(JOIN, 'join', 'join', iconJoin);
+        super(JOIN, 'combine', 'combine', iconJoin);
 
         this.canDisable        = true;
         this.variableInputs    = true;

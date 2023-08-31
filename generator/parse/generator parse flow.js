@@ -42,6 +42,49 @@ function genParseNull(parse)
 
 
 
+function genParseVariable(parse)
+{
+    const [, nodeId, options, ignore] = genParseNodeStart(parse);
+
+
+    const variable = new GVariable(nodeId, options);
+
+    variable.existing = options.existing;
+
+
+    if (parse.settings.logRequests) 
+        logReq(variable, parse, ignore);
+
+
+    if (ignore) 
+    {
+        genParseNodeEnd(parse, variable);
+        return parse.parsedNodes.find(n => n.nodeId == nodeId);
+    }
+
+
+    parse.nTab++;
+    parse.inParam = false;
+
+
+    variable.id       = parse.move();
+    variable.name     = options.nodeName;
+    
+    variable.genValue = genParse(parse);
+
+    
+    parse.nTab--;
+
+    
+    variable.linked = variable.id != NULL;
+
+
+    genParseNodeEnd(parse, variable);
+    return variable;
+}
+
+
+
 function genParseListValue(parse)
 {
     parse.pos++; // LIST_VALUE

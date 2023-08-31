@@ -4689,6 +4689,7 @@ const  SHAPE_LIST_VALUE       = 'SLIST#';
 
 
 const NULL_NODE               = 'NULL';
+const VARIABLE                = 'VAR';
 const START                   = 'START';
 const REPEAT                  = 'REPT';
 const CACHE                   = 'CACHE';
@@ -4740,12 +4741,10 @@ const LIST_VALUES =
 ];
 
 
-//const FOREACH = 'FOR';
-
-
 const FLOW_TYPES =
 [
     NULL_NODE,
+    VARIABLE,
     ...LIST_TYPES,
     CONDENSE,
     SUBLIST,
@@ -5001,11 +5000,6 @@ const LAYER_MASK_VALUE   = 'MASK#';
 const LAYER_MASK         = 'MASK';
 const LAYER_MASK_TYPES   = [LAYER_MASK_VALUE, LAYER_MASK];
 
-const VAR_COLOR          = 'CVAR';
-const VAR_NUMBER         = 'NVAR';
-const VAR_TEXT           = 'TVAR';
-const VAR_BOOLEAN        = 'BVAR';
-
 
 const EFFECT_TYPES =
 [
@@ -5014,15 +5008,6 @@ const EFFECT_TYPES =
     ...LAYER_BLUR_TYPES,
     ...BACK_BLUR_TYPES,
     ...LAYER_MASK_TYPES
-];
-
-
-const VARIABLE_TYPES =
-[
-    VAR_COLOR,
-    VAR_NUMBER,
-    VAR_TEXT,
-    VAR_BOOLEAN
 ];
 
 
@@ -5355,6 +5340,7 @@ const CREATE_INSERT_ACTION       = 'CREATE_INSERT';
 const DELETE_ACTION              = 'DELETE';
 const DISCONNECT_ACTION          = 'DISCONNECT';
 const LINK_STYLE_ACTION          = 'LINK_STYLE';
+const LINK_VARIABLE_ACTION       = 'LINK_VARIABLE';
 const MAKE_ACTIVE_ACTION         = 'MAKE_ACTIVE';
 const MAKE_PASSIVE_ACTION        = 'MAKE_PASSIVE';
 const PASTE_ACTION               = 'PASTE';
@@ -15130,6 +15116,143 @@ extends GOperator
     }
 }
 
+
+
+class GVariable
+extends GOperator
+{
+    id;
+
+    variable;
+    genValue;
+
+    //existing;
+    linked;
+
+
+
+    constructor(nodeId, options, styleId)
+    {
+        super(VARIABLE, nodeId, options);
+
+        this.id == styleId;
+    }
+
+
+
+    copy()
+    {
+        const copy = new GColorStyle(this.nodeId, this.options);
+
+        copy.id       = this.id;
+        copy.variable = this.variable.copy();
+        copy.genValue = this.genValue.copy();
+        
+        //copy.existing   = this.existing;
+        copy.linked   = this.linked;
+
+        return copy;
+    }
+
+
+
+    async eval(parse)
+    {
+        if (this.isCached())
+            return this;
+
+        
+        this.value = (await this.genValue.eval(parse)).toValue();
+
+
+        // if (   this.value.isValid()
+        //     && this.linked)
+        //     // (  !this.existing
+        //     //     || this.linked))
+        // {
+        //     if (this.value.type == COLOR_VALUE)
+        //         this.value = FillValue.fromRgb(scaleRgb(this.value.toRgb()), 0xff);
+
+        //     const rgba       = this.value.toRgba();
+        //     const rgbaStripe = rgb_a(getStripeBackColor(rgba), rgba[3]);
+
+        //     this.evalStyle({rgba: rgbaStripe});
+        // }
+        // else
+            this.value = NullValue;
+
+
+        this.setUpdateValues(parse,
+        [
+            ['value', this.value]
+        ]);
+
+
+        this.validate();
+
+        return this;
+    }
+
+
+
+    evalVariable(options = {})
+    {
+        if (!this.options.enabled)
+            return;
+
+            
+        // const colorStyle = new FigmaColorStyle(this.nodeId, this.id, this.name);
+
+        // //colorStyle.existing = this.existing;
+
+
+        // colorStyle.paints = 
+        // [
+        //     [ 'SOLID', 
+        //               Math.round(options.rgba[0] * 0xff)
+        //       + ' ' + Math.round(options.rgba[1] * 0xff)
+        //       + ' ' + Math.round(options.rgba[2] * 0xff)
+        //       + ' ' + Math.round(options.rgba[3] * 100 ) ]
+        // ];
+
+
+        // this.variable = colorStyle;
+    }
+
+
+
+    isValid()
+    {
+        return this.genValue && this.genValue.isValid();
+    }
+
+
+
+    pushValueUpdates(parse)
+    {
+        super.pushValueUpdates(parse);
+
+        if (this.genValue) this.genValue.pushValueUpdates(parse);
+    }
+
+
+
+    invalidateInputs(parse, from)
+    {
+        super.invalidateInputs(parse, from);
+
+        if (this.genValue) this.genValue.invalidateInputs(parse, from);
+    }
+
+
+
+    iterateLoop(parse)
+    {
+        super.iterateLoop(parse);
+
+        if (this.genValue) this.genValue.iterateLoop(parse);
+    }
+}
 
 
 class GCache
@@ -35019,6 +35142,49 @@ function genParseNull(parse)
 
 
 
+function genParseVariable(parse)
+{
+    const [, nodeId, options, ignore] = genParseNodeStart(parse);
+
+
+    const variable = new GVariable(nodeId, options);
+
+    variable.existing = options.existing;
+
+
+    if (parse.settings.logRequests) 
+        logReq(variable, parse, ignore);
+
+
+    if (ignore) 
+    {
+        genParseNodeEnd(parse, variable);
+        return parse.parsedNodes.find(n => n.nodeId == nodeId);
+    }
+
+
+    parse.nTab++;
+    parse.inParam = false;
+
+
+    variable.id       = parse.move();
+    variable.name     = options.nodeName;
+    
+    variable.genValue = genParse(parse);
+
+    
+    parse.nTab--;
+
+    
+    variable.linked = variable.id != NULL;
+
+
+    genParseNodeEnd(parse, variable);
+    return variable;
+}
+
+
+
 function genParseListValue(parse)
 {
     parse.pos++; // LIST_VALUE
@@ -40685,6 +40851,7 @@ function genParse(parse, inParam = true)
           || parse.next ==  SHAPE_LIST_VALUE      ) result = genParseListValue         (parse);
  
     else if (parse.next == NULL_NODE              ) result = genParseNull              (parse);
+    else if (parse.next == VARIABLE               ) result = genParseVariable          (parse);
 
     else if (parse.next == JOIN                   ) result = genParseJoin              (parse);
     else if (parse.next == CONDENSE               ) result = genParseCondense          (parse);
@@ -40699,7 +40866,7 @@ function genParse(parse, inParam = true)
     else if (parse.next == LIST_COUNT             ) result = genParseListCount         (parse);
     else if (parse.next == CONTAINS               ) result = genParseListContains      (parse);
     else if (parse.next == IF_ELSE                ) result = genParseIfElse            (parse);
-    else if (parse.next == START               ) result = genParseStart          (parse);
+    else if (parse.next == START                  ) result = genParseStart             (parse);
     else if (parse.next == REPEAT                 ) result = genParseRepeat            (parse);
     else if (parse.next == CACHE                  ) result = genParseCache             (parse);
     else if (parse.next == DEFINE                 ) result = genParseDefine            (parse);

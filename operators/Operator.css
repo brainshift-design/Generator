@@ -431,6 +431,55 @@
 }    
 
 
+.btnCircleWrapper
+{
+    display:        inline-block;
+    width:          16px;
+    height:         16px;
+    border-radius:   8px;
+    margin-right:    7px;
+    position:       relative;
+    top:           -1px;
+    pointer-events: all;
+    overflow:       hidden;
+}
+
+
+.btnCircleBack
+{
+    width:          16px;
+    height:         16px;
+    pointer-events: none;
+    position:       absolute;
+    left:           0;
+    top:            0;
+}
+
+
+.btnCircle
+{
+    display:        inline-block;
+    width:          16px;
+    height:         16px;
+    position:       absolute;
+    left:           0;
+    top:            0;
+}
+
+
+.btnLink
+{
+    width:          16px;
+    height:         16px;
+    pointer-events: none;
+    position:       absolute;
+    left:           50%;
+    top:            50%;
+    transform:      translateX(-50%)
+                    translateY(-50%);
+}    
+
+
 .headerCircleWrapper
 {
     display:        inline-block;

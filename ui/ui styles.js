@@ -119,9 +119,8 @@ function uiReturnFigGetAllLocalColorStyles(msg)
 
     initLocalStylesMenu(styles, msg.nodeId);
 
-    menuLocalStyles.showAt(msg.px, msg.py, false);
+    menuLocalVariables.showAt(msg.px, msg.py, false);
 }
-
 
 
 function uiReturnGetAllLocalTemplateNames(templateNames)
@@ -166,7 +165,7 @@ function initLocalStylesMenu(styles, nodeId)
     consoleAssert(node.type == COLOR_STYLE, 'node must be COLOR_STYLE');
 
 
-    menuLocalStyles.clearItems();
+    menuLocalVariables.clearItems();
 
     for (const style of styles)
     {
@@ -194,15 +193,15 @@ function initLocalStylesMenu(styles, nodeId)
 
         item.setChecked(style.nodeId == node.id);
 
-        menuLocalStyles.addItems([item]);
+        menuLocalVariables.addItems([item]);
     }
 
 
     if (!isEmpty(styles))
-        menuLocalStyles.addItems([new MenuItem('', null, {separator: true})]);
+        menuLocalVariables.addItems([new MenuItem('', null, {separator: true})]);
 
         
-    menuLocalStyles.addItems([
+    menuLocalVariables.addItems([
         new MenuItem('None', null, {
             callback: e => actionManager.do(new LinkExistingStyleAction(nodeId, NULL, '', [])),
             enabled:  node.linkedStyleId != NULL})

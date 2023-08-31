@@ -131,6 +131,7 @@ function genParse(parse, inParam = true)
           || parse.next ==  SHAPE_LIST_VALUE      ) result = genParseListValue         (parse);
  
     else if (parse.next == NULL_NODE              ) result = genParseNull              (parse);
+    else if (parse.next == VARIABLE               ) result = genParseVariable          (parse);
 
     else if (parse.next == JOIN                   ) result = genParseJoin              (parse);
     else if (parse.next == CONDENSE               ) result = genParseCondense          (parse);
@@ -145,7 +146,7 @@ function genParse(parse, inParam = true)
     else if (parse.next == LIST_COUNT             ) result = genParseListCount         (parse);
     else if (parse.next == CONTAINS               ) result = genParseListContains      (parse);
     else if (parse.next == IF_ELSE                ) result = genParseIfElse            (parse);
-    else if (parse.next == START               ) result = genParseStart          (parse);
+    else if (parse.next == START                  ) result = genParseStart             (parse);
     else if (parse.next == REPEAT                 ) result = genParseRepeat            (parse);
     else if (parse.next == CACHE                  ) result = genParseCache             (parse);
     else if (parse.next == DEFINE                 ) result = genParseDefine            (parse);

@@ -538,6 +538,7 @@ const NUMBER_LIST_VALUE = 'NLIST#';
 const TEXT_LIST_VALUE = 'TLIST#';
 const SHAPE_LIST_VALUE = 'SLIST#';
 const NULL_NODE = 'NULL';
+const VARIABLE = 'VAR';
 const START = 'START';
 const REPEAT = 'REPT';
 const CACHE = 'CACHE';
@@ -578,9 +579,9 @@ const LIST_VALUES = [
     TEXT_LIST_VALUE,
     SHAPE_LIST_VALUE
 ];
-//const FOREACH = 'FOR';
 const FLOW_TYPES = [
     NULL_NODE,
+    VARIABLE,
     ...LIST_TYPES,
     CONDENSE,
     SUBLIST,
@@ -791,22 +792,12 @@ const BACK_BLUR_TYPES = [BACK_BLUR_VALUE, BACK_BLUR];
 const LAYER_MASK_VALUE = 'MASK#';
 const LAYER_MASK = 'MASK';
 const LAYER_MASK_TYPES = [LAYER_MASK_VALUE, LAYER_MASK];
-const VAR_COLOR = 'CVAR';
-const VAR_NUMBER = 'NVAR';
-const VAR_TEXT = 'TVAR';
-const VAR_BOOLEAN = 'BVAR';
 const EFFECT_TYPES = [
     ...DROP_SHADOW_TYPES,
     ...INNER_SHADOW_TYPES,
     ...LAYER_BLUR_TYPES,
     ...BACK_BLUR_TYPES,
     ...LAYER_MASK_TYPES
-];
-const VARIABLE_TYPES = [
-    VAR_COLOR,
-    VAR_NUMBER,
-    VAR_TEXT,
-    VAR_BOOLEAN
 ];
 const STYLE_VALUES = [
     COLOR_VALUE,
@@ -1044,6 +1035,7 @@ const CREATE_INSERT_ACTION = 'CREATE_INSERT';
 const DELETE_ACTION = 'DELETE';
 const DISCONNECT_ACTION = 'DISCONNECT';
 const LINK_STYLE_ACTION = 'LINK_STYLE';
+const LINK_VARIABLE_ACTION = 'LINK_VARIABLE';
 const MAKE_ACTIVE_ACTION = 'MAKE_ACTIVE';
 const MAKE_PASSIVE_ACTION = 'MAKE_PASSIVE';
 const PASTE_ACTION = 'PASTE';
@@ -1668,6 +1660,12 @@ figma.ui.onmessage = function (msg) {
             break;
         case 'figRemovePluginDataFromAllLocalStyles':
             figRemovePluginDataFromAllLocalStyles();
+            break;
+        case 'figGetAllLocalVariables':
+            figGetAllLocalVariables(msg.nodeId, msg.px, msg.py);
+            break;
+        case 'figLinkNodeToVariable':
+            figLinkNodeToVariable(msg.nodeId, msg.variableId);
             break;
         case 'figGetAllLocalColorStyles':
             figGetAllLocalColorStyles(msg.nodeId, msg.px, msg.py);
@@ -2812,6 +2810,43 @@ function setStylePaints(figStyle, genStyle) {
         figStyle.paints = getStylePaints(genStyle[FO_STYLE_PAINTS]);
     else
         figStyle.paints = [];
+}
+function figGetAllLocalVariables(nodeId, px, py) {
+    const localVars = figma.variables.getLocalVariables();
+    const variables = new Array();
+    for (const _var of localVars) {
+        //const _nodeId = _var.getPluginData('nodeId');
+        const variable = {
+            id: _var.id,
+            //nodeId:        _nodeId,
+            name: _var.name,
+            collectionName: figma.variables.getVariableCollectionById(_var.variableCollectionId).name,
+            type: _var.resolvedType
+        };
+        variables.push(variable);
+    }
+    figPostMessageToUi({
+        cmd: 'uiReturnFigGetAllLocalVariables',
+        nodeId: nodeId,
+        px: px,
+        py: py,
+        variables: JSON.stringify(variables)
+    });
+}
+function figLinkNodeToVariable(nodeId, varId) {
+    const localVars = figma.variables.getLocalVariables();
+    if (varId != NULL)
+        figLinkVariable(localVars, nodeId, varId);
+}
+function figLinkVariable(localVars, nodeId, varId) {
+    const variable = localVars.find(v => v.id == varId);
+    figPostMessageToUi({
+        cmd: 'uiReturnFigLinkNodeToVariable',
+        nodeId: nodeId,
+        variableId: variable.id,
+        type: variable.resolvedType
+    });
+    return variable;
 }
 function getFigmaTransform(tl, tr, bl) {
     let vr = point(tr.x - tl.x, tr.y - tl.y);

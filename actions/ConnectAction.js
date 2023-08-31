@@ -129,14 +129,22 @@ function connectAction_saveInputActiveNodes(act)
 
 function connectAction_saveOutputValues(act)
 {
-    act.outputValues = act.output.getValuesForUndo ? act.output.getValuesForUndo(act.output) : [];
+    act.outputValues = 
+           act.output 
+        && act.output.getValuesForUndo 
+        ? act.output.getValuesForUndo(act.output) 
+        : [];
 }
 
 
 
 function connectAction_saveInputValues(act)
 {
-    act.inputValues = act.input.getValuesForUndo ? act.input.getValuesForUndo(act.input) : [];
+    act.inputValues = 
+           act.input 
+        && act.input.getValuesForUndo 
+        ? act.input.getValuesForUndo(act.input) 
+        : [];
 }
 
 

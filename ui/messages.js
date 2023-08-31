@@ -45,6 +45,9 @@ onmessage = e =>
                                                    
         case 'uiReturnFigResizeWindow':           uiReturnFigResizeWindow          ();                  break;
                            
+        case 'uiReturnFigGetAllLocalVariables':   uiReturnFigGetAllLocalVariables  (msg);               break;
+        case 'uiReturnFigLinkNodeToVariable':     uiReturnFigLinkNodeToVariable    (msg);               break;
+
         case 'uiReturnFigGetAllLocalColorStyles': uiReturnFigGetAllLocalColorStyles(msg);               break;
         case 'uiReturnGetAllLocalTemplateNames':  uiReturnGetAllLocalTemplateNames (msg.templateNames); break;
         

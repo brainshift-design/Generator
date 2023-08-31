@@ -1,0 +1,59 @@
+function figGetAllLocalVariables(nodeId, px, py)
+{
+    const localVars = figma.variables.getLocalVariables();
+
+
+    const variables = new Array();
+
+    for (const _var of localVars)
+    {
+        //const _nodeId = _var.getPluginData('nodeId');
+
+        const variable = 
+        { 
+            id:            _var.id,
+            //nodeId:        _nodeId,
+            name:          _var.name,
+            collectionName: figma.variables.getVariableCollectionById(_var.variableCollectionId).name,
+            type:          _var.resolvedType
+        };
+
+        variables.push(variable);
+    }
+
+
+    figPostMessageToUi(
+    {
+        cmd:      'uiReturnFigGetAllLocalVariables',
+        nodeId:    nodeId,
+        px:        px,
+        py:        py,
+        variables: JSON.stringify(variables)
+    });
+}
+
+
+function figLinkNodeToVariable(nodeId, varId)
+{
+    const localVars = figma.variables.getLocalVariables();
+
+    if (varId != NULL) 
+        figLinkVariable(localVars, nodeId, varId);
+}
+
+
+
+function figLinkVariable(localVars, nodeId, varId)
+{
+    const variable = localVars.find(v => v.id == varId);
+
+    figPostMessageToUi(
+    {
+        cmd:       'uiReturnFigLinkNodeToVariable',
+        nodeId:     nodeId,
+        variableId: variable.id,
+        type:       variable.resolvedType 
+    });
+
+    return variable;
+}

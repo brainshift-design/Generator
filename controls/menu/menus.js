@@ -77,7 +77,8 @@ var menuNodeHighlight;
 var menuNodeSelect;
 
 
-var menuLocalStyles;
+var menuLocalVariables;
+var menuLocalVariables;
 var menuSelectParam;
 
 var menuRemoveLicense;
@@ -392,7 +393,7 @@ function initGeneratorMenus()
         new MenuItem('Keyboard shortcuts', null, {shortcut: osCtrlShift() + '?', callback: () => showKeyboardPanel()}),
         // new MenuItem('Help page',   null, {callback:  () => window.open('http://www.bourt.com/generator/help', '_blank')}),
         new MenuItem('',             null, {separator: true}),
-        new MenuItem('Subscription', null, {callback:  () => showSubscriptionDialog()}),
+        //new MenuItem('Subscription', null, {callback:  () => showSubscriptionDialog()}),
       //new MenuItem('',             null, {separator: true}),
         new MenuItem('About',        null, {callback:  () => showAboutDialog()})]);
 
@@ -410,6 +411,8 @@ function initGeneratorMenus()
 menuFlow = new Menu('Flow', true, false);
     menuFlow.addItems([
         menuItemNull     = new MenuItem('Null',              null, {icon: iconNull,      createType: NULL_NODE,        callback: e => actionManager.do(getCreateNodeAction(NULL_NODE,       btnFlow.div, getCreateOptions(e)))}),
+                           new MenuItem('',                  null, {separator: true}),
+                           new MenuItem('Variable',          null, {icon: iconVarNumber, createType: VARIABLE,         callback: e => actionManager.do(getCreateNodeAction(VARIABLE,        btnFlow.div, getCreateOptions(e)))}),
                            new MenuItem('',                  null, {separator: true}),
         menuItemIfElse   = new MenuItem('I&hairsp;f / else', null, {icon: iconIfElse,    createType: IF_ELSE,          callback: e => actionManager.do(getCreateNodeAction(IF_ELSE,         btnFlow.div, getCreateOptions(e))), disambiguate: true}),
                            new MenuItem('',                  null, {separator: true}),
@@ -436,7 +439,7 @@ menuFlow = new Menu('Flow', true, false);
                            new MenuItem('Reverse',      null,            {icon: iconReverseList, createType: REVERSE_LIST, callback: e => actionManager.do(getCreateNodeAction(REVERSE_LIST,  btnData.div, getCreateOptions(e)))}),
                            new MenuItem('Sort',         null,            {icon: iconSort,        createType: SORT,         callback: e => actionManager.do(getCreateNodeAction(SORT,          btnData.div, getCreateOptions(e)))}),
                            new MenuItem('',             null,            {separator: true}),     
-        menuItemJoin     = new MenuItem('Join',         null,            {icon: iconJoin,        createType: JOIN,         callback: e => actionManager.do(getCreateNodeAction(JOIN,          btnData.div, getCreateOptions(e)))}),
+        menuItemJoin     = new MenuItem('Combine',      null,            {icon: iconJoin,        createType: JOIN,         callback: e => actionManager.do(getCreateNodeAction(JOIN,          btnData.div, getCreateOptions(e)))}),
                            new MenuItem('',             null,            {separator: true}),     
                            new MenuItem('Column',       null,            {icon: iconColumn,      createType: COLUMN,       callback: e => actionManager.do(getCreateNodeAction(COLUMN,        btnData.div, getCreateOptions(e)))}),
                            new MenuItem('Cell',         null,            {icon: iconCell,        createType: CELL,         callback: e => actionManager.do(getCreateNodeAction(CELL,          btnData.div, getCreateOptions(e)))}),
@@ -848,8 +851,9 @@ menuFlow = new Menu('Flow', true, false);
     menuCopy    = new Menu('Copy menu',    false, false);
 
 
-    menuLocalStyles = new Menu('Local styles',   true,  true);
-    menuSelectParam = new Menu('Select options', false, true);
+    menuLocalVariables    = new Menu('Local styles',    true,  true);
+    menuLocalVariables = new Menu('Local variables', true,  true);
+    menuSelectParam    = new Menu('Select options',  false, true);
 
     
     btnMain     = new MenuButton('', menuMain,     {useMenuName: true, highlight: () => currentMenus.includes(menuMain  ), callback: () => updatePanMode(false)});

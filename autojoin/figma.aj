@@ -16,6 +16,7 @@
 ../figma/objects.ts0
 ../figma/props.ts0
 ../figma/styles.ts0
+../figma/variables.ts0
 ../figma/transform.ts0
 
 ../figma/objects/*.ts0

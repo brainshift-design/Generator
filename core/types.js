@@ -6,6 +6,7 @@ const  SHAPE_LIST_VALUE       = 'SLIST#';
 
 
 const NULL_NODE               = 'NULL';
+const VARIABLE                = 'VAR';
 const START                   = 'START';
 const REPEAT                  = 'REPT';
 const CACHE                   = 'CACHE';
@@ -57,12 +58,10 @@ const LIST_VALUES =
 ];
 
 
-//const FOREACH = 'FOR';
-
-
 const FLOW_TYPES =
 [
     NULL_NODE,
+    VARIABLE,
     ...LIST_TYPES,
     CONDENSE,
     SUBLIST,
@@ -318,11 +317,6 @@ const LAYER_MASK_VALUE   = 'MASK#';
 const LAYER_MASK         = 'MASK';
 const LAYER_MASK_TYPES   = [LAYER_MASK_VALUE, LAYER_MASK];
 
-const VAR_COLOR          = 'CVAR';
-const VAR_NUMBER         = 'NVAR';
-const VAR_TEXT           = 'TVAR';
-const VAR_BOOLEAN        = 'BVAR';
-
 
 const EFFECT_TYPES =
 [
@@ -331,15 +325,6 @@ const EFFECT_TYPES =
     ...LAYER_BLUR_TYPES,
     ...BACK_BLUR_TYPES,
     ...LAYER_MASK_TYPES
-];
-
-
-const VARIABLE_TYPES =
-[
-    VAR_COLOR,
-    VAR_NUMBER,
-    VAR_TEXT,
-    VAR_BOOLEAN
 ];
 
 
@@ -672,6 +657,7 @@ const CREATE_INSERT_ACTION       = 'CREATE_INSERT';
 const DELETE_ACTION              = 'DELETE';
 const DISCONNECT_ACTION          = 'DISCONNECT';
 const LINK_STYLE_ACTION          = 'LINK_STYLE';
+const LINK_VARIABLE_ACTION       = 'LINK_VARIABLE';
 const MAKE_ACTIVE_ACTION         = 'MAKE_ACTIVE';
 const MAKE_PASSIVE_ACTION        = 'MAKE_PASSIVE';
 const PASTE_ACTION               = 'PASTE';

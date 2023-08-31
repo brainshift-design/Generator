@@ -4378,6 +4378,55 @@ a
 }    
 
 
+.btnCircleWrapper
+{
+    display:        inline-block;
+    width:          16px;
+    height:         16px;
+    border-radius:   8px;
+    margin-right:    7px;
+    position:       relative;
+    top:           -1px;
+    pointer-events: all;
+    overflow:       hidden;
+}
+
+
+.btnCircleBack
+{
+    width:          16px;
+    height:         16px;
+    pointer-events: none;
+    position:       absolute;
+    left:           0;
+    top:            0;
+}
+
+
+.btnCircle
+{
+    display:        inline-block;
+    width:          16px;
+    height:         16px;
+    position:       absolute;
+    left:           0;
+    top:            0;
+}
+
+
+.btnLink
+{
+    width:          16px;
+    height:         16px;
+    pointer-events: none;
+    position:       absolute;
+    left:           50%;
+    top:            50%;
+    transform:      translateX(-50%)
+                    translateY(-50%);
+}    
+
+
 .headerCircleWrapper
 {
     display:        inline-block;
@@ -9973,6 +10022,7 @@ const  SHAPE_LIST_VALUE       = 'SLIST#';
 
 
 const NULL_NODE               = 'NULL';
+const VARIABLE                = 'VAR';
 const START                   = 'START';
 const REPEAT                  = 'REPT';
 const CACHE                   = 'CACHE';
@@ -10024,12 +10074,10 @@ const LIST_VALUES =
 ];
 
 
-//const FOREACH = 'FOR';
-
-
 const FLOW_TYPES =
 [
     NULL_NODE,
+    VARIABLE,
     ...LIST_TYPES,
     CONDENSE,
     SUBLIST,
@@ -10285,11 +10333,6 @@ const LAYER_MASK_VALUE   = 'MASK#';
 const LAYER_MASK         = 'MASK';
 const LAYER_MASK_TYPES   = [LAYER_MASK_VALUE, LAYER_MASK];
 
-const VAR_COLOR          = 'CVAR';
-const VAR_NUMBER         = 'NVAR';
-const VAR_TEXT           = 'TVAR';
-const VAR_BOOLEAN        = 'BVAR';
-
 
 const EFFECT_TYPES =
 [
@@ -10298,15 +10341,6 @@ const EFFECT_TYPES =
     ...LAYER_BLUR_TYPES,
     ...BACK_BLUR_TYPES,
     ...LAYER_MASK_TYPES
-];
-
-
-const VARIABLE_TYPES =
-[
-    VAR_COLOR,
-    VAR_NUMBER,
-    VAR_TEXT,
-    VAR_BOOLEAN
 ];
 
 
@@ -10639,6 +10673,7 @@ const CREATE_INSERT_ACTION       = 'CREATE_INSERT';
 const DELETE_ACTION              = 'DELETE';
 const DISCONNECT_ACTION          = 'DISCONNECT';
 const LINK_STYLE_ACTION          = 'LINK_STYLE';
+const LINK_VARIABLE_ACTION       = 'LINK_VARIABLE';
 const MAKE_ACTIVE_ACTION         = 'MAKE_ACTIVE';
 const MAKE_PASSIVE_ACTION        = 'MAKE_PASSIVE';
 const PASTE_ACTION               = 'PASTE';
@@ -20414,6 +20449,143 @@ extends GOperator
     }
 }
 
+
+
+class GVariable
+extends GOperator
+{
+    id;
+
+    variable;
+    genValue;
+
+    //existing;
+    linked;
+
+
+
+    constructor(nodeId, options, styleId)
+    {
+        super(VARIABLE, nodeId, options);
+
+        this.id == styleId;
+    }
+
+
+
+    copy()
+    {
+        const copy = new GColorStyle(this.nodeId, this.options);
+
+        copy.id       = this.id;
+        copy.variable = this.variable.copy();
+        copy.genValue = this.genValue.copy();
+        
+        //copy.existing   = this.existing;
+        copy.linked   = this.linked;
+
+        return copy;
+    }
+
+
+
+    async eval(parse)
+    {
+        if (this.isCached())
+            return this;
+
+        
+        this.value = (await this.genValue.eval(parse)).toValue();
+
+
+        // if (   this.value.isValid()
+        //     && this.linked)
+        //     // (  !this.existing
+        //     //     || this.linked))
+        // {
+        //     if (this.value.type == COLOR_VALUE)
+        //         this.value = FillValue.fromRgb(scaleRgb(this.value.toRgb()), 0xff);
+
+        //     const rgba       = this.value.toRgba();
+        //     const rgbaStripe = rgb_a(getStripeBackColor(rgba), rgba[3]);
+
+        //     this.evalStyle({rgba: rgbaStripe});
+        // }
+        // else
+            this.value = NullValue;
+
+
+        this.setUpdateValues(parse,
+        [
+            ['value', this.value]
+        ]);
+
+
+        this.validate();
+
+        return this;
+    }
+
+
+
+    evalVariable(options = {})
+    {
+        if (!this.options.enabled)
+            return;
+
+            
+        // const colorStyle = new FigmaColorStyle(this.nodeId, this.id, this.name);
+
+        // //colorStyle.existing = this.existing;
+
+
+        // colorStyle.paints = 
+        // [
+        //     [ 'SOLID', 
+        //               Math.round(options.rgba[0] * 0xff)
+        //       + ' ' + Math.round(options.rgba[1] * 0xff)
+        //       + ' ' + Math.round(options.rgba[2] * 0xff)
+        //       + ' ' + Math.round(options.rgba[3] * 100 ) ]
+        // ];
+
+
+        // this.variable = colorStyle;
+    }
+
+
+
+    isValid()
+    {
+        return this.genValue && this.genValue.isValid();
+    }
+
+
+
+    pushValueUpdates(parse)
+    {
+        super.pushValueUpdates(parse);
+
+        if (this.genValue) this.genValue.pushValueUpdates(parse);
+    }
+
+
+
+    invalidateInputs(parse, from)
+    {
+        super.invalidateInputs(parse, from);
+
+        if (this.genValue) this.genValue.invalidateInputs(parse, from);
+    }
+
+
+
+    iterateLoop(parse)
+    {
+        super.iterateLoop(parse);
+
+        if (this.genValue) this.genValue.iterateLoop(parse);
+    }
+}
 
 
 class GCache
@@ -40303,6 +40475,49 @@ function genParseNull(parse)
 
 
 
+function genParseVariable(parse)
+{
+    const [, nodeId, options, ignore] = genParseNodeStart(parse);
+
+
+    const variable = new GVariable(nodeId, options);
+
+    variable.existing = options.existing;
+
+
+    if (parse.settings.logRequests) 
+        logReq(variable, parse, ignore);
+
+
+    if (ignore) 
+    {
+        genParseNodeEnd(parse, variable);
+        return parse.parsedNodes.find(n => n.nodeId == nodeId);
+    }
+
+
+    parse.nTab++;
+    parse.inParam = false;
+
+
+    variable.id       = parse.move();
+    variable.name     = options.nodeName;
+    
+    variable.genValue = genParse(parse);
+
+    
+    parse.nTab--;
+
+    
+    variable.linked = variable.id != NULL;
+
+
+    genParseNodeEnd(parse, variable);
+    return variable;
+}
+
+
+
 function genParseListValue(parse)
 {
     parse.pos++; // LIST_VALUE
@@ -45969,6 +46184,7 @@ function genParse(parse, inParam = true)
           || parse.next ==  SHAPE_LIST_VALUE      ) result = genParseListValue         (parse);
  
     else if (parse.next == NULL_NODE              ) result = genParseNull              (parse);
+    else if (parse.next == VARIABLE               ) result = genParseVariable          (parse);
 
     else if (parse.next == JOIN                   ) result = genParseJoin              (parse);
     else if (parse.next == CONDENSE               ) result = genParseCondense          (parse);
@@ -45983,7 +46199,7 @@ function genParse(parse, inParam = true)
     else if (parse.next == LIST_COUNT             ) result = genParseListCount         (parse);
     else if (parse.next == CONTAINS               ) result = genParseListContains      (parse);
     else if (parse.next == IF_ELSE                ) result = genParseIfElse            (parse);
-    else if (parse.next == START               ) result = genParseStart          (parse);
+    else if (parse.next == START                  ) result = genParseStart             (parse);
     else if (parse.next == REPEAT                 ) result = genParseRepeat            (parse);
     else if (parse.next == CACHE                  ) result = genParseCache             (parse);
     else if (parse.next == DEFINE                 ) result = genParseDefine            (parse);
@@ -56403,6 +56619,7 @@ const  SHAPE_LIST_VALUE       = 'SLIST#';
 
 
 const NULL_NODE               = 'NULL';
+const VARIABLE                = 'VAR';
 const START                   = 'START';
 const REPEAT                  = 'REPT';
 const CACHE                   = 'CACHE';
@@ -56454,12 +56671,10 @@ const LIST_VALUES =
 ];
 
 
-//const FOREACH = 'FOR';
-
-
 const FLOW_TYPES =
 [
     NULL_NODE,
+    VARIABLE,
     ...LIST_TYPES,
     CONDENSE,
     SUBLIST,
@@ -56715,11 +56930,6 @@ const LAYER_MASK_VALUE   = 'MASK#';
 const LAYER_MASK         = 'MASK';
 const LAYER_MASK_TYPES   = [LAYER_MASK_VALUE, LAYER_MASK];
 
-const VAR_COLOR          = 'CVAR';
-const VAR_NUMBER         = 'NVAR';
-const VAR_TEXT           = 'TVAR';
-const VAR_BOOLEAN        = 'BVAR';
-
 
 const EFFECT_TYPES =
 [
@@ -56728,15 +56938,6 @@ const EFFECT_TYPES =
     ...LAYER_BLUR_TYPES,
     ...BACK_BLUR_TYPES,
     ...LAYER_MASK_TYPES
-];
-
-
-const VARIABLE_TYPES =
-[
-    VAR_COLOR,
-    VAR_NUMBER,
-    VAR_TEXT,
-    VAR_BOOLEAN
 ];
 
 
@@ -57069,6 +57270,7 @@ const CREATE_INSERT_ACTION       = 'CREATE_INSERT';
 const DELETE_ACTION              = 'DELETE';
 const DISCONNECT_ACTION          = 'DISCONNECT';
 const LINK_STYLE_ACTION          = 'LINK_STYLE';
+const LINK_VARIABLE_ACTION       = 'LINK_VARIABLE';
 const MAKE_ACTIVE_ACTION         = 'MAKE_ACTIVE';
 const MAKE_PASSIVE_ACTION        = 'MAKE_PASSIVE';
 const PASTE_ACTION               = 'PASTE';
@@ -66844,6 +67046,143 @@ extends GOperator
     }
 }
 
+
+
+class GVariable
+extends GOperator
+{
+    id;
+
+    variable;
+    genValue;
+
+    //existing;
+    linked;
+
+
+
+    constructor(nodeId, options, styleId)
+    {
+        super(VARIABLE, nodeId, options);
+
+        this.id == styleId;
+    }
+
+
+
+    copy()
+    {
+        const copy = new GColorStyle(this.nodeId, this.options);
+
+        copy.id       = this.id;
+        copy.variable = this.variable.copy();
+        copy.genValue = this.genValue.copy();
+        
+        //copy.existing   = this.existing;
+        copy.linked   = this.linked;
+
+        return copy;
+    }
+
+
+
+    async eval(parse)
+    {
+        if (this.isCached())
+            return this;
+
+        
+        this.value = (await this.genValue.eval(parse)).toValue();
+
+
+        // if (   this.value.isValid()
+        //     && this.linked)
+        //     // (  !this.existing
+        //     //     || this.linked))
+        // {
+        //     if (this.value.type == COLOR_VALUE)
+        //         this.value = FillValue.fromRgb(scaleRgb(this.value.toRgb()), 0xff);
+
+        //     const rgba       = this.value.toRgba();
+        //     const rgbaStripe = rgb_a(getStripeBackColor(rgba), rgba[3]);
+
+        //     this.evalStyle({rgba: rgbaStripe});
+        // }
+        // else
+            this.value = NullValue;
+
+
+        this.setUpdateValues(parse,
+        [
+            ['value', this.value]
+        ]);
+
+
+        this.validate();
+
+        return this;
+    }
+
+
+
+    evalVariable(options = {})
+    {
+        if (!this.options.enabled)
+            return;
+
+            
+        // const colorStyle = new FigmaColorStyle(this.nodeId, this.id, this.name);
+
+        // //colorStyle.existing = this.existing;
+
+
+        // colorStyle.paints = 
+        // [
+        //     [ 'SOLID', 
+        //               Math.round(options.rgba[0] * 0xff)
+        //       + ' ' + Math.round(options.rgba[1] * 0xff)
+        //       + ' ' + Math.round(options.rgba[2] * 0xff)
+        //       + ' ' + Math.round(options.rgba[3] * 100 ) ]
+        // ];
+
+
+        // this.variable = colorStyle;
+    }
+
+
+
+    isValid()
+    {
+        return this.genValue && this.genValue.isValid();
+    }
+
+
+
+    pushValueUpdates(parse)
+    {
+        super.pushValueUpdates(parse);
+
+        if (this.genValue) this.genValue.pushValueUpdates(parse);
+    }
+
+
+
+    invalidateInputs(parse, from)
+    {
+        super.invalidateInputs(parse, from);
+
+        if (this.genValue) this.genValue.invalidateInputs(parse, from);
+    }
+
+
+
+    iterateLoop(parse)
+    {
+        super.iterateLoop(parse);
+
+        if (this.genValue) this.genValue.iterateLoop(parse);
+    }
+}
 
 
 class GCache
@@ -91470,7 +91809,8 @@ var menuNodeHighlight;
 var menuNodeSelect;
 
 
-var menuLocalStyles;
+var menuLocalVariables;
+var menuLocalVariables;
 var menuSelectParam;
 
 var menuRemoveLicense;
@@ -91785,7 +92125,7 @@ function initGeneratorMenus()
         new MenuItem('Keyboard shortcuts', null, {shortcut: osCtrlShift() + '?', callback: () => showKeyboardPanel()}),
         // new MenuItem('Help page',   null, {callback:  () => window.open('http://www.bourt.com/generator/help', '_blank')}),
         new MenuItem('',             null, {separator: true}),
-        new MenuItem('Subscription', null, {callback:  () => showSubscriptionDialog()}),
+        //new MenuItem('Subscription', null, {callback:  () => showSubscriptionDialog()}),
       //new MenuItem('',             null, {separator: true}),
         new MenuItem('About',        null, {callback:  () => showAboutDialog()})]);
 
@@ -91803,6 +92143,8 @@ function initGeneratorMenus()
 menuFlow = new Menu('Flow', true, false);
     menuFlow.addItems([
         menuItemNull     = new MenuItem('Null',              null, {icon: iconNull,      createType: NULL_NODE,        callback: e => actionManager.do(getCreateNodeAction(NULL_NODE,       btnFlow.div, getCreateOptions(e)))}),
+                           new MenuItem('',                  null, {separator: true}),
+                           new MenuItem('Variable',          null, {icon: iconVarNumber, createType: VARIABLE,         callback: e => actionManager.do(getCreateNodeAction(VARIABLE,        btnFlow.div, getCreateOptions(e)))}),
                            new MenuItem('',                  null, {separator: true}),
         menuItemIfElse   = new MenuItem('I&hairsp;f / else', null, {icon: iconIfElse,    createType: IF_ELSE,          callback: e => actionManager.do(getCreateNodeAction(IF_ELSE,         btnFlow.div, getCreateOptions(e))), disambiguate: true}),
                            new MenuItem('',                  null, {separator: true}),
@@ -91829,7 +92171,7 @@ menuFlow = new Menu('Flow', true, false);
                            new MenuItem('Reverse',      null,            {icon: iconReverseList, createType: REVERSE_LIST, callback: e => actionManager.do(getCreateNodeAction(REVERSE_LIST,  btnData.div, getCreateOptions(e)))}),
                            new MenuItem('Sort',         null,            {icon: iconSort,        createType: SORT,         callback: e => actionManager.do(getCreateNodeAction(SORT,          btnData.div, getCreateOptions(e)))}),
                            new MenuItem('',             null,            {separator: true}),     
-        menuItemJoin     = new MenuItem('Join',         null,            {icon: iconJoin,        createType: JOIN,         callback: e => actionManager.do(getCreateNodeAction(JOIN,          btnData.div, getCreateOptions(e)))}),
+        menuItemJoin     = new MenuItem('Combine',      null,            {icon: iconJoin,        createType: JOIN,         callback: e => actionManager.do(getCreateNodeAction(JOIN,          btnData.div, getCreateOptions(e)))}),
                            new MenuItem('',             null,            {separator: true}),     
                            new MenuItem('Column',       null,            {icon: iconColumn,      createType: COLUMN,       callback: e => actionManager.do(getCreateNodeAction(COLUMN,        btnData.div, getCreateOptions(e)))}),
                            new MenuItem('Cell',         null,            {icon: iconCell,        createType: CELL,         callback: e => actionManager.do(getCreateNodeAction(CELL,          btnData.div, getCreateOptions(e)))}),
@@ -92241,8 +92583,9 @@ menuFlow = new Menu('Flow', true, false);
     menuCopy    = new Menu('Copy menu',    false, false);
 
 
-    menuLocalStyles = new Menu('Local styles',   true,  true);
-    menuSelectParam = new Menu('Select options', false, true);
+    menuLocalVariables    = new Menu('Local styles',    true,  true);
+    menuLocalVariables = new Menu('Local variables', true,  true);
+    menuSelectParam    = new Menu('Select options',  false, true);
 
     
     btnMain     = new MenuButton('', menuMain,     {useMenuName: true, highlight: () => currentMenus.includes(menuMain  ), callback: () => updatePanMode(false)});
@@ -106915,6 +107258,255 @@ function OpNull_onDisconnectInput(node)
 }
 
 
+class   OpVariable
+extends OperatorBase
+{
+    paramValue;
+
+
+    linkedVariableId   = NULL;
+    linkedVariableName = NULL;
+
+
+
+    constructor(options = {})
+    {
+        super(VARIABLE, 'variable', 'variable', iconVarNumber);
+
+
+        this.resetValueParam();
+
+
+        this.divIcon.style.opacity       = 0.5;
+        this.divIcon.style.pointerEvents = 'all';
+
+
+        this.divIcon.addEventListener('pointerenter', e => 
+        { 
+            this.divIcon.style.opacity = 1;  
+        });
+
+
+        this.divIcon.addEventListener('pointerleave', e => 
+        { 
+            this.divIcon.style.opacity = 0.5;  
+        });
+
+
+        this.divIcon.addEventListener('pointerdown',  e => 
+        { 
+            e.stopPropagation();
+
+            if (   e.button == 0 
+                || e.button == 2)
+            {
+                hideAllMenus(); 
+
+                uiQueueMessageToFigma(
+                {
+                    cmd:   'figGetAllLocalVariables',
+                    nodeId: this.id,
+                    px:     e.clientX,
+                    py:     e.clientY 
+                }); 
+            }
+        });
+
+
+        this.updateParams();
+    }
+
+
+
+    setName(newName, options = {})
+    {
+        super.setName(newName, options);
+
+        if (isValid(options.updateNodes))
+            pushUnique(options.updateNodes, this);
+    }
+
+
+
+    genRequest(gen)
+    {
+        // 'this' is the node
+
+        gen.scope.push({
+            nodeId:  this.id, 
+            paramId: NULL });
+
+
+        const options = (this.existing ? 1 : 0) << 21;
+
+
+        const [request, ignore] = this.genRequestStart(gen, options);
+        if (ignore) return request;
+
+                
+        request.push(this.linkedVariableId);
+        request.push(...this.paramValue.genRequest(gen));
+
+
+        gen.scope.pop();
+        pushUnique(gen.passedNodes, this);
+
+        return request;
+    }
+
+
+
+    resetValueParam()
+    {
+        this.addParam(this.paramValue = new ListParam('value', '?', false, false, false));
+        this.paramValue.itemName = '';
+    }
+
+
+
+    updateValueParam(resolvedType)
+    {
+        let type;
+        let icon;
+        let iconOffsetY = 0;
+
+        switch (resolvedType)
+        {
+            case 'FLOAT':   type = NUMBER_VALUE; icon = iconVarNumber;  iconOffsetY = -1; break;
+            case 'BOOLEAN': type = NUMBER_VALUE; icon = iconVarBoolean; iconOffsetY =  0; break;
+            case 'STRING':  type = TEXT_VALUE;   icon = iconVarText;    iconOffsetY =  1; break;
+            case 'COLOR':   type = COLOR_VALUE;  icon = iconVarColor;   iconOffsetY = -2; break;
+        }
+
+
+        if (this.paramValue.type != type)
+        {
+            this.removeAllParams();
+            this.createAndAddParamByType(type, 'value', false, true, true);
+
+            this.icon = icon;
+        }
+    }
+
+
+
+    updateParams()
+    {
+        const enabled = this.linkedVariableId != NULL;
+            //   !this.existing 
+            // || this.linkedVariableId != NULL;
+
+        this.paramValue.enableControlText(enabled, this.isUnknown());
+
+        // // this.paramValue.controls[0].valueText =  this.isUnknown() ? UNKNOWN_DISPLAY : '';
+        // this.paramValue.controls[0].showBar   = false;//!this.isUnknown();
+
+
+        //const colors   = this.getHeaderColors();
+        //const rgbaBack = rgb_a(colors.stripeBack, colors.back[3]);
+
+        //this.paramValue.controlWrapper.style.background = rgba2style(rgbaBack);
+            //   !rgbaIsNaN(rgbaBack) 
+            // && this.paramValue.value.opacity.isValid()
+            // ?  rgba2style(rgbaBack)
+            // : 'transparent'; 
+
+        this.updateParamControls();
+    }
+
+
+
+    // updateHeader()
+    // {
+    //     super.updateHeader();
+
+
+    //     if (this.paramValue.value.isValid()
+    //         && (  !this.existing
+    //             || this.linkedVariableId != NULL))
+    //     {
+    //         this.btnCircle.style.boxShadow = 
+    //                 darkMode &&  isDark(rgbaStripe, 0.4)
+    //             || !darkMode && !isDark(rgbaStripe, 0.9)
+    //             ? '0 0 0 1px var(--figma-color-bg-tertiary) inset'
+    //             : 'none';
+    //     }
+    //     else
+    //     {
+    //         this.btnCircle     .style.boxShadow  = '0 0 0 1px var(--figma-color-bg-tertiary) inset';
+    //     }
+
+
+    //     this.updateLinkIcon();
+    // }
+    //}
+
+
+
+    getActiveOffset()
+    {
+        return -2;
+    }
+
+
+
+    // getHeaderColors(options = {})
+    // {
+    //     const colors = super.getHeaderColors();
+
+    //     colors.stripeBack = getStripeBackColor(colors.back);
+
+    //     return colors;
+    // }
+
+
+
+    paramIsConsideredDefault(param)
+    {
+        return  param.isDefault()
+            && (   !this.inputs[0]
+                || !this.inputs[0].connected);
+    }
+
+
+
+    toJsonBase(nTab = 0) 
+    {
+        let   pos = ' '.repeat(nTab);
+        const tab = HTAB;
+
+        return super.toJsonBase(nTab)
+             + ',\n' + pos + tab + '"linkedVariableId": "' + this.linkedVariableId          + '"';
+    }
+
+
+
+    loadParams(_node, pasting)
+    {
+        if (!pasting)
+        {
+            this.linkedVariableId = _node.linkedVariableId;
+     
+            super.loadParams(_node, pasting);
+        }
+        else
+        {
+            this.name               = this.defName;
+            this.linkedVariableId   = NULL;
+            this.linkedVariableName = '';
+        }
+    }
+}
+
+
+
+function OpVariable_value_onDisconnectInput(node, input)
+{
+    if (node.linkedVariableId == NULL)
+        node.paramValue.setValue(FillValue.NaN, false, false, false);
+}
+
+
 class   OpCache
 extends OperatorBase
 {
@@ -107393,7 +107985,7 @@ extends OperatorBase
 
     constructor()
     {
-        super(JOIN, 'join', 'join', iconJoin);
+        super(JOIN, 'combine', 'combine', iconJoin);
 
         this.canDisable        = true;
         this.variableInputs    = true;
@@ -121004,7 +121596,7 @@ extends OpShape
 
         
         this.addInput (this.createInputForObjects(SHAPE_VALUES, getNodeInputValuesForUndo));
-        this.addOutput(new Output([SHAPE_VALUE], this.output_genRequest));
+        this.addOutput(new Output([...SHAPE_VALUES, SHAPE_LIST_VALUE], this.output_genRequest));
 
 
         this.addBaseParams();
@@ -125201,14 +125793,22 @@ function connectAction_saveInputActiveNodes(act)
 
 function connectAction_saveOutputValues(act)
 {
-    act.outputValues = act.output.getValuesForUndo ? act.output.getValuesForUndo(act.output) : [];
+    act.outputValues = 
+           act.output 
+        && act.output.getValuesForUndo 
+        ? act.output.getValuesForUndo(act.output) 
+        : [];
 }
 
 
 
 function connectAction_saveInputValues(act)
 {
-    act.inputValues = act.input.getValuesForUndo ? act.input.getValuesForUndo(act.input) : [];
+    act.inputValues = 
+           act.input 
+        && act.input.getValuesForUndo 
+        ? act.input.getValuesForUndo(act.input) 
+        : [];
 }
 
 
@@ -126537,6 +127137,83 @@ extends Action
             this.prevStyleId,
             this.prevStyleName,
             [...this.prevPaints]);
+
+        this.node.updateNode();
+
+        uiSaveNodes([this.nodeId]);
+
+        if (this.node.paramValue.input.connected)
+            uiTriggerUndo();
+    }    
+}
+
+
+class LinkExistingVariableAction
+extends Action
+{
+    nodeId;
+    get node() { return nodeFromId(this.nodeId) } 
+
+    get  inputNode() { return this.node; } // dummy for ConnectAction_...
+    get outputNode() { return this.node; } // dummy for ConnectAction_...
+
+    get  input() { return this.node.paramValue. input; } // dummy for ConnectAction_...
+    get output() { return this.node.paramValue.output; } // dummy for ConnectAction_...
+
+    variableId;
+    variableName;
+
+    prevVariableId;
+    prevVariableName;
+
+    outputValues = []; // in id,value pairs, to be restored on undo
+    inputValues  = []; // in id,value pairs, to be restored on undo
+
+
+    constructor(nodeId, variableId, variableName)
+    {
+        super(
+            LINK_VARIABLE_ACTION, 
+            'LINK VARIABLE \'' + nodeId + ' ⟶ ' + variableId + ')');
+        
+        this.affectsConnections = false;
+
+        this.nodeId       = nodeId;
+        this.variableId   = variableId;
+        this.variableName = variableName;
+    }
+
+
+
+    do(updateNodes)
+    {
+        this.prevVariableId   = this.node.linkedVariableId;
+        this.prevVariableName = this.node.linkedVariableName;
+        
+        connectAction_saveOutputValues(this);
+        connectAction_saveInputValues(this);
+
+        uiLinkNodeToVariable(
+            this.node,
+            this.variableId,
+            this.variableName);
+
+        pushUnique(updateNodes, this.node);
+
+        uiSaveNodes([this.nodeId]);
+    }
+
+
+
+    undo(updateNodes)
+    {
+        connectAction_restoreInputValues(this);
+        connectAction_restoreOutputValues(this);
+
+        uiLinkNodeToVariable(
+            this.node,
+            this.prevVariableId,
+            this.prevVariableName);
 
         this.node.updateNode();
 
@@ -129717,6 +130394,9 @@ onmessage = e =>
                                                    
         case 'uiReturnFigResizeWindow':           uiReturnFigResizeWindow          ();                  break;
                            
+        case 'uiReturnFigGetAllLocalVariables':   uiReturnFigGetAllLocalVariables  (msg);               break;
+        case 'uiReturnFigLinkNodeToVariable':     uiReturnFigLinkNodeToVariable    (msg);               break;
+
         case 'uiReturnFigGetAllLocalColorStyles': uiReturnFigGetAllLocalColorStyles(msg);               break;
         case 'uiReturnGetAllLocalTemplateNames':  uiReturnGetAllLocalTemplateNames (msg.templateNames); break;
         
@@ -131616,6 +132296,7 @@ function createNode(nodeType, creatingButton = null, createdNodeId = -1, options
     switch (nodeType)
     {
         case NULL_NODE:               node = new OpNull();              break;
+        case VARIABLE:                node = new OpVariable();          break;
         case START:                   node = new OpStart();             break;
         case REPEAT:                  node = new OpRepeat();            break;
         case CACHE:                   node = new OpCache();             break;
@@ -133058,9 +133739,8 @@ function uiReturnFigGetAllLocalColorStyles(msg)
 
     initLocalStylesMenu(styles, msg.nodeId);
 
-    menuLocalStyles.showAt(msg.px, msg.py, false);
+    menuLocalVariables.showAt(msg.px, msg.py, false);
 }
-
 
 
 function uiReturnGetAllLocalTemplateNames(templateNames)
@@ -133105,7 +133785,7 @@ function initLocalStylesMenu(styles, nodeId)
     consoleAssert(node.type == COLOR_STYLE, 'node must be COLOR_STYLE');
 
 
-    menuLocalStyles.clearItems();
+    menuLocalVariables.clearItems();
 
     for (const style of styles)
     {
@@ -133133,15 +133813,15 @@ function initLocalStylesMenu(styles, nodeId)
 
         item.setChecked(style.nodeId == node.id);
 
-        menuLocalStyles.addItems([item]);
+        menuLocalVariables.addItems([item]);
     }
 
 
     if (!isEmpty(styles))
-        menuLocalStyles.addItems([new MenuItem('', null, {separator: true})]);
+        menuLocalVariables.addItems([new MenuItem('', null, {separator: true})]);
 
         
-    menuLocalStyles.addItems([
+    menuLocalVariables.addItems([
         new MenuItem('None', null, {
             callback: e => actionManager.do(new LinkExistingStyleAction(nodeId, NULL, '', [])),
             enabled:  node.linkedStyleId != NULL})
@@ -133419,6 +134099,98 @@ function uiGetValue(key)
             break;
         }
     }
+}
+
+
+
+function uiReturnFigGetAllLocalVariables(msg)
+{
+    const variables = JSON.parse(msg.variables);
+
+    initLocalVariablesMenu(variables, msg.nodeId);
+
+    menuLocalVariables.showAt(msg.px, msg.py, false);
+}
+
+
+
+function uiReturnFigLinkNodeToVariable(msg)
+{
+    const node = nodeFromId(msg.nodeId);
+
+    node.updateValueParam(msg.type);
+}
+
+
+
+function initLocalVariablesMenu(variables, nodeId)
+{
+    const node = nodeFromId(nodeId);
+    consoleAssert(node.type == VARIABLE, 'node must be VARIABLE');
+
+
+    menuLocalVariables.clearItems();
+
+    for (const variable of variables)
+    {
+        const options = {};
+
+        options.callback = () => actionManager.do(
+            new LinkExistingVariableAction(
+                nodeId,
+                variable.id,
+                variable.name));
+
+
+        switch (variable.type)
+        {
+            case 'FLOAT':   options.icon = iconVarNumber;  break;
+            case 'BOOLEAN': options.icon = iconVarBoolean; break;
+            case 'STRING':  options.icon = iconVarText;    break;
+            case 'COLOR':   options.icon = iconVarColor;   break;
+        }
+
+
+        const name = variable.collectionName + '/' + variable.name;
+        const item = new MenuItem(name.replaceAll('/', ' / '), null, options);
+
+        item.setChecked(variable.id == node.linkedVariableId);
+
+        menuLocalVariables.addItems([item]);
+    }
+
+
+    if (!isEmpty(variables))
+        menuLocalVariables.addItems([new MenuItem('', null, {separator: true})]);
+
+        
+    menuLocalVariables.addItems([
+        new MenuItem('None', null, {
+            callback: e => actionManager.do(new LinkExistingVariableAction(nodeId, NULL, '')),
+            enabled:  node.linkedStyleId != NULL})
+    ]);
+}
+
+
+
+function uiLinkNodeToVariable(node, variableId, variableName)
+{
+    node.linkedVariableId   = variableId;
+    node.linkedVariableName = variableName;
+
+
+    if (variableName != NULL)
+        node.name = variableName;
+
+    pushUpdate(null, [node]);
+
+
+    uiQueueMessageToFigma(
+    {
+        cmd:       'figLinkNodeToVariable',
+        variableId: variableId,
+        nodeId:     node.id 
+    });
 }
 
 
