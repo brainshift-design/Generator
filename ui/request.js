@@ -7,6 +7,7 @@ var curRequestId    = null;
 
 function pushUpdate(action, nodes, save = true)
 {
+    //console.trace();
     pushUpdateFromParam(action, nodes, null, save);
 }
 

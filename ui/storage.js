@@ -333,14 +333,25 @@ function loadNodesAndConnsAsync(_nodes, _conns, setProgress)
     {
         graph.addNodes(nodes, false, false);
         
-        nodes
-            .filter(n => n.type == VARIABLE)
-            .forEach(n => uiLinkNodeToVariable(
-                n,
-                n.linkedVariableId,
-                n.linkedVariableName));
 
-        loadConnectionsAsync(_nodes, _conns, nodes, setProgress);    
+        const varNodes = nodes.filter(n => 
+                   n.type == VARIABLE 
+                && n.linkedVariableId != NULL);
+                
+        uiGetValueFromFigma('getVariableData', varNodes.map(n => n.linkedVariableId))
+            .then(response =>
+            {
+                for (const value of response.value)
+                {
+                    const node = varNodes.find(n => n.linkedVariableId == value.id);
+
+                    node.updateValueParam(
+                         value.resolvedType,
+                        [value.value]);
+                }
+
+                loadConnectionsAsync(_nodes, _conns, nodes, setProgress);    
+            });
     });
 }
 
@@ -656,4 +667,46 @@ function dataColorToJson(color, nTab)
         + pos + tab + ']';
 
     return json;
+}
+
+
+
+async function uiGetValueFromFigma(key, spec = null) 
+{
+    return new Promise((resolve, reject) => 
+    {
+        const timeout = 1000;
+
+        uiPostMessageToFigma(
+        {
+            cmd: 'figGetValue',
+            key:  key,
+            spec: spec
+        });
+
+        const timeoutId = setTimeout(() => 
+            reject(new Error('Timeout: Result not received within the specified time')),
+            timeout);
+
+        function handleMessage(event) 
+        {
+            const msg = JSON.parse(event.data.pluginMessage);
+
+            if (msg.cmd === 'returnFigGetValue') 
+            {
+                clearTimeout(timeoutId);
+
+                resolve(
+                { 
+                    // key:   msg.key, 
+                    // spec:  msg.spec,
+                    value: msg.value 
+                });
+
+                self.removeEventListener('message', handleMessage);
+            }
+        }
+
+        self.addEventListener('message', handleMessage);
+    });
 }

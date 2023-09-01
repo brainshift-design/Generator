@@ -80,19 +80,19 @@ function initLocalVariablesMenu(variables, nodeId)
 
 
 
-function uiLinkNodeToVariable(node, variableId, variableName)
+function uiLinkNodeToVariable(node, varId, varName, varType)
 {
-    node.linkedVariableId   = variableId;
-    node.linkedVariableName = variableName;
-
-    if (variableName != NULL)
-        node.name = variableName;
+    node.linkedVariableId   = varId;
+    node.linkedVariableName = varName;
+    
+    if (varName != NULL)
+        node.name = varName;
 
     uiQueueMessageToFigma(
     {
         cmd:       'figLinkNodeToVariable',
         nodeId:     node.id,
-        variableId: variableId
+        variableId: varId
     });
 }
 

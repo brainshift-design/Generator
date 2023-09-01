@@ -107444,7 +107444,6 @@ extends ResizableBase
     updateValueParam(resolvedType, values)
     {
         let type = NULL;
-        let value;
 
         let icon;
         let iconOffsetY = 0;
@@ -107467,9 +107466,11 @@ extends ResizableBase
         {
             this.removeAllParams();
 
+
             if (type != NULL)
             {
-                this.paramValue  = this.createAndAddParamByType(type, 'value', false, true, true);
+                this.paramValue = this.createAndAddParamByType(type, 'value', false, true, true);
+                console.log('this.paramValue =', this.paramValue);
 
                 if (type == NUMBER_VALUE)
                 {
@@ -107488,13 +107489,16 @@ extends ResizableBase
 
         if (values.length > 0)
         {
+            let value;
+
+
             const val = values[0];
 
             switch (resolvedType)
             {
-                case 'FLOAT':   value = new NumberValue(val); break;
+                case 'FLOAT':   value = new NumberValue(val);    break;
                 case 'BOOLEAN': value = new NumberValue(val, 0); break;
-                case 'STRING':  value = new TextValue(val);   break;
+                case 'STRING':  value = new TextValue(val);      break;
 
                 case 'COLOR':
                     value = ColorValue.create(
@@ -107505,6 +107509,7 @@ extends ResizableBase
                     
                     break;
             }
+            
 
             this.paramValue.setValue(value, false, true, false);
         }
@@ -130472,6 +130477,10 @@ onmessage = e =>
     let msg = JSON.parse(e.data.pluginMessage);
 
 
+    if (msg.cmd == 'returnFigGetValue') // ignore this message in the queue
+        return;
+
+
     if (   msg.cmd == 'uiForwardToGenerator'
         || msg.cmd == 'uiEndFigMessage')
     {
@@ -130796,6 +130805,7 @@ var curRequestId    = null;
 
 function pushUpdate(action, nodes, save = true)
 {
+    //console.trace();
     pushUpdateFromParam(action, nodes, null, save);
 }
 
@@ -131802,14 +131812,25 @@ function loadNodesAndConnsAsync(_nodes, _conns, setProgress)
     {
         graph.addNodes(nodes, false, false);
         
-        nodes
-            .filter(n => n.type == VARIABLE)
-            .forEach(n => uiLinkNodeToVariable(
-                n,
-                n.linkedVariableId,
-                n.linkedVariableName));
 
-        loadConnectionsAsync(_nodes, _conns, nodes, setProgress);    
+        const varNodes = nodes.filter(n => 
+                   n.type == VARIABLE 
+                && n.linkedVariableId != NULL);
+                
+        uiGetValueFromFigma('getVariableData', varNodes.map(n => n.linkedVariableId))
+            .then(response =>
+            {
+                for (const value of response.value)
+                {
+                    const node = varNodes.find(n => n.linkedVariableId == value.id);
+
+                    node.updateValueParam(
+                         value.resolvedType,
+                        [value.value]);
+                }
+
+                loadConnectionsAsync(_nodes, _conns, nodes, setProgress);    
+            });
     });
 }
 
@@ -132125,6 +132146,48 @@ function dataColorToJson(color, nTab)
         + pos + tab + ']';
 
     return json;
+}
+
+
+
+async function uiGetValueFromFigma(key, spec = null) 
+{
+    return new Promise((resolve, reject) => 
+    {
+        const timeout = 1000;
+
+        uiPostMessageToFigma(
+        {
+            cmd: 'figGetValue',
+            key:  key,
+            spec: spec
+        });
+
+        const timeoutId = setTimeout(() => 
+            reject(new Error('Timeout: Result not received within the specified time')),
+            timeout);
+
+        function handleMessage(event) 
+        {
+            const msg = JSON.parse(event.data.pluginMessage);
+
+            if (msg.cmd === 'returnFigGetValue') 
+            {
+                clearTimeout(timeoutId);
+
+                resolve(
+                { 
+                    // key:   msg.key, 
+                    // spec:  msg.spec,
+                    value: msg.value 
+                });
+
+                self.removeEventListener('message', handleMessage);
+            }
+        }
+
+        self.addEventListener('message', handleMessage);
+    });
 }
 
 
@@ -134306,19 +134369,19 @@ function initLocalVariablesMenu(variables, nodeId)
 
 
 
-function uiLinkNodeToVariable(node, variableId, variableName)
+function uiLinkNodeToVariable(node, varId, varName, varType)
 {
-    node.linkedVariableId   = variableId;
-    node.linkedVariableName = variableName;
-
-    if (variableName != NULL)
-        node.name = variableName;
+    node.linkedVariableId   = varId;
+    node.linkedVariableName = varName;
+    
+    if (varName != NULL)
+        node.name = varName;
 
     uiQueueMessageToFigma(
     {
         cmd:       'figLinkNodeToVariable',
         nodeId:     node.id,
-        variableId: variableId
+        variableId: varId
     });
 }
 

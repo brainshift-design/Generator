@@ -1631,6 +1631,9 @@ figma.ui.onmessage = function (msg) {
         case 'figLogAllLocalData':
             figLogAllLocalData(msg.darkMode);
             break;
+        case 'figGetValue':
+            figGetValue(msg.key, msg.spec);
+            break;
         case 'figRemoveSavedPage':
             figRemoveSavedPage(msg.pageId);
             break;
@@ -1913,6 +1916,37 @@ function figLogAllSavedConnKeys(darkMode) {
 }
 function figLogAllLocalData(darkMode) {
     figma.clientStorage.keysAsync().then(keys => keys.forEach(k => figma.clientStorage.getAsync(k).then(val => console.log(k + ': ' + val))));
+}
+function figGetValue(key, spec) {
+    switch (key) {
+        case 'getVariableData':
+            {
+                const varIds = spec;
+                const localVars = figma.variables.getLocalVariables();
+                const variables = varIds.map(id => localVars.find(v => v.id == id));
+                let values = [];
+                for (const variable of variables) {
+                    const vals = [];
+                    const collection = figma.variables.getVariableCollectionById(variable.variableCollectionId);
+                    if (collection) {
+                        for (const mode of collection.modes)
+                            vals.push(variable.valuesByMode[mode.modeId]);
+                        values.push({
+                            id: variable.id,
+                            resolvedType: variable.resolvedType,
+                            value: vals[0]
+                        });
+                    }
+                }
+                figPostMessageToUi({
+                    cmd: 'returnFigGetValue',
+                    // key:   key,
+                    // spec:  spec,
+                    value: values
+                });
+                break;
+            }
+    }
 }
 function figRemoveSavedPage(pageId) {
     figClearPageData(getPageKey(pageId));

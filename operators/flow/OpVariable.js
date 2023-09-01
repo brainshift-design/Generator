@@ -132,7 +132,6 @@ extends ResizableBase
     updateValueParam(resolvedType, values)
     {
         let type = NULL;
-        let value;
 
         let icon;
         let iconOffsetY = 0;
@@ -155,9 +154,11 @@ extends ResizableBase
         {
             this.removeAllParams();
 
+
             if (type != NULL)
             {
-                this.paramValue  = this.createAndAddParamByType(type, 'value', false, true, true);
+                this.paramValue = this.createAndAddParamByType(type, 'value', false, true, true);
+                console.log('this.paramValue =', this.paramValue);
 
                 if (type == NUMBER_VALUE)
                 {
@@ -176,13 +177,16 @@ extends ResizableBase
 
         if (values.length > 0)
         {
+            let value;
+
+
             const val = values[0];
 
             switch (resolvedType)
             {
-                case 'FLOAT':   value = new NumberValue(val); break;
+                case 'FLOAT':   value = new NumberValue(val);    break;
                 case 'BOOLEAN': value = new NumberValue(val, 0); break;
-                case 'STRING':  value = new TextValue(val);   break;
+                case 'STRING':  value = new TextValue(val);      break;
 
                 case 'COLOR':
                     value = ColorValue.create(
@@ -193,6 +197,7 @@ extends ResizableBase
                     
                     break;
             }
+            
 
             this.paramValue.setValue(value, false, true, false);
         }

@@ -10,6 +10,10 @@ onmessage = e =>
     let msg = JSON.parse(e.data.pluginMessage);
 
 
+    if (msg.cmd == 'returnFigGetValue') // ignore this message in the queue
+        return;
+
+
     if (   msg.cmd == 'uiForwardToGenerator'
         || msg.cmd == 'uiEndFigMessage')
     {
