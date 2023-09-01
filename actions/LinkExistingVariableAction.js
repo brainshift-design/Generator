@@ -48,7 +48,7 @@ extends Action
             this.variableId,
             this.variableName);
 
-        pushUnique(updateNodes, this.node);
+        //pushUnique(updateNodes, this.node);
 
         uiSaveNodes([this.nodeId]);
     }

@@ -61,10 +61,13 @@ function initLocalVariablesMenu(variables, nodeId)
         menuLocalVariables.addItems([new MenuItem('', null, {separator: true})]);
 
         
-    menuLocalVariables.addItems([
-        new MenuItem('None', null, {
+    menuLocalVariables.addItems(
+    [
+        new MenuItem('None', null, 
+        {
             callback: e => actionManager.do(new LinkExistingVariableAction(nodeId, NULL, '')),
-            enabled:  node.linkedStyleId != NULL})
+            enabled:  node.linkedStyleId != NULL
+        })
     ]);
 }
 

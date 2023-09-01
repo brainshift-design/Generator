@@ -116,6 +116,8 @@ extends ResizableBase
         let iconOffsetY = 0;
 
 
+        const prevIsBool = this.isBool;
+
         switch (resolvedType)
         {
             case 'FLOAT':   type = NUMBER_VALUE; icon = iconVarNumber;  iconOffsetY = -1; this.isBool = false; break;
@@ -125,10 +127,17 @@ extends ResizableBase
         }
 
 
-        if (this.paramValue.type != type)
+        if (   this.paramValue.type != type
+            || this.isBool != prevIsBool)
         {
             this.removeAllParams();
             this.paramValue  = this.createAndAddParamByType(type, 'value', false, true, true);
+
+            if (type == NUMBER_VALUE)
+            {
+                this.paramValue.controls[0].setMin(this.isBool ? 0 : Number.MIN_SAFE_INTEGER);
+                this.paramValue.controls[0].setMax(this.isBool ? 1 : Number.MAX_SAFE_INTEGER);
+            }
 
             this.icon        = icon;
             this.iconOffsetY = iconOffsetY;
@@ -173,17 +182,11 @@ extends ResizableBase
         switch (value.type)
         {
             case NUMBER_VALUE: 
-                val = this.isBool 
-                      ? value.value != 0 
-                      : value.value;
+                val = value.value;
                 break;
 
             case TEXT_VALUE:   
                 val = value.value;  
-                
-                if (val == '') 
-                    val = '\0'; 
-                
                 break;
 
             case COLOR_VALUE:  
@@ -192,7 +195,7 @@ extends ResizableBase
         }
 
         
-        if (val)
+        if (val != null)
             uiUpdateVariable(this.linkedVariableId, val);
     }
 

@@ -4287,6 +4287,11 @@ function figUpdateVariable(varId, value)
     const variable   = localVars.find(v => v.id == varId);
     const collection = figma.variables.getVariableCollectionById(variable.variableCollectionId);
 
+    if (variable.resolvedType == 'BOOLEAN')
+        value = value != 0;
+    
+    console.log('variable.resolvedType =', variable.resolvedType);
+    console.log('typeof value =', typeof value);
     variable.setValueForMode(collection.modes[0].modeId, value);
 }
 
