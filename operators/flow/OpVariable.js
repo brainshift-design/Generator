@@ -357,8 +357,8 @@ extends ResizableBase
 
 
 
-function OpVariable_value_onDisconnectInput(node, input)
-{
-    if (node.linkedVariableId == NULL)
-        node.paramValue.setValue(FillValue.NaN, false, false, false);
-}
+// function OpVariable_value_onDisconnectInput(node, input)
+// {
+//     if (node.linkedVariableId == NULL)
+//         node.paramValue.setValue(FillValue.NaN, false, false, false);
+// }

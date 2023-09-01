@@ -43,6 +43,8 @@ function initLocalVariablesMenu(variables, nodeId)
                 variable.id,
                 variable.name));
 
+        options.enabled = !linkedNodes.find(n => n.linkedVariableId == variable.id);
+
 
         switch (variable.type)
         {
@@ -71,7 +73,7 @@ function initLocalVariablesMenu(variables, nodeId)
         new MenuItem('None', null, 
         {
             callback: e => actionManager.do(new LinkExistingVariableAction(nodeId, NULL, '')),
-            enabled:  linkedNodes.find(n => n.linkedStyleId == node.linkedStyleId) != null
+            enabled:  node.linkedVariableId != NULL
         })
     ]);
 }

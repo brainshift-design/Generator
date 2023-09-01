@@ -338,7 +338,7 @@ function loadNodesAndConnsAsync(_nodes, _conns, setProgress)
             .forEach(n => uiLinkNodeToVariable(
                 n,
                 n.linkedVariableId,
-                ''));
+                n.linkedVariableName));
 
         loadConnectionsAsync(_nodes, _conns, nodes, setProgress);    
     });
