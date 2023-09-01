@@ -5,6 +5,7 @@ extends ResizableBase
 
 
     linkedVariableId = NULL;
+    isBool           = false;
 
 
 
@@ -117,17 +118,17 @@ extends ResizableBase
 
         switch (resolvedType)
         {
-            case 'FLOAT':   type = NUMBER_VALUE; icon = iconVarNumber;  iconOffsetY = -1; break;
-            case 'BOOLEAN': type = NUMBER_VALUE; icon = iconVarBoolean; iconOffsetY =  0; break;
-            case 'STRING':  type = TEXT_VALUE;   icon = iconVarText;    iconOffsetY =  1; break;
-            case 'COLOR':   type = COLOR_VALUE;  icon = iconVarColor;   iconOffsetY = -2; break;
+            case 'FLOAT':   type = NUMBER_VALUE; icon = iconVarNumber;  iconOffsetY = -1; this.isBool = false; break;
+            case 'BOOLEAN': type = NUMBER_VALUE; icon = iconVarBoolean; iconOffsetY =  0; this.isBool = true;  break;
+            case 'STRING':  type = TEXT_VALUE;   icon = iconVarText;    iconOffsetY =  1; this.isBool = false; break;
+            case 'COLOR':   type = COLOR_VALUE;  icon = iconVarColor;   iconOffsetY = -2; this.isBool = false; break;
         }
 
 
         if (this.paramValue.type != type)
         {
             this.removeAllParams();
-            this.paramValue = this.createAndAddParamByType(type, 'value', false, true, true);
+            this.paramValue  = this.createAndAddParamByType(type, 'value', false, true, true);
 
             this.icon        = icon;
             this.iconOffsetY = iconOffsetY;
@@ -140,9 +141,9 @@ extends ResizableBase
 
             switch (resolvedType)
             {
-                case 'FLOAT':   value = new NumberValue(val);                      break;
-                case 'BOOLEAN': value = new NumberValue(val, 0);                   break;
-                case 'STRING':  value = new TextValue(val);                        break;
+                case 'FLOAT':   value = new NumberValue(val); break;
+                case 'BOOLEAN': value = new NumberValue(val, 0); break;
+                case 'STRING':  value = new TextValue(val);   break;
 
                 case 'COLOR':
                     value = ColorValue.create(
@@ -165,6 +166,34 @@ extends ResizableBase
         super.updateValues(requestId, actionId, updateParamId, paramIds, values);
 
         const value = values[paramIds.findIndex(id => id == 'value')];
+
+        
+        let val = null;
+
+        switch (value.type)
+        {
+            case NUMBER_VALUE: 
+                val = this.isBool 
+                      ? value.value != 0 
+                      : value.value;
+                break;
+
+            case TEXT_VALUE:   
+                val = value.value;  
+                
+                if (val == '') 
+                    val = '\0'; 
+                
+                break;
+
+            case COLOR_VALUE:  
+                val = value.toRgbObject(); 
+                break;
+        }
+
+        
+        if (val)
+            uiUpdateVariable(this.linkedVariableId, val);
     }
 
     
@@ -177,6 +206,9 @@ extends ResizableBase
 
         this.paramValue.enableControlText(false, this.paramValue.isUnknown());
 
+        if (this.isBool)
+            updateParamConditionText(this.paramValue, this.paramValue.isUnknown(), true, 1);
+    
         // // this.paramValue.controls[0].valueText =  this.isUnknown() ? UNKNOWN_DISPLAY : '';
         // this.paramValue.controls[0].showBar   = false;//!this.isUnknown();
 

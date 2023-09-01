@@ -2841,7 +2841,11 @@ function figLinkNodeToVariable(nodeId, varId) {
     if (varId != NULL)
         figLinkVariable(localVars, nodeId, varId);
 }
-function figUpdateVariable(variableId, value) {
+function figUpdateVariable(varId, value) {
+    const localVars = figma.variables.getLocalVariables();
+    const variable = localVars.find(v => v.id == varId);
+    const collection = figma.variables.getVariableCollectionById(variable.variableCollectionId);
+    variable.setValueForMode(collection.modes[0].modeId, value);
 }
 function figLinkVariable(localVars, nodeId, varId) {
     const variable = localVars.find(v => v.id == varId);

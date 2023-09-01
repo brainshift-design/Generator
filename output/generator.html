@@ -9709,6 +9709,18 @@ extends GValue
 
 
 
+    toRgbObject()
+    {
+        const rgb = dataColor2rgb(this.toDataColor());
+
+        return {
+            r: rgb[0],
+            g: rgb[1],
+            b: rgb[2] };
+    }
+
+
+
     toString()
     {
         return      this.space.toString()
