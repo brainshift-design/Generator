@@ -926,7 +926,7 @@ function genParseTimer(parse)
         timer.input = genParse(parse);
 
 
-    timer.delay = genParse(parse);
+    timer.interval = genParse(parse);
 
 
     parse.nTab--;

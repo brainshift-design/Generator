@@ -1667,6 +1667,9 @@ figma.ui.onmessage = function (msg) {
         case 'figLinkNodeToVariable':
             figLinkNodeToVariable(msg.nodeId, msg.variableId);
             break;
+        case 'figUpdateVariable':
+            figUpdateVariable(msg.variableId, msg.value);
+            break;
         case 'figGetAllLocalColorStyles':
             figGetAllLocalColorStyles(msg.nodeId, msg.px, msg.py);
             break;
@@ -2837,6 +2840,8 @@ function figLinkNodeToVariable(nodeId, varId) {
     const localVars = figma.variables.getLocalVariables();
     if (varId != NULL)
         figLinkVariable(localVars, nodeId, varId);
+}
+function figUpdateVariable(variableId, value) {
 }
 function figLinkVariable(localVars, nodeId, varId) {
     const variable = localVars.find(v => v.id == varId);

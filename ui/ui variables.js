@@ -85,3 +85,13 @@ function uiLinkNodeToVariable(node, variableId, variableName)
         variableId: variableId
     });
 }
+
+
+
+function uiUpdateVariable(variableId, value)
+{
+    uiQueueMessageToFigma({
+        cmd:       'figUpdateVariable',
+        variableId: variableId,
+        value:      value});
+}

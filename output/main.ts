@@ -2489,6 +2489,7 @@ figma.ui.onmessage = function(msg)
 
         case 'figGetAllLocalVariables':               figGetAllLocalVariables              (msg.nodeId, msg.px, msg.py);                  break;
         case 'figLinkNodeToVariable':                 figLinkNodeToVariable                (msg.nodeId, msg.variableId);                  break;
+        case 'figUpdateVariable':                     figUpdateVariable                    (msg.variableId, msg.value);                   break;
 
         case 'figGetAllLocalColorStyles':             figGetAllLocalColorStyles            (msg.nodeId, msg.px, msg.py);                  break;
         case 'figLinkNodeToExistingColorStyle':       figLinkNodeToExistingColorStyle      (msg.nodeId, msg.styleId);                     break;
@@ -4276,6 +4277,13 @@ function figLinkNodeToVariable(nodeId, varId)
 
     if (varId != NULL) 
         figLinkVariable(localVars, nodeId, varId);
+}
+
+
+
+function figUpdateVariable(variableId, value)
+{
+    
 }
 
 

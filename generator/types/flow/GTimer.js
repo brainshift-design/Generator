@@ -1,9 +1,9 @@
 class GTimer
 extends GOperator
 {
-    input = null;
+    input    = null;
 
-    delay = null;
+    interval = null;
 
 
 
@@ -21,7 +21,7 @@ extends GOperator
         copy.copyBase(this);
 
         if (this.input) copy.input = this.input.copy();
-        if (this.delay) copy.delay = this.delay.copy();
+        if (this.interval) copy.interval = this.interval.copy();
 
         return copy;
     }
@@ -43,7 +43,7 @@ extends GOperator
             return this;
 
 
-        const delay = (await this.delay.eval(parse)).toValue();
+        const interval = (await this.interval.eval(parse)).toValue();
             
 
         if (this.input)
@@ -57,8 +57,8 @@ extends GOperator
 
         this.setUpdateValues(parse,
         [
-            ['value', this.value],
-            ['delay', delay     ]
+            ['value',    this.value],
+            ['interval', interval  ]
         ]);
 
         
@@ -82,7 +82,7 @@ extends GOperator
     isValid()
     {
         return this.input && this.input.isValid()
-            && this.delay && this.delay.isValid();
+            && this.interval && this.interval.isValid();
     }
 
 
@@ -92,7 +92,7 @@ extends GOperator
         super.pushValueUpdates(parse);
 
         if (this.input) this.input.pushValueUpdates(parse);
-        if (this.delay) this.delay.pushValueUpdates(parse);
+        if (this.interval) this.interval.pushValueUpdates(parse);
     }
 
 
@@ -102,7 +102,7 @@ extends GOperator
         super.invalidateInputs(parse, from);
 
         if (this.input) this.input.invalidateInputs(parse, from);
-        if (this.delay) this.delay.invalidateInputs(parse, from);
+        if (this.interval) this.interval.invalidateInputs(parse, from);
     }
 
 
@@ -112,6 +112,6 @@ extends GOperator
         super.iterateLoop(parse);
 
         if (this.input) this.input.iterateLoop(parse);
-        if (this.delay) this.delay.iterateLoop(parse);
+        if (this.interval) this.interval.iterateLoop(parse);
     }
 }

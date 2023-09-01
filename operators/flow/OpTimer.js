@@ -1,7 +1,7 @@
 class   OpTimer
 extends OperatorBase
 {
-    paramDelay;
+    paramInterval;
 
     updateTimer = -1;
     updateDelay =  0;
@@ -25,10 +25,10 @@ extends OperatorBase
         this.inputs[0].addEventListener('disconnect', () => OpTimer_onDisconnectInput(this));
 
 
-        this.addParam(this.paramDelay = new NumberParam('delay', 'delay', true, true, true, 5, 0));
+        this.addParam(this.paramInterval = new NumberParam('interval', 'interval', true, true, true, 5, 0));
 
-        this.paramDelay.controls[0].suffix = ' sec';
-        this.paramDelay.divider            = 0.45;
+        this.paramInterval.controls[0].suffix = ' sec';
+        this.paramInterval.divider            = 0.5;
     }
 
 
@@ -54,7 +54,7 @@ extends OperatorBase
         if (input.connected)
             request.push(...pushInputOrParam(input, gen));
 
-        request.push(...this.node.paramDelay.genRequest(gen));
+        request.push(...this.node.paramInterval.genRequest(gen));
 
             
         gen.scope.pop();
@@ -71,17 +71,17 @@ extends OperatorBase
         super.updateValues(requestId, actionId, updateParamId, paramIds, values);
 
 
-        const delay = values[paramIds.findIndex(id => id == 'delay')].toNumber();
+        const interval = values[paramIds.findIndex(id => id == 'interval')].toNumber();
 
-        if (delay > 0)
+        if (interval > 0)
         {
             if (   this.updateTimer < 0
-                || this.updateDelay != delay)
+                || this.updateDelay != interval)
             {
                 if (this.updateTimer >= 0)
                     clearTimeout(this.updateTimer);
 
-                this.updateTimer = setTimeout(() => pushUpdate(null, [this]), delay * 1000);
+                this.updateTimer = setTimeout(() => pushUpdate(null, [this]), interval * 1000);
             } 
         }
         else if (this.updateTimer >= 0)
@@ -95,7 +95,7 @@ extends OperatorBase
     
     updateParams()
     {
-        this.paramDelay.enableControlText(true);
+        this.paramInterval.enableControlText(true);
     
         this.updateParamControls();
     }

@@ -160,6 +160,15 @@ extends ResizableBase
 
 
 
+    updateValues(requestId, actionId, updateParamId, paramIds, values)
+    {
+        super.updateValues(requestId, actionId, updateParamId, paramIds, values);
+
+        const value = values[paramIds.findIndex(id => id == 'value')];
+    }
+
+    
+    
     updateParams()
     {
         const enabled = this.linkedVariableId != NULL;

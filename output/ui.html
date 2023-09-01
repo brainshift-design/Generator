@@ -20784,9 +20784,9 @@ extends GOperator1
 class GTimer
 extends GOperator
 {
-    input = null;
+    input    = null;
 
-    delay = null;
+    interval = null;
 
 
 
@@ -20804,7 +20804,7 @@ extends GOperator
         copy.copyBase(this);
 
         if (this.input) copy.input = this.input.copy();
-        if (this.delay) copy.delay = this.delay.copy();
+        if (this.interval) copy.interval = this.interval.copy();
 
         return copy;
     }
@@ -20826,7 +20826,7 @@ extends GOperator
             return this;
 
 
-        const delay = (await this.delay.eval(parse)).toValue();
+        const interval = (await this.interval.eval(parse)).toValue();
             
 
         if (this.input)
@@ -20840,8 +20840,8 @@ extends GOperator
 
         this.setUpdateValues(parse,
         [
-            ['value', this.value],
-            ['delay', delay     ]
+            ['value',    this.value],
+            ['interval', interval  ]
         ]);
 
         
@@ -20865,7 +20865,7 @@ extends GOperator
     isValid()
     {
         return this.input && this.input.isValid()
-            && this.delay && this.delay.isValid();
+            && this.interval && this.interval.isValid();
     }
 
 
@@ -20875,7 +20875,7 @@ extends GOperator
         super.pushValueUpdates(parse);
 
         if (this.input) this.input.pushValueUpdates(parse);
-        if (this.delay) this.delay.pushValueUpdates(parse);
+        if (this.interval) this.interval.pushValueUpdates(parse);
     }
 
 
@@ -20885,7 +20885,7 @@ extends GOperator
         super.invalidateInputs(parse, from);
 
         if (this.input) this.input.invalidateInputs(parse, from);
-        if (this.delay) this.delay.invalidateInputs(parse, from);
+        if (this.interval) this.interval.invalidateInputs(parse, from);
     }
 
 
@@ -20895,7 +20895,7 @@ extends GOperator
         super.iterateLoop(parse);
 
         if (this.input) this.input.iterateLoop(parse);
-        if (this.delay) this.delay.iterateLoop(parse);
+        if (this.interval) this.interval.iterateLoop(parse);
     }
 }
 
@@ -41364,7 +41364,7 @@ function genParseTimer(parse)
         timer.input = genParse(parse);
 
 
-    timer.delay = genParse(parse);
+    timer.interval = genParse(parse);
 
 
     parse.nTab--;
@@ -67386,9 +67386,9 @@ extends GOperator1
 class GTimer
 extends GOperator
 {
-    input = null;
+    input    = null;
 
-    delay = null;
+    interval = null;
 
 
 
@@ -67406,7 +67406,7 @@ extends GOperator
         copy.copyBase(this);
 
         if (this.input) copy.input = this.input.copy();
-        if (this.delay) copy.delay = this.delay.copy();
+        if (this.interval) copy.interval = this.interval.copy();
 
         return copy;
     }
@@ -67428,7 +67428,7 @@ extends GOperator
             return this;
 
 
-        const delay = (await this.delay.eval(parse)).toValue();
+        const interval = (await this.interval.eval(parse)).toValue();
             
 
         if (this.input)
@@ -67442,8 +67442,8 @@ extends GOperator
 
         this.setUpdateValues(parse,
         [
-            ['value', this.value],
-            ['delay', delay     ]
+            ['value',    this.value],
+            ['interval', interval  ]
         ]);
 
         
@@ -67467,7 +67467,7 @@ extends GOperator
     isValid()
     {
         return this.input && this.input.isValid()
-            && this.delay && this.delay.isValid();
+            && this.interval && this.interval.isValid();
     }
 
 
@@ -67477,7 +67477,7 @@ extends GOperator
         super.pushValueUpdates(parse);
 
         if (this.input) this.input.pushValueUpdates(parse);
-        if (this.delay) this.delay.pushValueUpdates(parse);
+        if (this.interval) this.interval.pushValueUpdates(parse);
     }
 
 
@@ -67487,7 +67487,7 @@ extends GOperator
         super.invalidateInputs(parse, from);
 
         if (this.input) this.input.invalidateInputs(parse, from);
-        if (this.delay) this.delay.invalidateInputs(parse, from);
+        if (this.interval) this.interval.invalidateInputs(parse, from);
     }
 
 
@@ -67497,7 +67497,7 @@ extends GOperator
         super.iterateLoop(parse);
 
         if (this.input) this.input.iterateLoop(parse);
-        if (this.delay) this.delay.iterateLoop(parse);
+        if (this.interval) this.interval.iterateLoop(parse);
     }
 }
 
@@ -107432,6 +107432,15 @@ extends ResizableBase
 
 
 
+    updateValues(requestId, actionId, updateParamId, paramIds, values)
+    {
+        super.updateValues(requestId, actionId, updateParamId, paramIds, values);
+
+        const value = values[paramIds.findIndex(id => id == 'value')];
+    }
+
+    
+    
     updateParams()
     {
         const enabled = this.linkedVariableId != NULL;
@@ -107765,7 +107774,7 @@ function OpFreeze_onDisconnectInput(node)
 class   OpTimer
 extends OperatorBase
 {
-    paramDelay;
+    paramInterval;
 
     updateTimer = -1;
     updateDelay =  0;
@@ -107789,10 +107798,10 @@ extends OperatorBase
         this.inputs[0].addEventListener('disconnect', () => OpTimer_onDisconnectInput(this));
 
 
-        this.addParam(this.paramDelay = new NumberParam('delay', 'delay', true, true, true, 5, 0));
+        this.addParam(this.paramInterval = new NumberParam('interval', 'interval', true, true, true, 5, 0));
 
-        this.paramDelay.controls[0].suffix = ' sec';
-        this.paramDelay.divider            = 0.45;
+        this.paramInterval.controls[0].suffix = ' sec';
+        this.paramInterval.divider            = 0.5;
     }
 
 
@@ -107818,7 +107827,7 @@ extends OperatorBase
         if (input.connected)
             request.push(...pushInputOrParam(input, gen));
 
-        request.push(...this.node.paramDelay.genRequest(gen));
+        request.push(...this.node.paramInterval.genRequest(gen));
 
             
         gen.scope.pop();
@@ -107835,17 +107844,17 @@ extends OperatorBase
         super.updateValues(requestId, actionId, updateParamId, paramIds, values);
 
 
-        const delay = values[paramIds.findIndex(id => id == 'delay')].toNumber();
+        const interval = values[paramIds.findIndex(id => id == 'interval')].toNumber();
 
-        if (delay > 0)
+        if (interval > 0)
         {
             if (   this.updateTimer < 0
-                || this.updateDelay != delay)
+                || this.updateDelay != interval)
             {
                 if (this.updateTimer >= 0)
                     clearTimeout(this.updateTimer);
 
-                this.updateTimer = setTimeout(() => pushUpdate(null, [this]), delay * 1000);
+                this.updateTimer = setTimeout(() => pushUpdate(null, [this]), interval * 1000);
             } 
         }
         else if (this.updateTimer >= 0)
@@ -107859,7 +107868,7 @@ extends OperatorBase
     
     updateParams()
     {
-        this.paramDelay.enableControlText(true);
+        this.paramInterval.enableControlText(true);
     
         this.updateParamControls();
     }
@@ -134238,6 +134247,16 @@ function uiLinkNodeToVariable(node, variableId, variableName)
         nodeId:     node.id,
         variableId: variableId
     });
+}
+
+
+
+function uiUpdateVariable(variableId, value)
+{
+    uiQueueMessageToFigma({
+        cmd:       'figUpdateVariable',
+        variableId: variableId,
+        value:      value});
 }
 
 
