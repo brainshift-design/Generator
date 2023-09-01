@@ -107441,7 +107441,7 @@ extends ResizableBase
 
 
 
-    updateValueParam(resolvedType, values)
+    updateValueParam(resolvedType, values, update = false)
     {
         let type = NULL;
 
@@ -107511,7 +107511,7 @@ extends ResizableBase
             }
             
 
-            this.paramValue.setValue(value, false, true, false);
+            this.paramValue.setValue(value, update, true, update);
         }
     }
 
@@ -131814,7 +131814,7 @@ function loadNodesAndConnsAsync(_nodes, _conns, setProgress)
         
 
         const varNodes = nodes.filter(n => 
-                   n.type == VARIABLE 
+                   n.type             == VARIABLE 
                 && n.linkedVariableId != NULL);
                 
         uiGetValueFromFigma('getVariableData', varNodes.map(n => n.linkedVariableId))
@@ -132671,6 +132671,33 @@ subscriptionClose.addEventListener('click', e =>
 
 
 var importZoomToNodes = false;
+
+
+
+var variableTimer = setInterval(() =>
+{
+    if (!graph.pages[0])
+        return;
+    
+    const varNodes = graph.pages[0].nodes.filter(n => 
+           n.type             == VARIABLE 
+        && n.linkedVariableId != NULL);
+     
+    uiGetValueFromFigma('getVariableData', varNodes.map(n => n.linkedVariableId))
+        .then(response =>
+        {
+            for (const value of response.value)
+            {
+                const node = varNodes.find(n => n.linkedVariableId == value.id);
+
+                node.updateValueParam(
+                    value.resolvedType,
+                    [value.value],
+                    true);
+            }
+        });
+},
+333);
 
 
 

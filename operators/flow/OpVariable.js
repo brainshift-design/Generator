@@ -129,7 +129,7 @@ extends ResizableBase
 
 
 
-    updateValueParam(resolvedType, values)
+    updateValueParam(resolvedType, values, update = false)
     {
         let type = NULL;
 
@@ -199,7 +199,7 @@ extends ResizableBase
             }
             
 
-            this.paramValue.setValue(value, false, true, false);
+            this.paramValue.setValue(value, update, true, update);
         }
     }
 

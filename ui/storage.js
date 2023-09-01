@@ -335,7 +335,7 @@ function loadNodesAndConnsAsync(_nodes, _conns, setProgress)
         
 
         const varNodes = nodes.filter(n => 
-                   n.type == VARIABLE 
+                   n.type             == VARIABLE 
                 && n.linkedVariableId != NULL);
                 
         uiGetValueFromFigma('getVariableData', varNodes.map(n => n.linkedVariableId))
