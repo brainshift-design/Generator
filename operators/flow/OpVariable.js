@@ -4,8 +4,10 @@ extends ResizableBase
     paramValue;
 
 
-    linkedVariableId = NULL;
-    isBool           = false;
+    linkedVariableId   = NULL;
+    linkedVariableName = '';
+
+    isBool             = false;
 
 
 
@@ -251,6 +253,24 @@ extends ResizableBase
 
 
 
+    getLabelText()
+    {
+        if (this.linkedVariableId == NULL)
+            return 'variable';
+        
+
+        const parts = this.linkedVariableName.split('/');
+        
+        if (parts.length == 1)
+            return this.linkedVariableName;
+    
+        
+        return parts.slice(0, -1).map(p => '<b>' + p + '</b>').join('/') 
+             + '/' + parts.at(-1);
+    }
+
+
+
     // updateHeader()
     // {
     //     super.updateHeader();
@@ -311,7 +331,8 @@ extends ResizableBase
         const tab = HTAB;
 
         return super.toJsonBase(nTab)
-             + ',\n' + pos + tab + '"linkedVariableId": "' + this.linkedVariableId + '"';
+             + ',\n' + pos + tab + '"linkedVariableId": "'   + this.linkedVariableId   + '"'
+             + ',\n' + pos + tab + '"linkedVariableName": "' + this.linkedVariableName + '"';
     }
 
 
@@ -322,12 +343,14 @@ extends ResizableBase
         {
             super.loadParams(_node, pasting);
             
-            this.linkedVariableId = _node.linkedVariableId;
+            this.linkedVariableId   = _node.linkedVariableId;
+            this.linkedVariableName = _node.linkedVariableName;
         }
         else
         {
-            this.name             = this.defName;
-            this.linkedVariableId = NULL;
+            this.name               = this.defName;
+            this.linkedVariableId   = NULL;
+            this.linkedVariableName = '';
         }
     }
 }

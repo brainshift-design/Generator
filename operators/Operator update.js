@@ -299,15 +299,30 @@ Operator.prototype.updateHeaderLabelText = function()
     suffix += this.suffix;
 
 
-    this.labelText.innerHTML = 
-          (settings.showNodeId ? this.id + suffix : prefix + this.name + suffix)
+    let html =
+          (settings.showNodeId ? this.id + suffix : prefix + this.getLabelText() + suffix)
         + (this.active && this.showActiveArrow ? (settings.showNodeId ? ' ' : '  ') + '‣' : '');
+    
+
+    html = html.replaceAll('</', '%%@@%%!!)77')
+    html = html.replaceAll('/', ' / ');
+    html = html.replaceAll('%%@@%%!!)77', '</')
+
+    this.labelText.innerHTML = html;
+
 
     this.labelText.style.fontFamily = 
         settings.showNodeId 
         ? 'Roboto Mono' 
         : 'Inter';
 }
+
+
+
+Operator.prototype.getLabelText = function()
+{
+    return this.name;
+};
 
 
 

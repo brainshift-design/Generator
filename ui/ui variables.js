@@ -26,6 +26,11 @@ function initLocalVariablesMenu(variables, nodeId)
     consoleAssert(node.type == VARIABLE, 'node must be VARIABLE');
 
 
+    const linkedNodes = graph.pages[0].nodes.filter(n => 
+           n.type == VARIABLE
+        && n.linkedVariableId != NULL);
+
+
     menuLocalVariables.clearItems();
 
     for (const variable of variables)
@@ -66,7 +71,7 @@ function initLocalVariablesMenu(variables, nodeId)
         new MenuItem('None', null, 
         {
             callback: e => actionManager.do(new LinkExistingVariableAction(nodeId, NULL, '')),
-            enabled:  node.linkedStyleId != NULL
+            enabled:  linkedNodes.find(n => n.linkedStyleId == node.linkedStyleId) != null
         })
     ]);
 }
