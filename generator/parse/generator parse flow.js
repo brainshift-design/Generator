@@ -67,7 +67,7 @@ function genParseVariable(parse)
     parse.inParam = false;
 
 
-    variable.id       = parse.move();
+    //variable.id       = parse.move();
     //variable.name     = options.nodeName;
     
     variable.varValue = genParse(parse);

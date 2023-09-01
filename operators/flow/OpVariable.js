@@ -17,10 +17,10 @@ extends ResizableBase
 
 
         this.canRename   = false;
-        this.iconOffsetY = -1;
+        this.iconOffsetY = 0;
 
 
-        this.resetValueParam();
+        this.initValueParam();
 
 
         this.divIcon.style.opacity       = 0.5;
@@ -109,7 +109,7 @@ extends ResizableBase
         if (ignore) return request;
 
                 
-        request.push(this.linkedVariableId);
+        //request.push(this.linkedVariableId);
         request.push(...this.paramValue.genRequest(gen));
 
 
@@ -121,7 +121,7 @@ extends ResizableBase
 
 
 
-    resetValueParam()
+    initValueParam()
     {
         this.addParam(this.paramValue = new ListParam('value', '?', false, false, false));
         this.paramValue.itemName = '';
@@ -131,7 +131,7 @@ extends ResizableBase
 
     updateValueParam(resolvedType, values)
     {
-        let type;
+        let type = NULL;
         let value;
 
         let icon;
@@ -146,7 +146,7 @@ extends ResizableBase
             case 'BOOLEAN': type = NUMBER_VALUE; icon = iconVarBoolean; iconOffsetY =  0; this.isBool = true;  break;
             case 'STRING':  type = TEXT_VALUE;   icon = iconVarText;    iconOffsetY =  1; this.isBool = false; break;
             case 'COLOR':   type = COLOR_VALUE;  icon = iconVarColor;   iconOffsetY = -2; this.isBool = false; break;
-            default:                             icon = iconVariable;   iconOffsetY = -1;
+            default:                             icon = iconVariable;   iconOffsetY =  0;                      break;
         }
 
 
@@ -154,13 +154,20 @@ extends ResizableBase
             || this.isBool != prevIsBool)
         {
             this.removeAllParams();
-            this.paramValue  = this.createAndAddParamByType(type, 'value', false, true, true);
 
-            if (type == NUMBER_VALUE)
+            if (type != NULL)
             {
-                this.paramValue.controls[0].setMin(this.isBool ? 0 : Number.MIN_SAFE_INTEGER);
-                this.paramValue.controls[0].setMax(this.isBool ? 1 : Number.MAX_SAFE_INTEGER);
+                this.paramValue  = this.createAndAddParamByType(type, 'value', false, true, true);
+
+                if (type == NUMBER_VALUE)
+                {
+                    this.paramValue.controls[0].setMin(this.isBool ? 0 : Number.MIN_SAFE_INTEGER);
+                    this.paramValue.controls[0].setMax(this.isBool ? 1 : Number.MAX_SAFE_INTEGER);
+                }
             }
+            else
+                this.initValueParam();
+
 
             this.icon        = icon;
             this.iconOffsetY = iconOffsetY;
@@ -218,35 +225,17 @@ extends ResizableBase
         }
 
         
-        if (val != null)
-            uiUpdateVariable(this.linkedVariableId, val);
+        uiUpdateVariable(this.linkedVariableId, val);
     }
 
     
     
     updateParams()
     {
-        const enabled = this.linkedVariableId != NULL;
-            //   !this.existing 
-            // || this.linkedVariableId != NULL;
-
         this.paramValue.enableControlText(false, this.paramValue.isUnknown());
 
         if (this.isBool)
             updateParamConditionText(this.paramValue, this.paramValue.isUnknown(), true, 1);
-    
-        // // this.paramValue.controls[0].valueText =  this.isUnknown() ? UNKNOWN_DISPLAY : '';
-        // this.paramValue.controls[0].showBar   = false;//!this.isUnknown();
-
-
-        //const colors   = this.getHeaderColors();
-        //const rgbaBack = rgb_a(colors.stripeBack, colors.back[3]);
-
-        //this.paramValue.controlWrapper.style.background = rgba2style(rgbaBack);
-            //   !rgbaIsNaN(rgbaBack) 
-            // && this.paramValue.value.opacity.isValid()
-            // ?  rgba2style(rgbaBack)
-            // : 'transparent'; 
 
         this.updateParamControls();
     }
@@ -271,48 +260,10 @@ extends ResizableBase
 
 
 
-    // updateHeader()
-    // {
-    //     super.updateHeader();
-
-
-    //     if (this.paramValue.value.isValid()
-    //         && (  !this.existing
-    //             || this.linkedVariableId != NULL))
-    //     {
-    //         this.btnCircle.style.boxShadow = 
-    //                 darkMode &&  isDark(rgbaStripe, 0.4)
-    //             || !darkMode && !isDark(rgbaStripe, 0.9)
-    //             ? '0 0 0 1px var(--figma-color-bg-tertiary) inset'
-    //             : 'none';
-    //     }
-    //     else
-    //     {
-    //         this.btnCircle     .style.boxShadow  = '0 0 0 1px var(--figma-color-bg-tertiary) inset';
-    //     }
-
-
-    //     this.updateLinkIcon();
-    // }
-    //}
-
-
-
     getActiveOffset()
     {
         return -2;
     }
-
-
-
-    // getHeaderColors(options = {})
-    // {
-    //     const colors = super.getHeaderColors();
-
-    //     colors.stripeBack = getStripeBackColor(colors.back);
-
-    //     return colors;
-    // }
 
 
 
@@ -354,11 +305,3 @@ extends ResizableBase
         }
     }
 }
-
-
-
-// function OpVariable_value_onDisconnectInput(node, input)
-// {
-//     if (node.linkedVariableId == NULL)
-//         node.paramValue.setValue(FillValue.NaN, false, false, false);
-// }

@@ -2838,12 +2838,13 @@ function figGetAllLocalVariables(nodeId, px, py) {
 }
 function figLinkNodeToVariable(nodeId, varId) {
     const localVars = figma.variables.getLocalVariables();
-    if (varId != NULL)
-        figLinkVariable(localVars, nodeId, varId);
+    figLinkVariable(localVars, nodeId, varId);
 }
 function figUpdateVariable(varId, value) {
     const localVars = figma.variables.getLocalVariables();
     const variable = localVars.find(v => v.id == varId);
+    if (!variable)
+        return;
     const collection = figma.variables.getVariableCollectionById(variable.variableCollectionId);
     if (variable.resolvedType == 'BOOLEAN')
         value = value != 0;
@@ -2851,15 +2852,17 @@ function figUpdateVariable(varId, value) {
 }
 function figLinkVariable(localVars, nodeId, varId) {
     const variable = localVars.find(v => v.id == varId);
-    const collection = figma.variables.getVariableCollectionById(variable.variableCollectionId);
     const values = [];
-    for (const mode of collection.modes)
-        values.push(variable.valuesByMode[mode.modeId]);
+    if (variable) {
+        const collection = figma.variables.getVariableCollectionById(variable.variableCollectionId);
+        for (const mode of collection.modes)
+            values.push(variable.valuesByMode[mode.modeId]);
+    }
     figPostMessageToUi({
         cmd: 'uiReturnFigLinkNodeToVariable',
         nodeId: nodeId,
-        variableId: variable.id,
-        type: variable.resolvedType,
+        variableId: variable ? variable.id : NULL,
+        type: variable ? variable.resolvedType : NULL,
         values: values
     });
     return variable;

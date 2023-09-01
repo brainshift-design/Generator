@@ -1,13 +1,13 @@
 class GVariable
 extends GOperator
 {
-    id;
+    //id;
 
     //variable;
     varValue;
 
     //existing;
-    linked;
+    //linked;
 
 
 
@@ -15,7 +15,7 @@ extends GOperator
     {
         super(VARIABLE, nodeId, options);
 
-        this.id == styleId;
+        //this.id == styleId;
     }
 
 
@@ -24,12 +24,12 @@ extends GOperator
     {
         const copy = new GColorStyle(this.nodeId, this.options);
 
-        copy.id       = this.id;
+        //copy.id       = this.id;
         //copy.variable = this.variable.copy();
-        copy.genValue = this.varValue.copy();
+        copy.varValue = this.varValue.copy();
         
         //copy.existing   = this.existing;
-        copy.linked   = this.linked;
+        //copy.linked   = this.linked;
 
         return copy;
     }
