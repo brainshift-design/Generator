@@ -2919,21 +2919,37 @@ function figGetValue(key, spec)
             let   values    = [];
 
 
-            for (const variable of variables)
+            for (let i = 0; i < varIds.length; i++)
             {
-                const vals       = [];
-                const collection = figma.variables.getVariableCollectionById(variable.variableCollectionId);
+                const variable = variables[i];
                 
+                const collection = 
+                    variable != undefined // deleted
+                    ? figma.variables.getVariableCollectionById(variable.variableCollectionId)
+                    : null;
+                
+                    
                 if (collection)
                 {
+                    const vals = [];
+
                     for (const mode of collection.modes)
                         vals.push(variable.valuesByMode[mode.modeId]);
 
                     values.push(
                     {
-                        id:           variable.id, 
+                        id:           varIds[i], 
                         resolvedType: variable.resolvedType, 
                         value:        vals[0]
+                    });
+                }
+                else
+                {
+                    values.push(
+                    {
+                        id:           varIds[i], 
+                        resolvedType: NULL, 
+                        value:        null
                     });
                 }
             }

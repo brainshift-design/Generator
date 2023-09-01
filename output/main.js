@@ -1925,16 +1925,26 @@ function figGetValue(key, spec) {
                 const localVars = figma.variables.getLocalVariables();
                 const variables = varIds.map(id => localVars.find(v => v.id == id));
                 let values = [];
-                for (const variable of variables) {
-                    const vals = [];
-                    const collection = figma.variables.getVariableCollectionById(variable.variableCollectionId);
+                for (let i = 0; i < varIds.length; i++) {
+                    const variable = variables[i];
+                    const collection = variable != undefined // deleted
+                        ? figma.variables.getVariableCollectionById(variable.variableCollectionId)
+                        : null;
                     if (collection) {
+                        const vals = [];
                         for (const mode of collection.modes)
                             vals.push(variable.valuesByMode[mode.modeId]);
                         values.push({
-                            id: variable.id,
+                            id: varIds[i],
                             resolvedType: variable.resolvedType,
                             value: vals[0]
+                        });
+                    }
+                    else {
+                        values.push({
+                            id: varIds[i],
+                            resolvedType: NULL,
+                            value: null
                         });
                     }
                 }

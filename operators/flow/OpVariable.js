@@ -158,7 +158,6 @@ extends ResizableBase
             if (type != NULL)
             {
                 this.paramValue = this.createAndAddParamByType(type, 'value', false, true, true);
-                console.log('this.paramValue =', this.paramValue);
 
                 if (type == NUMBER_VALUE)
                 {
@@ -182,24 +181,28 @@ extends ResizableBase
 
             const val = values[0];
 
-            switch (resolvedType)
+
+            if (val)
             {
-                case 'FLOAT':   value = new NumberValue(val);    break;
-                case 'BOOLEAN': value = new NumberValue(val, 0); break;
-                case 'STRING':  value = new TextValue(val);      break;
+                switch (resolvedType)
+                {
+                    case 'FLOAT':   value = new NumberValue(val);    break;
+                    case 'BOOLEAN': value = new NumberValue(val, 0); break;
+                    case 'STRING':  value = new TextValue(val);      break;
 
-                case 'COLOR':
-                    value = ColorValue.create(
-                        1, 
-                        Math.round(val.r * 0xff), 
-                        Math.round(val.g * 0xff), 
-                        Math.round(val.b * 0xff)); 
-                    
-                    break;
+                    case 'COLOR':
+                        value = ColorValue.create(
+                            1, 
+                            Math.round(val.r * 0xff), 
+                            Math.round(val.g * 0xff), 
+                            Math.round(val.b * 0xff)); 
+                        
+                        break;
+                }
+                
+
+                this.paramValue.setValue(value, update, true, update);
             }
-            
-
-            this.paramValue.setValue(value, update, true, update);
         }
     }
 
