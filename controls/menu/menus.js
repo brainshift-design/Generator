@@ -412,7 +412,7 @@ menuFlow = new Menu('Flow', true, false);
     menuFlow.addItems([
         menuItemNull     = new MenuItem('Null',              null, {icon: iconNull,      createType: NULL_NODE,        callback: e => actionManager.do(getCreateNodeAction(NULL_NODE,       btnFlow.div, getCreateOptions(e)))}),
                            new MenuItem('',                  null, {separator: true}),
-                           new MenuItem('Variable',          null, {icon: iconVarNumber, createType: VARIABLE,         callback: e => actionManager.do(getCreateNodeAction(VARIABLE,        btnFlow.div, getCreateOptions(e)))}),
+                           new MenuItem('Variable',          null, {icon: iconVariable,  createType: VARIABLE,         callback: e => actionManager.do(getCreateNodeAction(VARIABLE,        btnFlow.div, getCreateOptions(e)))}),
                            new MenuItem('',                  null, {separator: true}),
         menuItemIfElse   = new MenuItem('I&hairsp;f / else', null, {icon: iconIfElse,    createType: IF_ELSE,          callback: e => actionManager.do(getCreateNodeAction(IF_ELSE,         btnFlow.div, getCreateOptions(e))), disambiguate: true}),
                            new MenuItem('',                  null, {separator: true}),

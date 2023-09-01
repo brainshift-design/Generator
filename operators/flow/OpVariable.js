@@ -11,10 +11,11 @@ extends ResizableBase
 
     constructor(options = {})
     {
-        super(VARIABLE, 'variable', 'variable', iconVarNumber);
+        super(VARIABLE, 'variable', 'variable', iconVariable);
 
 
-        this.canRename = false;
+        this.canRename   = false;
+        this.iconOffsetY = -1;
 
 
         this.resetValueParam();
@@ -67,6 +68,25 @@ extends ResizableBase
 
         if (isValid(options.updateNodes))
             pushUnique(options.updateNodes, this);
+    }
+
+
+
+    setRect(x, y, w, h, updateTransform = true)
+    {
+        const headerHeight = Math.max(defHeaderHeight, boundingRect(this.header).height / graph.currentPage.zoom);
+
+        const height =
+            settings.showOperationResults
+            ? Math.max(headerHeight + defParamHeight, h)
+            : headerHeight + defParamHeight;
+
+        super.setRect(
+            x, 
+            y, 
+            w, 
+            height, 
+            updateTransform);
     }
 
 
@@ -124,6 +144,7 @@ extends ResizableBase
             case 'BOOLEAN': type = NUMBER_VALUE; icon = iconVarBoolean; iconOffsetY =  0; this.isBool = true;  break;
             case 'STRING':  type = TEXT_VALUE;   icon = iconVarText;    iconOffsetY =  1; this.isBool = false; break;
             case 'COLOR':   type = COLOR_VALUE;  icon = iconVarColor;   iconOffsetY = -2; this.isBool = false; break;
+            default:                             icon = iconVariable;   iconOffsetY = -1;
         }
 
 
