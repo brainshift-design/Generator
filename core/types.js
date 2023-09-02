@@ -7,6 +7,7 @@ const  SHAPE_LIST_VALUE       = 'SLIST#';
 
 const NULL_NODE               = 'NULL';
 const VARIABLE                = 'VAR';
+const CREATE_VARIABLE         = 'CRVAR';
 const START                   = 'START';
 const REPEAT                  = 'REPT';
 const CACHE                   = 'CACHE';

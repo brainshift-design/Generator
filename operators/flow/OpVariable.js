@@ -5,6 +5,7 @@ extends ResizableBase
 
 
     linkedVariableId   = NULL;
+    linkedVariableType = NULL; // this is resolvedType
     linkedVariableName = '';
 
     isBool             = false;
@@ -129,7 +130,7 @@ extends ResizableBase
 
 
 
-    updateValueParam(resolvedType, values, update = false)
+    updateValueParamType(resolvedType)
     {
         let type = NULL;
 
@@ -158,6 +159,7 @@ extends ResizableBase
             if (type != NULL)
             {
                 this.paramValue = this.createAndAddParamByType(type, 'value', false, true, true);
+                this.paramValue.input.getValuesForUndo = getNodeInputValuesForUndo;
 
                 if (type == NUMBER_VALUE)
                 {
@@ -172,12 +174,15 @@ extends ResizableBase
             this.icon        = icon;
             this.iconOffsetY = iconOffsetY;
         }
+    }
 
 
+
+    updateValueParamValues(resolvedType, values, update = false)
+    {
         if (values.length > 0)
         {
             let value;
-
 
             const val = values[0];
 
@@ -291,6 +296,7 @@ extends ResizableBase
 
         return super.toJsonBase(nTab)
              + ',\n' + pos + tab + '"linkedVariableId": "'   + this.linkedVariableId   + '"'
+             + ',\n' + pos + tab + '"linkedVariableType": "' + this.linkedVariableType + '"'
              + ',\n' + pos + tab + '"linkedVariableName": "' + this.linkedVariableName + '"';
     }
 
@@ -303,12 +309,14 @@ extends ResizableBase
             super.loadParams(_node, pasting);
             
             this.linkedVariableId   = _node.linkedVariableId;
+            this.linkedVariableType = _node.linkedVariableType;
             this.linkedVariableName = _node.linkedVariableName;
         }
         else
         {
             this.name               = this.defName;
             this.linkedVariableId   = NULL;
+            this.linkedVariableType = NULL;
             this.linkedVariableName = '';
         }
     }

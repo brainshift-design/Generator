@@ -1,3 +1,28 @@
+var variableTimer = setInterval(() =>
+{
+    if (!graph.pages[0])
+        return;
+    
+    const varNodes = graph.pages[0].nodes.filter(n => 
+           n.type             == VARIABLE 
+        && n.linkedVariableId != NULL);
+     
+    uiGetValueFromFigma('getVariableData', varNodes.map(n => n.linkedVariableId))
+        .then(response =>
+        {
+            for (const value of response.value)
+            {
+                const node = varNodes.find(n => n.linkedVariableId == value.id);
+
+                node.updateValueParamType  (value.resolvedType);
+                node.updateValueParamValues(value.resolvedType, [value.value], true);
+            }
+        });
+},
+345);
+
+
+
 function uiReturnFigGetAllLocalVariables(msg)
 {
     const variables = JSON.parse(msg.variables);
@@ -13,7 +38,9 @@ function uiReturnFigLinkNodeToVariable(msg)
 {
     const node = nodeFromId(msg.nodeId);
 
-    node.updateValueParam(msg.type, msg.values);
+    node.updateValueParamValues(
+        msg.resolvedType, 
+        msg.values);
 
     pushUpdate(null, [node]);
 }
@@ -41,6 +68,7 @@ function initLocalVariablesMenu(variables, nodeId)
             new LinkExistingVariableAction(
                 nodeId,
                 variable.id,
+                variable.resolvedType,
                 variable.name));
 
         options.enabled = !linkedNodes.find(n => n.linkedVariableId == variable.id);
@@ -72,7 +100,7 @@ function initLocalVariablesMenu(variables, nodeId)
     [
         new MenuItem('None', null, 
         {
-            callback: e => actionManager.do(new LinkExistingVariableAction(nodeId, NULL, '')),
+            callback: e => actionManager.do(new LinkExistingVariableAction(nodeId, NULL, NULL, '')),
             enabled:  node.linkedVariableId != NULL
         })
     ]);
@@ -80,13 +108,18 @@ function initLocalVariablesMenu(variables, nodeId)
 
 
 
-function uiLinkNodeToVariable(node, varId, varName, varType)
+function uiLinkNodeToVariable(node, varId, varType, varName)
 {
     node.linkedVariableId   = varId;
+    node.linkedVariableType = varType;
     node.linkedVariableName = varName;
     
     if (varName != NULL)
         node.name = varName;
+
+
+    node.updateValueParamType(varType);
+
 
     uiQueueMessageToFigma(
     {

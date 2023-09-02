@@ -345,9 +345,8 @@ function loadNodesAndConnsAsync(_nodes, _conns, setProgress)
                 {
                     const node = varNodes.find(n => n.linkedVariableId == value.id);
 
-                    node.updateValueParam(
-                         value.resolvedType,
-                        [value.value]);
+                    node.updateValueParamType  (value.resolvedType);
+                    node.updateValueParamValues(value.resolvedType, [value.value]);
                 }
 
                 loadConnectionsAsync(_nodes, _conns, nodes, setProgress);    

@@ -539,6 +539,7 @@ const TEXT_LIST_VALUE = 'TLIST#';
 const SHAPE_LIST_VALUE = 'SLIST#';
 const NULL_NODE = 'NULL';
 const VARIABLE = 'VAR';
+const CREATE_VARIABLE = 'CRVAR';
 const START = 'START';
 const REPEAT = 'REPT';
 const CACHE = 'CACHE';
@@ -2865,10 +2866,9 @@ function figGetAllLocalVariables(nodeId, px, py) {
         //const _nodeId = _var.getPluginData('nodeId');
         const variable = {
             id: _var.id,
-            //nodeId:        _nodeId,
+            resolvedType: _var.resolvedType,
             name: _var.name,
-            collectionName: figma.variables.getVariableCollectionById(_var.variableCollectionId).name,
-            type: _var.resolvedType
+            collectionName: figma.variables.getVariableCollectionById(_var.variableCollectionId).name
         };
         variables.push(variable);
     }
@@ -2906,7 +2906,7 @@ function figLinkVariable(localVars, nodeId, varId) {
         cmd: 'uiReturnFigLinkNodeToVariable',
         nodeId: nodeId,
         variableId: variable ? variable.id : NULL,
-        type: variable ? variable.resolvedType : NULL,
+        resolvedType: variable ? variable.resolvedType : NULL,
         values: values
     });
     return variable;

@@ -2,33 +2,6 @@ var importZoomToNodes = false;
 
 
 
-var variableTimer = setInterval(() =>
-{
-    if (!graph.pages[0])
-        return;
-    
-    const varNodes = graph.pages[0].nodes.filter(n => 
-           n.type             == VARIABLE 
-        && n.linkedVariableId != NULL);
-     
-    uiGetValueFromFigma('getVariableData', varNodes.map(n => n.linkedVariableId))
-        .then(response =>
-        {
-            for (const value of response.value)
-            {
-                const node = varNodes.find(n => n.linkedVariableId == value.id);
-
-                node.updateValueParam(
-                    value.resolvedType,
-                    [value.value],
-                    true);
-            }
-        });
-},
-333);
-
-
-
 function idFromNode(node)
 {
     return node ? node.id : '';

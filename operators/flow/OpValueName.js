@@ -18,8 +18,8 @@ extends OperatorBase
         this.addParam(this.paramName = new TextParam('name', 'name', false, true, true));
 
 
-        this.inputs[0].addEventListener('connect',    () => OpNull_onConnectInput(this));
-        this.inputs[0].addEventListener('disconnect', () => OpNull_onDisconnectInput(this));
+        this.inputs[0].addEventListener('connect',    () => OpValueName_onConnectInput(this));
+        this.inputs[0].addEventListener('disconnect', () => OpValueName_onDisconnectInput(this));
     }
 
 
@@ -95,14 +95,14 @@ extends OperatorBase
 
 
 
-function OpNull_onConnectInput(node)
+function OpValueName_onConnectInput(node)
 {
     node.outputs[0].types = [...node.inputs[0].connectedOutput.types];
 }
 
 
 
-function OpNull_onDisconnectInput(node)
+function OpValueName_onDisconnectInput(node)
 {
     node.outputs[0].types = [ANY_VALUE];
 }
