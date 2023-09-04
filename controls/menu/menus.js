@@ -77,7 +77,7 @@ var menuNodeHighlight;
 var menuNodeSelect;
 
 
-var menuLocalVariables;
+var menuLocalStyles;
 var menuLocalVariables;
 var menuSelectParam;
 
@@ -851,7 +851,7 @@ menuFlow = new Menu('Flow', true, false);
     menuCopy    = new Menu('Copy menu',    false, false);
 
 
-    menuLocalVariables    = new Menu('Local styles',    true,  true);
+    menuLocalStyles    = new Menu('Local styles',    true,  true);
     menuLocalVariables = new Menu('Local variables', true,  true);
     menuSelectParam    = new Menu('Select options',  false, true);
 

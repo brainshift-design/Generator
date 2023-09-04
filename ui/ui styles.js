@@ -89,7 +89,7 @@ function uiStylePropertyChange(msg)
         pushUpdate(null, [node]);
 
         actionManager.clear();
-        uiShowClearUndoWarning();
+        uiShowClearUndoWarning('styles');
     }
 }
 
@@ -107,7 +107,7 @@ function uiStyleDelete(msg)
         uiLinkNodeToExistingColorStyle(node, NULL, '', []);
         
         actionManager.clear();
-        uiShowClearUndoWarning();
+        uiShowClearUndoWarning('styles');
     }
 }
 
@@ -119,7 +119,7 @@ function uiReturnFigGetAllLocalColorStyles(msg)
 
     initLocalStylesMenu(styles, msg.nodeId);
 
-    menuLocalVariables.showAt(msg.px, msg.py, false);
+    menuLocalStyles.showAt(msg.px, msg.py, false);
 }
 
 
@@ -165,7 +165,7 @@ function initLocalStylesMenu(styles, nodeId)
     consoleAssert(node.type == COLOR_STYLE, 'node must be COLOR_STYLE');
 
 
-    menuLocalVariables.clearItems();
+    menuLocalStyles.clearItems();
 
     for (const style of styles)
     {
@@ -193,15 +193,15 @@ function initLocalStylesMenu(styles, nodeId)
 
         item.setChecked(style.nodeId == node.id);
 
-        menuLocalVariables.addItems([item]);
+        menuLocalStyles.addItems([item]);
     }
 
 
     if (!isEmpty(styles))
-        menuLocalVariables.addItems([new MenuItem('', null, {separator: true})]);
+        menuLocalStyles.addItems([new MenuItem('', null, {separator: true})]);
 
         
-    menuLocalVariables.addItems([
+    menuLocalStyles.addItems([
         new MenuItem('None', null, {
             callback: e => actionManager.do(new LinkExistingStyleAction(nodeId, NULL, '', [])),
             enabled:  node.linkedStyleId != NULL})

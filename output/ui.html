@@ -4978,8 +4978,7 @@ a
             <div id='whatsNewBody'>
                 <h1 style='margin-top: 20px;'>What's new</h1>
 
-                <p>•  fixed bug in Timer node</p>
-                <p>•  fixed UI bugs</p>
+                <p>•  </p>
                 
                 <p><br/><br/><div id='chkHideWhatsNew'></div></p>
             </div>
@@ -5337,7 +5336,7 @@ a
 
 
 
-const generatorVersion = 194;
+const generatorVersion = 195;
 
 
 const MAX_INT32        = 2147483647;
@@ -49698,7 +49697,7 @@ onerror = (event, source, line, pos, error) =>
 };
 
 
-const generatorVersion = 194;
+const generatorVersion = 195;
 
 
 const MAX_INT32        = 2147483647;
@@ -91846,7 +91845,7 @@ var menuNodeHighlight;
 var menuNodeSelect;
 
 
-var menuLocalVariables;
+var menuLocalStyles;
 var menuLocalVariables;
 var menuSelectParam;
 
@@ -92620,7 +92619,7 @@ menuFlow = new Menu('Flow', true, false);
     menuCopy    = new Menu('Copy menu',    false, false);
 
 
-    menuLocalVariables    = new Menu('Local styles',    true,  true);
+    menuLocalStyles    = new Menu('Local styles',    true,  true);
     menuLocalVariables = new Menu('Local variables', true,  true);
     menuSelectParam    = new Menu('Select options',  false, true);
 
@@ -107520,7 +107519,13 @@ extends ResizableBase
                 }
                 
 
-                this.paramValue.setValue(value, update, true, update);
+                if (!this.paramValue.value.equals(value))
+                {
+                    this.paramValue.setValue(value, update, true, update);
+
+                    actionManager.clear();
+                    uiShowClearUndoWarning('variables');
+                }
             }
         }
     }
@@ -129843,7 +129848,7 @@ function createSessionId()
 
 function subscribed()
 {
-    return true;//currentSessionId == createSessionId();
+    return false;//currentSessionId == createSessionId();
 }
 
 
@@ -133909,7 +133914,7 @@ function uiStylePropertyChange(msg)
         pushUpdate(null, [node]);
 
         actionManager.clear();
-        uiShowClearUndoWarning();
+        uiShowClearUndoWarning('styles');
     }
 }
 
@@ -133927,7 +133932,7 @@ function uiStyleDelete(msg)
         uiLinkNodeToExistingColorStyle(node, NULL, '', []);
         
         actionManager.clear();
-        uiShowClearUndoWarning();
+        uiShowClearUndoWarning('styles');
     }
 }
 
@@ -133939,7 +133944,7 @@ function uiReturnFigGetAllLocalColorStyles(msg)
 
     initLocalStylesMenu(styles, msg.nodeId);
 
-    menuLocalVariables.showAt(msg.px, msg.py, false);
+    menuLocalStyles.showAt(msg.px, msg.py, false);
 }
 
 
@@ -133985,7 +133990,7 @@ function initLocalStylesMenu(styles, nodeId)
     consoleAssert(node.type == COLOR_STYLE, 'node must be COLOR_STYLE');
 
 
-    menuLocalVariables.clearItems();
+    menuLocalStyles.clearItems();
 
     for (const style of styles)
     {
@@ -134013,15 +134018,15 @@ function initLocalStylesMenu(styles, nodeId)
 
         item.setChecked(style.nodeId == node.id);
 
-        menuLocalVariables.addItems([item]);
+        menuLocalStyles.addItems([item]);
     }
 
 
     if (!isEmpty(styles))
-        menuLocalVariables.addItems([new MenuItem('', null, {separator: true})]);
+        menuLocalStyles.addItems([new MenuItem('', null, {separator: true})]);
 
         
-    menuLocalVariables.addItems([
+    menuLocalStyles.addItems([
         new MenuItem('None', null, {
             callback: e => actionManager.do(new LinkExistingStyleAction(nodeId, NULL, '', [])),
             enabled:  node.linkedStyleId != NULL})
@@ -134332,7 +134337,7 @@ function uiReturnFigGetAllLocalVariables(msg)
 {
     const variables = JSON.parse(msg.variables);
 
-    initLocalVariablesMenu(variables, msg.nodeId);
+    initLocalVariablesMenu(variables, msg.nodeId, msg.nCollections);
 
     menuLocalVariables.showAt(msg.px, msg.py, false);
 }
@@ -134352,7 +134357,7 @@ function uiReturnFigLinkNodeToVariable(msg)
 
 
 
-function initLocalVariablesMenu(variables, nodeId)
+function initLocalVariablesMenu(variables, nodeId, nCollections)
 {
     const node = nodeFromId(nodeId);
     consoleAssert(node.type == VARIABLE, 'node must be VARIABLE');
@@ -134379,7 +134384,7 @@ function initLocalVariablesMenu(variables, nodeId)
         options.enabled = !linkedNodes.find(n => n.linkedVariableId == variable.id);
 
 
-        switch (variable.type)
+        switch (variable.resolvedType)
         {
             case 'FLOAT':   options.icon = iconVarNumber;  break;
             case 'BOOLEAN': options.icon = iconVarBoolean; break;
@@ -134388,7 +134393,14 @@ function initLocalVariablesMenu(variables, nodeId)
         }
 
 
-        const name = variable.collectionName + '/' + variable.name;
+        let name = '';
+        
+        if (nCollections > 1)
+            name += variable.collectionName + '/';
+        
+        name += variable.name;
+
+
         const item = new MenuItem(name.replaceAll('/', ' / '), null, options);
 
         item.setChecked(variable.id == node.linkedVariableId);
@@ -134519,12 +134531,12 @@ function uiNotify(text, options = {})
 
 
 
-function uiShowClearUndoWarning(deleting)
+function uiShowClearUndoWarning(objName)
 {
     if (settings.showClearUndoWarning)
     {
         uiNotify(
-            'Changing or deleting linked styles in Figma clears undo in Generator', 
+            'Changing or deleting linked ' + objName + ' in Figma clears undo in Generator', 
             {
                 buttonText:   'Ignore',
                 buttonAction: 'hideClearUndoWarning',

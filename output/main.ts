@@ -23,7 +23,7 @@ function noNodeTag(key) { return noTag(key, nodeTag); }
 function noConnTag(key) { return noTag(key, connTag); }
 
 
-const generatorVersion = 194;
+const generatorVersion = 195;
 
 
 const MAX_INT32        = 2147483647;
@@ -4304,9 +4304,9 @@ function setStylePaints(figStyle, genStyle)
 
 function figGetAllLocalVariables(nodeId, px, py)
 {
-    const localVars = figma.variables.getLocalVariables();
+    const localVars        = figma.variables.getLocalVariables();
 
-
+    
     const variables = new Array();
 
     for (const _var of localVars)
@@ -4327,11 +4327,12 @@ function figGetAllLocalVariables(nodeId, px, py)
 
     figPostMessageToUi(
     {
-        cmd:      'uiReturnFigGetAllLocalVariables',
-        nodeId:    nodeId,
-        px:        px,
-        py:        py,
-        variables: JSON.stringify(variables)
+        cmd:         'uiReturnFigGetAllLocalVariables',
+        nodeId:       nodeId,
+        px:           px,
+        py:           py,
+        variables:    JSON.stringify(variables),
+        nCollections: figma.variables.getLocalVariableCollections().length
     });
 }
 

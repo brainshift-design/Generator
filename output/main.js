@@ -19,7 +19,7 @@ function isConnKey(key) { return isTagKey(key, connTag); }
 function noPageTag(key) { return noTag(key, pageTag); }
 function noNodeTag(key) { return noTag(key, nodeTag); }
 function noConnTag(key) { return noTag(key, connTag); }
-const generatorVersion = 194;
+const generatorVersion = 195;
 const MAX_INT32 = 2147483647;
 const NULL = '';
 const HTAB = '  '; // half-tab
@@ -2877,7 +2877,8 @@ function figGetAllLocalVariables(nodeId, px, py) {
         nodeId: nodeId,
         px: px,
         py: py,
-        variables: JSON.stringify(variables)
+        variables: JSON.stringify(variables),
+        nCollections: figma.variables.getLocalVariableCollections().length
     });
 }
 function figLinkNodeToVariable(nodeId, varId) {

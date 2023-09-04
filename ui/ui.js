@@ -71,12 +71,12 @@ function uiNotify(text, options = {})
 
 
 
-function uiShowClearUndoWarning(deleting)
+function uiShowClearUndoWarning(objName)
 {
     if (settings.showClearUndoWarning)
     {
         uiNotify(
-            'Changing or deleting linked styles in Figma clears undo in Generator', 
+            'Changing or deleting linked ' + objName + ' in Figma clears undo in Generator', 
             {
                 buttonText:   'Ignore',
                 buttonAction: 'hideClearUndoWarning',

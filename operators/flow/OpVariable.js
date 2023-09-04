@@ -206,7 +206,13 @@ extends ResizableBase
                 }
                 
 
-                this.paramValue.setValue(value, update, true, update);
+                if (!this.paramValue.value.equals(value))
+                {
+                    this.paramValue.setValue(value, update, true, update);
+
+                    actionManager.clear();
+                    uiShowClearUndoWarning('variables');
+                }
             }
         }
     }

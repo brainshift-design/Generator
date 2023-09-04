@@ -27,7 +27,7 @@ function uiReturnFigGetAllLocalVariables(msg)
 {
     const variables = JSON.parse(msg.variables);
 
-    initLocalVariablesMenu(variables, msg.nodeId);
+    initLocalVariablesMenu(variables, msg.nodeId, msg.nCollections);
 
     menuLocalVariables.showAt(msg.px, msg.py, false);
 }
@@ -47,7 +47,7 @@ function uiReturnFigLinkNodeToVariable(msg)
 
 
 
-function initLocalVariablesMenu(variables, nodeId)
+function initLocalVariablesMenu(variables, nodeId, nCollections)
 {
     const node = nodeFromId(nodeId);
     consoleAssert(node.type == VARIABLE, 'node must be VARIABLE');
@@ -74,7 +74,7 @@ function initLocalVariablesMenu(variables, nodeId)
         options.enabled = !linkedNodes.find(n => n.linkedVariableId == variable.id);
 
 
-        switch (variable.type)
+        switch (variable.resolvedType)
         {
             case 'FLOAT':   options.icon = iconVarNumber;  break;
             case 'BOOLEAN': options.icon = iconVarBoolean; break;
@@ -83,7 +83,14 @@ function initLocalVariablesMenu(variables, nodeId)
         }
 
 
-        const name = variable.collectionName + '/' + variable.name;
+        let name = '';
+        
+        if (nCollections > 1)
+            name += variable.collectionName + '/';
+        
+        name += variable.name;
+
+
         const item = new MenuItem(name.replaceAll('/', ' / '), null, options);
 
         item.setChecked(variable.id == node.linkedVariableId);
