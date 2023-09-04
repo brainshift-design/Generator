@@ -87,7 +87,7 @@ extends ResizableBase
 
         //this.updateSizers();
 
-        OperatorBase.prototype.setRect.call(this,
+        super.setRect(
             x, 
             y, 
             w, 
@@ -166,7 +166,8 @@ extends ResizableBase
             || this.paramValue.type != type
             || this.isBool != prevIsBool)
         {
-            this.removeAllParams();
+            // this.removeAllParams();
+            // this.paramValue = null;
 
 
             if (type != NULL)
@@ -184,7 +185,12 @@ extends ResizableBase
             {
                 this.removeAllParams();
                 this.paramValue = null;
-            }
+
+                pushUpdate(null, [this]);
+
+                actionManager.clear();
+                uiShowClearUndoWarning('variables');
+        }
 
 
             this.icon        = icon;

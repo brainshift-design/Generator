@@ -369,8 +369,8 @@ extends OperatorBase
         super.updateValues(requestId, actionId, updateParamId, paramIds, values);
 
         this.setRect(
-            this.div.offsetLeft, 
-            this.div.offsetTop, 
+            this.x, 
+            this.y, 
             this.width, 
             this.height,
             false);
