@@ -202,3 +202,4 @@ const iconSolo              = '<svg width="20" height="19" viewBox="0 0 20 19" f
 
 
 const iconSearch            = '<svg width="15" height="15" viewBox="0 0 15 15" fill="none" xmlns="http://www.w3.org/2000/svg"><path id="searchIconPath" fill-rule="evenodd" clip-rule="evenodd" d="M11 6C11 8.76147 8.76147 11 6 11C3.23853 11 1 8.76147 1 6C1 3.23853 3.23853 1 6 1C8.76147 1 11 3.23853 11 6ZM9.87439 10.5815C8.8291 11.4663 7.47681 12 6 12C2.68628 12 0 9.31372 0 6C0 2.68628 2.68628 0 6 0C9.31372 0 12 2.68628 12 6C12 7.47681 11.4664 8.8291 10.5815 9.87451L14.364 13.657L13.6569 14.364L9.87439 10.5815Z" fill="white"/></svg>';
+const iconSearchMenu        = '<svg width="10" height="10" viewBox="0 0 10 10" fill="none" xmlns="http://www.w3.org/2000/svg"><circle cx="4" cy="4" r="3.5" stroke="white"/><rect x="6.11426" y="6.82129" width="1" height="4.42429" transform="rotate(-45 6.11426 6.82129)" fill="white"/></svg>';

@@ -364,6 +364,20 @@ extends OperatorBase
 
 
 
+    updateValues(requestId, actionId, updateParamId, paramIds, values)
+    {
+        super.updateValues(requestId, actionId, updateParamId, paramIds, values);
+
+        this.setRect(
+            this.div.offsetLeft, 
+            this.div.offsetTop, 
+            this.width, 
+            this.height,
+            false);
+    }
+
+
+
     toJsonBase(nTab = 0) 
     {
         let   pos = ' '.repeat(nTab);
@@ -389,13 +403,6 @@ extends OperatorBase
         {
             this.width  = parseFloat(_node.width );
             this.height = parseFloat(_node.height);
-
-            this.setRect(
-                parseFloat(_node.x     ), 
-                parseFloat(_node.y     ), 
-                parseFloat(_node.width ), 
-                parseFloat(_node.height),
-                false);
         }
     }
 }

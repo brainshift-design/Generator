@@ -81,7 +81,13 @@ extends ResizableBase
 
         const height = defHeaderHeight + (this.paramValue ? defParamHeight : 0);
 
-        super.setRect(
+
+        this.height             = height;
+        this.inner.style.height = height + 'px';
+
+        //this.updateSizers();
+
+        OperatorBase.prototype.setRect.call(this,
             x, 
             y, 
             w, 
@@ -91,16 +97,16 @@ extends ResizableBase
 
 
 
-    setHeight(h, updateTransform = true)
-    {
-        OeratorBase.prototype.setHeight.call(this, h, updateTransform);
+    // setHeight(h, updateTransform = true)
+    // {
+    //     OeratorBase.prototype.setHeight.call(this, h, updateTransform);
         
-        this.height = h;
+    //     this.height = h;
         
-        this.updateSizers();
+    //     this.updateSizers();
 
-        this.inner.style.height = h;
-    }
+    //     this.inner.style.height = h;
+    // }
 
 
 

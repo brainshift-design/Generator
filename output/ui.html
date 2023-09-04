@@ -4978,7 +4978,7 @@ a
             <div id='whatsNewBody'>
                 <h1 style='margin-top: 20px;'>What's new</h1>
 
-                <p>•  </p>
+                <p>•  added Quick actions... to main menu</p>
                 
                 <p><br/><br/><div id='chkHideWhatsNew'></div></p>
             </div>
@@ -106891,6 +106891,20 @@ extends OperatorBase
 
 
 
+    updateValues(requestId, actionId, updateParamId, paramIds, values)
+    {
+        super.updateValues(requestId, actionId, updateParamId, paramIds, values);
+
+        this.setRect(
+            this.div.offsetLeft, 
+            this.div.offsetTop, 
+            this.width, 
+            this.height,
+            false);
+    }
+
+
+
     toJsonBase(nTab = 0) 
     {
         let   pos = ' '.repeat(nTab);
@@ -106916,13 +106930,6 @@ extends OperatorBase
         {
             this.width  = parseFloat(_node.width );
             this.height = parseFloat(_node.height);
-
-            this.setRect(
-                parseFloat(_node.x     ), 
-                parseFloat(_node.y     ), 
-                parseFloat(_node.width ), 
-                parseFloat(_node.height),
-                false);
         }
     }
 }
@@ -107412,7 +107419,13 @@ extends ResizableBase
 
         const height = defHeaderHeight + (this.paramValue ? defParamHeight : 0);
 
-        super.setRect(
+
+        this.height             = height;
+        this.inner.style.height = height + 'px';
+
+        //this.updateSizers();
+
+        OperatorBase.prototype.setRect.call(this,
             x, 
             y, 
             w, 
@@ -107422,16 +107435,16 @@ extends ResizableBase
 
 
 
-    setHeight(h, updateTransform = true)
-    {
-        OeratorBase.prototype.setHeight.call(this, h, updateTransform);
+    // setHeight(h, updateTransform = true)
+    // {
+    //     OeratorBase.prototype.setHeight.call(this, h, updateTransform);
         
-        this.height = h;
+    //     this.height = h;
         
-        this.updateSizers();
+    //     this.updateSizers();
 
-        this.inner.style.height = h;
-    }
+    //     this.inner.style.height = h;
+    // }
 
 
 
