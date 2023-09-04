@@ -254,7 +254,11 @@ GraphView.prototype.duplicateSelectedNodes = function(pasteConnected)
     if (!isEmpty(this.selectedNodes))
     {
         pasteOffset = point(0, 0);
-        actionManager.do(new PasteNodesAction(uiCopyNodes(this.selectedNodes.map(n => n.id)), pasteConnected, true));
+
+        actionManager.do(new PasteNodesAction(
+            uiCopyNodes(this.selectedNodes.map(n => n.id), false), 
+            pasteConnected, 
+            true));
     }
 };
 

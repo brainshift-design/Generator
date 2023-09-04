@@ -9,7 +9,7 @@ function idFromNode(node)
 
 
 
-function nodesToJson(nodes, encloseBraces = true, connOutputMustBeInNodes = true)
+function nodesToJson(nodes, encloseBraces = true, connOutputMustBeInNodes = true, keepVarsConnected = true)
 {
     const tab = HTAB;
     
@@ -28,7 +28,7 @@ function nodesToJson(nodes, encloseBraces = true, connOutputMustBeInNodes = true
     }
 
     json += NL + tab + ']';
-    json += connectionsToJson(nodes, connOutputMustBeInNodes);
+    json += connectionsToJson(nodes, connOutputMustBeInNodes, keepVarsConnected);
     json += (encloseBraces ? '\n}' :'');
 
     return json;
@@ -36,7 +36,7 @@ function nodesToJson(nodes, encloseBraces = true, connOutputMustBeInNodes = true
 
 
 
-function connectionsToJson(nodes, connOutputMustBeInNodes)
+function connectionsToJson(nodes, connOutputMustBeInNodes, keepVarsConnected = true)
 {
     const connections = [];
 
@@ -52,7 +52,9 @@ function connectionsToJson(nodes, connOutputMustBeInNodes)
         {
             if (   !node.inputs[j].connected
                 ||     connOutputMustBeInNodes
-                   && !nodes.includes(node.inputs[j].connectedOutput.node))
+                   && !nodes.includes(node.inputs[j].connectedOutput.node)
+                ||     node.type == VARIABLE
+                   && !keepVarsConnected)
                 continue;
 
             connections.push(node.inputs[j].connection);
@@ -374,23 +376,11 @@ function uiShowParamValue(nodeId, paramName, value)
 
 
 
-function uiCopyNodes(nodeIds)
+function uiCopyNodes(nodeIds, keepVarsConnected = true)
 {
     const nodes = graph.nodes.filter(n => nodeIds.includes(n.id));
 
-    for (const node of nodes)
-    {
-        if (node.type == VARIABLE)
-        {
-            node.connectedInputs .forEach(i => uiDisconnect(i, false));
-            node.connectedOutputs.forEach(o => o.connectedInputs.forEach(i => uiDisconnect(i, false)));
-        }
-    }
-
-
-    const copiedJson = nodesToJson(nodes, true, false);
-
-    // console.log(copiedJson);
+    const copiedJson = nodesToJson(nodes, true, false, keepVarsConnected);
 
     return copiedJson;
 }

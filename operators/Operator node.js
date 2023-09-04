@@ -561,7 +561,14 @@ function altCopyNodes(_this, e)
     const thisIndex    = graphView.selectedNodes.indexOf(_this);
 
     pasteOffset = point(0, 0);
-    actionManager.do(new PasteNodesAction(uiCopyNodes(graphView.selectedNodes.map(n => n.id)), getCtrlKey(e), true), false, true);
+
+    actionManager.do(
+        new PasteNodesAction(
+            uiCopyNodes(graphView.selectedNodes.map(n => n.id), false), 
+            getCtrlKey(e), 
+            true), 
+        false, 
+        true);
 
     consoleAssert(
         graphView.selectedNodes.length == prevSelected.length,
