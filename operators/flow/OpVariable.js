@@ -1,7 +1,7 @@
 class   OpVariable
 extends ResizableBase
 {
-    paramValue;
+    paramValue         = null;
 
 
     linkedVariableId   = NULL;
@@ -21,7 +21,7 @@ extends ResizableBase
         this.iconOffsetY = 0;
 
 
-        this.initValueParam();
+        //this.initValueParam();
 
 
         this.divIcon.style.opacity       = 0.5;
@@ -77,12 +77,9 @@ extends ResizableBase
 
     setRect(x, y, w, h, updateTransform = true)
     {
-        const headerHeight = Math.max(defHeaderHeight, boundingRect(this.header).height / graph.currentPage.zoom);
+        // const headerHeight = Math.max(defHeaderHeight, boundingRect(this.header).height / graph.currentPage.zoom);
 
-        const height =
-            settings.showOperationResults
-            ? Math.max(headerHeight + defParamHeight, h)
-            : headerHeight + defParamHeight;
+        const height = defHeaderHeight + (this.paramValue ? defParamHeight : 0);
 
         super.setRect(
             x, 
@@ -90,6 +87,19 @@ extends ResizableBase
             w, 
             height, 
             updateTransform);
+    }
+
+
+
+    setHeight(h, updateTransform = true)
+    {
+        OeratorBase.prototype.setHeight.call(this, h, updateTransform);
+        
+        this.height = h;
+        
+        this.updateSizers();
+
+        this.inner.style.height = h;
     }
 
 
@@ -111,21 +121,17 @@ extends ResizableBase
 
                 
         //request.push(this.linkedVariableId);
-        request.push(...this.paramValue.genRequest(gen));
+
+        request.push(this.paramValue ? 1 : 0);
+        
+        if (this.paramValue)
+            request.push(...this.paramValue.genRequest(gen));
 
 
         gen.scope.pop();
         pushUnique(gen.passedNodes, this);
 
         return request;
-    }
-
-
-
-    initValueParam()
-    {
-        this.addParam(this.paramValue = new ListParam('value', '?', false, false, false));
-        this.paramValue.itemName = '';
     }
 
 
@@ -150,7 +156,8 @@ extends ResizableBase
         }
 
 
-        if (   this.paramValue.type != type
+        if (  !this.paramValue
+            || this.paramValue.type != type
             || this.isBool != prevIsBool)
         {
             this.removeAllParams();
@@ -168,7 +175,10 @@ extends ResizableBase
                 }
             }
             else
-                this.initValueParam();
+            {
+                this.removeAllParams();
+                this.paramValue = null;
+            }
 
 
             this.icon        = icon;
@@ -244,17 +254,21 @@ extends ResizableBase
         }
 
         
-        uiUpdateVariable(this.linkedVariableId, val);
+        //uiUpdateVariable(this.linkedVariableId, val);
     }
 
     
     
     updateParams()
     {
-        this.paramValue.enableControlText(false, this.paramValue.isUnknown());
+        if (this.paramValue)
+        {
+            this.paramValue.enableControlText(false, this.paramValue.isUnknown());
 
-        if (this.isBool)
-            updateParamConditionText(this.paramValue, this.paramValue.isUnknown(), true, 1);
+            if (this.isBool)
+                updateParamConditionText(this.paramValue, this.paramValue.isUnknown(), true, 1);
+        }
+
 
         this.updateParamControls();
     }

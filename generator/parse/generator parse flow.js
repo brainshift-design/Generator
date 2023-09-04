@@ -70,7 +70,10 @@ function genParseVariable(parse)
     //variable.id       = parse.move();
     //variable.name     = options.nodeName;
     
-    variable.varValue = genParse(parse);
+    const nParams = parseInt(parse.move());
+
+    if (nParams == 1)
+        variable.varValue = genParse(parse);
 
     
     parse.nTab--;

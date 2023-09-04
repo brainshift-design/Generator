@@ -7,8 +7,8 @@ extends Action
     get  inputNode() { return this.node; } // dummy for ConnectAction_...
     get outputNode() { return this.node; } // dummy for ConnectAction_...
 
-    get  input() { return this.node.paramValue. input; } // dummy for ConnectAction_...
-    get output() { return this.node.paramValue.output; } // dummy for ConnectAction_...
+    get  input() { return this.node.paramValue ? this.node.paramValue. input : null; } // dummy for ConnectAction_...
+    get output() { return this.node.paramValue ? this.node.paramValue.output : null; } // dummy for ConnectAction_...
 
     variableId;
     variableType;
@@ -42,8 +42,8 @@ extends Action
         this.prevVariableType = this.node.linkedVariableType;
         this.prevVariableName = this.node.linkedVariableName;
         
-        connectAction_saveOutputValues(this);
-        connectAction_saveInputValues(this);
+        // connectAction_saveOutputValues(this);
+        // connectAction_saveInputValues(this);
 
         uiLinkNodeToVariable(
             this.node,
@@ -66,8 +66,8 @@ extends Action
             this.prevVariableType,
             this.prevVariableName);
 
-        connectAction_restoreInputValues(this);
-        connectAction_restoreOutputValues(this);
+        // connectAction_restoreInputValues(this);
+        // connectAction_restoreOutputValues(this);
 
         this.node.updateNode();
 

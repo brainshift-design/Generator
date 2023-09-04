@@ -20474,7 +20474,7 @@ extends GOperator
     //id;
 
     //variable;
-    varValue;
+    varValue = null;
 
     //existing;
     //linked;
@@ -20496,7 +20496,7 @@ extends GOperator
 
         //copy.id       = this.id;
         //copy.variable = this.variable.copy();
-        copy.varValue = this.varValue.copy();
+        if (this.varValue) copy.varValue = this.varValue.copy();
         
         //copy.existing   = this.existing;
         //copy.linked   = this.linked;
@@ -20512,7 +20512,10 @@ extends GOperator
             return this;
 
         
-        this.value = (await this.varValue.eval(parse)).toValue();
+        this.value = 
+            this.varValue
+            ? (await this.varValue.eval(parse)).toValue()
+            : NullValue;
 
 
         // if (   this.value.isValid()
@@ -40520,7 +40523,10 @@ function genParseVariable(parse)
     //variable.id       = parse.move();
     //variable.name     = options.nodeName;
     
-    variable.varValue = genParse(parse);
+    const nParams = parseInt(parse.move());
+
+    if (nParams == 1)
+        variable.varValue = genParse(parse);
 
     
     parse.nTab--;
@@ -67089,7 +67095,7 @@ extends GOperator
     //id;
 
     //variable;
-    varValue;
+    varValue = null;
 
     //existing;
     //linked;
@@ -67111,7 +67117,7 @@ extends GOperator
 
         //copy.id       = this.id;
         //copy.variable = this.variable.copy();
-        copy.varValue = this.varValue.copy();
+        if (this.varValue) copy.varValue = this.varValue.copy();
         
         //copy.existing   = this.existing;
         //copy.linked   = this.linked;
@@ -67127,7 +67133,10 @@ extends GOperator
             return this;
 
         
-        this.value = (await this.varValue.eval(parse)).toValue();
+        this.value = 
+            this.varValue
+            ? (await this.varValue.eval(parse)).toValue()
+            : NullValue;
 
 
         // if (   this.value.isValid()
@@ -90672,6 +90681,7 @@ const iconSolo              = '<svg width="20" height="19" viewBox="0 0 20 19" f
 
 
 const iconSearch            = '<svg width="15" height="15" viewBox="0 0 15 15" fill="none" xmlns="http://www.w3.org/2000/svg"><path id="searchIconPath" fill-rule="evenodd" clip-rule="evenodd" d="M11 6C11 8.76147 8.76147 11 6 11C3.23853 11 1 8.76147 1 6C1 3.23853 3.23853 1 6 1C8.76147 1 11 3.23853 11 6ZM9.87439 10.5815C8.8291 11.4663 7.47681 12 6 12C2.68628 12 0 9.31372 0 6C0 2.68628 2.68628 0 6 0C9.31372 0 12 2.68628 12 6C12 7.47681 11.4664 8.8291 10.5815 9.87451L14.364 13.657L13.6569 14.364L9.87439 10.5815Z" fill="white"/></svg>';
+const iconSearchMenu        = '<svg width="10" height="10" viewBox="0 0 10 10" fill="none" xmlns="http://www.w3.org/2000/svg"><circle cx="4" cy="4" r="3.5" stroke="white"/><rect x="6.11426" y="6.82129" width="1" height="4.42429" transform="rotate(-45 6.11426 6.82129)" fill="white"/></svg>';
 
 
 var currentMenus      = [];
@@ -92168,6 +92178,8 @@ function initGeneratorMenus()
 
     menuMain = new Menu('Main menu', false);
     menuMain.addItems([
+                        new MenuItem('Quick actions...',      null, {icon: iconSearchMenu, shortcut: osCtrl() + '/', callback: () => { hideAllMenus(); showSearchBox(); }}),
+                        new MenuItem('',                      null, {separator: true}),
                         new MenuItem('File',                  null, {childMenu: menuMainFile}),
                         new MenuItem('',                      null, {separator: true}),
                         new MenuItem('Preferences',           null, {childMenu: menuMainPreferences}),
@@ -92649,7 +92661,8 @@ menuFlow = new Menu('Flow', true, false);
     // }});
     
     btnHand = new MenuButton('Hand tool&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<span style="color: #888; font-weight: 500;">H</span>', null, {callback: () => 
-    { 
+    {
+        hideAllMenus(); 
         updatePanMode(!panMode);
     }});
 
@@ -92672,6 +92685,7 @@ menuFlow = new Menu('Flow', true, false);
         graphView.updateNodes([create.node]);
         graphView.updateScrollWithBounds();
 
+        hideAllMenus();
         updatePanMode(false);
     }});
 
@@ -106795,7 +106809,11 @@ extends OperatorBase
             : 0;
 
         const _w = Math.max(60, w);
-        const _h = Math.max(parseFloat(headerHeight) + paramHeight, h);
+
+        const _h = h;
+            // (this instanceof ResizableOperatorWithValue)
+            // ? Math.max(parseFloat(headerHeight) + paramHeight, h)
+            // : h;
 
         super.setRect(x, y, _w, _h, updateTransform);
         
@@ -107314,7 +107332,7 @@ function OpNull_onDisconnectInput(node)
 class   OpVariable
 extends ResizableBase
 {
-    paramValue;
+    paramValue         = null;
 
 
     linkedVariableId   = NULL;
@@ -107334,7 +107352,7 @@ extends ResizableBase
         this.iconOffsetY = 0;
 
 
-        this.initValueParam();
+        //this.initValueParam();
 
 
         this.divIcon.style.opacity       = 0.5;
@@ -107390,12 +107408,9 @@ extends ResizableBase
 
     setRect(x, y, w, h, updateTransform = true)
     {
-        const headerHeight = Math.max(defHeaderHeight, boundingRect(this.header).height / graph.currentPage.zoom);
+        // const headerHeight = Math.max(defHeaderHeight, boundingRect(this.header).height / graph.currentPage.zoom);
 
-        const height =
-            settings.showOperationResults
-            ? Math.max(headerHeight + defParamHeight, h)
-            : headerHeight + defParamHeight;
+        const height = defHeaderHeight + (this.paramValue ? defParamHeight : 0);
 
         super.setRect(
             x, 
@@ -107403,6 +107418,19 @@ extends ResizableBase
             w, 
             height, 
             updateTransform);
+    }
+
+
+
+    setHeight(h, updateTransform = true)
+    {
+        OeratorBase.prototype.setHeight.call(this, h, updateTransform);
+        
+        this.height = h;
+        
+        this.updateSizers();
+
+        this.inner.style.height = h;
     }
 
 
@@ -107424,21 +107452,17 @@ extends ResizableBase
 
                 
         //request.push(this.linkedVariableId);
-        request.push(...this.paramValue.genRequest(gen));
+
+        request.push(this.paramValue ? 1 : 0);
+        
+        if (this.paramValue)
+            request.push(...this.paramValue.genRequest(gen));
 
 
         gen.scope.pop();
         pushUnique(gen.passedNodes, this);
 
         return request;
-    }
-
-
-
-    initValueParam()
-    {
-        this.addParam(this.paramValue = new ListParam('value', '?', false, false, false));
-        this.paramValue.itemName = '';
     }
 
 
@@ -107463,7 +107487,8 @@ extends ResizableBase
         }
 
 
-        if (   this.paramValue.type != type
+        if (  !this.paramValue
+            || this.paramValue.type != type
             || this.isBool != prevIsBool)
         {
             this.removeAllParams();
@@ -107481,7 +107506,10 @@ extends ResizableBase
                 }
             }
             else
-                this.initValueParam();
+            {
+                this.removeAllParams();
+                this.paramValue = null;
+            }
 
 
             this.icon        = icon;
@@ -107557,17 +107585,21 @@ extends ResizableBase
         }
 
         
-        uiUpdateVariable(this.linkedVariableId, val);
+        //uiUpdateVariable(this.linkedVariableId, val);
     }
 
     
     
     updateParams()
     {
-        this.paramValue.enableControlText(false, this.paramValue.isUnknown());
+        if (this.paramValue)
+        {
+            this.paramValue.enableControlText(false, this.paramValue.isUnknown());
 
-        if (this.isBool)
-            updateParamConditionText(this.paramValue, this.paramValue.isUnknown(), true, 1);
+            if (this.isBool)
+                updateParamConditionText(this.paramValue, this.paramValue.isUnknown(), true, 1);
+        }
+
 
         this.updateParamControls();
     }
@@ -127293,8 +127325,8 @@ extends Action
     get  inputNode() { return this.node; } // dummy for ConnectAction_...
     get outputNode() { return this.node; } // dummy for ConnectAction_...
 
-    get  input() { return this.node.paramValue. input; } // dummy for ConnectAction_...
-    get output() { return this.node.paramValue.output; } // dummy for ConnectAction_...
+    get  input() { return this.node.paramValue ? this.node.paramValue. input : null; } // dummy for ConnectAction_...
+    get output() { return this.node.paramValue ? this.node.paramValue.output : null; } // dummy for ConnectAction_...
 
     variableId;
     variableType;
@@ -127328,8 +127360,8 @@ extends Action
         this.prevVariableType = this.node.linkedVariableType;
         this.prevVariableName = this.node.linkedVariableName;
         
-        connectAction_saveOutputValues(this);
-        connectAction_saveInputValues(this);
+        // connectAction_saveOutputValues(this);
+        // connectAction_saveInputValues(this);
 
         uiLinkNodeToVariable(
             this.node,
@@ -127352,8 +127384,8 @@ extends Action
             this.prevVariableType,
             this.prevVariableName);
 
-        connectAction_restoreInputValues(this);
-        connectAction_restoreOutputValues(this);
+        // connectAction_restoreInputValues(this);
+        // connectAction_restoreOutputValues(this);
 
         this.node.updateNode();
 
@@ -134458,7 +134490,7 @@ function uiUpdateVariable(variableId, value)
 
 
 
-const defNodeWidth          = 114;
+const defNodeWidth          = 120;
 const resizeEdgeWidth       = 8;
 
 

@@ -400,6 +400,8 @@ function initGeneratorMenus()
 
     menuMain = new Menu('Main menu', false);
     menuMain.addItems([
+                        new MenuItem('Quick actions...',      null, {icon: iconSearchMenu, shortcut: osCtrl() + '/', callback: () => { hideAllMenus(); showSearchBox(); }}),
+                        new MenuItem('',                      null, {separator: true}),
                         new MenuItem('File',                  null, {childMenu: menuMainFile}),
                         new MenuItem('',                      null, {separator: true}),
                         new MenuItem('Preferences',           null, {childMenu: menuMainPreferences}),
@@ -881,7 +883,8 @@ menuFlow = new Menu('Flow', true, false);
     // }});
     
     btnHand = new MenuButton('Hand tool&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<span style="color: #888; font-weight: 500;">H</span>', null, {callback: () => 
-    { 
+    {
+        hideAllMenus(); 
         updatePanMode(!panMode);
     }});
 
@@ -904,6 +907,7 @@ menuFlow = new Menu('Flow', true, false);
         graphView.updateNodes([create.node]);
         graphView.updateScrollWithBounds();
 
+        hideAllMenus();
         updatePanMode(false);
     }});
 

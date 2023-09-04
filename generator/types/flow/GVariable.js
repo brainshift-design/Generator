@@ -4,7 +4,7 @@ extends GOperator
     //id;
 
     //variable;
-    varValue;
+    varValue = null;
 
     //existing;
     //linked;
@@ -26,7 +26,7 @@ extends GOperator
 
         //copy.id       = this.id;
         //copy.variable = this.variable.copy();
-        copy.varValue = this.varValue.copy();
+        if (this.varValue) copy.varValue = this.varValue.copy();
         
         //copy.existing   = this.existing;
         //copy.linked   = this.linked;
@@ -42,7 +42,10 @@ extends GOperator
             return this;
 
         
-        this.value = (await this.varValue.eval(parse)).toValue();
+        this.value = 
+            this.varValue
+            ? (await this.varValue.eval(parse)).toValue()
+            : NullValue;
 
 
         // if (   this.value.isValid()

@@ -282,7 +282,11 @@ extends OperatorBase
             : 0;
 
         const _w = Math.max(60, w);
-        const _h = Math.max(parseFloat(headerHeight) + paramHeight, h);
+
+        const _h = h;
+            // (this instanceof ResizableOperatorWithValue)
+            // ? Math.max(parseFloat(headerHeight) + paramHeight, h)
+            // : h;
 
         super.setRect(x, y, _w, _h, updateTransform);
         
