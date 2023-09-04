@@ -15,7 +15,10 @@ var variableTimer = setInterval(() =>
                 const node = varNodes.find(n => n.linkedVariableId == value.id);
 
                 node.updateValueParamType  (value.resolvedType);
-                node.updateValueParamValues(value.resolvedType, [value.value], true);
+
+                if (    node.paramValue
+                    && !node.paramValue.input.connected)
+                    node.updateValueParamValues(value.resolvedType, [value.value], true);
             }
         });
 },

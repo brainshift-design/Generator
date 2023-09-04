@@ -114,7 +114,10 @@ class Action
                 _conn.inputId,
                 _conn.list);
   
-            uiDisconnect(nodeFromId(_conn.inputNodeId).inputFromId(_conn.inputId));
+            const input = nodeFromId(_conn.inputNodeId).inputFromId(_conn.inputId);
+
+            if (input)
+                uiDisconnect(input);
         }
 
         this.newConnectionData = [];

@@ -166,8 +166,7 @@ extends ResizableBase
             || this.paramValue.type != type
             || this.isBool != prevIsBool)
         {
-            // this.removeAllParams();
-            // this.paramValue = null;
+            this.removeAllParams();
 
 
             if (type != NULL)
@@ -183,14 +182,13 @@ extends ResizableBase
             }
             else
             {
-                this.removeAllParams();
                 this.paramValue = null;
 
                 pushUpdate(null, [this]);
 
                 actionManager.clear();
                 uiShowClearUndoWarning('variables');
-        }
+            }
 
 
             this.icon        = icon;
@@ -266,7 +264,7 @@ extends ResizableBase
         }
 
         
-        //uiUpdateVariable(this.linkedVariableId, val);
+        uiUpdateVariable(this.linkedVariableId, val);
     }
 
     

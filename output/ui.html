@@ -107504,8 +107504,7 @@ extends ResizableBase
             || this.paramValue.type != type
             || this.isBool != prevIsBool)
         {
-            // this.removeAllParams();
-            // this.paramValue = null;
+            this.removeAllParams();
 
 
             if (type != NULL)
@@ -107521,14 +107520,13 @@ extends ResizableBase
             }
             else
             {
-                this.removeAllParams();
                 this.paramValue = null;
 
                 pushUpdate(null, [this]);
 
                 actionManager.clear();
                 uiShowClearUndoWarning('variables');
-        }
+            }
 
 
             this.icon        = icon;
@@ -107604,7 +107602,7 @@ extends ResizableBase
         }
 
         
-        //uiUpdateVariable(this.linkedVariableId, val);
+        uiUpdateVariable(this.linkedVariableId, val);
     }
 
     
@@ -125546,7 +125544,10 @@ class Action
                 _conn.inputId,
                 _conn.list);
   
-            uiDisconnect(nodeFromId(_conn.inputNodeId).inputFromId(_conn.inputId));
+            const input = nodeFromId(_conn.inputNodeId).inputFromId(_conn.inputId);
+
+            if (input)
+                uiDisconnect(input);
         }
 
         this.newConnectionData = [];
@@ -133120,7 +133121,18 @@ function uiShowParamValue(nodeId, paramName, value)
 
 function uiCopyNodes(nodeIds)
 {
-    const nodes      = graph.nodes.filter(n => nodeIds.includes(n.id));
+    const nodes = graph.nodes.filter(n => nodeIds.includes(n.id));
+
+    for (const node of nodes)
+    {
+        if (node.type == VARIABLE)
+        {
+            node.connectedInputs .forEach(i => uiDisconnect(i, false));
+            node.connectedOutputs.forEach(o => o.connectedInputs.forEach(i => uiDisconnect(i, false)));
+        }
+    }
+
+
     const copiedJson = nodesToJson(nodes, true, false);
 
     // console.log(copiedJson);
@@ -134376,7 +134388,10 @@ var variableTimer = setInterval(() =>
                 const node = varNodes.find(n => n.linkedVariableId == value.id);
 
                 node.updateValueParamType  (value.resolvedType);
-                node.updateValueParamValues(value.resolvedType, [value.value], true);
+
+                if (    node.paramValue
+                    && !node.paramValue.input.connected)
+                    node.updateValueParamValues(value.resolvedType, [value.value], true);
             }
         });
 },

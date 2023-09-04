@@ -376,7 +376,18 @@ function uiShowParamValue(nodeId, paramName, value)
 
 function uiCopyNodes(nodeIds)
 {
-    const nodes      = graph.nodes.filter(n => nodeIds.includes(n.id));
+    const nodes = graph.nodes.filter(n => nodeIds.includes(n.id));
+
+    for (const node of nodes)
+    {
+        if (node.type == VARIABLE)
+        {
+            node.connectedInputs .forEach(i => uiDisconnect(i, false));
+            node.connectedOutputs.forEach(o => o.connectedInputs.forEach(i => uiDisconnect(i, false)));
+        }
+    }
+
+
     const copiedJson = nodesToJson(nodes, true, false);
 
     // console.log(copiedJson);
