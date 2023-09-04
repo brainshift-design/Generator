@@ -127638,21 +127638,25 @@ extends Action
                 ||    nodes.find(n => n.id == conn.outputNodeId)
                    && nodes.find(n => n.id == conn.inputNodeId ))
             {
-                uiSaveConnection(
-                    conn.outputNodeId, conn.outputId, conn.outputOrder,
-                    conn.inputNodeId,  conn.inputId,
-                    formatConnJson(
-                        '', 
-                        HTAB,
-                        conn.outputNodeId,
-                        conn.outputId,
-                        conn.outputOrder,
-                        conn.inputNodeId,
-                        conn.inputId,
-                        boolToString(
-                            nodeFromId(conn.outputNodeId)
-                            .outputFromId(conn.outputId)
-                            .supportsTypes(LIST_TYPES))));
+                const output = 
+                    nodeFromId(conn.outputNodeId)
+                    .outputFromId(conn.outputId);
+
+                if (output)
+                {
+                    uiSaveConnection(
+                        conn.outputNodeId, conn.outputId, conn.outputOrder,
+                        conn.inputNodeId,  conn.inputId,
+                        formatConnJson(
+                            '', 
+                            HTAB,
+                            conn.outputNodeId,
+                            conn.outputId,
+                            conn.outputOrder,
+                            conn.inputNodeId,
+                            conn.inputId,
+                            boolToString(output.supportsTypes(LIST_TYPES))));
+                }
             }
         }
 
