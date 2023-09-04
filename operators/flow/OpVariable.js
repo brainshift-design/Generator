@@ -166,6 +166,9 @@ extends ResizableBase
             || this.paramValue.type != type
             || this.isBool != prevIsBool)
         {
+            this.connectedInputs.forEach(i => uiDisconnect(i, false));
+            this.connectedOutputs.forEach(o => o.connectedInputs.forEach(i => uiDisconnect(i, false)));
+
             this.removeAllParams();
 
 
@@ -183,6 +186,11 @@ extends ResizableBase
             else
             {
                 this.paramValue = null;
+                this.name = 'variable';
+
+                this.linkedVariableId   = NULL;
+                this.linkedVariableType = NULL;
+                this.linkedVariableName = '';
 
                 pushUpdate(null, [this]);
 
@@ -202,30 +210,12 @@ extends ResizableBase
     {
         if (values.length > 0)
         {
-            let value;
-
             const val = values[0];
-
 
             if (val)
             {
-                switch (resolvedType)
-                {
-                    case 'FLOAT':   value = new NumberValue(val);    break;
-                    case 'BOOLEAN': value = new NumberValue(val, 0); break;
-                    case 'STRING':  value = new TextValue(val);      break;
-
-                    case 'COLOR':
-                        value = ColorValue.create(
-                            1, 
-                            Math.round(val.r * 0xff), 
-                            Math.round(val.g * 0xff), 
-                            Math.round(val.b * 0xff)); 
-                        
-                        break;
-                }
-                
-
+                const value = getValueFromVariable(resolvedType, val);
+              
                 if (!this.paramValue.value.equals(value))
                 {
                     this.paramValue.setValue(value, update, true, update);
@@ -245,26 +235,7 @@ extends ResizableBase
 
         const value = values[paramIds.findIndex(id => id == 'value')];
 
-        
-        let val = null;
-
-        switch (value.type)
-        {
-            case NUMBER_VALUE: 
-                val = value.value;
-                break;
-
-            case TEXT_VALUE:   
-                val = value.value;  
-                break;
-
-            case COLOR_VALUE:  
-                val = value.toRgbObject(); 
-                break;
-        }
-
-        
-        uiUpdateVariable(this.linkedVariableId, val);
+        uiUpdateVariable(this.linkedVariableId, getVariableValue(value));
     }
 
     

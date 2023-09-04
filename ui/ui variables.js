@@ -14,11 +14,15 @@ var variableTimer = setInterval(() =>
             {
                 const node = varNodes.find(n => n.linkedVariableId == value.id);
 
-                node.updateValueParamType  (value.resolvedType);
+                node.updateValueParamType(value.resolvedType);
 
-                if (    node.paramValue
-                    && !node.paramValue.input.connected)
-                    node.updateValueParamValues(value.resolvedType, [value.value], true);
+                if (node.paramValue)
+                {
+                    if (node.paramValue.input.connected)
+                        uiUpdateVariable(value.id, getVariableValue(node.paramValue.value));
+                    else
+                        node.updateValueParamValues(value.resolvedType, [value.value], true);
+                }
             }
         });
 },
@@ -147,4 +151,41 @@ function uiUpdateVariable(variableId, value)
         cmd:       'figUpdateVariable',
         variableId: variableId,
         value:      value});
+}
+
+
+
+function getValueFromVariable(resolvedType, val)
+{
+    let value;
+
+    switch (resolvedType)
+    {
+        case 'FLOAT':   value = new NumberValue(val);    break;
+        case 'BOOLEAN': value = new NumberValue(val, 0); break;
+        case 'STRING':  value = new TextValue(val);      break;
+
+        case 'COLOR':
+            value = ColorValue.create(
+                1, 
+                Math.round(val.r * 0xff), 
+                Math.round(val.g * 0xff), 
+                Math.round(val.b * 0xff)); 
+            
+            break;
+    }
+
+    return value;
+}
+
+
+
+function getVariableValue(value)
+{
+    switch (value.type)
+    {
+        case NUMBER_VALUE: return value.value;
+        case TEXT_VALUE:   return value.value;
+        case COLOR_VALUE:  return value.toRgbObject();
+    }
 }
