@@ -132,6 +132,15 @@ function genParse(parse, inParam = true)
  
     else if (parse.next == NULL_NODE              ) result = genParseNull              (parse);
     else if (parse.next == VARIABLE               ) result = genParseVariable          (parse);
+    else if (parse.next == VARIABLE_GROUP         ) result = genParseVariableGroup     (parse);
+    else if (parse.next == IF_ELSE                ) result = genParseIfElse            (parse);
+    else if (parse.next == START                  ) result = genParseStart             (parse);
+    else if (parse.next == REPEAT                 ) result = genParseRepeat            (parse);
+    else if (parse.next == CACHE                  ) result = genParseCache             (parse);
+    else if (parse.next == DEFINE                 ) result = genParseDefine            (parse);
+    else if (parse.next == FREEZE                 ) result = genParseFreeze            (parse);
+    else if (parse.next == TIMER                  ) result = genParseTimer             (parse);
+    else if (parse.next == VALUE_NAME             ) result = genParseValueName         (parse);
 
     else if (parse.next == JOIN                   ) result = genParseJoin              (parse);
     else if (parse.next == CONDENSE               ) result = genParseCondense          (parse);
@@ -145,14 +154,6 @@ function genParse(parse, inParam = true)
     else if (parse.next == SELECT                 ) result = genParseSelect            (parse);
     else if (parse.next == LIST_COUNT             ) result = genParseListCount         (parse);
     else if (parse.next == CONTAINS               ) result = genParseListContains      (parse);
-    else if (parse.next == IF_ELSE                ) result = genParseIfElse            (parse);
-    else if (parse.next == START                  ) result = genParseStart             (parse);
-    else if (parse.next == REPEAT                 ) result = genParseRepeat            (parse);
-    else if (parse.next == CACHE                  ) result = genParseCache             (parse);
-    else if (parse.next == DEFINE                 ) result = genParseDefine            (parse);
-    else if (parse.next == FREEZE                 ) result = genParseFreeze            (parse);
-    else if (parse.next == TIMER                  ) result = genParseTimer             (parse);
-    else if (parse.next == VALUE_NAME             ) result = genParseValueName         (parse);
      
     else if (parse.next == NUMBER_VALUE           ) result = genParseNumValue          (parse);
     else if (parse.next == NUMBER                 ) result = genParseNumber            (parse);

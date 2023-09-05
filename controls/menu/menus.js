@@ -48,7 +48,6 @@ var menuColorStyle;
 var menuLayer;
 var menuEffects;
 var menuStyles;
-var menuVariables;
 var menuShape;
 var menuTemplate;
 var menuGroup;
@@ -398,7 +397,7 @@ function initGeneratorMenus()
         new MenuItem('About',        null, {callback:  () => showAboutDialog()})]);
 
 
-    menuMain = new Menu('Main menu', false);
+    menuMain = new Menu('Main menu', true, false, true);
     menuMain.addItems([
                         new MenuItem('Quick actions...',      null, {icon: iconSearchMenu, shortcut: osCtrl() + '/', callback: () => { hideAllMenus(); showSearchBox(); }}),
                         new MenuItem('',                      null, {separator: true}),
@@ -412,20 +411,21 @@ function initGeneratorMenus()
 
 menuFlow = new Menu('Flow', true, false);
     menuFlow.addItems([
-        menuItemNull     = new MenuItem('Null',              null, {icon: iconNull,      createType: NULL_NODE,        callback: e => actionManager.do(getCreateNodeAction(NULL_NODE,       btnFlow.div, getCreateOptions(e)))}),
+        menuItemNull     = new MenuItem('Null',              null, {icon: iconNull,          createType: NULL_NODE,        callback: e => actionManager.do(getCreateNodeAction(NULL_NODE,       btnFlow.div, getCreateOptions(e)))}),
                            new MenuItem('',                  null, {separator: true}),
-                           new MenuItem('Variable',          null, {icon: iconVariable,  createType: VARIABLE,         callback: e => actionManager.do(getCreateNodeAction(VARIABLE,        btnFlow.div, getCreateOptions(e)))}),
+                           new MenuItem('Variable',          null, {icon: iconVariable,      createType: VARIABLE,         callback: e => actionManager.do(getCreateNodeAction(VARIABLE,        btnFlow.div, getCreateOptions(e)))}),
+                           new MenuItem('Variable group',    null, {icon: iconVariableGroup, createType: VARIABLE_GROUP,   callback: e => actionManager.do(getCreateNodeAction(VARIABLE_GROUP,  btnFlow.div, getCreateOptions(e)))}),
                            new MenuItem('',                  null, {separator: true}),
-        menuItemIfElse   = new MenuItem('I&hairsp;f / else', null, {icon: iconIfElse,    createType: IF_ELSE,          callback: e => actionManager.do(getCreateNodeAction(IF_ELSE,         btnFlow.div, getCreateOptions(e))), disambiguate: true}),
+        menuItemIfElse   = new MenuItem('I&hairsp;f / else', null, {icon: iconIfElse,        createType: IF_ELSE,          callback: e => actionManager.do(getCreateNodeAction(IF_ELSE,         btnFlow.div, getCreateOptions(e))), disambiguate: true}),
                            new MenuItem('',                  null, {separator: true}),
-        menuItemStart    = new MenuItem('Start. . .',        null, {icon: iconStart,     createType: START,            callback: e => actionManager.do(getCreateNodeAction(START,           btnFlow.div, getCreateOptions(e)))}),
-        menuItemRepeat   = new MenuItem('. . . Repeat',      null, {icon: iconRepeat,    createType: REPEAT,           callback: e => actionManager.do(getCreateNodeAction(REPEAT,          btnFlow.div, getCreateOptions(e)))}),
+        menuItemStart    = new MenuItem('Start. . .',        null, {icon: iconStart,         createType: START,            callback: e => actionManager.do(getCreateNodeAction(START,           btnFlow.div, getCreateOptions(e)))}),
+        menuItemRepeat   = new MenuItem('. . . Repeat',      null, {icon: iconRepeat,        createType: REPEAT,           callback: e => actionManager.do(getCreateNodeAction(REPEAT,          btnFlow.div, getCreateOptions(e)))}),
                            new MenuItem('',                  null, {separator: true}),
-        menuItemFreeze   = new MenuItem('Freeze. . .',       null, {icon: iconFreeze,    createType: FREEZE,           callback: e => actionManager.do(getCreateNodeAction(FREEZE,          btnFlow.div, getCreateOptions(e)))}),
-        //menuItemCache    = new MenuItem('Cache',           null, {icon: iconCache,     createType: CACHE,            callback: e => actionManager.do(getCreateNodeAction(CACHE,           btnFlow.div, getCreateOptions(e)))}),
+        menuItemFreeze   = new MenuItem('Freeze. . .',       null, {icon: iconFreeze,        createType: FREEZE,           callback: e => actionManager.do(getCreateNodeAction(FREEZE,          btnFlow.div, getCreateOptions(e)))}),
+        //menuItemCache    = new MenuItem('Cache',           null, {icon: iconCache,         createType: CACHE,            callback: e => actionManager.do(getCreateNodeAction(CACHE,           btnFlow.div, getCreateOptions(e)))}),
                            new MenuItem('',                  null, {separator: true}),
-        menuItemTimer    = new MenuItem('Timer ',            null, {icon: iconTimer,     createType: TIMER,            callback: e => actionManager.do(getCreateNodeAction(TIMER,           btnFlow.div, getCreateOptions(e)))}),
-        menuItemAnimate  = new MenuItem('Animate',           null, {icon: iconAnimate,   createType: NUMBER_ANIMATE,   callback: e => actionManager.do(getCreateNodeAction(NUMBER_ANIMATE,  btnFlow.div, getCreateOptions(e)))})]);
+        menuItemTimer    = new MenuItem('Timer ',            null, {icon: iconTimer,         createType: TIMER,            callback: e => actionManager.do(getCreateNodeAction(TIMER,           btnFlow.div, getCreateOptions(e)))}),
+        menuItemAnimate  = new MenuItem('Animate',           null, {icon: iconAnimate,       createType: NUMBER_ANIMATE,   callback: e => actionManager.do(getCreateNodeAction(NUMBER_ANIMATE,  btnFlow.div, getCreateOptions(e)))})]);
     
 
     menuData = new Menu('Data', true, false);
@@ -577,7 +577,7 @@ menuFlow = new Menu('Flow', true, false);
         new MenuItem('Link existing...', null, {icon: iconColorStyleReplace, createType: COLOR_STYLE, callback: e => actionManager.do(getCreateNodeAction(COLOR_STYLE,  btnColor.div, getCreateOptions(e, {existing: true})))})]);
 
         
-    menuColor = new Menu('Colors', true, true);
+    menuColor = new Menu('Colors', true, false);
     menuColor.addItems([
         menuItemColor        = new MenuItem('Color',         null,                {icon: iconColor,            callback: e => actionManager.do(getCreateNodeAction(COLOR,             btnColor.div, getCreateOptions(e,  {random: e.altKey && !getCtrlKey(e)})))}),
                                new MenuItem('',              null,                {separator: true}),
@@ -610,11 +610,6 @@ menuFlow = new Menu('Flow', true, false);
         new MenuItem('Color style', null, {icon: iconColorStyle, createType: START, callback: e => actionManager.do(getCreateNodeAction(COLOR_STYLE, btnLayer.div, getCreateOptions(e, {existing: true})))})]);
     
     
-    menuVariables = new Menu('Variables', true, false);
-    menuVariables.addItems([
-        new MenuItem('Number', null, {icon: iconVarNumber, createType: START, callback: e => actionManager.do(getCreateNodeAction(VAR_NUMBER, btnLayer.div, getCreateOptions(e, {existing: true})))})]);
-    
-    
     menuLayer = new Menu('Style', true, false);
     menuLayer.addItems([
         menuItemLayerFill   = new MenuItem('Fill',        null, {icon: iconFill,        callback: e => actionManager.do(getCreateNodeAction(FILL,       btnLayer.div, getCreateOptions(e)))}),
@@ -626,7 +621,6 @@ menuFlow = new Menu('Flow', true, false);
                               new MenuItem('',            null, {separator: true}),
                               new MenuItem('Effects',     null, {icon: iconEffects, childMenu: menuEffects}),
                               new MenuItem('Styles',      null, {icon: iconStyle, childMenu: menuStyles}),
-                            //new MenuItem('Variables',   null, {childMenu: menuVariables}),
                               new MenuItem('',            null, {separator: true}),
                               new MenuItem('Mask',        null, {icon: iconMask,        callback: e => actionManager.do(getCreateNodeAction(LAYER_MASK, btnLayer.div, getCreateOptions(e)))})]);
     

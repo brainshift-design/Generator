@@ -4690,7 +4690,7 @@ const  SHAPE_LIST_VALUE       = 'SLIST#';
 
 const NULL_NODE               = 'NULL';
 const VARIABLE                = 'VAR';
-const CREATE_VARIABLE         = 'CRVAR';
+const VARIABLE_GROUP          = 'VARGRP';
 const START                   = 'START';
 const REPEAT                  = 'REPT';
 const CACHE                   = 'CACHE';
@@ -4746,6 +4746,7 @@ const FLOW_TYPES =
 [
     NULL_NODE,
     VARIABLE,
+    VARIABLE_GROUP,
     ...LIST_TYPES,
     CONDENSE,
     SUBLIST,
@@ -5342,6 +5343,7 @@ const DELETE_ACTION              = 'DELETE';
 const DISCONNECT_ACTION          = 'DISCONNECT';
 const LINK_STYLE_ACTION          = 'LINK_STYLE';
 const LINK_VARIABLE_ACTION       = 'LINK_VARIABLE';
+const LINK_VARIABLE_GROUP_ACTION = 'LINK_VARIABLE_GROUP';
 const MAKE_ACTIVE_ACTION         = 'MAKE_ACTIVE';
 const MAKE_PASSIVE_ACTION        = 'MAKE_PASSIVE';
 const PASTE_ACTION               = 'PASTE';
@@ -15272,6 +15274,146 @@ extends GOperator
         super.iterateLoop(parse);
 
         if (this.varValue) this.varValue.iterateLoop(parse);
+    }
+}
+
+
+class GVariableGroup
+extends GOperator
+{
+    input = null;
+
+
+
+    constructor(nodeId, options)
+    {
+        super(VARIABLE_GROUP, nodeId, options);
+    }
+
+
+
+    copy()
+    {
+        const copy = new GList(this.nodeId, this.options);
+        
+        copy.copyBase(this);
+
+        if (this.input) 
+            copy.input = this.input.copy();
+        
+        for (const key of this.keys())
+        {
+            if (this[key] instanceof GValue)
+                Object.assign(copy, {[key]: this[key]});
+        }
+
+        return copy;
+    }
+
+
+
+    async eval(parse)
+    {
+        if (this.isCached())
+            return this;
+
+
+        this.value = this.input ? (await this.input.eval(parse)).toValue() : ListValue.NaN;
+
+
+        this.updateValues = [];
+
+        
+        // if (    this.value.isValid()
+        //     && !isEmpty(this.value.items))
+        // {
+        //     for (let i = 0; i < this.value.items.length; i++)
+        //     {
+        //         const item = this.value.items[i];
+                
+        //         let valueId = 
+        //             item.valueId.trim() != ''
+        //             ? item.valueId
+        //             : i.toString();
+
+        //         valueId = getNewNumberId(
+        //             valueId,
+        //             id => this.value.items.find(i => 
+        //                    i != item 
+        //                 && i.valueId == id));
+
+        //         Object.assign(this, {[valueId]: item});
+        //         this.setUpdateValues(parse, [[valueId, item]], true);
+
+        //         item.sortId = i;
+        //     }
+
+        //     this.updateValues.sort((a, b) => a.sortId - b.sortId);
+        // }
+        // else
+        //     this.setUpdateValues(parse, [['', NullValue]], true);
+
+
+        // if (this.value.objects)
+        //     for (let j = 0; j < this.value.objects.length; j++)
+        //         this.value.objects[j].nodeId = this.nodeId;
+
+
+        this.validate();
+
+        return this;
+    }
+    
+    
+
+    paramFromId(paramId)
+    {
+        return this.value
+            && this.value.items
+            && paramId != 'value'
+            ? this.value.items.find(i => i.valueId == paramId) //this[paramId]
+            : null;
+    }
+
+
+
+    toValue()
+    {
+        return this.value.copy();
+    }
+
+
+
+    isValid()
+    {
+        return this.input && this.input.isValid();
+    }
+
+
+
+    pushValueUpdates(parse)
+    {
+        super.pushValueUpdates(parse);
+
+        if (this.input) this.input.pushValueUpdates(parse);
+    }
+
+
+
+    invalidateInputs(parse, from)
+    {
+        super.invalidateInputs(parse, from);
+
+        if (this.input) this.input.invalidateInputs(parse, from);
+    }
+
+
+
+    iterateLoop(parse)
+    {
+        super.iterateLoop(parse);
+
+        if (this.input) this.input.iterateLoop(parse);
     }
 }
 
@@ -35188,9 +35330,6 @@ function genParseVariable(parse)
     parse.inParam = false;
 
 
-    //variable.id       = parse.move();
-    //variable.name     = options.nodeName;
-    
     const nParams = parseInt(parse.move());
 
     if (nParams == 1)
@@ -35205,6 +35344,50 @@ function genParseVariable(parse)
 
     genParseNodeEnd(parse, variable);
     return variable;
+}
+
+
+
+function genParseVariableGroup(parse)
+{
+    const [, nodeId, options, ignore] = genParseNodeStart(parse);
+
+
+    const group = new GVariableGroup(nodeId, options);
+
+    
+    let nInputs = -1;
+    
+    if (!ignore)
+    {
+        nInputs = parseInt(parse.move());
+        consoleAssert(nInputs == 0 || nInputs == 1, 'nInputs must be [0, 1]');
+    }
+
+
+    if (parse.settings.logRequests) 
+        logReq(group, parse, ignore, nInputs);
+
+
+    if (ignore) 
+    {
+        genParseNodeEnd(parse, group);
+        return parse.parsedNodes.find(n => n.nodeId == nodeId);
+    }
+
+
+    parse.nTab++;
+
+
+    if (nInputs == 1)
+        group.input = genParse(parse);
+
+
+    parse.nTab--;
+
+
+    genParseNodeEnd(parse, group);
+    return group;
 }
 
 
@@ -40876,6 +41059,15 @@ function genParse(parse, inParam = true)
  
     else if (parse.next == NULL_NODE              ) result = genParseNull              (parse);
     else if (parse.next == VARIABLE               ) result = genParseVariable          (parse);
+    else if (parse.next == VARIABLE_GROUP         ) result = genParseVariableGroup     (parse);
+    else if (parse.next == IF_ELSE                ) result = genParseIfElse            (parse);
+    else if (parse.next == START                  ) result = genParseStart             (parse);
+    else if (parse.next == REPEAT                 ) result = genParseRepeat            (parse);
+    else if (parse.next == CACHE                  ) result = genParseCache             (parse);
+    else if (parse.next == DEFINE                 ) result = genParseDefine            (parse);
+    else if (parse.next == FREEZE                 ) result = genParseFreeze            (parse);
+    else if (parse.next == TIMER                  ) result = genParseTimer             (parse);
+    else if (parse.next == VALUE_NAME             ) result = genParseValueName         (parse);
 
     else if (parse.next == JOIN                   ) result = genParseJoin              (parse);
     else if (parse.next == CONDENSE               ) result = genParseCondense          (parse);
@@ -40889,14 +41081,6 @@ function genParse(parse, inParam = true)
     else if (parse.next == SELECT                 ) result = genParseSelect            (parse);
     else if (parse.next == LIST_COUNT             ) result = genParseListCount         (parse);
     else if (parse.next == CONTAINS               ) result = genParseListContains      (parse);
-    else if (parse.next == IF_ELSE                ) result = genParseIfElse            (parse);
-    else if (parse.next == START                  ) result = genParseStart             (parse);
-    else if (parse.next == REPEAT                 ) result = genParseRepeat            (parse);
-    else if (parse.next == CACHE                  ) result = genParseCache             (parse);
-    else if (parse.next == DEFINE                 ) result = genParseDefine            (parse);
-    else if (parse.next == FREEZE                 ) result = genParseFreeze            (parse);
-    else if (parse.next == TIMER                  ) result = genParseTimer             (parse);
-    else if (parse.next == VALUE_NAME             ) result = genParseValueName         (parse);
      
     else if (parse.next == NUMBER_VALUE           ) result = genParseNumValue          (parse);
     else if (parse.next == NUMBER                 ) result = genParseNumber            (parse);

@@ -41,12 +41,13 @@ class Menu
 
 
 
-    constructor(name, showIcons = true, showChecks = true)
+    constructor(name, showIcons = true, showChecks = true, condense = false)
     {
         this.name       = name;
 
         this.showIcons  = showIcons;
         this.showChecks = showChecks;
+        this.condense   = condense;
 
         this.div        = createDiv('menu');
         this.divArrow   = createDiv('menuArrow');
@@ -146,6 +147,8 @@ class Menu
                 item.divCheck.style.display = item.icon == NULL ? 'inline-block' : 'none';
                 item.divIcon .style.display = item.icon != NULL ? 'inline-block' : 'none';
             }
+
+            item.update();
         }
 
 

@@ -175,7 +175,7 @@
 .menuItemCheck
 {
     display:             inline-block;
-    width:               32px;
+    width:               34px;
     height:              22px;
     background:          url('data:image/svg+xml;utf8,<svg width="9" height="9" viewBox="0 -2 9 9" fill="none" xmlns="http://www.w3.org/2000/svg"><path fill-rule="evenodd" clip-rule="evenodd" d="M1.31749 2.4477L3.42546 4.55569L7.64142 0.339716L8.9589 1.65721L3.42546 7.19067L0 3.76519L1.31749 2.4477Z" fill="white"/></svg>');
     background-position: 50% 50%;
@@ -189,7 +189,7 @@
 .menuItemIcon
 {
     display:             inline-block;
-    width:               32px;
+    width:               34px;
     height:              22px;
     /* box-shadow:          0 0 0 1px orange inset; */
     transform:           translateY(1px);

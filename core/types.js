@@ -7,7 +7,7 @@ const  SHAPE_LIST_VALUE       = 'SLIST#';
 
 const NULL_NODE               = 'NULL';
 const VARIABLE                = 'VAR';
-const CREATE_VARIABLE         = 'CRVAR';
+const VARIABLE_GROUP          = 'VARGRP';
 const START                   = 'START';
 const REPEAT                  = 'REPT';
 const CACHE                   = 'CACHE';
@@ -63,6 +63,7 @@ const FLOW_TYPES =
 [
     NULL_NODE,
     VARIABLE,
+    VARIABLE_GROUP,
     ...LIST_TYPES,
     CONDENSE,
     SUBLIST,
@@ -659,6 +660,7 @@ const DELETE_ACTION              = 'DELETE';
 const DISCONNECT_ACTION          = 'DISCONNECT';
 const LINK_STYLE_ACTION          = 'LINK_STYLE';
 const LINK_VARIABLE_ACTION       = 'LINK_VARIABLE';
+const LINK_VARIABLE_GROUP_ACTION = 'LINK_VARIABLE_GROUP';
 const MAKE_ACTIVE_ACTION         = 'MAKE_ACTIVE';
 const MAKE_PASSIVE_ACTION        = 'MAKE_PASSIVE';
 const PASTE_ACTION               = 'PASTE';

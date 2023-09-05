@@ -70,6 +70,7 @@
 ../generator/types/flow/GRepeat.js
 ../generator/types/flow/GNull.js
 ../generator/types/flow/GVariable.js
+../generator/types/flow/GVariableGroup.js
 ../generator/types/flow/GCache.js
 ../generator/types/flow/GFreeze.js
 ../generator/types/flow/GTimer.js

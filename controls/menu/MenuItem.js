@@ -423,11 +423,18 @@ class MenuItem
             ? 'var(--figma-color-bg-brand)'
             : 'transparent';
 
-        this.divCheck    .style.visibility = this.checked   ? 'visible'      : 'hidden';
-        this.div         .style.opacity    = this.enabled   ? '100%'         : '40%';
+        this.divCheck.style.display = 
+                this.parentMenu 
+            && (    this.parentMenu.showChecks 
+                || !this.parentMenu.condense)
+            ? 'inline-block' 
+            : 'none';
 
-        this.divShortcut.style.display    = this.sub ? 'inline-block' : 'none';
-        this.divPro     .style.display    = this.sub ? 'none'         : 'inline-block';
+        this.divCheck   .style.visibility = this.checked ? 'visible'      : 'hidden';
+        this.div        .style.opacity    = this.enabled ? '100%'         : '40%';
+
+        this.divShortcut.style.display    = this.sub     ? 'inline-block' : 'none';
+        this.divPro     .style.display    = this.sub     ? 'none'         : 'inline-block';
 
         this.updateLegend();
     }

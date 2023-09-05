@@ -2990,7 +2990,7 @@ a
 .menuItemCheck
 {
     display:             inline-block;
-    width:               32px;
+    width:               34px;
     height:              22px;
     background:          url('data:image/svg+xml;utf8,<svg width="9" height="9" viewBox="0 -2 9 9" fill="none" xmlns="http://www.w3.org/2000/svg"><path fill-rule="evenodd" clip-rule="evenodd" d="M1.31749 2.4477L3.42546 4.55569L7.64142 0.339716L8.9589 1.65721L3.42546 7.19067L0 3.76519L1.31749 2.4477Z" fill="white"/></svg>');
     background-position: 50% 50%;
@@ -3004,7 +3004,7 @@ a
 .menuItemIcon
 {
     display:             inline-block;
-    width:               32px;
+    width:               34px;
     height:              22px;
     /* box-shadow:          0 0 0 1px orange inset; */
     transform:           translateY(1px);
@@ -10023,7 +10023,7 @@ const  SHAPE_LIST_VALUE       = 'SLIST#';
 
 const NULL_NODE               = 'NULL';
 const VARIABLE                = 'VAR';
-const CREATE_VARIABLE         = 'CRVAR';
+const VARIABLE_GROUP          = 'VARGRP';
 const START                   = 'START';
 const REPEAT                  = 'REPT';
 const CACHE                   = 'CACHE';
@@ -10079,6 +10079,7 @@ const FLOW_TYPES =
 [
     NULL_NODE,
     VARIABLE,
+    VARIABLE_GROUP,
     ...LIST_TYPES,
     CONDENSE,
     SUBLIST,
@@ -10675,6 +10676,7 @@ const DELETE_ACTION              = 'DELETE';
 const DISCONNECT_ACTION          = 'DISCONNECT';
 const LINK_STYLE_ACTION          = 'LINK_STYLE';
 const LINK_VARIABLE_ACTION       = 'LINK_VARIABLE';
+const LINK_VARIABLE_GROUP_ACTION = 'LINK_VARIABLE_GROUP';
 const MAKE_ACTIVE_ACTION         = 'MAKE_ACTIVE';
 const MAKE_PASSIVE_ACTION        = 'MAKE_PASSIVE';
 const PASTE_ACTION               = 'PASTE';
@@ -20605,6 +20607,146 @@ extends GOperator
         super.iterateLoop(parse);
 
         if (this.varValue) this.varValue.iterateLoop(parse);
+    }
+}
+
+
+class GVariableGroup
+extends GOperator
+{
+    input = null;
+
+
+
+    constructor(nodeId, options)
+    {
+        super(VARIABLE_GROUP, nodeId, options);
+    }
+
+
+
+    copy()
+    {
+        const copy = new GList(this.nodeId, this.options);
+        
+        copy.copyBase(this);
+
+        if (this.input) 
+            copy.input = this.input.copy();
+        
+        for (const key of this.keys())
+        {
+            if (this[key] instanceof GValue)
+                Object.assign(copy, {[key]: this[key]});
+        }
+
+        return copy;
+    }
+
+
+
+    async eval(parse)
+    {
+        if (this.isCached())
+            return this;
+
+
+        this.value = this.input ? (await this.input.eval(parse)).toValue() : ListValue.NaN;
+
+
+        this.updateValues = [];
+
+        
+        // if (    this.value.isValid()
+        //     && !isEmpty(this.value.items))
+        // {
+        //     for (let i = 0; i < this.value.items.length; i++)
+        //     {
+        //         const item = this.value.items[i];
+                
+        //         let valueId = 
+        //             item.valueId.trim() != ''
+        //             ? item.valueId
+        //             : i.toString();
+
+        //         valueId = getNewNumberId(
+        //             valueId,
+        //             id => this.value.items.find(i => 
+        //                    i != item 
+        //                 && i.valueId == id));
+
+        //         Object.assign(this, {[valueId]: item});
+        //         this.setUpdateValues(parse, [[valueId, item]], true);
+
+        //         item.sortId = i;
+        //     }
+
+        //     this.updateValues.sort((a, b) => a.sortId - b.sortId);
+        // }
+        // else
+        //     this.setUpdateValues(parse, [['', NullValue]], true);
+
+
+        // if (this.value.objects)
+        //     for (let j = 0; j < this.value.objects.length; j++)
+        //         this.value.objects[j].nodeId = this.nodeId;
+
+
+        this.validate();
+
+        return this;
+    }
+    
+    
+
+    paramFromId(paramId)
+    {
+        return this.value
+            && this.value.items
+            && paramId != 'value'
+            ? this.value.items.find(i => i.valueId == paramId) //this[paramId]
+            : null;
+    }
+
+
+
+    toValue()
+    {
+        return this.value.copy();
+    }
+
+
+
+    isValid()
+    {
+        return this.input && this.input.isValid();
+    }
+
+
+
+    pushValueUpdates(parse)
+    {
+        super.pushValueUpdates(parse);
+
+        if (this.input) this.input.pushValueUpdates(parse);
+    }
+
+
+
+    invalidateInputs(parse, from)
+    {
+        super.invalidateInputs(parse, from);
+
+        if (this.input) this.input.invalidateInputs(parse, from);
+    }
+
+
+
+    iterateLoop(parse)
+    {
+        super.iterateLoop(parse);
+
+        if (this.input) this.input.iterateLoop(parse);
     }
 }
 
@@ -40521,9 +40663,6 @@ function genParseVariable(parse)
     parse.inParam = false;
 
 
-    //variable.id       = parse.move();
-    //variable.name     = options.nodeName;
-    
     const nParams = parseInt(parse.move());
 
     if (nParams == 1)
@@ -40538,6 +40677,50 @@ function genParseVariable(parse)
 
     genParseNodeEnd(parse, variable);
     return variable;
+}
+
+
+
+function genParseVariableGroup(parse)
+{
+    const [, nodeId, options, ignore] = genParseNodeStart(parse);
+
+
+    const group = new GVariableGroup(nodeId, options);
+
+    
+    let nInputs = -1;
+    
+    if (!ignore)
+    {
+        nInputs = parseInt(parse.move());
+        consoleAssert(nInputs == 0 || nInputs == 1, 'nInputs must be [0, 1]');
+    }
+
+
+    if (parse.settings.logRequests) 
+        logReq(group, parse, ignore, nInputs);
+
+
+    if (ignore) 
+    {
+        genParseNodeEnd(parse, group);
+        return parse.parsedNodes.find(n => n.nodeId == nodeId);
+    }
+
+
+    parse.nTab++;
+
+
+    if (nInputs == 1)
+        group.input = genParse(parse);
+
+
+    parse.nTab--;
+
+
+    genParseNodeEnd(parse, group);
+    return group;
 }
 
 
@@ -46209,6 +46392,15 @@ function genParse(parse, inParam = true)
  
     else if (parse.next == NULL_NODE              ) result = genParseNull              (parse);
     else if (parse.next == VARIABLE               ) result = genParseVariable          (parse);
+    else if (parse.next == VARIABLE_GROUP         ) result = genParseVariableGroup     (parse);
+    else if (parse.next == IF_ELSE                ) result = genParseIfElse            (parse);
+    else if (parse.next == START                  ) result = genParseStart             (parse);
+    else if (parse.next == REPEAT                 ) result = genParseRepeat            (parse);
+    else if (parse.next == CACHE                  ) result = genParseCache             (parse);
+    else if (parse.next == DEFINE                 ) result = genParseDefine            (parse);
+    else if (parse.next == FREEZE                 ) result = genParseFreeze            (parse);
+    else if (parse.next == TIMER                  ) result = genParseTimer             (parse);
+    else if (parse.next == VALUE_NAME             ) result = genParseValueName         (parse);
 
     else if (parse.next == JOIN                   ) result = genParseJoin              (parse);
     else if (parse.next == CONDENSE               ) result = genParseCondense          (parse);
@@ -46222,14 +46414,6 @@ function genParse(parse, inParam = true)
     else if (parse.next == SELECT                 ) result = genParseSelect            (parse);
     else if (parse.next == LIST_COUNT             ) result = genParseListCount         (parse);
     else if (parse.next == CONTAINS               ) result = genParseListContains      (parse);
-    else if (parse.next == IF_ELSE                ) result = genParseIfElse            (parse);
-    else if (parse.next == START                  ) result = genParseStart             (parse);
-    else if (parse.next == REPEAT                 ) result = genParseRepeat            (parse);
-    else if (parse.next == CACHE                  ) result = genParseCache             (parse);
-    else if (parse.next == DEFINE                 ) result = genParseDefine            (parse);
-    else if (parse.next == FREEZE                 ) result = genParseFreeze            (parse);
-    else if (parse.next == TIMER                  ) result = genParseTimer             (parse);
-    else if (parse.next == VALUE_NAME             ) result = genParseValueName         (parse);
      
     else if (parse.next == NUMBER_VALUE           ) result = genParseNumValue          (parse);
     else if (parse.next == NUMBER                 ) result = genParseNumber            (parse);
@@ -56644,7 +56828,7 @@ const  SHAPE_LIST_VALUE       = 'SLIST#';
 
 const NULL_NODE               = 'NULL';
 const VARIABLE                = 'VAR';
-const CREATE_VARIABLE         = 'CRVAR';
+const VARIABLE_GROUP          = 'VARGRP';
 const START                   = 'START';
 const REPEAT                  = 'REPT';
 const CACHE                   = 'CACHE';
@@ -56700,6 +56884,7 @@ const FLOW_TYPES =
 [
     NULL_NODE,
     VARIABLE,
+    VARIABLE_GROUP,
     ...LIST_TYPES,
     CONDENSE,
     SUBLIST,
@@ -57296,6 +57481,7 @@ const DELETE_ACTION              = 'DELETE';
 const DISCONNECT_ACTION          = 'DISCONNECT';
 const LINK_STYLE_ACTION          = 'LINK_STYLE';
 const LINK_VARIABLE_ACTION       = 'LINK_VARIABLE';
+const LINK_VARIABLE_GROUP_ACTION = 'LINK_VARIABLE_GROUP';
 const MAKE_ACTIVE_ACTION         = 'MAKE_ACTIVE';
 const MAKE_PASSIVE_ACTION        = 'MAKE_PASSIVE';
 const PASTE_ACTION               = 'PASTE';
@@ -67226,6 +67412,146 @@ extends GOperator
         super.iterateLoop(parse);
 
         if (this.varValue) this.varValue.iterateLoop(parse);
+    }
+}
+
+
+class GVariableGroup
+extends GOperator
+{
+    input = null;
+
+
+
+    constructor(nodeId, options)
+    {
+        super(VARIABLE_GROUP, nodeId, options);
+    }
+
+
+
+    copy()
+    {
+        const copy = new GList(this.nodeId, this.options);
+        
+        copy.copyBase(this);
+
+        if (this.input) 
+            copy.input = this.input.copy();
+        
+        for (const key of this.keys())
+        {
+            if (this[key] instanceof GValue)
+                Object.assign(copy, {[key]: this[key]});
+        }
+
+        return copy;
+    }
+
+
+
+    async eval(parse)
+    {
+        if (this.isCached())
+            return this;
+
+
+        this.value = this.input ? (await this.input.eval(parse)).toValue() : ListValue.NaN;
+
+
+        this.updateValues = [];
+
+        
+        // if (    this.value.isValid()
+        //     && !isEmpty(this.value.items))
+        // {
+        //     for (let i = 0; i < this.value.items.length; i++)
+        //     {
+        //         const item = this.value.items[i];
+                
+        //         let valueId = 
+        //             item.valueId.trim() != ''
+        //             ? item.valueId
+        //             : i.toString();
+
+        //         valueId = getNewNumberId(
+        //             valueId,
+        //             id => this.value.items.find(i => 
+        //                    i != item 
+        //                 && i.valueId == id));
+
+        //         Object.assign(this, {[valueId]: item});
+        //         this.setUpdateValues(parse, [[valueId, item]], true);
+
+        //         item.sortId = i;
+        //     }
+
+        //     this.updateValues.sort((a, b) => a.sortId - b.sortId);
+        // }
+        // else
+        //     this.setUpdateValues(parse, [['', NullValue]], true);
+
+
+        // if (this.value.objects)
+        //     for (let j = 0; j < this.value.objects.length; j++)
+        //         this.value.objects[j].nodeId = this.nodeId;
+
+
+        this.validate();
+
+        return this;
+    }
+    
+    
+
+    paramFromId(paramId)
+    {
+        return this.value
+            && this.value.items
+            && paramId != 'value'
+            ? this.value.items.find(i => i.valueId == paramId) //this[paramId]
+            : null;
+    }
+
+
+
+    toValue()
+    {
+        return this.value.copy();
+    }
+
+
+
+    isValid()
+    {
+        return this.input && this.input.isValid();
+    }
+
+
+
+    pushValueUpdates(parse)
+    {
+        super.pushValueUpdates(parse);
+
+        if (this.input) this.input.pushValueUpdates(parse);
+    }
+
+
+
+    invalidateInputs(parse, from)
+    {
+        super.invalidateInputs(parse, from);
+
+        if (this.input) this.input.invalidateInputs(parse, from);
+    }
+
+
+
+    iterateLoop(parse)
+    {
+        super.iterateLoop(parse);
+
+        if (this.input) this.input.iterateLoop(parse);
     }
 }
 
@@ -90607,6 +90933,7 @@ const iconLayerBlur         = '<svg width="15" height="12" viewBox="0 0 15 12" f
 const iconBackBlur          = '<svg width="15" height="11" viewBox="0 0 15 11" fill="none" xmlns="http://www.w3.org/2000/svg"><line x1="6.21326" y1="0.433143" x2="0.447288" y2="6.19912" stroke="white"/><line x1="10.2787" y1="0.610389" x2="1.25317" y2="9.63592" stroke="white"/><line x1="13.6388" y1="1.49308" x2="4.56403" y2="10.5678" stroke="white"/><line x1="14.5184" y1="4.85624" x2="8.86875" y2="10.5059" stroke="white"/><path d="M4 0.5H12C13.3807 0.5 14.5 1.61929 14.5 3V7C14.5 8.933 12.933 10.5 11 10.5H3C1.61929 10.5 0.5 9.38071 0.5 8V4C0.5 2.067 2.067 0.5 4 0.5Z" stroke="white"/></svg>';
 
 const iconVariable          = '<svg width="12" height="12" viewBox="0 0 12 12" fill="none" xmlns="http://www.w3.org/2000/svg"><circle cx="6" cy="6" r="1" fill="white"/><path d="M1.30385 3.28868L6 0.57735L10.6962 3.28868V8.71132L6 11.4226L1.30385 8.71132V3.28868Z" stroke="white"/></svg>';
+const iconVariableGroup     = '<svg width="11" height="18" viewBox="0 0 11 18" fill="none" xmlns="http://www.w3.org/2000/svg"><circle cx="5.5" cy="6" r="1" fill="white"/><path d="M0.803848 3.28868L5.5 0.57735L10.1962 3.28868V8.71132L5.5 11.4226L0.803848 8.71132V3.28868Z" stroke="white"/><path d="M0.303833 10.8657V12.0112L5.49999 15.0112L10.6961 12.0112V10.8657L5.49999 13.8657L0.303833 10.8657Z" fill="white"/><path d="M0.303833 13.8545V15L5.49999 18L10.6961 15V13.8545L5.49999 16.8545L0.303833 13.8545Z" fill="white"/></svg>';
 const iconVarColor          = '<svg width="17" height="17" viewBox="0 0 17 17" fill="none" xmlns="http://www.w3.org/2000/svg"><path d="M16.4198 7.57435C16.3504 8.02738 16.2074 8.33817 16.0231 8.57091C15.8364 8.80662 15.5835 8.99224 15.2491 9.15882C14.9095 9.32803 14.5097 9.46646 14.0368 9.62193C13.9807 9.64037 13.9237 9.65902 13.8658 9.67795C13.4455 9.81544 12.98 9.9677 12.499 10.1611C11.7091 10.4787 11.4564 11.2283 11.3641 11.9129C11.3168 12.2639 11.3052 12.6417 11.301 13.01C11.2997 13.1308 11.2991 13.2498 11.2985 13.3675C11.2973 13.6191 11.2961 13.8653 11.2873 14.1135C11.2611 14.8514 11.1676 15.4428 10.9004 15.8483C10.6656 16.2044 10.2381 16.5 9.30271 16.5C4.45892 16.5 0.5 12.8747 0.5 8.5C0.5 4.1021 4.23097 0.5 8.87986 0.5C11.2376 0.5 13.2971 1.2157 14.671 2.44456C16.0303 3.66025 16.752 5.4042 16.4198 7.57435Z" stroke="white"/><circle cx="8.50001" cy="4.2746" r="1.27473" fill="white"/><circle cx="12.7744" cy="5.54939" r="1.27473" fill="white"/><circle cx="4.52192" cy="6.82404" r="1.27473" fill="white"/></svg>';
 const iconVarNumber         = '<svg width="15" height="15" viewBox="0 0 15 15" fill="none" xmlns="http://www.w3.org/2000/svg"><rect x="4.43979" y="0.8703" width="1.34691" height="13.1692" transform="rotate(5.12323 4.43979 0.8703)" fill="white"/><rect x="10.4445" y="0.950623" width="1.34691" height="13.147" transform="rotate(5.12323 10.4445 0.950623)" fill="white"/><rect x="14.1184" y="4.19745" width="1.34691" height="13.2367" transform="rotate(90 14.1184 4.19745)" fill="white"/><rect x="14.1184" y="9.67902" width="1.34691" height="13.2367" transform="rotate(90 14.1184 9.67902)" fill="white"/></svg>';
 const iconVarText           = '<svg width="11" height="11" viewBox="0 0 11 11" fill="none" xmlns="http://www.w3.org/2000/svg"><path fill-rule="evenodd" clip-rule="evenodd" d="M0 0H0.5H5.00247H9.50494H10.0049V0.5V3.27642H9.00494V1H5.50247V9.99513L7.00021 9.99512L7.00021 10.9951L5.00247 10.9951L3.00021 10.9951L3.00021 9.99512L4.50247 9.99513V1H1V3.27642H0V0.5V0Z" fill="white"/></svg>';
@@ -90678,11 +91005,11 @@ const iconWindowDockTop     = '<svg width="15" height="12" viewBox="0 0 15 12" f
 const iconWindowDockBottom  = '<svg width="15" height="12" viewBox="0 0 15 12" fill="none" xmlns="http://www.w3.org/2000/svg"><rect x="0.5" y="0.5" width="14" height="11" stroke="white"/><rect y="7" width="15" height="5" fill="white"/></svg>';
 
 
-const iconSolo              = '<svg width="20" height="19" viewBox="0 0 20 19" fill="none" xmlns="http://www.w3.org/2000/svg"><path fill-rule="evenodd" clip-rule="evenodd" d="M4.08057 9.99671L9.99653 4.08074L12.9243 9.63767L18.5816 15.2949C18.9721 15.6854 18.9944 16.2963 18.6313 16.6594L16.6594 18.6313C16.2963 18.9944 15.6854 18.9721 15.2949 18.5816L9.63806 12.9247L4.08057 9.99671ZM9.40454 11.7438L5.69967 9.79182L9.79164 5.69984L11.7436 9.40471L9.40454 11.7438ZM10.2954 12.2674L12.2674 10.2954L17.9242 15.9522L15.9522 17.9242L10.2954 12.2674Z" fill="white"/><rect x="2.08472" y="2.79199" width="1" height="4.01147" transform="rotate(-45 2.08472 2.79199)" fill="white"/><rect y="6.25903" width="1" height="3.71342" transform="rotate(-60 0 6.25903)" fill="white"/><rect width="1" height="3.70373" transform="matrix(-0.866025 0.5 0.5 0.866025 6.26465 0.00756836)" fill="white"/></svg>';
+const iconSolo              = '<svg width="20" height="20" viewBox="0 0 20 20" fill="none" xmlns="http://www.w3.org/2000/svg"><path fill-rule="evenodd" clip-rule="evenodd" d="M4.08057 9.99671L9.99653 4.08074L12.9243 9.63767L18.5816 15.2949C18.9721 15.6854 18.9944 16.2963 18.6313 16.6594L16.6594 18.6313C16.2963 18.9944 15.6854 18.9721 15.2949 18.5816L9.63806 12.9247L4.08057 9.99671ZM9.40454 11.7438L5.69967 9.79182L9.79164 5.69984L11.7436 9.40471L9.40454 11.7438ZM10.2954 12.2674L12.2674 10.2954L17.9242 15.9522L15.9522 17.9242L10.2954 12.2674Z" fill="white"/><rect x="2.08472" y="2.79199" width="1" height="4.01147" transform="rotate(-45 2.08472 2.79199)" fill="white"/><rect y="6.25903" width="1" height="3.71342" transform="rotate(-60 0 6.25903)" fill="white"/><rect width="1" height="3.70373" transform="matrix(-0.866025 0.5 0.5 0.866025 6.26465 0.00756836)" fill="white"/></svg>';
 
 
 const iconSearch            = '<svg width="15" height="15" viewBox="0 0 15 15" fill="none" xmlns="http://www.w3.org/2000/svg"><path id="searchIconPath" fill-rule="evenodd" clip-rule="evenodd" d="M11 6C11 8.76147 8.76147 11 6 11C3.23853 11 1 8.76147 1 6C1 3.23853 3.23853 1 6 1C8.76147 1 11 3.23853 11 6ZM9.87439 10.5815C8.8291 11.4663 7.47681 12 6 12C2.68628 12 0 9.31372 0 6C0 2.68628 2.68628 0 6 0C9.31372 0 12 2.68628 12 6C12 7.47681 11.4664 8.8291 10.5815 9.87451L14.364 13.657L13.6569 14.364L9.87439 10.5815Z" fill="white"/></svg>';
-const iconSearchMenu        = '<svg width="10" height="10" viewBox="0 0 10 10" fill="none" xmlns="http://www.w3.org/2000/svg"><circle cx="4" cy="4" r="3.5" stroke="white"/><rect x="6.11426" y="6.82129" width="1" height="4.42429" transform="rotate(-45 6.11426 6.82129)" fill="white"/></svg>';
+const iconSearchMenu        = '<svg width="10" height="11" viewBox="0 -1 10 11" fill="none" xmlns="http://www.w3.org/2000/svg"><circle cx="4" cy="4" r="3.5" stroke="white"/><rect x="6.11426" y="6.82129" width="1" height="4.42429" transform="rotate(-45 6.11426 6.82129)" fill="white"/></svg>';
 
 
 var currentMenus      = [];
@@ -90728,12 +91055,13 @@ class Menu
 
 
 
-    constructor(name, showIcons = true, showChecks = true)
+    constructor(name, showIcons = true, showChecks = true, condense = false)
     {
         this.name       = name;
 
         this.showIcons  = showIcons;
         this.showChecks = showChecks;
+        this.condense   = condense;
 
         this.div        = createDiv('menu');
         this.divArrow   = createDiv('menuArrow');
@@ -90833,6 +91161,8 @@ class Menu
                 item.divCheck.style.display = item.icon == NULL ? 'inline-block' : 'none';
                 item.divIcon .style.display = item.icon != NULL ? 'inline-block' : 'none';
             }
+
+            item.update();
         }
 
 
@@ -91766,11 +92096,18 @@ class MenuItem
             ? 'var(--figma-color-bg-brand)'
             : 'transparent';
 
-        this.divCheck    .style.visibility = this.checked   ? 'visible'      : 'hidden';
-        this.div         .style.opacity    = this.enabled   ? '100%'         : '40%';
+        this.divCheck.style.display = 
+                this.parentMenu 
+            && (    this.parentMenu.showChecks 
+                || !this.parentMenu.condense)
+            ? 'inline-block' 
+            : 'none';
 
-        this.divShortcut.style.display    = this.sub ? 'inline-block' : 'none';
-        this.divPro     .style.display    = this.sub ? 'none'         : 'inline-block';
+        this.divCheck   .style.visibility = this.checked ? 'visible'      : 'hidden';
+        this.div        .style.opacity    = this.enabled ? '100%'         : '40%';
+
+        this.divShortcut.style.display    = this.sub     ? 'inline-block' : 'none';
+        this.divPro     .style.display    = this.sub     ? 'none'         : 'inline-block';
 
         this.updateLegend();
     }
@@ -91827,7 +92164,6 @@ var menuColorStyle;
 var menuLayer;
 var menuEffects;
 var menuStyles;
-var menuVariables;
 var menuShape;
 var menuTemplate;
 var menuGroup;
@@ -92177,7 +92513,7 @@ function initGeneratorMenus()
         new MenuItem('About',        null, {callback:  () => showAboutDialog()})]);
 
 
-    menuMain = new Menu('Main menu', false);
+    menuMain = new Menu('Main menu', true, false, true);
     menuMain.addItems([
                         new MenuItem('Quick actions...',      null, {icon: iconSearchMenu, shortcut: osCtrl() + '/', callback: () => { hideAllMenus(); showSearchBox(); }}),
                         new MenuItem('',                      null, {separator: true}),
@@ -92191,20 +92527,21 @@ function initGeneratorMenus()
 
 menuFlow = new Menu('Flow', true, false);
     menuFlow.addItems([
-        menuItemNull     = new MenuItem('Null',              null, {icon: iconNull,      createType: NULL_NODE,        callback: e => actionManager.do(getCreateNodeAction(NULL_NODE,       btnFlow.div, getCreateOptions(e)))}),
+        menuItemNull     = new MenuItem('Null',              null, {icon: iconNull,          createType: NULL_NODE,        callback: e => actionManager.do(getCreateNodeAction(NULL_NODE,       btnFlow.div, getCreateOptions(e)))}),
                            new MenuItem('',                  null, {separator: true}),
-                           new MenuItem('Variable',          null, {icon: iconVariable,  createType: VARIABLE,         callback: e => actionManager.do(getCreateNodeAction(VARIABLE,        btnFlow.div, getCreateOptions(e)))}),
+                           new MenuItem('Variable',          null, {icon: iconVariable,      createType: VARIABLE,         callback: e => actionManager.do(getCreateNodeAction(VARIABLE,        btnFlow.div, getCreateOptions(e)))}),
+                           new MenuItem('Variable group',    null, {icon: iconVariableGroup, createType: VARIABLE_GROUP,   callback: e => actionManager.do(getCreateNodeAction(VARIABLE_GROUP,  btnFlow.div, getCreateOptions(e)))}),
                            new MenuItem('',                  null, {separator: true}),
-        menuItemIfElse   = new MenuItem('I&hairsp;f / else', null, {icon: iconIfElse,    createType: IF_ELSE,          callback: e => actionManager.do(getCreateNodeAction(IF_ELSE,         btnFlow.div, getCreateOptions(e))), disambiguate: true}),
+        menuItemIfElse   = new MenuItem('I&hairsp;f / else', null, {icon: iconIfElse,        createType: IF_ELSE,          callback: e => actionManager.do(getCreateNodeAction(IF_ELSE,         btnFlow.div, getCreateOptions(e))), disambiguate: true}),
                            new MenuItem('',                  null, {separator: true}),
-        menuItemStart    = new MenuItem('Start. . .',        null, {icon: iconStart,     createType: START,            callback: e => actionManager.do(getCreateNodeAction(START,           btnFlow.div, getCreateOptions(e)))}),
-        menuItemRepeat   = new MenuItem('. . . Repeat',      null, {icon: iconRepeat,    createType: REPEAT,           callback: e => actionManager.do(getCreateNodeAction(REPEAT,          btnFlow.div, getCreateOptions(e)))}),
+        menuItemStart    = new MenuItem('Start. . .',        null, {icon: iconStart,         createType: START,            callback: e => actionManager.do(getCreateNodeAction(START,           btnFlow.div, getCreateOptions(e)))}),
+        menuItemRepeat   = new MenuItem('. . . Repeat',      null, {icon: iconRepeat,        createType: REPEAT,           callback: e => actionManager.do(getCreateNodeAction(REPEAT,          btnFlow.div, getCreateOptions(e)))}),
                            new MenuItem('',                  null, {separator: true}),
-        menuItemFreeze   = new MenuItem('Freeze. . .',       null, {icon: iconFreeze,    createType: FREEZE,           callback: e => actionManager.do(getCreateNodeAction(FREEZE,          btnFlow.div, getCreateOptions(e)))}),
-        //menuItemCache    = new MenuItem('Cache',           null, {icon: iconCache,     createType: CACHE,            callback: e => actionManager.do(getCreateNodeAction(CACHE,           btnFlow.div, getCreateOptions(e)))}),
+        menuItemFreeze   = new MenuItem('Freeze. . .',       null, {icon: iconFreeze,        createType: FREEZE,           callback: e => actionManager.do(getCreateNodeAction(FREEZE,          btnFlow.div, getCreateOptions(e)))}),
+        //menuItemCache    = new MenuItem('Cache',           null, {icon: iconCache,         createType: CACHE,            callback: e => actionManager.do(getCreateNodeAction(CACHE,           btnFlow.div, getCreateOptions(e)))}),
                            new MenuItem('',                  null, {separator: true}),
-        menuItemTimer    = new MenuItem('Timer ',            null, {icon: iconTimer,     createType: TIMER,            callback: e => actionManager.do(getCreateNodeAction(TIMER,           btnFlow.div, getCreateOptions(e)))}),
-        menuItemAnimate  = new MenuItem('Animate',           null, {icon: iconAnimate,   createType: NUMBER_ANIMATE,   callback: e => actionManager.do(getCreateNodeAction(NUMBER_ANIMATE,  btnFlow.div, getCreateOptions(e)))})]);
+        menuItemTimer    = new MenuItem('Timer ',            null, {icon: iconTimer,         createType: TIMER,            callback: e => actionManager.do(getCreateNodeAction(TIMER,           btnFlow.div, getCreateOptions(e)))}),
+        menuItemAnimate  = new MenuItem('Animate',           null, {icon: iconAnimate,       createType: NUMBER_ANIMATE,   callback: e => actionManager.do(getCreateNodeAction(NUMBER_ANIMATE,  btnFlow.div, getCreateOptions(e)))})]);
     
 
     menuData = new Menu('Data', true, false);
@@ -92356,7 +92693,7 @@ menuFlow = new Menu('Flow', true, false);
         new MenuItem('Link existing...', null, {icon: iconColorStyleReplace, createType: COLOR_STYLE, callback: e => actionManager.do(getCreateNodeAction(COLOR_STYLE,  btnColor.div, getCreateOptions(e, {existing: true})))})]);
 
         
-    menuColor = new Menu('Colors', true, true);
+    menuColor = new Menu('Colors', true, false);
     menuColor.addItems([
         menuItemColor        = new MenuItem('Color',         null,                {icon: iconColor,            callback: e => actionManager.do(getCreateNodeAction(COLOR,             btnColor.div, getCreateOptions(e,  {random: e.altKey && !getCtrlKey(e)})))}),
                                new MenuItem('',              null,                {separator: true}),
@@ -92389,11 +92726,6 @@ menuFlow = new Menu('Flow', true, false);
         new MenuItem('Color style', null, {icon: iconColorStyle, createType: START, callback: e => actionManager.do(getCreateNodeAction(COLOR_STYLE, btnLayer.div, getCreateOptions(e, {existing: true})))})]);
     
     
-    menuVariables = new Menu('Variables', true, false);
-    menuVariables.addItems([
-        new MenuItem('Number', null, {icon: iconVarNumber, createType: START, callback: e => actionManager.do(getCreateNodeAction(VAR_NUMBER, btnLayer.div, getCreateOptions(e, {existing: true})))})]);
-    
-    
     menuLayer = new Menu('Style', true, false);
     menuLayer.addItems([
         menuItemLayerFill   = new MenuItem('Fill',        null, {icon: iconFill,        callback: e => actionManager.do(getCreateNodeAction(FILL,       btnLayer.div, getCreateOptions(e)))}),
@@ -92405,7 +92737,6 @@ menuFlow = new Menu('Flow', true, false);
                               new MenuItem('',            null, {separator: true}),
                               new MenuItem('Effects',     null, {icon: iconEffects, childMenu: menuEffects}),
                               new MenuItem('Styles',      null, {icon: iconStyle, childMenu: menuStyles}),
-                            //new MenuItem('Variables',   null, {childMenu: menuVariables}),
                               new MenuItem('',            null, {separator: true}),
                               new MenuItem('Mask',        null, {icon: iconMask,        callback: e => actionManager.do(getCreateNodeAction(LAYER_MASK, btnLayer.div, getCreateOptions(e)))})]);
     
@@ -107671,6 +108002,324 @@ extends ResizableBase
 
 
 
+class   OpVariableGroup
+extends ResizableBase
+{
+    scrollbar;
+    scroll = 0;
+
+    linkedGroupId      = NULL;
+    linkedGroupName    = '';
+
+    linkedVariableId   = [];
+    linkedVariableType = []; // this is resolvedType
+    linkedVariableName = [];
+
+    isBool             = [];
+
+
+
+    constructor()
+    {
+        super(VARIABLE_GROUP, 'varGroup', 'group', iconVariableGroup);
+
+
+        this.canRename   = false;
+        this.iconOffsetY = -2;
+
+
+        this.addInput(new Input(LIST_VALUES));
+        this.addOutput(new Output([LIST_VALUE], this.output_genRequest));
+
+        this.alwaysLoadParams = true;
+        this.alwaysSaveParams = true;
+
+
+        this.createScrollbar();
+
+        
+        this.divIcon.style.opacity       = 0.5;
+        this.divIcon.style.pointerEvents = 'all';
+
+
+        this.divIcon.addEventListener('pointerenter', e => 
+        { 
+            this.divIcon.style.opacity = 1;  
+        });
+
+
+        this.divIcon.addEventListener('pointerleave', e => 
+        { 
+            this.divIcon.style.opacity = 0.5;  
+        });
+
+
+        this.divIcon.addEventListener('pointerdown',  e => 
+        { 
+            e.stopPropagation();
+
+            if (   e.button == 0 
+                || e.button == 2)
+            {
+                hideAllMenus(); 
+
+                // uiQueueMessageToFigma(
+                // {
+                //     cmd:   'figGetAllLocalVariables',
+                //     nodeId: this.id,
+                //     px:     e.clientX,
+                //     py:     e.clientY 
+                // }); 
+            }
+        });
+
+
+        this.updateParams();
+    }
+
+
+
+    createScrollbar()
+    {
+        this.scrollbar = createDiv('itemsScroll');
+
+        this.scrollbar.down = false;
+        this.scrollbar.sy   = Number.NaN;
+        this.scrollbar.spy  = Number.NaN;
+        this.scrollbar.style.height = 0;
+
+        this.div.appendChild(this.scrollbar);
+
+
+
+        this.scrollbar.addEventListener('pointerdown', e =>
+        {
+            if (e.button == 0)
+            {
+                e.stopPropagation();
+
+                try
+                {
+                    this.scrollbar.setPointerCapture(e.pointerId);
+
+                    this.scrollbar.down = true;
+
+                    this.scrollbar.sy  =  e.clientY;
+                    this.scrollbar.spy = -this.scroll;
+                }
+                catch {}
+            }
+        });
+
+
+
+        this.scrollbar.addEventListener('pointermove', e =>
+        {
+            if (this.scrollbar.down)
+            {
+                const totalHeight = this.measureData.divOffset.height - defHeaderHeight;
+
+                const scrollHeight = 
+                          (totalHeight - 10)
+                        *  totalHeight / this.measureData.paramOffset.height;
+        
+                const max = 
+                      this.measureData.innerOffset.height
+                    - scrollHeight
+                    - defHeaderHeight;
+
+                this.scroll = -Math.min(Math.max(
+                    0, 
+                    this.scrollbar.spy + (e.clientY - this.scrollbar.sy)),
+                    max);
+
+                    
+                this.updateScrollbar();
+
+
+                const wires = [];
+
+                for (const output of this.outputs.filter(o => o.param))
+                {
+                    for (const input of output.connectedInputs)
+                        wires.push(input.connection.wire);
+                }
+
+                graphView.updateWires(wires);
+            }
+        });
+
+
+
+        this.scrollbar.addEventListener('pointerup', e =>
+        {
+            if (e.button == 0)
+            {
+                e.stopPropagation();
+
+                this.scrollbar.down = false;
+                this.scrollbar.releasePointerCapture(e.pointerId);
+            }
+        });
+    }
+
+
+
+    // setSize(w, h, updateTransform = true)
+    // {
+    //     super.setSize(
+    //         w, 
+    //         Math.min(h, defHeaderHeight + this.params.length * defParamHeight), 
+    //         updateTransform);
+
+    //     this.updateScrollbar();
+    //     this.updateNode();
+    // }
+
+
+
+    setRect(x, y, w, h, updateTransform = true)
+    {
+        super.setRect(
+            x, 
+            y, 
+            Math.max(defNodeWidth, w), 
+            Math.min(
+                Math.max(defHeaderHeight, defHeaderHeight + this.params.length * defParamHeight),
+                Math.max(h, defHeaderHeight)),
+            updateTransform);
+
+        this.updateScrollbar();
+        this.updateNode();
+    }
+
+
+
+    output_genRequest(gen)
+    {
+        // 'this' is the output        
+
+        gen.scope.push({
+            nodeId:  this.id, 
+            paramId: NULL });
+
+
+        const [request, ignore] = this.node.genRequestStart(gen);
+        if (ignore) return request;
+
+
+        const input = this.node.inputs[0];
+
+
+        request.push(input.connected ? 1 : 0);
+
+        if (input.connected) 
+            request.push(...pushInputOrParam(input, gen));
+
+
+        gen.scope.pop();
+        pushUnique(gen.passedNodes, this.node);
+
+        return request;
+    }
+
+
+
+    updateValues(requestId, actionId, updateParamId, paramIds, values)
+    {
+        // const oldParams = [...this.params];
+
+        // const action = actionFromId(actionId);
+
+        // if (action)
+        //     pushUnique(oldParams, action.oldOutputParams);
+
+
+        // this.disconnectParamsNotInList(paramIds, true);
+        // this.removeParamsNotInList(paramIds);
+
+
+        // if (   paramIds.length > 1
+        //     ||    paramIds.length == 1 
+        //        && paramIds[0] != '')
+        // {
+        //     for (let i = 0; i < values.length; i++) 
+        //     {
+        //         const value   = values[i];
+        //         const valueId = paramIds[i];
+    
+        //         if (valueId == 'value')
+        //             continue;
+
+                    
+        //         let param = oldParams.find(p => p.id == valueId);
+
+        //         if (   param
+        //             && param.type != value.type)
+        //         {
+        //             this.removeParam(param);
+        //             param = null;
+        //         }
+
+        //         if (!param)
+        //             this.createAndAddParamByType(value.type, valueId, true, false, true, true);
+        //     }
+        // }
+
+        // else if (paramIds.length <= 1)
+        //     this.removeAllParams();
+    
+        
+        // super.updateValues(requestId, actionId, updateParamId, paramIds, values);
+
+
+        // this.setHeight(defHeaderHeight + this.params.length * defParamHeight, false);
+
+
+        // for (const param of this.params)
+        //     param.divider = Math.min(120 / this.measureData.divOffset.width, 0.25);
+    }
+
+
+
+    updateParams()
+    {
+        for (const param of this.params)
+            param.enableControlText(false);
+
+        this.updateParamControls();
+    }
+
+
+
+    updateScrollbar()
+    {
+        const totalHeight = this.measureData.divOffset.height - defHeaderHeight;
+
+        
+        if (   isEmpty(this.params)
+            || this.measureData.paramOffset.height <= totalHeight)
+        {
+            this.scrollbar.style.display = 'none';
+        }
+        else
+        {
+            this.scrollbar.style.display = 'block';
+            
+            this.scrollbar.style.left = this.measureData.divOffset.width - 20;
+            this.scrollbar.style.top  = defHeaderHeight + 5 - this.scroll;
+
+            this.scrollbar.style.height = Math.max(0,
+                  (totalHeight - 10)
+                *  totalHeight / this.measureData.paramOffset.height
+                - 10);
+
+            this.paramHolder.style.top = this.scroll;
+        }
+    }
+}
+
+
 class   OpCache
 extends OperatorBase
 {
@@ -109071,14 +109720,6 @@ extends ResizableBase
 
 
         this.createScrollbar();
-
-        
-        // this.setRect(
-        //     this.div.offsetLeft, 
-        //     this.div.offsetTop, 
-        //     this.div.offsetWidth, 
-        //     this.div.offsetHeight, 
-        //     false);
     }
 
 
@@ -132576,6 +133217,7 @@ function createNode(nodeType, creatingButton = null, createdNodeId = -1, options
     {
         case NULL_NODE:               node = new OpNull();              break;
         case VARIABLE:                node = new OpVariable();          break;
+        case VARIABLE_GROUP:          node = new OpVariableGroup();     break;
         case START:                   node = new OpStart();             break;
         case REPEAT:                  node = new OpRepeat();            break;
         case CACHE:                   node = new OpCache();             break;

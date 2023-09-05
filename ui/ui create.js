@@ -6,6 +6,7 @@ function createNode(nodeType, creatingButton = null, createdNodeId = -1, options
     {
         case NULL_NODE:               node = new OpNull();              break;
         case VARIABLE:                node = new OpVariable();          break;
+        case VARIABLE_GROUP:          node = new OpVariableGroup();     break;
         case START:                   node = new OpStart();             break;
         case REPEAT:                  node = new OpRepeat();            break;
         case CACHE:                   node = new OpCache();             break;

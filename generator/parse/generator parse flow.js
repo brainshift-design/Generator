@@ -67,9 +67,6 @@ function genParseVariable(parse)
     parse.inParam = false;
 
 
-    //variable.id       = parse.move();
-    //variable.name     = options.nodeName;
-    
     const nParams = parseInt(parse.move());
 
     if (nParams == 1)
@@ -84,6 +81,50 @@ function genParseVariable(parse)
 
     genParseNodeEnd(parse, variable);
     return variable;
+}
+
+
+
+function genParseVariableGroup(parse)
+{
+    const [, nodeId, options, ignore] = genParseNodeStart(parse);
+
+
+    const group = new GVariableGroup(nodeId, options);
+
+    
+    let nInputs = -1;
+    
+    if (!ignore)
+    {
+        nInputs = parseInt(parse.move());
+        consoleAssert(nInputs == 0 || nInputs == 1, 'nInputs must be [0, 1]');
+    }
+
+
+    if (parse.settings.logRequests) 
+        logReq(group, parse, ignore, nInputs);
+
+
+    if (ignore) 
+    {
+        genParseNodeEnd(parse, group);
+        return parse.parsedNodes.find(n => n.nodeId == nodeId);
+    }
+
+
+    parse.nTab++;
+
+
+    if (nInputs == 1)
+        group.input = genParse(parse);
+
+
+    parse.nTab--;
+
+
+    genParseNodeEnd(parse, group);
+    return group;
 }
 
 
