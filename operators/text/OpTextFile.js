@@ -24,10 +24,11 @@ extends ResizableBase
 
         this.addOutput(new Output([TEXT_VALUE], this.output_genRequest));
 
+
         this.addParam(this.paramPath = new TextParam('path', 'path', false, false, true));
 
         setControlFont(this.paramPath.controls[0].textbox, 'Roboto Mono', 10, 'center');
-
+        
         this.paramPath.controls[0].textbox.defPlaceholder = 'path';
 
 
@@ -196,7 +197,12 @@ extends ResizableBase
         {
             super.loadParams(_node, pasting);
             
-            this.paramPath.setValue(new TextValue(decodeURIComponent(_node.path), false, true, false));
+            let path = decodeURIComponent(_node.path);
+
+            ['/', '\\', '_', '-', '.', ':']
+                .forEach(c => path = path.replaceAll(c, '​' + c));
+            
+            this.paramPath.setValue(new TextValue(path, false, true, false));
             this.cachedValue = decodeURIComponent(_node.cachedValue);
         }
         else
