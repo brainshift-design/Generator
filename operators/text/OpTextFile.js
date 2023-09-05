@@ -127,7 +127,7 @@ extends ResizableBase
 
 
         request.push(TEXT_VALUE, encodeURIComponent(this.node.cachedValue));
-        request.push(...this.node.paramPath.genRequest(gen));
+        //request.push(...this.node.paramPath.genRequest(gen));
 
         
         gen.scope.pop();
@@ -169,11 +169,30 @@ extends ResizableBase
 
 
 
-    // loadParams(_node, pasting)
-    // {
-    //     if (_node.path != undefined)
-    //         this.paramPath.setValue(parseTextValue(_node.path)[0], false, true);
+    toJsonBase(nTab = 0) 
+    {
+        let   pos = ' '.repeat(nTab);
+        const tab = HTAB;
 
-    //     super.loadParams(_node, pasting);
-    // }
-}
+        return super.toJsonBase(nTab)
+             + ',\n' + pos + tab + '"path": "'        + encodeURIComponent(this.paramPath.value.toString()) + '"'
+             + ',\n' + pos + tab + '"cachedValue": "' + encodeURIComponent(this.cachedValue               ) + '"';
+    }
+
+
+
+    loadParams(_node, pasting)
+    {
+        if (!pasting)
+        {
+            super.loadParams(_node, pasting);
+            
+            this.paramPath.setValue(new TextValue(decodeURIComponent(_node.path), false, true, false));
+            this.cachedValue = decodeURIComponent(_node.cachedValue);
+        }
+        else
+        {
+            this.name        = this.defName;
+            this.cachedValue = '';
+        }
+    }}

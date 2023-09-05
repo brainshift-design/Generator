@@ -277,16 +277,12 @@ extends OperatorBase
 
         const paramHeight = 
                this instanceof ResizableOperatorWithValue
-            && settings.showOperationResults 
+            && settings.showOperationResults
             ? defParamHeight 
-            : 0;
+            : this.params.length * defParamHeight;
 
         const _w = Math.max(60, w);
-
-        const _h = h;
-            // (this instanceof ResizableOperatorWithValue)
-            // ? Math.max(parseFloat(headerHeight) + paramHeight, h)
-            // : h;
+        const _h = Math.max(parseFloat(headerHeight) + paramHeight, h);
 
         super.setRect(x, y, _w, _h, updateTransform);
         

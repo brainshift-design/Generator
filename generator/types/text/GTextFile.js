@@ -1,7 +1,7 @@
 class GTextFile
 extends GOperator
 {
-    path;
+    //path;
     
     cachedValue = null;
 
@@ -34,7 +34,7 @@ extends GOperator
 
 
         const cachedValue = this.cachedValue ? (await this.cachedValue.eval(parse)).toValue() : null;
-        const path        = this.path        ? (await this.path       .eval(parse)).toValue() : null;
+        //const path        = this.path        ? (await this.path       .eval(parse)).toValue() : null;
 
         
         genInitNodeProgress(this.nodeId);
@@ -45,8 +45,8 @@ extends GOperator
 
         this.setUpdateValues(parse,
         [
-            ['preview', this.value],
-            ['path',    path      ]
+            ['preview', this.value]//,
+            //['path',    path      ]
         ]);
         
         
@@ -59,7 +59,7 @@ extends GOperator
 
     isValid()
     {
-        return this.path && this.path.isValid();
+        return false;//return this.path && this.path.isValid();
     }
 
 

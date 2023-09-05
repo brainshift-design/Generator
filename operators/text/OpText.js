@@ -24,6 +24,7 @@ extends ResizableBase
     setRect(x, y, w, h, updateTransform = true)
     {
         super.setRect(x, y, w, h, updateTransform);
+        
         this.updateValueParam();
     }
 

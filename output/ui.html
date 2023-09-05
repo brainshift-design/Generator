@@ -4978,8 +4978,7 @@ a
             <div id='whatsNewBody'>
                 <h1 style='margin-top: 20px;'>What's new</h1>
 
-                <p>•  added Quick actions... to main menu</p>
-                <p>•  fixed Variable node bugs</p>
+                <p>•  </p>
                 
                 <p><br/><br/><div id='chkHideWhatsNew'></div></p>
             </div>
@@ -5337,7 +5336,7 @@ a
 
 
 
-const generatorVersion = 195;
+const generatorVersion = 196;
 
 
 const MAX_INT32        = 2147483647;
@@ -29476,7 +29475,7 @@ extends GOperator
 class GTextFile
 extends GOperator
 {
-    path;
+    //path;
     
     cachedValue = null;
 
@@ -29509,7 +29508,7 @@ extends GOperator
 
 
         const cachedValue = this.cachedValue ? (await this.cachedValue.eval(parse)).toValue() : null;
-        const path        = this.path        ? (await this.path       .eval(parse)).toValue() : null;
+        //const path        = this.path        ? (await this.path       .eval(parse)).toValue() : null;
 
         
         genInitNodeProgress(this.nodeId);
@@ -29520,8 +29519,8 @@ extends GOperator
 
         this.setUpdateValues(parse,
         [
-            ['preview', this.value],
-            ['path',    path      ]
+            ['preview', this.value]//,
+            //['path',    path      ]
         ]);
         
         
@@ -29534,7 +29533,7 @@ extends GOperator
 
     isValid()
     {
-        return this.path && this.path.isValid();
+        return false;//return this.path && this.path.isValid();
     }
 
 
@@ -46064,7 +46063,7 @@ function genParseTextFile(parse)
 
 
     file.cachedValue = genParse(parse);
-    file.path        = genParse(parse);
+    //file.path        = genParse(parse);
 
     
     parse.nTab--;
@@ -49704,7 +49703,7 @@ onerror = (event, source, line, pos, error) =>
 };
 
 
-const generatorVersion = 195;
+const generatorVersion = 196;
 
 
 const MAX_INT32        = 2147483647;
@@ -76097,7 +76096,7 @@ extends GOperator
 class GTextFile
 extends GOperator
 {
-    path;
+    //path;
     
     cachedValue = null;
 
@@ -76130,7 +76129,7 @@ extends GOperator
 
 
         const cachedValue = this.cachedValue ? (await this.cachedValue.eval(parse)).toValue() : null;
-        const path        = this.path        ? (await this.path       .eval(parse)).toValue() : null;
+        //const path        = this.path        ? (await this.path       .eval(parse)).toValue() : null;
 
         
         genInitNodeProgress(this.nodeId);
@@ -76141,8 +76140,8 @@ extends GOperator
 
         this.setUpdateValues(parse,
         [
-            ['preview', this.value],
-            ['path',    path      ]
+            ['preview', this.value]//,
+            //['path',    path      ]
         ]);
         
         
@@ -76155,7 +76154,7 @@ extends GOperator
 
     isValid()
     {
-        return this.path && this.path.isValid();
+        return false;//return this.path && this.path.isValid();
     }
 
 
@@ -106816,16 +106815,12 @@ extends OperatorBase
 
         const paramHeight = 
                this instanceof ResizableOperatorWithValue
-            && settings.showOperationResults 
+            && settings.showOperationResults
             ? defParamHeight 
-            : 0;
+            : this.params.length * defParamHeight;
 
         const _w = Math.max(60, w);
-
-        const _h = h;
-            // (this instanceof ResizableOperatorWithValue)
-            // ? Math.max(parseFloat(headerHeight) + paramHeight, h)
-            // : h;
+        const _h = Math.max(parseFloat(headerHeight) + paramHeight, h);
 
         super.setRect(x, y, _w, _h, updateTransform);
         
@@ -113274,6 +113269,7 @@ extends ResizableBase
     setRect(x, y, w, h, updateTransform = true)
     {
         super.setRect(x, y, w, h, updateTransform);
+        
         this.updateValueParam();
     }
 
@@ -114735,7 +114731,7 @@ extends ResizableBase
 
 
         request.push(TEXT_VALUE, encodeURIComponent(this.node.cachedValue));
-        request.push(...this.node.paramPath.genRequest(gen));
+        //request.push(...this.node.paramPath.genRequest(gen));
 
         
         gen.scope.pop();
@@ -114777,14 +114773,33 @@ extends ResizableBase
 
 
 
-    // loadParams(_node, pasting)
-    // {
-    //     if (_node.path != undefined)
-    //         this.paramPath.setValue(parseTextValue(_node.path)[0], false, true);
+    toJsonBase(nTab = 0) 
+    {
+        let   pos = ' '.repeat(nTab);
+        const tab = HTAB;
 
-    //     super.loadParams(_node, pasting);
-    // }
-}
+        return super.toJsonBase(nTab)
+             + ',\n' + pos + tab + '"path": "'        + encodeURIComponent(this.paramPath.value.toString()) + '"'
+             + ',\n' + pos + tab + '"cachedValue": "' + encodeURIComponent(this.cachedValue               ) + '"';
+    }
+
+
+
+    loadParams(_node, pasting)
+    {
+        if (!pasting)
+        {
+            super.loadParams(_node, pasting);
+            
+            this.paramPath.setValue(new TextValue(decodeURIComponent(_node.path), false, true, false));
+            this.cachedValue = decodeURIComponent(_node.cachedValue);
+        }
+        else
+        {
+            this.name        = this.defName;
+            this.cachedValue = '';
+        }
+    }}
 
 
 class   OpTextToNumber
