@@ -15,7 +15,7 @@ const FREEZE                  = 'FRZ';
 const TIMER                   = 'TIMER';
 const VALUE_NAME              = 'VNAME';
 
-const JOIN                    = 'JOIN';
+const COMBINE                 = 'CMB';
 const CONDENSE                = 'CDENSE';
 const SUBLIST                 = 'SUBLST';
 const UNIQUE                  = 'UNIQ';
@@ -41,7 +41,7 @@ const LIST_TYPES =
     NUMBER_LIST_VALUE,
     TEXT_LIST_VALUE,
     SHAPE_LIST_VALUE,
-    JOIN,
+    COMBINE,
     SUBLIST,
     LIST,
     LIST_COUNT,

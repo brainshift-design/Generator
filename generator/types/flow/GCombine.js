@@ -1,4 +1,4 @@
-class GJoin
+class GCombine
 extends GOperator
 {
     inputs = [];
@@ -9,14 +9,14 @@ extends GOperator
 
     constructor(nodeId, options)
     {
-        super(JOIN, nodeId, options);
+        super(COMBINE, nodeId, options);
     }
 
 
     
     copy()
     {
-        const copy = new GJoin(this.nodeId, this.options);
+        const copy = new GCombine(this.nodeId, this.options);
 
         copy.copyBase(this);
 

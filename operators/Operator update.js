@@ -286,7 +286,7 @@ Operator.prototype.updateHeaderLabelText = function()
 
     const sep = settings.showNodeId ? ' ' : '  ';
 
-         if (this.type == JOIN        ) suffix = sep + '[ ' + this.length        + ' ]';
+         if (this.type == COMBINE        ) suffix = sep + '[ ' + this.length        + ' ]';
     else if (this.type == SUBLIST     ) suffix = sep + '[ ' + this.length        + ' ]';
     else if (this.type == COLUMN      ) suffix = sep + '[ ' + this.columnLength  + ' ]';
     else if (this.type == REVERSE_LIST) suffix = sep + '[ ' + this.tableLength   + ' ]';

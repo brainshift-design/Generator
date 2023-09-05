@@ -1,4 +1,4 @@
-class   OpJoin
+class   OpCombine
 extends OperatorBase
 {
     length;
@@ -7,7 +7,7 @@ extends OperatorBase
 
     constructor()
     {
-        super(JOIN, 'combine', 'combine', iconJoin);
+        super(COMBINE, 'combine', 'combine', iconCombine);
 
         this.canDisable        = true;
         this.variableInputs    = true;

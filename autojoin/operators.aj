@@ -55,7 +55,7 @@
 ../operators/flow/OpTimer.js
 ../operators/flow/OpValueName.js
 
-../operators/flow/OpJoin.js
+../operators/flow/OpCombine.js
 ../operators/flow/OpCondense.js
 ../operators/flow/OpSublist.js
 ../operators/flow/OpUnique.js

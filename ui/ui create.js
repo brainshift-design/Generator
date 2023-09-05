@@ -14,7 +14,7 @@ function createNode(nodeType, creatingButton = null, createdNodeId = -1, options
         case TIMER:                   node = new OpTimer();             break;
         case VALUE_NAME:              node = new OpValueName();         break;
 
-        case JOIN:                    node = new OpJoin();              break;
+        case COMBINE:                    node = new OpCombine();              break;
         case CONDENSE:                node = new OpCondense();          break;
         case LIST:                    node = new OpList();              break;
         case LIST_COUNT:              node = new OpListCount();         break;

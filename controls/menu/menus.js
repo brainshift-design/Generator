@@ -142,6 +142,7 @@ var menuItemStart;
 var menuItemRepeat;
 var menuFlowSep4;
 var menuItemNull;
+var menuItemVarGroup;
 var menuItemCache;
 var menuItemFreeze;
 var menuItemTimer;
@@ -414,7 +415,7 @@ menuFlow = new Menu('Flow', true, false);
         menuItemNull     = new MenuItem('Null',              null, {icon: iconNull,          createType: NULL_NODE,        callback: e => actionManager.do(getCreateNodeAction(NULL_NODE,       btnFlow.div, getCreateOptions(e)))}),
                            new MenuItem('',                  null, {separator: true}),
                            new MenuItem('Variable',          null, {icon: iconVariable,      createType: VARIABLE,         callback: e => actionManager.do(getCreateNodeAction(VARIABLE,        btnFlow.div, getCreateOptions(e)))}),
-                           new MenuItem('Variable group',    null, {icon: iconVariableGroup, createType: VARIABLE_GROUP,   callback: e => actionManager.do(getCreateNodeAction(VARIABLE_GROUP,  btnFlow.div, getCreateOptions(e)))}),
+        menuItemVarGroup = new MenuItem('Variable group',    null, {icon: iconVariableGroup, createType: VARIABLE_GROUP,   callback: e => actionManager.do(getCreateNodeAction(VARIABLE_GROUP,  btnFlow.div, getCreateOptions(e)))}),
                            new MenuItem('',                  null, {separator: true}),
         menuItemIfElse   = new MenuItem('I&hairsp;f / else', null, {icon: iconIfElse,        createType: IF_ELSE,          callback: e => actionManager.do(getCreateNodeAction(IF_ELSE,         btnFlow.div, getCreateOptions(e))), disambiguate: true}),
                            new MenuItem('',                  null, {separator: true}),
@@ -441,7 +442,7 @@ menuFlow = new Menu('Flow', true, false);
                            new MenuItem('Reverse',      null,            {icon: iconReverseList, createType: REVERSE_LIST, callback: e => actionManager.do(getCreateNodeAction(REVERSE_LIST,  btnData.div, getCreateOptions(e)))}),
                            new MenuItem('Sort',         null,            {icon: iconSort,        createType: SORT,         callback: e => actionManager.do(getCreateNodeAction(SORT,          btnData.div, getCreateOptions(e)))}),
                            new MenuItem('',             null,            {separator: true}),     
-        menuItemJoin     = new MenuItem('Combine',      null,            {icon: iconJoin,        createType: JOIN,         callback: e => actionManager.do(getCreateNodeAction(JOIN,          btnData.div, getCreateOptions(e)))}),
+        menuItemJoin     = new MenuItem('Combine',      null,            {icon: iconCombine,        createType: COMBINE,         callback: e => actionManager.do(getCreateNodeAction(COMBINE,          btnData.div, getCreateOptions(e)))}),
                            new MenuItem('',             null,            {separator: true}),     
                            new MenuItem('Column',       null,            {icon: iconColumn,      createType: COLUMN,       callback: e => actionManager.do(getCreateNodeAction(COLUMN,        btnData.div, getCreateOptions(e)))}),
                            new MenuItem('Cell',         null,            {icon: iconCell,        createType: CELL,         callback: e => actionManager.do(getCreateNodeAction(CELL,          btnData.div, getCreateOptions(e)))}),
@@ -729,7 +730,7 @@ menuFlow = new Menu('Flow', true, false);
     wholeMenu = new Menu('Create node...', true, false);
     wholeMenu.addItems([
         new MenuItem('Flow',    null, {icon: iconFlow,     childMenu: menuFlow  }),
-        new MenuItem('Data',    null, {icon: iconJoin,     childMenu: menuData  }),
+        new MenuItem('Data',    null, {icon: iconCombine,     childMenu: menuData  }),
         new MenuItem('Sets...', null, {icon: iconSequence, childMenu: menuSets  }),
         new MenuItem('Number',  null, {icon: iconNumber,   childMenu: menuNumber}),
         new MenuItem('Text',    null, {icon: iconText,     childMenu: menuString}),

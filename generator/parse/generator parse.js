@@ -142,7 +142,7 @@ function genParse(parse, inParam = true)
     else if (parse.next == TIMER                  ) result = genParseTimer             (parse);
     else if (parse.next == VALUE_NAME             ) result = genParseValueName         (parse);
 
-    else if (parse.next == JOIN                   ) result = genParseJoin              (parse);
+    else if (parse.next == COMBINE                   ) result = genParseJoin              (parse);
     else if (parse.next == CONDENSE               ) result = genParseCondense          (parse);
     else if (parse.next == SUBLIST                ) result = genParseSublist           (parse);
     else if (parse.next == UNIQUE                 ) result = genParseUnique            (parse);

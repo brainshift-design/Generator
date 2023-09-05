@@ -227,7 +227,7 @@ class Operator
     {
         return input.param
              ? input.param.id
-             : input.index.toString();
+             : 'h' + input.index.toString();
     }
 
 
@@ -316,13 +316,14 @@ class Operator
     {
         return output.param
              ? output.param.id
-             : output.index.toString();
+             : 'h' + output.index.toString();
     }
 
 
 
     outputFromId(id)
     {
+        console.log('id =', id);
         return this.outputs.find(o => o.id == id);
     }
 

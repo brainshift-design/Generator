@@ -9913,9 +9913,10 @@ function updateMenuItemShowOperationResults()
 
 function enableFeatures(sub, beta = false)
 {
-    enableMenuItem(menuItemSaveToFile,   sub);
+    enableMenuItem(menuItemVarGroup,     sub);
     enableMenuItem(menuItemTimer,        sub);
     enableMenuItem(menuItemAnimate,      sub);
+    enableMenuItem(menuItemSaveToFile,   sub);
     enableMenuItem(menuItemFetch,        sub);
     enableMenuItem(menuItemTextFile,     sub);
     enableMenuItem(menuItemDateTime,     sub);
@@ -10031,7 +10032,7 @@ const FREEZE                  = 'FRZ';
 const TIMER                   = 'TIMER';
 const VALUE_NAME              = 'VNAME';
 
-const JOIN                    = 'JOIN';
+const COMBINE                 = 'CMB';
 const CONDENSE                = 'CDENSE';
 const SUBLIST                 = 'SUBLST';
 const UNIQUE                  = 'UNIQ';
@@ -10057,7 +10058,7 @@ const LIST_TYPES =
     NUMBER_LIST_VALUE,
     TEXT_LIST_VALUE,
     SHAPE_LIST_VALUE,
-    JOIN,
+    COMBINE,
     SUBLIST,
     LIST,
     LIST_COUNT,
@@ -20356,7 +20357,7 @@ function assertVolatile(loop, node)
         || loop.type == NUMBER_RANDOM
         || loop.type == NUMBER_NOISE
         || loop.type == NUMBER_PROBABILITY
-        || loop.type == JOIN
+        || loop.type == COMBINE
         || loop.type == PARAM, // for OpStart
         'only volatile types can be repeated');
 }
@@ -20684,7 +20685,7 @@ extends GOperator
         //     this.updateValues.sort((a, b) => a.sortId - b.sortId);
         // }
         // else
-        //     this.setUpdateValues(parse, [['', NullValue]], true);
+            this.setUpdateValues(parse, [['', NullValue]], true);
 
 
         // if (this.value.objects)
@@ -21182,7 +21183,7 @@ extends GOperator
 
 
 
-class GJoin
+class GCombine
 extends GOperator
 {
     inputs = [];
@@ -21193,14 +21194,14 @@ extends GOperator
 
     constructor(nodeId, options)
     {
-        super(JOIN, nodeId, options);
+        super(COMBINE, nodeId, options);
     }
 
 
     
     copy()
     {
-        const copy = new GJoin(this.nodeId, this.options);
+        const copy = new GCombine(this.nodeId, this.options);
 
         copy.copyBase(this);
 
@@ -40744,7 +40745,7 @@ function genParseJoin(parse)
     const [, nodeId, options, ignore] = genParseNodeStart(parse);
 
 
-    const list = new GJoin(nodeId, options);
+    const list = new GCombine(nodeId, options);
 
     
     let nInputs = 0;
@@ -46402,7 +46403,7 @@ function genParse(parse, inParam = true)
     else if (parse.next == TIMER                  ) result = genParseTimer             (parse);
     else if (parse.next == VALUE_NAME             ) result = genParseValueName         (parse);
 
-    else if (parse.next == JOIN                   ) result = genParseJoin              (parse);
+    else if (parse.next == COMBINE                   ) result = genParseJoin              (parse);
     else if (parse.next == CONDENSE               ) result = genParseCondense          (parse);
     else if (parse.next == SUBLIST                ) result = genParseSublist           (parse);
     else if (parse.next == UNIQUE                 ) result = genParseUnique            (parse);
@@ -56836,7 +56837,7 @@ const FREEZE                  = 'FRZ';
 const TIMER                   = 'TIMER';
 const VALUE_NAME              = 'VNAME';
 
-const JOIN                    = 'JOIN';
+const COMBINE                 = 'CMB';
 const CONDENSE                = 'CDENSE';
 const SUBLIST                 = 'SUBLST';
 const UNIQUE                  = 'UNIQ';
@@ -56862,7 +56863,7 @@ const LIST_TYPES =
     NUMBER_LIST_VALUE,
     TEXT_LIST_VALUE,
     SHAPE_LIST_VALUE,
-    JOIN,
+    COMBINE,
     SUBLIST,
     LIST,
     LIST_COUNT,
@@ -67161,7 +67162,7 @@ function assertVolatile(loop, node)
         || loop.type == NUMBER_RANDOM
         || loop.type == NUMBER_NOISE
         || loop.type == NUMBER_PROBABILITY
-        || loop.type == JOIN
+        || loop.type == COMBINE
         || loop.type == PARAM, // for OpStart
         'only volatile types can be repeated');
 }
@@ -67489,7 +67490,7 @@ extends GOperator
         //     this.updateValues.sort((a, b) => a.sortId - b.sortId);
         // }
         // else
-        //     this.setUpdateValues(parse, [['', NullValue]], true);
+            this.setUpdateValues(parse, [['', NullValue]], true);
 
 
         // if (this.value.objects)
@@ -67987,7 +67988,7 @@ extends GOperator
 
 
 
-class GJoin
+class GCombine
 extends GOperator
 {
     inputs = [];
@@ -67998,14 +67999,14 @@ extends GOperator
 
     constructor(nodeId, options)
     {
-        super(JOIN, nodeId, options);
+        super(COMBINE, nodeId, options);
     }
 
 
     
     copy()
     {
-        const copy = new GJoin(this.nodeId, this.options);
+        const copy = new GCombine(this.nodeId, this.options);
 
         copy.copyBase(this);
 
@@ -86542,9 +86543,10 @@ function updateMenuItemShowOperationResults()
 
 function enableFeatures(sub, beta = false)
 {
-    enableMenuItem(menuItemSaveToFile,   sub);
+    enableMenuItem(menuItemVarGroup,     sub);
     enableMenuItem(menuItemTimer,        sub);
     enableMenuItem(menuItemAnimate,      sub);
+    enableMenuItem(menuItemSaveToFile,   sub);
     enableMenuItem(menuItemFetch,        sub);
     enableMenuItem(menuItemTextFile,     sub);
     enableMenuItem(menuItemDateTime,     sub);
@@ -90822,7 +90824,7 @@ const iconTimer             = '<svg width="13" height="18" viewBox="0 -1 13 18" 
 const iconValueName         = '<svg width="15" height="6" viewBox="0 0 15 6" fill="none" xmlns="http://www.w3.org/2000/svg"><rect x="4" y="5" width="7" height="1" fill="white"/><path d="M14.28 1.14446L14.28 0L12.735 -1.35074e-07L12.735 1.15568C12.7385 1.58953 12.6706 1.98597 12.5311 2.34502C12.388 2.70781 12.211 3.05563 12 3.3885L12.9013 4C13.1624 3.77934 13.3984 3.50818 13.6094 3.18654C13.8169 2.86863 13.9814 2.53015 14.103 2.17111C14.221 1.8158 14.28 1.47359 14.28 1.14446Z" fill="white"/><path d="M3.22168 1.14446L3.22168 0L1.67662 -1.35074e-07L1.67662 1.15568C1.68019 1.58953 1.61224 1.98597 1.47275 2.34502C1.32969 2.70781 1.15265 3.05563 0.941637 3.3885L1.84292 4C2.10401 3.77934 2.34006 3.50818 2.55108 3.18654C2.75852 2.86863 2.92304 2.53015 3.04464 2.17111C3.16267 1.8158 3.22168 1.47359 3.22168 1.14446Z" fill="white"/></svg>';
 
 const iconData              = '<svg width="12" height="9" viewBox="0 0 12 9" fill="none" xmlns="http://www.w3.org/2000/svg"><rect width="9" height="1" fill="white"/><rect y="4" width="9" height="1" fill="white"/><rect y="8" width="9" height="1" fill="white"/></svg>';
-const iconJoin              = '<svg width="13" height="9" viewBox="0 0 13 9" fill="none" xmlns="http://www.w3.org/2000/svg"><rect width="5" height="1" fill="white"/><rect y="8" width="5" height="1" fill="white"/><rect y="4" width="13" height="1" fill="white"/><rect x="4.99963" width="5.52856" height="1" transform="rotate(49.2368 4.99963 0)" fill="white"/><rect width="5.52856" height="1" transform="matrix(0.652935 -0.757414 -0.757414 -0.652935 4.99963 8.98938)" fill="white"/></svg>';
+const iconCombine              = '<svg width="13" height="9" viewBox="0 0 13 9" fill="none" xmlns="http://www.w3.org/2000/svg"><rect width="5" height="1" fill="white"/><rect y="8" width="5" height="1" fill="white"/><rect y="4" width="13" height="1" fill="white"/><rect x="4.99963" width="5.52856" height="1" transform="rotate(49.2368 4.99963 0)" fill="white"/><rect width="5.52856" height="1" transform="matrix(0.652935 -0.757414 -0.757414 -0.652935 4.99963 8.98938)" fill="white"/></svg>';
 const iconCondense          = '<svg width="13" height="6" viewBox="0 0 13 6" fill="none" xmlns="http://www.w3.org/2000/svg"><path fill-rule="evenodd" clip-rule="evenodd" d="M5.776 0.996704L7.50296 3H13V4H7.4937L5.776 5.99256V6H0V5H5.31136L6.60908 3.49463L5.32062 2H0V1H5.77185V1.00028L5.776 0.996704Z" fill="white"/></svg>';
 const iconSublist           = '<svg width="15" height="13" viewBox="-1 0 15 13" fill="none" xmlns="http://www.w3.org/2000/svg"><rect width="9" height="1" fill="white"/><rect y="12" width="9" height="1" fill="white"/><rect x="5" y="4" width="9" height="1" fill="white"/><rect x="5" y="8" width="9" height="1" fill="white"/></svg>';
 const iconUnique            = '<svg width="13" height="13" viewBox="0 0 13 13" fill="none" xmlns="http://www.w3.org/2000/svg"><rect width="9" height="1" fill="white"/><rect x="4" y="12" width="9" height="1" fill="white"/><rect x="4" y="4" width="9" height="1" fill="white"/><rect y="8" width="9" height="1" fill="white"/></svg>';
@@ -92258,6 +92260,7 @@ var menuItemStart;
 var menuItemRepeat;
 var menuFlowSep4;
 var menuItemNull;
+var menuItemVarGroup;
 var menuItemCache;
 var menuItemFreeze;
 var menuItemTimer;
@@ -92530,7 +92533,7 @@ menuFlow = new Menu('Flow', true, false);
         menuItemNull     = new MenuItem('Null',              null, {icon: iconNull,          createType: NULL_NODE,        callback: e => actionManager.do(getCreateNodeAction(NULL_NODE,       btnFlow.div, getCreateOptions(e)))}),
                            new MenuItem('',                  null, {separator: true}),
                            new MenuItem('Variable',          null, {icon: iconVariable,      createType: VARIABLE,         callback: e => actionManager.do(getCreateNodeAction(VARIABLE,        btnFlow.div, getCreateOptions(e)))}),
-                           new MenuItem('Variable group',    null, {icon: iconVariableGroup, createType: VARIABLE_GROUP,   callback: e => actionManager.do(getCreateNodeAction(VARIABLE_GROUP,  btnFlow.div, getCreateOptions(e)))}),
+        menuItemVarGroup = new MenuItem('Variable group',    null, {icon: iconVariableGroup, createType: VARIABLE_GROUP,   callback: e => actionManager.do(getCreateNodeAction(VARIABLE_GROUP,  btnFlow.div, getCreateOptions(e)))}),
                            new MenuItem('',                  null, {separator: true}),
         menuItemIfElse   = new MenuItem('I&hairsp;f / else', null, {icon: iconIfElse,        createType: IF_ELSE,          callback: e => actionManager.do(getCreateNodeAction(IF_ELSE,         btnFlow.div, getCreateOptions(e))), disambiguate: true}),
                            new MenuItem('',                  null, {separator: true}),
@@ -92557,7 +92560,7 @@ menuFlow = new Menu('Flow', true, false);
                            new MenuItem('Reverse',      null,            {icon: iconReverseList, createType: REVERSE_LIST, callback: e => actionManager.do(getCreateNodeAction(REVERSE_LIST,  btnData.div, getCreateOptions(e)))}),
                            new MenuItem('Sort',         null,            {icon: iconSort,        createType: SORT,         callback: e => actionManager.do(getCreateNodeAction(SORT,          btnData.div, getCreateOptions(e)))}),
                            new MenuItem('',             null,            {separator: true}),     
-        menuItemJoin     = new MenuItem('Combine',      null,            {icon: iconJoin,        createType: JOIN,         callback: e => actionManager.do(getCreateNodeAction(JOIN,          btnData.div, getCreateOptions(e)))}),
+        menuItemJoin     = new MenuItem('Combine',      null,            {icon: iconCombine,        createType: COMBINE,         callback: e => actionManager.do(getCreateNodeAction(COMBINE,          btnData.div, getCreateOptions(e)))}),
                            new MenuItem('',             null,            {separator: true}),     
                            new MenuItem('Column',       null,            {icon: iconColumn,      createType: COLUMN,       callback: e => actionManager.do(getCreateNodeAction(COLUMN,        btnData.div, getCreateOptions(e)))}),
                            new MenuItem('Cell',         null,            {icon: iconCell,        createType: CELL,         callback: e => actionManager.do(getCreateNodeAction(CELL,          btnData.div, getCreateOptions(e)))}),
@@ -92845,7 +92848,7 @@ menuFlow = new Menu('Flow', true, false);
     wholeMenu = new Menu('Create node...', true, false);
     wholeMenu.addItems([
         new MenuItem('Flow',    null, {icon: iconFlow,     childMenu: menuFlow  }),
-        new MenuItem('Data',    null, {icon: iconJoin,     childMenu: menuData  }),
+        new MenuItem('Data',    null, {icon: iconCombine,     childMenu: menuData  }),
         new MenuItem('Sets...', null, {icon: iconSequence, childMenu: menuSets  }),
         new MenuItem('Number',  null, {icon: iconNumber,   childMenu: menuNumber}),
         new MenuItem('Text',    null, {icon: iconText,     childMenu: menuString}),
@@ -102178,7 +102181,7 @@ extends EventTarget
             return true;
 
         if (!this.param
-            && this.node.type == JOIN
+            && this.node.type == COMBINE
             && this.node.outputs[0].connectedInputs.find(i => i.isLoop()))
             return true;
 
@@ -104172,7 +104175,7 @@ class Operator
     {
         return input.param
              ? input.param.id
-             : input.index.toString();
+             : 'h' + input.index.toString();
     }
 
 
@@ -104261,13 +104264,14 @@ class Operator
     {
         return output.param
              ? output.param.id
-             : output.index.toString();
+             : 'h' + output.index.toString();
     }
 
 
 
     outputFromId(id)
     {
+        console.log('id =', id);
         return this.outputs.find(o => o.id == id);
     }
 
@@ -106626,7 +106630,7 @@ Operator.prototype.updateHeaderLabelText = function()
 
     const sep = settings.showNodeId ? ' ' : '  ';
 
-         if (this.type == JOIN        ) suffix = sep + '[ ' + this.length        + ' ]';
+         if (this.type == COMBINE        ) suffix = sep + '[ ' + this.length        + ' ]';
     else if (this.type == SUBLIST     ) suffix = sep + '[ ' + this.length        + ' ]';
     else if (this.type == COLUMN      ) suffix = sep + '[ ' + this.columnLength  + ' ]';
     else if (this.type == REVERSE_LIST) suffix = sep + '[ ' + this.tableLength   + ' ]';
@@ -108021,11 +108025,12 @@ extends ResizableBase
 
     constructor()
     {
-        super(VARIABLE_GROUP, 'varGroup', 'group', iconVariableGroup);
+        super(VARIABLE_GROUP, 'varGroup', 'variable group', iconVariableGroup);
 
 
-        this.canRename   = false;
-        this.iconOffsetY = -2;
+        this.subscription = true;
+        this.canRename    = false;
+        this.iconOffsetY  = -1;
 
 
         this.addInput(new Input(LIST_VALUES));
@@ -108789,7 +108794,7 @@ function OpValueName_onDisconnectInput(node)
 }
 
 
-class   OpJoin
+class   OpCombine
 extends OperatorBase
 {
     length;
@@ -108798,7 +108803,7 @@ extends OperatorBase
 
     constructor()
     {
-        super(JOIN, 'combine', 'combine', iconJoin);
+        super(COMBINE, 'combine', 'combine', iconCombine);
 
         this.canDisable        = true;
         this.variableInputs    = true;
@@ -132801,8 +132806,7 @@ function loadNodes(data, pasting)
 function loadNode(_node, pasting)
 {
     // replace legacy
-    if (_node.type == 'LIST') _node.type = JOIN;
-    if (_node.type == 'ITEMS' ) _node.type = LIST;
+    // if (_node.type == 'JOIN') _node.type = COMBINE;
 
 
     const node = createNode(_node.type);
@@ -133225,7 +133229,7 @@ function createNode(nodeType, creatingButton = null, createdNodeId = -1, options
         case TIMER:                   node = new OpTimer();             break;
         case VALUE_NAME:              node = new OpValueName();         break;
 
-        case JOIN:                    node = new OpJoin();              break;
+        case COMBINE:                    node = new OpCombine();              break;
         case CONDENSE:                node = new OpCondense();          break;
         case LIST:                    node = new OpList();              break;
         case LIST_COUNT:              node = new OpListCount();         break;

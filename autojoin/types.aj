@@ -76,7 +76,7 @@
 ../generator/types/flow/GTimer.js
 ../generator/types/flow/GValueName.js
 
-../generator/types/flow/GJoin.js
+../generator/types/flow/GCombine.js
 ../generator/types/flow/GCondense.js
 ../generator/types/flow/GSublist.js
 ../generator/types/flow/GUnique.js

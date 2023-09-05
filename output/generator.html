@@ -4580,9 +4580,10 @@ function updateMenuItemShowOperationResults()
 
 function enableFeatures(sub, beta = false)
 {
-    enableMenuItem(menuItemSaveToFile,   sub);
+    enableMenuItem(menuItemVarGroup,     sub);
     enableMenuItem(menuItemTimer,        sub);
     enableMenuItem(menuItemAnimate,      sub);
+    enableMenuItem(menuItemSaveToFile,   sub);
     enableMenuItem(menuItemFetch,        sub);
     enableMenuItem(menuItemTextFile,     sub);
     enableMenuItem(menuItemDateTime,     sub);
@@ -4698,7 +4699,7 @@ const FREEZE                  = 'FRZ';
 const TIMER                   = 'TIMER';
 const VALUE_NAME              = 'VNAME';
 
-const JOIN                    = 'JOIN';
+const COMBINE                 = 'CMB';
 const CONDENSE                = 'CDENSE';
 const SUBLIST                 = 'SUBLST';
 const UNIQUE                  = 'UNIQ';
@@ -4724,7 +4725,7 @@ const LIST_TYPES =
     NUMBER_LIST_VALUE,
     TEXT_LIST_VALUE,
     SHAPE_LIST_VALUE,
-    JOIN,
+    COMBINE,
     SUBLIST,
     LIST,
     LIST_COUNT,
@@ -15023,7 +15024,7 @@ function assertVolatile(loop, node)
         || loop.type == NUMBER_RANDOM
         || loop.type == NUMBER_NOISE
         || loop.type == NUMBER_PROBABILITY
-        || loop.type == JOIN
+        || loop.type == COMBINE
         || loop.type == PARAM, // for OpStart
         'only volatile types can be repeated');
 }
@@ -15351,7 +15352,7 @@ extends GOperator
         //     this.updateValues.sort((a, b) => a.sortId - b.sortId);
         // }
         // else
-        //     this.setUpdateValues(parse, [['', NullValue]], true);
+            this.setUpdateValues(parse, [['', NullValue]], true);
 
 
         // if (this.value.objects)
@@ -15849,7 +15850,7 @@ extends GOperator
 
 
 
-class GJoin
+class GCombine
 extends GOperator
 {
     inputs = [];
@@ -15860,14 +15861,14 @@ extends GOperator
 
     constructor(nodeId, options)
     {
-        super(JOIN, nodeId, options);
+        super(COMBINE, nodeId, options);
     }
 
 
     
     copy()
     {
-        const copy = new GJoin(this.nodeId, this.options);
+        const copy = new GCombine(this.nodeId, this.options);
 
         copy.copyBase(this);
 
@@ -35411,7 +35412,7 @@ function genParseJoin(parse)
     const [, nodeId, options, ignore] = genParseNodeStart(parse);
 
 
-    const list = new GJoin(nodeId, options);
+    const list = new GCombine(nodeId, options);
 
     
     let nInputs = 0;
@@ -41069,7 +41070,7 @@ function genParse(parse, inParam = true)
     else if (parse.next == TIMER                  ) result = genParseTimer             (parse);
     else if (parse.next == VALUE_NAME             ) result = genParseValueName         (parse);
 
-    else if (parse.next == JOIN                   ) result = genParseJoin              (parse);
+    else if (parse.next == COMBINE                   ) result = genParseJoin              (parse);
     else if (parse.next == CONDENSE               ) result = genParseCondense          (parse);
     else if (parse.next == SUBLIST                ) result = genParseSublist           (parse);
     else if (parse.next == UNIQUE                 ) result = genParseUnique            (parse);

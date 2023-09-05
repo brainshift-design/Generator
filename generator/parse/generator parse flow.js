@@ -148,7 +148,7 @@ function genParseJoin(parse)
     const [, nodeId, options, ignore] = genParseNodeStart(parse);
 
 
-    const list = new GJoin(nodeId, options);
+    const list = new GCombine(nodeId, options);
 
     
     let nInputs = 0;

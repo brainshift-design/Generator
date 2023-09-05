@@ -17,11 +17,12 @@ extends ResizableBase
 
     constructor()
     {
-        super(VARIABLE_GROUP, 'varGroup', 'group', iconVariableGroup);
+        super(VARIABLE_GROUP, 'varGroup', 'variable group', iconVariableGroup);
 
 
-        this.canRename   = false;
-        this.iconOffsetY = -2;
+        this.subscription = true;
+        this.canRename    = false;
+        this.iconOffsetY  = -1;
 
 
         this.addInput(new Input(LIST_VALUES));
