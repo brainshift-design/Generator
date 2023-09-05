@@ -77,16 +77,25 @@ extends ResizableBase
 
 
 
+    // setRect(x, y, w, h, updateTransform = true)
+    // {
+    //     const height = defHeaderHeight + defParamHeight;
+
+    //     super.setRect(
+    //         x, 
+    //         y, 
+    //         w, 
+    //         height, 
+    //         updateTransform);
+    // }
+
+
+
     setRect(x, y, w, h, updateTransform = true)
     {
-        const height = defHeaderHeight + defParamHeight;
+        super.setRect(x, y, w, h, updateTransform);
 
-        super.setRect(
-            x, 
-            y, 
-            w, 
-            height, 
-            updateTransform);
+        this.updatePathParam();
     }
 
     
@@ -156,6 +165,15 @@ extends ResizableBase
         this.paramPath.enableControlText(false);
 
         this.updateParamControls();
+        this.updatePathParam();
+    }
+
+
+
+    updatePathParam()
+    {
+        this.paramPath.div.style.width  = this.div.offsetWidth;
+        this.paramPath.div.style.height = this.div.offsetHeight - Math.max(defHeaderHeight, this.header.offsetHeight);    
     }
 
 

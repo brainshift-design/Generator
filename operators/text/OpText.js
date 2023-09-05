@@ -24,7 +24,7 @@ extends ResizableBase
     setRect(x, y, w, h, updateTransform = true)
     {
         super.setRect(x, y, w, h, updateTransform);
-        
+
         this.updateValueParam();
     }
 
@@ -81,7 +81,6 @@ extends ResizableBase
         this.paramValue.enableControlText(true, this.isUnknown());
 
         this.updateParamControls();
-        
         this.updateValueParam();
     }
 

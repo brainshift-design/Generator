@@ -4978,7 +4978,7 @@ a
             <div id='whatsNewBody'>
                 <h1 style='margin-top: 20px;'>What's new</h1>
 
-                <p>•  </p>
+                <p>•  Text file node now caches the file contents</p>
                 
                 <p><br/><br/><div id='chkHideWhatsNew'></div></p>
             </div>
@@ -113269,7 +113269,7 @@ extends ResizableBase
     setRect(x, y, w, h, updateTransform = true)
     {
         super.setRect(x, y, w, h, updateTransform);
-        
+
         this.updateValueParam();
     }
 
@@ -113326,7 +113326,6 @@ extends ResizableBase
         this.paramValue.enableControlText(true, this.isUnknown());
 
         this.updateParamControls();
-        
         this.updateValueParam();
     }
 
@@ -114681,16 +114680,25 @@ extends ResizableBase
 
 
 
+    // setRect(x, y, w, h, updateTransform = true)
+    // {
+    //     const height = defHeaderHeight + defParamHeight;
+
+    //     super.setRect(
+    //         x, 
+    //         y, 
+    //         w, 
+    //         height, 
+    //         updateTransform);
+    // }
+
+
+
     setRect(x, y, w, h, updateTransform = true)
     {
-        const height = defHeaderHeight + defParamHeight;
+        super.setRect(x, y, w, h, updateTransform);
 
-        super.setRect(
-            x, 
-            y, 
-            w, 
-            height, 
-            updateTransform);
+        this.updatePathParam();
     }
 
     
@@ -114760,6 +114768,15 @@ extends ResizableBase
         this.paramPath.enableControlText(false);
 
         this.updateParamControls();
+        this.updatePathParam();
+    }
+
+
+
+    updatePathParam()
+    {
+        this.paramPath.div.style.width  = this.div.offsetWidth;
+        this.paramPath.div.style.height = this.div.offsetHeight - Math.max(defHeaderHeight, this.header.offsetHeight);    
     }
 
 
