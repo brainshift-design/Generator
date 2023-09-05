@@ -279,7 +279,7 @@ extends OperatorBase
                this instanceof ResizableOperatorWithValue
             && settings.showOperationResults
             ? defParamHeight 
-            : this.params.length * defParamHeight;
+            : 0;
 
         const _w = Math.max(60, w);
         const _h = Math.max(parseFloat(headerHeight) + paramHeight, h);

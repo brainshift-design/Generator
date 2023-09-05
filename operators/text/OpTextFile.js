@@ -77,25 +77,16 @@ extends ResizableBase
 
 
 
-    // setRect(x, y, w, h, updateTransform = true)
-    // {
-    //     const height = defHeaderHeight + defParamHeight;
-
-    //     super.setRect(
-    //         x, 
-    //         y, 
-    //         w, 
-    //         height, 
-    //         updateTransform);
-    // }
-
-
-
     setRect(x, y, w, h, updateTransform = true)
     {
-        super.setRect(x, y, w, h, updateTransform);
-
         this.updatePathParam();
+
+        super.setRect(
+            x, 
+            y, 
+            w, 
+            Math.max(defHeaderHeight + defParamHeight, h), 
+            updateTransform);
     }
 
     
