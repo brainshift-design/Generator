@@ -9,11 +9,11 @@ class Connection
     
     input;
 
-    list           = false;
+    list     = false;
 
     wire;
     
-    backInit       = false; // if true, on connection the value is possibly copied from the input to the output
+    backInit = false; // if true, on connection the value is possibly copied from the input to the output
 
     // proxy          = null;
 
@@ -45,10 +45,10 @@ class Connection
             pos, 
             tab,
             (this.stripIdForCopy ? this.output.node.nodeId : this.output.node.id),
-            (this.output.param ? this.output.param.id : this.output.index),
+            this.output.node.getOutputId(this.output), //(this.output.param ? this.output.param.id : this.output.index),
             this.outputOrder,
             (this.stripIdForCopy ? this.input.node.nodeId : this.input.node.id),
-            (this.input.param ? this.input.param.id : this.input.index),
+            this.input.node.getInputId(this.input), //(this.input.param ? this.input.param.id : this.input.index),
             boolToString(arraysIntersect(this.output.types, LIST_TYPES))); // not supportsTypes() here, because that allows LIST in case of ANY_VALUE
 
         this.stripIdForCopy = false;
@@ -63,10 +63,10 @@ class Connection
         return {
             id:           this.id,
             outputNodeId: this.output.node.id,
-            outputId:     this.output.id,
+            outputId:     this.output.node.getOutputId(this.output),
             outputOrder:  this.outputOrder,
             inputNodeId:  this.input.node.id,
-            inputId:      this.input.id,
+            inputId:      this.input.node.getInputId(this.input),
             list:         this.list
         };
     }
@@ -85,11 +85,9 @@ function parseConnectionJsonAndConnect(_conn, pasteConnected)
 
 
     if (   !outputNode 
-        ||  isDigit(outputId[0]) && parseInt(outputId) >= outputNode.outputs.length
-        || !isDigit(outputId[0]) && !outputNode.params.find(p => p.id == outputId && p.output)
+        || !outputNode.outputFromId(outputId)
         || !inputNode  
-        ||  isDigit(inputId[0]) && parseInt(inputId) >= inputNode.inputs.length
-        || !isDigit(inputId[0]) && !inputNode.params.find(p => p.id == inputId && p.input))
+        || !inputNode.inputFromId(inputId))
     {
         // console.log('outputNode  =', outputNode );
         // console.log('outputId    =', outputId   );
@@ -110,8 +108,8 @@ function parseConnectionJsonAndConnect(_conn, pasteConnected)
     else
     {
         const conn = uiVariableConnect(
-            outputNode, isDigit(outputId[0]) ? parseInt(outputId) : outputNode.params.find(p => p.id == outputId).output.id,
-             inputNode, isDigit( inputId[0]) ? parseInt( inputId) :  inputNode.params.find(p => p.id ==  inputId). input.id,
+            outputNode, outputId, //isDigit(outputId[0]) ? parseInt(outputId) : outputNode.outputFromId(outputId).id,
+             inputNode, inputId, //isDigit( inputId[0]) ? parseInt( inputId) :  inputNode. inputFromId( inputId).id,
             pasteConnected ? -1 : outputOrder);
 
         _conn.outputOrder = conn.outputOrder;

@@ -2895,7 +2895,8 @@ function figUpdateVariable(varId, value) {
     const collection = figma.variables.getVariableCollectionById(variable.variableCollectionId);
     if (variable.resolvedType == 'BOOLEAN')
         value = value != 0;
-    variable.setValueForMode(collection.modes[0].modeId, value);
+    if (value !== null)
+        variable.setValueForMode(collection.modes[0].modeId, value);
 }
 function figLinkVariable(localVars, nodeId, varId) {
     const variable = localVars.find(v => v.id == varId);

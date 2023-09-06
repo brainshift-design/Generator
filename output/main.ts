@@ -4360,7 +4360,8 @@ function figUpdateVariable(varId, value)
     if (variable.resolvedType == 'BOOLEAN')
         value = value != 0;
     
-    variable.setValueForMode(collection.modes[0].modeId, value);
+    if (value !== null)
+        variable.setValueForMode(collection.modes[0].modeId, value);
 }
 
 

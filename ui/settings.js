@@ -312,7 +312,7 @@ function updateMenuItemShowOperationResults()
 
 function enableFeatures(sub, beta = false)
 {
-    enableMenuItem(menuItemVarGroup,     sub);
+    //enableMenuItem(menuItemVarGroup,     sub);
     enableMenuItem(menuItemTimer,        sub);
     enableMenuItem(menuItemAnimate,      sub);
     enableMenuItem(menuItemSaveToFile,   sub);

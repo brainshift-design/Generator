@@ -9913,7 +9913,7 @@ function updateMenuItemShowOperationResults()
 
 function enableFeatures(sub, beta = false)
 {
-    enableMenuItem(menuItemVarGroup,     sub);
+    //enableMenuItem(menuItemVarGroup,     sub);
     enableMenuItem(menuItemTimer,        sub);
     enableMenuItem(menuItemAnimate,      sub);
     enableMenuItem(menuItemSaveToFile,   sub);
@@ -86543,7 +86543,7 @@ function updateMenuItemShowOperationResults()
 
 function enableFeatures(sub, beta = false)
 {
-    enableMenuItem(menuItemVarGroup,     sub);
+    //enableMenuItem(menuItemVarGroup,     sub);
     enableMenuItem(menuItemTimer,        sub);
     enableMenuItem(menuItemAnimate,      sub);
     enableMenuItem(menuItemSaveToFile,   sub);
@@ -92533,7 +92533,7 @@ menuFlow = new Menu('Flow', true, false);
         menuItemNull     = new MenuItem('Null',              null, {icon: iconNull,          createType: NULL_NODE,        callback: e => actionManager.do(getCreateNodeAction(NULL_NODE,       btnFlow.div, getCreateOptions(e)))}),
                            new MenuItem('',                  null, {separator: true}),
                            new MenuItem('Variable',          null, {icon: iconVariable,      createType: VARIABLE,         callback: e => actionManager.do(getCreateNodeAction(VARIABLE,        btnFlow.div, getCreateOptions(e)))}),
-        menuItemVarGroup = new MenuItem('Variable group',    null, {icon: iconVariableGroup, createType: VARIABLE_GROUP,   callback: e => actionManager.do(getCreateNodeAction(VARIABLE_GROUP,  btnFlow.div, getCreateOptions(e)))}),
+        //menuItemVarGroup = new MenuItem('Variable group',    null, {icon: iconVariableGroup, createType: VARIABLE_GROUP,   callback: e => actionManager.do(getCreateNodeAction(VARIABLE_GROUP,  btnFlow.div, getCreateOptions(e)))}),
                            new MenuItem('',                  null, {separator: true}),
         menuItemIfElse   = new MenuItem('I&hairsp;f / else', null, {icon: iconIfElse,        createType: IF_ELSE,          callback: e => actionManager.do(getCreateNodeAction(IF_ELSE,         btnFlow.div, getCreateOptions(e))), disambiguate: true}),
                            new MenuItem('',                  null, {separator: true}),
@@ -103093,11 +103093,11 @@ class Connection
     
     input;
 
-    list           = false;
+    list     = false;
 
     wire;
     
-    backInit       = false; // if true, on connection the value is possibly copied from the input to the output
+    backInit = false; // if true, on connection the value is possibly copied from the input to the output
 
     // proxy          = null;
 
@@ -103129,10 +103129,10 @@ class Connection
             pos, 
             tab,
             (this.stripIdForCopy ? this.output.node.nodeId : this.output.node.id),
-            (this.output.param ? this.output.param.id : this.output.index),
+            this.output.node.getOutputId(this.output), //(this.output.param ? this.output.param.id : this.output.index),
             this.outputOrder,
             (this.stripIdForCopy ? this.input.node.nodeId : this.input.node.id),
-            (this.input.param ? this.input.param.id : this.input.index),
+            this.input.node.getInputId(this.input), //(this.input.param ? this.input.param.id : this.input.index),
             boolToString(arraysIntersect(this.output.types, LIST_TYPES))); // not supportsTypes() here, because that allows LIST in case of ANY_VALUE
 
         this.stripIdForCopy = false;
@@ -103147,10 +103147,10 @@ class Connection
         return {
             id:           this.id,
             outputNodeId: this.output.node.id,
-            outputId:     this.output.id,
+            outputId:     this.output.node.getOutputId(this.output),
             outputOrder:  this.outputOrder,
             inputNodeId:  this.input.node.id,
-            inputId:      this.input.id,
+            inputId:      this.input.node.getInputId(this.input),
             list:         this.list
         };
     }
@@ -103169,11 +103169,9 @@ function parseConnectionJsonAndConnect(_conn, pasteConnected)
 
 
     if (   !outputNode 
-        ||  isDigit(outputId[0]) && parseInt(outputId) >= outputNode.outputs.length
-        || !isDigit(outputId[0]) && !outputNode.params.find(p => p.id == outputId && p.output)
+        || !outputNode.outputFromId(outputId)
         || !inputNode  
-        ||  isDigit(inputId[0]) && parseInt(inputId) >= inputNode.inputs.length
-        || !isDigit(inputId[0]) && !inputNode.params.find(p => p.id == inputId && p.input))
+        || !inputNode.inputFromId(inputId))
     {
         // console.log('outputNode  =', outputNode );
         // console.log('outputId    =', outputId   );
@@ -103194,8 +103192,8 @@ function parseConnectionJsonAndConnect(_conn, pasteConnected)
     else
     {
         const conn = uiVariableConnect(
-            outputNode, isDigit(outputId[0]) ? parseInt(outputId) : outputNode.params.find(p => p.id == outputId).output.id,
-             inputNode, isDigit( inputId[0]) ? parseInt( inputId) :  inputNode.params.find(p => p.id ==  inputId). input.id,
+            outputNode, outputId, //isDigit(outputId[0]) ? parseInt(outputId) : outputNode.outputFromId(outputId).id,
+             inputNode, inputId, //isDigit( inputId[0]) ? parseInt( inputId) :  inputNode. inputFromId( inputId).id,
             pasteConnected ? -1 : outputOrder);
 
         _conn.outputOrder = conn.outputOrder;
@@ -104271,7 +104269,6 @@ class Operator
 
     outputFromId(id)
     {
-        console.log('id =', id);
         return this.outputs.find(o => o.id == id);
     }
 
@@ -106630,7 +106627,7 @@ Operator.prototype.updateHeaderLabelText = function()
 
     const sep = settings.showNodeId ? ' ' : '  ';
 
-         if (this.type == COMBINE        ) suffix = sep + '[ ' + this.length        + ' ]';
+         if (this.type == COMBINE     ) suffix = sep + '[ ' + this.length        + ' ]';
     else if (this.type == SUBLIST     ) suffix = sep + '[ ' + this.length        + ' ]';
     else if (this.type == COLUMN      ) suffix = sep + '[ ' + this.columnLength  + ' ]';
     else if (this.type == REVERSE_LIST) suffix = sep + '[ ' + this.tableLength   + ' ]';
@@ -107986,7 +107983,9 @@ extends ResizableBase
 
     loadParams(_node, pasting)
     {
-        if (!pasting)
+        const found = graph.pages[0].nodes.find(n => n.linkedVariableId == _node.linkedVariableId);
+
+        if (!found)
         {
             super.loadParams(_node, pasting);
             

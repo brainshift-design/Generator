@@ -305,7 +305,9 @@ extends ResizableBase
 
     loadParams(_node, pasting)
     {
-        if (!pasting)
+        const found = graph.pages[0].nodes.find(n => n.linkedVariableId == _node.linkedVariableId);
+
+        if (!found)
         {
             super.loadParams(_node, pasting);
             

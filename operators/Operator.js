@@ -323,7 +323,6 @@ class Operator
 
     outputFromId(id)
     {
-        console.log('id =', id);
         return this.outputs.find(o => o.id == id);
     }
 
