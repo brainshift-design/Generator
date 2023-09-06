@@ -50,20 +50,23 @@ extends GOperator1
         let   c2    = this.c2    ? (await this.c2   .eval(parse)).toValue()             : null;
         let   c3    = this.c3    ? (await this.c3   .eval(parse)).toValue()             : null;
 
-        //console.log('COLOR c3 =', c3.value);
         
         if (this.input)
         {
             const input = (await this.input.eval(parse)).toValue();
 
             
-            if (   input.isValid()
-                && this.input.type != START)
+            if (   input.isValid())
+                // && this.input.type != START)
             {
                 if (this.options.enabled)
                 {
-                    this.value = input.copy();
-                    
+                    this.value = new ColorValue(
+                        space ?? input.space,
+                        c1    ?? input.c1,
+                        c2    ?? input.c2,
+                        c3    ?? input.c3);
+                            
 
                     const fromSpaceIndex = input.space.value;
 
@@ -83,11 +86,11 @@ extends GOperator1
                         this.value.space.value = toSpaceIndex;
                     }
 
-
+                    
                     if (!c1) c1 = this.value.c1;
                     if (!c2) c2 = this.value.c2;
                     if (!c3) c3 = this.value.c3;
-                
+ 
                     if (c1) this.value.c1 = c1;
                     if (c2) this.value.c2 = c2;
                     if (c3) this.value.c3 = c3;
@@ -98,7 +101,7 @@ extends GOperator1
             else
                 this.value = ColorValue.NaN;
 
-
+                
             if (!this.convert)
                 this.convert = NumberValue.NaN;
         }
@@ -148,9 +151,9 @@ extends GOperator1
         ]);
 
 
-        if (!this.c1) this.c1 = this.value.c1.copy();
-        if (!this.c2) this.c2 = this.value.c2.copy();
-        if (!this.c3) this.c3 = this.value.c3.copy();
+        // if (!this.c1) this.c1 = this.value.c1.copy();
+        // if (!this.c2) this.c2 = this.value.c2.copy();
+        // if (!this.c3) this.c3 = this.value.c3.copy();
 
 
         this.validate();

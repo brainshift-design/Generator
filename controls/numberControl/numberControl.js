@@ -348,7 +348,9 @@ extends Control
 
             
         if (    isNaN(this.value)
-            || !this.showBar)
+            || !this.showBar
+            ||    this.param
+               && this.param.node.isUnknown())
             this.divBar.style.display = 'none';
 
         else

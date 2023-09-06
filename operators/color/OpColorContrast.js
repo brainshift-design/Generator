@@ -294,9 +294,9 @@ extends OpColorBase
         {
             const contrast = Math.abs(this.paramContrast.value.value) / 21;
 
-            const is1 = contrast > 0  /21 && contrast <=  3  /21;
-            const is2 = contrast > 3  /21 && contrast <=  4.5/21;
-            const is3 = contrast > 4.5/21 && contrast <=  7  /21;
+            const is1 = !this.isUnknown() && contrast > 0  /21 && contrast <=  3  /21;
+            const is2 = !this.isUnknown() && contrast > 3  /21 && contrast <=  4.5/21;
+            const is3 = !this.isUnknown() && contrast > 4.5/21 && contrast <=  7  /21;
            
             if (darkMode)
             {
@@ -319,13 +319,13 @@ extends OpColorBase
         {
             const contrast = Math.abs(this.paramContrast.value.value) / 100;
 
-            const is1 = contrast >=  0/100 && contrast <=  15/100;
-            const is2 = contrast >  15/100 && contrast <=  30/100;
-            const is3 = contrast >  30/100 && contrast <=  45/100;
-            const is4 = contrast >  45/100 && contrast <=  60/100;
-            const is5 = contrast >  60/100 && contrast <=  75/100;
-            const is6 = contrast >  75/100 && contrast <=  90/100;
-            const is7 = contrast >  90/100;
+            const is1 = !this.isUnknown() && contrast >=  0/100 && contrast <=  15/100;
+            const is2 = !this.isUnknown() && contrast >  15/100 && contrast <=  30/100;
+            const is3 = !this.isUnknown() && contrast >  30/100 && contrast <=  45/100;
+            const is4 = !this.isUnknown() && contrast >  45/100 && contrast <=  60/100;
+            const is5 = !this.isUnknown() && contrast >  60/100 && contrast <=  75/100;
+            const is6 = !this.isUnknown() && contrast >  75/100 && contrast <=  90/100;
+            const is7 = !this.isUnknown() && contrast >  90/100;
 
             if (darkMode)
             {

@@ -4979,6 +4979,8 @@ a
                 <h1 style='margin-top: 20px;'>What's new</h1>
 
                 <p>•  fixed blend mode bug in Fill node</p>
+                <p>•  fixed Color node bug</p>
+                <p>•  fixed unknown number controls showing value bars</p>
                 
                 <p><br/><br/><div id='chkHideWhatsNew'></div></p>
             </div>
@@ -9919,7 +9921,7 @@ function enableFeatures(sub, beta = false)
     enableMenuItem(menuItemFetch,        sub);
     enableMenuItem(menuItemTextFile,     sub);
     enableMenuItem(menuItemDateTime,     sub);
-    enableMenuItem(menuItemSolve,        sub);
+    //enableMenuItem(menuItemSolve,        sub);
     enableMenuItem(menuItemTextJson,     sub);
     enableMenuItem(menuItemCorrectColor, sub);
     enableMenuItem(menuItemConvertToP3,  sub);
@@ -24193,9 +24195,6 @@ extends GOperator
         {
             const value = start.value + (this.options.enabled ? step.value * this.iteration : 0);
 
-            if (this.nodeId == 'sequence2')
-                console.log('sequence');
-
             if (!end.isValid())
                 this.value = new NumberValue(value, Math.max(start.decimals, step.decimals));
 
@@ -24218,7 +24217,7 @@ extends GOperator
             this.value = NumberValue.NaN.copy();
 
 
-        // if (this.nodeId == 'sequence3')
+        // if (this.nodeId == 'sequence')
         //     console.log('this.value =', this.value);
 
 
@@ -30321,20 +30320,23 @@ extends GOperator1
         let   c2    = this.c2    ? (await this.c2   .eval(parse)).toValue()             : null;
         let   c3    = this.c3    ? (await this.c3   .eval(parse)).toValue()             : null;
 
-        //console.log('COLOR c3 =', c3.value);
         
         if (this.input)
         {
             const input = (await this.input.eval(parse)).toValue();
 
             
-            if (   input.isValid()
-                && this.input.type != START)
+            if (   input.isValid())
+                // && this.input.type != START)
             {
                 if (this.options.enabled)
                 {
-                    this.value = input.copy();
-                    
+                    this.value = new ColorValue(
+                        space ?? input.space,
+                        c1    ?? input.c1,
+                        c2    ?? input.c2,
+                        c3    ?? input.c3);
+                            
 
                     const fromSpaceIndex = input.space.value;
 
@@ -30354,11 +30356,11 @@ extends GOperator1
                         this.value.space.value = toSpaceIndex;
                     }
 
-
+                    
                     if (!c1) c1 = this.value.c1;
                     if (!c2) c2 = this.value.c2;
                     if (!c3) c3 = this.value.c3;
-                
+ 
                     if (c1) this.value.c1 = c1;
                     if (c2) this.value.c2 = c2;
                     if (c3) this.value.c3 = c3;
@@ -30369,7 +30371,7 @@ extends GOperator1
             else
                 this.value = ColorValue.NaN;
 
-
+                
             if (!this.convert)
                 this.convert = NumberValue.NaN;
         }
@@ -30419,9 +30421,9 @@ extends GOperator1
         ]);
 
 
-        if (!this.c1) this.c1 = this.value.c1.copy();
-        if (!this.c2) this.c2 = this.value.c2.copy();
-        if (!this.c3) this.c3 = this.value.c3.copy();
+        // if (!this.c1) this.c1 = this.value.c1.copy();
+        // if (!this.c2) this.c2 = this.value.c2.copy();
+        // if (!this.c3) this.c3 = this.value.c3.copy();
 
 
         this.validate();
@@ -71001,9 +71003,6 @@ extends GOperator
         {
             const value = start.value + (this.options.enabled ? step.value * this.iteration : 0);
 
-            if (this.nodeId == 'sequence2')
-                console.log('sequence');
-
             if (!end.isValid())
                 this.value = new NumberValue(value, Math.max(start.decimals, step.decimals));
 
@@ -71026,7 +71025,7 @@ extends GOperator
             this.value = NumberValue.NaN.copy();
 
 
-        // if (this.nodeId == 'sequence3')
+        // if (this.nodeId == 'sequence')
         //     console.log('this.value =', this.value);
 
 
@@ -77129,20 +77128,23 @@ extends GOperator1
         let   c2    = this.c2    ? (await this.c2   .eval(parse)).toValue()             : null;
         let   c3    = this.c3    ? (await this.c3   .eval(parse)).toValue()             : null;
 
-        //console.log('COLOR c3 =', c3.value);
         
         if (this.input)
         {
             const input = (await this.input.eval(parse)).toValue();
 
             
-            if (   input.isValid()
-                && this.input.type != START)
+            if (   input.isValid())
+                // && this.input.type != START)
             {
                 if (this.options.enabled)
                 {
-                    this.value = input.copy();
-                    
+                    this.value = new ColorValue(
+                        space ?? input.space,
+                        c1    ?? input.c1,
+                        c2    ?? input.c2,
+                        c3    ?? input.c3);
+                            
 
                     const fromSpaceIndex = input.space.value;
 
@@ -77162,11 +77164,11 @@ extends GOperator1
                         this.value.space.value = toSpaceIndex;
                     }
 
-
+                    
                     if (!c1) c1 = this.value.c1;
                     if (!c2) c2 = this.value.c2;
                     if (!c3) c3 = this.value.c3;
-                
+ 
                     if (c1) this.value.c1 = c1;
                     if (c2) this.value.c2 = c2;
                     if (c3) this.value.c3 = c3;
@@ -77177,7 +77179,7 @@ extends GOperator1
             else
                 this.value = ColorValue.NaN;
 
-
+                
             if (!this.convert)
                 this.convert = NumberValue.NaN;
         }
@@ -77227,9 +77229,9 @@ extends GOperator1
         ]);
 
 
-        if (!this.c1) this.c1 = this.value.c1.copy();
-        if (!this.c2) this.c2 = this.value.c2.copy();
-        if (!this.c3) this.c3 = this.value.c3.copy();
+        // if (!this.c1) this.c1 = this.value.c1.copy();
+        // if (!this.c2) this.c2 = this.value.c2.copy();
+        // if (!this.c3) this.c3 = this.value.c3.copy();
 
 
         this.validate();
@@ -86555,7 +86557,7 @@ function enableFeatures(sub, beta = false)
     enableMenuItem(menuItemFetch,        sub);
     enableMenuItem(menuItemTextFile,     sub);
     enableMenuItem(menuItemDateTime,     sub);
-    enableMenuItem(menuItemSolve,        sub);
+    //enableMenuItem(menuItemSolve,        sub);
     enableMenuItem(menuItemTextJson,     sub);
     enableMenuItem(menuItemCorrectColor, sub);
     enableMenuItem(menuItemConvertToP3,  sub);
@@ -87283,7 +87285,9 @@ extends Control
 
             
         if (    isNaN(this.value)
-            || !this.showBar)
+            || !this.showBar
+            ||    this.param
+               && this.param.node.isUnknown())
             this.divBar.style.display = 'none';
 
         else
@@ -98125,7 +98129,6 @@ extends Parameter
         const showColorBack = 
                 this.showColorBack
             && !this.isUnknown();
-            //&& !this.node.isUnknown();
 
 
         const noColor = 
@@ -112245,7 +112248,7 @@ extends OperatorBase
     {
         super(NUMBER_SOLVE, 'solve', 'solve', iconSolve, defNodeWidth, true);
 
-        this.subscription = true;
+        //this.subscription = true;
         this.canDisable   = true;
         
 
@@ -116245,9 +116248,9 @@ extends OpColorBase
         const enable = !this.inputs[0].connected;
 
         this.paramSpace.enableControlText(!this.paramSpace.input.connected);
-        this.param1    .enableControlText(enable, this.param1.isUnknown());
-        this.param2    .enableControlText(enable, this.param2.isUnknown());
-        this.param3    .enableControlText(enable, this.param3.isUnknown());
+        this.param1    .enableControlText(enable, this.param1.isUnknown() || this.isUnknown() && !this.param1.input.connected);
+        this.param2    .enableControlText(enable, this.param2.isUnknown() || this.isUnknown() && !this.param2.input.connected);
+        this.param3    .enableControlText(enable, this.param3.isUnknown() || this.isUnknown() && !this.param3.input.connected);
 
 
         enableElementText(this.paramColor.controls[0].div, !this.isConnected());
@@ -118471,9 +118474,9 @@ extends OpColorBase
         {
             const contrast = Math.abs(this.paramContrast.value.value) / 21;
 
-            const is1 = contrast > 0  /21 && contrast <=  3  /21;
-            const is2 = contrast > 3  /21 && contrast <=  4.5/21;
-            const is3 = contrast > 4.5/21 && contrast <=  7  /21;
+            const is1 = !this.isUnknown() && contrast > 0  /21 && contrast <=  3  /21;
+            const is2 = !this.isUnknown() && contrast > 3  /21 && contrast <=  4.5/21;
+            const is3 = !this.isUnknown() && contrast > 4.5/21 && contrast <=  7  /21;
            
             if (darkMode)
             {
@@ -118496,13 +118499,13 @@ extends OpColorBase
         {
             const contrast = Math.abs(this.paramContrast.value.value) / 100;
 
-            const is1 = contrast >=  0/100 && contrast <=  15/100;
-            const is2 = contrast >  15/100 && contrast <=  30/100;
-            const is3 = contrast >  30/100 && contrast <=  45/100;
-            const is4 = contrast >  45/100 && contrast <=  60/100;
-            const is5 = contrast >  60/100 && contrast <=  75/100;
-            const is6 = contrast >  75/100 && contrast <=  90/100;
-            const is7 = contrast >  90/100;
+            const is1 = !this.isUnknown() && contrast >=  0/100 && contrast <=  15/100;
+            const is2 = !this.isUnknown() && contrast >  15/100 && contrast <=  30/100;
+            const is3 = !this.isUnknown() && contrast >  30/100 && contrast <=  45/100;
+            const is4 = !this.isUnknown() && contrast >  45/100 && contrast <=  60/100;
+            const is5 = !this.isUnknown() && contrast >  60/100 && contrast <=  75/100;
+            const is6 = !this.isUnknown() && contrast >  75/100 && contrast <=  90/100;
+            const is7 = !this.isUnknown() && contrast >  90/100;
 
             if (darkMode)
             {
@@ -130578,7 +130581,7 @@ function createSessionId()
 
 function subscribed()
 {
-    return true;//currentSessionId == createSessionId();
+    return false;//currentSessionId == createSessionId();
 }
 
 

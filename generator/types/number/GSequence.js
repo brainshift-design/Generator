@@ -53,9 +53,6 @@ extends GOperator
         {
             const value = start.value + (this.options.enabled ? step.value * this.iteration : 0);
 
-            if (this.nodeId == 'sequence2')
-                console.log('sequence');
-
             if (!end.isValid())
                 this.value = new NumberValue(value, Math.max(start.decimals, step.decimals));
 
@@ -78,7 +75,7 @@ extends GOperator
             this.value = NumberValue.NaN.copy();
 
 
-        // if (this.nodeId == 'sequence3')
+        // if (this.nodeId == 'sequence')
         //     console.log('this.value =', this.value);
 
 
