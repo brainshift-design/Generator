@@ -206,8 +206,15 @@ extends ResizableBase
 
 
 
-    updateValueParamValues(resolvedType, values, update = false)
+    updateValueParamValues(resolvedType, varName, values, update = false)
     {
+        if (this.linkedVariableName != varName)
+        {
+            this.linkedVariableName = varName;
+            this.updateNode();
+        }
+
+
         if (values.length > 0)
         {
             const val = values[0];

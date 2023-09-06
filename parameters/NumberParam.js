@@ -55,7 +55,6 @@ extends NumberParamBase
         this.controls[0].addEventListener('finishedit', e =>
         { 
             let dec = decCount(e.detail.valueString);
-            console.log('dec =', dec);
             
             if (!e.detail.success)
                 return;

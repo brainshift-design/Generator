@@ -23,7 +23,7 @@ function noNodeTag(key) { return noTag(key, nodeTag); }
 function noConnTag(key) { return noTag(key, connTag); }
 
 
-const generatorVersion = 196;
+const generatorVersion = 197;
 
 
 const MAX_INT32        = 2147483647;
@@ -2941,7 +2941,8 @@ function figGetValue(key, spec)
 
                     values.push(
                     {
-                        id:           varIds[i], 
+                        id:           varIds[i],
+                        name:         variable.name, 
                         resolvedType: variable.resolvedType, 
                         value:        vals[0]
                     });
@@ -4385,6 +4386,7 @@ function figLinkVariable(localVars, nodeId, varId)
         cmd:         'uiReturnFigLinkNodeToVariable',
         nodeId:       nodeId,
         variableId:   variable ? variable.id           : NULL,
+        variableName: variable ? variable.name         : '',
         resolvedType: variable ? variable.resolvedType : NULL,
         values:       values
     });

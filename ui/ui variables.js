@@ -21,7 +21,7 @@ var variableTimer = setInterval(() =>
                     if (node.paramValue.input.connected)
                         uiUpdateVariable(value.id, getVariableValue(node.paramValue.value));
                     else
-                        node.updateValueParamValues(value.resolvedType, [value.value], true);
+                        node.updateValueParamValues(value.resolvedType, value.name, [value.value], true);
                 }
             }
         });
@@ -47,6 +47,7 @@ function uiReturnFigLinkNodeToVariable(msg)
 
     node.updateValueParamValues(
         msg.resolvedType, 
+        msg.variableName,
         msg.values);
 
     pushUpdate(null, [node]);

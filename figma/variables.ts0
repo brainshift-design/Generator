@@ -79,6 +79,7 @@ function figLinkVariable(localVars, nodeId, varId)
         cmd:         'uiReturnFigLinkNodeToVariable',
         nodeId:       nodeId,
         variableId:   variable ? variable.id           : NULL,
+        variableName: variable ? variable.name         : '',
         resolvedType: variable ? variable.resolvedType : NULL,
         values:       values
     });

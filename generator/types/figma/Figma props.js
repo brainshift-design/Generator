@@ -22,7 +22,7 @@ function addFillProp(obj, prop, target = obj.fills)
         rgb[1], 
         rgb[2], 
         prop.opacity.toValue().toNumber(),
-        BlendModes[prop.blend.value][2]]);
+        BlendModes[Math.min(Math.max(0, Math.round(prop.blend.value)), BlendModes.length-1)][2]]);
 }
 
 

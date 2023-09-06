@@ -4978,10 +4978,7 @@ a
             <div id='whatsNewBody'>
                 <h1 style='margin-top: 20px;'>What's new</h1>
 
-                <p>•  Text file node now caches the file contents</p>
-                <p>•  fixed decimal entry issue</p>
-                <p>•  fixed Range node</p>
-                <p>•  fixed UI issues</p>
+                <p>•  fixed blend mode bug in Fill node</p>
                 
                 <p><br/><br/><div id='chkHideWhatsNew'></div></p>
             </div>
@@ -5339,7 +5336,7 @@ a
 
 
 
-const generatorVersion = 196;
+const generatorVersion = 197;
 
 
 const MAX_INT32        = 2147483647;
@@ -11331,7 +11328,7 @@ function addFillProp(obj, prop, target = obj.fills)
         rgb[1], 
         rgb[2], 
         prop.opacity.toValue().toNumber(),
-        BlendModes[prop.blend.value][2]]);
+        BlendModes[Math.min(Math.max(0, Math.round(prop.blend.value)), BlendModes.length-1)][2]]);
 }
 
 
@@ -49893,7 +49890,7 @@ onerror = (event, source, line, pos, error) =>
 };
 
 
-const generatorVersion = 196;
+const generatorVersion = 197;
 
 
 const MAX_INT32        = 2147483647;
@@ -58138,7 +58135,7 @@ function addFillProp(obj, prop, target = obj.fills)
         rgb[1], 
         rgb[2], 
         prop.opacity.toValue().toNumber(),
-        BlendModes[prop.blend.value][2]]);
+        BlendModes[Math.min(Math.max(0, Math.round(prop.blend.value)), BlendModes.length-1)][2]]);
 }
 
 
@@ -97312,7 +97309,6 @@ extends NumberParamBase
         this.controls[0].addEventListener('finishedit', e =>
         { 
             let dec = decCount(e.detail.valueString);
-            console.log('dec =', dec);
             
             if (!e.detail.success)
                 return;
@@ -107890,8 +107886,15 @@ extends ResizableBase
 
 
 
-    updateValueParamValues(resolvedType, values, update = false)
+    updateValueParamValues(resolvedType, varName, values, update = false)
     {
+        if (this.linkedVariableName != varName)
+        {
+            this.linkedVariableName = varName;
+            this.updateNode();
+        }
+
+
         if (values.length > 0)
         {
             const val = values[0];
@@ -130573,7 +130576,7 @@ function createSessionId()
 
 function subscribed()
 {
-    return true;//currentSessionId == createSessionId();
+    return false;//currentSessionId == createSessionId();
 }
 
 
@@ -132572,7 +132575,7 @@ function loadNodesAndConnsAsync(_nodes, _conns, setProgress)
                     const node = varNodes.find(n => n.linkedVariableId == value.id);
 
                     node.updateValueParamType  (value.resolvedType);
-                    node.updateValueParamValues(value.resolvedType, [value.value]);
+                    node.updateValueParamValues(value.resolvedType, value.name, [value.value]);
                 }
 
                 loadConnectionsAsync(_nodes, _conns, nodes, setProgress);    
@@ -135057,7 +135060,7 @@ var variableTimer = setInterval(() =>
                     if (node.paramValue.input.connected)
                         uiUpdateVariable(value.id, getVariableValue(node.paramValue.value));
                     else
-                        node.updateValueParamValues(value.resolvedType, [value.value], true);
+                        node.updateValueParamValues(value.resolvedType, value.name, [value.value], true);
                 }
             }
         });
@@ -135083,6 +135086,7 @@ function uiReturnFigLinkNodeToVariable(msg)
 
     node.updateValueParamValues(
         msg.resolvedType, 
+        msg.variableName,
         msg.values);
 
     pushUpdate(null, [node]);

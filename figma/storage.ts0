@@ -390,7 +390,8 @@ function figGetValue(key, spec)
 
                     values.push(
                     {
-                        id:           varIds[i], 
+                        id:           varIds[i],
+                        name:         variable.name, 
                         resolvedType: variable.resolvedType, 
                         value:        vals[0]
                     });
