@@ -4978,9 +4978,7 @@ a
             <div id='whatsNewBody'>
                 <h1 style='margin-top: 20px;'>What's new</h1>
 
-                <p>•  fixed blend mode bug in Fill node</p>
-                <p>•  fixed Color node bug</p>
-                <p>•  fixed unknown number controls showing value bars</p>
+                <p>•  UI fixes</p>
                 
                 <p><br/><br/><div id='chkHideWhatsNew'></div></p>
             </div>
@@ -5338,7 +5336,7 @@ a
 
 
 
-const generatorVersion = 197;
+const generatorVersion = 198;
 
 
 const MAX_INT32        = 2147483647;
@@ -49893,7 +49891,7 @@ onerror = (event, source, line, pos, error) =>
 };
 
 
-const generatorVersion = 197;
+const generatorVersion = 198;
 
 
 const MAX_INT32        = 2147483647;
@@ -98128,7 +98126,9 @@ extends Parameter
 
         const showColorBack = 
                 this.showColorBack
-            && !this.isUnknown();
+            && !this.isUnknown()
+            && (   !this.node.isUnknown() 
+                || !this.isNodeValue);
 
 
         const noColor = 
