@@ -23,6 +23,7 @@
 
 
 ../html/crash.html
+../html/multiplayer.html
 ../html/about.html
 ../html/deleteConnections.html
 ../html/saveAsTemplate.html

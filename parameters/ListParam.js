@@ -176,7 +176,7 @@ extends Parameter
 
         let value =
             this.itemName != ''
-            ?   (this.node.isUnknown() ? '? ' : ((nItems != 0 || this.showZero) ? (nItems + ' ') : ''))
+            ?   (this.node && this.node.isUnknown() ? '? ' : ((nItems != 0 || this.showZero) ? (nItems + ' ') : ''))
               +  countString(nItems, this.itemName)
             : this.name;
 

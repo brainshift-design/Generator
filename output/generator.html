@@ -4,7 +4,7 @@
 
 
 
-const generatorVersion = 198;
+const generatorVersion = 199;
 
 
 const MAX_INT32        = 2147483647;
@@ -3178,6 +3178,19 @@ String.prototype.replaceAt = function(index, replacement)
     return this.substring(0, index) 
          + replacement 
          + this.substring(index+1);// + replacement.length);
+}
+
+
+
+function findAllIndices(array, condition)
+{
+    const items   = array.filter(condition);
+    const indices = [];
+    
+    for (const item of items)
+        indices.push(items.indexOf(item));
+
+    return indices;
 }
 
 
@@ -9308,8 +9321,9 @@ extends GValue
     equals(num)
     {
         return num
-            && this.value    == num.value
-            && this.decimals == num.decimals;
+            && this.toNumber() == num.toNumber();
+            // && this.value    == num.value
+            // && this.decimals == num.decimals;
     }
 
 
@@ -16293,7 +16307,8 @@ extends GOperator1
 class GUnique
 extends GOperator1
 {
-    counts = null;
+    counts  = null;
+    indices = null;
 
 
     
@@ -16324,7 +16339,8 @@ extends GOperator1
         const input = this.input ? (await this.input.eval(parse)).toValue() : null;
 
 
-        this.counts = new ListValue();
+        this.counts  = new ListValue();
+        this.indices = new ListValue();
 
 
         if (input)
@@ -16341,12 +16357,19 @@ extends GOperator1
                     if (foundIndex < 0)
                     {
                         this.value.items.push(item.copy());
-                        this.value.objects.push(...item.objects);
+
+                        if (   this.value.objects
+                            && item.objects)
+                            this.value.objects.push(...item.objects);
 
                         this.counts.items.push(new NumberValue(1));
+                        this.indices.items.push(new ListValue([new NumberValue(i)]));
                     }
                     else
-                        this.counts.items[foundIndex].value++;
+                    {
+                        this.counts .items[foundIndex].value++;
+                        this.indices.items[foundIndex].items.push(new NumberValue(i));
+                    }
                 }
             }
             else
@@ -24997,12 +25020,8 @@ extends GOperator1
             {
                 if (this.options.enabled)
                 {
-                    this.value = new ColorValue(
-                        space ?? input.space,
-                        c1    ?? input.c1,
-                        c2    ?? input.c2,
-                        c3    ?? input.c3);
-                            
+                    this.value = input.copy();
+                    
 
                     const fromSpaceIndex = input.space.value;
 

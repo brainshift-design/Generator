@@ -1,7 +1,8 @@
 class GUnique
 extends GOperator1
 {
-    counts = null;
+    counts  = null;
+    indices = null;
 
 
     
@@ -32,7 +33,8 @@ extends GOperator1
         const input = this.input ? (await this.input.eval(parse)).toValue() : null;
 
 
-        this.counts = new ListValue();
+        this.counts  = new ListValue();
+        this.indices = new ListValue();
 
 
         if (input)
@@ -49,12 +51,19 @@ extends GOperator1
                     if (foundIndex < 0)
                     {
                         this.value.items.push(item.copy());
-                        this.value.objects.push(...item.objects);
+
+                        if (   this.value.objects
+                            && item.objects)
+                            this.value.objects.push(...item.objects);
 
                         this.counts.items.push(new NumberValue(1));
+                        this.indices.items.push(new ListValue([new NumberValue(i)]));
                     }
                     else
-                        this.counts.items[foundIndex].value++;
+                    {
+                        this.counts .items[foundIndex].value++;
+                        this.indices.items[foundIndex].items.push(new NumberValue(i));
+                    }
                 }
             }
             else

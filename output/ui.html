@@ -2397,6 +2397,153 @@ a
 
 
 
+#multiplayerBack
+{
+    display:          none;
+
+    z-index:          10000;
+    
+    position:         fixed;
+    left:             0;
+    top:              0;
+    width:            100%;
+    height:           100%;
+    overflow:         auto;
+    pointer-events:   all;
+
+    background-color: #0005;
+}
+
+
+
+#multiplayerDialog
+{
+    display:       none;
+
+    font-family:   Inter;
+
+    z-index:       10001;
+    position:      absolute;
+    top:           50%;
+    left:          50%;
+    transform:     translateX(-50%)
+                   translateY(-50%);
+    width:         360px;
+    height:        150px;
+
+    overflow:      hidden;
+    
+    color:         var(--figma-color-text);
+    background:    var(--figma-color-bg);
+    
+    border:        0.5px solid rgba(0, 0, 0, 0.2);
+
+    border-radius: 4px;
+
+    /* -webkit-font-smoothing: subpixel-antialiased;
+    -moz-osx-font-smoothing: auto; */
+}
+
+
+#multiplayerDialogContainer
+{
+    height:   calc(100% - 42px);
+    overflow: hidden;
+    padding:  0;
+    z-index:  1;
+    /* box-shadow: 0 0 0 1px red inset; */
+}
+
+
+#multiplayerDialogContent
+{
+    font-size:      12px;
+    margin:         0;
+    padding:        1px 0 5px 0;
+    position:       absolute;
+    pointer-events: all;
+    user-select:    text;
+    width:          100%;
+    /* box-shadow:     0 0 0 1px blue inset; */
+}
+
+
+.figma-light #multiplayerDialog
+{
+    box-shadow: 0px 2px  7px rgba(0, 0, 0, 0.15),
+                0px 5px 17px rgba(0, 0, 0, 0.15);
+}
+
+
+.figma-dark #multiplayerDialog
+{
+    box-shadow: 0px 2px  7px rgba(0, 0, 0, 0.45),
+                0px 5px 25px rgba(0, 0, 0, 0.45),
+                0 0px 2px 0px #fff3 inset;
+}
+
+
+#multiplayerTitle
+{
+    font-size:     14px;
+    font-weight:   500;
+    margin-top:    20px;
+    margin-bottom: 27px;
+}
+
+
+#multiplayerDetails
+{
+    /* font-weight: bold; */
+    height:        165px;
+    margin-bottom: 30px;
+    position:      relative;
+    left:          1px;
+    overflow-y:    scroll;
+    /* box-shadow:    0 0 0 1px red inset; */
+}
+
+
+#multiplayerDetails::-webkit-scrollbar
+{
+    background: transparent;
+    width:      6px;
+}
+
+
+#multiplayerDetails::-webkit-scrollbar-track
+{
+    margin: 6px 6px 6px 0;
+}
+
+
+#multiplayerDetails::-webkit-scrollbar-thumb
+{
+    border-radius: 4px;
+}
+
+
+.figma-dark #multiplayerDetails::-webkit-scrollbar-thumb
+{ 
+    background:    #fff4;
+    /* background-color: #0006;
+    box-shadow:       0 0 0 1px rgba(255, 255, 255, 0.25);  */
+}
+
+
+.figma-light #multiplayerDetails::-webkit-scrollbar-thumb
+{ 
+    background-color: #0004;
+    box-shadow:       0 0 0 1px rgba(255, 255, 255, 0.25); 
+}    
+
+
+#multiplayerDialogBody
+{
+    margin: 0 25px 0 25px;
+}
+
+
 #saveAsTemplateBack
 {
     display:          none;
@@ -4784,6 +4931,35 @@ a
 </div>
 
 
+<div id='multiplayerBack'></div>
+
+<div id='multiplayerDialog'>
+    
+    <div id='multiplayerDialogContainer'>
+        <div id='multiplayerDialogContent'>
+            <div id='multiplayerDialogBody'>
+                <p id='multiplayerTitle'>
+                    <span style="position: relative; top: 13px;">
+                        <svg width="29" height="33" viewBox="0 0 29 33" fill="none" xmlns="http://www.w3.org/2000/svg">
+                            <path d="M11 4.5C13.4853 4.5 15.5 6.51473 15.5 9V14.5H20V9C20 4.02946 15.9706 0 11 0C6.02944 0 2 4.02946 2 9L2 14.5H6.5V9C6.5 6.51473 8.51472 4.5 11 4.5Z" fill="white"/>
+                            <path d="M26.2627 23.1924L13.5348 17.5355L19.1917 30.2634L22.0201 27.435L26.9698 32.3848L28.384 30.9705L23.4343 26.0208L26.2627 23.1924Z" fill="white"/>
+                            <path d="M22 14H0V26H16.2025L11.5651 15.5658L22 20.2035V14Z" fill="white"/>
+                        </svg>
+                    </span>
+                    &nbsp;Generator is locked...
+                </p>
+                    
+                <p id='multiplayerDetails'>
+                    Someone else is using Generator in this document.<br/>
+                    Multiplayer is currently not supported.
+                </p>
+            </div>
+        </div>
+    </div>
+
+</div>
+
+
 <div id='aboutBack'></div>
 
 <div id='aboutDialog'>
@@ -4978,7 +5154,7 @@ a
             <div id='whatsNewBody'>
                 <h1 style='margin-top: 20px;'>What's new</h1>
 
-                <p>•  UI fixes</p>
+                <p>•  fixed issue in Color node</p>
                 
                 <p><br/><br/><div id='chkHideWhatsNew'></div></p>
             </div>
@@ -5336,7 +5512,7 @@ a
 
 
 
-const generatorVersion = 198;
+const generatorVersion = 199;
 
 
 const MAX_INT32        = 2147483647;
@@ -8510,6 +8686,19 @@ String.prototype.replaceAt = function(index, replacement)
     return this.substring(0, index) 
          + replacement 
          + this.substring(index+1);// + replacement.length);
+}
+
+
+
+function findAllIndices(array, condition)
+{
+    const items   = array.filter(condition);
+    const indices = [];
+    
+    for (const item of items)
+        indices.push(items.indexOf(item));
+
+    return indices;
 }
 
 
@@ -14640,8 +14829,9 @@ extends GValue
     equals(num)
     {
         return num
-            && this.value    == num.value
-            && this.decimals == num.decimals;
+            && this.toNumber() == num.toNumber();
+            // && this.value    == num.value
+            // && this.decimals == num.decimals;
     }
 
 
@@ -21625,7 +21815,8 @@ extends GOperator1
 class GUnique
 extends GOperator1
 {
-    counts = null;
+    counts  = null;
+    indices = null;
 
 
     
@@ -21656,7 +21847,8 @@ extends GOperator1
         const input = this.input ? (await this.input.eval(parse)).toValue() : null;
 
 
-        this.counts = new ListValue();
+        this.counts  = new ListValue();
+        this.indices = new ListValue();
 
 
         if (input)
@@ -21673,12 +21865,19 @@ extends GOperator1
                     if (foundIndex < 0)
                     {
                         this.value.items.push(item.copy());
-                        this.value.objects.push(...item.objects);
+
+                        if (   this.value.objects
+                            && item.objects)
+                            this.value.objects.push(...item.objects);
 
                         this.counts.items.push(new NumberValue(1));
+                        this.indices.items.push(new ListValue([new NumberValue(i)]));
                     }
                     else
-                        this.counts.items[foundIndex].value++;
+                    {
+                        this.counts .items[foundIndex].value++;
+                        this.indices.items[foundIndex].items.push(new NumberValue(i));
+                    }
                 }
             }
             else
@@ -30329,12 +30528,8 @@ extends GOperator1
             {
                 if (this.options.enabled)
                 {
-                    this.value = new ColorValue(
-                        space ?? input.space,
-                        c1    ?? input.c1,
-                        c2    ?? input.c2,
-                        c3    ?? input.c3);
-                            
+                    this.value = input.copy();
+                    
 
                     const fromSpaceIndex = input.space.value;
 
@@ -49891,7 +50086,7 @@ onerror = (event, source, line, pos, error) =>
 };
 
 
-const generatorVersion = 198;
+const generatorVersion = 199;
 
 
 const MAX_INT32        = 2147483647;
@@ -53065,6 +53260,19 @@ String.prototype.replaceAt = function(index, replacement)
     return this.substring(0, index) 
          + replacement 
          + this.substring(index+1);// + replacement.length);
+}
+
+
+
+function findAllIndices(array, condition)
+{
+    const items   = array.filter(condition);
+    const indices = [];
+    
+    for (const item of items)
+        indices.push(items.indexOf(item));
+
+    return indices;
 }
 
 
@@ -61448,8 +61656,9 @@ extends GValue
     equals(num)
     {
         return num
-            && this.value    == num.value
-            && this.decimals == num.decimals;
+            && this.toNumber() == num.toNumber();
+            // && this.value    == num.value
+            // && this.decimals == num.decimals;
     }
 
 
@@ -68433,7 +68642,8 @@ extends GOperator1
 class GUnique
 extends GOperator1
 {
-    counts = null;
+    counts  = null;
+    indices = null;
 
 
     
@@ -68464,7 +68674,8 @@ extends GOperator1
         const input = this.input ? (await this.input.eval(parse)).toValue() : null;
 
 
-        this.counts = new ListValue();
+        this.counts  = new ListValue();
+        this.indices = new ListValue();
 
 
         if (input)
@@ -68481,12 +68692,19 @@ extends GOperator1
                     if (foundIndex < 0)
                     {
                         this.value.items.push(item.copy());
-                        this.value.objects.push(...item.objects);
+
+                        if (   this.value.objects
+                            && item.objects)
+                            this.value.objects.push(...item.objects);
 
                         this.counts.items.push(new NumberValue(1));
+                        this.indices.items.push(new ListValue([new NumberValue(i)]));
                     }
                     else
-                        this.counts.items[foundIndex].value++;
+                    {
+                        this.counts .items[foundIndex].value++;
+                        this.indices.items[foundIndex].items.push(new NumberValue(i));
+                    }
                 }
             }
             else
@@ -77137,12 +77355,8 @@ extends GOperator1
             {
                 if (this.options.enabled)
                 {
-                    this.value = new ColorValue(
-                        space ?? input.space,
-                        c1    ?? input.c1,
-                        c2    ?? input.c2,
-                        c3    ?? input.c3);
-                            
+                    this.value = input.copy();
+                    
 
                     const fromSpaceIndex = input.space.value;
 
@@ -98127,7 +98341,8 @@ extends Parameter
         const showColorBack = 
                 this.showColorBack
             && !this.isUnknown()
-            && (   !this.node.isUnknown() 
+            && (       this.node
+                   && !this.node.isUnknown() 
                 || !this.isNodeValue);
 
 
@@ -99539,7 +99754,7 @@ extends Parameter
 
         let value =
             this.itemName != ''
-            ?   (this.node.isUnknown() ? '? ' : ((nItems != 0 || this.showZero) ? (nItems + ' ') : ''))
+            ?   (this.node && this.node.isUnknown() ? '? ' : ((nItems != 0 || this.showZero) ? (nItems + ' ') : ''))
               +  countString(nItems, this.itemName)
             : this.name;
 
@@ -109176,6 +109391,7 @@ class   OpUnique
 extends OperatorBase
 {
     paramCounts;
+    paramIndices;
 
     length;
 
@@ -109192,9 +109408,12 @@ extends OperatorBase
         this.addInput (new Input (LIST_VALUES));
         this.addOutput(new Output([LIST_VALUE], this.output_genRequest));
 
-        this.addParam(this.paramCounts = new ListParam('counts', 'counts', false, false, true));
+        this.addParam(this.paramCounts  = new ListParam('counts',  'counts',  false, false, true));
+        //this.addParam(this.paramIndices = new ListParam('indices', 'indices', false, false, true));
+        this.paramIndices = new ListParam('indices', 'indices', false, false, true);
 
-        this.paramCounts.itemName  = '';
+        this.paramCounts .itemName  = '';
+        this.paramIndices.itemName  = '';
     }
 
 
@@ -109237,10 +109456,12 @@ extends OperatorBase
         this.length = length.value;
 
         const sep = settings.showNodeId ? ' ' : '  ';
-        this.paramCounts.setName('counts' + sep + '[ ' + this.length + ' ]');
+
+        this.paramCounts .setName('counts'  + sep + '[ ' + this.length + ' ]');
+        this.paramIndices.setName('indices' + sep + '[ ' + this.length + ' ]');
 
 
-        const type  = values[paramIds.findIndex(id => id == 'type'  )];
+        const type = values[paramIds.findIndex(id => id == 'type')];
 
         if (type)
             this.outputs[0].types = [type.value];
@@ -109250,7 +109471,8 @@ extends OperatorBase
 
     updateParams()
     {
-        this.paramCounts.enableControlText(false);
+        this.paramCounts .enableControlText(false, this.isUnknown());
+        this.paramIndices.enableControlText(false, this.isUnknown());
 
         this.updateParamControls();
     }
@@ -136331,6 +136553,86 @@ minZoomInput.addEventListener('pointerup', e =>
     }
 });
 
+
+
+function multiplayerAssert(condition, error, showDebugButton = true)
+{
+    if (condition) return;
+
+    initMultiplayerDialog(error, null, showDebugButton);
+    showMultiplayerDialog();
+
+    consoleError(error);
+}
+
+
+
+function initMultiplayerDialog(event, error, showDebugButton = true)
+{
+    if (error)
+    {
+        let stack = error.stack
+            .replaceAll('<anonymous>', '')
+            .replaceAll('.<', '<')
+            .replaceAll(/\(?data[a-zA-Z0-9/,;:=]*\)?/g, '')
+            .replaceAll('at \n', '')
+            .replaceAll('at ', '<br/>&nbsp;&nbsp;&nbsp;&nbsp;at ')
+            .replaceAll(/\(:[^\)]*\)/g, '')
+            .replaceAll(/at :[0-9]+:[0-9]+/g, '');
+
+        multiplayerDetails.innerHTML += stack + '<br/>';
+    }
+    else
+        multiplayerDetails.innerHTML += event + '<br/>';
+        
+
+    if (!multiplayered)
+    {
+        multiplayerBack.addEventListener('pointerdown', e => { e.preventDefault(); });
+
+        // multiplayerDetails.addEventListener('pointerup', e =>
+        // {
+        //     if (e.button == 2)
+        //     {
+        //         e.preventDefault();
+        //         e.stopImmediatePropagation();
+
+        //         initCopyMenu();
+        //         menuCopy.showAt(e.clientX, e.clientY, false, false);
+        //     }
+        // });
+    }
+}
+
+
+
+function showMultiplayerDialog()
+{
+    multiplayered = true;
+
+
+    if (loadRestartTimer > -1) 
+    {
+        clearTimeout(loadRestartTimer);
+        loadRestartTimer = -1;
+    }
+
+
+    multiplayerBack  .style.display = 'block';
+    multiplayerDialog.style.display = 'block';
+
+    dialogShown = true;
+}
+
+
+
+function hideMultiplayerDialog()
+{
+    multiplayerBack  .style.display = 'none';
+    multiplayerDialog.style.display = 'none';
+
+    dialogShown = false;
+}
 
 
 var saveAsTemplateDialogVisible = false;

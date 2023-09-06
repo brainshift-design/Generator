@@ -2,6 +2,7 @@ class   OpUnique
 extends OperatorBase
 {
     paramCounts;
+    paramIndices;
 
     length;
 
@@ -18,9 +19,12 @@ extends OperatorBase
         this.addInput (new Input (LIST_VALUES));
         this.addOutput(new Output([LIST_VALUE], this.output_genRequest));
 
-        this.addParam(this.paramCounts = new ListParam('counts', 'counts', false, false, true));
+        this.addParam(this.paramCounts  = new ListParam('counts',  'counts',  false, false, true));
+        //this.addParam(this.paramIndices = new ListParam('indices', 'indices', false, false, true));
+        this.paramIndices = new ListParam('indices', 'indices', false, false, true);
 
-        this.paramCounts.itemName  = '';
+        this.paramCounts .itemName  = '';
+        this.paramIndices.itemName  = '';
     }
 
 
@@ -63,10 +67,12 @@ extends OperatorBase
         this.length = length.value;
 
         const sep = settings.showNodeId ? ' ' : '  ';
-        this.paramCounts.setName('counts' + sep + '[ ' + this.length + ' ]');
+
+        this.paramCounts .setName('counts'  + sep + '[ ' + this.length + ' ]');
+        this.paramIndices.setName('indices' + sep + '[ ' + this.length + ' ]');
 
 
-        const type  = values[paramIds.findIndex(id => id == 'type'  )];
+        const type = values[paramIds.findIndex(id => id == 'type')];
 
         if (type)
             this.outputs[0].types = [type.value];
@@ -76,7 +82,8 @@ extends OperatorBase
 
     updateParams()
     {
-        this.paramCounts.enableControlText(false);
+        this.paramCounts .enableControlText(false, this.isUnknown());
+        this.paramIndices.enableControlText(false, this.isUnknown());
 
         this.updateParamControls();
     }

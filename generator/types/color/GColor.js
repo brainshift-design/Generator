@@ -61,12 +61,8 @@ extends GOperator1
             {
                 if (this.options.enabled)
                 {
-                    this.value = new ColorValue(
-                        space ?? input.space,
-                        c1    ?? input.c1,
-                        c2    ?? input.c2,
-                        c3    ?? input.c3);
-                            
+                    this.value = input.copy();
+                    
 
                     const fromSpaceIndex = input.space.value;
 

@@ -1,0 +1,145 @@
+#multiplayerBack
+{
+    display:          none;
+
+    z-index:          10000;
+    
+    position:         fixed;
+    left:             0;
+    top:              0;
+    width:            100%;
+    height:           100%;
+    overflow:         auto;
+    pointer-events:   all;
+
+    background-color: #0005;
+}
+
+
+
+#multiplayerDialog
+{
+    display:       none;
+
+    font-family:   Inter;
+
+    z-index:       10001;
+    position:      absolute;
+    top:           50%;
+    left:          50%;
+    transform:     translateX(-50%)
+                   translateY(-50%);
+    width:         360px;
+    height:        150px;
+
+    overflow:      hidden;
+    
+    color:         var(--figma-color-text);
+    background:    var(--figma-color-bg);
+    
+    border:        0.5px solid rgba(0, 0, 0, 0.2);
+
+    border-radius: 4px;
+
+    /* -webkit-font-smoothing: subpixel-antialiased;
+    -moz-osx-font-smoothing: auto; */
+}
+
+
+#multiplayerDialogContainer
+{
+    height:   calc(100% - 42px);
+    overflow: hidden;
+    padding:  0;
+    z-index:  1;
+    /* box-shadow: 0 0 0 1px red inset; */
+}
+
+
+#multiplayerDialogContent
+{
+    font-size:      12px;
+    margin:         0;
+    padding:        1px 0 5px 0;
+    position:       absolute;
+    pointer-events: all;
+    user-select:    text;
+    width:          100%;
+    /* box-shadow:     0 0 0 1px blue inset; */
+}
+
+
+.figma-light #multiplayerDialog
+{
+    box-shadow: 0px 2px  7px rgba(0, 0, 0, 0.15),
+                0px 5px 17px rgba(0, 0, 0, 0.15);
+}
+
+
+.figma-dark #multiplayerDialog
+{
+    box-shadow: 0px 2px  7px rgba(0, 0, 0, 0.45),
+                0px 5px 25px rgba(0, 0, 0, 0.45),
+                0 0px 2px 0px #fff3 inset;
+}
+
+
+#multiplayerTitle
+{
+    font-size:     14px;
+    font-weight:   500;
+    margin-top:    20px;
+    margin-bottom: 27px;
+}
+
+
+#multiplayerDetails
+{
+    /* font-weight: bold; */
+    height:        165px;
+    margin-bottom: 30px;
+    position:      relative;
+    left:          1px;
+    overflow-y:    scroll;
+    /* box-shadow:    0 0 0 1px red inset; */
+}
+
+
+#multiplayerDetails::-webkit-scrollbar
+{
+    background: transparent;
+    width:      6px;
+}
+
+
+#multiplayerDetails::-webkit-scrollbar-track
+{
+    margin: 6px 6px 6px 0;
+}
+
+
+#multiplayerDetails::-webkit-scrollbar-thumb
+{
+    border-radius: 4px;
+}
+
+
+.figma-dark #multiplayerDetails::-webkit-scrollbar-thumb
+{ 
+    background:    #fff4;
+    /* background-color: #0006;
+    box-shadow:       0 0 0 1px rgba(255, 255, 255, 0.25);  */
+}
+
+
+.figma-light #multiplayerDetails::-webkit-scrollbar-thumb
+{ 
+    background-color: #0004;
+    box-shadow:       0 0 0 1px rgba(255, 255, 255, 0.25); 
+}    
+
+
+#multiplayerDialogBody
+{
+    margin: 0 25px 0 25px;
+}

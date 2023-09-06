@@ -529,3 +529,16 @@ String.prototype.replaceAt = function(index, replacement)
          + replacement 
          + this.substring(index+1);// + replacement.length);
 }
+
+
+
+function findAllIndices(array, condition)
+{
+    const items   = array.filter(condition);
+    const indices = [];
+    
+    for (const item of items)
+        indices.push(items.indexOf(item));
+
+    return indices;
+}
