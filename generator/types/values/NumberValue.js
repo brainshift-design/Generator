@@ -22,7 +22,7 @@ extends GValue
               !isNaN(this.value) 
             && dec == -1 
             ? decDigits(this.value) 
-            : 0;
+            : dec;
     }
 
 

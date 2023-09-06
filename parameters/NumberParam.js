@@ -54,7 +54,8 @@ extends NumberParamBase
 
         this.controls[0].addEventListener('finishedit', e =>
         { 
-            let dec = decCount(e.detail.valueString); 
+            let dec = decCount(e.detail.valueString);
+            console.log('dec =', dec);
             
             if (!e.detail.success)
                 return;
@@ -66,7 +67,6 @@ extends NumberParamBase
                 e.preventSetValue = true;
             }
         });
-
 
 
         createTooltipSrc(this.controls[0].div, this.controls[0].div, () => 

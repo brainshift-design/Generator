@@ -14609,7 +14609,7 @@ extends GValue
               !isNaN(this.value) 
             && dec == -1 
             ? decDigits(this.value) 
-            : 0;
+            : dec;
     }
 
 
@@ -61414,7 +61414,7 @@ extends GValue
               !isNaN(this.value) 
             && dec == -1 
             ? decDigits(this.value) 
-            : 0;
+            : dec;
     }
 
 
@@ -97067,7 +97067,7 @@ extends Parameter
 
         if (  !isNaN(value.value)
             && isNaN(value.decimals))
-            value.decimals = 0;
+            value.decimals = decDigits(value.value);
 
             
         this.preSetValue(value, createAction, dispatchEvents);
@@ -97305,7 +97305,8 @@ extends NumberParamBase
 
         this.controls[0].addEventListener('finishedit', e =>
         { 
-            let dec = decCount(e.detail.valueString); 
+            let dec = decCount(e.detail.valueString);
+            console.log('dec =', dec);
             
             if (!e.detail.success)
                 return;
@@ -97317,7 +97318,6 @@ extends NumberParamBase
                 e.preventSetValue = true;
             }
         });
-
 
 
         createTooltipSrc(this.controls[0].div, this.controls[0].div, () => 

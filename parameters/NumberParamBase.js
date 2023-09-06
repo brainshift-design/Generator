@@ -37,7 +37,7 @@ extends Parameter
 
         if (  !isNaN(value.value)
             && isNaN(value.decimals))
-            value.decimals = 0;
+            value.decimals = decDigits(value.value);
 
             
         this.preSetValue(value, createAction, dispatchEvents);
