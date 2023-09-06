@@ -1,8 +1,7 @@
-class   OpSublist
+class   OpExtract
 extends OperatorBase
 {
-    paramStart;
-    paramEnd;
+    paramIndices;
 
     length;
 
@@ -12,7 +11,7 @@ extends OperatorBase
 
     constructor()
     {
-        super(SUBLIST, 'sublist', 'sublist', iconSublist);
+        super(EXTRACT, 'extract', 'extract', iconExtract);
 
         this.canDisable        = true;
         this.showHeaderTooltip = true;
@@ -21,12 +20,8 @@ extends OperatorBase
         this.addInput (new Input (LIST_VALUES));
         this.addOutput(new Output([LIST_VALUE], this.output_genRequest));
 
-        this.addParam(this.paramStart = new NumberParam('start', '[ start', true, true, true, 0, 0));
-        this.addParam(this.paramEnd   = new NumberParam('end',   '] end',   true, true, true, 0, 0));
+        this.addParam(this.paramIndices = new ListParam('indices', 'indices', false, true, true));
 
-
-        this.paramStart.controls[0].allowEditDecimals = false;
-        this.paramEnd  .controls[0].allowEditDecimals = false;
 
         this.inputs[0].addEventListener('disconnect', () => OpExtract_onDisconnectInput(this));
     }
@@ -53,8 +48,7 @@ extends OperatorBase
         if (input.connected)
             request.push(...pushInputOrParam(input, gen));
 
-        request.push(...this.node.paramStart.genRequest(gen));
-        request.push(...this.node.paramEnd  .genRequest(gen));
+        request.push(...this.node.paramIndices.genRequest(gen));
 
         
         gen.scope.pop();
@@ -67,21 +61,8 @@ extends OperatorBase
 
     updateValues(requestId, actionId, updateParamId, paramIds, values)
     {
-        const fullLength = values[paramIds.findIndex(id => id == 'fullLength')];
-        
-        if (fullLength.value > 0)
-        {
-            this.paramStart.controls[0].setMax(fullLength.value);
-            this.paramEnd  .controls[0].setMax(fullLength.value);
-        }
-        else
-        {
-            this.paramStart.controls[0].setMax();
-            this.paramEnd  .controls[0].setMax();
-        }
-
-
-        const length = values[paramIds.findIndex(id => id == 'length')];
+        //const fullLength = values[paramIds.findIndex(id => id == 'fullLength')];
+        const length     = values[paramIds.findIndex(id => id == 'length')];
 
         this.length = length.value;
 
@@ -93,23 +74,13 @@ extends OperatorBase
 
 
         super.updateValues(requestId, actionId, updateParamId, paramIds, values);
-
-
-        if (  !this._connected
-            && this.inputs[0].connected
-            && this.paramStart.value.value == this.paramEnd.value.value)
-        {
-            this.paramEnd.setValue(fullLength, false, true, false);
-            this._connected = true;
-        }
     }
 
 
 
     updateParams()
     {
-        this.paramStart.enableControlText(true);
-        this.paramEnd  .enableControlText(true);
+        this.paramIndices.enableControlText(false);
 
         this.updateParamControls();
     }

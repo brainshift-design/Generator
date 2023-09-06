@@ -126,21 +126,23 @@ class Graph
         {
             input = input.node.headerInputs.at(-1);
             
-            const inputIndex = 
-                   inputId != ''
-                && isDigit(inputId[0])
-                ? parseInt(inputId)
-                : input.index;
+            // const inputIndex = input.index;
+                // inputId != ''
+                // ? 
+                //    inputId != ''
+                // && isDigit(inputId[0])
+                // ? parseInt(inputId)
+                // : input.index;
 
             // move new input back to correct index
             moveInArray(
                 input.node.inputs, 
                 input.node.headerInputs.length-1, 
-                inputIndex);
+                input.index);//nputIndex);
 
             input.node.inputControls.insertBefore(
                 lastOf(input.node.inputControls.childNodes), 
-                input.node.inputControls.childNodes[inputIndex]);
+                input.node.inputControls.childNodes[input.index]);
         }
 
 

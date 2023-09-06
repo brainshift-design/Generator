@@ -14,13 +14,14 @@ function createNode(nodeType, creatingButton = null, createdNodeId = -1, options
         case TIMER:                   node = new OpTimer();             break;
         case VALUE_NAME:              node = new OpValueName();         break;
 
-        case COMBINE:                    node = new OpCombine();              break;
+        case COMBINE:                 node = new OpCombine();           break;
         case CONDENSE:                node = new OpCondense();          break;
         case LIST:                    node = new OpList();              break;
         case LIST_COUNT:              node = new OpListCount();         break;
         case SELECT:                  node = new OpSelect();            break;
         case CONTAINS:                node = new OpContains();          break;
         case IF_ELSE:                 node = new OpIfElse();            break;
+        case EXTRACT:                 node = new OpExtract();           break;
         case SUBLIST:                 node = new OpSublist();           break;
         case UNIQUE:                  node = new OpUnique();            break;
         case REVERSE_LIST:            node = new OpReverseList();       break;

@@ -5154,7 +5154,7 @@ a
             <div id='whatsNewBody'>
                 <h1 style='margin-top: 20px;'>What's new</h1>
 
-                <p>•  fixed issue in Color node</p>
+                <p>•  </p>
                 
                 <p><br/><br/><div id='chkHideWhatsNew'></div></p>
             </div>
@@ -5512,7 +5512,7 @@ a
 
 
 
-const generatorVersion = 199;
+const generatorVersion = 200;
 
 
 const MAX_INT32        = 2147483647;
@@ -10222,6 +10222,7 @@ const VALUE_NAME              = 'VNAME';
 
 const COMBINE                 = 'CMB';
 const CONDENSE                = 'CDENSE';
+const EXTRACT                 = 'EXTR';
 const SUBLIST                 = 'SUBLST';
 const UNIQUE                  = 'UNIQ';
 const REVERSE_LIST            = 'REVLST';
@@ -10247,6 +10248,7 @@ const LIST_TYPES =
     TEXT_LIST_VALUE,
     SHAPE_LIST_VALUE,
     COMBINE,
+    EXTRACT,
     SUBLIST,
     LIST,
     LIST_COUNT,
@@ -10271,6 +10273,7 @@ const FLOW_TYPES =
     VARIABLE_GROUP,
     ...LIST_TYPES,
     CONDENSE,
+    EXTRACT,
     SUBLIST,
     UNIQUE,
     REVERSE_LIST,
@@ -21653,6 +21656,151 @@ extends GOperator1
         this.validate();
 
         return this;
+    }
+}
+
+
+
+class GExtract
+extends GOperator1
+{
+    indices;
+
+
+    
+    constructor(nodeId, options)
+    {
+        super(SUBLIST, nodeId, options);
+    }
+
+
+    
+    copy()
+    {
+        const copy = new GSublist(this.nodeId, this.options);
+
+        copy.copyBase(this);
+
+        if (this.indices) copy.indices = this.indices.copy();
+
+        return copy;
+    }
+
+
+
+    async eval(parse)
+    {
+        if (this.isCached())
+            return this;
+
+
+        const indices = this.indices ? (await this.indices.eval(parse)).toValue() : null;
+
+
+        this.value = new ListValue();
+
+        let length = 0;
+        
+
+        if (   this.input
+            && indices)
+        {
+            const input = (await this.input.eval(parse)).toValue();
+
+            
+            if (   input
+                && input.items)
+            {
+                length = input.items.length;
+
+
+                // const _end =
+                //     end.isValid()
+                //     ? end
+                //     : new NumberValue(input.items.length);
+
+
+                // if (indices.value < _end.value)
+                // {
+                //     if (this.options.enabled)
+                //     {
+                //         for (let i = indices.value; i < _end.value; i++)
+                //         {
+                //             const item = input.items[i];
+                            
+                //             this.value.items.push(item ? item.copy() : NullValue);
+                            
+                //             if (   item
+                //                 && this.value.objects) 
+                //                 this.value.objects.push(...input.items[i].objects);
+                //         }
+                //     }
+                //     else
+                //         this.value = input.copy();
+                // }
+            }
+            else
+                this.value = ListValue.NaN.copy();
+        }
+
+
+        this.updateValueObjects();
+
+
+        const type = 
+            this.value
+            ? new TextValue(finalListTypeFromItems(this.value.items))
+            : TextValue.NaN;
+
+
+        this.setUpdateValues(parse,
+        [
+            ['preview',    new ListValue(this.value.items.slice(0, Math.min(this.value.items.length, 11)))],
+            ['type',       type                                                                           ],
+            ['length',     new NumberValue(this.value.items.length)                                       ], // used to set start and end maxima
+            //['fullLength', new NumberValue(length)                                                        ], // used to set start and end maxima
+            ['indices',    indices                                                                        ]
+        ]);
+        
+
+        this.validate();
+
+        return this;
+    }
+
+
+
+    isValid()
+    {
+        return super.isValid()
+            && this.indices && this.indices.isValid();
+    }
+
+
+
+    pushValueUpdates(parse)
+    {
+        super.pushValueUpdates(parse);
+
+        if (this.indices) this.indices.pushValueUpdates(parse);
+    }
+
+
+
+    invalidateInputs(parse, from)
+    {
+        super.invalidateInputs(parse, from);
+
+        if (this.indices) this.indices.invalidateInputs(parse, from);
+    }
+
+
+
+    iterateLoop(parse)
+    {
+        super.iterateLoop(parse);
+
+        if (this.indices) this.indices.iterateLoop(parse);
     }
 }
 
@@ -41022,6 +41170,52 @@ function genParseCondense(parse)
 
 
 
+function genParseExtract(parse)
+{
+    const [, nodeId, options, ignore] = genParseNodeStart(parse);
+
+
+    const extr = new GExtract(nodeId, options);
+   
+
+    let nInputs = -1;
+    
+    if (!ignore)
+    {
+        nInputs = parseInt(parse.move());
+        consoleAssert(nInputs == 0 || nInputs == 1, 'nInputs must be [0, 1]');
+    }
+
+    
+    if (parse.settings.logRequests) 
+        logReq(extr, parse, ignore, nInputs);
+
+
+    if (ignore) 
+    {
+        genParseNodeEnd(parse, extr);
+        return parse.parsedNodes.find(n => n.nodeId == nodeId);
+    }
+
+
+    parse.nTab++;
+
+
+    if (nInputs == 1)
+        extr.input = genParse(parse);
+
+    extr.indices = genParse(parse);
+
+    
+    parse.nTab--;
+
+
+    genParseNodeEnd(parse, extr);
+    return extr;
+}
+
+
+
 function genParseSublist(parse)
 {
     const [, nodeId, options, ignore] = genParseNodeStart(parse);
@@ -46600,8 +46794,9 @@ function genParse(parse, inParam = true)
     else if (parse.next == TIMER                  ) result = genParseTimer             (parse);
     else if (parse.next == VALUE_NAME             ) result = genParseValueName         (parse);
 
-    else if (parse.next == COMBINE                   ) result = genParseJoin              (parse);
+    else if (parse.next == COMBINE                ) result = genParseJoin              (parse);
     else if (parse.next == CONDENSE               ) result = genParseCondense          (parse);
+    else if (parse.next == EXTRACT                ) result = genParseExtract           (parse);
     else if (parse.next == SUBLIST                ) result = genParseSublist           (parse);
     else if (parse.next == UNIQUE                 ) result = genParseUnique            (parse);
     else if (parse.next == REVERSE_LIST           ) result = genParseReverseList       (parse);
@@ -50086,7 +50281,7 @@ onerror = (event, source, line, pos, error) =>
 };
 
 
-const generatorVersion = 199;
+const generatorVersion = 200;
 
 
 const MAX_INT32        = 2147483647;
@@ -57049,6 +57244,7 @@ const VALUE_NAME              = 'VNAME';
 
 const COMBINE                 = 'CMB';
 const CONDENSE                = 'CDENSE';
+const EXTRACT                 = 'EXTR';
 const SUBLIST                 = 'SUBLST';
 const UNIQUE                  = 'UNIQ';
 const REVERSE_LIST            = 'REVLST';
@@ -57074,6 +57270,7 @@ const LIST_TYPES =
     TEXT_LIST_VALUE,
     SHAPE_LIST_VALUE,
     COMBINE,
+    EXTRACT,
     SUBLIST,
     LIST,
     LIST_COUNT,
@@ -57098,6 +57295,7 @@ const FLOW_TYPES =
     VARIABLE_GROUP,
     ...LIST_TYPES,
     CONDENSE,
+    EXTRACT,
     SUBLIST,
     UNIQUE,
     REVERSE_LIST,
@@ -68480,6 +68678,151 @@ extends GOperator1
         this.validate();
 
         return this;
+    }
+}
+
+
+
+class GExtract
+extends GOperator1
+{
+    indices;
+
+
+    
+    constructor(nodeId, options)
+    {
+        super(SUBLIST, nodeId, options);
+    }
+
+
+    
+    copy()
+    {
+        const copy = new GSublist(this.nodeId, this.options);
+
+        copy.copyBase(this);
+
+        if (this.indices) copy.indices = this.indices.copy();
+
+        return copy;
+    }
+
+
+
+    async eval(parse)
+    {
+        if (this.isCached())
+            return this;
+
+
+        const indices = this.indices ? (await this.indices.eval(parse)).toValue() : null;
+
+
+        this.value = new ListValue();
+
+        let length = 0;
+        
+
+        if (   this.input
+            && indices)
+        {
+            const input = (await this.input.eval(parse)).toValue();
+
+            
+            if (   input
+                && input.items)
+            {
+                length = input.items.length;
+
+
+                // const _end =
+                //     end.isValid()
+                //     ? end
+                //     : new NumberValue(input.items.length);
+
+
+                // if (indices.value < _end.value)
+                // {
+                //     if (this.options.enabled)
+                //     {
+                //         for (let i = indices.value; i < _end.value; i++)
+                //         {
+                //             const item = input.items[i];
+                            
+                //             this.value.items.push(item ? item.copy() : NullValue);
+                            
+                //             if (   item
+                //                 && this.value.objects) 
+                //                 this.value.objects.push(...input.items[i].objects);
+                //         }
+                //     }
+                //     else
+                //         this.value = input.copy();
+                // }
+            }
+            else
+                this.value = ListValue.NaN.copy();
+        }
+
+
+        this.updateValueObjects();
+
+
+        const type = 
+            this.value
+            ? new TextValue(finalListTypeFromItems(this.value.items))
+            : TextValue.NaN;
+
+
+        this.setUpdateValues(parse,
+        [
+            ['preview',    new ListValue(this.value.items.slice(0, Math.min(this.value.items.length, 11)))],
+            ['type',       type                                                                           ],
+            ['length',     new NumberValue(this.value.items.length)                                       ], // used to set start and end maxima
+            //['fullLength', new NumberValue(length)                                                        ], // used to set start and end maxima
+            ['indices',    indices                                                                        ]
+        ]);
+        
+
+        this.validate();
+
+        return this;
+    }
+
+
+
+    isValid()
+    {
+        return super.isValid()
+            && this.indices && this.indices.isValid();
+    }
+
+
+
+    pushValueUpdates(parse)
+    {
+        super.pushValueUpdates(parse);
+
+        if (this.indices) this.indices.pushValueUpdates(parse);
+    }
+
+
+
+    invalidateInputs(parse, from)
+    {
+        super.invalidateInputs(parse, from);
+
+        if (this.indices) this.indices.invalidateInputs(parse, from);
+    }
+
+
+
+    iterateLoop(parse)
+    {
+        super.iterateLoop(parse);
+
+        if (this.indices) this.indices.iterateLoop(parse);
     }
 }
 
@@ -91045,8 +91388,9 @@ const iconTimer             = '<svg width="13" height="18" viewBox="0 -1 13 18" 
 const iconValueName         = '<svg width="15" height="6" viewBox="0 0 15 6" fill="none" xmlns="http://www.w3.org/2000/svg"><rect x="4" y="5" width="7" height="1" fill="white"/><path d="M14.28 1.14446L14.28 0L12.735 -1.35074e-07L12.735 1.15568C12.7385 1.58953 12.6706 1.98597 12.5311 2.34502C12.388 2.70781 12.211 3.05563 12 3.3885L12.9013 4C13.1624 3.77934 13.3984 3.50818 13.6094 3.18654C13.8169 2.86863 13.9814 2.53015 14.103 2.17111C14.221 1.8158 14.28 1.47359 14.28 1.14446Z" fill="white"/><path d="M3.22168 1.14446L3.22168 0L1.67662 -1.35074e-07L1.67662 1.15568C1.68019 1.58953 1.61224 1.98597 1.47275 2.34502C1.32969 2.70781 1.15265 3.05563 0.941637 3.3885L1.84292 4C2.10401 3.77934 2.34006 3.50818 2.55108 3.18654C2.75852 2.86863 2.92304 2.53015 3.04464 2.17111C3.16267 1.8158 3.22168 1.47359 3.22168 1.14446Z" fill="white"/></svg>';
 
 const iconData              = '<svg width="12" height="9" viewBox="0 0 12 9" fill="none" xmlns="http://www.w3.org/2000/svg"><rect width="9" height="1" fill="white"/><rect y="4" width="9" height="1" fill="white"/><rect y="8" width="9" height="1" fill="white"/></svg>';
-const iconCombine              = '<svg width="13" height="9" viewBox="0 0 13 9" fill="none" xmlns="http://www.w3.org/2000/svg"><rect width="5" height="1" fill="white"/><rect y="8" width="5" height="1" fill="white"/><rect y="4" width="13" height="1" fill="white"/><rect x="4.99963" width="5.52856" height="1" transform="rotate(49.2368 4.99963 0)" fill="white"/><rect width="5.52856" height="1" transform="matrix(0.652935 -0.757414 -0.757414 -0.652935 4.99963 8.98938)" fill="white"/></svg>';
+const iconCombine           = '<svg width="13" height="9" viewBox="0 0 13 9" fill="none" xmlns="http://www.w3.org/2000/svg"><rect width="5" height="1" fill="white"/><rect y="8" width="5" height="1" fill="white"/><rect y="4" width="13" height="1" fill="white"/><rect x="4.99963" width="5.52856" height="1" transform="rotate(49.2368 4.99963 0)" fill="white"/><rect width="5.52856" height="1" transform="matrix(0.652935 -0.757414 -0.757414 -0.652935 4.99963 8.98938)" fill="white"/></svg>';
 const iconCondense          = '<svg width="13" height="6" viewBox="0 0 13 6" fill="none" xmlns="http://www.w3.org/2000/svg"><path fill-rule="evenodd" clip-rule="evenodd" d="M5.776 0.996704L7.50296 3H13V4H7.4937L5.776 5.99256V6H0V5H5.31136L6.60908 3.49463L5.32062 2H0V1H5.77185V1.00028L5.776 0.996704Z" fill="white"/></svg>';
+const iconExtract           = '<svg width="14" height="13" viewBox="0 0 14 13" fill="none" xmlns="http://www.w3.org/2000/svg"><rect y="8" width="9" height="1" fill="white"/><rect y="12" width="9" height="1" fill="white"/><rect y="4" width="9" height="1" fill="white"/><rect width="9" height="1" fill="white"/><path d="M12.5 6C11.6716 6 11 5.32843 11 4.5C11 3.67157 11.6716 3 12.5 3C13.3284 3 14 3.67157 14 4.5C14 5.32843 13.3284 6 12.5 6Z" fill="white"/><path d="M12.5 10C11.6716 10 11 9.32843 11 8.5C11 7.67157 11.6716 7 12.5 7C13.3284 7 14 7.67157 14 8.5C14 9.32843 13.3284 10 12.5 10Z" fill="white"/></svg>';
 const iconSublist           = '<svg width="15" height="13" viewBox="-1 0 15 13" fill="none" xmlns="http://www.w3.org/2000/svg"><rect width="9" height="1" fill="white"/><rect y="12" width="9" height="1" fill="white"/><rect x="5" y="4" width="9" height="1" fill="white"/><rect x="5" y="8" width="9" height="1" fill="white"/></svg>';
 const iconUnique            = '<svg width="13" height="13" viewBox="0 0 13 13" fill="none" xmlns="http://www.w3.org/2000/svg"><rect width="9" height="1" fill="white"/><rect x="4" y="12" width="9" height="1" fill="white"/><rect x="4" y="4" width="9" height="1" fill="white"/><rect y="8" width="9" height="1" fill="white"/></svg>';
 const iconReverseList       = '<svg width="19" height="15" viewBox="-2 0 19 15" fill="none" xmlns="http://www.w3.org/2000/svg"><rect y="3" width="9" height="1" fill="white"/><rect y="7" width="9" height="1" fill="white"/><rect y="11" width="9" height="1" fill="white"/><path d="M11.9899 13.7828L11.9886 13.9778L15.9189 14.004L15.9268 12.8194L13.9576 12.8063C14.7313 11.9939 15.4826 10.933 15.9038 9.70503C16.1407 9.01413 16.2718 8.27255 16.245 7.49996H15.0596C15.0877 8.13674 14.98 8.74699 14.7833 9.3207C14.4072 10.417 13.7011 11.3868 12.97 12.1229L12.6764 9.8487L11.5016 10.0004L11.9899 13.7828Z" fill="white"/><path d="M11.9899 1.21724L11.9886 1.02219L15.9189 0.995972L15.9268 2.18055L13.9576 2.19368C14.7313 3.00606 15.4826 4.06702 15.9038 5.29496C16.1407 5.98586 16.2718 6.72737 16.245 7.49996H15.0596C15.0877 6.86318 14.98 6.253 14.7833 5.67929C14.4072 4.58301 13.7011 3.61316 12.97 2.87713L12.6764 5.15129L11.5016 4.99962L11.9899 1.21724Z" fill="white"/></svg>';
@@ -92775,6 +93119,7 @@ menuFlow = new Menu('Flow', true, false);
                            new MenuItem('Contains',     'List contains', {icon: iconContains,    createType: CONTAINS,     callback: e => actionManager.do(getCreateNodeAction(CONTAINS,      btnData.div, getCreateOptions(e))), disambiguate: true}),
                            new MenuItem('',             null,            {separator: true}),     
         menuItemSelect   = new MenuItem('Select',       null,            {icon: iconSelect,      createType: SELECT,       callback: e => actionManager.do(getCreateNodeAction(SELECT,        btnData.div, getCreateOptions(e)))}),
+                           new MenuItem('Extract',      null,            {icon: iconExtract,     createType: EXTRACT,      callback: e => actionManager.do(getCreateNodeAction(EXTRACT,       btnData.div, getCreateOptions(e)))}),
                            new MenuItem('Sublist',      null,            {icon: iconSublist,     createType: SUBLIST,      callback: e => actionManager.do(getCreateNodeAction(SUBLIST,       btnData.div, getCreateOptions(e)))}),
                            new MenuItem('Unique',       null,            {icon: iconUnique,      createType: UNIQUE,       callback: e => actionManager.do(getCreateNodeAction(UNIQUE,        btnData.div, getCreateOptions(e)))}),
                            new MenuItem('',             null,            {separator: true}),     
@@ -102538,7 +102883,8 @@ extends EventTarget
             && !output.node.isCached())
             return false;
 
-        if (output.node.isOrFollows(this.node))
+        console.log('output =', output);
+        //if (output.node.isOrFollows(this.node))
         if (output.node.follows(this.node))
             return false;
 
@@ -103010,10 +103356,10 @@ extends EventTarget
     connectedInputs = [];
 
     get connectedHeaderInputs() { return this.connectedInputs.filter(i => !i.param); }
-    get connected() { return !isEmpty(this.connectedInputs); }
+    get connected()             { return !isEmpty(this.connectedInputs); }
 
     
-    get connections() { return this.connectedInputs.map(i => i.connection); }
+    get connections()           { return this.connectedInputs.map(i => i.connection); }
 
 
     mouseOver  = false;
@@ -103414,8 +103760,8 @@ function parseConnectionJsonAndConnect(_conn, pasteConnected)
     else
     {
         const conn = uiVariableConnect(
-            outputNode, outputId, //isDigit(outputId[0]) ? parseInt(outputId) : outputNode.outputFromId(outputId).id,
-             inputNode, inputId, //isDigit( inputId[0]) ? parseInt( inputId) :  inputNode. inputFromId( inputId).id,
+            outputNode, outputId, //isDigit(outputId[0]) ? parseInt(outputId) : outputNode.params.find(p => p.id == outputId).output.id,
+             inputNode,  inputId, //isDigit( inputId[0]) ? parseInt( inputId) :  inputNode.params.find(p => p.id ==  inputId). input.id,
             pasteConnected ? -1 : outputOrder);
 
         _conn.outputOrder = conn.outputOrder;
@@ -109216,6 +109562,148 @@ extends OperatorBase
 }
 
 
+class   OpExtract
+extends OperatorBase
+{
+    paramIndices;
+
+    length;
+
+    _connected = false;
+
+
+
+    constructor()
+    {
+        super(EXTRACT, 'extract', 'extract', iconExtract);
+
+        this.canDisable        = true;
+        this.showHeaderTooltip = true;
+        
+
+        this.addInput (new Input (LIST_VALUES));
+        this.addOutput(new Output([LIST_VALUE], this.output_genRequest));
+
+        this.addParam(this.paramIndices = new ListParam('indices', 'indices', false, true, true));
+
+
+        this.inputs[0].addEventListener('disconnect', () => OpExtract_onDisconnectInput(this));
+    }
+
+
+
+    output_genRequest(gen)
+    {
+        // 'this' is the output
+
+        gen.scope.push({
+            nodeId:  this.node.id, 
+            paramId: NULL });
+
+        const [request, ignore] = this.node.genRequestStart(gen);
+        if (ignore) return request;
+
+        
+        const input = this.node.inputs[0];
+
+
+        request.push(input.connected ? 1 : 0);
+        
+        if (input.connected)
+            request.push(...pushInputOrParam(input, gen));
+
+        request.push(...this.node.paramIndices.genRequest(gen));
+
+        
+        gen.scope.pop();
+        pushUnique(gen.passedNodes, this.node);
+
+        return request;
+    }
+
+
+
+    updateValues(requestId, actionId, updateParamId, paramIds, values)
+    {
+        //const fullLength = values[paramIds.findIndex(id => id == 'fullLength')];
+        const length     = values[paramIds.findIndex(id => id == 'length')];
+
+        this.length = length.value;
+
+        
+        const type = values[paramIds.findIndex(id => id == 'type')];
+
+        if (type)
+            this.outputs[0].types = [type.value];
+
+
+        super.updateValues(requestId, actionId, updateParamId, paramIds, values);
+    }
+
+
+
+    updateParams()
+    {
+        this.paramIndices.enableControlText(false);
+
+        this.updateParamControls();
+    }
+
+
+
+    getHeaderColors(options = {})
+    {
+        const colors = super.getHeaderColors(options);
+        const type   = this.outputs[0].types[0];
+
+        colors.text  = isDark(colors.back) ? [1, 1, 1, 1] : [0, 0, 0, 1]; 
+
+        const gray =
+               this.active
+            && this.outputs[0].types[0] == LIST_VALUE;
+
+        colors.input  = this.active ? rgb_a(colors.text, 0.4)  : rgb_a(rgbSaturateHsv(rgbFromType(type, true), 0.5), 0.8);
+        colors.output = gray        ? rgb_a(colors.text, 0.35) : rgb_a(rgbSaturateHsv(rgbFromType(type, true), 0.5), 0.7);
+        colors.wire   = rgbFromType(type, true);
+
+        return colors;
+    }
+
+
+
+    toJsonBase(nTab = 0) 
+    {
+        let   pos = ' '.repeat(nTab);
+        const tab = HTAB;
+
+        let json = super.toJsonBase(nTab);
+
+        json += 
+              ',\n' + pos + tab + '"_connected": "'  + this._connected + '"';
+
+        return json;
+    }
+
+
+
+    loadParams(_node, pasting)
+    {
+        super.loadParams(_node, pasting);
+
+        if (_node._connected)
+            this._connected = parseBool(_node._connected);
+    }
+}
+
+
+
+function OpExtract_onDisconnectInput(node)
+{
+    node._connected = false;
+}
+
+
+
 class   OpSublist
 extends OperatorBase
 {
@@ -109246,7 +109734,7 @@ extends OperatorBase
         this.paramStart.controls[0].allowEditDecimals = false;
         this.paramEnd  .controls[0].allowEditDecimals = false;
 
-        this.inputs[0].addEventListener('disconnect', () => OpSublist_onDisconnectInput(this));
+        this.inputs[0].addEventListener('disconnect', () => OpExtract_onDisconnectInput(this));
     }
 
 
@@ -109380,7 +109868,7 @@ extends OperatorBase
 
 
 
-function OpSublist_onDisconnectInput(node)
+function OpExtract_onDisconnectInput(node)
 {
     node._connected = false;
 }
@@ -109409,8 +109897,7 @@ extends OperatorBase
         this.addOutput(new Output([LIST_VALUE], this.output_genRequest));
 
         this.addParam(this.paramCounts  = new ListParam('counts',  'counts',  false, false, true));
-        //this.addParam(this.paramIndices = new ListParam('indices', 'indices', false, false, true));
-        this.paramIndices = new ListParam('indices', 'indices', false, false, true);
+        this.addParam(this.paramIndices = new ListParam('indices', 'indices', false, false, true));
 
         this.paramCounts .itemName  = '';
         this.paramIndices.itemName  = '';
@@ -125562,21 +126049,23 @@ class Graph
         {
             input = input.node.headerInputs.at(-1);
             
-            const inputIndex = 
-                   inputId != ''
-                && isDigit(inputId[0])
-                ? parseInt(inputId)
-                : input.index;
+            // const inputIndex = input.index;
+                // inputId != ''
+                // ? 
+                //    inputId != ''
+                // && isDigit(inputId[0])
+                // ? parseInt(inputId)
+                // : input.index;
 
             // move new input back to correct index
             moveInArray(
                 input.node.inputs, 
                 input.node.headerInputs.length-1, 
-                inputIndex);
+                input.index);//nputIndex);
 
             input.node.inputControls.insertBefore(
                 lastOf(input.node.inputControls.childNodes), 
-                input.node.inputControls.childNodes[inputIndex]);
+                input.node.inputControls.childNodes[input.index]);
         }
 
 
@@ -133464,13 +133953,14 @@ function createNode(nodeType, creatingButton = null, createdNodeId = -1, options
         case TIMER:                   node = new OpTimer();             break;
         case VALUE_NAME:              node = new OpValueName();         break;
 
-        case COMBINE:                    node = new OpCombine();              break;
+        case COMBINE:                 node = new OpCombine();           break;
         case CONDENSE:                node = new OpCondense();          break;
         case LIST:                    node = new OpList();              break;
         case LIST_COUNT:              node = new OpListCount();         break;
         case SELECT:                  node = new OpSelect();            break;
         case CONTAINS:                node = new OpContains();          break;
         case IF_ELSE:                 node = new OpIfElse();            break;
+        case EXTRACT:                 node = new OpExtract();           break;
         case SUBLIST:                 node = new OpSublist();           break;
         case UNIQUE:                  node = new OpUnique();            break;
         case REVERSE_LIST:            node = new OpReverseList();       break;
@@ -133800,7 +134290,7 @@ function uiVariableConnectFromOutput(output, inputNode, inputId, outputOrder = -
         return;
     
 
-    const input = inputNode.inputFromId( inputId);
+    const input = inputNode.inputFromId(inputId);
 
 
     if (    inputNode.variableInputs

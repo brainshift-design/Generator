@@ -19,7 +19,7 @@ function isConnKey(key) { return isTagKey(key, connTag); }
 function noPageTag(key) { return noTag(key, pageTag); }
 function noNodeTag(key) { return noTag(key, nodeTag); }
 function noConnTag(key) { return noTag(key, connTag); }
-const generatorVersion = 199;
+const generatorVersion = 200;
 const MAX_INT32 = 2147483647;
 const NULL = '';
 const HTAB = '  '; // half-tab
@@ -548,6 +548,7 @@ const TIMER = 'TIMER';
 const VALUE_NAME = 'VNAME';
 const COMBINE = 'CMB';
 const CONDENSE = 'CDENSE';
+const EXTRACT = 'EXTR';
 const SUBLIST = 'SUBLST';
 const UNIQUE = 'UNIQ';
 const REVERSE_LIST = 'REVLST';
@@ -568,6 +569,7 @@ const LIST_TYPES = [
     TEXT_LIST_VALUE,
     SHAPE_LIST_VALUE,
     COMBINE,
+    EXTRACT,
     SUBLIST,
     LIST,
     LIST_COUNT,
@@ -586,6 +588,7 @@ const FLOW_TYPES = [
     VARIABLE_GROUP,
     ...LIST_TYPES,
     CONDENSE,
+    EXTRACT,
     SUBLIST,
     UNIQUE,
     REVERSE_LIST,

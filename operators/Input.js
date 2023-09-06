@@ -359,7 +359,8 @@ extends EventTarget
             && !output.node.isCached())
             return false;
 
-        if (output.node.isOrFollows(this.node))
+        console.log('output =', output);
+        //if (output.node.isOrFollows(this.node))
         if (output.node.follows(this.node))
             return false;
 

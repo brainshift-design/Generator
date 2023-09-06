@@ -57,6 +57,7 @@
 
 ../operators/flow/OpCombine.js
 ../operators/flow/OpCondense.js
+../operators/flow/OpExtract.js
 ../operators/flow/OpSublist.js
 ../operators/flow/OpUnique.js
 ../operators/flow/OpReverseList.js

@@ -37,10 +37,10 @@ extends EventTarget
     connectedInputs = [];
 
     get connectedHeaderInputs() { return this.connectedInputs.filter(i => !i.param); }
-    get connected() { return !isEmpty(this.connectedInputs); }
+    get connected()             { return !isEmpty(this.connectedInputs); }
 
     
-    get connections() { return this.connectedInputs.map(i => i.connection); }
+    get connections()           { return this.connectedInputs.map(i => i.connection); }
 
 
     mouseOver  = false;

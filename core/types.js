@@ -17,6 +17,7 @@ const VALUE_NAME              = 'VNAME';
 
 const COMBINE                 = 'CMB';
 const CONDENSE                = 'CDENSE';
+const EXTRACT                 = 'EXTR';
 const SUBLIST                 = 'SUBLST';
 const UNIQUE                  = 'UNIQ';
 const REVERSE_LIST            = 'REVLST';
@@ -42,6 +43,7 @@ const LIST_TYPES =
     TEXT_LIST_VALUE,
     SHAPE_LIST_VALUE,
     COMBINE,
+    EXTRACT,
     SUBLIST,
     LIST,
     LIST_COUNT,
@@ -66,6 +68,7 @@ const FLOW_TYPES =
     VARIABLE_GROUP,
     ...LIST_TYPES,
     CONDENSE,
+    EXTRACT,
     SUBLIST,
     UNIQUE,
     REVERSE_LIST,

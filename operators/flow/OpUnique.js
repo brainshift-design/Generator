@@ -20,8 +20,7 @@ extends OperatorBase
         this.addOutput(new Output([LIST_VALUE], this.output_genRequest));
 
         this.addParam(this.paramCounts  = new ListParam('counts',  'counts',  false, false, true));
-        //this.addParam(this.paramIndices = new ListParam('indices', 'indices', false, false, true));
-        this.paramIndices = new ListParam('indices', 'indices', false, false, true);
+        this.addParam(this.paramIndices = new ListParam('indices', 'indices', false, false, true));
 
         this.paramCounts .itemName  = '';
         this.paramIndices.itemName  = '';
