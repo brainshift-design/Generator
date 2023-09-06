@@ -22,8 +22,8 @@ extends OperatorBase
         this.addParam(this.paramCounts  = new ListParam('counts',  'counts',  false, false, true));
         this.addParam(this.paramIndices = new ListParam('indices', 'indices', false, false, true));
 
-        this.paramCounts .itemName  = '';
-        this.paramIndices.itemName  = '';
+        this.paramCounts .itemName  = [];
+        this.paramIndices.itemName  = [];
     }
 
 

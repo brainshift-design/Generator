@@ -22,6 +22,8 @@ extends OperatorBase
 
         this.addParam(this.paramIndices = new ListParam('indices', 'indices', false, true, true));
 
+        this.paramIndices.input.types = [LIST_VALUE, NUMBER_LIST_VALUE];
+        this.paramIndices.itemName = ['index', 'indices'];
 
         this.inputs[0].addEventListener('disconnect', () => OpExtract_onDisconnectInput(this));
     }

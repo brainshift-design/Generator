@@ -5154,7 +5154,7 @@ a
             <div id='whatsNewBody'>
                 <h1 style='margin-top: 20px;'>What's new</h1>
 
-                <p>•  </p>
+                <p>•  added Extract node to make sublists with specific indices</p>
                 
                 <p><br/><br/><div id='chkHideWhatsNew'></div></p>
             </div>
@@ -8182,19 +8182,26 @@ function indexOfChild(parent, child)
 
 
 
-function pluralString(count, pluralChar = 's')
+function countString(count, singular, plural = singular)
 {
-    return count == 1 ? '' : pluralChar;
-}
+    if (singular == plural)
+    {
+        const lastChar   = singular.at(-1);
+        const pluralChar = lastChar == lastChar.toUpperCase() ? 'S' : 's';
 
+        return singular + (count == 1 ? '' : pluralChar);
+    }
+    else
+    {
+        const lastChar = plural.at(-1);
 
+        if (lastChar == lastChar.toUpperCase())
+            plural = plural.toUpperCase();
 
-function countString(count, itemName)
-{
-    const lastChar   = itemName.at(-1);
-    const pluralChar = lastChar == lastChar.toUpperCase() ? 'S' : 's';
-
-    return itemName + pluralString(count, pluralChar);
+        return count == 1
+            ? singular
+            : plural;
+    }
 }
 
 
@@ -21720,25 +21727,20 @@ extends GOperator1
                 //     : new NumberValue(input.items.length);
 
 
-                // if (indices.value < _end.value)
-                // {
-                //     if (this.options.enabled)
-                //     {
-                //         for (let i = indices.value; i < _end.value; i++)
-                //         {
-                //             const item = input.items[i];
-                            
-                //             this.value.items.push(item ? item.copy() : NullValue);
-                            
-                //             if (   item
-                //                 && this.value.objects) 
-                //                 this.value.objects.push(...input.items[i].objects);
-                //         }
-                //     }
-                //     else
-                //         this.value = input.copy();
-                // }
-            }
+                if (this.options.enabled)
+                {
+                    for (let i = 0; i < indices.items.length; i++)
+                    {
+                        const item = input.items[Math.round(indices.items[i].value)];
+                        
+                        this.value.items.push(item ? item.copy() : NullValue);
+                        
+                        if (   item
+                            && this.value.objects) 
+                            this.value.objects.push(...input.items[i].objects);
+                    }
+                }
+           }
             else
                 this.value = ListValue.NaN.copy();
         }
@@ -52951,19 +52953,26 @@ function indexOfChild(parent, child)
 
 
 
-function pluralString(count, pluralChar = 's')
+function countString(count, singular, plural = singular)
 {
-    return count == 1 ? '' : pluralChar;
-}
+    if (singular == plural)
+    {
+        const lastChar   = singular.at(-1);
+        const pluralChar = lastChar == lastChar.toUpperCase() ? 'S' : 's';
 
+        return singular + (count == 1 ? '' : pluralChar);
+    }
+    else
+    {
+        const lastChar = plural.at(-1);
 
+        if (lastChar == lastChar.toUpperCase())
+            plural = plural.toUpperCase();
 
-function countString(count, itemName)
-{
-    const lastChar   = itemName.at(-1);
-    const pluralChar = lastChar == lastChar.toUpperCase() ? 'S' : 's';
-
-    return itemName + pluralString(count, pluralChar);
+        return count == 1
+            ? singular
+            : plural;
+    }
 }
 
 
@@ -68742,25 +68751,20 @@ extends GOperator1
                 //     : new NumberValue(input.items.length);
 
 
-                // if (indices.value < _end.value)
-                // {
-                //     if (this.options.enabled)
-                //     {
-                //         for (let i = indices.value; i < _end.value; i++)
-                //         {
-                //             const item = input.items[i];
-                            
-                //             this.value.items.push(item ? item.copy() : NullValue);
-                            
-                //             if (   item
-                //                 && this.value.objects) 
-                //                 this.value.objects.push(...input.items[i].objects);
-                //         }
-                //     }
-                //     else
-                //         this.value = input.copy();
-                // }
-            }
+                if (this.options.enabled)
+                {
+                    for (let i = 0; i < indices.items.length; i++)
+                    {
+                        const item = input.items[Math.round(indices.items[i].value)];
+                        
+                        this.value.items.push(item ? item.copy() : NullValue);
+                        
+                        if (   item
+                            && this.value.objects) 
+                            this.value.objects.push(...input.items[i].objects);
+                    }
+                }
+           }
             else
                 this.value = ListValue.NaN.copy();
         }
@@ -99955,7 +99959,7 @@ extends Parameter
         this.defaultValue = defaultValue;
         this.value        = defaultValue;
 
-        this.itemName     = 'item';
+        this.itemName     = ['item'];
 
 
         this.controls.push(new TextControl(
@@ -100098,9 +100102,9 @@ extends Parameter
                   .length;
 
         let value =
-            this.itemName != ''
+            this.itemName.length > 0
             ?   (this.node && this.node.isUnknown() ? '? ' : ((nItems != 0 || this.showZero) ? (nItems + ' ') : ''))
-              +  countString(nItems, this.itemName)
+              +  countString(nItems, ...this.itemName)
             : this.name;
 
         if (this.showCount)
@@ -102883,7 +102887,7 @@ extends EventTarget
             && !output.node.isCached())
             return false;
 
-        console.log('output =', output);
+            
         //if (output.node.isOrFollows(this.node))
         if (output.node.follows(this.node))
             return false;
@@ -107196,6 +107200,7 @@ Operator.prototype.updateHeaderLabelText = function()
     const sep = settings.showNodeId ? ' ' : '  ';
 
          if (this.type == COMBINE     ) suffix = sep + '[ ' + this.length        + ' ]';
+    else if (this.type == EXTRACT     ) suffix = sep + '[ ' + this.length        + ' ]';
     else if (this.type == SUBLIST     ) suffix = sep + '[ ' + this.length        + ' ]';
     else if (this.type == COLUMN      ) suffix = sep + '[ ' + this.columnLength  + ' ]';
     else if (this.type == REVERSE_LIST) suffix = sep + '[ ' + this.tableLength   + ' ]';
@@ -109586,6 +109591,8 @@ extends OperatorBase
 
         this.addParam(this.paramIndices = new ListParam('indices', 'indices', false, true, true));
 
+        this.paramIndices.input.types = [LIST_VALUE, NUMBER_LIST_VALUE];
+        this.paramIndices.itemName = ['index', 'indices'];
 
         this.inputs[0].addEventListener('disconnect', () => OpExtract_onDisconnectInput(this));
     }
@@ -109899,8 +109906,8 @@ extends OperatorBase
         this.addParam(this.paramCounts  = new ListParam('counts',  'counts',  false, false, true));
         this.addParam(this.paramIndices = new ListParam('indices', 'indices', false, false, true));
 
-        this.paramCounts .itemName  = '';
-        this.paramIndices.itemName  = '';
+        this.paramCounts .itemName  = [];
+        this.paramIndices.itemName  = [];
     }
 
 
@@ -110916,7 +110923,7 @@ extends OperatorBase
 
         this.paramValue.isNodeValue = true;
 
-        this.paramAll.itemName = '';
+        this.paramAll.itemName = [];
 
         this.paramFirst.divider = 0.62;
         this.paramLast .divider = 0.62;
@@ -114987,7 +114994,7 @@ extends OperatorBase
 
         this.paramValue.isNodeValue = true;
 
-        this.paramAll.itemName = '';
+        this.paramAll.itemName = [];
 
         this.paramFirst.divider = 0.62;
         this.paramLast .divider = 0.62;
@@ -115532,7 +115539,7 @@ extends OperatorBase
         this.addParam(this.paramSeparator = new TextParam('separator', 'separator', false, true,  true, ''));
 
 
-        this.paramValue.itemName    = 'value';
+        this.paramValue.itemName    = ['value'];
         this.paramValue.isNodeValue =  true;
 
         setControlFont(this.paramSeparator.controls[0].textbox, 'Roboto Mono', 10, 'center');
@@ -115699,7 +115706,7 @@ extends OperatorBase
         this.addParam(this.paramRowSeparator    = new TextParam  ('rowSeparator',    'rows', true , true,  true, '\\n'));
         this.addParam(this.paramColumnSeparator = new TextParam  ('columnSeparator', 'columns', true , true,  true, ','));
 
-        this.paramValue.itemName = '';
+        this.paramValue.itemName = [];
 
         this.paramRowSeparator   .divider = 0.6;
         this.paramColumnSeparator.divider = 0.6;
@@ -115786,7 +115793,7 @@ extends OperatorBase
 
         this.addParam(this.paramValue = new ListParam('value', 'values', false, false, true));
 
-        this.paramValue.itemName = '';
+        this.paramValue.itemName = [];
     }
 
 
@@ -120946,7 +120953,7 @@ extends OpColorBase
         this.addParam(this.paramCap    = new SelectParam('cap',    'cap',    true,  true, true, ['none', 'square', 'round'], 0));
         this.addParam(this.paramDashes = new   TextParam('dashes', 'dashes', false, true, true));
 
-        this.paramFills.itemName  = 'fill';
+        this.paramFills.itemName  = ['fill'];
         this.paramFills.showZero  = false;
         this.paramFills.listTypes = [COLOR_VALUE, FILL_VALUE, GRADIENT_VALUE];
         this.paramFills.input.types.push(...this.paramFills.listTypes);
@@ -121871,7 +121878,7 @@ extends OpShapeBase
 
         this.paramProps.controls[0].valueText = 'style';
         
-        this.paramProps.itemName  = 'style';
+        this.paramProps.itemName  = ['style'];
         this.paramProps.showZero  = false;
         this.paramProps.listTypes = [...STYLE_VALUES];
         this.paramProps.input.types.push(...this.paramProps.listTypes);
@@ -122580,7 +122587,7 @@ extends OpShape
         this.paramPoints.input.types.push(SHAPE_LIST_VALUE);
         this.paramPoints.listTypes   = [POINT_VALUE];
 
-        this.paramPoints.itemName    = 'point';
+        this.paramPoints.itemName    = ['point'];
         this.paramPoints.showZero    =  false;
 
         this.paramDegree.reverseMenu =  true;
@@ -123112,7 +123119,7 @@ extends OpShape
 
         this.paramChildren.input.types.push(SHAPE_LIST_VALUE, ...SHAPE_VALUES);
         this.paramChildren.listTypes    = SHAPE_VALUES;
-        this.paramChildren.itemName     = 'object';
+        this.paramChildren.itemName     = ['object'];
         this.paramChildren.showZero     = false;
         this.paramChildren.getItemCount = () => 0;
 
@@ -124208,7 +124215,7 @@ extends OpShapeBase
         
         this.paramChildren.input.types.push(SHAPE_LIST_VALUE, ...SHAPE_VALUES);
         this.paramChildren.listTypes    = SHAPE_VALUES;
-        this.paramChildren.itemName     = 'object';
+        this.paramChildren.itemName     = ['object'];
         this.paramChildren.showZero     = false;
         this.paramChildren.getItemCount = () => 0;
 
@@ -124276,7 +124283,7 @@ extends OpShapeBase
         
         this.paramChildren.input.types.push(SHAPE_LIST_VALUE, ...SHAPE_VALUES);
         this.paramChildren.listTypes    = SHAPE_VALUES;
-        this.paramChildren.itemName     = 'object';
+        this.paramChildren.itemName     = ['object'];
         this.paramChildren.showZero     = false;
         this.paramChildren.getItemCount = () => 0;
 

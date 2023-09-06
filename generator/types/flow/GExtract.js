@@ -57,25 +57,20 @@ extends GOperator1
                 //     : new NumberValue(input.items.length);
 
 
-                // if (indices.value < _end.value)
-                // {
-                //     if (this.options.enabled)
-                //     {
-                //         for (let i = indices.value; i < _end.value; i++)
-                //         {
-                //             const item = input.items[i];
-                            
-                //             this.value.items.push(item ? item.copy() : NullValue);
-                            
-                //             if (   item
-                //                 && this.value.objects) 
-                //                 this.value.objects.push(...input.items[i].objects);
-                //         }
-                //     }
-                //     else
-                //         this.value = input.copy();
-                // }
-            }
+                if (this.options.enabled)
+                {
+                    for (let i = 0; i < indices.items.length; i++)
+                    {
+                        const item = input.items[Math.round(indices.items[i].value)];
+                        
+                        this.value.items.push(item ? item.copy() : NullValue);
+                        
+                        if (   item
+                            && this.value.objects) 
+                            this.value.objects.push(...input.items[i].objects);
+                    }
+                }
+           }
             else
                 this.value = ListValue.NaN.copy();
         }

@@ -31,7 +31,7 @@ extends OpShape
         this.paramPoints.input.types.push(SHAPE_LIST_VALUE);
         this.paramPoints.listTypes   = [POINT_VALUE];
 
-        this.paramPoints.itemName    = 'point';
+        this.paramPoints.itemName    = ['point'];
         this.paramPoints.showZero    =  false;
 
         this.paramDegree.reverseMenu =  true;

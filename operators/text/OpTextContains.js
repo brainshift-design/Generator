@@ -26,7 +26,7 @@ extends OperatorBase
 
         this.paramValue.isNodeValue = true;
 
-        this.paramAll.itemName = '';
+        this.paramAll.itemName = [];
 
         this.paramFirst.divider = 0.62;
         this.paramLast .divider = 0.62;

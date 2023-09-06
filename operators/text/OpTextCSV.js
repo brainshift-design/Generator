@@ -21,7 +21,7 @@ extends OperatorBase
         this.addParam(this.paramRowSeparator    = new TextParam  ('rowSeparator',    'rows', true , true,  true, '\\n'));
         this.addParam(this.paramColumnSeparator = new TextParam  ('columnSeparator', 'columns', true , true,  true, ','));
 
-        this.paramValue.itemName = '';
+        this.paramValue.itemName = [];
 
         this.paramRowSeparator   .divider = 0.6;
         this.paramColumnSeparator.divider = 0.6;

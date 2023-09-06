@@ -32,7 +32,7 @@ extends Parameter
         this.defaultValue = defaultValue;
         this.value        = defaultValue;
 
-        this.itemName     = 'item';
+        this.itemName     = ['item'];
 
 
         this.controls.push(new TextControl(
@@ -175,9 +175,9 @@ extends Parameter
                   .length;
 
         let value =
-            this.itemName != ''
+            this.itemName.length > 0
             ?   (this.node && this.node.isUnknown() ? '? ' : ((nItems != 0 || this.showZero) ? (nItems + ' ') : ''))
-              +  countString(nItems, this.itemName)
+              +  countString(nItems, ...this.itemName)
             : this.name;
 
         if (this.showCount)

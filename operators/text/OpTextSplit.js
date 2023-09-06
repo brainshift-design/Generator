@@ -17,7 +17,7 @@ extends OperatorBase
         this.addParam(this.paramSeparator = new TextParam('separator', 'separator', false, true,  true, ''));
 
 
-        this.paramValue.itemName    = 'value';
+        this.paramValue.itemName    = ['value'];
         this.paramValue.isNodeValue =  true;
 
         setControlFont(this.paramSeparator.controls[0].textbox, 'Roboto Mono', 10, 'center');

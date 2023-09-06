@@ -20,7 +20,7 @@ extends OperatorBase
 
         this.addParam(this.paramValue = new ListParam('value', 'values', false, false, true));
 
-        this.paramValue.itemName = '';
+        this.paramValue.itemName = [];
     }
 
 
