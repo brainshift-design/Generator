@@ -53,7 +53,8 @@ extends GOperator
         {
             const value = start.value + (this.options.enabled ? step.value * this.iteration : 0);
 
-            // console.log('sequence');
+            if (this.nodeId == 'sequence2')
+                console.log('sequence');
 
             if (!end.isValid())
                 this.value = new NumberValue(value, Math.max(start.decimals, step.decimals));

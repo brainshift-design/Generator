@@ -250,8 +250,8 @@ extends Parameter
 
         const showColorBack = 
                 this.showColorBack
-            && !this.isUnknown() 
-            && !this.node.isUnknown();
+            && !this.isUnknown();
+            //&& !this.node.isUnknown();
 
 
         const noColor = 
