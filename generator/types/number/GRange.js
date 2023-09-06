@@ -22,11 +22,11 @@ extends GOperator
 
         copy.copyBase(this);
 
-        if (this.from   ) copy.from    = this.from   .copy();
-        if (this.start  ) copy.start   = this.start  .copy();
-        if (this.end    ) copy.end     = this.end    .copy();
-        if (this.spread ) copy.spread  = this.spread .copy();
-        if (this.bias   ) copy.bias    = this.bias   .copy();
+        if (this.from  ) copy.from   = this.from  .copy();
+        if (this.start ) copy.start  = this.start .copy();
+        if (this.end   ) copy.end    = this.end   .copy();
+        if (this.spread) copy.spread = this.spread.copy();
+        if (this.bias  ) copy.bias   = this.bias  .copy();
 
         if (this.current) copy.current = this.current.copy();
 
@@ -55,6 +55,9 @@ extends GOperator
         const iteration = repeat ? repeat.iteration : 0;
 
 
+        const startValue = Math.min(start.value, end.value);
+
+        
         let delta = end.value - start.value;
 
         let step = 
@@ -77,11 +80,9 @@ extends GOperator
         
         if (repeat)
         {
-            const sd = delta ? start.value/delta : 0;
-
-                 if (from.value == 2) f = sd + iteration/repeat.total;
-            else if (from.value == 1) f = sd + (repeat.total > 1 ? iteration/(repeat.total-1) : 0);
-            else if (from.value == 0) f = sd + iteration/repeat.total;
+                 if (from.value == 2) f = iteration/repeat.total;
+            else if (from.value == 1) f = (repeat.total > 1 ? iteration/(repeat.total-1) : 0);
+            else if (from.value == 0) f = iteration/repeat.total;
         }
         else
             f = 0;
@@ -119,6 +120,7 @@ extends GOperator
         this.value = new NumberValue(
             start.value + startOffset + delta * f,
             Math.max(start.decimals, end.decimals));
+
 
         this.setUpdateValues(parse,
         [
