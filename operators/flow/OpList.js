@@ -199,11 +199,24 @@ extends ResizableBase
                     continue;
 
                     
-                let param = oldParams.find(p => p.id == valueId);
+                let param = oldParams.find(p => 
+                       p.id == valueId 
+                    && p.node
+                    && p.node.nodeId == this.nodeId);
+
+                if (this.nodeId == 'list6')
+                    console.log('oldParams =', [...oldParams]);
 
                 if (   param
                     && param.type != value.type)
                 {
+                    if (this.nodeId == 'list6')
+                    {
+                        console.log('param.node.nodeId =', param.node.nodeId);
+                        console.log('param.id =', param.id);
+                        console.log('param.type =', param.type);
+                        console.log('value.type =', value.type);
+                    }
                     this.removeParam(param);
                     param = null;
                 }

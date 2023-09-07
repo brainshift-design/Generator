@@ -5155,6 +5155,7 @@ a
                 <h1 style='margin-top: 20px;'>What's new</h1>
 
                 <p>•  added Extract node to make sublists with specific indices</p>
+                <p>•  fixed disappearing connections from List</p>
                 
                 <p><br/><br/><div id='chkHideWhatsNew'></div></p>
             </div>
@@ -110633,11 +110634,24 @@ extends ResizableBase
                     continue;
 
                     
-                let param = oldParams.find(p => p.id == valueId);
+                let param = oldParams.find(p => 
+                       p.id == valueId 
+                    && p.node
+                    && p.node.nodeId == this.nodeId);
+
+                if (this.nodeId == 'list6')
+                    console.log('oldParams =', [...oldParams]);
 
                 if (   param
                     && param.type != value.type)
                 {
+                    if (this.nodeId == 'list6')
+                    {
+                        console.log('param.node.nodeId =', param.node.nodeId);
+                        console.log('param.id =', param.id);
+                        console.log('param.type =', param.type);
+                        console.log('value.type =', value.type);
+                    }
                     this.removeParam(param);
                     param = null;
                 }
@@ -126115,6 +126129,8 @@ class Graph
 
     disconnect(input)
     {
+        // console.log('disconnect');
+        // console.trace();
         const output = input.connectedOutput;
         if (!output) return false;
 
@@ -134289,6 +134305,7 @@ function uiVariableConnect(outputNode, outputId, inputNode, inputId, outputOrder
 {
     //console.log('uiVariableConnect()');
 
+    // console.log('outputId =', outputId);
     const output = outputNode.outputFromId(outputId);
     return uiVariableConnectFromOutput(output, inputNode, inputId, outputOrder);
 }

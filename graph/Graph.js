@@ -179,6 +179,8 @@ class Graph
 
     disconnect(input)
     {
+        // console.log('disconnect');
+        // console.trace();
         const output = input.connectedOutput;
         if (!output) return false;
 

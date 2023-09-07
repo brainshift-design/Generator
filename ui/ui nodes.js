@@ -138,6 +138,7 @@ function uiVariableConnect(outputNode, outputId, inputNode, inputId, outputOrder
 {
     //console.log('uiVariableConnect()');
 
+    // console.log('outputId =', outputId);
     const output = outputNode.outputFromId(outputId);
     return uiVariableConnectFromOutput(output, inputNode, inputId, outputOrder);
 }
