@@ -359,7 +359,7 @@ extends EventTarget
             && !output.node.isCached())
             return false;
 
-            
+
         //if (output.node.isOrFollows(this.node))
         if (output.node.follows(this.node))
             return false;
@@ -382,7 +382,8 @@ extends EventTarget
 
     isUncached()
     {
-        if (this.connectedOutput)
+        if (   this.connectedOutput
+            && this.connectedOutput.node)
             return this.connectedOutput.node.isOrPrecededByUncached();
         // if (    this.connectedOutput
         //     && !this.connectedOutput.node.cached)

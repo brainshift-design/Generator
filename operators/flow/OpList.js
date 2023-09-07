@@ -135,6 +135,7 @@ extends ResizableBase
                 Math.max(h, defHeaderHeight)),
             updateTransform);
 
+
         this.updateScrollbar();
         this.updateNode();
     }
@@ -224,6 +225,10 @@ extends ResizableBase
 
         for (const param of this.params)
             param.divider = Math.min(120 / this.measureData.divOffset.width, 0.25);
+
+
+        this.updateMeasureData();
+        this.updateScrollbar();
     }
 
 
