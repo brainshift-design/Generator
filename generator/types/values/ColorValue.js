@@ -147,6 +147,9 @@ extends GValue
     {
         const rgb = dataColor2rgb(this.toDataColor());
 
+        if (limit && rgbIsNaN(rgb))
+            return {r: 0.5, g: 0.5, b: 0.5};
+        
         return limit
             ? { r: Math.min(Math.max(0, rgb[0]), 1),
                 g: Math.min(Math.max(0, rgb[1]), 1),

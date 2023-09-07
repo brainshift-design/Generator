@@ -19,7 +19,7 @@ function isConnKey(key) { return isTagKey(key, connTag); }
 function noPageTag(key) { return noTag(key, pageTag); }
 function noNodeTag(key) { return noTag(key, nodeTag); }
 function noConnTag(key) { return noTag(key, connTag); }
-const generatorVersion = 201;
+const generatorVersion = 204;
 const MAX_INT32 = 2147483647;
 const NULL = '';
 const HTAB = '  '; // half-tab
@@ -1364,7 +1364,7 @@ function figRestartGenerator() {
     });
 }
 function figFinishStart() {
-    setInterval(figOnIdInterval, 5000);
+    setInterval(figOnIdInterval, clockInterval);
 }
 function figOnZoomInterval() {
     if (figma.viewport.zoom == curZoom)
@@ -1375,17 +1375,19 @@ function figOnZoomInterval() {
     updateDecoObjects();
 }
 function figOnIdInterval() {
-    figSetPageData(clockMarker + figma.currentUser.id, Date.now().toString());
+    figSetPageData(clockMarker + figma.currentUser.sessionId.toString(), Date.now().toString());
 }
 function figPageIsLocked() {
     const clocks = figma.currentPage.getPluginDataKeys()
         .filter(k => k.length > clockMarker.length
-        && k.substring(0, clockMarker.length) == clockMarker)
+        && k.substring(0, clockMarker.length) == clockMarker
+        && k.substring(clockMarker.length) != figma.currentUser.sessionId.toString())
         .map(k => parseInt(figGetPageData(k)));
     clocks.sort();
-    console.log('clocks =', clocks);
-    return clocks.length > 0
-        && Date.now() - clocks.at(-1) < clockInterval * 2;
+    const now = Date.now();
+    const locked = clocks.length > 0
+        && now - clocks[clocks.length - 1] < clockInterval * 2;
+    return locked;
 }
 function figOnSelectionChange() {
     updatePointObjects();

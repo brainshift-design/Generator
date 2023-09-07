@@ -47,6 +47,9 @@ GraphView.prototype.updateWires = function(_wires)
     }
 
 
+    if (wires.length == 0)
+        return;
+
     const pOut    = [];
     const pIn     = [];
     
