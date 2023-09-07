@@ -67,8 +67,6 @@ extends GOperator1
 
                 const nRepeats = 
                        this.options.enabled 
-                    && (   this.options.active
-                        || this.options.beforeActive)
                     ? count.value 
                     : 0;
                 
@@ -121,24 +119,28 @@ extends GOperator1
                         this.value.items.push(input.copy());
 
 
-                        this.iterationObjects = [];
-                    
-                        if (this.input.value.objects)
+                        if (   this.options.active
+                            || this.options.beforeActive)
                         {
-                            for (let j = 0; j < this.input.value.objects.length; j++, o++)
+                            this.iterationObjects = [];
+                        
+                            if (this.input.value.objects)
                             {
-                                const obj = copyFigmaObject(this.input.value.objects[j]);
+                                for (let j = 0; j < this.input.value.objects.length; j++, o++)
+                                {
+                                    const obj = copyFigmaObject(this.input.value.objects[j]);
 
-                                this.iterationObjects.push(obj.copy());
+                                    this.iterationObjects.push(obj.copy());
 
-                                obj.nodeId      = this.nodeId;
-                                obj.listId      = i;
+                                    obj.nodeId      = this.nodeId;
+                                    obj.listId      = i;
 
-                                obj.objectId    = obj.objectId + OBJECT_SEPARATOR + this.nodeId + ':' + (o+1).toString();
-                                obj.objectName += ' ' + (o+1).toString();
+                                    obj.objectId    = obj.objectId + OBJECT_SEPARATOR + this.nodeId + ':' + (o+1).toString();
+                                    obj.objectName += ' ' + (o+1).toString();
 
-                                if (this.value.objects)
-                                    this.value.objects.push(obj);
+                                    if (this.value.objects)
+                                        this.value.objects.push(obj);
+                                }
                             }
                         }
                     }

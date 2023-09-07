@@ -432,9 +432,9 @@ extends OpColorBase
         const enable = !this.inputs[0].connected;
 
         this.paramSpace.enableControlText(!this.paramSpace.input.connected);
-        this.param1    .enableControlText(enable, this.param1.isUnknown() || this.isUnknown() && !this.param1.input.connected);
-        this.param2    .enableControlText(enable, this.param2.isUnknown() || this.isUnknown() && !this.param2.input.connected);
-        this.param3    .enableControlText(enable, this.param3.isUnknown() || this.isUnknown() && !this.param3.input.connected);
+        this.param1    .enableControlText(enable, this.param1.isUnknown() || (this.inputs[0].connected && this.inputs[0].connectedOutput.node.isUnknown()) && !this.param1.input.connected);
+        this.param2    .enableControlText(enable, this.param2.isUnknown() || (this.inputs[0].connected && this.inputs[0].connectedOutput.node.isUnknown()) && !this.param2.input.connected);
+        this.param3    .enableControlText(enable, this.param3.isUnknown() || (this.inputs[0].connected && this.inputs[0].connectedOutput.node.isUnknown()) && !this.param3.input.connected);
 
 
         enableElementText(this.paramColor.controls[0].div, !this.isConnected());
