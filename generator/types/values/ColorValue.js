@@ -143,14 +143,17 @@ extends GValue
 
 
 
-    toRgbObject()
+    toRgbObject(limit = false)
     {
         const rgb = dataColor2rgb(this.toDataColor());
 
-        return {
-            r: rgb[0],
-            g: rgb[1],
-            b: rgb[2] };
+        return limit
+            ? { r: Math.min(Math.max(0, rgb[0]), 1),
+                g: Math.min(Math.max(0, rgb[1]), 1),
+                b: Math.min(Math.max(0, rgb[2]), 1) }
+            : { r: rgb[0],
+                g: rgb[1],
+                b: rgb[2] };
     }
 
 

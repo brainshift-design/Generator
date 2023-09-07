@@ -111,7 +111,10 @@ async function uiReturnFigStartGenerator(msg)
     initWindowSizers();
 
 
-    validateInit(msg.eulaRead);
+    if (msg.isLocked)
+        showMultiplayerDialog();
+    else
+        validateInit(msg.eulaRead);
 }
 
 
@@ -121,6 +124,8 @@ function initGenerator()
     uiGetLocalData('showWhatsNew');
 
     setTimeout(() => loadingGraphic.style.display = 'block', 300);
+
+    uiQueueMessageToFigma({cmd: 'figFinishStart'});
 
     uiQueueMessageToFigma({
         cmd:     'figLoadNodesAndConns',

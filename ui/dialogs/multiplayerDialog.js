@@ -29,38 +29,13 @@ function initMultiplayerDialog(event, error, showDebugButton = true)
         multiplayerDetails.innerHTML += event + '<br/>';
         
 
-    if (!multiplayered)
-    {
-        multiplayerBack.addEventListener('pointerdown', e => { e.preventDefault(); });
-
-        // multiplayerDetails.addEventListener('pointerup', e =>
-        // {
-        //     if (e.button == 2)
-        //     {
-        //         e.preventDefault();
-        //         e.stopImmediatePropagation();
-
-        //         initCopyMenu();
-        //         menuCopy.showAt(e.clientX, e.clientY, false, false);
-        //     }
-        // });
-    }
+    multiplayerBack.addEventListener('pointerdown', e => { e.preventDefault(); });
 }
 
 
 
 function showMultiplayerDialog()
 {
-    multiplayered = true;
-
-
-    if (loadRestartTimer > -1) 
-    {
-        clearTimeout(loadRestartTimer);
-        loadRestartTimer = -1;
-    }
-
-
     multiplayerBack  .style.display = 'block';
     multiplayerDialog.style.display = 'block';
 

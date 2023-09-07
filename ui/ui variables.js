@@ -187,6 +187,6 @@ function getVariableValue(value)
     {
         case NUMBER_VALUE: return value.value;
         case TEXT_VALUE:   return value.value;
-        case COLOR_VALUE:  return value.toRgbObject();
+        case COLOR_VALUE:  return value.toRgbObject(true);
     }
 }

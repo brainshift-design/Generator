@@ -2082,6 +2082,10 @@ var curZoom = figma.viewport.zoom;
 setInterval(figOnZoomInterval, 100);
 
 
+const clockMarker   = 'clock_';
+const clockInterval = 1000;
+
+
 var showIds = false;
 
 
@@ -2116,6 +2120,7 @@ function figStartGenerator()
         // console.log('figma fonts =', fonts);
  
         const eulaRead = (await figma.clientStorage.getAsync('eulaRead')) === 'true';
+        const isLocked = figPageIsLocked();
 
         
         figPostMessageToUi({
@@ -2124,7 +2129,8 @@ function figStartGenerator()
             viewportRect: figma.viewport.bounds,
             viewportZoom: figma.viewport.zoom,
             fonts:        fonts,
-            eulaRead:     eulaRead });
+            eulaRead:     eulaRead,
+            isLocked:     isLocked });
     })();
 }
 
@@ -2144,6 +2150,13 @@ function figRestartGenerator()
 
 
 
+function figFinishStart()
+{
+    setInterval(figOnIdInterval, 5000);
+}
+
+
+
 function figOnZoomInterval()
 {
     if (figma.viewport.zoom == curZoom)
@@ -2154,6 +2167,32 @@ function figOnZoomInterval()
     updatePointObjects();
     updateEmptyObjects();
     updateDecoObjects();
+}
+
+
+
+function figOnIdInterval()
+{
+    figSetPageData(clockMarker + figma.currentUser.id, Date.now().toString())
+}
+
+
+
+function figPageIsLocked()
+{
+    const clocks = figma.currentPage.getPluginDataKeys()
+        .filter(k => 
+               k.length > clockMarker.length
+            && k.substring(0, clockMarker.length) == clockMarker)
+        .map(k => parseInt(figGetPageData(k)));
+
+
+    clocks.sort();
+    console.log('clocks =', clocks);
+
+    
+    return clocks.length > 0
+        && Date.now() - clocks.at(-1) < clockInterval*2;
 }
 
 
@@ -2431,6 +2470,8 @@ figma.ui.onmessage = function(msg)
         case 'figStartGenerator':                     figStartGenerator                    ();                                            break;
         case 'figRestartGenerator':                   figRestartGenerator                  ();                                            break;
      
+        case 'figFinishStart':                        figFinishStart                       ();                                            break;       
+
         case 'figDockWindowNormal':                   figDockWindow                        ('normal');                                    break;
         case 'figDockWindowMaximize':                 figDockWindow                        ('maximize');                                  break;
         case 'figDockWindowTop':                      figDockWindow                        ('top');                                       break;

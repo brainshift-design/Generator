@@ -673,7 +673,7 @@ async function uiGetValueFromFigma(key, spec = null)
 {
     return new Promise((resolve, reject) => 
     {
-        const timeout = 1000;
+        const timeout = 60000;
 
         uiPostMessageToFigma(
         {

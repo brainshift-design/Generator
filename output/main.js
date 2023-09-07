@@ -1313,6 +1313,8 @@ figma.showUI(__html__, {
 });
 var curZoom = figma.viewport.zoom;
 setInterval(figOnZoomInterval, 100);
+const clockMarker = 'clock_';
+const clockInterval = 1000;
 var showIds = false;
 // figma.currentPage
 //     .getPluginDataKeys()
@@ -1341,13 +1343,15 @@ function figStartGenerator() {
             const fonts = yield figma.listAvailableFontsAsync();
             // console.log('figma fonts =', fonts);
             const eulaRead = (yield figma.clientStorage.getAsync('eulaRead')) === 'true';
+            const isLocked = figPageIsLocked();
             figPostMessageToUi({
                 cmd: 'uiReturnFigStartGenerator',
                 currentUser: figma.currentUser,
                 viewportRect: figma.viewport.bounds,
                 viewportZoom: figma.viewport.zoom,
                 fonts: fonts,
-                eulaRead: eulaRead
+                eulaRead: eulaRead,
+                isLocked: isLocked
             });
         });
     })();
@@ -1359,6 +1363,9 @@ function figRestartGenerator() {
         themeColors: true
     });
 }
+function figFinishStart() {
+    setInterval(figOnIdInterval, 5000);
+}
 function figOnZoomInterval() {
     if (figma.viewport.zoom == curZoom)
         return;
@@ -1366,6 +1373,19 @@ function figOnZoomInterval() {
     updatePointObjects();
     updateEmptyObjects();
     updateDecoObjects();
+}
+function figOnIdInterval() {
+    figSetPageData(clockMarker + figma.currentUser.id, Date.now().toString());
+}
+function figPageIsLocked() {
+    const clocks = figma.currentPage.getPluginDataKeys()
+        .filter(k => k.length > clockMarker.length
+        && k.substring(0, clockMarker.length) == clockMarker)
+        .map(k => parseInt(figGetPageData(k)));
+    clocks.sort();
+    console.log('clocks =', clocks);
+    return clocks.length > 0
+        && Date.now() - clocks.at(-1) < clockInterval * 2;
 }
 function figOnSelectionChange() {
     updatePointObjects();
@@ -1545,6 +1565,9 @@ figma.ui.onmessage = function (msg) {
             break;
         case 'figRestartGenerator':
             figRestartGenerator();
+            break;
+        case 'figFinishStart':
+            figFinishStart();
             break;
         case 'figDockWindowNormal':
             figDockWindow('normal');

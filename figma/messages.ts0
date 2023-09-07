@@ -10,6 +10,8 @@ figma.ui.onmessage = function(msg)
         case 'figStartGenerator':                     figStartGenerator                    ();                                            break;
         case 'figRestartGenerator':                   figRestartGenerator                  ();                                            break;
      
+        case 'figFinishStart':                        figFinishStart                       ();                                            break;       
+
         case 'figDockWindowNormal':                   figDockWindow                        ('normal');                                    break;
         case 'figDockWindowMaximize':                 figDockWindow                        ('maximize');                                  break;
         case 'figDockWindowTop':                      figDockWindow                        ('top');                                       break;

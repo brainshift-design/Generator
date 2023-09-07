@@ -102,7 +102,9 @@ extends OpColorBase
         const col = values[paramIds.findIndex(id => id == 'value')];
 
         this._color = 
-            col
+               col 
+            && col.type 
+            && col.type == COLOR_VALUE
             ? col.toDataColor()
             : dataColor_NaN;
 

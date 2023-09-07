@@ -526,7 +526,7 @@ async function genGetValueFromUi(key)
 {
     return new Promise((resolve, reject) => 
     {
-        const timeout = 1000;
+        const timeout = 60000;
 
         genPostMessageToUi(
         {

@@ -4941,16 +4941,16 @@ a
                 <p id='multiplayerTitle'>
                     <span style="position: relative; top: 13px;">
                         <svg width="29" height="33" viewBox="0 0 29 33" fill="none" xmlns="http://www.w3.org/2000/svg">
-                            <path d="M11 4.5C13.4853 4.5 15.5 6.51473 15.5 9V14.5H20V9C20 4.02946 15.9706 0 11 0C6.02944 0 2 4.02946 2 9L2 14.5H6.5V9C6.5 6.51473 8.51472 4.5 11 4.5Z" fill="white"/>
-                            <path d="M26.2627 23.1924L13.5348 17.5355L19.1917 30.2634L22.0201 27.435L26.9698 32.3848L28.384 30.9705L23.4343 26.0208L26.2627 23.1924Z" fill="white"/>
-                            <path d="M22 14H0V26H16.2025L11.5651 15.5658L22 20.2035V14Z" fill="white"/>
+                            <path d="M11 4.5C13.4853 4.5 15.5 6.51473 15.5 9V14.5H20V9C20 4.02946 15.9706 0 11 0C6.02944 0 2 4.02946 2 9L2 14.5H6.5V9C6.5 6.51473 8.51472 4.5 11 4.5Z" fill="var(--figma-color-text)"/>
+                            <path d="M26.2627 23.1924L13.5348 17.5355L19.1917 30.2634L22.0201 27.435L26.9698 32.3848L28.384 30.9705L23.4343 26.0208L26.2627 23.1924Z" fill="var(--figma-color-text)"/>
+                            <path d="M22 14H0V26H16.2025L11.5651 15.5658L22 20.2035V14Z" fill="var(--figma-color-text)"/>
                         </svg>
                     </span>
                     &nbsp;Generator is locked...
                 </p>
                     
                 <p id='multiplayerDetails'>
-                    Someone else is using Generator in this document.<br/>
+                    Someone else is using Generator on this page.<br/>
                     Multiplayer is currently not supported.
                 </p>
             </div>
@@ -5155,6 +5155,7 @@ a
                 <h1 style='margin-top: 20px;'>What's new</h1>
 
                 <p>•  fixed issue with Repeat and List nodes</p>
+                <p>•  fixed issue with color variables</p>
                 
                 <p><br/><br/><div id='chkHideWhatsNew'></div></p>
             </div>
@@ -15245,14 +15246,17 @@ extends GValue
 
 
 
-    toRgbObject()
+    toRgbObject(limit = false)
     {
         const rgb = dataColor2rgb(this.toDataColor());
 
-        return {
-            r: rgb[0],
-            g: rgb[1],
-            b: rgb[2] };
+        return limit
+            ? { r: Math.min(Math.max(0, rgb[0]), 1),
+                g: Math.min(Math.max(0, rgb[1]), 1),
+                b: Math.min(Math.max(0, rgb[2]), 1) }
+            : { r: rgb[0],
+                g: rgb[1],
+                b: rgb[2] };
     }
 
 
@@ -40442,7 +40446,7 @@ async function genGetValueFromUi(key)
 {
     return new Promise((resolve, reject) => 
     {
-        const timeout = 1000;
+        const timeout = 60000;
 
         genPostMessageToUi(
         {
@@ -62271,14 +62275,17 @@ extends GValue
 
 
 
-    toRgbObject()
+    toRgbObject(limit = false)
     {
         const rgb = dataColor2rgb(this.toDataColor());
 
-        return {
-            r: rgb[0],
-            g: rgb[1],
-            b: rgb[2] };
+        return limit
+            ? { r: Math.min(Math.max(0, rgb[0]), 1),
+                g: Math.min(Math.max(0, rgb[1]), 1),
+                b: Math.min(Math.max(0, rgb[2]), 1) }
+            : { r: rgb[0],
+                g: rgb[1],
+                b: rgb[2] };
     }
 
 
@@ -119637,7 +119644,9 @@ extends OpColorBase
         const col = values[paramIds.findIndex(id => id == 'value')];
 
         this._color = 
-            col
+               col 
+            && col.type 
+            && col.type == COLOR_VALUE
             ? col.toDataColor()
             : dataColor_NaN;
 
@@ -126122,8 +126131,9 @@ class Graph
 
     disconnect(input)
     {
-        console.log('disconnect');
-        console.trace();
+        // console.log('disconnect');
+        // console.trace();
+
         const output = input.connectedOutput;
         if (!output) return false;
 
@@ -131283,7 +131293,10 @@ async function uiReturnFigStartGenerator(msg)
     initWindowSizers();
 
 
-    validateInit(msg.eulaRead);
+    if (msg.isLocked)
+        showMultiplayerDialog();
+    else
+        validateInit(msg.eulaRead);
 }
 
 
@@ -131293,6 +131306,8 @@ function initGenerator()
     uiGetLocalData('showWhatsNew');
 
     setTimeout(() => loadingGraphic.style.display = 'block', 300);
+
+    uiQueueMessageToFigma({cmd: 'figFinishStart'});
 
     uiQueueMessageToFigma({
         cmd:     'figLoadNodesAndConns',
@@ -133640,7 +133655,7 @@ async function uiGetValueFromFigma(key, spec = null)
 {
     return new Promise((resolve, reject) => 
     {
-        const timeout = 1000;
+        const timeout = 60000;
 
         uiPostMessageToFigma(
         {
@@ -135966,7 +135981,7 @@ function getVariableValue(value)
     {
         case NUMBER_VALUE: return value.value;
         case TEXT_VALUE:   return value.value;
-        case COLOR_VALUE:  return value.toRgbObject();
+        case COLOR_VALUE:  return value.toRgbObject(true);
     }
 }
 
@@ -137099,38 +137114,13 @@ function initMultiplayerDialog(event, error, showDebugButton = true)
         multiplayerDetails.innerHTML += event + '<br/>';
         
 
-    if (!multiplayered)
-    {
-        multiplayerBack.addEventListener('pointerdown', e => { e.preventDefault(); });
-
-        // multiplayerDetails.addEventListener('pointerup', e =>
-        // {
-        //     if (e.button == 2)
-        //     {
-        //         e.preventDefault();
-        //         e.stopImmediatePropagation();
-
-        //         initCopyMenu();
-        //         menuCopy.showAt(e.clientX, e.clientY, false, false);
-        //     }
-        // });
-    }
+    multiplayerBack.addEventListener('pointerdown', e => { e.preventDefault(); });
 }
 
 
 
 function showMultiplayerDialog()
 {
-    multiplayered = true;
-
-
-    if (loadRestartTimer > -1) 
-    {
-        clearTimeout(loadRestartTimer);
-        loadRestartTimer = -1;
-    }
-
-
     multiplayerBack  .style.display = 'block';
     multiplayerDialog.style.display = 'block';
 
