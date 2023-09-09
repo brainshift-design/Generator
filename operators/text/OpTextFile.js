@@ -56,12 +56,17 @@ extends ResizableBase
 
             getLocalFile(file => 
             {
-                const filePath = new TextValue(
+                let path = 
                     file.path != '' 
                     ? file.path 
-                    : file.name);
+                    : file.name;
+
+                const filePath = new TextValue(this.updateFilePath(path));
+
 
                 this.file = file;
+
+                this.update
                 this.paramPath.setValue(filePath, false, true);
                 this.updateCachedValue(true);
             });
@@ -199,8 +204,7 @@ extends ResizableBase
             
             let path = decodeURIComponent(_node.path);
 
-            ['/', '\\', '_', '-', '.', ':']
-                .forEach(c => path = path.replaceAll(c, '​' + c));
+            path = this.updateFilePath(path);
             
             this.paramPath.setValue(new TextValue(path, false, true, false));
             this.cachedValue = decodeURIComponent(_node.cachedValue);
@@ -210,4 +214,17 @@ extends ResizableBase
             this.name        = this.defName;
             this.cachedValue = '';
         }
-    }}
+    }
+
+
+
+    updateFilePath(path)
+    {
+        let copy = path;
+
+        ['/', '\\', '_', '-']
+            .forEach(c => copy = copy.replaceAll(c, c + '​'));
+
+        return copy;
+    }
+}
