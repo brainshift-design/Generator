@@ -941,13 +941,7 @@ function getObjectFills(genObjFills)
                     && !isNaN(color.g)
                     && !isNaN(color.b)
                     && !isNaN(opacity))
-                    fills.push(
-                    {
-                        type:      fill[0], 
-                        color:     color,
-                        opacity:   opacity,
-                        blendMode: fill[5]
-                    });
+                    fills.push(createObjectFill(fill[0], color, opacity, fill[5]));
 
 
                 break;
@@ -994,6 +988,18 @@ function getObjectFills(genObjFills)
 
 
     return fills;
+}
+
+
+
+function createObjectFill(type, color, opacity, blendMode)
+{
+    return {
+        type:      type, 
+        color:     color,
+        opacity:   opacity,
+        blendMode: blendMode
+    };
 }
 
 
@@ -1559,7 +1565,9 @@ const ALL_VALUES =
      DROP_SHADOW_VALUE,
     INNER_SHADOW_VALUE,
       LAYER_BLUR_VALUE,
-       BACK_BLUR_VALUE
+       BACK_BLUR_VALUE,
+
+      LAYER_MASK_VALUE
 ];
 
 
@@ -3877,11 +3885,17 @@ function setObjectProps(figObj, genObj, phantom = true)
     // if (genObj.badTransform)
     //     return;
         
-    setObjectFills  (figObj, genObj);
-    setObjectStrokes(figObj, genObj, phantom);
     setObjectEffects(figObj, genObj);
+    setObjectStrokes(figObj, genObj, phantom);
+    setObjectFills  (figObj, genObj);
+
 
     figObj.isMask = genObj[FO_MASK];
+
+    if (   figObj.isMask
+        && figObj.fills  .length == 0
+        && figObj.strokes.length == 0)
+        figObj.fills = [createObjectFill('SOLID', {r:0, g:0, b:0}, 1, 'NORMAL')];
 }
 
 
@@ -3926,13 +3940,16 @@ function setObjectStrokes(figObj, genObj, phantom = true)
         if (genObj[FO_DECO])
             pushUnique(figDecoObjects, figObj);
     }
+
     else if (isEmpty(genObj[FO_FILLS  ])
-          && isEmpty(genObj[FO_STROKES])
+          && isEmpty(genObj[FO_STROKES]
+          && !genObj[FO_MASK])
           && phantom)
     {
         setEmptyObjectStroke(figObj);
         pushUnique(figEmptyObjects, figObj);
     }
+    
     else
         figObj.strokes = [];
 }
@@ -3971,7 +3988,7 @@ function parseDecoStrokeDashes(_dashes)
 
 function setObjectStroke_(figObj, fills, weight, align, join, miterLimit, cap, dashes = [])
 {
-    figObj.strokes          = fills
+    figObj.strokes          = fills;
     
     figObj.strokeWeight     = Math.max(0, weight);
     figObj.strokeAlign      = align;

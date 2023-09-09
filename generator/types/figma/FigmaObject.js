@@ -125,34 +125,6 @@ class FigmaObject
         this.xp0 = point(x,     y    );
         this.xp1 = point(x + w, y    );
         this.xp2 = point(x,     y + h);
-
-        // this.xp0 = new FigmaPoint(this.nodeId, this.objectId+'.0', this.objectName+' ^ 0', x,     y,     true, false, true);
-        // this.xp1 = new FigmaPoint(this.nodeId, this.objectId+'.1', this.objectName+' ^ 1', x + w, y,     true, false, true);
-        // this.xp2 = new FigmaPoint(this.nodeId, this.objectId+'.2', this.objectName+' ^ 2', x,     y + h, true, false, true);
-
-        // w = Math.sign(w) * Math.max(0.000001, Math.abs(w));
-        // h = Math.sign(h) * Math.max(0.000001, Math.abs(h));
-
-        // this.xp0.createDefaultTransform(x,     y    );
-        // this.xp1.createDefaultTransform(x + w, y    );
-        // this.xp2.createDefaultTransform(x,     y + h);
-    }
-
-
-
-    updateTransformPoints()
-    {
-        // if (this.xp0) this.xp0.nodeId     = this.nodeId;
-        // if (this.xp1) this.xp1.nodeId     = this.nodeId;
-        // if (this.xp2) this.xp2.nodeId     = this.nodeId;
-
-        // if (this.xp0) this.xp0.objectId   = this.objectId+'.0';
-        // if (this.xp1) this.xp1.objectId   = this.objectId+'.1';
-        // if (this.xp2) this.xp2.objectId   = this.objectId+'.2';
-
-        // if (this.xp0) this.xp0.objectName = this.objectName+' ^ 0';
-        // if (this.xp1) this.xp1.objectName = this.objectName+' ^ 1';
-        // if (this.xp2) this.xp2.objectName = this.objectName+' ^ 2';
     }
 
 
@@ -246,24 +218,9 @@ class FigmaObject
 
     applyObjectTransform(xform, space)
     {
-        this.updateTransformPoints();
-
         this.xp0 = transformPoint(this.xp0, xform, space);
         this.xp1 = transformPoint(this.xp1, xform, space);
         this.xp2 = transformPoint(this.xp2, xform, space);
-
-        // const xp0 = transformPoint(this.xp0.toPoint(), xform, space);
-        // const xp1 = transformPoint(this.xp1.toPoint(), xform, space);
-        // const xp2 = transformPoint(this.xp2.toPoint(), xform, space);
-
-        // this.xp0.x = xp0.x;
-        // this.xp0.y = xp0.y;
-
-        // this.xp1.x = xp1.x;
-        // this.xp1.y = xp1.y;
-
-        // this.xp2.x = xp2.x;
-        // this.xp2.y = xp2.y;
     }
 
 
