@@ -1,4 +1,5 @@
-var searchIndex = -1;
+var searchIndex      = -1;
+var searchMouseMoved = false;
 
 
 
@@ -125,7 +126,8 @@ function initSearchBox(query)
     
     searchItems.innerHTML = '';
 
-    searchIndex = search.found.length > 0 ? 0 : -1;
+    searchIndex      = search.found.length > 0 ? 0 : -1;
+    searchMouseMoved = false;
 
 
     for (let i = 0; i < search.found.length; i++)
@@ -170,8 +172,22 @@ function initSearchBox(query)
 
         result.addEventListener('pointerenter', e =>
         {
-            searchIndex = result.index;
-            updateSearchBox();
+            if (searchMouseMoved)
+            {
+                searchIndex = result.index;
+                updateSearchBox();
+            }
+        });
+
+        result.addEventListener('pointermove', e =>
+        {
+            if (!searchMouseMoved)
+            {
+                searchIndex = result.index;
+                updateSearchBox();
+            }
+
+            searchMouseMoved = true;
         });
 
         searchItems.appendChild(result);
