@@ -26,7 +26,7 @@ var variableTimer = setInterval(() =>
             }
         });
 },
-345);
+333);
 
 
 

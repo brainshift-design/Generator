@@ -4371,7 +4371,7 @@ function setStylePaints(figStyle, genStyle)
 
 function figGetAllLocalVariables(nodeId, px, py)
 {
-    const localVars        = figma.variables.getLocalVariables();
+    const localVars = figma.variables.getLocalVariables();
 
     
     const variables = new Array();
