@@ -5154,8 +5154,7 @@ a
             <div id='whatsNewBody'>
                 <h1 style='margin-top: 20px;'>What's new</h1>
 
-                <p>•  fixed masks not working correctly</p>
-                <p>•  fixed UI issues</p>
+                <p>•  improved variable updates</p>
                 
                 <p><br/><br/><div id='chkHideWhatsNew'></div></p>
             </div>
@@ -5513,7 +5512,7 @@ a
 
 
 
-const generatorVersion = 204;
+const generatorVersion = 206;
 
 
 const MAX_INT32        = 2147483647;
@@ -6431,7 +6430,13 @@ function getObjectFills(genObjFills)
                     && !isNaN(color.g)
                     && !isNaN(color.b)
                     && !isNaN(opacity))
-                    fills.push(createObjectFill(fill[0], color, opacity, fill[5]));
+                    fills.push(
+                    {
+                        type:      fill[0], 
+                        color:     color,
+                        opacity:   opacity,
+                        blendMode: fill[5]
+                    });
 
 
                 break;
@@ -6478,18 +6483,6 @@ function getObjectFills(genObjFills)
 
 
     return fills;
-}
-
-
-
-function createObjectFill(type, color, opacity, blendMode)
-{
-    return {
-        type:      type, 
-        color:     color,
-        opacity:   opacity,
-        blendMode: blendMode
-    };
 }
 
 
@@ -50257,7 +50250,7 @@ onerror = (event, source, line, pos, error) =>
 };
 
 
-const generatorVersion = 204;
+const generatorVersion = 206;
 
 
 const MAX_INT32        = 2147483647;
@@ -51175,7 +51168,13 @@ function getObjectFills(genObjFills)
                     && !isNaN(color.g)
                     && !isNaN(color.b)
                     && !isNaN(opacity))
-                    fills.push(createObjectFill(fill[0], color, opacity, fill[5]));
+                    fills.push(
+                    {
+                        type:      fill[0], 
+                        color:     color,
+                        opacity:   opacity,
+                        blendMode: fill[5]
+                    });
 
 
                 break;
@@ -51222,18 +51221,6 @@ function getObjectFills(genObjFills)
 
 
     return fills;
-}
-
-
-
-function createObjectFill(type, color, opacity, blendMode)
-{
-    return {
-        type:      type, 
-        color:     color,
-        opacity:   opacity,
-        blendMode: blendMode
-    };
 }
 
 
@@ -131973,6 +131960,8 @@ onmessage = e =>
         case 'uiReturnFigGetLocalData':           uiReturnFigGetLocalData          (msg);               break;
         case 'uiReturnFigGetPageData':            uiReturnFigGetPageData           (msg);               break;
                                                    
+        case 'uiReturnFigGetVariableUpdates':     uiReturnFigGetVariableUpdates    (msg.values);        break;
+
         case 'uiReturnFigResizeWindow':           uiReturnFigResizeWindow          ();                  break;
                            
         case 'uiReturnFigGetAllLocalVariables':   uiReturnFigGetAllLocalVariables  (msg);               break;
@@ -135772,25 +135761,10 @@ var variableTimer = setInterval(() =>
     const varNodes = graph.pages[0].nodes.filter(n => 
            n.type             == VARIABLE 
         && n.linkedVariableId != NULL);
-     
-    uiGetValueFromFigma('getVariableData', varNodes.map(n => n.linkedVariableId))
-        .then(response =>
-        {
-            for (const value of response.value)
-            {
-                const node = varNodes.find(n => n.linkedVariableId == value.id);
 
-                node.updateValueParamType(value.resolvedType);
-
-                if (node.paramValue)
-                {
-                    if (node.paramValue.input.connected)
-                        uiUpdateVariable(value.id, getVariableValue(node.paramValue.value));
-                    else
-                        node.updateValueParamValues(value.resolvedType, value.name, [value.value], true);
-                }
-            }
-        });
+    uiQueueMessageToFigma({
+        cmd:         'figGetVariableUpdates',
+        linkedVarIds: varNodes.map(n => n.linkedVariableId)});
 },
 333);
 
@@ -135803,6 +135777,31 @@ function uiReturnFigGetAllLocalVariables(msg)
     initLocalVariablesMenu(variables, msg.nodeId, msg.nCollections);
 
     menuLocalVariables.showAt(msg.px, msg.py, false);
+}
+
+
+
+function uiReturnFigGetVariableUpdates(values)
+{
+    const varNodes = graph.pages[0].nodes.filter(n => 
+               n.type             == VARIABLE 
+            && n.linkedVariableId != NULL);
+
+
+    for (const value of values)
+    {
+        const node = varNodes.find(n => n.linkedVariableId == value.id);
+
+        node.updateValueParamType(value.resolvedType);
+
+        if (node.paramValue)
+        {
+            if (node.paramValue.input.connected)
+                uiUpdateVariable(value.id, getVariableValue(node.paramValue.value));
+            else
+                node.updateValueParamValues(value.resolvedType, value.name, [value.value], true);
+        }
+    }
 }
 
 

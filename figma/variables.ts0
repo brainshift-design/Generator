@@ -33,6 +33,56 @@ function figGetAllLocalVariables(nodeId, px, py)
 }
 
 
+function getVariableValues(varIds)
+{
+    const localVars = figma.variables.getLocalVariables();
+
+    const variables = varIds.map(id => localVars.find(v => v.id == id));
+    let   values    = [];
+
+
+    for (let i = 0; i < varIds.length; i++)
+    {
+        const variable = variables[i];
+        
+        const collection = 
+            variable != undefined // deleted
+            ? figma.variables.getVariableCollectionById(variable.variableCollectionId)
+            : null;
+        
+            
+        if (collection)
+        {
+            const vals = [];
+
+            for (const mode of collection.modes)
+                vals.push(variable.valuesByMode[mode.modeId]);
+
+            values.push(
+            {
+                id:           varIds[i],
+                name:         variable.name, 
+                resolvedType: variable.resolvedType, 
+                value:        vals[0]
+            });
+        }
+        else
+        {
+            values.push(
+            {
+                id:           varIds[i], 
+                resolvedType: NULL, 
+                value:        null
+            });
+        }
+    }
+
+
+    return values;
+}
+
+
+
 function figLinkNodeToVariable(nodeId, varId)
 {
     const localVars = figma.variables.getLocalVariables();

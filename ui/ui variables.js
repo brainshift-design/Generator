@@ -6,25 +6,10 @@ var variableTimer = setInterval(() =>
     const varNodes = graph.pages[0].nodes.filter(n => 
            n.type             == VARIABLE 
         && n.linkedVariableId != NULL);
-     
-    uiGetValueFromFigma('getVariableData', varNodes.map(n => n.linkedVariableId))
-        .then(response =>
-        {
-            for (const value of response.value)
-            {
-                const node = varNodes.find(n => n.linkedVariableId == value.id);
 
-                node.updateValueParamType(value.resolvedType);
-
-                if (node.paramValue)
-                {
-                    if (node.paramValue.input.connected)
-                        uiUpdateVariable(value.id, getVariableValue(node.paramValue.value));
-                    else
-                        node.updateValueParamValues(value.resolvedType, value.name, [value.value], true);
-                }
-            }
-        });
+    uiQueueMessageToFigma({
+        cmd:         'figGetVariableUpdates',
+        linkedVarIds: varNodes.map(n => n.linkedVariableId)});
 },
 333);
 
@@ -37,6 +22,31 @@ function uiReturnFigGetAllLocalVariables(msg)
     initLocalVariablesMenu(variables, msg.nodeId, msg.nCollections);
 
     menuLocalVariables.showAt(msg.px, msg.py, false);
+}
+
+
+
+function uiReturnFigGetVariableUpdates(values)
+{
+    const varNodes = graph.pages[0].nodes.filter(n => 
+               n.type             == VARIABLE 
+            && n.linkedVariableId != NULL);
+
+
+    for (const value of values)
+    {
+        const node = varNodes.find(n => n.linkedVariableId == value.id);
+
+        node.updateValueParamType(value.resolvedType);
+
+        if (node.paramValue)
+        {
+            if (node.paramValue.input.connected)
+                uiUpdateVariable(value.id, getVariableValue(node.paramValue.value));
+            else
+                node.updateValueParamValues(value.resolvedType, value.name, [value.value], true);
+        }
+    }
 }
 
 

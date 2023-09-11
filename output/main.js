@@ -19,7 +19,7 @@ function isConnKey(key) { return isTagKey(key, connTag); }
 function noPageTag(key) { return noTag(key, pageTag); }
 function noNodeTag(key) { return noTag(key, nodeTag); }
 function noConnTag(key) { return noTag(key, connTag); }
-const generatorVersion = 204;
+const generatorVersion = 206;
 const MAX_INT32 = 2147483647;
 const NULL = '';
 const HTAB = '  '; // half-tab
@@ -495,7 +495,12 @@ function getObjectFills(genObjFills) {
                         && !isNaN(color.g)
                         && !isNaN(color.b)
                         && !isNaN(opacity))
-                        fills.push(createObjectFill(fill[0], color, opacity, fill[5]));
+                        fills.push({
+                            type: fill[0],
+                            color: color,
+                            opacity: opacity,
+                            blendMode: fill[5]
+                        });
                     break;
                 }
             case 'GRADIENT_LINEAR':
@@ -527,14 +532,6 @@ function getObjectFills(genObjFills) {
         }
     }
     return fills;
-}
-function createObjectFill(type, color, opacity, blendMode) {
-    return {
-        type: type,
-        color: color,
-        opacity: opacity,
-        blendMode: blendMode
-    };
 }
 const LIST_VALUE = 'LIST#';
 const NUMBER_LIST_VALUE = 'NLIST#';
@@ -1718,6 +1715,9 @@ figma.ui.onmessage = function (msg) {
         case 'figGetObjectSize':
             figGetObjectSize(msg.object);
             break;
+        case 'figGetVariableUpdates':
+            figGetVariableUpdates(msg.linkedVarIds);
+            break;
         case 'figUpdateShowIds':
             showIds = msg.showIds;
             break;
@@ -1956,43 +1956,19 @@ function figGetValue(key, spec) {
     switch (key) {
         case 'getVariableData':
             {
-                const varIds = spec;
-                const localVars = figma.variables.getLocalVariables();
-                const variables = varIds.map(id => localVars.find(v => v.id == id));
-                let values = [];
-                for (let i = 0; i < varIds.length; i++) {
-                    const variable = variables[i];
-                    const collection = variable != undefined // deleted
-                        ? figma.variables.getVariableCollectionById(variable.variableCollectionId)
-                        : null;
-                    if (collection) {
-                        const vals = [];
-                        for (const mode of collection.modes)
-                            vals.push(variable.valuesByMode[mode.modeId]);
-                        values.push({
-                            id: varIds[i],
-                            name: variable.name,
-                            resolvedType: variable.resolvedType,
-                            value: vals[0]
-                        });
-                    }
-                    else {
-                        values.push({
-                            id: varIds[i],
-                            resolvedType: NULL,
-                            value: null
-                        });
-                    }
-                }
                 figPostMessageToUi({
                     cmd: 'returnFigGetValue',
-                    // key:   key,
-                    // spec:  spec,
-                    value: values
+                    value: getVariableValues(spec)
                 });
                 break;
             }
     }
+}
+function figGetVariableUpdates(varIds) {
+    figPostMessageToUi({
+        cmd: 'uiReturnFigGetVariableUpdates',
+        values: getVariableValues(varIds)
+    });
 }
 function figRemoveSavedPage(pageId) {
     figClearPageData(getPageKey(pageId));
@@ -2615,7 +2591,14 @@ function setObjectProps(figObj, genObj, phantom = true) {
     if (figObj.isMask
         && figObj.fills.length == 0
         && figObj.strokes.length == 0)
-        figObj.fills = [createObjectFill('SOLID', { r: 0, g: 0, b: 0 }, 1, 'NORMAL')];
+        figObj.fills = [
+            {
+                type: 'SOLID',
+                color: { r: 0, g: 0, b: 0 },
+                opacity: 1,
+                blendMode: 'NORMAL'
+            }
+        ];
 }
 function setObjectFills(figObj, genObj) {
     if (!!genObj[FO_FILLS]
@@ -2639,8 +2622,8 @@ function setObjectStrokes(figObj, genObj, phantom = true) {
             pushUnique(figDecoObjects, figObj);
     }
     else if (isEmpty(genObj[FO_FILLS])
-        && isEmpty(genObj[FO_STROKES]
-            && !genObj[FO_MASK])
+        && isEmpty(genObj[FO_STROKES])
+        && !genObj[FO_MASK]
         && phantom) {
         setEmptyObjectStroke(figObj);
         pushUnique(figEmptyObjects, figObj);
@@ -2920,6 +2903,36 @@ function figGetAllLocalVariables(nodeId, px, py) {
         variables: JSON.stringify(variables),
         nCollections: figma.variables.getLocalVariableCollections().length
     });
+}
+function getVariableValues(varIds) {
+    const localVars = figma.variables.getLocalVariables();
+    const variables = varIds.map(id => localVars.find(v => v.id == id));
+    let values = [];
+    for (let i = 0; i < varIds.length; i++) {
+        const variable = variables[i];
+        const collection = variable != undefined // deleted
+            ? figma.variables.getVariableCollectionById(variable.variableCollectionId)
+            : null;
+        if (collection) {
+            const vals = [];
+            for (const mode of collection.modes)
+                vals.push(variable.valuesByMode[mode.modeId]);
+            values.push({
+                id: varIds[i],
+                name: variable.name,
+                resolvedType: variable.resolvedType,
+                value: vals[0]
+            });
+        }
+        else {
+            values.push({
+                id: varIds[i],
+                resolvedType: NULL,
+                value: null
+            });
+        }
+    }
+    return values;
 }
 function figLinkNodeToVariable(nodeId, varId) {
     const localVars = figma.variables.getLocalVariables();

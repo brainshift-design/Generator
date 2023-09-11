@@ -145,13 +145,19 @@ function setObjectProps(figObj, genObj, phantom = true)
     setObjectStrokes(figObj, genObj, phantom);
     setObjectFills  (figObj, genObj);
 
-
     figObj.isMask = genObj[FO_MASK];
+
 
     if (   figObj.isMask
         && figObj.fills  .length == 0
         && figObj.strokes.length == 0)
-        figObj.fills = [createObjectFill('SOLID', {r:0, g:0, b:0}, 1, 'NORMAL')];
+        figObj.fills = [
+        {
+            type:      'SOLID', 
+            color:     {r:0, g:0, b:0},
+            opacity:   1, 
+            blendMode: 'NORMAL'
+        }];
 }
 
 
@@ -197,10 +203,10 @@ function setObjectStrokes(figObj, genObj, phantom = true)
             pushUnique(figDecoObjects, figObj);
     }
 
-    else if (isEmpty(genObj[FO_FILLS  ])
-          && isEmpty(genObj[FO_STROKES]
-          && !genObj[FO_MASK])
-          && phantom)
+    else if ( isEmpty(genObj[FO_FILLS  ])
+          &&  isEmpty(genObj[FO_STROKES])
+          && !genObj[FO_MASK]
+          &&  phantom)
     {
         setEmptyObjectStroke(figObj);
         pushUnique(figEmptyObjects, figObj);

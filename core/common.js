@@ -1,4 +1,4 @@
-const generatorVersion = 204;
+const generatorVersion = 206;
 
 
 const MAX_INT32        = 2147483647;
@@ -916,7 +916,13 @@ function getObjectFills(genObjFills)
                     && !isNaN(color.g)
                     && !isNaN(color.b)
                     && !isNaN(opacity))
-                    fills.push(createObjectFill(fill[0], color, opacity, fill[5]));
+                    fills.push(
+                    {
+                        type:      fill[0], 
+                        color:     color,
+                        opacity:   opacity,
+                        blendMode: fill[5]
+                    });
 
 
                 break;
@@ -963,16 +969,4 @@ function getObjectFills(genObjFills)
 
 
     return fills;
-}
-
-
-
-function createObjectFill(type, color, opacity, blendMode)
-{
-    return {
-        type:      type, 
-        color:     color,
-        opacity:   opacity,
-        blendMode: blendMode
-    };
 }
