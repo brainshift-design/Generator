@@ -468,6 +468,22 @@ function uiPasteNodes(nodesJson, loading, pasteConnected, x, y, updateNodes)
 
 
 
+function loadNodes(data, pasting)
+{
+    const nodes = [];
+   
+    for (let i = 0; i < data.nodes.length; i++)
+    {
+        //console.log('data.nodes['+i+'] =', data.nodes[i]);
+        const node = loadNode(data.nodes[i], pasting);
+        nodes.push(node);
+    }
+
+    return nodes;
+}
+
+
+
 function moveNodesToViewport(nodes)
 {
     // if new nodes are outside of viewport, move them to center of viewport

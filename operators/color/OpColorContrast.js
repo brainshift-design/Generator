@@ -43,7 +43,7 @@ extends OpColorBase
 
     constructor()
     {
-        super(COLOR_CONTRAST, 'contrast', 'contrast', '');
+        super(COLOR_CONTRAST, 'contrast', 'contrast', iconWebContrast);
 
 
         this.colorBack = createDiv('colorBack');
@@ -280,10 +280,19 @@ extends OpColorBase
 
         const colors = this.getHeaderColors();
 
-          if (   this.inputs[0].connected 
-              && this.inputs[1].connected) this.label.style.color = rgb2style(this.labelColor);
-        else if (this.inputs[1].connected) this.label.style.color = rgba2style(colors.text);
-        else                               this.label.style.color = darkMode ? 'white' : 'black';
+        if (   this.inputs[0].connected 
+            && this.inputs[1].connected) 
+        {
+            this.label.style.color = rgb2style(this.labelColor);
+        }
+        else if (this.inputs[1].connected) 
+        {
+            this.label.style.color = rgba2style(colors.text);
+        }
+        else                               
+        {
+            this.label.style.color = darkMode ? 'white' : 'black';
+        }
     }
 
 

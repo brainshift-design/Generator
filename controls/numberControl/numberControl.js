@@ -213,7 +213,7 @@ extends Control
 
 
 
-    setValue(value, fireChangeEvent = true, confirm = true, fullRange = true)
+    setValue(value, fireChangeEvent = true, confirm = true, fullRange = true, fromWheel = false, shiftKey = false)
     {
         const oldValue = this.value;
 
@@ -227,7 +227,10 @@ extends Control
             while (value < this.displayMin) value += range;
         }
 
-        else if (fullRange)
+        else if (fullRange
+              || fromWheel && oldValue < this.displayMin
+              || fromWheel && oldValue > this.displayMax
+              || fromWheel && shiftKey)
             value = Math.min(Math.max(this.min, value), this.max);
 
         else

@@ -89,12 +89,16 @@ function parseConnectionJsonAndConnect(_conn, pasteConnected)
         || !inputNode  
         || !inputNode.inputFromId(inputId))
     {
-        // console.log('outputNode  =', outputNode );
-        // console.log('outputId    =', outputId   );
-        // console.log('outputOrder =', outputOrder);
-        // console.log('inputNode   =', inputNode  );
-        // console.log('inputNode.inputs =', [...inputNode.inputs]);
-        // console.log('inputId     =', inputId    );
+        // console.log('-1-');
+        // console.log('outputNode =', outputNode);
+        // console.log('outputId =', outputId);
+        // console.log('outputNode.outputFromId(outputId) =', outputNode.outputFromId(outputId));
+        // console.log('');
+        // console.log('-2-');
+        // console.log('inputNode =', inputNode);
+        // console.log('inputId =', inputId);
+        // console.log('inputNode.inputFromId(inputId) =', inputNode.inputFromId(inputId)  );
+        // console.log('');
         
         uiError(
            'Cannot connect ' + connToString(_conn),

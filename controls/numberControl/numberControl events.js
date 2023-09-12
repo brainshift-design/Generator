@@ -577,7 +577,7 @@ NumberControl.prototype.initEvents = function()
                     : this.value + (dWheelY > 0 ? -1 : 1) * this.wheelScale * dec;
 
 
-                this.setValue(val, true, true, false);
+                this.setValue(val, true, true, false, true, e.shiftKey);
 
                 if (this.param) this.param.changing = true;
                 if (this.confirmTimer) clearTimeout(this.confirmTimer);

@@ -5155,6 +5155,7 @@ a
                 <h1 style='margin-top: 20px;'>What's new</h1>
 
                 <p>•  fixed precision issue in Random node</p>
+                <p>•  fixed issue with number controls</p>
                 
                 <p><br/><br/><div id='chkHideWhatsNew'></div></p>
             </div>
@@ -87749,7 +87750,7 @@ extends Control
 
 
 
-    setValue(value, fireChangeEvent = true, confirm = true, fullRange = true)
+    setValue(value, fireChangeEvent = true, confirm = true, fullRange = true, fromWheel = false, shiftKey = false)
     {
         const oldValue = this.value;
 
@@ -87763,7 +87764,10 @@ extends Control
             while (value < this.displayMin) value += range;
         }
 
-        else if (fullRange)
+        else if (fullRange
+              || fromWheel && oldValue < this.displayMin
+              || fromWheel && oldValue > this.displayMax
+              || fromWheel && shiftKey)
             value = Math.min(Math.max(this.min, value), this.max);
 
         else
@@ -89333,7 +89337,7 @@ NumberControl.prototype.initEvents = function()
                     : this.value + (dWheelY > 0 ? -1 : 1) * this.wheelScale * dec;
 
 
-                this.setValue(val, true, true, false);
+                this.setValue(val, true, true, false, true, e.shiftKey);
 
                 if (this.param) this.param.changing = true;
                 if (this.confirmTimer) clearTimeout(this.confirmTimer);
@@ -93342,9 +93346,10 @@ menuFlow = new Menu('Flow', true, false);
     menuLayer = new Menu('Style', true, false);
     menuLayer.addItems([
         menuItemLayerFill   = new MenuItem('Fill',        null, {icon: iconFill,        callback: e => actionManager.do(getCreateNodeAction(FILL,       btnLayer.div, getCreateOptions(e)))}),
+        menuItemLayerStroke = new MenuItem('Stroke',      null, {icon: iconStroke,      callback: e => actionManager.do(getCreateNodeAction(STROKE,     btnLayer.div, getCreateOptions(e)))}),
+                              new MenuItem('',            null, {separator: true}),
                               new MenuItem('Gradient',    null, {icon: iconGradient,    callback: e => actionManager.do(getCreateNodeAction(GRADIENT,   btnLayer.div, getCreateOptions(e)))}),
                               new MenuItem('Color stop',  null, {icon: iconColorStop,   callback: e => actionManager.do(getCreateNodeAction(COLOR_STOP, btnLayer.div, getCreateOptions(e)))}),
-        menuItemLayerStroke = new MenuItem('Stroke',      null, {icon: iconStroke,      callback: e => actionManager.do(getCreateNodeAction(STROKE,     btnLayer.div, getCreateOptions(e)))}),
         menuItemLayerSep1   = new MenuItem('',            null, {separator: true}),
                               new MenuItem('Apply style', null, {icon: iconApply, createType: SHAPE_APPLY, callback: e => actionManager.do(getCreateNodeAction(SHAPE_APPLY, btnLayer.div, getCreateOptions(e)))}),
                               new MenuItem('',            null, {separator: true}),
@@ -103789,12 +103794,16 @@ function parseConnectionJsonAndConnect(_conn, pasteConnected)
         || !inputNode  
         || !inputNode.inputFromId(inputId))
     {
-        // console.log('outputNode  =', outputNode );
-        // console.log('outputId    =', outputId   );
-        // console.log('outputOrder =', outputOrder);
-        // console.log('inputNode   =', inputNode  );
-        // console.log('inputNode.inputs =', [...inputNode.inputs]);
-        // console.log('inputId     =', inputId    );
+        // console.log('-1-');
+        // console.log('outputNode =', outputNode);
+        // console.log('outputId =', outputId);
+        // console.log('outputNode.outputFromId(outputId) =', outputNode.outputFromId(outputId));
+        // console.log('');
+        // console.log('-2-');
+        // console.log('inputNode =', inputNode);
+        // console.log('inputId =', inputId);
+        // console.log('inputNode.inputFromId(inputId) =', inputNode.inputFromId(inputId)  );
+        // console.log('');
         
         uiError(
            'Cannot connect ' + connToString(_conn),
@@ -108091,7 +108100,7 @@ extends OperatorBase
         this.addOutput(new Output([LIST_VALUE], this.output_genRequest));
 
 
-        this.addParam(this.paramCount = new NumberParam('count', 'count', true,  true, true, 10, 0, 1000, 0));
+        this.addParam(this.paramCount = new NumberParam('count', 'count', true,  true, true, 10, 0, Number.MAX_SAFE_INTEGER, 0));
         this.addParam(this.paramWhile = new NumberParam('while', 'while', true,  true, true, 1, 0, 1));
         this.addParam(this.paramLoop  = new NumberParam('loop',  '',      false, true, false));
 
@@ -110716,7 +110725,7 @@ extends ResizableBase
     updateParams()
     {
         for (const param of this.params)
-            param.enableControlText(false);
+            param.enableControlText(false, this.isUnknown());
 
         this.updateParamControls();
     }
@@ -119068,7 +119077,7 @@ extends OpColorBase
 
     constructor()
     {
-        super(COLOR_CONTRAST, 'contrast', 'contrast', '');
+        super(COLOR_CONTRAST, 'contrast', 'contrast', iconWebContrast);
 
 
         this.colorBack = createDiv('colorBack');
@@ -119305,10 +119314,19 @@ extends OpColorBase
 
         const colors = this.getHeaderColors();
 
-          if (   this.inputs[0].connected 
-              && this.inputs[1].connected) this.label.style.color = rgb2style(this.labelColor);
-        else if (this.inputs[1].connected) this.label.style.color = rgba2style(colors.text);
-        else                               this.label.style.color = darkMode ? 'white' : 'black';
+        if (   this.inputs[0].connected 
+            && this.inputs[1].connected) 
+        {
+            this.label.style.color = rgb2style(this.labelColor);
+        }
+        else if (this.inputs[1].connected) 
+        {
+            this.label.style.color = rgba2style(colors.text);
+        }
+        else                               
+        {
+            this.label.style.color = darkMode ? 'white' : 'black';
+        }
     }
 
 
@@ -133415,7 +133433,9 @@ function loadNodesAndConnsAsync(_nodes, _conns, setProgress)
     let promise = Promise.resolve([]);
 
 
-    _nodes = _nodes.sort((a, b) => a.type == GROUP_NODE && b.type != GROUP_NODE);
+    _nodes = _nodes.sort((a, b) => 
+           a.type == GROUP_NODE 
+        && b.type != GROUP_NODE);
 
 
     const chunkSize = 10; // nodes
@@ -133433,7 +133453,9 @@ function loadNodesAndConnsAsync(_nodes, _conns, setProgress)
                 nodes,
                 false);
 
-            setProgress(i / (_nodes.length + (_conns ? _conns.length : 0)));
+            if (setProgress)
+                setProgress(i / (_nodes.length + (_conns ? _conns.length : 0)));
+    
             return res;
         });
     }
@@ -133526,7 +133548,9 @@ function loadConnectionsAsync(_nodes, _conns, loadedNodes, setProgress)
                     i, 
                     Math.min(i + chunkSize, _otherConns.length)); // exclusive
 
-                setProgress((_nodes.length + i) / nozero(_nodes.length + _otherConns.length * 19/20)); // the proportion is arbitrary
+                if (setProgress)
+                    setProgress((_nodes.length + i) / nozero(_nodes.length + _otherConns.length * 19/20)); // the proportion is arbitrary
+
                 return res;
             });
         }
@@ -133613,6 +133637,10 @@ function resolveConnections(nodes, _connections, first, last)
     {
         if (c1.inputNodeId != c2.inputNodeId) return c1.inputNodeId - c2.inputNodeId;
         if (c1.inputId     != c2.inputId    ) return c1.inputId     - c2.inputId;
+
+        // if (c1.inputNodeId == c2.outputNodeId) return -1;
+        // if (c2.inputNodeId == c1.outputNodeId) return  1;
+
         //if (c1.outputOrder != c2.outputOrder) return c1.outputOrder - c2.outputOrder;
         return 0;
     });
@@ -133671,22 +133699,6 @@ function resolveConnections(nodes, _connections, first, last)
             resolve();
         });
         // /);
-}
-
-
-
-function loadNodes(data, pasting)
-{
-    const nodes = [];
-   
-    for (let i = 0; i < data.nodes.length; i++)
-    {
-        //console.log('data.nodes['+i+'] =', data.nodes[i]);
-        const node = loadNode(data.nodes[i], pasting);
-        nodes.push(node);
-    }
-
-    return nodes;
 }
 
 
@@ -134766,6 +134778,22 @@ function uiPasteNodes(nodesJson, loading, pasteConnected, x, y, updateNodes)
     {
         return [[], []];
     }
+}
+
+
+
+function loadNodes(data, pasting)
+{
+    const nodes = [];
+   
+    for (let i = 0; i < data.nodes.length; i++)
+    {
+        //console.log('data.nodes['+i+'] =', data.nodes[i]);
+        const node = loadNode(data.nodes[i], pasting);
+        nodes.push(node);
+    }
+
+    return nodes;
 }
 
 

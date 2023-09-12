@@ -306,7 +306,9 @@ function loadNodesAndConnsAsync(_nodes, _conns, setProgress)
     let promise = Promise.resolve([]);
 
 
-    _nodes = _nodes.sort((a, b) => a.type == GROUP_NODE && b.type != GROUP_NODE);
+    _nodes = _nodes.sort((a, b) => 
+           a.type == GROUP_NODE 
+        && b.type != GROUP_NODE);
 
 
     const chunkSize = 10; // nodes
@@ -324,7 +326,9 @@ function loadNodesAndConnsAsync(_nodes, _conns, setProgress)
                 nodes,
                 false);
 
-            setProgress(i / (_nodes.length + (_conns ? _conns.length : 0)));
+            if (setProgress)
+                setProgress(i / (_nodes.length + (_conns ? _conns.length : 0)));
+    
             return res;
         });
     }
@@ -417,7 +421,9 @@ function loadConnectionsAsync(_nodes, _conns, loadedNodes, setProgress)
                     i, 
                     Math.min(i + chunkSize, _otherConns.length)); // exclusive
 
-                setProgress((_nodes.length + i) / nozero(_nodes.length + _otherConns.length * 19/20)); // the proportion is arbitrary
+                if (setProgress)
+                    setProgress((_nodes.length + i) / nozero(_nodes.length + _otherConns.length * 19/20)); // the proportion is arbitrary
+
                 return res;
             });
         }
@@ -504,6 +510,10 @@ function resolveConnections(nodes, _connections, first, last)
     {
         if (c1.inputNodeId != c2.inputNodeId) return c1.inputNodeId - c2.inputNodeId;
         if (c1.inputId     != c2.inputId    ) return c1.inputId     - c2.inputId;
+
+        // if (c1.inputNodeId == c2.outputNodeId) return -1;
+        // if (c2.inputNodeId == c1.outputNodeId) return  1;
+
         //if (c1.outputOrder != c2.outputOrder) return c1.outputOrder - c2.outputOrder;
         return 0;
     });
@@ -562,22 +572,6 @@ function resolveConnections(nodes, _connections, first, last)
             resolve();
         });
         // /);
-}
-
-
-
-function loadNodes(data, pasting)
-{
-    const nodes = [];
-   
-    for (let i = 0; i < data.nodes.length; i++)
-    {
-        //console.log('data.nodes['+i+'] =', data.nodes[i]);
-        const node = loadNode(data.nodes[i], pasting);
-        nodes.push(node);
-    }
-
-    return nodes;
 }
 
 

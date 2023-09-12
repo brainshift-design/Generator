@@ -615,9 +615,10 @@ menuFlow = new Menu('Flow', true, false);
     menuLayer = new Menu('Style', true, false);
     menuLayer.addItems([
         menuItemLayerFill   = new MenuItem('Fill',        null, {icon: iconFill,        callback: e => actionManager.do(getCreateNodeAction(FILL,       btnLayer.div, getCreateOptions(e)))}),
+        menuItemLayerStroke = new MenuItem('Stroke',      null, {icon: iconStroke,      callback: e => actionManager.do(getCreateNodeAction(STROKE,     btnLayer.div, getCreateOptions(e)))}),
+                              new MenuItem('',            null, {separator: true}),
                               new MenuItem('Gradient',    null, {icon: iconGradient,    callback: e => actionManager.do(getCreateNodeAction(GRADIENT,   btnLayer.div, getCreateOptions(e)))}),
                               new MenuItem('Color stop',  null, {icon: iconColorStop,   callback: e => actionManager.do(getCreateNodeAction(COLOR_STOP, btnLayer.div, getCreateOptions(e)))}),
-        menuItemLayerStroke = new MenuItem('Stroke',      null, {icon: iconStroke,      callback: e => actionManager.do(getCreateNodeAction(STROKE,     btnLayer.div, getCreateOptions(e)))}),
         menuItemLayerSep1   = new MenuItem('',            null, {separator: true}),
                               new MenuItem('Apply style', null, {icon: iconApply, createType: SHAPE_APPLY, callback: e => actionManager.do(getCreateNodeAction(SHAPE_APPLY, btnLayer.div, getCreateOptions(e)))}),
                               new MenuItem('',            null, {separator: true}),
