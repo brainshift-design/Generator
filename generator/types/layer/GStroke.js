@@ -121,7 +121,7 @@ extends GOperator1
 
             
         if (fills.type == COLOR_VALUE)
-            return new ListValue([FillValue.fromRgb(scaleRgb(fills.toRgb()), 255)]);
+            return new ListValue([FillValue.fromRgb(scaleRgb(fills.toRgb()), 100)]);
 
         else if (fills.type ==     FILL_VALUE
               || fills.type == GRADIENT_VALUE)

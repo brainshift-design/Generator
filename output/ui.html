@@ -33124,7 +33124,7 @@ extends GOperator1
 
             
         if (fills.type == COLOR_VALUE)
-            return new ListValue([FillValue.fromRgb(scaleRgb(fills.toRgb()), 255)]);
+            return new ListValue([FillValue.fromRgb(scaleRgb(fills.toRgb()), 100)]);
 
         else if (fills.type ==     FILL_VALUE
               || fills.type == GRADIENT_VALUE)
@@ -80193,7 +80193,7 @@ extends GOperator1
 
             
         if (fills.type == COLOR_VALUE)
-            return new ListValue([FillValue.fromRgb(scaleRgb(fills.toRgb()), 255)]);
+            return new ListValue([FillValue.fromRgb(scaleRgb(fills.toRgb()), 100)]);
 
         else if (fills.type ==     FILL_VALUE
               || fills.type == GRADIENT_VALUE)
@@ -121360,7 +121360,8 @@ extends OpColorBase
 
         const colors = this.getHeaderColors();
         
-            
+        console.log('colors.back =', colors.back);
+        
         if (  !rgbIsNaN(colors.back)
             && this.paramFills.value.isValid())
         {
