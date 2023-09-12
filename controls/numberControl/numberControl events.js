@@ -550,12 +550,13 @@ NumberControl.prototype.initEvents = function()
         }
 
 
-        const dWheelX = e.deltaX /  20 * (this.dragReverse ? -1 : 1);
+        //const dWheelX = e.deltaX /  20 * (this.dragReverse ? -1 : 1);
         const dWheelY = e.deltaY / 100 * (this.dragReverse ? -1 : 1);
 
 
         if (   !getCtrlKey(e)
-            && !this.buttonDown1)
+            && !this.buttonDown1
+            && dWheelY != 0)
         {
             e.stopPropagation();
 
@@ -572,9 +573,10 @@ NumberControl.prototype.initEvents = function()
                 const dec = Math.pow(10, -this.decimals);
 
                 const val =
-                    touchpad
-                    ? this.value -  dWheelX               * this.wheelScale * dec
-                    : this.value + (dWheelY > 0 ? -1 : 1) * this.wheelScale * dec;
+                    //touchpad
+                    //? this.value -  dWheelX               * this.wheelScale * dec
+                    //: 
+                    this.value + (dWheelY > 0 ? -1 : 1) * this.wheelScale * dec;
 
 
                 this.setValue(val, true, true, false, true, e.shiftKey);
