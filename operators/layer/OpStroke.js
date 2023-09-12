@@ -296,8 +296,7 @@ extends OpColorBase
 
         const colors = this.getHeaderColors();
         
-        console.log('colors.back =', colors.back);
-        
+
         if (  !rgbIsNaN(colors.back)
             && this.paramFills.value.isValid())
         {

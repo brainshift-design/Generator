@@ -2,6 +2,7 @@ class GStroke
 extends GOperator1
 {
     fills  = null;
+   _fills  = null; // actual fills that might need to be converted to a list, in case it's a color or a fill
     weight = null;
     fit    = null;
     join   = null;
@@ -42,9 +43,12 @@ extends GOperator1
         if (this.isCached())
             return this;
 
-        let fills = this.fills ? (await this.fills.eval(parse)).toValue() : null;
+        let fills = this._fills ? (await this._fills.eval(parse)).toValue() : null;
 
         fills = this.validateFills(fills);
+
+        if (!LIST_VALUES.includes(this.fills.type))
+            this.fills = fills;
 
 
         const weight = this.weight ? (await this.weight.eval(parse)).toValue() : null;
@@ -169,7 +173,7 @@ extends GOperator1
     {
         super.pushValueUpdates(parse);
 
-        if (this.fills ) this.fills .pushValueUpdates(parse);
+        if (this._fills) this._fills.pushValueUpdates(parse);
         if (this.weight) this.weight.pushValueUpdates(parse);
         if (this.fit   ) this.fit   .pushValueUpdates(parse);
         if (this.join  ) this.join  .pushValueUpdates(parse);
@@ -184,7 +188,7 @@ extends GOperator1
     {
         super.invalidateInputs(parse, from);
 
-        if (this.fills ) this.fills .invalidateInputs(parse, from);
+        if (this._fills) this._fills.invalidateInputs(parse, from);
         if (this.weight) this.weight.invalidateInputs(parse, from);
         if (this.fit   ) this.fit   .invalidateInputs(parse, from);
         if (this.join  ) this.join  .invalidateInputs(parse, from);
@@ -199,7 +203,7 @@ extends GOperator1
     {
         super.iterateLoop(parse);
 
-        if (this.fills ) this.fills .iterateLoop(parse);
+        if (this._fills) this._fills.iterateLoop(parse);
         if (this.weight) this.weight.iterateLoop(parse);
         if (this.fit   ) this.fit   .iterateLoop(parse);
         if (this.join  ) this.join  .iterateLoop(parse);
