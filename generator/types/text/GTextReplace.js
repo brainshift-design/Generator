@@ -3,6 +3,7 @@ extends GOperator1
 {
     what;
     with;
+    regex;
 
 
 
@@ -21,6 +22,7 @@ extends GOperator1
 
         copy.what  = this.what .copy();
         copy.with  = this.with .copy();
+        copy.regex = this.regex.copy();
 
         copy.value = this.value.copy();
 
@@ -35,8 +37,9 @@ extends GOperator1
             return this;
 
 
-        const _what = (await this.what.eval(parse)).toValue();
-        const _with = (await this.with.eval(parse)).toValue();
+        const _what  = (await this.what .eval(parse)).toValue();
+        const _with  = (await this.with .eval(parse)).toValue();
+        const _regex = (await this.regex.eval(parse)).toValue();
 
 
         if (this.input)
@@ -45,19 +48,31 @@ extends GOperator1
 
             consoleAssert(this.value.type == TEXT_VALUE, 'this.value.type must be TEXT_VALUE');
 
-            this.value.value = this.value.value.replaceAll(
-                unescapeString(_what.value),
-                unescapeString(_with.value));
+            if (_regex.value > 0)
+            {
+                const regex = new RegExp(_what.value, 'g');
+
+                this.value.value = this.value.value.replace(
+                    regex,
+                    _with.value);
+            }
+            else
+            {
+                this.value.value = this.value.value.replaceAll(
+                    unescapeString(_what.value),
+                    unescapeString(_with.value));
+            }
         }
         else
-            this.value = new TextValue();//TextValue.NaN;
+            this.value = new TextValue();
 
             
         this.setUpdateValues(parse,
         [
-            ['value', this.value],
-            ['what',  _what     ],
-            ['with',  _with     ]
+            ['value',  this.value],
+            ['what',  _what      ],
+            ['with',  _with      ],
+            ['regex', _regex     ]
         ]);
 
         
@@ -71,8 +86,9 @@ extends GOperator1
     isValid()
     {
         return super.isValid()
-            && this.what && this.what.isValid()
-            && this.with && this.with.isValid();
+            && this.what  && this.what .isValid()
+            && this.with  && this.with .isValid()
+            && this.regex && this.regex.isValid();
     }
 
 
@@ -81,8 +97,9 @@ extends GOperator1
     {
         super.pushValueUpdates(parse);
 
-        if (this.what) this.what.pushValueUpdates(parse);
-        if (this.with) this.with.pushValueUpdates(parse);
+        if (this.what ) this.what .pushValueUpdates(parse);
+        if (this.with ) this.with .pushValueUpdates(parse);
+        if (this.regex) this.regex.pushValueUpdates(parse);
     }
 
 
@@ -91,8 +108,9 @@ extends GOperator1
     {
         super.invalidateInputs(parse, from);
 
-        if (this.what) this.what.invalidateInputs(parse, from);
-        if (this.with) this.with.invalidateInputs(parse, from);
+        if (this.what ) this.what .invalidateInputs(parse, from);
+        if (this.with ) this.with .invalidateInputs(parse, from);
+        if (this.regex) this.regex.invalidateInputs(parse, from);
     }
 
 
@@ -101,7 +119,8 @@ extends GOperator1
     {
         super.iterateLoop(parse);
 
-        if (this.what) this.what.iterateLoop(parse);
-        if (this.with) this.with.iterateLoop(parse);
+        if (this.what ) this.what .iterateLoop(parse);
+        if (this.with ) this.with .iterateLoop(parse);
+        if (this.regex) this.regex.iterateLoop(parse);
     }
 }

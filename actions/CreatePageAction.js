@@ -19,14 +19,14 @@ extends Action
 
         if (graph.pages.length == 2)
         {
-            uiRemoveSavedNodesAndConns(graph.pages[0].nodes.map(n => n.id));
+            uiRemoveSavedNodesAndConns(graph.currentPage.nodes.map(n => n.id));
 
 
-            this.page.groups = graph.pages[0].groups;
-            graph.pages[0].groups = [];
+            this.page.groups = graph.currentPage.groups;
+            graph.currentPage.groups = [];
 
 
-            for (const node of graph.pages[0].nodes) node.id = makeNodePath(node);
+            for (const node of graph.currentPage.nodes) node.id = makeNodePath(node);
             //for (const node of this.page.nodes     ) node.id = makeNodePath(node);
 
                 
@@ -37,8 +37,8 @@ extends Action
             uiSaveConnections(getConnsFromNodes(this.page.nodes));
 
 
-            this.page._zoom = graph.pages[0]._zoom;
-            this.page._pan  = graph.pages[0]._pan;
+            this.page._zoom = graph.currentPage._zoom;
+            this.page._pan  = graph.currentPage._pan;
         }
 
 
@@ -62,18 +62,18 @@ extends Action
             for (const node of this.page.nodes)
                 node.id = makeNodePath(node);
 
-            graphView.updateNodes(graph.pages[0].nodes);
+            graphView.updateNodes(graph.currentPage.nodes);
             
             
-            uiSaveNodes(graph.pages[0].nodes.map(n => n.id));
-            uiSaveConnections(getConnsFromNodes(graph.pages[0].nodes));
+            uiSaveNodes(graph.currentPage.nodes.map(n => n.id));
+            uiSaveConnections(getConnsFromNodes(graph.currentPage.nodes));
 
 
-            graph.pages[0].groups = this.page.groups;
+            graph.currentPage.groups = this.page.groups;
             this.page.groups = [];
             
-            graph.pages[0]._zoom = this.page._zoom;
-            graph.pages[0]._pan  = this.page._pan;
+            graph.currentPage._zoom = this.page._zoom;
+            graph.currentPage._pan  = this.page._pan;
         }
 
 

@@ -16,8 +16,8 @@ class Graph
     connections     = [];
     
     
-    get currentPage() { return this.pages[this.pageIndex]; }
-    get pageNodes  () { return this.nodes.filter(n => n.pageId == this.currentPage.id); }
+    get currentPage() { return this.pages.length > 0 ? this.pages[this.pageIndex] : null; }
+    get pageNodes  () { return this.nodes.filter(n => n.pageId == this.currentPage.id);   }
 
 
 

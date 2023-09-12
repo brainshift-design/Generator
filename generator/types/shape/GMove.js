@@ -90,7 +90,12 @@ extends GOperator1
     async evalObjects(parse, options = {})
     {
         if (   this.value
-            && this.value.isValid())
+            && this.value.isValid()
+            && options.x
+            && options.y
+            && options.moveType
+            && options.affectSpace
+            && options.showCenter)
         {
             this.value.objects = getValidObjects(this.input.value);
 

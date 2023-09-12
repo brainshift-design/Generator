@@ -89,8 +89,11 @@ extends GOperator
         }        
 
 
+        if (this.value.isValid())
+            this.value.value = this.value.toNumber();
+
         this.lastValue2 = this.lastValue1;
-        this.lastValue1 = this.value.toNumber();
+        this.lastValue1 = this.value.value;
 
 
         this.setUpdateValues(parse,

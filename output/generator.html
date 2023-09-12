@@ -4,7 +4,7 @@
 
 
 
-const generatorVersion = 206;
+const generatorVersion = 208;
 
 
 const MAX_INT32        = 2147483647;
@@ -19184,8 +19184,11 @@ extends GOperator
         }        
 
 
+        if (this.value.isValid())
+            this.value.value = this.value.toNumber();
+
         this.lastValue2 = this.lastValue1;
-        this.lastValue1 = this.value.toNumber();
+        this.lastValue1 = this.value.value;
 
 
         this.setUpdateValues(parse,
@@ -23446,6 +23449,7 @@ extends GOperator1
 {
     what;
     with;
+    regex;
 
 
 
@@ -23464,6 +23468,7 @@ extends GOperator1
 
         copy.what  = this.what .copy();
         copy.with  = this.with .copy();
+        copy.regex = this.regex.copy();
 
         copy.value = this.value.copy();
 
@@ -23478,8 +23483,9 @@ extends GOperator1
             return this;
 
 
-        const _what = (await this.what.eval(parse)).toValue();
-        const _with = (await this.with.eval(parse)).toValue();
+        const _what  = (await this.what .eval(parse)).toValue();
+        const _with  = (await this.with .eval(parse)).toValue();
+        const _regex = (await this.regex.eval(parse)).toValue();
 
 
         if (this.input)
@@ -23488,19 +23494,31 @@ extends GOperator1
 
             consoleAssert(this.value.type == TEXT_VALUE, 'this.value.type must be TEXT_VALUE');
 
-            this.value.value = this.value.value.replaceAll(
-                unescapeString(_what.value),
-                unescapeString(_with.value));
+            if (_regex.value > 0)
+            {
+                const regex = new RegExp(_what.value, 'g');
+
+                this.value.value = this.value.value.replace(
+                    regex,
+                    _with.value);
+            }
+            else
+            {
+                this.value.value = this.value.value.replaceAll(
+                    unescapeString(_what.value),
+                    unescapeString(_with.value));
+            }
         }
         else
-            this.value = new TextValue();//TextValue.NaN;
+            this.value = new TextValue();
 
             
         this.setUpdateValues(parse,
         [
-            ['value', this.value],
-            ['what',  _what     ],
-            ['with',  _with     ]
+            ['value',  this.value],
+            ['what',  _what      ],
+            ['with',  _with      ],
+            ['regex', _regex     ]
         ]);
 
         
@@ -23514,8 +23532,9 @@ extends GOperator1
     isValid()
     {
         return super.isValid()
-            && this.what && this.what.isValid()
-            && this.with && this.with.isValid();
+            && this.what  && this.what .isValid()
+            && this.with  && this.with .isValid()
+            && this.regex && this.regex.isValid();
     }
 
 
@@ -23524,8 +23543,9 @@ extends GOperator1
     {
         super.pushValueUpdates(parse);
 
-        if (this.what) this.what.pushValueUpdates(parse);
-        if (this.with) this.with.pushValueUpdates(parse);
+        if (this.what ) this.what .pushValueUpdates(parse);
+        if (this.with ) this.with .pushValueUpdates(parse);
+        if (this.regex) this.regex.pushValueUpdates(parse);
     }
 
 
@@ -23534,8 +23554,9 @@ extends GOperator1
     {
         super.invalidateInputs(parse, from);
 
-        if (this.what) this.what.invalidateInputs(parse, from);
-        if (this.with) this.with.invalidateInputs(parse, from);
+        if (this.what ) this.what .invalidateInputs(parse, from);
+        if (this.with ) this.with .invalidateInputs(parse, from);
+        if (this.regex) this.regex.invalidateInputs(parse, from);
     }
 
 
@@ -23544,8 +23565,9 @@ extends GOperator1
     {
         super.iterateLoop(parse);
 
-        if (this.what) this.what.iterateLoop(parse);
-        if (this.with) this.with.iterateLoop(parse);
+        if (this.what ) this.what .iterateLoop(parse);
+        if (this.with ) this.with .iterateLoop(parse);
+        if (this.regex) this.regex.iterateLoop(parse);
     }
 }
 
@@ -28464,7 +28486,8 @@ extends GShapeBase
 
     baseIsValid()
     {
-        return this.props.isValid();
+        return this.value
+            && this.value.props.isValid();
     }
 
 
@@ -32221,7 +32244,12 @@ extends GOperator1
     async evalObjects(parse, options = {})
     {
         if (   this.value
-            && this.value.isValid())
+            && this.value.isValid()
+            && options.x
+            && options.y
+            && options.moveType
+            && options.affectSpace
+            && options.showCenter)
         {
             this.value.objects = getValidObjects(this.input.value);
 
@@ -40562,8 +40590,9 @@ function genParseTextReplace(parse)
     if (nInputs == 1)
         replace.input = genParse(parse);
 
-    replace.what = genParse(parse);
-    replace.with = genParse(parse);
+    replace.what  = genParse(parse);
+    replace.with  = genParse(parse);
+    replace.regex = genParse(parse);
 
     
     parse.nTab--;
@@ -40572,6 +40601,55 @@ function genParseTextReplace(parse)
     genParseNodeEnd(parse, replace);
     return replace;
 }
+
+
+
+
+// function genParseTextRegex(parse)
+// {
+//     const [, nodeId, options, ignore] = genParseNodeStart(parse);
+
+
+//     const regex = new GTextRegex(nodeId, options);
+   
+
+//     let nInputs = -1;
+    
+//     if (!ignore)
+//     {
+//         nInputs = parseInt(parse.move());
+//         consoleAssert(nInputs == 0 || nInputs == 1, 'nInputs must be [0, 1]');
+//     }
+
+    
+//     if (parse.settings.logRequests) 
+//         logReq(regex, parse, ignore, nInputs);
+
+
+//     if (ignore) 
+//     {
+//         genParseNodeEnd(parse, regex);
+//         return parse.parsedNodes.find(n => n.nodeId == nodeId);
+//     }
+
+
+//     parse.nTab++;
+
+
+//     if (nInputs == 1)
+//         regex.input = genParse(parse);
+
+//     regex.pattern = genParse(parse);
+//     regex.what    = genParse(parse);
+//     regex.with    = genParse(parse);
+
+    
+//     parse.nTab--;
+
+
+//     genParseNodeEnd(parse, regex);
+//     return regex;
+// }
 
 
 

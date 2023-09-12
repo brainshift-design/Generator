@@ -1,9 +1,9 @@
 var variableTimer = setInterval(() =>
 {
-    if (!graph.pages[0])
+    if (!graph.currentPage)
         return;
     
-    const varNodes = graph.pages[0].nodes.filter(n => 
+    const varNodes = graph.currentPage.nodes.filter(n => 
            n.type             == VARIABLE 
         && n.linkedVariableId != NULL);
 
@@ -28,7 +28,7 @@ function uiReturnFigGetAllLocalVariables(msg)
 
 function uiReturnFigGetVariableUpdates(values)
 {
-    const varNodes = graph.pages[0].nodes.filter(n => 
+    const varNodes = graph.currentPage.nodes.filter(n => 
                n.type             == VARIABLE 
             && n.linkedVariableId != NULL);
 
@@ -71,7 +71,7 @@ function initLocalVariablesMenu(variables, nodeId, nCollections)
     consoleAssert(node.type == VARIABLE, 'node must be VARIABLE');
 
 
-    const linkedNodes = graph.pages[0].nodes.filter(n => 
+    const linkedNodes = graph.currentPage.nodes.filter(n => 
            n.type == VARIABLE
         && n.linkedVariableId != NULL);
 

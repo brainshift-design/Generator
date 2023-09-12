@@ -5154,7 +5154,7 @@ a
             <div id='whatsNewBody'>
                 <h1 style='margin-top: 20px;'>What's new</h1>
 
-                <p>•  improved variable updates</p>
+                <p>•  fixed precision issue in Random node</p>
                 
                 <p><br/><br/><div id='chkHideWhatsNew'></div></p>
             </div>
@@ -5512,7 +5512,7 @@ a
 
 
 
-const generatorVersion = 206;
+const generatorVersion = 208;
 
 
 const MAX_INT32        = 2147483647;
@@ -24692,8 +24692,11 @@ extends GOperator
         }        
 
 
+        if (this.value.isValid())
+            this.value.value = this.value.toNumber();
+
         this.lastValue2 = this.lastValue1;
-        this.lastValue1 = this.value.toNumber();
+        this.lastValue1 = this.value.value;
 
 
         this.setUpdateValues(parse,
@@ -28954,6 +28957,7 @@ extends GOperator1
 {
     what;
     with;
+    regex;
 
 
 
@@ -28972,6 +28976,7 @@ extends GOperator1
 
         copy.what  = this.what .copy();
         copy.with  = this.with .copy();
+        copy.regex = this.regex.copy();
 
         copy.value = this.value.copy();
 
@@ -28986,8 +28991,9 @@ extends GOperator1
             return this;
 
 
-        const _what = (await this.what.eval(parse)).toValue();
-        const _with = (await this.with.eval(parse)).toValue();
+        const _what  = (await this.what .eval(parse)).toValue();
+        const _with  = (await this.with .eval(parse)).toValue();
+        const _regex = (await this.regex.eval(parse)).toValue();
 
 
         if (this.input)
@@ -28996,19 +29002,31 @@ extends GOperator1
 
             consoleAssert(this.value.type == TEXT_VALUE, 'this.value.type must be TEXT_VALUE');
 
-            this.value.value = this.value.value.replaceAll(
-                unescapeString(_what.value),
-                unescapeString(_with.value));
+            if (_regex.value > 0)
+            {
+                const regex = new RegExp(_what.value, 'g');
+
+                this.value.value = this.value.value.replace(
+                    regex,
+                    _with.value);
+            }
+            else
+            {
+                this.value.value = this.value.value.replaceAll(
+                    unescapeString(_what.value),
+                    unescapeString(_with.value));
+            }
         }
         else
-            this.value = new TextValue();//TextValue.NaN;
+            this.value = new TextValue();
 
             
         this.setUpdateValues(parse,
         [
-            ['value', this.value],
-            ['what',  _what     ],
-            ['with',  _with     ]
+            ['value',  this.value],
+            ['what',  _what      ],
+            ['with',  _with      ],
+            ['regex', _regex     ]
         ]);
 
         
@@ -29022,8 +29040,9 @@ extends GOperator1
     isValid()
     {
         return super.isValid()
-            && this.what && this.what.isValid()
-            && this.with && this.with.isValid();
+            && this.what  && this.what .isValid()
+            && this.with  && this.with .isValid()
+            && this.regex && this.regex.isValid();
     }
 
 
@@ -29032,8 +29051,9 @@ extends GOperator1
     {
         super.pushValueUpdates(parse);
 
-        if (this.what) this.what.pushValueUpdates(parse);
-        if (this.with) this.with.pushValueUpdates(parse);
+        if (this.what ) this.what .pushValueUpdates(parse);
+        if (this.with ) this.with .pushValueUpdates(parse);
+        if (this.regex) this.regex.pushValueUpdates(parse);
     }
 
 
@@ -29042,8 +29062,9 @@ extends GOperator1
     {
         super.invalidateInputs(parse, from);
 
-        if (this.what) this.what.invalidateInputs(parse, from);
-        if (this.with) this.with.invalidateInputs(parse, from);
+        if (this.what ) this.what .invalidateInputs(parse, from);
+        if (this.with ) this.with .invalidateInputs(parse, from);
+        if (this.regex) this.regex.invalidateInputs(parse, from);
     }
 
 
@@ -29052,8 +29073,9 @@ extends GOperator1
     {
         super.iterateLoop(parse);
 
-        if (this.what) this.what.iterateLoop(parse);
-        if (this.with) this.with.iterateLoop(parse);
+        if (this.what ) this.what .iterateLoop(parse);
+        if (this.with ) this.with .iterateLoop(parse);
+        if (this.regex) this.regex.iterateLoop(parse);
     }
 }
 
@@ -33972,7 +33994,8 @@ extends GShapeBase
 
     baseIsValid()
     {
-        return this.props.isValid();
+        return this.value
+            && this.value.props.isValid();
     }
 
 
@@ -37729,7 +37752,12 @@ extends GOperator1
     async evalObjects(parse, options = {})
     {
         if (   this.value
-            && this.value.isValid())
+            && this.value.isValid()
+            && options.x
+            && options.y
+            && options.moveType
+            && options.affectSpace
+            && options.showCenter)
         {
             this.value.objects = getValidObjects(this.input.value);
 
@@ -46070,8 +46098,9 @@ function genParseTextReplace(parse)
     if (nInputs == 1)
         replace.input = genParse(parse);
 
-    replace.what = genParse(parse);
-    replace.with = genParse(parse);
+    replace.what  = genParse(parse);
+    replace.with  = genParse(parse);
+    replace.regex = genParse(parse);
 
     
     parse.nTab--;
@@ -46080,6 +46109,55 @@ function genParseTextReplace(parse)
     genParseNodeEnd(parse, replace);
     return replace;
 }
+
+
+
+
+// function genParseTextRegex(parse)
+// {
+//     const [, nodeId, options, ignore] = genParseNodeStart(parse);
+
+
+//     const regex = new GTextRegex(nodeId, options);
+   
+
+//     let nInputs = -1;
+    
+//     if (!ignore)
+//     {
+//         nInputs = parseInt(parse.move());
+//         consoleAssert(nInputs == 0 || nInputs == 1, 'nInputs must be [0, 1]');
+//     }
+
+    
+//     if (parse.settings.logRequests) 
+//         logReq(regex, parse, ignore, nInputs);
+
+
+//     if (ignore) 
+//     {
+//         genParseNodeEnd(parse, regex);
+//         return parse.parsedNodes.find(n => n.nodeId == nodeId);
+//     }
+
+
+//     parse.nTab++;
+
+
+//     if (nInputs == 1)
+//         regex.input = genParse(parse);
+
+//     regex.pattern = genParse(parse);
+//     regex.what    = genParse(parse);
+//     regex.with    = genParse(parse);
+
+    
+//     parse.nTab--;
+
+
+//     genParseNodeEnd(parse, regex);
+//     return regex;
+// }
 
 
 
@@ -50250,7 +50328,7 @@ onerror = (event, source, line, pos, error) =>
 };
 
 
-const generatorVersion = 206;
+const generatorVersion = 208;
 
 
 const MAX_INT32        = 2147483647;
@@ -71683,8 +71761,11 @@ extends GOperator
         }        
 
 
+        if (this.value.isValid())
+            this.value.value = this.value.toNumber();
+
         this.lastValue2 = this.lastValue1;
-        this.lastValue1 = this.value.toNumber();
+        this.lastValue1 = this.value.value;
 
 
         this.setUpdateValues(parse,
@@ -75945,6 +76026,7 @@ extends GOperator1
 {
     what;
     with;
+    regex;
 
 
 
@@ -75963,6 +76045,7 @@ extends GOperator1
 
         copy.what  = this.what .copy();
         copy.with  = this.with .copy();
+        copy.regex = this.regex.copy();
 
         copy.value = this.value.copy();
 
@@ -75977,8 +76060,9 @@ extends GOperator1
             return this;
 
 
-        const _what = (await this.what.eval(parse)).toValue();
-        const _with = (await this.with.eval(parse)).toValue();
+        const _what  = (await this.what .eval(parse)).toValue();
+        const _with  = (await this.with .eval(parse)).toValue();
+        const _regex = (await this.regex.eval(parse)).toValue();
 
 
         if (this.input)
@@ -75987,19 +76071,31 @@ extends GOperator1
 
             consoleAssert(this.value.type == TEXT_VALUE, 'this.value.type must be TEXT_VALUE');
 
-            this.value.value = this.value.value.replaceAll(
-                unescapeString(_what.value),
-                unescapeString(_with.value));
+            if (_regex.value > 0)
+            {
+                const regex = new RegExp(_what.value, 'g');
+
+                this.value.value = this.value.value.replace(
+                    regex,
+                    _with.value);
+            }
+            else
+            {
+                this.value.value = this.value.value.replaceAll(
+                    unescapeString(_what.value),
+                    unescapeString(_with.value));
+            }
         }
         else
-            this.value = new TextValue();//TextValue.NaN;
+            this.value = new TextValue();
 
             
         this.setUpdateValues(parse,
         [
-            ['value', this.value],
-            ['what',  _what     ],
-            ['with',  _with     ]
+            ['value',  this.value],
+            ['what',  _what      ],
+            ['with',  _with      ],
+            ['regex', _regex     ]
         ]);
 
         
@@ -76013,8 +76109,9 @@ extends GOperator1
     isValid()
     {
         return super.isValid()
-            && this.what && this.what.isValid()
-            && this.with && this.with.isValid();
+            && this.what  && this.what .isValid()
+            && this.with  && this.with .isValid()
+            && this.regex && this.regex.isValid();
     }
 
 
@@ -76023,8 +76120,9 @@ extends GOperator1
     {
         super.pushValueUpdates(parse);
 
-        if (this.what) this.what.pushValueUpdates(parse);
-        if (this.with) this.with.pushValueUpdates(parse);
+        if (this.what ) this.what .pushValueUpdates(parse);
+        if (this.with ) this.with .pushValueUpdates(parse);
+        if (this.regex) this.regex.pushValueUpdates(parse);
     }
 
 
@@ -76033,8 +76131,9 @@ extends GOperator1
     {
         super.invalidateInputs(parse, from);
 
-        if (this.what) this.what.invalidateInputs(parse, from);
-        if (this.with) this.with.invalidateInputs(parse, from);
+        if (this.what ) this.what .invalidateInputs(parse, from);
+        if (this.with ) this.with .invalidateInputs(parse, from);
+        if (this.regex) this.regex.invalidateInputs(parse, from);
     }
 
 
@@ -76043,8 +76142,9 @@ extends GOperator1
     {
         super.iterateLoop(parse);
 
-        if (this.what) this.what.iterateLoop(parse);
-        if (this.with) this.with.iterateLoop(parse);
+        if (this.what ) this.what .iterateLoop(parse);
+        if (this.with ) this.with .iterateLoop(parse);
+        if (this.regex) this.regex.iterateLoop(parse);
     }
 }
 
@@ -80963,7 +81063,8 @@ extends GShapeBase
 
     baseIsValid()
     {
-        return this.props.isValid();
+        return this.value
+            && this.value.props.isValid();
     }
 
 
@@ -84720,7 +84821,12 @@ extends GOperator1
     async evalObjects(parse, options = {})
     {
         if (   this.value
-            && this.value.isValid())
+            && this.value.isValid()
+            && options.x
+            && options.y
+            && options.moveType
+            && options.affectSpace
+            && options.showCenter)
         {
             this.value.objects = getValidObjects(this.input.value);
 
@@ -91474,7 +91580,7 @@ const iconShapeGroup        = '<svg width="12" height="12" viewBox="0 0 12 12" f
 const iconFrame             = '<svg width="16" height="16" viewBox="0 0 16 16" fill="none" xmlns="http://www.w3.org/2000/svg"><path fill-rule="evenodd" clip-rule="evenodd" d="M4 0H3V3H0V4H3V12H0V13H3V16H4V13H12V16H13V13H16V12H13V4H16V3H13V0H12V3H4V0ZM12 12V4H4V12H12Z" fill="white"/></svg>';
 
 const iconMove              = '<svg width="17" height="18" viewBox="0 0 17 18" fill="none" xmlns="http://www.w3.org/2000/svg"><path d="M1.69662 8.51082L3.70749 10.5217L2.86015 11.373L-1.54856e-05 8.51282L2.86015 5.65259L3.70752 6.49995L1.69662 8.51082Z" fill="white"/><path d="M8.50169 1.70956L6.49078 3.72043L5.63948 2.87309L8.4997 0.0129241L11.3599 2.87309L10.5126 3.72046L8.50169 1.70956Z" fill="white"/><path d="M15.3029 8.51469L13.292 6.50378L14.1394 5.65248L16.9995 8.5127L14.1394 11.3729L13.292 10.5256L15.3029 8.51469Z" fill="white"/><path d="M8.49782 15.3158L10.5087 13.305L11.36 14.1523L8.49981 17.0125L5.63959 14.1523L6.48694 13.3049L8.49782 15.3158Z" fill="white"/><rect x="8" y="0.990723" width="1" height="15.0186" fill="white"/><rect x="1" y="9" width="0.999999" height="15" transform="rotate(-90 1 9)" fill="white"/></svg>'; 
-const iconRotate            = '<svg width="14" height="19" viewBox="0 0 14 19" fill="none" xmlns="http://www.w3.org/2000/svg"><path fill-rule="evenodd" clip-rule="evenodd" d="M7.9445 4.22796C5.01044 3.44178 1.99459 5.18299 1.20841 8.11705C0.713397 9.96445 1.21988 11.8445 2.39733 13.1809L1.64699 13.842C0.257648 12.265 -0.342805 10.0425 0.242481 7.85823C1.1716 4.3907 4.73579 2.33291 8.20332 3.26204L7.9445 4.22796Z" fill="white"/><path fill-rule="evenodd" clip-rule="evenodd" d="M5.08235 14.772C8.01642 15.5582 11.0323 13.817 11.8184 10.883C12.3135 9.03555 11.807 7.15553 10.6295 5.81905L11.3799 5.158C12.7692 6.73498 13.3697 8.95745 12.7844 11.1418C11.8553 14.6093 8.29106 16.6671 4.82353 15.738L5.08235 14.772Z" fill="white"/><path d="M7.41666 3.52189L5.40579 1.51099L6.25314 0.659682L9.1133 3.5199L6.25314 6.38012L5.40576 5.53277L7.41666 3.52189Z" fill="white"/><path d="M5.61019 15.4781L7.62106 17.489L6.77372 18.3403L3.91356 15.4801L6.77372 12.6199L7.62109 13.4672L5.61019 15.4781Z" fill="white"/></svg>'; 
+const iconRotate            = '<svg width="16" height="19" viewBox="0 0 16 19" fill="none" xmlns="http://www.w3.org/2000/svg"><path fill-rule="evenodd" clip-rule="evenodd" d="M8.88347 4.22796C5.9494 3.44178 2.93355 5.18299 2.14737 8.11705C1.65236 9.96445 2.15884 11.8445 3.33629 13.1809L2.58596 13.842C1.19661 12.265 0.59616 10.0425 1.18145 7.85823C2.11057 4.3907 5.67476 2.33291 9.14229 3.26204L8.88347 4.22796Z" fill="white"/><path fill-rule="evenodd" clip-rule="evenodd" d="M7.08235 14.772C10.0164 15.5582 13.0323 13.817 13.8184 10.883C14.3135 9.03555 13.807 7.15553 12.6295 5.81905L13.3799 5.158C14.7692 6.73498 15.3697 8.95745 14.7844 11.1418C13.8553 14.6093 10.2911 16.6671 6.82353 15.738L7.08235 14.772Z" fill="white"/><path d="M8.35563 3.52189L6.34476 1.51099L7.1921 0.659682L10.0523 3.5199L7.1921 6.38012L6.34473 5.53277L8.35563 3.52189Z" fill="white"/><path d="M7.61019 15.4781L9.62106 17.489L8.77372 18.3403L5.91356 15.4801L8.77372 12.6199L9.62109 13.4672L7.61019 15.4781Z" fill="white"/></svg>'; 
 const iconScale             = '<svg width="15" height="15" viewBox="0 0 15 15" fill="none" xmlns="http://www.w3.org/2000/svg"><path d="M0 0V15H15V9H14V14L1 14V1L6 1V0H0Z" fill="white"/><path d="M10 1V2.38419e-07L15 0V5H14V1.70718L6.70718 9H10V10H5V5H6V8.29297L13.293 1L10 1Z" fill="white"/></svg>';
 const iconSkew              = '<svg width="19" height="17" viewBox="0 0 19 17" fill="none" xmlns="http://www.w3.org/2000/svg"><path d="M2.75185 13.0498L4.85299 15.1509L4.04961 16.0462L0.564758 12.5613L4.02604 9.1001L4.85299 9.96779L2.77106 12.0496H8.03782V13.0498H2.75185Z" fill="white"/><path d="M16.2802 3.02754L14.1492 0.896574L14.9986 0.0472195L18.4673 3.516L15.0221 6.9613L14.1492 6.13945L16.261 4.02766L10.9942 4.02766L10.9942 3.02754L16.2802 3.02754Z" fill="white"/><rect x="8.03784" y="12.0476" width="3.98492" height="1" fill="white"/><rect x="10.9941" y="4.02979" width="3.94812" height="1" transform="rotate(-180 10.9941 4.02979)" fill="white"/><path d="M10.9083 12.532L13.0237 9.01649L14.0898 9.62791L12.0117 13.0475L10.9083 12.532Z" fill="white"/><path d="M8.20062 3.47107L6.03195 7.05296L4.94104 6.43312L7.02151 3.02985L8.20062 3.47107Z" fill="white"/></svg>'; 
 
@@ -108501,7 +108607,7 @@ extends ResizableBase
 
     loadParams(_node, pasting)
     {
-        const found = graph.pages[0].nodes.find(n => n.linkedVariableId == _node.linkedVariableId);
+        const found = graph.currentPage.nodes.find(n => n.linkedVariableId == _node.linkedVariableId);
 
         if (!found)
         {
@@ -115150,10 +115256,14 @@ extends OperatorWithValue
 
 
 class   OpTextReplace
-extends OperatorWithValue
+extends ResizableOperatorWithValue
 {
     paramWhat;
     paramWith;
+    paramRegex;
+
+    
+    menuRegex;
 
 
 
@@ -115172,15 +115282,42 @@ extends OperatorWithValue
         this.addOutput(new Output([TEXT_VALUE], this.output_genRequest));
 
         this.addParam(this.paramValue);
-        this.addParam(this.paramWhat = new TextParam('what', 'what', false, true, true));
-        this.addParam(this.paramWith = new TextParam('with', 'with', false, true, true));
+        this.addParam(this.paramWhat  = new   TextParam('what',  'what',  false, true, true));
+        this.addParam(this.paramWith  = new   TextParam('with',  'with',  false, true, true));
+        this.addParam(this.paramRegex = new NumberParam('regex', 'regex', true,  true, true, 0, 0, 1));
 
         this.paramWhat.controls[0].textbox.defPlaceholder = 'what';
         this.paramWith.controls[0].textbox.defPlaceholder = 'with';
 
+        this.paramRegex.divider = 0.56;
+
+        this.menuRegex = createBoolMenu(this.paramRegex);
+
+
         setControlFont(this.paramValue.controls[0].textbox, 'Roboto Mono', 10, 'center');
         setControlFont(this.paramWhat .controls[0].textbox, 'Roboto Mono', 10, 'center');
         setControlFont(this.paramWith .controls[0].textbox, 'Roboto Mono', 10, 'center');
+    }
+
+
+
+    setRect(x, y, w, h, updateTransform = true)
+    {
+        const headerHeight = boundingRect(this.header).height / graph.currentPage.zoom;
+
+        const height =
+            settings.showOperationResults
+            ? Math.max(headerHeight + 3 * defParamHeight, h)
+            : headerHeight + 3 * defParamHeight;
+
+        ResizableBase.prototype.setRect.call(this,
+            x, 
+            y, 
+            w, 
+            height, 
+            updateTransform);
+
+        this.updateValueParam();
     }
 
 
@@ -115205,8 +115342,9 @@ extends OperatorWithValue
         if (input.connected)
             request.push(...pushInputOrParam(input, gen));
 
-        request.push(...this.node.paramWhat.genRequest(gen));
-        request.push(...this.node.paramWith.genRequest(gen));
+        request.push(...this.node.paramWhat .genRequest(gen));
+        request.push(...this.node.paramWith .genRequest(gen));
+        request.push(...this.node.paramRegex.genRequest(gen));
 
         
         gen.scope.pop();
@@ -115220,12 +115358,40 @@ extends OperatorWithValue
     updateParams()
     {
         this.paramValue.enableControlText(true, this.isUnknown());
+        this.updateValueParam();
         // this.paramValue.controls[0].valueText = this.isUnknown() ? UNKNOWN_DISPLAY : '';
 
-        this.paramWhat.enableControlText(true);
-        this.paramWith.enableControlText(true);
+        this.paramWhat .enableControlText(true, this.paramWhat .isUnknown());
+        this.paramWith .enableControlText(true, this.paramWith .isUnknown());
+
+        updateParamConditionText(this.paramRegex, this.paramRegex.isUnknown(), false, 1);
 
         this.updateParamControls();
+    }
+
+
+    
+    updateValueParam()
+    {
+        const headerHeight = boundingRect(this.header).height / graph.currentPage.zoom;
+
+        const totalParamHeight = 
+              this.div.offsetHeight 
+            - Math.max(defHeaderHeight, headerHeight);
+
+        const hValue = Math.max(defParamHeight, totalParamHeight - defParamHeight * 3);
+
+        this.paramValue.div.style.width  = this.div.offsetWidth;
+        this.paramValue.div.style.height = hValue;    
+
+        this.paramWhat.div.style.width  = this.div.offsetWidth;
+        this.paramWhat.div.style.height = defParamHeight;    
+
+        this.paramWith.div.style.width  = this.div.offsetWidth;
+        this.paramWith.div.style.height = defParamHeight;    
+
+        this.paramRegex.div.style.width  = this.div.offsetWidth;
+        this.paramRegex.div.style.height = defParamHeight;    
     }
 }
 
@@ -125911,8 +126077,8 @@ class Graph
     connections     = [];
     
     
-    get currentPage() { return this.pages[this.pageIndex]; }
-    get pageNodes  () { return this.nodes.filter(n => n.pageId == this.currentPage.id); }
+    get currentPage() { return this.pages.length > 0 ? this.pages[this.pageIndex] : null; }
+    get pageNodes  () { return this.nodes.filter(n => n.pageId == this.currentPage.id);   }
 
 
 
@@ -127821,14 +127987,14 @@ extends Action
 
         if (graph.pages.length == 2)
         {
-            uiRemoveSavedNodesAndConns(graph.pages[0].nodes.map(n => n.id));
+            uiRemoveSavedNodesAndConns(graph.currentPage.nodes.map(n => n.id));
 
 
-            this.page.groups = graph.pages[0].groups;
-            graph.pages[0].groups = [];
+            this.page.groups = graph.currentPage.groups;
+            graph.currentPage.groups = [];
 
 
-            for (const node of graph.pages[0].nodes) node.id = makeNodePath(node);
+            for (const node of graph.currentPage.nodes) node.id = makeNodePath(node);
             //for (const node of this.page.nodes     ) node.id = makeNodePath(node);
 
                 
@@ -127839,8 +128005,8 @@ extends Action
             uiSaveConnections(getConnsFromNodes(this.page.nodes));
 
 
-            this.page._zoom = graph.pages[0]._zoom;
-            this.page._pan  = graph.pages[0]._pan;
+            this.page._zoom = graph.currentPage._zoom;
+            this.page._pan  = graph.currentPage._pan;
         }
 
 
@@ -127864,18 +128030,18 @@ extends Action
             for (const node of this.page.nodes)
                 node.id = makeNodePath(node);
 
-            graphView.updateNodes(graph.pages[0].nodes);
+            graphView.updateNodes(graph.currentPage.nodes);
             
             
-            uiSaveNodes(graph.pages[0].nodes.map(n => n.id));
-            uiSaveConnections(getConnsFromNodes(graph.pages[0].nodes));
+            uiSaveNodes(graph.currentPage.nodes.map(n => n.id));
+            uiSaveConnections(getConnsFromNodes(graph.currentPage.nodes));
 
 
-            graph.pages[0].groups = this.page.groups;
+            graph.currentPage.groups = this.page.groups;
             this.page.groups = [];
             
-            graph.pages[0]._zoom = this.page._zoom;
-            graph.pages[0]._pan  = this.page._pan;
+            graph.currentPage._zoom = this.page._zoom;
+            graph.currentPage._pan  = this.page._pan;
         }
 
 
@@ -128166,13 +128332,13 @@ extends Action
             for (const node of this.oldPage.nodes)
                 node.id = makeNodePath(node);
 
-            graphView.updateNodes(graph.pages[0].nodes);
-            uiSaveNodes(graph.pages[0].nodes.map(n => n.id));
+            graphView.updateNodes(graph.currentPage.nodes);
+            uiSaveNodes(graph.currentPage.nodes.map(n => n.id));
 
-            uiSaveConnections(getConnsFromNodes(graph.pages[0].nodes));
+            uiSaveConnections(getConnsFromNodes(graph.currentPage.nodes));
 
-            graph.pages[0]._zoom = this.oldPage._zoom;
-            graph.pages[0]._pan  = this.oldPage._pan;
+            graph.currentPage._zoom = this.oldPage._zoom;
+            graph.currentPage._pan  = this.oldPage._pan;
         }
 
 
@@ -128189,9 +128355,9 @@ extends Action
 
         if (graph.pages.length == 2)
         {
-            uiRemoveSavedNodesAndConns(graph.pages[0].nodes.map(n => n.id));
+            uiRemoveSavedNodesAndConns(graph.currentPage.nodes.map(n => n.id));
 
-            for (const node of graph.pages[0].nodes)
+            for (const node of graph.currentPage.nodes)
                 node.id = makeNodePath(node);
 
             graphView.updateNodes(this.oldPage.nodes);
@@ -128199,8 +128365,8 @@ extends Action
 
             uiSaveConnections(getConnsFromNodes(this.oldPage.nodes));
 
-            this.oldPage._zoom = graph.pages[0]._zoom;
-            this.oldPage._pan  = graph.pages[0]._pan;
+            this.oldPage._zoom = graph.currentPage._zoom;
+            this.oldPage._pan  = graph.currentPage._pan;
         }
 
 
@@ -135092,7 +135258,7 @@ function uiSaveSelectionToLocalFile()
     const nodes = 
         !isEmpty(graphView.selectedNodes)
         ? graphView.selectedNodes
-        : graph.pages[0].nodes;
+        : graph.currentPage.nodes;
         
     const json = uiCopyNodes(nodes.map(n => n.id));
 
@@ -135755,10 +135921,10 @@ function uiGetValue(key)
 
 var variableTimer = setInterval(() =>
 {
-    if (!graph.pages[0])
+    if (!graph.currentPage)
         return;
     
-    const varNodes = graph.pages[0].nodes.filter(n => 
+    const varNodes = graph.currentPage.nodes.filter(n => 
            n.type             == VARIABLE 
         && n.linkedVariableId != NULL);
 
@@ -135783,7 +135949,7 @@ function uiReturnFigGetAllLocalVariables(msg)
 
 function uiReturnFigGetVariableUpdates(values)
 {
-    const varNodes = graph.pages[0].nodes.filter(n => 
+    const varNodes = graph.currentPage.nodes.filter(n => 
                n.type             == VARIABLE 
             && n.linkedVariableId != NULL);
 
@@ -135826,7 +135992,7 @@ function initLocalVariablesMenu(variables, nodeId, nCollections)
     consoleAssert(node.type == VARIABLE, 'node must be VARIABLE');
 
 
-    const linkedNodes = graph.pages[0].nodes.filter(n => 
+    const linkedNodes = graph.currentPage.nodes.filter(n => 
            n.type == VARIABLE
         && n.linkedVariableId != NULL);
 

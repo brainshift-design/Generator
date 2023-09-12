@@ -26,7 +26,8 @@ extends GShapeBase
 
     baseIsValid()
     {
-        return this.props.isValid();
+        return this.value
+            && this.value.props.isValid();
     }
 
 

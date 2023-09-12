@@ -956,7 +956,7 @@ function uiSaveSelectionToLocalFile()
     const nodes = 
         !isEmpty(graphView.selectedNodes)
         ? graphView.selectedNodes
-        : graph.pages[0].nodes;
+        : graph.currentPage.nodes;
         
     const json = uiCopyNodes(nodes.map(n => n.id));
 

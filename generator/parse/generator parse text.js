@@ -318,8 +318,9 @@ function genParseTextReplace(parse)
     if (nInputs == 1)
         replace.input = genParse(parse);
 
-    replace.what = genParse(parse);
-    replace.with = genParse(parse);
+    replace.what  = genParse(parse);
+    replace.with  = genParse(parse);
+    replace.regex = genParse(parse);
 
     
     parse.nTab--;
@@ -328,6 +329,55 @@ function genParseTextReplace(parse)
     genParseNodeEnd(parse, replace);
     return replace;
 }
+
+
+
+
+// function genParseTextRegex(parse)
+// {
+//     const [, nodeId, options, ignore] = genParseNodeStart(parse);
+
+
+//     const regex = new GTextRegex(nodeId, options);
+   
+
+//     let nInputs = -1;
+    
+//     if (!ignore)
+//     {
+//         nInputs = parseInt(parse.move());
+//         consoleAssert(nInputs == 0 || nInputs == 1, 'nInputs must be [0, 1]');
+//     }
+
+    
+//     if (parse.settings.logRequests) 
+//         logReq(regex, parse, ignore, nInputs);
+
+
+//     if (ignore) 
+//     {
+//         genParseNodeEnd(parse, regex);
+//         return parse.parsedNodes.find(n => n.nodeId == nodeId);
+//     }
+
+
+//     parse.nTab++;
+
+
+//     if (nInputs == 1)
+//         regex.input = genParse(parse);
+
+//     regex.pattern = genParse(parse);
+//     regex.what    = genParse(parse);
+//     regex.with    = genParse(parse);
+
+    
+//     parse.nTab--;
+
+
+//     genParseNodeEnd(parse, regex);
+//     return regex;
+// }
 
 
 
