@@ -40,13 +40,13 @@ extends ResizableOperatorWithValue
         setControlFont(this.paramValue.controls[0].textbox, 'Roboto Mono', 10, 'center');
         setControlFont(this.paramWhat .controls[0].textbox, 'Roboto Mono', 10, 'center');
         setControlFont(this.paramWith .controls[0].textbox, 'Roboto Mono', 10, 'center');
-    }
+     }
 
 
 
     setRect(x, y, w, h, updateTransform = true)
     {
-        const headerHeight = boundingRect(this.header).height / graph.currentPage.zoom;
+        const headerHeight = defHeaderHeight;//boundingRect(this.header).height / graph.currentPage.zoom;
 
         const height =
             settings.showOperationResults
@@ -92,6 +92,7 @@ extends ResizableOperatorWithValue
         
         gen.scope.pop();
         pushUnique(gen.passedNodes, this.node);
+        
 
         return request;
     }
@@ -110,7 +111,7 @@ extends ResizableOperatorWithValue
         updateParamConditionText(this.paramRegex, this.paramRegex.isUnknown(), false, 1);
 
         this.updateParamControls();
-    }
+   }
 
 
     
