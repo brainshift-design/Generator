@@ -87788,7 +87788,8 @@ extends Control
          
         if (    isNaN(value) && !isNaN(oldValue)
             || !isNaN(value) &&  isNaN(oldValue)
-            || Math.abs(value - oldValue) > Number.EPSILON)
+            || Math.abs(value - oldValue) > Number.EPSILON
+            || decDigits(value) != decDigits(oldValue))
         {
             if (   value > -this.epsilon
                 && value <  0) // guard against -0
