@@ -267,6 +267,7 @@ Operator.prototype.updateIcon = function()
     this.divIcon.style.top     = (this.iconOffsetY * Math.min(graph.currentPage.zoom, 1)).toString() + 'px';
     this.divIcon.style.display = 
            this.icon != '' 
+        && this.showIcon
         && (   settings.showNodeIcons
             || this.alwaysShowIcon)
         ? 'inline' 

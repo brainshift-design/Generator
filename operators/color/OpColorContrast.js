@@ -46,6 +46,9 @@ extends OpColorBase
         super(COLOR_CONTRAST, 'contrast', 'contrast', iconWebContrast);
 
 
+        this.showIcon = false;
+        
+
         this.colorBack = createDiv('colorBack');
         this.inner.insertBefore(this.colorBack, this.paramHolder);
 

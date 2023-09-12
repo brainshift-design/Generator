@@ -104634,6 +104634,7 @@ class Operator
     alwaysLoadParams   = false;
     alwaysSaveParams   = false;
 
+    showIcon           = true;
     alwaysShowIcon     = false;
 
     saveParams         = true;  // master switch to not save any params
@@ -107233,6 +107234,7 @@ Operator.prototype.updateIcon = function()
     this.divIcon.style.top     = (this.iconOffsetY * Math.min(graph.currentPage.zoom, 1)).toString() + 'px';
     this.divIcon.style.display = 
            this.icon != '' 
+        && this.showIcon
         && (   settings.showNodeIcons
             || this.alwaysShowIcon)
         ? 'inline' 
@@ -119079,6 +119081,9 @@ extends OpColorBase
     {
         super(COLOR_CONTRAST, 'contrast', 'contrast', iconWebContrast);
 
+
+        this.showIcon = false;
+        
 
         this.colorBack = createDiv('colorBack');
         this.inner.insertBefore(this.colorBack, this.paramHolder);

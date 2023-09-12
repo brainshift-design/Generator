@@ -63,6 +63,7 @@ class Operator
     alwaysLoadParams   = false;
     alwaysSaveParams   = false;
 
+    showIcon           = true;
     alwaysShowIcon     = false;
 
     saveParams         = true;  // master switch to not save any params
