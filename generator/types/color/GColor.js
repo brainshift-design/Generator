@@ -87,9 +87,9 @@ extends GOperator1
                     if (!c2) c2 = this.value.c2;
                     if (!c3) c3 = this.value.c3;
  
-                    if (c1) this.value.c1 = c1;
-                    if (c2) this.value.c2 = c2;
-                    if (c3) this.value.c3 = c3;
+                    if (c1) { this.value.c1 = c1; this.c1 = c1; }
+                    if (c2) { this.value.c2 = c2; this.c2 = c2; }
+                    if (c3) { this.value.c3 = c3; this.c3 = c3; }
                 }
                 else
                     this.value = input;
@@ -137,6 +137,9 @@ extends GOperator1
                 NumberValue.NaN);
 
 
+        if (this.nodeId == 'color4')
+            console.log('1 this.updateValues =', [...this.updateValues]);
+    
         this.setUpdateValues(parse,
         [
             ['convert', this.convert    ],
@@ -145,6 +148,9 @@ extends GOperator1
             ['c2',      this.value.c2   ],
             ['c3',      this.value.c3   ]
         ]);
+
+        if (this.nodeId == 'color4')
+            console.log('2 this.updateValues =', [...this.updateValues]);
 
 
         // if (!this.c1) this.c1 = this.value.c1.copy();
