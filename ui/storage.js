@@ -297,7 +297,7 @@ function setLoadingProgress(progress)
 
 
 
-function loadNodesAndConnsAsync(_nodes, _conns, setProgress)
+function loadNodesAndConnsAsync(_nodes, _conns, setProgress, pasting = false)
 {
     loadingProgress.style.width   = 0;
     loadingOverlay .style.display = 'block';
@@ -324,7 +324,7 @@ function loadNodesAndConnsAsync(_nodes, _conns, setProgress)
                 i, 
                 Math.min(i + chunkSize, _nodes.length), // exclusive
                 nodes,
-                false);
+                pasting);
 
             if (setProgress)
                 setProgress(i / (_nodes.length + (_conns ? _conns.length : 0)));
@@ -333,28 +333,34 @@ function loadNodesAndConnsAsync(_nodes, _conns, setProgress)
         });
     }
 
-    promise.then(nodes => 
+    return new Promise(resolve =>
     {
-        graph.addNodes(nodes, false, false);
-        
+        promise.then(nodes => 
+        {
+            graph.addNodes(nodes, false, false);
 
-        const varNodes = nodes.filter(n => 
-                   n.type             == VARIABLE 
-                && n.linkedVariableId != NULL);
-                
-        uiGetValueFromFigma('getVariableData', varNodes.map(n => n.linkedVariableId))
-            .then(response =>
-            {
-                for (const value of response.value)
+
+            const varNodes = nodes.filter(n => 
+                    n.type             == VARIABLE 
+                    && n.linkedVariableId != NULL);
+                    
+            uiGetValueFromFigma('getVariableData', varNodes.map(n => n.linkedVariableId))
+                .then(response =>
                 {
-                    const node = varNodes.find(n => n.linkedVariableId == value.id);
+                    for (const value of response.value)
+                    {
+                        const node = varNodes.find(n => n.linkedVariableId == value.id);
 
-                    node.updateValueParamType  (value.resolvedType);
-                    node.updateValueParamValues(value.resolvedType, value.name, [value.value]);
-                }
+                        node.updateValueParamType  (value.resolvedType);
+                        node.updateValueParamValues(value.resolvedType, value.name, [value.value]);
+                    }
 
-                loadConnectionsAsync(_nodes, _conns, nodes, setProgress);    
-            });
+                    loadConnectionsAsync(_nodes, _conns, nodes, setProgress);    
+                });
+
+            
+            resolve(nodes);
+        });
     });
 }
 
@@ -572,68 +578,6 @@ function resolveConnections(nodes, _connections, first, last)
             resolve();
         });
         // /);
-}
-
-
-
-function loadNode(_node, pasting)
-{
-    // replace legacy
-    // if (_node.type == 'JOIN') _node.type = COMBINE;
-
-
-    const node = createNode(_node.type);
-    node.div.style.display = 'none';
-
-
-    node.loadFromParsedJson(_node, pasting);
-
-    if (node.pageId == NULL)
-        node.id = makeNodePath(node);
-
-        
-    node.setPosition(
-        parseFloat(_node.x), 
-        parseFloat(_node.y),
-        false);
-
-        
-    return node;
-}
-
-
-
-function parseConnectionsAndConnect(data, pasteConnected, setProgress = null)
-{
-    data.connections.sort((c1, c2) =>
-    {
-        if (c1.outputOrder != c2.outputOrder) return c1.outputOrder - c2.outputOrder;
-        if (c1.inputNodeId != c2.inputNodeId) return c1.inputNodeId - c2.inputNodeId;
-        if (c1.inputId     != c2.inputId    ) return c1.inputId     - c2.inputId;
-        return 0;
-    });
-
-    
-    const connections = [];
-    
-    for (let i = 0; i < data.connections.length; i++)
-    {
-        const _conn = data.connections[i];
-        
-        if (      data.nodes.find(n => (n.newId ?? n.id) == _conn.outputNodeId)
-               && data.nodes.find(n => (n.newId ?? n.id) == _conn. inputNodeId)
-            || pasteConnected)
-        {
-            parseConnectionJsonAndConnect(_conn, pasteConnected);
-            connections.push(_conn);
-        }
-
-        if (setProgress)
-            setProgress(((data.nodes.length + i) / (data.nodes.length + data.connections.length)));
-    }
-
-
-    return connections;
 }
 
 

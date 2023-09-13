@@ -430,6 +430,9 @@ function uiPasteNodes(nodesJson, loading, pasteConnected, x, y, updateNodes)
         //moveNodesToViewport(data.nodes);
 
 
+        //const nodes = await loadNodesAndConnsAsync(data.nodes, data.connections, null, true);
+
+
         const nodes = loadNodes(data, true);
         nodes.forEach(n => n.div.style.display ='none');
 
@@ -480,6 +483,75 @@ function loadNodes(data, pasting)
     }
 
     return nodes;
+}
+
+
+
+function loadNode(_node, pasting)
+{
+    // replace legacy
+    // if (_node.type == 'JOIN') _node.type = COMBINE;
+
+
+    const node = createNode(_node.type);
+    node.div.style.display = 'none';
+
+
+    node.loadFromParsedJson(_node, pasting);
+
+    if (node.pageId == NULL)
+        node.id = makeNodePath(node);
+
+        
+    node.setPosition(
+        parseFloat(_node.x), 
+        parseFloat(_node.y),
+        false);
+
+        
+    return node;
+}
+
+
+
+function parseConnectionsAndConnect(data, pasteConnected, setProgress = null)
+{
+    data.connections.sort((c1, c2) =>
+    {
+        // if (c1.outputOrder != c2.outputOrder) return c1.outputOrder - c2.outputOrder;
+        // if (c1.inputNodeId != c2.inputNodeId) return c1.inputNodeId - c2.inputNodeId;
+        // if (c1.inputId     != c2.inputId    ) return c1.inputId     - c2.inputId;
+        
+        if (c1.inputNodeId != c2.inputNodeId ) return c1.inputNodeId < c2.inputNodeId ? -1 : 1;
+        if (c1.inputId     != c2.inputId     ) return c1.inputId     < c2.inputId     ? -1 : 1;
+        
+        if (c1.inputNodeId == c2.outputNodeId) return -1;
+        if (c2.inputNodeId == c1.outputNodeId) return  1;
+
+        return 0;
+    });
+
+    
+    const connections = [];
+    
+    for (let i = 0; i < data.connections.length; i++)
+    {
+        const _conn = data.connections[i];
+        
+        if (      data.nodes.find(n => (n.newId ?? n.id) == _conn.outputNodeId)
+               && data.nodes.find(n => (n.newId ?? n.id) == _conn. inputNodeId)
+            || pasteConnected)
+        {
+            parseConnectionJsonAndConnect(_conn, pasteConnected);
+            connections.push(_conn);
+        }
+
+        if (setProgress)
+            setProgress(((data.nodes.length + i) / (data.nodes.length + data.connections.length)));
+    }
+
+
+    return connections;
 }
 
 

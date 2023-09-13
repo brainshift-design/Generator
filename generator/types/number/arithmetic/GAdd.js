@@ -47,6 +47,10 @@ async function evalAddInputs(inputs, parse)
     for (let i = 0; i < inputs.length; i++)
     {
         const val = (await inputs[i].eval(parse)).toValue();
+        
+        if (   !val
+            || !val.isValid())
+            return NumberValue.NaN;
 
         if (LIST_VALUES.includes(val.type))
         {

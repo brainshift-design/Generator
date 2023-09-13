@@ -55,6 +55,11 @@ async function evalMultiplyInputs(inputs, parse)
         {
             const val = (await inputs[i].eval(parse)).toValue();
 
+            if (   !val
+                || !val.isValid())
+                return NumberValue.NaN;
+
+
             if (LIST_VALUES.includes(val.type))
             {
                 if (   isEmpty(val.items)

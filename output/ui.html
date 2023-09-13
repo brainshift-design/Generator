@@ -5154,11 +5154,7 @@ a
             <div id='whatsNewBody'>
                 <h1 style='margin-top: 20px;'>What's new</h1>
 
-                <p>•  fixed precision issue in Random node</p>
-                <p>•  fixed issues with number controls</p>
-                <p>•  removed invalid warning stripes from Stroke node header</p>
-                <p>•  fixed invalid fills output in Stroke node</p>
-                <p>•  fixed small UI issues</p>
+                <p>•  </p>
                 
                 <p><br/><br/><div id='chkHideWhatsNew'></div></p>
             </div>
@@ -5516,7 +5512,7 @@ a
 
 
 
-const generatorVersion = 208;
+const generatorVersion = 209;
 
 
 const MAX_INT32        = 2147483647;
@@ -26039,6 +26035,10 @@ async function evalAddInputs(inputs, parse)
     for (let i = 0; i < inputs.length; i++)
     {
         const val = (await inputs[i].eval(parse)).toValue();
+        
+        if (   !val
+            || !val.isValid())
+            return NumberValue.NaN;
 
         if (LIST_VALUES.includes(val.type))
         {
@@ -26124,6 +26124,11 @@ async function evalSubtractInputs(inputs, parse)
     {
         const val0 = (await inputs[0].eval(parse)).toValue();
 
+        if (   !val0
+            || !val0.isValid())
+            return NumberValue.NaN;
+
+
         if (   inputs.length == 1
             && val0.type == NUMBER_VALUE)
         {
@@ -26134,12 +26139,21 @@ async function evalSubtractInputs(inputs, parse)
         {
             const item0 = val0.items[0];
 
+            if (   !item0
+                || !item0.isValid())
+                return NumberValue.NaN;
+
+
             value.value    = item0.value;
             value.decimals = item0.decimals;
 
             for (let i = 1; i < val0.items.length; i++)
             {
                 const item = val0.items[i];
+
+                if (   !item
+                    || !item.isValid())
+                    return NumberValue.NaN;
 
                 if (item.type == NUMBER_VALUE)
                 {
@@ -26161,6 +26175,11 @@ async function evalSubtractInputs(inputs, parse)
         for (let i = 1; i < inputs.length; i++)
         {
             const val = (await inputs[i].eval(parse)).toValue();
+
+            if (   !val
+                || !val.isValid())
+                return NumberValue.NaN;
+
 
             if (LIST_VALUES.includes(val.type))
             {
@@ -26247,6 +26266,11 @@ async function evalMultiplyInputs(inputs, parse)
         {
             const val = (await inputs[i].eval(parse)).toValue();
 
+            if (   !val
+                || !val.isValid())
+                return NumberValue.NaN;
+
+
             if (LIST_VALUES.includes(val.type))
             {
                 if (   isEmpty(val.items)
@@ -26329,11 +26353,20 @@ async function evalDivideInputs(inputs, parse)
     {
         const val0 = (await inputs[0].eval(parse)).toValue();
 
+        if (   !val0
+            || !val0.isValid())
+            return NumberValue.NaN;
+
 
         if (    LIST_VALUES.includes(val0.type)
             && !isEmpty(val0.items))
         {
             const item0 = val0.items[0];
+
+            if (   !item0
+                || !item0.isValid())
+                return NumberValue.NaN;
+
 
             value.value    = item0.value;
             value.decimals = item0.decimals;
@@ -26341,8 +26374,12 @@ async function evalDivideInputs(inputs, parse)
             for (let i = 1; i < val0.items.length; i++)
             {
                 const item = val0.items[i];
-                console.log('item =', item);
-                
+
+                if (   !item
+                    || !item.isValid())
+                    return NumberValue.NaN;
+
+                    
                 if (item.type == NUMBER_VALUE)
                 {
                     if (item.value == 0) 
@@ -26371,10 +26408,20 @@ async function evalDivideInputs(inputs, parse)
         {
             const val = (await inputs[i].eval(parse)).toValue();
 
+            if (   !val
+                || !val.isValid())
+                return NumberValue.NaN;
+
+
             if (LIST_VALUES.includes(val.type))
             {
                 for (const item of val.items)
                 {
+                    if (   !item
+                        || !item.isValid())
+                        return NumberValue.NaN;
+
+
                     if (item.type == NUMBER_VALUE)
                     {
                         if (item.value == 0) 
@@ -26466,10 +26513,20 @@ async function evalModuloInputs(inputs, parse)
     {
         const val0 = (await inputs[0].eval(parse)).toValue();
 
+        if (   !val0
+            || !val0.isValid())
+            return NumberValue.NaN;
+
+
         if (    LIST_VALUES.includes(val0.type)
             && !isEmpty(val0.items))
         {
             const item0 = val0.items[0];
+
+            if (   !item0
+                || !item0.isValid())
+                return NumberValue.NaN;
+
 
             value.value    = item0.value;
             value.decimals = item0.decimals;
@@ -26478,6 +26535,11 @@ async function evalModuloInputs(inputs, parse)
             {
                 const item = val0.items[i];
                 
+                if (   !item
+                    || !item.isValid())
+                    return NumberValue.NaN;
+
+
                 if (item.type == NUMBER_VALUE)
                 {
                     if (item.value == 0) 
@@ -26506,10 +26568,20 @@ async function evalModuloInputs(inputs, parse)
         {
             const val = (await inputs[i].eval(parse)).toValue();
 
+            if (   !val
+                || !val.isValid())
+                return NumberValue.NaN;
+
+
             if (LIST_VALUES.includes(val.type))
             {
                 for (const item of val.items)
                 {
+                    if (   !item
+                        || !item.isValid())
+                        return NumberValue.NaN;
+
+
                     if (item.type == NUMBER_VALUE)
                     {
                         if (item.value == 0) 
@@ -26601,10 +26673,20 @@ async function evalExponentInputs(inputs, parse)
     {
         const val0 = (await inputs[0].eval(parse)).toValue();
 
+        if (   !val0
+            || !val0.isValid())
+            return NumberValue.NaN;
+
+
         if (    LIST_VALUES.includes(val0.type)
             && !isEmpty(val0.items))
         {
             const item0 = val0.items[0];
+
+            if (   !item0
+                || !item0.isValid())
+                return NumberValue.NaN;
+
 
             value.value    = item0.value;
             value.decimals = item0.decimals;
@@ -26613,6 +26695,11 @@ async function evalExponentInputs(inputs, parse)
             {
                 const item = val0.items[i];
                 
+                if (   !item
+                    || !item.isValid())
+                    return NumberValue.NaN;
+
+
                 if (item.type == NUMBER_VALUE)
                 {
                     value.value    = Math.pow(value.value,    item.value);
@@ -26634,15 +26721,24 @@ async function evalExponentInputs(inputs, parse)
         {
             const val = (await inputs[i].eval(parse)).toValue();
 
+            if (   !val
+                || !val.isValid())
+                return NumberValue.NaN;
+
+
             if (LIST_VALUES.includes(val.type))
             {
                 for (const item of val.items)
                 {
+                    if (   !item
+                        || !item.isValid())
+                        return NumberValue.NaN;
+
                     if (item.type == NUMBER_VALUE)
                     {
                         value.value    = Math.pow(value.value,    item.value);
                         value.decimals = Math.max(value.decimals, item.decimals);
-                            }                    
+                    }                    
                 }
             }
             else
@@ -50337,7 +50433,7 @@ onerror = (event, source, line, pos, error) =>
 };
 
 
-const generatorVersion = 208;
+const generatorVersion = 209;
 
 
 const MAX_INT32        = 2147483647;
@@ -73113,6 +73209,10 @@ async function evalAddInputs(inputs, parse)
     for (let i = 0; i < inputs.length; i++)
     {
         const val = (await inputs[i].eval(parse)).toValue();
+        
+        if (   !val
+            || !val.isValid())
+            return NumberValue.NaN;
 
         if (LIST_VALUES.includes(val.type))
         {
@@ -73198,6 +73298,11 @@ async function evalSubtractInputs(inputs, parse)
     {
         const val0 = (await inputs[0].eval(parse)).toValue();
 
+        if (   !val0
+            || !val0.isValid())
+            return NumberValue.NaN;
+
+
         if (   inputs.length == 1
             && val0.type == NUMBER_VALUE)
         {
@@ -73208,12 +73313,21 @@ async function evalSubtractInputs(inputs, parse)
         {
             const item0 = val0.items[0];
 
+            if (   !item0
+                || !item0.isValid())
+                return NumberValue.NaN;
+
+
             value.value    = item0.value;
             value.decimals = item0.decimals;
 
             for (let i = 1; i < val0.items.length; i++)
             {
                 const item = val0.items[i];
+
+                if (   !item
+                    || !item.isValid())
+                    return NumberValue.NaN;
 
                 if (item.type == NUMBER_VALUE)
                 {
@@ -73235,6 +73349,11 @@ async function evalSubtractInputs(inputs, parse)
         for (let i = 1; i < inputs.length; i++)
         {
             const val = (await inputs[i].eval(parse)).toValue();
+
+            if (   !val
+                || !val.isValid())
+                return NumberValue.NaN;
+
 
             if (LIST_VALUES.includes(val.type))
             {
@@ -73321,6 +73440,11 @@ async function evalMultiplyInputs(inputs, parse)
         {
             const val = (await inputs[i].eval(parse)).toValue();
 
+            if (   !val
+                || !val.isValid())
+                return NumberValue.NaN;
+
+
             if (LIST_VALUES.includes(val.type))
             {
                 if (   isEmpty(val.items)
@@ -73403,11 +73527,20 @@ async function evalDivideInputs(inputs, parse)
     {
         const val0 = (await inputs[0].eval(parse)).toValue();
 
+        if (   !val0
+            || !val0.isValid())
+            return NumberValue.NaN;
+
 
         if (    LIST_VALUES.includes(val0.type)
             && !isEmpty(val0.items))
         {
             const item0 = val0.items[0];
+
+            if (   !item0
+                || !item0.isValid())
+                return NumberValue.NaN;
+
 
             value.value    = item0.value;
             value.decimals = item0.decimals;
@@ -73415,8 +73548,12 @@ async function evalDivideInputs(inputs, parse)
             for (let i = 1; i < val0.items.length; i++)
             {
                 const item = val0.items[i];
-                console.log('item =', item);
-                
+
+                if (   !item
+                    || !item.isValid())
+                    return NumberValue.NaN;
+
+                    
                 if (item.type == NUMBER_VALUE)
                 {
                     if (item.value == 0) 
@@ -73445,10 +73582,20 @@ async function evalDivideInputs(inputs, parse)
         {
             const val = (await inputs[i].eval(parse)).toValue();
 
+            if (   !val
+                || !val.isValid())
+                return NumberValue.NaN;
+
+
             if (LIST_VALUES.includes(val.type))
             {
                 for (const item of val.items)
                 {
+                    if (   !item
+                        || !item.isValid())
+                        return NumberValue.NaN;
+
+
                     if (item.type == NUMBER_VALUE)
                     {
                         if (item.value == 0) 
@@ -73540,10 +73687,20 @@ async function evalModuloInputs(inputs, parse)
     {
         const val0 = (await inputs[0].eval(parse)).toValue();
 
+        if (   !val0
+            || !val0.isValid())
+            return NumberValue.NaN;
+
+
         if (    LIST_VALUES.includes(val0.type)
             && !isEmpty(val0.items))
         {
             const item0 = val0.items[0];
+
+            if (   !item0
+                || !item0.isValid())
+                return NumberValue.NaN;
+
 
             value.value    = item0.value;
             value.decimals = item0.decimals;
@@ -73552,6 +73709,11 @@ async function evalModuloInputs(inputs, parse)
             {
                 const item = val0.items[i];
                 
+                if (   !item
+                    || !item.isValid())
+                    return NumberValue.NaN;
+
+
                 if (item.type == NUMBER_VALUE)
                 {
                     if (item.value == 0) 
@@ -73580,10 +73742,20 @@ async function evalModuloInputs(inputs, parse)
         {
             const val = (await inputs[i].eval(parse)).toValue();
 
+            if (   !val
+                || !val.isValid())
+                return NumberValue.NaN;
+
+
             if (LIST_VALUES.includes(val.type))
             {
                 for (const item of val.items)
                 {
+                    if (   !item
+                        || !item.isValid())
+                        return NumberValue.NaN;
+
+
                     if (item.type == NUMBER_VALUE)
                     {
                         if (item.value == 0) 
@@ -73675,10 +73847,20 @@ async function evalExponentInputs(inputs, parse)
     {
         const val0 = (await inputs[0].eval(parse)).toValue();
 
+        if (   !val0
+            || !val0.isValid())
+            return NumberValue.NaN;
+
+
         if (    LIST_VALUES.includes(val0.type)
             && !isEmpty(val0.items))
         {
             const item0 = val0.items[0];
+
+            if (   !item0
+                || !item0.isValid())
+                return NumberValue.NaN;
+
 
             value.value    = item0.value;
             value.decimals = item0.decimals;
@@ -73687,6 +73869,11 @@ async function evalExponentInputs(inputs, parse)
             {
                 const item = val0.items[i];
                 
+                if (   !item
+                    || !item.isValid())
+                    return NumberValue.NaN;
+
+
                 if (item.type == NUMBER_VALUE)
                 {
                     value.value    = Math.pow(value.value,    item.value);
@@ -73708,15 +73895,24 @@ async function evalExponentInputs(inputs, parse)
         {
             const val = (await inputs[i].eval(parse)).toValue();
 
+            if (   !val
+                || !val.isValid())
+                return NumberValue.NaN;
+
+
             if (LIST_VALUES.includes(val.type))
             {
                 for (const item of val.items)
                 {
+                    if (   !item
+                        || !item.isValid())
+                        return NumberValue.NaN;
+
                     if (item.type == NUMBER_VALUE)
                     {
                         value.value    = Math.pow(value.value,    item.value);
                         value.decimals = Math.max(value.decimals, item.decimals);
-                            }                    
+                    }                    
                 }
             }
             else
@@ -104049,7 +104245,7 @@ class Wire
                this.connection.output
             && arraysIntersect(this.connection.output.types, LIST_TYPES);
     
-        const yOffset = getTopHeight() + (listType ? 1/graph.currentPage.zoom : 0);
+        const yOffset = getTopHeight();// + (listType ? 1/graph.currentPage.zoom : 0);
     
         let pOut = point(0, 0),
             pIn  = point(0, 0);
@@ -133450,7 +133646,7 @@ function setLoadingProgress(progress)
 
 
 
-function loadNodesAndConnsAsync(_nodes, _conns, setProgress)
+function loadNodesAndConnsAsync(_nodes, _conns, setProgress, pasting = false)
 {
     loadingProgress.style.width   = 0;
     loadingOverlay .style.display = 'block';
@@ -133477,7 +133673,7 @@ function loadNodesAndConnsAsync(_nodes, _conns, setProgress)
                 i, 
                 Math.min(i + chunkSize, _nodes.length), // exclusive
                 nodes,
-                false);
+                pasting);
 
             if (setProgress)
                 setProgress(i / (_nodes.length + (_conns ? _conns.length : 0)));
@@ -133486,28 +133682,34 @@ function loadNodesAndConnsAsync(_nodes, _conns, setProgress)
         });
     }
 
-    promise.then(nodes => 
+    return new Promise(resolve =>
     {
-        graph.addNodes(nodes, false, false);
-        
+        promise.then(nodes => 
+        {
+            graph.addNodes(nodes, false, false);
 
-        const varNodes = nodes.filter(n => 
-                   n.type             == VARIABLE 
-                && n.linkedVariableId != NULL);
-                
-        uiGetValueFromFigma('getVariableData', varNodes.map(n => n.linkedVariableId))
-            .then(response =>
-            {
-                for (const value of response.value)
+
+            const varNodes = nodes.filter(n => 
+                    n.type             == VARIABLE 
+                    && n.linkedVariableId != NULL);
+                    
+            uiGetValueFromFigma('getVariableData', varNodes.map(n => n.linkedVariableId))
+                .then(response =>
                 {
-                    const node = varNodes.find(n => n.linkedVariableId == value.id);
+                    for (const value of response.value)
+                    {
+                        const node = varNodes.find(n => n.linkedVariableId == value.id);
 
-                    node.updateValueParamType  (value.resolvedType);
-                    node.updateValueParamValues(value.resolvedType, value.name, [value.value]);
-                }
+                        node.updateValueParamType  (value.resolvedType);
+                        node.updateValueParamValues(value.resolvedType, value.name, [value.value]);
+                    }
 
-                loadConnectionsAsync(_nodes, _conns, nodes, setProgress);    
-            });
+                    loadConnectionsAsync(_nodes, _conns, nodes, setProgress);    
+                });
+
+            
+            resolve(nodes);
+        });
     });
 }
 
@@ -133725,68 +133927,6 @@ function resolveConnections(nodes, _connections, first, last)
             resolve();
         });
         // /);
-}
-
-
-
-function loadNode(_node, pasting)
-{
-    // replace legacy
-    // if (_node.type == 'JOIN') _node.type = COMBINE;
-
-
-    const node = createNode(_node.type);
-    node.div.style.display = 'none';
-
-
-    node.loadFromParsedJson(_node, pasting);
-
-    if (node.pageId == NULL)
-        node.id = makeNodePath(node);
-
-        
-    node.setPosition(
-        parseFloat(_node.x), 
-        parseFloat(_node.y),
-        false);
-
-        
-    return node;
-}
-
-
-
-function parseConnectionsAndConnect(data, pasteConnected, setProgress = null)
-{
-    data.connections.sort((c1, c2) =>
-    {
-        if (c1.outputOrder != c2.outputOrder) return c1.outputOrder - c2.outputOrder;
-        if (c1.inputNodeId != c2.inputNodeId) return c1.inputNodeId - c2.inputNodeId;
-        if (c1.inputId     != c2.inputId    ) return c1.inputId     - c2.inputId;
-        return 0;
-    });
-
-    
-    const connections = [];
-    
-    for (let i = 0; i < data.connections.length; i++)
-    {
-        const _conn = data.connections[i];
-        
-        if (      data.nodes.find(n => (n.newId ?? n.id) == _conn.outputNodeId)
-               && data.nodes.find(n => (n.newId ?? n.id) == _conn. inputNodeId)
-            || pasteConnected)
-        {
-            parseConnectionJsonAndConnect(_conn, pasteConnected);
-            connections.push(_conn);
-        }
-
-        if (setProgress)
-            setProgress(((data.nodes.length + i) / (data.nodes.length + data.connections.length)));
-    }
-
-
-    return connections;
 }
 
 
@@ -134770,6 +134910,9 @@ function uiPasteNodes(nodesJson, loading, pasteConnected, x, y, updateNodes)
         //moveNodesToViewport(data.nodes);
 
 
+        //const nodes = await loadNodesAndConnsAsync(data.nodes, data.connections, null, true);
+
+
         const nodes = loadNodes(data, true);
         nodes.forEach(n => n.div.style.display ='none');
 
@@ -134820,6 +134963,75 @@ function loadNodes(data, pasting)
     }
 
     return nodes;
+}
+
+
+
+function loadNode(_node, pasting)
+{
+    // replace legacy
+    // if (_node.type == 'JOIN') _node.type = COMBINE;
+
+
+    const node = createNode(_node.type);
+    node.div.style.display = 'none';
+
+
+    node.loadFromParsedJson(_node, pasting);
+
+    if (node.pageId == NULL)
+        node.id = makeNodePath(node);
+
+        
+    node.setPosition(
+        parseFloat(_node.x), 
+        parseFloat(_node.y),
+        false);
+
+        
+    return node;
+}
+
+
+
+function parseConnectionsAndConnect(data, pasteConnected, setProgress = null)
+{
+    data.connections.sort((c1, c2) =>
+    {
+        // if (c1.outputOrder != c2.outputOrder) return c1.outputOrder - c2.outputOrder;
+        // if (c1.inputNodeId != c2.inputNodeId) return c1.inputNodeId - c2.inputNodeId;
+        // if (c1.inputId     != c2.inputId    ) return c1.inputId     - c2.inputId;
+        
+        if (c1.inputNodeId != c2.inputNodeId ) return c1.inputNodeId < c2.inputNodeId ? -1 : 1;
+        if (c1.inputId     != c2.inputId     ) return c1.inputId     < c2.inputId     ? -1 : 1;
+        
+        if (c1.inputNodeId == c2.outputNodeId) return -1;
+        if (c2.inputNodeId == c1.outputNodeId) return  1;
+
+        return 0;
+    });
+
+    
+    const connections = [];
+    
+    for (let i = 0; i < data.connections.length; i++)
+    {
+        const _conn = data.connections[i];
+        
+        if (      data.nodes.find(n => (n.newId ?? n.id) == _conn.outputNodeId)
+               && data.nodes.find(n => (n.newId ?? n.id) == _conn. inputNodeId)
+            || pasteConnected)
+        {
+            parseConnectionJsonAndConnect(_conn, pasteConnected);
+            connections.push(_conn);
+        }
+
+        if (setProgress)
+            setProgress(((data.nodes.length + i) / (data.nodes.length + data.connections.length)));
+    }
+
+
+    return connections;
 }
 
 

@@ -51,6 +51,11 @@ async function evalSubtractInputs(inputs, parse)
     {
         const val0 = (await inputs[0].eval(parse)).toValue();
 
+        if (   !val0
+            || !val0.isValid())
+            return NumberValue.NaN;
+
+
         if (   inputs.length == 1
             && val0.type == NUMBER_VALUE)
         {
@@ -61,12 +66,21 @@ async function evalSubtractInputs(inputs, parse)
         {
             const item0 = val0.items[0];
 
+            if (   !item0
+                || !item0.isValid())
+                return NumberValue.NaN;
+
+
             value.value    = item0.value;
             value.decimals = item0.decimals;
 
             for (let i = 1; i < val0.items.length; i++)
             {
                 const item = val0.items[i];
+
+                if (   !item
+                    || !item.isValid())
+                    return NumberValue.NaN;
 
                 if (item.type == NUMBER_VALUE)
                 {
@@ -88,6 +102,11 @@ async function evalSubtractInputs(inputs, parse)
         for (let i = 1; i < inputs.length; i++)
         {
             const val = (await inputs[i].eval(parse)).toValue();
+
+            if (   !val
+                || !val.isValid())
+                return NumberValue.NaN;
+
 
             if (LIST_VALUES.includes(val.type))
             {

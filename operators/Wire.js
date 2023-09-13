@@ -173,7 +173,7 @@ class Wire
                this.connection.output
             && arraysIntersect(this.connection.output.types, LIST_TYPES);
     
-        const yOffset = getTopHeight() + (listType ? 1/graph.currentPage.zoom : 0);
+        const yOffset = getTopHeight();// + (listType ? 1/graph.currentPage.zoom : 0);
     
         let pOut = point(0, 0),
             pIn  = point(0, 0);
