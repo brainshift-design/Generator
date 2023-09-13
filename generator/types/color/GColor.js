@@ -2,6 +2,11 @@ class GColor
 extends GOperator1
 {
     space   = null;
+    
+   _c1      = null;
+   _c2      = null;
+   _c3      = null;
+    
     c1      = null;
     c2      = null;
     c3      = null;
@@ -27,9 +32,13 @@ extends GOperator1
 
         copy.space = this.space.copy();
 
-        if (this.c1) copy.c1 = this.c1.copy();
-        if (this.c2) copy.c2 = this.c2.copy();
-        if (this.c3) copy.c3 = this.c3.copy();
+        if (this._c1) copy._c1 = this._c1.copy();
+        if (this._c2) copy._c2 = this._c2.copy();
+        if (this._c3) copy._c3 = this._c3.copy();
+
+        if (this. c1) copy. c1 = this. c1.copy();
+        if (this. c2) copy. c2 = this. c2.copy();
+        if (this. c3) copy. c3 = this. c3.copy();
 
         if (this.convert) 
             copy.convert = this.convert.copy();
@@ -46,9 +55,9 @@ extends GOperator1
 
 
         const space = this.space ? (await this.space.eval(parse)).toValue().toInteger() : null; 
-        let   c1    = this.c1    ? (await this.c1   .eval(parse)).toValue()             : null;
-        let   c2    = this.c2    ? (await this.c2   .eval(parse)).toValue()             : null;
-        let   c3    = this.c3    ? (await this.c3   .eval(parse)).toValue()             : null;
+        let   c1    = this._c1   ? (await this._c1  .eval(parse)).toValue()             : null;
+        let   c2    = this._c2   ? (await this._c2  .eval(parse)).toValue()             : null;
+        let   c3    = this._c3   ? (await this._c3  .eval(parse)).toValue()             : null;
 
         
         if (this.input)
@@ -137,9 +146,6 @@ extends GOperator1
                 NumberValue.NaN);
 
 
-        if (this.nodeId == 'color4')
-            console.log('1 this.updateValues =', [...this.updateValues]);
-    
         this.setUpdateValues(parse,
         [
             ['convert', this.convert    ],
@@ -148,9 +154,6 @@ extends GOperator1
             ['c2',      this.value.c2   ],
             ['c3',      this.value.c3   ]
         ]);
-
-        if (this.nodeId == 'color4')
-            console.log('2 this.updateValues =', [...this.updateValues]);
 
 
         // if (!this.c1) this.c1 = this.value.c1.copy();
@@ -207,9 +210,9 @@ extends GOperator1
         super.pushValueUpdates(parse);
 
         if (this.space) this.space.pushValueUpdates(parse);
-        if (this.c1   ) this.c1   .pushValueUpdates(parse);
-        if (this.c2   ) this.c2   .pushValueUpdates(parse);
-        if (this.c3   ) this.c3   .pushValueUpdates(parse);
+        if (this._c1  ) this._c1  .pushValueUpdates(parse);
+        if (this._c2  ) this._c2  .pushValueUpdates(parse);
+        if (this._c3  ) this._c3  .pushValueUpdates(parse);
     }
 
 
@@ -219,9 +222,9 @@ extends GOperator1
         super.invalidateInputs(parse, from);
 
         if (this.space) this.space.invalidateInputs(parse, from);
-        if (this.c1   ) this.c1   .invalidateInputs(parse, from);
-        if (this.c2   ) this.c2   .invalidateInputs(parse, from);
-        if (this.c3   ) this.c3   .invalidateInputs(parse, from);
+        if (this._c1  ) this._c1  .invalidateInputs(parse, from);
+        if (this._c2  ) this._c2  .invalidateInputs(parse, from);
+        if (this._c3  ) this._c3  .invalidateInputs(parse, from);
     }
 
 
@@ -231,8 +234,8 @@ extends GOperator1
         super.iterateLoop(parse);
 
         if (this.space) this.space.iterateLoop(parse);
-        if (this.c1   ) this.c1   .iterateLoop(parse);
-        if (this.c2   ) this.c2   .iterateLoop(parse);
-        if (this.c3   ) this.c3   .iterateLoop(parse);
+        if (this._c1  ) this._c1  .iterateLoop(parse);
+        if (this._c2  ) this._c2  .iterateLoop(parse);
+        if (this._c3  ) this._c3  .iterateLoop(parse);
     }
 }
