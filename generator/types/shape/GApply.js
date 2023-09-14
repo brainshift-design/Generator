@@ -1,6 +1,10 @@
 class GApply
 extends GShape
 {
+    replace;
+
+
+
     constructor(nodeId, options)
     {
         super(SHAPE_APPLY, nodeId, options);
@@ -14,6 +18,8 @@ extends GShape
 
         copy.copyBase(this);
 
+        if (this.replace) copy.replace = this.replace.copy();
+
         return copy;
     }
 
@@ -26,6 +32,8 @@ extends GShape
 
         
         const [, , , ] = await this.evalBaseParams(parse);
+        const replace  = (await this.replace.eval(parse)).toValue();
+
 
 
         if (this.input)
@@ -35,7 +43,7 @@ extends GShape
             this.value = input.copy();
 
             if (this.options.enabled)
-                await this.evalShapeBase(parse);
+                await this.evalShapeBase(parse, replace.value == 0);
 
             await this.evalObjects(parse);
         }

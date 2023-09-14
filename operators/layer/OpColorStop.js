@@ -225,8 +225,8 @@ extends OpColorBase
                !this.inputs[0].connected
             || !this.inputs[0].connectedOutput.supportsTypes(COLOR_STOP_TYPES);
 
-        this.paramFill    .enableControlText(enableFill);
-        this.paramPosition.enableControlText(enable);
+        this.paramFill    .enableControlText(enableFill, this.paramFill    .isUnknown());
+        this.paramPosition.enableControlText(enable,     this.paramPosition.isUnknown());
 
         this.updateParamControls();
     }

@@ -1597,20 +1597,8 @@ function genParseShapeApply(parse)
     if (nInputs == 1)
         apply.input = genParse(parse);
 
-
-    const nParamIds = genParseParamCount(parse);
-
-    for (let i = 0; i < nParamIds; i++)
-    {
-        const paramId = genParseParamId(parse);
-
-        parse.inParam = true;
-
-        switch (paramId)
-        {
-        case 'props': apply.props = genParse(parse); break;
-        }
-    }
+    apply.props   = genParse(parse);
+    apply.replace = genParse(parse);
 
 
     parse.inParam = false;

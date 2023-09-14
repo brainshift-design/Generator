@@ -1,5 +1,5 @@
 class   OpNumber
-extends OperatorBase
+extends ResizableBase
 {
     paramValue;
 
@@ -15,6 +15,18 @@ extends OperatorBase
         this.addParam(this.paramValue = new NumberParam('value', 'value', false, false, false));
 
         this.alwaysLoadParams = true;
+    }
+
+
+
+    setRect(x, y, w, h, updateTransform = true)
+    {
+        super.setRect(
+            x,
+            y,
+            w,
+            defHeaderHeight + defParamHeight,
+            updateTransform);
     }
 
 

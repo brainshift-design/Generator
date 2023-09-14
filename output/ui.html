@@ -5154,8 +5154,8 @@ a
             <div id='whatsNewBody'>
                 <h1 style='margin-top: 20px;'>What's new</h1>
 
-                <p>•  fixed connection loading issue</p>
-                <p>•  fixed Color node bug</p>
+                <p>•  Number node is now resizable</p>
+                <p>•  Apply style node can now add styles as well as replace existing ones</p>
                 
                 <p><br/><br/><div id='chkHideWhatsNew'></div></p>
             </div>
@@ -5513,7 +5513,7 @@ a
 
 
 
-const generatorVersion = 209;
+const generatorVersion = 210;
 
 
 const MAX_INT32        = 2147483647;
@@ -34123,7 +34123,7 @@ extends GShapeBase
 
 
 
-    async evalShapeBase(parse)
+    async evalShapeBase(parse, add = false)
     {
         let props = this.props ? (await this.props.eval(parse)).toValue() : null;
 
@@ -34135,7 +34135,24 @@ extends GShapeBase
         if (this.value)
         {
             if (this.input)
-                this.value.props = props ?? this.input.value.props;
+            {
+                if (add)
+                {
+                    this.value.props = new ListValue();
+
+                    
+                    if (this.input.value.props.type == LIST_VALUE)
+                        this.value.props.items.push(...this.input.value.props.items);
+                    else
+                        this.value.props.items.push(input);
+                    
+
+                    if (props)
+                        this.value.props.items.push(...props.items);
+                }
+                else
+                    this.value.props = props ?? this.input.value.props;
+            }
             else
                 this.value.props = props;
 
@@ -37342,6 +37359,10 @@ extends GShape
 class GApply
 extends GShape
 {
+    replace;
+
+
+
     constructor(nodeId, options)
     {
         super(SHAPE_APPLY, nodeId, options);
@@ -37355,6 +37376,8 @@ extends GShape
 
         copy.copyBase(this);
 
+        if (this.replace) copy.replace = this.replace.copy();
+
         return copy;
     }
 
@@ -37367,6 +37390,8 @@ extends GShape
 
         
         const [, , , ] = await this.evalBaseParams(parse);
+        const replace  = (await this.replace.eval(parse)).toValue();
+
 
 
         if (this.input)
@@ -37376,7 +37401,7 @@ extends GShape
             this.value = input.copy();
 
             if (this.options.enabled)
-                await this.evalShapeBase(parse);
+                await this.evalShapeBase(parse, replace.value == 0);
 
             await this.evalObjects(parse);
         }
@@ -45755,20 +45780,8 @@ function genParseShapeApply(parse)
     if (nInputs == 1)
         apply.input = genParse(parse);
 
-
-    const nParamIds = genParseParamCount(parse);
-
-    for (let i = 0; i < nParamIds; i++)
-    {
-        const paramId = genParseParamId(parse);
-
-        parse.inParam = true;
-
-        switch (paramId)
-        {
-        case 'props': apply.props = genParse(parse); break;
-        }
-    }
+    apply.props   = genParse(parse);
+    apply.replace = genParse(parse);
 
 
     parse.inParam = false;
@@ -50443,7 +50456,7 @@ onerror = (event, source, line, pos, error) =>
 };
 
 
-const generatorVersion = 209;
+const generatorVersion = 210;
 
 
 const MAX_INT32        = 2147483647;
@@ -81306,7 +81319,7 @@ extends GShapeBase
 
 
 
-    async evalShapeBase(parse)
+    async evalShapeBase(parse, add = false)
     {
         let props = this.props ? (await this.props.eval(parse)).toValue() : null;
 
@@ -81318,7 +81331,24 @@ extends GShapeBase
         if (this.value)
         {
             if (this.input)
-                this.value.props = props ?? this.input.value.props;
+            {
+                if (add)
+                {
+                    this.value.props = new ListValue();
+
+                    
+                    if (this.input.value.props.type == LIST_VALUE)
+                        this.value.props.items.push(...this.input.value.props.items);
+                    else
+                        this.value.props.items.push(input);
+                    
+
+                    if (props)
+                        this.value.props.items.push(...props.items);
+                }
+                else
+                    this.value.props = props ?? this.input.value.props;
+            }
             else
                 this.value.props = props;
 
@@ -84525,6 +84555,10 @@ extends GShape
 class GApply
 extends GShape
 {
+    replace;
+
+
+
     constructor(nodeId, options)
     {
         super(SHAPE_APPLY, nodeId, options);
@@ -84538,6 +84572,8 @@ extends GShape
 
         copy.copyBase(this);
 
+        if (this.replace) copy.replace = this.replace.copy();
+
         return copy;
     }
 
@@ -84550,6 +84586,8 @@ extends GShape
 
         
         const [, , , ] = await this.evalBaseParams(parse);
+        const replace  = (await this.replace.eval(parse)).toValue();
+
 
 
         if (this.input)
@@ -84559,7 +84597,7 @@ extends GShape
             this.value = input.copy();
 
             if (this.options.enabled)
-                await this.evalShapeBase(parse);
+                await this.evalShapeBase(parse, replace.value == 0);
 
             await this.evalObjects(parse);
         }
@@ -111670,7 +111708,7 @@ function OpIfElse_onDisconnectInput(node, inputIndex)
 
 
 class   OpNumber
-extends OperatorBase
+extends ResizableBase
 {
     paramValue;
 
@@ -111686,6 +111724,18 @@ extends OperatorBase
         this.addParam(this.paramValue = new NumberParam('value', 'value', false, false, false));
 
         this.alwaysLoadParams = true;
+    }
+
+
+
+    setRect(x, y, w, h, updateTransform = true)
+    {
+        super.setRect(
+            x,
+            y,
+            w,
+            defHeaderHeight + defParamHeight,
+            updateTransform);
     }
 
 
@@ -112374,8 +112424,8 @@ extends OperatorWithValue
         this.addOutput(new Output([NUMBER_VALUE], this.output_genRequest));
 
         this.addParam(this.paramValue);
-        this.addParam(this.paramMin = new NumberParam('min', 'min', true,  true,  true,    0));
-        this.addParam(this.paramMax = new NumberParam('max', 'max', true,  true,  true, 1000));
+        this.addParam(this.paramMin = new NumberParam('min', 'min', true, true, true,    0));
+        this.addParam(this.paramMax = new NumberParam('max', 'max', true, true, true, 1000));
 
         this.paramMin.divider = 0.42;
         this.paramMax.divider = 0.42;
@@ -121107,8 +121157,8 @@ extends OpColorBase
                !this.inputs[0].connected
             || !this.inputs[0].connectedOutput.supportsTypes(COLOR_STOP_TYPES);
 
-        this.paramFill    .enableControlText(enableFill);
-        this.paramPosition.enableControlText(enable);
+        this.paramFill    .enableControlText(enableFill, this.paramFill    .isUnknown());
+        this.paramPosition.enableControlText(enable,     this.paramPosition.isUnknown());
 
         this.updateParamControls();
     }
@@ -123555,6 +123605,13 @@ extends OpShape
 class   OpApply
 extends OpShape
 {
+    paramReplace;
+
+
+    menuReplace;
+
+
+
     constructor()
     {
         super(SHAPE_APPLY, 'apply', 'apply', iconApply);
@@ -123564,10 +123621,63 @@ extends OpShape
         
         this.addInput (this.createInputForObjects(SHAPE_VALUES, getNodeInputValuesForUndo));
         this.addOutput(new Output([...SHAPE_VALUES, SHAPE_LIST_VALUE], this.output_genRequest));
-
-
+        
+        
         this.addBaseParams();
-        this.setAllParamDividers(0.5);
+        this.addParam(this.paramReplace = new NumberParam('replace', 'replace', true, true, true, 0, 0, 1));
+        
+        
+        //this.setAllParamDividers(0.5);
+        this.paramReplace.divider = 0.6;
+
+
+        this.menuBool = createBoolMenu(this.paramReplace);
+    }
+
+
+
+    output_genRequest(gen)
+    {
+        // 'this' is the output
+
+        gen.scope.push({
+            nodeId:  this.node.id, 
+            paramId: NULL });
+
+        const [request, ignore] = this.node.genRequestStart(gen);
+        if (ignore) return request;
+                
+        
+        const input = this.node.inputs[0];
+
+
+        request.push(input.connected ? 1 : 0);
+        
+        if (input.connected)
+            request.push(...pushInputOrParam(input, gen));
+
+        request.push(...this.node.paramProps  .genRequest(gen));
+        request.push(...this.node.paramReplace.genRequest(gen));
+
+
+        gen.scope.pop();
+        pushUnique(gen.passedNodes, this.node);
+
+        return request;
+    }
+
+
+
+    updateParams()
+    {
+        super.updateParams();
+
+
+        this.paramReplace.enableControlText(true);
+
+        updateParamConditionText(this.paramReplace, this.paramReplace.isUnknown(), false, 1);
+
+        this.updateParamControls();
     }
 }
 
