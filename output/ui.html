@@ -26796,7 +26796,7 @@ extends GArithmetic
 
         const op = (await this.operation.eval(parse)).toValue().toInteger();
 
-        op.value = Math.min(Math.max(0, op.value), BOOLEAN_OPS.length-1);
+        op.value = op.initValue = Math.min(Math.max(0, op.value), BOOLEAN_OPS.length-1);
 
         
         switch (op.value)
@@ -73992,7 +73992,7 @@ extends GArithmetic
 
         const op = (await this.operation.eval(parse)).toValue().toInteger();
 
-        op.value = Math.min(Math.max(0, op.value), BOOLEAN_OPS.length-1);
+        op.value = op.initValue = Math.min(Math.max(0, op.value), BOOLEAN_OPS.length-1);
 
         
         switch (op.value)
@@ -108179,7 +108179,6 @@ extends OperatorBase
         {
             this.width  = parseFloat(_node.width );
             this.height = parseFloat(_node.height);
-            console.log('this.width =', this.width);
         }
     }
 }
@@ -114241,10 +114240,10 @@ extends OperatorWithValue
 
     updateParams()
     {
-        this.paramValue    .enableControlText(false, this.isUnknown());
+        this.paramValue.enableControlText(false);
         this.paramOperation.enableControlText(true);
 
-        updateParamConditionText(this.paramValue, this.paramValue.isUnknown(), true, 1);
+        updateParamConditionText(this.paramValue, this.isUnknown(), true, 1);
 
 
         switch (this.paramOperation.value.value)
@@ -115630,11 +115629,13 @@ extends ResizableOperatorWithValue
     setRect(x, y, w, h, updateTransform = true)
     {
         const headerHeight = defHeaderHeight;//boundingRect(this.header).height / graph.currentPage.zoom;
+        const paramHeight  = (settings.showOperationResults ? 4 : 3) * defParamHeight;
+
 
         const height =
             settings.showOperationResults
-            ? Math.max(headerHeight + 3 * defParamHeight, h)
-            : headerHeight + 3 * defParamHeight;
+            ? Math.max(headerHeight + paramHeight, h)
+            : headerHeight + paramHeight;
 
         ResizableBase.prototype.setRect.call(this,
             x, 

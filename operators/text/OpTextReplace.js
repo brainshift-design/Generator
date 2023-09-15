@@ -47,11 +47,13 @@ extends ResizableOperatorWithValue
     setRect(x, y, w, h, updateTransform = true)
     {
         const headerHeight = defHeaderHeight;//boundingRect(this.header).height / graph.currentPage.zoom;
+        const paramHeight  = (settings.showOperationResults ? 4 : 3) * defParamHeight;
+
 
         const height =
             settings.showOperationResults
-            ? Math.max(headerHeight + 3 * defParamHeight, h)
-            : headerHeight + 3 * defParamHeight;
+            ? Math.max(headerHeight + paramHeight, h)
+            : headerHeight + paramHeight;
 
         ResizableBase.prototype.setRect.call(this,
             x, 

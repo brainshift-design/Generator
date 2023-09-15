@@ -401,7 +401,6 @@ extends OperatorBase
         {
             this.width  = parseFloat(_node.width );
             this.height = parseFloat(_node.height);
-            console.log('this.width =', this.width);
         }
     }
 }

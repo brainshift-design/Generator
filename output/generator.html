@@ -21286,7 +21286,7 @@ extends GArithmetic
 
         const op = (await this.operation.eval(parse)).toValue().toInteger();
 
-        op.value = Math.min(Math.max(0, op.value), BOOLEAN_OPS.length-1);
+        op.value = op.initValue = Math.min(Math.max(0, op.value), BOOLEAN_OPS.length-1);
 
         
         switch (op.value)

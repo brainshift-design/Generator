@@ -76,10 +76,10 @@ extends OperatorWithValue
 
     updateParams()
     {
-        this.paramValue    .enableControlText(false, this.isUnknown());
+        this.paramValue.enableControlText(false);
         this.paramOperation.enableControlText(true);
 
-        updateParamConditionText(this.paramValue, this.paramValue.isUnknown(), true, 1);
+        updateParamConditionText(this.paramValue, this.isUnknown(), true, 1);
 
 
         switch (this.paramOperation.value.value)
