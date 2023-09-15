@@ -39,7 +39,10 @@ class Operator
     icon;
     iconOffsetY = 0;
 
+
+    headerHeight;
     
+
     enabled            = true;
     cached             = true;
     isMultiplier       = false;

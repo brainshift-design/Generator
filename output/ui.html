@@ -5154,8 +5154,9 @@ a
             <div id='whatsNewBody'>
                 <h1 style='margin-top: 20px;'>What's new</h1>
 
-                <p>•  Number node is now resizable</p>
+                <p>•  Number and Combine nodes are now resizable</p>
                 <p>•  Apply style node can now add styles as well as replace existing ones</p>
+                <p>•  fixed resizable node sizes not loading properly</p>
                 
                 <p><br/><br/><div id='chkHideWhatsNew'></div></p>
             </div>
@@ -104882,7 +104883,10 @@ class Operator
     icon;
     iconOffsetY = 0;
 
+
+    headerHeight;
     
+
     enabled            = true;
     cached             = true;
     isMultiplier       = false;
@@ -107633,6 +107637,9 @@ Operator.prototype.updateHeaderInputsAndOutputs = function()
     }
 
 
+    this.headerHeight = height;
+
+    
     return height;
 };
 
@@ -107797,8 +107804,9 @@ extends OperatorBase
     {
         super(type, id, name, icon, defWidth, progressBar);
 
-        this.width  = defWidth;
-        this.height = defHeaderHeight;
+        this.width            = defWidth;
+        this.height           = defHeaderHeight;
+        this.alwaysLoadParams = true;
 
         this.initSizers();
     }
@@ -108060,6 +108068,7 @@ extends OperatorBase
         this.width  = _w;
         this.height = _h;
 
+        this.updateHeaderLabel();
         this.updateSizers();
     
         this.inner.style.height = _h;
@@ -108170,6 +108179,7 @@ extends OperatorBase
         {
             this.width  = parseFloat(_node.width );
             this.height = parseFloat(_node.height);
+            console.log('this.width =', this.width);
         }
     }
 }
@@ -109701,7 +109711,7 @@ function OpValueName_onDisconnectInput(node)
 
 
 class   OpCombine
-extends OperatorBase
+extends ResizableBase
 {
     length;
 
@@ -109727,12 +109737,33 @@ extends OperatorBase
         const newInput = new Input(ALL_VALUES);
         newInput.isNew = true;
 
-        newInput.addEventListener('connect',    e => { onVariableListConnectInput(e.detail.input); e.detail.input.isNew = false; });
-        newInput.addEventListener('disconnect', e => onVariableListDisconnectInput(e.detail.input));
+        newInput.addEventListener('connect', e => 
+        { 
+            onVariableListConnectInput(e.detail.input); e.detail.input.isNew = false; 
+            this.updateHeader();
+        });
+
+        newInput.addEventListener('disconnect', e => 
+        { 
+            onVariableListDisconnectInput(e.detail.input); 
+            this.updateHeader();
+        });
 
         this.addInput(newInput);
 
         return newInput;
+    }
+
+
+
+    setRect(x, y, w, h, updateTransform = true)
+    {
+        super.setRect(
+            x,
+            y,
+            w,
+            this.headerHeight,
+            updateTransform);
     }
 
 

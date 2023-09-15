@@ -1,5 +1,5 @@
 class   OpCombine
-extends OperatorBase
+extends ResizableBase
 {
     length;
 
@@ -25,12 +25,33 @@ extends OperatorBase
         const newInput = new Input(ALL_VALUES);
         newInput.isNew = true;
 
-        newInput.addEventListener('connect',    e => { onVariableListConnectInput(e.detail.input); e.detail.input.isNew = false; });
-        newInput.addEventListener('disconnect', e => onVariableListDisconnectInput(e.detail.input));
+        newInput.addEventListener('connect', e => 
+        { 
+            onVariableListConnectInput(e.detail.input); e.detail.input.isNew = false; 
+            this.updateHeader();
+        });
+
+        newInput.addEventListener('disconnect', e => 
+        { 
+            onVariableListDisconnectInput(e.detail.input); 
+            this.updateHeader();
+        });
 
         this.addInput(newInput);
 
         return newInput;
+    }
+
+
+
+    setRect(x, y, w, h, updateTransform = true)
+    {
+        super.setRect(
+            x,
+            y,
+            w,
+            this.headerHeight,
+            updateTransform);
     }
 
 

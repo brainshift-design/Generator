@@ -26,8 +26,9 @@ extends OperatorBase
     {
         super(type, id, name, icon, defWidth, progressBar);
 
-        this.width  = defWidth;
-        this.height = defHeaderHeight;
+        this.width            = defWidth;
+        this.height           = defHeaderHeight;
+        this.alwaysLoadParams = true;
 
         this.initSizers();
     }
@@ -289,6 +290,7 @@ extends OperatorBase
         this.width  = _w;
         this.height = _h;
 
+        this.updateHeaderLabel();
         this.updateSizers();
     
         this.inner.style.height = _h;
@@ -399,6 +401,7 @@ extends OperatorBase
         {
             this.width  = parseFloat(_node.width );
             this.height = parseFloat(_node.height);
+            console.log('this.width =', this.width);
         }
     }
 }

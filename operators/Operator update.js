@@ -394,6 +394,9 @@ Operator.prototype.updateHeaderInputsAndOutputs = function()
     }
 
 
+    this.headerHeight = height;
+
+    
     return height;
 };
 
