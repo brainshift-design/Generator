@@ -287,14 +287,17 @@ function uiMakeNodeActive(node, makePassive = true)
 
 
 
-function uiMakeNodesActive(nodes, shiftKey = false)
+function uiMakeNodesActive(nodes, shiftKey = false, deactivate = true)
 {
     if (!shiftKey)
     {
-        for (const node of graph.nodes)
-            if (node.active)
-                uiMakeNodePassive(node);
-
+        if (deactivate)
+        {
+            for (const node of graph.nodes)
+                if (node.active)
+                    uiMakeNodePassive(node);
+        }
+        
 
         for (const node of nodes)
         {

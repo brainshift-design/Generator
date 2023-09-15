@@ -230,15 +230,13 @@ function deleteNodesAction_activateOldActiveNodes(act, updateNodes)
     let oldActiveNodeIds = [...act.oldActiveNodeIds].sort((x, y) => 
         (nodeFromId(x) === nodeFromId(y)) 
         ? 0 
-        : nodeFromId(y).isOrFollows(nodeFromId(x)) 
-          ? -1 
-          :  1);
-    
+        : nodeFromId(y).isOrFollows(nodeFromId(x)) ? -1 : 1);
+   
     
     const oldActiveNodes = oldActiveNodeIds.map(id => nodeFromId(id));
     
     graphView.selectByIds(act.prevSelectedIds);
-    uiMakeNodesActive(oldActiveNodes);
+    uiMakeNodesActive(oldActiveNodes, false, false);
 
     pushUnique(updateNodes, oldActiveNodes);
 }
