@@ -41,7 +41,7 @@ extends GShapeBase
 
 
 
-    async evalShapeBase(parse, add = false)
+    async evalShapeBase(parse, add = false, input = null)
     {
         let props = this.props ? (await this.props.eval(parse)).toValue() : null;
 
@@ -62,7 +62,7 @@ extends GShapeBase
                     if (this.input.value.props.type == LIST_VALUE)
                         this.value.props.items.push(...this.input.value.props.items);
                     else
-                        this.value.props.items.push(input);
+                        this.value.props.items.push(...input.items);
                     
 
                     if (props)

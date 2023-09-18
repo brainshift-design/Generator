@@ -43,7 +43,7 @@ extends GShape
             this.value = input.copy();
 
             if (this.options.enabled)
-                await this.evalShapeBase(parse, replace.value == 0);
+                await this.evalShapeBase(parse, replace.value == 0, input);
 
             await this.evalObjects(parse);
         }

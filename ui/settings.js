@@ -319,7 +319,7 @@ function enableFeatures(sub, beta = false)
     enableMenuItem(menuItemFetch,        sub);
     enableMenuItem(menuItemTextFile,     sub);
     enableMenuItem(menuItemDateTime,     sub);
-    //enableMenuItem(menuItemSolve,        sub);
+    enableMenuItem(menuItemSolve,        sub);
     enableMenuItem(menuItemTextJson,     sub);
     enableMenuItem(menuItemCorrectColor, sub);
     enableMenuItem(menuItemConvertToP3,  sub);

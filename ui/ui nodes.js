@@ -437,6 +437,7 @@ function uiPasteNodes(nodesJson, loading, pasteConnected, x, y, updateNodes)
 
 
         const nodes = loadNodes(data, true);
+
         nodes.forEach(n => n.div.style.display ='none');
 
         

@@ -14,13 +14,16 @@ extends Action
     x;
     y;
 
+    callback;
+
+
     prevSelectedNodeIds = [];
 
     oldActiveNodeIds    = [];
 
 
 
-    constructor(copiedNodesJson, pasteConnected, isDuplicate = false, isLoading = false, x = Number.NaN, y = Number.NaN)
+    constructor(copiedNodesJson, pasteConnected, isDuplicate = false, isLoading = false, x = Number.NaN, y = Number.NaN, callback = null)
     {
         let nNodes = 0;
 
@@ -44,6 +47,8 @@ extends Action
 
         this.x               = x;
         this.y               = y;
+
+        this.callback       = callback;
     }
 
 
@@ -55,6 +60,7 @@ extends Action
 
         const [nodes, _conns] = uiPasteNodes(this.copiedNodesJson, true, this.pasteConnected, this.x, this.y, updateNodes);
 
+        
         pushUnique(this.newConnectionData, _conns);
 
 
@@ -95,6 +101,10 @@ extends Action
 
         this.pastedNodeIds = nodes.map(n => n.id);
         this.pastedNodePos = nodes.map(n => point(n.div.offsetLeft, n.div.offsetTop));
+
+
+        if (this.callback)
+            this.callback(nodes);
 
 
         this.notify(

@@ -4,7 +4,7 @@
 
 
 
-const generatorVersion = 210;
+const generatorVersion = 212;
 
 
 const MAX_INT32        = 2147483647;
@@ -976,6 +976,7 @@ function getObjectFills(genObjFills)
 
     return fills;
 }
+
 
 
 function rgbFromType(type, active)
@@ -4607,7 +4608,7 @@ function enableFeatures(sub, beta = false)
     enableMenuItem(menuItemFetch,        sub);
     enableMenuItem(menuItemTextFile,     sub);
     enableMenuItem(menuItemDateTime,     sub);
-    //enableMenuItem(menuItemSolve,        sub);
+    enableMenuItem(menuItemSolve,        sub);
     enableMenuItem(menuItemTextJson,     sub);
     enableMenuItem(menuItemCorrectColor, sub);
     enableMenuItem(menuItemConvertToP3,  sub);
@@ -28614,7 +28615,7 @@ extends GShapeBase
 
 
 
-    async evalShapeBase(parse, add = false)
+    async evalShapeBase(parse, add = false, input = null)
     {
         let props = this.props ? (await this.props.eval(parse)).toValue() : null;
 
@@ -28635,7 +28636,7 @@ extends GShapeBase
                     if (this.input.value.props.type == LIST_VALUE)
                         this.value.props.items.push(...this.input.value.props.items);
                     else
-                        this.value.props.items.push(input);
+                        this.value.props.items.push(...input.items);
                     
 
                     if (props)
@@ -31892,7 +31893,7 @@ extends GShape
             this.value = input.copy();
 
             if (this.options.enabled)
-                await this.evalShapeBase(parse, replace.value == 0);
+                await this.evalShapeBase(parse, replace.value == 0, input);
 
             await this.evalObjects(parse);
         }

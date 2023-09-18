@@ -132,23 +132,34 @@ function startFreeTrial()
     uiSetLocalData('eulaRead', 'true');
 
 
-    postToServer(
-    {
-        action: 'createTrial',
-        userId:  currentUser.id
-    })
-    .then(response =>
-    {
-        consoleAssert(response, 'invalid response from server @ createTrial()');
+    graph.createPage('');
 
-        if (response.result)
-            initGenerator();
-    })
-    .catch(e =>
+    actionManager.do(new PasteNodesAction(getDefaultGraph(), false, false, true, Number.NaN, Number.NaN, nodes =>
     {
-        console.error(e);
-        throw e;
-    });
+        actionManager.clear();
+        graphView.selected = [];
+
+        setTimeout(() => graphView.zoomToNodes(nodes), 500);
+    }));
+    
+
+    // postToServer(
+    // {
+    //     action: 'createTrial',
+    //     userId:  currentUser.id
+    // })
+    // .then(response =>
+    // {
+    //     consoleAssert(response, 'invalid response from server @ createTrial()');
+
+    //     if (response.result)
+    //         initGenerator();
+    // })
+    // .catch(e =>
+    // {
+    //     console.error(e);
+    //     throw e;
+    // });
 }
 
 
