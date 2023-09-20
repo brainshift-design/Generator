@@ -1,11 +1,12 @@
 class   OpComment
-extends OperatorBase
+extends ResizableBase
 {
     constructor()
     {
-        super(COMMENT, 'comment', 'comment', 0);
+        super(COMMENT, 'comment', 'comment', '');
 
         this.scrollName = false;
+        this.showIcon   = false;
 
 
         this.textbox.addEventListener('input', e =>
@@ -76,6 +77,8 @@ extends OperatorBase
         this.textbox.style.height  =  this.div.offsetHeight;
         this.textbox.style.padding = '0';
         this.textbox.style.margin  = '0';
+
+        this.div.style.boxShadow = '0 0 0 1px red inset';
     }
 
 

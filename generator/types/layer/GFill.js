@@ -39,7 +39,7 @@ extends GOperator1
         let opacity = this.opacity ? (await this.opacity.eval(parse)).toValue() : null;
         let blend   = this.blend   ? (await this.blend  .eval(parse)).toValue() : null;
 
-        
+
         if (this.input)
         {
             const input = (await this.input.eval(parse)).toValue();

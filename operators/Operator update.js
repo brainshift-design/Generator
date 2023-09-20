@@ -301,9 +301,16 @@ Operator.prototype.updateHeaderLabelText = function()
     suffix += this.suffix;
 
 
-    let html =
-          (settings.showNodeId ? this.id + suffix : prefix + this.getLabelText() + suffix)
-        + (this.active && this.showActiveArrow ? (settings.showNodeId ? ' ' : '  ') + '‣' : '');
+    let html = 
+        settings.showNodeId 
+        ? this.id + suffix 
+        : prefix + this.getLabelText() + suffix;
+
+    html += 
+           this.active 
+        && this.showActiveArrow 
+        ? (settings.showNodeId ? ' ' : '  ') + '‣' 
+        : '';
     
 
     html = html.replaceAll('</', '%%@@%%!!)77')

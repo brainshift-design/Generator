@@ -131,16 +131,7 @@ function startFreeTrial()
 {
     uiSetLocalData('eulaRead', 'true');
 
-
-    graph.createPage('');
-
-    actionManager.do(new PasteNodesAction(getDefaultGraph(), false, false, true, Number.NaN, Number.NaN, nodes =>
-    {
-        actionManager.clear();
-        graphView.selected = [];
-
-        setTimeout(() => graphView.zoomToNodes(nodes), 500);
-    }));
+    loadPresetGraph('default');
     
 
     // postToServer(

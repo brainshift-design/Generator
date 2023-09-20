@@ -312,8 +312,7 @@ function genParseStroke(parse)
     {
         switch (id)
         {
-        case 'fill':   stroke._fills  = 
-                       stroke. fills = genParse(parse); break;
+        case 'fill':   stroke._fills = genParse(parse); stroke.fills = stroke._fills; break;
         case 'weight': stroke.weight = genParse(parse); break;
         case 'fit':    stroke.fit    = genParse(parse); break;
         case 'join':   stroke.join   = genParse(parse); break;

@@ -4,7 +4,7 @@
 
 
 
-const generatorVersion = 212;
+const generatorVersion = 213;
 
 
 const MAX_INT32        = 2147483647;
@@ -3443,8 +3443,9 @@ function getStyleValue(obj, style)
 
 function getCtrlKey(e)
 {
-    return  isMac && e.metaKey
-        || !isMac && e.ctrlKey;
+    return isMac ? e.metaKey : e.ctrlKey;
+    // return  isMac && e.metaKey
+    //     || !isMac && e.ctrlKey;
 }
 
 
@@ -19024,10 +19025,6 @@ extends GOperator
             this.value = NumberValue.NaN.copy();
 
 
-        // if (this.nodeId == 'sequence')
-        //     console.log('this.value =', this.value);
-
-
         this.setUpdateValues(parse,
         [
             ['start', start],
@@ -27173,7 +27170,7 @@ extends GOperator1
         let opacity = this.opacity ? (await this.opacity.eval(parse)).toValue() : null;
         let blend   = this.blend   ? (await this.blend  .eval(parse)).toValue() : null;
 
-        
+
         if (this.input)
         {
             const input = (await this.input.eval(parse)).toValue();
@@ -27630,6 +27627,7 @@ extends GOperator1
         copy.copyBase(this);
 
         if (this.fills ) copy.fills  = this.fills .copy();
+        if (this._fills) copy._fills = this._fills.copy();
         if (this.weight) copy.weight = this.weight.copy();
         if (this.fit   ) copy.fit    = this.fit   .copy();
         if (this.join  ) copy.join   = this.join  .copy();
@@ -27651,7 +27649,7 @@ extends GOperator1
 
         fills = this.validateFills(fills);
 
-        if (!LIST_VALUES.includes(this.fills.type))
+        if (!LIST_VALUES.includes(this._fills.type))
             this.fills = fills;
 
 
@@ -27723,11 +27721,10 @@ extends GOperator1
 
 
     validateFills(fills)
-    {
+    {            
         if (!fills)
             return null;
 
-            
         if (fills.type == COLOR_VALUE)
             return new ListValue([FillValue.fromRgb(scaleRgb(fills.toRgb()), 100)]);
 
@@ -37109,8 +37106,7 @@ function genParseStroke(parse)
     {
         switch (id)
         {
-        case 'fill':   stroke._fills  = 
-                       stroke. fills = genParse(parse); break;
+        case 'fill':   stroke._fills = genParse(parse); stroke.fills = stroke._fills; break;
         case 'weight': stroke.weight = genParse(parse); break;
         case 'fit':    stroke.fit    = genParse(parse); break;
         case 'join':   stroke.join   = genParse(parse); break;

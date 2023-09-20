@@ -26,6 +26,7 @@ extends GOperator1
         copy.copyBase(this);
 
         if (this.fills ) copy.fills  = this.fills .copy();
+        if (this._fills) copy._fills = this._fills.copy();
         if (this.weight) copy.weight = this.weight.copy();
         if (this.fit   ) copy.fit    = this.fit   .copy();
         if (this.join  ) copy.join   = this.join  .copy();
@@ -47,7 +48,7 @@ extends GOperator1
 
         fills = this.validateFills(fills);
 
-        if (!LIST_VALUES.includes(this.fills.type))
+        if (!LIST_VALUES.includes(this._fills.type))
             this.fills = fills;
 
 
@@ -119,11 +120,10 @@ extends GOperator1
 
 
     validateFills(fills)
-    {
+    {            
         if (!fills)
             return null;
 
-            
         if (fills.type == COLOR_VALUE)
             return new ListValue([FillValue.fromRgb(scaleRgb(fills.toRgb()), 100)]);
 

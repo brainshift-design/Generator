@@ -14,8 +14,9 @@ function getStyleValue(obj, style)
 
 function getCtrlKey(e)
 {
-    return  isMac && e.metaKey
-        || !isMac && e.ctrlKey;
+    return isMac ? e.metaKey : e.ctrlKey;
+    // return  isMac && e.metaKey
+    //     || !isMac && e.ctrlKey;
 }
 
 
