@@ -39,28 +39,43 @@ extends GOperator1
             const input = (await this.input.eval(parse)).toValue();
 
 
-            let num = Number.NaN;
-
-            switch (format.value)
+            if (LIST_VALUES.includes(input.type))
             {
-                case 0: // dec
-                    num = parseFloat(input.value);
-                    break;
+                this.value = new ListValue();
 
-                case 1: // hex
-                    num = parseInt(input.value, 16);
-                    break;
+                for (let i = 0; i < input.items.length; i++)
+                {
+                    const item = input.items[i];
+
+                    this.value.items.push(
+                        item.type == TEXT_VALUE
+                        ? getTextToNumberValue(item, format)
+                        : NumberValue.NaN.copy());   
+                }
             }
-
-            this.value = new NumberValue(num, decDigits(num));
+            else
+            {
+                this.value = getTextToNumberValue(input, format);
+            }
         }
+
         else
             this.value = NumberValue.NaN;
 
 
+        const type = 
+            this.value
+            ? new TextValue(
+                LIST_VALUES.includes(this.value.type)
+                ? finalListTypeFromItems(this.value.items)
+                : this.value.type)
+            : TextValue.NaN.copy();
+
+
         this.setUpdateValues(parse,
         [
-            ['value',  this.value],
+            //['value',  this.value],
+            ['type',   type      ],
             ['format', format    ]
         ]);
 
@@ -104,4 +119,24 @@ extends GOperator1
 
         if (this.format) this.format.iterateLoop(parse);
     }
+}
+
+
+
+function getTextToNumberValue(input, format)
+{
+    let num = Number.NaN;
+
+    switch (format.value)
+    {
+        case 0: // dec
+            num = parseFloat(input.value);
+            break;
+
+        case 1: // hex
+            num = parseInt(input.value, 16);
+            break;
+    }
+
+    return new NumberValue(num, decDigits(num));
 }

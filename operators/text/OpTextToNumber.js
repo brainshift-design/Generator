@@ -1,7 +1,6 @@
 class   OpTextToNumber
 extends OperatorBase
 {
-    paramValue;
     paramFormat;
 
 
@@ -11,29 +10,27 @@ extends OperatorBase
         super(TEXT_TO_NUMBER, 'textToNum', 'to number', iconTextToNumber);
 
 
-        this.addInput(new Input([TEXT_VALUE]));
+        this.addInput(new Input([TEXT_VALUE, TEXT_LIST_VALUE, LIST_VALUE]));
+        this.addOutput(new Output([NUMBER_VALUE], this.output_genRequest));
 
-        this.addParam(this.paramValue  = new NumberParam('value',  'value',  false, false, true));
         this.addParam(this.paramFormat = new SelectParam('format', 'format', false, true,  true, ['decimal', 'hexadecimal']));
-
-        this.paramValue.isNodeValue = true;
     }
 
 
 
-    genRequest(gen)
+    output_genRequest(gen)
     {
-        // 'this' is the node
+        // 'this' is the output
 
         gen.scope.push({
-            nodeId:  this.id, 
+            nodeId:  this.node.id, 
             paramId: NULL });
 
-        const [request, ignore] = this.genRequestStart(gen);
+        const [request, ignore] = this.node.genRequestStart(gen);
         if (ignore) return request;
 
         
-        const input = this.inputs[0];
+        const input = this.node.inputs[0];
 
 
         request.push(input.connected ? 1 : 0);
@@ -41,24 +38,44 @@ extends OperatorBase
         if (input.connected)
             request.push(...pushInputOrParam(input, gen));
 
-        request.push(...this.paramFormat.genRequest(gen));
+        request.push(...this.node.paramFormat.genRequest(gen));
 
         
         gen.scope.pop();
-        pushUnique(gen.passedNodes, this);
+        pushUnique(gen.passedNodes, this.node);
 
         return request;
     }
 
 
 
-    updateParams()
+    updateValues(requestId, actionId, updateParamId, paramIds, values)
     {
-        this.paramValue .enableControlText(false, this.isUnknown());
-        this.paramFormat.enableControlText(true);
+        const type = values[paramIds.findIndex(id => id == 'type' )];
 
-        this.paramValue.controls[0].showHex = this.paramFormat.value.value > 0;
+        if (type) 
+            this.outputs[0].types = [type.value];
+    }
 
-        this.updateParamControls();
+
+
+    // updateParams()
+    // {
+    //     this.paramFormat.enableControlText(true, this.paramFormat.isUnknown());
+
+    //     this.updateParamControls();
+    // }
+
+
+
+    getHeaderColors(options = {})
+    {
+        const colors = super.getHeaderColors(options);
+        const type   = this.outputs[0].types[0];
+
+        colors.output = rgb_a(rgbSaturateHsv(rgbFromType(type, true), 0.5), 0.7);
+        colors.wire   = rgbFromType(type, true);
+
+        return colors;
     }
 }

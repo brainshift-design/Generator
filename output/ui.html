@@ -29139,28 +29139,43 @@ extends GOperator1
             const input = (await this.input.eval(parse)).toValue();
 
 
-            let num = Number.NaN;
-
-            switch (format.value)
+            if (LIST_VALUES.includes(input.type))
             {
-                case 0: // dec
-                    num = parseFloat(input.value);
-                    break;
+                this.value = new ListValue();
 
-                case 1: // hex
-                    num = parseInt(input.value, 16);
-                    break;
+                for (let i = 0; i < input.items.length; i++)
+                {
+                    const item = input.items[i];
+
+                    this.value.items.push(
+                        item.type == TEXT_VALUE
+                        ? getTextToNumberValue(item, format)
+                        : NumberValue.NaN.copy());   
+                }
             }
-
-            this.value = new NumberValue(num, decDigits(num));
+            else
+            {
+                this.value = getTextToNumberValue(input, format);
+            }
         }
+
         else
             this.value = NumberValue.NaN;
 
 
+        const type = 
+            this.value
+            ? new TextValue(
+                LIST_VALUES.includes(this.value.type)
+                ? finalListTypeFromItems(this.value.items)
+                : this.value.type)
+            : TextValue.NaN.copy();
+
+
         this.setUpdateValues(parse,
         [
-            ['value',  this.value],
+            //['value',  this.value],
+            ['type',   type      ],
             ['format', format    ]
         ]);
 
@@ -29206,6 +29221,25 @@ extends GOperator1
     }
 }
 
+
+
+function getTextToNumberValue(input, format)
+{
+    let num = Number.NaN;
+
+    switch (format.value)
+    {
+        case 0: // dec
+            num = parseFloat(input.value);
+            break;
+
+        case 1: // hex
+            num = parseInt(input.value, 16);
+            break;
+    }
+
+    return new NumberValue(num, decDigits(num));
+}
 
 
 class GTextToColor
@@ -76339,28 +76373,43 @@ extends GOperator1
             const input = (await this.input.eval(parse)).toValue();
 
 
-            let num = Number.NaN;
-
-            switch (format.value)
+            if (LIST_VALUES.includes(input.type))
             {
-                case 0: // dec
-                    num = parseFloat(input.value);
-                    break;
+                this.value = new ListValue();
 
-                case 1: // hex
-                    num = parseInt(input.value, 16);
-                    break;
+                for (let i = 0; i < input.items.length; i++)
+                {
+                    const item = input.items[i];
+
+                    this.value.items.push(
+                        item.type == TEXT_VALUE
+                        ? getTextToNumberValue(item, format)
+                        : NumberValue.NaN.copy());   
+                }
             }
-
-            this.value = new NumberValue(num, decDigits(num));
+            else
+            {
+                this.value = getTextToNumberValue(input, format);
+            }
         }
+
         else
             this.value = NumberValue.NaN;
 
 
+        const type = 
+            this.value
+            ? new TextValue(
+                LIST_VALUES.includes(this.value.type)
+                ? finalListTypeFromItems(this.value.items)
+                : this.value.type)
+            : TextValue.NaN.copy();
+
+
         this.setUpdateValues(parse,
         [
-            ['value',  this.value],
+            //['value',  this.value],
+            ['type',   type      ],
             ['format', format    ]
         ]);
 
@@ -76406,6 +76455,25 @@ extends GOperator1
     }
 }
 
+
+
+function getTextToNumberValue(input, format)
+{
+    let num = Number.NaN;
+
+    switch (format.value)
+    {
+        case 0: // dec
+            num = parseFloat(input.value);
+            break;
+
+        case 1: // hex
+            num = parseInt(input.value, 16);
+            break;
+    }
+
+    return new NumberValue(num, decDigits(num));
+}
 
 
 class GTextToColor
@@ -117010,7 +117078,6 @@ extends ResizableBase
 class   OpTextToNumber
 extends OperatorBase
 {
-    paramValue;
     paramFormat;
 
 
@@ -117020,29 +117087,27 @@ extends OperatorBase
         super(TEXT_TO_NUMBER, 'textToNum', 'to number', iconTextToNumber);
 
 
-        this.addInput(new Input([TEXT_VALUE]));
+        this.addInput(new Input([TEXT_VALUE, TEXT_LIST_VALUE, LIST_VALUE]));
+        this.addOutput(new Output([NUMBER_VALUE], this.output_genRequest));
 
-        this.addParam(this.paramValue  = new NumberParam('value',  'value',  false, false, true));
         this.addParam(this.paramFormat = new SelectParam('format', 'format', false, true,  true, ['decimal', 'hexadecimal']));
-
-        this.paramValue.isNodeValue = true;
     }
 
 
 
-    genRequest(gen)
+    output_genRequest(gen)
     {
-        // 'this' is the node
+        // 'this' is the output
 
         gen.scope.push({
-            nodeId:  this.id, 
+            nodeId:  this.node.id, 
             paramId: NULL });
 
-        const [request, ignore] = this.genRequestStart(gen);
+        const [request, ignore] = this.node.genRequestStart(gen);
         if (ignore) return request;
 
         
-        const input = this.inputs[0];
+        const input = this.node.inputs[0];
 
 
         request.push(input.connected ? 1 : 0);
@@ -117050,25 +117115,45 @@ extends OperatorBase
         if (input.connected)
             request.push(...pushInputOrParam(input, gen));
 
-        request.push(...this.paramFormat.genRequest(gen));
+        request.push(...this.node.paramFormat.genRequest(gen));
 
         
         gen.scope.pop();
-        pushUnique(gen.passedNodes, this);
+        pushUnique(gen.passedNodes, this.node);
 
         return request;
     }
 
 
 
-    updateParams()
+    updateValues(requestId, actionId, updateParamId, paramIds, values)
     {
-        this.paramValue .enableControlText(false, this.isUnknown());
-        this.paramFormat.enableControlText(true);
+        const type = values[paramIds.findIndex(id => id == 'type' )];
 
-        this.paramValue.controls[0].showHex = this.paramFormat.value.value > 0;
+        if (type) 
+            this.outputs[0].types = [type.value];
+    }
 
-        this.updateParamControls();
+
+
+    // updateParams()
+    // {
+    //     this.paramFormat.enableControlText(true, this.paramFormat.isUnknown());
+
+    //     this.updateParamControls();
+    // }
+
+
+
+    getHeaderColors(options = {})
+    {
+        const colors = super.getHeaderColors(options);
+        const type   = this.outputs[0].types[0];
+
+        colors.output = rgb_a(rgbSaturateHsv(rgbFromType(type, true), 0.5), 0.7);
+        colors.wire   = rgbFromType(type, true);
+
+        return colors;
     }
 }
 
