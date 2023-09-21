@@ -14,6 +14,7 @@ extends Action
     x;
     y;
 
+    zoomToFit;
     callback;
 
 
@@ -23,7 +24,7 @@ extends Action
 
 
 
-    constructor(copiedNodesJson, pasteConnected, isDuplicate = false, isLoading = false, x = Number.NaN, y = Number.NaN, callback = null)
+    constructor(copiedNodesJson, pasteConnected, isDuplicate = false, isLoading = false, x = Number.NaN, y = Number.NaN, zoomToFit = false, callback = null)
     {
         let nNodes = 0;
 
@@ -48,7 +49,8 @@ extends Action
         this.x               = x;
         this.y               = y;
 
-        this.callback       = callback;
+        this.zoomToFit       = zoomToFit;
+        this.callback        = callback;
     }
 
 
@@ -58,7 +60,7 @@ extends Action
         this.prevSelectedNodeIds = graphView.selectedNodes.map(n => n.id);
 
 
-        const [nodes, _conns] = uiPasteNodes(this.copiedNodesJson, true, this.pasteConnected, this.x, this.y, updateNodes);
+        const [nodes, _conns] = uiPasteNodes(this.copiedNodesJson, true, this.pasteConnected, this.x, this.y, updateNodes, this.zoomToFit);
 
         
         pushUnique(this.newConnectionData, _conns);

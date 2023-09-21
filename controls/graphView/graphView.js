@@ -14,6 +14,7 @@ class GraphView
     creatingNodes  = false;
     loadingNodes   = false;
     pastingNodes   = false;
+    _zoomToFit     = false;
     restoringNodes = false;
 
 

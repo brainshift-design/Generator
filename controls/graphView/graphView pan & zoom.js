@@ -193,8 +193,15 @@ GraphView.prototype.zoomToNodes = function(nodes, zoom = true, topOffset = 0)
         nodes.forEach(n => n.updateMeasureData());
         const offset = this.getAllNodeOffsets(nodes);
 
+        let heightOffset = 0;
+
+        if (presets.offsetParent !== null)
+            heightOffset = presets.offsetHeight;
+        else if (keyboardPanel.offsetParent !== null)
+            heightOffset = keyboardPanel.offsetHeight;
+
         offset.y -= topOffset / graph.currentPage.zoom;
-        offset.h += topOffset / graph.currentPage.zoom;
+        offset.h += (-topOffset + heightOffset) / graph.currentPage.zoom;
 
         for (let i = 0; i < 5; i++) // need to do it a few times
             this.zoomToRect(offset, 40, zoom);

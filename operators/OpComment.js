@@ -1,5 +1,5 @@
 class   OpComment
-extends ResizableBase
+extends OperatorBase
 {
     constructor()
     {
@@ -61,7 +61,10 @@ extends ResizableBase
         this.inner.style.boxShadow = 'none';
 
 
-        utilContext.font = '11px Inter';
+        const fontSize = 36;
+
+
+        utilContext.font = fontSize + 'px \'Oooh Baby\'';
         
         const mes = utilContext.measureText(
             hasFocus(this.textbox) 
@@ -71,14 +74,37 @@ extends ResizableBase
 
         const width = Math.max(1, mes.width + 2);
 
-        this.div    .style.width   = 
-        this.textbox.style.width   = width + 'px';
+        this.div    .style.width      = 
+        this.textbox.style.width      = width + 'px';
 
-        this.textbox.style.height  =  this.div.offsetHeight;
-        this.textbox.style.padding = '0';
-        this.textbox.style.margin  = '0';
+        this.textbox.style.height     =  this.div.offsetHeight;
+        this.textbox.style.padding    = '0';
+        this.textbox.style.margin     = '0';
+        this.textbox.style.textAlign  = 'left';
+        this.textbox.style.fontFamily = 'Oooh Baby';
+        this.textbox.style.fontSize   = fontSize + 'px';
+        this.textbox.style.fontWeight =  400;
 
-        this.div.style.boxShadow = '0 0 0 1px red inset';
+        this.div.style.borderRadius = 0;
+
+        const height = (fontSize + mes.actualBoundingBoxDescent) + 'px';
+
+        this.div         .style.height = height;
+        this.header      .style.height = height;
+        this.labelWrapper.style.height = height;
+        this.label       .style.height = height;
+        this.labelText   .style.height = height;
+
+        this.labelText   .style.position   = 'absolute';
+        this.labelText   .style.left       =  0;
+
+        this.labelText   .style.fontFamily = 'Oooh Baby';
+        this.labelText   .style.fontSize   = fontSize + 'px';
+        this.labelText   .style.fontWeight =  400;
+
+        // this.div      .style.boxShadow = '0 0 0 1px red inset';
+        // this.label    .style.boxShadow = '0 0 0 1px green inset';
+        // this.labelText.style.boxShadow = '0 0 0 1px yellow inset';
     }
 
 

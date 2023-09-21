@@ -36,6 +36,7 @@
 
 
 ../html/keyboardPanel.html
+../html/presets.html
 ../html/tooltips.html
 
 
@@ -62,6 +63,7 @@
 
     ../actions/*.js
     ../ui/*!(settings).js
+    ../ui/presets/*.js
     ../ui/dialogs/*!(crashDialog).js
 
 ../html/ui_3.html

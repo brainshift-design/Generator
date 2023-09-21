@@ -44,6 +44,8 @@ function showKeyboardPanel()
 {
     setCurrentKeyboardTab(0);
 
+    presets.style.display = 'none';
+
     keyboardPanel.style.display = 
         keyboardPanel.style.display != 'block'
         ? 'block'

@@ -2,14 +2,14 @@
 
     <div id='keyboardPanelTabsHolder'>
         <div id='keyboardPanelTabs'>
-            <div id='keyboardPanelTab' onclick="setCurrentKeyboardTab(0);">Menu</div>
-            <div id='keyboardPanelTab' onclick="setCurrentKeyboardTab(1);">View</div>
-            <div id='keyboardPanelTab' onclick="setCurrentKeyboardTab(2);">Zoom</div>
-            <div id='keyboardPanelTab' onclick="setCurrentKeyboardTab(3);">Selection</div>
-            <div id='keyboardPanelTab' onclick="setCurrentKeyboardTab(4);">Nodes</div>
-            <div id='keyboardPanelTab' onclick="setCurrentKeyboardTab(5);">Connections</div>
-            <div id='keyboardPanelTab' onclick="setCurrentKeyboardTab(6);">Cursor</div>
-            <div id='keyboardPanelTab' onclick="setCurrentKeyboardTab(7);">Edit</div>
+            <div class='keyboardPanelTab' onclick="setCurrentKeyboardTab(0);">Menu</div>
+            <div class='keyboardPanelTab' onclick="setCurrentKeyboardTab(1);">View</div>
+            <div class='keyboardPanelTab' onclick="setCurrentKeyboardTab(2);">Zoom</div>
+            <div class='keyboardPanelTab' onclick="setCurrentKeyboardTab(3);">Selection</div>
+            <div class='keyboardPanelTab' onclick="setCurrentKeyboardTab(7);">Edit</div>
+            <div class='keyboardPanelTab' onclick="setCurrentKeyboardTab(4);">Nodes</div>
+            <div class='keyboardPanelTab' onclick="setCurrentKeyboardTab(5);">Connections</div>
+            <div class='keyboardPanelTab' onclick="setCurrentKeyboardTab(6);">Controls</div>
         </div>
         <div id='keyboardPanelClose' onclick="hideKeyboardPanel();"></div>
     </div>
@@ -19,7 +19,7 @@
 
         <div class='keyboardPage' id='keyboardPageMenu'>
             <div class='keyboardGroup'>
-                <div class='keyboardShortcut'><div class='shortcutAction'>Keep menu open</div><div class='shortcutKeys'><div class='shortcutKeys'><div class='shortcutKey'>Shift</div><div class='shortcutEvent'>click</div></div></div></div>
+                <div class='keyboardShortcut'><div class='shortcutAction'>Keep menu open</div><div class='shortcutKeys'><div class='shortcutKeys'><div class='shortcutKey'>Shift</div></div></div></div>
                 <div class='keyboardShortcut'><div class='shortcutAction'>Search menus and nodes</div><div class='shortcutKeys'><div class='shortcutKeys'><div class='shortcutKey'>Ctrl</div><div class='shortcutKey shortcutChar'>/</div></div></div></div>
                 <div class='keyboardShortcut'></div>
                 <div class='keyboardInfo'>Click a node menu to create a node under<br/>the menu button. Drag the menu to directly<br/>move the new node.</div>
@@ -30,7 +30,7 @@
         <div class='keyboardPage' id='keyboardPageView'>
 
             <div class='keyboardGroup'>
-                <div class='keyboardShortcut'><div class='shortcutAction'>Focus on node</div><div class='shortcutKeys'><div class='shortcutKeys'><div class='shortcutKey'>Alt</div><div class='shortcutKey shortcutChar'>S</div></div></div></div>
+                <div class='keyboardShortcut'><div class='shortcutAction'>Focus on node</div><div class='shortcutKeys'><div class='shortcutKeys'><div class='shortcutKey'>Alt</div><div class='shortcutKey shortcutChar'>F</div></div></div></div>
             </div>
 
         </div>
@@ -71,14 +71,6 @@
                 <div class='keyboardShortcut'><div class='shortcutAction'>Select none</div><div class='shortcutKeys'><div class='shortcutKeys'><div class='shortcutKey'>Esc</div></div></div></div>
             </div>
 
-            <div class='keyboardGroup nextGroup'>
-                <!-- <div class='keyboardShortcut'><div class='shortcutAction'>Toggle selected</div><div class='shortcutKeys'><div class='shortcutKeys'><div class='shortcutKey'>Shift</div><div class='shortcutKey'>click</div></div></div></div> -->
-                <div class='keyboardShortcut'><div class='shortcutAction'>Select tree left</div><div class='shortcutKeys'><div class='shortcutKeys'><div class='shortcutKey ctrlShift'>Ctrl</div><div class='shortcutKey ctrlShift treeLeftCtrl'>Shift</div><div class='shortcutEvent'>click</div></div></div></div>
-                <div class='keyboardShortcut'><div class='shortcutAction'>Select tree right</div><div class='shortcutKeys'><div class='shortcutKeys'><div class='shortcutKey treeRightCtrl1'>Alt</div><div class='shortcutKey treeRightCtrl2'>Shift</div><div class='shortcutEvent'>click</div></div></div></div>
-                <div class='keyboardShortcut'><div class='shortcutAction'>Select tree across</div><div class='shortcutKeys'><div class='shortcutKeys'><div class='shortcutKey treeAcross1'>Ctrl</div><div class='shortcutKey treeAcross2'>Alt</div><div class='shortcutEvent'>click</div></div></div></div>
-                <div class='keyboardShortcut'><div class='shortcutAction'>Select entire tree</div><div class='shortcutKeys'><div class='shortcutKeys'><div class='shortcutKey ctrlShift'>Ctrl</div><div class='shortcutKey'>Alt</div><div class='shortcutKey ctrlShift'>Shift</div><div class='shortcutEvent'>click</div></div></div></div>
-            </div>
-
         </div>
 
 
@@ -112,10 +104,6 @@
             <div class='keyboardGroup'>
                 <div class='keyboardLabel'>While adjusting (some) values...</div>
                 <div class='keyboardShortcut'><div class='shortcutAction'>Allow values outside the visible limits</div><div class='shortcutKeys'><div class='shortcutKeys'><div class='shortcutKey'>Shift</div></div></div></div>
-            </div>
-            <div class='keyboardGroup nextGroup'>
-                <div class='keyboardLabel'>While hovering over a node...</div>
-                <div class='keyboardShortcut'><div class='shortcutAction'>Isolate the node and its connections</div><div class='shortcutKeys'><div class='shortcutKeys'><div class='shortcutKey'>Alt</div></div></div></div>
             </div>
         </div>
 

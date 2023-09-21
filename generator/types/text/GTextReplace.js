@@ -50,11 +50,18 @@ extends GOperator1
 
             if (_regex.value > 0)
             {
-                const regex = new RegExp(_what.value, 'g');
+                try
+                {
+                    const regex = new RegExp(_what.value, 'g');
 
-                this.value.value = this.value.value.replace(
-                    regex,
-                    _with.value);
+                    this.value.value = this.value.value.replace(
+                        regex,
+                        _with.value);
+                }
+                catch (e)
+                {
+                
+                }
             }
             else
             {

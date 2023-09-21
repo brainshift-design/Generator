@@ -4,7 +4,7 @@
 
 
 
-const generatorVersion = 213;
+const generatorVersion = 214;
 
 
 const MAX_INT32        = 2147483647;
@@ -23594,11 +23594,18 @@ extends GOperator1
 
             if (_regex.value > 0)
             {
-                const regex = new RegExp(_what.value, 'g');
+                try
+                {
+                    const regex = new RegExp(_what.value, 'g');
 
-                this.value.value = this.value.value.replace(
-                    regex,
-                    _with.value);
+                    this.value.value = this.value.value.replace(
+                        regex,
+                        _with.value);
+                }
+                catch (e)
+                {
+                
+                }
             }
             else
             {
@@ -23880,7 +23887,7 @@ extends GOperator1
             if (this.options.enabled)
                 this.value.value = this.value.value
                     .padStart(startCount.value, unescapeString(startPad.value))
-                    .padEnd  (  endCount.value, unescapeString(  endPad.value));
+                    .padEnd  (  endCount.value, endPad.value != '' ? unescapeString(endPad.value) : unescapeString(startPad.value));
         }
         else
             this.value = new TextValue();//TextValue.NaN;

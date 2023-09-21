@@ -6,6 +6,7 @@
 
 <link href="https://fonts.googleapis.com/css2?family=Inter:wght@100;200;300;400;500;600;700;800;900&display=swap" rel="stylesheet">
 <link href="https://fonts.googleapis.com/css2?family=Roboto+Mono&display=swap" rel="stylesheet">
+<link href="https://fonts.googleapis.com/css2?family=Oooh+Baby&display=swap" rel="stylesheet">
 
 <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no" />
 
@@ -584,7 +585,7 @@ div
 }
 
 
-#keyboardPanelTab
+.keyboardPanelTab
 {
     background:    #1E1E1E;
     color:         #b6b6b6;
@@ -600,7 +601,7 @@ div
 }
 
 
-#keyboardPanelTab:hover
+.keyboardPanelTab:hover
 {
     color:         #f6f6f6;
 }
@@ -876,6 +877,176 @@ div
     padding-right: 12px;
     /* box-shadow:    0 0 0 1px orange inset; */
 }
+
+
+#presets
+{
+    display:       none;
+    background:    #1E1E1E;
+    width:         calc(100% - 2px);
+    height:        240px;
+    position:      absolute;
+    bottom:        0;
+    border-top:    1px solid #ffffff25;
+    border-bottom: 1px solid #ffffff0d;
+    border-left:   1px solid #ffffff08;
+    border-right:  1px solid #ffffff08;
+    z-index:       100;
+}
+
+
+#presetTabsHolder
+{
+    height:        36px;
+    overflow:      hidden;
+    position:      relative;
+    /* box-shadow:    0 0 0 1px inset red; */
+    z-index:       1;
+}
+
+
+#presetTabs
+{
+    display:    flex;
+    width:      fit-content;
+    height:     36px;
+    position:   absolute;
+    left:       50%;
+    transform:  translateX(-50%);
+    /* box-shadow: 0 0 0 1px inset blue;    */
+}
+
+
+.presetTab
+{
+    background:    #1E1E1E;
+    color:         #b6b6b6;
+    font-size:     12px;
+    font-weight:   500;
+    display:       inline;
+    padding-left:  16px;
+    padding-right: 16px;
+    padding-top:   10px;
+    margin:        0;
+    height:        26px;
+    white-space:   nowrap;
+    /* box-shadow:    0 0 0 1px inset green;    */
+}
+
+
+.presetTab:hover
+{
+    color:         #f6f6f6;
+}
+
+
+#presetClose
+{
+    position:            absolute;
+    top:                 0;
+    right:               0;
+    width:               35px;
+    height:              35px;
+    background:          url('data:image/svg+xml;utf8,<svg width="30" height="30" viewBox="0 0 30 30" fill="none" xmlns="http://www.w3.org/2000/svg"><path id="keyboardCloseX" fill-rule="evenodd" clip-rule="evenodd" d="M16 15.293L20.6465 10.6465L21.3536 11.3536L16.7071 16.0001L21.3536 20.6465L20.6465 21.3536L16 16.7072L11.3536 21.3536L10.6465 20.6465L15.2929 16.0001L10.6465 11.3537L11.3536 10.6466L16 15.293Z" fill="%23777"/></svg>');
+    background-position: 50% calc(50% - 1px);
+    background-repeat:   no-repeat;
+}
+
+
+#presetClose:hover
+{
+    background:          url('data:image/svg+xml;utf8,<svg width="30" height="30" viewBox="0 0 30 30" fill="none" xmlns="http://www.w3.org/2000/svg"><path id="keyboardCloseX" fill-rule="evenodd" clip-rule="evenodd" d="M16 15.293L20.6465 10.6465L21.3536 11.3536L16.7071 16.0001L21.3536 20.6465L20.6465 21.3536L16 16.7072L11.3536 21.3536L10.6465 20.6465L15.2929 16.0001L10.6465 11.3537L11.3536 10.6466L16 15.293Z" fill="%23f6f6f6"/></svg>');
+    background-position: 50% calc(50% - 1px);
+    background-repeat:   no-repeat;
+}
+
+
+#presetContent
+{
+    position:   absolute;
+    top:        35px;
+    background: #1E1E1E;
+    border-top: 1px solid #ffffff1b;   
+    width:      100%;
+    height:     206px;
+    /* box-shadow: 0 0 0 1px inset orange; */
+    z-index:    0;
+}
+
+
+.presetPage
+{
+    display:        flex;
+    position:       absolute;
+    left:           50%;
+    top:            0;
+    transform:      translateX(-50%);
+    padding-top:    6px;
+    width:          max-content;
+    height:         calc(100% - 7px);
+    /* box-shadow:     0 0 0 1px inset red; */
+}
+
+
+.presetGroup
+{
+    display:        inline-block;
+    width:          200px;
+    height:         auto;
+    vertical-align: top;
+    /* box-shadow:     0 0 0 1px inset yellow; */
+}
+
+
+.presetLabel
+{
+    display:     inline-block;
+    font-size:   12px;
+    font-weight: 600;
+    color:       #757575;
+    width:       200px;
+    height:      26px;
+    padding-top: 11px;
+    /* box-shadow:  0 0 0 1px inset green; */
+}
+
+
+.presetInfo
+{
+    display:     inline-block;
+    font-size:   12px;
+    color:       #b6b6b6;
+    font-weight: 500;
+    width:       200px;
+    height:      26px;
+    padding-top: 11px;
+    /* box-shadow:  0 0 0 1px inset green; */
+}
+
+
+.preset
+{
+    color:          var(--figma-color-text);
+    /* background:     var(--figma-color-bg); */
+
+    font-size:      11px;
+    text-align:     center;
+
+    padding:        8px 14px;
+
+    width:          200px;
+    margin-bottom:  4px;
+    border-radius:  6px;
+    box-shadow:     0 0 0 1px #fff2 inset;
+}
+
+
+.preset:active
+{
+    box-shadow: 0 0 0 2px var(--figma-color-bg-brand) inset;
+    background: var(--figma-color-bg);
+}
+
 
 
 #search
@@ -3957,7 +4128,7 @@ a
 .button
 {
     color:          var(--figma-color-text);
-    background:     var(--figma-color-bg);
+    /* background:     var(--figma-color-bg); */
 
     font-size:      11px;
     text-align:     center;
@@ -3972,6 +4143,7 @@ a
 .button:active
 {
     box-shadow: 0 0 0 2px var(--figma-color-bg-brand) inset;
+    background: var(--figma-color-bg);
 }
 
 
@@ -5162,7 +5334,7 @@ a
         <div class='dialogScrollbar' id='whatsNewScrollbarY'></div>
     </div>
 
-</div>
+</div>''
 
 
 <div id='search'>
@@ -5186,14 +5358,14 @@ a
 
     <div id='keyboardPanelTabsHolder'>
         <div id='keyboardPanelTabs'>
-            <div id='keyboardPanelTab' onclick="setCurrentKeyboardTab(0);">Menu</div>
-            <div id='keyboardPanelTab' onclick="setCurrentKeyboardTab(1);">View</div>
-            <div id='keyboardPanelTab' onclick="setCurrentKeyboardTab(2);">Zoom</div>
-            <div id='keyboardPanelTab' onclick="setCurrentKeyboardTab(3);">Selection</div>
-            <div id='keyboardPanelTab' onclick="setCurrentKeyboardTab(4);">Nodes</div>
-            <div id='keyboardPanelTab' onclick="setCurrentKeyboardTab(5);">Connections</div>
-            <div id='keyboardPanelTab' onclick="setCurrentKeyboardTab(6);">Cursor</div>
-            <div id='keyboardPanelTab' onclick="setCurrentKeyboardTab(7);">Edit</div>
+            <div class='keyboardPanelTab' onclick="setCurrentKeyboardTab(0);">Menu</div>
+            <div class='keyboardPanelTab' onclick="setCurrentKeyboardTab(1);">View</div>
+            <div class='keyboardPanelTab' onclick="setCurrentKeyboardTab(2);">Zoom</div>
+            <div class='keyboardPanelTab' onclick="setCurrentKeyboardTab(3);">Selection</div>
+            <div class='keyboardPanelTab' onclick="setCurrentKeyboardTab(7);">Edit</div>
+            <div class='keyboardPanelTab' onclick="setCurrentKeyboardTab(4);">Nodes</div>
+            <div class='keyboardPanelTab' onclick="setCurrentKeyboardTab(5);">Connections</div>
+            <div class='keyboardPanelTab' onclick="setCurrentKeyboardTab(6);">Controls</div>
         </div>
         <div id='keyboardPanelClose' onclick="hideKeyboardPanel();"></div>
     </div>
@@ -5203,7 +5375,7 @@ a
 
         <div class='keyboardPage' id='keyboardPageMenu'>
             <div class='keyboardGroup'>
-                <div class='keyboardShortcut'><div class='shortcutAction'>Keep menu open</div><div class='shortcutKeys'><div class='shortcutKeys'><div class='shortcutKey'>Shift</div><div class='shortcutEvent'>click</div></div></div></div>
+                <div class='keyboardShortcut'><div class='shortcutAction'>Keep menu open</div><div class='shortcutKeys'><div class='shortcutKeys'><div class='shortcutKey'>Shift</div></div></div></div>
                 <div class='keyboardShortcut'><div class='shortcutAction'>Search menus and nodes</div><div class='shortcutKeys'><div class='shortcutKeys'><div class='shortcutKey'>Ctrl</div><div class='shortcutKey shortcutChar'>/</div></div></div></div>
                 <div class='keyboardShortcut'></div>
                 <div class='keyboardInfo'>Click a node menu to create a node under<br/>the menu button. Drag the menu to directly<br/>move the new node.</div>
@@ -5214,7 +5386,7 @@ a
         <div class='keyboardPage' id='keyboardPageView'>
 
             <div class='keyboardGroup'>
-                <div class='keyboardShortcut'><div class='shortcutAction'>Focus on node</div><div class='shortcutKeys'><div class='shortcutKeys'><div class='shortcutKey'>Alt</div><div class='shortcutKey shortcutChar'>S</div></div></div></div>
+                <div class='keyboardShortcut'><div class='shortcutAction'>Focus on node</div><div class='shortcutKeys'><div class='shortcutKeys'><div class='shortcutKey'>Alt</div><div class='shortcutKey shortcutChar'>F</div></div></div></div>
             </div>
 
         </div>
@@ -5255,14 +5427,6 @@ a
                 <div class='keyboardShortcut'><div class='shortcutAction'>Select none</div><div class='shortcutKeys'><div class='shortcutKeys'><div class='shortcutKey'>Esc</div></div></div></div>
             </div>
 
-            <div class='keyboardGroup nextGroup'>
-                <!-- <div class='keyboardShortcut'><div class='shortcutAction'>Toggle selected</div><div class='shortcutKeys'><div class='shortcutKeys'><div class='shortcutKey'>Shift</div><div class='shortcutKey'>click</div></div></div></div> -->
-                <div class='keyboardShortcut'><div class='shortcutAction'>Select tree left</div><div class='shortcutKeys'><div class='shortcutKeys'><div class='shortcutKey ctrlShift'>Ctrl</div><div class='shortcutKey ctrlShift treeLeftCtrl'>Shift</div><div class='shortcutEvent'>click</div></div></div></div>
-                <div class='keyboardShortcut'><div class='shortcutAction'>Select tree right</div><div class='shortcutKeys'><div class='shortcutKeys'><div class='shortcutKey treeRightCtrl1'>Alt</div><div class='shortcutKey treeRightCtrl2'>Shift</div><div class='shortcutEvent'>click</div></div></div></div>
-                <div class='keyboardShortcut'><div class='shortcutAction'>Select tree across</div><div class='shortcutKeys'><div class='shortcutKeys'><div class='shortcutKey treeAcross1'>Ctrl</div><div class='shortcutKey treeAcross2'>Alt</div><div class='shortcutEvent'>click</div></div></div></div>
-                <div class='keyboardShortcut'><div class='shortcutAction'>Select entire tree</div><div class='shortcutKeys'><div class='shortcutKeys'><div class='shortcutKey ctrlShift'>Ctrl</div><div class='shortcutKey'>Alt</div><div class='shortcutKey ctrlShift'>Shift</div><div class='shortcutEvent'>click</div></div></div></div>
-            </div>
-
         </div>
 
 
@@ -5297,10 +5461,6 @@ a
                 <div class='keyboardLabel'>While adjusting (some) values...</div>
                 <div class='keyboardShortcut'><div class='shortcutAction'>Allow values outside the visible limits</div><div class='shortcutKeys'><div class='shortcutKeys'><div class='shortcutKey'>Shift</div></div></div></div>
             </div>
-            <div class='keyboardGroup nextGroup'>
-                <div class='keyboardLabel'>While hovering over a node...</div>
-                <div class='keyboardShortcut'><div class='shortcutAction'>Isolate the node and its connections</div><div class='shortcutKeys'><div class='shortcutKeys'><div class='shortcutKey'>Alt</div></div></div></div>
-            </div>
         </div>
 
         
@@ -5317,6 +5477,149 @@ a
                 <div class='keyboardShortcut'><div class='shortcutAction'>Duplicate</div><div class='shortcutKeys'><div class='shortcutKeys'><div class='shortcutKey'>Ctrl</div><div class='shortcutKey shortcutChar'>D</div></div></div></div>
                 <div class='keyboardShortcut'><div class='shortcutAction'>Duplicate with input connections</div><div class='shortcutKeys'><div class='shortcutKeys'><div class='shortcutKey ctrlShift'>Ctrl</div><div class='shortcutKey ctrlShift'>Shift</div><div class='shortcutKey shortcutChar'>D</div></div></div></div>
             </div>
+        </div>
+    
+    
+    </div>
+
+</div>
+
+
+<div id='presets'>
+
+    <div id='presetTabsHolder'>
+        <div id='presetTabs'>
+            <div class='presetTab' onclick="setCurrentPresetTab(0);">Basics</div>
+            <div class='presetTab' onclick="setCurrentPresetTab(1);">Data flow</div>
+            <div class='presetTab' onclick="setCurrentPresetTab(1);">Loops</div>
+            <div class='presetTab' onclick="setCurrentPresetTab(2);">Lists</div>
+            <div class='presetTab' onclick="setCurrentPresetTab(3);">Numbers</div>
+            <div class='presetTab' onclick="setCurrentPresetTab(4);">Text</div>
+            <div class='presetTab' onclick="setCurrentPresetTab(5);">Colors</div>
+            <div class='presetTab' onclick="setCurrentPresetTab(6);">Shapes</div>
+        </div>
+        <div id='presetClose' onclick="hidePresets();"></div>
+    </div>
+    
+    <div id='presetContent'>
+
+
+        <div class='presetPage' id='presetPageMenu'>
+            <div class='presetGroup'>
+                <div class='preset' onclick="loadPresetGraph('basics');">Nodes</div>
+                <div class='preset' onclick="loadPresetGraph('dataTypes');"">Data types</div>
+                <div class='preset' onclick="loadPresetGraph('organize');"">Organizing</div>
+                <div class='preset' onclick="loadPresetGraph('active');"">Where are my objects?</div>
+            </div>
+        </div>
+
+
+        <div class='presetPage' id='presetPageView'>
+
+            <!-- <div class='presetGroup'>
+                <div class='presetShortcut'><div class='shortcutAction'>Focus on node</div><div class='shortcutKeys'><div class='shortcutKeys'><div class='shortcutKey'>Alt</div><div class='shortcutKey shortcutChar'>S</div></div></div></div>
+            </div> -->
+
+        </div>
+
+
+        <div class='presetPage' id='presetPageZoom'>
+
+            <!-- <div class='presetGroup'>
+                <div class='presetShortcut'><div class='shortcutAction'>Pan</div><div class='shortcutKeys'><div class='shortcutKeys'><div class='shortcutKey'>Space</div><div class='shortcutEvent'>drag</div></div></div></div>
+                <div class='presetLabel'>While not using the hand tool...</div>
+                <div class='presetShortcut'><div class='shortcutAction'>Zoom</div><div class='shortcutKeys'><div class='shortcutKeys'><div class='shortcutKey'>Ctrl</div><div class='shortcutEvent'>wheel</div></div></div></div>
+                <div class='presetLabel'>While using the hand tool...</div>
+                <div class='presetShortcut'><div class='shortcutAction'>Zoom</div><div class='shortcutKeys'><div class='shortcutKeys'><div class='shortcutEvent'>Wheel</div></div></div></div>
+            </div>
+
+            <div class='presetGroup nextGroup'>
+                <div class='presetShortcut'><div class='shortcutAction'>Zoom in</div><div class='shortcutKeys'><div class='shortcutKeys'><div class='shortcutKey'>Ctrl</div><div class='shortcutKey shortcutChar'>+</div></div></div></div>
+                <div class='presetShortcut'><div class='shortcutAction'>Zoom out</div><div class='shortcutKeys'><div class='shortcutKeys'><div class='shortcutKey'>Ctrl</div><div class='shortcutKey shortcutChar'>−</div></div></div></div>
+                <div class='presetShortcut'><div class='shortcutAction'>Zoom to 100%</div><div class='shortcutKeys'><div class='shortcutKeys'><div class='shortcutKey'>Ctrl</div><div class='shortcutKey shortcutChar'>0</div></div></div></div>
+                <div class='presetShortcut'><div class='shortcutAction'>Zoom to fit</div><div class='shortcutKeys'><div class='shortcutKeys'><div class='shortcutKey'>Shift</div><div class='shortcutKey shortcutCharNarrow'>1</div></div></div></div>
+                <div class='presetShortcut'><div class='shortcutAction'>Zoom to selection</div><div class='shortcutKeys'><div class='shortcutKeys'><div class='shortcutKey'>Shift</div><div class='shortcutKey shortcutChar'>2</div></div></div></div>
+            </div> -->
+
+        </div>
+
+
+        <div class='presetPage' id='presetPageSelection'>
+
+            <!-- <div class='presetGroup'>
+                <div class='presetLabel'>While selecting...</div>
+                <div class='presetShortcut'><div class='shortcutAction'>Zoom to selection</div><div class='shortcutKeys'><div class='shortcutKeys'><div class='shortcutKey'>Ctrl</div></div></div></div>
+                <div class='presetShortcut'><div class='shortcutAction'>Zoom out from selection</div><div class='shortcutKeys'><div class='shortcutKeys'><div class='shortcutKey'>Ctrl</div><div class='shortcutKey'>Alt</div></div></div></div>
+            </div> -->
+
+            <!-- <div class='presetGroup'>
+                <div class='presetShortcut'><div class='shortcutAction'>Select all</div><div class='shortcutKeys'><div class='shortcutKeys'><div class='shortcutKey'>Ctrl</div><div class='shortcutKey shortcutChar'>A</div></div></div></div>
+                <div class='presetShortcut'><div class='shortcutAction'>Select inverse</div><div class='shortcutKeys'><div class='shortcutKeys'><div class='shortcutKey ctrlShift'>Ctrl</div><div class='shortcutKey ctrlShift'>Shift</div><div class='shortcutKey shortcutChar'>A</div></div></div></div>
+                <div class='presetShortcut'><div class='shortcutAction'>Select none</div><div class='shortcutKeys'><div class='shortcutKeys'><div class='shortcutKey'>Esc</div></div></div></div>
+            </div>
+
+            <div class='presetGroup nextGroup'>
+                <!-- <div class='presetShortcut'><div class='shortcutAction'>Toggle selected</div><div class='shortcutKeys'><div class='shortcutKeys'><div class='shortcutKey'>Shift</div><div class='shortcutKey'>click</div></div></div></div> -->
+                <!-- <div class='presetShortcut'><div class='shortcutAction'>Select tree left</div><div class='shortcutKeys'><div class='shortcutKeys'><div class='shortcutKey ctrlShift'>Ctrl</div><div class='shortcutKey ctrlShift treeLeftCtrl'>Shift</div><div class='shortcutEvent'>click</div></div></div></div>
+                <div class='presetShortcut'><div class='shortcutAction'>Select tree right</div><div class='shortcutKeys'><div class='shortcutKeys'><div class='shortcutKey treeRightCtrl1'>Alt</div><div class='shortcutKey treeRightCtrl2'>Shift</div><div class='shortcutEvent'>click</div></div></div></div>
+                <div class='presetShortcut'><div class='shortcutAction'>Select tree across</div><div class='shortcutKeys'><div class='shortcutKeys'><div class='shortcutKey treeAcross1'>Ctrl</div><div class='shortcutKey treeAcross2'>Alt</div><div class='shortcutEvent'>click</div></div></div></div>
+                <div class='presetShortcut'><div class='shortcutAction'>Select entire tree</div><div class='shortcutKeys'><div class='shortcutKeys'><div class='shortcutKey ctrlShift'>Ctrl</div><div class='shortcutKey'>Alt</div><div class='shortcutKey ctrlShift'>Shift</div><div class='shortcutEvent'>click</div></div></div></div>
+            </div> -->
+
+        </div>
+
+
+        <div class='presetPage' id='presetPageNodes'>
+            <!-- <div class='presetGroup'>
+                <div class='presetShortcut'><div class='shortcutAction'>Create node</div><div class='shortcutKeys'><div class='shortcutKeys'><div class='shortcutKey'>Menu</div></div></div></div>
+                <div class='presetShortcut'><div class='shortcutAction'>Insert node into branch</div><div class='shortcutKeys'><div class='shortcutKeys'><div class='shortcutKey'>Ctrl</div><div class='shortcutKey'>menu</div></div></div></div>
+                <div class='presetShortcut'><div class='shortcutAction'>Connect node in new branch</div><div class='shortcutKeys'><div class='shortcutKeys'><div class='shortcutKey newBranch1'>Ctrl</div><div class='shortcutKey newBranch2'>Alt</div><div class='shortcutKey'>menu</div></div></div></div>
+                <div class='presetShortcut'><div class='shortcutAction'>Create random color</div><div class='shortcutKeys'><div class='shortcutKeys'><div class='shortcutKey'>Alt</div><div class='shortcutKey'>Color menu</div></div></div></div>
+                <div class='presetShortcut'><div class='shortcutAction'>Reactivate active nodes</div><div class='shortcutKeys'><div class='shortcutKeys'><div class='shortcutKey'>Ctrl</div><div class='shortcutKey'>Enter</div></div></div></div>
+            </div>
+            <div class='presetGroup nextGroup'>
+                <div class='presetShortcut'><div class='shortcutAction'>Rename</div><div class='shortcutKeys'><div class='shortcutKeys'><div class='shortcutKey'>Shift</div><div class='shortcutKey shortcutChar'>R</div></div></div></div>
+                <div class='presetShortcut'><div class='shortcutAction'>Enable/disable</div><div class='shortcutKeys'><div class='shortcutKeys'><div class='shortcutKey ctrlShift'>Ctrl</div><div class='shortcutKey ctrlShift'>Shift</div><div class='shortcutKey shortcutChar'>E</div></div></div></div>
+                <div class='presetShortcut'><div class='shortcutAction'>Show/hide node icons</div><div class='shortcutKeys'><div class='shortcutKeys'><div class='shortcutKey ctrlShift'>Ctrl</div><div class='shortcutKey ctrlShift'>Shift</div><div class='shortcutKey shortcutCharNarrow'>I</div></div></div></div>
+                <div class='presetShortcut'><div class='shortcutAction'>Show/hide operation results</div><div class='shortcutKeys'><div class='shortcutKeys'><div class='shortcutKey ctrlShift'>Ctrl</div><div class='shortcutKey ctrlShift'>Shift</div><div class='shortcutKey shortcutChar'>R</div></div></div></div>
+                <div class='presetShortcut'><div class='shortcutAction'>Layout selected nodes</div><div class='shortcutKeys'><div class='shortcutKeys'><div class='shortcutKey ctrlShift'>Ctrl</div><div class='shortcutKey ctrlShift'>Shift</div><div class='shortcutKey shortcutChar'>L</div></div></div></div>
+            </div> -->
+        </div>
+ 
+
+        <div class='presetPage' id='presetPageConnections'>
+            <!-- <div class='presetGroup'>
+                <div class='presetLabel'>While connecting from an output...</div>
+                <div class='presetShortcut'><div class='shortcutAction'>Copy input value back to output</div><div class='shortcutKeys'><div class='shortcutKeys'><div class='shortcutKey'>Ctrl</div></div></div></div>
+            </div> -->
+        </div>
+
+        
+        <div class='presetPage' id='presetPageCursor'>
+            <!-- <div class='presetGroup'>
+                <div class='presetLabel'>While adjusting (some) values...</div>
+                <div class='presetShortcut'><div class='shortcutAction'>Allow values outside the visible limits</div><div class='shortcutKeys'><div class='shortcutKeys'><div class='shortcutKey'>Shift</div></div></div></div>
+            </div>
+            <div class='presetGroup nextGroup'>
+                <div class='presetLabel'>While hovering over a node...</div>
+                <div class='presetShortcut'><div class='shortcutAction'>Isolate the node and its connections</div><div class='shortcutKeys'><div class='shortcutKeys'><div class='shortcutKey'>Alt</div></div></div></div>
+            </div> -->
+        </div>
+
+        
+        <div class='presetPage' id='presetPageEdit'>
+            <!-- <div class='presetGroup'>
+                <div class='presetShortcut'><div class='shortcutAction'>Copy</div><div class='shortcutKeys'><div class='shortcutKeys'><div class='shortcutKey'>Ctrl</div><div class='shortcutKey shortcutChar'>C</div></div></div></div>
+                <div class='presetShortcut'><div class='shortcutAction'>Cut</div><div class='shortcutKeys'><div class='shortcutKeys'><div class='shortcutKey'>Ctrl</div><div class='shortcutKey shortcutChar'>X</div></div></div></div>
+                <div class='presetShortcut'><div class='shortcutAction'>Paste</div><div class='shortcutKeys'><div class='shortcutKeys'><div class='shortcutKey'>Ctrl</div><div class='shortcutKey shortcutChar'>V</div></div></div></div>
+                <div class='presetShortcut'><div class='shortcutAction'>Paste with input connections</div><div class='shortcutKeys'><div class='shortcutKeys'><div class='shortcutKey ctrlShift'>Ctrl</div><div class='shortcutKey ctrlShift'>Shift</div><div class='shortcutKey shortcutChar'>V</div></div></div></div>
+                <div class='presetShortcut'><div class='shortcutAction'>Remove from branch</div><div class='shortcutKeys'><div class='shortcutKeys'><div class='shortcutKey'>Ctrl</div><div class='shortcutKey shortcutCharWide'>⌫</div></div></div></div>
+            </div>
+            <div class='presetGroup nextGroup'>
+                <!-- <div id='shortcutCopyAsJavascript' class='presetShortcut'><div class='shortcutAction'>Copy as Javascript</div><div class='shortcutKeys'><div class='shortcutKeys'><div class='shortcutKey ctrlShift'>Ctrl</div><div class='shortcutKey ctrlShift'>Shift</div><div class='shortcutKey shortcutChar'>C</div></div></div></div> -->
+                <!-- <div class='presetShortcut'><div class='shortcutAction'>Duplicate</div><div class='shortcutKeys'><div class='shortcutKeys'><div class='shortcutKey'>Ctrl</div><div class='shortcutKey shortcutChar'>D</div></div></div></div>
+                <div class='presetShortcut'><div class='shortcutAction'>Duplicate with input connections</div><div class='shortcutKeys'><div class='shortcutKeys'><div class='shortcutKey ctrlShift'>Ctrl</div><div class='shortcutKey ctrlShift'>Shift</div><div class='shortcutKey shortcutChar'>D</div></div></div></div>
+            </div> -->
         </div>
     
     
@@ -5512,7 +5815,7 @@ a
 
 
 
-const generatorVersion = 213;
+const generatorVersion = 214;
 
 
 const MAX_INT32        = 2147483647;
@@ -29102,11 +29405,18 @@ extends GOperator1
 
             if (_regex.value > 0)
             {
-                const regex = new RegExp(_what.value, 'g');
+                try
+                {
+                    const regex = new RegExp(_what.value, 'g');
 
-                this.value.value = this.value.value.replace(
-                    regex,
-                    _with.value);
+                    this.value.value = this.value.value.replace(
+                        regex,
+                        _with.value);
+                }
+                catch (e)
+                {
+                
+                }
             }
             else
             {
@@ -29388,7 +29698,7 @@ extends GOperator1
             if (this.options.enabled)
                 this.value.value = this.value.value
                     .padStart(startCount.value, unescapeString(startPad.value))
-                    .padEnd  (  endCount.value, unescapeString(  endPad.value));
+                    .padEnd  (  endCount.value, endPad.value != '' ? unescapeString(endPad.value) : unescapeString(startPad.value));
         }
         else
             this.value = new TextValue();//TextValue.NaN;
@@ -50452,7 +50762,7 @@ onerror = (event, source, line, pos, error) =>
 };
 
 
-const generatorVersion = 213;
+const generatorVersion = 214;
 
 
 const MAX_INT32        = 2147483647;
@@ -76295,11 +76605,18 @@ extends GOperator1
 
             if (_regex.value > 0)
             {
-                const regex = new RegExp(_what.value, 'g');
+                try
+                {
+                    const regex = new RegExp(_what.value, 'g');
 
-                this.value.value = this.value.value.replace(
-                    regex,
-                    _with.value);
+                    this.value.value = this.value.value.replace(
+                        regex,
+                        _with.value);
+                }
+                catch (e)
+                {
+                
+                }
             }
             else
             {
@@ -76581,7 +76898,7 @@ extends GOperator1
             if (this.options.enabled)
                 this.value.value = this.value.value
                     .padStart(startCount.value, unescapeString(startPad.value))
-                    .padEnd  (  endCount.value, unescapeString(  endPad.value));
+                    .padEnd  (  endCount.value, endPad.value != '' ? unescapeString(endPad.value) : unescapeString(startPad.value));
         }
         else
             this.value = new TextValue();//TextValue.NaN;
@@ -93263,25 +93580,25 @@ function initGeneratorMenus()
 
     menuMainTutorials = new Menu('Tutorials', false);
     menuMainTutorials.addItems([
-        new MenuItem('Node & graph basics',       null, {callback: () => { hideAllMenus(); loadPresetGraph('basics');       }}),
-        new MenuItem('',                          null, {separator: true}),    
-        new MenuItem('Create shapes',             null, {callback: () => { hideAllMenus(); loadPresetGraph('shapes');       }}),
-        new MenuItem('Transform shapes',          null, {callback: () => { hideAllMenus(); loadPresetGraph('transform');    }}),
-        new MenuItem('',                          null, {separator: true}),    
-        new MenuItem('Repeat & lists',            null, {callback: () => { hideAllMenus(); loadPresetGraph('repeat');       }}),
-        new MenuItem('Simple loops',              null, {callback: () => { hideAllMenus(); loadPresetGraph('simpleLoops');  }}),
-        new MenuItem('Complex loops',             null, {callback: () => { hideAllMenus(); loadPresetGraph('complexLoops'); }}),
-        new MenuItem('',                          null, {separator: true}),    
-        new MenuItem('Sequences...',              null, {callback: () => { hideAllMenus(); loadPresetGraph('sequences');    }}),
-        new MenuItem('Random...',                 null, {callback: () => { hideAllMenus(); loadPresetGraph('random');       }}),
-        new MenuItem('',                          null, {separator: true}),    
-        new MenuItem('Math & logic',              null, {callback: () => { hideAllMenus(); loadPresetGraph('math');         }}),
-        new MenuItem('Convert & validate colors', null, {callback: () => { hideAllMenus(); loadPresetGraph('colors');       }}),
-        new MenuItem('',                          null, {separator: true}),    
-        new MenuItem('Manipulate text',           null, {callback: () => { hideAllMenus(); loadPresetGraph('text');         }}),
-        new MenuItem('Parse CSV',                 null, {callback: () => { hideAllMenus(); loadPresetGraph('csv');          }}),
-        new MenuItem('',                          null, {separator: true}),    
-        new MenuItem('Work with variables',       null, {callback: () => { hideAllMenus(); loadPresetGraph('variables');    }})]);
+        new MenuItem('Node & graph basics',        null, {callback: () => { hideAllMenus(); loadPresetGraph('basics');       }}),
+        new MenuItem('',                           null, {separator: true}),    
+        new MenuItem('Lists',                      null, {callback: () => { hideAllMenus(); loadPresetGraph('repeat');       }}),
+        new MenuItem('',                           null, {separator: true}),    
+        new MenuItem('Create shapes',              null, {callback: () => { hideAllMenus(); loadPresetGraph('shapes');       }}),
+        new MenuItem('Transform shapes',           null, {callback: () => { hideAllMenus(); loadPresetGraph('transform');    }}),
+        new MenuItem('',                           null, {separator: true}),    
+        new MenuItem('Loops',                      null, {callback: () => { hideAllMenus(); loadPresetGraph('loops');        }}),
+        new MenuItem('',                           null, {separator: true}),    
+        new MenuItem('Sequences...',               null, {callback: () => { hideAllMenus(); loadPresetGraph('sequences');    }}),
+        new MenuItem('Random & noise...',          null, {callback: () => { hideAllMenus(); loadPresetGraph('random');       }}),
+        new MenuItem('',                           null, {separator: true}),    
+        new MenuItem('Math & logic',               null, {callback: () => { hideAllMenus(); loadPresetGraph('math');         }}),
+        new MenuItem('Text & data',                null, {callback: () => { hideAllMenus(); loadPresetGraph('text');         }}),
+        new MenuItem('',                           null, {separator: true}),    
+        new MenuItem('Colors & gradients',         null, {callback: () => { hideAllMenus(); loadPresetGraph('colors');       }}),
+        new MenuItem('Validation & accessibility', null, {callback: () => { hideAllMenus(); loadPresetGraph('colors');       }}),
+        new MenuItem('',                           null, {separator: true}),    
+        new MenuItem('Figma variables',            null, {callback: () => { hideAllMenus(); loadPresetGraph('variables');    }})]);
 
 
     menuMainPreferences = new Menu('Preferences', false);
@@ -93407,6 +93724,8 @@ function initGeneratorMenus()
 
     menuMainHelp = new Menu('Help and subscription', false);
     menuMainHelp.addItems([
+        new MenuItem('Tutorials',    null, {callback: () => showPresets()}),
+        new MenuItem('',             null, {separator: true}),
         new MenuItem('Keyboard shortcuts', null, {shortcut: osCtrlShift() + '?', callback: () => showKeyboardPanel()}),
         // new MenuItem('Help page',   null, {callback:  () => window.open('http://www.bourt.com/generator/help', '_blank')}),
         new MenuItem('',             null, {separator: true}),
@@ -95164,6 +95483,7 @@ class GraphView
     creatingNodes  = false;
     loadingNodes   = false;
     pastingNodes   = false;
+    _zoomToFit     = false;
     restoringNodes = false;
 
 
@@ -96984,8 +97304,15 @@ GraphView.prototype.zoomToNodes = function(nodes, zoom = true, topOffset = 0)
         nodes.forEach(n => n.updateMeasureData());
         const offset = this.getAllNodeOffsets(nodes);
 
+        let heightOffset = 0;
+
+        if (presets.offsetParent !== null)
+            heightOffset = presets.offsetHeight;
+        else if (keyboardPanel.offsetParent !== null)
+            heightOffset = keyboardPanel.offsetHeight;
+
         offset.y -= topOffset / graph.currentPage.zoom;
-        offset.h += topOffset / graph.currentPage.zoom;
+        offset.h += (-topOffset + heightOffset) / graph.currentPage.zoom;
 
         for (let i = 0; i < 5; i++) // need to do it a few times
             this.zoomToRect(offset, 40, zoom);
@@ -106011,7 +106338,7 @@ class Operator
         let json =
               pos + tab + '"type": "'      + this.type                                     + '",\n'
             + pos + tab + '"id": "'        + (this.stripIdForCopy ? this.nodeId : this.id) + '",\n'
-            + pos + tab + '"name": "'      + this.name.replace('"', '\\\"')                + '",\n'
+            + pos + tab + '"name": "'      + encodeURIComponent(this.name)                 + '",\n'
             + pos + tab + '"renamed": "'   + boolToString(this.renamed)                    + '",\n'
             + pos + tab + '"enabled": "'   + boolToString(this.enabled)                    + '",\n'
             + pos + tab + '"highlight": "' + this.highlight                                + '",\n'
@@ -106069,7 +106396,7 @@ class Operator
     loadFromParsedJson(_node, pasting)
     {
         this.id   = _node.id;
-        this.name = _node.name;
+        this.name = decodeURIComponent(_node.name);
     
         if (_node.renamed  ) this.renamed   = parseBool(_node.renamed);
         if (_node.enabled  ) this.enabled   = parseBool(_node.enabled);
@@ -115920,8 +116247,8 @@ extends OperatorWithValue
         this.addParam(this.paramValue);
         this.addParam(this.paramStartPad   = new   TextParam('startPad',   'start', false, true, true));
         this.addParam(this.paramStartCount = new NumberParam('startCount', 'start', true,  true, true, 0, 0));
-        this.addParam(this.paramEndPad     = new   TextParam('endPad',     'end',   false, true, true));
         this.addParam(this.paramEndCount   = new NumberParam('endCount',   'end',   true,  true, true, 0, 0));
+        this.addParam(this.paramEndPad     = new   TextParam('endPad',     'end',   false, true, true));
 
 
         setControlFont(this.paramValue   .controls[0].textbox, 'Roboto Mono', 10, 'center');
@@ -125894,7 +126221,7 @@ function output_ondisconnect(node)
 
 
 class   OpComment
-extends ResizableBase
+extends OperatorBase
 {
     constructor()
     {
@@ -125956,7 +126283,10 @@ extends ResizableBase
         this.inner.style.boxShadow = 'none';
 
 
-        utilContext.font = '11px Inter';
+        const fontSize = 36;
+
+
+        utilContext.font = fontSize + 'px \'Oooh Baby\'';
         
         const mes = utilContext.measureText(
             hasFocus(this.textbox) 
@@ -125966,14 +126296,37 @@ extends ResizableBase
 
         const width = Math.max(1, mes.width + 2);
 
-        this.div    .style.width   = 
-        this.textbox.style.width   = width + 'px';
+        this.div    .style.width      = 
+        this.textbox.style.width      = width + 'px';
 
-        this.textbox.style.height  =  this.div.offsetHeight;
-        this.textbox.style.padding = '0';
-        this.textbox.style.margin  = '0';
+        this.textbox.style.height     =  this.div.offsetHeight;
+        this.textbox.style.padding    = '0';
+        this.textbox.style.margin     = '0';
+        this.textbox.style.textAlign  = 'left';
+        this.textbox.style.fontFamily = 'Oooh Baby';
+        this.textbox.style.fontSize   = fontSize + 'px';
+        this.textbox.style.fontWeight =  400;
 
-        this.div.style.boxShadow = '0 0 0 1px red inset';
+        this.div.style.borderRadius = 0;
+
+        const height = (fontSize + mes.actualBoundingBoxDescent) + 'px';
+
+        this.div         .style.height = height;
+        this.header      .style.height = height;
+        this.labelWrapper.style.height = height;
+        this.label       .style.height = height;
+        this.labelText   .style.height = height;
+
+        this.labelText   .style.position   = 'absolute';
+        this.labelText   .style.left       =  0;
+
+        this.labelText   .style.fontFamily = 'Oooh Baby';
+        this.labelText   .style.fontSize   = fontSize + 'px';
+        this.labelText   .style.fontWeight =  400;
+
+        // this.div      .style.boxShadow = '0 0 0 1px red inset';
+        // this.label    .style.boxShadow = '0 0 0 1px green inset';
+        // this.labelText.style.boxShadow = '0 0 0 1px yellow inset';
     }
 
 
@@ -129527,6 +129880,7 @@ extends Action
     x;
     y;
 
+    zoomToFit;
     callback;
 
 
@@ -129536,7 +129890,7 @@ extends Action
 
 
 
-    constructor(copiedNodesJson, pasteConnected, isDuplicate = false, isLoading = false, x = Number.NaN, y = Number.NaN, callback = null)
+    constructor(copiedNodesJson, pasteConnected, isDuplicate = false, isLoading = false, x = Number.NaN, y = Number.NaN, zoomToFit = false, callback = null)
     {
         let nNodes = 0;
 
@@ -129561,7 +129915,8 @@ extends Action
         this.x               = x;
         this.y               = y;
 
-        this.callback       = callback;
+        this.zoomToFit       = zoomToFit;
+        this.callback        = callback;
     }
 
 
@@ -129571,7 +129926,7 @@ extends Action
         this.prevSelectedNodeIds = graphView.selectedNodes.map(n => n.id);
 
 
-        const [nodes, _conns] = uiPasteNodes(this.copiedNodesJson, true, this.pasteConnected, this.x, this.y, updateNodes);
+        const [nodes, _conns] = uiPasteNodes(this.copiedNodesJson, true, this.pasteConnected, this.x, this.y, updateNodes, this.zoomToFit);
 
         
         pushUnique(this.newConnectionData, _conns);
@@ -131875,7 +132230,7 @@ function createSessionId()
 
 function subscribed()
 {
-    return false;//currentSessionId == createSessionId();
+    return true;//currentSessionId == createSessionId();
 }
 
 
@@ -132459,6 +132814,8 @@ function showKeyboardPanel()
 {
     setCurrentKeyboardTab(0);
 
+    presets.style.display = 'none';
+
     keyboardPanel.style.display = 
         keyboardPanel.style.display != 'block'
         ? 'block'
@@ -132847,19 +133204,99 @@ function setAutoCursor()
 };
 
 
+var currentPresetTab = 0;
+
+
+function initPresets()
+{
+    if (isMac)
+    {
+        const _ctrlShift = document.getElementsByClassName('ctrlShift');
+        const  ctrlShift = Array.prototype.slice.call(_ctrlShift);
+    
+        const ctrlKeys  = ctrlShift.filter(k => k.innerHTML == 'Ctrl' );
+        const shiftKeys = ctrlShift.filter(k => k.innerHTML == 'Shift');
+
+        ctrlKeys .forEach(k => k.innerHTML = 'Shift');
+        shiftKeys.forEach(k => k.innerHTML = 'Ctrl' );
+
+
+        document.getElementsByClassName('treeLeftCtrl'  )[0].innerHTML = 'Alt';
+
+        document.getElementsByClassName('newBranch1'    )[0].innerHTML = 'Alt';
+        document.getElementsByClassName('newBranch2'    )[0].innerHTML = 'Ctrl';
+        
+        document.getElementsByClassName('treeRightCtrl1')[0].innerHTML = 'Shift';
+        document.getElementsByClassName('treeRightCtrl2')[0].innerHTML = 'Ctrl';
+        
+        document.getElementsByClassName('treeAcross1'   )[0].innerHTML = 'Alt';
+        document.getElementsByClassName('treeAcross2'   )[0].innerHTML = 'Ctrl';
+    }
+
+
+    const keys = document.getElementsByClassName('shortcutKey');
+
+    for (const key of keys)
+    {
+             if (key.innerHTML == 'Ctrl' ) key.innerHTML = osCtrl (false);
+        else if (key.innerHTML == 'Shift') key.innerHTML = osShift(false);
+        else if (key.innerHTML == 'Alt'  ) key.innerHTML = osAlt  (false);
+    }
+}
+
+
+
+function showPresets()
+{
+    setCurrentPresetTab(0);
+
+    keyboardPanel.style.display = 'none';
+
+    presets.style.display = 
+        presets.style.display != 'block'
+        ? 'block'
+        : 'none';
+}
+
+
+
+function hidePresets()
+{
+    presets.style.display = 'none';
+}
+
+
+
+function setCurrentPresetTab(tab)
+{
+    currentPresetTab = tab;
+
+    for (let i = 0; i < presetTabs.children.length; i++)
+    {
+        presetTabs.children[i].style.background = i == currentPresetTab ? '#1E1E1E' : 'none';
+        presetTabs.children[i].style.boxShadow  = i == currentPresetTab ? '0 0 0 0.5px #ffffff2b' : 'none';
+
+        presetContent.children[i].style.display = i == currentPresetTab ? 'flex' : 'none';
+    }
+}
+
+
+
 function loadPresetGraph(graphId)
 {
+    hideAllMenus();
+    
+    
     if (isEmpty(graph.pages))
         graph.createPage('');
 
+    uiRemoveAllSavedNodesAndConns();
     graph.clear();
 
-    actionManager.do(new PasteNodesAction(getPresetGraph(graphId), false, false, true, Number.NaN, Number.NaN, nodes =>
+
+    actionManager.do(new PasteNodesAction(getPresetGraph(graphId), false, false, true, Number.NaN, Number.NaN, true, (nodes) =>
     {
         actionManager.clear();
-        graphView.selected = [];
-
-        setTimeout(() => graphView.zoomToNodes(nodes), 500);
     }));
 }
 
@@ -132869,480 +133306,12 @@ function getPresetGraph(graphId)
 {
     switch (graphId)
     {
-        case 'default':
-            return '\
-            {\
-                "nodes":\
-                [\
-                {\
-                    "type": "TEXT",\
-                    "id": "text6",\
-                    "name": "text",\
-                    "renamed": "false",\
-                    "enabled": "true",\
-                    "highlight": "2",\
-                    "x": "-128",\
-                    "y": "1167",\
-                    "z": "0",\
-                    "width": "279",\
-                    "height": "99.76926387125778",\
-                    "params":\
-                    [\
-                        ["TEXT#", "value", "Now%20the%20ellipse%20has%20only%20a%20fill.%20To%20add%20more%20fills%2C%20strokes%2C%20effects%20etc.%20to%20the%20same%20object%2C%20use%20a%20Combine%20node%2C%20just%20like%20with%20Repeats.", "left"]\
-                    ]\
-                },\
-                {\
-                    "type": "TEXT",\
-                    "id": "text5",\
-                    "name": "text",\
-                    "renamed": "false",\
-                    "enabled": "true",\
-                    "highlight": "3",\
-                    "x": "276",\
-                    "y": "1166",\
-                    "z": "1",\
-                    "width": "279.48463369156957",\
-                    "height": "86.62185689145741",\
-                    "params":\
-                    [\
-                        ["TEXT#", "value", "Random%20(or%20any%20node%20with%20...)%20can%20also%20be%20connected%20to%20a%20Repeat%2C%20which%20will%20then%20limit%20how%20often%20a%20new%20value%20is%20generated.", "left"]\
-                    ]\
-                },\
-                {\
-                    "type": "SEQ",\
-                    "id": "sequence3",\
-                    "name": "sequence",\
-                    "renamed": "false",\
-                    "enabled": "true",\
-                    "highlight": "1",\
-                    "x": "-439",\
-                    "y": "373",\
-                    "z": "2",\
-                    "params":\
-                    [\
-                        ["NUM#", "end", "?,0"]\
-                    ]\
-                },\
-                {\
-                    "type": "ELPS",\
-                    "id": "ellipse",\
-                    "name": "ellipse",\
-                    "renamed": "false",\
-                    "enabled": "true",\
-                    "highlight": "2",\
-                    "x": "-58",\
-                    "y": "143",\
-                    "z": "3",\
-                    "params":\
-                    [\
-                        ["NUM#", "inner", "42,0"]\
-                    ]\
-                },\
-                {\
-                    "type": "SEQ",\
-                    "id": "sequence",\
-                    "name": "sequence X",\
-                    "renamed": "true",\
-                    "enabled": "true",\
-                    "highlight": "0",\
-                    "x": "499",\
-                    "y": "585",\
-                    "z": "4",\
-                    "params":\
-                    [\
-                        ["NUM#", "step", "107,0"],\
-                        ["NUM#", "end", "?,0"]\
-                    ]\
-                },\
-                {\
-                    "type": "TEXT",\
-                    "id": "text",\
-                    "name": "text",\
-                    "renamed": "false",\
-                    "enabled": "true",\
-                    "highlight": "4",\
-                    "x": "682",\
-                    "y": "1164",\
-                    "z": "5",\
-                    "width": "238.7424013988722",\
-                    "height": "103",\
-                    "params":\
-                    [\
-                        ["TEXT#", "value", "Combine%20nodes%20above%20are%20not%20necessary%2C%20but%20they%20allow%20other%20nodes%20with%20...%20to%20be%20controlled%20by%20a%20specific%20Repeat.", "left"]\
-                    ]\
-                },\
-                {\
-                    "type": "SEQ",\
-                    "id": "sequence2",\
-                    "name": "sequence Y",\
-                    "renamed": "true",\
-                    "enabled": "true",\
-                    "highlight": "0",\
-                    "x": "499",\
-                    "y": "747",\
-                    "z": "6",\
-                    "params":\
-                    [\
-                        ["NUM#", "step", "115,0"],\
-                        ["NUM#", "end", "?,0"]\
-                    ]\
-                },\
-                {\
-                    "type": "RAND",\
-                    "id": "random",\
-                    "name": "random",\
-                    "renamed": "false",\
-                    "enabled": "true",\
-                    "highlight": "3",\
-                    "x": "296",\
-                    "y": "282",\
-                    "z": "7",\
-                    "params":\
-                    [\
-                        ["NUM#", "seed", "1234,0"],\
-                        ["NUM#", "max", "100,0"]\
-                    ]\
-                },\
-                {\
-                    "type": "CMB",\
-                    "id": "combine2",\
-                    "name": "combine",\
-                    "renamed": "false",\
-                    "enabled": "true",\
-                    "highlight": "4",\
-                    "x": "772",\
-                    "y": "781",\
-                    "z": "8",\
-                    "width": "120",\
-                    "height": "38"\
-                },\
-                {\
-                    "type": "SMATH",\
-                    "id": "math",\
-                    "name": "math",\
-                    "renamed": "false",\
-                    "enabled": "true",\
-                    "highlight": "0",\
-                    "x": "291",\
-                    "y": "602",\
-                    "z": "9",\
-                    "params":\
-                    [\
-                        ["NUM#", "value", "107,0"],\
-                        ["NUM#", "operand", "7,0"]\
-                    ]\
-                },\
-                {\
-                    "type": "SMATH",\
-                    "id": "math2",\
-                    "name": "math",\
-                    "renamed": "false",\
-                    "enabled": "true",\
-                    "highlight": "0",\
-                    "x": "294",\
-                    "y": "761",\
-                    "z": "10",\
-                    "params":\
-                    [\
-                        ["NUM#", "value", "115,0"],\
-                        ["NUM#", "operand", "15,0"]\
-                    ]\
-                },\
-                {\
-                    "type": "TEXT",\
-                    "id": "text4",\
-                    "name": "text",\
-                    "renamed": "false",\
-                    "enabled": "true",\
-                    "highlight": "5",\
-                    "x": "1043",\
-                    "y": "1164",\
-                    "z": "11",\
-                    "width": "219",\
-                    "height": "155.23373967021223",\
-                    "params":\
-                    [\
-                        ["TEXT#", "value", "Double-clicking%20a%20node%20header%20makes%20it%20active%2C%20which%20will%20generate%20geometry%20on%20the%20canvas.%20Hold%20Shift%20to%20activate%20multiple%20nodes%20at%20once.%0A%0ADouble-click%20the%20background%20to%20deactivate%20all%20nodes.%20This%20can%20be%20used%20to%20stop%20a%20very%20slow%20loop.", "left"]\
-                    ]\
-                },\
-                {\
-                    "type": "MOVE",\
-                    "id": "move",\
-                    "name": "move",\
-                    "renamed": "false",\
-                    "enabled": "true",\
-                    "highlight": "0",\
-                    "x": "763",\
-                    "y": "268",\
-                    "z": "12",\
-                    "params":\
-                    [\
-                        ["NUM#", "x", "428,0"],\
-                        ["NUM#", "y", "460,0"]\
-                    ]\
-                },\
-                {\
-                    "type": "CMB",\
-                    "id": "combine",\
-                    "name": "combine",\
-                    "renamed": "false",\
-                    "enabled": "true",\
-                    "highlight": "4",\
-                    "x": "773",\
-                    "y": "615",\
-                    "z": "13",\
-                    "width": "120",\
-                    "height": "38"\
-                },\
-                {\
-                    "type": "COL",\
-                    "id": "color",\
-                    "name": "color",\
-                    "renamed": "false",\
-                    "enabled": "true",\
-                    "highlight": "0",\
-                    "x": "-246",\
-                    "y": "324",\
-                    "z": "14",\
-                    "prevSpace": "hsv",\
-                    "params":\
-                    [\
-                        ["NUM#", "space", "2,0"],\
-                        ["NUM#", "c1", "240,0"],\
-                        ["NUM#", "c2", "85,0"],\
-                        ["NUM#", "c3", "85.09803921568627,0"]\
-                    ]\
-                },\
-                {\
-                    "type": "PANEL",\
-                    "id": "panel",\
-                    "name": "loops",\
-                    "renamed": "true",\
-                    "enabled": "true",\
-                    "highlight": "5",\
-                    "x": "1027",\
-                    "y": "518",\
-                    "z": "15",\
-                    "width": "248.84205555851295",\
-                    "height": "365.71675486894105",\
-                    "params":\
-                    [\
-                    ]\
-                },\
-                {\
-                    "type": "REPT",\
-                    "id": "repeat2",\
-                    "name": "repeat X",\
-                    "renamed": "true",\
-                    "enabled": "true",\
-                    "highlight": "0",\
-                    "x": "1090",\
-                    "y": "574",\
-                    "z": "16",\
-                    "params":\
-                    [\
-                        ["NUM#", "count", "5,0"]\
-                    ]\
-                },\
-                {\
-                    "type": "TEXT",\
-                    "id": "text2",\
-                    "name": "text",\
-                    "renamed": "false",\
-                    "enabled": "true",\
-                    "highlight": "1",\
-                    "x": "-481.797",\
-                    "y": "1164",\
-                    "z": "17",\
-                    "width": "213.79652512691814",\
-                    "height": "149",\
-                    "params":\
-                    [\
-                        ["TEXT#", "value", "This%20sequence%20is%20not%20connected%20to%20a%20repeat%2C%20so%20each%20new%20circle%20gets%20a%20new%20value.%20%0A%0AConnect%20the%20sequence%20header%20to%20a%20%D0%A1ombine%20node%20on%20the%20right%20(highlighted%20in%20green)%20to%20lock%20color%20changes%20to%20rows%20or%20columns.", "left"]\
-                    ]\
-                },\
-                {\
-                    "type": "SCALE",\
-                    "id": "scale",\
-                    "name": "scale",\
-                    "renamed": "false",\
-                    "enabled": "true",\
-                    "highlight": "0",\
-                    "x": "479",\
-                    "y": "145",\
-                    "z": "18",\
-                    "params":\
-                    [\
-                        ["NUM#", "scaleX", "21,0"],\
-                        ["NUM#", "scaleY", "21,0"],\
-                        ["NUM#", "affectSpace", "0,0"]\
-                    ]\
-                },\
-                {\
-                    "type": "REPT",\
-                    "id": "repeat",\
-                    "name": "repeat Y",\
-                    "renamed": "true",\
-                    "enabled": "true",\
-                    "highlight": "0",\
-                    "x": "1090",\
-                    "y": "744",\
-                    "z": "19",\
-                    "active": "true",\
-                    "params":\
-                    [\
-                        ["NUM#", "count", "5,0"]\
-                    ]\
-                }\
-                ],\
-                "connections":\
-                [\
-                {\
-                    "outputNodeId": "color",\
-                    "outputId": "h0",\
-                    "outputOrder": "0",\
-                    "inputNodeId": "ellipse",\
-                    "inputId": "props",\
-                    "list": "false"\
-                },\
-                {\
-                    "outputNodeId": "math",\
-                    "outputId": "h0",\
-                    "outputOrder": "0",\
-                    "inputNodeId": "sequence",\
-                    "inputId": "step",\
-                    "list": "false"\
-                },\
-                {\
-                    "outputNodeId": "math2",\
-                    "outputId": "h0",\
-                    "outputOrder": "0",\
-                    "inputNodeId": "sequence2",\
-                    "inputId": "step",\
-                    "list": "false"\
-                },\
-                {\
-                    "outputNodeId": "sequence2",\
-                    "outputId": "h0",\
-                    "outputOrder": "1",\
-                    "inputNodeId": "combine2",\
-                    "inputId": "h0",\
-                    "list": "false"\
-                },\
-                {\
-                    "outputNodeId": "ellipse",\
-                    "outputId": "width",\
-                    "outputOrder": "0",\
-                    "inputNodeId": "math",\
-                    "inputId": "h0",\
-                    "list": "false"\
-                },\
-                {\
-                    "outputNodeId": "ellipse",\
-                    "outputId": "height",\
-                    "outputOrder": "0",\
-                    "inputNodeId": "math2",\
-                    "inputId": "h0",\
-                    "list": "false"\
-                },\
-                {\
-                    "outputNodeId": "scale",\
-                    "outputId": "h0",\
-                    "outputOrder": "0",\
-                    "inputNodeId": "move",\
-                    "inputId": "h0",\
-                    "list": "false"\
-                },\
-                {\
-                    "outputNodeId": "sequence",\
-                    "outputId": "h0",\
-                    "outputOrder": "0",\
-                    "inputNodeId": "move",\
-                    "inputId": "x",\
-                    "list": "false"\
-                },\
-                {\
-                    "outputNodeId": "sequence2",\
-                    "outputId": "h0",\
-                    "outputOrder": "0",\
-                    "inputNodeId": "move",\
-                    "inputId": "y",\
-                    "list": "false"\
-                },\
-                {\
-                    "outputNodeId": "sequence",\
-                    "outputId": "h0",\
-                    "outputOrder": "1",\
-                    "inputNodeId": "combine",\
-                    "inputId": "h0",\
-                    "list": "false"\
-                },\
-                {\
-                    "outputNodeId": "sequence3",\
-                    "outputId": "h0",\
-                    "outputOrder": "0",\
-                    "inputNodeId": "color",\
-                    "inputId": "c1",\
-                    "list": "false"\
-                },\
-                {\
-                    "outputNodeId": "move",\
-                    "outputId": "h0",\
-                    "outputOrder": "0",\
-                    "inputNodeId": "repeat2",\
-                    "inputId": "h0",\
-                    "list": "false"\
-                },\
-                {\
-                    "outputNodeId": "combine",\
-                    "outputId": "h0",\
-                    "outputOrder": "0",\
-                    "inputNodeId": "repeat2",\
-                    "inputId": "loop",\
-                    "list": "true"\
-                },\
-                {\
-                    "outputNodeId": "ellipse",\
-                    "outputId": "h0",\
-                    "outputOrder": "0",\
-                    "inputNodeId": "scale",\
-                    "inputId": "h0",\
-                    "list": "false"\
-                },\
-                {\
-                    "outputNodeId": "random",\
-                    "outputId": "h0",\
-                    "outputOrder": "0",\
-                    "inputNodeId": "scale",\
-                    "inputId": "scaleX",\
-                    "list": "false"\
-                },\
-                {\
-                    "outputNodeId": "random",\
-                    "outputId": "h0",\
-                    "outputOrder": "1",\
-                    "inputNodeId": "scale",\
-                    "inputId": "scaleY",\
-                    "list": "false"\
-                },\
-                {\
-                    "outputNodeId": "repeat2",\
-                    "outputId": "h0",\
-                    "outputOrder": "0",\
-                    "inputNodeId": "repeat",\
-                    "inputId": "h0",\
-                    "list": "true"\
-                },\
-                {\
-                    "outputNodeId": "combine2",\
-                    "outputId": "h0",\
-                    "outputOrder": "0",\
-                    "inputNodeId": "repeat",\
-                    "inputId": "loop",\
-                    "list": "true"\
-                }\
-                ]\
-            }';
+        case 'basics':    return presetNodeBasics;
+        case 'dataTypes': return presetDataTypes;
+        case 'organize':  return presetOrganize;
+        case 'active':    return presetActive;
+        case 'shapes':    return presetShapes;
+        case 'transform': return presetTransform;
     }
 }
 
@@ -135571,13 +135540,14 @@ function uiCopyNodes(nodeIds, keepVarsConnected = true)
 
 
 
-function uiPasteNodes(nodesJson, loading, pasteConnected, x, y, updateNodes)
+function uiPasteNodes(nodesJson, loading, pasteConnected, x, y, updateNodes, zoomToFit = false)
 {
     //console.log('nodesJson =', nodesJson);
     //console.log('x =', x);
     //console.log('y =', y);
 
     graphView.pastingNodes = true;
+    graphView._zoomToFit   = zoomToFit;
 
 
     pasteOffset.x += pasteOffsetDelta.x;
@@ -136214,7 +136184,7 @@ function uiImportFromLocalFile()
     loadFromLocalFile(json => 
     {
         importZoomToNodes = true;
-        actionManager.do(new PasteNodesAction(json, false, false, true, Number.NaN, Number.NaN, true));
+        actionManager.do(new PasteNodesAction(json, false, false, true, Number.NaN, Number.NaN));
     });
 }
 
@@ -136814,6 +136784,16 @@ function uiUpdateValuesAndObjects(requestId, actionId, updateNodeId, updateParam
         
 
         loadingOverlay.style.display = 'none'; // for loading
+
+
+        if (graphView._zoomToFit)
+        {
+            for (let i = 0; i < 5; i++)
+                graphView.zoomToNodes(nodes);
+
+            graphView.selectedNodes = [];
+            graphView._zoomToFit = false;
+        }
 
 
         uiUpdateAnimateNodes();
@@ -137741,6 +137721,2080 @@ function dockWindowLeft    () { uiQueueMessageToFigma({cmd: 'figDockWindowLeft' 
 function dockWindowRight   () { uiQueueMessageToFigma({cmd: 'figDockWindowRight'   }); }
 function dockWindowBottom  () { uiQueueMessageToFigma({cmd: 'figDockWindowBottom'  }); }
 
+
+
+const presetNodeBasics = '\
+    {\
+        "nodes":\
+        [\
+            {\
+            "type": "CMNT",\
+            "id": "comment6",\
+            "name": "Connect%20this%20here%20to%20see%20the%20result",\
+            "renamed": "true",\
+            "enabled": "true",\
+            "highlight": "0",\
+            "x": "789",\
+            "y": "485",\
+            "z": "0"\
+            },\
+            {\
+            "type": "NUM",\
+            "id": "num2",\
+            "name": "input",\
+            "renamed": "true",\
+            "enabled": "true",\
+            "highlight": "0",\
+            "x": "602",\
+            "y": "643",\
+            "z": "1",\
+            "active": "true",\
+            "width": "120",\
+            "height": "54",\
+            "params":\
+            [\
+                    ["NUM#", "value", "5,0"]\
+            ]\
+            },\
+            {\
+            "type": "MATH",\
+            "id": "math",\
+            "name": "operation",\
+            "renamed": "true",\
+            "enabled": "true",\
+            "highlight": "0",\
+            "x": "794",\
+            "y": "590",\
+            "z": "2",\
+            "active": "true",\
+            "params":\
+            [\
+                    ["NUM#", "value", "8,0"]\
+            ]\
+            },\
+            {\
+            "type": "CMNT",\
+            "id": "comment",\
+            "name": "Nodes%20contain%20or%20modify%20data.",\
+            "renamed": "true",\
+            "enabled": "true",\
+            "highlight": "0",\
+            "x": "664",\
+            "y": "318",\
+            "z": "3"\
+            },\
+            {\
+            "type": "CMNT",\
+            "id": "comment4",\
+            "name": "Drag%20or%20type",\
+            "renamed": "true",\
+            "enabled": "true",\
+            "highlight": "0",\
+            "x": "324",\
+            "y": "569",\
+            "z": "4"\
+            },\
+            {\
+            "type": "CMNT",\
+            "id": "comment5",\
+            "name": "the%20input%20values",\
+            "renamed": "true",\
+            "enabled": "true",\
+            "highlight": "0",\
+            "x": "322",\
+            "y": "616",\
+            "z": "5"\
+            },\
+            {\
+            "type": "NUM",\
+            "id": "num3",\
+            "name": "output",\
+            "renamed": "true",\
+            "enabled": "true",\
+            "highlight": "0",\
+            "x": "983",\
+            "y": "600",\
+            "z": "6",\
+            "active": "true",\
+            "width": "120",\
+            "height": "54"\
+            },\
+            {\
+            "type": "NUM",\
+            "id": "num",\
+            "name": "input",\
+            "renamed": "true",\
+            "enabled": "true",\
+            "highlight": "0",\
+            "x": "602",\
+            "y": "539",\
+            "z": "7",\
+            "active": "true",\
+            "width": "120",\
+            "height": "54",\
+            "params":\
+            [\
+                    ["NUM#", "value", "3,0"]\
+            ]\
+            }\
+        ],\
+        "connections":\
+        [\
+            {\
+            "outputNodeId": "num",\
+            "outputId": "h0",\
+            "outputOrder": "0",\
+            "inputNodeId": "math",\
+            "inputId": "h0",\
+            "list": "false"\
+            },\
+            {\
+            "outputNodeId": "num2",\
+            "outputId": "h0",\
+            "outputOrder": "0",\
+            "inputNodeId": "math",\
+            "inputId": "h1",\
+            "list": "false"\
+            }\
+        ]\
+    }';
+
+
+
+const presetDataTypes = '\
+    {\
+        "nodes":\
+        [\
+            {\
+            "type": "NUM",\
+            "id": "num5",\
+            "name": "number",\
+            "renamed": "false",\
+            "enabled": "true",\
+            "highlight": "0",\
+            "x": "376",\
+            "y": "1165",\
+            "z": "0",\
+            "active": "true",\
+            "width": "120",\
+            "height": "54",\
+            "params":\
+            [\
+                    ["NUM#", "value", "1234567,0"]\
+            ]\
+            },\
+            {\
+            "type": "TREPL",\
+            "id": "replace",\
+            "name": "replace",\
+            "renamed": "false",\
+            "enabled": "true",\
+            "highlight": "0",\
+            "x": "745",\
+            "y": "1192",\
+            "z": "1",\
+            "active": "true",\
+            "width": "120",\
+            "height": "98",\
+            "params":\
+            [\
+                    ["TEXT#", "value", "%221234567%22", "center"],\
+                    ["TEXT#", "what", "(.*)", "center"],\
+                    ["TEXT#", "with", "%22%241", "center"],\
+                    ["NUM#", "regex", "1,0"]\
+            ]\
+            },\
+            {\
+            "type": "CMNT",\
+            "id": "comment7",\
+            "name": "In%20the%20following%20example%20a%20number%20is%20converted%20to%20text",\
+            "renamed": "true",\
+            "enabled": "true",\
+            "highlight": "0",\
+            "x": "365",\
+            "y": "1018",\
+            "z": "2"\
+            },\
+            {\
+            "type": "N2T",\
+            "id": "numToText",\
+            "name": "to%20text",\
+            "renamed": "false",\
+            "enabled": "true",\
+            "highlight": "0",\
+            "x": "560",\
+            "y": "1165",\
+            "z": "3",\
+            "active": "true",\
+            "params":\
+            [\
+                    ["TEXT#", "value", "1234567", "center"]\
+            ]\
+            },\
+            {\
+            "type": "CMNT",\
+            "id": "comment2",\
+            "name": "A%20node\'s%20data%20is%20typically%20in%20the%20header%2C",\
+            "renamed": "true",\
+            "enabled": "true",\
+            "highlight": "0",\
+            "x": "452",\
+            "y": "593",\
+            "z": "4"\
+            },\
+            {\
+            "type": "CMNT",\
+            "id": "comment3",\
+            "name": "which%20is%20%3Cb%3Ecolored%3C%2Fb%3E%20based%20on%20the%20%3Cb%3Edata%20type%3C%2Fb%3E.",\
+            "renamed": "true",\
+            "enabled": "true",\
+            "highlight": "0",\
+            "x": "450",\
+            "y": "642",\
+            "z": "5"\
+            },\
+            {\
+            "type": "NULL",\
+            "id": "null",\
+            "name": "flow",\
+            "renamed": "true",\
+            "enabled": "true",\
+            "highlight": "0",\
+            "x": "330",\
+            "y": "743",\
+            "z": "6",\
+            "active": "true"\
+            },\
+            {\
+            "type": "TXTS",\
+            "id": "text2",\
+            "name": "text",\
+            "renamed": "false",\
+            "enabled": "true",\
+            "highlight": "0",\
+            "x": "931",\
+            "y": "1165",\
+            "z": "7",\
+            "active": "true",\
+            "params":\
+            [\
+                    ["TEXT#", "text", "%221234567%22", "center"],\
+                    ["NUM#", "width", "337,0"],\
+                    ["NUM#", "height", "64,0"],\
+                    ["NUM#", "size", "64,0"]\
+            ]\
+            },\
+            {\
+            "type": "NUM",\
+            "id": "num4",\
+            "name": "number",\
+            "renamed": "false",\
+            "enabled": "true",\
+            "highlight": "0",\
+            "x": "487",\
+            "y": "743",\
+            "z": "8",\
+            "active": "true",\
+            "width": "120",\
+            "height": "54",\
+            "params":\
+            [\
+                    ["NUM#", "value", "123,0"]\
+            ]\
+            },\
+            {\
+            "type": "RECT",\
+            "id": "rect",\
+            "name": "shape",\
+            "renamed": "true",\
+            "enabled": "true",\
+            "highlight": "0",\
+            "x": "954",\
+            "y": "742",\
+            "z": "9",\
+            "active": "true"\
+            },\
+            {\
+            "type": "TEXT",\
+            "id": "text",\
+            "name": "text",\
+            "renamed": "false",\
+            "enabled": "true",\
+            "highlight": "0",\
+            "x": "643",\
+            "y": "743",\
+            "z": "10",\
+            "active": "true",\
+            "width": "120",\
+            "height": "54",\
+            "params":\
+            [\
+                    ["TEXT#", "value", "ABC", "center"]\
+            ]\
+            },\
+            {\
+            "type": "CMNT",\
+            "id": "comment13",\
+            "name": "which%20is%20then%20passed%20to%20a%20text%20shape%20on%20the%20canvas.",\
+            "renamed": "true",\
+            "enabled": "true",\
+            "highlight": "0",\
+            "x": "365",\
+            "y": "1061",\
+            "z": "11"\
+            },\
+            {\
+            "type": "COL",\
+            "id": "color",\
+            "name": "color",\
+            "renamed": "false",\
+            "enabled": "true",\
+            "highlight": "0",\
+            "x": "798",\
+            "y": "743",\
+            "z": "12",\
+            "active": "true",\
+            "prevSpace": "hex",\
+            "params":\
+            [\
+                    ["NUM#", "space", "0,0"],\
+                    ["NUM#", "c1", "17,0"],\
+                    ["NUM#", "c2", "184,0"],\
+                    ["NUM#", "c3", "54,0"]\
+            ]\
+            }\
+        ],\
+        "connections":\
+        [\
+            {\
+            "outputNodeId": "numToText",\
+            "outputId": "value",\
+            "outputOrder": "0",\
+            "inputNodeId": "replace",\
+            "inputId": "h0",\
+            "list": "false"\
+            },\
+            {\
+            "outputNodeId": "num5",\
+            "outputId": "h0",\
+            "outputOrder": "0",\
+            "inputNodeId": "numToText",\
+            "inputId": "h0",\
+            "list": "false"\
+            },\
+            {\
+            "outputNodeId": "replace",\
+            "outputId": "h0",\
+            "outputOrder": "0",\
+            "inputNodeId": "text2",\
+            "inputId": "text",\
+            "list": "false"\
+            }\
+        ]\
+    }';
+
+
+
+const presetOrganize = '\
+    {\
+        "nodes":\
+        [\
+            {\
+            "type": "NUM",\
+            "id": "num12",\
+            "name": "number",\
+            "renamed": "false",\
+            "enabled": "true",\
+            "highlight": "0",\
+            "x": "489",\
+            "y": "2160",\
+            "z": "0",\
+            "active": "true",\
+            "width": "120",\
+            "height": "54",\
+            "params":\
+            [\
+                    ["NUM#", "value", "3,0"]\
+            ]\
+            },\
+            {\
+            "type": "NUM",\
+            "id": "num10",\
+            "name": "number",\
+            "renamed": "false",\
+            "enabled": "true",\
+            "highlight": "5",\
+            "x": "908",\
+            "y": "1625",\
+            "z": "1",\
+            "active": "true",\
+            "width": "120",\
+            "height": "54",\
+            "params":\
+            [\
+                    ["NUM#", "value", "5,0"]\
+            ]\
+            },\
+            {\
+            "type": "TJOIN",\
+            "id": "join",\
+            "name": "join",\
+            "renamed": "false",\
+            "enabled": "true",\
+            "highlight": "0",\
+            "x": "869",\
+            "y": "2153",\
+            "z": "2",\
+            "active": "true",\
+            "width": "120",\
+            "height": "73.00000491969925",\
+            "params":\
+            [\
+                    ["TEXT#", "value", "AB", "center"]\
+            ]\
+            },\
+            {\
+            "type": "CMNT",\
+            "id": "comment12",\
+            "name": "Double-click%20a%20panel%20header%20to%20select%20the%20nodes%20inside.",\
+            "renamed": "true",\
+            "enabled": "true",\
+            "highlight": "0",\
+            "x": "303",\
+            "y": "1924",\
+            "z": "3"\
+            },\
+            {\
+            "type": "NUM",\
+            "id": "num6",\
+            "name": "number",\
+            "renamed": "false",\
+            "enabled": "true",\
+            "highlight": "1",\
+            "x": "293",\
+            "y": "1626",\
+            "z": "4",\
+            "active": "true",\
+            "width": "120",\
+            "height": "54",\
+            "params":\
+            [\
+                    ["NUM#", "value", "1,0"]\
+            ]\
+            },\
+            {\
+            "type": "NUM",\
+            "id": "num9",\
+            "name": "number",\
+            "renamed": "false",\
+            "enabled": "true",\
+            "highlight": "4",\
+            "x": "754",\
+            "y": "1625",\
+            "z": "5",\
+            "active": "true",\
+            "width": "120",\
+            "height": "54",\
+            "params":\
+            [\
+                    ["NUM#", "value", "4,0"]\
+            ]\
+            },\
+            {\
+            "type": "NUM",\
+            "id": "num13",\
+            "name": "number",\
+            "renamed": "false",\
+            "enabled": "true",\
+            "highlight": "0",\
+            "x": "189",\
+            "y": "2190",\
+            "z": "6",\
+            "active": "true",\
+            "width": "120",\
+            "height": "54",\
+            "params":\
+            [\
+                    ["NUM#", "value", "2,0"]\
+            ]\
+            },\
+            {\
+            "type": "NUM",\
+            "id": "num7",\
+            "name": "number",\
+            "renamed": "false",\
+            "enabled": "true",\
+            "highlight": "2",\
+            "x": "447",\
+            "y": "1626",\
+            "z": "7",\
+            "active": "true",\
+            "width": "120",\
+            "height": "54",\
+            "params":\
+            [\
+                    ["NUM#", "value", "2,0"]\
+            ]\
+            },\
+            {\
+            "type": "PANEL",\
+            "id": "panel",\
+            "name": "",\
+            "renamed": "false",\
+            "enabled": "true",\
+            "highlight": "5",\
+            "x": "154",\
+            "y": "2031",\
+            "z": "8",\
+            "width": "481",\
+            "height": "273.5307260702646",\
+            "params":\
+            [\
+            ]\
+            },\
+            {\
+            "type": "TEXT",\
+            "id": "text4",\
+            "name": "text",\
+            "renamed": "false",\
+            "enabled": "true",\
+            "highlight": "0",\
+            "x": "717",\
+            "y": "2189",\
+            "z": "9",\
+            "active": "true",\
+            "width": "120",\
+            "height": "54",\
+            "params":\
+            [\
+                    ["TEXT#", "value", "B", "center"]\
+            ]\
+            },\
+            {\
+            "type": "CMNT",\
+            "id": "comment10",\
+            "name": "to%20help%20navigate%20complex%20graphs.",\
+            "renamed": "true",\
+            "enabled": "true",\
+            "highlight": "0",\
+            "x": "366",\
+            "y": "1509",\
+            "z": "10"\
+            },\
+            {\
+            "type": "MATH",\
+            "id": "math2",\
+            "name": "math",\
+            "renamed": "false",\
+            "enabled": "true",\
+            "highlight": "0",\
+            "x": "342",\
+            "y": "2151",\
+            "z": "11",\
+            "active": "true",\
+            "params":\
+            [\
+                    ["NUM#", "value", "3,0"]\
+            ]\
+            },\
+            {\
+            "type": "TEXT",\
+            "id": "text3",\
+            "name": "text",\
+            "renamed": "false",\
+            "enabled": "true",\
+            "highlight": "0",\
+            "x": "716",\
+            "y": "2116",\
+            "z": "12",\
+            "active": "true",\
+            "width": "120",\
+            "height": "54",\
+            "params":\
+            [\
+                    ["TEXT#", "value", "A", "center"]\
+            ]\
+            },\
+            {\
+            "type": "NUM",\
+            "id": "num11",\
+            "name": "number",\
+            "renamed": "false",\
+            "enabled": "true",\
+            "highlight": "0",\
+            "x": "189",\
+            "y": "2118",\
+            "z": "13",\
+            "active": "true",\
+            "width": "120",\
+            "height": "54",\
+            "params":\
+            [\
+                    ["NUM#", "value", "1,0"]\
+            ]\
+            },\
+            {\
+            "type": "CMNT",\
+            "id": "comment9",\
+            "name": "Nodes%20can%20be%20highlighted%20with%20different%20colors",\
+            "renamed": "true",\
+            "enabled": "true",\
+            "highlight": "0",\
+            "x": "368",\
+            "y": "1458",\
+            "z": "14"\
+            },\
+            {\
+            "type": "CMNT",\
+            "id": "comment11",\
+            "name": "Use%20panels%20to%20organize%20your%20nodes.%20They%20can%20be%20colored%20too.",\
+            "renamed": "true",\
+            "enabled": "true",\
+            "highlight": "0",\
+            "x": "301",\
+            "y": "1873",\
+            "z": "15"\
+            },\
+            {\
+            "type": "PANEL",\
+            "id": "panel2",\
+            "name": "",\
+            "renamed": "false",\
+            "enabled": "true",\
+            "highlight": "3",\
+            "x": "689",\
+            "y": "2029",\
+            "z": "16",\
+            "width": "481",\
+            "height": "277.7321321240401",\
+            "params":\
+            [\
+            ]\
+            },\
+            {\
+            "type": "NUM",\
+            "id": "num8",\
+            "name": "number",\
+            "renamed": "false",\
+            "enabled": "true",\
+            "highlight": "3",\
+            "x": "600",\
+            "y": "1625",\
+            "z": "17",\
+            "active": "true",\
+            "width": "120",\
+            "height": "54",\
+            "params":\
+            [\
+                    ["NUM#", "value", "3,0"]\
+            ]\
+            },\
+            {\
+            "type": "TEXT",\
+            "id": "text5",\
+            "name": "text",\
+            "renamed": "false",\
+            "enabled": "true",\
+            "highlight": "0",\
+            "x": "1022",\
+            "y": "2162",\
+            "z": "18",\
+            "active": "true",\
+            "width": "120",\
+            "height": "54",\
+            "params":\
+            [\
+                    ["TEXT#", "value", "AB", "center"]\
+            ]\
+            }\
+        ],\
+        "connections":\
+        [\
+            {\
+            "outputNodeId": "math2",\
+            "outputId": "h0",\
+            "outputOrder": "0",\
+            "inputNodeId": "num12",\
+            "inputId": "h0",\
+            "list": "false"\
+            },\
+            {\
+            "outputNodeId": "text3",\
+            "outputId": "h0",\
+            "outputOrder": "0",\
+            "inputNodeId": "join",\
+            "inputId": "h0",\
+            "list": "false"\
+            },\
+            {\
+            "outputNodeId": "text4",\
+            "outputId": "h0",\
+            "outputOrder": "0",\
+            "inputNodeId": "join",\
+            "inputId": "h1",\
+            "list": "false"\
+            },\
+            {\
+            "outputNodeId": "num11",\
+            "outputId": "h0",\
+            "outputOrder": "0",\
+            "inputNodeId": "math2",\
+            "inputId": "h0",\
+            "list": "false"\
+            },\
+            {\
+            "outputNodeId": "num13",\
+            "outputId": "h0",\
+            "outputOrder": "0",\
+            "inputNodeId": "math2",\
+            "inputId": "h1",\
+            "list": "false"\
+            },\
+            {\
+            "outputNodeId": "join",\
+            "outputId": "h0",\
+            "outputOrder": "0",\
+            "inputNodeId": "text5",\
+            "inputId": "h0",\
+            "list": "false"\
+            }\
+        ]\
+    }';
+
+
+
+const presetActive = '\
+    {\
+        "nodes":\
+        [\
+        {\
+            "type": "CMNT",\
+            "id": "comment4",\
+            "name": "%3Cb%3EShift%3C%2Fb%3E%2BDouble%20click%20to%20activate%20%3Cb%3Emultiple%20nodes%3C%2Fb%3E%20at%20the%20same%20time.",\
+            "renamed": "true",\
+            "enabled": "true",\
+            "highlight": "0",\
+            "x": "2125",\
+            "y": "1659",\
+            "z": "0"\
+        },\
+        {\
+            "type": "CMNT",\
+            "id": "comment11",\
+            "name": "%3Cb%3EDouble%20click%3C%2Fb%3E%20a%20node\'s%20header%20to%20activate%20the%20node",\
+            "renamed": "true",\
+            "enabled": "true",\
+            "highlight": "0",\
+            "x": "2130",\
+            "y": "1283",\
+            "z": "1"\
+        },\
+        {\
+            "type": "CMNT",\
+            "id": "comment5",\
+            "name": "Double%20click%20the%20plugin%20background%20to%20deactivate%20all%20nodes.",\
+            "renamed": "true",\
+            "enabled": "true",\
+            "highlight": "0",\
+            "x": "2121",\
+            "y": "1713",\
+            "z": "2"\
+        },\
+        {\
+            "type": "RECT",\
+            "id": "rect",\
+            "name": "rectangle",\
+            "renamed": "false",\
+            "enabled": "true",\
+            "highlight": "0",\
+            "x": "1623",\
+            "y": "1555",\
+            "z": "3",\
+            "params":\
+            [\
+                ["NUM#", "y", "100,0"]\
+            ]\
+        },\
+        {\
+            "type": "ELPS",\
+            "id": "ellipse",\
+            "name": "ellipse",\
+            "renamed": "false",\
+            "enabled": "true",\
+            "highlight": "0",\
+            "x": "1814",\
+            "y": "1283",\
+            "z": "4",\
+            "params":\
+            [\
+                ["NUM#", "x", "100,0"]\
+            ]\
+        },\
+        {\
+            "type": "POLY",\
+            "id": "poly",\
+            "name": "polygon",\
+            "renamed": "false",\
+            "enabled": "true",\
+            "highlight": "0",\
+            "x": "1626",\
+            "y": "1284",\
+            "z": "5",\
+            "params":\
+            [\
+                ["NUM#", "corners", "6,0"]\
+            ]\
+        },\
+        {\
+            "type": "STAR",\
+            "id": "star",\
+            "name": "star",\
+            "renamed": "false",\
+            "enabled": "true",\
+            "highlight": "0",\
+            "x": "1815",\
+            "y": "1555",\
+            "z": "6",\
+            "params":\
+            [\
+                ["NUM#", "x", "100,0"],\
+                ["NUM#", "y", "100,0"]\
+            ]\
+        },\
+        {\
+            "type": "COL",\
+            "id": "color",\
+            "name": "color",\
+            "renamed": "false",\
+            "enabled": "true",\
+            "highlight": "0",\
+            "x": "1340",\
+            "y": "1475",\
+            "z": "7",\
+            "prevSpace": "hsv",\
+            "params":\
+            [\
+                ["NUM#", "space", "2,0"],\
+                ["NUM#", "c1", "27,0"],\
+                ["NUM#", "c2", "100,0"],\
+                ["NUM#", "c3", "93,0"]\
+            ]\
+        },\
+        {\
+            "type": "CMB",\
+            "id": "combine",\
+            "name": "combine",\
+            "renamed": "false",\
+            "enabled": "true",\
+            "highlight": "0",\
+            "x": "2126",\
+            "y": "1503",\
+            "z": "8",\
+            "width": "120",\
+            "height": "77"\
+        },\
+        {\
+            "type": "CMNT",\
+            "id": "comment13",\
+            "name": "to%20put%20its%20%3Cb%3Eobject%20on%20the%20canvas%3C%2Fb%3E.%20Objects%20created%20by%20Generator",\
+            "renamed": "true",\
+            "enabled": "true",\
+            "highlight": "0",\
+            "x": "2130",\
+            "y": "1331",\
+            "z": "9"\
+        },\
+        {\
+            "type": "CMNT",\
+            "id": "comment14",\
+            "name": "have%20the%20%26nbsp%3B%26hairsp%3B%E2%97%A6G%E2%80%A2%26nbsp%3B%26thinsp%3Bprefix%20in%20the%20name.",\
+            "renamed": "true",\
+            "enabled": "true",\
+            "highlight": "0",\
+            "x": "2128",\
+            "y": "1381",\
+            "z": "10"\
+        },\
+        {\
+            "type": "CMNT",\
+            "id": "comment12",\
+            "name": "In%20the%20free%20version%20of%20Generator%2C%20when%20you%20close%20the%20plugin%20your%20objects%20are%20removed%20from%20the%20canvas.",\
+            "renamed": "true",\
+            "enabled": "true",\
+            "highlight": "0",\
+            "x": "1418",\
+            "y": "1910",\
+            "z": "11"\
+        },\
+        {\
+            "type": "CMNT",\
+            "id": "comment15",\
+            "name": "This%20is%20the%20cleanest%20way%20of%20separating%20Generator%20objects%20from%20your%20other%20work.%20To%20keep%20using%20Generator%20objects",\
+            "renamed": "true",\
+            "enabled": "true",\
+            "highlight": "0",\
+            "x": "1413",\
+            "y": "1967",\
+            "z": "12"\
+        },\
+        {\
+            "type": "CMNT",\
+            "id": "comment16",\
+            "name": "after%20closing%20the%20plugin%2C%20first%20%3Cb%3Eselect%20and%20copy%20them%20to%20another%20Figma%20document%3C%2Fb%3E.",\
+            "renamed": "true",\
+            "enabled": "true",\
+            "highlight": "0",\
+            "x": "1417",\
+            "y": "2023",\
+            "z": "13"\
+        },\
+        {\
+            "type": "CMNT",\
+            "id": "comment17",\
+            "name": "Pro%20subscribers%20can%20use%20the%20Render%20node%20to%20keep%20their%20Generator%20objects%20on%20the%20same%20page%2C%20updated%20automatically",\
+            "renamed": "true",\
+            "enabled": "true",\
+            "highlight": "0",\
+            "x": "1412",\
+            "y": "2142",\
+            "z": "14"\
+        },\
+        {\
+            "type": "CMNT",\
+            "id": "comment18",\
+            "name": "when%20Generator%20reloads.",\
+            "renamed": "true",\
+            "enabled": "true",\
+            "highlight": "0",\
+            "x": "1412",\
+            "y": "2198",\
+            "z": "15",\
+            "active": "true"\
+        }\
+        ],\
+        "connections":\
+        [\
+        {\
+            "outputNodeId": "color",\
+            "outputId": "h0",\
+            "outputOrder": "0",\
+            "inputNodeId": "rect",\
+            "inputId": "props",\
+            "list": "false"\
+        },\
+        {\
+            "outputNodeId": "color",\
+            "outputId": "h0",\
+            "outputOrder": "1",\
+            "inputNodeId": "ellipse",\
+            "inputId": "props",\
+            "list": "false"\
+        },\
+        {\
+            "outputNodeId": "color",\
+            "outputId": "h0",\
+            "outputOrder": "2",\
+            "inputNodeId": "poly",\
+            "inputId": "props",\
+            "list": "false"\
+        },\
+        {\
+            "outputNodeId": "color",\
+            "outputId": "h0",\
+            "outputOrder": "3",\
+            "inputNodeId": "star",\
+            "inputId": "props",\
+            "list": "false"\
+        },\
+        {\
+            "outputNodeId": "poly",\
+            "outputId": "h0",\
+            "outputOrder": "0",\
+            "inputNodeId": "combine",\
+            "inputId": "h0",\
+            "list": "false"\
+        },\
+        {\
+            "outputNodeId": "ellipse",\
+            "outputId": "h0",\
+            "outputOrder": "0",\
+            "inputNodeId": "combine",\
+            "inputId": "h1",\
+            "list": "false"\
+        },\
+        {\
+            "outputNodeId": "rect",\
+            "outputId": "h0",\
+            "outputOrder": "0",\
+            "inputNodeId": "combine",\
+            "inputId": "h2",\
+            "list": "false"\
+        },\
+        {\
+            "outputNodeId": "star",\
+            "outputId": "h0",\
+            "outputOrder": "0",\
+            "inputNodeId": "combine",\
+            "inputId": "h3",\
+            "list": "false"\
+        }\
+        ]\
+    }';
+
+
+const presetShapes = '\
+    {\
+    "nodes":\
+    [\
+        {\
+        "type": "COL",\
+        "id": "color3",\
+        "name": "color",\
+        "renamed": "false",\
+        "enabled": "true",\
+        "highlight": "0",\
+        "x": "-233",\
+        "y": "1277",\
+        "z": "0",\
+        "prevSpace": "hsv",\
+        "params":\
+        [\
+                ["NUM#", "space", "2,0"],\
+                ["NUM#", "c1", "110.00000000000001,0"],\
+                ["NUM#", "c2", "65,0"],\
+                ["NUM#", "c3", "90,0"]\
+        ]\
+        },\
+        {\
+        "type": "CMNT",\
+        "id": "comment",\
+        "name": "(fill%2C%20stroke%20etc.)%2C%20otherwise%20it\'s%20shown",\
+        "renamed": "true",\
+        "enabled": "true",\
+        "highlight": "0",\
+        "x": "-445",\
+        "y": "77",\
+        "z": "1"\
+        },\
+        {\
+        "type": "STRK",\
+        "id": "stroke2",\
+        "name": "stroke",\
+        "renamed": "false",\
+        "enabled": "true",\
+        "highlight": "0",\
+        "x": "-42",\
+        "y": "1250",\
+        "z": "2",\
+        "params":\
+        [\
+                ["LIST#", "fills", "1 FILL# 105,0 230,0 80,0 100,0 0,0"],\
+                ["NUM#", "weight", "4,0"]\
+        ]\
+        },\
+        {\
+        "type": "STRK",\
+        "id": "stroke3",\
+        "name": "stroke",\
+        "renamed": "false",\
+        "enabled": "true",\
+        "highlight": "0",\
+        "x": "-44",\
+        "y": "1633",\
+        "z": "3",\
+        "params":\
+        [\
+                ["LIST#", "fills", "1 FILL# 64,0 128,0 255,0 50,0 0,0"],\
+                ["NUM#", "weight", "4,0"]\
+        ]\
+        },\
+        {\
+        "type": "COL",\
+        "id": "color4",\
+        "name": "color",\
+        "renamed": "false",\
+        "enabled": "true",\
+        "highlight": "0",\
+        "x": "-427",\
+        "y": "1687",\
+        "z": "4",\
+        "prevSpace": "hsv",\
+        "params":\
+        [\
+                ["NUM#", "space", "2,0"],\
+                ["NUM#", "c1", "220.00000000000003,0"],\
+                ["NUM#", "c2", "75,0"],\
+                ["NUM#", "c3", "100,0"]\
+        ]\
+        },\
+        {\
+        "type": "FILL",\
+        "id": "fill2",\
+        "name": "fill",\
+        "renamed": "false",\
+        "enabled": "true",\
+        "highlight": "0",\
+        "x": "-231",\
+        "y": "1660",\
+        "z": "5",\
+        "params":\
+        [\
+                ["COL#", "color", "1,0 64,0 128,0 255,0"],\
+                ["NUM#", "opacity", "50,0"]\
+        ]\
+        },\
+        {\
+        "type": "RECT",\
+        "id": "rect4",\
+        "name": "rectangle",\
+        "renamed": "false",\
+        "enabled": "true",\
+        "highlight": "0",\
+        "x": "139",\
+        "y": "1112",\
+        "z": "6",\
+        "params":\
+        [\
+                ["NUM#", "x", "50,0"],\
+                ["NUM#", "y", "50,0"]\
+        ]\
+        },\
+        {\
+        "type": "CMNT",\
+        "id": "comment3",\
+        "name": "A%20shape%20needs%20at%20least%20one%20%22style%22",\
+        "renamed": "true",\
+        "enabled": "true",\
+        "highlight": "0",\
+        "x": "-439",\
+        "y": "26",\
+        "z": "7"\
+        },\
+        {\
+        "type": "FILL",\
+        "id": "fill",\
+        "name": "fill",\
+        "renamed": "false",\
+        "enabled": "true",\
+        "highlight": "0",\
+        "x": "-50",\
+        "y": "893",\
+        "z": "8",\
+        "params":\
+        [\
+                ["COL#", "color", "1,0 230,0 229,0 23,0"],\
+                ["NUM#", "opacity", "50,0"]\
+        ]\
+        },\
+        {\
+        "type": "COL",\
+        "id": "color",\
+        "name": "color",\
+        "renamed": "false",\
+        "enabled": "true",\
+        "highlight": "0",\
+        "x": "-50",\
+        "y": "530",\
+        "z": "9",\
+        "prevSpace": "hsv",\
+        "params":\
+        [\
+                ["NUM#", "space", "2,0"],\
+                ["NUM#", "c1", "0,0"],\
+                ["NUM#", "c2", "75,0"],\
+                ["NUM#", "c3", "100,0"]\
+        ]\
+        },\
+        {\
+        "type": "CMNT",\
+        "id": "comment4",\
+        "name": "%3Cb%3EShift%3C%2Fb%3E%2BDouble%20click%20to%20activate%20%3Cb%3Emultiple%20nodes%3C%2Fb%3E%20at%20the%20same%20time.",\
+        "renamed": "true",\
+        "enabled": "true",\
+        "highlight": "0",\
+        "x": "486",\
+        "y": "53",\
+        "z": "10"\
+        },\
+        {\
+        "type": "RECT",\
+        "id": "rect5",\
+        "name": "rectangle",\
+        "renamed": "false",\
+        "enabled": "true",\
+        "highlight": "0",\
+        "x": "139",\
+        "y": "1496",\
+        "z": "11",\
+        "params":\
+        [\
+        ]\
+        },\
+        {\
+        "type": "CMNT",\
+        "id": "comment2",\
+        "name": "with%20a%20dotted%20stroke.",\
+        "renamed": "true",\
+        "enabled": "true",\
+        "highlight": "0",\
+        "x": "-441",\
+        "y": "126",\
+        "z": "12"\
+        },\
+        {\
+        "type": "ELPS",\
+        "id": "ellipse",\
+        "name": "ellipse",\
+        "renamed": "false",\
+        "enabled": "true",\
+        "highlight": "0",\
+        "x": "139",\
+        "y": "349",\
+        "z": "13",\
+        "params":\
+        [\
+                ["NUM#", "x", "50,0"]\
+        ]\
+        },\
+        {\
+        "type": "COL",\
+        "id": "color2",\
+        "name": "color",\
+        "renamed": "false",\
+        "enabled": "true",\
+        "highlight": "0",\
+        "x": "-234",\
+        "y": "920",\
+        "z": "14",\
+        "prevSpace": "hsv",\
+        "params":\
+        [\
+                ["NUM#", "space", "2,0"],\
+                ["NUM#", "c1", "60,0"],\
+                ["NUM#", "c2", "90,0"],\
+                ["NUM#", "c3", "90,0"]\
+        ]\
+        },\
+        {\
+        "type": "CMNT",\
+        "id": "comment6",\
+        "name": "Objects%20created%20by%20Generator%20have%20the%20%26nbsp%3B%26hairsp%3B%E2%97%A6G%E2%80%A2%26nbsp%3B%26thinsp%3Bprefix%20in%20the%20name.",\
+        "renamed": "true",\
+        "enabled": "true",\
+        "highlight": "0",\
+        "x": "479",\
+        "y": "235",\
+        "z": "15"\
+        },\
+        {\
+        "type": "RECT",\
+        "id": "rect",\
+        "name": "rectangle",\
+        "renamed": "false",\
+        "enabled": "true",\
+        "highlight": "0",\
+        "x": "137",\
+        "y": "8",\
+        "z": "16",\
+        "params":\
+        [\
+                ["NUM#", "x", "-50,0"],\
+                ["NUM#", "y", "-50,0"]\
+        ]\
+        },\
+        {\
+        "type": "COL",\
+        "id": "color5",\
+        "name": "color",\
+        "renamed": "false",\
+        "enabled": "true",\
+        "highlight": "0",\
+        "x": "1843",\
+        "y": "701",\
+        "z": "17",\
+        "prevSpace": "hsv",\
+        "params":\
+        [\
+                ["NUM#", "space", "2,0"],\
+                ["NUM#", "c1", "0,0"],\
+                ["NUM#", "c2", "75,0"],\
+                ["NUM#", "c3", "100,0"]\
+        ]\
+        },\
+        {\
+        "type": "ELPS",\
+        "id": "ellipse2",\
+        "name": "ellipse",\
+        "renamed": "false",\
+        "enabled": "true",\
+        "highlight": "0",\
+        "x": "2407",\
+        "y": "704",\
+        "z": "18"\
+        },\
+        {\
+        "type": "CMNT",\
+        "id": "comment8",\
+        "name": "To%20apply%20several%20styles%20to%20an%20object%2C%20combine%20them",\
+        "renamed": "true",\
+        "enabled": "true",\
+        "highlight": "0",\
+        "x": "1880",\
+        "y": "402",\
+        "z": "19"\
+        },\
+        {\
+        "type": "CMNT",\
+        "id": "comment9",\
+        "name": "into%20a%20list%20using%20a%20Combine%20node.",\
+        "renamed": "true",\
+        "enabled": "true",\
+        "highlight": "0",\
+        "x": "1880",\
+        "y": "453",\
+        "z": "20"\
+        },\
+        {\
+        "type": "CMB",\
+        "id": "combine",\
+        "name": "combine",\
+        "renamed": "false",\
+        "enabled": "true",\
+        "highlight": "0",\
+        "x": "2198",\
+        "y": "949",\
+        "z": "21",\
+        "width": "120",\
+        "height": "38"\
+        },\
+        {\
+        "type": "COL",\
+        "id": "color6",\
+        "name": "color",\
+        "renamed": "false",\
+        "enabled": "true",\
+        "highlight": "0",\
+        "x": "1657",\
+        "y": "900",\
+        "z": "22",\
+        "prevSpace": "hsv",\
+        "params":\
+        [\
+                ["NUM#", "space", "2,0"],\
+                ["NUM#", "c1", "60,0"],\
+                ["NUM#", "c2", "75,0"],\
+                ["NUM#", "c3", "100,0"]\
+        ]\
+        },\
+        {\
+        "type": "STRK",\
+        "id": "stroke",\
+        "name": "stroke",\
+        "renamed": "false",\
+        "enabled": "true",\
+        "highlight": "0",\
+        "x": "1838",\
+        "y": "871",\
+        "z": "23",\
+        "params":\
+        [\
+                ["LIST#", "fills", "1 FILL# 255,0 255,0 64,0 100,0 0,0"]\
+        ]\
+        },\
+        {\
+        "type": "LBLR",\
+        "id": "layerBlur",\
+        "name": "layer%20blur",\
+        "renamed": "false",\
+        "enabled": "true",\
+        "highlight": "0",\
+        "x": "1835",\
+        "y": "1319",\
+        "z": "24"\
+        },\
+        {\
+        "type": "CMNT",\
+        "id": "comment10",\
+        "name": "Connect%20these%20here%2C%20then%20this%20here.%20Then%20double-click%20here.",\
+        "renamed": "true",\
+        "enabled": "true",\
+        "highlight": "0",\
+        "x": "1992",\
+        "y": "1063",\
+        "z": "25"\
+        },\
+        {\
+        "type": "INSH",\
+        "id": "innerShadow",\
+        "name": "inner%20shadow",\
+        "renamed": "false",\
+        "enabled": "true",\
+        "highlight": "0",\
+        "x": "1837",\
+        "y": "1107",\
+        "z": "26",\
+        "params":\
+        [\
+                ["FILL#", "fill", "0,0 0,0 0,0 25,0 0,0"]\
+        ]\
+        },\
+        {\
+        "type": "CMNT",\
+        "id": "comment11",\
+        "name": "%3Cb%3EDouble%20click%3C%2Fb%3E%20to%20activate%20the%20node%20to%20put%20the%20%3Cb%3Eobject%20on%20the%20canvas%3C%2Fb%3E.",\
+        "renamed": "true",\
+        "enabled": "true",\
+        "highlight": "0",\
+        "x": "487",\
+        "y": "-2",\
+        "z": "27"\
+        },\
+        {\
+        "type": "CMNT",\
+        "id": "comment5",\
+        "name": "Double%20click%20the%20plugin%20background%20to%20deactivate%20all%20nodes.",\
+        "renamed": "true",\
+        "enabled": "true",\
+        "highlight": "0",\
+        "x": "481",\
+        "y": "113",\
+        "z": "28"\
+        },\
+        {\
+        "type": "POLY",\
+        "id": "poly",\
+        "name": "polygon",\
+        "renamed": "false",\
+        "enabled": "true",\
+        "highlight": "0",\
+        "x": "141",\
+        "y": "734",\
+        "z": "29",\
+        "params":\
+        [\
+                ["NUM#", "y", "50,0"],\
+                ["NUM#", "corners", "6,0"]\
+        ]\
+        },\
+        {\
+        "type": "CMB",\
+        "id": "combine2",\
+        "name": "combine",\
+        "renamed": "false",\
+        "enabled": "true",\
+        "highlight": "0",\
+        "x": "573",\
+        "y": "902",\
+        "z": "30",\
+        "width": "120",\
+        "height": "51"\
+        },\
+        {\
+        "type": "CMNT",\
+        "id": "comment7",\
+        "name": "Use%20a%20combine%20node%20to%20group%20objects",\
+        "renamed": "true",\
+        "enabled": "true",\
+        "highlight": "0",\
+        "x": "576",\
+        "y": "756",\
+        "z": "31"\
+        },\
+        {\
+        "type": "CMNT",\
+        "id": "comment12",\
+        "name": "and%20force%20a%20Z-order.",\
+        "renamed": "true",\
+        "enabled": "true",\
+        "highlight": "0",\
+        "x": "573",\
+        "y": "807",\
+        "z": "32"\
+        },\
+        {\
+        "type": "CMNT",\
+        "id": "comment13",\
+        "name": "Connect%20the%20rest%20of%20these%20here.",\
+        "renamed": "true",\
+        "enabled": "true",\
+        "highlight": "0",\
+        "x": "477",\
+        "y": "1356",\
+        "z": "33"\
+        }\
+    ],\
+    "connections":\
+    [\
+        {\
+        "outputNodeId": "color3",\
+        "outputId": "h0",\
+        "outputOrder": "0",\
+        "inputNodeId": "stroke2",\
+        "inputId": "fills",\
+        "list": "false"\
+        },\
+        {\
+        "outputNodeId": "fill2",\
+        "outputId": "h0",\
+        "outputOrder": "0",\
+        "inputNodeId": "stroke3",\
+        "inputId": "fills",\
+        "list": "false"\
+        },\
+        {\
+        "outputNodeId": "color4",\
+        "outputId": "h0",\
+        "outputOrder": "0",\
+        "inputNodeId": "fill2",\
+        "inputId": "color",\
+        "list": "false"\
+        },\
+        {\
+        "outputNodeId": "stroke2",\
+        "outputId": "h0",\
+        "outputOrder": "0",\
+        "inputNodeId": "rect4",\
+        "inputId": "props",\
+        "list": "false"\
+        },\
+        {\
+        "outputNodeId": "color2",\
+        "outputId": "h0",\
+        "outputOrder": "0",\
+        "inputNodeId": "fill",\
+        "inputId": "color",\
+        "list": "false"\
+        },\
+        {\
+        "outputNodeId": "stroke3",\
+        "outputId": "h0",\
+        "outputOrder": "0",\
+        "inputNodeId": "rect5",\
+        "inputId": "props",\
+        "list": "false"\
+        },\
+        {\
+        "outputNodeId": "color",\
+        "outputId": "h0",\
+        "outputOrder": "0",\
+        "inputNodeId": "ellipse",\
+        "inputId": "props",\
+        "list": "false"\
+        },\
+        {\
+        "outputNodeId": "color5",\
+        "outputId": "h0",\
+        "outputOrder": "0",\
+        "inputNodeId": "combine",\
+        "inputId": "h0",\
+        "list": "false"\
+        },\
+        {\
+        "outputNodeId": "color6",\
+        "outputId": "h0",\
+        "outputOrder": "0",\
+        "inputNodeId": "stroke",\
+        "inputId": "fills",\
+        "list": "false"\
+        },\
+        {\
+        "outputNodeId": "fill",\
+        "outputId": "h0",\
+        "outputOrder": "0",\
+        "inputNodeId": "poly",\
+        "inputId": "props",\
+        "list": "false"\
+        },\
+        {\
+        "outputNodeId": "rect",\
+        "outputId": "h0",\
+        "outputOrder": "0",\
+        "inputNodeId": "combine2",\
+        "inputId": "h0",\
+        "list": "false"\
+        },\
+        {\
+        "outputNodeId": "ellipse",\
+        "outputId": "h0",\
+        "outputOrder": "0",\
+        "inputNodeId": "combine2",\
+        "inputId": "h1",\
+        "list": "false"\
+        }\
+    ]\
+}';
+
+
+const presetTransform = '\
+    {\
+        "nodes":\
+        [\
+            {\
+            "type": "CMNT",\
+            "id": "comment4",\
+            "name": "the%20final%20node%20is%20activated.%20If%20not%2C%20double%20click%20it.",\
+            "renamed": "true",\
+            "enabled": "true",\
+            "highlight": "0",\
+            "x": "553",\
+            "y": "733",\
+            "z": "0"\
+            },\
+            {\
+            "type": "CMNT",\
+            "id": "comment2",\
+            "name": "toggle%20%3Cb%3Emove%26thinsp%3B.%26hairsp%3BmoveSpace%3C%2Fb%3E%20to%20see%20their%20effect",\
+            "renamed": "true",\
+            "enabled": "true",\
+            "highlight": "0",\
+            "x": "558",\
+            "y": "391",\
+            "z": "1"\
+            },\
+            {\
+            "type": "PANEL",\
+            "id": "panel",\
+            "name": "shape",\
+            "renamed": "true",\
+            "enabled": "true",\
+            "highlight": "0",\
+            "x": "-189",\
+            "y": "49",\
+            "z": "2",\
+            "width": "487.7051179016323",\
+            "height": "405.5981990149978",\
+            "params":\
+            [\
+            ]\
+            },\
+            {\
+            "type": "RECT",\
+            "id": "rect",\
+            "name": "rectangle",\
+            "renamed": "false",\
+            "enabled": "true",\
+            "highlight": "0",\
+            "x": "154",\
+            "y": "105",\
+            "z": "3",\
+            "params":\
+            [\
+            ]\
+            },\
+            {\
+            "type": "ROT",\
+            "id": "rotate",\
+            "name": "rotate",\
+            "renamed": "false",\
+            "enabled": "true",\
+            "highlight": "0",\
+            "x": "852",\
+            "y": "105",\
+            "z": "4",\
+            "active": "true",\
+            "params":\
+            [\
+                    ["NUM#", "angle", "45,0"],\
+                    ["NUM#", "showCenter", "1,0"]\
+            ]\
+            },\
+            {\
+            "type": "CMNT",\
+            "id": "comment",\
+            "name": "Adjust%20%3Cb%3Emove%26thinsp%3B.%26thinsp%3BX%3C%2Fb%3E%20and%20%3Cb%3Erotate%26thinsp%3B.%26hairsp%3Bangle%3C%2Fb%3E%2C%20and",\
+            "renamed": "true",\
+            "enabled": "true",\
+            "highlight": "0",\
+            "x": "560",\
+            "y": "347",\
+            "z": "5"\
+            },\
+            {\
+            "type": "PANEL",\
+            "id": "panel3",\
+            "name": "transformation",\
+            "renamed": "true",\
+            "enabled": "true",\
+            "highlight": "0",\
+            "x": "581",\
+            "y": "54",\
+            "z": "6",\
+            "width": "417",\
+            "height": "226.25287762942608",\
+            "params":\
+            [\
+            ]\
+            },\
+            {\
+            "type": "STRK",\
+            "id": "stroke",\
+            "name": "stroke",\
+            "renamed": "false",\
+            "enabled": "true",\
+            "highlight": "0",\
+            "x": "-5",\
+            "y": "241",\
+            "z": "7",\
+            "params":\
+            [\
+                    ["LIST#", "fills", "1 FILL# 255,0 131,0 53,0 100,0 0,0"]\
+            ]\
+            },\
+            {\
+            "type": "CMNT",\
+            "id": "comment5",\
+            "name": "If%20the%20object%20is%20not%20appearing%20on%20the%20canvas%2C%20check%20that",\
+            "renamed": "true",\
+            "enabled": "true",\
+            "highlight": "0",\
+            "x": "554",\
+            "y": "679",\
+            "z": "8"\
+            },\
+            {\
+            "type": "COL",\
+            "id": "color",\
+            "name": "color",\
+            "renamed": "false",\
+            "enabled": "true",\
+            "highlight": "0",\
+            "x": "-160",\
+            "y": "268",\
+            "z": "9",\
+            "prevSpace": "hex",\
+            "params":\
+            [\
+                    ["NUM#", "space", "0,0"],\
+                    ["NUM#", "c1", "255,0"],\
+                    ["NUM#", "c2", "131,0"],\
+                    ["NUM#", "c3", "53,0"]\
+            ]\
+            },\
+            {\
+            "type": "CMNT",\
+            "id": "comment3",\
+            "name": "on%20the%20transformation.",\
+            "renamed": "true",\
+            "enabled": "true",\
+            "highlight": "0",\
+            "x": "558",\
+            "y": "436",\
+            "z": "10"\
+            },\
+            {\
+            "type": "MOVE",\
+            "id": "move",\
+            "name": "move",\
+            "renamed": "false",\
+            "enabled": "true",\
+            "highlight": "0",\
+            "x": "610",\
+            "y": "105",\
+            "z": "11",\
+            "params":\
+            [\
+                    ["NUM#", "x", "200,0"],\
+                    ["NUM#", "affectSpace", "0,0"],\
+                    ["NUM#", "showCenter", "1,0"]\
+            ]\
+            },\
+            {\
+            "type": "COL",\
+            "id": "color2",\
+            "name": "color",\
+            "renamed": "false",\
+            "enabled": "true",\
+            "highlight": "0",\
+            "x": "-201",\
+            "y": "1184",\
+            "z": "12",\
+            "prevSpace": "hex",\
+            "params":\
+            [\
+                    ["NUM#", "space", "0,0"],\
+                    ["NUM#", "c1", "53.54999999999999,0"],\
+                    ["NUM#", "c2", "144.20251191912504,0"],\
+                    ["NUM#", "c3", "255,0"]\
+            ]\
+            },\
+            {\
+            "type": "RECT",\
+            "id": "rect2",\
+            "name": "rectangle",\
+            "renamed": "false",\
+            "enabled": "true",\
+            "highlight": "0",\
+            "x": "6",\
+            "y": "751",\
+            "z": "13",\
+            "params":\
+            [\
+            ]\
+            },\
+            {\
+            "type": "PANEL",\
+            "id": "panel2",\
+            "name": "combined%20shapes",\
+            "renamed": "true",\
+            "enabled": "true",\
+            "highlight": "0",\
+            "x": "-254",\
+            "y": "684",\
+            "z": "14",\
+            "width": "629.0716566313172",\
+            "height": "1011",\
+            "params":\
+            [\
+            ]\
+            },\
+            {\
+            "type": "ELPS",\
+            "id": "ellipse",\
+            "name": "ellipse",\
+            "renamed": "false",\
+            "enabled": "true",\
+            "highlight": "0",\
+            "x": "3",\
+            "y": "957",\
+            "z": "15",\
+            "params":\
+            [\
+                    ["NUM#", "x", "100,0"]\
+            ]\
+            },\
+            {\
+            "type": "POLY",\
+            "id": "poly",\
+            "name": "polygon",\
+            "renamed": "false",\
+            "enabled": "true",\
+            "highlight": "0",\
+            "x": "2",\
+            "y": "1218",\
+            "z": "16",\
+            "params":\
+            [\
+                    ["NUM#", "y", "100,0"]\
+            ]\
+            },\
+            {\
+            "type": "STAR",\
+            "id": "star",\
+            "name": "star",\
+            "renamed": "false",\
+            "enabled": "true",\
+            "highlight": "0",\
+            "x": "4",\
+            "y": "1456",\
+            "z": "17",\
+            "params":\
+            [\
+                    ["NUM#", "x", "100,0"],\
+                    ["NUM#", "y", "100,0"]\
+            ]\
+            },\
+            {\
+            "type": "CMB",\
+            "id": "combine",\
+            "name": "combine",\
+            "renamed": "false",\
+            "enabled": "true",\
+            "highlight": "0",\
+            "x": "201",\
+            "y": "1180",\
+            "z": "18",\
+            "width": "120",\
+            "height": "77"\
+            },\
+            {\
+            "type": "ROT",\
+            "id": "rotate2",\
+            "name": "rotate",\
+            "renamed": "false",\
+            "enabled": "true",\
+            "highlight": "0",\
+            "x": "856",\
+            "y": "1201",\
+            "z": "19",\
+            "active": "true",\
+            "params":\
+            [\
+                    ["NUM#", "angle", "40,0"],\
+                    ["NUM#", "showCenter", "1,0"]\
+            ]\
+            },\
+            {\
+            "type": "PANEL",\
+            "id": "panel4",\
+            "name": "transformation",\
+            "renamed": "true",\
+            "enabled": "true",\
+            "highlight": "0",\
+            "x": "585",\
+            "y": "1150",\
+            "z": "20",\
+            "width": "417",\
+            "height": "226.25287762942608",\
+            "params":\
+            [\
+            ]\
+            },\
+            {\
+            "type": "MOVE",\
+            "id": "move2",\
+            "name": "move",\
+            "renamed": "false",\
+            "enabled": "true",\
+            "highlight": "0",\
+            "x": "614",\
+            "y": "1201",\
+            "z": "21",\
+            "params":\
+            [\
+                    ["NUM#", "x", "200,0"],\
+                    ["NUM#", "affectSpace", "0,0"],\
+                    ["NUM#", "showCenter", "1,0"]\
+            ]\
+            },\
+            {\
+            "type": "CMNT",\
+            "id": "comment6",\
+            "name": "To%20transform%20a%20group%20of%20objects%20together",\
+            "renamed": "true",\
+            "enabled": "true",\
+            "highlight": "0",\
+            "x": "556",\
+            "y": "980",\
+            "z": "22"\
+            },\
+            {\
+            "type": "CMNT",\
+            "id": "comment7",\
+            "name": "combine%20them%20into%20a%20list.",\
+            "renamed": "true",\
+            "enabled": "true",\
+            "highlight": "0",\
+            "x": "556",\
+            "y": "1027",\
+            "z": "23"\
+            }\
+        ],\
+        "connections":\
+        [\
+            {\
+            "outputNodeId": "stroke",\
+            "outputId": "h0",\
+            "outputOrder": "0",\
+            "inputNodeId": "rect",\
+            "inputId": "props",\
+            "list": "false"\
+            },\
+            {\
+            "outputNodeId": "move",\
+            "outputId": "h0",\
+            "outputOrder": "0",\
+            "inputNodeId": "rotate",\
+            "inputId": "h0",\
+            "list": "false"\
+            },\
+            {\
+            "outputNodeId": "color",\
+            "outputId": "h0",\
+            "outputOrder": "0",\
+            "inputNodeId": "stroke",\
+            "inputId": "fills",\
+            "list": "false"\
+            },\
+            {\
+            "outputNodeId": "rect",\
+            "outputId": "h0",\
+            "outputOrder": "0",\
+            "inputNodeId": "move",\
+            "inputId": "h0",\
+            "list": "false"\
+            },\
+            {\
+            "outputNodeId": "color2",\
+            "outputId": "h0",\
+            "outputOrder": "0",\
+            "inputNodeId": "rect2",\
+            "inputId": "props",\
+            "list": "false"\
+            },\
+            {\
+            "outputNodeId": "color2",\
+            "outputId": "h0",\
+            "outputOrder": "1",\
+            "inputNodeId": "ellipse",\
+            "inputId": "props",\
+            "list": "false"\
+            },\
+            {\
+            "outputNodeId": "color2",\
+            "outputId": "h0",\
+            "outputOrder": "2",\
+            "inputNodeId": "poly",\
+            "inputId": "props",\
+            "list": "false"\
+            },\
+            {\
+            "outputNodeId": "color2",\
+            "outputId": "h0",\
+            "outputOrder": "3",\
+            "inputNodeId": "star",\
+            "inputId": "props",\
+            "list": "false"\
+            },\
+            {\
+            "outputNodeId": "rect2",\
+            "outputId": "h0",\
+            "outputOrder": "0",\
+            "inputNodeId": "combine",\
+            "inputId": "h0",\
+            "list": "false"\
+            },\
+            {\
+            "outputNodeId": "ellipse",\
+            "outputId": "h0",\
+            "outputOrder": "0",\
+            "inputNodeId": "combine",\
+            "inputId": "h1",\
+            "list": "false"\
+            },\
+            {\
+            "outputNodeId": "poly",\
+            "outputId": "h0",\
+            "outputOrder": "0",\
+            "inputNodeId": "combine",\
+            "inputId": "h2",\
+            "list": "false"\
+            },\
+            {\
+            "outputNodeId": "star",\
+            "outputId": "h0",\
+            "outputOrder": "0",\
+            "inputNodeId": "combine",\
+            "inputId": "h3",\
+            "list": "false"\
+            },\
+            {\
+            "outputNodeId": "move2",\
+            "outputId": "h0",\
+            "outputOrder": "0",\
+            "inputNodeId": "rotate2",\
+            "inputId": "h0",\
+            "list": "true"\
+            },\
+            {\
+            "outputNodeId": "combine",\
+            "outputId": "h0",\
+            "outputOrder": "0",\
+            "inputNodeId": "move2",\
+            "inputId": "h0",\
+            "list": "true"\
+            }\
+        ]\
+    }';
 
 
 function initAboutDialog()

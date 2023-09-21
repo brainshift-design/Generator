@@ -391,13 +391,14 @@ function uiCopyNodes(nodeIds, keepVarsConnected = true)
 
 
 
-function uiPasteNodes(nodesJson, loading, pasteConnected, x, y, updateNodes)
+function uiPasteNodes(nodesJson, loading, pasteConnected, x, y, updateNodes, zoomToFit = false)
 {
     //console.log('nodesJson =', nodesJson);
     //console.log('x =', x);
     //console.log('y =', y);
 
     graphView.pastingNodes = true;
+    graphView._zoomToFit   = zoomToFit;
 
 
     pasteOffset.x += pasteOffsetDelta.x;
@@ -1034,7 +1035,7 @@ function uiImportFromLocalFile()
     loadFromLocalFile(json => 
     {
         importZoomToNodes = true;
-        actionManager.do(new PasteNodesAction(json, false, false, true, Number.NaN, Number.NaN, true));
+        actionManager.do(new PasteNodesAction(json, false, false, true, Number.NaN, Number.NaN));
     });
 }
 

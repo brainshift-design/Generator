@@ -171,6 +171,16 @@ function uiUpdateValuesAndObjects(requestId, actionId, updateNodeId, updateParam
         loadingOverlay.style.display = 'none'; // for loading
 
 
+        if (graphView._zoomToFit)
+        {
+            for (let i = 0; i < 5; i++)
+                graphView.zoomToNodes(nodes);
+
+            graphView.selectedNodes = [];
+            graphView._zoomToFit = false;
+        }
+
+
         uiUpdateAnimateNodes();
     }
 }

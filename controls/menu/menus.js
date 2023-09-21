@@ -270,25 +270,25 @@ function initGeneratorMenus()
 
     menuMainTutorials = new Menu('Tutorials', false);
     menuMainTutorials.addItems([
-        new MenuItem('Node & graph basics',       null, {callback: () => { hideAllMenus(); loadPresetGraph('basics');       }}),
-        new MenuItem('',                          null, {separator: true}),    
-        new MenuItem('Create shapes',             null, {callback: () => { hideAllMenus(); loadPresetGraph('shapes');       }}),
-        new MenuItem('Transform shapes',          null, {callback: () => { hideAllMenus(); loadPresetGraph('transform');    }}),
-        new MenuItem('',                          null, {separator: true}),    
-        new MenuItem('Repeat & lists',            null, {callback: () => { hideAllMenus(); loadPresetGraph('repeat');       }}),
-        new MenuItem('Simple loops',              null, {callback: () => { hideAllMenus(); loadPresetGraph('simpleLoops');  }}),
-        new MenuItem('Complex loops',             null, {callback: () => { hideAllMenus(); loadPresetGraph('complexLoops'); }}),
-        new MenuItem('',                          null, {separator: true}),    
-        new MenuItem('Sequences...',              null, {callback: () => { hideAllMenus(); loadPresetGraph('sequences');    }}),
-        new MenuItem('Random...',                 null, {callback: () => { hideAllMenus(); loadPresetGraph('random');       }}),
-        new MenuItem('',                          null, {separator: true}),    
-        new MenuItem('Math & logic',              null, {callback: () => { hideAllMenus(); loadPresetGraph('math');         }}),
-        new MenuItem('Convert & validate colors', null, {callback: () => { hideAllMenus(); loadPresetGraph('colors');       }}),
-        new MenuItem('',                          null, {separator: true}),    
-        new MenuItem('Manipulate text',           null, {callback: () => { hideAllMenus(); loadPresetGraph('text');         }}),
-        new MenuItem('Parse CSV',                 null, {callback: () => { hideAllMenus(); loadPresetGraph('csv');          }}),
-        new MenuItem('',                          null, {separator: true}),    
-        new MenuItem('Work with variables',       null, {callback: () => { hideAllMenus(); loadPresetGraph('variables');    }})]);
+        new MenuItem('Node & graph basics',        null, {callback: () => { hideAllMenus(); loadPresetGraph('basics');       }}),
+        new MenuItem('',                           null, {separator: true}),    
+        new MenuItem('Lists',                      null, {callback: () => { hideAllMenus(); loadPresetGraph('repeat');       }}),
+        new MenuItem('',                           null, {separator: true}),    
+        new MenuItem('Create shapes',              null, {callback: () => { hideAllMenus(); loadPresetGraph('shapes');       }}),
+        new MenuItem('Transform shapes',           null, {callback: () => { hideAllMenus(); loadPresetGraph('transform');    }}),
+        new MenuItem('',                           null, {separator: true}),    
+        new MenuItem('Loops',                      null, {callback: () => { hideAllMenus(); loadPresetGraph('loops');        }}),
+        new MenuItem('',                           null, {separator: true}),    
+        new MenuItem('Sequences...',               null, {callback: () => { hideAllMenus(); loadPresetGraph('sequences');    }}),
+        new MenuItem('Random & noise...',          null, {callback: () => { hideAllMenus(); loadPresetGraph('random');       }}),
+        new MenuItem('',                           null, {separator: true}),    
+        new MenuItem('Math & logic',               null, {callback: () => { hideAllMenus(); loadPresetGraph('math');         }}),
+        new MenuItem('Text & data',                null, {callback: () => { hideAllMenus(); loadPresetGraph('text');         }}),
+        new MenuItem('',                           null, {separator: true}),    
+        new MenuItem('Colors & gradients',         null, {callback: () => { hideAllMenus(); loadPresetGraph('colors');       }}),
+        new MenuItem('Validation & accessibility', null, {callback: () => { hideAllMenus(); loadPresetGraph('colors');       }}),
+        new MenuItem('',                           null, {separator: true}),    
+        new MenuItem('Figma variables',            null, {callback: () => { hideAllMenus(); loadPresetGraph('variables');    }})]);
 
 
     menuMainPreferences = new Menu('Preferences', false);
@@ -414,6 +414,8 @@ function initGeneratorMenus()
 
     menuMainHelp = new Menu('Help and subscription', false);
     menuMainHelp.addItems([
+        new MenuItem('Tutorials',    null, {callback: () => showPresets()}),
+        new MenuItem('',             null, {separator: true}),
         new MenuItem('Keyboard shortcuts', null, {shortcut: osCtrlShift() + '?', callback: () => showKeyboardPanel()}),
         // new MenuItem('Help page',   null, {callback:  () => window.open('http://www.bourt.com/generator/help', '_blank')}),
         new MenuItem('',             null, {separator: true}),

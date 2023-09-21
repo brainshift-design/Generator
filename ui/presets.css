@@ -1,4 +1,4 @@
-#keyboardPanel
+#presets
 {
     display:       none;
     background:    #1E1E1E;
@@ -14,7 +14,7 @@
 }
 
 
-#keyboardPanelTabsHolder
+#presetTabsHolder
 {
     height:        36px;
     overflow:      hidden;
@@ -24,7 +24,7 @@
 }
 
 
-#keyboardPanelTabs
+#presetTabs
 {
     display:    flex;
     width:      fit-content;
@@ -36,7 +36,7 @@
 }
 
 
-.keyboardPanelTab
+.presetTab
 {
     background:    #1E1E1E;
     color:         #b6b6b6;
@@ -48,17 +48,18 @@
     padding-top:   10px;
     margin:        0;
     height:        26px;
+    white-space:   nowrap;
     /* box-shadow:    0 0 0 1px inset green;    */
 }
 
 
-.keyboardPanelTab:hover
+.presetTab:hover
 {
     color:         #f6f6f6;
 }
 
 
-#keyboardPanelClose
+#presetClose
 {
     position:            absolute;
     top:                 0;
@@ -71,7 +72,7 @@
 }
 
 
-#keyboardPanelClose:hover
+#presetClose:hover
 {
     background:          url('data:image/svg+xml;utf8,<svg width="30" height="30" viewBox="0 0 30 30" fill="none" xmlns="http://www.w3.org/2000/svg"><path id="keyboardCloseX" fill-rule="evenodd" clip-rule="evenodd" d="M16 15.293L20.6465 10.6465L21.3536 11.3536L16.7071 16.0001L21.3536 20.6465L20.6465 21.3536L16 16.7072L11.3536 21.3536L10.6465 20.6465L15.2929 16.0001L10.6465 11.3537L11.3536 10.6466L16 15.293Z" fill="%23f6f6f6"/></svg>');
     background-position: 50% calc(50% - 1px);
@@ -79,7 +80,7 @@
 }
 
 
-#keyboardPanelContent
+#presetContent
 {
     position:   absolute;
     top:        35px;
@@ -92,7 +93,7 @@
 }
 
 
-.keyboardPage
+.presetPage
 {
     display:        flex;
     position:       absolute;
@@ -106,139 +107,61 @@
 }
 
 
-.keyboardGroup
+.presetGroup
 {
     display:        inline-block;
-    width:          300px;
+    width:          200px;
     height:         auto;
     vertical-align: top;
     /* box-shadow:     0 0 0 1px inset yellow; */
 }
 
 
-.nextGroup
-{
-    margin-left: 46px;
-}
-
-
-.keyboardLabel
+.presetLabel
 {
     display:     inline-block;
     font-size:   12px;
     font-weight: 600;
     color:       #757575;
-    width:       300px;
+    width:       200px;
     height:      26px;
     padding-top: 11px;
     /* box-shadow:  0 0 0 1px inset green; */
 }
 
 
-.keyboardInfo
+.presetInfo
 {
     display:     inline-block;
     font-size:   12px;
     color:       #b6b6b6;
     font-weight: 500;
-    width:       300px;
+    width:       200px;
     height:      26px;
     padding-top: 11px;
     /* box-shadow:  0 0 0 1px inset green; */
 }
 
 
-.keyboardShortcut
+.preset
 {
-    display:    inline-block;
-    position:   relative;
-    width:      300px;
-    height:     37px;
-    /* box-shadow: 0 0 0 1px inset green; */
+    color:          var(--figma-color-text);
+    /* background:     var(--figma-color-bg); */
+
+    font-size:      11px;
+    text-align:     center;
+
+    padding:        8px 14px;
+
+    width:          200px;
+    margin-bottom:  4px;
+    border-radius:  6px;
+    box-shadow:     0 0 0 1px #fff2 inset;
 }
 
 
-.shortcutAction
+.preset:active
 {
-    position:    absolute;
-    left:        0;
-    top:         50%;
-    transform:   translateY(calc(-50% - 1px));
-    display:     inline-block;
-    font-size:   12px;
-    font-weight: 500;
-    color:       #bcbcbc;
-    width:       fit-content;
-    /* box-shadow:  0 0 0 1px inset blue; */
-}
-
-
-.shortcutKeys
-{
-    position:    absolute;
-    right:       0;
-    top:         50%;
-    transform:   translateY(-50%);
-    display:     flex;
-    width:       fit-content;
-    white-space: nowrap;
-    /* box-shadow:  0 0 0 1px inset magenta; */
-}
-
-
-.shortcutKey
-{
-    font-family:             Inter;
-    display:                 inline-block;
-    font-size:               11px;
-    color:                   #bcbcbc;
-    margin-left:             3px;
-    margin-right:            0px;
-    padding-left:            5px;
-    padding-right:           5px;
-    padding-top:             5px;
-    width:                   max(20px, fit-content);
-    height:                  19px;
-    border-radius:           2px;
-    box-shadow:              0 0 0 1px inset #bcbcbc;
-    font-variant-alternates: stylistic(), styleset();
-    font-feature-settings:   'salt' on, 'ss02' on;
-}
-
-
-.shortcutEvent
-{
-    font-family:             Inter;
-    display:                 inline-block;
-    font-size:               11px;
-    color:                   #bcbcbc;
-    margin-left:             3px;
-    margin-right:            0px;
-    padding-left:            5px;
-    padding-right:           5px;
-    padding-top:             5px;
-    width:                   max(20px, fit-content);
-    height:                  19px;
-    border-radius:           2px;
-    font-variant-alternates: stylistic(), styleset();
-    font-feature-settings:   'salt' on, 'ss02' on;
-}
-
-
-.shortcutChar
-{
-    padding-left:  9px;
-    padding-right: 9px;
-}
-
-.shortcutCharWide
-{
-    padding-left:  5px;
-    padding-right: 5px;
-}
-
-.shortcutCharNarrow
-{
-    padding-left:  9px;
-    padding-right: 9px;
+    box-shadow: 0 0 0 2px var(--figma-color-bg-brand) inset;
+    background: var(--figma-color-bg);
 }

@@ -60,7 +60,7 @@ extends GOperator1
             if (this.options.enabled)
                 this.value.value = this.value.value
                     .padStart(startCount.value, unescapeString(startPad.value))
-                    .padEnd  (  endCount.value, unescapeString(  endPad.value));
+                    .padEnd  (  endCount.value, endPad.value != '' ? unescapeString(endPad.value) : unescapeString(startPad.value));
         }
         else
             this.value = new TextValue();//TextValue.NaN;
