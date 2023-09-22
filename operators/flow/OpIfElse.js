@@ -26,11 +26,11 @@ extends OperatorBase
         this.paramCondition.divider = 0.62;
 
 
-        this.inputs[0].addEventListener('connect',    () => OpIfElse_onConnectInput(this, 0));
-        this.inputs[0].addEventListener('disconnect', () => OpIfElse_onDisconnectInput(this, 0));
+        // this.inputs[0].addEventListener('connect',    () => OpIfElse_onConnectInput(this, 0));
+        // this.inputs[0].addEventListener('disconnect', () => OpIfElse_onDisconnectInput(this, 0));
 
-        this.inputs[1].addEventListener('connect',    () => OpIfElse_onConnectInput(this, 1));
-        this.inputs[1].addEventListener('disconnect', () => OpIfElse_onDisconnectInput(this, 1));
+        // this.inputs[1].addEventListener('connect',    () => OpIfElse_onConnectInput(this, 1));
+        // this.inputs[1].addEventListener('disconnect', () => OpIfElse_onDisconnectInput(this, 1));
 
 
         this.menuBool = createBoolMenu(this.paramCondition);
@@ -169,211 +169,21 @@ extends OperatorBase
     getHeaderColors(options = {})
     {
         const colors = super.getHeaderColors(options);
-
-        const type =
-            this.inputs[0].connected
-            ? this.inputs[0].types[0]
-            : this.inputs[1].connected
-              ? this.inputs[1].types[0]
-              : ANY_VALUE;
+        const type   = this.outputs[0].types[0];
 
 
         colors.text   = isDark(colors.back) ? [1, 1, 1, 1] : [0, 0, 0, 1]; 
 
         const gray =
-               this.active
-            && (  !this.inputs[0].connected
-                || arraysIntersect(this.inputs[0].connectedOutput.types, [ANY_VALUE, LIST_VALUE])
-                || this.paramCondition.value.value == 0)
-            && (  !this.inputs[1].connected
-                || arraysIntersect(this.inputs[1].connectedOutput.types, [ANY_VALUE, LIST_VALUE])
-                || this.paramCondition.value.value == 1);
+                this.active
+            && !this.inputs[0].connected
+            && !this.inputs[1].connected;
 
-        colors.input  = this.active ? rgb_a(colors.text, 0.4)  : rgb_a(rgbSaturateHsv(rgbFromType(type, true), 0.5), 0.8);
-        colors.output = gray        ? rgb_a(colors.text, 0.35) : rgb_a(rgbSaturateHsv(rgbFromType(type, true), 0.5), 0.7);
-        colors.wire   = rgbFromType(ANY_VALUE, true);
-
-
-        // let colorActive  = rgbFromType(type, true);
-        // let colorPassive = rgbFromType(type, false);
-
-
-        // if (NUMBER_TYPES.includes(type))
-        // {
-        //     colors.input  = this.active ? rgb_a(colorPassive, 0.55) : rgb_a(colorActive, darkMode ? 0.65 : 0.5);
-        //     colors.output = this.active ? rgb_a(colorPassive, 0.5 ) : rgb_a(colorActive, darkMode ? 0.6  : 0.4);
-        //     colors.wire   = colorActive;
-        // }
-        // else if (TEXT_TYPES.includes(type))
-        // {
-        //     colors.input  = this.active ? rgb_a(colorActive, 0.55) : rgb_a(darkMode ? colorActive : colorPassive, darkMode ? 0.55 : 1);
-        //     colors.output = this.active ? rgb_a(colorActive, 0.45) : rgb_a(darkMode ? colorActive : colorPassive, darkMode ? 0.45 : 0.9);
-        //     colors.wire   = colorActive;
-        // }
-        // else if (SHAPE_TYPES.includes(type))
-        // {
-        //     colors.input  = this.active ? rgb_a(colorPassive, 0.65) : rgb_a(colorActive, darkMode ? 0.6 : 0.5 );
-        //     colors.output = this.active ? rgb_a(colorPassive, 0.65) : rgb_a(colorActive, darkMode ? 0.5 : 0.45);
-        //     colors.wire   = colorActive;
-        // }
-        // else if (COLOR_TYPES.includes(type))
-        // {
-        //     if (   this.inputs[0].connected
-        //         && this.inputs[1].connected)
-        //     {
-        //         colors.output = 
-        //             this.paramCondition.value.value > 0
-        //             ? this.inputs[0].connectedOutput.wireColor
-        //             : this.inputs[1].connectedOutput.wireColor;
-        //     }
-
-        //     else if (this.inputs[0].connected
-        //           && this.paramCondition.value.value > 0)
-        //         colors.output = this.inputs[0].connectedOutput.wireColor;
-
-        //     else if (this.inputs[1].connected
-        //           && this.paramCondition.value.value == 0)
-        //         colors.output = this.inputs[1].connectedOutput.wireColor;
-
-
-        //     colors.wire = colors.output;
-        // }
-        // else if (FILL_TYPES.includes(type))
-        // {
-        //     if (   this.inputs[0].connected
-        //         && this.inputs[1].connected)
-        //     {
-        //         const wireColor =
-        //             this.paramCondition.value.value > 0
-        //             ? this.inputs[0].connectedOutput.wireColor
-        //             : this.inputs[1].connectedOutput.wireColor;
-
-        //         colors.outputWire = wireColor;
-        //         colors.output = rgbaLerp(
-        //             rgb_a(getTextColorFromBackColor(rgbFromType(ANY_VALUE, true)), 0.3),
-        //             wireColor,
-        //             wireColor[3]);
-        //     }
-
-        //     else if (this.inputs[0].connected
-        //           && this.paramCondition.value.value > 0)
-        //     {
-        //         const wireColor = this.inputs[0].connectedOutput.wireColor;
-
-        //         colors.outputWire = wireColor;
-        //         colors.output = rgbaLerp(
-        //             rgb_a(getTextColorFromBackColor(rgbFromType(ANY_VALUE, true)), 0.3),
-        //             wireColor,
-        //             wireColor[3]);
-        //     }
-        //     else if (this.inputs[1].connected
-        //           && this.paramCondition.value.value == 0)
-        //     {
-        //         const wireColor = this.inputs[1].connectedOutput.wireColor;
-
-        //         colors.outputWire = wireColor;
-        //         colors.output = rgbaLerp(
-        //             rgb_a(getTextColorFromBackColor(rgbFromType(ANY_VALUE, true)), 0.3),
-        //             wireColor,
-        //             wireColor[3]);
-        //     }
-
-
-        //     colors.wire = colors.output;
-        // }
-
-        
+        colors.input  = rgb_a(colors.text, 0.4);
+        colors.output = gray ? rgb_a(colors.text, 0.35) : rgb_a(rgbSaturateHsv(rgbFromType(type, true), 0.5), 0.7);
+        colors.wire   = gray ? rgbFromType(ANY_VALUE, true) : rgbFromType(type, true);
+      
         
         return colors;
-    }
-}
-
-
-
-function OpIfElse_onConnectInput(node, inputIndex)
-{
-    const otherIndex = inputIndex == 0 ? 1 : 0;
-
-    const firstInput = node.inputs[inputIndex];
-    const otherInput = node.inputs[otherIndex];
-
-    const firstOut   = firstInput.connectedOutput;
-    const firstTypes = [...firstOut.types];
-    
-
-    firstInput.types     = [...firstTypes];
-    firstInput.wireColor = [...firstOut.wireColor];
-
-    
-    if (!node.inputs[otherIndex].connected)
-    {
-        otherInput.types      = [...firstTypes];
-        //otherInput.wireColor  = [...firstOut.wireColor];
-
-        node.outputs[0].types = 
-            firstTypes.includes(ANY_VALUE)
-            ? [ANY_VALUE]
-            : [...firstTypes];
-    }
-
-    
-    for (const output of node.outputs)
-        for (const input of output.connectedInputs)
-            if (input.node.type == IF_ELSE)
-                OpIfElse_onConnectInput(input.node, input.index);
-
-
-    // if there is an outgoing connection from the node of a different type than
-    // the incoming connection, delete the outgoing connection
-
-    if (    node.outputs[0].connected
-        && !node.outputs[0].connectedInputs[0].canConnectFrom(firstOut))
-        node.outputs[0].connectedInputs.forEach(i => uiDisconnect(i));
-}
-
-
-
-function OpIfElse_onDisconnectInput(node, inputIndex)
-{
-    const otherIndex = inputIndex == 0 ? 1 : 0;
-    
-    const firstInput = node.inputs[inputIndex];
-    //const firstOut   = firstInput.connectedOutput;
-
-    const otherInput = node.inputs[otherIndex];
-    const otherOut   = otherInput.connectedOutput;
-    const otherTypes = otherOut ? otherOut.types : [];
-
-
-    if (!node.inputs[otherIndex].connected)
-        node.inputs[inputIndex].types = [ANY_VALUE];
-
-    node.inputs[otherIndex].types = 
-        otherInput.connected 
-        ? [...otherTypes]
-        : [ANY_VALUE];
-
-    node.outputs[0].types = 
-        otherInput.connected
-        ? [...otherTypes]
-        : [ANY_VALUE];
-
-
-    // const connectedInputs = node.headerInputs.filter(i => i.connected);
-
-    // if (connectedInputs.length == 1)
-    // {
-    //     const input = connectedInputs[0];
-
-    //     uiDisconnect(input);
-
-    //     // if (input.node.type == IF_ELSE)
-    //     //     OpIfElse_onDisconnectInput(input.node, input.index);
-    // }
-    {
-        for (const output of node.outputs)
-            for (const input of output.connectedInputs)
-                if (input.node.type == IF_ELSE)
-                    OpIfElse_onConnectInput(input.node, input.index);
     }
 }

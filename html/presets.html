@@ -4,12 +4,13 @@
         <div id='presetTabs'>
             <div class='presetTab' onclick="setCurrentPresetTab(0);">Basics</div>
             <div class='presetTab' onclick="setCurrentPresetTab(1);">Data flow</div>
-            <div class='presetTab' onclick="setCurrentPresetTab(1);">Loops</div>
-            <div class='presetTab' onclick="setCurrentPresetTab(2);">Lists</div>
-            <div class='presetTab' onclick="setCurrentPresetTab(3);">Numbers</div>
-            <div class='presetTab' onclick="setCurrentPresetTab(4);">Text</div>
-            <div class='presetTab' onclick="setCurrentPresetTab(5);">Colors</div>
-            <div class='presetTab' onclick="setCurrentPresetTab(6);">Shapes</div>
+            <div class='presetTab' onclick="setCurrentPresetTab(2);">Loops</div>
+            <div class='presetTab' onclick="setCurrentPresetTab(3);">Lists</div>
+            <div class='presetTab' onclick="setCurrentPresetTab(4);">Numbers</div>
+            <div class='presetTab' onclick="setCurrentPresetTab(5);">Text</div>
+            <div class='presetTab' onclick="setCurrentPresetTab(6);">Colors</div>
+            <div class='presetTab' onclick="setCurrentPresetTab(7);">Shapes</div>
+            <div class='presetTab' onclick="setCurrentPresetTab(8);">Variables</div>
         </div>
         <div id='presetClose' onclick="hidePresets();"></div>
     </div>
@@ -17,125 +18,67 @@
     <div id='presetContent'>
 
 
-        <div class='presetPage' id='presetPageMenu'>
+        <div class='presetPage' id='presetPageBasics'>
             <div class='presetGroup'>
                 <div class='preset' onclick="loadPresetGraph('basics');">Nodes</div>
-                <div class='preset' onclick="loadPresetGraph('dataTypes');"">Data types</div>
-                <div class='preset' onclick="loadPresetGraph('organize');"">Organizing</div>
-                <div class='preset' onclick="loadPresetGraph('active');"">Where are my objects?</div>
+                <div class='preset' onclick="loadPresetGraph('dataTypes');">Data types</div>
+                <div class='preset' onclick="loadPresetGraph('organize');">Organizing</div>
+                <div class='preset' onclick="loadPresetGraph('active');">Where are my objects?</div>
             </div>
         </div>
 
 
-        <div class='presetPage' id='presetPageView'>
+        <div class='presetPage' id='presetPageDataFlow'>
+            <div class='presetGroup'>
+                <div class='preset' onclick="loadPresetGraph('ifElse');">If / else</div>
+                <div class='preset' onclick="loadPresetGraph('dataSelect');">Select from list</div>
+            </div>
+        </div>
 
-            <!-- <div class='presetGroup'>
-                <div class='presetShortcut'><div class='shortcutAction'>Focus on node</div><div class='shortcutKeys'><div class='shortcutKeys'><div class='shortcutKey'>Alt</div><div class='shortcutKey shortcutChar'>S</div></div></div></div>
-            </div> -->
+
+        <div class='presetPage' id='presetPageLoops'>
+            <div class='presetGroup'>
+                <div class='preset' onclick="loadPresetGraph('loop1d');">1D loop</div>
+                <div class='preset' onclick="loadPresetGraph('loop2d');">2D loop</div>
+                <div class='preset' onclick="loadPresetGraph('loopLock');">Complex loop</div>
+            </div>
+        </div>
+
+
+        <div class='presetPage' id='presetPageLists'>
 
         </div>
 
 
-        <div class='presetPage' id='presetPageZoom'>
+        <div class='presetPage' id='presetPageNumbers'>
 
-            <!-- <div class='presetGroup'>
-                <div class='presetShortcut'><div class='shortcutAction'>Pan</div><div class='shortcutKeys'><div class='shortcutKeys'><div class='shortcutKey'>Space</div><div class='shortcutEvent'>drag</div></div></div></div>
-                <div class='presetLabel'>While not using the hand tool...</div>
-                <div class='presetShortcut'><div class='shortcutAction'>Zoom</div><div class='shortcutKeys'><div class='shortcutKeys'><div class='shortcutKey'>Ctrl</div><div class='shortcutEvent'>wheel</div></div></div></div>
-                <div class='presetLabel'>While using the hand tool...</div>
-                <div class='presetShortcut'><div class='shortcutAction'>Zoom</div><div class='shortcutKeys'><div class='shortcutKeys'><div class='shortcutEvent'>Wheel</div></div></div></div>
-            </div>
-
-            <div class='presetGroup nextGroup'>
-                <div class='presetShortcut'><div class='shortcutAction'>Zoom in</div><div class='shortcutKeys'><div class='shortcutKeys'><div class='shortcutKey'>Ctrl</div><div class='shortcutKey shortcutChar'>+</div></div></div></div>
-                <div class='presetShortcut'><div class='shortcutAction'>Zoom out</div><div class='shortcutKeys'><div class='shortcutKeys'><div class='shortcutKey'>Ctrl</div><div class='shortcutKey shortcutChar'>−</div></div></div></div>
-                <div class='presetShortcut'><div class='shortcutAction'>Zoom to 100%</div><div class='shortcutKeys'><div class='shortcutKeys'><div class='shortcutKey'>Ctrl</div><div class='shortcutKey shortcutChar'>0</div></div></div></div>
-                <div class='presetShortcut'><div class='shortcutAction'>Zoom to fit</div><div class='shortcutKeys'><div class='shortcutKeys'><div class='shortcutKey'>Shift</div><div class='shortcutKey shortcutCharNarrow'>1</div></div></div></div>
-                <div class='presetShortcut'><div class='shortcutAction'>Zoom to selection</div><div class='shortcutKeys'><div class='shortcutKeys'><div class='shortcutKey'>Shift</div><div class='shortcutKey shortcutChar'>2</div></div></div></div>
-            </div> -->
-
-        </div>
-
-
-        <div class='presetPage' id='presetPageSelection'>
-
-            <!-- <div class='presetGroup'>
-                <div class='presetLabel'>While selecting...</div>
-                <div class='presetShortcut'><div class='shortcutAction'>Zoom to selection</div><div class='shortcutKeys'><div class='shortcutKeys'><div class='shortcutKey'>Ctrl</div></div></div></div>
-                <div class='presetShortcut'><div class='shortcutAction'>Zoom out from selection</div><div class='shortcutKeys'><div class='shortcutKeys'><div class='shortcutKey'>Ctrl</div><div class='shortcutKey'>Alt</div></div></div></div>
-            </div> -->
-
-            <!-- <div class='presetGroup'>
-                <div class='presetShortcut'><div class='shortcutAction'>Select all</div><div class='shortcutKeys'><div class='shortcutKeys'><div class='shortcutKey'>Ctrl</div><div class='shortcutKey shortcutChar'>A</div></div></div></div>
-                <div class='presetShortcut'><div class='shortcutAction'>Select inverse</div><div class='shortcutKeys'><div class='shortcutKeys'><div class='shortcutKey ctrlShift'>Ctrl</div><div class='shortcutKey ctrlShift'>Shift</div><div class='shortcutKey shortcutChar'>A</div></div></div></div>
-                <div class='presetShortcut'><div class='shortcutAction'>Select none</div><div class='shortcutKeys'><div class='shortcutKeys'><div class='shortcutKey'>Esc</div></div></div></div>
-            </div>
-
-            <div class='presetGroup nextGroup'>
-                <!-- <div class='presetShortcut'><div class='shortcutAction'>Toggle selected</div><div class='shortcutKeys'><div class='shortcutKeys'><div class='shortcutKey'>Shift</div><div class='shortcutKey'>click</div></div></div></div> -->
-                <!-- <div class='presetShortcut'><div class='shortcutAction'>Select tree left</div><div class='shortcutKeys'><div class='shortcutKeys'><div class='shortcutKey ctrlShift'>Ctrl</div><div class='shortcutKey ctrlShift treeLeftCtrl'>Shift</div><div class='shortcutEvent'>click</div></div></div></div>
-                <div class='presetShortcut'><div class='shortcutAction'>Select tree right</div><div class='shortcutKeys'><div class='shortcutKeys'><div class='shortcutKey treeRightCtrl1'>Alt</div><div class='shortcutKey treeRightCtrl2'>Shift</div><div class='shortcutEvent'>click</div></div></div></div>
-                <div class='presetShortcut'><div class='shortcutAction'>Select tree across</div><div class='shortcutKeys'><div class='shortcutKeys'><div class='shortcutKey treeAcross1'>Ctrl</div><div class='shortcutKey treeAcross2'>Alt</div><div class='shortcutEvent'>click</div></div></div></div>
-                <div class='presetShortcut'><div class='shortcutAction'>Select entire tree</div><div class='shortcutKeys'><div class='shortcutKeys'><div class='shortcutKey ctrlShift'>Ctrl</div><div class='shortcutKey'>Alt</div><div class='shortcutKey ctrlShift'>Shift</div><div class='shortcutEvent'>click</div></div></div></div>
-            </div> -->
-
-        </div>
-
-
-        <div class='presetPage' id='presetPageNodes'>
-            <!-- <div class='presetGroup'>
-                <div class='presetShortcut'><div class='shortcutAction'>Create node</div><div class='shortcutKeys'><div class='shortcutKeys'><div class='shortcutKey'>Menu</div></div></div></div>
-                <div class='presetShortcut'><div class='shortcutAction'>Insert node into branch</div><div class='shortcutKeys'><div class='shortcutKeys'><div class='shortcutKey'>Ctrl</div><div class='shortcutKey'>menu</div></div></div></div>
-                <div class='presetShortcut'><div class='shortcutAction'>Connect node in new branch</div><div class='shortcutKeys'><div class='shortcutKeys'><div class='shortcutKey newBranch1'>Ctrl</div><div class='shortcutKey newBranch2'>Alt</div><div class='shortcutKey'>menu</div></div></div></div>
-                <div class='presetShortcut'><div class='shortcutAction'>Create random color</div><div class='shortcutKeys'><div class='shortcutKeys'><div class='shortcutKey'>Alt</div><div class='shortcutKey'>Color menu</div></div></div></div>
-                <div class='presetShortcut'><div class='shortcutAction'>Reactivate active nodes</div><div class='shortcutKeys'><div class='shortcutKeys'><div class='shortcutKey'>Ctrl</div><div class='shortcutKey'>Enter</div></div></div></div>
-            </div>
-            <div class='presetGroup nextGroup'>
-                <div class='presetShortcut'><div class='shortcutAction'>Rename</div><div class='shortcutKeys'><div class='shortcutKeys'><div class='shortcutKey'>Shift</div><div class='shortcutKey shortcutChar'>R</div></div></div></div>
-                <div class='presetShortcut'><div class='shortcutAction'>Enable/disable</div><div class='shortcutKeys'><div class='shortcutKeys'><div class='shortcutKey ctrlShift'>Ctrl</div><div class='shortcutKey ctrlShift'>Shift</div><div class='shortcutKey shortcutChar'>E</div></div></div></div>
-                <div class='presetShortcut'><div class='shortcutAction'>Show/hide node icons</div><div class='shortcutKeys'><div class='shortcutKeys'><div class='shortcutKey ctrlShift'>Ctrl</div><div class='shortcutKey ctrlShift'>Shift</div><div class='shortcutKey shortcutCharNarrow'>I</div></div></div></div>
-                <div class='presetShortcut'><div class='shortcutAction'>Show/hide operation results</div><div class='shortcutKeys'><div class='shortcutKeys'><div class='shortcutKey ctrlShift'>Ctrl</div><div class='shortcutKey ctrlShift'>Shift</div><div class='shortcutKey shortcutChar'>R</div></div></div></div>
-                <div class='presetShortcut'><div class='shortcutAction'>Layout selected nodes</div><div class='shortcutKeys'><div class='shortcutKeys'><div class='shortcutKey ctrlShift'>Ctrl</div><div class='shortcutKey ctrlShift'>Shift</div><div class='shortcutKey shortcutChar'>L</div></div></div></div>
-            </div> -->
         </div>
  
 
-        <div class='presetPage' id='presetPageConnections'>
-            <!-- <div class='presetGroup'>
-                <div class='presetLabel'>While connecting from an output...</div>
-                <div class='presetShortcut'><div class='shortcutAction'>Copy input value back to output</div><div class='shortcutKeys'><div class='shortcutKeys'><div class='shortcutKey'>Ctrl</div></div></div></div>
-            </div> -->
+        <div class='presetPage' id='presetPageText'>
+
         </div>
 
         
-        <div class='presetPage' id='presetPageCursor'>
-            <!-- <div class='presetGroup'>
-                <div class='presetLabel'>While adjusting (some) values...</div>
-                <div class='presetShortcut'><div class='shortcutAction'>Allow values outside the visible limits</div><div class='shortcutKeys'><div class='shortcutKeys'><div class='shortcutKey'>Shift</div></div></div></div>
-            </div>
-            <div class='presetGroup nextGroup'>
-                <div class='presetLabel'>While hovering over a node...</div>
-                <div class='presetShortcut'><div class='shortcutAction'>Isolate the node and its connections</div><div class='shortcutKeys'><div class='shortcutKeys'><div class='shortcutKey'>Alt</div></div></div></div>
-            </div> -->
+        <div class='presetPage' id='presetPageColors'>
+
         </div>
 
         
-        <div class='presetPage' id='presetPageEdit'>
-            <!-- <div class='presetGroup'>
-                <div class='presetShortcut'><div class='shortcutAction'>Copy</div><div class='shortcutKeys'><div class='shortcutKeys'><div class='shortcutKey'>Ctrl</div><div class='shortcutKey shortcutChar'>C</div></div></div></div>
-                <div class='presetShortcut'><div class='shortcutAction'>Cut</div><div class='shortcutKeys'><div class='shortcutKeys'><div class='shortcutKey'>Ctrl</div><div class='shortcutKey shortcutChar'>X</div></div></div></div>
-                <div class='presetShortcut'><div class='shortcutAction'>Paste</div><div class='shortcutKeys'><div class='shortcutKeys'><div class='shortcutKey'>Ctrl</div><div class='shortcutKey shortcutChar'>V</div></div></div></div>
-                <div class='presetShortcut'><div class='shortcutAction'>Paste with input connections</div><div class='shortcutKeys'><div class='shortcutKeys'><div class='shortcutKey ctrlShift'>Ctrl</div><div class='shortcutKey ctrlShift'>Shift</div><div class='shortcutKey shortcutChar'>V</div></div></div></div>
-                <div class='presetShortcut'><div class='shortcutAction'>Remove from branch</div><div class='shortcutKeys'><div class='shortcutKeys'><div class='shortcutKey'>Ctrl</div><div class='shortcutKey shortcutCharWide'>⌫</div></div></div></div>
+        <div class='presetPage' id='presetPageShapes'>
+            <div class='presetGroup'>
+                <div class='preset' onclick="loadPresetGraph('shapesStyles');">Shapes & styles</div>
+                <div class='preset' onclick="loadPresetGraph('basicTransform');">Basic transform</div>
+                <div class='preset' onclick="loadPresetGraph('combinedTransform');">Combined transform</div>
             </div>
-            <div class='presetGroup nextGroup'>
-                <!-- <div id='shortcutCopyAsJavascript' class='presetShortcut'><div class='shortcutAction'>Copy as Javascript</div><div class='shortcutKeys'><div class='shortcutKeys'><div class='shortcutKey ctrlShift'>Ctrl</div><div class='shortcutKey ctrlShift'>Shift</div><div class='shortcutKey shortcutChar'>C</div></div></div></div> -->
-                <!-- <div class='presetShortcut'><div class='shortcutAction'>Duplicate</div><div class='shortcutKeys'><div class='shortcutKeys'><div class='shortcutKey'>Ctrl</div><div class='shortcutKey shortcutChar'>D</div></div></div></div>
-                <div class='presetShortcut'><div class='shortcutAction'>Duplicate with input connections</div><div class='shortcutKeys'><div class='shortcutKeys'><div class='shortcutKey ctrlShift'>Ctrl</div><div class='shortcutKey ctrlShift'>Shift</div><div class='shortcutKey shortcutChar'>D</div></div></div></div>
-            </div> -->
         </div>
     
-    
+
+        <div class='presetPage' id='presetPageVariables'>
+
+        </div>
+
+        
     </div>
 
 </div>

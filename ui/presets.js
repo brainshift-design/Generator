@@ -1,45 +1,6 @@
 var currentPresetTab = 0;
 
 
-function initPresets()
-{
-    if (isMac)
-    {
-        const _ctrlShift = document.getElementsByClassName('ctrlShift');
-        const  ctrlShift = Array.prototype.slice.call(_ctrlShift);
-    
-        const ctrlKeys  = ctrlShift.filter(k => k.innerHTML == 'Ctrl' );
-        const shiftKeys = ctrlShift.filter(k => k.innerHTML == 'Shift');
-
-        ctrlKeys .forEach(k => k.innerHTML = 'Shift');
-        shiftKeys.forEach(k => k.innerHTML = 'Ctrl' );
-
-
-        document.getElementsByClassName('treeLeftCtrl'  )[0].innerHTML = 'Alt';
-
-        document.getElementsByClassName('newBranch1'    )[0].innerHTML = 'Alt';
-        document.getElementsByClassName('newBranch2'    )[0].innerHTML = 'Ctrl';
-        
-        document.getElementsByClassName('treeRightCtrl1')[0].innerHTML = 'Shift';
-        document.getElementsByClassName('treeRightCtrl2')[0].innerHTML = 'Ctrl';
-        
-        document.getElementsByClassName('treeAcross1'   )[0].innerHTML = 'Alt';
-        document.getElementsByClassName('treeAcross2'   )[0].innerHTML = 'Ctrl';
-    }
-
-
-    const keys = document.getElementsByClassName('shortcutKey');
-
-    for (const key of keys)
-    {
-             if (key.innerHTML == 'Ctrl' ) key.innerHTML = osCtrl (false);
-        else if (key.innerHTML == 'Shift') key.innerHTML = osShift(false);
-        else if (key.innerHTML == 'Alt'  ) key.innerHTML = osAlt  (false);
-    }
-}
-
-
-
 function showPresets()
 {
     setCurrentPresetTab(0);
@@ -100,11 +61,19 @@ function getPresetGraph(graphId)
 {
     switch (graphId)
     {
-        case 'basics':    return presetNodeBasics;
-        case 'dataTypes': return presetDataTypes;
-        case 'organize':  return presetOrganize;
-        case 'active':    return presetActive;
-        case 'shapes':    return presetShapes;
-        case 'transform': return presetTransform;
+        case 'basics':            return presetNodeBasics;
+        case 'dataTypes':         return presetDataTypes;
+        case 'organize':          return presetOrganize;
+        case 'active':            return presetActive;
+     
+        case 'dataSelect':        return presetDataSelect;
+
+        case 'loop1d':            return presetLoop1d;
+        case 'loop2d':            return presetLoop2d;
+        case 'loopLock':          return presetLoopLock;
+
+        case 'shapesStyles':      return presetShapesStyles;
+        case 'basicTransform':    return presetBasicTransform;
+        case 'combinedTransform': return presetCombinedTransform;
     }
 }

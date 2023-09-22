@@ -61,15 +61,6 @@ extends OperatorBase
 
 
 
-    // updateParams()
-    // {
-    //     this.paramFormat.enableControlText(true, this.paramFormat.isUnknown());
-
-    //     this.updateParamControls();
-    // }
-
-
-
     getHeaderColors(options = {})
     {
         const colors = super.getHeaderColors(options);

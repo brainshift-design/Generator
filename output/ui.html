@@ -5326,8 +5326,8 @@ a
             <div id='whatsNewBody'>
                 <h1 style='margin-top: 20px;'>What's new</h1>
 
-                <p>•  Text ⟶ Number and Text ⟶ Color nodes can now convert text lists directly</p>
-                <p>•  <b>Breaking change:</b> removed value parameter from Text ⟶ Number nodes, the output value is now in the header</p>
+                <p>•  Number ⟶ Text can now convert number lists directly</p>
+                <p>•  fixed If/else input issues</p>
                 
                 <p><br/><br/><div id='chkHideWhatsNew'></div></p>
             </div>
@@ -5335,7 +5335,7 @@ a
         <div class='dialogScrollbar' id='whatsNewScrollbarY'></div>
     </div>
 
-</div>''
+</div>
 
 
 <div id='search'>
@@ -5492,12 +5492,13 @@ a
         <div id='presetTabs'>
             <div class='presetTab' onclick="setCurrentPresetTab(0);">Basics</div>
             <div class='presetTab' onclick="setCurrentPresetTab(1);">Data flow</div>
-            <div class='presetTab' onclick="setCurrentPresetTab(1);">Loops</div>
-            <div class='presetTab' onclick="setCurrentPresetTab(2);">Lists</div>
-            <div class='presetTab' onclick="setCurrentPresetTab(3);">Numbers</div>
-            <div class='presetTab' onclick="setCurrentPresetTab(4);">Text</div>
-            <div class='presetTab' onclick="setCurrentPresetTab(5);">Colors</div>
-            <div class='presetTab' onclick="setCurrentPresetTab(6);">Shapes</div>
+            <div class='presetTab' onclick="setCurrentPresetTab(2);">Loops</div>
+            <div class='presetTab' onclick="setCurrentPresetTab(3);">Lists</div>
+            <div class='presetTab' onclick="setCurrentPresetTab(4);">Numbers</div>
+            <div class='presetTab' onclick="setCurrentPresetTab(5);">Text</div>
+            <div class='presetTab' onclick="setCurrentPresetTab(6);">Colors</div>
+            <div class='presetTab' onclick="setCurrentPresetTab(7);">Shapes</div>
+            <div class='presetTab' onclick="setCurrentPresetTab(8);">Variables</div>
         </div>
         <div id='presetClose' onclick="hidePresets();"></div>
     </div>
@@ -5505,125 +5506,67 @@ a
     <div id='presetContent'>
 
 
-        <div class='presetPage' id='presetPageMenu'>
+        <div class='presetPage' id='presetPageBasics'>
             <div class='presetGroup'>
                 <div class='preset' onclick="loadPresetGraph('basics');">Nodes</div>
-                <div class='preset' onclick="loadPresetGraph('dataTypes');"">Data types</div>
-                <div class='preset' onclick="loadPresetGraph('organize');"">Organizing</div>
-                <div class='preset' onclick="loadPresetGraph('active');"">Where are my objects?</div>
+                <div class='preset' onclick="loadPresetGraph('dataTypes');">Data types</div>
+                <div class='preset' onclick="loadPresetGraph('organize');">Organizing</div>
+                <div class='preset' onclick="loadPresetGraph('active');">Where are my objects?</div>
             </div>
         </div>
 
 
-        <div class='presetPage' id='presetPageView'>
+        <div class='presetPage' id='presetPageDataFlow'>
+            <div class='presetGroup'>
+                <div class='preset' onclick="loadPresetGraph('ifElse');">If / else</div>
+                <div class='preset' onclick="loadPresetGraph('dataSelect');">Select from list</div>
+            </div>
+        </div>
 
-            <!-- <div class='presetGroup'>
-                <div class='presetShortcut'><div class='shortcutAction'>Focus on node</div><div class='shortcutKeys'><div class='shortcutKeys'><div class='shortcutKey'>Alt</div><div class='shortcutKey shortcutChar'>S</div></div></div></div>
-            </div> -->
+
+        <div class='presetPage' id='presetPageLoops'>
+            <div class='presetGroup'>
+                <div class='preset' onclick="loadPresetGraph('loop1d');">1D loop</div>
+                <div class='preset' onclick="loadPresetGraph('loop2d');">2D loop</div>
+                <div class='preset' onclick="loadPresetGraph('loopLock');">Complex loop</div>
+            </div>
+        </div>
+
+
+        <div class='presetPage' id='presetPageLists'>
 
         </div>
 
 
-        <div class='presetPage' id='presetPageZoom'>
+        <div class='presetPage' id='presetPageNumbers'>
 
-            <!-- <div class='presetGroup'>
-                <div class='presetShortcut'><div class='shortcutAction'>Pan</div><div class='shortcutKeys'><div class='shortcutKeys'><div class='shortcutKey'>Space</div><div class='shortcutEvent'>drag</div></div></div></div>
-                <div class='presetLabel'>While not using the hand tool...</div>
-                <div class='presetShortcut'><div class='shortcutAction'>Zoom</div><div class='shortcutKeys'><div class='shortcutKeys'><div class='shortcutKey'>Ctrl</div><div class='shortcutEvent'>wheel</div></div></div></div>
-                <div class='presetLabel'>While using the hand tool...</div>
-                <div class='presetShortcut'><div class='shortcutAction'>Zoom</div><div class='shortcutKeys'><div class='shortcutKeys'><div class='shortcutEvent'>Wheel</div></div></div></div>
-            </div>
-
-            <div class='presetGroup nextGroup'>
-                <div class='presetShortcut'><div class='shortcutAction'>Zoom in</div><div class='shortcutKeys'><div class='shortcutKeys'><div class='shortcutKey'>Ctrl</div><div class='shortcutKey shortcutChar'>+</div></div></div></div>
-                <div class='presetShortcut'><div class='shortcutAction'>Zoom out</div><div class='shortcutKeys'><div class='shortcutKeys'><div class='shortcutKey'>Ctrl</div><div class='shortcutKey shortcutChar'>−</div></div></div></div>
-                <div class='presetShortcut'><div class='shortcutAction'>Zoom to 100%</div><div class='shortcutKeys'><div class='shortcutKeys'><div class='shortcutKey'>Ctrl</div><div class='shortcutKey shortcutChar'>0</div></div></div></div>
-                <div class='presetShortcut'><div class='shortcutAction'>Zoom to fit</div><div class='shortcutKeys'><div class='shortcutKeys'><div class='shortcutKey'>Shift</div><div class='shortcutKey shortcutCharNarrow'>1</div></div></div></div>
-                <div class='presetShortcut'><div class='shortcutAction'>Zoom to selection</div><div class='shortcutKeys'><div class='shortcutKeys'><div class='shortcutKey'>Shift</div><div class='shortcutKey shortcutChar'>2</div></div></div></div>
-            </div> -->
-
-        </div>
-
-
-        <div class='presetPage' id='presetPageSelection'>
-
-            <!-- <div class='presetGroup'>
-                <div class='presetLabel'>While selecting...</div>
-                <div class='presetShortcut'><div class='shortcutAction'>Zoom to selection</div><div class='shortcutKeys'><div class='shortcutKeys'><div class='shortcutKey'>Ctrl</div></div></div></div>
-                <div class='presetShortcut'><div class='shortcutAction'>Zoom out from selection</div><div class='shortcutKeys'><div class='shortcutKeys'><div class='shortcutKey'>Ctrl</div><div class='shortcutKey'>Alt</div></div></div></div>
-            </div> -->
-
-            <!-- <div class='presetGroup'>
-                <div class='presetShortcut'><div class='shortcutAction'>Select all</div><div class='shortcutKeys'><div class='shortcutKeys'><div class='shortcutKey'>Ctrl</div><div class='shortcutKey shortcutChar'>A</div></div></div></div>
-                <div class='presetShortcut'><div class='shortcutAction'>Select inverse</div><div class='shortcutKeys'><div class='shortcutKeys'><div class='shortcutKey ctrlShift'>Ctrl</div><div class='shortcutKey ctrlShift'>Shift</div><div class='shortcutKey shortcutChar'>A</div></div></div></div>
-                <div class='presetShortcut'><div class='shortcutAction'>Select none</div><div class='shortcutKeys'><div class='shortcutKeys'><div class='shortcutKey'>Esc</div></div></div></div>
-            </div>
-
-            <div class='presetGroup nextGroup'>
-                <!-- <div class='presetShortcut'><div class='shortcutAction'>Toggle selected</div><div class='shortcutKeys'><div class='shortcutKeys'><div class='shortcutKey'>Shift</div><div class='shortcutKey'>click</div></div></div></div> -->
-                <!-- <div class='presetShortcut'><div class='shortcutAction'>Select tree left</div><div class='shortcutKeys'><div class='shortcutKeys'><div class='shortcutKey ctrlShift'>Ctrl</div><div class='shortcutKey ctrlShift treeLeftCtrl'>Shift</div><div class='shortcutEvent'>click</div></div></div></div>
-                <div class='presetShortcut'><div class='shortcutAction'>Select tree right</div><div class='shortcutKeys'><div class='shortcutKeys'><div class='shortcutKey treeRightCtrl1'>Alt</div><div class='shortcutKey treeRightCtrl2'>Shift</div><div class='shortcutEvent'>click</div></div></div></div>
-                <div class='presetShortcut'><div class='shortcutAction'>Select tree across</div><div class='shortcutKeys'><div class='shortcutKeys'><div class='shortcutKey treeAcross1'>Ctrl</div><div class='shortcutKey treeAcross2'>Alt</div><div class='shortcutEvent'>click</div></div></div></div>
-                <div class='presetShortcut'><div class='shortcutAction'>Select entire tree</div><div class='shortcutKeys'><div class='shortcutKeys'><div class='shortcutKey ctrlShift'>Ctrl</div><div class='shortcutKey'>Alt</div><div class='shortcutKey ctrlShift'>Shift</div><div class='shortcutEvent'>click</div></div></div></div>
-            </div> -->
-
-        </div>
-
-
-        <div class='presetPage' id='presetPageNodes'>
-            <!-- <div class='presetGroup'>
-                <div class='presetShortcut'><div class='shortcutAction'>Create node</div><div class='shortcutKeys'><div class='shortcutKeys'><div class='shortcutKey'>Menu</div></div></div></div>
-                <div class='presetShortcut'><div class='shortcutAction'>Insert node into branch</div><div class='shortcutKeys'><div class='shortcutKeys'><div class='shortcutKey'>Ctrl</div><div class='shortcutKey'>menu</div></div></div></div>
-                <div class='presetShortcut'><div class='shortcutAction'>Connect node in new branch</div><div class='shortcutKeys'><div class='shortcutKeys'><div class='shortcutKey newBranch1'>Ctrl</div><div class='shortcutKey newBranch2'>Alt</div><div class='shortcutKey'>menu</div></div></div></div>
-                <div class='presetShortcut'><div class='shortcutAction'>Create random color</div><div class='shortcutKeys'><div class='shortcutKeys'><div class='shortcutKey'>Alt</div><div class='shortcutKey'>Color menu</div></div></div></div>
-                <div class='presetShortcut'><div class='shortcutAction'>Reactivate active nodes</div><div class='shortcutKeys'><div class='shortcutKeys'><div class='shortcutKey'>Ctrl</div><div class='shortcutKey'>Enter</div></div></div></div>
-            </div>
-            <div class='presetGroup nextGroup'>
-                <div class='presetShortcut'><div class='shortcutAction'>Rename</div><div class='shortcutKeys'><div class='shortcutKeys'><div class='shortcutKey'>Shift</div><div class='shortcutKey shortcutChar'>R</div></div></div></div>
-                <div class='presetShortcut'><div class='shortcutAction'>Enable/disable</div><div class='shortcutKeys'><div class='shortcutKeys'><div class='shortcutKey ctrlShift'>Ctrl</div><div class='shortcutKey ctrlShift'>Shift</div><div class='shortcutKey shortcutChar'>E</div></div></div></div>
-                <div class='presetShortcut'><div class='shortcutAction'>Show/hide node icons</div><div class='shortcutKeys'><div class='shortcutKeys'><div class='shortcutKey ctrlShift'>Ctrl</div><div class='shortcutKey ctrlShift'>Shift</div><div class='shortcutKey shortcutCharNarrow'>I</div></div></div></div>
-                <div class='presetShortcut'><div class='shortcutAction'>Show/hide operation results</div><div class='shortcutKeys'><div class='shortcutKeys'><div class='shortcutKey ctrlShift'>Ctrl</div><div class='shortcutKey ctrlShift'>Shift</div><div class='shortcutKey shortcutChar'>R</div></div></div></div>
-                <div class='presetShortcut'><div class='shortcutAction'>Layout selected nodes</div><div class='shortcutKeys'><div class='shortcutKeys'><div class='shortcutKey ctrlShift'>Ctrl</div><div class='shortcutKey ctrlShift'>Shift</div><div class='shortcutKey shortcutChar'>L</div></div></div></div>
-            </div> -->
         </div>
  
 
-        <div class='presetPage' id='presetPageConnections'>
-            <!-- <div class='presetGroup'>
-                <div class='presetLabel'>While connecting from an output...</div>
-                <div class='presetShortcut'><div class='shortcutAction'>Copy input value back to output</div><div class='shortcutKeys'><div class='shortcutKeys'><div class='shortcutKey'>Ctrl</div></div></div></div>
-            </div> -->
+        <div class='presetPage' id='presetPageText'>
+
         </div>
 
         
-        <div class='presetPage' id='presetPageCursor'>
-            <!-- <div class='presetGroup'>
-                <div class='presetLabel'>While adjusting (some) values...</div>
-                <div class='presetShortcut'><div class='shortcutAction'>Allow values outside the visible limits</div><div class='shortcutKeys'><div class='shortcutKeys'><div class='shortcutKey'>Shift</div></div></div></div>
-            </div>
-            <div class='presetGroup nextGroup'>
-                <div class='presetLabel'>While hovering over a node...</div>
-                <div class='presetShortcut'><div class='shortcutAction'>Isolate the node and its connections</div><div class='shortcutKeys'><div class='shortcutKeys'><div class='shortcutKey'>Alt</div></div></div></div>
-            </div> -->
+        <div class='presetPage' id='presetPageColors'>
+
         </div>
 
         
-        <div class='presetPage' id='presetPageEdit'>
-            <!-- <div class='presetGroup'>
-                <div class='presetShortcut'><div class='shortcutAction'>Copy</div><div class='shortcutKeys'><div class='shortcutKeys'><div class='shortcutKey'>Ctrl</div><div class='shortcutKey shortcutChar'>C</div></div></div></div>
-                <div class='presetShortcut'><div class='shortcutAction'>Cut</div><div class='shortcutKeys'><div class='shortcutKeys'><div class='shortcutKey'>Ctrl</div><div class='shortcutKey shortcutChar'>X</div></div></div></div>
-                <div class='presetShortcut'><div class='shortcutAction'>Paste</div><div class='shortcutKeys'><div class='shortcutKeys'><div class='shortcutKey'>Ctrl</div><div class='shortcutKey shortcutChar'>V</div></div></div></div>
-                <div class='presetShortcut'><div class='shortcutAction'>Paste with input connections</div><div class='shortcutKeys'><div class='shortcutKeys'><div class='shortcutKey ctrlShift'>Ctrl</div><div class='shortcutKey ctrlShift'>Shift</div><div class='shortcutKey shortcutChar'>V</div></div></div></div>
-                <div class='presetShortcut'><div class='shortcutAction'>Remove from branch</div><div class='shortcutKeys'><div class='shortcutKeys'><div class='shortcutKey'>Ctrl</div><div class='shortcutKey shortcutCharWide'>⌫</div></div></div></div>
+        <div class='presetPage' id='presetPageShapes'>
+            <div class='presetGroup'>
+                <div class='preset' onclick="loadPresetGraph('shapesStyles');">Shapes & styles</div>
+                <div class='preset' onclick="loadPresetGraph('basicTransform');">Basic transform</div>
+                <div class='preset' onclick="loadPresetGraph('combinedTransform');">Combined transform</div>
             </div>
-            <div class='presetGroup nextGroup'>
-                <!-- <div id='shortcutCopyAsJavascript' class='presetShortcut'><div class='shortcutAction'>Copy as Javascript</div><div class='shortcutKeys'><div class='shortcutKeys'><div class='shortcutKey ctrlShift'>Ctrl</div><div class='shortcutKey ctrlShift'>Shift</div><div class='shortcutKey shortcutChar'>C</div></div></div></div> -->
-                <!-- <div class='presetShortcut'><div class='shortcutAction'>Duplicate</div><div class='shortcutKeys'><div class='shortcutKeys'><div class='shortcutKey'>Ctrl</div><div class='shortcutKey shortcutChar'>D</div></div></div></div>
-                <div class='presetShortcut'><div class='shortcutAction'>Duplicate with input connections</div><div class='shortcutKeys'><div class='shortcutKeys'><div class='shortcutKey ctrlShift'>Ctrl</div><div class='shortcutKey ctrlShift'>Shift</div><div class='shortcutKey shortcutChar'>D</div></div></div></div>
-            </div> -->
         </div>
     
-    
+
+        <div class='presetPage' id='presetPageVariables'>
+
+        </div>
+
+        
     </div>
 
 </div>
@@ -5816,7 +5759,7 @@ a
 
 
 
-const generatorVersion = 214;
+const generatorVersion = 217;
 
 
 const MAX_INT32        = 2147483647;
@@ -28997,7 +28940,6 @@ extends GOperator1
 class GNumberToText
 extends GOperator1
 {
-    number;
     format;
 
 
@@ -29036,29 +28978,43 @@ extends GOperator1
             const input = (await this.input.eval(parse)).toValue();
 
 
-            let str = NAN_CHAR;
-
-            switch (format.value)
+            if (isListType(input.type))
             {
-                case 0: // dec
-                    str = numToString(input.value, -input.decimals);
-                break;
+                this.value = new ListValue();
 
-                case 1: // hex
-                    str = numToString(Math.round(input.value), input.decimals, true).toUpperCase();
-                    break;
+                for (let i = 0; i < input.items.length; i++)
+                {
+                    const item = input.items[i];
+
+                    this.value.items.push(
+                        item.type == NUMBER_VALUE
+                        ? getNumberToTextValue(item, format)
+                        : TextValue.NaN.copy());   
+                }
             }
-
-            this.value = new TextValue(str);
+            else
+            {
+                this.value = getNumberToTextValue(input, format);
+            }
         }
+
         else
             this.value = TextValue.NaN;
 
+
+        const type = 
+            this.value
+            ? new TextValue(
+                isListType(this.value.type)
+                ? finalListTypeFromItems(this.value.items)
+                : this.value.type)
+            : TextValue.NaN.copy();
             
+
         this.setUpdateValues(parse,
         [
-            ['value',  this.value],
-            ['format', format    ]
+            ['type',   type  ],
+            ['format', format]
         ]);
 
 
@@ -29103,6 +29059,25 @@ extends GOperator1
     }
 }
 
+
+
+function getNumberToTextValue(input, format)
+{
+    let str = NAN_CHAR;
+
+    switch (format.value)
+    {
+        case 0: // dec
+            str = numToString(input.value, -input.decimals);
+        break;
+
+        case 1: // hex
+            str = numToString(Math.round(input.value), input.decimals, true).toUpperCase();
+            break;
+    }
+
+    return new TextValue(str);
+}
 
 
 class GTextToNumber
@@ -50835,7 +50810,7 @@ onerror = (event, source, line, pos, error) =>
 };
 
 
-const generatorVersion = 214;
+const generatorVersion = 217;
 
 
 const MAX_INT32        = 2147483647;
@@ -76269,7 +76244,6 @@ extends GOperator1
 class GNumberToText
 extends GOperator1
 {
-    number;
     format;
 
 
@@ -76308,29 +76282,43 @@ extends GOperator1
             const input = (await this.input.eval(parse)).toValue();
 
 
-            let str = NAN_CHAR;
-
-            switch (format.value)
+            if (isListType(input.type))
             {
-                case 0: // dec
-                    str = numToString(input.value, -input.decimals);
-                break;
+                this.value = new ListValue();
 
-                case 1: // hex
-                    str = numToString(Math.round(input.value), input.decimals, true).toUpperCase();
-                    break;
+                for (let i = 0; i < input.items.length; i++)
+                {
+                    const item = input.items[i];
+
+                    this.value.items.push(
+                        item.type == NUMBER_VALUE
+                        ? getNumberToTextValue(item, format)
+                        : TextValue.NaN.copy());   
+                }
             }
-
-            this.value = new TextValue(str);
+            else
+            {
+                this.value = getNumberToTextValue(input, format);
+            }
         }
+
         else
             this.value = TextValue.NaN;
 
+
+        const type = 
+            this.value
+            ? new TextValue(
+                isListType(this.value.type)
+                ? finalListTypeFromItems(this.value.items)
+                : this.value.type)
+            : TextValue.NaN.copy();
             
+
         this.setUpdateValues(parse,
         [
-            ['value',  this.value],
-            ['format', format    ]
+            ['type',   type  ],
+            ['format', format]
         ]);
 
 
@@ -76375,6 +76363,25 @@ extends GOperator1
     }
 }
 
+
+
+function getNumberToTextValue(input, format)
+{
+    let str = NAN_CHAR;
+
+    switch (format.value)
+    {
+        case 0: // dec
+            str = numToString(input.value, -input.decimals);
+        break;
+
+        case 1: // hex
+            str = numToString(Math.round(input.value), input.decimals, true).toUpperCase();
+            break;
+    }
+
+    return new TextValue(str);
+}
 
 
 class GTextToNumber
@@ -93478,7 +93485,6 @@ var menuBarMenus;
 
 var menuMain;
 var menuMainFile;
-var menuMainTutorials;
 var menuMainPreferences;
 var menuMainDebug;
 var menuMainHelp;
@@ -93723,29 +93729,6 @@ function initGeneratorMenus()
         menuItemSaveToFile = new MenuItem('Save selected to file...', null, {shortcut: osCtrlShift() + 'S', callback: () => { hideAllMenus(); uiSaveSelectionToLocalFile(); }})]);
 
 
-    menuMainTutorials = new Menu('Tutorials', false);
-    menuMainTutorials.addItems([
-        new MenuItem('Node & graph basics',        null, {callback: () => { hideAllMenus(); loadPresetGraph('basics');       }}),
-        new MenuItem('',                           null, {separator: true}),    
-        new MenuItem('Lists',                      null, {callback: () => { hideAllMenus(); loadPresetGraph('repeat');       }}),
-        new MenuItem('',                           null, {separator: true}),    
-        new MenuItem('Create shapes',              null, {callback: () => { hideAllMenus(); loadPresetGraph('shapes');       }}),
-        new MenuItem('Transform shapes',           null, {callback: () => { hideAllMenus(); loadPresetGraph('transform');    }}),
-        new MenuItem('',                           null, {separator: true}),    
-        new MenuItem('Loops',                      null, {callback: () => { hideAllMenus(); loadPresetGraph('loops');        }}),
-        new MenuItem('',                           null, {separator: true}),    
-        new MenuItem('Sequences...',               null, {callback: () => { hideAllMenus(); loadPresetGraph('sequences');    }}),
-        new MenuItem('Random & noise...',          null, {callback: () => { hideAllMenus(); loadPresetGraph('random');       }}),
-        new MenuItem('',                           null, {separator: true}),    
-        new MenuItem('Math & logic',               null, {callback: () => { hideAllMenus(); loadPresetGraph('math');         }}),
-        new MenuItem('Text & data',                null, {callback: () => { hideAllMenus(); loadPresetGraph('text');         }}),
-        new MenuItem('',                           null, {separator: true}),    
-        new MenuItem('Colors & gradients',         null, {callback: () => { hideAllMenus(); loadPresetGraph('colors');       }}),
-        new MenuItem('Validation & accessibility', null, {callback: () => { hideAllMenus(); loadPresetGraph('colors');       }}),
-        new MenuItem('',                           null, {separator: true}),    
-        new MenuItem('Figma variables',            null, {callback: () => { hideAllMenus(); loadPresetGraph('variables');    }})]);
-
-
     menuMainPreferences = new Menu('Preferences', false);
     menuMainPreferences.addItems([
         // menuItemShowPages           = new MenuItem('Show pages',                    null, {checkCallback: () => settings.showAllColorSpaces,     callback: () => { updateSettingAndMenu('showPages',              true, !settings.showPages);              updateMenuItemShowPages();              }}),
@@ -93869,8 +93852,8 @@ function initGeneratorMenus()
 
     menuMainHelp = new Menu('Help and subscription', false);
     menuMainHelp.addItems([
-        //new MenuItem('Tutorials',    null, {callback: () => showPresets()}),
-        //new MenuItem('',             null, {separator: true}),
+        new MenuItem('Tutorials',    null, {callback: () => showPresets()}),
+        new MenuItem('',             null, {separator: true}),
         new MenuItem('Keyboard shortcuts', null, {shortcut: osCtrlShift() + '?', callback: () => showKeyboardPanel()}),
         // new MenuItem('Help page',   null, {callback:  () => window.open('http://www.bourt.com/generator/help', '_blank')}),
         new MenuItem('',             null, {separator: true}),
@@ -93884,7 +93867,6 @@ function initGeneratorMenus()
                         new MenuItem('Quick actions...',      null, {icon: iconSearchMenu, shortcut: osCtrl() + '/', callback: () => { hideAllMenus(); showSearchBox(); }}),
                         new MenuItem('',                      null, {separator: true}),
                         new MenuItem('File',                  null, {childMenu: menuMainFile}),
-                        //new MenuItem('Tutorials',             null, {childMenu: menuMainTutorials}),
                         new MenuItem('',                      null, {separator: true}),
                         new MenuItem('Preferences',           null, {childMenu: menuMainPreferences}),
         menuItemDebug = new MenuItem('Debug',                 null, {childMenu: menuMainDebug}),
@@ -94379,17 +94361,17 @@ menuFlow = new Menu('Flow', true, false);
         updatePanMode(false);
     }});
 
-    // btnComment = new MenuButton('Add comment', null, {callback: () => 
-    // {
-    //     const create = new CreateNodeAction(COMMENT, btnComment.div);
-    //     actionManager.do(create);
+    btnComment = new MenuButton('Add comment', null, {callback: () => 
+    {
+        const create = new CreateNodeAction(COMMENT, btnComment.div);
+        actionManager.do(create);
 
-    //     graphView.updateNodes([create.node]);
-    //     graphView.updateScrollWithBounds();
+        graphView.updateNodes([create.node]);
+        graphView.updateScrollWithBounds();
 
-    //     hideAllMenus();
-    //     updatePanMode(false);
-    // }});
+        hideAllMenus();
+        updatePanMode(false);
+    }});
 
 
     //menuBar.appendChild(createDiv('', 'groupName'));
@@ -94460,7 +94442,7 @@ menuFlow = new Menu('Flow', true, false);
     btnLayer  .setIcon(iconEffects);
     btnShape  .setIcon(iconShapes);
     btnHand   .setIcon(iconHand);
-    //btnComment.setIcon(iconComment);
+    btnComment.setIcon(iconComment);
     btnPanel  .setIcon(iconPanel);
     btnSolo   .setIcon(iconSolo);
 
@@ -111665,7 +111647,7 @@ extends OperatorBase
         const colors = super.getHeaderColors(options);
         const type   = this.outputs[0].types[0];
 
-        colors.text   = isDark(colors.back) ? [1, 1, 1, 1] : [0, 0, 0, 1]; 
+        colors.text  = isDark(colors.back) ? [1, 1, 1, 1] : [0, 0, 0, 1]; 
 
         const gray =
                 this.active
@@ -111882,11 +111864,11 @@ extends OperatorBase
         this.paramCondition.divider = 0.62;
 
 
-        this.inputs[0].addEventListener('connect',    () => OpIfElse_onConnectInput(this, 0));
-        this.inputs[0].addEventListener('disconnect', () => OpIfElse_onDisconnectInput(this, 0));
+        // this.inputs[0].addEventListener('connect',    () => OpIfElse_onConnectInput(this, 0));
+        // this.inputs[0].addEventListener('disconnect', () => OpIfElse_onDisconnectInput(this, 0));
 
-        this.inputs[1].addEventListener('connect',    () => OpIfElse_onConnectInput(this, 1));
-        this.inputs[1].addEventListener('disconnect', () => OpIfElse_onDisconnectInput(this, 1));
+        // this.inputs[1].addEventListener('connect',    () => OpIfElse_onConnectInput(this, 1));
+        // this.inputs[1].addEventListener('disconnect', () => OpIfElse_onDisconnectInput(this, 1));
 
 
         this.menuBool = createBoolMenu(this.paramCondition);
@@ -112025,212 +112007,22 @@ extends OperatorBase
     getHeaderColors(options = {})
     {
         const colors = super.getHeaderColors(options);
-
-        const type =
-            this.inputs[0].connected
-            ? this.inputs[0].types[0]
-            : this.inputs[1].connected
-              ? this.inputs[1].types[0]
-              : ANY_VALUE;
+        const type   = this.outputs[0].types[0];
 
 
         colors.text   = isDark(colors.back) ? [1, 1, 1, 1] : [0, 0, 0, 1]; 
 
         const gray =
-               this.active
-            && (  !this.inputs[0].connected
-                || arraysIntersect(this.inputs[0].connectedOutput.types, [ANY_VALUE, LIST_VALUE])
-                || this.paramCondition.value.value == 0)
-            && (  !this.inputs[1].connected
-                || arraysIntersect(this.inputs[1].connectedOutput.types, [ANY_VALUE, LIST_VALUE])
-                || this.paramCondition.value.value == 1);
+                this.active
+            && !this.inputs[0].connected
+            && !this.inputs[1].connected;
 
-        colors.input  = this.active ? rgb_a(colors.text, 0.4)  : rgb_a(rgbSaturateHsv(rgbFromType(type, true), 0.5), 0.8);
-        colors.output = gray        ? rgb_a(colors.text, 0.35) : rgb_a(rgbSaturateHsv(rgbFromType(type, true), 0.5), 0.7);
-        colors.wire   = rgbFromType(ANY_VALUE, true);
-
-
-        // let colorActive  = rgbFromType(type, true);
-        // let colorPassive = rgbFromType(type, false);
-
-
-        // if (NUMBER_TYPES.includes(type))
-        // {
-        //     colors.input  = this.active ? rgb_a(colorPassive, 0.55) : rgb_a(colorActive, darkMode ? 0.65 : 0.5);
-        //     colors.output = this.active ? rgb_a(colorPassive, 0.5 ) : rgb_a(colorActive, darkMode ? 0.6  : 0.4);
-        //     colors.wire   = colorActive;
-        // }
-        // else if (TEXT_TYPES.includes(type))
-        // {
-        //     colors.input  = this.active ? rgb_a(colorActive, 0.55) : rgb_a(darkMode ? colorActive : colorPassive, darkMode ? 0.55 : 1);
-        //     colors.output = this.active ? rgb_a(colorActive, 0.45) : rgb_a(darkMode ? colorActive : colorPassive, darkMode ? 0.45 : 0.9);
-        //     colors.wire   = colorActive;
-        // }
-        // else if (SHAPE_TYPES.includes(type))
-        // {
-        //     colors.input  = this.active ? rgb_a(colorPassive, 0.65) : rgb_a(colorActive, darkMode ? 0.6 : 0.5 );
-        //     colors.output = this.active ? rgb_a(colorPassive, 0.65) : rgb_a(colorActive, darkMode ? 0.5 : 0.45);
-        //     colors.wire   = colorActive;
-        // }
-        // else if (COLOR_TYPES.includes(type))
-        // {
-        //     if (   this.inputs[0].connected
-        //         && this.inputs[1].connected)
-        //     {
-        //         colors.output = 
-        //             this.paramCondition.value.value > 0
-        //             ? this.inputs[0].connectedOutput.wireColor
-        //             : this.inputs[1].connectedOutput.wireColor;
-        //     }
-
-        //     else if (this.inputs[0].connected
-        //           && this.paramCondition.value.value > 0)
-        //         colors.output = this.inputs[0].connectedOutput.wireColor;
-
-        //     else if (this.inputs[1].connected
-        //           && this.paramCondition.value.value == 0)
-        //         colors.output = this.inputs[1].connectedOutput.wireColor;
-
-
-        //     colors.wire = colors.output;
-        // }
-        // else if (FILL_TYPES.includes(type))
-        // {
-        //     if (   this.inputs[0].connected
-        //         && this.inputs[1].connected)
-        //     {
-        //         const wireColor =
-        //             this.paramCondition.value.value > 0
-        //             ? this.inputs[0].connectedOutput.wireColor
-        //             : this.inputs[1].connectedOutput.wireColor;
-
-        //         colors.outputWire = wireColor;
-        //         colors.output = rgbaLerp(
-        //             rgb_a(getTextColorFromBackColor(rgbFromType(ANY_VALUE, true)), 0.3),
-        //             wireColor,
-        //             wireColor[3]);
-        //     }
-
-        //     else if (this.inputs[0].connected
-        //           && this.paramCondition.value.value > 0)
-        //     {
-        //         const wireColor = this.inputs[0].connectedOutput.wireColor;
-
-        //         colors.outputWire = wireColor;
-        //         colors.output = rgbaLerp(
-        //             rgb_a(getTextColorFromBackColor(rgbFromType(ANY_VALUE, true)), 0.3),
-        //             wireColor,
-        //             wireColor[3]);
-        //     }
-        //     else if (this.inputs[1].connected
-        //           && this.paramCondition.value.value == 0)
-        //     {
-        //         const wireColor = this.inputs[1].connectedOutput.wireColor;
-
-        //         colors.outputWire = wireColor;
-        //         colors.output = rgbaLerp(
-        //             rgb_a(getTextColorFromBackColor(rgbFromType(ANY_VALUE, true)), 0.3),
-        //             wireColor,
-        //             wireColor[3]);
-        //     }
-
-
-        //     colors.wire = colors.output;
-        // }
-
-        
+        colors.input  = rgb_a(colors.text, 0.4);
+        colors.output = gray ? rgb_a(colors.text, 0.35) : rgb_a(rgbSaturateHsv(rgbFromType(type, true), 0.5), 0.7);
+        colors.wire   = gray ? rgbFromType(ANY_VALUE, true) : rgbFromType(type, true);
+      
         
         return colors;
-    }
-}
-
-
-
-function OpIfElse_onConnectInput(node, inputIndex)
-{
-    const otherIndex = inputIndex == 0 ? 1 : 0;
-
-    const firstInput = node.inputs[inputIndex];
-    const otherInput = node.inputs[otherIndex];
-
-    const firstOut   = firstInput.connectedOutput;
-    const firstTypes = [...firstOut.types];
-    
-
-    firstInput.types     = [...firstTypes];
-    firstInput.wireColor = [...firstOut.wireColor];
-
-    
-    if (!node.inputs[otherIndex].connected)
-    {
-        otherInput.types      = [...firstTypes];
-        //otherInput.wireColor  = [...firstOut.wireColor];
-
-        node.outputs[0].types = 
-            firstTypes.includes(ANY_VALUE)
-            ? [ANY_VALUE]
-            : [...firstTypes];
-    }
-
-    
-    for (const output of node.outputs)
-        for (const input of output.connectedInputs)
-            if (input.node.type == IF_ELSE)
-                OpIfElse_onConnectInput(input.node, input.index);
-
-
-    // if there is an outgoing connection from the node of a different type than
-    // the incoming connection, delete the outgoing connection
-
-    if (    node.outputs[0].connected
-        && !node.outputs[0].connectedInputs[0].canConnectFrom(firstOut))
-        node.outputs[0].connectedInputs.forEach(i => uiDisconnect(i));
-}
-
-
-
-function OpIfElse_onDisconnectInput(node, inputIndex)
-{
-    const otherIndex = inputIndex == 0 ? 1 : 0;
-    
-    const firstInput = node.inputs[inputIndex];
-    //const firstOut   = firstInput.connectedOutput;
-
-    const otherInput = node.inputs[otherIndex];
-    const otherOut   = otherInput.connectedOutput;
-    const otherTypes = otherOut ? otherOut.types : [];
-
-
-    if (!node.inputs[otherIndex].connected)
-        node.inputs[inputIndex].types = [ANY_VALUE];
-
-    node.inputs[otherIndex].types = 
-        otherInput.connected 
-        ? [...otherTypes]
-        : [ANY_VALUE];
-
-    node.outputs[0].types = 
-        otherInput.connected
-        ? [...otherTypes]
-        : [ANY_VALUE];
-
-
-    // const connectedInputs = node.headerInputs.filter(i => i.connected);
-
-    // if (connectedInputs.length == 1)
-    // {
-    //     const input = connectedInputs[0];
-
-    //     uiDisconnect(input);
-
-    //     // if (input.node.type == IF_ELSE)
-    //     //     OpIfElse_onDisconnectInput(input.node, input.index);
-    // }
-    {
-        for (const output of node.outputs)
-            for (const input of output.connectedInputs)
-                if (input.node.type == IF_ELSE)
-                    OpIfElse_onConnectInput(input.node, input.index);
     }
 }
 
@@ -113762,7 +113554,6 @@ extends OperatorWithValue
 class   OpNumberToText
 extends OperatorBase
 {
-    paramValue;
     paramFormat;
 
 
@@ -113772,31 +113563,27 @@ extends OperatorBase
         super(NUMBER_TO_TEXT, 'numToText', 'to text', iconNumberToText);
 
 
-        this.addInput(new Input([NUMBER_VALUE]));
+        this.addInput (new Input([NUMBER_VALUE, NUMBER_LIST_VALUE, LIST_VALUE]));
+        this.addOutput(new Output([TEXT_VALUE], this.output_genRequest));
 
-        this.addParam(this.paramValue   = new TextParam ('value',  'value',  false, false, true));
         this.addParam(this.paramFormat = new SelectParam('format', 'format', false, true,  true, ['decimal', 'hexadecimal']));
-
-        this.paramValue.isNodeValue = true;
-
-        setControlFont(this.paramValue.controls[0].textbox, 'Roboto Mono', 10, 'center');
     }
 
 
 
-    genRequest(gen)
+    output_genRequest(gen)
     {
-        // 'this' is the node
+        // 'this' is the output
 
         gen.scope.push({
-            nodeId:  this.id, 
+            nodeId:  this.node.id, 
             paramId: NULL });
 
-        const [request, ignore] = this.genRequestStart(gen);
+        const [request, ignore] = this.node.genRequestStart(gen);
         if (ignore) return request;
 
         
-        const input = this.inputs[0];
+        const input = this.node.inputs[0];
 
 
         request.push(input.connected ? 1 : 0);
@@ -113804,25 +113591,38 @@ extends OperatorBase
         if (input.connected)
             request.push(...pushInputOrParam(input, gen));
 
-        request.push(...this.paramFormat.genRequest(gen));
+        request.push(...this.node.paramFormat.genRequest(gen));
 
         
         gen.scope.pop();
-        pushUnique(gen.passedNodes, this);
+        pushUnique(gen.passedNodes, this.node);
 
         return request;
     }
 
 
 
-    updateParams()
+    updateValues(requestId, actionId, updateParamId, paramIds, values)
     {
-        this.paramValue.enableControlText(false, this.isUnknown());
-        //this.paramValue.controls[0].valueText = this.isUnknown() ? UNKNOWN_DISPLAY : '';
+        const type = values[paramIds.findIndex(id => id == 'type' )];
 
-        this.paramFormat.enableControlText(true, this.paramFormat.isUnknown());
+        if (type) 
+            this.outputs[0].types = [type.value];
 
-        this.updateParamControls();
+        super.updateValues(requestId, actionId, updateParamId, paramIds, values);
+    }
+
+    
+
+    getHeaderColors(options = {})
+    {
+        const colors = super.getHeaderColors(options);
+        const type   = this.outputs[0].types[0];
+
+        colors.output = rgb_a(rgbSaturateHsv(rgbFromType(type, true), 0.5), 0.7);
+        colors.wire   = rgbFromType(type, true);
+
+        return colors;
     }
 }
 
@@ -117388,15 +117188,6 @@ extends OperatorBase
 
         super.updateValues(requestId, actionId, updateParamId, paramIds, values);
     }
-
-
-
-    // updateParams()
-    // {
-    //     this.paramFormat.enableControlText(true, this.paramFormat.isUnknown());
-
-    //     this.updateParamControls();
-    // }
 
 
 
@@ -132412,7 +132203,7 @@ function createSessionId()
 
 function subscribed()
 {
-    return false;//currentSessionId == createSessionId();
+    return true;//currentSessionId == createSessionId();
 }
 
 
@@ -132966,17 +132757,8 @@ function initKeyboardPanel()
         ctrlKeys .forEach(k => k.innerHTML = 'Shift');
         shiftKeys.forEach(k => k.innerHTML = 'Ctrl' );
 
-
-        document.getElementsByClassName('treeLeftCtrl'  )[0].innerHTML = 'Alt';
-
-        document.getElementsByClassName('newBranch1'    )[0].innerHTML = 'Alt';
-        document.getElementsByClassName('newBranch2'    )[0].innerHTML = 'Ctrl';
-        
-        document.getElementsByClassName('treeRightCtrl1')[0].innerHTML = 'Shift';
-        document.getElementsByClassName('treeRightCtrl2')[0].innerHTML = 'Ctrl';
-        
-        document.getElementsByClassName('treeAcross1'   )[0].innerHTML = 'Alt';
-        document.getElementsByClassName('treeAcross2'   )[0].innerHTML = 'Ctrl';
+        document.getElementsByClassName('newBranch1')[0].innerHTML = 'Alt';
+        document.getElementsByClassName('newBranch2')[0].innerHTML = 'Ctrl';
     }
 
 
@@ -133389,45 +133171,6 @@ function setAutoCursor()
 var currentPresetTab = 0;
 
 
-function initPresets()
-{
-    if (isMac)
-    {
-        const _ctrlShift = document.getElementsByClassName('ctrlShift');
-        const  ctrlShift = Array.prototype.slice.call(_ctrlShift);
-    
-        const ctrlKeys  = ctrlShift.filter(k => k.innerHTML == 'Ctrl' );
-        const shiftKeys = ctrlShift.filter(k => k.innerHTML == 'Shift');
-
-        ctrlKeys .forEach(k => k.innerHTML = 'Shift');
-        shiftKeys.forEach(k => k.innerHTML = 'Ctrl' );
-
-
-        document.getElementsByClassName('treeLeftCtrl'  )[0].innerHTML = 'Alt';
-
-        document.getElementsByClassName('newBranch1'    )[0].innerHTML = 'Alt';
-        document.getElementsByClassName('newBranch2'    )[0].innerHTML = 'Ctrl';
-        
-        document.getElementsByClassName('treeRightCtrl1')[0].innerHTML = 'Shift';
-        document.getElementsByClassName('treeRightCtrl2')[0].innerHTML = 'Ctrl';
-        
-        document.getElementsByClassName('treeAcross1'   )[0].innerHTML = 'Alt';
-        document.getElementsByClassName('treeAcross2'   )[0].innerHTML = 'Ctrl';
-    }
-
-
-    const keys = document.getElementsByClassName('shortcutKey');
-
-    for (const key of keys)
-    {
-             if (key.innerHTML == 'Ctrl' ) key.innerHTML = osCtrl (false);
-        else if (key.innerHTML == 'Shift') key.innerHTML = osShift(false);
-        else if (key.innerHTML == 'Alt'  ) key.innerHTML = osAlt  (false);
-    }
-}
-
-
-
 function showPresets()
 {
     setCurrentPresetTab(0);
@@ -133488,12 +133231,20 @@ function getPresetGraph(graphId)
 {
     switch (graphId)
     {
-        case 'basics':    return presetNodeBasics;
-        case 'dataTypes': return presetDataTypes;
-        case 'organize':  return presetOrganize;
-        case 'active':    return presetActive;
-        case 'shapes':    return presetShapes;
-        case 'transform': return presetTransform;
+        case 'basics':            return presetNodeBasics;
+        case 'dataTypes':         return presetDataTypes;
+        case 'organize':          return presetOrganize;
+        case 'active':            return presetActive;
+     
+        case 'dataSelect':        return presetDataSelect;
+
+        case 'loop1d':            return presetLoop1d;
+        case 'loop2d':            return presetLoop2d;
+        case 'loopLock':          return presetLoopLock;
+
+        case 'shapesStyles':      return presetShapesStyles;
+        case 'basicTransform':    return presetBasicTransform;
+        case 'combinedTransform': return presetCombinedTransform;
     }
 }
 
@@ -138054,10 +137805,9 @@ const presetDataTypes = '\
             "renamed": "false",\
             "enabled": "true",\
             "highlight": "0",\
-            "x": "376",\
-            "y": "1165",\
+            "x": "474",\
+            "y": "1292",\
             "z": "0",\
-            "active": "true",\
             "width": "120",\
             "height": "54",\
             "params":\
@@ -138072,12 +137822,11 @@ const presetDataTypes = '\
             "renamed": "false",\
             "enabled": "true",\
             "highlight": "0",\
-            "x": "745",\
-            "y": "1192",\
+            "x": "842",\
+            "y": "1292",\
             "z": "1",\
-            "active": "true",\
             "width": "120",\
-            "height": "98",\
+            "height": "120",\
             "params":\
             [\
                     ["TEXT#", "value", "%221234567%22", "center"],\
@@ -138089,29 +137838,13 @@ const presetDataTypes = '\
             {\
             "type": "CMNT",\
             "id": "comment7",\
-            "name": "In%20the%20following%20example%20a%20number%20is%20converted%20to%20text",\
+            "name": "In%20the%20following%20example%20a%20number%20is%20converted%20to%20text%2C%20which",\
             "renamed": "true",\
             "enabled": "true",\
             "highlight": "0",\
-            "x": "365",\
-            "y": "1018",\
+            "x": "433",\
+            "y": "1121",\
             "z": "2"\
-            },\
-            {\
-            "type": "N2T",\
-            "id": "numToText",\
-            "name": "to%20text",\
-            "renamed": "false",\
-            "enabled": "true",\
-            "highlight": "0",\
-            "x": "560",\
-            "y": "1165",\
-            "z": "3",\
-            "active": "true",\
-            "params":\
-            [\
-                    ["TEXT#", "value", "1234567", "center"]\
-            ]\
             },\
             {\
             "type": "CMNT",\
@@ -138120,9 +137853,9 @@ const presetDataTypes = '\
             "renamed": "true",\
             "enabled": "true",\
             "highlight": "0",\
-            "x": "452",\
-            "y": "593",\
-            "z": "4"\
+            "x": "552",\
+            "y": "693",\
+            "z": "3"\
             },\
             {\
             "type": "CMNT",\
@@ -138131,9 +137864,9 @@ const presetDataTypes = '\
             "renamed": "true",\
             "enabled": "true",\
             "highlight": "0",\
-            "x": "450",\
-            "y": "642",\
-            "z": "5"\
+            "x": "550",\
+            "y": "742",\
+            "z": "4"\
             },\
             {\
             "type": "NULL",\
@@ -138142,9 +137875,9 @@ const presetDataTypes = '\
             "renamed": "true",\
             "enabled": "true",\
             "highlight": "0",\
-            "x": "330",\
-            "y": "743",\
-            "z": "6",\
+            "x": "430",\
+            "y": "843",\
+            "z": "5",\
             "active": "true"\
             },\
             {\
@@ -138154,9 +137887,9 @@ const presetDataTypes = '\
             "renamed": "false",\
             "enabled": "true",\
             "highlight": "0",\
-            "x": "931",\
-            "y": "1165",\
-            "z": "7",\
+            "x": "1028",\
+            "y": "1265",\
+            "z": "6",\
             "active": "true",\
             "params":\
             [\
@@ -138173,9 +137906,9 @@ const presetDataTypes = '\
             "renamed": "false",\
             "enabled": "true",\
             "highlight": "0",\
-            "x": "487",\
-            "y": "743",\
-            "z": "8",\
+            "x": "587",\
+            "y": "843",\
+            "z": "7",\
             "active": "true",\
             "width": "120",\
             "height": "54",\
@@ -138191,9 +137924,9 @@ const presetDataTypes = '\
             "renamed": "true",\
             "enabled": "true",\
             "highlight": "0",\
-            "x": "954",\
-            "y": "742",\
-            "z": "9",\
+            "x": "1054",\
+            "y": "842",\
+            "z": "8",\
             "active": "true"\
             },\
             {\
@@ -138203,9 +137936,9 @@ const presetDataTypes = '\
             "renamed": "false",\
             "enabled": "true",\
             "highlight": "0",\
-            "x": "643",\
-            "y": "743",\
-            "z": "10",\
+            "x": "743",\
+            "y": "843",\
+            "z": "9",\
             "active": "true",\
             "width": "120",\
             "height": "54",\
@@ -138217,13 +137950,13 @@ const presetDataTypes = '\
             {\
             "type": "CMNT",\
             "id": "comment13",\
-            "name": "which%20is%20then%20passed%20to%20a%20text%20shape%20on%20the%20canvas.",\
+            "name": "is%20then%20modified%20and%20passed%20to%20a%20text%20shape%20on%20the%20canvas.",\
             "renamed": "true",\
             "enabled": "true",\
             "highlight": "0",\
-            "x": "365",\
-            "y": "1061",\
-            "z": "11"\
+            "x": "433",\
+            "y": "1164",\
+            "z": "10"\
             },\
             {\
             "type": "COL",\
@@ -138232,9 +137965,9 @@ const presetDataTypes = '\
             "renamed": "false",\
             "enabled": "true",\
             "highlight": "0",\
-            "x": "798",\
-            "y": "743",\
-            "z": "12",\
+            "x": "898",\
+            "y": "843",\
+            "z": "11",\
             "active": "true",\
             "prevSpace": "hex",\
             "params":\
@@ -138244,23 +137977,26 @@ const presetDataTypes = '\
                     ["NUM#", "c2", "184,0"],\
                     ["NUM#", "c3", "54,0"]\
             ]\
+            },\
+            {\
+            "type": "N2T",\
+            "id": "numToText",\
+            "name": "to%20text",\
+            "renamed": "false",\
+            "enabled": "true",\
+            "highlight": "0",\
+            "x": "658",\
+            "y": "1292",\
+            "z": "12"\
             }\
         ],\
         "connections":\
         [\
             {\
             "outputNodeId": "numToText",\
-            "outputId": "value",\
-            "outputOrder": "0",\
-            "inputNodeId": "replace",\
-            "inputId": "h0",\
-            "list": "false"\
-            },\
-            {\
-            "outputNodeId": "num5",\
             "outputId": "h0",\
             "outputOrder": "0",\
-            "inputNodeId": "numToText",\
+            "inputNodeId": "replace",\
             "inputId": "h0",\
             "list": "false"\
             },\
@@ -138270,6 +138006,14 @@ const presetDataTypes = '\
             "outputOrder": "0",\
             "inputNodeId": "text2",\
             "inputId": "text",\
+            "list": "false"\
+            },\
+            {\
+            "outputNodeId": "num5",\
+            "outputId": "h0",\
+            "outputOrder": "0",\
+            "inputNodeId": "numToText",\
+            "inputId": "h0",\
             "list": "false"\
             }\
         ]\
@@ -138649,862 +138393,2193 @@ const presetActive = '\
     {\
         "nodes":\
         [\
-        {\
+            {\
             "type": "CMNT",\
             "id": "comment4",\
             "name": "%3Cb%3EShift%3C%2Fb%3E%2BDouble%20click%20to%20activate%20%3Cb%3Emultiple%20nodes%3C%2Fb%3E%20at%20the%20same%20time.",\
             "renamed": "true",\
             "enabled": "true",\
             "highlight": "0",\
-            "x": "2125",\
-            "y": "1659",\
+            "x": "2275",\
+            "y": "1807",\
             "z": "0"\
-        },\
-        {\
+            },\
+            {\
             "type": "CMNT",\
             "id": "comment11",\
             "name": "%3Cb%3EDouble%20click%3C%2Fb%3E%20a%20node\'s%20header%20to%20activate%20the%20node",\
             "renamed": "true",\
             "enabled": "true",\
             "highlight": "0",\
-            "x": "2130",\
-            "y": "1283",\
+            "x": "2280",\
+            "y": "1433",\
             "z": "1"\
-        },\
-        {\
+            },\
+            {\
             "type": "CMNT",\
             "id": "comment5",\
             "name": "Double%20click%20the%20plugin%20background%20to%20deactivate%20all%20nodes.",\
             "renamed": "true",\
             "enabled": "true",\
             "highlight": "0",\
-            "x": "2121",\
-            "y": "1713",\
+            "x": "2271",\
+            "y": "1863",\
             "z": "2"\
-        },\
-        {\
+            },\
+            {\
             "type": "RECT",\
             "id": "rect",\
             "name": "rectangle",\
             "renamed": "false",\
             "enabled": "true",\
             "highlight": "0",\
-            "x": "1623",\
-            "y": "1555",\
+            "x": "1773",\
+            "y": "1705",\
             "z": "3",\
             "params":\
             [\
-                ["NUM#", "y", "100,0"]\
+                    ["NUM#", "y", "100,0"]\
             ]\
-        },\
-        {\
+            },\
+            {\
             "type": "ELPS",\
             "id": "ellipse",\
             "name": "ellipse",\
             "renamed": "false",\
             "enabled": "true",\
             "highlight": "0",\
-            "x": "1814",\
-            "y": "1283",\
+            "x": "1964",\
+            "y": "1433",\
             "z": "4",\
             "params":\
             [\
-                ["NUM#", "x", "100,0"]\
+                    ["NUM#", "x", "100,0"]\
             ]\
-        },\
-        {\
+            },\
+            {\
             "type": "POLY",\
             "id": "poly",\
             "name": "polygon",\
             "renamed": "false",\
             "enabled": "true",\
             "highlight": "0",\
-            "x": "1626",\
-            "y": "1284",\
+            "x": "1776",\
+            "y": "1434",\
             "z": "5",\
             "params":\
             [\
-                ["NUM#", "corners", "6,0"]\
+                    ["NUM#", "corners", "6,0"]\
             ]\
-        },\
-        {\
+            },\
+            {\
             "type": "STAR",\
             "id": "star",\
             "name": "star",\
             "renamed": "false",\
             "enabled": "true",\
             "highlight": "0",\
-            "x": "1815",\
-            "y": "1555",\
+            "x": "1965",\
+            "y": "1705",\
             "z": "6",\
             "params":\
             [\
-                ["NUM#", "x", "100,0"],\
-                ["NUM#", "y", "100,0"]\
+                    ["NUM#", "x", "100,0"],\
+                    ["NUM#", "y", "100,0"]\
             ]\
-        },\
-        {\
+            },\
+            {\
             "type": "COL",\
             "id": "color",\
             "name": "color",\
             "renamed": "false",\
             "enabled": "true",\
             "highlight": "0",\
-            "x": "1340",\
-            "y": "1475",\
+            "x": "1490",\
+            "y": "1625",\
             "z": "7",\
             "prevSpace": "hsv",\
             "params":\
             [\
-                ["NUM#", "space", "2,0"],\
-                ["NUM#", "c1", "27,0"],\
-                ["NUM#", "c2", "100,0"],\
-                ["NUM#", "c3", "93,0"]\
+                    ["NUM#", "space", "2,0"],\
+                    ["NUM#", "c1", "27,0"],\
+                    ["NUM#", "c2", "100,0"],\
+                    ["NUM#", "c3", "93,0"]\
             ]\
-        },\
-        {\
+            },\
+            {\
             "type": "CMB",\
             "id": "combine",\
             "name": "combine",\
             "renamed": "false",\
             "enabled": "true",\
             "highlight": "0",\
-            "x": "2126",\
-            "y": "1503",\
+            "x": "2276",\
+            "y": "1653",\
             "z": "8",\
             "width": "120",\
             "height": "77"\
-        },\
-        {\
+            },\
+            {\
             "type": "CMNT",\
             "id": "comment13",\
             "name": "to%20put%20its%20%3Cb%3Eobject%20on%20the%20canvas%3C%2Fb%3E.%20Objects%20created%20by%20Generator",\
             "renamed": "true",\
             "enabled": "true",\
             "highlight": "0",\
-            "x": "2130",\
-            "y": "1331",\
+            "x": "2280",\
+            "y": "1481",\
             "z": "9"\
-        },\
-        {\
+            },\
+            {\
             "type": "CMNT",\
             "id": "comment14",\
             "name": "have%20the%20%26nbsp%3B%26hairsp%3B%E2%97%A6G%E2%80%A2%26nbsp%3B%26thinsp%3Bprefix%20in%20the%20name.",\
             "renamed": "true",\
             "enabled": "true",\
             "highlight": "0",\
-            "x": "2128",\
-            "y": "1381",\
+            "x": "2278",\
+            "y": "1531",\
             "z": "10"\
-        },\
-        {\
+            },\
+            {\
             "type": "CMNT",\
-            "id": "comment12",\
-            "name": "In%20the%20free%20version%20of%20Generator%2C%20when%20you%20close%20the%20plugin%20your%20objects%20are%20removed%20from%20the%20canvas.",\
+            "id": "comment19",\
+            "name": "In%20the%20free%20version%20of%20Generator%2C%20when%20you%20close%20the%20plugin",\
             "renamed": "true",\
             "enabled": "true",\
             "highlight": "0",\
-            "x": "1418",\
-            "y": "1910",\
+            "x": "1519",\
+            "y": "2067",\
             "z": "11"\
-        },\
-        {\
+            },\
+            {\
             "type": "CMNT",\
-            "id": "comment15",\
-            "name": "This%20is%20the%20cleanest%20way%20of%20separating%20Generator%20objects%20from%20your%20other%20work.%20To%20keep%20using%20Generator%20objects",\
+            "id": "comment20",\
+            "name": "way%20of%20separating%20Generator%20objects%20from%20your%20other%20work.",\
             "renamed": "true",\
             "enabled": "true",\
             "highlight": "0",\
-            "x": "1413",\
-            "y": "1967",\
+            "x": "1518",\
+            "y": "2159",\
             "z": "12"\
-        },\
-        {\
+            },\
+            {\
             "type": "CMNT",\
-            "id": "comment16",\
-            "name": "after%20closing%20the%20plugin%2C%20first%20%3Cb%3Eselect%20and%20copy%20them%20to%20another%20Figma%20document%3C%2Fb%3E.",\
+            "id": "comment21",\
+            "name": "first%20%3Cb%3Eselect%20and%20copy%20them%20to%20another%20Figma%20document%3C%2Fb%3E.",\
             "renamed": "true",\
             "enabled": "true",\
             "highlight": "0",\
-            "x": "1417",\
-            "y": "2023",\
+            "x": "1522",\
+            "y": "2304",\
             "z": "13"\
-        },\
-        {\
+            },\
+            {\
             "type": "CMNT",\
-            "id": "comment17",\
-            "name": "Pro%20subscribers%20can%20use%20the%20Render%20node%20to%20keep%20their%20Generator%20objects%20on%20the%20same%20page%2C%20updated%20automatically",\
+            "id": "comment22",\
+            "name": "Pro%20subscribers%20can%20use%20the%20Render%20node%20to%20keep%20their",\
             "renamed": "true",\
             "enabled": "true",\
             "highlight": "0",\
-            "x": "1412",\
-            "y": "2142",\
+            "x": "2383",\
+            "y": "2065",\
             "z": "14"\
-        },\
-        {\
+            },\
+            {\
             "type": "CMNT",\
-            "id": "comment18",\
-            "name": "when%20Generator%20reloads.",\
+            "id": "comment23",\
+            "name": "automatically%20when%20Generator%20reloads.",\
             "renamed": "true",\
             "enabled": "true",\
             "highlight": "0",\
-            "x": "1412",\
-            "y": "2198",\
+            "x": "2383",\
+            "y": "2166",\
             "z": "15",\
             "active": "true"\
-        }\
+            },\
+            {\
+            "type": "CMNT",\
+            "id": "comment24",\
+            "name": "your%20objects%20are%20removed%20from%20the%20canvas.%20This%20is%20the%20cleanest",\
+            "renamed": "true",\
+            "enabled": "true",\
+            "highlight": "0",\
+            "x": "1522",\
+            "y": "2111",\
+            "z": "16"\
+            },\
+            {\
+            "type": "CMNT",\
+            "id": "comment25",\
+            "name": "To%20keep%20using%20Generator%20objects%20after%20closing%20the%20plugin%2C",\
+            "renamed": "true",\
+            "enabled": "true",\
+            "highlight": "0",\
+            "x": "1519",\
+            "y": "2257",\
+            "z": "17"\
+            },\
+            {\
+            "type": "CMNT",\
+            "id": "comment26",\
+            "name": "Generator%20objects%20on%20the%20same%20page%20and%20update%20them",\
+            "renamed": "true",\
+            "enabled": "true",\
+            "highlight": "0",\
+            "x": "2382",\
+            "y": "2116",\
+            "z": "18"\
+            },\
+            {\
+            "type": "PANEL",\
+            "id": "panel",\
+            "name": "",\
+            "renamed": "false",\
+            "enabled": "true",\
+            "highlight": "0",\
+            "x": "1469",\
+            "y": "2003",\
+            "z": "19",\
+            "active": "true",\
+            "width": "1639.6518683107404",\
+            "height": "395",\
+            "params":\
+            [\
+            ]\
+            }\
         ],\
         "connections":\
         [\
-        {\
+            {\
             "outputNodeId": "color",\
             "outputId": "h0",\
             "outputOrder": "0",\
             "inputNodeId": "rect",\
             "inputId": "props",\
             "list": "false"\
-        },\
-        {\
+            },\
+            {\
             "outputNodeId": "color",\
             "outputId": "h0",\
             "outputOrder": "1",\
             "inputNodeId": "ellipse",\
             "inputId": "props",\
             "list": "false"\
-        },\
-        {\
+            },\
+            {\
             "outputNodeId": "color",\
             "outputId": "h0",\
             "outputOrder": "2",\
             "inputNodeId": "poly",\
             "inputId": "props",\
             "list": "false"\
-        },\
-        {\
+            },\
+            {\
             "outputNodeId": "color",\
             "outputId": "h0",\
             "outputOrder": "3",\
             "inputNodeId": "star",\
             "inputId": "props",\
             "list": "false"\
-        },\
-        {\
+            },\
+            {\
             "outputNodeId": "poly",\
             "outputId": "h0",\
             "outputOrder": "0",\
             "inputNodeId": "combine",\
             "inputId": "h0",\
             "list": "false"\
-        },\
-        {\
+            },\
+            {\
             "outputNodeId": "ellipse",\
             "outputId": "h0",\
             "outputOrder": "0",\
             "inputNodeId": "combine",\
             "inputId": "h1",\
             "list": "false"\
-        },\
-        {\
+            },\
+            {\
             "outputNodeId": "rect",\
             "outputId": "h0",\
             "outputOrder": "0",\
             "inputNodeId": "combine",\
             "inputId": "h2",\
             "list": "false"\
-        },\
-        {\
+            },\
+            {\
             "outputNodeId": "star",\
             "outputId": "h0",\
             "outputOrder": "0",\
             "inputNodeId": "combine",\
             "inputId": "h3",\
             "list": "false"\
-        }\
+            }\
         ]\
     }';
 
 
-const presetShapes = '\
+const presetDataSelect = '\
     {\
-    "nodes":\
-    [\
-        {\
-        "type": "COL",\
-        "id": "color3",\
-        "name": "color",\
-        "renamed": "false",\
-        "enabled": "true",\
-        "highlight": "0",\
-        "x": "-233",\
-        "y": "1277",\
-        "z": "0",\
-        "prevSpace": "hsv",\
-        "params":\
+        "nodes":\
         [\
-                ["NUM#", "space", "2,0"],\
-                ["NUM#", "c1", "110.00000000000001,0"],\
-                ["NUM#", "c2", "65,0"],\
-                ["NUM#", "c3", "90,0"]\
-        ]\
-        },\
-        {\
-        "type": "CMNT",\
-        "id": "comment",\
-        "name": "(fill%2C%20stroke%20etc.)%2C%20otherwise%20it\'s%20shown",\
-        "renamed": "true",\
-        "enabled": "true",\
-        "highlight": "0",\
-        "x": "-445",\
-        "y": "77",\
-        "z": "1"\
-        },\
-        {\
-        "type": "STRK",\
-        "id": "stroke2",\
-        "name": "stroke",\
-        "renamed": "false",\
-        "enabled": "true",\
-        "highlight": "0",\
-        "x": "-42",\
-        "y": "1250",\
-        "z": "2",\
-        "params":\
+            {\
+            "type": "COL",\
+            "id": "color",\
+            "name": "color",\
+            "renamed": "false",\
+            "enabled": "true",\
+            "highlight": "0",\
+            "x": "637",\
+            "y": "2449",\
+            "z": "0",\
+            "prevSpace": "hex",\
+            "params":\
+            [\
+                    ["NUM#", "space", "0,0"],\
+                    ["NUM#", "c1", "211,0"],\
+                    ["NUM#", "c2", "17,0"],\
+                    ["NUM#", "c3", "150,0"]\
+            ]\
+            },\
+            {\
+            "type": "RECT",\
+            "id": "rect",\
+            "name": "rectangle",\
+            "renamed": "false",\
+            "enabled": "true",\
+            "highlight": "0",\
+            "x": "902",\
+            "y": "1965",\
+            "z": "1",\
+            "params":\
+            [\
+            ]\
+            },\
+            {\
+            "type": "ELPS",\
+            "id": "ellipse",\
+            "name": "ellipse",\
+            "renamed": "false",\
+            "enabled": "true",\
+            "highlight": "0",\
+            "x": "900",\
+            "y": "2150",\
+            "z": "2",\
+            "params":\
+            [\
+            ]\
+            },\
+            {\
+            "type": "TRPZ",\
+            "id": "trapeze",\
+            "name": "trapeze",\
+            "renamed": "false",\
+            "enabled": "true",\
+            "highlight": "0",\
+            "x": "901",\
+            "y": "2382",\
+            "z": "3",\
+            "params":\
+            [\
+            ]\
+            },\
+            {\
+            "type": "POLY",\
+            "id": "poly",\
+            "name": "polygon",\
+            "renamed": "false",\
+            "enabled": "true",\
+            "highlight": "0",\
+            "x": "901",\
+            "y": "2598",\
+            "z": "4",\
+            "params":\
+            [\
+            ]\
+            },\
+            {\
+            "type": "STAR",\
+            "id": "star",\
+            "name": "star",\
+            "renamed": "false",\
+            "enabled": "true",\
+            "highlight": "0",\
+            "x": "901",\
+            "y": "2822",\
+            "z": "5",\
+            "params":\
+            [\
+            ]\
+            },\
+            {\
+            "type": "CMB",\
+            "id": "combine",\
+            "name": "combine",\
+            "renamed": "false",\
+            "enabled": "true",\
+            "highlight": "0",\
+            "x": "1162",\
+            "y": "2431",\
+            "z": "6",\
+            "width": "120",\
+            "height": "90"\
+            },\
+            {\
+            "type": "SEL",\
+            "id": "select",\
+            "name": "select",\
+            "renamed": "false",\
+            "enabled": "true",\
+            "highlight": "0",\
+            "x": "1373",\
+            "y": "2460",\
+            "z": "7",\
+            "active": "true",\
+            "params":\
+            [\
+                    ["NUM#", "index", "4,0"]\
+            ]\
+            }\
+        ],\
+        "connections":\
         [\
-                ["LIST#", "fills", "1 FILL# 105,0 230,0 80,0 100,0 0,0"],\
-                ["NUM#", "weight", "4,0"]\
+            {\
+            "outputNodeId": "color",\
+            "outputId": "h0",\
+            "outputOrder": "0",\
+            "inputNodeId": "rect",\
+            "inputId": "props",\
+            "list": "false"\
+            },\
+            {\
+            "outputNodeId": "color",\
+            "outputId": "h0",\
+            "outputOrder": "1",\
+            "inputNodeId": "ellipse",\
+            "inputId": "props",\
+            "list": "false"\
+            },\
+            {\
+            "outputNodeId": "color",\
+            "outputId": "h0",\
+            "outputOrder": "2",\
+            "inputNodeId": "trapeze",\
+            "inputId": "props",\
+            "list": "false"\
+            },\
+            {\
+            "outputNodeId": "color",\
+            "outputId": "h0",\
+            "outputOrder": "3",\
+            "inputNodeId": "poly",\
+            "inputId": "props",\
+            "list": "false"\
+            },\
+            {\
+            "outputNodeId": "color",\
+            "outputId": "h0",\
+            "outputOrder": "4",\
+            "inputNodeId": "star",\
+            "inputId": "props",\
+            "list": "false"\
+            },\
+            {\
+            "outputNodeId": "rect",\
+            "outputId": "h0",\
+            "outputOrder": "0",\
+            "inputNodeId": "combine",\
+            "inputId": "h0",\
+            "list": "false"\
+            },\
+            {\
+            "outputNodeId": "ellipse",\
+            "outputId": "h0",\
+            "outputOrder": "0",\
+            "inputNodeId": "combine",\
+            "inputId": "h1",\
+            "list": "false"\
+            },\
+            {\
+            "outputNodeId": "trapeze",\
+            "outputId": "h0",\
+            "outputOrder": "0",\
+            "inputNodeId": "combine",\
+            "inputId": "h2",\
+            "list": "false"\
+            },\
+            {\
+            "outputNodeId": "poly",\
+            "outputId": "h0",\
+            "outputOrder": "0",\
+            "inputNodeId": "combine",\
+            "inputId": "h3",\
+            "list": "false"\
+            },\
+            {\
+            "outputNodeId": "star",\
+            "outputId": "h0",\
+            "outputOrder": "0",\
+            "inputNodeId": "combine",\
+            "inputId": "h4",\
+            "list": "false"\
+            },\
+            {\
+            "outputNodeId": "combine",\
+            "outputId": "h0",\
+            "outputOrder": "0",\
+            "inputNodeId": "select",\
+            "inputId": "h0",\
+            "list": "true"\
+            }\
         ]\
-        },\
-        {\
-        "type": "STRK",\
-        "id": "stroke3",\
-        "name": "stroke",\
-        "renamed": "false",\
-        "enabled": "true",\
-        "highlight": "0",\
-        "x": "-44",\
-        "y": "1633",\
-        "z": "3",\
-        "params":\
+    }';
+
+
+const presetLoop1d = '\
+    {\
+        "nodes":\
         [\
-                ["LIST#", "fills", "1 FILL# 64,0 128,0 255,0 50,0 0,0"],\
-                ["NUM#", "weight", "4,0"]\
-        ]\
-        },\
-        {\
-        "type": "COL",\
-        "id": "color4",\
-        "name": "color",\
-        "renamed": "false",\
-        "enabled": "true",\
-        "highlight": "0",\
-        "x": "-427",\
-        "y": "1687",\
-        "z": "4",\
-        "prevSpace": "hsv",\
-        "params":\
+            {\
+            "type": "COL",\
+            "id": "color",\
+            "name": "color",\
+            "renamed": "false",\
+            "enabled": "true",\
+            "highlight": "0",\
+            "x": "95",\
+            "y": "377",\
+            "z": "0",\
+            "prevSpace": "hsv",\
+            "params":\
+            [\
+                    ["NUM#", "space", "2,0"],\
+                    ["NUM#", "c1", "46,0"],\
+                    ["NUM#", "c2", "75,0"],\
+                    ["NUM#", "c3", "90,0"]\
+            ]\
+            },\
+            {\
+            "type": "MOVE",\
+            "id": "move",\
+            "name": "move",\
+            "renamed": "false",\
+            "enabled": "true",\
+            "highlight": "0",\
+            "x": "790",\
+            "y": "218",\
+            "z": "1",\
+            "params":\
+            [\
+                    ["NUM#", "x", "1080,0"]\
+            ]\
+            },\
+            {\
+            "type": "REPT",\
+            "id": "repeat",\
+            "name": "repeat",\
+            "renamed": "false",\
+            "enabled": "true",\
+            "highlight": "0",\
+            "x": "1037",\
+            "y": "498",\
+            "z": "2",\
+            "active": "true"\
+            },\
+            {\
+            "type": "SEQ",\
+            "id": "sequence",\
+            "name": "sequence",\
+            "renamed": "false",\
+            "enabled": "true",\
+            "highlight": "0",\
+            "x": "567",\
+            "y": "498",\
+            "z": "3",\
+            "params":\
+            [\
+                    ["NUM#", "step", "120,0"],\
+                    ["NUM#", "end", "?,0"]\
+            ]\
+            },\
+            {\
+            "type": "PANEL",\
+            "id": "panel",\
+            "name": "1D%20loop",\
+            "renamed": "true",\
+            "enabled": "true",\
+            "highlight": "0",\
+            "x": "508",\
+            "y": "150",\
+            "z": "4",\
+            "width": "691",\
+            "height": "494.2911638796187",\
+            "params":\
+            [\
+            ]\
+            },\
+            {\
+            "type": "POLY",\
+            "id": "poly",\
+            "name": "polygon",\
+            "renamed": "false",\
+            "enabled": "true",\
+            "highlight": "0",\
+            "x": "257",\
+            "y": "218",\
+            "z": "5",\
+            "params":\
+            [\
+            ]\
+            },\
+            {\
+            "type": "CMNT",\
+            "id": "comment",\
+            "name": "Incoming%20data%20(in%20this%20case%20a%20polygon)%20is%20%22repeated%E2%80%89%22%2C%20with%20",\
+            "renamed": "true",\
+            "enabled": "true",\
+            "highlight": "0",\
+            "x": "497",\
+            "y": "674",\
+            "z": "6"\
+            },\
+            {\
+            "type": "CMNT",\
+            "id": "comment2",\
+            "name": "each%20new%20repeat%20receiving%20a%20new%20X%20value%20from%20the%20sequence.",\
+            "renamed": "true",\
+            "enabled": "true",\
+            "highlight": "0",\
+            "x": "496",\
+            "y": "717",\
+            "z": "7"\
+            }\
+        ],\
+        "connections":\
         [\
-                ["NUM#", "space", "2,0"],\
-                ["NUM#", "c1", "220.00000000000003,0"],\
-                ["NUM#", "c2", "75,0"],\
-                ["NUM#", "c3", "100,0"]\
+            {\
+            "outputNodeId": "poly",\
+            "outputId": "h0",\
+            "outputOrder": "0",\
+            "inputNodeId": "move",\
+            "inputId": "h0",\
+            "list": "false"\
+            },\
+            {\
+            "outputNodeId": "sequence",\
+            "outputId": "h0",\
+            "outputOrder": "0",\
+            "inputNodeId": "move",\
+            "inputId": "x",\
+            "list": "false"\
+            },\
+            {\
+            "outputNodeId": "move",\
+            "outputId": "h0",\
+            "outputOrder": "0",\
+            "inputNodeId": "repeat",\
+            "inputId": "h0",\
+            "list": "false"\
+            },\
+            {\
+            "outputNodeId": "color",\
+            "outputId": "h0",\
+            "outputOrder": "0",\
+            "inputNodeId": "poly",\
+            "inputId": "props",\
+            "list": "false"\
+            }\
         ]\
-        },\
-        {\
-        "type": "FILL",\
-        "id": "fill2",\
-        "name": "fill",\
-        "renamed": "false",\
-        "enabled": "true",\
-        "highlight": "0",\
-        "x": "-231",\
-        "y": "1660",\
-        "z": "5",\
-        "params":\
+    }';
+
+
+    
+const presetLoop2d = '\
+    {\
+        "nodes":\
         [\
-                ["COL#", "color", "1,0 64,0 128,0 255,0"],\
-                ["NUM#", "opacity", "50,0"]\
-        ]\
-        },\
-        {\
-        "type": "RECT",\
-        "id": "rect4",\
-        "name": "rectangle",\
-        "renamed": "false",\
-        "enabled": "true",\
-        "highlight": "0",\
-        "x": "139",\
-        "y": "1112",\
-        "z": "6",\
-        "params":\
+            {\
+            "type": "SEQ",\
+            "id": "sequence2",\
+            "name": "sequence",\
+            "renamed": "false",\
+            "enabled": "true",\
+            "highlight": "0",\
+            "x": "517",\
+            "y": "623",\
+            "z": "0",\
+            "active": "true",\
+            "params":\
+            [\
+                    ["NUM#", "step", "120,0"],\
+                    ["NUM#", "end", "?,0"]\
+            ]\
+            },\
+            {\
+            "type": "COL",\
+            "id": "color",\
+            "name": "color",\
+            "renamed": "false",\
+            "enabled": "true",\
+            "highlight": "0",\
+            "x": "45",\
+            "y": "327",\
+            "z": "1",\
+            "active": "true",\
+            "prevSpace": "hsv",\
+            "params":\
+            [\
+                    ["NUM#", "space", "2,0"],\
+                    ["NUM#", "c1", "46,0"],\
+                    ["NUM#", "c2", "75,0"],\
+                    ["NUM#", "c3", "90,0"]\
+            ]\
+            },\
+            {\
+            "type": "CMNT",\
+            "id": "comment5",\
+            "name": "the%20repeat%20is%20done.%20Unlink%20the%20gray%20wires%20to%20see%20the%20difference.",\
+            "renamed": "true",\
+            "enabled": "true",\
+            "highlight": "0",\
+            "x": "439",\
+            "y": "1033",\
+            "z": "2"\
+            },\
+            {\
+            "type": "CMNT",\
+            "id": "comment2",\
+            "name": "each%20new%20repeat%20receiving%20new%20X%20and%20Y%20values%20from%20two",\
+            "renamed": "true",\
+            "enabled": "true",\
+            "highlight": "0",\
+            "x": "443",\
+            "y": "865",\
+            "z": "3"\
+            },\
+            {\
+            "type": "PANEL",\
+            "id": "panel",\
+            "name": "2D%20loop",\
+            "renamed": "true",\
+            "enabled": "true",\
+            "highlight": "0",\
+            "x": "458",\
+            "y": "100",\
+            "z": "4",\
+            "width": "691",\
+            "height": "673.6051224213832",\
+            "params":\
+            [\
+            ]\
+            },\
+            {\
+            "type": "CMNT",\
+            "id": "comment4",\
+            "name": "Linking%20a%20sequence%20to%20a%20repeat%20causes%20it%20to%20reset%20when%20",\
+            "renamed": "true",\
+            "enabled": "true",\
+            "highlight": "0",\
+            "x": "439",\
+            "y": "988",\
+            "z": "5"\
+            },\
+            {\
+            "type": "CMNT",\
+            "id": "comment3",\
+            "name": "separate%20sequences.",\
+            "renamed": "true",\
+            "enabled": "true",\
+            "highlight": "0",\
+            "x": "440",\
+            "y": "907",\
+            "z": "6"\
+            },\
+            {\
+            "type": "POLY",\
+            "id": "poly",\
+            "name": "polygon",\
+            "renamed": "false",\
+            "enabled": "true",\
+            "highlight": "0",\
+            "x": "207",\
+            "y": "168",\
+            "z": "7",\
+            "active": "true",\
+            "params":\
+            [\
+            ]\
+            },\
+            {\
+            "type": "SEQ",\
+            "id": "sequence",\
+            "name": "sequence",\
+            "renamed": "false",\
+            "enabled": "true",\
+            "highlight": "0",\
+            "x": "517",\
+            "y": "448",\
+            "z": "8",\
+            "active": "true",\
+            "params":\
+            [\
+                    ["NUM#", "step", "120,0"],\
+                    ["NUM#", "end", "?,0"]\
+            ]\
+            },\
+            {\
+            "type": "MOVE",\
+            "id": "move",\
+            "name": "move",\
+            "renamed": "false",\
+            "enabled": "true",\
+            "highlight": "0",\
+            "x": "740",\
+            "y": "168",\
+            "z": "9",\
+            "active": "true",\
+            "params":\
+            [\
+                    ["NUM#", "x", "480,0"],\
+                    ["NUM#", "y", "480,0"]\
+            ]\
+            },\
+            {\
+            "type": "REPT",\
+            "id": "repeat",\
+            "name": "repeat",\
+            "renamed": "false",\
+            "enabled": "true",\
+            "highlight": "0",\
+            "x": "967",\
+            "y": "448",\
+            "z": "10",\
+            "active": "true",\
+            "params":\
+            [\
+                    ["NUM#", "count", "5,0"]\
+            ]\
+            },\
+            {\
+            "type": "REPT",\
+            "id": "repeat2",\
+            "name": "repeat",\
+            "renamed": "false",\
+            "enabled": "true",\
+            "highlight": "0",\
+            "x": "967",\
+            "y": "623",\
+            "z": "11",\
+            "active": "true",\
+            "params":\
+            [\
+                    ["NUM#", "count", "5,0"]\
+            ]\
+            },\
+            {\
+            "type": "CMNT",\
+            "id": "comment",\
+            "name": "Incoming%20data%2C%20in%20this%20case%20a%20shape%2C%20is%20%22repeated%E2%80%89%22%2C%20with%20",\
+            "renamed": "true",\
+            "enabled": "true",\
+            "highlight": "0",\
+            "x": "444",\
+            "y": "822",\
+            "z": "12"\
+            }\
+        ],\
+        "connections":\
         [\
-                ["NUM#", "x", "50,0"],\
-                ["NUM#", "y", "50,0"]\
+            {\
+            "outputNodeId": "color",\
+            "outputId": "h0",\
+            "outputOrder": "0",\
+            "inputNodeId": "poly",\
+            "inputId": "props",\
+            "list": "false"\
+            },\
+            {\
+            "outputNodeId": "poly",\
+            "outputId": "h0",\
+            "outputOrder": "0",\
+            "inputNodeId": "move",\
+            "inputId": "h0",\
+            "list": "false"\
+            },\
+            {\
+            "outputNodeId": "sequence",\
+            "outputId": "h0",\
+            "outputOrder": "0",\
+            "inputNodeId": "move",\
+            "inputId": "x",\
+            "list": "false"\
+            },\
+            {\
+            "outputNodeId": "sequence2",\
+            "outputId": "h0",\
+            "outputOrder": "1",\
+            "inputNodeId": "move",\
+            "inputId": "y",\
+            "list": "false"\
+            },\
+            {\
+            "outputNodeId": "move",\
+            "outputId": "h0",\
+            "outputOrder": "0",\
+            "inputNodeId": "repeat",\
+            "inputId": "h0",\
+            "list": "false"\
+            },\
+            {\
+            "outputNodeId": "sequence",\
+            "outputId": "h0",\
+            "outputOrder": "1",\
+            "inputNodeId": "repeat",\
+            "inputId": "loop",\
+            "list": "false"\
+            },\
+            {\
+            "outputNodeId": "repeat",\
+            "outputId": "h0",\
+            "outputOrder": "0",\
+            "inputNodeId": "repeat2",\
+            "inputId": "h0",\
+            "list": "true"\
+            },\
+            {\
+            "outputNodeId": "sequence2",\
+            "outputId": "h0",\
+            "outputOrder": "0",\
+            "inputNodeId": "repeat2",\
+            "inputId": "loop",\
+            "list": "false"\
+            }\
         ]\
-        },\
-        {\
-        "type": "CMNT",\
-        "id": "comment3",\
-        "name": "A%20shape%20needs%20at%20least%20one%20%22style%22",\
-        "renamed": "true",\
-        "enabled": "true",\
-        "highlight": "0",\
-        "x": "-439",\
-        "y": "26",\
-        "z": "7"\
-        },\
-        {\
-        "type": "FILL",\
-        "id": "fill",\
-        "name": "fill",\
-        "renamed": "false",\
-        "enabled": "true",\
-        "highlight": "0",\
-        "x": "-50",\
-        "y": "893",\
-        "z": "8",\
-        "params":\
+    }';
+
+
+
+const presetLoopLock = '\
+    {\
+        "nodes":\
         [\
-                ["COL#", "color", "1,0 230,0 229,0 23,0"],\
-                ["NUM#", "opacity", "50,0"]\
-        ]\
-        },\
-        {\
-        "type": "COL",\
-        "id": "color",\
-        "name": "color",\
-        "renamed": "false",\
-        "enabled": "true",\
-        "highlight": "0",\
-        "x": "-50",\
-        "y": "530",\
-        "z": "9",\
-        "prevSpace": "hsv",\
-        "params":\
+            {\
+            "type": "CMNT",\
+            "id": "comment",\
+            "name": "A%20combine%20node%20can%20be%20used%20to%20link%20several%20sets%20to%20the%20same%20repeat.",\
+            "renamed": "true",\
+            "enabled": "true",\
+            "highlight": "0",\
+            "x": "388",\
+            "y": "823",\
+            "z": "0"\
+            },\
+            {\
+            "type": "SEQ",\
+            "id": "sequence3",\
+            "name": "sequence",\
+            "renamed": "false",\
+            "enabled": "true",\
+            "highlight": "0",\
+            "x": "-147",\
+            "y": "488",\
+            "z": "1",\
+            "active": "true",\
+            "params":\
+            [\
+                    ["NUM#", "step", "30,0"],\
+                    ["NUM#", "end", "?,0"]\
+            ]\
+            },\
+            {\
+            "type": "REPT",\
+            "id": "repeat2",\
+            "name": "repeat",\
+            "renamed": "false",\
+            "enabled": "true",\
+            "highlight": "0",\
+            "x": "969",\
+            "y": "623",\
+            "z": "2",\
+            "active": "true",\
+            "params":\
+            [\
+                    ["NUM#", "count", "5,0"]\
+            ]\
+            },\
+            {\
+            "type": "COL",\
+            "id": "color",\
+            "name": "color",\
+            "renamed": "false",\
+            "enabled": "true",\
+            "highlight": "0",\
+            "x": "45",\
+            "y": "327",\
+            "z": "3",\
+            "active": "true",\
+            "prevSpace": "hsv",\
+            "params":\
+            [\
+                    ["NUM#", "space", "2,0"],\
+                    ["NUM#", "c1", "120,0"],\
+                    ["NUM#", "c2", "75,0"],\
+                    ["NUM#", "c3", "90,0"]\
+            ]\
+            },\
+            {\
+            "type": "MOVE",\
+            "id": "move",\
+            "name": "move",\
+            "renamed": "false",\
+            "enabled": "true",\
+            "highlight": "0",\
+            "x": "740",\
+            "y": "168",\
+            "z": "4",\
+            "active": "true",\
+            "params":\
+            [\
+                    ["NUM#", "x", "480,0"],\
+                    ["NUM#", "y", "480,0"]\
+            ]\
+            },\
+            {\
+            "type": "CMNT",\
+            "id": "comment2",\
+            "name": "(Sets%20are%20nodes%20with%20.%E2%80%8A.%E2%80%8A.%20that%20generate%20many%20values.)",\
+            "renamed": "true",\
+            "enabled": "true",\
+            "highlight": "0",\
+            "x": "381",\
+            "y": "864",\
+            "z": "5"\
+            },\
+            {\
+            "type": "SEQ",\
+            "id": "sequence2",\
+            "name": "sequence",\
+            "renamed": "false",\
+            "enabled": "true",\
+            "highlight": "0",\
+            "x": "517",\
+            "y": "623",\
+            "z": "6",\
+            "active": "true",\
+            "params":\
+            [\
+                    ["NUM#", "step", "120,0"],\
+                    ["NUM#", "end", "?,0"]\
+            ]\
+            },\
+            {\
+            "type": "CMB",\
+            "id": "combine",\
+            "name": "combine",\
+            "renamed": "false",\
+            "enabled": "true",\
+            "highlight": "1",\
+            "x": "751",\
+            "y": "479",\
+            "z": "7",\
+            "active": "true",\
+            "width": "120",\
+            "height": "51"\
+            },\
+            {\
+            "type": "SEQ",\
+            "id": "sequence",\
+            "name": "sequence",\
+            "renamed": "false",\
+            "enabled": "true",\
+            "highlight": "0",\
+            "x": "517",\
+            "y": "448",\
+            "z": "8",\
+            "active": "true",\
+            "params":\
+            [\
+                    ["NUM#", "step", "120,0"],\
+                    ["NUM#", "end", "?,0"]\
+            ]\
+            },\
+            {\
+            "type": "REPT",\
+            "id": "repeat",\
+            "name": "repeat",\
+            "renamed": "false",\
+            "enabled": "true",\
+            "highlight": "0",\
+            "x": "967",\
+            "y": "448",\
+            "z": "9",\
+            "active": "true",\
+            "params":\
+            [\
+                    ["NUM#", "count", "5,0"]\
+            ]\
+            },\
+            {\
+            "type": "PANEL",\
+            "id": "panel",\
+            "name": "2D%20loop",\
+            "renamed": "true",\
+            "enabled": "true",\
+            "highlight": "0",\
+            "x": "458",\
+            "y": "100",\
+            "z": "10",\
+            "width": "691",\
+            "height": "673.6051224213832",\
+            "params":\
+            [\
+            ]\
+            },\
+            {\
+            "type": "POLY",\
+            "id": "poly",\
+            "name": "polygon",\
+            "renamed": "false",\
+            "enabled": "true",\
+            "highlight": "0",\
+            "x": "207",\
+            "y": "168",\
+            "z": "11",\
+            "active": "true",\
+            "params":\
+            [\
+            ]\
+            },\
+            {\
+            "type": "CMNT",\
+            "id": "comment3",\
+            "name": "Insert%20a%20new%20combine%20node%20here%20and%20re-connect%20the%20color%20sequence",\
+            "renamed": "true",\
+            "enabled": "true",\
+            "highlight": "0",\
+            "x": "388",\
+            "y": "941",\
+            "z": "12"\
+            },\
+            {\
+            "type": "CMNT",\
+            "id": "comment4",\
+            "name": "to%20change%20the%20color%20for%20every%20row%20instead%20of%20every%20column.",\
+            "renamed": "true",\
+            "enabled": "true",\
+            "highlight": "0",\
+            "x": "385",\
+            "y": "987",\
+            "z": "13"\
+            }\
+        ],\
+        "connections":\
         [\
-                ["NUM#", "space", "2,0"],\
-                ["NUM#", "c1", "0,0"],\
-                ["NUM#", "c2", "75,0"],\
-                ["NUM#", "c3", "100,0"]\
+            {\
+            "outputNodeId": "repeat",\
+            "outputId": "h0",\
+            "outputOrder": "0",\
+            "inputNodeId": "repeat2",\
+            "inputId": "h0",\
+            "list": "true"\
+            },\
+            {\
+            "outputNodeId": "sequence2",\
+            "outputId": "h0",\
+            "outputOrder": "0",\
+            "inputNodeId": "repeat2",\
+            "inputId": "loop",\
+            "list": "false"\
+            },\
+            {\
+            "outputNodeId": "sequence3",\
+            "outputId": "h0",\
+            "outputOrder": "0",\
+            "inputNodeId": "color",\
+            "inputId": "c1",\
+            "list": "false"\
+            },\
+            {\
+            "outputNodeId": "poly",\
+            "outputId": "h0",\
+            "outputOrder": "0",\
+            "inputNodeId": "move",\
+            "inputId": "h0",\
+            "list": "false"\
+            },\
+            {\
+            "outputNodeId": "sequence",\
+            "outputId": "h0",\
+            "outputOrder": "0",\
+            "inputNodeId": "move",\
+            "inputId": "x",\
+            "list": "false"\
+            },\
+            {\
+            "outputNodeId": "sequence2",\
+            "outputId": "h0",\
+            "outputOrder": "1",\
+            "inputNodeId": "move",\
+            "inputId": "y",\
+            "list": "false"\
+            },\
+            {\
+            "outputNodeId": "sequence",\
+            "outputId": "h0",\
+            "outputOrder": "1",\
+            "inputNodeId": "combine",\
+            "inputId": "h0",\
+            "list": "false"\
+            },\
+            {\
+            "outputNodeId": "sequence3",\
+            "outputId": "h0",\
+            "outputOrder": "1",\
+            "inputNodeId": "combine",\
+            "inputId": "h1",\
+            "list": "false"\
+            },\
+            {\
+            "outputNodeId": "move",\
+            "outputId": "h0",\
+            "outputOrder": "0",\
+            "inputNodeId": "repeat",\
+            "inputId": "h0",\
+            "list": "false"\
+            },\
+            {\
+            "outputNodeId": "combine",\
+            "outputId": "h0",\
+            "outputOrder": "0",\
+            "inputNodeId": "repeat",\
+            "inputId": "loop",\
+            "list": "true"\
+            },\
+            {\
+            "outputNodeId": "color",\
+            "outputId": "h0",\
+            "outputOrder": "0",\
+            "inputNodeId": "poly",\
+            "inputId": "props",\
+            "list": "false"\
+            }\
         ]\
-        },\
-        {\
-        "type": "CMNT",\
-        "id": "comment4",\
-        "name": "%3Cb%3EShift%3C%2Fb%3E%2BDouble%20click%20to%20activate%20%3Cb%3Emultiple%20nodes%3C%2Fb%3E%20at%20the%20same%20time.",\
-        "renamed": "true",\
-        "enabled": "true",\
-        "highlight": "0",\
-        "x": "486",\
-        "y": "53",\
-        "z": "10"\
-        },\
-        {\
-        "type": "RECT",\
-        "id": "rect5",\
-        "name": "rectangle",\
-        "renamed": "false",\
-        "enabled": "true",\
-        "highlight": "0",\
-        "x": "139",\
-        "y": "1496",\
-        "z": "11",\
-        "params":\
+    }';
+
+
+const presetShapesStyles = '\
+    {\
+        "nodes":\
         [\
-        ]\
-        },\
-        {\
-        "type": "CMNT",\
-        "id": "comment2",\
-        "name": "with%20a%20dotted%20stroke.",\
-        "renamed": "true",\
-        "enabled": "true",\
-        "highlight": "0",\
-        "x": "-441",\
-        "y": "126",\
-        "z": "12"\
-        },\
-        {\
-        "type": "ELPS",\
-        "id": "ellipse",\
-        "name": "ellipse",\
-        "renamed": "false",\
-        "enabled": "true",\
-        "highlight": "0",\
-        "x": "139",\
-        "y": "349",\
-        "z": "13",\
-        "params":\
+            {\
+            "type": "COL",\
+            "id": "color4",\
+            "name": "color",\
+            "renamed": "false",\
+            "enabled": "true",\
+            "highlight": "0",\
+            "x": "73",\
+            "y": "2187",\
+            "z": "0",\
+            "prevSpace": "hsv",\
+            "params":\
+            [\
+                    ["NUM#", "space", "2,0"],\
+                    ["NUM#", "c1", "220.00000000000003,0"],\
+                    ["NUM#", "c2", "75,0"],\
+                    ["NUM#", "c3", "100,0"]\
+            ]\
+            },\
+            {\
+            "type": "ELPS",\
+            "id": "ellipse",\
+            "name": "ellipse",\
+            "renamed": "false",\
+            "enabled": "true",\
+            "highlight": "0",\
+            "x": "639",\
+            "y": "849",\
+            "z": "1",\
+            "active": "true",\
+            "params":\
+            [\
+                    ["NUM#", "x", "50,0"]\
+            ]\
+            },\
+            {\
+            "type": "COL",\
+            "id": "color2",\
+            "name": "color",\
+            "renamed": "false",\
+            "enabled": "true",\
+            "highlight": "0",\
+            "x": "266",\
+            "y": "1420",\
+            "z": "2",\
+            "prevSpace": "hsv",\
+            "params":\
+            [\
+                    ["NUM#", "space", "2,0"],\
+                    ["NUM#", "c1", "60,0"],\
+                    ["NUM#", "c2", "90,0"],\
+                    ["NUM#", "c3", "90,0"]\
+            ]\
+            },\
+            {\
+            "type": "STRK",\
+            "id": "stroke",\
+            "name": "stroke",\
+            "renamed": "false",\
+            "enabled": "true",\
+            "highlight": "0",\
+            "x": "69",\
+            "y": "2763",\
+            "z": "3",\
+            "params":\
+            [\
+                    ["LIST#", "fills", "1 FILL# 255,0 255,0 64,0 100,0 0,0"]\
+            ]\
+            },\
+            {\
+            "type": "CMNT",\
+            "id": "comment10",\
+            "name": "Connect%20these%20here%2C%20then%20this%20here.%20Then%20double-click%20here.",\
+            "renamed": "true",\
+            "enabled": "true",\
+            "highlight": "0",\
+            "x": "223",\
+            "y": "2955",\
+            "z": "4"\
+            },\
+            {\
+            "type": "INSH",\
+            "id": "innerShadow",\
+            "name": "inner%20shadow",\
+            "renamed": "false",\
+            "enabled": "true",\
+            "highlight": "0",\
+            "x": "68",\
+            "y": "2999",\
+            "z": "5",\
+            "active": "true",\
+            "params":\
+            [\
+                    ["FILL#", "fill", "0,0 0,0 0,0 25,0 0,0"]\
+            ]\
+            },\
+            {\
+            "type": "CMB",\
+            "id": "combine",\
+            "name": "combine",\
+            "renamed": "false",\
+            "enabled": "true",\
+            "highlight": "0",\
+            "x": "429",\
+            "y": "2841",\
+            "z": "6",\
+            "active": "true",\
+            "width": "120",\
+            "height": "38"\
+            },\
+            {\
+            "type": "COL",\
+            "id": "color3",\
+            "name": "color",\
+            "renamed": "false",\
+            "enabled": "true",\
+            "highlight": "0",\
+            "x": "267",\
+            "y": "1777",\
+            "z": "7",\
+            "prevSpace": "hsv",\
+            "params":\
+            [\
+                    ["NUM#", "space", "2,0"],\
+                    ["NUM#", "c1", "110.00000000000001,0"],\
+                    ["NUM#", "c2", "65,0"],\
+                    ["NUM#", "c3", "90,0"]\
+            ]\
+            },\
+            {\
+            "type": "LBLR",\
+            "id": "layerBlur",\
+            "name": "layer%20blur",\
+            "renamed": "false",\
+            "enabled": "true",\
+            "highlight": "0",\
+            "x": "66",\
+            "y": "3211",\
+            "z": "8",\
+            "active": "true"\
+            },\
+            {\
+            "type": "STRK",\
+            "id": "stroke2",\
+            "name": "stroke",\
+            "renamed": "false",\
+            "enabled": "true",\
+            "highlight": "0",\
+            "x": "458",\
+            "y": "1750",\
+            "z": "9",\
+            "params":\
+            [\
+                    ["LIST#", "fills", "1 FILL# 105,0 230,0 80,0 100,0 0,0"],\
+                    ["NUM#", "weight", "4,0"]\
+            ]\
+            },\
+            {\
+            "type": "CMNT",\
+            "id": "comment3",\
+            "name": "A%20shape%20needs%20at%20least%20one%20%22style%22",\
+            "renamed": "true",\
+            "enabled": "true",\
+            "highlight": "0",\
+            "x": "90",\
+            "y": "522",\
+            "z": "10"\
+            },\
+            {\
+            "type": "COL",\
+            "id": "color6",\
+            "name": "color",\
+            "renamed": "false",\
+            "enabled": "true",\
+            "highlight": "0",\
+            "x": "-112",\
+            "y": "2792",\
+            "z": "11",\
+            "prevSpace": "hsv",\
+            "params":\
+            [\
+                    ["NUM#", "space", "2,0"],\
+                    ["NUM#", "c1", "60,0"],\
+                    ["NUM#", "c2", "75,0"],\
+                    ["NUM#", "c3", "100,0"]\
+            ]\
+            },\
+            {\
+            "type": "ELPS",\
+            "id": "ellipse2",\
+            "name": "ellipse",\
+            "renamed": "false",\
+            "enabled": "true",\
+            "highlight": "0",\
+            "x": "638",\
+            "y": "2596",\
+            "z": "12",\
+            "active": "true"\
+            },\
+            {\
+            "type": "POLY",\
+            "id": "poly",\
+            "name": "polygon",\
+            "renamed": "false",\
+            "enabled": "true",\
+            "highlight": "0",\
+            "x": "641",\
+            "y": "1234",\
+            "z": "13",\
+            "active": "true",\
+            "params":\
+            [\
+                    ["NUM#", "y", "50,0"],\
+                    ["NUM#", "corners", "6,0"]\
+            ]\
+            },\
+            {\
+            "type": "RECT",\
+            "id": "rect",\
+            "name": "rectangle",\
+            "renamed": "false",\
+            "enabled": "true",\
+            "highlight": "0",\
+            "x": "637",\
+            "y": "508",\
+            "z": "14",\
+            "active": "true",\
+            "params":\
+            [\
+                    ["NUM#", "x", "-50,0"],\
+                    ["NUM#", "y", "-50,0"]\
+            ]\
+            },\
+            {\
+            "type": "RECT",\
+            "id": "rect4",\
+            "name": "rectangle",\
+            "renamed": "false",\
+            "enabled": "true",\
+            "highlight": "0",\
+            "x": "639",\
+            "y": "1612",\
+            "z": "15",\
+            "active": "true",\
+            "params":\
+            [\
+                    ["NUM#", "x", "50,0"],\
+                    ["NUM#", "y", "50,0"]\
+            ]\
+            },\
+            {\
+            "type": "CMNT",\
+            "id": "comment",\
+            "name": "(fill%2C%20stroke%20etc.)%2C%20otherwise%20it\'s%20shown",\
+            "renamed": "true",\
+            "enabled": "true",\
+            "highlight": "0",\
+            "x": "84",\
+            "y": "573",\
+            "z": "16"\
+            },\
+            {\
+            "type": "FILL",\
+            "id": "fill",\
+            "name": "fill",\
+            "renamed": "false",\
+            "enabled": "true",\
+            "highlight": "0",\
+            "x": "450",\
+            "y": "1393",\
+            "z": "17",\
+            "params":\
+            [\
+                    ["COL#", "color", "1,0 230,0 229,0 23,0"],\
+                    ["NUM#", "opacity", "50,0"]\
+            ]\
+            },\
+            {\
+            "type": "RECT",\
+            "id": "rect5",\
+            "name": "rectangle",\
+            "renamed": "false",\
+            "enabled": "true",\
+            "highlight": "0",\
+            "x": "639",\
+            "y": "1996",\
+            "z": "18",\
+            "active": "true",\
+            "params":\
+            [\
+            ]\
+            },\
+            {\
+            "type": "COL",\
+            "id": "color",\
+            "name": "color",\
+            "renamed": "false",\
+            "enabled": "true",\
+            "highlight": "0",\
+            "x": "450",\
+            "y": "1030",\
+            "z": "19",\
+            "prevSpace": "hsv",\
+            "params":\
+            [\
+                    ["NUM#", "space", "2,0"],\
+                    ["NUM#", "c1", "0,0"],\
+                    ["NUM#", "c2", "75,0"],\
+                    ["NUM#", "c3", "100,0"]\
+            ]\
+            },\
+            {\
+            "type": "COL",\
+            "id": "color5",\
+            "name": "color",\
+            "renamed": "false",\
+            "enabled": "true",\
+            "highlight": "0",\
+            "x": "69",\
+            "y": "2593",\
+            "z": "20",\
+            "prevSpace": "hsv",\
+            "params":\
+            [\
+                    ["NUM#", "space", "2,0"],\
+                    ["NUM#", "c1", "0,0"],\
+                    ["NUM#", "c2", "75,0"],\
+                    ["NUM#", "c3", "100,0"]\
+            ]\
+            },\
+            {\
+            "type": "FILL",\
+            "id": "fill2",\
+            "name": "fill",\
+            "renamed": "false",\
+            "enabled": "true",\
+            "highlight": "0",\
+            "x": "269",\
+            "y": "2160",\
+            "z": "21",\
+            "params":\
+            [\
+                    ["COL#", "color", "1,0 64,0 128,0 255,0"],\
+                    ["NUM#", "opacity", "50,0"]\
+            ]\
+            },\
+            {\
+            "type": "CMNT",\
+            "id": "comment2",\
+            "name": "with%20a%20dotted%20stroke.",\
+            "renamed": "true",\
+            "enabled": "true",\
+            "highlight": "0",\
+            "x": "88",\
+            "y": "622",\
+            "z": "22"\
+            },\
+            {\
+            "type": "STRK",\
+            "id": "stroke3",\
+            "name": "stroke",\
+            "renamed": "false",\
+            "enabled": "true",\
+            "highlight": "0",\
+            "x": "456",\
+            "y": "2133",\
+            "z": "23",\
+            "params":\
+            [\
+                    ["LIST#", "fills", "1 FILL# 64,0 128,0 255,0 50,0 0,0"],\
+                    ["NUM#", "weight", "4,0"]\
+            ]\
+            },\
+            {\
+            "type": "CMNT",\
+            "id": "comment8",\
+            "name": "To%20apply%20several%20styles%20to%20an%20object%2C%20first%20combine%20them.",\
+            "renamed": "true",\
+            "enabled": "true",\
+            "highlight": "0",\
+            "x": "65",\
+            "y": "2498",\
+            "z": "24"\
+            }\
+        ],\
+        "connections":\
         [\
-                ["NUM#", "x", "50,0"]\
+            {\
+            "outputNodeId": "color",\
+            "outputId": "h0",\
+            "outputOrder": "0",\
+            "inputNodeId": "ellipse",\
+            "inputId": "props",\
+            "list": "false"\
+            },\
+            {\
+            "outputNodeId": "color6",\
+            "outputId": "h0",\
+            "outputOrder": "0",\
+            "inputNodeId": "stroke",\
+            "inputId": "fills",\
+            "list": "false"\
+            },\
+            {\
+            "outputNodeId": "color5",\
+            "outputId": "h0",\
+            "outputOrder": "0",\
+            "inputNodeId": "combine",\
+            "inputId": "h0",\
+            "list": "false"\
+            },\
+            {\
+            "outputNodeId": "color3",\
+            "outputId": "h0",\
+            "outputOrder": "0",\
+            "inputNodeId": "stroke2",\
+            "inputId": "fills",\
+            "list": "false"\
+            },\
+            {\
+            "outputNodeId": "fill",\
+            "outputId": "h0",\
+            "outputOrder": "0",\
+            "inputNodeId": "poly",\
+            "inputId": "props",\
+            "list": "false"\
+            },\
+            {\
+            "outputNodeId": "stroke2",\
+            "outputId": "h0",\
+            "outputOrder": "0",\
+            "inputNodeId": "rect4",\
+            "inputId": "props",\
+            "list": "false"\
+            },\
+            {\
+            "outputNodeId": "color2",\
+            "outputId": "h0",\
+            "outputOrder": "0",\
+            "inputNodeId": "fill",\
+            "inputId": "color",\
+            "list": "false"\
+            },\
+            {\
+            "outputNodeId": "stroke3",\
+            "outputId": "h0",\
+            "outputOrder": "0",\
+            "inputNodeId": "rect5",\
+            "inputId": "props",\
+            "list": "false"\
+            },\
+            {\
+            "outputNodeId": "color4",\
+            "outputId": "h0",\
+            "outputOrder": "0",\
+            "inputNodeId": "fill2",\
+            "inputId": "color",\
+            "list": "false"\
+            },\
+            {\
+            "outputNodeId": "fill2",\
+            "outputId": "h0",\
+            "outputOrder": "0",\
+            "inputNodeId": "stroke3",\
+            "inputId": "fills",\
+            "list": "false"\
+            }\
         ]\
-        },\
-        {\
-        "type": "COL",\
-        "id": "color2",\
-        "name": "color",\
-        "renamed": "false",\
-        "enabled": "true",\
-        "highlight": "0",\
-        "x": "-234",\
-        "y": "920",\
-        "z": "14",\
-        "prevSpace": "hsv",\
-        "params":\
+    }';
+
+
+
+const presetBasicTransform = '\
+    {\
+        "nodes":\
         [\
-                ["NUM#", "space", "2,0"],\
-                ["NUM#", "c1", "60,0"],\
-                ["NUM#", "c2", "90,0"],\
-                ["NUM#", "c3", "90,0"]\
-        ]\
-        },\
-        {\
-        "type": "CMNT",\
-        "id": "comment6",\
-        "name": "Objects%20created%20by%20Generator%20have%20the%20%26nbsp%3B%26hairsp%3B%E2%97%A6G%E2%80%A2%26nbsp%3B%26thinsp%3Bprefix%20in%20the%20name.",\
-        "renamed": "true",\
-        "enabled": "true",\
-        "highlight": "0",\
-        "x": "479",\
-        "y": "235",\
-        "z": "15"\
-        },\
-        {\
-        "type": "RECT",\
-        "id": "rect",\
-        "name": "rectangle",\
-        "renamed": "false",\
-        "enabled": "true",\
-        "highlight": "0",\
-        "x": "137",\
-        "y": "8",\
-        "z": "16",\
-        "params":\
+            {\
+            "type": "CMNT",\
+            "id": "comment2",\
+            "name": "toggle%20%3Cb%3Emove%26thinsp%3B.%26hairsp%3BmoveSpace%3C%2Fb%3E%20to%20see%20their%20effect",\
+            "renamed": "true",\
+            "enabled": "true",\
+            "highlight": "0",\
+            "x": "608",\
+            "y": "441",\
+            "z": "1"\
+            },\
+            {\
+            "type": "PANEL",\
+            "id": "panel",\
+            "name": "shape",\
+            "renamed": "true",\
+            "enabled": "true",\
+            "highlight": "0",\
+            "x": "-139",\
+            "y": "99",\
+            "z": "2",\
+            "width": "487.7051179016323",\
+            "height": "405.5981990149978",\
+            "params":\
+            [\
+            ]\
+            },\
+            {\
+            "type": "RECT",\
+            "id": "rect",\
+            "name": "rectangle",\
+            "renamed": "false",\
+            "enabled": "true",\
+            "highlight": "0",\
+            "x": "204",\
+            "y": "155",\
+            "z": "3",\
+            "params":\
+            [\
+            ]\
+            },\
+            {\
+            "type": "ROT",\
+            "id": "rotate",\
+            "name": "rotate",\
+            "renamed": "false",\
+            "enabled": "true",\
+            "highlight": "0",\
+            "x": "902",\
+            "y": "155",\
+            "z": "4",\
+            "active": "true",\
+            "params":\
+            [\
+                    ["NUM#", "angle", "45,0"],\
+                    ["NUM#", "showCenter", "1,0"]\
+            ]\
+            },\
+            {\
+            "type": "CMNT",\
+            "id": "comment",\
+            "name": "Adjust%20%3Cb%3Emove%26thinsp%3B.%26thinsp%3BX%3C%2Fb%3E%20and%20%3Cb%3Erotate%26thinsp%3B.%26hairsp%3Bangle%3C%2Fb%3E%2C%20and",\
+            "renamed": "true",\
+            "enabled": "true",\
+            "highlight": "0",\
+            "x": "610",\
+            "y": "397",\
+            "z": "5"\
+            },\
+            {\
+            "type": "PANEL",\
+            "id": "panel3",\
+            "name": "transformation",\
+            "renamed": "true",\
+            "enabled": "true",\
+            "highlight": "0",\
+            "x": "631",\
+            "y": "104",\
+            "z": "6",\
+            "width": "417",\
+            "height": "226.25287762942608",\
+            "params":\
+            [\
+            ]\
+            },\
+            {\
+            "type": "STRK",\
+            "id": "stroke",\
+            "name": "stroke",\
+            "renamed": "false",\
+            "enabled": "true",\
+            "highlight": "0",\
+            "x": "45",\
+            "y": "291",\
+            "z": "7",\
+            "params":\
+            [\
+                    ["LIST#", "fills", "1 FILL# 255,0 131,0 53,0 100,0 0,0"]\
+            ]\
+            },\
+            {\
+            "type": "COL",\
+            "id": "color",\
+            "name": "color",\
+            "renamed": "false",\
+            "enabled": "true",\
+            "highlight": "0",\
+            "x": "-110",\
+            "y": "318",\
+            "z": "9",\
+            "prevSpace": "hex",\
+            "params":\
+            [\
+                    ["NUM#", "space", "0,0"],\
+                    ["NUM#", "c1", "255,0"],\
+                    ["NUM#", "c2", "131,0"],\
+                    ["NUM#", "c3", "53,0"]\
+            ]\
+            },\
+            {\
+            "type": "CMNT",\
+            "id": "comment3",\
+            "name": "on%20the%20transformation.",\
+            "renamed": "true",\
+            "enabled": "true",\
+            "highlight": "0",\
+            "x": "608",\
+            "y": "486",\
+            "z": "10"\
+            },\
+            {\
+            "type": "MOVE",\
+            "id": "move",\
+            "name": "move",\
+            "renamed": "false",\
+            "enabled": "true",\
+            "highlight": "0",\
+            "x": "660",\
+            "y": "155",\
+            "z": "11",\
+            "params":\
+            [\
+                    ["NUM#", "x", "200,0"],\
+                    ["NUM#", "affectSpace", "0,0"],\
+                    ["NUM#", "showCenter", "1,0"]\
+            ]\
+            }\
+        ],\
+        "connections":\
         [\
-                ["NUM#", "x", "-50,0"],\
-                ["NUM#", "y", "-50,0"]\
+            {\
+            "outputNodeId": "stroke",\
+            "outputId": "h0",\
+            "outputOrder": "0",\
+            "inputNodeId": "rect",\
+            "inputId": "props",\
+            "list": "false"\
+            },\
+            {\
+            "outputNodeId": "move",\
+            "outputId": "h0",\
+            "outputOrder": "0",\
+            "inputNodeId": "rotate",\
+            "inputId": "h0",\
+            "list": "false"\
+            },\
+            {\
+            "outputNodeId": "color",\
+            "outputId": "h0",\
+            "outputOrder": "0",\
+            "inputNodeId": "stroke",\
+            "inputId": "fills",\
+            "list": "false"\
+            },\
+            {\
+            "outputNodeId": "rect",\
+            "outputId": "h0",\
+            "outputOrder": "0",\
+            "inputNodeId": "move",\
+            "inputId": "h0",\
+            "list": "false"\
+            }\
         ]\
-        },\
-        {\
-        "type": "COL",\
-        "id": "color5",\
-        "name": "color",\
-        "renamed": "false",\
-        "enabled": "true",\
-        "highlight": "0",\
-        "x": "1843",\
-        "y": "701",\
-        "z": "17",\
-        "prevSpace": "hsv",\
-        "params":\
+    }';
+
+
+
+const presetCombinedTransform = '\
+    {\
+        "nodes":\
         [\
-                ["NUM#", "space", "2,0"],\
-                ["NUM#", "c1", "0,0"],\
-                ["NUM#", "c2", "75,0"],\
-                ["NUM#", "c3", "100,0"]\
-        ]\
-        },\
-        {\
-        "type": "ELPS",\
-        "id": "ellipse2",\
-        "name": "ellipse",\
-        "renamed": "false",\
-        "enabled": "true",\
-        "highlight": "0",\
-        "x": "2407",\
-        "y": "704",\
-        "z": "18"\
-        },\
-        {\
-        "type": "CMNT",\
-        "id": "comment8",\
-        "name": "To%20apply%20several%20styles%20to%20an%20object%2C%20combine%20them",\
-        "renamed": "true",\
-        "enabled": "true",\
-        "highlight": "0",\
-        "x": "1880",\
-        "y": "402",\
-        "z": "19"\
-        },\
-        {\
-        "type": "CMNT",\
-        "id": "comment9",\
-        "name": "into%20a%20list%20using%20a%20Combine%20node.",\
-        "renamed": "true",\
-        "enabled": "true",\
-        "highlight": "0",\
-        "x": "1880",\
-        "y": "453",\
-        "z": "20"\
-        },\
-        {\
-        "type": "CMB",\
-        "id": "combine",\
-        "name": "combine",\
-        "renamed": "false",\
-        "enabled": "true",\
-        "highlight": "0",\
-        "x": "2198",\
-        "y": "949",\
-        "z": "21",\
-        "width": "120",\
-        "height": "38"\
-        },\
-        {\
-        "type": "COL",\
-        "id": "color6",\
-        "name": "color",\
-        "renamed": "false",\
-        "enabled": "true",\
-        "highlight": "0",\
-        "x": "1657",\
-        "y": "900",\
-        "z": "22",\
-        "prevSpace": "hsv",\
-        "params":\
+            {\
+            "type": "COL",\
+            "id": "color2",\
+            "name": "color",\
+            "renamed": "false",\
+            "enabled": "true",\
+            "highlight": "0",\
+            "x": "-203",\
+            "y": "1316",\
+            "z": "12",\
+            "prevSpace": "hex",\
+            "params":\
+            [\
+                    ["NUM#", "space", "0,0"],\
+                    ["NUM#", "c1", "53.54999999999999,0"],\
+                    ["NUM#", "c2", "144.20251191912504,0"],\
+                    ["NUM#", "c3", "255,0"]\
+            ]\
+            },\
+            {\
+            "type": "RECT",\
+            "id": "rect2",\
+            "name": "rectangle",\
+            "renamed": "false",\
+            "enabled": "true",\
+            "highlight": "0",\
+            "x": "4",\
+            "y": "883",\
+            "z": "13",\
+            "params":\
+            [\
+            ]\
+            },\
+            {\
+            "type": "PANEL",\
+            "id": "panel2",\
+            "name": "combined%20shapes",\
+            "renamed": "true",\
+            "enabled": "true",\
+            "highlight": "0",\
+            "x": "-256",\
+            "y": "816",\
+            "z": "14",\
+            "width": "629.0716566313172",\
+            "height": "1011",\
+            "params":\
+            [\
+            ]\
+            },\
+            {\
+            "type": "ELPS",\
+            "id": "ellipse",\
+            "name": "ellipse",\
+            "renamed": "false",\
+            "enabled": "true",\
+            "highlight": "0",\
+            "x": "1",\
+            "y": "1089",\
+            "z": "15",\
+            "params":\
+            [\
+                    ["NUM#", "x", "100,0"]\
+            ]\
+            },\
+            {\
+            "type": "POLY",\
+            "id": "poly",\
+            "name": "polygon",\
+            "renamed": "false",\
+            "enabled": "true",\
+            "highlight": "0",\
+            "x": "0",\
+            "y": "1350",\
+            "z": "16",\
+            "params":\
+            [\
+                    ["NUM#", "y", "100,0"]\
+            ]\
+            },\
+            {\
+            "type": "STAR",\
+            "id": "star",\
+            "name": "star",\
+            "renamed": "false",\
+            "enabled": "true",\
+            "highlight": "0",\
+            "x": "2",\
+            "y": "1588",\
+            "z": "17",\
+            "params":\
+            [\
+                    ["NUM#", "x", "100,0"],\
+                    ["NUM#", "y", "100,0"]\
+            ]\
+            },\
+            {\
+            "type": "CMB",\
+            "id": "combine",\
+            "name": "combine",\
+            "renamed": "false",\
+            "enabled": "true",\
+            "highlight": "0",\
+            "x": "199",\
+            "y": "1312",\
+            "z": "18",\
+            "width": "120",\
+            "height": "77"\
+            },\
+            {\
+            "type": "ROT",\
+            "id": "rotate2",\
+            "name": "rotate",\
+            "renamed": "false",\
+            "enabled": "true",\
+            "highlight": "0",\
+            "x": "854",\
+            "y": "1333",\
+            "z": "19",\
+            "active": "true",\
+            "params":\
+            [\
+                    ["NUM#", "angle", "40,0"],\
+                    ["NUM#", "showCenter", "1,0"]\
+            ]\
+            },\
+            {\
+            "type": "PANEL",\
+            "id": "panel4",\
+            "name": "transformation",\
+            "renamed": "true",\
+            "enabled": "true",\
+            "highlight": "0",\
+            "x": "583",\
+            "y": "1282",\
+            "z": "20",\
+            "width": "417",\
+            "height": "226.25287762942608",\
+            "params":\
+            [\
+            ]\
+            },\
+            {\
+            "type": "MOVE",\
+            "id": "move2",\
+            "name": "move",\
+            "renamed": "false",\
+            "enabled": "true",\
+            "highlight": "0",\
+            "x": "612",\
+            "y": "1333",\
+            "z": "21",\
+            "params":\
+            [\
+                    ["NUM#", "x", "200,0"],\
+                    ["NUM#", "affectSpace", "0,0"],\
+                    ["NUM#", "showCenter", "1,0"]\
+            ]\
+            }\
+        ],\
+        "connections":\
         [\
-                ["NUM#", "space", "2,0"],\
-                ["NUM#", "c1", "60,0"],\
-                ["NUM#", "c2", "75,0"],\
-                ["NUM#", "c3", "100,0"]\
+            {\
+            "outputNodeId": "color2",\
+            "outputId": "h0",\
+            "outputOrder": "0",\
+            "inputNodeId": "rect2",\
+            "inputId": "props",\
+            "list": "false"\
+            },\
+            {\
+            "outputNodeId": "color2",\
+            "outputId": "h0",\
+            "outputOrder": "1",\
+            "inputNodeId": "ellipse",\
+            "inputId": "props",\
+            "list": "false"\
+            },\
+            {\
+            "outputNodeId": "color2",\
+            "outputId": "h0",\
+            "outputOrder": "2",\
+            "inputNodeId": "poly",\
+            "inputId": "props",\
+            "list": "false"\
+            },\
+            {\
+            "outputNodeId": "color2",\
+            "outputId": "h0",\
+            "outputOrder": "3",\
+            "inputNodeId": "star",\
+            "inputId": "props",\
+            "list": "false"\
+            },\
+            {\
+            "outputNodeId": "rect2",\
+            "outputId": "h0",\
+            "outputOrder": "0",\
+            "inputNodeId": "combine",\
+            "inputId": "h0",\
+            "list": "false"\
+            },\
+            {\
+            "outputNodeId": "ellipse",\
+            "outputId": "h0",\
+            "outputOrder": "0",\
+            "inputNodeId": "combine",\
+            "inputId": "h1",\
+            "list": "false"\
+            },\
+            {\
+            "outputNodeId": "poly",\
+            "outputId": "h0",\
+            "outputOrder": "0",\
+            "inputNodeId": "combine",\
+            "inputId": "h2",\
+            "list": "false"\
+            },\
+            {\
+            "outputNodeId": "star",\
+            "outputId": "h0",\
+            "outputOrder": "0",\
+            "inputNodeId": "combine",\
+            "inputId": "h3",\
+            "list": "false"\
+            },\
+            {\
+            "outputNodeId": "move2",\
+            "outputId": "h0",\
+            "outputOrder": "0",\
+            "inputNodeId": "rotate2",\
+            "inputId": "h0",\
+            "list": "true"\
+            },\
+            {\
+            "outputNodeId": "combine",\
+            "outputId": "h0",\
+            "outputOrder": "0",\
+            "inputNodeId": "move2",\
+            "inputId": "h0",\
+            "list": "true"\
+            }\
         ]\
-        },\
-        {\
-        "type": "STRK",\
-        "id": "stroke",\
-        "name": "stroke",\
-        "renamed": "false",\
-        "enabled": "true",\
-        "highlight": "0",\
-        "x": "1838",\
-        "y": "871",\
-        "z": "23",\
-        "params":\
-        [\
-                ["LIST#", "fills", "1 FILL# 255,0 255,0 64,0 100,0 0,0"]\
-        ]\
-        },\
-        {\
-        "type": "LBLR",\
-        "id": "layerBlur",\
-        "name": "layer%20blur",\
-        "renamed": "false",\
-        "enabled": "true",\
-        "highlight": "0",\
-        "x": "1835",\
-        "y": "1319",\
-        "z": "24"\
-        },\
-        {\
-        "type": "CMNT",\
-        "id": "comment10",\
-        "name": "Connect%20these%20here%2C%20then%20this%20here.%20Then%20double-click%20here.",\
-        "renamed": "true",\
-        "enabled": "true",\
-        "highlight": "0",\
-        "x": "1992",\
-        "y": "1063",\
-        "z": "25"\
-        },\
-        {\
-        "type": "INSH",\
-        "id": "innerShadow",\
-        "name": "inner%20shadow",\
-        "renamed": "false",\
-        "enabled": "true",\
-        "highlight": "0",\
-        "x": "1837",\
-        "y": "1107",\
-        "z": "26",\
-        "params":\
-        [\
-                ["FILL#", "fill", "0,0 0,0 0,0 25,0 0,0"]\
-        ]\
-        },\
-        {\
-        "type": "CMNT",\
-        "id": "comment11",\
-        "name": "%3Cb%3EDouble%20click%3C%2Fb%3E%20to%20activate%20the%20node%20to%20put%20the%20%3Cb%3Eobject%20on%20the%20canvas%3C%2Fb%3E.",\
-        "renamed": "true",\
-        "enabled": "true",\
-        "highlight": "0",\
-        "x": "487",\
-        "y": "-2",\
-        "z": "27"\
-        },\
-        {\
-        "type": "CMNT",\
-        "id": "comment5",\
-        "name": "Double%20click%20the%20plugin%20background%20to%20deactivate%20all%20nodes.",\
-        "renamed": "true",\
-        "enabled": "true",\
-        "highlight": "0",\
-        "x": "481",\
-        "y": "113",\
-        "z": "28"\
-        },\
-        {\
-        "type": "POLY",\
-        "id": "poly",\
-        "name": "polygon",\
-        "renamed": "false",\
-        "enabled": "true",\
-        "highlight": "0",\
-        "x": "141",\
-        "y": "734",\
-        "z": "29",\
-        "params":\
-        [\
-                ["NUM#", "y", "50,0"],\
-                ["NUM#", "corners", "6,0"]\
-        ]\
-        },\
-        {\
-        "type": "CMB",\
-        "id": "combine2",\
-        "name": "combine",\
-        "renamed": "false",\
-        "enabled": "true",\
-        "highlight": "0",\
-        "x": "573",\
-        "y": "902",\
-        "z": "30",\
-        "width": "120",\
-        "height": "51"\
-        },\
-        {\
-        "type": "CMNT",\
-        "id": "comment7",\
-        "name": "Use%20a%20combine%20node%20to%20group%20objects",\
-        "renamed": "true",\
-        "enabled": "true",\
-        "highlight": "0",\
-        "x": "576",\
-        "y": "756",\
-        "z": "31"\
-        },\
-        {\
-        "type": "CMNT",\
-        "id": "comment12",\
-        "name": "and%20force%20a%20Z-order.",\
-        "renamed": "true",\
-        "enabled": "true",\
-        "highlight": "0",\
-        "x": "573",\
-        "y": "807",\
-        "z": "32"\
-        },\
-        {\
-        "type": "CMNT",\
-        "id": "comment13",\
-        "name": "Connect%20the%20rest%20of%20these%20here.",\
-        "renamed": "true",\
-        "enabled": "true",\
-        "highlight": "0",\
-        "x": "477",\
-        "y": "1356",\
-        "z": "33"\
-        }\
-    ],\
-    "connections":\
-    [\
-        {\
-        "outputNodeId": "color3",\
-        "outputId": "h0",\
-        "outputOrder": "0",\
-        "inputNodeId": "stroke2",\
-        "inputId": "fills",\
-        "list": "false"\
-        },\
-        {\
-        "outputNodeId": "fill2",\
-        "outputId": "h0",\
-        "outputOrder": "0",\
-        "inputNodeId": "stroke3",\
-        "inputId": "fills",\
-        "list": "false"\
-        },\
-        {\
-        "outputNodeId": "color4",\
-        "outputId": "h0",\
-        "outputOrder": "0",\
-        "inputNodeId": "fill2",\
-        "inputId": "color",\
-        "list": "false"\
-        },\
-        {\
-        "outputNodeId": "stroke2",\
-        "outputId": "h0",\
-        "outputOrder": "0",\
-        "inputNodeId": "rect4",\
-        "inputId": "props",\
-        "list": "false"\
-        },\
-        {\
-        "outputNodeId": "color2",\
-        "outputId": "h0",\
-        "outputOrder": "0",\
-        "inputNodeId": "fill",\
-        "inputId": "color",\
-        "list": "false"\
-        },\
-        {\
-        "outputNodeId": "stroke3",\
-        "outputId": "h0",\
-        "outputOrder": "0",\
-        "inputNodeId": "rect5",\
-        "inputId": "props",\
-        "list": "false"\
-        },\
-        {\
-        "outputNodeId": "color",\
-        "outputId": "h0",\
-        "outputOrder": "0",\
-        "inputNodeId": "ellipse",\
-        "inputId": "props",\
-        "list": "false"\
-        },\
-        {\
-        "outputNodeId": "color5",\
-        "outputId": "h0",\
-        "outputOrder": "0",\
-        "inputNodeId": "combine",\
-        "inputId": "h0",\
-        "list": "false"\
-        },\
-        {\
-        "outputNodeId": "color6",\
-        "outputId": "h0",\
-        "outputOrder": "0",\
-        "inputNodeId": "stroke",\
-        "inputId": "fills",\
-        "list": "false"\
-        },\
-        {\
-        "outputNodeId": "fill",\
-        "outputId": "h0",\
-        "outputOrder": "0",\
-        "inputNodeId": "poly",\
-        "inputId": "props",\
-        "list": "false"\
-        },\
-        {\
-        "outputNodeId": "rect",\
-        "outputId": "h0",\
-        "outputOrder": "0",\
-        "inputNodeId": "combine2",\
-        "inputId": "h0",\
-        "list": "false"\
-        },\
-        {\
-        "outputNodeId": "ellipse",\
-        "outputId": "h0",\
-        "outputOrder": "0",\
-        "inputNodeId": "combine2",\
-        "inputId": "h1",\
-        "list": "false"\
-        }\
-    ]\
-}';
+    }';
 
 
 const presetTransform = '\

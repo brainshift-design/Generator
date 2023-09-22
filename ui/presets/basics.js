@@ -147,10 +147,9 @@ const presetDataTypes = '\
             "renamed": "false",\
             "enabled": "true",\
             "highlight": "0",\
-            "x": "376",\
-            "y": "1165",\
+            "x": "474",\
+            "y": "1292",\
             "z": "0",\
-            "active": "true",\
             "width": "120",\
             "height": "54",\
             "params":\
@@ -165,12 +164,11 @@ const presetDataTypes = '\
             "renamed": "false",\
             "enabled": "true",\
             "highlight": "0",\
-            "x": "745",\
-            "y": "1192",\
+            "x": "842",\
+            "y": "1292",\
             "z": "1",\
-            "active": "true",\
             "width": "120",\
-            "height": "98",\
+            "height": "120",\
             "params":\
             [\
                     ["TEXT#", "value", "%221234567%22", "center"],\
@@ -182,29 +180,13 @@ const presetDataTypes = '\
             {\
             "type": "CMNT",\
             "id": "comment7",\
-            "name": "In%20the%20following%20example%20a%20number%20is%20converted%20to%20text",\
+            "name": "In%20the%20following%20example%20a%20number%20is%20converted%20to%20text%2C%20which",\
             "renamed": "true",\
             "enabled": "true",\
             "highlight": "0",\
-            "x": "365",\
-            "y": "1018",\
+            "x": "433",\
+            "y": "1121",\
             "z": "2"\
-            },\
-            {\
-            "type": "N2T",\
-            "id": "numToText",\
-            "name": "to%20text",\
-            "renamed": "false",\
-            "enabled": "true",\
-            "highlight": "0",\
-            "x": "560",\
-            "y": "1165",\
-            "z": "3",\
-            "active": "true",\
-            "params":\
-            [\
-                    ["TEXT#", "value", "1234567", "center"]\
-            ]\
             },\
             {\
             "type": "CMNT",\
@@ -213,9 +195,9 @@ const presetDataTypes = '\
             "renamed": "true",\
             "enabled": "true",\
             "highlight": "0",\
-            "x": "452",\
-            "y": "593",\
-            "z": "4"\
+            "x": "552",\
+            "y": "693",\
+            "z": "3"\
             },\
             {\
             "type": "CMNT",\
@@ -224,9 +206,9 @@ const presetDataTypes = '\
             "renamed": "true",\
             "enabled": "true",\
             "highlight": "0",\
-            "x": "450",\
-            "y": "642",\
-            "z": "5"\
+            "x": "550",\
+            "y": "742",\
+            "z": "4"\
             },\
             {\
             "type": "NULL",\
@@ -235,9 +217,9 @@ const presetDataTypes = '\
             "renamed": "true",\
             "enabled": "true",\
             "highlight": "0",\
-            "x": "330",\
-            "y": "743",\
-            "z": "6",\
+            "x": "430",\
+            "y": "843",\
+            "z": "5",\
             "active": "true"\
             },\
             {\
@@ -247,9 +229,9 @@ const presetDataTypes = '\
             "renamed": "false",\
             "enabled": "true",\
             "highlight": "0",\
-            "x": "931",\
-            "y": "1165",\
-            "z": "7",\
+            "x": "1028",\
+            "y": "1265",\
+            "z": "6",\
             "active": "true",\
             "params":\
             [\
@@ -266,9 +248,9 @@ const presetDataTypes = '\
             "renamed": "false",\
             "enabled": "true",\
             "highlight": "0",\
-            "x": "487",\
-            "y": "743",\
-            "z": "8",\
+            "x": "587",\
+            "y": "843",\
+            "z": "7",\
             "active": "true",\
             "width": "120",\
             "height": "54",\
@@ -284,9 +266,9 @@ const presetDataTypes = '\
             "renamed": "true",\
             "enabled": "true",\
             "highlight": "0",\
-            "x": "954",\
-            "y": "742",\
-            "z": "9",\
+            "x": "1054",\
+            "y": "842",\
+            "z": "8",\
             "active": "true"\
             },\
             {\
@@ -296,9 +278,9 @@ const presetDataTypes = '\
             "renamed": "false",\
             "enabled": "true",\
             "highlight": "0",\
-            "x": "643",\
-            "y": "743",\
-            "z": "10",\
+            "x": "743",\
+            "y": "843",\
+            "z": "9",\
             "active": "true",\
             "width": "120",\
             "height": "54",\
@@ -310,13 +292,13 @@ const presetDataTypes = '\
             {\
             "type": "CMNT",\
             "id": "comment13",\
-            "name": "which%20is%20then%20passed%20to%20a%20text%20shape%20on%20the%20canvas.",\
+            "name": "is%20then%20modified%20and%20passed%20to%20a%20text%20shape%20on%20the%20canvas.",\
             "renamed": "true",\
             "enabled": "true",\
             "highlight": "0",\
-            "x": "365",\
-            "y": "1061",\
-            "z": "11"\
+            "x": "433",\
+            "y": "1164",\
+            "z": "10"\
             },\
             {\
             "type": "COL",\
@@ -325,9 +307,9 @@ const presetDataTypes = '\
             "renamed": "false",\
             "enabled": "true",\
             "highlight": "0",\
-            "x": "798",\
-            "y": "743",\
-            "z": "12",\
+            "x": "898",\
+            "y": "843",\
+            "z": "11",\
             "active": "true",\
             "prevSpace": "hex",\
             "params":\
@@ -337,23 +319,26 @@ const presetDataTypes = '\
                     ["NUM#", "c2", "184,0"],\
                     ["NUM#", "c3", "54,0"]\
             ]\
+            },\
+            {\
+            "type": "N2T",\
+            "id": "numToText",\
+            "name": "to%20text",\
+            "renamed": "false",\
+            "enabled": "true",\
+            "highlight": "0",\
+            "x": "658",\
+            "y": "1292",\
+            "z": "12"\
             }\
         ],\
         "connections":\
         [\
             {\
             "outputNodeId": "numToText",\
-            "outputId": "value",\
-            "outputOrder": "0",\
-            "inputNodeId": "replace",\
-            "inputId": "h0",\
-            "list": "false"\
-            },\
-            {\
-            "outputNodeId": "num5",\
             "outputId": "h0",\
             "outputOrder": "0",\
-            "inputNodeId": "numToText",\
+            "inputNodeId": "replace",\
             "inputId": "h0",\
             "list": "false"\
             },\
@@ -363,6 +348,14 @@ const presetDataTypes = '\
             "outputOrder": "0",\
             "inputNodeId": "text2",\
             "inputId": "text",\
+            "list": "false"\
+            },\
+            {\
+            "outputNodeId": "num5",\
+            "outputId": "h0",\
+            "outputOrder": "0",\
+            "inputNodeId": "numToText",\
+            "inputId": "h0",\
             "list": "false"\
             }\
         ]\
@@ -742,276 +735,326 @@ const presetActive = '\
     {\
         "nodes":\
         [\
-        {\
+            {\
             "type": "CMNT",\
             "id": "comment4",\
             "name": "%3Cb%3EShift%3C%2Fb%3E%2BDouble%20click%20to%20activate%20%3Cb%3Emultiple%20nodes%3C%2Fb%3E%20at%20the%20same%20time.",\
             "renamed": "true",\
             "enabled": "true",\
             "highlight": "0",\
-            "x": "2125",\
-            "y": "1659",\
+            "x": "2275",\
+            "y": "1807",\
             "z": "0"\
-        },\
-        {\
+            },\
+            {\
             "type": "CMNT",\
             "id": "comment11",\
             "name": "%3Cb%3EDouble%20click%3C%2Fb%3E%20a%20node\'s%20header%20to%20activate%20the%20node",\
             "renamed": "true",\
             "enabled": "true",\
             "highlight": "0",\
-            "x": "2130",\
-            "y": "1283",\
+            "x": "2280",\
+            "y": "1433",\
             "z": "1"\
-        },\
-        {\
+            },\
+            {\
             "type": "CMNT",\
             "id": "comment5",\
             "name": "Double%20click%20the%20plugin%20background%20to%20deactivate%20all%20nodes.",\
             "renamed": "true",\
             "enabled": "true",\
             "highlight": "0",\
-            "x": "2121",\
-            "y": "1713",\
+            "x": "2271",\
+            "y": "1863",\
             "z": "2"\
-        },\
-        {\
+            },\
+            {\
             "type": "RECT",\
             "id": "rect",\
             "name": "rectangle",\
             "renamed": "false",\
             "enabled": "true",\
             "highlight": "0",\
-            "x": "1623",\
-            "y": "1555",\
+            "x": "1773",\
+            "y": "1705",\
             "z": "3",\
             "params":\
             [\
-                ["NUM#", "y", "100,0"]\
+                    ["NUM#", "y", "100,0"]\
             ]\
-        },\
-        {\
+            },\
+            {\
             "type": "ELPS",\
             "id": "ellipse",\
             "name": "ellipse",\
             "renamed": "false",\
             "enabled": "true",\
             "highlight": "0",\
-            "x": "1814",\
-            "y": "1283",\
+            "x": "1964",\
+            "y": "1433",\
             "z": "4",\
             "params":\
             [\
-                ["NUM#", "x", "100,0"]\
+                    ["NUM#", "x", "100,0"]\
             ]\
-        },\
-        {\
+            },\
+            {\
             "type": "POLY",\
             "id": "poly",\
             "name": "polygon",\
             "renamed": "false",\
             "enabled": "true",\
             "highlight": "0",\
-            "x": "1626",\
-            "y": "1284",\
+            "x": "1776",\
+            "y": "1434",\
             "z": "5",\
             "params":\
             [\
-                ["NUM#", "corners", "6,0"]\
+                    ["NUM#", "corners", "6,0"]\
             ]\
-        },\
-        {\
+            },\
+            {\
             "type": "STAR",\
             "id": "star",\
             "name": "star",\
             "renamed": "false",\
             "enabled": "true",\
             "highlight": "0",\
-            "x": "1815",\
-            "y": "1555",\
+            "x": "1965",\
+            "y": "1705",\
             "z": "6",\
             "params":\
             [\
-                ["NUM#", "x", "100,0"],\
-                ["NUM#", "y", "100,0"]\
+                    ["NUM#", "x", "100,0"],\
+                    ["NUM#", "y", "100,0"]\
             ]\
-        },\
-        {\
+            },\
+            {\
             "type": "COL",\
             "id": "color",\
             "name": "color",\
             "renamed": "false",\
             "enabled": "true",\
             "highlight": "0",\
-            "x": "1340",\
-            "y": "1475",\
+            "x": "1490",\
+            "y": "1625",\
             "z": "7",\
             "prevSpace": "hsv",\
             "params":\
             [\
-                ["NUM#", "space", "2,0"],\
-                ["NUM#", "c1", "27,0"],\
-                ["NUM#", "c2", "100,0"],\
-                ["NUM#", "c3", "93,0"]\
+                    ["NUM#", "space", "2,0"],\
+                    ["NUM#", "c1", "27,0"],\
+                    ["NUM#", "c2", "100,0"],\
+                    ["NUM#", "c3", "93,0"]\
             ]\
-        },\
-        {\
+            },\
+            {\
             "type": "CMB",\
             "id": "combine",\
             "name": "combine",\
             "renamed": "false",\
             "enabled": "true",\
             "highlight": "0",\
-            "x": "2126",\
-            "y": "1503",\
+            "x": "2276",\
+            "y": "1653",\
             "z": "8",\
             "width": "120",\
             "height": "77"\
-        },\
-        {\
+            },\
+            {\
             "type": "CMNT",\
             "id": "comment13",\
             "name": "to%20put%20its%20%3Cb%3Eobject%20on%20the%20canvas%3C%2Fb%3E.%20Objects%20created%20by%20Generator",\
             "renamed": "true",\
             "enabled": "true",\
             "highlight": "0",\
-            "x": "2130",\
-            "y": "1331",\
+            "x": "2280",\
+            "y": "1481",\
             "z": "9"\
-        },\
-        {\
+            },\
+            {\
             "type": "CMNT",\
             "id": "comment14",\
             "name": "have%20the%20%26nbsp%3B%26hairsp%3B%E2%97%A6G%E2%80%A2%26nbsp%3B%26thinsp%3Bprefix%20in%20the%20name.",\
             "renamed": "true",\
             "enabled": "true",\
             "highlight": "0",\
-            "x": "2128",\
-            "y": "1381",\
+            "x": "2278",\
+            "y": "1531",\
             "z": "10"\
-        },\
-        {\
+            },\
+            {\
             "type": "CMNT",\
-            "id": "comment12",\
-            "name": "In%20the%20free%20version%20of%20Generator%2C%20when%20you%20close%20the%20plugin%20your%20objects%20are%20removed%20from%20the%20canvas.",\
+            "id": "comment19",\
+            "name": "In%20the%20free%20version%20of%20Generator%2C%20when%20you%20close%20the%20plugin",\
             "renamed": "true",\
             "enabled": "true",\
             "highlight": "0",\
-            "x": "1418",\
-            "y": "1910",\
+            "x": "1519",\
+            "y": "2067",\
             "z": "11"\
-        },\
-        {\
+            },\
+            {\
             "type": "CMNT",\
-            "id": "comment15",\
-            "name": "This%20is%20the%20cleanest%20way%20of%20separating%20Generator%20objects%20from%20your%20other%20work.%20To%20keep%20using%20Generator%20objects",\
+            "id": "comment20",\
+            "name": "way%20of%20separating%20Generator%20objects%20from%20your%20other%20work.",\
             "renamed": "true",\
             "enabled": "true",\
             "highlight": "0",\
-            "x": "1413",\
-            "y": "1967",\
+            "x": "1518",\
+            "y": "2159",\
             "z": "12"\
-        },\
-        {\
+            },\
+            {\
             "type": "CMNT",\
-            "id": "comment16",\
-            "name": "after%20closing%20the%20plugin%2C%20first%20%3Cb%3Eselect%20and%20copy%20them%20to%20another%20Figma%20document%3C%2Fb%3E.",\
+            "id": "comment21",\
+            "name": "first%20%3Cb%3Eselect%20and%20copy%20them%20to%20another%20Figma%20document%3C%2Fb%3E.",\
             "renamed": "true",\
             "enabled": "true",\
             "highlight": "0",\
-            "x": "1417",\
-            "y": "2023",\
+            "x": "1522",\
+            "y": "2304",\
             "z": "13"\
-        },\
-        {\
+            },\
+            {\
             "type": "CMNT",\
-            "id": "comment17",\
-            "name": "Pro%20subscribers%20can%20use%20the%20Render%20node%20to%20keep%20their%20Generator%20objects%20on%20the%20same%20page%2C%20updated%20automatically",\
+            "id": "comment22",\
+            "name": "Pro%20subscribers%20can%20use%20the%20Render%20node%20to%20keep%20their",\
             "renamed": "true",\
             "enabled": "true",\
             "highlight": "0",\
-            "x": "1412",\
-            "y": "2142",\
+            "x": "2383",\
+            "y": "2065",\
             "z": "14"\
-        },\
-        {\
+            },\
+            {\
             "type": "CMNT",\
-            "id": "comment18",\
-            "name": "when%20Generator%20reloads.",\
+            "id": "comment23",\
+            "name": "automatically%20when%20Generator%20reloads.",\
             "renamed": "true",\
             "enabled": "true",\
             "highlight": "0",\
-            "x": "1412",\
-            "y": "2198",\
+            "x": "2383",\
+            "y": "2166",\
             "z": "15",\
             "active": "true"\
-        }\
+            },\
+            {\
+            "type": "CMNT",\
+            "id": "comment24",\
+            "name": "your%20objects%20are%20removed%20from%20the%20canvas.%20This%20is%20the%20cleanest",\
+            "renamed": "true",\
+            "enabled": "true",\
+            "highlight": "0",\
+            "x": "1522",\
+            "y": "2111",\
+            "z": "16"\
+            },\
+            {\
+            "type": "CMNT",\
+            "id": "comment25",\
+            "name": "To%20keep%20using%20Generator%20objects%20after%20closing%20the%20plugin%2C",\
+            "renamed": "true",\
+            "enabled": "true",\
+            "highlight": "0",\
+            "x": "1519",\
+            "y": "2257",\
+            "z": "17"\
+            },\
+            {\
+            "type": "CMNT",\
+            "id": "comment26",\
+            "name": "Generator%20objects%20on%20the%20same%20page%20and%20update%20them",\
+            "renamed": "true",\
+            "enabled": "true",\
+            "highlight": "0",\
+            "x": "2382",\
+            "y": "2116",\
+            "z": "18"\
+            },\
+            {\
+            "type": "PANEL",\
+            "id": "panel",\
+            "name": "",\
+            "renamed": "false",\
+            "enabled": "true",\
+            "highlight": "0",\
+            "x": "1469",\
+            "y": "2003",\
+            "z": "19",\
+            "active": "true",\
+            "width": "1639.6518683107404",\
+            "height": "395",\
+            "params":\
+            [\
+            ]\
+            }\
         ],\
         "connections":\
         [\
-        {\
+            {\
             "outputNodeId": "color",\
             "outputId": "h0",\
             "outputOrder": "0",\
             "inputNodeId": "rect",\
             "inputId": "props",\
             "list": "false"\
-        },\
-        {\
+            },\
+            {\
             "outputNodeId": "color",\
             "outputId": "h0",\
             "outputOrder": "1",\
             "inputNodeId": "ellipse",\
             "inputId": "props",\
             "list": "false"\
-        },\
-        {\
+            },\
+            {\
             "outputNodeId": "color",\
             "outputId": "h0",\
             "outputOrder": "2",\
             "inputNodeId": "poly",\
             "inputId": "props",\
             "list": "false"\
-        },\
-        {\
+            },\
+            {\
             "outputNodeId": "color",\
             "outputId": "h0",\
             "outputOrder": "3",\
             "inputNodeId": "star",\
             "inputId": "props",\
             "list": "false"\
-        },\
-        {\
+            },\
+            {\
             "outputNodeId": "poly",\
             "outputId": "h0",\
             "outputOrder": "0",\
             "inputNodeId": "combine",\
             "inputId": "h0",\
             "list": "false"\
-        },\
-        {\
+            },\
+            {\
             "outputNodeId": "ellipse",\
             "outputId": "h0",\
             "outputOrder": "0",\
             "inputNodeId": "combine",\
             "inputId": "h1",\
             "list": "false"\
-        },\
-        {\
+            },\
+            {\
             "outputNodeId": "rect",\
             "outputId": "h0",\
             "outputOrder": "0",\
             "inputNodeId": "combine",\
             "inputId": "h2",\
             "list": "false"\
-        },\
-        {\
+            },\
+            {\
             "outputNodeId": "star",\
             "outputId": "h0",\
             "outputOrder": "0",\
             "inputNodeId": "combine",\
             "inputId": "h3",\
             "list": "false"\
-        }\
+            }\
         ]\
     }';

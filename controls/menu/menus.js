@@ -23,7 +23,6 @@ var menuBarMenus;
 
 var menuMain;
 var menuMainFile;
-var menuMainTutorials;
 var menuMainPreferences;
 var menuMainDebug;
 var menuMainHelp;
@@ -268,29 +267,6 @@ function initGeneratorMenus()
         menuItemSaveToFile = new MenuItem('Save selected to file...', null, {shortcut: osCtrlShift() + 'S', callback: () => { hideAllMenus(); uiSaveSelectionToLocalFile(); }})]);
 
 
-    menuMainTutorials = new Menu('Tutorials', false);
-    menuMainTutorials.addItems([
-        new MenuItem('Node & graph basics',        null, {callback: () => { hideAllMenus(); loadPresetGraph('basics');       }}),
-        new MenuItem('',                           null, {separator: true}),    
-        new MenuItem('Lists',                      null, {callback: () => { hideAllMenus(); loadPresetGraph('repeat');       }}),
-        new MenuItem('',                           null, {separator: true}),    
-        new MenuItem('Create shapes',              null, {callback: () => { hideAllMenus(); loadPresetGraph('shapes');       }}),
-        new MenuItem('Transform shapes',           null, {callback: () => { hideAllMenus(); loadPresetGraph('transform');    }}),
-        new MenuItem('',                           null, {separator: true}),    
-        new MenuItem('Loops',                      null, {callback: () => { hideAllMenus(); loadPresetGraph('loops');        }}),
-        new MenuItem('',                           null, {separator: true}),    
-        new MenuItem('Sequences...',               null, {callback: () => { hideAllMenus(); loadPresetGraph('sequences');    }}),
-        new MenuItem('Random & noise...',          null, {callback: () => { hideAllMenus(); loadPresetGraph('random');       }}),
-        new MenuItem('',                           null, {separator: true}),    
-        new MenuItem('Math & logic',               null, {callback: () => { hideAllMenus(); loadPresetGraph('math');         }}),
-        new MenuItem('Text & data',                null, {callback: () => { hideAllMenus(); loadPresetGraph('text');         }}),
-        new MenuItem('',                           null, {separator: true}),    
-        new MenuItem('Colors & gradients',         null, {callback: () => { hideAllMenus(); loadPresetGraph('colors');       }}),
-        new MenuItem('Validation & accessibility', null, {callback: () => { hideAllMenus(); loadPresetGraph('colors');       }}),
-        new MenuItem('',                           null, {separator: true}),    
-        new MenuItem('Figma variables',            null, {callback: () => { hideAllMenus(); loadPresetGraph('variables');    }})]);
-
-
     menuMainPreferences = new Menu('Preferences', false);
     menuMainPreferences.addItems([
         // menuItemShowPages           = new MenuItem('Show pages',                    null, {checkCallback: () => settings.showAllColorSpaces,     callback: () => { updateSettingAndMenu('showPages',              true, !settings.showPages);              updateMenuItemShowPages();              }}),
@@ -414,8 +390,8 @@ function initGeneratorMenus()
 
     menuMainHelp = new Menu('Help and subscription', false);
     menuMainHelp.addItems([
-        //new MenuItem('Tutorials',    null, {callback: () => showPresets()}),
-        //new MenuItem('',             null, {separator: true}),
+        new MenuItem('Tutorials',    null, {callback: () => showPresets()}),
+        new MenuItem('',             null, {separator: true}),
         new MenuItem('Keyboard shortcuts', null, {shortcut: osCtrlShift() + '?', callback: () => showKeyboardPanel()}),
         // new MenuItem('Help page',   null, {callback:  () => window.open('http://www.bourt.com/generator/help', '_blank')}),
         new MenuItem('',             null, {separator: true}),
@@ -429,7 +405,6 @@ function initGeneratorMenus()
                         new MenuItem('Quick actions...',      null, {icon: iconSearchMenu, shortcut: osCtrl() + '/', callback: () => { hideAllMenus(); showSearchBox(); }}),
                         new MenuItem('',                      null, {separator: true}),
                         new MenuItem('File',                  null, {childMenu: menuMainFile}),
-                        //new MenuItem('Tutorials',             null, {childMenu: menuMainTutorials}),
                         new MenuItem('',                      null, {separator: true}),
                         new MenuItem('Preferences',           null, {childMenu: menuMainPreferences}),
         menuItemDebug = new MenuItem('Debug',                 null, {childMenu: menuMainDebug}),
@@ -924,17 +899,17 @@ menuFlow = new Menu('Flow', true, false);
         updatePanMode(false);
     }});
 
-    // btnComment = new MenuButton('Add comment', null, {callback: () => 
-    // {
-    //     const create = new CreateNodeAction(COMMENT, btnComment.div);
-    //     actionManager.do(create);
+    btnComment = new MenuButton('Add comment', null, {callback: () => 
+    {
+        const create = new CreateNodeAction(COMMENT, btnComment.div);
+        actionManager.do(create);
 
-    //     graphView.updateNodes([create.node]);
-    //     graphView.updateScrollWithBounds();
+        graphView.updateNodes([create.node]);
+        graphView.updateScrollWithBounds();
 
-    //     hideAllMenus();
-    //     updatePanMode(false);
-    // }});
+        hideAllMenus();
+        updatePanMode(false);
+    }});
 
 
     //menuBar.appendChild(createDiv('', 'groupName'));
@@ -1005,7 +980,7 @@ menuFlow = new Menu('Flow', true, false);
     btnLayer  .setIcon(iconEffects);
     btnShape  .setIcon(iconShapes);
     btnHand   .setIcon(iconHand);
-    //btnComment.setIcon(iconComment);
+    btnComment.setIcon(iconComment);
     btnPanel  .setIcon(iconPanel);
     btnSolo   .setIcon(iconSolo);
 

@@ -1,7 +1,6 @@
 class GNumberToText
 extends GOperator1
 {
-    number;
     format;
 
 
@@ -40,29 +39,43 @@ extends GOperator1
             const input = (await this.input.eval(parse)).toValue();
 
 
-            let str = NAN_CHAR;
-
-            switch (format.value)
+            if (isListType(input.type))
             {
-                case 0: // dec
-                    str = numToString(input.value, -input.decimals);
-                break;
+                this.value = new ListValue();
 
-                case 1: // hex
-                    str = numToString(Math.round(input.value), input.decimals, true).toUpperCase();
-                    break;
+                for (let i = 0; i < input.items.length; i++)
+                {
+                    const item = input.items[i];
+
+                    this.value.items.push(
+                        item.type == NUMBER_VALUE
+                        ? getNumberToTextValue(item, format)
+                        : TextValue.NaN.copy());   
+                }
             }
-
-            this.value = new TextValue(str);
+            else
+            {
+                this.value = getNumberToTextValue(input, format);
+            }
         }
+
         else
             this.value = TextValue.NaN;
 
+
+        const type = 
+            this.value
+            ? new TextValue(
+                isListType(this.value.type)
+                ? finalListTypeFromItems(this.value.items)
+                : this.value.type)
+            : TextValue.NaN.copy();
             
+
         this.setUpdateValues(parse,
         [
-            ['value',  this.value],
-            ['format', format    ]
+            ['type',   type  ],
+            ['format', format]
         ]);
 
 
@@ -105,4 +118,24 @@ extends GOperator1
 
         if (this.format) this.format.iterateLoop(parse);
     }
+}
+
+
+
+function getNumberToTextValue(input, format)
+{
+    let str = NAN_CHAR;
+
+    switch (format.value)
+    {
+        case 0: // dec
+            str = numToString(input.value, -input.decimals);
+        break;
+
+        case 1: // hex
+            str = numToString(Math.round(input.value), input.decimals, true).toUpperCase();
+            break;
+    }
+
+    return new TextValue(str);
 }

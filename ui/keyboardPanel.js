@@ -14,17 +14,8 @@ function initKeyboardPanel()
         ctrlKeys .forEach(k => k.innerHTML = 'Shift');
         shiftKeys.forEach(k => k.innerHTML = 'Ctrl' );
 
-
-        document.getElementsByClassName('treeLeftCtrl'  )[0].innerHTML = 'Alt';
-
-        document.getElementsByClassName('newBranch1'    )[0].innerHTML = 'Alt';
-        document.getElementsByClassName('newBranch2'    )[0].innerHTML = 'Ctrl';
-        
-        document.getElementsByClassName('treeRightCtrl1')[0].innerHTML = 'Shift';
-        document.getElementsByClassName('treeRightCtrl2')[0].innerHTML = 'Ctrl';
-        
-        document.getElementsByClassName('treeAcross1'   )[0].innerHTML = 'Alt';
-        document.getElementsByClassName('treeAcross2'   )[0].innerHTML = 'Ctrl';
+        document.getElementsByClassName('newBranch1')[0].innerHTML = 'Alt';
+        document.getElementsByClassName('newBranch2')[0].innerHTML = 'Ctrl';
     }
 
 
