@@ -44,7 +44,7 @@ extends GOperator
         const type = 
             this.value
             ? new TextValue(
-                LIST_VALUES.includes(this.value.type)
+                isListType(this.value.type)
                 ? finalListTypeFromItems(this.value.items)
                 : this.value.type)
             : TextValue.NaN;

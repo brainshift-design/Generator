@@ -48,7 +48,7 @@ extends GOperator1
 
         fills = this.validateFills(fills);
 
-        if (!LIST_VALUES.includes(this._fills.type))
+        if (!isListType(this._fills.type))
             this.fills = fills;
 
 

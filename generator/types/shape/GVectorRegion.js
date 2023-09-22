@@ -60,7 +60,7 @@ extends GShape
         {
             const input = (await this.inputs[i].eval(parse)).toValue();
 
-            if (LIST_VALUES.includes(input.type))
+            if (isListType(input.type))
             {
                 const _loop = new ListValue();
 

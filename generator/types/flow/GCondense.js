@@ -43,7 +43,7 @@ extends GOperator1
                 
             if (input)
             {
-                if (   LIST_VALUES.includes(input.type)
+                if (   isListType(input.type)
                     && this.options.enabled)
                 {
                     for (const item of input.items)

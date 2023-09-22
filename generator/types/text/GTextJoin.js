@@ -118,7 +118,7 @@ async function evalJoinInputs(inputs, _with, parse)
             value.value += w;
 
 
-        if (LIST_VALUES.includes(val.type))
+        if (isListType(val.type))
         {
             for (let j = 0; j < val.items.length; j++)
             {

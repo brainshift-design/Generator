@@ -39,7 +39,7 @@ extends GOperator1
             const input = (await this.input.eval(parse)).toValue();
 
 
-            if (LIST_VALUES.includes(input.type))
+            if (isListType(input.type))
             {
                 this.value = new ListValue();
 
@@ -66,7 +66,7 @@ extends GOperator1
         const type = 
             this.value
             ? new TextValue(
-                LIST_VALUES.includes(this.value.type)
+                isListType(this.value.type)
                 ? finalListTypeFromItems(this.value.items)
                 : this.value.type)
             : TextValue.NaN.copy();
@@ -74,9 +74,8 @@ extends GOperator1
 
         this.setUpdateValues(parse,
         [
-            //['value',  this.value],
-            ['type',   type      ],
-            ['format', format    ]
+            ['type',   type  ],
+            ['format', format]
         ]);
 
 

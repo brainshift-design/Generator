@@ -533,6 +533,9 @@ function getObjectFills(genObjFills) {
     }
     return fills;
 }
+function isListType(type) {
+    return LIST_VALUES.includes(type);
+}
 const LIST_VALUE = 'LIST#';
 const NUMBER_LIST_VALUE = 'NLIST#';
 const TEXT_LIST_VALUE = 'TLIST#';

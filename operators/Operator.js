@@ -1,5 +1,5 @@
-const connectionSize = 9;
-const connectionGap  = 4;
+const connectionSize  = 9;
+const connectionGap   = 4;
 
 const defHeaderHeight = 32;
 

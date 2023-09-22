@@ -125,7 +125,7 @@ extends GShape
                 x, y, w, h, r);
 
 
-            // if (LIST_VALUES.includes(this.value.type))
+            // if (isListType(this.value.type))
             // {
             //     console.log('this.value.children =', this.value.children);
             //     for (let i = 0; i < this.value.children.objects.length; i++)

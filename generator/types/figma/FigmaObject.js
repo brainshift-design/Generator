@@ -433,7 +433,7 @@ function getValidObjects(value)
 //     if (!input)
 //         return objects;
 
-//     // if (LIST_VALUES.includes(input.type))
+//     // if (isListType(input.type))
 //     //     for (const item of input.items)
 //     //         objects.push(...getValidInputObjects(item));
 

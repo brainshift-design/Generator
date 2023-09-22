@@ -88,11 +88,11 @@ extends OpColorBase
 
     updateValues(requestId, actionId, updateParamId, paramIds, values)
     {
-        const col = values[paramIds.findIndex(id => id == 'value')];
+        const value = values[paramIds.findIndex(id => id == 'value')];
 
         this._color = 
-            col
-            ? col.toDataColor()
+            value
+            ? value.toDataColor()
             : dataColor_NaN;
 
 

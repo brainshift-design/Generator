@@ -53,8 +53,8 @@ extends GOperator1
 
             input.items.sort((a, b) => 
             {
-                const ca = a ? (LIST_VALUES.includes(a.type) ? a.items[column.value].value : a.value) : 0;
-                const cb = b ? (LIST_VALUES.includes(b.type) ? b.items[column.value].value : b.value) : 0;
+                const ca = a ? (isListType(a.type) ? a.items[column.value].value : a.value) : 0;
+                const cb = b ? (isListType(b.type) ? b.items[column.value].value : b.value) : 0;
 
                 if (ca < cb) return -1 * sortMultiplier;
                 if (ca > cb) return  1 * sortMultiplier;
@@ -63,7 +63,7 @@ extends GOperator1
             });
 
 
-            input.items.forEach(i => maxColumns = Math.max(maxColumns, LIST_VALUES.includes(i.type) ? i.items.length : 1));
+            input.items.forEach(i => maxColumns = Math.max(maxColumns, isListType(i.type) ? i.items.length : 1));
 
             for (let i = 0; i < input.items.length; i++)
             {

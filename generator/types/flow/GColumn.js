@@ -65,7 +65,7 @@ extends GOperator1
                     }
                 }
             }
-            else if (LIST_VALUES.includes(input.type))
+            else if (isListType(input.type))
                 this.value = input.copy();
         }
 
@@ -131,12 +131,12 @@ extends GOperator1
 
 function isTable(value)
 {
-    if (!LIST_VALUES.includes(value.type))
+    if (!isListType(value.type))
         return false;
 
     for (const item of value.items)
     {
-        if (!LIST_VALUES.includes(item.type))
+        if (!isListType(item.type))
             return false;
     }
 

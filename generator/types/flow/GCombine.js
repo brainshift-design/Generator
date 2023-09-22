@@ -84,7 +84,7 @@ extends GOperator
             if (   input
                 && this.options.enabled)
             {
-                if (LIST_VALUES.includes(input.type))
+                if (isListType(input.type))
                 {
                     if (input.condensed === true)
                         this.value.items.push(input.copy());

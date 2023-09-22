@@ -97,7 +97,7 @@ extends ResizableBase
     
         if (type)
         {
-            consoleAssert(LIST_VALUES.includes(type.value));
+            consoleAssert(isListType(type.value));
             this.outputs[0].types = [type.value];
         }
     }

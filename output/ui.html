@@ -5326,7 +5326,8 @@ a
             <div id='whatsNewBody'>
                 <h1 style='margin-top: 20px;'>What's new</h1>
 
-                <p>•  </p>
+                <p>•  Text ⟶ Number and Text ⟶ Color nodes can now convert text lists directly</p>
+                <p>•  <b>Breaking change:</b> removed value parameter from Text ⟶ Number nodes, the output value is now in the header</p>
                 
                 <p><br/><br/><div id='chkHideWhatsNew'></div></p>
             </div>
@@ -6788,6 +6789,12 @@ function getObjectFills(genObjFills)
     return fills;
 }
 
+
+
+function isListType(type)
+{
+    return LIST_VALUES.includes(type);
+}
 
 
 function rgbFromType(type, active)
@@ -11750,7 +11757,7 @@ function getValidObjects(value)
 //     if (!input)
 //         return objects;
 
-//     // if (LIST_VALUES.includes(input.type))
+//     // if (isListType(input.type))
 //     //     for (const item of input.items)
 //     //         objects.push(...getValidInputObjects(item));
 
@@ -14851,7 +14858,7 @@ extends GValue
 
             const item = this.items[i];
 
-            if (LIST_VALUES.includes(item.type))
+            if (isListType(item.type))
                 // str += 'list [' + item.items.length + ']';
             {
                 for (let j = 0; j < item.items.length; j++)
@@ -20880,7 +20887,7 @@ extends GOperator
         const type = 
             this.value
             ? new TextValue(
-                LIST_VALUES.includes(this.value.type)
+                isListType(this.value.type)
                 ? finalListTypeFromItems(this.value.items)
                 : this.value.type)
             : TextValue.NaN;
@@ -21276,7 +21283,7 @@ extends GOperator1
         const type = 
             this.value
             ? new TextValue(
-                LIST_VALUES.includes(this.value.type)
+                isListType(this.value.type)
                 ? finalListTypeFromItems(this.value.items)
                 : this.value.type)
             : TextValue.NaN;
@@ -21382,7 +21389,7 @@ extends GOperator1
         const type = 
             this.value
             ? new TextValue(
-                LIST_VALUES.includes(this.value.type)
+                isListType(this.value.type)
                 ? finalListTypeFromItems(this.value.items)
                 : this.value.type)
             : TextValue.NaN;
@@ -21586,7 +21593,7 @@ extends GOperator
         const type = 
             this.value
             ? new TextValue(
-                LIST_VALUES.includes(this.value.type)
+                isListType(this.value.type)
                 ? finalListTypeFromItems(this.value.items)
                 : this.value.type)
             : TextValue.NaN;
@@ -21740,7 +21747,7 @@ extends GOperator
             if (   input
                 && this.options.enabled)
             {
-                if (LIST_VALUES.includes(input.type))
+                if (isListType(input.type))
                 {
                     if (input.condensed === true)
                         this.value.items.push(input.copy());
@@ -21900,7 +21907,7 @@ extends GOperator1
                 
             if (input)
             {
-                if (   LIST_VALUES.includes(input.type)
+                if (   isListType(input.type)
                     && this.options.enabled)
                 {
                     for (const item of input.items)
@@ -22473,8 +22480,8 @@ extends GOperator1
 
             input.items.sort((a, b) => 
             {
-                const ca = a ? (LIST_VALUES.includes(a.type) ? a.items[column.value].value : a.value) : 0;
-                const cb = b ? (LIST_VALUES.includes(b.type) ? b.items[column.value].value : b.value) : 0;
+                const ca = a ? (isListType(a.type) ? a.items[column.value].value : a.value) : 0;
+                const cb = b ? (isListType(b.type) ? b.items[column.value].value : b.value) : 0;
 
                 if (ca < cb) return -1 * sortMultiplier;
                 if (ca > cb) return  1 * sortMultiplier;
@@ -22483,7 +22490,7 @@ extends GOperator1
             });
 
 
-            input.items.forEach(i => maxColumns = Math.max(maxColumns, LIST_VALUES.includes(i.type) ? i.items.length : 1));
+            input.items.forEach(i => maxColumns = Math.max(maxColumns, isListType(i.type) ? i.items.length : 1));
 
             for (let i = 0; i < input.items.length; i++)
             {
@@ -22629,7 +22636,7 @@ extends GOperator1
                     }
                 }
             }
-            else if (LIST_VALUES.includes(input.type))
+            else if (isListType(input.type))
                 this.value = input.copy();
         }
 
@@ -22695,12 +22702,12 @@ extends GOperator1
 
 function isTable(value)
 {
-    if (!LIST_VALUES.includes(value.type))
+    if (!isListType(value.type))
         return false;
 
     for (const item of value.items)
     {
-        if (!LIST_VALUES.includes(item.type))
+        if (!isListType(item.type))
             return false;
     }
 
@@ -22786,7 +22793,7 @@ extends GOperator
         const type = 
             this.value
             ? new TextValue(
-                LIST_VALUES.includes(this.value.type)
+                isListType(this.value.type)
                 ? finalListTypeFromItems(this.value.items)
                 : this.value.type)
             : TextValue.NaN;
@@ -23102,7 +23109,7 @@ extends GOperator
         const type = 
             this.value
             ? new TextValue(
-                LIST_VALUES.includes(this.value.type)
+                isListType(this.value.type)
                 ? finalListTypeFromItems(this.value.items)
                 : this.value.type)
             : TextValue.NaN;
@@ -23989,7 +23996,7 @@ async function evalMinMaxInputs(inputs, op, parse)
     {
         value = new NumberValue(-val0.value, val0.decimals);
     }
-    else if (LIST_VALUES.includes(val0.type)
+    else if (isListType(val0.type)
             && !isEmpty(val0.items))
     {
         const item0 = val0.items[0];
@@ -24026,7 +24033,7 @@ async function evalMinMaxInputs(inputs, op, parse)
     {
         const val = (await inputs[i].eval(parse)).toValue();
 
-        if (LIST_VALUES.includes(val.type))
+        if (isListType(val.type))
         {
             for (const item of val.items)
             {
@@ -24487,7 +24494,7 @@ extends GOperator
             if (   input
                 && this.options.enabled)            
             {
-                if (LIST_VALUES.includes(input.type))
+                if (isListType(input.type))
                 {
                     for (const item of input.items)
                         _values.push(item.copy());   
@@ -26341,7 +26348,7 @@ async function evalAddInputs(inputs, parse)
             || !val.isValid())
             return NumberValue.NaN;
 
-        if (LIST_VALUES.includes(val.type))
+        if (isListType(val.type))
         {
             if (   isEmpty(val.items)
                 || val.items[0].type != NUMBER_VALUE)
@@ -26435,7 +26442,7 @@ async function evalSubtractInputs(inputs, parse)
         {
             value = new NumberValue(-val0.value, val0.decimals);
         }
-        else if (LIST_VALUES.includes(val0.type)
+        else if (isListType(val0.type)
              && !isEmpty(val0.items))
         {
             const item0 = val0.items[0];
@@ -26482,7 +26489,7 @@ async function evalSubtractInputs(inputs, parse)
                 return NumberValue.NaN;
 
 
-            if (LIST_VALUES.includes(val.type))
+            if (isListType(val.type))
             {
                 for (const item of val.items)
                 {
@@ -26572,7 +26579,7 @@ async function evalMultiplyInputs(inputs, parse)
                 return NumberValue.NaN;
 
 
-            if (LIST_VALUES.includes(val.type))
+            if (isListType(val.type))
             {
                 if (   isEmpty(val.items)
                     || val.items[0].type != NUMBER_VALUE)
@@ -26659,7 +26666,7 @@ async function evalDivideInputs(inputs, parse)
             return NumberValue.NaN;
 
 
-        if (    LIST_VALUES.includes(val0.type)
+        if (    isListType(val0.type)
             && !isEmpty(val0.items))
         {
             const item0 = val0.items[0];
@@ -26714,7 +26721,7 @@ async function evalDivideInputs(inputs, parse)
                 return NumberValue.NaN;
 
 
-            if (LIST_VALUES.includes(val.type))
+            if (isListType(val.type))
             {
                 for (const item of val.items)
                 {
@@ -26819,7 +26826,7 @@ async function evalModuloInputs(inputs, parse)
             return NumberValue.NaN;
 
 
-        if (    LIST_VALUES.includes(val0.type)
+        if (    isListType(val0.type)
             && !isEmpty(val0.items))
         {
             const item0 = val0.items[0];
@@ -26874,7 +26881,7 @@ async function evalModuloInputs(inputs, parse)
                 return NumberValue.NaN;
 
 
-            if (LIST_VALUES.includes(val.type))
+            if (isListType(val.type))
             {
                 for (const item of val.items)
                 {
@@ -26979,7 +26986,7 @@ async function evalExponentInputs(inputs, parse)
             return NumberValue.NaN;
 
 
-        if (    LIST_VALUES.includes(val0.type)
+        if (    isListType(val0.type)
             && !isEmpty(val0.items))
         {
             const item0 = val0.items[0];
@@ -27027,7 +27034,7 @@ async function evalExponentInputs(inputs, parse)
                 return NumberValue.NaN;
 
 
-            if (LIST_VALUES.includes(val.type))
+            if (isListType(val.type))
             {
                 for (const item of val.items)
                 {
@@ -27210,7 +27217,7 @@ async function evalNandInputs(inputs, parse)
         const val0 = (await inputs[0].eval(parse)).toValue();
         if (!val0.isValid()) return NumberValue.NaN;
 
-        if (    LIST_VALUES.includes(val0.type)
+        if (    isListType(val0.type)
             && !isEmpty(val0.items))
         {
             const item0 = val0.items[0];
@@ -27240,7 +27247,7 @@ async function evalNandInputs(inputs, parse)
             const val = (await inputs[i].eval(parse)).toValue();
             if (!val.isValid()) return NumberValue.NaN;
 
-            if (LIST_VALUES.includes(val.type))
+            if (isListType(val.type))
             {
                 for (const item of val.items)
                 {
@@ -27321,7 +27328,7 @@ async function evalAndInputs(inputs, parse)
         const val0 = (await inputs[0].eval(parse)).toValue();
         if (!val0.isValid()) return NumberValue.NaN;
 
-        if (    LIST_VALUES.includes(val0.type)
+        if (    isListType(val0.type)
             && !isEmpty(val0.items))
         {
             const item0 = val0.items[0];
@@ -27350,7 +27357,7 @@ async function evalAndInputs(inputs, parse)
             const val = (await inputs[i].eval(parse)).toValue();
             if (!val.isValid()) return NumberValue.NaN;
 
-            if (LIST_VALUES.includes(val.type))
+            if (isListType(val.type))
             {
                 for (const item of val.items)
                 {
@@ -27435,7 +27442,7 @@ async function evalOrInputs(inputs, parse)
         const val0 = (await inputs[0].eval(parse)).toValue();
         if (!val0.isValid()) return NumberValue.NaN;
 
-        if (    LIST_VALUES.includes(val0.type)
+        if (    isListType(val0.type)
             && !isEmpty(val0.items))
         {
             const item0 = val0.items[0];
@@ -27464,7 +27471,7 @@ async function evalOrInputs(inputs, parse)
             const val = (await inputs[i].eval(parse)).toValue();
             if (!val.isValid()) return NumberValue.NaN;
 
-            if (LIST_VALUES.includes(val.type))
+            if (isListType(val.type))
             {
                 for (const item of val.items)
                 {
@@ -27548,7 +27555,7 @@ async function evalXorInputs(inputs, parse)
         const val0 = (await inputs[0].eval(parse)).toValue();
         if (!val0.isValid()) return NumberValue.NaN;
 
-        if (    LIST_VALUES.includes(val0.type)
+        if (    isListType(val0.type)
             && !isEmpty(val0.items))
         {
             const item0 = val0.items[0];
@@ -27578,7 +27585,7 @@ async function evalXorInputs(inputs, parse)
             const val = (await inputs[i].eval(parse)).toValue();
             if (!val.isValid()) return NumberValue.NaN;
 
-            if (LIST_VALUES.includes(val.type))
+            if (isListType(val.type))
             {
                 for (const item of val.items)
                 {
@@ -29139,7 +29146,7 @@ extends GOperator1
             const input = (await this.input.eval(parse)).toValue();
 
 
-            if (LIST_VALUES.includes(input.type))
+            if (isListType(input.type))
             {
                 this.value = new ListValue();
 
@@ -29166,7 +29173,7 @@ extends GOperator1
         const type = 
             this.value
             ? new TextValue(
-                LIST_VALUES.includes(this.value.type)
+                isListType(this.value.type)
                 ? finalListTypeFromItems(this.value.items)
                 : this.value.type)
             : TextValue.NaN.copy();
@@ -29174,9 +29181,8 @@ extends GOperator1
 
         this.setUpdateValues(parse,
         [
-            //['value',  this.value],
-            ['type',   type      ],
-            ['format', format    ]
+            ['type',   type  ],
+            ['format', format]
         ]);
 
 
@@ -29273,20 +29279,42 @@ extends GOperator1
         {
             const input = (await this.input.eval(parse)).toValue();
 
-            let rgb = 
-                input.value.trim() != ''
-                ? validHex2rgb(input.value)
-                : rgb_NaN;
-                
-            this.value = ColorValue.fromRgb(scaleRgb(rgb));
+            if (isListType(input.type))
+            {
+                this.value = new ListValue();
+
+                for (let i = 0; i < input.items.length; i++)
+                {
+                    const item = input.items[i];
+
+                    this.value.items.push(
+                        item.type == TEXT_VALUE
+                        ? getTextToColorValue(item)
+                        : NumberValue.NaN.copy());   
+                }
+            }
+            else
+            {
+                this.value = getTextToColorValue(input);
+            }
         }
         else
             this.value = ColorValue.NaN;
 
 
+        const type = 
+            this.value
+            ? new TextValue(
+                isListType(this.value.type)
+                ? finalListTypeFromItems(this.value.items)
+                : this.value.type)
+            : TextValue.NaN.copy();
+
+
         this.setUpdateValues(parse,
         [
-            ['value', this.value]
+            ['value', this.value],
+            ['type',  type      ]
         ]);
 
 
@@ -29296,6 +29324,17 @@ extends GOperator1
     }
 }
 
+
+
+function getTextToColorValue(input)
+{
+    let rgb = 
+        input.value.trim() != ''
+        ? validHex2rgb(input.value)
+        : rgb_NaN;
+        
+    return ColorValue.fromRgb(scaleRgb(rgb));
+}
 
 
 class GTextCharacter
@@ -29643,7 +29682,7 @@ async function evalJoinInputs(inputs, _with, parse)
             value.value += w;
 
 
-        if (LIST_VALUES.includes(val.type))
+        if (isListType(val.type))
         {
             for (let j = 0; j < val.items.length; j++)
             {
@@ -33501,7 +33540,7 @@ extends GOperator1
 
         fills = this.validateFills(fills);
 
-        if (!LIST_VALUES.includes(this._fills.type))
+        if (!isListType(this._fills.type))
             this.fills = fills;
 
 
@@ -36900,7 +36939,7 @@ extends GShape
         {
             const input = (await this.inputs[i].eval(parse)).toValue();
 
-            if (LIST_VALUES.includes(input.type))
+            if (isListType(input.type))
             {
                 const _loop = new ListValue();
 
@@ -37606,7 +37645,7 @@ extends GShape
                 x, y, w, h, r);
 
 
-            // if (LIST_VALUES.includes(this.value.type))
+            // if (isListType(this.value.type))
             // {
             //     console.log('this.value.children =', this.value.children);
             //     for (let i = 0; i < this.value.children.objects.length; i++)
@@ -51771,6 +51810,12 @@ function getObjectFills(genObjFills)
 
 
 
+function isListType(type)
+{
+    return LIST_VALUES.includes(type);
+}
+
+
 function rgbFromType(type, active)
 {
     return rgbFromTypeMode(type, active, darkMode);
@@ -58984,7 +59029,7 @@ function getValidObjects(value)
 //     if (!input)
 //         return objects;
 
-//     // if (LIST_VALUES.includes(input.type))
+//     // if (isListType(input.type))
 //     //     for (const item of input.items)
 //     //         objects.push(...getValidInputObjects(item));
 
@@ -62085,7 +62130,7 @@ extends GValue
 
             const item = this.items[i];
 
-            if (LIST_VALUES.includes(item.type))
+            if (isListType(item.type))
                 // str += 'list [' + item.items.length + ']';
             {
                 for (let j = 0; j < item.items.length; j++)
@@ -68114,7 +68159,7 @@ extends GOperator
         const type = 
             this.value
             ? new TextValue(
-                LIST_VALUES.includes(this.value.type)
+                isListType(this.value.type)
                 ? finalListTypeFromItems(this.value.items)
                 : this.value.type)
             : TextValue.NaN;
@@ -68510,7 +68555,7 @@ extends GOperator1
         const type = 
             this.value
             ? new TextValue(
-                LIST_VALUES.includes(this.value.type)
+                isListType(this.value.type)
                 ? finalListTypeFromItems(this.value.items)
                 : this.value.type)
             : TextValue.NaN;
@@ -68616,7 +68661,7 @@ extends GOperator1
         const type = 
             this.value
             ? new TextValue(
-                LIST_VALUES.includes(this.value.type)
+                isListType(this.value.type)
                 ? finalListTypeFromItems(this.value.items)
                 : this.value.type)
             : TextValue.NaN;
@@ -68820,7 +68865,7 @@ extends GOperator
         const type = 
             this.value
             ? new TextValue(
-                LIST_VALUES.includes(this.value.type)
+                isListType(this.value.type)
                 ? finalListTypeFromItems(this.value.items)
                 : this.value.type)
             : TextValue.NaN;
@@ -68974,7 +69019,7 @@ extends GOperator
             if (   input
                 && this.options.enabled)
             {
-                if (LIST_VALUES.includes(input.type))
+                if (isListType(input.type))
                 {
                     if (input.condensed === true)
                         this.value.items.push(input.copy());
@@ -69134,7 +69179,7 @@ extends GOperator1
                 
             if (input)
             {
-                if (   LIST_VALUES.includes(input.type)
+                if (   isListType(input.type)
                     && this.options.enabled)
                 {
                     for (const item of input.items)
@@ -69707,8 +69752,8 @@ extends GOperator1
 
             input.items.sort((a, b) => 
             {
-                const ca = a ? (LIST_VALUES.includes(a.type) ? a.items[column.value].value : a.value) : 0;
-                const cb = b ? (LIST_VALUES.includes(b.type) ? b.items[column.value].value : b.value) : 0;
+                const ca = a ? (isListType(a.type) ? a.items[column.value].value : a.value) : 0;
+                const cb = b ? (isListType(b.type) ? b.items[column.value].value : b.value) : 0;
 
                 if (ca < cb) return -1 * sortMultiplier;
                 if (ca > cb) return  1 * sortMultiplier;
@@ -69717,7 +69762,7 @@ extends GOperator1
             });
 
 
-            input.items.forEach(i => maxColumns = Math.max(maxColumns, LIST_VALUES.includes(i.type) ? i.items.length : 1));
+            input.items.forEach(i => maxColumns = Math.max(maxColumns, isListType(i.type) ? i.items.length : 1));
 
             for (let i = 0; i < input.items.length; i++)
             {
@@ -69863,7 +69908,7 @@ extends GOperator1
                     }
                 }
             }
-            else if (LIST_VALUES.includes(input.type))
+            else if (isListType(input.type))
                 this.value = input.copy();
         }
 
@@ -69929,12 +69974,12 @@ extends GOperator1
 
 function isTable(value)
 {
-    if (!LIST_VALUES.includes(value.type))
+    if (!isListType(value.type))
         return false;
 
     for (const item of value.items)
     {
-        if (!LIST_VALUES.includes(item.type))
+        if (!isListType(item.type))
             return false;
     }
 
@@ -70020,7 +70065,7 @@ extends GOperator
         const type = 
             this.value
             ? new TextValue(
-                LIST_VALUES.includes(this.value.type)
+                isListType(this.value.type)
                 ? finalListTypeFromItems(this.value.items)
                 : this.value.type)
             : TextValue.NaN;
@@ -70336,7 +70381,7 @@ extends GOperator
         const type = 
             this.value
             ? new TextValue(
-                LIST_VALUES.includes(this.value.type)
+                isListType(this.value.type)
                 ? finalListTypeFromItems(this.value.items)
                 : this.value.type)
             : TextValue.NaN;
@@ -71223,7 +71268,7 @@ async function evalMinMaxInputs(inputs, op, parse)
     {
         value = new NumberValue(-val0.value, val0.decimals);
     }
-    else if (LIST_VALUES.includes(val0.type)
+    else if (isListType(val0.type)
             && !isEmpty(val0.items))
     {
         const item0 = val0.items[0];
@@ -71260,7 +71305,7 @@ async function evalMinMaxInputs(inputs, op, parse)
     {
         const val = (await inputs[i].eval(parse)).toValue();
 
-        if (LIST_VALUES.includes(val.type))
+        if (isListType(val.type))
         {
             for (const item of val.items)
             {
@@ -71721,7 +71766,7 @@ extends GOperator
             if (   input
                 && this.options.enabled)            
             {
-                if (LIST_VALUES.includes(input.type))
+                if (isListType(input.type))
                 {
                     for (const item of input.items)
                         _values.push(item.copy());   
@@ -73575,7 +73620,7 @@ async function evalAddInputs(inputs, parse)
             || !val.isValid())
             return NumberValue.NaN;
 
-        if (LIST_VALUES.includes(val.type))
+        if (isListType(val.type))
         {
             if (   isEmpty(val.items)
                 || val.items[0].type != NUMBER_VALUE)
@@ -73669,7 +73714,7 @@ async function evalSubtractInputs(inputs, parse)
         {
             value = new NumberValue(-val0.value, val0.decimals);
         }
-        else if (LIST_VALUES.includes(val0.type)
+        else if (isListType(val0.type)
              && !isEmpty(val0.items))
         {
             const item0 = val0.items[0];
@@ -73716,7 +73761,7 @@ async function evalSubtractInputs(inputs, parse)
                 return NumberValue.NaN;
 
 
-            if (LIST_VALUES.includes(val.type))
+            if (isListType(val.type))
             {
                 for (const item of val.items)
                 {
@@ -73806,7 +73851,7 @@ async function evalMultiplyInputs(inputs, parse)
                 return NumberValue.NaN;
 
 
-            if (LIST_VALUES.includes(val.type))
+            if (isListType(val.type))
             {
                 if (   isEmpty(val.items)
                     || val.items[0].type != NUMBER_VALUE)
@@ -73893,7 +73938,7 @@ async function evalDivideInputs(inputs, parse)
             return NumberValue.NaN;
 
 
-        if (    LIST_VALUES.includes(val0.type)
+        if (    isListType(val0.type)
             && !isEmpty(val0.items))
         {
             const item0 = val0.items[0];
@@ -73948,7 +73993,7 @@ async function evalDivideInputs(inputs, parse)
                 return NumberValue.NaN;
 
 
-            if (LIST_VALUES.includes(val.type))
+            if (isListType(val.type))
             {
                 for (const item of val.items)
                 {
@@ -74053,7 +74098,7 @@ async function evalModuloInputs(inputs, parse)
             return NumberValue.NaN;
 
 
-        if (    LIST_VALUES.includes(val0.type)
+        if (    isListType(val0.type)
             && !isEmpty(val0.items))
         {
             const item0 = val0.items[0];
@@ -74108,7 +74153,7 @@ async function evalModuloInputs(inputs, parse)
                 return NumberValue.NaN;
 
 
-            if (LIST_VALUES.includes(val.type))
+            if (isListType(val.type))
             {
                 for (const item of val.items)
                 {
@@ -74213,7 +74258,7 @@ async function evalExponentInputs(inputs, parse)
             return NumberValue.NaN;
 
 
-        if (    LIST_VALUES.includes(val0.type)
+        if (    isListType(val0.type)
             && !isEmpty(val0.items))
         {
             const item0 = val0.items[0];
@@ -74261,7 +74306,7 @@ async function evalExponentInputs(inputs, parse)
                 return NumberValue.NaN;
 
 
-            if (LIST_VALUES.includes(val.type))
+            if (isListType(val.type))
             {
                 for (const item of val.items)
                 {
@@ -74444,7 +74489,7 @@ async function evalNandInputs(inputs, parse)
         const val0 = (await inputs[0].eval(parse)).toValue();
         if (!val0.isValid()) return NumberValue.NaN;
 
-        if (    LIST_VALUES.includes(val0.type)
+        if (    isListType(val0.type)
             && !isEmpty(val0.items))
         {
             const item0 = val0.items[0];
@@ -74474,7 +74519,7 @@ async function evalNandInputs(inputs, parse)
             const val = (await inputs[i].eval(parse)).toValue();
             if (!val.isValid()) return NumberValue.NaN;
 
-            if (LIST_VALUES.includes(val.type))
+            if (isListType(val.type))
             {
                 for (const item of val.items)
                 {
@@ -74555,7 +74600,7 @@ async function evalAndInputs(inputs, parse)
         const val0 = (await inputs[0].eval(parse)).toValue();
         if (!val0.isValid()) return NumberValue.NaN;
 
-        if (    LIST_VALUES.includes(val0.type)
+        if (    isListType(val0.type)
             && !isEmpty(val0.items))
         {
             const item0 = val0.items[0];
@@ -74584,7 +74629,7 @@ async function evalAndInputs(inputs, parse)
             const val = (await inputs[i].eval(parse)).toValue();
             if (!val.isValid()) return NumberValue.NaN;
 
-            if (LIST_VALUES.includes(val.type))
+            if (isListType(val.type))
             {
                 for (const item of val.items)
                 {
@@ -74669,7 +74714,7 @@ async function evalOrInputs(inputs, parse)
         const val0 = (await inputs[0].eval(parse)).toValue();
         if (!val0.isValid()) return NumberValue.NaN;
 
-        if (    LIST_VALUES.includes(val0.type)
+        if (    isListType(val0.type)
             && !isEmpty(val0.items))
         {
             const item0 = val0.items[0];
@@ -74698,7 +74743,7 @@ async function evalOrInputs(inputs, parse)
             const val = (await inputs[i].eval(parse)).toValue();
             if (!val.isValid()) return NumberValue.NaN;
 
-            if (LIST_VALUES.includes(val.type))
+            if (isListType(val.type))
             {
                 for (const item of val.items)
                 {
@@ -74782,7 +74827,7 @@ async function evalXorInputs(inputs, parse)
         const val0 = (await inputs[0].eval(parse)).toValue();
         if (!val0.isValid()) return NumberValue.NaN;
 
-        if (    LIST_VALUES.includes(val0.type)
+        if (    isListType(val0.type)
             && !isEmpty(val0.items))
         {
             const item0 = val0.items[0];
@@ -74812,7 +74857,7 @@ async function evalXorInputs(inputs, parse)
             const val = (await inputs[i].eval(parse)).toValue();
             if (!val.isValid()) return NumberValue.NaN;
 
-            if (LIST_VALUES.includes(val.type))
+            if (isListType(val.type))
             {
                 for (const item of val.items)
                 {
@@ -76373,7 +76418,7 @@ extends GOperator1
             const input = (await this.input.eval(parse)).toValue();
 
 
-            if (LIST_VALUES.includes(input.type))
+            if (isListType(input.type))
             {
                 this.value = new ListValue();
 
@@ -76400,7 +76445,7 @@ extends GOperator1
         const type = 
             this.value
             ? new TextValue(
-                LIST_VALUES.includes(this.value.type)
+                isListType(this.value.type)
                 ? finalListTypeFromItems(this.value.items)
                 : this.value.type)
             : TextValue.NaN.copy();
@@ -76408,9 +76453,8 @@ extends GOperator1
 
         this.setUpdateValues(parse,
         [
-            //['value',  this.value],
-            ['type',   type      ],
-            ['format', format    ]
+            ['type',   type  ],
+            ['format', format]
         ]);
 
 
@@ -76507,20 +76551,42 @@ extends GOperator1
         {
             const input = (await this.input.eval(parse)).toValue();
 
-            let rgb = 
-                input.value.trim() != ''
-                ? validHex2rgb(input.value)
-                : rgb_NaN;
-                
-            this.value = ColorValue.fromRgb(scaleRgb(rgb));
+            if (isListType(input.type))
+            {
+                this.value = new ListValue();
+
+                for (let i = 0; i < input.items.length; i++)
+                {
+                    const item = input.items[i];
+
+                    this.value.items.push(
+                        item.type == TEXT_VALUE
+                        ? getTextToColorValue(item)
+                        : NumberValue.NaN.copy());   
+                }
+            }
+            else
+            {
+                this.value = getTextToColorValue(input);
+            }
         }
         else
             this.value = ColorValue.NaN;
 
 
+        const type = 
+            this.value
+            ? new TextValue(
+                isListType(this.value.type)
+                ? finalListTypeFromItems(this.value.items)
+                : this.value.type)
+            : TextValue.NaN.copy();
+
+
         this.setUpdateValues(parse,
         [
-            ['value', this.value]
+            ['value', this.value],
+            ['type',  type      ]
         ]);
 
 
@@ -76530,6 +76596,17 @@ extends GOperator1
     }
 }
 
+
+
+function getTextToColorValue(input)
+{
+    let rgb = 
+        input.value.trim() != ''
+        ? validHex2rgb(input.value)
+        : rgb_NaN;
+        
+    return ColorValue.fromRgb(scaleRgb(rgb));
+}
 
 
 class GTextCharacter
@@ -76877,7 +76954,7 @@ async function evalJoinInputs(inputs, _with, parse)
             value.value += w;
 
 
-        if (LIST_VALUES.includes(val.type))
+        if (isListType(val.type))
         {
             for (let j = 0; j < val.items.length; j++)
             {
@@ -80735,7 +80812,7 @@ extends GOperator1
 
         fills = this.validateFills(fills);
 
-        if (!LIST_VALUES.includes(this._fills.type))
+        if (!isListType(this._fills.type))
             this.fills = fills;
 
 
@@ -84134,7 +84211,7 @@ extends GShape
         {
             const input = (await this.inputs[i].eval(parse)).toValue();
 
-            if (LIST_VALUES.includes(input.type))
+            if (isListType(input.type))
             {
                 const _loop = new ListValue();
 
@@ -84840,7 +84917,7 @@ extends GShape
                 x, y, w, h, r);
 
 
-            // if (LIST_VALUES.includes(this.value.type))
+            // if (isListType(this.value.type))
             // {
             //     console.log('this.value.children =', this.value.children);
             //     for (let i = 0; i < this.value.children.objects.length; i++)
@@ -93792,8 +93869,8 @@ function initGeneratorMenus()
 
     menuMainHelp = new Menu('Help and subscription', false);
     menuMainHelp.addItems([
-        new MenuItem('Tutorials',    null, {callback: () => showPresets()}),
-        new MenuItem('',             null, {separator: true}),
+        //new MenuItem('Tutorials',    null, {callback: () => showPresets()}),
+        //new MenuItem('',             null, {separator: true}),
         new MenuItem('Keyboard shortcuts', null, {shortcut: osCtrlShift() + '?', callback: () => showKeyboardPanel()}),
         // new MenuItem('Help page',   null, {callback:  () => window.open('http://www.bourt.com/generator/help', '_blank')}),
         new MenuItem('',             null, {separator: true}),
@@ -93807,7 +93884,7 @@ function initGeneratorMenus()
                         new MenuItem('Quick actions...',      null, {icon: iconSearchMenu, shortcut: osCtrl() + '/', callback: () => { hideAllMenus(); showSearchBox(); }}),
                         new MenuItem('',                      null, {separator: true}),
                         new MenuItem('File',                  null, {childMenu: menuMainFile}),
-                        new MenuItem('Tutorials',             null, {childMenu: menuMainTutorials}),
+                        //new MenuItem('Tutorials',             null, {childMenu: menuMainTutorials}),
                         new MenuItem('',                      null, {separator: true}),
                         new MenuItem('Preferences',           null, {childMenu: menuMainPreferences}),
         menuItemDebug = new MenuItem('Debug',                 null, {childMenu: menuMainDebug}),
@@ -94302,17 +94379,17 @@ menuFlow = new Menu('Flow', true, false);
         updatePanMode(false);
     }});
 
-    btnComment = new MenuButton('Add comment', null, {callback: () => 
-    {
-        const create = new CreateNodeAction(COMMENT, btnComment.div);
-        actionManager.do(create);
+    // btnComment = new MenuButton('Add comment', null, {callback: () => 
+    // {
+    //     const create = new CreateNodeAction(COMMENT, btnComment.div);
+    //     actionManager.do(create);
 
-        graphView.updateNodes([create.node]);
-        graphView.updateScrollWithBounds();
+    //     graphView.updateNodes([create.node]);
+    //     graphView.updateScrollWithBounds();
 
-        hideAllMenus();
-        updatePanMode(false);
-    }});
+    //     hideAllMenus();
+    //     updatePanMode(false);
+    // }});
 
 
     //menuBar.appendChild(createDiv('', 'groupName'));
@@ -94383,7 +94460,7 @@ menuFlow = new Menu('Flow', true, false);
     btnLayer  .setIcon(iconEffects);
     btnShape  .setIcon(iconShapes);
     btnHand   .setIcon(iconHand);
-    btnComment.setIcon(iconComment);
+    //btnComment.setIcon(iconComment);
     btnPanel  .setIcon(iconPanel);
     btnSolo   .setIcon(iconSolo);
 
@@ -100725,7 +100802,7 @@ extends Parameter
     {
         // 'this' is the output
 
-        consoleAssert(LIST_VALUES.includes(value.type), 'expected LIST_VALUE in backInit()');
+        consoleAssert(isListType(value.type), 'expected LIST_VALUE in backInit()');
         
         this.param.setValue(value, false, true, false);
     }
@@ -100742,7 +100819,7 @@ extends Parameter
 
         consoleAssert(
                value.type 
-            && LIST_VALUES.includes(value.type), 
+            && isListType(value.type), 
             'ListParam value.type must be LIST_VALUE');
 
 
@@ -105256,8 +105333,8 @@ class Wire
 }
 
 
-const connectionSize = 9;
-const connectionGap  = 4;
+const connectionSize  = 9;
+const connectionGap   = 4;
 
 const defHeaderHeight = 32;
 
@@ -110229,7 +110306,7 @@ extends ResizableBase
     
         if (type)
         {
-            consoleAssert(LIST_VALUES.includes(type.value));
+            consoleAssert(isListType(type.value));
             this.outputs[0].types = [type.value];
         }
     }
@@ -110307,7 +110384,7 @@ extends OperatorBase
         super.updateValues(requestId, actionId, updateParamId, paramIds, values);
 
         const type = values[paramIds.findIndex(id => id == 'type')];
-        consoleAssert(LIST_VALUES.includes(type.value));
+        consoleAssert(isListType(type.value));
 
         this.outputs[0].types = [type.value];
     }
@@ -115417,6 +115494,182 @@ extends OperatorWithValue
 }
 
 
+class OpColorBase
+extends Operator
+{
+    _color = dataColor_NaN;
+
+    _warningOverlay;
+    
+    forceShowWarning = false;
+    warningStyle;
+    
+
+
+    constructor(type, id, name, icon, progressBar = false, defWidth = defNodeWidth)
+    {
+        super(type, id, name, icon, defWidth, progressBar);
+
+        this.showActiveArrow = true;
+        
+
+        this._warningOverlay = createDiv('colorWarningOverlay');
+        //this._warningOverlay.style.zIndex = 1;
+        
+        this.inner.appendChild(this._warningOverlay);
+
+
+        this.header.addEventListener('pointerenter', () => { this.header.over = true;  this.updateHeader(); });
+        this.header.addEventListener('pointerleave', () => { this.header.over = false; this.updateHeader(); });
+    }
+
+
+
+    canAutoConnectFrom(output)
+    {
+        return this.inputs[0].canConnectFrom(output);
+    }
+
+
+
+    updateHeader()
+    {
+        //console.log(this.id + '.OpColorBase.updateHeader()');
+
+        super.updateHeader();
+
+
+        const colors = this.getHeaderColors();
+
+        this.header.style.background = 
+            !rgbIsNaN(colors.stripeBack)
+            ? rgb2style(colors.stripeBack)
+            : rgba2style(rgb_a(rgbDocumentBody, 0.95));
+
+
+        for (const input of this.headerInputs)
+        {
+            input.colorLight =
+            input.colorDark  = colors.input;
+
+            input.wireColor  = colors.wire;
+        }
+
+
+        for (const output of this.headerOutputs)
+        {
+            output.colorLight = 
+            output.colorDark  = colors.output;
+
+            output.wireColor  = colors.wire;
+        }
+
+
+        this.updateWarningOverlay();
+    }
+
+
+
+    updateHeaderLabel()
+    {
+        super.updateHeaderLabel();
+        
+        const colors = this.getHeaderColors();
+        this.label.style.color = rgba2style(colors.text);
+    }
+
+
+
+    getHeaderColors(options = {})
+    {
+        const noColor = 
+            darkMode
+            ? rgbNoColorDark
+            : rgbNoColorLight;
+
+
+        const rgbBack = 
+            dataColorIsNaN(this._color)
+            ? rgb_NaN
+            : dataColor2rgb(this._color);
+            
+
+        let rgbStripeBack = getStripeBackColor(rgbBack);
+        
+
+        const rgbaBorder = rgb_a(rgbFromType(this.type, this.active), 0.95);
+
+        const rgbText  = getTextColorFromBackColor(rgbStripeBack);
+
+        const rgbaWire = 
+            !rgbIsNaN(rgbStripeBack)   
+            ? rgbStripeBack 
+            : noColor;
+
+        return {
+            back:       rgb_a(rgbBack), 
+            stripeBack: rgb_a(rgbStripeBack),
+            border:     rgbaBorder,
+            text:       rgb_a(rgbText, 0.9),
+            input:      rgb_a(rgbText, 0.2),
+            output:     rgb_a(rgbText, 0.2),
+            wire:       rgbaWire };
+    }
+
+
+
+    updateWarningOverlay() 
+    {
+        //console.log(this.id + '.updateWarningOverlay()');
+
+        const colors = this.getHeaderColors();
+        
+
+        if (!rgbaIsNaN(colors.back))
+        {
+            if (  !rgbIsValid(colors.back)
+                || this.forceShowWarning)
+            {
+                if (!this.forceShowWarning)
+                    this.warningStyle = getDefaultWarningStyle(colors.back);
+
+                this.updateWarningOverlayStyle(colors.back);
+            }
+            else
+                this._warningOverlay.style.display = 'none';
+        }
+        else
+        {
+            this.warningStyle = getDefaultWarningStyle(colors.back);
+            this.updateWarningOverlayStyle(colors.back);
+        }
+    }
+
+
+
+    updateWarningOverlayStyle(colBack, height = -1)
+    {
+        this._warningOverlay.style.height = 
+            height < 0
+            ? this.measureData.headerOffset.height
+            : height;
+
+            
+        const [warnStyle1, warnStyle2] = getWarningStyles(colBack);
+
+        this._warningOverlay.style.background =
+                rgbaIsOk(colBack)
+            && !this.forceShowWarning
+            ? 'transparent'
+            : getWarningGradient(7.8, warnStyle1, warnStyle2);
+
+            this._warningOverlay.style.backgroundPosition = '-6px 0';
+            this._warningOverlay.style.backgroundSize     = 'calc(100% + 11px) 100%';
+            this._warningOverlay.style.display            = 'block';
+    }
+}
+
+
 class   OpText
 extends ResizableBase
 {
@@ -117132,6 +117385,8 @@ extends OperatorBase
 
         if (type) 
             this.outputs[0].types = [type.value];
+
+        super.updateValues(requestId, actionId, updateParamId, paramIds, values);
     }
 
 
@@ -117161,7 +117416,7 @@ extends OperatorBase
 class   OpTextToColor
 extends OperatorBase
 {
-    paramValue;
+    _color = dataColor_NaN;
 
 
 
@@ -117170,28 +117425,29 @@ extends OperatorBase
         super(TEXT_TO_COLOR, 'textToColor', 'to color', iconTextToColor);
 
 
-        this.addInput(new Input([TEXT_VALUE]));
+        this.colorBack = createDiv('colorBack');
+        this.inner.insertBefore(this.colorBack, this.paramHolder);
 
-        this.addParam(this.paramValue = new ColorParam('value', 'value', false, false, true));
 
-        this.paramValue.isNodeValue = true;
+        this.addInput(new Input([TEXT_VALUE, TEXT_LIST_VALUE, LIST_VALUE]));
+        this.addOutput(new Output([COLOR_VALUE], this.output_genRequest));
     }
 
 
 
-    genRequest(gen)
+    output_genRequest(gen)
     {
-        // 'this' is the node
+        // 'this' is the output
 
         gen.scope.push({
-            nodeId:  this.id, 
+            nodeId:  this.node.id, 
             paramId: NULL });
 
-        const [request, ignore] = this.genRequestStart(gen);
+        const [request, ignore] = this.node.genRequestStart(gen);
         if (ignore) return request;
 
         
-        const input = this.inputs[0];
+        const input = this.node.inputs[0];
 
 
         request.push(input.connected ? 1 : 0);
@@ -117201,226 +117457,67 @@ extends OperatorBase
 
         
         gen.scope.pop();
-        pushUnique(gen.passedNodes, this);
+        pushUnique(gen.passedNodes, this.node);
 
         return request;
     }
 
 
 
-    updateParams()
+    updateValues(requestId, actionId, updateParamId, paramIds, values)
     {
-        this.paramValue.enableControlText(false, this.isUnknown());
+        const value = values[paramIds.findIndex(id => id == 'value')];
+        const type  = values[paramIds.findIndex(id => id == 'type' )];
 
-        this.updateParamControls();
-    }
-}
+        this._color = 
+               value
+            && value.type == COLOR_VALUE
+            ? value.toDataColor()
+            : dataColor_NaN;
 
+        if (type)
+            this.outputs[0].types = [type.value];
 
-class OpColorBase
-extends Operator
-{
-    _color = dataColor_NaN;
-
-    _warningOverlay;
-    
-    forceShowWarning = false;
-    warningStyle;
-    
-
-
-    constructor(type, id, name, icon, progressBar = false, defWidth = defNodeWidth)
-    {
-        super(type, id, name, icon, defWidth, progressBar);
-
-        this.showActiveArrow = true;
-        
-
-        this._warningOverlay = createDiv('colorWarningOverlay');
-        //this._warningOverlay.style.zIndex = 1;
-        
-        this.inner.appendChild(this._warningOverlay);
-
-
-        this.header.addEventListener('pointerenter', () => { this.header.over = true;  this.updateHeader(); });
-        this.header.addEventListener('pointerleave', () => { this.header.over = false; this.updateHeader(); });
+        super.updateValues(requestId, actionId, updateParamId, paramIds, values);
     }
 
 
 
-    // invalidate()
-    // {
-    //     super.invalidate();
-
-    //     //this._color = dataColor_NaN;
-    // }
-
-
-
-    // updateValues(requestId, actionId, updateParamId, paramIds, values)
-    // {
-    //     //logFunction('OpColorBase.updateValues()');
-
-    //     super.updateValues(requestId, actionId, updateParamId, paramIds, values);
-        
-    //     //this.updateHeader();
-    // }
-
-
-
-    canAutoConnectFrom(output)
+    isUnknown()
     {
-        return this.inputs[0].canConnectFrom(output);
+        return super.isUnknown()
+            || isListType(this.outputs[0].types[0]);
     }
 
 
 
-    updateHeader()
+    getHeaderColors()
     {
-        //console.log(this.id + '.OpColorBase.updateHeader()');
+        const colors = super.getHeaderColors();
 
-        super.updateHeader();
-
-
-        const colors = this.getHeaderColors();
-
-        this.header.style.background = 
-            !rgbIsNaN(colors.stripeBack) //  rgbIsOk(colors.back)
-            ? rgb2style(colors.stripeBack)
-            : rgba2style(rgb_a(rgbDocumentBody, 0.95));
-            //: 'transparent';
-
-        // this.colorBack.style.backgroundImage = 
-        //     this.isUnknown()
-        //     ? 'url(\'data:image/svg+xml;utf8,<svg width="8" height="13" viewBox="0 0 8 13" fill="none" xmlns="http://www.w3.org/2000/svg"><path d="M3 8.65341V8.54545C3.00758 7.84091 3.07765 7.2803 3.21023 6.86364C3.34659 6.44697 3.53977 6.10985 3.78977 5.85227C4.03977 5.5947 4.34091 5.35985 4.69318 5.14773C4.92045 5.00379 5.125 4.8428 5.30682 4.66477C5.48864 4.48674 5.63258 4.2822 5.73864 4.05114C5.8447 3.82008 5.89773 3.56439 5.89773 3.28409C5.89773 2.94697 5.81818 2.6553 5.65909 2.40909C5.5 2.16288 5.28788 1.97348 5.02273 1.84091C4.76136 1.70455 4.4697 1.63636 4.14773 1.63636C3.85606 1.63636 3.57765 1.69697 3.3125 1.81818C3.04735 1.93939 2.82765 2.12879 2.65341 2.38636C2.47917 2.64015 2.37879 2.9678 2.35227 3.36932H0.625C0.651515 2.6875 0.823864 2.11174 1.14205 1.64205C1.46023 1.16856 1.88068 0.810606 2.40341 0.568181C2.92992 0.325757 3.51136 0.204545 4.14773 0.204545C4.8447 0.204545 5.45455 0.335227 5.97727 0.596591C6.5 0.854166 6.9053 1.21591 7.19318 1.68182C7.48485 2.14394 7.63068 2.68371 7.63068 3.30114C7.63068 3.72538 7.56439 4.10795 7.43182 4.44886C7.29924 4.78598 7.10985 5.08712 6.86364 5.35227C6.62121 5.61742 6.32955 5.85227 5.98864 6.05682C5.66667 6.25758 5.4053 6.46591 5.20455 6.68182C5.00758 6.89773 4.86364 7.15341 4.77273 7.44886C4.68182 7.74432 4.63258 8.10985 4.625 8.54545V8.65341H3ZM3.85795 12.108C3.54735 12.108 3.2803 11.9981 3.05682 11.7784C2.83333 11.5549 2.72159 11.286 2.72159 10.9716C2.72159 10.661 2.83333 10.3958 3.05682 10.1761C3.2803 9.95265 3.54735 9.84091 3.85795 9.84091C4.16477 9.84091 4.42992 9.95265 4.65341 10.1761C4.88068 10.3958 4.99432 10.661 4.99432 10.9716C4.99432 11.1799 4.94129 11.3712 4.83523 11.5455C4.73295 11.7159 4.59659 11.8523 4.42614 11.9545C4.25568 12.0568 4.06629 12.108 3.85795 12.108Z" fill="white"/></svg>\')'
-        //     : 'none';
-
-
-        // this.colorBack.style.boxShadow =
-        //     this.isUnknown()
-        //     ? '0 0 0 1px ' + rgb2style(colors.border) + ' inset'
-        //     : 'none';
-
-
-        for (const input of this.headerInputs)
+        if (this.isUnknown())
         {
-            input.colorLight =
-            input.colorDark  = colors.input;
+            // colors.back       = rgbFromType(this.outputs[0].types[0], this.active);
+            // colors.stripeBack = rgbFromType(this.outputs[0].types[0], this.active);
 
-            input.wireColor  = colors.wire;
-        }
-
-
-        for (const output of this.headerOutputs)
-        {
-            output.colorLight = 
-            output.colorDark  = colors.output;
-
-            output.wireColor  = colors.wire;
-        }
-
-
-        this.updateWarningOverlay();
-    }
-
-
-
-    updateHeaderLabel()
-    {
-        super.updateHeaderLabel();
-        
-        const colors = this.getHeaderColors();
-        this.label.style.color = rgba2style(colors.text);
-    }
-
-
-
-    getHeaderColors(options = {})
-    {
-        const noColor = 
-            darkMode
-            ? rgbNoColorDark
-            : rgbNoColorLight;
-
-
-        const rgbBack = 
-            dataColorIsNaN(this._color)
-            ? rgb_NaN
-            : dataColor2rgb(this._color);
-            
-
-        let rgbStripeBack = getStripeBackColor(rgbBack);
-        
-
-        const rgbaBorder = rgb_a(rgbFromType(this.type, this.active), 0.95);
-
-        const rgbText  = getTextColorFromBackColor(rgbStripeBack);
-
-        const rgbaWire = 
-            !rgbIsNaN(rgbStripeBack)   
-            ? rgbStripeBack 
-            : noColor;
-
-        return {
-            back:       rgb_a(rgbBack), 
-            stripeBack: rgb_a(rgbStripeBack),
-            border:     rgbaBorder,
-            text:       rgb_a(rgbText, 0.9),
-            input:      rgb_a(rgbText, 0.2),
-            output:     rgb_a(rgbText, 0.2),
-            wire:       rgbaWire };
-    }
-
-
-
-    updateWarningOverlay() 
-    {
-        //console.log(this.id + '.updateWarningOverlay()');
-
-        const colors = this.getHeaderColors();
-        
-
-        if (!rgbaIsNaN(colors.back))
-        {
-            if (  !rgbIsValid(colors.back)
-                || this.forceShowWarning)
-            {
-                if (!this.forceShowWarning)
-                    this.warningStyle = getDefaultWarningStyle(colors.back);
-
-                this.updateWarningOverlayStyle(colors.back);
-            }
-            else
-                this._warningOverlay.style.display = 'none';
+            colors.text = darkMode ? hex2rgb('fff8') : hex2rgb('0008');
+            colors.wire = darkMode ? hex2rgb('888f') : hex2rgb('aaaf');
         }
         else
         {
-            this.warningStyle = getDefaultWarningStyle(colors.back);
-            this.updateWarningOverlayStyle(colors.back);
+            const noColor = 
+                darkMode
+                ? rgbNoColorDark
+                : rgbNoColorLight;
+
+            colors.wire = 
+                !dataColorIsNaN(this._color)
+                ? dataColor2rgb(this._color)
+                : noColor;
         }
-    }
-
-
-
-    updateWarningOverlayStyle(colBack, height = -1)
-    {
-        this._warningOverlay.style.height = 
-            height < 0
-            ? this.measureData.headerOffset.height
-            : height;
-
             
-        const [warnStyle1, warnStyle2] = getWarningStyles(colBack);
-
-        this._warningOverlay.style.background =
-                rgbaIsOk(colBack)
-            && !this.forceShowWarning
-            ? 'transparent'
-            : getWarningGradient(7.8, warnStyle1, warnStyle2);
-
-            this._warningOverlay.style.backgroundPosition = '-6px 0';
-            this._warningOverlay.style.backgroundSize     = 'calc(100% + 11px) 100%';
-            this._warningOverlay.style.display            = 'block';
+        
+        return colors;
     }
 }
 
@@ -119200,11 +119297,11 @@ extends OpColorBase
 
     updateValues(requestId, actionId, updateParamId, paramIds, values)
     {
-        const col = values[paramIds.findIndex(id => id == 'value')];
+        const value = values[paramIds.findIndex(id => id == 'value')];
 
         this._color = 
-            col
-            ? col.toDataColor()
+            value
+            ? value.toDataColor()
             : dataColor_NaN;
 
 
@@ -132315,7 +132412,7 @@ function createSessionId()
 
 function subscribed()
 {
-    return true;//currentSessionId == createSessionId();
+    return false;//currentSessionId == createSessionId();
 }
 
 

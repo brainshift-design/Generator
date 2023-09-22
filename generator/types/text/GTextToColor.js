@@ -29,20 +29,42 @@ extends GOperator1
         {
             const input = (await this.input.eval(parse)).toValue();
 
-            let rgb = 
-                input.value.trim() != ''
-                ? validHex2rgb(input.value)
-                : rgb_NaN;
-                
-            this.value = ColorValue.fromRgb(scaleRgb(rgb));
+            if (isListType(input.type))
+            {
+                this.value = new ListValue();
+
+                for (let i = 0; i < input.items.length; i++)
+                {
+                    const item = input.items[i];
+
+                    this.value.items.push(
+                        item.type == TEXT_VALUE
+                        ? getTextToColorValue(item)
+                        : NumberValue.NaN.copy());   
+                }
+            }
+            else
+            {
+                this.value = getTextToColorValue(input);
+            }
         }
         else
             this.value = ColorValue.NaN;
 
 
+        const type = 
+            this.value
+            ? new TextValue(
+                isListType(this.value.type)
+                ? finalListTypeFromItems(this.value.items)
+                : this.value.type)
+            : TextValue.NaN.copy();
+
+
         this.setUpdateValues(parse,
         [
-            ['value', this.value]
+            ['value', this.value],
+            ['type',  type      ]
         ]);
 
 
@@ -50,4 +72,16 @@ extends GOperator1
 
         return this;
     }
+}
+
+
+
+function getTextToColorValue(input)
+{
+    let rgb = 
+        input.value.trim() != ''
+        ? validHex2rgb(input.value)
+        : rgb_NaN;
+        
+    return ColorValue.fromRgb(scaleRgb(rgb));
 }

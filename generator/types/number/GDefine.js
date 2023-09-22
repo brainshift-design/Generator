@@ -40,7 +40,7 @@ extends GOperator
             if (   input
                 && this.options.enabled)            
             {
-                if (LIST_VALUES.includes(input.type))
+                if (isListType(input.type))
                 {
                     for (const item of input.items)
                         _values.push(item.copy());   

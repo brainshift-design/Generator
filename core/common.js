@@ -970,3 +970,10 @@ function getObjectFills(genObjFills)
 
     return fills;
 }
+
+
+
+function isListType(type)
+{
+    return LIST_VALUES.includes(type);
+}

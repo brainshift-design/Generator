@@ -126,6 +126,9 @@
 ../operators/number/OpConvertAngle.js
 
 
+../operators/color/OpColorBase.js
+
+
 ../operators/text/OpText.js
 ../operators/text/OpTextLength.js
 ../operators/text/OpTextTrim.js
@@ -146,7 +149,6 @@
 ../operators/text/OpTextToColor.js
 
 
-../operators/color/OpColorBase.js
 ../operators/color/OpColor.js
 ../operators/color/OpColor spaces.js
 ../operators/color/OpColor convert.js

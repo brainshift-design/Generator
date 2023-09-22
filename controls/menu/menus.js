@@ -414,8 +414,8 @@ function initGeneratorMenus()
 
     menuMainHelp = new Menu('Help and subscription', false);
     menuMainHelp.addItems([
-        new MenuItem('Tutorials',    null, {callback: () => showPresets()}),
-        new MenuItem('',             null, {separator: true}),
+        //new MenuItem('Tutorials',    null, {callback: () => showPresets()}),
+        //new MenuItem('',             null, {separator: true}),
         new MenuItem('Keyboard shortcuts', null, {shortcut: osCtrlShift() + '?', callback: () => showKeyboardPanel()}),
         // new MenuItem('Help page',   null, {callback:  () => window.open('http://www.bourt.com/generator/help', '_blank')}),
         new MenuItem('',             null, {separator: true}),
@@ -429,7 +429,7 @@ function initGeneratorMenus()
                         new MenuItem('Quick actions...',      null, {icon: iconSearchMenu, shortcut: osCtrl() + '/', callback: () => { hideAllMenus(); showSearchBox(); }}),
                         new MenuItem('',                      null, {separator: true}),
                         new MenuItem('File',                  null, {childMenu: menuMainFile}),
-                        new MenuItem('Tutorials',             null, {childMenu: menuMainTutorials}),
+                        //new MenuItem('Tutorials',             null, {childMenu: menuMainTutorials}),
                         new MenuItem('',                      null, {separator: true}),
                         new MenuItem('Preferences',           null, {childMenu: menuMainPreferences}),
         menuItemDebug = new MenuItem('Debug',                 null, {childMenu: menuMainDebug}),
@@ -924,17 +924,17 @@ menuFlow = new Menu('Flow', true, false);
         updatePanMode(false);
     }});
 
-    btnComment = new MenuButton('Add comment', null, {callback: () => 
-    {
-        const create = new CreateNodeAction(COMMENT, btnComment.div);
-        actionManager.do(create);
+    // btnComment = new MenuButton('Add comment', null, {callback: () => 
+    // {
+    //     const create = new CreateNodeAction(COMMENT, btnComment.div);
+    //     actionManager.do(create);
 
-        graphView.updateNodes([create.node]);
-        graphView.updateScrollWithBounds();
+    //     graphView.updateNodes([create.node]);
+    //     graphView.updateScrollWithBounds();
 
-        hideAllMenus();
-        updatePanMode(false);
-    }});
+    //     hideAllMenus();
+    //     updatePanMode(false);
+    // }});
 
 
     //menuBar.appendChild(createDiv('', 'groupName'));
@@ -1005,7 +1005,7 @@ menuFlow = new Menu('Flow', true, false);
     btnLayer  .setIcon(iconEffects);
     btnShape  .setIcon(iconShapes);
     btnHand   .setIcon(iconHand);
-    btnComment.setIcon(iconComment);
+    //btnComment.setIcon(iconComment);
     btnPanel  .setIcon(iconPanel);
     btnSolo   .setIcon(iconSolo);
 
