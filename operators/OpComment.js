@@ -134,7 +134,7 @@ extends OperatorBase
         }
         else
         {
-            this.label.style.color        = 'var(--figma-color-bg-disabled-secondary)';
+            this.label.style.color        = darkMode ? '#ddd' : '#222';
             this.label.style.textShadow   = 'none';
 
             this.textbox.style.color      = 'var(--figma-color-bg-disabled-secondary)';

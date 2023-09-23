@@ -390,14 +390,14 @@ function initGeneratorMenus()
 
     menuMainHelp = new Menu('Help and subscription', false);
     menuMainHelp.addItems([
-        new MenuItem('Tutorials',    null, {callback: () => showPresets()}),
-        new MenuItem('',             null, {separator: true}),
+        new MenuItem('Tutorials . . .',    null, {callback: () => showPresets()}),
+        new MenuItem('',                   null, {separator: true}),
         new MenuItem('Keyboard shortcuts', null, {shortcut: osCtrlShift() + '?', callback: () => showKeyboardPanel()}),
-        // new MenuItem('Help page',   null, {callback:  () => window.open('http://www.bourt.com/generator/help', '_blank')}),
-        new MenuItem('',             null, {separator: true}),
-        //new MenuItem('Subscription', null, {callback:  () => showSubscriptionDialog()}),
-      //new MenuItem('',             null, {separator: true}),
-        new MenuItem('About',        null, {callback:  () => showAboutDialog()})]);
+        // new MenuItem('Help page',       null, {callback:  () => window.open('http://www.bourt.com/generator/help', '_blank')}),
+        new MenuItem('',                   null, {separator: true}),
+        //new MenuItem('Subscription',     null, {callback:  () => showSubscriptionDialog()}),
+      //new MenuItem('',                   null, {separator: true}),
+        new MenuItem('About',              null, {callback:  () => showAboutDialog()})]);
 
 
     menuMain = new Menu('Main menu', true, false, true);

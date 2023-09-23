@@ -4,9 +4,9 @@
         <div id='presetTabs'>
             <div class='presetTab' onclick="setCurrentPresetTab(0);">Basics</div>
             <div class='presetTab' onclick="setCurrentPresetTab(1);">Data flow</div>
-            <div class='presetTab' onclick="setCurrentPresetTab(2);">Loops</div>
+            <div class='presetTab' onclick="setCurrentPresetTab(2);">Sets & Loops</div>
             <div class='presetTab' onclick="setCurrentPresetTab(3);">Lists</div>
-            <div class='presetTab' onclick="setCurrentPresetTab(4);">Numbers</div>
+            <div class='presetTab' onclick="setCurrentPresetTab(4);">Math</div>
             <div class='presetTab' onclick="setCurrentPresetTab(5);">Text</div>
             <div class='presetTab' onclick="setCurrentPresetTab(6);">Colors</div>
             <div class='presetTab' onclick="setCurrentPresetTab(7);">Shapes</div>
@@ -22,7 +22,7 @@
             <div class='presetGroup'>
                 <div class='preset' onclick="loadPresetGraph('basics');">Nodes</div>
                 <div class='preset' onclick="loadPresetGraph('dataTypes');">Data types</div>
-                <div class='preset' onclick="loadPresetGraph('organize');">Organizing</div>
+                <div class='preset' onclick="loadPresetGraph('organize');">Organizing nodes</div>
                 <div class='preset' onclick="loadPresetGraph('active');">Where are my objects?</div>
             </div>
         </div>
@@ -31,12 +31,20 @@
         <div class='presetPage' id='presetPageDataFlow'>
             <div class='presetGroup'>
                 <div class='preset' onclick="loadPresetGraph('ifElse');">If / else</div>
-                <div class='preset' onclick="loadPresetGraph('dataSelect');">Select from list</div>
+                <div class='preset' onclick="loadPresetGraph('select');">Select from list</div>
             </div>
         </div>
 
 
-        <div class='presetPage' id='presetPageLoops'>
+        <div class='presetPage' id='presetPageSetsLoops'>
+            <div class='presetGroup'>
+                <div class='preset' onclick="loadPresetGraph('sequence');">Sequence...</div>
+                <div class='preset' onclick="loadPresetGraph('range');">Range...</div>
+                <div class='preset' onclick="loadPresetGraph('define');">Define...</div>
+                <div class='preset' onclick="loadPresetGraph('random');">Random...</div>
+                <div class='preset' onclick="loadPresetGraph('noise');">Noise...</div>
+                <div class='preset' onclick="loadPresetGraph('probability');">Probability...</div>
+            </div>
             <div class='presetGroup'>
                 <div class='preset' onclick="loadPresetGraph('loop1d');">1D loop</div>
                 <div class='preset' onclick="loadPresetGraph('loop2d');">2D loop</div>
@@ -50,8 +58,10 @@
         </div>
 
 
-        <div class='presetPage' id='presetPageNumbers'>
-
+        <div class='presetPage' id='presetPageMath'>
+            <div class='presetGroup'>
+                <div class='preset' onclick="loadPresetGraph('quadraticFormula');">Quadratic formula</div>
+            </div>
         </div>
  
 
@@ -61,7 +71,9 @@
 
         
         <div class='presetPage' id='presetPageColors'>
-
+            <div class='presetGroup'>
+                <div class='preset' onclick="loadPresetGraph('colorContrast');">Color contrast</div>
+            </div>
         </div>
 
         

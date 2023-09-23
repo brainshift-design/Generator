@@ -9,8 +9,8 @@ const presetNodeBasics = '\
             "renamed": "true",\
             "enabled": "true",\
             "highlight": "0",\
-            "x": "789",\
-            "y": "485",\
+            "x": "839",\
+            "y": "535",\
             "z": "0"\
             },\
             {\
@@ -20,15 +20,14 @@ const presetNodeBasics = '\
             "renamed": "true",\
             "enabled": "true",\
             "highlight": "0",\
-            "x": "602",\
-            "y": "643",\
+            "x": "652",\
+            "y": "693",\
             "z": "1",\
-            "active": "true",\
             "width": "120",\
             "height": "54",\
             "params":\
             [\
-                    ["NUM#", "value", "5,0"]\
+                    ["NUM#", "value", "456,0"]\
             ]\
             },\
             {\
@@ -38,13 +37,13 @@ const presetNodeBasics = '\
             "renamed": "true",\
             "enabled": "true",\
             "highlight": "0",\
-            "x": "794",\
-            "y": "590",\
+            "x": "844",\
+            "y": "640",\
             "z": "2",\
             "active": "true",\
             "params":\
             [\
-                    ["NUM#", "value", "8,0"]\
+                    ["NUM#", "value", "579,0"]\
             ]\
             },\
             {\
@@ -54,8 +53,8 @@ const presetNodeBasics = '\
             "renamed": "true",\
             "enabled": "true",\
             "highlight": "0",\
-            "x": "664",\
-            "y": "318",\
+            "x": "623",\
+            "y": "388",\
             "z": "3"\
             },\
             {\
@@ -65,8 +64,8 @@ const presetNodeBasics = '\
             "renamed": "true",\
             "enabled": "true",\
             "highlight": "0",\
-            "x": "324",\
-            "y": "569",\
+            "x": "374",\
+            "y": "619",\
             "z": "4"\
             },\
             {\
@@ -76,8 +75,8 @@ const presetNodeBasics = '\
             "renamed": "true",\
             "enabled": "true",\
             "highlight": "0",\
-            "x": "322",\
-            "y": "616",\
+            "x": "372",\
+            "y": "666",\
             "z": "5"\
             },\
             {\
@@ -87,8 +86,8 @@ const presetNodeBasics = '\
             "renamed": "true",\
             "enabled": "true",\
             "highlight": "0",\
-            "x": "983",\
-            "y": "600",\
+            "x": "1033",\
+            "y": "649",\
             "z": "6",\
             "active": "true",\
             "width": "120",\
@@ -101,15 +100,14 @@ const presetNodeBasics = '\
             "renamed": "true",\
             "enabled": "true",\
             "highlight": "0",\
-            "x": "602",\
-            "y": "539",\
+            "x": "652",\
+            "y": "589",\
             "z": "7",\
-            "active": "true",\
             "width": "120",\
             "height": "54",\
             "params":\
             [\
-                    ["NUM#", "value", "3,0"]\
+                    ["NUM#", "value", "123,0"]\
             ]\
             }\
         ],\
@@ -133,7 +131,6 @@ const presetNodeBasics = '\
             }\
         ]\
     }';
-
 
 
 const presetDataTypes = '\

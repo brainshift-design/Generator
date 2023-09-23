@@ -66,11 +66,28 @@ function getPresetGraph(graphId)
         case 'organize':          return presetOrganize;
         case 'active':            return presetActive;
      
-        case 'dataSelect':        return presetDataSelect;
+
+        case 'ifElse':            return presetIfElse;
+        case 'select':            return presetSelect;
+
+
+        case 'sequence':          return presetSequence;
+        case 'range':             return presetRange;
+        case 'define':            return presetDefine;
+        case 'random':            return presetRandom;
+        case 'noise':             return presetNoise;
+        case 'probability':       return presetProbability;
 
         case 'loop1d':            return presetLoop1d;
         case 'loop2d':            return presetLoop2d;
         case 'loopLock':          return presetLoopLock;
+
+
+        case 'quadraticFormula':  return presetQuadraticFormula;
+
+
+        case 'colorContrast':     return presetColorContrast;
+
 
         case 'shapesStyles':      return presetShapesStyles;
         case 'basicTransform':    return presetBasicTransform;

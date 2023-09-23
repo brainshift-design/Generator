@@ -998,44 +998,19 @@ div
 }
 
 
-.presetLabel
-{
-    display:     inline-block;
-    font-size:   12px;
-    font-weight: 600;
-    color:       #757575;
-    width:       200px;
-    height:      26px;
-    padding-top: 11px;
-    /* box-shadow:  0 0 0 1px inset green; */
-}
-
-
-.presetInfo
-{
-    display:     inline-block;
-    font-size:   12px;
-    color:       #b6b6b6;
-    font-weight: 500;
-    width:       200px;
-    height:      26px;
-    padding-top: 11px;
-    /* box-shadow:  0 0 0 1px inset green; */
-}
-
-
 .preset
 {
-    color:          var(--figma-color-text);
+    color:          #b6b6b6;
     /* background:     var(--figma-color-bg); */
 
-    font-size:      11px;
+    font-weight:    500;
+    font-size:      12px;
     text-align:     center;
 
     padding:        8px 14px;
 
-    width:          200px;
-    margin-bottom:  4px;
+    width:          160px;
+    margin-bottom:  2px;
     border-radius:  6px;
     box-shadow:     0 0 0 1px #fff2 inset;
 }
@@ -5492,9 +5467,9 @@ a
         <div id='presetTabs'>
             <div class='presetTab' onclick="setCurrentPresetTab(0);">Basics</div>
             <div class='presetTab' onclick="setCurrentPresetTab(1);">Data flow</div>
-            <div class='presetTab' onclick="setCurrentPresetTab(2);">Loops</div>
+            <div class='presetTab' onclick="setCurrentPresetTab(2);">Sets & Loops</div>
             <div class='presetTab' onclick="setCurrentPresetTab(3);">Lists</div>
-            <div class='presetTab' onclick="setCurrentPresetTab(4);">Numbers</div>
+            <div class='presetTab' onclick="setCurrentPresetTab(4);">Math</div>
             <div class='presetTab' onclick="setCurrentPresetTab(5);">Text</div>
             <div class='presetTab' onclick="setCurrentPresetTab(6);">Colors</div>
             <div class='presetTab' onclick="setCurrentPresetTab(7);">Shapes</div>
@@ -5510,7 +5485,7 @@ a
             <div class='presetGroup'>
                 <div class='preset' onclick="loadPresetGraph('basics');">Nodes</div>
                 <div class='preset' onclick="loadPresetGraph('dataTypes');">Data types</div>
-                <div class='preset' onclick="loadPresetGraph('organize');">Organizing</div>
+                <div class='preset' onclick="loadPresetGraph('organize');">Organizing nodes</div>
                 <div class='preset' onclick="loadPresetGraph('active');">Where are my objects?</div>
             </div>
         </div>
@@ -5519,12 +5494,20 @@ a
         <div class='presetPage' id='presetPageDataFlow'>
             <div class='presetGroup'>
                 <div class='preset' onclick="loadPresetGraph('ifElse');">If / else</div>
-                <div class='preset' onclick="loadPresetGraph('dataSelect');">Select from list</div>
+                <div class='preset' onclick="loadPresetGraph('select');">Select from list</div>
             </div>
         </div>
 
 
-        <div class='presetPage' id='presetPageLoops'>
+        <div class='presetPage' id='presetPageSetsLoops'>
+            <div class='presetGroup'>
+                <div class='preset' onclick="loadPresetGraph('sequence');">Sequence...</div>
+                <div class='preset' onclick="loadPresetGraph('range');">Range...</div>
+                <div class='preset' onclick="loadPresetGraph('define');">Define...</div>
+                <div class='preset' onclick="loadPresetGraph('random');">Random...</div>
+                <div class='preset' onclick="loadPresetGraph('noise');">Noise...</div>
+                <div class='preset' onclick="loadPresetGraph('probability');">Probability...</div>
+            </div>
             <div class='presetGroup'>
                 <div class='preset' onclick="loadPresetGraph('loop1d');">1D loop</div>
                 <div class='preset' onclick="loadPresetGraph('loop2d');">2D loop</div>
@@ -5538,8 +5521,10 @@ a
         </div>
 
 
-        <div class='presetPage' id='presetPageNumbers'>
-
+        <div class='presetPage' id='presetPageMath'>
+            <div class='presetGroup'>
+                <div class='preset' onclick="loadPresetGraph('quadraticFormula');">Quadratic formula</div>
+            </div>
         </div>
  
 
@@ -5549,7 +5534,9 @@ a
 
         
         <div class='presetPage' id='presetPageColors'>
-
+            <div class='presetGroup'>
+                <div class='preset' onclick="loadPresetGraph('colorContrast');">Color contrast</div>
+            </div>
         </div>
 
         
@@ -93852,14 +93839,14 @@ function initGeneratorMenus()
 
     menuMainHelp = new Menu('Help and subscription', false);
     menuMainHelp.addItems([
-        new MenuItem('Tutorials',    null, {callback: () => showPresets()}),
-        new MenuItem('',             null, {separator: true}),
+        new MenuItem('Tutorials . . .',    null, {callback: () => showPresets()}),
+        new MenuItem('',                   null, {separator: true}),
         new MenuItem('Keyboard shortcuts', null, {shortcut: osCtrlShift() + '?', callback: () => showKeyboardPanel()}),
-        // new MenuItem('Help page',   null, {callback:  () => window.open('http://www.bourt.com/generator/help', '_blank')}),
-        new MenuItem('',             null, {separator: true}),
-        //new MenuItem('Subscription', null, {callback:  () => showSubscriptionDialog()}),
-      //new MenuItem('',             null, {separator: true}),
-        new MenuItem('About',        null, {callback:  () => showAboutDialog()})]);
+        // new MenuItem('Help page',       null, {callback:  () => window.open('http://www.bourt.com/generator/help', '_blank')}),
+        new MenuItem('',                   null, {separator: true}),
+        //new MenuItem('Subscription',     null, {callback:  () => showSubscriptionDialog()}),
+      //new MenuItem('',                   null, {separator: true}),
+        new MenuItem('About',              null, {callback:  () => showAboutDialog()})]);
 
 
     menuMain = new Menu('Main menu', true, false, true);
@@ -126329,7 +126316,7 @@ extends OperatorBase
         }
         else
         {
-            this.label.style.color        = 'var(--figma-color-bg-disabled-secondary)';
+            this.label.style.color        = darkMode ? '#ddd' : '#222';
             this.label.style.textShadow   = 'none';
 
             this.textbox.style.color      = 'var(--figma-color-bg-disabled-secondary)';
@@ -133236,11 +133223,28 @@ function getPresetGraph(graphId)
         case 'organize':          return presetOrganize;
         case 'active':            return presetActive;
      
-        case 'dataSelect':        return presetDataSelect;
+
+        case 'ifElse':            return presetIfElse;
+        case 'select':            return presetSelect;
+
+
+        case 'sequence':          return presetSequence;
+        case 'range':             return presetRange;
+        case 'define':            return presetDefine;
+        case 'random':            return presetRandom;
+        case 'noise':             return presetNoise;
+        case 'probability':       return presetProbability;
 
         case 'loop1d':            return presetLoop1d;
         case 'loop2d':            return presetLoop2d;
         case 'loopLock':          return presetLoopLock;
+
+
+        case 'quadraticFormula':  return presetQuadraticFormula;
+
+
+        case 'colorContrast':     return presetColorContrast;
+
 
         case 'shapesStyles':      return presetShapesStyles;
         case 'basicTransform':    return presetBasicTransform;
@@ -137667,8 +137671,8 @@ const presetNodeBasics = '\
             "renamed": "true",\
             "enabled": "true",\
             "highlight": "0",\
-            "x": "789",\
-            "y": "485",\
+            "x": "839",\
+            "y": "535",\
             "z": "0"\
             },\
             {\
@@ -137678,15 +137682,14 @@ const presetNodeBasics = '\
             "renamed": "true",\
             "enabled": "true",\
             "highlight": "0",\
-            "x": "602",\
-            "y": "643",\
+            "x": "652",\
+            "y": "693",\
             "z": "1",\
-            "active": "true",\
             "width": "120",\
             "height": "54",\
             "params":\
             [\
-                    ["NUM#", "value", "5,0"]\
+                    ["NUM#", "value", "456,0"]\
             ]\
             },\
             {\
@@ -137696,13 +137699,13 @@ const presetNodeBasics = '\
             "renamed": "true",\
             "enabled": "true",\
             "highlight": "0",\
-            "x": "794",\
-            "y": "590",\
+            "x": "844",\
+            "y": "640",\
             "z": "2",\
             "active": "true",\
             "params":\
             [\
-                    ["NUM#", "value", "8,0"]\
+                    ["NUM#", "value", "579,0"]\
             ]\
             },\
             {\
@@ -137712,8 +137715,8 @@ const presetNodeBasics = '\
             "renamed": "true",\
             "enabled": "true",\
             "highlight": "0",\
-            "x": "664",\
-            "y": "318",\
+            "x": "623",\
+            "y": "388",\
             "z": "3"\
             },\
             {\
@@ -137723,8 +137726,8 @@ const presetNodeBasics = '\
             "renamed": "true",\
             "enabled": "true",\
             "highlight": "0",\
-            "x": "324",\
-            "y": "569",\
+            "x": "374",\
+            "y": "619",\
             "z": "4"\
             },\
             {\
@@ -137734,8 +137737,8 @@ const presetNodeBasics = '\
             "renamed": "true",\
             "enabled": "true",\
             "highlight": "0",\
-            "x": "322",\
-            "y": "616",\
+            "x": "372",\
+            "y": "666",\
             "z": "5"\
             },\
             {\
@@ -137745,8 +137748,8 @@ const presetNodeBasics = '\
             "renamed": "true",\
             "enabled": "true",\
             "highlight": "0",\
-            "x": "983",\
-            "y": "600",\
+            "x": "1033",\
+            "y": "649",\
             "z": "6",\
             "active": "true",\
             "width": "120",\
@@ -137759,15 +137762,14 @@ const presetNodeBasics = '\
             "renamed": "true",\
             "enabled": "true",\
             "highlight": "0",\
-            "x": "602",\
-            "y": "539",\
+            "x": "652",\
+            "y": "589",\
             "z": "7",\
-            "active": "true",\
             "width": "120",\
             "height": "54",\
             "params":\
             [\
-                    ["NUM#", "value", "3,0"]\
+                    ["NUM#", "value", "123,0"]\
             ]\
             }\
         ],\
@@ -137791,7 +137793,6 @@ const presetNodeBasics = '\
             }\
         ]\
     }';
-
 
 
 const presetDataTypes = '\
@@ -138718,7 +138719,7 @@ const presetActive = '\
     }';
 
 
-const presetDataSelect = '\
+const presetColorContrast = '\
     {\
         "nodes":\
         [\
@@ -138729,28 +138730,264 @@ const presetDataSelect = '\
             "renamed": "false",\
             "enabled": "true",\
             "highlight": "0",\
-            "x": "637",\
-            "y": "2449",\
+            "x": "973",\
+            "y": "2512",\
             "z": "0",\
-            "prevSpace": "hex",\
+            "active": "true",\
+            "prevSpace": "hsv",\
             "params":\
             [\
-                    ["NUM#", "space", "0,0"],\
-                    ["NUM#", "c1", "211,0"],\
-                    ["NUM#", "c2", "17,0"],\
-                    ["NUM#", "c3", "150,0"]\
+                    ["NUM#", "space", "2,0"],\
+                    ["NUM#", "c1", "60,0"],\
+                    ["NUM#", "c2", "100,0"],\
+                    ["NUM#", "c3", "85.09803921568627,0"]\
             ]\
             },\
             {\
-            "type": "RECT",\
-            "id": "rect",\
-            "name": "rectangle",\
+            "type": "COL",\
+            "id": "color2",\
+            "name": "color",\
             "renamed": "false",\
             "enabled": "true",\
             "highlight": "0",\
-            "x": "902",\
-            "y": "1965",\
+            "x": "973",\
+            "y": "2316",\
             "z": "1",\
+            "active": "true",\
+            "prevSpace": "hsv",\
+            "params":\
+            [\
+                    ["NUM#", "space", "2,0"],\
+                    ["NUM#", "c1", "172,0"],\
+                    ["NUM#", "c2", "90,0"],\
+                    ["NUM#", "c3", "31,0"]\
+            ]\
+            },\
+            {\
+            "type": "CCNT",\
+            "id": "contrast2",\
+            "name": "contrast",\
+            "renamed": "false",\
+            "enabled": "true",\
+            "highlight": "0",\
+            "x": "1196",\
+            "y": "2372",\
+            "z": "2",\
+            "active": "true",\
+            "params":\
+            [\
+                    ["NUM#", "contrast", "65.52882974629615,1"]\
+            ]\
+            },\
+            {\
+            "type": "CCNT",\
+            "id": "contrast3",\
+            "name": "contrast",\
+            "renamed": "false",\
+            "enabled": "true",\
+            "highlight": "0",\
+            "x": "1196",\
+            "y": "2497",\
+            "z": "3",\
+            "active": "true",\
+            "params":\
+            [\
+                    ["NUM#", "contrast", "6.257915965905285,2"],\
+                    ["NUM#", "standard", "0,0"]\
+            ]\
+            }\
+        ],\
+        "connections":\
+        [\
+            {\
+            "outputNodeId": "color2",\
+            "outputId": "h0",\
+            "outputOrder": "1",\
+            "inputNodeId": "contrast2",\
+            "inputId": "h0",\
+            "list": "false"\
+            },\
+            {\
+            "outputNodeId": "color",\
+            "outputId": "h0",\
+            "outputOrder": "1",\
+            "inputNodeId": "contrast2",\
+            "inputId": "h1",\
+            "list": "false"\
+            },\
+            {\
+            "outputNodeId": "color2",\
+            "outputId": "h0",\
+            "outputOrder": "0",\
+            "inputNodeId": "contrast3",\
+            "inputId": "h0",\
+            "list": "false"\
+            },\
+            {\
+            "outputNodeId": "color",\
+            "outputId": "h0",\
+            "outputOrder": "0",\
+            "inputNodeId": "contrast3",\
+            "inputId": "h1",\
+            "list": "false"\
+            }\
+        ]\
+    }';
+
+
+const presetIfElse = '\
+    {\
+        "nodes":\
+        [\
+            {\
+            "type": "STAR",\
+            "id": "star",\
+            "name": "star",\
+            "renamed": "false",\
+            "enabled": "true",\
+            "highlight": "0",\
+            "x": "2374",\
+            "y": "3697",\
+            "z": "0",\
+            "params":\
+            [\
+            ]\
+            },\
+            {\
+            "type": "COL",\
+            "id": "color",\
+            "name": "color",\
+            "renamed": "false",\
+            "enabled": "true",\
+            "highlight": "0",\
+            "x": "2182",\
+            "y": "3626",\
+            "z": "1",\
+            "prevSpace": "hsv",\
+            "params":\
+            [\
+                    ["NUM#", "space", "2,0"],\
+                    ["NUM#", "c1", "57,0"],\
+                    ["NUM#", "c2", "100,0"],\
+                    ["NUM#", "c3", "76,0"]\
+            ]\
+            },\
+            {\
+            "type": "IF",\
+            "id": "ifElse",\
+            "name": "if%2Felse",\
+            "renamed": "false",\
+            "enabled": "true",\
+            "highlight": "0",\
+            "x": "2574",\
+            "y": "3649",\
+            "z": "2",\
+            "active": "true"\
+            },\
+            {\
+            "type": "ELPS",\
+            "id": "ellipse",\
+            "name": "ellipse",\
+            "renamed": "false",\
+            "enabled": "true",\
+            "highlight": "0",\
+            "x": "2374",\
+            "y": "3457",\
+            "z": "3",\
+            "params":\
+            [\
+            ]\
+            },\
+            {\
+            "type": "CMNT",\
+            "id": "comment",\
+            "name": "Change%20the%20condition%20of%20if%2Felse%20to%20see%20how%20that%20affects",\
+            "renamed": "true",\
+            "enabled": "true",\
+            "highlight": "0",\
+            "x": "2551.48",\
+            "y": "3753",\
+            "z": "4",\
+            "active": "true"\
+            },\
+            {\
+            "type": "CMNT",\
+            "id": "comment2",\
+            "name": "the%20output.%20Try%20disconnecting%20one%20of%20the%20red%20wires%20%E2%80%94",\
+            "renamed": "true",\
+            "enabled": "true",\
+            "highlight": "0",\
+            "x": "2554",\
+            "y": "3799",\
+            "z": "5",\
+            "active": "true"\
+            },\
+            {\
+            "type": "CMNT",\
+            "id": "comment3",\
+            "name": "with%20only%20one%20input%20it%20works%20as%20a%20pass-or-not%20node.",\
+            "renamed": "true",\
+            "enabled": "true",\
+            "highlight": "0",\
+            "x": "2550",\
+            "y": "3844",\
+            "z": "6",\
+            "active": "true"\
+            }\
+        ],\
+        "connections":\
+        [\
+            {\
+            "outputNodeId": "color",\
+            "outputId": "h0",\
+            "outputOrder": "1",\
+            "inputNodeId": "star",\
+            "inputId": "props",\
+            "list": "false"\
+            },\
+            {\
+            "outputNodeId": "ellipse",\
+            "outputId": "h0",\
+            "outputOrder": "0",\
+            "inputNodeId": "ifElse",\
+            "inputId": "h0",\
+            "list": "false"\
+            },\
+            {\
+            "outputNodeId": "star",\
+            "outputId": "h0",\
+            "outputOrder": "0",\
+            "inputNodeId": "ifElse",\
+            "inputId": "h1",\
+            "list": "false"\
+            },\
+            {\
+            "outputNodeId": "color",\
+            "outputId": "h0",\
+            "outputOrder": "0",\
+            "inputNodeId": "ellipse",\
+            "inputId": "props",\
+            "list": "false"\
+            }\
+        ]\
+    }';
+
+
+    
+const presetSelect = '\
+    {\
+        "nodes":\
+        [\
+            {\
+            "type": "TRPZ",\
+            "id": "trapeze",\
+            "name": "trapeze",\
+            "renamed": "false",\
+            "enabled": "true",\
+            "highlight": "0",\
+            "x": "1251",\
+            "y": "2732",\
+            "z": "0",\
             "params":\
             [\
             ]\
@@ -138762,22 +138999,41 @@ const presetDataSelect = '\
             "renamed": "false",\
             "enabled": "true",\
             "highlight": "0",\
-            "x": "900",\
-            "y": "2150",\
-            "z": "2",\
+            "x": "1250",\
+            "y": "2500",\
+            "z": "1",\
             "params":\
             [\
             ]\
             },\
             {\
-            "type": "TRPZ",\
-            "id": "trapeze",\
-            "name": "trapeze",\
+            "type": "COL",\
+            "id": "color",\
+            "name": "color",\
             "renamed": "false",\
             "enabled": "true",\
             "highlight": "0",\
-            "x": "901",\
-            "y": "2382",\
+            "x": "982",\
+            "y": "2790",\
+            "z": "2",\
+            "prevSpace": "hsv",\
+            "params":\
+            [\
+                    ["NUM#", "space", "2,0"],\
+                    ["NUM#", "c1", "88,0"],\
+                    ["NUM#", "c2", "85,0"],\
+                    ["NUM#", "c3", "66,0"]\
+            ]\
+            },\
+            {\
+            "type": "RECT",\
+            "id": "rect",\
+            "name": "rectangle",\
+            "renamed": "false",\
+            "enabled": "true",\
+            "highlight": "0",\
+            "x": "1252",\
+            "y": "2315",\
             "z": "3",\
             "params":\
             [\
@@ -138790,12 +139046,36 @@ const presetDataSelect = '\
             "renamed": "false",\
             "enabled": "true",\
             "highlight": "0",\
-            "x": "901",\
-            "y": "2598",\
+            "x": "1251",\
+            "y": "2948",\
             "z": "4",\
             "params":\
             [\
             ]\
+            },\
+            {\
+            "type": "CMNT",\
+            "id": "comment",\
+            "name": "Change%20the%20select%20index%20to%20decide",\
+            "renamed": "true",\
+            "enabled": "true",\
+            "highlight": "0",\
+            "x": "1513",\
+            "y": "2943",\
+            "z": "5",\
+            "active": "true"\
+            },\
+            {\
+            "type": "CMNT",\
+            "id": "comment2",\
+            "name": "which%20object%20goes%20through.",\
+            "renamed": "true",\
+            "enabled": "true",\
+            "highlight": "0",\
+            "x": "1514",\
+            "y": "2989",\
+            "z": "6",\
+            "active": "true"\
             },\
             {\
             "type": "STAR",\
@@ -138804,11 +139084,27 @@ const presetDataSelect = '\
             "renamed": "false",\
             "enabled": "true",\
             "highlight": "0",\
-            "x": "901",\
-            "y": "2822",\
-            "z": "5",\
+            "x": "1251",\
+            "y": "3172",\
+            "z": "7",\
             "params":\
             [\
+            ]\
+            },\
+            {\
+            "type": "SEL",\
+            "id": "select",\
+            "name": "select",\
+            "renamed": "false",\
+            "enabled": "true",\
+            "highlight": "0",\
+            "x": "1723",\
+            "y": "2831",\
+            "z": "8",\
+            "active": "true",\
+            "params":\
+            [\
+                    ["NUM#", "index", "0,0"]\
             ]\
             },\
             {\
@@ -138818,27 +139114,11 @@ const presetDataSelect = '\
             "renamed": "false",\
             "enabled": "true",\
             "highlight": "0",\
-            "x": "1162",\
-            "y": "2431",\
-            "z": "6",\
+            "x": "1512",\
+            "y": "2802",\
+            "z": "9",\
             "width": "120",\
             "height": "90"\
-            },\
-            {\
-            "type": "SEL",\
-            "id": "select",\
-            "name": "select",\
-            "renamed": "false",\
-            "enabled": "true",\
-            "highlight": "0",\
-            "x": "1373",\
-            "y": "2460",\
-            "z": "7",\
-            "active": "true",\
-            "params":\
-            [\
-                    ["NUM#", "index", "4,0"]\
-            ]\
             }\
         ],\
         "connections":\
@@ -138846,8 +139126,8 @@ const presetDataSelect = '\
             {\
             "outputNodeId": "color",\
             "outputId": "h0",\
-            "outputOrder": "0",\
-            "inputNodeId": "rect",\
+            "outputOrder": "2",\
+            "inputNodeId": "trapeze",\
             "inputId": "props",\
             "list": "false"\
             },\
@@ -138862,8 +139142,8 @@ const presetDataSelect = '\
             {\
             "outputNodeId": "color",\
             "outputId": "h0",\
-            "outputOrder": "2",\
-            "inputNodeId": "trapeze",\
+            "outputOrder": "0",\
+            "inputNodeId": "rect",\
             "inputId": "props",\
             "list": "false"\
             },\
@@ -138882,6 +139162,14 @@ const presetDataSelect = '\
             "inputNodeId": "star",\
             "inputId": "props",\
             "list": "false"\
+            },\
+            {\
+            "outputNodeId": "combine",\
+            "outputId": "h0",\
+            "outputOrder": "0",\
+            "inputNodeId": "select",\
+            "inputId": "h0",\
+            "list": "true"\
             },\
             {\
             "outputNodeId": "rect",\
@@ -138922,14 +139210,6 @@ const presetDataSelect = '\
             "inputNodeId": "combine",\
             "inputId": "h4",\
             "list": "false"\
-            },\
-            {\
-            "outputNodeId": "combine",\
-            "outputId": "h0",\
-            "outputOrder": "0",\
-            "inputNodeId": "select",\
-            "inputId": "h0",\
-            "list": "true"\
             }\
         ]\
     }';
@@ -139092,7 +139372,7 @@ const presetLoop1d = '\
     }';
 
 
-    
+
 const presetLoop2d = '\
     {\
         "nodes":\
@@ -139477,7 +139757,7 @@ const presetLoopLock = '\
             "name": "combine",\
             "renamed": "false",\
             "enabled": "true",\
-            "highlight": "1",\
+            "highlight": "7",\
             "x": "751",\
             "y": "479",\
             "z": "7",\
@@ -139660,6 +139940,2045 @@ const presetLoopLock = '\
             "outputOrder": "0",\
             "inputNodeId": "poly",\
             "inputId": "props",\
+            "list": "false"\
+            }\
+        ]\
+    }';
+
+
+const presetQuadraticFormula = '\
+    {\
+        "nodes":\
+        [\
+            {\
+            "type": "CMNT",\
+            "id": "comment",\
+            "name": "x%20%3D%20",\
+            "renamed": "true",\
+            "enabled": "true",\
+            "highlight": "0",\
+            "x": "2038",\
+            "y": "3266",\
+            "z": "0"\
+            },\
+            {\
+            "type": "CMNT",\
+            "id": "comment2",\
+            "name": "-b%20%C2%B1%20%E2%80%8A%E2%88%9Ab%C2%B2%20-%204ac",\
+            "renamed": "true",\
+            "enabled": "true",\
+            "highlight": "0",\
+            "x": "2098",\
+            "y": "3244",\
+            "z": "1"\
+            },\
+            {\
+            "type": "CMNT",\
+            "id": "comment3",\
+            "name": "______",\
+            "renamed": "true",\
+            "enabled": "true",\
+            "highlight": "0",\
+            "x": "2184",\
+            "y": "3210",\
+            "z": "2"\
+            },\
+            {\
+            "type": "CMNT",\
+            "id": "comment4",\
+            "name": "___________",\
+            "renamed": "true",\
+            "enabled": "true",\
+            "highlight": "0",\
+            "x": "2086",\
+            "y": "3257",\
+            "z": "3"\
+            },\
+            {\
+            "type": "CMNT",\
+            "id": "comment5",\
+            "name": "2a",\
+            "renamed": "true",\
+            "enabled": "true",\
+            "highlight": "0",\
+            "x": "2184",\
+            "y": "3299",\
+            "z": "4"\
+            },\
+            {\
+            "type": "NUM",\
+            "id": "num",\
+            "name": "a",\
+            "renamed": "true",\
+            "enabled": "true",\
+            "highlight": "7",\
+            "x": "1485",\
+            "y": "3440",\
+            "z": "5",\
+            "width": "120",\
+            "height": "54",\
+            "params":\
+            [\
+                    ["NUM#", "value", "2,0"]\
+            ]\
+            },\
+            {\
+            "type": "NUM",\
+            "id": "num2",\
+            "name": "b",\
+            "renamed": "true",\
+            "enabled": "true",\
+            "highlight": "7",\
+            "x": "1484",\
+            "y": "3512",\
+            "z": "6",\
+            "width": "120",\
+            "height": "54",\
+            "params":\
+            [\
+                    ["NUM#", "value", "5,0"]\
+            ]\
+            },\
+            {\
+            "type": "NUM",\
+            "id": "num3",\
+            "name": "c",\
+            "renamed": "true",\
+            "enabled": "true",\
+            "highlight": "7",\
+            "x": "1484",\
+            "y": "3584",\
+            "z": "7",\
+            "width": "120",\
+            "height": "54",\
+            "params":\
+            [\
+                    ["NUM#", "value", "-25,0"]\
+            ]\
+            },\
+            {\
+            "type": "MATH",\
+            "id": "math",\
+            "name": "-b",\
+            "renamed": "true",\
+            "enabled": "true",\
+            "highlight": "0",\
+            "x": "2183",\
+            "y": "3458",\
+            "z": "8",\
+            "params":\
+            [\
+                    ["NUM#", "value", "-5,0"],\
+                    ["NUM#", "operation", "0,0"]\
+            ]\
+            },\
+            {\
+            "type": "MATH",\
+            "id": "math2",\
+            "name": "b%C2%B2%20-%204ac",\
+            "renamed": "true",\
+            "enabled": "true",\
+            "highlight": "0",\
+            "x": "2008",\
+            "y": "3570",\
+            "z": "9",\
+            "params":\
+            [\
+                    ["NUM#", "value", "225,0"],\
+                    ["NUM#", "operation", "0,0"]\
+            ]\
+            },\
+            {\
+            "type": "MATH",\
+            "id": "math3",\
+            "name": "b%C2%B2",\
+            "renamed": "true",\
+            "enabled": "true",\
+            "highlight": "0",\
+            "x": "1816",\
+            "y": "3422",\
+            "z": "10",\
+            "params":\
+            [\
+                    ["NUM#", "value", "25,0"],\
+                    ["NUM#", "operation", "4,0"]\
+            ]\
+            },\
+            {\
+            "type": "MATH",\
+            "id": "math4",\
+            "name": "4ac",\
+            "renamed": "true",\
+            "enabled": "true",\
+            "highlight": "0",\
+            "x": "1812",\
+            "y": "3612",\
+            "z": "11",\
+            "params":\
+            [\
+                    ["NUM#", "value", "-200,0"],\
+                    ["NUM#", "operation", "4,0"]\
+            ]\
+            },\
+            {\
+            "type": "NUM",\
+            "id": "num4",\
+            "name": "number",\
+            "renamed": "false",\
+            "enabled": "true",\
+            "highlight": "0",\
+            "x": "1673",\
+            "y": "3563",\
+            "z": "12",\
+            "width": "120",\
+            "height": "54",\
+            "params":\
+            [\
+                    ["NUM#", "value", "4,0"]\
+            ]\
+            },\
+            {\
+            "type": "SMATH",\
+            "id": "math5",\
+            "name": "%E2%80%8A%E2%88%9Ab%CC%85%CC%85%C2%B2%CC%85%CC%85%20%CC%85%CC%85-%CC%85%CC%85%20%CC%85%CC%854%CC%85%CC%85a%CC%85%CC%85c%CC%85%CC%85",\
+            "renamed": "true",\
+            "enabled": "true",\
+            "highlight": "0",\
+            "x": "2182",\
+            "y": "3579",\
+            "z": "13",\
+            "params":\
+            [\
+                    ["NUM#", "value", "15,1"],\
+                    ["NUM#", "operation", "5,0"],\
+                    ["NUM#", "operand", "0.5,1"]\
+            ]\
+            },\
+            {\
+            "type": "MATH",\
+            "id": "math6",\
+            "name": "-b%20-%20%E2%80%8A%E2%88%9Ab%CC%85%CC%85%C2%B2%CC%85%CC%85%20%CC%85%CC%85-%CC%85%CC%85%20%CC%85%CC%854%CC%85%CC%85a%CC%85%CC%85c%CC%85%CC%85",\
+            "renamed": "true",\
+            "enabled": "true",\
+            "highlight": "0",\
+            "x": "2386",\
+            "y": "3459",\
+            "z": "14",\
+            "params":\
+            [\
+                    ["NUM#", "value", "10,1"]\
+            ]\
+            },\
+            {\
+            "type": "MATH",\
+            "id": "math7",\
+            "name": "-b%20%2B%20%E2%80%8A%E2%88%9Ab%CC%85%CC%85%C2%B2%CC%85%CC%85%20%CC%85%CC%85-%CC%85%CC%85%20%CC%85%CC%854%CC%85%CC%85a%CC%85%CC%85c%CC%85%CC%85",\
+            "renamed": "true",\
+            "enabled": "true",\
+            "highlight": "0",\
+            "x": "2384",\
+            "y": "3575",\
+            "z": "15",\
+            "params":\
+            [\
+                    ["NUM#", "value", "-20,1"],\
+                    ["NUM#", "operation", "0,0"]\
+            ]\
+            },\
+            {\
+            "type": "SMATH",\
+            "id": "math8",\
+            "name": "2a",\
+            "renamed": "true",\
+            "enabled": "true",\
+            "highlight": "0",\
+            "x": "2384",\
+            "y": "3805",\
+            "z": "16",\
+            "params":\
+            [\
+                    ["NUM#", "value", "4,0"],\
+                    ["NUM#", "operation", "4,0"],\
+                    ["NUM#", "operand", "2,0"]\
+            ]\
+            },\
+            {\
+            "type": "MATH",\
+            "id": "math9",\
+            "name": "-result",\
+            "renamed": "true",\
+            "enabled": "true",\
+            "highlight": "0",\
+            "x": "2577",\
+            "y": "3462",\
+            "z": "17",\
+            "params":\
+            [\
+                    ["NUM#", "value", "2.5,1"],\
+                    ["NUM#", "operation", "3,0"]\
+            ]\
+            },\
+            {\
+            "type": "MATH",\
+            "id": "math10",\
+            "name": "%2Bresult",\
+            "renamed": "true",\
+            "enabled": "true",\
+            "highlight": "0",\
+            "x": "2576",\
+            "y": "3571",\
+            "z": "18",\
+            "params":\
+            [\
+                    ["NUM#", "value", "-5,1"],\
+                    ["NUM#", "operation", "3,0"]\
+            ]\
+            },\
+            {\
+            "type": "NUM",\
+            "id": "num5",\
+            "name": "number",\
+            "renamed": "false",\
+            "enabled": "true",\
+            "highlight": "7",\
+            "x": "2753",\
+            "y": "3469",\
+            "z": "19",\
+            "width": "120",\
+            "height": "54",\
+            "params":\
+            [\
+                    ["NUM#", "value", "2.5,1"]\
+            ]\
+            },\
+            {\
+            "type": "NUM",\
+            "id": "num6",\
+            "name": "number",\
+            "renamed": "false",\
+            "enabled": "true",\
+            "highlight": "7",\
+            "x": "2754",\
+            "y": "3579",\
+            "z": "20",\
+            "width": "120",\
+            "height": "54",\
+            "params":\
+            [\
+                    ["NUM#", "value", "-5,1"]\
+            ]\
+            }\
+        ],\
+        "connections":\
+        [\
+            {\
+            "outputNodeId": "num2",\
+            "outputId": "h0",\
+            "outputOrder": "0",\
+            "inputNodeId": "math",\
+            "inputId": "h0",\
+            "list": "false"\
+            },\
+            {\
+            "outputNodeId": "math3",\
+            "outputId": "h0",\
+            "outputOrder": "0",\
+            "inputNodeId": "math2",\
+            "inputId": "h0",\
+            "list": "false"\
+            },\
+            {\
+            "outputNodeId": "math4",\
+            "outputId": "h0",\
+            "outputOrder": "0",\
+            "inputNodeId": "math2",\
+            "inputId": "h1",\
+            "list": "false"\
+            },\
+            {\
+            "outputNodeId": "num2",\
+            "outputId": "h0",\
+            "outputOrder": "1",\
+            "inputNodeId": "math3",\
+            "inputId": "h0",\
+            "list": "false"\
+            },\
+            {\
+            "outputNodeId": "num2",\
+            "outputId": "h0",\
+            "outputOrder": "2",\
+            "inputNodeId": "math3",\
+            "inputId": "h1",\
+            "list": "false"\
+            },\
+            {\
+            "outputNodeId": "num4",\
+            "outputId": "h0",\
+            "outputOrder": "0",\
+            "inputNodeId": "math4",\
+            "inputId": "h0",\
+            "list": "false"\
+            },\
+            {\
+            "outputNodeId": "num",\
+            "outputId": "h0",\
+            "outputOrder": "0",\
+            "inputNodeId": "math4",\
+            "inputId": "h1",\
+            "list": "false"\
+            },\
+            {\
+            "outputNodeId": "num3",\
+            "outputId": "h0",\
+            "outputOrder": "0",\
+            "inputNodeId": "math4",\
+            "inputId": "h2",\
+            "list": "false"\
+            },\
+            {\
+            "outputNodeId": "math2",\
+            "outputId": "h0",\
+            "outputOrder": "0",\
+            "inputNodeId": "math5",\
+            "inputId": "h0",\
+            "list": "false"\
+            },\
+            {\
+            "outputNodeId": "math",\
+            "outputId": "h0",\
+            "outputOrder": "0",\
+            "inputNodeId": "math6",\
+            "inputId": "h0",\
+            "list": "false"\
+            },\
+            {\
+            "outputNodeId": "math5",\
+            "outputId": "h0",\
+            "outputOrder": "0",\
+            "inputNodeId": "math6",\
+            "inputId": "h1",\
+            "list": "false"\
+            },\
+            {\
+            "outputNodeId": "math",\
+            "outputId": "h0",\
+            "outputOrder": "1",\
+            "inputNodeId": "math7",\
+            "inputId": "h0",\
+            "list": "false"\
+            },\
+            {\
+            "outputNodeId": "math5",\
+            "outputId": "h0",\
+            "outputOrder": "1",\
+            "inputNodeId": "math7",\
+            "inputId": "h1",\
+            "list": "false"\
+            },\
+            {\
+            "outputNodeId": "num",\
+            "outputId": "h0",\
+            "outputOrder": "1",\
+            "inputNodeId": "math8",\
+            "inputId": "h0",\
+            "list": "false"\
+            },\
+            {\
+            "outputNodeId": "math6",\
+            "outputId": "h0",\
+            "outputOrder": "0",\
+            "inputNodeId": "math9",\
+            "inputId": "h0",\
+            "list": "false"\
+            },\
+            {\
+            "outputNodeId": "math8",\
+            "outputId": "h0",\
+            "outputOrder": "0",\
+            "inputNodeId": "math9",\
+            "inputId": "h1",\
+            "list": "false"\
+            },\
+            {\
+            "outputNodeId": "math7",\
+            "outputId": "h0",\
+            "outputOrder": "0",\
+            "inputNodeId": "math10",\
+            "inputId": "h0",\
+            "list": "false"\
+            },\
+            {\
+            "outputNodeId": "math8",\
+            "outputId": "h0",\
+            "outputOrder": "1",\
+            "inputNodeId": "math10",\
+            "inputId": "h1",\
+            "list": "false"\
+            },\
+            {\
+            "outputNodeId": "math9",\
+            "outputId": "h0",\
+            "outputOrder": "0",\
+            "inputNodeId": "num5",\
+            "inputId": "h0",\
+            "list": "false"\
+            },\
+            {\
+            "outputNodeId": "math10",\
+            "outputId": "h0",\
+            "outputOrder": "0",\
+            "inputNodeId": "num6",\
+            "inputId": "h0",\
+            "list": "false"\
+            }\
+        ]\
+    }';
+
+
+const presetSequence = '\
+    {\
+        "nodes":\
+        [\
+            {\
+            "type": "SEQ",\
+            "id": "sequence",\
+            "name": "sequence",\
+            "renamed": "false",\
+            "enabled": "true",\
+            "highlight": "7",\
+            "x": "500",\
+            "y": "2300",\
+            "z": "0",\
+            "params":\
+            [\
+                    ["NUM#", "end", "?,0"]\
+            ]\
+            },\
+            {\
+            "type": "RECT",\
+            "id": "rect",\
+            "name": "rectangle",\
+            "renamed": "false",\
+            "enabled": "true",\
+            "highlight": "0",\
+            "x": "106",\
+            "y": "1652",\
+            "z": "1",\
+            "params":\
+            [\
+                    ["NUM#", "width", "10,0"]\
+            ]\
+            },\
+            {\
+            "type": "MOVE",\
+            "id": "move",\
+            "name": "move",\
+            "renamed": "false",\
+            "enabled": "true",\
+            "highlight": "0",\
+            "x": "450",\
+            "y": "1652",\
+            "z": "2",\
+            "params":\
+            [\
+                    ["NUM#", "x", "1470,0"]\
+            ]\
+            },\
+            {\
+            "type": "COL",\
+            "id": "color",\
+            "name": "color",\
+            "renamed": "false",\
+            "enabled": "true",\
+            "highlight": "0",\
+            "x": "-55",\
+            "y": "1790",\
+            "z": "3",\
+            "prevSpace": "hsv",\
+            "params":\
+            [\
+                    ["NUM#", "space", "2,0"],\
+                    ["NUM#", "c1", "142,0"],\
+                    ["NUM#", "c2", "80,0"],\
+                    ["NUM#", "c3", "70,0"]\
+            ]\
+            },\
+            {\
+            "type": "SEQ",\
+            "id": "sequence2",\
+            "name": "sequence",\
+            "renamed": "false",\
+            "enabled": "true",\
+            "highlight": "0",\
+            "x": "293",\
+            "y": "1872",\
+            "z": "4",\
+            "params":\
+            [\
+                    ["NUM#", "step", "30,0"],\
+                    ["NUM#", "end", "?,0"]\
+            ]\
+            },\
+            {\
+            "type": "REPT",\
+            "id": "repeat",\
+            "name": "repeat",\
+            "renamed": "false",\
+            "enabled": "true",\
+            "highlight": "0",\
+            "x": "1040",\
+            "y": "1887",\
+            "z": "5",\
+            "active": "true",\
+            "params":\
+            [\
+                    ["NUM#", "count", "50,0"]\
+            ]\
+            },\
+            {\
+            "type": "CENTR",\
+            "id": "center",\
+            "name": "center",\
+            "renamed": "false",\
+            "enabled": "true",\
+            "highlight": "0",\
+            "x": "709",\
+            "y": "1652",\
+            "z": "6",\
+            "params":\
+            [\
+                    ["NUM#", "centerY", "100,0"]\
+            ]\
+            },\
+            {\
+            "type": "SCALE",\
+            "id": "scale",\
+            "name": "scale",\
+            "renamed": "false",\
+            "enabled": "true",\
+            "highlight": "0",\
+            "x": "859",\
+            "y": "1652",\
+            "z": "7",\
+            "params":\
+            [\
+                    ["NUM#", "scaleY", "490,0"]\
+            ]\
+            },\
+            {\
+            "type": "PANEL",\
+            "id": "panel",\
+            "name": "",\
+            "renamed": "false",\
+            "enabled": "true",\
+            "highlight": "0",\
+            "x": "-104",\
+            "y": "1598",\
+            "z": "8",\
+            "width": "1305.8120687980118",\
+            "height": "417.66207376486375",\
+            "params":\
+            [\
+            ]\
+            }\
+        ],\
+        "connections":\
+        [\
+            {\
+            "outputNodeId": "color",\
+            "outputId": "h0",\
+            "outputOrder": "0",\
+            "inputNodeId": "rect",\
+            "inputId": "props",\
+            "list": "false"\
+            },\
+            {\
+            "outputNodeId": "rect",\
+            "outputId": "h0",\
+            "outputOrder": "0",\
+            "inputNodeId": "move",\
+            "inputId": "h0",\
+            "list": "false"\
+            },\
+            {\
+            "outputNodeId": "sequence2",\
+            "outputId": "h0",\
+            "outputOrder": "0",\
+            "inputNodeId": "move",\
+            "inputId": "x",\
+            "list": "false"\
+            },\
+            {\
+            "outputNodeId": "scale",\
+            "outputId": "h0",\
+            "outputOrder": "0",\
+            "inputNodeId": "repeat",\
+            "inputId": "h0",\
+            "list": "false"\
+            },\
+            {\
+            "outputNodeId": "move",\
+            "outputId": "h0",\
+            "outputOrder": "0",\
+            "inputNodeId": "center",\
+            "inputId": "h0",\
+            "list": "false"\
+            },\
+            {\
+            "outputNodeId": "center",\
+            "outputId": "h0",\
+            "outputOrder": "0",\
+            "inputNodeId": "scale",\
+            "inputId": "h0",\
+            "list": "false"\
+            },\
+            {\
+            "outputNodeId": "sequence",\
+            "outputId": "h0",\
+            "outputOrder": "0",\
+            "inputNodeId": "scale",\
+            "inputId": "scaleY",\
+            "list": "false"\
+            }\
+        ]\
+    }';
+
+
+
+const presetRange = '\
+    {\
+        "nodes":\
+        [\
+            {\
+            "type": "RECT",\
+            "id": "rect",\
+            "name": "rectangle",\
+            "renamed": "false",\
+            "enabled": "true",\
+            "highlight": "0",\
+            "x": "156",\
+            "y": "1702",\
+            "z": "0",\
+            "params":\
+            [\
+                    ["NUM#", "width", "10,0"]\
+            ]\
+            },\
+            {\
+            "type": "MOVE",\
+            "id": "move",\
+            "name": "move",\
+            "renamed": "false",\
+            "enabled": "true",\
+            "highlight": "0",\
+            "x": "500",\
+            "y": "1702",\
+            "z": "1",\
+            "params":\
+            [\
+                    ["NUM#", "x", "1470,0"]\
+            ]\
+            },\
+            {\
+            "type": "COL",\
+            "id": "color",\
+            "name": "color",\
+            "renamed": "false",\
+            "enabled": "true",\
+            "highlight": "0",\
+            "x": "-5",\
+            "y": "1840",\
+            "z": "2",\
+            "prevSpace": "hsv",\
+            "params":\
+            [\
+                    ["NUM#", "space", "2,0"],\
+                    ["NUM#", "c1", "142,0"],\
+                    ["NUM#", "c2", "80,0"],\
+                    ["NUM#", "c3", "70,0"]\
+            ]\
+            },\
+            {\
+            "type": "SEQ",\
+            "id": "sequence2",\
+            "name": "sequence",\
+            "renamed": "false",\
+            "enabled": "true",\
+            "highlight": "0",\
+            "x": "343",\
+            "y": "1922",\
+            "z": "3",\
+            "params":\
+            [\
+                    ["NUM#", "step", "30,0"],\
+                    ["NUM#", "end", "?,0"]\
+            ]\
+            },\
+            {\
+            "type": "REPT",\
+            "id": "repeat",\
+            "name": "repeat",\
+            "renamed": "false",\
+            "enabled": "true",\
+            "highlight": "0",\
+            "x": "1090",\
+            "y": "1937",\
+            "z": "4",\
+            "active": "true",\
+            "params":\
+            [\
+                    ["NUM#", "count", "50,0"]\
+            ]\
+            },\
+            {\
+            "type": "CENTR",\
+            "id": "center",\
+            "name": "center",\
+            "renamed": "false",\
+            "enabled": "true",\
+            "highlight": "0",\
+            "x": "759",\
+            "y": "1702",\
+            "z": "5",\
+            "params":\
+            [\
+                    ["NUM#", "centerY", "100,0"]\
+            ]\
+            },\
+            {\
+            "type": "SCALE",\
+            "id": "scale",\
+            "name": "scale",\
+            "renamed": "false",\
+            "enabled": "true",\
+            "highlight": "0",\
+            "x": "909",\
+            "y": "1702",\
+            "z": "6",\
+            "params":\
+            [\
+                    ["NUM#", "scaleY", "500,0"]\
+            ]\
+            },\
+            {\
+            "type": "PANEL",\
+            "id": "panel",\
+            "name": "",\
+            "renamed": "false",\
+            "enabled": "true",\
+            "highlight": "0",\
+            "x": "-54",\
+            "y": "1648",\
+            "z": "7",\
+            "width": "1305.8120687980118",\
+            "height": "417.66207376486375",\
+            "params":\
+            [\
+            ]\
+            },\
+            {\
+            "type": "RANGE",\
+            "id": "range",\
+            "name": "range",\
+            "renamed": "false",\
+            "enabled": "true",\
+            "highlight": "7",\
+            "x": "638",\
+            "y": "2335",\
+            "z": "8",\
+            "active": "true",\
+            "params":\
+            [\
+                    ["NUM#", "end", "500,0"]\
+            ]\
+            },\
+            {\
+            "type": "CMNT",\
+            "id": "comment",\
+            "name": "Unlike%20Sequence%2C%20Range%20%3Cb%3Emust%3C%2Fb%3E%20be%20connected%20to%20a%20Repeat",\
+            "renamed": "true",\
+            "enabled": "true",\
+            "highlight": "0",\
+            "x": "973",\
+            "y": "2177",\
+            "z": "9",\
+            "active": "true"\
+            },\
+            {\
+            "type": "CMNT",\
+            "id": "comment2",\
+            "name": "because%20the%20repeat%20count%20determines%20the%20step%20size.",\
+            "renamed": "true",\
+            "enabled": "true",\
+            "highlight": "0",\
+            "x": "973",\
+            "y": "2221",\
+            "z": "10",\
+            "active": "true"\
+            }\
+        ],\
+        "connections":\
+        [\
+            {\
+            "outputNodeId": "color",\
+            "outputId": "h0",\
+            "outputOrder": "0",\
+            "inputNodeId": "rect",\
+            "inputId": "props",\
+            "list": "false"\
+            },\
+            {\
+            "outputNodeId": "rect",\
+            "outputId": "h0",\
+            "outputOrder": "0",\
+            "inputNodeId": "move",\
+            "inputId": "h0",\
+            "list": "false"\
+            },\
+            {\
+            "outputNodeId": "sequence2",\
+            "outputId": "h0",\
+            "outputOrder": "0",\
+            "inputNodeId": "move",\
+            "inputId": "x",\
+            "list": "false"\
+            },\
+            {\
+            "outputNodeId": "scale",\
+            "outputId": "h0",\
+            "outputOrder": "0",\
+            "inputNodeId": "repeat",\
+            "inputId": "h0",\
+            "list": "false"\
+            },\
+            {\
+            "outputNodeId": "range",\
+            "outputId": "h0",\
+            "outputOrder": "1",\
+            "inputNodeId": "repeat",\
+            "inputId": "loop",\
+            "list": "false"\
+            },\
+            {\
+            "outputNodeId": "move",\
+            "outputId": "h0",\
+            "outputOrder": "0",\
+            "inputNodeId": "center",\
+            "inputId": "h0",\
+            "list": "false"\
+            },\
+            {\
+            "outputNodeId": "center",\
+            "outputId": "h0",\
+            "outputOrder": "0",\
+            "inputNodeId": "scale",\
+            "inputId": "h0",\
+            "list": "false"\
+            },\
+            {\
+            "outputNodeId": "range",\
+            "outputId": "h0",\
+            "outputOrder": "0",\
+            "inputNodeId": "scale",\
+            "inputId": "scaleY",\
+            "list": "false"\
+            }\
+        ]\
+    }';
+
+
+
+const presetDefine = '\
+    {\
+        "nodes":\
+        [\
+            {\
+            "type": "RECT",\
+            "id": "rect",\
+            "name": "rectangle",\
+            "renamed": "false",\
+            "enabled": "true",\
+            "highlight": "0",\
+            "x": "406",\
+            "y": "1952",\
+            "z": "0",\
+            "params":\
+            [\
+                    ["NUM#", "width", "10,0"]\
+            ]\
+            },\
+            {\
+            "type": "MOVE",\
+            "id": "move",\
+            "name": "move",\
+            "renamed": "false",\
+            "enabled": "true",\
+            "highlight": "0",\
+            "x": "750",\
+            "y": "1952",\
+            "z": "1",\
+            "params":\
+            [\
+                    ["NUM#", "x", "1470,0"]\
+            ]\
+            },\
+            {\
+            "type": "COL",\
+            "id": "color",\
+            "name": "color",\
+            "renamed": "false",\
+            "enabled": "true",\
+            "highlight": "0",\
+            "x": "245",\
+            "y": "2090",\
+            "z": "2",\
+            "prevSpace": "hsv",\
+            "params":\
+            [\
+                    ["NUM#", "space", "2,0"],\
+                    ["NUM#", "c1", "142,0"],\
+                    ["NUM#", "c2", "80,0"],\
+                    ["NUM#", "c3", "70,0"]\
+            ]\
+            },\
+            {\
+            "type": "SEQ",\
+            "id": "sequence2",\
+            "name": "sequence",\
+            "renamed": "false",\
+            "enabled": "true",\
+            "highlight": "0",\
+            "x": "593",\
+            "y": "2172",\
+            "z": "3",\
+            "params":\
+            [\
+                    ["NUM#", "step", "30,0"],\
+                    ["NUM#", "end", "?,0"]\
+            ]\
+            },\
+            {\
+            "type": "REPT",\
+            "id": "repeat",\
+            "name": "repeat",\
+            "renamed": "false",\
+            "enabled": "true",\
+            "highlight": "0",\
+            "x": "1340",\
+            "y": "2187",\
+            "z": "4",\
+            "active": "true",\
+            "params":\
+            [\
+                    ["NUM#", "count", "50,0"]\
+            ]\
+            },\
+            {\
+            "type": "CENTR",\
+            "id": "center",\
+            "name": "center",\
+            "renamed": "false",\
+            "enabled": "true",\
+            "highlight": "0",\
+            "x": "1009",\
+            "y": "1952",\
+            "z": "5",\
+            "params":\
+            [\
+                    ["NUM#", "centerY", "100,0"]\
+            ]\
+            },\
+            {\
+            "type": "SCALE",\
+            "id": "scale",\
+            "name": "scale",\
+            "renamed": "false",\
+            "enabled": "true",\
+            "highlight": "0",\
+            "x": "1159",\
+            "y": "1952",\
+            "z": "6",\
+            "params":\
+            [\
+                    ["NUM#", "scaleY", "345,0"]\
+            ]\
+            },\
+            {\
+            "type": "PANEL",\
+            "id": "panel",\
+            "name": "",\
+            "renamed": "false",\
+            "enabled": "true",\
+            "highlight": "0",\
+            "x": "196",\
+            "y": "1898",\
+            "z": "7",\
+            "width": "1305.8120687980118",\
+            "height": "417.66207376486375",\
+            "params":\
+            [\
+            ]\
+            },\
+            {\
+            "type": "CMNT",\
+            "id": "comment",\
+            "name": "Define%20lets%20you%20manualy%20define%20a%20sequence",\
+            "renamed": "true",\
+            "enabled": "true",\
+            "highlight": "0",\
+            "x": "1095",\
+            "y": "2554",\
+            "z": "8"\
+            },\
+            {\
+            "type": "CMNT",\
+            "id": "comment2",\
+            "name": "which%20repeats%20when%20it%20runs%20out%20of%20values.",\
+            "renamed": "true",\
+            "enabled": "true",\
+            "highlight": "0",\
+            "x": "1095",\
+            "y": "2598",\
+            "z": "9",\
+            "active": "true"\
+            },\
+            {\
+            "type": "DEFINE",\
+            "id": "define",\
+            "name": "define",\
+            "renamed": "false",\
+            "enabled": "true",\
+            "highlight": "7",\
+            "x": "893",\
+            "y": "2558",\
+            "z": "10"\
+            },\
+            {\
+            "type": "NUM",\
+            "id": "num",\
+            "name": "number",\
+            "renamed": "false",\
+            "enabled": "true",\
+            "highlight": "0",\
+            "x": "698",\
+            "y": "2439",\
+            "z": "11",\
+            "width": "120",\
+            "height": "54",\
+            "params":\
+            [\
+                    ["NUM#", "value", "123,0"]\
+            ]\
+            },\
+            {\
+            "type": "NUM",\
+            "id": "num2",\
+            "name": "number",\
+            "renamed": "false",\
+            "enabled": "true",\
+            "highlight": "0",\
+            "x": "698",\
+            "y": "2525",\
+            "z": "12",\
+            "width": "120",\
+            "height": "54",\
+            "params":\
+            [\
+                    ["NUM#", "value", "345,0"]\
+            ]\
+            },\
+            {\
+            "type": "NUM",\
+            "id": "num4",\
+            "name": "number",\
+            "renamed": "false",\
+            "enabled": "true",\
+            "highlight": "0",\
+            "x": "697",\
+            "y": "2609",\
+            "z": "13",\
+            "width": "120",\
+            "height": "54",\
+            "params":\
+            [\
+                    ["NUM#", "value", "567,0"]\
+            ]\
+            },\
+            {\
+            "type": "NUM",\
+            "id": "num5",\
+            "name": "number",\
+            "renamed": "false",\
+            "enabled": "true",\
+            "highlight": "0",\
+            "x": "696",\
+            "y": "2692",\
+            "z": "14",\
+            "width": "120",\
+            "height": "54",\
+            "params":\
+            [\
+                    ["NUM#", "value", "789,0"]\
+            ]\
+            }\
+        ],\
+        "connections":\
+        [\
+            {\
+            "outputNodeId": "color",\
+            "outputId": "h0",\
+            "outputOrder": "0",\
+            "inputNodeId": "rect",\
+            "inputId": "props",\
+            "list": "false"\
+            },\
+            {\
+            "outputNodeId": "rect",\
+            "outputId": "h0",\
+            "outputOrder": "0",\
+            "inputNodeId": "move",\
+            "inputId": "h0",\
+            "list": "false"\
+            },\
+            {\
+            "outputNodeId": "sequence2",\
+            "outputId": "h0",\
+            "outputOrder": "0",\
+            "inputNodeId": "move",\
+            "inputId": "x",\
+            "list": "false"\
+            },\
+            {\
+            "outputNodeId": "scale",\
+            "outputId": "h0",\
+            "outputOrder": "0",\
+            "inputNodeId": "repeat",\
+            "inputId": "h0",\
+            "list": "false"\
+            },\
+            {\
+            "outputNodeId": "move",\
+            "outputId": "h0",\
+            "outputOrder": "0",\
+            "inputNodeId": "center",\
+            "inputId": "h0",\
+            "list": "false"\
+            },\
+            {\
+            "outputNodeId": "center",\
+            "outputId": "h0",\
+            "outputOrder": "0",\
+            "inputNodeId": "scale",\
+            "inputId": "h0",\
+            "list": "false"\
+            },\
+            {\
+            "outputNodeId": "define",\
+            "outputId": "h0",\
+            "outputOrder": "0",\
+            "inputNodeId": "scale",\
+            "inputId": "scaleY",\
+            "list": "false"\
+            },\
+            {\
+            "outputNodeId": "num",\
+            "outputId": "h0",\
+            "outputOrder": "0",\
+            "inputNodeId": "define",\
+            "inputId": "h0",\
+            "list": "false"\
+            },\
+            {\
+            "outputNodeId": "num2",\
+            "outputId": "h0",\
+            "outputOrder": "0",\
+            "inputNodeId": "define",\
+            "inputId": "h1",\
+            "list": "false"\
+            },\
+            {\
+            "outputNodeId": "num4",\
+            "outputId": "h0",\
+            "outputOrder": "0",\
+            "inputNodeId": "define",\
+            "inputId": "h2",\
+            "list": "false"\
+            },\
+            {\
+            "outputNodeId": "num5",\
+            "outputId": "h0",\
+            "outputOrder": "0",\
+            "inputNodeId": "define",\
+            "inputId": "h3",\
+            "list": "false"\
+            }\
+        ]\
+    }';
+
+
+
+const presetRandom = '\
+    {\
+        "nodes":\
+        [\
+            {\
+            "type": "RECT",\
+            "id": "rect",\
+            "name": "rectangle",\
+            "renamed": "false",\
+            "enabled": "true",\
+            "highlight": "0",\
+            "x": "556",\
+            "y": "2102",\
+            "z": "0",\
+            "params":\
+            [\
+                    ["NUM#", "width", "10,0"]\
+            ]\
+            },\
+            {\
+            "type": "MOVE",\
+            "id": "move",\
+            "name": "move",\
+            "renamed": "false",\
+            "enabled": "true",\
+            "highlight": "0",\
+            "x": "900",\
+            "y": "2102",\
+            "z": "1",\
+            "params":\
+            [\
+                    ["NUM#", "x", "1470,0"]\
+            ]\
+            },\
+            {\
+            "type": "COL",\
+            "id": "color",\
+            "name": "color",\
+            "renamed": "false",\
+            "enabled": "true",\
+            "highlight": "0",\
+            "x": "395",\
+            "y": "2240",\
+            "z": "2",\
+            "prevSpace": "hsv",\
+            "params":\
+            [\
+                    ["NUM#", "space", "2,0"],\
+                    ["NUM#", "c1", "142,0"],\
+                    ["NUM#", "c2", "80,0"],\
+                    ["NUM#", "c3", "70,0"]\
+            ]\
+            },\
+            {\
+            "type": "SEQ",\
+            "id": "sequence2",\
+            "name": "sequence",\
+            "renamed": "false",\
+            "enabled": "true",\
+            "highlight": "0",\
+            "x": "743",\
+            "y": "2322",\
+            "z": "3",\
+            "params":\
+            [\
+                    ["NUM#", "step", "30,0"],\
+                    ["NUM#", "end", "?,0"]\
+            ]\
+            },\
+            {\
+            "type": "REPT",\
+            "id": "repeat",\
+            "name": "repeat",\
+            "renamed": "false",\
+            "enabled": "true",\
+            "highlight": "0",\
+            "x": "1490",\
+            "y": "2337",\
+            "z": "4",\
+            "active": "true",\
+            "params":\
+            [\
+                    ["NUM#", "count", "50,0"]\
+            ]\
+            },\
+            {\
+            "type": "CENTR",\
+            "id": "center",\
+            "name": "center",\
+            "renamed": "false",\
+            "enabled": "true",\
+            "highlight": "0",\
+            "x": "1159",\
+            "y": "2102",\
+            "z": "5",\
+            "params":\
+            [\
+                    ["NUM#", "centerY", "100,0"]\
+            ]\
+            },\
+            {\
+            "type": "SCALE",\
+            "id": "scale",\
+            "name": "scale",\
+            "renamed": "false",\
+            "enabled": "true",\
+            "highlight": "0",\
+            "x": "1309",\
+            "y": "2102",\
+            "z": "6",\
+            "params":\
+            [\
+                    ["NUM#", "scaleY", "221,0"]\
+            ]\
+            },\
+            {\
+            "type": "PANEL",\
+            "id": "panel",\
+            "name": "",\
+            "renamed": "false",\
+            "enabled": "true",\
+            "highlight": "0",\
+            "x": "346",\
+            "y": "2048",\
+            "z": "7",\
+            "width": "1305.8120687980118",\
+            "height": "417.66207376486375",\
+            "params":\
+            [\
+            ]\
+            },\
+            {\
+            "type": "RAND",\
+            "id": "random",\
+            "name": "random",\
+            "renamed": "false",\
+            "enabled": "true",\
+            "highlight": "7",\
+            "x": "950",\
+            "y": "2751",\
+            "z": "8",\
+            "active": "true",\
+            "params":\
+            [\
+                    ["NUM#", "seed", "1234,0"],\
+                    ["NUM#", "max", "500,0"]\
+            ]\
+            }\
+        ],\
+        "connections":\
+        [\
+            {\
+            "outputNodeId": "color",\
+            "outputId": "h0",\
+            "outputOrder": "0",\
+            "inputNodeId": "rect",\
+            "inputId": "props",\
+            "list": "false"\
+            },\
+            {\
+            "outputNodeId": "rect",\
+            "outputId": "h0",\
+            "outputOrder": "0",\
+            "inputNodeId": "move",\
+            "inputId": "h0",\
+            "list": "false"\
+            },\
+            {\
+            "outputNodeId": "sequence2",\
+            "outputId": "h0",\
+            "outputOrder": "0",\
+            "inputNodeId": "move",\
+            "inputId": "x",\
+            "list": "false"\
+            },\
+            {\
+            "outputNodeId": "scale",\
+            "outputId": "h0",\
+            "outputOrder": "0",\
+            "inputNodeId": "repeat",\
+            "inputId": "h0",\
+            "list": "false"\
+            },\
+            {\
+            "outputNodeId": "move",\
+            "outputId": "h0",\
+            "outputOrder": "0",\
+            "inputNodeId": "center",\
+            "inputId": "h0",\
+            "list": "false"\
+            },\
+            {\
+            "outputNodeId": "center",\
+            "outputId": "h0",\
+            "outputOrder": "0",\
+            "inputNodeId": "scale",\
+            "inputId": "h0",\
+            "list": "false"\
+            },\
+            {\
+            "outputNodeId": "random",\
+            "outputId": "h0",\
+            "outputOrder": "0",\
+            "inputNodeId": "scale",\
+            "inputId": "scaleY",\
+            "list": "false"\
+            }\
+        ]\
+    }';
+
+
+
+const presetNoise = '\
+    {\
+        "nodes":\
+        [\
+            {\
+            "type": "SEQ",\
+            "id": "sequence2",\
+            "name": "sequence",\
+            "renamed": "false",\
+            "enabled": "true",\
+            "highlight": "0",\
+            "x": "1393",\
+            "y": "2972",\
+            "z": "0",\
+            "params":\
+            [\
+                    ["NUM#", "step", "30,0"],\
+                    ["NUM#", "end", "?,0"]\
+            ]\
+            },\
+            {\
+            "type": "SCALE",\
+            "id": "scale",\
+            "name": "scale",\
+            "renamed": "false",\
+            "enabled": "true",\
+            "highlight": "0",\
+            "x": "1959",\
+            "y": "2752",\
+            "z": "1",\
+            "params":\
+            [\
+                    ["NUM#", "scaleY", "469.09588744415277,0"]\
+            ]\
+            },\
+            {\
+            "type": "REPT",\
+            "id": "repeat",\
+            "name": "repeat",\
+            "renamed": "false",\
+            "enabled": "true",\
+            "highlight": "0",\
+            "x": "2140",\
+            "y": "2987",\
+            "z": "2",\
+            "active": "true",\
+            "params":\
+            [\
+                    ["NUM#", "count", "50,0"]\
+            ]\
+            },\
+            {\
+            "type": "COL",\
+            "id": "color",\
+            "name": "color",\
+            "renamed": "false",\
+            "enabled": "true",\
+            "highlight": "0",\
+            "x": "1045",\
+            "y": "2890",\
+            "z": "3",\
+            "prevSpace": "hsv",\
+            "params":\
+            [\
+                    ["NUM#", "space", "2,0"],\
+                    ["NUM#", "c1", "142,0"],\
+                    ["NUM#", "c2", "80,0"],\
+                    ["NUM#", "c3", "70,0"]\
+            ]\
+            },\
+            {\
+            "type": "PANEL",\
+            "id": "panel",\
+            "name": "",\
+            "renamed": "false",\
+            "enabled": "true",\
+            "highlight": "0",\
+            "x": "996",\
+            "y": "2698",\
+            "z": "4",\
+            "width": "1305.8120687980118",\
+            "height": "417.66207376486375",\
+            "params":\
+            [\
+            ]\
+            },\
+            {\
+            "type": "CMNT",\
+            "id": "comment",\
+            "name": "Unlike%20Random%2C%20Noise%20has%20a%20scale%20parameter",\
+            "renamed": "true",\
+            "enabled": "true",\
+            "highlight": "0",\
+            "x": "1786",\
+            "y": "3452",\
+            "z": "5",\
+            "active": "true"\
+            },\
+            {\
+            "type": "RECT",\
+            "id": "rect",\
+            "name": "rectangle",\
+            "renamed": "false",\
+            "enabled": "true",\
+            "highlight": "0",\
+            "x": "1206",\
+            "y": "2752",\
+            "z": "6",\
+            "params":\
+            [\
+                    ["NUM#", "width", "10,0"]\
+            ]\
+            },\
+            {\
+            "type": "MOVE",\
+            "id": "move",\
+            "name": "move",\
+            "renamed": "false",\
+            "enabled": "true",\
+            "highlight": "0",\
+            "x": "1550",\
+            "y": "2752",\
+            "z": "7",\
+            "params":\
+            [\
+                    ["NUM#", "x", "1470,0"]\
+            ]\
+            },\
+            {\
+            "type": "CMNT",\
+            "id": "comment2",\
+            "name": "which%20allows%20for%20%22slower%22%20random%20values.",\
+            "renamed": "true",\
+            "enabled": "true",\
+            "highlight": "0",\
+            "x": "1786",\
+            "y": "3495",\
+            "z": "8",\
+            "active": "true"\
+            },\
+            {\
+            "type": "NOISE",\
+            "id": "noise",\
+            "name": "noise",\
+            "renamed": "false",\
+            "enabled": "true",\
+            "highlight": "7",\
+            "x": "1600",\
+            "y": "3400",\
+            "z": "9",\
+            "params":\
+            [\
+                    ["NUM#", "seed", "1234,0"],\
+                    ["NUM#", "max", "500,0"],\
+                    ["NUM#", "scale", "4,0"]\
+            ]\
+            },\
+            {\
+            "type": "CENTR",\
+            "id": "center",\
+            "name": "center",\
+            "renamed": "false",\
+            "enabled": "true",\
+            "highlight": "0",\
+            "x": "1809",\
+            "y": "2752",\
+            "z": "10",\
+            "params":\
+            [\
+                    ["NUM#", "centerY", "100,0"]\
+            ]\
+            }\
+        ],\
+        "connections":\
+        [\
+            {\
+            "outputNodeId": "center",\
+            "outputId": "h0",\
+            "outputOrder": "0",\
+            "inputNodeId": "scale",\
+            "inputId": "h0",\
+            "list": "false"\
+            },\
+            {\
+            "outputNodeId": "noise",\
+            "outputId": "h0",\
+            "outputOrder": "0",\
+            "inputNodeId": "scale",\
+            "inputId": "scaleY",\
+            "list": "false"\
+            },\
+            {\
+            "outputNodeId": "scale",\
+            "outputId": "h0",\
+            "outputOrder": "0",\
+            "inputNodeId": "repeat",\
+            "inputId": "h0",\
+            "list": "false"\
+            },\
+            {\
+            "outputNodeId": "color",\
+            "outputId": "h0",\
+            "outputOrder": "0",\
+            "inputNodeId": "rect",\
+            "inputId": "props",\
+            "list": "false"\
+            },\
+            {\
+            "outputNodeId": "rect",\
+            "outputId": "h0",\
+            "outputOrder": "0",\
+            "inputNodeId": "move",\
+            "inputId": "h0",\
+            "list": "false"\
+            },\
+            {\
+            "outputNodeId": "sequence2",\
+            "outputId": "h0",\
+            "outputOrder": "0",\
+            "inputNodeId": "move",\
+            "inputId": "x",\
+            "list": "false"\
+            },\
+            {\
+            "outputNodeId": "move",\
+            "outputId": "h0",\
+            "outputOrder": "0",\
+            "inputNodeId": "center",\
+            "inputId": "h0",\
+            "list": "false"\
+            }\
+        ]\
+    }';
+
+
+const presetProbability = '\
+    {\
+        "nodes":\
+        [\
+            {\
+            "type": "IF",\
+            "id": "ifElse",\
+            "name": "if%2Felse",\
+            "renamed": "false",\
+            "enabled": "true",\
+            "highlight": "0",\
+            "x": "1394",\
+            "y": "2974",\
+            "z": "0",\
+            "active": "true",\
+            "params":\
+            [\
+            ]\
+            },\
+            {\
+            "type": "NUM",\
+            "id": "num2",\
+            "name": "number",\
+            "renamed": "false",\
+            "enabled": "true",\
+            "highlight": "0",\
+            "x": "1197",\
+            "y": "3017",\
+            "z": "1",\
+            "active": "true",\
+            "width": "120",\
+            "height": "54",\
+            "params":\
+            [\
+                    ["NUM#", "value", "500,0"]\
+            ]\
+            },\
+            {\
+            "type": "CENTR",\
+            "id": "center",\
+            "name": "center",\
+            "renamed": "false",\
+            "enabled": "true",\
+            "highlight": "0",\
+            "x": "1559",\
+            "y": "2502",\
+            "z": "2",\
+            "params":\
+            [\
+                    ["NUM#", "centerY", "100,0"]\
+            ]\
+            },\
+            {\
+            "type": "SCALE",\
+            "id": "scale",\
+            "name": "scale",\
+            "renamed": "false",\
+            "enabled": "true",\
+            "highlight": "0",\
+            "x": "1709",\
+            "y": "2502",\
+            "z": "3",\
+            "params":\
+            [\
+            ]\
+            },\
+            {\
+            "type": "COL",\
+            "id": "color",\
+            "name": "color",\
+            "renamed": "false",\
+            "enabled": "true",\
+            "highlight": "0",\
+            "x": "795",\
+            "y": "2640",\
+            "z": "4",\
+            "prevSpace": "hsv",\
+            "params":\
+            [\
+                    ["NUM#", "space", "2,0"],\
+                    ["NUM#", "c1", "142,0"],\
+                    ["NUM#", "c2", "80,0"],\
+                    ["NUM#", "c3", "70,0"]\
+            ]\
+            },\
+            {\
+            "type": "CMNT",\
+            "id": "comment",\
+            "name": "Probability%20is%20a%20convenient%20way%20to%20alternate%20between%20values",\
+            "renamed": "true",\
+            "enabled": "true",\
+            "highlight": "0",\
+            "x": "1404",\
+            "y": "3176",\
+            "z": "5",\
+            "active": "true"\
+            },\
+            {\
+            "type": "PANEL",\
+            "id": "panel",\
+            "name": "",\
+            "renamed": "false",\
+            "enabled": "true",\
+            "highlight": "0",\
+            "x": "746",\
+            "y": "2448",\
+            "z": "6",\
+            "width": "1305.8120687980118",\
+            "height": "417.66207376486375",\
+            "params":\
+            [\
+            ]\
+            },\
+            {\
+            "type": "CMNT",\
+            "id": "comment2",\
+            "name": "with%20a%20certain%20chance%20of%20success.%20It%20generates%20a%20list%20of%201s%20and%200s",\
+            "renamed": "true",\
+            "enabled": "true",\
+            "highlight": "0",\
+            "x": "1404",\
+            "y": "3219",\
+            "z": "7",\
+            "active": "true"\
+            },\
+            {\
+            "type": "RECT",\
+            "id": "rect",\
+            "name": "rectangle",\
+            "renamed": "false",\
+            "enabled": "true",\
+            "highlight": "0",\
+            "x": "956",\
+            "y": "2502",\
+            "z": "8",\
+            "params":\
+            [\
+                    ["NUM#", "width", "10,0"]\
+            ]\
+            },\
+            {\
+            "type": "MOVE",\
+            "id": "move",\
+            "name": "move",\
+            "renamed": "false",\
+            "enabled": "true",\
+            "highlight": "0",\
+            "x": "1300",\
+            "y": "2502",\
+            "z": "9",\
+            "params":\
+            [\
+                    ["NUM#", "x", "1470,0"]\
+            ]\
+            },\
+            {\
+            "type": "REPT",\
+            "id": "repeat",\
+            "name": "repeat",\
+            "renamed": "false",\
+            "enabled": "true",\
+            "highlight": "0",\
+            "x": "1890",\
+            "y": "2737",\
+            "z": "10",\
+            "active": "true",\
+            "params":\
+            [\
+                    ["NUM#", "count", "50,0"]\
+            ]\
+            },\
+            {\
+            "type": "NUM",\
+            "id": "num",\
+            "name": "number",\
+            "renamed": "false",\
+            "enabled": "true",\
+            "highlight": "0",\
+            "x": "1196",\
+            "y": "2940",\
+            "z": "11",\
+            "active": "true",\
+            "width": "120",\
+            "height": "54",\
+            "params":\
+            [\
+                    ["NUM#", "value", "100,0"]\
+            ]\
+            },\
+            {\
+            "type": "SEQ",\
+            "id": "sequence2",\
+            "name": "sequence",\
+            "renamed": "false",\
+            "enabled": "true",\
+            "highlight": "0",\
+            "x": "1143",\
+            "y": "2722",\
+            "z": "12",\
+            "params":\
+            [\
+                    ["NUM#", "step", "30,0"],\
+                    ["NUM#", "end", "?,0"]\
+            ]\
+            },\
+            {\
+            "type": "PROB",\
+            "id": "prob",\
+            "name": "probability",\
+            "renamed": "false",\
+            "enabled": "true",\
+            "highlight": "7",\
+            "x": "1197",\
+            "y": "3202",\
+            "z": "13",\
+            "active": "true",\
+            "params":\
+            [\
+                    ["NUM#", "seed", "1234,0"],\
+                    ["NUM#", "chance", "75,0"]\
+            ]\
+            },\
+            {\
+            "type": "CMNT",\
+            "id": "comment3",\
+            "name": "that%20can%20be%20used%20as%20True%20and%20False.",\
+            "renamed": "true",\
+            "enabled": "true",\
+            "highlight": "0",\
+            "x": "1404",\
+            "y": "3261",\
+            "z": "14",\
+            "active": "true"\
+            }\
+        ],\
+        "connections":\
+        [\
+            {\
+            "outputNodeId": "num",\
+            "outputId": "h0",\
+            "outputOrder": "0",\
+            "inputNodeId": "ifElse",\
+            "inputId": "h0",\
+            "list": "false"\
+            },\
+            {\
+            "outputNodeId": "num2",\
+            "outputId": "h0",\
+            "outputOrder": "0",\
+            "inputNodeId": "ifElse",\
+            "inputId": "h1",\
+            "list": "false"\
+            },\
+            {\
+            "outputNodeId": "prob",\
+            "outputId": "h0",\
+            "outputOrder": "0",\
+            "inputNodeId": "ifElse",\
+            "inputId": "condition",\
+            "list": "false"\
+            },\
+            {\
+            "outputNodeId": "move",\
+            "outputId": "h0",\
+            "outputOrder": "0",\
+            "inputNodeId": "center",\
+            "inputId": "h0",\
+            "list": "false"\
+            },\
+            {\
+            "outputNodeId": "center",\
+            "outputId": "h0",\
+            "outputOrder": "0",\
+            "inputNodeId": "scale",\
+            "inputId": "h0",\
+            "list": "false"\
+            },\
+            {\
+            "outputNodeId": "ifElse",\
+            "outputId": "h0",\
+            "outputOrder": "0",\
+            "inputNodeId": "scale",\
+            "inputId": "scaleY",\
+            "list": "false"\
+            },\
+            {\
+            "outputNodeId": "color",\
+            "outputId": "h0",\
+            "outputOrder": "0",\
+            "inputNodeId": "rect",\
+            "inputId": "props",\
+            "list": "false"\
+            },\
+            {\
+            "outputNodeId": "rect",\
+            "outputId": "h0",\
+            "outputOrder": "0",\
+            "inputNodeId": "move",\
+            "inputId": "h0",\
+            "list": "false"\
+            },\
+            {\
+            "outputNodeId": "sequence2",\
+            "outputId": "h0",\
+            "outputOrder": "0",\
+            "inputNodeId": "move",\
+            "inputId": "x",\
+            "list": "false"\
+            },\
+            {\
+            "outputNodeId": "scale",\
+            "outputId": "h0",\
+            "outputOrder": "0",\
+            "inputNodeId": "repeat",\
+            "inputId": "h0",\
             "list": "false"\
             }\
         ]\

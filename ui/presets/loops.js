@@ -155,7 +155,7 @@ const presetLoop1d = '\
     }';
 
 
-    
+
 const presetLoop2d = '\
     {\
         "nodes":\
@@ -540,7 +540,7 @@ const presetLoopLock = '\
             "name": "combine",\
             "renamed": "false",\
             "enabled": "true",\
-            "highlight": "1",\
+            "highlight": "7",\
             "x": "751",\
             "y": "479",\
             "z": "7",\
