@@ -739,8 +739,8 @@ const presetActive = '\
             "renamed": "true",\
             "enabled": "true",\
             "highlight": "0",\
-            "x": "2275",\
-            "y": "1807",\
+            "x": "2325",\
+            "y": "1857",\
             "z": "0"\
             },\
             {\
@@ -750,8 +750,8 @@ const presetActive = '\
             "renamed": "true",\
             "enabled": "true",\
             "highlight": "0",\
-            "x": "2280",\
-            "y": "1433",\
+            "x": "2330",\
+            "y": "1483",\
             "z": "1"\
             },\
             {\
@@ -761,8 +761,8 @@ const presetActive = '\
             "renamed": "true",\
             "enabled": "true",\
             "highlight": "0",\
-            "x": "2271",\
-            "y": "1863",\
+            "x": "2321",\
+            "y": "1913",\
             "z": "2"\
             },\
             {\
@@ -772,8 +772,8 @@ const presetActive = '\
             "renamed": "false",\
             "enabled": "true",\
             "highlight": "0",\
-            "x": "1773",\
-            "y": "1705",\
+            "x": "1823",\
+            "y": "1755",\
             "z": "3",\
             "params":\
             [\
@@ -787,8 +787,8 @@ const presetActive = '\
             "renamed": "false",\
             "enabled": "true",\
             "highlight": "0",\
-            "x": "1964",\
-            "y": "1433",\
+            "x": "2014",\
+            "y": "1483",\
             "z": "4",\
             "params":\
             [\
@@ -802,8 +802,8 @@ const presetActive = '\
             "renamed": "false",\
             "enabled": "true",\
             "highlight": "0",\
-            "x": "1776",\
-            "y": "1434",\
+            "x": "1826",\
+            "y": "1484",\
             "z": "5",\
             "params":\
             [\
@@ -817,8 +817,8 @@ const presetActive = '\
             "renamed": "false",\
             "enabled": "true",\
             "highlight": "0",\
-            "x": "1965",\
-            "y": "1705",\
+            "x": "2015",\
+            "y": "1755",\
             "z": "6",\
             "params":\
             [\
@@ -833,8 +833,8 @@ const presetActive = '\
             "renamed": "false",\
             "enabled": "true",\
             "highlight": "0",\
-            "x": "1490",\
-            "y": "1625",\
+            "x": "1540",\
+            "y": "1667",\
             "z": "7",\
             "prevSpace": "hsv",\
             "params":\
@@ -852,8 +852,8 @@ const presetActive = '\
             "renamed": "false",\
             "enabled": "true",\
             "highlight": "0",\
-            "x": "2276",\
-            "y": "1653",\
+            "x": "2326",\
+            "y": "1703",\
             "z": "8",\
             "width": "120",\
             "height": "77"\
@@ -865,8 +865,8 @@ const presetActive = '\
             "renamed": "true",\
             "enabled": "true",\
             "highlight": "0",\
-            "x": "2280",\
-            "y": "1481",\
+            "x": "2330",\
+            "y": "1531",\
             "z": "9"\
             },\
             {\
@@ -876,8 +876,8 @@ const presetActive = '\
             "renamed": "true",\
             "enabled": "true",\
             "highlight": "0",\
-            "x": "2278",\
-            "y": "1531",\
+            "x": "2328",\
+            "y": "1581",\
             "z": "10"\
             },\
             {\
@@ -887,8 +887,8 @@ const presetActive = '\
             "renamed": "true",\
             "enabled": "true",\
             "highlight": "0",\
-            "x": "1519",\
-            "y": "2067",\
+            "x": "1569",\
+            "y": "2117",\
             "z": "11"\
             },\
             {\
@@ -898,8 +898,8 @@ const presetActive = '\
             "renamed": "true",\
             "enabled": "true",\
             "highlight": "0",\
-            "x": "1518",\
-            "y": "2159",\
+            "x": "1568",\
+            "y": "2209",\
             "z": "12"\
             },\
             {\
@@ -909,8 +909,8 @@ const presetActive = '\
             "renamed": "true",\
             "enabled": "true",\
             "highlight": "0",\
-            "x": "1522",\
-            "y": "2304",\
+            "x": "1572",\
+            "y": "2354",\
             "z": "13"\
             },\
             {\
@@ -920,8 +920,8 @@ const presetActive = '\
             "renamed": "true",\
             "enabled": "true",\
             "highlight": "0",\
-            "x": "2383",\
-            "y": "2065",\
+            "x": "2433",\
+            "y": "2115",\
             "z": "14"\
             },\
             {\
@@ -931,8 +931,8 @@ const presetActive = '\
             "renamed": "true",\
             "enabled": "true",\
             "highlight": "0",\
-            "x": "2383",\
-            "y": "2166",\
+            "x": "2433",\
+            "y": "2216",\
             "z": "15",\
             "active": "true"\
             },\
@@ -943,8 +943,8 @@ const presetActive = '\
             "renamed": "true",\
             "enabled": "true",\
             "highlight": "0",\
-            "x": "1522",\
-            "y": "2111",\
+            "x": "1572",\
+            "y": "2161",\
             "z": "16"\
             },\
             {\
@@ -954,8 +954,8 @@ const presetActive = '\
             "renamed": "true",\
             "enabled": "true",\
             "highlight": "0",\
-            "x": "1519",\
-            "y": "2257",\
+            "x": "1569",\
+            "y": "2307",\
             "z": "17"\
             },\
             {\
@@ -965,8 +965,8 @@ const presetActive = '\
             "renamed": "true",\
             "enabled": "true",\
             "highlight": "0",\
-            "x": "2382",\
-            "y": "2116",\
+            "x": "2432",\
+            "y": "2166",\
             "z": "18"\
             },\
             {\
@@ -976,8 +976,8 @@ const presetActive = '\
             "renamed": "false",\
             "enabled": "true",\
             "highlight": "0",\
-            "x": "1469",\
-            "y": "2003",\
+            "x": "1519",\
+            "y": "2053",\
             "z": "19",\
             "active": "true",\
             "width": "1639.6518683107404",\

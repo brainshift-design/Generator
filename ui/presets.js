@@ -61,36 +61,38 @@ function getPresetGraph(graphId)
 {
     switch (graphId)
     {
-        case 'basics':            return presetNodeBasics;
-        case 'dataTypes':         return presetDataTypes;
-        case 'organize':          return presetOrganize;
-        case 'active':            return presetActive;
+        case 'basics':             return presetNodeBasics;
+        case 'dataTypes':          return presetDataTypes;
+        case 'organize':           return presetOrganize;
+        case 'active':             return presetActive;
      
 
-        case 'ifElse':            return presetIfElse;
-        case 'select':            return presetSelect;
+        case 'ifElse':             return presetIfElse;
+        case 'select':             return presetSelect;
 
 
-        case 'sequence':          return presetSequence;
-        case 'range':             return presetRange;
-        case 'define':            return presetDefine;
-        case 'random':            return presetRandom;
-        case 'noise':             return presetNoise;
-        case 'probability':       return presetProbability;
+        case 'sequence':           return presetSequence;
+        case 'range':              return presetRange;
+        case 'define':             return presetDefine;
+        case 'random':             return presetRandom;
+        case 'noise':              return presetNoise;
+        case 'probability':        return presetProbability;
 
-        case 'loop1d':            return presetLoop1d;
-        case 'loop2d':            return presetLoop2d;
-        case 'loopLock':          return presetLoopLock;
-
-
-        case 'quadraticFormula':  return presetQuadraticFormula;
+        case 'loop1d':             return presetLoop1d;
+        case 'loop2d':             return presetLoop2d;
+        case 'loopLock':           return presetLoopLock;
 
 
-        case 'colorContrast':     return presetColorContrast;
+        case 'quadraticFormula':   return presetQuadraticFormula;
 
 
-        case 'shapesStyles':      return presetShapesStyles;
-        case 'basicTransform':    return presetBasicTransform;
-        case 'combinedTransform': return presetCombinedTransform;
+        case 'colorContrast':      return presetColorContrast;
+        case 'colorSpaces':        return presetColorSpaces;
+        case 'textFromBackground': return presetTextFromBackground;
+
+
+        case 'shapesStyles':       return presetShapesStyles;
+        case 'basicTransform':     return presetBasicTransform;
+        case 'combinedTransform':  return presetCombinedTransform;
     }
 }

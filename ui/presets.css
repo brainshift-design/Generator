@@ -129,7 +129,7 @@
     padding:        8px 14px;
 
     width:          160px;
-    margin-bottom:  2px;
+    margin-bottom:  1px;
     border-radius:  6px;
     box-shadow:     0 0 0 1px #fff2 inset;
 }
@@ -138,5 +138,5 @@
 .preset:active
 {
     box-shadow: 0 0 0 2px var(--figma-color-bg-brand) inset;
-    background: var(--figma-color-bg);
+    background: #383838;
 }
