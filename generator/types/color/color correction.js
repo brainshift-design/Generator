@@ -17,7 +17,7 @@ class ColorCorrection
 async function findCorrection(parse,
                         nodeId,
                         color,
-                        order,       margin1, margin2, margin3,
+                        order, _c1, _c2, _c3,
                         lockedOrder, locked1, locked2, locked3) 
 {
     const refOklab = dataColor2array(dataColor2oklab(color));
@@ -62,9 +62,9 @@ async function findCorrection(parse,
                 start3 = lerp(min3, closest3, 1-d),  end3 = lerp(max3, closest3, 1-d);
                
                 
-            if (locked1) { closest1 = margin1.toNumber(); start1 = closest1; end1 = closest1+Epsilon; }
-            if (locked2) { closest2 = margin2.toNumber(); start2 = closest2; end2 = closest2+Epsilon; }
-            if (locked3) { closest3 = margin3.toNumber(); start3 = closest3; end3 = closest3+Epsilon; }
+            if (locked1) { closest1 = _c1.toNumber(); start1 = closest1; end1 = closest1+Epsilon; }
+            if (locked2) { closest2 = _c2.toNumber(); start2 = closest2; end2 = closest2+Epsilon; }
+            if (locked3) { closest3 = _c3.toNumber(); start3 = closest3; end3 = closest3+Epsilon; }
             
 
           [ closestColor,
@@ -229,7 +229,7 @@ function getCorrectedColor(color, order, m1, m2, m3)
 
 
 
-function correctColor(color, order, margin1, margin2, margin3)
+function correctColor(color, order, c1, c2, c3)
 {
     if (order < 0)
         return color;
@@ -237,9 +237,9 @@ function correctColor(color, order, margin1, margin2, margin3)
 
     const [i1, i2, i3] = getCorrectionsInOrder(order);
 
-                               color = correctChannel(color, i1, margin1);
-    if (!dataColorIsOk(color)) color = correctChannel(color, i2, margin2);
-    if (!dataColorIsOk(color)) color = correctChannel(color, i3, margin3);
+                               color = correctChannel(color, i1, c1);
+    if (!dataColorIsOk(color)) color = correctChannel(color, i2, c2);
+    if (!dataColorIsOk(color)) color = correctChannel(color, i3, c3);
 
 
     // clip colors that are reasonably valid but stick over the fence

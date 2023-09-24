@@ -1,12 +1,5 @@
 function rgb2xyz(rgb, cs = sRGB)
 { 
-    return rgb2xyz_(rgb[0], rgb[1], rgb[2], cs);
-}    
-
-
-
-function rgb2xyz_(r, g, b, cs = sRGB)
-{ 
     return lrgb2xyz(degamma(rgb, cs), cs);
 }    
 

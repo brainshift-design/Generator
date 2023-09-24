@@ -1,12 +1,17 @@
 class GCorrectColor
 extends GOperator1
 {
-    order        = null;
-    margin1      = null;
-    margin2      = null;
-    margin3      = null;
+    _order  = null;
+    _c1     = null;
+    _c2     = null;
+    _c3     = null;
+    
+    order   = null;
+    c1      = null;
+    c2      = null;
+    c3      = null;
 
-    corrections  = [];
+    corrections = [];
 
 
 
@@ -22,12 +27,18 @@ extends GOperator1
         const copy = new GCorrectColor(this.nodeId, this.options);
 
         copy.copyBase(this);
-
-        if (this.order  ) copy.order   = this.order  .copy();
-        if (this.margin1) copy.margin1 = this.margin1.copy();
-        if (this.margin2) copy.margin2 = this.margin2.copy();
-        if (this.margin3) copy.margin3 = this.margin3.copy();
-        if (this.value  ) copy.value   = this.value  .copy();
+        
+        if (this._order) copy._order = this.order .copy();
+        if (this._c1   ) copy._c1    = this._c1   .copy();
+        if (this._c2   ) copy._c2    = this._c2   .copy();
+        if (this._c3   ) copy._c3    = this._c3   .copy();
+        
+        if (this. order) copy. order = this.order .copy();
+        if (this. c1   ) copy. c1    = this. c1   .copy();
+        if (this. c2   ) copy. c2    = this. c2   .copy();
+        if (this. c3   ) copy. c3    = this. c3   .copy();
+        
+        if (this.value ) copy. value = this. value.copy();
 
         return copy;
     }
@@ -40,10 +51,10 @@ extends GOperator1
             return this;
 
 
-        const order   = this.order   ? (await this.order  .eval(parse)).toValue().toInteger() : null;
-        const margin1 = this.margin1 ? (await this.margin1.eval(parse)).toValue()             : null;
-        const margin2 = this.margin2 ? (await this.margin2.eval(parse)).toValue()             : null;
-        const margin3 = this.margin3 ? (await this.margin3.eval(parse)).toValue()             : null;
+        const order = this._order ? (await this._order.eval(parse)).toValue().toInteger() : null;
+        const c1    = this._c1    ? (await this._c1   .eval(parse)).toValue()             : null;
+        const c2    = this._c2    ? (await this._c2   .eval(parse)).toValue()             : null;
+        const c3    = this._c3    ? (await this._c3   .eval(parse)).toValue()             : null;
 
     
         if (order)
@@ -57,143 +68,111 @@ extends GOperator1
 
             if (this.options.enabled)
             {
-                // if (   isValid(this.order  ) && this.order  .isValid()
-                //     && isValid(this.margin1) && this.margin1.isValid()
-                //     && isValid(this.margin2) && this.margin2.isValid()
-                //     && isValid(this.margin3) && this.margin3.isValid()
-                //     && isValid(this.value  ) && this.value  .isValid())
-                // {
-                //     genPushUpdateValue(parse, this.nodeId, 'order'  , this.order  );
-                //     genPushUpdateValue(parse, this.nodeId, 'margin1', this.margin1);
-                //     genPushUpdateValue(parse, this.nodeId, 'margin2', this.margin2);
-                //     genPushUpdateValue(parse, this.nodeId, 'margin3', this.margin3);
-                //     genPushUpdateValue(parse, this.nodeId, 'value'  , this.value  );
-                // }
-                // else
-                // {
-                    const rgb = input.toRgb();
+                const rgb = input.toRgb();
+                
+                if (!rgbIsOk(rgb))
+                    genInitNodeProgress(this.nodeId);
+
+
+                const inputColor = input.toDataColor();
+
+
+                const
+              [ closestOrder,
+                closest1,
+                closest2,
+                closest3 ] = await findCorrection(
+                    parse,
+                    this.nodeId,
+                    inputColor, 
+                    order, c1, c2, c3, 
+                    this.order != null,
+                    this.c1    != null, 
+                    this.c2    != null, 
+                    this.c3    != null); 
+
                     
-                    if (!rgbIsOk(rgb))
-                        genInitNodeProgress(this.nodeId);
-
-
-                    const inputColor = input.toDataColor();
-
-
-                    const
-                  [ closestOrder,
-                    closest1,
-                    closest2,
-                    closest3 ] = await findCorrection(
-                        parse,
-                        this.nodeId,
-                        inputColor, 
-                        order, margin1, margin2, margin3, 
-                        this.order   != null,
-                        this.margin1 != null, 
-                        this.margin2 != null, 
-                        this.margin3 != null); 
-
-                        
-                    if (   !parse.stop()
-                        && !parse.stopGenerate)
+                if (   !parse.stop()
+                    && !parse.stopGenerate)
+                {
+                    if (   closestOrder >= 0 
+                        && closestOrder <  6)
                     {
-                        if (   closestOrder >= 0 
-                            && closestOrder <  6)
-                        {
-                            this._color = correctColor(
-                                inputColor,
-                                closestOrder,
-                                closest1,
-                                closest2,
-                                closest3);
+                        this._color = correctColor(
+                            inputColor,
+                            closestOrder,
+                            closest1,
+                            closest2,
+                            closest3);
 
-                                
-                            this.order   = new NumberValue(closestOrder);
-                            this.margin1 = new NumberValue(closest1);
-                            this.margin2 = new NumberValue(closest2);
-                            this.margin3 = new NumberValue(closest3);
-                            this.value   = ColorValue.fromDataColor(this._color);
+                            
+                        this.order = new NumberValue(closestOrder);
+                        this.c1    = new NumberValue(closest1);
+                        this.c2    = new NumberValue(closest2);
+                        this.c3    = new NumberValue(closest3);
+                        this.value = ColorValue.fromDataColor(this._color);
 
-                            this.setUpdateValues(parse,
-                            [
-                                ['order',   new NumberValue(closestOrder)],
-                                ['margin1', new NumberValue(closest1    )],
-                                ['margin2', new NumberValue(closest2    )],
-                                ['margin3', new NumberValue(closest3    )],
-                                ['value',   this.value                   ]
-                            ]);
-                        }
-                        // else
-                        // {
-                        //     this.order   = NumberValue.NaN;
-                        //     this.margin1 = NumberValue.NaN;
-                        //     this.margin2 = NumberValue.NaN;
-                        //     this.margin3 = NumberValue.NaN;
-                        //     this.value   = ColorValue .NaN;
-
-                        //     this.setUpdateValues(parse,
-                        //     [
-                        //         ['order',   NumberValue.NaN],
-                        //         ['margin1', NumberValue.NaN],
-                        //         ['margin2', NumberValue.NaN],
-                        //         ['margin3', NumberValue.NaN],
-                        //         ['value',   ColorValue .NaN]
-                        //     ]);
-                        // }
-                    }
-                    else
-                    {
-                        this.order   = NumberValue.NaN;
-                        this.margin1 = NumberValue.NaN;
-                        this.margin2 = NumberValue.NaN;
-                        this.margin3 = NumberValue.NaN;
-                        this.value   = input;
-        
                         this.setUpdateValues(parse,
                         [
-                            ['order'  , this.order  ],
-                            ['margin1', this.margin1],
-                            ['margin2', this.margin2],
-                            ['margin3', this.margin3],
-                            ['value',   this.value  ]
+                            ['order', new NumberValue(closestOrder)],
+                            ['c1',    new NumberValue(closest1    )],
+                            ['c2',    new NumberValue(closest2    )],
+                            ['c3',    new NumberValue(closest3    )],
+                            ['value', this.value                   ]
                         ]);
                     }
-                //}
+                }
+                else
+                {
+                    this.order = NumberValue.NaN;
+                    this.c1    = NumberValue.NaN;
+                    this.c2    = NumberValue.NaN;
+                    this.c3    = NumberValue.NaN;
+                    this.value = input;
+    
+                    this.setUpdateValues(parse,
+                    [
+                        ['order', this.order],
+                        ['c1',    this.c1   ],
+                        ['c2',    this.c2   ],
+                        ['c3',    this.c3   ],
+                        ['value', this.value]
+                    ]);
+                }
             }
             else
             {
-                this.order   = NumberValue.NaN;
-                this.margin1 = NumberValue.NaN;
-                this.margin2 = NumberValue.NaN;
-                this.margin3 = NumberValue.NaN;
-                this.value   = input;
+                this.order = NumberValue.NaN;
+                this.c1    = NumberValue.NaN;
+                this.c2    = NumberValue.NaN;
+                this.c3    = NumberValue.NaN;
+                this.value = input;
 
                 this.setUpdateValues(parse,
                 [
-                    ['order'  , this.order  ],
-                    ['margin1', this.margin1],
-                    ['margin2', this.margin2],
-                    ['margin3', this.margin3],
-                    ['value',   this.value  ]
+                    ['order', this.order],
+                    ['c1',    this.c1   ],
+                    ['c2',    this.c2   ],
+                    ['c3',    this.c3   ],
+                    ['value', this.value]
                 ]);
             }
         }
         else
         {
-            this.order   = NumberValue.NaN;
-            this.margin1 = NumberValue.NaN;
-            this.margin2 = NumberValue.NaN;
-            this.margin3 = NumberValue.NaN;
-            this.value   = ColorValue .NaN;
+            this.order = NumberValue.NaN;
+            this.c1    = NumberValue.NaN;
+            this.c2    = NumberValue.NaN;
+            this.c3    = NumberValue.NaN;
+            this.value = ColorValue .NaN;
 
             this.setUpdateValues(parse,
             [
-                ['order',   NumberValue.NaN],
-                ['margin1', NumberValue.NaN],
-                ['margin2', NumberValue.NaN],
-                ['margin3', NumberValue.NaN],
-                ['value',   ColorValue .NaN]
+                ['order', NumberValue.NaN],
+                ['c1',    NumberValue.NaN],
+                ['c2',    NumberValue.NaN],
+                ['c3',    NumberValue.NaN],
+                ['value', ColorValue .NaN]
             ]);
         }
 
@@ -208,10 +187,10 @@ extends GOperator1
     isValid()
     {
         return super.isValid()
-            && this.order   && this.order  .isValid()
-            && this.margin1 && this.margin1.isValid()
-            && this.margin2 && this.margin2.isValid()
-            && this.margin3 && this.margin3.isValid();
+            && this.order && this.order.isValid()
+            && this.c1    && this.c1   .isValid()
+            && this.c2    && this.c2   .isValid()
+            && this.c3    && this.c3   .isValid();
     }
 
 
@@ -220,10 +199,10 @@ extends GOperator1
     {
         super.pushValueUpdates(parse);
 
-        if (this.order  ) this.order  .pushValueUpdates(parse);
-        if (this.margin1) this.margin1.pushValueUpdates(parse);
-        if (this.margin2) this.margin2.pushValueUpdates(parse);
-        if (this.margin3) this.margin3.pushValueUpdates(parse);
+        if (this._order) this._order.pushValueUpdates(parse);
+        if (this._c1   ) this._c1   .pushValueUpdates(parse);
+        if (this._c2   ) this._c2   .pushValueUpdates(parse);
+        if (this._c3   ) this._c3   .pushValueUpdates(parse);
     }
 
 
@@ -232,10 +211,10 @@ extends GOperator1
     {
         super.invalidateInputs(parse, from);
 
-        if (this.order  ) this.order  .invalidateInputs(parse, from);
-        if (this.margin1) this.margin1.invalidateInputs(parse, from);
-        if (this.margin2) this.margin2.invalidateInputs(parse, from);
-        if (this.margin3) this.margin3.invalidateInputs(parse, from);
+        if (this._order) this._order.invalidateInputs(parse, from);
+        if (this._c1   ) this._c1   .invalidateInputs(parse, from);
+        if (this._c2   ) this._c2   .invalidateInputs(parse, from);
+        if (this._c3   ) this._c3   .invalidateInputs(parse, from);
     }
 
 
@@ -244,9 +223,9 @@ extends GOperator1
     {
         super.iterateLoop(parse);
 
-        if (this.order  ) this.order  .iterateLoop(parse);
-        if (this.margin1) this.margin1.iterateLoop(parse);
-        if (this.margin2) this.margin2.iterateLoop(parse);
-        if (this.margin3) this.margin3.iterateLoop(parse);
+        if (this._order) this._order.iterateLoop(parse);
+        if (this._c1   ) this._c1   .iterateLoop(parse);
+        if (this._c2   ) this._c2   .iterateLoop(parse);
+        if (this._c3   ) this._c3   .iterateLoop(parse);
     }
 }

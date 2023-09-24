@@ -61,38 +61,46 @@ function getPresetGraph(graphId)
 {
     switch (graphId)
     {
-        case 'basics':             return presetNodeBasics;
-        case 'dataTypes':          return presetDataTypes;
-        case 'organize':           return presetOrganize;
-        case 'active':             return presetActive;
+        case 'basics':               return presetNodeBasics;
+        case 'dataTypes':            return presetDataTypes;
+        case 'organize':             return presetOrganize;
+        case 'active':               return presetActive;
      
 
-        case 'ifElse':             return presetIfElse;
-        case 'select':             return presetSelect;
+        case 'ifElse':               return presetIfElse;
+        case 'select':               return presetSelect;
 
 
-        case 'sequence':           return presetSequence;
-        case 'range':              return presetRange;
-        case 'define':             return presetDefine;
-        case 'random':             return presetRandom;
-        case 'noise':              return presetNoise;
-        case 'probability':        return presetProbability;
+        case 'sequence':             return presetSequence;
+        case 'range':                return presetRange;
+        case 'define':               return presetDefine;
+        case 'random':               return presetRandom;
+        case 'noise':                return presetNoise;
+        case 'probability':          return presetProbability;
 
-        case 'loop1d':             return presetLoop1d;
-        case 'loop2d':             return presetLoop2d;
-        case 'loopLock':           return presetLoopLock;
+        case 'randomSeeds':          return presetRandomSeeds;
 
-
-        case 'quadraticFormula':   return presetQuadraticFormula;
-
-
-        case 'colorContrast':      return presetColorContrast;
-        case 'colorSpaces':        return presetColorSpaces;
-        case 'textFromBackground': return presetTextFromBackground;
+        case 'loop1d':               return presetLoop1d;
+        case 'loop2d':               return presetLoop2d;
+        case 'loopLock':             return presetLoopLock;
 
 
-        case 'shapesStyles':       return presetShapesStyles;
-        case 'basicTransform':     return presetBasicTransform;
-        case 'combinedTransform':  return presetCombinedTransform;
+        case 'quadraticFormula':     return presetQuadraticFormula;
+        case 'opponentColor':        return presetOpponentColor;
+
+
+        case 'colorContrast':        return presetColorContrast;
+        case 'colorSpaces':          return presetColorSpaces;
+        case 'invalidColors':        return presetInvalidColors;
+        case 'textFromBackground':   return presetTextFromBackground;
+
+        case 'randomColors':         return presetRandomColors;
+        case 'tintsAndShades':       return presetTintsAndShades;
+        case 'paletteFromColor':     return presetPaletteFromColor;
+
+
+        case 'shapesStyles':         return presetShapesStyles;
+        case 'basicTransform':       return presetBasicTransform;
+        case 'combinedTransform':    return presetCombinedTransform;
     }
 }

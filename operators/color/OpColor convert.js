@@ -281,30 +281,30 @@ function convert2hclab(fromColor)
 {
     const col = dataColor2array(fromColor);
 
-    let hcl;
+    let lab;
 
     switch (fromColor[0])
     {
         case 'hex':
-        case 'rgb':   hcl = rgb2hclab(          col) ; break;
+        case 'rgb':   lab = rgb2hclab(          col) ; break;
         
-        case 'hsv':   hcl = rgb2hclab(hsv2rgb  (col)); break;
-        case 'hsl':   hcl = rgb2hclab(hsl2rgb  (col)); break;
+        case 'hsv':   lab = rgb2hclab(hsv2rgb  (col)); break;
+        case 'hsl':   lab = rgb2hclab(hsl2rgb  (col)); break;
         
-        case 'hclok': hcl = rgb2hclab(hclok2rgb(col)); break;
-        case 'hclab': hcl =                     col;   break;
-        case 'hcluv': hcl = rgb2hclab(hcluv2rgb(col)); break;
+        case 'hclok': lab = rgb2hclab(hclok2rgb(col)); break;
+        case 'hclab': lab =                     col;   break;
+        case 'hcluv': lab = rgb2hclab(hcluv2rgb(col)); break;
         
-        case 'oklab': hcl = rgb2hclab(oklab2rgb(col)); break;
-        case 'lab':   hcl = lab2hclab(          col ); break;
-        case 'luv':   hcl = rgb2hclab(luv2rgb  (col)); break;
+        case 'oklab': lab = rgb2hclab(oklab2rgb(col)); break;
+        case 'lab':   lab = lab2hclab(          col ); break;
+        case 'luv':   lab = rgb2hclab(luv2rgb  (col)); break;
     }
 
     return [
        'hclab',
-        hcl[0],
-        hcl[1],
-        hcl[2] ];
+        lab[0],
+        lab[1],
+        lab[2] ];
 }
 
 

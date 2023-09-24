@@ -39,9 +39,9 @@ extends OpColorBase
         this.paramOrder.addEventListener('change', () => this.updateCorrections());
         
         
-        this.addParam(this.param1 = new NumberParam('margin1', '', true, true, true, 0));
-        this.addParam(this.param2 = new NumberParam('margin2', '', true, true, true, 0));
-        this.addParam(this.param3 = new NumberParam('margin3', '', true, true, true, 0));
+        this.addParam(this.param1 = new NumberParam('c1', '', true, true, true, 0));
+        this.addParam(this.param2 = new NumberParam('c2', '', true, true, true, 0));
+        this.addParam(this.param3 = new NumberParam('c3', '', true, true, true, 0));
 
 
         this.initCorrections('');
@@ -274,25 +274,25 @@ extends OpColorBase
 
 
 
-    updateMargin(margin, correction)
+    updateMargin(c, correction)
     {
         const correctionName = '<span style="position: relative; top: -1px; font-weight: 200;">±</span>&thinsp;' + correction.name;
 
-        margin.setName(correctionName, false);
-        margin.controls[0].name = correctionName;
+        c.setName(correctionName, false);
+        c.controls[0].name = correctionName;
 
-        margin.controls[0].setMin(0);
-        margin.controls[0].setMax(correction.max);
+        c.controls[0].setMin(0);
+        c.controls[0].setMax(correction.max);
     }
 
 
 
-    resetMargin(margin)
+    resetMargin(c)
     {
-        margin.setName('', false);
-        margin.controls[0].name = '<span style="position: relative; top: -1px; font-weight: 200;">±</span>';
-        margin.controls[0].setMin(0);
-        margin.controls[0].setMax(Number.MAX_SAFE_INTEGER);
+        c.setName('', false);
+        c.controls[0].name = '<span style="position: relative; top: -1px; font-weight: 200;">±</span>';
+        c.controls[0].setMin(0);
+        c.controls[0].setMax(Number.MAX_SAFE_INTEGER);
     }
 
 

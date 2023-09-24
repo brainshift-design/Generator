@@ -102,6 +102,12 @@ extends OperatorBase
         this.labelText   .style.fontSize   = fontSize + 'px';
         this.labelText   .style.fontWeight =  400;
 
+        this.div         .style.overflow   = 'visible';
+        this.inner       .style.overflow   = 'visible';
+        this.header      .style.overflow   = 'visible';
+        this.labelWrapper.style.overflow   = 'visible';
+        this.label       .style.overflow   = 'visible';
+        this.labelText   .style.overflow   = 'visible';
         // this.div      .style.boxShadow = '0 0 0 1px red inset';
         // this.label    .style.boxShadow = '0 0 0 1px green inset';
         // this.labelText.style.boxShadow = '0 0 0 1px yellow inset';

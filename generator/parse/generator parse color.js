@@ -175,11 +175,11 @@ function genParseCorrectColor(parse)
     {
         switch (id)
         {
-        case 'order':    corr.order   = genParse(parse); break;
-        case 'margin1':  corr.margin1 = genParse(parse); break;
-        case 'margin2':  corr.margin2 = genParse(parse); break;
-        case 'margin3':  corr.margin3 = genParse(parse); break;
-        case 'value':    corr.value   = genParse(parse); break;
+        case 'order':  corr._order = corr.order = genParse(parse);  break;
+        case 'c1':     corr._c1    = corr.c1    = genParse(parse);  break;
+        case 'c2':     corr._c2    = corr.c2    = genParse(parse);  break;
+        case 'c3':     corr._c3    = corr.c3    = genParse(parse);  break;
+        case 'value':  corr.value               = genParse(parse);  break;
         }
     }
                 
