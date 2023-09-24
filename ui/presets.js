@@ -107,6 +107,9 @@ function getPresetGraph(graphId)
         case 'combinedTransform':    return presetCombinedTransform;
 
 
+        case 'basicVariables':       return presetBasicVariables;
+
+
         case 'booksOnShelf':         return presetBooksOnShelf;
     }
 }
