@@ -88,6 +88,9 @@ function getPresetGraph(graphId)
         case 'quadraticFormula':     return presetQuadraticFormula;
         case 'opponentColor':        return presetOpponentColor;
 
+        
+        case 'randomNames':          return presetRandomNames;
+
 
         case 'colorContrast':        return presetColorContrast;
         case 'colorSpaces':          return presetColorSpaces;
@@ -102,5 +105,8 @@ function getPresetGraph(graphId)
         case 'shapesStyles':         return presetShapesStyles;
         case 'basicTransform':       return presetBasicTransform;
         case 'combinedTransform':    return presetCombinedTransform;
+
+
+        case 'booksOnShelf':         return presetBooksOnShelf;
     }
 }

@@ -498,8 +498,8 @@ const presetOpponentColor = '\
             "renamed": "false",\
             "enabled": "true",\
             "highlight": "3",\
-            "x": "2936.24",\
-            "y": "3984",\
+            "x": "2986.24",\
+            "y": "4034",\
             "z": "0",\
             "active": "true",\
             "width": "166.48940919115523",\
@@ -515,8 +515,8 @@ const presetOpponentColor = '\
             "renamed": "true",\
             "enabled": "true",\
             "highlight": "0",\
-            "x": "2835",\
-            "y": "3786",\
+            "x": "2885",\
+            "y": "3836",\
             "z": "1"\
             },\
             {\
@@ -526,14 +526,14 @@ const presetOpponentColor = '\
             "renamed": "true",\
             "enabled": "true",\
             "highlight": "1",\
-            "x": "2345",\
-            "y": "4136",\
+            "x": "2395",\
+            "y": "4186",\
             "z": "2",\
             "width": "120",\
             "height": "54",\
             "params":\
             [\
-                    ["NUM#", "value", "20,1"]\
+                    ["NUM#", "value", "50,1"]\
             ]\
             },\
             {\
@@ -543,12 +543,12 @@ const presetOpponentColor = '\
             "renamed": "true",\
             "enabled": "true",\
             "highlight": "7",\
-            "x": "2746.24",\
-            "y": "3989",\
+            "x": "2796.24",\
+            "y": "4039",\
             "z": "3",\
             "params":\
             [\
-                    ["NUM#", "value", "21,1"]\
+                    ["NUM#", "value", "51,1"]\
             ]\
             },\
             {\
@@ -558,12 +558,12 @@ const presetOpponentColor = '\
             "renamed": "true",\
             "enabled": "true",\
             "highlight": "0",\
-            "x": "2512",\
-            "y": "4139",\
+            "x": "2562",\
+            "y": "4189",\
             "z": "4",\
             "params":\
             [\
-                    ["NUM#", "value", "20,1"],\
+                    ["NUM#", "value", "50,1"],\
                     ["NUM#", "operation", "1,0"]\
             ]\
             },\
@@ -574,12 +574,12 @@ const presetOpponentColor = '\
             "renamed": "true",\
             "enabled": "true",\
             "highlight": "0",\
-            "x": "2512",\
-            "y": "3939",\
+            "x": "2562",\
+            "y": "3989",\
             "z": "5",\
             "params":\
             [\
-                    ["NUM#", "value", "30.000000000000014,1"],\
+                    ["NUM#", "value", "34.999999999999986,1"],\
                     ["NUM#", "operation", "1,0"]\
             ]\
             },\
@@ -590,8 +590,8 @@ const presetOpponentColor = '\
             "renamed": "false",\
             "enabled": "true",\
             "highlight": "4",\
-            "x": "2935.24",\
-            "y": "4097",\
+            "x": "2985.24",\
+            "y": "4147",\
             "z": "6",\
             "active": "true",\
             "width": "166.48940919115523",\
@@ -607,16 +607,16 @@ const presetOpponentColor = '\
             "renamed": "false",\
             "enabled": "true",\
             "highlight": "0",\
-            "x": "3173.24",\
-            "y": "4012",\
+            "x": "3223.24",\
+            "y": "4062",\
             "z": "7",\
-            "prevSpace": "oklab",\
+            "prevSpace": "lab",\
             "params":\
             [\
-                    ["NUM#", "space", "7,0"],\
+                    ["NUM#", "space", "8,0"],\
                     ["NUM#", "c1", "63,0"],\
-                    ["NUM#", "c2", "19,1"],\
-                    ["NUM#", "c3", "-9.000000000000014,1"]\
+                    ["NUM#", "c2", "49,1"],\
+                    ["NUM#", "c3", "16.000000000000014,1"]\
             ]\
             },\
             {\
@@ -626,8 +626,8 @@ const presetOpponentColor = '\
             "renamed": "true",\
             "enabled": "true",\
             "highlight": "0",\
-            "x": "2510",\
-            "y": "4282",\
+            "x": "2560",\
+            "y": "4332",\
             "z": "8"\
             },\
             {\
@@ -637,8 +637,8 @@ const presetOpponentColor = '\
             "renamed": "true",\
             "enabled": "true",\
             "highlight": "0",\
-            "x": "2512",\
-            "y": "4324",\
+            "x": "2562",\
+            "y": "4374",\
             "z": "9"\
             },\
             {\
@@ -648,12 +648,12 @@ const presetOpponentColor = '\
             "renamed": "true",\
             "enabled": "true",\
             "highlight": "7",\
-            "x": "2959.24",\
-            "y": "4131",\
+            "x": "3009.24",\
+            "y": "4181",\
             "z": "10",\
             "params":\
             [\
-                    ["NUM#", "value", "19,1"],\
+                    ["NUM#", "value", "49,1"],\
                     ["NUM#", "operation", "0,0"]\
             ]\
             },\
@@ -664,8 +664,8 @@ const presetOpponentColor = '\
             "renamed": "true",\
             "enabled": "true",\
             "highlight": "0",\
-            "x": "2512",\
-            "y": "4038",\
+            "x": "2562",\
+            "y": "4088",\
             "z": "11",\
             "params":\
             [\
@@ -680,8 +680,8 @@ const presetOpponentColor = '\
             "renamed": "true",\
             "enabled": "true",\
             "highlight": "0",\
-            "x": "2345",\
-            "y": "4280",\
+            "x": "2395",\
+            "y": "4330",\
             "z": "12",\
             "width": "120",\
             "height": "54"\
@@ -693,8 +693,8 @@ const presetOpponentColor = '\
             "renamed": "true",\
             "enabled": "true",\
             "highlight": "4",\
-            "x": "2345",\
-            "y": "4034",\
+            "x": "2395",\
+            "y": "4084",\
             "z": "13",\
             "width": "120",\
             "height": "54",\
@@ -710,8 +710,8 @@ const presetOpponentColor = '\
             "renamed": "true",\
             "enabled": "true",\
             "highlight": "0",\
-            "x": "2511",\
-            "y": "4365",\
+            "x": "2561",\
+            "y": "4415",\
             "z": "14",\
             "active": "true"\
             },\
@@ -722,8 +722,8 @@ const presetOpponentColor = '\
             "renamed": "false",\
             "enabled": "true",\
             "highlight": "1",\
-            "x": "2935.24",\
-            "y": "4165",\
+            "x": "2985.24",\
+            "y": "4215",\
             "z": "15",\
             "active": "true",\
             "width": "166.48940919115523",\
@@ -739,14 +739,14 @@ const presetOpponentColor = '\
             "renamed": "true",\
             "enabled": "true",\
             "highlight": "5",\
-            "x": "2346",\
-            "y": "3934",\
+            "x": "2396",\
+            "y": "3984",\
             "z": "16",\
             "width": "120",\
             "height": "54",\
             "params":\
             [\
-                    ["NUM#", "value", "30.000000000000014,1"]\
+                    ["NUM#", "value", "34.999999999999986,1"]\
             ]\
             },\
             {\
@@ -756,8 +756,8 @@ const presetOpponentColor = '\
             "renamed": "false",\
             "enabled": "true",\
             "highlight": "5",\
-            "x": "2936.24",\
-            "y": "3916",\
+            "x": "2986.24",\
+            "y": "3966",\
             "z": "17",\
             "active": "true",\
             "width": "166.48940919115523",\
@@ -773,8 +773,8 @@ const presetOpponentColor = '\
             "renamed": "true",\
             "enabled": "true",\
             "highlight": "0",\
-            "x": "2508",\
-            "y": "4409",\
+            "x": "2558",\
+            "y": "4459",\
             "z": "18",\
             "active": "true"\
             },\
@@ -785,8 +785,8 @@ const presetOpponentColor = '\
             "renamed": "true",\
             "enabled": "true",\
             "highlight": "0",\
-            "x": "3375",\
-            "y": "4011",\
+            "x": "3425",\
+            "y": "4061",\
             "z": "19"\
             },\
             {\
@@ -796,12 +796,12 @@ const presetOpponentColor = '\
             "renamed": "true",\
             "enabled": "true",\
             "highlight": "7",\
-            "x": "2959.24",\
-            "y": "3947",\
+            "x": "3009.24",\
+            "y": "3997",\
             "z": "20",\
             "params":\
             [\
-                    ["NUM#", "value", "-9.000000000000014,1"],\
+                    ["NUM#", "value", "16.000000000000014,1"],\
                     ["NUM#", "operation", "0,0"]\
             ]\
             },\
@@ -812,8 +812,8 @@ const presetOpponentColor = '\
             "renamed": "true",\
             "enabled": "true",\
             "highlight": "0",\
-            "x": "3373.24",\
-            "y": "4122",\
+            "x": "3423.24",\
+            "y": "4172",\
             "z": "21"\
             },\
             {\
@@ -823,19 +823,19 @@ const presetOpponentColor = '\
             "renamed": "true",\
             "enabled": "true",\
             "highlight": "0",\
-            "x": "3373.24",\
-            "y": "4163",\
+            "x": "3423.24",\
+            "y": "4213",\
             "z": "22"\
             },\
             {\
             "type": "CMNT",\
             "id": "comment11",\
-            "name": "must%20be%20set%20to%20%3Cb%3EokLab%3C%2Fb%3E.",\
+            "name": "must%20be%20set%20to%20%3Cb%3ELab%3C%2Fb%3E.",\
             "renamed": "true",\
             "enabled": "true",\
             "highlight": "0",\
-            "x": "3378",\
-            "y": "4051",\
+            "x": "3428",\
+            "y": "4101",\
             "z": "23"\
             }\
         ],\
