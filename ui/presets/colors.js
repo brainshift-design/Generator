@@ -1476,8 +1476,8 @@ const presetInvalidColors = '\
             "renamed": "false",\
             "enabled": "true",\
             "highlight": "0",\
-            "x": "3362",\
-            "y": "4599",\
+            "x": "3962",\
+            "y": "5202",\
             "z": "0",\
             "active": "true",\
             "prevSpace": "hclok",\
@@ -1496,8 +1496,8 @@ const presetInvalidColors = '\
             "renamed": "false",\
             "enabled": "true",\
             "highlight": "0",\
-            "x": "3365",\
-            "y": "4888",\
+            "x": "3965",\
+            "y": "5488",\
             "z": "1",\
             "prevSpace": "hclok",\
             "params":\
@@ -1515,20 +1515,20 @@ const presetInvalidColors = '\
             "renamed": "true",\
             "enabled": "true",\
             "highlight": "0",\
-            "x": "3369",\
-            "y": "4497",\
+            "x": "3969",\
+            "y": "5095",\
             "z": "2",\
             "active": "true"\
             },\
             {\
             "type": "CMNT",\
             "id": "comment2",\
-            "name": "red%20lines%20indicate%20values%20outside%20of%20sRGB.",\
+            "name": "red%20lines%20indicate%20values%20%3Cb%3Eoutside%20of%20sRGB%3C%2Fb%3E.",\
             "renamed": "true",\
             "enabled": "true",\
             "highlight": "0",\
-            "x": "3369",\
-            "y": "4535",\
+            "x": "3969",\
+            "y": "5135",\
             "z": "3",\
             "active": "true"\
             },\
@@ -1539,8 +1539,8 @@ const presetInvalidColors = '\
             "renamed": "false",\
             "enabled": "true",\
             "highlight": "0",\
-            "x": "3528",\
-            "y": "4888",\
+            "x": "4128",\
+            "y": "5488",\
             "z": "4",\
             "active": "true",\
             "prevSpace": "hex",\
@@ -1555,12 +1555,12 @@ const presetInvalidColors = '\
             {\
             "type": "CMNT",\
             "id": "comment3",\
-            "name": "Those%20values%20leads%20to%20%3Cb%3Einvalid%20colors%3C%2Fb%3E%2C%20shown%20with%20stripes.",\
+            "name": "Such%20values%20create%20%3Cb%3Einvalid%20colors%3C%2Fb%3E%2C%20shown%20with%20stripes.",\
             "renamed": "true",\
             "enabled": "true",\
             "highlight": "0",\
-            "x": "3366",\
-            "y": "4823",\
+            "x": "3966",\
+            "y": "5423",\
             "z": "5",\
             "active": "true"\
             },\
@@ -1571,8 +1571,8 @@ const presetInvalidColors = '\
             "renamed": "false",\
             "enabled": "true",\
             "highlight": "0",\
-            "x": "4185",\
-            "y": "4704",\
+            "x": "4785",\
+            "y": "5304",\
             "z": "6",\
             "prevSpace": "hclok",\
             "params":\
@@ -1590,8 +1590,8 @@ const presetInvalidColors = '\
             "renamed": "false",\
             "enabled": "true",\
             "highlight": "0",\
-            "x": "4514",\
-            "y": "4574",\
+            "x": "5114",\
+            "y": "5174",\
             "z": "7",\
             "active": "true",\
             "prevSpace": "hex",\
@@ -1610,8 +1610,8 @@ const presetInvalidColors = '\
             "renamed": "true",\
             "enabled": "true",\
             "highlight": "0",\
-            "x": "4181",\
-            "y": "4500",\
+            "x": "4781",\
+            "y": "5100",\
             "z": "8",\
             "active": "true"\
             },\
@@ -1622,8 +1622,8 @@ const presetInvalidColors = '\
             "renamed": "false",\
             "enabled": "true",\
             "highlight": "0",\
-            "x": "4350",\
-            "y": "4569",\
+            "x": "4950",\
+            "y": "5169",\
             "z": "9",\
             "_color": "1,0 0,0 242,0 255,0",\
             "params":\
@@ -1638,8 +1638,8 @@ const presetInvalidColors = '\
             "renamed": "false",\
             "enabled": "true",\
             "highlight": "0",\
-            "x": "4514",\
-            "y": "4701",\
+            "x": "5114",\
+            "y": "5301",\
             "z": "10",\
             "active": "true",\
             "prevSpace": "hex",\
@@ -1658,8 +1658,8 @@ const presetInvalidColors = '\
             "renamed": "false",\
             "enabled": "true",\
             "highlight": "0",\
-            "x": "4350",\
-            "y": "4696",\
+            "x": "4950",\
+            "y": "5296",\
             "z": "11",\
             "_color": "1,0 109,0 221,0 255,0",\
             "params":\
@@ -1674,8 +1674,8 @@ const presetInvalidColors = '\
             "renamed": "false",\
             "enabled": "true",\
             "highlight": "0",\
-            "x": "4516",\
-            "y": "4822",\
+            "x": "5116",\
+            "y": "5422",\
             "z": "12",\
             "active": "true",\
             "prevSpace": "hex",\
@@ -1694,8 +1694,8 @@ const presetInvalidColors = '\
             "renamed": "false",\
             "enabled": "true",\
             "highlight": "0",\
-            "x": "4352",\
-            "y": "4817",\
+            "x": "4952",\
+            "y": "5417",\
             "z": "13",\
             "_color": "4,0 219.9999918549708,9 18.19999741877982,10 78.23053036776213,8",\
             "params":\
@@ -1710,8 +1710,8 @@ const presetInvalidColors = '\
             "renamed": "false",\
             "enabled": "true",\
             "highlight": "1",\
-            "x": "3363",\
-            "y": "4536",\
+            "x": "3963",\
+            "y": "5136",\
             "z": "14",\
             "active": "true",\
             "width": "118.57148918154229",\
@@ -1727,8 +1727,8 @@ const presetInvalidColors = '\
             "renamed": "true",\
             "enabled": "true",\
             "highlight": "0",\
-            "x": "4188",\
-            "y": "4930",\
+            "x": "4788",\
+            "y": "5530",\
             "z": "15",\
             "active": "true"\
             },\
@@ -1739,8 +1739,8 @@ const presetInvalidColors = '\
             "renamed": "true",\
             "enabled": "true",\
             "highlight": "0",\
-            "x": "4189",\
-            "y": "4971",\
+            "x": "4789",\
+            "y": "5571",\
             "z": "16",\
             "active": "true"\
             },\
@@ -1751,8 +1751,8 @@ const presetInvalidColors = '\
             "renamed": "true",\
             "enabled": "true",\
             "highlight": "0",\
-            "x": "4951",\
-            "y": "4501",\
+            "x": "5551",\
+            "y": "5101",\
             "z": "17",\
             "active": "true"\
             },\
@@ -1763,8 +1763,8 @@ const presetInvalidColors = '\
             "renamed": "true",\
             "enabled": "true",\
             "highlight": "0",\
-            "x": "4952",\
-            "y": "4543",\
+            "x": "5552",\
+            "y": "5143",\
             "z": "18",\
             "active": "true"\
             },\
@@ -1775,8 +1775,8 @@ const presetInvalidColors = '\
             "renamed": "false",\
             "enabled": "true",\
             "highlight": "0",\
-            "x": "4954",\
-            "y": "4620",\
+            "x": "5554",\
+            "y": "5220",\
             "z": "19",\
             "prevSpace": "hclok",\
             "params":\
@@ -1794,17 +1794,17 @@ const presetInvalidColors = '\
             "renamed": "false",\
             "enabled": "true",\
             "highlight": "0",\
-            "x": "5374",\
-            "y": "4620",\
+            "x": "5974",\
+            "y": "5220",\
             "z": "20",\
             "active": "true",\
             "prevSpace": "hclok",\
             "params":\
             [\
                     ["NUM#", "space", "4,0"],\
-                    ["NUM#", "c1", "219.9999918549708,9"],\
-                    ["NUM#", "c2", "18.19999741877982,10"],\
-                    ["NUM#", "c3", "78.23053036776213,8"]\
+                    ["NUM#", "c1", "219.9999918549708,0"],\
+                    ["NUM#", "c2", "18.19999741877982,0"],\
+                    ["NUM#", "c3", "78.23053036776213,0"]\
             ]\
             },\
             {\
@@ -1814,8 +1814,8 @@ const presetInvalidColors = '\
             "renamed": "false",\
             "enabled": "true",\
             "highlight": "0",\
-            "x": "5193",\
-            "y": "4614",\
+            "x": "5793",\
+            "y": "5214",\
             "z": "21",\
             "_color": "4,0 219.9999918549708,9 18.19999741877982,10 78.23053036776213,8",\
             "params":\
@@ -1833,17 +1833,17 @@ const presetInvalidColors = '\
             "renamed": "false",\
             "enabled": "true",\
             "highlight": "0",\
-            "x": "5374",\
-            "y": "4789",\
+            "x": "5974",\
+            "y": "5389",\
             "z": "22",\
             "active": "true",\
             "prevSpace": "hclok",\
             "params":\
             [\
                     ["NUM#", "space", "4,0"],\
-                    ["NUM#", "c1", "219.9999885481921,10"],\
-                    ["NUM#", "c2", "13.299997469590782,10"],\
-                    ["NUM#", "c3", "84.53053031574358,8"]\
+                    ["NUM#", "c1", "219.9999885481921,0"],\
+                    ["NUM#", "c2", "13.299997469590782,0"],\
+                    ["NUM#", "c3", "84.53053031574358,0"]\
             ]\
             },\
             {\
@@ -1853,8 +1853,8 @@ const presetInvalidColors = '\
             "renamed": "false",\
             "enabled": "true",\
             "highlight": "0",\
-            "x": "5193",\
-            "y": "4783",\
+            "x": "5793",\
+            "y": "5383",\
             "z": "23",\
             "_color": "4,0 219.9999885481921,10 13.299997469590782,10 84.53053031574358,8",\
             "params":\
@@ -1872,10 +1872,9 @@ const presetInvalidColors = '\
             "renamed": "true",\
             "enabled": "true",\
             "highlight": "0",\
-            "x": "4994",\
-            "y": "4866",\
+            "x": "5594",\
+            "y": "5466",\
             "z": "24",\
-            "active": "true",\
             "width": "150.3478113978905",\
             "height": "54"\
             },\
@@ -1886,10 +1885,9 @@ const presetInvalidColors = '\
             "renamed": "true",\
             "enabled": "true",\
             "highlight": "0",\
-            "x": "4996",\
-            "y": "4797",\
+            "x": "5596",\
+            "y": "5397",\
             "z": "25",\
-            "active": "true",\
             "width": "146.5873157905789",\
             "height": "54",\
             "params":\

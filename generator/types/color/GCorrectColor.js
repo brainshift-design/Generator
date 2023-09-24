@@ -110,7 +110,14 @@ extends GOperator1
                         this.c1    = new NumberValue(closest1);
                         this.c2    = new NumberValue(closest2);
                         this.c3    = new NumberValue(closest3);
+                        
+
                         this.value = ColorValue.fromDataColor(this._color);
+
+                        this.value.c1.decimals = input.c1.decimals;
+                        this.value.c2.decimals = input.c2.decimals;
+                        this.value.c3.decimals = input.c3.decimals;
+
 
                         this.setUpdateValues(parse,
                         [
