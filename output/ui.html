@@ -5304,7 +5304,7 @@ a
             <div id='whatsNewBody'>
                 <h1 style='margin-top: 20px;'>What's new</h1>
 
-                <p>•  fixed UI issue</p>
+                <p>•  bug fixes</p>
                 
                 <p><br/><br/><div id='chkHideWhatsNew'></div></p>
             </div>
@@ -133190,6 +133190,7 @@ function loadPresetGraph(graphId)
     if (isEmpty(graph.pages))
         graph.createPage('');
 
+    uiDeleteAllObjects();
     uiRemoveAllSavedNodesAndConns();
     graph.clear();
 
@@ -136044,6 +136045,15 @@ function uiRemoveConnsToNodes(nodeIds)
     uiQueueMessageToFigma({
         cmd:    'figRemoveConnsToNodes',
         nodeIds: nodeIds
+    });
+}
+
+
+
+function uiDeleteAllObjects()
+{
+    uiQueueMessageToFigma({
+        cmd: 'figDeleteAllObjects'
     });
 }
 

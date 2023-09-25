@@ -953,6 +953,15 @@ function uiRemoveConnsToNodes(nodeIds)
 
 
 
+function uiDeleteAllObjects()
+{
+    uiQueueMessageToFigma({
+        cmd: 'figDeleteAllObjects'
+    });
+}
+
+
+
 function uiRemoveAllSavedNodesAndConns()
 {
     uiQueueMessageToFigma({

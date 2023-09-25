@@ -1724,6 +1724,9 @@ figma.ui.onmessage = function (msg) {
         case 'figUpdateShowIds':
             showIds = msg.showIds;
             break;
+        case 'figDeleteAllObjects':
+            figDeleteAllObjects();
+            break;
         case 'figUpdateObjectsAndStyles':
             figUpdateObjects(null, msg.objects, msg.nodeIds, msg.firstChunk, msg.lastChunk);
             figUpdateStyles(msg);

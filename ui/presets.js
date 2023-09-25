@@ -45,6 +45,7 @@ function loadPresetGraph(graphId)
     if (isEmpty(graph.pages))
         graph.createPage('');
 
+    uiDeleteAllObjects();
     uiRemoveAllSavedNodesAndConns();
     graph.clear();
 
