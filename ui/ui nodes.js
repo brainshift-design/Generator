@@ -495,7 +495,7 @@ function loadNodes(data, pasting)
 function loadNode(_node, pasting)
 {
     // replace legacy
-    // if (_node.type == 'JOIN') _node.type = COMBINE;
+    //if (_node.type == 'DISTR') _node.type = DEFINE;
 
 
     const node = createNode(_node.type);
