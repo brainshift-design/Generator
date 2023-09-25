@@ -98,7 +98,8 @@ NumberControl.prototype.initTextbox = function()
                         && params[--index].controls[0].readOnly); // ; on purpose
 
                     if (   index >= 0
-                        && params[index].controls[0].showTextbox)
+                        && params[index].controls[0].showTextbox
+                        && params[index].controls[0].param.div.parentNode)
                         params[index].controls[0].showTextbox();
                     else
                         findParamAbove(this.param.node);
@@ -115,7 +116,8 @@ NumberControl.prototype.initTextbox = function()
                         && params[++index].controls[0].readOnly); // ; on purpose
 
                     if (   index < params.length
-                        && params[index].controls[0].showTextbox)
+                        && params[index].controls[0].showTextbox
+                        && params[index].controls[0].param.div.parentNode)
                         params[index].controls[0].showTextbox();
                     else
                         findParamBelow(this.param.node);
@@ -502,7 +504,8 @@ function findParamAbove(node)
             && nodeAbove.params[--index].controls[0].readOnly); // ; on purpose
 
         if (   index >= 0
-            && nodeAbove.params[index].controls[0].showTextbox)
+            && nodeAbove.params[index].controls[0].showTextbox
+            && nodeAbove.params[index].controls[0].param.div.parentNode)
             nodeAbove.params[index].controls[0].showTextbox();
     }
 }
@@ -522,7 +525,8 @@ function findParamBelow(node)
             && nodeBelow.params[++index].controls[0].readOnly); // ; on purpose
 
         if (   index < nodeBelow.params.length
-            && nodeBelow.params[index].controls[0].showTextbox)
+            && nodeBelow.params[index].controls[0].showTextbox
+            && nodeBelow.params[index].controls[0].param.div.parentNode)
             nodeBelow.params[index].controls[0].showTextbox();
     }
 }
