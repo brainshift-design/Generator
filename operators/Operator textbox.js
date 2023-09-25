@@ -95,6 +95,13 @@ Operator.prototype.initLabelTextbox = function()
 
 
 
+    this.textbox.addEventListener('dblclick', e =>
+    {
+        e.stopPropagation();
+    });
+    
+
+
     // this.textbox.addEventListener('paste', e =>
     // {
     //     e.preventDefault();
