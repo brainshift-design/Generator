@@ -82,12 +82,14 @@ extends OperatorBase
         this.textbox.style.margin     = '0';
         this.textbox.style.textAlign  = 'left';
         this.textbox.style.fontFamily = 'Oooh Baby';
-        this.textbox.style.fontSize   = fontSize + 'px';
+        this.textbox.style.fontSize   =  fontSize + 'px';
         this.textbox.style.fontWeight =  400;
 
         this.div.style.borderRadius = 0;
 
         const height = (fontSize + mes.actualBoundingBoxDescent) + 'px';
+
+        this.headerHeight = height;
 
         this.div         .style.height = height;
         this.header      .style.height = height;
@@ -108,6 +110,9 @@ extends OperatorBase
         this.labelWrapper.style.overflow   = 'visible';
         this.label       .style.overflow   = 'visible';
         this.labelText   .style.overflow   = 'visible';
+        
+        this.updateTransform();
+        
         // this.div      .style.boxShadow = '0 0 0 1px red inset';
         // this.label    .style.boxShadow = '0 0 0 1px green inset';
         // this.labelText.style.boxShadow = '0 0 0 1px yellow inset';

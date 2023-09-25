@@ -55,8 +55,6 @@ extends GValue
     {
         return num
             && this.toNumber() == num.toNumber();
-            // && this.value    == num.value
-            // && this.decimals == num.decimals;
     }
 
 

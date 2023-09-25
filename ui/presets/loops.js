@@ -167,10 +167,9 @@ const presetLoop2d = '\
             "renamed": "false",\
             "enabled": "true",\
             "highlight": "0",\
-            "x": "517",\
-            "y": "623",\
+            "x": "1167",\
+            "y": "1273",\
             "z": "0",\
-            "active": "true",\
             "params":\
             [\
                     ["NUM#", "step", "120,0"],\
@@ -184,10 +183,9 @@ const presetLoop2d = '\
             "renamed": "false",\
             "enabled": "true",\
             "highlight": "0",\
-            "x": "45",\
-            "y": "327",\
+            "x": "695",\
+            "y": "977",\
             "z": "1",\
-            "active": "true",\
             "prevSpace": "hsv",\
             "params":\
             [\
@@ -204,8 +202,8 @@ const presetLoop2d = '\
             "renamed": "true",\
             "enabled": "true",\
             "highlight": "0",\
-            "x": "439",\
-            "y": "1033",\
+            "x": "1089",\
+            "y": "1683",\
             "z": "2"\
             },\
             {\
@@ -215,8 +213,8 @@ const presetLoop2d = '\
             "renamed": "true",\
             "enabled": "true",\
             "highlight": "0",\
-            "x": "443",\
-            "y": "865",\
+            "x": "1093",\
+            "y": "1515",\
             "z": "3"\
             },\
             {\
@@ -226,8 +224,8 @@ const presetLoop2d = '\
             "renamed": "true",\
             "enabled": "true",\
             "highlight": "0",\
-            "x": "458",\
-            "y": "100",\
+            "x": "1108",\
+            "y": "750",\
             "z": "4",\
             "width": "691",\
             "height": "673.6051224213832",\
@@ -242,8 +240,8 @@ const presetLoop2d = '\
             "renamed": "true",\
             "enabled": "true",\
             "highlight": "0",\
-            "x": "439",\
-            "y": "988",\
+            "x": "1089",\
+            "y": "1638",\
             "z": "5"\
             },\
             {\
@@ -253,8 +251,8 @@ const presetLoop2d = '\
             "renamed": "true",\
             "enabled": "true",\
             "highlight": "0",\
-            "x": "440",\
-            "y": "907",\
+            "x": "1090",\
+            "y": "1557",\
             "z": "6"\
             },\
             {\
@@ -264,10 +262,9 @@ const presetLoop2d = '\
             "renamed": "false",\
             "enabled": "true",\
             "highlight": "0",\
-            "x": "207",\
-            "y": "168",\
+            "x": "857",\
+            "y": "818",\
             "z": "7",\
-            "active": "true",\
             "params":\
             [\
             ]\
@@ -279,10 +276,9 @@ const presetLoop2d = '\
             "renamed": "false",\
             "enabled": "true",\
             "highlight": "0",\
-            "x": "517",\
-            "y": "448",\
+            "x": "1167",\
+            "y": "1098",\
             "z": "8",\
-            "active": "true",\
             "params":\
             [\
                     ["NUM#", "step", "120,0"],\
@@ -296,10 +292,9 @@ const presetLoop2d = '\
             "renamed": "false",\
             "enabled": "true",\
             "highlight": "0",\
-            "x": "740",\
-            "y": "168",\
+            "x": "1390",\
+            "y": "818",\
             "z": "9",\
-            "active": "true",\
             "params":\
             [\
                     ["NUM#", "x", "480,0"],\
@@ -313,10 +308,9 @@ const presetLoop2d = '\
             "renamed": "false",\
             "enabled": "true",\
             "highlight": "0",\
-            "x": "967",\
-            "y": "448",\
+            "x": "1617",\
+            "y": "1098",\
             "z": "10",\
-            "active": "true",\
             "params":\
             [\
                     ["NUM#", "count", "5,0"]\
@@ -329,8 +323,8 @@ const presetLoop2d = '\
             "renamed": "false",\
             "enabled": "true",\
             "highlight": "0",\
-            "x": "967",\
-            "y": "623",\
+            "x": "1617",\
+            "y": "1273",\
             "z": "11",\
             "active": "true",\
             "params":\
@@ -341,12 +335,12 @@ const presetLoop2d = '\
             {\
             "type": "CMNT",\
             "id": "comment",\
-            "name": "Incoming%20data%2C%20in%20this%20case%20a%20shape%2C%20is%20%22repeated%E2%80%89%22%2C%20with%20",\
+            "name": "Incoming%20data%20(in%20this%20case%20a%20polygon)%20is%20%22repeated%E2%80%89%22%2C%20with%20",\
             "renamed": "true",\
             "enabled": "true",\
             "highlight": "0",\
-            "x": "444",\
-            "y": "822",\
+            "x": "1094",\
+            "y": "1472",\
             "z": "12"\
             }\
         ],\
@@ -419,7 +413,7 @@ const presetLoop2d = '\
         ]\
     }';
 
-
+    
 
 const presetLoopLock = '\
     {\
