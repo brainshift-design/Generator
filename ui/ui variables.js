@@ -172,9 +172,9 @@ function getValueFromVariable(resolvedType, val)
 
     switch (resolvedType)
     {
-        case 'FLOAT':   value = new NumberValue(val);    break;
-        case 'BOOLEAN': value = new NumberValue(val, 0); break;
-        case 'STRING':  value = new TextValue(val);      break;
+        case 'FLOAT':   value = new NumberValue(val);            break;
+        case 'BOOLEAN': value = new NumberValue(val ? 1 : 0, 0); break;
+        case 'STRING':  value = new TextValue(val);              break;
 
         case 'COLOR':
             value = ColorValue.create(

@@ -144,8 +144,8 @@ const presetDataTypes = '\
             "renamed": "false",\
             "enabled": "true",\
             "highlight": "0",\
-            "x": "474",\
-            "y": "1292",\
+            "x": "674",\
+            "y": "1492",\
             "z": "0",\
             "width": "120",\
             "height": "54",\
@@ -161,11 +161,11 @@ const presetDataTypes = '\
             "renamed": "false",\
             "enabled": "true",\
             "highlight": "0",\
-            "x": "842",\
-            "y": "1292",\
+            "x": "1042",\
+            "y": "1492",\
             "z": "1",\
             "width": "120",\
-            "height": "120",\
+            "height": "98",\
             "params":\
             [\
                     ["TEXT#", "value", "%221234567%22", "center"],\
@@ -181,8 +181,8 @@ const presetDataTypes = '\
             "renamed": "true",\
             "enabled": "true",\
             "highlight": "0",\
-            "x": "433",\
-            "y": "1121",\
+            "x": "633",\
+            "y": "1321",\
             "z": "2"\
             },\
             {\
@@ -192,8 +192,8 @@ const presetDataTypes = '\
             "renamed": "true",\
             "enabled": "true",\
             "highlight": "0",\
-            "x": "552",\
-            "y": "693",\
+            "x": "752",\
+            "y": "893",\
             "z": "3"\
             },\
             {\
@@ -203,8 +203,8 @@ const presetDataTypes = '\
             "renamed": "true",\
             "enabled": "true",\
             "highlight": "0",\
-            "x": "550",\
-            "y": "742",\
+            "x": "750",\
+            "y": "942",\
             "z": "4"\
             },\
             {\
@@ -214,8 +214,8 @@ const presetDataTypes = '\
             "renamed": "true",\
             "enabled": "true",\
             "highlight": "0",\
-            "x": "430",\
-            "y": "843",\
+            "x": "630",\
+            "y": "1043",\
             "z": "5",\
             "active": "true"\
             },\
@@ -226,8 +226,8 @@ const presetDataTypes = '\
             "renamed": "false",\
             "enabled": "true",\
             "highlight": "0",\
-            "x": "1028",\
-            "y": "1265",\
+            "x": "1228",\
+            "y": "1465",\
             "z": "6",\
             "active": "true",\
             "params":\
@@ -245,8 +245,8 @@ const presetDataTypes = '\
             "renamed": "false",\
             "enabled": "true",\
             "highlight": "0",\
-            "x": "587",\
-            "y": "843",\
+            "x": "787",\
+            "y": "1043",\
             "z": "7",\
             "active": "true",\
             "width": "120",\
@@ -263,8 +263,8 @@ const presetDataTypes = '\
             "renamed": "true",\
             "enabled": "true",\
             "highlight": "0",\
-            "x": "1054",\
-            "y": "842",\
+            "x": "1254",\
+            "y": "1042",\
             "z": "8",\
             "active": "true"\
             },\
@@ -275,8 +275,8 @@ const presetDataTypes = '\
             "renamed": "false",\
             "enabled": "true",\
             "highlight": "0",\
-            "x": "743",\
-            "y": "843",\
+            "x": "943",\
+            "y": "1043",\
             "z": "9",\
             "active": "true",\
             "width": "120",\
@@ -293,8 +293,8 @@ const presetDataTypes = '\
             "renamed": "true",\
             "enabled": "true",\
             "highlight": "0",\
-            "x": "433",\
-            "y": "1164",\
+            "x": "633",\
+            "y": "1364",\
             "z": "10"\
             },\
             {\
@@ -304,8 +304,8 @@ const presetDataTypes = '\
             "renamed": "false",\
             "enabled": "true",\
             "highlight": "0",\
-            "x": "898",\
-            "y": "843",\
+            "x": "1098",\
+            "y": "1043",\
             "z": "11",\
             "active": "true",\
             "prevSpace": "hex",\
@@ -324,9 +324,29 @@ const presetDataTypes = '\
             "renamed": "false",\
             "enabled": "true",\
             "highlight": "0",\
-            "x": "658",\
-            "y": "1292",\
+            "x": "858",\
+            "y": "1492",\
             "z": "12"\
+            },\
+            {\
+            "type": "COL",\
+            "id": "color2",\
+            "name": "color",\
+            "renamed": "false",\
+            "enabled": "true",\
+            "highlight": "0",\
+            "x": "1042",\
+            "y": "1756",\
+            "z": "13",\
+            "active": "true",\
+            "prevSpace": "hex",\
+            "params":\
+            [\
+                    ["NUM#", "space", "0,0"],\
+                    ["NUM#", "c1", "17,0"],\
+                    ["NUM#", "c2", "184,0"],\
+                    ["NUM#", "c3", "54,0"]\
+            ]\
             }\
         ],\
         "connections":\
@@ -348,6 +368,14 @@ const presetDataTypes = '\
             "list": "false"\
             },\
             {\
+            "outputNodeId": "color2",\
+            "outputId": "h0",\
+            "outputOrder": "0",\
+            "inputNodeId": "text2",\
+            "inputId": "props",\
+            "list": "false"\
+            },\
+            {\
             "outputNodeId": "num5",\
             "outputId": "h0",\
             "outputOrder": "0",\
@@ -357,7 +385,6 @@ const presetDataTypes = '\
             }\
         ]\
     }';
-
 
 
 const presetOrganize = '\
