@@ -4989,6 +4989,9 @@ a
 </style>
 
 
+<div id='divTextMeasure' style='position: absolute; visibility: hidden'></div>
+
+
 <div id='menuBar'>
     <div id='pageName'>Page name</div>
 </div>
@@ -5306,6 +5309,7 @@ a
                 <p>•  fixed If/else input issues</p>
                 <p>•  fixed Correct color node</p>
                 <p>•  fixed resize bug in Text join node</p>
+                <p>•  fixed panel renaming bug</p>
                 
                 <p><br/><br/><div id='chkHideWhatsNew'></div></p>
             </div>
@@ -126205,12 +126209,15 @@ extends OperatorBase
         const fontSize = 36;
 
 
-        utilContext.font = fontSize + 'px \'Oooh Baby\'';
+        //utilContext.font = fontSize + 'px \'Oooh Baby\'';
+        divTextMeasure.style.font = fontSize + 'px \'Oooh Baby\'';
         
-        const mes = utilContext.measureText(
+        divTextMeasure.innerHTML = 
             hasFocus(this.textbox) 
             ? this.textbox.value 
-            : this.name);
+            : this.name;
+
+        const mes = boundingRect(divTextMeasure);
 
 
         const width = Math.max(1, mes.width + 2);
@@ -130290,6 +130297,8 @@ extends Action
 
         this.node.setName(this.newName, {updateNodes: updateNodes});
         this.node.renamed = true;
+
+        this.node.updateNode();
 
         uiSaveNodes([this.nodeId]);
     }

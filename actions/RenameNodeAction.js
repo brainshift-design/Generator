@@ -30,6 +30,8 @@ extends Action
         this.node.setName(this.newName, {updateNodes: updateNodes});
         this.node.renamed = true;
 
+        this.node.updateNode();
+
         uiSaveNodes([this.nodeId]);
     }
 

@@ -64,12 +64,15 @@ extends OperatorBase
         const fontSize = 36;
 
 
-        utilContext.font = fontSize + 'px \'Oooh Baby\'';
+        //utilContext.font = fontSize + 'px \'Oooh Baby\'';
+        divTextMeasure.style.font = fontSize + 'px \'Oooh Baby\'';
         
-        const mes = utilContext.measureText(
+        divTextMeasure.innerHTML = 
             hasFocus(this.textbox) 
             ? this.textbox.value 
-            : this.name);
+            : this.name;
+
+        const mes = boundingRect(divTextMeasure);
 
 
         const width = Math.max(1, mes.width + 2);
