@@ -46,7 +46,7 @@ extends Parameter
         if (updateControl)
         {
             this.controls[0].setDecimals(value.decimals, value.decimals);
-            this.controls[0].setValue(value.value, false, false); 
+            this.controls[0].setValue(value.value, value.decimals, false, false); 
         }
 
 
@@ -199,7 +199,8 @@ extends Parameter
 
     isDefault = () => 
            !this.alwaysSaveValue
-         && this.value.equals(this.defaultValue);
+         && this.value.value    == this.defaultValue.value
+         && this.value.decimals == this.defaultValue.decimals;
 
 
 

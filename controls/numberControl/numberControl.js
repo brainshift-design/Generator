@@ -213,9 +213,10 @@ extends Control
 
 
 
-    setValue(value, fireChangeEvent = true, confirm = true, fullRange = true, fromWheel = false, shiftKey = false)
+    setValue(value, decimals, fireChangeEvent = true, confirm = true, fullRange = true, fromWheel = false, shiftKey = false)
     {
-        const oldValue = this.value;
+        const oldValue    = this.value;
+        const oldDecimals = this.decimals;
 
         
         if (this.wrapValue)
@@ -240,7 +241,7 @@ extends Control
         if (    isNaN(value) && !isNaN(oldValue)
             || !isNaN(value) &&  isNaN(oldValue)
             || Math.abs(value - oldValue) > Number.EPSILON
-            || decDigits(value) != decDigits(oldValue))
+            || decimals != oldDecimals)
         {
             if (   value > -this.epsilon
                 && value <  0) // guard against -0
@@ -252,7 +253,8 @@ extends Control
 
             if (   fireChangeEvent
                 && this.enableChangeEvent
-                && value != oldValue)
+                && (   value    != oldValue
+                    || decimals != oldDecimals))
                 this.dispatchEvent(this.onchange);
         }
 

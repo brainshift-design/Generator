@@ -221,7 +221,7 @@ extends Parameter
         if (updateControl)
         {
             this.controls[0].setValue(this.value.color,         false, false); 
-            this.controls[1].setValue(this.value.opacity.value, false, false, false); 
+            this.controls[1].setValue(this.value.opacity.value, this.value.opacity.decimals, false, false, false); 
         }
 
 

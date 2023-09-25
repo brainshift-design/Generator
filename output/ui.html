@@ -5305,6 +5305,7 @@ a
                 <h1 style='margin-top: 20px;'>What's new</h1>
 
                 <p>•  added more tutorials</p>
+                <p>•  fixed UI bugs</p>
                 
                 <p><br/><br/><div id='chkHideWhatsNew'></div></p>
             </div>
@@ -15057,7 +15058,8 @@ extends GValue
     equals(num)
     {
         return num
-            && this.toNumber() == num.toNumber();
+            && this.value    == num.value
+            && this.decimals == num.decimals;
     }
 
 
@@ -62331,7 +62333,8 @@ extends GValue
     equals(num)
     {
         return num
-            && this.toNumber() == num.toNumber();
+            && this.value    == num.value
+            && this.decimals == num.decimals;
     }
 
 
@@ -88436,9 +88439,10 @@ extends Control
 
 
 
-    setValue(value, fireChangeEvent = true, confirm = true, fullRange = true, fromWheel = false, shiftKey = false)
+    setValue(value, decimals, fireChangeEvent = true, confirm = true, fullRange = true, fromWheel = false, shiftKey = false)
     {
-        const oldValue = this.value;
+        const oldValue    = this.value;
+        const oldDecimals = this.decimals;
 
         
         if (this.wrapValue)
@@ -88463,7 +88467,7 @@ extends Control
         if (    isNaN(value) && !isNaN(oldValue)
             || !isNaN(value) &&  isNaN(oldValue)
             || Math.abs(value - oldValue) > Number.EPSILON
-            || decDigits(value) != decDigits(oldValue))
+            || decimals != oldDecimals)
         {
             if (   value > -this.epsilon
                 && value <  0) // guard against -0
@@ -88475,7 +88479,8 @@ extends Control
 
             if (   fireChangeEvent
                 && this.enableChangeEvent
-                && value != oldValue)
+                && (   value    != oldValue
+                    || decimals != oldDecimals))
                 this.dispatchEvent(this.onchange);
         }
 
@@ -98374,7 +98379,7 @@ extends Parameter
         if (updateControl)
         {
             this.controls[0].setDecimals(value.decimals, value.decimals);
-            this.controls[0].setValue(value.value, false, false); 
+            this.controls[0].setValue(value.value, value.decimals, false, false); 
         }
 
 
@@ -98527,7 +98532,8 @@ extends Parameter
 
     isDefault = () => 
            !this.alwaysSaveValue
-         && this.value.equals(this.defaultValue);
+         && this.value.value    == this.defaultValue.value
+         && this.value.decimals == this.defaultValue.decimals;
 
 
 
@@ -98608,7 +98614,7 @@ extends NumberParamBase
             if (!e.detail.success)
                 return;
 
-
+                
             if (this.controls[0].allowEditDecimals)
             {
                 this.setValue(new NumberValue(e.detail.value, dec), true);
@@ -99814,7 +99820,7 @@ extends Parameter
         if (updateControl)
         {
             this.controls[0].setValue(this.value.color,         false, false); 
-            this.controls[1].setValue(this.value.opacity.value, false, false, false); 
+            this.controls[1].setValue(this.value.opacity.value, this.value.opacity.decimals, false, false, false); 
         }
 
 
@@ -119811,7 +119817,7 @@ extends OpColorBase
                 this.paramContrast.controls[0].setDecimals(1);
                 this.paramContrast.controls[0].setSuffix('<span style="font-size: 5; position: relative; top: -7px; left: 2px;">L</span><span style="font-size: 3; font-weight: bold; position: relative; top: -9px; left: 2px;">c</span>');
 
-                this.paramContrast.controls[0].setValue(contrast.value, false, false);
+                this.paramContrast.controls[0].setValue(contrast.value, contrast.decimals, false, false);
             }
 
 
@@ -135454,7 +135460,11 @@ function uiShowParamValue(nodeId, paramName, value)
     if (!!node) // this is for deleted nodes which still exist
     {           // in genGraph but no longer in graph
         const param = node.params.find(p => p.name == paramName);
-        param.controls[0].setValue(value, false);
+
+        if (param.type == NUMBER_VALUE)
+            param.controls[0].setValue(value, decDigits(value), false);
+        else
+            param.controls[0].setValue(value, false);
     }
 }
 
@@ -135576,7 +135586,7 @@ function loadNode(_node, pasting)
 {
     // replace legacy
     //if (_node.type == 'DISTR') _node.type = DEFINE;
-    if (_node.type == 'ITEMS') _node.type = LIST;
+    //if (_node.type == 'ITEMS') _node.type = LIST;
 
 
     const node = createNode(_node.type);
@@ -151072,8 +151082,8 @@ const presetFeedback = '\
             "renamed": "false",\
             "enabled": "true",\
             "highlight": "4",\
-            "x": "2616",\
-            "y": "236",\
+            "x": "2716",\
+            "y": "336",\
             "z": "0",\
             "params":\
             [\
@@ -151087,12 +151097,13 @@ const presetFeedback = '\
             "renamed": "false",\
             "enabled": "true",\
             "highlight": "0",\
-            "x": "3282",\
-            "y": "-353",\
+            "x": "3382",\
+            "y": "-253",\
             "z": "1",\
             "params":\
             [\
                     ["NUM#", "scaleX", "106.1873696824477,0"],\
+                    ["NUM#", "scaleY", "103.96793015020337,0"],\
                     ["NUM#", "affectSpace", "0,0"]\
             ]\
             },\
@@ -151103,13 +151114,14 @@ const presetFeedback = '\
             "renamed": "false",\
             "enabled": "true",\
             "highlight": "0",\
-            "x": "2346",\
-            "y": "-341",\
+            "x": "2446",\
+            "y": "-241",\
             "z": "2",\
             "params":\
             [\
                     ["NUM#", "width", "200,0"],\
-                    ["NUM#", "height", "1.5,1"]\
+                    ["NUM#", "height", "2,0"],\
+                    ["NUM#", "round", "10,0"]\
             ]\
             },\
             {\
@@ -151119,8 +151131,8 @@ const presetFeedback = '\
             "renamed": "false",\
             "enabled": "true",\
             "highlight": "0",\
-            "x": "3061",\
-            "y": "-86",\
+            "x": "3184",\
+            "y": "-41",\
             "z": "3",\
             "params":\
             [\
@@ -151137,8 +151149,8 @@ const presetFeedback = '\
             "renamed": "false",\
             "enabled": "true",\
             "highlight": "0",\
-            "x": "2884",\
-            "y": "-88",\
+            "x": "3007",\
+            "y": "-43",\
             "z": "4",\
             "params":\
             [\
@@ -151156,8 +151168,8 @@ const presetFeedback = '\
             "renamed": "false",\
             "enabled": "true",\
             "highlight": "0",\
-            "x": "3488",\
-            "y": "215",\
+            "x": "3588",\
+            "y": "315",\
             "z": "5",\
             "active": "true",\
             "params":\
@@ -151172,8 +151184,8 @@ const presetFeedback = '\
             "renamed": "false",\
             "enabled": "true",\
             "highlight": "0",\
-            "x": "2851",\
-            "y": "-353",\
+            "x": "2951",\
+            "y": "-253",\
             "z": "6",\
             "params":\
             [\
@@ -151187,8 +151199,8 @@ const presetFeedback = '\
             "renamed": "false",\
             "enabled": "true",\
             "highlight": "0",\
-            "x": "3077",\
-            "y": "-353",\
+            "x": "3177",\
+            "y": "-253",\
             "z": "7",\
             "params":\
             [\
@@ -151196,22 +151208,38 @@ const presetFeedback = '\
             ]\
             },\
             {\
-            "type": "COL",\
-            "id": "color",\
-            "name": "color",\
+            "type": "NOISE",\
+            "id": "noise3",\
+            "name": "noise",\
             "renamed": "false",\
             "enabled": "true",\
             "highlight": "0",\
-            "x": "2181",\
-            "y": "-160",\
+            "x": "3184",\
+            "y": "169",\
             "z": "8",\
-            "prevSpace": "hex",\
             "params":\
             [\
-                    ["NUM#", "space", "0,0"],\
-                    ["NUM#", "c1", "28,0"],\
-                    ["NUM#", "c2", "185,0"],\
-                    ["NUM#", "c3", "67,0"]\
+                    ["NUM#", "seed", "161.1398079517017,0"],\
+                    ["NUM#", "min", "90,0"],\
+                    ["NUM#", "max", "110,0"],\
+                    ["NUM#", "scale", "11,0"]\
+            ]\
+            },\
+            {\
+            "type": "FILL",\
+            "id": "fill",\
+            "name": "fill",\
+            "renamed": "false",\
+            "enabled": "true",\
+            "highlight": "0",\
+            "x": "2268",\
+            "y": "-103",\
+            "z": "9",\
+            "active": "true",\
+            "params":\
+            [\
+                    ["COL#", "color", "1,0 28,0 185,0 67,0"],\
+                    ["NUM#", "opacity", "60,0"]\
             ]\
             }\
         ],\
@@ -151242,7 +151270,15 @@ const presetFeedback = '\
             "list": "false"\
             },\
             {\
-            "outputNodeId": "color",\
+            "outputNodeId": "noise3",\
+            "outputId": "h0",\
+            "outputOrder": "0",\
+            "inputNodeId": "scale",\
+            "inputId": "scaleY",\
+            "list": "false"\
+            },\
+            {\
+            "outputNodeId": "fill",\
             "outputId": "h0",\
             "outputOrder": "0",\
             "inputNodeId": "rect",\

@@ -374,7 +374,11 @@ function uiShowParamValue(nodeId, paramName, value)
     if (!!node) // this is for deleted nodes which still exist
     {           // in genGraph but no longer in graph
         const param = node.params.find(p => p.name == paramName);
-        param.controls[0].setValue(value, false);
+
+        if (param.type == NUMBER_VALUE)
+            param.controls[0].setValue(value, decDigits(value), false);
+        else
+            param.controls[0].setValue(value, false);
     }
 }
 
@@ -496,7 +500,7 @@ function loadNode(_node, pasting)
 {
     // replace legacy
     //if (_node.type == 'DISTR') _node.type = DEFINE;
-    if (_node.type == 'ITEMS') _node.type = LIST;
+    //if (_node.type == 'ITEMS') _node.type = LIST;
 
 
     const node = createNode(_node.type);

@@ -926,8 +926,8 @@ const presetFeedback = '\
             "renamed": "false",\
             "enabled": "true",\
             "highlight": "4",\
-            "x": "2616",\
-            "y": "236",\
+            "x": "2716",\
+            "y": "336",\
             "z": "0",\
             "params":\
             [\
@@ -941,12 +941,13 @@ const presetFeedback = '\
             "renamed": "false",\
             "enabled": "true",\
             "highlight": "0",\
-            "x": "3282",\
-            "y": "-353",\
+            "x": "3382",\
+            "y": "-253",\
             "z": "1",\
             "params":\
             [\
                     ["NUM#", "scaleX", "106.1873696824477,0"],\
+                    ["NUM#", "scaleY", "103.96793015020337,0"],\
                     ["NUM#", "affectSpace", "0,0"]\
             ]\
             },\
@@ -957,13 +958,14 @@ const presetFeedback = '\
             "renamed": "false",\
             "enabled": "true",\
             "highlight": "0",\
-            "x": "2346",\
-            "y": "-341",\
+            "x": "2446",\
+            "y": "-241",\
             "z": "2",\
             "params":\
             [\
                     ["NUM#", "width", "200,0"],\
-                    ["NUM#", "height", "1.5,1"]\
+                    ["NUM#", "height", "2,0"],\
+                    ["NUM#", "round", "10,0"]\
             ]\
             },\
             {\
@@ -973,8 +975,8 @@ const presetFeedback = '\
             "renamed": "false",\
             "enabled": "true",\
             "highlight": "0",\
-            "x": "3061",\
-            "y": "-86",\
+            "x": "3184",\
+            "y": "-41",\
             "z": "3",\
             "params":\
             [\
@@ -991,8 +993,8 @@ const presetFeedback = '\
             "renamed": "false",\
             "enabled": "true",\
             "highlight": "0",\
-            "x": "2884",\
-            "y": "-88",\
+            "x": "3007",\
+            "y": "-43",\
             "z": "4",\
             "params":\
             [\
@@ -1010,8 +1012,8 @@ const presetFeedback = '\
             "renamed": "false",\
             "enabled": "true",\
             "highlight": "0",\
-            "x": "3488",\
-            "y": "215",\
+            "x": "3588",\
+            "y": "315",\
             "z": "5",\
             "active": "true",\
             "params":\
@@ -1026,8 +1028,8 @@ const presetFeedback = '\
             "renamed": "false",\
             "enabled": "true",\
             "highlight": "0",\
-            "x": "2851",\
-            "y": "-353",\
+            "x": "2951",\
+            "y": "-253",\
             "z": "6",\
             "params":\
             [\
@@ -1041,8 +1043,8 @@ const presetFeedback = '\
             "renamed": "false",\
             "enabled": "true",\
             "highlight": "0",\
-            "x": "3077",\
-            "y": "-353",\
+            "x": "3177",\
+            "y": "-253",\
             "z": "7",\
             "params":\
             [\
@@ -1050,22 +1052,38 @@ const presetFeedback = '\
             ]\
             },\
             {\
-            "type": "COL",\
-            "id": "color",\
-            "name": "color",\
+            "type": "NOISE",\
+            "id": "noise3",\
+            "name": "noise",\
             "renamed": "false",\
             "enabled": "true",\
             "highlight": "0",\
-            "x": "2181",\
-            "y": "-160",\
+            "x": "3184",\
+            "y": "169",\
             "z": "8",\
-            "prevSpace": "hex",\
             "params":\
             [\
-                    ["NUM#", "space", "0,0"],\
-                    ["NUM#", "c1", "28,0"],\
-                    ["NUM#", "c2", "185,0"],\
-                    ["NUM#", "c3", "67,0"]\
+                    ["NUM#", "seed", "161.1398079517017,0"],\
+                    ["NUM#", "min", "90,0"],\
+                    ["NUM#", "max", "110,0"],\
+                    ["NUM#", "scale", "11,0"]\
+            ]\
+            },\
+            {\
+            "type": "FILL",\
+            "id": "fill",\
+            "name": "fill",\
+            "renamed": "false",\
+            "enabled": "true",\
+            "highlight": "0",\
+            "x": "2268",\
+            "y": "-103",\
+            "z": "9",\
+            "active": "true",\
+            "params":\
+            [\
+                    ["COL#", "color", "1,0 28,0 185,0 67,0"],\
+                    ["NUM#", "opacity", "60,0"]\
             ]\
             }\
         ],\
@@ -1096,7 +1114,15 @@ const presetFeedback = '\
             "list": "false"\
             },\
             {\
-            "outputNodeId": "color",\
+            "outputNodeId": "noise3",\
+            "outputId": "h0",\
+            "outputOrder": "0",\
+            "inputNodeId": "scale",\
+            "inputId": "scaleY",\
+            "list": "false"\
+            },\
+            {\
+            "outputNodeId": "fill",\
             "outputId": "h0",\
             "outputOrder": "0",\
             "inputNodeId": "rect",\

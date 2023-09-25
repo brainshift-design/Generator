@@ -59,7 +59,7 @@ extends NumberParamBase
             if (!e.detail.success)
                 return;
 
-
+                
             if (this.controls[0].allowEditDecimals)
             {
                 this.setValue(new NumberValue(e.detail.value, dec), true);

@@ -200,7 +200,7 @@ extends OpColorBase
                 this.paramContrast.controls[0].setDecimals(1);
                 this.paramContrast.controls[0].setSuffix('<span style="font-size: 5; position: relative; top: -7px; left: 2px;">L</span><span style="font-size: 3; font-weight: bold; position: relative; top: -9px; left: 2px;">c</span>');
 
-                this.paramContrast.controls[0].setValue(contrast.value, false, false);
+                this.paramContrast.controls[0].setValue(contrast.value, contrast.decimals, false, false);
             }
 
 
