@@ -78,17 +78,10 @@ extends OperatorBase
     getHeaderColors(options = {})
     {
         const colors = super.getHeaderColors(options);
-
-        
-        const type = this.outputs[0].types[0];
+        const type   = this.outputs[0].types[0];
 
 
-        // const back = rgb_a(rgbFromType(type, this.active), 0.95);
-
-        // colors.back = back;
-
-
-        colors.text   = isDark(colors.back) ? [1, 1, 1, 1] : [0, 0, 0, 1]; 
+        colors.text  = isDark(colors.back) ? [1, 1, 1, 1] : [0, 0, 0, 1]; 
 
         const gray =
                this.active

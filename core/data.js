@@ -68,7 +68,10 @@ function rgbFromTypeMode(type, active, mode)
     }
 
     
-    return [0xff, 0, 0xff];
+    // return [0xff, 0, 0xff];
+    return mode 
+         ? rgbFlowDark         
+         : rgbFlowLight;
 }
 
 
