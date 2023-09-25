@@ -25,7 +25,10 @@ extends Action
     do(updateNodes)
     {
         // this happens in the UI
-        updateComments(this.prevSelectedIds);
+
+        updateComments([
+            ...this.selectedIds,
+            ...this.prevSelectedIds]);
     }
 
 
@@ -33,7 +36,10 @@ extends Action
     undo(updateNodes)
     {
         graphView.selectByIds(this.prevSelectedIds);
-        updateComments(this.selectedIds);
+
+        updateComments([
+            ...this.selectedIds,
+            ...this.prevSelectedIds]);
     }
 
 
@@ -42,8 +48,9 @@ extends Action
     {
         graphView.selectByIds(this.selectedIds);
 
-        updateComments(this.selectedIds);
-        updateComments(this.prevSelectedIds);
+        updateComments([
+            ...this.selectedIds,
+            ...this.prevSelectedIds]);
     }
 }
 
