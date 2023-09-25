@@ -217,6 +217,7 @@ var menuItemWindowBottom;
 
 var menuItemGraphPaste;
 var menuItemGraphPasteConnected;
+var menuItemGraphDeactivateAll;
 
 var menuItemNodeEditGroup;
 var menuItemNodeSepGroup;
@@ -239,7 +240,7 @@ var menuItemNodeHighlight;
 var menuItemNodeSelect;
 // var menuItemNodeBringToFront;
 // var menuItemNodeSendToBack;
-//var menuItemNodeActivate;
+var menuItemNodeActivate;
 var menuItemNodeSaveAsTemplate;
 var menuItemNodeSep4;
 var menuItemNodeEnableDisable;
@@ -744,17 +745,20 @@ menuFlow = new Menu('Flow', true, false);
                                       
     menuGraph = new Menu('Graph menu', false, false);
     menuGraph.addItems([
-        menuItemGraphPaste          = new MenuItem('Paste here',       null, {shortcut: osCtrl()      + 'V', callback: e => { hideAllMenus(); graphView.pasteCopiedNodes(false, e.clientX, e.clientY - getTopHeight()); }}),
-        menuItemGraphPasteConnected = new MenuItem('Paste connected',  null, {shortcut: osCtrlShift() + 'V', callback: e => { hideAllMenus(); graphView.pasteCopiedNodes(true,  e.clientX, e.clientY - getTopHeight()); }}),
-                                      new MenuItem('',                 null, {separator: true}),
-                                      new MenuItem('Create node...',   null, {childMenu: wholeMenu}),
-                                      new MenuItem('',                 null, {separator: true}),
-                                      new MenuItem('Quick actions...', null, {shortcut: osCtrl() + '/',      callback: () => showSearchBox() })]);
+        menuItemGraphPaste          = new MenuItem('Paste here',           null, {shortcut: osCtrl()      + 'V', callback: e => { hideAllMenus(); graphView.pasteCopiedNodes(false, e.clientX, e.clientY - getTopHeight()); }}),
+        menuItemGraphPasteConnected = new MenuItem('Paste connected',      null, {shortcut: osCtrlShift() + 'V', callback: e => { hideAllMenus(); graphView.pasteCopiedNodes(true,  e.clientX, e.clientY - getTopHeight()); }}),
+                                      new MenuItem('',                     null, {separator: true}),
+        menuItemGraphDeactivateAll  = new MenuItem('Deactivate all nodes', null, {callback: () => uiDeactivateAllNodes()}),
+                                      new MenuItem('',                     null, {separator: true}),
+                                      new MenuItem('Create node...',       null, {childMenu: wholeMenu}),
+                                      new MenuItem('',                     null, {separator: true}),
+                                      new MenuItem('Quick actions...',     null, {shortcut: osCtrl() + '/',      callback: () => showSearchBox() })]);
 
     menuGraph.init = () => 
     {
         menuItemGraphPaste         .setEnabled(copiedNodesJson != '');
         menuItemGraphPasteConnected.setEnabled(copiedNodesJson != '');
+        menuItemGraphDeactivateAll .setEnabled(graph.nodes.find(n => n.active) != null);
     };
 
 
@@ -793,13 +797,13 @@ menuFlow = new Menu('Flow', true, false);
         menuItemNodeRename         = new MenuItem('Rename',           null, {shortcut:  osCtrl() + 'R',       callback: e => { hideAllMenus(); graphView.renameSelectedNode(); }}),
         menuItemNodeHighlight      = new MenuItem('Highlight',        null, {childMenu: menuNodeHighlight}),
         menuItemNodeSep3           = new MenuItem('',                 null, {separator: true}),
+        menuItemNodeActivate       = new MenuItem('Activate',         null, {callback: () => makeSelectedNodesActive()}),
         menuItemNodeEnableDisable  = new MenuItem('Enable/Disable',   null, {shortcut:  osCtrlShift() + 'E',  callback: () => actionManager.do(new ToggleDisableNodesAction(graphView.selectedNodes.map(n => n.id)))}),
         menuItemNodeSelect         = new MenuItem('Select',           null, {childMenu: menuNodeSelect}),
         // menuItemNodeEdit           = new MenuItem('Edit...',       null, {callback: e => { hideAllMenus(); graphView.editSelectedCustomNode(); }}),
                                     //  new MenuItem('',              null, {separator: true}),
         // menuItemNodeSaveAsTemplate = new MenuItem('Save as template', null, {callback: e => { hideAllMenus(); showSaveAsTemplateDialog(); }}),
         //                              new MenuItem('',                 null, {separator: true}),
-        // menuItemNodeActivate    = new MenuItem('Activate',         null, {callback: () => makeSelectedNodesActive()}),
         menuItemNodeSep4           = new MenuItem('',                 null, {separator: true}),
         menuItemNodeRemove         = new MenuItem('Remove',           null, {shortcut:  osCtrl() + '⌫',      callback: e => { hideAllMenus(); graphView.removeSelectedNodes(true); }}),
                                      new MenuItem('',                 null, {separator: true}),

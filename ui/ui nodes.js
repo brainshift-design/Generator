@@ -1232,3 +1232,30 @@ function setNodeHighlight(nodes, color)
 {
     actionManager.do(new HighlightNodesAction(nodes.map(n => n.nodeId), color));
 }
+
+
+
+function uiDeactivateAllNodes()
+{
+    stopRequestId = curRequestId;
+
+            
+    const activeNodes = [];
+
+    for (const node of graph.nodes)
+    {
+        if (node.active)
+        {
+            uiMakeNodePassive(node);
+            activeNodes.push(node);
+
+            if (node.type == LIST)
+                pushUpdate(null, [node]);
+        }
+    }
+
+    uiSaveNodes(activeNodes.map(n => n.id));
+    graphView.updateNodes(activeNodes);
+    
+    uiDeleteObjectsAndStyles(activeNodes.map(n => n.id));
+}
