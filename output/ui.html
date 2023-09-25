@@ -5304,12 +5304,7 @@ a
             <div id='whatsNewBody'>
                 <h1 style='margin-top: 20px;'>What's new</h1>
 
-                <p>•  added built-in tutorials</p>
-                <p>•  Number ⟶ Text can now convert number lists directly</p>
-                <p>•  fixed If/else input issues</p>
-                <p>•  fixed Correct color node</p>
-                <p>•  fixed resize bug in Text join node</p>
-                <p>•  fixed panel renaming bug</p>
+                <p>•  fixed UI issue</p>
                 
                 <p><br/><br/><div id='chkHideWhatsNew'></div></p>
             </div>
@@ -5770,7 +5765,7 @@ a
 
 
 
-const generatorVersion = 217;
+const generatorVersion = 218;
 
 
 const MAX_INT32        = 2147483647;
@@ -50798,7 +50793,7 @@ onerror = (event, source, line, pos, error) =>
 };
 
 
-const generatorVersion = 217;
+const generatorVersion = 218;
 
 
 const MAX_INT32        = 2147483647;
@@ -94324,17 +94319,17 @@ menuFlow = new Menu('Flow', true, false);
         updatePanMode(false);
     }});
 
-    btnComment = new MenuButton('Add comment', null, {callback: () => 
-    {
-        const create = new CreateNodeAction(COMMENT, btnComment.div);
-        actionManager.do(create);
+    // btnComment = new MenuButton('Add comment', null, {callback: () => 
+    // {
+    //     const create = new CreateNodeAction(COMMENT, btnComment.div);
+    //     actionManager.do(create);
 
-        graphView.updateNodes([create.node]);
-        graphView.updateScrollWithBounds();
+    //     graphView.updateNodes([create.node]);
+    //     graphView.updateScrollWithBounds();
 
-        hideAllMenus();
-        updatePanMode(false);
-    }});
+    //     hideAllMenus();
+    //     updatePanMode(false);
+    // }});
 
 
     //menuBar.appendChild(createDiv('', 'groupName'));
@@ -94405,7 +94400,7 @@ menuFlow = new Menu('Flow', true, false);
     btnLayer  .setIcon(iconEffects);
     btnShape  .setIcon(iconShapes);
     btnHand   .setIcon(iconHand);
-    btnComment.setIcon(iconComment);
+    //btnComment.setIcon(iconComment);
     btnPanel  .setIcon(iconPanel);
     btnSolo   .setIcon(iconSolo);
 
@@ -132183,7 +132178,7 @@ function createSessionId()
 
 function subscribed()
 {
-    return true;//currentSessionId == createSessionId();
+    return false;//currentSessionId == createSessionId();
 }
 
 
@@ -134454,6 +134449,8 @@ function finishLoading(_nodes)
 
 function finishLoadingNodes(_nodes, loadedNodes, updateNodes, duplicates = false)
 {
+    loadedNodes.forEach(n => n.updateSubscribeStatus(subscribed()));
+
     _nodes
         .filter(_n => _n.active)
         .map   (_n => nodeFromId(duplicates ? _n.newId : (pageIdFromPath(_n.id) == NULL ? makeNodePath(_n) : _n.id)))

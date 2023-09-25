@@ -486,6 +486,8 @@ function finishLoading(_nodes)
 
 function finishLoadingNodes(_nodes, loadedNodes, updateNodes, duplicates = false)
 {
+    loadedNodes.forEach(n => n.updateSubscribeStatus(subscribed()));
+
     _nodes
         .filter(_n => _n.active)
         .map   (_n => nodeFromId(duplicates ? _n.newId : (pageIdFromPath(_n.id) == NULL ? makeNodePath(_n) : _n.id)))
