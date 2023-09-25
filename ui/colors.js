@@ -19,7 +19,7 @@ const rgbTextLight         = hex2rgb('#FBE6BE');
 
 
 const rgbActiveFlowDark    = hex2rgb('#8B8B8B');
-const rgbFlowDark          = hex2rgb('#4D4D4D');
+const rgbFlowDark          = hex2rgb('#aaa');
 
 const rgbActiveNumberDark  = hex2rgb('#1785CE');
 const rgbNumberDark        = hex2rgb('#2B4E6E');

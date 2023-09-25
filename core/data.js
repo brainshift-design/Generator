@@ -58,9 +58,13 @@ function rgbFromTypeMode(type, active, mode)
         case COLOR_STOP:
         case GRADIENT:
 
-            return active 
-                ? (mode ? rgbActiveFlowDark   : rgbActiveFlowLight)
-                : (mode ? rgbFlowDark         : rgbFlowLight      );
+            return mode 
+                 ? rgbFlowDark         
+                 : rgbFlowLight;
+
+            // return active 
+            //     ? (mode ? rgbActiveFlowDark   : rgbActiveFlowLight)
+            //     : (mode ? rgbFlowDark         : rgbFlowLight      );
     }
 
     
