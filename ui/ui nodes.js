@@ -496,6 +496,7 @@ function loadNode(_node, pasting)
 {
     // replace legacy
     //if (_node.type == 'DISTR') _node.type = DEFINE;
+    if (_node.type == 'ITEMS') _node.type = LIST;
 
 
     const node = createNode(_node.type);

@@ -9,8 +9,7 @@
             <div class='presetTab' onclick="setCurrentPresetTab(4);">Text</div>
             <div class='presetTab' onclick="setCurrentPresetTab(5);">Colors</div>
             <div class='presetTab' onclick="setCurrentPresetTab(6);">Shapes</div>
-            <div class='presetTab' onclick="setCurrentPresetTab(7);">Variables</div>
-            <div class='presetTab' onclick="setCurrentPresetTab(8);">Examples</div>
+            <div class='presetTab' onclick="setCurrentPresetTab(7);">Examples</div>
         </div>
         <div id='presetClose' onclick="hidePresets();"></div>
     </div>
@@ -33,6 +32,9 @@
                 <div class='preset' onclick="loadPresetGraph('ifElse');">If / else</div>
                 <div class='preset' onclick="loadPresetGraph('select');">Select from list</div>
                 <div class='preset' onclick="loadPresetGraph('tableBasics');">CSV and tables</div>
+            </div>
+            <div class='presetGroup'>
+                <div class='preset' onclick="loadPresetGraph('basicVariables');">Figma variables</div>
             </div>
         </div>
 
@@ -90,17 +92,11 @@
                 <div class='preset' onclick="loadPresetGraph('shapesStyles');">Shapes & styles</div>
                 <div class='preset' onclick="loadPresetGraph('basicTransform');">Basic transform</div>
                 <div class='preset' onclick="loadPresetGraph('combinedTransform');">Combined transform</div>
+                <div class='preset' onclick="loadPresetGraph('feedback');">Loop feedback</div>
             </div>
         </div>
     
 
-        <div class='presetPage' id='presetPageVariables'>
-            <div class='presetGroup'>
-                <div class='preset' onclick="loadPresetGraph('basicVariables');">Basic variables</div>
-            </div>
-        </div>
-
-        
         <div class='presetPage' id='presetPageExamples'>
             <div class='presetGroup'>
                 <div class='preset' onclick="loadPresetGraph('booksOnShelf');">Books on shelf</div>

@@ -107,6 +107,7 @@ function getPresetGraph(graphId)
         case 'shapesStyles':         return presetShapesStyles;
         case 'basicTransform':       return presetBasicTransform;
         case 'combinedTransform':    return presetCombinedTransform;
+        case 'feedback':             return presetFeedback;
 
 
         case 'basicVariables':       return presetBasicVariables;
