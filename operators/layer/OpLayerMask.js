@@ -1,6 +1,10 @@
 class OpLayerMask
 extends OperatorBase
 {
+    paramMaskType;
+
+
+
     constructor()
     {
         super(LAYER_MASK, 'mask', 'mask', iconMask);
@@ -10,6 +14,8 @@ extends OperatorBase
         
 
         this.addOutput(new Output([LAYER_MASK_VALUE], this.output_genRequest, getNodeOutputValuesForUndo, this.output_backInit));
+
+        this.addParam(this.paramMaskType = new SelectParam('maskType', 'type', false, true, true, ['alpha', 'vector', 'luminance'], 0));
     }
     
     
@@ -25,6 +31,9 @@ extends OperatorBase
 
         const [request, ignore] = this.node.genRequestStart(gen);
         if (ignore) return request;
+
+
+        request.push(...this.node.paramMaskType.genRequest(gen));
 
 
         gen.scope.pop();

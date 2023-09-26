@@ -19,7 +19,7 @@ extends FigmaObject
     isDeco;
     isXform;
 
-    isMask  = false;
+    maskType = 0;
 
 
 
@@ -58,7 +58,7 @@ extends FigmaObject
         this.isDeco           = base.isDeco;
         this.isXform          = base.isXform;
 
-        this.isMask           = base.isMask;
+        this.maskType         = base.maskType;
     }
 
 
@@ -93,7 +93,7 @@ extends FigmaObject
 
             /* 19 */ this.isDeco,
 
-            /* 20 */ this.isMask
+            /* 20 */ this.maskType
         ];
     }
 }

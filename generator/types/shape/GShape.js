@@ -123,7 +123,7 @@ extends GShapeBase
                 else if (prop.type == INNER_SHADOW_VALUE)  addInnerShadowProp(obj, prop);
                 else if (prop.type ==   LAYER_BLUR_VALUE)  addLayerBlurProp  (obj, prop);
                 else if (prop.type ==    BACK_BLUR_VALUE)  addBackBlurProp   (obj, prop);
-                else if (prop.type ==   LAYER_MASK_VALUE)  addMaskProp       (obj);
+                else if (prop.type ==   LAYER_MASK_VALUE)  addMaskProp       (obj, prop);
             }
         }
     }

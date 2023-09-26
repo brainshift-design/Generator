@@ -2,21 +2,23 @@ class LayerMaskValue
 extends GValue
 {
     visible;
+    maskType;
 
 
 
-    constructor(visible = true)
+    constructor(maskType, visible = true)
     {
         super(LAYER_MASK_VALUE);
 
-        this.visible = visible;
+        this.maskType = maskType.copy();
+        this.visible  = visible;
     }
 
 
     
     copy()
     {
-        const copy = new LayerMaskValue(this.visible);
+        const copy = new LayerMaskValue(this.maskType, this.visible);
 
         copy.copyBase(this);
 
@@ -27,7 +29,8 @@ extends GValue
 
     equals(mask)
     {
-        return this.visible === mask.visible;
+        return this.maskType == mask.maskType
+            && this.visible === mask.visible;
     }
 
 
@@ -62,7 +65,8 @@ extends GValue
 
     isValid()
     {
-        return super.isValid();
+        return super.isValid()
+            && this.maskType.isValid();
     }
 
 
@@ -74,7 +78,7 @@ extends GValue
 
 
 
-    static NaN = Object.freeze(new LayerMaskValue(false));
+    static NaN = Object.freeze(new LayerMaskValue(NumberValue.NaN, false));
 }
 
 
@@ -84,7 +88,7 @@ function parseLayerMaskValue(str)
     const mask = 
         str == NAN_DISPLAY
         ? LayerMaskValue.NaN
-        : new LayerMaskValue(true);
+        : new LayerMaskValue(new NumberValue(parseInt(str)), true);
 
     return [mask, 1];
 }

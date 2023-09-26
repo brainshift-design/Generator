@@ -221,6 +221,7 @@
 
 
 ../operators/OpComment.js
+../operators/OpCommentArrow.js
 ../operators/OpPanel.js
 
 

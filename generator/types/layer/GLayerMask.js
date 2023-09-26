@@ -1,6 +1,10 @@
 class GLayerMask
 extends GOperator
 {
+    maskType;
+
+
+
     constructor(nodeId, options)
     {
         super(LAYER_MASK, nodeId, options);
@@ -14,6 +18,8 @@ extends GOperator
 
         copy.copyBase(this);
 
+        if (this.maskType) copy.maskType = this.maskType.copy();
+
         return copy;
     }
 
@@ -25,10 +31,16 @@ extends GOperator
             return this;
 ``
 
-        this.value = new LayerMaskValue(this.options.enabled);
+        const maskType = (await this.maskType.eval(parse)).toValue();
 
 
-        this.setUpdateValues(parse, [['', NullValue]]);
+        this.value = new LayerMaskValue(maskType, this.options.enabled);
+
+
+        this.setUpdateValues(parse, 
+        [
+            ['maskType', maskType]
+        ]);
 
 
         this.validate();
@@ -40,7 +52,7 @@ extends GOperator
 
     toValue()
     {
-        return new LayerMaskValue(this.options.enabled);
+        return this.value.copy();
     }
 
 

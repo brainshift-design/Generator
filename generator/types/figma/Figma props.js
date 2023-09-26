@@ -300,7 +300,7 @@ function addBackBlurProp(obj, prop)
 
 
 
-function addMaskProp(obj)
+function addMaskProp(obj, mask)
 {
-    obj.isMask = true;
+    obj.maskType = mask.maskType.value + 1;
 }

@@ -83,11 +83,11 @@ extends GShape
 
             if (this.options.enabled)
             {
-                obj.fills   = [];
-                obj.strokes = [];
-                obj.effects = [];
+                obj.fills    = [];
+                obj.strokes  = [];
+                obj.effects  = [];
 
-                obj.isMask  = false;
+                obj.maskType = 0;
             }
         }
 

@@ -238,4 +238,5 @@
 
 
 ../generator/types/GComment.js
+../generator/types/GCommentArrow.js
 ../generator/types/GPanel.js

@@ -19,7 +19,7 @@ function isConnKey(key) { return isTagKey(key, connTag); }
 function noPageTag(key) { return noTag(key, pageTag); }
 function noNodeTag(key) { return noTag(key, nodeTag); }
 function noConnTag(key) { return noTag(key, connTag); }
-const generatorVersion = 219;
+const generatorVersion = 220;
 const MAX_INT32 = 2147483647;
 const NULL = '';
 const HTAB = '  '; // half-tab
@@ -2593,18 +2593,27 @@ function setObjectProps(figObj, genObj, phantom = true) {
     setObjectEffects(figObj, genObj);
     setObjectStrokes(figObj, genObj, phantom);
     setObjectFills(figObj, genObj);
-    figObj.isMask = genObj[FO_MASK];
+    const maskType = genObj[FO_MASK];
+    figObj.isMask = maskType > 0;
+    // if (figObj.isMask)
+    // {
+    //     switch (maskType)
+    //     {
+    //         case 1: figObj.maskType = 'ALPHA';     break;
+    //         case 2: figObj.maskType = 'VECTOR';    break;
+    //         case 3: figObj.maskType = 'LUMINANCE'; break;
+    //     }
+    // }
     if (figObj.isMask
         && figObj.fills.length == 0
         && figObj.strokes.length == 0)
-        figObj.fills = [
-            {
-                type: 'SOLID',
-                color: { r: 0, g: 0, b: 0 },
-                opacity: 1,
-                blendMode: 'NORMAL'
-            }
-        ];
+        figObj.fills =
+            [{
+                    type: 'SOLID',
+                    color: { r: 0, g: 0, b: 0 },
+                    opacity: 1,
+                    blendMode: 'NORMAL'
+                }];
 }
 function setObjectFills(figObj, genObj) {
     if (!!genObj[FO_FILLS]

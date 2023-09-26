@@ -5304,8 +5304,7 @@ a
             <div id='whatsNewBody'>
                 <h1 style='margin-top: 20px;'>What's new</h1>
 
-                <p>•  added more tutorials</p>
-                <p>•  fixed UI bugs</p>
+                <p>•  </p>
                 
                 <p><br/><br/><div id='chkHideWhatsNew'></div></p>
             </div>
@@ -5764,7 +5763,7 @@ a
 
 
 
-const generatorVersion = 219;
+const generatorVersion = 220;
 
 
 const MAX_INT32        = 2147483647;
@@ -12031,9 +12030,9 @@ function addBackBlurProp(obj, prop)
 
 
 
-function addMaskProp(obj)
+function addMaskProp(obj, mask)
 {
-    obj.isMask = true;
+    obj.maskType = mask.maskType.value + 1;
 }
 
 
@@ -12059,7 +12058,7 @@ extends FigmaObject
     isDeco;
     isXform;
 
-    isMask  = false;
+    maskType = 0;
 
 
 
@@ -12098,7 +12097,7 @@ extends FigmaObject
         this.isDeco           = base.isDeco;
         this.isXform          = base.isXform;
 
-        this.isMask           = base.isMask;
+        this.maskType         = base.maskType;
     }
 
 
@@ -12133,7 +12132,7 @@ extends FigmaObject
 
             /* 19 */ this.isDeco,
 
-            /* 20 */ this.isMask
+            /* 20 */ this.maskType
         ];
     }
 }
@@ -17097,21 +17096,23 @@ class LayerMaskValue
 extends GValue
 {
     visible;
+    maskType;
 
 
 
-    constructor(visible = true)
+    constructor(maskType, visible = true)
     {
         super(LAYER_MASK_VALUE);
 
-        this.visible = visible;
+        this.maskType = maskType.copy();
+        this.visible  = visible;
     }
 
 
     
     copy()
     {
-        const copy = new LayerMaskValue(this.visible);
+        const copy = new LayerMaskValue(this.maskType, this.visible);
 
         copy.copyBase(this);
 
@@ -17122,7 +17123,8 @@ extends GValue
 
     equals(mask)
     {
-        return this.visible === mask.visible;
+        return this.maskType == mask.maskType
+            && this.visible === mask.visible;
     }
 
 
@@ -17157,7 +17159,8 @@ extends GValue
 
     isValid()
     {
-        return super.isValid();
+        return super.isValid()
+            && this.maskType.isValid();
     }
 
 
@@ -17169,7 +17172,7 @@ extends GValue
 
 
 
-    static NaN = Object.freeze(new LayerMaskValue(false));
+    static NaN = Object.freeze(new LayerMaskValue(NumberValue.NaN, false));
 }
 
 
@@ -17179,7 +17182,7 @@ function parseLayerMaskValue(str)
     const mask = 
         str == NAN_DISPLAY
         ? LayerMaskValue.NaN
-        : new LayerMaskValue(true);
+        : new LayerMaskValue(new NumberValue(parseInt(str)), true);
 
     return [mask, 1];
 }
@@ -34260,6 +34263,10 @@ extends GOperator1
 class GLayerMask
 extends GOperator
 {
+    maskType;
+
+
+
     constructor(nodeId, options)
     {
         super(LAYER_MASK, nodeId, options);
@@ -34273,6 +34280,8 @@ extends GOperator
 
         copy.copyBase(this);
 
+        if (this.maskType) copy.maskType = this.maskType.copy();
+
         return copy;
     }
 
@@ -34284,10 +34293,16 @@ extends GOperator
             return this;
 ``
 
-        this.value = new LayerMaskValue(this.options.enabled);
+        const maskType = (await this.maskType.eval(parse)).toValue();
 
 
-        this.setUpdateValues(parse, [['', NullValue]]);
+        this.value = new LayerMaskValue(maskType, this.options.enabled);
+
+
+        this.setUpdateValues(parse, 
+        [
+            ['maskType', maskType]
+        ]);
 
 
         this.validate();
@@ -34299,7 +34314,7 @@ extends GOperator
 
     toValue()
     {
-        return new LayerMaskValue(this.options.enabled);
+        return this.value.copy();
     }
 
 
@@ -34557,7 +34572,7 @@ extends GShapeBase
                 else if (prop.type == INNER_SHADOW_VALUE)  addInnerShadowProp(obj, prop);
                 else if (prop.type ==   LAYER_BLUR_VALUE)  addLayerBlurProp  (obj, prop);
                 else if (prop.type ==    BACK_BLUR_VALUE)  addBackBlurProp   (obj, prop);
-                else if (prop.type ==   LAYER_MASK_VALUE)  addMaskProp       (obj);
+                else if (prop.type ==   LAYER_MASK_VALUE)  addMaskProp       (obj, prop);
             }
         }
     }
@@ -37793,11 +37808,11 @@ extends GShape
 
             if (this.options.enabled)
             {
-                obj.fills   = [];
-                obj.strokes = [];
-                obj.effects = [];
+                obj.fills    = [];
+                obj.strokes  = [];
+                obj.effects  = [];
 
-                obj.isMask  = false;
+                obj.maskType = 0;
             }
         }
 
@@ -40204,6 +40219,9 @@ extends GOperator
              : null;
     }
 }
+
+
+
 
 
 
@@ -43358,6 +43376,9 @@ function genParseLayerMask(parse)
     }
 
 
+    mask.maskType = genParse(parse);
+    
+    
     genParseNodeEnd(parse, mask);
     return mask;
 }
@@ -50800,7 +50821,7 @@ onerror = (event, source, line, pos, error) =>
 };
 
 
-const generatorVersion = 219;
+const generatorVersion = 220;
 
 
 const MAX_INT32        = 2147483647;
@@ -59313,9 +59334,9 @@ function addBackBlurProp(obj, prop)
 
 
 
-function addMaskProp(obj)
+function addMaskProp(obj, mask)
 {
-    obj.isMask = true;
+    obj.maskType = mask.maskType.value + 1;
 }
 
 
@@ -59341,7 +59362,7 @@ extends FigmaObject
     isDeco;
     isXform;
 
-    isMask  = false;
+    maskType = 0;
 
 
 
@@ -59380,7 +59401,7 @@ extends FigmaObject
         this.isDeco           = base.isDeco;
         this.isXform          = base.isXform;
 
-        this.isMask           = base.isMask;
+        this.maskType         = base.maskType;
     }
 
 
@@ -59415,7 +59436,7 @@ extends FigmaObject
 
             /* 19 */ this.isDeco,
 
-            /* 20 */ this.isMask
+            /* 20 */ this.maskType
         ];
     }
 }
@@ -64379,21 +64400,23 @@ class LayerMaskValue
 extends GValue
 {
     visible;
+    maskType;
 
 
 
-    constructor(visible = true)
+    constructor(maskType, visible = true)
     {
         super(LAYER_MASK_VALUE);
 
-        this.visible = visible;
+        this.maskType = maskType.copy();
+        this.visible  = visible;
     }
 
 
     
     copy()
     {
-        const copy = new LayerMaskValue(this.visible);
+        const copy = new LayerMaskValue(this.maskType, this.visible);
 
         copy.copyBase(this);
 
@@ -64404,7 +64427,8 @@ extends GValue
 
     equals(mask)
     {
-        return this.visible === mask.visible;
+        return this.maskType == mask.maskType
+            && this.visible === mask.visible;
     }
 
 
@@ -64439,7 +64463,8 @@ extends GValue
 
     isValid()
     {
-        return super.isValid();
+        return super.isValid()
+            && this.maskType.isValid();
     }
 
 
@@ -64451,7 +64476,7 @@ extends GValue
 
 
 
-    static NaN = Object.freeze(new LayerMaskValue(false));
+    static NaN = Object.freeze(new LayerMaskValue(NumberValue.NaN, false));
 }
 
 
@@ -64461,7 +64486,7 @@ function parseLayerMaskValue(str)
     const mask = 
         str == NAN_DISPLAY
         ? LayerMaskValue.NaN
-        : new LayerMaskValue(true);
+        : new LayerMaskValue(new NumberValue(parseInt(str)), true);
 
     return [mask, 1];
 }
@@ -81542,6 +81567,10 @@ extends GOperator1
 class GLayerMask
 extends GOperator
 {
+    maskType;
+
+
+
     constructor(nodeId, options)
     {
         super(LAYER_MASK, nodeId, options);
@@ -81555,6 +81584,8 @@ extends GOperator
 
         copy.copyBase(this);
 
+        if (this.maskType) copy.maskType = this.maskType.copy();
+
         return copy;
     }
 
@@ -81566,10 +81597,16 @@ extends GOperator
             return this;
 ``
 
-        this.value = new LayerMaskValue(this.options.enabled);
+        const maskType = (await this.maskType.eval(parse)).toValue();
 
 
-        this.setUpdateValues(parse, [['', NullValue]]);
+        this.value = new LayerMaskValue(maskType, this.options.enabled);
+
+
+        this.setUpdateValues(parse, 
+        [
+            ['maskType', maskType]
+        ]);
 
 
         this.validate();
@@ -81581,7 +81618,7 @@ extends GOperator
 
     toValue()
     {
-        return new LayerMaskValue(this.options.enabled);
+        return this.value.copy();
     }
 
 
@@ -81839,7 +81876,7 @@ extends GShapeBase
                 else if (prop.type == INNER_SHADOW_VALUE)  addInnerShadowProp(obj, prop);
                 else if (prop.type ==   LAYER_BLUR_VALUE)  addLayerBlurProp  (obj, prop);
                 else if (prop.type ==    BACK_BLUR_VALUE)  addBackBlurProp   (obj, prop);
-                else if (prop.type ==   LAYER_MASK_VALUE)  addMaskProp       (obj);
+                else if (prop.type ==   LAYER_MASK_VALUE)  addMaskProp       (obj, prop);
             }
         }
     }
@@ -85075,11 +85112,11 @@ extends GShape
 
             if (this.options.enabled)
             {
-                obj.fills   = [];
-                obj.strokes = [];
-                obj.effects = [];
+                obj.fills    = [];
+                obj.strokes  = [];
+                obj.effects  = [];
 
-                obj.isMask  = false;
+                obj.maskType = 0;
             }
         }
 
@@ -87486,6 +87523,9 @@ extends GOperator
              : null;
     }
 }
+
+
+
 
 
 
@@ -94344,17 +94384,17 @@ menuFlow = new Menu('Flow', true, false);
         updatePanMode(false);
     }});
 
-    btnComment = new MenuButton('Add comment', null, {callback: () => 
-    {
-        const create = new CreateNodeAction(COMMENT, btnComment.div);
-        actionManager.do(create);
+    // btnComment = new MenuButton('Add comment', null, {callback: () => 
+    // {
+    //     const create = new CreateNodeAction(COMMENT, btnComment.div);
+    //     actionManager.do(create);
 
-        graphView.updateNodes([create.node]);
-        graphView.updateScrollWithBounds();
+    //     graphView.updateNodes([create.node]);
+    //     graphView.updateScrollWithBounds();
 
-        hideAllMenus();
-        updatePanMode(false);
-    }});
+    //     hideAllMenus();
+    //     updatePanMode(false);
+    // }});
 
 
     //menuBar.appendChild(createDiv('', 'groupName'));
@@ -94425,7 +94465,7 @@ menuFlow = new Menu('Flow', true, false);
     btnLayer  .setIcon(iconEffects);
     btnShape  .setIcon(iconShapes);
     btnHand   .setIcon(iconHand);
-    btnComment.setIcon(iconComment);
+    //btnComment.setIcon(iconComment);
     btnPanel  .setIcon(iconPanel);
     btnSolo   .setIcon(iconSolo);
 
@@ -122483,6 +122523,10 @@ extends OperatorBase
 class OpLayerMask
 extends OperatorBase
 {
+    paramMaskType;
+
+
+
     constructor()
     {
         super(LAYER_MASK, 'mask', 'mask', iconMask);
@@ -122492,6 +122536,8 @@ extends OperatorBase
         
 
         this.addOutput(new Output([LAYER_MASK_VALUE], this.output_genRequest, getNodeOutputValuesForUndo, this.output_backInit));
+
+        this.addParam(this.paramMaskType = new SelectParam('maskType', 'type', false, true, true, ['alpha', 'vector', 'luminance'], 0));
     }
     
     
@@ -122507,6 +122553,9 @@ extends OperatorBase
 
         const [request, ignore] = this.node.genRequestStart(gen);
         if (ignore) return request;
+
+
+        request.push(...this.node.paramMaskType.genRequest(gen));
 
 
         gen.scope.pop();
@@ -126321,6 +126370,9 @@ extends OperatorBase
         this.div.style.boxShadow = 'none';
     }
 }
+
+
+
 
 
 const defPanelWidth  = 400;
@@ -132175,7 +132227,7 @@ function createSessionId()
 
 function subscribed()
 {
-    return true;//currentSessionId == createSessionId();
+    return false;//currentSessionId == createSessionId();
 }
 
 

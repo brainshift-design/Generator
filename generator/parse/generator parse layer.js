@@ -701,6 +701,9 @@ function genParseLayerMask(parse)
     }
 
 
+    mask.maskType = genParse(parse);
+    
+    
     genParseNodeEnd(parse, mask);
     return mask;
 }
