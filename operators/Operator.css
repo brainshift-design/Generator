@@ -644,3 +644,10 @@
  
 .figma-light .itemsScroll:hover { background: #0004; }
 .figma-dark  .itemsScroll:hover { background: #fff4; }
+
+
+.arrowHandle
+{
+    position:      absolute;
+    background:    red;
+}

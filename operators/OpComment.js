@@ -94,11 +94,11 @@ extends OperatorBase
 
         this.headerHeight = height;
 
-        this.div         .style.height = height;
-        this.header      .style.height = height;
-        this.labelWrapper.style.height = height;
-        this.label       .style.height = height;
-        this.labelText   .style.height = height;
+        this.div         .style.height     = height;
+        this.header      .style.height     = height;
+        this.labelWrapper.style.height     = height;
+        this.label       .style.height     = height;
+        this.labelText   .style.height     = height;
 
         this.labelText   .style.position   = 'absolute';
         this.labelText   .style.left       =  0;

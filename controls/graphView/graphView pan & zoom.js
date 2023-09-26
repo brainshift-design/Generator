@@ -4,13 +4,13 @@
 
 function checkDragOut()
 {
-    const pan  = graphView.currentPage ? graphView.currentPage.pan  : point(0, 0);
-    const zoom = graphView.currentPage ? graphView.currentPage.zoom : 1;
+    const pan  = graph.currentPage ? graph.currentPage.pan  : point(0, 0);
+    const zoom = graph.currentPage ? graph.currentPage.zoom : 1;
 
     const offset = 10;
     
     if (graphView.p.x >= graphView.offsetWidth)
-        graphView.currentPage.setPanAndZoom(point(pan.x + offset, pan.y), zoom);
+        graph.currentPage.setPanAndZoom(point(pan.x + offset, pan.y), zoom);
 }
 
 

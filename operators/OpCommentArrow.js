@@ -6,11 +6,13 @@ extends OperatorBase
     handle2;
     handle3;
 
+    handleSize = 25;
 
-    
+
+
     constructor()
     {
-        super(COMMENT_ARROW, 'arrow', 'arrow', '');
+        super(COMMENT_ARROW, 'arrow', '', '');
 
         this.scrollName = false;
         this.showIcon   = false;
@@ -28,6 +30,77 @@ extends OperatorBase
             if (this.textbox.value.trim() == '')
                 actionManager.do(new DeleteNodesAction([this.id]), true);
         });
+
+
+        this.header.style.pointerEvents = 'none';
+
+        this.handle0 = this.createHandle(point(  0, 0));
+        this.handle1 = this.createHandle(point( 66, 0));
+        this.handle2 = this.createHandle(point(133, 0));
+        this.handle3 = this.createHandle(point(200, 0));
+
+        this.div.appendChild(this.handle0);
+        this.div.appendChild(this.handle1);
+        this.div.appendChild(this.handle2);
+        this.div.appendChild(this.handle3);
+    }
+
+
+
+    createHandle(p)
+    {
+        const handle = createDiv('arrowHandle');
+
+        handle.style.width        = this.handleSize + 'px';
+        handle.style.height       = this.handleSize + 'px';
+        handle.style.borderRadius = (this.handleSize/2) + 'px';
+        
+        handle.p           = p;
+        handle.buttonDown0 = false;
+
+        
+        handle.addEventListener('pointerdown', e =>
+        {
+            if (e.button == 0)
+            {
+                e.preventDefault();
+                e.stopPropagation();
+
+                handle.sx  = handle.p.x;
+                handle.sy  = handle.p.y;
+
+                handle.psx = e.clientX;
+                handle.psy = e.clientY;
+
+                handle.buttonDown0 = true;
+                handle.setPointerCapture(e.pointerId);
+            }
+        });
+
+
+        handle.addEventListener('pointermove', e =>
+        {
+            if (handle.buttonDown0)
+            {
+                handle.p.x = handle.sx + (e.clientX - handle.psx) / graph.currentPage.zoom;
+                handle.p.y = handle.sy + (e.clientY - handle.psy) / graph.currentPage.zoom;
+
+                this.updateNode();
+            }
+        });
+
+
+        handle.addEventListener('pointerup', e =>
+        {
+            if (e.button == 0)
+            {
+                handle.releasePointerCapture(e.pointerId);
+                handle.buttonDown0 = false;
+            }
+        });
+
+
+        return handle;
     }
 
 
@@ -62,70 +135,33 @@ extends OperatorBase
 
     updateNode()
     {
+        const bounds = new AbsRect(
+            Math.min(this.handle0.p.x, this.handle1.p.x, this.handle2.p.x, this.handle3.p.x),
+            Math.min(this.handle0.p.y, this.handle1.p.y, this.handle2.p.y, this.handle3.p.y),
+            Math.max(this.handle0.p.x, this.handle1.p.x, this.handle2.p.x, this.handle3.p.x),
+            Math.max(this.handle0.p.y, this.handle1.p.y, this.handle2.p.y, this.handle3.p.y));
+console.log('bounds =', bounds);
+        this.div.style.left   = bounds.x;
+        this.div.style.top    = bounds.y;
+        this.div.style.width  = Math.max(1, bounds.width ) + this.handleSize;
+        this.div.style.height = Math.max(1, bounds.height) + this.handleSize;
+
+        
         super.updateNode();
 
 
+        this.div.style.boxShadow = '0 0 0 1px red inset';
         this.inner.style.boxShadow = 'none';
 
 
-        const fontSize = 36;
-
-
-        //utilContext.font = fontSize + 'px \'Oooh Baby\'';
-        divTextMeasure.style.font = fontSize + 'px \'Oooh Baby\'';
-        
-        divTextMeasure.innerHTML = 
-            hasFocus(this.textbox) 
-            ? this.textbox.value 
-            : this.name;
-
-        const mes = boundingRect(divTextMeasure);
-
-
-        const width = Math.max(1, mes.width + 2);
-
-        this.div    .style.width      = 
-        this.textbox.style.width      = width + 'px';
-
-        this.textbox.style.height     =  this.div.offsetHeight;
-        this.textbox.style.padding    = '0';
-        this.textbox.style.margin     = '0';
-        this.textbox.style.textAlign  = 'left';
-        this.textbox.style.fontFamily = 'Oooh Baby';
-        this.textbox.style.fontSize   =  fontSize + 'px';
-        this.textbox.style.fontWeight =  400;
-
-        this.div.style.borderRadius = 0;
-
-        const height = (fontSize + mes.actualBoundingBoxDescent) + 'px';
-
-        this.headerHeight = height;
-
-        this.div         .style.height = height;
-        this.header      .style.height = height;
-        this.labelWrapper.style.height = height;
-        this.label       .style.height = height;
-        this.labelText   .style.height = height;
-
-        this.labelText   .style.position   = 'absolute';
-        this.labelText   .style.left       =  0;
-
-        this.labelText   .style.fontFamily = 'Oooh Baby';
-        this.labelText   .style.fontSize   = fontSize + 'px';
-        this.labelText   .style.fontWeight =  400;
-
-        this.div         .style.overflow   = 'visible';
-        this.inner       .style.overflow   = 'visible';
-        this.header      .style.overflow   = 'visible';
-        this.labelWrapper.style.overflow   = 'visible';
-        this.label       .style.overflow   = 'visible';
-        this.labelText   .style.overflow   = 'visible';
-        
-        this.updateTransform();
-        
-        // this.div      .style.boxShadow = '0 0 0 1px red inset';
-        // this.label    .style.boxShadow = '0 0 0 1px green inset';
-        // this.labelText.style.boxShadow = '0 0 0 1px yellow inset';
+        this.handle0.style.left = (this.handle0.p.x - bounds.x) + 'px';
+        this.handle0.style.top  = (this.handle0.p.y - bounds.y) + 'px';
+        this.handle1.style.left = (this.handle1.p.x - bounds.x) + 'px';
+        this.handle1.style.top  = (this.handle1.p.y - bounds.y) + 'px';
+        this.handle2.style.left = (this.handle2.p.x - bounds.x) + 'px';
+        this.handle2.style.top  = (this.handle2.p.y - bounds.y) + 'px';
+        this.handle3.style.left = (this.handle3.p.x - bounds.x) + 'px';
+        this.handle3.style.top  = (this.handle3.p.y - bounds.y) + 'px';
     }
 
 
@@ -178,9 +214,48 @@ extends OperatorBase
     }
 
 
-
-    updateBorder()
+    
+    toJsonBase(nTab = 0) 
     {
-        this.div.style.boxShadow = 'none';
+        let   pos = ' '.repeat(nTab);
+        const tab = HTAB;
+
+        return super.toJsonBase(nTab)
+             + ',\n' + pos + tab + '"ax0": "' + this.handle0.p.x.toString() + '"'
+             + ',\n' + pos + tab + '"ay0": "' + this.handle0.p.y.toString() + '"'
+             + ',\n' + pos + tab + '"ax1": "' + this.handle1.p.x.toString() + '"'
+             + ',\n' + pos + tab + '"ay1": "' + this.handle1.p.y.toString() + '"'
+             + ',\n' + pos + tab + '"ax2": "' + this.handle2.p.x.toString() + '"'
+             + ',\n' + pos + tab + '"ay2": "' + this.handle2.p.y.toString() + '"'
+             + ',\n' + pos + tab + '"ax3": "' + this.handle3.p.x.toString() + '"'
+             + ',\n' + pos + tab + '"ay3": "' + this.handle3.p.y.toString() + '"';
+    }
+
+
+
+    loadParams(_node, pasting)
+    {
+        if (   _node.ax0 != undefined
+            && _node.ay0 != undefined
+            && _node.ax1 != undefined
+            && _node.ay1 != undefined
+            && _node.ax2 != undefined
+            && _node.ay2 != undefined
+            && _node.ax3 != undefined
+            && _node.ay3 != undefined)
+        {
+            this.handle0.p.x = parseFloat(_node.ax0);
+            this.handle0.p.y = parseFloat(_node.ay0);
+            this.handle1.p.x = parseFloat(_node.ax1);
+            this.handle1.p.y = parseFloat(_node.ay1);
+            this.handle2.p.x = parseFloat(_node.ax2);
+            this.handle2.p.y = parseFloat(_node.ay2);
+            this.handle3.p.x = parseFloat(_node.ax3);
+            this.handle3.p.y = parseFloat(_node.ay3);
+
+            this.valid = true;
+        }
+
+        super.loadParams(_node, pasting);
     }
 }
