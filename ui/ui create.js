@@ -163,6 +163,7 @@ function createNode(nodeType, creatingButton = null, createdNodeId = -1, options
         case GROUP_PARAM:             node = new OpGroupParam();        break;
 
         case COMMENT:                 node = new OpComment();           break;
+        case COMMENT_ARROW:           node = new OpCommentArrow();      break;
         case PANEL:                   node = new OpPanel();             break;
 
         default:                      consoleError('Graph.js/createNode() cannot create type ' + nodeType);

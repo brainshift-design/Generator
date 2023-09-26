@@ -51,6 +51,7 @@ var menuStyles;
 var menuShape;
 var menuTemplate;
 var menuGroup;
+var menuPanel;
 
 var menuMath;
 var menuBoolean;
@@ -702,6 +703,14 @@ menuFlow = new Menu('Flow', true, false);
         new MenuItem('Parameter', null, {icon: iconGroupParam, createType: GROUP_PARAM, callback: e => actionManager.do(getCreateNodeAction(GROUP_PARAM, btnGroup.div, getCreateOptions(e)))})]);
     
 
+    menuPanel = new Menu('Decoration', true, false);
+    menuPanel.addItems([
+        new MenuItem('Panel',   null, {icon: iconPanel,        createType: PANEL,         callback: e => actionManager.do(getCreateNodeAction(PANEL,         btnPanel.div, getCreateOptions(e)))}),
+        new MenuItem('',        null, {separator: true}),
+        new MenuItem('Comment', null, {icon: iconComment,      createType: COMMENT,       callback: e => actionManager.do(getCreateNodeAction(COMMENT,       btnPanel.div, getCreateOptions(e)))}),
+        new MenuItem('Arrow',   null, {icon: iconCommentArrow, createType: COMMENT_ARROW, callback: e => actionManager.do(getCreateNodeAction(COMMENT_ARROW, btnPanel.div, getCreateOptions(e)))})]);
+
+
     menuWindow = new Menu('Window options', true, false);
     menuWindow.showOnLeft = true;
     menuWindow.addItems([
@@ -869,8 +878,9 @@ menuFlow = new Menu('Flow', true, false);
     btnLayer    = new MenuButton('', menuLayer,    {useMenuName: true, highlight: () => currentMenus.includes(menuLayer ), callback: () => updatePanMode(false)});
     //btnStyle  = new MenuButton('', menuStyle,    {useMenuName: true, highlight: () => currentMenus.includes(menuStyle ), callback: () => updatePanMode(false)});
     btnShape    = new MenuButton('', menuShape,    {useMenuName: true, highlight: () => currentMenus.includes(menuShape ), callback: () => updatePanMode(false)});
-   // btnTemplate = new MenuButton('', menuTemplate, {useMenuName: true, highlight: () => currentMenus.includes(menuShape ), callback: () => updatePanMode(false)});
-    //btnGroup  = new MenuButton('', menuGroup,  {useMenuName: true, highlight: () => currentMenus.includes(menuShape ), callback: () => updatePanMode(false)});
+   // btnTemplate = new MenuButton('', menuTemplate, {useMenuName: true, highlight: () => currentMenus.includes(menuTemplate ), callback: () => updatePanMode(false)});
+    //btnGroup  = new MenuButton('', menuGroup,  {useMenuName: true, highlight: () => currentMenus.includes(menuGroup ), callback: () => updatePanMode(false)});
+    btnPanel    = new MenuButton('', menuPanel,  {useMenuName: true, highlight: () => currentMenus.includes(menuPanel ), callback: () => updatePanMode(false)});
 
     // btnGroup  = new MenuButton('Node groups', null, {callback: () => 
     // {
@@ -889,17 +899,17 @@ menuFlow = new Menu('Flow', true, false);
         updatePanMode(!panMode);
     }});
 
-    btnPanel = new MenuButton('Panel', null, {callback: () => 
-    {
-        const create = new CreateNodeAction(PANEL, btnPanel.div);
-        actionManager.do(create);
+    // btnPanel = new MenuButton('Panel', null, {callback: () => 
+    // {
+    //     const create = new CreateNodeAction(PANEL, btnPanel.div);
+    //     actionManager.do(create);
 
-        graphView.updateNodes([create.node]);
-        graphView.updateScrollWithBounds();
+    //     graphView.updateNodes([create.node]);
+    //     graphView.updateScrollWithBounds();
 
-        hideAllMenus();
-        updatePanMode(false);
-    }});
+    //     hideAllMenus();
+    //     updatePanMode(false);
+    // }});
 
     // btnComment = new MenuButton('Add comment', null, {callback: () => 
     // {

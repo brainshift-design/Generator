@@ -1099,6 +1099,31 @@ function genParseComment(parse)
 
 
 
+function genParseCommentArrow(parse)
+{
+    const [, nodeId, options, ignore] = genParseNodeStart(parse);
+
+
+    const cmnt = new GCommentArrow(nodeId, options);
+
+    
+    if (parse.settings.logRequests) 
+        logReq(cmnt, parse, ignore);
+
+
+    if (ignore) 
+    {
+        genParseNodeEnd(parse, cmnt);
+        return parse.parsedNodes.find(n => n.nodeId == nodeId);
+    }
+
+
+    genParseNodeEnd(parse, cmnt);
+    return cmnt;
+}
+
+
+
 function genParsePanel(parse)
 {
     const [, nodeId, options, ignore] = genParseNodeStart(parse);

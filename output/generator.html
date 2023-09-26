@@ -5297,6 +5297,7 @@ const GROUP_TYPES =
 
 
 const COMMENT       = 'CMNT';
+const COMMENT_ARROW = 'CMNTARR';
 const PANEL         = 'PANEL';
 
 
@@ -34463,6 +34464,53 @@ extends GOperator
 
 
 
+class GCommentArrow
+extends GOperator
+{
+    constructor(nodeId, options)
+    {
+        super(COMMENT_ARROW, nodeId, options);
+    }
+
+
+    
+    copy()
+    {
+        const copy = new GCommentArrow(this.nodeId, this.options);
+
+        copy.copyBase(this);
+
+        return copy;
+    }
+
+
+
+    async eval(parse)
+    {
+        if (this.isCached())
+            return this;
+
+
+        this.value = NullValue.copy();
+
+
+        this.setUpdateValues(parse, [['', NullValue]]);
+        
+        
+        this.validate();
+
+        return this;
+    }
+
+
+
+    toValue()
+    {
+        return this.value
+             ? this.value.copy() 
+             : null;
+    }
+}
 
 
 
@@ -36769,6 +36817,31 @@ function genParseComment(parse)
 
 
     const cmnt = new GComment(nodeId, options);
+
+    
+    if (parse.settings.logRequests) 
+        logReq(cmnt, parse, ignore);
+
+
+    if (ignore) 
+    {
+        genParseNodeEnd(parse, cmnt);
+        return parse.parsedNodes.find(n => n.nodeId == nodeId);
+    }
+
+
+    genParseNodeEnd(parse, cmnt);
+    return cmnt;
+}
+
+
+
+function genParseCommentArrow(parse)
+{
+    const [, nodeId, options, ignore] = genParseNodeStart(parse);
+
+
+    const cmnt = new GCommentArrow(nodeId, options);
 
     
     if (parse.settings.logRequests) 
@@ -41758,6 +41831,7 @@ function genParse(parse, inParam = true)
     else if (parse.next == GROUP_PARAM            ) result = genParseGroupParam        (parse);
  
     else if (parse.next == COMMENT                ) result = genParseComment           (parse);
+    else if (parse.next == COMMENT_ARROW          ) result = genParseCommentArrow      (parse);
     else if (parse.next == PANEL                  ) result = genParsePanel             (parse);
 
     else consoleError('unknown parse token \'' + parse.next + '\' @ ' + parse.pos);

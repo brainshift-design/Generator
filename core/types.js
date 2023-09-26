@@ -578,6 +578,7 @@ const GROUP_TYPES =
 
 
 const COMMENT       = 'CMNT';
+const COMMENT_ARROW = 'CMNTARR';
 const PANEL         = 'PANEL';
 
 

@@ -989,6 +989,7 @@ const GROUP_TYPES = [
     GROUP_PARAM
 ];
 const COMMENT = 'CMNT';
+const COMMENT_ARROW = 'CMNTARR';
 const PANEL = 'PANEL';
 const ACTIVE = 'ACT';
 const BEFORE_ACTIVE = 'BEF';
@@ -2595,15 +2596,21 @@ function setObjectProps(figObj, genObj, phantom = true) {
     setObjectFills(figObj, genObj);
     const maskType = genObj[FO_MASK];
     figObj.isMask = maskType > 0;
-    // if (figObj.isMask)
-    // {
-    //     switch (maskType)
-    //     {
-    //         case 1: figObj.maskType = 'ALPHA';     break;
-    //         case 2: figObj.maskType = 'VECTOR';    break;
-    //         case 3: figObj.maskType = 'LUMINANCE'; break;
-    //     }
-    // }
+    if (figObj.isMask
+        && figObj.maskType) // maybe legacy, figObj.maskType check needed until Figma update 78 actually works
+     {
+        switch (maskType) {
+            case 1:
+                figObj.maskType = 'ALPHA';
+                break;
+            case 2:
+                figObj.maskType = 'VECTOR';
+                break;
+            case 3:
+                figObj.maskType = 'LUMINANCE';
+                break;
+        }
+    }
     if (figObj.isMask
         && figObj.fills.length == 0
         && figObj.strokes.length == 0)

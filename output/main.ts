@@ -1584,6 +1584,7 @@ const GROUP_TYPES =
 
 
 const COMMENT       = 'CMNT';
+const COMMENT_ARROW = 'CMNTARR';
 const PANEL         = 'PANEL';
 
 
@@ -3863,15 +3864,16 @@ function setObjectProps(figObj, genObj, phantom = true)
 
     figObj.isMask = maskType > 0;
 
-    // if (figObj.isMask)
-    // {
-    //     switch (maskType)
-    //     {
-    //         case 1: figObj.maskType = 'ALPHA';     break;
-    //         case 2: figObj.maskType = 'VECTOR';    break;
-    //         case 3: figObj.maskType = 'LUMINANCE'; break;
-    //     }
-    // }
+    if (   figObj.isMask
+        && figObj.maskType) // maybe legacy, figObj.maskType check needed until Figma update 78 actually works
+    {
+        switch (maskType)
+        {
+            case 1: figObj.maskType = 'ALPHA';     break;
+            case 2: figObj.maskType = 'VECTOR';    break;
+            case 3: figObj.maskType = 'LUMINANCE'; break;
+        }
+    }
 
 
     if (   figObj.isMask
