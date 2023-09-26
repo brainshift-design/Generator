@@ -5,7 +5,13 @@
   "main":          "output/main.js",
   "ui":            "output/ui.html",
   "editorType":    [ "figma" ],
-  "permissions":   [ "currentuser", "activeusers" ],
+  
+  "permissions":   
+  [ 
+    "currentuser", 
+    "activeusers" 
+  ],
+  
   "networkAccess": 
   {
     "allowedDomains": ["*"],
