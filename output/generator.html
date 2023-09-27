@@ -4915,6 +4915,7 @@ const TEXT_PAD       = 'TPAD';
 const TEXT_COMPARE   = 'TCMP';
 const TEXT_CHAR      = 'TCHAR';
 const NUMBER_TO_TEXT = 'N2T';
+const COLOR_TO_TEXT  = 'C2T';
 const TEXT_TO_NUMBER = 'T2N';
 const TEXT_TO_COLOR  = 'T2C';
 const TEXT_SPLIT     = 'TSPLT';
@@ -4946,6 +4947,7 @@ const NUMBER_TYPES =
     NUMBER_SOLVE,
     NUMBER_ANIMATE,
     NUMBER_TO_TEXT,
+    COLOR_TO_TEXT,
 
     ...MATH_TYPES,
     ...NUMBER_BOOLEAN_TYPES,
@@ -23325,10 +23327,166 @@ function getNumberToTextValue(input, format)
     {
         case 0: // dec
             str = numToString(input.value, -input.decimals);
-        break;
+            break;
 
         case 1: // hex
             str = numToString(Math.round(input.value), input.decimals, true).toUpperCase();
+            break;
+    }
+
+    return new TextValue(str);
+}
+
+
+class GColorToText
+extends GOperator1
+{
+    format;
+
+
+    
+    constructor(nodeId, options)
+    {
+        super(COLOR_TO_TEXT, nodeId, options);
+    }
+
+
+    
+    copy()
+    {
+        const copy = new GColorToText(this.nodeId, this.options);
+
+        copy.copyBase(this);
+
+        if (this.format) copy.format = this.format.copy();
+
+        return copy;
+    }
+
+
+
+    async eval(parse)
+    {
+        if (this.isCached())
+            return this;
+
+
+        const format = (await this.format.eval(parse)).toValue();
+
+
+        if (this.input)
+        {
+            const input = (await this.input.eval(parse)).toValue();
+
+
+            if (isListType(input.type))
+            {
+                this.value = new ListValue();
+
+                for (let i = 0; i < input.items.length; i++)
+                {
+                    const item = input.items[i];
+
+                    this.value.items.push(
+                        item.type == NUMBER_VALUE
+                        ? getColorToTextValue(item, format)
+                        : TextValue.NaN.copy());   
+                }
+            }
+            else
+            {
+                this.value = getColorToTextValue(input, format);
+            }
+        }
+
+        else
+            this.value = TextValue.NaN;
+
+
+        const type = 
+            this.value
+            ? new TextValue(
+                isListType(this.value.type)
+                ? finalListTypeFromItems(this.value.items)
+                : this.value.type)
+            : TextValue.NaN.copy();
+            
+
+        this.setUpdateValues(parse,
+        [
+            ['type',   type  ],
+            ['format', format]
+        ]);
+
+
+        this.validate();
+
+        return this;
+    }
+
+
+
+    isValid()
+    {
+        return super.isValid()
+            && this.format && this.format.isValid();
+    }
+
+
+
+    pushValueUpdates(parse)
+    {
+        super.pushValueUpdates(parse);
+
+        if (this.format) this.format.pushValueUpdates(parse);
+    }
+
+
+
+    invalidateInputs(parse, from)
+    {
+        super.invalidateInputs(parse, from);
+
+        if (this.format) this.format.invalidateInputs(parse, from);
+    }
+
+
+
+    iterateLoop(parse)
+    {
+        super.iterateLoop(parse);
+
+        if (this.format) this.format.iterateLoop(parse);
+    }
+}
+
+
+
+function getColorToTextValue(input, format)
+{
+    let str = NAN_CHAR;
+
+    console.log('input =', input);
+    const rgb = input.toRgb();
+
+    switch (format.value)
+    {
+        case 0: // hex
+            str = rgb2hex(rgb);
+            break;
+
+        case 1: // rgb 1.0
+            str = 
+                  numToString(rgb[0], -3) + ', '
+                + numToString(rgb[1], -3) + ', '
+                + numToString(rgb[2], -3);
+            break;
+
+        case 2: // rgb 255
+            str = 
+                  Math.round(rgb[0] * 255) + ', '
+                + Math.round(rgb[1] * 255) + ', '
+                + Math.round(rgb[2] * 255);
             break;
     }
 
@@ -41215,6 +41373,52 @@ function genParseNumberToText(parse)
 
 
 
+function genParseColorToText(parse)
+{
+    const [, nodeId, options, ignore] = genParseNodeStart(parse);
+
+
+    const col2text = new GColorToText(nodeId, options);
+   
+
+    let nInputs = -1;
+    
+    if (!ignore)
+    {
+        nInputs = parseInt(parse.move());
+        consoleAssert(nInputs == 0 || nInputs == 1, 'nInputs must be [0, 1]');
+    }
+
+
+    if (parse.settings.logRequests) 
+        logReq(col2text, parse, ignore, nInputs);
+
+
+    if (ignore) 
+    {
+        genParseNodeEnd(parse, col2text);
+        return parse.parsedNodes.find(n => n.nodeId == nodeId);
+    }
+
+
+    parse.nTab++;
+
+
+    if (nInputs == 1)
+        col2text.input = genParse(parse);
+
+    col2text.format = genParse(parse);
+
+    
+    parse.nTab--;
+
+
+    genParseNodeEnd(parse, col2text);
+    return col2text;
+}
+
+
+
 function genParseTextToNumber(parse)
 {
     const [, nodeId, options, ignore] = genParseNodeStart(parse);
@@ -41728,6 +41932,7 @@ function genParse(parse, inParam = true)
     else if (parse.next == TEXT_CASE              ) result = genParseTextCase          (parse);
     else if (parse.next == TEXT_CHAR              ) result = genParseTextCharacter     (parse);
     else if (parse.next == NUMBER_TO_TEXT         ) result = genParseNumberToText      (parse);
+    else if (parse.next == COLOR_TO_TEXT          ) result = genParseColorToText       (parse);
     else if (parse.next == TEXT_TO_NUMBER         ) result = genParseTextToNumber      (parse);
     else if (parse.next == TEXT_TO_COLOR          ) result = genParseTextToColor       (parse);
     else if (parse.next == TEXT_REPLACE           ) result = genParseTextReplace       (parse);

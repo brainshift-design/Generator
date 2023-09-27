@@ -147,6 +147,7 @@
 ../operators/text/OpTextFile.js
 ../operators/text/OpTextToNumber.js
 ../operators/text/OpTextToColor.js
+../operators/text/OpColorToText.js
 
 
 ../operators/color/OpColor.js

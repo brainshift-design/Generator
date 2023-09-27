@@ -1202,6 +1202,7 @@ const TEXT_PAD       = 'TPAD';
 const TEXT_COMPARE   = 'TCMP';
 const TEXT_CHAR      = 'TCHAR';
 const NUMBER_TO_TEXT = 'N2T';
+const COLOR_TO_TEXT  = 'C2T';
 const TEXT_TO_NUMBER = 'T2N';
 const TEXT_TO_COLOR  = 'T2C';
 const TEXT_SPLIT     = 'TSPLT';
@@ -1233,6 +1234,7 @@ const NUMBER_TYPES =
     NUMBER_SOLVE,
     NUMBER_ANIMATE,
     NUMBER_TO_TEXT,
+    COLOR_TO_TEXT,
 
     ...MATH_TYPES,
     ...NUMBER_BOOLEAN_TYPES,

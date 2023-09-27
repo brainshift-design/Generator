@@ -151,6 +151,7 @@
 ../generator/types/text/GTextContains.js
 ../generator/types/text/GTextCase.js
 ../generator/types/text/GNumberToText.js
+../generator/types/text/GColorToText.js
 ../generator/types/text/GTextToNumber.js
 ../generator/types/text/GTextToColor.js
 ../generator/types/text/GTextCharacter.js

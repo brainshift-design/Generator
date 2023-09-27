@@ -66,8 +66,8 @@ extends OperatorBase
                 e.preventDefault();
                 e.stopPropagation();
 
-                handle.sx  = handle.p.x;
-                handle.sy  = handle.p.y;
+                handle.sx  = handle.p.x;// - this.div.offsetLeft;// / graph.currentPage.zoom;
+                handle.sy  = handle.p.y;// - this.div.offsetTop ;/// graph.currentPage.zoom;
 
                 handle.psx = e.clientX;
                 handle.psy = e.clientY;
@@ -140,7 +140,9 @@ extends OperatorBase
             Math.min(this.handle0.p.y, this.handle1.p.y, this.handle2.p.y, this.handle3.p.y),
             Math.max(this.handle0.p.x, this.handle1.p.x, this.handle2.p.x, this.handle3.p.x),
             Math.max(this.handle0.p.y, this.handle1.p.y, this.handle2.p.y, this.handle3.p.y));
-console.log('bounds =', bounds);
+
+        console.log('bounds =', bounds);
+
         this.div.style.left   = bounds.x;
         this.div.style.top    = bounds.y;
         this.div.style.width  = Math.max(1, bounds.width ) + this.handleSize;
