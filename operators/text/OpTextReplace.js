@@ -1,5 +1,5 @@
 class   OpTextReplace
-extends ResizableOperatorWithValue
+extends ResizableBase
 {
     paramWhat;
     paramWith;
@@ -21,10 +21,9 @@ extends ResizableOperatorWithValue
         this.alwaysSaveParams = true;
         
 
-        this.addInput (new Input (TEXT_TYPES));
+        this.addInput (new Input ([TEXT_VALUE, TEXT_LIST_VALUE, LIST_VALUE]));
         this.addOutput(new Output([TEXT_VALUE], this.output_genRequest));
 
-        this.addParam(this.paramValue);
         this.addParam(this.paramWhat  = new   TextParam('what',  'what',  false, true, true));
         this.addParam(this.paramWith  = new   TextParam('with',  'with',  false, true, true));
         this.addParam(this.paramRegex = new NumberParam('regex', 'regex', true,  true, true, 0, 0, 1));
@@ -37,7 +36,6 @@ extends ResizableOperatorWithValue
         this.menuRegex = createBoolMenu(this.paramRegex);
 
 
-        setControlFont(this.paramValue.controls[0].textbox, 'Roboto Mono', 10, 'center');
         setControlFont(this.paramWhat .controls[0].textbox, 'Roboto Mono', 10, 'center');
         setControlFont(this.paramWith .controls[0].textbox, 'Roboto Mono', 10, 'center');
      }
@@ -61,8 +59,6 @@ extends ResizableOperatorWithValue
             w, 
             height, 
             updateTransform);
-
-        this.updateValueParam();
     }
 
 
@@ -101,42 +97,25 @@ extends ResizableOperatorWithValue
 
 
 
+    updateValues(requestId, actionId, updateParamId, paramIds, values)
+    {
+        const type  = values[paramIds.findIndex(id => id == 'type' )];
+
+        if (type)
+            this.outputs[0].types = [type.value];
+
+        super.updateValues(requestId, actionId, updateParamId, paramIds, values);
+    }
+
+
+
     updateParams()
     {
-        this.paramValue.enableControlText(true, this.isUnknown());
-        this.updateValueParam();
-        // this.paramValue.controls[0].valueText = this.isUnknown() ? UNKNOWN_DISPLAY : '';
-
-        this.paramWhat .enableControlText(true, this.paramWhat .isUnknown());
-        this.paramWith .enableControlText(true, this.paramWith .isUnknown());
+        this.paramWhat .enableControlText(true, this.paramWhat.isUnknown());
+        this.paramWith .enableControlText(true, this.paramWith.isUnknown());
 
         updateParamConditionText(this.paramRegex, this.paramRegex.isUnknown(), false, 1);
 
         this.updateParamControls();
    }
-
-
-    
-    updateValueParam()
-    {
-        const headerHeight = boundingRect(this.header).height / graph.currentPage.zoom;
-
-        const totalParamHeight = 
-              this.div.offsetHeight 
-            - Math.max(defHeaderHeight, headerHeight);
-
-        const hValue = Math.max(defParamHeight, totalParamHeight - defParamHeight * 3);
-
-        this.paramValue.div.style.width  = this.div.offsetWidth;
-        this.paramValue.div.style.height = hValue;    
-
-        this.paramWhat.div.style.width  = this.div.offsetWidth;
-        this.paramWhat.div.style.height = defParamHeight;    
-
-        this.paramWith.div.style.width  = this.div.offsetWidth;
-        this.paramWith.div.style.height = defParamHeight;    
-
-        this.paramRegex.div.style.width  = this.div.offsetWidth;
-        this.paramRegex.div.style.height = defParamHeight;    
-    }
 }

@@ -44,39 +44,44 @@ extends GOperator1
 
         if (this.input)
         {
-            this.value = (await this.input.eval(parse)).toValue();
-
-            consoleAssert(this.value.type == TEXT_VALUE, 'this.value.type must be TEXT_VALUE');
-
-            if (_regex.value > 0)
+            const input = (await this.input.eval(parse)).toValue();
+            
+            if (isListType(input.type))
             {
-                try
-                {
-                    const regex = new RegExp(_what.value, 'g');
+                this.value = new ListValue();
 
-                    this.value.value = this.value.value.replace(
-                        regex,
-                        _with.value);
-                }
-                catch (e)
+                for (let i = 0; i < input.items.length; i++)
                 {
-                
+                    const item = input.items[i];
+
+                    this.value.items.push(
+                        item.type == TEXT_VALUE
+                        ? getReplaceValue(item, _what, _with, _regex)
+                        : new TextValue());   
                 }
             }
             else
             {
-                this.value.value = this.value.value.replaceAll(
-                    unescapeString(_what.value),
-                    unescapeString(_with.value));
+                this.value = getReplaceValue(input, _what, _with, _regex);
             }
         }
         else
             this.value = new TextValue();
 
+
+        const type = 
+            this.value
+            ? new TextValue(
+                isListType(this.value.type)
+                ? finalListTypeFromItems(this.value.items)
+                : this.value.type)
+            : TextValue.NaN.copy();
+
             
         this.setUpdateValues(parse,
         [
             ['value',  this.value],
+            ['type',   type      ],
             ['what',  _what      ],
             ['with',  _with      ],
             ['regex', _regex     ]
@@ -130,4 +135,37 @@ extends GOperator1
         if (this.with ) this.with .iterateLoop(parse);
         if (this.regex) this.regex.iterateLoop(parse);
     }
+}
+
+
+
+function getReplaceValue(input, _what, _with, _regex)
+{
+    consoleAssert(input.type == TEXT_VALUE, 'input.type must be TEXT_VALUE');
+
+    const value = new TextValue();
+
+    if (_regex.value > 0)
+    {
+        try
+        {
+            const regex = new RegExp(_what.value, 'g');
+
+            value.value = input.value.replace(
+                regex,
+                _with.value);
+        }
+        catch (e)
+        {
+        
+        }
+    }
+    else
+    {
+        value.value = input.value.replaceAll(
+            unescapeString(_what.value),
+            unescapeString(_with.value));
+    }
+
+    return value;
 }

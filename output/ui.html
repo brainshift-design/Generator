@@ -5314,6 +5314,7 @@ a
                 <p>•  fixed text params always resetting alignment to center</p>
                 <p>•  added Color ⟶ Text node</p>
                 <p>•  Text ⟶ Color now trims spaces before parsing</p>
+                <p>•  Trim text and Pad text nodes will now take lists as inputs</p>
                 
                 <p><br/><br/><div id='chkHideWhatsNew'></div></p>
             </div>
@@ -28520,24 +28521,44 @@ extends GOperator1
 
         if (this.input)
         {
-            this.value = (await this.input.eval(parse)).toValue();
+            const input = (await this.input.eval(parse)).toValue();
             
-            consoleAssert(this.value.type == TEXT_VALUE, 'this.value.type must be TEXT_VALUE');
-                
-                
-            if (this.options.enabled)
+            if (isListType(input.type))
             {
-                if (start.value.length > 0) this.value.value = trimCharFromStart(this.value.value, unescapeString(start.value));
-                if (end  .value.length > 0) this.value.value = trimCharFromEnd  (this.value.value, unescapeString(end  .value));
+                this.value = new ListValue();
+
+                for (let i = 0; i < input.items.length; i++)
+                {
+                    const item = input.items[i];
+
+                    this.value.items.push(
+                        item.type == TEXT_VALUE
+                        ? getTrimValue(item, start, end, this.options.enabled)
+                        : new TextValue());   
+                }
+            }
+            else
+            {
+                this.value = getTrimValue(input, start, end, this.options.enabled);
             }
         }
         else
             this.value = new TextValue();//TextValue.NaN;
 
 
+        const type = 
+            this.value
+            ? new TextValue(
+                isListType(this.value.type)
+                ? finalListTypeFromItems(this.value.items)
+                : this.value.type)
+            : TextValue.NaN.copy();
+
+
         this.setUpdateValues(parse,
         [
             ['value', this.value],
+            ['type',  type      ],
             ['start', start     ],
             ['end',   end       ]
         ]);
@@ -28588,6 +28609,22 @@ extends GOperator1
     }
 }
 
+
+
+function getTrimValue(input, start, end, enabled)
+{
+    consoleAssert(input.type == TEXT_VALUE, 'input.type must be TEXT_VALUE');
+               
+    const value = input.copy();
+
+    if (enabled)
+    {
+        if (start.value.length > 0) value.value = trimCharFromStart(value.value, unescapeString(start.value));
+        if (end  .value.length > 0) value.value = trimCharFromEnd  (value.value, unescapeString(end  .value));
+    }
+
+    return value;
+}
 
 
 class GTextSubstring
@@ -29630,39 +29667,44 @@ extends GOperator1
 
         if (this.input)
         {
-            this.value = (await this.input.eval(parse)).toValue();
-
-            consoleAssert(this.value.type == TEXT_VALUE, 'this.value.type must be TEXT_VALUE');
-
-            if (_regex.value > 0)
+            const input = (await this.input.eval(parse)).toValue();
+            
+            if (isListType(input.type))
             {
-                try
-                {
-                    const regex = new RegExp(_what.value, 'g');
+                this.value = new ListValue();
 
-                    this.value.value = this.value.value.replace(
-                        regex,
-                        _with.value);
-                }
-                catch (e)
+                for (let i = 0; i < input.items.length; i++)
                 {
-                
+                    const item = input.items[i];
+
+                    this.value.items.push(
+                        item.type == TEXT_VALUE
+                        ? getReplaceValue(item, _what, _with, _regex)
+                        : new TextValue());   
                 }
             }
             else
             {
-                this.value.value = this.value.value.replaceAll(
-                    unescapeString(_what.value),
-                    unescapeString(_with.value));
+                this.value = getReplaceValue(input, _what, _with, _regex);
             }
         }
         else
             this.value = new TextValue();
 
+
+        const type = 
+            this.value
+            ? new TextValue(
+                isListType(this.value.type)
+                ? finalListTypeFromItems(this.value.items)
+                : this.value.type)
+            : TextValue.NaN.copy();
+
             
         this.setUpdateValues(parse,
         [
             ['value',  this.value],
+            ['type',   type      ],
             ['what',  _what      ],
             ['with',  _with      ],
             ['regex', _regex     ]
@@ -29718,6 +29760,38 @@ extends GOperator1
     }
 }
 
+
+
+function getReplaceValue(input, _what, _with, _regex)
+{
+    consoleAssert(input.type == TEXT_VALUE, 'input.type must be TEXT_VALUE');
+
+    const value = new TextValue();
+
+    if (_regex.value > 0)
+    {
+        try
+        {
+            const regex = new RegExp(_what.value, 'g');
+
+            value.value = input.value.replace(
+                regex,
+                _with.value);
+        }
+        catch (e)
+        {
+        
+        }
+    }
+    else
+    {
+        value.value = input.value.replaceAll(
+            unescapeString(_what.value),
+            unescapeString(_with.value));
+    }
+
+    return value;
+}
 
 
 class GTextJoin
@@ -29912,37 +29986,62 @@ extends GOperator1
         const endCount   = (await this.endCount  .eval(parse)).toValue();
 
 
-        let length = 0;
-
-
         if (this.input)
         {
             const input = (await this.input.eval(parse)).toValue();
             
-            length = input.value.length;
-            
-            this.value = input.copy();
-            
-            consoleAssert(this.value.type == TEXT_VALUE, 'this.value.type must be TEXT_VALUE');
-                
-                
-            if (this.options.enabled)
-                this.value.value = this.value.value
-                    .padStart(startCount.value, unescapeString(startPad.value))
-                    .padEnd  (  endCount.value, endPad.value != '' ? unescapeString(endPad.value) : unescapeString(startPad.value));
+            if (isListType(input.type))
+            {
+                this.value = new ListValue();
+
+                for (let i = 0; i < input.items.length; i++)
+                {
+                    const item = input.items[i];
+
+                    this.value.items.push(
+                        item.type == TEXT_VALUE
+                        ? getPadValue(
+                            item, 
+                            startPad, 
+                            startCount, 
+                            endPad, 
+                            endCount, 
+                            this.options.enabled)
+                        : new TextValue());   
+                }
+            }
+            else
+            {
+                this.value = getPadValue(
+                    input, 
+                    startPad, 
+                    startCount, 
+                    endPad, 
+                    endCount, 
+                    this.options.enabled);
+            }
         }
         else
             this.value = new TextValue();//TextValue.NaN;
 
 
+        const type = 
+            this.value
+            ? new TextValue(
+                isListType(this.value.type)
+                ? finalListTypeFromItems(this.value.items)
+                : this.value.type)
+            : TextValue.NaN.copy();
+
+
         this.setUpdateValues(parse,
         [
-            ['value',      this.value             ],
-            ['length',     new NumberValue(length)], // used to set start and end maxima
-            ['startPad',   startPad               ],
-            ['startCount', startCount             ],
-            ['endPad',     endPad                 ],
-            ['endCount',   endCount               ]
+            ['value',      this.value],
+            ['type',       type      ],
+            ['startPad',   startPad  ],
+            ['startCount', startCount],
+            ['endPad',     endPad    ],
+            ['endCount',   endCount  ]
         ]);
         
 
@@ -29999,6 +30098,21 @@ extends GOperator1
     }
 }
 
+
+
+function getPadValue(input, startPad, startCount, endPad, endCount, enabled)
+{
+    consoleAssert(input.type == TEXT_VALUE, 'input.type must be TEXT_VALUE');
+
+    const value = input.copy();
+    
+    if (enabled)
+        value.value = input.value
+            .padStart(startCount.value, unescapeString(startPad.value))
+            .padEnd  (  endCount.value, endPad.value != '' ? unescapeString(endPad.value) : unescapeString(startPad.value));
+
+    return value;
+}
 
 
 class GTextSplit
@@ -76104,24 +76218,44 @@ extends GOperator1
 
         if (this.input)
         {
-            this.value = (await this.input.eval(parse)).toValue();
+            const input = (await this.input.eval(parse)).toValue();
             
-            consoleAssert(this.value.type == TEXT_VALUE, 'this.value.type must be TEXT_VALUE');
-                
-                
-            if (this.options.enabled)
+            if (isListType(input.type))
             {
-                if (start.value.length > 0) this.value.value = trimCharFromStart(this.value.value, unescapeString(start.value));
-                if (end  .value.length > 0) this.value.value = trimCharFromEnd  (this.value.value, unescapeString(end  .value));
+                this.value = new ListValue();
+
+                for (let i = 0; i < input.items.length; i++)
+                {
+                    const item = input.items[i];
+
+                    this.value.items.push(
+                        item.type == TEXT_VALUE
+                        ? getTrimValue(item, start, end, this.options.enabled)
+                        : new TextValue());   
+                }
+            }
+            else
+            {
+                this.value = getTrimValue(input, start, end, this.options.enabled);
             }
         }
         else
             this.value = new TextValue();//TextValue.NaN;
 
 
+        const type = 
+            this.value
+            ? new TextValue(
+                isListType(this.value.type)
+                ? finalListTypeFromItems(this.value.items)
+                : this.value.type)
+            : TextValue.NaN.copy();
+
+
         this.setUpdateValues(parse,
         [
             ['value', this.value],
+            ['type',  type      ],
             ['start', start     ],
             ['end',   end       ]
         ]);
@@ -76172,6 +76306,22 @@ extends GOperator1
     }
 }
 
+
+
+function getTrimValue(input, start, end, enabled)
+{
+    consoleAssert(input.type == TEXT_VALUE, 'input.type must be TEXT_VALUE');
+               
+    const value = input.copy();
+
+    if (enabled)
+    {
+        if (start.value.length > 0) value.value = trimCharFromStart(value.value, unescapeString(start.value));
+        if (end  .value.length > 0) value.value = trimCharFromEnd  (value.value, unescapeString(end  .value));
+    }
+
+    return value;
+}
 
 
 class GTextSubstring
@@ -77214,39 +77364,44 @@ extends GOperator1
 
         if (this.input)
         {
-            this.value = (await this.input.eval(parse)).toValue();
-
-            consoleAssert(this.value.type == TEXT_VALUE, 'this.value.type must be TEXT_VALUE');
-
-            if (_regex.value > 0)
+            const input = (await this.input.eval(parse)).toValue();
+            
+            if (isListType(input.type))
             {
-                try
-                {
-                    const regex = new RegExp(_what.value, 'g');
+                this.value = new ListValue();
 
-                    this.value.value = this.value.value.replace(
-                        regex,
-                        _with.value);
-                }
-                catch (e)
+                for (let i = 0; i < input.items.length; i++)
                 {
-                
+                    const item = input.items[i];
+
+                    this.value.items.push(
+                        item.type == TEXT_VALUE
+                        ? getReplaceValue(item, _what, _with, _regex)
+                        : new TextValue());   
                 }
             }
             else
             {
-                this.value.value = this.value.value.replaceAll(
-                    unescapeString(_what.value),
-                    unescapeString(_with.value));
+                this.value = getReplaceValue(input, _what, _with, _regex);
             }
         }
         else
             this.value = new TextValue();
 
+
+        const type = 
+            this.value
+            ? new TextValue(
+                isListType(this.value.type)
+                ? finalListTypeFromItems(this.value.items)
+                : this.value.type)
+            : TextValue.NaN.copy();
+
             
         this.setUpdateValues(parse,
         [
             ['value',  this.value],
+            ['type',   type      ],
             ['what',  _what      ],
             ['with',  _with      ],
             ['regex', _regex     ]
@@ -77302,6 +77457,38 @@ extends GOperator1
     }
 }
 
+
+
+function getReplaceValue(input, _what, _with, _regex)
+{
+    consoleAssert(input.type == TEXT_VALUE, 'input.type must be TEXT_VALUE');
+
+    const value = new TextValue();
+
+    if (_regex.value > 0)
+    {
+        try
+        {
+            const regex = new RegExp(_what.value, 'g');
+
+            value.value = input.value.replace(
+                regex,
+                _with.value);
+        }
+        catch (e)
+        {
+        
+        }
+    }
+    else
+    {
+        value.value = input.value.replaceAll(
+            unescapeString(_what.value),
+            unescapeString(_with.value));
+    }
+
+    return value;
+}
 
 
 class GTextJoin
@@ -77496,37 +77683,62 @@ extends GOperator1
         const endCount   = (await this.endCount  .eval(parse)).toValue();
 
 
-        let length = 0;
-
-
         if (this.input)
         {
             const input = (await this.input.eval(parse)).toValue();
             
-            length = input.value.length;
-            
-            this.value = input.copy();
-            
-            consoleAssert(this.value.type == TEXT_VALUE, 'this.value.type must be TEXT_VALUE');
-                
-                
-            if (this.options.enabled)
-                this.value.value = this.value.value
-                    .padStart(startCount.value, unescapeString(startPad.value))
-                    .padEnd  (  endCount.value, endPad.value != '' ? unescapeString(endPad.value) : unescapeString(startPad.value));
+            if (isListType(input.type))
+            {
+                this.value = new ListValue();
+
+                for (let i = 0; i < input.items.length; i++)
+                {
+                    const item = input.items[i];
+
+                    this.value.items.push(
+                        item.type == TEXT_VALUE
+                        ? getPadValue(
+                            item, 
+                            startPad, 
+                            startCount, 
+                            endPad, 
+                            endCount, 
+                            this.options.enabled)
+                        : new TextValue());   
+                }
+            }
+            else
+            {
+                this.value = getPadValue(
+                    input, 
+                    startPad, 
+                    startCount, 
+                    endPad, 
+                    endCount, 
+                    this.options.enabled);
+            }
         }
         else
             this.value = new TextValue();//TextValue.NaN;
 
 
+        const type = 
+            this.value
+            ? new TextValue(
+                isListType(this.value.type)
+                ? finalListTypeFromItems(this.value.items)
+                : this.value.type)
+            : TextValue.NaN.copy();
+
+
         this.setUpdateValues(parse,
         [
-            ['value',      this.value             ],
-            ['length',     new NumberValue(length)], // used to set start and end maxima
-            ['startPad',   startPad               ],
-            ['startCount', startCount             ],
-            ['endPad',     endPad                 ],
-            ['endCount',   endCount               ]
+            ['value',      this.value],
+            ['type',       type      ],
+            ['startPad',   startPad  ],
+            ['startCount', startCount],
+            ['endPad',     endPad    ],
+            ['endCount',   endCount  ]
         ]);
         
 
@@ -77583,6 +77795,21 @@ extends GOperator1
     }
 }
 
+
+
+function getPadValue(input, startPad, startCount, endPad, endCount, enabled)
+{
+    consoleAssert(input.type == TEXT_VALUE, 'input.type must be TEXT_VALUE');
+
+    const value = input.copy();
+    
+    if (enabled)
+        value.value = input.value
+            .padStart(startCount.value, unescapeString(startPad.value))
+            .padEnd  (  endCount.value, endPad.value != '' ? unescapeString(endPad.value) : unescapeString(startPad.value));
+
+    return value;
+}
 
 
 class GTextSplit
@@ -116159,7 +116386,7 @@ extends OperatorBase
 
 
 class   OpTextTrim
-extends OperatorWithValue
+extends OperatorBase
 {
     paramStart;
     paramEnd;
@@ -116173,15 +116400,13 @@ extends OperatorWithValue
         this.canDisable = true;
         
 
-        this.addInput (new Input ([TEXT_VALUE]));
+        this.addInput (new Input ([TEXT_VALUE, TEXT_LIST_VALUE, LIST_VALUE]));
         this.addOutput(new Output([TEXT_VALUE], this.output_genRequest));
 
-        this.addParam(this.paramValue);
         this.addParam(this.paramStart = new TextParam('start', 'start', false, true, true, ''));
         this.addParam(this.paramEnd   = new TextParam('end',   'end',   false, true, true, ''));
 
 
-        setControlFont(this.paramValue.controls[0].textbox, 'Roboto Mono', 10, 'center');
         setControlFont(this.paramStart.controls[0].textbox, 'Roboto Mono', 10, 'center');
         setControlFont(this.paramEnd  .controls[0].textbox, 'Roboto Mono', 10, 'center');
 
@@ -116223,11 +116448,20 @@ extends OperatorWithValue
 
 
 
+    updateValues(requestId, actionId, updateParamId, paramIds, values)
+    {
+        const type = values[paramIds.findIndex(id => id == 'type' )];
+
+        if (type)
+            this.outputs[0].types = [type.value];
+
+        super.updateValues(requestId, actionId, updateParamId, paramIds, values);
+    }
+
+
+
     updateParams()
     {
-        this.paramValue.enableControlText(true);
-        this.paramValue.controls[0].valueText = this.isUnknown() ? UNKNOWN_DISPLAY : '';
-
         this.paramStart.enableControlText(true);
         this.paramEnd  .enableControlText(true);
 
@@ -116574,7 +116808,7 @@ extends OperatorWithValue
 
 
 class   OpTextReplace
-extends ResizableOperatorWithValue
+extends ResizableBase
 {
     paramWhat;
     paramWith;
@@ -116596,10 +116830,9 @@ extends ResizableOperatorWithValue
         this.alwaysSaveParams = true;
         
 
-        this.addInput (new Input (TEXT_TYPES));
+        this.addInput (new Input ([TEXT_VALUE, TEXT_LIST_VALUE, LIST_VALUE]));
         this.addOutput(new Output([TEXT_VALUE], this.output_genRequest));
 
-        this.addParam(this.paramValue);
         this.addParam(this.paramWhat  = new   TextParam('what',  'what',  false, true, true));
         this.addParam(this.paramWith  = new   TextParam('with',  'with',  false, true, true));
         this.addParam(this.paramRegex = new NumberParam('regex', 'regex', true,  true, true, 0, 0, 1));
@@ -116612,7 +116845,6 @@ extends ResizableOperatorWithValue
         this.menuRegex = createBoolMenu(this.paramRegex);
 
 
-        setControlFont(this.paramValue.controls[0].textbox, 'Roboto Mono', 10, 'center');
         setControlFont(this.paramWhat .controls[0].textbox, 'Roboto Mono', 10, 'center');
         setControlFont(this.paramWith .controls[0].textbox, 'Roboto Mono', 10, 'center');
      }
@@ -116636,8 +116868,6 @@ extends ResizableOperatorWithValue
             w, 
             height, 
             updateTransform);
-
-        this.updateValueParam();
     }
 
 
@@ -116676,44 +116906,27 @@ extends ResizableOperatorWithValue
 
 
 
+    updateValues(requestId, actionId, updateParamId, paramIds, values)
+    {
+        const type  = values[paramIds.findIndex(id => id == 'type' )];
+
+        if (type)
+            this.outputs[0].types = [type.value];
+
+        super.updateValues(requestId, actionId, updateParamId, paramIds, values);
+    }
+
+
+
     updateParams()
     {
-        this.paramValue.enableControlText(true, this.isUnknown());
-        this.updateValueParam();
-        // this.paramValue.controls[0].valueText = this.isUnknown() ? UNKNOWN_DISPLAY : '';
-
-        this.paramWhat .enableControlText(true, this.paramWhat .isUnknown());
-        this.paramWith .enableControlText(true, this.paramWith .isUnknown());
+        this.paramWhat .enableControlText(true, this.paramWhat.isUnknown());
+        this.paramWith .enableControlText(true, this.paramWith.isUnknown());
 
         updateParamConditionText(this.paramRegex, this.paramRegex.isUnknown(), false, 1);
 
         this.updateParamControls();
    }
-
-
-    
-    updateValueParam()
-    {
-        const headerHeight = boundingRect(this.header).height / graph.currentPage.zoom;
-
-        const totalParamHeight = 
-              this.div.offsetHeight 
-            - Math.max(defHeaderHeight, headerHeight);
-
-        const hValue = Math.max(defParamHeight, totalParamHeight - defParamHeight * 3);
-
-        this.paramValue.div.style.width  = this.div.offsetWidth;
-        this.paramValue.div.style.height = hValue;    
-
-        this.paramWhat.div.style.width  = this.div.offsetWidth;
-        this.paramWhat.div.style.height = defParamHeight;    
-
-        this.paramWith.div.style.width  = this.div.offsetWidth;
-        this.paramWith.div.style.height = defParamHeight;    
-
-        this.paramRegex.div.style.width  = this.div.offsetWidth;
-        this.paramRegex.div.style.height = defParamHeight;    
-    }
 }
 
 
@@ -116844,7 +117057,7 @@ extends ResizableOperatorWithValue
 
 
 class   OpTextPad
-extends OperatorWithValue
+extends OperatorBase
 {
     paramStartPad;
     paramStartCount;
@@ -116860,17 +117073,15 @@ extends OperatorWithValue
         this.canDisable = true;
         
 
-        this.addInput (new Input ([TEXT_VALUE]));
+        this.addInput (new Input ([TEXT_VALUE, TEXT_LIST_VALUE, LIST_VALUE]));
         this.addOutput(new Output([TEXT_VALUE], this.output_genRequest));
 
-        this.addParam(this.paramValue);
         this.addParam(this.paramStartPad   = new   TextParam('startPad',   'start', false, true, true));
         this.addParam(this.paramStartCount = new NumberParam('startCount', 'start', true,  true, true, 0, 0));
         this.addParam(this.paramEndCount   = new NumberParam('endCount',   'end',   true,  true, true, 0, 0));
         this.addParam(this.paramEndPad     = new   TextParam('endPad',     'end',   false, true, true));
 
 
-        setControlFont(this.paramValue   .controls[0].textbox, 'Roboto Mono', 10, 'center');
         setControlFont(this.paramStartPad.controls[0].textbox, 'Roboto Mono', 10, 'center');
         setControlFont(this.paramEndPad  .controls[0].textbox, 'Roboto Mono', 10, 'center');
         
@@ -116917,11 +117128,20 @@ extends OperatorWithValue
 
 
 
+    updateValues(requestId, actionId, updateParamId, paramIds, values)
+    {
+        const type = values[paramIds.findIndex(id => id == 'type' )];
+
+        if (type)
+            this.outputs[0].types = [type.value];
+
+        super.updateValues(requestId, actionId, updateParamId, paramIds, values);
+    }
+
+
+
     updateParams()
     {
-        this.paramValue.enableControlText(true, this.isUnknown());
-        // this.paramValue.controls[0].valueText = this.isUnknown() ? UNKNOWN_DISPLAY : '';
-
         this.paramStartPad  .enableControlText(true);
         this.paramStartCount.enableControlText(true);
         this.paramEndPad    .enableControlText(true);

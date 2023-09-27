@@ -1,5 +1,5 @@
 class   OpTextPad
-extends OperatorWithValue
+extends OperatorBase
 {
     paramStartPad;
     paramStartCount;
@@ -15,17 +15,15 @@ extends OperatorWithValue
         this.canDisable = true;
         
 
-        this.addInput (new Input ([TEXT_VALUE]));
+        this.addInput (new Input ([TEXT_VALUE, TEXT_LIST_VALUE, LIST_VALUE]));
         this.addOutput(new Output([TEXT_VALUE], this.output_genRequest));
 
-        this.addParam(this.paramValue);
         this.addParam(this.paramStartPad   = new   TextParam('startPad',   'start', false, true, true));
         this.addParam(this.paramStartCount = new NumberParam('startCount', 'start', true,  true, true, 0, 0));
         this.addParam(this.paramEndCount   = new NumberParam('endCount',   'end',   true,  true, true, 0, 0));
         this.addParam(this.paramEndPad     = new   TextParam('endPad',     'end',   false, true, true));
 
 
-        setControlFont(this.paramValue   .controls[0].textbox, 'Roboto Mono', 10, 'center');
         setControlFont(this.paramStartPad.controls[0].textbox, 'Roboto Mono', 10, 'center');
         setControlFont(this.paramEndPad  .controls[0].textbox, 'Roboto Mono', 10, 'center');
         
@@ -72,11 +70,20 @@ extends OperatorWithValue
 
 
 
+    updateValues(requestId, actionId, updateParamId, paramIds, values)
+    {
+        const type = values[paramIds.findIndex(id => id == 'type' )];
+
+        if (type)
+            this.outputs[0].types = [type.value];
+
+        super.updateValues(requestId, actionId, updateParamId, paramIds, values);
+    }
+
+
+
     updateParams()
     {
-        this.paramValue.enableControlText(true, this.isUnknown());
-        // this.paramValue.controls[0].valueText = this.isUnknown() ? UNKNOWN_DISPLAY : '';
-
         this.paramStartPad  .enableControlText(true);
         this.paramStartCount.enableControlText(true);
         this.paramEndPad    .enableControlText(true);

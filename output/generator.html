@@ -22752,24 +22752,44 @@ extends GOperator1
 
         if (this.input)
         {
-            this.value = (await this.input.eval(parse)).toValue();
+            const input = (await this.input.eval(parse)).toValue();
             
-            consoleAssert(this.value.type == TEXT_VALUE, 'this.value.type must be TEXT_VALUE');
-                
-                
-            if (this.options.enabled)
+            if (isListType(input.type))
             {
-                if (start.value.length > 0) this.value.value = trimCharFromStart(this.value.value, unescapeString(start.value));
-                if (end  .value.length > 0) this.value.value = trimCharFromEnd  (this.value.value, unescapeString(end  .value));
+                this.value = new ListValue();
+
+                for (let i = 0; i < input.items.length; i++)
+                {
+                    const item = input.items[i];
+
+                    this.value.items.push(
+                        item.type == TEXT_VALUE
+                        ? getTrimValue(item, start, end, this.options.enabled)
+                        : new TextValue());   
+                }
+            }
+            else
+            {
+                this.value = getTrimValue(input, start, end, this.options.enabled);
             }
         }
         else
             this.value = new TextValue();//TextValue.NaN;
 
 
+        const type = 
+            this.value
+            ? new TextValue(
+                isListType(this.value.type)
+                ? finalListTypeFromItems(this.value.items)
+                : this.value.type)
+            : TextValue.NaN.copy();
+
+
         this.setUpdateValues(parse,
         [
             ['value', this.value],
+            ['type',  type      ],
             ['start', start     ],
             ['end',   end       ]
         ]);
@@ -22820,6 +22840,22 @@ extends GOperator1
     }
 }
 
+
+
+function getTrimValue(input, start, end, enabled)
+{
+    consoleAssert(input.type == TEXT_VALUE, 'input.type must be TEXT_VALUE');
+               
+    const value = input.copy();
+
+    if (enabled)
+    {
+        if (start.value.length > 0) value.value = trimCharFromStart(value.value, unescapeString(start.value));
+        if (end  .value.length > 0) value.value = trimCharFromEnd  (value.value, unescapeString(end  .value));
+    }
+
+    return value;
+}
 
 
 class GTextSubstring
@@ -23862,39 +23898,44 @@ extends GOperator1
 
         if (this.input)
         {
-            this.value = (await this.input.eval(parse)).toValue();
-
-            consoleAssert(this.value.type == TEXT_VALUE, 'this.value.type must be TEXT_VALUE');
-
-            if (_regex.value > 0)
+            const input = (await this.input.eval(parse)).toValue();
+            
+            if (isListType(input.type))
             {
-                try
-                {
-                    const regex = new RegExp(_what.value, 'g');
+                this.value = new ListValue();
 
-                    this.value.value = this.value.value.replace(
-                        regex,
-                        _with.value);
-                }
-                catch (e)
+                for (let i = 0; i < input.items.length; i++)
                 {
-                
+                    const item = input.items[i];
+
+                    this.value.items.push(
+                        item.type == TEXT_VALUE
+                        ? getReplaceValue(item, _what, _with, _regex)
+                        : new TextValue());   
                 }
             }
             else
             {
-                this.value.value = this.value.value.replaceAll(
-                    unescapeString(_what.value),
-                    unescapeString(_with.value));
+                this.value = getReplaceValue(input, _what, _with, _regex);
             }
         }
         else
             this.value = new TextValue();
 
+
+        const type = 
+            this.value
+            ? new TextValue(
+                isListType(this.value.type)
+                ? finalListTypeFromItems(this.value.items)
+                : this.value.type)
+            : TextValue.NaN.copy();
+
             
         this.setUpdateValues(parse,
         [
             ['value',  this.value],
+            ['type',   type      ],
             ['what',  _what      ],
             ['with',  _with      ],
             ['regex', _regex     ]
@@ -23950,6 +23991,38 @@ extends GOperator1
     }
 }
 
+
+
+function getReplaceValue(input, _what, _with, _regex)
+{
+    consoleAssert(input.type == TEXT_VALUE, 'input.type must be TEXT_VALUE');
+
+    const value = new TextValue();
+
+    if (_regex.value > 0)
+    {
+        try
+        {
+            const regex = new RegExp(_what.value, 'g');
+
+            value.value = input.value.replace(
+                regex,
+                _with.value);
+        }
+        catch (e)
+        {
+        
+        }
+    }
+    else
+    {
+        value.value = input.value.replaceAll(
+            unescapeString(_what.value),
+            unescapeString(_with.value));
+    }
+
+    return value;
+}
 
 
 class GTextJoin
@@ -24144,37 +24217,62 @@ extends GOperator1
         const endCount   = (await this.endCount  .eval(parse)).toValue();
 
 
-        let length = 0;
-
-
         if (this.input)
         {
             const input = (await this.input.eval(parse)).toValue();
             
-            length = input.value.length;
-            
-            this.value = input.copy();
-            
-            consoleAssert(this.value.type == TEXT_VALUE, 'this.value.type must be TEXT_VALUE');
-                
-                
-            if (this.options.enabled)
-                this.value.value = this.value.value
-                    .padStart(startCount.value, unescapeString(startPad.value))
-                    .padEnd  (  endCount.value, endPad.value != '' ? unescapeString(endPad.value) : unescapeString(startPad.value));
+            if (isListType(input.type))
+            {
+                this.value = new ListValue();
+
+                for (let i = 0; i < input.items.length; i++)
+                {
+                    const item = input.items[i];
+
+                    this.value.items.push(
+                        item.type == TEXT_VALUE
+                        ? getPadValue(
+                            item, 
+                            startPad, 
+                            startCount, 
+                            endPad, 
+                            endCount, 
+                            this.options.enabled)
+                        : new TextValue());   
+                }
+            }
+            else
+            {
+                this.value = getPadValue(
+                    input, 
+                    startPad, 
+                    startCount, 
+                    endPad, 
+                    endCount, 
+                    this.options.enabled);
+            }
         }
         else
             this.value = new TextValue();//TextValue.NaN;
 
 
+        const type = 
+            this.value
+            ? new TextValue(
+                isListType(this.value.type)
+                ? finalListTypeFromItems(this.value.items)
+                : this.value.type)
+            : TextValue.NaN.copy();
+
+
         this.setUpdateValues(parse,
         [
-            ['value',      this.value             ],
-            ['length',     new NumberValue(length)], // used to set start and end maxima
-            ['startPad',   startPad               ],
-            ['startCount', startCount             ],
-            ['endPad',     endPad                 ],
-            ['endCount',   endCount               ]
+            ['value',      this.value],
+            ['type',       type      ],
+            ['startPad',   startPad  ],
+            ['startCount', startCount],
+            ['endPad',     endPad    ],
+            ['endCount',   endCount  ]
         ]);
         
 
@@ -24231,6 +24329,21 @@ extends GOperator1
     }
 }
 
+
+
+function getPadValue(input, startPad, startCount, endPad, endCount, enabled)
+{
+    consoleAssert(input.type == TEXT_VALUE, 'input.type must be TEXT_VALUE');
+
+    const value = input.copy();
+    
+    if (enabled)
+        value.value = input.value
+            .padStart(startCount.value, unescapeString(startPad.value))
+            .padEnd  (  endCount.value, endPad.value != '' ? unescapeString(endPad.value) : unescapeString(startPad.value));
+
+    return value;
+}
 
 
 class GTextSplit

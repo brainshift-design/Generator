@@ -43,37 +43,62 @@ extends GOperator1
         const endCount   = (await this.endCount  .eval(parse)).toValue();
 
 
-        let length = 0;
-
-
         if (this.input)
         {
             const input = (await this.input.eval(parse)).toValue();
             
-            length = input.value.length;
-            
-            this.value = input.copy();
-            
-            consoleAssert(this.value.type == TEXT_VALUE, 'this.value.type must be TEXT_VALUE');
-                
-                
-            if (this.options.enabled)
-                this.value.value = this.value.value
-                    .padStart(startCount.value, unescapeString(startPad.value))
-                    .padEnd  (  endCount.value, endPad.value != '' ? unescapeString(endPad.value) : unescapeString(startPad.value));
+            if (isListType(input.type))
+            {
+                this.value = new ListValue();
+
+                for (let i = 0; i < input.items.length; i++)
+                {
+                    const item = input.items[i];
+
+                    this.value.items.push(
+                        item.type == TEXT_VALUE
+                        ? getPadValue(
+                            item, 
+                            startPad, 
+                            startCount, 
+                            endPad, 
+                            endCount, 
+                            this.options.enabled)
+                        : new TextValue());   
+                }
+            }
+            else
+            {
+                this.value = getPadValue(
+                    input, 
+                    startPad, 
+                    startCount, 
+                    endPad, 
+                    endCount, 
+                    this.options.enabled);
+            }
         }
         else
             this.value = new TextValue();//TextValue.NaN;
 
 
+        const type = 
+            this.value
+            ? new TextValue(
+                isListType(this.value.type)
+                ? finalListTypeFromItems(this.value.items)
+                : this.value.type)
+            : TextValue.NaN.copy();
+
+
         this.setUpdateValues(parse,
         [
-            ['value',      this.value             ],
-            ['length',     new NumberValue(length)], // used to set start and end maxima
-            ['startPad',   startPad               ],
-            ['startCount', startCount             ],
-            ['endPad',     endPad                 ],
-            ['endCount',   endCount               ]
+            ['value',      this.value],
+            ['type',       type      ],
+            ['startPad',   startPad  ],
+            ['startCount', startCount],
+            ['endPad',     endPad    ],
+            ['endCount',   endCount  ]
         ]);
         
 
@@ -128,4 +153,20 @@ extends GOperator1
         if (this.endPad    ) this.endPad    .iterateLoop(parse);
         if (this.endCount  ) this.endCount  .iterateLoop(parse);
     }
+}
+
+
+
+function getPadValue(input, startPad, startCount, endPad, endCount, enabled)
+{
+    consoleAssert(input.type == TEXT_VALUE, 'input.type must be TEXT_VALUE');
+
+    const value = input.copy();
+    
+    if (enabled)
+        value.value = input.value
+            .padStart(startCount.value, unescapeString(startPad.value))
+            .padEnd  (  endCount.value, endPad.value != '' ? unescapeString(endPad.value) : unescapeString(startPad.value));
+
+    return value;
 }

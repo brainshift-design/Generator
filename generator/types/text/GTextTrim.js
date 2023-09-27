@@ -39,24 +39,44 @@ extends GOperator1
 
         if (this.input)
         {
-            this.value = (await this.input.eval(parse)).toValue();
+            const input = (await this.input.eval(parse)).toValue();
             
-            consoleAssert(this.value.type == TEXT_VALUE, 'this.value.type must be TEXT_VALUE');
-                
-                
-            if (this.options.enabled)
+            if (isListType(input.type))
             {
-                if (start.value.length > 0) this.value.value = trimCharFromStart(this.value.value, unescapeString(start.value));
-                if (end  .value.length > 0) this.value.value = trimCharFromEnd  (this.value.value, unescapeString(end  .value));
+                this.value = new ListValue();
+
+                for (let i = 0; i < input.items.length; i++)
+                {
+                    const item = input.items[i];
+
+                    this.value.items.push(
+                        item.type == TEXT_VALUE
+                        ? getTrimValue(item, start, end, this.options.enabled)
+                        : new TextValue());   
+                }
+            }
+            else
+            {
+                this.value = getTrimValue(input, start, end, this.options.enabled);
             }
         }
         else
             this.value = new TextValue();//TextValue.NaN;
 
 
+        const type = 
+            this.value
+            ? new TextValue(
+                isListType(this.value.type)
+                ? finalListTypeFromItems(this.value.items)
+                : this.value.type)
+            : TextValue.NaN.copy();
+
+
         this.setUpdateValues(parse,
         [
             ['value', this.value],
+            ['type',  type      ],
             ['start', start     ],
             ['end',   end       ]
         ]);
@@ -105,4 +125,21 @@ extends GOperator1
         if (this.start) this.start.iterateLoop(parse);
         if (this.end  ) this.end  .iterateLoop(parse);
     }
+}
+
+
+
+function getTrimValue(input, start, end, enabled)
+{
+    consoleAssert(input.type == TEXT_VALUE, 'input.type must be TEXT_VALUE');
+               
+    const value = input.copy();
+
+    if (enabled)
+    {
+        if (start.value.length > 0) value.value = trimCharFromStart(value.value, unescapeString(start.value));
+        if (end  .value.length > 0) value.value = trimCharFromEnd  (value.value, unescapeString(end  .value));
+    }
+
+    return value;
 }
