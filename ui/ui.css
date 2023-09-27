@@ -96,3 +96,14 @@ a
 {
     color: var(--figma-color-text-brand);
 }
+
+
+#findTutorials
+{
+    position: absolute;
+    left:     20;
+    top:      50;
+    width:    auto;
+    height:   auto;
+    display:  none;
+}

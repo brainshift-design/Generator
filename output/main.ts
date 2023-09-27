@@ -2131,8 +2131,9 @@ function figStartGenerator()
         const fonts = await figma.listAvailableFontsAsync();
         // console.log('figma fonts =', fonts);
  
-        const eulaRead = (await figma.clientStorage.getAsync('eulaRead')) === 'true';
-        const isLocked = figPageIsLocked();
+        const eula      = (await figma.clientStorage.getAsync('eula'     )) === 'true';
+        const tutorials = (await figma.clientStorage.getAsync('tutorials')) === 'true';
+        const isLocked  = figPageIsLocked();
 
         
         figPostMessageToUi({
@@ -2141,7 +2142,8 @@ function figStartGenerator()
             viewportRect: figma.viewport.bounds,
             viewportZoom: figma.viewport.zoom,
             fonts:        fonts,
-            eulaRead:     eulaRead,
+            eula:         eula,
+            tutorials:    tutorials,
             isLocked:     isLocked });
     })();
 }

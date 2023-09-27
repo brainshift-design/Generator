@@ -110,6 +110,13 @@ function hideWhatsNewDialog()
     whatsNewDialog.style.display = 'none';
 
     dialogShown = false;
+
+
+    if (!tutorialsSeen)
+    {
+        findTutorials.style.display = 'block';
+        tutorialsShown = true;
+    }
 }
 
 

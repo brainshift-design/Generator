@@ -129,10 +129,8 @@ function manageLastSub(userId, enable)
 
 function startFreeTrial()
 {
-    uiSetLocalData('eulaRead', 'true');
+    uiSetLocalData('eula', 'true');
 
-    loadPresetGraph('default');
-    
 
     // postToServer(
     // {
@@ -144,7 +142,7 @@ function startFreeTrial()
     //     consoleAssert(response, 'invalid response from server @ createTrial()');
 
     //     if (response.result)
-    //         initGenerator();
+           initGenerator();
     // })
     // .catch(e =>
     // {

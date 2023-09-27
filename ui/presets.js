@@ -102,6 +102,7 @@ function getPresetGraph(graphId)
         case 'randomColors':         return presetRandomColors;
         case 'tintsAndShades':       return presetTintsAndShades;
         case 'paletteFromColor':     return presetPaletteFromColor;
+        case 'colorSwatches':        return presetColorSwatches;
 
 
         case 'shapesStyles':         return presetShapesStyles;

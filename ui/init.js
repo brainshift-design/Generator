@@ -7,8 +7,11 @@ var genMessages      = []; // messages from UI to Generator
 var genMessagePosted = false;
 
 
-var allUpdateNodes   = [];
+var tutorialsShown   = false;
+var tutorialsSeen    = false;
 
+
+var allUpdateNodes   = [];
 
 
 var currentSessionId = '';
@@ -37,8 +40,8 @@ var currentSessionId = '';
 
 
 
-//uiRemoveAllSavedNodesAndConns();
-//uiRemoveAllSavedPages();
+// uiRemoveAllSavedNodesAndConns();
+// uiRemoveAllSavedPages();
 
 
 
@@ -85,6 +88,9 @@ async function uiReturnFigStartGenerator(msg)
     //manageLastSub(currentUser.id, true);
     
 
+    tutorialsSeen = msg.tutorials;
+
+
     loadLocalSettings();
 
 
@@ -114,7 +120,7 @@ async function uiReturnFigStartGenerator(msg)
     if (msg.isLocked)
         showMultiplayerDialog();
     else
-        validateInit(msg.eulaRead);
+        validateInit(msg.eula);
 }
 
 
@@ -147,12 +153,12 @@ function createSessionId()
 
 function subscribed()
 {
-    return true;//currentSessionId == createSessionId();
+    return false;//currentSessionId == createSessionId();
 }
 
 
 
-function validateInit(eulaRead)
+function validateInit(eula)
 {
     try
     {
@@ -172,7 +178,7 @@ function validateInit(eulaRead)
         //     //         showEulaDialog();
         //     // });
 
-            if (!eulaRead)
+            if (!eula)
                 showEulaDialog();
             else
                 initGenerator();
