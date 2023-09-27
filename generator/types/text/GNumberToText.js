@@ -130,7 +130,7 @@ function getNumberToTextValue(input, format)
     {
         case 0: // dec
             str = numToString(input.value, -input.decimals);
-        break;
+            break;
 
         case 1: // hex
             str = numToString(Math.round(input.value), input.decimals, true).toUpperCase();

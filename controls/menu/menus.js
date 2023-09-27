@@ -526,6 +526,7 @@ menuFlow = new Menu('Flow', true, false);
         new MenuItem('Text ⟶ Color',        null, {icon: iconTextToColor,   createType: TEXT_TO_COLOR,  callback: e => actionManager.do(getCreateNodeAction(TEXT_TO_COLOR,  btnText.div, getCreateOptions(e)))}),
         new MenuItem('',                     null, {separator: true}),
         new MenuItem('Number ⟶ Text',       null, {icon: iconNumberToText,  createType: NUMBER_TO_TEXT, callback: e => actionManager.do(getCreateNodeAction(NUMBER_TO_TEXT, btnText.div, getCreateOptions(e)))}),
+        new MenuItem('Color ⟶ Text',        null, {icon: iconColorToText,   createType: COLOR_TO_TEXT,  callback: e => actionManager.do(getCreateNodeAction(COLOR_TO_TEXT,  btnText.div, getCreateOptions(e)))}),
         new MenuItem('',                     null, {separator: true}),
         new MenuItem('Unicode ⟶ Character', null, {icon: iconTextCharacter, createType: TEXT_CHAR,      callback: e => actionManager.do(getCreateNodeAction(TEXT_CHAR,      btnText.div, getCreateOptions(e)))})]);
     

@@ -48,6 +48,7 @@ function createNode(nodeType, creatingButton = null, createdNodeId = -1, options
 
         case NUMBER_INTERPOLATE:      node = new OpInterpolate();       break;
         case NUMBER_TO_TEXT:          node = new OpNumberToText();      break;
+        case COLOR_TO_TEXT:           node = new OpColorToText();       break;
         case NUMBER_SOLVE:            node = new OpSolve();             break;
         case NUMBER_ANIMATE:          node = new OpAnimate();           break;
 

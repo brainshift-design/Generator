@@ -215,6 +215,7 @@ function genParse(parse, inParam = true)
     else if (parse.next == TEXT_CASE              ) result = genParseTextCase          (parse);
     else if (parse.next == TEXT_CHAR              ) result = genParseTextCharacter     (parse);
     else if (parse.next == NUMBER_TO_TEXT         ) result = genParseNumberToText      (parse);
+    else if (parse.next == COLOR_TO_TEXT          ) result = genParseColorToText       (parse);
     else if (parse.next == TEXT_TO_NUMBER         ) result = genParseTextToNumber      (parse);
     else if (parse.next == TEXT_TO_COLOR          ) result = genParseTextToColor       (parse);
     else if (parse.next == TEXT_REPLACE           ) result = genParseTextReplace       (parse);

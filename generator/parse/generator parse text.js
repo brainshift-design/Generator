@@ -621,6 +621,52 @@ function genParseNumberToText(parse)
 
 
 
+function genParseColorToText(parse)
+{
+    const [, nodeId, options, ignore] = genParseNodeStart(parse);
+
+
+    const col2text = new GColorToText(nodeId, options);
+   
+
+    let nInputs = -1;
+    
+    if (!ignore)
+    {
+        nInputs = parseInt(parse.move());
+        consoleAssert(nInputs == 0 || nInputs == 1, 'nInputs must be [0, 1]');
+    }
+
+
+    if (parse.settings.logRequests) 
+        logReq(col2text, parse, ignore, nInputs);
+
+
+    if (ignore) 
+    {
+        genParseNodeEnd(parse, col2text);
+        return parse.parsedNodes.find(n => n.nodeId == nodeId);
+    }
+
+
+    parse.nTab++;
+
+
+    if (nInputs == 1)
+        col2text.input = genParse(parse);
+
+    col2text.format = genParse(parse);
+
+    
+    parse.nTab--;
+
+
+    genParseNodeEnd(parse, col2text);
+    return col2text;
+}
+
+
+
 function genParseTextToNumber(parse)
 {
     const [, nodeId, options, ignore] = genParseNodeStart(parse);
