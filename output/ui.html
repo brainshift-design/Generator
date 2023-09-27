@@ -5313,6 +5313,7 @@ a
 
                 <p>•  fixed text params always resetting alignment to center</p>
                 <p>•  added Color ⟶ Text node</p>
+                <p>•  Text ⟶ Color now trims spaces before parsing</p>
                 
                 <p><br/><br/><div id='chkHideWhatsNew'></div></p>
             </div>
@@ -29233,7 +29234,6 @@ function getColorToTextValue(input, format)
 {
     let str = NAN_CHAR;
 
-    console.log('input =', input);
     const rgb = input.toRgb();
 
     switch (format.value)
@@ -29484,9 +29484,11 @@ extends GOperator1
 
 function getTextToColorValue(input)
 {
+    const str = input.value.trim();
+
     let rgb = 
-        input.value.trim() != ''
-        ? validHex2rgb(input.value)
+        str != ''
+        ? validHex2rgb(str)
         : rgb_NaN;
         
     return ColorValue.fromRgb(scaleRgb(rgb));
@@ -76816,7 +76818,6 @@ function getColorToTextValue(input, format)
 {
     let str = NAN_CHAR;
 
-    console.log('input =', input);
     const rgb = input.toRgb();
 
     switch (format.value)
@@ -77067,9 +77068,11 @@ extends GOperator1
 
 function getTextToColorValue(input)
 {
+    const str = input.value.trim();
+
     let rgb = 
-        input.value.trim() != ''
-        ? validHex2rgb(input.value)
+        str != ''
+        ? validHex2rgb(str)
         : rgb_NaN;
         
     return ColorValue.fromRgb(scaleRgb(rgb));

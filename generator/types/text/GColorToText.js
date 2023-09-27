@@ -126,7 +126,6 @@ function getColorToTextValue(input, format)
 {
     let str = NAN_CHAR;
 
-    console.log('input =', input);
     const rgb = input.toRgb();
 
     switch (format.value)

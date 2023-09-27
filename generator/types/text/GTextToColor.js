@@ -78,9 +78,11 @@ extends GOperator1
 
 function getTextToColorValue(input)
 {
+    const str = input.value.trim();
+
     let rgb = 
-        input.value.trim() != ''
-        ? validHex2rgb(input.value)
+        str != ''
+        ? validHex2rgb(str)
         : rgb_NaN;
         
     return ColorValue.fromRgb(scaleRgb(rgb));
