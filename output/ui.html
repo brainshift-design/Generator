@@ -5332,7 +5332,8 @@ a
 
                 <p>•  added random logo tutorial</p>
                 <p>•  added basic colors to color menu</p>
-                <p>•  fixed hex color entry bug</p>
+                <p>•  fixed UI issues</p>
+                <p>•  fixed font loading bug</p>
                 
                 <p><br/><br/><div id='chkHideWhatsNew'></div></p>
             </div>
@@ -92742,7 +92743,7 @@ class ColorListMenuItem
         this.div      .style.height     = '41px';
         
         this.divColor1.style.background = this.swatchType == 1 ? '#000' : 'transparent';
-        this.divColor1.style.boxShadow  = '0 0 0 1px inset #fff2';
+        this.divColor1.style.boxShadow  = '0 0 0 1px #fff2';
         
 
         if (this.swatchType == 0)
@@ -92974,7 +92975,7 @@ class ColorListMenuItem
             ? 'var(--figma-color-bg-brand)'
             : 'transparent';
 
-        this.divColor8.style.background = this.swatchType == 1 ? '#fff' : (darkMode ? '#ddd' : '#333');
+        this.divColor8.style.background = this.swatchType == 1 ? '#eee' : (darkMode ? '#ddd' : '#333');
         
         if (this.swatchType == 0)
             this.noColorLine.style.background = darkMode ? 'transparent' : '#fff2';
@@ -124013,7 +124014,7 @@ extends OpShape
         this.addParam(this.paramY             = new NumberParam('y',             'Y',        true,  true, true, 0));
         this.addParam(this.paramWidth         = new NumberParam('width',         'width',    true,  true, true, 0));
         this.addParam(this.paramHeight        = new NumberParam('height',        'height',   true,  true, true, 0));
-        this.addParam(this.paramFont          = new SelectParam('font',          'font',     true,  true, true, figUniqueFontNames, interIndex));
+        this.addParam(this.paramFont          = new SelectParam('font',          'font',     false, true, true, figUniqueFontNames, interIndex));
         this.addParam(this.paramSize          = new NumberParam('size',          'size',     true,  true, true,  12, 1));
         this.addParam(this.paramStyle         = new SelectParam('style',         'style',    false, true, true, [''], 0));
         this.addParam(this.paramAlignH        = new SelectParam('alignH',        'align H',  true,  true, true, ['left', 'center', 'right', 'justify'], 0));
@@ -124030,6 +124031,7 @@ extends OpShape
         this.paramFont .saveAsText = true;
         this.paramStyle.saveAsText = true;
 
+        this.paramFont.divider = 0.3;
         
         this.addBaseParams();
     }

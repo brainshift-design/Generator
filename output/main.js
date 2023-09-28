@@ -3360,35 +3360,38 @@ function figUpdateText(figText, genText) {
             family: genText[FO_FONT],
             style: genText[FO_FONT_STYLE]
         };
-        yield figma.loadFontAsync(fontName);
-        figText.fontName = fontName;
-        figText.fontSize = Math.max(1, genText[FO_FONT_SIZE]);
-        figText.characters = genText[FO_TEXT];
-        figText.lineHeight = { unit: 'PERCENT', value: genText[FO_LINE_HEIGHT] };
-        figText.letterSpacing = { unit: 'PERCENT', value: genText[FO_LETTER_SPACING] };
-        if (genText[FO_ALIGN_H] == 0)
-            figText.textAlignHorizontal = 'LEFT';
-        else if (genText[FO_ALIGN_H] == 1)
-            figText.textAlignHorizontal = 'CENTER';
-        else if (genText[FO_ALIGN_H] == 2)
-            figText.textAlignHorizontal = 'RIGHT';
-        else if (genText[FO_ALIGN_H] == 3)
-            figText.textAlignHorizontal = 'JUSTIFIED';
-        if (genText[FO_ALIGN_V] == 0)
-            figText.textAlignVertical = 'TOP';
-        else if (genText[FO_ALIGN_V] == 1)
-            figText.textAlignVertical = 'CENTER';
-        else if (genText[FO_ALIGN_V] == 2)
-            figText.textAlignVertical = 'BOTTOM';
-        setObjectTransform(figText, genText);
-        setObjectProps(figText, genText);
-        if (genText[FO_FIG_WIDTH] == 0
-            && genText[FO_FIG_HEIGHT] == 0)
-            figText.textAutoResize = 'WIDTH_AND_HEIGHT';
-        else if (genText[FO_FIG_WIDTH] == 0)
-            figText.textAutoResize = 'HEIGHT';
-        else
-            figText.textAutoResize = 'NONE';
+        try {
+            yield figma.loadFontAsync(fontName);
+            figText.fontName = fontName;
+            figText.fontSize = Math.max(1, genText[FO_FONT_SIZE]);
+            figText.characters = genText[FO_TEXT];
+            figText.lineHeight = { unit: 'PERCENT', value: genText[FO_LINE_HEIGHT] };
+            figText.letterSpacing = { unit: 'PERCENT', value: genText[FO_LETTER_SPACING] };
+            if (genText[FO_ALIGN_H] == 0)
+                figText.textAlignHorizontal = 'LEFT';
+            else if (genText[FO_ALIGN_H] == 1)
+                figText.textAlignHorizontal = 'CENTER';
+            else if (genText[FO_ALIGN_H] == 2)
+                figText.textAlignHorizontal = 'RIGHT';
+            else if (genText[FO_ALIGN_H] == 3)
+                figText.textAlignHorizontal = 'JUSTIFIED';
+            if (genText[FO_ALIGN_V] == 0)
+                figText.textAlignVertical = 'TOP';
+            else if (genText[FO_ALIGN_V] == 1)
+                figText.textAlignVertical = 'CENTER';
+            else if (genText[FO_ALIGN_V] == 2)
+                figText.textAlignVertical = 'BOTTOM';
+            setObjectTransform(figText, genText);
+            setObjectProps(figText, genText);
+            if (genText[FO_FIG_WIDTH] == 0
+                && genText[FO_FIG_HEIGHT] == 0)
+                figText.textAutoResize = 'WIDTH_AND_HEIGHT';
+            else if (genText[FO_FIG_WIDTH] == 0)
+                figText.textAutoResize = 'HEIGHT';
+            else
+                figText.textAutoResize = 'NONE';
+        }
+        catch (e) { }
     });
 }
 function genVectorNetworkIsValid(genNetwork) {

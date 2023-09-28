@@ -63,7 +63,7 @@ class ColorListMenuItem
         this.div      .style.height     = '41px';
         
         this.divColor1.style.background = this.swatchType == 1 ? '#000' : 'transparent';
-        this.divColor1.style.boxShadow  = '0 0 0 1px inset #fff2';
+        this.divColor1.style.boxShadow  = '0 0 0 1px #fff2';
         
 
         if (this.swatchType == 0)
@@ -295,7 +295,7 @@ class ColorListMenuItem
             ? 'var(--figma-color-bg-brand)'
             : 'transparent';
 
-        this.divColor8.style.background = this.swatchType == 1 ? '#fff' : (darkMode ? '#ddd' : '#333');
+        this.divColor8.style.background = this.swatchType == 1 ? '#eee' : (darkMode ? '#ddd' : '#333');
         
         if (this.swatchType == 0)
             this.noColorLine.style.background = darkMode ? 'transparent' : '#fff2';
