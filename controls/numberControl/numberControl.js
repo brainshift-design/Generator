@@ -218,7 +218,7 @@ extends Control
         const oldValue    = this.value;
         const oldDecimals = this.decimals;
 
-        
+
         if (this.wrapValue)
         {
             const range = this.displayMax - this.displayMin;

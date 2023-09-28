@@ -273,6 +273,7 @@ NumberControl.prototype.initEvents = function()
                         Math.round(val / grain) * grain, 
                         true, 
                         false,
+                        false,
                         e.shiftKey);
 
 

@@ -89230,7 +89230,7 @@ extends Control
         const oldValue    = this.value;
         const oldDecimals = this.decimals;
 
-        
+
         if (this.wrapValue)
         {
             const range = this.displayMax - this.displayMin;
@@ -90514,6 +90514,7 @@ NumberControl.prototype.initEvents = function()
                     this.setValue(
                         Math.round(val / grain) * grain, 
                         true, 
+                        false,
                         false,
                         e.shiftKey);
 
