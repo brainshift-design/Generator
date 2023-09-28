@@ -5332,6 +5332,7 @@ a
 
                 <p>•  added random logo tutorial</p>
                 <p>•  added basic colors to color menu</p>
+                <p>•  fixed hex color entry bug</p>
                 
                 <p><br/><br/><div id='chkHideWhatsNew'></div></p>
             </div>
@@ -5497,11 +5498,9 @@ a
             <div class='presetTab' onclick="setCurrentPresetTab(0);">Basics</div>
             <div class='presetTab' onclick="setCurrentPresetTab(1);">Data & Lists</div>
             <div class='presetTab' onclick="setCurrentPresetTab(2);">Sets & Loops</div>
-            <div class='presetTab' onclick="setCurrentPresetTab(3);">Math</div>
-            <div class='presetTab' onclick="setCurrentPresetTab(4);">Text</div>
-            <div class='presetTab' onclick="setCurrentPresetTab(5);">Colors</div>
-            <div class='presetTab' onclick="setCurrentPresetTab(6);">Shapes</div>
-            <div class='presetTab' onclick="setCurrentPresetTab(7);">Examples</div>
+            <div class='presetTab' onclick="setCurrentPresetTab(3);">Numbers & Text</div>
+            <div class='presetTab' onclick="setCurrentPresetTab(4);">Colors</div>
+            <div class='presetTab' onclick="setCurrentPresetTab(5);">Shapes</div>
         </div>
         <div id='presetClose' onclick="hidePresets();"></div>
     </div>
@@ -5516,6 +5515,9 @@ a
                 <div class='preset' onclick="loadPresetGraph('organize');">Organizing nodes</div>
                 <div class='preset' onclick="loadPresetGraph('active');">Where are my objects?</div>
             </div>
+            <div class='presetGroup'>
+                <div class='preset' onclick="loadPresetGraph('basicVariables');">Figma variables</div>
+            </div>
         </div>
 
 
@@ -5524,9 +5526,6 @@ a
                 <div class='preset' onclick="loadPresetGraph('ifElse');">If / else</div>
                 <div class='preset' onclick="loadPresetGraph('select');">Select from list</div>
                 <div class='preset' onclick="loadPresetGraph('tableBasics');">CSV and tables</div>
-            </div>
-            <div class='presetGroup'>
-                <div class='preset' onclick="loadPresetGraph('basicVariables');">Figma variables</div>
             </div>
         </div>
 
@@ -5541,29 +5540,29 @@ a
                 <div class='preset' onclick="loadPresetGraph('probability');">Probability...</div>
             </div>
             <div class='presetGroup'>
-                <div class='preset' onclick="loadPresetGraph('randomSeeds');">Random seeds</div>
                 <div class='preset' onclick="loadPresetGraph('loop1d');">1D loop</div>
                 <div class='preset' onclick="loadPresetGraph('loop2d');">2D loop</div>
                 <div class='preset' onclick="loadPresetGraph('loopLock');">Complex loop</div>
+                <div class='preset' onclick="loadPresetGraph('wobbles');">Wobbles</div>
+                <div class='preset' onclick="loadPresetGraph('randomAbstract');">Random abstract</div>
+                <div class='preset' onclick="loadPresetGraph('booksOnShelf');">Books on shelf</div>
             </div>
         </div>
 
 
-        <div class='presetPage' id='presetPageMath'>
+        <div class='presetPage' id='presetPageMathЕуче'>
             <div class='presetGroup'>
                 <div class='preset' onclick="loadPresetGraph('quadraticFormula');">Quadratic formula</div>
                 <div class='preset' onclick="loadPresetGraph('opponentColor');">Opponent process color</div>
             </div>
+            <div class='presetGroup'>
+                <div class='preset' onclick="loadPresetGraph('randomSeeds');">Random seeds</div>
+                <div class='preset' onclick="loadPresetGraph('randomNames');">Random names</div>
+                <div class='preset' onclick="loadPresetGraph('namesLogos');">Random logos</div>
+            </div>
         </div>
  
 
-        <div class='presetPage' id='presetPageText'>
-            <div class='presetGroup'>
-                <div class='preset' onclick="loadPresetGraph('randomNames');">Random names</div>
-            </div>
-        </div>
-
-        
         <div class='presetPage' id='presetPageColors'>
             <div class='presetGroup'>
                 <div class='preset' onclick="loadPresetGraph('colorSpaces');">Color spaces</div>
@@ -5590,16 +5589,6 @@ a
         </div>
     
 
-        <div class='presetPage' id='presetPageExamples'>
-            <div class='presetGroup'>
-                <div class='preset' onclick="loadPresetGraph('booksOnShelf');">Books on shelf</div>
-                <div class='preset' onclick="loadPresetGraph('wobbles');">Wobbles</div>
-                <div class='preset' onclick="loadPresetGraph('randomAbstract');">Random abstract</div>
-                <div class='preset' onclick="loadPresetGraph('namesLogos');">Names & Logos</div>
-            </div>
-        </div>
-
-        
     </div>
 
 </div>
@@ -92173,19 +92162,24 @@ ColorControl.prototype.initTextbox = function()
 
         let rgb      = validHex2rgb(value);
         let savedRgb = validHex2rgb(savedValue);
-        
 
+        
         if (!e.preventSetValue)
         {
             if (success) 
             {
+                console.log('1 rgb =', rgb);
+
                 this.setValue(
                       value.trim() != '' 
                     ? ColorValue.fromRgb(scaleRgb(rgb     )) 
                     : ColorValue.fromRgb(scaleRgb(savedRgb)));
             }
             else
+            {
+                console.log('2 rgb =', rgb);
                 this.setValue(ColorValue.fromRgb(scaleRgb(savedRgb)));
+            }
         }
 
         
@@ -100195,8 +100189,9 @@ extends Parameter
 
                 if (   colorName == 'rnd'
                     || colorName == 'random'
-                    || getEditDistance(colorName, 'random') <= 2)
+                    || getEditDistance(colorName, 'random') <= 1)
                 {
+                    console.log('1');
                     skipRandom(Date.now() % 10);  const r = Math.random();
                     skipRandom(Date.now() % 10);  const g = Math.random();
                     skipRandom(Date.now() % 10);  const b = Math.random();
@@ -100205,8 +100200,10 @@ extends Parameter
                 }
                 else
                 {
+                    console.log('2');
+                    
                                let webColor = webColors.find(wc => wc.name.toLowerCase() == colorName);
-                    if (!webColor) webColor = webColors.find(wc => getEditDistance(wc.name.toLowerCase(), colorName) <= 2);
+                    if (!webColor) webColor = webColors.find(wc => getEditDistance(wc.name.toLowerCase(), colorName) <= 1);
                     
                     if (webColor) e.detail.value = webColor.color;
 

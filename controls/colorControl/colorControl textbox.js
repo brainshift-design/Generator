@@ -309,19 +309,24 @@ ColorControl.prototype.initTextbox = function()
 
         let rgb      = validHex2rgb(value);
         let savedRgb = validHex2rgb(savedValue);
-        
 
+        
         if (!e.preventSetValue)
         {
             if (success) 
             {
+                console.log('1 rgb =', rgb);
+
                 this.setValue(
                       value.trim() != '' 
                     ? ColorValue.fromRgb(scaleRgb(rgb     )) 
                     : ColorValue.fromRgb(scaleRgb(savedRgb)));
             }
             else
+            {
+                console.log('2 rgb =', rgb);
                 this.setValue(ColorValue.fromRgb(scaleRgb(savedRgb)));
+            }
         }
 
         
