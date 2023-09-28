@@ -117,5 +117,6 @@ function getPresetGraph(graphId)
         case 'booksOnShelf':         return presetBooksOnShelf;
         case 'wobbles':              return presetWobbles;
         case 'randomAbstract':       return presetRandomAbstract;
+        case 'namesLogos':           return presetNamesLogos;
     }
 }

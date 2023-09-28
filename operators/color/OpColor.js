@@ -22,16 +22,17 @@ extends OpColorBase
     {
         super(COLOR, 'color', 'color', iconColor);
 
+
         this.canDisable = true;
 
         
         const defColor = ['hex', 0.85, 0.85, 0.85];
 
-        this._color = 
-            !!options.random
-            ? ['hex', Math.random(), Math.random(), Math.random()]
-            : [...defColor];
-        
+             if (!!options.random) this._color = ['hex', Math.random(), Math.random(), Math.random()];
+        else if (!!options.color ) this._color = ['hex', options.color[0], options.color[1], options.color[2]];
+        else                       this._color = [...defColor];
+
+            
         this.prevSpace = 'hex';
 
 

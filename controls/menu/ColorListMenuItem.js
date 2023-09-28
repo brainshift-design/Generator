@@ -6,6 +6,7 @@ class ColorListMenuItem
     enabled       = true;
 
     callback      = null;
+    swatchType    = 0; // 0 = highlight, 1 = create
 
     noColorLine   = null;
 
@@ -37,7 +38,8 @@ class ColorListMenuItem
 
     initOptions(options)
     {
-        if (options.callback != undefined) this.callback = options.callback;
+        if (options.callback   != undefined) this.callback   = options.callback;
+        if (options.swatchType != undefined) this.swatchType = options.swatchType;
     }
 
 
@@ -60,21 +62,24 @@ class ColorListMenuItem
         this.div      .style.top        = '-8px';
         this.div      .style.height     = '41px';
         
-        this.divColor1.style.background = 'transparent';
+        this.divColor1.style.background = this.swatchType == 1 ? '#000' : 'transparent';
         this.divColor1.style.boxShadow  = '0 0 0 1px inset #fff2';
         
 
-        this.noColorLine = createDiv();
-        
-        this.noColorLine.style.width      = '1px';
-        this.noColorLine.style.height     = '19px';
-        this.noColorLine.style.transform  = 'rotate(45deg)';
-        this.noColorLine.style.position   = 'relative';
-        this.noColorLine.style.left       = '8px';
-        this.noColorLine.style.top        = '-2px';
-        this.noColorLine.style.background = '#fff2';
+        if (this.swatchType == 0)
+        {
+            this.noColorLine = createDiv();
+            
+            this.noColorLine.style.width      = '1px';
+            this.noColorLine.style.height     = '19px';
+            this.noColorLine.style.transform  = 'rotate(45deg)';
+            this.noColorLine.style.position   = 'relative';
+            this.noColorLine.style.left       = '8px';
+            this.noColorLine.style.top        = '-2px';
+            this.noColorLine.style.background = '#fff2';
 
-        this.divColor1.appendChild(this.noColorLine);
+            this.divColor1.appendChild(this.noColorLine);
+        }
 
 
         this.divColor2.style.background = '#d44';
@@ -83,7 +88,7 @@ class ColorListMenuItem
         this.divColor5.style.background = '#4d4';
         this.divColor6.style.background = '#36f';
         this.divColor7.style.background = '#d4d';
-        this.divColor8.style.background = darkMode ? '#ddd' : '#333';
+        this.divColor8.style.background = this.swatchType == 1 ? '#fff' : (darkMode ? '#ddd' : '#333');
 
         this.divHighlight.style.zIndex = -2;
 
@@ -98,6 +103,27 @@ class ColorListMenuItem
         this.div.appendChild(this.divColor6);
         this.div.appendChild(this.divColor7);
         this.div.appendChild(this.divColor8);
+
+
+
+        this.div.addEventListener('pointerdown', e => 
+        {
+            e.stopPropagation();
+            e.preventDefault();
+
+
+            if (e.button == 0)
+            {
+                this.button0 = true;
+
+                try
+                {
+                    this.div.setPointerCapture(e.pointerId);
+                    this.dragStart = point(e.clientX, e.clientY);
+                }
+                catch {}
+            }
+        });
 
 
 
@@ -116,8 +142,13 @@ class ColorListMenuItem
                     let index = Math.round((e.clientX - (rect.x-8)) / 24) - 1;
                         index = Math.min(Math.max(0, index), 7);
 
-                    this.callback(index);
+                    this.callback(e, index);
                 }
+
+
+                this.button0 = false;
+
+                this.div.releasePointerCapture(e.pointerId);
             }
         });
 
@@ -131,17 +162,62 @@ class ColorListMenuItem
                 this.update();
 
 
-                const rect = boundingRect(this.div);
+                if (   this.button0
+                    && this.callback
+                    && distance(this.dragStart, clientPos(e)) > 5)
+                {
+                    const rect = boundingRect(this.div);
 
-                let index = Math.round((e.clientX - (rect.x-8)) / 24) - 1;
-                    index = Math.min(Math.max(0, index), 7);
+                    if (this.callback)
+                    {
+                        let index = Math.round((e.clientX - (rect.x-8)) / 24) - 1;
+                            index = Math.min(Math.max(0, index), 7);
 
-                this.divHighlight.style.left   = (4 + index*24) + 'px';
-                this.divHighlight.style.width  = '24px';
-                this.divHighlight.style.top    = '0px';
-                this.divHighlight.style.height = '41px';
+                        this.callback(e, index);
+                    }
 
-                this.enteredDiv  = true;
+                    
+                    this.button0 = false;
+
+                    if (!e.shiftKey)
+                        hideAllMenus();
+
+
+                    const node = graph.pageNodes.at(-1);
+
+                    node.div.shiftOnPointerDown = false;
+
+                    node.sx  = node.div.offsetLeft;
+                    node.sy  = node.div.offsetTop ;
+
+                    node.slx = node.div.offsetLeft - (defNodeWidth    / 2) - (               + graph.currentPage.pan.x) / graph.currentPage.zoom;
+                    node.sly = node.div.offsetTop  - (defHeaderHeight / 2) - (getTopHeight() + graph.currentPage.pan.y) / graph.currentPage.zoom;
+
+                    try
+                    {
+                        if (this.div.hasPointerCapture(e.pointerId))
+                            this.div.releasePointerCapture(e.pointerId);
+
+                        node.header.setPointerCapture(e.pointerId);
+
+                        node.div.dragging = true;
+                    }
+                    catch {}
+                }
+                else
+                {
+                    const rect = boundingRect(this.div);
+
+                    let index = Math.round((e.clientX - (rect.x-8)) / 24) - 1;
+                        index = Math.min(Math.max(0, index), 7);
+
+                    this.divHighlight.style.left   = (4 + index*24) + 'px';
+                    this.divHighlight.style.width  = '24px';
+                    this.divHighlight.style.top    = '0px';
+                    this.divHighlight.style.height = '41px';
+
+                    this.enteredDiv  = true;
+                }
             }
         });
     
@@ -219,8 +295,10 @@ class ColorListMenuItem
             ? 'var(--figma-color-bg-brand)'
             : 'transparent';
 
-        this.divColor8  .style.background = darkMode ? '#ddd' : '#333';
-        this.noColorLine.style.background = darkMode ? 'transparent' : '#fff2';
+        this.divColor8.style.background = this.swatchType == 1 ? '#fff' : (darkMode ? '#ddd' : '#333');
+        
+        if (this.swatchType == 0)
+            this.noColorLine.style.background = darkMode ? 'transparent' : '#fff2';
         
         this.div.style.opacity = this.enabled ? '100%' : '40%';
     }

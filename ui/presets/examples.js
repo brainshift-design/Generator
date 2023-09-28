@@ -4294,3 +4294,1885 @@ const presetRandomAbstract = '\
             }\
         ]\
     }';
+
+
+
+const presetNamesLogos = '\
+    {\
+        "nodes":\
+        [\
+            {\
+            "type": "TXTS",\
+            "id": "text",\
+            "name": "text",\
+            "renamed": "false",\
+            "enabled": "true",\
+            "highlight": "0",\
+            "x": "1325",\
+            "y": "1395",\
+            "z": "0",\
+            "params":\
+            [\
+                    ["TEXT#", "text", "QOFEHOFO", "center"],\
+                    ["NUM#", "x", "-100,0"],\
+                    ["NUM#", "y", "45,0"],\
+                    ["NUM#", "width", "300,0"],\
+                    ["NUM#", "height", "25,0"],\
+                    ["TEXT#", "font", "Georama"],\
+                    ["NUM#", "size", "25,0"],\
+                    ["NUM#", "alignH", "1,0"]\
+            ]\
+            },\
+            {\
+            "type": "NUM",\
+            "id": "num",\
+            "name": "number",\
+            "renamed": "false",\
+            "enabled": "true",\
+            "highlight": "0",\
+            "x": "1068",\
+            "y": "1459",\
+            "z": "1",\
+            "width": "120",\
+            "height": "54",\
+            "params":\
+            [\
+                    ["NUM#", "value", "300,0"]\
+            ]\
+            },\
+            {\
+            "type": "NUM",\
+            "id": "num2",\
+            "name": "number",\
+            "renamed": "false",\
+            "enabled": "true",\
+            "highlight": "0",\
+            "x": "1068",\
+            "y": "1524",\
+            "z": "2",\
+            "width": "120",\
+            "height": "54",\
+            "params":\
+            [\
+                    ["NUM#", "value", "25,0"]\
+            ]\
+            },\
+            {\
+            "type": "COL",\
+            "id": "color",\
+            "name": "color",\
+            "renamed": "false",\
+            "enabled": "true",\
+            "highlight": "0",\
+            "x": "945",\
+            "y": "1882",\
+            "z": "3",\
+            "prevSpace": "hex",\
+            "params":\
+            [\
+                    ["NUM#", "space", "0,0"],\
+                    ["NUM#", "c1", "0,0"],\
+                    ["NUM#", "c2", "0,0"],\
+                    ["NUM#", "c3", "0,0"]\
+            ]\
+            },\
+            {\
+            "type": "ELPS",\
+            "id": "ellipse",\
+            "name": "ellipse",\
+            "renamed": "false",\
+            "enabled": "true",\
+            "highlight": "0",\
+            "x": "880",\
+            "y": "154",\
+            "z": "4",\
+            "params":\
+            [\
+                    ["NUM#", "inner", "85,0"]\
+            ]\
+            },\
+            {\
+            "type": "COL",\
+            "id": "color2",\
+            "name": "color",\
+            "renamed": "false",\
+            "enabled": "true",\
+            "highlight": "4",\
+            "x": "392",\
+            "y": "805",\
+            "z": "5",\
+            "prevSpace": "rgb",\
+            "params":\
+            [\
+                    ["NUM#", "space", "1,0"],\
+                    ["NUM#", "c1", "12,0"],\
+                    ["NUM#", "c2", "199,0"],\
+                    ["NUM#", "c3", "224,0"]\
+            ]\
+            },\
+            {\
+            "type": "CMB",\
+            "id": "combine",\
+            "name": "combine",\
+            "renamed": "false",\
+            "enabled": "true",\
+            "highlight": "0",\
+            "x": "2646",\
+            "y": "1093",\
+            "z": "6",\
+            "width": "120",\
+            "height": "51"\
+            },\
+            {\
+            "type": "RECT",\
+            "id": "rect",\
+            "name": "rectangle",\
+            "renamed": "false",\
+            "enabled": "true",\
+            "highlight": "0",\
+            "x": "902",\
+            "y": "528",\
+            "z": "7",\
+            "params":\
+            [\
+                    ["NUM#", "y", "25,0"],\
+                    ["NUM#", "height", "50,0"],\
+                    ["NUM#", "round", "29,0"]\
+            ]\
+            },\
+            {\
+            "type": "TRPZ",\
+            "id": "trapeze",\
+            "name": "trapeze",\
+            "renamed": "false",\
+            "enabled": "true",\
+            "highlight": "0",\
+            "x": "896",\
+            "y": "902",\
+            "z": "8",\
+            "params":\
+            [\
+                    ["NUM#", "bias", "-3,0"]\
+            ]\
+            },\
+            {\
+            "type": "POLY",\
+            "id": "poly",\
+            "name": "polygon",\
+            "renamed": "false",\
+            "enabled": "true",\
+            "highlight": "0",\
+            "x": "898",\
+            "y": "1109",\
+            "z": "9",\
+            "params":\
+            [\
+                    ["NUM#", "corners", "8,0"]\
+            ]\
+            },\
+            {\
+            "type": "SEL",\
+            "id": "select",\
+            "name": "select",\
+            "renamed": "false",\
+            "enabled": "true",\
+            "highlight": "0",\
+            "x": "1360",\
+            "y": "871",\
+            "z": "10",\
+            "params":\
+            [\
+                    ["NUM#", "index", "0,0"]\
+            ]\
+            },\
+            {\
+            "type": "CMB",\
+            "id": "combine2",\
+            "name": "combine",\
+            "renamed": "false",\
+            "enabled": "true",\
+            "highlight": "0",\
+            "x": "1182",\
+            "y": "850",\
+            "z": "11",\
+            "width": "120.06478332057225",\
+            "height": "77"\
+            },\
+            {\
+            "type": "RAND",\
+            "id": "random4",\
+            "name": "random",\
+            "renamed": "false",\
+            "enabled": "true",\
+            "highlight": "0",\
+            "x": "354",\
+            "y": "1529",\
+            "z": "12",\
+            "params":\
+            [\
+                    ["NUM#", "seed", "20,0"],\
+                    ["NUM#", "min", "2,0"],\
+                    ["NUM#", "max", "4,0"]\
+            ]\
+            },\
+            {\
+            "type": "TJOIN",\
+            "id": "join2",\
+            "name": "join%20as%20text",\
+            "renamed": "true",\
+            "enabled": "true",\
+            "highlight": "0",\
+            "x": "779",\
+            "y": "1416",\
+            "z": "13",\
+            "width": "120",\
+            "height": "59.9999844390567",\
+            "params":\
+            [\
+                    ["TEXT#", "value", "QOFEHOFO", "center"]\
+            ]\
+            },\
+            {\
+            "type": "TSPLT",\
+            "id": "split2",\
+            "name": "split",\
+            "renamed": "false",\
+            "enabled": "true",\
+            "highlight": "0",\
+            "x": "-193",\
+            "y": "1388",\
+            "z": "14",\
+            "params":\
+            [\
+                    ["LIST#", "value", "6 TEXT# A TEXT# E TEXT# I TEXT# O TEXT# U TEXT# Y"]\
+            ]\
+            },\
+            {\
+            "type": "COUNT",\
+            "id": "count2",\
+            "name": "count",\
+            "renamed": "false",\
+            "enabled": "true",\
+            "highlight": "0",\
+            "x": "-171",\
+            "y": "1696",\
+            "z": "15",\
+            "params":\
+            [\
+                    ["NUM#", "value", "5,0"],\
+                    ["NUM#", "start", "0,0"]\
+            ]\
+            },\
+            {\
+            "type": "TSPLT",\
+            "id": "split",\
+            "name": "split",\
+            "renamed": "false",\
+            "enabled": "true",\
+            "highlight": "0",\
+            "x": "-193",\
+            "y": "1260",\
+            "z": "16",\
+            "params":\
+            [\
+                    ["LIST#", "value", "20 TEXT# B TEXT# C TEXT# D TEXT# F TEXT# G TEXT# H TEXT# J TEXT# K TEXT# L TEXT# M TEXT# N TEXT# P TEXT# Q TEXT# R TEXT# S TEXT# T TEXT# V TEXT# W TEXT# X TEXT# Z"]\
+            ]\
+            },\
+            {\
+            "type": "RAND",\
+            "id": "random2",\
+            "name": "random",\
+            "renamed": "false",\
+            "enabled": "true",\
+            "highlight": "0",\
+            "x": "28",\
+            "y": "1651",\
+            "z": "17",\
+            "params":\
+            [\
+                    ["NUM#", "seed", "140,0"],\
+                    ["NUM#", "max", "5,0"]\
+            ]\
+            },\
+            {\
+            "type": "RAND",\
+            "id": "random",\
+            "name": "random",\
+            "renamed": "false",\
+            "enabled": "true",\
+            "highlight": "0",\
+            "x": "28",\
+            "y": "1510",\
+            "z": "18",\
+            "params":\
+            [\
+                    ["NUM#", "seed", "100,0"],\
+                    ["NUM#", "max", "19,0"]\
+            ]\
+            },\
+            {\
+            "type": "REPT",\
+            "id": "repeat2",\
+            "name": "repeat",\
+            "renamed": "false",\
+            "enabled": "true",\
+            "highlight": "0",\
+            "x": "-895",\
+            "y": "1218",\
+            "z": "19",\
+            "params":\
+            [\
+                    ["NUM#", "count", "21,0"]\
+            ]\
+            },\
+            {\
+            "type": "RAND",\
+            "id": "random3",\
+            "name": "random",\
+            "renamed": "false",\
+            "enabled": "true",\
+            "highlight": "0",\
+            "x": "-1045",\
+            "y": "1218",\
+            "z": "20",\
+            "params":\
+            [\
+                    ["NUM#", "seed", "174,0"]\
+            ]\
+            },\
+            {\
+            "type": "TEXT",\
+            "id": "text2",\
+            "name": "vowels",\
+            "renamed": "true",\
+            "enabled": "true",\
+            "highlight": "7",\
+            "x": "-366",\
+            "y": "1388",\
+            "z": "21",\
+            "width": "141.22003193114557",\
+            "height": "54",\
+            "params":\
+            [\
+                    ["TEXT#", "value", "AEIOUY", "center"]\
+            ]\
+            },\
+            {\
+            "type": "REPT",\
+            "id": "repeat",\
+            "name": "syllables%20in%20word",\
+            "renamed": "true",\
+            "enabled": "true",\
+            "highlight": "0",\
+            "x": "616",\
+            "y": "1412",\
+            "z": "22",\
+            "params":\
+            [\
+                    ["NUM#", "count", "4,0"]\
+            ]\
+            },\
+            {\
+            "type": "TJOIN",\
+            "id": "join",\
+            "name": "syllable",\
+            "renamed": "true",\
+            "enabled": "true",\
+            "highlight": "7",\
+            "x": "355",\
+            "y": "1355",\
+            "z": "23",\
+            "width": "120",\
+            "height": "72.9999952221861",\
+            "params":\
+            [\
+                    ["TEXT#", "value", "FO", "center"]\
+            ]\
+            },\
+            {\
+            "type": "SEL",\
+            "id": "select2",\
+            "name": "select",\
+            "renamed": "false",\
+            "enabled": "true",\
+            "highlight": "0",\
+            "x": "183",\
+            "y": "1415",\
+            "z": "24",\
+            "params":\
+            [\
+                    ["NUM#", "index", "3,0"]\
+            ]\
+            },\
+            {\
+            "type": "SEL",\
+            "id": "select3",\
+            "name": "select",\
+            "renamed": "false",\
+            "enabled": "true",\
+            "highlight": "0",\
+            "x": "183",\
+            "y": "1287",\
+            "z": "25",\
+            "params":\
+            [\
+                    ["NUM#", "index", "3,0"]\
+            ]\
+            },\
+            {\
+            "type": "COUNT",\
+            "id": "count",\
+            "name": "count",\
+            "renamed": "false",\
+            "enabled": "true",\
+            "highlight": "0",\
+            "x": "-173",\
+            "y": "1554",\
+            "z": "26",\
+            "params":\
+            [\
+                    ["NUM#", "value", "19,0"],\
+                    ["NUM#", "start", "0,0"]\
+            ]\
+            },\
+            {\
+            "type": "TEXT",\
+            "id": "text3",\
+            "name": "consonants",\
+            "renamed": "true",\
+            "enabled": "true",\
+            "highlight": "7",\
+            "x": "-365",\
+            "y": "1260",\
+            "z": "27",\
+            "width": "141.22003193114557",\
+            "height": "54",\
+            "params":\
+            [\
+                    ["TEXT#", "value", "BCDFGHJKLMNPQRSTVWXZ", "center"]\
+            ]\
+            },\
+            {\
+            "type": "LIST",\
+            "id": "list",\
+            "name": "list",\
+            "renamed": "false",\
+            "enabled": "true",\
+            "highlight": "0",\
+            "x": "-745",\
+            "y": "1218",\
+            "z": "28",\
+            "width": "120",\
+            "height": "494",\
+            "params":\
+            [\
+                    ["NUM#", "0", "100,0"],\
+                    ["NUM#", "1", "140,0"],\
+                    ["NUM#", "2", "70,0"],\
+                    ["NUM#", "3", "229,0"],\
+                    ["NUM#", "4", "225,0"],\
+                    ["NUM#", "5", "163,0"],\
+                    ["NUM#", "6", "113,0"],\
+                    ["NUM#", "7", "186,0"],\
+                    ["NUM#", "8", "206,0"],\
+                    ["NUM#", "9", "206,0"],\
+                    ["NUM#", "10", "102,0"],\
+                    ["NUM#", "11", "233,0"],\
+                    ["NUM#", "12", "132,0"],\
+                    ["NUM#", "13", "105,0"],\
+                    ["NUM#", "14", "87,0"],\
+                    ["NUM#", "15", "178,0"],\
+                    ["NUM#", "16", "203,0"],\
+                    ["NUM#", "17", "225,0"],\
+                    ["NUM#", "18", "4,0"],\
+                    ["NUM#", "19", "146,0"],\
+                    ["NUM#", "20", "35,0"]\
+            ]\
+            },\
+            {\
+            "type": "PANEL",\
+            "id": "panel",\
+            "name": "",\
+            "renamed": "false",\
+            "enabled": "true",\
+            "highlight": "7",\
+            "x": "-1075",\
+            "y": "1173",\
+            "z": "29",\
+            "width": "482",\
+            "height": "578.0748878223906",\
+            "params":\
+            [\
+            ]\
+            },\
+            {\
+            "type": "RAND",\
+            "id": "random5",\
+            "name": "random",\
+            "renamed": "false",\
+            "enabled": "true",\
+            "highlight": "0",\
+            "x": "1194",\
+            "y": "1031",\
+            "z": "30",\
+            "params":\
+            [\
+                    ["NUM#", "seed", "19,0"],\
+                    ["NUM#", "max", "3,0"]\
+            ]\
+            },\
+            {\
+            "type": "ROT",\
+            "id": "rotate",\
+            "name": "rotate",\
+            "renamed": "false",\
+            "enabled": "true",\
+            "highlight": "0",\
+            "x": "2003",\
+            "y": "963",\
+            "z": "31",\
+            "params":\
+            [\
+                    ["NUM#", "angle", "276,0"]\
+            ]\
+            },\
+            {\
+            "type": "SKEW",\
+            "id": "skew",\
+            "name": "skew",\
+            "renamed": "false",\
+            "enabled": "true",\
+            "highlight": "0",\
+            "x": "1841",\
+            "y": "965",\
+            "z": "32",\
+            "params":\
+            [\
+                    ["NUM#", "skewX", "30,0"],\
+                    ["NUM#", "skewY", "-6,0"]\
+            ]\
+            },\
+            {\
+            "type": "SCALE",\
+            "id": "scale",\
+            "name": "scale",\
+            "renamed": "false",\
+            "enabled": "true",\
+            "highlight": "0",\
+            "x": "2446",\
+            "y": "864",\
+            "z": "33",\
+            "params":\
+            [\
+                    ["NUM#", "scaleX", "92,0"],\
+                    ["NUM#", "scaleY", "75,0"]\
+            ]\
+            },\
+            {\
+            "type": "RAND",\
+            "id": "random8",\
+            "name": "random",\
+            "renamed": "false",\
+            "enabled": "true",\
+            "highlight": "0",\
+            "x": "595",\
+            "y": "306",\
+            "z": "34",\
+            "params":\
+            [\
+                    ["NUM#", "seed", "206,0"],\
+                    ["NUM#", "max", "100,0"]\
+            ]\
+            },\
+            {\
+            "type": "RAND",\
+            "id": "random9",\
+            "name": "random",\
+            "renamed": "false",\
+            "enabled": "true",\
+            "highlight": "0",\
+            "x": "1703",\
+            "y": "1218",\
+            "z": "35",\
+            "params":\
+            [\
+                    ["NUM#", "seed", "183,0"],\
+                    ["NUM#", "min", "-50,0"],\
+                    ["NUM#", "max", "50,0"]\
+            ]\
+            },\
+            {\
+            "type": "RAND",\
+            "id": "random10",\
+            "name": "random",\
+            "renamed": "false",\
+            "enabled": "true",\
+            "highlight": "0",\
+            "x": "1706",\
+            "y": "1352",\
+            "z": "36",\
+            "params":\
+            [\
+                    ["NUM#", "seed", "93,0"],\
+                    ["NUM#", "min", "-50,0"],\
+                    ["NUM#", "max", "50,0"]\
+            ]\
+            },\
+            {\
+            "type": "RAND",\
+            "id": "random11",\
+            "name": "random",\
+            "renamed": "false",\
+            "enabled": "true",\
+            "highlight": "0",\
+            "x": "617",\
+            "y": "605",\
+            "z": "37",\
+            "params":\
+            [\
+                    ["NUM#", "seed", "47,0"],\
+                    ["NUM#", "max", "50,0"]\
+            ]\
+            },\
+            {\
+            "type": "RAND",\
+            "id": "random12",\
+            "name": "random",\
+            "renamed": "false",\
+            "enabled": "true",\
+            "highlight": "0",\
+            "x": "1897",\
+            "y": "1226",\
+            "z": "38",\
+            "params":\
+            [\
+                    ["NUM#", "seed", "87,0"],\
+                    ["NUM#", "max", "360,0"]\
+            ]\
+            },\
+            {\
+            "type": "RAND",\
+            "id": "random13",\
+            "name": "random",\
+            "renamed": "false",\
+            "enabled": "true",\
+            "highlight": "0",\
+            "x": "2291",\
+            "y": "1127",\
+            "z": "39",\
+            "params":\
+            [\
+                    ["NUM#", "seed", "159,0"],\
+                    ["NUM#", "min", "50,0"],\
+                    ["NUM#", "max", "150,0"]\
+            ]\
+            },\
+            {\
+            "type": "RAND",\
+            "id": "random14",\
+            "name": "random",\
+            "renamed": "false",\
+            "enabled": "true",\
+            "highlight": "0",\
+            "x": "2294",\
+            "y": "1261",\
+            "z": "40",\
+            "params":\
+            [\
+                    ["NUM#", "seed", "115,0"],\
+                    ["NUM#", "min", "50,0"],\
+                    ["NUM#", "max", "150,0"]\
+            ]\
+            },\
+            {\
+            "type": "MOVE",\
+            "id": "move",\
+            "name": "move",\
+            "renamed": "false",\
+            "enabled": "true",\
+            "highlight": "0",\
+            "x": "1601",\
+            "y": "966",\
+            "z": "41",\
+            "params":\
+            [\
+                    ["NUM#", "x", "19,0"],\
+                    ["NUM#", "y", "18,0"]\
+            ]\
+            },\
+            {\
+            "type": "RAND",\
+            "id": "random15",\
+            "name": "random",\
+            "renamed": "false",\
+            "enabled": "true",\
+            "highlight": "0",\
+            "x": "1544",\
+            "y": "1227",\
+            "z": "42",\
+            "params":\
+            [\
+                    ["NUM#", "seed", "166,0"],\
+                    ["NUM#", "min", "-20,0"],\
+                    ["NUM#", "max", "20,0"]\
+            ]\
+            },\
+            {\
+            "type": "RAND",\
+            "id": "random16",\
+            "name": "random",\
+            "renamed": "false",\
+            "enabled": "true",\
+            "highlight": "0",\
+            "x": "1547",\
+            "y": "1361",\
+            "z": "43",\
+            "params":\
+            [\
+                    ["NUM#", "seed", "165,0"],\
+                    ["NUM#", "min", "-20,0"],\
+                    ["NUM#", "max", "20,0"]\
+            ]\
+            },\
+            {\
+            "type": "RAND",\
+            "id": "random6",\
+            "name": "random",\
+            "renamed": "false",\
+            "enabled": "true",\
+            "highlight": "0",\
+            "x": "596",\
+            "y": "1063",\
+            "z": "44",\
+            "params":\
+            [\
+                    ["NUM#", "seed", "245,0"],\
+                    ["NUM#", "min", "-100,0"],\
+                    ["NUM#", "max", "100,0"]\
+            ]\
+            },\
+            {\
+            "type": "RAND",\
+            "id": "random7",\
+            "name": "random",\
+            "renamed": "false",\
+            "enabled": "true",\
+            "highlight": "0",\
+            "x": "602",\
+            "y": "1214",\
+            "z": "45",\
+            "params":\
+            [\
+                    ["NUM#", "seed", "61,0"],\
+                    ["NUM#", "min", "3,0"],\
+                    ["NUM#", "max", "8,0"]\
+            ]\
+            },\
+            {\
+            "type": "IF",\
+            "id": "ifElse",\
+            "name": "if%2Felse",\
+            "renamed": "false",\
+            "enabled": "true",\
+            "highlight": "0",\
+            "x": "2193",\
+            "y": "869",\
+            "z": "46",\
+            "params":\
+            [\
+            ]\
+            },\
+            {\
+            "type": "PROB",\
+            "id": "prob",\
+            "name": "probability",\
+            "renamed": "false",\
+            "enabled": "true",\
+            "highlight": "0",\
+            "x": "2099",\
+            "y": "1214",\
+            "z": "47",\
+            "params":\
+            [\
+                    ["NUM#", "seed", "9807,0"]\
+            ]\
+            },\
+            {\
+            "type": "MOVE",\
+            "id": "move2",\
+            "name": "move",\
+            "renamed": "false",\
+            "enabled": "true",\
+            "highlight": "0",\
+            "x": "2956",\
+            "y": "1100",\
+            "z": "48",\
+            "params":\
+            [\
+                    ["NUM#", "x", "720,0"],\
+                    ["NUM#", "y", "720,0"]\
+            ]\
+            },\
+            {\
+            "type": "REPT",\
+            "id": "repeat3",\
+            "name": "repeat",\
+            "renamed": "false",\
+            "enabled": "true",\
+            "highlight": "0",\
+            "x": "3159",\
+            "y": "1194",\
+            "z": "49",\
+            "params":\
+            [\
+                    ["NUM#", "count", "5,0"]\
+            ]\
+            },\
+            {\
+            "type": "REPT",\
+            "id": "repeat4",\
+            "name": "repeat",\
+            "renamed": "false",\
+            "enabled": "true",\
+            "highlight": "0",\
+            "x": "3168",\
+            "y": "1355",\
+            "z": "50",\
+            "params":\
+            [\
+                    ["NUM#", "count", "5,0"]\
+            ]\
+            },\
+            {\
+            "type": "SEQ",\
+            "id": "sequence",\
+            "name": "sequence",\
+            "renamed": "false",\
+            "enabled": "true",\
+            "highlight": "0",\
+            "x": "2750",\
+            "y": "1196",\
+            "z": "51",\
+            "params":\
+            [\
+                    ["NUM#", "step", "180,0"],\
+                    ["NUM#", "end", "?,0"]\
+            ]\
+            },\
+            {\
+            "type": "SEQ",\
+            "id": "sequence2",\
+            "name": "sequence",\
+            "renamed": "false",\
+            "enabled": "true",\
+            "highlight": "0",\
+            "x": "2753",\
+            "y": "1350",\
+            "z": "52",\
+            "params":\
+            [\
+                    ["NUM#", "step", "180,0"],\
+                    ["NUM#", "end", "?,0"]\
+            ]\
+            },\
+            {\
+            "type": "RAND",\
+            "id": "random17",\
+            "name": "random",\
+            "renamed": "false",\
+            "enabled": "true",\
+            "highlight": "0",\
+            "x": "869",\
+            "y": "1519",\
+            "z": "53",\
+            "params":\
+            [\
+                    ["NUM#", "seed", "203,0"],\
+                    ["NUM#", "min", "15,0"],\
+                    ["NUM#", "max", "35,0"]\
+            ]\
+            },\
+            {\
+            "type": "RAND",\
+            "id": "random18",\
+            "name": "random",\
+            "renamed": "false",\
+            "enabled": "true",\
+            "highlight": "0",\
+            "x": "866",\
+            "y": "1665",\
+            "z": "54",\
+            "params":\
+            [\
+                    ["NUM#", "seed", "225,0"],\
+                    ["NUM#", "max", "1525,0"]\
+            ]\
+            },\
+            {\
+            "type": "RAND",\
+            "id": "random19",\
+            "name": "random",\
+            "renamed": "false",\
+            "enabled": "true",\
+            "highlight": "0",\
+            "x": "166",\
+            "y": "646",\
+            "z": "55",\
+            "params":\
+            [\
+                    ["NUM#", "seed", "126,0"]\
+            ]\
+            },\
+            {\
+            "type": "RAND",\
+            "id": "random20",\
+            "name": "random",\
+            "renamed": "false",\
+            "enabled": "true",\
+            "highlight": "0",\
+            "x": "166",\
+            "y": "791",\
+            "z": "56",\
+            "params":\
+            [\
+                    ["NUM#", "seed", "1,0"]\
+            ]\
+            },\
+            {\
+            "type": "RAND",\
+            "id": "random21",\
+            "name": "random",\
+            "renamed": "false",\
+            "enabled": "true",\
+            "highlight": "0",\
+            "x": "166",\
+            "y": "939",\
+            "z": "57",\
+            "params":\
+            [\
+                    ["NUM#", "seed", "5,0"]\
+            ]\
+            },\
+            {\
+            "type": "COL",\
+            "id": "color3",\
+            "name": "color",\
+            "renamed": "false",\
+            "enabled": "true",\
+            "highlight": "0",\
+            "x": "945",\
+            "y": "1981",\
+            "z": "58",\
+            "prevSpace": "hex",\
+            "params":\
+            [\
+                    ["NUM#", "space", "0,0"],\
+                    ["NUM#", "c1", "255,0"],\
+                    ["NUM#", "c2", "255,0"],\
+                    ["NUM#", "c3", "255,0"]\
+            ]\
+            },\
+            {\
+            "type": "IF",\
+            "id": "ifElse2",\
+            "name": "if%2Felse",\
+            "renamed": "false",\
+            "enabled": "true",\
+            "highlight": "0",\
+            "x": "1110",\
+            "y": "1931",\
+            "z": "59",\
+            "params":\
+            [\
+            ]\
+            },\
+            {\
+            "type": "COL",\
+            "id": "color4",\
+            "name": "color",\
+            "renamed": "false",\
+            "enabled": "true",\
+            "highlight": "0",\
+            "x": "621",\
+            "y": "2128",\
+            "z": "60",\
+            "prevSpace": "hclok",\
+            "params":\
+            [\
+                    ["NUM#", "space", "4,0"],\
+                    ["NUM#", "c1", "210.7740381045793,0"],\
+                    ["NUM#", "c2", "17.185084207432766,0"],\
+                    ["NUM#", "c3", "76.11391431403511,0"]\
+            ]\
+            },\
+            {\
+            "type": "COND",\
+            "id": "cond",\
+            "name": "condition",\
+            "renamed": "false",\
+            "enabled": "true",\
+            "highlight": "0",\
+            "x": "794",\
+            "y": "2221",\
+            "z": "61",\
+            "params":\
+            [\
+                    ["NUM#", "value", "1,0"],\
+                    ["NUM#", "operation", "4,0"],\
+                    ["NUM#", "operand", "70,0"]\
+            ]\
+            },\
+            {\
+            "type": "COL",\
+            "id": "color5",\
+            "name": "color",\
+            "renamed": "false",\
+            "enabled": "true",\
+            "highlight": "0",\
+            "x": "3661",\
+            "y": "1453",\
+            "z": "62",\
+            "prevSpace": "hex",\
+            "params":\
+            [\
+                    ["NUM#", "space", "0,0"],\
+                    ["NUM#", "c1", "204,0"],\
+                    ["NUM#", "c2", "204,0"],\
+                    ["NUM#", "c3", "204,0"]\
+            ]\
+            },\
+            {\
+            "type": "FRM",\
+            "id": "frame",\
+            "name": "frame",\
+            "renamed": "false",\
+            "enabled": "true",\
+            "highlight": "0",\
+            "x": "4154",\
+            "y": "1224",\
+            "z": "63",\
+            "active": "true",\
+            "params":\
+            [\
+                    ["NUM#", "width", "1040,0"],\
+                    ["NUM#", "height", "1040,0"],\
+                    ["NUM#", "round", "20,0"]\
+            ]\
+            },\
+            {\
+            "type": "MOVE",\
+            "id": "move3",\
+            "name": "move",\
+            "renamed": "false",\
+            "enabled": "true",\
+            "highlight": "0",\
+            "x": "3318",\
+            "y": "1355",\
+            "z": "64",\
+            "params":\
+            [\
+                    ["NUM#", "x", "100,0"],\
+                    ["NUM#", "y", "100,0"]\
+            ]\
+            },\
+            {\
+            "type": "GRAD",\
+            "id": "grad",\
+            "name": "gradient",\
+            "renamed": "false",\
+            "enabled": "true",\
+            "highlight": "0",\
+            "x": "3893",\
+            "y": "1464",\
+            "z": "65",\
+            "params":\
+            [\
+                    ["NUM#", "type", "1,0"],\
+                    ["NUM#", "x", "50,0"],\
+                    ["NUM#", "aspect", "100,0"]\
+            ]\
+            },\
+            {\
+            "type": "COL",\
+            "id": "color6",\
+            "name": "color",\
+            "renamed": "false",\
+            "enabled": "true",\
+            "highlight": "0",\
+            "x": "3663",\
+            "y": "1554",\
+            "z": "66",\
+            "prevSpace": "hex",\
+            "params":\
+            [\
+                    ["NUM#", "space", "0,0"],\
+                    ["NUM#", "c1", "136,0"],\
+                    ["NUM#", "c2", "136,0"],\
+                    ["NUM#", "c3", "136,0"]\
+            ]\
+            }\
+        ],\
+        "connections":\
+        [\
+            {\
+            "outputNodeId": "join2",\
+            "outputId": "h0",\
+            "outputOrder": "0",\
+            "inputNodeId": "text",\
+            "inputId": "text",\
+            "list": "false"\
+            },\
+            {\
+            "outputNodeId": "num",\
+            "outputId": "h0",\
+            "outputOrder": "0",\
+            "inputNodeId": "text",\
+            "inputId": "width",\
+            "list": "false"\
+            },\
+            {\
+            "outputNodeId": "num2",\
+            "outputId": "h0",\
+            "outputOrder": "0",\
+            "inputNodeId": "text",\
+            "inputId": "height",\
+            "list": "false"\
+            },\
+            {\
+            "outputNodeId": "random18",\
+            "outputId": "h0",\
+            "outputOrder": "0",\
+            "inputNodeId": "text",\
+            "inputId": "font",\
+            "list": "false"\
+            },\
+            {\
+            "outputNodeId": "num2",\
+            "outputId": "h0",\
+            "outputOrder": "1",\
+            "inputNodeId": "text",\
+            "inputId": "size",\
+            "list": "false"\
+            },\
+            {\
+            "outputNodeId": "ifElse2",\
+            "outputId": "h0",\
+            "outputOrder": "0",\
+            "inputNodeId": "text",\
+            "inputId": "props",\
+            "list": "false"\
+            },\
+            {\
+            "outputNodeId": "random17",\
+            "outputId": "h0",\
+            "outputOrder": "0",\
+            "inputNodeId": "num2",\
+            "inputId": "h0",\
+            "list": "false"\
+            },\
+            {\
+            "outputNodeId": "random8",\
+            "outputId": "h0",\
+            "outputOrder": "0",\
+            "inputNodeId": "ellipse",\
+            "inputId": "inner",\
+            "list": "false"\
+            },\
+            {\
+            "outputNodeId": "color2",\
+            "outputId": "h0",\
+            "outputOrder": "0",\
+            "inputNodeId": "ellipse",\
+            "inputId": "props",\
+            "list": "false"\
+            },\
+            {\
+            "outputNodeId": "random19",\
+            "outputId": "h0",\
+            "outputOrder": "0",\
+            "inputNodeId": "color2",\
+            "inputId": "c1",\
+            "list": "false"\
+            },\
+            {\
+            "outputNodeId": "random20",\
+            "outputId": "h0",\
+            "outputOrder": "0",\
+            "inputNodeId": "color2",\
+            "inputId": "c2",\
+            "list": "false"\
+            },\
+            {\
+            "outputNodeId": "random21",\
+            "outputId": "h0",\
+            "outputOrder": "0",\
+            "inputNodeId": "color2",\
+            "inputId": "c3",\
+            "list": "false"\
+            },\
+            {\
+            "outputNodeId": "scale",\
+            "outputId": "h0",\
+            "outputOrder": "0",\
+            "inputNodeId": "combine",\
+            "inputId": "h0",\
+            "list": "false"\
+            },\
+            {\
+            "outputNodeId": "text",\
+            "outputId": "h0",\
+            "outputOrder": "0",\
+            "inputNodeId": "combine",\
+            "inputId": "h1",\
+            "list": "false"\
+            },\
+            {\
+            "outputNodeId": "random11",\
+            "outputId": "h0",\
+            "outputOrder": "0",\
+            "inputNodeId": "rect",\
+            "inputId": "round",\
+            "list": "false"\
+            },\
+            {\
+            "outputNodeId": "color2",\
+            "outputId": "h0",\
+            "outputOrder": "1",\
+            "inputNodeId": "rect",\
+            "inputId": "props",\
+            "list": "false"\
+            },\
+            {\
+            "outputNodeId": "random6",\
+            "outputId": "h0",\
+            "outputOrder": "0",\
+            "inputNodeId": "trapeze",\
+            "inputId": "bias",\
+            "list": "false"\
+            },\
+            {\
+            "outputNodeId": "color2",\
+            "outputId": "h0",\
+            "outputOrder": "2",\
+            "inputNodeId": "trapeze",\
+            "inputId": "props",\
+            "list": "false"\
+            },\
+            {\
+            "outputNodeId": "random7",\
+            "outputId": "h0",\
+            "outputOrder": "0",\
+            "inputNodeId": "poly",\
+            "inputId": "corners",\
+            "list": "false"\
+            },\
+            {\
+            "outputNodeId": "color2",\
+            "outputId": "h0",\
+            "outputOrder": "3",\
+            "inputNodeId": "poly",\
+            "inputId": "props",\
+            "list": "false"\
+            },\
+            {\
+            "outputNodeId": "combine2",\
+            "outputId": "h0",\
+            "outputOrder": "0",\
+            "inputNodeId": "select",\
+            "inputId": "h0",\
+            "list": "true"\
+            },\
+            {\
+            "outputNodeId": "random5",\
+            "outputId": "h0",\
+            "outputOrder": "0",\
+            "inputNodeId": "select",\
+            "inputId": "index",\
+            "list": "false"\
+            },\
+            {\
+            "outputNodeId": "ellipse",\
+            "outputId": "h0",\
+            "outputOrder": "0",\
+            "inputNodeId": "combine2",\
+            "inputId": "h0",\
+            "list": "false"\
+            },\
+            {\
+            "outputNodeId": "rect",\
+            "outputId": "h0",\
+            "outputOrder": "0",\
+            "inputNodeId": "combine2",\
+            "inputId": "h1",\
+            "list": "false"\
+            },\
+            {\
+            "outputNodeId": "trapeze",\
+            "outputId": "h0",\
+            "outputOrder": "0",\
+            "inputNodeId": "combine2",\
+            "inputId": "h2",\
+            "list": "false"\
+            },\
+            {\
+            "outputNodeId": "poly",\
+            "outputId": "h0",\
+            "outputOrder": "0",\
+            "inputNodeId": "combine2",\
+            "inputId": "h3",\
+            "list": "false"\
+            },\
+            {\
+            "outputNodeId": "list",\
+            "outputId": "2",\
+            "outputOrder": "0",\
+            "inputNodeId": "random4",\
+            "inputId": "seed",\
+            "list": "false"\
+            },\
+            {\
+            "outputNodeId": "repeat",\
+            "outputId": "h0",\
+            "outputOrder": "0",\
+            "inputNodeId": "join2",\
+            "inputId": "h0",\
+            "list": "true"\
+            },\
+            {\
+            "outputNodeId": "text2",\
+            "outputId": "h0",\
+            "outputOrder": "0",\
+            "inputNodeId": "split2",\
+            "inputId": "h0",\
+            "list": "false"\
+            },\
+            {\
+            "outputNodeId": "split2",\
+            "outputId": "value",\
+            "outputOrder": "1",\
+            "inputNodeId": "count2",\
+            "inputId": "h0",\
+            "list": "true"\
+            },\
+            {\
+            "outputNodeId": "text3",\
+            "outputId": "h0",\
+            "outputOrder": "0",\
+            "inputNodeId": "split",\
+            "inputId": "h0",\
+            "list": "false"\
+            },\
+            {\
+            "outputNodeId": "list",\
+            "outputId": "1",\
+            "outputOrder": "0",\
+            "inputNodeId": "random2",\
+            "inputId": "seed",\
+            "list": "false"\
+            },\
+            {\
+            "outputNodeId": "count2",\
+            "outputId": "value",\
+            "outputOrder": "0",\
+            "inputNodeId": "random2",\
+            "inputId": "max",\
+            "list": "false"\
+            },\
+            {\
+            "outputNodeId": "list",\
+            "outputId": "0",\
+            "outputOrder": "0",\
+            "inputNodeId": "random",\
+            "inputId": "seed",\
+            "list": "false"\
+            },\
+            {\
+            "outputNodeId": "count",\
+            "outputId": "value",\
+            "outputOrder": "0",\
+            "inputNodeId": "random",\
+            "inputId": "max",\
+            "list": "false"\
+            },\
+            {\
+            "outputNodeId": "random3",\
+            "outputId": "h0",\
+            "outputOrder": "0",\
+            "inputNodeId": "repeat2",\
+            "inputId": "h0",\
+            "list": "false"\
+            },\
+            {\
+            "outputNodeId": "join",\
+            "outputId": "h0",\
+            "outputOrder": "0",\
+            "inputNodeId": "repeat",\
+            "inputId": "h0",\
+            "list": "false"\
+            },\
+            {\
+            "outputNodeId": "random4",\
+            "outputId": "h0",\
+            "outputOrder": "0",\
+            "inputNodeId": "repeat",\
+            "inputId": "count",\
+            "list": "false"\
+            },\
+            {\
+            "outputNodeId": "select3",\
+            "outputId": "h0",\
+            "outputOrder": "0",\
+            "inputNodeId": "join",\
+            "inputId": "h0",\
+            "list": "false"\
+            },\
+            {\
+            "outputNodeId": "select2",\
+            "outputId": "h0",\
+            "outputOrder": "0",\
+            "inputNodeId": "join",\
+            "inputId": "h1",\
+            "list": "false"\
+            },\
+            {\
+            "outputNodeId": "split2",\
+            "outputId": "value",\
+            "outputOrder": "0",\
+            "inputNodeId": "select2",\
+            "inputId": "h0",\
+            "list": "true"\
+            },\
+            {\
+            "outputNodeId": "random2",\
+            "outputId": "h0",\
+            "outputOrder": "0",\
+            "inputNodeId": "select2",\
+            "inputId": "index",\
+            "list": "false"\
+            },\
+            {\
+            "outputNodeId": "split",\
+            "outputId": "value",\
+            "outputOrder": "0",\
+            "inputNodeId": "select3",\
+            "inputId": "h0",\
+            "list": "true"\
+            },\
+            {\
+            "outputNodeId": "random",\
+            "outputId": "h0",\
+            "outputOrder": "0",\
+            "inputNodeId": "select3",\
+            "inputId": "index",\
+            "list": "false"\
+            },\
+            {\
+            "outputNodeId": "split",\
+            "outputId": "value",\
+            "outputOrder": "1",\
+            "inputNodeId": "count",\
+            "inputId": "h0",\
+            "list": "true"\
+            },\
+            {\
+            "outputNodeId": "repeat2",\
+            "outputId": "h0",\
+            "outputOrder": "0",\
+            "inputNodeId": "list",\
+            "inputId": "h0",\
+            "list": "true"\
+            },\
+            {\
+            "outputNodeId": "list",\
+            "outputId": "3",\
+            "outputOrder": "0",\
+            "inputNodeId": "random5",\
+            "inputId": "seed",\
+            "list": "false"\
+            },\
+            {\
+            "outputNodeId": "skew",\
+            "outputId": "h0",\
+            "outputOrder": "0",\
+            "inputNodeId": "rotate",\
+            "inputId": "h0",\
+            "list": "false"\
+            },\
+            {\
+            "outputNodeId": "random12",\
+            "outputId": "h0",\
+            "outputOrder": "0",\
+            "inputNodeId": "rotate",\
+            "inputId": "angle",\
+            "list": "false"\
+            },\
+            {\
+            "outputNodeId": "move",\
+            "outputId": "h0",\
+            "outputOrder": "0",\
+            "inputNodeId": "skew",\
+            "inputId": "h0",\
+            "list": "false"\
+            },\
+            {\
+            "outputNodeId": "random9",\
+            "outputId": "h0",\
+            "outputOrder": "0",\
+            "inputNodeId": "skew",\
+            "inputId": "skewX",\
+            "list": "false"\
+            },\
+            {\
+            "outputNodeId": "random10",\
+            "outputId": "h0",\
+            "outputOrder": "0",\
+            "inputNodeId": "skew",\
+            "inputId": "skewY",\
+            "list": "false"\
+            },\
+            {\
+            "outputNodeId": "ifElse",\
+            "outputId": "h0",\
+            "outputOrder": "0",\
+            "inputNodeId": "scale",\
+            "inputId": "h0",\
+            "list": "false"\
+            },\
+            {\
+            "outputNodeId": "random13",\
+            "outputId": "h0",\
+            "outputOrder": "0",\
+            "inputNodeId": "scale",\
+            "inputId": "scaleX",\
+            "list": "false"\
+            },\
+            {\
+            "outputNodeId": "random14",\
+            "outputId": "h0",\
+            "outputOrder": "0",\
+            "inputNodeId": "scale",\
+            "inputId": "scaleY",\
+            "list": "false"\
+            },\
+            {\
+            "outputNodeId": "list",\
+            "outputId": "4",\
+            "outputOrder": "0",\
+            "inputNodeId": "random8",\
+            "inputId": "seed",\
+            "list": "false"\
+            },\
+            {\
+            "outputNodeId": "list",\
+            "outputId": "8",\
+            "outputOrder": "0",\
+            "inputNodeId": "random9",\
+            "inputId": "seed",\
+            "list": "false"\
+            },\
+            {\
+            "outputNodeId": "list",\
+            "outputId": "9",\
+            "outputOrder": "0",\
+            "inputNodeId": "random10",\
+            "inputId": "seed",\
+            "list": "false"\
+            },\
+            {\
+            "outputNodeId": "list",\
+            "outputId": "5",\
+            "outputOrder": "0",\
+            "inputNodeId": "random11",\
+            "inputId": "seed",\
+            "list": "false"\
+            },\
+            {\
+            "outputNodeId": "list",\
+            "outputId": "10",\
+            "outputOrder": "0",\
+            "inputNodeId": "random12",\
+            "inputId": "seed",\
+            "list": "false"\
+            },\
+            {\
+            "outputNodeId": "list",\
+            "outputId": "11",\
+            "outputOrder": "0",\
+            "inputNodeId": "random13",\
+            "inputId": "seed",\
+            "list": "false"\
+            },\
+            {\
+            "outputNodeId": "list",\
+            "outputId": "12",\
+            "outputOrder": "0",\
+            "inputNodeId": "random14",\
+            "inputId": "seed",\
+            "list": "false"\
+            },\
+            {\
+            "outputNodeId": "select",\
+            "outputId": "h0",\
+            "outputOrder": "0",\
+            "inputNodeId": "move",\
+            "inputId": "h0",\
+            "list": "false"\
+            },\
+            {\
+            "outputNodeId": "random15",\
+            "outputId": "h0",\
+            "outputOrder": "0",\
+            "inputNodeId": "move",\
+            "inputId": "x",\
+            "list": "false"\
+            },\
+            {\
+            "outputNodeId": "random16",\
+            "outputId": "h0",\
+            "outputOrder": "0",\
+            "inputNodeId": "move",\
+            "inputId": "y",\
+            "list": "false"\
+            },\
+            {\
+            "outputNodeId": "list",\
+            "outputId": "6",\
+            "outputOrder": "0",\
+            "inputNodeId": "random15",\
+            "inputId": "seed",\
+            "list": "false"\
+            },\
+            {\
+            "outputNodeId": "list",\
+            "outputId": "7",\
+            "outputOrder": "0",\
+            "inputNodeId": "random16",\
+            "inputId": "seed",\
+            "list": "false"\
+            },\
+            {\
+            "outputNodeId": "list",\
+            "outputId": "13",\
+            "outputOrder": "0",\
+            "inputNodeId": "random6",\
+            "inputId": "seed",\
+            "list": "false"\
+            },\
+            {\
+            "outputNodeId": "list",\
+            "outputId": "14",\
+            "outputOrder": "0",\
+            "inputNodeId": "random7",\
+            "inputId": "seed",\
+            "list": "false"\
+            },\
+            {\
+            "outputNodeId": "select",\
+            "outputId": "h0",\
+            "outputOrder": "1",\
+            "inputNodeId": "ifElse",\
+            "inputId": "h0",\
+            "list": "false"\
+            },\
+            {\
+            "outputNodeId": "rotate",\
+            "outputId": "h0",\
+            "outputOrder": "0",\
+            "inputNodeId": "ifElse",\
+            "inputId": "h1",\
+            "list": "false"\
+            },\
+            {\
+            "outputNodeId": "prob",\
+            "outputId": "h0",\
+            "outputOrder": "0",\
+            "inputNodeId": "ifElse",\
+            "inputId": "condition",\
+            "list": "false"\
+            },\
+            {\
+            "outputNodeId": "list",\
+            "outputId": "15",\
+            "outputOrder": "0",\
+            "inputNodeId": "prob",\
+            "inputId": "chance",\
+            "list": "false"\
+            },\
+            {\
+            "outputNodeId": "combine",\
+            "outputId": "h0",\
+            "outputOrder": "0",\
+            "inputNodeId": "move2",\
+            "inputId": "h0",\
+            "list": "true"\
+            },\
+            {\
+            "outputNodeId": "sequence",\
+            "outputId": "h0",\
+            "outputOrder": "0",\
+            "inputNodeId": "move2",\
+            "inputId": "x",\
+            "list": "false"\
+            },\
+            {\
+            "outputNodeId": "sequence2",\
+            "outputId": "h0",\
+            "outputOrder": "0",\
+            "inputNodeId": "move2",\
+            "inputId": "y",\
+            "list": "false"\
+            },\
+            {\
+            "outputNodeId": "move2",\
+            "outputId": "h0",\
+            "outputOrder": "0",\
+            "inputNodeId": "repeat3",\
+            "inputId": "h0",\
+            "list": "true"\
+            },\
+            {\
+            "outputNodeId": "sequence",\
+            "outputId": "h0",\
+            "outputOrder": "1",\
+            "inputNodeId": "repeat3",\
+            "inputId": "loop",\
+            "list": "false"\
+            },\
+            {\
+            "outputNodeId": "repeat3",\
+            "outputId": "h0",\
+            "outputOrder": "0",\
+            "inputNodeId": "repeat4",\
+            "inputId": "h0",\
+            "list": "true"\
+            },\
+            {\
+            "outputNodeId": "sequence2",\
+            "outputId": "h0",\
+            "outputOrder": "1",\
+            "inputNodeId": "repeat4",\
+            "inputId": "loop",\
+            "list": "false"\
+            },\
+            {\
+            "outputNodeId": "list",\
+            "outputId": "16",\
+            "outputOrder": "0",\
+            "inputNodeId": "random17",\
+            "inputId": "seed",\
+            "list": "false"\
+            },\
+            {\
+            "outputNodeId": "list",\
+            "outputId": "17",\
+            "outputOrder": "0",\
+            "inputNodeId": "random18",\
+            "inputId": "seed",\
+            "list": "false"\
+            },\
+            {\
+            "outputNodeId": "list",\
+            "outputId": "18",\
+            "outputOrder": "0",\
+            "inputNodeId": "random19",\
+            "inputId": "seed",\
+            "list": "false"\
+            },\
+            {\
+            "outputNodeId": "list",\
+            "outputId": "19",\
+            "outputOrder": "0",\
+            "inputNodeId": "random20",\
+            "inputId": "seed",\
+            "list": "false"\
+            },\
+            {\
+            "outputNodeId": "list",\
+            "outputId": "20",\
+            "outputOrder": "0",\
+            "inputNodeId": "random21",\
+            "inputId": "seed",\
+            "list": "false"\
+            },\
+            {\
+            "outputNodeId": "color",\
+            "outputId": "h0",\
+            "outputOrder": "0",\
+            "inputNodeId": "ifElse2",\
+            "inputId": "h0",\
+            "list": "false"\
+            },\
+            {\
+            "outputNodeId": "color3",\
+            "outputId": "h0",\
+            "outputOrder": "0",\
+            "inputNodeId": "ifElse2",\
+            "inputId": "h1",\
+            "list": "false"\
+            },\
+            {\
+            "outputNodeId": "cond",\
+            "outputId": "h0",\
+            "outputOrder": "0",\
+            "inputNodeId": "ifElse2",\
+            "inputId": "condition",\
+            "list": "false"\
+            },\
+            {\
+            "outputNodeId": "color2",\
+            "outputId": "h0",\
+            "outputOrder": "4",\
+            "inputNodeId": "color4",\
+            "inputId": "h0",\
+            "list": "false"\
+            },\
+            {\
+            "outputNodeId": "color4",\
+            "outputId": "c3",\
+            "outputOrder": "0",\
+            "inputNodeId": "cond",\
+            "inputId": "h0",\
+            "list": "false"\
+            },\
+            {\
+            "outputNodeId": "move3",\
+            "outputId": "h0",\
+            "outputOrder": "0",\
+            "inputNodeId": "frame",\
+            "inputId": "children",\
+            "list": "true"\
+            },\
+            {\
+            "outputNodeId": "grad",\
+            "outputId": "h0",\
+            "outputOrder": "0",\
+            "inputNodeId": "frame",\
+            "inputId": "props",\
+            "list": "true"\
+            },\
+            {\
+            "outputNodeId": "repeat4",\
+            "outputId": "h0",\
+            "outputOrder": "0",\
+            "inputNodeId": "move3",\
+            "inputId": "h0",\
+            "list": "true"\
+            },\
+            {\
+            "outputNodeId": "color5",\
+            "outputId": "h0",\
+            "outputOrder": "0",\
+            "inputNodeId": "grad",\
+            "inputId": "h0",\
+            "list": "false"\
+            },\
+            {\
+            "outputNodeId": "color6",\
+            "outputId": "h0",\
+            "outputOrder": "0",\
+            "inputNodeId": "grad",\
+            "inputId": "h1",\
+            "list": "false"\
+            }\
+        ]\
+    }';

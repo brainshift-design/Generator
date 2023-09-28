@@ -25,6 +25,7 @@ GraphView.prototype.updatePanAndZoom = function(updateNodes)
         updateZoomTooltip();
         updateZoomIcon();
 
+        //if (menuItemZoomTo100)
         menuItemZoomTo100.setChecked(equal(graph.currentPage.zoom, 1, 0.0001));
     });
 

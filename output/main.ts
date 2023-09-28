@@ -23,7 +23,7 @@ function noNodeTag(key) { return noTag(key, nodeTag); }
 function noConnTag(key) { return noTag(key, connTag); }
 
 
-const generatorVersion = 220;
+const generatorVersion = 222;
 
 
 const MAX_INT32        = 2147483647;
@@ -3869,7 +3869,7 @@ function setObjectProps(figObj, genObj, phantom = true)
     figObj.isMask = maskType > 0;
 
     if (   figObj.isMask
-        && figObj.maskType) // maybe legacy, figObj.maskType check needed until Figma update 78 actually works
+        && figObj.maskType) // check needed until Figma update 78 works
     {
         switch (maskType)
         {

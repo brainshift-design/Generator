@@ -44,6 +44,7 @@ var menuConvertNumber;
 var menuConvertText;
 var menuTextData;
 var menuColor;
+var menuCreateColor;
 var menuColorStyle;
 var menuLayer;
 var menuEffects;
@@ -582,9 +583,23 @@ menuFlow = new Menu('Flow', true, false);
         new MenuItem('Link existing...', null, {icon: iconColorStyleReplace, createType: COLOR_STYLE, callback: e => actionManager.do(getCreateNodeAction(COLOR_STYLE,  btnColor.div, getCreateOptions(e, {existing: true})))})]);
 
         
+    menuCreateColor = new Menu('Highlight nodes menu', false, false);
+    menuCreateColor.addItems([
+        new ColorListMenuItem(
+        {
+            callback: (e, colorIndex) => 
+            { 
+                hideAllMenus(); 
+                actionManager.do(getCreateNodeAction(COLOR, btnColor.div, getCreateOptions(e, {color: getMenuColorFromIndex(colorIndex)}))); 
+            },
+
+            swatchType: 1
+        })]);
+
+
     menuColor = new Menu('Colors', true, false);
     menuColor.addItems([
-        menuItemColor        = new MenuItem('Color',         null,                {icon: iconColor,            callback: e => actionManager.do(getCreateNodeAction(COLOR,             btnColor.div, getCreateOptions(e,  {random: e.altKey && !getCtrlKey(e)})))}),
+        menuItemColor        = new MenuItem('Color',         null,                {icon: iconColor,            childMenu: menuCreateColor,  callback: e => actionManager.do(getCreateNodeAction(COLOR,             btnColor.div, getCreateOptions(e,  {random: e.altKey && !getCtrlKey(e)})))}),
                                new MenuItem('',              null,                {separator: true}),
                                new MenuItem('Valid sRGB',    null,                {icon: iconValidColor,       callback: e => actionManager.do(getCreateNodeAction(VALID_COLOR,       btnColor.div, getCreateOptions(e)))}),
         menuItemCorrectColor = new MenuItem('Correct color', null,                {icon: iconCorrectColor,     callback: e => actionManager.do(getCreateNodeAction(CORRECT_COLOR,     btnColor.div, getCreateOptions(e)))}),
@@ -774,7 +789,7 @@ menuFlow = new Menu('Flow', true, false);
 
     menuNodeHighlight = new Menu('Highlight nodes menu', false, false);
     menuNodeHighlight.addItems([
-        new ColorListMenuItem({callback: color => { hideAllMenus(); setNodeHighlight(graphView.selectedNodes, color); }})]);
+        new ColorListMenuItem({callback: (e, colorIndex) => { hideAllMenus(); setNodeHighlight(graphView.selectedNodes, colorIndex); }})]);
 
     menuNodeSelect = new Menu('Select nodes menu', false, false);
     menuNodeSelect.addItems([
@@ -893,12 +908,6 @@ menuFlow = new Menu('Flow', true, false);
 
     //     updatePanMode(false);
     // }});
-    
-    btnHand = new MenuButton('Hand tool&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<span style="color: #888; font-weight: 500;">H</span>', null, {callback: () => 
-    {
-        hideAllMenus(); 
-        updatePanMode(!panMode);
-    }});
 
     btnPanel = new MenuButton('Panel', null, {callback: () => 
     {
@@ -911,6 +920,14 @@ menuFlow = new Menu('Flow', true, false);
         hideAllMenus();
         updatePanMode(false);
     }});
+
+    
+    btnHand = new MenuButton('Hand tool&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<span style="color: #888; font-weight: 500;">H</span>', null, {callback: () => 
+        {
+            hideAllMenus(); 
+            updatePanMode(!panMode);
+        }});
+
 
     // btnComment = new MenuButton('Add comment', null, {callback: () => 
     // {
