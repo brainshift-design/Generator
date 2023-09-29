@@ -3525,6 +3525,9 @@ async function figUpdateObject(figObj, genObj)
     }
 
 
+    figObj.parent.appendChild(figObj);
+
+
     if (genObj[FO_DECO])
         updateDecoObject(figObj);
 }
@@ -3603,7 +3606,10 @@ async function figUpdateObjects(figParent, genObjects, nodeIds = [], firstChunk 
         if (   figObj == undefined
             || figObj == null
             || figObj.removed) // no existing object, create new one
+        {
+            console.log('2');
             await figCreateObject(genObj, addObject);
+        }
 
         else if (!figObj.removed
                && figObj.getPluginData('type') == genObj[FO_TYPE].toString()) // update existing object
@@ -3611,6 +3617,7 @@ async function figUpdateObjects(figParent, genObjects, nodeIds = [], firstChunk 
     
         else // delete existing object, create new one
         {
+            console.log('4');
             figObj.remove();
 
             if (figPoints.includes(figObj))
@@ -3868,8 +3875,7 @@ function setObjectProps(figObj, genObj, phantom = true)
 
     figObj.isMask = maskType > 0;
 
-    if (   figObj.isMask
-        && figObj.maskType) // check needed until Figma update 78 works
+    if (figObj.isMask)
     {
         switch (maskType)
         {

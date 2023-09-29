@@ -8505,8 +8505,9 @@ extends GNode
             const obj = copyFigmaObject(objects[i]);
     
             obj.nodeId   = this.nodeId;
-            obj.objectId = obj.objectId + OBJECT_SEPARATOR + this.nodeId;
             obj.listId   = listId;
+            
+            obj.objectId = obj.objectId + OBJECT_SEPARATOR + this.nodeId;
     
             copies.push(obj);
         }
@@ -15955,7 +15956,7 @@ extends GOperator
                     else
                     {
                         for (const item of input.items)
-                            this.value.items.push(item.copy());   
+                            this.value.items.push(item.copy());
                     }
                 }
                 else
@@ -17276,11 +17277,15 @@ extends GOperator
                 
                     if (this.value.objects)
                     {
-                        for (const obj of this.value.objects)
+                        for (let i = 0; i < this.value.objects.length; i++)
                         {
+                            const obj = this.value.objects[i];
+
                             obj.nodeId = this.nodeId;
                             obj.listId = -1;
 
+                            obj.objectId = this.nodeId;
+                            
                             if (obj.objectId != NULL) 
                                 obj.objectId += '/';
 

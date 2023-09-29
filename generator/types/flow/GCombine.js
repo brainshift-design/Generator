@@ -91,7 +91,7 @@ extends GOperator
                     else
                     {
                         for (const item of input.items)
-                            this.value.items.push(item.copy());   
+                            this.value.items.push(item.copy());
                     }
                 }
                 else

@@ -79,11 +79,15 @@ extends GOperator
                 
                     if (this.value.objects)
                     {
-                        for (const obj of this.value.objects)
+                        for (let i = 0; i < this.value.objects.length; i++)
                         {
+                            const obj = this.value.objects[i];
+
                             obj.nodeId = this.nodeId;
                             obj.listId = -1;
 
+                            obj.objectId = this.nodeId;
+                            
                             if (obj.objectId != NULL) 
                                 obj.objectId += '/';
 

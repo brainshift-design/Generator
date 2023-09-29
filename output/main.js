@@ -2362,6 +2362,7 @@ function figUpdateObject(figObj, genObj) {
                 figUpdateFrame(figObj, genObj);
                 break;
         }
+        figObj.parent.appendChild(figObj);
         if (genObj[FO_DECO])
             updateDecoObject(figObj);
     });
@@ -2411,12 +2412,16 @@ function figUpdateObjects(figParent, genObjects, nodeIds = [], firstChunk = fals
             if (figObj == undefined
                 || figObj == null
                 || figObj.removed) // no existing object, create new one
+             {
+                console.log('2');
                 yield figCreateObject(genObj, addObject);
+            }
             else if (!figObj.removed
                 && figObj.getPluginData('type') == genObj[FO_TYPE].toString()) // update existing object
                 yield figUpdateObject(figObj, genObj);
             else // delete existing object, create new one
              {
+                console.log('4');
                 figObj.remove();
                 if (figPoints.includes(figObj))
                     removeFromArray(figPoints, figObj);
@@ -2600,9 +2605,7 @@ function setObjectProps(figObj, genObj, phantom = true) {
     setObjectFills(figObj, genObj);
     const maskType = genObj[FO_MASK];
     figObj.isMask = maskType > 0;
-    if (figObj.isMask
-        && figObj.maskType) // check needed until Figma update 78 works
-     {
+    if (figObj.isMask) {
         switch (maskType) {
             case 1:
                 figObj.maskType = 'ALPHA';

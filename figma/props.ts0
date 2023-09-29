@@ -150,8 +150,7 @@ function setObjectProps(figObj, genObj, phantom = true)
 
     figObj.isMask = maskType > 0;
 
-    if (   figObj.isMask
-        && figObj.maskType) // check needed until Figma update 78 works
+    if (figObj.isMask)
     {
         switch (maskType)
         {

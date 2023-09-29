@@ -23,7 +23,7 @@ extends OpColorBase
     
     constructor()
     {
-        super(COLORBLIND, 'colorblind', 'colorblind', '');
+        super(COLORBLIND, 'colorVision', 'color vision', '');
 
         this.canDisable = true;
         

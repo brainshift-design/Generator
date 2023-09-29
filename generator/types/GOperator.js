@@ -92,8 +92,9 @@ extends GNode
             const obj = copyFigmaObject(objects[i]);
     
             obj.nodeId   = this.nodeId;
-            obj.objectId = obj.objectId + OBJECT_SEPARATOR + this.nodeId;
             obj.listId   = listId;
+            
+            obj.objectId = obj.objectId + OBJECT_SEPARATOR + this.nodeId;
     
             copies.push(obj);
         }
