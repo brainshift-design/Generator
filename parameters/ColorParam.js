@@ -109,7 +109,6 @@ extends Parameter
                     || colorName == 'random'
                     || getEditDistance(colorName, 'random') <= 1)
                 {
-                    console.log('1');
                     skipRandom(Date.now() % 10);  const r = Math.random();
                     skipRandom(Date.now() % 10);  const g = Math.random();
                     skipRandom(Date.now() % 10);  const b = Math.random();
@@ -118,8 +117,6 @@ extends Parameter
                 }
                 else
                 {
-                    console.log('2');
-                    
                                let webColor = webColors.find(wc => wc.name.toLowerCase() == colorName);
                     if (!webColor) webColor = webColors.find(wc => getEditDistance(wc.name.toLowerCase(), colorName) <= 1);
                     

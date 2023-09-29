@@ -19,7 +19,7 @@ function isConnKey(key) { return isTagKey(key, connTag); }
 function noPageTag(key) { return noTag(key, pageTag); }
 function noNodeTag(key) { return noTag(key, nodeTag); }
 function noConnTag(key) { return noTag(key, connTag); }
-const generatorVersion = 222;
+const generatorVersion = 223;
 const MAX_INT32 = 2147483647;
 const NULL = '';
 const HTAB = '  '; // half-tab
@@ -2412,16 +2412,12 @@ function figUpdateObjects(figParent, genObjects, nodeIds = [], firstChunk = fals
             if (figObj == undefined
                 || figObj == null
                 || figObj.removed) // no existing object, create new one
-             {
-                console.log('2');
                 yield figCreateObject(genObj, addObject);
-            }
             else if (!figObj.removed
                 && figObj.getPluginData('type') == genObj[FO_TYPE].toString()) // update existing object
                 yield figUpdateObject(figObj, genObj);
             else // delete existing object, create new one
              {
-                console.log('4');
                 figObj.remove();
                 if (figPoints.includes(figObj))
                     removeFromArray(figPoints, figObj);

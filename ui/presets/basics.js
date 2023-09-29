@@ -932,7 +932,7 @@ const presetActive = '\
             {\
             "type": "CMNT",\
             "id": "comment21",\
-            "name": "first%20%3Cb%3Eselect%20and%20copy%20them%20to%20another%20Figma%20document%3C%2Fb%3E.",\
+            "name": "%3Cb%3Eselect%20and%20copy%20them%20to%20another%20Figma%20document%3C%2Fb%3E.",\
             "renamed": "true",\
             "enabled": "true",\
             "highlight": "0",\
@@ -988,7 +988,7 @@ const presetActive = '\
             {\
             "type": "CMNT",\
             "id": "comment26",\
-            "name": "Generator%20objects%20on%20the%20same%20page%20and%20update%20them",\
+            "name": "generated%20objects%20on%20the%20same%20page%20and%20update%20them",\
             "renamed": "true",\
             "enabled": "true",\
             "highlight": "0",\

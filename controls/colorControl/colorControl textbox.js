@@ -315,8 +315,6 @@ ColorControl.prototype.initTextbox = function()
         {
             if (success) 
             {
-                console.log('1 rgb =', rgb);
-
                 this.setValue(
                       value.trim() != '' 
                     ? ColorValue.fromRgb(scaleRgb(rgb     )) 
@@ -324,7 +322,6 @@ ColorControl.prototype.initTextbox = function()
             }
             else
             {
-                console.log('2 rgb =', rgb);
                 this.setValue(ColorValue.fromRgb(scaleRgb(savedRgb)));
             }
         }

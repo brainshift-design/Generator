@@ -180,10 +180,7 @@ async function figUpdateObjects(figParent, genObjects, nodeIds = [], firstChunk 
         if (   figObj == undefined
             || figObj == null
             || figObj.removed) // no existing object, create new one
-        {
-            console.log('2');
             await figCreateObject(genObj, addObject);
-        }
 
         else if (!figObj.removed
                && figObj.getPluginData('type') == genObj[FO_TYPE].toString()) // update existing object
@@ -191,7 +188,6 @@ async function figUpdateObjects(figParent, genObjects, nodeIds = [], firstChunk 
     
         else // delete existing object, create new one
         {
-            console.log('4');
             figObj.remove();
 
             if (figPoints.includes(figObj))
