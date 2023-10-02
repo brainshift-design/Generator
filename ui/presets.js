@@ -86,6 +86,7 @@ function getPresetGraph(graphId)
         case 'loop2d':               return presetLoop2d;
         case 'loopLock':             return presetLoopLock;
 
+        case 'numberLine':           return presetNumberLine;
         case 'wavyDots':             return presetWavyDots;
 
 

@@ -735,8 +735,8 @@ const presetWavyDots = '\
             "renamed": "true",\
             "enabled": "true",\
             "highlight": "0",\
-            "x": "-54.956",\
-            "y": "387",\
+            "x": "45.044",\
+            "y": "487",\
             "z": "0",\
             "width": "685.9561841543723",\
             "height": "558",\
@@ -751,8 +751,8 @@ const presetWavyDots = '\
             "renamed": "false",\
             "enabled": "true",\
             "highlight": "2",\
-            "x": "-10",\
-            "y": "796",\
+            "x": "90",\
+            "y": "896",\
             "z": "1",\
             "params":\
             [\
@@ -767,11 +767,12 @@ const presetWavyDots = '\
             "renamed": "false",\
             "enabled": "true",\
             "highlight": "0",\
-            "x": "473",\
-            "y": "462",\
+            "x": "573",\
+            "y": "562",\
             "z": "2",\
             "params":\
             [\
+                    ["NUM#", "x", "50,0"],\
                     ["NUM#", "width", "10,0"],\
                     ["NUM#", "height", "10,0"]\
             ]\
@@ -783,8 +784,8 @@ const presetWavyDots = '\
             "renamed": "false",\
             "enabled": "true",\
             "highlight": "0",\
-            "x": "170",\
-            "y": "672",\
+            "x": "270",\
+            "y": "772",\
             "z": "3",\
             "prevSpace": "hsv",\
             "params":\
@@ -802,8 +803,8 @@ const presetWavyDots = '\
             "renamed": "true",\
             "enabled": "true",\
             "highlight": "0",\
-            "x": "971",\
-            "y": "931",\
+            "x": "1071",\
+            "y": "1031",\
             "z": "4"\
             },\
             {\
@@ -813,10 +814,9 @@ const presetWavyDots = '\
             "renamed": "true",\
             "enabled": "true",\
             "highlight": "0",\
-            "x": "1743",\
-            "y": "981",\
+            "x": "1843",\
+            "y": "1081",\
             "z": "5",\
-            "active": "true",\
             "params":\
             [\
             ]\
@@ -828,8 +828,8 @@ const presetWavyDots = '\
             "renamed": "true",\
             "enabled": "true",\
             "highlight": "4",\
-            "x": "801",\
-            "y": "1042",\
+            "x": "901",\
+            "y": "1142",\
             "z": "6",\
             "params":\
             [\
@@ -844,8 +844,8 @@ const presetWavyDots = '\
             "renamed": "true",\
             "enabled": "true",\
             "highlight": "1",\
-            "x": "479",\
-            "y": "1508",\
+            "x": "579",\
+            "y": "1608",\
             "z": "7",\
             "params":\
             [\
@@ -861,8 +861,8 @@ const presetWavyDots = '\
             "renamed": "false",\
             "enabled": "true",\
             "highlight": "0",\
-            "x": "1365",\
-            "y": "782",\
+            "x": "1465",\
+            "y": "882",\
             "z": "8",\
             "width": "120",\
             "height": "64"\
@@ -874,8 +874,8 @@ const presetWavyDots = '\
             "renamed": "false",\
             "enabled": "true",\
             "highlight": "0",\
-            "x": "326",\
-            "y": "645",\
+            "x": "426",\
+            "y": "745",\
             "z": "9",\
             "params":\
             [\
@@ -890,8 +890,8 @@ const presetWavyDots = '\
             "renamed": "false",\
             "enabled": "true",\
             "highlight": "0",\
-            "x": "984",\
-            "y": "1123",\
+            "x": "1084",\
+            "y": "1223",\
             "z": "10",\
             "params":\
             [\
@@ -905,8 +905,8 @@ const presetWavyDots = '\
             "renamed": "true",\
             "enabled": "true",\
             "highlight": "4",\
-            "x": "981",\
-            "y": "777",\
+            "x": "1081",\
+            "y": "877",\
             "z": "11",\
             "params":\
             [\
@@ -921,8 +921,8 @@ const presetWavyDots = '\
             "renamed": "false",\
             "enabled": "true",\
             "highlight": "0",\
-            "x": "1565",\
-            "y": "1041",\
+            "x": "1665",\
+            "y": "1141",\
             "z": "12",\
             "width": "120",\
             "height": "51"\
@@ -934,8 +934,8 @@ const presetWavyDots = '\
             "renamed": "true",\
             "enabled": "true",\
             "highlight": "0",\
-            "x": "1521",\
-            "y": "726",\
+            "x": "1621",\
+            "y": "826",\
             "z": "13",\
             "params":\
             [\
@@ -949,8 +949,8 @@ const presetWavyDots = '\
             "renamed": "false",\
             "enabled": "true",\
             "highlight": "5",\
-            "x": "803",\
-            "y": "1218",\
+            "x": "903",\
+            "y": "1318",\
             "z": "14",\
             "params":\
             [\
@@ -967,8 +967,8 @@ const presetWavyDots = '\
             "renamed": "true",\
             "enabled": "true",\
             "highlight": "1",\
-            "x": "636",\
-            "y": "1459",\
+            "x": "736",\
+            "y": "1559",\
             "z": "15",\
             "params":\
             [\
@@ -983,8 +983,8 @@ const presetWavyDots = '\
             "renamed": "false",\
             "enabled": "true",\
             "highlight": "0",\
-            "x": "1289",\
-            "y": "462",\
+            "x": "1389",\
+            "y": "562",\
             "z": "16",\
             "params":\
             [\
@@ -999,8 +999,8 @@ const presetWavyDots = '\
             "renamed": "true",\
             "enabled": "true",\
             "highlight": "0",\
-            "x": "973",\
-            "y": "969",\
+            "x": "1073",\
+            "y": "1069",\
             "z": "17"\
             },\
             {\
@@ -1010,8 +1010,8 @@ const presetWavyDots = '\
             "renamed": "true",\
             "enabled": "true",\
             "highlight": "0",\
-            "x": "351",\
-            "y": "1647",\
+            "x": "451",\
+            "y": "1747",\
             "z": "18"\
             },\
             {\
@@ -1021,8 +1021,8 @@ const presetWavyDots = '\
             "renamed": "true",\
             "enabled": "true",\
             "highlight": "0",\
-            "x": "350",\
-            "y": "1682",\
+            "x": "450",\
+            "y": "1782",\
             "z": "19"\
             },\
             {\
@@ -1032,8 +1032,8 @@ const presetWavyDots = '\
             "renamed": "true",\
             "enabled": "true",\
             "highlight": "0",\
-            "x": "-59",\
-            "y": "980",\
+            "x": "41",\
+            "y": "1080",\
             "z": "20"\
             },\
             {\
@@ -1043,8 +1043,8 @@ const presetWavyDots = '\
             "renamed": "true",\
             "enabled": "true",\
             "highlight": "0",\
-            "x": "1253",\
-            "y": "1483",\
+            "x": "1353",\
+            "y": "1583",\
             "z": "21"\
             },\
             {\
@@ -1054,9 +1054,46 @@ const presetWavyDots = '\
             "renamed": "true",\
             "enabled": "true",\
             "highlight": "0",\
-            "x": "1251",\
-            "y": "1528",\
+            "x": "1351",\
+            "y": "1628",\
             "z": "22"\
+            },\
+            {\
+            "type": "FRM",\
+            "id": "frame",\
+            "name": "frame",\
+            "renamed": "false",\
+            "enabled": "true",\
+            "highlight": "0",\
+            "x": "2109",\
+            "y": "943",\
+            "z": "23",\
+            "active": "true",\
+            "params":\
+            [\
+                    ["NUM#", "width", "900,0"],\
+                    ["NUM#", "height", "250,0"],\
+                    ["NUM#", "round", "20,0"]\
+            ]\
+            },\
+            {\
+            "type": "COL",\
+            "id": "color2",\
+            "name": "color",\
+            "renamed": "false",\
+            "enabled": "true",\
+            "highlight": "0",\
+            "x": "2107",\
+            "y": "1142",\
+            "z": "24",\
+            "prevSpace": "hex",\
+            "params":\
+            [\
+                    ["NUM#", "space", "0,0"],\
+                    ["NUM#", "c1", "68,0"],\
+                    ["NUM#", "c2", "68,0"],\
+                    ["NUM#", "c3", "68,0"]\
+            ]\
             }\
         ],\
         "connections":\
@@ -1211,6 +1248,371 @@ const presetWavyDots = '\
             "outputOrder": "0",\
             "inputNodeId": "move",\
             "inputId": "y",\
+            "list": "false"\
+            },\
+            {\
+            "outputNodeId": "repeat2",\
+            "outputId": "h0",\
+            "outputOrder": "0",\
+            "inputNodeId": "frame",\
+            "inputId": "children",\
+            "list": "true"\
+            },\
+            {\
+            "outputNodeId": "color2",\
+            "outputId": "h0",\
+            "outputOrder": "0",\
+            "inputNodeId": "frame",\
+            "inputId": "props",\
+            "list": "false"\
+            }\
+        ]\
+    }';
+
+
+
+const presetNumberLine = '\
+    {\
+        "nodes":\
+        [\
+            {\
+            "type": "SEQ",\
+            "id": "sequence2",\
+            "name": "sequence",\
+            "renamed": "false",\
+            "enabled": "true",\
+            "highlight": "0",\
+            "x": "681",\
+            "y": "328",\
+            "z": "0",\
+            "params":\
+            [\
+                    ["NUM#", "step", "20,0"],\
+                    ["NUM#", "end", "?,0"]\
+            ]\
+            },\
+            {\
+            "type": "SEQ",\
+            "id": "sequence",\
+            "name": "sequence",\
+            "renamed": "false",\
+            "enabled": "true",\
+            "highlight": "0",\
+            "x": "213",\
+            "y": "-26",\
+            "z": "1",\
+            "params":\
+            [\
+                    ["NUM#", "start", "1,0"],\
+                    ["NUM#", "step", "1,0"],\
+                    ["NUM#", "end", "?,0"]\
+            ]\
+            },\
+            {\
+            "type": "MOVE",\
+            "id": "move",\
+            "name": "move",\
+            "renamed": "false",\
+            "enabled": "true",\
+            "highlight": "0",\
+            "x": "874",\
+            "y": "88",\
+            "z": "2",\
+            "params":\
+            [\
+                    ["NUM#", "x", "640,0"]\
+            ]\
+            },\
+            {\
+            "type": "COL",\
+            "id": "color",\
+            "name": "color",\
+            "renamed": "false",\
+            "enabled": "true",\
+            "highlight": "0",\
+            "x": "261.1",\
+            "y": "379",\
+            "z": "3",\
+            "prevSpace": "hex",\
+            "params":\
+            [\
+                    ["NUM#", "space", "0,0"],\
+                    ["NUM#", "c1", "0,0"],\
+                    ["NUM#", "c2", "0,0"],\
+                    ["NUM#", "c3", "0,0"]\
+            ]\
+            },\
+            {\
+            "type": "REPT",\
+            "id": "repeat",\
+            "name": "repeat",\
+            "renamed": "false",\
+            "enabled": "true",\
+            "highlight": "1",\
+            "x": "1069",\
+            "y": "322.271",\
+            "z": "4",\
+            "params":\
+            [\
+                    ["NUM#", "count", "33,0"]\
+            ]\
+            },\
+            {\
+            "type": "N2T",\
+            "id": "numToText",\
+            "name": "to%20text",\
+            "renamed": "false",\
+            "enabled": "true",\
+            "highlight": "0",\
+            "x": "213",\
+            "y": "83",\
+            "z": "5"\
+            },\
+            {\
+            "type": "TXTS",\
+            "id": "text",\
+            "name": "text",\
+            "renamed": "false",\
+            "enabled": "true",\
+            "highlight": "0",\
+            "x": "438.1",\
+            "y": "88",\
+            "z": "6",\
+            "params":\
+            [\
+                    ["TEXT#", "text", "33", "center"],\
+                    ["NUM#", "y", "6,0"],\
+                    ["NUM#", "width", "17,0"],\
+                    ["NUM#", "height", "12,0"],\
+                    ["TEXT#", "style", "Medium"],\
+                    ["NUM#", "alignH", "1,0"]\
+            ]\
+            },\
+            {\
+            "type": "NUM",\
+            "id": "num",\
+            "name": "number",\
+            "renamed": "false",\
+            "enabled": "true",\
+            "highlight": "0",\
+            "x": "214",\
+            "y": "173",\
+            "z": "7",\
+            "width": "120",\
+            "height": "54",\
+            "params":\
+            [\
+                    ["NUM#", "value", "17,0"]\
+            ]\
+            },\
+            {\
+            "type": "NUM",\
+            "id": "num2",\
+            "name": "number",\
+            "renamed": "false",\
+            "enabled": "true",\
+            "highlight": "0",\
+            "x": "214",\
+            "y": "236",\
+            "z": "8",\
+            "width": "120",\
+            "height": "54",\
+            "params":\
+            [\
+                    ["NUM#", "value", "12,0"]\
+            ]\
+            },\
+            {\
+            "type": "FRM",\
+            "id": "frame",\
+            "name": "number%20line",\
+            "renamed": "true",\
+            "enabled": "true",\
+            "highlight": "0",\
+            "x": "1579",\
+            "y": "183.271",\
+            "z": "9",\
+            "active": "true",\
+            "params":\
+            [\
+                    ["NUM#", "width", "660,0"],\
+                    ["NUM#", "height", "24,0"],\
+                    ["NUM#", "round", "4,0"]\
+            ]\
+            },\
+            {\
+            "type": "COL",\
+            "id": "color2",\
+            "name": "color",\
+            "renamed": "false",\
+            "enabled": "true",\
+            "highlight": "0",\
+            "x": "1579",\
+            "y": "380",\
+            "z": "10",\
+            "prevSpace": "hex",\
+            "params":\
+            [\
+                    ["NUM#", "space", "0,0"],\
+                    ["NUM#", "c1", "217,0"],\
+                    ["NUM#", "c2", "217,0"],\
+                    ["NUM#", "c3", "217,0"]\
+            ]\
+            },\
+            {\
+            "type": "MATH",\
+            "id": "math",\
+            "name": "math",\
+            "renamed": "false",\
+            "enabled": "true",\
+            "highlight": "0",\
+            "x": "1387.1",\
+            "y": "364",\
+            "z": "11",\
+            "params":\
+            [\
+                    ["NUM#", "value", "660,0"],\
+                    ["NUM#", "operation", "4,0"]\
+            ]\
+            },\
+            {\
+            "type": "SMATH",\
+            "id": "math2",\
+            "name": "math",\
+            "renamed": "false",\
+            "enabled": "true",\
+            "highlight": "0",\
+            "x": "1389",\
+            "y": "236",\
+            "z": "12",\
+            "params":\
+            [\
+                    ["NUM#", "value", "24,0"],\
+                    ["NUM#", "operation", "4,0"],\
+                    ["NUM#", "operand", "2,0"]\
+            ]\
+            }\
+        ],\
+        "connections":\
+        [\
+            {\
+            "outputNodeId": "text",\
+            "outputId": "h0",\
+            "outputOrder": "0",\
+            "inputNodeId": "move",\
+            "inputId": "h0",\
+            "list": "false"\
+            },\
+            {\
+            "outputNodeId": "sequence2",\
+            "outputId": "h0",\
+            "outputOrder": "0",\
+            "inputNodeId": "move",\
+            "inputId": "x",\
+            "list": "false"\
+            },\
+            {\
+            "outputNodeId": "move",\
+            "outputId": "h0",\
+            "outputOrder": "0",\
+            "inputNodeId": "repeat",\
+            "inputId": "h0",\
+            "list": "false"\
+            },\
+            {\
+            "outputNodeId": "sequence",\
+            "outputId": "h0",\
+            "outputOrder": "0",\
+            "inputNodeId": "numToText",\
+            "inputId": "h0",\
+            "list": "false"\
+            },\
+            {\
+            "outputNodeId": "numToText",\
+            "outputId": "h0",\
+            "outputOrder": "0",\
+            "inputNodeId": "text",\
+            "inputId": "text",\
+            "list": "false"\
+            },\
+            {\
+            "outputNodeId": "num",\
+            "outputId": "h0",\
+            "outputOrder": "0",\
+            "inputNodeId": "text",\
+            "inputId": "width",\
+            "list": "false"\
+            },\
+            {\
+            "outputNodeId": "num2",\
+            "outputId": "h0",\
+            "outputOrder": "0",\
+            "inputNodeId": "text",\
+            "inputId": "height",\
+            "list": "false"\
+            },\
+            {\
+            "outputNodeId": "color",\
+            "outputId": "h0",\
+            "outputOrder": "0",\
+            "inputNodeId": "text",\
+            "inputId": "props",\
+            "list": "false"\
+            },\
+            {\
+            "outputNodeId": "math",\
+            "outputId": "h0",\
+            "outputOrder": "0",\
+            "inputNodeId": "frame",\
+            "inputId": "width",\
+            "list": "false"\
+            },\
+            {\
+            "outputNodeId": "math2",\
+            "outputId": "h0",\
+            "outputOrder": "0",\
+            "inputNodeId": "frame",\
+            "inputId": "height",\
+            "list": "false"\
+            },\
+            {\
+            "outputNodeId": "repeat",\
+            "outputId": "h0",\
+            "outputOrder": "0",\
+            "inputNodeId": "frame",\
+            "inputId": "children",\
+            "list": "true"\
+            },\
+            {\
+            "outputNodeId": "color2",\
+            "outputId": "h0",\
+            "outputOrder": "0",\
+            "inputNodeId": "frame",\
+            "inputId": "props",\
+            "list": "false"\
+            },\
+            {\
+            "outputNodeId": "repeat",\
+            "outputId": "count",\
+            "outputOrder": "0",\
+            "inputNodeId": "math",\
+            "inputId": "h0",\
+            "list": "false"\
+            },\
+            {\
+            "outputNodeId": "sequence2",\
+            "outputId": "step",\
+            "outputOrder": "0",\
+            "inputNodeId": "math",\
+            "inputId": "h1",\
+            "list": "false"\
+            },\
+            {\
+            "outputNodeId": "num2",\
+            "outputId": "h0",\
+            "outputOrder": "1",\
+            "inputNodeId": "math2",\
+            "inputId": "h0",\
             "list": "false"\
             }\
         ]\
