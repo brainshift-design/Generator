@@ -49,7 +49,7 @@ extends GOperator1
 
 
         if (   this.input
-            //&& current.isValid()
+            && current.isValid()
             && target .isValid())
         {
             let input = (await this.input.eval(parse)).toValue();
@@ -61,8 +61,7 @@ extends GOperator1
 
             if (this.options.enabled)
             {
-                const diffStart = target.value - current.value;
-                let   diff      = diffStart;
+                let   diff      = target.value - current.value;
                 let   prevDiff  = 0;
 
 
@@ -86,35 +85,40 @@ extends GOperator1
 
 
                     if (this.input.type == PARAM)
-                        this.input.node[this.input.paramId].value = temp;
+                    {
+                        this.input.node[this.input.paramId].value    = temp;
+                        this.input.node[this.input.paramId].decimals = decDigits(temp);
+                    }
+
                         
                     this.current.invalidateInputs(parse, this);
                     current = (await this.current.eval(parse)).toValue();
 
 
-                    if (!current.isValid())
-                        diff = Number.MIN_SAFE_INTEGER;
-                    else
+                    // if (!current.isValid())
+                    //     diff = Number.MAX_SAFE_INTEGER;
+                    // else
+                    if (current.isValid())
+                    {
                         diff = target.value - current.value;
+                        console.log('diff =', diff);
 
-                    
-                    if (Math.abs(diff) < 0.0000001)
-                        break;
+                        if (Math.abs(diff) < 0.0000001)
+                            break;
+                            
+
+                        if (   Math.abs (diff) >  Math.abs (prevDiff)
+                            || Math.sign(diff) != Math.sign(prevDiff))
+                            step /= -2;
+
+                        console.log('step =', step);
+                        console.log('');
+
+                        prevDiff = diff;
+                    }
                         
 
-                    if (   Math.abs (diff) >  Math.abs (prevDiff)
-                        || Math.sign(diff) != Math.sign(prevDiff))
-                        step /= -2;
-
-
-                    prevDiff = diff;
-                    console.log('diff =', diff);
-                    console.log('');
-
-
                     parse.currentProgress++;
-
-
                     genUpdateNodeProgress(parse, this.nodeId, iter / maxIter);
                 }
 

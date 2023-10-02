@@ -86,6 +86,8 @@ function getPresetGraph(graphId)
         case 'loop2d':               return presetLoop2d;
         case 'loopLock':             return presetLoopLock;
 
+        case 'wavyDots':             return presetWavyDots;
+
 
         case 'quadraticFormula':     return presetQuadraticFormula;
         case 'opponentColor':        return presetOpponentColor;

@@ -897,8 +897,7 @@ menuFlow = new Menu('Flow', true, false);
     btnShape    = new MenuButton('', menuShape,    {useMenuName: true, highlight: () => currentMenus.includes(menuShape ), callback: () => updatePanMode(false)});
    // btnTemplate = new MenuButton('', menuTemplate, {useMenuName: true, highlight: () => currentMenus.includes(menuTemplate ), callback: () => updatePanMode(false)});
     //btnGroup  = new MenuButton('', menuGroup,  {useMenuName: true, highlight: () => currentMenus.includes(menuGroup ), callback: () => updatePanMode(false)});
-    //btnPanel    = new MenuButton('', menuPanel,  {useMenuName: true, highlight: () => currentMenus.includes(menuPanel ), callback: () => updatePanMode(false)});
-
+    
     // btnGroup  = new MenuButton('Node groups', null, {callback: () => 
     // {
     //     const create = new CreateNodeAction(OUP, btnGroup.div);
@@ -910,17 +909,20 @@ menuFlow = new Menu('Flow', true, false);
     //     updatePanMode(false);
     // }});
 
-    btnPanel = new MenuButton('Panel', null, {callback: () => 
-    {
-        const create = new CreateNodeAction(PANEL, btnPanel.div);
-        actionManager.do(create);
 
-        graphView.updateNodes([create.node]);
-        graphView.updateScrollWithBounds();
+    btnPanel    = new MenuButton('', menuPanel,  {useMenuName: true, highlight: () => currentMenus.includes(menuPanel ), callback: () => updatePanMode(false)});
+    
+    // btnPanel = new MenuButton('Panel', null, {callback: () => 
+    // {
+    //     const create = new CreateNodeAction(PANEL, btnPanel.div);
+    //     actionManager.do(create);
 
-        hideAllMenus();
-        updatePanMode(false);
-    }});
+    //     graphView.updateNodes([create.node]);
+    //     graphView.updateScrollWithBounds();
+
+    //     hideAllMenus();
+    //     updatePanMode(false);
+    // }});
 
     
     btnHand = new MenuButton('Hand tool&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<span style="color: #888; font-weight: 500;">H</span>', null, {callback: () => 
