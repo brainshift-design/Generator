@@ -108,6 +108,9 @@ extends GOperator1
                     repeat.iteration = i;
 
                     this.input.invalidateInputs(parse, this);
+
+                    if (this.loop.type != NUMBER_VALUE)
+                    this.input.invalidateInputs(parse, this);
                     
 
                     const input = (await this.input.eval(parse)).toValue();

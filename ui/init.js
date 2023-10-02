@@ -153,7 +153,7 @@ function createSessionId()
 
 function subscribed()
 {
-    return false;//currentSessionId == createSessionId();
+    return true;//currentSessionId == createSessionId();
 }
 
 

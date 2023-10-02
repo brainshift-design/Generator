@@ -55,10 +55,16 @@ function decDigits(num)
     if (iDec === -1)
         return 0;
     
-    let count = 0;
-    for (let i = iDec + 1; i < strNum.length; i++)
-        if (strNum[i] !== '0')
-            count++;
+    let count        = strNum.length - iDec - 1;
+    let nonZeroFound = false;
+    
+    for (let i = strNum.length-1; i > iDec; i--)
+    {
+        if (strNum[i] === '0')
+            count--;
+        else
+            break;
+    }
     
     return count;
 }

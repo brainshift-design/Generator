@@ -93,10 +93,11 @@ extends GOperator1
 
 
                     if (!current.isValid())
-                        diff = Number.MAX_SAFE_INTEGER;
+                        diff = Number.MIN_SAFE_INTEGER;
                     else
                         diff = target.value - current.value;
 
+                    
                     if (Math.abs(diff) < 0.0000001)
                         break;
                         
@@ -107,6 +108,8 @@ extends GOperator1
 
 
                     prevDiff = diff;
+                    console.log('diff =', diff);
+                    console.log('');
 
 
                     parse.currentProgress++;

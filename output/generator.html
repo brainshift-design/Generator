@@ -1128,10 +1128,16 @@ function decDigits(num)
     if (iDec === -1)
         return 0;
     
-    let count = 0;
-    for (let i = iDec + 1; i < strNum.length; i++)
-        if (strNum[i] !== '0')
-            count++;
+    let count        = strNum.length - iDec - 1;
+    let nonZeroFound = false;
+    
+    for (let i = strNum.length-1; i > iDec; i--)
+    {
+        if (strNum[i] === '0')
+            count--;
+        else
+            break;
+    }
     
     return count;
 }
@@ -14868,6 +14874,9 @@ extends GOperator1
                     repeat.iteration = i;
 
                     this.input.invalidateInputs(parse, this);
+
+                    if (this.loop.type != NUMBER_VALUE)
+                    this.input.invalidateInputs(parse, this);
                     
 
                     const input = (await this.input.eval(parse)).toValue();
@@ -19951,10 +19960,11 @@ extends GOperator1
 
 
                     if (!current.isValid())
-                        diff = Number.MAX_SAFE_INTEGER;
+                        diff = Number.MIN_SAFE_INTEGER;
                     else
                         diff = target.value - current.value;
 
+                    
                     if (Math.abs(diff) < 0.0000001)
                         break;
                         
@@ -19965,6 +19975,8 @@ extends GOperator1
 
 
                     prevDiff = diff;
+                    console.log('diff =', diff);
+                    console.log('');
 
 
                     parse.currentProgress++;
