@@ -100,6 +100,7 @@
 ../generator/types/number/GRound.js
 ../generator/types/number/GMinMax.js
 ../generator/types/number/GLimits.js
+../generator/types/number/GNaNisNumber.js
 ../generator/types/number/GConstant.js
 ../generator/types/number/GDateTime.js
 ../generator/types/number/GDefine.js

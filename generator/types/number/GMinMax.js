@@ -34,8 +34,8 @@ extends GArithmetic
 
         const op = (await this.operation.eval(parse)).toValue().toInteger();
 
-        op.value = Math.min(Math.max(0, op.value), MATH_OPS.length-1);
-
+        if (this.options.enabled)
+            op.value = Math.min(Math.max(0, op.value), MATH_OPS.length-1);
         
         this.value = await evalMinMaxInputs(this.inputs, op.value, parse);
 

@@ -18,7 +18,7 @@ extends GOperator1
 
         copy.copyBase(this);
 
-        copy.operation = this.operation.copy();
+        copy.function = this.function.copy();
 
         return copy;
     }

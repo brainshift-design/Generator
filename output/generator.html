@@ -4822,6 +4822,7 @@ const NUMBER_ABSOLUTE         = 'ABS';
 const NUMBER_ROUND            = 'ROUND';   
 const NUMBER_MINMAX           = 'MINMAX';   
 const NUMBER_LIMITS           = 'LIM';   
+const NUMBER_NAN              = 'NANISNUM';
 const NUMBER_CONSTANT         = 'CONST';  
 const NUMBER_DATETIME         = 'DATE';  
 const NUMBER_RANGE            = 'RANGE';  
@@ -4941,6 +4942,7 @@ const NUMBER_TYPES =
     NUMBER_ROUND,
     NUMBER_MINMAX,
     NUMBER_LIMITS,
+    NUMBER_NAN,
     NUMBER_CONSTANT,
     NUMBER_DATETIME,
     NUMBER_RANGE,
@@ -18139,8 +18141,8 @@ extends GArithmetic
 
         const op = (await this.operation.eval(parse)).toValue().toInteger();
 
-        op.value = Math.min(Math.max(0, op.value), MATH_OPS.length-1);
-
+        if (this.options.enabled)
+            op.value = Math.min(Math.max(0, op.value), MATH_OPS.length-1);
         
         this.value = await evalMinMaxInputs(this.inputs, op.value, parse);
 
@@ -18408,6 +18410,139 @@ extends GOperator1
     }
 }
 
+
+
+class GNaNisNumber
+extends GOperator1
+{
+    _value;
+
+
+
+    constructor(nodeId, options)
+    {
+        super(NUMBER_NAN, nodeId, options);
+    }
+
+
+    
+    copy()
+    {
+        const copy = new GNaNisNumber(this.nodeId, this.options);
+
+        copy.copyBase(this);
+
+        copy._value = this._value.copy();
+
+        return copy;
+    }
+
+
+
+    async eval(parse)
+    {
+        if (this.isCached())
+            return this;
+
+
+        const _value = (await this._value.eval(parse)).toValue();
+
+
+        if (this.input)
+        {
+            const input = (await this. input.eval(parse)).toValue();
+
+            if (isListType(input.type))
+            {
+                this.value = new ListValue();
+
+                for (let i = 0; i < input.items.length; i++)
+                {
+                    const item = input.items[i];
+
+                    this.value.items.push(
+                        item.type == NUMBER_VALUE
+                        ? getNaNisNumberValue(item, _value, this.options.enabled)
+                        : TextValue.NaN.copy());   
+                }
+            }
+            else
+            {
+                this.value = getNaNisNumberValue(input, _value, this.options.enabled);
+            }
+        }
+
+        else
+            this.value = NumberValue.NaN.copy();
+
+
+        const type = 
+            this.value
+            ? new TextValue(
+                isListType(this.value.type)
+                ? finalListTypeFromItems(this.value.items)
+                : this.value.type)
+            : TextValue.NaN.copy();
+            
+       
+        this.setUpdateValues(parse,
+        [
+            ['type',   type ],
+            ['value', _value]
+        ]);
+
+
+        this.validate();
+
+        return this;
+    }
+
+
+
+    isValid()
+    {
+        return super.isValid()
+            && this.value && this.value.isValid();
+    }
+
+
+
+    pushValueUpdates(parse)
+    {
+        super.pushValueUpdates(parse);
+
+        if (this.value) this.value.pushValueUpdates(parse);
+    }
+
+
+
+    invalidateInputs(parse, from)
+    {
+        super.invalidateInputs(parse, from);
+
+        if (this.value) this.value.invalidateInputs(parse, from);
+    }
+
+
+
+    iterateLoop(parse)
+    {
+        super.iterateLoop(parse);
+
+        if (this.value) this.value.iterateLoop(parse);
+    }
+}
+
+
+
+function getNaNisNumberValue(input, value, enabled)
+{
+    if (    enabled
+        && !input.isValid())
+        return value;
+    else
+        return input;
+}
 
 
 class GConstant
@@ -22240,7 +22375,7 @@ extends GOperator1
 
         copy.copyBase(this);
 
-        copy.operation = this.operation.copy();
+        copy.function = this.function.copy();
 
         return copy;
     }
@@ -38342,6 +38477,51 @@ function genParseLimits(parse)
 
 
 
+function genParseNaNisNumber(parse)
+{
+    const [, nodeId, options, ignore] = genParseNodeStart(parse);
+
+
+    const nanIsNum = new GNaNisNumber(nodeId, options);
+
+
+    let nInputs = -1;
+    
+    if (!ignore)
+    {
+        nInputs = parseInt(parse.move());
+        consoleAssert(nInputs == 0 || nInputs == 1, 'nInputs must be [0, 1]');
+    }
+
+    
+    if (parse.settings.logRequests) 
+        logReq(nanIsNum, parse, ignore, nInputs);
+
+
+    if (ignore) 
+    {
+        genParseNodeEnd(parse, nanIsNum);
+        return parse.parsedNodes.find(n => n.nodeId == nodeId);
+    }
+
+
+    parse.nTab++;
+
+
+    if (nInputs == 1)
+        nanIsNum.input = genParse(parse);
+
+    nanIsNum._value = genParse(parse);
+
+    parse.nTab--;
+
+
+    genParseNodeEnd(parse, nanIsNum);
+    return nanIsNum;
+}
+
+
+
 function genParseMath(parse, newNode)
 {
     const [type, nodeId, options, ignore] = genParseNodeStart(parse);
@@ -42016,6 +42196,7 @@ function genParse(parse, inParam = true)
     else if (parse.next == NUMBER_ROUND           ) result = genParseRound             (parse);
     else if (parse.next == NUMBER_MINMAX          ) result = genParseMinMax            (parse);
     else if (parse.next == NUMBER_LIMITS          ) result = genParseLimits            (parse);
+    else if (parse.next == NUMBER_NAN             ) result = genParseNaNisNumber       (parse);
     else if (parse.next == NUMBER_CONSTANT        ) result = genParseConstant          (parse);
     else if (parse.next == NUMBER_DATETIME        ) result = genParseDateTime          (parse);
     else if (parse.next == NUMBER_SEQUENCE        ) result = genParseSequence          (parse);

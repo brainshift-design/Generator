@@ -76,6 +76,7 @@
 ../operators/number/OpRound.js
 ../operators/number/OpMinMax.js
 ../operators/number/OpLimits.js
+../operators/number/OpNaNisNumber.js
 ../operators/number/OpConstant.js
 
 ../operators/number/OpDateTime.js
