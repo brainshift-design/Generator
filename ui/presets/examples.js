@@ -6967,7 +6967,7 @@ const presetAfterTheStorm = '\
 
 
 
-const presetHopeInHell = '\
+const presetSunsetDreams = '\
     {\
         "nodes":\
         [\
@@ -7134,7 +7134,7 @@ const presetHopeInHell = '\
             "z": "10",\
             "params":\
             [\
-                    ["NUM#", "seed", "2644,0"],\
+                    ["NUM#", "seed", "2663,0"],\
                     ["NUM#", "max", "10000,0"]\
             ]\
             },\

@@ -71,10 +71,12 @@ extends OperatorBase
 
     updateValues(requestId, actionId, updateParamId, paramIds, values)
     {
+        // super.updateValues(requestId, actionId, updateParamId, paramIds, values);
+
         const type  = values[paramIds.findIndex(id => id == 'type' )];
         const count = values[paramIds.findIndex(id => id == 'count')];
 
-        if (count) this.paramCount.setValue( count, false, true, false);
+        if (count) this.paramCount.setValue(count, false, true, false);
 
         this.outputs[0].types = 
                type

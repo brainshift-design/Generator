@@ -123,6 +123,6 @@ function getPresetGraph(graphId)
         case 'randomAbstract':       return presetRandomAbstract;
         case 'namesLogos':           return presetNamesLogos;
         case 'afterTheStorm':        return presetAfterTheStorm;
-        case 'hopeInHell':           return presetHopeInHell;
+        case 'sunsetDreams':         return presetSunsetDreams;
     }
 }

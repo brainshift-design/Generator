@@ -110,7 +110,7 @@ extends GOperator1
                     this.input.invalidateInputs(parse, this);
 
                     if (this.loop.type != NUMBER_VALUE)
-                    this.input.invalidateInputs(parse, this);
+                        this.input.invalidateInputs(parse, this);
                     
 
                     const input = (await this.input.eval(parse)).toValue();
