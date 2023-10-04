@@ -9,8 +9,8 @@ const presetBooksOnShelf = '\
             "renamed": "false",\
             "enabled": "true",\
             "highlight": "0",\
-            "x": "8047",\
-            "y": "-350",\
+            "x": "8147",\
+            "y": "-250",\
             "z": "0",\
             "params":\
             [\
@@ -25,8 +25,8 @@ const presetBooksOnShelf = '\
             "renamed": "false",\
             "enabled": "true",\
             "highlight": "0",\
-            "x": "7476",\
-            "y": "129",\
+            "x": "7576",\
+            "y": "229",\
             "z": "1",\
             "params":\
             [\
@@ -42,8 +42,8 @@ const presetBooksOnShelf = '\
             "renamed": "false",\
             "enabled": "true",\
             "highlight": "0",\
-            "x": "7476",\
-            "y": "-157",\
+            "x": "7576",\
+            "y": "-57",\
             "z": "2"\
             },\
             {\
@@ -53,8 +53,8 @@ const presetBooksOnShelf = '\
             "renamed": "false",\
             "enabled": "true",\
             "highlight": "0",\
-            "x": "6665",\
-            "y": "-329",\
+            "x": "6765",\
+            "y": "-229",\
             "z": "3",\
             "params":\
             [\
@@ -70,8 +70,8 @@ const presetBooksOnShelf = '\
             "renamed": "false",\
             "enabled": "true",\
             "highlight": "0",\
-            "x": "4430",\
-            "y": "-127",\
+            "x": "4530",\
+            "y": "-27",\
             "z": "4",\
             "params":\
             [\
@@ -86,8 +86,8 @@ const presetBooksOnShelf = '\
             "renamed": "false",\
             "enabled": "true",\
             "highlight": "0",\
-            "x": "3665",\
-            "y": "-1684",\
+            "x": "3765",\
+            "y": "-1584",\
             "z": "5",\
             "prevSpace": "hsl",\
             "params":\
@@ -105,8 +105,8 @@ const presetBooksOnShelf = '\
             "renamed": "false",\
             "enabled": "true",\
             "highlight": "4",\
-            "x": "4175",\
-            "y": "-384",\
+            "x": "4275",\
+            "y": "-284",\
             "z": "6",\
             "params":\
             [\
@@ -122,8 +122,8 @@ const presetBooksOnShelf = '\
             "renamed": "false",\
             "enabled": "true",\
             "highlight": "0",\
-            "x": "5773",\
-            "y": "48",\
+            "x": "5873",\
+            "y": "148",\
             "z": "7",\
             "params":\
             [\
@@ -138,8 +138,8 @@ const presetBooksOnShelf = '\
             "renamed": "false",\
             "enabled": "true",\
             "highlight": "0",\
-            "x": "4435",\
-            "y": "349",\
+            "x": "4535",\
+            "y": "449",\
             "z": "8",\
             "params":\
             [\
@@ -154,8 +154,8 @@ const presetBooksOnShelf = '\
             "renamed": "false",\
             "enabled": "true",\
             "highlight": "0",\
-            "x": "4734",\
-            "y": "433",\
+            "x": "4834",\
+            "y": "533",\
             "z": "9",\
             "params":\
             [\
@@ -170,8 +170,8 @@ const presetBooksOnShelf = '\
             "renamed": "false",\
             "enabled": "true",\
             "highlight": "0",\
-            "x": "4348",\
-            "y": "-1100",\
+            "x": "4448",\
+            "y": "-1000",\
             "z": "10",\
             "params":\
             [\
@@ -187,8 +187,8 @@ const presetBooksOnShelf = '\
             "renamed": "false",\
             "enabled": "true",\
             "highlight": "0",\
-            "x": "5115",\
-            "y": "152",\
+            "x": "5215",\
+            "y": "252",\
             "z": "11",\
             "params":\
             [\
@@ -203,8 +203,8 @@ const presetBooksOnShelf = '\
             "renamed": "false",\
             "enabled": "true",\
             "highlight": "0",\
-            "x": "3979",\
-            "y": "287",\
+            "x": "4079",\
+            "y": "387",\
             "z": "12",\
             "params":\
             [\
@@ -218,8 +218,8 @@ const presetBooksOnShelf = '\
             "renamed": "false",\
             "enabled": "true",\
             "highlight": "0",\
-            "x": "4771",\
-            "y": "4",\
+            "x": "4871",\
+            "y": "104",\
             "z": "13",\
             "params":\
             [\
@@ -234,8 +234,8 @@ const presetBooksOnShelf = '\
             "renamed": "false",\
             "enabled": "true",\
             "highlight": "0",\
-            "x": "4422",\
-            "y": "-304",\
+            "x": "4522",\
+            "y": "-204",\
             "z": "14",\
             "params":\
             [\
@@ -251,8 +251,8 @@ const presetBooksOnShelf = '\
             "renamed": "false",\
             "enabled": "true",\
             "highlight": "0",\
-            "x": "5274",\
-            "y": "-7",\
+            "x": "5374",\
+            "y": "93",\
             "z": "15",\
             "width": "115.41300100514482",\
             "height": "51"\
@@ -264,8 +264,8 @@ const presetBooksOnShelf = '\
             "renamed": "false",\
             "enabled": "true",\
             "highlight": "0",\
-            "x": "2195",\
-            "y": "-924",\
+            "x": "2295",\
+            "y": "-824",\
             "z": "16",\
             "width": "120",\
             "height": "164",\
@@ -286,8 +286,8 @@ const presetBooksOnShelf = '\
             "renamed": "false",\
             "enabled": "true",\
             "highlight": "0",\
-            "x": "5942",\
-            "y": "7",\
+            "x": "6042",\
+            "y": "107",\
             "z": "17",\
             "params":\
             [\
@@ -301,8 +301,8 @@ const presetBooksOnShelf = '\
             "renamed": "false",\
             "enabled": "true",\
             "highlight": "0",\
-            "x": "3831",\
-            "y": "-820",\
+            "x": "3931",\
+            "y": "-720",\
             "z": "18",\
             "params":\
             [\
@@ -317,8 +317,8 @@ const presetBooksOnShelf = '\
             "renamed": "false",\
             "enabled": "true",\
             "highlight": "0",\
-            "x": "2987",\
-            "y": "-251",\
+            "x": "3087",\
+            "y": "-151",\
             "z": "19",\
             "params":\
             [\
@@ -332,8 +332,8 @@ const presetBooksOnShelf = '\
             "renamed": "false",\
             "enabled": "true",\
             "highlight": "0",\
-            "x": "4019",\
-            "y": "-1090",\
+            "x": "4119",\
+            "y": "-990",\
             "z": "20",\
             "prevSpace": "hsl",\
             "params":\
@@ -351,8 +351,8 @@ const presetBooksOnShelf = '\
             "renamed": "false",\
             "enabled": "true",\
             "highlight": "0",\
-            "x": "5914",\
-            "y": "-1085",\
+            "x": "6014",\
+            "y": "-985",\
             "z": "21",\
             "params":\
             [\
@@ -368,8 +368,8 @@ const presetBooksOnShelf = '\
             "renamed": "false",\
             "enabled": "true",\
             "highlight": "0",\
-            "x": "4920",\
-            "y": "-258",\
+            "x": "5020",\
+            "y": "-158",\
             "z": "22",\
             "params":\
             [\
@@ -388,8 +388,8 @@ const presetBooksOnShelf = '\
             "renamed": "false",\
             "enabled": "true",\
             "highlight": "0",\
-            "x": "3831",\
-            "y": "-998",\
+            "x": "3931",\
+            "y": "-898",\
             "z": "23",\
             "params":\
             [\
@@ -404,8 +404,8 @@ const presetBooksOnShelf = '\
             "renamed": "false",\
             "enabled": "true",\
             "highlight": "0",\
-            "x": "4455",\
-            "y": "-1451",\
+            "x": "4555",\
+            "y": "-1351",\
             "z": "24",\
             "params":\
             [\
@@ -421,8 +421,8 @@ const presetBooksOnShelf = '\
             "renamed": "false",\
             "enabled": "true",\
             "highlight": "0",\
-            "x": "2933",\
-            "y": "-1518",\
+            "x": "3033",\
+            "y": "-1418",\
             "z": "25",\
             "params":\
             [\
@@ -438,8 +438,8 @@ const presetBooksOnShelf = '\
             "renamed": "false",\
             "enabled": "true",\
             "highlight": "0",\
-            "x": "4041",\
-            "y": "-1686",\
+            "x": "4141",\
+            "y": "-1586",\
             "z": "26",\
             "prevSpace": "hsl",\
             "params":\
@@ -457,8 +457,8 @@ const presetBooksOnShelf = '\
             "renamed": "false",\
             "enabled": "true",\
             "highlight": "0",\
-            "x": "4285",\
-            "y": "-1528",\
+            "x": "4385",\
+            "y": "-1428",\
             "z": "27",\
             "params":\
             [\
@@ -474,8 +474,8 @@ const presetBooksOnShelf = '\
             "renamed": "false",\
             "enabled": "true",\
             "highlight": "0",\
-            "x": "4943",\
-            "y": "-435",\
+            "x": "5043",\
+            "y": "-335",\
             "z": "28",\
             "params":\
             [\
@@ -490,8 +490,8 @@ const presetBooksOnShelf = '\
             "renamed": "false",\
             "enabled": "true",\
             "highlight": "0",\
-            "x": "4628",\
-            "y": "-1501",\
+            "x": "4728",\
+            "y": "-1401",\
             "z": "29",\
             "width": "120",\
             "height": "51"\
@@ -503,8 +503,8 @@ const presetBooksOnShelf = '\
             "renamed": "false",\
             "enabled": "true",\
             "highlight": "0",\
-            "x": "5725",\
-            "y": "-957",\
+            "x": "5825",\
+            "y": "-857",\
             "z": "30",\
             "width": "120",\
             "height": "51"\
@@ -516,17 +516,17 @@ const presetBooksOnShelf = '\
             "renamed": "false",\
             "enabled": "true",\
             "highlight": "0",\
-            "x": "2553",\
-            "y": "-255",\
+            "x": "2399",\
+            "y": "-179",\
             "z": "31",\
             "width": "239.31498377267474",\
             "height": "98",\
             "params":\
             [\
-                    ["TEXT#", "value", "Title%2CAuthor%2CGenre%2CHeight%2CPublisher%0AFundamentals%20of%20Wavelets%2CJaideva%20Goswami%2Csignal_processing%2C228%2CWiley%0AData%20Smart%2CJohn%20Foreman%2Cdata_science%2C235%2CWiley%0AGod%20Created%20the%20Integers%2CStephen%20Hawking%2Cmathematics%2C197%2CPenguin%0ASuperfreakonomics%2CStephen%20Dubner%2Ceconomics%2C179%2CHarperCollins%0AOrientalism%2CEdward%20Said%2Chistory%2C197%2CPenguin%0AThe%20Nature%20of%20Statistical%20Learning%20Theory%2CVladimir%20Vapnik%2Cdata_science%2C230%2CSpringer%0AIntegration%20of%20the%20Indian%20States%2CV%20P%20Menon%2Chistory%2C217%2COrient%20Blackswan%0AThe%20Drunkard\'s%20Walk%2CLeonard%20Mlodinow%2Cscience%2C197%2CPenguin%0AImage%20Processing%20%26%20Mathematical%20Morphology%2CFrank%20Shih%2Csignal_processing%2C241%2CCRC%0AHow%20to%20Think%20Like%20Sherlock%20Holmes%2CMaria%20Konnikova%2Cpsychology%2C240%2CPenguin%0AData%20Scientists%20at%20Work%2CSebastian%20Gutierrez%2Cdata_science%2C230%2CApress%0ASlaughterhouse%20Five%2CKurt%20Vonnegut%2Cfiction%2C198%2CRandom%20House%0ABirth%20of%20a%20Theorem%2CCedric%20Villani%2Cmathematics%2C234%2CBodley%20Head%0AStructure%20%26%20Interpretation%20of%20Computer%20Programs%2CGerald%20Sussman%2Ccomputer_science%2C240%2CMIT%20Press%0AThe%20Age%20of%20Wrath%2CAbraham%20Eraly%2Chistory%2C238%2CPenguin%0AThe%20Trial%2CFrank%20Kafka%2Cfiction%2C198%2CRandom%20House%0AStatistical%20Decision%20Theory\'%2CJohn%20Pratt%2Cdata_science%2C236%2CMIT%20Press%0AData%20Mining%20Handbook%2CRobert%20Nisbet%2Cdata_science%2C242%2CApress%0AThe%20New%20Machiavelli%2CH.%20G.%20Wells%2Cfiction%2C180%2CPenguin%0APhysics%20%26%20Philosophy%2CWerner%20Heisenberg%2Cscience%2C197%2CPenguin%0AMaking%20Software%2CAndy%20Oram%2Ccomputer_science%2C232%2CO\'Reilly%0AVol%20I%20Analysis%2CTerence%20Tao%2Cmathematics%2C248%2CHBA%0AMachine%20Learning%20for%20Hackers%2CDrew%20Conway%2Cdata_science%2C233%2CO\'Reilly%0AThe%20Signal%20and%20the%20Noise%2CNate%20Silver%2Cdata_science%2C233%2CPenguin%0APython%20for%20Data%20Analysis%2CWes%20McKinney%2Cdata_science%2C233%2CO\'Reilly%0AIntroduction%20to%20Algorithms%2CThomas%20Cormen%2Ccomputer_science%2C234%2CMIT%20Press%0AThe%20Beautiful%20and%20the%20Damned%2CSiddhartha%20Deb%2Cnonfiction%2C198%2CPenguin%0AThe%20Outsider%2CAlbert%20Camus%2Cfiction%2C198%2CPenguin%0AThe%20-%20Vol%20I%20Complete%20Sherlock%20Holmes%2CArthur%20Conan%20Doyle%2Cfiction%2C176%2CRandom%20House%0AThe%20-%20Vol%20II%20Complete%20Sherlock%20Holmes%2CArthur%20Conan%20Doyle%2Cfiction%2C176%2CRandom%20House%0AThe%20Wealth%20of%20Nations%2CAdam%20Smith%2Ceconomics%2C175%2CRandom%20House%0AThe%20Pillars%20of%20the%20Earth%2CKen%20Follett%2Cfiction%2C176%2CRandom%20House%0AMein%20Kampf%2CAdolf%20Hitler%2Cnonfiction%2C212%2CRupa%0AThe%20Tao%20of%20Physics%2CFritjof%20Capra%2Cscience%2C179%2CPenguin%0ASurely%20You\'re%20Joking%20Mr%20Feynman%2CRichard%20Feynman%2Cscience%2C198%2CRandom%20House%0AA%20Farewell%20to%20Arms%2CErnest%20Hemingway%2Cfiction%2C179%2CRupa%0AThe%20Veteran%2CFrederick%20Forsyth%2Cfiction%2C177%2CTransworld%0AFalse%20Impressions%2CJeffery%20Archer%2Cfiction%2C177%2CPan%0AThe%20Last%20Lecture%2CRandy%20Pausch%2Cnonfiction%2C197%2CHyperion%0AReturn%20of%20the%20Primitive%2CAyn%20Rand%2Cphilosophy%2C202%2CPenguin%0AJurassic%20Park%2CMichael%20Crichton%2Cfiction%2C174%2CRandom%20House%0AA%20Russian%20Journal%2CJohn%20Steinbeck%2Cnonfiction%2C196%2CPenguin%0ATales%20of%20Mystery%20and%20Imagination%2CEdgar%20Allen%20Poe%2Cfiction%2C172%2CHarperCollins%0AFreakonomics%2CStephen%20Dubner%2Ceconomics%2C197%2CPenguin%0AThe%20Hidden%20Connections%2CFritjof%20Capra%2Cscience%2C197%2CHarperCollins%0AThe%20Story%20of%20Philosophy%2CWill%20Durant%2Cphilosophy%2C170%2CPocket%0AAsami%20Asami%2CP%20L%20Deshpande%2Cfiction%2C205%2CMauj%0AJournal%20of%20a%20Novel%2CJohn%20Steinbeck%2Cfiction%2C196%2CPenguin%0AOnce%20There%20Was%20a%20War%2CJohn%20Steinbeck%2Cnonfiction%2C196%2CPenguin%0AThe%20Moon%20is%20Down%2CJohn%20Steinbeck%2Cfiction%2C196%2CPenguin%0AThe%20Brethren%2CJohn%20Grisham%2Cfiction%2C174%2CRandom%20House%0AIn%20a%20Free%20State%2CV.%20S.%20Naipaul%2Cfiction%2C196%2CRupa%0ACatch%2022%2CJoseph%20Heller%2Cfiction%2C178%2CRandom%20House%0AThe%20Complete%20Mastermind%2CBBC%2Cnonfiction%2C178%2CBBC%0ADylan%20on%20Dylan%2CBob%20Dylan%2Cnonfiction%2C197%2CRandom%20House%0ASoft%20Computing%20%26%20Intelligent%20Systems%2CMadan%20Gupta%2Cdata_science%2C242%2CElsevier%0ATextbook%20of%20Economic%20Theory%2CAlfred%20Stonier%2Ceconomics%2C242%2CPearson%0AEconometric%20Analysis%2CW.%20H.%20Greene%2Ceconomics%2C242%2CPearson%0ALearning%20OpenCV%2CGary%20Bradsky%2Cdata_science%2C232%2CO\'Reilly%0AData%20Structures%20Using%20C%20%26%20C%2B%2B%2CAndrew%20Tanenbaum%2Ccomputer_science%2C235%2CPrentice%20Hall%0AA%20Modern%20Approach%20Computer%20Vision%2CDavid%20Forsyth%2Cdata_science%2C255%2CPearson%0APrinciples%20of%20Communication%20Systems%2CSchilling%20Taub%2Ccomputer_science%2C240%2CTMH%0ALet%20Us%20C%2CYashwant%20Kanetkar%2Ccomputer_science%2C213%2CPrentice%20Hall%0AThe%20Amulet%20of%20Samarkand%2CJonathan%20Stroud%2Cfiction%2C179%2CRandom%20House%0ACrime%20and%20Punishment%2CFyodor%20Dostoevsky%2Cfiction%2C180%2CPenguin%0AAngels%20%26%20Demons%2CDan%20Brown%2Cfiction%2C178%2CRandom%20House%0AThe%20Argumentative%20Indian%2CAmartya%20Sen%2Cnonfiction%2C209%2CPicador%0ASea%20of%20Poppies%2CAmitav%20Ghosh%2Cfiction%2C197%2CPenguin%0AThe%20Idea%20of%20Justice%2CAmartya%20Sen%2Cnonfiction%2C212%2CPenguin%0AA%20Raisin%20in%20the%20Sun%2CLorraine%20Hansberry%2Cfiction%2C175%2CPenguin%0AAll%20the%20President\'s%20Men%2CBob%20Woodward%2Chistory%2C177%2CRandom%20House%0AA%20Prisoner%20of%20Birth%2CJeffery%20Archer%2Cfiction%2C176%2CPan%0AScoop!%2CKuldip%20Nayar%2Chistory%2C216%2CHarperCollins%0AAhe%20Manohar%20Tari%2CSunita%20Deshpande%2Cnonfiction%2C213%2CMauj%0AThe%20Last%20Mughal%2CWilliam%20Dalrymple%2Chistory%2C199%2CPenguin%0AVol%2039%20No.%201%20Social%20Choice%20%26%20Welfare%2CVarious%2Ceconomics%2C235%2CSpringer%0ARadiowaril%20Bhashane%20%26%20Shrutika%2CP%20L%20Deshpande%2Cnonfiction%2C213%2CMauj%0AGun%20Gayin%20Awadi%2CP%20L%20Deshpande%2Cnonfiction%2C212%2CMauj%0AAghal%20Paghal%2CP%20L%20Deshpande%2Cnonfiction%2C212%2CMauj%0AMaqta-e-Ghalib%2CSanjay%20Garg%2Cfiction%2C221%2CMauj%0ABeyond%20Degrees%2C%2Cnonfiction%2C222%2CHarperCollins%0AManasa%2CV%20P%20Kale%2Cnonfiction%2C213%2CMauj%0AIndia%20from%20Midnight%20to%20Milennium%2CShashi%20Tharoor%2Chistory%2C198%2CPenguin%0AThe%20World\'s%20Greatest%20Trials%2C%2Chistory%2C210%2C%0AThe%20Great%20Indian%20Novel%2CShashi%20Tharoor%2Cfiction%2C198%2CPenguin%0AO%20Jerusalem!%2CDominique%20Lapierre%2Chistory%2C217%2Cvikas%0AThe%20City%20of%20Joy%2CDominique%20Lapierre%2Cfiction%2C177%2Cvikas%0AFreedom%20at%20Midnight%2CDominique%20Lapierre%2Chistory%2C167%2Cvikas%0AThe%20Winter%20of%20Our%20Discontent%2CJohn%20Steinbeck%2Cfiction%2C196%2CPenguin%0AOn%20Education%2CBertrand%20Russell%2Cphilosophy%2C203%2CRoutledge%0AFree%20Will%2CSam%20Harris%2Cphilosophy%2C203%2CFreePress%0ABookless%20in%20Baghdad%2CShashi%20Tharoor%2Cnonfiction%2C206%2CPenguin%0AThe%20Case%20of%20the%20Lame%20Canary%2CEarle%20Stanley%20Gardner%2Cfiction%2C179%2C%0AThe%20Theory%20of%20Everything%2CStephen%20Hawking%2Cscience%2C217%2CJaico%0ANew%20Markets%20%26%20Other%20Essays%2CPeter%20Drucker%2Ceconomics%2C176%2CPenguin%0AElectric%20Universe%2CDavid%20Bodanis%2Cscience%2C201%2CPenguin%0AThe%20Hunchback%20of%20Notre%20Dame%2CVictor%20Hugo%2Cfiction%2C175%2CRandom%20House%0ABurning%20Bright%2CJohn%20Steinbeck%2Cfiction%2C175%2CPenguin%0AThe%20Age%20of%20Discontuinity%2CPeter%20Drucker%2Ceconomics%2C178%2CRandom%20House%0ADoctor%20in%20the%20Nude%2CRichard%20Gordon%2Cfiction%2C179%2CPenguin%0ADown%20and%20Out%20in%20Paris%20%26%20London%2CGeorge%20Orwell%2Cnonfiction%2C179%2CPenguin%0AIdentity%20%26%20Violence%2CAmartya%20Sen%2Cphilosophy%2C219%2CPenguin%0ABeyond%20the%20Three%20Seas%2CWilliam%20Dalrymple%2Chistory%2C197%2CRandom%20House%0AThe%20World\'s%20Greatest%20Short%20Stories%2C%2Cfiction%2C217%2CJaico%0ATalking%20Straight%2CLee%20Iacoca%2Cnonfiction%2C175%2C%0AVol%203%20Maugham\'s%20Collected%20Short%20Stories%2CWilliam%20S%20Maugham%2Cfiction%2C171%2CVintage%0AThe%20Phantom%20of%20Manhattan%2CFrederick%20Forsyth%2Cfiction%2C180%2C%0AAshenden%20of%20The%20British%20Agent%2CWilliam%20S%20Maugham%2Cfiction%2C160%2CVintage%0AZen%20%26%20The%20Art%20of%20Motorcycle%20Maintenance%2CRobert%20Pirsig%2Cphilosophy%2C172%2CVintage%0AThe%20Great%20War%20for%20Civilization%2CRobert%20Fisk%2Chistory%2C197%2CHarperCollins%0AWe%20the%20Living%2CAyn%20Rand%2Cfiction%2C178%2CPenguin%0AThe%20Artist%20and%20the%20Mathematician%2CAmir%20Aczel%2Cscience%2C186%2CHighStakes%0AHistory%20of%20Western%20Philosophy%2CBertrand%20Russell%2Cphilosophy%2C213%2CRoutledge%0ASelected%20Short%20Stories%2C%2Cfiction%2C215%2CJaico%0ARationality%20%26%20Freedom%2CAmartya%20Sen%2Ceconomics%2C213%2CSpringer%0AClash%20of%20Civilizations%20and%20Remaking%20of%20the%20World%20Order%2CSamuel%20Huntington%2Chistory%2C228%2CSimon%26Schuster%0AUncommon%20Wisdom%2CFritjof%20Capra%2Cnonfiction%2C197%2CFontana%0AOne%2CRichard%20Bach%2Cnonfiction%2C172%2CDell%0AKarl%20Marx%20Biography%2C%2Cnonfiction%2C162%2C%0ATo%20Sir%20With%20Love%2CBraithwaite%2Cfiction%2C197%2CPenguin%0AHalf%20A%20Life%2CV%20S%20Naipaul%2Cfiction%2C196%2C%0AThe%20Discovery%20of%20India%2CJawaharlal%20Nehru%2Chistory%2C230%2C%0AApulki%2CP%20L%20Deshpande%2Cnonfiction%2C211%2C%0AUnpopular%20Essays%2CBertrand%20Russell%2Cphilosophy%2C198%2C%0AThe%20Deceiver%2CFrederick%20Forsyth%2Cfiction%2C178%2C%0AVeil%3A%20Secret%20Wars%20of%20the%20CIA%2CBob%20Woodward%2Chistory%2C171%2C%0AChar%20Shabda%2CP%20L%20Deshpande%2Cnonfiction%2C214%2C%0ARosy%20is%20My%20Relative%2CGerald%20Durrell%2Cfiction%2C176%2C%0AThe%20Moon%20and%20Sixpence%2CWilliam%20S%20Maugham%2Cfiction%2C180%2C%0APolitical%20Philosophers%2C%2Cphilosophy%2C162%2C%0AA%20Short%20History%20of%20the%20World%2CH%20G%20Wells%2Chistory%2C197%2C%0AThe%20Trembling%20of%20a%20Leaf%2CWilliam%20S%20Maugham%2Cfiction%2C205%2C%0ADoctor%20on%20the%20Brain%2CRichard%20Gordon%2Cfiction%2C204%2C%0ASimpsons%20%26%20Their%20Mathematical%20Secrets%2CSimon%20Singh%2Cscience%2C233%2C%0APattern%20Classification%2CHart%20Duda%2Cdata_science%2C241%2C%0AFrom%20Beirut%20to%20Jerusalem%2CThomas%20Friedman%2Chistory%2C202%2C%0AThe%20Code%20Book%2CSimon%20Singh%2Cscience%2C197%2C%0AThe%20Age%20of%20the%20Warrior%2CRobert%20Fisk%2Chistory%2C197%2C%0AFinal%20Crisis%2C%2Ccomic%2C257%2C%0AThe%20Killing%20Joke%2C%2Ccomic%2C283%2C%0AFlashpoint%2C%2Ccomic%2C265%2C%0ABatman%20Earth%20One%2C%2Ccomic%2C265%2C%0ACrisis%20on%20Infinite%20Earths%2C%2Ccomic%2C258%2C%0AThe%20Numbers%20Behind%20Numb3rs%2CKeith%20Devlin%2Cscience%2C202%2C%0ASuperman%20Earth%20One%20-%201%2C%2Ccomic%2C259%2C%0ASuperman%20Earth%20One%20-%202%2C%2Ccomic%2C258%2C%0AJustice%20League%3A%20Throne%20of%20Atlantis%2C%2Ccomic%2C258%2C%0AJustice%20League%3A%20The%20Villain\'s%20Journey%2C%2Ccomic%2C258%2C%0AThe%20Death%20of%20Superman%2C%2Ccomic%2C258%2C%0AHistory%20of%20the%20DC%20Universe%2C%2Ccomic%2C258%2C%0ABatman%3A%20The%20Long%20Halloween%2C%2Ccomic%2C258%2C%0AA%20Life%20in%20Letters%2CJohn%20Steinbeck%2Cnonfiction%2C196%2C%0AThe%20Information%2CJames%20Gleick%2Cscience%2C233%2C%0Avol%20106%20No%203%20Journal%20of%20Economics%2C%2Ceconomics%2C235%2C%0AElements%20of%20Information%20Theory%2CJoy%20Thomas%2Cdata_science%2C229%2C%0APower%20Electronics%20-%20Rashid%2CMuhammad%20Rashid%2Ccomputer_science%2C235%2C%0APower%20Electronics%20-%20Mohan%2CNed%20Mohan%2Ccomputer_science%2C237%2C%0ANeural%20Networks%2CSimon%20Haykin%2Cdata_science%2C240%2C%0AThe%20Grapes%20of%20Wrath%2CJohn%20Steinbeck%2Cfiction%2C196%2C%0AVyakti%20ani%20Valli%2CP%20L%20Deshpande%2Cnonfiction%2C211%2C%0AStatistical%20Learning%20Theory%2CVladimir%20Vapnik%2Cdata_science%2C228%2C%0AEmpire%20of%20the%20Mughal%20-%20The%20Tainted%20Throne%2CAlex%20Rutherford%2Chistory%2C180%2C%0AEmpire%20of%20the%20Mughal%20-%20Brothers%20at%20War%2CAlex%20Rutherford%2Chistory%2C180%2C%0AEmpire%20of%20the%20Mughal%20-%20Ruler%20of%20the%20World%2CAlex%20Rutherford%2Chistory%2C180%2C%0AEmpire%20of%20the%20Mughal%20-%20The%20Serpent\'s%20Tooth%2CAlex%20Rutherford%2Chistory%2C180%2C%0AEmpire%20of%20the%20Mughal%20-%20Raiders%20from%20the%20North%2CAlex%20Rutherford%2Chistory%2C180%2C%0AMossad%2CMichael%20Baz-Zohar%2Chistory%2C236%2C%0AJim%20Corbett%20Omnibus%2CJim%20Corbett%2Cnonfiction%2C223%2C%0A20000%20Leagues%20Under%20the%20Sea%2CJules%20Verne%2Cfiction%2C190%2C%0ABatatyachi%20Chal%2CDeshpande%20P%20L%2Cfiction%2C200%2C%0AHafasavnuk%2CDeshpande%20P%20L%2Cfiction%2C211%2C%0AUrlasurla%2CDeshpande%20P%20L%2Cfiction%2C211%2C%0APointers%20in%20C%2CYashwant%20Kanetkar%2Ccomputer_science%2C213%2C%0AThe%20Cathedral%20and%20the%20Bazaar%2CEric%20Raymond%2Ccomputer_science%2C217%2C%0ADesign%20with%20OpAmps%2CSergio%20Franco%2Ccomputer_science%2C240%2C%0AThink%20Complexity%2CAllen%20Downey%2Cdata_science%2C230%2C%0AThe%20Devil\'s%20Advocate%2CMorris%20West%2Cfiction%2C178%2C%0AAyn%20Rand%20Answers%2CAyn%20Rand%2Cphilosophy%2C203%2C%0APhilosophy%3A%20Who%20Needs%20It%2CAyn%20Rand%2Cphilosophy%2C171%2C%0AThe%20World\'s%20Great%20Thinkers%2C%2Cphilosophy%2C189%2C%0AData%20Analysis%20with%20Open%20Source%20Tools%2CPhillip%20Janert%2Cdata_science%2C230%2C%0ABroca\'s%20Brain%2CCarl%20Sagan%2Cscience%2C174%2C%0AMen%20of%20Mathematics%2CE%20T%20Bell%2Cmathematics%2C217%2C%0AOxford%20book%20of%20Modern%20Science%20Writing%2CRichard%20Dawkins%2Cscience%2C240%2C%0AJudiciary%20and%20Democracy%20Justice%2CSudhanshu%20Ranjan%2Cphilosophy%2C224%2C%0AThe%20Arthashastra%2CKautiyla%2Cphilosophy%2C214%2C%0AWe%20the%20People%2CPalkhivala%2Cphilosophy%2C216%2C%0AWe%20the%20Nation%2CPalkhivala%2Cphilosophy%2C216%2C%0AThe%20Courtroom%20Genius%2CSorabjee%2Cnonfiction%2C217%2C%0ADongri%20to%20Dubai%2CHussain%20Zaidi%2Cnonfiction%2C216%2C%0AFoundation%20History%20of%20England%2CPeter%20Ackroyd%2Chistory%2C197%2C%0ACity%20of%20Djinns%2CWilliam%20Dalrymple%2Chistory%2C198%2C%0AIndia\'s%20Legal%20System%2CNariman%2Cnonfiction%2C177%2C%0AMore%20Tears%20to%20Cry%2CJean%20Sassoon%2Cfiction%2C235%2C%0AThe%20Ropemaker%2CPeter%20Dickinson%2Cfiction%2C196%2C%0AAngels%20%26%20Demons%2CDan%20Brown%2Cfiction%2C170%2C%0AThe%20Judge%2C%2Cfiction%2C170%2C%0AThe%20Attorney%2C%2Cfiction%2C170%2C%0AThe%20Prince%2CMachiavelli%2Cphilosophy%2C173%2C%0AEyeless%20in%20Gaza%2CAldous%20Huxley%2Cfiction%2C180%2C%0ATales%20of%20Beedle%20the%20Bard%2CJ%20K%20Rowling%2Cfiction%2C184%2C%0AGirl%20with%20the%20Dragon%20Tattoo%2CSteig%20Larsson%2Cfiction%2C179%2C%0AGirl%20who%20kicked%20the%20Hornet\'s%20Nest%2CSteig%20Larsson%2Cfiction%2C179%2C%0AGirl%20who%20played%20with%20Fire%2CSteig%20Larsson%2Cfiction%2C179%2C%0ABatman%20Handbook%2C%2Ccomic%2C270%2C%0AMurphy\'s%20Law%2C%2Cnonfiction%2C178%2C%0AStructure%20and%20Randomness%2CTerence%20Tao%2Cmathematics%2C252%2C%0AImage%20Processing%20with%20MATLAB%2CSteve%20Eddins%2Csignal_processing%2C241%2C%0AAnimal%20Farm%2CGeorge%20Orwell%2Cfiction%2C180%2C%0AThe%20Idiot%2CFyodor%20Dostoevsky%2Cfiction%2C197%2C%0AA%20Christmas%20Carol%2CCharles%20Dickens%2Cfiction%2C196%2C", "left"],\
                     ["TEXT#", "what", "%22(%5B%5E%22%5D*)%2C%20(%5B%5E%22%5D*)%22", "center"],\
                     ["TEXT#", "with", "%242%20%241", "center"],\
-                    ["NUM#", "regex", "1,0"]\
+                    ["NUM#", "regex", "1,0"],\
+                    ["TEXT#", "value", "Title%2CAuthor%2CGenre%2CHeight%2CPublisher%0AFundamentals%20of%20Wavelets%2CJaideva%20Goswami%2Csignal_processing%2C228%2CWiley%0AData%20Smart%2CJohn%20Foreman%2Cdata_science%2C235%2CWiley%0AGod%20Created%20the%20Integers%2CStephen%20Hawking%2Cmathematics%2C197%2CPenguin%0ASuperfreakonomics%2CStephen%20Dubner%2Ceconomics%2C179%2CHarperCollins%0AOrientalism%2CEdward%20Said%2Chistory%2C197%2CPenguin%0AThe%20Nature%20of%20Statistical%20Learning%20Theory%2CVladimir%20Vapnik%2Cdata_science%2C230%2CSpringer%0AIntegration%20of%20the%20Indian%20States%2CV%20P%20Menon%2Chistory%2C217%2COrient%20Blackswan%0AThe%20Drunkard\'s%20Walk%2CLeonard%20Mlodinow%2Cscience%2C197%2CPenguin%0AImage%20Processing%20%26%20Mathematical%20Morphology%2CFrank%20Shih%2Csignal_processing%2C241%2CCRC%0AHow%20to%20Think%20Like%20Sherlock%20Holmes%2CMaria%20Konnikova%2Cpsychology%2C240%2CPenguin%0AData%20Scientists%20at%20Work%2CSebastian%20Gutierrez%2Cdata_science%2C230%2CApress%0ASlaughterhouse%20Five%2CKurt%20Vonnegut%2Cfiction%2C198%2CRandom%20House%0ABirth%20of%20a%20Theorem%2CCedric%20Villani%2Cmathematics%2C234%2CBodley%20Head%0AStructure%20%26%20Interpretation%20of%20Computer%20Programs%2CGerald%20Sussman%2Ccomputer_science%2C240%2CMIT%20Press%0AThe%20Age%20of%20Wrath%2CAbraham%20Eraly%2Chistory%2C238%2CPenguin%0AThe%20Trial%2CFrank%20Kafka%2Cfiction%2C198%2CRandom%20House%0AStatistical%20Decision%20Theory\'%2CJohn%20Pratt%2Cdata_science%2C236%2CMIT%20Press%0AData%20Mining%20Handbook%2CRobert%20Nisbet%2Cdata_science%2C242%2CApress%0AThe%20New%20Machiavelli%2CH.%20G.%20Wells%2Cfiction%2C180%2CPenguin%0APhysics%20%26%20Philosophy%2CWerner%20Heisenberg%2Cscience%2C197%2CPenguin%0AMaking%20Software%2CAndy%20Oram%2Ccomputer_science%2C232%2CO\'Reilly%0AVol%20I%20Analysis%2CTerence%20Tao%2Cmathematics%2C248%2CHBA%0AMachine%20Learning%20for%20Hackers%2CDrew%20Conway%2Cdata_science%2C233%2CO\'Reilly%0AThe%20Signal%20and%20the%20Noise%2CNate%20Silver%2Cdata_science%2C233%2CPenguin%0APython%20for%20Data%20Analysis%2CWes%20McKinney%2Cdata_science%2C233%2CO\'Reilly%0AIntroduction%20to%20Algorithms%2CThomas%20Cormen%2Ccomputer_science%2C234%2CMIT%20Press%0AThe%20Beautiful%20and%20the%20Damned%2CSiddhartha%20Deb%2Cnonfiction%2C198%2CPenguin%0AThe%20Outsider%2CAlbert%20Camus%2Cfiction%2C198%2CPenguin%0AThe%20-%20Vol%20I%20Complete%20Sherlock%20Holmes%2CArthur%20Conan%20Doyle%2Cfiction%2C176%2CRandom%20House%0AThe%20-%20Vol%20II%20Complete%20Sherlock%20Holmes%2CArthur%20Conan%20Doyle%2Cfiction%2C176%2CRandom%20House%0AThe%20Wealth%20of%20Nations%2CAdam%20Smith%2Ceconomics%2C175%2CRandom%20House%0AThe%20Pillars%20of%20the%20Earth%2CKen%20Follett%2Cfiction%2C176%2CRandom%20House%0AMein%20Kampf%2CAdolf%20Hitler%2Cnonfiction%2C212%2CRupa%0AThe%20Tao%20of%20Physics%2CFritjof%20Capra%2Cscience%2C179%2CPenguin%0ASurely%20You\'re%20Joking%20Mr%20Feynman%2CRichard%20Feynman%2Cscience%2C198%2CRandom%20House%0AA%20Farewell%20to%20Arms%2CErnest%20Hemingway%2Cfiction%2C179%2CRupa%0AThe%20Veteran%2CFrederick%20Forsyth%2Cfiction%2C177%2CTransworld%0AFalse%20Impressions%2CJeffery%20Archer%2Cfiction%2C177%2CPan%0AThe%20Last%20Lecture%2CRandy%20Pausch%2Cnonfiction%2C197%2CHyperion%0AReturn%20of%20the%20Primitive%2CAyn%20Rand%2Cphilosophy%2C202%2CPenguin%0AJurassic%20Park%2CMichael%20Crichton%2Cfiction%2C174%2CRandom%20House%0AA%20Russian%20Journal%2CJohn%20Steinbeck%2Cnonfiction%2C196%2CPenguin%0ATales%20of%20Mystery%20and%20Imagination%2CEdgar%20Allen%20Poe%2Cfiction%2C172%2CHarperCollins%0AFreakonomics%2CStephen%20Dubner%2Ceconomics%2C197%2CPenguin%0AThe%20Hidden%20Connections%2CFritjof%20Capra%2Cscience%2C197%2CHarperCollins%0AThe%20Story%20of%20Philosophy%2CWill%20Durant%2Cphilosophy%2C170%2CPocket%0AAsami%20Asami%2CP%20L%20Deshpande%2Cfiction%2C205%2CMauj%0AJournal%20of%20a%20Novel%2CJohn%20Steinbeck%2Cfiction%2C196%2CPenguin%0AOnce%20There%20Was%20a%20War%2CJohn%20Steinbeck%2Cnonfiction%2C196%2CPenguin%0AThe%20Moon%20is%20Down%2CJohn%20Steinbeck%2Cfiction%2C196%2CPenguin%0AThe%20Brethren%2CJohn%20Grisham%2Cfiction%2C174%2CRandom%20House%0AIn%20a%20Free%20State%2CV.%20S.%20Naipaul%2Cfiction%2C196%2CRupa%0ACatch%2022%2CJoseph%20Heller%2Cfiction%2C178%2CRandom%20House%0AThe%20Complete%20Mastermind%2CBBC%2Cnonfiction%2C178%2CBBC%0ADylan%20on%20Dylan%2CBob%20Dylan%2Cnonfiction%2C197%2CRandom%20House%0ASoft%20Computing%20%26%20Intelligent%20Systems%2CMadan%20Gupta%2Cdata_science%2C242%2CElsevier%0ATextbook%20of%20Economic%20Theory%2CAlfred%20Stonier%2Ceconomics%2C242%2CPearson%0AEconometric%20Analysis%2CW.%20H.%20Greene%2Ceconomics%2C242%2CPearson%0ALearning%20OpenCV%2CGary%20Bradsky%2Cdata_science%2C232%2CO\'Reilly%0AData%20Structures%20Using%20C%20%26%20C%2B%2B%2CAndrew%20Tanenbaum%2Ccomputer_science%2C235%2CPrentice%20Hall%0AA%20Modern%20Approach%20Computer%20Vision%2CDavid%20Forsyth%2Cdata_science%2C255%2CPearson%0APrinciples%20of%20Communication%20Systems%2CSchilling%20Taub%2Ccomputer_science%2C240%2CTMH%0ALet%20Us%20C%2CYashwant%20Kanetkar%2Ccomputer_science%2C213%2CPrentice%20Hall%0AThe%20Amulet%20of%20Samarkand%2CJonathan%20Stroud%2Cfiction%2C179%2CRandom%20House%0ACrime%20and%20Punishment%2CFyodor%20Dostoevsky%2Cfiction%2C180%2CPenguin%0AAngels%20%26%20Demons%2CDan%20Brown%2Cfiction%2C178%2CRandom%20House%0AThe%20Argumentative%20Indian%2CAmartya%20Sen%2Cnonfiction%2C209%2CPicador%0ASea%20of%20Poppies%2CAmitav%20Ghosh%2Cfiction%2C197%2CPenguin%0AThe%20Idea%20of%20Justice%2CAmartya%20Sen%2Cnonfiction%2C212%2CPenguin%0AA%20Raisin%20in%20the%20Sun%2CLorraine%20Hansberry%2Cfiction%2C175%2CPenguin%0AAll%20the%20President\'s%20Men%2CBob%20Woodward%2Chistory%2C177%2CRandom%20House%0AA%20Prisoner%20of%20Birth%2CJeffery%20Archer%2Cfiction%2C176%2CPan%0AScoop!%2CKuldip%20Nayar%2Chistory%2C216%2CHarperCollins%0AAhe%20Manohar%20Tari%2CSunita%20Deshpande%2Cnonfiction%2C213%2CMauj%0AThe%20Last%20Mughal%2CWilliam%20Dalrymple%2Chistory%2C199%2CPenguin%0AVol%2039%20No.%201%20Social%20Choice%20%26%20Welfare%2CVarious%2Ceconomics%2C235%2CSpringer%0ARadiowaril%20Bhashane%20%26%20Shrutika%2CP%20L%20Deshpande%2Cnonfiction%2C213%2CMauj%0AGun%20Gayin%20Awadi%2CP%20L%20Deshpande%2Cnonfiction%2C212%2CMauj%0AAghal%20Paghal%2CP%20L%20Deshpande%2Cnonfiction%2C212%2CMauj%0AMaqta-e-Ghalib%2CSanjay%20Garg%2Cfiction%2C221%2CMauj%0ABeyond%20Degrees%2C%2Cnonfiction%2C222%2CHarperCollins%0AManasa%2CV%20P%20Kale%2Cnonfiction%2C213%2CMauj%0AIndia%20from%20Midnight%20to%20Milennium%2CShashi%20Tharoor%2Chistory%2C198%2CPenguin%0AThe%20World\'s%20Greatest%20Trials%2C%2Chistory%2C210%2C%0AThe%20Great%20Indian%20Novel%2CShashi%20Tharoor%2Cfiction%2C198%2CPenguin%0AO%20Jerusalem!%2CDominique%20Lapierre%2Chistory%2C217%2Cvikas%0AThe%20City%20of%20Joy%2CDominique%20Lapierre%2Cfiction%2C177%2Cvikas%0AFreedom%20at%20Midnight%2CDominique%20Lapierre%2Chistory%2C167%2Cvikas%0AThe%20Winter%20of%20Our%20Discontent%2CJohn%20Steinbeck%2Cfiction%2C196%2CPenguin%0AOn%20Education%2CBertrand%20Russell%2Cphilosophy%2C203%2CRoutledge%0AFree%20Will%2CSam%20Harris%2Cphilosophy%2C203%2CFreePress%0ABookless%20in%20Baghdad%2CShashi%20Tharoor%2Cnonfiction%2C206%2CPenguin%0AThe%20Case%20of%20the%20Lame%20Canary%2CEarle%20Stanley%20Gardner%2Cfiction%2C179%2C%0AThe%20Theory%20of%20Everything%2CStephen%20Hawking%2Cscience%2C217%2CJaico%0ANew%20Markets%20%26%20Other%20Essays%2CPeter%20Drucker%2Ceconomics%2C176%2CPenguin%0AElectric%20Universe%2CDavid%20Bodanis%2Cscience%2C201%2CPenguin%0AThe%20Hunchback%20of%20Notre%20Dame%2CVictor%20Hugo%2Cfiction%2C175%2CRandom%20House%0ABurning%20Bright%2CJohn%20Steinbeck%2Cfiction%2C175%2CPenguin%0AThe%20Age%20of%20Discontuinity%2CPeter%20Drucker%2Ceconomics%2C178%2CRandom%20House%0ADoctor%20in%20the%20Nude%2CRichard%20Gordon%2Cfiction%2C179%2CPenguin%0ADown%20and%20Out%20in%20Paris%20%26%20London%2CGeorge%20Orwell%2Cnonfiction%2C179%2CPenguin%0AIdentity%20%26%20Violence%2CAmartya%20Sen%2Cphilosophy%2C219%2CPenguin%0ABeyond%20the%20Three%20Seas%2CWilliam%20Dalrymple%2Chistory%2C197%2CRandom%20House%0AThe%20World\'s%20Greatest%20Short%20Stories%2C%2Cfiction%2C217%2CJaico%0ATalking%20Straight%2CLee%20Iacoca%2Cnonfiction%2C175%2C%0AVol%203%20Maugham\'s%20Collected%20Short%20Stories%2CWilliam%20S%20Maugham%2Cfiction%2C171%2CVintage%0AThe%20Phantom%20of%20Manhattan%2CFrederick%20Forsyth%2Cfiction%2C180%2C%0AAshenden%20of%20The%20British%20Agent%2CWilliam%20S%20Maugham%2Cfiction%2C160%2CVintage%0AZen%20%26%20The%20Art%20of%20Motorcycle%20Maintenance%2CRobert%20Pirsig%2Cphilosophy%2C172%2CVintage%0AThe%20Great%20War%20for%20Civilization%2CRobert%20Fisk%2Chistory%2C197%2CHarperCollins%0AWe%20the%20Living%2CAyn%20Rand%2Cfiction%2C178%2CPenguin%0AThe%20Artist%20and%20the%20Mathematician%2CAmir%20Aczel%2Cscience%2C186%2CHighStakes%0AHistory%20of%20Western%20Philosophy%2CBertrand%20Russell%2Cphilosophy%2C213%2CRoutledge%0ASelected%20Short%20Stories%2C%2Cfiction%2C215%2CJaico%0ARationality%20%26%20Freedom%2CAmartya%20Sen%2Ceconomics%2C213%2CSpringer%0AClash%20of%20Civilizations%20and%20Remaking%20of%20the%20World%20Order%2CSamuel%20Huntington%2Chistory%2C228%2CSimon%26Schuster%0AUncommon%20Wisdom%2CFritjof%20Capra%2Cnonfiction%2C197%2CFontana%0AOne%2CRichard%20Bach%2Cnonfiction%2C172%2CDell%0AKarl%20Marx%20Biography%2C%2Cnonfiction%2C162%2C%0ATo%20Sir%20With%20Love%2CBraithwaite%2Cfiction%2C197%2CPenguin%0AHalf%20A%20Life%2CV%20S%20Naipaul%2Cfiction%2C196%2C%0AThe%20Discovery%20of%20India%2CJawaharlal%20Nehru%2Chistory%2C230%2C%0AApulki%2CP%20L%20Deshpande%2Cnonfiction%2C211%2C%0AUnpopular%20Essays%2CBertrand%20Russell%2Cphilosophy%2C198%2C%0AThe%20Deceiver%2CFrederick%20Forsyth%2Cfiction%2C178%2C%0AVeil%3A%20Secret%20Wars%20of%20the%20CIA%2CBob%20Woodward%2Chistory%2C171%2C%0AChar%20Shabda%2CP%20L%20Deshpande%2Cnonfiction%2C214%2C%0ARosy%20is%20My%20Relative%2CGerald%20Durrell%2Cfiction%2C176%2C%0AThe%20Moon%20and%20Sixpence%2CWilliam%20S%20Maugham%2Cfiction%2C180%2C%0APolitical%20Philosophers%2C%2Cphilosophy%2C162%2C%0AA%20Short%20History%20of%20the%20World%2CH%20G%20Wells%2Chistory%2C197%2C%0AThe%20Trembling%20of%20a%20Leaf%2CWilliam%20S%20Maugham%2Cfiction%2C205%2C%0ADoctor%20on%20the%20Brain%2CRichard%20Gordon%2Cfiction%2C204%2C%0ASimpsons%20%26%20Their%20Mathematical%20Secrets%2CSimon%20Singh%2Cscience%2C233%2C%0APattern%20Classification%2CHart%20Duda%2Cdata_science%2C241%2C%0AFrom%20Beirut%20to%20Jerusalem%2CThomas%20Friedman%2Chistory%2C202%2C%0AThe%20Code%20Book%2CSimon%20Singh%2Cscience%2C197%2C%0AThe%20Age%20of%20the%20Warrior%2CRobert%20Fisk%2Chistory%2C197%2C%0AFinal%20Crisis%2C%2Ccomic%2C257%2C%0AThe%20Killing%20Joke%2C%2Ccomic%2C283%2C%0AFlashpoint%2C%2Ccomic%2C265%2C%0ABatman%20Earth%20One%2C%2Ccomic%2C265%2C%0ACrisis%20on%20Infinite%20Earths%2C%2Ccomic%2C258%2C%0AThe%20Numbers%20Behind%20Numb3rs%2CKeith%20Devlin%2Cscience%2C202%2C%0ASuperman%20Earth%20One%20-%201%2C%2Ccomic%2C259%2C%0ASuperman%20Earth%20One%20-%202%2C%2Ccomic%2C258%2C%0AJustice%20League%3A%20Throne%20of%20Atlantis%2C%2Ccomic%2C258%2C%0AJustice%20League%3A%20The%20Villain\'s%20Journey%2C%2Ccomic%2C258%2C%0AThe%20Death%20of%20Superman%2C%2Ccomic%2C258%2C%0AHistory%20of%20the%20DC%20Universe%2C%2Ccomic%2C258%2C%0ABatman%3A%20The%20Long%20Halloween%2C%2Ccomic%2C258%2C%0AA%20Life%20in%20Letters%2CJohn%20Steinbeck%2Cnonfiction%2C196%2C%0AThe%20Information%2CJames%20Gleick%2Cscience%2C233%2C%0Avol%20106%20No%203%20Journal%20of%20Economics%2C%2Ceconomics%2C235%2C%0AElements%20of%20Information%20Theory%2CJoy%20Thomas%2Cdata_science%2C229%2C%0APower%20Electronics%20-%20Rashid%2CMuhammad%20Rashid%2Ccomputer_science%2C235%2C%0APower%20Electronics%20-%20Mohan%2CNed%20Mohan%2Ccomputer_science%2C237%2C%0ANeural%20Networks%2CSimon%20Haykin%2Cdata_science%2C240%2C%0AThe%20Grapes%20of%20Wrath%2CJohn%20Steinbeck%2Cfiction%2C196%2C%0AVyakti%20ani%20Valli%2CP%20L%20Deshpande%2Cnonfiction%2C211%2C%0AStatistical%20Learning%20Theory%2CVladimir%20Vapnik%2Cdata_science%2C228%2C%0AEmpire%20of%20the%20Mughal%20-%20The%20Tainted%20Throne%2CAlex%20Rutherford%2Chistory%2C180%2C%0AEmpire%20of%20the%20Mughal%20-%20Brothers%20at%20War%2CAlex%20Rutherford%2Chistory%2C180%2C%0AEmpire%20of%20the%20Mughal%20-%20Ruler%20of%20the%20World%2CAlex%20Rutherford%2Chistory%2C180%2C%0AEmpire%20of%20the%20Mughal%20-%20The%20Serpent\'s%20Tooth%2CAlex%20Rutherford%2Chistory%2C180%2C%0AEmpire%20of%20the%20Mughal%20-%20Raiders%20from%20the%20North%2CAlex%20Rutherford%2Chistory%2C180%2C%0AMossad%2CMichael%20Baz-Zohar%2Chistory%2C236%2C%0AJim%20Corbett%20Omnibus%2CJim%20Corbett%2Cnonfiction%2C223%2C%0A20000%20Leagues%20Under%20the%20Sea%2CJules%20Verne%2Cfiction%2C190%2C%0ABatatyachi%20Chal%2CDeshpande%20P%20L%2Cfiction%2C200%2C%0AHafasavnuk%2CDeshpande%20P%20L%2Cfiction%2C211%2C%0AUrlasurla%2CDeshpande%20P%20L%2Cfiction%2C211%2C%0APointers%20in%20C%2CYashwant%20Kanetkar%2Ccomputer_science%2C213%2C%0AThe%20Cathedral%20and%20the%20Bazaar%2CEric%20Raymond%2Ccomputer_science%2C217%2C%0ADesign%20with%20OpAmps%2CSergio%20Franco%2Ccomputer_science%2C240%2C%0AThink%20Complexity%2CAllen%20Downey%2Cdata_science%2C230%2C%0AThe%20Devil\'s%20Advocate%2CMorris%20West%2Cfiction%2C178%2C%0AAyn%20Rand%20Answers%2CAyn%20Rand%2Cphilosophy%2C203%2C%0APhilosophy%3A%20Who%20Needs%20It%2CAyn%20Rand%2Cphilosophy%2C171%2C%0AThe%20World\'s%20Great%20Thinkers%2C%2Cphilosophy%2C189%2C%0AData%20Analysis%20with%20Open%20Source%20Tools%2CPhillip%20Janert%2Cdata_science%2C230%2C%0ABroca\'s%20Brain%2CCarl%20Sagan%2Cscience%2C174%2C%0AMen%20of%20Mathematics%2CE%20T%20Bell%2Cmathematics%2C217%2C%0AOxford%20book%20of%20Modern%20Science%20Writing%2CRichard%20Dawkins%2Cscience%2C240%2C%0AJudiciary%20and%20Democracy%20Justice%2CSudhanshu%20Ranjan%2Cphilosophy%2C224%2C%0AThe%20Arthashastra%2CKautiyla%2Cphilosophy%2C214%2C%0AWe%20the%20People%2CPalkhivala%2Cphilosophy%2C216%2C%0AWe%20the%20Nation%2CPalkhivala%2Cphilosophy%2C216%2C%0AThe%20Courtroom%20Genius%2CSorabjee%2Cnonfiction%2C217%2C%0ADongri%20to%20Dubai%2CHussain%20Zaidi%2Cnonfiction%2C216%2C%0AFoundation%20History%20of%20England%2CPeter%20Ackroyd%2Chistory%2C197%2C%0ACity%20of%20Djinns%2CWilliam%20Dalrymple%2Chistory%2C198%2C%0AIndia\'s%20Legal%20System%2CNariman%2Cnonfiction%2C177%2C%0AMore%20Tears%20to%20Cry%2CJean%20Sassoon%2Cfiction%2C235%2C%0AThe%20Ropemaker%2CPeter%20Dickinson%2Cfiction%2C196%2C%0AAngels%20%26%20Demons%2CDan%20Brown%2Cfiction%2C170%2C%0AThe%20Judge%2C%2Cfiction%2C170%2C%0AThe%20Attorney%2C%2Cfiction%2C170%2C%0AThe%20Prince%2CMachiavelli%2Cphilosophy%2C173%2C%0AEyeless%20in%20Gaza%2CAldous%20Huxley%2Cfiction%2C180%2C%0ATales%20of%20Beedle%20the%20Bard%2CJ%20K%20Rowling%2Cfiction%2C184%2C%0AGirl%20with%20the%20Dragon%20Tattoo%2CSteig%20Larsson%2Cfiction%2C179%2C%0AGirl%20who%20kicked%20the%20Hornet\'s%20Nest%2CSteig%20Larsson%2Cfiction%2C179%2C%0AGirl%20who%20played%20with%20Fire%2CSteig%20Larsson%2Cfiction%2C179%2C%0ABatman%20Handbook%2C%2Ccomic%2C270%2C%0AMurphy\'s%20Law%2C%2Cnonfiction%2C178%2C%0AStructure%20and%20Randomness%2CTerence%20Tao%2Cmathematics%2C252%2C%0AImage%20Processing%20with%20MATLAB%2CSteve%20Eddins%2Csignal_processing%2C241%2C%0AAnimal%20Farm%2CGeorge%20Orwell%2Cfiction%2C180%2C%0AThe%20Idiot%2CFyodor%20Dostoevsky%2Cfiction%2C197%2C%0AA%20Christmas%20Carol%2CCharles%20Dickens%2Cfiction%2C196%2C", "left"]\
             ]\
             },\
             {\
@@ -536,8 +536,8 @@ const presetBooksOnShelf = '\
             "renamed": "false",\
             "enabled": "true",\
             "highlight": "0",\
-            "x": "7527",\
-            "y": "11",\
+            "x": "7627",\
+            "y": "111",\
             "z": "32",\
             "params":\
             [\
@@ -553,8 +553,8 @@ const presetBooksOnShelf = '\
             "renamed": "false",\
             "enabled": "true",\
             "highlight": "0",\
-            "x": "5625",\
-            "y": "46",\
+            "x": "5725",\
+            "y": "146",\
             "z": "33",\
             "params":\
             [\
@@ -568,8 +568,8 @@ const presetBooksOnShelf = '\
             "renamed": "false",\
             "enabled": "true",\
             "highlight": "0",\
-            "x": "4816",\
-            "y": "-627",\
+            "x": "4916",\
+            "y": "-527",\
             "z": "34",\
             "params":\
             [\
@@ -584,8 +584,8 @@ const presetBooksOnShelf = '\
             "renamed": "false",\
             "enabled": "true",\
             "highlight": "4",\
-            "x": "3611",\
-            "y": "-1758",\
+            "x": "3711",\
+            "y": "-1658",\
             "z": "35",\
             "width": "1167.5093567440279",\
             "height": "544.510129930884",\
@@ -600,8 +600,8 @@ const presetBooksOnShelf = '\
             "renamed": "false",\
             "enabled": "true",\
             "highlight": "5",\
-            "x": "4776",\
-            "y": "-825",\
+            "x": "4876",\
+            "y": "-725",\
             "z": "36",\
             "width": "787.2715194875075",\
             "height": "410.2452782933203",\
@@ -616,8 +616,8 @@ const presetBooksOnShelf = '\
             "renamed": "false",\
             "enabled": "true",\
             "highlight": "0",\
-            "x": "4603",\
-            "y": "-146",\
+            "x": "4703",\
+            "y": "-46",\
             "z": "37",\
             "width": "120",\
             "height": "54",\
@@ -633,8 +633,8 @@ const presetBooksOnShelf = '\
             "renamed": "false",\
             "enabled": "true",\
             "highlight": "0",\
-            "x": "6884",\
-            "y": "-553",\
+            "x": "6984",\
+            "y": "-453",\
             "z": "38",\
             "params":\
             [\
@@ -649,8 +649,8 @@ const presetBooksOnShelf = '\
             "renamed": "false",\
             "enabled": "true",\
             "highlight": "0",\
-            "x": "4926",\
-            "y": "155",\
+            "x": "5026",\
+            "y": "255",\
             "z": "39",\
             "params":\
             [\
@@ -669,8 +669,8 @@ const presetBooksOnShelf = '\
             "renamed": "false",\
             "enabled": "true",\
             "highlight": "0",\
-            "x": "4634",\
-            "y": "293",\
+            "x": "4734",\
+            "y": "393",\
             "z": "40",\
             "width": "120",\
             "height": "54",\
@@ -686,8 +686,8 @@ const presetBooksOnShelf = '\
             "renamed": "false",\
             "enabled": "true",\
             "highlight": "0",\
-            "x": "7694",\
-            "y": "-276",\
+            "x": "7794",\
+            "y": "-176",\
             "z": "41",\
             "params":\
             [\
@@ -701,8 +701,8 @@ const presetBooksOnShelf = '\
             "renamed": "false",\
             "enabled": "true",\
             "highlight": "0",\
-            "x": "2042",\
-            "y": "-923",\
+            "x": "2142",\
+            "y": "-823",\
             "z": "42"\
             },\
             {\
@@ -712,8 +712,8 @@ const presetBooksOnShelf = '\
             "renamed": "false",\
             "enabled": "true",\
             "highlight": "0",\
-            "x": "3617",\
-            "y": "121",\
+            "x": "3717",\
+            "y": "221",\
             "z": "43",\
             "prevSpace": "hex",\
             "params":\
@@ -731,8 +731,8 @@ const presetBooksOnShelf = '\
             "renamed": "false",\
             "enabled": "true",\
             "highlight": "0",\
-            "x": "5398",\
-            "y": "-774",\
+            "x": "5498",\
+            "y": "-674",\
             "z": "44"\
             },\
             {\
@@ -742,8 +742,8 @@ const presetBooksOnShelf = '\
             "renamed": "false",\
             "enabled": "true",\
             "highlight": "0",\
-            "x": "2934",\
-            "y": "-1381",\
+            "x": "3034",\
+            "y": "-1281",\
             "z": "45",\
             "params":\
             [\
@@ -758,8 +758,8 @@ const presetBooksOnShelf = '\
             "renamed": "false",\
             "enabled": "true",\
             "highlight": "0",\
-            "x": "7179",\
-            "y": "-606",\
+            "x": "7279",\
+            "y": "-506",\
             "z": "46",\
             "width": "1447",\
             "height": "887.8927327301616",\
@@ -774,8 +774,8 @@ const presetBooksOnShelf = '\
             "renamed": "false",\
             "enabled": "true",\
             "highlight": "0",\
-            "x": "3635",\
-            "y": "377",\
+            "x": "3735",\
+            "y": "477",\
             "z": "47",\
             "prevSpace": "hex",\
             "params":\
@@ -793,8 +793,8 @@ const presetBooksOnShelf = '\
             "renamed": "false",\
             "enabled": "true",\
             "highlight": "0",\
-            "x": "3621",\
-            "y": "-420",\
+            "x": "3721",\
+            "y": "-320",\
             "z": "48",\
             "params":\
             [\
@@ -808,8 +808,8 @@ const presetBooksOnShelf = '\
             "renamed": "false",\
             "enabled": "true",\
             "highlight": "3",\
-            "x": "6632",\
-            "y": "-615",\
+            "x": "6732",\
+            "y": "-515",\
             "z": "49",\
             "width": "400",\
             "height": "425.6608238154229",\
@@ -824,8 +824,8 @@ const presetBooksOnShelf = '\
             "renamed": "false",\
             "enabled": "true",\
             "highlight": "0",\
-            "x": "5213",\
-            "y": "-1291",\
+            "x": "5313",\
+            "y": "-1191",\
             "z": "50",\
             "params":\
             [\
@@ -838,8 +838,8 @@ const presetBooksOnShelf = '\
             "renamed": "false",\
             "enabled": "true",\
             "highlight": "0",\
-            "x": "3662",\
-            "y": "-912",\
+            "x": "3762",\
+            "y": "-812",\
             "z": "51",\
             "prevSpace": "hsl",\
             "params":\
@@ -857,8 +857,8 @@ const presetBooksOnShelf = '\
             "renamed": "false",\
             "enabled": "true",\
             "highlight": "0",\
-            "x": "3677",\
-            "y": "-1093",\
+            "x": "3777",\
+            "y": "-993",\
             "z": "52",\
             "prevSpace": "hsl",\
             "params":\
@@ -876,8 +876,8 @@ const presetBooksOnShelf = '\
             "renamed": "false",\
             "enabled": "true",\
             "highlight": "0",\
-            "x": "4819",\
-            "y": "-748",\
+            "x": "4919",\
+            "y": "-648",\
             "z": "53",\
             "params":\
             [\
@@ -892,8 +892,8 @@ const presetBooksOnShelf = '\
             "renamed": "false",\
             "enabled": "true",\
             "highlight": "0",\
-            "x": "5444",\
-            "y": "0",\
+            "x": "5544",\
+            "y": "100",\
             "z": "54"\
             },\
             {\
@@ -903,8 +903,8 @@ const presetBooksOnShelf = '\
             "renamed": "false",\
             "enabled": "true",\
             "highlight": "0",\
-            "x": "8424",\
-            "y": "-240",\
+            "x": "8524",\
+            "y": "-140",\
             "z": "55",\
             "params":\
             [\
@@ -918,8 +918,8 @@ const presetBooksOnShelf = '\
             "renamed": "false",\
             "enabled": "true",\
             "highlight": "4",\
-            "x": "3620",\
-            "y": "-1151",\
+            "x": "3720",\
+            "y": "-1051",\
             "z": "56",\
             "width": "885",\
             "height": "438",\
@@ -934,8 +934,8 @@ const presetBooksOnShelf = '\
             "renamed": "false",\
             "enabled": "true",\
             "highlight": "0",\
-            "x": "3867",\
-            "y": "-393",\
+            "x": "3967",\
+            "y": "-293",\
             "z": "57",\
             "params":\
             [\
@@ -951,8 +951,8 @@ const presetBooksOnShelf = '\
             "renamed": "false",\
             "enabled": "true",\
             "highlight": "0",\
-            "x": "2216",\
-            "y": "-254",\
+            "x": "2062",\
+            "y": "-178",\
             "z": "58",\
             "width": "309",\
             "height": "213.83694298372413",\
@@ -968,8 +968,8 @@ const presetBooksOnShelf = '\
             "renamed": "false",\
             "enabled": "true",\
             "highlight": "0",\
-            "x": "7941",\
-            "y": "-551",\
+            "x": "8041",\
+            "y": "-451",\
             "z": "59",\
             "params":\
             [\
@@ -984,8 +984,8 @@ const presetBooksOnShelf = '\
             "renamed": "false",\
             "enabled": "true",\
             "highlight": "0",\
-            "x": "5110",\
-            "y": "-258",\
+            "x": "5210",\
+            "y": "-158",\
             "z": "60",\
             "params":\
             [\
@@ -1000,8 +1000,8 @@ const presetBooksOnShelf = '\
             "renamed": "false",\
             "enabled": "true",\
             "highlight": "0",\
-            "x": "8214",\
-            "y": "-551",\
+            "x": "8314",\
+            "y": "-451",\
             "z": "61",\
             "params":\
             [\
@@ -1015,8 +1015,8 @@ const presetBooksOnShelf = '\
             "renamed": "true",\
             "enabled": "true",\
             "highlight": "7",\
-            "x": "1684",\
-            "y": "-1033",\
+            "x": "1784",\
+            "y": "-933",\
             "z": "62",\
             "width": "680.9091290631509",\
             "height": "298.7272608735842",\
@@ -1031,8 +1031,8 @@ const presetBooksOnShelf = '\
             "renamed": "false",\
             "enabled": "true",\
             "highlight": "0",\
-            "x": "4023",\
-            "y": "-914",\
+            "x": "4123",\
+            "y": "-814",\
             "z": "63",\
             "prevSpace": "hsl",\
             "params":\
@@ -1050,8 +1050,8 @@ const presetBooksOnShelf = '\
             "renamed": "false",\
             "enabled": "true",\
             "highlight": "0",\
-            "x": "3836",\
-            "y": "245",\
+            "x": "3936",\
+            "y": "345",\
             "z": "64",\
             "params":\
             [\
@@ -1065,8 +1065,8 @@ const presetBooksOnShelf = '\
             "renamed": "false",\
             "enabled": "true",\
             "highlight": "0",\
-            "x": "1894",\
-            "y": "-922",\
+            "x": "1994",\
+            "y": "-822",\
             "z": "65",\
             "params":\
             [\
@@ -1080,8 +1080,8 @@ const presetBooksOnShelf = '\
             "renamed": "false",\
             "enabled": "true",\
             "highlight": "0",\
-            "x": "3152",\
-            "y": "-255",\
+            "x": "3252",\
+            "y": "-155",\
             "z": "66",\
             "width": "224.46657575662033",\
             "height": "142",\
@@ -1101,8 +1101,8 @@ const presetBooksOnShelf = '\
             "renamed": "false",\
             "enabled": "true",\
             "highlight": "0",\
-            "x": "4137",\
-            "y": "289",\
+            "x": "4237",\
+            "y": "389",\
             "z": "67",\
             "params":\
             [\
@@ -1117,8 +1117,8 @@ const presetBooksOnShelf = '\
             "renamed": "false",\
             "enabled": "true",\
             "highlight": "0",\
-            "x": "1744",\
-            "y": "-922",\
+            "x": "1844",\
+            "y": "-822",\
             "z": "68",\
             "params":\
             [\
@@ -1133,8 +1133,8 @@ const presetBooksOnShelf = '\
             "renamed": "false",\
             "enabled": "true",\
             "highlight": "0",\
-            "x": "3841",\
-            "y": "-1592",\
+            "x": "3941",\
+            "y": "-1492",\
             "z": "69",\
             "params":\
             [\
@@ -1149,8 +1149,8 @@ const presetBooksOnShelf = '\
             "renamed": "false",\
             "enabled": "true",\
             "highlight": "0",\
-            "x": "2827",\
-            "y": "-255",\
+            "x": "2673",\
+            "y": "-179",\
             "z": "70"\
             },\
             {\
@@ -1160,8 +1160,8 @@ const presetBooksOnShelf = '\
             "renamed": "false",\
             "enabled": "true",\
             "highlight": "0",\
-            "x": "6685",\
-            "y": "-553",\
+            "x": "6785",\
+            "y": "-453",\
             "z": "71",\
             "params":\
             [\
@@ -1176,8 +1176,8 @@ const presetBooksOnShelf = '\
             "renamed": "false",\
             "enabled": "true",\
             "highlight": "7",\
-            "x": "6308",\
-            "y": "-558",\
+            "x": "6408",\
+            "y": "-458",\
             "z": "72",\
             "width": "120",\
             "height": "51"\
@@ -1189,8 +1189,8 @@ const presetBooksOnShelf = '\
             "renamed": "false",\
             "enabled": "true",\
             "highlight": "0",\
-            "x": "4323",\
-            "y": "258",\
+            "x": "4423",\
+            "y": "358",\
             "z": "73",\
             "params":\
             [\
@@ -1204,8 +1204,8 @@ const presetBooksOnShelf = '\
             "renamed": "false",\
             "enabled": "true",\
             "highlight": "0",\
-            "x": "2931",\
-            "y": "-1238",\
+            "x": "3031",\
+            "y": "-1138",\
             "z": "74",\
             "params":\
             [\
@@ -1221,8 +1221,8 @@ const presetBooksOnShelf = '\
             "renamed": "false",\
             "enabled": "true",\
             "highlight": "0",\
-            "x": "3250",\
-            "y": "-1378",\
+            "x": "3350",\
+            "y": "-1278",\
             "z": "75",\
             "prevSpace": "hsl",\
             "params":\
@@ -1240,8 +1240,8 @@ const presetBooksOnShelf = '\
             "renamed": "false",\
             "enabled": "true",\
             "highlight": "0",\
-            "x": "7604",\
-            "y": "-105",\
+            "x": "7704",\
+            "y": "-5",\
             "z": "76",\
             "params":\
             [\
@@ -1256,8 +1256,8 @@ const presetBooksOnShelf = '\
             "renamed": "false",\
             "enabled": "true",\
             "highlight": "5",\
-            "x": "4227",\
-            "y": "50",\
+            "x": "4327",\
+            "y": "150",\
             "z": "77",\
             "params":\
             [\
@@ -1272,8 +1272,8 @@ const presetBooksOnShelf = '\
             "renamed": "false",\
             "enabled": "true",\
             "highlight": "0",\
-            "x": "2819",\
-            "y": "54",\
+            "x": "2934",\
+            "y": "-65",\
             "z": "78",\
             "params":\
             [\
@@ -1289,8 +1289,8 @@ const presetBooksOnShelf = '\
             "renamed": "false",\
             "enabled": "true",\
             "highlight": "0",\
-            "x": "4907",\
-            "y": "-1034",\
+            "x": "5007",\
+            "y": "-934",\
             "z": "79",\
             "params":\
             [\
@@ -1304,8 +1304,8 @@ const presetBooksOnShelf = '\
             "renamed": "false",\
             "enabled": "true",\
             "highlight": "0",\
-            "x": "8739",\
-            "y": "341",\
+            "x": "8839",\
+            "y": "441",\
             "z": "80",\
             "active": "true",\
             "params":\
@@ -1320,8 +1320,8 @@ const presetBooksOnShelf = '\
             "renamed": "false",\
             "enabled": "true",\
             "highlight": "0",\
-            "x": "8240",\
-            "y": "-163",\
+            "x": "8340",\
+            "y": "-63",\
             "z": "81",\
             "width": "120",\
             "height": "103"\
@@ -1333,8 +1333,8 @@ const presetBooksOnShelf = '\
             "renamed": "false",\
             "enabled": "true",\
             "highlight": "0",\
-            "x": "7688",\
-            "y": "344",\
+            "x": "7788",\
+            "y": "444",\
             "z": "82",\
             "params":\
             [\
@@ -1344,26 +1344,38 @@ const presetBooksOnShelf = '\
             },\
             {\
             "type": "CMNT",\
-            "id": "comment",\
-            "name": "Data%20taken%20from%20CSV%2C",\
+            "id": "comment2",\
+            "name": "Book%20size%20is%20proportinal%20to%20page%20count.",\
             "renamed": "true",\
             "enabled": "true",\
             "highlight": "0",\
-            "x": "2073",\
-            "y": "199",\
+            "x": "2062",\
+            "y": "188",\
             "z": "83",\
             "active": "true"\
             },\
             {\
             "type": "CMNT",\
-            "id": "comment2",\
-            "name": "book%20size%20is%20proportinal%20to%20page%20count.",\
+            "id": "comment3",\
+            "name": "Dataset%20taken%20from",\
             "renamed": "true",\
             "enabled": "true",\
             "highlight": "0",\
-            "x": "2073",\
-            "y": "245",\
+            "x": "2063",\
+            "y": "90",\
             "z": "84",\
+            "active": "true"\
+            },\
+            {\
+            "type": "CMNT",\
+            "id": "comment18",\
+            "name": "%3Ca%20href%3D%22https%3A%2F%2Fgist.github.com%2Fjaidevd%2F23aef12e9bf56c618c41%22%3Ehttps%3A%2F%2Fgist.github.com%2Fjaidevd%2F23aef12e9bf56c618c41%3C%2Fa%3E",\
+            "renamed": "true",\
+            "enabled": "true",\
+            "highlight": "0",\
+            "x": "2063",\
+            "y": "136",\
+            "z": "85",\
             "active": "true"\
             }\
         ],\
