@@ -122,5 +122,7 @@ function getPresetGraph(graphId)
         case 'wobbles':              return presetWobbles;
         case 'randomAbstract':       return presetRandomAbstract;
         case 'namesLogos':           return presetNamesLogos;
+        case 'afterTheStorm':        return presetAfterTheStorm;
+        case 'hopeInHell':           return presetHopeInHell;
     }
 }

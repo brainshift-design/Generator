@@ -119,7 +119,7 @@ extends GOperator1
                     if (   input
                         && nRepeats > 0)
                     {
-                        this.value.items.push(input.copy());
+                        this.value.items.push(input);//.copy());
 
 
                         if (   this.options.active

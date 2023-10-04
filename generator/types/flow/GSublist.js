@@ -69,7 +69,7 @@ extends GOperator1
                         {
                             const item = input.items[i];
                             
-                            this.value.items.push(item ? item.copy() : NullValue);
+                            this.value.items.push(item ? item/*.copy()*/ : NullValue);
                             
                             if (   item
                                 && this.value.objects) 
@@ -77,11 +77,11 @@ extends GOperator1
                         }
                     }
                     else
-                        this.value = input.copy();
+                        this.value = input;//.copy();
                 }
             }
             else
-                this.value = ListValue.NaN.copy();
+                this.value = ListValue.NaN;//.copy();
         }
 
 

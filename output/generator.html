@@ -8173,17 +8173,21 @@ class GNode
 
 
 class GValue
-extends GNode
+//extends GNode
 {
+    type;
     valueId;
 
     objects = null;
 
 
 
-    constructor(type, options) 
+    constructor(type) 
     {
-        super(type, options);
+        //super(type, options);
+
+        this.type = type;
+
 
         this.valueId = '';
     }
@@ -8200,7 +8204,7 @@ extends GNode
 
     copyBase(base)
     {
-        super.copyBase(base);
+        //super.copyBase(base);
         
         this.valueId = base.valueId;
 
@@ -8279,6 +8283,12 @@ extends GNode
     {
         return true;
     }
+
+
+
+    pushValueUpdates(parse)       {}
+    invalidateInputs(parse, from) {}
+    iterateLoop     (parse)       {}
 }
 
 
@@ -14887,7 +14897,7 @@ extends GOperator1
                     if (   input
                         && nRepeats > 0)
                     {
-                        this.value.items.push(input.copy());
+                        this.value.items.push(input);//.copy());
 
 
                         if (   this.options.active
@@ -15548,7 +15558,7 @@ extends GOperator1
 {
     frozen = false;
 
-    loopId  = NULL;
+    loopId = NULL;
 
 
 
@@ -15580,6 +15590,7 @@ extends GOperator1
 
         const repeat = parse.repeats.find(r => r.repeatId == this.loopId);
 
+
         if (      repeat
                && repeat.iteration == 0
             || !this.options.enabled)
@@ -15606,11 +15617,11 @@ extends GOperator1
                 ? finalListTypeFromItems(this.value.items)
                 : this.value.type)
             : TextValue.NaN;
-
+        
 
         this.setUpdateValues(parse,
         [
-            ['type', type],
+            ['type', type]
         ]);
 
 
@@ -15963,15 +15974,15 @@ extends GOperator
                 if (isListType(input.type))
                 {
                     if (input.condensed === true)
-                        this.value.items.push(input.copy());
+                        this.value.items.push(input);//.copy());
                     else
                     {
                         for (const item of input.items)
-                            this.value.items.push(item.copy());
+                            this.value.items.push(item);//.copy());
                     }
                 }
                 else
-                    this.value.items.push(input.copy());
+                    this.value.items.push(input);//.copy());
             }
 
 
@@ -16371,7 +16382,7 @@ extends GOperator1
                         {
                             const item = input.items[i];
                             
-                            this.value.items.push(item ? item.copy() : NullValue);
+                            this.value.items.push(item ? item/*.copy()*/ : NullValue);
                             
                             if (   item
                                 && this.value.objects) 
@@ -16379,11 +16390,11 @@ extends GOperator1
                         }
                     }
                     else
-                        this.value = input.copy();
+                        this.value = input;//.copy();
                 }
             }
             else
-                this.value = ListValue.NaN.copy();
+                this.value = ListValue.NaN;//.copy();
         }
 
 
@@ -17284,7 +17295,7 @@ extends GOperator
                     && index.value >= 0
                     && index.value < input.items.length)
                 {
-                    this.value = input.items[index.value].copy();
+                    this.value = input.items[index.value];//.copy();
                 
                     if (this.value.objects)
                     {
@@ -32893,7 +32904,7 @@ extends GOperator1
         }
         else
         {
-            this.value = NullValue.copy();
+            this.value = NullValue;//.copy();
         }
 
 

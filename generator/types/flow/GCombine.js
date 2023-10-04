@@ -87,15 +87,15 @@ extends GOperator
                 if (isListType(input.type))
                 {
                     if (input.condensed === true)
-                        this.value.items.push(input.copy());
+                        this.value.items.push(input);//.copy());
                     else
                     {
                         for (const item of input.items)
-                            this.value.items.push(item.copy());
+                            this.value.items.push(item);//.copy());
                     }
                 }
                 else
-                    this.value.items.push(input.copy());
+                    this.value.items.push(input);//.copy());
             }
 
 

@@ -75,7 +75,7 @@ extends GOperator
                     && index.value >= 0
                     && index.value < input.items.length)
                 {
-                    this.value = input.items[index.value].copy();
+                    this.value = input.items[index.value];//.copy();
                 
                     if (this.value.objects)
                     {

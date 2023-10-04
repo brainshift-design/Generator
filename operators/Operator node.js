@@ -96,7 +96,7 @@ Operator.prototype.createHeader = function()
 
     this.header.appendChild(this. inputControls);
     this.header.appendChild(this.outputControls);
-    this.header.appendChild(this. reorderArrows);
+    this.header.appendChild(this.reorderArrows );
 
     
     this.inner.appendChild(this.header);

@@ -3,7 +3,7 @@ extends GOperator1
 {
     frozen = false;
 
-    loopId  = NULL;
+    loopId = NULL;
 
 
 
@@ -35,6 +35,7 @@ extends GOperator1
 
         const repeat = parse.repeats.find(r => r.repeatId == this.loopId);
 
+
         if (      repeat
                && repeat.iteration == 0
             || !this.options.enabled)
@@ -61,11 +62,11 @@ extends GOperator1
                 ? finalListTypeFromItems(this.value.items)
                 : this.value.type)
             : TextValue.NaN;
-
+        
 
         this.setUpdateValues(parse,
         [
-            ['type', type],
+            ['type', type]
         ]);
 
 

@@ -72,6 +72,7 @@ extends OperatorBase
             ? this.textbox.value 
             : this.name;
 
+            
         const mes = boundingRect(divTextMeasure);
 
 
@@ -114,6 +115,7 @@ extends OperatorBase
         this.label       .style.overflow   = 'visible';
         this.labelText   .style.overflow   = 'visible';
         
+
         this.updateTransform();
         
         // this.div      .style.boxShadow = '0 0 0 1px red inset';
@@ -136,6 +138,20 @@ extends OperatorBase
     updateHeaderLabel()
     {
         this.labelText.innerHTML = this.name;
+
+
+        var links = this.labelText.querySelectorAll("a");
+        
+        for (let i = 0; i < links.length; i++)
+        {
+            links[i].addEventListener('pointerdown', e => 
+            {
+                if (getCtrlKey(e))
+                    window.open(links[i].href);
+                else
+                    forwardEvent(e, this.labelText);
+            });
+        }
 
 
         if (this.selected)

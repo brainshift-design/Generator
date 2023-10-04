@@ -419,6 +419,7 @@ menuFlow = new Menu('Flow', true, false);
     menuFlow.addItems([
         menuItemStart    = new MenuItem('Start. . .',        null, {icon: iconStart,         createType: START,            callback: e => actionManager.do(getCreateNodeAction(START,           btnFlow.div, getCreateOptions(e)))}),
         menuItemRepeat   = new MenuItem('. . . Repeat',      null, {icon: iconRepeat,        createType: REPEAT,           callback: e => actionManager.do(getCreateNodeAction(REPEAT,          btnFlow.div, getCreateOptions(e)))}),
+                           new MenuItem('',                  null, {separator: true}),
         menuItemFreeze   = new MenuItem('Freeze. . .',       null, {icon: iconFreeze,        createType: FREEZE,           callback: e => actionManager.do(getCreateNodeAction(FREEZE,          btnFlow.div, getCreateOptions(e)))}),
                            //menuItemCache    = new MenuItem('Cache',           null, {icon: iconCache,         createType: CACHE,            callback: e => actionManager.do(getCreateNodeAction(CACHE,           btnFlow.div, getCreateOptions(e)))}),
                            new MenuItem('',                  null, {separator: true}),

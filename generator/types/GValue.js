@@ -1,15 +1,19 @@
 class GValue
-extends GNode
+//extends GNode
 {
+    type;
     valueId;
 
     objects = null;
 
 
 
-    constructor(type, options) 
+    constructor(type) 
     {
-        super(type, options);
+        //super(type, options);
+
+        this.type = type;
+
 
         this.valueId = '';
     }
@@ -26,7 +30,7 @@ extends GNode
 
     copyBase(base)
     {
-        super.copyBase(base);
+        //super.copyBase(base);
         
         this.valueId = base.valueId;
 
@@ -105,6 +109,12 @@ extends GNode
     {
         return true;
     }
+
+
+
+    pushValueUpdates(parse)       {}
+    invalidateInputs(parse, from) {}
+    iterateLoop     (parse)       {}
 }
 
 

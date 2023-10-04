@@ -55,7 +55,7 @@ extends GOperator1
         }
         else
         {
-            this.value = NullValue.copy();
+            this.value = NullValue;//.copy();
         }
 
 
