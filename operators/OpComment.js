@@ -81,7 +81,7 @@ extends OperatorBase
         this.div    .style.width      = 
         this.textbox.style.width      = width + 'px';
 
-        this.textbox.style.height     =  this.div.offsetHeight;
+        this.textbox.style.height     =  fontSize + 'px';//this.div.offsetHeight;
         this.textbox.style.padding    = '0';
         this.textbox.style.margin     = '0';
         this.textbox.style.textAlign  = 'left';
