@@ -5,12 +5,12 @@ const presetNodeBasics = '\
             {\
             "type": "CMNT",\
             "id": "comment6",\
-            "name": "Connect%20this%20here%20to%20see%20the%20result",\
+            "name": "Connect%20here",\
             "renamed": "true",\
             "enabled": "true",\
             "highlight": "0",\
-            "x": "839",\
-            "y": "535",\
+            "x": "1194",\
+            "y": "743",\
             "z": "0"\
             },\
             {\
@@ -20,8 +20,8 @@ const presetNodeBasics = '\
             "renamed": "true",\
             "enabled": "true",\
             "highlight": "0",\
-            "x": "652",\
-            "y": "693",\
+            "x": "852",\
+            "y": "893",\
             "z": "1",\
             "width": "120",\
             "height": "54",\
@@ -37,8 +37,8 @@ const presetNodeBasics = '\
             "renamed": "true",\
             "enabled": "true",\
             "highlight": "0",\
-            "x": "844",\
-            "y": "640",\
+            "x": "1044",\
+            "y": "840",\
             "z": "2",\
             "active": "true",\
             "params":\
@@ -53,8 +53,8 @@ const presetNodeBasics = '\
             "renamed": "true",\
             "enabled": "true",\
             "highlight": "0",\
-            "x": "623",\
-            "y": "388",\
+            "x": "823",\
+            "y": "588",\
             "z": "3"\
             },\
             {\
@@ -64,8 +64,8 @@ const presetNodeBasics = '\
             "renamed": "true",\
             "enabled": "true",\
             "highlight": "0",\
-            "x": "374",\
-            "y": "619",\
+            "x": "574",\
+            "y": "819",\
             "z": "4"\
             },\
             {\
@@ -75,8 +75,8 @@ const presetNodeBasics = '\
             "renamed": "true",\
             "enabled": "true",\
             "highlight": "0",\
-            "x": "372",\
-            "y": "666",\
+            "x": "572",\
+            "y": "866",\
             "z": "5"\
             },\
             {\
@@ -86,8 +86,8 @@ const presetNodeBasics = '\
             "renamed": "true",\
             "enabled": "true",\
             "highlight": "0",\
-            "x": "1033",\
-            "y": "649",\
+            "x": "1233",\
+            "y": "849",\
             "z": "6",\
             "active": "true",\
             "width": "120",\
@@ -100,8 +100,8 @@ const presetNodeBasics = '\
             "renamed": "true",\
             "enabled": "true",\
             "highlight": "0",\
-            "x": "652",\
-            "y": "589",\
+            "x": "852",\
+            "y": "789",\
             "z": "7",\
             "width": "120",\
             "height": "54",\
@@ -109,6 +109,28 @@ const presetNodeBasics = '\
             [\
                     ["NUM#", "value", "123,0"]\
             ]\
+            },\
+            {\
+            "type": "CMNT",\
+            "id": "comment7",\
+            "name": "%E2%9F%B6",\
+            "renamed": "true",\
+            "enabled": "true",\
+            "highlight": "0",\
+            "x": "1176",\
+            "y": "844",\
+            "z": "8"\
+            },\
+            {\
+            "type": "CMNT",\
+            "id": "comment8",\
+            "name": "to%20see%20the%20result",\
+            "renamed": "true",\
+            "enabled": "true",\
+            "highlight": "0",\
+            "x": "1195",\
+            "y": "783",\
+            "z": "9"\
             }\
         ],\
         "connections":\
@@ -133,6 +155,7 @@ const presetNodeBasics = '\
     }';
 
 
+    
 const presetDataTypes = '\
     {\
         "nodes":\

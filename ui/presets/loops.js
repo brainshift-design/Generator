@@ -167,8 +167,8 @@ const presetLoop2d = '\
             "renamed": "false",\
             "enabled": "true",\
             "highlight": "0",\
-            "x": "1167",\
-            "y": "1273",\
+            "x": "2667",\
+            "y": "2773",\
             "z": "0",\
             "params":\
             [\
@@ -183,8 +183,8 @@ const presetLoop2d = '\
             "renamed": "false",\
             "enabled": "true",\
             "highlight": "0",\
-            "x": "695",\
-            "y": "977",\
+            "x": "2195",\
+            "y": "2477",\
             "z": "1",\
             "prevSpace": "hsv",\
             "params":\
@@ -202,19 +202,19 @@ const presetLoop2d = '\
             "renamed": "true",\
             "enabled": "true",\
             "highlight": "0",\
-            "x": "1089",\
-            "y": "1683",\
+            "x": "2565",\
+            "y": "3181",\
             "z": "2"\
             },\
             {\
             "type": "CMNT",\
             "id": "comment2",\
-            "name": "each%20new%20repeat%20receiving%20new%20X%20and%20Y%20values%20from%20two",\
+            "name": "with%20each%20new%20repeat%20receiving%20new%20X%20and%20Y%20values",\
             "renamed": "true",\
             "enabled": "true",\
             "highlight": "0",\
-            "x": "1093",\
-            "y": "1515",\
+            "x": "2610",\
+            "y": "2998",\
             "z": "3"\
             },\
             {\
@@ -224,8 +224,8 @@ const presetLoop2d = '\
             "renamed": "true",\
             "enabled": "true",\
             "highlight": "0",\
-            "x": "1108",\
-            "y": "750",\
+            "x": "2608",\
+            "y": "2250",\
             "z": "4",\
             "width": "691",\
             "height": "673.6051224213832",\
@@ -236,23 +236,23 @@ const presetLoop2d = '\
             {\
             "type": "CMNT",\
             "id": "comment4",\
-            "name": "Linking%20a%20sequence%20to%20a%20repeat%20causes%20it%20to%20reset%20when%20",\
+            "name": "%3Cb%3ELinking%20a%20sequence%20to%20a%20repeat%3C%2Fb%3E%20causes%20it%20to%20reset%20when%20",\
             "renamed": "true",\
             "enabled": "true",\
             "highlight": "0",\
-            "x": "1089",\
-            "y": "1638",\
+            "x": "2565",\
+            "y": "3136",\
             "z": "5"\
             },\
             {\
             "type": "CMNT",\
             "id": "comment3",\
-            "name": "separate%20sequences.",\
+            "name": "from%20two%20separate%20sequences.",\
             "renamed": "true",\
             "enabled": "true",\
             "highlight": "0",\
-            "x": "1090",\
-            "y": "1557",\
+            "x": "2613",\
+            "y": "3043",\
             "z": "6"\
             },\
             {\
@@ -262,8 +262,8 @@ const presetLoop2d = '\
             "renamed": "false",\
             "enabled": "true",\
             "highlight": "0",\
-            "x": "857",\
-            "y": "818",\
+            "x": "2357",\
+            "y": "2318",\
             "z": "7",\
             "params":\
             [\
@@ -276,8 +276,8 @@ const presetLoop2d = '\
             "renamed": "false",\
             "enabled": "true",\
             "highlight": "0",\
-            "x": "1167",\
-            "y": "1098",\
+            "x": "2667",\
+            "y": "2598",\
             "z": "8",\
             "params":\
             [\
@@ -292,8 +292,8 @@ const presetLoop2d = '\
             "renamed": "false",\
             "enabled": "true",\
             "highlight": "0",\
-            "x": "1390",\
-            "y": "818",\
+            "x": "2890",\
+            "y": "2318",\
             "z": "9",\
             "params":\
             [\
@@ -308,8 +308,8 @@ const presetLoop2d = '\
             "renamed": "false",\
             "enabled": "true",\
             "highlight": "0",\
-            "x": "1617",\
-            "y": "1098",\
+            "x": "3117",\
+            "y": "2598",\
             "z": "10",\
             "params":\
             [\
@@ -323,8 +323,8 @@ const presetLoop2d = '\
             "renamed": "false",\
             "enabled": "true",\
             "highlight": "0",\
-            "x": "1617",\
-            "y": "1273",\
+            "x": "3117",\
+            "y": "2773",\
             "z": "11",\
             "active": "true",\
             "params":\
@@ -335,13 +335,132 @@ const presetLoop2d = '\
             {\
             "type": "CMNT",\
             "id": "comment",\
-            "name": "Incoming%20data%20(in%20this%20case%20a%20polygon)%20is%20%22repeated%E2%80%89%22%2C%20with%20",\
+            "name": "Incoming%20data%20(in%20this%20case%20a%20polygon)%20is%20%22repeated%E2%80%89%22%2C",\
             "renamed": "true",\
             "enabled": "true",\
             "highlight": "0",\
-            "x": "1094",\
-            "y": "1472",\
+            "x": "2612",\
+            "y": "2954",\
             "z": "12"\
+            },\
+            {\
+            "type": "PANEL",\
+            "id": "panel2",\
+            "name": "",\
+            "renamed": "false",\
+            "enabled": "true",\
+            "highlight": "4",\
+            "x": "2871",\
+            "y": "2790",\
+            "z": "13",\
+            "active": "true",\
+            "width": "60",\
+            "height": "32",\
+            "params":\
+            [\
+            ]\
+            },\
+            {\
+            "type": "PANEL",\
+            "id": "panel3",\
+            "name": "",\
+            "renamed": "false",\
+            "enabled": "true",\
+            "highlight": "4",\
+            "x": "2931",\
+            "y": "2811",\
+            "z": "14",\
+            "active": "true",\
+            "width": "60",\
+            "height": "32",\
+            "params":\
+            [\
+            ]\
+            },\
+            {\
+            "type": "PANEL",\
+            "id": "panel4",\
+            "name": "",\
+            "renamed": "false",\
+            "enabled": "true",\
+            "highlight": "4",\
+            "x": "2991",\
+            "y": "2829",\
+            "z": "15",\
+            "active": "true",\
+            "width": "60",\
+            "height": "32",\
+            "params":\
+            [\
+            ]\
+            },\
+            {\
+            "type": "PANEL",\
+            "id": "panel5",\
+            "name": "",\
+            "renamed": "false",\
+            "enabled": "true",\
+            "highlight": "4",\
+            "x": "2875",\
+            "y": "2616",\
+            "z": "16",\
+            "active": "true",\
+            "width": "60",\
+            "height": "32",\
+            "params":\
+            [\
+            ]\
+            },\
+            {\
+            "type": "PANEL",\
+            "id": "panel6",\
+            "name": "",\
+            "renamed": "false",\
+            "enabled": "true",\
+            "highlight": "4",\
+            "x": "2935",\
+            "y": "2637",\
+            "z": "17",\
+            "active": "true",\
+            "width": "60",\
+            "height": "32",\
+            "params":\
+            [\
+            ]\
+            },\
+            {\
+            "type": "PANEL",\
+            "id": "panel7",\
+            "name": "",\
+            "renamed": "false",\
+            "enabled": "true",\
+            "highlight": "4",\
+            "x": "2995",\
+            "y": "2655",\
+            "z": "18",\
+            "active": "true",\
+            "width": "60",\
+            "height": "32",\
+            "params":\
+            [\
+            ]\
+            },\
+            {\
+            "type": "PANEL",\
+            "id": "panel8",\
+            "name": "",\
+            "renamed": "false",\
+            "enabled": "true",\
+            "highlight": "4",\
+            "x": "2537",\
+            "y": "3123",\
+            "z": "19",\
+            "active": "true",\
+            "width": "826.8969014821726",\
+            "height": "119",\
+            "params":\
+            [\
+            ]\
             }\
         ],\
         "connections":\
@@ -412,7 +531,7 @@ const presetLoop2d = '\
             }\
         ]\
     }';
-
+    
     
 
 const presetLoopLock = '\

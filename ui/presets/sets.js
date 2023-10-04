@@ -1560,8 +1560,8 @@ const presetRandomSeeds = '\
             "renamed": "true",\
             "enabled": "true",\
             "highlight": "0",\
-            "x": "1941",\
-            "y": "3744",\
+            "x": "2491",\
+            "y": "4294",\
             "z": "0"\
             },\
             {\
@@ -1571,8 +1571,8 @@ const presetRandomSeeds = '\
             "renamed": "false",\
             "enabled": "true",\
             "highlight": "4",\
-            "x": "1392",\
-            "y": "3987",\
+            "x": "1942",\
+            "y": "4537",\
             "z": "1",\
             "params":\
             [\
@@ -1587,8 +1587,8 @@ const presetRandomSeeds = '\
             "renamed": "true",\
             "enabled": "true",\
             "highlight": "0",\
-            "x": "2374",\
-            "y": "2959",\
+            "x": "2924",\
+            "y": "3509",\
             "z": "2"\
             },\
             {\
@@ -1598,8 +1598,8 @@ const presetRandomSeeds = '\
             "renamed": "true",\
             "enabled": "true",\
             "highlight": "0",\
-            "x": "2371",\
-            "y": "3361",\
+            "x": "2921",\
+            "y": "3911",\
             "z": "3"\
             },\
             {\
@@ -1609,8 +1609,8 @@ const presetRandomSeeds = '\
             "renamed": "false",\
             "enabled": "true",\
             "highlight": "0",\
-            "x": "2209",\
-            "y": "3454",\
+            "x": "2759",\
+            "y": "4004",\
             "z": "4",\
             "prevSpace": "hex",\
             "params":\
@@ -1628,8 +1628,8 @@ const presetRandomSeeds = '\
             "renamed": "false",\
             "enabled": "true",\
             "highlight": "4",\
-            "x": "1392",\
-            "y": "4130",\
+            "x": "1942",\
+            "y": "4680",\
             "z": "5",\
             "params":\
             [\
@@ -1644,8 +1644,8 @@ const presetRandomSeeds = '\
             "renamed": "false",\
             "enabled": "true",\
             "highlight": "0",\
-            "x": "1580",\
-            "y": "3987",\
+            "x": "2130",\
+            "y": "4537",\
             "z": "6",\
             "active": "true",\
             "params":\
@@ -1662,8 +1662,8 @@ const presetRandomSeeds = '\
             "renamed": "true",\
             "enabled": "true",\
             "highlight": "0",\
-            "x": "1164",\
-            "y": "3902",\
+            "x": "1714",\
+            "y": "4452",\
             "z": "7"\
             },\
             {\
@@ -1673,8 +1673,8 @@ const presetRandomSeeds = '\
             "renamed": "false",\
             "enabled": "true",\
             "highlight": "0",\
-            "x": "2021",\
-            "y": "2980",\
+            "x": "2571",\
+            "y": "3530",\
             "z": "8",\
             "params":\
             [\
@@ -1689,8 +1689,8 @@ const presetRandomSeeds = '\
             "renamed": "false",\
             "enabled": "true",\
             "highlight": "0",\
-            "x": "1580",\
-            "y": "4170",\
+            "x": "2130",\
+            "y": "4720",\
             "z": "9",\
             "prevSpace": "hex",\
             "params":\
@@ -1708,8 +1708,8 @@ const presetRandomSeeds = '\
             "renamed": "false",\
             "enabled": "true",\
             "highlight": "0",\
-            "x": "2209",\
-            "y": "3271",\
+            "x": "2759",\
+            "y": "3821",\
             "z": "10",\
             "active": "true",\
             "params":\
@@ -1726,8 +1726,8 @@ const presetRandomSeeds = '\
             "renamed": "false",\
             "enabled": "true",\
             "highlight": "0",\
-            "x": "2209",\
-            "y": "2896",\
+            "x": "2759",\
+            "y": "3446",\
             "z": "11",\
             "active": "true",\
             "params":\
@@ -1743,8 +1743,8 @@ const presetRandomSeeds = '\
             "renamed": "true",\
             "enabled": "true",\
             "highlight": "0",\
-            "x": "2374",\
-            "y": "3007",\
+            "x": "2924",\
+            "y": "3557",\
             "z": "12"\
             },\
             {\
@@ -1754,8 +1754,8 @@ const presetRandomSeeds = '\
             "renamed": "false",\
             "enabled": "true",\
             "highlight": "1",\
-            "x": "1113",\
-            "y": "3751",\
+            "x": "1663",\
+            "y": "4301",\
             "z": "13",\
             "width": "664",\
             "height": "551.542398553761",\
@@ -1770,8 +1770,8 @@ const presetRandomSeeds = '\
             "renamed": "true",\
             "enabled": "true",\
             "highlight": "0",\
-            "x": "2371",\
-            "y": "3315",\
+            "x": "2921",\
+            "y": "3865",\
             "z": "14"\
             },\
             {\
@@ -1781,8 +1781,8 @@ const presetRandomSeeds = '\
             "renamed": "false",\
             "enabled": "true",\
             "highlight": "0",\
-            "x": "2021",\
-            "y": "3294",\
+            "x": "2571",\
+            "y": "3844",\
             "z": "15",\
             "params":\
             [\
@@ -1797,8 +1797,8 @@ const presetRandomSeeds = '\
             "renamed": "false",\
             "enabled": "true",\
             "highlight": "5",\
-            "x": "1194",\
-            "y": "4084",\
+            "x": "1744",\
+            "y": "4634",\
             "z": "16",\
             "params":\
             [\
@@ -1812,8 +1812,8 @@ const presetRandomSeeds = '\
             "renamed": "false",\
             "enabled": "true",\
             "highlight": "0",\
-            "x": "2209",\
-            "y": "3079",\
+            "x": "2759",\
+            "y": "3629",\
             "z": "17",\
             "prevSpace": "hex",\
             "params":\
@@ -1831,8 +1831,8 @@ const presetRandomSeeds = '\
             "renamed": "false",\
             "enabled": "true",\
             "highlight": "0",\
-            "x": "2022",\
-            "y": "3437",\
+            "x": "2572",\
+            "y": "3987",\
             "z": "18",\
             "params":\
             [\
@@ -1847,8 +1847,8 @@ const presetRandomSeeds = '\
             "renamed": "true",\
             "enabled": "true",\
             "highlight": "0",\
-            "x": "2377",\
-            "y": "2913",\
+            "x": "2927",\
+            "y": "3463",\
             "z": "19"\
             },\
             {\
@@ -1858,8 +1858,8 @@ const presetRandomSeeds = '\
             "renamed": "true",\
             "enabled": "true",\
             "highlight": "0",\
-            "x": "1165",\
-            "y": "3857",\
+            "x": "1715",\
+            "y": "4407",\
             "z": "20"\
             },\
             {\
@@ -1869,8 +1869,8 @@ const presetRandomSeeds = '\
             "renamed": "true",\
             "enabled": "true",\
             "highlight": "0",\
-            "x": "1166",\
-            "y": "3812",\
+            "x": "1716",\
+            "y": "4362",\
             "z": "21"\
             },\
             {\
@@ -1880,8 +1880,8 @@ const presetRandomSeeds = '\
             "renamed": "false",\
             "enabled": "true",\
             "highlight": "1",\
-            "x": "2635.17",\
-            "y": "3936",\
+            "x": "3185.17",\
+            "y": "4486",\
             "z": "22",\
             "params":\
             [\
@@ -1896,8 +1896,8 @@ const presetRandomSeeds = '\
             "renamed": "false",\
             "enabled": "true",\
             "highlight": "0",\
-            "x": "2855.17",\
-            "y": "3935",\
+            "x": "3342",\
+            "y": "4485",\
             "z": "23",\
             "params":\
             [\
@@ -1911,8 +1911,8 @@ const presetRandomSeeds = '\
             "renamed": "true",\
             "enabled": "true",\
             "highlight": "5",\
-            "x": "3005.17",\
-            "y": "3935",\
+            "x": "3670.56",\
+            "y": "4485",\
             "z": "24",\
             "width": "120",\
             "height": "186",\
@@ -1934,8 +1934,8 @@ const presetRandomSeeds = '\
             "renamed": "true",\
             "enabled": "true",\
             "highlight": "0",\
-            "x": "2861.17",\
-            "y": "3819",\
+            "x": "3526.56",\
+            "y": "4369",\
             "z": "25"\
             },\
             {\
@@ -1945,10 +1945,10 @@ const presetRandomSeeds = '\
             "renamed": "false",\
             "enabled": "true",\
             "highlight": "0",\
-            "x": "2580.17",\
-            "y": "3752",\
+            "x": "3130",\
+            "y": "4302",\
             "z": "26",\
-            "width": "595.4069801229714",\
+            "width": "709.7971882372418",\
             "height": "419",\
             "params":\
             [\
@@ -1961,8 +1961,8 @@ const presetRandomSeeds = '\
             "renamed": "true",\
             "enabled": "true",\
             "highlight": "4",\
-            "x": "3319.17",\
-            "y": "3621",\
+            "x": "3984.56",\
+            "y": "4171",\
             "z": "27",\
             "params":\
             [\
@@ -1977,8 +1977,8 @@ const presetRandomSeeds = '\
             "renamed": "true",\
             "enabled": "true",\
             "highlight": "4",\
-            "x": "3319.17",\
-            "y": "3764",\
+            "x": "3984.56",\
+            "y": "4314",\
             "z": "28",\
             "params":\
             [\
@@ -1993,8 +1993,8 @@ const presetRandomSeeds = '\
             "renamed": "false",\
             "enabled": "true",\
             "highlight": "0",\
-            "x": "3661.17",\
-            "y": "3710",\
+            "x": "4326.56",\
+            "y": "4260",\
             "z": "29",\
             "active": "true",\
             "params":\
@@ -2011,8 +2011,8 @@ const presetRandomSeeds = '\
             "renamed": "true",\
             "enabled": "true",\
             "highlight": "0",\
-            "x": "1944",\
-            "y": "3786",\
+            "x": "2494",\
+            "y": "4336",\
             "z": "30"\
             },\
             {\
@@ -2022,8 +2022,8 @@ const presetRandomSeeds = '\
             "renamed": "true",\
             "enabled": "true",\
             "highlight": "4",\
-            "x": "3319.17",\
-            "y": "3908",\
+            "x": "3984.56",\
+            "y": "4458",\
             "z": "31",\
             "params":\
             [\
@@ -2038,8 +2038,8 @@ const presetRandomSeeds = '\
             "renamed": "true",\
             "enabled": "true",\
             "highlight": "4",\
-            "x": "3319.17",\
-            "y": "4051",\
+            "x": "3984.56",\
+            "y": "4601",\
             "z": "32",\
             "params":\
             [\
@@ -2054,8 +2054,8 @@ const presetRandomSeeds = '\
             "renamed": "false",\
             "enabled": "true",\
             "highlight": "0",\
-            "x": "3477.17",\
-            "y": "4309",\
+            "x": "4142.56",\
+            "y": "4859",\
             "z": "33",\
             "prevSpace": "rgb",\
             "params":\
@@ -2073,8 +2073,8 @@ const presetRandomSeeds = '\
             "renamed": "false",\
             "enabled": "true",\
             "highlight": "0",\
-            "x": "3661.17",\
-            "y": "3885",\
+            "x": "4326.56",\
+            "y": "4435",\
             "z": "34",\
             "active": "true",\
             "params":\
@@ -2092,10 +2092,9 @@ const presetRandomSeeds = '\
             "renamed": "true",\
             "enabled": "true",\
             "highlight": "0",\
-            "x": "3318.17",\
-            "y": "4248",\
+            "x": "3983.56",\
+            "y": "4798",\
             "z": "35",\
-            "active": "true",\
             "params":\
             [\
                     ["NUM#", "seed", "21,0"]\
@@ -2108,10 +2107,9 @@ const presetRandomSeeds = '\
             "renamed": "true",\
             "enabled": "true",\
             "highlight": "0",\
-            "x": "3318.17",\
-            "y": "4380",\
+            "x": "3983.56",\
+            "y": "4930",\
             "z": "36",\
-            "active": "true",\
             "params":\
             [\
                     ["NUM#", "seed", "119,0"]\
@@ -2124,10 +2122,9 @@ const presetRandomSeeds = '\
             "renamed": "true",\
             "enabled": "true",\
             "highlight": "0",\
-            "x": "3318.17",\
-            "y": "4515",\
+            "x": "3983.56",\
+            "y": "5065",\
             "z": "37",\
-            "active": "true",\
             "params":\
             [\
                     ["NUM#", "seed", "198,0"]\
@@ -2140,8 +2137,8 @@ const presetRandomSeeds = '\
             "renamed": "true",\
             "enabled": "true",\
             "highlight": "0",\
-            "x": "2859.17",\
-            "y": "3856",\
+            "x": "3524.56",\
+            "y": "4406",\
             "z": "38"\
             },\
             {\
@@ -2151,8 +2148,8 @@ const presetRandomSeeds = '\
             "renamed": "true",\
             "enabled": "true",\
             "highlight": "0",\
-            "x": "2642.17",\
-            "y": "3821",\
+            "x": "3192.17",\
+            "y": "4371",\
             "z": "39"\
             },\
             {\
@@ -2162,9 +2159,69 @@ const presetRandomSeeds = '\
             "renamed": "true",\
             "enabled": "true",\
             "highlight": "0",\
-            "x": "2642.17",\
-            "y": "3856",\
+            "x": "3192.17",\
+            "y": "4406",\
             "z": "40"\
+            },\
+            {\
+            "type": "FRZ",\
+            "id": "freeze",\
+            "name": "freeze",\
+            "renamed": "false",\
+            "enabled": "true",\
+            "highlight": "5",\
+            "x": "3508",\
+            "y": "4485",\
+            "z": "41"\
+            },\
+            {\
+            "type": "PANEL",\
+            "id": "panel3",\
+            "name": "",\
+            "renamed": "false",\
+            "enabled": "true",\
+            "highlight": "5",\
+            "x": "3149",\
+            "y": "4753",\
+            "z": "42",\
+            "width": "664",\
+            "height": "204.16025645645797",\
+            "params":\
+            [\
+            ]\
+            },\
+            {\
+            "type": "CMNT",\
+            "id": "comment15",\
+            "name": "The%20%3Cb%3Efreeze%20node%3C%2Fb%3E%20stops%20anything%20to%20the%20left%20of%20it",\
+            "renamed": "true",\
+            "enabled": "true",\
+            "highlight": "0",\
+            "x": "3187",\
+            "y": "4795",\
+            "z": "43"\
+            },\
+            {\
+            "type": "CMNT",\
+            "id": "comment16",\
+            "name": "from%20generating%20new%20values.%20%20Once%20the%20repeat",\
+            "renamed": "true",\
+            "enabled": "true",\
+            "highlight": "0",\
+            "x": "3192",\
+            "y": "4837",\
+            "z": "44"\
+            },\
+            {\
+            "type": "CMNT",\
+            "id": "comment17",\
+            "name": "is%20done%2C%20freeze%20caches%20the%20results.",\
+            "renamed": "true",\
+            "enabled": "true",\
+            "highlight": "0",\
+            "x": "3190",\
+            "y": "4881",\
+            "z": "45"\
             }\
         ],\
         "connections":\
@@ -2266,7 +2323,7 @@ const presetRandomSeeds = '\
             "list": "false"\
             },\
             {\
-            "outputNodeId": "repeat",\
+            "outputNodeId": "freeze",\
             "outputId": "h0",\
             "outputOrder": "0",\
             "inputNodeId": "list",\
@@ -2400,6 +2457,14 @@ const presetRandomSeeds = '\
             "inputNodeId": "random14",\
             "inputId": "seed",\
             "list": "false"\
+            },\
+            {\
+            "outputNodeId": "repeat",\
+            "outputId": "h0",\
+            "outputOrder": "0",\
+            "inputNodeId": "freeze",\
+            "inputId": "h0",\
+            "list": "true"\
             }\
         ]\
     }';
