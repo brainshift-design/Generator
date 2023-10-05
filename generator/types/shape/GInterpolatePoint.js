@@ -47,7 +47,9 @@ extends GOperator2
             const input1 = this.input1 ? (await this.input1.eval(parse)).toValue() : null;
 
             if (   input0
-                && input1)
+                && input1
+                && input0.isValid()
+                && input1.isValid())
             {
                 const p0  = point(input0.objects[0].x, input0.objects[0].y);
                 const p1  = point(input1.objects[0].x, input1.objects[0].y);
