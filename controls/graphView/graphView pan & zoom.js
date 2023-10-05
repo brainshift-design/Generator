@@ -274,21 +274,28 @@ function updateZoomIcon()
         if (   zoom < settings.minZoomForParams
             && zoom < 1)
         {
+            btnZoom.div.style.color = 'black';
             _zoomIconOverlay.style.left       = '14px';
             _zoomIconOverlay.style.top        = '11px';
             _zoomIconOverlay.style.width      = '28';
-            _zoomIconOverlay.style.background = 'url(\'data:image/svg+xml;utf8,<svg width="28" height="20" viewBox="0 0 28 20" fill="none" xmlns="http://www.w3.org/2000/svg"><path d="M4 0.5H24C25.933 0.5 27.5 2.067 27.5 4V19.5H0.5V4C0.5 2.067 2.067 0.5 4 0.5Z" stroke="white"/></svg>\')';
+            _zoomIconOverlay.style.height     = '20';
+            _zoomIconOverlay.style.background = 'url(\'data:image/svg+xml;utf8,<svg width="28" height="20" viewBox="0 0 28 20" fill="none" xmlns="http://www.w3.org/2000/svg"><path d="M0 4C0 1.79086 1.79086 0 4 0H24C26.2091 0 28 1.79086 28 4V20H0V4Z" fill="white"/></svg>\')';
         }
         else if (zoom < settings.minZoomForParams
             && zoom < 10)
         {
+            btnZoom.div.style.color = 'black';
             _zoomIconOverlay.style.left       = '12px';
             _zoomIconOverlay.style.top        = '11px';
             _zoomIconOverlay.style.width      = '33';
-            _zoomIconOverlay.style.background = 'url(\'data:image/svg+xml;utf8,<svg width="33" height="20" viewBox="0 0 33 20" fill="none" xmlns="http://www.w3.org/2000/svg"><path d="M4 0.5H29C30.933 0.5 32.5 2.067 32.5 4V19.5H0.5V4C0.5 2.067 2.067 0.5 4 0.5Z" stroke="white"/></svg>\')';
+            _zoomIconOverlay.style.height     = '20';
+            _zoomIconOverlay.style.background = 'url(\'data:image/svg+xml;utf8,<svg width="33" height="20" viewBox="0 0 33 20" fill="none" xmlns="http://www.w3.org/2000/svg"><path d="M0 4C0 1.79086 1.79086 0 4 0H29C31.2091 0 33 1.79086 33 4V20H0V4Z" fill="white"/></svg>\')';
         }
         else
+        {
+            btnZoom.div.style.color = 'white';
             _zoomIconOverlay.style.background = 'none';
+        }
 
 
         _zoomIconOverlay.style.backgroundPosition = '50% 50%';

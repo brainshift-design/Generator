@@ -914,20 +914,25 @@ menuFlow = new Menu('Flow', true, false);
     // }});
 
 
-    btnPanel    = new MenuButton('', menuPanel,  {useMenuName: true, highlight: () => currentMenus.includes(menuPanel ), callback: () => updatePanMode(false)});
+    if (true)
+    {
+        btnPanel    = new MenuButton('', menuPanel,  {useMenuName: true, highlight: () => currentMenus.includes(menuPanel ), callback: () => updatePanMode(false)});
+    }
+    else
+    {
+        btnPanel = new MenuButton('Panel', null, {callback: () => 
+        {
+            const create = new CreateNodeAction(PANEL, btnPanel.div);
+            actionManager.do(create);
+
+            graphView.updateNodes([create.node]);
+            graphView.updateScrollWithBounds();
+
+            hideAllMenus();
+            updatePanMode(false);
+        }});
+    }
     
-    // btnPanel = new MenuButton('Panel', null, {callback: () => 
-    // {
-    //     const create = new CreateNodeAction(PANEL, btnPanel.div);
-    //     actionManager.do(create);
-
-    //     graphView.updateNodes([create.node]);
-    //     graphView.updateScrollWithBounds();
-
-    //     hideAllMenus();
-    //     updatePanMode(false);
-    // }});
-
     
     btnHand = new MenuButton('Hand tool&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<span style="color: #888; font-weight: 500;">H</span>', null, {callback: () => 
         {
@@ -993,7 +998,7 @@ menuFlow = new Menu('Flow', true, false);
         });
 
         
-    btnZoom.div.appendChild(createDiv('', 'zoomIconOverlay'));
+    btnZoom.div.insertBefore(createDiv('', 'zoomIconOverlay'), btnZoom.divIcon);
 
     btnZoom.divIcon.style.textAlign          = 'center';
     btnZoom.divIcon.style.fontVariantNumeric = 'tabular-nums';
