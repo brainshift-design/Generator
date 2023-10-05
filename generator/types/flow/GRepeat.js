@@ -113,7 +113,7 @@ extends GOperator1
                     if (this.loop.type != NUMBER_VALUE)
                     {
                         //this.loop.invalidateInputs(parse, this);
-                        this.loop.iterateLoop(parse);
+                        //this.loop.iterateLoop(parse);
                     }
                     
 
