@@ -163,7 +163,7 @@ Operator.prototype.initLabelTextbox = function()
             this.updateHeaderLabel();
             
             if (this.inFocus)
-                this.div.focus();
+                this.div.focus({preventScroll: true});
         });
     };    
 }
@@ -176,15 +176,15 @@ Operator.prototype.showLabelTextbox = function()
             hasFocus(this.div)
         && !this.clicked;
 
-    this.textbox.style.width                = this.header.offsetWidth  - 4;
-    this.textbox.style.height               = this.header.offsetHeight - 4;
-    this.textbox.style.position             = 'absolute';
-    this.textbox.style.left                 = '50%';
-    this.textbox.style.top                  = '50%';
-    this.textbox.style.transform            = this.type == COMMENT ? 'translateX(-50%) translateY(-2px)' : 'translateX(-50%) translateY(-50%)';
-    this.textbox.style.textAlign            = 'center';
-    this.textbox.style.margin               = '0 1px 0 0px';
-    this.textbox.style.borderRadius         = '2px 2px 0 0';
+    this.textbox.style.width           = this.header.offsetWidth  - 4;
+    this.textbox.style.height          = this.header.offsetHeight - 4;
+    this.textbox.style.position        = 'absolute';
+    this.textbox.style.left            = '50%';
+    this.textbox.style.top             = '50%';
+    this.textbox.style.transform       = this.type == COMMENT ? 'translateX(-50%) translateY(-2px)' : 'translateX(-50%) translateY(-50%)';
+    this.textbox.style.textAlign       = 'center';
+    this.textbox.style.margin          = '0 1px 0 0px';
+    this.textbox.style.borderRadius    = '2px 2px 0 0';
 
     this.textbox.style.backgroundColor = this.header.style.backgroundColor;
     this.textbox.style.color           = this.label.style.color;
@@ -198,6 +198,6 @@ Operator.prototype.showLabelTextbox = function()
     
     this.updateNode();
     
-    this.textbox.focus();
+    this.textbox.focus({preventScroll: true});
     this.textbox.select();
 }

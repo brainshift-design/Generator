@@ -66,7 +66,7 @@ extends GOperator1
 
 
                 let   temp      = 0;
-                let   step      = Number.MAX_SAFE_INTEGER/2;
+                let   step      = Number.MAX_SAFE_INTEGER/65536;
 
 
                 let   iter      = 0;
@@ -101,7 +101,7 @@ extends GOperator1
                     if (current.isValid())
                     {
                         diff = target.value - current.value;
-                        console.log('diff =', diff);
+                        //console.log('diff =', diff);
 
                         if (Math.abs(diff) < 0.0000001)
                             break;
@@ -111,8 +111,8 @@ extends GOperator1
                             || Math.sign(diff) != Math.sign(prevDiff))
                             step /= -2;
 
-                        console.log('step =', step);
-                        console.log('');
+                        // console.log('step =', step);
+                        // console.log('');
 
                         prevDiff = diff;
                     }

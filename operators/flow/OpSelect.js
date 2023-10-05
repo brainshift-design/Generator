@@ -18,7 +18,7 @@ extends OperatorBase
         this.addInput(new Input(LIST_VALUES, getNodeInputValuesForUndo));
         this.addOutput(new Output([ANY_VALUE], this.output_genRequest));
 
-        this.addParam(this.paramIndex = new NumberParam('index', 'index', true, true, false, 0, 0));
+        this.addParam(this.paramIndex = new NumberParam('index', 'index', true, true, false, 0));
 
         this.paramIndex.divider                       = 0.55;
         this.paramIndex.controls[0].allowEditDecimals = false;
@@ -89,7 +89,9 @@ extends OperatorBase
         // super.updateParams();
         
         this.paramIndex.enableControlText(true, this.paramIndex.isUnknown());
-        this.paramIndex.controls[0].setMax(Math.max(0, this.length.value-1));
+
+        this.paramIndex.controls[0].setMin(Math.min(0, -this.length.value+1));
+        this.paramIndex.controls[0].setMax(Math.max(0,  this.length.value-1));
 
         this.updateParamControls();
     }

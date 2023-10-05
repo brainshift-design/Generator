@@ -59,7 +59,7 @@ function readTextFromClipboard()
             
             document.body.appendChild(textArea);
             
-            textArea.focus();
+            textArea.focus({preventScroll: true});
             textArea.select();
             
             return new Promise((res, rej) => 

@@ -117,6 +117,10 @@ extends OperatorBase
         
 
         this.updateTransform();
+
+
+        // graphView.updateNodeTransforms(graph.currentPage.nodes);
+        // graphView.updateScrollWithBounds();
         
         // this.div      .style.boxShadow = '0 0 0 1px red inset';
         // this.label    .style.boxShadow = '0 0 0 1px green inset';

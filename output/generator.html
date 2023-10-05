@@ -4,7 +4,7 @@
 
 
 
-const generatorVersion = 223;
+const generatorVersion = 224;
 
 
 const MAX_INT32        = 2147483647;
@@ -4016,7 +4016,7 @@ function readTextFromClipboard()
             
             document.body.appendChild(textArea);
             
-            textArea.focus();
+            textArea.focus({preventScroll: true});
             textArea.select();
             
             return new Promise((res, rej) => 
@@ -17267,17 +17267,17 @@ extends GOperator
 
                 index = 
                        index.isValid()
-                    && index.value >= 0
+                    && index.value > -input.items.length
                     && index.value <  input.items.length
                     ? new NumberValue(Math.round(index.value))
                     : new NumberValue(0);
 
 
                 if (   index.isValid()
-                    && index.value >= 0
-                    && index.value < input.items.length)
+                    && index.value > -input.items.length
+                    && index.value <  input.items.length)
                 {
-                    this.value = input.items[index.value];//.copy();
+                    this.value = input.items.at(index.value);
                 
                     if (this.value.objects)
                     {
@@ -20061,7 +20061,7 @@ extends GOperator1
 
 
                 let   temp      = 0;
-                let   step      = Number.MAX_SAFE_INTEGER/2;
+                let   step      = Number.MAX_SAFE_INTEGER/65536;
 
 
                 let   iter      = 0;
@@ -20096,7 +20096,7 @@ extends GOperator1
                     if (current.isValid())
                     {
                         diff = target.value - current.value;
-                        console.log('diff =', diff);
+                        //console.log('diff =', diff);
 
                         if (Math.abs(diff) < 0.0000001)
                             break;
@@ -20106,8 +20106,8 @@ extends GOperator1
                             || Math.sign(diff) != Math.sign(prevDiff))
                             step /= -2;
 
-                        console.log('step =', step);
-                        console.log('');
+                        // console.log('step =', step);
+                        // console.log('');
 
                         prevDiff = diff;
                     }
