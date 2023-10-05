@@ -18,7 +18,7 @@ function createTooltipSrc(source, ref, getTooltip, canShow = null)
 
 
         if (    tooltipTimer < 0
-            &&  graph.currentPage.zoom >= settings.minZoomForParams
+            //&&  graph.currentPage.zoom >= settings.minZoomForParams
             && !graphView.soloMode
             && (!canShow || canShow()))
         {
