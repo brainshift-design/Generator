@@ -5661,6 +5661,7 @@ class FigmaObject
 
     createSpaceTransform()
     {
+        console.log('this =', this);
         let vr = point(this.sp1.x - this.sp0.x, this.sp1.y - this.sp0.y);
         let vb = point(this.sp2.x - this.sp0.x, this.sp2.y - this.sp0.y);
     
@@ -15925,33 +15926,7 @@ extends GOperator
 
         for (let i = 0, o = 0; i < this.inputs.length; i++)
         {
-            await this.inputs[i].eval(parse);
-            
-            
-            // first copy the input objects
-            // to display when list is the active node
-
-            // if (   this.options.enabled
-            //     && this.inputs[i].value)
-            // {
-            //     const objects = getValidObjects(this.inputs[i].value);
-                
-            //     for (let j = 0; j < objects.length; j++, o++)
-            //     {
-            //         const obj = objects[j];//copyFigmaObject(objects[j]);
-
-            //         obj.nodeId   = this.nodeId;
-            //         obj.objectId = obj.objectId + OBJECT_SEPARATOR + this.nodeId;
-            //         obj.listId   = i;
-
-            //         //this.value.objects.push(obj);
-            //     }
-            // }
-
-
-            // now create the output value
-
-            const input = this.inputs[i].toValue();
+            const input = (await this.inputs[i].eval(parse)).toValue();
 
 
             if (   input
@@ -32024,25 +31999,6 @@ extends GShapeBase
             const input = (await this.inputs[i].eval(parse)).toValue();
 
             
-            // first copy the input objects
-
-            // if (this.options.enabled)
-            // {
-            //     for (let j = 0; j < this.inputs[i].objects.length; j++, o++)
-            //     {
-            //         const obj = copyFigmaObject(this.inputs[i].objects[j]);
-
-            //         obj.nodeId   = this.nodeId;
-            //         obj.objectId = obj.objectId + OBJECT_SEPARATOR + this.nodeId;
-            //         obj.listId   = -1;
-
-            //         this.value.objects.push(obj);
-            //     }
-            // }
-
-
-            // now create the output value
-
             if (   input
                 && this.options.enabled)            
             {
@@ -32054,13 +32010,13 @@ extends GShapeBase
                         if (!SHAPE_VALUES.includes(item.type))
                             continue;
 
-                        this.value.items.push(item.copy());   
+                        this.value.items.push(item);//.copy());   
                         //this.value.objects.push(...item.objects.map(o => this.copyObject(o, i)));
                     }
                 }
                 else
                 {
-                    this.value.items.push(input.copy());
+                    this.value.items.push(input);//.copy());
                     //this.value.objects.push(...input.objects.map(o => this.copyObject(o, i)));
                 }
             }
@@ -32110,6 +32066,25 @@ extends GShapeBase
                     group.children.push(obj);
                 }
             }
+
+
+            let bounds = Rect.NaN;
+
+            for (const obj of group.children)
+                bounds = expandRect(bounds, obj.getBounds());
+            console.log('bounds =', bounds);
+    
+            group.x      = bounds.x;
+            group.y      = bounds.y;
+            group.width  = bounds.width;
+            group.height = bounds.height;
+
+            group.createDefaultSpace();
+            group.resetSpace(bounds);
+
+            group.createDefaultTransform(bounds.x, bounds.y);
+            group.createDefaultTransformPoints(bounds.x, bounds.y, bounds.width, bounds.height);
+
 
             this.value.objects = [group];
         }
@@ -32432,7 +32407,7 @@ extends GShape
         {
             const input = (await this.input.eval(parse)).toValue();
 
-            this.value = input.copy();
+            this.value = input;//.copy();
 
             if (this.options.enabled)
                 await this.evalShapeBase(parse, replace.value == 0, input);

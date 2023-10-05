@@ -52,33 +52,7 @@ extends GOperator
 
         for (let i = 0, o = 0; i < this.inputs.length; i++)
         {
-            await this.inputs[i].eval(parse);
-            
-            
-            // first copy the input objects
-            // to display when list is the active node
-
-            // if (   this.options.enabled
-            //     && this.inputs[i].value)
-            // {
-            //     const objects = getValidObjects(this.inputs[i].value);
-                
-            //     for (let j = 0; j < objects.length; j++, o++)
-            //     {
-            //         const obj = objects[j];//copyFigmaObject(objects[j]);
-
-            //         obj.nodeId   = this.nodeId;
-            //         obj.objectId = obj.objectId + OBJECT_SEPARATOR + this.nodeId;
-            //         obj.listId   = i;
-
-            //         //this.value.objects.push(obj);
-            //     }
-            // }
-
-
-            // now create the output value
-
-            const input = this.inputs[i].toValue();
+            const input = (await this.inputs[i].eval(parse)).toValue();
 
 
             if (   input

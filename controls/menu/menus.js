@@ -699,7 +699,7 @@ menuFlow = new Menu('Flow', true, false);
                                 new MenuItem('Vector',    null,   {icon: iconVectorNetwork, childMenu: menuVector}),
                                 new MenuItem('',          null,   {separator: true}),
                                 new MenuItem('Frame',     null,   {icon: iconFrame,      createType: FRAME,       callback: e => actionManager.do(getCreateNodeAction(FRAME,       btnShape.div, getCreateOptions(e)))}),
-                              //new MenuItem('Group',     null,   {icon: iconShapeGroup, createType: SHAPE_GROUP, callback: e => actionManager.do(getCreateNodeAction(SHAPE_GROUP, btnShape.div, getCreateOptions(e)))}),
+                                new MenuItem('Group',     null,   {icon: iconShapeGroup, createType: SHAPE_GROUP, callback: e => actionManager.do(getCreateNodeAction(SHAPE_GROUP, btnShape.div, getCreateOptions(e)))}),
                              // new MenuItem('Boolean',   null,   {enabled: false, icon: iconBoolUnion,  callback: e => actionManager.do(getCreateNodeAction(BOOLEAN,     btnShape.div, getCreateOptions(e)))}),
         menuItemShapeSep1     = new MenuItem('',          null,   {separator: true}),
                                 new MenuItem('Transform', null,   {icon: iconMove, childMenu: menuTransform}),

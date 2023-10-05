@@ -131,6 +131,7 @@ class FigmaObject
 
     createSpaceTransform()
     {
+        console.log('this =', this);
         let vr = point(this.sp1.x - this.sp0.x, this.sp1.y - this.sp0.y);
         let vb = point(this.sp2.x - this.sp0.x, this.sp2.y - this.sp0.y);
     
