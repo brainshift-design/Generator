@@ -648,7 +648,7 @@ menuFlow = new Menu('Flow', true, false);
                               new MenuItem('Effects',     null, {icon: iconEffects, childMenu: menuEffects}),
                               new MenuItem('Styles',      null, {icon: iconStyle, childMenu: menuStyles}),
                               new MenuItem('',            null, {separator: true}),
-                              new MenuItem('Blend',       null, {icon: iconBlendLayer,  callback: e => actionManager.do(getCreateNodeAction(LAYER_BLEND, btnLayer.div, getCreateOptions(e)))}),
+                              new MenuItem('Blend',       null, {icon: iconColorBlend,  callback: e => actionManager.do(getCreateNodeAction(LAYER_BLEND, btnLayer.div, getCreateOptions(e)))}),
                               new MenuItem('Mask',        null, {icon: iconMask,        callback: e => actionManager.do(getCreateNodeAction(LAYER_MASK,  btnLayer.div, getCreateOptions(e)))})]);
     
     

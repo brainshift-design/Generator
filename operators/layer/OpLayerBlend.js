@@ -8,7 +8,7 @@ extends OperatorBase
 
     constructor()
     {
-        super(LAYER_BLEND, 'layer', 'layer', iconBlendLayer);
+        super(LAYER_BLEND, 'blend', 'blend', iconColorBlend);
 
         this.canDisable  = true;
         this.iconOffsetY = -1;
@@ -16,8 +16,8 @@ extends OperatorBase
 
         this.addOutput(new Output([LAYER_BLEND_VALUE], this.output_genRequest, getNodeOutputValuesForUndo));
 
-        this.addParam(this.paramOpacity = new NumberParam('opacity', 'opacity', true,  true, true, 100, 0, 100));
         this.addParam(this.paramBlend   = new SelectParam('blend',   'blend',   false, true, true, BlendModes.map(bm => bm[1]), 0));
+        this.addParam(this.paramOpacity = new NumberParam('opacity', 'opacity', true,  true, true, 100, 0, 100));
     
         this.paramOpacity.controls[0].suffix = '%';
 
