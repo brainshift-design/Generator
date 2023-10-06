@@ -37,18 +37,18 @@ const identity = Object.freeze([[1, 0, 0],
 const Epsilon = 0.0000001;
 const Tau = Math.PI * 2;
 var enableAsserts = false;
-function almostZero(x, eps = 0.0000001) {
+function hardZero(x, eps = 0.000000001) {
     return Math.abs(x) < eps ? 0 : x;
 }
-function nozero(x, eps = Epsilon) {
+function nozero(x, eps = 0.000000001) {
     return x != 0
         ? x
         : (x < 0 ? -eps : eps);
 }
-function nozerov(v) {
-    return point(nozero(v.x), nozero(v.y));
+function nozerov(v, eps = 0.000000001) {
+    return point(nozero(v.x, eps), nozero(v.y, eps));
 }
-function equal(a, b, eps = Epsilon) {
+function equal(a, b, eps = 0.000000001) {
     return Math.abs(b - a) < eps;
 }
 function sqr(x) { return x * x; }
@@ -170,8 +170,8 @@ function inversem3(m) {
     return divm3s(adjugate(m), determinant(m));
 }
 function createRotateTransform(angle) {
-    const cosA = Math.cos(angle);
-    const sinA = Math.sin(angle);
+    const cosA = hardZero(Math.cos(angle));
+    const sinA = hardZero(Math.sin(angle));
     return [[cosA, sinA, 0],
         [-sinA, cosA, 0],
         [0, 0, 1]];
@@ -396,13 +396,13 @@ function getLinearPathData(points) {
     if (points.length < 2)
         return pathData;
     pathData += 'M';
-    pathData += ' ' + almostZero(points[0].x);
-    pathData += ' ' + almostZero(points[0].y);
+    pathData += ' ' + hardZero(points[0].x);
+    pathData += ' ' + hardZero(points[0].y);
     for (let i = 1; i < points.length; i++) {
         pathData +=
             ' L'
-                + ' ' + almostZero(points[i].x)
-                + ' ' + almostZero(points[i].y);
+                + ' ' + hardZero(points[i].x)
+                + ' ' + hardZero(points[i].y);
     }
     return pathData;
 }

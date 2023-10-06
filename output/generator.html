@@ -40,14 +40,14 @@ var enableAsserts = false;
 
 
 
-function almostZero(x, eps = 0.0000001) 
+function hardZero(x, eps = 0.000000001) 
 { 
     return Math.abs(x) < eps ? 0 : x;
 }
 
 
 
-function nozero(x, eps = Epsilon) 
+function nozero(x, eps = 0.000000001) 
 { 
     return x != 0 
          ? x 
@@ -56,16 +56,16 @@ function nozero(x, eps = Epsilon)
 
 
 
-function nozerov(v) 
+function nozerov(v, eps = 0.000000001) 
 { 
     return point(
-        nozero(v.x), 
-        nozero(v.y)); 
+        nozero(v.x, eps), 
+        nozero(v.y, eps)); 
 }
 
 
 
-function equal(a, b, eps = Epsilon)
+function equal(a, b, eps = 0.000000001)
 {
     return Math.abs(b - a) < eps;
 }
@@ -288,8 +288,8 @@ function inversem3(m)
 
 function createRotateTransform(angle)
 {
-    const cosA = Math.cos(angle);
-    const sinA = Math.sin(angle);
+    const cosA = hardZero(Math.cos(angle));
+    const sinA = hardZero(Math.sin(angle));
 
     return [[ cosA, sinA, 0],
             [-sinA, cosA, 0],
@@ -756,15 +756,15 @@ function getLinearPathData(points)
 
 
     pathData += 'M';
-    pathData += ' ' + almostZero(points[0].x);
-    pathData += ' ' + almostZero(points[0].y);
+    pathData += ' ' + hardZero(points[0].x);
+    pathData += ' ' + hardZero(points[0].y);
 
     for (let i = 1; i < points.length; i++)
     {
         pathData += 
               ' L'
-            + ' ' + almostZero(points[i].x)
-            + ' ' + almostZero(points[i].y);
+            + ' ' + hardZero(points[i].x)
+            + ' ' + hardZero(points[i].y);
     }
 
 
@@ -5683,8 +5683,8 @@ class FigmaObject
         let vb = point(this.sp2.x - this.sp0.x, this.sp2.y - this.sp0.y);
     
     
-        let sx = nozero(vr.x);
-        let sy = nozero(vb.y);
+        let sx = vr.x;
+        let sy = vb.y;
     
         let kx = vr.y;
         let ky = vb.x;
@@ -5766,6 +5766,14 @@ class FigmaObject
 
     applyObjectTransform(xform, space)
     {
+        if (   this.xp0.x == this.xp1.x
+            && this.xp0.y == this.xp1.y)
+            this.xp1.x += 0.000000001;
+
+        if (   this.xp0.x == this.xp2.x
+            && this.xp0.y == this.xp2.y)
+            this.xp2.y += 0.000000001;
+
         this.xp0 = transformPoint(this.xp0, xform, space);
         this.xp1 = transformPoint(this.xp1, xform, space);
         this.xp2 = transformPoint(this.xp2, xform, space);
@@ -6862,18 +6870,18 @@ function getQuadraticPathData(points, closed)
 
 
     pathData += 'M';
-    pathData += ' ' + almostZero(points[0].x);
-    pathData += ' ' + almostZero(points[0].y);
+    pathData += ' ' + hardZero(points[0].x);
+    pathData += ' ' + hardZero(points[0].y);
 
     let i;
     for (i = 1; i < points.length-1; i += 2)
     {
         pathData += 
               ' Q'
-            + ' ' + almostZero(points[i  ].x)
-            + ' ' + almostZero(points[i  ].y)
-            + ' ' + almostZero(points[i+1].x)
-            + ' ' + almostZero(points[i+1].y);
+            + ' ' + hardZero(points[i  ].x)
+            + ' ' + hardZero(points[i  ].y)
+            + ' ' + hardZero(points[i+1].x)
+            + ' ' + hardZero(points[i+1].y);
     }
 
 
@@ -6882,10 +6890,10 @@ function getQuadraticPathData(points, closed)
     {
         pathData += 
               ' Q'
-            + ' ' + almostZero(points.at(-1).x)
-            + ' ' + almostZero(points.at(-1).y)
-            + ' ' + almostZero(points.at( 0).x)
-            + ' ' + almostZero(points.at( 0).y);
+            + ' ' + hardZero(points.at(-1).x)
+            + ' ' + hardZero(points.at(-1).y)
+            + ' ' + hardZero(points.at( 0).x)
+            + ' ' + hardZero(points.at( 0).y);
     }
 
 
@@ -6904,20 +6912,20 @@ function getCubicPathData(points, closed)
 
 
     pathData += 'M';
-    pathData += ' ' + almostZero(points[0].x);
-    pathData += ' ' + almostZero(points[0].y);
+    pathData += ' ' + hardZero(points[0].x);
+    pathData += ' ' + hardZero(points[0].y);
 
     let i;
     for (i = 1; i < points.length-2; i += 3)
     {
         pathData += 
               ' C'
-            + ' ' + almostZero(points[i  ].x)
-            + ' ' + almostZero(points[i  ].y)
-            + ' ' + almostZero(points[i+1].x)
-            + ' ' + almostZero(points[i+1].y)
-            + ' ' + almostZero(points[i+2].x)
-            + ' ' + almostZero(points[i+2].y);
+            + ' ' + hardZero(points[i  ].x)
+            + ' ' + hardZero(points[i  ].y)
+            + ' ' + hardZero(points[i+1].x)
+            + ' ' + hardZero(points[i+1].y)
+            + ' ' + hardZero(points[i+2].x)
+            + ' ' + hardZero(points[i+2].y);
     }
 
 
@@ -6925,12 +6933,12 @@ function getCubicPathData(points, closed)
     {
         pathData += 
               ' C'
-            + ' ' + almostZero(points.at(-2).x)
-            + ' ' + almostZero(points.at(-2).y)
-            + ' ' + almostZero(points.at(-1).x)
-            + ' ' + almostZero(points.at(-1).y)
-            + ' ' + almostZero(points.at( 0).x)
-            + ' ' + almostZero(points.at( 0).y);
+            + ' ' + hardZero(points.at(-2).x)
+            + ' ' + hardZero(points.at(-2).y)
+            + ' ' + hardZero(points.at(-1).x)
+            + ' ' + hardZero(points.at(-1).y)
+            + ' ' + hardZero(points.at( 0).x)
+            + ' ' + hardZero(points.at( 0).y);
     }
 
 
@@ -33468,14 +33476,15 @@ extends GAffine
 
     async evalObjects(parse, options)
     {
-        const a = options.angle.value/360*Tau;
+        const a     = options.angle.value/360*Tau;
+        const xform = createRotateTransform(a);
 
         return await this.evalAffineObjects(
             parse,
             options, 
             1, 
             1,
-            () => createRotateTransform(a));
+            () => xform);
     }
 
 
@@ -33626,8 +33635,20 @@ extends GAffine
 
     async evalObjects(parse, options)
     {
-        const sx    = options.scaleX.value / 100;
-        const sy    = options.scaleY.value / 100;
+        let sx = hardZero(options.scaleX.value / 100);
+        let sy = hardZero(options.scaleY.value / 100);
+
+
+        // if (sx > -0.000000001 && sx < 0 && sy >= 0) sx = -sx;
+        // if (sy > -0.000000001 && sy < 0 && sx >= 0) sy = -sy;
+
+
+        // if (this.nodeId == 'scale')
+        // {
+        //     console.log('2 sx = ', sx);
+        //     console.log('2 sy = ', sy);
+        // }
+
 
         const scale = Math.min(sx, sy);
 

@@ -260,18 +260,18 @@ function getQuadraticPathData(points, closed)
 
 
     pathData += 'M';
-    pathData += ' ' + almostZero(points[0].x);
-    pathData += ' ' + almostZero(points[0].y);
+    pathData += ' ' + hardZero(points[0].x);
+    pathData += ' ' + hardZero(points[0].y);
 
     let i;
     for (i = 1; i < points.length-1; i += 2)
     {
         pathData += 
               ' Q'
-            + ' ' + almostZero(points[i  ].x)
-            + ' ' + almostZero(points[i  ].y)
-            + ' ' + almostZero(points[i+1].x)
-            + ' ' + almostZero(points[i+1].y);
+            + ' ' + hardZero(points[i  ].x)
+            + ' ' + hardZero(points[i  ].y)
+            + ' ' + hardZero(points[i+1].x)
+            + ' ' + hardZero(points[i+1].y);
     }
 
 
@@ -280,10 +280,10 @@ function getQuadraticPathData(points, closed)
     {
         pathData += 
               ' Q'
-            + ' ' + almostZero(points.at(-1).x)
-            + ' ' + almostZero(points.at(-1).y)
-            + ' ' + almostZero(points.at( 0).x)
-            + ' ' + almostZero(points.at( 0).y);
+            + ' ' + hardZero(points.at(-1).x)
+            + ' ' + hardZero(points.at(-1).y)
+            + ' ' + hardZero(points.at( 0).x)
+            + ' ' + hardZero(points.at( 0).y);
     }
 
 
@@ -302,20 +302,20 @@ function getCubicPathData(points, closed)
 
 
     pathData += 'M';
-    pathData += ' ' + almostZero(points[0].x);
-    pathData += ' ' + almostZero(points[0].y);
+    pathData += ' ' + hardZero(points[0].x);
+    pathData += ' ' + hardZero(points[0].y);
 
     let i;
     for (i = 1; i < points.length-2; i += 3)
     {
         pathData += 
               ' C'
-            + ' ' + almostZero(points[i  ].x)
-            + ' ' + almostZero(points[i  ].y)
-            + ' ' + almostZero(points[i+1].x)
-            + ' ' + almostZero(points[i+1].y)
-            + ' ' + almostZero(points[i+2].x)
-            + ' ' + almostZero(points[i+2].y);
+            + ' ' + hardZero(points[i  ].x)
+            + ' ' + hardZero(points[i  ].y)
+            + ' ' + hardZero(points[i+1].x)
+            + ' ' + hardZero(points[i+1].y)
+            + ' ' + hardZero(points[i+2].x)
+            + ' ' + hardZero(points[i+2].y);
     }
 
 
@@ -323,12 +323,12 @@ function getCubicPathData(points, closed)
     {
         pathData += 
               ' C'
-            + ' ' + almostZero(points.at(-2).x)
-            + ' ' + almostZero(points.at(-2).y)
-            + ' ' + almostZero(points.at(-1).x)
-            + ' ' + almostZero(points.at(-1).y)
-            + ' ' + almostZero(points.at( 0).x)
-            + ' ' + almostZero(points.at( 0).y);
+            + ' ' + hardZero(points.at(-2).x)
+            + ' ' + hardZero(points.at(-2).y)
+            + ' ' + hardZero(points.at(-1).x)
+            + ' ' + hardZero(points.at(-1).y)
+            + ' ' + hardZero(points.at( 0).x)
+            + ' ' + hardZero(points.at( 0).y);
     }
 
 
