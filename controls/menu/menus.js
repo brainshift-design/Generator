@@ -915,7 +915,7 @@ menuFlow = new Menu('Flow', true, false);
     // }});
 
 
-    if (false)
+    if (true)
     {
         btnPanel    = new MenuButton('', menuPanel,  {useMenuName: true, highlight: () => currentMenus.includes(menuPanel ), callback: () => updatePanMode(false)});
     }

@@ -115,6 +115,8 @@ function getPresetGraph(graphId)
         case 'combinedTransform':    return presetCombinedTransform;
         case 'feedback':             return presetFeedback;
 
+        case 'wobblyCircle':         return presetWobblyCircle;
+
 
         case 'basicVariables':       return presetBasicVariables;
 
