@@ -444,10 +444,15 @@ function getSmoothSegment(_pointP, _point, _pointN)
         : 1/3 + (k*kCorr - 1/3) * (1 - Math.cos(a));
     
 
-    const pp = addv(_p, mulvs(unitv(v), -lengthv(v)/2 * f));
-    const pn = addv(_p, mulvs(unitv(v),  lengthv(v)/2 * f));
-    //console.log('pp =', pp);
-    //console.log('pn =', pn);
+    let pp = addv(_p, mulvs(unitv(v), -lengthv(v)/2 * f));
+    let pn = addv(_p, mulvs(unitv(v),  lengthv(v)/2 * f));
+
+
+    // add salt to get around Figma's issue 
+    // with straight otrhogonal bezier lines
+    pp = addv(pp, point(
+        Math.random() * 0.0000000001, 
+        Math.random() * 0.0000000001));
 
 
     return [pp, _p, pn];
