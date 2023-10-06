@@ -59,6 +59,33 @@ extends GOperator
 
     isValid()
     {
-        return true;
+        return this.maskType && this.maskType.isValid();
+    }
+
+
+
+    pushValueUpdates(parse)
+    {
+        super.pushValueUpdates(parse);
+
+        if (this.maskType) this.maskType.pushValueUpdates(parse);
+    }
+    
+    
+    
+    invalidateInputs(parse, from)
+    {
+        super.invalidateInputs(parse, from);
+
+        if (this.maskType) this.maskType.invalidateInputs(parse, from);
+    }
+
+
+
+    iterateLoop(parse)
+    {
+        super.iterateLoop(parse);
+
+        if (this.maskType) this.maskType.iterateLoop(parse);
     }
 }

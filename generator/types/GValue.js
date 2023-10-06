@@ -140,6 +140,7 @@ function parseValueFromType(type, value)
         case   INNER_SHADOW_VALUE: return parseInnerShadowValue  (value)[0];
         case     LAYER_BLUR_VALUE: return parseLayerBlurValue    (value)[0];
         case      BACK_BLUR_VALUE: return parseBackBlurValue     (value)[0];
+        case    LAYER_BLEND_VALUE: return parseLayerBlendValue   (value)[0];
         case     LAYER_MASK_VALUE: return parseLayerMaskValue    (value)[0];
 
         case      RECTANGLE_VALUE: return parseRectangleValue    (value)[0];
@@ -189,6 +190,7 @@ function displayValue(type, value)
         case   INNER_SHADOW_VALUE: return parseInnerShadowValue  (value)[0].toDisplayString();
         case     LAYER_BLUR_VALUE: return parseLayerBlurValue    (value)[0].toDisplayString();
         case      BACK_BLUR_VALUE: return parseBackBlurValue     (value)[0].toDisplayString();
+        case    LAYER_BLEND_VALUE: return parseLayerBlendValue   (value)[0].toDisplayString();
         case     LAYER_MASK_VALUE: return parseLayerMaskValue    (value)[0].toDisplayString();
 
         case      RECTANGLE_VALUE: return parseRectangleValue    (value)[0].toDisplayString();
@@ -232,6 +234,7 @@ function nanFromType(type)
         case    INNER_SHADOW_VALUE: return   InnerShadowValue.NaN;
         case      LAYER_BLUR_VALUE: return     LayerBlurValue.NaN;
         case       BACK_BLUR_VALUE: return      BackBlurValue.NaN;
+        case     LAYER_BLEND_VALUE: return    LayerBlendValue.NaN;
         case      LAYER_MASK_VALUE: return     LayerMaskValue.NaN;
 
         case       RECTANGLE_VALUE: return     RectangleValue.NaN;

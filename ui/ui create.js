@@ -123,6 +123,7 @@ function createNode(nodeType, creatingButton = null, createdNodeId = -1, options
         case LAYER_BLUR:              node = new OpLayerBlur();         break;
         case BACK_BLUR:               node = new OpBackBlur();          break;
 
+        case LAYER_BLEND:             node = new OpLayerBlend();        break;
         case LAYER_MASK:              node = new OpLayerMask();         break;
 
         case COLOR_STYLE:             node = new OpColorStyle(options); break;

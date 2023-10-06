@@ -119,10 +119,12 @@ function getPresetGraph(graphId)
         case 'basicVariables':       return presetBasicVariables;
 
 
+        case 'namesLogos':           return presetNamesLogos;
+        case 'avatars':              return presetAvatars;
+
         case 'booksOnShelf':         return presetBooksOnShelf;
         case 'wobbles':              return presetWobbles;
         case 'randomAbstract':       return presetRandomAbstract;
-        case 'namesLogos':           return presetNamesLogos;
         case 'afterTheStorm':        return presetAfterTheStorm;
         case 'sunsetDreams':         return presetSunsetDreams;
     }

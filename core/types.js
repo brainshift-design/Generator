@@ -326,6 +326,10 @@ const LAYER_MASK_VALUE   = 'MASK#';
 const LAYER_MASK         = 'MASK';
 const LAYER_MASK_TYPES   = [LAYER_MASK_VALUE, LAYER_MASK];
 
+const LAYER_BLEND_VALUE  = 'BLEND#';
+const LAYER_BLEND        = 'BLEND';
+const LAYER_BLEND_TYPES  = [LAYER_BLEND_VALUE, LAYER_BLEND];
+
 
 const EFFECT_TYPES =
 [
@@ -333,21 +337,23 @@ const EFFECT_TYPES =
     ...INNER_SHADOW_TYPES,
     ...LAYER_BLUR_TYPES,
     ...BACK_BLUR_TYPES,
+    ...LAYER_BLEND_TYPES,
     ...LAYER_MASK_TYPES
 ];
 
 
 const STYLE_VALUES =
 [
-    COLOR_VALUE, 
-    FILL_VALUE, 
-    GRADIENT_VALUE, 
-    STROKE_VALUE,
-    DROP_SHADOW_VALUE,
+           COLOR_VALUE, 
+            FILL_VALUE, 
+        GRADIENT_VALUE, 
+          STROKE_VALUE,
+     DROP_SHADOW_VALUE,
     INNER_SHADOW_VALUE,
-    LAYER_BLUR_VALUE,
-    BACK_BLUR_VALUE,
-    LAYER_MASK_VALUE
+      LAYER_BLUR_VALUE,
+       BACK_BLUR_VALUE,
+     LAYER_BLEND_VALUE,
+      LAYER_MASK_VALUE
 ];
 
 
@@ -476,7 +482,12 @@ const SHAPE_VALUES =
     SHAPE_GROUP_VALUE,
     FRAME_VALUE,
     BOOLEAN_VALUE,
-    DROP_SHADOW_VALUE
+    DROP_SHADOW_VALUE,
+    INNER_SHADOW_VALUE,
+    LAYER_BLUR_VALUE,
+    BACK_BLUR_VALUE,
+    LAYER_BLEND_VALUE,
+    LAYER_MASK_VALUE
 ];
 
 
@@ -566,6 +577,7 @@ const ALL_VALUES =
       LAYER_BLUR_VALUE,
        BACK_BLUR_VALUE,
 
+     LAYER_BLEND_VALUE,
       LAYER_MASK_VALUE
 ];
 
@@ -698,9 +710,11 @@ const HIGHLIGHT_NODES_ACTION     = 'HIGHLIGHT_NODES';
 const BLEND_NORMAL               = 'BNORM';
 const BLEND_DARKEN               = 'BDARK';
 const BLEND_MULTIPLY             = 'BMULT';
+const BLEND_PLUS_DARKER          = 'BPDRK';
 const BLEND_COLOR_BURN           = 'BBURN';
 const BLEND_LIGNTEN              = 'BLITE';
 const BLEND_SCREEN               = 'BSCRN';
+const BLEND_PLUS_LIGHTER         = 'BPLGT';
 const BLEND_COLOR_DODGE          = 'BDODG';
 const BLEND_OVERLAY              = 'BOVER';
 const BLEND_SOFT_LIGHT           = 'BSOFT';
@@ -715,22 +729,24 @@ const BLEND_LUMINOSITY           = 'BLUM';
 
 const BlendModes =
 [
-    [BLEND_NORMAL,      'normal',      'NORMAL'     ],
-    [BLEND_DARKEN,      'darken',      'DARKEN'     ],
-    [BLEND_MULTIPLY,    'multiply',    'MULTIPLY'   ],
-    [BLEND_COLOR_BURN,  'color burn',  'COLOR_BURN' ],
-    [BLEND_LIGNTEN,     'lighten',     'LIGHTEN'    ],
-    [BLEND_SCREEN,      'screen',      'SCREEN'     ],
-    [BLEND_COLOR_DODGE, 'color dodge', 'COLOR_DODGE'],
-    [BLEND_OVERLAY,     'overlay',     'OVERLAY'    ],
-    [BLEND_SOFT_LIGHT,  'soft light',  'SOFT_LIGHT' ],
-    [BLEND_HARD_LIGHT,  'hard light',  'HARD_LIGHT' ],
-    [BLEND_DIFFERENCE,  'difference',  'DIFFERENCE' ],
-    [BLEND_EXCLUSION,   'exclusion',   'EXCLUSION'  ],
-    [BLEND_HUE,         'hue',         'HUE'        ],
-    [BLEND_SATURATION,  'saturation',  'SATURATION' ],
-    [BLEND_COLOR,       'color',       'COLOR'      ],
-    [BLEND_LUMINOSITY,  'luminosity',  'LUMINOSITY' ]
+    [BLEND_NORMAL,       'normal',       'NORMAL'      ],
+    [BLEND_DARKEN,       'darken',       'DARKEN'      ],
+    [BLEND_MULTIPLY,     'multiply',     'MULTIPLY'    ],
+    [BLEND_PLUS_DARKER,  'plus darker',  'MULTIPLY'    ],//'PLUS_DARKER' ],
+    [BLEND_COLOR_BURN,   'color burn',   'COLOR_BURN'  ],
+    [BLEND_LIGNTEN,      'lighten',      'LIGHTEN'     ],
+    [BLEND_SCREEN,       'screen',       'SCREEN'      ],
+    [BLEND_PLUS_LIGHTER, 'plus lighter', 'SCREEN'      ],//'PLUS_LIGHTER'],
+    [BLEND_COLOR_DODGE,  'color dodge',  'COLOR_DODGE' ],
+    [BLEND_OVERLAY,      'overlay',      'OVERLAY'     ],
+    [BLEND_SOFT_LIGHT,   'soft light',   'SOFT_LIGHT'  ],
+    [BLEND_HARD_LIGHT,   'hard light',   'HARD_LIGHT'  ],
+    [BLEND_DIFFERENCE,   'difference',   'DIFFERENCE'  ],
+    [BLEND_EXCLUSION,    'exclusion',    'EXCLUSION'   ],
+    [BLEND_HUE,          'hue',          'HUE'         ],
+    [BLEND_SATURATION,   'saturation',   'SATURATION'  ],
+    [BLEND_COLOR,        'color',        'COLOR'       ],
+    [BLEND_LUMINOSITY,   'luminosity',   'LUMINOSITY'  ]
 ];
 
 
@@ -781,23 +797,25 @@ const FO_EFFECTS        = 18;
 
 const FO_DECO           = 19;
 
-const FO_MASK           = 20;
+const FO_OPACITY        = 20;
+const FO_BLEND          = 21;
+const FO_MASK           = 22;
 
-const FO_X              = 21;                                                                                                                                                                                                         const FO_GROUP_CHILDREN = 21;
-const FO_Y              = 22;                                    
-const FO_WIDTH          = 23;   const FO_POINT_IS_CENTER = 23;   
-const FO_HEIGHT         = 24;                                    
+const FO_X              = 23;                                                                                                                                                                                                         const FO_GROUP_CHILDREN = 23;
+const FO_Y              = 24;                                    
+const FO_WIDTH          = 25;   const FO_POINT_IS_CENTER = 23;   
+const FO_HEIGHT         = 26;                                    
 
-const FO_RECT_ROUND     = 25;   const FO_ELLIPSE_FROM    = 25;   const FO_VECTOR_NETWORK_DATA = 25;   const FO_VECTOR_PATH_DATA    = 25;   const FO_POLY_ROUND   = 25;   const FO_STAR_ROUND  = 25;   const FO_FIG_WIDTH      = 25;   const FO_FRAME_ROUND    = 25;
-                                const FO_ELLIPSE_TO      = 26;                                        const FO_VECTOR_PATH_WINDING = 26;   const FO_POLY_CORNERS = 26;   const FO_STAR_POINTS = 26;   const FO_FIG_HEIGHT     = 26;   const FO_FRAME_CHILDREN = 26;
-                                const FO_ELLIPSE_INNER   = 27;                                        const FO_VECTOR_PATH_ROUND   = 27;                                 const FO_STAR_CONVEX = 27;   const FO_TEXT           = 27; 
+const FO_RECT_ROUND     = 27;   const FO_ELLIPSE_FROM    = 27;   const FO_VECTOR_NETWORK_DATA = 27;   const FO_VECTOR_PATH_DATA    = 27;   const FO_POLY_ROUND   = 27;   const FO_STAR_ROUND  = 27;   const FO_FIG_WIDTH      = 27;   const FO_FRAME_ROUND    = 27;
+                                const FO_ELLIPSE_TO      = 28;                                        const FO_VECTOR_PATH_WINDING = 28;   const FO_POLY_CORNERS = 28;   const FO_STAR_POINTS = 28;   const FO_FIG_HEIGHT     = 28;   const FO_FRAME_CHILDREN = 28;
+                                const FO_ELLIPSE_INNER   = 29;                                        const FO_VECTOR_PATH_ROUND   = 29;                                 const FO_STAR_CONVEX = 29;   const FO_TEXT           = 29; 
                                                                                                                                  
-                                                                                                                                                                                                      const FO_FONT           = 28;
-                                                                                                                                                                                                      const FO_FONT_SIZE      = 29;
-                                                                                                                                                                                                      const FO_FONT_STYLE     = 30;
+                                                                                                                                                                                                      const FO_FONT           = 30;
+                                                                                                                                                                                                      const FO_FONT_SIZE      = 31;
+                                                                                                                                                                                                      const FO_FONT_STYLE     = 32;
                                                                                                                                                                                                                                     
-                                                                                                                                                                                                      const FO_ALIGN_H        = 31;
-                                                                                                                                                                                                      const FO_ALIGN_V        = 32;
+                                                                                                                                                                                                      const FO_ALIGN_H        = 33;
+                                                                                                                                                                                                      const FO_ALIGN_V        = 34;
                                                                                                                                                                                                                                     
-                                                                                                                                                                                                      const FO_LINE_HEIGHT    = 33;
-                                                                                                                                                                                                      const FO_LETTER_SPACING = 34;                                
+                                                                                                                                                                                                      const FO_LINE_HEIGHT    = 35;
+                                                                                                                                                                                                      const FO_LETTER_SPACING = 36;                                

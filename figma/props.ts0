@@ -146,6 +146,10 @@ function setObjectProps(figObj, genObj, phantom = true)
     setObjectFills  (figObj, genObj);
 
     
+    figObj.opacity   = genObj[FO_OPACITY];
+    figObj.blendMode = genObj[FO_BLEND  ];
+
+
     const maskType = genObj[FO_MASK];
 
     figObj.isMask = maskType > 0;

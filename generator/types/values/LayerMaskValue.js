@@ -10,8 +10,8 @@ extends GValue
     {
         super(LAYER_MASK_VALUE);
 
-        this.maskType = maskType.copy();
         this.visible  = visible;
+        this.maskType = maskType.copy();
     }
 
 
@@ -29,8 +29,8 @@ extends GValue
 
     equals(mask)
     {
-        return this.maskType == mask.maskType
-            && this.visible === mask.visible;
+        return this.visible === mask.visible
+            && this.maskType.equals(mask.maskType);
     }
 
 
@@ -65,8 +65,7 @@ extends GValue
 
     isValid()
     {
-        return super.isValid()
-            && this.maskType.isValid();
+        return this.maskType.isValid();
     }
 
 

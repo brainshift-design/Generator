@@ -172,6 +172,7 @@
 ../operators/layer/OpInnerShadow.js
 ../operators/layer/OpLayerBlur.js
 ../operators/layer/OpBackBlur.js
+../operators/layer/OpLayerBlend.js
 ../operators/layer/OpLayerMask.js
 
 

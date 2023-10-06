@@ -263,6 +263,9 @@ function genParse(parse, inParam = true)
     else if (parse.next == BACK_BLUR_VALUE        ) result = genParseBackBlurValue     (parse);
     else if (parse.next == BACK_BLUR              ) result = genParseBackBlur          (parse);
 
+    else if (parse.next == LAYER_BLEND_VALUE      ) result = genParseLayerBlendValue   (parse);
+    else if (parse.next == LAYER_BLEND            ) result = genParseLayerBlend        (parse);
+      
     else if (parse.next == LAYER_MASK_VALUE       ) result = genParseLayerMaskValue    (parse);
     else if (parse.next == LAYER_MASK             ) result = genParseLayerMask         (parse);
       

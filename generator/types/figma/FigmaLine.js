@@ -48,9 +48,9 @@ extends FigmaShape
         return [
             ...super.toData(),
    
-            /* 21 */ this.x,
-            /* 22 */ this.y,
-            /* 23 */ this.width
+            /* 23 */ this.x,
+            /* 24 */ this.y,
+            /* 25 */ this.width
         ];
     }
 }

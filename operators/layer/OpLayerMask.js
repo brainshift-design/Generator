@@ -13,7 +13,7 @@ extends OperatorBase
         this.iconOffsetY = -1;
         
 
-        this.addOutput(new Output([LAYER_MASK_VALUE], this.output_genRequest, getNodeOutputValuesForUndo, this.output_backInit));
+        this.addOutput(new Output([LAYER_MASK_VALUE], this.output_genRequest, getNodeOutputValuesForUndo));
 
         this.addParam(this.paramMaskType = new SelectParam('maskType', 'type', false, true, true, ['alpha', 'vector', 'luminance'], 0));
     }

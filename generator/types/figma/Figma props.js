@@ -300,6 +300,14 @@ function addBackBlurProp(obj, prop)
 
 
 
+function addLayerBlendProp(obj, prop)
+{
+    obj.opacity = Math.min(Math.max(0, prop.opacity.toNumber() / 100), 1);
+    obj.blend   = BlendModes[prop.blend.value][2];
+}
+
+
+
 function addMaskProp(obj, mask)
 {
     obj.maskType = mask.maskType.value + 1;

@@ -112,13 +112,13 @@ extends GShapeBase
 
             for (const obj of group.children)
                 bounds = expandRect(bounds, obj.getBounds());
-            console.log('bounds =', bounds);
     
             group.x      = bounds.x;
             group.y      = bounds.y;
             group.width  = bounds.width;
             group.height = bounds.height;
 
+            
             group.createDefaultSpace();
             group.resetSpace(bounds);
 

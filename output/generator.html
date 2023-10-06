@@ -4,7 +4,7 @@
 
 
 
-const generatorVersion = 225;
+const generatorVersion = 226;
 
 
 const MAX_INT32        = 2147483647;
@@ -5051,6 +5051,10 @@ const LAYER_MASK_VALUE   = 'MASK#';
 const LAYER_MASK         = 'MASK';
 const LAYER_MASK_TYPES   = [LAYER_MASK_VALUE, LAYER_MASK];
 
+const LAYER_BLEND_VALUE  = 'BLEND#';
+const LAYER_BLEND        = 'BLEND';
+const LAYER_BLEND_TYPES  = [LAYER_BLEND_VALUE, LAYER_BLEND];
+
 
 const EFFECT_TYPES =
 [
@@ -5058,21 +5062,23 @@ const EFFECT_TYPES =
     ...INNER_SHADOW_TYPES,
     ...LAYER_BLUR_TYPES,
     ...BACK_BLUR_TYPES,
+    ...LAYER_BLEND_TYPES,
     ...LAYER_MASK_TYPES
 ];
 
 
 const STYLE_VALUES =
 [
-    COLOR_VALUE, 
-    FILL_VALUE, 
-    GRADIENT_VALUE, 
-    STROKE_VALUE,
-    DROP_SHADOW_VALUE,
+           COLOR_VALUE, 
+            FILL_VALUE, 
+        GRADIENT_VALUE, 
+          STROKE_VALUE,
+     DROP_SHADOW_VALUE,
     INNER_SHADOW_VALUE,
-    LAYER_BLUR_VALUE,
-    BACK_BLUR_VALUE,
-    LAYER_MASK_VALUE
+      LAYER_BLUR_VALUE,
+       BACK_BLUR_VALUE,
+     LAYER_BLEND_VALUE,
+      LAYER_MASK_VALUE
 ];
 
 
@@ -5201,7 +5207,12 @@ const SHAPE_VALUES =
     SHAPE_GROUP_VALUE,
     FRAME_VALUE,
     BOOLEAN_VALUE,
-    DROP_SHADOW_VALUE
+    DROP_SHADOW_VALUE,
+    INNER_SHADOW_VALUE,
+    LAYER_BLUR_VALUE,
+    BACK_BLUR_VALUE,
+    LAYER_BLEND_VALUE,
+    LAYER_MASK_VALUE
 ];
 
 
@@ -5291,6 +5302,7 @@ const ALL_VALUES =
       LAYER_BLUR_VALUE,
        BACK_BLUR_VALUE,
 
+     LAYER_BLEND_VALUE,
       LAYER_MASK_VALUE
 ];
 
@@ -5423,9 +5435,11 @@ const HIGHLIGHT_NODES_ACTION     = 'HIGHLIGHT_NODES';
 const BLEND_NORMAL               = 'BNORM';
 const BLEND_DARKEN               = 'BDARK';
 const BLEND_MULTIPLY             = 'BMULT';
+const BLEND_PLUS_DARKER          = 'BPDRK';
 const BLEND_COLOR_BURN           = 'BBURN';
 const BLEND_LIGNTEN              = 'BLITE';
 const BLEND_SCREEN               = 'BSCRN';
+const BLEND_PLUS_LIGHTER         = 'BPLGT';
 const BLEND_COLOR_DODGE          = 'BDODG';
 const BLEND_OVERLAY              = 'BOVER';
 const BLEND_SOFT_LIGHT           = 'BSOFT';
@@ -5440,22 +5454,24 @@ const BLEND_LUMINOSITY           = 'BLUM';
 
 const BlendModes =
 [
-    [BLEND_NORMAL,      'normal',      'NORMAL'     ],
-    [BLEND_DARKEN,      'darken',      'DARKEN'     ],
-    [BLEND_MULTIPLY,    'multiply',    'MULTIPLY'   ],
-    [BLEND_COLOR_BURN,  'color burn',  'COLOR_BURN' ],
-    [BLEND_LIGNTEN,     'lighten',     'LIGHTEN'    ],
-    [BLEND_SCREEN,      'screen',      'SCREEN'     ],
-    [BLEND_COLOR_DODGE, 'color dodge', 'COLOR_DODGE'],
-    [BLEND_OVERLAY,     'overlay',     'OVERLAY'    ],
-    [BLEND_SOFT_LIGHT,  'soft light',  'SOFT_LIGHT' ],
-    [BLEND_HARD_LIGHT,  'hard light',  'HARD_LIGHT' ],
-    [BLEND_DIFFERENCE,  'difference',  'DIFFERENCE' ],
-    [BLEND_EXCLUSION,   'exclusion',   'EXCLUSION'  ],
-    [BLEND_HUE,         'hue',         'HUE'        ],
-    [BLEND_SATURATION,  'saturation',  'SATURATION' ],
-    [BLEND_COLOR,       'color',       'COLOR'      ],
-    [BLEND_LUMINOSITY,  'luminosity',  'LUMINOSITY' ]
+    [BLEND_NORMAL,       'normal',       'NORMAL'      ],
+    [BLEND_DARKEN,       'darken',       'DARKEN'      ],
+    [BLEND_MULTIPLY,     'multiply',     'MULTIPLY'    ],
+    [BLEND_PLUS_DARKER,  'plus darker',  'MULTIPLY'    ],//'PLUS_DARKER' ],
+    [BLEND_COLOR_BURN,   'color burn',   'COLOR_BURN'  ],
+    [BLEND_LIGNTEN,      'lighten',      'LIGHTEN'     ],
+    [BLEND_SCREEN,       'screen',       'SCREEN'      ],
+    [BLEND_PLUS_LIGHTER, 'plus lighter', 'SCREEN'      ],//'PLUS_LIGHTER'],
+    [BLEND_COLOR_DODGE,  'color dodge',  'COLOR_DODGE' ],
+    [BLEND_OVERLAY,      'overlay',      'OVERLAY'     ],
+    [BLEND_SOFT_LIGHT,   'soft light',   'SOFT_LIGHT'  ],
+    [BLEND_HARD_LIGHT,   'hard light',   'HARD_LIGHT'  ],
+    [BLEND_DIFFERENCE,   'difference',   'DIFFERENCE'  ],
+    [BLEND_EXCLUSION,    'exclusion',    'EXCLUSION'   ],
+    [BLEND_HUE,          'hue',          'HUE'         ],
+    [BLEND_SATURATION,   'saturation',   'SATURATION'  ],
+    [BLEND_COLOR,        'color',        'COLOR'       ],
+    [BLEND_LUMINOSITY,   'luminosity',   'LUMINOSITY'  ]
 ];
 
 
@@ -5506,26 +5522,28 @@ const FO_EFFECTS        = 18;
 
 const FO_DECO           = 19;
 
-const FO_MASK           = 20;
+const FO_OPACITY        = 20;
+const FO_BLEND          = 21;
+const FO_MASK           = 22;
 
-const FO_X              = 21;                                                                                                                                                                                                         const FO_GROUP_CHILDREN = 21;
-const FO_Y              = 22;                                    
-const FO_WIDTH          = 23;   const FO_POINT_IS_CENTER = 23;   
-const FO_HEIGHT         = 24;                                    
+const FO_X              = 23;                                                                                                                                                                                                         const FO_GROUP_CHILDREN = 23;
+const FO_Y              = 24;                                    
+const FO_WIDTH          = 25;   const FO_POINT_IS_CENTER = 23;   
+const FO_HEIGHT         = 26;                                    
 
-const FO_RECT_ROUND     = 25;   const FO_ELLIPSE_FROM    = 25;   const FO_VECTOR_NETWORK_DATA = 25;   const FO_VECTOR_PATH_DATA    = 25;   const FO_POLY_ROUND   = 25;   const FO_STAR_ROUND  = 25;   const FO_FIG_WIDTH      = 25;   const FO_FRAME_ROUND    = 25;
-                                const FO_ELLIPSE_TO      = 26;                                        const FO_VECTOR_PATH_WINDING = 26;   const FO_POLY_CORNERS = 26;   const FO_STAR_POINTS = 26;   const FO_FIG_HEIGHT     = 26;   const FO_FRAME_CHILDREN = 26;
-                                const FO_ELLIPSE_INNER   = 27;                                        const FO_VECTOR_PATH_ROUND   = 27;                                 const FO_STAR_CONVEX = 27;   const FO_TEXT           = 27; 
+const FO_RECT_ROUND     = 27;   const FO_ELLIPSE_FROM    = 27;   const FO_VECTOR_NETWORK_DATA = 27;   const FO_VECTOR_PATH_DATA    = 27;   const FO_POLY_ROUND   = 27;   const FO_STAR_ROUND  = 27;   const FO_FIG_WIDTH      = 27;   const FO_FRAME_ROUND    = 27;
+                                const FO_ELLIPSE_TO      = 28;                                        const FO_VECTOR_PATH_WINDING = 28;   const FO_POLY_CORNERS = 28;   const FO_STAR_POINTS = 28;   const FO_FIG_HEIGHT     = 28;   const FO_FRAME_CHILDREN = 28;
+                                const FO_ELLIPSE_INNER   = 29;                                        const FO_VECTOR_PATH_ROUND   = 29;                                 const FO_STAR_CONVEX = 29;   const FO_TEXT           = 29; 
                                                                                                                                  
-                                                                                                                                                                                                      const FO_FONT           = 28;
-                                                                                                                                                                                                      const FO_FONT_SIZE      = 29;
-                                                                                                                                                                                                      const FO_FONT_STYLE     = 30;
+                                                                                                                                                                                                      const FO_FONT           = 30;
+                                                                                                                                                                                                      const FO_FONT_SIZE      = 31;
+                                                                                                                                                                                                      const FO_FONT_STYLE     = 32;
                                                                                                                                                                                                                                     
-                                                                                                                                                                                                      const FO_ALIGN_H        = 31;
-                                                                                                                                                                                                      const FO_ALIGN_V        = 32;
+                                                                                                                                                                                                      const FO_ALIGN_H        = 33;
+                                                                                                                                                                                                      const FO_ALIGN_V        = 34;
                                                                                                                                                                                                                                     
-                                                                                                                                                                                                      const FO_LINE_HEIGHT    = 33;
-                                                                                                                                                                                                      const FO_LETTER_SPACING = 34;                                
+                                                                                                                                                                                                      const FO_LINE_HEIGHT    = 35;
+                                                                                                                                                                                                      const FO_LETTER_SPACING = 36;                                
 
 
 class FigmaObject
@@ -5661,7 +5679,6 @@ class FigmaObject
 
     createSpaceTransform()
     {
-        console.log('this =', this);
         let vr = point(this.sp1.x - this.sp0.x, this.sp1.y - this.sp0.y);
         let vb = point(this.sp2.x - this.sp0.x, this.sp2.y - this.sp0.y);
     
@@ -5803,13 +5820,6 @@ class FigmaObject
         /* 9 */ 0 // for future use
         ];
     }
-
-
-
-    // isValid()
-    // {
-    //     return true;
-    // }
 }
 
 
@@ -5953,32 +5963,6 @@ function getValidObjects(value)
               .map(o => o.copy()) 
         : [];
 }
-
-
-
-// function getValidInputObjects(input)
-// {
-//     const objects = [];
-    
-
-//     if (!input)
-//         return objects;
-
-//     // if (isListType(input.type))
-//     //     for (const item of input.items)
-//     //         objects.push(...getValidInputObjects(item));
-
-//     if (   input.value
-//         && input.value.objects)
-//         objects.push(...input.value.objects
-//               .filter(o => 
-//                      o.isDeco  === false
-//                   || o.isXform === true)
-//               .map(o => o.copy()));
-
-
-//     return objects;
-// }
 
 
 function addColorProp(obj, prop)
@@ -6283,6 +6267,14 @@ function addBackBlurProp(obj, prop)
 
 
 
+function addLayerBlendProp(obj, prop)
+{
+    obj.opacity = Math.min(Math.max(0, prop.opacity.toNumber() / 100), 1);
+    obj.blend   = BlendModes[prop.blend.value][2];
+}
+
+
+
 function addMaskProp(obj, mask)
 {
     obj.maskType = mask.maskType.value + 1;
@@ -6311,6 +6303,9 @@ extends FigmaObject
     isDeco;
     isXform;
 
+    opacity;
+    blend;
+
     maskType = 0;
 
 
@@ -6324,6 +6319,9 @@ extends FigmaObject
 
         this.isDeco  = isDeco;
         this.isXform = isXform;
+
+        this.opacity = 1;
+        this.blend   = 'PASS_THROUGH';
     }
 
 
@@ -6350,6 +6348,8 @@ extends FigmaObject
         this.isDeco           = base.isDeco;
         this.isXform          = base.isXform;
 
+        this.opacity          = base.opacity;
+        this.blend            = base.blend;
         this.maskType         = base.maskType;
     }
 
@@ -6385,7 +6385,9 @@ extends FigmaObject
 
             /* 19 */ this.isDeco,
 
-            /* 20 */ this.maskType
+            /* 20 */ this.opacity,
+            /* 21 */ this.blend,
+            /* 22 */ this.maskType
         ];
     }
 }
@@ -6450,12 +6452,12 @@ extends FigmaShape
         return [
             ...super.toData(),
    
-            /* 21 */ this.x,
-            /* 22 */ this.y,
-            /* 23 */ this.width,
-            /* 24 */ this.height,
+            /* 23 */ this.x,
+            /* 24 */ this.y,
+            /* 25 */ this.width,
+            /* 26 */ this.height,
 
-            /* 25 */ this.round * Math.abs(this.scaleCorners)
+            /* 27 */ this.round * Math.abs(this.scaleCorners)
         ];
     }
 }
@@ -6512,9 +6514,9 @@ extends FigmaShape
         return [
             ...super.toData(),
    
-            /* 21 */ this.x,
-            /* 22 */ this.y,
-            /* 23 */ this.width
+            /* 23 */ this.x,
+            /* 24 */ this.y,
+            /* 25 */ this.width
         ];
     }
 }
@@ -6585,14 +6587,14 @@ extends FigmaShape
         return [
             ...super.toData(),
    
-            /* 21 */ this.x,
-            /* 22 */ this.y,
-            /* 23 */ this.width,
-            /* 24 */ this.height,
+            /* 23 */ this.x,
+            /* 24 */ this.y,
+            /* 25 */ this.width,
+            /* 26 */ this.height,
 
-            /* 25 */ this.from,
-            /* 26 */ this.to,
-            /* 27 */ this.inner
+            /* 27 */ this.from,
+            /* 28 */ this.to,
+            /* 29 */ this.inner
         ];
     }
 }
@@ -7451,13 +7453,13 @@ extends FigmaShape
         return [
             ...super.toData(),
    
-            /* 21 */ this.x,
-            /* 22 */ this.y,
-            /* 23 */ this.width,
-            /* 24 */ this.height,
+            /* 23 */ this.x,
+            /* 24 */ this.y,
+            /* 25 */ this.width,
+            /* 26 */ this.height,
 
-            /* 25 */ this.round * Math.abs(this.scaleCorners),
-            /* 26 */ this.corners
+            /* 27 */ this.round * Math.abs(this.scaleCorners),
+            /* 28 */ this.corners
         ];
     }
 }
@@ -7526,14 +7528,14 @@ extends FigmaShape
         return [
             ...super.toData(),
    
-            /* 21 */ this.x,
-            /* 22 */ this.y,
-            /* 23 */ this.width,
-            /* 24 */ this.height,
+            /* 23 */ this.x,
+            /* 24 */ this.y,
+            /* 25 */ this.width,
+            /* 26 */ this.height,
 
-            /* 25 */ this.round * Math.abs(this.scaleCorners),
-            /* 26 */ this.points,
-            /* 27 */ this.convex
+            /* 27 */ this.round * Math.abs(this.scaleCorners),
+            /* 28 */ this.points,
+            /* 29 */ this.convex
         ];
     }
 }
@@ -7668,54 +7670,27 @@ extends FigmaShape
         return [
             ...super.toData(),
    
-            /* 21 */ this.x,
-            /* 22 */ this.y,
-            /* 23 */ this.width,
-            /* 24 */ this.height,
+            /* 23 */ this.x,
+            /* 24 */ this.y,
+            /* 25 */ this.width,
+            /* 26 */ this.height,
             
-            /* 25 */ this.figWidth,
-            /* 26 */ this.figHeight,
+            /* 27 */ this.figWidth,
+            /* 28 */ this.figHeight,
             
-            /* 27 */ this.text,
+            /* 29 */ this.text,
 
-            /* 28 */ this.font,
-            /* 29 */ this.size,
-            /* 30 */ this.style,
+            /* 30 */ this.font,
+            /* 31 */ this.size,
+            /* 32 */ this.style,
             
-            /* 31 */ this.alignH,
-            /* 32 */ this.alignV,
+            /* 33 */ this.alignH,
+            /* 34 */ this.alignV,
             
-            /* 33 */ this.lineHeight,
-            /* 34 */ this.letterSpacing
+            /* 35 */ this.lineHeight,
+            /* 36 */ this.letterSpacing
         ];
     }
-
-
-
-    // isValid()
-    // {
-    //     return super.isValid()
-
-    //         && this.x
-    //         && this.y
-    //         && this.width
-    //         && this.height
-
-    //         && this.figWidth
-    //         && this.figHeight
-
-    //         && this.text
-
-    //         && this.font
-    //         && this.size
-    //         && this.style
-
-    //         && this.alignH
-    //         && this.alignV
-        
-    //         && this.lineHeight
-    //         && this.letterSpacing;
-    // }
 }
 
 
@@ -7782,9 +7757,9 @@ extends FigmaShape
         return [
             ...super.toData(),
    
-            /* 21 */ this.x,
-            /* 22 */ this.y,
-            /* 23 */ this.isCenter
+            /* 23 */ this.x,
+            /* 24 */ this.y,
+            /* 25 */ this.isCenter
         ];
     }
 }
@@ -7885,7 +7860,7 @@ extends FigmaShape
         return [
             ...super.toData(),
    
-            /* 21 */ this.children.map(o => o.toData())
+            /* 23 */ this.children.map(o => o.toData())
         ];
     }
 }
@@ -7969,14 +7944,14 @@ extends FigmaShape
         return [
             ...super.toData(),
    
-            /* 21 */ this.x,
-            /* 22 */ this.y,
-            /* 23 */ this.width,
-            /* 24 */ this.height,
+            /* 23 */ this.x,
+            /* 24 */ this.y,
+            /* 25 */ this.width,
+            /* 26 */ this.height,
 
-            /* 25 */ this.round,
+            /* 27 */ this.round,
 
-            /* 26 */ this.children.map(o => o.toData())
+            /* 28 */ this.children.map(o => o.toData())
         ];
     }
 }
@@ -8315,6 +8290,7 @@ function parseValueFromType(type, value)
         case   INNER_SHADOW_VALUE: return parseInnerShadowValue  (value)[0];
         case     LAYER_BLUR_VALUE: return parseLayerBlurValue    (value)[0];
         case      BACK_BLUR_VALUE: return parseBackBlurValue     (value)[0];
+        case    LAYER_BLEND_VALUE: return parseLayerBlendValue   (value)[0];
         case     LAYER_MASK_VALUE: return parseLayerMaskValue    (value)[0];
 
         case      RECTANGLE_VALUE: return parseRectangleValue    (value)[0];
@@ -8364,6 +8340,7 @@ function displayValue(type, value)
         case   INNER_SHADOW_VALUE: return parseInnerShadowValue  (value)[0].toDisplayString();
         case     LAYER_BLUR_VALUE: return parseLayerBlurValue    (value)[0].toDisplayString();
         case      BACK_BLUR_VALUE: return parseBackBlurValue     (value)[0].toDisplayString();
+        case    LAYER_BLEND_VALUE: return parseLayerBlendValue   (value)[0].toDisplayString();
         case     LAYER_MASK_VALUE: return parseLayerMaskValue    (value)[0].toDisplayString();
 
         case      RECTANGLE_VALUE: return parseRectangleValue    (value)[0].toDisplayString();
@@ -8407,6 +8384,7 @@ function nanFromType(type)
         case    INNER_SHADOW_VALUE: return   InnerShadowValue.NaN;
         case      LAYER_BLUR_VALUE: return     LayerBlurValue.NaN;
         case       BACK_BLUR_VALUE: return      BackBlurValue.NaN;
+        case     LAYER_BLEND_VALUE: return    LayerBlendValue.NaN;
         case      LAYER_MASK_VALUE: return     LayerMaskValue.NaN;
 
         case       RECTANGLE_VALUE: return     RectangleValue.NaN;
@@ -9157,6 +9135,7 @@ function parseListValue(str, i = -1)
             case INNER_SHADOW_VALUE: { const shadow  = parseInnerShadowValue (str, i);  i += shadow [1];  list.items.push(shadow [0]);  break; }
             case   LAYER_BLUR_VALUE: { const blur    = parseLayerBlurValue   (str, i);  i += blur   [1];  list.items.push(blur   [0]);  break; }
             case    BACK_BLUR_VALUE: { const blur    = parseBackBlurValue    (str, i);  i += blur   [1];  list.items.push(blur   [0]);  break; }
+            case  LAYER_BLEND_VALUE: { const layer   = parseLayerBlendValue  (str, i);  i += layer  [1];  list.items.push(layer  [0]);  break; }
             case   LAYER_MASK_VALUE: { const mask    = parseLayerMaskValue   (str[i]);  i += mask   [1];  list.items.push(mask   [0]);  break; }
 
             case    RECTANGLE_VALUE: { const rect    = parseRectangleValue   (str, i);  i += rect   [1];  list.items.push(rect   [0]);  break; }
@@ -11338,6 +11317,132 @@ function parseBackBlurValue(str, i = -1)
 
 
 
+class LayerBlendValue
+extends GValue
+{
+    opacity;
+    blend;
+
+
+
+    constructor(opacity, blend)
+    {
+        super(LAYER_BLEND_VALUE);
+
+        this.opacity = opacity.copy();
+        this.blend   = blend  .copy();
+    }
+
+
+    
+    copy()
+    {
+        const copy = new LayerBlendValue(this.opacity, this.blend);
+
+        copy.copyBase(this);
+
+        return copy;
+    }
+
+
+
+    equals(layer)
+    {
+        return this.opacity.equals(layer.opacity)
+            && this.blend  .equals(layer.blend  );
+    }
+
+
+
+    async eval(parse)
+    {
+        return this;
+    }
+
+
+
+    toString()
+    {
+        return      this.opacity.toString()
+            + ' ' + this.blend  .toString();
+    }
+
+
+
+    toPreviewString()
+    {
+        return      this.opacity.toPreviewString()
+            + ' ' + this.blend  .toPreviewString();
+    }
+
+
+
+    toDisplayString()
+    {
+        return      this.opacity.toDisplayString()
+            + ' ' + this.blend  .toDisplayString();
+    }
+
+
+
+    hasInitValue()
+    {
+        return this.opacity.hasInitValue()
+            && this.blend  .hasInitValue();
+    }
+
+
+
+    isValid()
+    {
+        return this.opacity && this.opacity.isValid()
+            && this.blend   && this.blend  .isValid();
+    }
+
+
+
+    getNaN()
+    {
+        return LayerBlendValue.NaN;
+    }
+
+
+
+    static NaN = Object.freeze(new LayerBlendValue(NumberValue.NaN, NumberValue.NaN));
+}
+
+
+
+function parseLayerBlendValue(str, i = -1)
+{
+    if (   i <  0 && str    == NAN_DISPLAY
+        || i >= 0 && str[i] == NAN_DISPLAY)
+        return [LayerBlendValue.NaN, 1];
+
+
+    if (i < 0)
+    {
+        str = str.split(' ');
+        i   = 0;
+    }
+
+
+    const iStart = i;
+
+    const opacity = parseNumberValue(str[i]); i += opacity[1];
+    const blend   = parseNumberValue(str[i]); i += blend  [1];
+
+
+    const layer = new LayerBlendValue(
+        opacity[0],
+        blend  [0]);
+
+        
+    return [layer, i - iStart];
+}
+
+
+
 class LayerMaskValue
 extends GValue
 {
@@ -11350,8 +11455,8 @@ extends GValue
     {
         super(LAYER_MASK_VALUE);
 
-        this.maskType = maskType.copy();
         this.visible  = visible;
+        this.maskType = maskType.copy();
     }
 
 
@@ -11369,8 +11474,8 @@ extends GValue
 
     equals(mask)
     {
-        return this.maskType == mask.maskType
-            && this.visible === mask.visible;
+        return this.visible === mask.visible
+            && this.maskType.equals(mask.maskType);
     }
 
 
@@ -11405,8 +11510,7 @@ extends GValue
 
     isValid()
     {
-        return super.isValid()
-            && this.maskType.isValid();
+        return this.maskType.isValid();
     }
 
 
@@ -14376,22 +14480,8 @@ function parseShapeGroupValue(str, i = -1)
         switch (type)
         {
             case         LIST_VALUE:  
-            // case  NUMBER_LIST_VALUE:  
-            // case    TEXT_LIST_VALUE:  
             case   SHAPE_LIST_VALUE: { const _list   = parseListValue        (str, i);  i += _list  [1];  group.items.push(_list  [0]);  break; }
  
-            // case       NUMBER_VALUE: { const num     = parseNumberValue      (str[i]);  i += num    [1];  group.items.push(num    [0]);  break; }
-            // case         TEXT_VALUE: { const text    = parseTextValue        (str[i]);  i += text   [1];  group.items.push(text   [0]);  break; }
-            // case        COLOR_VALUE: { const color   = parseColorValue       (str, i);  i += color  [1];  group.items.push(color  [0]);  break; }
-
-            // case         FILL_VALUE: { const fill    = parseFillValue        (str, i);  i += fill   [1];  group.items.push(fill   [0]);  break; }
-            // case       STROKE_VALUE: { const stroke  = parseStrokeValue      (str, i);  i += stroke [1];  group.items.push(stroke [0]);  break; }
-            // case  DROP_SHADOW_VALUE: { const shadow  = parseDropShadowValue  (str, i);  i += shadow [1];  group.items.push(shadow [0]);  break; }
-            // case INNER_SHADOW_VALUE: { const shadow  = parseInnerShadowValue (str, i);  i += shadow [1];  group.items.push(shadow [0]);  break; }
-            // case   LAYER_BLUR_VALUE: { const blur    = parseLayerBlurValue   (str, i);  i += blur   [1];  group.items.push(blur   [0]);  break; }
-            // case    BACK_BLUR_VALUE: { const blur    = parseBackBlurValue    (str, i);  i += blur   [1];  group.items.push(blur   [0]);  break; }
-            // case   LAYER_MASK_VALUE: { const mask    = parseLayerMaskValue   (str[i]);  i += mask   [1];  group.items.push(mask   [0]);  break; }
-
             case    RECTANGLE_VALUE: { const rect    = parseRectangleValue   (str, i);  i += rect   [1];  group.items.push(rect   [0]);  break; }
             case         LINE_VALUE: { const line    = parseLineValue        (str, i);  i += line   [1];  group.items.push(line   [0]);  break; }
             case      ELLIPSE_VALUE: { const ellipse = parseEllipseValue     (str, i);  i += ellipse[1];  group.items.push(ellipse[0]);  break; }
@@ -28902,6 +28992,110 @@ extends GOperator1
 }
 
 
+class GLayerBlend
+extends GOperator
+{
+    opacity;
+    blend;
+
+
+
+    constructor(nodeId, options)
+    {
+        super(LAYER_BLEND, nodeId, options);
+    }
+
+
+
+    copy()
+    {
+        const copy = new GLayerBlend(this.nodeId, this.options);
+
+        copy.copyBase(this);
+
+        if (this.opacity) copy.opacity = this.opacity.copy();
+        if (this.blend  ) copy.blend   = this.blend  .copy();
+
+        return copy;
+    }
+
+
+
+    async eval(parse)
+    {
+        if (this.isCached())
+            return this;
+``
+
+        const opacity = (await this.opacity.eval(parse)).toValue();
+        const blend   = (await this.blend  .eval(parse)).toValue();
+
+
+        this.value = 
+            this.options.enabled
+            ? new LayerBlendValue(opacity, blend)
+            : new LayerBlendValue(new NumberValue(100), new NumberValue(0));
+
+
+        this.setUpdateValues(parse, 
+        [
+            ['opacity', opacity],
+            ['blend',   blend  ]
+        ]);
+
+
+        this.validate();
+
+        return this;
+    }
+
+
+
+    toValue()
+    {
+        return this.value.copy();
+    }
+
+
+
+    isValid()
+    {
+        return this.opacity && this.opacity.isValid()
+            && this.blend   && this.blend  .isValid();
+    }
+
+
+
+    pushValueUpdates(parse)
+    {
+        super.pushValueUpdates(parse);
+
+        if (this.opacity) this.opacity.pushValueUpdates(parse);
+        if (this.blend  ) this.blend  .pushValueUpdates(parse);
+    }
+    
+    
+    
+    invalidateInputs(parse, from)
+    {
+        super.invalidateInputs(parse, from);
+
+        if (this.opacity) this.opacity.invalidateInputs(parse, from);
+        if (this.blend  ) this.blend  .invalidateInputs(parse, from);
+    }
+
+
+
+    iterateLoop(parse)
+    {
+        super.iterateLoop(parse);
+
+        if (this.opacity) this.opacity.iterateLoop(parse);
+        if (this.blend  ) this.blend  .iterateLoop(parse);
+    }
+}
+
+
 class GLayerMask
 extends GOperator
 {
@@ -28963,7 +29157,34 @@ extends GOperator
 
     isValid()
     {
-        return true;
+        return this.maskType && this.maskType.isValid();
+    }
+
+
+
+    pushValueUpdates(parse)
+    {
+        super.pushValueUpdates(parse);
+
+        if (this.maskType) this.maskType.pushValueUpdates(parse);
+    }
+    
+    
+    
+    invalidateInputs(parse, from)
+    {
+        super.invalidateInputs(parse, from);
+
+        if (this.maskType) this.maskType.invalidateInputs(parse, from);
+    }
+
+
+
+    iterateLoop(parse)
+    {
+        super.iterateLoop(parse);
+
+        if (this.maskType) this.maskType.iterateLoop(parse);
     }
 }
 
@@ -29214,6 +29435,7 @@ extends GShapeBase
                 else if (prop.type == INNER_SHADOW_VALUE)  addInnerShadowProp(obj, prop);
                 else if (prop.type ==   LAYER_BLUR_VALUE)  addLayerBlurProp  (obj, prop);
                 else if (prop.type ==    BACK_BLUR_VALUE)  addBackBlurProp   (obj, prop);
+                else if (prop.type ==  LAYER_BLEND_VALUE)  addLayerBlendProp (obj, prop);
                 else if (prop.type ==   LAYER_MASK_VALUE)  addMaskProp       (obj, prop);
             }
         }
@@ -32072,13 +32294,13 @@ extends GShapeBase
 
             for (const obj of group.children)
                 bounds = expandRect(bounds, obj.getBounds());
-            console.log('bounds =', bounds);
     
             group.x      = bounds.x;
             group.y      = bounds.y;
             group.width  = bounds.width;
             group.height = bounds.height;
 
+            
             group.createDefaultSpace();
             group.resetSpace(bounds);
 
@@ -38059,6 +38281,49 @@ function genParseBackBlur(parse)
 
 
 
+function genParseLayerBlendValue(parse)
+{
+    parse.pos++; // LAYER_BLEND_VALUE
+
+    const layer = parse.move();
+
+    if (parse.settings.logRequests) 
+        logReqValue(LAYER_BLEND_VALUE, layer, parse);
+
+    return parseLayerBlendValue(layer)[0];
+}
+
+
+
+function genParseLayerBlend(parse)
+{
+    const [, nodeId, options, ignore] = genParseNodeStart(parse);
+
+
+    const layer = new GLayerBlend(nodeId, options);
+
+
+    if (parse.settings.logRequests) 
+        logReq(layer, parse, ignore);
+
+
+    if (ignore)
+    {
+        genParseNodeEnd(parse, layer);
+        return parse.parsedNodes.find(n => n.nodeId == nodeId);
+    }
+
+
+    layer.opacity = genParse(parse);
+    layer.blend   = genParse(parse);
+    
+    
+    genParseNodeEnd(parse, layer);
+    return layer;
+}
+
+
+
 function genParseLayerMaskValue(parse)
 {
     parse.pos++; // LAYER_MASK_VALUE
@@ -42269,6 +42534,9 @@ function genParse(parse, inParam = true)
     else if (parse.next == BACK_BLUR_VALUE        ) result = genParseBackBlurValue     (parse);
     else if (parse.next == BACK_BLUR              ) result = genParseBackBlur          (parse);
 
+    else if (parse.next == LAYER_BLEND_VALUE      ) result = genParseLayerBlendValue   (parse);
+    else if (parse.next == LAYER_BLEND            ) result = genParseLayerBlend        (parse);
+      
     else if (parse.next == LAYER_MASK_VALUE       ) result = genParseLayerMaskValue    (parse);
     else if (parse.next == LAYER_MASK             ) result = genParseLayerMask         (parse);
       

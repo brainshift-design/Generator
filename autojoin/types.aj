@@ -45,6 +45,7 @@
 ../generator/types/values/InnerShadowValue.js
 ../generator/types/values/LayerBlurValue.js
 ../generator/types/values/BackBlurValue.js
+../generator/types/values/LayerBlendValue.js
 ../generator/types/values/LayerMaskValue.js
 
 ../generator/types/values/ShapeValue.js
@@ -189,6 +190,7 @@
 ../generator/types/layer/GInnerShadow.js
 ../generator/types/layer/GLayerBlur.js
 ../generator/types/layer/GBackBlur.js
+../generator/types/layer/GLayerBlend.js
 ../generator/types/layer/GLayerMask.js
 
 

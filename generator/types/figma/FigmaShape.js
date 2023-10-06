@@ -19,6 +19,9 @@ extends FigmaObject
     isDeco;
     isXform;
 
+    opacity;
+    blend;
+
     maskType = 0;
 
 
@@ -32,6 +35,9 @@ extends FigmaObject
 
         this.isDeco  = isDeco;
         this.isXform = isXform;
+
+        this.opacity = 1;
+        this.blend   = 'PASS_THROUGH';
     }
 
 
@@ -58,6 +64,8 @@ extends FigmaObject
         this.isDeco           = base.isDeco;
         this.isXform          = base.isXform;
 
+        this.opacity          = base.opacity;
+        this.blend            = base.blend;
         this.maskType         = base.maskType;
     }
 
@@ -93,7 +101,9 @@ extends FigmaObject
 
             /* 19 */ this.isDeco,
 
-            /* 20 */ this.maskType
+            /* 20 */ this.opacity,
+            /* 21 */ this.blend,
+            /* 22 */ this.maskType
         ];
     }
 }

@@ -668,6 +668,49 @@ function genParseBackBlur(parse)
 
 
 
+function genParseLayerBlendValue(parse)
+{
+    parse.pos++; // LAYER_BLEND_VALUE
+
+    const layer = parse.move();
+
+    if (parse.settings.logRequests) 
+        logReqValue(LAYER_BLEND_VALUE, layer, parse);
+
+    return parseLayerBlendValue(layer)[0];
+}
+
+
+
+function genParseLayerBlend(parse)
+{
+    const [, nodeId, options, ignore] = genParseNodeStart(parse);
+
+
+    const layer = new GLayerBlend(nodeId, options);
+
+
+    if (parse.settings.logRequests) 
+        logReq(layer, parse, ignore);
+
+
+    if (ignore)
+    {
+        genParseNodeEnd(parse, layer);
+        return parse.parsedNodes.find(n => n.nodeId == nodeId);
+    }
+
+
+    layer.opacity = genParse(parse);
+    layer.blend   = genParse(parse);
+    
+    
+    genParseNodeEnd(parse, layer);
+    return layer;
+}
+
+
+
 function genParseLayerMaskValue(parse)
 {
     parse.pos++; // LAYER_MASK_VALUE

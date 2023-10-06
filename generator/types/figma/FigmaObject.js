@@ -131,7 +131,6 @@ class FigmaObject
 
     createSpaceTransform()
     {
-        console.log('this =', this);
         let vr = point(this.sp1.x - this.sp0.x, this.sp1.y - this.sp0.y);
         let vb = point(this.sp2.x - this.sp0.x, this.sp2.y - this.sp0.y);
     
@@ -273,13 +272,6 @@ class FigmaObject
         /* 9 */ 0 // for future use
         ];
     }
-
-
-
-    // isValid()
-    // {
-    //     return true;
-    // }
 }
 
 
@@ -423,29 +415,3 @@ function getValidObjects(value)
               .map(o => o.copy()) 
         : [];
 }
-
-
-
-// function getValidInputObjects(input)
-// {
-//     const objects = [];
-    
-
-//     if (!input)
-//         return objects;
-
-//     // if (isListType(input.type))
-//     //     for (const item of input.items)
-//     //         objects.push(...getValidInputObjects(item));
-
-//     if (   input.value
-//         && input.value.objects)
-//         objects.push(...input.value.objects
-//               .filter(o => 
-//                      o.isDeco  === false
-//                   || o.isXform === true)
-//               .map(o => o.copy()));
-
-
-//     return objects;
-// }
