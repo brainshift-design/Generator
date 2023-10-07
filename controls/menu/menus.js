@@ -604,8 +604,14 @@ menuFlow = new Menu('Flow', true, false);
 
     menuColor = new Menu('Colors', true, false);
     menuColor.addItems([
-        menuItemColor        = new MenuItem('Color',         null,                {icon: iconColor,            childMenu: menuCreateColor,  callback: e => actionManager.do(getCreateNodeAction(COLOR,             btnColor.div, getCreateOptions(e,  {random: e.altKey && !getCtrlKey(e)})))}),
+        menuItemColor        = new MenuItem('Color',         null,                {icon: iconColor,            childMenu: menuCreateColor,  callback: e => actionManager.do(getCreateNodeAction(COLOR, btnColor.div, getCreateOptions(e,  {random: e.altKey && !getCtrlKey(e)})))}),
                                new MenuItem('',              null,                {separator: true}),
+        menuItemLayerFill    = new MenuItem('Fill',          null,                {icon: iconFill,             callback: e => actionManager.do(getCreateNodeAction(FILL,              btnColor.div, getCreateOptions(e)))}),
+        menuItemLayerStroke  = new MenuItem('Stroke',        null,                {icon: iconStroke,           callback: e => actionManager.do(getCreateNodeAction(STROKE,            btnColor.div, getCreateOptions(e)))}),
+                               new MenuItem('',              null,                {separator: true}),
+                               new MenuItem('Gradient',      null,                {icon: iconGradient,         callback: e => actionManager.do(getCreateNodeAction(GRADIENT,          btnColor.div, getCreateOptions(e)))}),
+                               new MenuItem('Color stop',    null,                {icon: iconColorStop,        callback: e => actionManager.do(getCreateNodeAction(COLOR_STOP,        btnColor.div, getCreateOptions(e)))}),
+        menuItemLayerSep1    = new MenuItem('',              null,                {separator: true}),
                                new MenuItem('Valid sRGB',    null,                {icon: iconValidColor,       callback: e => actionManager.do(getCreateNodeAction(VALID_COLOR,       btnColor.div, getCreateOptions(e)))}),
         menuItemCorrectColor = new MenuItem('Correct color', null,                {icon: iconCorrectColor,     callback: e => actionManager.do(getCreateNodeAction(CORRECT_COLOR,     btnColor.div, getCreateOptions(e)))}),
         menuItemConvertToP3  = new MenuItem('sRGB ⟷ P3',    null,                {icon: iconConvertP3,        callback: e => actionManager.do(getCreateNodeAction(COLOR_CONVERT_P3,  btnColor.div, getCreateOptions(e)))}),
@@ -635,21 +641,16 @@ menuFlow = new Menu('Flow', true, false);
         new MenuItem('Color style', null, {icon: iconColorStyle, createType: START, callback: e => actionManager.do(getCreateNodeAction(COLOR_STYLE, btnLayer.div, getCreateOptions(e, {existing: true})))})]);
     
     
-    menuLayer = new Menu('Style', true, false);
-    menuLayer.addItems([
-        menuItemLayerFill   = new MenuItem('Fill',        null, {icon: iconFill,        callback: e => actionManager.do(getCreateNodeAction(FILL,       btnLayer.div, getCreateOptions(e)))}),
-        menuItemLayerStroke = new MenuItem('Stroke',      null, {icon: iconStroke,      callback: e => actionManager.do(getCreateNodeAction(STROKE,     btnLayer.div, getCreateOptions(e)))}),
-                              new MenuItem('',            null, {separator: true}),
-                              new MenuItem('Gradient',    null, {icon: iconGradient,    callback: e => actionManager.do(getCreateNodeAction(GRADIENT,   btnLayer.div, getCreateOptions(e)))}),
-                              new MenuItem('Color stop',  null, {icon: iconColorStop,   callback: e => actionManager.do(getCreateNodeAction(COLOR_STOP, btnLayer.div, getCreateOptions(e)))}),
-        menuItemLayerSep1   = new MenuItem('',            null, {separator: true}),
-                              new MenuItem('Apply style', null, {icon: iconApply, createType: SHAPE_APPLY, callback: e => actionManager.do(getCreateNodeAction(SHAPE_APPLY, btnLayer.div, getCreateOptions(e)))}),
-                              new MenuItem('',            null, {separator: true}),
-                              new MenuItem('Effects',     null, {icon: iconEffects, childMenu: menuEffects}),
-                              new MenuItem('Styles',      null, {icon: iconStyle, childMenu: menuStyles}),
-                              new MenuItem('',            null, {separator: true}),
-                              new MenuItem('Blend',       null, {icon: iconColorBlend,  callback: e => actionManager.do(getCreateNodeAction(LAYER_BLEND, btnLayer.div, getCreateOptions(e)))}),
-                              new MenuItem('Mask',        null, {icon: iconMask,        callback: e => actionManager.do(getCreateNodeAction(LAYER_MASK,  btnLayer.div, getCreateOptions(e)))})]);
+    // menuLayer = new Menu('Style', true, false);
+    // menuLayer.addItems([
+    //     new MenuItem('Apply style', null, {icon: iconApply, createType: SHAPE_APPLY, callback: e => actionManager.do(getCreateNodeAction(SHAPE_APPLY, btnLayer.div, getCreateOptions(e)))}),
+    //     new MenuItem('',            null, {separator: true}),
+    //     new MenuItem('Effects',     null, {icon: iconEffects, childMenu: menuEffects}),
+    //     new MenuItem('Styles',      null, {icon: iconStyle, childMenu: menuStyles}),
+    //     new MenuItem('',            null, {separator: true}),
+    //     new MenuItem('Blend',       null, {icon: iconColorBlend,  callback: e => actionManager.do(getCreateNodeAction(LAYER_BLEND, btnLayer.div, getCreateOptions(e)))}),
+    //     new MenuItem('',            null, {separator: true}),
+    //     new MenuItem('Mask',        null, {icon: iconMask,        callback: e => actionManager.do(getCreateNodeAction(LAYER_MASK,  btnLayer.div, getCreateOptions(e)))})]);
     
     
     menuVector = new Menu('Vector', true, false);
@@ -695,17 +696,25 @@ menuFlow = new Menu('Flow', true, false);
     menuShape = new Menu('Shapes', true, false);
     menuShape.addItems([
         // menuItemShapeSelected = new MenuItem('Selected objects...', null, {icon: iconSelected,   enabled: false}),
-                             // new MenuItem('',          null,   {separator: true}),
-                                new MenuItem('Shapes',    null,   {icon: iconShapes,        childMenu: menuShapes}),
-                                new MenuItem('Vector',    null,   {icon: iconVectorNetwork, childMenu: menuVector}),
-                                new MenuItem('',          null,   {separator: true}),
-                                new MenuItem('Frame',     null,   {icon: iconFrame,      createType: FRAME,       callback: e => actionManager.do(getCreateNodeAction(FRAME,       btnShape.div, getCreateOptions(e)))}),
-                                new MenuItem('Group',     null,   {icon: iconShapeGroup, createType: SHAPE_GROUP, callback: e => actionManager.do(getCreateNodeAction(SHAPE_GROUP, btnShape.div, getCreateOptions(e)))}),
-                             // new MenuItem('Boolean',   null,   {enabled: false, icon: iconBoolUnion,  callback: e => actionManager.do(getCreateNodeAction(BOOLEAN,     btnShape.div, getCreateOptions(e)))}),
-        menuItemShapeSep1     = new MenuItem('',          null,   {separator: true}),
-                                new MenuItem('Transform', null,   {icon: iconMove, childMenu: menuTransform}),
-                                new MenuItem('',          null,   {separator: true}),
-        menuItemShapeRender   = new MenuItem('Render',    null,   {icon: iconRenderDown, createType: RENDER, callback: e => actionManager.do(getCreateNodeAction(RENDER,       btnShape.div, getCreateOptions(e)))})]);
+                             // new MenuItem('',            null, {separator: true}),
+                                new MenuItem('Shapes',      null, {icon: iconShapes,        childMenu: menuShapes}),
+                                new MenuItem('Vector',      null, {icon: iconVectorNetwork, childMenu: menuVector}),
+                                new MenuItem('',            null, {separator: true}),
+                                new MenuItem('Frame',       null, {icon: iconFrame,      createType: FRAME,       callback: e => actionManager.do(getCreateNodeAction(FRAME,       btnShape.div, getCreateOptions(e)))}),
+                                new MenuItem('Group',       null, {icon: iconShapeGroup, createType: SHAPE_GROUP, callback: e => actionManager.do(getCreateNodeAction(SHAPE_GROUP, btnShape.div, getCreateOptions(e)))}),
+                             // new MenuItem('Boolean',     null, {enabled: false, icon: iconBoolUnion,  callback: e => actionManager.do(getCreateNodeAction(BOOLEAN,     btnShape.div, getCreateOptions(e)))}),
+        menuItemShapeSep1     = new MenuItem('',            null, {separator: true}),
+                                new MenuItem('Transform',   null, {icon: iconMove, childMenu: menuTransform}),
+                                new MenuItem('',            null, {separator: true}),
+                                new MenuItem('Effects',     null, {icon: iconEffects, childMenu: menuEffects}),
+                                new MenuItem('Styles',      null, {icon: iconStyle, childMenu: menuStyles}),
+                                new MenuItem('',            null, {separator: true}),
+                                new MenuItem('Blend',       null, {icon: iconColorBlend,  callback: e => actionManager.do(getCreateNodeAction(LAYER_BLEND, btnLayer.div, getCreateOptions(e)))}),
+                                new MenuItem('Mask',        null, {icon: iconMask,        callback: e => actionManager.do(getCreateNodeAction(LAYER_MASK,  btnLayer.div, getCreateOptions(e)))}),
+                                new MenuItem('',            null, {separator: true}),
+                                new MenuItem('Apply style', null, {icon: iconApply, createType: SHAPE_APPLY, callback: e => actionManager.do(getCreateNodeAction(SHAPE_APPLY, btnLayer.div, getCreateOptions(e)))}),
+                                new MenuItem('',            null, {separator: true}),
+        menuItemShapeRender   = new MenuItem('Render',      null, {icon: iconRenderDown, createType: RENDER, callback: e => actionManager.do(getCreateNodeAction(RENDER, btnShape.div, getCreateOptions(e)))})]);
 
 
     menuTemplate = new Menu('Templates', true, false);
@@ -894,12 +903,12 @@ menuFlow = new Menu('Flow', true, false);
     btnFlow     = new MenuButton('', menuFlow,     {useMenuName: true, highlight: () => currentMenus.includes(menuFlow  ), callback: () => updatePanMode(false)});
     btnData     = new MenuButton('', menuData,     {useMenuName: true, highlight: () => currentMenus.includes(menuData  ), callback: () => updatePanMode(false)});
     btnSets     = new MenuButton('', menuSets,     {useMenuName: true, highlight: () => currentMenus.includes(menuSets  ), callback: () => updatePanMode(false)});
+    btnShape    = new MenuButton('', menuShape,    {useMenuName: true, highlight: () => currentMenus.includes(menuShape ), callback: () => updatePanMode(false)});
+    btnColor    = new MenuButton('', menuColor,    {useMenuName: true, highlight: () => currentMenus.includes(menuColor ), callback: () => updatePanMode(false)});
+    //btnLayer    = new MenuButton('', menuLayer,    {useMenuName: true, highlight: () => currentMenus.includes(menuLayer ), callback: () => updatePanMode(false)});
     btnNumber   = new MenuButton('', menuNumber,   {useMenuName: true, highlight: () => currentMenus.includes(menuNumber), callback: () => updatePanMode(false)});
     btnText     = new MenuButton('', menuString,   {useMenuName: true, highlight: () => currentMenus.includes(menuString), callback: () => updatePanMode(false)});
-    btnColor    = new MenuButton('', menuColor,    {useMenuName: true, highlight: () => currentMenus.includes(menuColor ), callback: () => updatePanMode(false)});
-    btnLayer    = new MenuButton('', menuLayer,    {useMenuName: true, highlight: () => currentMenus.includes(menuLayer ), callback: () => updatePanMode(false)});
     //btnStyle  = new MenuButton('', menuStyle,    {useMenuName: true, highlight: () => currentMenus.includes(menuStyle ), callback: () => updatePanMode(false)});
-    btnShape    = new MenuButton('', menuShape,    {useMenuName: true, highlight: () => currentMenus.includes(menuShape ), callback: () => updatePanMode(false)});
    // btnTemplate = new MenuButton('', menuTemplate, {useMenuName: true, highlight: () => currentMenus.includes(menuTemplate ), callback: () => updatePanMode(false)});
     //btnGroup  = new MenuButton('', menuGroup,  {useMenuName: true, highlight: () => currentMenus.includes(menuGroup ), callback: () => updatePanMode(false)});
     
@@ -1020,7 +1029,7 @@ menuFlow = new Menu('Flow', true, false);
     btnSets   .setIcon(iconSequence);
     btnMain   .setIcon(iconGenerator);
     btnColor  .setIcon(iconVarColor);
-    btnLayer  .setIcon(iconEffects);
+    //btnLayer  .setIcon(iconEffects);
     btnShape  .setIcon(iconShapes);
     btnHand   .setIcon(iconHand);
     //btnComment.setIcon(iconComment);

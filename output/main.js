@@ -19,7 +19,7 @@ function isConnKey(key) { return isTagKey(key, connTag); }
 function noPageTag(key) { return noTag(key, pageTag); }
 function noNodeTag(key) { return noTag(key, nodeTag); }
 function noConnTag(key) { return noTag(key, connTag); }
-const generatorVersion = 226;
+const generatorVersion = 228;
 const MAX_INT32 = 2147483647;
 const NULL = '';
 const HTAB = '  '; // half-tab
@@ -1106,11 +1106,11 @@ const BlendModes = [
     [BLEND_NORMAL, 'normal', 'NORMAL'],
     [BLEND_DARKEN, 'darken', 'DARKEN'],
     [BLEND_MULTIPLY, 'multiply', 'MULTIPLY'],
-    [BLEND_PLUS_DARKER, 'plus darker', 'MULTIPLY'],
+    [BLEND_PLUS_DARKER, 'plus darker', 'LINEAR_BURN'],
     [BLEND_COLOR_BURN, 'color burn', 'COLOR_BURN'],
     [BLEND_LIGNTEN, 'lighten', 'LIGHTEN'],
     [BLEND_SCREEN, 'screen', 'SCREEN'],
-    [BLEND_PLUS_LIGHTER, 'plus lighter', 'SCREEN'],
+    [BLEND_PLUS_LIGHTER, 'plus lighter', 'LINEAR_DODGE'],
     [BLEND_COLOR_DODGE, 'color dodge', 'COLOR_DODGE'],
     [BLEND_OVERLAY, 'overlay', 'OVERLAY'],
     [BLEND_SOFT_LIGHT, 'soft light', 'SOFT_LIGHT'],

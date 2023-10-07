@@ -1727,3 +1727,872 @@ const presetWobblyCircle = '\
             }\
         ]\
     }';
+
+
+
+const presetNestedTorus = '\
+    {\
+        "nodes":\
+        [\
+            {\
+            "type": "CMB",\
+            "id": "combine",\
+            "name": "combine",\
+            "renamed": "false",\
+            "enabled": "true",\
+            "highlight": "0",\
+            "x": "4699",\
+            "y": "3043",\
+            "z": "0",\
+            "width": "60",\
+            "height": "64"\
+            },\
+            {\
+            "type": "SMATH",\
+            "id": "math5",\
+            "name": "math",\
+            "renamed": "false",\
+            "enabled": "true",\
+            "highlight": "0",\
+            "x": "4132",\
+            "y": "3328",\
+            "z": "1",\
+            "params":\
+            [\
+                    ["NUM#", "value", "1,0"],\
+                    ["NUM#", "operation", "3,0"],\
+                    ["NUM#", "operand", "2,0"]\
+            ]\
+            },\
+            {\
+            "type": "CONST",\
+            "id": "constant",\
+            "name": "constant",\
+            "renamed": "false",\
+            "enabled": "true",\
+            "highlight": "0",\
+            "x": "3824",\
+            "y": "2960",\
+            "z": "2",\
+            "params":\
+            [\
+                    ["NUM#", "value", "3.1415926536,10"]\
+            ]\
+            },\
+            {\
+            "type": "SMATH",\
+            "id": "math7",\
+            "name": "math",\
+            "renamed": "false",\
+            "enabled": "true",\
+            "highlight": "0",\
+            "x": "2963",\
+            "y": "3185",\
+            "z": "3",\
+            "params":\
+            [\
+                    ["NUM#", "value", "1.5,1"],\
+                    ["NUM#", "operand", "0.5,1"]\
+            ]\
+            },\
+            {\
+            "type": "SMATH",\
+            "id": "math8",\
+            "name": "math",\
+            "renamed": "false",\
+            "enabled": "true",\
+            "highlight": "0",\
+            "x": "2962",\
+            "y": "3272",\
+            "z": "4",\
+            "params":\
+            [\
+                    ["NUM#", "value", "0.75,1"],\
+                    ["NUM#", "operation", "3,0"],\
+                    ["NUM#", "operand", "2,0"]\
+            ]\
+            },\
+            {\
+            "type": "SEQ",\
+            "id": "sequence3",\
+            "name": "sequence",\
+            "renamed": "false",\
+            "enabled": "true",\
+            "highlight": "0",\
+            "x": "2577",\
+            "y": "3530",\
+            "z": "5",\
+            "params":\
+            [\
+                    ["NUM#", "start", "45,0"],\
+                    ["NUM#", "step", "-8,0"],\
+                    ["NUM#", "end", "?,0"]\
+            ]\
+            },\
+            {\
+            "type": "FILL",\
+            "id": "fill",\
+            "name": "fill",\
+            "renamed": "false",\
+            "enabled": "true",\
+            "highlight": "0",\
+            "x": "3164",\
+            "y": "2830",\
+            "z": "6",\
+            "params":\
+            [\
+                    ["COL#", "color", "1,0 255,0 89,0 0,0"],\
+                    ["NUM#", "opacity", "5,0"]\
+            ]\
+            },\
+            {\
+            "type": "STRK",\
+            "id": "stroke",\
+            "name": "stroke",\
+            "renamed": "false",\
+            "enabled": "true",\
+            "highlight": "0",\
+            "x": "3350.05",\
+            "y": "2803",\
+            "z": "7",\
+            "params":\
+            [\
+                    ["LIST#", "fills", "1 FILL# 255,0 89,0 0,0 5,0 0,0"],\
+                    ["NUM#", "weight", "2.25,1"]\
+            ]\
+            },\
+            {\
+            "type": "CENTR",\
+            "id": "center",\
+            "name": "center",\
+            "renamed": "false",\
+            "enabled": "true",\
+            "highlight": "0",\
+            "x": "3686",\
+            "y": "2621",\
+            "z": "8",\
+            "params":\
+            [\
+                    ["NUM#", "centerX", "0,0"]\
+            ]\
+            },\
+            {\
+            "type": "SCALE",\
+            "id": "scale",\
+            "name": "scale",\
+            "renamed": "false",\
+            "enabled": "true",\
+            "highlight": "0",\
+            "x": "4576",\
+            "y": "2622",\
+            "z": "9",\
+            "params":\
+            [\
+                    ["NUM#", "scaleX", "0,0"],\
+                    ["NUM#", "scaleY", "67,0"],\
+                    ["NUM#", "affectStyle", "0,0"]\
+            ]\
+            },\
+            {\
+            "type": "SEQ",\
+            "id": "sequence2",\
+            "name": "sequence",\
+            "renamed": "false",\
+            "enabled": "true",\
+            "highlight": "0",\
+            "x": "2771",\
+            "y": "3519",\
+            "z": "10",\
+            "params":\
+            [\
+                    ["NUM#", "start", "50,0"],\
+                    ["NUM#", "step", "-15,0"],\
+                    ["NUM#", "end", "?,0"]\
+            ]\
+            },\
+            {\
+            "type": "CENTR",\
+            "id": "center2",\
+            "name": "center",\
+            "renamed": "false",\
+            "enabled": "true",\
+            "highlight": "0",\
+            "x": "5116",\
+            "y": "3070",\
+            "z": "11",\
+            "params":\
+            [\
+                    ["NUM#", "centerX", "0,0"]\
+            ]\
+            },\
+            {\
+            "type": "ROT",\
+            "id": "rotate",\
+            "name": "rotate",\
+            "renamed": "false",\
+            "enabled": "true",\
+            "highlight": "0",\
+            "x": "5267",\
+            "y": "3070",\
+            "z": "12",\
+            "params":\
+            [\
+                    ["NUM#", "angle", "180,0"]\
+            ]\
+            },\
+            {\
+            "type": "RANGE",\
+            "id": "range",\
+            "name": "range",\
+            "renamed": "false",\
+            "enabled": "true",\
+            "highlight": "0",\
+            "x": "3999",\
+            "y": "2888",\
+            "z": "13",\
+            "params":\
+            [\
+                    ["NUM#", "end", "3.1415926536,10"]\
+            ]\
+            },\
+            {\
+            "type": "SMATH",\
+            "id": "math6",\
+            "name": "math",\
+            "renamed": "false",\
+            "enabled": "true",\
+            "highlight": "0",\
+            "x": "3984",\
+            "y": "3171",\
+            "z": "14",\
+            "params":\
+            [\
+                    ["NUM#", "value", "1.5707963268,10"],\
+                    ["NUM#", "operation", "3,0"],\
+                    ["NUM#", "operand", "2,0"]\
+            ]\
+            },\
+            {\
+            "type": "REPT",\
+            "id": "repeat",\
+            "name": "repeat",\
+            "renamed": "false",\
+            "enabled": "true",\
+            "highlight": "0",\
+            "x": "4816",\
+            "y": "2988",\
+            "z": "15",\
+            "params":\
+            [\
+                    ["NUM#", "count", "20,0"]\
+            ]\
+            },\
+            {\
+            "type": "RSTX",\
+            "id": "reset",\
+            "name": "reset%20space",\
+            "renamed": "false",\
+            "enabled": "true",\
+            "highlight": "0",\
+            "x": "4971",\
+            "y": "3069",\
+            "z": "16"\
+            },\
+            {\
+            "type": "ELPS",\
+            "id": "ellipse",\
+            "name": "ellipse",\
+            "renamed": "false",\
+            "enabled": "true",\
+            "highlight": "0",\
+            "x": "3513.05",\
+            "y": "2621",\
+            "z": "17",\
+            "params":\
+            [\
+                    ["NUM#", "width", "400,0"],\
+                    ["NUM#", "height", "400,0"]\
+            ]\
+            },\
+            {\
+            "type": "RANGE",\
+            "id": "range2",\
+            "name": "range",\
+            "renamed": "false",\
+            "enabled": "true",\
+            "highlight": "0",\
+            "x": "3823",\
+            "y": "3148",\
+            "z": "18",\
+            "params":\
+            [\
+                    ["NUM#", "end", "3.1415926536,10"]\
+            ]\
+            },\
+            {\
+            "type": "TRIG",\
+            "id": "trig2",\
+            "name": "trigonometric",\
+            "renamed": "false",\
+            "enabled": "true",\
+            "highlight": "0",\
+            "x": "4132",\
+            "y": "3172",\
+            "z": "19",\
+            "params":\
+            [\
+                    ["NUM#", "value", "1,0"]\
+            ]\
+            },\
+            {\
+            "type": "SEQ",\
+            "id": "sequence",\
+            "name": "sequence",\
+            "renamed": "false",\
+            "enabled": "true",\
+            "highlight": "0",\
+            "x": "3444",\
+            "y": "3402",\
+            "z": "20",\
+            "params":\
+            [\
+                    ["NUM#", "start", "100,0"],\
+                    ["NUM#", "step", "60,0"],\
+                    ["NUM#", "end", "?,0"]\
+            ]\
+            },\
+            {\
+            "type": "SMATH",\
+            "id": "math",\
+            "name": "math",\
+            "renamed": "false",\
+            "enabled": "true",\
+            "highlight": "0",\
+            "x": "4294",\
+            "y": "2887",\
+            "z": "21",\
+            "params":\
+            [\
+                    ["NUM#", "operation", "4,0"],\
+                    ["NUM#", "operand", "40,0"]\
+            ]\
+            },\
+            {\
+            "type": "CMB",\
+            "id": "combine2",\
+            "name": "combine",\
+            "renamed": "false",\
+            "enabled": "true",\
+            "highlight": "0",\
+            "x": "5429",\
+            "y": "2994",\
+            "z": "22",\
+            "width": "118.46411091634813",\
+            "height": "51"\
+            },\
+            {\
+            "type": "SMATH",\
+            "id": "math9",\
+            "name": "math",\
+            "renamed": "false",\
+            "enabled": "true",\
+            "highlight": "0",\
+            "x": "2814",\
+            "y": "3115",\
+            "z": "23",\
+            "params":\
+            [\
+                    ["NUM#", "value", "1.5707963268,10"],\
+                    ["NUM#", "operation", "3,0"],\
+                    ["NUM#", "operand", "2,0"]\
+            ]\
+            },\
+            {\
+            "type": "SMATH",\
+            "id": "math2",\
+            "name": "math",\
+            "renamed": "false",\
+            "enabled": "true",\
+            "highlight": "0",\
+            "x": "4301",\
+            "y": "3172",\
+            "z": "24",\
+            "params":\
+            [\
+                    ["NUM#", "value", "67,0"],\
+                    ["NUM#", "operation", "4,0"],\
+                    ["NUM#", "operand", "67,0"]\
+            ]\
+            },\
+            {\
+            "type": "COL",\
+            "id": "color",\
+            "name": "color",\
+            "renamed": "false",\
+            "enabled": "true",\
+            "highlight": "0",\
+            "x": "3007",\
+            "y": "2857",\
+            "z": "25",\
+            "prevSpace": "hsv",\
+            "params":\
+            [\
+                    ["NUM#", "space", "2,0"],\
+                    ["NUM#", "c1", "21,0"],\
+                    ["NUM#", "c2", "100,0"],\
+                    ["NUM#", "c3", "100,0"]\
+            ]\
+            },\
+            {\
+            "type": "SCALE",\
+            "id": "scale2",\
+            "name": "scale",\
+            "renamed": "false",\
+            "enabled": "true",\
+            "highlight": "0",\
+            "x": "3940",\
+            "y": "2620",\
+            "z": "26",\
+            "params":\
+            [\
+                    ["NUM#", "scaleX", "280,0"],\
+                    ["NUM#", "scaleY", "280,0"],\
+                    ["NUM#", "affectStyle", "0,0"]\
+            ]\
+            },\
+            {\
+            "type": "SMATH",\
+            "id": "math3",\
+            "name": "math",\
+            "renamed": "false",\
+            "enabled": "true",\
+            "highlight": "0",\
+            "x": "4133",\
+            "y": "3241",\
+            "z": "27",\
+            "params":\
+            [\
+                    ["NUM#", "value", "2,0"],\
+                    ["NUM#", "operand", "1,0"]\
+            ]\
+            },\
+            {\
+            "type": "CMB",\
+            "id": "combine3",\
+            "name": "combine",\
+            "renamed": "false",\
+            "enabled": "true",\
+            "highlight": "0",\
+            "x": "5535",\
+            "y": "3528",\
+            "z": "28",\
+            "width": "63.14231120745772",\
+            "height": "64"\
+            },\
+            {\
+            "type": "TRIG",\
+            "id": "trig3",\
+            "name": "trigonometric",\
+            "renamed": "false",\
+            "enabled": "true",\
+            "highlight": "0",\
+            "x": "2962",\
+            "y": "3116",\
+            "z": "29",\
+            "params":\
+            [\
+                    ["NUM#", "value", "1,0"]\
+            ]\
+            },\
+            {\
+            "type": "TRIG",\
+            "id": "trig",\
+            "name": "trigonometric",\
+            "renamed": "false",\
+            "enabled": "true",\
+            "highlight": "0",\
+            "x": "4144",\
+            "y": "2887",\
+            "z": "30"\
+            },\
+            {\
+            "type": "SMATH",\
+            "id": "math4",\
+            "name": "math",\
+            "renamed": "false",\
+            "enabled": "true",\
+            "highlight": "0",\
+            "x": "3157",\
+            "y": "3122",\
+            "z": "31",\
+            "params":\
+            [\
+                    ["NUM#", "value", "2.25,1"],\
+                    ["NUM#", "operation", "4,0"],\
+                    ["NUM#", "operand", "3,0"]\
+            ]\
+            },\
+            {\
+            "type": "REPT",\
+            "id": "repeat2",\
+            "name": "repeat",\
+            "renamed": "false",\
+            "enabled": "true",\
+            "highlight": "0",\
+            "x": "5658",\
+            "y": "3474",\
+            "z": "32",\
+            "active": "true",\
+            "params":\
+            [\
+                    ["NUM#", "count", "4,0"]\
+            ]\
+            },\
+            {\
+            "type": "RANGE",\
+            "id": "range3",\
+            "name": "range",\
+            "renamed": "false",\
+            "enabled": "true",\
+            "highlight": "0",\
+            "x": "2600",\
+            "y": "3063",\
+            "z": "33",\
+            "params":\
+            [\
+                    ["NUM#", "end", "3.1415926536,10"]\
+            ]\
+            }\
+        ],\
+        "connections":\
+        [\
+            {\
+            "outputNodeId": "range",\
+            "outputId": "h0",\
+            "outputOrder": "1",\
+            "inputNodeId": "combine",\
+            "inputId": "h0",\
+            "list": "false"\
+            },\
+            {\
+            "outputNodeId": "range2",\
+            "outputId": "h0",\
+            "outputOrder": "1",\
+            "inputNodeId": "combine",\
+            "inputId": "h1",\
+            "list": "false"\
+            },\
+            {\
+            "outputNodeId": "range3",\
+            "outputId": "h0",\
+            "outputOrder": "3",\
+            "inputNodeId": "combine",\
+            "inputId": "h2",\
+            "list": "false"\
+            },\
+            {\
+            "outputNodeId": "math3",\
+            "outputId": "h0",\
+            "outputOrder": "0",\
+            "inputNodeId": "math5",\
+            "inputId": "h0",\
+            "list": "false"\
+            },\
+            {\
+            "outputNodeId": "trig3",\
+            "outputId": "h0",\
+            "outputOrder": "0",\
+            "inputNodeId": "math7",\
+            "inputId": "h0",\
+            "list": "false"\
+            },\
+            {\
+            "outputNodeId": "math7",\
+            "outputId": "h0",\
+            "outputOrder": "0",\
+            "inputNodeId": "math8",\
+            "inputId": "h0",\
+            "list": "false"\
+            },\
+            {\
+            "outputNodeId": "color",\
+            "outputId": "h0",\
+            "outputOrder": "0",\
+            "inputNodeId": "fill",\
+            "inputId": "color",\
+            "list": "false"\
+            },\
+            {\
+            "outputNodeId": "sequence2",\
+            "outputId": "h0",\
+            "outputOrder": "1",\
+            "inputNodeId": "fill",\
+            "inputId": "opacity",\
+            "list": "false"\
+            },\
+            {\
+            "outputNodeId": "fill",\
+            "outputId": "h0",\
+            "outputOrder": "0",\
+            "inputNodeId": "stroke",\
+            "inputId": "fills",\
+            "list": "false"\
+            },\
+            {\
+            "outputNodeId": "math4",\
+            "outputId": "h0",\
+            "outputOrder": "0",\
+            "inputNodeId": "stroke",\
+            "inputId": "weight",\
+            "list": "false"\
+            },\
+            {\
+            "outputNodeId": "ellipse",\
+            "outputId": "h0",\
+            "outputOrder": "0",\
+            "inputNodeId": "center",\
+            "inputId": "h0",\
+            "list": "false"\
+            },\
+            {\
+            "outputNodeId": "scale2",\
+            "outputId": "h0",\
+            "outputOrder": "0",\
+            "inputNodeId": "scale",\
+            "inputId": "h0",\
+            "list": "false"\
+            },\
+            {\
+            "outputNodeId": "math",\
+            "outputId": "h0",\
+            "outputOrder": "0",\
+            "inputNodeId": "scale",\
+            "inputId": "scaleX",\
+            "list": "false"\
+            },\
+            {\
+            "outputNodeId": "math2",\
+            "outputId": "h0",\
+            "outputOrder": "0",\
+            "inputNodeId": "scale",\
+            "inputId": "scaleY",\
+            "list": "false"\
+            },\
+            {\
+            "outputNodeId": "reset",\
+            "outputId": "h0",\
+            "outputOrder": "0",\
+            "inputNodeId": "center2",\
+            "inputId": "h0",\
+            "list": "true"\
+            },\
+            {\
+            "outputNodeId": "center2",\
+            "outputId": "h0",\
+            "outputOrder": "0",\
+            "inputNodeId": "rotate",\
+            "inputId": "h0",\
+            "list": "false"\
+            },\
+            {\
+            "outputNodeId": "constant",\
+            "outputId": "h0",\
+            "outputOrder": "0",\
+            "inputNodeId": "range",\
+            "inputId": "end",\
+            "list": "false"\
+            },\
+            {\
+            "outputNodeId": "range2",\
+            "outputId": "h0",\
+            "outputOrder": "2",\
+            "inputNodeId": "math6",\
+            "inputId": "h0",\
+            "list": "false"\
+            },\
+            {\
+            "outputNodeId": "scale",\
+            "outputId": "h0",\
+            "outputOrder": "0",\
+            "inputNodeId": "repeat",\
+            "inputId": "h0",\
+            "list": "false"\
+            },\
+            {\
+            "outputNodeId": "combine",\
+            "outputId": "h0",\
+            "outputOrder": "0",\
+            "inputNodeId": "repeat",\
+            "inputId": "loop",\
+            "list": "true"\
+            },\
+            {\
+            "outputNodeId": "repeat",\
+            "outputId": "h0",\
+            "outputOrder": "0",\
+            "inputNodeId": "reset",\
+            "inputId": "h0",\
+            "list": "true"\
+            },\
+            {\
+            "outputNodeId": "stroke",\
+            "outputId": "h0",\
+            "outputOrder": "0",\
+            "inputNodeId": "ellipse",\
+            "inputId": "props",\
+            "list": "false"\
+            },\
+            {\
+            "outputNodeId": "math6",\
+            "outputId": "h0",\
+            "outputOrder": "0",\
+            "inputNodeId": "trig2",\
+            "inputId": "h0",\
+            "list": "false"\
+            },\
+            {\
+            "outputNodeId": "trig",\
+            "outputId": "h0",\
+            "outputOrder": "0",\
+            "inputNodeId": "math",\
+            "inputId": "h0",\
+            "list": "false"\
+            },\
+            {\
+            "outputNodeId": "repeat",\
+            "outputId": "h0",\
+            "outputOrder": "1",\
+            "inputNodeId": "combine2",\
+            "inputId": "h0",\
+            "list": "true"\
+            },\
+            {\
+            "outputNodeId": "rotate",\
+            "outputId": "h0",\
+            "outputOrder": "0",\
+            "inputNodeId": "combine2",\
+            "inputId": "h1",\
+            "list": "false"\
+            },\
+            {\
+            "outputNodeId": "range3",\
+            "outputId": "h0",\
+            "outputOrder": "2",\
+            "inputNodeId": "math9",\
+            "inputId": "h0",\
+            "list": "false"\
+            },\
+            {\
+            "outputNodeId": "math5",\
+            "outputId": "h0",\
+            "outputOrder": "0",\
+            "inputNodeId": "math2",\
+            "inputId": "h0",\
+            "list": "false"\
+            },\
+            {\
+            "outputNodeId": "sequence3",\
+            "outputId": "h0",\
+            "outputOrder": "0",\
+            "inputNodeId": "color",\
+            "inputId": "c1",\
+            "list": "false"\
+            },\
+            {\
+            "outputNodeId": "center",\
+            "outputId": "h0",\
+            "outputOrder": "0",\
+            "inputNodeId": "scale2",\
+            "inputId": "h0",\
+            "list": "false"\
+            },\
+            {\
+            "outputNodeId": "sequence",\
+            "outputId": "h0",\
+            "outputOrder": "0",\
+            "inputNodeId": "scale2",\
+            "inputId": "scaleX",\
+            "list": "false"\
+            },\
+            {\
+            "outputNodeId": "sequence",\
+            "outputId": "h0",\
+            "outputOrder": "1",\
+            "inputNodeId": "scale2",\
+            "inputId": "scaleY",\
+            "list": "false"\
+            },\
+            {\
+            "outputNodeId": "trig2",\
+            "outputId": "h0",\
+            "outputOrder": "0",\
+            "inputNodeId": "math3",\
+            "inputId": "h0",\
+            "list": "false"\
+            },\
+            {\
+            "outputNodeId": "sequence",\
+            "outputId": "h0",\
+            "outputOrder": "2",\
+            "inputNodeId": "combine3",\
+            "inputId": "h0",\
+            "list": "false"\
+            },\
+            {\
+            "outputNodeId": "sequence2",\
+            "outputId": "h0",\
+            "outputOrder": "0",\
+            "inputNodeId": "combine3",\
+            "inputId": "h1",\
+            "list": "false"\
+            },\
+            {\
+            "outputNodeId": "sequence3",\
+            "outputId": "h0",\
+            "outputOrder": "1",\
+            "inputNodeId": "combine3",\
+            "inputId": "h2",\
+            "list": "false"\
+            },\
+            {\
+            "outputNodeId": "math9",\
+            "outputId": "h0",\
+            "outputOrder": "0",\
+            "inputNodeId": "trig3",\
+            "inputId": "h0",\
+            "list": "false"\
+            },\
+            {\
+            "outputNodeId": "range",\
+            "outputId": "h0",\
+            "outputOrder": "0",\
+            "inputNodeId": "trig",\
+            "inputId": "h0",\
+            "list": "false"\
+            },\
+            {\
+            "outputNodeId": "math8",\
+            "outputId": "h0",\
+            "outputOrder": "0",\
+            "inputNodeId": "math4",\
+            "inputId": "h0",\
+            "list": "false"\
+            },\
+            {\
+            "outputNodeId": "combine2",\
+            "outputId": "h0",\
+            "outputOrder": "0",\
+            "inputNodeId": "repeat2",\
+            "inputId": "h0",\
+            "list": "true"\
+            },\
+            {\
+            "outputNodeId": "combine3",\
+            "outputId": "h0",\
+            "outputOrder": "0",\
+            "inputNodeId": "repeat2",\
+            "inputId": "loop",\
+            "list": "true"\
+            }\
+        ]\
+    }';

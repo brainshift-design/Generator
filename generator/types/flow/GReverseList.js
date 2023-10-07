@@ -36,10 +36,11 @@ extends GOperator1
             if (this.options.enabled)
             {
                 this.value = new ListValue();
+                this.value.objects = [];
 
                 for (let i = input.items.length-1; i >= 0; i--)
                 {
-                    this.value.items.push(input.items[i].copy());
+                    this.value.items.push(input.items[i]);//.copy());
                     this.value.objects.push(...input.items[i].objects);
                 }
             }
