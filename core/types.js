@@ -623,6 +623,13 @@ const MATH_OPS =
 ];
 
 
+const MATH_OPS_SHORT = 
+[   // the order is important for logical keyboard value changes
+    [NUMBER_ADD,      '+'],
+    [NUMBER_MULTIPLY, '×']
+];
+
+
 
 const BOOLEAN_NOT = 0;
 const BOOLEAN_XOR = 1;

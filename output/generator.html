@@ -4,7 +4,7 @@
 
 
 
-const generatorVersion = 228;
+const generatorVersion = 230;
 
 
 const MAX_INT32        = 2147483647;
@@ -5345,6 +5345,13 @@ const MATH_OPS =
     [NUMBER_DIVIDE,   '/' ], //'÷' ],
     [NUMBER_MULTIPLY, '×' ],
     [NUMBER_EXPONENT, 'e<sup>x'] 
+];
+
+
+const MATH_OPS_SHORT = 
+[   // the order is important for logical keyboard value changes
+    [NUMBER_ADD,      '+'],
+    [NUMBER_MULTIPLY, '×']
 ];
 
 
@@ -15071,7 +15078,7 @@ extends GOperator1
         const type = 
             this.value
             ? new TextValue(finalListTypeFromItems(this.value.items))
-            : TextValue.NaN;
+            : TextValue.NaN.copy();
 
 
         this.setUpdateValues(parse,
@@ -15599,7 +15606,7 @@ extends GOperator1
                 isListType(this.value.type)
                 ? finalListTypeFromItems(this.value.items)
                 : this.value.type)
-            : TextValue.NaN;
+            : TextValue.NaN.copy();
 
 
         this.setUpdateValues(parse,
@@ -15706,7 +15713,7 @@ extends GOperator1
                 isListType(this.value.type)
                 ? finalListTypeFromItems(this.value.items)
                 : this.value.type)
-            : TextValue.NaN;
+            : TextValue.NaN.copy();
         
 
         this.setUpdateValues(parse,
@@ -16319,7 +16326,7 @@ extends GOperator1
         const type = 
             this.value
             ? new TextValue(finalListTypeFromItems(this.value.items))
-            : TextValue.NaN;
+            : TextValue.NaN.copy();
 
 
         this.setUpdateValues(parse,
@@ -16458,7 +16465,7 @@ extends GOperator1
                 }
             }
             else
-                this.value = ListValue.NaN;//.copy();
+                this.value = ListValue.NaN.copy();
         }
 
 
@@ -16678,13 +16685,16 @@ extends GOperator1
                 this.value.objects = [];
 
                 for (let i = input.items.length-1; i >= 0; i--)
-                {
                     this.value.items.push(input.items[i]);//.copy());
-                    this.value.objects.push(...input.items[i].objects);
+
+                if (input.objects)
+                {
+                    for (let i = input.objects.length-1; i >= 0; i--)
+                        this.value.objects.push(input.objects[i]);
                 }
             }
             else
-                this.value = input.copy();
+                this.value = input;//.copy();
         }
         else
             this.value = ListValue.NaN.copy();
@@ -16696,7 +16706,7 @@ extends GOperator1
         const type = 
             this.value
             ? new TextValue(finalListTypeFromItems(this.value.items))
-            : TextValue.NaN;
+            : TextValue.NaN.copy();
 
         this.setUpdateValues(parse, 
         [
@@ -16933,7 +16943,7 @@ extends GOperator1
         const type = 
             this.value
             ? new TextValue(finalListTypeFromItems(this.value.items))
-            : TextValue.NaN;
+            : TextValue.NaN.copy();
 
 
         this.setUpdateValues(parse,
@@ -17085,7 +17095,7 @@ extends GOperator
                 isListType(this.value.type)
                 ? finalListTypeFromItems(this.value.items)
                 : this.value.type)
-            : TextValue.NaN;
+            : TextValue.NaN.copy();
 
 
         this.setUpdateValues(parse,
@@ -17519,7 +17529,7 @@ extends GOperator
             this.value = new NumberValue(input.items.length - (start.value == 0 ? 1 : 0));
         }
         else
-            this.value = NumberValue.NaN;
+            this.value = NumberValue.NaN.copy();
 
 
         this.setUpdateValues(parse,
@@ -19196,6 +19206,7 @@ class GSequence
 extends GOperator
 {
     start;
+    operation;
     step;
     end;
 
@@ -19216,9 +19227,10 @@ extends GOperator
 
         copy.copyBase(this);
 
-        if (this.start  ) copy.start   = this.start  .copy();
-        if (this.step   ) copy.step    = this.step   .copy();
-        if (this.end    ) copy.end     = this.end    .copy();
+        if (this.start    ) copy.start     = this.start    .copy();
+        if (this.operation) copy.operation = this.operation.copy();
+        if (this.step     ) copy.step      = this.step     .copy();
+        if (this.end      ) copy.end       = this.end      .copy();
 
         if (this.current) copy.current = this.current.copy();
 
@@ -19236,9 +19248,10 @@ extends GOperator
         // input not used for evaluation
 
 
-        const start = (await this.start.eval(parse)).toValue();
-        const step  = (await this.step .eval(parse)).toValue();
-        const end   = (await this.end  .eval(parse)).toValue();
+        const start = (await this.start    .eval(parse)).toValue();
+        const op    = (await this.operation.eval(parse)).toValue();
+        const step  = (await this.step     .eval(parse)).toValue();
+        const end   = (await this.end      .eval(parse)).toValue();
     
 
         if (   start
@@ -19248,7 +19261,7 @@ extends GOperator
             const value = start.value + (this.options.enabled ? step.value * this.iteration : 0);
 
             if (!end.isValid())
-                this.value = new NumberValue(value, Math.max(start.decimals, step.decimals));
+                this.value = getSequenceValue(start, op, step, this.iteration, this.options.enabled);
 
             else if (end.isValid()   
                      && (   step.value == 0
@@ -19256,11 +19269,7 @@ extends GOperator
                                             &&       value < end.value
                          || step.value <  0 && start.value > end.value
                                             &&       value > end.value))
-            {
-                this.value = new NumberValue(
-                    start.value + (this.options.enabled ? step.value * this.iteration : 0),
-                    Math.max(start.decimals, step.decimals));
-            }
+                this.value = getSequenceValue(start, op, step, this.iteration, this.options.enabled);
 
             else
                 this.value = NumberValue.NaN.copy();
@@ -19271,9 +19280,10 @@ extends GOperator
 
         this.setUpdateValues(parse,
         [
-            ['start', start],
-            ['step',  step ],
-            ['end',   end  ]
+            ['start',     start],
+            ['operation', op   ],
+            ['step',      step ],
+            ['end',       end  ]
         ]);
         
 
@@ -19295,8 +19305,9 @@ extends GOperator
 
     isValid()
     {
-        return this.start && this.start.isValid()
-            && this.step  && this.step .isValid();
+        return this.start     && this.start    .isValid()
+            && this.step      && this.step     .isValid()
+            && this.operation && this.operation.isValid();
     }
 
 
@@ -19305,9 +19316,10 @@ extends GOperator
     {
         super.pushValueUpdates(parse);
 
-        if (this.start) this.start.pushValueUpdates(parse);
-        if (this.step ) this.step .pushValueUpdates(parse);
-        if (this.end  ) this.end  .pushValueUpdates(parse);
+        if (this.start    ) this.start    .pushValueUpdates(parse);
+        if (this.step     ) this.step     .pushValueUpdates(parse);
+        if (this.operation) this.operation.pushValueUpdates(parse);
+        if (this.end      ) this.end      .pushValueUpdates(parse);
     }
 
 
@@ -19316,9 +19328,10 @@ extends GOperator
     {
         super.invalidateInputs(parse, from);
 
-        if (this.start) this.start.invalidateInputs(parse, from);
-        if (this.end  ) this.end  .invalidateInputs(parse, from);
-        if (this.step ) this.step .invalidateInputs(parse, from);
+        if (this.start    ) this.start    .invalidateInputs(parse, from);
+        if (this.step     ) this.step     .invalidateInputs(parse, from);
+        if (this.operation) this.operation.invalidateInputs(parse, from);
+        if (this.end      ) this.end      .invalidateInputs(parse, from);
     }
 
 
@@ -19327,12 +19340,30 @@ extends GOperator
     {
         super.iterateLoop(parse);
 
-        if (this.start) this.start.iterateLoop(parse);
-        if (this.step ) this.step .iterateLoop(parse);
-        if (this.end  ) this.end  .iterateLoop(parse);
+        if (this.start    ) this.start    .iterateLoop(parse);
+        if (this.step     ) this.step     .iterateLoop(parse);
+        if (this.operation) this.operation.iterateLoop(parse);
+        if (this.end      ) this.end      .iterateLoop(parse);
     }
 }
 
+
+
+function getSequenceValue(start, op, step, iteration, enabled)
+{
+    let value = start.value;
+
+    if (enabled)
+    {
+        switch (op.value)
+        {
+            case 0: value = start.value + step.value * iteration;          break;
+            case 1: value = start.value * Math.pow(step.value, iteration); break;
+        }
+    }
+
+    return new NumberValue(value);
+}
 
 
 class GRandom
@@ -20610,71 +20641,44 @@ extends GOperator1
 
         if (this.input)
         {
-            this.value = (await this.input.eval(parse)).toValue();
+            const input = (await this.input.eval(parse)).toValue();
 
-            consoleAssert(
-                this.value.type == NUMBER_VALUE, 
-                'this.value.type must be NUMBER_VALUE');
-
-            
-            if (this.options.enabled)
+            if (isListType(input.type))
             {
-                op.value = Math.min(Math.max(0, op.value), MATH_OPS.length-1);
+                this.value = new ListValue();
 
-                switch (op.value)
+                for (let i = 0; i < input.items.length; i++)
                 {
-                    case 0: 
-                        this.value = new NumberValue(
-                            this.value.value - operand.value,
-                            Math.max(this.value.decimals, operand.decimals));
-                        break;
+                    const item = input.items[i];
 
-                    case 1: 
-                        this.value = new NumberValue(
-                            this.value.value + operand.value,
-                            Math.max(this.value.decimals, operand.decimals));
-                        break;
-
-                    case 2: 
-                        this.value = new NumberValue(
-                            this.value.value % operand.value,
-                            Math.max(this.value.decimals, operand.decimals));
-                        break;
-
-                    case 3: 
-                        if (operand.value == 0)
-                            this.value = NumberValue.NaN;
-                        else
-                        {
-                            const val = this.value.value / operand.value;
-
-                            this.value = new NumberValue(
-                                val, 
-                                Math.max(Math.max(this.value.decimals, operand.decimals)), decDigits(val));
-                        }
-                        break;
-
-                    case 4: 
-                        this.value = new NumberValue(
-                            this.value.value * operand.value,
-                            Math.max(this.value.decimals, operand.decimals));
-                        break;
-
-                    case 5: 
-                        this.value = new NumberValue(
-                            Math.pow(this.value.value, operand.value),
-                            Math.max(this.value.decimals, operand.decimals));
-                        break;
+                    this.value.items.push(
+                        item.type == NUMBER_VALUE
+                        ? getSimpleMathValue(item, operand, op, this.options.enabled)
+                        : NumberValue.NaN.copy());   
                 }
+            }
+            else
+            {
+                this.value = getSimpleMathValue(input, operand, op, this.options.enabled);
             }
         }
         else
-            this.value = NumberValue.NaN;
+            this.value = NumberValue.NaN.copy();
 
 
+        const type = 
+            this.value
+            ? new TextValue(
+                isListType(this.value.type)
+                ? finalListTypeFromItems(this.value.items)
+                : this.value.type)
+            : TextValue.NaN.copy();
+
+            
         this.setUpdateValues(parse,
         [
             ['value',     this.value],
+            ['type',      type      ],
             ['operation', op        ],
             ['operand',   operand   ]
         ]);
@@ -20725,6 +20729,66 @@ extends GOperator1
     }
 }
 
+
+
+function getSimpleMathValue(input, operand, op, enabled)
+{
+    consoleAssert(
+        input.type == NUMBER_VALUE, 
+        'input.type must be NUMBER_VALUE');
+
+
+    if (enabled)
+    {
+        op.value = Math.min(Math.max(0, op.value), MATH_OPS.length-1);
+
+        switch (op.value)
+        {
+            case 0: 
+                return new NumberValue(
+                    input.value - operand.value,
+                    Math.max(input.decimals, operand.decimals));
+
+            case 1: 
+                return new NumberValue(
+                    input.value + operand.value,
+                    Math.max(input.decimals, operand.decimals));
+
+            case 2: 
+                return new NumberValue(
+                    input.value % operand.value,
+                    Math.max(input.decimals, operand.decimals));
+
+            case 3: 
+                if (operand.value == 0)
+                    return NumberValue.NaN.copy();
+                else
+                {
+                    const val = input.value / operand.value;
+
+                    return new NumberValue(
+                        val, 
+                        Math.max(Math.max(input.decimals, operand.decimals)), decDigits(val));
+                }
+
+            case 4: 
+                return new NumberValue(
+                    input.value * operand.value,
+                    Math.max(input.decimals, operand.decimals));
+
+            case 5: 
+                return new NumberValue(
+                    Math.pow(input.value, operand.value),
+                    Math.max(input.decimals, operand.decimals));
+        }
+
+
+        console.error('invalid math result')
+        return input;
+    }
+    else
+        return input;
+}
 
 
 class GAdd
@@ -24231,6 +24295,7 @@ function getReplaceValue(input, _what, _with, _regex)
 
     const value = new TextValue();
 
+    
     if (_regex.value > 0)
     {
         try
@@ -24252,6 +24317,7 @@ function getReplaceValue(input, _what, _with, _regex)
             unescapeString(_what.value),
             unescapeString(_with.value));
     }
+
 
     return value;
 }
@@ -25926,11 +25992,11 @@ extends GOperator1
                     this.value = input;
             }
             else
-                this.value = ColorValue.NaN;
+                this.value = ColorValue.NaN.copy();
 
                 
             if (!this.convert)
-                this.convert = NumberValue.NaN;
+                this.convert = NumberValue.NaN.copy();
         }
         else
         {
@@ -26011,7 +26077,7 @@ extends GOperator1
     {
         return this.options.enabled
              ? this.value.copy()
-             : ColorValue.NaN;
+             : ColorValue.NaN.copy();
     }
 
 
@@ -26540,13 +26606,16 @@ extends GOperator2
                     }
                 }
                 else
-                    this.contrast = NumberValue.NaN;
+                    this.contrast = NumberValue.NaN.copy();
             }
             else
-                this.contrast = NumberValue.NaN;
+                this.contrast = NumberValue.NaN.copy();
 
 
-            this.value = input0 ? input0.copy() : ColorValue.NaN;
+            this.value = 
+                input0 
+                ? input0//.copy() 
+                : ColorValue.NaN.copy();
 
 
             this.setUpdateValues(parse,
@@ -26566,8 +26635,8 @@ extends GOperator2
                 ['back', ColorValue.NaN                            ]
             ]);
             
-            this.value    = input0.copy();
-            this.contrast = NumberValue.NaN;
+            this.value    = input0;//.copy();
+            this.contrast = NumberValue.NaN.copy();
         }
 
         else if (this.input1) 
@@ -26580,14 +26649,14 @@ extends GOperator2
                 ['back', input1.isValid() ? input1 : ColorValue.NaN]
             ]);
 
-            this.value    = ColorValue.NaN;
-            this.contrast = NumberValue.NaN;
+            this.value    = ColorValue.NaN.copy();
+            this.contrast = NumberValue.NaN.copy();
         }
 
         else
         {
-            this.value    = ColorValue.NaN;
-            this.contrast = NumberValue.NaN;
+            this.value    = ColorValue.NaN.copy();
+            this.contrast = NumberValue.NaN.copy();
 
             this.setUpdateValues(parse,
             [
@@ -26705,7 +26774,7 @@ extends GOperator1
                 this.value = input;
         }
         else
-            this.value = ColorValue.NaN;
+            this.value = ColorValue.NaN.copy();
 
 
         
@@ -26825,13 +26894,13 @@ extends GOperator1
                     this.value = ColorValue.fromDataColor(validCol);
                 }
                 else
-                    this.value = ColorValue.NaN;
+                    this.value = ColorValue.NaN.copy();
             }
             else
                 this.value = input;
         }
         else
-            this.value = ColorValue.NaN;
+            this.value = ColorValue.NaN.copy();
 
 
         this.setUpdateValues(parse,
@@ -26974,7 +27043,7 @@ extends GOperator2
             this.value = (await this.input1.eval(parse)).toValue();
             
         else 
-            this.value = ColorValue.NaN;
+            this.value = ColorValue.NaN.copy();
 
 
         this.setUpdateValues(parse,
@@ -27147,7 +27216,7 @@ extends GOperator2
             this.value = (await this.input1.eval(parse)).toValue();
             
         else 
-            this.value = ColorValue.NaN;
+            this.value = ColorValue.NaN.copy();
 
 
         this.setUpdateValues(parse,
@@ -39064,9 +39133,10 @@ function genParseSequence(parse)
     parse.nTab++;
 
 
-    seq.start = genParse(parse);
-    seq.step  = genParse(parse);
-    seq.end   = genParse(parse);
+    seq.start     = genParse(parse);
+    seq.operation = genParse(parse);
+    seq.step      = genParse(parse);
+    seq.end       = genParse(parse);
 
 
     parse.nTab--;

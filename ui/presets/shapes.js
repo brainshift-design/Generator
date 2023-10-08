@@ -1741,8 +1741,8 @@ const presetNestedTorus = '\
             "renamed": "false",\
             "enabled": "true",\
             "highlight": "0",\
-            "x": "4699",\
-            "y": "3043",\
+            "x": "4749",\
+            "y": "3093",\
             "z": "0",\
             "width": "60",\
             "height": "64"\
@@ -1754,8 +1754,8 @@ const presetNestedTorus = '\
             "renamed": "false",\
             "enabled": "true",\
             "highlight": "0",\
-            "x": "4132",\
-            "y": "3328",\
+            "x": "4182",\
+            "y": "3378",\
             "z": "1",\
             "params":\
             [\
@@ -1771,8 +1771,8 @@ const presetNestedTorus = '\
             "renamed": "false",\
             "enabled": "true",\
             "highlight": "0",\
-            "x": "3824",\
-            "y": "2960",\
+            "x": "3874",\
+            "y": "3010",\
             "z": "2",\
             "params":\
             [\
@@ -1786,8 +1786,8 @@ const presetNestedTorus = '\
             "renamed": "false",\
             "enabled": "true",\
             "highlight": "0",\
-            "x": "2963",\
-            "y": "3185",\
+            "x": "3013",\
+            "y": "3235",\
             "z": "3",\
             "params":\
             [\
@@ -1802,8 +1802,8 @@ const presetNestedTorus = '\
             "renamed": "false",\
             "enabled": "true",\
             "highlight": "0",\
-            "x": "2962",\
-            "y": "3272",\
+            "x": "3012",\
+            "y": "3322",\
             "z": "4",\
             "params":\
             [\
@@ -1819,8 +1819,8 @@ const presetNestedTorus = '\
             "renamed": "false",\
             "enabled": "true",\
             "highlight": "0",\
-            "x": "2577",\
-            "y": "3530",\
+            "x": "2627",\
+            "y": "3580",\
             "z": "5",\
             "params":\
             [\
@@ -1836,8 +1836,8 @@ const presetNestedTorus = '\
             "renamed": "false",\
             "enabled": "true",\
             "highlight": "0",\
-            "x": "3164",\
-            "y": "2830",\
+            "x": "3214",\
+            "y": "2880",\
             "z": "6",\
             "params":\
             [\
@@ -1852,8 +1852,8 @@ const presetNestedTorus = '\
             "renamed": "false",\
             "enabled": "true",\
             "highlight": "0",\
-            "x": "3350.05",\
-            "y": "2803",\
+            "x": "3400.05",\
+            "y": "2853",\
             "z": "7",\
             "params":\
             [\
@@ -1868,8 +1868,8 @@ const presetNestedTorus = '\
             "renamed": "false",\
             "enabled": "true",\
             "highlight": "0",\
-            "x": "3686",\
-            "y": "2621",\
+            "x": "3736",\
+            "y": "2671",\
             "z": "8",\
             "params":\
             [\
@@ -1883,8 +1883,8 @@ const presetNestedTorus = '\
             "renamed": "false",\
             "enabled": "true",\
             "highlight": "0",\
-            "x": "4576",\
-            "y": "2622",\
+            "x": "4626",\
+            "y": "2672",\
             "z": "9",\
             "params":\
             [\
@@ -1900,8 +1900,8 @@ const presetNestedTorus = '\
             "renamed": "false",\
             "enabled": "true",\
             "highlight": "0",\
-            "x": "2771",\
-            "y": "3519",\
+            "x": "2821",\
+            "y": "3569",\
             "z": "10",\
             "params":\
             [\
@@ -1917,8 +1917,8 @@ const presetNestedTorus = '\
             "renamed": "false",\
             "enabled": "true",\
             "highlight": "0",\
-            "x": "5116",\
-            "y": "3070",\
+            "x": "5166",\
+            "y": "3120",\
             "z": "11",\
             "params":\
             [\
@@ -1932,8 +1932,8 @@ const presetNestedTorus = '\
             "renamed": "false",\
             "enabled": "true",\
             "highlight": "0",\
-            "x": "5267",\
-            "y": "3070",\
+            "x": "5317",\
+            "y": "3120",\
             "z": "12",\
             "params":\
             [\
@@ -1947,8 +1947,8 @@ const presetNestedTorus = '\
             "renamed": "false",\
             "enabled": "true",\
             "highlight": "0",\
-            "x": "3999",\
-            "y": "2888",\
+            "x": "4049",\
+            "y": "2938",\
             "z": "13",\
             "params":\
             [\
@@ -1962,8 +1962,8 @@ const presetNestedTorus = '\
             "renamed": "false",\
             "enabled": "true",\
             "highlight": "0",\
-            "x": "3984",\
-            "y": "3171",\
+            "x": "4034",\
+            "y": "3221",\
             "z": "14",\
             "params":\
             [\
@@ -1979,8 +1979,8 @@ const presetNestedTorus = '\
             "renamed": "false",\
             "enabled": "true",\
             "highlight": "0",\
-            "x": "4816",\
-            "y": "2988",\
+            "x": "4866",\
+            "y": "3038",\
             "z": "15",\
             "params":\
             [\
@@ -1994,8 +1994,8 @@ const presetNestedTorus = '\
             "renamed": "false",\
             "enabled": "true",\
             "highlight": "0",\
-            "x": "4971",\
-            "y": "3069",\
+            "x": "5021",\
+            "y": "3119",\
             "z": "16"\
             },\
             {\
@@ -2005,8 +2005,8 @@ const presetNestedTorus = '\
             "renamed": "false",\
             "enabled": "true",\
             "highlight": "0",\
-            "x": "3513.05",\
-            "y": "2621",\
+            "x": "3563.05",\
+            "y": "2671",\
             "z": "17",\
             "params":\
             [\
@@ -2021,8 +2021,8 @@ const presetNestedTorus = '\
             "renamed": "false",\
             "enabled": "true",\
             "highlight": "0",\
-            "x": "3823",\
-            "y": "3148",\
+            "x": "3873",\
+            "y": "3198",\
             "z": "18",\
             "params":\
             [\
@@ -2036,8 +2036,8 @@ const presetNestedTorus = '\
             "renamed": "false",\
             "enabled": "true",\
             "highlight": "0",\
-            "x": "4132",\
-            "y": "3172",\
+            "x": "4182",\
+            "y": "3222",\
             "z": "19",\
             "params":\
             [\
@@ -2051,8 +2051,8 @@ const presetNestedTorus = '\
             "renamed": "false",\
             "enabled": "true",\
             "highlight": "0",\
-            "x": "3444",\
-            "y": "3402",\
+            "x": "3494",\
+            "y": "3452",\
             "z": "20",\
             "params":\
             [\
@@ -2068,8 +2068,8 @@ const presetNestedTorus = '\
             "renamed": "false",\
             "enabled": "true",\
             "highlight": "0",\
-            "x": "4294",\
-            "y": "2887",\
+            "x": "4344",\
+            "y": "2937",\
             "z": "21",\
             "params":\
             [\
@@ -2084,8 +2084,8 @@ const presetNestedTorus = '\
             "renamed": "false",\
             "enabled": "true",\
             "highlight": "0",\
-            "x": "5429",\
-            "y": "2994",\
+            "x": "5479",\
+            "y": "3044",\
             "z": "22",\
             "width": "118.46411091634813",\
             "height": "51"\
@@ -2097,8 +2097,8 @@ const presetNestedTorus = '\
             "renamed": "false",\
             "enabled": "true",\
             "highlight": "0",\
-            "x": "2814",\
-            "y": "3115",\
+            "x": "2864",\
+            "y": "3165",\
             "z": "23",\
             "params":\
             [\
@@ -2114,8 +2114,8 @@ const presetNestedTorus = '\
             "renamed": "false",\
             "enabled": "true",\
             "highlight": "0",\
-            "x": "4301",\
-            "y": "3172",\
+            "x": "4351",\
+            "y": "3222",\
             "z": "24",\
             "params":\
             [\
@@ -2131,8 +2131,8 @@ const presetNestedTorus = '\
             "renamed": "false",\
             "enabled": "true",\
             "highlight": "0",\
-            "x": "3007",\
-            "y": "2857",\
+            "x": "3057",\
+            "y": "2907",\
             "z": "25",\
             "prevSpace": "hsv",\
             "params":\
@@ -2150,8 +2150,8 @@ const presetNestedTorus = '\
             "renamed": "false",\
             "enabled": "true",\
             "highlight": "0",\
-            "x": "3940",\
-            "y": "2620",\
+            "x": "3990",\
+            "y": "2670",\
             "z": "26",\
             "params":\
             [\
@@ -2167,8 +2167,8 @@ const presetNestedTorus = '\
             "renamed": "false",\
             "enabled": "true",\
             "highlight": "0",\
-            "x": "4133",\
-            "y": "3241",\
+            "x": "4183",\
+            "y": "3291",\
             "z": "27",\
             "params":\
             [\
@@ -2183,8 +2183,8 @@ const presetNestedTorus = '\
             "renamed": "false",\
             "enabled": "true",\
             "highlight": "0",\
-            "x": "5535",\
-            "y": "3528",\
+            "x": "5585",\
+            "y": "3578",\
             "z": "28",\
             "width": "63.14231120745772",\
             "height": "64"\
@@ -2196,8 +2196,8 @@ const presetNestedTorus = '\
             "renamed": "false",\
             "enabled": "true",\
             "highlight": "0",\
-            "x": "2962",\
-            "y": "3116",\
+            "x": "3012",\
+            "y": "3166",\
             "z": "29",\
             "params":\
             [\
@@ -2211,8 +2211,8 @@ const presetNestedTorus = '\
             "renamed": "false",\
             "enabled": "true",\
             "highlight": "0",\
-            "x": "4144",\
-            "y": "2887",\
+            "x": "4194",\
+            "y": "2937",\
             "z": "30"\
             },\
             {\
@@ -2222,8 +2222,8 @@ const presetNestedTorus = '\
             "renamed": "false",\
             "enabled": "true",\
             "highlight": "0",\
-            "x": "3157",\
-            "y": "3122",\
+            "x": "3207",\
+            "y": "3172",\
             "z": "31",\
             "params":\
             [\
@@ -2239,10 +2239,9 @@ const presetNestedTorus = '\
             "renamed": "false",\
             "enabled": "true",\
             "highlight": "0",\
-            "x": "5658",\
-            "y": "3474",\
+            "x": "5708",\
+            "y": "3524",\
             "z": "32",\
-            "active": "true",\
             "params":\
             [\
                     ["NUM#", "count", "4,0"]\
@@ -2255,13 +2254,25 @@ const presetNestedTorus = '\
             "renamed": "false",\
             "enabled": "true",\
             "highlight": "0",\
-            "x": "2600",\
-            "y": "3063",\
+            "x": "2650",\
+            "y": "3113",\
             "z": "33",\
             "params":\
             [\
                     ["NUM#", "end", "3.1415926536,10"]\
             ]\
+            },\
+            {\
+            "type": "REVLST",\
+            "id": "reverse",\
+            "name": "reverse",\
+            "renamed": "false",\
+            "enabled": "true",\
+            "highlight": "0",\
+            "x": "5858",\
+            "y": "3524",\
+            "z": "34",\
+            "active": "true"\
             }\
         ],\
         "connections":\
@@ -2593,6 +2604,415 @@ const presetNestedTorus = '\
             "inputNodeId": "repeat2",\
             "inputId": "loop",\
             "list": "true"\
+            },\
+            {\
+            "outputNodeId": "repeat2",\
+            "outputId": "h0",\
+            "outputOrder": "0",\
+            "inputNodeId": "reverse",\
+            "inputId": "h0",\
+            "list": "true"\
+            }\
+        ]\
+    }';
+
+
+
+const presetTargets = '\
+    {\
+        "nodes":\
+        [\
+            {\
+            "type": "SEQ",\
+            "id": "sequence",\
+            "name": "sequence",\
+            "renamed": "false",\
+            "enabled": "true",\
+            "highlight": "0",\
+            "x": "6503.12",\
+            "y": "6432",\
+            "z": "0",\
+            "params":\
+            [\
+                    ["NUM#", "start", "100,0"],\
+                    ["NUM#", "step", "-35,0"],\
+                    ["NUM#", "end", "?,0"]\
+            ]\
+            },\
+            {\
+            "type": "COL",\
+            "id": "color3",\
+            "name": "color",\
+            "renamed": "false",\
+            "enabled": "true",\
+            "highlight": "0",\
+            "x": "5682.12",\
+            "y": "6481",\
+            "z": "1",\
+            "prevSpace": "hsv",\
+            "params":\
+            [\
+                    ["NUM#", "space", "2,0"],\
+                    ["NUM#", "c1", "220.00000000000003,0"],\
+                    ["NUM#", "c2", "83,0"],\
+                    ["NUM#", "c3", "100,0"]\
+            ]\
+            },\
+            {\
+            "type": "COL",\
+            "id": "color",\
+            "name": "color",\
+            "renamed": "false",\
+            "enabled": "true",\
+            "highlight": "0",\
+            "x": "5684.12",\
+            "y": "6198",\
+            "z": "2",\
+            "prevSpace": "hsv",\
+            "params":\
+            [\
+                    ["NUM#", "space", "2,0"],\
+                    ["NUM#", "c1", "0,0"],\
+                    ["NUM#", "c2", "79,0"],\
+                    ["NUM#", "c3", "100,0"]\
+            ]\
+            },\
+            {\
+            "type": "SCALE",\
+            "id": "scale",\
+            "name": "scale",\
+            "renamed": "false",\
+            "enabled": "true",\
+            "highlight": "0",\
+            "x": "6672.12",\
+            "y": "6164",\
+            "z": "3",\
+            "params":\
+            [\
+                    ["NUM#", "scaleX", "30,0"],\
+                    ["NUM#", "scaleY", "30,0"],\
+                    ["NUM#", "affectSpace", "0,0"]\
+            ]\
+            },\
+            {\
+            "type": "CMB",\
+            "id": "combine",\
+            "name": "combine",\
+            "renamed": "false",\
+            "enabled": "true",\
+            "highlight": "0",\
+            "x": "5839.12",\
+            "y": "6329",\
+            "z": "4",\
+            "width": "120",\
+            "height": "64"\
+            },\
+            {\
+            "type": "RAND",\
+            "id": "random",\
+            "name": "random",\
+            "renamed": "false",\
+            "enabled": "true",\
+            "highlight": "4",\
+            "x": "5914.12",\
+            "y": "6532",\
+            "z": "5",\
+            "params":\
+            [\
+                    ["NUM#", "seed", "382,0"],\
+                    ["NUM#", "max", "2,0"]\
+            ]\
+            },\
+            {\
+            "type": "SEQ",\
+            "id": "sequence3",\
+            "name": "sequence",\
+            "renamed": "false",\
+            "enabled": "true",\
+            "highlight": "0",\
+            "x": "7162.88",\
+            "y": "6846",\
+            "z": "6",\
+            "active": "true",\
+            "params":\
+            [\
+                    ["NUM#", "step", "100,0"],\
+                    ["NUM#", "end", "?,0"]\
+            ]\
+            },\
+            {\
+            "type": "COL",\
+            "id": "color2",\
+            "name": "color",\
+            "renamed": "false",\
+            "enabled": "true",\
+            "highlight": "0",\
+            "x": "5681.12",\
+            "y": "6339",\
+            "z": "7",\
+            "prevSpace": "hsv",\
+            "params":\
+            [\
+                    ["NUM#", "space", "2,0"],\
+                    ["NUM#", "c1", "45,0"],\
+                    ["NUM#", "c2", "85,0"],\
+                    ["NUM#", "c3", "100,0"]\
+            ]\
+            },\
+            {\
+            "type": "REPT",\
+            "id": "repeat2",\
+            "name": "repeat",\
+            "renamed": "false",\
+            "enabled": "true",\
+            "highlight": "0",\
+            "x": "7554.88",\
+            "y": "6693",\
+            "z": "8",\
+            "params":\
+            [\
+                    ["NUM#", "count", "5,0"]\
+            ]\
+            },\
+            {\
+            "type": "ELPS",\
+            "id": "ellipse",\
+            "name": "ellipse",\
+            "renamed": "false",\
+            "enabled": "true",\
+            "highlight": "0",\
+            "x": "6147.12",\
+            "y": "6164",\
+            "z": "9",\
+            "params":\
+            [\
+            ]\
+            },\
+            {\
+            "type": "REPT",\
+            "id": "repeat3",\
+            "name": "repeat",\
+            "renamed": "false",\
+            "enabled": "true",\
+            "highlight": "0",\
+            "x": "7556.88",\
+            "y": "6849",\
+            "z": "10",\
+            "active": "true",\
+            "params":\
+            [\
+                    ["NUM#", "count", "5,0"]\
+            ]\
+            },\
+            {\
+            "type": "REPT",\
+            "id": "repeat",\
+            "name": "repeat",\
+            "renamed": "false",\
+            "enabled": "true",\
+            "highlight": "0",\
+            "x": "6850.12",\
+            "y": "6438",\
+            "z": "11",\
+            "params":\
+            [\
+                    ["NUM#", "count", "3,0"]\
+            ]\
+            },\
+            {\
+            "type": "SEQ",\
+            "id": "sequence2",\
+            "name": "sequence",\
+            "renamed": "false",\
+            "enabled": "true",\
+            "highlight": "0",\
+            "x": "7161.88",\
+            "y": "6689",\
+            "z": "12",\
+            "active": "true",\
+            "params":\
+            [\
+                    ["NUM#", "step", "100,0"],\
+                    ["NUM#", "end", "?,0"]\
+            ]\
+            },\
+            {\
+            "type": "SEL",\
+            "id": "select",\
+            "name": "select",\
+            "renamed": "false",\
+            "enabled": "true",\
+            "highlight": "0",\
+            "x": "5989.12",\
+            "y": "6345",\
+            "z": "13",\
+            "params":\
+            [\
+                    ["NUM#", "index", "1,0"]\
+            ]\
+            },\
+            {\
+            "type": "MOVE",\
+            "id": "move",\
+            "name": "move",\
+            "renamed": "false",\
+            "enabled": "true",\
+            "highlight": "0",\
+            "x": "7354.88",\
+            "y": "6438",\
+            "z": "14",\
+            "params":\
+            [\
+                    ["NUM#", "x", "400,0"],\
+                    ["NUM#", "y", "400,0"]\
+            ]\
+            }\
+        ],\
+        "connections":\
+        [\
+            {\
+            "outputNodeId": "ellipse",\
+            "outputId": "h0",\
+            "outputOrder": "0",\
+            "inputNodeId": "scale",\
+            "inputId": "h0",\
+            "list": "false"\
+            },\
+            {\
+            "outputNodeId": "sequence",\
+            "outputId": "h0",\
+            "outputOrder": "0",\
+            "inputNodeId": "scale",\
+            "inputId": "scaleX",\
+            "list": "false"\
+            },\
+            {\
+            "outputNodeId": "sequence",\
+            "outputId": "h0",\
+            "outputOrder": "1",\
+            "inputNodeId": "scale",\
+            "inputId": "scaleY",\
+            "list": "false"\
+            },\
+            {\
+            "outputNodeId": "color",\
+            "outputId": "h0",\
+            "outputOrder": "0",\
+            "inputNodeId": "combine",\
+            "inputId": "h0",\
+            "list": "false"\
+            },\
+            {\
+            "outputNodeId": "color2",\
+            "outputId": "h0",\
+            "outputOrder": "0",\
+            "inputNodeId": "combine",\
+            "inputId": "h1",\
+            "list": "false"\
+            },\
+            {\
+            "outputNodeId": "color3",\
+            "outputId": "h0",\
+            "outputOrder": "0",\
+            "inputNodeId": "combine",\
+            "inputId": "h2",\
+            "list": "false"\
+            },\
+            {\
+            "outputNodeId": "move",\
+            "outputId": "h0",\
+            "outputOrder": "0",\
+            "inputNodeId": "repeat2",\
+            "inputId": "h0",\
+            "list": "true"\
+            },\
+            {\
+            "outputNodeId": "sequence2",\
+            "outputId": "h0",\
+            "outputOrder": "1",\
+            "inputNodeId": "repeat2",\
+            "inputId": "loop",\
+            "list": "false"\
+            },\
+            {\
+            "outputNodeId": "select",\
+            "outputId": "h0",\
+            "outputOrder": "0",\
+            "inputNodeId": "ellipse",\
+            "inputId": "props",\
+            "list": "false"\
+            },\
+            {\
+            "outputNodeId": "repeat2",\
+            "outputId": "h0",\
+            "outputOrder": "0",\
+            "inputNodeId": "repeat3",\
+            "inputId": "h0",\
+            "list": "true"\
+            },\
+            {\
+            "outputNodeId": "sequence3",\
+            "outputId": "h0",\
+            "outputOrder": "1",\
+            "inputNodeId": "repeat3",\
+            "inputId": "loop",\
+            "list": "false"\
+            },\
+            {\
+            "outputNodeId": "scale",\
+            "outputId": "h0",\
+            "outputOrder": "0",\
+            "inputNodeId": "repeat",\
+            "inputId": "h0",\
+            "list": "false"\
+            },\
+            {\
+            "outputNodeId": "sequence",\
+            "outputId": "h0",\
+            "outputOrder": "2",\
+            "inputNodeId": "repeat",\
+            "inputId": "loop",\
+            "list": "false"\
+            },\
+            {\
+            "outputNodeId": "combine",\
+            "outputId": "h0",\
+            "outputOrder": "0",\
+            "inputNodeId": "select",\
+            "inputId": "h0",\
+            "list": "true"\
+            },\
+            {\
+            "outputNodeId": "random",\
+            "outputId": "h0",\
+            "outputOrder": "0",\
+            "inputNodeId": "select",\
+            "inputId": "index",\
+            "list": "false"\
+            },\
+            {\
+            "outputNodeId": "repeat",\
+            "outputId": "h0",\
+            "outputOrder": "0",\
+            "inputNodeId": "move",\
+            "inputId": "h0",\
+            "list": "true"\
+            },\
+            {\
+            "outputNodeId": "sequence2",\
+            "outputId": "h0",\
+            "outputOrder": "0",\
+            "inputNodeId": "move",\
+            "inputId": "x",\
+            "list": "false"\
+            },\
+            {\
+            "outputNodeId": "sequence3",\
+            "outputId": "h0",\
+            "outputOrder": "0",\
+            "inputNodeId": "move",\
+            "inputId": "y",\
+            "list": "false"\
             }\
         ]\
     }';

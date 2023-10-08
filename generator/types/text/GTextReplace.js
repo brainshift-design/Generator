@@ -145,6 +145,7 @@ function getReplaceValue(input, _what, _with, _regex)
 
     const value = new TextValue();
 
+    
     if (_regex.value > 0)
     {
         try
@@ -166,6 +167,7 @@ function getReplaceValue(input, _what, _with, _regex)
             unescapeString(_what.value),
             unescapeString(_with.value));
     }
+
 
     return value;
 }

@@ -60,6 +60,18 @@ extends OperatorWithValue
 
 
 
+    updateValues(requestId, actionId, updateParamId, paramIds, values)
+    {
+        const type  = values[paramIds.findIndex(id => id == 'type' )];
+
+        if (type)
+            this.outputs[0].types = [type.value];
+
+        super.updateValues(requestId, actionId, updateParamId, paramIds, values);
+    }
+
+
+
     updateParams()
     {
         this.paramValue    .enableControlText(false, this.isUnknown());

@@ -50,7 +50,7 @@ extends GOperator1
                 this.value = input;
         }
         else
-            this.value = ColorValue.NaN;
+            this.value = ColorValue.NaN.copy();
 
 
         

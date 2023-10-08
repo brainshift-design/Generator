@@ -23,7 +23,7 @@ function noNodeTag(key) { return noTag(key, nodeTag); }
 function noConnTag(key) { return noTag(key, connTag); }
 
 
-const generatorVersion = 228;
+const generatorVersion = 230;
 
 
 const MAX_INT32        = 2147483647;
@@ -1626,6 +1626,13 @@ const MATH_OPS =
     [NUMBER_DIVIDE,   '/' ], //'÷' ],
     [NUMBER_MULTIPLY, '×' ],
     [NUMBER_EXPONENT, 'e<sup>x'] 
+];
+
+
+const MATH_OPS_SHORT = 
+[   // the order is important for logical keyboard value changes
+    [NUMBER_ADD,      '+'],
+    [NUMBER_MULTIPLY, '×']
 ];
 
 

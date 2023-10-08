@@ -42,71 +42,44 @@ extends GOperator1
 
         if (this.input)
         {
-            this.value = (await this.input.eval(parse)).toValue();
+            const input = (await this.input.eval(parse)).toValue();
 
-            consoleAssert(
-                this.value.type == NUMBER_VALUE, 
-                'this.value.type must be NUMBER_VALUE');
-
-            
-            if (this.options.enabled)
+            if (isListType(input.type))
             {
-                op.value = Math.min(Math.max(0, op.value), MATH_OPS.length-1);
+                this.value = new ListValue();
 
-                switch (op.value)
+                for (let i = 0; i < input.items.length; i++)
                 {
-                    case 0: 
-                        this.value = new NumberValue(
-                            this.value.value - operand.value,
-                            Math.max(this.value.decimals, operand.decimals));
-                        break;
+                    const item = input.items[i];
 
-                    case 1: 
-                        this.value = new NumberValue(
-                            this.value.value + operand.value,
-                            Math.max(this.value.decimals, operand.decimals));
-                        break;
-
-                    case 2: 
-                        this.value = new NumberValue(
-                            this.value.value % operand.value,
-                            Math.max(this.value.decimals, operand.decimals));
-                        break;
-
-                    case 3: 
-                        if (operand.value == 0)
-                            this.value = NumberValue.NaN;
-                        else
-                        {
-                            const val = this.value.value / operand.value;
-
-                            this.value = new NumberValue(
-                                val, 
-                                Math.max(Math.max(this.value.decimals, operand.decimals)), decDigits(val));
-                        }
-                        break;
-
-                    case 4: 
-                        this.value = new NumberValue(
-                            this.value.value * operand.value,
-                            Math.max(this.value.decimals, operand.decimals));
-                        break;
-
-                    case 5: 
-                        this.value = new NumberValue(
-                            Math.pow(this.value.value, operand.value),
-                            Math.max(this.value.decimals, operand.decimals));
-                        break;
+                    this.value.items.push(
+                        item.type == NUMBER_VALUE
+                        ? getSimpleMathValue(item, operand, op, this.options.enabled)
+                        : NumberValue.NaN.copy());   
                 }
+            }
+            else
+            {
+                this.value = getSimpleMathValue(input, operand, op, this.options.enabled);
             }
         }
         else
-            this.value = NumberValue.NaN;
+            this.value = NumberValue.NaN.copy();
 
 
+        const type = 
+            this.value
+            ? new TextValue(
+                isListType(this.value.type)
+                ? finalListTypeFromItems(this.value.items)
+                : this.value.type)
+            : TextValue.NaN.copy();
+
+            
         this.setUpdateValues(parse,
         [
             ['value',     this.value],
+            ['type',      type      ],
             ['operation', op        ],
             ['operand',   operand   ]
         ]);
@@ -155,4 +128,65 @@ extends GOperator1
         if (this.operation) this.operation.iterateLoop(parse);
         if (this.operand  ) this.operand  .iterateLoop(parse);
     }
+}
+
+
+
+function getSimpleMathValue(input, operand, op, enabled)
+{
+    consoleAssert(
+        input.type == NUMBER_VALUE, 
+        'input.type must be NUMBER_VALUE');
+
+
+    if (enabled)
+    {
+        op.value = Math.min(Math.max(0, op.value), MATH_OPS.length-1);
+
+        switch (op.value)
+        {
+            case 0: 
+                return new NumberValue(
+                    input.value - operand.value,
+                    Math.max(input.decimals, operand.decimals));
+
+            case 1: 
+                return new NumberValue(
+                    input.value + operand.value,
+                    Math.max(input.decimals, operand.decimals));
+
+            case 2: 
+                return new NumberValue(
+                    input.value % operand.value,
+                    Math.max(input.decimals, operand.decimals));
+
+            case 3: 
+                if (operand.value == 0)
+                    return NumberValue.NaN.copy();
+                else
+                {
+                    const val = input.value / operand.value;
+
+                    return new NumberValue(
+                        val, 
+                        Math.max(Math.max(input.decimals, operand.decimals)), decDigits(val));
+                }
+
+            case 4: 
+                return new NumberValue(
+                    input.value * operand.value,
+                    Math.max(input.decimals, operand.decimals));
+
+            case 5: 
+                return new NumberValue(
+                    Math.pow(input.value, operand.value),
+                    Math.max(input.decimals, operand.decimals));
+        }
+
+
+        console.error('invalid math result')
+        return input;
+    }
+    else
+        return input;
 }

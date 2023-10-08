@@ -39,13 +39,16 @@ extends GOperator1
                 this.value.objects = [];
 
                 for (let i = input.items.length-1; i >= 0; i--)
-                {
                     this.value.items.push(input.items[i]);//.copy());
-                    this.value.objects.push(...input.items[i].objects);
+
+                if (input.objects)
+                {
+                    for (let i = input.objects.length-1; i >= 0; i--)
+                        this.value.objects.push(input.objects[i]);
                 }
             }
             else
-                this.value = input.copy();
+                this.value = input;//.copy();
         }
         else
             this.value = ListValue.NaN.copy();
@@ -57,7 +60,7 @@ extends GOperator1
         const type = 
             this.value
             ? new TextValue(finalListTypeFromItems(this.value.items))
-            : TextValue.NaN;
+            : TextValue.NaN.copy();
 
         this.setUpdateValues(parse, 
         [

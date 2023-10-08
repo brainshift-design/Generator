@@ -207,7 +207,7 @@ extends GOperator1
         const type = 
             this.value
             ? new TextValue(finalListTypeFromItems(this.value.items))
-            : TextValue.NaN;
+            : TextValue.NaN.copy();
 
 
         this.setUpdateValues(parse,

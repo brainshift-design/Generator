@@ -78,7 +78,7 @@ extends GOperator2
             this.value = (await this.input1.eval(parse)).toValue();
             
         else 
-            this.value = ColorValue.NaN;
+            this.value = ColorValue.NaN.copy();
 
 
         this.setUpdateValues(parse,

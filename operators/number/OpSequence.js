@@ -2,6 +2,7 @@ class   OpSequence
 extends OperatorBase
 {
     paramStart;
+    paramOperation;
     paramStep;
     paramEnd;
 
@@ -18,9 +19,10 @@ extends OperatorBase
 
         this.addOutput(new Output([NUMBER_VALUE], this.output_genRequest));
 
-        this.addParam(this.paramStart = new NumberParam('start', '[ start', true, true, true,  0));
-        this.addParam(this.paramStep  = new NumberParam('step',  'step',    true, true, true, 10));
-        this.addParam(this.paramEnd   = new NumberParam('end',   '] end',   true, true, true, Number.NaN));
+        this.addParam(this.paramStart     = new NumberParam('start',     '[ start', true,  true, true,  0));
+        this.addParam(this.paramOperation = new SelectParam('operation', '',        false, true, true, MATH_OPS_SHORT.map(s => s[1]), 0));
+        this.addParam(this.paramStep      = new NumberParam('step',      'step',    true,  true, true, 10));
+        this.addParam(this.paramEnd       = new NumberParam('end',       '] end',   true,  true, true, Number.NaN));
     }
 
 
@@ -37,9 +39,10 @@ extends OperatorBase
         if (ignore) return request;
 
         
-        request.push(...this.node.paramStart.genRequest(gen));
-        request.push(...this.node.paramStep .genRequest(gen));
-        request.push(...this.node.paramEnd  .genRequest(gen));
+        request.push(...this.node.paramStart    .genRequest(gen));
+        request.push(...this.node.paramOperation.genRequest(gen));
+        request.push(...this.node.paramStep     .genRequest(gen));
+        request.push(...this.node.paramEnd      .genRequest(gen));
 
 
         gen.scope.pop();
@@ -52,9 +55,10 @@ extends OperatorBase
 
     updateParams()
     {
-        this.paramStart.enableControlText(true, this.paramStart.isUnknown());
-        this.paramStep .enableControlText(true, this.paramStep .isUnknown());
-        this.paramEnd  .enableControlText(true, this.paramEnd  .isUnknown());
+        this.paramStart    .enableControlText(true, this.paramStart    .isUnknown());
+        this.paramOperation.enableControlText(true, this.paramOperation.isUnknown());
+        this.paramStep     .enableControlText(true, this.paramStep     .isUnknown());
+        this.paramEnd      .enableControlText(true, this.paramEnd      .isUnknown());
 
         this.updateParamControls();
     }

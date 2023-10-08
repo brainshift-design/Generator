@@ -64,13 +64,16 @@ extends GOperator2
                     }
                 }
                 else
-                    this.contrast = NumberValue.NaN;
+                    this.contrast = NumberValue.NaN.copy();
             }
             else
-                this.contrast = NumberValue.NaN;
+                this.contrast = NumberValue.NaN.copy();
 
 
-            this.value = input0 ? input0.copy() : ColorValue.NaN;
+            this.value = 
+                input0 
+                ? input0//.copy() 
+                : ColorValue.NaN.copy();
 
 
             this.setUpdateValues(parse,
@@ -90,8 +93,8 @@ extends GOperator2
                 ['back', ColorValue.NaN                            ]
             ]);
             
-            this.value    = input0.copy();
-            this.contrast = NumberValue.NaN;
+            this.value    = input0;//.copy();
+            this.contrast = NumberValue.NaN.copy();
         }
 
         else if (this.input1) 
@@ -104,14 +107,14 @@ extends GOperator2
                 ['back', input1.isValid() ? input1 : ColorValue.NaN]
             ]);
 
-            this.value    = ColorValue.NaN;
-            this.contrast = NumberValue.NaN;
+            this.value    = ColorValue.NaN.copy();
+            this.contrast = NumberValue.NaN.copy();
         }
 
         else
         {
-            this.value    = ColorValue.NaN;
-            this.contrast = NumberValue.NaN;
+            this.value    = ColorValue.NaN.copy();
+            this.contrast = NumberValue.NaN.copy();
 
             this.setUpdateValues(parse,
             [

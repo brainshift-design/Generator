@@ -114,6 +114,8 @@ function hideWhatsNewDialog()
 
     if (!tutorialsSeen)
     {
+        loadPresetGraph('targets');
+
         findTutorials.style.display = 'block';
         tutorialsShown = true;
     }

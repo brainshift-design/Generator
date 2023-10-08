@@ -104,11 +104,11 @@ extends GOperator1
                     this.value = input;
             }
             else
-                this.value = ColorValue.NaN;
+                this.value = ColorValue.NaN.copy();
 
                 
             if (!this.convert)
-                this.convert = NumberValue.NaN;
+                this.convert = NumberValue.NaN.copy();
         }
         else
         {
@@ -189,7 +189,7 @@ extends GOperator1
     {
         return this.options.enabled
              ? this.value.copy()
-             : ColorValue.NaN;
+             : ColorValue.NaN.copy();
     }
 
 

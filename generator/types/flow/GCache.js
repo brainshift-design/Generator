@@ -54,7 +54,7 @@ extends GOperator1
                 isListType(this.value.type)
                 ? finalListTypeFromItems(this.value.items)
                 : this.value.type)
-            : TextValue.NaN;
+            : TextValue.NaN.copy();
 
 
         this.setUpdateValues(parse,

@@ -55,7 +55,7 @@ extends GOperator
             this.value = new NumberValue(input.items.length - (start.value == 0 ? 1 : 0));
         }
         else
-            this.value = NumberValue.NaN;
+            this.value = NumberValue.NaN.copy();
 
 
         this.setUpdateValues(parse,

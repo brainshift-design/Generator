@@ -1,73 +1,254 @@
-const presetNodeBasics = '\
+const presetDefault = '\
     {\
         "nodes":\
         [\
             {\
-            "type": "CMNT",\
-            "id": "comment6",\
-            "name": "Connect%20here",\
-            "renamed": "true",\
+            "type": "CENTR",\
+            "id": "center",\
+            "name": "center",\
+            "renamed": "false",\
             "enabled": "true",\
             "highlight": "0",\
-            "x": "1194",\
-            "y": "743",\
-            "z": "0"\
-            },\
-            {\
-            "type": "NUM",\
-            "id": "num2",\
-            "name": "input",\
-            "renamed": "true",\
-            "enabled": "true",\
-            "highlight": "0",\
-            "x": "852",\
-            "y": "893",\
-            "z": "1",\
-            "width": "120",\
-            "height": "54",\
+            "x": "6443.46",\
+            "y": "5887",\
+            "z": "0",\
             "params":\
             [\
-                    ["NUM#", "value", "456,0"]\
+                    ["NUM#", "centerY", "100,0"]\
             ]\
             },\
             {\
-            "type": "MATH",\
-            "id": "math",\
-            "name": "operation",\
-            "renamed": "true",\
+            "type": "COL",\
+            "id": "color2",\
+            "name": "color",\
+            "renamed": "false",\
             "enabled": "true",\
             "highlight": "0",\
-            "x": "1044",\
-            "y": "840",\
+            "x": "5547.54",\
+            "y": "6156",\
+            "z": "1",\
+            "prevSpace": "hsv",\
+            "params":\
+            [\
+                    ["NUM#", "space", "2,0"],\
+                    ["NUM#", "c1", "215,0"],\
+                    ["NUM#", "c2", "90.11926605504587,0"],\
+                    ["NUM#", "c3", "100,0"]\
+            ]\
+            },\
+            {\
+            "type": "FILL",\
+            "id": "fill",\
+            "name": "fill",\
+            "renamed": "false",\
+            "enabled": "true",\
+            "highlight": "0",\
+            "x": "5711.54",\
+            "y": "6129",\
             "z": "2",\
             "active": "true",\
             "params":\
             [\
-                    ["NUM#", "value", "579,0"]\
+                    ["COL#", "color", "1,0 25,0 121,0 255,0"],\
+                    ["NUM#", "opacity", "30,0"]\
             ]\
             },\
             {\
-            "type": "CMNT",\
-            "id": "comment",\
-            "name": "Nodes%20contain%20or%20modify%20data.",\
+            "type": "SEQ",\
+            "id": "sequence3",\
+            "name": "scale%20W",\
             "renamed": "true",\
             "enabled": "true",\
             "highlight": "0",\
-            "x": "823",\
-            "y": "588",\
-            "z": "3"\
+            "x": "6282.46",\
+            "y": "6238",\
+            "z": "3",\
+            "active": "true",\
+            "params":\
+            [\
+                    ["NUM#", "start", "100,0"],\
+                    ["NUM#", "step", "-10,0"],\
+                    ["NUM#", "end", "?,0"]\
+            ]\
             },\
             {\
-            "type": "CMNT",\
-            "id": "comment4",\
-            "name": "Drag%20or%20type",\
+            "type": "SEQ",\
+            "id": "sequence",\
+            "name": "move%20Y",\
             "renamed": "true",\
             "enabled": "true",\
             "highlight": "0",\
-            "x": "574",\
-            "y": "819",\
-            "z": "4"\
+            "x": "6012",\
+            "y": "6201",\
+            "z": "4",\
+            "active": "true",\
+            "params":\
+            [\
+                    ["NUM#", "step", "3,0"],\
+                    ["NUM#", "end", "?,0"]\
+            ]\
             },\
+            {\
+            "type": "REPT",\
+            "id": "repeat",\
+            "name": "repeat",\
+            "renamed": "false",\
+            "enabled": "true",\
+            "highlight": "0",\
+            "x": "6711",\
+            "y": "5948",\
+            "z": "5",\
+            "active": "true"\
+            },\
+            {\
+            "type": "SCALE",\
+            "id": "scale",\
+            "name": "scale",\
+            "renamed": "false",\
+            "enabled": "true",\
+            "highlight": "0",\
+            "x": "6443.46",\
+            "y": "6004",\
+            "z": "6",\
+            "params":\
+            [\
+                    ["NUM#", "scaleX", "10,0"],\
+                    ["NUM#", "scaleY", "10,0"]\
+            ]\
+            },\
+            {\
+            "type": "ELPS",\
+            "id": "ellipse",\
+            "name": "ellipse",\
+            "renamed": "false",\
+            "enabled": "true",\
+            "highlight": "0",\
+            "x": "5885.54",\
+            "y": "5948",\
+            "z": "7",\
+            "params":\
+            [\
+                    ["NUM#", "width", "200,0"],\
+                    ["NUM#", "height", "200,0"]\
+            ]\
+            },\
+            {\
+            "type": "MOVE",\
+            "id": "move",\
+            "name": "move",\
+            "renamed": "false",\
+            "enabled": "true",\
+            "highlight": "0",\
+            "x": "6159",\
+            "y": "5948",\
+            "z": "8",\
+            "params":\
+            [\
+                    ["NUM#", "y", "27,0"]\
+            ]\
+            },\
+            {\
+            "type": "SEQ",\
+            "id": "sequence2",\
+            "name": "scale%20H",\
+            "renamed": "true",\
+            "enabled": "true",\
+            "highlight": "0",\
+            "x": "6283.46",\
+            "y": "6357",\
+            "z": "9",\
+            "active": "true",\
+            "params":\
+            [\
+                    ["NUM#", "start", "100,0"],\
+                    ["NUM#", "step", "-10,0"],\
+                    ["NUM#", "end", "?,0"]\
+            ]\
+            }\
+        ],\
+        "connections":\
+        [\
+            {\
+            "outputNodeId": "move",\
+            "outputId": "h0",\
+            "outputOrder": "0",\
+            "inputNodeId": "center",\
+            "inputId": "h0",\
+            "list": "false"\
+            },\
+            {\
+            "outputNodeId": "color2",\
+            "outputId": "h0",\
+            "outputOrder": "0",\
+            "inputNodeId": "fill",\
+            "inputId": "color",\
+            "list": "false"\
+            },\
+            {\
+            "outputNodeId": "scale",\
+            "outputId": "h0",\
+            "outputOrder": "0",\
+            "inputNodeId": "repeat",\
+            "inputId": "h0",\
+            "list": "false"\
+            },\
+            {\
+            "outputNodeId": "center",\
+            "outputId": "h0",\
+            "outputOrder": "0",\
+            "inputNodeId": "scale",\
+            "inputId": "h0",\
+            "list": "false"\
+            },\
+            {\
+            "outputNodeId": "sequence3",\
+            "outputId": "h0",\
+            "outputOrder": "0",\
+            "inputNodeId": "scale",\
+            "inputId": "scaleX",\
+            "list": "false"\
+            },\
+            {\
+            "outputNodeId": "sequence2",\
+            "outputId": "h0",\
+            "outputOrder": "0",\
+            "inputNodeId": "scale",\
+            "inputId": "scaleY",\
+            "list": "false"\
+            },\
+            {\
+            "outputNodeId": "fill",\
+            "outputId": "h0",\
+            "outputOrder": "0",\
+            "inputNodeId": "ellipse",\
+            "inputId": "props",\
+            "list": "false"\
+            },\
+            {\
+            "outputNodeId": "ellipse",\
+            "outputId": "h0",\
+            "outputOrder": "0",\
+            "inputNodeId": "move",\
+            "inputId": "h0",\
+            "list": "false"\
+            },\
+            {\
+            "outputNodeId": "sequence",\
+            "outputId": "h0",\
+            "outputOrder": "0",\
+            "inputNodeId": "move",\
+            "inputId": "y",\
+            "list": "false"\
+            }\
+        ]\
+    }';
+
+    
+
+const presetNodeBasics = '\
+    {\
+        "nodes":\
+        [\
             {\
             "type": "CMNT",\
             "id": "comment5",\
@@ -75,23 +256,20 @@ const presetNodeBasics = '\
             "renamed": "true",\
             "enabled": "true",\
             "highlight": "0",\
-            "x": "572",\
-            "y": "866",\
-            "z": "5"\
+            "x": "884",\
+            "y": "1103",\
+            "z": "0"\
             },\
             {\
-            "type": "NUM",\
-            "id": "num3",\
-            "name": "output",\
+            "type": "CMNT",\
+            "id": "comment8",\
+            "name": "to%20see%20the%20result",\
             "renamed": "true",\
             "enabled": "true",\
             "highlight": "0",\
-            "x": "1233",\
-            "y": "849",\
-            "z": "6",\
-            "active": "true",\
-            "width": "120",\
-            "height": "54"\
+            "x": "1508",\
+            "y": "929",\
+            "z": "1"\
             },\
             {\
             "type": "NUM",\
@@ -100,9 +278,9 @@ const presetNodeBasics = '\
             "renamed": "true",\
             "enabled": "true",\
             "highlight": "0",\
-            "x": "852",\
-            "y": "789",\
-            "z": "7",\
+            "x": "1164",\
+            "y": "1026",\
+            "z": "2",\
             "width": "120",\
             "height": "54",\
             "params":\
@@ -117,20 +295,264 @@ const presetNodeBasics = '\
             "renamed": "true",\
             "enabled": "true",\
             "highlight": "0",\
-            "x": "1176",\
-            "y": "844",\
-            "z": "8"\
+            "x": "1503",\
+            "y": "1083",\
+            "z": "3"\
             },\
             {\
             "type": "CMNT",\
-            "id": "comment8",\
-            "name": "to%20see%20the%20result",\
+            "id": "comment6",\
+            "name": "Connect%20here",\
             "renamed": "true",\
             "enabled": "true",\
             "highlight": "0",\
-            "x": "1195",\
-            "y": "783",\
-            "z": "9"\
+            "x": "1506",\
+            "y": "891",\
+            "z": "4",\
+            "active": "true"\
+            },\
+            {\
+            "type": "NUM",\
+            "id": "num3",\
+            "name": "output",\
+            "renamed": "true",\
+            "enabled": "true",\
+            "highlight": "0",\
+            "x": "1571",\
+            "y": "1088",\
+            "z": "5",\
+            "width": "120",\
+            "height": "54"\
+            },\
+            {\
+            "type": "CMNT",\
+            "id": "comment4",\
+            "name": "Drag%20or%20type",\
+            "renamed": "true",\
+            "enabled": "true",\
+            "highlight": "0",\
+            "x": "886",\
+            "y": "1056",\
+            "z": "6"\
+            },\
+            {\
+            "type": "MATH",\
+            "id": "math",\
+            "name": "operation",\
+            "renamed": "true",\
+            "enabled": "true",\
+            "highlight": "0",\
+            "x": "1356",\
+            "y": "1077",\
+            "z": "7",\
+            "params":\
+            [\
+                    ["NUM#", "value", "579,0"]\
+            ]\
+            },\
+            {\
+            "type": "CMNT",\
+            "id": "comment",\
+            "name": "Nodes%20contain%20or%20modify%20data.",\
+            "renamed": "true",\
+            "enabled": "true",\
+            "highlight": "0",\
+            "x": "887",\
+            "y": "883",\
+            "z": "8"\
+            },\
+            {\
+            "type": "NUM",\
+            "id": "num2",\
+            "name": "input",\
+            "renamed": "true",\
+            "enabled": "true",\
+            "highlight": "0",\
+            "x": "1164",\
+            "y": "1130",\
+            "z": "9",\
+            "width": "120",\
+            "height": "54",\
+            "params":\
+            [\
+                    ["NUM#", "value", "456,0"]\
+            ]\
+            },\
+            {\
+            "type": "PANEL",\
+            "id": "panel",\
+            "name": "",\
+            "renamed": "false",\
+            "enabled": "true",\
+            "highlight": "4",\
+            "x": "1486",\
+            "y": "877",\
+            "z": "10",\
+            "width": "244.07492732820356",\
+            "height": "110",\
+            "params":\
+            [\
+            ]\
+            },\
+            {\
+            "type": "PANEL",\
+            "id": "panel2",\
+            "name": "",\
+            "renamed": "false",\
+            "enabled": "true",\
+            "highlight": "4",\
+            "x": "1486",\
+            "y": "987",\
+            "z": "11",\
+            "width": "76",\
+            "height": "159.88473133432382",\
+            "params":\
+            [\
+            ]\
+            },\
+            {\
+            "type": "CMNT",\
+            "id": "comment2",\
+            "name": "They%20will%20appear%20in%20the%20center%20of%20the%20window.",\
+            "renamed": "true",\
+            "enabled": "true",\
+            "highlight": "0",\
+            "x": "683",\
+            "y": "264",\
+            "z": "12"\
+            },\
+            {\
+            "type": "CMNT",\
+            "id": "comment3",\
+            "name": "Alternatively%2C%20a%20node%20can%20be%20dragged%20out%20from",\
+            "renamed": "true",\
+            "enabled": "true",\
+            "highlight": "0",\
+            "x": "1372.41",\
+            "y": "222",\
+            "z": "13"\
+            },\
+            {\
+            "type": "CMNT",\
+            "id": "comment10",\
+            "name": "Nodes%20are%20created%20from%20the%20menu%20buttons%20above.",\
+            "renamed": "true",\
+            "enabled": "true",\
+            "highlight": "0",\
+            "x": "684",\
+            "y": "223",\
+            "z": "14"\
+            },\
+            {\
+            "type": "CMNT",\
+            "id": "comment11",\
+            "name": "a%20menu%20and%20%3Cb%3Eplaced%20directly%20where%20needed%3C%2Fb%3E.",\
+            "renamed": "true",\
+            "enabled": "true",\
+            "highlight": "0",\
+            "x": "1367.41",\
+            "y": "263",\
+            "z": "15"\
+            },\
+            {\
+            "type": "CMNT",\
+            "id": "comment9",\
+            "name": "You%20can%20also%20search%20for%20new%20and%20existing%20nodes",\
+            "renamed": "true",\
+            "enabled": "true",\
+            "highlight": "0",\
+            "x": "970.325",\
+            "y": "436",\
+            "z": "16"\
+            },\
+            {\
+            "type": "CMNT",\
+            "id": "comment12",\
+            "name": "by%20pressing%20%3Cb%3ECtrl%2FCmd%2BP%20or%20%2F%3C%2Fb%3E%2C%20just%20like%20in%20Figma.",\
+            "renamed": "true",\
+            "enabled": "true",\
+            "highlight": "0",\
+            "x": "975",\
+            "y": "482",\
+            "z": "17"\
+            },\
+            {\
+            "type": "CMNT",\
+            "id": "comment13",\
+            "name": "Holding%20Ctrl%2FCmd%20when%20creating%20a%20node%2C",\
+            "renamed": "true",\
+            "enabled": "true",\
+            "highlight": "0",\
+            "x": "992",\
+            "y": "610",\
+            "z": "18"\
+            },\
+            {\
+            "type": "CMNT",\
+            "id": "comment14",\
+            "name": "either%20from%20the%20menu%20or%20from%20the%20search%20box%2C",\
+            "renamed": "true",\
+            "enabled": "true",\
+            "highlight": "0",\
+            "x": "989",\
+            "y": "650",\
+            "z": "19"\
+            },\
+            {\
+            "type": "CMNT",\
+            "id": "comment15",\
+            "name": "will%20automatically%20%3Cb%3Econnect%20it%20to%20the%20selected%20node%3C%2Fb%3E",\
+            "renamed": "true",\
+            "enabled": "true",\
+            "highlight": "0",\
+            "x": "987",\
+            "y": "691",\
+            "z": "20"\
+            },\
+            {\
+            "type": "PANEL",\
+            "id": "panel3",\
+            "name": "",\
+            "renamed": "false",\
+            "enabled": "true",\
+            "highlight": "1",\
+            "x": "647",\
+            "y": "193",\
+            "z": "21",\
+            "active": "true",\
+            "width": "1339.9123134328358",\
+            "height": "146.67350746268656",\
+            "params":\
+            [\
+            ]\
+            },\
+            {\
+            "type": "PANEL",\
+            "id": "panel4",\
+            "name": "",\
+            "renamed": "false",\
+            "enabled": "true",\
+            "highlight": "3",\
+            "x": "938",\
+            "y": "409",\
+            "z": "22",\
+            "active": "true",\
+            "width": "717.6324626865671",\
+            "height": "140",\
+            "params":\
+            [\
+            ]\
+            },\
+            {\
+            "type": "CMNT",\
+            "id": "comment16",\
+            "name": "(where%20possible).",\
+            "renamed": "true",\
+            "enabled": "true",\
+            "highlight": "0",\
+            "x": "982",\
+            "y": "732",\
+            "z": "23"\
             }\
         ],\
         "connections":\

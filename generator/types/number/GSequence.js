@@ -2,6 +2,7 @@ class GSequence
 extends GOperator
 {
     start;
+    operation;
     step;
     end;
 
@@ -22,9 +23,10 @@ extends GOperator
 
         copy.copyBase(this);
 
-        if (this.start  ) copy.start   = this.start  .copy();
-        if (this.step   ) copy.step    = this.step   .copy();
-        if (this.end    ) copy.end     = this.end    .copy();
+        if (this.start    ) copy.start     = this.start    .copy();
+        if (this.operation) copy.operation = this.operation.copy();
+        if (this.step     ) copy.step      = this.step     .copy();
+        if (this.end      ) copy.end       = this.end      .copy();
 
         if (this.current) copy.current = this.current.copy();
 
@@ -42,9 +44,10 @@ extends GOperator
         // input not used for evaluation
 
 
-        const start = (await this.start.eval(parse)).toValue();
-        const step  = (await this.step .eval(parse)).toValue();
-        const end   = (await this.end  .eval(parse)).toValue();
+        const start = (await this.start    .eval(parse)).toValue();
+        const op    = (await this.operation.eval(parse)).toValue();
+        const step  = (await this.step     .eval(parse)).toValue();
+        const end   = (await this.end      .eval(parse)).toValue();
     
 
         if (   start
@@ -54,7 +57,7 @@ extends GOperator
             const value = start.value + (this.options.enabled ? step.value * this.iteration : 0);
 
             if (!end.isValid())
-                this.value = new NumberValue(value, Math.max(start.decimals, step.decimals));
+                this.value = getSequenceValue(start, op, step, this.iteration, this.options.enabled);
 
             else if (end.isValid()   
                      && (   step.value == 0
@@ -62,11 +65,7 @@ extends GOperator
                                             &&       value < end.value
                          || step.value <  0 && start.value > end.value
                                             &&       value > end.value))
-            {
-                this.value = new NumberValue(
-                    start.value + (this.options.enabled ? step.value * this.iteration : 0),
-                    Math.max(start.decimals, step.decimals));
-            }
+                this.value = getSequenceValue(start, op, step, this.iteration, this.options.enabled);
 
             else
                 this.value = NumberValue.NaN.copy();
@@ -77,9 +76,10 @@ extends GOperator
 
         this.setUpdateValues(parse,
         [
-            ['start', start],
-            ['step',  step ],
-            ['end',   end  ]
+            ['start',     start],
+            ['operation', op   ],
+            ['step',      step ],
+            ['end',       end  ]
         ]);
         
 
@@ -101,8 +101,9 @@ extends GOperator
 
     isValid()
     {
-        return this.start && this.start.isValid()
-            && this.step  && this.step .isValid();
+        return this.start     && this.start    .isValid()
+            && this.step      && this.step     .isValid()
+            && this.operation && this.operation.isValid();
     }
 
 
@@ -111,9 +112,10 @@ extends GOperator
     {
         super.pushValueUpdates(parse);
 
-        if (this.start) this.start.pushValueUpdates(parse);
-        if (this.step ) this.step .pushValueUpdates(parse);
-        if (this.end  ) this.end  .pushValueUpdates(parse);
+        if (this.start    ) this.start    .pushValueUpdates(parse);
+        if (this.step     ) this.step     .pushValueUpdates(parse);
+        if (this.operation) this.operation.pushValueUpdates(parse);
+        if (this.end      ) this.end      .pushValueUpdates(parse);
     }
 
 
@@ -122,9 +124,10 @@ extends GOperator
     {
         super.invalidateInputs(parse, from);
 
-        if (this.start) this.start.invalidateInputs(parse, from);
-        if (this.end  ) this.end  .invalidateInputs(parse, from);
-        if (this.step ) this.step .invalidateInputs(parse, from);
+        if (this.start    ) this.start    .invalidateInputs(parse, from);
+        if (this.step     ) this.step     .invalidateInputs(parse, from);
+        if (this.operation) this.operation.invalidateInputs(parse, from);
+        if (this.end      ) this.end      .invalidateInputs(parse, from);
     }
 
 
@@ -133,8 +136,27 @@ extends GOperator
     {
         super.iterateLoop(parse);
 
-        if (this.start) this.start.iterateLoop(parse);
-        if (this.step ) this.step .iterateLoop(parse);
-        if (this.end  ) this.end  .iterateLoop(parse);
+        if (this.start    ) this.start    .iterateLoop(parse);
+        if (this.step     ) this.step     .iterateLoop(parse);
+        if (this.operation) this.operation.iterateLoop(parse);
+        if (this.end      ) this.end      .iterateLoop(parse);
     }
+}
+
+
+
+function getSequenceValue(start, op, step, iteration, enabled)
+{
+    let value = start.value;
+
+    if (enabled)
+    {
+        switch (op.value)
+        {
+            case 0: value = start.value + step.value * iteration;          break;
+            case 1: value = start.value * Math.pow(step.value, iteration); break;
+        }
+    }
+
+    return new NumberValue(value);
 }

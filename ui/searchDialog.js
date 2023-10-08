@@ -80,6 +80,8 @@ function initSearchBox(query)
 
             for (const menu of menuBarMenus)
             {
+                if (!menu) continue;
+                
                 for (const item of menu.items)
                 {
                     if (   item.name.toLowerCase().includes(query.toLowerCase())

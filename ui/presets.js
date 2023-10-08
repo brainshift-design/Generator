@@ -62,6 +62,8 @@ function getPresetGraph(graphId)
 {
     switch (graphId)
     {
+        case 'default':              return presetDefault;
+
         case 'basics':               return presetNodeBasics;
         case 'dataTypes':            return presetDataTypes;
         case 'organize':             return presetOrganize;
@@ -92,6 +94,7 @@ function getPresetGraph(graphId)
         case 'falsePerspective':     return presetFalsePerspective;
 
 
+        case 'twoMathNodes':         return presetTwoMathNodes;
         case 'quadraticFormula':     return presetQuadraticFormula;
         case 'opponentColor':        return presetOpponentColor;
 
@@ -117,6 +120,7 @@ function getPresetGraph(graphId)
 
         case 'wobblyCircle':         return presetWobblyCircle;
         case 'nestedTorus':          return presetNestedTorus;
+        case 'targets':              return presetTargets;
 
 
         case 'basicVariables':       return presetBasicVariables;

@@ -64,13 +64,13 @@ extends GOperator1
                     this.value = ColorValue.fromDataColor(validCol);
                 }
                 else
-                    this.value = ColorValue.NaN;
+                    this.value = ColorValue.NaN.copy();
             }
             else
                 this.value = input;
         }
         else
-            this.value = ColorValue.NaN;
+            this.value = ColorValue.NaN.copy();
 
 
         this.setUpdateValues(parse,
