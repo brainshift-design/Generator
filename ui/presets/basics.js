@@ -67,7 +67,7 @@ const presetDefault = '\
             "params":\
             [\
                     ["NUM#", "start", "100,0"],\
-                    ["NUM#", "step", "-10,0"],\
+                    ["NUM#", "add", "-10,0"],\
                     ["NUM#", "end", "?,0"]\
             ]\
             },\
@@ -84,7 +84,7 @@ const presetDefault = '\
             "active": "true",\
             "params":\
             [\
-                    ["NUM#", "step", "3,0"],\
+                    ["NUM#", "add", "3,0"],\
                     ["NUM#", "end", "?,0"]\
             ]\
             },\
@@ -161,7 +161,7 @@ const presetDefault = '\
             "params":\
             [\
                     ["NUM#", "start", "100,0"],\
-                    ["NUM#", "step", "-10,0"],\
+                    ["NUM#", "add", "-10,0"],\
                     ["NUM#", "end", "?,0"]\
             ]\
             }\
@@ -243,7 +243,7 @@ const presetDefault = '\
         ]\
     }';
 
-    
+
 
 const presetNodeBasics = '\
     {\

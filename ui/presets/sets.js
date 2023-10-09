@@ -4,32 +4,37 @@ const presetSequence = '\
         [\
             {\
             "type": "SEQ",\
+            "id": "sequence2",\
+            "name": "sequence",\
+            "renamed": "false",\
+            "enabled": "true",\
+            "highlight": "0",\
+            "x": "311",\
+            "y": "1907",\
+            "z": "0",\
+            "active": "true",\
+            "params":\
+            [\
+                    ["NUM#", "add", "15,0"],\
+                    ["NUM#", "end", "?,0"]\
+            ]\
+            },\
+            {\
+            "type": "SEQ",\
             "id": "sequence",\
             "name": "sequence",\
             "renamed": "false",\
             "enabled": "true",\
             "highlight": "7",\
-            "x": "500",\
-            "y": "2300",\
-            "z": "0",\
-            "params":\
-            [\
-                    ["NUM#", "end", "?,0"]\
-            ]\
-            },\
-            {\
-            "type": "RECT",\
-            "id": "rect",\
-            "name": "rectangle",\
-            "renamed": "false",\
-            "enabled": "true",\
-            "highlight": "0",\
-            "x": "106",\
-            "y": "1652",\
+            "x": "707",\
+            "y": "2229",\
             "z": "1",\
             "params":\
             [\
-                    ["NUM#", "width", "10,0"]\
+                    ["NUM#", "start", "1,0"],\
+                    ["NUM#", "multiply", "1.12,2"],\
+                    ["NUM#", "add", "3,0"],\
+                    ["NUM#", "end", "?,0"]\
             ]\
             },\
             {\
@@ -39,12 +44,27 @@ const presetSequence = '\
             "renamed": "false",\
             "enabled": "true",\
             "highlight": "0",\
-            "x": "450",\
-            "y": "1652",\
+            "x": "500",\
+            "y": "1702",\
             "z": "2",\
             "params":\
             [\
-                    ["NUM#", "x", "1470,0"]\
+                    ["NUM#", "x", "735,0"]\
+            ]\
+            },\
+            {\
+            "type": "CENTR",\
+            "id": "center",\
+            "name": "center",\
+            "renamed": "false",\
+            "enabled": "true",\
+            "highlight": "0",\
+            "x": "759",\
+            "y": "1702",\
+            "z": "3",\
+            "params":\
+            [\
+                    ["NUM#", "centerY", "100,0"]\
             ]\
             },\
             {\
@@ -54,9 +74,9 @@ const presetSequence = '\
             "renamed": "false",\
             "enabled": "true",\
             "highlight": "0",\
-            "x": "-55",\
-            "y": "1790",\
-            "z": "3",\
+            "x": "-5",\
+            "y": "1840",\
+            "z": "4",\
             "prevSpace": "hsv",\
             "params":\
             [\
@@ -67,65 +87,19 @@ const presetSequence = '\
             ]\
             },\
             {\
-            "type": "SEQ",\
-            "id": "sequence2",\
-            "name": "sequence",\
-            "renamed": "false",\
-            "enabled": "true",\
-            "highlight": "0",\
-            "x": "293",\
-            "y": "1872",\
-            "z": "4",\
-            "params":\
-            [\
-                    ["NUM#", "step", "30,0"],\
-                    ["NUM#", "end", "?,0"]\
-            ]\
-            },\
-            {\
             "type": "REPT",\
             "id": "repeat",\
             "name": "repeat",\
             "renamed": "false",\
             "enabled": "true",\
             "highlight": "0",\
-            "x": "1040",\
-            "y": "1887",\
+            "x": "1090",\
+            "y": "1937",\
             "z": "5",\
             "active": "true",\
             "params":\
             [\
                     ["NUM#", "count", "50,0"]\
-            ]\
-            },\
-            {\
-            "type": "CENTR",\
-            "id": "center",\
-            "name": "center",\
-            "renamed": "false",\
-            "enabled": "true",\
-            "highlight": "0",\
-            "x": "709",\
-            "y": "1652",\
-            "z": "6",\
-            "params":\
-            [\
-                    ["NUM#", "centerY", "100,0"]\
-            ]\
-            },\
-            {\
-            "type": "SCALE",\
-            "id": "scale",\
-            "name": "scale",\
-            "renamed": "false",\
-            "enabled": "true",\
-            "highlight": "0",\
-            "x": "859",\
-            "y": "1652",\
-            "z": "7",\
-            "params":\
-            [\
-                    ["NUM#", "scaleY", "490,0"]\
             ]\
             },\
             {\
@@ -135,26 +109,72 @@ const presetSequence = '\
             "renamed": "false",\
             "enabled": "true",\
             "highlight": "0",\
-            "x": "-104",\
-            "y": "1598",\
-            "z": "8",\
+            "x": "-51",\
+            "y": "1657",\
+            "z": "6",\
             "width": "1305.8120687980118",\
             "height": "417.66207376486375",\
             "params":\
             [\
             ]\
+            },\
+            {\
+            "type": "SCALE",\
+            "id": "scale",\
+            "name": "scale",\
+            "renamed": "false",\
+            "enabled": "true",\
+            "highlight": "0",\
+            "x": "909",\
+            "y": "1702",\
+            "z": "7",\
+            "params":\
+            [\
+                    ["NUM#", "scaleY", "405.0376694910721,10"]\
+            ]\
+            },\
+            {\
+            "type": "RECT",\
+            "id": "rect",\
+            "name": "rectangle",\
+            "renamed": "false",\
+            "enabled": "true",\
+            "highlight": "0",\
+            "x": "156",\
+            "y": "1702",\
+            "z": "8",\
+            "params":\
+            [\
+                    ["NUM#", "width", "10,0"]\
+            ]\
+            },\
+            {\
+            "type": "CMNT",\
+            "id": "comment",\
+            "name": "Sequence%20performs%20a%20multiply-and-add%20operation%2C",\
+            "renamed": "true",\
+            "enabled": "true",\
+            "highlight": "0",\
+            "x": "908",\
+            "y": "2244",\
+            "z": "9",\
+            "active": "true"\
+            },\
+            {\
+            "type": "CMNT",\
+            "id": "comment2",\
+            "name": "which%20gives%20you%20good%20control%20over%20simple%20curvature.",\
+            "renamed": "true",\
+            "enabled": "true",\
+            "highlight": "0",\
+            "x": "908",\
+            "y": "2290",\
+            "z": "10",\
+            "active": "true"\
             }\
         ],\
         "connections":\
         [\
-            {\
-            "outputNodeId": "color",\
-            "outputId": "h0",\
-            "outputOrder": "0",\
-            "inputNodeId": "rect",\
-            "inputId": "props",\
-            "list": "false"\
-            },\
             {\
             "outputNodeId": "rect",\
             "outputId": "h0",\
@@ -172,18 +192,18 @@ const presetSequence = '\
             "list": "false"\
             },\
             {\
-            "outputNodeId": "scale",\
-            "outputId": "h0",\
-            "outputOrder": "0",\
-            "inputNodeId": "repeat",\
-            "inputId": "h0",\
-            "list": "false"\
-            },\
-            {\
             "outputNodeId": "move",\
             "outputId": "h0",\
             "outputOrder": "0",\
             "inputNodeId": "center",\
+            "inputId": "h0",\
+            "list": "false"\
+            },\
+            {\
+            "outputNodeId": "scale",\
+            "outputId": "h0",\
+            "outputOrder": "0",\
+            "inputNodeId": "repeat",\
             "inputId": "h0",\
             "list": "false"\
             },\
@@ -202,6 +222,14 @@ const presetSequence = '\
             "inputNodeId": "scale",\
             "inputId": "scaleY",\
             "list": "false"\
+            },\
+            {\
+            "outputNodeId": "color",\
+            "outputId": "h0",\
+            "outputOrder": "0",\
+            "inputNodeId": "rect",\
+            "inputId": "props",\
+            "list": "false"\
             }\
         ]\
     }';
@@ -219,8 +247,8 @@ const presetRange = '\
             "renamed": "false",\
             "enabled": "true",\
             "highlight": "0",\
-            "x": "156",\
-            "y": "1702",\
+            "x": "306",\
+            "y": "1852",\
             "z": "0",\
             "params":\
             [\
@@ -234,12 +262,12 @@ const presetRange = '\
             "renamed": "false",\
             "enabled": "true",\
             "highlight": "0",\
-            "x": "500",\
-            "y": "1702",\
+            "x": "650",\
+            "y": "1852",\
             "z": "1",\
             "params":\
             [\
-                    ["NUM#", "x", "1470,0"]\
+                    ["NUM#", "x", "735,0"]\
             ]\
             },\
             {\
@@ -249,8 +277,8 @@ const presetRange = '\
             "renamed": "false",\
             "enabled": "true",\
             "highlight": "0",\
-            "x": "-5",\
-            "y": "1840",\
+            "x": "145",\
+            "y": "1990",\
             "z": "2",\
             "prevSpace": "hsv",\
             "params":\
@@ -268,12 +296,12 @@ const presetRange = '\
             "renamed": "false",\
             "enabled": "true",\
             "highlight": "0",\
-            "x": "343",\
-            "y": "1922",\
+            "x": "493",\
+            "y": "2072",\
             "z": "3",\
             "params":\
             [\
-                    ["NUM#", "step", "30,0"],\
+                    ["NUM#", "add", "15,0"],\
                     ["NUM#", "end", "?,0"]\
             ]\
             },\
@@ -284,8 +312,8 @@ const presetRange = '\
             "renamed": "false",\
             "enabled": "true",\
             "highlight": "0",\
-            "x": "1090",\
-            "y": "1937",\
+            "x": "1240",\
+            "y": "2087",\
             "z": "4",\
             "active": "true",\
             "params":\
@@ -300,8 +328,8 @@ const presetRange = '\
             "renamed": "false",\
             "enabled": "true",\
             "highlight": "0",\
-            "x": "759",\
-            "y": "1702",\
+            "x": "909",\
+            "y": "1852",\
             "z": "5",\
             "params":\
             [\
@@ -315,8 +343,8 @@ const presetRange = '\
             "renamed": "false",\
             "enabled": "true",\
             "highlight": "0",\
-            "x": "909",\
-            "y": "1702",\
+            "x": "1059",\
+            "y": "1852",\
             "z": "6",\
             "params":\
             [\
@@ -330,8 +358,8 @@ const presetRange = '\
             "renamed": "false",\
             "enabled": "true",\
             "highlight": "0",\
-            "x": "-54",\
-            "y": "1648",\
+            "x": "96",\
+            "y": "1798",\
             "z": "7",\
             "width": "1305.8120687980118",\
             "height": "417.66207376486375",\
@@ -346,13 +374,14 @@ const presetRange = '\
             "renamed": "false",\
             "enabled": "true",\
             "highlight": "7",\
-            "x": "638",\
-            "y": "2335",\
+            "x": "788",\
+            "y": "2485",\
             "z": "8",\
-            "active": "true",\
             "params":\
             [\
-                    ["NUM#", "end", "500,0"]\
+                    ["NUM#", "end", "500,0"],\
+                    ["NUM#", "spread", "2,0"],\
+                    ["NUM#", "bias", "32,0"]\
             ]\
             },\
             {\
@@ -362,8 +391,8 @@ const presetRange = '\
             "renamed": "true",\
             "enabled": "true",\
             "highlight": "0",\
-            "x": "973",\
-            "y": "2177",\
+            "x": "1123",\
+            "y": "2327",\
             "z": "9",\
             "active": "true"\
             },\
@@ -374,9 +403,57 @@ const presetRange = '\
             "renamed": "true",\
             "enabled": "true",\
             "highlight": "0",\
-            "x": "973",\
-            "y": "2221",\
+            "x": "1123",\
+            "y": "2371",\
             "z": "10",\
+            "active": "true"\
+            },\
+            {\
+            "type": "CMNT",\
+            "id": "comment3",\
+            "name": "Because%20the%20end%20value%20is%20known%2C%20curvature%20can%20be",\
+            "renamed": "true",\
+            "enabled": "true",\
+            "highlight": "0",\
+            "x": "1002",\
+            "y": "2536",\
+            "z": "11",\
+            "active": "true"\
+            },\
+            {\
+            "type": "CMNT",\
+            "id": "comment4",\
+            "name": "controlled%20using%20the%20spread%20and%20bias%20parameters",\
+            "renamed": "true",\
+            "enabled": "true",\
+            "highlight": "0",\
+            "x": "999",\
+            "y": "2577",\
+            "z": "12",\
+            "active": "true"\
+            },\
+            {\
+            "type": "CMNT",\
+            "id": "comment5",\
+            "name": "in%20ways%20not%20possible%20with%20a%20sequence",\
+            "renamed": "true",\
+            "enabled": "true",\
+            "highlight": "0",\
+            "x": "998",\
+            "y": "2616",\
+            "z": "13",\
+            "active": "true"\
+            },\
+            {\
+            "type": "CMNT",\
+            "id": "comment6",\
+            "name": "%E2%9F%B5",\
+            "renamed": "true",\
+            "enabled": "true",\
+            "highlight": "0",\
+            "x": "940",\
+            "y": "2581",\
+            "z": "14",\
             "active": "true"\
             }\
         ],\
@@ -516,7 +593,7 @@ const presetDefine = '\
             "z": "3",\
             "params":\
             [\
-                    ["NUM#", "step", "30,0"],\
+                    ["NUM#", "add", "15,0"],\
                     ["NUM#", "end", "?,0"]\
             ]\
             },\
@@ -664,7 +741,7 @@ const presetDefine = '\
             "height": "54",\
             "params":\
             [\
-                    ["NUM#", "value", "567,0"]\
+                    ["NUM#", "value", "345,0"]\
             ]\
             },\
             {\
@@ -681,7 +758,7 @@ const presetDefine = '\
             "height": "54",\
             "params":\
             [\
-                    ["NUM#", "value", "789,0"]\
+                    ["NUM#", "value", "456,0"]\
             ]\
             }\
         ],\
@@ -845,7 +922,7 @@ const presetRandom = '\
             "z": "3",\
             "params":\
             [\
-                    ["NUM#", "step", "30,0"],\
+                    ["NUM#", "add", "15,0"],\
                     ["NUM#", "end", "?,0"]\
             ]\
             },\
@@ -1008,7 +1085,7 @@ const presetNoise = '\
             "z": "0",\
             "params":\
             [\
-                    ["NUM#", "step", "30,0"],\
+                    ["NUM#", "add", "15,0"],\
                     ["NUM#", "end", "?,0"]\
             ]\
             },\
@@ -1428,7 +1505,7 @@ const presetProbability = '\
             "z": "12",\
             "params":\
             [\
-                    ["NUM#", "step", "30,0"],\
+                    ["NUM#", "add", "15,0"],\
                     ["NUM#", "end", "?,0"]\
             ]\
             },\

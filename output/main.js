@@ -1022,7 +1022,9 @@ const MATH_OPS = [
     [NUMBER_EXPONENT, 'e<sup>x']
 ];
 const MATH_OPS_SHORT = [
+    [NUMBER_SUBTRACT, '−'],
     [NUMBER_ADD, '+'],
+    [NUMBER_DIVIDE, '/'],
     [NUMBER_MULTIPLY, '×']
 ];
 const BOOLEAN_NOT = 0;

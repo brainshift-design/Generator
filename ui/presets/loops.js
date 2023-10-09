@@ -60,7 +60,7 @@ const presetLoop1d = '\
             "z": "3",\
             "params":\
             [\
-                    ["NUM#", "step", "120,0"],\
+                    ["NUM#", "add", "120,0"],\
                     ["NUM#", "end", "?,0"]\
             ]\
             },\
@@ -172,7 +172,7 @@ const presetLoop2d = '\
             "z": "0",\
             "params":\
             [\
-                    ["NUM#", "step", "120,0"],\
+                    ["NUM#", "add", "120,0"],\
                     ["NUM#", "end", "?,0"]\
             ]\
             },\
@@ -281,7 +281,7 @@ const presetLoop2d = '\
             "z": "8",\
             "params":\
             [\
-                    ["NUM#", "step", "120,0"],\
+                    ["NUM#", "add", "120,0"],\
                     ["NUM#", "end", "?,0"]\
             ]\
             },\
@@ -562,7 +562,7 @@ const presetLoopLock = '\
             "active": "true",\
             "params":\
             [\
-                    ["NUM#", "step", "30,0"],\
+                    ["NUM#", "add", "30,0"],\
                     ["NUM#", "end", "?,0"]\
             ]\
             },\
@@ -643,7 +643,7 @@ const presetLoopLock = '\
             "active": "true",\
             "params":\
             [\
-                    ["NUM#", "step", "120,0"],\
+                    ["NUM#", "add", "120,0"],\
                     ["NUM#", "end", "?,0"]\
             ]\
             },\
@@ -674,7 +674,7 @@ const presetLoopLock = '\
             "active": "true",\
             "params":\
             [\
-                    ["NUM#", "step", "120,0"],\
+                    ["NUM#", "add", "120,0"],\
                     ["NUM#", "end", "?,0"]\
             ]\
             },\
@@ -875,7 +875,7 @@ const presetWavyDots = '\
             "z": "1",\
             "params":\
             [\
-                    ["NUM#", "step", "-4,0"],\
+                    ["NUM#", "add", "-4,0"],\
                     ["NUM#", "end", "?,0"]\
             ]\
             },\
@@ -952,7 +952,7 @@ const presetWavyDots = '\
             "z": "6",\
             "params":\
             [\
-                    ["NUM#", "step", "12,0"],\
+                    ["NUM#", "add", "12,0"],\
                     ["NUM#", "end", "?,0"]\
             ]\
             },\
@@ -969,7 +969,7 @@ const presetWavyDots = '\
             "params":\
             [\
                     ["NUM#", "start", "0.01,2"],\
-                    ["NUM#", "step", "-0.0003,4"],\
+                    ["NUM#", "add", "-0.0003,4"],\
                     ["NUM#", "end", "?,0"]\
             ]\
             },\
@@ -1029,7 +1029,7 @@ const presetWavyDots = '\
             "z": "11",\
             "params":\
             [\
-                    ["NUM#", "step", "20,0"],\
+                    ["NUM#", "add", "20,0"],\
                     ["NUM#", "end", "?,0"]\
             ]\
             },\
@@ -1091,7 +1091,7 @@ const presetWavyDots = '\
             "z": "15",\
             "params":\
             [\
-                    ["NUM#", "step", "-0.10969999999999999,4"],\
+                    ["NUM#", "add", "-0.10969999999999999,4"],\
                     ["NUM#", "end", "?,0"]\
             ]\
             },\
@@ -1342,7 +1342,7 @@ const presetWavyDots = '\
             "outputId": "h0",\
             "outputOrder": "0",\
             "inputNodeId": "sequence3",\
-            "inputId": "step",\
+            "inputId": "add",\
             "list": "false"\
             },\
             {\
@@ -1406,7 +1406,7 @@ const presetNumberLine = '\
             "z": "0",\
             "params":\
             [\
-                    ["NUM#", "step", "20,0"],\
+                    ["NUM#", "add", "20,0"],\
                     ["NUM#", "end", "?,0"]\
             ]\
             },\
@@ -1423,7 +1423,7 @@ const presetNumberLine = '\
             "params":\
             [\
                     ["NUM#", "start", "1,0"],\
-                    ["NUM#", "step", "1,0"],\
+                    ["NUM#", "add", "1,0"],\
                     ["NUM#", "end", "?,0"]\
             ]\
             },\
@@ -1720,7 +1720,7 @@ const presetNumberLine = '\
             },\
             {\
             "outputNodeId": "sequence2",\
-            "outputId": "step",\
+            "outputId": "add",\
             "outputOrder": "0",\
             "inputNodeId": "math",\
             "inputId": "h1",\
@@ -2101,7 +2101,7 @@ const presetFalsePerspective = '\
             "z": "22",\
             "params":\
             [\
-                    ["NUM#", "step", "1,0"],\
+                    ["NUM#", "add", "1,0"],\
                     ["NUM#", "end", "?,0"]\
             ]\
             },\

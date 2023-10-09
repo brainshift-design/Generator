@@ -296,7 +296,7 @@ const presetRandomNames = '\
             "z": "18",\
             "params":\
             [\
-                    ["NUM#", "step", "14,0"],\
+                    ["NUM#", "add", "14,0"],\
                     ["NUM#", "end", "?,0"]\
             ]\
             },\

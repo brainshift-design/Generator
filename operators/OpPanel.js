@@ -61,9 +61,9 @@ extends ResizableBase
                         nodes.push(node);
                 }
 
-                graphView.selectedNodes = [
-                    ...graphView.selectedNodes,
-                    ...nodes ];
+                actionManager.do(new SelectNodesAction(
+                    nodes.map(n => n.id), 
+                    graphView.selectedNodes.map(n => n.id)));
             }
         });
     }

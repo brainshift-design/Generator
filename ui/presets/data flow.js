@@ -1076,7 +1076,7 @@ const presetCountryData = '\
             "z": "4",\
             "params":\
             [\
-                    ["NUM#", "step", "12,0"],\
+                    ["NUM#", "add", "12,0"],\
                     ["NUM#", "end", "?,0"]\
             ]\
             },\
@@ -1355,7 +1355,7 @@ const presetCountryData = '\
             "z": "22",\
             "params":\
             [\
-                    ["NUM#", "step", "1,0"],\
+                    ["NUM#", "add", "1,0"],\
                     ["NUM#", "end", "?,0"]\
             ]\
             },\

@@ -670,10 +670,10 @@ function genParseSequence(parse)
     parse.nTab++;
 
 
-    seq.start     = genParse(parse);
-    seq.operation = genParse(parse);
-    seq.step      = genParse(parse);
-    seq.end       = genParse(parse);
+    seq.start    = genParse(parse);
+    seq.multiply = genParse(parse);
+    seq.add      = genParse(parse);
+    seq.end      = genParse(parse);
 
 
     parse.nTab--;

@@ -14,7 +14,7 @@ const presetBooksOnShelf = '\
             "z": "0",\
             "params":\
             [\
-                    ["NUM#", "step", "-0.4,1"],\
+                    ["NUM#", "add", "-0.4,1"],\
                     ["NUM#", "end", "?,0"]\
             ]\
             },\
@@ -31,7 +31,7 @@ const presetBooksOnShelf = '\
             "params":\
             [\
                     ["NUM#", "start", "-0.03,2"],\
-                    ["NUM#", "step", "0.004,3"],\
+                    ["NUM#", "add", "0.004,3"],\
                     ["NUM#", "end", "?,0"]\
             ]\
             },\
@@ -59,7 +59,7 @@ const presetBooksOnShelf = '\
             "params":\
             [\
                     ["NUM#", "start", "90,0"],\
-                    ["NUM#", "step", "0.7,1"],\
+                    ["NUM#", "add", "0.7,1"],\
                     ["NUM#", "end", "?,0"]\
             ]\
             },\
@@ -542,7 +542,7 @@ const presetBooksOnShelf = '\
             "params":\
             [\
                     ["NUM#", "start", "3,0"],\
-                    ["NUM#", "step", "0.07,3"],\
+                    ["NUM#", "add", "0.07,3"],\
                     ["NUM#", "end", "?,0"]\
             ]\
             },\
@@ -1245,7 +1245,7 @@ const presetBooksOnShelf = '\
             "z": "76",\
             "params":\
             [\
-                    ["NUM#", "step", "4.75,3"],\
+                    ["NUM#", "add", "4.75,3"],\
                     ["NUM#", "end", "?,0"]\
             ]\
             },\
@@ -1278,7 +1278,7 @@ const presetBooksOnShelf = '\
             "params":\
             [\
                     ["NUM#", "start", "1,0"],\
-                    ["NUM#", "step", "1,0"],\
+                    ["NUM#", "add", "1,0"],\
                     ["NUM#", "end", "?,0"]\
             ]\
             },\
@@ -1338,7 +1338,7 @@ const presetBooksOnShelf = '\
             "z": "82",\
             "params":\
             [\
-                    ["NUM#", "step", "500,0"],\
+                    ["NUM#", "add", "500,0"],\
                     ["NUM#", "end", "?,0"]\
             ]\
             },\
@@ -1762,7 +1762,7 @@ const presetBooksOnShelf = '\
             "outputId": "h0",\
             "outputOrder": "0",\
             "inputNodeId": "sequence4",\
-            "inputId": "step",\
+            "inputId": "add",\
             "list": "false"\
             },\
             {\
@@ -2162,7 +2162,7 @@ const presetBooksOnShelf = '\
             "outputId": "h0",\
             "outputOrder": "0",\
             "inputNodeId": "sequence3",\
-            "inputId": "step",\
+            "inputId": "add",\
             "list": "false"\
             },\
             {\
@@ -2259,7 +2259,7 @@ const presetWobbles = '\
             "params":\
             [\
                     ["NUM#", "start", "100,0"],\
-                    ["NUM#", "step", "-3,0"],\
+                    ["NUM#", "add", "-3,0"],\
                     ["NUM#", "end", "?,0"]\
             ]\
             },\
@@ -2275,7 +2275,7 @@ const presetWobbles = '\
             "z": "1",\
             "params":\
             [\
-                    ["NUM#", "step", "150,0"],\
+                    ["NUM#", "add", "150,0"],\
                     ["NUM#", "end", "?,0"]\
             ]\
             },\
@@ -2538,7 +2538,7 @@ const presetWobbles = '\
             "params":\
             [\
                     ["NUM#", "start", "100,0"],\
-                    ["NUM#", "step", "-2,0"],\
+                    ["NUM#", "add", "-2,0"],\
                     ["NUM#", "end", "?,0"]\
             ]\
             },\
@@ -2569,7 +2569,7 @@ const presetWobbles = '\
             "z": "20",\
             "params":\
             [\
-                    ["NUM#", "step", "3,0"],\
+                    ["NUM#", "add", "3,0"],\
                     ["NUM#", "end", "?,0"]\
             ]\
             },\
@@ -2603,7 +2603,7 @@ const presetWobbles = '\
             [\
                     ["COL#", "color", "1,0 0,0 127,0 217,0"],\
                     ["NUM#", "opacity", "42,0"],\
-                    ["NUM#", "blend", "7,0"]\
+                    ["NUM#", "blend", "9,0"]\
             ]\
             },\
             {\
@@ -2669,8 +2669,8 @@ const presetWobbles = '\
             "z": "26",\
             "params":\
             [\
-                    ["NUM#", "start", "45,0"],\
-                    ["NUM#", "step", "40,0"],\
+                    ["NUM#", "start", "120,0"],\
+                    ["NUM#", "add", "13,0"],\
                     ["NUM#", "end", "?,0"]\
             ]\
             },\
@@ -2686,7 +2686,7 @@ const presetWobbles = '\
             "z": "27",\
             "params":\
             [\
-                    ["NUM#", "step", "0.1,1"],\
+                    ["NUM#", "add", "0.1,1"],\
                     ["NUM#", "end", "?,0"]\
             ]\
             },\
@@ -3052,7 +3052,7 @@ const presetWobbles = '\
             "outputId": "h0",\
             "outputOrder": "0",\
             "inputNodeId": "sequence6",\
-            "inputId": "step",\
+            "inputId": "add",\
             "list": "false"\
             },\
             {\
@@ -3631,7 +3631,7 @@ const presetRandomAbstract = '\
             [\
                     ["COL#", "color", "1,0 187,0 80,0 39,0"],\
                     ["NUM#", "opacity", "83.06592158693132,0"],\
-                    ["NUM#", "blend", "4,0"]\
+                    ["NUM#", "blend", "5,0"]\
             ]\
             },\
             {\
@@ -4763,7 +4763,7 @@ const presetNamesLogos = '\
             "z": "27",\
             "params":\
             [\
-                    ["NUM#", "step", "180,0"],\
+                    ["NUM#", "add", "180,0"],\
                     ["NUM#", "end", "?,0"]\
             ]\
             },\
@@ -4779,7 +4779,7 @@ const presetNamesLogos = '\
             "z": "28",\
             "params":\
             [\
-                    ["NUM#", "step", "180,0"],\
+                    ["NUM#", "add", "180,0"],\
                     ["NUM#", "end", "?,0"]\
             ]\
             },\
@@ -6419,7 +6419,7 @@ const presetAfterTheStorm = '\
             "params":\
             [\
                     ["NUM#", "start", "220,0"],\
-                    ["NUM#", "step", "-11,0"],\
+                    ["NUM#", "add", "-11,0"],\
                     ["NUM#", "end", "?,0"]\
             ]\
             },\
@@ -6436,7 +6436,7 @@ const presetAfterTheStorm = '\
             "params":\
             [\
                     ["NUM#", "start", "5,0"],\
-                    ["NUM#", "step", "1,0"],\
+                    ["NUM#", "add", "1,0"],\
                     ["NUM#", "end", "?,0"]\
             ]\
             },\
@@ -6577,7 +6577,7 @@ const presetAfterTheStorm = '\
             "params":\
             [\
                     ["NUM#", "start", "40,0"],\
-                    ["NUM#", "step", "-1.5,1"],\
+                    ["NUM#", "add", "-1.5,1"],\
                     ["NUM#", "end", "?,0"]\
             ]\
             },\
@@ -6798,7 +6798,7 @@ const presetAfterTheStorm = '\
             "params":\
             [\
                     ["COL#", "color", "1,0 244,0 214,0 37,0"],\
-                    ["NUM#", "blend", "7,0"]\
+                    ["NUM#", "blend", "9,0"]\
             ]\
             },\
             {\
@@ -6815,7 +6815,7 @@ const presetAfterTheStorm = '\
             [\
                     ["NUM#", "x", "50,0"],\
                     ["NUM#", "angle", "185,0"],\
-                    ["NUM#", "blend", "7,0"]\
+                    ["NUM#", "blend", "9,0"]\
             ]\
             },\
             {\
@@ -7198,7 +7198,7 @@ const presetSunsetDreams = '\
             [\
                     ["NUM#", "x", "50,0"],\
                     ["NUM#", "angle", "90,0"],\
-                    ["NUM#", "blend", "7,0"]\
+                    ["NUM#", "blend", "9,0"]\
             ]\
             },\
             {\
@@ -7353,7 +7353,7 @@ const presetSunsetDreams = '\
             "params":\
             [\
                     ["NUM#", "start", "220,0"],\
-                    ["NUM#", "step", "-11,0"],\
+                    ["NUM#", "add", "-11,0"],\
                     ["NUM#", "end", "?,0"]\
             ]\
             },\
@@ -7486,7 +7486,7 @@ const presetSunsetDreams = '\
             "params":\
             [\
                     ["NUM#", "start", "31,0"],\
-                    ["NUM#", "step", "-0.1,1"],\
+                    ["NUM#", "add", "-0.1,1"],\
                     ["NUM#", "end", "?,0"]\
             ]\
             },\
@@ -7629,7 +7629,7 @@ const presetSunsetDreams = '\
             [\
                     ["COL#", "color", "1,0 92,0 181,0 128,0"],\
                     ["NUM#", "opacity", "66,0"],\
-                    ["NUM#", "blend", "7,0"]\
+                    ["NUM#", "blend", "9,0"]\
             ]\
             },\
             {\
@@ -7730,7 +7730,7 @@ const presetSunsetDreams = '\
             "params":\
             [\
                     ["NUM#", "start", "60,0"],\
-                    ["NUM#", "step", "-3,0"],\
+                    ["NUM#", "add", "-3,0"],\
                     ["NUM#", "end", "?,0"]\
             ]\
             },\
@@ -10208,7 +10208,7 @@ const presetAvatars = '\
             "z": "98",\
             "params":\
             [\
-                    ["NUM#", "step", "230,0"],\
+                    ["NUM#", "add", "230,0"],\
                     ["NUM#", "end", "?,0"]\
             ]\
             },\
@@ -10298,7 +10298,7 @@ const presetAvatars = '\
             "z": "104",\
             "params":\
             [\
-                    ["NUM#", "step", "320,0"],\
+                    ["NUM#", "add", "320,0"],\
                     ["NUM#", "end", "?,0"]\
             ]\
             },\

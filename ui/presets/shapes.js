@@ -1825,7 +1825,7 @@ const presetNestedTorus = '\
             "params":\
             [\
                     ["NUM#", "start", "45,0"],\
-                    ["NUM#", "step", "-8,0"],\
+                    ["NUM#", "add", "-8,0"],\
                     ["NUM#", "end", "?,0"]\
             ]\
             },\
@@ -1906,7 +1906,7 @@ const presetNestedTorus = '\
             "params":\
             [\
                     ["NUM#", "start", "50,0"],\
-                    ["NUM#", "step", "-15,0"],\
+                    ["NUM#", "add", "-15,0"],\
                     ["NUM#", "end", "?,0"]\
             ]\
             },\
@@ -2057,7 +2057,7 @@ const presetNestedTorus = '\
             "params":\
             [\
                     ["NUM#", "start", "100,0"],\
-                    ["NUM#", "step", "60,0"],\
+                    ["NUM#", "add", "60,0"],\
                     ["NUM#", "end", "?,0"]\
             ]\
             },\
@@ -2624,18 +2624,17 @@ const presetTargets = '\
         [\
             {\
             "type": "SEQ",\
-            "id": "sequence",\
+            "id": "sequence2",\
             "name": "sequence",\
             "renamed": "false",\
             "enabled": "true",\
             "highlight": "0",\
-            "x": "6503.12",\
-            "y": "6432",\
+            "x": "7461.88",\
+            "y": "6989",\
             "z": "0",\
             "params":\
             [\
-                    ["NUM#", "start", "100,0"],\
-                    ["NUM#", "step", "-35,0"],\
+                    ["NUM#", "add", "100,0"],\
                     ["NUM#", "end", "?,0"]\
             ]\
             },\
@@ -2646,8 +2645,8 @@ const presetTargets = '\
             "renamed": "false",\
             "enabled": "true",\
             "highlight": "0",\
-            "x": "5682.12",\
-            "y": "6481",\
+            "x": "5982.12",\
+            "y": "6781",\
             "z": "1",\
             "prevSpace": "hsv",\
             "params":\
@@ -2660,14 +2659,33 @@ const presetTargets = '\
             },\
             {\
             "type": "COL",\
+            "id": "color2",\
+            "name": "color",\
+            "renamed": "false",\
+            "enabled": "true",\
+            "highlight": "0",\
+            "x": "5981.12",\
+            "y": "6639",\
+            "z": "2",\
+            "prevSpace": "hsv",\
+            "params":\
+            [\
+                    ["NUM#", "space", "2,0"],\
+                    ["NUM#", "c1", "45,0"],\
+                    ["NUM#", "c2", "85,0"],\
+                    ["NUM#", "c3", "100,0"]\
+            ]\
+            },\
+            {\
+            "type": "COL",\
             "id": "color",\
             "name": "color",\
             "renamed": "false",\
             "enabled": "true",\
             "highlight": "0",\
-            "x": "5684.12",\
-            "y": "6198",\
-            "z": "2",\
+            "x": "5984.12",\
+            "y": "6498",\
+            "z": "3",\
             "prevSpace": "hsv",\
             "params":\
             [\
@@ -2684,171 +2702,14 @@ const presetTargets = '\
             "renamed": "false",\
             "enabled": "true",\
             "highlight": "0",\
-            "x": "6672.12",\
-            "y": "6164",\
-            "z": "3",\
+            "x": "6972.12",\
+            "y": "6464",\
+            "z": "4",\
             "params":\
             [\
                     ["NUM#", "scaleX", "30,0"],\
                     ["NUM#", "scaleY", "30,0"],\
                     ["NUM#", "affectSpace", "0,0"]\
-            ]\
-            },\
-            {\
-            "type": "CMB",\
-            "id": "combine",\
-            "name": "combine",\
-            "renamed": "false",\
-            "enabled": "true",\
-            "highlight": "0",\
-            "x": "5839.12",\
-            "y": "6329",\
-            "z": "4",\
-            "width": "120",\
-            "height": "64"\
-            },\
-            {\
-            "type": "RAND",\
-            "id": "random",\
-            "name": "random",\
-            "renamed": "false",\
-            "enabled": "true",\
-            "highlight": "4",\
-            "x": "5914.12",\
-            "y": "6532",\
-            "z": "5",\
-            "params":\
-            [\
-                    ["NUM#", "seed", "382,0"],\
-                    ["NUM#", "max", "2,0"]\
-            ]\
-            },\
-            {\
-            "type": "SEQ",\
-            "id": "sequence3",\
-            "name": "sequence",\
-            "renamed": "false",\
-            "enabled": "true",\
-            "highlight": "0",\
-            "x": "7162.88",\
-            "y": "6846",\
-            "z": "6",\
-            "active": "true",\
-            "params":\
-            [\
-                    ["NUM#", "step", "100,0"],\
-                    ["NUM#", "end", "?,0"]\
-            ]\
-            },\
-            {\
-            "type": "COL",\
-            "id": "color2",\
-            "name": "color",\
-            "renamed": "false",\
-            "enabled": "true",\
-            "highlight": "0",\
-            "x": "5681.12",\
-            "y": "6339",\
-            "z": "7",\
-            "prevSpace": "hsv",\
-            "params":\
-            [\
-                    ["NUM#", "space", "2,0"],\
-                    ["NUM#", "c1", "45,0"],\
-                    ["NUM#", "c2", "85,0"],\
-                    ["NUM#", "c3", "100,0"]\
-            ]\
-            },\
-            {\
-            "type": "REPT",\
-            "id": "repeat2",\
-            "name": "repeat",\
-            "renamed": "false",\
-            "enabled": "true",\
-            "highlight": "0",\
-            "x": "7554.88",\
-            "y": "6693",\
-            "z": "8",\
-            "params":\
-            [\
-                    ["NUM#", "count", "5,0"]\
-            ]\
-            },\
-            {\
-            "type": "ELPS",\
-            "id": "ellipse",\
-            "name": "ellipse",\
-            "renamed": "false",\
-            "enabled": "true",\
-            "highlight": "0",\
-            "x": "6147.12",\
-            "y": "6164",\
-            "z": "9",\
-            "params":\
-            [\
-            ]\
-            },\
-            {\
-            "type": "REPT",\
-            "id": "repeat3",\
-            "name": "repeat",\
-            "renamed": "false",\
-            "enabled": "true",\
-            "highlight": "0",\
-            "x": "7556.88",\
-            "y": "6849",\
-            "z": "10",\
-            "active": "true",\
-            "params":\
-            [\
-                    ["NUM#", "count", "5,0"]\
-            ]\
-            },\
-            {\
-            "type": "REPT",\
-            "id": "repeat",\
-            "name": "repeat",\
-            "renamed": "false",\
-            "enabled": "true",\
-            "highlight": "0",\
-            "x": "6850.12",\
-            "y": "6438",\
-            "z": "11",\
-            "params":\
-            [\
-                    ["NUM#", "count", "3,0"]\
-            ]\
-            },\
-            {\
-            "type": "SEQ",\
-            "id": "sequence2",\
-            "name": "sequence",\
-            "renamed": "false",\
-            "enabled": "true",\
-            "highlight": "0",\
-            "x": "7161.88",\
-            "y": "6689",\
-            "z": "12",\
-            "active": "true",\
-            "params":\
-            [\
-                    ["NUM#", "step", "100,0"],\
-                    ["NUM#", "end", "?,0"]\
-            ]\
-            },\
-            {\
-            "type": "SEL",\
-            "id": "select",\
-            "name": "select",\
-            "renamed": "false",\
-            "enabled": "true",\
-            "highlight": "0",\
-            "x": "5989.12",\
-            "y": "6345",\
-            "z": "13",\
-            "params":\
-            [\
-                    ["NUM#", "index", "1,0"]\
             ]\
             },\
             {\
@@ -2858,13 +2719,150 @@ const presetTargets = '\
             "renamed": "false",\
             "enabled": "true",\
             "highlight": "0",\
-            "x": "7354.88",\
-            "y": "6438",\
-            "z": "14",\
+            "x": "7654.88",\
+            "y": "6738",\
+            "z": "5",\
             "params":\
             [\
                     ["NUM#", "x", "400,0"],\
                     ["NUM#", "y", "400,0"]\
+            ]\
+            },\
+            {\
+            "type": "SEL",\
+            "id": "select",\
+            "name": "select",\
+            "renamed": "false",\
+            "enabled": "true",\
+            "highlight": "0",\
+            "x": "6289.12",\
+            "y": "6645",\
+            "z": "6",\
+            "params":\
+            [\
+                    ["NUM#", "index", "1,0"]\
+            ]\
+            },\
+            {\
+            "type": "SEQ",\
+            "id": "sequence3",\
+            "name": "sequence",\
+            "renamed": "false",\
+            "enabled": "true",\
+            "highlight": "0",\
+            "x": "7462.88",\
+            "y": "7146",\
+            "z": "7",\
+            "params":\
+            [\
+                    ["NUM#", "add", "100,0"],\
+                    ["NUM#", "end", "?,0"]\
+            ]\
+            },\
+            {\
+            "type": "ELPS",\
+            "id": "ellipse",\
+            "name": "ellipse",\
+            "renamed": "false",\
+            "enabled": "true",\
+            "highlight": "0",\
+            "x": "6447.12",\
+            "y": "6464",\
+            "z": "8",\
+            "params":\
+            [\
+            ]\
+            },\
+            {\
+            "type": "CMB",\
+            "id": "combine",\
+            "name": "combine",\
+            "renamed": "false",\
+            "enabled": "true",\
+            "highlight": "0",\
+            "x": "6139.12",\
+            "y": "6629",\
+            "z": "9",\
+            "width": "120",\
+            "height": "64"\
+            },\
+            {\
+            "type": "REPT",\
+            "id": "repeat3",\
+            "name": "repeat",\
+            "renamed": "false",\
+            "enabled": "true",\
+            "highlight": "0",\
+            "x": "7856.88",\
+            "y": "7149",\
+            "z": "10",\
+            "active": "true",\
+            "params":\
+            [\
+                    ["NUM#", "count", "5,0"]\
+            ]\
+            },\
+            {\
+            "type": "SEQ",\
+            "id": "sequence",\
+            "name": "sequence",\
+            "renamed": "false",\
+            "enabled": "true",\
+            "highlight": "0",\
+            "x": "6803.12",\
+            "y": "6732",\
+            "z": "11",\
+            "params":\
+            [\
+                    ["NUM#", "start", "100,0"],\
+                    ["NUM#", "add", "-35,0"],\
+                    ["NUM#", "end", "?,0"]\
+            ]\
+            },\
+            {\
+            "type": "REPT",\
+            "id": "repeat",\
+            "name": "repeat",\
+            "renamed": "false",\
+            "enabled": "true",\
+            "highlight": "0",\
+            "x": "7150.12",\
+            "y": "6738",\
+            "z": "12",\
+            "params":\
+            [\
+                    ["NUM#", "count", "3,0"]\
+            ]\
+            },\
+            {\
+            "type": "REPT",\
+            "id": "repeat2",\
+            "name": "repeat",\
+            "renamed": "false",\
+            "enabled": "true",\
+            "highlight": "0",\
+            "x": "7854.88",\
+            "y": "6993",\
+            "z": "13",\
+            "params":\
+            [\
+                    ["NUM#", "count", "5,0"]\
+            ]\
+            },\
+            {\
+            "type": "RAND",\
+            "id": "random",\
+            "name": "random",\
+            "renamed": "false",\
+            "enabled": "true",\
+            "highlight": "4",\
+            "x": "6214.12",\
+            "y": "6832",\
+            "z": "14",\
+            "params":\
+            [\
+                    ["NUM#", "seed", "382,0"],\
+                    ["NUM#", "max", "2,0"]\
             ]\
             }\
         ],\
@@ -2895,6 +2893,54 @@ const presetTargets = '\
             "list": "false"\
             },\
             {\
+            "outputNodeId": "repeat",\
+            "outputId": "h0",\
+            "outputOrder": "0",\
+            "inputNodeId": "move",\
+            "inputId": "h0",\
+            "list": "true"\
+            },\
+            {\
+            "outputNodeId": "sequence2",\
+            "outputId": "h0",\
+            "outputOrder": "0",\
+            "inputNodeId": "move",\
+            "inputId": "x",\
+            "list": "false"\
+            },\
+            {\
+            "outputNodeId": "sequence3",\
+            "outputId": "h0",\
+            "outputOrder": "0",\
+            "inputNodeId": "move",\
+            "inputId": "y",\
+            "list": "false"\
+            },\
+            {\
+            "outputNodeId": "combine",\
+            "outputId": "h0",\
+            "outputOrder": "0",\
+            "inputNodeId": "select",\
+            "inputId": "h0",\
+            "list": "true"\
+            },\
+            {\
+            "outputNodeId": "random",\
+            "outputId": "h0",\
+            "outputOrder": "0",\
+            "inputNodeId": "select",\
+            "inputId": "index",\
+            "list": "false"\
+            },\
+            {\
+            "outputNodeId": "select",\
+            "outputId": "h0",\
+            "outputOrder": "0",\
+            "inputNodeId": "ellipse",\
+            "inputId": "props",\
+            "list": "false"\
+            },\
+            {\
             "outputNodeId": "color",\
             "outputId": "h0",\
             "outputOrder": "0",\
@@ -2916,30 +2962,6 @@ const presetTargets = '\
             "outputOrder": "0",\
             "inputNodeId": "combine",\
             "inputId": "h2",\
-            "list": "false"\
-            },\
-            {\
-            "outputNodeId": "move",\
-            "outputId": "h0",\
-            "outputOrder": "0",\
-            "inputNodeId": "repeat2",\
-            "inputId": "h0",\
-            "list": "true"\
-            },\
-            {\
-            "outputNodeId": "sequence2",\
-            "outputId": "h0",\
-            "outputOrder": "1",\
-            "inputNodeId": "repeat2",\
-            "inputId": "loop",\
-            "list": "false"\
-            },\
-            {\
-            "outputNodeId": "select",\
-            "outputId": "h0",\
-            "outputOrder": "0",\
-            "inputNodeId": "ellipse",\
-            "inputId": "props",\
             "list": "false"\
             },\
             {\
@@ -2975,43 +2997,19 @@ const presetTargets = '\
             "list": "false"\
             },\
             {\
-            "outputNodeId": "combine",\
+            "outputNodeId": "move",\
             "outputId": "h0",\
             "outputOrder": "0",\
-            "inputNodeId": "select",\
-            "inputId": "h0",\
-            "list": "true"\
-            },\
-            {\
-            "outputNodeId": "random",\
-            "outputId": "h0",\
-            "outputOrder": "0",\
-            "inputNodeId": "select",\
-            "inputId": "index",\
-            "list": "false"\
-            },\
-            {\
-            "outputNodeId": "repeat",\
-            "outputId": "h0",\
-            "outputOrder": "0",\
-            "inputNodeId": "move",\
+            "inputNodeId": "repeat2",\
             "inputId": "h0",\
             "list": "true"\
             },\
             {\
             "outputNodeId": "sequence2",\
             "outputId": "h0",\
-            "outputOrder": "0",\
-            "inputNodeId": "move",\
-            "inputId": "x",\
-            "list": "false"\
-            },\
-            {\
-            "outputNodeId": "sequence3",\
-            "outputId": "h0",\
-            "outputOrder": "0",\
-            "inputNodeId": "move",\
-            "inputId": "y",\
+            "outputOrder": "1",\
+            "inputNodeId": "repeat2",\
+            "inputId": "loop",\
             "list": "false"\
             }\
         ]\

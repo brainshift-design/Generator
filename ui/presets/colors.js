@@ -1294,7 +1294,7 @@ const presetPaletteFromColor = '\
             "params":\
             [\
                     ["NUM#", "start", "95,0"],\
-                    ["NUM#", "step", "-10,0"],\
+                    ["NUM#", "add", "-10,0"],\
                     ["NUM#", "end", "?,0"]\
             ]\
             },\
@@ -1345,7 +1345,7 @@ const presetPaletteFromColor = '\
             "params":\
             [\
                     ["NUM#", "start", "100,0"],\
-                    ["NUM#", "step", "100,0"],\
+                    ["NUM#", "add", "100,0"],\
                     ["NUM#", "end", "?,0"]\
             ]\
             },\
@@ -2356,7 +2356,7 @@ const presetColorSwatches = '\
             "z": "19",\
             "params":\
             [\
-                    ["NUM#", "step", "1,0"],\
+                    ["NUM#", "add", "1,0"],\
                     ["NUM#", "end", "?,0"]\
             ]\
             },\
@@ -2503,7 +2503,7 @@ const presetColorSwatches = '\
             "z": "29",\
             "params":\
             [\
-                    ["NUM#", "step", "160,0"],\
+                    ["NUM#", "add", "160,0"],\
                     ["NUM#", "end", "?,0"]\
             ]\
             },\
@@ -2652,7 +2652,7 @@ const presetColorSwatches = '\
             "z": "38",\
             "params":\
             [\
-                    ["NUM#", "step", "1,0"],\
+                    ["NUM#", "add", "1,0"],\
                     ["NUM#", "end", "?,0"]\
             ]\
             },\
@@ -2793,7 +2793,7 @@ const presetColorSwatches = '\
             "z": "47",\
             "params":\
             [\
-                    ["NUM#", "step", "132,0"],\
+                    ["NUM#", "add", "132,0"],\
                     ["NUM#", "end", "?,0"]\
             ]\
             },\
