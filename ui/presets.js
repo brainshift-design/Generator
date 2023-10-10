@@ -1,6 +1,13 @@
 var currentPresetTab = 0;
 
 
+function initPresets()
+{
+    presets.addEventListener('pointerdown', () => hideAllMenus());
+}
+
+
+
 function showPresets()
 {
     setCurrentPresetTab(0);
@@ -100,6 +107,7 @@ function getPresetGraph(graphId)
 
         
         case 'randomNames':          return presetRandomNames;
+        case 'letterSalad':          return presetLetterSalad;
 
 
         case 'colorContrast':        return presetColorContrast;
@@ -134,5 +142,6 @@ function getPresetGraph(graphId)
         case 'randomAbstract':       return presetRandomAbstract;
         case 'afterTheStorm':        return presetAfterTheStorm;
         case 'sunsetDreams':         return presetSunsetDreams;
+        case 'linesOfFire':          return presetLinesOfFire;
     }
 }

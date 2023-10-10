@@ -27,6 +27,9 @@ function initKeyboardPanel()
         else if (key.innerHTML == 'Shift') key.innerHTML = osShift(false);
         else if (key.innerHTML == 'Alt'  ) key.innerHTML = osAlt  (false);
     }
+
+
+    keyboardPanel.addEventListener('pointerdown', () => hideAllMenus());
 }
 
 

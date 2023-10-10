@@ -114,6 +114,7 @@ async function uiReturnFigStartGenerator(msg)
 
     initThemeColors();
     initKeyboardPanel();
+    initPresets();
     initWindowSizers();
 
 
@@ -153,7 +154,7 @@ function createSessionId()
 
 function subscribed()
 {
-    return true;//currentSessionId == createSessionId();
+    return false;//currentSessionId == createSessionId();
 }
 
 

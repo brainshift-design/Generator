@@ -107,9 +107,11 @@ function updatePointStyles(figPoint)
     const effects = [];
     
     effects.push(...getObjectEffects(
+        'ELLIPSE', 
         [['DROP_SHADOW', border[0]/255, border[1]/255, border[2]/255,  1, 0, 0, 0, (isCenter ? 3 : isSelected ? 5 : 3.6)/curZoom, 'NORMAL', true, true]]));
     
     effects.push(...getObjectEffects(
+        'ELLIPSE', 
         [['DROP_SHADOW', color[0]/255, color[1]/255, color[2]/255, 1, 0, 0, 0, (isSelected ? 4 : 2.4)/curZoom, 'NORMAL', true, true]]));
 
 

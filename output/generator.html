@@ -4,7 +4,7 @@
 
 
 
-const generatorVersion = 230;
+const generatorVersion = 235;
 
 
 const MAX_INT32        = 2147483647;
@@ -28151,8 +28151,8 @@ extends GOperator
 
         for (let i = 0, o = 0; i < this.inputs.length; i++)
         {
-            await this.inputs[i].eval(parse);
-            stops.items.push(this.inputs[i].toValue());
+            const input = (await this.inputs[i].eval(parse)).toValue();
+            stops.items.push(input);
         }
 
 
@@ -33406,6 +33406,16 @@ extends GOperator1
 
                 obj.scaleCorners *= Math.abs(scaleCorners);
                 obj.scaleStyle   *= Math.abs(scaleStyle  );
+
+                
+                if (obj.type == TEXT_SHAPE
+                    && xform[0][0] > 0
+                    && xform[1][1] > 0)
+                {
+                    obj.size *= Math.min(
+                        xform[0][0], 
+                        xform[1][1]);
+                }
             }
         }
 
@@ -33709,18 +33719,6 @@ extends GAffine
     {
         let sx = hardZero(options.scaleX.value / 100);
         let sy = hardZero(options.scaleY.value / 100);
-
-
-        // if (sx > -0.000000001 && sx < 0 && sy >= 0) sx = -sx;
-        // if (sy > -0.000000001 && sy < 0 && sx >= 0) sy = -sy;
-
-
-        // if (this.nodeId == 'scale')
-        // {
-        //     console.log('2 sx = ', sx);
-        //     console.log('2 sy = ', sy);
-        // }
-
 
         const scale = Math.min(sx, sy);
 

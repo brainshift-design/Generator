@@ -62,8 +62,8 @@ extends GOperator
 
         for (let i = 0, o = 0; i < this.inputs.length; i++)
         {
-            await this.inputs[i].eval(parse);
-            stops.items.push(this.inputs[i].toValue());
+            const input = (await this.inputs[i].eval(parse)).toValue();
+            stops.items.push(input);
         }
 
 

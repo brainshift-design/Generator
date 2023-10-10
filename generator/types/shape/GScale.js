@@ -103,18 +103,6 @@ extends GAffine
         let sx = hardZero(options.scaleX.value / 100);
         let sy = hardZero(options.scaleY.value / 100);
 
-
-        // if (sx > -0.000000001 && sx < 0 && sy >= 0) sx = -sx;
-        // if (sy > -0.000000001 && sy < 0 && sx >= 0) sy = -sy;
-
-
-        // if (this.nodeId == 'scale')
-        // {
-        //     console.log('2 sx = ', sx);
-        //     console.log('2 sy = ', sy);
-        // }
-
-
         const scale = Math.min(sx, sy);
 
         return await this.evalAffineObjects(

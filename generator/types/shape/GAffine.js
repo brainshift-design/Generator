@@ -59,6 +59,16 @@ extends GOperator1
 
                 obj.scaleCorners *= Math.abs(scaleCorners);
                 obj.scaleStyle   *= Math.abs(scaleStyle  );
+
+                
+                if (obj.type == TEXT_SHAPE
+                    && xform[0][0] > 0
+                    && xform[1][1] > 0)
+                {
+                    obj.size *= Math.min(
+                        xform[0][0], 
+                        xform[1][1]);
+                }
             }
         }
 

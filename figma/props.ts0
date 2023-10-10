@@ -3,7 +3,7 @@ const figDecoObjects  = [];
 
 
 
-function getObjectEffects(genObjEffects)
+function getObjectEffects(objType, genObjEffects)
 {
     const effects = [];
 
@@ -41,17 +41,21 @@ function getObjectEffects(genObjEffects)
                     && !isNaN(offset.y)
                     && !isNaN(radius)
                     && !isNaN(spread))
+                {
                     effects.push(
                     {
                         type:                 type, 
                         color:                color,
                         offset:               offset,
                         radius:               radius,
-                        spread:               spread,
                         visible:              visible,
                         blendMode:            blend,
                         showShadowBehindNode: behind
                     });
+
+                    if (objType == 'TEXT')
+                        effects.push({spread: spread});
+                }
 
                 break;
             }
@@ -290,7 +294,7 @@ function setObjectEffects(figObj, genObj)
 {
     if (  !!genObj[FO_EFFECTS]
         && !isEmpty(genObj[FO_EFFECTS]))
-        figObj.effects = getObjectEffects(genObj[FO_EFFECTS]);
+        figObj.effects = getObjectEffects(genObj[FO_TYPE], genObj[FO_EFFECTS]);
     else
         figObj.effects = [];
 }

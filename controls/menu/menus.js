@@ -630,15 +630,15 @@ menuFlow = new Menu('Flow', true, false);
     
     menuEffects = new Menu('Effects', true, false);
     menuEffects.addItems([
-        menuItemLayerDropShadow  = new MenuItem('Drop shadow',     null, {icon: iconDropShadow,  callback: e => actionManager.do(getCreateNodeAction(DROP_SHADOW,  btnLayer.div, getCreateOptions(e)))}),
-        menuItemLayerInnerShadow = new MenuItem('Inner shadow',    null, {icon: iconInnerShadow, callback: e => actionManager.do(getCreateNodeAction(INNER_SHADOW, btnLayer.div, getCreateOptions(e)))}),
-        menuItemLayerLayerBlur   = new MenuItem('Layer blur',      null, {icon: iconLayerBlur,   callback: e => actionManager.do(getCreateNodeAction(LAYER_BLUR,   btnLayer.div, getCreateOptions(e)))}),
-        menuItemLayerBackBlur    = new MenuItem('Background blur', null, {icon: iconBackBlur,    callback: e => actionManager.do(getCreateNodeAction(BACK_BLUR,    btnLayer.div, getCreateOptions(e)))})]);
+        menuItemLayerDropShadow  = new MenuItem('Drop shadow',     null, {icon: iconDropShadow,  callback: e => actionManager.do(getCreateNodeAction(DROP_SHADOW,  btnShape.div, getCreateOptions(e)))}),
+        menuItemLayerInnerShadow = new MenuItem('Inner shadow',    null, {icon: iconInnerShadow, callback: e => actionManager.do(getCreateNodeAction(INNER_SHADOW, btnShape.div, getCreateOptions(e)))}),
+        menuItemLayerLayerBlur   = new MenuItem('Layer blur',      null, {icon: iconLayerBlur,   callback: e => actionManager.do(getCreateNodeAction(LAYER_BLUR,   btnShape.div, getCreateOptions(e)))}),
+        menuItemLayerBackBlur    = new MenuItem('Background blur', null, {icon: iconBackBlur,    callback: e => actionManager.do(getCreateNodeAction(BACK_BLUR,    btnShape.div, getCreateOptions(e)))})]);
     
     
     menuStyles = new Menu('Styles', true, false);
     menuStyles.addItems([
-        new MenuItem('Color style', null, {icon: iconColorStyle, createType: START, callback: e => actionManager.do(getCreateNodeAction(COLOR_STYLE, btnLayer.div, getCreateOptions(e, {existing: true})))})]);
+        new MenuItem('Color style', null, {icon: iconColorStyle, createType: START, callback: e => actionManager.do(getCreateNodeAction(COLOR_STYLE, btnShape.div, getCreateOptions(e, {existing: true})))})]);
     
     
     // menuLayer = new Menu('Style', true, false);
@@ -709,10 +709,10 @@ menuFlow = new Menu('Flow', true, false);
                                 new MenuItem('Effects',     null, {icon: iconEffects, childMenu: menuEffects}),
                                 new MenuItem('Styles',      null, {icon: iconStyle, childMenu: menuStyles}),
                                 new MenuItem('',            null, {separator: true}),
-                                new MenuItem('Blend',       null, {icon: iconColorBlend,  callback: e => actionManager.do(getCreateNodeAction(LAYER_BLEND, btnLayer.div, getCreateOptions(e)))}),
-                                new MenuItem('Mask',        null, {icon: iconMask,        callback: e => actionManager.do(getCreateNodeAction(LAYER_MASK,  btnLayer.div, getCreateOptions(e)))}),
+                                new MenuItem('Blend',       null, {icon: iconColorBlend,  callback: e => actionManager.do(getCreateNodeAction(LAYER_BLEND, btnShape.div, getCreateOptions(e)))}),
+                                new MenuItem('Mask',        null, {icon: iconMask,        callback: e => actionManager.do(getCreateNodeAction(LAYER_MASK,  btnShape.div, getCreateOptions(e)))}),
                                 new MenuItem('',            null, {separator: true}),
-                                new MenuItem('Apply style', null, {icon: iconApply, createType: SHAPE_APPLY, callback: e => actionManager.do(getCreateNodeAction(SHAPE_APPLY, btnLayer.div, getCreateOptions(e)))}),
+                                new MenuItem('Apply style', null, {icon: iconApply, createType: SHAPE_APPLY, callback: e => actionManager.do(getCreateNodeAction(SHAPE_APPLY, btnShape.div, getCreateOptions(e)))}),
                                 new MenuItem('',            null, {separator: true}),
         menuItemShapeRender   = new MenuItem('Render',      null, {icon: iconRenderDown, createType: RENDER, callback: e => actionManager.do(getCreateNodeAction(RENDER, btnShape.div, getCreateOptions(e)))})]);
 
@@ -924,7 +924,7 @@ menuFlow = new Menu('Flow', true, false);
     // }});
 
 
-    if (true)
+    if (false)
     {
         btnPanel    = new MenuButton('', menuPanel,  {useMenuName: true, highlight: () => currentMenus.includes(menuPanel ), callback: () => updatePanMode(false)});
     }

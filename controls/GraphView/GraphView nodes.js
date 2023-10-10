@@ -319,9 +319,19 @@ GraphView.prototype.getTopNodeIndex = function()
 
 GraphView.prototype.nudgeSelected = function(x, y)
 {
-    graphView.selectedNodes.forEach(n => 
-        n.setPosition(
-            n.div.offsetLeft + x / graph.currentPage.zoom,
-            n.div.offsetTop  + y / graph.currentPage.zoom,
-            true));
+    // graphView.selectedNodes.forEach(n => 
+    //     n.setPosition(
+    //         n.div.offsetLeft + x / graph.currentPage.zoom,
+    //         n.div.offsetTop  + y / graph.currentPage.zoom,
+    //         true));
+    
+    const positions = 
+        graphView.selectedNodes.map(n => 
+            point(
+                n.div.offsetLeft + x / graph.currentPage.zoom,
+                n.div.offsetTop  + y / graph.currentPage.zoom));
+
+    actionManager.do(new MoveNodesAction(
+        graphView.selectedNodes.map(n => n.nodeId), 
+        positions));
 };

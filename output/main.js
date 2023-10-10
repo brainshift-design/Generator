@@ -19,7 +19,7 @@ function isConnKey(key) { return isTagKey(key, connTag); }
 function noPageTag(key) { return noTag(key, pageTag); }
 function noNodeTag(key) { return noTag(key, nodeTag); }
 function noConnTag(key) { return noTag(key, connTag); }
-const generatorVersion = 230;
+const generatorVersion = 235;
 const MAX_INT32 = 2147483647;
 const NULL = '';
 const HTAB = '  '; // half-tab
@@ -2513,7 +2513,7 @@ function clearObjectData(figObj) {
 }
 const figEmptyObjects = [];
 const figDecoObjects = [];
-function getObjectEffects(genObjEffects) {
+function getObjectEffects(objType, genObjEffects) {
     const effects = [];
     for (const effect of genObjEffects) {
         const type = effect[0];
@@ -2542,17 +2542,19 @@ function getObjectEffects(genObjEffects) {
                         && !isNaN(offset.x)
                         && !isNaN(offset.y)
                         && !isNaN(radius)
-                        && !isNaN(spread))
+                        && !isNaN(spread)) {
                         effects.push({
                             type: type,
                             color: color,
                             offset: offset,
                             radius: radius,
-                            spread: spread,
                             visible: visible,
                             blendMode: blend,
                             showShadowBehindNode: behind
                         });
+                        if (objType == 'TEXT')
+                            effects.push({ spread: spread });
+                    }
                     break;
                 }
             case 'INNER_SHADOW':
@@ -2715,7 +2717,7 @@ function setObjectStroke_(figObj, fills, weight, align, join, miterLimit, cap, d
 function setObjectEffects(figObj, genObj) {
     if (!!genObj[FO_EFFECTS]
         && !isEmpty(genObj[FO_EFFECTS]))
-        figObj.effects = getObjectEffects(genObj[FO_EFFECTS]);
+        figObj.effects = getObjectEffects(genObj[FO_TYPE], genObj[FO_EFFECTS]);
     else
         figObj.effects = [];
 }
@@ -3075,8 +3077,9 @@ function setObjectTransform(figObj, genObj, setSize = true, noHeight = 0.01) {
         const height = genObj[FO_TYPE] == TEXT_SHAPE
             ? genObj[FO_FIG_HEIGHT]
             : genObj[FO_HEIGHT];
-        if (!figObj.removed)
+        if (!figObj.removed) {
             figObj.resizeWithoutConstraints(Math.max(0.01, scaleX), height ? Math.max(0.01, scaleY) : noHeight);
+        }
     }
 }
 function setPointTransform(figPoint, genPoint) {
@@ -3291,8 +3294,8 @@ function updatePointStyles(figPoint) {
             : [12, 140, 233];
     figPoint.fills = getObjectFills([['SOLID', color[0], color[1], color[2], 100]]);
     const effects = [];
-    effects.push(...getObjectEffects([['DROP_SHADOW', border[0] / 255, border[1] / 255, border[2] / 255, 1, 0, 0, 0, (isCenter ? 3 : isSelected ? 5 : 3.6) / curZoom, 'NORMAL', true, true]]));
-    effects.push(...getObjectEffects([['DROP_SHADOW', color[0] / 255, color[1] / 255, color[2] / 255, 1, 0, 0, 0, (isSelected ? 4 : 2.4) / curZoom, 'NORMAL', true, true]]));
+    effects.push(...getObjectEffects('ELLIPSE', [['DROP_SHADOW', border[0] / 255, border[1] / 255, border[2] / 255, 1, 0, 0, 0, (isCenter ? 3 : isSelected ? 5 : 3.6) / curZoom, 'NORMAL', true, true]]));
+    effects.push(...getObjectEffects('ELLIPSE', [['DROP_SHADOW', color[0] / 255, color[1] / 255, color[2] / 255, 1, 0, 0, 0, (isSelected ? 4 : 2.4) / curZoom, 'NORMAL', true, true]]));
     figPoint.effects = effects;
 }
 function genPolygonIsValid(genPoly) {
@@ -3409,6 +3412,14 @@ function figUpdateText(figText, genText) {
                 figText.textAlignVertical = 'BOTTOM';
             setObjectTransform(figText, genText);
             setObjectProps(figText, genText);
+            // const xp0 = genText[FO_XP0];
+            // const xp1 = genText[FO_XP1];
+            // const xp2 = genText[FO_XP2];
+            // const scaleY = distance(xp0, xp2);
+            // console.log('scaleY =', scaleY);
+            // figText.fontSize = 
+            //       Math.max(1, genText[FO_FONT_SIZE])
+            //     * scaleY / 100;
             if (genText[FO_FIG_WIDTH] == 0
                 && genText[FO_FIG_HEIGHT] == 0)
                 figText.textAutoResize = 'WIDTH_AND_HEIGHT';
@@ -3417,7 +3428,9 @@ function figUpdateText(figText, genText) {
             else
                 figText.textAutoResize = 'NONE';
         }
-        catch (e) { }
+        catch (e) {
+            consoleError(e);
+        }
     });
 }
 function genVectorNetworkIsValid(genNetwork) {
