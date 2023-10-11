@@ -119,6 +119,7 @@ function getPresetGraph(graphId)
         case 'tintsAndShades':       return presetTintsAndShades;
         case 'paletteFromColor':     return presetPaletteFromColor;
         case 'colorSwatches':        return presetColorSwatches;
+        case 'blurryBackgrounds':    return presetBlurryBackgrounds;
 
 
         case 'shapesStyles':         return presetShapesStyles;
@@ -143,5 +144,6 @@ function getPresetGraph(graphId)
         case 'afterTheStorm':        return presetAfterTheStorm;
         case 'sunsetDreams':         return presetSunsetDreams;
         case 'linesOfFire':          return presetLinesOfFire;
+        case 'clouds':               return presetClouds;
     }
 }

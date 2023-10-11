@@ -3550,3 +3550,988 @@ const presetColorSwatches = '\
             }\
         ]\
     }';
+
+
+
+const presetBlurryBackgrounds = '\
+    {\
+        "nodes":\
+        [\
+            {\
+            "type": "MOVE",\
+            "id": "move2",\
+            "name": "move",\
+            "renamed": "false",\
+            "enabled": "true",\
+            "highlight": "0",\
+            "x": "6555",\
+            "y": "801",\
+            "z": "0",\
+            "params":\
+            [\
+                    ["NUM#", "y", "-166,0"]\
+            ]\
+            },\
+            {\
+            "type": "MATH",\
+            "id": "math",\
+            "name": "math",\
+            "renamed": "false",\
+            "enabled": "true",\
+            "highlight": "0",\
+            "x": "4516",\
+            "y": "783",\
+            "z": "1",\
+            "params":\
+            [\
+                    ["NUM#", "value", "-324,0"],\
+                    ["NUM#", "operation", "0,0"]\
+            ]\
+            },\
+            {\
+            "type": "IF",\
+            "id": "ifElse",\
+            "name": "if%2Felse",\
+            "renamed": "false",\
+            "enabled": "true",\
+            "highlight": "0",\
+            "x": "5408",\
+            "y": "506",\
+            "z": "2",\
+            "params":\
+            [\
+                    ["NUM#", "condition", "0,0"]\
+            ]\
+            },\
+            {\
+            "type": "REPT",\
+            "id": "repeat",\
+            "name": "repeat",\
+            "renamed": "false",\
+            "enabled": "true",\
+            "highlight": "0",\
+            "x": "5881",\
+            "y": "513",\
+            "z": "3"\
+            },\
+            {\
+            "type": "RAND",\
+            "id": "random3",\
+            "name": "random",\
+            "renamed": "false",\
+            "enabled": "true",\
+            "highlight": "0",\
+            "x": "4016",\
+            "y": "868",\
+            "z": "4",\
+            "params":\
+            [\
+                    ["NUM#", "seed", "8419,0"],\
+                    ["NUM#", "min", "18,0"],\
+                    ["NUM#", "max", "53,0"]\
+            ]\
+            },\
+            {\
+            "type": "RAND",\
+            "id": "random2",\
+            "name": "random",\
+            "renamed": "false",\
+            "enabled": "true",\
+            "highlight": "0",\
+            "x": "4014",\
+            "y": "712",\
+            "z": "5",\
+            "params":\
+            [\
+                    ["NUM#", "seed", "5956,0"],\
+                    ["NUM#", "min", "38,0"],\
+                    ["NUM#", "max", "59,0"]\
+            ]\
+            },\
+            {\
+            "type": "RAND",\
+            "id": "random5",\
+            "name": "random",\
+            "renamed": "false",\
+            "enabled": "true",\
+            "highlight": "7",\
+            "x": "3228",\
+            "y": "626",\
+            "z": "6",\
+            "params":\
+            [\
+                    ["NUM#", "seed", "8009,0"],\
+                    ["NUM#", "max", "10000,0"]\
+            ]\
+            },\
+            {\
+            "type": "NOISE",\
+            "id": "noise",\
+            "name": "noise",\
+            "renamed": "false",\
+            "enabled": "true",\
+            "highlight": "0",\
+            "x": "4009",\
+            "y": "476",\
+            "z": "7",\
+            "params":\
+            [\
+                    ["NUM#", "seed", "6034,0"],\
+                    ["NUM#", "max", "360,0"],\
+                    ["NUM#", "scale", "5,0"],\
+                    ["NUM#", "offset", "0,1"]\
+            ]\
+            },\
+            {\
+            "type": "COL",\
+            "id": "color",\
+            "name": "color",\
+            "renamed": "false",\
+            "enabled": "true",\
+            "highlight": "0",\
+            "x": "5815",\
+            "y": "889",\
+            "z": "8",\
+            "prevSpace": "rgb",\
+            "params":\
+            [\
+                    ["NUM#", "space", "1,0"],\
+                    ["NUM#", "c1", "351.6905161327172,0"],\
+                    ["NUM#", "c2", "215,0"],\
+                    ["NUM#", "c3", "135,0"]\
+            ]\
+            },\
+            {\
+            "type": "PANEL",\
+            "id": "panel",\
+            "name": "",\
+            "renamed": "false",\
+            "enabled": "true",\
+            "highlight": "7",\
+            "x": "3176",\
+            "y": "587",\
+            "z": "9",\
+            "width": "661",\
+            "height": "323.268456154255",\
+            "params":\
+            [\
+            ]\
+            },\
+            {\
+            "type": "FRM",\
+            "id": "frame2",\
+            "name": "alt_background",\
+            "renamed": "true",\
+            "enabled": "true",\
+            "highlight": "0",\
+            "x": "6925",\
+            "y": "769",\
+            "z": "10",\
+            "active": "true",\
+            "params":\
+            [\
+                    ["NUM#", "x", "1536,0"],\
+                    ["NUM#", "width", "640,0"],\
+                    ["NUM#", "height", "1871,0"]\
+            ]\
+            },\
+            {\
+            "type": "RAND",\
+            "id": "random",\
+            "name": "random",\
+            "renamed": "false",\
+            "enabled": "true",\
+            "highlight": "0",\
+            "x": "5316",\
+            "y": "1172",\
+            "z": "11",\
+            "params":\
+            [\
+                    ["NUM#", "seed", "9995,0"],\
+                    ["NUM#", "min", "50,0"],\
+                    ["NUM#", "max", "200,0"]\
+            ]\
+            },\
+            {\
+            "type": "PROB",\
+            "id": "prob",\
+            "name": "probability",\
+            "renamed": "false",\
+            "enabled": "true",\
+            "highlight": "0",\
+            "x": "5256",\
+            "y": "905",\
+            "z": "12",\
+            "params":\
+            [\
+                    ["NUM#", "seed", "6022,0"]\
+            ]\
+            },\
+            {\
+            "type": "ROT",\
+            "id": "rotate",\
+            "name": "rotate",\
+            "renamed": "false",\
+            "enabled": "true",\
+            "highlight": "0",\
+            "x": "5210",\
+            "y": "649",\
+            "z": "13",\
+            "params":\
+            [\
+                    ["NUM#", "angle", "-5,0"]\
+            ]\
+            },\
+            {\
+            "type": "CMB",\
+            "id": "combine",\
+            "name": "combine",\
+            "renamed": "false",\
+            "enabled": "true",\
+            "highlight": "0",\
+            "x": "4453",\
+            "y": "640",\
+            "z": "14",\
+            "width": "120",\
+            "height": "51"\
+            },\
+            {\
+            "type": "SMATH",\
+            "id": "math3",\
+            "name": "math",\
+            "renamed": "false",\
+            "enabled": "true",\
+            "highlight": "0",\
+            "x": "4609",\
+            "y": "885",\
+            "z": "15",\
+            "params":\
+            [\
+                    ["NUM#", "value", "2088,0"],\
+                    ["NUM#", "operand", "1440,0"]\
+            ]\
+            },\
+            {\
+            "type": "SMATH",\
+            "id": "math2",\
+            "name": "math",\
+            "renamed": "false",\
+            "enabled": "true",\
+            "highlight": "0",\
+            "x": "4463",\
+            "y": "885",\
+            "z": "16",\
+            "params":\
+            [\
+                    ["NUM#", "value", "648,0"],\
+                    ["NUM#", "operation", "4,0"],\
+                    ["NUM#", "operand", "2,0"]\
+            ]\
+            },\
+            {\
+            "type": "MOVE",\
+            "id": "move",\
+            "name": "move",\
+            "renamed": "false",\
+            "enabled": "true",\
+            "highlight": "0",\
+            "x": "4974",\
+            "y": "505",\
+            "z": "17",\
+            "params":\
+            [\
+                    ["NUM#", "y", "2628,0"]\
+            ]\
+            },\
+            {\
+            "type": "REPT",\
+            "id": "repeat2",\
+            "name": "repeat",\
+            "renamed": "false",\
+            "enabled": "true",\
+            "highlight": "0",\
+            "x": "3378",\
+            "y": "626",\
+            "z": "18"\
+            },\
+            {\
+            "type": "FRZ",\
+            "id": "freeze",\
+            "name": "freeze",\
+            "renamed": "false",\
+            "enabled": "true",\
+            "highlight": "0",\
+            "x": "3528",\
+            "y": "626",\
+            "z": "19"\
+            },\
+            {\
+            "type": "FRM",\
+            "id": "frame",\
+            "name": "background",\
+            "renamed": "true",\
+            "enabled": "true",\
+            "highlight": "0",\
+            "x": "6922",\
+            "y": "529",\
+            "z": "20",\
+            "active": "true",\
+            "params":\
+            [\
+                    ["NUM#", "width", "1440,0"],\
+                    ["NUM#", "height", "2640,0"]\
+            ]\
+            },\
+            {\
+            "type": "RAND",\
+            "id": "random4",\
+            "name": "random",\
+            "renamed": "false",\
+            "enabled": "true",\
+            "highlight": "0",\
+            "x": "5049",\
+            "y": "727",\
+            "z": "21",\
+            "params":\
+            [\
+                    ["NUM#", "seed", "1792,0"],\
+                    ["NUM#", "min", "-20,0"],\
+                    ["NUM#", "max", "20,0"]\
+            ]\
+            },\
+            {\
+            "type": "RSTX",\
+            "id": "reset",\
+            "name": "reset%20space",\
+            "renamed": "false",\
+            "enabled": "true",\
+            "highlight": "0",\
+            "x": "6111",\
+            "y": "689",\
+            "z": "22"\
+            },\
+            {\
+            "type": "LBLR",\
+            "id": "layerBlur",\
+            "name": "layer%20blur",\
+            "renamed": "false",\
+            "enabled": "true",\
+            "highlight": "0",\
+            "x": "4221",\
+            "y": "859",\
+            "z": "23",\
+            "params":\
+            [\
+                    ["NUM#", "radius", "324,0"]\
+            ]\
+            },\
+            {\
+            "type": "RAND",\
+            "id": "random6",\
+            "name": "random",\
+            "renamed": "false",\
+            "enabled": "true",\
+            "highlight": "0",\
+            "x": "5633",\
+            "y": "982",\
+            "z": "24",\
+            "params":\
+            [\
+                    ["NUM#", "seed", "6441,0"]\
+            ]\
+            },\
+            {\
+            "type": "CENTR",\
+            "id": "center",\
+            "name": "center",\
+            "renamed": "false",\
+            "enabled": "true",\
+            "highlight": "0",\
+            "x": "6255",\
+            "y": "801",\
+            "z": "25",\
+            "params":\
+            [\
+                    ["NUM#", "centerX", "12,0"],\
+                    ["NUM#", "centerY", "22,0"]\
+            ]\
+            },\
+            {\
+            "type": "LIST",\
+            "id": "list",\
+            "name": "list",\
+            "renamed": "false",\
+            "enabled": "true",\
+            "highlight": "0",\
+            "x": "3678",\
+            "y": "626",\
+            "z": "26",\
+            "width": "127.93624156812596",\
+            "height": "252",\
+            "params":\
+            [\
+                    ["NUM#", "0", "6034,0"],\
+                    ["NUM#", "1", "5956,0"],\
+                    ["NUM#", "2", "8419,0"],\
+                    ["NUM#", "3", "1406,0"],\
+                    ["NUM#", "4", "6441,0"],\
+                    ["NUM#", "5", "9519,0"],\
+                    ["NUM#", "6", "6022,0"],\
+                    ["NUM#", "7", "1792,0"],\
+                    ["NUM#", "8", "5412,0"],\
+                    ["NUM#", "9", "9995,0"]\
+            ]\
+            },\
+            {\
+            "type": "SCALE",\
+            "id": "scale2",\
+            "name": "scale",\
+            "renamed": "false",\
+            "enabled": "true",\
+            "highlight": "0",\
+            "x": "6405",\
+            "y": "801",\
+            "z": "27",\
+            "params":\
+            [\
+                    ["NUM#", "scaleX", "51,0"]\
+            ]\
+            },\
+            {\
+            "type": "SCALE",\
+            "id": "scale",\
+            "name": "scale",\
+            "renamed": "false",\
+            "enabled": "true",\
+            "highlight": "0",\
+            "x": "5731",\
+            "y": "513",\
+            "z": "28",\
+            "params":\
+            [\
+                    ["NUM#", "scaleX", "79,0"],\
+                    ["NUM#", "scaleY", "111,0"]\
+            ]\
+            },\
+            {\
+            "type": "RECT",\
+            "id": "rect",\
+            "name": "rectangle",\
+            "renamed": "false",\
+            "enabled": "true",\
+            "highlight": "0",\
+            "x": "4824",\
+            "y": "505",\
+            "z": "29",\
+            "params":\
+            [\
+                    ["NUM#", "x", "-324,0"],\
+                    ["NUM#", "y", "-200,0"],\
+                    ["NUM#", "width", "2088,0"],\
+                    ["NUM#", "height", "305,0"]\
+            ]\
+            },\
+            {\
+            "type": "SEQ",\
+            "id": "sequence",\
+            "name": "sequence",\
+            "renamed": "false",\
+            "enabled": "true",\
+            "highlight": "0",\
+            "x": "4852",\
+            "y": "766",\
+            "z": "30",\
+            "params":\
+            [\
+                    ["NUM#", "add", "292,0"],\
+                    ["NUM#", "end", "?,0"]\
+            ]\
+            },\
+            {\
+            "type": "RAND",\
+            "id": "random7",\
+            "name": "random",\
+            "renamed": "false",\
+            "enabled": "true",\
+            "highlight": "0",\
+            "x": "5628",\
+            "y": "1120",\
+            "z": "31",\
+            "params":\
+            [\
+                    ["NUM#", "seed", "9519,0"]\
+            ]\
+            },\
+            {\
+            "type": "COL",\
+            "id": "color2",\
+            "name": "color",\
+            "renamed": "false",\
+            "enabled": "true",\
+            "highlight": "0",\
+            "x": "4178",\
+            "y": "634",\
+            "z": "32",\
+            "prevSpace": "hsv",\
+            "params":\
+            [\
+                    ["NUM#", "space", "2,0"],\
+                    ["NUM#", "c1", "326.3850344503607,0"],\
+                    ["NUM#", "c2", "44,0"],\
+                    ["NUM#", "c3", "45,0"]\
+            ]\
+            },\
+            {\
+            "type": "RAND",\
+            "id": "random8",\
+            "name": "random",\
+            "renamed": "false",\
+            "enabled": "true",\
+            "highlight": "0",\
+            "x": "5313",\
+            "y": "1025",\
+            "z": "33",\
+            "params":\
+            [\
+                    ["NUM#", "seed", "5412,0"],\
+                    ["NUM#", "min", "30,0"],\
+                    ["NUM#", "max", "120,0"]\
+            ]\
+            },\
+            {\
+            "type": "CENTR",\
+            "id": "center2",\
+            "name": "center",\
+            "renamed": "false",\
+            "enabled": "true",\
+            "highlight": "0",\
+            "x": "5574",\
+            "y": "509",\
+            "z": "34",\
+            "params":\
+            [\
+                    ["NUM#", "centerX", "70,0"]\
+            ]\
+            },\
+            {\
+            "type": "RAND",\
+            "id": "random9",\
+            "name": "random",\
+            "renamed": "false",\
+            "enabled": "true",\
+            "highlight": "0",\
+            "x": "5416",\
+            "y": "728",\
+            "z": "35",\
+            "params":\
+            [\
+                    ["NUM#", "seed", "1406,0"],\
+                    ["NUM#", "max", "100,0"]\
+            ]\
+            },\
+            {\
+            "type": "PANEL",\
+            "id": "panel2",\
+            "name": "",\
+            "renamed": "false",\
+            "enabled": "true",\
+            "highlight": "5",\
+            "x": "6868",\
+            "y": "479",\
+            "z": "36",\
+            "active": "true",\
+            "width": "245.8044905377676",\
+            "height": "527.9494652984481",\
+            "params":\
+            [\
+            ]\
+            }\
+        ],\
+        "connections":\
+        [\
+            {\
+            "outputNodeId": "scale2",\
+            "outputId": "h0",\
+            "outputOrder": "0",\
+            "inputNodeId": "move2",\
+            "inputId": "h0",\
+            "list": "false"\
+            },\
+            {\
+            "outputNodeId": "layerBlur",\
+            "outputId": "radius",\
+            "outputOrder": "0",\
+            "inputNodeId": "math",\
+            "inputId": "h0",\
+            "list": "false"\
+            },\
+            {\
+            "outputNodeId": "move",\
+            "outputId": "h0",\
+            "outputOrder": "1",\
+            "inputNodeId": "ifElse",\
+            "inputId": "h0",\
+            "list": "false"\
+            },\
+            {\
+            "outputNodeId": "rotate",\
+            "outputId": "h0",\
+            "outputOrder": "0",\
+            "inputNodeId": "ifElse",\
+            "inputId": "h1",\
+            "list": "false"\
+            },\
+            {\
+            "outputNodeId": "prob",\
+            "outputId": "h0",\
+            "outputOrder": "0",\
+            "inputNodeId": "ifElse",\
+            "inputId": "condition",\
+            "list": "false"\
+            },\
+            {\
+            "outputNodeId": "scale",\
+            "outputId": "h0",\
+            "outputOrder": "0",\
+            "inputNodeId": "repeat",\
+            "inputId": "h0",\
+            "list": "false"\
+            },\
+            {\
+            "outputNodeId": "list",\
+            "outputId": "2",\
+            "outputOrder": "3",\
+            "inputNodeId": "random3",\
+            "inputId": "seed",\
+            "list": "false"\
+            },\
+            {\
+            "outputNodeId": "list",\
+            "outputId": "1",\
+            "outputOrder": "3",\
+            "inputNodeId": "random2",\
+            "inputId": "seed",\
+            "list": "false"\
+            },\
+            {\
+            "outputNodeId": "list",\
+            "outputId": "0",\
+            "outputOrder": "3",\
+            "inputNodeId": "noise",\
+            "inputId": "seed",\
+            "list": "false"\
+            },\
+            {\
+            "outputNodeId": "color2",\
+            "outputId": "c1",\
+            "outputOrder": "0",\
+            "inputNodeId": "color",\
+            "inputId": "c1",\
+            "list": "false"\
+            },\
+            {\
+            "outputNodeId": "random6",\
+            "outputId": "h0",\
+            "outputOrder": "0",\
+            "inputNodeId": "color",\
+            "inputId": "c2",\
+            "list": "false"\
+            },\
+            {\
+            "outputNodeId": "random7",\
+            "outputId": "h0",\
+            "outputOrder": "0",\
+            "inputNodeId": "color",\
+            "inputId": "c3",\
+            "list": "false"\
+            },\
+            {\
+            "outputNodeId": "move2",\
+            "outputId": "h0",\
+            "outputOrder": "0",\
+            "inputNodeId": "frame2",\
+            "inputId": "children",\
+            "list": "false"\
+            },\
+            {\
+            "outputNodeId": "color",\
+            "outputId": "h0",\
+            "outputOrder": "1",\
+            "inputNodeId": "frame2",\
+            "inputId": "props",\
+            "list": "false"\
+            },\
+            {\
+            "outputNodeId": "list",\
+            "outputId": "9",\
+            "outputOrder": "0",\
+            "inputNodeId": "random",\
+            "inputId": "seed",\
+            "list": "false"\
+            },\
+            {\
+            "outputNodeId": "list",\
+            "outputId": "6",\
+            "outputOrder": "3",\
+            "inputNodeId": "prob",\
+            "inputId": "seed",\
+            "list": "false"\
+            },\
+            {\
+            "outputNodeId": "move",\
+            "outputId": "h0",\
+            "outputOrder": "0",\
+            "inputNodeId": "rotate",\
+            "inputId": "h0",\
+            "list": "false"\
+            },\
+            {\
+            "outputNodeId": "random4",\
+            "outputId": "h0",\
+            "outputOrder": "0",\
+            "inputNodeId": "rotate",\
+            "inputId": "angle",\
+            "list": "false"\
+            },\
+            {\
+            "outputNodeId": "color2",\
+            "outputId": "h0",\
+            "outputOrder": "0",\
+            "inputNodeId": "combine",\
+            "inputId": "h0",\
+            "list": "false"\
+            },\
+            {\
+            "outputNodeId": "layerBlur",\
+            "outputId": "h0",\
+            "outputOrder": "0",\
+            "inputNodeId": "combine",\
+            "inputId": "h1",\
+            "list": "false"\
+            },\
+            {\
+            "outputNodeId": "math2",\
+            "outputId": "h0",\
+            "outputOrder": "0",\
+            "inputNodeId": "math3",\
+            "inputId": "h0",\
+            "list": "false"\
+            },\
+            {\
+            "outputNodeId": "layerBlur",\
+            "outputId": "radius",\
+            "outputOrder": "1",\
+            "inputNodeId": "math2",\
+            "inputId": "h0",\
+            "list": "false"\
+            },\
+            {\
+            "outputNodeId": "rect",\
+            "outputId": "h0",\
+            "outputOrder": "0",\
+            "inputNodeId": "move",\
+            "inputId": "h0",\
+            "list": "false"\
+            },\
+            {\
+            "outputNodeId": "sequence",\
+            "outputId": "h0",\
+            "outputOrder": "0",\
+            "inputNodeId": "move",\
+            "inputId": "y",\
+            "list": "false"\
+            },\
+            {\
+            "outputNodeId": "random5",\
+            "outputId": "h0",\
+            "outputOrder": "0",\
+            "inputNodeId": "repeat2",\
+            "inputId": "h0",\
+            "list": "false"\
+            },\
+            {\
+            "outputNodeId": "repeat2",\
+            "outputId": "h0",\
+            "outputOrder": "0",\
+            "inputNodeId": "freeze",\
+            "inputId": "h0",\
+            "list": "true"\
+            },\
+            {\
+            "outputNodeId": "repeat",\
+            "outputId": "h0",\
+            "outputOrder": "0",\
+            "inputNodeId": "frame",\
+            "inputId": "children",\
+            "list": "true"\
+            },\
+            {\
+            "outputNodeId": "color",\
+            "outputId": "h0",\
+            "outputOrder": "0",\
+            "inputNodeId": "frame",\
+            "inputId": "props",\
+            "list": "false"\
+            },\
+            {\
+            "outputNodeId": "list",\
+            "outputId": "7",\
+            "outputOrder": "3",\
+            "inputNodeId": "random4",\
+            "inputId": "seed",\
+            "list": "false"\
+            },\
+            {\
+            "outputNodeId": "repeat",\
+            "outputId": "h0",\
+            "outputOrder": "1",\
+            "inputNodeId": "reset",\
+            "inputId": "h0",\
+            "list": "true"\
+            },\
+            {\
+            "outputNodeId": "list",\
+            "outputId": "4",\
+            "outputOrder": "3",\
+            "inputNodeId": "random6",\
+            "inputId": "seed",\
+            "list": "false"\
+            },\
+            {\
+            "outputNodeId": "reset",\
+            "outputId": "h0",\
+            "outputOrder": "0",\
+            "inputNodeId": "center",\
+            "inputId": "h0",\
+            "list": "true"\
+            },\
+            {\
+            "outputNodeId": "freeze",\
+            "outputId": "h0",\
+            "outputOrder": "0",\
+            "inputNodeId": "list",\
+            "inputId": "h0",\
+            "list": "true"\
+            },\
+            {\
+            "outputNodeId": "center",\
+            "outputId": "h0",\
+            "outputOrder": "0",\
+            "inputNodeId": "scale2",\
+            "inputId": "h0",\
+            "list": "false"\
+            },\
+            {\
+            "outputNodeId": "center2",\
+            "outputId": "h0",\
+            "outputOrder": "0",\
+            "inputNodeId": "scale",\
+            "inputId": "h0",\
+            "list": "false"\
+            },\
+            {\
+            "outputNodeId": "random8",\
+            "outputId": "h0",\
+            "outputOrder": "0",\
+            "inputNodeId": "scale",\
+            "inputId": "scaleX",\
+            "list": "false"\
+            },\
+            {\
+            "outputNodeId": "random",\
+            "outputId": "h0",\
+            "outputOrder": "0",\
+            "inputNodeId": "scale",\
+            "inputId": "scaleY",\
+            "list": "false"\
+            },\
+            {\
+            "outputNodeId": "math",\
+            "outputId": "h0",\
+            "outputOrder": "0",\
+            "inputNodeId": "rect",\
+            "inputId": "x",\
+            "list": "false"\
+            },\
+            {\
+            "outputNodeId": "math3",\
+            "outputId": "h0",\
+            "outputOrder": "0",\
+            "inputNodeId": "rect",\
+            "inputId": "width",\
+            "list": "false"\
+            },\
+            {\
+            "outputNodeId": "combine",\
+            "outputId": "h0",\
+            "outputOrder": "0",\
+            "inputNodeId": "rect",\
+            "inputId": "props",\
+            "list": "true"\
+            },\
+            {\
+            "outputNodeId": "list",\
+            "outputId": "5",\
+            "outputOrder": "3",\
+            "inputNodeId": "random7",\
+            "inputId": "seed",\
+            "list": "false"\
+            },\
+            {\
+            "outputNodeId": "noise",\
+            "outputId": "h0",\
+            "outputOrder": "0",\
+            "inputNodeId": "color2",\
+            "inputId": "c1",\
+            "list": "false"\
+            },\
+            {\
+            "outputNodeId": "random2",\
+            "outputId": "h0",\
+            "outputOrder": "0",\
+            "inputNodeId": "color2",\
+            "inputId": "c2",\
+            "list": "false"\
+            },\
+            {\
+            "outputNodeId": "random3",\
+            "outputId": "h0",\
+            "outputOrder": "0",\
+            "inputNodeId": "color2",\
+            "inputId": "c3",\
+            "list": "false"\
+            },\
+            {\
+            "outputNodeId": "list",\
+            "outputId": "8",\
+            "outputOrder": "0",\
+            "inputNodeId": "random8",\
+            "inputId": "seed",\
+            "list": "false"\
+            },\
+            {\
+            "outputNodeId": "ifElse",\
+            "outputId": "h0",\
+            "outputOrder": "0",\
+            "inputNodeId": "center2",\
+            "inputId": "h0",\
+            "list": "false"\
+            },\
+            {\
+            "outputNodeId": "random9",\
+            "outputId": "h0",\
+            "outputOrder": "0",\
+            "inputNodeId": "center2",\
+            "inputId": "centerX",\
+            "list": "false"\
+            },\
+            {\
+            "outputNodeId": "list",\
+            "outputId": "3",\
+            "outputOrder": "0",\
+            "inputNodeId": "random9",\
+            "inputId": "seed",\
+            "list": "false"\
+            }\
+        ]\
+    }';
