@@ -143,6 +143,7 @@ function getPresetGraph(graphId)
         case 'randomAbstract':       return presetRandomAbstract;
         case 'afterTheStorm':        return presetAfterTheStorm;
         case 'sunsetDreams':         return presetSunsetDreams;
+        case 'polarizedLights':      return presetPolarizedLights;
         case 'linesOfFire':          return presetLinesOfFire;
         case 'clouds':               return presetClouds;
     }

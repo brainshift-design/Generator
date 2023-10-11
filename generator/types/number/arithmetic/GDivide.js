@@ -44,7 +44,7 @@ async function evalDivideInputs(inputs, parse)
         return NumberValue.NaN;
 
         
-    const value = new NumberValue(0);
+    let value = new NumberValue(0);
 
         
     if (!isEmpty(inputs))
