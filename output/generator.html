@@ -20747,41 +20747,25 @@ function getSimpleMathValue(input, operand, op, enabled)
         switch (op.value)
         {
             case 0: 
-                return new NumberValue(
-                    input.value - operand.value,
-                    Math.max(input.decimals, operand.decimals));
+                return new NumberValue(input.toNumber() - operand.toNumber());
 
             case 1: 
-                return new NumberValue(
-                    input.value + operand.value,
-                    Math.max(input.decimals, operand.decimals));
+                return new NumberValue(input.toNumber() + operand.toNumber());
 
             case 2: 
-                return new NumberValue(
-                    input.value % operand.value,
-                    Math.max(input.decimals, operand.decimals));
+                return new NumberValue(input.toNumber() % operand.toNumber());
 
             case 3: 
                 if (operand.value == 0)
                     return NumberValue.NaN.copy();
                 else
-                {
-                    const val = input.value / operand.value;
-
-                    return new NumberValue(
-                        val, 
-                        Math.max(Math.max(input.decimals, operand.decimals)), decDigits(val));
-                }
+                    return new NumberValue(input.toNumber() / operand.toNumber());
 
             case 4: 
-                return new NumberValue(
-                    input.value * operand.value,
-                    Math.max(input.decimals, operand.decimals));
+                return new NumberValue(input.toNumber() * operand.toNumber());
 
             case 5: 
-                return new NumberValue(
-                    Math.pow(input.value, operand.value),
-                    Math.max(input.decimals, operand.decimals));
+                return new NumberValue(Math.pow(input.toNumber(), operand.toNumber()));
         }
 
 
@@ -21238,8 +21222,9 @@ async function evalDivideInputs(inputs, parse)
                             break; 
                         }
 
-                        value.value    = value.value / item.value;
-                        value.decimals = Math.max(Math.max(value.decimals, item.decimals), decDigits(value.value));
+                        value = new NumberValue(value.toNumber() / item.toNumber());
+                        // value.value    = value.value / item.value;
+                        // value.decimals = Math.max(Math.max(value.decimals, item.decimals), decDigits(value.value));
                     }                    
                 }
             }
@@ -21256,8 +21241,10 @@ async function evalDivideInputs(inputs, parse)
                     break; 
                 }
     
-                value.value    = value.value / val.value;
-                value.decimals = Math.max(Math.max(value.decimals, val.decimals), decDigits(value.value));
+                value = new NumberValue(value.toNumber() / val.toNumber());
+                
+                // value.value    = value.value / val.value;
+                // value.decimals = Math.max(Math.max(value.decimals, val.decimals), decDigits(value.value));
             }
         }
     }

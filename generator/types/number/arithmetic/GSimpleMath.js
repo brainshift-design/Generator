@@ -146,41 +146,25 @@ function getSimpleMathValue(input, operand, op, enabled)
         switch (op.value)
         {
             case 0: 
-                return new NumberValue(
-                    input.value - operand.value,
-                    Math.max(input.decimals, operand.decimals));
+                return new NumberValue(input.toNumber() - operand.toNumber());
 
             case 1: 
-                return new NumberValue(
-                    input.value + operand.value,
-                    Math.max(input.decimals, operand.decimals));
+                return new NumberValue(input.toNumber() + operand.toNumber());
 
             case 2: 
-                return new NumberValue(
-                    input.value % operand.value,
-                    Math.max(input.decimals, operand.decimals));
+                return new NumberValue(input.toNumber() % operand.toNumber());
 
             case 3: 
                 if (operand.value == 0)
                     return NumberValue.NaN.copy();
                 else
-                {
-                    const val = input.value / operand.value;
-
-                    return new NumberValue(
-                        val, 
-                        Math.max(Math.max(input.decimals, operand.decimals)), decDigits(val));
-                }
+                    return new NumberValue(input.toNumber() / operand.toNumber());
 
             case 4: 
-                return new NumberValue(
-                    input.value * operand.value,
-                    Math.max(input.decimals, operand.decimals));
+                return new NumberValue(input.toNumber() * operand.toNumber());
 
             case 5: 
-                return new NumberValue(
-                    Math.pow(input.value, operand.value),
-                    Math.max(input.decimals, operand.decimals));
+                return new NumberValue(Math.pow(input.toNumber(), operand.toNumber()));
         }
 
 

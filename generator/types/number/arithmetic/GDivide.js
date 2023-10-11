@@ -129,8 +129,9 @@ async function evalDivideInputs(inputs, parse)
                             break; 
                         }
 
-                        value.value    = value.value / item.value;
-                        value.decimals = Math.max(Math.max(value.decimals, item.decimals), decDigits(value.value));
+                        value = new NumberValue(value.toNumber() / item.toNumber());
+                        // value.value    = value.value / item.value;
+                        // value.decimals = Math.max(Math.max(value.decimals, item.decimals), decDigits(value.value));
                     }                    
                 }
             }
@@ -147,8 +148,10 @@ async function evalDivideInputs(inputs, parse)
                     break; 
                 }
     
-                value.value    = value.value / val.value;
-                value.decimals = Math.max(Math.max(value.decimals, val.decimals), decDigits(value.value));
+                value = new NumberValue(value.toNumber() / val.toNumber());
+                
+                // value.value    = value.value / val.value;
+                // value.decimals = Math.max(Math.max(value.decimals, val.decimals), decDigits(value.value));
             }
         }
     }
