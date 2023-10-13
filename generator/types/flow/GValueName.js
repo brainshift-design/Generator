@@ -50,19 +50,10 @@ extends GOperator
         this.updateValueObjects();
 
 
-        const type = 
-            this.value
-            ? new TextValue(
-                isListType(this.value.type)
-                ? finalListTypeFromItems(this.value.items)
-                : this.value.type)
-            : TextValue.NaN;
-
-
         this.setUpdateValues(parse,
         [
-            ['type', type],
-            ['name', name]
+            ['type', this.outputType()],
+            ['name', name             ]
         ]);
 
 

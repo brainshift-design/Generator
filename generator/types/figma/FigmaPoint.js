@@ -43,7 +43,11 @@ extends FigmaShape
 
     getBounds()
     {
-        return new Rect(this.x-0.005, this.y-0.005, 0.01, 0.01);
+        return new Rect(
+            this.x - 0.005, 
+            this.y - 0.005, 
+            0.01, 
+            0.01);
     }
 
 

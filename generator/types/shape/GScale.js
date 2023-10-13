@@ -81,13 +81,14 @@ extends GAffine
 
         this.setUpdateValues(parse,
         [
-            ['scaleX',        scaleX       ],
-            ['scaleY',        scaleY       ],
-            ['showCenter',    showCenter   ],
-            ['affectSpace',   affectSpace  ],
-            ['affectCorners', affectCorners],
-            ['affectStyle',   affectStyle  ],
-            ['bounds',        bounds       ]
+            ['type',          this.outputType()],
+            ['scaleX',        scaleX           ],
+            ['scaleY',        scaleY           ],
+            ['showCenter',    showCenter       ],
+            ['affectSpace',   affectSpace      ],
+            ['affectCorners', affectCorners    ],
+            ['affectStyle',   affectStyle      ],
+            ['bounds',        bounds           ]
         ]);
         
 

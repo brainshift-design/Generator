@@ -76,7 +76,7 @@ extends GOperator
             const inputObjects = this.copyObjects(input, i);
             inputObjects.forEach(o => o.itemIndex = i);
 
-            this.value.objects.push(inputObjects);
+            this.value.objects.push(...inputObjects);
         }
 
 

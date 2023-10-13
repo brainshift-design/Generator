@@ -67,21 +67,12 @@ extends GOperator1
             this.value = NumberValue.NaN.copy();
 
 
-        const type = 
-            this.value
-            ? new TextValue(
-                isListType(this.value.type)
-                ? finalListTypeFromItems(this.value.items)
-                : this.value.type)
-            : TextValue.NaN.copy();
-
-            
         this.setUpdateValues(parse,
         [
-            ['value',     this.value],
-            ['type',      type      ],
-            ['operation', op        ],
-            ['operand',   operand   ]
+            ['value',     this.value       ],
+            ['type',      this.outputType()],
+            ['operation', op               ],
+            ['operand',   operand          ]
         ]);
 
 

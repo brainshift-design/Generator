@@ -72,11 +72,12 @@ extends GOperator1
 
         this.setUpdateValues(parse,
         [
-            ['x',           x          ],
-            ['y',           y          ],
-            ['moveType',    moveType   ],
-            ['affectSpace', affectSpace],
-            ['showCenter',  showCenter ]
+            ['type',        this.outputType()],
+            ['x',           x                ],
+            ['y',           y                ],
+            ['moveType',    moveType         ],
+            ['affectSpace', affectSpace      ],
+            ['showCenter',  showCenter       ]
         ]);
 
 

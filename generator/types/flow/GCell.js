@@ -73,19 +73,10 @@ extends GOperator
             this.value = NullValue.copy();
 
 
-        const type = 
-            this.value
-            ? new TextValue(
-                isListType(this.value.type)
-                ? finalListTypeFromItems(this.value.items)
-                : this.value.type)
-            : TextValue.NaN.copy();
-
-
         this.setUpdateValues(parse,
         [
             ['preview', this.value                 ],
-            ['type',    type                       ],
+            ['type',    this.outputType()          ],
             ['columns', new NumberValue(columns, 0)],
             ['rows',    new NumberValue(rows   , 0)]
         ]);

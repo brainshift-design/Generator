@@ -1,6 +1,7 @@
 class   OpSort
 extends OperatorBase
 {
+    paramOrder;
     paramColumn;
     paramReverse;
 
@@ -20,13 +21,16 @@ extends OperatorBase
         this.addInput (new Input (LIST_VALUES));
         this.addOutput(new Output([LIST_VALUE], this.output_genRequest));
 
-        this.addParam(this.paramColumn  = new NumberParam('column',  'column',  true, true, true, 0, 0));
-        this.addParam(this.paramReverse = new NumberParam('reverse', 'reverse', true, true, true, 0, 0, 1));
+        this.addParam(this.paramOrder   = new NumberParam('order',   '',        false, true, false));
+        this.addParam(this.paramColumn  = new NumberParam('column',  'column',  true,  true, true, 0, 0));
+        this.addParam(this.paramReverse = new NumberParam('reverse', 'reverse', true,  true, true, 0, 0, 1));
 
         this.paramColumn.controls[0].allowEditDecimals = false;
         
-        this.paramColumn.divider  = 0.59;
+        this.paramColumn .divider = 0.59;
         this.paramReverse.divider = 0.59;
+
+        this.paramOrder.valueText = 'order';
 
         this.menuBoolReverse = createBoolMenu(this.paramReverse);
     }

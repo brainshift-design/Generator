@@ -7764,7 +7764,11 @@ extends FigmaShape
 
     getBounds()
     {
-        return new Rect(this.x-0.005, this.y-0.005, 0.01, 0.01);
+        return new Rect(
+            this.x - 0.005, 
+            this.y - 0.005, 
+            0.01, 
+            0.01);
     }
 
 
@@ -8537,7 +8541,29 @@ extends GNode
     }
     
     
-    
+
+    outputType()
+    {
+        return this.value
+            ? new TextValue(
+                isListType(this.value.type)
+                ? finalListTypeFromItems(this.value.items)
+                : this.value.type)
+            : TextValue.NaN;
+    }
+
+
+
+    outputListType()
+    {
+        return this.outputType();
+        //return this.value
+        //     ? new TextValue(finalListTypeFromItems(this.value.items))
+        //     : TextValue.NaN.copy();
+    }
+
+
+
     invalidateInputs(parse, from)
     {
         super.invalidateInputs(parse, from);
@@ -15081,16 +15107,10 @@ extends GOperator1
         }
 
 
-        const type = 
-            this.value
-            ? new TextValue(finalListTypeFromItems(this.value.items))
-            : TextValue.NaN.copy();
-
-
         this.setUpdateValues(parse,
         [
-            ['type',  type ],
-            ['count', count]
+            ['type',  this.outputListType()],
+            ['count', count                ]
         ]);
 
 
@@ -15210,18 +15230,9 @@ extends GOperator
         this.updateValueObjects();
 
 
-        const type = 
-            this.value
-            ? new TextValue(
-                isListType(this.value.type)
-                ? finalListTypeFromItems(this.value.items)
-                : this.value.type)
-            : TextValue.NaN;
-
-
         this.setUpdateValues(parse,
         [
-            ['type', type]
+            ['type', this.outputType()]
         ]);
 
 
@@ -15606,18 +15617,9 @@ extends GOperator1
         this.updateValueObjects();
 
 
-        const type = 
-            this.value
-            ? new TextValue(
-                isListType(this.value.type)
-                ? finalListTypeFromItems(this.value.items)
-                : this.value.type)
-            : TextValue.NaN.copy();
-
-
         this.setUpdateValues(parse,
         [
-            ['type', type]
+            ['type', this.outputType()]
         ]);
 
 
@@ -15713,18 +15715,9 @@ extends GOperator1
         }
 
 
-        const type = 
-            this.value
-            ? new TextValue(
-                isListType(this.value.type)
-                ? finalListTypeFromItems(this.value.items)
-                : this.value.type)
-            : TextValue.NaN.copy();
-        
-
         this.setUpdateValues(parse,
         [
-            ['type', type]
+            ['type', this.outputType()]
         ]);
 
 
@@ -15917,19 +15910,10 @@ extends GOperator
         this.updateValueObjects();
 
 
-        const type = 
-            this.value
-            ? new TextValue(
-                isListType(this.value.type)
-                ? finalListTypeFromItems(this.value.items)
-                : this.value.type)
-            : TextValue.NaN;
-
-
         this.setUpdateValues(parse,
         [
-            ['type', type],
-            ['name', name]
+            ['type', this.outputType()],
+            ['name', name             ]
         ]);
 
 
@@ -16066,7 +16050,7 @@ extends GOperator
             const inputObjects = this.copyObjects(input, i);
             inputObjects.forEach(o => o.itemIndex = i);
 
-            this.value.objects.push(inputObjects);
+            this.value.objects.push(...inputObjects);
         }
 
 
@@ -16332,16 +16316,10 @@ extends GOperator1
         this.updateValueObjects();
 
 
-        const type = 
-            this.value
-            ? new TextValue(finalListTypeFromItems(this.value.items))
-            : TextValue.NaN.copy();
-
-
         this.setUpdateValues(parse,
         [
             ['preview',    new ListValue(this.value.items.slice(0, Math.min(this.value.items.length, 11)))],
-            ['type',       type                                                                           ],
+            ['type',       this.outputListType()                                                          ],
             ['length',     new NumberValue(this.value.items.length)                                       ], // used to set start and end maxima
             //['fullLength', new NumberValue(length)                                                        ], // used to set start and end maxima
             ['indices',    indices                                                                        ]
@@ -16481,17 +16459,11 @@ extends GOperator1
         this.updateValueObjects();
 
 
-        const type = 
-            this.value
-            ? new TextValue(finalListTypeFromItems(this.value.items))
-            : TextValue.NaN;
-
-
         this.setUpdateValues(parse,
         [
             ['preview',    new ListValue(this.value.items.slice(0, Math.min(this.value.items.length, 11)))],
-            ['type',       type                                                                           ],
-            ['length',     new NumberValue(this.value.items.length)                                                        ], // used to set start and end maxima
+            ['type',       this.outputListType()                                                          ],
+            ['length',     new NumberValue(this.value.items.length)                                       ], // used to set start and end maxima
             ['fullLength', new NumberValue(length)                                                        ], // used to set start and end maxima
             ['start',      start                                                                          ],
             ['end',        end                                                                            ]
@@ -16623,16 +16595,10 @@ extends GOperator1
         this.updateValueObjects();
 
 
-        const type = 
-            this.value
-            ? new TextValue(finalListTypeFromItems(this.value.items))
-            : TextValue.NaN;
-
-
         this.setUpdateValues(parse,
         [
             ['preview', new ListValue(this.value.items.slice(0, Math.min(this.value.items.length, 10)))],
-            ['type',    type                                                                           ],
+            ['type',    this.outputListType()                                                          ],
             ['length',  new NumberValue(this.value.items.length)                                       ]
         ]);
         
@@ -16712,16 +16678,11 @@ extends GOperator1
         this.updateValueObjects();
 
 
-        const type = 
-            this.value
-            ? new TextValue(finalListTypeFromItems(this.value.items))
-            : TextValue.NaN.copy();
-
         this.setUpdateValues(parse, 
         [
             ['preview', new ListValue(this.value.items.slice(0, Math.min(this.value.items.length, 10)))],
-            ['type',    type                                                                           ],
-            ['length', new NumberValue(this.value.items.length)                                        ]
+            ['type',    this.outputListType()                                                          ],
+            ['length',  new NumberValue(this.value.items.length)                                       ]
         ]); 
                
 
@@ -16784,15 +16745,15 @@ extends GOperator1
             const input = (await this.input.eval(parse)).toValue();
 
             
-            const sortMultiplier = reverse.value > 0 ? -1 : 1;
+            const reverseMultiplier = reverse.value > 0 ? -1 : 1;
 
             input.items.sort((a, b) => 
             {
                 const ca = a ? (isListType(a.type) ? a.items[column.value].value : a.value) : 0;
                 const cb = b ? (isListType(b.type) ? b.items[column.value].value : b.value) : 0;
 
-                if (ca < cb) return -1 * sortMultiplier;
-                if (ca > cb) return  1 * sortMultiplier;
+                if (ca < cb) return -1 * reverseMultiplier;
+                if (ca > cb) return  1 * reverseMultiplier;
 
                 return 0;
             });
@@ -16807,23 +16768,21 @@ extends GOperator1
 
                 if (   row.objects
                     && this.value.objects)
+                {
+                    row.objects.forEach(o => o.itemIndex = i);
                     this.value.objects.push(...row.objects);
+                }
             }
         }
 
 
         const preview = new ListValue(this.value.items.slice(0, Math.min(this.value.items.length, 11)));
 
-        const type = 
-            this.value
-            ? new TextValue(finalListTypeFromItems(this.value.items))
-            : TextValue.NaN;
-
 
         this.setUpdateValues(parse,
         [
             ['preview', preview                                 ],
-            ['type',    type                                    ],
+            ['type',    this.outputListType()                   ],
             ['length',  new NumberValue(this.value.items.length)],
             ['columns', new NumberValue(maxColumns)             ],
             ['column',  column                                  ],
@@ -16949,16 +16908,10 @@ extends GOperator1
         }
 
 
-        const type = 
-            this.value
-            ? new TextValue(finalListTypeFromItems(this.value.items))
-            : TextValue.NaN.copy();
-
-
         this.setUpdateValues(parse,
         [
             ['preview', new ListValue(this.value.items.slice(0, Math.min(this.value.items.length, 11)))],
-            ['type',    type                                                                           ],
+            ['type',    this.outputListType()                                                          ],
             ['length',  new NumberValue(this.value.items.length)                                       ],
             ['columns', new NumberValue(maxColumns, 0)                                                 ],
             ['index',   index                                                                          ]
@@ -17098,19 +17051,10 @@ extends GOperator
             this.value = NullValue.copy();
 
 
-        const type = 
-            this.value
-            ? new TextValue(
-                isListType(this.value.type)
-                ? finalListTypeFromItems(this.value.items)
-                : this.value.type)
-            : TextValue.NaN.copy();
-
-
         this.setUpdateValues(parse,
         [
             ['preview', this.value                 ],
-            ['type',    type                       ],
+            ['type',    this.outputType()          ],
             ['columns', new NumberValue(columns, 0)],
             ['rows',    new NumberValue(rows   , 0)]
         ]);
@@ -17418,21 +17362,12 @@ extends GOperator
         }
 
 
-        const type = 
-            this.value
-            ? new TextValue(
-                isListType(this.value.type)
-                ? finalListTypeFromItems(this.value.items)
-                : this.value.type)
-            : TextValue.NaN;
-
-
         this.setUpdateValues(parse,
         [
-            ['preview', this.value              ],
-            ['type',    type                    ],
-            ['length',  new NumberValue(length) ],
-            ['index',   index                   ]
+            ['preview', this.value             ],
+            ['type',    this.outputType()      ],
+            ['length',  new NumberValue(length)],
+            ['index',   index                  ]
         ]);
 
 
@@ -18571,19 +18506,10 @@ extends GOperator1
             this.value = NumberValue.NaN.copy();
 
 
-        const type = 
-            this.value
-            ? new TextValue(
-                isListType(this.value.type)
-                ? finalListTypeFromItems(this.value.items)
-                : this.value.type)
-            : TextValue.NaN.copy();
-            
-       
         this.setUpdateValues(parse,
         [
-            ['type',   type ],
-            ['value', _value]
+            ['type',   this.outputType()],
+            ['value', _value            ]
         ]);
 
 
@@ -20675,21 +20601,12 @@ extends GOperator1
             this.value = NumberValue.NaN.copy();
 
 
-        const type = 
-            this.value
-            ? new TextValue(
-                isListType(this.value.type)
-                ? finalListTypeFromItems(this.value.items)
-                : this.value.type)
-            : TextValue.NaN.copy();
-
-            
         this.setUpdateValues(parse,
         [
-            ['value',     this.value],
-            ['type',      type      ],
-            ['operation', op        ],
-            ['operand',   operand   ]
+            ['value',     this.value       ],
+            ['type',      this.outputType()],
+            ['operation', op               ],
+            ['operand',   operand          ]
         ]);
 
 
@@ -23069,21 +22986,12 @@ extends GOperator1
             this.value = new TextValue();//TextValue.NaN;
 
 
-        const type = 
-            this.value
-            ? new TextValue(
-                isListType(this.value.type)
-                ? finalListTypeFromItems(this.value.items)
-                : this.value.type)
-            : TextValue.NaN.copy();
-
-
         this.setUpdateValues(parse,
         [
-            ['value', this.value],
-            ['type',  type      ],
-            ['start', start     ],
-            ['end',   end       ]
+            ['value', this.value       ],
+            ['type',  this.outputType()],
+            ['start', start            ],
+            ['end',   end              ]
         ]);
 
 
@@ -23588,19 +23496,10 @@ extends GOperator1
             this.value = TextValue.NaN;
 
 
-        const type = 
-            this.value
-            ? new TextValue(
-                isListType(this.value.type)
-                ? finalListTypeFromItems(this.value.items)
-                : this.value.type)
-            : TextValue.NaN.copy();
-            
-
         this.setUpdateValues(parse,
         [
-            ['type',   type  ],
-            ['format', format]
+            ['type',   this.outputType()],
+            ['format', format           ]
         ]);
 
 
@@ -23731,19 +23630,10 @@ extends GOperator1
             this.value = TextValue.NaN;
 
 
-        const type = 
-            this.value
-            ? new TextValue(
-                isListType(this.value.type)
-                ? finalListTypeFromItems(this.value.items)
-                : this.value.type)
-            : TextValue.NaN.copy();
-            
-
         this.setUpdateValues(parse,
         [
-            ['type',   type  ],
-            ['format', format]
+            ['type',   this.outputType()],
+            ['format', format           ]
         ]);
 
 
@@ -23886,19 +23776,10 @@ extends GOperator1
             this.value = NumberValue.NaN;
 
 
-        const type = 
-            this.value
-            ? new TextValue(
-                isListType(this.value.type)
-                ? finalListTypeFromItems(this.value.items)
-                : this.value.type)
-            : TextValue.NaN.copy();
-
-
         this.setUpdateValues(parse,
         [
-            ['type',   type  ],
-            ['format', format]
+            ['type',   this.outputType()],
+            ['format', format           ]
         ]);
 
 
@@ -24018,19 +23899,10 @@ extends GOperator1
             this.value = ColorValue.NaN;
 
 
-        const type = 
-            this.value
-            ? new TextValue(
-                isListType(this.value.type)
-                ? finalListTypeFromItems(this.value.items)
-                : this.value.type)
-            : TextValue.NaN.copy();
-
-
         this.setUpdateValues(parse,
         [
-            ['value', this.value],
-            ['type',  type      ]
+            ['value', this.value       ],
+            ['type',  this.outputType()]
         ]);
 
 
@@ -24215,22 +24087,13 @@ extends GOperator1
             this.value = new TextValue();
 
 
-        const type = 
-            this.value
-            ? new TextValue(
-                isListType(this.value.type)
-                ? finalListTypeFromItems(this.value.items)
-                : this.value.type)
-            : TextValue.NaN.copy();
-
-            
         this.setUpdateValues(parse,
         [
-            ['value',  this.value],
-            ['type',   type      ],
-            ['what',  _what      ],
-            ['with',  _with      ],
-            ['regex', _regex     ]
+            ['value',  this.value       ],
+            ['type',   this.outputType()],
+            ['what',  _what             ],
+            ['with',  _with             ],
+            ['regex', _regex            ]
         ]);
 
         
@@ -24550,23 +24413,14 @@ extends GOperator1
             this.value = new TextValue();//TextValue.NaN;
 
 
-        const type = 
-            this.value
-            ? new TextValue(
-                isListType(this.value.type)
-                ? finalListTypeFromItems(this.value.items)
-                : this.value.type)
-            : TextValue.NaN.copy();
-
-
         this.setUpdateValues(parse,
         [
-            ['value',      this.value],
-            ['type',       type      ],
-            ['startPad',   startPad  ],
-            ['startCount', startCount],
-            ['endPad',     endPad    ],
-            ['endCount',   endCount  ]
+            ['value',      this.value       ],
+            ['type',       this.outputType()],
+            ['startPad',   startPad         ],
+            ['startCount', startCount       ],
+            ['endPad',     endPad           ],
+            ['endCount',   endCount         ]
         ]);
         
 
@@ -29418,6 +29272,7 @@ extends GShapeBase
     baseIsValid()
     {
         return this.value
+            && this.value.props
             && this.value.props.isValid();
     }
 
@@ -33183,11 +33038,12 @@ extends GOperator1
 
         this.setUpdateValues(parse,
         [
-            ['x',           x          ],
-            ['y',           y          ],
-            ['moveType',    moveType   ],
-            ['affectSpace', affectSpace],
-            ['showCenter',  showCenter ]
+            ['type',        this.outputType()],
+            ['x',           x                ],
+            ['y',           y                ],
+            ['moveType',    moveType         ],
+            ['affectSpace', affectSpace      ],
+            ['showCenter',  showCenter       ]
         ]);
 
 
@@ -33548,10 +33404,11 @@ extends GAffine
 
         this.setUpdateValues(parse,
         [
-            ['angle',       angle      ],
-            ['showCenter',  showCenter ],
-            ['affectSpace', affectSpace],
-            ['bounds',      bounds     ]
+            ['type',        this.outputType()],
+            ['angle',       angle            ],
+            ['showCenter',  showCenter       ],
+            ['affectSpace', affectSpace      ],
+            ['bounds',      bounds           ]
         ]);
 
 
@@ -33704,13 +33561,14 @@ extends GAffine
 
         this.setUpdateValues(parse,
         [
-            ['scaleX',        scaleX       ],
-            ['scaleY',        scaleY       ],
-            ['showCenter',    showCenter   ],
-            ['affectSpace',   affectSpace  ],
-            ['affectCorners', affectCorners],
-            ['affectStyle',   affectStyle  ],
-            ['bounds',        bounds       ]
+            ['type',          this.outputType()],
+            ['scaleX',        scaleX           ],
+            ['scaleY',        scaleY           ],
+            ['showCenter',    showCenter       ],
+            ['affectSpace',   affectSpace      ],
+            ['affectCorners', affectCorners    ],
+            ['affectStyle',   affectStyle      ],
+            ['bounds',        bounds           ]
         ]);
         
 
@@ -33871,11 +33729,12 @@ extends GAffine
 
         this.setUpdateValues(parse,
         [
-            ['skewX',       skewX      ],
-            ['skewY',       skewY      ],
-            ['showCenter',  showCenter ],
-            ['affectSpace', affectSpace],
-            ['bounds',      bounds     ]
+            ['type',        this.outputType()],
+            ['skewX',       skewX            ],
+            ['skewY',       skewY            ],
+            ['showCenter',  showCenter       ],
+            ['affectSpace', affectSpace      ],
+            ['bounds',      bounds           ]
         ]);
 
 

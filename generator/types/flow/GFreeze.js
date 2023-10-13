@@ -55,18 +55,9 @@ extends GOperator1
         }
 
 
-        const type = 
-            this.value
-            ? new TextValue(
-                isListType(this.value.type)
-                ? finalListTypeFromItems(this.value.items)
-                : this.value.type)
-            : TextValue.NaN.copy();
-        
-
         this.setUpdateValues(parse,
         [
-            ['type', type]
+            ['type', this.outputType()]
         ]);
 
 

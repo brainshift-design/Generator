@@ -103,7 +103,29 @@ extends GNode
     }
     
     
-    
+
+    outputType()
+    {
+        return this.value
+            ? new TextValue(
+                isListType(this.value.type)
+                ? finalListTypeFromItems(this.value.items)
+                : this.value.type)
+            : TextValue.NaN;
+    }
+
+
+
+    outputListType()
+    {
+        return this.outputType();
+        //return this.value
+        //     ? new TextValue(finalListTypeFromItems(this.value.items))
+        //     : TextValue.NaN.copy();
+    }
+
+
+
     invalidateInputs(parse, from)
     {
         super.invalidateInputs(parse, from);

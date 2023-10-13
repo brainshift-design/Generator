@@ -21,8 +21,8 @@ extends OperatorBase
         this.addInput (new Input ([...SHAPE_VALUES, SHAPE_LIST_VALUE, LIST_VALUE]));
         this.addOutput(new Output([SHAPE_VALUE], this.output_genRequest));
 
-        this.inputs[0].addEventListener('connect',    () => OpAffine_onConnectInput   (this));
-        this.inputs[0].addEventListener('disconnect', () => OpAffine_onDisconnectInput(this));
+        // this.inputs[0].addEventListener('connect',    () => OpAffine_onConnectInput   (this));
+        // this.inputs[0].addEventListener('disconnect', () => OpAffine_onDisconnectInput(this));
     }
     
     
@@ -42,18 +42,28 @@ extends OperatorBase
         this.menuBoolShowCenter  = createBoolMenu(this.paramShowCenter );
         this.menuBoolAffectSpace = createBoolMenu(this.paramAffectSpace);
     }
+
+
+
+    updateValues(requestId, actionId, updateParamId, paramIds, values)
+    {
+        super.updateValues(requestId, actionId, updateParamId, paramIds, values);
+
+        const type = values[paramIds.findIndex(id => id == 'type')];
+        if (type) this.outputs[0].types = [type.value];
+    }
 }
 
 
 
-function OpAffine_onConnectInput(node)
-{
-    node.outputs[0].types = [...node.inputs[0].connectedOutput.types];    
-}
+// function OpAffine_onConnectInput(node)
+// {
+//     node.outputs[0].types = [...node.inputs[0].connectedOutput.types];    
+// }
 
 
 
-function OpAffine_onDisconnectInput(node)
-{
-    node.outputs[0].types = [SHAPE_VALUE];
-}
+// function OpAffine_onDisconnectInput(node)
+// {
+//     node.outputs[0].types = [SHAPE_VALUE];
+// }

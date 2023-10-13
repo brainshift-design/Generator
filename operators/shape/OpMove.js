@@ -42,10 +42,6 @@ extends OperatorBase
 
         this.menuBoolShowCenter  = createBoolMenu(this.paramShowCenter );
         this.menuBoolAffectSpace = createBoolMenu(this.paramAffectSpace);
-
-
-        this.inputs[0].addEventListener('connect',    e => this.outputs[0].types = [...this.inputs[0].connectedOutput.types]);
-        this.inputs[0].addEventListener('disconnect', e => this.outputs[0].types = [SHAPE_VALUE]);
     }
     
     
@@ -82,6 +78,16 @@ extends OperatorBase
 
 
         return request;
+    }
+
+
+
+    updateValues(requestId, actionId, updateParamId, paramIds, values)
+    {
+        super.updateValues(requestId, actionId, updateParamId, paramIds, values);
+
+        const type  = values[paramIds.findIndex(id => id == 'type')];
+        if (type) this.outputs[0].types = [type.value];
     }
 
 

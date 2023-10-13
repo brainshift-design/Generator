@@ -69,10 +69,11 @@ extends GAffine
 
         this.setUpdateValues(parse,
         [
-            ['angle',       angle      ],
-            ['showCenter',  showCenter ],
-            ['affectSpace', affectSpace],
-            ['bounds',      bounds     ]
+            ['type',        this.outputType()],
+            ['angle',       angle            ],
+            ['showCenter',  showCenter       ],
+            ['affectSpace', affectSpace      ],
+            ['bounds',      bounds           ]
         ]);
 
 

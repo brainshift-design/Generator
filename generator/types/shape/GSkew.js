@@ -73,11 +73,12 @@ extends GAffine
 
         this.setUpdateValues(parse,
         [
-            ['skewX',       skewX      ],
-            ['skewY',       skewY      ],
-            ['showCenter',  showCenter ],
-            ['affectSpace', affectSpace],
-            ['bounds',      bounds     ]
+            ['type',        this.outputType()],
+            ['skewX',       skewX            ],
+            ['skewY',       skewY            ],
+            ['showCenter',  showCenter       ],
+            ['affectSpace', affectSpace      ],
+            ['bounds',      bounds           ]
         ]);
 
 

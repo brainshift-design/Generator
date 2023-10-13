@@ -49,15 +49,15 @@ extends GOperator1
             const input = (await this.input.eval(parse)).toValue();
 
             
-            const sortMultiplier = reverse.value > 0 ? -1 : 1;
+            const reverseMultiplier = reverse.value > 0 ? -1 : 1;
 
             input.items.sort((a, b) => 
             {
                 const ca = a ? (isListType(a.type) ? a.items[column.value].value : a.value) : 0;
                 const cb = b ? (isListType(b.type) ? b.items[column.value].value : b.value) : 0;
 
-                if (ca < cb) return -1 * sortMultiplier;
-                if (ca > cb) return  1 * sortMultiplier;
+                if (ca < cb) return -1 * reverseMultiplier;
+                if (ca > cb) return  1 * reverseMultiplier;
 
                 return 0;
             });
@@ -72,23 +72,21 @@ extends GOperator1
 
                 if (   row.objects
                     && this.value.objects)
+                {
+                    row.objects.forEach(o => o.itemIndex = i);
                     this.value.objects.push(...row.objects);
+                }
             }
         }
 
 
         const preview = new ListValue(this.value.items.slice(0, Math.min(this.value.items.length, 11)));
 
-        const type = 
-            this.value
-            ? new TextValue(finalListTypeFromItems(this.value.items))
-            : TextValue.NaN;
-
 
         this.setUpdateValues(parse,
         [
             ['preview', preview                                 ],
-            ['type',    type                                    ],
+            ['type',    this.outputListType()                   ],
             ['length',  new NumberValue(this.value.items.length)],
             ['columns', new NumberValue(maxColumns)             ],
             ['column',  column                                  ],
