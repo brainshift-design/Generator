@@ -76,7 +76,7 @@ extends GOperator
                     && index.value <  input.items.length)
                 {
                     this.value = input.items.at(index.value);
-                
+
                     if (this.value.objects)
                     {
                         for (let i = 0; i < this.value.objects.length; i++)
@@ -99,7 +99,7 @@ extends GOperator
                 {
                     this.value = NullValue.copy();
                     index      = NumberValue.NaN;
-                }                    
+                }
             }
             else
             {

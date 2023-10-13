@@ -52,6 +52,18 @@ extends GShape
         {
             input = (await this.input.eval(parse)).toValue();
 
+            
+            consoleAssert(
+                input.points.items.length == input.points.objects.length,
+                'Vector path points input item count must match object count');
+
+            for (let i = 0; i < input.points.items.length; i++)
+            {
+                input.points.items[i].x = new NumberValue(input.points.objects[i].x);
+                input.points.items[i].y = new NumberValue(input.points.objects[i].y);
+            }
+            
+
             this.value = new VectorPathValue(
                 this.nodeId,
                 points  ?? input.points,

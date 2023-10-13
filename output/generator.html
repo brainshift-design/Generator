@@ -17324,7 +17324,7 @@ extends GOperator
                     && index.value <  input.items.length)
                 {
                     this.value = input.items.at(index.value);
-                
+
                     if (this.value.objects)
                     {
                         for (let i = 0; i < this.value.objects.length; i++)
@@ -17347,7 +17347,7 @@ extends GOperator
                 {
                     this.value = NullValue.copy();
                     index      = NumberValue.NaN;
-                }                    
+                }
             }
             else
             {
@@ -31119,6 +31119,18 @@ extends GShape
         if (this.input)
         {
             input = (await this.input.eval(parse)).toValue();
+
+            
+            consoleAssert(
+                input.points.items.length == input.points.objects.length,
+                'Vector path points input item count must match object count');
+
+            for (let i = 0; i < input.points.items.length; i++)
+            {
+                input.points.items[i].x = new NumberValue(input.points.objects[i].x);
+                input.points.items[i].y = new NumberValue(input.points.objects[i].y);
+            }
+            
 
             this.value = new VectorPathValue(
                 this.nodeId,
