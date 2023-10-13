@@ -59,14 +59,14 @@ extends OpShape
 
 
 
-    updateParams()
-    {
-        this.paramPoints .enableControlText(true);
-        this.paramClosed .enableControlText(true);
-        this.paramDegree .enableControlText(true);
-        this.paramWinding.enableControlText(true);
-        this.paramRound  .enableControlText(true);
+    // updateParams()
+    // {
+    //     this.paramPoints .enableControlText(true);
+    //     this.paramClosed .enableControlText(true);
+    //     this.paramDegree .enableControlText(true);
+    //     this.paramWinding.enableControlText(true);
+    //     this.paramRound  .enableControlText(true);
 
-        this.updateParamControls();
-    }
+    //     this.updateParamControls();
+    // }
 }

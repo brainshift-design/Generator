@@ -22,12 +22,12 @@ extends OperatorBase
         this.addOutput(new Output([LIST_VALUE], this.output_genRequest));
 
         this.addParam(this.paramOrder   = new NumberParam('order',   '',        false, true, false));
-        this.addParam(this.paramColumn  = new NumberParam('column',  'column',  true,  true, true, 0, 0));
+        //this.addParam(this.paramColumn  = new NumberParam('column',  'column',  true,  true, true, 0, 0));
         this.addParam(this.paramReverse = new NumberParam('reverse', 'reverse', true,  true, true, 0, 0, 1));
 
-        this.paramColumn.controls[0].allowEditDecimals = false;
+        //this.paramColumn.controls[0].allowEditDecimals = false;
         
-        this.paramColumn .divider = 0.59;
+        //this.paramColumn .divider = 0.59;
         this.paramReverse.divider = 0.59;
 
         this.paramOrder.valueText = 'order';
@@ -57,7 +57,8 @@ extends OperatorBase
         if (input.connected)
             request.push(...pushInputOrParam(input, gen));
 
-        request.push(...this.node.paramColumn .genRequest(gen));
+        request.push(...this.node.paramOrder .genRequest(gen));
+        //request.push(...this.node.paramColumn .genRequest(gen));
         request.push(...this.node.paramReverse.genRequest(gen));
 
         
@@ -76,33 +77,34 @@ extends OperatorBase
 
         //const column  = values[paramIds.findIndex(id => id == 'column')];
 
-        const length  = values[paramIds.findIndex(id => id == 'length' )];
-        const columns = values[paramIds.findIndex(id => id == 'columns')];
+        //const length  = values[paramIds.findIndex(id => id == 'length' )];
+        //const columns = values[paramIds.findIndex(id => id == 'columns')];
 
-        this.tableLength = length.value;
+        // this.tableLength = length.value;
 
-        if (columns.value > 0)
-            this.paramColumn.controls[0].setMax(columns.value-1);
-        else
-            this.paramColumn.controls[0].setMax();
+        // if (columns.value > 0)
+        //     this.paramColumn.controls[0].setMax(columns.value-1);
+        // else
+        //     this.paramColumn.controls[0].setMax();
 
 
         const type = values[paramIds.findIndex(id => id == 'type')];
-
-        if (type)
-            this.outputs[0].types = [type.value];
+        if (type) this.outputs[0].types = [type.value];
     }
 
 
 
     updateParams()
     {
-        this.paramColumn .enableControlText(true);
+        //this.paramColumn .enableControlText(true);
+        this.paramOrder  .enableControlText(false);
         this.paramReverse.enableControlText(true);
 
         updateParamConditionText(this.paramReverse, this.paramReverse.isUnknown(), false, 1);
 
         this.updateParamControls();
+
+        this.paramOrder.valueText = 'order';
     }
 
 

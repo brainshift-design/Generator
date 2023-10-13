@@ -7,14 +7,14 @@ extends GOperator1
     
     constructor(nodeId, options)
     {
-        super(SUBLIST, nodeId, options);
+        super(EXTRACT, nodeId, options);
     }
 
 
     
     copy()
     {
-        const copy = new GSublist(this.nodeId, this.options);
+        const copy = new GExtract(this.nodeId, this.options);
 
         copy.copyBase(this);
 
@@ -51,12 +51,6 @@ extends GOperator1
                 length = input.items.length;
 
 
-                // const _end =
-                //     end.isValid()
-                //     ? end
-                //     : new NumberValue(input.items.length);
-
-
                 if (this.options.enabled)
                 {
                     for (let i = 0; i < indices.items.length; i++)
@@ -66,8 +60,9 @@ extends GOperator1
                         this.value.items.push(item ? item.copy() : NullValue);
                         
                         if (   item
+                            && item.objects
                             && this.value.objects) 
-                            this.value.objects.push(...input.items[i].objects);
+                            this.value.objects.push(...item.objects);//input.items[i].objects);
                     }
                 }
            }
@@ -84,7 +79,6 @@ extends GOperator1
             ['preview',    new ListValue(this.value.items.slice(0, Math.min(this.value.items.length, 11)))],
             ['type',       this.outputListType()                                                          ],
             ['length',     new NumberValue(this.value.items.length)                                       ], // used to set start and end maxima
-            //['fullLength', new NumberValue(length)                                                        ], // used to set start and end maxima
             ['indices',    indices                                                                        ]
         ]);
         

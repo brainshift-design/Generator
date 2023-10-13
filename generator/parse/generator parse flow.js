@@ -274,6 +274,52 @@ function genParseExtract(parse)
 
 
 
+function genParseExtractParam(parse)
+{
+    const [, nodeId, options, ignore] = genParseNodeStart(parse);
+
+
+    const extr = new GExtractParam(nodeId, options);
+   
+
+    let nInputs = -1;
+    
+    if (!ignore)
+    {
+        nInputs = parseInt(parse.move());
+        consoleAssert(nInputs == 0 || nInputs == 1, 'nInputs must be [0, 1]');
+    }
+
+    
+    if (parse.settings.logRequests) 
+        logReq(extr, parse, ignore, nInputs);
+
+
+    if (ignore) 
+    {
+        genParseNodeEnd(parse, extr);
+        return parse.parsedNodes.find(n => n.nodeId == nodeId);
+    }
+
+
+    parse.nTab++;
+
+
+    if (nInputs == 1)
+        extr.input = genParse(parse);
+
+    extr.param = genParse(parse);
+
+    
+    parse.nTab--;
+
+
+    genParseNodeEnd(parse, extr);
+    return extr;
+}
+
+
+
 function genParseSublist(parse)
 {
     const [, nodeId, options, ignore] = genParseNodeStart(parse);
@@ -443,7 +489,8 @@ function genParseSort(parse)
     if (nInputs == 1)
         sort.input = genParse(parse);
 
-    sort.column  = genParse(parse);
+    sort.order  = genParse(parse);
+    //sort.column  = genParse(parse);
     sort.reverse = genParse(parse);
 
     

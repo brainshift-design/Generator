@@ -22,6 +22,7 @@ function createNode(nodeType, creatingButton = null, createdNodeId = -1, options
         case CONTAINS:                node = new OpContains();          break;
         case IF_ELSE:                 node = new OpIfElse();            break;
         case EXTRACT:                 node = new OpExtract();           break;
+        case EXTRACT_PARAM:           node = new OpExtractParam();      break;
         case SUBLIST:                 node = new OpSublist();           break;
         case UNIQUE:                  node = new OpUnique();            break;
         case REVERSE_LIST:            node = new OpReverseList();       break;

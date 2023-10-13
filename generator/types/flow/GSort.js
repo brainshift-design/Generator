@@ -1,8 +1,11 @@
 class GSort
 extends GOperator1
 {
-    column  = null;
+    order   = null;
+    //column  = null;
     reverse = null;
+
+    firstSortNode = null;
 
 
     
@@ -19,7 +22,8 @@ extends GOperator1
 
         copy.copyBase(this);
 
-        if (this.column ) copy.column  = this.column .copy();
+        if (this.order  ) copy.order   = this.order  .copy();
+        //if (this.column ) copy.column  = this.column .copy();
         if (this.reverse) copy.reverse = this.reverse.copy();
 
         return copy;
@@ -33,7 +37,8 @@ extends GOperator1
             return this;
 
 
-        const column  = this.column  ? (await this.column .eval(parse)).toValue() : null;
+        //const order   = this.order   ? (await this.order  .eval(parse)).toValue() : null;
+        //const column  = this.column  ? (await this.column .eval(parse)).toValue() : null;
         const reverse = this.reverse ? (await this.reverse.eval(parse)).toValue() : null;
 
         
@@ -43,7 +48,7 @@ extends GOperator1
 
         
         if (   this.input
-            && column
+            //&& column
             && reverse)
         {
             const input = (await this.input.eval(parse)).toValue();
@@ -53,8 +58,8 @@ extends GOperator1
 
             input.items.sort((a, b) => 
             {
-                const ca = a ? (isListType(a.type) ? a.items[column.value].value : a.value) : 0;
-                const cb = b ? (isListType(b.type) ? b.items[column.value].value : b.value) : 0;
+                const ca = 0;//a ? (isListType(a.type) ? a.items[column.value].value : a.value) : 0;
+                const cb = 0;//b ? (isListType(b.type) ? b.items[column.value].value : b.value) : 0;
 
                 if (ca < cb) return -1 * reverseMultiplier;
                 if (ca > cb) return  1 * reverseMultiplier;
@@ -87,9 +92,9 @@ extends GOperator1
         [
             ['preview', preview                                 ],
             ['type',    this.outputListType()                   ],
-            ['length',  new NumberValue(this.value.items.length)],
-            ['columns', new NumberValue(maxColumns)             ],
-            ['column',  column                                  ],
+            //['length',  new NumberValue(this.value.items.length)],
+            //['columns', new NumberValue(maxColumns)             ],
+            //['column',  column                                  ],
             ['reverse', reverse                                 ]
         ]);
         
@@ -104,7 +109,8 @@ extends GOperator1
     isValid()
     {
         return super.isValid()
-            && this.column  && this.column .isValid()
+            && this.order   && this.order  .isValid()
+            //&& this.column && this.column.isValid()
             && this.reverse && this.reverse.isValid();
     }
 
@@ -114,7 +120,8 @@ extends GOperator1
     {
         super.pushValueUpdates(parse);
 
-        if (this.column ) this.column .pushValueUpdates(parse);
+        if (this.order  ) this.order  .pushValueUpdates(parse);
+        //if (this.column) this.column.pushValueUpdates(parse);
         if (this.reverse) this.reverse.pushValueUpdates(parse);
     }
 
@@ -124,7 +131,8 @@ extends GOperator1
     {
         super.invalidateInputs(parse, from);
 
-        if (this.column ) this.column .invalidateInputs(parse, from);
+        if (this.order  ) this.order  .invalidateInputs(parse, from);
+        //if (this.column) this.column.invalidateInputs(parse, from);
         if (this.reverse) this.reverse.invalidateInputs(parse, from);
     }
 
@@ -134,7 +142,8 @@ extends GOperator1
     {
         super.iterateLoop(parse);
 
-        if (this.column ) this.column .iterateLoop(parse);
+        if (this.order  ) this.order  .iterateLoop(parse);
+        //if (this.column) this.column.iterateLoop(parse);
         if (this.reverse) this.reverse.iterateLoop(parse);
     }
 }

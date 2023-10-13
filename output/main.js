@@ -552,6 +552,7 @@ const VALUE_NAME = 'VNAME';
 const COMBINE = 'CMB';
 const CONDENSE = 'CDENSE';
 const EXTRACT = 'EXTR';
+const EXTRACT_PARAM = 'EXTRP';
 const SUBLIST = 'SUBLST';
 const UNIQUE = 'UNIQ';
 const REVERSE_LIST = 'REVLST';
@@ -573,6 +574,7 @@ const LIST_TYPES = [
     SHAPE_LIST_VALUE,
     COMBINE,
     EXTRACT,
+    EXTRACT_PARAM,
     SUBLIST,
     LIST,
     LIST_COUNT,
@@ -592,6 +594,7 @@ const FLOW_TYPES = [
     ...LIST_TYPES,
     CONDENSE,
     EXTRACT,
+    EXTRACT_PARAM,
     SUBLIST,
     UNIQUE,
     REVERSE_LIST,

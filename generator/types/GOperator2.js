@@ -25,6 +25,14 @@ extends GOperator
 
 
 
+    inputNameFromNode(node)
+    {
+        return this.input0 && this.input0.nodeId == node.nodeId
+            || this.input1 && this.input1.nodeId == node.nodeId;
+    }
+
+
+
     isValid()
     {
         return this.input0 && this.input0.isValid()

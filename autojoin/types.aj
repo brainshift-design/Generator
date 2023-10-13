@@ -80,6 +80,7 @@
 ../generator/types/flow/GCombine.js
 ../generator/types/flow/GCondense.js
 ../generator/types/flow/GExtract.js
+../generator/types/flow/GExtractParam.js
 ../generator/types/flow/GSublist.js
 ../generator/types/flow/GUnique.js
 ../generator/types/flow/GReverseList.js
