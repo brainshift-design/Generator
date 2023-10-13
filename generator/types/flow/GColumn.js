@@ -66,7 +66,10 @@ extends GOperator1
                 }
             }
             else if (isListType(input.type))
+            {
                 this.value = input.copy();
+                maxColumns = 1;
+            }
         }
 
 

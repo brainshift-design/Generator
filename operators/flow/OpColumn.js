@@ -74,8 +74,10 @@ extends OperatorBase
 
         this.columnLength = length ? length.value : 0;
 
-        if (columns.value > 0)
-            this.paramIndex.controls[0].setMax(columns.value-1);
+        if (columns.value > 1)
+            this.paramIndex.controls[0].setMax(columns.value-1, columns.value-1);
+        else if (columns.value == 1)
+            this.paramIndex.controls[0].setMax(0, 0);
         else
             this.paramIndex.controls[0].setMax();
     }

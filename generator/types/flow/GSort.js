@@ -1,8 +1,8 @@
 class GSort
 extends GOperator1
 {
-    order   = null;
-    //column  = null;
+    //order   = null;
+    column  = null;
     reverse = null;
 
     firstSortNode = null;
@@ -22,8 +22,8 @@ extends GOperator1
 
         copy.copyBase(this);
 
-        if (this.order  ) copy.order   = this.order  .copy();
-        //if (this.column ) copy.column  = this.column .copy();
+        //if (this.order  ) copy.order   = this.order  .copy();
+        if (this.column ) copy.column  = this.column .copy();
         if (this.reverse) copy.reverse = this.reverse.copy();
 
         return copy;
@@ -38,7 +38,6 @@ extends GOperator1
 
 
         //const order   = this.order   ? (await this.order  .eval(parse)).toValue() : null;
-        //const column  = this.column  ? (await this.column .eval(parse)).toValue() : null;
         const reverse = this.reverse ? (await this.reverse.eval(parse)).toValue() : null;
 
         
@@ -48,11 +47,11 @@ extends GOperator1
 
         
         if (   this.input
-            //&& column
+            && this.column
             && reverse)
         {
-            const input = (await this.input.eval(parse)).toValue();
-
+            const input  = (await this.input .eval(parse)).toValue();
+            let   column = (await this.column.eval(parse)).toValue();
             
             const reverseMultiplier = reverse.value > 0 ? -1 : 1;
 
@@ -109,8 +108,8 @@ extends GOperator1
     isValid()
     {
         return super.isValid()
-            && this.order   && this.order  .isValid()
-            //&& this.column && this.column.isValid()
+            //&& this.order   && this.order  .isValid()
+            && this.column  && this.column .isValid()
             && this.reverse && this.reverse.isValid();
     }
 
@@ -120,8 +119,8 @@ extends GOperator1
     {
         super.pushValueUpdates(parse);
 
-        if (this.order  ) this.order  .pushValueUpdates(parse);
-        //if (this.column) this.column.pushValueUpdates(parse);
+        //if (this.order  ) this.order  .pushValueUpdates(parse);
+        if (this.column ) this.column .pushValueUpdates(parse);
         if (this.reverse) this.reverse.pushValueUpdates(parse);
     }
 
@@ -131,8 +130,8 @@ extends GOperator1
     {
         super.invalidateInputs(parse, from);
 
-        if (this.order  ) this.order  .invalidateInputs(parse, from);
-        //if (this.column) this.column.invalidateInputs(parse, from);
+        //if (this.order  ) this.order  .invalidateInputs(parse, from);
+        if (this.column ) this.column .invalidateInputs(parse, from);
         if (this.reverse) this.reverse.invalidateInputs(parse, from);
     }
 
@@ -142,8 +141,8 @@ extends GOperator1
     {
         super.iterateLoop(parse);
 
-        if (this.order  ) this.order  .iterateLoop(parse);
-        //if (this.column) this.column.iterateLoop(parse);
+        //if (this.order  ) this.order  .iterateLoop(parse);
+        if (this.column ) this.column .iterateLoop(parse);
         if (this.reverse) this.reverse.iterateLoop(parse);
     }
 }
