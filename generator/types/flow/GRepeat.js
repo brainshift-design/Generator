@@ -145,6 +145,8 @@ extends GOperator1
                                     obj.objectId    = obj.objectId + OBJECT_SEPARATOR + this.nodeId + ':' + (o+1).toString();
                                     obj.objectName += ' ' + (o+1).toString();
 
+                                    obj.itemIndex   = repeat.iteration;
+
                                     if (this.value.objects)
                                         this.value.objects.push(obj);
                                 }

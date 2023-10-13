@@ -42,6 +42,12 @@ extends GOperator1
 
         this.value.objects = getValidObjects(this.input.value);
         
+        if (isListType(this.value.type))
+        {
+            for (let i = 0; i < this.value.items.length; i++)
+                this.value.items[i].objects = this.value.objects.filter(o => o.itemIndex == i);
+        }
+
 
         const bounds = getObjBounds(this.value.objects);
         const xform  = getXform();
@@ -61,7 +67,7 @@ extends GOperator1
                 obj.scaleStyle   *= Math.abs(scaleStyle  );
 
                 
-                if (obj.type == TEXT_SHAPE
+                if (   obj.type == TEXT_SHAPE
                     && xform[0][0] > 0
                     && xform[1][1] > 0)
                 {

@@ -5566,7 +5566,8 @@ class FigmaObject
     objectId   = NULL;
     objectName = NULL;
 
-    inputIndex = -1; // for unique object IDs
+    itemIndex  = -1; // for linking objects to list items
+    //inputIndex = -1; // for unique object IDs
 
     retain     = 0;
     feedback   = false;
@@ -5605,7 +5606,8 @@ class FigmaObject
 
     copyBase(base)
     {
-        this.inputIndex   = base.inputIndex;
+        this.itemIndex    = base.itemIndex;
+        //this.inputIndex   = base.inputIndex;
         
         this.feedback     = base.feedback;
         this.retain       = base.retain;
@@ -15018,6 +15020,8 @@ extends GOperator1
                                     obj.objectId    = obj.objectId + OBJECT_SEPARATOR + this.nodeId + ':' + (o+1).toString();
                                     obj.objectName += ' ' + (o+1).toString();
 
+                                    obj.itemIndex   = repeat.iteration;
+
                                     if (this.value.objects)
                                         this.value.objects.push(obj);
                                 }
@@ -16059,7 +16063,10 @@ extends GOperator
             }
 
 
-            this.value.objects.push(...this.copyObjects(input, i));
+            const inputObjects = this.copyObjects(input, i);
+            inputObjects.forEach(o => o.itemIndex = i);
+
+            this.value.objects.push(inputObjects);
         }
 
 
@@ -33203,6 +33210,12 @@ extends GOperator1
         {
             this.value.objects = getValidObjects(this.input.value);
 
+            if (isListType(this.value.type))
+            {
+                for (let i = 0; i < this.value.items.length; i++)
+                    this.value.items[i].objects = this.value.objects.filter(o => o.itemIndex == i);
+            }
+    
             
             const bounds = getObjBounds(this.value.objects);
 
@@ -33376,6 +33389,12 @@ extends GOperator1
 
         this.value.objects = getValidObjects(this.input.value);
         
+        if (isListType(this.value.type))
+        {
+            for (let i = 0; i < this.value.items.length; i++)
+                this.value.items[i].objects = this.value.objects.filter(o => o.itemIndex == i);
+        }
+
 
         const bounds = getObjBounds(this.value.objects);
         const xform  = getXform();
@@ -33395,7 +33414,7 @@ extends GOperator1
                 obj.scaleStyle   *= Math.abs(scaleStyle  );
 
                 
-                if (obj.type == TEXT_SHAPE
+                if (   obj.type == TEXT_SHAPE
                     && xform[0][0] > 0
                     && xform[1][1] > 0)
                 {

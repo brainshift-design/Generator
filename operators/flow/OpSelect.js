@@ -90,8 +90,13 @@ extends OperatorBase
         
         this.paramIndex.enableControlText(true, this.paramIndex.isUnknown());
 
-        this.paramIndex.controls[0].setMin(Math.min(0, -this.length.value+1));
-        this.paramIndex.controls[0].setMax(Math.max(0,  this.length.value-1));
+
+        const min = Math.min(0, -this.length.value+1);
+        const max = Math.max(0,  this.length.value-1);
+
+        this.paramIndex.controls[0].setMin(0, min);
+        this.paramIndex.controls[0].setMax(max, max);
+
 
         this.updateParamControls();
     }
