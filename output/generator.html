@@ -31120,17 +31120,29 @@ extends GShape
         {
             input = (await this.input.eval(parse)).toValue();
 
-            
-            consoleAssert(
-                input.points.items.length == input.points.objects.length,
-                'Vector path points input item count must match object count');
 
-            for (let i = 0; i < input.points.items.length; i++)
+            if (   input
+                && input.points
+                && input.points.items
+                && input.points.objects)
             {
-                input.points.items[i].x = new NumberValue(input.points.objects[i].x);
-                input.points.items[i].y = new NumberValue(input.points.objects[i].y);
+                consoleAssert(
+                    input.points.items.length == input.points.objects.length,
+                    'Vector path points input item count must match object count');
+
+                for (let i = 0; i < input.points.items.length; i++)
+                {
+                    const item = input.points.items  [i];
+                    const obj  = input.points.objects[i];
+
+                    if (item && obj)
+                    {
+                        item.x = new NumberValue(obj.x);
+                        item.y = new NumberValue(obj.y);
+                    }
+                }
             }
-            
+
 
             this.value = new VectorPathValue(
                 this.nodeId,
