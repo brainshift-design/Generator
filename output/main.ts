@@ -1818,7 +1818,7 @@ const FO_MASK           = 22;
 
 const FO_X              = 23;                                                                                                                                                                                                         const FO_GROUP_CHILDREN = 23;
 const FO_Y              = 24;                                    
-const FO_WIDTH          = 25;   const FO_POINT_IS_CENTER = 23;   
+const FO_WIDTH          = 25;   const FO_POINT_IS_CENTER = 25;   
 const FO_HEIGHT         = 26;                                    
 
 const FO_RECT_ROUND     = 27;   const FO_ELLIPSE_FROM    = 27;   const FO_VECTOR_NETWORK_DATA = 27;   const FO_VECTOR_PATH_DATA    = 27;   const FO_POLY_ROUND   = 27;   const FO_STAR_ROUND  = 27;   const FO_FIG_WIDTH      = 27;   const FO_FRAME_ROUND    = 27;
@@ -3753,7 +3753,7 @@ const figDecoObjects  = [];
 
 
 
-function getObjectEffects(objType, genObjEffects)
+function getObjectEffects(genObjEffects, canSpread)
 {
     const effects = [];
 
@@ -3789,8 +3789,7 @@ function getObjectEffects(objType, genObjEffects)
                     && !isNaN(color.a)
                     && !isNaN(offset.x)
                     && !isNaN(offset.y)
-                    && !isNaN(radius)
-                    && !isNaN(spread))
+                    && !isNaN(radius))
                 {
                     effects.push(
                     {
@@ -3803,8 +3802,9 @@ function getObjectEffects(objType, genObjEffects)
                         showShadowBehindNode: behind
                     });
 
-                    if (objType == 'TEXT')
-                        effects.push({spread: spread});
+                    if (    canSpread
+                        && !isNaN(spread))
+                        effects[effects.length-1]['spread'] = spread;
                 }
 
                 break;
@@ -4044,7 +4044,14 @@ function setObjectEffects(figObj, genObj)
 {
     if (  !!genObj[FO_EFFECTS]
         && !isEmpty(genObj[FO_EFFECTS]))
-        figObj.effects = getObjectEffects(genObj[FO_TYPE], genObj[FO_EFFECTS]);
+    {
+        const canSpread =
+               genObj[FO_TYPE] == RECTANGLE
+            || genObj[FO_TYPE] == ELLIPSE
+            || genObj[FO_TYPE] == FRAME;
+
+        figObj.effects = getObjectEffects(genObj[FO_EFFECTS], canSpread);
+    }
     else
         figObj.effects = [];
 }
@@ -5045,13 +5052,8 @@ function updatePointStyles(figPoint)
 
     const effects = [];
     
-    effects.push(...getObjectEffects(
-        'ELLIPSE', 
-        [['DROP_SHADOW', border[0]/255, border[1]/255, border[2]/255,  1, 0, 0, 0, (isCenter ? 3 : isSelected ? 5 : 3.6)/curZoom, 'NORMAL', true, true]]));
-    
-    effects.push(...getObjectEffects(
-        'ELLIPSE', 
-        [['DROP_SHADOW', color[0]/255, color[1]/255, color[2]/255, 1, 0, 0, 0, (isSelected ? 4 : 2.4)/curZoom, 'NORMAL', true, true]]));
+    effects.push(...getObjectEffects([['DROP_SHADOW', border[0]/255, border[1]/255, border[2]/255,  1, 0, 0, 0, (isCenter ? 3 : isSelected ? 5 : 3.6)/curZoom, 'NORMAL', true, true]], true));
+    effects.push(...getObjectEffects([['DROP_SHADOW', color[0]/255, color[1]/255, color[2]/255, 1, 0, 0, 0, (isSelected ? 4 : 2.4)/curZoom, 'NORMAL', true, true]], true));
 
 
     figPoint.effects = effects;

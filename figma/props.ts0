@@ -3,7 +3,7 @@ const figDecoObjects  = [];
 
 
 
-function getObjectEffects(objType, genObjEffects)
+function getObjectEffects(genObjEffects, canSpread)
 {
     const effects = [];
 
@@ -39,8 +39,7 @@ function getObjectEffects(objType, genObjEffects)
                     && !isNaN(color.a)
                     && !isNaN(offset.x)
                     && !isNaN(offset.y)
-                    && !isNaN(radius)
-                    && !isNaN(spread))
+                    && !isNaN(radius))
                 {
                     effects.push(
                     {
@@ -53,8 +52,9 @@ function getObjectEffects(objType, genObjEffects)
                         showShadowBehindNode: behind
                     });
 
-                    if (objType == 'TEXT')
-                        effects.push({spread: spread});
+                    if (    canSpread
+                        && !isNaN(spread))
+                        effects[effects.length-1]['spread'] = spread;
                 }
 
                 break;
@@ -294,7 +294,14 @@ function setObjectEffects(figObj, genObj)
 {
     if (  !!genObj[FO_EFFECTS]
         && !isEmpty(genObj[FO_EFFECTS]))
-        figObj.effects = getObjectEffects(genObj[FO_TYPE], genObj[FO_EFFECTS]);
+    {
+        const canSpread =
+               genObj[FO_TYPE] == RECTANGLE
+            || genObj[FO_TYPE] == ELLIPSE
+            || genObj[FO_TYPE] == FRAME;
+
+        figObj.effects = getObjectEffects(genObj[FO_EFFECTS], canSpread);
+    }
     else
         figObj.effects = [];
 }

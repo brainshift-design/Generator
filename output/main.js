@@ -1169,7 +1169,7 @@ const FO_X = 23;
 const FO_GROUP_CHILDREN = 23;
 const FO_Y = 24;
 const FO_WIDTH = 25;
-const FO_POINT_IS_CENTER = 23;
+const FO_POINT_IS_CENTER = 25;
 const FO_HEIGHT = 26;
 const FO_RECT_ROUND = 27;
 const FO_ELLIPSE_FROM = 27;
@@ -2513,7 +2513,7 @@ function clearObjectData(figObj) {
 }
 const figEmptyObjects = [];
 const figDecoObjects = [];
-function getObjectEffects(objType, genObjEffects) {
+function getObjectEffects(genObjEffects, canSpread) {
     const effects = [];
     for (const effect of genObjEffects) {
         const type = effect[0];
@@ -2541,8 +2541,7 @@ function getObjectEffects(objType, genObjEffects) {
                         && !isNaN(color.a)
                         && !isNaN(offset.x)
                         && !isNaN(offset.y)
-                        && !isNaN(radius)
-                        && !isNaN(spread)) {
+                        && !isNaN(radius)) {
                         effects.push({
                             type: type,
                             color: color,
@@ -2552,8 +2551,9 @@ function getObjectEffects(objType, genObjEffects) {
                             blendMode: blend,
                             showShadowBehindNode: behind
                         });
-                        if (objType == 'TEXT')
-                            effects.push({ spread: spread });
+                        if (canSpread
+                            && !isNaN(spread))
+                            effects[effects.length - 1]['spread'] = spread;
                     }
                     break;
                 }
@@ -2716,8 +2716,12 @@ function setObjectStroke_(figObj, fills, weight, align, join, miterLimit, cap, d
 }
 function setObjectEffects(figObj, genObj) {
     if (!!genObj[FO_EFFECTS]
-        && !isEmpty(genObj[FO_EFFECTS]))
-        figObj.effects = getObjectEffects(genObj[FO_TYPE], genObj[FO_EFFECTS]);
+        && !isEmpty(genObj[FO_EFFECTS])) {
+        const canSpread = genObj[FO_TYPE] == RECTANGLE
+            || genObj[FO_TYPE] == ELLIPSE
+            || genObj[FO_TYPE] == FRAME;
+        figObj.effects = getObjectEffects(genObj[FO_EFFECTS], canSpread);
+    }
     else
         figObj.effects = [];
 }
@@ -3294,8 +3298,8 @@ function updatePointStyles(figPoint) {
             : [12, 140, 233];
     figPoint.fills = getObjectFills([['SOLID', color[0], color[1], color[2], 100]]);
     const effects = [];
-    effects.push(...getObjectEffects('ELLIPSE', [['DROP_SHADOW', border[0] / 255, border[1] / 255, border[2] / 255, 1, 0, 0, 0, (isCenter ? 3 : isSelected ? 5 : 3.6) / curZoom, 'NORMAL', true, true]]));
-    effects.push(...getObjectEffects('ELLIPSE', [['DROP_SHADOW', color[0] / 255, color[1] / 255, color[2] / 255, 1, 0, 0, 0, (isSelected ? 4 : 2.4) / curZoom, 'NORMAL', true, true]]));
+    effects.push(...getObjectEffects([['DROP_SHADOW', border[0] / 255, border[1] / 255, border[2] / 255, 1, 0, 0, 0, (isCenter ? 3 : isSelected ? 5 : 3.6) / curZoom, 'NORMAL', true, true]], true));
+    effects.push(...getObjectEffects([['DROP_SHADOW', color[0] / 255, color[1] / 255, color[2] / 255, 1, 0, 0, 0, (isSelected ? 4 : 2.4) / curZoom, 'NORMAL', true, true]], true));
     figPoint.effects = effects;
 }
 function genPolygonIsValid(genPoly) {
