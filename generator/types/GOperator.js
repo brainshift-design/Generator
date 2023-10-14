@@ -126,13 +126,6 @@ extends GNode
 
 
 
-    hasInputFrom(node)
-    {
-        return false;
-    }
-
-    
-
     invalidateInputs(parse, from)
     {
         super.invalidateInputs(parse, from);

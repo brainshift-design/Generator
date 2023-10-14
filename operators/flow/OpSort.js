@@ -32,7 +32,6 @@ extends OperatorBase
 
         //this.paramOrder.valueText = 'order';
         this.paramColumn.valueText   = 'column';
-        this.paramColumn.input.types = [LIST_VALUE, NUMBER_LIST_VALUE];
 
         this.menuBoolReverse = createBoolMenu(this.paramReverse);
     }

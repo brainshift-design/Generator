@@ -24,6 +24,7 @@ const pageTag          = 'G_PAGE';
 const tempTag          = 'G_TEMP';
 
 
+
 const identity = Object.freeze(
     [[1, 0, 0],
      [0, 1, 0],
@@ -8091,12 +8092,22 @@ class GNode
 
     copyBase(base)
     {
-        this.data     = clone(base.data   );
-
+        //this.data     = clone(base.data);
         this.uniqueId = base.uniqueId;
     }
 
 
+
+    getOrderNode()
+    {
+        if (   this.input
+            && this.input.getOrderNode)
+            return this.input.getOrderNode();
+        
+        return this;
+    }
+
+    
 
     toValue()
     {
@@ -8567,13 +8578,6 @@ extends GNode
 
 
 
-    hasInputFrom(node)
-    {
-        return false;
-    }
-
-    
-
     invalidateInputs(parse, from)
     {
         super.invalidateInputs(parse, from);
@@ -8704,14 +8708,6 @@ extends GOperator
         return super.isCached()
             && (  !this.input 
                 || this.input.isCached());
-    }
-
-
-
-    hasInputFrom(node)
-    {
-        return this.input
-            && this.input.nodeId == node.nodeId;
     }
 
 
@@ -8851,6 +8847,15 @@ extends GOperator
         copy.node = this.node;
     
         return copy;
+    }
+
+
+
+    getOrderNode()
+    {
+        return this.node
+             ? this.node.getOrderNode()
+             : null;
     }
 
 
@@ -16890,7 +16895,7 @@ extends GOperator1
         //const order   = this.order   ? (await this.order  .eval(parse)).toValue() : null;
         const reverse = this.reverse ? (await this.reverse.eval(parse)).toValue() : null;
 
-        
+
         this.value = new ListValue();
 
         let maxColumns = 0;
@@ -16900,35 +16905,57 @@ extends GOperator1
             && this.column
             && reverse)
         {
-            const input  = (await this.input .eval(parse)).toValue();
-            let   column = (await this.column.eval(parse)).toValue();
-            
-            const reverseMultiplier = reverse.value > 0 ? -1 : 1;
+            const input = (await this.input .eval(parse)).toValue();
 
-            input.items.sort((a, b) => 
+
+            if (   input 
+                && this.column
+                && this.column.getOrderNode)
             {
-                const ca = 0;//a ? (isListType(a.type) ? a.items[column.value].value : a.value) : 0;
-                const cb = 0;//b ? (isListType(b.type) ? b.items[column.value].value : b.value) : 0;
-
-                if (ca < cb) return -1 * reverseMultiplier;
-                if (ca > cb) return  1 * reverseMultiplier;
-
-                return 0;
-            });
+                const column    = (await this.column.eval(parse)).toValue(); // must be done for getOrderNode() to work
+                const orderNode = this.column.getOrderNode(parse);
 
 
-            input.items.forEach(i => maxColumns = Math.max(maxColumns, isListType(i.type) ? i.items.length : 1));
-
-            for (let i = 0; i < input.items.length; i++)
-            {
-                const row = input.items[i];
-                this.value.items.push(row.copy());
-
-                if (   row.objects
-                    && this.value.objects)
+                if (orderNode)
                 {
-                    row.objects.forEach(o => o.itemIndex = i);
-                    this.value.objects.push(...row.objects);
+                    const reverseMultiplier = reverse.value > 0 ? -1 : 1;
+
+                    input.items.sort(async (a, b) => 
+                    {
+                        // console.log('a =', a);
+                        // console.log('b =', b);
+
+                        orderNode.input = a; this.column.invalidateInputs(parse, this); 
+                        const ca = (await this.column.eval(parse)).toValue().value;//0;//a ? (isListType(a.type) ? a.items[column.value].value : a.value) : 0;
+                        
+                        orderNode.input = b; this.column.invalidateInputs(parse, this); 
+                        const cb = (await this.column.eval(parse)).toValue().value;//0;//b ? (isListType(b.type) ? b.items[column.value].value : b.value) : 0;
+
+                        console.log('ca =', ca);
+                        console.log('cb =', cb);
+                        console.log('');
+
+                        if (ca < cb) return -1 * reverseMultiplier;
+                        if (ca > cb) return  1 * reverseMultiplier;
+
+                        return 0;
+                    });
+
+
+                    input.items.forEach(i => maxColumns = Math.max(maxColumns, isListType(i.type) ? i.items.length : 1));
+
+                    for (let i = 0; i < input.items.length; i++)
+                    {
+                        const row = input.items[i];
+                        this.value.items.push(row.copy());
+
+                        if (   row.objects
+                            && this.value.objects)
+                        {
+                            row.objects.forEach(o => o.itemIndex = i);
+                            this.value.objects.push(...row.objects);
+                        }
+                    }
                 }
             }
         }
@@ -17966,6 +17993,25 @@ extends GOperator
 
 
 
+    getOrderNode()
+    {
+        const orderNodes = [];
+
+        for (const input of this.inputs)
+        {
+            const orderNode = input.getOrderNode();
+            if (orderNode) orderNodes.push(orderNode);            
+        }
+
+        console.assert(orderNodes.length < 2, 'Error: sort order requires not more than one order node');
+        
+        return orderNodes.length == 1
+             ? orderNodes[0]
+             : null;
+    }
+
+
+
     isCached()
     {
         for (const input of this.inputs)
@@ -18340,6 +18386,7 @@ extends GArithmetic
             op.value = Math.min(Math.max(0, op.value), MATH_OPS.length-1);
         
         this.value = await evalMinMaxInputs(this.inputs, op.value, parse);
+        console.log('this.inputs =', [...this.inputs]);
 
         
         this.setUpdateValues(parse,

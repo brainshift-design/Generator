@@ -40,7 +40,7 @@ extends GOperator1
         //const order   = this.order   ? (await this.order  .eval(parse)).toValue() : null;
         const reverse = this.reverse ? (await this.reverse.eval(parse)).toValue() : null;
 
-        
+
         this.value = new ListValue();
 
         let maxColumns = 0;
@@ -50,35 +50,57 @@ extends GOperator1
             && this.column
             && reverse)
         {
-            const input  = (await this.input .eval(parse)).toValue();
-            let   column = (await this.column.eval(parse)).toValue();
-            
-            const reverseMultiplier = reverse.value > 0 ? -1 : 1;
+            const input = (await this.input .eval(parse)).toValue();
 
-            input.items.sort((a, b) => 
+
+            if (   input 
+                && this.column
+                && this.column.getOrderNode)
             {
-                const ca = 0;//a ? (isListType(a.type) ? a.items[column.value].value : a.value) : 0;
-                const cb = 0;//b ? (isListType(b.type) ? b.items[column.value].value : b.value) : 0;
-
-                if (ca < cb) return -1 * reverseMultiplier;
-                if (ca > cb) return  1 * reverseMultiplier;
-
-                return 0;
-            });
+                const column    = (await this.column.eval(parse)).toValue(); // must be done for getOrderNode() to work
+                const orderNode = this.column.getOrderNode(parse);
 
 
-            input.items.forEach(i => maxColumns = Math.max(maxColumns, isListType(i.type) ? i.items.length : 1));
-
-            for (let i = 0; i < input.items.length; i++)
-            {
-                const row = input.items[i];
-                this.value.items.push(row.copy());
-
-                if (   row.objects
-                    && this.value.objects)
+                if (orderNode)
                 {
-                    row.objects.forEach(o => o.itemIndex = i);
-                    this.value.objects.push(...row.objects);
+                    const reverseMultiplier = reverse.value > 0 ? -1 : 1;
+
+                    input.items.sort(async (a, b) => 
+                    {
+                        // console.log('a =', a);
+                        // console.log('b =', b);
+
+                        orderNode.input = a; this.column.invalidateInputs(parse, this); 
+                        const ca = (await this.column.eval(parse)).toValue().value;//0;//a ? (isListType(a.type) ? a.items[column.value].value : a.value) : 0;
+                        
+                        orderNode.input = b; this.column.invalidateInputs(parse, this); 
+                        const cb = (await this.column.eval(parse)).toValue().value;//0;//b ? (isListType(b.type) ? b.items[column.value].value : b.value) : 0;
+
+                        console.log('ca =', ca);
+                        console.log('cb =', cb);
+                        console.log('');
+
+                        if (ca < cb) return -1 * reverseMultiplier;
+                        if (ca > cb) return  1 * reverseMultiplier;
+
+                        return 0;
+                    });
+
+
+                    input.items.forEach(i => maxColumns = Math.max(maxColumns, isListType(i.type) ? i.items.length : 1));
+
+                    for (let i = 0; i < input.items.length; i++)
+                    {
+                        const row = input.items[i];
+                        this.value.items.push(row.copy());
+
+                        if (   row.objects
+                            && this.value.objects)
+                        {
+                            row.objects.forEach(o => o.itemIndex = i);
+                            this.value.objects.push(...row.objects);
+                        }
+                    }
                 }
             }
         }

@@ -30,6 +30,15 @@ extends GOperator
 
 
 
+    getOrderNode()
+    {
+        return this.node
+             ? this.node.getOrderNode()
+             : null;
+    }
+
+
+
     async eval(parse)
     {
         this.node = parse.parsedNodes.find(v => v.nodeId == this.nodeId);

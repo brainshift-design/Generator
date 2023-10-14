@@ -38,6 +38,7 @@ extends GArithmetic
             op.value = Math.min(Math.max(0, op.value), MATH_OPS.length-1);
         
         this.value = await evalMinMaxInputs(this.inputs, op.value, parse);
+        console.log('this.inputs =', [...this.inputs]);
 
         
         this.setUpdateValues(parse,

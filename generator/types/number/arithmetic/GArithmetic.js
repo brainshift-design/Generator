@@ -5,6 +5,25 @@ extends GOperator
 
 
 
+    getOrderNode()
+    {
+        const orderNodes = [];
+
+        for (const input of this.inputs)
+        {
+            const orderNode = input.getOrderNode();
+            if (orderNode) orderNodes.push(orderNode);            
+        }
+
+        console.assert(orderNodes.length < 2, 'Error: sort order requires not more than one order node');
+        
+        return orderNodes.length == 1
+             ? orderNodes[0]
+             : null;
+    }
+
+
+
     isCached()
     {
         for (const input of this.inputs)

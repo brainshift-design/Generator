@@ -45,12 +45,22 @@ class GNode
 
     copyBase(base)
     {
-        this.data     = clone(base.data   );
-
+        //this.data     = clone(base.data);
         this.uniqueId = base.uniqueId;
     }
 
 
+
+    getOrderNode()
+    {
+        if (   this.input
+            && this.input.getOrderNode)
+            return this.input.getOrderNode();
+        
+        return this;
+    }
+
+    
 
     toValue()
     {
