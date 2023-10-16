@@ -18,8 +18,8 @@ const rgbActiveTextLight   = hex2rgb('#F6C953');
 const rgbTextLight         = hex2rgb('#FBE6BE');
 
 
-const rgbActiveFlowDark    = hex2rgb('#8B8B8B');
-const rgbFlowDark          = hex2rgb('#aaa');
+const rgbActiveFlowDark    = hex2rgb('#ccc');
+const rgbFlowDark          = hex2rgb('#777');
 
 const rgbActiveNumberDark  = hex2rgb('#1785CE');
 const rgbNumberDark        = hex2rgb('#2B4E6E');
