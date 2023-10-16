@@ -120,6 +120,7 @@ function getPresetGraph(graphId)
         case 'paletteFromColor':     return presetPaletteFromColor;
         case 'colorSwatches':        return presetColorSwatches;
         case 'blurryBackgrounds':    return presetBlurryBackgrounds;
+        case 'brickWall':            return presetBrickWall;
 
 
         case 'shapesStyles':         return presetShapesStyles;
@@ -146,5 +147,6 @@ function getPresetGraph(graphId)
         case 'polarizedLights':      return presetPolarizedLights;
         case 'linesOfFire':          return presetLinesOfFire;
         case 'clouds':               return presetClouds;
+        case 'twistedTower':         return presetTwistedTower;
     }
 }
