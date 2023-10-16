@@ -6,11 +6,23 @@ extends GAffine
     affectCorners = null;
     affectStyle   = null;
 
-
+    
 
     constructor(nodeId, options)
     {
         super(SCALE, nodeId, options);
+    }
+
+
+
+    reset()
+    {
+        super.reset();
+
+        this.scaleX        = null;
+        this.scaleY        = null;
+        this.affectCorners = null;
+        this.affectStyle   = null;
     }
 
 

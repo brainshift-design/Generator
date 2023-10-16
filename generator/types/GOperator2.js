@@ -6,6 +6,16 @@ extends GOperator
 
 
 
+    reset()
+    {
+        super.reset();
+
+        this.input0 = null;
+        this.input1 = null;
+    }
+
+
+
     copyBase(base)
     {
         super.copyBase(base);

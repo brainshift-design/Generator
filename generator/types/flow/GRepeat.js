@@ -16,6 +16,19 @@ extends GOperator1
 
 
     
+    reset()
+    {
+        super.reset();
+
+        this.count  = null;
+        this._while = null;
+        this.loop   = null;
+
+        this.iterationObjects = [];
+    }
+
+
+
     copy()
     {
         const copy = new GRepeat(this.nodeId, this.options);
@@ -123,7 +136,7 @@ extends GOperator1
                     if (   input
                         && nRepeats > 0)
                     {
-                        this.value.items.push(input);//.copy());
+                        this.value.items.push(input);
 
 
                         if (   this.options.active

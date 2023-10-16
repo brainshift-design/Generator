@@ -15,6 +15,16 @@ extends GOperator1
 
 
     
+    reset()
+    {
+        super.reset();
+
+        this.order   = null;
+        this.reverse = null;
+    }
+
+
+
     copy()
     {
         const copy = new GSort(this.nodeId, this.options);
@@ -50,9 +60,10 @@ extends GOperator1
                 && this.order
                 && reverse)
             {
-                const input = (await this.input .eval(parse)).toValue();
+                const input = (await this.input.eval(parse)).toValue();
+                const order = (await this.order.eval(parse)).toValue();
 
-
+                
                 if (   input 
                     && this.order
                     && this.order.getOrderNode)
@@ -68,12 +79,12 @@ extends GOperator1
 
                         input.items = await asyncSort(
                             parse, 
-                            input.items, 
+                            unsorted, 
                             orderNode, 
                             this,
                             this.order, 
                             reverseMultiplier);
-
+                        
 
                         input.items.forEach(i => maxColumns = Math.max(maxColumns, isListType(i.type) ? i.items.length : 1));
                         
@@ -88,7 +99,7 @@ extends GOperator1
                             if (   row.objects
                                 && this.value.objects)
                             {
-                                const objects = input.objects.filter(o => o.itemIndex == itemIndex);
+                                const objects = input.objects.filter(o => o.itemIndex == itemIndex).map(o => o.copy());
                                 objects.forEach(o => o.itemIndex = i);
 
                                 this.value.objects.push(...objects);
@@ -110,11 +121,9 @@ extends GOperator1
 
         this.setUpdateValues(parse,
         [
-            ['preview', preview                                 ],
-            ['type',    this.outputListType()                   ],
-            //['length',  new NumberValue(this.value.items.length)],
-            //['columns', new NumberValue(maxColumns)             ],
-            ['reverse', reverse                                 ]
+            ['preview', preview              ],
+            ['type',    this.outputListType()],
+            ['reverse', reverse              ]
         ]);
         
 
@@ -172,12 +181,12 @@ async function asyncSort(parse, array, orderNode, node, order, reverseMultiplier
     for (const item of array)
     {
         const criterion = await getSortCriterion(parse, orderNode, node, order, item);
+        //console.log('criterion =', criterion);
         sorted.push({item, criterion});
     }
 
-    console.log('sorted =', sorted.map(i => i.criterion));
 
-    sorted.sort((a, b) => 
+    sorted.sort((a, b) =>
     {
         if (a.criterion < b.criterion) return -1 * reverseMultiplier;
         if (a.criterion > b.criterion) return  1 * reverseMultiplier;
@@ -193,12 +202,10 @@ async function asyncSort(parse, array, orderNode, node, order, reverseMultiplier
 
 async function getSortCriterion(parse, orderNode, node, order, item)
 {
-    orderNode.input = item;
+    orderNode.reset();
+
+    orderNode.input = item.copy();
     order.invalidateInputs(parse, node, true); 
 
-    console.log('item.value =', item.value);
-    const value = (await order.eval(parse)).toValue();
-    console.log('value =', value);
-
-    return value.value;
+    return (await order.eval(parse)).toValue().value;
 }

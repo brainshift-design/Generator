@@ -11,6 +11,15 @@ extends GOperator2
 
 
     
+    reset()
+    {
+        super.reset();
+
+        this.amount = null;
+    }
+
+
+
     copy()
     {
         const copy = new GInterpolate(this.nodeId, this.options);

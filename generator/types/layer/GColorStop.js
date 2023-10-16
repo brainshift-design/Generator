@@ -13,6 +13,16 @@ extends GOperator1
 
 
 
+    reset()
+    {
+        super.reset();
+
+        this.fill     = null;
+        this.position = null;
+    }
+
+
+
     copy()
     {
         const copy = new GColorStop(this.nodeId, this.options);

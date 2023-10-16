@@ -14,6 +14,16 @@ extends GOperator
 
 
 
+    reset()
+    {
+        super.reset();
+
+        this.input    = null;
+        this.dataType = null;
+    }
+
+
+
     copy()
     {
         const copy = new GGroupParam(this.nodeId, this.options);

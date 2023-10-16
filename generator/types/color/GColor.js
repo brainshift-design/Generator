@@ -12,7 +12,7 @@ extends GOperator1
     c3      = null;
 
     convert = null;
-
+    
     hasInputs;
 
 
@@ -22,8 +22,27 @@ extends GOperator1
         super(COLOR, nodeId, options);
     }
 
-
     
+    
+    reset()
+    {
+        super.reset();
+        
+        this.space   = null;
+        
+        this._c1     = null;
+        this._c2     = null;
+        this._c3     = null;
+        
+        this.c1      = null;
+        this.c2      = null;
+        this.c3      = null;
+    
+        this.convert = null;
+    }
+
+
+
     copy()
     {
         const copy = new GColor(this.nodeId, this.options);

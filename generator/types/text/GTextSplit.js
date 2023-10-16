@@ -12,7 +12,17 @@ extends GOperator1
     }
 
 
-    
+
+    reset()
+    {
+        super.reset();
+
+        this.value     = null;
+        this.separator = null;
+    }
+
+
+   
     copy()
     {
         const copy = new GTextSplit(this.nodeId, this.options);

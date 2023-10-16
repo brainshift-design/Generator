@@ -13,6 +13,16 @@ extends GOperator1
 
 
     
+    reset()
+    {
+        super.reset();
+
+        this.counts  = null;
+        this.indices = null;
+    }
+
+
+
     copy()
     {
         const copy = new GUnique(this.nodeId, this.options);

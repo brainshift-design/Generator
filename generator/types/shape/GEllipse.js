@@ -14,6 +14,17 @@ extends GShape
 
 
 
+    reset()
+    {
+        super.reset();
+
+        this.from  = null;
+        this.to    = null;
+        this.inner = null;
+    }
+
+
+
     copy()
     {
         const copy = new GEllipse(this.nodeId, this.options);

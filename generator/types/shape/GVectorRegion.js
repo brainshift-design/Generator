@@ -15,6 +15,18 @@ extends GShape
 
 
 
+    reset()
+    {
+        super.reset();
+
+        this.inputs  = [];
+
+        this.loops   = null;
+        this.winding = null;
+    }
+
+
+
     copy()
     {
         const copy = new GVectorRegion(this.nodeId, this.options);

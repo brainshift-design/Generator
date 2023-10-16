@@ -1,7 +1,7 @@
 class GTextToNumber
 extends GOperator1
 {
-    format;
+    format = null;
 
 
     
@@ -12,6 +12,15 @@ extends GOperator1
 
 
     
+    reset()
+    {
+        super.reset();
+
+        this.format = null;
+    }
+
+
+
     copy()
     {
         const copy = new GTextToNumber(this.nodeId, this.options);

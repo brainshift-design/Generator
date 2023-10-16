@@ -13,6 +13,16 @@ extends GOperator1
 
 
     
+    reset()
+    {
+        super.reset();
+
+        this.operation = null;
+        this.operand   = null;
+    }
+
+
+
     copy()
     {
         const copy = new GRound(this.nodeId, this.options);

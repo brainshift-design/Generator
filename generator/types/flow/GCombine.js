@@ -14,6 +14,15 @@ extends GOperator
 
 
     
+    reset()
+    {
+        super.reset();
+
+        this.inputs = [];
+    }
+
+
+
     copy()
     {
         const copy = new GCombine(this.nodeId, this.options);

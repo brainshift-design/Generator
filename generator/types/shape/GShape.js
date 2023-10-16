@@ -14,6 +14,16 @@ extends GShapeBase
 
 
 
+    reset()
+    {
+        super.reset();
+
+        this.input = null;
+        this.props = null;
+    }
+
+
+
     copyBase(base)
     {
         super.copyBase(base);
@@ -55,13 +65,15 @@ extends GShapeBase
         {
             if (this.input)
             {
+                // console.log('this.input =', this.input);
+
                 if (add)
                 {
                     this.value.props = new ListValue();
 
                     
-                    if (this.input.value.props.type == LIST_VALUE)
-                        this.value.props.items.push(...this.input.value.props.items);
+                    if (this.input.toValue().props.type == LIST_VALUE)
+                        this.value.props.items.push(...this.input.toValue().props.items);
                     else
                         this.value.props.items.push(...input.items);
                     
@@ -70,7 +82,7 @@ extends GShapeBase
                         this.value.props.items.push(...props.items);
                 }
                 else
-                    this.value.props = props ?? this.input.value.props;
+                    this.value.props = props ?? this.input.toValue().props;
             }
             else
                 this.value.props = props;

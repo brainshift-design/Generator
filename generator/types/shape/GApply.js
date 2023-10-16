@@ -12,6 +12,15 @@ extends GShape
 
 
 
+    reset()
+    {
+        super.reset();
+
+        this.replace = null;
+    }
+
+
+
     copy()
     {
         const copy = new GApply(this.nodeId, this.options);

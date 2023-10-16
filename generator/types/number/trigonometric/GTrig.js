@@ -12,6 +12,15 @@ extends GOperator1
 
 
     
+    reset()
+    {
+        super.reset();
+
+        this.function = null;
+    }
+
+
+
     copy()
     {
         const copy = new GTrig(this.nodeId, this.options);

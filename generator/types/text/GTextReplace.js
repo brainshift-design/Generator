@@ -1,9 +1,9 @@
 class GTextReplace
 extends GOperator1
 {
-    what;
-    with;
-    regex;
+    what  = null;
+    with  = null;
+    regex = null;
 
 
 
@@ -14,6 +14,17 @@ extends GOperator1
 
 
     
+    reset()
+    {
+        super.reset();
+
+        this.what  = null;
+        this.with  = null;
+        this.regex = null;
+    }
+
+
+
     copy()
     {
         const copy = new GTextReplace(this.nodeId, this.options);

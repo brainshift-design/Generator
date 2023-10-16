@@ -13,6 +13,16 @@ extends GOperator1
 
 
     
+    reset()
+    {
+        super.reset();
+
+        this.min = null;
+        this.max = null;
+    }
+
+
+
     copy()
     {
         const copy = new GLimits(this.nodeId, this.options);

@@ -15,6 +15,18 @@ extends GOperator
 
 
 
+    reset()
+    {
+        super.reset();
+        
+        this.x      = null;
+        this.y      = null;
+        this.width  = null;
+        this.height = null;
+    }
+
+
+
     copyBase(base)
     {
         super.copyBase(base);

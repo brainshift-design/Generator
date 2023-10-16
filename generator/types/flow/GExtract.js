@@ -12,6 +12,15 @@ extends GOperator1
 
 
     
+    reset()
+    {
+        super.reset();
+
+        this.indices = null;
+    }
+
+
+
     copy()
     {
         const copy = new GExtract(this.nodeId, this.options);

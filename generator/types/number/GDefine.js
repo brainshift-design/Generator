@@ -12,6 +12,15 @@ extends GOperator
 
 
     
+    reset()
+    {
+        super.reset();
+
+        this.input = [];
+    }
+
+
+
     copy()
     {
         const copy = new GDefine(this.nodeId, this.options);

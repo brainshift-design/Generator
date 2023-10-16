@@ -6,12 +6,25 @@ extends GOperator1
 
     startTangent = null;
     endTangent   = null;
-
-
-
+    
+    
+    
     constructor(nodeId, options)
     {
         super(VECTOR_EDGE, nodeId, options);
+    }
+
+
+
+    reset()
+    {
+        super.reset();
+        
+        this.input0       = null;
+        this.input1       = null;
+    
+        this.startTangent = null;
+        this.endTangent   = null;
     }
 
 

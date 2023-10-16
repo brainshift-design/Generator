@@ -12,6 +12,15 @@ extends GOperator1
 
 
     
+    reset()
+    {
+        super.reset();
+
+        this.index = null;
+    }
+
+
+
     copy()
     {
         const copy = new GColumn(this.nodeId, this.options);

@@ -13,6 +13,16 @@ extends GShape
 
 
 
+    reset()
+    {
+        super.reset();
+
+        this.round = null;
+        this.bias  = null;
+    }
+
+
+
     copy()
     {
         const copy = new GTrapeze(this.nodeId, this.options);

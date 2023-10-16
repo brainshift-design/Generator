@@ -15,6 +15,17 @@ extends GShapeBase
 
 
 
+    reset()
+    {
+        super.reset();
+
+        this.input     = null;
+        this.operation = null;
+        this.children  = null;
+    }
+
+
+
     copy()
     {
         const copy = new GShapeBoolean(this.nodeId, this.options);

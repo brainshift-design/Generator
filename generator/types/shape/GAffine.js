@@ -13,6 +13,16 @@ extends GOperator1
 
 
 
+    reset()
+    {
+        super.reset();
+
+        this.showCenter  = null;
+        this.affectSpace = null;
+    }
+
+
+
     copyBase(base)
     {
         super.copyBase(base);

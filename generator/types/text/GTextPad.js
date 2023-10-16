@@ -1,12 +1,12 @@
 class GTextPad
 extends GOperator1
 {
-    startPad;
-    startCount;
-    endPad;
-    endCount;
-
-
+    startPad   = null;
+    startCount = null;
+    endPad     = null;
+    endCount   = null;
+    
+    
     
     constructor(nodeId, options)
     {
@@ -15,6 +15,18 @@ extends GOperator1
 
 
     
+    reset()
+    {
+        super.reset();
+        
+        this.startPad   = null;
+        this.startCount = null;
+        this.endPad     = null;
+        this.endCount   = null;
+    }
+
+
+
     copy()
     {
         const copy = new GTextPad(this.nodeId, this.options);

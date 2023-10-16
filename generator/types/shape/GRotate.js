@@ -12,6 +12,15 @@ extends GAffine
 
 
 
+    reset()
+    {
+        super.reset();
+
+        this.angle = null;
+    }
+
+
+
     copy()
     {
         const copy = new GRotate(this.nodeId, this.options);

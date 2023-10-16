@@ -6,12 +6,25 @@ extends GOperator1
     moveType    = null;
     affectSpace = null;
     showCenter  = null;
-
-
+    
+    
 
     constructor(nodeId, options)
     {
         super(MOVE, nodeId, options);
+    }
+
+
+
+    reset()
+    {
+        super.reset();
+
+        this.x           = null;
+        this.y           = null;
+        this.moveType    = null;
+        this.affectSpace = null;
+        this.showCenter  = null;
     }
 
 

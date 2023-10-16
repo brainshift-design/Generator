@@ -14,6 +14,16 @@ extends GOperator1
 
 
     
+    reset()
+    {
+        super.reset();
+
+        this.quality     = null;
+        this.corrections = [];
+    }
+
+
+
     copy()
     {
         const copy = new GValidColor(this.nodeId, this.options);

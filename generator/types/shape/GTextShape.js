@@ -13,12 +13,32 @@ extends GShape
     alignV        = null;
     lineHeight    = null;
     letterSpacing = null;
-
-
+    
+    
 
     constructor(nodeId, options)
     {
         super(TEXT_SHAPE, nodeId, options);
+    }
+
+
+    
+    reset()
+    {
+        super.reset();
+        
+        this.text          = null;
+        this.x             = null;
+        this.y             = null;
+        this.width         = null;
+        this.height        = null;
+        this.font          = null;
+        this.size          = null;
+        this.style         = null;
+        this.alignH        = null;
+        this.alignV        = null;
+        this.lineHeight    = null;
+        this.letterSpacing = null;
     }
 
 

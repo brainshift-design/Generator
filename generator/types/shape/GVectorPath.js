@@ -16,6 +16,19 @@ extends GShape
 
 
 
+    reset()
+    {
+        super.reset();
+
+        this.points  = null;
+        this.closed  = null;
+        this.degree  = null;
+        this.winding = null;
+        this.round   = null;
+    }
+
+
+
     copy()
     {
         const copy = new GVectorPath(this.nodeId, this.options);

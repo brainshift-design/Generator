@@ -31,6 +31,16 @@ extends GNode
 
 
 
+    reset()
+    {
+        super.reset();
+        
+        this.options      = {};
+        this.updateValues = [];
+    }
+
+
+
     copyBase(base)
     {
         super.copyBase(base);
@@ -232,4 +242,21 @@ extends GNode
             obj.listId   = -1;
         }
     }
+
+
+
+    // resetNode()
+    // {
+    //     for (const prop in this)
+    //     {
+    //         if (this.hasOwnProperty(prop))
+    //         {
+    //             if (   this[prop]
+    //                 && this[prop].resetNode)
+    //                 this[prop].resetNode();
+
+    //             this[prop] = null;
+    //         }
+    //     }
+    // }
 }

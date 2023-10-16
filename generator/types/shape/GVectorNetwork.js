@@ -1,13 +1,22 @@
 class GVectorNetwork
 extends GShape
 {
-    inputs  = [];
+    inputs = [];
 
 
 
     constructor(nodeId, options)
     {
         super(VECTOR_NETWORK, nodeId, options);
+    }
+
+
+
+    reset()
+    {
+        super.reset();
+
+        this.inputs = [];
     }
 
 

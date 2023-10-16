@@ -11,7 +11,16 @@ extends GOperator1
     }
 
 
-    
+    reset()
+    {
+        super.reset();
+
+        this.format = null;
+    }
+
+
+
+   
     copy()
     {
         const copy = new GColorToText(this.nodeId, this.options);

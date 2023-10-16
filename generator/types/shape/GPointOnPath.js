@@ -5,8 +5,8 @@ extends GOperator2
     amount     = null;
     transform  = null;
     showCenter = null;
-
-
+    
+    
     
     constructor(nodeId, options)
     {
@@ -15,6 +15,18 @@ extends GOperator2
 
 
     
+    reset()
+    {
+        super.reset();
+
+        this.measure    = null;
+        this.amount     = null;
+        this.transform  = null;
+        this.showCenter = null;
+    }
+
+
+
     copy()
     {
         const copy = new GPointOnPath(this.nodeId, this.options);

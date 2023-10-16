@@ -9,12 +9,28 @@ extends GOperator1
     miter  = null;
     cap    = null;
     dashes = null;
-
-
+    
+    
 
     constructor(nodeId, options)
     {
         super(STROKE, nodeId, options);
+    }
+    
+
+    
+    reset()
+    {
+        super.reset();
+        
+        this. fills  = null;
+        this._fills  = null; // actual fills that might need to be converted to a list, in case it's a color or a fill
+        this. weight = null;
+        this. fit    = null;
+        this. join   = null;
+        this. miter  = null;
+        this. cap    = null;
+        this. dashes = null;
     }
 
 

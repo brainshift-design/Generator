@@ -1,10 +1,10 @@
 class GSolve
 extends GOperator1
 {
-    current;
-    target;
+    current = null;
+    target  = null;
 
-    temp;
+    temp    = null;
 
 
     
@@ -15,6 +15,17 @@ extends GOperator1
 
 
     
+    reset()
+    {
+        super.reset();
+
+        this.current = null;
+        this.target  = null;
+        this.temp    = null;
+    }
+
+
+
     copy()
     {
         const copy = new GSolve(this.nodeId, this.options);

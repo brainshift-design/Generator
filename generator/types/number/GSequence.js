@@ -1,22 +1,36 @@
 class GSequence
 extends GOperator
 {
-    start;
-    multiply;
-    add;
-    end;
+    start    = null;
+    multiply = null;
+    add      = null;
+    end      = null;
 
-    current;
-
-
-
+    current  = null;
+    
+    
+    
     constructor(nodeId, options)
     {
         super(NUMBER_SEQUENCE, nodeId, options);
     }
 
 
+
+    reset()
+    {
+        super.reset();
+        
+        this.start    = null;
+        this.multiply = null;
+        this.add      = null;
+        this.end      = null;
     
+        this.current  = null;
+    }
+
+
+   
     copy()
     {
         const copy = new GSequence(this.nodeId, this.options);

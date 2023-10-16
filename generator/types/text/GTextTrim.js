@@ -1,8 +1,8 @@
 class GTextTrim
 extends GOperator1
 {
-    start;
-    end;
+    start = null;
+    end   = null;
 
 
     
@@ -13,6 +13,16 @@ extends GOperator1
 
 
     
+    reset()
+    {
+        super.reset();
+
+        this.start = null;
+        this.end   = null;
+    }
+
+
+
     copy()
     {
         const copy = new GTextTrim(this.nodeId, this.options);

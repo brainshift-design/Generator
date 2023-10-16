@@ -15,6 +15,16 @@ extends GOperator
 
 
     
+    reset()
+    {
+        super.reset();
+
+        this.current = null;
+        this.when    = null;
+    }
+
+
+
     copy()
     {
         const copy = new GAccumulate(this.nodeId, this.options);

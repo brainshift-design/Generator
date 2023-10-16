@@ -4,12 +4,23 @@ extends GOperator1
     position   = null;
     transform  = null;
     showCenter = null;
-
-
+    
+    
 
     constructor(nodeId, options)
     {
         super(PLACE, nodeId, options);
+    }
+
+
+
+    reset()
+    {
+        super.reset();
+        
+        this.position   = null;
+        this.transform  = null;
+        this.showCenter = null;
     }
 
 

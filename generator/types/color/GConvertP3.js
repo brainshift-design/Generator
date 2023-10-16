@@ -12,6 +12,15 @@ extends GOperator1
 
 
     
+    reset()
+    {
+        super.reset();
+
+        this.from = null;
+    }
+
+
+
     copy()
     {
         const copy = new GConvertP3(this.nodeId, this.options);

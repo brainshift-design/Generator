@@ -22,6 +22,25 @@ extends GOperator1
 
 
     
+    reset()
+    {
+        super.reset();
+
+        this._order  = null;
+        this._c1     = null;
+        this._c2     = null;
+        this._c3     = null;
+        
+        this.order   = null;
+        this.c1      = null;
+        this.c2      = null;
+        this.c3      = null;
+    
+        this.corrections = [];
+    }
+
+
+
     copy()
     {
         const copy = new GCorrectColor(this.nodeId, this.options);

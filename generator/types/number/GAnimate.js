@@ -1,22 +1,36 @@
 class GAnimate
 extends GOperator
 {
-    from;
-    to;
-    curve;
-    repeat;
-    length;
-    time;
-
-
-
+    from   = null;
+    to     = null;
+    curve  = null;
+    repeat = null;
+    length = null;
+    time   = null;
+    
+    
+    
     constructor(nodeId, options)
     {
         super(NUMBER_ANIMATE, nodeId, options);
     }
-
-
     
+    
+    
+    reset()
+    {
+        super.reset();
+        
+        this.from   = null;
+        this.to     = null;
+        this.curve  = null;
+        this.repeat = null;
+        this.length = null;
+        this.time   = null;
+    }
+
+
+
     copy()
     {
         const copy = new GAnimate(this.nodeId, this.options);

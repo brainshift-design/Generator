@@ -1,8 +1,8 @@
 class GColorBlend
 extends GOperator2
 {
-    mode;
-    opacity;
+    mode    = null;
+    opacity = null;
     
 
     constructor(nodeId, options)
@@ -12,6 +12,16 @@ extends GOperator2
 
 
     
+    reset()
+    {
+        super.reset();
+
+        this.mode    = null;
+        this.opacity = null;
+    }
+
+
+
     copy()
     {
         const copy = new GColorBlend(this.nodeId, this.options);

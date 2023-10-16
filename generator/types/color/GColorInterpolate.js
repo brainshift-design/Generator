@@ -13,6 +13,17 @@ extends GOperator2
 
 
     
+    reset()
+    {
+        super.reset();
+
+        this.space  = null;
+        this.amount = null;
+        this.gamma  = null;
+    }
+
+
+
     copy()
     {
         const copy = new GColorInterpolate(this.nodeId, this.options);

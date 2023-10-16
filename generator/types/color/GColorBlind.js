@@ -13,6 +13,17 @@ extends GOperator1
 
 
     
+    reset()
+    {
+        super.reset();
+
+        this.l = null;
+        this.m = null;
+        this.s = null;
+    }
+
+
+
     copy()
     {
         const copy = new GColorBlind(this.nodeId, this.options);

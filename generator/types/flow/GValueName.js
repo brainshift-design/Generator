@@ -1,9 +1,7 @@
 class GValueName
-extends GOperator
+extends GOperator1
 {
-    input = null;
-
-    name  = null;
+    name = null;
 
 
 
@@ -14,6 +12,15 @@ extends GOperator
 
 
     
+    reset()
+    {
+        super.reset();
+
+        this.name = null;
+    }
+
+
+
     copy()
     {
         const copy = new GNull(this.nodeId, this.options);
@@ -21,7 +28,6 @@ extends GOperator
         copy.copyBase(this);
 
         if (this.value) copy.value = this.value.copy();
-        if (this.input) copy.input = this.input.copy();
         if (this.name ) copy.name  = this.name .copy();
 
         return copy;
@@ -75,8 +81,8 @@ extends GOperator
 
     isValid()
     {
-        return this.input && this.input.isValid()
-            && this.name  && this.name .isValid();
+        return super.isValid()
+            && this.name && this.name.isValid();
     }
 
 
@@ -85,8 +91,7 @@ extends GOperator
     {
         super.pushValueUpdates(parse);
 
-        if (this.input) this.input.pushValueUpdates(parse);
-        if (this.name ) this.name .pushValueUpdates(parse);
+        if (this.name) this.name.pushValueUpdates(parse);
     }
 
 
@@ -95,8 +100,7 @@ extends GOperator
     {
         super.invalidateInputs(parse, from, force);
 
-        if (this.input) this.input.invalidateInputs(parse, from, force);
-        if (this.name ) this.name .invalidateInputs(parse, from, force);
+        if (this.name) this.name.invalidateInputs(parse, from, force);
     }
 
 
@@ -105,7 +109,6 @@ extends GOperator
     {
         super.iterateLoop(parse);
 
-        if (this.input) this.input.iterateLoop(parse);
-        if (this.name ) this.name .iterateLoop(parse);
+        if (this.name) this.name.iterateLoop(parse);
     }
 }

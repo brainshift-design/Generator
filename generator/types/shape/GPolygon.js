@@ -13,6 +13,16 @@ extends GShape
 
 
 
+    reset()
+    {
+        super.reset();
+
+        this.round   = null;
+        this.corners = null;
+    }
+
+
+
     copy()
     {
         const copy = new GPolygon(this.nodeId, this.options);

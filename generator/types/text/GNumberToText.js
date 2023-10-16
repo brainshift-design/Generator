@@ -12,6 +12,15 @@ extends GOperator1
 
 
     
+    reset()
+    {
+        super.reset();
+
+        this.format = null;
+    }
+
+
+
     copy()
     {
         const copy = new GNumberToText(this.nodeId, this.options);

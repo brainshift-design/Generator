@@ -16,6 +16,19 @@ extends GOperator1
 
 
 
+    reset()
+    {
+        super.reset();
+
+        this.x     = null;
+        this.y     = null;
+        this.join  = null;
+        this.cap   = null;
+        this.round = null;
+    }
+
+
+
     copy()
     {
         const copy = new GVectorVertex(this.nodeId, this.options);

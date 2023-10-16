@@ -7,12 +7,26 @@ extends GOperator1
     spread = null;
     fill   = null;
     blend  = null;
-
-
+    
+    
 
     constructor(nodeId, options)
     {
         super(INNER_SHADOW, nodeId, options);
+    }
+
+
+
+    reset()
+    {
+        super.reset();
+
+        this.x      = null;
+        this.y      = null;
+        this.blur   = null;
+        this.spread = null;
+        this.fill   = null;
+        this.blend  = null;
     }
 
 

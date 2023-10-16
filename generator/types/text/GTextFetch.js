@@ -13,6 +13,16 @@ extends GOperator
 
 
     
+    reset()
+    {
+        super.reset();
+
+        this.request     = null;
+        this.cachedValue = null;
+    }
+
+
+
     copy()
     {
         const copy = new GTextFetch(this.nodeId, this.options);

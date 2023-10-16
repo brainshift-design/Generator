@@ -35,6 +35,23 @@ class GNode
 
 
 
+    reset()
+    {
+        //this.listId       = -1;
+    
+        //this.cached       = true;
+        //this.unknown      = false;
+    
+        //this.loopId       = NULL;
+    
+        //this.iteration    = 0;
+        //this.iterated     = false;
+    
+        this.updateValues = null;
+    }
+
+
+
     copy()
     {
         consoleError('abstract type GNode cannot be copied');

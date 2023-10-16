@@ -12,6 +12,15 @@ extends GOperator2
 
 
     
+    reset()
+    {
+        super.reset();
+
+        this.operation = null;
+    }
+
+
+
     copy()
     {
         const copy = new GTextCompare(this.nodeId, this.options);

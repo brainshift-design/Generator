@@ -11,7 +11,16 @@ extends GArithmetic
     }
 
 
-    
+    reset()
+    {
+        super.reset();
+
+        this.operation = null;
+    }
+
+
+
+   
     copy()
     {
         const copy = new GMath(this.nodeId, this.options);

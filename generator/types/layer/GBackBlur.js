@@ -12,6 +12,15 @@ extends GOperator1
 
 
 
+    reset()
+    {
+        super.reset();
+
+        this.radius = null;
+    }
+
+
+
     copy()
     {
         const copy = new GBackBlur(this.nodeId, this.options);

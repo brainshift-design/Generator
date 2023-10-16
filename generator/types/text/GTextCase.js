@@ -12,6 +12,15 @@ extends GOperator1
 
 
     
+    reset()
+    {
+        super.reset();
+
+        this.case = null;
+    }
+
+
+
     copy()
     {
         const copy = new GTextCase(this.nodeId, this.options);

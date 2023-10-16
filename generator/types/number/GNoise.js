@@ -1,25 +1,40 @@
 class GNoise
 extends GOperator
 {
-    seed;
-    min;
-    max;
-    scale;
-    interpolate;
-    offset;
-    detail;
-
+    seed        = null;
+    min         = null;
+    max         = null;
+    scale       = null;
+    interpolate = null;
+    offset      = null;
+    detail      = null;
+    
     random = null;
-
-
-
+    
+    
+    
     constructor(nodeId, options)
     {
         super(NUMBER_NOISE, nodeId, options);
     }
-
-
     
+    
+    
+    reset()
+    {
+        super.reset();
+        
+        this.seed        = null;
+        this.min         = null;
+        this.max         = null;
+        this.scale       = null;
+        this.interpolate = null;
+        this.offset      = null;
+        this.detail      = null;
+    }
+
+
+
     copy()
     {
         const copy = new GNoise(this.nodeId, this.options);

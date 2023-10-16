@@ -14,6 +14,17 @@ extends GOperator2
 
 
     
+    reset()
+    {
+        super.reset();
+
+        this.amount     = null;
+        this.transform  = null;
+        this.showCenter = null;
+    }
+
+
+
     copy()
     {
         const copy = new GInterpolatePoint(this.nodeId, this.options);

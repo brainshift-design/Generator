@@ -20,6 +20,10 @@ class GValue
 
 
 
+    reset() {}
+
+
+
     copy()
     {
         consoleError('abstract class GValue cannot be copied');

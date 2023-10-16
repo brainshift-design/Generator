@@ -13,6 +13,16 @@ extends GOperator2
 
 
     
+    reset()
+    {
+        super.reset();
+
+        this.distance = null;
+        this.angle    = null;
+    }
+
+
+
     copy()
     {
         const copy = new GMeasurePoints(this.nodeId, this.options);

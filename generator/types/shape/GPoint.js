@@ -13,6 +13,16 @@ extends GOperator1
 
 
 
+    reset()
+    {
+        super.reset();
+
+        this.x = null;
+        this.y = null;
+    }
+
+
+
     copy()
     {
         const copy = new GPoint(this.nodeId, this.options);

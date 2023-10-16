@@ -1,10 +1,6 @@
 class GNull
-extends GOperator
+extends GOperator1
 {
-    input = null;
-
-
-
     constructor(nodeId, options)
     {
         super(NULL_NODE, nodeId, options);
@@ -59,39 +55,5 @@ extends GOperator
         return this.value
              ? this.value.copy()
              : null;
-    }
-
-
-
-    isValid()
-    {
-        return this.input && this.input.isValid();
-    }
-
-
-
-    pushValueUpdates(parse)
-    {
-        super.pushValueUpdates(parse);
-
-        if (this.input) this.input.pushValueUpdates(parse);
-    }
-
-
-
-    invalidateInputs(parse, from, force)
-    {
-        super.invalidateInputs(parse, from, force);
-
-        if (this.input) this.input.invalidateInputs(parse, from, force);
-    }
-
-
-
-    iterateLoop(parse)
-    {
-        super.iterateLoop(parse);
-
-        if (this.input) this.input.iterateLoop(parse);
     }
 }

@@ -8,8 +8,8 @@ extends GOperator
     date      = null;
     month     = null;
     year      = null;
-
-
+    
+    
     
     constructor(nodeId, options)
     {
@@ -18,6 +18,21 @@ extends GOperator
 
 
     
+    reset()
+    {
+        super.reset();
+        
+        this.seconds   = null;
+        this.minutes   = null;
+        this.hours     = null;
+        this.dayOfWeek = null;
+        this.date      = null;
+        this.month     = null;
+        this.year      = null;
+    }
+
+
+
     copy()
     {
         const copy = new GLimits(this.nodeId, this.options);

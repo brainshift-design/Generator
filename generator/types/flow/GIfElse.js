@@ -1,10 +1,10 @@
 class GIfElse
 extends GOperator
 {
-    input0 = null;
-    input1 = null;
+    input0    = null;
+    input1    = null;
 
-    condition;
+    condition = null;
 
 
 
@@ -15,6 +15,18 @@ extends GOperator
 
 
     
+    reset()
+    {
+        super.reset();
+
+        this.input0    = null;
+        this.input1    = null;
+
+        this.condition = null;
+    }
+
+
+
     copy()
     {
         const copy = new GIfElse(this.nodeId, this.options);

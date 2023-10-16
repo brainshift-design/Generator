@@ -1,10 +1,10 @@
 class GRandom
 extends GOperator
 {
-    seed;
-    min;
-    max;
-    unique;
+    seed   = null;
+    min    = null;
+    max    = null;
+    unique = null;
 
     random       = null;
     randomUnique = null;
@@ -22,6 +22,18 @@ extends GOperator
 
 
     
+    reset()
+    {
+        super.reset();
+
+        this.seed   = null;
+        this.min    = null;
+        this.max    = null;
+        this.unique = null;
+    }
+
+
+
     copy()
     {
         const copy = new GRandom(this.nodeId, this.options);

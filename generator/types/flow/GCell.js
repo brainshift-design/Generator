@@ -13,6 +13,16 @@ extends GOperator
 
 
     
+    reset()
+    {
+        super.reset();
+
+        this.column = null;
+        this.row    = null;
+    }
+
+
+
     copy()
     {
         const copy = new GCell(this.nodeId, this.options);

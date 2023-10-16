@@ -1,8 +1,8 @@
 class GProbability
 extends GOperator
 {
-    seed;
-    chance;
+    seed   = null;
+    chance = null;
 
     random = null;
 
@@ -15,6 +15,16 @@ extends GOperator
 
 
     
+    reset()
+    {
+        super.reset();
+
+        this.seed   = null;
+        this.chance = null;
+    }
+
+
+
     copy()
     {
         const copy = new GRandom(this.nodeId, this.options);

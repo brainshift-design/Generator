@@ -17,6 +17,14 @@ extends GOperator
 
 
 
+    reset()
+    {
+        if (this.node)
+            this.node.reset();
+    }
+
+
+
     copy()
     {
         const copy = new GParam(this.nodeId, this.paramId);
@@ -46,12 +54,13 @@ extends GOperator
 
 
         await this.node.eval(parse);
+        //console.log('this.node.value =', this.node.value);
 
 
         this.param = this.node.paramFromId(this.paramId);
 
         if (this.node.type == LIST)
-            this.param = this.node[this.paramId];
+            this.param = this.node[this.paramId].copy();
 
         
         if (isValid(this.param))
@@ -59,6 +68,8 @@ extends GOperator
             const value = (await this.param.eval(parse)).toValue();
             this.value = value;
             
+            //console.log('this.nodeId =', this.node.nodeId);
+            //console.log('this.param =', this.param);
             return this.value;
         }
         else

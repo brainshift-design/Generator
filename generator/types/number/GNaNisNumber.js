@@ -1,7 +1,7 @@
 class GNaNisNumber
 extends GOperator1
 {
-    _value;
+    _value = null;
 
 
 
@@ -12,6 +12,15 @@ extends GOperator1
 
 
     
+    reset()
+    {
+        super.reset();
+
+        this._value = null;
+    }
+
+
+
     copy()
     {
         const copy = new GNaNisNumber(this.nodeId, this.options);

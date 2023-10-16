@@ -1,10 +1,6 @@
 class GList
-extends GOperator
+extends GOperator1
 {
-    input = null;
-
-
-
     constructor(nodeId, options)
     {
         super(LIST, nodeId, options);
@@ -100,39 +96,5 @@ extends GOperator
     toValue()
     {
         return this.value.copy();
-    }
-
-
-
-    isValid()
-    {
-        return this.input && this.input.isValid();
-    }
-
-
-
-    pushValueUpdates(parse)
-    {
-        super.pushValueUpdates(parse);
-
-        if (this.input) this.input.pushValueUpdates(parse);
-    }
-
-
-
-    invalidateInputs(parse, from, force)
-    {
-        super.invalidateInputs(parse, from, force);
-
-        if (this.input) this.input.invalidateInputs(parse, from, force);
-    }
-
-
-
-    iterateLoop(parse)
-    {
-        super.iterateLoop(parse);
-
-        if (this.input) this.input.iterateLoop(parse);
     }
 }

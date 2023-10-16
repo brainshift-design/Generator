@@ -14,6 +14,17 @@ extends GOperator1
 
 
 
+    reset()
+    {
+        super.reset();
+
+        this.color   = null;
+        this.opacity = null;
+        this.blend   = null;
+    }
+
+
+
     copy()
     {
         const copy = new GFill(this.nodeId, this.options);

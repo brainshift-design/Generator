@@ -1,8 +1,6 @@
 class GTimer
-extends GOperator
+extends GOperator1
 {
-    input    = null;
-
     interval = null;
 
 
@@ -14,13 +12,21 @@ extends GOperator
 
 
     
+    reset()
+    {
+        super.reset();
+
+        this.interval = null;
+    }
+
+
+
     copy()
     {
         const copy = new GTimer(this.nodeId, this.options);
 
         copy.copyBase(this);
 
-        if (this.input) copy.input = this.input.copy();
         if (this.interval) copy.interval = this.interval.copy();
 
         return copy;
@@ -81,7 +87,7 @@ extends GOperator
 
     isValid()
     {
-        return this.input && this.input.isValid()
+        return super.isValid()
             && this.interval && this.interval.isValid();
     }
 
@@ -91,7 +97,6 @@ extends GOperator
     {
         super.pushValueUpdates(parse);
 
-        if (this.input) this.input.pushValueUpdates(parse);
         if (this.interval) this.interval.pushValueUpdates(parse);
     }
 
@@ -101,7 +106,6 @@ extends GOperator
     {
         super.invalidateInputs(parse, from, force);
 
-        if (this.input) this.input.invalidateInputs(parse, from, force);
         if (this.interval) this.interval.invalidateInputs(parse, from, force);
     }
 
@@ -111,7 +115,6 @@ extends GOperator
     {
         super.iterateLoop(parse);
 
-        if (this.input) this.input.iterateLoop(parse);
         if (this.interval) this.interval.iterateLoop(parse);
     }
 }

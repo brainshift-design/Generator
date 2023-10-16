@@ -1,16 +1,24 @@
 class GListCount
-extends GOperator
+extends GOperator1
 {
-    input = null;
     start = null;
 
-    value = null;
+    //value = null;
 
 
 
     constructor(nodeId, options)
     {
         super(LIST_COUNT, nodeId, options);
+    }
+
+
+
+    reset()
+    {
+        super.reset();
+
+        this.start = null;
     }
 
 
@@ -22,7 +30,7 @@ extends GOperator
         copy.copyBase(this);
 
         if (this.input) copy.input = this.input.copy();
-        if (this.start)  copy.start  = this.start .copy();
+        if (this.start) copy.start = this.start.copy();
         
         if (this.count) copy.count = this.count.copy();
 
@@ -81,7 +89,7 @@ extends GOperator
 
     isValid()
     {
-        return this.input && this.input.isValid()
+        return super.isValid()
             && this.start && this.start.isValid();
     }
 
@@ -91,7 +99,6 @@ extends GOperator
     {
         super.pushValueUpdates(parse);
 
-        if (this.input) this.input.pushValueUpdates(parse);
         if (this.start) this.start.pushValueUpdates(parse);
     }    
 
@@ -101,7 +108,6 @@ extends GOperator
     {
         super.invalidateInputs(parse, from, force);
 
-        if (this.input) this.input.invalidateInputs(parse, from, force);
         if (this.start) this.start.invalidateInputs(parse, from, force);
     }
 
@@ -111,7 +117,6 @@ extends GOperator
     {
         super.iterateLoop(parse);
 
-        if (this.input) this.input.iterateLoop(parse);
         if (this.start) this.start.iterateLoop(parse);
     }    
 }

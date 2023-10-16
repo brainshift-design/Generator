@@ -1,15 +1,22 @@
 class GSelect
-extends GOperator
+extends GOperator1
 {
-    input = null;
-    
-    index;
+    index = null;
 
 
 
     constructor(nodeId, options)
     {
         super(SELECT, nodeId, options);
+    }
+
+
+
+    reset()
+    {
+        super.reset();
+
+        this.index = null;
     }
 
 
@@ -132,7 +139,7 @@ extends GOperator
 
     isValid()
     {
-        return this.input && this.input.isValid()
+        return super.isValid()
             && this.index && this.index.isValid();
     }
 
@@ -142,7 +149,6 @@ extends GOperator
     {
         super.pushValueUpdates(parse);
 
-        if (this.input) this.input.pushValueUpdates(parse);
         if (this.index) this.index.pushValueUpdates(parse);
     }
 
@@ -152,7 +158,6 @@ extends GOperator
     {
         super.invalidateInputs(parse, from, force);
 
-        if (this.input) this.input.invalidateInputs(parse, from, force);
         if (this.index) this.index.invalidateInputs(parse, from, force);
     }
 
@@ -162,7 +167,6 @@ extends GOperator
     {
         super.iterateLoop(parse);
 
-        if (this.input) this.input.iterateLoop(parse);
         if (this.index) this.index.iterateLoop(parse);
     }
 }

@@ -13,6 +13,16 @@ extends GOperator1
 
 
     
+    reset()
+    {
+        super.reset();
+
+        this.rowSeparator    = null;
+        this.columnSeparator = null;
+    }
+
+
+
     copy()
     {
         const copy = new GTextCSV(this.nodeId, this.options);

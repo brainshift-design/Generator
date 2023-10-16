@@ -1,8 +1,6 @@
 class GStart
-extends GOperator
+extends GOperator1
 {
-    input    = null;
-
     feedback = null;
     from     = null;
 
@@ -17,6 +15,16 @@ extends GOperator
 
 
     
+    reset()
+    {
+        super.reset();
+
+        this.feedback = null;
+        this.from     = null;
+    }
+
+
+
     copy()
     {
         const copy = new GStart(this.nodeId, this.options);
@@ -24,7 +32,6 @@ extends GOperator
         copy.copyBase(this);
 
         if (this.value   ) copy.value    = this.value   .copy();
-        if (this.input   ) copy.input    = this.input   .copy();
         if (this.feedback) copy.feedback = this.feedback.copy();
 
         return copy;
@@ -124,7 +131,7 @@ extends GOperator
 
     isValid()
     {
-        return this.input    && this.input   .isValid()
+        return super.isValid()
             && this.feedback && this.feedback.isValid();
     }
 
@@ -134,7 +141,6 @@ extends GOperator
     {
         super.pushValueUpdates(parse);
 
-        if (this.input   ) this.input   .pushValueUpdates(parse);
         if (this.feedback) this.feedback.pushValueUpdates(parse);
     }
 
@@ -146,7 +152,6 @@ extends GOperator
 
         this.from = from;
 
-        if (this.input   ) this.input   .invalidateInputs(parse, from, force);
         if (this.feedback) this.feedback.invalidateInputs(parse, from, force);
     }
 
@@ -156,7 +161,6 @@ extends GOperator
     {
         super.iterateLoop(parse);
 
-        if (this.input   ) this.input   .iterateLoop(parse);
         if (this.feedback) this.feedback.iterateLoop(parse);
     }
 }

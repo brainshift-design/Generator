@@ -11,7 +11,17 @@ extends GOperator2
     }
 
 
-    
+
+    reset()
+    {
+        super.reset();
+
+        this.standard = null;
+        this.contrast = null;
+    }
+
+
+
     copy()
     {
         const copy = new GColorContrast(this.nodeId, this.options);

@@ -14,6 +14,15 @@ extends GOperator1
 
 
     
+    reset()
+    {
+        super.reset();
+
+        this.frozen = false;
+    }
+
+
+
     copy()
     {
         const copy = new GFreeze(this.nodeId, this.options);

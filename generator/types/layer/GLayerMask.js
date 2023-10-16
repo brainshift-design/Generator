@@ -12,6 +12,15 @@ extends GOperator
 
 
 
+    reset()
+    {
+        super.reset();
+
+        this.maskType = null;
+    }
+
+
+
     copy()
     {
         const copy = new GLayerMask(this.nodeId, this.options);

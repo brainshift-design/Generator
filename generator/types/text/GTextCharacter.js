@@ -12,6 +12,15 @@ extends GOperator1
 
 
     
+    reset()
+    {
+        super.reset();
+
+        this.code = null;
+    }
+
+
+
     copy()
     {
         const copy = new GTextCharacter(this.nodeId, this.options);

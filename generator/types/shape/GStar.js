@@ -15,6 +15,17 @@ extends GShape
 
 
 
+    reset()
+    {
+        super.reset();
+
+        this.round  = null;
+        this.points = null;
+        this.convex = null;
+    }
+
+
+
     copy()
     {
         const copy = new GStar(this.nodeId, this.options);

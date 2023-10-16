@@ -12,6 +12,15 @@ extends GOperator1
 
 
 
+    reset()
+    {
+        super.reset();
+
+        this.showCenter = null;
+    }
+
+
+
     copy()
     {
         const copy = new GResetTransform(this.nodeId, this.options);

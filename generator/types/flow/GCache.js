@@ -12,6 +12,15 @@ extends GOperator1
 
 
     
+    reset()
+    {
+        super.reset();
+
+        this.cachedValue = null;
+    }
+
+
+
     copy()
     {
         const copy = new GCache(this.nodeId, this.options);

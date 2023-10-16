@@ -12,6 +12,15 @@ extends GArithmetic
 
 
     
+    reset()
+    {
+        super.reset();
+
+        this.operation = null;
+    }
+
+
+
     copy()
     {
         const copy = new GMinMax(this.nodeId, this.options);
@@ -111,6 +120,7 @@ async function evalMinMaxInputs(inputs, op, parse)
     else if (isListType(val0.type)
             && !isEmpty(val0.items))
     {
+        //console.log('val0.items =', val0.items);
         value = val0.items[0].copy();
         
         for (let i = 1; i < val0.items.length; i++)

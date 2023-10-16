@@ -13,6 +13,16 @@ extends GAffine
 
 
 
+    reset()
+    {
+        super.reset();
+
+        this.skewX = null;
+        this.skewY = null;
+    }
+
+
+
     copy()
     {
         const copy = new GSkew(this.nodeId, this.options);

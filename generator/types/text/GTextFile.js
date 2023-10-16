@@ -14,6 +14,15 @@ extends GOperator
 
 
     
+    reset()
+    {
+        super.reset();
+
+        this.cachedValue = null;
+    }
+
+
+
     copy()
     {
         const copy = new GTextFile(this.nodeId, this.options);

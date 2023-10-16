@@ -14,6 +14,17 @@ extends GOperator2
 
 
     
+    reset()
+    {
+        super.reset();
+
+        this.first = null;
+        this.last  = null;
+        this.all   = null;
+    }
+
+
+
     copy()
     {
         const copy = new GTextContains(this.nodeId, this.options);

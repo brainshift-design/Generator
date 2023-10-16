@@ -11,12 +11,30 @@ extends GOperator
     aspect   = null;
     skew     = null;
     blend    = null;
-
-
-
+    
+    
+    
     constructor(nodeId, options)
     {
         super(GRADIENT, nodeId, options);
+    }
+    
+    
+    
+    reset()
+    {
+        super.reset();
+        
+        this.inputs = [];
+    
+        this.gradType = null;
+        this.x        = null;
+        this.y        = null;
+        this.size     = null;
+        this.angle    = null;
+        this.aspect   = null;
+        this.skew     = null;
+        this.blend    = null;
     }
 
 

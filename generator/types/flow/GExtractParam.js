@@ -1,7 +1,7 @@
 class GExtractParam
 extends GOperator1
 {
-    param;
+    param = null;
 
 
     
@@ -12,6 +12,15 @@ extends GOperator1
 
 
     
+    reset()
+    {
+        super.reset();
+
+        this.param  = null;
+    }
+
+
+
     copy()
     {
         const copy = new GExtractParam(this.nodeId, this.options);
@@ -50,6 +59,7 @@ extends GOperator1
                 && input.items)
             {
                 length = input.items.length;
+                //console.log('input.items =', [...input.items]);
 
 
                 if (this.options.enabled)

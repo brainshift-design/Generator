@@ -12,6 +12,15 @@ extends GShape
 
 
 
+    reset()
+    {
+        super.reset();
+
+        this.round = null;
+    }
+
+
+
     copy()
     {
         const copy = new GRectangle(this.nodeId, this.options);
@@ -41,7 +50,7 @@ extends GShape
         if (this.input)
         {
             input = (await this.input.eval(parse)).toValue();
-
+            
             this.value = new RectangleValue(
                 this.nodeId,
                 x      ?? input.x,

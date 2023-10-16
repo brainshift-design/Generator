@@ -5,6 +5,15 @@ extends GOperator
 
 
 
+    reset()
+    {
+        super.reset();
+
+        this.inputs = [];
+    }
+
+
+
     getOrderNode()
     {
         const orderNodes = [];
@@ -16,7 +25,7 @@ extends GOperator
         }
 
         console.assert(orderNodes.length < 2, 'Error: sort order requires not more than one order node');
-        
+
         return orderNodes.length == 1
              ? orderNodes[0]
              : null;

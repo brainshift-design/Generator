@@ -14,6 +14,17 @@ extends GOperator1
 
 
 
+    reset()
+    {
+        super.reset();
+
+        this.centerX    = null;
+        this.centerY    = null;
+        this.showCenter = null;
+    }
+
+
+
     copy()
     {
         const copy = new GMove(this.nodeId, this.options);

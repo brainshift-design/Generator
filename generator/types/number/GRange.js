@@ -1,13 +1,13 @@
 class GRange
 extends GOperator
 {
-    from;
-    start;
-    end;
-    spread;
-    bias;
-
-
+    from   = null;
+    start  = null;
+    end    = null;
+    spread = null;
+    bias   = null;
+    
+    
 
     constructor(nodeId, options)
     {
@@ -16,6 +16,19 @@ extends GOperator
 
 
     
+    reset()
+    {
+        super.reset();
+
+        this.from   = null;
+        this.start  = null;
+        this.end    = null;
+        this.spread = null;
+        this.bias   = null;
+    }
+
+
+
     copy()
     {
         const copy = new GRange(this.nodeId, this.options);

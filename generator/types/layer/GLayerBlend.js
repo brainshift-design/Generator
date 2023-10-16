@@ -13,6 +13,16 @@ extends GOperator
 
 
 
+    reset()
+    {
+        super.reset();
+
+        this.opacity = null;
+        this.blend   = null;
+    }
+
+
+
     copy()
     {
         const copy = new GLayerBlend(this.nodeId, this.options);

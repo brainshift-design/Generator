@@ -16,6 +16,16 @@ extends GShapeBase
 
 
 
+    reset()
+    {
+        super.reset();
+
+        this.inputs = [];
+        this.retain = null;
+    }
+
+
+
     copy()
     {
         const copy = new GRender(this.nodeId, this.options);

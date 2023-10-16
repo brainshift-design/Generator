@@ -3,7 +3,7 @@ extends GOperator
 {
     inputs = [];
 
-    with;
+    with = null;
 
 
     
@@ -13,7 +13,18 @@ extends GOperator
     }
 
 
-    
+
+    reset()
+    {
+        super.reset();
+
+        this.inputs = [];
+        
+        this.with = null;
+    }
+
+
+   
     copy()
     {
         const copy = new GTextJoin(this.nodeId, this.options);

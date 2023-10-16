@@ -20,6 +20,15 @@ extends GOperator
 
 
 
+    reset()
+    {
+        super.reset();
+
+        this.varValue = null;
+    }
+
+
+
     copy()
     {
         const copy = new GColorStyle(this.nodeId, this.options);

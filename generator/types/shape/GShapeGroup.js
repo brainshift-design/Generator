@@ -12,6 +12,15 @@ extends GShapeBase
 
 
 
+    reset()
+    {
+        super.reset();
+
+        this.inputs = [];
+    }
+
+
+
     copy()
     {
         const copy = new GShapeGroup(this.nodeId, this.options);

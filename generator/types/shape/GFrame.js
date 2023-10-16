@@ -13,6 +13,16 @@ extends GShape
 
 
 
+    reset()
+    {
+        super.reset();
+
+        this.round    = null;
+        this.children = null;
+    }
+
+
+
     copy()
     {
         const copy = new GFrame(this.nodeId, this.options);
