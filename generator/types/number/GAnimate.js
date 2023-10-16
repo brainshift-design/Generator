@@ -152,16 +152,16 @@ extends GOperator
 
 
 
-    invalidateInputs(parse, from)
+    invalidateInputs(parse, from, force)
     {
-        super.invalidateInputs(parse, from);
+        super.invalidateInputs(parse, from, force);
 
-        if (this.from  ) this.from  .invalidateInputs(parse, from);
-        if (this.to    ) this.to    .invalidateInputs(parse, from);
-        if (this.curve ) this.curve .invalidateInputs(parse, from);
-        if (this.repeat) this.repeat.invalidateInputs(parse, from);
-        if (this.length) this.length.invalidateInputs(parse, from);
-        if (this.time  ) this.time  .invalidateInputs(parse, from);
+        if (this.from  ) this.from  .invalidateInputs(parse, from, force);
+        if (this.to    ) this.to    .invalidateInputs(parse, from, force);
+        if (this.curve ) this.curve .invalidateInputs(parse, from, force);
+        if (this.repeat) this.repeat.invalidateInputs(parse, from, force);
+        if (this.length) this.length.invalidateInputs(parse, from, force);
+        if (this.time  ) this.time  .invalidateInputs(parse, from, force);
     }
 
 

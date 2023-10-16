@@ -112,9 +112,9 @@ class GValue
 
 
 
-    pushValueUpdates(parse)       {}
-    invalidateInputs(parse, from) {}
-    iterateLoop     (parse)       {}
+    pushValueUpdates(parse)              {}
+    invalidateInputs(parse, from, force) {}
+    iterateLoop     (parse)              {}
 }
 
 

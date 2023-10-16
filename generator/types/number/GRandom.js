@@ -143,14 +143,14 @@ extends GOperator
 
 
 
-    invalidateInputs(parse, from)
+    invalidateInputs(parse, from, force)
     {
-        super.invalidateInputs(parse, from);
+        super.invalidateInputs(parse, from, force);
 
-        if (this.seed  ) this.seed  .invalidateInputs(parse, from);
-        if (this.min   ) this.min   .invalidateInputs(parse, from);
-        if (this.max   ) this.max   .invalidateInputs(parse, from);
-        if (this.unique) this.unique.invalidateInputs(parse, from);
+        if (this.seed  ) this.seed  .invalidateInputs(parse, from, force);
+        if (this.min   ) this.min   .invalidateInputs(parse, from, force);
+        if (this.max   ) this.max   .invalidateInputs(parse, from, force);
+        if (this.unique) this.unique.invalidateInputs(parse, from, force);
     }
 
 

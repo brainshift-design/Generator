@@ -97,12 +97,12 @@ extends GOperator
 
 
 
-    invalidateInputs(parse, from)
+    invalidateInputs(parse, from, force)
     {
-        super.invalidateInputs(parse, from);
+        super.invalidateInputs(parse, from, force);
 
-        if (this.seed  ) this.seed  .invalidateInputs(parse, from);
-        if (this.chance) this.chance.invalidateInputs(parse, from);
+        if (this.seed  ) this.seed  .invalidateInputs(parse, from, force);
+        if (this.chance) this.chance.invalidateInputs(parse, from, force);
     }
 
 

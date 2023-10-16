@@ -290,22 +290,22 @@ extends GShape
 
 
 
-    invalidateInputs(parse, from)
+    invalidateInputs(parse, from, force)
     {
-        super.invalidateInputs(parse, from);
+        super.invalidateInputs(parse, from, force);
         
-        if (this.text         ) this.text         .invalidateInputs(parse, from);
-        if (this.x            ) this.x            .invalidateInputs(parse, from);
-        if (this.y            ) this.y            .invalidateInputs(parse, from);
-        if (this.width        ) this.width        .invalidateInputs(parse, from);
-        if (this.height       ) this.height       .invalidateInputs(parse, from);
-        if (this.font         ) this.font         .invalidateInputs(parse, from);
-        if (this.style        ) this.style        .invalidateInputs(parse, from);
-        if (this.size         ) this.size         .invalidateInputs(parse, from);
-        if (this.alignH       ) this.alignH       .invalidateInputs(parse, from);
-        if (this.alignV       ) this.alignV       .invalidateInputs(parse, from);
-        if (this.lineHeight   ) this.lineHeight   .invalidateInputs(parse, from);
-        if (this.letterSpacing) this.letterSpacing.invalidateInputs(parse, from);
+        if (this.text         ) this.text         .invalidateInputs(parse, from, force);
+        if (this.x            ) this.x            .invalidateInputs(parse, from, force);
+        if (this.y            ) this.y            .invalidateInputs(parse, from, force);
+        if (this.width        ) this.width        .invalidateInputs(parse, from, force);
+        if (this.height       ) this.height       .invalidateInputs(parse, from, force);
+        if (this.font         ) this.font         .invalidateInputs(parse, from, force);
+        if (this.style        ) this.style        .invalidateInputs(parse, from, force);
+        if (this.size         ) this.size         .invalidateInputs(parse, from, force);
+        if (this.alignH       ) this.alignH       .invalidateInputs(parse, from, force);
+        if (this.alignV       ) this.alignV       .invalidateInputs(parse, from, force);
+        if (this.lineHeight   ) this.lineHeight   .invalidateInputs(parse, from, force);
+        if (this.letterSpacing) this.letterSpacing.invalidateInputs(parse, from, force);
     }
 
 

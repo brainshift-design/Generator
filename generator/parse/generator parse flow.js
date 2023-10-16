@@ -489,8 +489,7 @@ function genParseSort(parse)
     if (nInputs == 1)
         sort.input = genParse(parse);
 
-    //sort.order  = genParse(parse);
-    sort.column  = genParse(parse);
+    sort.order   = genParse(parse);
     sort.reverse = genParse(parse);
 
     

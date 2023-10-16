@@ -86,11 +86,11 @@ extends GOperator2
 
 
 
-    invalidateInputs(parse, from)
+    invalidateInputs(parse, from, force)
     {
-        super.invalidateInputs(parse, from);
+        super.invalidateInputs(parse, from, force);
 
-        if (this.amount) this.amount.invalidateInputs(parse, from);
+        if (this.amount) this.amount.invalidateInputs(parse, from, force);
     }
 
 

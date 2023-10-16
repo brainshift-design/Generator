@@ -151,17 +151,17 @@ extends GOperator1
     
     
     
-   invalidateInputs(parse, from)
+   invalidateInputs(parse, from, force)
     {
-        super.invalidateInputs(parse, from);
+        super.invalidateInputs(parse, from, force);
 
-        if (this.x     ) this.x     .invalidateInputs(parse, from);
-        if (this.y     ) this.y     .invalidateInputs(parse, from);
-        if (this.blur  ) this.blur  .invalidateInputs(parse, from);
-        if (this.spread) this.spread.invalidateInputs(parse, from);
-        if (this.fill  ) this.fill  .invalidateInputs(parse, from);
-        if (this.blend ) this.blend .invalidateInputs(parse, from);
-        if (this.behind) this.behind.invalidateInputs(parse, from);
+        if (this.x     ) this.x     .invalidateInputs(parse, from, force);
+        if (this.y     ) this.y     .invalidateInputs(parse, from, force);
+        if (this.blur  ) this.blur  .invalidateInputs(parse, from, force);
+        if (this.spread) this.spread.invalidateInputs(parse, from, force);
+        if (this.fill  ) this.fill  .invalidateInputs(parse, from, force);
+        if (this.blend ) this.blend .invalidateInputs(parse, from, force);
+        if (this.behind) this.behind.invalidateInputs(parse, from, force);
     }
 
 

@@ -123,14 +123,14 @@ extends GOperator1
 
 
 
-    invalidateInputs(parse, from)
+    invalidateInputs(parse, from, force)
     {
-        super.invalidateInputs(parse, from);
+        super.invalidateInputs(parse, from, force);
 
-        if (this.startPad  ) this.startPad  .invalidateInputs(parse, from);
-        if (this.startCount) this.startCount.invalidateInputs(parse, from);
-        if (this.endPad    ) this.endPad    .invalidateInputs(parse, from);
-        if (this.endCount  ) this.endCount  .invalidateInputs(parse, from);
+        if (this.startPad  ) this.startPad  .invalidateInputs(parse, from, force);
+        if (this.startCount) this.startCount.invalidateInputs(parse, from, force);
+        if (this.endPad    ) this.endPad    .invalidateInputs(parse, from, force);
+        if (this.endCount  ) this.endCount  .invalidateInputs(parse, from, force);
     }
 
 

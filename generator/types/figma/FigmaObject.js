@@ -2,7 +2,6 @@ class FigmaObject
 {
     type;
     
-
     nodeId     = '';
 
 
@@ -10,7 +9,6 @@ class FigmaObject
     objectName = NULL;
 
     itemIndex  = -1; // for linking objects to list items
-    //inputIndex = -1; // for unique object IDs
 
     retain     = 0;
     feedback   = false;
@@ -50,7 +48,6 @@ class FigmaObject
     copyBase(base)
     {
         this.itemIndex    = base.itemIndex;
-        //this.inputIndex   = base.inputIndex;
         
         this.feedback     = base.feedback;
         this.retain       = base.retain;

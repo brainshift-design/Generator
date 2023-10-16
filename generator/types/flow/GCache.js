@@ -70,9 +70,9 @@ extends GOperator1
 
 
 
-    invalidateInputs(parse, from)
+    invalidateInputs(parse, from, force)
     {
-        super.invalidateInputs(parse, from);
+        super.invalidateInputs(parse, from, force);
 
         this.cachedValue = null;
     }

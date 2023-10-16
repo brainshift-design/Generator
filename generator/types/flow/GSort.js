@@ -1,8 +1,7 @@
 class GSort
 extends GOperator1
 {
-    //order   = null;
-    column  = null;
+    order   = null;
     reverse = null;
 
     firstSortNode = null;
@@ -22,8 +21,7 @@ extends GOperator1
 
         copy.copyBase(this);
 
-        //if (this.order  ) copy.order   = this.order  .copy();
-        if (this.column ) copy.column  = this.column .copy();
+        if (this.order  ) copy.order   = this.order  .copy();
         if (this.reverse) copy.reverse = this.reverse.copy();
 
         return copy;
@@ -37,73 +35,74 @@ extends GOperator1
             return this;
 
 
-        //const order   = this.order   ? (await this.order  .eval(parse)).toValue() : null;
         const reverse = this.reverse ? (await this.reverse.eval(parse)).toValue() : null;
 
 
-        this.value = new ListValue();
-
-        let maxColumns = 0;
-
-        
-        if (   this.input
-            && this.column
-            && reverse)
+        if (this.options.enabled)
         {
-            const input = (await this.input .eval(parse)).toValue();
+            this.value = new ListValue();
+            this.value.objects = [];
 
+            let maxColumns = 0;
 
-            if (   input 
-                && this.column
-                && this.column.getOrderNode)
+            
+            if (   this.input
+                && this.order
+                && reverse)
             {
-                const column    = (await this.column.eval(parse)).toValue(); // must be done for getOrderNode() to work
-                const orderNode = this.column.getOrderNode(parse);
+                const input = (await this.input .eval(parse)).toValue();
 
 
-                if (orderNode)
+                if (   input 
+                    && this.order
+                    && this.order.getOrderNode)
                 {
-                    const reverseMultiplier = reverse.value > 0 ? -1 : 1;
+                    const orderNode = this.order.getOrderNode(parse);
 
-                    input.items.sort(async (a, b) => 
+
+                    if (orderNode)
                     {
-                        // console.log('a =', a);
-                        // console.log('b =', b);
+                        const reverseMultiplier = reverse.value > 0 ? -1 : 1;
+                        const unsorted          = [...input.items];
 
-                        orderNode.input = a; this.column.invalidateInputs(parse, this); 
-                        const ca = (await this.column.eval(parse)).toValue().value;//0;//a ? (isListType(a.type) ? a.items[column.value].value : a.value) : 0;
+
+                        input.items = await asyncSort(
+                            parse, 
+                            input.items, 
+                            orderNode, 
+                            this,
+                            this.order, 
+                            reverseMultiplier);
+
+
+                        input.items.forEach(i => maxColumns = Math.max(maxColumns, isListType(i.type) ? i.items.length : 1));
                         
-                        orderNode.input = b; this.column.invalidateInputs(parse, this); 
-                        const cb = (await this.column.eval(parse)).toValue().value;//0;//b ? (isListType(b.type) ? b.items[column.value].value : b.value) : 0;
 
-                        console.log('ca =', ca);
-                        console.log('cb =', cb);
-                        console.log('');
-
-                        if (ca < cb) return -1 * reverseMultiplier;
-                        if (ca > cb) return  1 * reverseMultiplier;
-
-                        return 0;
-                    });
-
-
-                    input.items.forEach(i => maxColumns = Math.max(maxColumns, isListType(i.type) ? i.items.length : 1));
-
-                    for (let i = 0; i < input.items.length; i++)
-                    {
-                        const row = input.items[i];
-                        this.value.items.push(row.copy());
-
-                        if (   row.objects
-                            && this.value.objects)
+                        for (let i = 0; i < input.items.length; i++)
                         {
-                            row.objects.forEach(o => o.itemIndex = i);
-                            this.value.objects.push(...row.objects);
+                            const row       = input   .items[i];
+                            const itemIndex = unsorted.indexOf(row);
+
+                            this.value.items.push(row.copy());
+
+                            if (   row.objects
+                                && this.value.objects)
+                            {
+                                const objects = input.objects.filter(o => o.itemIndex == itemIndex);
+                                objects.forEach(o => o.itemIndex = i);
+
+                                this.value.objects.push(...objects);
+                            }
                         }
                     }
                 }
             }
         }
+        else
+            this.value = (await this.input.eval(parse)).toValue();
+
+
+        this.updateValueObjects();
 
 
         const preview = new ListValue(this.value.items.slice(0, Math.min(this.value.items.length, 11)));
@@ -115,7 +114,6 @@ extends GOperator1
             ['type',    this.outputListType()                   ],
             //['length',  new NumberValue(this.value.items.length)],
             //['columns', new NumberValue(maxColumns)             ],
-            //['column',  column                                  ],
             ['reverse', reverse                                 ]
         ]);
         
@@ -130,8 +128,7 @@ extends GOperator1
     isValid()
     {
         return super.isValid()
-            //&& this.order   && this.order  .isValid()
-            && this.column  && this.column .isValid()
+            && this.order   && this.order  .isValid()
             && this.reverse && this.reverse.isValid();
     }
 
@@ -141,20 +138,18 @@ extends GOperator1
     {
         super.pushValueUpdates(parse);
 
-        //if (this.order  ) this.order  .pushValueUpdates(parse);
-        if (this.column ) this.column .pushValueUpdates(parse);
+        if (this.order  ) this.order  .pushValueUpdates(parse);
         if (this.reverse) this.reverse.pushValueUpdates(parse);
     }
 
 
 
-    invalidateInputs(parse, from)
+    invalidateInputs(parse, from, force)
     {
-        super.invalidateInputs(parse, from);
+        super.invalidateInputs(parse, from, force);
 
-        //if (this.order  ) this.order  .invalidateInputs(parse, from);
-        if (this.column ) this.column .invalidateInputs(parse, from);
-        if (this.reverse) this.reverse.invalidateInputs(parse, from);
+        if (this.order  ) this.order  .invalidateInputs(parse, from, force);
+        if (this.reverse) this.reverse.invalidateInputs(parse, from, force);
     }
 
 
@@ -163,8 +158,47 @@ extends GOperator1
     {
         super.iterateLoop(parse);
 
-        //if (this.order  ) this.order  .iterateLoop(parse);
-        if (this.column ) this.column .iterateLoop(parse);
+        if (this.order  ) this.order  .iterateLoop(parse);
         if (this.reverse) this.reverse.iterateLoop(parse);
     }
+}
+
+
+
+async function asyncSort(parse, array, orderNode, node, order, reverseMultiplier)
+{
+    const sorted = [];
+
+    for (const item of array)
+    {
+        const criterion = await getSortCriterion(parse, orderNode, node, order, item);
+        sorted.push({item, criterion});
+    }
+
+    console.log('sorted =', sorted.map(i => i.criterion));
+
+    sorted.sort((a, b) => 
+    {
+        if (a.criterion < b.criterion) return -1 * reverseMultiplier;
+        if (a.criterion > b.criterion) return  1 * reverseMultiplier;
+
+        return 0;
+    });
+
+
+    return sorted.map(_item => _item.item);
+}
+
+
+
+async function getSortCriterion(parse, orderNode, node, order, item)
+{
+    orderNode.input = item;
+    order.invalidateInputs(parse, node, true); 
+
+    console.log('item.value =', item.value);
+    const value = (await order.eval(parse)).toValue();
+    console.log('value =', value);
+
+    return value.value;
 }

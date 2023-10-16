@@ -51,6 +51,7 @@ extends GShape
         if (this.input)
         {
             input = (await this.input.eval(parse)).toValue();
+            //if (this.nodeId == 'path3') console.log('input =', input);
 
 
             if (   input
@@ -78,7 +79,7 @@ extends GShape
 
             this.value = new VectorPathValue(
                 this.nodeId,
-                points  ?? input.points,
+                points && points.items.length > 0 ? points : input.points,
                 closed  ?? input.closed,
                 degree  ?? input.degree,
                 winding ?? input.winding,
@@ -95,6 +96,7 @@ extends GShape
                 round);
         }
 
+        
         this.setUpdateValues(parse, 
         [
             ['value', this.value]
@@ -107,7 +109,9 @@ extends GShape
         await this.evalObjects(parse);
 
 
-        if (!this.points ) this.points  = this.value.points .copy();
+        if (   !this.points 
+            || this.points.items == 0) 
+                           this.points  = this.value.points .copy();
         if (!this.closed ) this.closed  = this.value.closed .copy();
         if (!this.degree ) this.degree  = this.value.degree .copy();
         if (!this.winding) this.winding = this.value.winding.copy();
@@ -223,15 +227,15 @@ extends GShape
 
 
 
-    invalidateInputs(parse, from)
+    invalidateInputs(parse, from, force)
     {
-        super.invalidateInputs(parse, from);
+        super.invalidateInputs(parse, from, force);
 
-        if (this.points ) this.points .invalidateInputs(parse, from);
-        if (this.closed ) this.closed .invalidateInputs(parse, from);
-        if (this.degree ) this.degree .invalidateInputs(parse, from);
-        if (this.winding) this.winding.invalidateInputs(parse, from);
-        if (this.round  ) this.round  .invalidateInputs(parse, from);
+        if (this.points ) this.points .invalidateInputs(parse, from, force);
+        if (this.closed ) this.closed .invalidateInputs(parse, from, force);
+        if (this.degree ) this.degree .invalidateInputs(parse, from, force);
+        if (this.winding) this.winding.invalidateInputs(parse, from, force);
+        if (this.round  ) this.round  .invalidateInputs(parse, from, force);
     }
 
 

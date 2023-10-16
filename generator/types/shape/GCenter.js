@@ -153,13 +153,13 @@ extends GOperator1
 
 
 
-   invalidateInputs(parse, from)
+   invalidateInputs(parse, from, force)
     {
-        super.invalidateInputs(parse, from);
+        super.invalidateInputs(parse, from, force);
 
-        if (this.centerX   ) this.centerX   .invalidateInputs(parse, from);
-        if (this.centerY   ) this.centerY   .invalidateInputs(parse, from);
-        if (this.showCenter) this.showCenter.invalidateInputs(parse, from);
+        if (this.centerX   ) this.centerX   .invalidateInputs(parse, from, force);
+        if (this.centerY   ) this.centerY   .invalidateInputs(parse, from, force);
+        if (this.showCenter) this.showCenter.invalidateInputs(parse, from, force);
     }
 
 

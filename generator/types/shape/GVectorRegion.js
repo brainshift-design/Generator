@@ -228,14 +228,14 @@ extends GShape
 
 
 
-    invalidateInputs(parse, from)
+    invalidateInputs(parse, from, force)
     {
-        super.invalidateInputs(parse, from);
+        super.invalidateInputs(parse, from, force);
 
-        this.inputs.forEach(i => i.invalidateInputs(parse, from));
+        this.inputs.forEach(i => i.invalidateInputs(parse, from, force));
 
-        if (this.winding) this.winding.invalidateInputs(parse, from);
-        if (this.props  ) this.props  .invalidateInputs(parse, from);
+        if (this.winding) this.winding.invalidateInputs(parse, from, force);
+        if (this.props  ) this.props  .invalidateInputs(parse, from, force);
     }
 
 

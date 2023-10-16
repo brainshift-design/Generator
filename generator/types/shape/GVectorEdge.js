@@ -153,14 +153,14 @@ extends GOperator1
 
 
 
-    invalidateInputs(parse, from)
+    invalidateInputs(parse, from, force)
     {
-        super.invalidateInputs(parse, from);
+        super.invalidateInputs(parse, from, force);
 
-        if (this.input0      ) this.input0      .invalidateInputs(parse, from);
-        if (this.input1      ) this.input1      .invalidateInputs(parse, from);
-        if (this.startTangent) this.startTangent.invalidateInputs(parse, from);
-        if (this.endTangent  ) this.endTangent  .invalidateInputs(parse, from);
+        if (this.input0      ) this.input0      .invalidateInputs(parse, from, force);
+        if (this.input1      ) this.input1      .invalidateInputs(parse, from, force);
+        if (this.startTangent) this.startTangent.invalidateInputs(parse, from, force);
+        if (this.endTangent  ) this.endTangent  .invalidateInputs(parse, from, force);
     }
 
 

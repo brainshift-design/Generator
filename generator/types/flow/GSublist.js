@@ -38,6 +38,7 @@ extends GOperator1
 
 
         this.value = new ListValue();
+        this.value.objects = [];
 
         let length = 0;
         
@@ -65,15 +66,20 @@ extends GOperator1
                 {
                     if (this.options.enabled)
                     {
-                        for (let i = start.value; i < _end.value; i++)
+                        for (let i = start.value, j = 0; i < _end.value; i++, j++)
                         {
                             const item = input.items[i];
                             
-                            this.value.items.push(item ? item/*.copy()*/ : NullValue);
+                            this.value.items.push(item ? item.copy() : NullValue);
                             
                             if (   item
-                                && this.value.objects) 
-                                this.value.objects.push(...input.items[i].objects);
+                                && this.value.objects)
+                            {
+                                const objects = input.objects.filter(o => o.itemIndex == i);
+                                objects.forEach(o => o.itemIndex = j);
+
+                                this.value.objects.push(...objects);
+                            }
                         }
                     }
                     else
@@ -125,12 +131,12 @@ extends GOperator1
 
 
 
-    invalidateInputs(parse, from)
+    invalidateInputs(parse, from, force)
     {
-        super.invalidateInputs(parse, from);
+        super.invalidateInputs(parse, from, force);
 
-        if (this.start) this.start.invalidateInputs(parse, from);
-        if (this.end  ) this.end  .invalidateInputs(parse, from);
+        if (this.start) this.start.invalidateInputs(parse, from, force);
+        if (this.end  ) this.end  .invalidateInputs(parse, from, force);
     }
 
 

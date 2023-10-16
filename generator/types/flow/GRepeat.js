@@ -108,11 +108,11 @@ extends GOperator1
                     repeat.iteration = i;
 
 
-                    this.input.invalidateInputs(parse, this);
+                    this.input.invalidateInputs(parse, this, false);
 
                     if (this.loop.type != NUMBER_VALUE)
                     {
-                        //this.loop.invalidateInputs(parse, this);
+                        //this.loop.invalidateInputs(parse, this, false);
                         //this.loop.iterateLoop(parse);
                     }
                     
@@ -247,13 +247,13 @@ extends GOperator1
 
 
 
-    invalidateInputs(parse, from)
+    invalidateInputs(parse, from, force)
     {
-        super.invalidateInputs(parse, from);
+        super.invalidateInputs(parse, from, force);
 
-        if (this. count) this. count.invalidateInputs(parse, from);
-        if (this._while) this._while.invalidateInputs(parse, from);
-        if (this. loop ) this. loop .invalidateInputs(parse, from);
+        if (this. count) this. count.invalidateInputs(parse, from, force);
+        if (this._while) this._while.invalidateInputs(parse, from, force);
+        if (this. loop ) this. loop .invalidateInputs(parse, from, force);
     }
 
 

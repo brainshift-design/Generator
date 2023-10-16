@@ -140,14 +140,14 @@ extends GOperator
 
 
 
-    invalidateInputs(parse, from)
+    invalidateInputs(parse, from, force)
     {
-        super.invalidateInputs(parse, from);
+        super.invalidateInputs(parse, from, force);
 
         this.from = from;
 
-        if (this.input   ) this.input   .invalidateInputs(parse, from);
-        if (this.feedback) this.feedback.invalidateInputs(parse, from);
+        if (this.input   ) this.input   .invalidateInputs(parse, from, force);
+        if (this.feedback) this.feedback.invalidateInputs(parse, from, force);
     }
 
 

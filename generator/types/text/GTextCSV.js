@@ -123,12 +123,12 @@ extends GOperator1
 
 
 
-    invalidateInputs(parse, from)
+    invalidateInputs(parse, from, force)
     {
-        super.invalidateInputs(parse, from);
+        super.invalidateInputs(parse, from, force);
 
-        if (this.rowSeparator   ) this.rowSeparator   .invalidateInputs(parse, from);
-        if (this.columnSeparator) this.columnSeparator.invalidateInputs(parse, from);
+        if (this.rowSeparator   ) this.rowSeparator   .invalidateInputs(parse, from, force);
+        if (this.columnSeparator) this.columnSeparator.invalidateInputs(parse, from, force);
     }
 
 

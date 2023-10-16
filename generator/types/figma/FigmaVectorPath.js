@@ -60,10 +60,10 @@ extends FigmaShape
             this.round);
 
 
-        copy.x      = this.x;
-        copy.y      = this.y;
-        copy.width  = this.width;
-        copy.height = this.height;
+        copy.x        = this.x;
+        copy.y        = this.y;
+        copy.width    = this.width;
+        copy.height   = this.height;
 
 
         copy.copyBase(this);

@@ -73,11 +73,11 @@ extends GOperator
     
     
     
-    invalidateInputs(parse, from)
+    invalidateInputs(parse, from, force)
     {
-        super.invalidateInputs(parse, from);
+        super.invalidateInputs(parse, from, force);
 
-        if (this.maskType) this.maskType.invalidateInputs(parse, from);
+        if (this.maskType) this.maskType.invalidateInputs(parse, from, force);
     }
 
 

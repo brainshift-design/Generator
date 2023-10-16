@@ -37,8 +37,8 @@ extends GArithmetic
         if (this.options.enabled)
             op.value = Math.min(Math.max(0, op.value), MATH_OPS.length-1);
         
+
         this.value = await evalMinMaxInputs(this.inputs, op.value, parse);
-        console.log('this.inputs =', [...this.inputs]);
 
         
         this.setUpdateValues(parse,
@@ -72,11 +72,11 @@ extends GArithmetic
 
 
 
-    invalidateInputs(parse, from)
+    invalidateInputs(parse, from, force)
     {
-        super.invalidateInputs(parse, from);
+        super.invalidateInputs(parse, from, force);
 
-        if (this.operation) this.operation.invalidateInputs(parse, from);
+        if (this.operation) this.operation.invalidateInputs(parse, from, force);
     }
 
 
@@ -102,6 +102,7 @@ async function evalMinMaxInputs(inputs, op, parse)
 
     const val0 = (await inputs[0].eval(parse)).toValue();
 
+
     if (   inputs.length == 1
         && val0.type == NUMBER_VALUE)
     {
@@ -110,23 +111,18 @@ async function evalMinMaxInputs(inputs, op, parse)
     else if (isListType(val0.type)
             && !isEmpty(val0.items))
     {
-        const item0 = val0.items[0];
-
-        value.value    = item0.value;
-        value.decimals = item0.decimals;
-
+        value = val0.items[0].copy();
+        
         for (let i = 1; i < val0.items.length; i++)
         {
             const item = val0.items[i];
 
             if (item.type == NUMBER_VALUE)
             {
-                value.value = 
+                value = new NumberValue( 
                     op == 0
-                    ? Math.min(value.value, item.value)
-                    : Math.max(value.value, item.value);
-
-                value.decimals = Math.max(value.decimals, item.decimals);
+                    ? Math.min(value.toNumber(), item.toNumber())
+                    : Math.max(value.toNumber(), item.toNumber()));
             }                    
         }
     }
@@ -135,14 +131,14 @@ async function evalMinMaxInputs(inputs, op, parse)
         if (val0.type != NUMBER_VALUE)
             return NumberValue.NaN;
 
-        value.value    = val0.value;
-        value.decimals = val0.decimals;
+        value = val0;
     }
 
 
     for (let i = 1; i < inputs.length; i++)
     {
         const val = (await inputs[i].eval(parse)).toValue();
+
 
         if (isListType(val.type))
         {

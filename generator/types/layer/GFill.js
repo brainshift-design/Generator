@@ -112,13 +112,13 @@ extends GOperator1
     
     
     
-    invalidateInputs(parse, from)
+    invalidateInputs(parse, from, force)
     {
-        super.invalidateInputs(parse, from);
+        super.invalidateInputs(parse, from, force);
 
-        if (this.color  ) this.color  .invalidateInputs(parse, from);
-        if (this.opacity) this.opacity.invalidateInputs(parse, from);
-        if (this.blend  ) this.blend  .invalidateInputs(parse, from);
+        if (this.color  ) this.color  .invalidateInputs(parse, from, force);
+        if (this.opacity) this.opacity.invalidateInputs(parse, from, force);
+        if (this.blend  ) this.blend  .invalidateInputs(parse, from, force);
     }
 
 

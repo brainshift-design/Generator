@@ -157,20 +157,20 @@ extends GOperator
 
 
 
-    invalidateInputs(parse, from)
+    invalidateInputs(parse, from, force)
     {
-        super.invalidateInputs(parse, from);
+        super.invalidateInputs(parse, from, force);
 
-        this.inputs.forEach(i => i.invalidateInputs(parse, from));
+        this.inputs.forEach(i => i.invalidateInputs(parse, from, force));
         
-        if (this.gradType) this.gradType.invalidateInputs(parse, from);
-        if (this.x       ) this.x       .invalidateInputs(parse, from);
-        if (this.y       ) this.y       .invalidateInputs(parse, from);
-        if (this.size    ) this.size    .invalidateInputs(parse, from);
-        if (this.angle   ) this.angle   .invalidateInputs(parse, from);
-        if (this.aspect  ) this.aspect  .invalidateInputs(parse, from);
-        if (this.skew    ) this.skew    .invalidateInputs(parse, from);
-        if (this.blend   ) this.blend   .invalidateInputs(parse, from);
+        if (this.gradType) this.gradType.invalidateInputs(parse, from, force);
+        if (this.x       ) this.x       .invalidateInputs(parse, from, force);
+        if (this.y       ) this.y       .invalidateInputs(parse, from, force);
+        if (this.size    ) this.size    .invalidateInputs(parse, from, force);
+        if (this.angle   ) this.angle   .invalidateInputs(parse, from, force);
+        if (this.aspect  ) this.aspect  .invalidateInputs(parse, from, force);
+        if (this.skew    ) this.skew    .invalidateInputs(parse, from, force);
+        if (this.blend   ) this.blend   .invalidateInputs(parse, from, force);
     }
 
 

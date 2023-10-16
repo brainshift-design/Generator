@@ -150,14 +150,14 @@ extends GAffine
 
 
 
-    invalidateInputs(parse, from)
+    invalidateInputs(parse, from, force)
     {
-        super.invalidateInputs(parse, from);
+        super.invalidateInputs(parse, from, force);
 
-        if (this.scaleX       ) this.scaleX       .invalidateInputs(parse, from);
-        if (this.scaleY       ) this.scaleY       .invalidateInputs(parse, from);
-        if (this.affectCorners) this.affectCorners.invalidateInputs(parse, from);
-        if (this.affectStyle  ) this.affectStyle  .invalidateInputs(parse, from);
+        if (this.scaleX       ) this.scaleX       .invalidateInputs(parse, from, force);
+        if (this.scaleY       ) this.scaleY       .invalidateInputs(parse, from, force);
+        if (this.affectCorners) this.affectCorners.invalidateInputs(parse, from, force);
+        if (this.affectStyle  ) this.affectStyle  .invalidateInputs(parse, from, force);
     }
 
 

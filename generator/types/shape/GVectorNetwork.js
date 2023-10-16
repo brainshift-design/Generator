@@ -178,9 +178,9 @@ extends GShape
 
 
 
-    invalidateInputs(parse, from)
+    invalidateInputs(parse, from, force)
     {
-        super.invalidateInputs(parse, from);
+        super.invalidateInputs(parse, from, force);
 
         this.inputs.forEach(i => i.pushValueUpdates(parse));
     }

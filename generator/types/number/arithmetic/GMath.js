@@ -79,11 +79,11 @@ extends GArithmetic
 
 
 
-    invalidateInputs(parse, from)
+    invalidateInputs(parse, from, force)
     {
-        super.invalidateInputs(parse, from);
+        super.invalidateInputs(parse, from, force);
 
-        if (this.operation) this.operation.invalidateInputs(parse, from);
+        if (this.operation) this.operation.invalidateInputs(parse, from, force);
     }
 
 

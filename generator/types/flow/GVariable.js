@@ -120,11 +120,11 @@ extends GOperator
 
 
 
-    invalidateInputs(parse, from)
+    invalidateInputs(parse, from, force)
     {
-        super.invalidateInputs(parse, from);
+        super.invalidateInputs(parse, from, force);
 
-        if (this.varValue) this.varValue.invalidateInputs(parse, from);
+        if (this.varValue) this.varValue.invalidateInputs(parse, from, force);
     }
 
 

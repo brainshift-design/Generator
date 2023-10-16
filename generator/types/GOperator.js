@@ -126,9 +126,9 @@ extends GNode
 
 
 
-    invalidateInputs(parse, from)
+    invalidateInputs(parse, from, force)
     {
-        super.invalidateInputs(parse, from);
+        super.invalidateInputs(parse, from, force);
 
         //if (this.unknown)
             this.valid = false;

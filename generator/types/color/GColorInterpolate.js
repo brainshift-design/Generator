@@ -159,13 +159,13 @@ extends GOperator2
 
 
 
-    invalidateInputs(parse, from)
+    invalidateInputs(parse, from, force)
     {
-        super.invalidateInputs(parse, from);
+        super.invalidateInputs(parse, from, force);
 
-        if (this.space ) this.space .invalidateInputs(parse, from);
-        if (this.amount) this.amount.invalidateInputs(parse, from);
-        if (this.gamma ) this.gamma .invalidateInputs(parse, from);
+        if (this.space ) this.space .invalidateInputs(parse, from, force);
+        if (this.amount) this.amount.invalidateInputs(parse, from, force);
+        if (this.gamma ) this.gamma .invalidateInputs(parse, from, force);
     }
 
 

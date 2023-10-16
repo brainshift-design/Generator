@@ -104,9 +104,10 @@ class GNode
 
 
 
-    invalidateInputs(parse, from)
+    invalidateInputs(parse, from, force = false)
     {
-        if (this.unknown)
+        if (   this.unknown
+            || force)
             this.valid = false;
 
         return true;

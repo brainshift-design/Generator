@@ -159,12 +159,12 @@ extends GOperator2
 
 
 
-    invalidateInputs(parse, from)
+    invalidateInputs(parse, from, force)
     {
-        super.invalidateInputs(parse, from);
+        super.invalidateInputs(parse, from, force);
 
-        if (this.standard) this.standard.invalidateInputs(parse, from);
-        if (this.contrast) this.contrast.invalidateInputs(parse, from);
+        if (this.standard) this.standard.invalidateInputs(parse, from, force);
+        if (this.contrast) this.contrast.invalidateInputs(parse, from, force);
     }
 
 

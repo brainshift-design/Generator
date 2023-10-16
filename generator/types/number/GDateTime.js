@@ -121,17 +121,17 @@ extends GOperator
 
 
 
-    invalidateInputs(parse, from)
+    invalidateInputs(parse, from, force)
     {
-        super.invalidateInputs(parse, from);
+        super.invalidateInputs(parse, from, force);
 
-        if (this.year     ) this.year     .invalidateInputs(parse, from);
-        if (this.month    ) this.month    .invalidateInputs(parse, from);
-        if (this.date     ) this.date     .invalidateInputs(parse, from);
-        if (this.dayOfWeek) this.dayOfWeek.invalidateInputs(parse, from);
-        if (this.hours    ) this.hours    .invalidateInputs(parse, from);
-        if (this.minutes  ) this.minutes  .invalidateInputs(parse, from);
-        if (this.seconds  ) this.seconds  .invalidateInputs(parse, from);
+        if (this.year     ) this.year     .invalidateInputs(parse, from, force);
+        if (this.month    ) this.month    .invalidateInputs(parse, from, force);
+        if (this.date     ) this.date     .invalidateInputs(parse, from, force);
+        if (this.dayOfWeek) this.dayOfWeek.invalidateInputs(parse, from, force);
+        if (this.hours    ) this.hours    .invalidateInputs(parse, from, force);
+        if (this.minutes  ) this.minutes  .invalidateInputs(parse, from, force);
+        if (this.seconds  ) this.seconds  .invalidateInputs(parse, from, force);
     }
 
 

@@ -87,11 +87,11 @@ extends GOperator1
 
 
 
-    invalidateInputs(parse, from)
+    invalidateInputs(parse, from, force)
     {
-        super.invalidateInputs(parse, from);
+        super.invalidateInputs(parse, from, force);
 
-        if (this.separator) this.separator.invalidateInputs(parse, from);
+        if (this.separator) this.separator.invalidateInputs(parse, from, force);
     }
 
 

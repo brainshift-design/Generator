@@ -108,12 +108,12 @@ extends GOperator
 
 
 
-    invalidateInputs(parse, from)
+    invalidateInputs(parse, from, force)
     {
-        super.invalidateInputs(parse, from);
+        super.invalidateInputs(parse, from, force);
 
-        if (this.column) this.column.invalidateInputs(parse, from);
-        if (this.row   ) this.row   .invalidateInputs(parse, from);
+        if (this.column) this.column.invalidateInputs(parse, from, force);
+        if (this.row   ) this.row   .invalidateInputs(parse, from, force);
     }
 
 

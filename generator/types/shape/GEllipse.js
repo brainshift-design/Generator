@@ -193,13 +193,13 @@ extends GShape
 
    
         
-    invalidateInputs(parse, from)
+    invalidateInputs(parse, from, force)
     {
-        super.invalidateInputs(parse, from);
+        super.invalidateInputs(parse, from, force);
 
-        if (this.from ) this.from .invalidateInputs(parse, from);
-        if (this.to   ) this.to   .invalidateInputs(parse, from);
-        if (this.inner) this.inner.invalidateInputs(parse, from);
+        if (this.from ) this.from .invalidateInputs(parse, from, force);
+        if (this.to   ) this.to   .invalidateInputs(parse, from, force);
+        if (this.inner) this.inner.invalidateInputs(parse, from, force);
     }
 
 

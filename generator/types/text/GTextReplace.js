@@ -107,13 +107,13 @@ extends GOperator1
 
 
 
-    invalidateInputs(parse, from)
+    invalidateInputs(parse, from, force)
     {
-        super.invalidateInputs(parse, from);
+        super.invalidateInputs(parse, from, force);
 
-        if (this.what ) this.what .invalidateInputs(parse, from);
-        if (this.with ) this.with .invalidateInputs(parse, from);
-        if (this.regex) this.regex.invalidateInputs(parse, from);
+        if (this.what ) this.what .invalidateInputs(parse, from, force);
+        if (this.with ) this.with .invalidateInputs(parse, from, force);
+        if (this.regex) this.regex.invalidateInputs(parse, from, force);
     }
 
 

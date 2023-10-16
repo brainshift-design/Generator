@@ -169,11 +169,11 @@ extends GShapeBase
 
 
 
-    invalidateInputs(parse, from)
+    invalidateInputs(parse, from, force)
     {
-        super.invalidateInputs(parse, from);
+        super.invalidateInputs(parse, from, force);
 
-        this.inputs.forEach(i => i.invalidateInputs(parse, from));
+        this.inputs.forEach(i => i.invalidateInputs(parse, from, force));
     }
 
 

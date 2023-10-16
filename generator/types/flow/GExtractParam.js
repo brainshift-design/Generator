@@ -45,7 +45,7 @@ extends GOperator1
         {
             const input = (await this.input.eval(parse)).toValue();
 
-            
+
             if (   input
                 && input.items)
             {
@@ -82,10 +82,10 @@ extends GOperator1
 
         this.setUpdateValues(parse,
         [
-            ['preview',    new ListValue(this.value.items.slice(0, Math.min(this.value.items.length, 11)))],
-            ['type',       this.outputListType()                                                          ],
-            ['length',     new NumberValue(this.value.items.length)                                       ], // used to set start and end maxima
-            ['param',      param                                                                        ]
+            ['preview', new ListValue(this.value.items.slice(0, Math.min(this.value.items.length, 11)))],
+            ['type',    this.outputListType()                                                          ],
+            ['length',  new NumberValue(this.value.items.length)                                       ], // used to set start and end maxima
+            ['param',   param                                                                        ]
         ]);
         
 
@@ -113,11 +113,11 @@ extends GOperator1
 
 
 
-    invalidateInputs(parse, from)
+    invalidateInputs(parse, from, force)
     {
-        super.invalidateInputs(parse, from);
+        super.invalidateInputs(parse, from, force);
 
-        if (this.param) this.param.invalidateInputs(parse, from);
+        if (this.param) this.param.invalidateInputs(parse, from, force);
     }
 
 
