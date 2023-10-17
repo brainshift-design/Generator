@@ -81,7 +81,19 @@ extends GOperator
         for (let i = 0, o = 0; i < this.inputs.length; i++)
         {
             const input = (await this.inputs[i].eval(parse)).toValue();
-            stops.items.push(input);
+
+
+            if (   input
+                && this.options.enabled)
+            {
+                if (isListType(input.type))
+                {
+                    for (const item of input.items)
+                        stops.items.push(item);
+                }
+                else
+                    stops.items.push(input);
+            }
         }
 
 
