@@ -17,8 +17,8 @@ extends OperatorBase
         this.showHeaderTooltip = true;
         
 
-        this.addInput (new Input (LIST_VALUES));
-        this.addOutput(new Output([LIST_VALUE], this.output_genRequest));
+        this.addInput (new Input (ALL_VALUES));
+        this.addOutput(new Output([ANY_VALUE], this.output_genRequest));
 
         this.addParam(this.paramParam = new TextParam('param', 'param', false, true, true));
 
@@ -61,16 +61,15 @@ extends OperatorBase
     updateValues(requestId, actionId, updateParamId, paramIds, values)
     {
         //const fullLength = values[paramIds.findIndex(id => id == 'fullLength')];
-        const length     = values[paramIds.findIndex(id => id == 'length')];
+        //const length     = values[paramIds.findIndex(id => id == 'length')];
 
-        this.length = length.value;
+        //this.length = length.value;
 
         
         const type = values[paramIds.findIndex(id => id == 'type')];
 
         if (type)
             this.outputs[0].types = [type.value];
-
 
         super.updateValues(requestId, actionId, updateParamId, paramIds, values);
     }

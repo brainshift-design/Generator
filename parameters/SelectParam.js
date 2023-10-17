@@ -219,8 +219,8 @@ function initSelectParamMenu(param)
 
             
         const item = new MenuItem(
-              option.replaceAll('/', ' / ') 
-            + ' ' + subscriptNumber(i), 
+              i + '  ·  '
+            + option.replaceAll('/', ' / '), 
             null,
             options);
 

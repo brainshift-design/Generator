@@ -43,11 +43,6 @@ extends GOperator1
         const param = this.param ? (await this.param.eval(parse)).toValue() : null;
 
 
-        this.value = new ListValue();
-
-        let length = 0;
-        
-
         if (   this.input
             && param
             && param.value != '')
@@ -55,12 +50,9 @@ extends GOperator1
             const input = (await this.input.eval(parse)).toValue();
 
 
-            if (   input
-                && input.items)
+            if (isListType(input.type))
             {
-                length = input.items.length;
-                //console.log('input.items =', [...input.items]);
-
+                this.value = new ListValue();
 
                 if (this.options.enabled)
                 {
@@ -72,7 +64,7 @@ extends GOperator1
                                item 
                             && item[param.value]
                             ? item[param.value].copy() 
-                            : NullValue);
+                            : NullValue.copy());
                         
                         if (   item
                             && item[param.value]
@@ -81,9 +73,20 @@ extends GOperator1
                             this.value.objects.push(...item[param.value].objects);
                     }
                 }
-           }
+                else
+                    this.value = input;
+            }
             else
-                this.value = ListValue.NaN.copy();
+            {
+                this.value = 
+                    input[param.value]
+                    ? input[param.value].copy()
+                    : NullValue.copy();
+            }
+        }
+        else
+        {
+            this.value = NullValue.copy();
         }
 
 
@@ -92,9 +95,8 @@ extends GOperator1
 
         this.setUpdateValues(parse,
         [
-            ['preview', new ListValue(this.value.items.slice(0, Math.min(this.value.items.length, 11)))],
-            ['type',    this.outputListType()                                                          ],
-            ['length',  new NumberValue(this.value.items.length)                                       ], // used to set start and end maxima
+            ['preview', isListType(this.value) ? new ListValue(this.value.items.slice(0, Math.min(this.value.items.length, 11))) : this.value],
+            ['type',    this.outputType()                                                          ],
             ['param',   param                                                                        ]
         ]);
         
