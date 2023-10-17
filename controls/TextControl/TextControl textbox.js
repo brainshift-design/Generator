@@ -100,9 +100,11 @@ TextControl.prototype.initTextarea = function(textbox)
 
 
         if (   (      e.code == 'Enter'
-                        && getCtrlKey(e)
-                     || e.code == 'NumpadEnter')
-                 && !this.readOnly)
+                   && (   getCtrlKey(e) 
+                       ||    !this.requireFinishCtrl
+                          && !e.shiftKey)
+                || e.code == 'NumpadEnter')
+            && !this.readOnly)
         {
             this.textbox.keyBlur = true;
             this.textbox.finish(true);
@@ -135,10 +137,10 @@ TextControl.prototype.initTextarea = function(textbox)
 
 
 
-    this.textbox.addEventListener('input', e =>
-    {
-        this.setValue(this.textbox.value, true, true);
-    });
+    // this.textbox.addEventListener('input', e =>
+    // {
+    //     this.setValue(this.textbox.value, true, true);
+    // });
 
 
 

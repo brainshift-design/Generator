@@ -16,6 +16,8 @@ extends Control
     successOnFocusOut = false;
     keyBlur           = false;
 
+    requireFinishCtrl = false;
+
     
     readOnly          = false;
     
