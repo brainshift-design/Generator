@@ -83,7 +83,8 @@ extends GOperator1
                             this.value.items.push(item ? item.copy() : NullValue);
                             
                             if (   item
-                                && this.value.objects)
+                                && this.value.objects
+                                && input.objects)
                             {
                                 const objects = input.objects.filter(o => o.itemIndex == i);
                                 objects.forEach(o => o.itemIndex = j);

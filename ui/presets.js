@@ -115,6 +115,9 @@ function getPresetGraph(graphId)
         case 'invalidColors':        return presetInvalidColors;
         case 'textFromBackground':   return presetTextFromBackground;
 
+        case 'compositeGradients':   return presetCompositeGradients;
+
+
         case 'randomColors':         return presetRandomColors;
         case 'tintsAndShades':       return presetTintsAndShades;
         case 'paletteFromColor':     return presetPaletteFromColor;

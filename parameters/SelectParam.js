@@ -198,8 +198,8 @@ function initSelectParamMenu(param)
     const d = !param.reverseMenu ? 1 : -1;
 
     const indexPad = getDigitCount(param.controls[0].displayMax);
-    console.log('indexPad =', indexPad);
 
+    
     for (let i = s; c(i); i += d)
     {
         const option = param.options[i];
@@ -219,7 +219,8 @@ function initSelectParamMenu(param)
 
             
         const item = new MenuItem(
-            i.toString().padStart(indexPad, ' ') + ' · ' + option.replaceAll('/', ' / '), 
+              option.replaceAll('/', ' / ') 
+            + ' ' + subscriptNumber(i), 
             null,
             options);
 
