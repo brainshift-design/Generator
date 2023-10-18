@@ -1,7 +1,7 @@
 class GExtractParam
 extends GOperator1
 {
-    param = null;
+    name = null;
 
 
     
@@ -16,7 +16,7 @@ extends GOperator1
     {
         super.reset();
 
-        this.param  = null;
+        this.name  = null;
     }
 
 
@@ -27,7 +27,7 @@ extends GOperator1
 
         copy.copyBase(this);
 
-        if (this.param) copy.param = this.param.copy();
+        if (this.name) copy.name = this.name.copy();
 
         return copy;
     }
@@ -40,12 +40,12 @@ extends GOperator1
             return this;
 
 
-        const param = this.param ? (await this.param.eval(parse)).toValue() : null;
+        const name = this.name ? (await this.name.eval(parse)).toValue() : null;
 
 
         if (   this.input
-            && param
-            && param.value != '')
+            && name
+            && name.value != '')
         {
             const input = (await this.input.eval(parse)).toValue();
 
@@ -62,15 +62,15 @@ extends GOperator1
                         
                         this.value.items.push(
                                item 
-                            && item[param.value]
-                            ? item[param.value].copy() 
+                            && item[name.value]
+                            ? item[name.value].copy() 
                             : NullValue.copy());
                         
                         if (   item
-                            && item[param.value]
-                            && item[param.value].objects 
+                            && item[name.value]
+                            && item[name.value].objects 
                             && this.value.objects)
-                            this.value.objects.push(...item[param.value].objects);
+                            this.value.objects.push(...item[name.value].objects);
                     }
                 }
                 else
@@ -79,8 +79,8 @@ extends GOperator1
             else
             {
                 this.value = 
-                    input[param.value]
-                    ? input[param.value].copy()
+                    input[name.value]
+                    ? input[name.value].copy()
                     : NullValue.copy();
             }
         }
@@ -95,9 +95,11 @@ extends GOperator1
 
         this.setUpdateValues(parse,
         [
-            ['preview', isListType(this.value) ? new ListValue(this.value.items.slice(0, Math.min(this.value.items.length, 11))) : this.value],
-            ['type',    this.outputType()                                                          ],
-            ['param',   param                                                                        ]
+            ['preview', isListType(this.value) 
+                        ? new ListValue(this.value.items.slice(0, Math.min(this.value.items.length, 11))) 
+                        : this.value     ],
+            ['type',    this.outputType()],
+            ['name',    name             ]
         ]);
         
 
@@ -111,7 +113,7 @@ extends GOperator1
     isValid()
     {
         return super.isValid()
-            && this.param && this.param.isValid();
+            && this.name && this.name.isValid();
     }
 
 
@@ -120,7 +122,7 @@ extends GOperator1
     {
         super.pushValueUpdates(parse);
 
-        if (this.param) this.param.pushValueUpdates(parse);
+        if (this.name) this.name.pushValueUpdates(parse);
     }
 
 
@@ -129,7 +131,7 @@ extends GOperator1
     {
         super.invalidateInputs(parse, from, force);
 
-        if (this.param) this.param.invalidateInputs(parse, from, force);
+        if (this.name) this.name.invalidateInputs(parse, from, force);
     }
 
 
@@ -138,6 +140,6 @@ extends GOperator1
     {
         super.iterateLoop(parse);
 
-        if (this.param) this.param.iterateLoop(parse);
+        if (this.name) this.name.iterateLoop(parse);
     }
 }

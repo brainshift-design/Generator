@@ -428,6 +428,7 @@ menuFlow = new Menu('Flow', true, false);
                            new MenuItem('Variable',          null, {icon: iconVariable,      createType: VARIABLE,         callback: e => actionManager.do(getCreateNodeAction(VARIABLE,        btnFlow.div, getCreateOptions(e)))}),
                            //menuItemVarGroup = new MenuItem('Variable group',    null, {icon: iconVariableGroup, createType: VARIABLE_GROUP, callback: e => actionManager.do(getCreateNodeAction(VARIABLE_GROUP,  btnFlow.div, getCreateOptions(e)))}),
                            new MenuItem('',                  null, {separator: true}),
+                           new MenuItem('Extract value',     null, {icon: iconExtractParam,  createType: EXTRACT_PARAM,    callback: e => actionManager.do(getCreateNodeAction(EXTRACT_PARAM,   btnFlow.div, getCreateOptions(e)))}),
                            new MenuItem('Value name',        null, {icon: iconValueName,     createType: VALUE_NAME,       callback: e => actionManager.do(getCreateNodeAction(VALUE_NAME,      btnFlow.div, getCreateOptions(e)))}),
                            new MenuItem('',                  null, {separator: true}),
         menuItemTimer    = new MenuItem('Timer ',            null, {icon: iconTimer,         createType: TIMER,            callback: e => actionManager.do(getCreateNodeAction(TIMER,           btnFlow.div, getCreateOptions(e)))})]);
@@ -450,7 +451,6 @@ menuFlow = new Menu('Flow', true, false);
                            new MenuItem('Sort',              null,            {icon: iconSort,         createType: SORT,          callback: e => actionManager.do(getCreateNodeAction(SORT,          btnData.div, getCreateOptions(e)))}),
                            new MenuItem('',                  null,            {separator: true}),     
                            new MenuItem('Extract items',     null,            {icon: iconExtract,      createType: EXTRACT,       callback: e => actionManager.do(getCreateNodeAction(EXTRACT,       btnData.div, getCreateOptions(e)))}),
-                           new MenuItem('Extract parameter', null,            {icon: iconExtractParam, createType: EXTRACT_PARAM, callback: e => actionManager.do(getCreateNodeAction(EXTRACT_PARAM, btnData.div, getCreateOptions(e)))}),
                            new MenuItem('',                  null,            {separator: true}),     
                            new MenuItem('Column',            null,            {icon: iconColumn,       createType: COLUMN,        callback: e => actionManager.do(getCreateNodeAction(COLUMN,        btnData.div, getCreateOptions(e)))}),
                            new MenuItem('Cell',              null,            {icon: iconCell,         createType: CELL,          callback: e => actionManager.do(getCreateNodeAction(CELL,          btnData.div, getCreateOptions(e)))}),

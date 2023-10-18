@@ -11,7 +11,7 @@ extends OperatorBase
 
     constructor()
     {
-        super(EXTRACT_PARAM, 'extractParam', 'extract param', iconExtractParam);
+        super(EXTRACT_PARAM, 'extractValue', 'extract value', iconExtractParam);
 
         this.canDisable        = true;
         this.showHeaderTooltip = true;
@@ -20,7 +20,7 @@ extends OperatorBase
         this.addInput (new Input (ALL_VALUES));
         this.addOutput(new Output([ANY_VALUE], this.output_genRequest));
 
-        this.addParam(this.paramParam = new TextParam('param', 'param', false, true, true));
+        this.addParam(this.paramParam = new TextParam('name', 'name', false, true, true));
 
         this.inputs[0].addEventListener('disconnect', () => OpExtract_onDisconnectInput(this));
     }
