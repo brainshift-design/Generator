@@ -20,7 +20,7 @@ extends OperatorBase
         this.addInput (new Input (ALL_VALUES));
         this.addOutput(new Output([ANY_VALUE], this.output_genRequest));
 
-        this.addParam(this.paramParam = new TextParam('name', 'name', false, true, true));
+        this.addParam(this.paramParam = new TextParam('name', 'name', true, true, true));
 
         this.inputs[0].addEventListener('disconnect', () => OpExtract_onDisconnectInput(this));
     }

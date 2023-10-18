@@ -938,6 +938,7 @@ const presetWavyDots = '\
             "z": "5",\
             "params":\
             [\
+                ["NUM#", "count", "10,0"]\
             ]\
             },\
             {\
@@ -1606,7 +1607,6 @@ const presetNumberLine = '\
             "z": "12",\
             "params":\
             [\
-                    ["NUM#", "value", "24,0"],\
                     ["NUM#", "operation", "4,0"],\
                     ["NUM#", "operand", "2,0"]\
             ]\
@@ -1801,7 +1801,6 @@ const presetFalsePerspective = '\
             "z": "3",\
             "params":\
             [\
-                    ["NUM#", "value", "980.0000000000001,2"],\
                     ["NUM#", "operation", "4,0"],\
                     ["NUM#", "operand", "2.45,2"]\
             ]\
@@ -2959,6 +2958,7 @@ const presetBrickWall = '\
             "z": "17",\
             "params":\
             [\
+                ["NUM#", "count", "10,0"]\
             ]\
             },\
             {\
@@ -3002,7 +3002,6 @@ const presetBrickWall = '\
             "z": "20",\
             "params":\
             [\
-                    ["NUM#", "value", "-5,0"],\
                     ["NUM#", "operand", "-5,0"]\
             ]\
             },\

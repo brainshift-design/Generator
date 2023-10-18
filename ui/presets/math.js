@@ -82,7 +82,6 @@ const presetTwoMathNodes = '\
             "active": "true",\
             "params":\
             [\
-                    ["NUM#", "value", "15,0"],\
                     ["NUM#", "operand", "5,0"]\
             ]\
             },\
@@ -319,7 +318,6 @@ const presetTwoMathNodes = '\
             "active": "true",\
             "params":\
             [\
-                    ["NUM#", "value", "?,-1"],\
                     ["NUM#", "operand", "5,0"]\
             ]\
             },\
@@ -1008,7 +1006,6 @@ const presetQuadraticFormula = '\
             "z": "13",\
             "params":\
             [\
-                    ["NUM#", "value", "15,1"],\
                     ["NUM#", "operation", "5,0"],\
                     ["NUM#", "operand", "0.5,1"]\
             ]\
@@ -1056,7 +1053,6 @@ const presetQuadraticFormula = '\
             "z": "16",\
             "params":\
             [\
-                    ["NUM#", "value", "4,0"],\
                     ["NUM#", "operation", "4,0"],\
                     ["NUM#", "operand", "2,0"]\
             ]\

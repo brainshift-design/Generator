@@ -1,5 +1,5 @@
 class   OpSimpleMath
-extends OperatorWithValue
+extends OperatorBase
 {
     paramOperation;
     paramOperand;
@@ -17,7 +17,6 @@ extends OperatorWithValue
         this.addInput (new Input (NUMBER_TYPES));
         this.addOutput(new Output([NUMBER_VALUE], this.output_genRequest));
 
-        this.addParam(this.paramValue);
         this.addParam(this.paramOperation = new SelectParam('operation', '',        false, true, true, MATH_OPS.map(s => s[1]), 1));
         this.addParam(this.paramOperand   = new NumberParam('operand',   'operand', false, true, true, 0));
 
@@ -62,7 +61,7 @@ extends OperatorWithValue
 
     updateValues(requestId, actionId, updateParamId, paramIds, values)
     {
-        const type  = values[paramIds.findIndex(id => id == 'type' )];
+        const type = values[paramIds.findIndex(id => id == 'type' )];
 
         if (type)
             this.outputs[0].types = [type.value];
@@ -74,7 +73,6 @@ extends OperatorWithValue
 
     updateParams()
     {
-        this.paramValue    .enableControlText(false, this.isUnknown());
         this.paramOperation.enableControlText(true);
         this.paramOperand  .enableControlText(true);
 

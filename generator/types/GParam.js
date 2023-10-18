@@ -60,7 +60,7 @@ extends GOperator
         this.param = this.node.paramFromId(this.paramId);
 
         if (this.node.type == LIST)
-            this.param = this.node[this.paramId].copy();
+            this.param = this.node[this.paramId];//.copy();
 
         
         if (isValid(this.param))

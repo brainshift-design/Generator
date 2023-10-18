@@ -308,7 +308,7 @@ function genParseExtractParam(parse)
     if (nInputs == 1)
         extr.input = genParse(parse);
 
-    extr.param = genParse(parse);
+    extr.name = genParse(parse);
 
     
     parse.nTab--;

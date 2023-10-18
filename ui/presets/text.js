@@ -979,6 +979,7 @@ const presetLetterSalad = '\
             "z": "13",\
             "params":\
             [\
+                ["NUM#", "count", "10,0"]\
             ]\
             },\
             {\
@@ -994,6 +995,7 @@ const presetLetterSalad = '\
             "active": "true",\
             "params":\
             [\
+                ["NUM#", "count", "10,0"]\
             ]\
             },\
             {\
@@ -1316,7 +1318,6 @@ const presetLetterSalad = '\
             "z": "33",\
             "params":\
             [\
-                    ["NUM#", "value", "15,10"],\
                     ["NUM#", "operation", "4,0"],\
                     ["NUM#", "operand", "0.5,1"]\
             ]\

@@ -8939,7 +8939,7 @@ extends GOperator
         this.param = this.node.paramFromId(this.paramId);
 
         if (this.node.type == LIST)
-            this.param = this.node[this.paramId].copy();
+            this.param = this.node[this.paramId];//.copy();
 
         
         if (isValid(this.param))
@@ -16590,9 +16590,9 @@ extends GOperator1
 
         this.setUpdateValues(parse,
         [
-            ['preview', isListType(this.value) 
-                        ? new ListValue(this.value.items.slice(0, Math.min(this.value.items.length, 11))) 
-                        : this.value     ],
+            // ['preview', isListType(this.value) 
+            //             ? new ListValue(this.value.items.slice(0, Math.min(this.value.items.length, 11))) 
+            //             : this.value     ],
             ['type',    this.outputType()],
             ['name',    name             ]
         ]);
@@ -21275,7 +21275,7 @@ function getSimpleMathValue(input, operand, op, enabled)
 {
     consoleAssert(
         input.type == NUMBER_VALUE, 
-        'input.type must be NUMBER_VALUE');
+        'input.type is ' + input.type + ', must be NUMBER_VALUE');
 
 
     if (enabled)
@@ -38065,7 +38065,7 @@ function genParseExtractParam(parse)
     if (nInputs == 1)
         extr.input = genParse(parse);
 
-    extr.param = genParse(parse);
+    extr.name = genParse(parse);
 
     
     parse.nTab--;

@@ -137,7 +137,7 @@ function getSimpleMathValue(input, operand, op, enabled)
 {
     consoleAssert(
         input.type == NUMBER_VALUE, 
-        'input.type must be NUMBER_VALUE');
+        'input.type is ' + input.type + ', must be NUMBER_VALUE');
 
 
     if (enabled)

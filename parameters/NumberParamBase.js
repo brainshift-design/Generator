@@ -30,9 +30,12 @@ extends Parameter
 
     setValue(value, createAction, updateControl = true, dispatchEvents = true) 
     {
+        if (!(value instanceof NumberValue))
+            console.trace(); 
+
         consoleAssert(
             value instanceof NumberValue,
-            'value must be a NumberValue');
+            'value is a ' + value.constructor.name + ', must be a NumberValue');
 
 
         if (  !isNaN(value.value)

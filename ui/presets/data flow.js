@@ -1398,7 +1398,6 @@ const presetCountryData = '\
             "z": "25",\
             "params":\
             [\
-                    ["NUM#", "value", "206,0"],\
                     ["NUM#", "operand", "6,0"]\
             ]\
             },\
@@ -1446,7 +1445,6 @@ const presetCountryData = '\
             "z": "28",\
             "params":\
             [\
-                    ["NUM#", "value", "?,0"],\
                     ["NUM#", "operation", "3,0"],\
                     ["NUM#", "operand", "5000000,0"]\
             ]\

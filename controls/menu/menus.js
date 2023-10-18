@@ -429,7 +429,7 @@ menuFlow = new Menu('Flow', true, false);
                            //menuItemVarGroup = new MenuItem('Variable group',    null, {icon: iconVariableGroup, createType: VARIABLE_GROUP, callback: e => actionManager.do(getCreateNodeAction(VARIABLE_GROUP,  btnFlow.div, getCreateOptions(e)))}),
                            new MenuItem('',                  null, {separator: true}),
                            new MenuItem('Extract value',     null, {icon: iconExtractParam,  createType: EXTRACT_PARAM,    callback: e => actionManager.do(getCreateNodeAction(EXTRACT_PARAM,   btnFlow.div, getCreateOptions(e)))}),
-                           new MenuItem('Value name',        null, {icon: iconValueName,     createType: VALUE_NAME,       callback: e => actionManager.do(getCreateNodeAction(VALUE_NAME,      btnFlow.div, getCreateOptions(e)))}),
+                           new MenuItem('Set value name',        null, {icon: iconValueName,     createType: VALUE_NAME,       callback: e => actionManager.do(getCreateNodeAction(VALUE_NAME,      btnFlow.div, getCreateOptions(e)))}),
                            new MenuItem('',                  null, {separator: true}),
         menuItemTimer    = new MenuItem('Timer ',            null, {icon: iconTimer,         createType: TIMER,            callback: e => actionManager.do(getCreateNodeAction(TIMER,           btnFlow.div, getCreateOptions(e)))})]);
     

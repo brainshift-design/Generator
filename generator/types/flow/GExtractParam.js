@@ -95,9 +95,9 @@ extends GOperator1
 
         this.setUpdateValues(parse,
         [
-            ['preview', isListType(this.value) 
-                        ? new ListValue(this.value.items.slice(0, Math.min(this.value.items.length, 11))) 
-                        : this.value     ],
+            // ['preview', isListType(this.value) 
+            //             ? new ListValue(this.value.items.slice(0, Math.min(this.value.items.length, 11))) 
+            //             : this.value     ],
             ['type',    this.outputType()],
             ['name',    name             ]
         ]);

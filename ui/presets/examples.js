@@ -110,7 +110,6 @@ const presetBooksOnShelf = '\
             "z": "6",\
             "params":\
             [\
-                    ["NUM#", "value", "82.32000000000001,1"],\
                     ["NUM#", "operation", "4,0"],\
                     ["NUM#", "operand", "0.2,1"]\
             ]\
@@ -239,7 +238,6 @@ const presetBooksOnShelf = '\
             "z": "14",\
             "params":\
             [\
-                    ["NUM#", "value", "370.44000000000005,1"],\
                     ["NUM#", "operation", "4,0"],\
                     ["NUM#", "operand", "0.9,1"]\
             ]\
@@ -306,7 +304,6 @@ const presetBooksOnShelf = '\
             "z": "18",\
             "params":\
             [\
-                    ["NUM#", "value", "33,0"],\
                     ["NUM#", "operand", "-15,0"]\
             ]\
             },\
@@ -393,7 +390,6 @@ const presetBooksOnShelf = '\
             "z": "23",\
             "params":\
             [\
-                    ["NUM#", "value", "28,0"],\
                     ["NUM#", "operand", "-20,0"]\
             ]\
             },\
@@ -939,7 +935,6 @@ const presetBooksOnShelf = '\
             "z": "57",\
             "params":\
             [\
-                    ["NUM#", "value", "411.6,1"],\
                     ["NUM#", "operation", "4,0"],\
                     ["NUM#", "operand", "2.1,1"]\
             ]\
@@ -1138,7 +1133,6 @@ const presetBooksOnShelf = '\
             "z": "69",\
             "params":\
             [\
-                    ["NUM#", "value", "-52,0"],\
                     ["NUM#", "operand", "-100,0"]\
             ]\
             },\
@@ -9377,7 +9371,6 @@ const presetAvatars = '\
             "z": "47",\
             "params":\
             [\
-                    ["NUM#", "value", "58.036915051043195,0"],\
                     ["NUM#", "operand", "-5,0"]\
             ]\
             },\
@@ -9456,7 +9449,6 @@ const presetAvatars = '\
             "z": "52",\
             "params":\
             [\
-                    ["NUM#", "value", "53.036915051043195,0"],\
                     ["NUM#", "operand", "-10,0"]\
             ]\
             },\
@@ -9483,7 +9475,6 @@ const presetAvatars = '\
             "z": "54",\
             "params":\
             [\
-                    ["NUM#", "value", "58.036915051043195,0"],\
                     ["NUM#", "operand", "-5,0"]\
             ]\
             },\
@@ -14716,7 +14707,6 @@ const presetTwistedTower = '\
             "z": "17",\
             "params":\
             [\
-                    ["NUM#", "value", "4,0"],\
                     ["NUM#", "operand", "1,0"]\
             ]\
             },\
@@ -14825,7 +14815,7 @@ const presetTwistedTower = '\
             {\
             "type": "EXTRP",\
             "id": "extractParam",\
-            "name": "extract%20param",\
+            "name": "extract%20value",\
             "renamed": "false",\
             "enabled": "true",\
             "highlight": "0",\
@@ -14835,7 +14825,7 @@ const presetTwistedTower = '\
             "_connected": "false",\
             "params":\
             [\
-                    ["TEXT#", "param", "y", "center"]\
+                    ["TEXT#", "name", "y", "center"]\
             ]\
             },\
             {\
@@ -15023,7 +15013,6 @@ const presetTwistedTower = '\
             "active": "true",\
             "params":\
             [\
-                    ["NUM#", "value", "94,0"],\
                     ["NUM#", "operation", "0,0"],\
                     ["NUM#", "operand", "6,0"]\
             ]\
@@ -15041,7 +15030,6 @@ const presetTwistedTower = '\
             "active": "true",\
             "params":\
             [\
-                    ["NUM#", "value", "50,0"],\
                     ["NUM#", "operation", "3,0"],\
                     ["NUM#", "operand", "2,0"]\
             ]\

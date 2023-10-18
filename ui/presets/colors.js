@@ -1020,7 +1020,6 @@ const presetTintsAndShades = '\
             "z": "3",\
             "params":\
             [\
-                    ["NUM#", "value", "76.33,0"],\
                     ["NUM#", "operand", "30,0"]\
             ]\
             },\
@@ -1074,7 +1073,6 @@ const presetTintsAndShades = '\
             "z": "6",\
             "params":\
             [\
-                    ["NUM#", "value", "31.33,0"],\
                     ["NUM#", "operation", "0,0"],\
                     ["NUM#", "operand", "15,0"]\
             ]\
@@ -2906,7 +2904,6 @@ const presetColorSwatches = '\
             "z": "55",\
             "params":\
             [\
-                    ["NUM#", "value", "960,0"],\
                     ["NUM#", "operation", "4,0"],\
                     ["NUM#", "operand", "10,0"]\
             ]\
@@ -3677,7 +3674,6 @@ const presetBlurryBackgrounds = '\
             "z": "7",\
             "params":\
             [\
-                    ["NUM#", "value", "2240,0"],\
                     ["NUM#", "operand", "1440,0"]\
             ]\
             },\
@@ -4056,7 +4052,6 @@ const presetBlurryBackgrounds = '\
             "z": "30",\
             "params":\
             [\
-                    ["NUM#", "value", "800,0"],\
                     ["NUM#", "operation", "4,0"],\
                     ["NUM#", "operand", "2,0"]\
             ]\
