@@ -134,14 +134,6 @@ extends FigmaShape
 
 
 
-    applyObjectTransform(xform, space)
-    {
-        super.applyObjectTransform(xform, space);
-        this.updatePoints(xform, space);
-    }
-
-
-
     updatePoints(xform, space)
     {
         for (let i = 0; i < this.points.length; i++)

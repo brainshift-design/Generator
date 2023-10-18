@@ -175,6 +175,18 @@ extends GOperator1
             }
 
 
+            if (this.value.type == VECTOR_PATH_VALUE)
+            {
+                for (let i = 0; i < this.value.objects[0].points.length; i++)
+                {
+                    const p = this.value.objects[0].points[i].toPoint();
+    
+                    this.value.points.objects[i].x = p.x;
+                    this.value.points.objects[i].y = p.y;
+                }
+            }
+
+
             if (showCenter > 0)
             {
                 const objects = [...this.value.objects]; // avoids infinite growth

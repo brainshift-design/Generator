@@ -187,13 +187,14 @@ class FigmaObject
             if (affectSpace)
                 this.applySpaceTransform(xform, space);
         }
-        // else if (this.type == VECTOR_PATH)
-        // {
-        //     this.updatePoints(xform, space);
+        else if (this.type == VECTOR_PATH)
+        {
+            this.applyObjectTransform(xform, space);
+            this.updatePoints(xform, space);
 
-        //     if (affectSpace)
-        //         this.applySpaceTransform(xform, space);
-        // }
+            if (affectSpace)
+                this.applySpaceTransform(xform, space);
+        }
         else if (this.type == SHAPE_GROUP)
         {
             for (const obj of this.children)

@@ -4,7 +4,7 @@
 
 
 
-const generatorVersion = 241;
+const generatorVersion = 242;
 
 
 const MAX_INT32        = 2147483647;
@@ -5748,13 +5748,14 @@ class FigmaObject
             if (affectSpace)
                 this.applySpaceTransform(xform, space);
         }
-        // else if (this.type == VECTOR_PATH)
-        // {
-        //     this.updatePoints(xform, space);
+        else if (this.type == VECTOR_PATH)
+        {
+            this.applyObjectTransform(xform, space);
+            this.updatePoints(xform, space);
 
-        //     if (affectSpace)
-        //         this.applySpaceTransform(xform, space);
-        // }
+            if (affectSpace)
+                this.applySpaceTransform(xform, space);
+        }
         else if (this.type == SHAPE_GROUP)
         {
             for (const obj of this.children)
@@ -6752,14 +6753,6 @@ extends FigmaShape
 
 
         return bounds;
-    }
-
-
-
-    applyObjectTransform(xform, space)
-    {
-        super.applyObjectTransform(xform, space);
-        this.updatePoints(xform, space);
     }
 
 
@@ -34431,6 +34424,18 @@ extends GOperator1
             }
 
 
+            if (this.value.type == VECTOR_PATH_VALUE)
+            {
+                for (let i = 0; i < this.value.objects[0].points.length; i++)
+                {
+                    const p = this.value.objects[0].points[i].toPoint();
+    
+                    this.value.points.objects[i].x = p.x;
+                    this.value.points.objects[i].y = p.y;
+                }
+            }
+
+
             if (showCenter > 0)
             {
                 const objects = [...this.value.objects]; // avoids infinite growth
@@ -34591,6 +34596,18 @@ extends GOperator1
                         xform[0][0], 
                         xform[1][1]);
                 }
+            }
+        }
+
+
+        if (this.value.type == VECTOR_PATH_VALUE)
+        {
+            for (let i = 0; i < this.value.objects[0].points.length; i++)
+            {
+                const p = this.value.objects[0].points[i].toPoint();
+
+                this.value.points.objects[i].x = p.x;
+                this.value.points.objects[i].y = p.y;
             }
         }
 
