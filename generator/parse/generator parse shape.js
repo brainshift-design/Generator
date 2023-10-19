@@ -1409,7 +1409,7 @@ function genParseCircleCenter(parse)
     const [, nodeId, options, ignore] = genParseNodeStart(parse);
 
 
-    const measure = new GCircleCenter(nodeId, options);
+    const center = new GCircleCenter(nodeId, options);
 
 
     let nInputs = -1;
@@ -1417,17 +1417,17 @@ function genParseCircleCenter(parse)
     if (!ignore)
     {
         nInputs = parseInt(parse.move());
-        consoleAssert(nInputs => 0 && nInputs <= 2, 'nInputs must be [0, 2]');
+        consoleAssert(nInputs => 0 && nInputs <= 3, 'nInputs must be [0, 3]');
     }
 
     
     if (parse.settings.logRequests) 
-        logReq(measure, parse, ignore, nInputs);
+        logReq(center, parse, ignore, nInputs);
 
 
     if (ignore) 
     {
-        genParseNodeEnd(parse, measure);
+        genParseNodeEnd(parse, center);
         return parse.parsedNodes.find(n => n.nodeId == nodeId);
     }
 
@@ -1437,26 +1437,93 @@ function genParseCircleCenter(parse)
     
     if (nInputs == 3)
     {
-        measure.input0 = genParse(parse);
-        measure.input1 = genParse(parse);
-        measure.input2 = genParse(parse);
+        center.input0 = genParse(parse);
+        center.input1 = genParse(parse);
+        center.input2 = genParse(parse);
     }
     else if (nInputs == 2)
     {
-        measure.input0 = genParse(parse);
-        measure.input1 = genParse(parse);
+        center.input0 = genParse(parse);
+        center.input1 = genParse(parse);
     }
     else if (nInputs == 1)
     {
-        measure.input0 = genParse(parse);
+        center.input0 = genParse(parse);
     }
 
 
     parse.nTab--;
 
 
-    genParseNodeEnd(parse, measure);
-    return measure;
+    genParseNodeEnd(parse, center);
+    return center;
+}
+
+
+
+function genParseIntersectLines(parse)
+{
+    const [, nodeId, options, ignore] = genParseNodeStart(parse);
+
+
+    const inter = new GIntersectLines(nodeId, options);
+
+
+    let nInputs = -1;
+
+    if (!ignore)
+    {
+        nInputs = parseInt(parse.move());
+        consoleAssert(nInputs => 0 && nInputs <= 4, 'nInputs must be [0, 4]');
+    }
+
+    
+    if (parse.settings.logRequests) 
+        logReq(inter, parse, ignore, nInputs);
+
+
+    if (ignore) 
+    {
+        genParseNodeEnd(parse, inter);
+        return parse.parsedNodes.find(n => n.nodeId == nodeId);
+    }
+
+
+    parse.nTab++;
+
+    
+    if (nInputs == 4)
+    {
+        inter.input0 = genParse(parse);
+        inter.input1 = genParse(parse);
+        inter.input2 = genParse(parse);
+        inter.input3 = genParse(parse);
+    }
+    else if (nInputs == 3)
+    {
+        inter.input0 = genParse(parse);
+        inter.input1 = genParse(parse);
+        inter.input2 = genParse(parse);
+    }
+    else if (nInputs == 2)
+    {
+        inter.input0 = genParse(parse);
+        inter.input1 = genParse(parse);
+    }
+    else if (nInputs == 1)
+    {
+        inter.input0 = genParse(parse);
+    }
+
+
+    inter.segment = genParse(parse);
+
+
+    parse.nTab--;
+
+
+    genParseNodeEnd(parse, inter);
+    return inter;
 }
 
 

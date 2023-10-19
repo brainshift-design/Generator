@@ -1812,8 +1812,8 @@ function intersectLines(p1, p2, q1, q2, segment)
     const t1 = crossv2(subv(q1, p1), v2) / crossv2(v1, v2);
     const t2 = crossv2(subv(q1, p1), v1) / crossv2(v1, v2);
 
-    if ((  0 <= t1 && t1 <= 1
-        && 0 <= t2 && t2 <= 1)
+    if (   (   0 <= t1 && t1 <= 1
+            && 0 <= t2 && t2 <= 1)
         || !segment)
         return addv(p1, mulvs(v1, t1));
         
@@ -1959,18 +1959,30 @@ function boundingRect(elem)
 
 
 
-function circleCenter(p1, p2, p3)
+function circleCenter(p0, p1, p2)
 {
-    const v1 = subv(p2, p1);
-    const v2 = subv(p3, p2);
+    console.log('p0 =', p0);
+    console.log('p1 =', p1);
+    console.log('p2 =', p2);
+    
+    const v0  = subv(p1, p0);
+    const v1  = subv(p2, p1);
+    
+    const pm0 = divvs(addv(p0, p1), 2);
+    const pm1 = divvs(addv(p1, p2), 2);
+    
+    console.log('v0 =', v0);
+    console.log('v1 =', v1);
+    console.log('pm0 =', pm0);
+    console.log('pm1 =', pm1);
 
-    const m1 = divvs(addv(p1, p2), 2);
-    const m2 = divvs(addv(p2, p3), 2);
-
-    return intersectLines(
-        m1, addv(m1, v2), 
-        m2, subv(m2, v1), 
+    const pc = intersectLines(
+        pm0, addv(pm0, v1), 
+        pm1, subv(pm1, v0), 
         false);
+    console.log('pc =', pc);
+
+    return pc;
 }
 
 
@@ -5165,6 +5177,7 @@ const SHAPE_APPLY          = 'APPLY';
   
 const MEASURE_POINTS       = 'MESPT';
 const CIRCLE_CENTER        = 'CIRCEN';
+const INTERSECT_LINES      = 'INTLIN';
 const INTERPOLATE_POINT    = 'PTLERP';
 const POINT_ON_PATH        = 'PONPT';
 
@@ -5260,6 +5273,7 @@ const SHAPE_TYPES =
 
     MEASURE_POINTS,
     CIRCLE_CENTER,
+    INTERSECT_LINES,
     INTERPOLATE_POINT,
     POINT_ON_PATH,
 
@@ -8967,6 +8981,107 @@ extends GOperator
         if (this.input0) this.input0.iterateLoop(parse);
         if (this.input1) this.input1.iterateLoop(parse);
         if (this.input2) this.input2.iterateLoop(parse);
+    }
+}
+
+
+class GOperator4
+extends GOperator
+{
+    input0 = null;
+    input1 = null;
+    input2 = null;
+    input3 = null;
+
+
+
+    reset()
+    {
+        super.reset();
+
+        this.input0 = null;
+        this.input1 = null;
+        this.input2 = null;
+        this.input3 = null;
+    }
+
+
+
+    copyBase(base)
+    {
+        super.copyBase(base);
+
+        if (base.input0) this.input0 = base.input0.copy();
+        if (base.input1) this.input1 = base.input1.copy();
+        if (base.input2) this.input2 = base.input2.copy();
+        if (base.input3) this.input3 = base.input3.copy();
+    }
+
+
+
+    isCached()
+    {
+        return super.isCached()
+            && (!this.input0 || this.input0.isCached())
+            && (!this.input1 || this.input1.isCached())
+            && (!this.input2 || this.input2.isCached())
+            && (!this.input3 || this.input3.isCached());
+    }
+
+
+
+    inputNameFromNode(node)
+    {
+        return this.input0 && this.input0.nodeId == node.nodeId
+            || this.input1 && this.input1.nodeId == node.nodeId
+            || this.input2 && this.input2.nodeId == node.nodeId
+            || this.input3 && this.input3.nodeId == node.nodeId;
+    }
+
+
+
+    isValid()
+    {
+        return this.input0 && this.input0.isValid()
+            && this.input1 && this.input1.isValid()
+            && this.input2 && this.input2.isValid()
+            && this.input3 && this.input3.isValid();
+    }
+
+
+
+    pushValueUpdates(parse)
+    {
+        super.pushValueUpdates(parse);
+
+        if (this.input0) this.input0.pushValueUpdates(parse);
+        if (this.input1) this.input1.pushValueUpdates(parse);
+        if (this.input2) this.input2.pushValueUpdates(parse);
+        if (this.input3) this.input3.pushValueUpdates(parse);
+    }
+
+
+
+    invalidateInputs(parse, from, force)
+    {
+        super.invalidateInputs(parse, from, force);
+
+        if (this.input0) this.input0.invalidateInputs(parse, from, force);
+        if (this.input1) this.input1.invalidateInputs(parse, from, force);
+        if (this.input2) this.input2.invalidateInputs(parse, from, force);
+        if (this.input3) this.input3.invalidateInputs(parse, from, force);
+    }
+
+
+
+    iterateLoop(parse)
+    {
+        super.iterateLoop(parse);
+
+        if (this.input0) this.input0.iterateLoop(parse);
+        if (this.input1) this.input1.iterateLoop(parse);
+        if (this.input2) this.input2.iterateLoop(parse);
+        if (this.input3) this.input3.iterateLoop(parse);
     }
 }
 
@@ -32325,7 +32440,10 @@ extends GOperator1
         await this.evalObjects(parse);
 
 
-        this.setUpdateValues(parse, [['value', this.value]]);
+        this.setUpdateValues(parse, 
+        [
+            ['value', this.value]
+        ]);
 
 
         if (!this.x) this.x = this.value.x.copy();
@@ -35921,7 +36039,10 @@ extends GOperator3
         }
 
 
-        this.setUpdateValues(parse,
+        await this.evalObjects(parse);
+
+
+        this.setUpdateValues(parse, 
         [
             ['value', this.value]
         ]);
@@ -35934,11 +36055,163 @@ extends GOperator3
 
 
 
+    async evalObjects(parse, options = {})
+    {
+        if (!this.options.enabled)
+            return;
+            
+            
+        this.value.objects = [];
+
+
+        if (   this.value.x.isValid()
+            && this.value.y.isValid())
+        {
+            const x = this.value.x.value;
+            const y = this.value.y.value;
+
+            const point = new FigmaPoint(this.nodeId, this.nodeId, this.nodeName, x, y);
+
+            point.createDefaultTransform(x, y);
+
+            this.value.objects = [point];
+        }
+
+
+        await super.evalObjects(parse);
+    }
+}
+
+
+class GIntersectLines
+extends GOperator4
+{
+    segment = null;
+
+
+
+    constructor(nodeId, options)
+    {
+        super(INTERSECT_LINES, nodeId, options);
+    }
+
+
+    
+    reset()
+    {
+        super.reset();
+
+        if (this.segment) this.segment.reset();
+    }
+
+
+
+    copy()
+    {
+        const copy = new GIntersectLines(this.nodeId, this.options);
+
+        copy.copyBase(this);
+
+        if (this.segment) copy.segment = this.segment.copy();
+
+        return copy;
+    }
+
+
+
+    async eval(parse)
+    {
+        if (this.isCached())
+            return this;
+
+
+        const segment = this.segment ? (await this.segment.eval(parse)).toValue() : null;
+
+
+        if (   this.input0
+            && this.input1
+            && this.input2
+            && this.input3)
+        {
+            const input0 = this.input0 ? (await this.input0.eval(parse)).toValue() : null;
+            const input1 = this.input1 ? (await this.input1.eval(parse)).toValue() : null;
+            const input2 = this.input2 ? (await this.input2.eval(parse)).toValue() : null;
+            const input3 = this.input3 ? (await this.input3.eval(parse)).toValue() : null;
+
+            if (   input0
+                && input1
+                && input2
+                && input3)
+            {
+                const p = intersectLines(
+                    input0.toPoint(),
+                    input1.toPoint(),
+                    input2.toPoint(),
+                    input3.toPoint(),
+                    segment.value != 0);
+
+                this.value = PointValue.fromPoint(this.nodeId, p);
+            }
+            else
+            {
+                this.value = PointValue.NaN.copy();
+            }
+        }
+        else
+        {
+            this.value = PointValue.NaN.copy();
+        }
+
+
+        await this.evalObjects(parse);
+
+
+        this.setUpdateValues(parse, 
+        [
+            ['value',   this.value],
+            ['segment', segment   ]
+        ]);
+        
+
+        this.validate();
+
+        return this;
+    }
+
+
+
+    async evalObjects(parse, options = {})
+    {
+        if (!this.options.enabled)
+            return;
+            
+            
+        this.value.objects = [];
+
+
+        if (   this.value.x.isValid()
+            && this.value.y.isValid())
+        {
+            const x = this.value.x.value;
+            const y = this.value.y.value;
+
+            const point = new FigmaPoint(this.nodeId, this.nodeId, this.nodeName, x, y);
+
+            point.createDefaultTransform(x, y);
+
+            this.value.objects = [point];
+        }
+
+
+        await super.evalObjects(parse);
+    }
+
+
+
     isValid()
     {
         return super.isValid()
-            && this.distance && this.distance.isValid()
-            && this.angle    && this.angle   .isValid();
+            && this.segment && this.segment.isValid();
     }
 
 
@@ -35947,8 +36220,7 @@ extends GOperator3
     {
         super.pushValueUpdates(parse);
 
-        if (this.distance) this.distance.pushValueUpdates(parse);
-        if (this.angle   ) this.angle   .pushValueUpdates(parse);
+        if (this.segment) this.segment.pushValueUpdates(parse);
     }
 
 
@@ -35957,8 +36229,7 @@ extends GOperator3
     {
         super.invalidateInputs(parse, from, force);
 
-        if (this.distance) this.distance.invalidateInputs(parse, from, force);
-        if (this.angle   ) this.angle   .invalidateInputs(parse, from, force);
+        if (this.segment) this.segment.invalidateInputs(parse, from, force);
     }
 
 
@@ -35967,8 +36238,7 @@ extends GOperator3
     {
         super.iterateLoop(parse);
 
-        if (this.distance) this.distance.iterateLoop(parse);
-        if (this.angle   ) this.angle   .iterateLoop(parse);
+        if (this.segment) this.segment.iterateLoop(parse);
     }
 }
 
@@ -42760,7 +43030,7 @@ function genParseCircleCenter(parse)
     const [, nodeId, options, ignore] = genParseNodeStart(parse);
 
 
-    const measure = new GCircleCenter(nodeId, options);
+    const center = new GCircleCenter(nodeId, options);
 
 
     let nInputs = -1;
@@ -42768,17 +43038,17 @@ function genParseCircleCenter(parse)
     if (!ignore)
     {
         nInputs = parseInt(parse.move());
-        consoleAssert(nInputs => 0 && nInputs <= 2, 'nInputs must be [0, 2]');
+        consoleAssert(nInputs => 0 && nInputs <= 3, 'nInputs must be [0, 3]');
     }
 
     
     if (parse.settings.logRequests) 
-        logReq(measure, parse, ignore, nInputs);
+        logReq(center, parse, ignore, nInputs);
 
 
     if (ignore) 
     {
-        genParseNodeEnd(parse, measure);
+        genParseNodeEnd(parse, center);
         return parse.parsedNodes.find(n => n.nodeId == nodeId);
     }
 
@@ -42788,26 +43058,93 @@ function genParseCircleCenter(parse)
     
     if (nInputs == 3)
     {
-        measure.input0 = genParse(parse);
-        measure.input1 = genParse(parse);
-        measure.input2 = genParse(parse);
+        center.input0 = genParse(parse);
+        center.input1 = genParse(parse);
+        center.input2 = genParse(parse);
     }
     else if (nInputs == 2)
     {
-        measure.input0 = genParse(parse);
-        measure.input1 = genParse(parse);
+        center.input0 = genParse(parse);
+        center.input1 = genParse(parse);
     }
     else if (nInputs == 1)
     {
-        measure.input0 = genParse(parse);
+        center.input0 = genParse(parse);
     }
 
 
     parse.nTab--;
 
 
-    genParseNodeEnd(parse, measure);
-    return measure;
+    genParseNodeEnd(parse, center);
+    return center;
+}
+
+
+
+function genParseIntersectLines(parse)
+{
+    const [, nodeId, options, ignore] = genParseNodeStart(parse);
+
+
+    const inter = new GIntersectLines(nodeId, options);
+
+
+    let nInputs = -1;
+
+    if (!ignore)
+    {
+        nInputs = parseInt(parse.move());
+        consoleAssert(nInputs => 0 && nInputs <= 4, 'nInputs must be [0, 4]');
+    }
+
+    
+    if (parse.settings.logRequests) 
+        logReq(inter, parse, ignore, nInputs);
+
+
+    if (ignore) 
+    {
+        genParseNodeEnd(parse, inter);
+        return parse.parsedNodes.find(n => n.nodeId == nodeId);
+    }
+
+
+    parse.nTab++;
+
+    
+    if (nInputs == 4)
+    {
+        inter.input0 = genParse(parse);
+        inter.input1 = genParse(parse);
+        inter.input2 = genParse(parse);
+        inter.input3 = genParse(parse);
+    }
+    else if (nInputs == 3)
+    {
+        inter.input0 = genParse(parse);
+        inter.input1 = genParse(parse);
+        inter.input2 = genParse(parse);
+    }
+    else if (nInputs == 2)
+    {
+        inter.input0 = genParse(parse);
+        inter.input1 = genParse(parse);
+    }
+    else if (nInputs == 1)
+    {
+        inter.input0 = genParse(parse);
+    }
+
+
+    inter.segment = genParse(parse);
+
+
+    parse.nTab--;
+
+
+    genParseNodeEnd(parse, inter);
+    return inter;
 }
 
 
@@ -44414,6 +44751,7 @@ function genParse(parse, inParam = true)
 
     else if (parse.next == MEASURE_POINTS         ) result = genParseMeasurePoints     (parse);
     else if (parse.next == CIRCLE_CENTER          ) result = genParseCircleCenter      (parse);
+    else if (parse.next == INTERSECT_LINES        ) result = genParseIntersectLines    (parse);
     else if (parse.next == INTERPOLATE_POINT      ) result = genParseInterpolatePoint  (parse);
     else if (parse.next == POINT_ON_PATH          ) result = genParsePointOnPath       (parse);
 

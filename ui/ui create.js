@@ -157,6 +157,7 @@ function createNode(nodeType, creatingButton = null, createdNodeId = -1, options
         
         case MEASURE_POINTS:          node = new OpMeasurePoints();     break;
         case CIRCLE_CENTER:           node = new OpCircleCenter();      break;
+        case INTERSECT_LINES:         node = new OpIntersectLines();    break;
         case INTERPOLATE_POINT:       node = new OpInterpolatePoint();  break;
         case POINT_ON_PATH:           node = new OpPointOnPath();       break;
 

@@ -116,8 +116,8 @@ function intersectLines(p1, p2, q1, q2, segment)
     const t1 = crossv2(subv(q1, p1), v2) / crossv2(v1, v2);
     const t2 = crossv2(subv(q1, p1), v1) / crossv2(v1, v2);
 
-    if ((  0 <= t1 && t1 <= 1
-        && 0 <= t2 && t2 <= 1)
+    if (   (   0 <= t1 && t1 <= 1
+            && 0 <= t2 && t2 <= 1)
         || !segment)
         return addv(p1, mulvs(v1, t1));
         
@@ -263,18 +263,30 @@ function boundingRect(elem)
 
 
 
-function circleCenter(p1, p2, p3)
+function circleCenter(p0, p1, p2)
 {
-    const v1 = subv(p2, p1);
-    const v2 = subv(p3, p2);
+    console.log('p0 =', p0);
+    console.log('p1 =', p1);
+    console.log('p2 =', p2);
+    
+    const v0  = subv(p1, p0);
+    const v1  = subv(p2, p1);
+    
+    const pm0 = divvs(addv(p0, p1), 2);
+    const pm1 = divvs(addv(p1, p2), 2);
+    
+    console.log('v0 =', v0);
+    console.log('v1 =', v1);
+    console.log('pm0 =', pm0);
+    console.log('pm1 =', pm1);
 
-    const m1 = divvs(addv(p1, p2), 2);
-    const m2 = divvs(addv(p2, p3), 2);
-
-    return intersectLines(
-        m1, addv(m1, v2), 
-        m2, subv(m2, v1), 
+    const pc = intersectLines(
+        pm0, addv(pm0, v1), 
+        pm1, subv(pm1, v0), 
         false);
+    console.log('pc =', pc);
+
+    return pc;
 }
 
 

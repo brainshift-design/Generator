@@ -1446,6 +1446,7 @@ const SHAPE_APPLY          = 'APPLY';
   
 const MEASURE_POINTS       = 'MESPT';
 const CIRCLE_CENTER        = 'CIRCEN';
+const INTERSECT_LINES      = 'INTLIN';
 const INTERPOLATE_POINT    = 'PTLERP';
 const POINT_ON_PATH        = 'PONPT';
 
@@ -1541,6 +1542,7 @@ const SHAPE_TYPES =
 
     MEASURE_POINTS,
     CIRCLE_CENTER,
+    INTERSECT_LINES,
     INTERPOLATE_POINT,
     POINT_ON_PATH,
 

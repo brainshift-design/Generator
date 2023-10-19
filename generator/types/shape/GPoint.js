@@ -71,7 +71,10 @@ extends GOperator1
         await this.evalObjects(parse);
 
 
-        this.setUpdateValues(parse, [['value', this.value]]);
+        this.setUpdateValues(parse, 
+        [
+            ['value', this.value]
+        ]);
 
 
         if (!this.x) this.x = this.value.x.copy();

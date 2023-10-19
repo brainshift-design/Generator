@@ -62,7 +62,10 @@ extends GOperator3
         }
 
 
-        this.setUpdateValues(parse,
+        await this.evalObjects(parse);
+
+
+        this.setUpdateValues(parse, 
         [
             ['value', this.value]
         ]);
@@ -75,40 +78,29 @@ extends GOperator3
 
 
 
-    isValid()
+    async evalObjects(parse, options = {})
     {
-        return super.isValid()
-            && this.distance && this.distance.isValid()
-            && this.angle    && this.angle   .isValid();
-    }
+        if (!this.options.enabled)
+            return;
+            
+            
+        this.value.objects = [];
 
 
+        if (   this.value.x.isValid()
+            && this.value.y.isValid())
+        {
+            const x = this.value.x.value;
+            const y = this.value.y.value;
 
-    pushValueUpdates(parse)
-    {
-        super.pushValueUpdates(parse);
+            const point = new FigmaPoint(this.nodeId, this.nodeId, this.nodeName, x, y);
 
-        if (this.distance) this.distance.pushValueUpdates(parse);
-        if (this.angle   ) this.angle   .pushValueUpdates(parse);
-    }
+            point.createDefaultTransform(x, y);
 
-
-
-    invalidateInputs(parse, from, force)
-    {
-        super.invalidateInputs(parse, from, force);
-
-        if (this.distance) this.distance.invalidateInputs(parse, from, force);
-        if (this.angle   ) this.angle   .invalidateInputs(parse, from, force);
-    }
+            this.value.objects = [point];
+        }
 
 
-
-    iterateLoop(parse)
-    {
-        super.iterateLoop(parse);
-
-        if (this.distance) this.distance.iterateLoop(parse);
-        if (this.angle   ) this.angle   .iterateLoop(parse);
+        await super.evalObjects(parse);
     }
 }
