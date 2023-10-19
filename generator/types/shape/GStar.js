@@ -2,9 +2,10 @@
 class GStar
 extends GShape
 {
-    round  = null;
-    points = null;
-    convex = null;
+    position = null;
+    round    = null;
+    points   = null;
+    convex   = null;
 
 
 
@@ -19,9 +20,10 @@ extends GShape
     {
         super.reset();
 
-        this.round  = null;
-        this.points = null;
-        this.convex = null;
+        this.position = null;
+        this.round    = null;
+        this.points   = null;
+        this.convex   = null;
     }
 
 
@@ -32,9 +34,10 @@ extends GShape
 
         copy.copyBase(this);
 
-        if (this.round ) copy.round  = this.round .copy();
-        if (this.points) copy.points = this.points.copy();
-        if (this.convex) copy.convex = this.convex.copy();
+        if (this.position) copy.position = this.position.copy();
+        if (this.round   ) copy.round    = this.round   .copy();
+        if (this.points  ) copy.points   = this.points  .copy();
+        if (this.convex  ) copy.convex   = this.convex  .copy();
 
         return copy;
     }
@@ -49,9 +52,10 @@ extends GShape
             
         const [x, y, width, height] = await this.evalBaseParams(parse);
 
-        const round  = this.round  ? (await this.round .eval(parse)).toValue() : null;
-        const points = this.points ? (await this.points.eval(parse)).toValue() : null;
-        const convex = this.convex ? (await this.convex.eval(parse)).toValue() : null;
+        const pos    = this.position ? (await this.position.eval(parse)).toValue() : null;
+        const round  = this.round    ? (await this.round   .eval(parse)).toValue() : null;
+        const points = this.points   ? (await this.points  .eval(parse)).toValue() : null;
+        const convex = this.convex   ? (await this.convex  .eval(parse)).toValue() : null;
 
 
         let input = null;
@@ -60,34 +64,64 @@ extends GShape
         {
             input = (await this.input.eval(parse)).toValue();
 
+            const  _x = x      ?? this.input.value.x;
+            const  _y = y      ?? this.input.value.y;
+            const  _w = width  ?? this.input.value.width;
+            const  _h = height ?? this.input.value.height;
+
+            const __x = pos.value == 0 ? _x : new NumberValue(_x.value + _w.value/2, Math.max(_x.decimals, _w.decimals));
+            const __y = pos.value == 0 ? _y : new NumberValue(_y.value + _h.value/2, Math.max(_y.decimals, _h.decimals));
+            const __w = pos.value == 0 ? _w : new NumberValue(_w.value/2, Math.max(_x.decimals, _w.decimals));
+            const __h = pos.value == 0 ? _h : new NumberValue(_h.value/2, Math.max(_y.decimals, _h.decimals));            
+            
             this.value = new StarValue(
                 this.nodeId,
-                x      ?? input.x,
-                y      ?? input.y,
-                width  ?? input.width,
-                height ?? input.height,
-                round  ?? input.round,
-                points ?? input.points,
-                convex ?? input.convex);
+                _x, _y, _w, _h,
+                round  ?? this.input.value.round,
+                points ?? this.input.value.points,
+                convex ?? this.input.value.convex);
+
+
+            this.setUpdateValues(parse, 
+            [
+                ['position', pos       ],
+                ['x',        __x       ],
+                ['y',        __y       ],
+                ['width',    __w       ],
+                ['height',   __h       ],
+                ['value',    this.value]
+            ]);
         }
         else
         {
-            this.value = new StarValue(
-                this.nodeId, 
-                x, 
-                y, 
-                width, 
-                height, 
-                round, 
-                points, 
-                convex);
-        }
+            const _x = x;
+            const _y = y;
+            const _w = width;
+            const _h = height;
 
-             
-        this.setUpdateValues(parse, 
-        [
-            ['value', this.value]
-        ]);
+            const __x = pos.value == 0 ? _x : new NumberValue(_x.value - _w.value, Math.max(_x.decimals, _w.decimals));
+            const __y = pos.value == 0 ? _y : new NumberValue(_y.value - _h.value, Math.max(_y.decimals, _h.decimals));
+            const __w = pos.value == 0 ? _w : new NumberValue(_w.value*2, Math.max(_x.decimals, _w.decimals));
+            const __h = pos.value == 0 ? _h : new NumberValue(_h.value*2, Math.max(_y.decimals, _h.decimals));            
+
+            this.value = new StarValue(
+                this.nodeId,
+                __x, __y, __w, __h,
+                round,
+                points,
+                convex);
+
+
+            this.setUpdateValues(parse, 
+            [
+                ['position', pos       ],
+                ['x',        _x        ],
+                ['y',        _y        ],
+                ['width',    _w        ],
+                ['height',   _h        ],
+                ['value',    this.value]
+            ]);
+        }
 
 
         await this.evalShapeBase(parse);
@@ -185,9 +219,10 @@ extends GShape
     isValid()
     {
         return super.isValid()
-            && this.round  && this.round .isValid()
-            && this.points && this.points.isValid()
-            && this.convex && this.convex.isValid();
+            && this.position && this.position.isValid()
+            && this.round    && this.round   .isValid()
+            && this.points   && this.points  .isValid()
+            && this.convex   && this.convex  .isValid();
     }
 
 
@@ -196,9 +231,10 @@ extends GShape
     {
         super.pushValueUpdates(parse);
 
-        if (this.round ) this.round .pushValueUpdates(parse);
-        if (this.points) this.points.pushValueUpdates(parse);
-        if (this.convex) this.convex.pushValueUpdates(parse);
+        if (this.position) this.position.pushValueUpdates(parse);
+        if (this.round   ) this.round   .pushValueUpdates(parse);
+        if (this.points  ) this.points  .pushValueUpdates(parse);
+        if (this.convex  ) this.convex  .pushValueUpdates(parse);
     }
 
 
@@ -207,9 +243,10 @@ extends GShape
     {
         super.invalidateInputs(parse, from, force);
 
-        if (this.round ) this.round .invalidateInputs(parse, from, force);
-        if (this.points) this.points.invalidateInputs(parse, from, force);
-        if (this.convex) this.convex.invalidateInputs(parse, from, force);
+        if (this.position) this.position.invalidateInputs(parse, from, force);
+        if (this.round   ) this.round   .invalidateInputs(parse, from, force);
+        if (this.points  ) this.points  .invalidateInputs(parse, from, force);
+        if (this.convex  ) this.convex  .invalidateInputs(parse, from, force);
     }
 
 
@@ -218,8 +255,9 @@ extends GShape
     {
         super.iterateLoop(parse);
 
-        if (this.round ) this.round .iterateLoop(parse);
-        if (this.points) this.points.iterateLoop(parse);
-        if (this.convex) this.convex.iterateLoop(parse);
+        if (this.position) this.position.iterateLoop(parse);
+        if (this.round   ) this.round   .iterateLoop(parse);
+        if (this.points  ) this.points  .iterateLoop(parse);
+        if (this.convex  ) this.convex  .iterateLoop(parse);
     }
 }

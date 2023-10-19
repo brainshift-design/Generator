@@ -1,8 +1,9 @@
 class GPolygon
 extends GShape
 {
-    round   = null;
-    corners = null;
+    position = null;
+    round    = null;
+    corners  = null;
 
 
 
@@ -17,8 +18,9 @@ extends GShape
     {
         super.reset();
 
-        this.round   = null;
-        this.corners = null;
+        this.position = null;
+        this.round    = null;
+        this.corners  = null;
     }
 
 
@@ -29,8 +31,9 @@ extends GShape
 
         copy.copyBase(this);
 
-        if (this.round  ) copy.round   = this.round  .copy();
-        if (this.corners) copy.corners = this.corners.copy();
+        if (this.position) copy.position = this.position.copy();
+        if (this.round   ) copy.round    = this.round   .copy();
+        if (this.corners ) copy.corners  = this.corners .copy();
 
         return copy;
     }
@@ -45,8 +48,9 @@ extends GShape
             
         const [x, y, width, height] = await this.evalBaseParams(parse);
 
-        const round   = this.round   ? (await this.round  .eval(parse)).toValue() : null;
-        const corners = this.corners ? (await this.corners.eval(parse)).toValue() : null;
+        const pos     = this.position ? (await this.position.eval(parse)).toValue() : null;
+        const round   = this.round    ? (await this.round   .eval(parse)).toValue() : null;
+        const corners = this.corners  ? (await this.corners .eval(parse)).toValue() : null;
 
 
         let input = null;
@@ -55,29 +59,62 @@ extends GShape
         {
             input = (await this.input.eval(parse)).toValue();
 
+            const  _x = x      ?? this.input.value.x;
+            const  _y = y      ?? this.input.value.y;
+            const  _w = width  ?? this.input.value.width;
+            const  _h = height ?? this.input.value.height;
+
+            const __x = pos.value == 0 ? _x : new NumberValue(_x.value + _w.value/2, Math.max(_x.decimals, _w.decimals));
+            const __y = pos.value == 0 ? _y : new NumberValue(_y.value + _h.value/2, Math.max(_y.decimals, _h.decimals));
+            const __w = pos.value == 0 ? _w : new NumberValue(_w.value/2, Math.max(_x.decimals, _w.decimals));
+            const __h = pos.value == 0 ? _h : new NumberValue(_h.value/2, Math.max(_y.decimals, _h.decimals));            
+            
             this.value = new PolygonValue(
                 this.nodeId,
-                x       ?? input.x,
-                y       ?? input.y,
-                width   ?? input.width,
-                height  ?? input.height,
-                round   ?? input.round,
-                corners ?? input.corners);
+                _x, _y, _w, _h,
+                round   ?? this.input.value.round,
+                corners ?? this.input.value.corners);
+
+
+            this.setUpdateValues(parse, 
+            [
+                ['position', pos       ],
+                ['x',        __x       ],
+                ['y',        __y       ],
+                ['width',    __w       ],
+                ['height',   __h       ],
+                ['value',    this.value]
+            ]);
         }
         else
         {
-            this.value = new PolygonValue(
-                this.nodeId, 
-                x, 
-                y, 
-                width, 
-                height, 
-                round, 
-                corners);
-        }
+            const _x = x;
+            const _y = y;
+            const _w = width;
+            const _h = height;
 
-        
-        this.setUpdateValues(parse, [['value', this.value]]);
+            const __x = pos.value == 0 ? _x : new NumberValue(_x.value - _w.value, Math.max(_x.decimals, _w.decimals));
+            const __y = pos.value == 0 ? _y : new NumberValue(_y.value - _h.value, Math.max(_y.decimals, _h.decimals));
+            const __w = pos.value == 0 ? _w : new NumberValue(_w.value*2, Math.max(_x.decimals, _w.decimals));
+            const __h = pos.value == 0 ? _h : new NumberValue(_h.value*2, Math.max(_y.decimals, _h.decimals));            
+
+            this.value = new PolygonValue(
+                this.nodeId,
+                __x, __y, __w, __h,
+                round,
+                corners);
+
+
+            this.setUpdateValues(parse, 
+            [
+                ['position', pos       ],
+                ['x',        _x        ],
+                ['y',        _y        ],
+                ['width',    _w        ],
+                ['height',   _h        ],
+                ['value',    this.value]
+            ]);
+        }
 
 
         await this.evalShapeBase(parse);
@@ -173,8 +210,9 @@ extends GShape
     isValid()
     {
         return super.isValid()
-            && this.round   && this.round  .isValid()
-            && this.corners && this.corners.isValid();
+            && this.position && this.position.isValid()
+            && this.round    && this.round   .isValid()
+            && this.corners  && this.corners .isValid();
     }
 
 
@@ -183,8 +221,9 @@ extends GShape
     {
         super.pushValueUpdates(parse);
 
-        if (this.round  ) this.round  .pushValueUpdates(parse);
-        if (this.corners) this.corners.pushValueUpdates(parse);
+        if (this.position) this.position.pushValueUpdates(parse);
+        if (this.round   ) this.round   .pushValueUpdates(parse);
+        if (this.corners ) this.corners .pushValueUpdates(parse);
     }
 
 
@@ -193,8 +232,9 @@ extends GShape
     {
         super.invalidateInputs(parse, from, force);
 
-        if (this.round  ) this.round  .invalidateInputs(parse, from, force);
-        if (this.corners) this.corners.invalidateInputs(parse, from, force);
+        if (this.position) this.position.invalidateInputs(parse, from, force);
+        if (this.round   ) this.round   .invalidateInputs(parse, from, force);
+        if (this.corners ) this.corners .invalidateInputs(parse, from, force);
     }
 
 
@@ -203,7 +243,8 @@ extends GShape
     {
         super.iterateLoop(parse);
 
-        if (this.round  ) this.round  .iterateLoop(parse);
-        if (this.corners) this.corners.iterateLoop(parse);
+        if (this.position) this.position.iterateLoop(parse);
+        if (this.round   ) this.round   .iterateLoop(parse);
+        if (this.corners ) this.corners .iterateLoop(parse);
     }
 }

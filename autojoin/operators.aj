@@ -205,6 +205,7 @@
 ../operators/shape/OpResetTransform.js
 
 ../operators/shape/OpMeasurePoints.js
+../operators/shape/OpCircleCenter.js
 ../operators/shape/OpInterpolatePoint.js
 ../operators/shape/OpPointOnPath.js
 

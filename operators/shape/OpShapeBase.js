@@ -47,7 +47,8 @@ extends OperatorBase
 
             for (const param of this.node.params)
                 if (   param.input 
-                    && param.input.connected
+                    && (   param.input.connected
+                        || param.alwaysRequest)
                     && param.canShow())
                     paramIds.push(param.id);
         }

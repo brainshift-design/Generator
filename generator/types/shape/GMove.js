@@ -1,9 +1,9 @@
 class GMove
 extends GOperator1
 {
+    moveType    = null;
     x           = null;
     y           = null;
-    moveType    = null;
     affectSpace = null;
     showCenter  = null;
     
@@ -20,9 +20,9 @@ extends GOperator1
     {
         super.reset();
 
+        this.moveType    = null;
         this.x           = null;
         this.y           = null;
-        this.moveType    = null;
         this.affectSpace = null;
         this.showCenter  = null;
     }
@@ -35,9 +35,9 @@ extends GOperator1
 
         copy.copyBase(this);
 
+        if (this.moveType   ) copy.moveType    = this.moveType   .copy();
         if (this.x          ) copy.x           = this.x          .copy();
         if (this.y          ) copy.y           = this.y          .copy();
-        if (this.moveType   ) copy.moveType    = this.moveType   .copy();
         if (this.affectSpace) copy.affectSpace = this.affectSpace.copy();
         if (this.showCenter ) copy.showCenter  = this.showCenter .copy();
 
@@ -52,9 +52,9 @@ extends GOperator1
             return this;
 
             
+        const moveType    = this.moveType    ? (await this.moveType   .eval(parse)).toValue() : null;
         const x           = this.x           ? (await this.x          .eval(parse)).toValue() : null;
         const y           = this.y           ? (await this.y          .eval(parse)).toValue() : null;
-        const moveType    = this.moveType    ? (await this.moveType   .eval(parse)).toValue() : null;
         const affectSpace = this.affectSpace ? (await this.affectSpace.eval(parse)).toValue() : null;
         const showCenter  = this.showCenter  ? (await this.showCenter .eval(parse)).toValue() : null;
 
@@ -75,9 +75,9 @@ extends GOperator1
         await this.evalObjects(
             parse, 
             {
+                moveType:    moveType,
                 x:           x, 
                 y:           y,
-                moveType:    moveType,
                 showCenter:  showCenter,
                 affectSpace: affectSpace
             });
@@ -86,9 +86,9 @@ extends GOperator1
         this.setUpdateValues(parse,
         [
             ['type',        this.outputType()],
+            ['moveType',    moveType         ],
             ['x',           x                ],
             ['y',           y                ],
-            ['moveType',    moveType         ],
             ['affectSpace', affectSpace      ],
             ['showCenter',  showCenter       ]
         ]);
@@ -105,9 +105,9 @@ extends GOperator1
     {
         if (   this.value
             && this.value.isValid()
+            && options.moveType
             && options.x
             && options.y
-            && options.moveType
             && options.affectSpace
             && options.showCenter)
         {
@@ -123,9 +123,9 @@ extends GOperator1
             const bounds = getObjBounds(this.value.objects);
 
 
+            const moveType    = options.moveType   .value;
             const x           = options.x          .value;
             const y           = options.y          .value;
-            const moveType    = options.moveType   .value;
             const affectSpace = options.affectSpace.value;
             const showCenter  = options.showCenter .value;
 
@@ -212,9 +212,9 @@ extends GOperator1
     isValid()
     {
         return super.isValid()
+            && this.moveType    && this.moveType   .isValid()
             && this.x           && this.x          .isValid()
             && this.y           && this.y          .isValid()
-            && this.moveType    && this.moveType   .isValid()
             && this.affectSpace && this.affectSpace.isValid()
             && this.showCenter  && this.showCenter .isValid();
     }
@@ -225,9 +225,9 @@ extends GOperator1
     {
         super.pushValueUpdates(parse);
 
+        if (this.moveType   ) this.moveType   .pushValueUpdates(parse);
         if (this.x          ) this.x          .pushValueUpdates(parse);
         if (this.y          ) this.y          .pushValueUpdates(parse);
-        if (this.moveType   ) this.moveType   .pushValueUpdates(parse);
         if (this.affectSpace) this.affectSpace.pushValueUpdates(parse);
         if (this.showCenter ) this.showCenter .pushValueUpdates(parse);
     }
@@ -238,9 +238,9 @@ extends GOperator1
     {
         super.invalidateInputs(parse, from, force);
 
+        if (this.moveType   ) this.moveType   .invalidateInputs(parse, from, force);
         if (this.x          ) this.x          .invalidateInputs(parse, from, force);
         if (this.y          ) this.y          .invalidateInputs(parse, from, force);
-        if (this.moveType   ) this.moveType   .invalidateInputs(parse, from, force);
         if (this.affectSpace) this.affectSpace.invalidateInputs(parse, from, force);
         if (this.showCenter ) this.showCenter .invalidateInputs(parse, from, force);
     }
@@ -251,9 +251,9 @@ extends GOperator1
     {
         super.iterateLoop(parse);
 
+        if (this.moveType   ) this.moveType   .iterateLoop(parse);
         if (this.x          ) this.x          .iterateLoop(parse);
         if (this.y          ) this.y          .iterateLoop(parse);
-        if (this.moveType   ) this.moveType   .iterateLoop(parse);
         if (this.affectSpace) this.affectSpace.iterateLoop(parse);
         if (this.showCenter ) this.showCenter .iterateLoop(parse);
     }

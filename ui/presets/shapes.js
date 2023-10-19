@@ -3,15 +3,124 @@ const presetShapesStyles = '\
         "nodes":\
         [\
             {\
+            "type": "RECT",\
+            "id": "rect5",\
+            "name": "rectangle",\
+            "renamed": "false",\
+            "enabled": "true",\
+            "highlight": "0",\
+            "x": "739",\
+            "y": "2096",\
+            "z": "0",\
+            "active": "true",\
+            "params":\
+            [\
+            ]\
+            },\
+            {\
+            "type": "POLY",\
+            "id": "poly",\
+            "name": "polygon",\
+            "renamed": "false",\
+            "enabled": "true",\
+            "highlight": "0",\
+            "x": "741",\
+            "y": "1334",\
+            "z": "1",\
+            "active": "true",\
+            "params":\
+            [\
+                    ["NUM#", "y", "50,0"],\
+                    ["NUM#", "corners", "6,0"]\
+            ]\
+            },\
+            {\
+            "type": "INSH",\
+            "id": "innerShadow",\
+            "name": "inner%20shadow",\
+            "renamed": "false",\
+            "enabled": "true",\
+            "highlight": "0",\
+            "x": "168",\
+            "y": "3099",\
+            "z": "2",\
+            "params":\
+            [\
+                    ["FILL#", "fill", "0,0 0,0 0,0 25,0 0,0"]\
+            ]\
+            },\
+            {\
+            "type": "ELPS",\
+            "id": "ellipse",\
+            "name": "ellipse",\
+            "renamed": "false",\
+            "enabled": "true",\
+            "highlight": "0",\
+            "x": "739",\
+            "y": "949",\
+            "z": "3",\
+            "active": "true",\
+            "params":\
+            [\
+                    ["NUM#", "x", "50,0"]\
+            ]\
+            },\
+            {\
+            "type": "LBLR",\
+            "id": "layerBlur",\
+            "name": "layer%20blur",\
+            "renamed": "false",\
+            "enabled": "true",\
+            "highlight": "0",\
+            "x": "166",\
+            "y": "3311",\
+            "z": "4"\
+            },\
+            {\
+            "type": "STRK",\
+            "id": "stroke3",\
+            "name": "stroke",\
+            "renamed": "false",\
+            "enabled": "true",\
+            "highlight": "0",\
+            "x": "556",\
+            "y": "2233",\
+            "z": "5",\
+            "params":\
+            [\
+                    ["LIST#", "fills", "1 FILL# 64,0 128,0 255,0 50,0 0,0"],\
+                    ["NUM#", "weight", "4,0"]\
+            ]\
+            },\
+            {\
+            "type": "COL",\
+            "id": "color3",\
+            "name": "color",\
+            "renamed": "false",\
+            "enabled": "true",\
+            "highlight": "0",\
+            "x": "367",\
+            "y": "1877",\
+            "z": "6",\
+            "prevSpace": "hsv",\
+            "params":\
+            [\
+                    ["NUM#", "space", "2,0"],\
+                    ["NUM#", "c1", "110.00000000000001,0"],\
+                    ["NUM#", "c2", "65,0"],\
+                    ["NUM#", "c3", "90,0"]\
+            ]\
+            },\
+            {\
             "type": "COL",\
             "id": "color4",\
             "name": "color",\
             "renamed": "false",\
             "enabled": "true",\
             "highlight": "0",\
-            "x": "73",\
-            "y": "2187",\
-            "z": "0",\
+            "x": "173",\
+            "y": "2287",\
+            "z": "7",\
             "prevSpace": "hsv",\
             "params":\
             [\
@@ -23,295 +132,26 @@ const presetShapesStyles = '\
             },\
             {\
             "type": "ELPS",\
-            "id": "ellipse",\
-            "name": "ellipse",\
-            "renamed": "false",\
-            "enabled": "true",\
-            "highlight": "0",\
-            "x": "639",\
-            "y": "849",\
-            "z": "1",\
-            "active": "true",\
-            "params":\
-            [\
-                    ["NUM#", "x", "50,0"]\
-            ]\
-            },\
-            {\
-            "type": "COL",\
-            "id": "color2",\
-            "name": "color",\
-            "renamed": "false",\
-            "enabled": "true",\
-            "highlight": "0",\
-            "x": "266",\
-            "y": "1420",\
-            "z": "2",\
-            "prevSpace": "hsv",\
-            "params":\
-            [\
-                    ["NUM#", "space", "2,0"],\
-                    ["NUM#", "c1", "60,0"],\
-                    ["NUM#", "c2", "90,0"],\
-                    ["NUM#", "c3", "90,0"]\
-            ]\
-            },\
-            {\
-            "type": "STRK",\
-            "id": "stroke",\
-            "name": "stroke",\
-            "renamed": "false",\
-            "enabled": "true",\
-            "highlight": "0",\
-            "x": "69",\
-            "y": "2763",\
-            "z": "3",\
-            "params":\
-            [\
-                    ["LIST#", "fills", "1 FILL# 255,0 255,0 64,0 100,0 0,0"]\
-            ]\
-            },\
-            {\
-            "type": "CMNT",\
-            "id": "comment10",\
-            "name": "Connect%20these%20here%2C%20then%20this%20here.%20Then%20double-click%20here.",\
-            "renamed": "true",\
-            "enabled": "true",\
-            "highlight": "0",\
-            "x": "223",\
-            "y": "2955",\
-            "z": "4"\
-            },\
-            {\
-            "type": "INSH",\
-            "id": "innerShadow",\
-            "name": "inner%20shadow",\
-            "renamed": "false",\
-            "enabled": "true",\
-            "highlight": "0",\
-            "x": "68",\
-            "y": "2999",\
-            "z": "5",\
-            "active": "true",\
-            "params":\
-            [\
-                    ["FILL#", "fill", "0,0 0,0 0,0 25,0 0,0"]\
-            ]\
-            },\
-            {\
-            "type": "CMB",\
-            "id": "combine",\
-            "name": "combine",\
-            "renamed": "false",\
-            "enabled": "true",\
-            "highlight": "0",\
-            "x": "429",\
-            "y": "2841",\
-            "z": "6",\
-            "active": "true",\
-            "width": "120",\
-            "height": "38"\
-            },\
-            {\
-            "type": "COL",\
-            "id": "color3",\
-            "name": "color",\
-            "renamed": "false",\
-            "enabled": "true",\
-            "highlight": "0",\
-            "x": "267",\
-            "y": "1777",\
-            "z": "7",\
-            "prevSpace": "hsv",\
-            "params":\
-            [\
-                    ["NUM#", "space", "2,0"],\
-                    ["NUM#", "c1", "110.00000000000001,0"],\
-                    ["NUM#", "c2", "65,0"],\
-                    ["NUM#", "c3", "90,0"]\
-            ]\
-            },\
-            {\
-            "type": "LBLR",\
-            "id": "layerBlur",\
-            "name": "layer%20blur",\
-            "renamed": "false",\
-            "enabled": "true",\
-            "highlight": "0",\
-            "x": "66",\
-            "y": "3211",\
-            "z": "8",\
-            "active": "true"\
-            },\
-            {\
-            "type": "STRK",\
-            "id": "stroke2",\
-            "name": "stroke",\
-            "renamed": "false",\
-            "enabled": "true",\
-            "highlight": "0",\
-            "x": "458",\
-            "y": "1750",\
-            "z": "9",\
-            "params":\
-            [\
-                    ["LIST#", "fills", "1 FILL# 105,0 230,0 80,0 100,0 0,0"],\
-                    ["NUM#", "weight", "4,0"]\
-            ]\
-            },\
-            {\
-            "type": "CMNT",\
-            "id": "comment3",\
-            "name": "A%20shape%20needs%20at%20least%20one%20%22style%22",\
-            "renamed": "true",\
-            "enabled": "true",\
-            "highlight": "0",\
-            "x": "90",\
-            "y": "522",\
-            "z": "10"\
-            },\
-            {\
-            "type": "COL",\
-            "id": "color6",\
-            "name": "color",\
-            "renamed": "false",\
-            "enabled": "true",\
-            "highlight": "0",\
-            "x": "-112",\
-            "y": "2792",\
-            "z": "11",\
-            "prevSpace": "hsv",\
-            "params":\
-            [\
-                    ["NUM#", "space", "2,0"],\
-                    ["NUM#", "c1", "60,0"],\
-                    ["NUM#", "c2", "75,0"],\
-                    ["NUM#", "c3", "100,0"]\
-            ]\
-            },\
-            {\
-            "type": "ELPS",\
             "id": "ellipse2",\
             "name": "ellipse",\
             "renamed": "false",\
             "enabled": "true",\
             "highlight": "0",\
-            "x": "638",\
-            "y": "2596",\
-            "z": "12",\
+            "x": "839",\
+            "y": "2698",\
+            "z": "8",\
             "active": "true"\
             },\
             {\
-            "type": "POLY",\
-            "id": "poly",\
-            "name": "polygon",\
-            "renamed": "false",\
-            "enabled": "true",\
-            "highlight": "0",\
-            "x": "641",\
-            "y": "1234",\
-            "z": "13",\
-            "active": "true",\
-            "params":\
-            [\
-                    ["NUM#", "y", "50,0"],\
-                    ["NUM#", "corners", "6,0"]\
-            ]\
-            },\
-            {\
-            "type": "RECT",\
-            "id": "rect",\
-            "name": "rectangle",\
-            "renamed": "false",\
-            "enabled": "true",\
-            "highlight": "0",\
-            "x": "637",\
-            "y": "508",\
-            "z": "14",\
-            "active": "true",\
-            "params":\
-            [\
-                    ["NUM#", "x", "-50,0"],\
-                    ["NUM#", "y", "-50,0"]\
-            ]\
-            },\
-            {\
-            "type": "RECT",\
-            "id": "rect4",\
-            "name": "rectangle",\
-            "renamed": "false",\
-            "enabled": "true",\
-            "highlight": "0",\
-            "x": "639",\
-            "y": "1612",\
-            "z": "15",\
-            "active": "true",\
-            "params":\
-            [\
-                    ["NUM#", "x", "50,0"],\
-                    ["NUM#", "y", "50,0"]\
-            ]\
-            },\
-            {\
             "type": "CMNT",\
-            "id": "comment",\
-            "name": "(fill%2C%20stroke%20etc.)%2C%20otherwise%20it\'s%20shown",\
+            "id": "comment10",\
+            "name": "Connect%20the%20stroke%2C%20the%20inner%20shadow%20and%20the%20layer%20blur",\
             "renamed": "true",\
             "enabled": "true",\
             "highlight": "0",\
-            "x": "84",\
-            "y": "573",\
-            "z": "16"\
-            },\
-            {\
-            "type": "FILL",\
-            "id": "fill",\
-            "name": "fill",\
-            "renamed": "false",\
-            "enabled": "true",\
-            "highlight": "0",\
-            "x": "450",\
-            "y": "1393",\
-            "z": "17",\
-            "params":\
-            [\
-                    ["COL#", "color", "1,0 230,0 229,0 23,0"],\
-                    ["NUM#", "opacity", "50,0"]\
-            ]\
-            },\
-            {\
-            "type": "RECT",\
-            "id": "rect5",\
-            "name": "rectangle",\
-            "renamed": "false",\
-            "enabled": "true",\
-            "highlight": "0",\
-            "x": "639",\
-            "y": "1996",\
-            "z": "18",\
-            "active": "true",\
-            "params":\
-            [\
-            ]\
-            },\
-            {\
-            "type": "COL",\
-            "id": "color",\
-            "name": "color",\
-            "renamed": "false",\
-            "enabled": "true",\
-            "highlight": "0",\
-            "x": "450",\
-            "y": "1030",\
-            "z": "19",\
-            "prevSpace": "hsv",\
-            "params":\
-            [\
-                    ["NUM#", "space", "2,0"],\
-                    ["NUM#", "c1", "0,0"],\
-                    ["NUM#", "c2", "75,0"],\
-                    ["NUM#", "c3", "100,0"]\
-            ]\
+            "x": "364",\
+            "y": "3048",\
+            "z": "9"\
             },\
             {\
             "type": "COL",\
@@ -320,9 +160,9 @@ const presetShapesStyles = '\
             "renamed": "false",\
             "enabled": "true",\
             "highlight": "0",\
-            "x": "69",\
-            "y": "2593",\
-            "z": "20",\
+            "x": "169",\
+            "y": "2693",\
+            "z": "10",\
             "prevSpace": "hsv",\
             "params":\
             [\
@@ -339,9 +179,9 @@ const presetShapesStyles = '\
             "renamed": "false",\
             "enabled": "true",\
             "highlight": "0",\
-            "x": "269",\
-            "y": "2160",\
-            "z": "21",\
+            "x": "369",\
+            "y": "2260",\
+            "z": "11",\
             "params":\
             [\
                     ["COL#", "color", "1,0 64,0 128,0 255,0"],\
@@ -349,30 +189,55 @@ const presetShapesStyles = '\
             ]\
             },\
             {\
-            "type": "CMNT",\
-            "id": "comment2",\
-            "name": "with%20a%20dotted%20stroke.",\
-            "renamed": "true",\
-            "enabled": "true",\
-            "highlight": "0",\
-            "x": "88",\
-            "y": "622",\
-            "z": "22"\
-            },\
-            {\
-            "type": "STRK",\
-            "id": "stroke3",\
-            "name": "stroke",\
+            "type": "RECT",\
+            "id": "rect4",\
+            "name": "rectangle",\
             "renamed": "false",\
             "enabled": "true",\
             "highlight": "0",\
-            "x": "456",\
-            "y": "2133",\
-            "z": "23",\
+            "x": "739",\
+            "y": "1712",\
+            "z": "12",\
+            "active": "true",\
             "params":\
             [\
-                    ["LIST#", "fills", "1 FILL# 64,0 128,0 255,0 50,0 0,0"],\
-                    ["NUM#", "weight", "4,0"]\
+                    ["NUM#", "x", "50,0"],\
+                    ["NUM#", "y", "50,0"]\
+            ]\
+            },\
+            {\
+            "type": "FILL",\
+            "id": "fill",\
+            "name": "fill",\
+            "renamed": "false",\
+            "enabled": "true",\
+            "highlight": "0",\
+            "x": "550",\
+            "y": "1493",\
+            "z": "13",\
+            "params":\
+            [\
+                    ["COL#", "color", "1,0 230,0 229,0 23,0"],\
+                    ["NUM#", "opacity", "50,0"]\
+            ]\
+            },\
+            {\
+            "type": "COL",\
+            "id": "color",\
+            "name": "color",\
+            "renamed": "false",\
+            "enabled": "true",\
+            "highlight": "0",\
+            "x": "550",\
+            "y": "1130",\
+            "z": "14",\
+            "prevSpace": "hsv",\
+            "params":\
+            [\
+                    ["NUM#", "space", "2,0"],\
+                    ["NUM#", "c1", "0,0"],\
+                    ["NUM#", "c2", "75,0"],\
+                    ["NUM#", "c3", "100,0"]\
             ]\
             },\
             {\
@@ -382,13 +247,227 @@ const presetShapesStyles = '\
             "renamed": "true",\
             "enabled": "true",\
             "highlight": "0",\
-            "x": "65",\
-            "y": "2498",\
+            "x": "165",\
+            "y": "2598",\
+            "z": "15"\
+            },\
+            {\
+            "type": "CMNT",\
+            "id": "comment",\
+            "name": "(fill%2C%20stroke%20etc.)%2C%20otherwise%20it\'s%20shown",\
+            "renamed": "true",\
+            "enabled": "true",\
+            "highlight": "0",\
+            "x": "184",\
+            "y": "673",\
+            "z": "16"\
+            },\
+            {\
+            "type": "STRK",\
+            "id": "stroke2",\
+            "name": "stroke",\
+            "renamed": "false",\
+            "enabled": "true",\
+            "highlight": "0",\
+            "x": "558",\
+            "y": "1850",\
+            "z": "17",\
+            "params":\
+            [\
+                    ["LIST#", "fills", "1 FILL# 105,0 230,0 80,0 100,0 0,0"],\
+                    ["NUM#", "weight", "4,0"]\
+            ]\
+            },\
+            {\
+            "type": "STRK",\
+            "id": "stroke",\
+            "name": "stroke",\
+            "renamed": "false",\
+            "enabled": "true",\
+            "highlight": "0",\
+            "x": "169",\
+            "y": "2863",\
+            "z": "18",\
+            "params":\
+            [\
+                    ["LIST#", "fills", "1 FILL# 255,0 255,0 64,0 100,0 0,0"]\
+            ]\
+            },\
+            {\
+            "type": "COL",\
+            "id": "color6",\
+            "name": "color",\
+            "renamed": "false",\
+            "enabled": "true",\
+            "highlight": "0",\
+            "x": "-12",\
+            "y": "2892",\
+            "z": "19",\
+            "prevSpace": "hsv",\
+            "params":\
+            [\
+                    ["NUM#", "space", "2,0"],\
+                    ["NUM#", "c1", "60,0"],\
+                    ["NUM#", "c2", "75,0"],\
+                    ["NUM#", "c3", "100,0"]\
+            ]\
+            },\
+            {\
+            "type": "RECT",\
+            "id": "rect",\
+            "name": "rectangle",\
+            "renamed": "false",\
+            "enabled": "true",\
+            "highlight": "0",\
+            "x": "737",\
+            "y": "608",\
+            "z": "20",\
+            "active": "true",\
+            "params":\
+            [\
+                    ["NUM#", "x", "-50,0"],\
+                    ["NUM#", "y", "-50,0"]\
+            ]\
+            },\
+            {\
+            "type": "COL",\
+            "id": "color2",\
+            "name": "color",\
+            "renamed": "false",\
+            "enabled": "true",\
+            "highlight": "0",\
+            "x": "366",\
+            "y": "1520",\
+            "z": "21",\
+            "prevSpace": "hsv",\
+            "params":\
+            [\
+                    ["NUM#", "space", "2,0"],\
+                    ["NUM#", "c1", "60,0"],\
+                    ["NUM#", "c2", "90,0"],\
+                    ["NUM#", "c3", "90,0"]\
+            ]\
+            },\
+            {\
+            "type": "CMB",\
+            "id": "combine",\
+            "name": "combine",\
+            "renamed": "false",\
+            "enabled": "true",\
+            "highlight": "0",\
+            "x": "529",\
+            "y": "2941",\
+            "z": "22",\
+            "width": "120",\
+            "height": "38"\
+            },\
+            {\
+            "type": "CMNT",\
+            "id": "comment3",\
+            "name": "A%20shape%20needs%20at%20least%20one%20%22style%22",\
+            "renamed": "true",\
+            "enabled": "true",\
+            "highlight": "0",\
+            "x": "190",\
+            "y": "622",\
+            "z": "23"\
+            },\
+            {\
+            "type": "CMNT",\
+            "id": "comment2",\
+            "name": "with%20a%20dotted%20stroke.",\
+            "renamed": "true",\
+            "enabled": "true",\
+            "highlight": "0",\
+            "x": "188",\
+            "y": "722",\
             "z": "24"\
+            },\
+            {\
+            "type": "CMNT",\
+            "id": "comment11",\
+            "name": "to%20the%20combine%20node%2C%20then%20connect%20the%20combine%20node%20to",\
+            "renamed": "true",\
+            "enabled": "true",\
+            "highlight": "0",\
+            "x": "364",\
+            "y": "3089",\
+            "z": "25"\
+            },\
+            {\
+            "type": "CMNT",\
+            "id": "comment12",\
+            "name": "the%20ellipse\'s%20style%20parameter.",\
+            "renamed": "true",\
+            "enabled": "true",\
+            "highlight": "0",\
+            "x": "364",\
+            "y": "3132",\
+            "z": "26"\
+            },\
+            {\
+            "type": "CMNT",\
+            "id": "comment13",\
+            "name": "%E2%9F%B6",\
+            "renamed": "true",\
+            "enabled": "true",\
+            "highlight": "0",\
+            "x": "474",\
+            "y": "2945",\
+            "z": "27"\
+            },\
+            {\
+            "type": "CMNT",\
+            "id": "comment14",\
+            "name": "%E2%9F%B6",\
+            "renamed": "true",\
+            "enabled": "true",\
+            "highlight": "0",\
+            "x": "474",\
+            "y": "2959",\
+            "z": "28"\
+            },\
+            {\
+            "type": "CMNT",\
+            "id": "comment15",\
+            "name": "%E2%9F%B6",\
+            "renamed": "true",\
+            "enabled": "true",\
+            "highlight": "0",\
+            "x": "474",\
+            "y": "2971",\
+            "z": "29"\
+            },\
+            {\
+            "type": "CMNT",\
+            "id": "comment17",\
+            "name": "%E2%9F%B6",\
+            "renamed": "true",\
+            "enabled": "true",\
+            "highlight": "0",\
+            "x": "777",\
+            "y": "2875",\
+            "z": "30"\
             }\
         ],\
         "connections":\
         [\
+            {\
+            "outputNodeId": "stroke3",\
+            "outputId": "h0",\
+            "outputOrder": "0",\
+            "inputNodeId": "rect5",\
+            "inputId": "props",\
+            "list": "false"\
+            },\
+            {\
+            "outputNodeId": "fill",\
+            "outputId": "h0",\
+            "outputOrder": "0",\
+            "inputNodeId": "poly",\
+            "inputId": "props",\
+            "list": "false"\
+            },\
             {\
             "outputNodeId": "color",\
             "outputId": "h0",\
@@ -398,35 +477,19 @@ const presetShapesStyles = '\
             "list": "false"\
             },\
             {\
-            "outputNodeId": "color6",\
+            "outputNodeId": "fill2",\
             "outputId": "h0",\
             "outputOrder": "0",\
-            "inputNodeId": "stroke",\
+            "inputNodeId": "stroke3",\
             "inputId": "fills",\
             "list": "false"\
             },\
             {\
-            "outputNodeId": "color5",\
+            "outputNodeId": "color4",\
             "outputId": "h0",\
             "outputOrder": "0",\
-            "inputNodeId": "combine",\
-            "inputId": "h0",\
-            "list": "false"\
-            },\
-            {\
-            "outputNodeId": "color3",\
-            "outputId": "h0",\
-            "outputOrder": "0",\
-            "inputNodeId": "stroke2",\
-            "inputId": "fills",\
-            "list": "false"\
-            },\
-            {\
-            "outputNodeId": "fill",\
-            "outputId": "h0",\
-            "outputOrder": "0",\
-            "inputNodeId": "poly",\
-            "inputId": "props",\
+            "inputNodeId": "fill2",\
+            "inputId": "color",\
             "list": "false"\
             },\
             {\
@@ -446,27 +509,27 @@ const presetShapesStyles = '\
             "list": "false"\
             },\
             {\
-            "outputNodeId": "stroke3",\
+            "outputNodeId": "color3",\
             "outputId": "h0",\
             "outputOrder": "0",\
-            "inputNodeId": "rect5",\
-            "inputId": "props",\
-            "list": "false"\
-            },\
-            {\
-            "outputNodeId": "color4",\
-            "outputId": "h0",\
-            "outputOrder": "0",\
-            "inputNodeId": "fill2",\
-            "inputId": "color",\
-            "list": "false"\
-            },\
-            {\
-            "outputNodeId": "fill2",\
-            "outputId": "h0",\
-            "outputOrder": "0",\
-            "inputNodeId": "stroke3",\
+            "inputNodeId": "stroke2",\
             "inputId": "fills",\
+            "list": "false"\
+            },\
+            {\
+            "outputNodeId": "color6",\
+            "outputId": "h0",\
+            "outputOrder": "0",\
+            "inputNodeId": "stroke",\
+            "inputId": "fills",\
+            "list": "false"\
+            },\
+            {\
+            "outputNodeId": "color5",\
+            "outputId": "h0",\
+            "outputOrder": "0",\
+            "inputNodeId": "combine",\
+            "inputId": "h0",\
             "list": "false"\
             }\
         ]\
@@ -485,9 +548,9 @@ const presetBasicTransform = '\
             "renamed": "true",\
             "enabled": "true",\
             "highlight": "0",\
-            "x": "608",\
-            "y": "441",\
-            "z": "1"\
+            "x": "708",\
+            "y": "541",\
+            "z": "0"\
             },\
             {\
             "type": "PANEL",\
@@ -496,9 +559,9 @@ const presetBasicTransform = '\
             "renamed": "true",\
             "enabled": "true",\
             "highlight": "0",\
-            "x": "-139",\
-            "y": "99",\
-            "z": "2",\
+            "x": "-39",\
+            "y": "199",\
+            "z": "1",\
             "width": "487.7051179016323",\
             "height": "405.5981990149978",\
             "params":\
@@ -512,9 +575,9 @@ const presetBasicTransform = '\
             "renamed": "false",\
             "enabled": "true",\
             "highlight": "0",\
-            "x": "204",\
-            "y": "155",\
-            "z": "3",\
+            "x": "304",\
+            "y": "255",\
+            "z": "2",\
             "params":\
             [\
             ]\
@@ -526,9 +589,9 @@ const presetBasicTransform = '\
             "renamed": "false",\
             "enabled": "true",\
             "highlight": "0",\
-            "x": "902",\
-            "y": "155",\
-            "z": "4",\
+            "x": "1002",\
+            "y": "255",\
+            "z": "3",\
             "active": "true",\
             "params":\
             [\
@@ -543,9 +606,9 @@ const presetBasicTransform = '\
             "renamed": "true",\
             "enabled": "true",\
             "highlight": "0",\
-            "x": "610",\
-            "y": "397",\
-            "z": "5"\
+            "x": "710",\
+            "y": "497",\
+            "z": "4"\
             },\
             {\
             "type": "PANEL",\
@@ -554,9 +617,9 @@ const presetBasicTransform = '\
             "renamed": "true",\
             "enabled": "true",\
             "highlight": "0",\
-            "x": "631",\
-            "y": "104",\
-            "z": "6",\
+            "x": "731",\
+            "y": "204",\
+            "z": "5",\
             "width": "417",\
             "height": "226.25287762942608",\
             "params":\
@@ -570,9 +633,9 @@ const presetBasicTransform = '\
             "renamed": "false",\
             "enabled": "true",\
             "highlight": "0",\
-            "x": "45",\
-            "y": "291",\
-            "z": "7",\
+            "x": "145",\
+            "y": "391",\
+            "z": "6",\
             "params":\
             [\
                     ["LIST#", "fills", "1 FILL# 255,0 131,0 53,0 100,0 0,0"]\
@@ -585,9 +648,9 @@ const presetBasicTransform = '\
             "renamed": "false",\
             "enabled": "true",\
             "highlight": "0",\
-            "x": "-110",\
-            "y": "318",\
-            "z": "9",\
+            "x": "-10",\
+            "y": "418",\
+            "z": "7",\
             "prevSpace": "hex",\
             "params":\
             [\
@@ -604,9 +667,9 @@ const presetBasicTransform = '\
             "renamed": "true",\
             "enabled": "true",\
             "highlight": "0",\
-            "x": "608",\
-            "y": "486",\
-            "z": "10"\
+            "x": "708",\
+            "y": "586",\
+            "z": "8"\
             },\
             {\
             "type": "MOVE",\
@@ -615,15 +678,26 @@ const presetBasicTransform = '\
             "renamed": "false",\
             "enabled": "true",\
             "highlight": "0",\
-            "x": "660",\
-            "y": "155",\
-            "z": "11",\
+            "x": "760",\
+            "y": "255",\
+            "z": "9",\
             "params":\
             [\
                     ["NUM#", "x", "200,0"],\
                     ["NUM#", "affectSpace", "0,0"],\
                     ["NUM#", "showCenter", "1,0"]\
             ]\
+            },\
+            {\
+            "type": "CMNT",\
+            "id": "comment4",\
+            "name": "%E2%9F%B6",\
+            "renamed": "true",\
+            "enabled": "true",\
+            "highlight": "0",\
+            "x": "710",\
+            "y": "342",\
+            "z": "10"\
             }\
         ],\
         "connections":\

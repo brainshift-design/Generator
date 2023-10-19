@@ -171,14 +171,15 @@ function genParseEllipse(parse)
 
         switch (paramId)
         {
-        case 'x':      ellipse.x      = genParse(parse); break;
-        case 'y':      ellipse.y      = genParse(parse); break;
-        case 'width':  ellipse.width  = genParse(parse); break;
-        case 'height': ellipse.height = genParse(parse); break;
-        case 'from':   ellipse.from   = genParse(parse); break;
-        case 'to':     ellipse.to     = genParse(parse); break;
-        case 'inner':  ellipse.inner  = genParse(parse); break;
-        case 'props':  ellipse.props  = genParse(parse); break;
+        case 'position': ellipse.position = genParse(parse); break;
+        case 'x':        ellipse.x        = genParse(parse); break;
+        case 'y':        ellipse.y        = genParse(parse); break;
+        case 'width':    ellipse.width    = genParse(parse); break;
+        case 'height':   ellipse.height   = genParse(parse); break;
+        case 'from':     ellipse.from     = genParse(parse); break;
+        case 'to':       ellipse.to       = genParse(parse); break;
+        case 'inner':    ellipse.inner    = genParse(parse); break;
+        case 'props':    ellipse.props    = genParse(parse); break;
         }
     }
     
@@ -304,13 +305,14 @@ function genParsePolygon(parse)
 
         switch (paramId)
         {
-        case 'x':       poly.x       = genParse(parse); break;
-        case 'y':       poly.y       = genParse(parse); break;
-        case 'width':   poly.width   = genParse(parse); break;
-        case 'height':  poly.height  = genParse(parse); break;
-        case 'round':   poly.round   = genParse(parse); break;
-        case 'corners': poly.corners = genParse(parse); break;
-        case 'props':   poly.props   = genParse(parse); break;
+        case 'position': poly.position = genParse(parse); break;
+        case 'x':        poly.x        = genParse(parse); break;
+        case 'y':        poly.y        = genParse(parse); break;
+        case 'width':    poly.width    = genParse(parse); break;
+        case 'height':   poly.height   = genParse(parse); break;
+        case 'round':    poly.round    = genParse(parse); break;
+        case 'corners':  poly.corners  = genParse(parse); break;
+        case 'props':    poly.props    = genParse(parse); break;
         }
     }
     
@@ -370,14 +372,15 @@ function genParseStar(parse)
 
         switch (paramId)
         {
-        case 'x':      star.x      = genParse(parse); break;
-        case 'y':      star.y      = genParse(parse); break;
-        case 'width':  star.width  = genParse(parse); break;
-        case 'height': star.height = genParse(parse); break;
-        case 'round':  star.round  = genParse(parse); break;
-        case 'points': star.points = genParse(parse); break;
-        case 'convex': star.convex = genParse(parse); break;
-        case 'props':  star.props  = genParse(parse); break;
+        case 'position': star.position = genParse(parse); break;
+        case 'x':        star.x        = genParse(parse); break;
+        case 'y':        star.y        = genParse(parse); break;
+        case 'width':    star.width    = genParse(parse); break;
+        case 'height':   star.height   = genParse(parse); break;
+        case 'round':    star.round    = genParse(parse); break;
+        case 'points':   star.points   = genParse(parse); break;
+        case 'convex':   star.convex   = genParse(parse); break;
+        case 'props':    star.props    = genParse(parse); break;
         }
     }
     
@@ -1087,9 +1090,9 @@ function genParseMove(parse)
     if (nInputs == 1)
         move.input = genParse(parse);
 
+    move.moveType    = genParse(parse);
     move.x           = genParse(parse);
     move.y           = genParse(parse);
-    move.moveType    = genParse(parse);
     move.affectSpace = genParse(parse);
     move.showCenter  = genParse(parse);
 
@@ -1389,6 +1392,63 @@ function genParseMeasurePoints(parse)
     else if (nInputs == 1)
     {
         measure.input0 = genParse(parse); // doesn't matter if it's input0 or input1, the eval() result will be the same
+    }
+
+
+    parse.nTab--;
+
+
+    genParseNodeEnd(parse, measure);
+    return measure;
+}
+
+
+
+function genParseCircleCenter(parse)
+{
+    const [, nodeId, options, ignore] = genParseNodeStart(parse);
+
+
+    const measure = new GCircleCenter(nodeId, options);
+
+
+    let nInputs = -1;
+
+    if (!ignore)
+    {
+        nInputs = parseInt(parse.move());
+        consoleAssert(nInputs => 0 && nInputs <= 2, 'nInputs must be [0, 2]');
+    }
+
+    
+    if (parse.settings.logRequests) 
+        logReq(measure, parse, ignore, nInputs);
+
+
+    if (ignore) 
+    {
+        genParseNodeEnd(parse, measure);
+        return parse.parsedNodes.find(n => n.nodeId == nodeId);
+    }
+
+
+    parse.nTab++;
+
+    
+    if (nInputs == 3)
+    {
+        measure.input0 = genParse(parse);
+        measure.input1 = genParse(parse);
+        measure.input2 = genParse(parse);
+    }
+    else if (nInputs == 2)
+    {
+        measure.input0 = genParse(parse);
+        measure.input1 = genParse(parse);
+    }
+    else if (nInputs == 1)
+    {
+        measure.input0 = genParse(parse);
     }
 
 

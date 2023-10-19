@@ -19,7 +19,7 @@ function isConnKey(key) { return isTagKey(key, connTag); }
 function noPageTag(key) { return noTag(key, pageTag); }
 function noNodeTag(key) { return noTag(key, nodeTag); }
 function noConnTag(key) { return noTag(key, connTag); }
-const generatorVersion = 242;
+const generatorVersion = 243;
 const MAX_INT32 = 2147483647;
 const NULL = '';
 const HTAB = '  '; // half-tab
@@ -886,6 +886,7 @@ const RESET_XFORM = 'RSTX';
 const PLACE = 'PLACE';
 const SHAPE_APPLY = 'APPLY';
 const MEASURE_POINTS = 'MESPT';
+const CIRCLE_CENTER = 'CIRCEN';
 const INTERPOLATE_POINT = 'PTLERP';
 const POINT_ON_PATH = 'PONPT';
 const BOOLEAN = 'BOOL';
@@ -959,6 +960,7 @@ const SHAPE_TYPES = [
     PLACE,
     SHAPE_APPLY,
     MEASURE_POINTS,
+    CIRCLE_CENTER,
     INTERPOLATE_POINT,
     POINT_ON_PATH,
     RENDER

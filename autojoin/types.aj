@@ -28,6 +28,7 @@
 ../generator/types/GOperator.js
 ../generator/types/GOperator1.js
 ../generator/types/GOperator2.js
+../generator/types/GOperator3.js
 
 
 ../generator/types/GParam.js
@@ -232,6 +233,7 @@
 ../generator/types/shape/GResetTransform.js
 
 ../generator/types/shape/GMeasurePoints.js
+../generator/types/shape/GCircleCenter.js
 ../generator/types/shape/GInterpolatePoint.js
 ../generator/types/shape/GPointOnPath.js
 

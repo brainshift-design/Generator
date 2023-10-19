@@ -1,9 +1,10 @@
 class GEllipse
 extends GShape
 {
-    from  = null;
-    to    = null;
-    inner = null;
+    position = null;
+    from     = null;
+    to       = null;
+    inner    = null;
 
 
 
@@ -18,9 +19,10 @@ extends GShape
     {
         super.reset();
 
-        this.from  = null;
-        this.to    = null;
-        this.inner = null;
+        this.position = null;
+        this.from     = null;
+        this.to       = null;
+        this.inner    = null;
     }
 
 
@@ -31,9 +33,10 @@ extends GShape
 
         copy.copyBase(this);
 
-        if (this.from ) copy.from  = this.from .copy();
-        if (this.to   ) copy.to    = this.to   .copy();
-        if (this.inner) copy.inner = this.inner.copy();
+        if (this.position) copy.position = this.position.copy();
+        if (this.from    ) copy.from     = this.from    .copy();
+        if (this.to      ) copy.to       = this.to      .copy();
+        if (this.inner   ) copy.inner    = this.inner   .copy();
         
         return copy;
     }
@@ -47,9 +50,10 @@ extends GShape
 
         const [x, y, width, height] = await this.evalBaseParams(parse);
 
-        const from  = this.from  ? (await this.from .eval(parse)).toValue() : null;
-        const to    = this.to    ? (await this.to   .eval(parse)).toValue() : null;
-        const inner = this.inner ? (await this.inner.eval(parse)).toValue() : null;
+        const pos   = this.position ? (await this.position.eval(parse)).toValue() : null;
+        const from  = this.from     ? (await this.from    .eval(parse)).toValue() : null;
+        const to    = this.to       ? (await this.to      .eval(parse)).toValue() : null;
+        const inner = this.inner    ? (await this.inner   .eval(parse)).toValue() : null;
 
 
         let input = null;
@@ -58,34 +62,64 @@ extends GShape
         {
             input = (await this.input.eval(parse)).toValue();
 
+            const  _x = x      ?? this.input.value.x;
+            const  _y = y      ?? this.input.value.y;
+            const  _w = width  ?? this.input.value.width;
+            const  _h = height ?? this.input.value.height;
+
+            const __x = pos.value == 0 ? _x : new NumberValue(_x.value + _w.value/2, Math.max(_x.decimals, _w.decimals));
+            const __y = pos.value == 0 ? _y : new NumberValue(_y.value + _h.value/2, Math.max(_y.decimals, _h.decimals));
+            const __w = pos.value == 0 ? _w : new NumberValue(_w.value/2, Math.max(_x.decimals, _w.decimals));
+            const __h = pos.value == 0 ? _h : new NumberValue(_h.value/2, Math.max(_y.decimals, _h.decimals));            
+            
+
             this.value = new EllipseValue(
                 this.nodeId,
-                x      ?? input.x,
-                y      ?? input.y,
-                width  ?? input.width,
-                height ?? input.height,
-                from   ?? input.from,
-                to     ?? input.to,
-                inner  ?? input.inner);
+                _x, _y, _w, _h,
+                from  ?? this.input.value.from,
+                to    ?? this.input.value.to,
+                inner ?? this.input.value.inner);
+
+            this.setUpdateValues(parse, 
+            [
+                ['position', pos       ],
+                ['x',        __x       ],
+                ['y',        __y       ],
+                ['width',    __w       ],
+                ['height',   __h       ],
+                ['value',    this.value]
+            ]);
         }
         else
         {
+            const _x = x;
+            const _y = y;
+            const _w = width;
+            const _h = height;
+
+            const __x = pos.value == 0 ? _x : new NumberValue(_x.value - _w.value, Math.max(_x.decimals, _w.decimals));
+            const __y = pos.value == 0 ? _y : new NumberValue(_y.value - _h.value, Math.max(_y.decimals, _h.decimals));
+            const __w = pos.value == 0 ? _w : new NumberValue(_w.value*2, Math.max(_x.decimals, _w.decimals));
+            const __h = pos.value == 0 ? _h : new NumberValue(_h.value*2, Math.max(_y.decimals, _h.decimals));            
+
             this.value = new EllipseValue(
-                this.nodeId, 
-                x, 
-                y, 
-                width, 
-                height, 
+                this.nodeId,
+                __x, __y, __w, __h,
                 from,
-                to, 
+                to,
                 inner);
+
+
+            this.setUpdateValues(parse, 
+            [
+                ['position', pos       ],
+                ['x',        _x        ],
+                ['y',        _y        ],
+                ['width',    _w        ],
+                ['height',   _h        ],
+                ['value',    this.value]
+            ]);
         }
-
-
-        this.setUpdateValues(parse, 
-        [
-            ['value', this.value]
-        ]);
 
 
         await this.evalShapeBase(parse);
@@ -186,9 +220,10 @@ extends GShape
     isValid()
     {
         return super.isValid()
-            && this.from  && this.from .isValid()
-            && this.to    && this.to   .isValid()
-            && this.inner && this.inner.isValid();
+            && this.position && this.position.isValid()
+            && this.from     && this.from    .isValid()
+            && this.to       && this.to      .isValid()
+            && this.inner    && this.inner   .isValid();
     }
 
 
@@ -197,9 +232,10 @@ extends GShape
     {
         super.pushValueUpdates(parse);
  
-        if (this.from ) this.from .pushValueUpdates(parse);
-        if (this.to   ) this.to   .pushValueUpdates(parse);
-        if (this.inner) this.inner.pushValueUpdates(parse);
+        if (this.position) this.position.pushValueUpdates(parse);
+        if (this.from    ) this.from    .pushValueUpdates(parse);
+        if (this.to      ) this.to      .pushValueUpdates(parse);
+        if (this.inner   ) this.inner   .pushValueUpdates(parse);
     }
 
    
@@ -208,9 +244,10 @@ extends GShape
     {
         super.invalidateInputs(parse, from, force);
 
-        if (this.from ) this.from .invalidateInputs(parse, from, force);
-        if (this.to   ) this.to   .invalidateInputs(parse, from, force);
-        if (this.inner) this.inner.invalidateInputs(parse, from, force);
+        if (this.position) this.position.invalidateInputs(parse, from, force);
+        if (this.from    ) this.from    .invalidateInputs(parse, from, force);
+        if (this.to      ) this.to      .invalidateInputs(parse, from, force);
+        if (this.inner   ) this.inner   .invalidateInputs(parse, from, force);
     }
 
 
@@ -219,8 +256,9 @@ extends GShape
     {
         super.iterateLoop(parse);
  
-        if (this.from ) this.from .iterateLoop(parse);
-        if (this.to   ) this.to   .iterateLoop(parse);
-        if (this.inner) this.inner.iterateLoop(parse);
+        if (this.position) this.position.iterateLoop(parse);
+        if (this.from    ) this.from    .iterateLoop(parse);
+        if (this.to      ) this.to      .iterateLoop(parse);
+        if (this.inner   ) this.inner   .iterateLoop(parse);
     }
 }

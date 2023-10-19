@@ -5,11 +5,11 @@ const defParamHeight = 22;
 class Parameter
 extends EventTarget
 {
-    #type;     get type()    { return this.#type;    }
-    _id;       get id()      { return this._id;      }
-    #name;     get name()    { return this.#name;    }
-    _node;     get node()    { return this._node;    }
-    _div;      get div()     { return this._div;     }
+    #type;     get type()    { return this.#type; }
+    _id;       get id()      { return this._id;   }
+    #name;     get name()    { return this.#name; }
+    _node;     get node()    { return this._node; }
+    _div;      get div()     { return this._div;  }
 
 
     get index() { return this.node.params.indexOf(this); }
@@ -61,6 +61,8 @@ extends EventTarget
 
 
     canShow = () => true;
+
+    alwaysRequest  = false;
 
 
 
