@@ -265,28 +265,16 @@ function boundingRect(elem)
 
 function circleCenter(p0, p1, p2)
 {
-    console.log('p0 =', p0);
-    console.log('p1 =', p1);
-    console.log('p2 =', p2);
-    
     const v0  = subv(p1, p0);
     const v1  = subv(p2, p1);
     
     const pm0 = divvs(addv(p0, p1), 2);
     const pm1 = divvs(addv(p1, p2), 2);
     
-    console.log('v0 =', v0);
-    console.log('v1 =', v1);
-    console.log('pm0 =', pm0);
-    console.log('pm1 =', pm1);
-
-    const pc = intersectLines(
-        pm0, addv(pm0, v1), 
-        pm1, subv(pm1, v0), 
+    return intersectLines(
+        pm0, addv(pm0, crossv(v0)), 
+        pm1, subv(pm1, crossv(v1)), 
         false);
-    console.log('pc =', pc);
-
-    return pc;
 }
 
 

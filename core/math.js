@@ -54,6 +54,13 @@ function equalv(v1, v2)
 
 
 
+function negv(v)
+{
+    return point(-v.x, -v.y);
+}
+
+
+
 function crossv(v)
 {
     // returns a cross product of v and the unit vector pointing up the Z axis

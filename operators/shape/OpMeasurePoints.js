@@ -75,4 +75,14 @@ extends OpShapeBase
         this.paramDistance.setValue(distance, false, true, false);
         this.paramAngle   .setValue(angle,    false, true, false);
     }
+
+
+
+    updateParams()
+    {
+        this.paramDistance.enableControlText(false, this.isUnknown());
+        this.paramAngle   .enableControlText(false, this.isUnknown());
+
+        this.updateParamControls();
+    }
 }
