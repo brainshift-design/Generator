@@ -89,7 +89,9 @@ extends GOperator1
         }
 
 
-        if (this.value.type == VECTOR_PATH_VALUE)
+        if (   this.value.type == VECTOR_PATH_VALUE
+            && this.value.objects
+            && this.value.objects.length > 0)
         {
             for (let i = 0; i < this.value.objects[0].points.length; i++)
             {

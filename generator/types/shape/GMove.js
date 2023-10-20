@@ -159,10 +159,8 @@ extends GOperator1
                 moveType == 0
                 ? createTransform(_x, _y)
                 : mulm3m3(
-                    
                     createTransform(_x, _y),
-                    createRotateTransform(-_a) // for vector movement
-                    );
+                    createRotateTransform(-_a)); // for vector movement
 
                 
             for (const obj of this.value.objects)
@@ -175,7 +173,9 @@ extends GOperator1
             }
 
 
-            if (this.value.type == VECTOR_PATH_VALUE)
+            if (   this.value.type == VECTOR_PATH_VALUE
+                && this.value.objects
+                && this.value.objects.length > 0)
             {
                 for (let i = 0; i < this.value.objects[0].points.length; i++)
                 {
