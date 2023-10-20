@@ -58,6 +58,10 @@ extends GOperator
 
     async eval(parse)
     {
+        const repeat    = parse.repeats.find(r => r.repeatId == this.loopId);
+        const iteration = repeat ? repeat.iteration : 0;
+
+
         if (this.isCached())
             return this;
 

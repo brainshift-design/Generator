@@ -128,13 +128,16 @@ extends GShape
         await this.evalObjects(parse);
 
 
-        if (!this.x     ) this.x      = this.value.x     .copy();
-        if (!this.y     ) this.y      = this.value.y     .copy();
-        if (!this.width ) this.width  = this.value.width .copy();
-        if (!this.height) this.height = this.value.height.copy();
-        if (!this.from  ) this.from   = this.value.from  .copy();
-        if (!this.to    ) this.to     = this.value.to    .copy();
-        if (!this.inner ) this.inner  = this.value.inner .copy();
+        if (this.input)
+        {
+            this.x      = this.value.x     .copy();
+            this.y      = this.value.y     .copy();
+            this.width  = this.value.width .copy();
+            this.height = this.value.height.copy();
+            this.from   = this.value.from  .copy();
+            this.to     = this.value.to    .copy();
+            this.inner  = this.value.inner .copy();
+        }
 
 
         this.validate();

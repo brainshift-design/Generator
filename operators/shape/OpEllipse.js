@@ -84,12 +84,9 @@ extends OpShape
         
         const center = this.paramPosition.value.value == 1;
        
-        this.paramWidth.setName(center ? 'radius W' : 'width');
-        this.paramWidth.divider = center ? 0.55 : 0.45;
-
+        this.paramWidth .setName(center ? 'radius W' : 'width' );
         this.paramHeight.setName(center ? 'radius H' : 'height');
-        this.paramHeight.divider = center ? 0.55 : 0.45;
-
+        
 
         this.updateParamControls();
     }

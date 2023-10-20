@@ -52,12 +52,24 @@ extends GOperator1
 
         if (this.input)
         {
+            // if (this.nodeId == 'point5')
+            //     console.log('this.input =', this.input);
+            
             input = (await this.input.eval(parse)).toValue();
+
+            // if (   this.input
+            //     && this.input.type == CIRCLE_CENTER)
+            // {
+            //     console.log('x =', x);
+            // }
 
             this.value = new PointValue(
                 this.nodeId,
-                x ?? input.x,
-                y ?? input.y);
+                x && this.x.type != NUMBER_VALUE ? x : input.x,
+                y && this.y.type != NUMBER_VALUE ? y : input.y);
+
+            if (this.nodeId == 'point4')
+                console.log('this.value =', this.value);
         }
         else
         {
@@ -77,8 +89,11 @@ extends GOperator1
         ]);
 
 
-        if (!this.x) this.x = this.value.x.copy();
-        if (!this.y) this.y = this.value.y.copy();
+        if (this.input)
+        { 
+            this.x = this.value.x.copy();
+            this.y = this.value.y.copy();
+        }
 
 
         this.validate();
@@ -102,6 +117,13 @@ extends GOperator1
         {
             const x = this.value.x.value;
             const y = this.value.y.value;
+
+            // if (   this.input
+            //     && this.input.type == CIRCLE_CENTER)
+            // {
+            //     console.log('x =', x);
+            //     console.log('y =', y);
+            // }
 
             const point = new FigmaPoint(this.nodeId, this.nodeId, this.nodeName, x, y);
 

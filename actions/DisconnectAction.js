@@ -58,7 +58,7 @@ extends Action
     
     undo(updateNodes)
     {
-        this.deactivateNewActiveNodes();
+        //this.deactivateNewActiveNodes();
 
         //this.activateOldActiveNodes(updateNodes);
         pushUnique(updateNodes, this.outputNode);

@@ -52,6 +52,10 @@ extends GOperator2
             if (   input0
                 && input1)
             {
+                // console.log('input0 =', input0.toPoint());
+                // console.log('input1 =', input1.toPoint());
+                // console.log('');
+
                 const dist = distance(input0.toPoint(), input1.toPoint());
 
                 let ang = angle(subv(input1.toPoint(), input0.toPoint()));

@@ -115,8 +115,8 @@ extends GShape
                 text, 
                 x, 
                 y, 
-                this.width .type != NUMBER_VALUE ? width  : new NumberValue(0), 
-                this.height.type != NUMBER_VALUE ? height : new NumberValue(0), 
+                width, //this.width .type != NUMBER_VALUE ? width  : new NumberValue(0), 
+                height, //this.height.type != NUMBER_VALUE ? height : new NumberValue(0), 
                 font, 
                 style,
                 size,
@@ -136,19 +136,22 @@ extends GShape
         await this.evalObjects(parse);
 
 
-        if (!this.text         ) this.text          = this.value.text         .copy();
-        if (!this.x            ) this.x             = this.value.x            .copy();
-        if (!this.y            ) this.y             = this.value.y            .copy();
-        if (!this.width        ) this.width         = this.value.width        .copy();
-        if (!this.height       ) this.height        = this.value.height       .copy();
-        if (!this.font         ) this.font          = this.value.font         .copy();
-        if (!this.style        ) this.style         = this.value.style        .copy();
-        if (!this.size         ) this.size          = this.value.size         .copy();
-        if (!this.alignH       ) this.alignH        = this.value.alignH       .copy();
-        if (!this.alignV       ) this.alignV        = this.value.alignV       .copy();
-        if (!this.lineHeight   ) this.lineHeight    = this.value.lineHeight   .copy();
-        if (!this.letterSpacing) this.letterSpacing = this.value.letterSpacing.copy();
-
+        if (this.input)
+        {
+            this.text          = this.value.text         .copy();
+            this.x             = this.value.x            .copy();
+            this.y             = this.value.y            .copy();
+            this.width         = this.value.width        .copy();
+            this.height        = this.value.height       .copy();
+            this.font          = this.value.font         .copy();
+            this.style         = this.value.style        .copy();
+            this.size          = this.value.size         .copy();
+            this.alignH        = this.value.alignH       .copy();
+            this.alignV        = this.value.alignV       .copy();
+            this.lineHeight    = this.value.lineHeight   .copy();
+            this.letterSpacing = this.value.letterSpacing.copy();
+        }
+        
 
         this.validate();
 

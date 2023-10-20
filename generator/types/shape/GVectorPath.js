@@ -122,14 +122,14 @@ extends GShape
         await this.evalObjects(parse);
 
 
-        if (   !this.points 
-            || this.points.items == 0) 
-                           this.points  = this.value.points .copy();
-        if (!this.closed ) this.closed  = this.value.closed .copy();
-        if (!this.degree ) this.degree  = this.value.degree .copy();
-        if (!this.winding) this.winding = this.value.winding.copy();
-        if (!this.round  ) this.round   = this.value.round  .copy();
-
+        if (this.input)
+        {
+            this.points  = this.value.points .copy();
+            this.closed  = this.value.closed .copy();
+            this.degree  = this.value.degree .copy();
+            this.winding = this.value.winding.copy();
+            this.round   = this.value.round  .copy();
+        }
 
 
         this.validate();

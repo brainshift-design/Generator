@@ -9137,7 +9137,6 @@ extends GOperator
 
 
         await this.node.eval(parse);
-        //console.log('this.node.value =', this.node.value);
 
 
         this.param = this.node.paramFromId(this.paramId);
@@ -9151,8 +9150,6 @@ extends GOperator
             const value = (await this.param.eval(parse)).toValue();
             this.value = value;
             
-            //console.log('this.nodeId =', this.node.nodeId);
-            //console.log('this.param =', this.param);
             return this.value;
         }
         else
@@ -15897,7 +15894,8 @@ extends GOperator1
 
     async eval(parse)
     {
-        if (this.isCached())
+        if (this.isCached()
+            && this.cachedValue)
             return this;
 
 
@@ -19697,7 +19695,7 @@ extends GOperator
         const iteration = repeat ? repeat.iteration : 0;
 
 
-        const startValue = Math.min(start.value, end.value);
+        //const startValue = Math.min(start.value, end.value);
 
         
         let delta = end.value - start.value;
@@ -19898,9 +19896,6 @@ extends GOperator
             return this;
             
 
-        // input not used for evaluation
-
-
         const start = (await this.start   .eval(parse)).toValue();
         const mult  = (await this.multiply.eval(parse)).toValue();
         const add   = (await this.add     .eval(parse)).toValue();
@@ -19917,7 +19912,7 @@ extends GOperator
             if (!end.isValid())
                 this.value = getSequenceValue(start, mult, add, this.iteration, this.options.enabled);
 
-            else if (end.isValid()   
+            else if (   end.isValid()   
                      && (   add.value == 0
                          || add.value >  0 && start.value < end.value
                                            &&       value < end.value
@@ -20279,6 +20274,10 @@ extends GOperator
 
     async eval(parse)
     {
+        const repeat    = parse.repeats.find(r => r.repeatId == this.loopId);
+        const iteration = repeat ? repeat.iteration : 0;
+
+
         if (this.isCached())
             return this;
 
@@ -30777,11 +30776,14 @@ extends GShape
         await this.evalObjects(parse);
 
 
-        if (!this.x     ) this.x      = this.value.x     .copy();
-        if (!this.y     ) this.y      = this.value.y     .copy();
-        if (!this.width ) this.width  = this.value.width .copy();
-        if (!this.height) this.height = this.value.height.copy();
-        if (!this.round ) this.round  = this.value.round .copy();
+        if (this.input)
+        {
+            this.x      = this.value.x     .copy();
+            this.y      = this.value.y     .copy();
+            this.width  = this.value.width .copy();
+            this.height = this.value.height.copy();
+            this.round  = this.value.round .copy();
+        }
 
 
         this.validate();
@@ -30953,9 +30955,12 @@ extends GShape
         await this.evalObjects(parse);
 
 
-        if (!this.x    ) this.x     = this.value.x    .copy();
-        if (!this.y    ) this.y     = this.value.y    .copy();
-        if (!this.width) this.width = this.value.width.copy();
+        if (this.input)
+        {
+            this.x     = this.value.x    .copy();
+            this.y     = this.value.y    .copy();
+            this.width = this.value.width.copy();
+        }
 
 
         this.validate();
@@ -31154,13 +31159,16 @@ extends GShape
         await this.evalObjects(parse);
 
 
-        if (!this.x     ) this.x      = this.value.x     .copy();
-        if (!this.y     ) this.y      = this.value.y     .copy();
-        if (!this.width ) this.width  = this.value.width .copy();
-        if (!this.height) this.height = this.value.height.copy();
-        if (!this.from  ) this.from   = this.value.from  .copy();
-        if (!this.to    ) this.to     = this.value.to    .copy();
-        if (!this.inner ) this.inner  = this.value.inner .copy();
+        if (this.input)
+        {
+            this.x      = this.value.x     .copy();
+            this.y      = this.value.y     .copy();
+            this.width  = this.value.width .copy();
+            this.height = this.value.height.copy();
+            this.from   = this.value.from  .copy();
+            this.to     = this.value.to    .copy();
+            this.inner  = this.value.inner .copy();
+        }
 
 
         this.validate();
@@ -31618,12 +31626,15 @@ extends GShape
         await this.evalObjects(parse);
 
 
-        if (!this.x      ) this.x       = this.value.x      .copy();
-        if (!this.y      ) this.y       = this.value.y      .copy();
-        if (!this.width  ) this.width   = this.value.width  .copy();
-        if (!this.height ) this.height  = this.value.height .copy();
-        if (!this.round  ) this.round   = this.value.round  .copy();
-        if (!this.corners) this.corners = this.value.corners.copy();
+        if (this.input)
+        {
+            this.x       = this.value.x      .copy();
+            this.y       = this.value.y      .copy();
+            this.width   = this.value.width  .copy();
+            this.height  = this.value.height .copy();
+            this.round   = this.value.round  .copy();
+            this.corners = this.value.corners.copy();
+        }
 
 
         this.validate();
@@ -31877,14 +31888,16 @@ extends GShape
         await this.evalObjects(parse);
 
 
-        if (!this.x     ) this.x      = this.value.x     .copy();
-        if (!this.y     ) this.y      = this.value.y     .copy();
-        if (!this.width ) this.width  = this.value.width .copy();
-        if (!this.height) this.height = this.value.height.copy();
-        if (!this.round ) this.round  = this.value.round .copy();
-        if (!this.points) this.points = this.value.points.copy();
-        if (!this.convex) this.convex = this.value.convex.copy();
-
+        if (this.input)
+        {
+            this.x      = this.value.x     .copy();
+            this.y      = this.value.y     .copy();
+            this.width  = this.value.width .copy();
+            this.height = this.value.height.copy();
+            this.round  = this.value.round .copy();
+            this.points = this.value.points.copy();
+            this.convex = this.value.convex.copy();
+        }
 
 
         this.validate();
@@ -32127,8 +32140,8 @@ extends GShape
                 text, 
                 x, 
                 y, 
-                this.width .type != NUMBER_VALUE ? width  : new NumberValue(0), 
-                this.height.type != NUMBER_VALUE ? height : new NumberValue(0), 
+                width, //this.width .type != NUMBER_VALUE ? width  : new NumberValue(0), 
+                height, //this.height.type != NUMBER_VALUE ? height : new NumberValue(0), 
                 font, 
                 style,
                 size,
@@ -32148,19 +32161,22 @@ extends GShape
         await this.evalObjects(parse);
 
 
-        if (!this.text         ) this.text          = this.value.text         .copy();
-        if (!this.x            ) this.x             = this.value.x            .copy();
-        if (!this.y            ) this.y             = this.value.y            .copy();
-        if (!this.width        ) this.width         = this.value.width        .copy();
-        if (!this.height       ) this.height        = this.value.height       .copy();
-        if (!this.font         ) this.font          = this.value.font         .copy();
-        if (!this.style        ) this.style         = this.value.style        .copy();
-        if (!this.size         ) this.size          = this.value.size         .copy();
-        if (!this.alignH       ) this.alignH        = this.value.alignH       .copy();
-        if (!this.alignV       ) this.alignV        = this.value.alignV       .copy();
-        if (!this.lineHeight   ) this.lineHeight    = this.value.lineHeight   .copy();
-        if (!this.letterSpacing) this.letterSpacing = this.value.letterSpacing.copy();
-
+        if (this.input)
+        {
+            this.text          = this.value.text         .copy();
+            this.x             = this.value.x            .copy();
+            this.y             = this.value.y            .copy();
+            this.width         = this.value.width        .copy();
+            this.height        = this.value.height       .copy();
+            this.font          = this.value.font         .copy();
+            this.style         = this.value.style        .copy();
+            this.size          = this.value.size         .copy();
+            this.alignH        = this.value.alignH       .copy();
+            this.alignV        = this.value.alignV       .copy();
+            this.lineHeight    = this.value.lineHeight   .copy();
+            this.letterSpacing = this.value.letterSpacing.copy();
+        }
+        
 
         this.validate();
 
@@ -32416,12 +32432,24 @@ extends GOperator1
 
         if (this.input)
         {
+            // if (this.nodeId == 'point5')
+            //     console.log('this.input =', this.input);
+            
             input = (await this.input.eval(parse)).toValue();
+
+            // if (   this.input
+            //     && this.input.type == CIRCLE_CENTER)
+            // {
+            //     console.log('x =', x);
+            // }
 
             this.value = new PointValue(
                 this.nodeId,
-                x ?? input.x,
-                y ?? input.y);
+                x && this.x.type != NUMBER_VALUE ? x : input.x,
+                y && this.y.type != NUMBER_VALUE ? y : input.y);
+
+            if (this.nodeId == 'point4')
+                console.log('this.value =', this.value);
         }
         else
         {
@@ -32441,8 +32469,11 @@ extends GOperator1
         ]);
 
 
-        if (!this.x) this.x = this.value.x.copy();
-        if (!this.y) this.y = this.value.y.copy();
+        if (this.input)
+        { 
+            this.x = this.value.x.copy();
+            this.y = this.value.y.copy();
+        }
 
 
         this.validate();
@@ -32466,6 +32497,13 @@ extends GOperator1
         {
             const x = this.value.x.value;
             const y = this.value.y.value;
+
+            // if (   this.input
+            //     && this.input.type == CIRCLE_CENTER)
+            // {
+            //     console.log('x =', x);
+            //     console.log('y =', y);
+            // }
 
             const point = new FigmaPoint(this.nodeId, this.nodeId, this.nodeName, x, y);
 
@@ -32660,14 +32698,14 @@ extends GShape
         await this.evalObjects(parse);
 
 
-        if (   !this.points 
-            || this.points.items == 0) 
-                           this.points  = this.value.points .copy();
-        if (!this.closed ) this.closed  = this.value.closed .copy();
-        if (!this.degree ) this.degree  = this.value.degree .copy();
-        if (!this.winding) this.winding = this.value.winding.copy();
-        if (!this.round  ) this.round   = this.value.round  .copy();
-
+        if (this.input)
+        {
+            this.points  = this.value.points .copy();
+            this.closed  = this.value.closed .copy();
+            this.degree  = this.value.degree .copy();
+            this.winding = this.value.winding.copy();
+            this.round   = this.value.round  .copy();
+        }
 
 
         this.validate();
@@ -35896,6 +35934,10 @@ extends GOperator2
             if (   input0
                 && input1)
             {
+                // console.log('input0 =', input0.toPoint());
+                // console.log('input1 =', input1.toPoint());
+                // console.log('');
+
                 const dist = distance(input0.toPoint(), input1.toPoint());
 
                 let ang = angle(subv(input1.toPoint(), input0.toPoint()));

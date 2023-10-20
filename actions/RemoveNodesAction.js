@@ -52,7 +52,7 @@ extends Action
     {
         deleteNodesAction_restoreNodes(this, updateNodes);
         
-        this.deactivateNewActiveNodes();
+        //this.deactivateNewActiveNodes();
         deleteNodesAction_activateOldActiveNodes(this, updateNodes);
 
         uiSaveNodes([...this.nodeIds, ...this.newActiveNodeIds]);

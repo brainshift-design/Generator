@@ -36,7 +36,8 @@ extends GOperator1
 
     async eval(parse)
     {
-        if (this.isCached())
+        if (this.isCached()
+            && this.cachedValue)
             return this;
 
 

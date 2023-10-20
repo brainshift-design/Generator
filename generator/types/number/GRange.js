@@ -68,7 +68,7 @@ extends GOperator
         const iteration = repeat ? repeat.iteration : 0;
 
 
-        const startValue = Math.min(start.value, end.value);
+        //const startValue = Math.min(start.value, end.value);
 
         
         let delta = end.value - start.value;

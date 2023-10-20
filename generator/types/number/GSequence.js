@@ -55,9 +55,6 @@ extends GOperator
             return this;
             
 
-        // input not used for evaluation
-
-
         const start = (await this.start   .eval(parse)).toValue();
         const mult  = (await this.multiply.eval(parse)).toValue();
         const add   = (await this.add     .eval(parse)).toValue();
@@ -74,7 +71,7 @@ extends GOperator
             if (!end.isValid())
                 this.value = getSequenceValue(start, mult, add, this.iteration, this.options.enabled);
 
-            else if (end.isValid()   
+            else if (   end.isValid()   
                      && (   add.value == 0
                          || add.value >  0 && start.value < end.value
                                            &&       value < end.value

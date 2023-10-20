@@ -54,7 +54,6 @@ extends GOperator
 
 
         await this.node.eval(parse);
-        //console.log('this.node.value =', this.node.value);
 
 
         this.param = this.node.paramFromId(this.paramId);
@@ -68,8 +67,6 @@ extends GOperator
             const value = (await this.param.eval(parse)).toValue();
             this.value = value;
             
-            //console.log('this.nodeId =', this.node.nodeId);
-            //console.log('this.param =', this.param);
             return this.value;
         }
         else
