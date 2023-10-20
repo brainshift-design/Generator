@@ -54,6 +54,15 @@ function equalv(v1, v2)
 
 
 
+function saltv(v, salt = 0.0000000001)
+{
+    return addv(v, point(
+        -salt + Math.random() * salt*2, 
+        -salt + Math.random() * salt*2));
+}
+
+
+
 function negv(v)
 {
     return point(-v.x, -v.y);

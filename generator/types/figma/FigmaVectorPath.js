@@ -412,7 +412,7 @@ function getSmoothPoints(points, closed, getSegment)
 function getSmoothSegment(_pointP, _point, _pointN)
 {
     const _pp = point(_pointP.x.value, _pointP.y.value);
-    const _p  = point(_point .x.value, _point .y.value);
+    let   _p  = point(_point .x.value, _point .y.value);
     const _pn = point(_pointN.x.value, _pointN.y.value);
 
 
@@ -442,9 +442,10 @@ function getSmoothSegment(_pointP, _point, _pointN)
 
     // add salt to get around Figma's issue 
     // with straight otrhogonal bezier lines
-    pp = addv(pp, point(
-        Math.random() * 0.0000000001, 
-        Math.random() * 0.0000000001));
+
+    pp = saltv(pp);
+    _p = saltv(_p);
+    pn = saltv(pn);
 
 
     return [pp, _p, pn];
