@@ -16757,17 +16757,28 @@ extends GOperator1
                     {
                         const item = input.items[i];
                         
+
+                        let nameValue = name.value;
+                        
+                        if (    item
+                            && !item[name.value])
+                        {
+                                 if (item[name.value.toUpperCase()]) nameValue = name.value.toUpperCase();
+                            else if (item[name.value.toLowerCase()]) nameValue = name.value.toLowerCase();
+                        }
+
+
                         this.value.items.push(
                                item 
-                            && item[name.value]
-                            ? item[name.value].copy() 
+                            && item[nameValue]
+                            ? item[nameValue].copy() 
                             : NullValue.copy());
                         
                         if (   item
-                            && item[name.value]
-                            && item[name.value].objects 
+                            && item[nameValue]
+                            && item[nameValue].objects 
                             && this.value.objects)
-                            this.value.objects.push(...item[name.value].objects);
+                            this.value.objects.push(...item[nameValue].objects);
                     }
                 }
                 else
@@ -16775,9 +16786,18 @@ extends GOperator1
             }
             else
             {
+                let nameValue = name.value;
+                
+                if (    input
+                    && !input[name.value])
+                {
+                         if (input[name.value.toUpperCase()]) nameValue = name.value.toUpperCase();
+                    else if (input[name.value.toLowerCase()]) nameValue = name.value.toLowerCase();
+                }
+
                 this.value = 
-                    input[name.value]
-                    ? input[name.value].copy()
+                    input[nameValue]
+                    ? input[nameValue].copy()
                     : NullValue.copy();
             }
         }

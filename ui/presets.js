@@ -80,6 +80,7 @@ function getPresetGraph(graphId)
         case 'ifElse':               return presetIfElse;
         case 'select':               return presetSelect;
         case 'tableBasics':          return presetTableBasics;
+        case 'sorting':              return presetSorting;
         case 'countryData':          return presetCountryData;
 
 
