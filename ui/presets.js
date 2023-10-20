@@ -133,6 +133,7 @@ function getPresetGraph(graphId)
         case 'feedback':             return presetFeedback;
 
         case 'wobblyCircle':         return presetWobblyCircle;
+        case 'roughStar':            return presetRoughStar;
         case 'nestedTorus':          return presetNestedTorus;
         case 'targets':              return presetTargets;
         case 'spiderWeb':            return presetSpiderWeb;
