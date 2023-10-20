@@ -144,6 +144,7 @@ function getPresetGraph(graphId)
         case 'avatars':              return presetAvatars;
 
         case 'booksOnShelf':         return presetBooksOnShelf;
+        case 'circleFields':         return presetCircleFields;
         case 'wobbles':              return presetWobbles;
         case 'randomAbstract':       return presetRandomAbstract;
         case 'afterTheStorm':        return presetAfterTheStorm;

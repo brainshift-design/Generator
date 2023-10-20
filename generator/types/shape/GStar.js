@@ -130,16 +130,14 @@ extends GShape
         await this.evalObjects(parse);
 
 
-        if (this.input)
-        {
-            this.x      = this.value.x     .copy();
-            this.y      = this.value.y     .copy();
-            this.width  = this.value.width .copy();
-            this.height = this.value.height.copy();
-            this.round  = this.value.round .copy();
-            this.points = this.value.points.copy();
-            this.convex = this.value.convex.copy();
-        }
+        if (!this.x     ) this.x      = this.value.x     .copy();
+        if (!this.y     ) this.y      = this.value.y     .copy();
+        if (!this.width ) this.width  = this.value.width .copy();
+        if (!this.height) this.height = this.value.height.copy();
+        if (!this.round ) this.round  = this.value.round .copy();
+        if (!this.points) this.points = this.value.points.copy();
+        if (!this.convex) this.convex = this.value.convex.copy();
+
 
 
         this.validate();

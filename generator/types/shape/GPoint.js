@@ -52,24 +52,12 @@ extends GOperator1
 
         if (this.input)
         {
-            // if (this.nodeId == 'point5')
-            //     console.log('this.input =', this.input);
-            
             input = (await this.input.eval(parse)).toValue();
-
-            // if (   this.input
-            //     && this.input.type == CIRCLE_CENTER)
-            // {
-            //     console.log('x =', x);
-            // }
 
             this.value = new PointValue(
                 this.nodeId,
                 x && this.x.type != NUMBER_VALUE ? x : input.x,
                 y && this.y.type != NUMBER_VALUE ? y : input.y);
-
-            if (this.nodeId == 'point4')
-                console.log('this.value =', this.value);
         }
         else
         {

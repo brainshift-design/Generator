@@ -30776,14 +30776,11 @@ extends GShape
         await this.evalObjects(parse);
 
 
-        if (this.input)
-        {
-            this.x      = this.value.x     .copy();
-            this.y      = this.value.y     .copy();
-            this.width  = this.value.width .copy();
-            this.height = this.value.height.copy();
-            this.round  = this.value.round .copy();
-        }
+        if (!this.x     ) this.x      = this.value.x     .copy();
+        if (!this.y     ) this.y      = this.value.y     .copy();
+        if (!this.width ) this.width  = this.value.width .copy();
+        if (!this.height) this.height = this.value.height.copy();
+        if (!this.round ) this.round  = this.value.round .copy();
 
 
         this.validate();
@@ -30955,12 +30952,9 @@ extends GShape
         await this.evalObjects(parse);
 
 
-        if (this.input)
-        {
-            this.x     = this.value.x    .copy();
-            this.y     = this.value.y    .copy();
-            this.width = this.value.width.copy();
-        }
+        if (!this.x    ) this.x     = this.value.x    .copy();
+        if (!this.y    ) this.y     = this.value.y    .copy();
+        if (!this.width) this.width = this.value.width.copy();
 
 
         this.validate();
@@ -31159,16 +31153,13 @@ extends GShape
         await this.evalObjects(parse);
 
 
-        if (this.input)
-        {
-            this.x      = this.value.x     .copy();
-            this.y      = this.value.y     .copy();
-            this.width  = this.value.width .copy();
-            this.height = this.value.height.copy();
-            this.from   = this.value.from  .copy();
-            this.to     = this.value.to    .copy();
-            this.inner  = this.value.inner .copy();
-        }
+        if (!this.x     ) this.x      = this.value.x     .copy();
+        if (!this.y     ) this.y      = this.value.y     .copy();
+        if (!this.width ) this.width  = this.value.width .copy();
+        if (!this.height) this.height = this.value.height.copy();
+        if (!this.from  ) this.from   = this.value.from  .copy();
+        if (!this.to    ) this.to     = this.value.to    .copy();
+        if (!this.inner ) this.inner  = this.value.inner .copy();
 
 
         this.validate();
@@ -31626,15 +31617,12 @@ extends GShape
         await this.evalObjects(parse);
 
 
-        if (this.input)
-        {
-            this.x       = this.value.x      .copy();
-            this.y       = this.value.y      .copy();
-            this.width   = this.value.width  .copy();
-            this.height  = this.value.height .copy();
-            this.round   = this.value.round  .copy();
-            this.corners = this.value.corners.copy();
-        }
+        if (!this.x      ) this.x       = this.value.x      .copy();
+        if (!this.y      ) this.y       = this.value.y      .copy();
+        if (!this.width  ) this.width   = this.value.width  .copy();
+        if (!this.height ) this.height  = this.value.height .copy();
+        if (!this.round  ) this.round   = this.value.round  .copy();
+        if (!this.corners) this.corners = this.value.corners.copy();
 
 
         this.validate();
@@ -31888,16 +31876,14 @@ extends GShape
         await this.evalObjects(parse);
 
 
-        if (this.input)
-        {
-            this.x      = this.value.x     .copy();
-            this.y      = this.value.y     .copy();
-            this.width  = this.value.width .copy();
-            this.height = this.value.height.copy();
-            this.round  = this.value.round .copy();
-            this.points = this.value.points.copy();
-            this.convex = this.value.convex.copy();
-        }
+        if (!this.x     ) this.x      = this.value.x     .copy();
+        if (!this.y     ) this.y      = this.value.y     .copy();
+        if (!this.width ) this.width  = this.value.width .copy();
+        if (!this.height) this.height = this.value.height.copy();
+        if (!this.round ) this.round  = this.value.round .copy();
+        if (!this.points) this.points = this.value.points.copy();
+        if (!this.convex) this.convex = this.value.convex.copy();
+
 
 
         this.validate();
@@ -32432,24 +32418,12 @@ extends GOperator1
 
         if (this.input)
         {
-            // if (this.nodeId == 'point5')
-            //     console.log('this.input =', this.input);
-            
             input = (await this.input.eval(parse)).toValue();
-
-            // if (   this.input
-            //     && this.input.type == CIRCLE_CENTER)
-            // {
-            //     console.log('x =', x);
-            // }
 
             this.value = new PointValue(
                 this.nodeId,
                 x && this.x.type != NUMBER_VALUE ? x : input.x,
                 y && this.y.type != NUMBER_VALUE ? y : input.y);
-
-            if (this.nodeId == 'point4')
-                console.log('this.value =', this.value);
         }
         else
         {
@@ -32698,14 +32672,14 @@ extends GShape
         await this.evalObjects(parse);
 
 
-        if (this.input)
-        {
-            this.points  = this.value.points .copy();
-            this.closed  = this.value.closed .copy();
-            this.degree  = this.value.degree .copy();
-            this.winding = this.value.winding.copy();
-            this.round   = this.value.round  .copy();
-        }
+        if (  !this.points 
+            || this.points.items == 0) 
+                           this.points  = this.value.points .copy();
+        if (!this.closed ) this.closed  = this.value.closed .copy();
+        if (!this.degree ) this.degree  = this.value.degree .copy();
+        if (!this.winding) this.winding = this.value.winding.copy();
+        if (!this.round  ) this.round   = this.value.round  .copy();
+
 
 
         this.validate();
