@@ -159,10 +159,10 @@ extends GOperator1
                 moveType == 0
                 ? createTransform(_x, _y)
                 : mulm3m3(
-                    createTransform(cx, cy),
+                    
                     createTransform(_x, _y),
-                    createRotateTransform(-_a), // for vector movement
-                    createTransform(-cx, -cy));
+                    createRotateTransform(-_a) // for vector movement
+                    );
 
                 
             for (const obj of this.value.objects)

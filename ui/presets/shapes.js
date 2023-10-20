@@ -1254,106 +1254,14 @@ const presetWobblyCircle = '\
         [\
             {\
             "type": "PANEL",\
-            "id": "panel3",\
-            "name": "",\
-            "renamed": "false",\
-            "enabled": "true",\
-            "highlight": "5",\
-            "x": "2608",\
-            "y": "1879",\
-            "z": "0",\
-            "active": "true",\
-            "width": "60",\
-            "height": "32",\
-            "params":\
-            [\
-            ]\
-            },\
-            {\
-            "type": "CMNT",\
-            "id": "comment14",\
-            "name": "%E2%9F%B6",\
-            "renamed": "true",\
-            "enabled": "true",\
-            "highlight": "0",\
-            "x": "2617",\
-            "y": "1874",\
-            "z": "1"\
-            },\
-            {\
-            "type": "CMNT",\
-            "id": "comment",\
-            "name": "%3Cb%3E1.%3C%2Fb%3E%20Create%20a%20point%20at",\
-            "renamed": "true",\
-            "enabled": "true",\
-            "highlight": "0",\
-            "x": "2196",\
-            "y": "1671",\
-            "z": "2"\
-            },\
-            {\
-            "type": "PT",\
-            "id": "point",\
-            "name": "point",\
-            "renamed": "false",\
-            "enabled": "true",\
-            "highlight": "0",\
-            "x": "2222",\
-            "y": "1853",\
-            "z": "3"\
-            },\
-            {\
-            "type": "ROT",\
-            "id": "rotate",\
-            "name": "rotate",\
-            "renamed": "false",\
-            "enabled": "true",\
-            "highlight": "0",\
-            "x": "3582",\
-            "y": "1854",\
-            "z": "4",\
-            "params":\
-            [\
-                    ["NUM#", "angle", "348,0"]\
-            ]\
-            },\
-            {\
-            "type": "CMNT",\
-            "id": "comment10",\
-            "name": "%3Cb%3E3.%3C%2Fb%3E%20This%20is%20where%20the%20circle%20is%20actually%20created.",\
-            "renamed": "true",\
-            "enabled": "true",\
-            "highlight": "0",\
-            "x": "3543",\
-            "y": "1670",\
-            "z": "5"\
-            },\
-            {\
-            "type": "RANGE",\
-            "id": "range",\
-            "name": "range",\
-            "renamed": "false",\
-            "enabled": "true",\
-            "highlight": "0",\
-            "x": "3321",\
-            "y": "2127",\
-            "z": "6",\
-            "params":\
-            [\
-                    ["NUM#", "from", "0,0"],\
-                    ["NUM#", "end", "360,0"]\
-            ]\
-            },\
-            {\
-            "type": "PANEL",\
             "id": "panel2",\
             "name": "",\
             "renamed": "false",\
             "enabled": "true",\
             "highlight": "5",\
-            "x": "2481",\
-            "y": "2025",\
-            "z": "7",\
+            "x": "2533",\
+            "y": "2097",\
+            "z": "0",\
             "active": "true",\
             "width": "580",\
             "height": "202.9305695272746",\
@@ -1362,158 +1270,36 @@ const presetWobblyCircle = '\
             ]\
             },\
             {\
-            "type": "CMNT",\
-            "id": "comment2",\
-            "name": "the%20center%20of%20the%20circle.",\
-            "renamed": "true",\
-            "enabled": "true",\
-            "highlight": "0",\
-            "x": "2223",\
-            "y": "1715",\
-            "z": "8"\
-            },\
-            {\
-            "type": "CMNT",\
-            "id": "comment7",\
-            "name": "to%20see%20how%20the%20wobbly%20circle%20is%20formed.",\
-            "renamed": "true",\
-            "enabled": "true",\
-            "highlight": "0",\
-            "x": "2852",\
-            "y": "2636",\
-            "z": "9"\
-            },\
-            {\
-            "type": "CMNT",\
-            "id": "comment11",\
-            "name": "Rotate%20the%20point%20around%20the%20center%20using%20a%20Range.",\
-            "renamed": "true",\
-            "enabled": "true",\
-            "highlight": "0",\
-            "x": "3584",\
-            "y": "1713",\
-            "z": "10"\
-            },\
-            {\
-            "type": "CMNT",\
-            "id": "comment8",\
-            "name": "%3Cb%3E5.%3C%2Fb%3E%20Connect%20the%20random%20output%20to",\
-            "renamed": "true",\
-            "enabled": "true",\
-            "highlight": "0",\
-            "x": "2513",\
-            "y": "2059",\
-            "z": "11"\
-            },\
-            {\
-            "type": "REPT",\
-            "id": "repeat",\
-            "name": "repeat",\
+            "type": "PANEL",\
+            "id": "panel3",\
+            "name": "",\
             "renamed": "false",\
             "enabled": "true",\
-            "highlight": "0",\
-            "x": "3869",\
-            "y": "2054",\
-            "z": "12",\
+            "highlight": "5",\
+            "x": "2660",\
+            "y": "1951",\
+            "z": "1",\
             "active": "true",\
+            "width": "60",\
+            "height": "32",\
             "params":\
             [\
-                    ["NUM#", "count", "30,0"]\
             ]\
             },\
             {\
-            "type": "CMNT",\
-            "id": "comment6",\
-            "name": "from%20left%20to%20right",\
-            "renamed": "true",\
-            "enabled": "true",\
-            "highlight": "0",\
-            "x": "2628",\
-            "y": "2585",\
-            "z": "13"\
-            },\
-            {\
-            "type": "CMNT",\
-            "id": "comment3",\
-            "name": "%3Cb%3E2.%3C%2Fb%3E%20Move%20the%20point%20away%20from%20the%20center",\
-            "renamed": "true",\
-            "enabled": "true",\
-            "highlight": "0",\
-            "x": "2635",\
-            "y": "1671",\
-            "z": "14"\
-            },\
-            {\
-            "type": "CMNT",\
-            "id": "comment13",\
-            "name": "the%20X%20parameter%20of%20the%20Move%20node.",\
-            "renamed": "true",\
-            "enabled": "true",\
-            "highlight": "0",\
-            "x": "2551",\
-            "y": "2105",\
-            "z": "15"\
-            },\
-            {\
-            "type": "CMNT",\
-            "id": "comment4",\
-            "name": "to%20set%20the%20circle%20radius.%20Disable%20%3Cb%3Emove%20space%3C%2Fb%3E",\
-            "renamed": "true",\
-            "enabled": "true",\
-            "highlight": "0",\
-            "x": "2676",\
-            "y": "1716",\
-            "z": "16"\
-            },\
-            {\
-            "type": "CMNT",\
-            "id": "comment12",\
-            "name": "This%20makes%20it%20easy%20to%20set%20the%20number%20of%20points.",\
-            "renamed": "true",\
-            "enabled": "true",\
-            "highlight": "0",\
-            "x": "3580",\
-            "y": "1760",\
-            "z": "17"\
-            },\
-            {\
-            "type": "CMNT",\
-            "id": "comment9",\
-            "name": "so%20the%20circle%20center%20is%20not%20moved%20with%20the%20point.",\
-            "renamed": "true",\
-            "enabled": "true",\
-            "highlight": "0",\
-            "x": "2675",\
-            "y": "1760",\
-            "z": "18"\
-            },\
-            {\
-            "type": "CMNT",\
-            "id": "comment5",\
-            "name": "Double%20click%20each%20node",\
-            "renamed": "true",\
-            "enabled": "true",\
-            "highlight": "0",\
-            "x": "2327",\
-            "y": "2530",\
-            "z": "19"\
-            },\
-            {\
-            "type": "RAND",\
-            "id": "random",\
-            "name": "random",\
+            "type": "RANGE",\
+            "id": "range",\
+            "name": "range",\
             "renamed": "false",\
             "enabled": "true",\
             "highlight": "0",\
-            "x": "2482",\
-            "y": "1879",\
-            "z": "20",\
-            "active": "true",\
+            "x": "3371",\
+            "y": "2177",\
+            "z": "2",\
             "params":\
             [\
-                    ["NUM#", "seed", "5022,0"],\
-                    ["NUM#", "min", "180,0"],\
-                    ["NUM#", "max", "220,0"]\
+                    ["NUM#", "from", "0,0"],\
+                    ["NUM#", "end", "360,0"]\
             ]\
             },\
             {\
@@ -1523,9 +1309,9 @@ const presetWobblyCircle = '\
             "renamed": "false",\
             "enabled": "true",\
             "highlight": "0",\
-            "x": "2674",\
-            "y": "1853",\
-            "z": "21",\
+            "x": "2724",\
+            "y": "1903",\
+            "z": "3",\
             "params":\
             [\
                     ["NUM#", "x", "200,0"],\
@@ -1534,31 +1320,74 @@ const presetWobblyCircle = '\
             },\
             {\
             "type": "CMNT",\
-            "id": "comment15",\
-            "name": "Note%20the%20Random%20min%20%26%20max%20values.",\
+            "id": "comment4",\
+            "name": "to%20set%20the%20circle%20radius.%20Disable%20%3Cb%3Emove%20space%3C%2Fb%3E",\
             "renamed": "true",\
             "enabled": "true",\
             "highlight": "0",\
-            "x": "2551",\
-            "y": "2154",\
-            "z": "22"\
+            "x": "2726",\
+            "y": "1766",\
+            "z": "4"\
             },\
             {\
-            "type": "VPATH",\
-            "id": "path",\
-            "name": "path",\
+            "type": "CMNT",\
+            "id": "comment7",\
+            "name": "to%20see%20how%20the%20wobbly%20circle%20is%20formed.",\
+            "renamed": "true",\
+            "enabled": "true",\
+            "highlight": "0",\
+            "x": "2902",\
+            "y": "2686",\
+            "z": "5"\
+            },\
+            {\
+            "type": "STRK",\
+            "id": "stroke",\
+            "name": "stroke",\
             "renamed": "false",\
             "enabled": "true",\
             "highlight": "0",\
-            "x": "4531",\
-            "y": "2027",\
-            "z": "23",\
-            "active": "true",\
+            "x": "4246",\
+            "y": "2612",\
+            "z": "6",\
             "params":\
             [\
-                    ["LIST#", "points", "30 PT# 0,0 0,0 PT# 0,0 0,0 PT# 0,0 0,0 PT# 0,0 0,0 PT# 0,0 0,0 PT# 0,0 0,0 PT# 0,0 0,0 PT# 0,0 0,0 PT# 0,0 0,0 PT# 0,0 0,0 PT# 0,0 0,0 PT# 0,0 0,0 PT# 0,0 0,0 PT# 0,0 0,0 PT# 0,0 0,0 PT# 0,0 0,0 PT# 0,0 0,0 PT# 0,0 0,0 PT# 0,0 0,0 PT# 0,0 0,0 PT# 0,0 0,0 PT# 0,0 0,0 PT# 0,0 0,0 PT# 0,0 0,0 PT# 0,0 0,0 PT# 0,0 0,0 PT# 0,0 0,0 PT# 0,0 0,0 PT# 0,0 0,0 PT# 0,0 0,0"],\
-                    ["NUM#", "closed", "1,0"]\
+                    ["LIST#", "fills", "1 FILL# 217,0 217,0 217,0 100,0 0,0"],\
+                    ["NUM#", "weight", "4,0"]\
             ]\
+            },\
+            {\
+            "type": "CMNT",\
+            "id": "comment6",\
+            "name": "from%20left%20to%20right",\
+            "renamed": "true",\
+            "enabled": "true",\
+            "highlight": "0",\
+            "x": "2678",\
+            "y": "2635",\
+            "z": "7"\
+            },\
+            {\
+            "type": "PT",\
+            "id": "point",\
+            "name": "point",\
+            "renamed": "false",\
+            "enabled": "true",\
+            "highlight": "0",\
+            "x": "2272",\
+            "y": "1903",\
+            "z": "8"\
+            },\
+            {\
+            "type": "CMNT",\
+            "id": "comment19",\
+            "name": "The%20path%20needs%20a%20stroke%20or%20a%20fill%20to%20be%20properly%20visible.",\
+            "renamed": "true",\
+            "enabled": "true",\
+            "highlight": "0",\
+            "x": "4440",\
+            "y": "2691",\
+            "z": "9"\
             },\
             {\
             "type": "CMNT",\
@@ -1567,9 +1396,9 @@ const presetWobblyCircle = '\
             "renamed": "true",\
             "enabled": "true",\
             "highlight": "0",\
-            "x": "4493",\
-            "y": "1889",\
-            "z": "24"\
+            "x": "4543",\
+            "y": "1939",\
+            "z": "10"\
             },\
             {\
             "type": "CMNT",\
@@ -1578,20 +1407,82 @@ const presetWobblyCircle = '\
             "renamed": "true",\
             "enabled": "true",\
             "highlight": "0",\
-            "x": "4712",\
-            "y": "2070",\
-            "z": "25"\
+            "x": "4762",\
+            "y": "2120",\
+            "z": "11"\
+            },\
+            {\
+            "type": "FILL",\
+            "id": "fill",\
+            "name": "fill",\
+            "renamed": "false",\
+            "enabled": "true",\
+            "highlight": "0",\
+            "x": "4239",\
+            "y": "2456",\
+            "z": "12",\
+            "params":\
+            [\
+                    ["COL#", "color", "1,0 179,0 60,0 67,0"],\
+                    ["NUM#", "opacity", "50,0"]\
+            ]\
             },\
             {\
             "type": "CMNT",\
-            "id": "comment18",\
-            "name": "%E2%9F%B5",\
+            "id": "comment12",\
+            "name": "This%20makes%20it%20easy%20to%20set%20the%20number%20of%20points.",\
             "renamed": "true",\
             "enabled": "true",\
             "highlight": "0",\
-            "x": "4664",\
-            "y": "2071",\
-            "z": "26"\
+            "x": "3630",\
+            "y": "1810",\
+            "z": "13"\
+            },\
+            {\
+            "type": "CMB",\
+            "id": "combine",\
+            "name": "combine",\
+            "renamed": "false",\
+            "enabled": "true",\
+            "highlight": "0",\
+            "x": "4427",\
+            "y": "2531",\
+            "z": "14",\
+            "width": "60",\
+            "height": "51"\
+            },\
+            {\
+            "type": "CMNT",\
+            "id": "comment2",\
+            "name": "the%20center%20of%20the%20circle.",\
+            "renamed": "true",\
+            "enabled": "true",\
+            "highlight": "0",\
+            "x": "2273",\
+            "y": "1765",\
+            "z": "15"\
+            },\
+            {\
+            "type": "CMNT",\
+            "id": "comment15",\
+            "name": "Note%20the%20Random%20min%20%26%20max%20values.",\
+            "renamed": "true",\
+            "enabled": "true",\
+            "highlight": "0",\
+            "x": "2603",\
+            "y": "2226",\
+            "z": "16"\
+            },\
+            {\
+            "type": "CMNT",\
+            "id": "comment",\
+            "name": "%3Cb%3E1.%3C%2Fb%3E%20Create%20a%20point%20at",\
+            "renamed": "true",\
+            "enabled": "true",\
+            "highlight": "0",\
+            "x": "2246",\
+            "y": "1721",\
+            "z": "17"\
             },\
             {\
             "type": "COL",\
@@ -1600,10 +1491,9 @@ const presetWobblyCircle = '\
             "renamed": "false",\
             "enabled": "true",\
             "highlight": "0",\
-            "x": "4014",\
-            "y": "2589",\
-            "z": "27",\
-            "active": "true",\
+            "x": "4064",\
+            "y": "2639",\
+            "z": "18",\
             "prevSpace": "hex",\
             "params":\
             [\
@@ -1614,32 +1504,158 @@ const presetWobblyCircle = '\
             ]\
             },\
             {\
-            "type": "STRK",\
-            "id": "stroke",\
-            "name": "stroke",\
+            "type": "CMNT",\
+            "id": "comment3",\
+            "name": "%3Cb%3E2.%3C%2Fb%3E%20Move%20the%20point%20away%20from%20the%20center",\
+            "renamed": "true",\
+            "enabled": "true",\
+            "highlight": "0",\
+            "x": "2685",\
+            "y": "1721",\
+            "z": "19"\
+            },\
+            {\
+            "type": "CMNT",\
+            "id": "comment11",\
+            "name": "Rotate%20the%20point%20around%20the%20center%20using%20a%20Range.",\
+            "renamed": "true",\
+            "enabled": "true",\
+            "highlight": "0",\
+            "x": "3634",\
+            "y": "1763",\
+            "z": "20"\
+            },\
+            {\
+            "type": "RAND",\
+            "id": "random",\
+            "name": "random",\
             "renamed": "false",\
             "enabled": "true",\
             "highlight": "0",\
-            "x": "4196",\
-            "y": "2562",\
-            "z": "28",\
+            "x": "2534",\
+            "y": "1951",\
+            "z": "21",\
             "active": "true",\
             "params":\
             [\
-                    ["LIST#", "fills", "1 FILL# 217,0 217,0 217,0 100,0 0,0"],\
-                    ["NUM#", "weight", "4,0"]\
+                    ["NUM#", "seed", "5022,0"],\
+                    ["NUM#", "min", "180,0"],\
+                    ["NUM#", "max", "220,0"]\
             ]\
             },\
             {\
             "type": "CMNT",\
-            "id": "comment19",\
-            "name": "The%20path%20needs%20a%20stroke%20or%20a%20fill%20to%20be%20properly%20visible.",\
+            "id": "comment5",\
+            "name": "Double%20click%20each%20node",\
             "renamed": "true",\
             "enabled": "true",\
             "highlight": "0",\
-            "x": "4390",\
-            "y": "2641",\
+            "x": "2377",\
+            "y": "2580",\
+            "z": "22"\
+            },\
+            {\
+            "type": "CMNT",\
+            "id": "comment18",\
+            "name": "%E2%9F%B5",\
+            "renamed": "true",\
+            "enabled": "true",\
+            "highlight": "0",\
+            "x": "4714",\
+            "y": "2121",\
+            "z": "23"\
+            },\
+            {\
+            "type": "CMNT",\
+            "id": "comment8",\
+            "name": "%3Cb%3E5.%3C%2Fb%3E%20Connect%20the%20random%20output%20to",\
+            "renamed": "true",\
+            "enabled": "true",\
+            "highlight": "0",\
+            "x": "2565",\
+            "y": "2131",\
+            "z": "24"\
+            },\
+            {\
+            "type": "VPATH",\
+            "id": "path",\
+            "name": "path",\
+            "renamed": "false",\
+            "enabled": "true",\
+            "highlight": "0",\
+            "x": "4581",\
+            "y": "2077",\
+            "z": "25",\
+            "active": "true",\
+            "params":\
+            [\
+                    ["LIST#", "points", "30 PT# 0,0 0,0 PT# 0,0 0,0 PT# 0,0 0,0 PT# 0,0 0,0 PT# 0,0 0,0 PT# 0,0 0,0 PT# 0,0 0,0 PT# 0,0 0,0 PT# 0,0 0,0 PT# 0,0 0,0 PT# 0,0 0,0 PT# 0,0 0,0 PT# 0,0 0,0 PT# 0,0 0,0 PT# 0,0 0,0 PT# 0,0 0,0 PT# 0,0 0,0 PT# 0,0 0,0 PT# 0,0 0,0 PT# 0,0 0,0 PT# 0,0 0,0 PT# 0,0 0,0 PT# 0,0 0,0 PT# 0,0 0,0 PT# 0,0 0,0 PT# 0,0 0,0 PT# 0,0 0,0 PT# 0,0 0,0 PT# 0,0 0,0 PT# 0,0 0,0"],\
+                    ["NUM#", "closed", "1,0"]\
+            ]\
+            },\
+            {\
+            "type": "CMNT",\
+            "id": "comment14",\
+            "name": "%E2%9F%B6",\
+            "renamed": "true",\
+            "enabled": "true",\
+            "highlight": "0",\
+            "x": "2669",\
+            "y": "1946",\
+            "z": "26"\
+            },\
+            {\
+            "type": "REPT",\
+            "id": "repeat",\
+            "name": "repeat",\
+            "renamed": "false",\
+            "enabled": "true",\
+            "highlight": "0",\
+            "x": "3919",\
+            "y": "2104",\
+            "z": "27",\
+            "params":\
+            [\
+                    ["NUM#", "count", "30,0"]\
+            ]\
+            },\
+            {\
+            "type": "PANEL",\
+            "id": "panel4",\
+            "name": "",\
+            "renamed": "false",\
+            "enabled": "true",\
+            "highlight": "7",\
+            "x": "2279",\
+            "y": "2510",\
+            "z": "28",\
+            "width": "1205.3135943048746",\
+            "height": "285.10430605107064",\
+            "params":\
+            [\
+            ]\
+            },\
+            {\
+            "type": "CMNT",\
+            "id": "comment13",\
+            "name": "the%20X%20parameter%20of%20the%20Move%20node.",\
+            "renamed": "true",\
+            "enabled": "true",\
+            "highlight": "0",\
+            "x": "2603",\
+            "y": "2177",\
             "z": "29"\
+            },\
+            {\
+            "type": "CMNT",\
+            "id": "comment10",\
+            "name": "%3Cb%3E3.%3C%2Fb%3E%20This%20is%20where%20the%20circle%20is%20actually%20created.",\
+            "renamed": "true",\
+            "enabled": "true",\
+            "highlight": "0",\
+            "x": "3593",\
+            "y": "1720",\
+            "z": "30"\
             },\
             {\
             "type": "COL",\
@@ -1648,10 +1664,9 @@ const presetWobblyCircle = '\
             "renamed": "false",\
             "enabled": "true",\
             "highlight": "0",\
-            "x": "4013",\
-            "y": "2433",\
-            "z": "30",\
-            "active": "true",\
+            "x": "4063",\
+            "y": "2483",\
+            "z": "31",\
             "prevSpace": "hex",\
             "params":\
             [\
@@ -1662,87 +1677,34 @@ const presetWobblyCircle = '\
             ]\
             },\
             {\
-            "type": "FILL",\
-            "id": "fill",\
-            "name": "fill",\
+            "type": "CMNT",\
+            "id": "comment9",\
+            "name": "so%20the%20circle%20center%20is%20not%20moved%20with%20the%20point.",\
+            "renamed": "true",\
+            "enabled": "true",\
+            "highlight": "0",\
+            "x": "2725",\
+            "y": "1810",\
+            "z": "32"\
+            },\
+            {\
+            "type": "ROT",\
+            "id": "rotate",\
+            "name": "rotate",\
             "renamed": "false",\
             "enabled": "true",\
             "highlight": "0",\
-            "x": "4189",\
-            "y": "2406",\
-            "z": "31",\
-            "active": "true",\
-            "params":\
-            [\
-                    ["COL#", "color", "1,0 179,0 60,0 67,0"],\
-                    ["NUM#", "opacity", "50,0"]\
-            ]\
-            },\
-            {\
-            "type": "CMB",\
-            "id": "combine",\
-            "name": "combine",\
-            "renamed": "false",\
-            "enabled": "true",\
-            "highlight": "0",\
-            "x": "4377",\
-            "y": "2481",\
-            "z": "32",\
-            "active": "true",\
-            "width": "60",\
-            "height": "51"\
-            },\
-            {\
-            "type": "PANEL",\
-            "id": "panel4",\
-            "name": "",\
-            "renamed": "false",\
-            "enabled": "true",\
-            "highlight": "7",\
-            "x": "2229",\
-            "y": "2460",\
+            "x": "3632",\
+            "y": "1904",\
             "z": "33",\
-            "width": "1205.3135943048746",\
-            "height": "285.10430605107064",\
             "params":\
             [\
+                    ["NUM#", "angle", "348,0"]\
             ]\
             }\
         ],\
         "connections":\
         [\
-            {\
-            "outputNodeId": "move",\
-            "outputId": "h0",\
-            "outputOrder": "0",\
-            "inputNodeId": "rotate",\
-            "inputId": "h0",\
-            "list": "false"\
-            },\
-            {\
-            "outputNodeId": "range",\
-            "outputId": "h0",\
-            "outputOrder": "0",\
-            "inputNodeId": "rotate",\
-            "inputId": "angle",\
-            "list": "false"\
-            },\
-            {\
-            "outputNodeId": "rotate",\
-            "outputId": "h0",\
-            "outputOrder": "0",\
-            "inputNodeId": "repeat",\
-            "inputId": "h0",\
-            "list": "false"\
-            },\
-            {\
-            "outputNodeId": "range",\
-            "outputId": "h0",\
-            "outputOrder": "1",\
-            "inputNodeId": "repeat",\
-            "inputId": "loop",\
-            "list": "false"\
-            },\
             {\
             "outputNodeId": "point",\
             "outputId": "h0",\
@@ -1750,22 +1712,6 @@ const presetWobblyCircle = '\
             "inputNodeId": "move",\
             "inputId": "h0",\
             "list": "false"\
-            },\
-            {\
-            "outputNodeId": "repeat",\
-            "outputId": "h0",\
-            "outputOrder": "0",\
-            "inputNodeId": "path",\
-            "inputId": "points",\
-            "list": "true"\
-            },\
-            {\
-            "outputNodeId": "combine",\
-            "outputId": "h0",\
-            "outputOrder": "0",\
-            "inputNodeId": "path",\
-            "inputId": "props",\
-            "list": "true"\
             },\
             {\
             "outputNodeId": "color",\
@@ -1798,10 +1744,57 @@ const presetWobblyCircle = '\
             "inputNodeId": "combine",\
             "inputId": "h1",\
             "list": "false"\
+            },\
+            {\
+            "outputNodeId": "repeat",\
+            "outputId": "h0",\
+            "outputOrder": "0",\
+            "inputNodeId": "path",\
+            "inputId": "points",\
+            "list": "true"\
+            },\
+            {\
+            "outputNodeId": "combine",\
+            "outputId": "h0",\
+            "outputOrder": "0",\
+            "inputNodeId": "path",\
+            "inputId": "props",\
+            "list": "true"\
+            },\
+            {\
+            "outputNodeId": "rotate",\
+            "outputId": "h0",\
+            "outputOrder": "0",\
+            "inputNodeId": "repeat",\
+            "inputId": "h0",\
+            "list": "false"\
+            },\
+            {\
+            "outputNodeId": "range",\
+            "outputId": "h0",\
+            "outputOrder": "1",\
+            "inputNodeId": "repeat",\
+            "inputId": "loop",\
+            "list": "false"\
+            },\
+            {\
+            "outputNodeId": "move",\
+            "outputId": "h0",\
+            "outputOrder": "0",\
+            "inputNodeId": "rotate",\
+            "inputId": "h0",\
+            "list": "false"\
+            },\
+            {\
+            "outputNodeId": "range",\
+            "outputId": "h0",\
+            "outputOrder": "0",\
+            "inputNodeId": "rotate",\
+            "inputId": "angle",\
+            "list": "false"\
             }\
         ]\
     }';
-
 
 
 const presetNestedTorus = '\
