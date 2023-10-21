@@ -59,51 +59,53 @@ extends GOperator
         this.value.objects = [];
 
 
-        for (let i = 0, o = 0; i < this.inputs.length; i++)
+        if (this.options.enabled)
         {
-            const input = (await this.inputs[i].eval(parse)).toValue();
-
-
-            if (   input
-                && this.options.enabled)
+            for (let i = 0, o = 0; i < this.inputs.length; i++)
             {
-                if (isListType(input.type))
+                const input = (await this.inputs[i].eval(parse)).toValue();
+
+
+                if (input)
                 {
-                    if (input.condensed === true)
-                        this.value.items.push(input);//.copy());
-                    else
+                    if (isListType(input.type))
                     {
-                        for (const item of input.items)
-                            this.value.items.push(item);//.copy());
+                        if (input.condensed === true)
+                            this.value.items.push(input);//.copy());
+                        else
+                        {
+                            for (const item of input.items)
+                                this.value.items.push(item);//.copy());
+                        }
                     }
+                    else
+                        this.value.items.push(input);//.copy());
                 }
-                else
-                    this.value.items.push(input);//.copy());
+
+
+                const inputObjects = this.copyObjects(input, i);
+                inputObjects.forEach(o => o.itemIndex = i);
+
+                this.value.objects.push(...inputObjects);
             }
 
 
-            const inputObjects = this.copyObjects(input, i);
-            inputObjects.forEach(o => o.itemIndex = i);
+            // reset object space
 
-            this.value.objects.push(...inputObjects);
+            const bounds = getObjBounds(this.value.objects);
+
+            const singlePoint =
+                this.value.objects.length  == 1 
+                && this.value.objects[0].type == POINT;
+
+
+            for (const obj of this.value.objects)
+            {
+                obj.createDefaultSpace(obj.sp0.x, obj.sp0.y);
+                obj.resetSpace(bounds, singlePoint);
+            }
         }
-
-
-        // reset object space
-
-        const bounds = getObjBounds(this.value.objects);
-
-        const singlePoint =
-               this.value.objects.length  == 1 
-            && this.value.objects[0].type == POINT;
-
-
-        for (const obj of this.value.objects)
-        {
-            obj.createDefaultSpace(obj.sp0.x, obj.sp0.y);
-            obj.resetSpace(bounds, singlePoint);
-        }
-
+        
 
         const preview = new ListValue(this.value.items.slice(0, Math.min(this.value.items.length, 10)));
         const length  = new NumberValue(this.value.items.length);

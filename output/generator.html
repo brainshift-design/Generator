@@ -7082,12 +7082,8 @@ function getSmoothSegment(_pointP, _point, _pointN)
     let pp = addv(_p, mulvs(unitv(v), -lengthv(v)/2 * f));
     let pn = addv(_p, mulvs(unitv(v),  lengthv(v)/2 * f));
 
-
-    // add salt to get around Figma's issue 
-    // with straight otrhogonal bezier lines
-
-    pp = saltv(pp);
-    _p = saltv(_p);
+    pp = saltv(pp); // add salt to get around Figma's issue 
+    _p = saltv(_p); // with straight otrhogonal bezier lines
     pn = saltv(pn);
 
 
@@ -12065,6 +12061,13 @@ extends ShapeValue
 
 
 
+    toValue()
+    {
+        return this.copy();
+    }
+
+
+
     hasInitValue()
     {
         return super.hasInitValue()
@@ -12089,13 +12092,6 @@ extends ShapeValue
 
 
     
-    toValue()
-    {
-        return this.copy();
-    }
-
-
-
     static NaN = new RectangleValue(
         '',
         NumberValue.NaN,
@@ -12595,12 +12591,13 @@ extends ShapeValue
 
     toPreviewString()
     {
-        return      this.x     .toPreviewString()
-            + ' ' + this.y     .toPreviewString()
-            + ' ' + this.width .toPreviewString()
-            + ' ' + this.height.toPreviewString()
-            + ' ' + this.round .toPreviewString()
-            + ' ' + this.bias  .toPreviewString();
+        return 'trapeze';
+            //        this.x     .toPreviewString()
+            //+ ' ' + this.y     .toPreviewString()
+            //+ ' ' + this.width .toPreviewString()
+            //+ ' ' + this.height.toPreviewString()
+            //+ ' ' + this.round .toPreviewString()
+            //+ ' ' + this.bias  .toPreviewString();
     }
 
 
@@ -13717,7 +13714,7 @@ extends ShapeValue
 
     toValue()
     {
-        return this.copy();
+        return this;//.copy();
     }
 
 
@@ -16357,51 +16354,53 @@ extends GOperator
         this.value.objects = [];
 
 
-        for (let i = 0, o = 0; i < this.inputs.length; i++)
+        if (this.options.enabled)
         {
-            const input = (await this.inputs[i].eval(parse)).toValue();
-
-
-            if (   input
-                && this.options.enabled)
+            for (let i = 0, o = 0; i < this.inputs.length; i++)
             {
-                if (isListType(input.type))
+                const input = (await this.inputs[i].eval(parse)).toValue();
+
+
+                if (input)
                 {
-                    if (input.condensed === true)
-                        this.value.items.push(input);//.copy());
-                    else
+                    if (isListType(input.type))
                     {
-                        for (const item of input.items)
-                            this.value.items.push(item);//.copy());
+                        if (input.condensed === true)
+                            this.value.items.push(input);//.copy());
+                        else
+                        {
+                            for (const item of input.items)
+                                this.value.items.push(item);//.copy());
+                        }
                     }
+                    else
+                        this.value.items.push(input);//.copy());
                 }
-                else
-                    this.value.items.push(input);//.copy());
+
+
+                const inputObjects = this.copyObjects(input, i);
+                inputObjects.forEach(o => o.itemIndex = i);
+
+                this.value.objects.push(...inputObjects);
             }
 
 
-            const inputObjects = this.copyObjects(input, i);
-            inputObjects.forEach(o => o.itemIndex = i);
+            // reset object space
 
-            this.value.objects.push(...inputObjects);
+            const bounds = getObjBounds(this.value.objects);
+
+            const singlePoint =
+                this.value.objects.length  == 1 
+                && this.value.objects[0].type == POINT;
+
+
+            for (const obj of this.value.objects)
+            {
+                obj.createDefaultSpace(obj.sp0.x, obj.sp0.y);
+                obj.resetSpace(bounds, singlePoint);
+            }
         }
-
-
-        // reset object space
-
-        const bounds = getObjBounds(this.value.objects);
-
-        const singlePoint =
-               this.value.objects.length  == 1 
-            && this.value.objects[0].type == POINT;
-
-
-        for (const obj of this.value.objects)
-        {
-            obj.createDefaultSpace(obj.sp0.x, obj.sp0.y);
-            obj.resetSpace(bounds, singlePoint);
-        }
-
+        
 
         const preview = new ListValue(this.value.items.slice(0, Math.min(this.value.items.length, 10)));
         const length  = new NumberValue(this.value.items.length);
@@ -34694,7 +34693,7 @@ extends GOperator1
         }
         else
         {
-            this.value = NullValue;//.copy();
+            this.value = NullValue.copy();
         }
 
 
@@ -34767,6 +34766,8 @@ extends GOperator1
                     createTransform(_x, _y),
                     createRotateTransform(-_a)); // for vector movement
 
+            if (this.nodeId == 'move3')
+                    console.log('this.value =', this.value);
                 
             for (const obj of this.value.objects)
             {
@@ -34786,8 +34787,8 @@ extends GOperator1
                 {
                     const p = this.value.objects[0].points[i].toPoint();
     
-                    this.value.points.objects[i].x = p.x;
-                    this.value.points.objects[i].y = p.y;
+                    this.value.points.objects[i].x = new NumberValue(p.x);
+                    this.value.points.objects[i].y = new NumberValue(p.y);
                 }
             }
 

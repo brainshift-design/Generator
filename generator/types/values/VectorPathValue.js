@@ -99,7 +99,7 @@ extends ShapeValue
 
     toValue()
     {
-        return this.copy();
+        return this;//.copy();
     }
 
 

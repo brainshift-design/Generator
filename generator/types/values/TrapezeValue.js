@@ -83,12 +83,13 @@ extends ShapeValue
 
     toPreviewString()
     {
-        return      this.x     .toPreviewString()
-            + ' ' + this.y     .toPreviewString()
-            + ' ' + this.width .toPreviewString()
-            + ' ' + this.height.toPreviewString()
-            + ' ' + this.round .toPreviewString()
-            + ' ' + this.bias  .toPreviewString();
+        return 'trapeze';
+            //        this.x     .toPreviewString()
+            //+ ' ' + this.y     .toPreviewString()
+            //+ ' ' + this.width .toPreviewString()
+            //+ ' ' + this.height.toPreviewString()
+            //+ ' ' + this.round .toPreviewString()
+            //+ ' ' + this.bias  .toPreviewString();
     }
 
 

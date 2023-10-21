@@ -68,7 +68,7 @@ extends GOperator1
         }
         else
         {
-            this.value = NullValue;//.copy();
+            this.value = NullValue.copy();
         }
 
 
@@ -141,6 +141,8 @@ extends GOperator1
                     createTransform(_x, _y),
                     createRotateTransform(-_a)); // for vector movement
 
+            if (this.nodeId == 'move3')
+                    console.log('this.value =', this.value);
                 
             for (const obj of this.value.objects)
             {
@@ -160,8 +162,8 @@ extends GOperator1
                 {
                     const p = this.value.objects[0].points[i].toPoint();
     
-                    this.value.points.objects[i].x = p.x;
-                    this.value.points.objects[i].y = p.y;
+                    this.value.points.objects[i].x = new NumberValue(p.x);
+                    this.value.points.objects[i].y = new NumberValue(p.y);
                 }
             }
 

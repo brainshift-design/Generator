@@ -402,7 +402,7 @@ Operator.prototype.createHeader = function()
             {
                 const input = graphView.headerInput;
                 
-                graphView.overInput   = null;
+                graphView.overInput = null;
                 
                 if (input) // will be null if data types don't match or there's no auto input for someo other reason
                 {
@@ -418,7 +418,7 @@ Operator.prototype.createHeader = function()
             {
                 const output = graphView.headerOutput;
                 
-                graphView.overOutput   = null;
+                graphView.overOutput = null;
 
                 if (output) // will be null if data types don't match or there's no auto output for someo other reason
                 {
@@ -439,11 +439,11 @@ Operator.prototype.createHeader = function()
 
     this.header.addEventListener('dblclick', e =>
     {
-        // if (this.type == COMMENT)
-        // {
-        //     e.preventDefault();
-        //     return;
-        // }
+        if (this.type == COMMENT)
+        {
+            e.preventDefault();
+            return;
+        }
 
 
         e.stopPropagation();
