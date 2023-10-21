@@ -4,7 +4,7 @@
 
 
 
-const generatorVersion = 245;
+const generatorVersion = 246;
 
 
 const MAX_INT32        = 2147483647;
@@ -21513,7 +21513,7 @@ function getSimpleMathValue(input, operand, op, enabled)
 
     if (enabled)
     {
-        op.value = Math.min(Math.max(0, op.value), MATH_OPS.length-1);
+        op.value = Math.min(Math.max(0, Math.floor(op.value)), MATH_OPS.length-1);
 
         switch (op.value)
         {
@@ -31398,13 +31398,24 @@ extends GShape
         }
 
        
-        this.setUpdateValues(parse, [['value', this.value]]);
+        this.setUpdateValues(parse, 
+        [
+            ['value', this.value]
+        ]);
 
 
         await this.evalShapeBase(parse);
 
 
         await this.evalObjects(parse);
+
+
+        if (!this.x     ) this.x      = this.value.x     .copy();
+        if (!this.y     ) this.y      = this.value.y     .copy();
+        if (!this.width ) this.width  = this.value.width .copy();
+        if (!this.height) this.height = this.value.height.copy();
+        if (!this.round ) this.round  = this.value.round .copy();
+        if (!this.bias  ) this.bias   = this.value.bias  .copy();
 
 
         this.validate();
@@ -34735,9 +34746,6 @@ extends GOperator1
             }
     
             
-            const bounds = getObjBounds(this.value.objects);
-
-
             const moveType    = options.moveType   .value;
             const x           = options.x          .value;
             const y           = options.y          .value;
@@ -34751,24 +34759,6 @@ extends GOperator1
             const _x = moveType == 0 ? x : _v.x;
             const _y = moveType == 0 ? y : _v.y;
 
-
-            const singlePoint = 
-                   this.value.objects.length  == 1 
-                && this.value.objects[0].type == POINT;
-
-
-            let _cx = 50;
-            let _cy = 50;
-
-            if (!singlePoint)
-            {
-                _cx /= 100;
-                _cy /= 100;
-            }
-
-
-            const cx = singlePoint ? this.value.objects[0].x + _cx : bounds.x + _cx * bounds.width;
-            const cy = singlePoint ? this.value.objects[0].y + _cy : bounds.y + _cy * bounds.height;
 
             const xform = 
                 moveType == 0

@@ -155,5 +155,6 @@ function getPresetGraph(graphId)
         case 'linesOfFire':          return presetLinesOfFire;
         case 'clouds':               return presetClouds;
         case 'twistedTower':         return presetTwistedTower;
+        case 'brushStrokes':         return presetBrushStrokes;
     }
 }

@@ -142,7 +142,7 @@ function getSimpleMathValue(input, operand, op, enabled)
 
     if (enabled)
     {
-        op.value = Math.min(Math.max(0, op.value), MATH_OPS.length-1);
+        op.value = Math.min(Math.max(0, Math.floor(op.value)), MATH_OPS.length-1);
 
         switch (op.value)
         {

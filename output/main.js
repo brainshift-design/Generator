@@ -19,7 +19,7 @@ function isConnKey(key) { return isTagKey(key, connTag); }
 function noPageTag(key) { return noTag(key, pageTag); }
 function noNodeTag(key) { return noTag(key, nodeTag); }
 function noConnTag(key) { return noTag(key, connTag); }
-const generatorVersion = 245;
+const generatorVersion = 246;
 const MAX_INT32 = 2147483647;
 const NULL = '';
 const HTAB = '  '; // half-tab

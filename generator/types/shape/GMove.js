@@ -120,9 +120,6 @@ extends GOperator1
             }
     
             
-            const bounds = getObjBounds(this.value.objects);
-
-
             const moveType    = options.moveType   .value;
             const x           = options.x          .value;
             const y           = options.y          .value;
@@ -136,24 +133,6 @@ extends GOperator1
             const _x = moveType == 0 ? x : _v.x;
             const _y = moveType == 0 ? y : _v.y;
 
-
-            const singlePoint = 
-                   this.value.objects.length  == 1 
-                && this.value.objects[0].type == POINT;
-
-
-            let _cx = 50;
-            let _cy = 50;
-
-            if (!singlePoint)
-            {
-                _cx /= 100;
-                _cy /= 100;
-            }
-
-
-            const cx = singlePoint ? this.value.objects[0].x + _cx : bounds.x + _cx * bounds.width;
-            const cy = singlePoint ? this.value.objects[0].y + _cy : bounds.y + _cy * bounds.height;
 
             const xform = 
                 moveType == 0

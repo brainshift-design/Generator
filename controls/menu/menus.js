@@ -613,13 +613,13 @@ menuFlow = new Menu('Flow', true, false);
                                new MenuItem('',              null,                {separator: true}),
                                new MenuItem('Gradient',      null,                {icon: iconGradient,         callback: e => actionManager.do(getCreateNodeAction(GRADIENT,          btnColor.div, getCreateOptions(e)))}),
                                new MenuItem('Color stop',    null,                {icon: iconColorStop,        callback: e => actionManager.do(getCreateNodeAction(COLOR_STOP,        btnColor.div, getCreateOptions(e)))}),
+        menuItemColorSep1    = new MenuItem('',              null,                {separator: true}),
+                               new MenuItem('Contrast',      null,                {icon: iconWebContrast,      callback: e => actionManager.do(getCreateNodeAction(COLOR_CONTRAST,    btnColor.div, getCreateOptions(e)))}),
         menuItemLayerSep1    = new MenuItem('',              null,                {separator: true}),
                                new MenuItem('Valid sRGB',    null,                {icon: iconValidColor,       callback: e => actionManager.do(getCreateNodeAction(VALID_COLOR,       btnColor.div, getCreateOptions(e)))}),
         menuItemCorrectColor = new MenuItem('Correct color', null,                {icon: iconCorrectColor,     callback: e => actionManager.do(getCreateNodeAction(CORRECT_COLOR,     btnColor.div, getCreateOptions(e)))}),
         menuItemConvertToP3  = new MenuItem('sRGB ⟷ P3',    null,                {icon: iconConvertP3,        callback: e => actionManager.do(getCreateNodeAction(COLOR_CONVERT_P3,  btnColor.div, getCreateOptions(e)))}),
         menuItemColorblind   = new MenuItem('Color vision',  null,                {icon: iconColorblind,       callback: e => actionManager.do(getCreateNodeAction(COLORBLIND,        btnColor.div, getCreateOptions(e)))}),
-        menuItemColorSep1    = new MenuItem('',              null,                {separator: true}),
-                               new MenuItem('Contrast',      null,                {icon: iconWebContrast,      callback: e => actionManager.do(getCreateNodeAction(COLOR_CONTRAST,    btnColor.div, getCreateOptions(e)))}),
                                new MenuItem('',              null,                {separator: true}),
                                new MenuItem('Interpolate',   'Interpolate color', {icon: iconColorInterpolate, callback: e => actionManager.do(getCreateNodeAction(COLOR_INTERPOLATE, btnColor.div, getCreateOptions(e)))}),
         menuItemColorBlend   = new MenuItem('Blend',         null,                {icon: iconColorBlend,       callback: e => actionManager.do(getCreateNodeAction(COLOR_BLEND,       btnColor.div, getCreateOptions(e)))})]);
@@ -928,7 +928,7 @@ menuFlow = new Menu('Flow', true, false);
     // }});
 
 
-    if (false)
+    if (true)
     {
         btnPanel    = new MenuButton('', menuPanel,  {useMenuName: true, highlight: () => currentMenus.includes(menuPanel ), callback: () => updatePanMode(false)});
     }
