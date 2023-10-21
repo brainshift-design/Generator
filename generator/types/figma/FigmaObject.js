@@ -201,6 +201,9 @@ class FigmaObject
             {
                 obj.applyObjectTransform(xform, space);
 
+                if (obj.type == VECTOR_PATH)
+                    obj.updatePoints(xform, space);
+
                 if (affectSpace)
                     obj.applySpaceTransform(xform, space);
             }                

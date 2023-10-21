@@ -61,7 +61,7 @@ extends GOperator
 
         if (this.options.enabled)
         {
-            for (let i = 0, o = 0; i < this.inputs.length; i++)
+            for (let i = 0; i < this.inputs.length; i++)
             {
                 const input = (await this.inputs[i].eval(parse)).toValue();
 
@@ -95,7 +95,7 @@ extends GOperator
             const bounds = getObjBounds(this.value.objects);
 
             const singlePoint =
-                this.value.objects.length  == 1 
+                   this.value.objects.length  == 1 
                 && this.value.objects[0].type == POINT;
 
 
@@ -105,7 +105,7 @@ extends GOperator
                 obj.resetSpace(bounds, singlePoint);
             }
         }
-        
+
 
         const preview = new ListValue(this.value.items.slice(0, Math.min(this.value.items.length, 10)));
         const length  = new NumberValue(this.value.items.length);

@@ -118,6 +118,13 @@ extends GOperator1
                 for (let i = 0; i < this.value.items.length; i++)
                     this.value.items[i].objects = this.value.objects.filter(o => o.itemIndex == i);
             }
+            // else if (this.value.type == SHAPE_GROUP_VALUE)
+            // {
+            //     const group = this.value.objects[0];
+
+            //     for (let i = 0; i < group.children.length; i++)
+            //         group.children[i].objects = this.value.objects.filter(o => o.itemIndex == i);
+            // }
     
             
             const moveType    = options.moveType   .value;
@@ -143,7 +150,7 @@ extends GOperator1
 
             if (this.nodeId == 'move3')
                     console.log('this.value =', this.value);
-                
+
             for (const obj of this.value.objects)
             {
                 obj.nodeId   = this.nodeId;
@@ -161,9 +168,10 @@ extends GOperator1
                 for (let i = 0; i < this.value.objects[0].points.length; i++)
                 {
                     const p = this.value.objects[0].points[i].toPoint();
+                    console.log('p =', p);
     
-                    this.value.points.objects[i].x = new NumberValue(p.x);
-                    this.value.points.objects[i].y = new NumberValue(p.y);
+                    this.value.points.objects[i].x = p.x;
+                    this.value.points.objects[i].y = p.y;
                 }
             }
 

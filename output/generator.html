@@ -5782,6 +5782,9 @@ class FigmaObject
             {
                 obj.applyObjectTransform(xform, space);
 
+                if (obj.type == VECTOR_PATH)
+                    obj.updatePoints(xform, space);
+
                 if (affectSpace)
                     obj.applySpaceTransform(xform, space);
             }                
@@ -16356,7 +16359,7 @@ extends GOperator
 
         if (this.options.enabled)
         {
-            for (let i = 0, o = 0; i < this.inputs.length; i++)
+            for (let i = 0; i < this.inputs.length; i++)
             {
                 const input = (await this.inputs[i].eval(parse)).toValue();
 
@@ -16390,7 +16393,7 @@ extends GOperator
             const bounds = getObjBounds(this.value.objects);
 
             const singlePoint =
-                this.value.objects.length  == 1 
+                   this.value.objects.length  == 1 
                 && this.value.objects[0].type == POINT;
 
 
@@ -16400,7 +16403,7 @@ extends GOperator
                 obj.resetSpace(bounds, singlePoint);
             }
         }
-        
+
 
         const preview = new ListValue(this.value.items.slice(0, Math.min(this.value.items.length, 10)));
         const length  = new NumberValue(this.value.items.length);
@@ -33768,37 +33771,44 @@ extends GShapeBase
 
         this.value = new ShapeGroupValue(this.nodeId);
 
+        this.value.objects = [];
 
-        for (let i = 0, o = 0; i < this.inputs.length; i++)
+       
+        if (this.options.enabled)
         {
-            const input = (await this.inputs[i].eval(parse)).toValue();
-
-            
-            if (   input
-                && this.options.enabled)            
+            for (let i = 0; i < this.inputs.length; i++)
             {
-                if (   input.type == SHAPE_LIST_VALUE
-                    || input.type == LIST_VALUE)
-                {
-                    for (const item of input.items)
-                    {
-                        if (!SHAPE_VALUES.includes(item.type))
-                            continue;
+                const input = (await this.inputs[i].eval(parse)).toValue();
 
-                        this.value.items.push(item);//.copy());   
-                        //this.value.objects.push(...item.objects.map(o => this.copyObject(o, i)));
-                    }
-                }
-                else
+                
+                if (input)            
                 {
-                    this.value.items.push(input);//.copy());
-                    //this.value.objects.push(...input.objects.map(o => this.copyObject(o, i)));
+                    if (   input.type == SHAPE_LIST_VALUE
+                        || input.type == LIST_VALUE)
+                    {
+                        for (const item of input.items)
+                        {
+                            if (!SHAPE_VALUES.includes(item.type))
+                                continue;
+
+                            this.value.items.push(item);//.copy());   
+                            //this.value.objects.push(...item.objects.map(o => this.copyObject(o, i)));
+                        }
+                    }
+                    else
+                    {
+                        this.value.items.push(input);//.copy());
+                        //this.value.objects.push(...input.objects.map(o => this.copyObject(o, i)));
+                    }
                 }
             }
         }
 
 
-        this.setUpdateValues(parse, [['value', this.value]]);
+        this.setUpdateValues(parse, 
+        [
+            ['value', this.value]
+        ]);
 
 
         //await this.evalShapeBase(parse);
@@ -33868,7 +33878,7 @@ extends GShapeBase
             this.value.objects = [];
         }
 
-        
+
         await super.evalObjects(parse);
     }
 
@@ -34743,6 +34753,13 @@ extends GOperator1
                 for (let i = 0; i < this.value.items.length; i++)
                     this.value.items[i].objects = this.value.objects.filter(o => o.itemIndex == i);
             }
+            // else if (this.value.type == SHAPE_GROUP_VALUE)
+            // {
+            //     const group = this.value.objects[0];
+
+            //     for (let i = 0; i < group.children.length; i++)
+            //         group.children[i].objects = this.value.objects.filter(o => o.itemIndex == i);
+            // }
     
             
             const moveType    = options.moveType   .value;
@@ -34768,7 +34785,7 @@ extends GOperator1
 
             if (this.nodeId == 'move3')
                     console.log('this.value =', this.value);
-                
+
             for (const obj of this.value.objects)
             {
                 obj.nodeId   = this.nodeId;
@@ -34786,9 +34803,10 @@ extends GOperator1
                 for (let i = 0; i < this.value.objects[0].points.length; i++)
                 {
                     const p = this.value.objects[0].points[i].toPoint();
+                    console.log('p =', p);
     
-                    this.value.points.objects[i].x = new NumberValue(p.x);
-                    this.value.points.objects[i].y = new NumberValue(p.y);
+                    this.value.points.objects[i].x = p.x;
+                    this.value.points.objects[i].y = p.y;
                 }
             }
 

@@ -42,37 +42,44 @@ extends GShapeBase
 
         this.value = new ShapeGroupValue(this.nodeId);
 
+        this.value.objects = [];
 
-        for (let i = 0, o = 0; i < this.inputs.length; i++)
+       
+        if (this.options.enabled)
         {
-            const input = (await this.inputs[i].eval(parse)).toValue();
-
-            
-            if (   input
-                && this.options.enabled)            
+            for (let i = 0; i < this.inputs.length; i++)
             {
-                if (   input.type == SHAPE_LIST_VALUE
-                    || input.type == LIST_VALUE)
-                {
-                    for (const item of input.items)
-                    {
-                        if (!SHAPE_VALUES.includes(item.type))
-                            continue;
+                const input = (await this.inputs[i].eval(parse)).toValue();
 
-                        this.value.items.push(item);//.copy());   
-                        //this.value.objects.push(...item.objects.map(o => this.copyObject(o, i)));
-                    }
-                }
-                else
+                
+                if (input)            
                 {
-                    this.value.items.push(input);//.copy());
-                    //this.value.objects.push(...input.objects.map(o => this.copyObject(o, i)));
+                    if (   input.type == SHAPE_LIST_VALUE
+                        || input.type == LIST_VALUE)
+                    {
+                        for (const item of input.items)
+                        {
+                            if (!SHAPE_VALUES.includes(item.type))
+                                continue;
+
+                            this.value.items.push(item);//.copy());   
+                            //this.value.objects.push(...item.objects.map(o => this.copyObject(o, i)));
+                        }
+                    }
+                    else
+                    {
+                        this.value.items.push(input);//.copy());
+                        //this.value.objects.push(...input.objects.map(o => this.copyObject(o, i)));
+                    }
                 }
             }
         }
 
 
-        this.setUpdateValues(parse, [['value', this.value]]);
+        this.setUpdateValues(parse, 
+        [
+            ['value', this.value]
+        ]);
 
 
         //await this.evalShapeBase(parse);
@@ -142,7 +149,7 @@ extends GShapeBase
             this.value.objects = [];
         }
 
-        
+
         await super.evalObjects(parse);
     }
 
