@@ -20,6 +20,6 @@ extends OpShapeBase
         this.paramProps.itemName  = ['style'];
         this.paramProps.showZero  = false;
         this.paramProps.listTypes = [...STYLE_VALUES];
-        this.paramProps.input.types.push(...this.paramProps.listTypes);
+        this.paramProps.input.types.push(...this.paramProps.listTypes, SHAPE_LIST_VALUE);
     }
 }

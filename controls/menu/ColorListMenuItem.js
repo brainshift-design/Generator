@@ -61,7 +61,7 @@ class ColorListMenuItem
         this.div      .style.textAlign  = 'center';
         this.div      .style.top        = '-8px';
         this.div      .style.height     = '41px';
-        
+
         this.divColor1.style.background = this.swatchType == 1 ? '#000' : 'transparent';
         this.divColor1.style.boxShadow  = '0 0 0 1px #fff2';
         
