@@ -161,6 +161,9 @@ TextControl.prototype.initTextarea = function(textbox)
         if (this.textbox.keyBlur)
             this.textbox.keyBlur = false;
 
+            
+        this.textbox.finish(true);
+
 
         if (this.savedSuccessOnFocusOut != null)
         {

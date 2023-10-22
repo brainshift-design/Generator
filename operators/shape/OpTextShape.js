@@ -87,8 +87,8 @@ extends OpShape
         this.paramText         .enableControlText(true, this.paramText         .isUnknown());
         this.paramX            .enableControlText(true, this.paramX            .isUnknown());
         this.paramY            .enableControlText(true, this.paramY            .isUnknown());
-        this.paramWidth        .enableControlText(false, this.paramWidth        .isUnknown());
-        this.paramHeight       .enableControlText(false, this.paramHeight       .isUnknown());
+        this.paramWidth        .enableControlText(true, this.paramWidth        .isUnknown());
+        this.paramHeight       .enableControlText(true, this.paramHeight       .isUnknown());
         this.paramFont         .enableControlText(true, this.paramFont         .isUnknown());
         this.paramSize         .enableControlText(true, this.paramSize         .isUnknown());
         this.paramStyle        .enableControlText(true, this.paramStyle        .isUnknown());
