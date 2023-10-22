@@ -127,7 +127,10 @@ extends GShape
         }
 
        
-        this.setUpdateValues(parse, [['value', this.value]]);
+        this.setUpdateValues(parse, 
+        [
+            ['value', this.value]
+        ]);
 
 
         await this.evalShapeBase(parse);
@@ -205,30 +208,30 @@ extends GShape
                 this.value.lineHeight   .value,
                 this.value.letterSpacing.value);
 
-
+                
             text.createDefaultTransform(x, y);
  
-            if (   text.width  == 0
-                && text.height == 0)
-            {
-                const {objectId, width, height} = await genGetObjectSizeFromFigma(text.toData());
+            // if (   text.width  == 0
+            //     && text.height == 0)
+            // {
+            //     const {objectId, width, height} = await genGetObjectSizeFromFigma(text.toData());
 
-                text.width  = width;
-                text.height = height;
+            //     text.width  = width;
+            //     text.height = height;
 
-                this.value.width.value  = width;
-                this.value.height.value = height;
+            //     this.value.width.value  = width;
+            //     this.value.height.value = height;
 
-                text.createDefaultTransformPoints(x, y, width, height);
+            //     text.createDefaultTransformPoints(x, y, width, height);
 
-                this.value.objects.push(text);
-            }
-            else
-            {
+            //     this.value.objects.push(text);
+            // }
+            // else
+            // {
                 text.createDefaultTransformPoints(x, y, w, h)
 
                 this.value.objects.push(text);
-            }
+            // }
         }
 
         

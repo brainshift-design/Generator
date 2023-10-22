@@ -77,13 +77,12 @@ extends GOperator1
                 obj.scaleStyle   *= Math.abs(scaleStyle  );
 
                 
-                if (   obj.type == TEXT_SHAPE
-                    && xform[0][0] > 0
-                    && xform[1][1] > 0)
+                if (obj.type == TEXT_SHAPE)
                 {
-                    obj.size *= Math.min(
-                        xform[0][0], 
-                        xform[1][1]);
+                    const sx = Math.sqrt(sqr(xform[0][0]) + sqr(xform[0][1]));
+                    const sy = Math.sqrt(sqr(xform[1][0]) + sqr(xform[1][1]));
+
+                    obj.size *= Math.min(sx, sy);
                 }
             }
         }
