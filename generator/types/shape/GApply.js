@@ -49,7 +49,7 @@ extends GShape
         {
             const input = (await this.input.eval(parse)).toValue();
 
-            this.value = input;//.copy();
+            this.value = input.copy();
 
             if (this.options.enabled)
                 await this.evalShapeBase(parse, replace.value == 0, input);

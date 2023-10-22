@@ -75,7 +75,7 @@ extends GShapeBase
                     if (this.input.toValue().props.type == LIST_VALUE)
                         this.value.props.items.push(...this.input.toValue().props.items);
                     else
-                        this.value.props.items.push(...input.items);
+                        this.value.props.items.push(input.props);
                     
 
                     if (props)

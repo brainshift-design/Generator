@@ -148,9 +148,6 @@ extends GOperator1
                     createTransform(_x, _y),
                     createRotateTransform(-_a)); // for vector movement
 
-            if (this.nodeId == 'move3')
-                    console.log('this.value =', this.value);
-
             for (const obj of this.value.objects)
             {
                 obj.nodeId   = this.nodeId;
@@ -168,7 +165,6 @@ extends GOperator1
                 for (let i = 0; i < this.value.objects[0].points.length; i++)
                 {
                     const p = this.value.objects[0].points[i].toPoint();
-                    console.log('p =', p);
     
                     this.value.points.objects[i].x = p.x;
                     this.value.points.objects[i].y = p.y;
