@@ -4,6 +4,8 @@ extends OperatorBase
     paramSeed;
     paramMin;
     paramMax;
+    paramSpread;
+    paramBias;
     paramUnique;
 
 
@@ -22,10 +24,15 @@ extends OperatorBase
         this.addParam(this.paramSeed   = new NumberParam('seed',   'seed',   true, true, true, Math.floor(Math.random() * 10000), 0, 0x7fffffff));
         this.addParam(this.paramMin    = new NumberParam('min',    'min',    true, true, true,   0));
         this.addParam(this.paramMax    = new NumberParam('max',    'max',    true, true, true, 255));
+        this.addParam(this.paramBias   = new NumberParam('bias',   'bias',   true, true, true, 0, -100, 100));
+        this.addParam(this.paramSpread = new NumberParam('spread', 'spread', true, true, true, 0, -100, 100));
         this.addParam(this.paramUnique = new NumberParam('unique', 'unique', true, true, true, 0, 0, 100));
 
         this.paramSeed.controls[0].allowEditDecimals = false;
         this.paramSeed.isDefault = () => false;
+
+        this.paramBias  .controls[0].suffix = '%';
+        this.paramSpread.controls[0].suffix = '%';
 
         this.paramUnique.controls[0].suffix = '%';
         this.paramUnique.controls[0].max    = 200;
@@ -55,6 +62,8 @@ extends OperatorBase
         request.push(...this.node.paramSeed  .genRequest(gen));
         request.push(...this.node.paramMin   .genRequest(gen));
         request.push(...this.node.paramMax   .genRequest(gen));
+        request.push(...this.node.paramBias  .genRequest(gen));
+        request.push(...this.node.paramSpread.genRequest(gen));
         request.push(...this.node.paramUnique.genRequest(gen));
 
 

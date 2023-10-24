@@ -154,8 +154,8 @@ const presetTwistedTower = '\
             "params":\
             [\
                     ["NUM#", "end", "90,0"],\
-                    ["NUM#", "spread", "2,0"],\
-                    ["NUM#", "bias", "25,0"]\
+                    ["NUM#", "bias", "0,0"],\
+                    ["NUM#", "spread", "25,0"]\
             ]\
             },\
             {\

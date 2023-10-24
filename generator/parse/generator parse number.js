@@ -635,8 +635,8 @@ function genParseRange(parse)
     dist.from   = genParse(parse);
     dist.start  = genParse(parse);
     dist.end    = genParse(parse);
-    dist.spread = genParse(parse);
     dist.bias   = genParse(parse);
+    dist.spread = genParse(parse);
 
 
     parse.nTab--;
@@ -710,6 +710,8 @@ function genParseRandom(parse)
     rnd.seed        = genParse(parse);
     rnd.min         = genParse(parse);
     rnd.max         = genParse(parse);
+    rnd.bias        = genParse(parse);
+    rnd.spread      = genParse(parse);
     rnd.unique      = genParse(parse);
 
 

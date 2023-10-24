@@ -45,15 +45,18 @@ extends GShapeBase
         this.value.objects = [];
 
        
+        const inputs = [];
+        
         if (this.options.enabled)
         {
             for (let i = 0; i < this.inputs.length; i++)
             {
                 const input = (await this.inputs[i].eval(parse)).toValue();
 
-                
                 if (input)            
                 {
+                    inputs.push(input);
+
                     if (   input.type == SHAPE_LIST_VALUE
                         || input.type == LIST_VALUE)
                     {
@@ -85,7 +88,7 @@ extends GShapeBase
         //await this.evalShapeBase(parse);
 
 
-        await this.evalObjects(parse);
+        await this.evalObjects(parse, {inputs: inputs});
 
 
         this.validate();
@@ -109,11 +112,11 @@ extends GShapeBase
                 this.nodeName);
 
 
-            for (const item of this.value.items)
+            for (const input of options.inputs)
             {
-                for (let i = 0; i < item.objects.length; i++)
+                for (let i = 0; i < input.objects.length; i++)
                 {
-                    const obj = item.objects[i].copy();
+                    const obj = input.objects[i];//.copy();
 
                     obj.nodeId   = this.nodeId;
                     obj.objectId = obj.objectId + OBJECT_SEPARATOR + this.nodeId;

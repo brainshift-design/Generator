@@ -142,8 +142,8 @@ const presetRange = '\
             "params":\
             [\
                     ["NUM#", "end", "500,0"],\
-                    ["NUM#", "spread", "2,0"],\
-                    ["NUM#", "bias", "32,0"]\
+                    ["NUM#", "bias", "0,0"],\
+                    ["NUM#", "spread", "32,0"]\
             ]\
             },\
             {\

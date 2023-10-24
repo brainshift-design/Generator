@@ -29,7 +29,7 @@ const presetFalsePerspective = '\
             "z": "1",\
             "params":\
             [\
-                    ["NUM#", "spread", "1,0"],\
+                    ["NUM#", "spread", "0,0"],\
                     ["NUM#", "bias", "-66,0"]\
             ]\
             },\

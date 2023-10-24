@@ -4,8 +4,8 @@ extends GOperator
     from   = null;
     start  = null;
     end    = null;
-    spread = null;
     bias   = null;
+    spread = null;
     
     
 
@@ -23,8 +23,8 @@ extends GOperator
         this.from   = null;
         this.start  = null;
         this.end    = null;
-        this.spread = null;
         this.bias   = null;
+        this.spread = null;
     }
 
 
@@ -38,8 +38,8 @@ extends GOperator
         if (this.from  ) copy.from   = this.from  .copy();
         if (this.start ) copy.start  = this.start .copy();
         if (this.end   ) copy.end    = this.end   .copy();
-        if (this.spread) copy.spread = this.spread.copy();
         if (this.bias  ) copy.bias   = this.bias  .copy();
+        if (this.spread) copy.spread = this.spread.copy();
 
         if (this.current) copy.current = this.current.copy();
 
@@ -60,8 +60,8 @@ extends GOperator
         const from   = (await this.from  .eval(parse)).toValue();
         const start  = (await this.start .eval(parse)).toValue();
         const end    = (await this.end   .eval(parse)).toValue();
-        const spread = (await this.spread.eval(parse)).toValue();
         const bias   = (await this.bias  .eval(parse)).toValue();
+        const spread = (await this.spread.eval(parse)).toValue();
     
 
         const repeat    = parse.repeats.find(r => r.repeatId == this.loopId);
@@ -101,33 +101,7 @@ extends GOperator
             f = 0;
 
 
-        switch(spread.value)
-        {
-            case 0:
-                break;
-
-            case 1:
-            {
-                const b = bias.value / 50;
-
-                f = 
-                    b >= 0
-                    ? 1 - Math.pow(1-f, 1+b)
-                    :     Math.pow(  f, 1-b);
-
-                break;
-            }
-            case 2:
-            {
-                const b = bias.value / 50;
-
-                     if (b >= 0 && f >= 0.5) f = 1 - Math.pow((1-f)*2, 1+b) / 2;
-                else if (b >= 0 && f <  0.5) f = Math.pow(f*2, 1+b) / 2;
-                else if (b < 0)              f = lerp3(0, (1-b)/3, (2+b)/3, 1, f);
-
-                break;
-            }
-        }
+        f = getSpreadBias(f, bias.value, spread.value);
 
 
         this.value = new NumberValue(
@@ -140,8 +114,8 @@ extends GOperator
             ['from',   from  ],
             ['start',  start ],
             ['end',    end   ],
-            ['spread', spread],
-            ['bias',   bias  ]
+            ['bias',   bias  ],
+            ['spread', spread]
         ]);
 
 
@@ -166,8 +140,8 @@ extends GOperator
         return this.from   && this.from  .isValid()
             && this.start  && this.start .isValid()
             && this.end    && this.end   .isValid()
-            && this.spread && this.spread.isValid()
-            && this.bias   && this.bias  .isValid();
+            && this.bias   && this.bias  .isValid()
+            && this.spread && this.spread.isValid();
     }
 
 
@@ -179,8 +153,8 @@ extends GOperator
         if (this.from  ) this.from  .pushValueUpdates(parse);
         if (this.start ) this.start .pushValueUpdates(parse);
         if (this.end   ) this.end   .pushValueUpdates(parse);
-        if (this.spread) this.spread.pushValueUpdates(parse);
         if (this.bias  ) this.bias  .pushValueUpdates(parse);
+        if (this.spread) this.spread.pushValueUpdates(parse);
     }
 
 
@@ -192,8 +166,8 @@ extends GOperator
         if (this.from  ) this.from  .invalidateInputs(parse, from, force);
         if (this.start ) this.start .invalidateInputs(parse, from, force);
         if (this.end   ) this.end   .invalidateInputs(parse, from, force);
-        if (this.spread) this.spread.invalidateInputs(parse, from, force);
         if (this.bias  ) this.bias  .invalidateInputs(parse, from, force);
+        if (this.spread) this.spread.invalidateInputs(parse, from, force);
     }
 
 
@@ -205,7 +179,29 @@ extends GOperator
         if (this.from  ) this.from  .iterateLoop(parse);
         if (this.start ) this.start .iterateLoop(parse);
         if (this.end   ) this.end   .iterateLoop(parse);
-        if (this.spread) this.spread.iterateLoop(parse);
         if (this.bias  ) this.bias  .iterateLoop(parse);
+        if (this.spread) this.spread.iterateLoop(parse);
     }
+}
+
+
+
+function getSpreadBias(f, bias, spread)
+{
+    const b = bias   / 50;
+    const s = spread / 50;
+
+
+    f = 
+        b >= 0
+        ? 1 - Math.pow(1-f, 1+b)
+        :     Math.pow(  f, 1-b);
+
+
+         if (s >= 0 && f >= 0.5) f = 1 - Math.pow((1-f)*2, 1+s) / 2;
+    else if (s >= 0 && f <  0.5) f = Math.pow(f*2, 1+s) / 2;
+    else if (s < 0)              f = lerp3(0, (1-s)/3, (2+s)/3, 1, f);
+
+
+    return f;
 }

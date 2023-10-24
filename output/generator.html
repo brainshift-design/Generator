@@ -4,7 +4,7 @@
 
 
 
-const generatorVersion = 249;
+const generatorVersion = 253;
 
 
 const MAX_INT32        = 2147483647;
@@ -19663,8 +19663,8 @@ extends GOperator
     from   = null;
     start  = null;
     end    = null;
-    spread = null;
     bias   = null;
+    spread = null;
     
     
 
@@ -19682,8 +19682,8 @@ extends GOperator
         this.from   = null;
         this.start  = null;
         this.end    = null;
-        this.spread = null;
         this.bias   = null;
+        this.spread = null;
     }
 
 
@@ -19697,8 +19697,8 @@ extends GOperator
         if (this.from  ) copy.from   = this.from  .copy();
         if (this.start ) copy.start  = this.start .copy();
         if (this.end   ) copy.end    = this.end   .copy();
-        if (this.spread) copy.spread = this.spread.copy();
         if (this.bias  ) copy.bias   = this.bias  .copy();
+        if (this.spread) copy.spread = this.spread.copy();
 
         if (this.current) copy.current = this.current.copy();
 
@@ -19719,8 +19719,8 @@ extends GOperator
         const from   = (await this.from  .eval(parse)).toValue();
         const start  = (await this.start .eval(parse)).toValue();
         const end    = (await this.end   .eval(parse)).toValue();
-        const spread = (await this.spread.eval(parse)).toValue();
         const bias   = (await this.bias  .eval(parse)).toValue();
+        const spread = (await this.spread.eval(parse)).toValue();
     
 
         const repeat    = parse.repeats.find(r => r.repeatId == this.loopId);
@@ -19760,33 +19760,7 @@ extends GOperator
             f = 0;
 
 
-        switch(spread.value)
-        {
-            case 0:
-                break;
-
-            case 1:
-            {
-                const b = bias.value / 50;
-
-                f = 
-                    b >= 0
-                    ? 1 - Math.pow(1-f, 1+b)
-                    :     Math.pow(  f, 1-b);
-
-                break;
-            }
-            case 2:
-            {
-                const b = bias.value / 50;
-
-                     if (b >= 0 && f >= 0.5) f = 1 - Math.pow((1-f)*2, 1+b) / 2;
-                else if (b >= 0 && f <  0.5) f = Math.pow(f*2, 1+b) / 2;
-                else if (b < 0)              f = lerp3(0, (1-b)/3, (2+b)/3, 1, f);
-
-                break;
-            }
-        }
+        f = getSpreadBias(f, bias.value, spread.value);
 
 
         this.value = new NumberValue(
@@ -19799,8 +19773,8 @@ extends GOperator
             ['from',   from  ],
             ['start',  start ],
             ['end',    end   ],
-            ['spread', spread],
-            ['bias',   bias  ]
+            ['bias',   bias  ],
+            ['spread', spread]
         ]);
 
 
@@ -19825,8 +19799,8 @@ extends GOperator
         return this.from   && this.from  .isValid()
             && this.start  && this.start .isValid()
             && this.end    && this.end   .isValid()
-            && this.spread && this.spread.isValid()
-            && this.bias   && this.bias  .isValid();
+            && this.bias   && this.bias  .isValid()
+            && this.spread && this.spread.isValid();
     }
 
 
@@ -19838,8 +19812,8 @@ extends GOperator
         if (this.from  ) this.from  .pushValueUpdates(parse);
         if (this.start ) this.start .pushValueUpdates(parse);
         if (this.end   ) this.end   .pushValueUpdates(parse);
-        if (this.spread) this.spread.pushValueUpdates(parse);
         if (this.bias  ) this.bias  .pushValueUpdates(parse);
+        if (this.spread) this.spread.pushValueUpdates(parse);
     }
 
 
@@ -19851,8 +19825,8 @@ extends GOperator
         if (this.from  ) this.from  .invalidateInputs(parse, from, force);
         if (this.start ) this.start .invalidateInputs(parse, from, force);
         if (this.end   ) this.end   .invalidateInputs(parse, from, force);
-        if (this.spread) this.spread.invalidateInputs(parse, from, force);
         if (this.bias  ) this.bias  .invalidateInputs(parse, from, force);
+        if (this.spread) this.spread.invalidateInputs(parse, from, force);
     }
 
 
@@ -19864,11 +19838,32 @@ extends GOperator
         if (this.from  ) this.from  .iterateLoop(parse);
         if (this.start ) this.start .iterateLoop(parse);
         if (this.end   ) this.end   .iterateLoop(parse);
-        if (this.spread) this.spread.iterateLoop(parse);
         if (this.bias  ) this.bias  .iterateLoop(parse);
+        if (this.spread) this.spread.iterateLoop(parse);
     }
 }
 
+
+
+function getSpreadBias(f, bias, spread)
+{
+    const b = bias   / 50;
+    const s = spread / 50;
+
+
+    f = 
+        b >= 0
+        ? 1 - Math.pow(1-f, 1+b)
+        :     Math.pow(  f, 1-b);
+
+
+         if (s >= 0 && f >= 0.5) f = 1 - Math.pow((1-f)*2, 1+s) / 2;
+    else if (s >= 0 && f <  0.5) f = Math.pow(f*2, 1+s) / 2;
+    else if (s < 0)              f = lerp3(0, (1-s)/3, (2+s)/3, 1, f);
+
+
+    return f;
+}
 
 
 class GSequence
@@ -20052,6 +20047,8 @@ extends GOperator
     seed   = null;
     min    = null;
     max    = null;
+    bias   = null;
+    spread = null;
     unique = null;
 
     random       = null;
@@ -20077,6 +20074,8 @@ extends GOperator
         this.seed   = null;
         this.min    = null;
         this.max    = null;
+        this.bias   = null;
+        this.spread = null;
         this.unique = null;
     }
 
@@ -20091,6 +20090,8 @@ extends GOperator
         if (this.seed  ) copy.seed   = this.seed  .copy();
         if (this.min   ) copy.min    = this.min   .copy();
         if (this.max   ) copy.max    = this.max   .copy();
+        if (this.bias  ) copy.bias   = this.bias  .copy();
+        if (this.spread) copy.spread = this.spread.copy();
         if (this.unique) copy.unique = this.unique.copy();
 
         if (this.random) copy.random = this.random.copy();
@@ -20109,6 +20110,8 @@ extends GOperator
         const seed   = (await this.seed  .eval(parse)).toValue();
         const min    = (await this.min   .eval(parse)).toValue();
         const max    = (await this.max   .eval(parse)).toValue();
+        const bias   = (await this.bias  .eval(parse)).toValue();
+        const spread = (await this.spread.eval(parse)).toValue();
         const unique = (await this.unique.eval(parse)).toValue();
     
 
@@ -20121,9 +20124,12 @@ extends GOperator
 
 
 
-        this.value = new NumberValue(
-            min.value + this.random.get(this.iteration + this.uniqueOffset) * (max.value - min.value), 
-            Math.max(min.decimals, max.decimals));
+        let f = this.random.get(this.iteration + this.uniqueOffset);
+        f = getSpreadBias(f, bias.value, spread.value);
+        
+        f = min.value + f * (max.value - min.value);
+        
+        this.value = new NumberValue(f, Math.max(min.decimals, max.decimals));
 
             
         const _unique = unique.value/100;
@@ -20161,6 +20167,8 @@ extends GOperator
             ['seed',   seed  ],
             ['min',    min   ],
             ['max',    max   ],
+            ['bias',   bias  ],
+            ['spread', spread],
             ['unique', unique]
         ]);
         
@@ -20186,6 +20194,8 @@ extends GOperator
         return this.seed   && this.seed  .isValid()
             && this.min    && this.min   .isValid()
             && this.max    && this.max   .isValid()
+            && this.bias   && this.bias  .isValid()
+            && this.spread && this.spread.isValid()
             && this.unique && this.unique.isValid();
     }
 
@@ -20198,6 +20208,8 @@ extends GOperator
         if (this.seed  ) this.seed  .pushValueUpdates(parse);
         if (this.min   ) this.min   .pushValueUpdates(parse);
         if (this.max   ) this.max   .pushValueUpdates(parse);
+        if (this.bias  ) this.bias  .pushValueUpdates(parse);
+        if (this.spread) this.spread.pushValueUpdates(parse);
         if (this.unique) this.unique.pushValueUpdates(parse);
     }
 
@@ -20210,6 +20222,8 @@ extends GOperator
         if (this.seed  ) this.seed  .invalidateInputs(parse, from, force);
         if (this.min   ) this.min   .invalidateInputs(parse, from, force);
         if (this.max   ) this.max   .invalidateInputs(parse, from, force);
+        if (this.bias  ) this.bias  .invalidateInputs(parse, from, force);
+        if (this.spread) this.spread.invalidateInputs(parse, from, force);
         if (this.unique) this.unique.invalidateInputs(parse, from, force);
     }
 
@@ -20222,6 +20236,8 @@ extends GOperator
         if (this.seed  ) this.seed  .iterateLoop(parse);
         if (this.min   ) this.min   .iterateLoop(parse);
         if (this.max   ) this.max   .iterateLoop(parse);
+        if (this.bias  ) this.bias  .iterateLoop(parse);
+        if (this.spread) this.spread.iterateLoop(parse);
         if (this.unique) this.unique.iterateLoop(parse);
     }
 
@@ -33777,15 +33793,18 @@ extends GShapeBase
         this.value.objects = [];
 
        
+        const inputs = [];
+        
         if (this.options.enabled)
         {
             for (let i = 0; i < this.inputs.length; i++)
             {
                 const input = (await this.inputs[i].eval(parse)).toValue();
 
-                
                 if (input)            
                 {
+                    inputs.push(input);
+
                     if (   input.type == SHAPE_LIST_VALUE
                         || input.type == LIST_VALUE)
                     {
@@ -33817,7 +33836,7 @@ extends GShapeBase
         //await this.evalShapeBase(parse);
 
 
-        await this.evalObjects(parse);
+        await this.evalObjects(parse, {inputs: inputs});
 
 
         this.validate();
@@ -33841,11 +33860,11 @@ extends GShapeBase
                 this.nodeName);
 
 
-            for (const item of this.value.items)
+            for (const input of options.inputs)
             {
-                for (let i = 0; i < item.objects.length; i++)
+                for (let i = 0; i < input.objects.length; i++)
                 {
-                    const obj = item.objects[i].copy();
+                    const obj = input.objects[i];//.copy();
 
                     obj.nodeId   = this.nodeId;
                     obj.objectId = obj.objectId + OBJECT_SEPARATOR + this.nodeId;
@@ -41091,8 +41110,8 @@ function genParseRange(parse)
     dist.from   = genParse(parse);
     dist.start  = genParse(parse);
     dist.end    = genParse(parse);
-    dist.spread = genParse(parse);
     dist.bias   = genParse(parse);
+    dist.spread = genParse(parse);
 
 
     parse.nTab--;
@@ -41166,6 +41185,8 @@ function genParseRandom(parse)
     rnd.seed        = genParse(parse);
     rnd.min         = genParse(parse);
     rnd.max         = genParse(parse);
+    rnd.bias        = genParse(parse);
+    rnd.spread      = genParse(parse);
     rnd.unique      = genParse(parse);
 
 

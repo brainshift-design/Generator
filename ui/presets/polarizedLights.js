@@ -3,15 +3,73 @@ const presetPolarizedLights = '\
         "nodes":\
         [\
             {\
+            "type": "REPT",\
+            "id": "repeat4",\
+            "name": "repeat",\
+            "renamed": "false",\
+            "enabled": "true",\
+            "highlight": "0",\
+            "x": "5945",\
+            "y": "2328",\
+            "z": "0",\
+            "params":\
+            [\
+                    ["NUM#", "count", "2,0"]\
+            ]\
+            },\
+            {\
+            "type": "FRZ",\
+            "id": "freeze2",\
+            "name": "freeze",\
+            "renamed": "false",\
+            "enabled": "true",\
+            "highlight": "0",\
+            "x": "5793",\
+            "y": "2419",\
+            "z": "1"\
+            },\
+            {\
+            "type": "RAND",\
+            "id": "random5",\
+            "name": "random",\
+            "renamed": "false",\
+            "enabled": "true",\
+            "highlight": "0",\
+            "x": "5414",\
+            "y": "2507",\
+            "z": "2",\
+            "params":\
+            [\
+                    ["NUM#", "seed", "234,0"],\
+                    ["NUM#", "max", "700,0"]\
+            ]\
+            },\
+            {\
+            "type": "RAND",\
+            "id": "random3",\
+            "name": "random",\
+            "renamed": "false",\
+            "enabled": "true",\
+            "highlight": "0",\
+            "x": "5416",\
+            "y": "2368",\
+            "z": "3",\
+            "params":\
+            [\
+                    ["NUM#", "seed", "8,0"],\
+                    ["NUM#", "max", "400,0"]\
+            ]\
+            },\
+            {\
             "type": "NOISE",\
             "id": "noise3",\
             "name": "noise",\
             "renamed": "false",\
             "enabled": "true",\
             "highlight": "0",\
-            "x": "3825",\
-            "y": "2019",\
-            "z": "0",\
+            "x": "4277",\
+            "y": "2459",\
+            "z": "4",\
             "params":\
             [\
                     ["NUM#", "seed", "120,0"],\
@@ -22,45 +80,44 @@ const presetPolarizedLights = '\
             },\
             {\
             "type": "RAND",\
-            "id": "random",\
+            "id": "random4",\
             "name": "random",\
             "renamed": "false",\
             "enabled": "true",\
-            "highlight": "0",\
-            "x": "3656",\
-            "y": "1845",\
-            "z": "1",\
+            "highlight": "7",\
+            "x": "2998",\
+            "y": "2574",\
+            "z": "5",\
             "params":\
             [\
-                    ["NUM#", "seed", "109,0"],\
-                    ["NUM#", "min", "10,0"],\
-                    ["NUM#", "max", "200,0"]\
+                    ["NUM#", "seed", "5132,0"]\
             ]\
             },\
             {\
-            "type": "LIST",\
-            "id": "list",\
-            "name": "list",\
+            "type": "REPT",\
+            "id": "repeat2",\
+            "name": "repeat",\
             "renamed": "false",\
             "enabled": "true",\
             "highlight": "0",\
-            "x": "2698",\
-            "y": "2150",\
-            "z": "2",\
-            "width": "120",\
-            "height": "252",\
+            "x": "2997",\
+            "y": "2716",\
+            "z": "6"\
+            },\
+            {\
+            "type": "FILL",\
+            "id": "fill",\
+            "name": "fill",\
+            "renamed": "false",\
+            "enabled": "true",\
+            "highlight": "0",\
+            "x": "3716",\
+            "y": "2242",\
+            "z": "7",\
             "params":\
             [\
-                    ["NUM#", "0", "109,0"],\
-                    ["NUM#", "1", "121,0"],\
-                    ["NUM#", "2", "120,0"],\
-                    ["NUM#", "3", "8,0"],\
-                    ["NUM#", "4", "234,0"],\
-                    ["NUM#", "5", "58,0"],\
-                    ["NUM#", "6", "212,0"],\
-                    ["NUM#", "7", "177,0"],\
-                    ["NUM#", "8", "56,0"],\
-                    ["NUM#", "9", "169,0"]\
+                    ["COL#", "color", "1,0 143,0 255,0 161,0"],\
+                    ["NUM#", "opacity", "0,0"]\
             ]\
             },\
             {\
@@ -70,30 +127,31 @@ const presetPolarizedLights = '\
             "renamed": "false",\
             "enabled": "true",\
             "highlight": "0",\
-            "x": "2937",\
-            "y": "1957",\
-            "z": "3",\
-            "active": "true",\
+            "x": "3389",\
+            "y": "2397",\
+            "z": "8",\
             "params":\
             [\
-                    ["NUM#", "seed", "212,0"],\
+                    ["NUM#", "seed", "?,?"],\
                     ["NUM#", "min", "30,0"],\
                     ["NUM#", "max", "46,1"]\
             ]\
             },\
             {\
-            "type": "FILL",\
-            "id": "fill2",\
-            "name": "fill",\
+            "type": "SCALE",\
+            "id": "scale",\
+            "name": "scale",\
             "renamed": "false",\
             "enabled": "true",\
             "highlight": "0",\
-            "x": "3264",\
-            "y": "1685",\
-            "z": "4",\
+            "x": "4292",\
+            "y": "2062",\
+            "z": "9",\
             "params":\
             [\
-                    ["COL#", "color", "1,0 255,0 255,0 164,0"]\
+                    ["NUM#", "scaleX", "158,0"],\
+                    ["NUM#", "scaleY", "3,0"],\
+                    ["NUM#", "affectSpace", "0,0"]\
             ]\
             },\
             {\
@@ -103,30 +161,58 @@ const presetPolarizedLights = '\
             "renamed": "false",\
             "enabled": "true",\
             "highlight": "0",\
-            "x": "3990",\
-            "y": "1622",\
-            "z": "5",\
+            "x": "4442",\
+            "y": "2062",\
+            "z": "10",\
             "params":\
             [\
-                    ["NUM#", "angle", "334.928176279612,0"],\
+                    ["NUM#", "angle", "79.57543812672395,0"],\
                     ["NUM#", "affectSpace", "0,0"]\
             ]\
             },\
             {\
-            "type": "SCALE",\
-            "id": "scale2",\
-            "name": "scale",\
+            "type": "REPT",\
+            "id": "repeat",\
+            "name": "repeat",\
             "renamed": "false",\
             "enabled": "true",\
             "highlight": "0",\
-            "x": "4611.6",\
-            "y": "1868",\
-            "z": "6",\
+            "x": "4678",\
+            "y": "2308",\
+            "z": "11"\
+            },\
+            {\
+            "type": "REPT",\
+            "id": "repeat3",\
+            "name": "repeat",\
+            "renamed": "false",\
+            "enabled": "true",\
+            "highlight": "0",\
+            "x": "5793",\
+            "y": "2305",\
+            "z": "12",\
             "params":\
             [\
-                    ["NUM#", "scaleX", "62,0"],\
-                    ["NUM#", "scaleY", "62,0"],\
-                    ["NUM#", "affectSpace", "0,0"]\
+                    ["NUM#", "count", "40,0"]\
+            ]\
+            },\
+            {\
+            "type": "COL",\
+            "id": "color2",\
+            "name": "color",\
+            "renamed": "false",\
+            "enabled": "true",\
+            "highlight": "0",\
+            "x": "5633",\
+            "y": "2825",\
+            "z": "13",\
+            "prevSpace": "hsv",\
+            "params":\
+            [\
+                    ["NUM#", "space", "2,0"],\
+                    ["NUM#", "c1", "210,0"],\
+                    ["NUM#", "c2", "80,0"],\
+                    ["NUM#", "c3", "20,0"]\
             ]\
             },\
             {\
@@ -136,9 +222,9 @@ const presetPolarizedLights = '\
             "renamed": "false",\
             "enabled": "true",\
             "highlight": "0",\
-            "x": "5186",\
-            "y": "2228",\
-            "z": "7",\
+            "x": "5638",\
+            "y": "2668",\
+            "z": "14",\
             "prevSpace": "hsv",\
             "params":\
             [\
@@ -149,183 +235,35 @@ const presetPolarizedLights = '\
             ]\
             },\
             {\
+            "type": "FILL",\
+            "id": "fill2",\
+            "name": "fill",\
+            "renamed": "false",\
+            "enabled": "true",\
+            "highlight": "0",\
+            "x": "3716",\
+            "y": "2125",\
+            "z": "15",\
+            "params":\
+            [\
+                    ["COL#", "color", "1,0 143,0 255,0 161,0"]\
+            ]\
+            },\
+            {\
             "type": "MOVE",\
             "id": "move2",\
             "name": "move",\
             "renamed": "false",\
             "enabled": "true",\
             "highlight": "0",\
-            "x": "5136.6",\
-            "y": "1870",\
-            "z": "8",\
+            "x": "5591",\
+            "y": "2306",\
+            "z": "16",\
             "params":\
             [\
                     ["NUM#", "x", "51,0"],\
                     ["NUM#", "y", "90,0"],\
                     ["NUM#", "affectSpace", "0,0"]\
-            ]\
-            },\
-            {\
-            "type": "RECT",\
-            "id": "rect",\
-            "name": "rectangle",\
-            "renamed": "false",\
-            "enabled": "true",\
-            "highlight": "0",\
-            "x": "3690",\
-            "y": "1622",\
-            "z": "9",\
-            "params":\
-            [\
-            ]\
-            },\
-            {\
-            "type": "REPT",\
-            "id": "repeat",\
-            "name": "repeat",\
-            "renamed": "false",\
-            "enabled": "true",\
-            "highlight": "0",\
-            "x": "4226",\
-            "y": "1868",\
-            "z": "10"\
-            },\
-            {\
-            "type": "FILL",\
-            "id": "fill",\
-            "name": "fill",\
-            "renamed": "false",\
-            "enabled": "true",\
-            "highlight": "0",\
-            "x": "3264",\
-            "y": "1802",\
-            "z": "11",\
-            "params":\
-            [\
-                    ["COL#", "color", "1,0 255,0 255,0 164,0"],\
-                    ["NUM#", "opacity", "0,0"]\
-            ]\
-            },\
-            {\
-            "type": "SCALE",\
-            "id": "scale",\
-            "name": "scale",\
-            "renamed": "false",\
-            "enabled": "true",\
-            "highlight": "0",\
-            "x": "3840",\
-            "y": "1622",\
-            "z": "12",\
-            "params":\
-            [\
-                    ["NUM#", "scaleX", "69,0"],\
-                    ["NUM#", "scaleY", "4,0"],\
-                    ["NUM#", "affectSpace", "0,0"]\
-            ]\
-            },\
-            {\
-            "type": "RAND",\
-            "id": "random6",\
-            "name": "random",\
-            "renamed": "false",\
-            "enabled": "true",\
-            "highlight": "0",\
-            "x": "4434.6",\
-            "y": "2066",\
-            "z": "13",\
-            "active": "true",\
-            "params":\
-            [\
-                    ["NUM#", "seed", "58,0"],\
-                    ["NUM#", "min", "1,0"],\
-                    ["NUM#", "max", "200,0"]\
-            ]\
-            },\
-            {\
-            "type": "RAND",\
-            "id": "random2",\
-            "name": "random",\
-            "renamed": "false",\
-            "enabled": "true",\
-            "highlight": "0",\
-            "x": "3657",\
-            "y": "1992",\
-            "z": "14",\
-            "params":\
-            [\
-                    ["NUM#", "seed", "121,0"],\
-                    ["NUM#", "min", "1,0"],\
-                    ["NUM#", "max", "5,0"]\
-            ]\
-            },\
-            {\
-            "type": "COL",\
-            "id": "color2",\
-            "name": "color",\
-            "renamed": "false",\
-            "enabled": "true",\
-            "highlight": "0",\
-            "x": "5181",\
-            "y": "2385",\
-            "z": "15",\
-            "prevSpace": "hsv",\
-            "params":\
-            [\
-                    ["NUM#", "space", "2,0"],\
-                    ["NUM#", "c1", "0,0"],\
-                    ["NUM#", "c2", "80,0"],\
-                    ["NUM#", "c3", "20,0"]\
-            ]\
-            },\
-            {\
-            "type": "RAND",\
-            "id": "random4",\
-            "name": "random",\
-            "renamed": "false",\
-            "enabled": "true",\
-            "highlight": "7",\
-            "x": "2546",\
-            "y": "2134",\
-            "z": "16",\
-            "params":\
-            [\
-                    ["NUM#", "seed", "5132,0"]\
-            ]\
-            },\
-            {\
-            "type": "COL",\
-            "id": "color",\
-            "name": "color",\
-            "renamed": "false",\
-            "enabled": "true",\
-            "highlight": "0",\
-            "x": "3082",\
-            "y": "1758",\
-            "z": "17",\
-            "prevSpace": "hsv",\
-            "params":\
-            [\
-                    ["NUM#", "space", "2,0"],\
-                    ["NUM#", "c1", "60,0"],\
-                    ["NUM#", "c2", "35.8,1"],\
-                    ["NUM#", "c3", "100,0"]\
-            ]\
-            },\
-            {\
-            "type": "RAND",\
-            "id": "random5",\
-            "name": "random",\
-            "renamed": "false",\
-            "enabled": "true",\
-            "highlight": "0",\
-            "x": "4961.6",\
-            "y": "2067",\
-            "z": "18",\
-            "active": "true",\
-            "params":\
-            [\
-                    ["NUM#", "seed", "234,0"],\
-                    ["NUM#", "max", "700,0"]\
             ]\
             },\
             {\
@@ -335,9 +273,9 @@ const presetPolarizedLights = '\
             "renamed": "false",\
             "enabled": "true",\
             "highlight": "7",\
-            "x": "2503",\
-            "y": "2086",\
-            "z": "19",\
+            "x": "2955",\
+            "y": "2526",\
+            "z": "17",\
             "width": "350.0185469679293",\
             "height": "368",\
             "params":\
@@ -345,18 +283,155 @@ const presetPolarizedLights = '\
             ]\
             },\
             {\
-            "type": "REPT",\
-            "id": "repeat3",\
-            "name": "repeat",\
+            "type": "LIST",\
+            "id": "list",\
+            "name": "list",\
             "renamed": "false",\
             "enabled": "true",\
             "highlight": "0",\
-            "x": "5387",\
-            "y": "1868",\
+            "x": "3150",\
+            "y": "2590",\
+            "z": "18",\
+            "width": "120",\
+            "height": "142",\
+            "params":\
+            [\
+                    ["NUM#", "0", "109,0"],\
+                    ["NUM#", "1", "121,0"],\
+                    ["NUM#", "2", "120,0"],\
+                    ["NUM#", "3", "8,0"],\
+                    ["NUM#", "4", "234,0"]\
+            ]\
+            },\
+            {\
+            "type": "GRAD",\
+            "id": "grad",\
+            "name": "gradient",\
+            "renamed": "false",\
+            "enabled": "true",\
+            "highlight": "0",\
+            "x": "3884",\
+            "y": "2189",\
+            "z": "19",\
+            "params":\
+            [\
+                    ["NUM#", "type", "1,0"],\
+                    ["NUM#", "x", "50,0"],\
+                    ["NUM#", "size", "50,0"],\
+                    ["NUM#", "aspect", "100,0"],\
+                    ["NUM#", "blend", "9,0"]\
+            ]\
+            },\
+            {\
+            "type": "RAND",\
+            "id": "random2",\
+            "name": "random",\
+            "renamed": "false",\
+            "enabled": "true",\
+            "highlight": "0",\
+            "x": "4109",\
+            "y": "2432",\
             "z": "20",\
             "params":\
             [\
-                    ["NUM#", "count", "40,0"]\
+                    ["NUM#", "seed", "121,0"],\
+                    ["NUM#", "min", "1,0"],\
+                    ["NUM#", "max", "5,0"]\
+            ]\
+            },\
+            {\
+            "type": "COL",\
+            "id": "color",\
+            "name": "color",\
+            "renamed": "false",\
+            "enabled": "true",\
+            "highlight": "0",\
+            "x": "3534",\
+            "y": "2198",\
+            "z": "21",\
+            "prevSpace": "hsv",\
+            "params":\
+            [\
+                    ["NUM#", "space", "2,0"],\
+                    ["NUM#", "c1", "130,0"],\
+                    ["NUM#", "c2", "44.1,1"],\
+                    ["NUM#", "c3", "100,0"]\
+            ]\
+            },\
+            {\
+            "type": "RAND",\
+            "id": "random6",\
+            "name": "random",\
+            "renamed": "false",\
+            "enabled": "true",\
+            "highlight": "0",\
+            "x": "4887",\
+            "y": "2506",\
+            "z": "22",\
+            "params":\
+            [\
+                    ["NUM#", "seed", "?,?"],\
+                    ["NUM#", "min", "1,0"],\
+                    ["NUM#", "max", "200,0"]\
+            ]\
+            },\
+            {\
+            "type": "FRZ",\
+            "id": "freeze",\
+            "name": "freeze",\
+            "renamed": "false",\
+            "enabled": "true",\
+            "highlight": "0",\
+            "x": "2998",\
+            "y": "2827",\
+            "z": "23"\
+            },\
+            {\
+            "type": "RAND",\
+            "id": "random",\
+            "name": "random",\
+            "renamed": "false",\
+            "enabled": "true",\
+            "highlight": "0",\
+            "x": "4108",\
+            "y": "2285",\
+            "z": "24",\
+            "params":\
+            [\
+                    ["NUM#", "seed", "109,0"],\
+                    ["NUM#", "min", "10,0"],\
+                    ["NUM#", "max", "200,0"]\
+            ]\
+            },\
+            {\
+            "type": "RECT",\
+            "id": "rect",\
+            "name": "rectangle",\
+            "renamed": "false",\
+            "enabled": "true",\
+            "highlight": "0",\
+            "x": "4142",\
+            "y": "2062",\
+            "z": "25",\
+            "params":\
+            [\
+            ]\
+            },\
+            {\
+            "type": "SCALE",\
+            "id": "scale2",\
+            "name": "scale",\
+            "renamed": "false",\
+            "enabled": "true",\
+            "highlight": "0",\
+            "x": "5064",\
+            "y": "2308",\
+            "z": "26",\
+            "params":\
+            [\
+                    ["NUM#", "scaleX", "17,0"],\
+                    ["NUM#", "scaleY", "17,0"],\
+                    ["NUM#", "affectSpace", "0,0"]\
             ]\
             },\
             {\
@@ -366,9 +441,9 @@ const presetPolarizedLights = '\
             "renamed": "false",\
             "enabled": "true",\
             "highlight": "0",\
-            "x": "5565",\
-            "y": "2099",\
-            "z": "21",\
+            "x": "6168",\
+            "y": "2513",\
+            "z": "27",\
             "active": "true",\
             "params":\
             [\
@@ -384,9 +459,9 @@ const presetPolarizedLights = '\
             "renamed": "false",\
             "enabled": "true",\
             "highlight": "0",\
-            "x": "5373",\
-            "y": "2284",\
-            "z": "22",\
+            "x": "5825",\
+            "y": "2724",\
+            "z": "28",\
             "params":\
             [\
                     ["NUM#", "type", "1,0"],\
@@ -396,68 +471,42 @@ const presetPolarizedLights = '\
                     ["NUM#", "angle", "90,0"],\
                     ["NUM#", "aspect", "100,0"]\
             ]\
-            },\
-            {\
-            "type": "RAND",\
-            "id": "random3",\
-            "name": "random",\
-            "renamed": "false",\
-            "enabled": "true",\
-            "highlight": "0",\
-            "x": "4963.6",\
-            "y": "1928",\
-            "z": "23",\
-            "active": "true",\
-            "params":\
-            [\
-                    ["NUM#", "seed", "8,0"],\
-                    ["NUM#", "max", "400,0"]\
-            ]\
-            },\
-            {\
-            "type": "GRAD",\
-            "id": "grad",\
-            "name": "gradient",\
-            "renamed": "false",\
-            "enabled": "true",\
-            "highlight": "0",\
-            "x": "3432",\
-            "y": "1749",\
-            "z": "24",\
-            "params":\
-            [\
-                    ["NUM#", "type", "1,0"],\
-                    ["NUM#", "x", "50,0"],\
-                    ["NUM#", "size", "50,0"],\
-                    ["NUM#", "aspect", "100,0"],\
-                    ["NUM#", "blend", "9,0"]\
-            ]\
-            },\
-            {\
-            "type": "REPT",\
-            "id": "repeat2",\
-            "name": "repeat",\
-            "renamed": "false",\
-            "enabled": "true",\
-            "highlight": "0",\
-            "x": "2545",\
-            "y": "2276",\
-            "z": "25"\
-            },\
-            {\
-            "type": "FRZ",\
-            "id": "freeze",\
-            "name": "freeze",\
-            "renamed": "false",\
-            "enabled": "true",\
-            "highlight": "0",\
-            "x": "2546",\
-            "y": "2387",\
-            "z": "26"\
             }\
         ],\
         "connections":\
         [\
+            {\
+            "outputNodeId": "freeze2",\
+            "outputId": "h0",\
+            "outputOrder": "0",\
+            "inputNodeId": "repeat4",\
+            "inputId": "h0",\
+            "list": "true"\
+            },\
+            {\
+            "outputNodeId": "repeat3",\
+            "outputId": "h0",\
+            "outputOrder": "0",\
+            "inputNodeId": "freeze2",\
+            "inputId": "h0",\
+            "list": "true"\
+            },\
+            {\
+            "outputNodeId": "list",\
+            "outputId": "4",\
+            "outputOrder": "0",\
+            "inputNodeId": "random5",\
+            "inputId": "seed",\
+            "list": "false"\
+            },\
+            {\
+            "outputNodeId": "list",\
+            "outputId": "3",\
+            "outputOrder": "0",\
+            "inputNodeId": "random3",\
+            "inputId": "seed",\
+            "list": "false"\
+            },\
             {\
             "outputNodeId": "list",\
             "outputId": "2",\
@@ -467,114 +516,10 @@ const presetPolarizedLights = '\
             "list": "false"\
             },\
             {\
-            "outputNodeId": "list",\
-            "outputId": "0",\
-            "outputOrder": "4",\
-            "inputNodeId": "random",\
-            "inputId": "seed",\
-            "list": "false"\
-            },\
-            {\
-            "outputNodeId": "freeze",\
+            "outputNodeId": "random4",\
             "outputId": "h0",\
             "outputOrder": "0",\
-            "inputNodeId": "list",\
-            "inputId": "h0",\
-            "list": "true"\
-            },\
-            {\
-            "outputNodeId": "list",\
-            "outputId": "6",\
-            "outputOrder": "0",\
-            "inputNodeId": "random7",\
-            "inputId": "seed",\
-            "list": "false"\
-            },\
-            {\
-            "outputNodeId": "color",\
-            "outputId": "h0",\
-            "outputOrder": "1",\
-            "inputNodeId": "fill2",\
-            "inputId": "color",\
-            "list": "false"\
-            },\
-            {\
-            "outputNodeId": "scale",\
-            "outputId": "h0",\
-            "outputOrder": "0",\
-            "inputNodeId": "rotate",\
-            "inputId": "h0",\
-            "list": "false"\
-            },\
-            {\
-            "outputNodeId": "noise3",\
-            "outputId": "h0",\
-            "outputOrder": "0",\
-            "inputNodeId": "rotate",\
-            "inputId": "angle",\
-            "list": "false"\
-            },\
-            {\
-            "outputNodeId": "repeat",\
-            "outputId": "h0",\
-            "outputOrder": "0",\
-            "inputNodeId": "scale2",\
-            "inputId": "h0",\
-            "list": "true"\
-            },\
-            {\
-            "outputNodeId": "random6",\
-            "outputId": "h0",\
-            "outputOrder": "0",\
-            "inputNodeId": "scale2",\
-            "inputId": "scaleX",\
-            "list": "false"\
-            },\
-            {\
-            "outputNodeId": "random6",\
-            "outputId": "h0",\
-            "outputOrder": "1",\
-            "inputNodeId": "scale2",\
-            "inputId": "scaleY",\
-            "list": "false"\
-            },\
-            {\
-            "outputNodeId": "scale2",\
-            "outputId": "h0",\
-            "outputOrder": "0",\
-            "inputNodeId": "move2",\
-            "inputId": "h0",\
-            "list": "true"\
-            },\
-            {\
-            "outputNodeId": "random3",\
-            "outputId": "h0",\
-            "outputOrder": "0",\
-            "inputNodeId": "move2",\
-            "inputId": "x",\
-            "list": "false"\
-            },\
-            {\
-            "outputNodeId": "random5",\
-            "outputId": "h0",\
-            "outputOrder": "0",\
-            "inputNodeId": "move2",\
-            "inputId": "y",\
-            "list": "false"\
-            },\
-            {\
-            "outputNodeId": "grad",\
-            "outputId": "h0",\
-            "outputOrder": "0",\
-            "inputNodeId": "rect",\
-            "inputId": "props",\
-            "list": "true"\
-            },\
-            {\
-            "outputNodeId": "rotate",\
-            "outputId": "h0",\
-            "outputOrder": "0",\
-            "inputNodeId": "repeat",\
+            "inputNodeId": "repeat2",\
             "inputId": "h0",\
             "list": "false"\
             },\
@@ -611,11 +556,91 @@ const presetPolarizedLights = '\
             "list": "false"\
             },\
             {\
-            "outputNodeId": "list",\
-            "outputId": "5",\
+            "outputNodeId": "scale",\
+            "outputId": "h0",\
             "outputOrder": "0",\
-            "inputNodeId": "random6",\
-            "inputId": "seed",\
+            "inputNodeId": "rotate",\
+            "inputId": "h0",\
+            "list": "false"\
+            },\
+            {\
+            "outputNodeId": "noise3",\
+            "outputId": "h0",\
+            "outputOrder": "0",\
+            "inputNodeId": "rotate",\
+            "inputId": "angle",\
+            "list": "false"\
+            },\
+            {\
+            "outputNodeId": "rotate",\
+            "outputId": "h0",\
+            "outputOrder": "0",\
+            "inputNodeId": "repeat",\
+            "inputId": "h0",\
+            "list": "false"\
+            },\
+            {\
+            "outputNodeId": "move2",\
+            "outputId": "h0",\
+            "outputOrder": "0",\
+            "inputNodeId": "repeat3",\
+            "inputId": "h0",\
+            "list": "true"\
+            },\
+            {\
+            "outputNodeId": "color",\
+            "outputId": "h0",\
+            "outputOrder": "1",\
+            "inputNodeId": "fill2",\
+            "inputId": "color",\
+            "list": "false"\
+            },\
+            {\
+            "outputNodeId": "scale2",\
+            "outputId": "h0",\
+            "outputOrder": "0",\
+            "inputNodeId": "move2",\
+            "inputId": "h0",\
+            "list": "true"\
+            },\
+            {\
+            "outputNodeId": "random3",\
+            "outputId": "h0",\
+            "outputOrder": "0",\
+            "inputNodeId": "move2",\
+            "inputId": "x",\
+            "list": "false"\
+            },\
+            {\
+            "outputNodeId": "random5",\
+            "outputId": "h0",\
+            "outputOrder": "0",\
+            "inputNodeId": "move2",\
+            "inputId": "y",\
+            "list": "false"\
+            },\
+            {\
+            "outputNodeId": "freeze",\
+            "outputId": "h0",\
+            "outputOrder": "0",\
+            "inputNodeId": "list",\
+            "inputId": "h0",\
+            "list": "true"\
+            },\
+            {\
+            "outputNodeId": "fill2",\
+            "outputId": "h0",\
+            "outputOrder": "0",\
+            "inputNodeId": "grad",\
+            "inputId": "h0",\
+            "list": "false"\
+            },\
+            {\
+            "outputNodeId": "fill",\
+            "outputId": "h0",\
+            "outputOrder": "0",\
+            "inputNodeId": "grad",\
+            "inputId": "h1",\
             "list": "false"\
             },\
             {\
@@ -635,23 +660,55 @@ const presetPolarizedLights = '\
             "list": "false"\
             },\
             {\
-            "outputNodeId": "list",\
-            "outputId": "4",\
+            "outputNodeId": "repeat2",\
+            "outputId": "h0",\
             "outputOrder": "0",\
-            "inputNodeId": "random5",\
+            "inputNodeId": "freeze",\
+            "inputId": "h0",\
+            "list": "true"\
+            },\
+            {\
+            "outputNodeId": "list",\
+            "outputId": "0",\
+            "outputOrder": "4",\
+            "inputNodeId": "random",\
             "inputId": "seed",\
             "list": "false"\
             },\
             {\
-            "outputNodeId": "move2",\
+            "outputNodeId": "grad",\
             "outputId": "h0",\
             "outputOrder": "0",\
-            "inputNodeId": "repeat3",\
+            "inputNodeId": "rect",\
+            "inputId": "props",\
+            "list": "true"\
+            },\
+            {\
+            "outputNodeId": "repeat",\
+            "outputId": "h0",\
+            "outputOrder": "0",\
+            "inputNodeId": "scale2",\
             "inputId": "h0",\
+            "list": "true"\
+            },\
+            {\
+            "outputNodeId": "random6",\
+            "outputId": "h0",\
+            "outputOrder": "0",\
+            "inputNodeId": "scale2",\
+            "inputId": "scaleX",\
             "list": "false"\
             },\
             {\
-            "outputNodeId": "repeat3",\
+            "outputNodeId": "random6",\
+            "outputId": "h0",\
+            "outputOrder": "1",\
+            "inputNodeId": "scale2",\
+            "inputId": "scaleY",\
+            "list": "false"\
+            },\
+            {\
+            "outputNodeId": "repeat4",\
             "outputId": "h0",\
             "outputOrder": "0",\
             "inputNodeId": "frame",\
@@ -681,46 +738,6 @@ const presetPolarizedLights = '\
             "inputNodeId": "grad2",\
             "inputId": "h1",\
             "list": "false"\
-            },\
-            {\
-            "outputNodeId": "list",\
-            "outputId": "3",\
-            "outputOrder": "0",\
-            "inputNodeId": "random3",\
-            "inputId": "seed",\
-            "list": "false"\
-            },\
-            {\
-            "outputNodeId": "fill2",\
-            "outputId": "h0",\
-            "outputOrder": "0",\
-            "inputNodeId": "grad",\
-            "inputId": "h0",\
-            "list": "false"\
-            },\
-            {\
-            "outputNodeId": "fill",\
-            "outputId": "h0",\
-            "outputOrder": "0",\
-            "inputNodeId": "grad",\
-            "inputId": "h1",\
-            "list": "false"\
-            },\
-            {\
-            "outputNodeId": "random4",\
-            "outputId": "h0",\
-            "outputOrder": "0",\
-            "inputNodeId": "repeat2",\
-            "inputId": "h0",\
-            "list": "false"\
-            },\
-            {\
-            "outputNodeId": "repeat2",\
-            "outputId": "h0",\
-            "outputOrder": "0",\
-            "inputNodeId": "freeze",\
-            "inputId": "h0",\
-            "list": "true"\
             }\
         ]\
     }';

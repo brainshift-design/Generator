@@ -4,6 +4,8 @@ extends GOperator
     seed   = null;
     min    = null;
     max    = null;
+    bias   = null;
+    spread = null;
     unique = null;
 
     random       = null;
@@ -29,6 +31,8 @@ extends GOperator
         this.seed   = null;
         this.min    = null;
         this.max    = null;
+        this.bias   = null;
+        this.spread = null;
         this.unique = null;
     }
 
@@ -43,6 +47,8 @@ extends GOperator
         if (this.seed  ) copy.seed   = this.seed  .copy();
         if (this.min   ) copy.min    = this.min   .copy();
         if (this.max   ) copy.max    = this.max   .copy();
+        if (this.bias  ) copy.bias   = this.bias  .copy();
+        if (this.spread) copy.spread = this.spread.copy();
         if (this.unique) copy.unique = this.unique.copy();
 
         if (this.random) copy.random = this.random.copy();
@@ -61,6 +67,8 @@ extends GOperator
         const seed   = (await this.seed  .eval(parse)).toValue();
         const min    = (await this.min   .eval(parse)).toValue();
         const max    = (await this.max   .eval(parse)).toValue();
+        const bias   = (await this.bias  .eval(parse)).toValue();
+        const spread = (await this.spread.eval(parse)).toValue();
         const unique = (await this.unique.eval(parse)).toValue();
     
 
@@ -73,9 +81,12 @@ extends GOperator
 
 
 
-        this.value = new NumberValue(
-            min.value + this.random.get(this.iteration + this.uniqueOffset) * (max.value - min.value), 
-            Math.max(min.decimals, max.decimals));
+        let f = this.random.get(this.iteration + this.uniqueOffset);
+        f = getSpreadBias(f, bias.value, spread.value);
+        
+        f = min.value + f * (max.value - min.value);
+        
+        this.value = new NumberValue(f, Math.max(min.decimals, max.decimals));
 
             
         const _unique = unique.value/100;
@@ -113,6 +124,8 @@ extends GOperator
             ['seed',   seed  ],
             ['min',    min   ],
             ['max',    max   ],
+            ['bias',   bias  ],
+            ['spread', spread],
             ['unique', unique]
         ]);
         
@@ -138,6 +151,8 @@ extends GOperator
         return this.seed   && this.seed  .isValid()
             && this.min    && this.min   .isValid()
             && this.max    && this.max   .isValid()
+            && this.bias   && this.bias  .isValid()
+            && this.spread && this.spread.isValid()
             && this.unique && this.unique.isValid();
     }
 
@@ -150,6 +165,8 @@ extends GOperator
         if (this.seed  ) this.seed  .pushValueUpdates(parse);
         if (this.min   ) this.min   .pushValueUpdates(parse);
         if (this.max   ) this.max   .pushValueUpdates(parse);
+        if (this.bias  ) this.bias  .pushValueUpdates(parse);
+        if (this.spread) this.spread.pushValueUpdates(parse);
         if (this.unique) this.unique.pushValueUpdates(parse);
     }
 
@@ -162,6 +179,8 @@ extends GOperator
         if (this.seed  ) this.seed  .invalidateInputs(parse, from, force);
         if (this.min   ) this.min   .invalidateInputs(parse, from, force);
         if (this.max   ) this.max   .invalidateInputs(parse, from, force);
+        if (this.bias  ) this.bias  .invalidateInputs(parse, from, force);
+        if (this.spread) this.spread.invalidateInputs(parse, from, force);
         if (this.unique) this.unique.invalidateInputs(parse, from, force);
     }
 
@@ -174,6 +193,8 @@ extends GOperator
         if (this.seed  ) this.seed  .iterateLoop(parse);
         if (this.min   ) this.min   .iterateLoop(parse);
         if (this.max   ) this.max   .iterateLoop(parse);
+        if (this.bias  ) this.bias  .iterateLoop(parse);
+        if (this.spread) this.spread.iterateLoop(parse);
         if (this.unique) this.unique.iterateLoop(parse);
     }
 
