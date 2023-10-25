@@ -289,6 +289,7 @@ function assertVolatile(loop, node)
            loop.type == DEFINE
         || loop.type == FREEZE
         || loop.type == NUMBER_RANGE
+        || loop.type == NUMBER_WAVE
         || loop.type == NUMBER_SEQUENCE
         || loop.type == NUMBER_RANDOM
         || loop.type == NUMBER_NOISE

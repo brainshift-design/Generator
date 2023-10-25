@@ -4,8 +4,8 @@ extends OperatorBase
     paramSeed;
     paramMin;
     paramMax;
-    paramSpread;
     paramBias;
+    paramSpread;
     paramUnique;
 
 

@@ -36,7 +36,7 @@ extends GOperator1
 
     async eval(parse)
     {
-        if (this.isCached()
+        if (   this.isCached()
             && this.cachedValue)
             return this;
 
@@ -84,7 +84,11 @@ extends GOperator1
     {
         super.invalidateInputs(parse, from, force);
 
-        this.cachedValue = null;
+        const repeat = parse.repeats.find(r => r.repeatId == this.loopId);
+
+        if (   repeat
+            && repeat.nodeId == from.nodeId)
+            this.cachedValue = null;
     }
 
 

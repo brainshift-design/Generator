@@ -31,8 +31,9 @@ function createNode(nodeType, creatingButton = null, createdNodeId = -1, options
         case CELL:                    node = new OpCell();              break;
         
         case DEFINE:                  node = new OpDefine();            break;
-        case NUMBER_RANGE:            node = new OpRange();             break;
         case NUMBER_SEQUENCE:         node = new OpSequence();          break;
+        case NUMBER_RANGE:            node = new OpRange();             break;
+        case NUMBER_WAVE:             node = new OpWave();              break;
         case NUMBER_RANDOM:           node = new OpRandom();            break;
         case NUMBER_NOISE:            node = new OpNoise();             break;
         case NUMBER_PROBABILITY:      node = new OpProbability();       break;
@@ -44,6 +45,7 @@ function createNode(nodeType, creatingButton = null, createdNodeId = -1, options
         case NUMBER_ROUND:            node = new OpRound();             break;
         case NUMBER_MINMAX:           node = new OpMinMax();            break;
         case NUMBER_LIMITS:           node = new OpLimits();            break;
+        case NUMBER_CURVE:            node = new OpNumberCurve();       break;
         case NUMBER_NAN:              node = new OpNaNisNumber();       break;
         case NUMBER_CONSTANT:         node = new OpConstant();          break;
         case NUMBER_DATETIME:         node = new OpDateTime();          break;

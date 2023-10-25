@@ -156,6 +156,7 @@ var menuItemTextFile;
 
 var menuItemArray;
 var menuItemRange;
+var menuItemWave;
 var menuItemSequence;
 
 var menuItemDateTime;
@@ -421,7 +422,7 @@ menuFlow = new Menu('Flow', true, false);
         menuItemStart    = new MenuItem('Start. . .',        null, {icon: iconStart,         createType: START,            callback: e => actionManager.do(getCreateNodeAction(START,           btnFlow.div, getCreateOptions(e)))}),
         menuItemRepeat   = new MenuItem('. . . Repeat',      null, {icon: iconRepeat,        createType: REPEAT,           callback: e => actionManager.do(getCreateNodeAction(REPEAT,          btnFlow.div, getCreateOptions(e)))}),
                            new MenuItem('',                  null, {separator: true}),
-        //menuItemCache    = new MenuItem('Cache',             null, {icon: iconCache,         createType: CACHE,            callback: e => actionManager.do(getCreateNodeAction(CACHE,           btnFlow.div, getCreateOptions(e)))}),
+        menuItemCache    = new MenuItem('Cache',             null, {icon: iconCache,         createType: CACHE,            callback: e => actionManager.do(getCreateNodeAction(CACHE,           btnFlow.div, getCreateOptions(e)))}),
         menuItemFreeze   = new MenuItem('Freeze. . .',       null, {icon: iconFreeze,        createType: FREEZE,           callback: e => actionManager.do(getCreateNodeAction(FREEZE,          btnFlow.div, getCreateOptions(e)))}),
                            new MenuItem('',                  null, {separator: true}),
         menuItemNull     = new MenuItem('Null',              null, {icon: iconNull,          createType: NULL_NODE,        callback: e => actionManager.do(getCreateNodeAction(NULL_NODE,       btnFlow.div, getCreateOptions(e)))}),
@@ -461,15 +462,16 @@ menuFlow = new Menu('Flow', true, false);
 
     menuSets = new Menu('Sets...', true, false);
     menuSets.addItems([
-        menuItemSequence   = new MenuItem('Sequence . . .',   null, {icon: iconSequence,    createType: NUMBER_SEQUENCE,    callback: e => actionManager.do(getCreateNodeAction(NUMBER_SEQUENCE,    btnSets.div, getCreateOptions(e)))}),
-        menuItemRange = new MenuItem('Range . . .',      null, {icon: iconRange,  createType: NUMBER_RANGE,  callback: e => actionManager.do(getCreateNodeAction(NUMBER_RANGE,  btnSets.div, getCreateOptions(e)))}),
-        menuItemArray      = new MenuItem('Define . . .',     null, {icon: iconDefine,      createType: DEFINE,             callback: e => actionManager.do(getCreateNodeAction(DEFINE,             btnSets.div, getCreateOptions(e)))}),
-                             new MenuItem('',                 null, {separator: true}),
-                             new MenuItem('Random . . .',     null, {icon: iconRandom,      createType: NUMBER_RANDOM,      callback: e => actionManager.do(getCreateNodeAction(NUMBER_RANDOM,      btnSets.div, getCreateOptions(e)))}),
-                             new MenuItem('Noise . . .',      null, {icon: iconNoise,       createType: NUMBER_NOISE,       callback: e => actionManager.do(getCreateNodeAction(NUMBER_NOISE,       btnSets.div, getCreateOptions(e)))}),
-                             new MenuItem('Probability. . .', null, {icon: iconProbability, createType: NUMBER_PROBABILITY, callback: e => actionManager.do(getCreateNodeAction(NUMBER_PROBABILITY, btnSets.div, getCreateOptions(e)))}),
-                             new MenuItem('',                 null, {separator: true}),
-                             new MenuItem('Accumulate. . .',  null, {icon: iconAccumulate,  createType: NUMBER_ACCUMULATE,  callback: e => actionManager.do(getCreateNodeAction(NUMBER_ACCUMULATE,  btnSets.div, getCreateOptions(e)))})]);
+        menuItemSequence = new MenuItem('Sequence . . .',   null, {icon: iconSequence,    createType: NUMBER_SEQUENCE,    callback: e => actionManager.do(getCreateNodeAction(NUMBER_SEQUENCE,    btnSets.div, getCreateOptions(e)))}),
+        menuItemRange    = new MenuItem('Range . . .',      null, {icon: iconRange,       createType: NUMBER_RANGE,       callback: e => actionManager.do(getCreateNodeAction(NUMBER_RANGE,       btnSets.div, getCreateOptions(e)))}),
+        menuItemWave     = new MenuItem('Wave. . .',        null, {icon: iconWave,        createType: NUMBER_WAVE,        callback: e => actionManager.do(getCreateNodeAction(NUMBER_WAVE,        btnSets.div, getCreateOptions(e)))}),
+        menuItemArray    = new MenuItem('Define . . .',     null, {icon: iconDefine,      createType: DEFINE,             callback: e => actionManager.do(getCreateNodeAction(DEFINE,             btnSets.div, getCreateOptions(e)))}),
+                           new MenuItem('',                 null, {separator: true}),
+                           new MenuItem('Random . . .',     null, {icon: iconRandom,      createType: NUMBER_RANDOM,      callback: e => actionManager.do(getCreateNodeAction(NUMBER_RANDOM,      btnSets.div, getCreateOptions(e)))}),
+                           new MenuItem('Noise . . .',      null, {icon: iconNoise,       createType: NUMBER_NOISE,       callback: e => actionManager.do(getCreateNodeAction(NUMBER_NOISE,       btnSets.div, getCreateOptions(e)))}),
+                           new MenuItem('Probability. . .', null, {icon: iconProbability, createType: NUMBER_PROBABILITY, callback: e => actionManager.do(getCreateNodeAction(NUMBER_PROBABILITY, btnSets.div, getCreateOptions(e)))}),
+                           new MenuItem('',                 null, {separator: true}),
+                           new MenuItem('Accumulate. . .',  null, {icon: iconAccumulate,  createType: NUMBER_ACCUMULATE,  callback: e => actionManager.do(getCreateNodeAction(NUMBER_ACCUMULATE,  btnSets.div, getCreateOptions(e)))})]);
         
     
     menuMath = new Menu('Math', true, false);
@@ -521,6 +523,7 @@ menuFlow = new Menu('Flow', true, false);
                            new MenuItem('Round',         null, {icon: iconRound,       createType: NUMBER_ROUND,    callback: e => actionManager.do(getCreateNodeAction(NUMBER_ROUND,    btnNumber.div, getCreateOptions(e)))}),
                            new MenuItem('Min / max',     null, {icon: iconMinMax,      createType: NUMBER_MINMAX,   callback: e => actionManager.do(getCreateNodeAction(NUMBER_MINMAX,   btnNumber.div, getCreateOptions(e)))}),
                            new MenuItem('Limits',        null, {icon: iconLimits,      createType: NUMBER_LIMITS,   callback: e => actionManager.do(getCreateNodeAction(NUMBER_LIMITS,   btnNumber.div, getCreateOptions(e)))}), 
+                           new MenuItem('Curve',         null, {icon: iconNumberCurve, createType: NUMBER_CURVE,    callback: e => actionManager.do(getCreateNodeAction(NUMBER_CURVE,    btnNumber.div, getCreateOptions(e)))}), 
                            new MenuItem('',              null, {separator: true}),
         menuItemDateTime = new MenuItem('Date & time',   null, {icon: iconDateTime,    createType: NUMBER_DATETIME, callback: e => actionManager.do(getCreateNodeAction(NUMBER_DATETIME, btnNumber.div, getCreateOptions(e)))})]);
         

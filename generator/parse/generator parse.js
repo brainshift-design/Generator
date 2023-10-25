@@ -165,11 +165,13 @@ function genParse(parse, inParam = true)
     else if (parse.next == NUMBER_ROUND           ) result = genParseRound             (parse);
     else if (parse.next == NUMBER_MINMAX          ) result = genParseMinMax            (parse);
     else if (parse.next == NUMBER_LIMITS          ) result = genParseLimits            (parse);
+    else if (parse.next == NUMBER_CURVE           ) result = genParseNumberCurve       (parse);
     else if (parse.next == NUMBER_NAN             ) result = genParseNaNisNumber       (parse);
     else if (parse.next == NUMBER_CONSTANT        ) result = genParseConstant          (parse);
     else if (parse.next == NUMBER_DATETIME        ) result = genParseDateTime          (parse);
     else if (parse.next == NUMBER_SEQUENCE        ) result = genParseSequence          (parse);
     else if (parse.next == NUMBER_RANGE           ) result = genParseRange             (parse);
+    else if (parse.next == NUMBER_WAVE            ) result = genParseWave              (parse);
     else if (parse.next == NUMBER_RANDOM          ) result = genParseRandom            (parse);
     else if (parse.next == NUMBER_NOISE           ) result = genParseNoise             (parse);
     else if (parse.next == NUMBER_PROBABILITY     ) result = genParseProbability       (parse);

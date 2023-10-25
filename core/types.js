@@ -100,11 +100,13 @@ const NUMBER_ABSOLUTE         = 'ABS';
 const NUMBER_ROUND            = 'ROUND';   
 const NUMBER_MINMAX           = 'MINMAX';   
 const NUMBER_LIMITS           = 'LIM';   
+const NUMBER_CURVE            = 'NCURVE';   
 const NUMBER_NAN              = 'NANISNUM';
 const NUMBER_CONSTANT         = 'CONST';  
 const NUMBER_DATETIME         = 'DATE';  
-const NUMBER_RANGE            = 'RANGE';  
 const NUMBER_SEQUENCE         = 'SEQ';  
+const NUMBER_RANGE            = 'RANGE';  
+const NUMBER_WAVE             = 'WAVE';  
 const NUMBER_RANDOM           = 'RAND';  
 const NUMBER_NOISE            = 'NOISE';  
 const NUMBER_PROBABILITY      = 'PROB';  
@@ -220,11 +222,13 @@ const NUMBER_TYPES =
     NUMBER_ROUND,
     NUMBER_MINMAX,
     NUMBER_LIMITS,
+    NUMBER_CURVE,
     NUMBER_NAN,
     NUMBER_CONSTANT,
     NUMBER_DATETIME,
-    NUMBER_RANGE,
     NUMBER_SEQUENCE,
+    NUMBER_RANGE,
+    NUMBER_WAVE,
     NUMBER_RANDOM,
     NUMBER_NOISE,
     NUMBER_PROBABILITY,

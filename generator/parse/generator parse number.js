@@ -349,6 +349,56 @@ function genParseLimits(parse)
 
 
 
+function genParseNumberCurve(parse)
+{
+    const [, nodeId, options, ignore] = genParseNodeStart(parse);
+
+
+    const curve = new GNumberCurve(nodeId, options);
+   
+
+    let nInputs = -1;
+    
+    if (!ignore)
+    {
+        nInputs = parseInt(parse.move());
+        consoleAssert(nInputs == 0 || nInputs == 1, 'nInputs must be [0, 1]');
+    }
+
+    
+    if (parse.settings.logRequests) 
+        logReq(curve, parse, ignore, nInputs);
+
+
+    if (ignore) 
+    {
+        genParseNodeEnd(parse, curve);
+        return parse.parsedNodes.find(n => n.nodeId == nodeId);
+    }
+
+
+    parse.nTab++;
+
+
+    if (nInputs == 1)
+        curve.input = genParse(parse);
+
+    curve.min    = genParse(parse);
+    curve.max    = genParse(parse);
+    curve.power  = genParse(parse);
+    curve.bias   = genParse(parse);
+    curve.spread = genParse(parse);
+
+    
+    parse.nTab--;
+
+
+    genParseNodeEnd(parse, curve);
+    return curve;
+}
+
+
+
 function genParseNaNisNumber(parse)
 {
     const [, nodeId, options, ignore] = genParseNodeStart(parse);
@@ -644,6 +694,44 @@ function genParseRange(parse)
 
     genParseNodeEnd(parse, dist);
     return dist;
+}
+
+
+
+function genParseWave(parse)
+{
+    const [, nodeId, options, ignore] = genParseNodeStart(parse);
+
+
+    const wave = new GWave(nodeId, options);
+
+
+    if (parse.settings.logRequests) 
+        logReq(wave, parse, ignore);
+
+
+    if (ignore) 
+    {
+        genParseNodeEnd(parse, wave);
+        return parse.parsedNodes.find(n => n.nodeId == nodeId);
+    }
+
+
+    parse.nTab++;
+
+
+    wave.shape     = genParse(parse);
+    wave.amplitude = genParse(parse);
+    wave.frequency = genParse(parse);
+    wave.offset    = genParse(parse);
+    wave.bias      = genParse(parse);
+
+
+    parse.nTab--;
+
+
+    genParseNodeEnd(parse, wave);
+    return wave;
 }
 
 

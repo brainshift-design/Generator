@@ -52,11 +52,8 @@ extends GOperator
     {
         if (this.isCached())
             return this;
+
             
-
-        // input not used for evaluation
-
-
         const from   = (await this.from  .eval(parse)).toValue();
         const start  = (await this.start .eval(parse)).toValue();
         const end    = (await this.end   .eval(parse)).toValue();
@@ -68,9 +65,6 @@ extends GOperator
         const iteration = repeat ? repeat.iteration : 0;
 
 
-        //const startValue = Math.min(start.value, end.value);
-
-        
         let delta = end.value - start.value;
 
         let step = 

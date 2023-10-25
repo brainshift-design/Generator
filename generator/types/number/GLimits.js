@@ -1,8 +1,8 @@
 class GLimits
 extends GOperator1
 {
-    min;
-    max;
+    min = null;
+    max = null;
 
 
     

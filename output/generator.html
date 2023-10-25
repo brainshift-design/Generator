@@ -4,7 +4,7 @@
 
 
 
-const generatorVersion = 253;
+const generatorVersion = 256;
 
 
 const MAX_INT32        = 2147483647;
@@ -4842,11 +4842,13 @@ const NUMBER_ABSOLUTE         = 'ABS';
 const NUMBER_ROUND            = 'ROUND';   
 const NUMBER_MINMAX           = 'MINMAX';   
 const NUMBER_LIMITS           = 'LIM';   
+const NUMBER_CURVE            = 'NCURVE';   
 const NUMBER_NAN              = 'NANISNUM';
 const NUMBER_CONSTANT         = 'CONST';  
 const NUMBER_DATETIME         = 'DATE';  
-const NUMBER_RANGE            = 'RANGE';  
 const NUMBER_SEQUENCE         = 'SEQ';  
+const NUMBER_RANGE            = 'RANGE';  
+const NUMBER_WAVE             = 'WAVE';  
 const NUMBER_RANDOM           = 'RAND';  
 const NUMBER_NOISE            = 'NOISE';  
 const NUMBER_PROBABILITY      = 'PROB';  
@@ -4962,11 +4964,13 @@ const NUMBER_TYPES =
     NUMBER_ROUND,
     NUMBER_MINMAX,
     NUMBER_LIMITS,
+    NUMBER_CURVE,
     NUMBER_NAN,
     NUMBER_CONSTANT,
     NUMBER_DATETIME,
-    NUMBER_RANGE,
     NUMBER_SEQUENCE,
+    NUMBER_RANGE,
+    NUMBER_WAVE,
     NUMBER_RANDOM,
     NUMBER_NOISE,
     NUMBER_PROBABILITY,
@@ -15505,6 +15509,7 @@ function assertVolatile(loop, node)
            loop.type == DEFINE
         || loop.type == FREEZE
         || loop.type == NUMBER_RANGE
+        || loop.type == NUMBER_WAVE
         || loop.type == NUMBER_SEQUENCE
         || loop.type == NUMBER_RANDOM
         || loop.type == NUMBER_NOISE
@@ -15904,7 +15909,7 @@ extends GOperator1
 
     async eval(parse)
     {
-        if (this.isCached()
+        if (   this.isCached()
             && this.cachedValue)
             return this;
 
@@ -15952,7 +15957,11 @@ extends GOperator1
     {
         super.invalidateInputs(parse, from, force);
 
-        this.cachedValue = null;
+        const repeat = parse.repeats.find(r => r.repeatId == this.loopId);
+
+        if (   repeat
+            && repeat.nodeId == from.nodeId)
+            this.cachedValue = null;
     }
 
 
@@ -18987,8 +18996,8 @@ async function evalMinMaxInputs(inputs, op, parse)
 class GLimits
 extends GOperator1
 {
-    min;
-    max;
+    min = null;
+    max = null;
 
 
     
@@ -19116,6 +19125,174 @@ extends GOperator1
         if (this.input) this.input.iterateLoop(parse);
         if (this.min  ) this.min  .iterateLoop(parse);
         if (this.max  ) this.max  .iterateLoop(parse);
+    }
+}
+
+
+
+class GNumberCurve
+extends GOperator1
+{
+    min    = null;
+    max    = null;
+    power  = null;
+    bias   = null;
+    spread = null;
+
+
+    
+    constructor(nodeId, options)
+    {
+        super(NUMBER_CURVE, nodeId, options);
+    }
+
+
+    
+    reset()
+    {
+        super.reset();
+
+        this.min    = null;
+        this.max    = null;
+        this.power  = null;
+        this.bias   = null;
+        this.spread = null;
+    }
+
+
+
+    copy()
+    {
+        const copy = new GLimits(this.nodeId, this.options);
+
+        copy.copyBase(this);
+
+        copy.min    = this.min   .copy();
+        copy.max    = this.max   .copy();
+        copy.power  = this.power .copy();
+        copy.bias   = this.bias  .copy();
+        copy.spread = this.spread.copy();
+
+        return copy;
+    }
+
+
+
+    isCached()
+    {
+        return super.isCached()
+            && (!this.min    || this.min   .isCached())
+            && (!this.max    || this.max   .isCached())
+            && (!this.power  || this.power .isCached())
+            && (!this.bias   || this.bias  .isCached())
+            && (!this.spread || this.spread.isCached());
+    }
+
+
+
+    async eval(parse)
+    {
+        if (this.isCached())
+            return this;
+
+            
+        const min    = (await this.min   .eval(parse)).toValue();
+        const max    = (await this.max   .eval(parse)).toValue();
+        const power  = (await this.power .eval(parse)).toValue();
+        const bias   = (await this.bias  .eval(parse)).toValue();
+        const spread = (await this.spread.eval(parse)).toValue();
+
+
+        if (this.input)
+        {
+            const input = (await this.input.eval(parse)).toValue();
+
+            if (this.options.enabled)
+            {
+                let f = (input.value - min.value) / (max.value - min.value);
+
+                f = Math.pow(f, power.value);
+                f = getSpreadBias(f, bias.value, spread.value);
+                
+                f = min.value + f * (max.value - min.value);
+                
+                this.value = new NumberValue(f);
+            }
+            else
+                this.value = input;
+        }
+        else
+            this.value = NumberValue.NaN;
+
+
+        this.setUpdateValues(parse,
+        [
+            ['value',  this.value],
+            ['min',    min       ],
+            ['max',    max       ],
+            ['power',  power     ],
+            ['bias',   bias      ],
+            ['spread', spread    ]
+        ]);
+
+
+        this.validate();
+
+        return this;
+    }
+
+
+
+    isValid()
+    {
+        return super.isValid()
+            && this.min    && this.min   .isValid()
+            && this.max    && this.max   .isValid()
+            && this.power  && this.power .isValid()
+            && this.bias   && this.bias  .isValid()
+            && this.spread && this.spread.isValid();
+    }
+
+
+
+    pushValueUpdates(parse)
+    {
+        super.pushValueUpdates(parse);
+
+        if (this.input ) this.input .pushValueUpdates(parse);
+        if (this.min   ) this.min   .pushValueUpdates(parse);
+        if (this.max   ) this.max   .pushValueUpdates(parse);
+        if (this.power ) this.power .pushValueUpdates(parse);
+        if (this.bias  ) this.bias  .pushValueUpdates(parse);
+        if (this.spread) this.spread.pushValueUpdates(parse);
+    }
+
+
+
+    invalidateInputs(parse, from, force)
+    {
+        super.invalidateInputs(parse, from, force);
+
+        if (this.input ) this.input .invalidateInputs(parse, from, force);
+        if (this.min   ) this.min   .invalidateInputs(parse, from, force);
+        if (this.max   ) this.max   .invalidateInputs(parse, from, force);
+        if (this.power ) this.power .invalidateInputs(parse, from, force);
+        if (this.bias  ) this.bias  .invalidateInputs(parse, from, force);
+        if (this.spread) this.spread.invalidateInputs(parse, from, force);
+    }
+
+
+
+    iterateLoop(parse)
+    {
+        super.iterateLoop(parse);
+
+        if (this.input ) this.input .iterateLoop(parse);
+        if (this.min   ) this.min   .iterateLoop(parse);
+        if (this.max   ) this.max   .iterateLoop(parse);
+        if (this.power ) this.power .iterateLoop(parse);
+        if (this.bias  ) this.bias  .iterateLoop(parse);
+        if (this.spread) this.spread.iterateLoop(parse);
     }
 }
 
@@ -19657,215 +19834,6 @@ extends GOperator
 
 
 
-class GRange
-extends GOperator
-{
-    from   = null;
-    start  = null;
-    end    = null;
-    bias   = null;
-    spread = null;
-    
-    
-
-    constructor(nodeId, options)
-    {
-        super(NUMBER_RANGE, nodeId, options);
-    }
-
-
-    
-    reset()
-    {
-        super.reset();
-
-        this.from   = null;
-        this.start  = null;
-        this.end    = null;
-        this.bias   = null;
-        this.spread = null;
-    }
-
-
-
-    copy()
-    {
-        const copy = new GRange(this.nodeId, this.options);
-
-        copy.copyBase(this);
-
-        if (this.from  ) copy.from   = this.from  .copy();
-        if (this.start ) copy.start  = this.start .copy();
-        if (this.end   ) copy.end    = this.end   .copy();
-        if (this.bias  ) copy.bias   = this.bias  .copy();
-        if (this.spread) copy.spread = this.spread.copy();
-
-        if (this.current) copy.current = this.current.copy();
-
-        return copy;
-    }
-
-
-
-    async eval(parse)
-    {
-        if (this.isCached())
-            return this;
-            
-
-        // input not used for evaluation
-
-
-        const from   = (await this.from  .eval(parse)).toValue();
-        const start  = (await this.start .eval(parse)).toValue();
-        const end    = (await this.end   .eval(parse)).toValue();
-        const bias   = (await this.bias  .eval(parse)).toValue();
-        const spread = (await this.spread.eval(parse)).toValue();
-    
-
-        const repeat    = parse.repeats.find(r => r.repeatId == this.loopId);
-        const iteration = repeat ? repeat.iteration : 0;
-
-
-        //const startValue = Math.min(start.value, end.value);
-
-        
-        let delta = end.value - start.value;
-
-        let step = 
-               repeat
-            && this.options.enabled
-            ? delta / Math.max(1, repeat.total - (from.value == 1 ? 1 : 0))
-            : 0;
-
-            
-        let startOffset;
-
-             if (from  .value == 2) startOffset = step;
-        else if (from  .value == 1
-              && repeat
-              && repeat.total == 1) startOffset = delta/2;
-        else                        startOffset = 0;
-
-
-        let f;
-        
-        if (repeat)
-        {
-                 if (from.value == 2) f = iteration/repeat.total;
-            else if (from.value == 1) f = (repeat.total > 1 ? iteration/(repeat.total-1) : 0);
-            else if (from.value == 0) f = iteration/repeat.total;
-        }
-        else
-            f = 0;
-
-
-        f = getSpreadBias(f, bias.value, spread.value);
-
-
-        this.value = new NumberValue(
-            start.value + startOffset + delta * f,
-            Math.max(start.decimals, end.decimals));
-
-
-        this.setUpdateValues(parse,
-        [
-            ['from',   from  ],
-            ['start',  start ],
-            ['end',    end   ],
-            ['bias',   bias  ],
-            ['spread', spread]
-        ]);
-
-
-        this.validate();
-
-        return this;
-    }
-
-
-
-    toValue()
-    {
-        return this.value
-             ? this.value.copy()
-             : null;
-    }
-
-
-
-    isValid()
-    {
-        return this.from   && this.from  .isValid()
-            && this.start  && this.start .isValid()
-            && this.end    && this.end   .isValid()
-            && this.bias   && this.bias  .isValid()
-            && this.spread && this.spread.isValid();
-    }
-
-
-
-    pushValueUpdates(parse)
-    {
-        super.pushValueUpdates(parse);
-
-        if (this.from  ) this.from  .pushValueUpdates(parse);
-        if (this.start ) this.start .pushValueUpdates(parse);
-        if (this.end   ) this.end   .pushValueUpdates(parse);
-        if (this.bias  ) this.bias  .pushValueUpdates(parse);
-        if (this.spread) this.spread.pushValueUpdates(parse);
-    }
-
-
-
-    invalidateInputs(parse, from, force)
-    {
-        super.invalidateInputs(parse, from, force);
-
-        if (this.from  ) this.from  .invalidateInputs(parse, from, force);
-        if (this.start ) this.start .invalidateInputs(parse, from, force);
-        if (this.end   ) this.end   .invalidateInputs(parse, from, force);
-        if (this.bias  ) this.bias  .invalidateInputs(parse, from, force);
-        if (this.spread) this.spread.invalidateInputs(parse, from, force);
-    }
-
-
-
-    iterateLoop(parse)
-    {
-        super.iterateLoop(parse);
-
-        if (this.from  ) this.from  .iterateLoop(parse);
-        if (this.start ) this.start .iterateLoop(parse);
-        if (this.end   ) this.end   .iterateLoop(parse);
-        if (this.bias  ) this.bias  .iterateLoop(parse);
-        if (this.spread) this.spread.iterateLoop(parse);
-    }
-}
-
-
-
-function getSpreadBias(f, bias, spread)
-{
-    const b = bias   / 50;
-    const s = spread / 50;
-
-
-    f = 
-        b >= 0
-        ? 1 - Math.pow(1-f, 1+b)
-        :     Math.pow(  f, 1-b);
-
-
-         if (s >= 0 && f >= 0.5) f = 1 - Math.pow((1-f)*2, 1+s) / 2;
-    else if (s >= 0 && f <  0.5) f = Math.pow(f*2, 1+s) / 2;
-    else if (s < 0)              f = lerp3(0, (1-s)/3, (2+s)/3, 1, f);
-
-
-    return f;
-}
-
-
 class GSequence
 extends GOperator
 {
@@ -20039,6 +20007,385 @@ function getSequenceValue(start, mult, add, iteration, enabled)
 
     return new NumberValue(value);
 }
+
+
+class GRange
+extends GOperator
+{
+    from   = null;
+    start  = null;
+    end    = null;
+    bias   = null;
+    spread = null;
+    
+    
+
+    constructor(nodeId, options)
+    {
+        super(NUMBER_RANGE, nodeId, options);
+    }
+
+
+    
+    reset()
+    {
+        super.reset();
+
+        this.from   = null;
+        this.start  = null;
+        this.end    = null;
+        this.bias   = null;
+        this.spread = null;
+    }
+
+
+
+    copy()
+    {
+        const copy = new GRange(this.nodeId, this.options);
+
+        copy.copyBase(this);
+
+        if (this.from  ) copy.from   = this.from  .copy();
+        if (this.start ) copy.start  = this.start .copy();
+        if (this.end   ) copy.end    = this.end   .copy();
+        if (this.bias  ) copy.bias   = this.bias  .copy();
+        if (this.spread) copy.spread = this.spread.copy();
+
+        if (this.current) copy.current = this.current.copy();
+
+        return copy;
+    }
+
+
+
+    async eval(parse)
+    {
+        if (this.isCached())
+            return this;
+
+            
+        const from   = (await this.from  .eval(parse)).toValue();
+        const start  = (await this.start .eval(parse)).toValue();
+        const end    = (await this.end   .eval(parse)).toValue();
+        const bias   = (await this.bias  .eval(parse)).toValue();
+        const spread = (await this.spread.eval(parse)).toValue();
+    
+
+        const repeat    = parse.repeats.find(r => r.repeatId == this.loopId);
+        const iteration = repeat ? repeat.iteration : 0;
+
+
+        let delta = end.value - start.value;
+
+        let step = 
+               repeat
+            && this.options.enabled
+            ? delta / Math.max(1, repeat.total - (from.value == 1 ? 1 : 0))
+            : 0;
+
+            
+        let startOffset;
+
+             if (from  .value == 2) startOffset = step;
+        else if (from  .value == 1
+              && repeat
+              && repeat.total == 1) startOffset = delta/2;
+        else                        startOffset = 0;
+
+
+        let f;
+        
+        if (repeat)
+        {
+                 if (from.value == 2) f = iteration/repeat.total;
+            else if (from.value == 1) f = (repeat.total > 1 ? iteration/(repeat.total-1) : 0);
+            else if (from.value == 0) f = iteration/repeat.total;
+        }
+        else
+            f = 0;
+
+
+        f = getSpreadBias(f, bias.value, spread.value);
+
+
+        this.value = new NumberValue(
+            start.value + startOffset + delta * f,
+            Math.max(start.decimals, end.decimals));
+
+
+        this.setUpdateValues(parse,
+        [
+            ['from',   from  ],
+            ['start',  start ],
+            ['end',    end   ],
+            ['bias',   bias  ],
+            ['spread', spread]
+        ]);
+
+
+        this.validate();
+
+        return this;
+    }
+
+
+
+    toValue()
+    {
+        return this.value
+             ? this.value.copy()
+             : null;
+    }
+
+
+
+    isValid()
+    {
+        return this.from   && this.from  .isValid()
+            && this.start  && this.start .isValid()
+            && this.end    && this.end   .isValid()
+            && this.bias   && this.bias  .isValid()
+            && this.spread && this.spread.isValid();
+    }
+
+
+
+    pushValueUpdates(parse)
+    {
+        super.pushValueUpdates(parse);
+
+        if (this.from  ) this.from  .pushValueUpdates(parse);
+        if (this.start ) this.start .pushValueUpdates(parse);
+        if (this.end   ) this.end   .pushValueUpdates(parse);
+        if (this.bias  ) this.bias  .pushValueUpdates(parse);
+        if (this.spread) this.spread.pushValueUpdates(parse);
+    }
+
+
+
+    invalidateInputs(parse, from, force)
+    {
+        super.invalidateInputs(parse, from, force);
+
+        if (this.from  ) this.from  .invalidateInputs(parse, from, force);
+        if (this.start ) this.start .invalidateInputs(parse, from, force);
+        if (this.end   ) this.end   .invalidateInputs(parse, from, force);
+        if (this.bias  ) this.bias  .invalidateInputs(parse, from, force);
+        if (this.spread) this.spread.invalidateInputs(parse, from, force);
+    }
+
+
+
+    iterateLoop(parse)
+    {
+        super.iterateLoop(parse);
+
+        if (this.from  ) this.from  .iterateLoop(parse);
+        if (this.start ) this.start .iterateLoop(parse);
+        if (this.end   ) this.end   .iterateLoop(parse);
+        if (this.bias  ) this.bias  .iterateLoop(parse);
+        if (this.spread) this.spread.iterateLoop(parse);
+    }
+}
+
+
+
+function getSpreadBias(f, bias, spread)
+{
+    const b = bias   / 50;
+    const s = spread / 50;
+
+
+    f = 
+        b >= 0
+        ? 1 - Math.pow(1-f, 1+b)
+        :     Math.pow(  f, 1-b);
+
+
+         if (s >= 0 && f >= 0.5) f = 1 - Math.pow((1-f)*2, 1+s) / 2;
+    else if (s >= 0 && f <  0.5) f = Math.pow(f*2, 1+s) / 2;
+    else if (s < 0)              f = lerp3(0, (1-s)/3, (2+s)/3, 1, f);
+
+
+    return f;
+}
+
+
+class GWave
+extends GOperator
+{
+    shape     = null;
+    amplitude = null;
+    frequency = null;
+    offset    = null;
+    bias      = null;
+    
+    
+
+    constructor(nodeId, options)
+    {
+        super(NUMBER_WAVE, nodeId, options);
+    }
+
+
+    
+    reset()
+    {
+        super.reset();
+
+        this.shape     = null;
+        this.amplitude = null;
+        this.frequency = null;
+        this.offset    = null;
+        this.bias      = null;
+    }
+
+
+
+    copy()
+    {
+        const copy = new GWave(this.nodeId, this.options);
+
+        copy.copyBase(this);
+
+        if (this.shape    ) copy.shape     = this.shape    .copy();
+        if (this.amplitude) copy.amplitude = this.amplitude.copy();
+        if (this.frequency) copy.frequency = this.frequency.copy();
+        if (this.offset   ) copy.offset    = this.offset   .copy();
+        if (this.bias     ) copy.bias      = this.bias     .copy();
+
+        if (this.current) copy.current = this.current.copy();
+
+        return copy;
+    }
+
+
+
+    async eval(parse)
+    {
+        if (this.isCached())
+            return this;
+            
+
+        const shape  = (await this.shape    .eval(parse)).toValue();
+        const amp    = (await this.amplitude.eval(parse)).toValue();
+        const freq   = (await this.frequency.eval(parse)).toValue();
+        const offset = (await this.offset   .eval(parse)).toValue();
+        const bias   = (await this.bias     .eval(parse)).toValue();
+    
+
+        const repeat    = parse.repeats.find(r => r.repeatId == this.loopId);
+        const iteration = repeat ? repeat.iteration : 0;
+
+ 
+        let t;
+        
+        
+        if (repeat)
+        {
+            t = (iteration/repeat.total - offset.value) * freq.value;
+
+            switch (shape.value)
+            {
+                case 0: t = (t%1) < 0.5 ? 1 : -1;      break; // square
+                case 1: t = (1 - (t%1)*2);             break; // saw
+                case 2: t = ((t%1)*2 - 1);             break; // back saw
+                case 3: t = 1 - 2*Math.abs(2*(t%1)-1); break; // triangle
+                case 4: t = Math.sin(t * Tau);         break; // sine
+            }
+        }
+        else 
+            t = 0;
+
+        
+        const b = bias.value / 100;
+
+        if (b >= 0) t = t / (1+b) + b/2;
+        else        t = t / (1-b) + b/2;
+
+
+        t = t * amp.value;
+
+
+        this.value = new NumberValue(t);
+
+
+        this.setUpdateValues(parse,
+        [
+            ['shape',     shape ],
+            ['amplitude', amp   ],
+            ['frequency', freq  ],
+            ['offset',    offset],
+            ['bias',      bias  ]
+        ]);
+
+
+        this.validate();
+
+        return this;
+    }
+
+
+
+    toValue()
+    {
+        return this.value
+             ? this.value.copy()
+             : null;
+    }
+
+
+
+    isValid()
+    {
+        return this.shape     && this.shape    .isValid()
+            && this.amplitude && this.amplitude.isValid()
+            && this.frequency && this.frequency.isValid()
+            && this.offset    && this.offset   .isValid()
+            && this.bias      && this.bias     .isValid();
+    }
+
+
+
+    pushValueUpdates(parse)
+    {
+        super.pushValueUpdates(parse);
+
+        if (this.shape    ) this.shape    .pushValueUpdates(parse);
+        if (this.amplitude) this.amplitude.pushValueUpdates(parse);
+        if (this.frequency) this.frequency.pushValueUpdates(parse);
+        if (this.offset   ) this.offset   .pushValueUpdates(parse);
+        if (this.bias     ) this.bias     .pushValueUpdates(parse);
+    }
+
+
+
+    invalidateInputs(parse, from, force)
+    {
+        super.invalidateInputs(parse, from, force);
+
+        if (this.shape    ) this.shape    .invalidateInputs(parse, from, force);
+        if (this.amplitude) this.amplitude.invalidateInputs(parse, from, force);
+        if (this.frequency) this.frequency.invalidateInputs(parse, from, force);
+        if (this.offset   ) this.offset   .invalidateInputs(parse, from, force);
+        if (this.bias     ) this.bias     .invalidateInputs(parse, from, force);
+    }
+
+
+
+    iterateLoop(parse)
+    {
+        super.iterateLoop(parse);
+
+        if (this.shape    ) this.shape    .iterateLoop(parse);
+        if (this.amplitude) this.amplitude.iterateLoop(parse);
+        if (this.frequency) this.frequency.iterateLoop(parse);
+        if (this.offset   ) this.offset   .iterateLoop(parse);
+        if (this.bias     ) this.bias     .iterateLoop(parse);
+    }
+}
+
 
 
 class GRandom
@@ -40824,6 +41171,56 @@ function genParseLimits(parse)
 
 
 
+function genParseNumberCurve(parse)
+{
+    const [, nodeId, options, ignore] = genParseNodeStart(parse);
+
+
+    const curve = new GNumberCurve(nodeId, options);
+   
+
+    let nInputs = -1;
+    
+    if (!ignore)
+    {
+        nInputs = parseInt(parse.move());
+        consoleAssert(nInputs == 0 || nInputs == 1, 'nInputs must be [0, 1]');
+    }
+
+    
+    if (parse.settings.logRequests) 
+        logReq(curve, parse, ignore, nInputs);
+
+
+    if (ignore) 
+    {
+        genParseNodeEnd(parse, curve);
+        return parse.parsedNodes.find(n => n.nodeId == nodeId);
+    }
+
+
+    parse.nTab++;
+
+
+    if (nInputs == 1)
+        curve.input = genParse(parse);
+
+    curve.min    = genParse(parse);
+    curve.max    = genParse(parse);
+    curve.power  = genParse(parse);
+    curve.bias   = genParse(parse);
+    curve.spread = genParse(parse);
+
+    
+    parse.nTab--;
+
+
+    genParseNodeEnd(parse, curve);
+    return curve;
+}
+
+
+
 function genParseNaNisNumber(parse)
 {
     const [, nodeId, options, ignore] = genParseNodeStart(parse);
@@ -41119,6 +41516,44 @@ function genParseRange(parse)
 
     genParseNodeEnd(parse, dist);
     return dist;
+}
+
+
+
+function genParseWave(parse)
+{
+    const [, nodeId, options, ignore] = genParseNodeStart(parse);
+
+
+    const wave = new GWave(nodeId, options);
+
+
+    if (parse.settings.logRequests) 
+        logReq(wave, parse, ignore);
+
+
+    if (ignore) 
+    {
+        genParseNodeEnd(parse, wave);
+        return parse.parsedNodes.find(n => n.nodeId == nodeId);
+    }
+
+
+    parse.nTab++;
+
+
+    wave.shape     = genParse(parse);
+    wave.amplitude = genParse(parse);
+    wave.frequency = genParse(parse);
+    wave.offset    = genParse(parse);
+    wave.bias      = genParse(parse);
+
+
+    parse.nTab--;
+
+
+    genParseNodeEnd(parse, wave);
+    return wave;
 }
 
 
@@ -44674,11 +45109,13 @@ function genParse(parse, inParam = true)
     else if (parse.next == NUMBER_ROUND           ) result = genParseRound             (parse);
     else if (parse.next == NUMBER_MINMAX          ) result = genParseMinMax            (parse);
     else if (parse.next == NUMBER_LIMITS          ) result = genParseLimits            (parse);
+    else if (parse.next == NUMBER_CURVE           ) result = genParseNumberCurve       (parse);
     else if (parse.next == NUMBER_NAN             ) result = genParseNaNisNumber       (parse);
     else if (parse.next == NUMBER_CONSTANT        ) result = genParseConstant          (parse);
     else if (parse.next == NUMBER_DATETIME        ) result = genParseDateTime          (parse);
     else if (parse.next == NUMBER_SEQUENCE        ) result = genParseSequence          (parse);
     else if (parse.next == NUMBER_RANGE           ) result = genParseRange             (parse);
+    else if (parse.next == NUMBER_WAVE            ) result = genParseWave              (parse);
     else if (parse.next == NUMBER_RANDOM          ) result = genParseRandom            (parse);
     else if (parse.next == NUMBER_NOISE           ) result = genParseNoise             (parse);
     else if (parse.next == NUMBER_PROBABILITY     ) result = genParseProbability       (parse);

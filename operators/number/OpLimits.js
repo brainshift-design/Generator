@@ -18,8 +18,8 @@ extends OperatorWithValue
         this.addOutput(new Output([NUMBER_VALUE], this.output_genRequest));
 
         this.addParam(this.paramValue);
-        this.addParam(this.paramMin = new NumberParam('min', 'min', true, true, true,    0));
-        this.addParam(this.paramMax = new NumberParam('max', 'max', true, true, true, 1000));
+        this.addParam(this.paramMin = new NumberParam('min', 'min', true, true, true,   0));
+        this.addParam(this.paramMax = new NumberParam('max', 'max', true, true, true, 100));
 
         this.paramMin.divider = 0.42;
         this.paramMax.divider = 0.42;

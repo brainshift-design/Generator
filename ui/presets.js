@@ -86,6 +86,7 @@ function getPresetGraph(graphId)
 
         case 'sequence':             return presetSequence;
         case 'range':                return presetRange;
+        case 'wave':                 return presetWave;
         case 'define':               return presetDefine;
         case 'random':               return presetRandom;
         case 'noise':                return presetNoise;
@@ -125,6 +126,7 @@ function getPresetGraph(graphId)
         case 'colorSwatches':        return presetColorSwatches;
         case 'blurryBackgrounds':    return presetBlurryBackgrounds;
         case 'brickWall':            return presetBrickWall;
+        case 'cairoTiles':           return presetCairoTiles;
 
 
         case 'shapesStyles':         return presetShapesStyles;

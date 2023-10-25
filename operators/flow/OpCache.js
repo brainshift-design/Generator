@@ -6,7 +6,7 @@ extends OperatorBase
         super(CACHE, 'cache', 'cache', iconCache);
 
         this.canDisable  = true;
-        this.iconOffsetY = 1;
+        this.iconOffsetY = 2;
 
 
         this.addInput (new Input(ALL_VALUES));

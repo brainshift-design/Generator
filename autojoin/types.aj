@@ -104,12 +104,14 @@
 ../generator/types/number/GRound.js
 ../generator/types/number/GMinMax.js
 ../generator/types/number/GLimits.js
+../generator/types/number/GNumberCurve.js
 ../generator/types/number/GNaNisNumber.js
 ../generator/types/number/GConstant.js
 ../generator/types/number/GDateTime.js
 ../generator/types/number/GDefine.js
-../generator/types/number/GRange.js
 ../generator/types/number/GSequence.js
+../generator/types/number/GRange.js
+../generator/types/number/GWave.js
 ../generator/types/number/GRandom.js
 ../generator/types/number/GNoise.js
 ../generator/types/number/GProbability.js

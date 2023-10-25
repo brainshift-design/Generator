@@ -77,13 +77,15 @@
 ../operators/number/OpRound.js
 ../operators/number/OpMinMax.js
 ../operators/number/OpLimits.js
+../operators/number/OpNumberCurve.js
 ../operators/number/OpNaNisNumber.js
 ../operators/number/OpConstant.js
 
 ../operators/number/OpDateTime.js
 ../operators/number/OpDefine.js
-../operators/number/OpRange.js
 ../operators/number/OpSequence.js
+../operators/number/OpRange.js
+../operators/number/OpWave.js
 ../operators/number/OpRandom.js
 ../operators/number/OpNoise.js
 ../operators/number/OpProbability.js
