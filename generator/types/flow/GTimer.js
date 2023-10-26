@@ -2,6 +2,8 @@ class GTimer
 extends GOperator1
 {
     interval = null;
+   _while    = null;
+    loop     = null;
 
 
 
@@ -16,7 +18,9 @@ extends GOperator1
     {
         super.reset();
 
-        this.interval = null;
+        this. interval = null;
+        this._while    = null;
+        this. loop     = null;
     }
 
 
@@ -27,7 +31,9 @@ extends GOperator1
 
         copy.copyBase(this);
 
-        if (this.interval) copy.interval = this.interval.copy();
+        if (this. interval) copy. interval = this. interval.copy();
+        if (this._while   ) copy._while    = this._while   .copy();
+        if (this. loop    ) copy. loop     = this. loop    .copy();
 
         return copy;
     }
@@ -49,13 +55,27 @@ extends GOperator1
             return this;
 
 
-        const interval = (await this.interval.eval(parse)).toValue();
+        const  interval = (await this. interval.eval(parse)).toValue();
+        const _while    = (await this._while   .eval(parse)).toValue();
+        const  loop     = (await this. loop    .eval(parse)).toValue();
             
+
+        if (this.loop.type != NUMBER_VALUE) assertVolatile(this.loop, this);
+
+        if (_while.value == 0)
+            return this;
+
 
         if (this.input)
         {
+            this.input.invalidateInputs(parse, this, true);
+
             const input = (await this.input.eval(parse)).toValue();
+
             this.value = input ? input : NullValue;
+
+            if (this.loop.type != NUMBER_VALUE)
+                this.loop.iterateLoop(parse);
         }
         else
             this.value = NullValue.copy();
@@ -88,7 +108,8 @@ extends GOperator1
     isValid()
     {
         return super.isValid()
-            && this.interval && this.interval.isValid();
+            && this.interval && this.interval.isValid()
+            && this._while   && this._while  .isValid();
     }
 
 
@@ -97,7 +118,9 @@ extends GOperator1
     {
         super.pushValueUpdates(parse);
 
-        if (this.interval) this.interval.pushValueUpdates(parse);
+        if (this. interval) this. interval.pushValueUpdates(parse);
+        if (this._while   ) this._while   .pushValueUpdates(parse);
+        if (this. loop    ) this. loop    .pushValueUpdates(parse);
     }
 
 
@@ -106,7 +129,9 @@ extends GOperator1
     {
         super.invalidateInputs(parse, from, force);
 
-        if (this.interval) this.interval.invalidateInputs(parse, from, force);
+        if (this. interval) this. interval.invalidateInputs(parse, from, force);
+        if (this._while   ) this._while   .invalidateInputs(parse, from, force);
+        if (this. loop    ) this. loop    .invalidateInputs(parse, from, force);
     }
 
 
@@ -115,6 +140,8 @@ extends GOperator1
     {
         super.iterateLoop(parse);
 
-        if (this.interval) this.interval.iterateLoop(parse);
+        if (this. interval) this. interval.iterateLoop(parse);
+        if (this._while   ) this._while   .iterateLoop(parse);
+        if (this. loop    ) this. loop    .iterateLoop(parse);
     }
 }

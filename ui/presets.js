@@ -128,19 +128,19 @@ function getPresetGraph(graphId)
         case 'brickWall':            return presetBrickWall;
         case 'cairoTiles':           return presetCairoTiles;
 
-
+        
         case 'shapesStyles':         return presetShapesStyles;
         case 'basicTransform':       return presetBasicTransform;
         case 'combinedTransform':    return presetCombinedTransform;
         case 'feedback':             return presetFeedback;
-
+        
         case 'wobblyCircle':         return presetWobblyCircle;
         case 'roughStar':            return presetRoughStar;
         case 'nestedTorus':          return presetNestedTorus;
         case 'targets':              return presetTargets;
         case 'spiderWeb':            return presetSpiderWeb;
 
-
+        
         case 'basicVariables':       return presetBasicVariables;
 
 
@@ -158,5 +158,6 @@ function getPresetGraph(graphId)
         case 'clouds':               return presetClouds;
         case 'twistedTower':         return presetTwistedTower;
         case 'brushStrokes':         return presetBrushStrokes;
+        case 'gradientCircles':      return presetGradientCircles;
     }
 }

@@ -63,7 +63,6 @@ extends OperatorBase
         gen.scope.pop();
         pushUnique(gen.passedNodes, this.node);
 
-
         return request;
     }
 
@@ -97,7 +96,6 @@ extends OperatorBase
 
         this.paramWhile.controls[0].valueText = '﻿';
 
-
         const arrowStyle = darkMode ? 'white' : 'black';
         this.paramLoop.controls[0].valueText = '<svg width="25" height="11" viewBox="0 0 25 11" fill="none" xmlns="http://www.w3.org/2000/svg"><path fill-rule="evenodd" clip-rule="evenodd" d="M23.991 0H24.991L24.991 2C24.991 4.76142 22.7524 7 19.991 7H14V6H19.991C22.2001 6 23.991 4.20914 23.991 2L23.991 0Z" fill="'+arrowStyle+'"/><rect width="4.97369" height="1" transform="matrix(0.707107 -0.707107 -0.707107 -0.707107 13.7036 7.224)" fill="'+arrowStyle+'"/><rect width="5" height="1" transform="matrix(0.707107 0.707107 0.707107 -0.707107 12.991 6.54858)" fill="'+arrowStyle+'"/><circle cx="0.5" cy="6.5" r="0.5" fill="'+arrowStyle+'"/><circle cx="4.5" cy="6.5" r="0.5" fill="'+arrowStyle+'"/><circle cx="8.5" cy="6.5" r="0.5" fill="'+arrowStyle+'"/></svg>';
 
@@ -109,8 +107,7 @@ extends OperatorBase
     getHeaderColors(options = {})
     {
         const colors = super.getHeaderColors(options);
-
-        const type = this.outputs[0].types[0];
+        const type   = this.outputs[0].types[0];
 
         colors.input  = this.active ? rgb_a(colors.text, 0.4)  : rgb_a(rgbSaturateHsv(rgbFromType(type, true), 0.5), 0.8);
         colors.output = this.active ? rgb_a(colors.text, 0.35) : rgb_a(rgbSaturateHsv(rgbFromType(type, true), 0.5), 0.7);

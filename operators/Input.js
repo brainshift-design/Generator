@@ -219,8 +219,9 @@ extends EventTarget
     isLoop()
     {
         if (   this.param
-            && this.param.id  == 'loop'
-            && this.node.type == REPEAT)
+            && this.param.id == 'loop'
+            && (   this.node.type == REPEAT
+                || this.node.type == TIMER))
             return true;
 
         if (!this.param

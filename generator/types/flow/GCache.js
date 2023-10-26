@@ -36,6 +36,9 @@ extends GOperator1
 
     async eval(parse)
     {
+        if (!this.options.enabled)
+            this.cachedValue = null;
+            
         if (   this.isCached()
             && this.cachedValue)
             return this;
@@ -51,7 +54,8 @@ extends GOperator1
                 ? (await this.input.eval(parse)).toValue() 
                 : NullValue;
 
-            this.cachedValue = this.value.copy();
+            if (this.options.enabled)
+                this.cachedValue = this.value.copy();
         }
 
 

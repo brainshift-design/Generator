@@ -167,10 +167,17 @@ extends GNode
     {
         const repeatIndex = parse.repeats.findIndex(r => r.repeatId == this.loopId);
         
+        // if (this.nodeId == 'sequence')
+        // {
+        //     console.log('repeatIndex = ', repeatIndex);
+        //     console.log('this.iterated = ', this.iterated);
+        // }
+
         if (   (   repeatIndex < 0
                 || repeatIndex == parse.repeats.length-1)
             && !this.iterated)
         {
+            //console.log('iterating');
             this.iteration++;
             this.iterated = true;
         }

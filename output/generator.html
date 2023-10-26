@@ -4,7 +4,7 @@
 
 
 
-const generatorVersion = 256;
+const generatorVersion = 257;
 
 
 const MAX_INT32        = 2147483647;
@@ -8655,10 +8655,17 @@ extends GNode
     {
         const repeatIndex = parse.repeats.findIndex(r => r.repeatId == this.loopId);
         
+        // if (this.nodeId == 'sequence')
+        // {
+        //     console.log('repeatIndex = ', repeatIndex);
+        //     console.log('this.iterated = ', this.iterated);
+        // }
+
         if (   (   repeatIndex < 0
                 || repeatIndex == parse.repeats.length-1)
             && !this.iterated)
         {
+            //console.log('iterating');
             this.iteration++;
             this.iterated = true;
         }
@@ -15240,9 +15247,9 @@ extends GOperator1
     {
         super.reset();
 
-        this.count  = null;
+        this. count = null;
         this._while = null;
-        this.loop   = null;
+        this. loop  = null;
 
         this.iterationObjects = [];
     }
@@ -15255,10 +15262,10 @@ extends GOperator1
 
         copy.copyBase(this);
 
-        copy. value = this. value.copy();
-        copy. count = this. count.copy();
-        copy._while = this._while.copy();
-        copy. loop  = this. loop .copy();
+        if (this. value) copy. value = this. value.copy();
+        if (this. count) copy. count = this. count.copy();
+        if (this._while) copy._while = this._while.copy();
+        if (this. loop ) copy. loop  = this. loop .copy();
 
         return copy;
     }
@@ -15343,11 +15350,11 @@ extends GOperator1
 
                     this.input.invalidateInputs(parse, this, false);
 
-                    if (this.loop.type != NUMBER_VALUE)
-                    {
+                    //if (this.loop.type != NUMBER_VALUE)
+                    //{
                         //this.loop.invalidateInputs(parse, this, false);
                         //this.loop.iterateLoop(parse);
-                    }
+                    //}
                     
 
                     const input = (await this.input.eval(parse)).toValue();
@@ -15413,7 +15420,7 @@ extends GOperator1
 
 
                 if (this.loop.type != NUMBER_VALUE)
-                    this.loop.resetLoop(parse, this.nodeId);
+                    this.loop.resetLoop(parse, this.nodeId, true);
 
 
                 if (this.startTimer > -1)
@@ -15909,6 +15916,9 @@ extends GOperator1
 
     async eval(parse)
     {
+        if (!this.options.enabled)
+            this.cachedValue = null;
+            
         if (   this.isCached()
             && this.cachedValue)
             return this;
@@ -15924,7 +15934,8 @@ extends GOperator1
                 ? (await this.input.eval(parse)).toValue() 
                 : NullValue;
 
-            this.cachedValue = this.value.copy();
+            if (this.options.enabled)
+                this.cachedValue = this.value.copy();
         }
 
 
@@ -16069,6 +16080,8 @@ class GTimer
 extends GOperator1
 {
     interval = null;
+   _while    = null;
+    loop     = null;
 
 
 
@@ -16083,7 +16096,9 @@ extends GOperator1
     {
         super.reset();
 
-        this.interval = null;
+        this. interval = null;
+        this._while    = null;
+        this. loop     = null;
     }
 
 
@@ -16094,7 +16109,9 @@ extends GOperator1
 
         copy.copyBase(this);
 
-        if (this.interval) copy.interval = this.interval.copy();
+        if (this. interval) copy. interval = this. interval.copy();
+        if (this._while   ) copy._while    = this._while   .copy();
+        if (this. loop    ) copy. loop     = this. loop    .copy();
 
         return copy;
     }
@@ -16116,13 +16133,27 @@ extends GOperator1
             return this;
 
 
-        const interval = (await this.interval.eval(parse)).toValue();
+        const  interval = (await this. interval.eval(parse)).toValue();
+        const _while    = (await this._while   .eval(parse)).toValue();
+        const  loop     = (await this. loop    .eval(parse)).toValue();
             
+
+        if (this.loop.type != NUMBER_VALUE) assertVolatile(this.loop, this);
+
+        if (_while.value == 0)
+            return this;
+
 
         if (this.input)
         {
+            this.input.invalidateInputs(parse, this, true);
+
             const input = (await this.input.eval(parse)).toValue();
+
             this.value = input ? input : NullValue;
+
+            if (this.loop.type != NUMBER_VALUE)
+                this.loop.iterateLoop(parse);
         }
         else
             this.value = NullValue.copy();
@@ -16155,7 +16186,8 @@ extends GOperator1
     isValid()
     {
         return super.isValid()
-            && this.interval && this.interval.isValid();
+            && this.interval && this.interval.isValid()
+            && this._while   && this._while  .isValid();
     }
 
 
@@ -16164,7 +16196,9 @@ extends GOperator1
     {
         super.pushValueUpdates(parse);
 
-        if (this.interval) this.interval.pushValueUpdates(parse);
+        if (this. interval) this. interval.pushValueUpdates(parse);
+        if (this._while   ) this._while   .pushValueUpdates(parse);
+        if (this. loop    ) this. loop    .pushValueUpdates(parse);
     }
 
 
@@ -16173,7 +16207,9 @@ extends GOperator1
     {
         super.invalidateInputs(parse, from, force);
 
-        if (this.interval) this.interval.invalidateInputs(parse, from, force);
+        if (this. interval) this. interval.invalidateInputs(parse, from, force);
+        if (this._while   ) this._while   .invalidateInputs(parse, from, force);
+        if (this. loop    ) this. loop    .invalidateInputs(parse, from, force);
     }
 
 
@@ -16182,7 +16218,9 @@ extends GOperator1
     {
         super.iterateLoop(parse);
 
-        if (this.interval) this.interval.iterateLoop(parse);
+        if (this. interval) this. interval.iterateLoop(parse);
+        if (this._while   ) this._while   .iterateLoop(parse);
+        if (this. loop    ) this. loop    .iterateLoop(parse);
     }
 }
 
@@ -39833,6 +39871,8 @@ function genParseTimer(parse)
 
 
     timer.interval = genParse(parse);
+    timer._while   = genParse(parse);
+    timer. loop    = genParse(parse);  // don't set target here
 
 
     parse.nTab--;

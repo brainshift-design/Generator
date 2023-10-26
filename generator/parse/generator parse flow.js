@@ -1063,6 +1063,8 @@ function genParseTimer(parse)
 
 
     timer.interval = genParse(parse);
+    timer._while   = genParse(parse);
+    timer. loop    = genParse(parse);  // don't set target here
 
 
     parse.nTab--;

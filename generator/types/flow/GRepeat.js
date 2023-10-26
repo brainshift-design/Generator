@@ -20,9 +20,9 @@ extends GOperator1
     {
         super.reset();
 
-        this.count  = null;
+        this. count = null;
         this._while = null;
-        this.loop   = null;
+        this. loop  = null;
 
         this.iterationObjects = [];
     }
@@ -35,10 +35,10 @@ extends GOperator1
 
         copy.copyBase(this);
 
-        copy. value = this. value.copy();
-        copy. count = this. count.copy();
-        copy._while = this._while.copy();
-        copy. loop  = this. loop .copy();
+        if (this. value) copy. value = this. value.copy();
+        if (this. count) copy. count = this. count.copy();
+        if (this._while) copy._while = this._while.copy();
+        if (this. loop ) copy. loop  = this. loop .copy();
 
         return copy;
     }
@@ -123,11 +123,11 @@ extends GOperator1
 
                     this.input.invalidateInputs(parse, this, false);
 
-                    if (this.loop.type != NUMBER_VALUE)
-                    {
+                    //if (this.loop.type != NUMBER_VALUE)
+                    //{
                         //this.loop.invalidateInputs(parse, this, false);
                         //this.loop.iterateLoop(parse);
-                    }
+                    //}
                     
 
                     const input = (await this.input.eval(parse)).toValue();
@@ -193,7 +193,7 @@ extends GOperator1
 
 
                 if (this.loop.type != NUMBER_VALUE)
-                    this.loop.resetLoop(parse, this.nodeId);
+                    this.loop.resetLoop(parse, this.nodeId, true);
 
 
                 if (this.startTimer > -1)
