@@ -127,36 +127,36 @@ function manageLastSub(userId, enable)
 
 
 
-function startFreeTrial()
-{
-    uiSetLocalData('eula', 'true');
+// function startFreeTrial()
+// {
+//     uiSetLocalData('eula', 'true');
 
 
-    // postToServer(
-    // {
-    //     action: 'createTrial',
-    //     userId:  currentUser.id
-    // })
-    // .then(response =>
-    // {
-    //     consoleAssert(response, 'invalid response from server @ createTrial()');
+//     // postToServer(
+//     // {
+//     //     action: 'createTrial',
+//     //     userId:  currentUser.id
+//     // })
+//     // .then(response =>
+//     // {
+//     //     consoleAssert(response, 'invalid response from server @ createTrial()');
 
-    //     if (response.result)
-           initGenerator();
-    // })
-    // .catch(e =>
-    // {
-    //     console.error(e);
-    //     throw e;
-    // });
-}
+//     //     if (response.result)
+//            initGenerator();
+//     // })
+//     // .catch(e =>
+//     // {
+//     //     console.error(e);
+//     //     throw e;
+//     // });
+// }
 
 
 
 function postToServer(cmd)
 {
     return fetch(
-        'https://brainshift.design/generator/license/',
+        'https://brainshift.design/license/',
         {
             method:  'POST',
             headers: { 'Content-Type': 'application/json' },

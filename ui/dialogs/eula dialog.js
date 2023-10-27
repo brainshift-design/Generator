@@ -165,3 +165,14 @@ function updateEulaScrollY(x, w, h, bounds, yOffset)
     else
        eulaScrollbarY.style.display = 'none';
 }
+
+
+
+function btnStartTrial_onclick()
+{
+    btnStartTrial.blur(); 
+    hideAllMenus(); 
+    
+    uiSetLocalData('eula', 'true');
+    hideEulaDialog();
+}

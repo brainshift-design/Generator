@@ -26,8 +26,8 @@
     transform:     translateX(-50%)
                    translateY(-50%);
 
-    width:         400px;
-    height:        226px;
+    width:         370px;
+    height:        235px;
     
     color:         var(--figma-color-text);
     background:    var(--figma-color-bg);
@@ -203,15 +203,49 @@
 }
 
 
+#subEmail
+{
+    position:      absolute;
+    left:          50%;
+    transform:     translateX(-50%);
+    top:           64px;
+    width:         250px;
+    padding:       13px 6px 13px 6px;
+    box-shadow:    0 1px 0 0 var(--figma-color-bg-tertiary);
+}
+
+#subEmail:hover
+{
+    box-shadow:    0 0 0 1px var(--figma-color-bg-tertiary);
+}
+
+#subLicenseKey
+{
+    position:      absolute;
+    left:          50%;
+    transform:     translateX(-50%);
+    top:           97px;
+    width:         250px;
+    padding:       13px 6px 13px 6px;
+    box-shadow:    0 1px 0 0 var(--figma-color-bg-tertiary);
+}
+
+#subLicenseKey:hover
+{
+    box-shadow:    0 0 0 1px var(--figma-color-bg-tertiary);
+}
+
+
 #validateProductKeyButton
 {
-    width:          138px;
+    width:          100px;
 
     position:       absolute;
+    
     left:           50%;
     transform:      translateX(-50%);
 
-    top:            147px;
+    top:            149px;
 }
 
 
@@ -226,8 +260,8 @@
 
     position:       absolute;
     left:           50%;
-    top:            200px;
     transform:      translateX(-50%);
+    top:            176px;
 
     color:          var(--figma-color-bg-disabled);
 }

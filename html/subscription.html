@@ -17,13 +17,14 @@
 
         <div id='subscriptionBody'>
             <!-- <div id='subscriptionUserName'></div> -->
-            <div id='subscriptionUserId' ondblclick='copyUserId()'></div>
-            <div id='subscriptionTextBack'></div>
-            <div id='subscriptionInputBack'></div>
-            <input type='text' spellcheck='false' id='subscriptionInput' />
+            <!-- <div id='subscriptionUserId' ondblclick='copyUserId()'></div> -->
+            <!-- <div id='subscriptionTextBack'></div>
+            <div id='subscriptionInputBack'></div> -->
+            <input type='text' spellcheck='false' id='subEmail'      placeholder='email' />
+            <input type='text' spellcheck='false' id='subLicenseKey' placeholder='license key' />
             <div id='licenseInfo'></div>
-            <div class='button' id='validateProductKeyButton' onclick='onValidateClick(subscriptionInput.value);'>Validate</div>
-            <div id='subscribeWebsite'><!--<a href='http://www.bourt.com/generator/subscribe' target='_blank'>-->Subscribe to get Pro features<!--</a>--></div>
+            <div class='button' id='validateProductKeyButton' onclick='onValidateClick();'>Validate</div>
+            <div id='subscribeWebsite'><a href='https://brainshift.design/generator' target='_blank'>Subscribe to get Pro features</div>
         </div>
     </div>
 

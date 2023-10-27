@@ -5,44 +5,44 @@ var subscriptionDialogShown = false;
 
 
 
-function onSubscribeClick()
+function onValidateClick()
 {
-    let checkoutSession = arrayToBase32(sign(hashLicenseString(
-        currentUser.id + (new Date().getTime()).toString(),
-        30), licenseKeys.private));
+    // let checkoutSession = arrayToBase32(sign(hashLicenseString(
+    //     currentUser.id + (new Date().getTime()).toString(),
+    //     30), licenseKeys.private));
 
 
     postToServer(
     {
-        action: 'createCheckout',
-        userId:  currentUser.id,
-        session: checkoutSession
+        action:    'validateSubscription',
+        userId:     currentUser.id,
+        email:      subEmail.value.trim(),
+        licenseKey: subLicenseKey.value.trim()
     })
     .then(response =>
     {    
-        console.log('response.result =', response.result);
         if (   response
             && response.result)
         {
-            window.open('https://brainshift.design/generator/checkout.html?' + checkoutSession, '_blank');
+            // window.open('https://brainshift.design/generator/checkout.html?' + checkoutSession, '_blank');
 
-            checkoutTimer = setInterval(() => 
-            {
-                checkLastSub().then(lastSub =>
-                {
-                    if (   lastSub
-                        && lastSub.daysLeft > 0)
-                        uiRestartGenerator(false);
-                });
-            }, 
-            4000);
+            // checkoutTimer = setInterval(() => 
+            // {
+            //     checkLastSub().then(lastSub =>
+            //     {
+            //         if (   lastSub
+            //             && lastSub.daysLeft > 0)
+            //             uiRestartGenerator(false);
+            //     });
+            // }, 
+            // 4000);
         }
         else
-            console.error('Could not create Generator checkout session.')
+            uiError('Error: Could not validate subscription.')
     })
     .catch(error =>
     {
-        console.error('Could not create Generator checkout session.')
+        uiError('Error: Could not validate subscription.')
     });
 }
 
@@ -55,7 +55,7 @@ function showSubscriptionDialog(showBack = true)
 
     subscriptionBack.style.backgroundColor = showBack ? '#0005' : 'transparent';
     
-    subscriptionUserId.innerHTML = '<span style="user-select: none; color: var(--figma-color-bg-disabled-secondary);">User ID:&nbsp;&nbsp;</span>' + currentUser.id;
+    //subscriptionUserId.innerHTML = '<span style="user-select: none; color: var(--figma-color-bg-disabled-secondary);">User ID:&nbsp;&nbsp;</span>' + currentUser.id;
     
     
     const license = 
@@ -64,17 +64,17 @@ function showSubscriptionDialog(showBack = true)
         : null;
 
     
-    subscriptionInputBack.innerHTML = license ? '' : '•'.repeat(13);
+    //subscriptionInputBack.innerHTML = license ? '' : '•'.repeat(13);
     
-    subscriptionInput.value         = subscription;
-    subscriptionInput.disabled      = license;
+    // subscriptionInput.value         = subscription;
+    // subscriptionInput.disabled      = license;
     
-    subscriptionInput.style.display = license ? 'none' : 'inline'
+    // subscriptionInput.style.display = license ? 'none' : 'inline'
 
-    updateLicenseInfo(license);
+    //updateLicenseInfo(license);
     
-    subscriptionTextBack.style.display   = license ? 'none' : 'inline';
-    validateProductKeyButton.innerHTML = license ? 'Edit' : 'Validate';
+    //subscriptionTextBack.style.display   = license ? 'none' : 'inline';
+    // validateProductKeyButton.innerHTML = license ? 'Edit' : 'Validate';
 
 
     if (license) setDisabledSubscriptionInput();
@@ -118,117 +118,127 @@ subscriptionClose.addEventListener('pointerdown', e => e.stopPropagation());
 subscriptionClose.addEventListener('pointerdown', e => e.stopPropagation());
 subscriptionBack.addEventListener('pointerdown', () => { hideSubscriptionDialog(); });
 
-subscriptionInput.addEventListener('pointerdown', e => 
-{ 
-    if (!subscriptionInput.disabled)
-    {
-        setDefaultSubscriptionInput(); 
+// subscriptionInput.addEventListener('pointerdown', e => 
+// { 
+//     // if (!subscriptionInput.disabled)
+//     // {
+//     //     setDefaultSubscriptionInput(); 
 
-        const sub = 
-               subscription != NULL
-            && (      subscriptionInput.selectionStart == subscriptionInput.selectionEnd
-                   && subscriptionInput.value == subscription
-                || getSelectedText(subscriptionInput) == subscription);
+//     //     const sub = 
+//     //            subscription != NULL
+//     //         && (      subscriptionInput.selectionStart == subscriptionInput.selectionEnd
+//     //                && subscriptionInput.value == subscription
+//     //             || getSelectedText(subscriptionInput) == subscription);
 
-        if (e.button == 2)
-        {
-            e.preventDefault();
-            e.stopPropagation();
+//     //     if (e.button == 2)
+//     //     {
+//     //         e.preventDefault();
+//     //         e.stopPropagation();
 
-            updateElementDisplay(menuItemLicenseSep1  .div, sub);
-            updateElementDisplay(menuItemLicenseRemove.div, sub);
+//     //         updateElementDisplay(menuItemLicenseSep1  .div, sub);
+//     //         updateElementDisplay(menuItemLicenseRemove.div, sub);
 
-            menuRemoveLicense.showAt(e.clientX, e.clientY, false, false);
-        }
-    }
-});
+//     //         menuRemoveLicense.showAt(e.clientX, e.clientY, false, false);
+//     //     }
+//     // }
+// });
 
 
 
-subscriptionInput.addEventListener('keydown', e =>
+subEmail.addEventListener('keydown', e =>
 {
-    if (e.code == 'Escape')
-        subscriptionInput.blur();
+    // if (e.code == 'Escape')
+    //     subscriptionInput.blur();
 
     e.stopPropagation();
 });
 
 
 
-subscriptionInput.addEventListener('input', () =>
+subLicenseKey.addEventListener('keydown', e =>
 {
-    let val = subscriptionInput.value;
-    
-    val = val.toUpperCase();
-    val = val.replace(/[^12345679ABCDEFGHJKLMNPQRSTUVWXYZ]/g, '');
-    val = val.substring(0, Math.min(val.length, 13));
-    
-    subscriptionInput.value = val;
+    // if (e.code == 'Escape')
+    //     subscriptionInput.blur();
 
-    updateSubscriptionDots();
+    e.stopPropagation();
 });
+
+
+
+// subscriptionInput.addEventListener('input', () =>
+// {
+//     // let val = subscriptionInput.value;
+    
+//     // val = val.toUpperCase();
+//     // val = val.replace(/[^12345679ABCDEFGHJKLMNPQRSTUVWXYZ]/g, '');
+//     // val = val.substring(0, Math.min(val.length, 13));
+    
+//     // subscriptionInput.value = val;
+
+//     // updateSubscriptionDots();
+// });
 
 
 
 function updateSubscriptionDots()
 {
-    subscriptionInputBack.innerHTML = 
-          '&nbsp;'.repeat(subscriptionInput.value.length)
-        + '•'.repeat(13 - subscriptionInput.value.length);
+    // subscriptionInputBack.innerHTML = 
+    //       '&nbsp;'.repeat(subscriptionInput.value.length)
+    //     + '•'.repeat(13 - subscriptionInput.value.length);
 }
 
 
 
 function setBadSubscriptionInput()
 {
-    subscriptionInput.style.outline   = '2px dashed #e00';        
-    subscriptionTextBack.style.display = 'none';
+    // subscriptionInput.style.outline   = '2px dashed #e00';        
+    // subscriptionTextBack.style.display = 'none';
 }
 
 
 
 function setDefaultSubscriptionInput()
 {
-    subscriptionInput.style.outline    = 'none';
-    subscriptionTextBack.style.display = 'inline';
+    // subscriptionInput.style.outline    = 'none';
+    // subscriptionTextBack.style.display = 'inline';
 }
 
 
 
 function setDisabledSubscriptionInput()
 {
-    subscriptionInput.style.outline   = 'none';
+    // subscriptionInput.style.outline   = 'none';
 }
 
 
 
-function tryValidateLicense(key)
-{
-    let license;
+// function tryValidateLicense(key)
+// {
+//     let license;
 
-    if (license = validateLicense(currentUser.id, key))
-    {
-        subscription = key;
-        uiSetLocalData('subscription', key);
+//     if (license = validateLicense(currentUser.id, key))
+//     {
+//         subscription = key;
+//         uiSetLocalData('subscription', key);
 
-        enableFeatures(subscribed()/*subscription != NULL*/, settings.enableBetaFeatures);
+//         enableFeatures(subscribed()/*subscription != NULL*/, settings.enableBetaFeatures);
         
-        setDisabledSubscriptionInput();
-        updateLicenseInfo(license);
+//         setDisabledSubscriptionInput();
+//         updateLicenseInfo(license);
 
-        subscriptionInput.disabled           = true;
-        subscriptionTextBack.style.display   = 'none';
-        subscriptionInput   .style.display   = 'none';
+//         subscriptionInput.disabled           = true;
+//         subscriptionTextBack.style.display   = 'none';
+//         subscriptionInput   .style.display   = 'none';
 
-        validateProductKeyButton.innerHTML = 'Edit';
+//         validateProductKeyButton.innerHTML = 'Edit';
 
-        uiNotify('✨   Thank you for subscribing to Generator !   ✨', {delay: 6000});
-    }
-    else
-    {
-        setBadSubscriptionInput();
-    }
-}
+//         uiNotify('✨   Thank you for subscribing to Generator !   ✨', {delay: 6000});
+//     }
+//     else
+//     {
+//         setBadSubscriptionInput();
+//     }
+// }
 
 
 
