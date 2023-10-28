@@ -51,7 +51,11 @@ extends GShape
         if (   children
             && SHAPE_VALUES.includes(children.type)
             && children.type != SHAPE_LIST_VALUE)
-            children = new ListValue([children]);
+        {
+            const objects    = children.objects;
+            children         = new ListValue([children]);
+            children.objects = objects;
+        }
 
 
         let input = null;
@@ -135,17 +139,9 @@ extends GShape
                 x, y, w, h, r);
 
 
-            // if (isListType(this.value.type))
-            // {
-            //     console.log('this.value.children =', this.value.children);
-            //     for (let i = 0; i < this.value.children.objects.length; i++)
-            //         this.addChildObject(frame.children, this.value.children.objects[i]);
-            // }
-            // else
-            // {
-                for (let i = 0; i < this.value.objects.length; i++)
-                    this.addChildObject(frame.children, this.value.objects[i]);
-            // }
+            //console.log('this.value.objects =', [...this.value.objects]);
+            for (let i = 0; i < this.value.objects.length; i++)
+                this.addChildObject(frame.children, this.value.objects[i]);
 
 
             frame.createDefaultTransform(x, y);

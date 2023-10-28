@@ -21,18 +21,18 @@ async function figCreateObject(genObj, addObject = null)
 
     switch (genObj[FO_TYPE])
     {
-        case RECTANGLE:      figObj =       figCreateRect         (genObj);  break;
-        case LINE:           figObj =       figCreateLine         (genObj);  break;
-        case ELLIPSE:        figObj =       figCreateEllipse      (genObj);  break;
-        case POLYGON:        figObj =       figCreatePolygon      (genObj);  break;
-        case STAR:           figObj =       figCreateStar         (genObj);  break;
+        case RECTANGLE:      figObj = await figCreateRect         (genObj);  break;
+        case LINE:           figObj = await figCreateLine         (genObj);  break;
+        case ELLIPSE:        figObj = await figCreateEllipse      (genObj);  break;
+        case POLYGON:        figObj = await figCreatePolygon      (genObj);  break;
+        case STAR:           figObj = await figCreateStar         (genObj);  break;
         case TEXT_SHAPE:     figObj = await figCreateText         (genObj);  break;
-        case POINT:          figObj =       figCreatePoint        (genObj);  break;
-        case VECTOR_PATH:    figObj =       figCreateVectorPath   (genObj);  break;
-        case VECTOR_NETWORK: figObj =       figCreateVectorNetwork(genObj);  break;
-        case BOOLEAN:        figObj =       figCreateBoolean      (genObj);  break;
-        case SHAPE_GROUP:    figObj =       figCreateShapeGroup   (genObj);  break;
-        case FRAME:          figObj =       figCreateFrame        (genObj);  break;
+        case POINT:          figObj = await figCreatePoint        (genObj);  break;
+        case VECTOR_PATH:    figObj = await figCreateVectorPath   (genObj);  break;
+        case VECTOR_NETWORK: figObj = await figCreateVectorNetwork(genObj);  break;
+        case BOOLEAN:        figObj = await figCreateBoolean      (genObj);  break;
+        case SHAPE_GROUP:    figObj = await figCreateShapeGroup   (genObj);  break;
+        case FRAME:          figObj = await figCreateFrame        (genObj);  break;
     }
 
 

@@ -23,7 +23,7 @@ function noNodeTag(key) { return noTag(key, nodeTag); }
 function noConnTag(key) { return noTag(key, connTag); }
 
 
-const generatorVersion = 257;
+const generatorVersion = 259;
 
 
 const MAX_INT32        = 2147483647;
@@ -3488,18 +3488,18 @@ async function figCreateObject(genObj, addObject = null)
 
     switch (genObj[FO_TYPE])
     {
-        case RECTANGLE:      figObj =       figCreateRect         (genObj);  break;
-        case LINE:           figObj =       figCreateLine         (genObj);  break;
-        case ELLIPSE:        figObj =       figCreateEllipse      (genObj);  break;
-        case POLYGON:        figObj =       figCreatePolygon      (genObj);  break;
-        case STAR:           figObj =       figCreateStar         (genObj);  break;
+        case RECTANGLE:      figObj = await figCreateRect         (genObj);  break;
+        case LINE:           figObj = await figCreateLine         (genObj);  break;
+        case ELLIPSE:        figObj = await figCreateEllipse      (genObj);  break;
+        case POLYGON:        figObj = await figCreatePolygon      (genObj);  break;
+        case STAR:           figObj = await figCreateStar         (genObj);  break;
         case TEXT_SHAPE:     figObj = await figCreateText         (genObj);  break;
-        case POINT:          figObj =       figCreatePoint        (genObj);  break;
-        case VECTOR_PATH:    figObj =       figCreateVectorPath   (genObj);  break;
-        case VECTOR_NETWORK: figObj =       figCreateVectorNetwork(genObj);  break;
-        case BOOLEAN:        figObj =       figCreateBoolean      (genObj);  break;
-        case SHAPE_GROUP:    figObj =       figCreateShapeGroup   (genObj);  break;
-        case FRAME:          figObj =       figCreateFrame        (genObj);  break;
+        case POINT:          figObj = await figCreatePoint        (genObj);  break;
+        case VECTOR_PATH:    figObj = await figCreateVectorPath   (genObj);  break;
+        case VECTOR_NETWORK: figObj = await figCreateVectorNetwork(genObj);  break;
+        case BOOLEAN:        figObj = await figCreateBoolean      (genObj);  break;
+        case SHAPE_GROUP:    figObj = await figCreateShapeGroup   (genObj);  break;
+        case FRAME:          figObj = await figCreateFrame        (genObj);  break;
     }
 
 
@@ -4705,12 +4705,12 @@ function genBooleanIsValid(genBool)
 
 
 
-function figCreateBoolean(genBool)
+async function figCreateBoolean(genBool)
 {
     let objects = [];
 
     for (const obj of genBool.children)
-        figCreateObject(obj, o => objects = [...objects, o]);
+        await figCreateObject(obj, o => objects = [...objects, o]);
 
 
     let figBool = null;
@@ -4773,7 +4773,7 @@ function genEllipseIsValid(genEllipse)
 
 
 
-function figCreateEllipse(genEllipse)
+async function figCreateEllipse(genEllipse)
 {
     if (!genEllipseIsValid(genEllipse))
         return null;
@@ -4797,7 +4797,7 @@ function figCreateEllipse(genEllipse)
 
 
 
-function figUpdateEllipse(figEllipse, genEllipse)
+async function figUpdateEllipse(figEllipse, genEllipse)
 {
     figUpdateEllipseData(figEllipse, genEllipse);
 
@@ -4830,7 +4830,7 @@ function genFrameIsValid(genFrame)
 
 
 
-function figCreateFrame(genFrame)
+async function figCreateFrame(genFrame)
 {
     if (!genFrameIsValid(genFrame))
         return null;
@@ -4847,8 +4847,9 @@ function figCreateFrame(genFrame)
         let objects = [];
 
         for (const obj of genFrame[FO_FRAME_CHILDREN])
-            figCreateObject(obj, o => objects = [...objects, o]);
+            await figCreateObject(obj, o => objects = [...objects, o]);
 
+        console.log('objects =', objects);
         for (const obj of objects)
             figFrame.appendChild(obj);
     }
@@ -4884,12 +4885,12 @@ function genShapeGroupIsValid(genGroup)
 
 
 
-function figCreateShapeGroup(genGroup)
+async function figCreateShapeGroup(genGroup)
 {
     let objects = [];
 
     for (const obj of genGroup[FO_GROUP_CHILDREN])
-        figCreateObject(obj, o => objects = [...objects, o]);
+        await figCreateObject(obj, o => objects = [...objects, o]);
 
 
     const figGroup = 
@@ -4933,7 +4934,7 @@ function genLineIsValid(genLine)
 
 
 
-function figCreateLine(genLine)
+async function figCreateLine(genLine)
 {
     if (!genLineIsValid(genLine))
         return null;
@@ -4948,7 +4949,7 @@ function figCreateLine(genLine)
 
 
 
-function figUpdateLine(figLine, genLine)
+async function figUpdateLine(figLine, genLine)
 {
     setObjectTransform(figLine, genLine, true, 0);
     setObjectProps    (figLine, genLine);
@@ -4968,7 +4969,7 @@ function genPointIsValid(genPoint)
 
 
 
-function figCreatePoint(genPoint)
+async function figCreatePoint(genPoint)
 {    
     const figPoint = 
         genPoint[FO_POINT_IS_CENTER]
@@ -4997,7 +4998,7 @@ function figCreatePoint(genPoint)
 
 
 
-function figUpdatePoint(figPoint, genPoint)
+async function figUpdatePoint(figPoint, genPoint)
 {
     setPointTransform(figPoint, genPoint);
     updatePointStyles(figPoint);
@@ -5085,7 +5086,7 @@ function genPolygonIsValid(genPoly)
 
 
 
-function figCreatePolygon(genPoly)
+async function figCreatePolygon(genPoly)
 {
     if (!genPolygonIsValid(genPoly))
         return null;
@@ -5100,7 +5101,7 @@ function figCreatePolygon(genPoly)
 
 
 
-function figUpdatePolygon(figPoly, genPoly)
+async function figUpdatePolygon(figPoly, genPoly)
 {
     if (!genPolygonIsValid(genPoly))
         return;
@@ -5168,7 +5169,7 @@ function genStarIsValid(genStar)
 
 
 
-function figCreateStar(genStar)
+async function figCreateStar(genStar)
 {
     if (!genStarIsValid(genStar))
         return null;
@@ -5183,7 +5184,7 @@ function figCreateStar(genStar)
 
 
 
-function figUpdateStar(figStar, genStar)
+async function figUpdateStar(figStar, genStar)
 {
     figStar.cornerRadius = genStar[FO_STAR_ROUND ];
     figStar.pointCount   = genStar[FO_STAR_POINTS];
@@ -5293,7 +5294,7 @@ function genVectorNetworkIsValid(genNetwork)
 
 
 
-function figCreateVectorNetwork(genNetwork)
+async function figCreateVectorNetwork(genNetwork)
 {
     const figNetwork = figma.createVector();
 
@@ -5313,7 +5314,7 @@ function figCreateVectorNetwork(genNetwork)
 
 
 
-function figUpdateVectorNetwork(figNetwork, genNetwork)
+async function figUpdateVectorNetwork(figNetwork, genNetwork)
 {
     if (!genVectorNetworkIsValid(genNetwork))
         return;
@@ -5336,7 +5337,7 @@ function genVectorPathIsValid(genPath)
 
 
 
-function figCreateVectorPath(genPath)
+async function figCreateVectorPath(genPath)
 {
     const figPath = figma.createVector();
 
@@ -5363,7 +5364,7 @@ function figCreateVectorPath(genPath)
 
 
 
-function figUpdateVectorPath(figPath, genPath)
+async function figUpdateVectorPath(figPath, genPath)
 {
     if (!genVectorPathIsValid(genPath))
         return;

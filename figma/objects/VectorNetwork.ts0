@@ -6,7 +6,7 @@ function genVectorNetworkIsValid(genNetwork)
 
 
 
-function figCreateVectorNetwork(genNetwork)
+async function figCreateVectorNetwork(genNetwork)
 {
     const figNetwork = figma.createVector();
 
@@ -26,7 +26,7 @@ function figCreateVectorNetwork(genNetwork)
 
 
 
-function figUpdateVectorNetwork(figNetwork, genNetwork)
+async function figUpdateVectorNetwork(figNetwork, genNetwork)
 {
     if (!genVectorNetworkIsValid(genNetwork))
         return;

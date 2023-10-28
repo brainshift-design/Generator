@@ -7,7 +7,7 @@ function genVectorPathIsValid(genPath)
 
 
 
-function figCreateVectorPath(genPath)
+async function figCreateVectorPath(genPath)
 {
     const figPath = figma.createVector();
 
@@ -34,7 +34,7 @@ function figCreateVectorPath(genPath)
 
 
 
-function figUpdateVectorPath(figPath, genPath)
+async function figUpdateVectorPath(figPath, genPath)
 {
     if (!genVectorPathIsValid(genPath))
         return;

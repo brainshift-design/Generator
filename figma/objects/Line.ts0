@@ -7,7 +7,7 @@ function genLineIsValid(genLine)
 
 
 
-function figCreateLine(genLine)
+async function figCreateLine(genLine)
 {
     if (!genLineIsValid(genLine))
         return null;
@@ -22,7 +22,7 @@ function figCreateLine(genLine)
 
 
 
-function figUpdateLine(figLine, genLine)
+async function figUpdateLine(figLine, genLine)
 {
     setObjectTransform(figLine, genLine, true, 0);
     setObjectProps    (figLine, genLine);

@@ -11,7 +11,7 @@ function genStarIsValid(genStar)
 
 
 
-function figCreateStar(genStar)
+async function figCreateStar(genStar)
 {
     if (!genStarIsValid(genStar))
         return null;
@@ -26,7 +26,7 @@ function figCreateStar(genStar)
 
 
 
-function figUpdateStar(figStar, genStar)
+async function figUpdateStar(figStar, genStar)
 {
     figStar.cornerRadius = genStar[FO_STAR_ROUND ];
     figStar.pointCount   = genStar[FO_STAR_POINTS];

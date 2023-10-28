@@ -10,7 +10,7 @@ function genPolygonIsValid(genPoly)
 
 
 
-function figCreatePolygon(genPoly)
+async function figCreatePolygon(genPoly)
 {
     if (!genPolygonIsValid(genPoly))
         return null;
@@ -25,7 +25,7 @@ function figCreatePolygon(genPoly)
 
 
 
-function figUpdatePolygon(figPoly, genPoly)
+async function figUpdatePolygon(figPoly, genPoly)
 {
     if (!genPolygonIsValid(genPoly))
         return;

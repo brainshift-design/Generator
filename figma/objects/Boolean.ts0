@@ -5,12 +5,12 @@ function genBooleanIsValid(genBool)
 
 
 
-function figCreateBoolean(genBool)
+async function figCreateBoolean(genBool)
 {
     let objects = [];
 
     for (const obj of genBool.children)
-        figCreateObject(obj, o => objects = [...objects, o]);
+        await figCreateObject(obj, o => objects = [...objects, o]);
 
 
     let figBool = null;
