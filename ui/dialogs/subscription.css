@@ -209,7 +209,7 @@
     left:          50%;
     transform:     translateX(-50%);
     top:           64px;
-    width:         250px;
+    width:         260px;
     padding:       13px 6px 13px 6px;
     box-shadow:    0 1px 0 0 var(--figma-color-bg-tertiary);
 }
@@ -225,7 +225,7 @@
     left:          50%;
     transform:     translateX(-50%);
     top:           97px;
-    width:         250px;
+    width:         260px;
     padding:       13px 6px 13px 6px;
     box-shadow:    0 1px 0 0 var(--figma-color-bg-tertiary);
 }

@@ -469,8 +469,8 @@ function finishLoading(_nodes)
     graphView.updateShowWires(false);
 
 
-    if (!settings.dataMode)
-        enableFeatures(subscribed());
+    // if (!settings.dataMode)
+    //     enableFeatures(subscribed());
 
         
     generatorStarted = true;

@@ -5,6 +5,46 @@ var subscriptionDialogShown = false;
 
 
 
+function initSubscriptionDialog()
+{
+    subscriptionDialog.addEventListener('pointerdown', e =>
+    {
+        if (   e.button == 0 
+            || e.button == 2)
+            hideAllMenus();
+    });
+
+
+    subEmail.addEventListener('pointerdown', e =>
+    {
+        e.stopPropagation();
+
+        if (e.button == 2)
+        {
+            e.preventDefault();
+
+            initTextMenu(subEmail);
+            menuText.showAt(e.clientX, e.clientY, false, false);
+        }
+    });
+
+
+    subLicenseKey.addEventListener('pointerdown', e =>
+    {
+        e.stopPropagation();
+
+        if (e.button == 2)
+        {
+            e.preventDefault();
+
+            initTextMenu(subLicenseKey);
+            menuText.showAt(e.clientX, e.clientY, false, false);
+        }
+    });
+}
+
+
+
 function onValidateClick()
 {
     // let checkoutSession = arrayToBase32(sign(hashLicenseString(
@@ -12,37 +52,42 @@ function onValidateClick()
     //     30), licenseKeys.private));
 
 
+    const userId        = currentUser.id;
+    const email         = subEmail.value.trim();
+    const activationKey = subLicenseKey.value.trim();
+
     postToServer(
     {
-        action:    'validateSubscription',
-        userId:     currentUser.id,
-        email:      subEmail.value.trim(),
-        licenseKey: subLicenseKey.value.trim()
+        action:       'activateSubscription',
+        userId:        userId,
+        email:         email,
+        activationKey: activationKey
     })
     .then(response =>
     {    
-        if (   response
-            && response.result)
+        if (response)
         {
-            // window.open('https://brainshift.design/generator/checkout.html?' + checkoutSession, '_blank');
-
-            // checkoutTimer = setInterval(() => 
-            // {
-            //     checkLastSub().then(lastSub =>
-            //     {
-            //         if (   lastSub
-            //             && lastSub.daysLeft > 0)
-            //             uiRestartGenerator(false);
-            //     });
-            // }, 
-            // 4000);
+            if (   response.result == 0  // ok
+                || response.result == 3) // user with ID found, also ok
+            {
+                hideSubscriptionDialog();
+                uiNotify('✨   Thank you for subscribing to Generator !   ✨', {delay: 6000});
+            }
+            else if (response.result == 1)
+            {
+                uiError('Error: No subscription found for ' + email + '.');
+            }
+            else if (response.result == 2)
+            {
+                uiError('Error: This activation key has already been used.');
+            }
         }
         else
-            uiError('Error: Could not validate subscription.')
+            uiError('Error: Could not activate subscription.')
     })
     .catch(error =>
     {
-        uiError('Error: Could not validate subscription.')
+        uiError('Error: Could not activate subscription.')
     });
 }
 
@@ -116,7 +161,13 @@ subscriptionClose.addEventListener('pointerdown', e => e.stopPropagation());
 
 
 subscriptionClose.addEventListener('pointerdown', e => e.stopPropagation());
-subscriptionBack.addEventListener('pointerdown', () => { hideSubscriptionDialog(); });
+
+subscriptionBack .addEventListener('pointerdown', e => 
+{ 
+         if (e.button == 0) hideSubscriptionDialog(); 
+    else if (e.button == 2) hideAllMenus();
+});
+
 
 // subscriptionInput.addEventListener('pointerdown', e => 
 // { 
@@ -150,6 +201,7 @@ subEmail.addEventListener('keydown', e =>
     // if (e.code == 'Escape')
     //     subscriptionInput.blur();
 
+    //e.preventDefault();
     e.stopPropagation();
 });
 
@@ -160,6 +212,7 @@ subLicenseKey.addEventListener('keydown', e =>
     // if (e.code == 'Escape')
     //     subscriptionInput.blur();
 
+    //e.preventDefault();
     e.stopPropagation();
 });
 

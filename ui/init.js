@@ -1,20 +1,21 @@
-var generatorStarted = false;
+var generatorStarted   = false;
 
 
-var uiFigMessages    = []; // messages from UI to Figma
-var genMessages      = []; // messages from UI to Generator
+var uiFigMessages      = []; // messages from UI to Figma
+var genMessages        = []; // messages from UI to Generator
 
-var genMessagePosted = false;
-
-
-var tutorialsShown   = false;
-var tutorialsSeen    = false;
+var genMessagePosted   = false;
 
 
-var allUpdateNodes   = [];
+var tutorialsShown     = false;
+var tutorialsSeen      = false;
 
 
-var currentSessionId = '';
+var allUpdateNodes     = [];
+
+
+//var currentSessionId = '';
+var subscriptionActive = false;
 
 
 
@@ -83,11 +84,7 @@ uiQueueMessageToFigma({cmd: 'figStartGenerator'});
 
 async function uiReturnFigStartGenerator(msg)
 {
-    currentUser = msg.currentUser;
-
-    //manageLastSub(currentUser.id, true);
-    
-
+    currentUser   = msg.currentUser;
     tutorialsSeen = msg.tutorials;
 
 
@@ -114,6 +111,7 @@ async function uiReturnFigStartGenerator(msg)
 
     initThemeColors();
     initKeyboardPanel();
+    initSubscriptionDialog();
     initPresets();
     initWindowSizers();
 
@@ -141,55 +139,58 @@ function initGenerator()
 
 
 
-function createSessionId()
-{
-    const date = getCurrentDateString();
-    const hash = hashLicenseString(currentUser.id + date, licenseHashSize);
-    const enc  = sign(hash, licenseKeys.private);
+// function createSessionId()
+// {
+//     const date = getCurrentDateString();
+//     const hash = hashLicenseString(currentUser.id + date, licenseHashSize);
+//     const enc  = sign(hash, licenseKeys.private);
     
-    return arrayToBase32(enc);
-}
+//     return arrayToBase32(enc);
+// }
 
 
 
 function subscribed()
 {
-    return false;//currentSessionId == createSessionId();
+    return subscriptionActive;//false;//currentSessionId == createSessionId();
 }
 
 
 
-function validateInit(eula)
+function validateInit(eulaAgreed)
 {
     try
     {
-        // checkSubActive().then(subActive => 
-        // {
-        //     if (subActive) 
-        //     {
-        //         currentSessionId = createSessionId();
-        //         //initGenerator();
-        //     }
-
-        //     // else checkTrialExists().then(trialExists => 
-        //     // {
-        //     //     if (trialExists)
-        //     //         initGenerator();
-        //     //     else
-        //     //         showEulaDialog();
-        //     // });
-
-            if (!eula)
-                showEulaDialog();
-            else
-                initGenerator();
-        // });
+        checkActiveSubscription(currentUser.id).then(result =>
+        {
+            subscriptionActive = result;
+            console.log('subscriptionActive =', subscriptionActive);
+            finalizeInit(eulaAgreed);
+        })
+        .catch(error =>
+        {
+            uiError('Error while checking for subscription.')
+            finalizeInit(eulaAgreed);
+        });
     }
     catch (e)
     {
         console.error('Error connecting to license server...');
         console.error(e);
     }
+}
+
+
+
+function finalizeInit(eulaAgreed)
+{
+    if (!settings.dataMode)
+        enableFeatures(subscribed());
+
+    if (!eulaAgreed)
+        showEulaDialog();
+    else
+        initGenerator();
 }
 
 
