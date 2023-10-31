@@ -17383,7 +17383,11 @@ extends GOperator1
                         }
                     }
                 }
+                else
+                    this.value = (await this.input.eval(parse)).toValue();
             }
+            else
+                this.value = (await this.input.eval(parse)).toValue();
         }
         else
             this.value = (await this.input.eval(parse)).toValue();
@@ -20306,11 +20310,11 @@ extends GOperator
             return this;
             
 
-        const shape  = (await this.shape    .eval(parse)).toValue();
-        const amp    = (await this.amplitude.eval(parse)).toValue();
-        const freq   = (await this.frequency.eval(parse)).toValue();
-        const offset = (await this.offset   .eval(parse)).toValue();
-        const bias   = (await this.bias     .eval(parse)).toValue();
+        const shape  = this.shape     ? (await this.shape    .eval(parse)).toValue() : null;
+        const amp    = this.amplitude ? (await this.amplitude.eval(parse)).toValue() : null;
+        const freq   = this.frequency ? (await this.frequency.eval(parse)).toValue() : null;
+        const offset = this.offset    ? (await this.offset   .eval(parse)).toValue() : null;
+        const bias   = this.bias      ? (await this.bias     .eval(parse)).toValue() : null;
     
 
         const repeat    = parse.repeats.find(r => r.repeatId == this.loopId);
@@ -20320,7 +20324,10 @@ extends GOperator
         let t;
         
         
-        if (repeat)
+        if (   repeat
+            && shape
+            && freq
+            && offset)
         {
             t = (iteration/repeat.total) * freq.value - offset.value/freq.value*2;
 
@@ -20337,13 +20344,17 @@ extends GOperator
             t = 0;
 
         
-        const b = bias.value / 100;
+        if (bias)
+        {
+            const b = bias.value / 100;
 
-        if (b >= 0) t = t / (1+b) + b/2;
-        else        t = t / (1-b) + b/2;
+            if (b >= 0) t = t / (1+b) + b/2;
+            else        t = t / (1-b) + b/2;
+        }
 
 
-        t = t * amp.value;
+        if (amp)
+            t = t * amp.value;
 
 
         this.value = new NumberValue(t);
