@@ -70,7 +70,7 @@ extends GOperator
         
         if (repeat)
         {
-            t = (iteration/repeat.total - offset.value) * freq.value;
+            t = (iteration/repeat.total) * freq.value - offset.value/freq.value*2;
 
             switch (shape.value)
             {

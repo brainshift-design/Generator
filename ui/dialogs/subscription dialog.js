@@ -56,6 +56,12 @@ function onValidateClick()
     const email         = subEmail.value.trim();
     const activationKey = subLicenseKey.value.trim();
 
+    
+    if (   email         == '' 
+        || activationKey == '')
+        return;
+
+
     postToServer(
     {
         action:       'activateSubscription',
