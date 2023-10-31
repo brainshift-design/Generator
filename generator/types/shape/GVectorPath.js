@@ -64,7 +64,6 @@ extends GShape
         if (this.input)
         {
             input = (await this.input.eval(parse)).toValue();
-            //if (this.nodeId == 'path3') console.log('input =', input);
 
 
             if (   input

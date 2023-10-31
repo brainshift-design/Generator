@@ -61,24 +61,24 @@
 
 
 
-// function checkRemainingTrialDays()
-// {
-//     return postToServer(
-//         {
-//             action: 'getRemainingTrialDays',
-//             userId:  currentUser.id
-//         })
-//         .then(response => 
-//         {
-//             consoleAssert(response, 'invalid response from server @ checkRemainingTrialDays()');
-//             return response ? response.result : -1;
-//         })
-//         .catch(e =>
-//         {
-//             console.error(e);
-//             throw e;
-//         });
-// }
+function checkRemainingSubscriptionDays()
+{
+    return postToServer(
+        {
+            action: 'getRemainingSubscriptionDays',
+            userId:  currentUser.id
+        })
+        .then(response => 
+        {
+            consoleAssert(response, 'invalid response from server @ checkRemainingSubscriptionDays()');
+            return response ? response.result : -1;
+        })
+        .catch(e =>
+        {
+            console.error(e);
+            throw e;
+        });
+}
 
 
 

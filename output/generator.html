@@ -4,7 +4,7 @@
 
 
 
-const generatorVersion = 260;
+const generatorVersion = 261;
 
 
 const MAX_INT32        = 2147483647;
@@ -33047,7 +33047,6 @@ extends GShape
         if (this.input)
         {
             input = (await this.input.eval(parse)).toValue();
-            //if (this.nodeId == 'path3') console.log('input =', input);
 
 
             if (   input

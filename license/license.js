@@ -250,7 +250,6 @@ function prepareEmail(email)
         email += String.fromCodePoint(cp[i]);
 
 
-    console.log('email =', email);
     return email;
 }
 

@@ -103,12 +103,30 @@ function showSubscriptionDialog(showBack = true)
     //subscriptionUserId.innerHTML = '<span style="user-select: none; color: var(--figma-color-bg-disabled-secondary);">User ID:&nbsp;&nbsp;</span>' + currentUser.id;
     
     
-    const license = 
-        subscription != NULL
-        ? validateLicense(currentUser.id, subscription)
-        : null;
+    if (subscribed())
+    {
+        licenseInfo             .style.display = 'block';
+        subEmail                .style.display = 'none';
+        subLicenseKey           .style.display = 'none';
+        validateProductKeyButton.style.display = 'none';
+        subscribeWebsite        .style.display = 'none';
 
-    
+        checkRemainingSubscriptionDays().then(result =>
+        {
+            console.log('result =', result);
+            licenseInfo.innerHTML = formatDaysLeft(result) + ' of your Pro subscription.';
+        });
+    }
+    else
+    {
+        licenseInfo             .style.display = 'none';
+        subEmail                .style.display = 'block';
+        subLicenseKey           .style.display = 'block';
+        validateProductKeyButton.style.display = 'block';
+        subscribeWebsite        .style.display = 'block';
+    }
+
+
     //subscriptionInputBack.innerHTML = license ? '' : '•'.repeat(13);
     
     // subscriptionInput.value         = subscription;
@@ -122,8 +140,8 @@ function showSubscriptionDialog(showBack = true)
     // validateProductKeyButton.innerHTML = license ? 'Edit' : 'Validate';
 
 
-    if (license) setDisabledSubscriptionInput();
-    else         setDefaultSubscriptionInput();
+    // if (license) setDisabledSubscriptionInput();
+    // else         setDefaultSubscriptionInput();
 
 
     // updateLicenseInfo()
@@ -401,6 +419,5 @@ function formatDaysLeft(daysLeft)
 {
     return daysLeft == 1
         ? 'Last day'
-        :  daysLeft + ' ' + countString(daysLeft, 'day') + ' left';
-
+        :  daysLeft + ' ' + countString(daysLeft, 'day') + ' remaining';
 }

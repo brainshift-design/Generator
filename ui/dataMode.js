@@ -588,14 +588,8 @@ function dataModeDeleteConnectionsToAndFromNode(node)
 
 function dataModeDeletePathFromNodeId(node)
 {
-    console.log('node ', node);
-
     uiRemoveSavedNodesAndConns([node.id]);
     uiDeleteObjectsAndStyles([node.id], true);
-
-
-    const div = node.div;
-    
 
     node.id = stripPathFromId(node.id);
 

@@ -152,7 +152,8 @@ function initGenerator()
 
 function subscribed()
 {
-    return subscriptionActive;//false;//currentSessionId == createSessionId();
+    return subscriptionActive;
+    //return false;
 }
 
 
@@ -164,7 +165,6 @@ function validateInit(eulaAgreed)
         checkActiveSubscription(currentUser.id).then(result =>
         {
             subscriptionActive = result;
-            console.log('subscriptionActive =', subscriptionActive);
             finalizeInit(eulaAgreed);
         })
         .catch(error =>
