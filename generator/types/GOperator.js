@@ -7,9 +7,9 @@ extends GNode
     topLevel;
 
     value;
-
+    
+    customParams = []; // [[name, GValue]]
     options      = {};
-
     updateValues = [];
 
    
@@ -35,6 +35,7 @@ extends GNode
     {
         super.reset();
         
+        this.customParams = [];
         this.options      = {};
         this.updateValues = [];
     }
@@ -45,13 +46,14 @@ extends GNode
     {
         super.copyBase(base);
         
-        this.nodeId   = base.nodeId;
-        this.nodeName = base.nodeName;
+        this.nodeId       = base.nodeId;
+        this.nodeName     = base.nodeName;
 
-        this.options  = clone(base.options);
+        this.customParams = clone(base.customParams);
+        this.options      = clone(base.options);
 
-        this.valid    = base.valid;
-        this.topLevel = base.topLevel;
+        this.valid        = base.valid;
+        this.topLevel     = base.topLevel;
 
         if (base.value) 
             this.value = base.value.copy();

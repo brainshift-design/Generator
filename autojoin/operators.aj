@@ -75,6 +75,7 @@
 ../operators/number/OpSign.js
 ../operators/number/OpAbsolute.js
 ../operators/number/OpRound.js
+../operators/number/OpSimpleMinMax.js
 ../operators/number/OpMinMax.js
 ../operators/number/OpLimits.js
 ../operators/number/OpNumberCurve.js

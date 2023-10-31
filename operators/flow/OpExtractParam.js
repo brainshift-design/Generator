@@ -11,7 +11,7 @@ extends OperatorBase
 
     constructor()
     {
-        super(EXTRACT_PARAM, 'extractValue', 'extract value', iconExtractParam);
+        super(EXTRACT_PARAM, 'getParam', 'get param', iconExtractParam);
 
         this.canDisable        = true;
         this.showHeaderTooltip = true;

@@ -43,6 +43,7 @@ function createNode(nodeType, creatingButton = null, createdNodeId = -1, options
         case NUMBER_SIGN:             node = new OpSign();              break;
         case NUMBER_ABSOLUTE:         node = new OpAbsolute();          break;
         case NUMBER_ROUND:            node = new OpRound();             break;
+        case NUMBER_SIMPLE_MINMAX:    node = new OpSimpleMinMax();      break;
         case NUMBER_MINMAX:           node = new OpMinMax();            break;
         case NUMBER_LIMITS:           node = new OpLimits();            break;
         case NUMBER_CURVE:            node = new OpNumberCurve();       break;

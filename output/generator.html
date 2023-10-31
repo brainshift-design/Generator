@@ -4,7 +4,7 @@
 
 
 
-const generatorVersion = 262;
+const generatorVersion = 263;
 
 
 const MAX_INT32        = 2147483647;
@@ -4840,6 +4840,7 @@ const NUMBER                  = 'NUM';
 const NUMBER_SIGN             = 'NSIGN';   
 const NUMBER_ABSOLUTE         = 'ABS';   
 const NUMBER_ROUND            = 'ROUND';   
+const NUMBER_SIMPLE_MINMAX    = 'SMINMAX';   
 const NUMBER_MINMAX           = 'MINMAX';   
 const NUMBER_LIMITS           = 'LIM';   
 const NUMBER_CURVE            = 'NCURVE';   
@@ -4857,8 +4858,8 @@ const NUMBER_INTERPOLATE      = 'LERP';
 const NUMBER_SOLVE            = 'SOLVE';
 const NUMBER_ANIMATE          = 'NANIM';
 
-const NUMBER_MATH             = 'MATH';  
 const NUMBER_SIMPLE_MATH      = 'SMATH';  
+const NUMBER_MATH             = 'MATH';  
 const NUMBER_ADD              = 'ADD';   
 const NUMBER_SUBTRACT         = 'SUB';   
 const NUMBER_MULTIPLY         = 'MUL';   
@@ -4962,6 +4963,7 @@ const NUMBER_TYPES =
     NUMBER_SIGN,
     NUMBER_ABSOLUTE,
     NUMBER_ROUND,
+    NUMBER_SIMPLE_MINMAX,
     NUMBER_MINMAX,
     NUMBER_LIMITS,
     NUMBER_CURVE,
@@ -8495,9 +8497,9 @@ extends GNode
     topLevel;
 
     value;
-
+    
+    customParams = []; // [[name, GValue]]
     options      = {};
-
     updateValues = [];
 
    
@@ -8523,6 +8525,7 @@ extends GNode
     {
         super.reset();
         
+        this.customParams = [];
         this.options      = {};
         this.updateValues = [];
     }
@@ -8533,13 +8536,14 @@ extends GNode
     {
         super.copyBase(base);
         
-        this.nodeId   = base.nodeId;
-        this.nodeName = base.nodeName;
+        this.nodeId       = base.nodeId;
+        this.nodeName     = base.nodeName;
 
-        this.options  = clone(base.options);
+        this.customParams = clone(base.customParams);
+        this.options      = clone(base.options);
 
-        this.valid    = base.valid;
-        this.topLevel = base.topLevel;
+        this.valid        = base.valid;
+        this.topLevel     = base.topLevel;
 
         if (base.value) 
             this.value = base.value.copy();
@@ -16796,16 +16800,14 @@ extends GOperator1
             return this;
 
 
-        const name = this.name ? (await this.name.eval(parse)).toValue() : null;
+        const input = this.input ? (await this.input.eval(parse)).toValue() : null;
+        const name  = this.name  ? (await this.name .eval(parse)).toValue() : null;
 
 
-        if (   this.input
+        if (   input
             && name
-            && name.value != '')
+            && name.value.trim() != '')
         {
-            const input = (await this.input.eval(parse)).toValue();
-
-
             if (isListType(input.type))
             {
                 this.value = new ListValue();
@@ -16854,9 +16856,10 @@ extends GOperator1
                     else if (input[name.value.toLowerCase()]) nameValue = name.value.toLowerCase();
                 }
 
+                
                 this.value = 
-                    input[nameValue]
-                    ? input[nameValue].copy()
+                    this.input[nameValue]
+                    ? this.input[nameValue].toValue()//copy()
                     : NullValue.copy();
             }
         }
@@ -18848,6 +18851,161 @@ extends GOperator1
 
 
 
+class GSimpleMinMax
+extends GOperator1
+{
+    operand;
+    operation;
+
+
+
+    constructor(nodeId, options)
+    {
+        super(NUMBER_SIMPLE_MINMAX, nodeId, options);
+    }
+
+
+    
+    reset()
+    {
+        super.reset();
+
+        this.operand   = null;
+        this.operation = null;
+    }
+
+
+
+    copy()
+    {
+        const copy = new GRound(this.nodeId, this.options);
+
+        copy.copyBase(this);
+
+        copy.operand   = this.operand  .copy();
+        copy.operation = this.operation.copy();
+
+        return copy;
+    }
+
+
+
+    async eval(parse)
+    {
+        if (this.isCached())
+            return this;
+
+
+        this.value = new NumberValue(0);
+
+        
+        const operand = (await this.operand  .eval(parse)).toValue();
+        const op      = (await this.operation.eval(parse)).toValue();
+
+
+        if (this.input)
+        {
+            const input = (await this.input.eval(parse)).toValue();
+
+            if (isListType(input.type))
+            {
+                this.value = new ListValue();
+
+                for (let i = 0; i < input.items.length; i++)
+                {
+                    const item = input.items[i];
+
+                    this.value.items.push(
+                        item.type == NUMBER_VALUE
+                        ? getSimpleMinMaxValue(item, operand, op, this.options.enabled)
+                        : NumberValue.NaN.copy());   
+                }
+            }
+            else
+            {
+                this.value = getSimpleMinMaxValue(input, operand, op, this.options.enabled);
+            }
+        }
+        else
+            this.value = NumberValue.NaN.copy();
+
+
+        this.setUpdateValues(parse,
+        [
+            ['value',     this.value       ],
+            ['type',      this.outputType()],
+            ['operand',   operand          ],
+            ['operation', op               ]
+        ]);
+
+
+        this.validate();
+
+        return this;
+    }
+
+
+
+    isValid()
+    {
+        return super.isValid()
+            && this.operand   && this.operation.isValid()
+            && this.operation && this.operand  .isValid();
+    }
+
+
+
+    pushValueUpdates(parse)
+    {
+        super.pushValueUpdates(parse);
+
+        if (this.operand  ) this.operand  .pushValueUpdates(parse);
+        if (this.operation) this.operation.pushValueUpdates(parse);
+    }
+
+
+
+    invalidateInputs(parse, from, force)
+    {
+        super.invalidateInputs(parse, from, force);
+
+        if (this.operand  ) this.operand  .invalidateInputs(parse, from, force);
+        if (this.operation) this.operation.invalidateInputs(parse, from, force);
+    }
+
+
+
+    iterateLoop(parse)
+    {
+        super.iterateLoop(parse);
+
+        if (this.operand  ) this.operand  .iterateLoop(parse);
+        if (this.operation) this.operation.iterateLoop(parse);
+    }
+}
+
+
+
+function getSimpleMinMaxValue(input, operand, op, enabled)
+{
+    consoleAssert(
+        input.type == NUMBER_VALUE, 
+        'input.type is ' + input.type + ', must be NUMBER_VALUE');
+
+
+    if (enabled)
+    {
+        op.value = Math.min(Math.max(0, Math.floor(op.value)), 1);
+
+        return new NumberValue(op.value == 0
+            ? Math.min(input.toNumber(), operand.toNumber())
+            : Math.max(input.toNumber(), operand.toNumber()));
+    }
+    else
+        return input;
+}
+
+
 class GMinMax
 extends GArithmetic
 {
@@ -20258,6 +20416,7 @@ class GWave
 extends GOperator
 {
     shape     = null;
+    base      = null;
     amplitude = null;
     frequency = null;
     offset    = null;
@@ -20277,6 +20436,7 @@ extends GOperator
         super.reset();
 
         this.shape     = null;
+        this.base      = null;
         this.amplitude = null;
         this.frequency = null;
         this.offset    = null;
@@ -20292,6 +20452,7 @@ extends GOperator
         copy.copyBase(this);
 
         if (this.shape    ) copy.shape     = this.shape    .copy();
+        if (this.base     ) copy.base      = this.base     .copy();
         if (this.amplitude) copy.amplitude = this.amplitude.copy();
         if (this.frequency) copy.frequency = this.frequency.copy();
         if (this.offset   ) copy.offset    = this.offset   .copy();
@@ -20311,6 +20472,7 @@ extends GOperator
             
 
         const shape  = this.shape     ? (await this.shape    .eval(parse)).toValue() : null;
+        const base   = this.base      ? (await this.base     .eval(parse)).toValue() : null;
         const amp    = this.amplitude ? (await this.amplitude.eval(parse)).toValue() : null;
         const freq   = this.frequency ? (await this.frequency.eval(parse)).toValue() : null;
         const offset = this.offset    ? (await this.offset   .eval(parse)).toValue() : null;
@@ -20353,8 +20515,8 @@ extends GOperator
         }
 
 
-        if (amp)
-            t = t * amp.value;
+        if (amp ) t = t * amp .value;
+        if (base) t = t + base.value;
 
 
         this.value = new NumberValue(t);
@@ -20363,6 +20525,7 @@ extends GOperator
         this.setUpdateValues(parse,
         [
             ['shape',     shape ],
+            ['base',      base  ],
             ['amplitude', amp   ],
             ['frequency', freq  ],
             ['offset',    offset],
@@ -20389,6 +20552,7 @@ extends GOperator
     isValid()
     {
         return this.shape     && this.shape    .isValid()
+            && this.base      && this.base     .isValid()
             && this.amplitude && this.amplitude.isValid()
             && this.frequency && this.frequency.isValid()
             && this.offset    && this.offset   .isValid()
@@ -20402,6 +20566,7 @@ extends GOperator
         super.pushValueUpdates(parse);
 
         if (this.shape    ) this.shape    .pushValueUpdates(parse);
+        if (this.base     ) this.base     .pushValueUpdates(parse);
         if (this.amplitude) this.amplitude.pushValueUpdates(parse);
         if (this.frequency) this.frequency.pushValueUpdates(parse);
         if (this.offset   ) this.offset   .pushValueUpdates(parse);
@@ -20415,6 +20580,7 @@ extends GOperator
         super.invalidateInputs(parse, from, force);
 
         if (this.shape    ) this.shape    .invalidateInputs(parse, from, force);
+        if (this.base     ) this.base     .invalidateInputs(parse, from, force);
         if (this.amplitude) this.amplitude.invalidateInputs(parse, from, force);
         if (this.frequency) this.frequency.invalidateInputs(parse, from, force);
         if (this.offset   ) this.offset   .invalidateInputs(parse, from, force);
@@ -20428,6 +20594,7 @@ extends GOperator
         super.iterateLoop(parse);
 
         if (this.shape    ) this.shape    .iterateLoop(parse);
+        if (this.base     ) this.base     .iterateLoop(parse);
         if (this.amplitude) this.amplitude.iterateLoop(parse);
         if (this.frequency) this.frequency.iterateLoop(parse);
         if (this.offset   ) this.offset   .iterateLoop(parse);
@@ -41113,6 +41280,53 @@ function genParseRound(parse)
 
 
 
+function genParseSimpleMinMax(parse)
+{
+    const [, nodeId, options, ignore] = genParseNodeStart(parse);
+
+
+    const sminmax = new GSimpleMinMax(nodeId, options);
+   
+
+    let nInputs = -1;
+    
+    if (!ignore)
+    {
+        nInputs = parseInt(parse.move());
+        consoleAssert(nInputs == 0 || nInputs == 1, 'nInputs must be [0, 1]');
+    }
+
+    
+    if (parse.settings.logRequests) 
+        logReq(sminmax, parse, ignore, nInputs);
+
+
+    if (ignore) 
+    {
+        genParseNodeEnd(parse, sminmax);
+        return parse.parsedNodes.find(n => n.nodeId == nodeId);
+    }
+
+
+    parse.nTab++;
+
+
+    if (nInputs == 1)
+        sminmax.input = genParse(parse);
+
+    sminmax.operand   = genParse(parse);
+    sminmax.operation = genParse(parse);
+
+    
+    parse.nTab--;
+
+
+    genParseNodeEnd(parse, sminmax);
+    return sminmax;
+}
+
+
+
 function genParseMinMax(parse)
 {
     const [type, nodeId, options, ignore] = genParseNodeStart(parse);
@@ -41575,6 +41789,7 @@ function genParseWave(parse)
 
 
     wave.shape     = genParse(parse);
+    wave.base      = genParse(parse);
     wave.amplitude = genParse(parse);
     wave.frequency = genParse(parse);
     wave.offset    = genParse(parse);
@@ -45140,6 +45355,7 @@ function genParse(parse, inParam = true)
     else if (parse.next == NUMBER_ABSOLUTE        ) result = genParseAbsolute          (parse);
     else if (parse.next == NUMBER_ROUND           ) result = genParseRound             (parse);
     else if (parse.next == NUMBER_MINMAX          ) result = genParseMinMax            (parse);
+    else if (parse.next == NUMBER_SIMPLE_MINMAX   ) result = genParseSimpleMinMax      (parse);
     else if (parse.next == NUMBER_LIMITS          ) result = genParseLimits            (parse);
     else if (parse.next == NUMBER_CURVE           ) result = genParseNumberCurve       (parse);
     else if (parse.next == NUMBER_NAN             ) result = genParseNaNisNumber       (parse);

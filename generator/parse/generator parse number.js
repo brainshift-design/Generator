@@ -259,6 +259,53 @@ function genParseRound(parse)
 
 
 
+function genParseSimpleMinMax(parse)
+{
+    const [, nodeId, options, ignore] = genParseNodeStart(parse);
+
+
+    const sminmax = new GSimpleMinMax(nodeId, options);
+   
+
+    let nInputs = -1;
+    
+    if (!ignore)
+    {
+        nInputs = parseInt(parse.move());
+        consoleAssert(nInputs == 0 || nInputs == 1, 'nInputs must be [0, 1]');
+    }
+
+    
+    if (parse.settings.logRequests) 
+        logReq(sminmax, parse, ignore, nInputs);
+
+
+    if (ignore) 
+    {
+        genParseNodeEnd(parse, sminmax);
+        return parse.parsedNodes.find(n => n.nodeId == nodeId);
+    }
+
+
+    parse.nTab++;
+
+
+    if (nInputs == 1)
+        sminmax.input = genParse(parse);
+
+    sminmax.operand   = genParse(parse);
+    sminmax.operation = genParse(parse);
+
+    
+    parse.nTab--;
+
+
+    genParseNodeEnd(parse, sminmax);
+    return sminmax;
+}
+
+
+
 function genParseMinMax(parse)
 {
     const [type, nodeId, options, ignore] = genParseNodeStart(parse);
@@ -721,6 +768,7 @@ function genParseWave(parse)
 
 
     wave.shape     = genParse(parse);
+    wave.base      = genParse(parse);
     wave.amplitude = genParse(parse);
     wave.frequency = genParse(parse);
     wave.offset    = genParse(parse);

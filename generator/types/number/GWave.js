@@ -2,6 +2,7 @@ class GWave
 extends GOperator
 {
     shape     = null;
+    base      = null;
     amplitude = null;
     frequency = null;
     offset    = null;
@@ -21,6 +22,7 @@ extends GOperator
         super.reset();
 
         this.shape     = null;
+        this.base      = null;
         this.amplitude = null;
         this.frequency = null;
         this.offset    = null;
@@ -36,6 +38,7 @@ extends GOperator
         copy.copyBase(this);
 
         if (this.shape    ) copy.shape     = this.shape    .copy();
+        if (this.base     ) copy.base      = this.base     .copy();
         if (this.amplitude) copy.amplitude = this.amplitude.copy();
         if (this.frequency) copy.frequency = this.frequency.copy();
         if (this.offset   ) copy.offset    = this.offset   .copy();
@@ -55,6 +58,7 @@ extends GOperator
             
 
         const shape  = this.shape     ? (await this.shape    .eval(parse)).toValue() : null;
+        const base   = this.base      ? (await this.base     .eval(parse)).toValue() : null;
         const amp    = this.amplitude ? (await this.amplitude.eval(parse)).toValue() : null;
         const freq   = this.frequency ? (await this.frequency.eval(parse)).toValue() : null;
         const offset = this.offset    ? (await this.offset   .eval(parse)).toValue() : null;
@@ -97,8 +101,8 @@ extends GOperator
         }
 
 
-        if (amp)
-            t = t * amp.value;
+        if (amp ) t = t * amp .value;
+        if (base) t = t + base.value;
 
 
         this.value = new NumberValue(t);
@@ -107,6 +111,7 @@ extends GOperator
         this.setUpdateValues(parse,
         [
             ['shape',     shape ],
+            ['base',      base  ],
             ['amplitude', amp   ],
             ['frequency', freq  ],
             ['offset',    offset],
@@ -133,6 +138,7 @@ extends GOperator
     isValid()
     {
         return this.shape     && this.shape    .isValid()
+            && this.base      && this.base     .isValid()
             && this.amplitude && this.amplitude.isValid()
             && this.frequency && this.frequency.isValid()
             && this.offset    && this.offset   .isValid()
@@ -146,6 +152,7 @@ extends GOperator
         super.pushValueUpdates(parse);
 
         if (this.shape    ) this.shape    .pushValueUpdates(parse);
+        if (this.base     ) this.base     .pushValueUpdates(parse);
         if (this.amplitude) this.amplitude.pushValueUpdates(parse);
         if (this.frequency) this.frequency.pushValueUpdates(parse);
         if (this.offset   ) this.offset   .pushValueUpdates(parse);
@@ -159,6 +166,7 @@ extends GOperator
         super.invalidateInputs(parse, from, force);
 
         if (this.shape    ) this.shape    .invalidateInputs(parse, from, force);
+        if (this.base     ) this.base     .invalidateInputs(parse, from, force);
         if (this.amplitude) this.amplitude.invalidateInputs(parse, from, force);
         if (this.frequency) this.frequency.invalidateInputs(parse, from, force);
         if (this.offset   ) this.offset   .invalidateInputs(parse, from, force);
@@ -172,6 +180,7 @@ extends GOperator
         super.iterateLoop(parse);
 
         if (this.shape    ) this.shape    .iterateLoop(parse);
+        if (this.base     ) this.base     .iterateLoop(parse);
         if (this.amplitude) this.amplitude.iterateLoop(parse);
         if (this.frequency) this.frequency.iterateLoop(parse);
         if (this.offset   ) this.offset   .iterateLoop(parse);

@@ -40,16 +40,14 @@ extends GOperator1
             return this;
 
 
-        const name = this.name ? (await this.name.eval(parse)).toValue() : null;
+        const input = this.input ? (await this.input.eval(parse)).toValue() : null;
+        const name  = this.name  ? (await this.name .eval(parse)).toValue() : null;
 
 
-        if (   this.input
+        if (   input
             && name
-            && name.value != '')
+            && name.value.trim() != '')
         {
-            const input = (await this.input.eval(parse)).toValue();
-
-
             if (isListType(input.type))
             {
                 this.value = new ListValue();
@@ -98,9 +96,10 @@ extends GOperator1
                     else if (input[name.value.toLowerCase()]) nameValue = name.value.toLowerCase();
                 }
 
+                
                 this.value = 
-                    input[nameValue]
-                    ? input[nameValue].copy()
+                    this.input[nameValue]
+                    ? this.input[nameValue].toValue()//copy()
                     : NullValue.copy();
             }
         }

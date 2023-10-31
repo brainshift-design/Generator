@@ -19,7 +19,7 @@ function isConnKey(key) { return isTagKey(key, connTag); }
 function noPageTag(key) { return noTag(key, pageTag); }
 function noNodeTag(key) { return noTag(key, nodeTag); }
 function noConnTag(key) { return noTag(key, connTag); }
-const generatorVersion = 262;
+const generatorVersion = 263;
 const MAX_INT32 = 2147483647;
 const NULL = '';
 const HTAB = '  '; // half-tab
@@ -619,6 +619,7 @@ const NUMBER = 'NUM';
 const NUMBER_SIGN = 'NSIGN';
 const NUMBER_ABSOLUTE = 'ABS';
 const NUMBER_ROUND = 'ROUND';
+const NUMBER_SIMPLE_MINMAX = 'SMINMAX';
 const NUMBER_MINMAX = 'MINMAX';
 const NUMBER_LIMITS = 'LIM';
 const NUMBER_CURVE = 'NCURVE';
@@ -635,8 +636,8 @@ const NUMBER_ACCUMULATE = 'ACCUM';
 const NUMBER_INTERPOLATE = 'LERP';
 const NUMBER_SOLVE = 'SOLVE';
 const NUMBER_ANIMATE = 'NANIM';
-const NUMBER_MATH = 'MATH';
 const NUMBER_SIMPLE_MATH = 'SMATH';
+const NUMBER_MATH = 'MATH';
 const NUMBER_ADD = 'ADD';
 const NUMBER_SUBTRACT = 'SUB';
 const NUMBER_MULTIPLY = 'MUL';
@@ -720,6 +721,7 @@ const NUMBER_TYPES = [
     NUMBER_SIGN,
     NUMBER_ABSOLUTE,
     NUMBER_ROUND,
+    NUMBER_SIMPLE_MINMAX,
     NUMBER_MINMAX,
     NUMBER_LIMITS,
     NUMBER_CURVE,

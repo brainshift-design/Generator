@@ -164,6 +164,7 @@ function genParse(parse, inParam = true)
     else if (parse.next == NUMBER_ABSOLUTE        ) result = genParseAbsolute          (parse);
     else if (parse.next == NUMBER_ROUND           ) result = genParseRound             (parse);
     else if (parse.next == NUMBER_MINMAX          ) result = genParseMinMax            (parse);
+    else if (parse.next == NUMBER_SIMPLE_MINMAX   ) result = genParseSimpleMinMax      (parse);
     else if (parse.next == NUMBER_LIMITS          ) result = genParseLimits            (parse);
     else if (parse.next == NUMBER_CURVE           ) result = genParseNumberCurve       (parse);
     else if (parse.next == NUMBER_NAN             ) result = genParseNaNisNumber       (parse);

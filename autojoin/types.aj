@@ -102,6 +102,7 @@
 ../generator/types/number/GSign.js
 ../generator/types/number/GAbsolute.js
 ../generator/types/number/GRound.js
+../generator/types/number/GSimpleMinMax.js
 ../generator/types/number/GMinMax.js
 ../generator/types/number/GLimits.js
 ../generator/types/number/GNumberCurve.js

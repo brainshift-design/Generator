@@ -2,6 +2,7 @@ class   OpWave
 extends OperatorBase
 {
     paramShape;
+    paramBase;
     paramAmplitude;
     paramFrequency;
     paramOffset;
@@ -22,6 +23,7 @@ extends OperatorBase
 
 
         this.addParam(this.paramShape     = new SelectParam('shape',     'shape',     false, true, true, ['square', 'saw', 'back saw', 'triangle', 'sine'], 4));
+        this.addParam(this.paramBase      = new NumberParam('base',      'base',      true,  true, true, 0));
         this.addParam(this.paramAmplitude = new NumberParam('amplitude', 'amplitude', true,  true, true, 100));
         this.addParam(this.paramFrequency = new NumberParam('frequency', 'frequency', true,  true, true, 1, 0));
         this.addParam(this.paramOffset    = new NumberParam('offset',    'offset',    true,  true, true, 0));
@@ -29,7 +31,7 @@ extends OperatorBase
 
 
         this.paramFrequency.controls[0].setDecimals(1);
-        this.paramOffset   .controls[0].setDecimals(2);
+        this.paramOffset   .controls[0].setDecimals(1);
 
         this.paramBias     .controls[0].suffix = '%';
 
@@ -51,6 +53,7 @@ extends OperatorBase
 
         
         request.push(...this.node.paramShape    .genRequest(gen));
+        request.push(...this.node.paramBase     .genRequest(gen));
         request.push(...this.node.paramAmplitude.genRequest(gen));
         request.push(...this.node.paramFrequency.genRequest(gen));
         request.push(...this.node.paramOffset   .genRequest(gen));
