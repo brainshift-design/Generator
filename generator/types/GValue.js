@@ -40,11 +40,18 @@ class GValue
         
         this.valueId = base.valueId;
 
-        for (const param of base.customParams)
-            this.customParams.push([param[0], param[1].copy()]);
+        this.copyCustomParams(base);
 
         if (base.objects)
             this.copyObjects(base.objects);
+    }
+
+
+
+    copyCustomParams(base)
+    {
+        for (const param of base.customParams)
+            this.customParams.push([param[0], param[1].copy()]);
     }
 
 

@@ -42,26 +42,28 @@ extends GOperator1
 
         const input = this.input ? (await this.input.eval(parse)).toValue() : null;
         const name  = this.name  ? (await this.name .eval(parse)).toValue() : null;
+        console.log('this.input =', this.input);
+        console.log('input =', input);
 
-
+        
         if (   input
             && name
             && name.value.trim() != '')
         {
-            if (isListType(input.type))
+            if (this.options.enabled)
             {
-                this.value = new ListValue();
-
-                if (this.options.enabled)
+                if (isListType(input.type))
                 {
+                    this.value = new ListValue();
+
                     for (let i = 0; i < input.items.length; i++)
-                        this.value.items.push(extractParam(input.items[i]));
+                        this.value.items.push(getExtractParamValue(input.items[i], name));
                 }
                 else
-                    this.value = input;
+                    this.value = getExtractParamValue(input, name);
             }
             else
-                this.value = extractParam(input, name);
+                this.value = input;
         }
         else
         {
@@ -76,7 +78,7 @@ extends GOperator1
         [
             // ['preview', isListType(this.value) 
             //             ? new ListValue(this.value.items.slice(0, Math.min(this.value.items.length, 11))) 
-            //             : this.value     ],
+            //             : this.value  ],
             ['type',    this.outputType()],
             ['name',    name             ]
         ]);
@@ -125,7 +127,7 @@ extends GOperator1
 
 
 
-function extractParam(input, name)
+function getExtractParamValue(input, name)
 {
     let nameValue = name.value.trim();
 

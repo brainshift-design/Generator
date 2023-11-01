@@ -86,6 +86,8 @@ extends GShape
                 _points,
                 _convex);
 
+            this.value.copyCustomParams(input);
+
 
             this.setUpdateValues(parse, 
             [
@@ -215,7 +217,9 @@ extends GShape
             this.round   .toValue(),
             this.points  .toValue(),
             this.convex  .toValue());
- 
+
+        star.copyCustomParams(this.value);
+
         star.props   = this.props.toValue();
         star.objects = this.value.objects.map(o => o.copy());
  

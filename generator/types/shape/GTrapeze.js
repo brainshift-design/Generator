@@ -63,6 +63,8 @@ extends GShape
                 height ?? input.height,
                 round  ?? input.round,
                 bias   ?? input.bias);
+
+            this.value.copyCustomParams(input);
         }
         else
         {
@@ -164,6 +166,8 @@ extends GShape
             this.height.toValue(),
             this.round .toValue(),
             this.bias  .toValue());
+
+        trap.copyCustomParams(this.value);
 
         trap.props   = this.props.toValue();
         trap.objects = this.value.objects.map(o => o.copy());

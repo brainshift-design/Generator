@@ -135,6 +135,8 @@ extends GOperator1
             this.startTangent.toValue(),
             this.endTangent  .toValue());
 
+        edge.copyCustomParams(this.value);
+
         edge.uniqueId = this.value.uniqueId;
         edge.objects  = this.value.objects.map(o => o.copy());
 

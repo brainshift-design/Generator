@@ -79,7 +79,9 @@ extends GShape
                 _round,
                 _corners);
 
+            this.value.copyCustomParams(input);
 
+                
             this.setUpdateValues(parse, 
             [
                 ['position', _pos      ],
@@ -205,6 +207,8 @@ extends GShape
             this.height  .toValue(),
             this.round   .toValue(),
             this.corners .toValue());
+
+        poly.copyCustomParams(this.value);
 
         poly.props   = this.props.toValue();
         poly.objects = this.value.objects.map(o => o.copy());

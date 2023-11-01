@@ -96,6 +96,8 @@ extends GShape
                 degree  ?? input.degree,
                 winding ?? input.winding,
                 round   ?? input.round);
+
+            this.value.copyCustomParams(input);
         }
         else
         {
@@ -205,6 +207,8 @@ extends GShape
             this.degree .toValue(),
             this.winding.toValue(),
             this.round  .toValue());
+
+        path.copyCustomParams(this.value);
 
         path.props   = this.props.toValue();
         path.objects = this.value.objects.map(o => o.copy());

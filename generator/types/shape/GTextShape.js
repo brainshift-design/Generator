@@ -107,6 +107,8 @@ extends GShape
                 alignV        ?? input.size,
                 lineHeight    ?? input.size,
                 letterSpacing ?? input.size);
+
+            this.value.copyCustomParams(input);
         }
         else
         {
@@ -272,7 +274,9 @@ extends GShape
             this.alignV       .toValue(),
             this.lineHeight   .toValue(),
             this.letterSpacing.toValue());
-            
+
+        text.copyCustomParams(this.value);
+           
         text.props   = this.props.toValue();
         text.objects = this.value.objects.map(o => o.copy());
         

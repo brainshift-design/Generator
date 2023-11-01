@@ -142,6 +142,8 @@ extends GOperator1
             this.cap  .toValue(),
             this.round.toValue());
 
+        point.copyCustomParams(this.value);
+
         point.objects  = this.value.objects.map(o => o.copy());
         point.uniqueId = this.value.uniqueId;
 

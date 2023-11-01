@@ -58,6 +58,8 @@ extends GShape
                 width  ?? input.width,
                 height ?? input.height,
                 round  ?? input.round);
+
+            this.value.copyCustomParams(input);
         }
         else
         {
@@ -155,6 +157,8 @@ extends GShape
             this.width .toValue(),
             this.height.toValue(),
             this.round .toValue());
+
+        rect.copyCustomParams(this.value);
 
         rect.props   = this.props.toValue();
         rect.objects = this.value.objects.map(o => o.copy());

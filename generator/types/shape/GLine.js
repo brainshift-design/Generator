@@ -39,6 +39,8 @@ extends GShape
                 x     ?? input.x,
                 y     ?? input.y,
                 width ?? input.width);
+
+            this.value.copyCustomParams(input);
         }
         else
         {
@@ -121,6 +123,8 @@ extends GShape
             this.x     .toValue(),
             this.y     .toValue(),
             this.width .toValue());
+
+        line.copyCustomParams(this.value);
 
         line.props   = this.props.toValue();
         line.objects = this.value.objects.map(o => o.copy());

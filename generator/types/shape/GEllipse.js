@@ -77,7 +77,7 @@ extends GShape
             const __y = _pos.value == 0 ? _y : new NumberValue(_y.value + _h.value/2, Math.max(_y.decimals, _h.decimals));
             const __w = _pos.value == 0 ? _w : new NumberValue(_w.value/2, Math.max(_x.decimals, _w.decimals));
             const __h = _pos.value == 0 ? _h : new NumberValue(_h.value/2, Math.max(_y.decimals, _h.decimals));            
-            
+
 
             this.value = new EllipseValue(
                 this.nodeId,
@@ -86,6 +86,9 @@ extends GShape
                 _from,
                 _to,
                 _inner);
+            
+            this.value.copyCustomParams(input);
+            
 
             this.setUpdateValues(parse, 
             [
@@ -215,7 +218,9 @@ extends GShape
             this.to      .toValue(),
             this.inner   .toValue());
 
-        ellipse.props   = this.props.toValue();
+        ellipse.copyCustomParams(this.value);
+
+        ellipse.props = this.props.toValue();
 
         ellipse.objects = 
             this.value.objects

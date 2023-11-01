@@ -162,6 +162,8 @@ extends GShape
             this.nodeId,
             this.regions.toValue());
 
+        network.copyCustomParams(this.value);
+
         network.uniqueId = this.value.uniqueId;
         network.objects  = this.value.objects.map(o => o.copy());
 

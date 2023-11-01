@@ -205,6 +205,8 @@ extends GShape
             this.winding.toValue(),
             this.props  .toValue());
 
+        region.copyCustomParams(this.value);
+
         region.uniqueId = this.value.uniqueId;
         region.objects  = this.value.objects.map(o => o.copy());
 
