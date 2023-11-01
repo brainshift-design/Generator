@@ -1,6 +1,7 @@
 class StarValue
 extends ShapeValue
 {
+    position;
     x;
     y;
     width;
@@ -12,23 +13,25 @@ extends ShapeValue
 
 
     constructor(nodeId,
-                x      = new NumberValue(0), 
-                y      = new NumberValue(0), 
-                width  = new NumberValue(0), 
-                height = new NumberValue(0), 
-                round  = new NumberValue(0), 
-                points = new NumberValue(0),
-                convex = new NumberValue(0))
+                position = new NumberValue(0), 
+                x        = new NumberValue(0), 
+                y        = new NumberValue(0), 
+                width    = new NumberValue(0), 
+                height   = new NumberValue(0), 
+                round    = new NumberValue(0), 
+                points   = new NumberValue(0),
+                convex   = new NumberValue(0))
     {
         super(STAR_VALUE, nodeId);
 
-        this.x      = x;
-        this.y      = y;
-        this.width  = width;
-        this.height = height;
-        this.round  = round;
-        this.points = points;
-        this.convex = convex;
+        this.position = position;
+        this.x        = x;
+        this.y        = y;
+        this.width    = width;
+        this.height   = height;
+        this.round    = round;
+        this.points   = points;
+        this.convex   = convex;
     }
 
 
@@ -37,13 +40,14 @@ extends ShapeValue
     {
         const copy = new StarValue(
             this.nodeId,
-            this.x     .copy(), 
-            this.y     .copy(), 
-            this.width .copy(), 
-            this.height.copy(), 
-            this.round .copy(), 
-            this.points.copy(),
-            this.convex.copy());
+            this.position.copy(), 
+            this.x       .copy(), 
+            this.y       .copy(), 
+            this.width   .copy(), 
+            this.height  .copy(), 
+            this.round   .copy(), 
+            this.points  .copy(),
+            this.convex  .copy());
 
         copy.copyBase(this);
 
@@ -55,13 +59,14 @@ extends ShapeValue
     equals(star)
     {
         return star
-            && this.x     .equals(star.x     )
-            && this.y     .equals(star.y     )
-            && this.width .equals(star.width )
-            && this.height.equals(star.height)
-            && this.round .equals(star.round )
-            && this.points.equals(star.points)
-            && this.convex.equals(star.convex);
+            && this.position.equals(star.position)
+            && this.x       .equals(star.x       )
+            && this.y       .equals(star.y       )
+            && this.width   .equals(star.width   )
+            && this.height  .equals(star.height  )
+            && this.round   .equals(star.round   )
+            && this.points  .equals(star.points  )
+            && this.convex  .equals(star.convex  );
     }
 
 
@@ -76,13 +81,14 @@ extends ShapeValue
     hasInitValue()
     {
         return super.hasInitValue()
-            && this.x     .hasInitValue()
-            && this.y     .hasInitValue()
-            && this.width .hasInitValue()
-            && this.height.hasInitValue()
-            && this.round .hasInitValue()
-            && this.points.hasInitValue()
-            && this.convex.hasInitValue();
+            && this.position.hasInitValue()
+            && this.x       .hasInitValue()
+            && this.y       .hasInitValue()
+            && this.width   .hasInitValue()
+            && this.height  .hasInitValue()
+            && this.round   .hasInitValue()
+            && this.points  .hasInitValue()
+            && this.convex  .hasInitValue();
     }
 
 
@@ -90,13 +96,14 @@ extends ShapeValue
     isValid()
     {
         return super.isValid()
-            && this.x     .isValid()
-            && this.y     .isValid()
-            && this.width .isValid()
-            && this.height.isValid()
-            && this.round .isValid()
-            && this.points.isValid()
-            && this.convex.isValid();
+            && this.position.isValid()
+            && this.x       .isValid()
+            && this.y       .isValid()
+            && this.width   .isValid()
+            && this.height  .isValid()
+            && this.round   .isValid()
+            && this.points  .isValid()
+            && this.convex  .isValid();
     }
 
 
@@ -110,13 +117,14 @@ extends ShapeValue
 
     toString()
     {
-        return      this.x     .toString()
-            + ' ' + this.y     .toString()
-            + ' ' + this.width .toString()
-            + ' ' + this.height.toString()
-            + ' ' + this.round .toString()
-            + ' ' + this.points.toString()
-            + ' ' + this.convex.toString()
+        return      this.position.toString()
+            + ' ' + this.x       .toString()
+            + ' ' + this.y       .toString()
+            + ' ' + this.width   .toString()
+            + ' ' + this.height  .toString()
+            + ' ' + this.round   .toString()
+            + ' ' + this.points  .toString()
+            + ' ' + this.convex  .toString()
             + ' ' + super.toString();
     }
 
@@ -124,32 +132,35 @@ extends ShapeValue
 
     toPreviewString()
     {
-        return      this.x     .toPreviewString()
-            + ' ' + this.y     .toPreviewString()
-            + ' ' + this.width .toPreviewString()
-            + ' ' + this.height.toPreviewString()
-            + ' ' + this.round .toPreviewString()
-            + ' ' + this.points.toPreviewString()
-            + ' ' + this.convex.toPreviewString();
+        return      this.position.toPreviewString()
+            + ' ' + this.x       .toPreviewString()
+            + ' ' + this.y       .toPreviewString()
+            + ' ' + this.width   .toPreviewString()
+            + ' ' + this.height  .toPreviewString()
+            + ' ' + this.round   .toPreviewString()
+            + ' ' + this.points  .toPreviewString()
+            + ' ' + this.convex  .toPreviewString();
     }
 
 
 
     toDisplayString()
     {
-        return      this.x     .toDisplayString()
-            + ' ' + this.y     .toDisplayString()
-            + ' ' + this.width .toDisplayString()
-            + ' ' + this.height.toDisplayString()
-            + ' ' + this.round .toDisplayString()
-            + ' ' + this.points.toDisplayString()
-            + ' ' + this.convex.toDisplayString();
+        return      this.position.toDisplayString()
+            + ' ' + this.x       .toDisplayString()
+            + ' ' + this.y       .toDisplayString()
+            + ' ' + this.width   .toDisplayString()
+            + ' ' + this.height  .toDisplayString()
+            + ' ' + this.round   .toDisplayString()
+            + ' ' + this.points  .toDisplayString()
+            + ' ' + this.convex  .toDisplayString();
     }
 
 
 
     static NaN = new StarValue(
         '',
+        NumberValue.NaN,
         NumberValue.NaN,
         NumberValue.NaN,
         NumberValue.NaN,
@@ -177,6 +188,7 @@ function parseStarValue(str, i = -1)
 
     const iStart = i;
 
+    const pos    = parseNumberValue(str[i]); i += pos   [1];
     const x      = parseNumberValue(str[i]); i += x     [1];
     const y      = parseNumberValue(str[i]); i += y     [1];
     const width  = parseNumberValue(str[i]); i += width [1];
@@ -188,6 +200,7 @@ function parseStarValue(str, i = -1)
 
     const star = new StarValue(
         '', // set node ID elsewhere
+        pos   [0],
         x     [0],
         y     [0],
         width [0],

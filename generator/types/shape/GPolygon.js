@@ -59,26 +59,30 @@ extends GShape
         {
             input = (await this.input.eval(parse)).toValue();
 
-            const  _x = x      ?? this.input.value.x;
-            const  _y = y      ?? this.input.value.y;
-            const  _w = width  ?? this.input.value.width;
-            const  _h = height ?? this.input.value.height;
+            const  _pos     = pos     ?? input.position;
+            const  _x       = x       ?? input.x;
+            const  _y       = y       ?? input.y;
+            const  _w       = width   ?? input.width;
+            const  _h       = height  ?? input.height;
+            const  _round   = round   ?? input.round;
+            const  _corners = corners ?? input.corners;
 
-            const __x = pos.value == 0 ? _x : new NumberValue(_x.value + _w.value/2, Math.max(_x.decimals, _w.decimals));
-            const __y = pos.value == 0 ? _y : new NumberValue(_y.value + _h.value/2, Math.max(_y.decimals, _h.decimals));
-            const __w = pos.value == 0 ? _w : new NumberValue(_w.value/2, Math.max(_x.decimals, _w.decimals));
-            const __h = pos.value == 0 ? _h : new NumberValue(_h.value/2, Math.max(_y.decimals, _h.decimals));            
+            const __x = _pos.value == 0 ? _x : new NumberValue(_x.value + _w.value/2, Math.max(_x.decimals, _w.decimals));
+            const __y = _pos.value == 0 ? _y : new NumberValue(_y.value + _h.value/2, Math.max(_y.decimals, _h.decimals));
+            const __w = _pos.value == 0 ? _w : new NumberValue(_w.value/2, Math.max(_x.decimals, _w.decimals));
+            const __h = _pos.value == 0 ? _h : new NumberValue(_h.value/2, Math.max(_y.decimals, _h.decimals));            
             
             this.value = new PolygonValue(
                 this.nodeId,
+                _pos,
                 _x, _y, _w, _h,
-                round   ?? this.input.value.round,
-                corners ?? this.input.value.corners);
+                _round,
+                _corners);
 
 
             this.setUpdateValues(parse, 
             [
-                ['position', pos       ],
+                ['position', _pos      ],
                 ['x',        __x       ],
                 ['y',        __y       ],
                 ['width',    __w       ],
@@ -100,6 +104,7 @@ extends GShape
 
             this.value = new PolygonValue(
                 this.nodeId,
+                pos,
                 __x, __y, __w, __h,
                 round,
                 corners);
@@ -123,12 +128,13 @@ extends GShape
         await this.evalObjects(parse);
 
 
-        if (!this.x      ) this.x       = this.value.x      .copy();
-        if (!this.y      ) this.y       = this.value.y      .copy();
-        if (!this.width  ) this.width   = this.value.width  .copy();
-        if (!this.height ) this.height  = this.value.height .copy();
-        if (!this.round  ) this.round   = this.value.round  .copy();
-        if (!this.corners) this.corners = this.value.corners.copy();
+        if (!this.position) this.position = this.value.position.copy();
+        if (!this.x       ) this.x        = this.value.x       .copy();
+        if (!this.y       ) this.y        = this.value.y       .copy();
+        if (!this.width   ) this.width    = this.value.width   .copy();
+        if (!this.height  ) this.height   = this.value.height  .copy();
+        if (!this.round   ) this.round    = this.value.round   .copy();
+        if (!this.corners ) this.corners  = this.value.corners .copy();
 
 
         this.validate();
@@ -192,12 +198,13 @@ extends GShape
     {
         const poly = new PolygonValue(
             this.nodeId,
-            this.x      .toValue(),
-            this.y      .toValue(),
-            this.width  .toValue(),
-            this.height .toValue(),
-            this.round  .toValue(),
-            this.corners.toValue());
+            this.position.toValue(),
+            this.x       .toValue(),
+            this.y       .toValue(),
+            this.width   .toValue(),
+            this.height  .toValue(),
+            this.round   .toValue(),
+            this.corners .toValue());
 
         poly.props   = this.props.toValue();
         poly.objects = this.value.objects.map(o => o.copy());

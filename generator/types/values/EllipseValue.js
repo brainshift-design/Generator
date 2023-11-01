@@ -1,6 +1,7 @@
 class EllipseValue
 extends ShapeValue
 {
+    position;
     x;
     y;
     width;
@@ -12,23 +13,25 @@ extends ShapeValue
 
 
     constructor(nodeId,
-                x      = new NumberValue(0), 
-                y      = new NumberValue(0), 
-                width  = new NumberValue(0), 
-                height = new NumberValue(0), 
-                from   = new NumberValue(0),
-                to     = new NumberValue(0),
-                inner  = new NumberValue(0))
+                position = new NumberValue(0),
+                x        = new NumberValue(0), 
+                y        = new NumberValue(0), 
+                width    = new NumberValue(0), 
+                height   = new NumberValue(0), 
+                from     = new NumberValue(0),
+                to       = new NumberValue(0),
+                inner    = new NumberValue(0))
     {
         super(ELLIPSE_VALUE, nodeId);
 
-        this.x       = x;
-        this.y       = y;
-        this.width   = width;
-        this.height  = height;
-        this.from    = from;
-        this.to      = to;
-        this.inner   = inner;
+        this.position = position;
+        this.x        = x;
+        this.y        = y;
+        this.width    = width;
+        this.height   = height;
+        this.from     = from;
+        this.to       = to;
+        this.inner    = inner;
     }
 
 
@@ -37,13 +40,14 @@ extends ShapeValue
     {
         const copy = new EllipseValue(
             this.nodeId,
-            this.x     .copy(), 
-            this.y     .copy(), 
-            this.width .copy(), 
-            this.height.copy(), 
-            this.from  .copy(),
-            this.to    .copy(),
-            this.inner .copy());
+            this.position.copy(), 
+            this.x       .copy(), 
+            this.y       .copy(), 
+            this.width   .copy(), 
+            this.height  .copy(), 
+            this.from    .copy(),
+            this.to      .copy(),
+            this.inner   .copy());
 
         copy.copyBase(this);
 
@@ -55,13 +59,14 @@ extends ShapeValue
     equals(ellipse)
     {
         return ellipse
-            && this.x     .equals(ellipse.x     )
-            && this.y     .equals(ellipse.y     )
-            && this.width .equals(ellipse.width )
-            && this.height.equals(ellipse.height)
-            && this.from  .equals(ellipse.from  )
-            && this.to    .equals(ellipse.to    )
-            && this.inner .equals(ellipse.inner );
+            && this.position.equals(ellipse.position)
+            && this.x       .equals(ellipse.x       )
+            && this.y       .equals(ellipse.y       )
+            && this.width   .equals(ellipse.width   )
+            && this.height  .equals(ellipse.height  )
+            && this.from    .equals(ellipse.from    )
+            && this.to      .equals(ellipse.to      )
+            && this.inner   .equals(ellipse.inner   );
     }
 
 
@@ -76,13 +81,14 @@ extends ShapeValue
     hasInitValue()
     {
         return super.hasInitValue()
-            && this.x     .hasInitValue()
-            && this.y     .hasInitValue()
-            && this.width .hasInitValue()
-            && this.height.hasInitValue()
-            && this.from  .hasInitValue()
-            && this.to    .hasInitValue()
-            && this.inner .hasInitValue();
+            && this.position.hasInitValue()
+            && this.x       .hasInitValue()
+            && this.y       .hasInitValue()
+            && this.width   .hasInitValue()
+            && this.height  .hasInitValue()
+            && this.from    .hasInitValue()
+            && this.to      .hasInitValue()
+            && this.inner   .hasInitValue();
     }
 
 
@@ -90,13 +96,14 @@ extends ShapeValue
     isValid()
     {
         return super.isValid()
-            && this.x     .isValid()
-            && this.y     .isValid()
-            && this.width .isValid()
-            && this.height.isValid()
-            && this.from  .isValid()
-            && this.to    .isValid()
-            && this.inner .isValid();
+            && this.position.isValid()
+            && this.x       .isValid()
+            && this.y       .isValid()
+            && this.width   .isValid()
+            && this.height  .isValid()
+            && this.from    .isValid()
+            && this.to      .isValid()
+            && this.inner   .isValid();
     }
 
 
@@ -110,13 +117,14 @@ extends ShapeValue
 
     toString()
     {
-        return      this.x     .toString()
-            + ' ' + this.y     .toString()
-            + ' ' + this.width .toString()
-            + ' ' + this.height.toString()
-            + ' ' + this.from  .toString()
-            + ' ' + this.to    .toString()
-            + ' ' + this.inner .toString()
+        return      this.position.toString()
+            + ' ' + this.x       .toString()
+            + ' ' + this.y       .toString()
+            + ' ' + this.width   .toString()
+            + ' ' + this.height  .toString()
+            + ' ' + this.from    .toString()
+            + ' ' + this.to      .toString()
+            + ' ' + this.inner   .toString()
             + ' ' + super.toString();
     }
 
@@ -125,32 +133,35 @@ extends ShapeValue
     toPreviewString()
     {
         return 'ellipse';
-            // + ' ' + this.x     .toPreviewString()
-            // + ' ' + this.y     .toPreviewString()
-            // + ' ' + this.width .toPreviewString()
-            // + ' ' + this.height.toPreviewString()
-            // + ' ' + this.inner .toPreviewString() + '%'
-            // + ' ' + this.from  .toPreviewString() + '°'
-            // + ' ' + this.to    .toPreviewString() + '°';
+            // + ' ' + this.position.toPreviewString()
+            // + ' ' + this.x       .toPreviewString()
+            // + ' ' + this.y       .toPreviewString()
+            // + ' ' + this.width   .toPreviewString()
+            // + ' ' + this.height  .toPreviewString()
+            // + ' ' + this.inner   .toPreviewString() + '%'
+            // + ' ' + this.from    .toPreviewString() + '°'
+            // + ' ' + this.to      .toPreviewString() + '°';
     }
 
 
 
     toDisplayString()
     {
-        return      this.x     .toDisplayString()
-            + ' ' + this.y     .toDisplayString()
-            + ' ' + this.width .toDisplayString()
-            + ' ' + this.height.toDisplayString()
-            + ' ' + this.from  .toDisplayString()
-            + ' ' + this.to    .toDisplayString()
-            + ' ' + this.inner .toDisplayString();
+        return      this.position.toDisplayString()
+            + ' ' + this.x       .toDisplayString()
+            + ' ' + this.y       .toDisplayString()
+            + ' ' + this.width   .toDisplayString()
+            + ' ' + this.height  .toDisplayString()
+            + ' ' + this.from    .toDisplayString()
+            + ' ' + this.to      .toDisplayString()
+            + ' ' + this.inner   .toDisplayString();
     }
 
 
 
     static NaN = new EllipseValue(
         '',
+        NumberValue.NaN,
         NumberValue.NaN,
         NumberValue.NaN,
         NumberValue.NaN,
@@ -178,6 +189,7 @@ function parseEllipseValue(str, i = -1)
 
     const iStart = i;
 
+    const pos    = parseNumberValue(str[i]); i += pos   [1];
     const x      = parseNumberValue(str[i]); i += x     [1];
     const y      = parseNumberValue(str[i]); i += y     [1];
     const width  = parseNumberValue(str[i]); i += width [1];
@@ -188,7 +200,8 @@ function parseEllipseValue(str, i = -1)
 
 
     const ellipse = new EllipseValue(
-        '', // set node ID elsewhere
+        '', // set node ID elsewhere,
+        pos   [0],
         x     [0],
         y     [0],
         width [0],
