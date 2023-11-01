@@ -8269,6 +8269,9 @@ class GValue
         
         this.valueId = base.valueId;
 
+        for (const param of base.customParams)
+            this.customParams.push([param[0], param[1].copy()]);
+
         if (base.objects)
             this.copyObjects(base.objects);
     }
@@ -8544,7 +8547,9 @@ extends GNode
         this.nodeId       = base.nodeId;
         this.nodeName     = base.nodeName;
 
-        this.customParams = clone(base.customParams);
+        for (const param of base.customParams)
+            this.customParams.push([param[0], param[1].copy()]);
+
         this.options      = clone(base.options);
 
         this.valid        = base.valid;
@@ -17061,6 +17066,8 @@ function extractParam(input, name)
     else
     {
         const customIndex = input.customParams.findIndex(p => p[0] == nameValue);
+        console.log('input.customParams =', [...input.customParams]);
+        console.log('customIndex =', customIndex);
 
         value =
             customIndex > -1
@@ -47749,6 +47756,9 @@ function noColorStyle(rgba)
             : 'rgba(255, 255, 255, 0.95)';
     }
 }
+
+
+// https://ixora.io/projects/colorblindness/color-blindness-simulation-research/
 
 
 const lmsW = xyz2lms(lrgb2xyz([1, 1, 1]));

@@ -1,3 +1,6 @@
+// https://ixora.io/projects/colorblindness/color-blindness-simulation-research/
+
+
 const lmsW = xyz2lms(lrgb2xyz([1, 1, 1]));
 const lmsB = xyz2lms(lrgb2xyz([0, 0, 1]));
 const lmsR = xyz2lms(lrgb2xyz([1, 0, 0]));

@@ -148,6 +148,8 @@ function extractParam(input, name)
     else
     {
         const customIndex = input.customParams.findIndex(p => p[0] == nameValue);
+        console.log('input.customParams =', [...input.customParams]);
+        console.log('customIndex =', customIndex);
 
         value =
             customIndex > -1

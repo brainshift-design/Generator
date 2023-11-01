@@ -49,7 +49,9 @@ extends GNode
         this.nodeId       = base.nodeId;
         this.nodeName     = base.nodeName;
 
-        this.customParams = clone(base.customParams);
+        for (const param of base.customParams)
+            this.customParams.push([param[0], param[1].copy()]);
+
         this.options      = clone(base.options);
 
         this.valid        = base.valid;
