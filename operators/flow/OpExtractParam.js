@@ -1,7 +1,7 @@
 class   OpExtractParam
-extends OperatorBase
+extends ResizableBase
 {
-    paramParam;
+    paramName;
 
     length;
 
@@ -14,15 +14,38 @@ extends OperatorBase
         super(EXTRACT_PARAM, 'getParam', 'get param', iconExtractParam);
 
         this.canDisable        = true;
-        this.showHeaderTooltip = true;
         
 
         this.addInput (new Input (ALL_VALUES));
         this.addOutput(new Output([ANY_VALUE], this.output_genRequest));
 
-        this.addParam(this.paramParam = new TextParam('name', 'name', true, true, true));
+        this.addParam(this.paramName = new TextParam('name', 'name', true, true, true));
 
-        this.inputs[0].addEventListener('disconnect', () => OpExtract_onDisconnectInput(this));
+        this.inputs[0].addEventListener('disconnect', () => OpExtractParam_onDisconnectInput(this));
+
+        this.paramName.divider = 0.35;
+    }
+
+
+
+    setRect(x, y, w, h, updateTransform = true)
+    {
+        // const headerHeight = Math.max(defHeaderHeight, boundingRect(this.header).height / graph.currentPage.zoom);
+
+        const height = defHeaderHeight + (this.paramName ? defParamHeight : 0);
+
+
+        this.height             = height;
+        this.inner.style.height = height + 'px';
+
+        //this.updateSizers();
+
+        super.setRect(
+            x, 
+            y, 
+            w, 
+            height, 
+            updateTransform);
     }
 
 
@@ -47,7 +70,7 @@ extends OperatorBase
         if (input.connected)
             request.push(...pushInputOrParam(input, gen));
 
-        request.push(...this.node.paramParam.genRequest(gen));
+        request.push(...this.node.paramName.genRequest(gen));
 
         
         gen.scope.pop();
@@ -60,12 +83,6 @@ extends OperatorBase
 
     updateValues(requestId, actionId, updateParamId, paramIds, values)
     {
-        //const fullLength = values[paramIds.findIndex(id => id == 'fullLength')];
-        //const length     = values[paramIds.findIndex(id => id == 'length')];
-
-        //this.length = length.value;
-
-        
         const type = values[paramIds.findIndex(id => id == 'type')];
 
         if (type)
@@ -76,21 +93,15 @@ extends OperatorBase
 
 
 
-    // updateParams()
-    // {
-    //     this.paramParam.enableControlText(false);
-
-    //     this.updateParamControls();
-    // }
-
-
-
     getHeaderColors(options = {})
     {
         const colors = super.getHeaderColors(options);
         const type   = this.outputs[0].types[0];
 
-        colors.text  = isDark(colors.back) ? [1, 1, 1, 1] : [0, 0, 0, 1]; 
+        colors.text = 
+            isDark(colors.back) 
+            ? [1, 1, 1, 1] 
+            : [0, 0, 0, 1]; 
 
         const gray =
                this.active
@@ -131,7 +142,7 @@ extends OperatorBase
 
 
 
-function OpExtract_onDisconnectInput(node)
+function OpExtractParam_onDisconnectInput(node)
 {
     node._connected = false;
 }

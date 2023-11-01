@@ -55,53 +55,13 @@ extends GOperator1
                 if (this.options.enabled)
                 {
                     for (let i = 0; i < input.items.length; i++)
-                    {
-                        const item = input.items[i];
-                        
-
-                        let nameValue = name.value;
-                        
-                        if (    item
-                            && !item[name.value])
-                        {
-                                 if (item[name.value.toUpperCase()]) nameValue = name.value.toUpperCase();
-                            else if (item[name.value.toLowerCase()]) nameValue = name.value.toLowerCase();
-                        }
-
-
-                        this.value.items.push(
-                               item 
-                            && item[nameValue]
-                            ? item[nameValue].copy() 
-                            : NullValue.copy());
-                        
-                        if (   item
-                            && item[nameValue]
-                            && item[nameValue].objects 
-                            && this.value.objects)
-                            this.value.objects.push(...item[nameValue].objects);
-                    }
+                        this.value.items.push(extractParam(input.items[i]));
                 }
                 else
                     this.value = input;
             }
             else
-            {
-                let nameValue = name.value;
-                
-                if (    input
-                    && !input[name.value])
-                {
-                         if (input[name.value.toUpperCase()]) nameValue = name.value.toUpperCase();
-                    else if (input[name.value.toLowerCase()]) nameValue = name.value.toLowerCase();
-                }
-
-                
-                this.value = 
-                    this.input[nameValue]
-                    ? this.input[nameValue].toValue()//copy()
-                    : NullValue.copy();
-            }
+                this.value = extractParam(input, name);
         }
         else
         {
@@ -161,4 +121,47 @@ extends GOperator1
 
         if (this.name) this.name.iterateLoop(parse);
     }
+}
+
+
+
+function extractParam(input, name)
+{
+    let nameValue = name.value.trim();
+
+
+    if (    input
+        && !input[nameValue])
+    {
+             if (input[name.value.toUpperCase()]) nameValue = name.value.toUpperCase();
+        else if (input[name.value.toLowerCase()]) nameValue = name.value.toLowerCase();
+    }
+
+
+    let value = null;
+
+    if (   input
+        && input[nameValue])
+    {
+        value = input[nameValue];//.copy();
+    }
+    else
+    {
+        const customIndex = input.customParams.findIndex(p => p[0] == nameValue);
+
+        value =
+            customIndex > -1
+            ? input.customParams[customIndex][1]//.copy()
+            : NullValue.copy();
+    }
+
+
+    if (   input
+        && input[nameValue]
+        && input[nameValue].objects 
+        && this.value.objects)
+        value.objects.push(...input[nameValue].objects);
+
+
+    return value;
 }

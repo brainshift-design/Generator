@@ -145,6 +145,7 @@ function genParse(parse, inParam = true)
     else if (parse.next == COMBINE                ) result = genParseJoin              (parse);
     else if (parse.next == CONDENSE               ) result = genParseCondense          (parse);
     else if (parse.next == EXTRACT                ) result = genParseExtract           (parse);
+    else if (parse.next == SET_PARAM              ) result = genParseSetParam          (parse);
     else if (parse.next == EXTRACT_PARAM          ) result = genParseExtractParam      (parse);
     else if (parse.next == SUBLIST                ) result = genParseSublist           (parse);
     else if (parse.next == UNIQUE                 ) result = genParseUnique            (parse);

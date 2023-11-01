@@ -23,7 +23,7 @@ function noNodeTag(key) { return noTag(key, nodeTag); }
 function noConnTag(key) { return noTag(key, connTag); }
 
 
-const generatorVersion = 263;
+const generatorVersion = 265;
 
 
 const MAX_INT32        = 2147483647;
@@ -1025,6 +1025,7 @@ const VALUE_NAME              = 'VNAME';
 const COMBINE                 = 'CMB';
 const CONDENSE                = 'CDENSE';
 const EXTRACT                 = 'EXTR';
+const SET_PARAM               = 'SETP';
 const EXTRACT_PARAM           = 'EXTRP';
 const SUBLIST                 = 'SUBLST';
 const UNIQUE                  = 'UNIQ';
@@ -1052,6 +1053,7 @@ const LIST_TYPES =
     SHAPE_LIST_VALUE,
     COMBINE,
     EXTRACT,
+    SET_PARAM,
     EXTRACT_PARAM,
     SUBLIST,
     LIST,
@@ -1078,6 +1080,7 @@ const FLOW_TYPES =
     ...LIST_TYPES,
     CONDENSE,
     EXTRACT,
+    SET_PARAM,
     EXTRACT_PARAM,
     SUBLIST,
     UNIQUE,

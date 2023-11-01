@@ -4,7 +4,7 @@
 
 
 
-const generatorVersion = 263;
+const generatorVersion = 265;
 
 
 const MAX_INT32        = 2147483647;
@@ -4760,6 +4760,7 @@ const VALUE_NAME              = 'VNAME';
 const COMBINE                 = 'CMB';
 const CONDENSE                = 'CDENSE';
 const EXTRACT                 = 'EXTR';
+const SET_PARAM               = 'SETP';
 const EXTRACT_PARAM           = 'EXTRP';
 const SUBLIST                 = 'SUBLST';
 const UNIQUE                  = 'UNIQ';
@@ -4787,6 +4788,7 @@ const LIST_TYPES =
     SHAPE_LIST_VALUE,
     COMBINE,
     EXTRACT,
+    SET_PARAM,
     EXTRACT_PARAM,
     SUBLIST,
     LIST,
@@ -4813,6 +4815,7 @@ const FLOW_TYPES =
     ...LIST_TYPES,
     CONDENSE,
     EXTRACT,
+    SET_PARAM,
     EXTRACT_PARAM,
     SUBLIST,
     UNIQUE,
@@ -8229,6 +8232,8 @@ class GValue
 {
     type;
     valueId;
+
+    customParams = []; // [[name, GValue]]
 
     objects = null;
 
@@ -16758,6 +16763,154 @@ extends GOperator1
 
 
 
+class GSetParam
+extends GOperator2
+{
+    name = null;
+
+
+    
+    constructor(nodeId, options)
+    {
+        super(EXTRACT_PARAM, nodeId, options);
+    }
+
+
+    
+    reset()
+    {
+        super.reset();
+
+        this.name  = null;
+    }
+
+
+
+    copy()
+    {
+        const copy = new GExtractParam(this.nodeId, this.options);
+
+        copy.copyBase(this);
+
+        if (this.name) copy.name = this.name.copy();
+
+        return copy;
+    }
+
+
+
+    async eval(parse)
+    {
+        if (this.isCached())
+            return this;
+
+
+        const input0 = this.input0 ? (await this.input0.eval(parse)).toValue() : null;
+        const input1 = this.input1 ? (await this.input1.eval(parse)).toValue() : null;
+
+        const name   = this.name  ? (await this.name .eval(parse)).toValue() : null;
+
+
+        if (   input0
+            && name)
+        {
+            let nameValue = name.value.trim();
+
+
+            if (isListType(input0.type))
+            {
+                this.value = new ListValue();
+
+                if (this.options.enabled)
+                {
+                    for (let i = 0; i < input0.items.length; i++)
+                    {
+                        const item = input0.items[i];
+
+                        if (   input1
+                            && name.value.trim() != '')
+                            item.customParams.push([nameValue, input1]);
+
+                        
+                        if (   item
+                            && item[nameValue]
+                            && item[nameValue].objects 
+                            && this.value.objects)
+                            this.value.objects.push(...item[nameValue].objects);
+                    }
+                }
+                else
+                    this.value = input0;
+            }
+            else
+            {
+                this.value = input0;
+
+                if (   input1
+                    && nameValue != ''
+                    && this.options.enabled)
+                    this.value.customParams.push([nameValue, input1]);
+            }
+        }
+        else
+        {
+            this.value = NullValue.copy();
+        }
+
+
+        this.updateValueObjects();
+
+
+        this.setUpdateValues(parse,
+        [
+            ['type', this.outputType()],
+            ['name', name             ]
+        ]);
+        
+
+        this.validate();
+
+        return this;
+    }
+
+
+
+    isValid()
+    {
+        return super.isValid()
+            && this.name && this.name.isValid();
+    }
+
+
+
+    pushValueUpdates(parse)
+    {
+        super.pushValueUpdates(parse);
+
+        if (this.name) this.name.pushValueUpdates(parse);
+    }
+
+
+
+    invalidateInputs(parse, from, force)
+    {
+        super.invalidateInputs(parse, from, force);
+
+        if (this.name) this.name.invalidateInputs(parse, from, force);
+    }
+
+
+
+    iterateLoop(parse)
+    {
+        super.iterateLoop(parse);
+
+        if (this.name) this.name.iterateLoop(parse);
+    }
+}
+
+
+
 class GExtractParam
 extends GOperator1
 {
@@ -16815,53 +16968,13 @@ extends GOperator1
                 if (this.options.enabled)
                 {
                     for (let i = 0; i < input.items.length; i++)
-                    {
-                        const item = input.items[i];
-                        
-
-                        let nameValue = name.value;
-                        
-                        if (    item
-                            && !item[name.value])
-                        {
-                                 if (item[name.value.toUpperCase()]) nameValue = name.value.toUpperCase();
-                            else if (item[name.value.toLowerCase()]) nameValue = name.value.toLowerCase();
-                        }
-
-
-                        this.value.items.push(
-                               item 
-                            && item[nameValue]
-                            ? item[nameValue].copy() 
-                            : NullValue.copy());
-                        
-                        if (   item
-                            && item[nameValue]
-                            && item[nameValue].objects 
-                            && this.value.objects)
-                            this.value.objects.push(...item[nameValue].objects);
-                    }
+                        this.value.items.push(extractParam(input.items[i]));
                 }
                 else
                     this.value = input;
             }
             else
-            {
-                let nameValue = name.value;
-                
-                if (    input
-                    && !input[name.value])
-                {
-                         if (input[name.value.toUpperCase()]) nameValue = name.value.toUpperCase();
-                    else if (input[name.value.toLowerCase()]) nameValue = name.value.toLowerCase();
-                }
-
-                
-                this.value = 
-                    this.input[nameValue]
-                    ? this.input[nameValue].toValue()//copy()
-                    : NullValue.copy();
-            }
+                this.value = extractParam(input, name);
         }
         else
         {
@@ -16923,6 +17036,48 @@ extends GOperator1
     }
 }
 
+
+
+function extractParam(input, name)
+{
+    let nameValue = name.value.trim();
+
+
+    if (    input
+        && !input[nameValue])
+    {
+             if (input[name.value.toUpperCase()]) nameValue = name.value.toUpperCase();
+        else if (input[name.value.toLowerCase()]) nameValue = name.value.toLowerCase();
+    }
+
+
+    let value = null;
+
+    if (   input
+        && input[nameValue])
+    {
+        value = input[nameValue];//.copy();
+    }
+    else
+    {
+        const customIndex = input.customParams.findIndex(p => p[0] == nameValue);
+
+        value =
+            customIndex > -1
+            ? input.customParams[customIndex][1]//.copy()
+            : NullValue.copy();
+    }
+
+
+    if (   input
+        && input[nameValue]
+        && input[nameValue].objects 
+        && this.value.objects)
+        value.objects.push(...input[nameValue].objects);
+
+
+    return value;
+}
 
 
 class GSublist
@@ -27677,84 +27832,36 @@ extends GOperator1
 
             if (this.options.enabled)
             {
-                // if (   !isValid(this.value) 
-                //     || !this.value.isValid()) 
-                // {
-                    let rgb = input.toRgb();
-
-                    if (quality.value == 0) // clip sRGB
+                if (this.options.enabled)
+                {
+                    if (isListType(input.type))
                     {
-                        rgb[0] = Math.round(Math.min(Math.max(0, rgb[0]), 1) * 0xff);   
-                        rgb[1] = Math.round(Math.min(Math.max(0, rgb[1]), 1) * 0xff);   
-                        rgb[2] = Math.round(Math.min(Math.max(0, rgb[2]), 1) * 0xff); 
-                        
-                        this.value = ColorValue.fromRgb(rgb);
+                        this.value = new ListValue();
+    
+                        for (let i = 0; i < input.items.length; i++)
+                            this.value.items.push(await getValidColorValue(input.items[i], quality));
                     }
-                    else if (quality.value == 1) // clip chroma
+                    else
                     {
-                        rgb = clipChroma(rgb);
-
-                        rgb[0] = Math.round(rgb[0] * 0xff);   
-                        rgb[1] = Math.round(rgb[1] * 0xff);   
-                        rgb[2] = Math.round(rgb[2] * 0xff); 
-
-                        this.value = ColorValue.fromRgb(rgb);
+                        this.value = await getValidColorValue(input, quality);
                     }
-                    else // find corrections
-                    {
-                        if (!rgbIsOk(rgb))
-                            genInitNodeProgress(this.nodeId);
-                        
-
-                        const inputColor = input.toDataColor();
-
-
-                        const
-                      [ closestOrder,
-                        closest1,
-                        closest2,
-                        closest3 ] = await findCorrection(
-                            parse,
-                            this.nodeId,
-                            inputColor, 
-                            quality, null,  null,  null, 
-                            false,   false, false, false); 
-
-                            
-                        if (!parse.stopGenerate)
-                        {
-                            if (   closestOrder >= 0 
-                                && closestOrder <  6)
-                            {
-                                this._color = correctColor(
-                                    inputColor,
-                                    closestOrder,
-                                    closest1,
-                                    closest2,
-                                    closest3);
-
-                                this.value = ColorValue.fromDataColor(this._color);
-                            }
-                            else
-                            {
-                                this.value = ColorValue.NaN;
-                            }
-                        }
-                    }
-                //}
+                }
+                else
+                    this.value = input;
             }
             else
                 this.value = input;
         }
         else
-            this.value = ColorValue.NaN;
+            this.value = ColorValue.NaN.copy();
 
 
         
         this.setUpdateValues(parse,
         [
-            ['value',   this.value],
-            ['quality', quality   ]
+            ['value',   this.value       ],
+            ['type',    this.outputType()],
+            ['quality', quality          ]
         ]);
 
         
@@ -27799,6 +27906,75 @@ extends GOperator1
     }
 }
 
+
+
+async function getValidColorValue(input, quality)
+{
+    let rgb = input.toRgb();
+
+    if (quality.value == 0) // clip sRGB
+    {
+        rgb[0] = Math.round(Math.min(Math.max(0, rgb[0]), 1) * 0xff);   
+        rgb[1] = Math.round(Math.min(Math.max(0, rgb[1]), 1) * 0xff);   
+        rgb[2] = Math.round(Math.min(Math.max(0, rgb[2]), 1) * 0xff); 
+        
+        return ColorValue.fromRgb(rgb);
+    }
+    else if (quality.value == 1) // clip chroma
+    {
+        rgb = clipChroma(rgb);
+
+        rgb[0] = Math.round(rgb[0] * 0xff);
+        rgb[1] = Math.round(rgb[1] * 0xff);
+        rgb[2] = Math.round(rgb[2] * 0xff);
+
+        return ColorValue.fromRgb(rgb);
+    }
+    else // find corrections
+    {
+        if (!rgbIsOk(rgb))
+            genInitNodeProgress(this.nodeId);
+        
+
+        const inputColor = input.toDataColor();
+
+
+        const
+      [ closestOrder,
+        closest1,
+        closest2,
+        closest3 ] = await findCorrection(
+            parse,
+            this.nodeId,
+            inputColor,
+            quality, null,  null,  null,
+            false,   false, false, false);
+
+            
+        if (!parse.stopGenerate)
+        {
+            if (   closestOrder >= 0
+                && closestOrder <  6)
+            {
+                this._color = correctColor(
+                    inputColor,
+                    closestOrder,
+                    closest1,
+                    closest2,
+                    closest3);
+
+                return ColorValue.fromDataColor(this._color);
+            }
+            else
+            {
+                return ColorValue.NaN.copy();
+            }
+        }
+    }    
+
+
+    return NullValue.copy();
+}
 
 
 class GCorrectColor
@@ -28423,29 +28599,19 @@ extends GOperator1
         if (this.input)
         {
             const input = (await this.input.eval(parse)).toValue();
-            const rgb   = input.toRgb();
+
 
             if (this.options.enabled)
             {
-                const rgbCb = rgb2colorblind(
-                    rgb,
-                    l.value / 2,
-                    m.value / 2,
-                    s.value / 2);
-
-                if (   !rgbIsNaN(rgb)
-                    && !rgbIsNaN(rgbCb))
+                if (isListType(input.type))
                 {
-                    const validRgbCb = rgbCb;
-                
-                    const validCol = convertDataColorToSpace(
-                        rgb2dataColor(validRgbCb), 
-                        colorSpace(input.space.value));
+                    this.value = new ListValue();
 
-                    this.value = ColorValue.fromDataColor(validCol);
+                    for (let i = 0; i < input.items.length; i++)
+                        this.value.items.push(getColorBlindValue(input.items[i], l, m, s));
                 }
                 else
-                    this.value = ColorValue.NaN.copy();
+                    this.value = getColorBlindValue(input, l, m, s);
             }
             else
                 this.value = input;
@@ -28456,10 +28622,11 @@ extends GOperator1
 
         this.setUpdateValues(parse,
         [
-            ['l',     l         ],
-            ['m',     m         ],
-            ['s',     s         ],
-            ['value', this.value]
+            ['value',  this.value       ],
+            ['type',   this.outputType()],
+            ['l',      l                ],
+            ['m',      m                ],
+            ['s',      s                ]
         ]);
         
 
@@ -28512,6 +28679,32 @@ extends GOperator1
     }
 }
 
+
+
+function getColorBlindValue(input, l, m, s)
+{
+    const rgb   = input.toRgb();
+
+    const rgbCb = rgb2colorblind(
+        rgb,
+        l.value / 2,
+        m.value / 2,
+        s.value / 2);
+
+    if (   !rgbIsNaN(rgb  )
+        && !rgbIsNaN(rgbCb))
+    {
+        const validRgbCb = rgbCb;
+    
+        const validCol = convertDataColorToSpace(
+            rgb2dataColor(validRgbCb), 
+            colorSpace(input.space.value));
+
+        return ColorValue.fromDataColor(validCol);
+    }
+    else
+        return ColorValue.NaN.copy();
+}
 
 
 class GColorInterpolate
@@ -39241,6 +39434,63 @@ function genParseExtract(parse)
 
 
 
+function genParseSetParam(parse)
+{
+    const [, nodeId, options, ignore] = genParseNodeStart(parse);
+
+
+    const set = new GSetParam(nodeId, options);
+   
+
+    let nInputs = -1;
+    
+    if (!ignore)
+    {
+        nInputs = parseInt(parse.move());
+        consoleAssert(nInputs == 0 || nInputs == 1, 'nInputs must be [0, 1]');
+    }
+
+    
+    if (parse.settings.logRequests) 
+        logReq(set, parse, ignore, nInputs);
+
+
+    if (ignore) 
+    {
+        genParseNodeEnd(parse, set);
+        return parse.parsedNodes.find(n => n.nodeId == nodeId);
+    }
+
+
+    parse.nTab++;
+
+
+    if (nInputs == 2)
+    {
+        set.input0 = genParse(parse);
+        set.input1 = genParse(parse);
+        set.name   = genParse(parse);
+    }
+    else if (nInputs == 1)
+    {
+        set.input0 = genParse(parse); // doesn't matter if it's input0 or input1, the eval() result will be the same
+        set.name   = genParse(parse);
+    }
+    else if (nInputs == 0)
+    {
+        set.name   = genParse(parse);
+    }
+
+    
+    parse.nTab--;
+
+
+    genParseNodeEnd(parse, set);
+    return set;
+}
+
+
+
 function genParseExtractParam(parse)
 {
     const [, nodeId, options, ignore] = genParseNodeStart(parse);
@@ -45336,6 +45586,7 @@ function genParse(parse, inParam = true)
     else if (parse.next == COMBINE                ) result = genParseJoin              (parse);
     else if (parse.next == CONDENSE               ) result = genParseCondense          (parse);
     else if (parse.next == EXTRACT                ) result = genParseExtract           (parse);
+    else if (parse.next == SET_PARAM              ) result = genParseSetParam          (parse);
     else if (parse.next == EXTRACT_PARAM          ) result = genParseExtractParam      (parse);
     else if (parse.next == SUBLIST                ) result = genParseSublist           (parse);
     else if (parse.next == UNIQUE                 ) result = genParseUnique            (parse);

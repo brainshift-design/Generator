@@ -274,6 +274,63 @@ function genParseExtract(parse)
 
 
 
+function genParseSetParam(parse)
+{
+    const [, nodeId, options, ignore] = genParseNodeStart(parse);
+
+
+    const set = new GSetParam(nodeId, options);
+   
+
+    let nInputs = -1;
+    
+    if (!ignore)
+    {
+        nInputs = parseInt(parse.move());
+        consoleAssert(nInputs == 0 || nInputs == 1, 'nInputs must be [0, 1]');
+    }
+
+    
+    if (parse.settings.logRequests) 
+        logReq(set, parse, ignore, nInputs);
+
+
+    if (ignore) 
+    {
+        genParseNodeEnd(parse, set);
+        return parse.parsedNodes.find(n => n.nodeId == nodeId);
+    }
+
+
+    parse.nTab++;
+
+
+    if (nInputs == 2)
+    {
+        set.input0 = genParse(parse);
+        set.input1 = genParse(parse);
+        set.name   = genParse(parse);
+    }
+    else if (nInputs == 1)
+    {
+        set.input0 = genParse(parse); // doesn't matter if it's input0 or input1, the eval() result will be the same
+        set.name   = genParse(parse);
+    }
+    else if (nInputs == 0)
+    {
+        set.name   = genParse(parse);
+    }
+
+    
+    parse.nTab--;
+
+
+    genParseNodeEnd(parse, set);
+    return set;
+}
+
+
+
 function genParseExtractParam(parse)
 {
     const [, nodeId, options, ignore] = genParseNodeStart(parse);

@@ -53,29 +53,19 @@ extends GOperator1
         if (this.input)
         {
             const input = (await this.input.eval(parse)).toValue();
-            const rgb   = input.toRgb();
+
 
             if (this.options.enabled)
             {
-                const rgbCb = rgb2colorblind(
-                    rgb,
-                    l.value / 2,
-                    m.value / 2,
-                    s.value / 2);
-
-                if (   !rgbIsNaN(rgb)
-                    && !rgbIsNaN(rgbCb))
+                if (isListType(input.type))
                 {
-                    const validRgbCb = rgbCb;
-                
-                    const validCol = convertDataColorToSpace(
-                        rgb2dataColor(validRgbCb), 
-                        colorSpace(input.space.value));
+                    this.value = new ListValue();
 
-                    this.value = ColorValue.fromDataColor(validCol);
+                    for (let i = 0; i < input.items.length; i++)
+                        this.value.items.push(getColorBlindValue(input.items[i], l, m, s));
                 }
                 else
-                    this.value = ColorValue.NaN.copy();
+                    this.value = getColorBlindValue(input, l, m, s);
             }
             else
                 this.value = input;
@@ -86,10 +76,11 @@ extends GOperator1
 
         this.setUpdateValues(parse,
         [
-            ['l',     l         ],
-            ['m',     m         ],
-            ['s',     s         ],
-            ['value', this.value]
+            ['value',  this.value       ],
+            ['type',   this.outputType()],
+            ['l',      l                ],
+            ['m',      m                ],
+            ['s',      s                ]
         ]);
         
 
@@ -140,4 +131,31 @@ extends GOperator1
         if (this.m) this.m.iterateLoop(parse);
         if (this.s) this.s.iterateLoop(parse);
     }
+}
+
+
+
+function getColorBlindValue(input, l, m, s)
+{
+    const rgb   = input.toRgb();
+
+    const rgbCb = rgb2colorblind(
+        rgb,
+        l.value / 2,
+        m.value / 2,
+        s.value / 2);
+
+    if (   !rgbIsNaN(rgb  )
+        && !rgbIsNaN(rgbCb))
+    {
+        const validRgbCb = rgbCb;
+    
+        const validCol = convertDataColorToSpace(
+            rgb2dataColor(validRgbCb), 
+            colorSpace(input.space.value));
+
+        return ColorValue.fromDataColor(validCol);
+    }
+    else
+        return ColorValue.NaN.copy();
 }

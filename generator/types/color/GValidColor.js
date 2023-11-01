@@ -54,84 +54,36 @@ extends GOperator1
 
             if (this.options.enabled)
             {
-                // if (   !isValid(this.value) 
-                //     || !this.value.isValid()) 
-                // {
-                    let rgb = input.toRgb();
-
-                    if (quality.value == 0) // clip sRGB
+                if (this.options.enabled)
+                {
+                    if (isListType(input.type))
                     {
-                        rgb[0] = Math.round(Math.min(Math.max(0, rgb[0]), 1) * 0xff);   
-                        rgb[1] = Math.round(Math.min(Math.max(0, rgb[1]), 1) * 0xff);   
-                        rgb[2] = Math.round(Math.min(Math.max(0, rgb[2]), 1) * 0xff); 
-                        
-                        this.value = ColorValue.fromRgb(rgb);
+                        this.value = new ListValue();
+    
+                        for (let i = 0; i < input.items.length; i++)
+                            this.value.items.push(await getValidColorValue(input.items[i], quality));
                     }
-                    else if (quality.value == 1) // clip chroma
+                    else
                     {
-                        rgb = clipChroma(rgb);
-
-                        rgb[0] = Math.round(rgb[0] * 0xff);   
-                        rgb[1] = Math.round(rgb[1] * 0xff);   
-                        rgb[2] = Math.round(rgb[2] * 0xff); 
-
-                        this.value = ColorValue.fromRgb(rgb);
+                        this.value = await getValidColorValue(input, quality);
                     }
-                    else // find corrections
-                    {
-                        if (!rgbIsOk(rgb))
-                            genInitNodeProgress(this.nodeId);
-                        
-
-                        const inputColor = input.toDataColor();
-
-
-                        const
-                      [ closestOrder,
-                        closest1,
-                        closest2,
-                        closest3 ] = await findCorrection(
-                            parse,
-                            this.nodeId,
-                            inputColor, 
-                            quality, null,  null,  null, 
-                            false,   false, false, false); 
-
-                            
-                        if (!parse.stopGenerate)
-                        {
-                            if (   closestOrder >= 0 
-                                && closestOrder <  6)
-                            {
-                                this._color = correctColor(
-                                    inputColor,
-                                    closestOrder,
-                                    closest1,
-                                    closest2,
-                                    closest3);
-
-                                this.value = ColorValue.fromDataColor(this._color);
-                            }
-                            else
-                            {
-                                this.value = ColorValue.NaN;
-                            }
-                        }
-                    }
-                //}
+                }
+                else
+                    this.value = input;
             }
             else
                 this.value = input;
         }
         else
-            this.value = ColorValue.NaN;
+            this.value = ColorValue.NaN.copy();
 
 
         
         this.setUpdateValues(parse,
         [
-            ['value',   this.value],
-            ['quality', quality   ]
+            ['value',   this.value       ],
+            ['type',    this.outputType()],
+            ['quality', quality          ]
         ]);
 
         
@@ -174,4 +126,74 @@ extends GOperator1
 
         if (this.quality) this.quality.iterateLoop(parse);
     }
+}
+
+
+
+async function getValidColorValue(input, quality)
+{
+    let rgb = input.toRgb();
+
+    if (quality.value == 0) // clip sRGB
+    {
+        rgb[0] = Math.round(Math.min(Math.max(0, rgb[0]), 1) * 0xff);   
+        rgb[1] = Math.round(Math.min(Math.max(0, rgb[1]), 1) * 0xff);   
+        rgb[2] = Math.round(Math.min(Math.max(0, rgb[2]), 1) * 0xff); 
+        
+        return ColorValue.fromRgb(rgb);
+    }
+    else if (quality.value == 1) // clip chroma
+    {
+        rgb = clipChroma(rgb);
+
+        rgb[0] = Math.round(rgb[0] * 0xff);
+        rgb[1] = Math.round(rgb[1] * 0xff);
+        rgb[2] = Math.round(rgb[2] * 0xff);
+
+        return ColorValue.fromRgb(rgb);
+    }
+    else // find corrections
+    {
+        if (!rgbIsOk(rgb))
+            genInitNodeProgress(this.nodeId);
+        
+
+        const inputColor = input.toDataColor();
+
+
+        const
+      [ closestOrder,
+        closest1,
+        closest2,
+        closest3 ] = await findCorrection(
+            parse,
+            this.nodeId,
+            inputColor,
+            quality, null,  null,  null,
+            false,   false, false, false);
+
+            
+        if (!parse.stopGenerate)
+        {
+            if (   closestOrder >= 0
+                && closestOrder <  6)
+            {
+                this._color = correctColor(
+                    inputColor,
+                    closestOrder,
+                    closest1,
+                    closest2,
+                    closest3);
+
+                return ColorValue.fromDataColor(this._color);
+            }
+            else
+            {
+                return ColorValue.NaN.copy();
+            }
+        }
+    }    
+
+
+    return NullValue.copy();
 }

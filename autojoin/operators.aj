@@ -58,6 +58,7 @@
 ../operators/flow/OpCombine.js
 ../operators/flow/OpCondense.js
 ../operators/flow/OpExtract.js
+../operators/flow/OpSetParam.js
 ../operators/flow/OpExtractParam.js
 ../operators/flow/OpSublist.js
 ../operators/flow/OpUnique.js

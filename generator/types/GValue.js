@@ -4,6 +4,8 @@ class GValue
     type;
     valueId;
 
+    customParams = []; // [[name, GValue]]
+
     objects = null;
 
 

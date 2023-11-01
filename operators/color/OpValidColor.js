@@ -23,7 +23,7 @@ extends OpColorBase
         this.inner.insertBefore(this.colorBack, this.paramHolder);
 
 
-        this.addInput(new Input(COLOR_TYPES));
+        this.addInput(new Input([...COLOR_TYPES, LIST_VALUE]));
         this.addOutput(new Output([COLOR_VALUE], this.output_genRequest));
 
         this.alwaysSaveParams = true;
@@ -89,11 +89,16 @@ extends OpColorBase
     updateValues(requestId, actionId, updateParamId, paramIds, values)
     {
         const value = values[paramIds.findIndex(id => id == 'value')];
+        const type  = values[paramIds.findIndex(id => id == 'type' )];
 
         this._color = 
-            value
+                value
+            && !isListType(value.type)
             ? value.toDataColor()
             : dataColor_NaN;
+
+        if (type) 
+            this.outputs[0].types = [type.value];
 
 
         this.initCorrections(this._color[0]);
@@ -118,6 +123,7 @@ extends OpColorBase
     getHeaderColors()
     {
         const colors = super.getHeaderColors();
+        const type   = this.outputs[0].types[0];
 
         if (this.isUnknown())
         {
@@ -125,6 +131,9 @@ extends OpColorBase
             colors.wire = darkMode ? hex2rgb('888f') : hex2rgb('aaaf');
         }
                 
+        colors.output = rgb_a(rgbSaturateHsv(rgbFromType(type, true), 0.5), 0.7);
+        colors.wire   = rgbFromType(type, true);
+
         return colors;
     }
 
