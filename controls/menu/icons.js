@@ -210,7 +210,7 @@ const iconWindowDockTop     = '<svg width="15" height="12" viewBox="0 0 15 12" f
 const iconWindowDockBottom  = '<svg width="15" height="12" viewBox="0 0 15 12" fill="none" xmlns="http://www.w3.org/2000/svg"><rect x="0.5" y="0.5" width="14" height="11" stroke="white"/><rect y="7" width="15" height="5" fill="white"/></svg>';
 
 
-const iconSolo              = '<svg width="17" height="17" viewBox="0 0 17 17" fill="none" xmlns="http://www.w3.org/2000/svg"><rect x="8" width="1" height="17" fill="white"/><rect y="9" width="0.999999" height="17" transform="rotate(-90 0 9)" fill="white"/><circle cx="8.5" cy="8.5" r="6" stroke="white"/></svg>';
+const iconSolo              = '<svg width="19" height="17" viewBox="0 0 19 17" fill="none" xmlns="http://www.w3.org/2000/svg"><rect x="8.26367" width="0.472656" height="17" fill="white"/><rect width="0.523684" height="17" transform="matrix(4.37114e-08 1 1 -4.37114e-08 0 8.23816)" fill="white"/><circle cx="8.5" cy="8.5" r="6.25" stroke="white" stroke-width="0.5"/></svg>';
 
 
 const iconSearch            = '<svg width="15" height="15" viewBox="0 0 15 15" fill="none" xmlns="http://www.w3.org/2000/svg"><path id="searchIconPath" fill-rule="evenodd" clip-rule="evenodd" d="M11 6C11 8.76147 8.76147 11 6 11C3.23853 11 1 8.76147 1 6C1 3.23853 3.23853 1 6 1C8.76147 1 11 3.23853 11 6ZM9.87439 10.5815C8.8291 11.4663 7.47681 12 6 12C2.68628 12 0 9.31372 0 6C0 2.68628 2.68628 0 6 0C9.31372 0 12 2.68628 12 6C12 7.47681 11.4664 8.8291 10.5815 9.87451L14.364 13.657L13.6569 14.364L9.87439 10.5815Z" fill="white"/></svg>';

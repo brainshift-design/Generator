@@ -50,10 +50,15 @@ extends GOperator1
 
             if (this.options.enabled)
             {
-                this.value = ColorValue.fromRgb(
-                    from.value == 0 
-                    ? scaleRgb(srgb2p3(input.toRgb()))
-                    : scaleRgb(p32srgb(input.toRgb())));
+                if (isListType(input.type))
+                {
+                    this.value = new ListValue();
+
+                    for (let i = 0; i < input.items.length; i++)
+                        this.value.items.push(await getConvertP3Value(input.items[i], from));
+                }
+                else
+                    this.value = await getConvertP3Value(input, from);
             }
             else
                 this.value = input;
@@ -65,8 +70,9 @@ extends GOperator1
         
         this.setUpdateValues(parse,
         [
-            ['value',   this.value],
-            ['quality', from      ]
+            ['value',   this.value       ],
+            ['type',    this.outputType()],
+            ['quality', from             ]
         ]);
 
         
@@ -109,4 +115,14 @@ extends GOperator1
 
         if (this.from) this.from.iterateLoop(parse);
     }
+}
+
+
+
+function getConvertP3Value(input, from)
+{
+    return ColorValue.fromRgb(
+        from.value == 0
+        ? scaleRgb(srgb2p3(input.toRgb()))
+        : scaleRgb(p32srgb(input.toRgb())));
 }

@@ -21,7 +21,7 @@ extends OpColorBase
         this.inner.insertBefore(this.colorBack, this.paramHolder);
 
 
-        this.addInput(new Input(COLOR_TYPES));
+        this.addInput(new Input([...COLOR_TYPES, LIST_VALUE]));
         this.addOutput(new Output([COLOR_VALUE], this.output_genRequest));
 
         this.alwaysSaveParams = true;
@@ -70,13 +70,17 @@ extends OpColorBase
 
     updateValues(requestId, actionId, updateParamId, paramIds, values)
     {
-        const col = values[paramIds.findIndex(id => id == 'value')];
+        const value = values[paramIds.findIndex(id => id == 'value')];
+        const type  = values[paramIds.findIndex(id => id == 'type' )];
 
         this._color = 
-            col
-            ? col.toDataColor()
+                value
+            && !isListType(value.type)
+            ? value.toDataColor()
             : dataColor_NaN;
 
+        if (type) 
+            this.outputs[0].types = [type.value];
 
         super.updateValues(requestId, actionId, updateParamId, paramIds, values);
     }

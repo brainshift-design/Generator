@@ -51,25 +51,17 @@ extends GOperator1
         {
             const input = (await this.input.eval(parse)).toValue();
 
-
             if (this.options.enabled)
             {
-                if (this.options.enabled)
+                if (isListType(input.type))
                 {
-                    if (isListType(input.type))
-                    {
-                        this.value = new ListValue();
-    
-                        for (let i = 0; i < input.items.length; i++)
-                            this.value.items.push(await getValidColorValue(input.items[i], quality));
-                    }
-                    else
-                    {
-                        this.value = await getValidColorValue(input, quality);
-                    }
+                    this.value = new ListValue();
+
+                    for (let i = 0; i < input.items.length; i++)
+                        this.value.items.push(await getValidColorValue(input.items[i], quality));
                 }
                 else
-                    this.value = input;
+                    this.value = await getValidColorValue(input, quality);
             }
             else
                 this.value = input;
