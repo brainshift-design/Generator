@@ -111,6 +111,7 @@ function getPresetGraph(graphId)
         
         case 'randomNames':          return presetRandomNames;
         case 'letterSalad':          return presetLetterSalad;
+        case 'fontList':             return presetFontList;
 
 
         case 'colorContrast':        return presetColorContrast;

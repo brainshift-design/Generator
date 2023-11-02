@@ -23,7 +23,7 @@ function noNodeTag(key) { return noTag(key, nodeTag); }
 function noConnTag(key) { return noTag(key, connTag); }
 
 
-const generatorVersion = 267;
+const generatorVersion = 268;
 
 
 const MAX_INT32        = 2147483647;
@@ -1212,6 +1212,7 @@ const TEXT_JOIN      = 'TJOIN';
 const TEXT_PAD       = 'TPAD';
 const TEXT_COMPARE   = 'TCMP';
 const TEXT_CHAR      = 'TCHAR';
+const FONT_NAME      = 'FNTNM';
 const NUMBER_TO_TEXT = 'N2T';
 const COLOR_TO_TEXT  = 'C2T';
 const TEXT_TO_NUMBER = 'T2N';
@@ -1275,6 +1276,7 @@ const TEXT_TYPES =
     TEXT_REPLACE,
     TEXT_COMPARE,
     TEXT_CHAR,
+    FONT_NAME,
     TEXT_TO_NUMBER,
     TEXT_TO_COLOR,
     TEXT_SPLIT,
@@ -4854,7 +4856,6 @@ async function figCreateFrame(genFrame)
         for (const obj of genFrame[FO_FRAME_CHILDREN])
             await figCreateObject(obj, o => objects = [...objects, o]);
 
-        console.log('objects =', objects);
         for (const obj of objects)
             figFrame.appendChild(obj);
     }

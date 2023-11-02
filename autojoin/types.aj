@@ -163,7 +163,7 @@
 ../generator/types/text/GColorToText.js
 ../generator/types/text/GTextToNumber.js
 ../generator/types/text/GTextToColor.js
-../generator/types/text/GTextCharacter.js
+../generator/types/text/GFontName.js
 ../generator/types/text/GTextReplace.js
 ../generator/types/text/GTextJoin.js
 ../generator/types/text/GTextPad.js

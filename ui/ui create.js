@@ -95,6 +95,7 @@ function createNode(nodeType, creatingButton = null, createdNodeId = -1, options
         case TEXT_CONTAINS:           node = new OpTextContains();      break;
         case TEXT_CASE:               node = new OpTextCase();          break;
         case TEXT_CHAR:               node = new OpTextCharacter();     break;
+        case FONT_NAME:               node = new OpFontName();          break;
         case TEXT_REPLACE:            node = new OpTextReplace();       break;
         case TEXT_JOIN:               node = new OpTextJoin();          break;
         case TEXT_PAD:                node = new OpTextPad();           break;

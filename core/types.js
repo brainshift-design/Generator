@@ -205,6 +205,7 @@ const TEXT_JOIN      = 'TJOIN';
 const TEXT_PAD       = 'TPAD';
 const TEXT_COMPARE   = 'TCMP';
 const TEXT_CHAR      = 'TCHAR';
+const FONT_NAME      = 'FNTNM';
 const NUMBER_TO_TEXT = 'N2T';
 const COLOR_TO_TEXT  = 'C2T';
 const TEXT_TO_NUMBER = 'T2N';
@@ -268,6 +269,7 @@ const TEXT_TYPES =
     TEXT_REPLACE,
     TEXT_COMPARE,
     TEXT_CHAR,
+    FONT_NAME,
     TEXT_TO_NUMBER,
     TEXT_TO_COLOR,
     TEXT_SPLIT,

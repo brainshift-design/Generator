@@ -28,7 +28,6 @@ async function figCreateFrame(genFrame)
         for (const obj of genFrame[FO_FRAME_CHILDREN])
             await figCreateObject(obj, o => objects = [...objects, o]);
 
-        console.log('objects =', objects);
         for (const obj of objects)
             figFrame.appendChild(obj);
     }

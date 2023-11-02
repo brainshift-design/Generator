@@ -542,7 +542,9 @@ menuFlow = new Menu('Flow', true, false);
         new MenuItem('Number ⟶ Text',       null, {icon: iconNumberToText,  createType: NUMBER_TO_TEXT, callback: e => actionManager.do(getCreateNodeAction(NUMBER_TO_TEXT, btnText.div, getCreateOptions(e)))}),
         new MenuItem('Color ⟶ Text',        null, {icon: iconColorToText,   createType: COLOR_TO_TEXT,  callback: e => actionManager.do(getCreateNodeAction(COLOR_TO_TEXT,  btnText.div, getCreateOptions(e)))}),
         new MenuItem('',                     null, {separator: true}),
-        new MenuItem('Unicode ⟶ Character', null, {icon: iconTextCharacter, createType: TEXT_CHAR,      callback: e => actionManager.do(getCreateNodeAction(TEXT_CHAR,      btnText.div, getCreateOptions(e)))})]);
+        new MenuItem('Unicode ⟶ Character', null, {icon: iconTextCharacter, createType: TEXT_CHAR,      callback: e => actionManager.do(getCreateNodeAction(TEXT_CHAR,      btnText.div, getCreateOptions(e)))}),
+        new MenuItem('',                     null, {separator: true}),
+        new MenuItem('Index ⟶ Font name',   null, {icon: iconFontName,      createType: FONT_NAME,      callback: e => actionManager.do(getCreateNodeAction(FONT_NAME,      btnText.div, getCreateOptions(e)))})]);
     
 
     menuTextData = new Menu('Data', true, false);

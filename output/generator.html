@@ -4,7 +4,7 @@
 
 
 
-const generatorVersion = 267;
+const generatorVersion = 268;
 
 
 const MAX_INT32        = 2147483647;
@@ -4947,6 +4947,7 @@ const TEXT_JOIN      = 'TJOIN';
 const TEXT_PAD       = 'TPAD';
 const TEXT_COMPARE   = 'TCMP';
 const TEXT_CHAR      = 'TCHAR';
+const FONT_NAME      = 'FNTNM';
 const NUMBER_TO_TEXT = 'N2T';
 const COLOR_TO_TEXT  = 'C2T';
 const TEXT_TO_NUMBER = 'T2N';
@@ -5010,6 +5011,7 @@ const TEXT_TYPES =
     TEXT_REPLACE,
     TEXT_COMPARE,
     TEXT_CHAR,
+    FONT_NAME,
     TEXT_TO_NUMBER,
     TEXT_TO_COLOR,
     TEXT_SPLIT,
@@ -25672,16 +25674,16 @@ function getTextToColorValue(input)
 }
 
 
-class GTextCharacter
-extends GOperator1
+class GFontName
+extends GOperator
 {
-    code;
+    index;
 
 
     
     constructor(nodeId, options)
     {
-        super(TEXT_CHAR, nodeId, options);
+        super(FONT_NAME, nodeId, options);
     }
 
 
@@ -25690,18 +25692,18 @@ extends GOperator1
     {
         super.reset();
 
-        this.code = null;
+        this.index = null;
     }
 
 
 
     copy()
     {
-        const copy = new GTextCharacter(this.nodeId, this.options);
+        const copy = new GFontName(this.nodeId, this.options);
 
         copy.copyBase(this);
 
-        copy.code = this.code.copy();
+        copy.index = this.index.copy();
 
         return copy;
     }
@@ -25714,16 +25716,16 @@ extends GOperator1
             return this;
 
 
-        const code = (await this.code.eval(parse)).toValue();
+        const index = (await this.index.eval(parse)).toValue();
 
 
-        this.value = new TextValue(String.fromCharCode(code.value));
+        this.value = new TextValue(figUniqueFontNames[index.value]);
 
 
         this.setUpdateValues(parse,
         [
             ['value', this.value],
-            ['code',  code      ]
+            ['index', index     ]
         ]);
 
 
@@ -25737,7 +25739,7 @@ extends GOperator1
     isValid()
     {
         return super.isValid()
-            && this.code && this.code.isValid();
+            && this.index && this.index.isValid();
     }
 
 
@@ -25746,7 +25748,7 @@ extends GOperator1
     {
         super.pushValueUpdates(parse);
 
-        if (this.code) this.code.pushValueUpdates(parse);
+        if (this.index) this.index.pushValueUpdates(parse);
     }
 
 
@@ -25755,7 +25757,7 @@ extends GOperator1
     {
         super.invalidateInputs(parse, from, force);
 
-        if (this.code) this.code.invalidateInputs(parse, from, force);
+        if (this.index) this.index.invalidateInputs(parse, from, force);
     }
 
 
@@ -25764,7 +25766,7 @@ extends GOperator1
     {
         super.iterateLoop(parse);
 
-        if (this.code) this.code.iterateLoop(parse);
+        if (this.index) this.index.iterateLoop(parse);
     }
 }
 
@@ -45182,6 +45184,49 @@ function genParseTextCharacter(parse)
 
 
 
+function genParseFontName(parse)
+{
+    const [, nodeId, options, ignore] = genParseNodeStart(parse);
+
+
+    const font = new GFontName(nodeId, options);
+   
+
+    let nInputs = -1;
+    
+    if (!ignore)
+    {
+        nInputs = parseInt(parse.move());
+        consoleAssert(nInputs == 0 || nInputs == 1, 'nInputs must be [0, 1]');
+    }
+
+    
+    if (parse.settings.logRequests) 
+        logReq(font, parse, ignore, nInputs);
+
+
+    if (ignore) 
+    {
+        genParseNodeEnd(parse, font);
+        return parse.parsedNodes.find(n => n.nodeId == nodeId);
+    }
+
+
+    parse.nTab++;
+
+
+    font.index = genParse(parse);
+
+    
+    parse.nTab--;
+
+
+    genParseNodeEnd(parse, font);
+    return font;
+}
+
+
+
 function genParseNumberToText(parse)
 {
     const [, nodeId, options, ignore] = genParseNodeStart(parse);
@@ -45792,6 +45837,7 @@ function genParse(parse, inParam = true)
     else if (parse.next == TEXT_CONTAINS          ) result = genParseTextContains      (parse);
     else if (parse.next == TEXT_CASE              ) result = genParseTextCase          (parse);
     else if (parse.next == TEXT_CHAR              ) result = genParseTextCharacter     (parse);
+    else if (parse.next == FONT_NAME              ) result = genParseFontName          (parse);
     else if (parse.next == NUMBER_TO_TEXT         ) result = genParseNumberToText      (parse);
     else if (parse.next == COLOR_TO_TEXT          ) result = genParseColorToText       (parse);
     else if (parse.next == TEXT_TO_NUMBER         ) result = genParseTextToNumber      (parse);
