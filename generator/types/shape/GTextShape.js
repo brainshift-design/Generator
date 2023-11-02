@@ -103,10 +103,10 @@ extends GShape
                 font          ?? input.font,
                 style         ?? input.style,
                 size          ?? input.size,
-                alignH        ?? input.size,
-                alignV        ?? input.size,
-                lineHeight    ?? input.size,
-                letterSpacing ?? input.size);
+                alignH        ?? input.alignH,
+                alignV        ?? input.alignV,
+                lineHeight    ?? input.lineHeight,
+                letterSpacing ?? input.letterSpacing);
 
             this.value.copyCustomParams(input);
         }

@@ -79,8 +79,9 @@ function getPresetGraph(graphId)
 
         case 'ifElse':               return presetIfElse;
         case 'select':               return presetSelect;
-        case 'tableBasics':          return presetTableBasics;
         case 'sorting':              return presetSorting;
+        case 'encodingValues':       return presetEncodingValues;
+        case 'tableBasics':          return presetTableBasics;
         case 'countryData':          return presetCountryData;
 
 
@@ -159,5 +160,6 @@ function getPresetGraph(graphId)
         case 'twistedTower':         return presetTwistedTower;
         case 'brushStrokes':         return presetBrushStrokes;
         case 'gradientCircles':      return presetGradientCircles;
+        case 'hotSpring':            return presetHotSpring;
     }
 }

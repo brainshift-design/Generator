@@ -23,7 +23,7 @@ function noNodeTag(key) { return noTag(key, nodeTag); }
 function noConnTag(key) { return noTag(key, connTag); }
 
 
-const generatorVersion = 266;
+const generatorVersion = 267;
 
 
 const MAX_INT32        = 2147483647;
@@ -3877,7 +3877,7 @@ function getObjectEffects(genObjEffects, canSpread)
                     {
                         type:    type, 
                         visible: visible,
-                        radius:  radius
+                        radius:  Math.max(0, radius)
                     });
 
                 break;
@@ -3893,7 +3893,7 @@ function getObjectEffects(genObjEffects, canSpread)
                     {
                         type:    type, 
                         visible: visible,
-                        radius:  radius
+                        radius:  Math.max(0, radius)
                     });
 
                 break;

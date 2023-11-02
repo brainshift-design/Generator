@@ -4,7 +4,7 @@
 
 
 
-const generatorVersion = 266;
+const generatorVersion = 267;
 
 
 const MAX_INT32        = 2147483647;
@@ -17013,10 +17013,8 @@ extends GOperator1
 
         const input = this.input ? (await this.input.eval(parse)).toValue() : null;
         const name  = this.name  ? (await this.name .eval(parse)).toValue() : null;
-        console.log('this.input =', this.input);
-        console.log('input =', input);
 
-        
+
         if (   input
             && name
             && name.value.trim() != '')
@@ -33040,10 +33038,10 @@ extends GShape
                 font          ?? input.font,
                 style         ?? input.style,
                 size          ?? input.size,
-                alignH        ?? input.size,
-                alignV        ?? input.size,
-                lineHeight    ?? input.size,
-                letterSpacing ?? input.size);
+                alignH        ?? input.alignH,
+                alignV        ?? input.alignV,
+                lineHeight    ?? input.lineHeight,
+                letterSpacing ?? input.letterSpacing);
 
             this.value.copyCustomParams(input);
         }

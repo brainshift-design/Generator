@@ -153,7 +153,7 @@ function initGenerator()
 function subscribed()
 {
     return subscriptionActive;
-    //return false;
+    //return true;
 }
 
 

@@ -42,10 +42,8 @@ extends GOperator1
 
         const input = this.input ? (await this.input.eval(parse)).toValue() : null;
         const name  = this.name  ? (await this.name .eval(parse)).toValue() : null;
-        console.log('this.input =', this.input);
-        console.log('input =', input);
 
-        
+
         if (   input
             && name
             && name.value.trim() != '')

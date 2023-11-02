@@ -110,7 +110,7 @@ function getObjectEffects(genObjEffects, canSpread)
                     {
                         type:    type, 
                         visible: visible,
-                        radius:  radius
+                        radius:  Math.max(0, radius)
                     });
 
                 break;
@@ -126,7 +126,7 @@ function getObjectEffects(genObjEffects, canSpread)
                     {
                         type:    type, 
                         visible: visible,
-                        radius:  radius
+                        radius:  Math.max(0, radius)
                     });
 
                 break;
