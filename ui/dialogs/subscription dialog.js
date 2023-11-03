@@ -76,8 +76,13 @@ function onValidateClick()
             if (   response.result == 0  // ok
                 || response.result == 3) // user with ID found, also ok
             {
-                hideSubscriptionDialog();
-                uiNotify('✨   Thank you for subscribing to Generator !   ✨', {delay: 6000});
+                subscriptionActive = true;
+
+                updateSubscriptionDialog();
+                enableFeatures(subscribed());
+
+                uiNotify('✨   Thanks for subscribing to Generator !   ✨', {delay: 6000});
+
             }
             else if (response.result == 1)
             {
@@ -109,29 +114,7 @@ function showSubscriptionDialog(showBack = true)
     //subscriptionUserId.innerHTML = '<span style="user-select: none; color: var(--figma-color-bg-disabled-secondary);">User ID:&nbsp;&nbsp;</span>' + currentUser.id;
     
     
-    if (subscribed())
-    {
-        licenseInfo             .style.display = 'block';
-        subEmail                .style.display = 'none';
-        subLicenseKey           .style.display = 'none';
-        validateProductKeyButton.style.display = 'none';
-        subscribeWebsite        .style.display = 'none';
-
-        checkRemainingSubscriptionDays().then(result =>
-        {
-            console.log('result =', result);
-            licenseInfo.innerHTML = formatDaysLeft(result) + ' of your Pro subscription.';
-        });
-    }
-    else
-    {
-        licenseInfo             .style.display = 'none';
-        subEmail                .style.display = 'block';
-        subLicenseKey           .style.display = 'block';
-        validateProductKeyButton.style.display = 'block';
-        subscribeWebsite        .style.display = 'block';
-    }
-
+    updateSubscriptionDialog();
 
     //subscriptionInputBack.innerHTML = license ? '' : '•'.repeat(13);
     
@@ -162,6 +145,34 @@ function showSubscriptionDialog(showBack = true)
 
     dialogShown             = true;
     subscriptionDialogShown = true;
+}
+
+
+
+function updateSubscriptionDialog()
+{
+    if (subscribed())
+    {
+        licenseInfo             .style.display = 'block';
+        subEmail                .style.display = 'none';
+        subLicenseKey           .style.display = 'none';
+        validateProductKeyButton.style.display = 'none';
+        subscribeWebsite        .style.display = 'none';
+
+        checkRemainingSubscriptionDays().then(result =>
+        {
+            console.log('result =', result);
+            licenseInfo.innerHTML = formatDaysLeft(result) + ' of your Pro subscription.';
+        });
+    }
+    else
+    {
+        licenseInfo             .style.display = 'none';
+        subEmail                .style.display = 'block';
+        subLicenseKey           .style.display = 'block';
+        validateProductKeyButton.style.display = 'block';
+        subscribeWebsite        .style.display = 'block';
+    }
 }
 
 
@@ -286,36 +297,6 @@ function setDisabledSubscriptionInput()
 {
     // subscriptionInput.style.outline   = 'none';
 }
-
-
-
-// function tryValidateLicense(key)
-// {
-//     let license;
-
-//     if (license = validateLicense(currentUser.id, key))
-//     {
-//         subscription = key;
-//         uiSetLocalData('subscription', key);
-
-//         enableFeatures(subscribed()/*subscription != NULL*/, settings.enableBetaFeatures);
-        
-//         setDisabledSubscriptionInput();
-//         updateLicenseInfo(license);
-
-//         subscriptionInput.disabled           = true;
-//         subscriptionTextBack.style.display   = 'none';
-//         subscriptionInput   .style.display   = 'none';
-
-//         validateProductKeyButton.innerHTML = 'Edit';
-
-//         uiNotify('✨   Thank you for subscribing to Generator !   ✨', {delay: 6000});
-//     }
-//     else
-//     {
-//         setBadSubscriptionInput();
-//     }
-// }
 
 
 

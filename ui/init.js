@@ -124,7 +124,7 @@ async function uiReturnFigStartGenerator(msg)
 
 
 
-function initGenerator()
+function initGenerator(activate)
 {
     uiGetLocalData('showWhatsNew');
 
@@ -135,6 +135,10 @@ function initGenerator()
     uiQueueMessageToFigma({
         cmd:     'figLoadNodesAndConns',
         dataMode: settings.dataMode });
+
+
+    if (activate)
+        showSubscriptionDialog();
 }
 
 
@@ -164,8 +168,10 @@ function validateInit(eulaAgreed)
     {
         checkActiveSubscription(currentUser.id).then(result =>
         {
-            subscriptionActive = result;
-            finalizeInit(eulaAgreed);
+            if (result == 2)
+                subscriptionActive = true;
+
+            finalizeInit(eulaAgreed, result == 1);
         })
         .catch(error =>
         {
@@ -182,7 +188,7 @@ function validateInit(eulaAgreed)
 
 
 
-function finalizeInit(eulaAgreed)
+function finalizeInit(eulaAgreed, activate)
 {
     if (!settings.dataMode)
         enableFeatures(subscribed());
@@ -190,7 +196,7 @@ function finalizeInit(eulaAgreed)
     if (!eulaAgreed)
         showEulaDialog();
     else
-        initGenerator();
+        initGenerator(activate);
 }
 
 

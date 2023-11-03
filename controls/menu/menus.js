@@ -400,7 +400,7 @@ function initGeneratorMenus()
         new MenuItem('Keyboard shortcuts', null, {shortcut: osCtrlShift() + '?', callback: () => showKeyboardPanel()}),
         // new MenuItem('Help page',       null, {callback:  () => window.open('http://www.bourt.com/generator/help', '_blank')}),
         new MenuItem('',                   null, {separator: true}),
-        //new MenuItem('Subscription',       null, {callback:  () => showSubscriptionDialog()}),
+        new MenuItem('Subscription',       null, {callback:  () => showSubscriptionDialog()}),
       //new MenuItem('',                   null, {separator: true}),
         new MenuItem('About',              null, {callback:  () => showAboutDialog()})]);
 
