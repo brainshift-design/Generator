@@ -58,10 +58,10 @@ extends GOperator1
                     this.value = new ListValue();
 
                     for (let i = 0; i < input.items.length; i++)
-                        this.value.items.push(await getValidColorValue(input.items[i], quality));
+                        this.value.items.push(await getValidColorValue(parse, this, input.items[i], quality));
                 }
                 else
-                    this.value = await getValidColorValue(input, quality);
+                    this.value = await getValidColorValue(parse, this, input, quality);
             }
             else
                 this.value = input;
@@ -122,7 +122,7 @@ extends GOperator1
 
 
 
-async function getValidColorValue(input, quality)
+async function getValidColorValue(parse, node, input, quality)
 {
     let rgb = input.toRgb();
 
@@ -147,7 +147,7 @@ async function getValidColorValue(input, quality)
     else // find corrections
     {
         if (!rgbIsOk(rgb))
-            genInitNodeProgress(this.nodeId);
+            genInitNodeProgress(node.nodeId);
         
 
         const inputColor = input.toDataColor();
@@ -159,7 +159,7 @@ async function getValidColorValue(input, quality)
         closest2,
         closest3 ] = await findCorrection(
             parse,
-            this.nodeId,
+            node.nodeId,
             inputColor,
             quality, null,  null,  null,
             false,   false, false, false);
@@ -170,14 +170,14 @@ async function getValidColorValue(input, quality)
             if (   closestOrder >= 0
                 && closestOrder <  6)
             {
-                this._color = correctColor(
+                node._color = correctColor(
                     inputColor,
                     closestOrder,
                     closest1,
                     closest2,
                     closest3);
 
-                return ColorValue.fromDataColor(this._color);
+                return ColorValue.fromDataColor(node._color);
             }
             else
             {
