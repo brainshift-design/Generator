@@ -1357,9 +1357,12 @@ figma.on('documentchange', figOnDocumentChange);
 figma.on('selectionchange', figOnSelectionChange);
 figma.on('close', figOnPluginClose);
 figDeleteAllObjects(true);
-figma.showUI(__html__, {
-    visible: false,
-    themeColors: true
+figma.clientStorage.getAsync('pro').then(data => {
+    figma.showUI(__html__, {
+        visible: false,
+        themeColors: true,
+        title: 'Generator' + (data === true ? ' Pro' : '')
+    });
 });
 var curZoom = figma.viewport.zoom;
 setInterval(figOnZoomInterval, 100);

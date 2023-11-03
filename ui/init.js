@@ -171,6 +171,10 @@ function validateInit(eulaAgreed)
             if (result == 2)
                 subscriptionActive = true;
 
+            uiSetLocalData(
+                'pro', 
+                 subscriptionActive);
+
             finalizeInit(eulaAgreed, result == 1);
         })
         .catch(error =>

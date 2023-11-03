@@ -161,8 +161,8 @@ function updateSubscriptionDialog()
 
         checkRemainingSubscriptionDays().then(result =>
         {
-            console.log('result =', result);
-            licenseInfo.innerHTML = formatDaysLeft(result) + ' of your Pro subscription.';
+            licenseInfo.innerHTML = 'Your Pro subscription is active!'; 
+                //formatDaysLeft(result) + ' of your Pro subscription.';
         });
     }
     else
