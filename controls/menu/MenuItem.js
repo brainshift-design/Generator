@@ -226,24 +226,27 @@ class MenuItem
 
                     const node = graph.pageNodes.at(-1);
 
-                    node.div.shiftOnPointerDown = false;
-
-                    node.sx  = node.div.offsetLeft;
-                    node.sy  = node.div.offsetTop ;
-
-                    node.slx = node.div.offsetLeft - (defNodeWidth    / 2) - (               + graph.currentPage.pan.x) / graph.currentPage.zoom;
-                    node.sly = node.div.offsetTop  - (defHeaderHeight / 2) - (getTopHeight() + graph.currentPage.pan.y) / graph.currentPage.zoom;
-
-                    try
+                    if (node)
                     {
-                        if (this.div.hasPointerCapture(e.pointerId))
-                            this.div.releasePointerCapture(e.pointerId);
+                        node.div.shiftOnPointerDown = false;
 
-                        node.header.setPointerCapture(e.pointerId);
+                        node.sx  = node.div.offsetLeft;
+                        node.sy  = node.div.offsetTop ;
 
-                        node.div.dragging = true;
+                        node.slx = node.div.offsetLeft - (defNodeWidth    / 2) - (               + graph.currentPage.pan.x) / graph.currentPage.zoom;
+                        node.sly = node.div.offsetTop  - (defHeaderHeight / 2) - (getTopHeight() + graph.currentPage.pan.y) / graph.currentPage.zoom;
+
+                        try
+                        {
+                            if (this.div.hasPointerCapture(e.pointerId))
+                                this.div.releasePointerCapture(e.pointerId);
+
+                            node.header.setPointerCapture(e.pointerId);
+
+                            node.div.dragging = true;
+                        }
+                        catch {}
                     }
-                    catch {}
                 }
                 else
                 {
