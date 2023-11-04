@@ -132,6 +132,15 @@ document.addEventListener('keydown', e =>
           && !document.button0
           && isEmpty(currentMenus))
     {
+        // if (   document.activeElement
+        //     && document.activeElement.tagName === 'INPUT'
+        //     && document.activeElement.type    === 'text')
+        // {
+        //     e.preventDefault();
+        //     return;
+        // }
+        console.log('keyboard.js');
+ 
              if (e.shiftKey && !actionManager.redoing) actionManager.redo();
         else if (              !actionManager.undoing) actionManager.undo();
 

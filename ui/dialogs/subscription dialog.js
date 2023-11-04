@@ -104,7 +104,7 @@ function onValidateClick()
 
 
 
-function showSubscriptionDialog(showBack = true)
+function showSubscriptionDialog(activate, showBack = true)
 {
     subscriptionBack  .style.display = 'block';
     subscriptionDialog.style.display = 'block';
@@ -145,6 +145,8 @@ function showSubscriptionDialog(showBack = true)
 
     dialogShown             = true;
     subscriptionDialogShown = true;
+
+    subscribeWebsite.style.display = activate ? 'none' : 'block';
 }
 
 
@@ -193,10 +195,6 @@ function hideSubscriptionDialog()
 
 subscriptionClose.addEventListener('pointerdown', e => e.stopPropagation());
 
-
-
-subscriptionClose.addEventListener('pointerdown', e => e.stopPropagation());
-
 subscriptionBack .addEventListener('pointerdown', e => 
 { 
          if (e.button == 0) hideSubscriptionDialog(); 
@@ -237,8 +235,13 @@ subEmail.addEventListener('keydown', e =>
     //     subscriptionInput.blur();
 
     //e.preventDefault();
-    e.stopPropagation();
+    if (   e.code == 'KeyZ'
+        && getCtrlKey(e))   
+        e.preventDefault();
+
+    e.stopImmediatePropagation();
 });
+
 
 
 
@@ -247,8 +250,37 @@ subLicenseKey.addEventListener('keydown', e =>
     // if (e.code == 'Escape')
     //     subscriptionInput.blur();
 
-    //e.preventDefault();
-    e.stopPropagation();
+    if (   e.code == 'KeyZ'
+        && getCtrlKey(e))
+        e.preventDefault();
+    else if (e.code == 'Tab')
+    {
+        e.preventDefault();
+
+        if (e.shiftKey) subEmail.focus();
+        else            validateProductKeyButton.focus();
+    }
+
+    e.stopImmediatePropagation();
+});
+
+
+
+validateProductKeyButton.addEventListener('keydown', e =>
+{
+    if (   e.code == 'Tab'
+        && e.shiftKey)
+    {
+        e.preventDefault();
+        subLicenseKey.focus();
+    }
+    else if (e.code == 'Enter')
+    {
+        e.preventDefault();
+        validateProductKeyButton.click();
+    }
+
+    e.stopImmediatePropagation();
 });
 
 

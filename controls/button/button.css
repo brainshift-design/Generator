@@ -20,6 +20,13 @@
 }
 
 
+/* .button:focus
+{
+    box-shadow: 0 0 0 2px var(--figma-color-bg-brand) inset;
+    background: var(--figma-color-bg);
+} */
+
+
 .panelButton
 {
     font-family:   Inter;

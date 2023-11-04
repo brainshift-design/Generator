@@ -138,7 +138,7 @@ function initGenerator(activate)
 
 
     if (activate)
-        showSubscriptionDialog();
+        showSubscriptionDialog(activate);
 }
 
 
