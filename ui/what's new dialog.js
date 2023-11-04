@@ -114,7 +114,7 @@ function hideWhatsNewDialog()
 
     if (!tutorialsSeen)
     {
-        loadPresetGraph('targets');
+        uiGetLocalData('canvasEmpty')
 
         findTutorials.style.display = 'block';
         tutorialsShown = true;

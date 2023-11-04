@@ -1817,13 +1817,22 @@ function figLoadLocal(key) {
     });
 }
 function figGetLocalData(key) {
-    figma.clientStorage.getAsync(key).then(data => {
+    if (key == 'canvasEmpty') {
         figPostMessageToUi({
             cmd: 'uiReturnFigGetLocalData',
             key: key,
-            value: data
+            value: figma.currentPage.children.length == 0
         });
-    });
+    }
+    else {
+        figma.clientStorage.getAsync(key).then(data => {
+            figPostMessageToUi({
+                cmd: 'uiReturnFigGetLocalData',
+                key: key,
+                value: data
+            });
+        });
+    }
 }
 function figSetLocalData(key, value) {
     figma.clientStorage.setAsync(key, value);

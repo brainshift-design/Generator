@@ -99,6 +99,12 @@ async function uiReturnFigGetLocalData(msg)
                 showWhatsNewDialog();
 
             break;
+
+        case 'canvasEmpty':
+            if (msg.value)
+                loadPresetGraph('targets');
+    
+            break;
     }
 
 
