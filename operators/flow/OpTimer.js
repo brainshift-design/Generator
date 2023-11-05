@@ -84,8 +84,9 @@ extends OperatorBase
 
         const interval = values[paramIds.findIndex(id => id == 'interval')].toNumber();
 
-        if (   interval > 0
-            && this.enabled)
+        if (    interval > 0
+            &&  this.enabled
+            && !graphView.loadingNodes)
         {
             if (   this.updateTimer < 0
                 || this.updateDelay != interval)
