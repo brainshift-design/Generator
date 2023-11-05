@@ -187,10 +187,14 @@ class FigmaObject
             if (affectSpace)
                 this.applySpaceTransform(xform, space);
         }
-        else if (this.type == VECTOR_PATH)
+        else if (this.type == VECTOR_PATH
+              || this.type == TRAPEZE)
         {
             this.applyObjectTransform(xform, space);
+
             this.updatePoints(xform, space);
+            this.updatePathPoints();
+            this.updatePathData();
 
             if (affectSpace)
                 this.applySpaceTransform(xform, space);

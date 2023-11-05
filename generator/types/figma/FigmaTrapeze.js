@@ -5,7 +5,6 @@ extends FigmaVectorPath
     height;
 
     round;
-
     bias;
 
 
@@ -49,6 +48,13 @@ extends FigmaVectorPath
         this.createDefaultSpace(
             x + width /2, 
             y + height/2);
+
+        // let bounds = this.getBounds();
+
+        // this.createDefaultSpace(
+        //     bounds.x + bounds.width /2,            
+        //     bounds.y + bounds.height/2            
+        // );
     }
 
 
@@ -69,8 +75,10 @@ extends FigmaVectorPath
             this.bias);
 
 
-        copy.x = this.x;
-        copy.y = this.y;
+        copy.x      = this.x;
+        copy.y      = this.y;
+        copy.width  = this.width;
+        copy.height = this.height;
 
 
         copy.copyBase(this);
