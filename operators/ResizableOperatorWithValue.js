@@ -29,6 +29,8 @@ extends ResizableBase
 
     setRect(x, y, w, h, updateTransform = true)
     {
+        console.log('wv this.width =', this.width);
+
         super.setRect(
             x,
             y,

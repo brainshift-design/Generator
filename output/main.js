@@ -19,7 +19,7 @@ function isConnKey(key) { return isTagKey(key, connTag); }
 function noPageTag(key) { return noTag(key, pageTag); }
 function noNodeTag(key) { return noTag(key, nodeTag); }
 function noConnTag(key) { return noTag(key, connTag); }
-const generatorVersion = 274;
+const generatorVersion = 275;
 const MAX_INT32 = 2147483647;
 const NULL = '';
 const HTAB = '  '; // half-tab
@@ -1352,7 +1352,6 @@ function logSavedConn(conn, darkMode) {
         console.log('%c%s', 'background: #cfc; color: black;', strConn);
     }
 }
-console.log('starting Generator');
 //figma.on('selectionchange', figOnSelectionChange);
 figma.on('documentchange', figOnDocumentChange);
 figma.on('selectionchange', figOnSelectionChange);

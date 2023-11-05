@@ -23,7 +23,7 @@ function noNodeTag(key) { return noTag(key, nodeTag); }
 function noConnTag(key) { return noTag(key, connTag); }
 
 
-const generatorVersion = 274;
+const generatorVersion = 275;
 
 
 const MAX_INT32        = 2147483647;
@@ -2117,8 +2117,6 @@ function logSavedConn(conn, darkMode)
     }
 }
 
-
-console.log('starting Generator');
 
 //figma.on('selectionchange', figOnSelectionChange);
 

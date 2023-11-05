@@ -1,5 +1,3 @@
-console.log('starting Generator');
-
 //figma.on('selectionchange', figOnSelectionChange);
 
 figma.on('documentchange',  figOnDocumentChange);

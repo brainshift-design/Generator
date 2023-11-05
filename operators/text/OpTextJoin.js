@@ -49,7 +49,7 @@ extends ResizableOperatorWithValue
             ? this.headerHeight + 2*defParamHeight
             : this.headerHeight +   defParamHeight;
         
-        OperatorBase.prototype.setRect.call(this, 
+        ResizableBase.prototype.setRect.call(this, 
             x, 
             y, 
             w, 
