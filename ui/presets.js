@@ -113,6 +113,7 @@ function getPresetGraph(graphId)
         case 'letterSalad':          return presetLetterSalad;
         case 'fontList':             return presetFontList;
 
+        case 'clock':                return presetClock;
 
         case 'colorContrast':        return presetColorContrast;
         case 'colorSpaces':          return presetColorSpaces;

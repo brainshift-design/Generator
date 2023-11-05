@@ -44,7 +44,9 @@ extends GArithmetic
 
         const op = (await this.operation.eval(parse)).toValue().toInteger();
 
-        op.value = Math.min(Math.max(0, op.value), MATH_OPS.length-1);
+        op.value    = Math.min(Math.max(0, Math.round(op.value)), MATH_OPS.length-1);
+        op.decimals = 0;
+
 
         switch (op.value)
         {

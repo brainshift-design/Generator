@@ -49,6 +49,9 @@ extends GOperator1
         const op      = (await this.operation.eval(parse)).toValue();
         const operand = (await this.operand  .eval(parse)).toValue();
 
+        op.value    = Math.min(Math.max(0, Math.round(op.value)), MATH_OPS.length-1);
+        op.decimals = 0;
+
 
         if (this.input)
         {

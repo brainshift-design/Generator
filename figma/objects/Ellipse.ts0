@@ -11,7 +11,7 @@ function genEllipseIsValid(genEllipse)
 
 
 
-async function figCreateEllipse(genEllipse)
+function figCreateEllipse(genEllipse)
 {
     if (!genEllipseIsValid(genEllipse))
         return null;
@@ -35,7 +35,7 @@ async function figCreateEllipse(genEllipse)
 
 
 
-async function figUpdateEllipse(figEllipse, genEllipse)
+function figUpdateEllipse(figEllipse, genEllipse)
 {
     figUpdateEllipseData(figEllipse, genEllipse);
 

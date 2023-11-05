@@ -9,7 +9,7 @@ function genFrameIsValid(genFrame)
 
 
 
-async function figCreateFrame(genFrame)
+function figCreateFrame(genFrame)
 {
     if (!genFrameIsValid(genFrame))
         return null;
@@ -26,7 +26,7 @@ async function figCreateFrame(genFrame)
         let objects = [];
 
         for (const obj of genFrame[FO_FRAME_CHILDREN])
-            await figCreateObject(obj, o => objects = [...objects, o]);
+            figCreateObject(obj, o => objects = [...objects, o]);
 
         for (const obj of objects)
             figFrame.appendChild(obj);

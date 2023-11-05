@@ -5,12 +5,12 @@ function genShapeGroupIsValid(genGroup)
 
 
 
-async function figCreateShapeGroup(genGroup)
+function figCreateShapeGroup(genGroup)
 {
     let objects = [];
 
     for (const obj of genGroup[FO_GROUP_CHILDREN])
-        await figCreateObject(obj, o => objects = [...objects, o]);
+        figCreateObject(obj, o => objects = [...objects, o]);
 
 
     const figGroup = 

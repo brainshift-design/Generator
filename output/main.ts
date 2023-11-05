@@ -2118,6 +2118,8 @@ function logSavedConn(conn, darkMode)
 }
 
 
+console.log('starting Generator');
+
 //figma.on('selectionchange', figOnSelectionChange);
 
 figma.on('documentchange',  figOnDocumentChange);
@@ -2179,7 +2181,6 @@ function figStartGenerator()
 
         
         const fonts = await figma.listAvailableFontsAsync();
-        // console.log('figma fonts =', fonts);
  
         const eula      = (await figma.clientStorage.getAsync('eula'     )) === 'true';
         const tutorials = (await figma.clientStorage.getAsync('tutorials')) === 'true';
@@ -3499,7 +3500,7 @@ function makeObjectName(obj)
 
 
 
-async function figCreateObject(genObj, addObject = null)
+function figCreateObject(genObj, addObject = null)
 {
     if (!genObjectIsValid(genObj))
         return;
@@ -3509,18 +3510,18 @@ async function figCreateObject(genObj, addObject = null)
 
     switch (genObj[FO_TYPE])
     {
-        case RECTANGLE:      figObj = await figCreateRect         (genObj);  break;
-        case LINE:           figObj = await figCreateLine         (genObj);  break;
-        case ELLIPSE:        figObj = await figCreateEllipse      (genObj);  break;
-        case POLYGON:        figObj = await figCreatePolygon      (genObj);  break;
-        case STAR:           figObj = await figCreateStar         (genObj);  break;
-        case TEXT_SHAPE:     figObj = await figCreateText         (genObj);  break;
-        case POINT:          figObj = await figCreatePoint        (genObj);  break;
-        case VECTOR_PATH:    figObj = await figCreateVectorPath   (genObj);  break;
-        case VECTOR_NETWORK: figObj = await figCreateVectorNetwork(genObj);  break;
-        case BOOLEAN:        figObj = await figCreateBoolean      (genObj);  break;
-        case SHAPE_GROUP:    figObj = await figCreateShapeGroup   (genObj);  break;
-        case FRAME:          figObj = await figCreateFrame        (genObj);  break;
+        case RECTANGLE:      figObj = figCreateRect         (genObj);  break;
+        case LINE:           figObj = figCreateLine         (genObj);  break;
+        case ELLIPSE:        figObj = figCreateEllipse      (genObj);  break;
+        case POLYGON:        figObj = figCreatePolygon      (genObj);  break;
+        case STAR:           figObj = figCreateStar         (genObj);  break;
+        case TEXT_SHAPE:     figObj = figCreateText         (genObj);  break;
+        case POINT:          figObj = figCreatePoint        (genObj);  break;
+        case VECTOR_PATH:    figObj = figCreateVectorPath   (genObj);  break;
+        case VECTOR_NETWORK: figObj = figCreateVectorNetwork(genObj);  break;
+        case BOOLEAN:        figObj = figCreateBoolean      (genObj);  break;
+        case SHAPE_GROUP:    figObj = figCreateShapeGroup   (genObj);  break;
+        case FRAME:          figObj = figCreateFrame        (genObj);  break;
     }
 
 
@@ -3558,7 +3559,7 @@ async function figCreateObject(genObj, addObject = null)
 
 
 
-async function figUpdateObject(figObj, genObj)
+function figUpdateObject(figObj, genObj)
 {
     if (  !genObjectIsValid(genObj)
         || figObj.removed)
@@ -3577,7 +3578,7 @@ async function figUpdateObject(figObj, genObj)
         case ELLIPSE:           figUpdateEllipse      (figObj, genObj);  break;
         case POLYGON:           figUpdatePolygon      (figObj, genObj);  break;
         case STAR:              figUpdateStar         (figObj, genObj);  break;
-        case TEXT_SHAPE:  await figUpdateText         (figObj, genObj);  break;
+        case TEXT_SHAPE:        figUpdateText         (figObj, genObj);  break;
         case POINT:             figUpdatePoint        (figObj, genObj);  break;
         case VECTOR_PATH:       figUpdateVectorPath   (figObj, genObj);  break;
         case VECTOR_NETWORK:    figUpdateVectorNetwork(figObj, genObj);  break;
@@ -3596,7 +3597,7 @@ async function figUpdateObject(figObj, genObj)
 
 
 
-async function figUpdateObjects(figParent, genObjects, nodeIds = [], firstChunk = false, lastChunk = false)
+function figUpdateObjects(figParent, genObjects, nodeIds = [], firstChunk = false, lastChunk = false)
 {
     let curNodeId  = NULL;
     let figObjects = null;
@@ -3648,8 +3649,6 @@ async function figUpdateObjects(figParent, genObjects, nodeIds = [], firstChunk 
                o.removed
             || o.getPluginData('objectId') == genObj[FO_OBJECT_ID]);
 
-        // console.log('figObj =', figObj);
-
 
         if (   figObj != undefined
             && figObj != null
@@ -3668,11 +3667,11 @@ async function figUpdateObjects(figParent, genObjects, nodeIds = [], firstChunk 
         if (   figObj == undefined
             || figObj == null
             || figObj.removed) // no existing object, create new one
-            await figCreateObject(genObj, addObject);
+            figCreateObject(genObj, addObject);
 
         else if (!figObj.removed
                && figObj.getPluginData('type') == genObj[FO_TYPE].toString()) // update existing object
-            await figUpdateObject(figObj, genObj);
+            figUpdateObject(figObj, genObj);
     
         else // delete existing object, create new one
         {
@@ -3684,7 +3683,7 @@ async function figUpdateObjects(figParent, genObjects, nodeIds = [], firstChunk 
             if (figEmptyObjects.includes(figObj))
                 removeFromArray(figEmptyObjects, figObj);
 
-            await figCreateObject(genObj, addObject);
+            figCreateObject(genObj, addObject);
         }
     }
 
@@ -3747,7 +3746,7 @@ function figGetObjectSize(genObj)
 {
     (async () =>
     {
-        const figObj = await figCreateObject(genObj);
+        const figObj = figCreateObject(genObj);
         
         const width  = figObj.width;
         const height = figObj.height;
@@ -4726,12 +4725,12 @@ function genBooleanIsValid(genBool)
 
 
 
-async function figCreateBoolean(genBool)
+function figCreateBoolean(genBool)
 {
     let objects = [];
 
     for (const obj of genBool.children)
-        await figCreateObject(obj, o => objects = [...objects, o]);
+        figCreateObject(obj, o => objects = [...objects, o]);
 
 
     let figBool = null;
@@ -4794,7 +4793,7 @@ function genEllipseIsValid(genEllipse)
 
 
 
-async function figCreateEllipse(genEllipse)
+function figCreateEllipse(genEllipse)
 {
     if (!genEllipseIsValid(genEllipse))
         return null;
@@ -4818,7 +4817,7 @@ async function figCreateEllipse(genEllipse)
 
 
 
-async function figUpdateEllipse(figEllipse, genEllipse)
+function figUpdateEllipse(figEllipse, genEllipse)
 {
     figUpdateEllipseData(figEllipse, genEllipse);
 
@@ -4851,7 +4850,7 @@ function genFrameIsValid(genFrame)
 
 
 
-async function figCreateFrame(genFrame)
+function figCreateFrame(genFrame)
 {
     if (!genFrameIsValid(genFrame))
         return null;
@@ -4868,7 +4867,7 @@ async function figCreateFrame(genFrame)
         let objects = [];
 
         for (const obj of genFrame[FO_FRAME_CHILDREN])
-            await figCreateObject(obj, o => objects = [...objects, o]);
+            figCreateObject(obj, o => objects = [...objects, o]);
 
         for (const obj of objects)
             figFrame.appendChild(obj);
@@ -4905,12 +4904,12 @@ function genShapeGroupIsValid(genGroup)
 
 
 
-async function figCreateShapeGroup(genGroup)
+function figCreateShapeGroup(genGroup)
 {
     let objects = [];
 
     for (const obj of genGroup[FO_GROUP_CHILDREN])
-        await figCreateObject(obj, o => objects = [...objects, o]);
+        figCreateObject(obj, o => objects = [...objects, o]);
 
 
     const figGroup = 
@@ -4954,7 +4953,7 @@ function genLineIsValid(genLine)
 
 
 
-async function figCreateLine(genLine)
+function figCreateLine(genLine)
 {
     if (!genLineIsValid(genLine))
         return null;
@@ -4969,7 +4968,7 @@ async function figCreateLine(genLine)
 
 
 
-async function figUpdateLine(figLine, genLine)
+function figUpdateLine(figLine, genLine)
 {
     setObjectTransform(figLine, genLine, true, 0);
     setObjectProps    (figLine, genLine);
@@ -4989,7 +4988,7 @@ function genPointIsValid(genPoint)
 
 
 
-async function figCreatePoint(genPoint)
+function figCreatePoint(genPoint)
 {    
     const figPoint = 
         genPoint[FO_POINT_IS_CENTER]
@@ -5018,7 +5017,7 @@ async function figCreatePoint(genPoint)
 
 
 
-async function figUpdatePoint(figPoint, genPoint)
+function figUpdatePoint(figPoint, genPoint)
 {
     setPointTransform(figPoint, genPoint);
     updatePointStyles(figPoint);
@@ -5106,7 +5105,7 @@ function genPolygonIsValid(genPoly)
 
 
 
-async function figCreatePolygon(genPoly)
+function figCreatePolygon(genPoly)
 {
     if (!genPolygonIsValid(genPoly))
         return null;
@@ -5121,7 +5120,7 @@ async function figCreatePolygon(genPoly)
 
 
 
-async function figUpdatePolygon(figPoly, genPoly)
+function figUpdatePolygon(figPoly, genPoly)
 {
     if (!genPolygonIsValid(genPoly))
         return;
@@ -5189,7 +5188,7 @@ function genStarIsValid(genStar)
 
 
 
-async function figCreateStar(genStar)
+function figCreateStar(genStar)
 {
     if (!genStarIsValid(genStar))
         return null;
@@ -5204,7 +5203,7 @@ async function figCreateStar(genStar)
 
 
 
-async function figUpdateStar(figStar, genStar)
+function figUpdateStar(figStar, genStar)
 {
     figStar.cornerRadius = genStar[FO_STAR_ROUND ];
     figStar.pointCount   = genStar[FO_STAR_POINTS];
@@ -5213,6 +5212,10 @@ async function figUpdateStar(figStar, genStar)
     setObjectTransform(figStar, genStar);
     setObjectProps    (figStar, genStar);
 }
+
+
+
+const loadedFonts = [];
 
 
 
@@ -5229,7 +5232,7 @@ function genTextIsValid(genText)
 
 
 
-async function figCreateText(genText)
+function figCreateText(genText)
 {
     if (!genTextIsValid(genText))
         return null;
@@ -5237,7 +5240,7 @@ async function figCreateText(genText)
 
     const figText = figma.createText();
 
-    await figUpdateText(figText, genText);
+    figUpdateText(figText, genText);
 
     
     return figText;
@@ -5245,7 +5248,7 @@ async function figCreateText(genText)
 
 
 
-async function figUpdateText(figText, genText)
+function figUpdateText(figText, genText)
 {
     const fontName = 
     { 
@@ -5255,54 +5258,69 @@ async function figUpdateText(figText, genText)
 
     try
     {
-        await figma.loadFontAsync(fontName); 
-
-        
-        figText.fontName      = fontName;
-
-        figText.fontSize      = Math.max(1, genText[FO_FONT_SIZE]);
-
-        figText.characters    = genText[FO_TEXT];
-
-        figText.lineHeight    = {unit: 'PERCENT', value: genText[FO_LINE_HEIGHT   ]};
-        figText.letterSpacing = {unit: 'PERCENT', value: genText[FO_LETTER_SPACING]};
-
-
-             if (genText[FO_ALIGN_H] == 0) figText.textAlignHorizontal = 'LEFT';
-        else if (genText[FO_ALIGN_H] == 1) figText.textAlignHorizontal = 'CENTER';
-        else if (genText[FO_ALIGN_H] == 2) figText.textAlignHorizontal = 'RIGHT';
-        else if (genText[FO_ALIGN_H] == 3) figText.textAlignHorizontal = 'JUSTIFIED';
-
-             if (genText[FO_ALIGN_V] == 0) figText.textAlignVertical   = 'TOP';
-        else if (genText[FO_ALIGN_V] == 1) figText.textAlignVertical   = 'CENTER';
-        else if (genText[FO_ALIGN_V] == 2) figText.textAlignVertical   = 'BOTTOM';
-
-
-        setObjectTransform(figText, genText);
-        setObjectProps    (figText, genText);
-
-
-        // const xp0 = genText[FO_XP0];
-        // const xp1 = genText[FO_XP1];
-        // const xp2 = genText[FO_XP2];
-
-        // const scaleY = distance(xp0, xp2);
-        // console.log('scaleY =', scaleY);
-        
-        // figText.fontSize = 
-        //       Math.max(1, genText[FO_FONT_SIZE])
-        //     * scaleY / 100;
-
-
-        if (     genText[FO_FIG_WIDTH ] == 0
-              && genText[FO_FIG_HEIGHT] == 0) figText.textAutoResize = 'WIDTH_AND_HEIGHT';
-        else if (genText[FO_FIG_WIDTH ] == 0) figText.textAutoResize = 'HEIGHT';
-        else                                  figText.textAutoResize = 'NONE';
+        if (!loadedFonts.includes(fontName))
+        {
+            figma.loadFontAsync(fontName).then(() =>
+            {
+                figUpdateText_(figText, genText, fontName);
+                loadedFonts.push(fontName);
+            });
+        }
+        else
+        {
+            figUpdateText_(figText, genText, fontName);
+        }
     }
     catch (e) 
     {
         consoleError(e);
     }
+}
+
+
+
+function figUpdateText_(figText, genText, fontName)
+{
+    figText.fontName      = fontName;
+
+    figText.fontSize      = Math.max(1, genText[FO_FONT_SIZE]);
+
+    figText.characters    = genText[FO_TEXT];
+
+    figText.lineHeight    = {unit: 'PERCENT', value: genText[FO_LINE_HEIGHT   ]};
+    figText.letterSpacing = {unit: 'PERCENT', value: genText[FO_LETTER_SPACING]};
+
+
+            if (genText[FO_ALIGN_H] == 0) figText.textAlignHorizontal = 'LEFT';
+    else if (genText[FO_ALIGN_H] == 1) figText.textAlignHorizontal = 'CENTER';
+    else if (genText[FO_ALIGN_H] == 2) figText.textAlignHorizontal = 'RIGHT';
+    else if (genText[FO_ALIGN_H] == 3) figText.textAlignHorizontal = 'JUSTIFIED';
+
+            if (genText[FO_ALIGN_V] == 0) figText.textAlignVertical   = 'TOP';
+    else if (genText[FO_ALIGN_V] == 1) figText.textAlignVertical   = 'CENTER';
+    else if (genText[FO_ALIGN_V] == 2) figText.textAlignVertical   = 'BOTTOM';
+
+
+    setObjectTransform(figText, genText);
+    setObjectProps    (figText, genText);
+
+
+    // const xp0 = genText[FO_XP0];
+    // const xp1 = genText[FO_XP1];
+    // const xp2 = genText[FO_XP2];
+
+    // const scaleY = distance(xp0, xp2);
+    // console.log('scaleY =', scaleY);
+    
+    // figText.fontSize = 
+    //       Math.max(1, genText[FO_FONT_SIZE])
+    //     * scaleY / 100;
+
+
+    if (     genText[FO_FIG_WIDTH ] == 0
+            && genText[FO_FIG_HEIGHT] == 0) figText.textAutoResize = 'WIDTH_AND_HEIGHT';
+    else if (genText[FO_FIG_WIDTH ] == 0) figText.textAutoResize = 'HEIGHT';
+    else                                  figText.textAutoResize = 'NONE';
 }
 
 
@@ -5314,7 +5332,7 @@ function genVectorNetworkIsValid(genNetwork)
 
 
 
-async function figCreateVectorNetwork(genNetwork)
+function figCreateVectorNetwork(genNetwork)
 {
     const figNetwork = figma.createVector();
 
@@ -5334,7 +5352,7 @@ async function figCreateVectorNetwork(genNetwork)
 
 
 
-async function figUpdateVectorNetwork(figNetwork, genNetwork)
+function figUpdateVectorNetwork(figNetwork, genNetwork)
 {
     if (!genVectorNetworkIsValid(genNetwork))
         return;
@@ -5357,34 +5375,18 @@ function genVectorPathIsValid(genPath)
 
 
 
-async function figCreateVectorPath(genPath)
+function figCreateVectorPath(genPath)
 {
     const figPath = figma.createVector();
 
     figUpdateVectorPath(figPath, genPath);
-    // if (!genVectorPathIsValid(genPath))
-    //     return figPath;
-
-    
-    // figPath.vectorPaths = [{
-    //     windingRule: genPath[FO_VECTOR_PATH_WINDING] == 1 ? 'NONZERO' : 'EVENODD',
-    //     data:        genPath[FO_VECTOR_PATH_DATA   ]
-    // }];
-
-
-    // figPath.cornerRadius = genPath[FO_VECTOR_PATH_ROUND];
-
-
-    // setObjectTransform(figPath, genPath, false);
-    // setObjectProps    (figPath, genPath);
-
 
     return figPath;
 }
 
 
 
-async function figUpdateVectorPath(figPath, genPath)
+function figUpdateVectorPath(figPath, genPath)
 {
     if (!genVectorPathIsValid(genPath))
         return;

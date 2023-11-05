@@ -1,3 +1,7 @@
+const loadedFonts = [];
+
+
+
 function genTextIsValid(genText)
 {
     return genText[FO_TEXT     ] != null
@@ -11,7 +15,7 @@ function genTextIsValid(genText)
 
 
 
-async function figCreateText(genText)
+function figCreateText(genText)
 {
     if (!genTextIsValid(genText))
         return null;
@@ -19,7 +23,7 @@ async function figCreateText(genText)
 
     const figText = figma.createText();
 
-    await figUpdateText(figText, genText);
+    figUpdateText(figText, genText);
 
     
     return figText;
@@ -27,7 +31,7 @@ async function figCreateText(genText)
 
 
 
-async function figUpdateText(figText, genText)
+function figUpdateText(figText, genText)
 {
     const fontName = 
     { 
@@ -37,52 +41,67 @@ async function figUpdateText(figText, genText)
 
     try
     {
-        await figma.loadFontAsync(fontName); 
-
-        
-        figText.fontName      = fontName;
-
-        figText.fontSize      = Math.max(1, genText[FO_FONT_SIZE]);
-
-        figText.characters    = genText[FO_TEXT];
-
-        figText.lineHeight    = {unit: 'PERCENT', value: genText[FO_LINE_HEIGHT   ]};
-        figText.letterSpacing = {unit: 'PERCENT', value: genText[FO_LETTER_SPACING]};
-
-
-             if (genText[FO_ALIGN_H] == 0) figText.textAlignHorizontal = 'LEFT';
-        else if (genText[FO_ALIGN_H] == 1) figText.textAlignHorizontal = 'CENTER';
-        else if (genText[FO_ALIGN_H] == 2) figText.textAlignHorizontal = 'RIGHT';
-        else if (genText[FO_ALIGN_H] == 3) figText.textAlignHorizontal = 'JUSTIFIED';
-
-             if (genText[FO_ALIGN_V] == 0) figText.textAlignVertical   = 'TOP';
-        else if (genText[FO_ALIGN_V] == 1) figText.textAlignVertical   = 'CENTER';
-        else if (genText[FO_ALIGN_V] == 2) figText.textAlignVertical   = 'BOTTOM';
-
-
-        setObjectTransform(figText, genText);
-        setObjectProps    (figText, genText);
-
-
-        // const xp0 = genText[FO_XP0];
-        // const xp1 = genText[FO_XP1];
-        // const xp2 = genText[FO_XP2];
-
-        // const scaleY = distance(xp0, xp2);
-        // console.log('scaleY =', scaleY);
-        
-        // figText.fontSize = 
-        //       Math.max(1, genText[FO_FONT_SIZE])
-        //     * scaleY / 100;
-
-
-        if (     genText[FO_FIG_WIDTH ] == 0
-              && genText[FO_FIG_HEIGHT] == 0) figText.textAutoResize = 'WIDTH_AND_HEIGHT';
-        else if (genText[FO_FIG_WIDTH ] == 0) figText.textAutoResize = 'HEIGHT';
-        else                                  figText.textAutoResize = 'NONE';
+        if (!loadedFonts.includes(fontName))
+        {
+            figma.loadFontAsync(fontName).then(() =>
+            {
+                figUpdateText_(figText, genText, fontName);
+                loadedFonts.push(fontName);
+            });
+        }
+        else
+        {
+            figUpdateText_(figText, genText, fontName);
+        }
     }
     catch (e) 
     {
         consoleError(e);
     }
+}
+
+
+
+function figUpdateText_(figText, genText, fontName)
+{
+    figText.fontName      = fontName;
+
+    figText.fontSize      = Math.max(1, genText[FO_FONT_SIZE]);
+
+    figText.characters    = genText[FO_TEXT];
+
+    figText.lineHeight    = {unit: 'PERCENT', value: genText[FO_LINE_HEIGHT   ]};
+    figText.letterSpacing = {unit: 'PERCENT', value: genText[FO_LETTER_SPACING]};
+
+
+            if (genText[FO_ALIGN_H] == 0) figText.textAlignHorizontal = 'LEFT';
+    else if (genText[FO_ALIGN_H] == 1) figText.textAlignHorizontal = 'CENTER';
+    else if (genText[FO_ALIGN_H] == 2) figText.textAlignHorizontal = 'RIGHT';
+    else if (genText[FO_ALIGN_H] == 3) figText.textAlignHorizontal = 'JUSTIFIED';
+
+            if (genText[FO_ALIGN_V] == 0) figText.textAlignVertical   = 'TOP';
+    else if (genText[FO_ALIGN_V] == 1) figText.textAlignVertical   = 'CENTER';
+    else if (genText[FO_ALIGN_V] == 2) figText.textAlignVertical   = 'BOTTOM';
+
+
+    setObjectTransform(figText, genText);
+    setObjectProps    (figText, genText);
+
+
+    // const xp0 = genText[FO_XP0];
+    // const xp1 = genText[FO_XP1];
+    // const xp2 = genText[FO_XP2];
+
+    // const scaleY = distance(xp0, xp2);
+    // console.log('scaleY =', scaleY);
+    
+    // figText.fontSize = 
+    //       Math.max(1, genText[FO_FONT_SIZE])
+    //     * scaleY / 100;
+
+
+    if (     genText[FO_FIG_WIDTH ] == 0
+            && genText[FO_FIG_HEIGHT] == 0) figText.textAutoResize = 'WIDTH_AND_HEIGHT';
+    else if (genText[FO_FIG_WIDTH ] == 0) figText.textAutoResize = 'HEIGHT';
+    else                                  figText.textAutoResize = 'NONE';
 }

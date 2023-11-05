@@ -10,7 +10,7 @@ function genPointIsValid(genPoint)
 
 
 
-async function figCreatePoint(genPoint)
+function figCreatePoint(genPoint)
 {    
     const figPoint = 
         genPoint[FO_POINT_IS_CENTER]
@@ -39,7 +39,7 @@ async function figCreatePoint(genPoint)
 
 
 
-async function figUpdatePoint(figPoint, genPoint)
+function figUpdatePoint(figPoint, genPoint)
 {
     setPointTransform(figPoint, genPoint);
     updatePointStyles(figPoint);

@@ -1,3 +1,5 @@
+console.log('starting Generator');
+
 //figma.on('selectionchange', figOnSelectionChange);
 
 figma.on('documentchange',  figOnDocumentChange);
@@ -59,7 +61,6 @@ function figStartGenerator()
 
         
         const fonts = await figma.listAvailableFontsAsync();
-        // console.log('figma fonts =', fonts);
  
         const eula      = (await figma.clientStorage.getAsync('eula'     )) === 'true';
         const tutorials = (await figma.clientStorage.getAsync('tutorials')) === 'true';
