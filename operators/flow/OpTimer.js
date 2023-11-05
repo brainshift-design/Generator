@@ -84,7 +84,8 @@ extends OperatorBase
 
         const interval = values[paramIds.findIndex(id => id == 'interval')].toNumber();
 
-        if (interval > 0)
+        if (   interval > 0
+            && this.enabled)
         {
             if (   this.updateTimer < 0
                 || this.updateDelay != interval)
