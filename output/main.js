@@ -2355,7 +2355,8 @@ function figCreateObject(genObj, addObject = null) {
         figObj.name = makeObjectName(genObj);
         consoleAssert(genObj[FO_TYPE] == SHAPE_GROUP // cannot exist without children
             || !!figObj, 'no Figma object created');
-        if (figObj) {
+        if (figObj
+            && genObj[FO_RETAIN] < 2) {
             figObj.setPluginData('type', genObj[FO_TYPE]);
             figObj.setPluginData('nodeId', genObj[FO_NODE_ID]);
             figObj.setPluginData('objectId', genObj[FO_OBJECT_ID]);

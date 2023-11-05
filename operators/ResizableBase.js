@@ -291,8 +291,6 @@ extends OperatorBase
         this.height = _h;
         
 
-        console.log('this.width =', this.width);
-
         this.updateHeaderLabel();
         this.updateSizers();
     

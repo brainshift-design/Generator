@@ -36,21 +36,21 @@ extends OpShapeBase
         this.btnFinal.down = false;
 
 
-        this.btnFinal.addEventListener('pointerenter', e => 
+        this.btnFinal.addEventListener('pointerenter', e =>
         { 
             this.btnFinal.over = true;  
             this.updateHeader(); 
         });
 
 
-        this.btnFinal.addEventListener('pointerleave', e => 
+        this.btnFinal.addEventListener('pointerleave', e =>
         { 
             this.btnFinal.over = false; 
             this.updateHeader(); 
         });
 
 
-        this.btnFinal.addEventListener('pointerdown',  e => 
+        this.btnFinal.addEventListener('pointerdown',  e =>
         { 
             this.btnFinal.down = true; 
             this.updateHeader(); 
@@ -68,7 +68,7 @@ extends OpShapeBase
 
             setTimeout(() => 
             {
-                this.btnFinal.down = false; 
+                this.btnFinal.down = false;
                 this.updateHeader(); 
             },
             200);
@@ -172,8 +172,8 @@ extends OpShapeBase
     {
         const colors     = this.getHeaderColors();
 
-        const rgba       = rgb_a(rgbFromType(ANY_VALUE));
-        const rgbaStripe = rgb_a(getStripeBackColor(rgba), rgba[3]);
+        //const rgba       = rgb_a(rgbFromType(ANY_VALUE));
+        //const rgbaStripe = rgb_a(getStripeBackColor(rgba), rgba[3]);
 
         const headerStyle = rgba2style(
             rgb_a(

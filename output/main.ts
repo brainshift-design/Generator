@@ -3534,7 +3534,8 @@ function figCreateObject(genObj, addObject = null)
             'no Figma object created');
 
             
-        if (figObj)
+        if (   figObj
+            && genObj[FO_RETAIN] < 2)
         {
             figObj.setPluginData('type',     genObj[FO_TYPE     ]);
             figObj.setPluginData('nodeId',   genObj[FO_NODE_ID  ]);
