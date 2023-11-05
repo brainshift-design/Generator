@@ -24,6 +24,10 @@ extends FigmaShape
         this.round    = round;
     
         this.children = children.map(c => c.copy());
+
+        this.createDefaultSpace(
+            x + width /2, 
+            y + height/2);
     }
 
 

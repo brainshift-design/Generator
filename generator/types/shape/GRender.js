@@ -51,6 +51,8 @@ extends GShapeBase
 
         this.value = new ListValue();
 
+        this.value.objects = [];
+
 
         for (let i = 0, o = 0; i < this.inputs.length; i++)
         {

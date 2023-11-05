@@ -19,7 +19,7 @@ function isConnKey(key) { return isTagKey(key, connTag); }
 function noPageTag(key) { return noTag(key, pageTag); }
 function noNodeTag(key) { return noTag(key, nodeTag); }
 function noConnTag(key) { return noTag(key, connTag); }
-const generatorVersion = 273;
+const generatorVersion = 274;
 const MAX_INT32 = 2147483647;
 const NULL = '';
 const HTAB = '  '; // half-tab
@@ -708,7 +708,7 @@ const TEXT_JOIN = 'TJOIN';
 const TEXT_PAD = 'TPAD';
 const TEXT_COMPARE = 'TCMP';
 const TEXT_CHAR = 'TCHAR';
-const FONT_NAME = 'FNTNM';
+const INDEX_TO_NAME = 'INDEX';
 const NUMBER_TO_TEXT = 'N2T';
 const COLOR_TO_TEXT = 'C2T';
 const TEXT_TO_NUMBER = 'T2N';
@@ -764,7 +764,7 @@ const TEXT_TYPES = [
     TEXT_REPLACE,
     TEXT_COMPARE,
     TEXT_CHAR,
-    FONT_NAME,
+    INDEX_TO_NAME,
     TEXT_TO_NUMBER,
     TEXT_TO_COLOR,
     TEXT_SPLIT,

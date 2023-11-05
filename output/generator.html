@@ -4,7 +4,7 @@
 
 
 
-const generatorVersion = 273;
+const generatorVersion = 274;
 
 
 const MAX_INT32        = 2147483647;
@@ -4947,7 +4947,7 @@ const TEXT_JOIN      = 'TJOIN';
 const TEXT_PAD       = 'TPAD';
 const TEXT_COMPARE   = 'TCMP';
 const TEXT_CHAR      = 'TCHAR';
-const FONT_NAME      = 'FNTNM';
+const INDEX_TO_NAME  = 'INDEX';
 const NUMBER_TO_TEXT = 'N2T';
 const COLOR_TO_TEXT  = 'C2T';
 const TEXT_TO_NUMBER = 'T2N';
@@ -5011,7 +5011,7 @@ const TEXT_TYPES =
     TEXT_REPLACE,
     TEXT_COMPARE,
     TEXT_CHAR,
-    FONT_NAME,
+    INDEX_TO_NAME,
     TEXT_TO_NUMBER,
     TEXT_TO_COLOR,
     TEXT_SPLIT,
@@ -7945,6 +7945,10 @@ extends FigmaShape
         this.round    = round;
     
         this.children = children.map(c => c.copy());
+
+        this.createDefaultSpace(
+            x + width /2, 
+            y + height/2);
     }
 
 
@@ -25772,16 +25776,17 @@ extends GOperator1
 
 
 
-class GFontName
+class GIndexToName
 extends GOperator
 {
+    name;
     index;
 
 
     
     constructor(nodeId, options)
     {
-        super(FONT_NAME, nodeId, options);
+        super(INDEX_TO_NAME, nodeId, options);
     }
 
 
@@ -25797,10 +25802,11 @@ extends GOperator
 
     copy()
     {
-        const copy = new GFontName(this.nodeId, this.options);
+        const copy = new GIndexToName(this.nodeId, this.options);
 
         copy.copyBase(this);
 
+        copy.name  = this.name .copy();
         copy.index = this.index.copy();
 
         return copy;
@@ -25814,15 +25820,55 @@ extends GOperator
             return this;
 
 
+        const name  = (await this.name .eval(parse)).toValue();
         const index = (await this.index.eval(parse)).toValue();
 
 
-        this.value = new TextValue(figUniqueFontNames[index.value]);
+        switch (name.value)
+        {
+            case 0:
+                this.value = new TextValue(figUniqueFontNames[index.value]);
+                break;
+
+            case 1: this.value = new TextValue(
+                [
+                    'monday', 
+                    'tuesday', 
+                    'wednesday', 
+                    'thursday', 
+                    'friday', 
+                    'saturday', 
+                    'sunday'
+                ] 
+                [index.value-1]);
+
+                break;
+
+            case 2: this.value = new TextValue(
+                [
+                    'january', 
+                    'february', 
+                    'march', 
+                    'april', 
+                    'may', 
+                    'june', 
+                    'july',
+                    'august',
+                    'september',
+                    'october',
+                    'november',
+                    'december'
+                ] 
+                [index.value-1]);
+
+                break;
+        }
 
 
         this.setUpdateValues(parse,
         [
             ['value', this.value],
+            ['name',  name      ],
             ['index', index     ]
         ]);
 
@@ -25837,7 +25883,8 @@ extends GOperator
     isValid()
     {
         return super.isValid()
-            && this.index && this.index.isValid();
+            && this.index && this.index.isValid()
+            && this.name  && this.name .isValid();
     }
 
 
@@ -25847,6 +25894,7 @@ extends GOperator
         super.pushValueUpdates(parse);
 
         if (this.index) this.index.pushValueUpdates(parse);
+        if (this.name ) this.name .pushValueUpdates(parse);
     }
 
 
@@ -25856,6 +25904,7 @@ extends GOperator
         super.invalidateInputs(parse, from, force);
 
         if (this.index) this.index.invalidateInputs(parse, from, force);
+        if (this.name ) this.name .invalidateInputs(parse, from, force);
     }
 
 
@@ -25865,6 +25914,7 @@ extends GOperator
         super.iterateLoop(parse);
 
         if (this.index) this.index.iterateLoop(parse);
+        if (this.name ) this.name .iterateLoop(parse);
     }
 }
 
@@ -35526,6 +35576,8 @@ extends GShapeBase
 
 
         this.value = new ListValue();
+
+        this.value.objects = [];
 
 
         for (let i = 0, o = 0; i < this.inputs.length; i++)
@@ -45282,12 +45334,12 @@ function genParseTextCharacter(parse)
 
 
 
-function genParseFontName(parse)
+function genParseIndexToName(parse)
 {
     const [, nodeId, options, ignore] = genParseNodeStart(parse);
 
 
-    const font = new GFontName(nodeId, options);
+    const index = new GIndexToName(nodeId, options);
    
 
     let nInputs = -1;
@@ -45300,12 +45352,12 @@ function genParseFontName(parse)
 
     
     if (parse.settings.logRequests) 
-        logReq(font, parse, ignore, nInputs);
+        logReq(index, parse, ignore, nInputs);
 
 
     if (ignore) 
     {
-        genParseNodeEnd(parse, font);
+        genParseNodeEnd(parse, index);
         return parse.parsedNodes.find(n => n.nodeId == nodeId);
     }
 
@@ -45313,14 +45365,15 @@ function genParseFontName(parse)
     parse.nTab++;
 
 
-    font.index = genParse(parse);
+    index.name  = genParse(parse);
+    index.index = genParse(parse);
 
     
     parse.nTab--;
 
 
-    genParseNodeEnd(parse, font);
-    return font;
+    genParseNodeEnd(parse, index);
+    return index;
 }
 
 
@@ -45935,7 +45988,7 @@ function genParse(parse, inParam = true)
     else if (parse.next == TEXT_CONTAINS          ) result = genParseTextContains      (parse);
     else if (parse.next == TEXT_CASE              ) result = genParseTextCase          (parse);
     else if (parse.next == TEXT_CHAR              ) result = genParseTextCharacter     (parse);
-    else if (parse.next == FONT_NAME              ) result = genParseFontName          (parse);
+    else if (parse.next == INDEX_TO_NAME          ) result = genParseIndexToName          (parse);
     else if (parse.next == NUMBER_TO_TEXT         ) result = genParseNumberToText      (parse);
     else if (parse.next == COLOR_TO_TEXT          ) result = genParseColorToText       (parse);
     else if (parse.next == TEXT_TO_NUMBER         ) result = genParseTextToNumber      (parse);

@@ -142,7 +142,7 @@
 ../operators/text/OpTextContains.js
 ../operators/text/OpTextCase.js
 ../operators/text/OpTextCharacter.js
-../operators/text/OpFontName.js
+../operators/text/OpIndexToName.js
 ../operators/text/OpTextReplace.js
 ../operators/text/OpTextJoin.js
 ../operators/text/OpTextPad.js

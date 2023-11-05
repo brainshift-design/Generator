@@ -23,9 +23,9 @@ extends OpShapeBase
         this.addNewInput();
 
 
-        this.addParam(this.paramRetain = new NumberParam('retain', 'keep', true, true, true, 1, 0, 1));
+        this.addParam(this.paramRetain = new NumberParam('retain', 'preserve', true, true, true, 1, 0, 1));
 
-        this.paramRetain.divider = 0.53;
+        this.paramRetain.divider = 0.62;
 
 
         this.addBaseParams();

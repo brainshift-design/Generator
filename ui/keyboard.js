@@ -139,7 +139,6 @@ document.addEventListener('keydown', e =>
         //     e.preventDefault();
         //     return;
         // }
-        console.log('keyboard.js');
  
              if (e.shiftKey && !actionManager.redoing) actionManager.redo();
         else if (              !actionManager.undoing) actionManager.undo();

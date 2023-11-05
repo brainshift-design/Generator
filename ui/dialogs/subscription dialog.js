@@ -252,7 +252,9 @@ subLicenseKey.addEventListener('keydown', e =>
 
     if (   e.code == 'KeyZ'
         && getCtrlKey(e))
+    {
         e.preventDefault();
+    }
     else if (e.code == 'Tab')
     {
         e.preventDefault();

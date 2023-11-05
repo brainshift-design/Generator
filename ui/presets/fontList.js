@@ -3,67 +3,15 @@ const presetFontList = '\
         "nodes":\
         [\
             {\
-            "type": "SEQ",\
-            "id": "sequence",\
-            "name": "sequence",\
+            "type": "SGRP",\
+            "id": "group",\
+            "name": "group",\
             "renamed": "false",\
             "enabled": "true",\
             "highlight": "0",\
-            "x": "5841.77",\
-            "y": "3644",\
-            "z": "0",\
-            "params":\
-            [\
-                    ["NUM#", "add", "35,0"],\
-                    ["NUM#", "end", "?,0"]\
-            ]\
-            },\
-            {\
-            "type": "TXTS",\
-            "id": "text",\
-            "name": "text",\
-            "renamed": "false",\
-            "enabled": "true",\
-            "highlight": "0",\
-            "x": "5269",\
-            "y": "3253",\
-            "z": "1",\
-            "params":\
-            [\
-                    ["TEXT#", "text", "The%20quick%20brown%20fox%20jumps%20over%20the%20lazy%20dog.", "center"],\
-                    ["TEXT#", "font", "Aclonica"],\
-                    ["NUM#", "size", "16,0"]\
-            ]\
-            },\
-            {\
-            "type": "FNTNM",\
-            "id": "fontName",\
-            "name": "font%20name",\
-            "renamed": "false",\
-            "enabled": "true",\
-            "highlight": "0",\
-            "x": "5113",\
-            "y": "3694",\
-            "z": "2",\
-            "params":\
-            [\
-                    ["NUM#", "index", "9,0"]\
-            ]\
-            },\
-            {\
-            "type": "MOVE",\
-            "id": "move",\
-            "name": "move",\
-            "renamed": "false",\
-            "enabled": "true",\
-            "highlight": "0",\
-            "x": "6038.77",\
-            "y": "3481",\
-            "z": "3",\
-            "params":\
-            [\
-                    ["NUM#", "y", "315,0"]\
-            ]\
+            "x": "5517",\
+            "y": "3521",\
+            "z": "0"\
             },\
             {\
             "type": "SEQ",\
@@ -72,9 +20,9 @@ const presetFontList = '\
             "renamed": "false",\
             "enabled": "true",\
             "highlight": "0",\
-            "x": "4900",\
-            "y": "3391",\
-            "z": "4",\
+            "x": "4950",\
+            "y": "3441",\
+            "z": "1",\
             "params":\
             [\
                     ["NUM#", "add", "1,0"],\
@@ -82,67 +30,17 @@ const presetFontList = '\
             ]\
             },\
             {\
-            "type": "COL",\
-            "id": "color",\
-            "name": "color",\
-            "renamed": "false",\
+            "type": "NUM",\
+            "id": "num",\
+            "name": "font%20page",\
+            "renamed": "true",\
             "enabled": "true",\
-            "highlight": "0",\
-            "x": "5103",\
-            "y": "3545",\
-            "z": "5",\
-            "prevSpace": "hex",\
-            "params":\
-            [\
-                    ["NUM#", "space", "0,0"],\
-                    ["NUM#", "c1", "255,0"],\
-                    ["NUM#", "c2", "255,0"],\
-                    ["NUM#", "c3", "255,0"]\
-            ]\
-            },\
-            {\
-            "type": "REPT",\
-            "id": "repeat",\
-            "name": "repeat",\
-            "renamed": "false",\
-            "enabled": "true",\
-            "highlight": "0",\
-            "x": "6256.77",\
-            "y": "3792",\
-            "z": "6",\
-            "params":\
-            [\
-                    ["NUM#", "count", "10,0"]\
-            ]\
-            },\
-            {\
-            "type": "TXTS",\
-            "id": "text2",\
-            "name": "text",\
-            "renamed": "false",\
-            "enabled": "true",\
-            "highlight": "0",\
-            "x": "5266",\
-            "y": "3666",\
-            "z": "7",\
-            "params":\
-            [\
-                    ["TEXT#", "text", "Aclonica", "center"],\
-                    ["NUM#", "y", "-14,0"],\
-                    ["NUM#", "size", "7,0"],\
-                    ["TEXT#", "style", "Light"]\
-            ]\
-            },\
-            {\
-            "type": "SGRP",\
-            "id": "group",\
-            "name": "group",\
-            "renamed": "false",\
-            "enabled": "true",\
-            "highlight": "0",\
-            "x": "5467",\
-            "y": "3471",\
-            "z": "8"\
+            "highlight": "1",\
+            "x": "4596.46",\
+            "y": "3825",\
+            "z": "2",\
+            "width": "120",\
+            "height": "54"\
             },\
             {\
             "type": "COL",\
@@ -151,9 +49,9 @@ const presetFontList = '\
             "renamed": "false",\
             "enabled": "true",\
             "highlight": "0",\
-            "x": "5111",\
-            "y": "3956",\
-            "z": "9",\
+            "x": "5161",\
+            "y": "4006",\
+            "z": "3",\
             "prevSpace": "hsv",\
             "params":\
             [\
@@ -164,44 +62,15 @@ const presetFontList = '\
             ]\
             },\
             {\
-            "type": "NUM",\
-            "id": "num",\
-            "name": "font%20page",\
-            "renamed": "true",\
-            "enabled": "true",\
-            "highlight": "1",\
-            "x": "4546.46",\
-            "y": "3775",\
-            "z": "10",\
-            "width": "120",\
-            "height": "54"\
-            },\
-            {\
-            "type": "SMATH",\
-            "id": "math",\
-            "name": "math",\
-            "renamed": "false",\
-            "enabled": "true",\
-            "highlight": "0",\
-            "x": "4724",\
-            "y": "3775",\
-            "z": "11",\
-            "params":\
-            [\
-                    ["NUM#", "operation", "4,0"],\
-                    ["NUM#", "operand", "10,0"]\
-            ]\
-            },\
-            {\
             "type": "FRM",\
             "id": "frame",\
             "name": "frame",\
             "renamed": "false",\
             "enabled": "true",\
             "highlight": "0",\
-            "x": "6583.77",\
-            "y": "3656",\
-            "z": "12",\
+            "x": "6690.87",\
+            "y": "3706",\
+            "z": "4",\
             "active": "true",\
             "params":\
             [\
@@ -211,16 +80,97 @@ const presetFontList = '\
             ]\
             },\
             {\
+            "type": "TXTS",\
+            "id": "text",\
+            "name": "text",\
+            "renamed": "false",\
+            "enabled": "true",\
+            "highlight": "0",\
+            "x": "5319",\
+            "y": "3303",\
+            "z": "5",\
+            "params":\
+            [\
+                    ["TEXT#", "text", "The%20quick%20brown%20fox%20jumps%20over%20the%20lazy%20dog.", "center"],\
+                    ["TEXT#", "font", "Aclonica"],\
+                    ["NUM#", "size", "16,0"]\
+            ]\
+            },\
+            {\
+            "type": "COL",\
+            "id": "color",\
+            "name": "color",\
+            "renamed": "false",\
+            "enabled": "true",\
+            "highlight": "0",\
+            "x": "5153",\
+            "y": "3595",\
+            "z": "6",\
+            "prevSpace": "hex",\
+            "params":\
+            [\
+                    ["NUM#", "space", "0,0"],\
+                    ["NUM#", "c1", "255,0"],\
+                    ["NUM#", "c2", "255,0"],\
+                    ["NUM#", "c3", "255,0"]\
+            ]\
+            },\
+            {\
+            "type": "INDEX",\
+            "id": "fontName",\
+            "name": "index",\
+            "renamed": "true",\
+            "enabled": "true",\
+            "highlight": "0",\
+            "x": "5163",\
+            "y": "3744",\
+            "z": "7",\
+            "params":\
+            [\
+                    ["NUM#", "index", "9,0"]\
+            ]\
+            },\
+            {\
+            "type": "MOVE",\
+            "id": "move2",\
+            "name": "move",\
+            "renamed": "false",\
+            "enabled": "true",\
+            "highlight": "0",\
+            "x": "5657",\
+            "y": "3531",\
+            "z": "8",\
+            "params":\
+            [\
+                    ["NUM#", "x", "35,0"],\
+                    ["NUM#", "y", "42,0"]\
+            ]\
+            },\
+            {\
+            "type": "REPT",\
+            "id": "repeat",\
+            "name": "repeat",\
+            "renamed": "false",\
+            "enabled": "true",\
+            "highlight": "0",\
+            "x": "6306.77",\
+            "y": "3842",\
+            "z": "9",\
+            "params":\
+            [\
+                    ["NUM#", "count", "10,0"]\
+            ]\
+            },\
+            {\
             "type": "COL",\
             "id": "color3",\
             "name": "color",\
             "renamed": "false",\
             "enabled": "true",\
             "highlight": "0",\
-            "x": "6441.77",\
-            "y": "3855",\
-            "z": "13",\
-            "active": "true",\
+            "x": "6510.87",\
+            "y": "3905",\
+            "z": "10",\
             "prevSpace": "hex",\
             "params":\
             [\
@@ -231,24 +181,113 @@ const presetFontList = '\
             ]\
             },\
             {\
+            "type": "SEQ",\
+            "id": "sequence",\
+            "name": "sequence",\
+            "renamed": "false",\
+            "enabled": "true",\
+            "highlight": "0",\
+            "x": "5891.77",\
+            "y": "3694",\
+            "z": "11",\
+            "params":\
+            [\
+                    ["NUM#", "add", "35,0"],\
+                    ["NUM#", "end", "?,0"]\
+            ]\
+            },\
+            {\
             "type": "MOVE",\
-            "id": "move2",\
+            "id": "move",\
             "name": "move",\
             "renamed": "false",\
             "enabled": "true",\
             "highlight": "0",\
-            "x": "5607",\
-            "y": "3481",\
+            "x": "6088.77",\
+            "y": "3531",\
+            "z": "12",\
+            "params":\
+            [\
+                    ["NUM#", "y", "315,0"]\
+            ]\
+            },\
+            {\
+            "type": "SMATH",\
+            "id": "math",\
+            "name": "math",\
+            "renamed": "false",\
+            "enabled": "true",\
+            "highlight": "0",\
+            "x": "4774",\
+            "y": "3825",\
+            "z": "13",\
+            "params":\
+            [\
+                    ["NUM#", "operation", "4,0"],\
+                    ["NUM#", "operand", "10,0"]\
+            ]\
+            },\
+            {\
+            "type": "TXTS",\
+            "id": "text2",\
+            "name": "text",\
+            "renamed": "false",\
+            "enabled": "true",\
+            "highlight": "0",\
+            "x": "5316",\
+            "y": "3716",\
             "z": "14",\
             "params":\
             [\
-                    ["NUM#", "x", "35,0"],\
-                    ["NUM#", "y", "42,0"]\
+                    ["TEXT#", "text", "Aclonica", "center"],\
+                    ["NUM#", "y", "-14,0"],\
+                    ["NUM#", "size", "7,0"],\
+                    ["TEXT#", "style", "Light"]\
             ]\
             }\
         ],\
         "connections":\
         [\
+            {\
+            "outputNodeId": "text",\
+            "outputId": "h0",\
+            "outputOrder": "0",\
+            "inputNodeId": "group",\
+            "inputId": "h0",\
+            "list": "false"\
+            },\
+            {\
+            "outputNodeId": "text2",\
+            "outputId": "h0",\
+            "outputOrder": "0",\
+            "inputNodeId": "group",\
+            "inputId": "h1",\
+            "list": "false"\
+            },\
+            {\
+            "outputNodeId": "math",\
+            "outputId": "h0",\
+            "outputOrder": "0",\
+            "inputNodeId": "sequence2",\
+            "inputId": "start",\
+            "list": "false"\
+            },\
+            {\
+            "outputNodeId": "repeat",\
+            "outputId": "h0",\
+            "outputOrder": "0",\
+            "inputNodeId": "frame",\
+            "inputId": "children",\
+            "list": "true"\
+            },\
+            {\
+            "outputNodeId": "color3",\
+            "outputId": "h0",\
+            "outputOrder": "0",\
+            "inputNodeId": "frame",\
+            "inputId": "props",\
+            "list": "false"\
+            },\
             {\
             "outputNodeId": "sequence2",\
             "outputId": "h0",\
@@ -274,27 +313,11 @@ const presetFontList = '\
             "list": "false"\
             },\
             {\
-            "outputNodeId": "move2",\
+            "outputNodeId": "group",\
             "outputId": "h0",\
             "outputOrder": "0",\
-            "inputNodeId": "move",\
+            "inputNodeId": "move2",\
             "inputId": "h0",\
-            "list": "false"\
-            },\
-            {\
-            "outputNodeId": "sequence",\
-            "outputId": "h0",\
-            "outputOrder": "0",\
-            "inputNodeId": "move",\
-            "inputId": "y",\
-            "list": "false"\
-            },\
-            {\
-            "outputNodeId": "math",\
-            "outputId": "h0",\
-            "outputOrder": "0",\
-            "inputNodeId": "sequence2",\
-            "inputId": "start",\
             "list": "false"\
             },\
             {\
@@ -314,6 +337,30 @@ const presetFontList = '\
             "list": "false"\
             },\
             {\
+            "outputNodeId": "move2",\
+            "outputId": "h0",\
+            "outputOrder": "0",\
+            "inputNodeId": "move",\
+            "inputId": "h0",\
+            "list": "false"\
+            },\
+            {\
+            "outputNodeId": "sequence",\
+            "outputId": "h0",\
+            "outputOrder": "0",\
+            "inputNodeId": "move",\
+            "inputId": "y",\
+            "list": "false"\
+            },\
+            {\
+            "outputNodeId": "num",\
+            "outputId": "h0",\
+            "outputOrder": "0",\
+            "inputNodeId": "math",\
+            "inputId": "h0",\
+            "list": "false"\
+            },\
+            {\
             "outputNodeId": "fontName",\
             "outputId": "h0",\
             "outputOrder": "0",\
@@ -327,54 +374,6 @@ const presetFontList = '\
             "outputOrder": "0",\
             "inputNodeId": "text2",\
             "inputId": "props",\
-            "list": "false"\
-            },\
-            {\
-            "outputNodeId": "text",\
-            "outputId": "h0",\
-            "outputOrder": "0",\
-            "inputNodeId": "group",\
-            "inputId": "h0",\
-            "list": "false"\
-            },\
-            {\
-            "outputNodeId": "text2",\
-            "outputId": "h0",\
-            "outputOrder": "0",\
-            "inputNodeId": "group",\
-            "inputId": "h1",\
-            "list": "false"\
-            },\
-            {\
-            "outputNodeId": "num",\
-            "outputId": "h0",\
-            "outputOrder": "0",\
-            "inputNodeId": "math",\
-            "inputId": "h0",\
-            "list": "false"\
-            },\
-            {\
-            "outputNodeId": "repeat",\
-            "outputId": "h0",\
-            "outputOrder": "0",\
-            "inputNodeId": "frame",\
-            "inputId": "children",\
-            "list": "true"\
-            },\
-            {\
-            "outputNodeId": "color3",\
-            "outputId": "h0",\
-            "outputOrder": "0",\
-            "inputNodeId": "frame",\
-            "inputId": "props",\
-            "list": "false"\
-            },\
-            {\
-            "outputNodeId": "group",\
-            "outputId": "h0",\
-            "outputOrder": "0",\
-            "inputNodeId": "move2",\
-            "inputId": "h0",\
             "list": "false"\
             }\
         ]\

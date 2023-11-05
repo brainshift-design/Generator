@@ -544,7 +544,7 @@ menuFlow = new Menu('Flow', true, false);
         new MenuItem('',                     null, {separator: true}),
         new MenuItem('Unicode ⟶ Character', null, {icon: iconTextCharacter, createType: TEXT_CHAR,      callback: e => actionManager.do(getCreateNodeAction(TEXT_CHAR,      btnText.div, getCreateOptions(e)))}),
         new MenuItem('',                     null, {separator: true}),
-        new MenuItem('Index ⟶ Font name',   null, {icon: iconFontName,      createType: FONT_NAME,      callback: e => actionManager.do(getCreateNodeAction(FONT_NAME,      btnText.div, getCreateOptions(e)))})]);
+        new MenuItem('Index ⟶ Name',        null, {icon: iconIndexToName,      createType: INDEX_TO_NAME,      callback: e => actionManager.do(getCreateNodeAction(INDEX_TO_NAME,      btnText.div, getCreateOptions(e)))})]);
     
 
     menuTextData = new Menu('Data', true, false);
@@ -937,7 +937,7 @@ menuFlow = new Menu('Flow', true, false);
     // }});
 
 
-    if (false)
+    if (true)
     {
         btnPanel    = new MenuButton('', menuPanel,  {useMenuName: true, highlight: () => currentMenus.includes(menuPanel ), callback: () => updatePanMode(false)});
     }

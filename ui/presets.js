@@ -75,7 +75,7 @@ function getPresetGraph(graphId)
         case 'dataTypes':            return presetDataTypes;
         case 'organize':             return presetOrganize;
         case 'active':               return presetActive;
-     
+        case 'render':               return presetRender;
 
         case 'ifElse':               return presetIfElse;
         case 'select':               return presetSelect;

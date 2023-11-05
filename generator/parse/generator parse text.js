@@ -575,12 +575,12 @@ function genParseTextCharacter(parse)
 
 
 
-function genParseFontName(parse)
+function genParseIndexToName(parse)
 {
     const [, nodeId, options, ignore] = genParseNodeStart(parse);
 
 
-    const font = new GFontName(nodeId, options);
+    const index = new GIndexToName(nodeId, options);
    
 
     let nInputs = -1;
@@ -593,12 +593,12 @@ function genParseFontName(parse)
 
     
     if (parse.settings.logRequests) 
-        logReq(font, parse, ignore, nInputs);
+        logReq(index, parse, ignore, nInputs);
 
 
     if (ignore) 
     {
-        genParseNodeEnd(parse, font);
+        genParseNodeEnd(parse, index);
         return parse.parsedNodes.find(n => n.nodeId == nodeId);
     }
 
@@ -606,14 +606,15 @@ function genParseFontName(parse)
     parse.nTab++;
 
 
-    font.index = genParse(parse);
+    index.name  = genParse(parse);
+    index.index = genParse(parse);
 
     
     parse.nTab--;
 
 
-    genParseNodeEnd(parse, font);
-    return font;
+    genParseNodeEnd(parse, index);
+    return index;
 }
 
 
