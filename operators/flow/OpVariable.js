@@ -18,7 +18,7 @@ extends ResizableBase
 
 
         this.canRename      = false;
-        this.iconOffsetY    = 0;
+        this.iconOffsetY    = 1;
         this.alwaysShowIcon = true;
 
 
