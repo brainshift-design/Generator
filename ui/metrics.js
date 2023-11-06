@@ -50,7 +50,7 @@ function updateMetrics()
     })
     .then(response =>
     {   
-        console.log('metricsEvents =', metricsEvents); 
+        //console.log('metricsEvents =', metricsEvents); 
         metricsEvents = [];
     })
     .catch(error =>

@@ -140,7 +140,6 @@ extends FigmaShape
         {
             let p      = this.points[i].toPoint();
             let smooth = this.points[i].smooth;
-            console.log('smooth =', smooth);
 
             p = transformPoint(p, xform, space);
 

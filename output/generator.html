@@ -4,7 +4,7 @@
 
 
 
-const generatorVersion = 276;
+const generatorVersion = 277;
 
 
 const MAX_INT32        = 2147483647;
@@ -6818,7 +6818,6 @@ extends FigmaShape
         {
             let p      = this.points[i].toPoint();
             let smooth = this.points[i].smooth;
-            console.log('smooth =', smooth);
 
             p = transformPoint(p, xform, space);
 
