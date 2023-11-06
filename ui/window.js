@@ -66,11 +66,15 @@ function uiSetWindowRect(x, y, width, height)
 
 function uiResizeWindow(width, height)
 {
+    width = Math.max(600, width);
+
     uiQueueMessageToFigma({ 
         cmd:   'figResizeWindow', 
-        width:  Math.max(600, width),
+        width:  width,
         height: height
     });
+
+    addMetricsEvent(METRICS_WINDOW_SIZE, width + ' × ' + height)    
 }
 
 

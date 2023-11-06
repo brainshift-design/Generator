@@ -549,3 +549,17 @@ function findAllIndices(array, condition)
 
     return indices;
 }
+
+
+
+function createRandomString(length)
+{
+    const letters = 'ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz0123456789'.split('');
+
+    let str = '';
+
+    for (let i = 0; i < length; i++)
+        str += letters[Math.floor(Math.random() * letters.length)];
+
+    return str;
+}

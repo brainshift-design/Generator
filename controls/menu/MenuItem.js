@@ -390,6 +390,9 @@ class MenuItem
 
         if (this.callback)
             this.callback(e);
+
+
+        addMetricsEvent(METRICS_MENU_ITEM, this.name);
     }
 
 

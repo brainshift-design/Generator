@@ -116,6 +116,8 @@ class MenuButton
                     e.stopPropagation();
                     this.showMenu();
                     this.update();
+
+                    addMetricsEvent(METRICS_MENU_BUTTON, this.name);
                 }
             });
         }

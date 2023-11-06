@@ -18,6 +18,9 @@ var allUpdateNodes     = [];
 var subscriptionActive = false;
 
 
+var sessionId          = ''; // for metrics
+
+
 
 // uiClearAllLocalData();
 //uiQueueMessageToFigma({cmd: 'figLogAllLocalData', darkMode: darkMode});
@@ -126,6 +129,9 @@ async function uiReturnFigStartGenerator(msg)
 
 function initGenerator(activate)
 {
+    sessionId = createRandomString(32);
+    
+
     uiGetLocalData('showWhatsNew');
 
     setTimeout(() => loadingGraphic.style.display = 'block', 300);
@@ -201,6 +207,10 @@ function finalizeInit(eulaAgreed, activate)
         showEulaDialog();
     else
         initGenerator(activate);
+
+
+    if (settings.dataMode)
+        addMetricsEvent(METRICS_DATA_MODE, NULL);
 }
 
 

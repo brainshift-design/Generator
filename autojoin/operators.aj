@@ -192,6 +192,7 @@
 ../operators/shape/OpStar.js
 ../operators/shape/OpTextShape.js
 ../operators/shape/OpPoint.js
+../operators/shape/OpPointCorner.js
 ../operators/shape/OpVectorPath.js
 ../operators/shape/OpVectorVertex.js
 ../operators/shape/OpVectorEdge.js

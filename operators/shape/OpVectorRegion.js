@@ -116,6 +116,6 @@ extends OpShape
         this.paramWinding.enableControlText(true);
         this.paramProps  .enableControlText(false);
     
-        super.updateParamControls();
+        this.updateParamControls();
     }
 }

@@ -58,7 +58,7 @@ extends GShape
         const winding = this.winding ? (await this.winding.eval(parse)).toValue() : null;
         const round   = this.round   ? (await this.round  .eval(parse)).toValue() : null;
 
-        
+
         let input = null;
 
         if (this.input)
@@ -153,7 +153,14 @@ extends GShape
             const objPoints = this.value.points.objects.filter(o => o.type == POINT);
 
             for (const pt of objPoints)
-                points.push(PointValue.create(this.nodeId, pt.x, pt.y));
+            {
+                const p = PointValue.create(this.nodeId, pt.x, pt.y);
+                
+                if (pt.smooth != null)
+                    p.smooth = new NumberValue(pt.smooth);
+
+                points.push(p);
+            }
         }
 
 

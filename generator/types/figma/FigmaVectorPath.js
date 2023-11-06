@@ -138,9 +138,14 @@ extends FigmaShape
     {
         for (let i = 0; i < this.points.length; i++)
         {
-            let p = this.points[i].toPoint();
+            let p      = this.points[i].toPoint();
+            let smooth = this.points[i].smooth;
+            console.log('smooth =', smooth);
+
             p = transformPoint(p, xform, space);
-            this.points[i] = PointValue.fromPoint(this.nodeId, p);
+
+            this.points[i]        = PointValue.fromPoint(this.nodeId, p);
+            this.points[i].smooth = smooth;
         }
     }
 
@@ -213,12 +218,12 @@ function getPathDataFromPoints(points, closed, degree)
 
     switch (degree)
     {
-    case 0: pathData = getLinearPathData   (points);         break;
-    case 1: pathData = getQuadraticPathData(points, closed); break;
-    case 2: 
-    case 3: 
-    case 4: 
-    case 5: pathData = getCubicPathData    (points, closed); break;
+    case 0: pathData = getLinearPathData   (points);         break; // linear
+    case 1: pathData = getQuadraticPathData(points, closed); break; // quadratic
+    case 2:                                                         // cubic
+    case 3:                                                         // smooth
+    case 4:                                                         // sine X
+    case 5: pathData = getCubicPathData    (points, closed); break; // sine Y
     }
 
 
@@ -360,8 +365,15 @@ function getSmoothPoints(points, closed, getSegment)
             ? (closed ? points[0] : points[i])
             : points[i+1]);
 
-        bp.push(_pp, pp, p);
+        if (   points[i].smooth
+            && points[i].smooth.value == 0)
+        {
+            pp = p;
+            pn = p;
+        }
 
+        bp.push(_pp, pp, p);
+   
         _pp = pn;
     }
 
@@ -379,6 +391,13 @@ function getSmoothPoints(points, closed, getSegment)
                     points.at( 0),
                     points.at( 1));
 
+                if (   points[0].smooth
+                    && points[0].smooth.value == 0)
+                {
+                    pp = p;
+                    pn = p;
+                }
+
                 bp[1]           = pn;
                 bp[bp.length-2] = pp;
             }
@@ -389,6 +408,13 @@ function getSmoothPoints(points, closed, getSegment)
                     points.at(-1), 
                     points.at( 0),
                     points.at( 1));
+
+                if (   points[0].smooth
+                    && points[0].smooth.value == 0)
+                {
+                    pp = p;
+                    pn = p;
+                }
 
                 bp.push(_pp, pp, p);
 

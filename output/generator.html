@@ -4,7 +4,7 @@
 
 
 
-const generatorVersion = 275;
+const generatorVersion = 276;
 
 
 const MAX_INT32        = 2147483647;
@@ -3238,6 +3238,20 @@ function findAllIndices(array, condition)
 }
 
 
+
+function createRandomString(length)
+{
+    const letters = 'ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz0123456789'.split('');
+
+    let str = '';
+
+    for (let i = 0; i < length; i++)
+        str += letters[Math.floor(Math.random() * letters.length)];
+
+    return str;
+}
+
+
 "use strict";
 
 // Base64 / binary data / UTF-8 strings utilities
@@ -5150,6 +5164,8 @@ const POINT                = 'PT';
 const POINT_VALUE          = 'PT#';
 const POINT_TYPES          = [POINT_VALUE, POINT];
 
+const POINT_CORNER         = 'PCORN';
+
 const VECTOR_PATH_VALUE    = 'VPATH#';
 const VECTOR_PATH          = 'VPATH'; 
 const VECTOR_PATH_TYPES    = [VECTOR_PATH_VALUE, VECTOR_PATH];
@@ -5269,6 +5285,7 @@ const SHAPE_TYPES =
     ...STAR_TYPES,
     ...TEXT_SHAPE_TYPES,
     ...POINT_TYPES,
+       POINT_CORNER,
     ...VECTOR_PATH_TYPES,
     ...VECTOR_VERTEX_TYPES,
     ...VECTOR_EDGE_TYPES,
@@ -6799,9 +6816,14 @@ extends FigmaShape
     {
         for (let i = 0; i < this.points.length; i++)
         {
-            let p = this.points[i].toPoint();
+            let p      = this.points[i].toPoint();
+            let smooth = this.points[i].smooth;
+            console.log('smooth =', smooth);
+
             p = transformPoint(p, xform, space);
-            this.points[i] = PointValue.fromPoint(this.nodeId, p);
+
+            this.points[i]        = PointValue.fromPoint(this.nodeId, p);
+            this.points[i].smooth = smooth;
         }
     }
 
@@ -6874,12 +6896,12 @@ function getPathDataFromPoints(points, closed, degree)
 
     switch (degree)
     {
-    case 0: pathData = getLinearPathData   (points);         break;
-    case 1: pathData = getQuadraticPathData(points, closed); break;
-    case 2: 
-    case 3: 
-    case 4: 
-    case 5: pathData = getCubicPathData    (points, closed); break;
+    case 0: pathData = getLinearPathData   (points);         break; // linear
+    case 1: pathData = getQuadraticPathData(points, closed); break; // quadratic
+    case 2:                                                         // cubic
+    case 3:                                                         // smooth
+    case 4:                                                         // sine X
+    case 5: pathData = getCubicPathData    (points, closed); break; // sine Y
     }
 
 
@@ -7021,8 +7043,15 @@ function getSmoothPoints(points, closed, getSegment)
             ? (closed ? points[0] : points[i])
             : points[i+1]);
 
-        bp.push(_pp, pp, p);
+        if (   points[i].smooth
+            && points[i].smooth.value == 0)
+        {
+            pp = p;
+            pn = p;
+        }
 
+        bp.push(_pp, pp, p);
+   
         _pp = pn;
     }
 
@@ -7040,6 +7069,13 @@ function getSmoothPoints(points, closed, getSegment)
                     points.at( 0),
                     points.at( 1));
 
+                if (   points[0].smooth
+                    && points[0].smooth.value == 0)
+                {
+                    pp = p;
+                    pn = p;
+                }
+
                 bp[1]           = pn;
                 bp[bp.length-2] = pp;
             }
@@ -7050,6 +7086,13 @@ function getSmoothPoints(points, closed, getSegment)
                     points.at(-1), 
                     points.at( 0),
                     points.at( 1));
+
+                if (   points[0].smooth
+                    && points[0].smooth.value == 0)
+                {
+                    pp = p;
+                    pn = p;
+                }
 
                 bp.push(_pp, pp, p);
 
@@ -7761,16 +7804,18 @@ extends FigmaShape
 {
     x;
     y;
+    smooth;
     isCenter;
 
 
 
-    constructor(nodeId, objectId, objectName, x, y, isDeco = false, isCenter = false, isXform = false)
+    constructor(nodeId, objectId, objectName, x, y, smooth = -1, isDeco = false, isCenter = false, isXform = false)
     {
         super(POINT, nodeId, objectId, objectName, isDeco, isXform);
         
         this.x        = x;
         this.y        = y;
+        this.smooth   = smooth;
         this.isCenter = isCenter;
 
         
@@ -7789,6 +7834,7 @@ extends FigmaShape
             this.objectName, 
             this.x,
             this.y,
+            this.smooth,
             this.isDeco,
             this.isCenter);
 
@@ -13498,6 +13544,8 @@ extends GValue
 
     x;
     y;
+    smooth;
+
 
     sp0 = null; //  sp0 ------- sp1 
     sp1 = null; //   |
@@ -13507,7 +13555,8 @@ extends GValue
 
     constructor(nodeId,
                 x = new NumberValue(0), 
-                y = new NumberValue(0))
+                y = new NumberValue(0),
+                smooth = null)
     {
         super(POINT_VALUE);
 
@@ -13515,6 +13564,8 @@ extends GValue
 
         this.x       = x;
         this.y       = y;
+        this.smooth  = smooth;
+
 
         this.createDefaultSpace();
     }
@@ -13527,6 +13578,8 @@ extends GValue
             this.nodeId,
             this.x.copy(), 
             this.y.copy());
+
+        if (this.smooth) copy.smooth = this.smooth.copy();
 
         copy.copyBase(this);
 
@@ -13596,7 +13649,9 @@ extends GValue
     hasInitValue()
     {
         return this.x.hasInitValue()
-            && this.y.hasInitValue();
+            && this.y.hasInitValue()
+            && (  !this.smooth
+                || this.smooth.hasInitValue());
     }
 
 
@@ -13604,7 +13659,9 @@ extends GValue
     isValid()
     {
         return this.x.isValid()
-            && this.y.isValid();
+            && this.y.isValid()
+            && (  !this.smooth
+                || this.smooth.isValid());
     }
 
 
@@ -33562,14 +33619,13 @@ extends GOperator1
             const x = this.value.x.value;
             const y = this.value.y.value;
 
-            // if (   this.input
-            //     && this.input.type == CIRCLE_CENTER)
-            // {
-            //     console.log('x =', x);
-            //     console.log('y =', y);
-            // }
-
-            const point = new FigmaPoint(this.nodeId, this.nodeId, this.nodeName, x, y);
+            const point = new FigmaPoint(
+                this.nodeId, 
+                this.nodeId, 
+                this.nodeName, 
+                x, 
+                y, 
+                this.smooth ? this.smooth.value : -1);
 
             point.createDefaultTransform(x, y);
 
@@ -33638,6 +33694,162 @@ extends GOperator1
 }
 
 
+class GPointCorner
+extends GOperator1
+{
+    smooth = null;
+
+
+
+    constructor(nodeId, options)
+    {
+        super(POINT_CORNER, nodeId, options);
+    }
+
+
+
+    reset()
+    {
+        super.reset();
+
+        this.smooth = null;
+    }
+
+
+
+    copy()
+    {
+        const copy = new GPointCorner(this.nodeId, this.options);
+
+        copy.copyBase(this);
+
+        if (this.value ) copy.value  = this.value .copy();
+        if (this.smooth) copy.smooth = this.smooth.copy();
+
+        return copy;
+    }
+
+
+
+    async eval(parse)
+    {
+        if (this.isCached())
+            return this;
+
+        
+        const input  = this.input  ? (await this.input .eval(parse)).toValue() : null;
+        const smooth = this.smooth ? (await this.smooth.eval(parse)).toValue() : null;
+        
+        if (input)
+        {
+            this.value        = input;
+            this.value.smooth = smooth;
+        }
+        else
+        {
+            this.value = PointValue.NaN.copy();
+        }
+
+
+        await this.evalObjects(parse);
+
+
+        this.setUpdateValues(parse, 
+        [
+            ['value',  this.value],
+            ['smooth', smooth    ]
+        ]);
+
+
+        this.validate();
+
+        return this;
+    }
+
+
+
+    async evalObjects(parse, options = {})
+    {
+        if (!this.options.enabled)
+            return;
+            
+            
+        this.value.objects = [];
+
+
+        if (   this.value.x.isValid()
+            && this.value.y.isValid())
+        {
+            const x      = this.value.x.value;
+            const y      = this.value.y.value;
+            const smooth = this.value.smooth ? this.value.smooth.value : -1;
+
+            const point = new FigmaPoint(this.nodeId, this.nodeId, this.nodeName, x, y, smooth);
+
+            point.createDefaultTransform(x, y);
+
+            this.value.objects = [point];
+        }
+
+
+        await super.evalObjects(parse);
+    }
+
+
+
+    toValue()
+    {
+        return this.value.copy();
+    //     const point = new PointValue(
+    //         this.nodeId,
+    //         this.x.toValue(),
+    //         this.y.toValue());
+
+    //     point.objects = 
+    //         this.value.objects
+    //         ? this.value.objects.map(o => o.copy())
+    //         : [];
+
+    //     return point;
+    }
+
+
+
+    isValid()
+    {
+        return super.isValid()
+            && this.smooth && this.smooth.isValid();
+    }
+
+
+
+    pushValueUpdates(parse)
+    {
+        super.pushValueUpdates(parse);
+
+        if (this.smooth) this.smooth.pushValueUpdates(parse);
+    }
+
+
+
+    invalidateInputs(parse, from, force)
+    {
+        super.invalidateInputs(parse, from, force);
+
+        if (this.smooth) this.smooth.invalidateInputs(parse, from, force);
+    }
+
+
+
+    iterateLoop(parse)
+    {
+        super.iterateLoop(parse);
+
+        if (this.smooth) this.smooth.iterateLoop(parse);
+    }
+}
+
+
 class GVectorPath
 extends GShape
 {
@@ -33698,7 +33910,7 @@ extends GShape
         const winding = this.winding ? (await this.winding.eval(parse)).toValue() : null;
         const round   = this.round   ? (await this.round  .eval(parse)).toValue() : null;
 
-        
+
         let input = null;
 
         if (this.input)
@@ -33793,7 +34005,14 @@ extends GShape
             const objPoints = this.value.points.objects.filter(o => o.type == POINT);
 
             for (const pt of objPoints)
-                points.push(PointValue.create(this.nodeId, pt.x, pt.y));
+            {
+                const p = PointValue.create(this.nodeId, pt.x, pt.y);
+                
+                if (pt.smooth != null)
+                    p.smooth = new NumberValue(pt.smooth);
+
+                points.push(p);
+            }
         }
 
 
@@ -43466,6 +43685,53 @@ function genParsePoint(parse)
 
 
 
+function genParsePointCorner(parse)
+{
+    const [, nodeId, options, ignore] = genParseNodeStart(parse);
+
+
+    const corner = new GPointCorner(nodeId, options);
+
+
+    let nInputs = -1;
+
+    if (!ignore)
+    {
+        nInputs = parseInt(parse.move());
+        consoleAssert(nInputs => 0 && nInputs <= 1, 'nInputs must be [0, 1]');
+    }
+
+
+    if (parse.settings.logRequests) 
+        logReq(corner, parse, ignore);
+
+
+    if (ignore) 
+    {
+        genParseNodeEnd(parse, corner);
+        return parse.parsedNodes.find(n => n.nodeId == nodeId);
+    }
+
+
+    parse.nTab++;
+
+
+    if (nInputs == 1)
+        corner.input = genParse(parse);
+
+    corner.smooth = genParse(parse);
+
+
+    parse.inParam = false;
+    parse.nTab--;
+
+
+    genParseNodeEnd(parse, corner);
+    return corner;
+}
+
+
+
 function genParseVectorPathValue(parse)
 {
     parse.pos++; // VECTOR_PATH_VALUE
@@ -46072,6 +46338,7 @@ function genParse(parse, inParam = true)
  
     else if (parse.next == POINT_VALUE            ) result = genParsePointValue        (parse);
     else if (parse.next == POINT                  ) result = genParsePoint             (parse);
+    else if (parse.next == POINT_CORNER           ) result = genParsePointCorner       (parse);
     else if (parse.next == VECTOR_PATH_VALUE      ) result = genParseVectorPathValue   (parse);
     else if (parse.next == VECTOR_PATH            ) result = genParseVectorPath        (parse);
     

@@ -250,6 +250,9 @@ function selectSearchItem(item, shift, ctrl, alt)
     }
 
     searchIndex = -1;
+
+
+    addMetricsEvent(METRICS_SEARCH, item.name);
 }
 
 

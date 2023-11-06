@@ -61,6 +61,9 @@ function loadPresetGraph(graphId)
     {
         actionManager.clear();
     }));
+
+
+    addMetricsEvent(METRICS_LOAD_PRESET, graphId);
 }
 
 

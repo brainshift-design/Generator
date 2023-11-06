@@ -5,6 +5,8 @@ extends GValue
 
     x;
     y;
+    smooth;
+
 
     sp0 = null; //  sp0 ------- sp1 
     sp1 = null; //   |
@@ -14,7 +16,8 @@ extends GValue
 
     constructor(nodeId,
                 x = new NumberValue(0), 
-                y = new NumberValue(0))
+                y = new NumberValue(0),
+                smooth = null)
     {
         super(POINT_VALUE);
 
@@ -22,6 +25,8 @@ extends GValue
 
         this.x       = x;
         this.y       = y;
+        this.smooth  = smooth;
+
 
         this.createDefaultSpace();
     }
@@ -34,6 +39,8 @@ extends GValue
             this.nodeId,
             this.x.copy(), 
             this.y.copy());
+
+        if (this.smooth) copy.smooth = this.smooth.copy();
 
         copy.copyBase(this);
 
@@ -103,7 +110,9 @@ extends GValue
     hasInitValue()
     {
         return this.x.hasInitValue()
-            && this.y.hasInitValue();
+            && this.y.hasInitValue()
+            && (  !this.smooth
+                || this.smooth.hasInitValue());
     }
 
 
@@ -111,7 +120,9 @@ extends GValue
     isValid()
     {
         return this.x.isValid()
-            && this.y.isValid();
+            && this.y.isValid()
+            && (  !this.smooth
+                || this.smooth.isValid());
     }
 
 

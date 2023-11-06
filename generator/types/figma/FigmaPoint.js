@@ -3,16 +3,18 @@ extends FigmaShape
 {
     x;
     y;
+    smooth;
     isCenter;
 
 
 
-    constructor(nodeId, objectId, objectName, x, y, isDeco = false, isCenter = false, isXform = false)
+    constructor(nodeId, objectId, objectName, x, y, smooth = -1, isDeco = false, isCenter = false, isXform = false)
     {
         super(POINT, nodeId, objectId, objectName, isDeco, isXform);
         
         this.x        = x;
         this.y        = y;
+        this.smooth   = smooth;
         this.isCenter = isCenter;
 
         
@@ -31,6 +33,7 @@ extends FigmaShape
             this.objectName, 
             this.x,
             this.y,
+            this.smooth,
             this.isDeco,
             this.isCenter);
 

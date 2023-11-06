@@ -302,6 +302,9 @@ extends EventTarget
         }
 
 
+        //addMetricsEvent(METRICS_PARAM_VALUE, value.toString());
+
+
         // if (this.proxy) 
         //     this.proxy.updateControls();
     }

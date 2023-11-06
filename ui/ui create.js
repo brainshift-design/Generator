@@ -142,6 +142,7 @@ function createNode(nodeType, creatingButton = null, createdNodeId = -1, options
         case STAR:                    node = new OpStar();              break;
         case TEXT_SHAPE:              node = new OpTextShape();         break;
         case POINT:                   node = new OpPoint();             break;
+        case POINT_CORNER:            node = new OpPointCorner();       break;
         case VECTOR_PATH:             node = new OpVectorPath();        break;
         case VECTOR_VERTEX:           node = new OpVectorVertex();      break;
         case VECTOR_EDGE:             node = new OpVectorEdge();        break;

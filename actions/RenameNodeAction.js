@@ -33,6 +33,9 @@ extends Action
         this.node.updateNode();
 
         uiSaveNodes([this.nodeId]);
+
+
+        addMetricsEvent(METRICS_NODE_NAME, this.node.name);
     }
 
 

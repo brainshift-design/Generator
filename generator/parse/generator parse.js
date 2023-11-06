@@ -287,6 +287,7 @@ function genParse(parse, inParam = true)
  
     else if (parse.next == POINT_VALUE            ) result = genParsePointValue        (parse);
     else if (parse.next == POINT                  ) result = genParsePoint             (parse);
+    else if (parse.next == POINT_CORNER           ) result = genParsePointCorner       (parse);
     else if (parse.next == VECTOR_PATH_VALUE      ) result = genParseVectorPathValue   (parse);
     else if (parse.next == VECTOR_PATH            ) result = genParseVectorPath        (parse);
     

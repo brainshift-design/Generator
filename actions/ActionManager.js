@@ -55,6 +55,8 @@ class ActionManager
 
 
         this.doAction(act, false);
+
+        addMetricsEvent(METRICS_ACTION_DO, act.name);
     }
 
 
@@ -75,6 +77,8 @@ class ActionManager
 
 
             this.undoAction(last);
+
+            addMetricsEvent(METRICS_ACTION_UNDO, last.name);
 
 
             if (   isEmpty(this.actions)
@@ -101,6 +105,8 @@ class ActionManager
 
 
             this.doAction(last, true);
+
+            addMetricsEvent(METRICS_ACTION_REDO, last.name);
 
 
             if (   isEmpty(this.redoActions)

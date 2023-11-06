@@ -106,14 +106,13 @@ extends GOperator1
             const x = this.value.x.value;
             const y = this.value.y.value;
 
-            // if (   this.input
-            //     && this.input.type == CIRCLE_CENTER)
-            // {
-            //     console.log('x =', x);
-            //     console.log('y =', y);
-            // }
-
-            const point = new FigmaPoint(this.nodeId, this.nodeId, this.nodeName, x, y);
+            const point = new FigmaPoint(
+                this.nodeId, 
+                this.nodeId, 
+                this.nodeName, 
+                x, 
+                y, 
+                this.smooth ? this.smooth.value : -1);
 
             point.createDefaultTransform(x, y);
 
