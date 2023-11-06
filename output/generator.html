@@ -4,7 +4,7 @@
 
 
 
-const generatorVersion = 277;
+const generatorVersion = 278;
 
 
 const MAX_INT32        = 2147483647;
@@ -5592,10 +5592,10 @@ const FO_Y              = 24;
 const FO_WIDTH          = 25;   const FO_POINT_IS_CENTER = 25;   
 const FO_HEIGHT         = 26;                                    
 
-const FO_RECT_ROUND     = 27;   const FO_ELLIPSE_FROM    = 27;   const FO_VECTOR_NETWORK_DATA = 27;   const FO_VECTOR_PATH_DATA    = 27;   const FO_POLY_ROUND   = 27;   const FO_STAR_ROUND  = 27;   const FO_FIG_WIDTH      = 27;   const FO_FRAME_ROUND    = 27;
-                                const FO_ELLIPSE_TO      = 28;                                        const FO_VECTOR_PATH_WINDING = 28;   const FO_POLY_CORNERS = 28;   const FO_STAR_POINTS = 28;   const FO_FIG_HEIGHT     = 28;   const FO_FRAME_CHILDREN = 28;
-                                const FO_ELLIPSE_INNER   = 29;                                        const FO_VECTOR_PATH_ROUND   = 29;                                 const FO_STAR_CONVEX = 29;   const FO_TEXT           = 29; 
-                                                                                                                                 
+const FO_RECT_ROUND     = 27;   const FO_ELLIPSE_ROUND   = 27;   const FO_VECTOR_NETWORK_DATA = 27;   const FO_VECTOR_PATH_DATA    = 27;   const FO_POLY_ROUND   = 27;   const FO_STAR_ROUND  = 27;   const FO_FIG_WIDTH      = 27;   const FO_FRAME_ROUND    = 27;
+                                const FO_ELLIPSE_FROM    = 28;                                        const FO_VECTOR_PATH_WINDING = 28;   const FO_POLY_CORNERS = 28;   const FO_STAR_POINTS = 28;   const FO_FIG_HEIGHT     = 28;   const FO_FRAME_CHILDREN = 28;
+                                const FO_ELLIPSE_TO      = 29;                                        const FO_VECTOR_PATH_ROUND   = 29;                                 const FO_STAR_CONVEX = 29;   const FO_TEXT           = 29; 
+                                const FO_ELLIPSE_INNER   = 30;                                                                                                 
                                                                                                                                                                                                       const FO_FONT           = 30;
                                                                                                                                                                                                       const FO_FONT_SIZE      = 31;
                                                                                                                                                                                                       const FO_FONT_STYLE     = 32;
@@ -6605,6 +6605,7 @@ extends FigmaShape
     y;
     width;
     height;
+    round;
 
     from;
     to;
@@ -6612,7 +6613,7 @@ extends FigmaShape
 
     
 
-    constructor(nodeId, objectId, objectName, x, y, width, height, from, to, inner)
+    constructor(nodeId, objectId, objectName, x, y, width, height, round, from, to, inner)
     {
         super(ELLIPSE, nodeId, objectId, objectName);
         
@@ -6620,6 +6621,7 @@ extends FigmaShape
         this.y      = y;
         this.width  = width;
         this.height = height;
+        this.round  = round;
 
         this.from   = from;
         this.to     = to;
@@ -6644,6 +6646,7 @@ extends FigmaShape
             this.y,
             this.width,
             this.height,
+            this.round,
             
             this.from,
             this.to,
@@ -6667,10 +6670,11 @@ extends FigmaShape
             /* 24 */ this.y,
             /* 25 */ this.width,
             /* 26 */ this.height,
+            /* 27 */ this.round,
 
-            /* 27 */ this.from,
-            /* 28 */ this.to,
-            /* 29 */ this.inner
+            /* 28 */ this.from,
+            /* 29 */ this.to,
+            /* 30 */ this.inner
         ];
     }
 }
@@ -12411,6 +12415,7 @@ extends ShapeValue
     y;
     width;
     height;
+    round;
     from;
     to;
     inner;
@@ -12423,6 +12428,7 @@ extends ShapeValue
                 y        = new NumberValue(0), 
                 width    = new NumberValue(0), 
                 height   = new NumberValue(0), 
+                round    = new NumberValue(0), 
                 from     = new NumberValue(0),
                 to       = new NumberValue(0),
                 inner    = new NumberValue(0))
@@ -12434,6 +12440,7 @@ extends ShapeValue
         this.y        = y;
         this.width    = width;
         this.height   = height;
+        this.round    = round;
         this.from     = from;
         this.to       = to;
         this.inner    = inner;
@@ -12450,6 +12457,7 @@ extends ShapeValue
             this.y       .copy(), 
             this.width   .copy(), 
             this.height  .copy(), 
+            this.round   .copy(), 
             this.from    .copy(),
             this.to      .copy(),
             this.inner   .copy());
@@ -12469,6 +12477,7 @@ extends ShapeValue
             && this.y       .equals(ellipse.y       )
             && this.width   .equals(ellipse.width   )
             && this.height  .equals(ellipse.height  )
+            && this.round   .equals(ellipse.round   )
             && this.from    .equals(ellipse.from    )
             && this.to      .equals(ellipse.to      )
             && this.inner   .equals(ellipse.inner   );
@@ -12491,6 +12500,7 @@ extends ShapeValue
             && this.y       .hasInitValue()
             && this.width   .hasInitValue()
             && this.height  .hasInitValue()
+            && this.round   .hasInitValue()
             && this.from    .hasInitValue()
             && this.to      .hasInitValue()
             && this.inner   .hasInitValue();
@@ -12506,6 +12516,7 @@ extends ShapeValue
             && this.y       .isValid()
             && this.width   .isValid()
             && this.height  .isValid()
+            && this.round   .isValid()
             && this.from    .isValid()
             && this.to      .isValid()
             && this.inner   .isValid();
@@ -12527,6 +12538,7 @@ extends ShapeValue
             + ' ' + this.y       .toString()
             + ' ' + this.width   .toString()
             + ' ' + this.height  .toString()
+            + ' ' + this.round   .toString()
             + ' ' + this.from    .toString()
             + ' ' + this.to      .toString()
             + ' ' + this.inner   .toString()
@@ -12543,6 +12555,7 @@ extends ShapeValue
             // + ' ' + this.y       .toPreviewString()
             // + ' ' + this.width   .toPreviewString()
             // + ' ' + this.height  .toPreviewString()
+            // + ' ' + this.round   .toPreviewString()
             // + ' ' + this.inner   .toPreviewString() + '%'
             // + ' ' + this.from    .toPreviewString() + '°'
             // + ' ' + this.to      .toPreviewString() + '°';
@@ -12557,6 +12570,7 @@ extends ShapeValue
             + ' ' + this.y       .toDisplayString()
             + ' ' + this.width   .toDisplayString()
             + ' ' + this.height  .toDisplayString()
+            + ' ' + this.round   .toDisplayString()
             + ' ' + this.from    .toDisplayString()
             + ' ' + this.to      .toDisplayString()
             + ' ' + this.inner   .toDisplayString();
@@ -12566,6 +12580,7 @@ extends ShapeValue
 
     static NaN = new EllipseValue(
         '',
+        NumberValue.NaN,
         NumberValue.NaN,
         NumberValue.NaN,
         NumberValue.NaN,
@@ -12599,6 +12614,7 @@ function parseEllipseValue(str, i = -1)
     const y      = parseNumberValue(str[i]); i += y     [1];
     const width  = parseNumberValue(str[i]); i += width [1];
     const height = parseNumberValue(str[i]); i += height[1];
+    const round  = parseNumberValue(str[i]); i += round [1];
     const from   = parseNumberValue(str[i]); i += from  [1];
     const to     = parseNumberValue(str[i]); i += to    [1];
     const inner  = parseNumberValue(str[i]); i += inner [1];
@@ -12611,6 +12627,7 @@ function parseEllipseValue(str, i = -1)
         y     [0],
         width [0],
         height[0],
+        round [0],
         from  [0],
         to    [0],
         inner [0]);
@@ -32128,6 +32145,7 @@ class GEllipse
 extends GShape
 {
     position = null;
+    round    = null;
     from     = null;
     to       = null;
     inner    = null;
@@ -32146,6 +32164,7 @@ extends GShape
         super.reset();
 
         this.position = null;
+        this.round    = null;
         this.from     = null;
         this.to       = null;
         this.inner    = null;
@@ -32160,6 +32179,7 @@ extends GShape
         copy.copyBase(this);
 
         if (this.position) copy.position = this.position.copy();
+        if (this.round   ) copy.round    = this.round   .copy();
         if (this.from    ) copy.from     = this.from    .copy();
         if (this.to      ) copy.to       = this.to      .copy();
         if (this.inner   ) copy.inner    = this.inner   .copy();
@@ -32177,6 +32197,7 @@ extends GShape
         const [x, y, width, height] = await this.evalBaseParams(parse);
 
         const pos   = this.position ? (await this.position.eval(parse)).toValue() : null;
+        const round = this.round    ? (await this.round   .eval(parse)).toValue() : null;
         const from  = this.from     ? (await this.from    .eval(parse)).toValue() : null;
         const to    = this.to       ? (await this.to      .eval(parse)).toValue() : null;
         const inner = this.inner    ? (await this.inner   .eval(parse)).toValue() : null;
@@ -32195,6 +32216,7 @@ extends GShape
             const  _y     = y      ?? input.y;
             const  _w     = width  ?? input.width;
             const  _h     = height ?? input.height;
+            const  _round = round  ?? input.round;
             const  _from  = from   ?? input.from;
             const  _to    = to     ?? input.to;
             const  _inner = inner  ?? input.inner;
@@ -32209,6 +32231,7 @@ extends GShape
                 this.nodeId,
                 _pos,
                 _x, _y, _w, _h,
+                _round,
                 _from,
                 _to,
                 _inner);
@@ -32223,6 +32246,10 @@ extends GShape
                 ['y',        __y       ],
                 ['width',    __w       ],
                 ['height',   __h       ],
+                ['round',    _round    ],
+                ['from',     _from     ],
+                ['to',       _to       ],
+                ['inner',    _inner    ],
                 ['value',    this.value]
             ]);
         }
@@ -32242,6 +32269,7 @@ extends GShape
                 this.nodeId,
                 pos,
                 __x, __y, __w, __h,
+                round,
                 from,
                 to,
                 inner);
@@ -32254,6 +32282,10 @@ extends GShape
                 ['y',        _y        ],
                 ['width',    _w        ],
                 ['height',   _h        ],
+                ['round',    round     ],
+                ['from',     from      ],
+                ['to',       to        ],
+                ['inner',    inner     ],
                 ['value',    this.value]
             ]);
         }
@@ -32270,6 +32302,7 @@ extends GShape
         if (!this.y       ) this.y        = this.value.y       .copy();
         if (!this.width   ) this.width    = this.value.width   .copy();
         if (!this.height  ) this.height   = this.value.height  .copy();
+        if (!this.round   ) this.round    = this.value.round   .copy();
         if (!this.from    ) this.from     = this.value.from    .copy();
         if (!this.to      ) this.to       = this.value.to      .copy();
         if (!this.inner   ) this.inner    = this.value.inner   .copy();
@@ -32301,6 +32334,7 @@ extends GShape
             let   y = this.value.y     .value;
             let   w = this.value.width .value;
             let   h = this.value.height.value;
+            let   r = this.value.round .value;
             const f = this.value.from  .value;
             const t = this.value.to    .value;
             const i = this.value.inner .value;
@@ -32316,7 +32350,7 @@ extends GShape
                     this.nodeId,
                     this.nodeId,
                     this.nodeName,
-                    x, y, w, h, f, t, i);
+                    x, y, w, h, r, f, t, i);
 
                 ellipse.createDefaultTransform(x, y);
                 ellipse.createDefaultTransformPoints(x, y, w, h);
@@ -32340,6 +32374,7 @@ extends GShape
             this.y       .toValue(),
             this.width   .toValue(),
             this.height  .toValue(),
+            this.round   .toValue(),
             this.from    .toValue(),
             this.to      .toValue(),
             this.inner   .toValue());
@@ -32362,6 +32397,7 @@ extends GShape
     {
         return super.isValid()
             && this.position && this.position.isValid()
+            && this.round    && this.round   .isValid()
             && this.from     && this.from    .isValid()
             && this.to       && this.to      .isValid()
             && this.inner    && this.inner   .isValid();
@@ -32374,6 +32410,7 @@ extends GShape
         super.pushValueUpdates(parse);
  
         if (this.position) this.position.pushValueUpdates(parse);
+        if (this.round   ) this.round   .pushValueUpdates(parse);
         if (this.from    ) this.from    .pushValueUpdates(parse);
         if (this.to      ) this.to      .pushValueUpdates(parse);
         if (this.inner   ) this.inner   .pushValueUpdates(parse);
@@ -32386,6 +32423,7 @@ extends GShape
         super.invalidateInputs(parse, from, force);
 
         if (this.position) this.position.invalidateInputs(parse, from, force);
+        if (this.round   ) this.round   .invalidateInputs(parse, from, force);
         if (this.from    ) this.from    .invalidateInputs(parse, from, force);
         if (this.to      ) this.to      .invalidateInputs(parse, from, force);
         if (this.inner   ) this.inner   .invalidateInputs(parse, from, force);
@@ -32398,6 +32436,7 @@ extends GShape
         super.iterateLoop(parse);
  
         if (this.position) this.position.iterateLoop(parse);
+        if (this.round   ) this.round   .iterateLoop(parse);
         if (this.from    ) this.from    .iterateLoop(parse);
         if (this.to      ) this.to      .iterateLoop(parse);
         if (this.inner   ) this.inner   .iterateLoop(parse);
@@ -43318,6 +43357,7 @@ function genParseEllipse(parse)
         case 'y':        ellipse.y        = genParse(parse); break;
         case 'width':    ellipse.width    = genParse(parse); break;
         case 'height':   ellipse.height   = genParse(parse); break;
+        case 'round':    ellipse.round    = genParse(parse); break;
         case 'from':     ellipse.from     = genParse(parse); break;
         case 'to':       ellipse.to       = genParse(parse); break;
         case 'inner':    ellipse.inner    = genParse(parse); break;

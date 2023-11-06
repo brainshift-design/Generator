@@ -23,7 +23,7 @@ function noNodeTag(key) { return noTag(key, nodeTag); }
 function noConnTag(key) { return noTag(key, connTag); }
 
 
-const generatorVersion = 277;
+const generatorVersion = 278;
 
 
 const MAX_INT32        = 2147483647;
@@ -1843,10 +1843,10 @@ const FO_Y              = 24;
 const FO_WIDTH          = 25;   const FO_POINT_IS_CENTER = 25;   
 const FO_HEIGHT         = 26;                                    
 
-const FO_RECT_ROUND     = 27;   const FO_ELLIPSE_FROM    = 27;   const FO_VECTOR_NETWORK_DATA = 27;   const FO_VECTOR_PATH_DATA    = 27;   const FO_POLY_ROUND   = 27;   const FO_STAR_ROUND  = 27;   const FO_FIG_WIDTH      = 27;   const FO_FRAME_ROUND    = 27;
-                                const FO_ELLIPSE_TO      = 28;                                        const FO_VECTOR_PATH_WINDING = 28;   const FO_POLY_CORNERS = 28;   const FO_STAR_POINTS = 28;   const FO_FIG_HEIGHT     = 28;   const FO_FRAME_CHILDREN = 28;
-                                const FO_ELLIPSE_INNER   = 29;                                        const FO_VECTOR_PATH_ROUND   = 29;                                 const FO_STAR_CONVEX = 29;   const FO_TEXT           = 29; 
-                                                                                                                                 
+const FO_RECT_ROUND     = 27;   const FO_ELLIPSE_ROUND   = 27;   const FO_VECTOR_NETWORK_DATA = 27;   const FO_VECTOR_PATH_DATA    = 27;   const FO_POLY_ROUND   = 27;   const FO_STAR_ROUND  = 27;   const FO_FIG_WIDTH      = 27;   const FO_FRAME_ROUND    = 27;
+                                const FO_ELLIPSE_FROM    = 28;                                        const FO_VECTOR_PATH_WINDING = 28;   const FO_POLY_CORNERS = 28;   const FO_STAR_POINTS = 28;   const FO_FIG_HEIGHT     = 28;   const FO_FRAME_CHILDREN = 28;
+                                const FO_ELLIPSE_TO      = 29;                                        const FO_VECTOR_PATH_ROUND   = 29;                                 const FO_STAR_CONVEX = 29;   const FO_TEXT           = 29; 
+                                const FO_ELLIPSE_INNER   = 30;                                                                                                 
                                                                                                                                                                                                       const FO_FONT           = 30;
                                                                                                                                                                                                       const FO_FONT_SIZE      = 31;
                                                                                                                                                                                                       const FO_FONT_STYLE     = 32;
@@ -4501,7 +4501,11 @@ function getVariableValues(varIds)
             const vals = [];
 
             for (const mode of collection.modes)
-                vals.push(variable.valuesByMode[mode.modeId]);
+            {
+                const resolved = variable.resolveForConsumer(figma.currentPage);
+                //console.log('resolved =', resolved);
+                vals.push(resolved);//valuesByMode[mode.modeId]);
+            }
 
             values.push(
             {
@@ -4788,6 +4792,7 @@ function genEllipseIsValid(genEllipse)
         && genEllipse[FO_Y            ] != null && !isNaN(genEllipse[FO_Y            ])
         && genEllipse[FO_WIDTH        ] != null && !isNaN(genEllipse[FO_WIDTH        ])
         && genEllipse[FO_HEIGHT       ] != null && !isNaN(genEllipse[FO_HEIGHT       ])
+        && genEllipse[FO_ELLIPSE_ROUND] != null && !isNaN(genEllipse[FO_ELLIPSE_ROUND])
         && genEllipse[FO_ELLIPSE_FROM ] != null && !isNaN(genEllipse[FO_ELLIPSE_FROM ])
         && genEllipse[FO_ELLIPSE_TO   ] != null && !isNaN(genEllipse[FO_ELLIPSE_TO   ])
         && genEllipse[FO_ELLIPSE_INNER] != null && !isNaN(genEllipse[FO_ELLIPSE_INNER]);
@@ -4830,6 +4835,8 @@ function figUpdateEllipse(figEllipse, genEllipse)
 
 function figUpdateEllipseData(figEllipse, genEllipse)
 {
+    figEllipse.cornerRadius = genEllipse[FO_ELLIPSE_ROUND];
+
     figEllipse.arcData =
     {
         startingAngle: genEllipse[FO_ELLIPSE_FROM] /360*(Math.PI*2),

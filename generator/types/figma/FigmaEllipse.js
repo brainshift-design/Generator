@@ -5,6 +5,7 @@ extends FigmaShape
     y;
     width;
     height;
+    round;
 
     from;
     to;
@@ -12,7 +13,7 @@ extends FigmaShape
 
     
 
-    constructor(nodeId, objectId, objectName, x, y, width, height, from, to, inner)
+    constructor(nodeId, objectId, objectName, x, y, width, height, round, from, to, inner)
     {
         super(ELLIPSE, nodeId, objectId, objectName);
         
@@ -20,6 +21,7 @@ extends FigmaShape
         this.y      = y;
         this.width  = width;
         this.height = height;
+        this.round  = round;
 
         this.from   = from;
         this.to     = to;
@@ -44,6 +46,7 @@ extends FigmaShape
             this.y,
             this.width,
             this.height,
+            this.round,
             
             this.from,
             this.to,
@@ -67,10 +70,11 @@ extends FigmaShape
             /* 24 */ this.y,
             /* 25 */ this.width,
             /* 26 */ this.height,
+            /* 27 */ this.round,
 
-            /* 27 */ this.from,
-            /* 28 */ this.to,
-            /* 29 */ this.inner
+            /* 28 */ this.from,
+            /* 29 */ this.to,
+            /* 30 */ this.inner
         ];
     }
 }

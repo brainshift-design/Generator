@@ -836,10 +836,10 @@ const FO_Y              = 24;
 const FO_WIDTH          = 25;   const FO_POINT_IS_CENTER = 25;   
 const FO_HEIGHT         = 26;                                    
 
-const FO_RECT_ROUND     = 27;   const FO_ELLIPSE_FROM    = 27;   const FO_VECTOR_NETWORK_DATA = 27;   const FO_VECTOR_PATH_DATA    = 27;   const FO_POLY_ROUND   = 27;   const FO_STAR_ROUND  = 27;   const FO_FIG_WIDTH      = 27;   const FO_FRAME_ROUND    = 27;
-                                const FO_ELLIPSE_TO      = 28;                                        const FO_VECTOR_PATH_WINDING = 28;   const FO_POLY_CORNERS = 28;   const FO_STAR_POINTS = 28;   const FO_FIG_HEIGHT     = 28;   const FO_FRAME_CHILDREN = 28;
-                                const FO_ELLIPSE_INNER   = 29;                                        const FO_VECTOR_PATH_ROUND   = 29;                                 const FO_STAR_CONVEX = 29;   const FO_TEXT           = 29; 
-                                                                                                                                 
+const FO_RECT_ROUND     = 27;   const FO_ELLIPSE_ROUND   = 27;   const FO_VECTOR_NETWORK_DATA = 27;   const FO_VECTOR_PATH_DATA    = 27;   const FO_POLY_ROUND   = 27;   const FO_STAR_ROUND  = 27;   const FO_FIG_WIDTH      = 27;   const FO_FRAME_ROUND    = 27;
+                                const FO_ELLIPSE_FROM    = 28;                                        const FO_VECTOR_PATH_WINDING = 28;   const FO_POLY_CORNERS = 28;   const FO_STAR_POINTS = 28;   const FO_FIG_HEIGHT     = 28;   const FO_FRAME_CHILDREN = 28;
+                                const FO_ELLIPSE_TO      = 29;                                        const FO_VECTOR_PATH_ROUND   = 29;                                 const FO_STAR_CONVEX = 29;   const FO_TEXT           = 29; 
+                                const FO_ELLIPSE_INNER   = 30;                                                                                                 
                                                                                                                                                                                                       const FO_FONT           = 30;
                                                                                                                                                                                                       const FO_FONT_SIZE      = 31;
                                                                                                                                                                                                       const FO_FONT_STYLE     = 32;

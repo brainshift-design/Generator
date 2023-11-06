@@ -4,6 +4,7 @@ function genEllipseIsValid(genEllipse)
         && genEllipse[FO_Y            ] != null && !isNaN(genEllipse[FO_Y            ])
         && genEllipse[FO_WIDTH        ] != null && !isNaN(genEllipse[FO_WIDTH        ])
         && genEllipse[FO_HEIGHT       ] != null && !isNaN(genEllipse[FO_HEIGHT       ])
+        && genEllipse[FO_ELLIPSE_ROUND] != null && !isNaN(genEllipse[FO_ELLIPSE_ROUND])
         && genEllipse[FO_ELLIPSE_FROM ] != null && !isNaN(genEllipse[FO_ELLIPSE_FROM ])
         && genEllipse[FO_ELLIPSE_TO   ] != null && !isNaN(genEllipse[FO_ELLIPSE_TO   ])
         && genEllipse[FO_ELLIPSE_INNER] != null && !isNaN(genEllipse[FO_ELLIPSE_INNER]);
@@ -46,6 +47,8 @@ function figUpdateEllipse(figEllipse, genEllipse)
 
 function figUpdateEllipseData(figEllipse, genEllipse)
 {
+    figEllipse.cornerRadius = genEllipse[FO_ELLIPSE_ROUND];
+
     figEllipse.arcData =
     {
         startingAngle: genEllipse[FO_ELLIPSE_FROM] /360*(Math.PI*2),

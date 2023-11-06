@@ -9,8 +9,8 @@ const presetPolarizedLights = '\
             "renamed": "false",\
             "enabled": "true",\
             "highlight": "0",\
-            "x": "5945",\
-            "y": "2328",\
+            "x": "5995",\
+            "y": "2378",\
             "z": "0",\
             "params":\
             [\
@@ -24,8 +24,8 @@ const presetPolarizedLights = '\
             "renamed": "false",\
             "enabled": "true",\
             "highlight": "0",\
-            "x": "5793",\
-            "y": "2419",\
+            "x": "5843",\
+            "y": "2469",\
             "z": "1"\
             },\
             {\
@@ -35,8 +35,8 @@ const presetPolarizedLights = '\
             "renamed": "false",\
             "enabled": "true",\
             "highlight": "0",\
-            "x": "5414",\
-            "y": "2507",\
+            "x": "5464",\
+            "y": "2557",\
             "z": "2",\
             "params":\
             [\
@@ -51,8 +51,8 @@ const presetPolarizedLights = '\
             "renamed": "false",\
             "enabled": "true",\
             "highlight": "0",\
-            "x": "5416",\
-            "y": "2368",\
+            "x": "5466",\
+            "y": "2418",\
             "z": "3",\
             "params":\
             [\
@@ -67,8 +67,8 @@ const presetPolarizedLights = '\
             "renamed": "false",\
             "enabled": "true",\
             "highlight": "0",\
-            "x": "4277",\
-            "y": "2459",\
+            "x": "4327",\
+            "y": "2509",\
             "z": "4",\
             "params":\
             [\
@@ -85,8 +85,8 @@ const presetPolarizedLights = '\
             "renamed": "false",\
             "enabled": "true",\
             "highlight": "7",\
-            "x": "2998",\
-            "y": "2574",\
+            "x": "3048",\
+            "y": "2624",\
             "z": "5",\
             "params":\
             [\
@@ -100,8 +100,8 @@ const presetPolarizedLights = '\
             "renamed": "false",\
             "enabled": "true",\
             "highlight": "0",\
-            "x": "2997",\
-            "y": "2716",\
+            "x": "3045",\
+            "y": "2814",\
             "z": "6"\
             },\
             {\
@@ -111,12 +111,12 @@ const presetPolarizedLights = '\
             "renamed": "false",\
             "enabled": "true",\
             "highlight": "0",\
-            "x": "3716",\
-            "y": "2242",\
+            "x": "3766",\
+            "y": "2292",\
             "z": "7",\
             "params":\
             [\
-                    ["COL#", "color", "1,0 143,0 255,0 161,0"],\
+                    ["COL#", "color", "1,0 255,0 199,0 143,0"],\
                     ["NUM#", "opacity", "0,0"]\
             ]\
             },\
@@ -127,8 +127,8 @@ const presetPolarizedLights = '\
             "renamed": "false",\
             "enabled": "true",\
             "highlight": "0",\
-            "x": "3389",\
-            "y": "2397",\
+            "x": "3439",\
+            "y": "2447",\
             "z": "8",\
             "params":\
             [\
@@ -144,13 +144,13 @@ const presetPolarizedLights = '\
             "renamed": "false",\
             "enabled": "true",\
             "highlight": "0",\
-            "x": "4292",\
-            "y": "2062",\
+            "x": "4342",\
+            "y": "2112",\
             "z": "9",\
             "params":\
             [\
                     ["NUM#", "scaleX", "158,0"],\
-                    ["NUM#", "scaleY", "3,0"],\
+                    ["NUM#", "scaleY", "11,0"],\
                     ["NUM#", "affectSpace", "0,0"]\
             ]\
             },\
@@ -161,8 +161,8 @@ const presetPolarizedLights = '\
             "renamed": "false",\
             "enabled": "true",\
             "highlight": "0",\
-            "x": "4442",\
-            "y": "2062",\
+            "x": "4492",\
+            "y": "2112",\
             "z": "10",\
             "params":\
             [\
@@ -177,8 +177,8 @@ const presetPolarizedLights = '\
             "renamed": "false",\
             "enabled": "true",\
             "highlight": "0",\
-            "x": "4678",\
-            "y": "2308",\
+            "x": "4728",\
+            "y": "2358",\
             "z": "11"\
             },\
             {\
@@ -188,8 +188,8 @@ const presetPolarizedLights = '\
             "renamed": "false",\
             "enabled": "true",\
             "highlight": "0",\
-            "x": "5793",\
-            "y": "2305",\
+            "x": "5843",\
+            "y": "2355",\
             "z": "12",\
             "params":\
             [\
@@ -203,8 +203,8 @@ const presetPolarizedLights = '\
             "renamed": "false",\
             "enabled": "true",\
             "highlight": "0",\
-            "x": "5633",\
-            "y": "2825",\
+            "x": "5683",\
+            "y": "2875",\
             "z": "13",\
             "prevSpace": "hsv",\
             "params":\
@@ -222,8 +222,8 @@ const presetPolarizedLights = '\
             "renamed": "false",\
             "enabled": "true",\
             "highlight": "0",\
-            "x": "5638",\
-            "y": "2668",\
+            "x": "5688",\
+            "y": "2718",\
             "z": "14",\
             "prevSpace": "hsv",\
             "params":\
@@ -241,12 +241,12 @@ const presetPolarizedLights = '\
             "renamed": "false",\
             "enabled": "true",\
             "highlight": "0",\
-            "x": "3716",\
-            "y": "2125",\
+            "x": "3766",\
+            "y": "2175",\
             "z": "15",\
             "params":\
             [\
-                    ["COL#", "color", "1,0 143,0 255,0 161,0"]\
+                    ["COL#", "color", "1,0 255,0 199,0 143,0"]\
             ]\
             },\
             {\
@@ -256,8 +256,8 @@ const presetPolarizedLights = '\
             "renamed": "false",\
             "enabled": "true",\
             "highlight": "0",\
-            "x": "5591",\
-            "y": "2306",\
+            "x": "5641",\
+            "y": "2356",\
             "z": "16",\
             "params":\
             [\
@@ -273,11 +273,11 @@ const presetPolarizedLights = '\
             "renamed": "false",\
             "enabled": "true",\
             "highlight": "7",\
-            "x": "2955",\
-            "y": "2526",\
+            "x": "3005",\
+            "y": "2576",\
             "z": "17",\
-            "width": "350.0185469679293",\
-            "height": "368",\
+            "width": "350",\
+            "height": "412.7239406922519",\
             "params":\
             [\
             ]\
@@ -289,8 +289,8 @@ const presetPolarizedLights = '\
             "renamed": "false",\
             "enabled": "true",\
             "highlight": "0",\
-            "x": "3150",\
-            "y": "2590",\
+            "x": "3200",\
+            "y": "2640",\
             "z": "18",\
             "width": "120",\
             "height": "142",\
@@ -310,8 +310,8 @@ const presetPolarizedLights = '\
             "renamed": "false",\
             "enabled": "true",\
             "highlight": "0",\
-            "x": "3884",\
-            "y": "2189",\
+            "x": "3934",\
+            "y": "2239",\
             "z": "19",\
             "params":\
             [\
@@ -329,14 +329,14 @@ const presetPolarizedLights = '\
             "renamed": "false",\
             "enabled": "true",\
             "highlight": "0",\
-            "x": "4109",\
-            "y": "2432",\
+            "x": "4158",\
+            "y": "2536",\
             "z": "20",\
             "params":\
             [\
                     ["NUM#", "seed", "121,0"],\
                     ["NUM#", "min", "1,0"],\
-                    ["NUM#", "max", "5,0"]\
+                    ["NUM#", "max", "20,0"]\
             ]\
             },\
             {\
@@ -346,14 +346,14 @@ const presetPolarizedLights = '\
             "renamed": "false",\
             "enabled": "true",\
             "highlight": "0",\
-            "x": "3534",\
-            "y": "2198",\
+            "x": "3584",\
+            "y": "2248",\
             "z": "21",\
             "prevSpace": "hsv",\
             "params":\
             [\
                     ["NUM#", "space", "2,0"],\
-                    ["NUM#", "c1", "130,0"],\
+                    ["NUM#", "c1", "30,0"],\
                     ["NUM#", "c2", "44.1,1"],\
                     ["NUM#", "c3", "100,0"]\
             ]\
@@ -365,8 +365,8 @@ const presetPolarizedLights = '\
             "renamed": "false",\
             "enabled": "true",\
             "highlight": "0",\
-            "x": "4887",\
-            "y": "2506",\
+            "x": "4937",\
+            "y": "2556",\
             "z": "22",\
             "params":\
             [\
@@ -382,8 +382,8 @@ const presetPolarizedLights = '\
             "renamed": "false",\
             "enabled": "true",\
             "highlight": "0",\
-            "x": "2998",\
-            "y": "2827",\
+            "x": "3046",\
+            "y": "2925",\
             "z": "23"\
             },\
             {\
@@ -393,8 +393,8 @@ const presetPolarizedLights = '\
             "renamed": "false",\
             "enabled": "true",\
             "highlight": "0",\
-            "x": "4108",\
-            "y": "2285",\
+            "x": "4158",\
+            "y": "2335",\
             "z": "24",\
             "params":\
             [\
@@ -410,8 +410,8 @@ const presetPolarizedLights = '\
             "renamed": "false",\
             "enabled": "true",\
             "highlight": "0",\
-            "x": "4142",\
-            "y": "2062",\
+            "x": "4192",\
+            "y": "2112",\
             "z": "25",\
             "params":\
             [\
@@ -424,8 +424,8 @@ const presetPolarizedLights = '\
             "renamed": "false",\
             "enabled": "true",\
             "highlight": "0",\
-            "x": "5064",\
-            "y": "2308",\
+            "x": "5114",\
+            "y": "2358",\
             "z": "26",\
             "params":\
             [\
@@ -441,8 +441,8 @@ const presetPolarizedLights = '\
             "renamed": "false",\
             "enabled": "true",\
             "highlight": "0",\
-            "x": "6168",\
-            "y": "2513",\
+            "x": "6218",\
+            "y": "2563",\
             "z": "27",\
             "active": "true",\
             "params":\
@@ -459,8 +459,8 @@ const presetPolarizedLights = '\
             "renamed": "false",\
             "enabled": "true",\
             "highlight": "0",\
-            "x": "5825",\
-            "y": "2724",\
+            "x": "5875",\
+            "y": "2774",\
             "z": "28",\
             "params":\
             [\
