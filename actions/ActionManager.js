@@ -232,5 +232,9 @@ function actNameForDisplay(name)
     name = name.replaceAll('==>', '⟹');
     name = name.replaceAll('-->', '⟶');
 
+    const regex = /_(\d+)/g;
+
+    name = name.replace(regex, (match, number) => subscriptNumber(parseInt(number)));
+
     return name;
 }

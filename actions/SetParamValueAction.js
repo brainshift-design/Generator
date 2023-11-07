@@ -39,8 +39,8 @@ extends Action
 
         this.name = 
               'SET PARAM VALUE ' 
-            + this.param.node.id 
-            + '.' + this.param.id 
+                    + this.param.node.id 
+            + '.'   + this.param.id 
             + ' = ' + this.newValue.toDisplayString() 
             + ' (old value = ' + (this.oldValue ? this.oldValue.toDisplayString() : '') + ')';
 

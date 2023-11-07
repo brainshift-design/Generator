@@ -213,10 +213,14 @@ extends Control
 
 
 
-    setValue(value, decimals, fireChangeEvent = true, confirm = true, fullRange = true, fromWheel = false, shiftKey = false)
+    setValue(value, decimals = -1, fireChangeEvent = true, confirm = true, fullRange = true, fromWheel = false, shiftKey = false)
     {
         const oldValue    = this.value;
         const oldDecimals = this.decimals;
+
+
+        if (decimals < 0)
+            decimals = decDigits(value);
 
 
         if (this.wrapValue)

@@ -116,7 +116,7 @@ extends GValue
     {
         return printNum(this.value) 
              + (!isNaN(this.decimals)
-                ? subscriptNumber(this.decimals)
+                ? '_' + this.decimals //subscriptNumber(this.decimals)
                 : '');
     }
 

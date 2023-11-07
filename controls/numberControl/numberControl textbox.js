@@ -172,7 +172,7 @@ NumberControl.prototype.initTextbox = function()
                         if (e.shiftKey) 
                             dec *= 10;
 
-                        this.setValue((val + sign * dec) / this.valueScale);
+                        this.setValue((val + sign * dec) / this.valueScale, this.decimals);
                         this.updateTextbox();
                     }
                     else // floating point
@@ -188,7 +188,7 @@ NumberControl.prototype.initTextbox = function()
                             dec *= 10;
 
                         this.displayDec = text.length-1 - decIndex;
-                        this.setValue((val + sign * dec) / this.valueScale);
+                        this.setValue((val + sign * dec) / this.valueScale, this.decimals);
                         this.updateTextbox();
                     }
 
@@ -218,7 +218,7 @@ NumberControl.prototype.initTextbox = function()
                         if (e.shiftKey) 
                             dec *= 10;
 
-                        this.setValue((val + sign * dec) / this.valueScale);
+                        this.setValue((val + sign * dec) / this.valueScale, this.decimals);
                         this.updateTextbox();
                     }
                     else // floating point
@@ -234,7 +234,7 @@ NumberControl.prototype.initTextbox = function()
                             dec *= 10;
 
                         this.displayDec = text.length-1 - decIndex;
-                        this.setValue((val + sign * dec) / this.valueScale);
+                        this.setValue((val + sign * dec) / this.valueScale, this.decimals);
                         this.updateTextbox();
                     }
 

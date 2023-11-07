@@ -353,7 +353,7 @@ ColorControl.prototype.initEvents = function()
                 //     ? this.value -  dWheelX               * this.wheelScale * dec
                 //     : this.value + (dWheelY > 0 ? -1 : 1) * this.wheelScale * dec;
                 
-                // this.setValue(val, true, true, false, false);
+                // this.setValue(val, dec, true, true, false, false);
             }
         }
     });
