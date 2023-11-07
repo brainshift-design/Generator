@@ -270,7 +270,8 @@ NumberControl.prototype.initEvents = function()
                     const max = e.shiftKey ? this.max : this.displayMax;
 
                     this.setValue(
-                        Math.round(val / grain) * grain, 
+                        Math.round(val / grain) * grain,
+                        this.decimals, 
                         true, 
                         false,
                         false,
@@ -459,6 +460,7 @@ NumberControl.prototype.initEvents = function()
 
             this.setValue(
                 this.value,
+                this.decimals,
                 false, 
                 true,
                 e.shiftKey);
