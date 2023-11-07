@@ -81,18 +81,18 @@ function updateMetrics()
     if (metricsEvents.length == 0)
         return;
 
-    const me = [...metricsEvents];
+    const events = [...metricsEvents];
     metricsEvents = [];
 
 
     postToServer(
     {
         action: 'updateMetrics',
-        events:  JSON.stringify(me)
+        events:  JSON.stringify(events)
     })
     .then(response =>
     {   
-        console.log('metricsEvents =', me); 
+        //console.log('metricsEvents =', events); 
     })
     .catch(error =>
     {

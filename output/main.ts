@@ -23,7 +23,7 @@ function noNodeTag(key) { return noTag(key, nodeTag); }
 function noConnTag(key) { return noTag(key, connTag); }
 
 
-const generatorVersion = 283;
+const generatorVersion = 284;
 
 
 const MAX_INT32        = 2147483647;
@@ -2306,6 +2306,7 @@ function figDeleteAllObjects(forceDelete = false)
             continue;
 
         if (    obj.getPluginData('objectId') != ''
+            &&  obj.getPluginData('userId') == figma.currentUser.id
             && (   obj.getPluginData('retain') == '0'
                 || forceDelete)
             && !obj.removed) 
@@ -2374,7 +2375,8 @@ function findObject(figObj, genIgnoreObjects)
     else
     {
         const found = genIgnoreObjects.find(o => 
-               o[FO_OBJECT_ID] == figObj.getPluginData('objectId')
+                  o[FO_OBJECT_ID] == figObj.getPluginData('objectId')
+               && figObj.getPluginData('userId') == figma.currentUser.id
             ||    o[FO_RETAIN] > 0
                && o[FO_RETAIN] == figObj.getPluginData('retain'  ));
 
@@ -3651,7 +3653,8 @@ function figUpdateObjects(figParent, genObjects, nodeIds = [], firstChunk = fals
 
         let figObj = objects.find(o => 
                o.removed
-            || o.getPluginData('objectId') == genObj[FO_OBJECT_ID]);
+            ||    o.getPluginData('userId'  ) == figma.currentUser.id
+               && o.getPluginData('objectId') == genObj[FO_OBJECT_ID]);
 
 
         if (   figObj != undefined
@@ -3699,7 +3702,9 @@ function figUpdateObjects(figParent, genObjects, nodeIds = [], firstChunk = fals
     {
         for (const figObj of figParent.children)
             if (    figObj.removed
-                || !genObjects.find(o => o[FO_OBJECT_ID] == figObj.getPluginData('objectId')))
+                || !genObjects.find(o => 
+                           o[FO_OBJECT_ID] == figObj.getPluginData('objectId')
+                        && figObj.getPluginData('userId') == figma.currentUser.id))
                 figObj.remove();
     }
 
@@ -3778,6 +3783,7 @@ function clearObjectData(figObj)
 {
     figObj.setPluginData('type',     '');
     figObj.setPluginData('nodeId',   '');
+    figObj.setPluginData('userId',   '');
     figObj.setPluginData('objectId', '');
     figObj.setPluginData('retain',   '');
 }

@@ -119,9 +119,9 @@ async function uiReturnFigStartGenerator(msg)
     initWindowSizers();
 
 
-    if (msg.isLocked)
-        showMultiplayerDialog();
-    else
+    // if (msg.isLocked)
+    //     showMultiplayerDialog();
+    // else
         validateInit(msg.eula);
 }
 
