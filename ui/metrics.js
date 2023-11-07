@@ -3,7 +3,7 @@ let metricsEvents = [];
 
 
 setInterval(() => pingMetrics(),   60000);
-setInterval(() => updateMetrics(), 1000 );
+setInterval(() => updateMetrics(),  6000);
 
 
 
@@ -29,11 +29,12 @@ function createMetricsEvent(type, data)
     
     const event =
     {
-        userId:    currentUser.id,
-        sessionId: sessionId,
-        dateTime:  new Date(),
-        type:      type,
-        data:      data
+        userId:           currentUser.id,
+        sessionId:        sessionId,
+        generatorVersion: generatorVersion,
+        dateTime:         new Date(),
+        type:             type,
+        data:             data
     };
 
     return event;
@@ -91,7 +92,7 @@ function updateMetrics()
     })
     .then(response =>
     {   
-        //console.log('metricsEvents =', me); 
+        console.log('metricsEvents =', me); 
     })
     .catch(error =>
     {
