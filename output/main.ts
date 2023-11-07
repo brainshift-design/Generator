@@ -481,8 +481,8 @@ function arraysIntersect(array1, array2)
 
 
 
-function  leftArrowChar(list) { return list ? '⟸' : '⟵'; }
-function rightArrowChar(list) { return list ? '⟹' : '⟶'; }
+function  leftArrowChar(list) { return list ? '<==' : '<--'; }; 
+function rightArrowChar(list) { return list ? '==>' : '-->'; }; 
 
 function nodeNameForStorage(nodeId) { return nodeTag + ' ' + nodeId; }
 function connNameForStorage(name)   { return connTag + ' ' + name;   }

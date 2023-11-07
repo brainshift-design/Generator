@@ -133,8 +133,10 @@ class ActionManager
             const prevLink = act.getPrevLinkString();
             const nextLink = act.getNextLinkString();
 
-            if (redo) console.log("%cREDO %s", 'background: #ffd;    color: #b80;', prevLink + act.name + nextLink);
-            else      console.log("%c%s",      'background: #e8ffe8; color: #282;', prevLink + act.name + nextLink);
+            const name = actNameForDisplay(act.name);
+
+            if (redo) console.log("%cREDO %s", 'background: #ffd;    color: #b80;', prevLink + name + nextLink);
+            else      console.log("%c%s",      'background: #e8ffe8; color: #282;', prevLink + name + nextLink);
         }
 
 
@@ -177,7 +179,9 @@ class ActionManager
             const prevLink = act.getPrevLinkString();
             const nextLink = act.getNextLinkString();
 
-            console.log("%cUNDO %s", 'background: #fff4e8; color: #c64;', prevLink + act.name + nextLink);
+            const name = actNameForDisplay(act.name);
+
+            console.log("%cUNDO %s", 'background: #fff4e8; color: #c64;', prevLink + name + nextLink);
         }
 
             
@@ -217,4 +221,16 @@ function actionFromId(actionId)
         action = actionManager.redoActions.find(a => a.id == actionId);
 
     return action;
+}
+
+
+
+function actNameForDisplay(name)
+{
+    name = name.replaceAll('<==', '⟸');
+    name = name.replaceAll('<--', '⟵');
+    name = name.replaceAll('==>', '⟹');
+    name = name.replaceAll('-->', '⟶');
+
+    return name;
 }

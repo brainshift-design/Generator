@@ -249,8 +249,10 @@ function arraysAreEqual(arr1, arr2) {
 function arraysIntersect(array1, array2) {
     return array1.findIndex(i => array2.includes(i)) > -1;
 }
-function leftArrowChar(list) { return list ? '⟸' : '⟵'; }
-function rightArrowChar(list) { return list ? '⟹' : '⟶'; }
+function leftArrowChar(list) { return list ? '<==' : '<--'; }
+;
+function rightArrowChar(list) { return list ? '==>' : '-->'; }
+;
 function nodeNameForStorage(nodeId) { return nodeTag + ' ' + nodeId; }
 function connNameForStorage(name) { return connTag + ' ' + name; }
 function pageNameForStorage(name) { return pageTag + ' ' + name; }
