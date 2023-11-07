@@ -22,9 +22,6 @@ extends ResizableBase
         this.alwaysShowIcon = true;
 
 
-        //this.initValueParam();
-
-
         this.divIcon.style.opacity       = 0.5;
         this.divIcon.style.pointerEvents = 'all';
 
@@ -98,19 +95,6 @@ extends ResizableBase
 
 
 
-    // setHeight(h, updateTransform = true)
-    // {
-    //     OeratorBase.prototype.setHeight.call(this, h, updateTransform);
-        
-    //     this.height = h;
-        
-    //     this.updateSizers();
-
-    //     this.inner.style.height = h;
-    // }
-
-
-
     genRequest(gen)
     {
         // 'this' is the node
@@ -127,8 +111,6 @@ extends ResizableBase
         if (ignore) return request;
 
                 
-        //request.push(this.linkedVariableId);
-
         request.push(this.paramValue ? 1 : 0);
         
         if (this.paramValue)

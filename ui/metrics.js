@@ -2,7 +2,7 @@ let metricsEvents = [];
 
 
 
-setInterval(() => updateMetrics(), 10000);
+setInterval(() => updateMetrics(), 60000);
 
 
 

@@ -65,7 +65,10 @@ function initWindowSizerEvents(sizer, setRect)
         if (e.button == 0)
         {
             if (sizer.resizing)
+            {
                 sizer.resizing = false;
+                addMetricsEvent(METRICS_WINDOW_SIZE, window.innerWidth + ' × ' + window.innerHeight)    
+            }
 
             if (sizer.hasPointerCapture(e.pointerId))
                 sizer.releasePointerCapture(e.pointerId);

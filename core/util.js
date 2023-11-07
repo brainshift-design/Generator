@@ -563,3 +563,15 @@ function createRandomString(length)
 
     return str;
 }
+
+
+
+function rectToString(rect)
+{
+    return '{'
+             /*+ rect.x
+        + ', ' + rect.y
+        + ', '*/ + rect.width
+        + ', '   + rect.height
+        + '}';
+}

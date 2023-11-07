@@ -13,7 +13,7 @@ extends Action
     {
         super(
             SET_NODE_RECT_ACTION,
-           'SET NODE ' + nodeId + ' RECT to \'' + newRect.toString() + '\'');
+           'SET NODE ' + nodeId + ' RECT to \'' + rectToString(newRect) + '\'');
 
         this.affectsConnections = false;
 

@@ -48,6 +48,7 @@ extends NumberParamBase
 
         this.controls[0].addEventListener('confirm', () => 
         { 
+            this.setValue(this.value, true, false, true);
             this.changing = false;
         });
 

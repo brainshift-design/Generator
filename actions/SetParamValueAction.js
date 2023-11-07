@@ -8,7 +8,7 @@ extends Action
     get param() 
     { 
         return nodeFromId(this.nodeId).params
-               .find(p => p.id == this.paramId); 
+              .find(p => p.id == this.paramId); 
     } 
 
 
@@ -34,7 +34,7 @@ extends Action
 
 
     do(updateNodes)
-    {
+    {``
         this.oldValue = this.param.oldValue;
 
         this.name = 
@@ -43,6 +43,8 @@ extends Action
             + '.' + this.param.id 
             + ' = ' + this.newValue.toDisplayString() 
             + ' (old value = ' + (this.oldValue ? this.oldValue.toDisplayString() : '') + ')';
+
+        //console.log('SetParamValueAction.name =', this.name);
 
         pushUpdateFromParam(this, [this.param.node], this.param);
     }

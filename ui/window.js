@@ -73,8 +73,6 @@ function uiResizeWindow(width, height)
         width:  width,
         height: height
     });
-
-    addMetricsEvent(METRICS_WINDOW_SIZE, width + ' × ' + height)    
 }
 
 
