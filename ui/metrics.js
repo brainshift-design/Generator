@@ -7,22 +7,25 @@ setInterval(() => updateMetrics(), 10000);
 
 
 const METRICS_PING        = 'PING';
-const METRICS_MENU_BUTTON = 'MENUBTN';
-const METRICS_MENU_ITEM   = 'MENUITEM';
-const METRICS_WINDOW_SIZE = 'WNDSIZE';
-const METRICS_PARAM_VALUE = 'PARAMVAL';
-const METRICS_NODE_NAME   = 'NODENAME';
-const METRICS_DATA_MODE   = 'DATAMODE';
-const METRICS_LOAD_PRESET = 'LOADPRESET';
+const METRICS_MENU_BUTTON = 'MENU_BUTTON';
+const METRICS_MENU_ITEM   = 'MENU_ITEM';
+const METRICS_WINDOW_SIZE = 'WINDOW_SIZE';
+const METRICS_PARAM_VALUE = 'PARAM_VALUE';
+const METRICS_NODE_NAME   = 'NODE_NAME';
+const METRICS_DATA_MODE   = 'DATA_MODE';
+const METRICS_LOAD_PRESET = 'LOAD_PRESET';
 const METRICS_SEARCH      = 'SEARCH';
-const METRICS_ACTION_DO   = 'ACTDO';
-const METRICS_ACTION_UNDO = 'ACTUNDO';
-const METRICS_ACTION_REDO = 'ACTREDO';
+const METRICS_ACTION_DO   = 'ACTION_DO';
+const METRICS_ACTION_UNDO = 'ACTION_UNDO';
+const METRICS_ACTION_REDO = 'ACTION_REDO';
 
 
 
 function addMetricsEvent(type, data, atStart = false)
 {
+    // console.log('type =', type);
+    // console.log('data =', data);
+    
     const event =
     {
         userId:    currentUser.id,
@@ -50,8 +53,16 @@ function updateMetrics()
     })
     .then(response =>
     {   
-        console.log('metricsEvents =', metricsEvents); 
+        //console.log('metricsEvents =', [...metricsEvents]); 
         metricsEvents = [];
+
+
+        const update = generatorVersion < response.latestVersion;
+
+        btnMain.setIcon(update ? iconGeneratorUpdate : iconGenerator);
+
+        updateElementDisplay(menuItemRestartSep.div, update);
+        updateElementDisplay(menuItemRestart   .div, update);
     })
     .catch(error =>
     {

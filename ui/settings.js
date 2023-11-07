@@ -312,29 +312,29 @@ function updateMenuItemShowOperationResults()
 
 function enableFeatures(sub, beta = false)
 {
-    //enableMenuItem(menuItemVarGroup,     sub);
-    enableMenuItem(menuItemTimer,        sub);
-    enableMenuItem(menuItemAnimate,      sub);
-    enableMenuItem(menuItemSaveToFile,   sub);
-    enableMenuItem(menuItemFetch,        sub);
-    enableMenuItem(menuItemTextFile,     sub);
-    enableMenuItem(menuItemDateTime,     sub);
-    enableMenuItem(menuItemSolve,        sub);
-    enableMenuItem(menuItemTextJson,     sub);
-    enableMenuItem(menuItemCorrectColor, sub);
-    enableMenuItem(menuItemConvertToP3,  sub);
-    enableMenuItem(menuItemShapeRender,  sub);
+    //enableMenuItem(menuItemVarGroup,    sub,  sub);
+    enableMenuItem(menuItemTimer,        sub, sub);
+    enableMenuItem(menuItemAnimate,      sub, sub);
+    enableMenuItem(menuItemSaveToFile,   sub, sub);
+    enableMenuItem(menuItemFetch,        sub, sub);
+    enableMenuItem(menuItemTextFile,     sub, sub);
+    enableMenuItem(menuItemDateTime,     sub, sub);
+    enableMenuItem(menuItemSolve,        sub, sub);
+    enableMenuItem(menuItemTextJson,     sub, sub);
+    enableMenuItem(menuItemCorrectColor, sub, sub);
+    enableMenuItem(menuItemConvertToP3,  sub, sub);
+    enableMenuItem(menuItemShapeRender,  sub, sub);
 
     graph.nodes.forEach(n => n.updateSubscribeStatus(sub));
 }
 
 
 
-function enableMenuItem(menuItem, sub)
+function enableMenuItem(menuItem, enable, sub)
 {
     //if (!menuItem) return;
 
-    menuItem.enabled = sub;
+    menuItem.enabled = enable;
     menuItem.sub     = sub;
 
     menuItem.update();

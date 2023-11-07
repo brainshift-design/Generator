@@ -96,11 +96,13 @@ class MenuButton
                 if (e.button == 0)
                 {
                     disableCurrentMenuButton();
-
+                    
                     e.stopPropagation();
                     this.showMenu();
                     
                     this.update();
+
+                    addMetricsEvent(METRICS_MENU_BUTTON, this.menu.name);
                 }
             });
 
@@ -117,7 +119,7 @@ class MenuButton
                     this.showMenu();
                     this.update();
 
-                    addMetricsEvent(METRICS_MENU_BUTTON, this.name);
+                    addMetricsEvent(METRICS_MENU_BUTTON, this.menu.name);
                 }
             });
         }

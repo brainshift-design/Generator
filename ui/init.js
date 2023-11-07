@@ -130,6 +130,9 @@ async function uiReturnFigStartGenerator(msg)
 function initGenerator(activate)
 {
     sessionId = createRandomString(32);
+
+
+    updateMetrics();
     
 
     uiGetLocalData('showWhatsNew');

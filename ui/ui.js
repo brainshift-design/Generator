@@ -97,7 +97,7 @@ function uiHideClearUndoWarning()
 
 
 
-function uiRestartGenerator(dataMode)
+function uiRestartGenerator(dataMode = false)
 {
     uiSetLocalData('dataMode', boolToString(dataMode));
     uiPostMessageToFigma({cmd: 'figRestartGenerator'});

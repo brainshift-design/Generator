@@ -130,6 +130,9 @@ var menuItemDebugLog;
 
 var menuItemHelp;
 
+var menuItemRestartSep;
+var menuItemRestart;
+
 
 //var menuItemEnableBetaFeatures;
 
@@ -407,14 +410,19 @@ function initGeneratorMenus()
 
     menuMain = new Menu('Main menu', true, false, true);
     menuMain.addItems([
-                        new MenuItem('Quick actions...',      null, {icon: iconSearchMenu, shortcut: osCtrl() + '/', callback: () => { hideAllMenus(); showSearchBox(); }}),
-                        new MenuItem('',                      null, {separator: true}),
-                        new MenuItem('File',                  null, {childMenu: menuMainFile}),
-                        new MenuItem('',                      null, {separator: true}),
-                        new MenuItem('Preferences',           null, {childMenu: menuMainPreferences}),
-        menuItemDebug = new MenuItem('Debug',                 null, {childMenu: menuMainDebug}),
-                        new MenuItem('',                      null, {separator: true}),
-        menuItemHelp  = new MenuItem('Help and subscription', null, {childMenu: menuMainHelp })]);
+                             new MenuItem('Quick actions...',      null, {icon: iconSearchMenu, shortcut: osCtrl() + '/', callback: () => { hideAllMenus(); showSearchBox(); }}),
+                             new MenuItem('',                      null, {separator: true}),
+                             new MenuItem('File',                  null, {childMenu: menuMainFile}),
+                             new MenuItem('',                      null, {separator: true}),
+                             new MenuItem('Preferences',           null, {childMenu: menuMainPreferences}),
+        menuItemDebug      = new MenuItem('Debug',                 null, {childMenu: menuMainDebug}),
+                             new MenuItem('',                      null, {separator: true}),
+        menuItemHelp       = new MenuItem('Help and subscription', null, {childMenu: menuMainHelp }),
+        menuItemRestartSep = new MenuItem('',                      null, {separator: true}),
+        menuItemRestart    = new MenuItem('Restart to update...',  null, {icon: iconUpdate, callback: () => uiRestartGenerator()})]);
+
+    updateElementDisplay(menuItemRestartSep.div, false);
+    updateElementDisplay(menuItemRestart   .div, false);
 
 
 menuFlow = new Menu('Flow', true, false);
