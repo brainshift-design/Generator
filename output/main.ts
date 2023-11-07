@@ -23,7 +23,7 @@ function noNodeTag(key) { return noTag(key, nodeTag); }
 function noConnTag(key) { return noTag(key, connTag); }
 
 
-const generatorVersion = 281;
+const generatorVersion = 282;
 
 
 const MAX_INT32        = 2147483647;
@@ -2524,6 +2524,7 @@ function figOnDocumentChange(e)
 function figOnPluginClose()
 {
     figDeleteAllObjects();
+    figPostMessageToUi({ cmd: 'updateMetrics' });
 }
 
 
@@ -3540,6 +3541,7 @@ function figCreateObject(genObj, addObject = null)
         if (   figObj
             && genObj[FO_RETAIN] < 2)
         {
+            figObj.setPluginData('userId',   figma.currentUser.id);
             figObj.setPluginData('type',     genObj[FO_TYPE     ]);
             figObj.setPluginData('nodeId',   genObj[FO_NODE_ID  ]);
             figObj.setPluginData('objectId', genObj[FO_OBJECT_ID]);

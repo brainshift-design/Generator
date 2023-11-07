@@ -132,7 +132,7 @@ function initGenerator(activate)
     sessionId = createRandomString(32);
 
 
-    updateMetrics();
+    pingMetrics();
     
 
     uiGetLocalData('showWhatsNew');

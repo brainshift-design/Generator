@@ -99,4 +99,5 @@ function figOnDocumentChange(e)
 function figOnPluginClose()
 {
     figDeleteAllObjects();
+    figPostMessageToUi({ cmd: 'updateMetrics' });
 }

@@ -2,7 +2,8 @@ let metricsEvents = [];
 
 
 
-setInterval(() => updateMetrics(), 60000);
+setInterval(() => pingMetrics(),   60000);
+setInterval(() => updateMetrics(), 1000 );
 
 
 
@@ -21,7 +22,7 @@ const METRICS_ACTION_REDO = 'ACTION_REDO';
 
 
 
-function addMetricsEvent(type, data, atStart = false)
+function createMetricsEvent(type, data)
 {
     // console.log('type =', type);
     // console.log('data =', data);
@@ -35,34 +36,62 @@ function addMetricsEvent(type, data, atStart = false)
         data:      data
     };
 
+    return event;
+}
+
+
+
+function addMetricsEvent(type, data, atStart = false)
+{
+    const event = createMetricsEvent(type, data);
+
     if (atStart) metricsEvents.unshift(event);
     else         metricsEvents.push   (event);
 }
 
 
 
-function updateMetrics()
+function pingMetrics()
 {
-    addMetricsEvent(METRICS_PING, NULL, true);
-
-    
     postToServer(
     {
         action: 'updateMetrics',
-        events:  JSON.stringify(metricsEvents)
+        events:  JSON.stringify([createMetricsEvent(METRICS_PING, NULL)])
     })
     .then(response =>
     {   
-        //console.log('metricsEvents =', [...metricsEvents]); 
-        metricsEvents = [];
-
-
         const update = generatorVersion < response.latestVersion;
 
         btnMain.setIcon(update ? iconGeneratorUpdate : iconGenerator);
 
         updateElementDisplay(menuItemRestartSep.div, update);
         updateElementDisplay(menuItemRestart   .div, update);
+    })
+    .catch(error =>
+    {
+        consoleError();
+    });
+}
+
+
+
+function updateMetrics()
+{
+    if (metricsEvents.length == 0)
+        return;
+
+    const me = [...metricsEvents];
+    metricsEvents = [];
+
+
+    postToServer(
+    {
+        action: 'updateMetrics',
+        events:  JSON.stringify(me)
+    })
+    .then(response =>
+    {   
+        //console.log('metricsEvents =', me); 
     })
     .catch(error =>
     {
