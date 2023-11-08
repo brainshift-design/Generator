@@ -119,9 +119,9 @@ async function uiReturnFigStartGenerator(msg)
     initWindowSizers();
 
 
-    // if (msg.isLocked)
-    //     showMultiplayerDialog();
-    // else
+    if (msg.isLocked)
+        showMultiplayerDialog();
+    else
         validateInit(msg.eula);
 }
 
@@ -129,9 +129,10 @@ async function uiReturnFigStartGenerator(msg)
 
 function initGenerator(activate)
 {
-    sessionId = createRandomString(32);
+    sessionId = createRandomString(16);
 
 
+    window.focus();
     pingMetrics();
     
 

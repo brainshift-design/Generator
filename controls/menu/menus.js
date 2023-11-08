@@ -64,6 +64,7 @@ var menuFunctions;
 
 var menuVector;
 var menuShapes;
+var menuRectangle;
 var menuTransform;
 
 var menuPage;
@@ -116,6 +117,7 @@ var menuItemShowOperationResults;
 var menuItemShowClearUndoWarning;
 var menuItemShowTooltips;
 var menuItemShowDebugMenu;
+var menuItemEnableMultiplayer;
 var menuPrefSep2;
 
 var menuItemShowNodeId;
@@ -278,21 +280,23 @@ function initGeneratorMenus()
 
     menuMainPreferences = new Menu('Preferences', false);
     menuMainPreferences.addItems([
-        // menuItemShowPages           = new MenuItem('Show pages',                    null, {checkCallback: () => settings.showAllColorSpaces,     callback: () => { updateSettingAndMenu('showPages',              true, !settings.showPages);              updateMenuItemShowPages();              }}),
-        // menuPrefSep1                = new MenuItem('',                              null, {separator: true}),    
-        menuItemShowAllColorSpaces     = new MenuItem('Show all color spaces',         null, {checkCallback: () => settings.showAllColorSpaces,     callback: () => { updateSettingAndMenu('showAllColorSpaces',     true, !settings.showAllColorSpaces);     updateMenuItemShowAllColorSpaces();     }}),
-        menuItemShowOperationResults   = new MenuItem('Show operation results',        null, {checkCallback: () => settings.showOperationResults,   callback: () => { updateSettingAndMenu('showOperationResults',   true, !settings.showOperationResults);   updateMenuItemShowOperationResults();   }}),
-        menuItemShowNodeIcons          = new MenuItem('Show node icons',               null, {checkCallback: () => settings.showNodeIcons,          callback: () => { updateSettingAndMenu('showNodeIcons',          true, !settings.showNodeIcons);          updateMenuItemShowNodeIcons();          }}),
-        menuItemShowBoolValues         = new MenuItem('Show boolean values as   ✓ ✗', null, {checkCallback: () => settings.showBoolValues,         callback: () => { updateSettingAndMenu('showBoolValues',         true, !settings.showBoolValues);         updateMenuItemShowBoolValues();         }}),
-        //menuItemShowColorLegendInMenus = new MenuItem('Show color legend in menus',    null, {checkCallback: () => settings.showColorLegendInMenus, callback: () => { updateSettingAndMenu('showColorLegendInMenus', true, !settings.showColorLegendInMenus); updateMenuItemShowColorLegendInMenus(); }}),
-                                         new MenuItem('',                              null, {separator: true}),    
-        menuItemShowTooltips           = new MenuItem('Show tooltips',                 null, {childMenu: menuShowTooltips}),
-        menuItemShowClearUndoWarning   = new MenuItem('Show clear undo warning',       null, {checkCallback: () => settings.showClearUndoWarning,   callback: () => { updateSettingAndMenu('showClearUndoWarning',   true, !settings.showClearUndoWarning);                                           }}),
-        menuItemShowDebugMenu          = new MenuItem('Show debug menu',               null, {checkCallback: () => settings.showDebugMenu,          callback: () => { updateSettingAndMenu('showDebugMenu',          true, !settings.showDebugMenu);          updateMenuItemShowDebugMenu();          }}),
-        menuPrefSep2                   = new MenuItem('',                              null, {separator: true}),    
-        // menuItemEnableBetaFeatures  = new MenuItem('Enable beta features',          null, {checkCallback: () => settings.enableBetaFeatures,     callback: () => { updateSettingAndMenu('enableBetaFeatures',     true, !settings.enableBetaFeatures);     enableFeatures(true, settings.enableBetaFeatures); }}),
-        //                               new MenuItem('',                              null, {separator: true}),    
-        menuItemMinZoomForParams       = new MenuItem('Zoom level for values...',      null, {callback: () => showMinZoomDialog()})]);
+        // menuItemShowPages           = new MenuItem('Show pages',                        null, {checkCallback: () => settings.showAllColorSpaces,     callback: () => { updateSettingAndMenu('showPages',              true, !settings.showPages);              updateMenuItemShowPages();              }}),
+        // menuPrefSep1                = new MenuItem('',                                  null, {separator: true}),    
+        menuItemShowAllColorSpaces     = new MenuItem('Show all color spaces',             null, {checkCallback: () => settings.showAllColorSpaces,     callback: () => { updateSettingAndMenu('showAllColorSpaces',     true, !settings.showAllColorSpaces);     updateMenuItemShowAllColorSpaces();     }}),
+        menuItemShowOperationResults   = new MenuItem('Show operation results',            null, {checkCallback: () => settings.showOperationResults,   callback: () => { updateSettingAndMenu('showOperationResults',   true, !settings.showOperationResults);   updateMenuItemShowOperationResults();   }}),
+        menuItemShowNodeIcons          = new MenuItem('Show node icons',                   null, {checkCallback: () => settings.showNodeIcons,          callback: () => { updateSettingAndMenu('showNodeIcons',          true, !settings.showNodeIcons);          updateMenuItemShowNodeIcons();          }}),
+        menuItemShowBoolValues         = new MenuItem('Show boolean values as   ✓ ✗',     null, {checkCallback: () => settings.showBoolValues,         callback: () => { updateSettingAndMenu('showBoolValues',         true, !settings.showBoolValues);         updateMenuItemShowBoolValues();         }}),
+        //menuItemShowColorLegendInMenus = new MenuItem('Show color legend in menus',      null, {checkCallback: () => settings.showColorLegendInMenus, callback: () => { updateSettingAndMenu('showColorLegendInMenus', true, !settings.showColorLegendInMenus); updateMenuItemShowColorLegendInMenus(); }}),
+        new MenuItem('',                              null, {separator: true}),    
+        menuItemShowTooltips           = new MenuItem('Show tooltips',                     null, {childMenu: menuShowTooltips}),
+        menuItemShowClearUndoWarning   = new MenuItem('Show clear undo warning',           null, {checkCallback: () => settings.showClearUndoWarning,   callback: () => { updateSettingAndMenu('showClearUndoWarning',   true, !settings.showClearUndoWarning);                                           }}),
+        menuItemShowDebugMenu          = new MenuItem('Show debug menu',                   null, {checkCallback: () => settings.showDebugMenu,          callback: () => { updateSettingAndMenu('showDebugMenu',          true, !settings.showDebugMenu);          updateMenuItemShowDebugMenu();          }}),
+        menuPrefSep2                   = new MenuItem('',                                  null, {separator: true}),    
+        // menuItemEnableMultiplayer      = new MenuItem('Enable multiplayer on this canvas', null, {checkCallback: () => multiplayerEnabled,              callback: () => { updateSettingAndMenu('showPages',              true, !settings.showPages);              enableMultiplayer(!multiplayerEnabled); }}),
+        //                                  new MenuItem('',                                  null, {separator: true}),    
+        // menuItemEnableBetaFeatures  = new MenuItem('Enable beta features',              null, {checkCallback: () => settings.enableBetaFeatures,     callback: () => { updateSettingAndMenu('enableBetaFeatures',     true, !settings.enableBetaFeatures);     enableFeatures(true, settings.enableBetaFeatures); }}),
+        //                               new MenuItem('',                                  null, {separator: true}),    
+        menuItemMinZoomForParams       = new MenuItem('Zoom level for values...',          null, {callback: () => showMinZoomDialog()})]);
         
 
     menuItemShowBoolValues.divName.innerHTML = 'Show boolean values as   <span style="position: relative; top: 1px;">' + TRUE_DISPLAY_MENU + '</span>  <span>' + FALSE_DISPLAY_MENU + '</span>'
@@ -691,9 +695,14 @@ menuFlow = new Menu('Flow', true, false);
         // new MenuItem('Network', null, {icon: iconVectorNetwork, createType: VECTOR_NETWORK, callback: e => actionManager.do(getCreateNodeAction(VECTOR_NETWORK, btnShape.div, getCreateOptions(e)))})]);
 
 
+    menuRectangle = new Menu('Rectangle', true, false);
+    menuRectangle.addItems([
+        new MenuItem('Round corners',  null, {icon: iconRoundCorners, createType: ROUND_CORNERS, callback: e => actionManager.do(getCreateNodeAction(ROUND_CORNERS, btnShape.div, getCreateOptions(e)))})]);
+
+
     menuShapes = new Menu('Shapes', true, false);
     menuShapes.addItems([
-        new MenuItem('Rectangle', null,         {icon: iconRectangle,  createType: RECTANGLE,  callback: e => actionManager.do(getCreateNodeAction(RECTANGLE,  btnShape.div, getCreateOptions(e)))}),
+        new MenuItem('Rectangle', null,         {icon: iconRectangle,  childMenu: menuRectangle, createType: RECTANGLE,  callback: e => actionManager.do(getCreateNodeAction(RECTANGLE,  btnShape.div, getCreateOptions(e)))}),
         new MenuItem('Trapeze',   null,         {icon: iconTrapeze,    createType: TRAPEZE,    callback: e => actionManager.do(getCreateNodeAction(TRAPEZE,    btnShape.div, getCreateOptions(e)))}),
         new MenuItem('Line',      null,         {icon: iconLine,       createType: LINE,       callback: e => actionManager.do(getCreateNodeAction(LINE,       btnShape.div, getCreateOptions(e)))}),
         new MenuItem('Ellipse',   null,         {icon: iconEllipse,    createType: ELLIPSE,    callback: e => actionManager.do(getCreateNodeAction(ELLIPSE,    btnShape.div, getCreateOptions(e)))}),

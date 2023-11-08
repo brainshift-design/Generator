@@ -239,6 +239,19 @@ function addStrokeProp(obj, prop)
 
 
 
+function addRoundCornersProp(obj, prop)
+{
+    obj.effects.push([
+        'ROUND_CORNERS', 
+        prop.tl.toNumber(),
+        prop.tr.toNumber(),
+        prop.bl.toNumber(),
+        prop.br.toNumber(),
+        prop.visible ]);
+}
+
+
+
 function addDropShadowProp(obj, prop)
 {
     const rgba = prop.fill.toRgba();

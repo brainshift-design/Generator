@@ -50,11 +50,12 @@ function figCreateObject(genObj, addObject = null)
         if (   figObj
             && genObj[FO_RETAIN] < 2)
         {
-            figObj.setPluginData('userId',   figma.currentUser.id);
-            figObj.setPluginData('type',     genObj[FO_TYPE     ]);
-            figObj.setPluginData('nodeId',   genObj[FO_NODE_ID  ]);
-            figObj.setPluginData('objectId', genObj[FO_OBJECT_ID]);
-            figObj.setPluginData('retain',   genObj[FO_RETAIN   ].toString());
+            figObj.setPluginData('userId',    figma.currentUser.id);
+            figObj.setPluginData('sessionId', figma.currentUser.sessionId.toString());
+            figObj.setPluginData('type',      genObj[FO_TYPE     ]);
+            figObj.setPluginData('nodeId',    genObj[FO_NODE_ID  ]);
+            figObj.setPluginData('objectId',  genObj[FO_OBJECT_ID]);
+            figObj.setPluginData('retain',    genObj[FO_RETAIN   ].toString());
             
             if (genObj[FO_TYPE] == POINT)
                 figPoints.push(figObj);
@@ -160,8 +161,9 @@ function figUpdateObjects(figParent, genObjects, nodeIds = [], firstChunk = fals
 
         let figObj = objects.find(o => 
                o.removed
-            ||    o.getPluginData('userId'  ) == figma.currentUser.id
-               && o.getPluginData('objectId') == genObj[FO_OBJECT_ID]);
+            ||    o.getPluginData('userId'   ) == figma.currentUser.id
+               //&& o.getPluginData('sessionId') == figma.currentUser.sessionId.toString()
+               && o.getPluginData('objectId' ) == genObj[FO_OBJECT_ID]);
 
 
         if (   figObj != undefined
@@ -211,7 +213,8 @@ function figUpdateObjects(figParent, genObjects, nodeIds = [], firstChunk = fals
             if (    figObj.removed
                 || !genObjects.find(o => 
                            o[FO_OBJECT_ID] == figObj.getPluginData('objectId')
-                        && figObj.getPluginData('userId') == figma.currentUser.id))
+                        && figObj.getPluginData('userId'   ) == figma.currentUser.id))
+                        //&& figObj.getPluginData('sessionId') == figma.currentUser.sessionId.toString()))
                 figObj.remove();
     }
 
@@ -288,9 +291,10 @@ function figGetObjectSize(genObj)
 
 function clearObjectData(figObj)
 {
-    figObj.setPluginData('type',     '');
-    figObj.setPluginData('nodeId',   '');
-    figObj.setPluginData('userId',   '');
-    figObj.setPluginData('objectId', '');
-    figObj.setPluginData('retain',   '');
+    figObj.setPluginData('type',      '');
+    figObj.setPluginData('nodeId',    '');
+    figObj.setPluginData('userId',    '');
+    figObj.setPluginData('sessionId', '');
+    figObj.setPluginData('objectId',  '');
+    figObj.setPluginData('retain',    '');
 }

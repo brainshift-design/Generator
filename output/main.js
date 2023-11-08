@@ -19,7 +19,7 @@ function isConnKey(key) { return isTagKey(key, connTag); }
 function noPageTag(key) { return noTag(key, pageTag); }
 function noNodeTag(key) { return noTag(key, nodeTag); }
 function noConnTag(key) { return noTag(key, connTag); }
-const generatorVersion = 284;
+const generatorVersion = 286;
 const MAX_INT32 = 2147483647;
 const NULL = '';
 const HTAB = '  '; // half-tab
@@ -805,6 +805,9 @@ const COLOR_STOP_TYPES = [COLOR_STOP_VALUE, COLOR_STOP];
 const GRADIENT_VALUE = 'GRAD#';
 const GRADIENT = 'GRAD';
 const GRADIENT_TYPES = [GRADIENT_VALUE, GRADIENT];
+const ROUND_CORNERS_VALUE = 'RCRN#';
+const ROUND_CORNERS = 'RCRN';
+const ROUND_CORNERS_TYPES = [ROUND_CORNERS_VALUE, ROUND_CORNERS];
 const DROP_SHADOW_VALUE = 'DRSH#';
 const DROP_SHADOW = 'DRSH';
 const DROP_SHADOW_TYPES = [DROP_SHADOW_VALUE, DROP_SHADOW];
@@ -824,6 +827,7 @@ const LAYER_BLEND_VALUE = 'BLEND#';
 const LAYER_BLEND = 'BLEND';
 const LAYER_BLEND_TYPES = [LAYER_BLEND_VALUE, LAYER_BLEND];
 const EFFECT_TYPES = [
+    ...ROUND_CORNERS_TYPES,
     ...DROP_SHADOW_TYPES,
     ...INNER_SHADOW_TYPES,
     ...LAYER_BLUR_TYPES,
@@ -1012,6 +1016,7 @@ const ALL_VALUES = [
     VECTOR_NETWORK_VALUE,
     SHAPE_GROUP_VALUE,
     FRAME_VALUE,
+    ROUND_CORNERS_VALUE,
     DROP_SHADOW_VALUE,
     INNER_SHADOW_VALUE,
     LAYER_BLUR_VALUE,
@@ -1474,6 +1479,7 @@ function figDeleteAllObjects(forceDelete = false) {
             continue;
         if (obj.getPluginData('objectId') != ''
             && obj.getPluginData('userId') == figma.currentUser.id
+            //&&  obj.getPluginData('sessionId') == figma.currentUser.sessionId.toString()
             && (obj.getPluginData('retain') == '0'
                 || forceDelete)
             && !obj.removed)
@@ -1515,8 +1521,9 @@ function findObject(figObj, genIgnoreObjects) {
         }
     }
     else {
-        const found = genIgnoreObjects.find(o => o[FO_OBJECT_ID] == figObj.getPluginData('objectId')
+        const found = genIgnoreObjects.find(o => figObj.getPluginData('objectId') == o[FO_OBJECT_ID]
             && figObj.getPluginData('userId') == figma.currentUser.id
+            //&& figObj.getPluginData('sessionId') == figma.currentUser.sessionId.toString()
             || o[FO_RETAIN] > 0
                 && o[FO_RETAIN] == figObj.getPluginData('retain'));
         if (found)
@@ -2366,6 +2373,7 @@ function figCreateObject(genObj, addObject = null) {
         if (figObj
             && genObj[FO_RETAIN] < 2) {
             figObj.setPluginData('userId', figma.currentUser.id);
+            figObj.setPluginData('sessionId', figma.currentUser.sessionId.toString());
             figObj.setPluginData('type', genObj[FO_TYPE]);
             figObj.setPluginData('nodeId', genObj[FO_NODE_ID]);
             figObj.setPluginData('objectId', genObj[FO_OBJECT_ID]);
@@ -2458,6 +2466,7 @@ function figUpdateObjects(figParent, genObjects, nodeIds = [], firstChunk = fals
             : figObjects.objects;
         let figObj = objects.find(o => o.removed
             || o.getPluginData('userId') == figma.currentUser.id
+                //&& o.getPluginData('sessionId') == figma.currentUser.sessionId.toString()
                 && o.getPluginData('objectId') == genObj[FO_OBJECT_ID]);
         if (figObj != undefined
             && figObj != null
@@ -2492,6 +2501,7 @@ function figUpdateObjects(figParent, genObjects, nodeIds = [], firstChunk = fals
             if (figObj.removed
                 || !genObjects.find(o => o[FO_OBJECT_ID] == figObj.getPluginData('objectId')
                     && figObj.getPluginData('userId') == figma.currentUser.id))
+                //&& figObj.getPluginData('sessionId') == figma.currentUser.sessionId.toString()))
                 figObj.remove();
     }
     // put points on top
@@ -2543,6 +2553,7 @@ function clearObjectData(figObj) {
     figObj.setPluginData('type', '');
     figObj.setPluginData('nodeId', '');
     figObj.setPluginData('userId', '');
+    figObj.setPluginData('sessionId', '');
     figObj.setPluginData('objectId', '');
     figObj.setPluginData('retain', '');
 }
@@ -3383,7 +3394,16 @@ function figCreateRect(genRect) {
 function figUpdateRect(figRect, genRect) {
     if (!genRectIsValid(genRect))
         return;
-    figRect.cornerRadius = genRect[FO_RECT_ROUND];
+    const found = genRect[FO_EFFECTS].findIndex(e => e[0] == 'ROUND_CORNERS');
+    if (found > -1) {
+        const corners = genRect[FO_EFFECTS][found];
+        figRect.topLeftRadius = corners[1];
+        figRect.topRightRadius = corners[2];
+        figRect.bottomLeftRadius = corners[3];
+        figRect.bottomRightRadius = corners[4];
+    }
+    else
+        figRect.cornerRadius = genRect[FO_RECT_ROUND];
     setObjectTransform(figRect, genRect);
     setObjectProps(figRect, genRect);
 }

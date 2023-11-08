@@ -1,3 +1,7 @@
+let multiplayerEnabled = false;
+
+
+
 function multiplayerAssert(condition, error, showDebugButton = true)
 {
     if (condition) return;

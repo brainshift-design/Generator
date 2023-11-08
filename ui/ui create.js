@@ -124,6 +124,7 @@ function createNode(nodeType, creatingButton = null, createdNodeId = -1, options
 
         case STROKE:                  node = new OpStroke();            break;
 
+        case ROUND_CORNERS:           node = new OpRoundCorners();      break;
         case DROP_SHADOW:             node = new OpDropShadow();        break;
         case INNER_SHADOW:            node = new OpInnerShadow();       break;
         case LAYER_BLUR:              node = new OpLayerBlur();         break;

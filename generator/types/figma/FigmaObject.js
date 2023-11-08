@@ -54,9 +54,9 @@ class FigmaObject
         
         this.xform        = clone(base.xform);
 
-        this.xp0          = clone(base.xp0); //base.xp0 ? base.xp0.copy() : null;
-        this.xp1          = clone(base.xp1); //base.xp1 ? base.xp1.copy() : null;
-        this.xp2          = clone(base.xp2); //base.xp2 ? base.xp2.copy() : null;
+        this.xp0          = clone(base.xp0);
+        this.xp1          = clone(base.xp1);
+        this.xp2          = clone(base.xp2);
 
         this.sp0          = clone(base.sp0);
         this.sp1          = clone(base.sp1);

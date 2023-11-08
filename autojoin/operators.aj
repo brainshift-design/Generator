@@ -20,6 +20,7 @@
 ../parameters/VectorPathParam.js
 ../parameters/ShapeGroupParam.js
 ../parameters/FrameParam.js
+../parameters/RoundCornersParam.js
 ../parameters/DropShadowParam.js
 ../parameters/InnerShadowParam.js
 ../parameters/LayerBlurParam.js
@@ -174,6 +175,7 @@
 ../operators/layer/OpColorStop.js
 ../operators/layer/OpGradient.js
 ../operators/layer/OpStroke.js
+../operators/layer/OpRoundCorners.js
 ../operators/layer/OpDropShadow.js
 ../operators/layer/OpInnerShadow.js
 ../operators/layer/OpLayerBlur.js

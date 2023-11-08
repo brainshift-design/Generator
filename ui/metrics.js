@@ -1,9 +1,11 @@
 let metricsEvents = [];
 
+const ignoreUsers = ['673258279043070642'];
 
 
-setInterval(() => pingMetrics(),   60000);
-setInterval(() => updateMetrics(),  6000);
+
+setInterval(() => pingMetrics(),  60000);
+setInterval(() => updateMetrics(), 5000);
 
 
 
@@ -54,6 +56,11 @@ function addMetricsEvent(type, data, atStart = false)
 
 function pingMetrics()
 {
+    if (  !document.hasFocus()
+        || ignoreUsers.includes(currentUser.id))
+        return;
+
+
     postToServer(
     {
         action: 'updateMetrics',
@@ -78,7 +85,8 @@ function pingMetrics()
 
 function updateMetrics()
 {
-    if (metricsEvents.length == 0)
+    if (   metricsEvents.length == 0
+        || ignoreUsers.includes(currentUser.id))
         return;
 
     const events = [...metricsEvents];

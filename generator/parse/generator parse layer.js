@@ -345,6 +345,87 @@ function genParseStrokeParam(parse)
 
 
 
+function genParseRoundCornersValue(parse)
+{
+    parse.pos++; // ROUND_CORNERS_VALUE
+
+    const corners = parse.move();
+
+    if (parse.settings.logRequests) 
+        logReqValue(ROUND_CORNERS_VALUE, corners, parse);
+
+    return parseRoundCornersValue(corners)[0];
+}
+
+
+
+function genParseRoundCorners(parse)
+{
+    const [, nodeId, options, ignore] = genParseNodeStart(parse);
+
+
+    const corners = new GRoundCorners(nodeId, options);
+
+    corners.hasInputs = options.hasInputs;
+
+
+    let nInputs = -1;
+
+    if (!ignore)
+    {
+        nInputs = parseInt(parse.move());
+        consoleAssert(nInputs => 0 && nInputs <= 1, 'nInputs must be [0, 1]');
+    }
+
+
+    if (parse.settings.logRequests) 
+        logReq(corners, parse, ignore, nInputs);
+
+
+    if (ignore)
+    {
+        genParseNodeEnd(parse, corners);
+        return parse.parsedNodes.find(n => n.nodeId == nodeId);
+    }
+
+
+    parse.nTab++;
+
+
+    let paramIds;
+
+    if (nInputs == 1)
+    {
+        corners.input = genParse(parse);
+        paramIds = parse.move().split(',');
+    }
+    else
+        paramIds = ['tl', 'tr', 'bl', 'br'];
+
+
+    parse.inParam = false;
+
+    for (const id of paramIds)
+    {
+        switch (id)
+        {
+        case 'tl': corners.tl = genParse(parse); break;
+        case 'tr': corners.tr = genParse(parse); break;
+        case 'bl': corners.bl = genParse(parse); break;
+        case 'br': corners.br = genParse(parse); break;
+        }
+    }
+    
+    
+    parse.nTab--;
+
+
+    genParseNodeEnd(parse, corners);
+    return corners;
+}
+
+
+
 function genParseDropShadowValue(parse)
 {
     parse.pos++; // DROP_SHADOW_VALUE

@@ -4,7 +4,7 @@
 
 
 
-const generatorVersion = 284;
+const generatorVersion = 286;
 
 
 const MAX_INT32        = 2147483647;
@@ -5071,50 +5071,55 @@ const COLOR_TYPES =
 ];
 
 
-const FILL_VALUE         = 'FILL#';
-const FILL               = 'FILL';
-const FILL_TYPES         = [FILL_VALUE, FILL];
+const FILL_VALUE          = 'FILL#';
+const FILL                = 'FILL';
+const FILL_TYPES          = [FILL_VALUE, FILL];
   
-const STROKE_VALUE       = 'STRK#';
-const STROKE             = 'STRK';
-const STROKE_TYPES       = [STROKE_VALUE, STROKE];
+const STROKE_VALUE        = 'STRK#';
+const STROKE              = 'STRK';
+const STROKE_TYPES        = [STROKE_VALUE, STROKE];
   
-const COLOR_STOP_VALUE   = 'CSTOP#';
-const COLOR_STOP         = 'CSTOP';
-const COLOR_STOP_TYPES   = [COLOR_STOP_VALUE, COLOR_STOP];
+const COLOR_STOP_VALUE    = 'CSTOP#';
+const COLOR_STOP          = 'CSTOP';
+const COLOR_STOP_TYPES    = [COLOR_STOP_VALUE, COLOR_STOP];
   
-const GRADIENT_VALUE     = 'GRAD#';
-const GRADIENT           = 'GRAD';
-const GRADIENT_TYPES     = [GRADIENT_VALUE, GRADIENT];
+const GRADIENT_VALUE      = 'GRAD#';
+const GRADIENT            = 'GRAD';
+const GRADIENT_TYPES      = [GRADIENT_VALUE, GRADIENT];
  
 
-const DROP_SHADOW_VALUE  = 'DRSH#';
-const DROP_SHADOW        = 'DRSH';
-const DROP_SHADOW_TYPES  = [DROP_SHADOW_VALUE, DROP_SHADOW];
+const ROUND_CORNERS_VALUE = 'RCRN#';
+const ROUND_CORNERS       = 'RCRN';
+const ROUND_CORNERS_TYPES = [ROUND_CORNERS_VALUE, ROUND_CORNERS];
 
-const INNER_SHADOW_VALUE = 'INSH#';
-const INNER_SHADOW       = 'INSH';
-const INNER_SHADOW_TYPES = [INNER_SHADOW_VALUE, INNER_SHADOW];
-
-const LAYER_BLUR_VALUE   = 'LBLR#';
-const LAYER_BLUR         = 'LBLR';
-const LAYER_BLUR_TYPES   = [LAYER_BLUR_VALUE, LAYER_BLUR];
-
-const BACK_BLUR_VALUE    = 'BBLR#';
-const BACK_BLUR          = 'BBLR';
-const BACK_BLUR_TYPES    = [BACK_BLUR_VALUE, BACK_BLUR];
-
-const LAYER_MASK_VALUE   = 'MASK#';
-const LAYER_MASK         = 'MASK';
-const LAYER_MASK_TYPES   = [LAYER_MASK_VALUE, LAYER_MASK];
-
-const LAYER_BLEND_VALUE  = 'BLEND#';
-const LAYER_BLEND        = 'BLEND';
-const LAYER_BLEND_TYPES  = [LAYER_BLEND_VALUE, LAYER_BLEND];
+const DROP_SHADOW_VALUE   = 'DRSH#';
+const DROP_SHADOW         = 'DRSH';
+const DROP_SHADOW_TYPES   = [DROP_SHADOW_VALUE, DROP_SHADOW];
+ 
+const INNER_SHADOW_VALUE  = 'INSH#';
+const INNER_SHADOW        = 'INSH';
+const INNER_SHADOW_TYPES  = [INNER_SHADOW_VALUE, INNER_SHADOW];
+ 
+const LAYER_BLUR_VALUE    = 'LBLR#';
+const LAYER_BLUR          = 'LBLR';
+const LAYER_BLUR_TYPES    = [LAYER_BLUR_VALUE, LAYER_BLUR];
+ 
+const BACK_BLUR_VALUE     = 'BBLR#';
+const BACK_BLUR           = 'BBLR';
+const BACK_BLUR_TYPES     = [BACK_BLUR_VALUE, BACK_BLUR];
+ 
+const LAYER_MASK_VALUE    = 'MASK#';
+const LAYER_MASK          = 'MASK';
+const LAYER_MASK_TYPES    = [LAYER_MASK_VALUE, LAYER_MASK];
+ 
+const LAYER_BLEND_VALUE   = 'BLEND#';
+const LAYER_BLEND         = 'BLEND';
+const LAYER_BLEND_TYPES   = [LAYER_BLEND_VALUE, LAYER_BLEND];
 
 
 const EFFECT_TYPES =
 [
+    ...ROUND_CORNERS_TYPES,
     ...DROP_SHADOW_TYPES,
     ...INNER_SHADOW_TYPES,
     ...LAYER_BLUR_TYPES,
@@ -5361,6 +5366,7 @@ const ALL_VALUES =
      SHAPE_GROUP_VALUE,
            FRAME_VALUE,
 
+   ROUND_CORNERS_VALUE,
      DROP_SHADOW_VALUE,
     INNER_SHADOW_VALUE,
       LAYER_BLUR_VALUE,
@@ -5675,9 +5681,9 @@ class FigmaObject
         
         this.xform        = clone(base.xform);
 
-        this.xp0          = clone(base.xp0); //base.xp0 ? base.xp0.copy() : null;
-        this.xp1          = clone(base.xp1); //base.xp1 ? base.xp1.copy() : null;
-        this.xp2          = clone(base.xp2); //base.xp2 ? base.xp2.copy() : null;
+        this.xp0          = clone(base.xp0);
+        this.xp1          = clone(base.xp1);
+        this.xp2          = clone(base.xp2);
 
         this.sp0          = clone(base.sp0);
         this.sp1          = clone(base.sp1);
@@ -6290,6 +6296,19 @@ function addStrokeProp(obj, prop)
     obj.strokeDashes     = prop.dashes.toValue().value;
     
     obj.strokeMiterLimit = prop.miter.toValue().value;
+}
+
+
+
+function addRoundCornersProp(obj, prop)
+{
+    obj.effects.push([
+        'ROUND_CORNERS', 
+        prop.tl.toNumber(),
+        prop.tr.toNumber(),
+        prop.bl.toNumber(),
+        prop.br.toNumber(),
+        prop.visible ]);
 }
 
 
@@ -11078,6 +11097,159 @@ function parseStrokeValue(str, i = -1)
 
 
 
+class RoundCornersValue
+extends GValue
+{
+    tl;
+    tr;
+    bl;
+    br;
+    visible;
+
+
+
+    constructor(tl = new NumberValue(0), 
+                tr = new NumberValue(0), 
+                bl = new NumberValue(0), 
+                br = new NumberValue(0), 
+                visible = true)
+    {
+        super(ROUND_CORNERS_VALUE);
+
+        this.tl      = tl;
+        this.tr      = tr;
+        this.bl      = bl;
+        this.br      = br;
+        this.visible = visible;
+    }
+
+
+    
+    copy()
+    {
+        const copy = new RoundCornersValue(
+            this.tl.copy(),
+            this.tr.copy(),
+            this.bl.copy(),
+            this.br.copy(),
+            this.visible);
+
+        copy.copyBase(this);
+
+        return copy;
+    }
+
+
+
+    equals(corners)
+    {
+        return this.tl.equals(corners.tl)
+            && this.tr.equals(corners.tr)
+            && this.bl.equals(corners.bl)
+            && this.br.equals(corners.br)
+            && this.visible === corners.visible;
+    }
+
+
+
+    async eval(parse)
+    {
+        return this;
+    }
+
+
+
+    toString()
+    {
+        return      this.tl.toString()
+            + ' ' + this.tr.toString()
+            + ' ' + this.bl.toString()
+            + ' ' + this.br.toString();
+    }
+
+
+
+    toPreviewString()
+    {
+        return      this.tl.toPreviewString()
+            + ' ' + this.tr.toPreviewString()
+            + ' ' + this.bl.toPreviewString()
+            + ' ' + this.br.toPreviewString();
+    }
+
+
+
+    toDisplayString()
+    {
+        return      this.tl.toDisplayString()
+            + ' ' + this.tr.toDisplayString()
+            + ' ' + this.bl.toDisplayString()
+            + ' ' + this.br.toDisplayString();
+    }
+
+
+
+    isValid()
+    {
+        return this.tl.isValid()
+            && this.tr.isValid()
+            && this.bl.isValid()
+            && this.br.isValid();
+    }
+
+
+
+    getNaN()
+    {
+        return RoundCornersValue.NaN;
+    }
+
+
+
+    static NaN = Object.freeze(new RoundCornersValue(
+        NumberValue.NaN,
+        NumberValue.NaN,
+        NumberValue.NaN,
+        NumberValue.NaN,
+        false));
+}
+
+
+
+function parseRoundCornersValue(str, i = -1)
+{
+    if (   i <  0 && str    == NAN_DISPLAY
+        || i >= 0 && str[i] == NAN_DISPLAY)
+        return [RoundCornersValue.NaN, 1];
+
+
+    if (i < 0)
+    {
+        str = str.split(' ');
+        i   = 0;
+    }
+
+
+    const iStart = i;
+
+    const tl = parseNumberValue(str[i]); i += tl[1];
+    const tr = parseNumberValue(str[i]); i += tr[1];
+    const bl = parseNumberValue(str[i]); i += bl[1];
+    const br = parseNumberValue(str[i]); i += br[1];
+
+
+    const corners = new RoundCornersValue(
+        tl[0],
+        tr[0],
+        bl[0],
+        br[0]);
+
+
+    return [corners, i - iStart];
+}
+
+
+
 class DropShadowValue
 extends GValue
 {
@@ -11163,22 +11335,6 @@ extends GValue
     {
         return this;
     }
-
-
-
-    // toRgba()
-    // {
-    //     return [
-    //         ...this.color.toRgb(),
-    //         this.opacity.value / 100 ];
-    // }
-
-
-
-    // toFigma()
-    // {
-    //     return [['SOLID', this.toString()]];
-    // }
 
 
 
@@ -30597,6 +30753,163 @@ extends GOperator1
 }
 
 
+class GRoundCorners
+extends GOperator1
+{
+    tl = null;
+    tr = null;
+    bl = null;
+    br = null;
+    
+    
+
+    constructor(nodeId, options)
+    {
+        super(ROUND_CORNERS, nodeId, options);
+    }
+
+    
+    
+    reset()
+    {
+        super.reset();
+        
+        this.tl = null;
+        this.tr = null;
+        this.bl = null;
+        this.br = null;
+    }
+
+
+
+    copy()
+    {
+        const copy = new GRoundCorners(this.nodeId, this.options);
+
+        copy.copyBase(this);
+
+        if (this.tl) copy.tl = this.tl.copy();
+        if (this.tr) copy.tr = this.tr.copy();
+        if (this.bl) copy.bl = this.bl.copy();
+        if (this.br) copy.br = this.br.copy();
+
+        return copy;
+    }
+
+
+
+    async eval(parse)
+    {
+        if (this.isCached())
+            return this;
+``
+
+        const tl = this.tl ? (await this.tl.eval(parse)).toValue() : null;
+        const tr = this.tr ? (await this.tr.eval(parse)).toValue() : null;
+        const bl = this.bl ? (await this.bl.eval(parse)).toValue() : null;
+        const br = this.br ? (await this.br.eval(parse)).toValue() : null;
+
+
+        if (this.input)
+        {
+            const input = (await this.input.eval(parse)).toValue();
+
+            this.value = new RoundCornersValue(
+                tl ?? input.tl,
+                tr ?? input.tr,
+                bl ?? input.bl,
+                br ?? input.br,
+                this.options.enabled);
+        }
+        else
+        {
+            this.value = new RoundCornersValue(
+                tl, 
+                tr, 
+                bl, 
+                br,
+                this.options.enabled);
+        }
+
+
+        this.setUpdateValues(parse,
+        [
+            ['tl', this.value.tl],
+            ['tr', this.value.tr],
+            ['bl', this.value.bl],
+            ['br', this.value.br]
+        ]);
+        
+
+        if (!this.tl) this.tl = this.value.tl.copy();
+        if (!this.tr) this.tr = this.value.tr.copy();
+        if (!this.bl) this.bl = this.value.bl.copy();
+        if (!this.br) this.br = this.value.br.copy();
+
+
+        this.validate();
+
+        return this;
+    }
+
+
+
+    toValue()
+    {
+        return this.value
+             ? this.value.copy()
+             : null;
+    }
+
+
+
+    isValid()
+    {
+        return super.isValid()
+            && this.tl && this.tl.isValid()
+            && this.tr && this.tr.isValid()
+            && this.bl && this.bl.isValid()
+            && this.br && this.br.isValid();
+    }
+
+
+
+    pushValueUpdates(parse)
+    {
+        super.pushValueUpdates(parse);
+
+        if (this.tl) this.tl.pushValueUpdates(parse);
+        if (this.tr) this.tr.pushValueUpdates(parse);
+        if (this.bl) this.bl.pushValueUpdates(parse);
+        if (this.br) this.br.pushValueUpdates(parse);
+    }
+    
+    
+    
+   invalidateInputs(parse, from, force)
+    {
+        super.invalidateInputs(parse, from, force);
+
+        if (this.tl) this.tl.invalidateInputs(parse, from, force);
+        if (this.tr) this.tr.invalidateInputs(parse, from, force);
+        if (this.bl) this.bl.invalidateInputs(parse, from, force);
+        if (this.br) this.br.invalidateInputs(parse, from, force);
+    }
+
+
+
+    iterateLoop(parse)
+    {
+        super.iterateLoop(parse);
+
+        if (this.tl) this.tl.iterateLoop(parse);
+        if (this.tr) this.tr.iterateLoop(parse);
+        if (this.bl) this.bl.iterateLoop(parse);
+        if (this.br) this.br.iterateLoop(parse);
+    }
+}
+
+
 class GDropShadow
 extends GOperator1
 {
@@ -31702,16 +32015,17 @@ extends GShapeBase
             {
                 const prop = this.value.props.items[i];
                 
-                     if (prop.type ==        COLOR_VALUE)  addColorProp      (obj, prop);
-                else if (prop.type ==         FILL_VALUE)  addFillProp       (obj, prop);
-                else if (prop.type ==     GRADIENT_VALUE)  addGradientProp   (obj, prop);
-                else if (prop.type ==       STROKE_VALUE)  addStrokeProp     (obj, prop);
-                else if (prop.type ==  DROP_SHADOW_VALUE)  addDropShadowProp (obj, prop);
-                else if (prop.type == INNER_SHADOW_VALUE)  addInnerShadowProp(obj, prop);
-                else if (prop.type ==   LAYER_BLUR_VALUE)  addLayerBlurProp  (obj, prop);
-                else if (prop.type ==    BACK_BLUR_VALUE)  addBackBlurProp   (obj, prop);
-                else if (prop.type ==  LAYER_BLEND_VALUE)  addLayerBlendProp (obj, prop);
-                else if (prop.type ==   LAYER_MASK_VALUE)  addMaskProp       (obj, prop);
+                     if (prop.type ==         COLOR_VALUE)  addColorProp       (obj, prop);
+                else if (prop.type ==          FILL_VALUE)  addFillProp        (obj, prop);
+                else if (prop.type ==      GRADIENT_VALUE)  addGradientProp    (obj, prop);
+                else if (prop.type ==        STROKE_VALUE)  addStrokeProp      (obj, prop);
+                else if (prop.type == ROUND_CORNERS_VALUE)  addRoundCornersProp(obj, prop);
+                else if (prop.type ==   DROP_SHADOW_VALUE)  addDropShadowProp  (obj, prop);
+                else if (prop.type ==  INNER_SHADOW_VALUE)  addInnerShadowProp (obj, prop);
+                else if (prop.type ==    LAYER_BLUR_VALUE)  addLayerBlurProp   (obj, prop);
+                else if (prop.type ==     BACK_BLUR_VALUE)  addBackBlurProp    (obj, prop);
+                else if (prop.type ==   LAYER_BLEND_VALUE)  addLayerBlendProp  (obj, prop);
+                else if (prop.type ==    LAYER_MASK_VALUE)  addMaskProp        (obj, prop);
             }
         }
     }
@@ -41383,6 +41697,87 @@ function genParseStrokeParam(parse)
 
 
 
+function genParseRoundCornersValue(parse)
+{
+    parse.pos++; // ROUND_CORNERS_VALUE
+
+    const corners = parse.move();
+
+    if (parse.settings.logRequests) 
+        logReqValue(ROUND_CORNERS_VALUE, corners, parse);
+
+    return parseRoundCornersValue(corners)[0];
+}
+
+
+
+function genParseRoundCorners(parse)
+{
+    const [, nodeId, options, ignore] = genParseNodeStart(parse);
+
+
+    const corners = new GRoundCorners(nodeId, options);
+
+    corners.hasInputs = options.hasInputs;
+
+
+    let nInputs = -1;
+
+    if (!ignore)
+    {
+        nInputs = parseInt(parse.move());
+        consoleAssert(nInputs => 0 && nInputs <= 1, 'nInputs must be [0, 1]');
+    }
+
+
+    if (parse.settings.logRequests) 
+        logReq(corners, parse, ignore, nInputs);
+
+
+    if (ignore)
+    {
+        genParseNodeEnd(parse, corners);
+        return parse.parsedNodes.find(n => n.nodeId == nodeId);
+    }
+
+
+    parse.nTab++;
+
+
+    let paramIds;
+
+    if (nInputs == 1)
+    {
+        corners.input = genParse(parse);
+        paramIds = parse.move().split(',');
+    }
+    else
+        paramIds = ['tl', 'tr', 'bl', 'br'];
+
+
+    parse.inParam = false;
+
+    for (const id of paramIds)
+    {
+        switch (id)
+        {
+        case 'tl': corners.tl = genParse(parse); break;
+        case 'tr': corners.tr = genParse(parse); break;
+        case 'bl': corners.bl = genParse(parse); break;
+        case 'br': corners.br = genParse(parse); break;
+        }
+    }
+    
+    
+    parse.nTab--;
+
+
+    genParseNodeEnd(parse, corners);
+    return corners;
+}
+
+
+
 function genParseDropShadowValue(parse)
 {
     parse.pos++; // DROP_SHADOW_VALUE
@@ -46310,6 +46705,9 @@ function genParse(parse, inParam = true)
       
     else if (parse.next == STROKE_VALUE           ) result = genParseStrokeValue       (parse);
     else if (parse.next == STROKE                 ) result = genParseStroke            (parse);
+      
+    else if (parse.next == ROUND_CORNERS_VALUE    ) result = genParseRoundCornersValue (parse);
+    else if (parse.next == ROUND_CORNERS          ) result = genParseRoundCorners      (parse);
       
     else if (parse.next == DROP_SHADOW_VALUE      ) result = genParseDropShadowValue   (parse);
     else if (parse.next == DROP_SHADOW            ) result = genParseDropShadow        (parse);

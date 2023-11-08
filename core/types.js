@@ -303,50 +303,55 @@ const COLOR_TYPES =
 ];
 
 
-const FILL_VALUE         = 'FILL#';
-const FILL               = 'FILL';
-const FILL_TYPES         = [FILL_VALUE, FILL];
+const FILL_VALUE          = 'FILL#';
+const FILL                = 'FILL';
+const FILL_TYPES          = [FILL_VALUE, FILL];
   
-const STROKE_VALUE       = 'STRK#';
-const STROKE             = 'STRK';
-const STROKE_TYPES       = [STROKE_VALUE, STROKE];
+const STROKE_VALUE        = 'STRK#';
+const STROKE              = 'STRK';
+const STROKE_TYPES        = [STROKE_VALUE, STROKE];
   
-const COLOR_STOP_VALUE   = 'CSTOP#';
-const COLOR_STOP         = 'CSTOP';
-const COLOR_STOP_TYPES   = [COLOR_STOP_VALUE, COLOR_STOP];
+const COLOR_STOP_VALUE    = 'CSTOP#';
+const COLOR_STOP          = 'CSTOP';
+const COLOR_STOP_TYPES    = [COLOR_STOP_VALUE, COLOR_STOP];
   
-const GRADIENT_VALUE     = 'GRAD#';
-const GRADIENT           = 'GRAD';
-const GRADIENT_TYPES     = [GRADIENT_VALUE, GRADIENT];
+const GRADIENT_VALUE      = 'GRAD#';
+const GRADIENT            = 'GRAD';
+const GRADIENT_TYPES      = [GRADIENT_VALUE, GRADIENT];
  
 
-const DROP_SHADOW_VALUE  = 'DRSH#';
-const DROP_SHADOW        = 'DRSH';
-const DROP_SHADOW_TYPES  = [DROP_SHADOW_VALUE, DROP_SHADOW];
+const ROUND_CORNERS_VALUE = 'RCRN#';
+const ROUND_CORNERS       = 'RCRN';
+const ROUND_CORNERS_TYPES = [ROUND_CORNERS_VALUE, ROUND_CORNERS];
 
-const INNER_SHADOW_VALUE = 'INSH#';
-const INNER_SHADOW       = 'INSH';
-const INNER_SHADOW_TYPES = [INNER_SHADOW_VALUE, INNER_SHADOW];
-
-const LAYER_BLUR_VALUE   = 'LBLR#';
-const LAYER_BLUR         = 'LBLR';
-const LAYER_BLUR_TYPES   = [LAYER_BLUR_VALUE, LAYER_BLUR];
-
-const BACK_BLUR_VALUE    = 'BBLR#';
-const BACK_BLUR          = 'BBLR';
-const BACK_BLUR_TYPES    = [BACK_BLUR_VALUE, BACK_BLUR];
-
-const LAYER_MASK_VALUE   = 'MASK#';
-const LAYER_MASK         = 'MASK';
-const LAYER_MASK_TYPES   = [LAYER_MASK_VALUE, LAYER_MASK];
-
-const LAYER_BLEND_VALUE  = 'BLEND#';
-const LAYER_BLEND        = 'BLEND';
-const LAYER_BLEND_TYPES  = [LAYER_BLEND_VALUE, LAYER_BLEND];
+const DROP_SHADOW_VALUE   = 'DRSH#';
+const DROP_SHADOW         = 'DRSH';
+const DROP_SHADOW_TYPES   = [DROP_SHADOW_VALUE, DROP_SHADOW];
+ 
+const INNER_SHADOW_VALUE  = 'INSH#';
+const INNER_SHADOW        = 'INSH';
+const INNER_SHADOW_TYPES  = [INNER_SHADOW_VALUE, INNER_SHADOW];
+ 
+const LAYER_BLUR_VALUE    = 'LBLR#';
+const LAYER_BLUR          = 'LBLR';
+const LAYER_BLUR_TYPES    = [LAYER_BLUR_VALUE, LAYER_BLUR];
+ 
+const BACK_BLUR_VALUE     = 'BBLR#';
+const BACK_BLUR           = 'BBLR';
+const BACK_BLUR_TYPES     = [BACK_BLUR_VALUE, BACK_BLUR];
+ 
+const LAYER_MASK_VALUE    = 'MASK#';
+const LAYER_MASK          = 'MASK';
+const LAYER_MASK_TYPES    = [LAYER_MASK_VALUE, LAYER_MASK];
+ 
+const LAYER_BLEND_VALUE   = 'BLEND#';
+const LAYER_BLEND         = 'BLEND';
+const LAYER_BLEND_TYPES   = [LAYER_BLEND_VALUE, LAYER_BLEND];
 
 
 const EFFECT_TYPES =
 [
+    ...ROUND_CORNERS_TYPES,
     ...DROP_SHADOW_TYPES,
     ...INNER_SHADOW_TYPES,
     ...LAYER_BLUR_TYPES,
@@ -593,6 +598,7 @@ const ALL_VALUES =
      SHAPE_GROUP_VALUE,
            FRAME_VALUE,
 
+   ROUND_CORNERS_VALUE,
      DROP_SHADOW_VALUE,
     INNER_SHADOW_VALUE,
       LAYER_BLUR_VALUE,

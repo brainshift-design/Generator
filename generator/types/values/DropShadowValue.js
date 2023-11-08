@@ -86,22 +86,6 @@ extends GValue
 
 
 
-    // toRgba()
-    // {
-    //     return [
-    //         ...this.color.toRgb(),
-    //         this.opacity.value / 100 ];
-    // }
-
-
-
-    // toFigma()
-    // {
-    //     return [['SOLID', this.toString()]];
-    // }
-
-
-
     toString()
     {
         return      this.x     .toString()

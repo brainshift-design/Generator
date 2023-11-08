@@ -23,7 +23,7 @@ function noNodeTag(key) { return noTag(key, nodeTag); }
 function noConnTag(key) { return noTag(key, connTag); }
 
 
-const generatorVersion = 284;
+const generatorVersion = 286;
 
 
 const MAX_INT32        = 2147483647;
@@ -1310,50 +1310,55 @@ const COLOR_TYPES =
 ];
 
 
-const FILL_VALUE         = 'FILL#';
-const FILL               = 'FILL';
-const FILL_TYPES         = [FILL_VALUE, FILL];
+const FILL_VALUE          = 'FILL#';
+const FILL                = 'FILL';
+const FILL_TYPES          = [FILL_VALUE, FILL];
   
-const STROKE_VALUE       = 'STRK#';
-const STROKE             = 'STRK';
-const STROKE_TYPES       = [STROKE_VALUE, STROKE];
+const STROKE_VALUE        = 'STRK#';
+const STROKE              = 'STRK';
+const STROKE_TYPES        = [STROKE_VALUE, STROKE];
   
-const COLOR_STOP_VALUE   = 'CSTOP#';
-const COLOR_STOP         = 'CSTOP';
-const COLOR_STOP_TYPES   = [COLOR_STOP_VALUE, COLOR_STOP];
+const COLOR_STOP_VALUE    = 'CSTOP#';
+const COLOR_STOP          = 'CSTOP';
+const COLOR_STOP_TYPES    = [COLOR_STOP_VALUE, COLOR_STOP];
   
-const GRADIENT_VALUE     = 'GRAD#';
-const GRADIENT           = 'GRAD';
-const GRADIENT_TYPES     = [GRADIENT_VALUE, GRADIENT];
+const GRADIENT_VALUE      = 'GRAD#';
+const GRADIENT            = 'GRAD';
+const GRADIENT_TYPES      = [GRADIENT_VALUE, GRADIENT];
  
 
-const DROP_SHADOW_VALUE  = 'DRSH#';
-const DROP_SHADOW        = 'DRSH';
-const DROP_SHADOW_TYPES  = [DROP_SHADOW_VALUE, DROP_SHADOW];
+const ROUND_CORNERS_VALUE = 'RCRN#';
+const ROUND_CORNERS       = 'RCRN';
+const ROUND_CORNERS_TYPES = [ROUND_CORNERS_VALUE, ROUND_CORNERS];
 
-const INNER_SHADOW_VALUE = 'INSH#';
-const INNER_SHADOW       = 'INSH';
-const INNER_SHADOW_TYPES = [INNER_SHADOW_VALUE, INNER_SHADOW];
-
-const LAYER_BLUR_VALUE   = 'LBLR#';
-const LAYER_BLUR         = 'LBLR';
-const LAYER_BLUR_TYPES   = [LAYER_BLUR_VALUE, LAYER_BLUR];
-
-const BACK_BLUR_VALUE    = 'BBLR#';
-const BACK_BLUR          = 'BBLR';
-const BACK_BLUR_TYPES    = [BACK_BLUR_VALUE, BACK_BLUR];
-
-const LAYER_MASK_VALUE   = 'MASK#';
-const LAYER_MASK         = 'MASK';
-const LAYER_MASK_TYPES   = [LAYER_MASK_VALUE, LAYER_MASK];
-
-const LAYER_BLEND_VALUE  = 'BLEND#';
-const LAYER_BLEND        = 'BLEND';
-const LAYER_BLEND_TYPES  = [LAYER_BLEND_VALUE, LAYER_BLEND];
+const DROP_SHADOW_VALUE   = 'DRSH#';
+const DROP_SHADOW         = 'DRSH';
+const DROP_SHADOW_TYPES   = [DROP_SHADOW_VALUE, DROP_SHADOW];
+ 
+const INNER_SHADOW_VALUE  = 'INSH#';
+const INNER_SHADOW        = 'INSH';
+const INNER_SHADOW_TYPES  = [INNER_SHADOW_VALUE, INNER_SHADOW];
+ 
+const LAYER_BLUR_VALUE    = 'LBLR#';
+const LAYER_BLUR          = 'LBLR';
+const LAYER_BLUR_TYPES    = [LAYER_BLUR_VALUE, LAYER_BLUR];
+ 
+const BACK_BLUR_VALUE     = 'BBLR#';
+const BACK_BLUR           = 'BBLR';
+const BACK_BLUR_TYPES     = [BACK_BLUR_VALUE, BACK_BLUR];
+ 
+const LAYER_MASK_VALUE    = 'MASK#';
+const LAYER_MASK          = 'MASK';
+const LAYER_MASK_TYPES    = [LAYER_MASK_VALUE, LAYER_MASK];
+ 
+const LAYER_BLEND_VALUE   = 'BLEND#';
+const LAYER_BLEND         = 'BLEND';
+const LAYER_BLEND_TYPES   = [LAYER_BLEND_VALUE, LAYER_BLEND];
 
 
 const EFFECT_TYPES =
 [
+    ...ROUND_CORNERS_TYPES,
     ...DROP_SHADOW_TYPES,
     ...INNER_SHADOW_TYPES,
     ...LAYER_BLUR_TYPES,
@@ -1600,6 +1605,7 @@ const ALL_VALUES =
      SHAPE_GROUP_VALUE,
            FRAME_VALUE,
 
+   ROUND_CORNERS_VALUE,
      DROP_SHADOW_VALUE,
     INNER_SHADOW_VALUE,
       LAYER_BLUR_VALUE,
@@ -2305,8 +2311,9 @@ function figDeleteAllObjects(forceDelete = false)
         if (obj.removed)
             continue;
 
-        if (    obj.getPluginData('objectId') != ''
-            &&  obj.getPluginData('userId') == figma.currentUser.id
+        if (    obj.getPluginData('objectId' ) != ''
+            &&  obj.getPluginData('userId'   ) == figma.currentUser.id
+            //&&  obj.getPluginData('sessionId') == figma.currentUser.sessionId.toString()
             && (   obj.getPluginData('retain') == '0'
                 || forceDelete)
             && !obj.removed) 
@@ -2375,10 +2382,11 @@ function findObject(figObj, genIgnoreObjects)
     else
     {
         const found = genIgnoreObjects.find(o => 
-                  o[FO_OBJECT_ID] == figObj.getPluginData('objectId')
-               && figObj.getPluginData('userId') == figma.currentUser.id
+                  figObj.getPluginData('objectId' ) == o[FO_OBJECT_ID] 
+               && figObj.getPluginData('userId'   ) == figma.currentUser.id
+               //&& figObj.getPluginData('sessionId') == figma.currentUser.sessionId.toString()
             ||    o[FO_RETAIN] > 0
-               && o[FO_RETAIN] == figObj.getPluginData('retain'  ));
+               && o[FO_RETAIN] == figObj.getPluginData('retain'));
 
         if (found) 
             return found;
@@ -3543,11 +3551,12 @@ function figCreateObject(genObj, addObject = null)
         if (   figObj
             && genObj[FO_RETAIN] < 2)
         {
-            figObj.setPluginData('userId',   figma.currentUser.id);
-            figObj.setPluginData('type',     genObj[FO_TYPE     ]);
-            figObj.setPluginData('nodeId',   genObj[FO_NODE_ID  ]);
-            figObj.setPluginData('objectId', genObj[FO_OBJECT_ID]);
-            figObj.setPluginData('retain',   genObj[FO_RETAIN   ].toString());
+            figObj.setPluginData('userId',    figma.currentUser.id);
+            figObj.setPluginData('sessionId', figma.currentUser.sessionId.toString());
+            figObj.setPluginData('type',      genObj[FO_TYPE     ]);
+            figObj.setPluginData('nodeId',    genObj[FO_NODE_ID  ]);
+            figObj.setPluginData('objectId',  genObj[FO_OBJECT_ID]);
+            figObj.setPluginData('retain',    genObj[FO_RETAIN   ].toString());
             
             if (genObj[FO_TYPE] == POINT)
                 figPoints.push(figObj);
@@ -3653,8 +3662,9 @@ function figUpdateObjects(figParent, genObjects, nodeIds = [], firstChunk = fals
 
         let figObj = objects.find(o => 
                o.removed
-            ||    o.getPluginData('userId'  ) == figma.currentUser.id
-               && o.getPluginData('objectId') == genObj[FO_OBJECT_ID]);
+            ||    o.getPluginData('userId'   ) == figma.currentUser.id
+               //&& o.getPluginData('sessionId') == figma.currentUser.sessionId.toString()
+               && o.getPluginData('objectId' ) == genObj[FO_OBJECT_ID]);
 
 
         if (   figObj != undefined
@@ -3704,7 +3714,8 @@ function figUpdateObjects(figParent, genObjects, nodeIds = [], firstChunk = fals
             if (    figObj.removed
                 || !genObjects.find(o => 
                            o[FO_OBJECT_ID] == figObj.getPluginData('objectId')
-                        && figObj.getPluginData('userId') == figma.currentUser.id))
+                        && figObj.getPluginData('userId'   ) == figma.currentUser.id))
+                        //&& figObj.getPluginData('sessionId') == figma.currentUser.sessionId.toString()))
                 figObj.remove();
     }
 
@@ -3781,11 +3792,12 @@ function figGetObjectSize(genObj)
 
 function clearObjectData(figObj)
 {
-    figObj.setPluginData('type',     '');
-    figObj.setPluginData('nodeId',   '');
-    figObj.setPluginData('userId',   '');
-    figObj.setPluginData('objectId', '');
-    figObj.setPluginData('retain',   '');
+    figObj.setPluginData('type',      '');
+    figObj.setPluginData('nodeId',    '');
+    figObj.setPluginData('userId',    '');
+    figObj.setPluginData('sessionId', '');
+    figObj.setPluginData('objectId',  '');
+    figObj.setPluginData('retain',    '');
 }
 
 
@@ -5185,7 +5197,19 @@ function figUpdateRect(figRect, genRect)
         return;
 
 
-    figRect.cornerRadius = genRect[FO_RECT_ROUND];
+    const found = genRect[FO_EFFECTS].findIndex(e => e[0] == 'ROUND_CORNERS');
+
+    if (found > -1)
+    {
+        const corners = genRect[FO_EFFECTS][found];
+
+        figRect.topLeftRadius     = corners[1];
+        figRect.topRightRadius    = corners[2];
+        figRect.bottomLeftRadius  = corners[3];
+        figRect.bottomRightRadius = corners[4];
+    }
+    else
+        figRect.cornerRadius = genRect[FO_RECT_ROUND];
 
     setObjectTransform(figRect, genRect);
     setObjectProps    (figRect, genRect);

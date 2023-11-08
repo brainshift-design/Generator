@@ -30,7 +30,19 @@ function figUpdateRect(figRect, genRect)
         return;
 
 
-    figRect.cornerRadius = genRect[FO_RECT_ROUND];
+    const found = genRect[FO_EFFECTS].findIndex(e => e[0] == 'ROUND_CORNERS');
+
+    if (found > -1)
+    {
+        const corners = genRect[FO_EFFECTS][found];
+
+        figRect.topLeftRadius     = corners[1];
+        figRect.topRightRadius    = corners[2];
+        figRect.bottomLeftRadius  = corners[3];
+        figRect.bottomRightRadius = corners[4];
+    }
+    else
+        figRect.cornerRadius = genRect[FO_RECT_ROUND];
 
     setObjectTransform(figRect, genRect);
     setObjectProps    (figRect, genRect);
