@@ -1793,7 +1793,7 @@ figma.ui.onmessage = function (msg) {
             figDeleteAllObjects();
             break;
         case 'figUpdateObjectsAndStyles':
-            figUpdateObjects(null, msg.objects, msg.nodeIds, msg.firstChunk, msg.lastChunk);
+            figUpdateObjects(null, msg.objects, msg.nodeIds, msg.firstChunk, msg.lastChunk, msg.zoomToFit);
             figUpdateStyles(msg);
             break;
         case 'figDeleteObjectsAndStyles':
@@ -2325,7 +2325,7 @@ function makeObjectName(obj) {
 }
 function figCreateObject(genObj, addObject = null) {
     if (!genObjectIsValid(genObj))
-        return;
+        return null;
     let figObj;
     switch (genObj[FO_TYPE]) {
         case RECTANGLE:
@@ -2435,9 +2435,10 @@ function figUpdateObject(figObj, genObj) {
     if (genObj[FO_DECO])
         updateDecoObject(figObj);
 }
-function figUpdateObjects(figParent, genObjects, nodeIds = [], firstChunk = false, lastChunk = false) {
+function figUpdateObjects(figParent, genObjects, nodeIds = [], firstChunk = false, lastChunk = false, zoomToFit = false) {
     let curNodeId = NULL;
     let figObjects = null;
+    const updateObjects = [];
     _genIgnoreNodeIds.push(...nodeIds);
     for (const genObj of genObjects) {
         _genIgnoreObjects.push(genObj);
@@ -2480,10 +2481,18 @@ function figUpdateObjects(figParent, genObjects, nodeIds = [], firstChunk = fals
         if (figObj == undefined
             || figObj == null
             || figObj.removed) // no existing object, create new one
-            figCreateObject(genObj, addObject);
+         {
+            const newObj = figCreateObject(genObj, addObject);
+            updateObjects.push(newObj);
+        }
         else if (!figObj.removed
             && figObj.getPluginData('type') == genObj[FO_TYPE].toString()) // update existing object
+         {
             figUpdateObject(figObj, genObj);
+            if (figObj
+                && !figObj.removed)
+                updateObjects.push(figObj);
+        }
         else // delete existing object, create new one
          {
             figObj.remove();
@@ -2509,11 +2518,16 @@ function figUpdateObjects(figParent, genObjects, nodeIds = [], firstChunk = fals
         if (!point.removed
             && !point.parent.removed)
             point.parent.appendChild(point);
-    // delete old content
     if (lastChunk) {
+        // delete old content
         figDeleteObjectsExcept(_genIgnoreNodeIds, _genIgnoreObjects);
         _genIgnoreNodeIds = [];
         _genIgnoreObjects = [];
+        if (zoomToFit) {
+            figma.viewport.scrollAndZoomIntoView(updateObjects);
+            const bounds = figGetObjectBounds(updateObjects);
+            figma.viewport.zoom = Math.min(figma.viewport.bounds.width * figma.viewport.zoom / bounds.width - 0.05, figma.viewport.bounds.height * figma.viewport.zoom / bounds.height - 0.05);
+        }
     }
 }
 function genObjectIsValid(genObj) {
@@ -2556,6 +2570,30 @@ function clearObjectData(figObj) {
     figObj.setPluginData('sessionId', '');
     figObj.setPluginData('objectId', '');
     figObj.setPluginData('retain', '');
+}
+function figGetObjectBounds(objects) {
+    const bounds = {
+        left: 0,
+        top: 0,
+        right: 0,
+        bottom: 0
+    };
+    for (const obj of objects) {
+        if (obj.x < bounds.left || bounds.left == bounds.right)
+            bounds.left = obj.x;
+        if (obj.y < bounds.top || bounds.top == bounds.bottom)
+            bounds.top = obj.y;
+        if (obj.x + obj.width > bounds.right || bounds.left == bounds.right)
+            bounds.right = obj.x + obj.width;
+        if (obj.y + obj.height > bounds.bottom || bounds.top == bounds.bottom)
+            bounds.bottom = obj.y + obj.height;
+    }
+    return {
+        x: bounds.left,
+        y: bounds.top,
+        width: bounds.right - bounds.left,
+        height: bounds.bottom - bounds.top
+    };
 }
 const figEmptyObjects = [];
 const figDecoObjects = [];

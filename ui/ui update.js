@@ -99,7 +99,8 @@ function uiUpdateValuesAndObjects(requestId, actionId, updateNodeId, updateParam
             objects:       [...objects],
             styles:        [...styles ],
             firstChunk:    isFirstChunk,
-            lastChunk:     isLastChunk 
+            lastChunk:     isLastChunk,
+            zoomToFit:     graphView._zoomToFitObjects
         });
     }
 
@@ -162,7 +163,7 @@ function uiUpdateValuesAndObjects(requestId, actionId, updateNodeId, updateParam
         graphView.creatingNodes  = false;
         graphView.pastingNodes   = false;
         graphView.loadingNodes   = false;
-        graphView.restoringNodes = false;
+    graphView.restoringNodes = false;
 
         actionManager.undoing    = false;
         actionManager.redoing    = false;
@@ -171,14 +172,16 @@ function uiUpdateValuesAndObjects(requestId, actionId, updateNodeId, updateParam
         loadingOverlay.style.display = 'none'; // for loading
 
 
-        if (graphView._zoomToFit)
+        if (graphView._zoomToFitNodes)
         {
             for (let i = 0; i < 5; i++)
                 graphView.zoomToNodes(nodes);
 
             graphView.selectedNodes = [];
-            graphView._zoomToFit = false;
+            graphView._zoomToFitNodes = false;
         }
+
+        graphView._zoomToFitObjects = false;
 
 
         uiUpdateAnimateNodes();

@@ -395,14 +395,15 @@ function uiCopyNodes(nodeIds, keepVarsConnected = true)
 
 
 
-function uiPasteNodes(nodesJson, loading, pasteConnected, x, y, updateNodes, zoomToFit = false)
-{
+function uiPasteNodes(nodesJson, loading, pasteConnected, x, y, updateNodes, zoomToFitNodes = false, zoomToFitObjects = false){
     //console.log('nodesJson =', nodesJson);
     //console.log('x =', x);
     //console.log('y =', y);
 
-    graphView.pastingNodes = true;
-    graphView._zoomToFit   = zoomToFit;
+    graphView.pastingNodes      = true;
+    
+    graphView._zoomToFitNodes   = zoomToFitNodes;
+    graphView._zoomToFitObjects = zoomToFitObjects;
 
 
     pasteOffset.x += pasteOffsetDelta.x;

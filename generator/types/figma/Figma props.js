@@ -234,7 +234,7 @@ function addStrokeProp(obj, prop)
 
     obj.strokeDashes     = prop.dashes.toValue().value;
     
-    obj.strokeMiterLimit = prop.miter.toValue().value;
+    obj.strokeMiterLimit = prop.miter .toValue().value;
 }
 
 

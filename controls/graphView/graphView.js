@@ -8,84 +8,85 @@ class GraphView
     scrollbarY;
 
 
-    wires          = [];
+    wires              = [];
     
-
-    creatingNodes  = false;
-    loadingNodes   = false;
-    pastingNodes   = false;
-    _zoomToFit     = false;
-    restoringNodes = false;
-
-
-    canUpdateNodes = true;
+ 
+    creatingNodes      = false;
+    loadingNodes       = false;
+    pastingNodes       = false;
+    _zoomToFitNodes    = false;
+    _zoomToFitObjects  = false;
+    restoringNodes     = false;
 
 
-    activeNodes    = [];
+    canUpdateNodes     = true;
 
 
-    overNode       = null;
-    overInput      = null;
-    overOutput     = null;
+    activeNodes        = [];
+
+
+    overNode           = null;
+    overInput          = null;
+    overOutput         = null;
         
-    headerInput    = null; // same as overInput, but when snapping from a header
-    headerOutput   = null; // same as overOutput, but when snapping from a header
+    headerInput        = null; // same as overInput, but when snapping from a header
+    headerOutput       = null; // same as overOutput, but when snapping from a header
         
-    tempConn       = null;
-    tempConnSwap   = null;
-    savedConn      = null;
-    tempConnected  = false;
+    tempConn           = null;
+    tempConnSwap       = null;
+    savedConn          = null;
+    tempConnected      = false;
 
-    connPointerId  = -1;
+    connPointerId      = -1;
 
-    soloMode       = false;
-    _soloNode      = null;
+    soloMode           = false;
+    _soloNode          = null;
     
-    selecting      = false;
-    selectionRect  = Rect.NaN;
+    selecting          = false;
+    selectionRect      = Rect.NaN;
 
-    startedInPanel = false;
+    startedInPanel     = false;
 
 
-    btn1down       = false; // this is to help deal with mouse wheels that send X values as
-                            // sometimes a MMB press is followed by wheelX as a "deeper" middle-click
+    btn1down           = false; // this is to help deal with mouse wheels that send X values as
+                                // sometimes a MMB press is followed by wheelX as a "deeper" middle-click
 
-    altDown        = false;
+    altDown            = false;
 
-    panning        = false;
+    panning            = false;
     
     pViewport; 
-    pStart         = point(0, 0);
+    pStart             = point(0, 0);
     zoomStart;
 
 
-    touches        = [];
+    touches            = [];
 
 
-    wheelTimer     = null;
+    wheelTimer         = null;
 
 
-    measureData    = {};
+    measureData        = {};
 
 
 
-    panning = false;
+    panning            = false;
     panStart;
     
-    spaceDown = false;
+    spaceDown          = false;
     
     
     
-    oldZoom = 1;
+    oldZoom            = 1;
 
 
-    zooming       = false;
-    zoomStart     = 1;
+    zooming            = false;
+    zoomStart          = 1;
 
-    zoomSelecting = false;
+    zoomSelecting      = false;
 
 
-    panZoomTimer  = null;
+    panZoomTimer       = null;
 
 
 

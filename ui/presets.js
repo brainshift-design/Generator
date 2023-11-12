@@ -57,7 +57,7 @@ function loadPresetGraph(graphId)
     graph.clear();
 
 
-    actionManager.do(new PasteNodesAction(getPresetGraph(graphId), false, false, true, Number.NaN, Number.NaN, true, (nodes) =>
+    actionManager.do(new PasteNodesAction(getPresetGraph(graphId), false, false, true, Number.NaN, Number.NaN, true, true, (nodes) =>
     {
         actionManager.clear();
     }));
