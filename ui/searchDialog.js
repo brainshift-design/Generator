@@ -244,7 +244,7 @@ function selectSearchItem(item, shift, ctrl, alt)
             if (!shift)
                 graphView.selectedNodes = [];
 
-            search.found[searchIndex].selected = true;//setSelected(true);
+            search.found[searchIndex].selected = true;
             search.found[searchIndex].updateBorder();
         }
     }

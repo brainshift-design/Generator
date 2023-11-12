@@ -60,8 +60,8 @@ extends GOperator1
                 && this.order
                 && reverse)
             {
-                const input = (await this.input.eval(parse)).toValue();
-                const order = (await this.order.eval(parse)).toValue();
+                const input = this.input ? (await this.input.eval(parse)).toValue() : null;
+                const order = this.input ? (await this.order.eval(parse)).toValue() : null;
 
                 
                 if (   input 

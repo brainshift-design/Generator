@@ -1016,7 +1016,7 @@ menuFlow = new Menu('Flow', true, false);
 
 
 
-    btnSolo = new MenuButton('Focus&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<span style="color: #888; font-weight: 500;">'+osAlt()+'F</span>', null, {callback: () => 
+    btnSolo = new MenuButton('Highlight&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<span style="color: #888; font-weight: 500;">~</span>', null, {callback: () => 
     {
         updateSoloMode(!graphView.soloMode);
     }});

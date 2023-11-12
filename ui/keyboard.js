@@ -4,6 +4,9 @@ var altPressedInMenu = false;
 
 document.addEventListener('keydown', e =>
 {
+    //console.log('e.code =', e.code);
+
+
     if (   crashed
         || graphView.loadingNodes
         || graphView.pastingNodes
@@ -49,10 +52,10 @@ document.addEventListener('keydown', e =>
     }
 
     // focus mode
-    else if (   e.code == 'KeyF'
-        && !getCtrlKey(e)
-        && !e.shiftKey
-        &&  e.altKey)
+    else if (e.code == 'Backquote'
+         && !getCtrlKey(e)
+         && !e.shiftKey
+         && !e.altKey)
     {
         e.preventDefault();
         updateSoloMode(!graphView.soloMode);
