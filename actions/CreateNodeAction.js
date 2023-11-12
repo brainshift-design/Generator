@@ -51,7 +51,11 @@ extends Action
             && this.options.autoConnect;
 
             
-        graph.addNode(this.node, !autoConnect);
+        graph.addNode(
+            this.node, 
+            !autoConnect, 
+            true, 
+            this.options.fromSearch === true);
 
         this.createdNodeId = this.node.id;
         

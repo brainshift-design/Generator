@@ -702,7 +702,7 @@ menuFlow = new Menu('Flow', true, false);
 
     menuShapes = new Menu('Shapes', true, false);
     menuShapes.addItems([
-        new MenuItem('Rectangle', null,         {icon: iconRectangle,  childMenu: menuRectangle, createType: RECTANGLE,  callback: e => actionManager.do(getCreateNodeAction(RECTANGLE,  btnShape.div, getCreateOptions(e)))}),
+        new MenuItem('Rectangle', null,         {icon: iconRectangle,  childMenu: menuRectangle, createType: RECTANGLE,  callback: e => actionManager.do(getCreateNodeAction(RECTANGLE, btnShape.div, getCreateOptions(e)))}),
         new MenuItem('Trapeze',   null,         {icon: iconTrapeze,    createType: TRAPEZE,    callback: e => actionManager.do(getCreateNodeAction(TRAPEZE,    btnShape.div, getCreateOptions(e)))}),
         new MenuItem('Line',      null,         {icon: iconLine,       createType: LINE,       callback: e => actionManager.do(getCreateNodeAction(LINE,       btnShape.div, getCreateOptions(e)))}),
         new MenuItem('Ellipse',   null,         {icon: iconEllipse,    createType: ELLIPSE,    callback: e => actionManager.do(getCreateNodeAction(ELLIPSE,    btnShape.div, getCreateOptions(e)))}),
@@ -1016,7 +1016,7 @@ menuFlow = new Menu('Flow', true, false);
 
 
 
-    btnSolo = new MenuButton('Highlight&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<span style="color: #888; font-weight: 500;">~</span>', null, {callback: () => 
+    btnSolo = new MenuButton('Highlight node&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<span style="color: #888; font-weight: 500;">~</span>', null, {callback: () => 
     {
         updateSoloMode(!graphView.soloMode);
     }});

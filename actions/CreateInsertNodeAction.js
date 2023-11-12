@@ -50,7 +50,11 @@ extends Action
             && canAutoConnectNode(node);
    
             
-        graph.addNode(node, !insert);
+        graph.addNode(
+            node, 
+            !insert,
+            true,
+            this.options.fromSearch === true);
         
         this.createdNodeId = node.id;
 

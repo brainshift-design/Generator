@@ -232,7 +232,8 @@ function selectSearchItem(item, shift, ctrl, alt)
     {
         shiftKey: shift,
         ctrlKey:  ctrl,
-        altKey:   alt
+        altKey:   alt,
+        search:   true
     };
 
     if (item)

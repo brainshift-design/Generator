@@ -37,7 +37,7 @@ class Graph
 
 
 
-    addNode(node, placeNode = true, updateLabel = true)
+    addNode(node, placeNode = true, updateLabel = true, fromSearch = false)
     {
         node.graph = this;
 
@@ -49,7 +49,7 @@ class Graph
         graphView.div.appendChild(node.div);
         
         if (placeNode)
-            graphView.placeNewNode(node);
+            graphView.placeNewNode(node, fromSearch);
 
         node.div.style.zIndex = graph.nodes.length-1;
         graphView.putNodeOnTop(node);
