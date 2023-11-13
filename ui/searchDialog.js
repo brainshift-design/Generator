@@ -83,20 +83,7 @@ function initSearchBox(query)
                 if (!menu) continue;
                 
                 for (const item of menu.items)
-                {
-                    if (   item.name.toLowerCase().includes(query.toLowerCase())
-                        && item.callback)
-                    {
-                        item.foundExact = 0;
-                        search.found.push(item);
-                    }
-                    else if (includesSimilar(item.name.toLowerCase(), query.toLowerCase(), 1)
-                          && item.callback)
-                    {
-                        item.foundExact = 1;
-                        search.found.push(item);
-                    }
-                }
+                    initSearchItem(item, search, query);
             }
         }
 
@@ -219,6 +206,24 @@ function initSearchBox(query)
 
 
     updateSearchBox();
+}
+
+
+
+function initSearchItem(item, search, query)
+{
+    if (   item.name.toLowerCase().includes(query.toLowerCase())
+        && item.callback)
+    {
+        item.foundExact = 0;
+        search.found.push(item);
+    }
+    else if (includesSimilar(item.name.toLowerCase(), query.toLowerCase(), 1)
+            && item.callback)
+    {
+        item.foundExact = 1;
+        search.found.push(item);
+    }
 }
 
 

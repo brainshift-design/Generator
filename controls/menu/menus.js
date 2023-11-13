@@ -767,10 +767,10 @@ menuFlow = new Menu('Flow', true, false);
 
     menuPanel = new Menu('Decoration', true, false);
     menuPanel.addItems([
-        new MenuItem('Panel',   null, {icon: iconPanel,        createType: PANEL,         callback: e => actionManager.do(getCreateNodeAction(PANEL,         btnPanel.div, getCreateOptions(e)))}),
-        new MenuItem('',        null, {separator: true}),
-        new MenuItem('Comment', null, {icon: iconComment,      createType: COMMENT,       callback: e => actionManager.do(getCreateNodeAction(COMMENT,       btnPanel.div, getCreateOptions(e)))}),
-        new MenuItem('Arrow',   null, {icon: iconCommentArrow, createType: COMMENT_ARROW, callback: e => actionManager.do(getCreateNodeAction(COMMENT_ARROW, btnPanel.div, getCreateOptions(e)))})]);
+        new MenuItem('Panel',   null, {icon: iconPanel,        createType: PANEL,         callback: e => actionManager.do(getCreateNodeAction(PANEL,         btnPanel.div, getCreateOptions(e)))})]);//,
+        // new MenuItem('',        null, {separator: true}),
+        // new MenuItem('Comment', null, {icon: iconComment,      createType: COMMENT,       callback: e => actionManager.do(getCreateNodeAction(COMMENT,       btnPanel.div, getCreateOptions(e)))}),
+        // new MenuItem('Arrow',   null, {icon: iconCommentArrow, createType: COMMENT_ARROW, callback: e => actionManager.do(getCreateNodeAction(COMMENT_ARROW, btnPanel.div, getCreateOptions(e)))})]);
 
 
     menuWindow = new Menu('Window options', true, false);
@@ -1087,7 +1087,8 @@ menuFlow = new Menu('Flow', true, false);
         menuShape,
         menuShapes,
         menuVector,
-        menuTransform
+        menuTransform,
+        menuPanel
     ];
 }
 
