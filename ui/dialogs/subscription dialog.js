@@ -83,6 +83,7 @@ function onValidateClick()
 
                 uiNotify('✨   Thanks for subscribing to Generator !   ✨', {delay: 6000});
 
+                addMetricsEvent(METRICS_CLICK_LINK, 'subscribe');                
             }
             else if (response.result == 1)
             {

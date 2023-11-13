@@ -45,7 +45,7 @@ class GraphPage
 
         this._pan = pan;
         
-        graphView.updatePanAndZoom(false);//true);
+        graphView.updatePanAndZoom(false);
     }
     
 

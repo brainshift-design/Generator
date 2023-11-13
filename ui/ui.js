@@ -44,6 +44,8 @@ function uiError(text, options = {}, delay = 6000)
             error: true,
             ...options
         });
+
+    addMetricsEvent(METRICS_ERROR, 'text');                
 }
 
 
