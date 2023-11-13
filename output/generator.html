@@ -3191,7 +3191,6 @@ function includesSimilar(str, sub, levenshteinDistance)
     for (let i = 0; i <= str.length - sub.length; i++) 
     {
         const s = str.substring(i, i + sub.length);
-        console.log('s =', s);
         
         if (getEditDistance(sub, s) <= levenshteinDistance)
             return true;

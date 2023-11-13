@@ -13,6 +13,7 @@ const METRICS_PING        = 'PING';
 const METRICS_MENU_BUTTON = 'MENU_BUTTON';
 const METRICS_MENU_ITEM   = 'MENU_ITEM';
 const METRICS_WINDOW_SIZE = 'WINDOW_SIZE';
+const METRICS_PAN_ZOOM    = 'PAN_ZOOM';
 const METRICS_PARAM_VALUE = 'PARAM_VALUE';
 const METRICS_NODE_NAME   = 'NODE_NAME';
 const METRICS_DEBUG_MODE  = 'DEBUG_MODE';
@@ -26,8 +27,8 @@ const METRICS_ACTION_REDO = 'ACTION_REDO';
 
 function createMetricsEvent(type, data)
 {
-    // console.log('type =', type);
-    // console.log('data =', data);
+    console.log('type =', type);
+    console.log('data =', data);
     
     const event =
     {

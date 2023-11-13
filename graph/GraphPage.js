@@ -86,6 +86,8 @@ class GraphPage
                 graphView.updatePanAndZoom(this.zoom != graphView.oldZoom);
                 graphView.panZoomTimer = null;
             });
+
+            addMetricsEvent(METRICS_PAN_ZOOM, 'x: ' + Number(pan.x.toFixed(3)) + ', y: ' + Number(pan.y.toFixed(3)) + ', z: ' + Number(zoom.toFixed(3)));
         }
     };
     
