@@ -230,10 +230,10 @@ function selectSearchItem(item, shift, ctrl, alt)
 
     const e = 
     {
-        shiftKey: shift,
-        ctrlKey:  ctrl,
-        altKey:   alt,
-        search:   true
+        shiftKey:   shift,
+        ctrlKey:    ctrl,
+        altKey:     alt,
+        fromSearch: true
     };
 
     if (item)

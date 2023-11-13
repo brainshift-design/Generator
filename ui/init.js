@@ -214,7 +214,7 @@ function finalizeInit(eulaAgreed, activate)
 
 
     if (settings.dataMode)
-        addMetricsEvent(METRICS_DATA_MODE, NULL);
+        addMetricsEvent(METRICS_DEBUG_MODE, NULL);
 }
 
 

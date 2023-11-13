@@ -259,20 +259,20 @@ class GraphView
 
     placeNewNode(node, fromSearch = false)
     {
-        const ox = fromSearch ? mouse X : this.div.offsetWidth /2;
-        const oy = fromSearch ? mouse Y : this.div.offsetHeight/2;
+        const ox = fromSearch && graphView.p ? graphView.p.x                 : this.div.offsetWidth /2;
+        const oy = fromSearch && graphView.p ? graphView.p.y - menuBarHeight : this.div.offsetHeight/2;
 
         if (node.type == PANEL)
         {
             node.div.style.left = (ox - graph.currentPage.pan.x) / graph.currentPage.zoom - defPanelWidth /2;
-            node.div.style.top  = (oy - graph.currentPage.pan.y) / graph.currentPage.zoom - defPanelHeight/2;
+            node.div.style.top  = (oy - graph.currentPage.pan.y) / graph.currentPage.zoom - (fromSearch ? defHeaderHeight/2 : defPanelHeight/2);
         }
         else
         {
             const nodeHeight = defHeaderHeight + node.params.length * defParamHeight;
             
             node.div.style.left = (ox - graph.currentPage.pan.x) / graph.currentPage.zoom - defNodeWidth/2;
-            node.div.style.top  = (oy - graph.currentPage.pan.y) / graph.currentPage.zoom - nodeHeight  /2;
+            node.div.style.top  = (oy - graph.currentPage.pan.y) / graph.currentPage.zoom - (fromSearch ? defHeaderHeight/2 : nodeHeight/2);
         }
     }
 

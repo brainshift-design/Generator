@@ -1231,6 +1231,7 @@ function getCreateOptions(e, options = {})
     return {
         insert:      e.ctrlKey,
         autoConnect: e.ctrlKey && e.altKey,
+        fromSearch:  e.fromSearch === true,
         ...options
     };
 }
