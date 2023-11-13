@@ -212,18 +212,30 @@ function initSearchBox(query)
 
 function initSearchItem(item, search, query)
 {
-    if (   item.name.toLowerCase().includes(query.toLowerCase())
+    if (   makeSearchable(item.name).includes(makeSearchable(query))
         && item.callback)
     {
         item.foundExact = 0;
         search.found.push(item);
     }
-    else if (includesSimilar(item.name.toLowerCase(), query.toLowerCase(), 1)
-            && item.callback)
+    else if (includesSimilar(makeSearchable(item.name), makeSearchable(query), 1)
+          && item.callback)
     {
         item.foundExact = 1;
         search.found.push(item);
     }
+}
+
+
+
+function makeSearchable(name)
+{
+    return name
+        .toLowerCase()
+        .replaceAll(' ', '')
+        .replaceAll('&hairsp;', '')
+        .replaceAll('&thinsp;', '')
+        .replaceAll('&nbsp;',   '');
 }
 
 
