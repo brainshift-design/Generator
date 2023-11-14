@@ -211,7 +211,14 @@ generator.onmessage = function(e)
             break;
         
         case 'uiInitNodeProgress':   nodeFromId(msg.nodeId).initProgress();      break;
-        case 'uiUpdateNodeProgress': nodeFromId(msg.nodeId).updateProgress(msg); break;
+
+        case 'uiUpdateNodeProgress': 
+        {
+            const node = nodeFromId(msg.nodeId);
+            if (node) node.updateProgress(msg); 
+            break;
+        }
+
         case 'uiEndNodeProgress':    nodeFromId(msg.nodeId).endProgress();       break;
 
         case 'uiInitGlobalProgress': uiInitGlobalProgress(msg.requestId);        break;

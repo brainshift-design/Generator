@@ -463,7 +463,7 @@ NumberControl.prototype.initEvents = function()
             this.setValue(
                 this.value,
                 this.decimals,
-                false, 
+                false,
                 true,
                 e.shiftKey);
 
@@ -476,6 +476,9 @@ NumberControl.prototype.initEvents = function()
             pushUpdateFromParam(null, [param.node], param);
 
 
+            // if (this.param)
+            //     addMetricsEvent(METRICS_PARAM_VALUE, this.param.name);
+
             return;            
         }
 
@@ -486,7 +489,7 @@ NumberControl.prototype.initEvents = function()
         }
 
 
-        if (e.button == 0) 
+        if (e.button == 0)
         {
             this.buttonDown0 = false;
             this.shiftDown   = false;

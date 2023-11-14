@@ -429,6 +429,9 @@ NumberControl.prototype.initTextbox = function()
                     value.trim() != ''
                     ? val
                     : savedVal);
+
+                // if (this.param)
+                //     addMetricsEvent(METRICS_PARAM_VALUE, this.param.name);
             }
             else
                 this.setValue(savedVal);

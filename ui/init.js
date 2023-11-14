@@ -49,7 +49,8 @@ var sessionId          = ''; // for metrics
 
 
 
-var currentUser  = null;
+var currentUser     = null;
+var currentUserHash = null;
 
 
 
@@ -87,8 +88,11 @@ uiQueueMessageToFigma({cmd: 'figStartGenerator'});
 
 async function uiReturnFigStartGenerator(msg)
 {
-    currentUser   = msg.currentUser;
-    tutorialsSeen = msg.tutorials;
+    currentUser     = msg.currentUser;
+    tutorialsSeen   = msg.tutorials;
+
+    currentUserHash = hashUserId(currentUser.is);
+    console.log('currentUserHash =', currentUserHash);
 
 
     loadLocalSettings();

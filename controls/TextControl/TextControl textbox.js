@@ -221,6 +221,9 @@ TextControl.prototype.initTextarea = function(textbox)
                     value != NAN_CHAR
                     ? value 
                     : savedValue);
+
+                // if (this.param)
+                //     addMetricsEvent(METRICS_PARAM_VALUE, this.param.name);
             }
             else
                 this.setValue(savedVal);

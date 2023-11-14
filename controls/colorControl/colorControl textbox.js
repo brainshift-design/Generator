@@ -319,6 +319,9 @@ ColorControl.prototype.initTextbox = function()
                       value.trim() != '' 
                     ? ColorValue.fromRgb(scaleRgb(rgb     )) 
                     : ColorValue.fromRgb(scaleRgb(savedRgb)));
+
+                // if (this.param)
+                //     addMetricsEvent(METRICS_PARAM_VALUE, this.param.name);
             }
             else
             {

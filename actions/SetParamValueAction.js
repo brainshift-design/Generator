@@ -21,7 +21,7 @@ extends Action
     {
         super(
             SET_PARAM_VALUE_ACTION,
-            'SET PARAM VALUE ' + param.node.id + '.' + param.id + ' = ' + value.toDisplayString());
+            'SET PARAM VALUE ' + param.node.id + '.' + param.id);// + ' = ' + value.toDisplayString());
 
         this.nodeId     = param.node.id;
         this.paramId    = param.id;
@@ -40,9 +40,9 @@ extends Action
         this.name = 
               'SET PARAM VALUE ' 
                     + this.param.node.id 
-            + '.'   + this.param.id 
-            + ' = ' + this.newValue.toDisplayString() 
-            + ' (old value = ' + (this.oldValue ? this.oldValue.toDisplayString() : '') + ')';
+            + '.'   + this.param.id;
+            // + ' = ' + this.newValue.toDisplayString() 
+            // + ' (old value = ' + (this.oldValue ? this.oldValue.toDisplayString() : '') + ')';
 
         //console.log('SetParamValueAction.name =', this.name);
 
