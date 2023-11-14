@@ -215,7 +215,10 @@ generator.onmessage = function(e)
         case 'uiUpdateNodeProgress': 
         {
             const node = nodeFromId(msg.nodeId);
-            if (node) node.updateProgress(msg); 
+
+            if (node) 
+                node.updateProgress(msg); 
+
             break;
         }
 

@@ -88,6 +88,8 @@ function pingMetrics()
 
 function updateMetrics()
 {
+    return;
+
     if (   metricsEvents.length == 0
         || ignoreUsers.includes(currentUser.id))
         return;
@@ -113,15 +115,18 @@ function updateMetrics()
 
 
 
-function hashUserId(userId, rounds = 10)
+function hashUserId(userId, rounds = 10, salt = '')
 {
     const saltBuffer = new Uint8Array(16);
     
     crypto.getRandomValues(saltBuffer);
 
-    const salt = Array.from(saltBuffer)
-        .map(byte => ('0' + (byte & 0xFF).toString(16)).slice(-2))
-        .join('');
+    if (salt == '')
+    {
+        salt = Array.from(saltBuffer)
+            .map(byte => ('0' + (byte & 0xFF).toString(16)).slice(-2))
+            .join('');
+    }
     
 
     const encoder = new TextEncoder();
@@ -132,12 +137,10 @@ function hashUserId(userId, rounds = 10)
     for (let i = 0; i < rounds - 1; i++)
         hash = sha256(hash);
 
-
-    const hashedUserHex = Array.from(new Uint8Array(hash))
-        .map(byte => ('0' + byte.toString(16)).slice(-2))
-        .join('');
-  
-    return { id: hashedUserHex, salt };
+ 
+    return { 
+        hash: hash.slice(0, 16), 
+        salt };
 }
 
 
@@ -146,8 +149,6 @@ function sha256(text)
 {
     const encoder = new TextEncoder();
     const data    = encoder.encode(text);
-
-    const hashBuffer = new Uint8Array(32);
 
     
     let [h0, h1, h2, h3, h4, h5, h6, h7] = 

@@ -91,7 +91,7 @@ async function uiReturnFigStartGenerator(msg)
     currentUser     = msg.currentUser;
     tutorialsSeen   = msg.tutorials;
 
-    currentUserHash = hashUserId(currentUser.is);
+    currentUserHash = hashUserId(currentUser.id);
     console.log('currentUserHash =', currentUserHash);
 
 
