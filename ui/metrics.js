@@ -29,8 +29,8 @@ const METRICS_ERROR       = 'ERROR';
 
 function createMetricsEvent(type, data)
 {
-    console.log('type =', type);
-    console.log('data =', data);
+    // console.log('type =', type);
+    // console.log('data =', data);
     
     const event =
     {

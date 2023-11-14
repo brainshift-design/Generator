@@ -58,16 +58,18 @@ extends GShapeBase
         {
             await this.inputs[i].eval(parse);
 
+            const objects = getValidObjects(this.inputs[i].value);
         
+            
             if (   this.options.enabled
                 && (   finalize
                     || retain.value == 1))
             {
-                for (let j = 0; j < this.inputs[i].value.objects.length; j++, o++)
+                for (let j = 0; j < objects.length; j++, o++)
                 {
-                    let obj = this.inputs[i].value.objects[j];
+                    let obj = objects[j];
 
-                    obj = copyFigmaObject(obj);
+                    //obj = copyFigmaObject(obj);
 
                     obj.nodeId   = this.nodeId;
                     obj.objectId = obj.objectId + OBJECT_SEPARATOR + this.nodeId;
@@ -77,8 +79,6 @@ extends GShapeBase
                     if (  (   !isEmpty(obj.fills  )
                            || !isEmpty(obj.strokes))
                         && !obj.isDeco)
-                        // && (   finalize
-                        //     || retain.value == 1))
                             obj.retain = finalize ? 2 : 1;
                             
 
