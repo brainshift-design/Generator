@@ -269,11 +269,13 @@ NumberControl.prototype.initEvents = function()
                     const min = e.shiftKey ? this.min : this.displayMin;
                     const max = e.shiftKey ? this.max : this.displayMax;
 
+
                     this.setValue(
                         Math.round(val / grain) * grain,
                         this.decimals, 
                         true, 
                         false,
+                        e.shiftKey,
                         false,
                         e.shiftKey);
 

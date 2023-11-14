@@ -105,7 +105,8 @@ function getPresetGraph(graphId)
         case 'numberLine':           return presetNumberLine;
         case 'wavyDots':             return presetWavyDots;
         case 'falsePerspective':     return presetFalsePerspective;
-
+        case 'rays':                 return presetRays;
+        
 
         case 'twoMathNodes':         return presetTwoMathNodes;
         case 'quadraticFormula':     return presetQuadraticFormula;
