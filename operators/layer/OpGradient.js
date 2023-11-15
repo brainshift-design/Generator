@@ -45,7 +45,7 @@ extends OpColorBase
         this.addParam(this.paramY      = new NumberParam('y',      'y',      true,  true, true,  50));
         this.addParam(this.paramSize   = new NumberParam('size',   'size',   true,  true, true, 100));
         this.addParam(this.paramAngle  = new NumberParam('angle',  'angle',  true,  true, true,   0));
-        this.addParam(this.paramAspect = new NumberParam('aspect', 'aspect', true,  true, true,  50));
+        this.addParam(this.paramAspect = new NumberParam('aspect', 'aspect', true,  true, true, 100));
         this.addParam(this.paramSkew   = new NumberParam('skew',   'skew',   true,  true, true,   0));
         this.addParam(this.paramBlend  = new SelectParam('blend',  'blend',  false, true, true, BlendModes.map(bm => bm[1]), 0));
 

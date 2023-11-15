@@ -476,9 +476,6 @@ NumberControl.prototype.initEvents = function()
             pushUpdateFromParam(null, [param.node], param);
 
 
-            // if (this.param)
-            //     addMetricsEvent(METRICS_PARAM_VALUE, this.param.name);
-
             return;            
         }
 

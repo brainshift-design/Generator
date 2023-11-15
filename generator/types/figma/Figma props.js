@@ -46,8 +46,7 @@ function addGradientProp(obj, prop, target = obj.fills)
     }
 
 
-    const isLinear = prop.gradType.value == 0;
-
+    const isLinear   = prop.gradType.value == 0;
 
     let   x   =        prop.x     .toNumber() / 100;
     let   y   =        prop.y     .toNumber() / 100;
@@ -59,10 +58,10 @@ function addGradientProp(obj, prop, target = obj.fills)
 
     if (!isLinear)
     {
-        x   -= s * Math.cos(a);
-        y   -= s * Math.sin(a);
+        x   -= s/2 * Math.cos(a);
+        y   -= s/2 * Math.sin(a);
 
-        s   *= 2;
+        // s   *= 2;
 
         asp /= 2;
     }
