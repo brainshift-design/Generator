@@ -92,7 +92,7 @@ async function uiReturnFigStartGenerator(msg)
     tutorialsSeen   = msg.tutorials;
 
     currentUserHash = hashUserId(currentUser.id);
-    console.log('currentUserHash =', currentUserHash);
+    //console.log('currentUserHash =', currentUserHash);
 
 
     loadLocalSettings();

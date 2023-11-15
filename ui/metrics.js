@@ -88,8 +88,6 @@ function pingMetrics()
 
 function updateMetrics()
 {
-    return;
-
     if (   metricsEvents.length == 0
         || ignoreUsers.includes(currentUser.id))
         return;

@@ -23,7 +23,7 @@ function noNodeTag(key) { return noTag(key, nodeTag); }
 function noConnTag(key) { return noTag(key, connTag); }
 
 
-const generatorVersion = 290;
+const generatorVersion = 292;
 
 
 const MAX_INT32        = 2147483647;
@@ -3751,7 +3751,8 @@ function figUpdateObjects(figParent, genObjects, nodeIds = [], firstChunk = fals
         _genIgnoreObjects = [];
 
         
-        if (zoomToFit)
+        if (   zoomToFit
+            && updateObjects.length > 0)
         {
             figma.viewport.scrollAndZoomIntoView(updateObjects);
 

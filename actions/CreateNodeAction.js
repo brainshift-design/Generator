@@ -55,7 +55,8 @@ extends Action
             this.node, 
             !autoConnect, 
             true, 
-            this.options.fromSearch === true);
+               this.options
+            && this.options.fromSearch === true);
 
         this.createdNodeId = this.node.id;
         

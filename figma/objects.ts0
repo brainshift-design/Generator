@@ -249,7 +249,8 @@ function figUpdateObjects(figParent, genObjects, nodeIds = [], firstChunk = fals
         _genIgnoreObjects = [];
 
         
-        if (zoomToFit)
+        if (   zoomToFit
+            && updateObjects.length > 0)
         {
             figma.viewport.scrollAndZoomIntoView(updateObjects);
 

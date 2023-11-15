@@ -54,7 +54,8 @@ extends Action
             node, 
             !insert,
             true,
-            this.options.fromSearch === true);
+               this.options
+            && this.options.fromSearch === true);
         
         this.createdNodeId = node.id;
 

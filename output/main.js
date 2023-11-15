@@ -19,7 +19,7 @@ function isConnKey(key) { return isTagKey(key, connTag); }
 function noPageTag(key) { return noTag(key, pageTag); }
 function noNodeTag(key) { return noTag(key, nodeTag); }
 function noConnTag(key) { return noTag(key, connTag); }
-const generatorVersion = 290;
+const generatorVersion = 292;
 const MAX_INT32 = 2147483647;
 const NULL = '';
 const HTAB = '  '; // half-tab
@@ -2523,7 +2523,8 @@ function figUpdateObjects(figParent, genObjects, nodeIds = [], firstChunk = fals
         figDeleteObjectsExcept(_genIgnoreNodeIds, _genIgnoreObjects);
         _genIgnoreNodeIds = [];
         _genIgnoreObjects = [];
-        if (zoomToFit) {
+        if (zoomToFit
+            && updateObjects.length > 0) {
             figma.viewport.scrollAndZoomIntoView(updateObjects);
             const bounds = figGetObjectBounds(updateObjects);
             figma.viewport.zoom = Math.min(figma.viewport.bounds.width * figma.viewport.zoom / bounds.width - 0.05, figma.viewport.bounds.height * figma.viewport.zoom / bounds.height - 0.05);
