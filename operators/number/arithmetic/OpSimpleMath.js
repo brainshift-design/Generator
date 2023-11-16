@@ -3,6 +3,9 @@ extends OperatorBase
 {
     paramOperation;
     paramOperand;
+    paramInvert;
+
+    menuInvert;
 
 
 
@@ -19,9 +22,14 @@ extends OperatorBase
 
         this.addParam(this.paramOperation = new SelectParam('operation', '',        false, true, true, MATH_OPS.map(s => s[1]), 1));
         this.addParam(this.paramOperand   = new NumberParam('operand',   'operand', false, true, true, 0));
+        this.addParam(this.paramInvert    = new NumberParam('invert',    'invert',  true,  true, true, 0, 0, 1));
 
 
         this.paramOperation.reverseMenu = true;
+    
+        this.paramInvert.divider = 0.55;
+
+        this.menuInvert = createBoolMenu(this.paramInvert);
     }
 
 
@@ -49,6 +57,7 @@ extends OperatorBase
         
         request.push(...this.node.paramOperation.genRequest(gen));
         request.push(...this.node.paramOperand  .genRequest(gen));
+        request.push(...this.node.paramInvert   .genRequest(gen));
 
         
         gen.scope.pop();
@@ -73,8 +82,12 @@ extends OperatorBase
 
     updateParams()
     {
-        this.paramOperation.enableControlText(true);
-        this.paramOperand  .enableControlText(true);
+        this.paramOperation.enableControlText(true, this.paramOperation.isUnknown());
+        this.paramOperand  .enableControlText(true, this.paramOperand  .isUnknown());
+
+        this.paramInvert   .enableControlText(true);
+
+        updateParamConditionText(this.paramInvert, this.paramInvert.isUnknown(), false, 1);
 
         
         switch (this.paramOperation.value.value)

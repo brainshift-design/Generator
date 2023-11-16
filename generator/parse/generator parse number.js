@@ -570,6 +570,7 @@ function genParseSimpleMath(parse)
 
     smath.operation = genParse(parse);
     smath.operand   = genParse(parse);
+    smath.invert    = genParse(parse);
 
     
     parse.nTab--;

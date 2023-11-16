@@ -3,6 +3,7 @@ extends GOperator1
 {
     operation;
     operand;
+    invert;
 
 
 
@@ -19,6 +20,7 @@ extends GOperator1
 
         this.operation = null;
         this.operand   = null;
+        this.invert    = null;
     }
 
 
@@ -31,6 +33,7 @@ extends GOperator1
 
         copy.operation = this.operation.copy();
         copy.operand   = this.operand  .copy();
+        copy.invert    = this.invert   .copy();
 
         return copy;
     }
@@ -46,8 +49,10 @@ extends GOperator1
         this.value = new NumberValue(0);
 
         
-        const op      = (await this.operation.eval(parse)).toValue();
-        const operand = (await this.operand  .eval(parse)).toValue();
+        const op      = this.operation ? (await this.operation.eval(parse)).toValue() : null;
+        const operand = this.operand   ? (await this.operand  .eval(parse)).toValue() : null;
+        const invert  = this.invert    ? (await this.invert   .eval(parse)).toValue() : null;
+
 
         op.value    = Math.min(Math.max(0, Math.round(op.value)), MATH_OPS.length-1);
         op.decimals = 0;
@@ -67,13 +72,13 @@ extends GOperator1
 
                     this.value.items.push(
                         item.type == NUMBER_VALUE
-                        ? getSimpleMathValue(item, operand, op, this.options.enabled)
+                        ? getSimpleMathValue(item, operand, op, invert, this.options.enabled)
                         : NumberValue.NaN.copy());   
                 }
             }
             else
             {
-                this.value = getSimpleMathValue(input, operand, op, this.options.enabled);
+                this.value = getSimpleMathValue(input, operand, op, invert, this.options.enabled);
             }
         }
         else
@@ -85,7 +90,8 @@ extends GOperator1
             ['value',     this.value       ],
             ['type',      this.outputType()],
             ['operation', op               ],
-            ['operand',   operand          ]
+            ['operand',   operand          ],
+            ['invert',    invert           ]
         ]);
 
 
@@ -100,7 +106,8 @@ extends GOperator1
     {
         return super.isValid()
             && this.operation && this.operation.isValid()
-            && this.operand   && this.operand  .isValid();
+            && this.operand   && this.operand  .isValid()
+            && this.invert    && this.invert   .isValid();
     }
 
 
@@ -111,6 +118,7 @@ extends GOperator1
 
         if (this.operation) this.operation.pushValueUpdates(parse);
         if (this.operand  ) this.operand  .pushValueUpdates(parse);
+        if (this.invert   ) this.invert   .pushValueUpdates(parse);
     }
 
 
@@ -121,6 +129,7 @@ extends GOperator1
 
         if (this.operation) this.operation.invalidateInputs(parse, from, force);
         if (this.operand  ) this.operand  .invalidateInputs(parse, from, force);
+        if (this.invert   ) this.invert   .invalidateInputs(parse, from, force);
     }
 
 
@@ -131,12 +140,13 @@ extends GOperator1
 
         if (this.operation) this.operation.iterateLoop(parse);
         if (this.operand  ) this.operand  .iterateLoop(parse);
+        if (this.invert   ) this.invert   .iterateLoop(parse);
     }
 }
 
 
 
-function getSimpleMathValue(input, operand, op, enabled)
+function getSimpleMathValue(input, operand, op, invert, enabled)
 {
     consoleAssert(
         input.type == NUMBER_VALUE, 
@@ -150,29 +160,44 @@ function getSimpleMathValue(input, operand, op, enabled)
         switch (op.value)
         {
             case 0: 
-                return new NumberValue(input.toNumber() - operand.toNumber());
+                return invert.value == 0
+                    ? new NumberValue(input.toNumber() - operand.toNumber())
+                    : new NumberValue(operand.toNumber() - input.toNumber());
 
             case 1: 
-                return new NumberValue(input.toNumber() + operand.toNumber());
+                return invert.value == 0
+                    ? new NumberValue(input.toNumber() + operand.toNumber())
+                    : new NumberValue(operand.toNumber() + input.toNumber());
 
             case 2: 
-                return new NumberValue(input.toNumber() % operand.toNumber());
+                return invert.value == 0
+                    ? new NumberValue(input.toNumber() % operand.toNumber())
+                    : new NumberValue(operand.toNumber() % input.toNumber());
 
             case 3: 
-                if (operand.value == 0)
+                if (      operand.value == 0
+                       && invert .value == 0
+                    ||    input  .value == 0
+                       && invert .value == 1)
                     return NumberValue.NaN.copy();
                 else
-                    return new NumberValue(input.toNumber() / operand.toNumber());
+                    return invert.value == 0
+                        ? new NumberValue(input.toNumber() / operand.toNumber())
+                        : new NumberValue(operand.toNumber() / input.toNumber());
 
             case 4: 
-                return new NumberValue(input.toNumber() * operand.toNumber());
+                return invert.value == 0
+                    ? new NumberValue(input.toNumber() * operand.toNumber())
+                    : new NumberValue(operand.toNumber() * input.toNumber());
 
             case 5: 
-                return new NumberValue(Math.pow(input.toNumber(), operand.toNumber()));
+                return invert.value == 0
+                    ? new NumberValue(Math.pow(input.toNumber(), operand.toNumber()))
+                    : new NumberValue(Math.pow(operand.toNumber(), input.toNumber()));
         }
 
 
-        console.error('invalid math result')
+        consoleError('invalid math operation')
         return input;
     }
     else
