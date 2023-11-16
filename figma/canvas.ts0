@@ -26,18 +26,17 @@ function figDeleteObjectsFromNodeIds(nodeIds)
 
 function figDeleteAllObjects(forceDelete = false)
 {
-    for (const obj of figma.currentPage.children)
+    for (const figObj of figma.currentPage.children)
     {
-        if (obj.removed)
+        if (figObj.removed)
             continue;
 
-        if (    obj.getPluginData('objectId' ) != ''
-            &&  obj.getPluginData('userId'   ) == figma.currentUser.id
-            //&&  obj.getPluginData('sessionId') == figma.currentUser.sessionId.toString()
-            && (   obj.getPluginData('retain') == '0'
-                || forceDelete)
-            && !obj.removed) 
-            obj.remove();
+        if (       figObj.getPluginData('objectId' ) != ''
+               &&  figObj.getPluginData('userId'   ) == figma.currentUser.id
+               //&&  figObj.getPluginData('sessionId') == figma.currentUser.sessionId.toString()
+               && (   parseInt(figObj.getPluginData('retain')) == 0
+                   || forceDelete)) 
+            figObj.remove();
     }
 }
 
@@ -57,7 +56,6 @@ function figDeleteObjectsExcept(nodeIds, genIgnoreObjects)
         {
             const figObj = figObjArray.objects[j];
             
-            
             if (    figObj.removed
                 || !findObject(figObj, genIgnoreObjects))
             {
@@ -74,9 +72,11 @@ function figDeleteObjectsExcept(nodeIds, genIgnoreObjects)
             }
 
             
-            if (  !figObj.removed
-                && figObj.getPluginData('retain') == '2')
-                clearObjectData(figObj);
+            if (  !figObj.removed)
+            {
+                if (parseInt(figObj.getPluginData('retain')) == 2)
+                    clearObjectData(figObj);
+            }
         }
 
 
@@ -105,7 +105,7 @@ function findObject(figObj, genIgnoreObjects)
                   figObj.getPluginData('objectId' ) == o[FO_OBJECT_ID] 
                && figObj.getPluginData('userId'   ) == figma.currentUser.id
                //&& figObj.getPluginData('sessionId') == figma.currentUser.sessionId.toString()
-            ||    o[FO_RETAIN] > 0
+            ||    o[FO_RETAIN] == 2
                && o[FO_RETAIN] == figObj.getPluginData('retain'));
 
         if (found) 

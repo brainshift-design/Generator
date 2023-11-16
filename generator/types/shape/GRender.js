@@ -44,7 +44,6 @@ extends GShapeBase
         if (this.isCached())
             return this;
 
-
         const retain   = (await this.retain.eval(parse)).toValue();
         const finalize = this.finalize.value > 0;
 
@@ -75,13 +74,11 @@ extends GShapeBase
                     obj.objectId = obj.objectId + OBJECT_SEPARATOR + this.nodeId;
                     obj.listId   = -1;
 
-
                     if (  (   !isEmpty(obj.fills  )
                            || !isEmpty(obj.strokes))
                         && !obj.isDeco)
                             obj.retain = finalize ? 2 : 1;
                             
-
                     this.value.objects.push(obj);
                 }
             }

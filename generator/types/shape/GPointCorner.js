@@ -86,7 +86,7 @@ extends GOperator1
         {
             const x      = this.value.x.value;
             const y      = this.value.y.value;
-            const smooth = this.value.smooth ? this.value.smooth.value : -1;
+            const smooth = this.value.smooth ? this.value.smooth.value/100 : 1;
 
             const point = new FigmaPoint(this.nodeId, this.nodeId, this.nodeName, x, y, smooth);
 

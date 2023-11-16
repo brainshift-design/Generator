@@ -50,7 +50,7 @@ var sessionId          = ''; // for metrics
 
 
 var currentUser     = null;
-var currentUserHash = null;
+//var currentUserHash = null;
 
 
 
@@ -69,7 +69,7 @@ var pasteOffsetDelta    = point(50, 50);
 
 
 
-clearConsole();
+//clearConsole();
 
 
 initUtilContext();
@@ -91,8 +91,8 @@ async function uiReturnFigStartGenerator(msg)
     currentUser     = msg.currentUser;
     tutorialsSeen   = msg.tutorials;
 
-    currentUserHash = hashUserId(currentUser.id);
-    //console.log('currentUserHash =', currentUserHash);
+    // currentUserHash = hashUserId(currentUser.id, msg.salt);
+    // console.log('currentUserHash =', currentUserHash);
 
 
     loadLocalSettings();

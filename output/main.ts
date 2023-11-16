@@ -23,7 +23,7 @@ function noNodeTag(key) { return noTag(key, nodeTag); }
 function noConnTag(key) { return noTag(key, connTag); }
 
 
-const generatorVersion = 292;
+const generatorVersion = 293;
 
 
 const MAX_INT32        = 2147483647;
@@ -2127,6 +2127,9 @@ function logSavedConn(conn, darkMode)
 }
 
 
+console.clear();
+
+
 //figma.on('selectionchange', figOnSelectionChange);
 
 figma.on('documentchange',  figOnDocumentChange);
@@ -2306,18 +2309,17 @@ function figDeleteObjectsFromNodeIds(nodeIds)
 
 function figDeleteAllObjects(forceDelete = false)
 {
-    for (const obj of figma.currentPage.children)
+    for (const figObj of figma.currentPage.children)
     {
-        if (obj.removed)
+        if (figObj.removed)
             continue;
 
-        if (    obj.getPluginData('objectId' ) != ''
-            &&  obj.getPluginData('userId'   ) == figma.currentUser.id
-            //&&  obj.getPluginData('sessionId') == figma.currentUser.sessionId.toString()
-            && (   obj.getPluginData('retain') == '0'
-                || forceDelete)
-            && !obj.removed) 
-            obj.remove();
+        if (       figObj.getPluginData('objectId' ) != ''
+               &&  figObj.getPluginData('userId'   ) == figma.currentUser.id
+               //&&  figObj.getPluginData('sessionId') == figma.currentUser.sessionId.toString()
+               && (   parseInt(figObj.getPluginData('retain')) == 0
+                   || forceDelete)) 
+            figObj.remove();
     }
 }
 
@@ -2337,7 +2339,6 @@ function figDeleteObjectsExcept(nodeIds, genIgnoreObjects)
         {
             const figObj = figObjArray.objects[j];
             
-            
             if (    figObj.removed
                 || !findObject(figObj, genIgnoreObjects))
             {
@@ -2354,9 +2355,11 @@ function figDeleteObjectsExcept(nodeIds, genIgnoreObjects)
             }
 
             
-            if (  !figObj.removed
-                && figObj.getPluginData('retain') == '2')
-                clearObjectData(figObj);
+            if (  !figObj.removed)
+            {
+                if (parseInt(figObj.getPluginData('retain')) == 2)
+                    clearObjectData(figObj);
+            }
         }
 
 
@@ -2385,7 +2388,7 @@ function findObject(figObj, genIgnoreObjects)
                   figObj.getPluginData('objectId' ) == o[FO_OBJECT_ID] 
                && figObj.getPluginData('userId'   ) == figma.currentUser.id
                //&& figObj.getPluginData('sessionId') == figma.currentUser.sessionId.toString()
-            ||    o[FO_RETAIN] > 0
+            ||    o[FO_RETAIN] == 2
                && o[FO_RETAIN] == figObj.getPluginData('retain'));
 
         if (found) 
@@ -3507,7 +3510,7 @@ var _genIgnoreObjects = [];
 
 function makeObjectName(obj)
 {
-    return (obj[FO_RETAIN] == 2 ? '' : OBJECT_PREFIX)
+    return (obj[FO_RETAIN] === 2 ? '' : OBJECT_PREFIX)
          + (showIds ? obj[FO_OBJECT_ID] : obj[FO_OBJECT_NAME]);
 }
 
@@ -3548,22 +3551,25 @@ function figCreateObject(genObj, addObject = null)
             || !!figObj, 
             'no Figma object created');
 
-            
-        if (   figObj
-            && genObj[FO_RETAIN] < 2)
-        {
-            figObj.setPluginData('userId',    figma.currentUser.id);
-            figObj.setPluginData('sessionId', figma.currentUser.sessionId.toString());
-            figObj.setPluginData('type',      genObj[FO_TYPE     ]);
-            figObj.setPluginData('nodeId',    genObj[FO_NODE_ID  ]);
-            figObj.setPluginData('objectId',  genObj[FO_OBJECT_ID]);
-            figObj.setPluginData('retain',    genObj[FO_RETAIN   ].toString());
-            
-            if (genObj[FO_TYPE] == POINT)
-                figPoints.push(figObj);
 
-            if (genObj[FO_DECO])
-                updateDecoObject(figObj);
+        if (figObj)
+        {
+            figObj.setPluginData('retain', genObj[FO_RETAIN].toString());
+
+            if (genObj[FO_RETAIN] < 2)
+            {
+                figObj.setPluginData('userId',    figma.currentUser.id);
+                figObj.setPluginData('sessionId', figma.currentUser.sessionId.toString());
+                figObj.setPluginData('type',      genObj[FO_TYPE     ]);
+                figObj.setPluginData('nodeId',    genObj[FO_NODE_ID  ]);
+                figObj.setPluginData('objectId',  genObj[FO_OBJECT_ID]);
+                
+                if (genObj[FO_TYPE] == POINT)
+                    figPoints.push(figObj);
+            
+                if (genObj[FO_DECO])
+                    updateDecoObject(figObj);
+            }
 
             addObject(figObj);
         }
@@ -3589,18 +3595,18 @@ function figUpdateObject(figObj, genObj)
 
     switch (genObj[FO_TYPE])
     {
-        case RECTANGLE:         figUpdateRect         (figObj, genObj);  break;
-        case LINE:              figUpdateLine         (figObj, genObj);  break;
-        case ELLIPSE:           figUpdateEllipse      (figObj, genObj);  break;
-        case POLYGON:           figUpdatePolygon      (figObj, genObj);  break;
-        case STAR:              figUpdateStar         (figObj, genObj);  break;
-        case TEXT_SHAPE:        figUpdateText         (figObj, genObj);  break;
-        case POINT:             figUpdatePoint        (figObj, genObj);  break;
-        case VECTOR_PATH:       figUpdateVectorPath   (figObj, genObj);  break;
-        case VECTOR_NETWORK:    figUpdateVectorNetwork(figObj, genObj);  break;
-        case BOOLEAN:           figUpdateBoolean      (figObj, genObj);  break;
-        case SHAPE_GROUP:       figUpdateShapeGroup   (figObj, genObj);  break;
-        case FRAME:             figUpdateFrame        (figObj, genObj);  break;
+        case RECTANGLE:      figUpdateRect         (figObj, genObj);  break;
+        case LINE:           figUpdateLine         (figObj, genObj);  break;
+        case ELLIPSE:        figUpdateEllipse      (figObj, genObj);  break;
+        case POLYGON:        figUpdatePolygon      (figObj, genObj);  break;
+        case STAR:           figUpdateStar         (figObj, genObj);  break;
+        case TEXT_SHAPE:     figUpdateText         (figObj, genObj);  break;
+        case POINT:          figUpdatePoint        (figObj, genObj);  break;
+        case VECTOR_PATH:    figUpdateVectorPath   (figObj, genObj);  break;
+        case VECTOR_NETWORK: figUpdateVectorNetwork(figObj, genObj);  break;
+        case BOOLEAN:        figUpdateBoolean      (figObj, genObj);  break;
+        case SHAPE_GROUP:    figUpdateShapeGroup   (figObj, genObj);  break;
+        case FRAME:          figUpdateFrame        (figObj, genObj);  break;
     }
 
 
@@ -3640,7 +3646,6 @@ function figUpdateObjects(figParent, genObjects, nodeIds = [], firstChunk = fals
                 figObjectArrays.push(figObjects = 
                 {
                     nodeId:  genObj[FO_NODE_ID], 
-                    //existing: genObj.existing,
                     objects: []
                 });
             }
@@ -3723,12 +3728,14 @@ function figUpdateObjects(figParent, genObjects, nodeIds = [], firstChunk = fals
         && !figParent.removed)
     {
         for (const figObj of figParent.children)
+        {
             if (    figObj.removed
                 || !genObjects.find(o => 
                            o[FO_OBJECT_ID] == figObj.getPluginData('objectId')
                         && figObj.getPluginData('userId'   ) == figma.currentUser.id))
                         //&& figObj.getPluginData('sessionId') == figma.currentUser.sessionId.toString()))
                 figObj.remove();
+        }
     }
 
 
@@ -3745,7 +3752,9 @@ function figUpdateObjects(figParent, genObjects, nodeIds = [], firstChunk = fals
     {
         // delete old content
 
-        figDeleteObjectsExcept(_genIgnoreNodeIds, _genIgnoreObjects);
+        figDeleteObjectsExcept(
+            _genIgnoreNodeIds, 
+            _genIgnoreObjects);
 
         _genIgnoreNodeIds = [];
         _genIgnoreObjects = [];

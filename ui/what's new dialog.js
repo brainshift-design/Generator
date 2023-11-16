@@ -112,13 +112,8 @@ function hideWhatsNewDialog()
     dialogShown = false;
 
 
-    if (!tutorialsSeen)
-    {
+    if (!tutorialsShown)
         uiGetLocalData('canvasEmpty')
-
-        findTutorials.style.display = 'block';
-        tutorialsShown = true;
-    }
 }
 
 

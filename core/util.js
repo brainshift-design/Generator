@@ -159,10 +159,10 @@ function strFromData(data)
 
 
 
-function clearConsole()
-{
-    setTimeout(console.clear.bind(console));
-}
+// function clearConsole()
+// {
+//     setTimeout(console.clear.bind(console));
+// }
 
 
 

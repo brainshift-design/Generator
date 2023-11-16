@@ -115,6 +115,7 @@ var menuItemShowColorLegendInMenus;
 var menuItemShowBoolValues;
 var menuItemShowOperationResults;
 var menuItemShowClearUndoWarning;
+var menuItemShareUsageMetrics;
 var menuItemShowTooltips;
 var menuItemShowDebugMenu;
 var menuItemEnableMultiplayer;
@@ -403,13 +404,14 @@ function initGeneratorMenus()
 
     menuMainHelp = new Menu('Help and subscription', false);
     menuMainHelp.addItems([
-        new MenuItem('Tutorials . . .',    null, {callback: () => showPresets()}),
-        new MenuItem('Keyboard shortcuts', null, {shortcut: osCtrlShift() + '?', callback: () => showKeyboardPanel()}),
-        // new MenuItem('Help page',       null, {callback:  () => window.open('http://www.bourt.com/generator/help', '_blank')}),
-        new MenuItem('',                   null, {separator: true}),
-        new MenuItem('Subscription',       null, {callback:  () => showSubscriptionDialog(false)}),
-      //new MenuItem('',                   null, {separator: true}),
-        new MenuItem('About',              null, {callback:  () => showAboutDialog()})]);
+                                  new MenuItem('Tutorials . . .',    null, {callback: () => showPresets()}),
+                                  new MenuItem('Keyboard shortcuts', null, {shortcut: osCtrlShift() + '?', callback: () => showKeyboardPanel()}),
+                                  // new MenuItem('Help page',       null, {callback:  () => window.open('http://www.bourt.com/generator/help', '_blank')}),
+                                  new MenuItem('',                   null, {separator: true}),
+                                  new MenuItem('Subscription',       null, {callback:  () => showSubscriptionDialog(false)}),
+                                  new MenuItem('',                   null, {separator: true}),
+      menuItemShareUsageMetrics = new MenuItem('Share anonymous metrics',           null, {checkCallback: () => settings.shareUsageMetrics,      callback: () => { updateSettingAndMenu('shareUsageMetrics',      true, !settings.shareUsageMetrics);                                              }}),
+                                  new MenuItem('About',              null, {callback:  () => showAboutDialog()})]);
 
 
     menuMain = new Menu('Main menu', true, false, true);

@@ -266,6 +266,7 @@ const presetHotSpring = '\
             "z": "16",\
             "params":\
             [\
+                    ["NUM#", "size", "200,0"],\
                     ["NUM#", "type", "1,0"],\
                     ["NUM#", "y", "0,0"],\
                     ["NUM#", "aspect", "100,0"]\

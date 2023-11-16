@@ -48,6 +48,7 @@ async function uiReturnFigGetLocalData(msg)
         case 'showColorLegendInMenus':
         case 'showOperationResults':
         case 'showClearUndoWarning':
+        case 'shareUsageMetrics':
         case 'showDebugMenu':
 
         case 'showNodeId':       
@@ -103,7 +104,13 @@ async function uiReturnFigGetLocalData(msg)
         case 'canvasEmpty':
             if (msg.value)
                 loadPresetGraph('targets');
-    
+            
+            if (!tutorialsShown)
+            {
+                findTutorials.style.display = 'block';
+                tutorialsShown = true;
+            }
+                
             break;
     }
 

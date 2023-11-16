@@ -32,12 +32,12 @@ function createMetricsEvent(type, data = '')
     
     const event =
     {
-        userId:           currentUser.id,
-        sessionId:        sessionId,
-        generatorVersion: generatorVersion,
-        dateTime:         new Date(),
-        type:             type,
-        data:             data
+        userId:    currentUser.id,
+        sessionId: sessionId,
+        version:   generatorVersion,
+        dateTime:  new Date(),
+        type:      type,
+        data:      data
     };
 
     return event;
@@ -86,7 +86,8 @@ function pingMetrics()
 
 function updateMetrics()
 {
-    if (   metricsEvents.length == 0
+    if (  !settings.shareUsageMetrics
+        || metricsEvents.length == 0
         || ignoreUsers.includes(currentUser.id))
         return;
 
@@ -105,7 +106,7 @@ function updateMetrics()
     })
     .catch(error =>
     {
-        consoleError();
+        consoleError(error);
     });
 }
 

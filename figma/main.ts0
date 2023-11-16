@@ -1,3 +1,6 @@
+console.clear();
+
+
 //figma.on('selectionchange', figOnSelectionChange);
 
 figma.on('documentchange',  figOnDocumentChange);

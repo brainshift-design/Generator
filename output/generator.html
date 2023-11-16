@@ -4,7 +4,7 @@
 
 
 
-const generatorVersion = 292;
+const generatorVersion = 293;
 
 
 const MAX_INT32        = 2147483647;
@@ -2846,10 +2846,10 @@ function strFromData(data)
 
 
 
-function clearConsole()
-{
-    setTimeout(console.clear.bind(console));
-}
+// function clearConsole()
+// {
+//     setTimeout(console.clear.bind(console));
+// }
 
 
 
@@ -4364,6 +4364,7 @@ const settings =
     showColorLegendInMenus:        false,
     showOperationResults:          false,
     showClearUndoWarning:          true,
+    shareUsageMetrics:             true,
     showDebugMenu:                 false,
         
     showNodeId:                    false, // instead of name
@@ -4421,6 +4422,7 @@ function updateSetting(settingName, value)
         case 'showColorLegendInMenus':        settings.showColorLegendInMenus        = value;  break;
         case 'showOperationResults':          settings.showOperationResults          = value;  break;
         case 'showClearUndoWarning':          settings.showClearUndoWarning          = value;  break;
+        case 'shareUsageMetrics':             settings.shareUsageMetrics             = value;  break;
         case 'showDebugMenu':                 settings.showDebugMenu                 = value;  break;
                         
         case 'showNodeId':                    settings.showNodeId                    = value;  break;
@@ -4477,6 +4479,7 @@ function updateSettingAndMenu(settingName, valid, value, save = true)
         case 'showColorLegendInMenus':        updateSettingAndMenu_(valid, settingName, value, menuItemShowColorLegendInMenus       ); break;
         case 'showOperationResults':          updateSettingAndMenu_(valid, settingName, value, menuItemShowOperationResults         ); break;
         case 'showClearUndoWarning':          updateSettingAndMenu_(valid, settingName, value, menuItemShowClearUndoWarning         ); break;
+        case 'shareUsageMetrics':             updateSettingAndMenu_(valid, settingName, value, menuItemShareUsageMetrics            ); break;
         case 'showDebugMenu':                 updateSettingAndMenu_(valid, settingName, value, menuItemShowDebugMenu                ); break;
                       
         case 'showNodeId':                    updateSettingAndMenu_(valid, settingName, value, menuItemShowNodeId                   ); break;
@@ -4556,6 +4559,7 @@ function updateSettingsMenus()
     menuItemShowColorLegendInMenus       .setChecked(settings.showColorLegendInMenus       );
     menuItemShowOperationResults         .setChecked(settings.showOperationResults         );
     menuItemShowClearUndoWarning         .setChecked(settings.showClearUndoWarning         );
+    menuItemShareUsageMetrics            .setChecked(settings.shareUsageMetrics            );
     menuItemShowDebugMenu                .setChecked(settings.showDebugMenu                );
                 
     menuItemShowNodeId                   .setChecked(settings.showNodeId                   );
@@ -4726,6 +4730,7 @@ function loadLocalSettings()
     uiGetLocalData('showPages'                    );
     uiGetLocalData('showOperationResults'         );
     uiGetLocalData('showClearUndoWarning'         );
+    uiGetLocalData('shareUsageMetrics'            );
     uiGetLocalData('showDebugMenu'                );
         
     uiGetLocalData('showNodeId'                   );
@@ -6119,10 +6124,8 @@ function addGradientProp(obj, prop, target = obj.fills)
 
     if (!isLinear)
     {
-        x   -= s/2 * Math.cos(a);
-        y   -= s/2 * Math.sin(a);
-
-        // s   *= 2;
+        x -= s/2 * Math.cos(a);
+        y -= s/2 * Math.sin(a);
 
         asp /= 2;
     }
@@ -7076,13 +7079,9 @@ function getSmoothPoints(points, closed, getSegment)
             ? (closed ? points[0] : points[i])
             : points[i+1]);
 
-        if (   points[i].smooth
-            && points[i].smooth.value == 0)
-        {
-            pp = p;
-            pn = p;
-        }
-
+        if (points[i].smooth)
+            [pp, pn] = getSmoothPoint(points[i], pp, p, pn);
+            
         bp.push(_pp, pp, p);
    
         _pp = pn;
@@ -7102,12 +7101,8 @@ function getSmoothPoints(points, closed, getSegment)
                     points.at( 0),
                     points.at( 1));
 
-                if (   points[0].smooth
-                    && points[0].smooth.value == 0)
-                {
-                    pp = p;
-                    pn = p;
-                }
+                if (points[0].smooth)
+                    [pp, pn] = getSmoothPoint(points[0], pp, p, pn);
 
                 bp[1]           = pn;
                 bp[bp.length-2] = pp;
@@ -7120,12 +7115,8 @@ function getSmoothPoints(points, closed, getSegment)
                     points.at( 0),
                     points.at( 1));
 
-                if (   points[0].smooth
-                    && points[0].smooth.value == 0)
-                {
-                    pp = p;
-                    pn = p;
-                }
+                if (points[0].smooth)
+                    [pp, pn] = getSmoothPoint(points[0], pp, p, pn);
 
                 bp.push(_pp, pp, p);
 
@@ -7142,6 +7133,21 @@ function getSmoothPoints(points, closed, getSegment)
 
 
     return bp;
+}
+
+
+
+function getSmoothPoint(point, pp, p, pn)
+{
+    if (point.smooth)
+    {
+        const smooth = point.smooth.value;
+        
+        pp = addv(p, mulvs(subv(pp, p), smooth));
+        pn = addv(p, mulvs(subv(pn, p), smooth));
+    }
+
+    return [pp, pn];
 }
 
 
@@ -7842,7 +7848,7 @@ extends FigmaShape
 
 
 
-    constructor(nodeId, objectId, objectName, x, y, smooth = -1, isDeco = false, isCenter = false, isXform = false)
+    constructor(nodeId, objectId, objectName, x, y, smooth = 1, isDeco = false, isCenter = false, isXform = false)
     {
         super(POINT, nodeId, objectId, objectName, isDeco, isXform);
         
@@ -33940,7 +33946,7 @@ extends GOperator1
                 this.nodeName, 
                 x, 
                 y, 
-                this.smooth ? this.smooth.value : -1);
+                this.smooth ? this.smooth.value/100 : 1);
 
             point.createDefaultTransform(x, y);
 
@@ -34097,7 +34103,7 @@ extends GOperator1
         {
             const x      = this.value.x.value;
             const y      = this.value.y.value;
-            const smooth = this.value.smooth ? this.value.smooth.value : -1;
+            const smooth = this.value.smooth ? this.value.smooth.value/100 : 1;
 
             const point = new FigmaPoint(this.nodeId, this.nodeId, this.nodeName, x, y, smooth);
 
@@ -36121,7 +36127,6 @@ extends GShapeBase
         if (this.isCached())
             return this;
 
-
         const retain   = (await this.retain.eval(parse)).toValue();
         const finalize = this.finalize.value > 0;
 
@@ -36152,13 +36157,11 @@ extends GShapeBase
                     obj.objectId = obj.objectId + OBJECT_SEPARATOR + this.nodeId;
                     obj.listId   = -1;
 
-
                     if (  (   !isEmpty(obj.fills  )
                            || !isEmpty(obj.strokes))
                         && !obj.isDeco)
                             obj.retain = finalize ? 2 : 1;
                             
-
                     this.value.objects.push(obj);
                 }
             }

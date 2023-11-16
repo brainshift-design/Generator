@@ -4,9 +4,6 @@ extends OperatorBase
     paramSmooth;
 
 
-    menuBool;
-
-
 
     constructor()
     {
@@ -19,11 +16,12 @@ extends OperatorBase
         this.addInput (new Input ([POINT_VALUE]));
         this.addOutput(new Output([POINT_VALUE], this.output_genRequest));
 
-        this.addParam(this.paramSmooth = new NumberParam('smooth', 'smooth', true, true, true, 1, 0, 1));
+        this.addParam(this.paramSmooth = new NumberParam('smooth', 'smooth', true, true, true, 100, 0, 100));
 
-        this.setAllParamDividers(0.595);
+        this.setAllParamDividers(0.53);
 
-        this.menuBool = createBoolMenu(this.paramSmooth);
+        this.paramSmooth.controls[0].setMax(100);
+        this.paramSmooth.controls[0].suffix = '%';
     }
 
 
@@ -56,17 +54,5 @@ extends OperatorBase
 
 
         return request;
-    }
-
-
-
-    updateParams()
-    {
-        this.paramSmooth.enableControlText(true);
-
-        updateParamConditionText(this.paramSmooth, this.paramSmooth.isUnknown(), true, 1);
-
-
-        this.updateParamControls();
     }
 }

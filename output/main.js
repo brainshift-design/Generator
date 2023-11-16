@@ -19,7 +19,7 @@ function isConnKey(key) { return isTagKey(key, connTag); }
 function noPageTag(key) { return noTag(key, pageTag); }
 function noNodeTag(key) { return noTag(key, nodeTag); }
 function noConnTag(key) { return noTag(key, connTag); }
-const generatorVersion = 292;
+const generatorVersion = 293;
 const MAX_INT32 = 2147483647;
 const NULL = '';
 const HTAB = '  '; // half-tab
@@ -1362,6 +1362,7 @@ function logSavedConn(conn, darkMode) {
         console.log('%c%s', 'background: #cfc; color: black;', strConn);
     }
 }
+console.clear();
 //figma.on('selectionchange', figOnSelectionChange);
 figma.on('documentchange', figOnDocumentChange);
 figma.on('selectionchange', figOnSelectionChange);
@@ -1474,16 +1475,15 @@ function figDeleteObjectsFromNodeIds(nodeIds) {
     figObjectArrays = figObjectArrays.filter(a => !nodeIds.includes(a.nodeId));
 }
 function figDeleteAllObjects(forceDelete = false) {
-    for (const obj of figma.currentPage.children) {
-        if (obj.removed)
+    for (const figObj of figma.currentPage.children) {
+        if (figObj.removed)
             continue;
-        if (obj.getPluginData('objectId') != ''
-            && obj.getPluginData('userId') == figma.currentUser.id
-            //&&  obj.getPluginData('sessionId') == figma.currentUser.sessionId.toString()
-            && (obj.getPluginData('retain') == '0'
-                || forceDelete)
-            && !obj.removed)
-            obj.remove();
+        if (figObj.getPluginData('objectId') != ''
+            && figObj.getPluginData('userId') == figma.currentUser.id
+            //&&  figObj.getPluginData('sessionId') == figma.currentUser.sessionId.toString()
+            && (parseInt(figObj.getPluginData('retain')) == 0
+                || forceDelete))
+            figObj.remove();
     }
 }
 function figDeleteObjectsExcept(nodeIds, genIgnoreObjects) {
@@ -1503,9 +1503,10 @@ function figDeleteObjectsExcept(nodeIds, genIgnoreObjects) {
                 if (figEmptyObjects.includes(figObj))
                     removeFromArray(figEmptyObjects, figObj);
             }
-            if (!figObj.removed
-                && figObj.getPluginData('retain') == '2')
-                clearObjectData(figObj);
+            if (!figObj.removed) {
+                if (parseInt(figObj.getPluginData('retain')) == 2)
+                    clearObjectData(figObj);
+            }
         }
         if (isEmpty(figObjArray.objects))
             removeFromArray(figObjectArrays, figObjArray);
@@ -1524,7 +1525,7 @@ function findObject(figObj, genIgnoreObjects) {
         const found = genIgnoreObjects.find(o => figObj.getPluginData('objectId') == o[FO_OBJECT_ID]
             && figObj.getPluginData('userId') == figma.currentUser.id
             //&& figObj.getPluginData('sessionId') == figma.currentUser.sessionId.toString()
-            || o[FO_RETAIN] > 0
+            || o[FO_RETAIN] == 2
                 && o[FO_RETAIN] == figObj.getPluginData('retain'));
         if (found)
             return found;
@@ -2320,7 +2321,7 @@ function figNotify(text, prefix = 'Generator ', delay = 400, error = false, butt
 var _genIgnoreNodeIds = [];
 var _genIgnoreObjects = [];
 function makeObjectName(obj) {
-    return (obj[FO_RETAIN] == 2 ? '' : OBJECT_PREFIX)
+    return (obj[FO_RETAIN] === 2 ? '' : OBJECT_PREFIX)
         + (showIds ? obj[FO_OBJECT_ID] : obj[FO_OBJECT_NAME]);
 }
 function figCreateObject(genObj, addObject = null) {
@@ -2370,18 +2371,19 @@ function figCreateObject(genObj, addObject = null) {
         figObj.name = makeObjectName(genObj);
         consoleAssert(genObj[FO_TYPE] == SHAPE_GROUP // cannot exist without children
             || !!figObj, 'no Figma object created');
-        if (figObj
-            && genObj[FO_RETAIN] < 2) {
-            figObj.setPluginData('userId', figma.currentUser.id);
-            figObj.setPluginData('sessionId', figma.currentUser.sessionId.toString());
-            figObj.setPluginData('type', genObj[FO_TYPE]);
-            figObj.setPluginData('nodeId', genObj[FO_NODE_ID]);
-            figObj.setPluginData('objectId', genObj[FO_OBJECT_ID]);
+        if (figObj) {
             figObj.setPluginData('retain', genObj[FO_RETAIN].toString());
-            if (genObj[FO_TYPE] == POINT)
-                figPoints.push(figObj);
-            if (genObj[FO_DECO])
-                updateDecoObject(figObj);
+            if (genObj[FO_RETAIN] < 2) {
+                figObj.setPluginData('userId', figma.currentUser.id);
+                figObj.setPluginData('sessionId', figma.currentUser.sessionId.toString());
+                figObj.setPluginData('type', genObj[FO_TYPE]);
+                figObj.setPluginData('nodeId', genObj[FO_NODE_ID]);
+                figObj.setPluginData('objectId', genObj[FO_OBJECT_ID]);
+                if (genObj[FO_TYPE] == POINT)
+                    figPoints.push(figObj);
+                if (genObj[FO_DECO])
+                    updateDecoObject(figObj);
+            }
             addObject(figObj);
         }
     }
@@ -2449,7 +2451,6 @@ function figUpdateObjects(figParent, genObjects, nodeIds = [], firstChunk = fals
                 figObjectArrays.push(figObjects =
                     {
                         nodeId: genObj[FO_NODE_ID],
-                        //existing: genObj.existing,
                         objects: []
                     });
             }
@@ -2506,12 +2507,13 @@ function figUpdateObjects(figParent, genObjects, nodeIds = [], firstChunk = fals
     // delete removed objects from parent
     if (figParent
         && !figParent.removed) {
-        for (const figObj of figParent.children)
+        for (const figObj of figParent.children) {
             if (figObj.removed
                 || !genObjects.find(o => o[FO_OBJECT_ID] == figObj.getPluginData('objectId')
                     && figObj.getPluginData('userId') == figma.currentUser.id))
                 //&& figObj.getPluginData('sessionId') == figma.currentUser.sessionId.toString()))
                 figObj.remove();
+        }
     }
     // put points on top
     for (const point of figPoints)

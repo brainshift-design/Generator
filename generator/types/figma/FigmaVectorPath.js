@@ -364,13 +364,9 @@ function getSmoothPoints(points, closed, getSegment)
             ? (closed ? points[0] : points[i])
             : points[i+1]);
 
-        if (   points[i].smooth
-            && points[i].smooth.value == 0)
-        {
-            pp = p;
-            pn = p;
-        }
-
+        if (points[i].smooth)
+            [pp, pn] = getSmoothPoint(points[i], pp, p, pn);
+            
         bp.push(_pp, pp, p);
    
         _pp = pn;
@@ -390,12 +386,8 @@ function getSmoothPoints(points, closed, getSegment)
                     points.at( 0),
                     points.at( 1));
 
-                if (   points[0].smooth
-                    && points[0].smooth.value == 0)
-                {
-                    pp = p;
-                    pn = p;
-                }
+                if (points[0].smooth)
+                    [pp, pn] = getSmoothPoint(points[0], pp, p, pn);
 
                 bp[1]           = pn;
                 bp[bp.length-2] = pp;
@@ -408,12 +400,8 @@ function getSmoothPoints(points, closed, getSegment)
                     points.at( 0),
                     points.at( 1));
 
-                if (   points[0].smooth
-                    && points[0].smooth.value == 0)
-                {
-                    pp = p;
-                    pn = p;
-                }
+                if (points[0].smooth)
+                    [pp, pn] = getSmoothPoint(points[0], pp, p, pn);
 
                 bp.push(_pp, pp, p);
 
@@ -430,6 +418,21 @@ function getSmoothPoints(points, closed, getSegment)
 
 
     return bp;
+}
+
+
+
+function getSmoothPoint(point, pp, p, pn)
+{
+    if (point.smooth)
+    {
+        const smooth = point.smooth.value;
+        
+        pp = addv(p, mulvs(subv(pp, p), smooth));
+        pn = addv(p, mulvs(subv(pn, p), smooth));
+    }
+
+    return [pp, pn];
 }
 
 

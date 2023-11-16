@@ -12,6 +12,7 @@ const settings =
     showColorLegendInMenus:        false,
     showOperationResults:          false,
     showClearUndoWarning:          true,
+    shareUsageMetrics:             true,
     showDebugMenu:                 false,
         
     showNodeId:                    false, // instead of name
@@ -69,6 +70,7 @@ function updateSetting(settingName, value)
         case 'showColorLegendInMenus':        settings.showColorLegendInMenus        = value;  break;
         case 'showOperationResults':          settings.showOperationResults          = value;  break;
         case 'showClearUndoWarning':          settings.showClearUndoWarning          = value;  break;
+        case 'shareUsageMetrics':             settings.shareUsageMetrics             = value;  break;
         case 'showDebugMenu':                 settings.showDebugMenu                 = value;  break;
                         
         case 'showNodeId':                    settings.showNodeId                    = value;  break;
@@ -125,6 +127,7 @@ function updateSettingAndMenu(settingName, valid, value, save = true)
         case 'showColorLegendInMenus':        updateSettingAndMenu_(valid, settingName, value, menuItemShowColorLegendInMenus       ); break;
         case 'showOperationResults':          updateSettingAndMenu_(valid, settingName, value, menuItemShowOperationResults         ); break;
         case 'showClearUndoWarning':          updateSettingAndMenu_(valid, settingName, value, menuItemShowClearUndoWarning         ); break;
+        case 'shareUsageMetrics':             updateSettingAndMenu_(valid, settingName, value, menuItemShareUsageMetrics            ); break;
         case 'showDebugMenu':                 updateSettingAndMenu_(valid, settingName, value, menuItemShowDebugMenu                ); break;
                       
         case 'showNodeId':                    updateSettingAndMenu_(valid, settingName, value, menuItemShowNodeId                   ); break;
@@ -204,6 +207,7 @@ function updateSettingsMenus()
     menuItemShowColorLegendInMenus       .setChecked(settings.showColorLegendInMenus       );
     menuItemShowOperationResults         .setChecked(settings.showOperationResults         );
     menuItemShowClearUndoWarning         .setChecked(settings.showClearUndoWarning         );
+    menuItemShareUsageMetrics            .setChecked(settings.shareUsageMetrics            );
     menuItemShowDebugMenu                .setChecked(settings.showDebugMenu                );
                 
     menuItemShowNodeId                   .setChecked(settings.showNodeId                   );
@@ -374,6 +378,7 @@ function loadLocalSettings()
     uiGetLocalData('showPages'                    );
     uiGetLocalData('showOperationResults'         );
     uiGetLocalData('showClearUndoWarning'         );
+    uiGetLocalData('shareUsageMetrics'            );
     uiGetLocalData('showDebugMenu'                );
         
     uiGetLocalData('showNodeId'                   );
