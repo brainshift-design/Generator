@@ -5469,16 +5469,22 @@ const CONDITION_OPS =
 
 
 
-const TRIG_SIN = 0;
-const TRIG_COS = 1;
-const TRIG_TAN = 2;
+const TRIG_SIN  = 0;
+const TRIG_COS  = 1;
+const TRIG_TAN  = 2;
+const TRIG_ASIN = 3;
+const TRIG_ACOS = 4;
+const TRIG_ATAN = 5;
 
 
 const TRIG_OPS = 
 [   
-    [TRIG_SIN, 'sin'],
-    [TRIG_COS, 'cos'],
-    [TRIG_TAN, 'tan']
+    [TRIG_SIN,  'sin' ],
+    [TRIG_COS,  'cos' ],
+    [TRIG_TAN,  'tan' ],
+    [TRIG_ASIN, 'asin'],
+    [TRIG_ACOS, 'acos'],
+    [TRIG_ATAN, 'atan']
 ];
 
 
@@ -24362,9 +24368,12 @@ extends GOperator1
         
         switch (func.value)
         {
-            case TRIG_SIN: this.value = await evalSine   (this.input, parse);  break;
-            case TRIG_COS: this.value = await evalCosine (this.input, parse);  break;
-            case TRIG_TAN: this.value = await evalTangent(this.input, parse);  break;
+            case TRIG_SIN:  this.value = await evalSine   (this.input, parse, false);  break;
+            case TRIG_COS:  this.value = await evalCosine (this.input, parse, false);  break;
+            case TRIG_TAN:  this.value = await evalTangent(this.input, parse, false);  break;
+            case TRIG_ASIN: this.value = await evalSine   (this.input, parse, true );  break;
+            case TRIG_ACOS: this.value = await evalCosine (this.input, parse, true );  break;
+            case TRIG_ATAN: this.value = await evalTangent(this.input, parse, true );  break;
         }
 
 
@@ -24467,14 +24476,17 @@ extends GOperator1
 
 
 
-async function evalSine(input, parse)
+async function evalSine(input, parse, arc)
 {
     if (!input)
         return NumberValue.NaN;
 
     let value = (await input.eval(parse)).toValue();
 
-    const val = Math.sin(value.value);
+    const val = 
+        !arc 
+        ? Math.sin(value.value) 
+        : Math.asin(value.value);
 
     value = new NumberValue(val, decDigits(val));
 
@@ -24525,14 +24537,17 @@ extends GOperator1
 
 
 
-async function evalCosine(input, parse)
+async function evalCosine(input, parse, arc)
 {
     if (!input)
         return NumberValue.NaN;
 
     let value = (await input.eval(parse)).toValue();
 
-    const val = Math.cos(value.value);
+    const val = 
+        !arc 
+        ? Math.cos(value.value) 
+        : Math.acos(value.value);
 
     value = new NumberValue(val, decDigits(val));
 
@@ -24583,14 +24598,17 @@ extends GOperator1
 
 
 
-async function evalTangent(input, parse)
+async function evalTangent(input, parse, arc)
 {
     if (!input)
         return NumberValue.NaN;
 
     let value = (await input.eval(parse)).toValue();
 
-    const val = Math.tan(value.value);
+    const val = 
+        !arc 
+        ? Math.tan(value.value) 
+        : Math.atan(value.value);
     
     value = new NumberValue(val, decDigits(val));
 

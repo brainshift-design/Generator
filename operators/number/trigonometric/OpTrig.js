@@ -62,9 +62,12 @@ extends OperatorWithValue
 
         switch (this.paramFunction.value.value)
         {
-            case 0: this.icon = iconSine;    break;
-            case 1: this.icon = iconCosine;  break;
-            case 2: this.icon = iconTangent; break;
+            case 0: this.icon = iconSine;       break;
+            case 1: this.icon = iconCosine;     break;
+            case 2: this.icon = iconTangent;    break;
+            case 3: this.icon = iconArcSine;    break;
+            case 4: this.icon = iconArcCosine;  break;
+            case 5: this.icon = iconArcTangent; break;
         }
 
         this.updateIcon();

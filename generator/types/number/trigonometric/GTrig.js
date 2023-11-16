@@ -47,9 +47,12 @@ extends GOperator1
         
         switch (func.value)
         {
-            case TRIG_SIN: this.value = await evalSine   (this.input, parse);  break;
-            case TRIG_COS: this.value = await evalCosine (this.input, parse);  break;
-            case TRIG_TAN: this.value = await evalTangent(this.input, parse);  break;
+            case TRIG_SIN:  this.value = await evalSine   (this.input, parse, false);  break;
+            case TRIG_COS:  this.value = await evalCosine (this.input, parse, false);  break;
+            case TRIG_TAN:  this.value = await evalTangent(this.input, parse, false);  break;
+            case TRIG_ASIN: this.value = await evalSine   (this.input, parse, true );  break;
+            case TRIG_ACOS: this.value = await evalCosine (this.input, parse, true );  break;
+            case TRIG_ATAN: this.value = await evalTangent(this.input, parse, true );  break;
         }
 
 

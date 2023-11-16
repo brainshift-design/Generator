@@ -48,14 +48,17 @@ extends GOperator1
 
 
 
-async function evalSine(input, parse)
+async function evalSine(input, parse, arc)
 {
     if (!input)
         return NumberValue.NaN;
 
     let value = (await input.eval(parse)).toValue();
 
-    const val = Math.sin(value.value);
+    const val = 
+        !arc 
+        ? Math.sin(value.value) 
+        : Math.asin(value.value);
 
     value = new NumberValue(val, decDigits(val));
 

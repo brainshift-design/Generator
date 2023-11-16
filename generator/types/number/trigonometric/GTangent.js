@@ -41,14 +41,17 @@ extends GOperator1
 
 
 
-async function evalTangent(input, parse)
+async function evalTangent(input, parse, arc)
 {
     if (!input)
         return NumberValue.NaN;
 
     let value = (await input.eval(parse)).toValue();
 
-    const val = Math.tan(value.value);
+    const val = 
+        !arc 
+        ? Math.tan(value.value) 
+        : Math.atan(value.value);
     
     value = new NumberValue(val, decDigits(val));
 

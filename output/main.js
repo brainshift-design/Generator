@@ -1081,10 +1081,16 @@ const CONDITION_OPS = [
 const TRIG_SIN = 0;
 const TRIG_COS = 1;
 const TRIG_TAN = 2;
+const TRIG_ASIN = 3;
+const TRIG_ACOS = 4;
+const TRIG_ATAN = 5;
 const TRIG_OPS = [
     [TRIG_SIN, 'sin'],
     [TRIG_COS, 'cos'],
-    [TRIG_TAN, 'tan']
+    [TRIG_TAN, 'tan'],
+    [TRIG_ASIN, 'asin'],
+    [TRIG_ACOS, 'acos'],
+    [TRIG_ATAN, 'atan']
 ];
 const EMPTY_ACTION = 'EMPTY';
 const CONNECT_ACTION = 'CONNECT';
