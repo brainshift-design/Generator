@@ -115,12 +115,11 @@ async function evalMinMaxInputs(inputs, op, parse)
     if (   inputs.length == 1
         && val0.type == NUMBER_VALUE)
     {
-        value = new NumberValue(-val0.value, val0.decimals);
+        value = new NumberValue(-val0.value);//, val0.decimals);
     }
     else if (isListType(val0.type)
             && !isEmpty(val0.items))
     {
-        //console.log('val0.items =', val0.items);
         value = val0.items[0].copy();
         
         for (let i = 1; i < val0.items.length; i++)
@@ -131,8 +130,8 @@ async function evalMinMaxInputs(inputs, op, parse)
             {
                 value = new NumberValue( 
                     op == 0
-                    ? Math.min(value.toNumber(), item.toNumber())
-                    : Math.max(value.toNumber(), item.toNumber()));
+                    ? Math.min(value.value, item.value)
+                    : Math.max(value.value, item.value));
             }                    
         }
     }
@@ -156,12 +155,12 @@ async function evalMinMaxInputs(inputs, op, parse)
             {
                 if (item.type == NUMBER_VALUE)
                 {
-                    value.value = 
+                    value = new NumberValue(
                         op == 0
                         ? Math.min(value.value, item.value)
-                        : Math.max(value.value, item.value);
+                        : Math.max(value.value, item.value));
 
-                    value.decimals = Math.max(value.decimals, item.decimals);
+                    // value.decimals = Math.max(value.decimals, item.decimals);
                 }                    
             }
         }
@@ -171,12 +170,12 @@ async function evalMinMaxInputs(inputs, op, parse)
                 val.type == NUMBER_VALUE, 
                 'val.type must be NUMBER_VALUE');
                 
-            value.value = 
+            value = new NumberValue(
                 op == 0
                 ? Math.min(value.value, val.value)
-                : Math.max(value.value, val.value);
+                : Math.max(value.value, val.value));
 
-            value.decimals = Math.max(value.decimals, val.decimals);
+            //value.decimals = Math.max(value.decimals, val.decimals);
         }
     }
 

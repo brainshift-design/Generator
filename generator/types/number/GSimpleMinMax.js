@@ -145,8 +145,8 @@ function getSimpleMinMaxValue(input, operand, op, enabled)
         op.value = Math.min(Math.max(0, Math.floor(op.value)), 1);
 
         return new NumberValue(op.value == 0
-            ? Math.min(input.toNumber(), operand.toNumber())
-            : Math.max(input.toNumber(), operand.toNumber()));
+            ? Math.min(input.value, operand.toNumber())
+            : Math.max(input.value, operand.toNumber()));
     }
     else
         return input;
