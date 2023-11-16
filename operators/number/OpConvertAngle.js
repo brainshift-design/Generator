@@ -9,7 +9,8 @@ extends OperatorWithValue
     {
         super(CONVERT_ANGLE, 'convert', 'convert', iconConvertAngle);
 
-        this.canDisable = true;
+        this.canDisable  = true;
+        this.iconOffsetY = -2;
         
 
         this.addInput (new Input (NUMBER_TYPES));

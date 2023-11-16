@@ -145,7 +145,8 @@ const NUMBER_GREATER_OR_EQUAL = 'GE';
 const NUMBER_TRIG             = 'TRIG';  
 const NUMBER_SIN              = 'SIN';   
 const NUMBER_COS              = 'COS';   
-const NUMBER_TAN              = 'TAN';   
+const NUMBER_TAN              = 'TAN';
+const NUMBER_ATAN2            = 'ATAN2';
 
 const CONVERT_ANGLE           = 'CNVANG';
 
@@ -189,7 +190,8 @@ const TRIG_TYPES =
     NUMBER_TRIG,
     NUMBER_SIN,
     NUMBER_COS,
-    NUMBER_TAN
+    NUMBER_TAN,
+    NUMBER_ATAN2
 ];
 
 

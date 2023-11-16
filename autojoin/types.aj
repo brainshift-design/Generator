@@ -150,6 +150,7 @@
 ../generator/types/number/trigonometric/GSine.js
 ../generator/types/number/trigonometric/GCosine.js
 ../generator/types/number/trigonometric/GTangent.js
+../generator/types/number/trigonometric/GAtan2.js
 
 ../generator/types/number/GConvertAngle.js
 

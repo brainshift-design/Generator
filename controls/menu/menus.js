@@ -520,9 +520,10 @@ menuFlow = new Menu('Flow', true, false);
     
     menuTrig = new Menu('Trigonometric', true, false);
     menuTrig.addItems([
-        new MenuItem('Sine',    null, {icon: iconSine,    createType: NUMBER_SIN, callback: e => actionManager.do(getCreateNodeAction(NUMBER_SIN, btnNumber.div, getCreateOptions(e)))}),
-        new MenuItem('Cosine',  null, {icon: iconCosine,  createType: NUMBER_COS, callback: e => actionManager.do(getCreateNodeAction(NUMBER_COS, btnNumber.div, getCreateOptions(e)))}),
-        new MenuItem('Tangent', null, {icon: iconTangent, createType: NUMBER_TAN, callback: e => actionManager.do(getCreateNodeAction(NUMBER_TAN, btnNumber.div, getCreateOptions(e)))})]);
+        // new MenuItem('Sine',       null, {icon: iconSine,    createType: NUMBER_SIN,   callback: e => actionManager.do(getCreateNodeAction(NUMBER_SIN,   btnNumber.div, getCreateOptions(e)))}),
+        // new MenuItem('Cosine',     null, {icon: iconCosine,  createType: NUMBER_COS,   callback: e => actionManager.do(getCreateNodeAction(NUMBER_COS,   btnNumber.div, getCreateOptions(e)))}),
+        // new MenuItem('Tangent',    null, {icon: iconTangent, createType: NUMBER_TAN,   callback: e => actionManager.do(getCreateNodeAction(NUMBER_TAN,   btnNumber.div, getCreateOptions(e)))})]);
+        new MenuItem('Arctangent', null, {icon: iconAtan2,   createType: NUMBER_ATAN2, callback: e => actionManager.do(getCreateNodeAction(NUMBER_ATAN2, btnNumber.div, getCreateOptions(e)))})]);
         
     
     menuNumberBase = new Menu('Numbers', true, false);
@@ -577,7 +578,7 @@ menuFlow = new Menu('Flow', true, false);
                           new MenuItem('Math',          null,                 {icon: iconMath,        childMenu: menuMath,          createType: NUMBER_SIMPLE_MATH, callback: e => actionManager.do(getCreateNodeAction(NUMBER_SIMPLE_MATH, btnNumber.div, getCreateOptions(e)))}),
                           new MenuItem('Boolean',       null,                 {icon: iconBoolean,     /*childMenu: menuBoolean,  */ createType: NUMBER_BOOLEAN,     callback: e => actionManager.do(getCreateNodeAction(NUMBER_BOOLEAN,     btnNumber.div, getCreateOptions(e)))}),
                           new MenuItem('Conditional',   null,                 {icon: iconCondition,   /*childMenu: menuCondition,*/ createType: NUMBER_CONDITION,   callback: e => actionManager.do(getCreateNodeAction(NUMBER_CONDITION,   btnNumber.div, getCreateOptions(e)))}),
-                          new MenuItem('Trigonometric', null,                 {icon: iconSine,        /*childMenu: menuTrig,     */ createType: NUMBER_TRIG,        callback: e => actionManager.do(getCreateNodeAction(NUMBER_TRIG,        btnNumber.div, getCreateOptions(e)))}),
+                          new MenuItem('Trigonometric', null,                 {icon: iconSine,        childMenu: menuTrig,          createType: NUMBER_TRIG,        callback: e => actionManager.do(getCreateNodeAction(NUMBER_TRIG,        btnNumber.div, getCreateOptions(e)))}),
                           new MenuItem('',              null,                 {separator: true}),
                           new MenuItem('Functions',     null,                 {icon: iconRound,       childMenu: menuFunctions}),
                           new MenuItem('Convert',       null,                 {icon: iconConvert,     childMenu: menuConvertNumber}),

@@ -209,6 +209,7 @@ function genParse(parse, inParam = true)
     else if (parse.next == NUMBER_SIN             ) result = genParseTrigBase          (parse, (nodeId, options) => new GSine          (nodeId, options));
     else if (parse.next == NUMBER_COS             ) result = genParseTrigBase          (parse, (nodeId, options) => new GCosine        (nodeId, options));
     else if (parse.next == NUMBER_TAN             ) result = genParseTrigBase          (parse, (nodeId, options) => new GTangent       (nodeId, options));
+    else if (parse.next == NUMBER_ATAN2           ) result = genParseAtan2             (parse, (nodeId, options) => new GTangent       (nodeId, options));
 
     else if (parse.next == CONVERT_ANGLE          ) result = genParseConvertAngle      (parse);
  

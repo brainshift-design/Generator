@@ -85,6 +85,7 @@ function createNode(nodeType, creatingButton = null, createdNodeId = -1, options
         case NUMBER_SIN:              node = new OpSine();              break;
         case NUMBER_COS:              node = new OpCosine();            break;
         case NUMBER_TAN:              node = new OpTangent();           break;
+        case NUMBER_ATAN2:            node = new OpAtan2();             break;
 
         case CONVERT_ANGLE:           node = new OpConvertAngle();      break;
 

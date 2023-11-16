@@ -1266,6 +1266,41 @@ function genParseTrigBase(parse, newNode)
 
 
 
+function genParseAtan2(parse)
+{
+    const [, nodeId, options, ignore] = genParseNodeStart(parse);
+
+
+    const atan2 = new GAtan2(nodeId, options);
+   
+
+    if (parse.settings.logRequests) 
+        logReq(atan2, parse, ignore, nInputs);
+
+
+    if (ignore) 
+    {
+        genParseNodeEnd(parse, atan2);
+        return parse.parsedNodes.find(n => n.nodeId == nodeId);
+    }
+
+
+    parse.nTab++;
+
+
+    atan2.x = genParse(parse);
+    atan2.y = genParse(parse);
+
+    
+    parse.nTab--;
+
+
+    genParseNodeEnd(parse, atan2);
+    return atan2;
+}
+
+
+
 function genParseSolve(parse)
 {
     const [, nodeId, options, ignore] = genParseNodeStart(parse);

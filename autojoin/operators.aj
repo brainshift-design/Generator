@@ -129,6 +129,7 @@
 ../operators/number/trigonometric/OpSine.js
 ../operators/number/trigonometric/OpCosine.js
 ../operators/number/trigonometric/OpTangent.js
+../operators/number/trigonometric/OpAtan2.js
 
 ../operators/number/OpConvertAngle.js
 
