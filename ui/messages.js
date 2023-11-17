@@ -210,8 +210,16 @@ generator.onmessage = function(e)
                 
             break;
         
-        case 'uiInitNodeProgress':   nodeFromId(msg.nodeId).initProgress();      break;
+        case 'uiInitNodeProgress':   
+        {
+            const node = nodeFromId(msg.nodeId);
 
+            if (node)
+                node.initProgress();      
+
+            break;
+        }
+        
         case 'uiUpdateNodeProgress': 
         {
             const node = nodeFromId(msg.nodeId);
@@ -222,7 +230,15 @@ generator.onmessage = function(e)
             break;
         }
 
-        case 'uiEndNodeProgress':    nodeFromId(msg.nodeId).endProgress();       break;
+        case 'uiEndNodeProgress':    
+        {
+            const node = nodeFromId(msg.nodeId);
+
+            if (node)
+                node.endProgress();       
+
+            break;
+        }
 
         case 'uiInitGlobalProgress': uiInitGlobalProgress(msg.requestId);        break;
         case 'uiEndGlobalProgress':  uiEndGlobalProgress();                      break;

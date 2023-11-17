@@ -38,6 +38,10 @@ extends OperatorBase
         this.paramWhile.divider               = 0.6;
 
         this.paramLoop.input.types.push(ANY_VALUE);
+
+
+        if (this.enabled)
+            setTimeout(() => pushUpdate(null, [this]), 1000);
     }
 
 
