@@ -8,7 +8,6 @@ var genMessagePosted   = false;
 
 
 var tutorialsShown     = false;
-var tutorialsSeen      = false;
 
 
 var allUpdateNodes     = [];
@@ -89,7 +88,7 @@ uiQueueMessageToFigma({cmd: 'figStartGenerator'});
 async function uiReturnFigStartGenerator(msg)
 {
     currentUser     = msg.currentUser;
-    tutorialsSeen   = msg.tutorials;
+    tutorialsShown  = msg.tutorials;
 
     // currentUserHash = hashUserId(currentUser.id, msg.salt);
     // console.log('currentUserHash =', currentUserHash);
