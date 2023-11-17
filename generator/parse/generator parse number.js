@@ -1273,9 +1273,9 @@ function genParseAtan2(parse)
 
     const atan2 = new GAtan2(nodeId, options);
    
-
+    
     if (parse.settings.logRequests) 
-        logReq(atan2, parse, ignore, nInputs);
+        logReq(atan2, parse, ignore);
 
 
     if (ignore) 

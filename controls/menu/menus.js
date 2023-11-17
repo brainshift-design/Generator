@@ -584,7 +584,7 @@ menuFlow = new Menu('Flow', true, false);
                           new MenuItem('Convert',       null,                 {icon: iconConvert,     childMenu: menuConvertNumber}),
                           new MenuItem('',              null,                 {separator: true}),
                           new MenuItem('Interpolate',   'Interpolate number', {icon: iconInterpolate, createType: NUMBER_INTERPOLATE, callback: e => actionManager.do(getCreateNodeAction(NUMBER_INTERPOLATE, btnNumber.div, getCreateOptions(e)))}),
-        menuItemSolve   = new MenuItem('Solve',         null,                 {icon: iconSolve,       createType: NUMBER_SOLVE,       callback: e => actionManager.do(getCreateNodeAction(NUMBER_SOLVE,    btnNumber.div, getCreateOptions(e)))}),
+          menuItemSolve = new MenuItem('Solve',         null,                 {icon: iconSolve,       createType: NUMBER_SOLVE,       callback: e => actionManager.do(getCreateNodeAction(NUMBER_SOLVE,    btnNumber.div, getCreateOptions(e)))}),
          menuNumberSep1 = new MenuItem('',              null,                 {separator: true}),
         menuItemAnimate = new MenuItem('Animate',       null,                 {icon: iconAnimate,       createType: NUMBER_ANIMATE,   callback: e => actionManager.do(getCreateNodeAction(NUMBER_ANIMATE,  btnNumber.div, getCreateOptions(e)))})]);
         
@@ -688,8 +688,9 @@ menuFlow = new Menu('Flow', true, false);
         new MenuItem('Interpolate points',        null,          {icon: iconInterpolatePoint, createType: INTERPOLATE_POINT, callback: e => actionManager.do(getCreateNodeAction(INTERPOLATE_POINT, btnShape.div, getCreateOptions(e)))}),
         //new MenuItem('Point on path',           null,          {icon: iconPointOnPath,      createType: POINT_ON_PATH,     callback: e => actionManager.do(getCreateNodeAction(POINT_ON_PATH,     btnShape.div, getCreateOptions(e)))}),
         new MenuItem('Intersect lines',           null,          {icon: iconIntersectLines,   createType: INTERSECT_LINES,   callback: e => actionManager.do(getCreateNodeAction(INTERSECT_LINES,   btnShape.div, getCreateOptions(e)))}),
-        new MenuItem('Circle center from points', null,          {icon: iconCircleCenter,     createType: CIRCLE_CENTER,     callback: e => actionManager.do(getCreateNodeAction(CIRCLE_CENTER,     btnShape.div, getCreateOptions(e)))}),
+        new MenuItem('Circle center',             null,          {icon: iconCircleCenter,     createType: CIRCLE_CENTER,     callback: e => actionManager.do(getCreateNodeAction(CIRCLE_CENTER,     btnShape.div, getCreateOptions(e)))}),
         new MenuItem('',                          null,          {separator: true}),
+        new MenuItem('Vector length',             null,          {icon: iconVectorLength,     createType: VECTOR_LENGTH,     callback: e => actionManager.do(getCreateNodeAction(VECTOR_LENGTH,     btnShape.div, getCreateOptions(e)))}),
         new MenuItem('Measure points',            null,          {icon: iconMeasurePoints,    createType: MEASURE_POINTS,    callback: e => actionManager.do(getCreateNodeAction(MEASURE_POINTS,    btnShape.div, getCreateOptions(e)))})]);
         // new MenuItem('',        null, {separator: true}),
         // new MenuItem('Vertex',  null, {icon: iconVectorVertex,  createType: VERTEX, callback: e => actionManager.do(getCreateNodeAction(VECTOR_VERTEX,  btnShape.div, getCreateOptions(e)))}),

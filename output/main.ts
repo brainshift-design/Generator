@@ -1465,6 +1465,7 @@ const PLACE                = 'PLACE';
 const SHAPE_APPLY          = 'APPLY';
   
 const MEASURE_POINTS       = 'MESPT';
+const VECTOR_LENGTH        = 'VECLEN';
 const CIRCLE_CENTER        = 'CIRCEN';
 const INTERSECT_LINES      = 'INTLIN';
 const INTERPOLATE_POINT    = 'PTLERP';
@@ -1562,6 +1563,7 @@ const SHAPE_TYPES =
     SHAPE_APPLY,
 
     MEASURE_POINTS,
+    VECTOR_LENGTH,
     CIRCLE_CENTER,
     INTERSECT_LINES,
     INTERPOLATE_POINT,

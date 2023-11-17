@@ -378,7 +378,24 @@ NumberControl.prototype.initTextbox = function()
         const savedValue = this.textbox.savedValue;
 
         value = value.replace(this.suffix, '');
-        
+
+        value = replaceLast(value, ',', '.');
+        value = replaceLast(value, '٫', '.');
+
+
+        let sepCount = 0;
+
+        for (let i = 0; i < value.length; i++)
+        {
+            if (   value[i] == '.'
+                || value[i] == ','
+                || value[i] == '٫')
+                sepCount++;
+        }
+
+        if (sepCount > 1)
+            success = false;
+                
         
         let isHex = this.showHex;
 

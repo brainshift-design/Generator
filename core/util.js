@@ -575,3 +575,15 @@ function rectToString(rect)
         + ', '   + rect.height
         + '}';
 }
+
+
+
+function replaceLast(str, _what, _with)
+{
+    var lastIndex = str.lastIndexOf(_what);
+
+    if (lastIndex === -1) 
+        return str;
+
+    return str.substring(0, lastIndex) + _with + str.substring(lastIndex + _what.length);
+}

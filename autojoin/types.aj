@@ -243,6 +243,7 @@
 ../generator/types/shape/GResetTransform.js
 
 ../generator/types/shape/GMeasurePoints.js
+../generator/types/shape/GVectorLength.js
 ../generator/types/shape/GCircleCenter.js
 ../generator/types/shape/GIntersectLines.js
 ../generator/types/shape/GInterpolatePoint.js

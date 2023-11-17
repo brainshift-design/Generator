@@ -3264,6 +3264,18 @@ function rectToString(rect)
 }
 
 
+
+function replaceLast(str, _what, _with)
+{
+    var lastIndex = str.lastIndexOf(_what);
+
+    if (lastIndex === -1) 
+        return str;
+
+    return str.substring(0, lastIndex) + _with + str.substring(lastIndex + _what.length);
+}
+
+
 "use strict";
 
 // Base64 / binary data / UTF-8 strings utilities
@@ -5231,6 +5243,7 @@ const PLACE                = 'PLACE';
 const SHAPE_APPLY          = 'APPLY';
   
 const MEASURE_POINTS       = 'MESPT';
+const VECTOR_LENGTH        = 'VECLEN';
 const CIRCLE_CENTER        = 'CIRCEN';
 const INTERSECT_LINES      = 'INTLIN';
 const INTERPOLATE_POINT    = 'PTLERP';
@@ -5328,6 +5341,7 @@ const SHAPE_TYPES =
     SHAPE_APPLY,
 
     MEASURE_POINTS,
+    VECTOR_LENGTH,
     CIRCLE_CENTER,
     INTERSECT_LINES,
     INTERPOLATE_POINT,
@@ -37689,10 +37703,6 @@ extends GOperator2
         if (   input0
             && input1)
         {
-            // console.log('input0 =', input0.toPoint());
-            // console.log('input1 =', input1.toPoint());
-            // console.log('');
-
             const dist = distance(input0.toPoint(), input1.toPoint());
 
             let ang = angle(subv(input1.toPoint(), input0.toPoint()));
@@ -37757,6 +37767,105 @@ extends GOperator2
 
         if (this.distance) this.distance.iterateLoop(parse);
         if (this.angle   ) this.angle   .iterateLoop(parse);
+    }
+}
+
+
+class GVectorLength
+extends GOperator1
+{
+    length = null;
+
+
+    
+    constructor(nodeId, options)
+    {
+        super(VECTOR_LENGTH, nodeId, options);
+    }
+
+
+    
+    reset()
+    {
+        super.reset();
+
+        this.length = null;
+    }
+
+
+
+    copy()
+    {
+        const copy = new GVectorLength(this.nodeId, this.options);
+
+        copy.copyBase(this);
+
+        if (this.length) copy.length = this.length.copy();
+
+        return copy;
+    }
+
+
+
+    async eval(parse)
+    {
+        if (this.isCached())
+            return this;
+
+
+        const input = this.input ? (await this.input.eval(parse)).toValue() : null;
+
+
+        if (input)
+            this.length = new NumberValue(lengthv(input.toPoint()), -2);
+        else
+            this.length = NumberValue.NaN;
+
+
+        this.setUpdateValues(parse,
+        [
+            ['length', this.length]
+        ]);
+        
+
+        this.validate();
+
+        return this;
+    }
+
+
+
+    isValid()
+    {
+        return super.isValid()
+            && this.length && this.length.isValid();
+    }
+
+
+
+    pushValueUpdates(parse)
+    {
+        super.pushValueUpdates(parse);
+
+        if (this.length) this.length.pushValueUpdates(parse);
+    }
+
+
+
+    invalidateInputs(parse, from, force)
+    {
+        super.invalidateInputs(parse, from, force);
+
+        if (this.length) this.length.invalidateInputs(parse, from, force);
+    }
+
+
+
+    iterateLoop(parse)
+    {
+        super.iterateLoop(parse);
+
+        if (this.length) this.length.iterateLoop(parse);
     }
 }
 
@@ -43605,9 +43714,9 @@ function genParseAtan2(parse)
 
     const atan2 = new GAtan2(nodeId, options);
    
-
+    
     if (parse.settings.logRequests) 
-        logReq(atan2, parse, ignore, nInputs);
+        logReq(atan2, parse, ignore);
 
 
     if (ignore) 
@@ -45169,6 +45278,52 @@ function genParseMeasurePoints(parse)
 
     genParseNodeEnd(parse, measure);
     return measure;
+}
+
+
+
+function genParseVectorLength(parse)
+{
+    const [, nodeId, options, ignore] = genParseNodeStart(parse);
+
+
+    const len = new GVectorLength(nodeId, options);
+
+
+    let nInputs = -1;
+
+    if (!ignore)
+    {
+        nInputs = parseInt(parse.move());
+        consoleAssert(nInputs => 0 && nInputs <= 1, 'nInputs must be [0, 1]');
+    }
+
+    
+    if (parse.settings.logRequests) 
+        logReq(len, parse, ignore, nInputs);
+
+
+    if (ignore) 
+    {
+        genParseNodeEnd(parse, len);
+        return parse.parsedNodes.find(n => n.nodeId == nodeId);
+    }
+
+
+    parse.nTab++;
+
+    
+    if (nInputs == 1)
+        len.input = genParse(parse);
+
+    len.length = genParse(parse);
+
+
+    parse.nTab--;
+
+
+    genParseNodeEnd(parse, len);
+    return len;
 }
 
 
@@ -46952,6 +47107,7 @@ function genParse(parse, inParam = true)
     else if (parse.next == RESET_XFORM            ) result = genParseResetTransform    (parse);
 
     else if (parse.next == MEASURE_POINTS         ) result = genParseMeasurePoints     (parse);
+    else if (parse.next == VECTOR_LENGTH          ) result = genParseVectorLength      (parse);
     else if (parse.next == CIRCLE_CENTER          ) result = genParseCircleCenter      (parse);
     else if (parse.next == INTERSECT_LINES        ) result = genParseIntersectLines    (parse);
     else if (parse.next == INTERPOLATE_POINT      ) result = genParseInterpolatePoint  (parse);

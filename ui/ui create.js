@@ -164,6 +164,7 @@ function createNode(nodeType, creatingButton = null, createdNodeId = -1, options
         case RESET_XFORM:             node = new OpResetTransform();    break;
         
         case MEASURE_POINTS:          node = new OpMeasurePoints();     break;
+        case VECTOR_LENGTH:           node = new OpVectorLength();      break;
         case CIRCLE_CENTER:           node = new OpCircleCenter();      break;
         case INTERSECT_LINES:         node = new OpIntersectLines();    break;
         case INTERPOLATE_POINT:       node = new OpInterpolatePoint();  break;
