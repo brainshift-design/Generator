@@ -322,11 +322,14 @@ function enableFeatures(sub, beta = false)
     enableMenuItem(menuItemSaveToFile,   sub, sub);
     enableMenuItem(menuItemFetch,        sub, sub);
     enableMenuItem(menuItemTextFile,     sub, sub);
+    enableMenuItem(menuItemIndexToName,  sub, sub);
     enableMenuItem(menuItemDateTime,     sub, sub);
     enableMenuItem(menuItemSolve,        sub, sub);
     enableMenuItem(menuItemTextJson,     sub, sub);
+    enableMenuItem(menuItemValidColor,   sub, sub);
     enableMenuItem(menuItemCorrectColor, sub, sub);
     enableMenuItem(menuItemConvertToP3,  sub, sub);
+    enableMenuItem(menuItemColorblind,   sub, sub);
     enableMenuItem(menuItemShapeRender,  sub, sub);
 
     graph.nodes.forEach(n => n.updateSubscribeStatus(sub));

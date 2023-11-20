@@ -45,7 +45,7 @@ extends FigmaShape
 
         copy.copyBase(this);
 
-        
+
         return copy;
     }
 

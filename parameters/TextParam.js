@@ -30,7 +30,8 @@ extends Parameter
     {
         super(TEXT_VALUE, id, name, showName);
 
-        this.defaultValue = defaultValue;
+
+        this.defaultValue = new TextValue(defaultValue);
 
 
         this.controls[0] = new TextControl(

@@ -48,11 +48,7 @@ extends GOperator
 
         switch (name.value)
         {
-            case 0:
-                this.value = new TextValue(figUniqueFontNames[index.value]);
-                break;
-
-            case 1: this.value = new TextValue(
+            case 0: this.value = new TextValue(
                 [
                     'monday', 
                     'tuesday', 
@@ -66,7 +62,7 @@ extends GOperator
 
                 break;
 
-            case 2: this.value = new TextValue(
+            case 1: this.value = new TextValue(
                 [
                     'january', 
                     'february', 
@@ -84,6 +80,11 @@ extends GOperator
                 [index.value-1]);
 
                 break;
+
+            case 2:
+                this.value = new TextValue(figUniqueFontNames[index.value]);
+                break;
+
         }
 
 

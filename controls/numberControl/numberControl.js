@@ -543,7 +543,10 @@ extends Control
 
                 if (Math.abs(val) >= 10_000) // add thousand separators
                 {
-                    for (let i = str.length-3; i > 0; i -= 3)
+                    let decIndex = str.lastIndexOf('.');
+                    if (decIndex == -1) str.length;
+
+                    for (let i = decIndex-3; i > 0; i -= 3)
                         str = str.substring(0, i) + ' ' + str.substring(i);
                 }
                 

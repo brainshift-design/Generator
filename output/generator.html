@@ -4,7 +4,7 @@
 
 
 
-const generatorVersion = 295;
+const generatorVersion = 297;
 
 
 const MAX_INT32        = 2147483647;
@@ -1155,48 +1155,143 @@ function isArrowKey(code)
 
 
 
-function numToString(num, dec, showHex = false)
+function numToString(num, dec, showHex = false, decSep = '.', thouSep = '')
 {
-    if (showHex)
-    {
-        const _num = Number(num);
-        let str = Math.round(Math.abs(_num)).toString(16);
+    return showHex
+         ? numToStringHex(num, dec, decSep, thouSep)
+         : numToStringDec(num, dec, decSep, thouSep);
+}
 
-        if (str.length % 2 > 0) str = '0' + str;
-        if (_num < 0)           str = '-' + str;
 
-        return str;
-    }
 
-    
+function numToStringDec(num, dec, decSep = '.', thouSep = '')
+{
     const _dec = Math.abs(dec);
-    let    str = Number(num).toFixed(_dec).toString(showHex ? 16 : 10);
+    let    str = Number(num).toFixed(_dec).toString(10);
     
-
-    let i = 0;
 
     // find decimal place
-
-    while (i < str.length 
+    
+    let i = str.length-1;
+    
+    while (i >= 0
         && str[i] !== '.' 
         && str[i] !== ',')
-        i++;
+        i--;
 
-    if (i >= str.length) // if no decimal place
-        return str;
+    if (i < 0) // if no decimal place
+        return addGroupSeparator(str, thouSep, 3);
 
-        
-    i = str.length-1;
+    
+    let whole = str.slice(0, i);
+    let frac  = str.slice(i+1);
+
+
+    // format fraction
+
+    i = frac.length-1;
 
     if (dec < 0)
     {
-        while (i >= 0 && str[i] === '0')
-            str = str.substring(0, i--);
-        
-         if (   str[i] === '.' 
-             || str[i] === ',') // hack because JavaScript has shit support for locales
-            str = str.substring(0, i--);
+        while (i >= 0 && frac[i] === '0')
+            frac = frac.substring(0, i--);
     }    
+
+
+    return addGroupSeparator(whole, thouSep, 3) + decSep + frac;
+}
+
+
+
+function numToStringHex(num, dec, decSep = '.', thouSep = '')
+{
+    const _num = Number(num);
+    const _dec = Math.abs(dec);
+
+    let   _str = Number(num).toFixed(_dec).toString(10);
+    let    str = Math.abs(_num).toString(16);
+
+
+    // find decimal place
+    
+    let i = str.length-1;
+
+    while (i >= 0
+        && str[i] !== '.' 
+        && str[i] !== ',')
+        i--;
+
+    if (i < 0) // if no decimal place
+        return addGroupSeparator(str, thouSep, 2);
+
+    
+    let whole = str.slice(0, i);
+    let frac  = _str.slice(i+1);
+
+
+    // format fraction
+    
+    i = frac.length-1;
+
+    let _frac = parseFloat(frac);
+    frac = '';
+
+    while (_frac != 0)
+    {
+        _frac *= 16;
+
+        const decFrac = Math.floor(_frac);
+
+        frac += decFrac.toString(16);
+        _frac -= decFrac;
+    }    
+
+
+    if (whole.length % 2 > 0) whole = '0' + whole;
+    if (frac .length % 2 > 0) frac  = frac + '0';
+
+
+    const neg = num < 0 ? '-' : '';
+
+    return neg + addGroupSeparator(whole, thouSep, 2) + decSep + addHexFracGroupSeparator(frac, thouSep, 2);
+}
+
+
+
+function addGroupSeparator(_str, sep, groupSize)
+{
+    let str = '';
+
+    for (let i = _str.length-1, t = 0; i >= 0; i--, t++)
+    {
+        if (t == groupSize)
+        {
+            str = sep + str;
+            t = 0;
+        }
+
+        str = _str[i] + str;
+    }
+
+    return str;
+}
+
+
+
+function addHexFracGroupSeparator(_str, sep, groupSize)
+{
+    let str = '';
+
+    for (let i = 0, t = 0; i < _str.length; i++, t++)
+    {
+        if (t == groupSize)
+        {
+            str += sep;
+            t = 0;
+        }
+
+        str += _str[i];
+    }
 
     return str;
 }
@@ -2062,7 +2157,7 @@ function positionOnSegment(p0, p1, p2, p3, arcLen, error = 0.001)
     }
 
     if (loopProtect == 0)
-        console.log('endless loop in positionOnSegment()');
+        consoleError('endless loop in positionOnSegment()');
 
 
     return t;
@@ -4686,11 +4781,14 @@ function enableFeatures(sub, beta = false)
     enableMenuItem(menuItemSaveToFile,   sub, sub);
     enableMenuItem(menuItemFetch,        sub, sub);
     enableMenuItem(menuItemTextFile,     sub, sub);
+    enableMenuItem(menuItemIndexToName,  sub, sub);
     enableMenuItem(menuItemDateTime,     sub, sub);
     enableMenuItem(menuItemSolve,        sub, sub);
     enableMenuItem(menuItemTextJson,     sub, sub);
+    enableMenuItem(menuItemValidColor,   sub, sub);
     enableMenuItem(menuItemCorrectColor, sub, sub);
     enableMenuItem(menuItemConvertToP3,  sub, sub);
+    enableMenuItem(menuItemColorblind,   sub, sub);
     enableMenuItem(menuItemShapeRender,  sub, sub);
 
     graph.nodes.forEach(n => n.updateSubscribeStatus(sub));
@@ -6572,7 +6670,7 @@ extends FigmaShape
 
         copy.copyBase(this);
 
-        
+
         return copy;
     }
 
@@ -23013,7 +23111,7 @@ async function evalDivideInputs(inputs, parse)
                     }
 
                     value.value    = value.value / item.value;
-                    value.decimals = Math.max(Math.max(value.decimals, item.decimals), decDigits(value.value));
+                    value.decimals = Math.max(value.decimals, item.decimals);
                 }                    
             }
         }
@@ -23054,9 +23152,9 @@ async function evalDivideInputs(inputs, parse)
                             break; 
                         }
 
-                        value = new NumberValue(value.toNumber() / item.toNumber());
-                        // value.value    = value.value / item.value;
-                        // value.decimals = Math.max(Math.max(value.decimals, item.decimals), decDigits(value.value));
+                        //value = new NumberValue(value.toNumber() / item.toNumber());
+                        value.value    = value.value / item.value;
+                        value.decimals = Math.max(value.decimals, item.decimals);
                     }                    
                 }
             }
@@ -23073,10 +23171,10 @@ async function evalDivideInputs(inputs, parse)
                     break; 
                 }
     
-                value = new NumberValue(value.toNumber() / val.toNumber());
+                //value = new NumberValue(value.toNumber() / val.toNumber());
                 
-                // value.value    = value.value / val.value;
-                // value.decimals = Math.max(Math.max(value.decimals, val.decimals), decDigits(value.value));
+                value.value    = value.value / val.value;
+                value.decimals = Math.max(value.decimals, val.decimals);
             }
         }
     }
@@ -25538,7 +25636,9 @@ extends GOperator1
 class GNumberToText
 extends GOperator1
 {
-    format;
+    base;
+    decimals;
+    thousands;
 
 
     
@@ -25553,7 +25653,9 @@ extends GOperator1
     {
         super.reset();
 
-        this.format = null;
+        this.base      = null;
+        this.decimals  = null;
+        this.thousands = null;
     }
 
 
@@ -25564,7 +25666,9 @@ extends GOperator1
 
         copy.copyBase(this);
 
-        if (this.format) copy.format = this.format.copy();
+        if (this.base     ) copy.base      = this.base     .copy();
+        if (this.decimals ) copy.decimals  = this.decimals .copy();
+        if (this.thousands) copy.thousands = this.thousands.copy();
 
         return copy;
     }
@@ -25577,14 +25681,14 @@ extends GOperator1
             return this;
 
 
-        const format = (await this.format.eval(parse)).toValue();
+        const input     = this.input     ? (await this.input    .eval(parse)).toValue() : null;
+        const base      = this.base      ? (await this.base     .eval(parse)).toValue() : null;
+        const decimals  = this.decimals  ? (await this.decimals .eval(parse)).toValue() : null;
+        const thousands = this.thousands ? (await this.thousands.eval(parse)).toValue() : null;
 
 
-        if (this.input)
+        if (input)
         {
-            const input = (await this.input.eval(parse)).toValue();
-
-
             if (isListType(input.type))
             {
                 this.value = new ListValue();
@@ -25595,13 +25699,13 @@ extends GOperator1
 
                     this.value.items.push(
                         item.type == NUMBER_VALUE
-                        ? getNumberToTextValue(item, format)
+                        ? getNumberToTextValue(item, base, decimals, thousands)
                         : TextValue.NaN.copy());   
                 }
             }
             else
             {
-                this.value = getNumberToTextValue(input, format);
+                this.value = getNumberToTextValue(input, base, decimals, thousands);
             }
         }
 
@@ -25611,8 +25715,10 @@ extends GOperator1
 
         this.setUpdateValues(parse,
         [
-            ['type',   this.outputType()],
-            ['format', format           ]
+            ['type',      this.outputType()],
+            ['base',      base             ],
+            ['decimals',  decimals         ],
+            ['thousands', thousands        ]
         ]);
 
 
@@ -25626,7 +25732,9 @@ extends GOperator1
     isValid()
     {
         return super.isValid()
-            && this.format && this.format.isValid();
+            && this.base      && this.base     .isValid()
+            && this.decimals  && this.decimals .isValid()
+            && this.thousands && this.thousands.isValid();
     }
 
 
@@ -25635,7 +25743,9 @@ extends GOperator1
     {
         super.pushValueUpdates(parse);
 
-        if (this.format) this.format.pushValueUpdates(parse);
+        if (this.base     ) this.base     .pushValueUpdates(parse);
+        if (this.decimals ) this.decimals .pushValueUpdates(parse);
+        if (this.thousands) this.thousands.pushValueUpdates(parse);
     }
 
 
@@ -25644,7 +25754,9 @@ extends GOperator1
     {
         super.invalidateInputs(parse, from, force);
 
-        if (this.format) this.format.invalidateInputs(parse, from, force);
+        if (this.base     ) this.base     .invalidateInputs(parse, from, force);
+        if (this.decimals ) this.decimals .invalidateInputs(parse, from, force);
+        if (this.thousands) this.thousands.invalidateInputs(parse, from, force);
     }
 
 
@@ -25653,28 +25765,22 @@ extends GOperator1
     {
         super.iterateLoop(parse);
 
-        if (this.format) this.format.iterateLoop(parse);
+        if (this.base     ) this.base     .iterateLoop(parse);
+        if (this.decimals ) this.decimals .iterateLoop(parse);
+        if (this.thousands) this.thousands.iterateLoop(parse);
     }
 }
 
 
 
-function getNumberToTextValue(input, format)
+function getNumberToTextValue(input, base, decimals, thousands)
 {
-    let str = NAN_CHAR;
-
-    switch (format.value)
-    {
-        case 0: // dec
-            str = numToString(input.value, -input.decimals);
-            break;
-
-        case 1: // hex
-            str = numToString(Math.round(input.value), input.decimals, true).toUpperCase();
-            break;
-    }
-
-    return new TextValue(str);
+    return new TextValue(numToString(
+         input.value, 
+        -input.decimals, 
+         base.value == 1, 
+         decimals.value, 
+         thousands.value));
 }
 
 
@@ -26206,11 +26312,7 @@ extends GOperator
 
         switch (name.value)
         {
-            case 0:
-                this.value = new TextValue(figUniqueFontNames[index.value]);
-                break;
-
-            case 1: this.value = new TextValue(
+            case 0: this.value = new TextValue(
                 [
                     'monday', 
                     'tuesday', 
@@ -26224,7 +26326,7 @@ extends GOperator
 
                 break;
 
-            case 2: this.value = new TextValue(
+            case 1: this.value = new TextValue(
                 [
                     'january', 
                     'february', 
@@ -26242,6 +26344,11 @@ extends GOperator
                 [index.value-1]);
 
                 break;
+
+            case 2:
+                this.value = new TextValue(figUniqueFontNames[index.value]);
+                break;
+
         }
 
 
@@ -32122,8 +32229,6 @@ extends GShapeBase
         {
             if (this.input)
             {
-                // console.log('this.input =', this.input);
-
                 if (add)
                 {
                     this.value.props = new ListValue();
@@ -32176,27 +32281,17 @@ extends GShapeBase
             consoleAssert(obj.effects, 'obj.effects must not be null');
 
 
-            if (  !this.value.props
-                || this.value.props.items == undefined) 
+            if (!this.value.props)
                 continue;
-
-
-            for (let i = this.value.props.items.length-1; i >= 0; i--)
-            {
-                const prop = this.value.props.items[i];
-                
-                     if (prop.type ==         COLOR_VALUE)  addColorProp       (obj, prop);
-                else if (prop.type ==          FILL_VALUE)  addFillProp        (obj, prop);
-                else if (prop.type ==      GRADIENT_VALUE)  addGradientProp    (obj, prop);
-                else if (prop.type ==        STROKE_VALUE)  addStrokeProp      (obj, prop);
-                else if (prop.type == ROUND_CORNERS_VALUE)  addRoundCornersProp(obj, prop);
-                else if (prop.type ==   DROP_SHADOW_VALUE)  addDropShadowProp  (obj, prop);
-                else if (prop.type ==  INNER_SHADOW_VALUE)  addInnerShadowProp (obj, prop);
-                else if (prop.type ==    LAYER_BLUR_VALUE)  addLayerBlurProp   (obj, prop);
-                else if (prop.type ==     BACK_BLUR_VALUE)  addBackBlurProp    (obj, prop);
-                else if (prop.type ==   LAYER_BLEND_VALUE)  addLayerBlendProp  (obj, prop);
-                else if (prop.type ==    LAYER_MASK_VALUE)  addMaskProp        (obj, prop);
+    
+            
+            if (isListType(this.value.props.type))
+            {               
+                for (let i = this.value.props.items.length-1; i >= 0; i--)
+                    addProp(obj, this.value.props.items[i]);
             }
+            else
+                addProp(obj, this.value.props);
         }
     }
 
@@ -32248,6 +32343,23 @@ extends GShapeBase
 }
 
 
+
+function addProp(obj, prop)
+{
+         if (prop.type ==         COLOR_VALUE)  addColorProp       (obj, prop);
+    else if (prop.type ==          FILL_VALUE)  addFillProp        (obj, prop);
+    else if (prop.type ==      GRADIENT_VALUE)  addGradientProp    (obj, prop);
+    else if (prop.type ==        STROKE_VALUE)  addStrokeProp      (obj, prop);
+    else if (prop.type == ROUND_CORNERS_VALUE)  addRoundCornersProp(obj, prop);
+    else if (prop.type ==   DROP_SHADOW_VALUE)  addDropShadowProp  (obj, prop);
+    else if (prop.type ==  INNER_SHADOW_VALUE)  addInnerShadowProp (obj, prop);
+    else if (prop.type ==    LAYER_BLUR_VALUE)  addLayerBlurProp   (obj, prop);
+    else if (prop.type ==     BACK_BLUR_VALUE)  addBackBlurProp    (obj, prop);
+    else if (prop.type ==   LAYER_BLEND_VALUE)  addLayerBlendProp  (obj, prop);
+    else if (prop.type ==    LAYER_MASK_VALUE)  addMaskProp        (obj, prop);
+}
+
+
 class GRectangle
 extends GShape
 {
@@ -32295,21 +32407,16 @@ extends GShape
         const round = this.round ? (await this.round.eval(parse)).toValue() : null;
 
 
-        let input = null;
-
         if (this.input)
         {
-            input = (await this.input.eval(parse)).toValue();
+            this.value = (await this.input.eval(parse)).toValue();
+            this.value.nodeId = this.nodeId;
             
-            this.value = new RectangleValue(
-                this.nodeId,
-                x      ?? input.x,
-                y      ?? input.y,
-                width  ?? input.width,
-                height ?? input.height,
-                round  ?? input.round);
-
-            this.value.copyCustomParams(input);
+            if (x     ) this.value.x      = x;
+            if (y     ) this.value.y      = y;
+            if (width ) this.value.width  = width;
+            if (height) this.value.height = height;
+            if (round ) this.value.round  = round;
         }
         else
         {
@@ -32379,9 +32486,9 @@ extends GShape
                 && h != 0)
             {
                 const rect = new FigmaRectangle(
-                    this.nodeId, 
-                    this.nodeId, 
-                    this.nodeName, 
+                    this.nodeId,
+                    this.nodeId,
+                    this.nodeName,
                     x, y, w, h, r);
 
                 rect.createDefaultTransform(x, y);
@@ -32393,7 +32500,6 @@ extends GShape
 
         
         await super.evalObjects(parse);
-        
     }
 
 
@@ -46429,7 +46535,9 @@ function genParseNumberToText(parse)
     if (nInputs == 1)
         num2text.input = genParse(parse);
 
-    num2text.format = genParse(parse);
+    num2text.base      = genParse(parse);
+    num2text.decimals  = genParse(parse);
+    num2text.thousands = genParse(parse);
 
     
     parse.nTab--;

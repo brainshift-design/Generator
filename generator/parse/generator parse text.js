@@ -653,7 +653,9 @@ function genParseNumberToText(parse)
     if (nInputs == 1)
         num2text.input = genParse(parse);
 
-    num2text.format = genParse(parse);
+    num2text.base      = genParse(parse);
+    num2text.decimals  = genParse(parse);
+    num2text.thousands = genParse(parse);
 
     
     parse.nTab--;

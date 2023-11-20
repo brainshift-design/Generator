@@ -65,8 +65,6 @@ extends GShapeBase
         {
             if (this.input)
             {
-                // console.log('this.input =', this.input);
-
                 if (add)
                 {
                     this.value.props = new ListValue();
@@ -119,27 +117,17 @@ extends GShapeBase
             consoleAssert(obj.effects, 'obj.effects must not be null');
 
 
-            if (  !this.value.props
-                || this.value.props.items == undefined) 
+            if (!this.value.props)
                 continue;
-
-
-            for (let i = this.value.props.items.length-1; i >= 0; i--)
-            {
-                const prop = this.value.props.items[i];
-                
-                     if (prop.type ==         COLOR_VALUE)  addColorProp       (obj, prop);
-                else if (prop.type ==          FILL_VALUE)  addFillProp        (obj, prop);
-                else if (prop.type ==      GRADIENT_VALUE)  addGradientProp    (obj, prop);
-                else if (prop.type ==        STROKE_VALUE)  addStrokeProp      (obj, prop);
-                else if (prop.type == ROUND_CORNERS_VALUE)  addRoundCornersProp(obj, prop);
-                else if (prop.type ==   DROP_SHADOW_VALUE)  addDropShadowProp  (obj, prop);
-                else if (prop.type ==  INNER_SHADOW_VALUE)  addInnerShadowProp (obj, prop);
-                else if (prop.type ==    LAYER_BLUR_VALUE)  addLayerBlurProp   (obj, prop);
-                else if (prop.type ==     BACK_BLUR_VALUE)  addBackBlurProp    (obj, prop);
-                else if (prop.type ==   LAYER_BLEND_VALUE)  addLayerBlendProp  (obj, prop);
-                else if (prop.type ==    LAYER_MASK_VALUE)  addMaskProp        (obj, prop);
+    
+            
+            if (isListType(this.value.props.type))
+            {               
+                for (let i = this.value.props.items.length-1; i >= 0; i--)
+                    addProp(obj, this.value.props.items[i]);
             }
+            else
+                addProp(obj, this.value.props);
         }
     }
 
@@ -188,4 +176,21 @@ extends GShapeBase
         if (this.input) this.input.iterateLoop(parse);
         if (this.props) this.props.iterateLoop(parse);
     }
+}
+
+
+
+function addProp(obj, prop)
+{
+         if (prop.type ==         COLOR_VALUE)  addColorProp       (obj, prop);
+    else if (prop.type ==          FILL_VALUE)  addFillProp        (obj, prop);
+    else if (prop.type ==      GRADIENT_VALUE)  addGradientProp    (obj, prop);
+    else if (prop.type ==        STROKE_VALUE)  addStrokeProp      (obj, prop);
+    else if (prop.type == ROUND_CORNERS_VALUE)  addRoundCornersProp(obj, prop);
+    else if (prop.type ==   DROP_SHADOW_VALUE)  addDropShadowProp  (obj, prop);
+    else if (prop.type ==  INNER_SHADOW_VALUE)  addInnerShadowProp (obj, prop);
+    else if (prop.type ==    LAYER_BLUR_VALUE)  addLayerBlurProp   (obj, prop);
+    else if (prop.type ==     BACK_BLUR_VALUE)  addBackBlurProp    (obj, prop);
+    else if (prop.type ==   LAYER_BLEND_VALUE)  addLayerBlendProp  (obj, prop);
+    else if (prop.type ==    LAYER_MASK_VALUE)  addMaskProp        (obj, prop);
 }

@@ -13,8 +13,8 @@ extends OperatorBase
 
         this.addOutput(new Output([TEXT_VALUE], this.output_genRequest));
 
-        this.addParam(this.paramName  = new SelectParam('name', 'name', false,  true,  true, ['font name', 'day of week', 'month'], 0));
-        this.addParam(this.paramIndex = new NumberParam('index', 'index', true,  true,  true, figUniqueFontNames.indexOf('Inter'), 0));
+        this.addParam(this.paramName  = new SelectParam('name', 'name', false,  true,  true, ['day of week', 'month', 'font name'], 0));
+        this.addParam(this.paramIndex = new NumberParam('index', 'index', true,  true,  true, 1, 1));
     }
 
 
@@ -54,20 +54,21 @@ extends OperatorBase
 
         switch (this.paramName.value.value)
         {
-            case 0: // font names
-                this.paramIndex.controls[0].setMin(0); 
-                this.paramIndex.controls[0].setMax(figUniqueFontNames.length-1); 
-                break;
-
-            case 1: // days of week
+            case 0: // days of week
                 this.paramIndex.controls[0].setMin(1);
                 this.paramIndex.controls[0].setMax(7); 
                 break;
 
-            case 2: // months
+            case 1: // months
                 this.paramIndex.controls[0].setMin(1);
                 this.paramIndex.controls[0].setMax(12); 
                 break;
+
+            case 2: // font names
+                this.paramIndex.controls[0].setMin(0); 
+                this.paramIndex.controls[0].setMax(figUniqueFontNames.length-1); 
+                break;
+
         }
 
 

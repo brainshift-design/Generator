@@ -1,7 +1,9 @@
 class GNumberToText
 extends GOperator1
 {
-    format;
+    base;
+    decimals;
+    thousands;
 
 
     
@@ -16,7 +18,9 @@ extends GOperator1
     {
         super.reset();
 
-        this.format = null;
+        this.base      = null;
+        this.decimals  = null;
+        this.thousands = null;
     }
 
 
@@ -27,7 +31,9 @@ extends GOperator1
 
         copy.copyBase(this);
 
-        if (this.format) copy.format = this.format.copy();
+        if (this.base     ) copy.base      = this.base     .copy();
+        if (this.decimals ) copy.decimals  = this.decimals .copy();
+        if (this.thousands) copy.thousands = this.thousands.copy();
 
         return copy;
     }
@@ -40,14 +46,14 @@ extends GOperator1
             return this;
 
 
-        const format = (await this.format.eval(parse)).toValue();
+        const input     = this.input     ? (await this.input    .eval(parse)).toValue() : null;
+        const base      = this.base      ? (await this.base     .eval(parse)).toValue() : null;
+        const decimals  = this.decimals  ? (await this.decimals .eval(parse)).toValue() : null;
+        const thousands = this.thousands ? (await this.thousands.eval(parse)).toValue() : null;
 
 
-        if (this.input)
+        if (input)
         {
-            const input = (await this.input.eval(parse)).toValue();
-
-
             if (isListType(input.type))
             {
                 this.value = new ListValue();
@@ -58,13 +64,13 @@ extends GOperator1
 
                     this.value.items.push(
                         item.type == NUMBER_VALUE
-                        ? getNumberToTextValue(item, format)
+                        ? getNumberToTextValue(item, base, decimals, thousands)
                         : TextValue.NaN.copy());   
                 }
             }
             else
             {
-                this.value = getNumberToTextValue(input, format);
+                this.value = getNumberToTextValue(input, base, decimals, thousands);
             }
         }
 
@@ -74,8 +80,10 @@ extends GOperator1
 
         this.setUpdateValues(parse,
         [
-            ['type',   this.outputType()],
-            ['format', format           ]
+            ['type',      this.outputType()],
+            ['base',      base             ],
+            ['decimals',  decimals         ],
+            ['thousands', thousands        ]
         ]);
 
 
@@ -89,7 +97,9 @@ extends GOperator1
     isValid()
     {
         return super.isValid()
-            && this.format && this.format.isValid();
+            && this.base      && this.base     .isValid()
+            && this.decimals  && this.decimals .isValid()
+            && this.thousands && this.thousands.isValid();
     }
 
 
@@ -98,7 +108,9 @@ extends GOperator1
     {
         super.pushValueUpdates(parse);
 
-        if (this.format) this.format.pushValueUpdates(parse);
+        if (this.base     ) this.base     .pushValueUpdates(parse);
+        if (this.decimals ) this.decimals .pushValueUpdates(parse);
+        if (this.thousands) this.thousands.pushValueUpdates(parse);
     }
 
 
@@ -107,7 +119,9 @@ extends GOperator1
     {
         super.invalidateInputs(parse, from, force);
 
-        if (this.format) this.format.invalidateInputs(parse, from, force);
+        if (this.base     ) this.base     .invalidateInputs(parse, from, force);
+        if (this.decimals ) this.decimals .invalidateInputs(parse, from, force);
+        if (this.thousands) this.thousands.invalidateInputs(parse, from, force);
     }
 
 
@@ -116,26 +130,20 @@ extends GOperator1
     {
         super.iterateLoop(parse);
 
-        if (this.format) this.format.iterateLoop(parse);
+        if (this.base     ) this.base     .iterateLoop(parse);
+        if (this.decimals ) this.decimals .iterateLoop(parse);
+        if (this.thousands) this.thousands.iterateLoop(parse);
     }
 }
 
 
 
-function getNumberToTextValue(input, format)
+function getNumberToTextValue(input, base, decimals, thousands)
 {
-    let str = NAN_CHAR;
-
-    switch (format.value)
-    {
-        case 0: // dec
-            str = numToString(input.value, -input.decimals);
-            break;
-
-        case 1: // hex
-            str = numToString(Math.round(input.value), input.decimals, true).toUpperCase();
-            break;
-    }
-
-    return new TextValue(str);
+    return new TextValue(numToString(
+         input.value, 
+        -input.decimals, 
+         base.value == 1, 
+         decimals.value, 
+         thousands.value));
 }

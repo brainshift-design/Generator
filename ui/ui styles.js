@@ -125,8 +125,6 @@ function uiReturnFigGetAllLocalColorStyles(msg)
 
 function uiReturnGetAllLocalTemplateNames(templateNames)
 {
-    console.log('return local templates');
-
     const menuItems = [];
 
 

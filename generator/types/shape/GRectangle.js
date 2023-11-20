@@ -45,21 +45,16 @@ extends GShape
         const round = this.round ? (await this.round.eval(parse)).toValue() : null;
 
 
-        let input = null;
-
         if (this.input)
         {
-            input = (await this.input.eval(parse)).toValue();
+            this.value = (await this.input.eval(parse)).toValue();
+            this.value.nodeId = this.nodeId;
             
-            this.value = new RectangleValue(
-                this.nodeId,
-                x      ?? input.x,
-                y      ?? input.y,
-                width  ?? input.width,
-                height ?? input.height,
-                round  ?? input.round);
-
-            this.value.copyCustomParams(input);
+            if (x     ) this.value.x      = x;
+            if (y     ) this.value.y      = y;
+            if (width ) this.value.width  = width;
+            if (height) this.value.height = height;
+            if (round ) this.value.round  = round;
         }
         else
         {
@@ -129,9 +124,9 @@ extends GShape
                 && h != 0)
             {
                 const rect = new FigmaRectangle(
-                    this.nodeId, 
-                    this.nodeId, 
-                    this.nodeName, 
+                    this.nodeId,
+                    this.nodeId,
+                    this.nodeName,
                     x, y, w, h, r);
 
                 rect.createDefaultTransform(x, y);
@@ -143,7 +138,6 @@ extends GShape
 
         
         await super.evalObjects(parse);
-        
     }
 
 

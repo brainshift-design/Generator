@@ -50,7 +50,7 @@ function positionOnSegment(p0, p1, p2, p3, arcLen, error = 0.001)
     }
 
     if (loopProtect == 0)
-        console.log('endless loop in positionOnSegment()');
+        consoleError('endless loop in positionOnSegment()');
 
 
     return t;

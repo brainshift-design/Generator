@@ -225,8 +225,8 @@ GraphView.prototype.copySelectedNodesAsJavascript = function()
         js += terminal.toJavascript(gen);
     }
 
-
-    console.log(js);
+    
+    //console.log(js);
     writeTextToClipboard(js);
 };
 

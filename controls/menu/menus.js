@@ -167,6 +167,7 @@ var menuItemWave;
 var menuItemSequence;
 
 var menuItemDateTime;
+var menuItemIndexToName;
 
 var menuNumberSep1;
 var menuItemSolve;  
@@ -174,6 +175,7 @@ var menuItemSolve;
 var menuItemTextJson;
 
 var menuItemColor;
+var menuItemValidColor;
 var menuItemCorrectColor;
 var menuItemConvertToP3;
 var menuItemColorSep1;
@@ -551,15 +553,15 @@ menuFlow = new Menu('Flow', true, false);
 
     menuConvertText = new Menu('Convert text', true, false);
     menuConvertText.addItems([
-        new MenuItem('Text ⟶ Number',       null, {icon: iconTextToNumber,  createType: TEXT_TO_NUMBER, callback: e => actionManager.do(getCreateNodeAction(TEXT_TO_NUMBER, btnText.div, getCreateOptions(e)))}),
-        new MenuItem('Text ⟶ Color',        null, {icon: iconTextToColor,   createType: TEXT_TO_COLOR,  callback: e => actionManager.do(getCreateNodeAction(TEXT_TO_COLOR,  btnText.div, getCreateOptions(e)))}),
-        new MenuItem('',                     null, {separator: true}),
-        new MenuItem('Number ⟶ Text',       null, {icon: iconNumberToText,  createType: NUMBER_TO_TEXT, callback: e => actionManager.do(getCreateNodeAction(NUMBER_TO_TEXT, btnText.div, getCreateOptions(e)))}),
-        new MenuItem('Color ⟶ Text',        null, {icon: iconColorToText,   createType: COLOR_TO_TEXT,  callback: e => actionManager.do(getCreateNodeAction(COLOR_TO_TEXT,  btnText.div, getCreateOptions(e)))}),
-        new MenuItem('',                     null, {separator: true}),
-        new MenuItem('Unicode ⟶ Character', null, {icon: iconTextCharacter, createType: TEXT_CHAR,      callback: e => actionManager.do(getCreateNodeAction(TEXT_CHAR,      btnText.div, getCreateOptions(e)))}),
-        new MenuItem('',                     null, {separator: true}),
-        new MenuItem('Index ⟶ Name',        null, {icon: iconIndexToName,      createType: INDEX_TO_NAME,      callback: e => actionManager.do(getCreateNodeAction(INDEX_TO_NAME,      btnText.div, getCreateOptions(e)))})]);
+                              new MenuItem('Text ⟶ Number',       null, {icon: iconTextToNumber,  createType: TEXT_TO_NUMBER, callback: e => actionManager.do(getCreateNodeAction(TEXT_TO_NUMBER, btnText.div, getCreateOptions(e)))}),
+                              new MenuItem('Text ⟶ Color',        null, {icon: iconTextToColor,   createType: TEXT_TO_COLOR,  callback: e => actionManager.do(getCreateNodeAction(TEXT_TO_COLOR,  btnText.div, getCreateOptions(e)))}),
+                              new MenuItem('',                     null, {separator: true}),
+                              new MenuItem('Number ⟶ Text',       null, {icon: iconNumberToText,  createType: NUMBER_TO_TEXT, callback: e => actionManager.do(getCreateNodeAction(NUMBER_TO_TEXT, btnText.div, getCreateOptions(e)))}),
+                              new MenuItem('Color ⟶ Text',        null, {icon: iconColorToText,   createType: COLOR_TO_TEXT,  callback: e => actionManager.do(getCreateNodeAction(COLOR_TO_TEXT,  btnText.div, getCreateOptions(e)))}),
+                              new MenuItem('',                     null, {separator: true}),
+                              new MenuItem('Unicode ⟶ Character', null, {icon: iconTextCharacter, createType: TEXT_CHAR,      callback: e => actionManager.do(getCreateNodeAction(TEXT_CHAR,      btnText.div, getCreateOptions(e)))}),
+                              new MenuItem('',                     null, {separator: true}),
+        menuItemIndexToName = new MenuItem('Index ⟶ Name',        null, {icon: iconIndexToName,      createType: INDEX_TO_NAME,      callback: e => actionManager.do(getCreateNodeAction(INDEX_TO_NAME,      btnText.div, getCreateOptions(e)))})]);
     
 
     menuTextData = new Menu('Data', true, false);
@@ -640,7 +642,7 @@ menuFlow = new Menu('Flow', true, false);
         menuItemColorSep1    = new MenuItem('',              null,                {separator: true}),
                                new MenuItem('Contrast',      null,                {icon: iconWebContrast,      callback: e => actionManager.do(getCreateNodeAction(COLOR_CONTRAST,    btnColor.div, getCreateOptions(e)))}),
         menuItemLayerSep1    = new MenuItem('',              null,                {separator: true}),
-                               new MenuItem('Valid sRGB',    null,                {icon: iconValidColor,       callback: e => actionManager.do(getCreateNodeAction(VALID_COLOR,       btnColor.div, getCreateOptions(e)))}),
+        menuItemValidColor   = new MenuItem('Valid sRGB',    null,                {icon: iconValidColor,       callback: e => actionManager.do(getCreateNodeAction(VALID_COLOR,       btnColor.div, getCreateOptions(e)))}),
         menuItemCorrectColor = new MenuItem('Correct color', null,                {icon: iconCorrectColor,     callback: e => actionManager.do(getCreateNodeAction(CORRECT_COLOR,     btnColor.div, getCreateOptions(e)))}),
         menuItemConvertToP3  = new MenuItem('sRGB ⟷ P3',    null,                {icon: iconConvertP3,        callback: e => actionManager.do(getCreateNodeAction(COLOR_CONVERT_P3,  btnColor.div, getCreateOptions(e)))}),
         menuItemColorblind   = new MenuItem('Color vision',  null,                {icon: iconColorblind,       callback: e => actionManager.do(getCreateNodeAction(COLORBLIND,        btnColor.div, getCreateOptions(e)))}),
