@@ -141,6 +141,7 @@ function initGenerator(activate)
 
     uiGetLocalData('showWhatsNew');
 
+
     setTimeout(() => loadingGraphic.style.display = 'block', 300);
 
     uiQueueMessageToFigma({cmd: 'figFinishStart'});

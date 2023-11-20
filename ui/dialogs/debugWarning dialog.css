@@ -1,0 +1,146 @@
+#debugWarningBack
+{
+    display:          none;
+
+    
+    position:         fixed;
+    left:             0;
+    top:              0;
+    width:            100%;
+    height:           100%;
+    overflow:         auto;
+    z-index:          20000;
+    pointer-events:   all;
+
+    background-color: #0005;
+}
+
+
+
+#debugWarningDialog
+{
+    display:       none;
+
+    font-family:   Inter;
+
+    z-index:       20001;
+    position:      absolute;
+    top:           50%;
+    left:          50%;
+    transform:     translateX(-50%)
+                   translateY(-50%);
+    width:         380px;
+    height:        378px;
+
+    overflow:      hidden;
+    
+    color:         var(--figma-color-text);
+    background:    var(--figma-color-bg);
+    
+    border:        0.5px solid rgba(0, 0, 0, 0.2);
+
+    border-radius: 4px;
+}
+
+
+#debugWarningDialogContainer
+{
+    height:   calc(100% - 42px);
+    overflow: hidden;
+    padding:  0;
+    z-index:  1;
+    /* box-shadow: 0 0 0 1px red inset; */
+}
+
+
+#debugWarningDialogContent
+{
+    font-size:      12px;
+    margin:         0;
+    padding:        1px 0 5px 0;
+    position:       absolute;
+    pointer-events: all;
+    user-select:    text;
+    /* box-shadow:  0 0 0 1px blue inset; */
+}
+
+
+.figma-light #debugWarningDialog
+{
+    box-shadow: 0px 2px  7px rgba(0, 0, 0, 0.15),
+                0px 5px 17px rgba(0, 0, 0, 0.15);
+}
+
+
+.figma-dark #debugWarningDialog
+{
+    box-shadow: 0px 2px  7px rgba(0, 0, 0, 0.45),
+                0px 5px 25px rgba(0, 0, 0, 0.45),
+                0 0px 2px 0px #fff3 inset;
+}
+
+
+#debugWarningTitle
+{
+    position:       relative;
+    height:         40px;
+    border-bottom:  1px solid rgb(0, 0, 0, 0.15);
+    border-top:     1px solid var(--figma-color-bg-tertiary);
+    border-bottom:  1px solid var(--figma-color-bg-tertiary);
+    background:     var(--figma-color-bg);
+    z-index:        10;
+}
+
+
+#debugWarningTitleText
+{
+    position:       absolute;
+    left:           16px;
+    top:            12px;
+    
+    font-style:     normal;
+    font-weight:    600;
+    font-size:      11px;
+    line-height:    16px;
+    
+    display:        flex;
+    align-items:    center;
+    letter-spacing: 0.005em;
+    
+    color:          var(--figma-color-text);
+
+    pointer-events: none;
+    user-select:    none;
+}
+
+
+#debugWarningBody
+{
+    margin:      25px 40px 0 40px;
+    font-weight: 200;
+}
+
+
+.figma-dark  #debugWarningBody { font-weight: 200; }
+.figma-light #debugWarningBody { font-weight: 400; }
+
+.figma-light #debugWarningBody .bold { font-weight: 700; }
+.figma-dark  #debugWarningBody .bold { font-weight: 500; }
+
+
+
+
+#btnAcceptDebugWarning
+{
+    width:       180px;
+    height:      14px;
+    user-select: none;
+    margin:      30px auto 42px auto;
+    position:    relative;
+    left:        -5px;
+    background:  transparent;
+}
+
+
+.figma-light #btnAcceptDebugWarning { font-weight: 600; }
+.figma-dark  #btnAcceptDebugWarning { font-weight: 300; }

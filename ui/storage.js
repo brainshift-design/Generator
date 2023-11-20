@@ -127,6 +127,24 @@ async function uiReturnFigGetLocalData(msg)
     }
 
 
+    if (msg.key == 'debugWarningCrash')
+    {
+        if (!msg.value)
+            showDebugWarningDialog();
+        else
+            uiRestartGenerator(true);
+    }
+
+
+    if (msg.key == 'debugWarning')
+    {
+        if (!msg.value)
+            showDebugWarningDialog();
+        else
+            updateSettingAndMenu('showDebugMenu', true, !settings.showDebugMenu); updateMenuItemShowDebugMenu();
+    }
+
+
     if (    msg.key == 'debugMode'
         && !generatorStarted)
     {

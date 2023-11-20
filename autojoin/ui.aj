@@ -29,6 +29,7 @@
 ../html/saveAsTemplate.html
 ../html/manageTemplates.html
 ../html/subscription.html
+../html/debugWarning.html
 ../html/eula.html
 ../html/minZoom.html
 ../html/whatsNew.html

@@ -1849,6 +1849,15 @@ function figGetLocalData(key) {
             value: figma.currentPage.children.length == 0
         });
     }
+    else if (key == 'debugWarningCrash') {
+        figma.clientStorage.getAsync('debugWarning').then(data => {
+            figPostMessageToUi({
+                cmd: 'uiReturnFigGetLocalData',
+                key: key,
+                value: data
+            });
+        });
+    }
     else {
         figma.clientStorage.getAsync(key).then(data => {
             figPostMessageToUi({

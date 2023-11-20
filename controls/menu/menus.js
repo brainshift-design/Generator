@@ -295,7 +295,7 @@ function initGeneratorMenus()
         new MenuItem('',                              null, {separator: true}),    
         menuItemShowTooltips           = new MenuItem('Show tooltips',                     null, {childMenu: menuShowTooltips}),
         menuItemShowClearUndoWarning   = new MenuItem('Show clear undo warning',           null, {checkCallback: () => settings.showClearUndoWarning,   callback: () => { updateSettingAndMenu('showClearUndoWarning',   true, !settings.showClearUndoWarning);                                           }}),
-        menuItemShowDebugMenu          = new MenuItem('Show debug menu',                   null, {checkCallback: () => settings.showDebugMenu,          callback: () => { updateSettingAndMenu('showDebugMenu',          true, !settings.showDebugMenu);          updateMenuItemShowDebugMenu();          }}),
+        menuItemShowDebugMenu          = new MenuItem('Show debug menu',                   null, {checkCallback: () => settings.showDebugMenu,          callback: () => { uiGetLocalData('debugWarning'); }}),
         menuPrefSep2                   = new MenuItem('',                                  null, {separator: true}),    
         // menuItemEnableMultiplayer      = new MenuItem('Enable multiplayer on this canvas', null, {checkCallback: () => multiplayerEnabled,              callback: () => { updateSettingAndMenu('showPages',              true, !settings.showPages);              enableMultiplayer(!multiplayerEnabled); }}),
         //                                  new MenuItem('',                                  null, {separator: true}),    

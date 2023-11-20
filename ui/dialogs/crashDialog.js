@@ -33,7 +33,7 @@ function initCrashDialog(event, error, showDebugButton = true)
     {
         crashBack.addEventListener('pointerdown', e => { e.preventDefault(); });
 
-        btnCrashRestart.addEventListener('click', () => uiRestartGenerator(true));
+        btnCrashRestart.addEventListener('click', () => uiGetLocalData('debugWarningCrash'));
         btnCrashRestart.style.display = showDebugButton ? 'block' : 'none';
 
         crashDetails.addEventListener('pointerup', e =>
