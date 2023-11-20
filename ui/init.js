@@ -75,7 +75,7 @@ initUtilContext();
 
 
 initLoadingOverlay();
-initDataMode();
+initDebugMode();
 initEulaDialog();
 initWhatsNewDialog();
 initAboutDialog();
@@ -146,8 +146,8 @@ function initGenerator(activate)
     uiQueueMessageToFigma({cmd: 'figFinishStart'});
 
     uiQueueMessageToFigma({
-        cmd:     'figLoadNodesAndConns',
-        dataMode: settings.dataMode });
+        cmd:      'figLoadNodesAndConns',
+        debugMode: settings.debugMode });
 
 
     if (activate)
@@ -207,7 +207,7 @@ function validateInit(eulaAgreed)
 
 function finalizeInit(eulaAgreed, activate)
 {
-    if (!settings.dataMode)
+    if (!settings.debugMode)
         enableFeatures(subscribed());
 
     if (!eulaAgreed)
@@ -216,7 +216,7 @@ function finalizeInit(eulaAgreed, activate)
         initGenerator(activate);
 
 
-    if (settings.dataMode)
+    if (settings.debugMode)
         addMetricsEvent(METRICS_DEBUG_MODE, NULL);
 }
 

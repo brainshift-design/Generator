@@ -2592,7 +2592,7 @@ figma.ui.onmessage = function(msg)
         
         case 'figSavePages':                          figSavePages                         (msg.pageIds, msg.pageJson, msg.currentPageId); break;
      
-        case 'figLoadNodesAndConns':                  figLoadNodesAndConns                 (msg.dataMode);                                break;
+        case 'figLoadNodesAndConns':                  figLoadNodesAndConns                 (msg.debugMode);                               break;
         case 'figSaveNodes':                          figSaveNodes                         (msg.nodeIds, msg.nodeJson);                   break;
      
         case 'figGetAllLocalTemplateNames':           figGetAllLocalTemplateNames          ();                                            break;
@@ -2723,9 +2723,18 @@ function figGetLocalData(key)
 
 
 
-function figSetLocalData(key, value)
+function figSetLocalData(key, value, postToUi = true)
 {
     figma.clientStorage.setAsync(key, value); 
+
+    if (postToUi)
+    {
+        figPostMessageToUi({
+            cmd:  'uiReturnFigSetLocalData',
+            key:   key,
+            value: value
+        });
+    }
 }
 
 
@@ -2773,7 +2782,7 @@ function figClearPageData(key)
 
 
 
-function figLoadNodesAndConns(dataMode)
+function figLoadNodesAndConns(debugMode)
 {
     // const pageIds  = figma.currentPage.getPluginData('pages');
 
@@ -2783,7 +2792,7 @@ function figLoadNodesAndConns(dataMode)
     const connKeys  = figma.currentPage.getPluginDataKeys().filter(k => isConnKey(k));
 
 
-    if (!dataMode)
+    if (!debugMode)
         figMarkForLoading(nodeKeys, connKeys);
 
     const pages     = pageKeys.map(k => figma.currentPage.getPluginData(k));

@@ -1701,7 +1701,7 @@ figma.ui.onmessage = function (msg) {
             figSavePages(msg.pageIds, msg.pageJson, msg.currentPageId);
             break;
         case 'figLoadNodesAndConns':
-            figLoadNodesAndConns(msg.dataMode);
+            figLoadNodesAndConns(msg.debugMode);
             break;
         case 'figSaveNodes':
             figSaveNodes(msg.nodeIds, msg.nodeJson);
@@ -1859,8 +1859,15 @@ function figGetLocalData(key) {
         });
     }
 }
-function figSetLocalData(key, value) {
+function figSetLocalData(key, value, postToUi = true) {
     figma.clientStorage.setAsync(key, value);
+    if (postToUi) {
+        figPostMessageToUi({
+            cmd: 'uiReturnFigSetLocalData',
+            key: key,
+            value: value
+        });
+    }
 }
 function figClearAllLocalData() {
     return __awaiter(this, void 0, void 0, function* () {
@@ -1887,12 +1894,12 @@ function figSetPageData(key, value) {
 function figClearPageData(key) {
     figma.currentPage.setPluginData(key, '');
 }
-function figLoadNodesAndConns(dataMode) {
+function figLoadNodesAndConns(debugMode) {
     // const pageIds  = figma.currentPage.getPluginData('pages');
     const pageKeys = figma.currentPage.getPluginDataKeys().filter(k => isPageKey(k));
     const nodeKeys = figma.currentPage.getPluginDataKeys().filter(k => isNodeKey(k));
     const connKeys = figma.currentPage.getPluginDataKeys().filter(k => isConnKey(k));
-    if (!dataMode)
+    if (!debugMode)
         figMarkForLoading(nodeKeys, connKeys);
     const pages = pageKeys.map(k => figma.currentPage.getPluginData(k));
     const nodes = nodeKeys.map(k => figma.currentPage.getPluginData(k));

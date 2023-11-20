@@ -1,6 +1,5 @@
 const settings =
 {
-    dataMode:                      false,
     debugMode:                     false,
         
     enableZoomedOutParams:         false,
@@ -59,7 +58,6 @@ function updateSetting(settingName, value)
 {
     switch (settingName)
     {
-        case 'dataMode':                      settings.dataMode                      = value;  break;
         case 'debugMode':                     settings.debugMode                     = value;  break;
                 
         case 'enableZoomedOutParams':         settings.enableZoomedOutParams         = value;  break;
@@ -118,8 +116,7 @@ function updateSettingAndMenu(settingName, valid, value, save = true)
 {
     switch (settingName)
     {
-        case 'dataMode':                      updateSettingAndMenu_(valid, settingName, value, menuItemDataMode                     ); break;
-        case 'debugMode':                     updateSettingAndMenu_(valid, settingName, value                                       ); break;
+        case 'debugMode':                     updateSettingAndMenu_(valid, settingName, value, menuItemDebugMode                    ); break;
               
         case 'enableZoomedOutParams':         updateSettingAndMenu_(valid, settingName, value, menuItemEnableZoomedOutParams        ); break;
         case 'showPages':                     updateSettingAndMenu_(valid, settingName, value, menuItemShowPages                    ); break;
@@ -199,8 +196,7 @@ function updateSettingAndMenu_(valid, setting, value, menu)
 
 function updateSettingsMenus()
 {
-    menuItemDataMode                     .setVisible(settings.dataMode                     );
-    menuItemDebug                        .setVisible(settings.debugMode                    );
+    menuItemDebugMode                    .setVisible(settings.debugMode                    );
                 
     menuItemEnableZoomedOutParams        .setChecked(settings.enableZoomedOutParams        );
     menuItemShowPages                    .setChecked(settings.showPages                    );
@@ -364,7 +360,7 @@ function enableMenuItem(menuItem, enable, sub)
 
 function updateMenuItemShowDebugMenu()
 {
-    updateElementDisplay(menuItemDebug.div, settings.showDebugMenu);
+    updateElementDisplay(menuDebug.div, settings.showDebugMenu);
 
     menuMain.update(
         boundingRect(menuMain.div).x + 6,
@@ -383,7 +379,6 @@ function updateElementDisplay(menuItem, enable)
 
 function loadLocalSettings()
 {
-    uiGetLocalData('dataMode'                     );
     uiGetLocalData('debugMode'                    );
         
     uiGetLocalData('enableZoomedOutParams'        );

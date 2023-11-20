@@ -250,7 +250,7 @@ GraphView.prototype.zoomToRect = function(rect, margin = 40, zoom = true)
 
 function updateZoomIcon()
 {
-    if (settings.dataMode)
+    if (settings.debugMode)
         return;
 
     

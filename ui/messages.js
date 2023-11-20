@@ -21,7 +21,8 @@ onmessage = e =>
             logFigToUi(msg);
     }
     else if (msg.cmd == 'uiReturnFigGetLocalData'
-          || msg.cmd == 'uiReturnFigGetPageData')
+          || msg.cmd == 'uiReturnFigGetPageData'
+          || msg.cmd == 'uiReturnFigSetLocalData')
     {
         if (settings.logDataMessages)
             logFigToUi(msg);
@@ -44,6 +45,8 @@ onmessage = e =>
                                                     
         case 'uiReturnFigLoadNodesAndConns':      uiReturnFigLoadNodesAndConns     (msg);               break;
                                                     
+        case 'uiReturnFigSetLocalData':           uiReturnFigSetLocalData          (msg);               break;
+
         case 'uiReturnFigGetLocalData':           uiReturnFigGetLocalData          (msg);               break;
         case 'uiReturnFigGetPageData':            uiReturnFigGetPageData           (msg);               break;
                                                    

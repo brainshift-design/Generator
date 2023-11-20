@@ -28,6 +28,18 @@ function     uiClearPageData(key)        { uiQueueMessageToFigma({ cmd:       'f
    
 
 
+async function uiReturnFigSetLocalData(msg)
+{
+    switch (msg.key)
+    {
+        case 'debugMode':
+            uiPostMessageToFigma({cmd: 'figRestartGenerator'});
+            break;
+    }
+}
+
+
+
 async function uiReturnFigGetLocalData(msg)
 {
     switch (msg.key)
@@ -38,7 +50,6 @@ async function uiReturnFigGetLocalData(msg)
     
             break;
 
-        case 'dataMode':
         case 'debugMode':
 
         case 'enableZoomedOutParams':
@@ -116,13 +127,13 @@ async function uiReturnFigGetLocalData(msg)
     }
 
 
-    if (    msg.key == 'dataMode'
+    if (    msg.key == 'debugMode'
         && !generatorStarted)
     {
-        if (settings.dataMode)
+        if (settings.debugMode)
         {
-            dataModeView.style.display = 'block';
-            initDataModeMenus();
+            debugModeView.style.display = 'block';
+            initDebugModeMenus();
         }
         else
             initGeneratorMenus();
@@ -132,7 +143,7 @@ async function uiReturnFigGetLocalData(msg)
         { 
             initThemeColors();
 
-            if (!settings.dataMode)
+            if (!settings.debugMode)
             {
                 graph.nodes.forEach(n => n.updateNode());
                 graphView.updateNodeWireTransforms(graph.nodes);
@@ -141,7 +152,7 @@ async function uiReturnFigGetLocalData(msg)
     }
 
 
-    if (!settings.dataMode)
+    if (!settings.debugMode)
     {
         // if (msg.key == 'enableBetaFeatures')
             //enableFeatures(true, settings.enableBetaFeatures); 
@@ -256,7 +267,7 @@ function uiReturnFigLoadNodesAndConns(msg)
 
 
 
-    if (!settings.dataMode)
+    if (!settings.debugMode)
         graphView.updatePanAndZoom(true);
 
 
@@ -282,7 +293,7 @@ function uiReturnFigLoadNodesAndConns(msg)
     _n.sort((a, b) => a.value.z - b.value.z);
 
     
-    if (settings.dataMode)
+    if (settings.debugMode)
     {
         menuBar.style.display = 'none';
 
@@ -483,10 +494,6 @@ function finishLoading(_nodes)
     graphView.updateShowWires(false);
 
 
-    // if (!settings.dataMode)
-    //     enableFeatures(subscribed());
-
-        
     generatorStarted = true;
 
 

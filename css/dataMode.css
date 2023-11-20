@@ -1,14 +1,14 @@
 :root 
 {
-    --data-mode-node:        #fed;
-    --data-mode-node-active: #fdb;
+    --debug-mode-node:        #fed;
+    --debug-mode-node-active: #fdb;
 
-    --data-mode-conn:        #cfc;
-    --data-mode-conn-active: #aea;
+    --debug-mode-conn:        #cfc;
+    --debug-mode-conn-active: #aea;
 }
 
 
-#dataModeView
+#debugModeView
 {
     position:   absolute;
     left:       0;
@@ -22,60 +22,60 @@
 
 
 
-#dataModeTitleBar
+#debugModeTitleBar
 {
     padding: 13px 12px 14px 17px;
 }
 
 
-#dataModeContent
+#debugModeContent
 {
     overflow-y: scroll;
     height:     calc(100% - 43px);
 }
 
 
-#dataModeContent::-webkit-scrollbar
+#debugModeContent::-webkit-scrollbar
 {
     background: transparent;
     width:      6px;
 }
 
 
-#dataModeContent::-webkit-scrollbar-track
+#debugModeContent::-webkit-scrollbar-track
 {
     margin: 6px 6px 6px 0;
 }
 
 
-#dataModeContent::-webkit-scrollbar-thumb
+#debugModeContent::-webkit-scrollbar-thumb
 {
     border-radius: 4px;
 }
 
 
-.figma-dark #dataModeContent::-webkit-scrollbar-thumb
+.figma-dark #debugModeContent::-webkit-scrollbar-thumb
 { 
     background:    #fff4;
     /* background-color: #0006;
     box-shadow:       0 0 0 1px rgba(255, 255, 255, 0.25);  */
 }
 
-.figma-light #dataModeContent::-webkit-scrollbar-thumb
+.figma-light #debugModeContent::-webkit-scrollbar-thumb
 { 
     background-color: #0004;
     box-shadow:       0 0 0 1px rgba(255, 255, 255, 0.25); 
 }    
 
 
-.dataModeRowWrapper
+.debugModeRowWrapper
 {
     padding:         13px 12px 20px 13px;
     border-bottom:   1px solid var(--figma-color-bg-tertiary);
 }
 
 
-.dataModeRowTitle
+.debugModeRowTitle
 {
     font-family:    Inter;
     font-size:      11px;
@@ -85,7 +85,7 @@
 }
 
 
-.dataModePage
+.debugModePage
 {
     font-family:    Inter;
     font-size:      11px;
@@ -93,7 +93,7 @@
     display:        inline-block;
     min-width:      50px;
     min-height:     14px;
-    background:     var(--data-mode-node); 
+    background:     var(--debug-mode-node); 
     border-radius:  3px;
     margin:         2px 0px 0px 3px;
     padding:        4px 4px;
@@ -103,14 +103,14 @@
 }
 
 
-.dataModeNode
+.debugModeNode
 {
     font-family:    Inter;
     font-size:      11px;
     text-align:     center;
     display:        inline-block;
     min-width:      50px;
-    background:     var(--data-mode-node); 
+    background:     var(--debug-mode-node); 
     border-radius:  3px;
     margin:         2px 0px 0px 3px;
     padding:        4px 4px;
@@ -120,14 +120,14 @@
 }
 
 
-.dataModeConn
+.debugModeConn
 {
     font-family:    Inter;
     font-size:      11px;
     text-align:     center;
     display:        inline-block;
     min-width:      70px;
-    background:     var(--data-mode-conn); 
+    background:     var(--debug-mode-conn); 
     border-radius:  3px;
     margin:         2px 0px 0px 3px;
     padding:        4px 0px;

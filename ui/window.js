@@ -79,7 +79,7 @@ function uiResizeWindow(width, height)
 
 function uiReturnFigResizeWindow()
 {
-    if (settings.dataMode)
+    if (settings.debugMode)
         return;
 
     graphView.update();

@@ -1,17 +1,17 @@
-var _dataModePages = [];
-var _dataModeNodes = [];
-var _dataModeConns = [];
+var _debugModePages = [];
+var _debugModeNodes = [];
+var _debugModeConns = [];
 
 
 
-function initDataMode()
+function initDebugMode()
 {
-    btnDataModeRestart.addEventListener('click', () => uiRestartGenerator(false));
+    btnDebugModeRestart.addEventListener('click', () => uiRestartGenerator(false));
 }
 
 
 
-dataModePagesWrapper.addEventListener('pointerdown', e =>
+debugModePagesWrapper.addEventListener('pointerdown', e =>
 {
     e.preventDefault();
 
@@ -24,7 +24,7 @@ dataModePagesWrapper.addEventListener('pointerdown', e =>
 
 
 
-dataModeNodesWrapper.addEventListener('pointerdown', e =>
+debugModeNodesWrapper.addEventListener('pointerdown', e =>
 {
     e.preventDefault();
 
@@ -37,7 +37,7 @@ dataModeNodesWrapper.addEventListener('pointerdown', e =>
 
 
 
-dataModeConnsWrapper.addEventListener('pointerdown', e =>
+debugModeConnsWrapper.addEventListener('pointerdown', e =>
 {
     e.preventDefault();
 
@@ -52,19 +52,19 @@ dataModeConnsWrapper.addEventListener('pointerdown', e =>
 
 function loadNodesAndConnsData(_pages, _nodes, _conns)
 {
-    _dataModePages = _pages;
-    _dataModeNodes = _nodes;
-    _dataModeConns = _conns;
+    _debugModePages = _pages;
+    _debugModeNodes = _nodes;
+    _debugModeConns = _conns;
 
 
-    _dataModeNodes.sort((n1, n2) => 
+    _debugModeNodes.sort((n1, n2) => 
     {
         if (n1.key.split(' ')[1] < n2.key.split(' ')[1]) return -1;
         if (n1.key.split(' ')[1] > n2.key.split(' ')[1]) return  1;
         return 0;
     });
 
-    _dataModeConns.sort((c1, c2) => 
+    _debugModeConns.sort((c1, c2) => 
     {
         if (c1.value.outputNodeId != c2.value.outputNodeId) return c1.value.outputNodeId < c2.value.outputNodeId ? -1 : 1;
         if (c1.value.outputId     != c2.value.outputId    ) return c1.value.outputId     < c2.value.outputId     ? -1 : 1;
@@ -73,12 +73,12 @@ function loadNodesAndConnsData(_pages, _nodes, _conns)
     });
 
     
-    for (const _page of _dataModePages) dataModePages.appendChild(createPageDataDiv(_page));
-    for (const _node of _dataModeNodes) dataModeNodes.appendChild(createNodeDataDiv(_node));
-    for (const _conn of _dataModeConns) dataModeConns.appendChild(createConnDataDiv(_conn));
+    for (const _page of _debugModePages) debugModePages.appendChild(createPageDataDiv(_page));
+    for (const _node of _debugModeNodes) debugModeNodes.appendChild(createNodeDataDiv(_node));
+    for (const _conn of _debugModeConns) debugModeConns.appendChild(createConnDataDiv(_conn));
 
 
-    updateDataModeInfo();
+    updateDebugModeInfo();
 
     
     loadingOverlay.style.display = 'none';
@@ -86,18 +86,18 @@ function loadNodesAndConnsData(_pages, _nodes, _conns)
 
 
 
-function updateDataModeInfo()
+function updateDebugModeInfo()
 {
-    dataModePagesTitle.innerHTML = dataModePages.children.length + '&thinsp;&nbsp;' + countString(dataModePages.children.length, 'page'      );
-    dataModeNodesTitle.innerHTML = dataModeNodes.children.length + '&thinsp;&nbsp;' + countString(dataModeNodes.children.length, 'node'      );
-    dataModeConnsTitle.innerHTML = dataModeConns.children.length + '&thinsp;&nbsp;' + countString(dataModeConns.children.length, 'connection');
+    debugModePagesTitle.innerHTML = debugModePages.children.length + '&thinsp;&nbsp;' + countString(debugModePages.children.length, 'page'      );
+    debugModeNodesTitle.innerHTML = debugModeNodes.children.length + '&thinsp;&nbsp;' + countString(debugModeNodes.children.length, 'node'      );
+    debugModeConnsTitle.innerHTML = debugModeConns.children.length + '&thinsp;&nbsp;' + countString(debugModeConns.children.length, 'connection');
 }
 
 
 
 function createPageDataDiv(_page)
 {
-    const div    = createDiv('dataModePage');
+    const div    = createDiv('debugModePage');
     
     const page   = JSON.parse(_page.value);
     page._key    = _page.key;
@@ -119,8 +119,8 @@ function createPageDataDiv(_page)
     });
 
 
-    div.addEventListener('pointerenter', () => div.style.background = 'var(--data-mode-node-active)');
-    div.addEventListener('pointerleave', () => { if (!menuPageData._div) div.style.background = 'var(--data-mode-node)'; });
+    div.addEventListener('pointerenter', () => div.style.background = 'var(--debug-mode-node-active)');
+    div.addEventListener('pointerleave', () => { if (!menuPageData._div) div.style.background = 'var(--debug-mode-node)'; });
 
 
     div.addEventListener('pointerdown', e =>
@@ -131,12 +131,12 @@ function createPageDataDiv(_page)
         {
             e.stopPropagation();
 
-            // div.style.background = 'var(--data-mode-node-active)';
+            // div.style.background = 'var(--debug-mode-node-active)';
 
             createDataMenuOnHide(
                 menuPageData,
                 div,
-                'var(--data-mode-node)'); 
+                'var(--debug-mode-node)'); 
 
             menuPageData.showAt(e.clientX, e.clientY, false);
         }
@@ -150,7 +150,7 @@ function createPageDataDiv(_page)
 
 function createNodeDataDiv(_node)
 {
-    const div    = createDiv('dataModeNode');
+    const div    = createDiv('debugModeNode');
     
     const node   = JSON.parse(_node.value);
     node._key    = _node.key;
@@ -172,8 +172,8 @@ function createNodeDataDiv(_node)
     });
 
 
-    div.addEventListener('pointerenter', () => div.style.background = 'var(--data-mode-node-active)');
-    div.addEventListener('pointerleave', () => { if (!menuNodeData._div) div.style.background = 'var(--data-mode-node)'; });
+    div.addEventListener('pointerenter', () => div.style.background = 'var(--debug-mode-node-active)');
+    div.addEventListener('pointerleave', () => { if (!menuNodeData._div) div.style.background = 'var(--debug-mode-node)'; });
 
 
     div.addEventListener('pointerdown', e =>
@@ -184,12 +184,12 @@ function createNodeDataDiv(_node)
         {
             e.stopPropagation();
 
-            // div.style.background = 'var(--data-mode-node-active)';
+            // div.style.background = 'var(--debug-mode-node-active)';
 
             createDataMenuOnHide(
                 menuNodeData,
                 div,
-                'var(--data-mode-node)'); 
+                'var(--debug-mode-node)'); 
 
             menuNodeData.showAt(e.clientX, e.clientY, false);
         }
@@ -203,7 +203,7 @@ function createNodeDataDiv(_node)
 
 function createConnDataDiv(_conn)
 {
-    const div    = createDiv('dataModeConn');
+    const div    = createDiv('debugModeConn');
 
     const conn   = JSON.parse(_conn.value);
     conn._key    = _conn.key;
@@ -223,8 +223,8 @@ function createConnDataDiv(_conn)
     });
 
 
-    div.addEventListener('pointerenter', () => div.style.background = 'var(--data-mode-conn-active)');
-    div.addEventListener('pointerleave', () => { if (!menuConnData._div) div.style.background = 'var(--data-mode-conn)'; });
+    div.addEventListener('pointerenter', () => div.style.background = 'var(--debug-mode-conn-active)');
+    div.addEventListener('pointerleave', () => { if (!menuConnData._div) div.style.background = 'var(--debug-mode-conn)'; });
 
 
     div.addEventListener('pointerdown', e =>
@@ -235,12 +235,12 @@ function createConnDataDiv(_conn)
         {
             e.stopPropagation();
 
-            div.style.background = 'var(--data-mode-conn-active)';
+            div.style.background = 'var(--debug-mode-conn-active)';
 
             createDataMenuOnHide(
                 menuConnData,
                 div,
-                'var(--data-mode-conn)');
+                'var(--debug-mode-conn)');
 
             menuConnData.showAt(e.clientX, e.clientY, false);
         }
@@ -360,7 +360,7 @@ function expandConnData(div)
 
 function expandAllPageData()
 {
-    for (const div of dataModePages.children)
+    for (const div of debugModePages.children)
     {
         div.showJson = true;
         expandPageData(div, div.page, div._page);
@@ -371,7 +371,7 @@ function expandAllPageData()
 
 function collapseAllPageData()
 {
-    for (const div of dataModePages.children)
+    for (const div of debugModePages.children)
     {
         div.showJson = false;
         expandPageData(div, div.page, div._page);
@@ -382,7 +382,7 @@ function collapseAllPageData()
 
 function expandAllNodeData()
 {
-    for (const div of dataModeNodes.children)
+    for (const div of debugModeNodes.children)
     {
         div.showJson = true;
         expandNodeData(div, div.node, div._node);
@@ -393,7 +393,7 @@ function expandAllNodeData()
 
 function collapseAllNodeData()
 {
-    for (const div of dataModeNodes.children)
+    for (const div of debugModeNodes.children)
     {
         div.showJson = false;
         expandNodeData(div, div.node, div._node);
@@ -404,7 +404,7 @@ function collapseAllNodeData()
 
 function expandAllConnData()
 {
-    for (const div of dataModeConns.children)
+    for (const div of debugModeConns.children)
     {
         div.showJson = true;
         expandConnData(div, div.conn, div._conn);
@@ -415,7 +415,7 @@ function expandAllConnData()
 
 function collapseAllConnData()
 {
-    for (const div of dataModeConns.children)
+    for (const div of debugModeConns.children)
     {
         div.showJson = false;
         expandConnData(div, div.conn, div._conn);
@@ -424,13 +424,13 @@ function collapseAllConnData()
 
 
 
-function dataModeDeleteAllPages()
+function debugModeDeleteAllPages()
 {
     const nPages = graph.pages.length;
     const notice = 'Deleted ' + nPages + ' ' + countString(nPages, 'page');
 
     for (const page of graph.pages)
-        dataModeDeletePage(page, false);
+        debugModeDeletePage(page, false);
 
     if (nPages > 0)
         uiNotify(notice);
@@ -438,14 +438,14 @@ function dataModeDeleteAllPages()
 
 
 
-function dataModeDeletePage(page, notify = true)
+function debugModeDeletePage(page, notify = true)
 {
-    for (let i = dataModePages.children.length-1; i >= 0; i--)
+    for (let i = debugModePages.children.length-1; i >= 0; i--)
     {
-        const div = dataModePages.children[i];
+        const div = debugModePages.children[i];
 
         if (div.page.id == page.id)
-            dataModePages.removeChild(div);
+        debugModePages.removeChild(div);
     }
 
 
@@ -453,12 +453,12 @@ function dataModeDeletePage(page, notify = true)
 
     graph.nodes
         .filter (n => n.pageId == page.id)
-        .forEach(n => dataModeDeleteNode(n));
+        .forEach(n => debugModeDeleteNode(n));
 
 
     const notice = 'Deleted page \'' + page.id + '\'';
 
-    updateDataModeInfo();
+    updateDebugModeInfo();
 
     if (notify)
         uiNotify(notice);
@@ -466,30 +466,30 @@ function dataModeDeletePage(page, notify = true)
 
 
 
-function dataModeDeleteNode(node)
+function debugModeDeleteNode(node)
 {
     uiRemoveSavedNodesAndConns([node.id]);
 
 
-    for (let i = dataModeNodes.children.length-1; i >= 0; i--)
+    for (let i = debugModeNodes.children.length-1; i >= 0; i--)
     {
-        const div = dataModeNodes.children[i];
+        const div = debugModeNodes.children[i];
 
         if (div.node.id == node.id)
-            dataModeNodes.removeChild(div);
+        debugModeNodes.removeChild(div);
     }
 
 
     let nRemovedConns = 0;
 
-    for (let i = dataModeConns.children.length-1; i >= 0; i--)
+    for (let i = debugModeConns.children.length-1; i >= 0; i--)
     {
-        const div = dataModeConns.children[i];
+        const div = debugModeConns.children[i];
 
         if (   div.conn.outputNodeId == node.id
             || div.conn. inputNodeId == node.id)
         {
-            dataModeConns.removeChild(div);
+            debugModeConns.removeChild(div);
             nRemovedConns++;
         }
     }
@@ -501,28 +501,28 @@ function dataModeDeleteNode(node)
         notice += ' and ' + nRemovedConns + ' ' + countString(nRemovedConns, 'connection');
 
 
-    updateDataModeInfo();
+    updateDebugModeInfo();
 
     uiNotify(notice);
 }
 
 
 
-function dataModeDeleteAllNodes()
+function debugModeDeleteAllNodes()
 {
     uiRemoveAllSavedNodesAndConns();
 
 
-    let nRemovedNodes = dataModeNodes.children.length;
+    let nRemovedNodes = debugModeNodes.children.length;
 
-    for (let i = dataModeNodes.children.length-1; i >= 0; i--)
-        dataModeNodes.removeChild(dataModeNodes.children[i]);
+    for (let i = debugModeNodes.children.length-1; i >= 0; i--)
+        debugModeNodes.removeChild(debugModeNodes.children[i]);
 
 
-    let nRemovedConns = dataModeConns.children.length;
+    let nRemovedConns = debugModeConns.children.length;
 
-    for (let i = dataModeConns.children.length-1; i >= 0; i--)
-        dataModeConns.removeChild(dataModeConns.children[i]);
+    for (let i = debugModeConns.children.length-1; i >= 0; i--)
+        debugModeConns.removeChild(debugModeConns.children[i]);
 
 
     let notice = 'Deleted ' + nRemovedNodes + ' ' + countString(nRemovedNodes, 'node');
@@ -531,25 +531,25 @@ function dataModeDeleteAllNodes()
         notice += ' and ' + nRemovedConns + ' ' + countString(nRemovedConns, 'connection');
 
 
-    updateDataModeInfo();
+    updateDebugModeInfo();
 
     uiNotify(notice);
 }
 
 
 
-function dataModeDeleteAllConnections()
+function debugModeDeleteAllConnections()
 {
     uiRemoveAllSavedConnections();
 
 
-    let nRemovedConns = dataModeConns.children.length;
+    let nRemovedConns = debugModeConns.children.length;
 
-    for (let i = dataModeConns.children.length-1; i >= 0; i--)
-        dataModeConns.removeChild(dataModeConns.children[i]);
+    for (let i = debugModeConns.children.length-1; i >= 0; i--)
+    debugModeConns.removeChild(debugModeConns.children[i]);
 
 
-    updateDataModeInfo();
+    updateDebugModeInfo();
 
     if (nRemovedConns > 0)
         uiNotify('Deleted ' + nRemovedConns + ' ' + countString(nRemovedConns, 'connection'));
@@ -557,7 +557,7 @@ function dataModeDeleteAllConnections()
 
 
 
-function dataModeDeleteConnectionsToAndFromNode(node)
+function debugModeDeleteConnectionsToAndFromNode(node)
 {
     uiDeleteSavedConnectionsToNodeId  (node.id);
     uiDeleteSavedConnectionsFromNodeId(node.id);
@@ -565,20 +565,20 @@ function dataModeDeleteConnectionsToAndFromNode(node)
     
     let nRemovedConns = 0;
 
-    for (let i = dataModeConns.children.length-1; i >= 0; i--)
+    for (let i = debugModeConns.children.length-1; i >= 0; i--)
     {
-        const div = dataModeConns.children[i];
+        const div = debugModeConns.children[i];
 
         if (   div.conn.outputNodeId == node.id
             || div.conn. inputNodeId == node.id)
         {
-            dataModeConns.removeChild(div);
+            debugModeConns.removeChild(div);
             nRemovedConns++;
         }
     }
 
 
-    updateDataModeInfo();
+    updateDebugModeInfo();
 
     if (nRemovedConns > 0)
         uiNotify('Deleted ' + nRemovedConns + ' ' + countString(nRemovedConns, 'connection') + ' to and from \'' + node.id + '\'');
@@ -586,7 +586,7 @@ function dataModeDeleteConnectionsToAndFromNode(node)
 
 
 
-function dataModeDeletePathFromNodeId(node)
+function debugModeDeletePathFromNodeId(node)
 {
     uiRemoveSavedNodesAndConns([node.id]);
     uiDeleteObjectsAndStyles([node.id], true);
@@ -602,26 +602,26 @@ function dataModeDeletePathFromNodeId(node)
 
 
 
-function dataModeDeleteConnectionsFromNode(node)
+function debugModeDeleteConnectionsFromNode(node)
 {
     uiDeleteSavedConnectionsFromNodeId(node.id);
 
 
     let nRemovedConns = 0;
 
-    for (let i = dataModeConns.children.length-1; i >= 0; i--)
+    for (let i = debugModeConns.children.length-1; i >= 0; i--)
     {
-        const div = dataModeConns.children[i];
+        const div = debugModeConns.children[i];
 
         if (div.conn.outputNodeId == node.id)
         {
-            dataModeConns.removeChild(div);
+            debugModeConns.removeChild(div);
             nRemovedConns++;
         }
     }
 
 
-    updateDataModeInfo();
+    updateDebugModeInfo();
 
     if (nRemovedConns > 0)
         uiNotify('Deleted ' + nRemovedConns + ' ' + countString(nRemovedConns, 'connection') + ' from \'' + node.id + '\'');
@@ -629,26 +629,26 @@ function dataModeDeleteConnectionsFromNode(node)
 
 
 
-function dataModeDeleteConnectionsToNode(node)
+function debugModeDeleteConnectionsToNode(node)
 {
     uiDeleteSavedConnectionsToNodeId(node.id);
 
 
     let nRemovedConns = 0;
 
-    for (let i = dataModeConns.children.length-1; i >= 0; i--)
+    for (let i = debugModeConns.children.length-1; i >= 0; i--)
     {
-        const div = dataModeConns.children[i];
+        const div = debugModeConns.children[i];
 
         if (div.conn. inputNodeId == node.id)
         {
-            dataModeConns.removeChild(div);
+            debugModeConns.removeChild(div);
             nRemovedConns++;
         }
     }
 
 
-    updateDataModeInfo();
+    updateDebugModeInfo();
 
     if (nRemovedConns > 0)
         uiNotify('Deleted ' + nRemovedConns + ' ' + countString(nRemovedConns, 'connection') + ' to \'' + node.id + '\'');
@@ -656,7 +656,7 @@ function dataModeDeleteConnectionsToNode(node)
 
 
 
-function dataModeDeleteConnection(conn)
+function debugModeDeleteConnection(conn)
 {
     uiDeleteSavedConnection(
         conn._key,
@@ -668,16 +668,16 @@ function dataModeDeleteConnection(conn)
         conn.list);
 
 
-    for (let i = dataModeConns.children.length-1; i >= 0; i--)
+    for (let i = debugModeConns.children.length-1; i >= 0; i--)
     {
-        const div = dataModeConns.children[i];
+        const div = debugModeConns.children[i];
 
         if (div.conn._key == conn._key)
-            dataModeConns.removeChild(div);
+        debugModeConns.removeChild(div);
     }
 
 
-    updateDataModeInfo();
+    updateDebugModeInfo();
 
     uiNotify('Deleted connection  ' + connToString(conn));
 }

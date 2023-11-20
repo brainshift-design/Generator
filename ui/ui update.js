@@ -143,16 +143,6 @@ function uiUpdateValuesAndObjects(requestId, actionId, updateNodeId, updateParam
         }
 
 
-        // if (   (   graphView.loadingNodes
-        //         || graphView.creatingNodes
-        //         || graphView.pastingNodes)
-        //     && !settings.dataMode)
-        // {
-        //     console.log('enable');
-        //     enableFeatures(subscribed());
-        // }
-
-            
         if (importZoomToNodes)
         {
             graphView.zoomToNodes(nodes);
