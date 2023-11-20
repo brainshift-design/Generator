@@ -261,3 +261,11 @@ TextControl.prototype.initEvents = function()
             e.stopPropagation();
     });
 };
+
+
+
+function syncTextScroll(textarea1, textarea2) 
+{
+    var factor = textarea1.scrollTop / (textarea1.scrollHeight - textarea1.clientHeight);
+    textarea2.scrollTop = factor * (textarea2.scrollHeight - textarea2.clientHeight);
+}

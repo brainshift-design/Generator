@@ -30,7 +30,8 @@ extends Control
 
     constructor(param, id, name, defaultValue = '')
     {
-        const textbox = createTextarea('textControlTextarea');
+        const textBehind = createTextarea('textControlHighlight');
+        const textbox    = createTextarea('textControlTextarea');
 
 
         super(textbox, param, id, name);
@@ -39,10 +40,11 @@ extends Control
         this.value = defaultValue;
         
         
-        this.initTextarea(textbox);
+        this.initTextarea(textbox, textBehind);
         this.initEvents();
         
 
+        this.div.appendChild(textBehind);
         this.div.appendChild(textbox);
 
 
@@ -130,8 +132,10 @@ extends Control
         this.value = value;
 
         if (updateControl)
+        {
             this.textbox.value = value;
-
+            this.updateTextBehind();
+        }
 
         this.update();
 
@@ -141,6 +145,20 @@ extends Control
             this.dispatchEvent(this.onchange);
     }
 
+
+
+
+    updateTextBehind()
+    {
+        this.textBehind.value = this.textbox.value;
+
+        // let highlight = '';
+
+        // for (let i = 0; i < this.textbox.value.length; i++)
+        //     highlight += '<span class="textBehind">' + this.textbox.value[i] + '</span>';
+
+        // this.textBehind.innerHTML = highlight;
+    }
 
 
 
@@ -166,13 +184,18 @@ extends Control
             : this.textbox.defPlaceholder;
 
 
-        this.textbox.style.height        = '100%';
-        this.textbox.style.pointerEvents = this.readOnly ? 'none' : 'all';
+        this.textBehind.style.height        = '100%';
+        this.textbox   .style.height        = '100%';
+        
+        this.textbox   .style.pointerEvents = this.readOnly ? 'none' : 'all';
 
 
 
         if (this.param.showName)
-            this.textbox.style.textAlign = 'left';
+        {
+            this.textbox   .style.textAlign = 'left';
+            this.textBehind.style.textAlign = 'left';
+        }
 
 
              if (this.valueText != '')   this.textbox.value = this.valueText;

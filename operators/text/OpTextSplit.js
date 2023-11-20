@@ -21,6 +21,7 @@ extends OperatorBase
         this.paramValue.isNodeValue =  true;
 
         setControlFont(this.paramSeparator.controls[0].textbox, 'Roboto Mono', 10, 'center');
+        setControlFont(this.paramSeparator.controls[0].textbox, 'Roboto Mono', 10, 'center');
 
         this.paramSeparator.controls[0].textbox.defPlaceholder = 'with';
     }

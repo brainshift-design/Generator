@@ -139,7 +139,10 @@ extends Parameter
     updateSetting(setting, value)
     {
         if (setting == 'align')
-            this.controls[0].textbox.style.textAlign = value;
+        {
+            this.controls[0].textbox   .style.textAlign = value;
+            this.controls[0].textBehind.style.textAlign = value;
+        }
     }
 
 

@@ -1,16 +1,19 @@
-TextControl.prototype.initTextarea = function(textbox)
+TextControl.prototype.initTextarea = function(textbox, textBehind)
 {
-    this.textbox                 = textbox;
+    this.textBehind                 = textBehind;
+    this.textbox                    = textbox;
 
-    this.textbox.control         = this;
-    this.textbox.defPlaceholder  = '...';//' . . .';
-    this.textbox.placeholder     = this.textbox.defPlaceholder;
+    this.textbox   .control         = this;
+    this.textbox   .defPlaceholder  = '...';//' . . .';
+    this.textbox   .placeholder     = this.textbox.defPlaceholder;
 
-    this.textbox.style.height    = defParamHeight;
-    this.textbox.style.textAlign = 'center';
+    this.textbox   .style.height    = defParamHeight;
+    this.textbox   .style.textAlign = 'center';
+
+    this.textBehind.style.height    = defParamHeight;
+    this.textBehind.style.textAlign = 'center';
 
     this.textbox.savedValue      = this.textbox.value;
-
 
 
     this.textbox.addEventListener('pointerdown', e =>
@@ -64,7 +67,13 @@ TextControl.prototype.initTextarea = function(textbox)
     });
     
     
-    
+
+    this.textbox.addEventListener('scroll', () =>
+    {
+        syncTextScroll(this.textbox, this.textBehind);
+    });
+
+      
     // this.textbox.addEventListener('pointermove', e =>
     // {
     //     //e.preventDefault();
@@ -130,6 +139,8 @@ TextControl.prototype.initTextarea = function(textbox)
                 + tab
                 + this.textbox.value.slice(selEnd);
 
+            this.updateTextBehind();
+
             this.textbox.selectionStart = 
             this.textbox.selectionEnd   = selStart + this.tabSize;
         }
@@ -137,10 +148,12 @@ TextControl.prototype.initTextarea = function(textbox)
 
 
 
-    // this.textbox.addEventListener('input', e =>
-    // {
-    //     this.setValue(this.textbox.value, true, true);
-    // });
+    this.textbox.addEventListener('input', e =>
+    {
+        
+        //this.setValue(this.textbox.value, true, true);
+        this.updateTextBehind();
+    });
 
 
 
@@ -249,8 +262,9 @@ TextControl.prototype.showTextarea = function()
     this.focus.style.opacity    = 0;
 
 
-    this.textbox.style.boxShadow = '0 0 0 1px var(--figma-color-bg-brand)';
-    this.textbox.style.outline   = 'none';
+    this.textbox   .style.boxShadow = '0 0 0 1px var(--figma-color-bg-brand)';
+    this.textbox   .style.outline   = 'none';
+    this.textBehind.style.outline   = 'none';
 
 
     this.updateTextarea();
