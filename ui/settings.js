@@ -9,6 +9,7 @@ const settings =
     showAllColorSpaces:            false,
     showNodeIcons:                 true,
     showBoolValues:                true,
+    separateThousands:             true,
     showColorLegendInMenus:        false,
     showOperationResults:          false,
     showClearUndoWarning:          true,
@@ -67,6 +68,7 @@ function updateSetting(settingName, value)
         case 'showAllColorSpaces':            settings.showAllColorSpaces            = value;  break;
         case 'showNodeIcons':                 settings.showNodeIcons                 = value;  break;
         case 'showBoolValues':                settings.showBoolValues                = value;  break;
+        case 'separateThousands':             settings.separateThousands             = value;  break;
         case 'showColorLegendInMenus':        settings.showColorLegendInMenus        = value;  break;
         case 'showOperationResults':          settings.showOperationResults          = value;  break;
         case 'showClearUndoWarning':          settings.showClearUndoWarning          = value;  break;
@@ -124,6 +126,7 @@ function updateSettingAndMenu(settingName, valid, value, save = true)
         case 'showAllColorSpaces':            updateSettingAndMenu_(valid, settingName, value, menuItemShowAllColorSpaces           ); break;
         case 'showNodeIcons':                 updateSettingAndMenu_(valid, settingName, value, menuItemShowNodeIcons                ); break;
         case 'showBoolValues':                updateSettingAndMenu_(valid, settingName, value, menuItemShowBoolValues               ); break;
+        case 'separateThousands':             updateSettingAndMenu_(valid, settingName, value, menuItemSeparateThousands            ); break;
         case 'showColorLegendInMenus':        updateSettingAndMenu_(valid, settingName, value, menuItemShowColorLegendInMenus       ); break;
         case 'showOperationResults':          updateSettingAndMenu_(valid, settingName, value, menuItemShowOperationResults         ); break;
         case 'showClearUndoWarning':          updateSettingAndMenu_(valid, settingName, value, menuItemShowClearUndoWarning         ); break;
@@ -204,6 +207,7 @@ function updateSettingsMenus()
     menuItemShowAllColorSpaces           .setChecked(settings.showAllColorSpaces           );
     menuItemShowNodeIcons                .setChecked(settings.showNodeIcons                );
     menuItemShowBoolValues               .setChecked(settings.showBoolValues               );
+    menuItemSeparateThousands            .setChecked(settings.separateThousands            );
     menuItemShowColorLegendInMenus       .setChecked(settings.showColorLegendInMenus       );
     menuItemShowOperationResults         .setChecked(settings.showOperationResults         );
     menuItemShowClearUndoWarning         .setChecked(settings.showClearUndoWarning         );
@@ -282,6 +286,15 @@ function updateMenuItemShowBoolValues()
             ||      CONDITION_TYPES.includes(n.type)
             ||         AFFINE_TYPES.includes(n.type)
             || n.type == IF_ELSE)
+        .forEach(n => n.updateNode());
+}
+
+
+
+function updateMenuItemSeparateThousands()
+{
+    graph.nodes
+        .filter(n => n.params.find(p => p.type == NUMBER_VALUE) != null)
         .forEach(n => n.updateNode());
 }
 
@@ -377,6 +390,7 @@ function loadLocalSettings()
     uiGetLocalData('minZoomForParams'             );
     uiGetLocalData('showNodeIcons'                );
     uiGetLocalData('showBoolValues'               );
+    uiGetLocalData('separateThousands'            );
     uiGetLocalData('showColorLegendInMenus'       );
     uiGetLocalData('showPages'                    );
     uiGetLocalData('showOperationResults'         );

@@ -144,8 +144,8 @@ function getTextToNumberValue(input, base, decimals, thousands)
     let value = input.value;
 
     value = value.replaceAll(thousands.value, '');
-    console.log('value =', value);
 
+    
     switch (base.value)
     {
         case 0: // dec

@@ -113,6 +113,7 @@ var menuItemShowAllColorSpaces;
 var menuItemShowNodeIcons;
 var menuItemShowColorLegendInMenus;
 var menuItemShowBoolValues;
+var menuItemSeparateThousands;
 var menuItemShowOperationResults;
 var menuItemShowClearUndoWarning;
 var menuItemShareUsageMetrics;
@@ -289,6 +290,7 @@ function initGeneratorMenus()
         menuItemShowOperationResults   = new MenuItem('Show operation results',            null, {checkCallback: () => settings.showOperationResults,   callback: () => { updateSettingAndMenu('showOperationResults',   true, !settings.showOperationResults);   updateMenuItemShowOperationResults();   }}),
         menuItemShowNodeIcons          = new MenuItem('Show node icons',                   null, {checkCallback: () => settings.showNodeIcons,          callback: () => { updateSettingAndMenu('showNodeIcons',          true, !settings.showNodeIcons);          updateMenuItemShowNodeIcons();          }}),
         menuItemShowBoolValues         = new MenuItem('Show boolean values as   ✓ ✗',     null, {checkCallback: () => settings.showBoolValues,         callback: () => { updateSettingAndMenu('showBoolValues',         true, !settings.showBoolValues);         updateMenuItemShowBoolValues();         }}),
+        menuItemSeparateThousands      = new MenuItem('Separate thousands in numbers',     null, {checkCallback: () => settings.separateThousands,      callback: () => { updateSettingAndMenu('separateThousands',      true, !settings.separateThousands);      updateMenuItemSeparateThousands();      }}),
         //menuItemShowColorLegendInMenus = new MenuItem('Show color legend in menus',      null, {checkCallback: () => settings.showColorLegendInMenus, callback: () => { updateSettingAndMenu('showColorLegendInMenus', true, !settings.showColorLegendInMenus); updateMenuItemShowColorLegendInMenus(); }}),
         new MenuItem('',                              null, {separator: true}),    
         menuItemShowTooltips           = new MenuItem('Show tooltips',                     null, {childMenu: menuShowTooltips}),

@@ -45,6 +45,7 @@ async function uiReturnFigGetLocalData(msg)
         case 'showPages':
         case 'showNodeIcons':
         case 'showBoolValues':
+        case 'separateThousands':
         case 'showColorLegendInMenus':
         case 'showOperationResults':
         case 'showClearUndoWarning':

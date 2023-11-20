@@ -83,8 +83,6 @@ extends OperatorWithValue
             : 'italic';
 
 
-        //this.paramValue.controls[0].text.style.letterSpacing = settings.showBoolValues ? '0.1em' : 0; // this is if "true" and "false" are used
-        
         this.paramValue.controls[0].showBar = !this.isUnknown();
 
 

@@ -541,7 +541,8 @@ extends Control
             {
                 str = numToString(val, this.displayDec, this.showHex);
 
-                if (Math.abs(val) >= 10_000) // add thousand separators
+                if (   Math.abs(val) >= 10_000
+                    && settings.separateThousands) // add thousand separators
                 {
                     let decIndex = str.lastIndexOf('.');
                     if (decIndex == -1) str.length;
