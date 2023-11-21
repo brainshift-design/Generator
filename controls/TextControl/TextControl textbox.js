@@ -101,22 +101,31 @@ TextControl.prototype.initTextarea = function(textbox, textBehind)
             this.textbox.finish(true);
         }
 
-        else if (e.code == 'Tab')
+        else if (e.code == 'Tab'
+              && this.allowTabs)
         {
             e.preventDefault();
 
-            const tab = Array(this.tabSize + 1).join(' ');
+            const tab = Array(this.tabSize).join(' ');
 
-            const selStart = this.textbox.selectionStart;
-            const selEnd   = this.textbox.selectionEnd;
+            document.execCommand('insertText', false, tab);
 
-            this.textbox.value = 
-                  this.textbox.value.slice(0, selStart)
-                + tab
-                + this.textbox.value.slice(selEnd);
+            // const selStart = this.textbox.selectionStart;
+            // const selEnd   = this.textbox.selectionEnd;
 
-            this.textbox.selectionStart = 
-            this.textbox.selectionEnd   = selStart + this.tabSize;
+
+            // this.textbox.value = 
+            //       this.textbox.value.slice(0, selStart)
+            //     + tab
+            //     + this.textbox.value.slice(selEnd);
+
+
+            // this.textbox.setSelectionRange(
+            //     selStart + tab.length, 
+            //     selStart + tab.length);
+
+
+            this.updateTextBehind();
         }
     });
 
@@ -124,6 +133,7 @@ TextControl.prototype.initTextarea = function(textbox, textBehind)
 
     this.textbox.addEventListener('input', e =>
     {
+        //console.log('input');
         //this.setValue(this.textbox.value, true, true);
         this.updateTextBehind();
     });

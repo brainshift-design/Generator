@@ -15,8 +15,10 @@ extends ResizableBase
 
         this.addParam(this.paramValue = new TextParam('value', 'value', false, false, false));
 
+        this.paramValue.controls[0].allowTabs         = true;
         this.paramValue.controls[0].requireFinishCtrl = true;
         this.paramValue.controls[0].textbox.defPlaceholder = '...';
+
         setControlFont(this.paramValue.controls[0].textbox, 'Roboto Mono', 10, 'center');
     }
 

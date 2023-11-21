@@ -9,6 +9,8 @@ extends Control
     placeholder;
 
     highlightText     = true;
+    allowTabs         = false;
+    
     
     valueText         = '';
 
