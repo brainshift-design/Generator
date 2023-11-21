@@ -8,20 +8,6 @@ TextControl.prototype.initEvents = function()
             return;
         }
 
-
-        //if (   !graphView.spaceDown
-        //    &&  this.pointerEvents)
-        //{
-        //    // if (graphView.tempConn)
-        //    //     this.divControl.style.cursor = 'default';
-//
-        //        
-        //    // this.textbox.style.visibility = 'visible';
-        //    // this.textbox.style.opacity    = '100%';
-    //
-        //    this.update();
-        //}
-        //else 
         if (!currentTooltip)
             initTextTooltip(this.value);
     });
@@ -88,10 +74,6 @@ TextControl.prototype.initEvents = function()
         {
             this.checkDragConnection();
         }
-        // else if (this.readOnly)
-        // {
-        //     this.moved = true;
-        // }
     });
 
 
@@ -102,12 +84,6 @@ TextControl.prototype.initEvents = function()
             return;
 
 
-        // this.divControl.style.cursor  = 'default';
-        
-        // this.textbox.style.visibility = 'hidden';
-        // this.textbox.style.opacity    = 0;
-
-        
         this.update();
 
 
@@ -200,11 +176,7 @@ TextControl.prototype.initEvents = function()
             this.buttonDown1 = false;
 
         else if (e.button == 2) 
-        {
-            //e.stopPropagation();
             this.buttonDown2 = false;
-        }
-
 
 
         this.buttonDown0_ = false;
@@ -264,8 +236,7 @@ TextControl.prototype.initEvents = function()
 
 
 
-function syncTextScroll(textarea1, textarea2) 
+function syncTextScroll(textarea, highlight) 
 {
-    var factor = textarea1.scrollTop / (textarea1.scrollHeight - textarea1.clientHeight);
-    textarea2.scrollTop = factor * (textarea2.scrollHeight - textarea2.clientHeight);
+    highlight.scrollTop = textarea.scrollTop;
 }

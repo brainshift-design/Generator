@@ -8,6 +8,8 @@ extends Control
     textbox;
     placeholder;
 
+    highlightText     = true;
+    
     valueText         = '';
 
 
@@ -30,7 +32,7 @@ extends Control
 
     constructor(param, id, name, defaultValue = '')
     {
-        const textBehind = createTextarea('textControlHighlight');
+        const textBehind = createDiv('textControlHighlight');
         const textbox    = createTextarea('textControlTextarea');
 
 
@@ -40,14 +42,13 @@ extends Control
         this.value = defaultValue;
         
         
-        this.initTextarea(textbox, textBehind);
-        this.initEvents();
-        
-
         this.div.appendChild(textBehind);
         this.div.appendChild(textbox);
 
+        this.initTextarea(textbox, textBehind);
+        this.initEvents();
 
+        
         createTooltipSrc(this.div, this.div, () => 
                 settings.showTooltipLongText
             &&  scrollbarVisible(this.textbox)
@@ -92,34 +93,8 @@ extends Control
     {
         h = Math.max(defParamHeight, h);
 
-
         super.setSize(w, h);
-
-
-        // if (this.textbox) 
-        // {
-        //     this.textbox.style.width  = '100%';
-        //     this.textbox.style.height = '100%';
-        // }
-    }
-
-
-
-    // updateTextboxSize()
-    // {
-    //     const  input = this.param && this.param. input;
-    //     const output = this.param && this.param.output;
-
-    //     const left = input ? 12 : 0;
-
-    //     const dw = 
-    //           ( input ? 12 : 0) 
-    //         + (output ? 12 : 0);
-
-
-    //     // this.textbox.style.left  = left + 'px';
-    //     // this.textbox.style.width = 'calc(100% - ' + dw + 'px)';
-    // }
+   }
 
 
 
@@ -132,10 +107,7 @@ extends Control
         this.value = value;
 
         if (updateControl)
-        {
             this.textbox.value = value;
-            this.updateTextBehind();
-        }
 
         this.update();
 
@@ -147,17 +119,34 @@ extends Control
 
 
 
-
     updateTextBehind()
     {
-        this.textBehind.value = this.textbox.value;
+        const lines = this.textbox.value.split('\n');
+        
+        let highlight = '';
 
-        // let highlight = '';
 
-        // for (let i = 0; i < this.textbox.value.length; i++)
-        //     highlight += '<span class="textBehind">' + this.textbox.value[i] + '</span>';
+        for (let i = 0; i < lines.length; i++)
+        {
+            // lines[i] = lines[i].replaceAll(' ', ' ');
+            
+            if (i > 0)
+                highlight += '<br>​';
 
-        // this.textBehind.innerHTML = highlight;
+            highlight += '<span class="textBehind">' + lines[i] + '</span>';
+        }
+
+        this.textBehind.innerHTML = highlight;
+
+
+        const style = getComputedStyle(this.textbox);
+
+        this.textBehind.style.fontFamily   = style.fontFamily;
+        this.textBehind.style.fontSize     = style.fontSize;
+        this.textBehind.style.lineHeight   = style.lineHeight;
+        this.textBehind.style.textAlign    = style.textAlign;
+        this.textBehind.style.height       = 'calc(' + style.height + ' - 0.6em)';
+        this.textBehind.style.display      = this.highlightText ? 'display-block' : 'none';
     }
 
 
@@ -184,22 +173,19 @@ extends Control
             : this.textbox.defPlaceholder;
 
 
-        this.textBehind.style.height        = '100%';
-        this.textbox   .style.height        = '100%';
-        
-        this.textbox   .style.pointerEvents = this.readOnly ? 'none' : 'all';
-
+        this.textbox.style.height        = '100%';
+        this.textbox.style.pointerEvents = this.readOnly ? 'none' : 'all';
 
 
         if (this.param.showName)
-        {
-            this.textbox   .style.textAlign = 'left';
-            this.textBehind.style.textAlign = 'left';
-        }
+            this.textbox.style.textAlign = 'left';
 
 
              if (this.valueText != '')   this.textbox.value = this.valueText;
         else if (this.value == NAN_CHAR) this.textbox.value = '';
+
+
+        this.updateTextBehind();
     }
 
 

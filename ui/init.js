@@ -157,21 +157,9 @@ function initGenerator(activate)
 
 
 
-// function createSessionId()
-// {
-//     const date = getCurrentDateString();
-//     const hash = hashLicenseString(currentUser.id + date, licenseHashSize);
-//     const enc  = sign(hash, licenseKeys.private);
-    
-//     return arrayToBase32(enc);
-// }
-
-
-
 function subscribed()
 {
     return subscriptionActive;
-    //return true;
 }
 
 

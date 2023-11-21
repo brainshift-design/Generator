@@ -8,15 +8,28 @@
 }    
 
 
-/* .textBehind
+.textBehind
 {
-    color:                red;
-} */
+    color:        transparent;
+    overflow-wrap: break-word;
+    word-break:    break-word;
+}
+
+.figma-light .textBehind
+{
+    background-color: #0001;
+}
+
+.figma-dark .textBehind
+{
+    background-color: #fff1;
+}
+
 
 .textControlHighlight
 {
     display:              inline-block;
-    color:                red;
+    color:                transparent;
     background-color:     transparent;
 
     font-family:          'Roboto Mono';
@@ -24,28 +37,32 @@
     position:             absolute;
     left:                 0px;
     top:                  0px;
-    width:                100%;
+    width:                calc(100% - 0.8em);
+    /* height:               calc(100% - 0.4em); */
     z-index:              4999;
 
     border:               none;
-    overflow:             auto;
     outline:              none;
 
     -webkit-box-shadow:   none;
     -moz-box-shadow:      none;
     box-shadow:           none;
 
-    resize:               none;
-    cursor:               default;
+    /* resize:               none; */
+    cursor:               none;
 
     padding-top:          0.4em;
     padding-left:         0.4em;
     padding-right:        0.4em;
+    padding-bottom:       0.4em;
 
     border-radius:        0.5px;
 
     pointer-events:       none;
     
+    white-space:          pre-wrap;
+    overflow:             auto;
+
     /* box-shadow:           0 0 0 1px inset red; */
 }
 
@@ -65,23 +82,26 @@
     z-index:              5000;
 
     border:               none;
-    overflow:             auto;
     outline:              none;
-
+    
     -webkit-box-shadow:   none;
     -moz-box-shadow:      none;
     box-shadow:           none;
 
     resize:               none;
     cursor:               default;
-
+    
     padding-top:          0.4em;
     padding-left:         0.4em;
     padding-right:        0.4em;
 
     border-radius:        0.5px;
     
-    /* box-shadow:           0 0 0 1px inset red; */
+    white-space:          pre-wrap;
+    overflow-wrap:        break-word;
+    overflow:             auto;
+    
+    /* box-shadow:           0 0 0 1px inset orange; */
 }
 
 
