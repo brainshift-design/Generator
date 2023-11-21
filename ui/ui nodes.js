@@ -1050,7 +1050,7 @@ function uiImportFromLocalFile()
     loadFromLocalFile(json => 
     {
         importZoomToNodes = true;
-        actionManager.do(new PasteNodesAction(json, false, false, true, Number.NaN, Number.NaN));
+        actionManager.do(new PasteNodesAction(json, false, false, true, Number.NaN, Number.NaN, true, true));
     });
 }
 
