@@ -124,7 +124,7 @@ function numToStringDec(num, dec, decSep = '.', thouSep = '')
     }    
 
 
-    return addGroupSeparator(whole, thouSep, 3) + decSep + frac;
+    return addGroupSeparator(whole, thouSep, 3) + (frac != '' ? decSep : '') + frac;
 }
 
 

@@ -4,7 +4,7 @@
 
 
 
-const generatorVersion = 299;
+const generatorVersion = 301;
 
 
 const MAX_INT32        = 2147483647;
@@ -1198,7 +1198,7 @@ function numToStringDec(num, dec, decSep = '.', thouSep = '')
     }    
 
 
-    return addGroupSeparator(whole, thouSep, 3) + decSep + frac;
+    return addGroupSeparator(whole, thouSep, 3) + (frac != '' ? decSep : '') + frac;
 }
 
 
