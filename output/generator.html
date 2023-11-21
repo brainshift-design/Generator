@@ -4,7 +4,7 @@
 
 
 
-const generatorVersion = 298;
+const generatorVersion = 299;
 
 
 const MAX_INT32        = 2147483647;
@@ -19457,32 +19457,36 @@ extends GOperator1
         this.value = new NumberValue(0);
 
         
-        const operand = (await this.operand  .eval(parse)).toValue();
-        const op      = (await this.operation.eval(parse)).toValue();
+        const input   = this.input     ? (await this.input    .eval(parse)).toValue() : null;
+        const operand = this.operand   ? (await this.operand  .eval(parse)).toValue() : null;
+        const op      = this.operation ? (await this.operation.eval(parse)).toValue() : null;
 
 
-        if (this.input)
+        if (input)
         {
-            const input = (await this.input.eval(parse)).toValue();
-
-            if (isListType(input.type))
+            if (this.options.enabled)
             {
-                this.value = new ListValue();
-
-                for (let i = 0; i < input.items.length; i++)
+                if (isListType(input.type))
                 {
-                    const item = input.items[i];
+                    this.value = new ListValue();
 
-                    this.value.items.push(
-                        item.type == NUMBER_VALUE
-                        ? getSimpleMinMaxValue(item, operand, op, this.options.enabled)
-                        : NumberValue.NaN.copy());   
+                    for (let i = 0; i < input.items.length; i++)
+                    {
+                        const item = input.items[i];
+
+                        this.value.items.push(
+                            item.type == NUMBER_VALUE
+                            ? getSimpleMinMaxValue(item, operand, op, this.options.enabled)
+                            : NumberValue.NaN.copy());   
+                    }
+                }
+                else
+                {
+                    this.value = getSimpleMinMaxValue(input, operand, op, this.options.enabled);
                 }
             }
             else
-            {
-                this.value = getSimpleMinMaxValue(input, operand, op, this.options.enabled);
-            }
+                this.value = input;
         }
         else
             this.value = NumberValue.NaN.copy();
@@ -22559,7 +22563,8 @@ extends GOperator1
 
         this.value = new NumberValue(0);
 
-        
+
+        const input   = this.input     ? (await this.input    .eval(parse)).toValue() : null;
         const op      = this.operation ? (await this.operation.eval(parse)).toValue() : null;
         const operand = this.operand   ? (await this.operand  .eval(parse)).toValue() : null;
         const invert  = this.invert    ? (await this.invert   .eval(parse)).toValue() : null;
@@ -22569,28 +22574,31 @@ extends GOperator1
         op.decimals = 0;
 
 
-        if (this.input)
+        if (input)
         {
-            const input = (await this.input.eval(parse)).toValue();
-
-            if (isListType(input.type))
+            if (this.options.enabled)
             {
-                this.value = new ListValue();
-
-                for (let i = 0; i < input.items.length; i++)
+                if (isListType(input.type))
                 {
-                    const item = input.items[i];
+                    this.value = new ListValue();
 
-                    this.value.items.push(
-                        item.type == NUMBER_VALUE
-                        ? getSimpleMathValue(item, operand, op, invert, this.options.enabled)
-                        : NumberValue.NaN.copy());   
+                    for (let i = 0; i < input.items.length; i++)
+                    {
+                        const item = input.items[i];
+
+                        this.value.items.push(
+                            item.type == NUMBER_VALUE
+                            ? getSimpleMathValue(item, operand, op, invert, this.options.enabled)
+                            : NumberValue.NaN.copy());   
+                    }
+                }
+                else
+                {
+                    this.value = getSimpleMathValue(input, operand, op, invert, this.options.enabled);
                 }
             }
             else
-            {
-                this.value = getSimpleMathValue(input, operand, op, invert, this.options.enabled);
-            }
+                this.value = input;
         }
         else
             this.value = NumberValue.NaN.copy();
@@ -24484,20 +24492,26 @@ extends GOperator1
             return this;
 
 
-        const func = (await this.function.eval(parse)).toValue().toInteger();
+        const input = this.input    ? (await this.input   .eval(parse)).toValue() : null;
+        const func  = this.function ? (await this.function.eval(parse)).toValue().toInteger() : null;
 
         func.value = Math.min(Math.max(0, func.value), TRIG_OPS.length-1);
 
         
-        switch (func.value)
+        if (this.options.enabled)
         {
-            case TRIG_SIN:  this.value = await evalSine   (this.input, parse, false);  break;
-            case TRIG_COS:  this.value = await evalCosine (this.input, parse, false);  break;
-            case TRIG_TAN:  this.value = await evalTangent(this.input, parse, false);  break;
-            case TRIG_ASIN: this.value = await evalSine   (this.input, parse, true );  break;
-            case TRIG_ACOS: this.value = await evalCosine (this.input, parse, true );  break;
-            case TRIG_ATAN: this.value = await evalTangent(this.input, parse, true );  break;
+            switch (func.value)
+            {
+                case TRIG_SIN:  this.value = await evalSine   (input, false);  break;
+                case TRIG_COS:  this.value = await evalCosine (input, false);  break;
+                case TRIG_TAN:  this.value = await evalTangent(input, false);  break;
+                case TRIG_ASIN: this.value = await evalSine   (input, true );  break;
+                case TRIG_ACOS: this.value = await evalCosine (input, true );  break;
+                case TRIG_ATAN: this.value = await evalTangent(input, true );  break;
+            }
         }
+        else
+            this.value = input;
 
 
         this.setUpdateValues(parse,
@@ -24599,21 +24613,17 @@ extends GOperator1
 
 
 
-async function evalSine(input, parse, arc)
+async function evalSine(input, arc)
 {
     if (!input)
         return NumberValue.NaN;
 
-    let value = (await input.eval(parse)).toValue();
-
     const val = 
         !arc 
-        ? Math.sin(value.value) 
-        : Math.asin(value.value);
+        ? Math.sin (input.value) 
+        : Math.asin(input.value);
 
-    value = new NumberValue(val, decDigits(val));
-
-    return value;
+    return new NumberValue(val, decDigits(val));
 }
 
 
@@ -24660,21 +24670,17 @@ extends GOperator1
 
 
 
-async function evalCosine(input, parse, arc)
+async function evalCosine(input, arc)
 {
     if (!input)
         return NumberValue.NaN;
 
-    let value = (await input.eval(parse)).toValue();
-
     const val = 
         !arc 
-        ? Math.cos(value.value) 
-        : Math.acos(value.value);
+        ? Math.cos (input.value) 
+        : Math.acos(input.value);
 
-    value = new NumberValue(val, decDigits(val));
-
-    return value;
+   return new NumberValue(val, decDigits(val));
 }
 
 
@@ -24721,21 +24727,17 @@ extends GOperator1
 
 
 
-async function evalTangent(input, parse, arc)
+async function evalTangent(input, arc)
 {
     if (!input)
         return NumberValue.NaN;
 
-    let value = (await input.eval(parse)).toValue();
-
     const val = 
         !arc 
-        ? Math.tan(value.value) 
-        : Math.atan(value.value);
+        ? Math.tan (input.value) 
+        : Math.atan(input.value);
     
-    value = new NumberValue(val, decDigits(val));
-
-    return value;
+    return new NumberValue(val, decDigits(val));
 }
 
 
@@ -26510,33 +26512,37 @@ extends GOperator1
             return this;
 
 
-        const _what  = (await this.what .eval(parse)).toValue();
-        const _with  = (await this.with .eval(parse)).toValue();
-        const _regex = (await this.regex.eval(parse)).toValue();
+        const  input = this.input ? (await this.input.eval(parse)).toValue() : null;
+        const _what  = this.what  ? (await this.what .eval(parse)).toValue() : null;
+        const _with  = this.with  ? (await this.with .eval(parse)).toValue() : null;
+        const _regex = this.regex ? (await this.regex.eval(parse)).toValue() : null;
 
 
-        if (this.input)
+        if (input)
         {
-            const input = (await this.input.eval(parse)).toValue();
-            
-            if (isListType(input.type))
+            if (this.options.enabled)
             {
-                this.value = new ListValue();
-
-                for (let i = 0; i < input.items.length; i++)
+                if (isListType(input.type))
                 {
-                    const item = input.items[i];
+                    this.value = new ListValue();
 
-                    this.value.items.push(
-                        item.type == TEXT_VALUE
-                        ? getReplaceValue(item, _what, _with, _regex)
-                        : new TextValue());   
+                    for (let i = 0; i < input.items.length; i++)
+                    {
+                        const item = input.items[i];
+
+                        this.value.items.push(
+                            item.type == TEXT_VALUE
+                            ? getReplaceValue(item, _what, _with, _regex)
+                            : new TextValue());   
+                    }
+                }
+                else
+                {
+                    this.value = getReplaceValue(input, _what, _with, _regex);
                 }
             }
             else
-            {
-                this.value = getReplaceValue(input, _what, _with, _regex);
-            }
+                this.value = input;
         }
         else
             this.value = new TextValue();

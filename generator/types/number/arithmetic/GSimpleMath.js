@@ -48,7 +48,8 @@ extends GOperator1
 
         this.value = new NumberValue(0);
 
-        
+
+        const input   = this.input     ? (await this.input    .eval(parse)).toValue() : null;
         const op      = this.operation ? (await this.operation.eval(parse)).toValue() : null;
         const operand = this.operand   ? (await this.operand  .eval(parse)).toValue() : null;
         const invert  = this.invert    ? (await this.invert   .eval(parse)).toValue() : null;
@@ -58,28 +59,31 @@ extends GOperator1
         op.decimals = 0;
 
 
-        if (this.input)
+        if (input)
         {
-            const input = (await this.input.eval(parse)).toValue();
-
-            if (isListType(input.type))
+            if (this.options.enabled)
             {
-                this.value = new ListValue();
-
-                for (let i = 0; i < input.items.length; i++)
+                if (isListType(input.type))
                 {
-                    const item = input.items[i];
+                    this.value = new ListValue();
 
-                    this.value.items.push(
-                        item.type == NUMBER_VALUE
-                        ? getSimpleMathValue(item, operand, op, invert, this.options.enabled)
-                        : NumberValue.NaN.copy());   
+                    for (let i = 0; i < input.items.length; i++)
+                    {
+                        const item = input.items[i];
+
+                        this.value.items.push(
+                            item.type == NUMBER_VALUE
+                            ? getSimpleMathValue(item, operand, op, invert, this.options.enabled)
+                            : NumberValue.NaN.copy());   
+                    }
+                }
+                else
+                {
+                    this.value = getSimpleMathValue(input, operand, op, invert, this.options.enabled);
                 }
             }
             else
-            {
-                this.value = getSimpleMathValue(input, operand, op, invert, this.options.enabled);
-            }
+                this.value = input;
         }
         else
             this.value = NumberValue.NaN.copy();

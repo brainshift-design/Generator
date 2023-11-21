@@ -48,33 +48,37 @@ extends GOperator1
             return this;
 
 
-        const _what  = (await this.what .eval(parse)).toValue();
-        const _with  = (await this.with .eval(parse)).toValue();
-        const _regex = (await this.regex.eval(parse)).toValue();
+        const  input = this.input ? (await this.input.eval(parse)).toValue() : null;
+        const _what  = this.what  ? (await this.what .eval(parse)).toValue() : null;
+        const _with  = this.with  ? (await this.with .eval(parse)).toValue() : null;
+        const _regex = this.regex ? (await this.regex.eval(parse)).toValue() : null;
 
 
-        if (this.input)
+        if (input)
         {
-            const input = (await this.input.eval(parse)).toValue();
-            
-            if (isListType(input.type))
+            if (this.options.enabled)
             {
-                this.value = new ListValue();
-
-                for (let i = 0; i < input.items.length; i++)
+                if (isListType(input.type))
                 {
-                    const item = input.items[i];
+                    this.value = new ListValue();
 
-                    this.value.items.push(
-                        item.type == TEXT_VALUE
-                        ? getReplaceValue(item, _what, _with, _regex)
-                        : new TextValue());   
+                    for (let i = 0; i < input.items.length; i++)
+                    {
+                        const item = input.items[i];
+
+                        this.value.items.push(
+                            item.type == TEXT_VALUE
+                            ? getReplaceValue(item, _what, _with, _regex)
+                            : new TextValue());   
+                    }
+                }
+                else
+                {
+                    this.value = getReplaceValue(input, _what, _with, _regex);
                 }
             }
             else
-            {
-                this.value = getReplaceValue(input, _what, _with, _regex);
-            }
+                this.value = input;
         }
         else
             this.value = new TextValue();

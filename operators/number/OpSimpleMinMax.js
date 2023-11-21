@@ -12,6 +12,7 @@ extends OperatorBase
 
         this.iconOffsetY      = -1;
         this.alwaysLoadParams = true;
+        this.canDisable       = true;
         
 
         this.addInput (new Input (NUMBER_TYPES));

@@ -40,20 +40,26 @@ extends GOperator1
             return this;
 
 
-        const func = (await this.function.eval(parse)).toValue().toInteger();
+        const input = this.input    ? (await this.input   .eval(parse)).toValue() : null;
+        const func  = this.function ? (await this.function.eval(parse)).toValue().toInteger() : null;
 
         func.value = Math.min(Math.max(0, func.value), TRIG_OPS.length-1);
 
         
-        switch (func.value)
+        if (this.options.enabled)
         {
-            case TRIG_SIN:  this.value = await evalSine   (this.input, parse, false);  break;
-            case TRIG_COS:  this.value = await evalCosine (this.input, parse, false);  break;
-            case TRIG_TAN:  this.value = await evalTangent(this.input, parse, false);  break;
-            case TRIG_ASIN: this.value = await evalSine   (this.input, parse, true );  break;
-            case TRIG_ACOS: this.value = await evalCosine (this.input, parse, true );  break;
-            case TRIG_ATAN: this.value = await evalTangent(this.input, parse, true );  break;
+            switch (func.value)
+            {
+                case TRIG_SIN:  this.value = await evalSine   (input, false);  break;
+                case TRIG_COS:  this.value = await evalCosine (input, false);  break;
+                case TRIG_TAN:  this.value = await evalTangent(input, false);  break;
+                case TRIG_ASIN: this.value = await evalSine   (input, true );  break;
+                case TRIG_ACOS: this.value = await evalCosine (input, true );  break;
+                case TRIG_ATAN: this.value = await evalTangent(input, true );  break;
+            }
         }
+        else
+            this.value = input;
 
 
         this.setUpdateValues(parse,

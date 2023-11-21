@@ -41,19 +41,15 @@ extends GOperator1
 
 
 
-async function evalCosine(input, parse, arc)
+async function evalCosine(input, arc)
 {
     if (!input)
         return NumberValue.NaN;
 
-    let value = (await input.eval(parse)).toValue();
-
     const val = 
         !arc 
-        ? Math.cos(value.value) 
-        : Math.acos(value.value);
+        ? Math.cos (input.value) 
+        : Math.acos(input.value);
 
-    value = new NumberValue(val, decDigits(val));
-
-    return value;
+   return new NumberValue(val, decDigits(val));
 }
