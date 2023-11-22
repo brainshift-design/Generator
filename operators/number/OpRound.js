@@ -21,6 +21,8 @@ extends OperatorWithValue
         this.addParam(this.paramDecimals = new NumberParam('decimals', 'decimals', true,  true,  true, 0, 0, 10));
 
 
+        this.paramType.reverseMenu = true;
+
         this.paramDecimals.divider = 0.61;
     }
 

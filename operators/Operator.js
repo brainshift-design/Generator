@@ -408,7 +408,7 @@ class Operator
         param._node    = this;
         param.volatile = volatile;
 
-        this.params.push(param);
+        this.params     .push(param);
         this.paramHolder.appendChild(param.div);
 
         if (param. input) this. inputs.push(param. input);

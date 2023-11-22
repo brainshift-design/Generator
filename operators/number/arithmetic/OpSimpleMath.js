@@ -104,6 +104,38 @@ extends OperatorBase
         this.updateIcon();
 
 
+        if (this.paramInvert.value.value == 0)
+        {
+            this.params = 
+            [
+                this.paramOperation, 
+                this.paramOperand, 
+                this.paramInvert
+            ];
+
+            clearChildren(this.paramHolder);
+
+            this.paramHolder.appendChild(this.paramOperation.div); 
+            this.paramHolder.appendChild(this.paramOperand  .div); 
+            this.paramHolder.appendChild(this.paramInvert   .div);
+        }
+        else
+        {
+            this.params = 
+            [
+                this.paramOperand, 
+                this.paramOperation, 
+                this.paramInvert
+            ];
+
+            clearChildren(this.paramHolder);
+
+            this.paramHolder.appendChild(this.paramOperand  .div); 
+            this.paramHolder.appendChild(this.paramOperation.div); 
+            this.paramHolder.appendChild(this.paramInvert   .div);
+        }
+
+
         this.updateParamControls();
     }
 }
