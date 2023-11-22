@@ -6,7 +6,7 @@ extends OperatorBase
         super(CONDENSE, 'listAsItem', 'list as item', iconCondense);
 
         this.canDisable  = true;
-        this.iconOffsetY = -1;
+        this.iconOffsetY = -3;
         
 
         this.addInput (new Input (LIST_VALUES));
