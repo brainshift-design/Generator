@@ -32,6 +32,7 @@
 ../html/debugWarning.html
 ../html/eula.html
 ../html/minZoom.html
+../html/objectBatch.html
 ../html/whatsNew.html
 ../html/search.html
 

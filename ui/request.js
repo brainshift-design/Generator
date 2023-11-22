@@ -57,7 +57,8 @@ function pushUpdateFromParam(action, nodes, param, save = true)
     [
         curRequestId,
         action ? action.id : -1,
-        set.toString()
+        set.toString(),
+        settings.objectBatchSize.toString()
     ];
 
 

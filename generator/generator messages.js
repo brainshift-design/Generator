@@ -131,7 +131,7 @@ function genEndFigMessage()
     if (   !isEmpty(lastUpdateValues )
         || !isEmpty(lastUpdateObjects)
         || !isEmpty(lastUpdateStyles ))
-        genUpdateValuesAndObjects(lastRequestId, -1, lastUpdateNodeId, lastUpdateParamId, [], [], [], false);
+        genUpdateValuesAndObjects(lastRequestId, -1, 1000000, lastUpdateNodeId, lastUpdateParamId, [], [], [], false);
 
     genPostNextMessageToUi();
 }

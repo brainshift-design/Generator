@@ -50,6 +50,12 @@ async function uiReturnFigGetLocalData(msg)
     
             break;
 
+        case 'objectBatchSize':
+            if (!isNaN(msg.value))
+                updateSetting(msg.key, parseInt(msg.value));
+    
+            break;
+
         case 'debugMode':
 
         case 'enableZoomedOutParams':

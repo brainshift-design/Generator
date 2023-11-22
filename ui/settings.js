@@ -4,6 +4,7 @@ const settings =
         
     enableZoomedOutParams:         false,
     minZoomForParams:              0.35,
+    objectBatchSize:               1000000,
     showPages:                     false,
     showAllColorSpaces:            false,
     showNodeIcons:                 true,
@@ -63,6 +64,7 @@ function updateSetting(settingName, value)
                 
         case 'enableZoomedOutParams':         settings.enableZoomedOutParams         = value;  break;
         case 'minZoomForParams':              settings.minZoomForParams              = value;  break;
+        case 'objectBatchSize':               settings.objectBatchSize               = value;  break;
         case 'showPages':                     settings.showPages                     = value;  break;
         case 'showAllColorSpaces':            settings.showAllColorSpaces            = value;  break;
         case 'showNodeIcons':                 settings.showNodeIcons                 = value;  break;
@@ -392,6 +394,7 @@ function loadLocalSettings()
         
     uiGetLocalData('enableZoomedOutParams'        );
     uiGetLocalData('minZoomForParams'             );
+    uiGetLocalData('objectBatchSize'              );
     uiGetLocalData('showNodeIcons'                );
     uiGetLocalData('showBoolValues'               );
     uiGetLocalData('separateThousands'            );

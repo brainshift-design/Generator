@@ -107,6 +107,7 @@ var menuItemShowTooltipColorBlindness;
 
 var menuItemEnableZoomedOutParams;
 var menuItemMinZoomForParams;
+var menuItemObjectBatchSize;
 var menuItemShowPages;
 var menuPrefSep1;
 var menuItemShowAllColorSpaces;
@@ -298,12 +299,14 @@ function initGeneratorMenus()
         menuItemShowTooltips               = new MenuItem('Show tooltips',                      null, {childMenu: menuShowTooltips}),
         menuItemShowClearUndoWarning       = new MenuItem('Show clear undo warning',            null, {checkCallback: () => settings.showClearUndoWarning,       callback: () => { updateSettingAndMenu('showClearUndoWarning',       true, !settings.showClearUndoWarning);                                               }}),
         menuItemShowDebugMenu              = new MenuItem('Show debug menu',                    null, {checkCallback: () => settings.showDebugMenu,              callback: () => { uiGetLocalData('debugWarning'); }}),
+                                             new MenuItem('',                                   null, {separator: true}),    
+        menuItemMinZoomForParams           = new MenuItem('Zoom level for values . . .',        null, {callback: () => showMinZoomDialog()}),
         menuPrefSep2                       = new MenuItem('',                                   null, {separator: true}),    
         // menuItemEnableMultiplayer       = new MenuItem('Enable multiplayer on this canvas',  null, {checkCallback: () => multiplayerEnabled,                  callback: () => { updateSettingAndMenu('showPages',                  true, !settings.showPages);                  enableMultiplayer(!multiplayerEnabled);     }}),
         //                                   new MenuItem('',                                   null, {separator: true}),    
         // menuItemEnableBetaFeatures      = new MenuItem('Enable beta features',               null, {checkCallback: () => settings.enableBetaFeatures,         callback: () => { updateSettingAndMenu('enableBetaFeatures',         true, !settings.enableBetaFeatures);         enableFeatures(true, settings.enableBetaFeatures); }}),
         //                                   new MenuItem('',                                   null, {separator: true}),    
-        menuItemMinZoomForParams           = new MenuItem('Zoom level for values...',           null, {callback: () => showMinZoomDialog()})]);
+        menuItemObjectBatchSize            = new MenuItem('Update batch size . . .',            null, {callback: () => showObjectBatchDialog()})]);
         
 
     menuItemShowBoolValues.divName.innerHTML = 'Show boolean values as   <span style="position: relative; top: 1px;">' + TRUE_DISPLAY_MENU + '</span>  <span>' + FALSE_DISPLAY_MENU + '</span>'
@@ -357,7 +360,7 @@ function initGeneratorMenus()
     menuDebugDelete.addItems([
         new MenuItem('All saved pages',       null, {callback: () => { hideAllMenus(); uiRemoveAllSavedPages(); }}),
         new MenuItem('',                      null, {separator: true}),                   
-        new MenuItem('Connections to...',     null, {callback: () => showDeleteConnectionsDialog()}),                        
+        new MenuItem('Connections to . . .',     null, {callback: () => showDeleteConnectionsDialog()}),                        
         new MenuItem('All saved connections', null, {callback: () => { hideAllMenus(); uiRemoveAllSavedConnections(); }}),
         new MenuItem('',                      null, {separator: true}),                   
         new MenuItem('All style links',       null, {callback: () => { hideAllMenus(); uiRemovePluginDataFromAllLocalStyles(); }}),

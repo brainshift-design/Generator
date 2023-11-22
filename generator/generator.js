@@ -20,9 +20,10 @@ function initFonts(fonts, uniqueFontNames)
 
 function genRequest(request, save)
 {
-    const requestId     = parseInt(request[0]);
-    const actionId      = parseInt(request[1]);
-    const set           = parseInt(request[2]);
+    const requestId       = parseInt(request[0]);
+    const actionId        = parseInt(request[1]);
+    const set             = parseInt(request[2]);
+    const objectBatchSize = parseInt(request[3]);
 
     curRequestIds.push(requestId);
 
@@ -35,15 +36,15 @@ function genRequest(request, save)
     };
 
 
-    const updateNodeId  = request[3];
-    const updateParamId = request[4];
+    const updateNodeId  = request[4];
+    const updateParamId = request[5];
 
-    const viewportZoom  = request[5];
+    const viewportZoom  = request[6];
 
 
     const parse = new Parse(
         request, 
-        6,
+        7,
         requestId,
         updateNodeId, 
         updateParamId, 
@@ -167,6 +168,7 @@ function genRequest(request, save)
         genUpdateValuesAndObjects(
             requestId,
             actionId,
+            objectBatchSize,
             parse.updateNodeId,
             parse.updateParamId,
             parse.updateValues,
@@ -246,7 +248,7 @@ function clearLastUpdate()
 
 
 
-function genUpdateValuesAndObjects(requestId, actionId, updateNodeId, updateParamId, updateValues, updateObjects, updateStyles, save)
+function genUpdateValuesAndObjects(requestId, actionId, objectBatchSize, updateNodeId, updateParamId, updateValues, updateObjects, updateStyles, save)
 {
     if (   isEmpty(updateValues )
         && isEmpty(updateObjects)
@@ -283,7 +285,7 @@ function genUpdateValuesAndObjects(requestId, actionId, updateNodeId, updatePara
     // send updates in chunks
 
     const approxNodeChunkSize = 1000000;//20;
-    const objChunkSize        = 1000000;//200;
+    const objChunkSize        = objectBatchSize;
     const styleChunkSize      = 1000000;//20;
 
     

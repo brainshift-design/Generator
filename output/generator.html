@@ -1155,7 +1155,7 @@ function isArrowKey(code)
 
 
 
-function numToString(num, dec, showHex = false, decSep = '.', thouSep = '')
+function numToString(num, dec = 0, showHex = false, decSep = '.', thouSep = '')
 {
     return showHex
          ? numToStringHex(num, dec, decSep, thouSep)
@@ -4463,6 +4463,7 @@ const settings =
         
     enableZoomedOutParams:         false,
     minZoomForParams:              0.35,
+    objectBatchSize:               1000000,
     showPages:                     false,
     showAllColorSpaces:            false,
     showNodeIcons:                 true,
@@ -4522,6 +4523,7 @@ function updateSetting(settingName, value)
                 
         case 'enableZoomedOutParams':         settings.enableZoomedOutParams         = value;  break;
         case 'minZoomForParams':              settings.minZoomForParams              = value;  break;
+        case 'objectBatchSize':               settings.objectBatchSize               = value;  break;
         case 'showPages':                     settings.showPages                     = value;  break;
         case 'showAllColorSpaces':            settings.showAllColorSpaces            = value;  break;
         case 'showNodeIcons':                 settings.showNodeIcons                 = value;  break;
@@ -4851,6 +4853,7 @@ function loadLocalSettings()
         
     uiGetLocalData('enableZoomedOutParams'        );
     uiGetLocalData('minZoomForParams'             );
+    uiGetLocalData('objectBatchSize'              );
     uiGetLocalData('showNodeIcons'                );
     uiGetLocalData('showBoolValues'               );
     uiGetLocalData('separateThousands'            );
@@ -39386,7 +39389,7 @@ function genEndFigMessage()
     if (   !isEmpty(lastUpdateValues )
         || !isEmpty(lastUpdateObjects)
         || !isEmpty(lastUpdateStyles ))
-        genUpdateValuesAndObjects(lastRequestId, -1, lastUpdateNodeId, lastUpdateParamId, [], [], [], false);
+        genUpdateValuesAndObjects(lastRequestId, -1, 1000000, lastUpdateNodeId, lastUpdateParamId, [], [], [], false);
 
     genPostNextMessageToUi();
 }
@@ -39416,9 +39419,10 @@ function initFonts(fonts, uniqueFontNames)
 
 function genRequest(request, save)
 {
-    const requestId     = parseInt(request[0]);
-    const actionId      = parseInt(request[1]);
-    const set           = parseInt(request[2]);
+    const requestId       = parseInt(request[0]);
+    const actionId        = parseInt(request[1]);
+    const set             = parseInt(request[2]);
+    const objectBatchSize = parseInt(request[3]);
 
     curRequestIds.push(requestId);
 
@@ -39431,15 +39435,15 @@ function genRequest(request, save)
     };
 
 
-    const updateNodeId  = request[3];
-    const updateParamId = request[4];
+    const updateNodeId  = request[4];
+    const updateParamId = request[5];
 
-    const viewportZoom  = request[5];
+    const viewportZoom  = request[6];
 
 
     const parse = new Parse(
         request, 
-        6,
+        7,
         requestId,
         updateNodeId, 
         updateParamId, 
@@ -39563,6 +39567,7 @@ function genRequest(request, save)
         genUpdateValuesAndObjects(
             requestId,
             actionId,
+            objectBatchSize,
             parse.updateNodeId,
             parse.updateParamId,
             parse.updateValues,
@@ -39642,7 +39647,7 @@ function clearLastUpdate()
 
 
 
-function genUpdateValuesAndObjects(requestId, actionId, updateNodeId, updateParamId, updateValues, updateObjects, updateStyles, save)
+function genUpdateValuesAndObjects(requestId, actionId, objectBatchSize, updateNodeId, updateParamId, updateValues, updateObjects, updateStyles, save)
 {
     if (   isEmpty(updateValues )
         && isEmpty(updateObjects)
@@ -39679,7 +39684,7 @@ function genUpdateValuesAndObjects(requestId, actionId, updateNodeId, updatePara
     // send updates in chunks
 
     const approxNodeChunkSize = 1000000;//20;
-    const objChunkSize        = 1000000;//200;
+    const objChunkSize        = objectBatchSize;
     const styleChunkSize      = 1000000;//20;
 
     

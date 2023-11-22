@@ -81,7 +81,7 @@ function isArrowKey(code)
 
 
 
-function numToString(num, dec, showHex = false, decSep = '.', thouSep = '')
+function numToString(num, dec = 0, showHex = false, decSep = '.', thouSep = '')
 {
     return showHex
          ? numToStringHex(num, dec, decSep, thouSep)
