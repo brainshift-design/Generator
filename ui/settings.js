@@ -277,11 +277,7 @@ function updateMenuItemShowNodeIcons()
 function updateMenuItemShowBoolValues()
 {
     graph.nodes
-        .filter(n => 
-               NUMBER_BOOLEAN_TYPES.includes(n.type)
-            ||      CONDITION_TYPES.includes(n.type)
-            ||         AFFINE_TYPES.includes(n.type)
-            || n.type == IF_ELSE)
+        .filter(n => n.params.find(p => p.type == NUMBER_VALUE) != null)
         .forEach(n => n.updateNode());
 }
 
