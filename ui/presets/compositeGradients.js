@@ -9,8 +9,8 @@ const presetCompositeGradients = '\
             "renamed": "false",\
             "enabled": "true",\
             "highlight": "0",\
-            "x": "6045",\
-            "y": "5397",\
+            "x": "6195",\
+            "y": "5547",\
             "z": "0",\
             "params":\
             [\
@@ -30,8 +30,8 @@ const presetCompositeGradients = '\
             "renamed": "false",\
             "enabled": "true",\
             "highlight": "0",\
-            "x": "6520",\
-            "y": "5176",\
+            "x": "6670",\
+            "y": "5326",\
             "z": "1",\
             "active": "true",\
             "params":\
@@ -48,8 +48,8 @@ const presetCompositeGradients = '\
             "renamed": "false",\
             "enabled": "true",\
             "highlight": "0",\
-            "x": "5851",\
-            "y": "5868",\
+            "x": "5981",\
+            "y": "5923",\
             "z": "2",\
             "params":\
             [\
@@ -64,8 +64,8 @@ const presetCompositeGradients = '\
             "renamed": "false",\
             "enabled": "true",\
             "highlight": "7",\
-            "x": "4638",\
-            "y": "5711",\
+            "x": "4788",\
+            "y": "5861",\
             "z": "3",\
             "params":\
             [\
@@ -80,8 +80,8 @@ const presetCompositeGradients = '\
             "renamed": "false",\
             "enabled": "true",\
             "highlight": "0",\
-            "x": "5891",\
-            "y": "6029",\
+            "x": "6041",\
+            "y": "6179",\
             "z": "4",\
             "params":\
             [\
@@ -97,8 +97,8 @@ const presetCompositeGradients = '\
             "renamed": "false",\
             "enabled": "true",\
             "highlight": "0",\
-            "x": "6032",\
-            "y": "6027",\
+            "x": "6182",\
+            "y": "6177",\
             "z": "5",\
             "params":\
             [\
@@ -113,8 +113,8 @@ const presetCompositeGradients = '\
             "renamed": "false",\
             "enabled": "true",\
             "highlight": "0",\
-            "x": "5611",\
-            "y": "6029",\
+            "x": "5761",\
+            "y": "6179",\
             "z": "6",\
             "params":\
             [\
@@ -129,8 +129,8 @@ const presetCompositeGradients = '\
             "renamed": "false",\
             "enabled": "true",\
             "highlight": "0",\
-            "x": "5733",\
-            "y": "5395",\
+            "x": "5883",\
+            "y": "5545",\
             "z": "7",\
             "params":\
             [\
@@ -145,8 +145,8 @@ const presetCompositeGradients = '\
             "renamed": "false",\
             "enabled": "true",\
             "highlight": "0",\
-            "x": "5587",\
-            "y": "5397",\
+            "x": "5737",\
+            "y": "5547",\
             "z": "8",\
             "params":\
             [\
@@ -161,8 +161,8 @@ const presetCompositeGradients = '\
             "renamed": "false",\
             "enabled": "true",\
             "highlight": "0",\
-            "x": "5678",\
-            "y": "5775",\
+            "x": "5828",\
+            "y": "5925",\
             "z": "9",\
             "params":\
             [\
@@ -178,8 +178,8 @@ const presetCompositeGradients = '\
             "renamed": "false",\
             "enabled": "true",\
             "highlight": "0",\
-            "x": "5529",\
-            "y": "5776",\
+            "x": "5679",\
+            "y": "5926",\
             "z": "10",\
             "params":\
             [\
@@ -194,8 +194,8 @@ const presetCompositeGradients = '\
             "renamed": "false",\
             "enabled": "true",\
             "highlight": "0",\
-            "x": "4802",\
-            "y": "5703",\
+            "x": "4952",\
+            "y": "5853",\
             "z": "11",\
             "width": "120",\
             "height": "340",\
@@ -224,8 +224,8 @@ const presetCompositeGradients = '\
             "renamed": "false",\
             "enabled": "true",\
             "highlight": "0",\
-            "x": "5150",\
-            "y": "5469",\
+            "x": "5299",\
+            "y": "5578",\
             "z": "12",\
             "params":\
             [\
@@ -239,8 +239,8 @@ const presetCompositeGradients = '\
             "renamed": "false",\
             "enabled": "true",\
             "highlight": "0",\
-            "x": "4639",\
-            "y": "5970",\
+            "x": "4785",\
+            "y": "6166",\
             "z": "13"\
             },\
             {\
@@ -250,8 +250,8 @@ const presetCompositeGradients = '\
             "renamed": "false",\
             "enabled": "true",\
             "highlight": "0",\
-            "x": "6196",\
-            "y": "5399",\
+            "x": "6346",\
+            "y": "5549",\
             "z": "14",\
             "params":\
             [\
@@ -265,8 +265,8 @@ const presetCompositeGradients = '\
             "renamed": "false",\
             "enabled": "true",\
             "highlight": "7",\
-            "x": "4595",\
-            "y": "5667",\
+            "x": "4745",\
+            "y": "5817",\
             "z": "15",\
             "width": "372",\
             "height": "411.01903194220137",\
@@ -281,8 +281,8 @@ const presetCompositeGradients = '\
             "renamed": "false",\
             "enabled": "true",\
             "highlight": "0",\
-            "x": "5469",\
-            "y": "6029",\
+            "x": "5619",\
+            "y": "6179",\
             "z": "16",\
             "params":\
             [\
@@ -297,8 +297,8 @@ const presetCompositeGradients = '\
             "renamed": "false",\
             "enabled": "true",\
             "highlight": "0",\
-            "x": "4640",\
-            "y": "5855",\
+            "x": "4786",\
+            "y": "6051",\
             "z": "17",\
             "params":\
             [\
@@ -312,8 +312,8 @@ const presetCompositeGradients = '\
             "renamed": "false",\
             "enabled": "true",\
             "highlight": "0",\
-            "x": "5439",\
-            "y": "5395",\
+            "x": "5589",\
+            "y": "5545",\
             "z": "18",\
             "prevSpace": "rgb",\
             "params":\
@@ -331,8 +331,8 @@ const presetCompositeGradients = '\
             "renamed": "false",\
             "enabled": "true",\
             "highlight": "0",\
-            "x": "5888",\
-            "y": "5395",\
+            "x": "6038",\
+            "y": "5545",\
             "z": "19",\
             "params":\
             [\
@@ -346,8 +346,8 @@ const presetCompositeGradients = '\
             "renamed": "false",\
             "enabled": "true",\
             "highlight": "0",\
-            "x": "6247",\
-            "y": "5204",\
+            "x": "6397",\
+            "y": "5354",\
             "z": "20",\
             "prevSpace": "hex",\
             "params":\
@@ -365,8 +365,8 @@ const presetCompositeGradients = '\
             "renamed": "false",\
             "enabled": "true",\
             "highlight": "0",\
-            "x": "5151",\
-            "y": "5741",\
+            "x": "5299",\
+            "y": "5929",\
             "z": "21",\
             "params":\
             [\
@@ -380,8 +380,8 @@ const presetCompositeGradients = '\
             "renamed": "false",\
             "enabled": "true",\
             "highlight": "0",\
-            "x": "5380",\
-            "y": "5775",\
+            "x": "5530",\
+            "y": "5925",\
             "z": "22",\
             "params":\
             [\
@@ -395,11 +395,10 @@ const presetCompositeGradients = '\
             "name": "",\
             "renamed": "false",\
             "enabled": "true",\
-            "highlight": "0",\
-            "x": "5404",\
-            "y": "5130",\
+            "highlight": "6",\
+            "x": "5554",\
+            "y": "5280",\
             "z": "23",\
-            "active": "true",\
             "width": "1273.765471080087",\
             "height": "516.5020628106782",\
             "params":\
@@ -413,8 +412,8 @@ const presetCompositeGradients = '\
             "renamed": "false",\
             "enabled": "true",\
             "highlight": "0",\
-            "x": "6413",\
-            "y": "5304",\
+            "x": "6563",\
+            "y": "5454",\
             "z": "24",\
             "width": "60.587880337831905",\
             "height": "51"\
@@ -426,8 +425,8 @@ const presetCompositeGradients = '\
             "renamed": "false",\
             "enabled": "true",\
             "highlight": "0",\
-            "x": "6046",\
-            "y": "5784",\
+            "x": "6196",\
+            "y": "5934",\
             "z": "25",\
             "params":\
             [\
@@ -443,8 +442,8 @@ const presetCompositeGradients = '\
             "renamed": "false",\
             "enabled": "true",\
             "highlight": "0",\
-            "x": "5750",\
-            "y": "6029",\
+            "x": "5900",\
+            "y": "6179",\
             "z": "26",\
             "params":\
             [\
@@ -459,8 +458,8 @@ const presetCompositeGradients = '\
             "renamed": "false",\
             "enabled": "true",\
             "highlight": "0",\
-            "x": "5149",\
-            "y": "5604",\
+            "x": "5299",\
+            "y": "5753",\
             "z": "27",\
             "params":\
             [\
@@ -474,8 +473,8 @@ const presetCompositeGradients = '\
             "renamed": "false",\
             "enabled": "true",\
             "highlight": "0",\
-            "x": "6172",\
-            "y": "6027",\
+            "x": "6322",\
+            "y": "6177",\
             "z": "28",\
             "params":\
             [\

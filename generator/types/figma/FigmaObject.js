@@ -403,12 +403,12 @@ function createDecoPoly(node, center, points, closed, dashes, color, suffix)
         100, 
         'NORMAL']);
 
-    line.strokeWeight = 1;
+    line.strokeWeight =  1;
     line.strokeAlign  = 'CENTER';
     line.strokeJoin   = 'MITER';
     line.strokeCap    = 'NONE';
-    line.strokeDashes = dashes;
-    line.isDeco       = true;
+    line.strokeDashes =  dashes;
+    line.isDeco       =  true;
 
 
     line.createDefaultTransform(center.x, center.y);

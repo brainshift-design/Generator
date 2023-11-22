@@ -6177,12 +6177,12 @@ function createDecoPoly(node, center, points, closed, dashes, color, suffix)
         100, 
         'NORMAL']);
 
-    line.strokeWeight = 1;
+    line.strokeWeight =  1;
     line.strokeAlign  = 'CENTER';
     line.strokeJoin   = 'MITER';
     line.strokeCap    = 'NONE';
-    line.strokeDashes = dashes;
-    line.isDeco       = true;
+    line.strokeDashes =  dashes;
+    line.isDeco       =  true;
 
 
     line.createDefaultTransform(center.x, center.y);
@@ -6316,7 +6316,7 @@ function addGradientProp(obj, prop, target = obj.fills)
             rgba[1], 
             rgba[2], 
             rgba[3],
-            stop.position.toNumber() / 100]);
+            Math.min(Math.max(0, stop.position.toNumber() / 100), 1)]);
     }
 
 

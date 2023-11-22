@@ -52,6 +52,7 @@ function pushUpdateFromParam(action, nodes, param, save = true)
         lastRequestedId = nextRequestId++;
         curRequestId    = lastRequestedId;
     }
+    console.log('curRequestId =', curRequestId);
     
     const request = 
     [

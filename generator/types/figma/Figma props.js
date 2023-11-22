@@ -108,7 +108,7 @@ function addGradientProp(obj, prop, target = obj.fills)
             rgba[1], 
             rgba[2], 
             rgba[3],
-            stop.position.toNumber() / 100]);
+            Math.min(Math.max(0, stop.position.toNumber() / 100), 1)]);
     }
 
 
