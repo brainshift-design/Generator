@@ -739,6 +739,7 @@ class Operator
         if (updateTransform)
         {
             this.div.style.display = 'block';
+            this.updateParams();
             this.updateTransform();
         }
     }
