@@ -57,6 +57,7 @@ async function uiReturnFigGetLocalData(msg)
         case 'showNodeIcons':
         case 'showBoolValues':
         case 'separateThousands':
+        case 'invertSimpleMathParamOrder':
         case 'showColorLegendInMenus':
         case 'showOperationResults':
         case 'showClearUndoWarning':

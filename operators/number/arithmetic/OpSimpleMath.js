@@ -104,7 +104,8 @@ extends OperatorBase
         this.updateIcon();
 
 
-        if (this.paramInvert.value.value == 0)
+        if (    this.paramInvert.value.value == 0
+            || !settings.invertSimpleMathParamOrder)
         {
             this.params = 
             [
