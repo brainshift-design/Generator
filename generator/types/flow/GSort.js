@@ -45,25 +45,25 @@ extends GOperator1
             return this;
 
 
+        const input   = this.input ? (await this.input.eval(parse)).toValue() : null;
         const reverse = this.reverse ? (await this.reverse.eval(parse)).toValue() : null;
 
 
-        if (this.options.enabled)
+        this.value = new ListValue();
+        this.value.objects = [];
+
+        let maxColumns = 0;
+
+        
+        if (   input
+            && this.order
+            && reverse)
         {
-            this.value = new ListValue();
-            this.value.objects = [];
-
-            let maxColumns = 0;
-
-            
-            if (   this.input
-                && this.order
-                && reverse)
-            {
-                const input = this.input ? (await this.input.eval(parse)).toValue() : null;
-                const order = this.input ? (await this.order.eval(parse)).toValue() : null;
+            const order = this.order ? (await this.order.eval(parse)).toValue() : null;
 
                 
+            if (this.options.enabled)
+            {
                 if (   input 
                     && this.order
                     && this.order.getOrderNode)
@@ -108,13 +108,13 @@ extends GOperator1
                     }
                 }
                 else
-                    this.value = (await this.input.eval(parse)).toValue();
+                    this.value = input;
             }
             else
-                this.value = (await this.input.eval(parse)).toValue();
+                this.value = input;
         }
         else
-            this.value = (await this.input.eval(parse)).toValue();
+            this.value = new ListValue();
 
 
         this.updateValueObjects();

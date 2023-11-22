@@ -23,10 +23,16 @@ extends Action
    
 
     get outputNode()    { return nodeFromId(this.outputNodeId); }
-    get output()        { return this.outputNode.outputFromId(this.outputId); }
+
+    get output()        { return this.outputNode
+                               ? this.outputNode.outputFromId(this.outputId)
+                               : null; }
     
     get inputNode()     { return nodeFromId(this.inputNodeId); }
-    get input()         { return this.inputNode.inputFromId(this.inputId); }
+
+    get input()         { return this.inputNode
+                               ? this.inputNode.inputFromId(this.inputId)
+                               : null; }
     
 
     get oldOutputNode() { return nodeFromId(this.oldOutputNodeId); }
