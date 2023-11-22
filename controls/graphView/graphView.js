@@ -104,6 +104,8 @@ class GraphView
     
         for (const node of this._selectedNodes)
             node.setSelected(true);
+
+        updateSaveSelectedMenu();
     }
 
 

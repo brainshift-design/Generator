@@ -277,9 +277,9 @@ function initGeneratorMenus()
 
     menuMainFile = new Menu('File', false);
     menuMainFile.addItems([
-                             new MenuItem('Import from file...',      null, {callback: () => { hideAllMenus(); uiImportFromLocalFile(); }}),
+                             new MenuItem('Import from file . . .',      null, {callback: () => { hideAllMenus(); uiImportFromLocalFile(); }}),
         menuFileSep1       = new MenuItem('',                         null, {separator: true}),    
-        menuItemSaveToFile = new MenuItem('Save selected to file...', null, {shortcut: osCtrlShift() + 'S', callback: () => { hideAllMenus(); uiSaveSelectionToLocalFile(); }})]);
+        menuItemSaveToFile = new MenuItem('Save to file . . .', null, {shortcut: osCtrlShift() + 'S', callback: () => { hideAllMenus(); uiSaveSelectionToLocalFile(); }})]);
 
 
     menuMainPreferences = new Menu('Preferences', false);
@@ -408,14 +408,16 @@ function initGeneratorMenus()
 
     menuMainHelp = new Menu('Help and subscription', false);
     menuMainHelp.addItems([
-                                  new MenuItem('Tutorials . . .',    null, {callback: () => showPresets()}),
-                                  new MenuItem('Keyboard shortcuts', null, {shortcut: osCtrlShift() + '?', callback: () => showKeyboardPanel()}),
-                                  // new MenuItem('Help page',       null, {callback:  () => window.open('http://www.bourt.com/generator/help', '_blank')}),
-                                  new MenuItem('',                   null, {separator: true}),
-                                  new MenuItem('Subscription',       null, {callback:  () => showSubscriptionDialog(false)}),
-                                  new MenuItem('',                   null, {separator: true}),
+                                  new MenuItem('Tutorials & examples', null, {callback: () => showPresets()}),
+                                  new MenuItem('Youtube . . .',        null, {callback: () => window.open('https://www.youtube.com/playlist?list=PLXbRBjG6htkQE-1_gJ4XtgW5KP7mPzYcV', '_blank')}),
+                                  new MenuItem('',                     null, {separator: true}),
+                                  new MenuItem('Keyboard shortcuts',   null, {shortcut: osCtrlShift() + '?', callback: () => showKeyboardPanel()}),
+                                  // new MenuItem('Help page',         null, {callback:  () => window.open('http://www.bourt.com/generator/help', '_blank')}),
+                                  new MenuItem('',                     null, {separator: true}),
+                                  new MenuItem('Subscription',         null, {callback:  () => showSubscriptionDialog(false)}),
+                                  new MenuItem('',                     null, {separator: true}),
       menuItemShareUsageMetrics = new MenuItem('Share anonymous metrics',           null, {checkCallback: () => settings.shareUsageMetrics,      callback: () => { updateSettingAndMenu('shareUsageMetrics',      true, !settings.shareUsageMetrics);                                              }}),
-                                  new MenuItem('About',              null, {callback:  () => showAboutDialog()})]);
+                                  new MenuItem('About',                null, {callback:  () => showAboutDialog()})]);
 
 
     menuMain = new Menu('Main menu', true, false, true);
@@ -435,7 +437,7 @@ function initGeneratorMenus()
     updateElementDisplay(menuItemRestart   .div, false);
 
 
-menuFlow = new Menu('Flow', true, false);
+    menuFlow = new Menu('Flow', true, false);
     menuFlow.addItems([
         menuItemStart    = new MenuItem('Start. . .',        null, {icon: iconStart,         createType: START,            callback: e => actionManager.do(getCreateNodeAction(START,           btnFlow.div, getCreateOptions(e)))}),
         menuItemRepeat   = new MenuItem('. . . Repeat',      null, {icon: iconRepeat,        createType: REPEAT,           callback: e => actionManager.do(getCreateNodeAction(REPEAT,          btnFlow.div, getCreateOptions(e)))}),
@@ -578,12 +580,13 @@ menuFlow = new Menu('Flow', true, false);
     menuNumber.addItems([
                           new MenuItem('Number',        null,                 {icon: iconNumber,      childMenu: menuNumberBase, createType: NUMBER, callback: e => actionManager.do(getCreateNodeAction(NUMBER,             btnNumber.div, getCreateOptions(e)))}),
                           new MenuItem('',              null,                 {separator: true}),
+                          new MenuItem('Functions',     null,                 {icon: iconRound,       childMenu: menuFunctions}),
+                          new MenuItem('',              null,                 {separator: true}),
                           new MenuItem('Math',          null,                 {icon: iconMath,        childMenu: menuMath,          createType: NUMBER_SIMPLE_MATH, callback: e => actionManager.do(getCreateNodeAction(NUMBER_SIMPLE_MATH, btnNumber.div, getCreateOptions(e)))}),
                           new MenuItem('Boolean',       null,                 {icon: iconBoolean,     /*childMenu: menuBoolean,  */ createType: NUMBER_BOOLEAN,     callback: e => actionManager.do(getCreateNodeAction(NUMBER_BOOLEAN,     btnNumber.div, getCreateOptions(e)))}),
                           new MenuItem('Conditional',   null,                 {icon: iconCondition,   /*childMenu: menuCondition,*/ createType: NUMBER_CONDITION,   callback: e => actionManager.do(getCreateNodeAction(NUMBER_CONDITION,   btnNumber.div, getCreateOptions(e)))}),
                           new MenuItem('Trigonometric', null,                 {icon: iconSine,        childMenu: menuTrig,          createType: NUMBER_TRIG,        callback: e => actionManager.do(getCreateNodeAction(NUMBER_TRIG,        btnNumber.div, getCreateOptions(e)))}),
                           new MenuItem('',              null,                 {separator: true}),
-                          new MenuItem('Functions',     null,                 {icon: iconRound,       childMenu: menuFunctions}),
                           new MenuItem('Convert',       null,                 {icon: iconConvert,     childMenu: menuConvertNumber}),
                           new MenuItem('',              null,                 {separator: true}),
                           new MenuItem('Curve',         null, {icon: iconNumberCurve, createType: NUMBER_CURVE,         callback: e => actionManager.do(getCreateNodeAction(NUMBER_CURVE,         btnNumber.div, getCreateOptions(e)))}), 
@@ -1099,6 +1102,9 @@ menuFlow = new Menu('Flow', true, false);
         menuTransform,
         menuPanel
     ];
+
+
+    updateSaveSelectedMenu();
 }
 
 
@@ -1244,4 +1250,14 @@ function getCreateOptions(e, options = {})
         fromSearch:  e.fromSearch === true,
         ...options
     };
+}
+
+
+
+function updateSaveSelectedMenu()
+{
+    menuItemSaveToFile.setName( 
+        graphView._selectedNodes.length > 0
+        ? 'Save selected to file . . .'
+        : 'Save to file . . .');
 }
