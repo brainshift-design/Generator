@@ -104,8 +104,9 @@ extends OperatorBase
         this.updateIcon();
 
 
-        if (    this.paramInvert.value.value == 0
-            || !settings.invertSimpleMathParamOrder)
+        if (   (    this.paramInvert.value.value == 0
+                || !settings.invertSimpleMathParamOrder)
+            && this.params.indexOf(this.paramOperation) != 0)
         {
             this.params = 
             [
@@ -120,7 +121,8 @@ extends OperatorBase
             this.paramHolder.appendChild(this.paramOperand  .div); 
             this.paramHolder.appendChild(this.paramInvert   .div);
         }
-        else
+        else if (this.paramInvert.value.value == 1
+              && this.params.indexOf(this.paramOperation) != 1)
         {
             this.params = 
             [

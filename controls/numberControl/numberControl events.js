@@ -340,7 +340,6 @@ NumberControl.prototype.initEvents = function()
 
         controlDiv.style.cursor        = 'default';
         
-        //this.divFocus.style.boxShadow  = 'none';
         this.divFocus.style.visibility = 'hidden';
         this.divFocus.style.opacity    = 0;
 
