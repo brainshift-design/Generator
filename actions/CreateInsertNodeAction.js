@@ -100,17 +100,23 @@ extends Action
             if (node.type == COMBINE)
             {
                 const selNodes = this.prevSelectedIds.map(id => nodeFromId(id)).filter(n => n.headerOutputs.length > 0);
-                selNodes.sort((n1, n2) => n1.div.offsetTop - n2.div.offsetTop);
-                
-                const outputs  = [];
-                
-                for (const selNode of selNodes)
-                {
-                    const conn = createNodeAction_connect(this, selNode.outputs[0], node, node.headerInputs.at(-1).id);
-                    outputs.push(conn.output);
-                }
 
-                graphView.autoPlaceNewVariableNode(outputs, node);
+                if (selNodes.length > 0)
+                {
+                    selNodes.sort((n1, n2) => n1.div.offsetTop - n2.div.offsetTop);
+                    
+                    const outputs  = [];
+                    
+                    for (const selNode of selNodes)
+                    {
+                        const conn = createNodeAction_connect(this, selNode.outputs[0], node, node.headerInputs.at(-1).id);
+                        outputs.push(conn.output);
+                    }
+
+                    graphView.autoPlaceNewVariableNode(outputs, node);
+                }
+                else
+                    graphView.placeNewNode(node, this.options.fromSearch);
             }
             else
             {
@@ -126,6 +132,8 @@ extends Action
                         graphView.autoPlaceNewNode(conn.output, conn.input);
                     }
                 }
+                else
+                    graphView.placeNewNode(node, this.options.fromSearch);
             }
         }
 
