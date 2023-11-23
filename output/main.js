@@ -439,11 +439,19 @@ function clone(val) {
     }
     throw 'unknown';
 }
-function pushUnique(array, item) {
-    if (Array.isArray(item))
-        item.forEach(i => pushUnique(array, i));
-    else if (!array.includes(item))
-        array.push(item);
+function pushUnique(array, item, equal = null) {
+    if (equal) {
+        if (Array.isArray(item))
+            item.forEach(i => pushUnique(array, i, equal));
+        else if (!array.find(i => equal(i, item)))
+            array.push(item);
+    }
+    else {
+        if (Array.isArray(item))
+            item.forEach(i => pushUnique(array, i));
+        else if (!array.includes(item))
+            array.push(item);
+    }
 }
 function pushUniqueBy(array, item, equal) {
     if (Array.isArray(item))

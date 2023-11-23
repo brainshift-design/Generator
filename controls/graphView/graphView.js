@@ -282,12 +282,39 @@ class GraphView
 
     autoPlaceNewNode(output, input)
     {
-        //console.log('GraphView.autoPlaceNewNode()');
-
         const defaultPlacementGap = 30;
 
         input.node.div.style.left = output.node.div.offsetLeft + output.node.div.offsetWidth + defaultPlacementGap;
-        input.node.div.style.top  = output.node.div.offsetTop;//outputRect.y - graph.currentPage.pan.y/graph.currentPage.zoom - (inputRect.y - inputNodeRect.y);
+        input.node.div.style.top  = output.node.div.offsetTop;
+    }
+
+
+
+    autoPlaceNewVariableNode(outputs, node)
+    {
+        const defaultPlacementGap = 30;
+
+        let left = Number.NaN;
+        let top  = Number.NaN;
+
+        
+        for (const out of outputs)
+        {
+            const _left = out.node.div.offsetLeft + out.node.div.offsetWidth + defaultPlacementGap;
+            const _top  = out.node.div.offsetTop;
+
+            left = isNaN(left) ? _left : Math.max(left, _left);
+            top  = isNaN(top)  ? _top  : top + _top;
+        }
+
+
+        if (outputs.length > 0)
+        {
+            top /= outputs.length;
+
+            node.div.style.left = left;
+            node.div.style.top  = top;
+        }
     }
 
 

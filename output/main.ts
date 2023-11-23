@@ -847,12 +847,22 @@ function clone(val)
 
 
 
-function pushUnique(array, item)
+function pushUnique(array, item, equal = null)
 {
-    if (Array.isArray(item))
-        item.forEach(i => pushUnique(array, i));
-    else if (!array.includes(item))
-        array.push(item);
+    if (equal)
+    {
+        if (Array.isArray(item))
+            item.forEach(i => pushUnique(array, i, equal));
+        else if (!array.find(i => equal(i, item)))
+            array.push(item);
+    }
+    else
+    {
+        if (Array.isArray(item))
+            item.forEach(i => pushUnique(array, i));
+        else if (!array.includes(item))
+            array.push(item);
+    }
 }
 
 

@@ -359,7 +359,7 @@ function enableFeatures(sub, beta = false)
 
 function enableMenuItem(menuItem, enable, sub)
 {
-    //if (!menuItem) return;
+    if (!menuItem) return;
 
     menuItem.enabled = enable;
     menuItem.sub     = sub;

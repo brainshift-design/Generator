@@ -101,8 +101,18 @@ class Action
 
     deleteNewConnections()
     {
-        for (const _conn of this.newConnectionData)
+        this.newConnectionData.sort((c1, c2) =>
         {
+            if (c1.outputNodeId != c2.outputNodeId) return c1.outputNodeId < c2.outputNodeId ? -1 : 1;
+            if (c1.outputId     != c2.outputId    ) return c1.outputId     < c2.outputId     ? -1 : 1;
+            if (c1.outputOrder  != c2.outputOrder ) return parseInt(c1.outputOrder) - parseInt(c2.outputOrder);
+            return 0;
+        });
+
+        for (let i = this.newConnectionData.length-1; i >= 0; i--)
+        {
+            const _conn = this.newConnectionData[i];
+
             uiDeleteSavedConnection(
                 getConnectionKey(
                     _conn.outputNodeId, _conn.outputId, _conn.outputOrder,

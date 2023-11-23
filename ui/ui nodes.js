@@ -88,18 +88,31 @@ function connectionsToJson(nodes, connOutputMustBeInNodes, keepVarsConnected = t
 
 
 
-function canAutoConnectNode(node)
+function canAutoConnectNode(node, allowCombine = false)
 {
-    const selNode = graph.pageNodes.find(n => n.selected);
+    if (   node.type == COMBINE
+        && allowCombine)
+    {
+        const selNodes = graph.pageNodes
+            .filter(n => 
+                    n.selected
+                && !isEmpty(n.headerOutputs));
 
-    if (  !selNode
-        || isEmpty(selNode.headerOutputs))
-        return false;
+        return !isEmpty(selNodes);
+    }
+    else
+    {
+        const selNode = graph.pageNodes.find(n => n.selected);
 
-    const inputs = node.headerInputs.filter(i => i.canConnectFrom(selNode.headerOutputs[0]));
+        if (  !selNode
+            || isEmpty(selNode.headerOutputs))
+            return false;
 
-    return !isEmpty(inputs)
-         && node.canAutoConnectFrom(selNode.headerOutputs[0]);
+        const inputs = node.headerInputs.filter(i => i.canConnectFrom(selNode.headerOutputs[0]));
+
+        return !isEmpty(inputs)
+            && node.canAutoConnectFrom(selNode.headerOutputs[0]);
+    }
 }
 
 

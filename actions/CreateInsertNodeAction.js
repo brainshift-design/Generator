@@ -52,7 +52,7 @@ extends Action
             
         graph.addNode(
             node, 
-            !insert,
+            false,
             true,
                this.options
             && this.options.fromSearch === true);
@@ -95,6 +95,39 @@ extends Action
                 }
             }
         }
+        else
+        {
+            if (node.type == COMBINE)
+            {
+                const selNodes = this.prevSelectedIds.map(id => nodeFromId(id)).filter(n => n.headerOutputs.length > 0);
+                selNodes.sort((n1, n2) => n1.div.offsetTop - n2.div.offsetTop);
+                
+                const outputs  = [];
+                
+                for (const selNode of selNodes)
+                {
+                    const conn = createNodeAction_connect(this, selNode.outputs[0], node, node.headerInputs.at(-1).id);
+                    outputs.push(conn.output);
+                }
+
+                graphView.autoPlaceNewVariableNode(outputs, node);
+            }
+            else
+            {
+                const selNode = nodeFromId(this.prevSelectedIds[0]);
+
+                if (selNode.headerOutputs.length > 0)
+                {
+                    const inputs  = node.headerInputs.filter(i => i.canConnectFrom(selNode.headerOutputs[0]));
+                    
+                    if (!isEmpty(inputs))
+                    {
+                        const conn = createNodeAction_connect(this, selNode.outputs[0], node, inputs[0].id);
+                        graphView.autoPlaceNewNode(conn.output, conn.input);
+                    }
+                }
+            }
+        }
 
             
         graphView.lastSelectedNodes = graphView.selectedNodes;
@@ -131,9 +164,13 @@ function createInsertNodeAction_savePrevConnections(act)
         
     act.oldInputActiveNodeId = idFromNode(getActiveFromNodeId(act.prevSelectedIds[0]));
 
-    const selNode = nodeFromId(act.prevSelectedIds[0]);
-    const output  = selNode.outputs[0];
+    const selNodes = act.prevSelectedIds.map(id => nodeFromId(id));
 
-    for (const input of output.connectedInputs)
-        act.prevConnections.push(input.connection.toDataObject());
+    for (const selNode of selNodes)
+    {
+        const output = selNode.outputs[0];
+
+        for (const input of output.connectedInputs)
+            act.prevConnections.push(input.connection.toDataObject());
+    }
 }

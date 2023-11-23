@@ -152,3 +152,16 @@ function formatConnJson(pos, tab, outputNodeId, outputId, outputOrder, inputNode
          +       NL + pos
          + '}';
 }
+
+
+
+function connDataObjectsEqual(connData1, connData2)
+{
+    return connData1.id           == connData2.id
+        && connData1.outputNodeId == connData2.output.node.id
+        && connData1.outputId     == connData2.output.node.getOutputId(this.output)
+        && connData1.outputOrder  == connData2.outputOrder
+        && connData1.inputNodeId  == connData2.input.node.id
+        && connData1.inputId      == connData2.input.node.getInputId(this.input)
+        && connData1.list         == connData2.list;
+}

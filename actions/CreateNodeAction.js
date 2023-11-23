@@ -46,7 +46,7 @@ extends Action
         const autoConnect = 
                 this.autoConnect
             && !isEmpty(this.prevSelectedIds)
-            &&  canAutoConnectNode(this.node)
+            &&  canAutoConnectNode(this.node, true)
             && this.options.autoConnect != undefined
             && this.options.autoConnect;
 
@@ -106,7 +106,10 @@ function createNodeAction_connect(act, output, inputNode, inputId, outputOrder =
         
     uiSaveConn(conn);
 
-    pushUnique(act.newConnectionData, conn.toDataObject());
+    pushUnique(
+        act.newConnectionData, 
+        conn.toDataObject(), 
+        connDataObjectsEqual);
 
     return conn;
 }

@@ -228,7 +228,7 @@ function deleteNodesAction_restoreNodes(act, updateNodes)
 function deleteNodesAction_activateOldActiveNodes(act, updateNodes)
 {
     let oldActiveNodeIds = [...act.oldActiveNodeIds].sort((x, y) => 
-        (nodeFromId(x) === nodeFromId(y)) 
+        (nodeFromId(x) === nodeFromId(y))
         ? 0 
         : nodeFromId(y).isOrFollows(nodeFromId(x)) ? -1 : 1);
    
