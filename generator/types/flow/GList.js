@@ -65,14 +65,19 @@ extends GOperator1
             }
 
             this.updateValues.sort((a, b) => a.sortId - b.sortId);
+
+            this.setUpdateValues(parse, [['-type-', this.outputType()]], true);
         }
         else
-            this.setUpdateValues(parse, [['', NullValue]], true);
+            this.setUpdateValues(parse, [['-type-', new TextValue(ANY_VALUE)]], true);
 
 
-        if (this.value.objects)
-            for (let j = 0; j < this.value.objects.length; j++)
-                this.value.objects[j].nodeId = this.nodeId;
+        // if (this.value.objects)
+        //     for (let j = 0; j < this.value.objects.length; j++)
+        //         this.value.objects[j].nodeId = this.nodeId;
+
+
+        this.updateValueObjects();
 
 
         this.validate();

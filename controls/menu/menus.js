@@ -427,7 +427,7 @@ function initGeneratorMenus()
 
     menuMain = new Menu('Main menu', true, false, true);
     menuMain.addItems([
-                             new MenuItem('Quick actions...',      null, {icon: iconSearchMenu, shortcut: osCtrl() + '/', callback: () => { hideAllMenus(); showSearchBox(); }}),
+                             new MenuItem('Quick actions. . .',      null, {icon: iconSearchMenu, shortcut: osCtrl() + '/', callback: () => { hideAllMenus(); showSearchBox(); }}),
                              new MenuItem('',                      null, {separator: true}),
                              new MenuItem('File',                  null, {childMenu: menuMainFile}),
                              new MenuItem('',                      null, {separator: true}),
@@ -436,7 +436,7 @@ function initGeneratorMenus()
                              new MenuItem('',                      null, {separator: true}),
         menuItemHelp       = new MenuItem('Help and subscription', null, {childMenu: menuMainHelp }),
         menuItemRestartSep = new MenuItem('',                      null, {separator: true}),
-        menuItemRestart    = new MenuItem('Restart to update...',  null, {icon: iconUpdate, callback: () => uiRestartGenerator()})]);
+        menuItemRestart    = new MenuItem('Restart to update. . .',  null, {icon: iconUpdate, callback: () => uiRestartGenerator()})]);
 
     updateElementDisplay(menuItemRestartSep.div, false);
     updateElementDisplay(menuItemRestart   .div, false);
@@ -444,7 +444,7 @@ function initGeneratorMenus()
 
     menuFlow = new Menu('Flow', true, false);
     menuFlow.addItems([
-        menuItemStart    = new MenuItem('Start. . .',        null, {icon: iconStart,         createType: START,            callback: e => actionManager.do(getCreateNodeAction(START,           btnFlow.div, getCreateOptions(e)))}),
+        menuItemStart    = new MenuItem('Start . . .',        null, {icon: iconStart,         createType: START,            callback: e => actionManager.do(getCreateNodeAction(START,           btnFlow.div, getCreateOptions(e)))}),
         menuItemRepeat   = new MenuItem('. . . Repeat',      null, {icon: iconRepeat,        createType: REPEAT,           callback: e => actionManager.do(getCreateNodeAction(REPEAT,          btnFlow.div, getCreateOptions(e)))}),
                            new MenuItem('',                  null, {separator: true}),
         menuItemCache    = new MenuItem('Cache',             null, {icon: iconCache,         createType: CACHE,            callback: e => actionManager.do(getCreateNodeAction(CACHE,           btnFlow.div, getCreateOptions(e)))}),
@@ -466,8 +466,8 @@ function initGeneratorMenus()
     menuData = new Menu('Data', true, false);
     menuData.addItems([
         menuItemJoin     = new MenuItem('Combine',           null,            {icon: iconCombine,      createType: COMBINE,       callback: e => actionManager.do(getCreateNodeAction(COMBINE,       btnData.div, getCreateOptions(e)))}),
-                           new MenuItem('',                  null,            {separator: true}),     
         menuItemList     = new MenuItem('List',              null,            {icon: iconList,         createType: LIST,          callback: e => actionManager.do(getCreateNodeAction(LIST,          btnData.div, getCreateOptions(e)))}),
+                           new MenuItem('',                  null,            {separator: true}),     
         menuItemIfElse   = new MenuItem('I&hairsp;f / else', null,            {icon: iconIfElse,       createType: IF_ELSE,       callback: e => actionManager.do(getCreateNodeAction(IF_ELSE,       btnData.div, getCreateOptions(e))), disambiguate: true}),
         menuItemSelect   = new MenuItem('Select',            null,            {icon: iconSelect,       createType: SELECT,        callback: e => actionManager.do(getCreateNodeAction(SELECT,        btnData.div, getCreateOptions(e)))}),
                            new MenuItem('',                  null,            {separator: true}),     
@@ -489,13 +489,13 @@ function initGeneratorMenus()
 
     menuSets = new Menu('Sets...', true, false);
     menuSets.addItems([
-        menuItemSequence = new MenuItem('Sequence . . .',   null, {icon: iconSequence,    createType: NUMBER_SEQUENCE,    callback: e => actionManager.do(getCreateNodeAction(NUMBER_SEQUENCE,    btnSets.div, getCreateOptions(e)))}),
-        menuItemRange    = new MenuItem('Range . . .',      null, {icon: iconRange,       createType: NUMBER_RANGE,       callback: e => actionManager.do(getCreateNodeAction(NUMBER_RANGE,       btnSets.div, getCreateOptions(e)))}),
+        menuItemSequence = new MenuItem('Sequence. . .',   null, {icon: iconSequence,    createType: NUMBER_SEQUENCE,    callback: e => actionManager.do(getCreateNodeAction(NUMBER_SEQUENCE,    btnSets.div, getCreateOptions(e)))}),
+        menuItemRange    = new MenuItem('Range. . .',      null, {icon: iconRange,       createType: NUMBER_RANGE,       callback: e => actionManager.do(getCreateNodeAction(NUMBER_RANGE,       btnSets.div, getCreateOptions(e)))}),
         menuItemWave     = new MenuItem('Wave. . .',        null, {icon: iconWave,        createType: NUMBER_WAVE,        callback: e => actionManager.do(getCreateNodeAction(NUMBER_WAVE,        btnSets.div, getCreateOptions(e)))}),
-        menuItemArray    = new MenuItem('Define . . .',     null, {icon: iconDefine,      createType: DEFINE,             callback: e => actionManager.do(getCreateNodeAction(DEFINE,             btnSets.div, getCreateOptions(e)))}),
+        menuItemArray    = new MenuItem('Define. . .',     null, {icon: iconDefine,      createType: DEFINE,             callback: e => actionManager.do(getCreateNodeAction(DEFINE,             btnSets.div, getCreateOptions(e)))}),
                            new MenuItem('',                 null, {separator: true}),
                            new MenuItem('Random . . .',     null, {icon: iconRandom,      createType: NUMBER_RANDOM,      callback: e => actionManager.do(getCreateNodeAction(NUMBER_RANDOM,      btnSets.div, getCreateOptions(e)))}),
-                           new MenuItem('Noise . . .',      null, {icon: iconNoise,       createType: NUMBER_NOISE,       callback: e => actionManager.do(getCreateNodeAction(NUMBER_NOISE,       btnSets.div, getCreateOptions(e)))}),
+                           new MenuItem('Noise. . .',      null, {icon: iconNoise,       createType: NUMBER_NOISE,       callback: e => actionManager.do(getCreateNodeAction(NUMBER_NOISE,       btnSets.div, getCreateOptions(e)))}),
                            new MenuItem('Probability. . .', null, {icon: iconProbability, createType: NUMBER_PROBABILITY, callback: e => actionManager.do(getCreateNodeAction(NUMBER_PROBABILITY, btnSets.div, getCreateOptions(e)))}),
                            new MenuItem('',                 null, {separator: true}),
                            new MenuItem('Accumulate. . .',  null, {icon: iconAccumulate,  createType: NUMBER_ACCUMULATE,  callback: e => actionManager.do(getCreateNodeAction(NUMBER_ACCUMULATE,  btnSets.div, getCreateOptions(e)))})]);
@@ -624,7 +624,7 @@ function initGeneratorMenus()
 
     menuColorStyle = new Menu('Color style', true, false);
     menuColorStyle.addItems([
-        new MenuItem('Link existing...', null, {icon: iconColorStyleReplace, createType: COLOR_STYLE, callback: e => actionManager.do(getCreateNodeAction(COLOR_STYLE,  btnColor.div, getCreateOptions(e, {existing: true})))})]);
+        new MenuItem('Link existing. . .', null, {icon: iconColorStyleReplace, createType: COLOR_STYLE, callback: e => actionManager.do(getCreateNodeAction(COLOR_STYLE,  btnColor.div, getCreateOptions(e, {existing: true})))})]);
 
         
     menuCreateColor = new Menu('Highlight nodes menu', false, false);
@@ -773,7 +773,7 @@ function initGeneratorMenus()
     };
 
 
-    menuItemManageTemplates = new MenuItem('Manage templates...', null, {icon: iconManageTemplates});
+    menuItemManageTemplates = new MenuItem('Manage templates. . .', null, {icon: iconManageTemplates});
 
 
     menuGroup = new Menu('Groups', true, false);
@@ -818,11 +818,11 @@ function initGeneratorMenus()
                         //  new MenuItem('Window',       {childMenu: menuWindow})]);
 
         
-    wholeMenu = new Menu('Create node...', true, false);
+    wholeMenu = new Menu('Create node. . .', true, false);
     wholeMenu.addItems([
         new MenuItem('Flow',    null, {icon: iconFlow,     childMenu: menuFlow  }),
         new MenuItem('Data',    null, {icon: iconCombine,     childMenu: menuData  }),
-        new MenuItem('Sets...', null, {icon: iconSequence, childMenu: menuSets  }),
+        new MenuItem('Sets. . .', null, {icon: iconSequence, childMenu: menuSets  }),
         new MenuItem('Number',  null, {icon: iconNumber,   childMenu: menuNumber}),
         new MenuItem('Text',    null, {icon: iconText,     childMenu: menuString}),
         new MenuItem('Color',   null, {icon: iconVarColor, childMenu: menuColor }),
@@ -838,9 +838,9 @@ function initGeneratorMenus()
                                       new MenuItem('',                     null, {separator: true}),
         menuItemGraphDeactivateAll  = new MenuItem('Deactivate all nodes', null, {callback: () => uiDeactivateAllNodes()}),
                                       new MenuItem('',                     null, {separator: true}),
-                                      new MenuItem('Create node...',       null, {childMenu: wholeMenu}),
+                                      new MenuItem('Create node. . .',       null, {childMenu: wholeMenu}),
                                       new MenuItem('',                     null, {separator: true}),
-                                      new MenuItem('Quick actions...',     null, {shortcut: osCtrl() + '/',      callback: () => showSearchBox() })]);
+                                      new MenuItem('Quick actions. . .',     null, {shortcut: osCtrl() + '/',      callback: () => showSearchBox() })]);
 
     menuGraph.init = () => 
     {
@@ -888,14 +888,14 @@ function initGeneratorMenus()
         menuItemNodeActivate       = new MenuItem('Activate',         null, {callback: () => makeSelectedNodesActive()}),
         menuItemNodeEnableDisable  = new MenuItem('Enable/Disable',   null, {shortcut:  osCtrlShift() + 'E',  callback: () => actionManager.do(new ToggleDisableNodesAction(graphView.selectedNodes.map(n => n.id)))}),
         menuItemNodeSelect         = new MenuItem('Select',           null, {childMenu: menuNodeSelect}),
-        // menuItemNodeEdit           = new MenuItem('Edit...',       null, {callback: e => { hideAllMenus(); graphView.editSelectedCustomNode(); }}),
+        // menuItemNodeEdit           = new MenuItem('Edit . . .',       null, {callback: e => { hideAllMenus(); graphView.editSelectedCustomNode(); }}),
                                     //  new MenuItem('',              null, {separator: true}),
         // menuItemNodeSaveAsTemplate = new MenuItem('Save as template', null, {callback: e => { hideAllMenus(); showSaveAsTemplateDialog(); }}),
         //                              new MenuItem('',                 null, {separator: true}),
         menuItemNodeSep4           = new MenuItem('',                 null, {separator: true}),
         menuItemNodeRemove         = new MenuItem('Remove',           null, {shortcut:  osCtrl() + '⌫',      callback: e => { hideAllMenus(); graphView.removeSelectedNodes(true); }}),
                                      new MenuItem('',                 null, {separator: true}),
-                                     new MenuItem('Create node...',   null, {childMenu: wholeMenu})]);
+                                     new MenuItem('Create node. . .',   null, {childMenu: wholeMenu})]);
 
 
 

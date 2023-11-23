@@ -37,14 +37,17 @@ function uiReturnFigGetVariableUpdates(values)
     {
         const node = varNodes.find(n => n.linkedVariableId == value.id);
 
-        node.updateValueParamType(value.resolvedType);
-
-        if (node.paramValue)
+        if (node)
         {
-            if (node.paramValue.input.connected)
-                uiUpdateVariable(value.id, getVariableValue(node.paramValue.value));
-            else
-                node.updateValueParamValues(value.resolvedType, value.name, [value.value], true);
+            node.updateValueParamType(value.resolvedType);
+
+            if (node.paramValue)
+            {
+                if (node.paramValue.input.connected)
+                    uiUpdateVariable(value.id, getVariableValue(node.paramValue.value));
+                else
+                    node.updateValueParamValues(value.resolvedType, value.name, [value.value], true);
+            }
         }
     }
 }
