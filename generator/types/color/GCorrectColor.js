@@ -111,8 +111,8 @@ extends GOperator1
                     this.c3    != null); 
 
                     
-                if (   !parse.stop()
-                    && !parse.stopGenerate)
+                if (   /*!parse.stop()
+                    &&*/ !parse.stopGenerate)
                 {
                     if (   closestOrder >= 0 
                         && closestOrder <  6)

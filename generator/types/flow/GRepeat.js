@@ -123,12 +123,6 @@ extends GOperator1
 
                     this.input.invalidateInputs(parse, this, false);
 
-                    //if (this.loop.type != NUMBER_VALUE)
-                    //{
-                        //this.loop.invalidateInputs(parse, this, false);
-                        //this.loop.iterateLoop(parse);
-                    //}
-                    
 
                     const input = (await this.input.eval(parse)).toValue();
 
@@ -172,19 +166,11 @@ extends GOperator1
 
 
                     if (parse.repeats.length == 1)
-                    {
                         parse.currentProgress++;
-                        
-                        const stopRequestId = await genGetValueFromUi('stopRequestId');
 
-                    //     if (   parse.requestId == stopRequestId.value
-                    //         || curRequestIds.includes(parse.requestId)) 
-                    //     { 
-                    //         console.log('repeat stop');
-                    //         parse.stopGenerate = true;
-                    //         break; 
-                    //     }
-                    }
+
+                    if (await checkStop(parse))
+                        return this;
 
 
                     if (showProgress)

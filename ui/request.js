@@ -1,13 +1,10 @@
-var nextRequestId   =  0;
-var lastRequestedId = -1;
-
-var curRequestId    = null;
+var nextRequestId =  0;
+var curRequestId  = -1;
 
 
 
 function pushUpdate(action, nodes, save = true)
 {
-    //console.trace();
     pushUpdateFromParam(action, nodes, null, save);
 }
 
@@ -15,6 +12,8 @@ function pushUpdate(action, nodes, save = true)
 
 function pushUpdateFromParam(action, nodes, param, save = true)
 {
+    //console.trace();
+
     // first check if any nodes to the left are uncached
     // and replace in update array as necessary
 
@@ -47,12 +46,8 @@ function pushUpdateFromParam(action, nodes, param, save = true)
         actionManager.updateActions.push(action);
         
 
-    if (!curRequestId)
-    {
-        lastRequestedId = nextRequestId++;
-        curRequestId    = lastRequestedId;
-    }
-    console.log('curRequestId =', curRequestId);
+    curRequestId = nextRequestId++;
+    
     
     const request = 
     [
@@ -172,12 +167,4 @@ function getNodeRequest(node, gen)
 
 
     return request;
-}
-
-
-
-function uiEndRequest(requestId)
-{
-    //consoleAssert(curRequestId == requestId);
-    curRequestId = null;
 }

@@ -1243,9 +1243,6 @@ function setNodeHighlight(nodes, color)
 
 function uiDeactivateAllNodes()
 {
-    stopRequestId = curRequestId;
-
-            
     const activeNodes = [];
 
     for (const node of graph.nodes)
@@ -1260,6 +1257,10 @@ function uiDeactivateAllNodes()
         }
     }
 
+    
+    curRequestId = nextRequestId++;
+
+    
     uiSaveNodes(activeNodes.map(n => n.id));
     graphView.updateNodes(activeNodes);
     

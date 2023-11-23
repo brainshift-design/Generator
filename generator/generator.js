@@ -6,9 +6,6 @@ var lastUpdateObjects  =  [];
 var lastUpdateStyles   =  [];
 
 
-var curRequestIds      = [];
-
-
 
 function initFonts(fonts, uniqueFontNames)
 {
@@ -24,8 +21,6 @@ function genRequest(request, save)
     const actionId        = parseInt(request[1]);
     const set             = parseInt(request[2]);
     const objectBatchSize = parseInt(request[3]);
-
-    curRequestIds.push(requestId);
 
 
     const settings =
@@ -72,45 +67,29 @@ function genRequest(request, save)
     {
         for (const node of paramNodes) 
         { 
-            await node.eval(parse);
+            if (await checkStop(parse)) 
+                return;
 
-            if (parse.stop()) 
-            {
-                genPostMessageToUi({cmd: 'uiEndRequest', requestId: requestId});
-                genPostMessageToUi({cmd: 'uiEndGlobalProgress'});
-                return; 
-            }
+            await node.eval(parse);
         } 
 
 
-        if (!parse.stop()) 
-        {
-            for (const node of topLevelNodes) 
-            { 
-                await node.eval(parse); 
+        for (const node of topLevelNodes) 
+        { 
+            if (await checkStop(parse)) 
+                return;
 
-                if (parse.stop()) 
-                {
-                    genPostMessageToUi({cmd: 'uiEndRequest', requestId: requestId});
-                    genPostMessageToUi({cmd: 'uiEndGlobalProgress'});
-                    return; 
-                }
-            }
+            await node.eval(parse); 
         }
-        else
-        {
-            genPostMessageToUi({cmd: 'uiEndRequest', requestId: requestId});
-            genPostMessageToUi({cmd: 'uiEndGlobalProgress'});
+
+
+        if (await checkStop(parse)) 
             return;
-        }
 
 
         genQueueMessageToUi({cmd: 'uiEndGlobalProgress'});
 
-
-        if (parse.stop()) return;
-
-        
+       
         for (const node of topLevelNodes) 
             node.pushValueUpdates(parse);
         
@@ -175,14 +154,22 @@ function genRequest(request, save)
             parse.updateObjects,
             parse.updateStyles,
             save);
-
-
-        genPostMessageToUi(
-        {
-            cmd:      'uiEndRequest',
-            requestId: requestId
-        });
     })();
+}
+
+
+
+async function checkStop(parse)
+{
+    const uiCurRequestId = await genGetValueFromUi('curRequestId');
+
+    if (uiCurRequestId.value > parse.requestId) 
+    { 
+        genQueueMessageToUi({cmd: 'uiEndGlobalProgress'});
+        return true; 
+    }
+
+    return false
 }
 
 
@@ -192,12 +179,8 @@ function genPushUpdateValue(parse, nodeId, paramId, value)
     if (!value)
         return;
     
-    // if (  !parse.save
-    //     && value.hasInitValue())
-    //     return;
 
-    
-    removeFromArrayWhere(parse.updateValues, v =>
+        removeFromArrayWhere(parse.updateValues, v =>
            v.nodeId     == nodeId
         && v.paramId    == paramId
         && v.value.type == value.type);

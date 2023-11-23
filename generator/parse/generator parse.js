@@ -98,16 +98,18 @@ class Parse
 
 
 
-    stop()
-    {
-        if (curRequestIds.includes(this.requestId))
-        {
-            removeFromArray(curRequestIds, this.requestId);
-            true;
-        }
+    // stop()
+    // {
+    //     // if (curRequestIds.includes(this.requestId))
+    //     // {
+    //     //     removeFromArray(curRequestIds, this.requestId);
+    //     //     true;
+    //     // }
 
-        return this.stopGenerate;
-    }
+    //     this.stopGenerate = true;
+
+    //     return this.stopGenerate;
+    // }
 }
 
 

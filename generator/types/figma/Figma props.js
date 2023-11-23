@@ -131,8 +131,6 @@ function validateColorStops(_stops)
 
         if (stop.type == COLOR_VALUE)
         {
-            // if (isNaN(stop.toRgb()[0]))
-            //     console.log('stop =', stop);
             stops.push(new ColorStopValue(
                 FillValue.fromRgb(scaleRgb(stop.toRgb()), 100),
                 NumberValue.NaN));

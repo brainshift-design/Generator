@@ -1,14 +1,14 @@
-var isGenerating  = false;
-var stopRequestId = null;
+//var isGenerating  = false;
+//var stopRequestId = null;
 
 
 
 function uiUpdateValuesAndObjects(requestId, actionId, updateNodeId, updateParamId, values, objects, styles, updatedNodes, totalNodes, isFirstChunk, isLastChunk, save)
 {
-    if (requestId < lastRequestedId) 
-        return;
+    // if (requestId < lastRequestedId) 
+    //     return;
     
-    lastRequestedId = -1;
+    // lastRequestedId = -1;
 
         
     if (loadRestartTimer > -1)
@@ -153,7 +153,7 @@ function uiUpdateValuesAndObjects(requestId, actionId, updateNodeId, updateParam
         graphView.creatingNodes  = false;
         graphView.pastingNodes   = false;
         graphView.loadingNodes   = false;
-    graphView.restoringNodes = false;
+        graphView.restoringNodes = false;
 
         actionManager.undoing    = false;
         actionManager.redoing    = false;
@@ -199,7 +199,7 @@ function uiInitGlobalProgress(requestId)
     commonProgressBar.style.width   = 0;
     commonProgressBar.style.display = 'block';
 
-    isGenerating = true;
+    //isGenerating = true;
 }
 
 
@@ -217,7 +217,7 @@ function uiEndGlobalProgress()
 {
     commonProgressBar.style.display = 'none';
 
-    isGenerating = false;
+    //isGenerating = false;
 }
 
 
@@ -226,19 +226,17 @@ function uiGetValue(key)
 {
     switch (key)
     {
-        case 'stopRequestId':  
+        case 'curRequestId':  
         {
             uiPostMessageToGenerator(
             {
                 cmd:  'returnUiGetValue',
                 key:   key,
-                value: stopRequestId
+                value: curRequestId
             });
 
-            stopRequestId = null;
-
-            if (graphView.loadingNodes)
-                restartLoadingTimer();
+            //if (graphView.loadingNodes)
+            //    restartLoadingTimer();
             
             break;
         }

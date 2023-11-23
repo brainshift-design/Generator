@@ -6339,8 +6339,6 @@ function validateColorStops(_stops)
 
         if (stop.type == COLOR_VALUE)
         {
-            // if (isNaN(stop.toRgb()[0]))
-            //     console.log('stop =', stop);
             stops.push(new ColorStopValue(
                 FillValue.fromRgb(scaleRgb(stop.toRgb()), 100),
                 NumberValue.NaN));
@@ -15823,12 +15821,6 @@ extends GOperator1
 
                     this.input.invalidateInputs(parse, this, false);
 
-                    //if (this.loop.type != NUMBER_VALUE)
-                    //{
-                        //this.loop.invalidateInputs(parse, this, false);
-                        //this.loop.iterateLoop(parse);
-                    //}
-                    
 
                     const input = (await this.input.eval(parse)).toValue();
 
@@ -15872,19 +15864,11 @@ extends GOperator1
 
 
                     if (parse.repeats.length == 1)
-                    {
                         parse.currentProgress++;
-                        
-                        const stopRequestId = await genGetValueFromUi('stopRequestId');
 
-                    //     if (   parse.requestId == stopRequestId.value
-                    //         || curRequestIds.includes(parse.requestId)) 
-                    //     { 
-                    //         console.log('repeat stop');
-                    //         parse.stopGenerate = true;
-                    //         break; 
-                    //     }
-                    }
+
+                    if (await checkStop(parse))
+                        return this;
 
 
                     if (showProgress)
@@ -27772,14 +27756,16 @@ async function findCorrection(parse,
     dLoop:
     while (d > 1/1024)
     {
-        if (parse.stop()) break dLoop;
+        if (parse.stopGenerate)//stop()) 
+            break dLoop;
 
         let _closestColor = [...closestColor];
 
 
         for (let _order = 0; _order < 6; _order++)
         {
-            if (parse.stop()) break dLoop;
+            if (parse.stopGenerate)//stop()) 
+                break dLoop;
 
             closestColor = [..._closestColor];
 
@@ -27831,8 +27817,8 @@ async function findCorrection(parse,
     }
 
 
-    if (   !parse.stop()
-        && !parse.stopGenerate)
+    if (   /*!parse.stop()
+        &&*/ !parse.stopGenerate)
     {
         // reduce closest to necessary minimums
 
@@ -27886,15 +27872,18 @@ async function findCorrectionInOrder(parse,
     cLoop:
     for (let m1 = start1; m1 < end1; m1 += (end1-start1)/nSteps1)
     {
-       if (parse.stop()) break cLoop;
+        if (parse.stopGenerate)//stop()) 
+            break cLoop;
 
         for (let m2 = start2; m2 < end2; m2 += (end2-start2)/nSteps2)
         {
-            if (parse.stop()) break cLoop;
+            if (parse.stopGenerate)//stop()) 
+                break cLoop;
 
             for (let m3 = start3; m3 < end3; m3 += (end3-start3)/nSteps3)
             {
-                if (parse.stop()) break cLoop;
+                if (parse.stopGenerate)//stop()) 
+                    break cLoop;
 
                 const [_color, _oklab, _rgb] = getCorrectedColor(color, order, m1, m2, m3);
 
@@ -27920,14 +27909,14 @@ async function findCorrectionInOrder(parse,
         
         if (parse.repeats.length == 1)
         {
-            const stopRequestId = await genGetValueFromUi('stopRequestId');
+            // const stopRequestId = await genGetValueFromUi('stopRequestId');
 
-            if (   parse.requestId == stopRequestId.value
-                || curRequestIds.includes(parse.requestId)) 
-            { 
-                parse.stopGenerate = true;
-                break; 
-            }
+            // if (   parse.requestId == stopRequestId.value
+            //     || curRequestIds.includes(parse.requestId)) 
+            // { 
+            //     parse.stopGenerate = true;
+            //     break; 
+            // }
         }
 
 
@@ -28851,8 +28840,8 @@ extends GOperator1
                     this.c3    != null); 
 
                     
-                if (   !parse.stop()
-                    && !parse.stopGenerate)
+                if (   /*!parse.stop()
+                    &&*/ !parse.stopGenerate)
                 {
                     if (   closestOrder >= 0 
                         && closestOrder <  6)
@@ -39405,9 +39394,6 @@ var lastUpdateObjects  =  [];
 var lastUpdateStyles   =  [];
 
 
-var curRequestIds      = [];
-
-
 
 function initFonts(fonts, uniqueFontNames)
 {
@@ -39423,8 +39409,6 @@ function genRequest(request, save)
     const actionId        = parseInt(request[1]);
     const set             = parseInt(request[2]);
     const objectBatchSize = parseInt(request[3]);
-
-    curRequestIds.push(requestId);
 
 
     const settings =
@@ -39471,45 +39455,29 @@ function genRequest(request, save)
     {
         for (const node of paramNodes) 
         { 
-            await node.eval(parse);
+            if (await checkStop(parse)) 
+                return;
 
-            if (parse.stop()) 
-            {
-                genPostMessageToUi({cmd: 'uiEndRequest', requestId: requestId});
-                genPostMessageToUi({cmd: 'uiEndGlobalProgress'});
-                return; 
-            }
+            await node.eval(parse);
         } 
 
 
-        if (!parse.stop()) 
-        {
-            for (const node of topLevelNodes) 
-            { 
-                await node.eval(parse); 
+        for (const node of topLevelNodes) 
+        { 
+            if (await checkStop(parse)) 
+                return;
 
-                if (parse.stop()) 
-                {
-                    genPostMessageToUi({cmd: 'uiEndRequest', requestId: requestId});
-                    genPostMessageToUi({cmd: 'uiEndGlobalProgress'});
-                    return; 
-                }
-            }
+            await node.eval(parse); 
         }
-        else
-        {
-            genPostMessageToUi({cmd: 'uiEndRequest', requestId: requestId});
-            genPostMessageToUi({cmd: 'uiEndGlobalProgress'});
+
+
+        if (await checkStop(parse)) 
             return;
-        }
 
 
         genQueueMessageToUi({cmd: 'uiEndGlobalProgress'});
 
-
-        if (parse.stop()) return;
-
-        
+       
         for (const node of topLevelNodes) 
             node.pushValueUpdates(parse);
         
@@ -39574,14 +39542,22 @@ function genRequest(request, save)
             parse.updateObjects,
             parse.updateStyles,
             save);
-
-
-        genPostMessageToUi(
-        {
-            cmd:      'uiEndRequest',
-            requestId: requestId
-        });
     })();
+}
+
+
+
+async function checkStop(parse)
+{
+    const uiCurRequestId = await genGetValueFromUi('curRequestId');
+
+    if (uiCurRequestId.value > parse.requestId) 
+    { 
+        genQueueMessageToUi({cmd: 'uiEndGlobalProgress'});
+        return true; 
+    }
+
+    return false
 }
 
 
@@ -39591,12 +39567,8 @@ function genPushUpdateValue(parse, nodeId, paramId, value)
     if (!value)
         return;
     
-    // if (  !parse.save
-    //     && value.hasInitValue())
-    //     return;
 
-    
-    removeFromArrayWhere(parse.updateValues, v =>
+        removeFromArrayWhere(parse.updateValues, v =>
            v.nodeId     == nodeId
         && v.paramId    == paramId
         && v.value.type == value.type);
@@ -47069,16 +47041,18 @@ class Parse
 
 
 
-    stop()
-    {
-        if (curRequestIds.includes(this.requestId))
-        {
-            removeFromArray(curRequestIds, this.requestId);
-            true;
-        }
+    // stop()
+    // {
+    //     // if (curRequestIds.includes(this.requestId))
+    //     // {
+    //     //     removeFromArray(curRequestIds, this.requestId);
+    //     //     true;
+    //     // }
 
-        return this.stopGenerate;
-    }
+    //     this.stopGenerate = true;
+
+    //     return this.stopGenerate;
+    // }
 }
 
 

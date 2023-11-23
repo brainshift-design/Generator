@@ -473,7 +473,7 @@ NumberControl.prototype.initEvents = function()
             this.update();
 
 
-            pushUpdateFromParam(null, [param.node], param);
+            //pushUpdateFromParam(null, [param.node], param);
 
 
             return;            

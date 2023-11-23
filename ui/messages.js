@@ -194,8 +194,6 @@ generator.onmessage = function(e)
     {
         case 'uiEndGenMessage': uiEndGenMessage(); break;
         
-        case 'uiEndRequest':    uiEndRequest(msg.requestId); break;
-
         case 'uiUpdateValuesAndObjects': 
             uiUpdateValuesAndObjects(
                 parseInt(msg.requestId), 

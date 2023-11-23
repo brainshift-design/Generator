@@ -43,14 +43,16 @@ async function findCorrection(parse,
     dLoop:
     while (d > 1/1024)
     {
-        if (parse.stop()) break dLoop;
+        if (parse.stopGenerate)//stop()) 
+            break dLoop;
 
         let _closestColor = [...closestColor];
 
 
         for (let _order = 0; _order < 6; _order++)
         {
-            if (parse.stop()) break dLoop;
+            if (parse.stopGenerate)//stop()) 
+                break dLoop;
 
             closestColor = [..._closestColor];
 
@@ -102,8 +104,8 @@ async function findCorrection(parse,
     }
 
 
-    if (   !parse.stop()
-        && !parse.stopGenerate)
+    if (   /*!parse.stop()
+        &&*/ !parse.stopGenerate)
     {
         // reduce closest to necessary minimums
 
@@ -157,15 +159,18 @@ async function findCorrectionInOrder(parse,
     cLoop:
     for (let m1 = start1; m1 < end1; m1 += (end1-start1)/nSteps1)
     {
-       if (parse.stop()) break cLoop;
+        if (parse.stopGenerate)//stop()) 
+            break cLoop;
 
         for (let m2 = start2; m2 < end2; m2 += (end2-start2)/nSteps2)
         {
-            if (parse.stop()) break cLoop;
+            if (parse.stopGenerate)//stop()) 
+                break cLoop;
 
             for (let m3 = start3; m3 < end3; m3 += (end3-start3)/nSteps3)
             {
-                if (parse.stop()) break cLoop;
+                if (parse.stopGenerate)//stop()) 
+                    break cLoop;
 
                 const [_color, _oklab, _rgb] = getCorrectedColor(color, order, m1, m2, m3);
 
@@ -191,14 +196,14 @@ async function findCorrectionInOrder(parse,
         
         if (parse.repeats.length == 1)
         {
-            const stopRequestId = await genGetValueFromUi('stopRequestId');
+            // const stopRequestId = await genGetValueFromUi('stopRequestId');
 
-            if (   parse.requestId == stopRequestId.value
-                || curRequestIds.includes(parse.requestId)) 
-            { 
-                parse.stopGenerate = true;
-                break; 
-            }
+            // if (   parse.requestId == stopRequestId.value
+            //     || curRequestIds.includes(parse.requestId)) 
+            // { 
+            //     parse.stopGenerate = true;
+            //     break; 
+            // }
         }
 
 
