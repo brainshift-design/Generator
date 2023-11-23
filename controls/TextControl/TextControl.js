@@ -133,7 +133,7 @@ extends Control
             // lines[i] = lines[i].replaceAll(' ', ' ');
             
             if (i > 0)
-                highlight += '<br>​';
+                highlight += '<br>';
 
             highlight += '<span class="textBehind">' + lines[i] + '</span>';
         }
