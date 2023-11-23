@@ -69,7 +69,7 @@ extends GOperator1
             this.setUpdateValues(parse, [['-type-', this.outputType()]], true);
         }
         else
-            this.setUpdateValues(parse, [['-type-', new TextValue(ANY_VALUE)]], true);
+            this.setUpdateValues(parse, [['-type-', new TextValue(LIST_VALUE)]], true);
 
 
         // if (this.value.objects)
