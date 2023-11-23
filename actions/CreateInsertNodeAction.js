@@ -7,12 +7,12 @@ extends Action
     options;
 
 
-    prevSelectedIds      = []; // currently selected nodes that are deselected as a result of creation
+    prevSelectedIds       = []; // currently selected nodes that are deselected as a result of creation
 
-    oldInputActiveNodeId = NULL;
+    oldInputActiveNodeIds = [];
 
 
-    prevConnections      = []; // [{outputNodeId, outputId, outputOrder, inputNodeId, inputId}]
+    prevConnections       = []; // [{outputNodeId, outputId, outputOrder, inputNodeId, inputId}]
 
 
     creatingButton;
@@ -155,7 +155,7 @@ extends Action
     {
         uiDeleteNodes([this.createdNodeId]);
 
-        createNodeAction_activateOldInput(this, updateNodes);
+        createInsertNodeAction_activateOldInputs(this, updateNodes);
 
         this.prevConnections = [];
             
@@ -170,7 +170,7 @@ function createInsertNodeAction_savePrevConnections(act)
     if (act.prevSelectedIds.length == 0)
         return;
         
-    act.oldInputActiveNodeId = idFromNode(getActiveFromNodeId(act.prevSelectedIds[0]));
+    act.oldInputActiveNodeIds = act.prevSelectedIds.map(id => idFromNode(getActiveFromNodeId(id)));
 
     const selNodes = act.prevSelectedIds.map(id => nodeFromId(id));
 
@@ -180,5 +180,23 @@ function createInsertNodeAction_savePrevConnections(act)
 
         for (const input of output.connectedInputs)
             act.prevConnections.push(input.connection.toDataObject());
+    }
+}
+
+
+
+function createInsertNodeAction_activateOldInputs(act, updateNodes)
+{
+    if (act.oldInputActiveNodeIds.length == 0)
+        return;
+
+    const oldInputActiveNodes = act.oldInputActiveNodeIds.map(id => nodeFromId(id));
+    
+    for (const node of oldInputActiveNodes)
+    {
+        uiMakeNodeActive(node);
+        pushUnique(updateNodes, node);
+
+        act.oldInputActiveNodeIds = [];
     }
 }
