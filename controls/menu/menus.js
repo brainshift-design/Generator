@@ -1034,7 +1034,7 @@ function initGeneratorMenus()
 
 
 
-    btnSolo = new MenuButton('Highlight node&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<span style="color: #888; font-weight: 500;">~</span>', null, {callback: () => 
+    btnSolo = new MenuButton('Highlight mode&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<span style="color: #888; font-weight: 500;">~</span>', null, {callback: () => 
     {
         updateSoloMode(!graphView.soloMode);
     }});
