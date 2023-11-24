@@ -104,13 +104,13 @@ extends ResizableBase
         switch (this.highlight)
         {
             case 0: background = darkMode ? '#ffffff08' : '#00000008'; break;
-            case 1: background = darkMode ? '#ff33332d' : '#ff000028'; break;
-            case 2: background = darkMode ? '#ff880028' : '#f803';     break;
-            case 3: background = darkMode ? '#ffff0020' : '#cc04';     break;
-            case 4: background = darkMode ? '#1e12'     : '#0d04';     break;
-            case 5: background = darkMode ? '#2277ff33' : '#0066ff28'; break;
-            case 6: background = darkMode ? '#ff22ff26' : '#ff00ff28'; break;
-            case 7: background = darkMode ? '#fff3'     : '#0003';     break;
+            case 1: background = darkMode ? '#fff3'     : '#0003';     break;
+            case 2: background = darkMode ? '#ff33332d' : '#ff000028'; break;
+            case 3: background = darkMode ? '#ff880028' : '#f803';     break;
+            case 4: background = darkMode ? '#ffff0020' : '#cc04';     break;
+            case 5: background = darkMode ? '#1e12'     : '#0d04';     break;
+            case 6: background = darkMode ? '#2277ff33' : '#0066ff28'; break;
+            case 7: background = darkMode ? '#ff22ff26' : '#ff00ff28'; break;
         }
 
         this.div.style.background = background;

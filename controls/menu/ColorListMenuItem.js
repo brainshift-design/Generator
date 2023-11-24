@@ -1,14 +1,15 @@
 class ColorListMenuItem
 {
-    parentMenu    = null;
-    index         = -1;
+    parentMenu  = null;
+    index       = -1;
 
-    enabled       = true;
+    enabled     = true;
 
-    callback      = null;
-    swatchType    = 0; // 0 = highlight, 1 = create
+    callback    = null;
+    swatchType  = 0; // 0 = highlight, 1 = create
 
-    noColorLine   = null;
+    noColorLine = null;
+    
 
     div;
     divHighlight;
@@ -82,13 +83,13 @@ class ColorListMenuItem
         }
 
 
-        this.divColor2.style.background = '#d44';
-        this.divColor3.style.background = '#f94';
-        this.divColor4.style.background = '#dd4';
-        this.divColor5.style.background = '#4d4';
-        this.divColor6.style.background = '#36f';
-        this.divColor7.style.background = '#d4d';
-        this.divColor8.style.background = this.swatchType == 1 ? '#fff' : (darkMode ? '#ddd' : '#333');
+        this.divColor2.style.background = this.swatchType == 1 ? '#fff' : (darkMode ? '#ddd' : '#333');
+        this.divColor3.style.background = '#d44';
+        this.divColor4.style.background = '#f94';
+        this.divColor5.style.background = '#dd4';
+        this.divColor6.style.background = '#4d4';
+        this.divColor7.style.background = '#36f';
+        this.divColor8.style.background = '#d4d';
 
         this.divHighlight.style.zIndex = -2;
 
@@ -298,7 +299,7 @@ class ColorListMenuItem
             ? 'var(--figma-color-bg-brand)'
             : 'transparent';
 
-        this.divColor8.style.background = this.swatchType == 1 ? '#eee' : (darkMode ? '#ddd' : '#333');
+        this.divColor2.style.background = this.swatchType == 1 ? '#eee' : (darkMode ? '#ddd' : '#333');
         
         if (this.swatchType == 0)
             this.noColorLine.style.background = darkMode ? 'transparent' : '#fff2';
