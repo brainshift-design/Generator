@@ -63,6 +63,7 @@ var menuTrig;
 var menuFunctions;
 
 var menuVector;
+var menuPoint;
 var menuShapes;
 var menuRectangle;
 var menuTransform;
@@ -693,10 +694,14 @@ function initGeneratorMenus()
     //     new MenuItem('Mask',        null, {icon: iconMask,        callback: e => actionManager.do(getCreateNodeAction(LAYER_MASK,  btnLayer.div, getCreateOptions(e)))})]);
     
     
+    menuPoint = new Menu('Point', true, false);
+    menuPoint.addItems([
+        new MenuItem('Corner', null, {icon: iconPointCorner, createType: POINT_CORNER,      callback: e => actionManager.do(getCreateNodeAction(POINT_CORNER, btnShape.div, getCreateOptions(e)))})]);
+
+
     menuVector = new Menu('Vector', true, false);
     menuVector.addItems([
-        new MenuItem('Point',                     null,          {icon: iconPoint,            createType: POINT,             callback: e => actionManager.do(getCreateNodeAction(POINT,             btnShape.div, getCreateOptions(e)))}),
-        new MenuItem('Corner',                    null,          {icon: iconPointCorner,      createType: POINT_CORNER,      callback: e => actionManager.do(getCreateNodeAction(POINT_CORNER,      btnShape.div, getCreateOptions(e)))}),
+        new MenuItem('Point',                     null,          {childMenu: menuPoint, icon: iconPoint,            createType: POINT,             callback: e => actionManager.do(getCreateNodeAction(POINT,             btnShape.div, getCreateOptions(e)))}),
         new MenuItem('Path',                     'Vector path',  {icon: iconVectorPath,       createType: VECTOR_PATH,       callback: e => actionManager.do(getCreateNodeAction(VECTOR_PATH,       btnShape.div, getCreateOptions(e)))}),
         new MenuItem('',                          null,          {separator: true}),
         new MenuItem('Interpolate points',        null,          {icon: iconInterpolatePoint, createType: INTERPOLATE_POINT, callback: e => actionManager.do(getCreateNodeAction(INTERPOLATE_POINT, btnShape.div, getCreateOptions(e)))}),
