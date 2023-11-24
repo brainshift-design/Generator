@@ -1342,7 +1342,7 @@ function genParseCenter(parse)
 
     center.centerX    = genParse(parse);
     center.centerY    = genParse(parse);
-    center.absolute   = genParse(parse);
+    center.units      = genParse(parse);
     center.showCenter = genParse(parse);
 
 

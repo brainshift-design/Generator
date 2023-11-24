@@ -3,7 +3,7 @@ extends GOperator1
 {
     centerX    = null;
     centerY    = null;
-    absolute   = null;
+    units      = null;
     showCenter = null;
 
 
@@ -21,7 +21,7 @@ extends GOperator1
 
         this.centerX    = null;
         this.centerY    = null;
-        this.absolute   = null;
+        this.units      = null;
         this.showCenter = null;
     }
 
@@ -29,13 +29,13 @@ extends GOperator1
 
     copy()
     {
-        const copy = new GMove(this.nodeId, this.options);
+        const copy = new GCenter(this.nodeId, this.options);
 
         copy.copyBase(this);
 
         if (this.centerX   ) copy.centerX    = this.centerX   .copy();
         if (this.centerY   ) copy.centerY    = this.centerY   .copy();
-        if (this.absolute  ) copy.absolute   = this.absolute  .copy();
+        if (this.units     ) copy.units      = this.units     .copy();
         if (this.showCenter) copy.showCenter = this.showCenter.copy();
 
         return copy;
@@ -51,7 +51,7 @@ extends GOperator1
             
         const centerX    = this.centerX    ? (await this.centerX   .eval(parse)).toValue() : null;
         const centerY    = this.centerY    ? (await this.centerY   .eval(parse)).toValue() : null;
-        const absolute   = this.absolute   ? (await this.absolute  .eval(parse)).toValue() : null;
+        const units      = this.units      ? (await this.units     .eval(parse)).toValue() : null;
         const showCenter = this.showCenter ? (await this.showCenter.eval(parse)).toValue() : null;
 
 
@@ -73,7 +73,7 @@ extends GOperator1
             {
                 centerX:    centerX, 
                 centerY:    centerY,
-                absolute:   absolute,
+                units:      units,
                 showCenter: showCenter
             });
 
@@ -82,7 +82,7 @@ extends GOperator1
         [
             ['centerX',    centerX   ],
             ['centerY',    centerY   ],
-            ['absolute',   absolute  ],
+            ['units',      units     ],
             ['showCenter', showCenter]
         ]);
 
@@ -104,11 +104,11 @@ extends GOperator1
             
             const centerX     = options.centerX   .value;
             const centerY     = options.centerY   .value;
-            const absolute    = options.absolute  .value;
+            const units       = options.units     .value;
             const showCenter  = options.showCenter.value;
      
-            const cx          = absolute ? centerX : centerX/100;
-            const cy          = absolute ? centerY : centerY/100;
+            const cx          = units == 0 ? centerX/100 : centerX;
+            const cy          = units == 0 ? centerY/100 : centerY;
 
 
             const bounds      = getObjBounds(this.value.objects);
@@ -124,7 +124,7 @@ extends GOperator1
                 obj.objectId = obj.objectId + OBJECT_SEPARATOR + this.nodeId;
 
                 if (this.options.enabled)
-                    obj.resetSpace(bounds, singlePoint, cx, cy, absolute);
+                    obj.resetSpace(bounds, singlePoint, cx, cy, units);
             }
 
 
@@ -155,7 +155,7 @@ extends GOperator1
         return super.isValid()
             && this.centerX    && this.centerX   .isValid()
             && this.centerY    && this.centerY   .isValid()
-            && this.absolute   && this.absolute.isValid()
+            && this.units      && this.units     .isValid()
             && this.showCenter && this.showCenter.isValid();
     }
 
@@ -167,7 +167,7 @@ extends GOperator1
 
         if (this.centerX   ) this.centerX   .pushValueUpdates(parse);
         if (this.centerY   ) this.centerY   .pushValueUpdates(parse);
-        if (this.absolute  ) this.absolute  .pushValueUpdates(parse);
+        if (this.units     ) this.units     .pushValueUpdates(parse);
         if (this.showCenter) this.showCenter.pushValueUpdates(parse);
     }
 
@@ -179,7 +179,7 @@ extends GOperator1
 
         if (this.centerX   ) this.centerX   .invalidateInputs(parse, from, force);
         if (this.centerY   ) this.centerY   .invalidateInputs(parse, from, force);
-        if (this.absolute  ) this.absolute  .invalidateInputs(parse, from, force);
+        if (this.units     ) this.units     .invalidateInputs(parse, from, force);
         if (this.showCenter) this.showCenter.invalidateInputs(parse, from, force);
     }
 
@@ -191,7 +191,7 @@ extends GOperator1
 
         if (this.centerX   ) this.centerX   .iterateLoop(parse);
         if (this.centerY   ) this.centerY   .iterateLoop(parse);
-        if (this.absolute  ) this.absolute  .iterateLoop(parse);
+        if (this.units     ) this.units     .iterateLoop(parse);
         if (this.showCenter) this.showCenter.iterateLoop(parse);
     }
 }

@@ -85,18 +85,26 @@ class FigmaObject
 
 
 
-    resetSpace(bounds, singlePoint = false, cx = 0.5, cy = 0.5, absolute = false)
+    resetSpace(bounds, singlePoint = false, cx = 0.5, cy = 0.5, units = 0)
     {
-        if (    singlePoint
-            && !absolute)
+        let _cx; 
+        let _cy; 
+
+        if (units == 0)
         {
-            cx *= 100;
-            cy *= 100;
+            _cx = bounds.x + cx * bounds.width;
+            _cy = bounds.y + cy * bounds.height;            
         }
-
-
-        const _cx = singlePoint || absolute ? this.x + cx : bounds.x + cx * bounds.width;
-        const _cy = singlePoint || absolute ? this.y + cy : bounds.y + cy * bounds.height;            
+        else if (units == 1)
+        {
+            _cx = bounds.x + cx;
+            _cy = bounds.y + cy;
+        }
+        else // units == 2
+        {
+            _cx = this.x + cx;
+            _cy = this.y + cy;            
+        }
 
 
         const ds1 = subv(this.sp1, this.sp0);

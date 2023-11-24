@@ -3,11 +3,10 @@ extends OperatorBase
 {
     paramCenterX;
     paramCenterY;
-    paramAbsolute;
+    paramUnits;
     paramShowCenter;
 
 
-    menuBoolAbsolute;
     menuBoolShowCenter;
 
 
@@ -24,10 +23,10 @@ extends OperatorBase
         this.addOutput(new Output([SHAPE_VALUE], this.output_genRequest));
 
 
-        this.addParam(this.paramCenterX    = new NumberParam('centerX',    'center X',    true, true, true, 50, 0, 100));
-        this.addParam(this.paramCenterY    = new NumberParam('centerY',    'center Y',    true, true, true, 50, 0, 100));
-        this.addParam(this.paramAbsolute   = new NumberParam('absolute',   'absolute',    true, true, true, 0,  0,   1));
-        this.addParam(this.paramShowCenter = new NumberParam('showCenter', 'show center', true, true, true, 0,  0,   1));
+        this.addParam(this.paramCenterX    = new NumberParam('centerX',    'center X',    true,  true, true, 50, 0, 100));
+        this.addParam(this.paramCenterY    = new NumberParam('centerY',    'center Y',    true,  true, true, 50, 0, 100));
+        this.addParam(this.paramUnits      = new SelectParam('units',      'units',       false, true, true, ['object', 'relative', 'absolute'], 0));
+        this.addParam(this.paramShowCenter = new NumberParam('showCenter', 'show center', true,  true, true, 0,  0,   1));
 
 
         this.paramCenterX.controls[0].suffix = '%';
@@ -43,13 +42,9 @@ extends OperatorBase
         this.paramCenterX.divider = 0.55;
         this.paramCenterY.divider = 0.55;
 
-        this.paramAbsolute.controls[0].allowEditDecimals = false;
-        this.paramAbsolute.divider = 0.55;
-
         this.paramShowCenter.controls[0].allowEditDecimals = false;
         this.paramShowCenter.divider = 0.68;
 
-        this.menuBoolAbsolute   = createBoolMenu(this.paramAbsolute  );
         this.menuBoolShowCenter = createBoolMenu(this.paramShowCenter);
 
 
@@ -97,7 +92,7 @@ extends OperatorBase
 
         request.push(...this.node.paramCenterX   .genRequest(gen));
         request.push(...this.node.paramCenterY   .genRequest(gen));
-        request.push(...this.node.paramAbsolute  .genRequest(gen));
+        request.push(...this.node.paramUnits     .genRequest(gen));
         request.push(...this.node.paramShowCenter.genRequest(gen));
 
         
@@ -115,19 +110,18 @@ extends OperatorBase
         super.updateParams();
 
         updateParamConditionText(this.paramShowCenter, this.paramShowCenter.isUnknown(), false, 1);
-        updateParamConditionText(this.paramAbsolute,   this.paramAbsolute  .isUnknown(), false, 1);
 
 
-        const absolute = this.paramAbsolute.value.value == 1;
+        const units = this.paramUnits.value.value;
 
-        this.paramCenterX.controls[0].suffix     = absolute ? '' : '%';
-        this.paramCenterY.controls[0].suffix     = absolute ? '' : '%';
+        this.paramCenterX.controls[0].suffix     = units == 0 ? '%' : '';
+        this.paramCenterY.controls[0].suffix     = units == 0 ? '%' : '';
 
-        this.paramCenterX.controls[0].displayMin = absolute ? Number.MIN_SAFE_INTEGER :   0;
-        this.paramCenterX.controls[0].displayMax = absolute ? Number.MAX_SAFE_INTEGER : 100;
+        this.paramCenterX.controls[0].displayMin = units == 0 ?   0 : Number.MIN_SAFE_INTEGER;
+        this.paramCenterX.controls[0].displayMax = units == 0 ? 100 : Number.MAX_SAFE_INTEGER;
 
-        this.paramCenterY.controls[0].displayMin = absolute ? Number.MIN_SAFE_INTEGER :   0;
-        this.paramCenterY.controls[0].displayMax = absolute ? Number.MAX_SAFE_INTEGER : 100;
+        this.paramCenterY.controls[0].displayMin = units == 0 ?   0 : Number.MIN_SAFE_INTEGER;
+        this.paramCenterY.controls[0].displayMax = units == 0 ? 100 : Number.MAX_SAFE_INTEGER;
 
 
         this.updateParamControls();

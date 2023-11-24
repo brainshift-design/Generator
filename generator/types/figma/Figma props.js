@@ -228,8 +228,6 @@ function addStrokeProp(obj, prop)
     }
 
     obj.strokeDashes     = prop.dashes.toValue().value.trim();
-    console.log('typeof obj.strokeDashes =', typeof obj.strokeDashes);
-    console.log('obj.strokeDashes =', obj.strokeDashes);
     
     obj.strokeMiterLimit = prop.miter .toValue().value;
 }
