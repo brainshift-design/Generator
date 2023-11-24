@@ -4,7 +4,7 @@ extends OperatorBase
     paramOrder;
     paramReverse;
 
-    tableLength;
+    //length;
 
     menuBoolReverse;
 

@@ -292,8 +292,9 @@ Operator.prototype.updateHeaderLabelText = function()
     if (this.type == EXTRACT     ) suffix = sep + '[ ' + this.length        + ' ]';
     else if (this.type == SUBLIST     ) suffix = sep + '[ ' + this.length        + ' ]';
     else if (this.type == COLUMN      ) suffix = sep + '[ ' + this.columnLength  + ' ]';
-    else if (this.type == REVERSE_LIST) suffix = sep + '[ ' + this.tableLength   + ' ]';
-    //else if (this.type == SORT        ) suffix = sep + '[ ' + this.tableLength   + ' ]';
+    else if (this.type == REVERSE_LIST) suffix = sep + '[ ' + this.length   + ' ]';
+    //else if (this.type == SORT      ) suffix = sep + '[ ' + this.length   + ' ]';
+    else if (this.type == FILTER      ) suffix = sep + '[ ' + this.length   + ' ]';
     else if (this.type == UNIQUE      ) suffix = sep + '[ ' + this.length        + ' ]';
     else if (this.type == LIST        ) suffix = sep + '[ ' + this.params.length + ' ]';
     else                                suffix = this.cached || this.type == START ? '' : (settings.showNodeId ? '...' : ' . . .');

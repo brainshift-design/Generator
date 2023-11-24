@@ -65,6 +65,7 @@
 ../operators/flow/OpUnique.js
 ../operators/flow/OpReverseList.js
 ../operators/flow/OpSort.js
+../operators/flow/OpFilter.js
 ../operators/flow/OpColumn.js
 ../operators/flow/OpCell.js
 ../operators/flow/OpList.js

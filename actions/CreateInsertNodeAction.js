@@ -60,82 +60,8 @@ extends Action
         this.createdNodeId = node.id;
 
 
-        if (insert)
-        {
-            const selNode   = nodeFromId(this.prevSelectedIds[0]);
-            const selOutput = selNode.headerOutputs[0];
-
-
-            for (let i = selOutput.connectedInputs.length-1; i >= 0; i--)
-            {
-                const input = selOutput.connectedInputs[i];
-
-                uiDeleteSavedConn(input.connection);
-                uiDisconnect(input);
-            }
-
-
-            const inputs = node.headerInputs.filter(i => i.canConnectFrom(selNode.headerOutputs[0]));
-
-            if (!isEmpty(inputs))
-            {
-                const newConn = createNodeAction_connect(this, selNode.outputs[0], node, inputs[0].id);
-                graphView.autoPlaceNewNode(newConn.output, newConn.input);
-
-
-                for (const _conn of this.prevConnections)
-                {
-                    const _output    = node.headerOutputs[0];
-                    const _inputNode = nodeFromId(_conn.inputNodeId);
-                    const _input     = _inputNode.inputFromId(_conn.inputId);
-
-                    if (   _output
-                        && _input.canConnectFrom(_output))
-                        createNodeAction_connect(this, _output, _inputNode, _conn.inputId, _conn.outputOrder);
-                }
-            }
-        }
-        else
-        {
-            if (node.type == COMBINE)
-            {
-                const selNodes = this.prevSelectedIds.map(id => nodeFromId(id)).filter(n => n.headerOutputs.length > 0);
-
-                if (selNodes.length > 0)
-                {
-                    selNodes.sort((n1, n2) => n1.div.offsetTop - n2.div.offsetTop);
-                    
-                    const outputs  = [];
-                    
-                    for (const selNode of selNodes)
-                    {
-                        const conn = createNodeAction_connect(this, selNode.outputs[0], node, node.headerInputs.at(-1).id);
-                        outputs.push(conn.output);
-                    }
-
-                    graphView.autoPlaceNewVariableNode(outputs, node);
-                }
-                else
-                    graphView.placeNewNode(node, this.options.fromSearch);
-            }
-            else
-            {
-                const selNode = nodeFromId(this.prevSelectedIds[0]);
-
-                if (selNode.headerOutputs.length > 0)
-                {
-                    const inputs  = node.headerInputs.filter(i => i.canConnectFrom(selNode.headerOutputs[0]));
-                    
-                    if (!isEmpty(inputs))
-                    {
-                        const conn = createNodeAction_connect(this, selNode.outputs[0], node, inputs[0].id);
-                        graphView.autoPlaceNewNode(conn.output, conn.input);
-                    }
-                }
-                else
-                    graphView.placeNewNode(node, this.options.fromSearch);
-            }
-        }
+        if (insert) this.do_insert  (node);
+        else        this.do_noInsert(node);
 
             
         graphView.lastSelectedNodes = graphView.selectedNodes;
@@ -160,6 +86,90 @@ extends Action
         this.prevConnections = [];
             
         graphView.selectByIds(this.prevSelectedIds);
+    }
+
+
+
+    do_insert()
+    {
+        const selNode   = nodeFromId(this.prevSelectedIds[0]);
+        const selOutput = selNode.headerOutputs[0];
+
+
+        for (let i = selOutput.connectedInputs.length-1; i >= 0; i--)
+        {
+            const input = selOutput.connectedInputs[i];
+
+            uiDeleteSavedConn(input.connection);
+            uiDisconnect(input);
+        }
+
+
+        const inputs = node.headerInputs.filter(i => i.canConnectFrom(selNode.headerOutputs[0]));
+
+        if (!isEmpty(inputs))
+        {
+            const newConn = createNodeAction_connect(this, selNode.outputs[0], node, inputs[0].id);
+            graphView.autoPlaceNewNode(newConn.output, newConn.input);
+
+
+            for (const _conn of this.prevConnections)
+            {
+                const _output    = node.headerOutputs[0];
+                const _inputNode = nodeFromId(_conn.inputNodeId);
+                const _input     = _inputNode.inputFromId(_conn.inputId);
+
+                if (   _output
+                    && _input.canConnectFrom(_output))
+                    createNodeAction_connect(this, _output, _inputNode, _conn.inputId, _conn.outputOrder);
+            }
+        }
+    }
+
+
+
+    do_noInsert(node)
+    {
+        if (node.type == COMBINE)
+        {
+            const selNodes = this.prevSelectedIds.map(id => nodeFromId(id)).filter(n => n.headerOutputs.length > 0);
+
+            if (selNodes.length > 0)
+            {
+                selNodes.sort((n1, n2) => n1.div.offsetTop - n2.div.offsetTop);
+                
+                const outputs  = [];
+                
+                for (const selNode of selNodes)
+                {
+                    const conn = createNodeAction_connect(this, selNode.outputs[0], node, node.headerInputs.at(-1).id);
+                    outputs.push(conn.output);
+                }
+
+                graphView.autoPlaceNewVariableNode(outputs, node);
+            }
+            else
+                graphView.placeNewNode(node, this.options.fromSearch);
+        }
+        else
+        {
+            const selNode = nodeFromId(this.prevSelectedIds[0]);
+
+            if (   selNode
+                && selNode.headerOutputs.length > 0)
+            {
+                const inputs = node.headerInputs
+                    .filter(i => i.canConnectFrom(selNode.headerOutputs[0]));
+                
+                if (!isEmpty(inputs))
+                {
+                    const conn = createNodeAction_connect(this, selNode.outputs[0], node, inputs[0].id);
+                    graphView.autoPlaceNewNode(conn.output, conn.input);
+                }
+            }
+            else
+                graphView.placeNewNode(node, this.options.fromSearch);
+        }
     }
 }
 

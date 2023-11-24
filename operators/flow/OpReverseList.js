@@ -1,7 +1,7 @@
 class   OpReverseList
 extends OperatorBase
 {
-    tableLength;
+    length;
 
 
 
@@ -55,7 +55,7 @@ extends OperatorBase
         
         const length = values[paramIds.findIndex(id => id == 'length' )];
 
-        this.tableLength = length.value;
+        this.length = length.value;
 
 
         const type  = values[paramIds.findIndex(id => id == 'type'  )];

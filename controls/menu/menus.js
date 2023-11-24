@@ -478,6 +478,7 @@ function initGeneratorMenus()
                            new MenuItem('Unique',            null,            {icon: iconUnique,       createType: UNIQUE,        callback: e => actionManager.do(getCreateNodeAction(UNIQUE,        btnData.div, getCreateOptions(e)))}),
                            new MenuItem('Reverse',           null,            {icon: iconReverseList,  createType: REVERSE_LIST,  callback: e => actionManager.do(getCreateNodeAction(REVERSE_LIST,  btnData.div, getCreateOptions(e)))}),
                            new MenuItem('Sort',              null,            {icon: iconSort,         createType: SORT,          callback: e => actionManager.do(getCreateNodeAction(SORT,          btnData.div, getCreateOptions(e)))}),
+                           //new MenuItem('Filter',            null,            {icon: iconFilter,       createType: FILTER,        callback: e => actionManager.do(getCreateNodeAction(FILTER,        btnData.div, getCreateOptions(e)))}),
                            new MenuItem('',                  null,            {separator: true}),     
                            new MenuItem('Extract items',     null,            {icon: iconExtract,      createType: EXTRACT,       callback: e => actionManager.do(getCreateNodeAction(EXTRACT,       btnData.div, getCreateOptions(e)))}),
                            new MenuItem('',                  null,            {separator: true}),     
