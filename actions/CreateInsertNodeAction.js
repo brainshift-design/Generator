@@ -90,7 +90,7 @@ extends Action
 
 
 
-    do_insert()
+    do_insert(node)
     {
         const selNode   = nodeFromId(this.prevSelectedIds[0]);
         const selOutput = selNode.headerOutputs[0];
@@ -166,6 +166,8 @@ extends Action
                     const conn = createNodeAction_connect(this, selNode.outputs[0], node, inputs[0].id);
                     graphView.autoPlaceNewNode(conn.output, conn.input);
                 }
+                else
+                    graphView.placeNewNode(node, this.options.fromSearch);
             }
             else
                 graphView.placeNewNode(node, this.options.fromSearch);
