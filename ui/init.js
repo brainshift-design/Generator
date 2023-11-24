@@ -155,6 +155,7 @@ function initGenerator(activate)
         showSubscriptionDialog(activate);
 
 
+    objectCount = 0;
     updateObjectCountDisplay();
 }
 

@@ -47,14 +47,18 @@ function setCurrentPresetTab(tab)
 function loadPresetGraph(graphId)
 {
     hideAllMenus();
-    
-    
+
+
     if (isEmpty(graph.pages))
         graph.createPage('');
 
     uiDeleteAllObjects();
     uiRemoveAllSavedNodesAndConns();
     graph.clear();
+
+
+    objectCount = 0;
+    updateObjectCountDisplay();
 
 
     actionManager.do(new PasteNodesAction(getPresetGraph(graphId), false, false, true, Number.NaN, Number.NaN, true, true, (nodes) =>

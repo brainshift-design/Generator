@@ -70,6 +70,10 @@ function uiUpdateValuesAndObjects(requestId, actionId, updateNodeId, updateParam
     }
 
     
+    objectCount = getObjectCount(objects);
+    updateObjectCountDisplay();
+
+
     if (   !isEmpty(objects)
         || !isEmpty(styles)
         || isLastChunk)
@@ -84,10 +88,6 @@ function uiUpdateValuesAndObjects(requestId, actionId, updateNodeId, updateParam
         });
 
 
-        objectCount += objects.length;
-        updateObjectCountDisplay();
-
-        
         uiQueueMessageToFigma(
         {
             cmd:          'figUpdateObjectsAndStyles',
@@ -174,6 +174,28 @@ function uiUpdateValuesAndObjects(requestId, actionId, updateNodeId, updateParam
 
         uiUpdateAnimateNodes();
     }
+}
+
+
+
+function getObjectCount(objects)
+{
+    let count = 0;
+
+    if (!isEmpty(objects))
+    {
+        for (const obj of objects)
+        {
+            switch (obj[FO_TYPE])
+            {
+                case SHAPE_GROUP: count += getObjectCount(obj[FO_GROUP_CHILDREN]); break;
+                case FRAME:       count += getObjectCount(obj[FO_FRAME_CHILDREN]); break;
+                default:          count++;                                         break;
+            }
+        }
+    }
+    
+    return count;
 }
 
 

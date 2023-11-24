@@ -81,8 +81,11 @@ function uiResizeWindow(width, height)
 
 function updateObjectCountDisplay()
 {
+    if (!objectCountInfo)
+        return;
+
     objectCountInfo.innerHTML = objectCount;
-    
+
     objectCountInfo.style.display = 
            settings.showObjectCount
         && window.innerWidth >= 650 
