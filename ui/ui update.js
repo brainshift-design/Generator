@@ -1,16 +1,9 @@
-//var isGenerating  = false;
-//var stopRequestId = null;
+var objectCount = 0;
 
 
 
 function uiUpdateValuesAndObjects(requestId, actionId, updateNodeId, updateParamId, values, objects, styles, updatedNodes, totalNodes, isFirstChunk, isLastChunk, save)
 {
-    // if (requestId < lastRequestedId) 
-    //     return;
-    
-    // lastRequestedId = -1;
-
-        
     if (loadRestartTimer > -1)
     {
         clearTimeout(loadRestartTimer);
@@ -90,6 +83,11 @@ function uiUpdateValuesAndObjects(requestId, actionId, updateNodeId, updateParam
             return node && node.active;
         });
 
+
+        objectCount += objects.length;
+        updateObjectCountDisplay();
+
+        
         uiQueueMessageToFigma(
         {
             cmd:          'figUpdateObjectsAndStyles',

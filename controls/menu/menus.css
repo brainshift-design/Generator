@@ -29,6 +29,26 @@
 }
 
 
+#objectCountInfo
+{
+    width:            41px;
+    height:           20px;
+    line-height:      20px;
+    font-family:      Inter;
+    font-size:        11px;
+    color:            #fff;
+    background-color: #444;
+    border-radius:    12px;
+    text-align:       center;
+    vertical-align:   middle;
+    position:         absolute;
+    right:            114px;
+    margin-top:       10px;
+    padding-top:      1px;
+}
+
+
+
 #btnZoom
 {
     position:      absolute;

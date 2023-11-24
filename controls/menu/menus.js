@@ -14,6 +14,7 @@ var btnHand;
 var btnComment;
 var btnPanel;
 var btnPage;
+var objectCountInfo;
 var btnSolo;
 var btnZoom;
 
@@ -121,6 +122,7 @@ var menuItemShowOperationResults;
 var menuItemShowClearUndoWarning;
 var menuItemShareUsageMetrics;
 var menuItemShowTooltips;
+var menuItemShowObjectCount;
 var menuItemShowDebugMenu;
 var menuItemEnableMultiplayer;
 var menuPrefSep2;
@@ -298,7 +300,8 @@ function initGeneratorMenus()
         //menuItemShowColorLegendInMenus   = new MenuItem('Show color legend in menus',         null, {checkCallback: () => settings.showColorLegendInMenus,     callback: () => { updateSettingAndMenu('showColorLegendInMenus',     true, !settings.showColorLegendInMenus);     updateMenuItemShowColorLegendInMenus();     }}),
                                              new MenuItem('',                                   null, {separator: true}),    
         menuItemShowTooltips               = new MenuItem('Show tooltips',                      null, {childMenu: menuShowTooltips}),
-        menuItemShowClearUndoWarning       = new MenuItem('Show clear undo warning',            null, {checkCallback: () => settings.showClearUndoWarning,       callback: () => { updateSettingAndMenu('showClearUndoWarning',       true, !settings.showClearUndoWarning);                                               }}),
+        menuItemShowClearUndoWarning       = new MenuItem('Show clear undo warning',            null, {checkCallback: () => settings.showClearUndoWarning,       callback: () => { updateSettingAndMenu('showClearUndoWarning',       true, !settings.showClearUndoWarning);                                                   }}),
+        menuItemShowObjectCount            = new MenuItem('Show object count',                  null, {checkCallback: () => settings.showObjectCount,            callback: () => { updateSettingAndMenu('showObjectCount',            true, !settings.showObjectCount);            updateObjectCountDisplay();                 }}),
         menuItemShowDebugMenu              = new MenuItem('Show debug menu',                    null, {checkCallback: () => settings.showDebugMenu,              callback: () => { uiGetLocalData('debugWarning'); }}),
                                              new MenuItem('',                                   null, {separator: true}),    
         menuItemMinZoomForParams           = new MenuItem('Zoom level for values . . .',        null, {callback: () => showMinZoomDialog()}),
@@ -1037,6 +1040,10 @@ function initGeneratorMenus()
     btnPage.div.style.position    = 'relative';
     btnPage.div.style.left        = '-26px';
 
+
+    objectCountInfo = createDiv('', 'objectCountInfo');
+    objectCountInfo.innerHTML = '0';
+    menuBar.appendChild(objectCountInfo);
 
 
     btnSolo = new MenuButton('Highlight mode&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<span style="color: #888; font-weight: 500;">~</span>', null, {callback: () => 

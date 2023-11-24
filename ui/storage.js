@@ -68,6 +68,7 @@ async function uiReturnFigGetLocalData(msg)
         case 'showOperationResults':
         case 'showClearUndoWarning':
         case 'shareUsageMetrics':
+        case 'showObjectCount':
         case 'showDebugMenu':
 
         case 'showNodeId':       

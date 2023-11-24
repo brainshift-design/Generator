@@ -12,6 +12,9 @@ function pushUpdate(action, nodes, save = true)
 
 function pushUpdateFromParam(action, nodes, param, save = true)
 {
+    objectCount = 0;
+
+    
     //console.trace();
 
     // first check if any nodes to the left are uncached

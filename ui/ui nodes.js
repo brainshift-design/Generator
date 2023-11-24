@@ -1278,4 +1278,8 @@ function uiDeactivateAllNodes()
     graphView.updateNodes(activeNodes);
     
     uiDeleteObjectsAndStyles(activeNodes.map(n => n.id));
+
+
+    objectCount = 0;
+    updateObjectCountDisplay();
 }

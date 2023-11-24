@@ -4484,6 +4484,7 @@ const settings =
     showOperationResults:          false,
     showClearUndoWarning:          true,
     shareUsageMetrics:             true,
+    showObjectCount:               false,
     showDebugMenu:                 false,
         
     showNodeId:                    false, // instead of name
@@ -4544,6 +4545,7 @@ function updateSetting(settingName, value)
         case 'showOperationResults':          settings.showOperationResults          = value;  break;
         case 'showClearUndoWarning':          settings.showClearUndoWarning          = value;  break;
         case 'shareUsageMetrics':             settings.shareUsageMetrics             = value;  break;
+        case 'showObjectCount':               settings.showObjectCount               = value;  break;
         case 'showDebugMenu':                 settings.showDebugMenu                 = value;  break;
                         
         case 'showNodeId':                    settings.showNodeId                    = value;  break;
@@ -4602,6 +4604,7 @@ function updateSettingAndMenu(settingName, valid, value, save = true)
         case 'showOperationResults':          updateSettingAndMenu_(valid, settingName, value, menuItemShowOperationResults         ); break;
         case 'showClearUndoWarning':          updateSettingAndMenu_(valid, settingName, value, menuItemShowClearUndoWarning         ); break;
         case 'shareUsageMetrics':             updateSettingAndMenu_(valid, settingName, value, menuItemShareUsageMetrics            ); break;
+        case 'showObjectCount':               updateSettingAndMenu_(valid, settingName, value, menuItemShowObjectCount              ); break;
         case 'showDebugMenu':                 updateSettingAndMenu_(valid, settingName, value, menuItemShowDebugMenu                ); break;
                       
         case 'showNodeId':                    updateSettingAndMenu_(valid, settingName, value, menuItemShowNodeId                   ); break;
@@ -4683,6 +4686,7 @@ function updateSettingsMenus()
     menuItemShowOperationResults         .setChecked(settings.showOperationResults         );
     menuItemShowClearUndoWarning         .setChecked(settings.showClearUndoWarning         );
     menuItemShareUsageMetrics            .setChecked(settings.shareUsageMetrics            );
+    menuItemShowObjectCount              .setChecked(settings.showObjectCount              );
     menuItemShowDebugMenu                .setChecked(settings.showDebugMenu                );
                 
     menuItemShowNodeId                   .setChecked(settings.showNodeId                   );
@@ -4873,6 +4877,7 @@ function loadLocalSettings()
     uiGetLocalData('showOperationResults'         );
     uiGetLocalData('showClearUndoWarning'         );
     uiGetLocalData('shareUsageMetrics'            );
+    uiGetLocalData('showObjectCount'              );
     uiGetLocalData('showDebugMenu'                );
         
     uiGetLocalData('showNodeId'                   );

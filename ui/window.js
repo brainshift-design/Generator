@@ -68,11 +68,26 @@ function uiResizeWindow(width, height)
 {
     width = Math.max(600, width);
 
+    updateObjectCountDisplay();
+
     uiQueueMessageToFigma({ 
         cmd:   'figResizeWindow', 
         width:  width,
         height: height
     });
+}
+
+
+
+function updateObjectCountDisplay()
+{
+    objectCountInfo.innerHTML = objectCount;
+    
+    objectCountInfo.style.display = 
+           settings.showObjectCount
+        && window.innerWidth >= 650 
+        ? 'inline-block' 
+        : 'none';
 }
 
 
