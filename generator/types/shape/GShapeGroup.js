@@ -65,7 +65,7 @@ extends GShapeBase
                             if (!SHAPE_VALUES.includes(item.type))
                                 continue;
 
-                            this.value.items.push(item);//.copy());   
+                            this.value.items.push(item);
                             //this.value.objects.push(...item.objects.map(o => this.copyObject(o, i)));
                         }
                     }
@@ -115,15 +115,7 @@ extends GShapeBase
             for (const input of options.inputs)
             {
                 for (let i = 0; i < input.objects.length; i++)
-                {
-                    const obj = input.objects[i];//.copy();
-
-                    obj.nodeId   = this.nodeId;
-                    obj.objectId = obj.objectId + OBJECT_SEPARATOR + this.nodeId;
-                    obj.listId   = -1;
-
-                    group.children.push(obj);
-                }
+                    this.addChildObject(group.children, input.objects[i]);
             }
 
 
@@ -154,6 +146,19 @@ extends GShapeBase
 
 
         await super.evalObjects(parse);
+    }
+
+
+
+    addChildObject(objects, _obj)
+    {
+        const obj = copyFigmaObject(_obj);
+
+        obj.nodeId   = this.nodeId;
+        obj.objectId = obj.objectId + OBJECT_SEPARATOR + this.nodeId;
+        obj.listId   = -1;
+
+        objects.push(obj);
     }
 
 

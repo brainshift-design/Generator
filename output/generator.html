@@ -4,7 +4,7 @@
 
 
 
-const generatorVersion = 308;
+const generatorVersion = 309;
 
 
 const MAX_INT32        = 2147483647;
@@ -4473,7 +4473,7 @@ const settings =
         
     enableZoomedOutParams:         false,
     minZoomForParams:              0.35,
-    objectBatchSize:               1000000,
+    objectBatchSize:               500,
     showPages:                     false,
     showAllColorSpaces:            false,
     showNodeIcons:                 true,
@@ -5869,17 +5869,18 @@ class FigmaObject
 
 
 
-    resetSpace(bounds, singlePoint = false, cx = 0.5, cy = 0.5)
+    resetSpace(bounds, singlePoint = false, cx = 0.5, cy = 0.5, absolute = false)
     {
-        if (singlePoint)
+        if (    singlePoint
+            && !absolute)
         {
             cx *= 100;
             cy *= 100;
         }
 
 
-        const _cx = singlePoint ? this.x + cx : bounds.x + cx * bounds.width;
-        const _cy = singlePoint ? this.y + cy : bounds.y + cy * bounds.height;            
+        const _cx = singlePoint || absolute ? this.x + cx : bounds.x + cx * bounds.width;
+        const _cy = singlePoint || absolute ? this.y + cy : bounds.y + cy * bounds.height;            
 
 
         const ds1 = subv(this.sp1, this.sp0);
@@ -6445,7 +6446,9 @@ function addStrokeProp(obj, prop)
         case 2: obj.strokeCap = 'ROUND';  break;
     }
 
-    obj.strokeDashes     = prop.dashes.toValue().value;
+    obj.strokeDashes     = prop.dashes.toValue().value.trim();
+    console.log('typeof obj.strokeDashes =', typeof obj.strokeDashes);
+    console.log('obj.strokeDashes =', obj.strokeDashes);
     
     obj.strokeMiterLimit = prop.miter .toValue().value;
 }
@@ -9852,21 +9855,24 @@ function finalTypeFromTypes(types)
 {
     let _type = NULL;
 
-
     for (const type of types)
     {
         if (_type == NULL)
             _type = type;
 
-        else if (_type != type
-                 &&  SHAPE_VALUES.includes(_type) 
+        else if (    SHAPE_VALUES.includes(_type) 
                  && !SHAPE_VALUES.includes( type))
-        { 
+        {
+            _type = ANY_VALUE;
+            break; 
+        }
+    else if (   !SHAPE_VALUES.includes(_type) 
+                 && _type != type)
+        {
             _type = ANY_VALUE;
             break; 
         }
     }
-
 
     return _type;
 }
@@ -9875,7 +9881,6 @@ function finalTypeFromTypes(types)
 
 function finalListTypeFromTypes(types)
 {
-    //console.log('types =', types);
     let _type = finalTypeFromTypes(types);
     
          if (  _type == NUMBER_VALUE || _type == NUMBER_LIST_VALUE)  return NUMBER_LIST_VALUE;
@@ -16835,15 +16840,15 @@ extends GOperator
                     if (isListType(input.type))
                     {
                         if (input.condensed === true)
-                            this.value.items.push(input);//.copy());
+                            this.value.items.push(input);
                         else
                         {
                             for (const item of input.items)
-                                this.value.items.push(item);//.copy());
+                                this.value.items.push(item);
                         }
                     }
                     else
-                        this.value.items.push(input);//.copy());
+                        this.value.items.push(input);
                 }
 
 
@@ -35911,7 +35916,7 @@ extends GShapeBase
                             if (!SHAPE_VALUES.includes(item.type))
                                 continue;
 
-                            this.value.items.push(item);//.copy());   
+                            this.value.items.push(item);
                             //this.value.objects.push(...item.objects.map(o => this.copyObject(o, i)));
                         }
                     }
@@ -35961,15 +35966,7 @@ extends GShapeBase
             for (const input of options.inputs)
             {
                 for (let i = 0; i < input.objects.length; i++)
-                {
-                    const obj = input.objects[i];//.copy();
-
-                    obj.nodeId   = this.nodeId;
-                    obj.objectId = obj.objectId + OBJECT_SEPARATOR + this.nodeId;
-                    obj.listId   = -1;
-
-                    group.children.push(obj);
-                }
+                    this.addChildObject(group.children, input.objects[i]);
             }
 
 
@@ -36000,6 +35997,19 @@ extends GShapeBase
 
 
         await super.evalObjects(parse);
+    }
+
+
+
+    addChildObject(objects, _obj)
+    {
+        const obj = copyFigmaObject(_obj);
+
+        obj.nodeId   = this.nodeId;
+        obj.objectId = obj.objectId + OBJECT_SEPARATOR + this.nodeId;
+        obj.listId   = -1;
+
+        objects.push(obj);
     }
 
 
@@ -36193,7 +36203,6 @@ extends GShape
                 x, y, w, h, r);
 
 
-            //console.log('this.value.objects =', [...this.value.objects]);
             for (let i = 0; i < this.value.objects.length; i++)
                 this.addChildObject(frame.children, this.value.objects[i]);
 
@@ -37662,6 +37671,7 @@ extends GOperator1
 {
     centerX    = null;
     centerY    = null;
+    absolute   = null;
     showCenter = null;
 
 
@@ -37679,6 +37689,7 @@ extends GOperator1
 
         this.centerX    = null;
         this.centerY    = null;
+        this.absolute   = null;
         this.showCenter = null;
     }
 
@@ -37692,6 +37703,7 @@ extends GOperator1
 
         if (this.centerX   ) copy.centerX    = this.centerX   .copy();
         if (this.centerY   ) copy.centerY    = this.centerY   .copy();
+        if (this.absolute  ) copy.absolute   = this.absolute  .copy();
         if (this.showCenter) copy.showCenter = this.showCenter.copy();
 
         return copy;
@@ -37707,6 +37719,7 @@ extends GOperator1
             
         const centerX    = this.centerX    ? (await this.centerX   .eval(parse)).toValue() : null;
         const centerY    = this.centerY    ? (await this.centerY   .eval(parse)).toValue() : null;
+        const absolute   = this.absolute   ? (await this.absolute  .eval(parse)).toValue() : null;
         const showCenter = this.showCenter ? (await this.showCenter.eval(parse)).toValue() : null;
 
 
@@ -37728,6 +37741,7 @@ extends GOperator1
             {
                 centerX:    centerX, 
                 centerY:    centerY,
+                absolute:   absolute,
                 showCenter: showCenter
             });
 
@@ -37736,6 +37750,7 @@ extends GOperator1
         [
             ['centerX',    centerX   ],
             ['centerY',    centerY   ],
+            ['absolute',   absolute  ],
             ['showCenter', showCenter]
         ]);
 
@@ -37757,10 +37772,11 @@ extends GOperator1
             
             const centerX     = options.centerX   .value;
             const centerY     = options.centerY   .value;
+            const absolute    = options.absolute  .value;
             const showCenter  = options.showCenter.value;
      
-            const cx          = centerX/100;
-            const cy          = centerY/100;
+            const cx          = absolute ? centerX : centerX/100;
+            const cy          = absolute ? centerY : centerY/100;
 
 
             const bounds      = getObjBounds(this.value.objects);
@@ -37776,7 +37792,7 @@ extends GOperator1
                 obj.objectId = obj.objectId + OBJECT_SEPARATOR + this.nodeId;
 
                 if (this.options.enabled)
-                    obj.resetSpace(bounds, singlePoint, cx, cy);
+                    obj.resetSpace(bounds, singlePoint, cx, cy, absolute);
             }
 
 
@@ -37807,6 +37823,7 @@ extends GOperator1
         return super.isValid()
             && this.centerX    && this.centerX   .isValid()
             && this.centerY    && this.centerY   .isValid()
+            && this.absolute   && this.absolute.isValid()
             && this.showCenter && this.showCenter.isValid();
     }
 
@@ -37818,6 +37835,7 @@ extends GOperator1
 
         if (this.centerX   ) this.centerX   .pushValueUpdates(parse);
         if (this.centerY   ) this.centerY   .pushValueUpdates(parse);
+        if (this.absolute  ) this.absolute  .pushValueUpdates(parse);
         if (this.showCenter) this.showCenter.pushValueUpdates(parse);
     }
 
@@ -37829,6 +37847,7 @@ extends GOperator1
 
         if (this.centerX   ) this.centerX   .invalidateInputs(parse, from, force);
         if (this.centerY   ) this.centerY   .invalidateInputs(parse, from, force);
+        if (this.absolute  ) this.absolute  .invalidateInputs(parse, from, force);
         if (this.showCenter) this.showCenter.invalidateInputs(parse, from, force);
     }
 
@@ -37840,6 +37859,7 @@ extends GOperator1
 
         if (this.centerX   ) this.centerX   .iterateLoop(parse);
         if (this.centerY   ) this.centerY   .iterateLoop(parse);
+        if (this.absolute  ) this.absolute  .iterateLoop(parse);
         if (this.showCenter) this.showCenter.iterateLoop(parse);
     }
 }
@@ -44301,7 +44321,7 @@ function genParseLine(parse)
 
     if (ignore) 
     {
-        genParseNodeEnd(parse, rect);
+        genParseNodeEnd(parse, line);
         return parse.parsedNodes.find(n => n.nodeId == nodeId);
     }
 
@@ -45557,6 +45577,7 @@ function genParseCenter(parse)
 
     center.centerX    = genParse(parse);
     center.centerY    = genParse(parse);
+    center.absolute   = genParse(parse);
     center.showCenter = genParse(parse);
 
 

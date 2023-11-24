@@ -211,7 +211,9 @@ TextControl.prototype.initTextarea = function(textbox, textBehind)
 
         if (!e.preventSetValue)
         {
-            if (success) 
+            if (   success
+                && (  !this.testFunction
+                    || this.testFunction(value))) 
             {
                 this.setValue(
                     value != NAN_CHAR
@@ -219,7 +221,7 @@ TextControl.prototype.initTextarea = function(textbox, textBehind)
                     : savedValue);
             }
             else
-                this.setValue(savedVal);
+                this.setValue(savedValue);
         }
          
         

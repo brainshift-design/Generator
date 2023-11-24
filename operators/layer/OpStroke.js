@@ -57,7 +57,18 @@ extends OpColorBase
         this.paramMiter.controls[0].suffixOffsetY = -4;
         this.paramMiter.canShow = () => this.paramJoin.value == 0;
 
+        this.paramDashes.controls[0].highlightText          = false;
         this.paramDashes.controls[0].textbox.defPlaceholder = 'no dashes';
+
+        this.paramDashes.controls[0].testFunction = str =>
+        {
+            if (str.trim == '')
+                return true;
+
+            let pattern = /^\s*\d+(\.\d+)?(\s*,\s*\d+(\.\d+)?)*\s*$/;
+            
+            return pattern.test(str);
+        };
     }
     
     

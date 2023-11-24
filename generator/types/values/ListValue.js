@@ -326,21 +326,24 @@ function finalTypeFromTypes(types)
 {
     let _type = NULL;
 
-
     for (const type of types)
     {
         if (_type == NULL)
             _type = type;
 
-        else if (_type != type
-                 &&  SHAPE_VALUES.includes(_type) 
+        else if (    SHAPE_VALUES.includes(_type) 
                  && !SHAPE_VALUES.includes( type))
-        { 
+        {
+            _type = ANY_VALUE;
+            break; 
+        }
+    else if (   !SHAPE_VALUES.includes(_type) 
+                 && _type != type)
+        {
             _type = ANY_VALUE;
             break; 
         }
     }
-
 
     return _type;
 }
@@ -349,7 +352,6 @@ function finalTypeFromTypes(types)
 
 function finalListTypeFromTypes(types)
 {
-    //console.log('types =', types);
     let _type = finalTypeFromTypes(types);
     
          if (  _type == NUMBER_VALUE || _type == NUMBER_LIST_VALUE)  return NUMBER_LIST_VALUE;

@@ -23,6 +23,7 @@ extends Control
     requireFinishCtrl = false;
 
     
+    testFunction      = null;
     readOnly          = false;
     
     tabSize           = 4;

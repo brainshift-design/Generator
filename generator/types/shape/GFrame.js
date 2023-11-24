@@ -139,7 +139,6 @@ extends GShape
                 x, y, w, h, r);
 
 
-            //console.log('this.value.objects =', [...this.value.objects]);
             for (let i = 0; i < this.value.objects.length; i++)
                 this.addChildObject(frame.children, this.value.objects[i]);
 

@@ -86,7 +86,7 @@ function genParseLine(parse)
 
     if (ignore) 
     {
-        genParseNodeEnd(parse, rect);
+        genParseNodeEnd(parse, line);
         return parse.parsedNodes.find(n => n.nodeId == nodeId);
     }
 
@@ -1342,6 +1342,7 @@ function genParseCenter(parse)
 
     center.centerX    = genParse(parse);
     center.centerY    = genParse(parse);
+    center.absolute   = genParse(parse);
     center.showCenter = genParse(parse);
 
 
