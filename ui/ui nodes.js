@@ -90,7 +90,7 @@ function connectionsToJson(nodes, connOutputMustBeInNodes, keepVarsConnected = t
 
 function canAutoConnectNode(node, allowCombine = false)
 {
-    if (   node.type == COMBINE
+    if (   node.variableInputs
         && allowCombine)
     {
         const selNodes = graph.pageNodes

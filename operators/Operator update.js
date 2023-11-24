@@ -101,6 +101,13 @@ Operator.prototype.updateBorder = function()
            ? '0 0 0 ' + scale + 'px var(--figma-color-bg-brand), '
            : '')
         + '0 0 0 ' + highlightScale + 'px ' + highlight;
+
+
+    this.div.style.outline = 
+           !darkMode 
+        && !this._selected
+        ? '1px solid #0001'
+        : 'none';
 }
 
 

@@ -130,7 +130,7 @@ extends Action
 
     do_noInsert(node)
     {
-        if (node.type == COMBINE)
+        if (node.variableInputs)
         {
             const selNodes = this.prevSelectedIds.map(id => nodeFromId(id)).filter(n => n.headerOutputs.length > 0);
 

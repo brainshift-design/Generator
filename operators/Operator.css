@@ -18,7 +18,7 @@
     border-radius: 4px 4px 0 0;
     padding:       0;
     overflow:      visible;
- /* box-shadow:    0 0 0 1px yellow inset; */
+    /* box-shadow:    0 0 0 1px yellow inset; */
 }
 
 
@@ -31,7 +31,6 @@
     overflow:      hidden;
     border-radius: 4px 4px 0 0;
     padding:       0;
-    /* box-shadow:    0 0 0 1px var(--figma-color-bg-tertiary); */
     overflow:      hidden;
     /* box-shadow:    0 0 0 1px orange inset; */
 }    

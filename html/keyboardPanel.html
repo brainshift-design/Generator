@@ -6,9 +6,8 @@
             <div class='keyboardPanelTab' onclick="setCurrentKeyboardTab(1);">View</div>
             <div class='keyboardPanelTab' onclick="setCurrentKeyboardTab(2);">Zoom</div>
             <div class='keyboardPanelTab' onclick="setCurrentKeyboardTab(3);">Selection</div>
-            <div class='keyboardPanelTab' onclick="setCurrentKeyboardTab(7);">Edit</div>
-            <div class='keyboardPanelTab' onclick="setCurrentKeyboardTab(4);">Nodes</div>
-            <div class='keyboardPanelTab' onclick="setCurrentKeyboardTab(5);">Connections</div>
+            <div class='keyboardPanelTab' onclick="setCurrentKeyboardTab(4);">Edit</div>
+            <div class='keyboardPanelTab' onclick="setCurrentKeyboardTab(5);">Nodes</div>
             <div class='keyboardPanelTab' onclick="setCurrentKeyboardTab(6);">Controls</div>
         </div>
         <div id='keyboardPanelClose' onclick="hideKeyboardPanel();"></div>
@@ -29,7 +28,13 @@
         <div class='keyboardPage' id='keyboardPageView'>
 
             <div class='keyboardGroup'>
+                <div class='keyboardShortcut'><div class='shortcutAction'>Show/hide node icons</div><div class='shortcutKeys'><div class='shortcutKeys'><div class='shortcutKey ctrlShift'>Ctrl</div><div class='shortcutKey ctrlShift'>Shift</div><div class='shortcutKey shortcutCharNarrow'>I</div></div></div></div>
+                <div class='keyboardShortcut'><div class='shortcutAction'>Show/hide operation results</div><div class='shortcutKeys'><div class='shortcutKeys'><div class='shortcutKey ctrlShift'>Ctrl</div><div class='shortcutKey ctrlShift'>Shift</div><div class='shortcutKey shortcutChar'>R</div></div></div></div>
+            </div>
+
+            <div class='keyboardGroup nextGroup'>
                 <div class='keyboardShortcut'><div class='shortcutAction'>Highlight mode</div><div class='shortcutKeys'><div class='shortcutKeys'><div class='shortcutKey shortcutChar'>~</div></div></div></div>
+                <div class='keyboardShortcut'><div class='shortcutAction'>Layout selected nodes</div><div class='shortcutKeys'><div class='shortcutKeys'><div class='shortcutKey ctrlShift'>Ctrl</div><div class='shortcutKey ctrlShift'>Shift</div><div class='shortcutKey shortcutChar'>L</div></div></div></div>
             </div>
 
         </div>
@@ -42,7 +47,7 @@
                 <div class='keyboardLabel'>While not using the hand tool...</div>
                 <div class='keyboardShortcut'><div class='shortcutAction'>Zoom</div><div class='shortcutKeys'><div class='shortcutKeys'><div class='shortcutKey'>Ctrl</div><div class='shortcutEvent'>wheel</div></div></div></div>
                 <div class='keyboardLabel'>While using the hand tool...</div>
-                <div class='keyboardShortcut'><div class='shortcutAction'>Zoom</div><div class='shortcutKeys'><div class='shortcutKeys'><div class='shortcutEvent'>Wheel</div></div></div></div>
+                <div class='keyboardShortcut'><div class='shortcutAction'>Zoom</div><div class='shortcutKeys'><div class='shortcutEvent'>Wheel</div></div></div>
             </div>
 
             <div class='keyboardGroup nextGroup'>
@@ -73,37 +78,34 @@
         </div>
 
 
-        <div class='keyboardPage' id='keyboardPageNodes'>
+        <div class='keyboardPage' id='keyboardPageEdit'>
             <div class='keyboardGroup'>
                 <div class='keyboardShortcut'><div class='shortcutAction'>Create node</div><div class='shortcutKeys'><div class='shortcutKeys'><div class='shortcutKey'>Menu</div></div></div></div>
+                <div class='keyboardShortcut'><div class='shortcutAction'>Create & connect to selected</div><div class='shortcutKeys'><div class='shortcutKeys'><div class='shortcutKey'>Ctrl</div><div class='shortcutKey'>menu</div></div></div></div>
                 <div class='keyboardShortcut'><div class='shortcutAction'>Insert node into branch</div><div class='shortcutKeys'><div class='shortcutKeys'><div class='shortcutKey'>Ctrl</div><div class='shortcutKey'>menu</div></div></div></div>
                 <div class='keyboardShortcut'><div class='shortcutAction'>Connect node in new branch</div><div class='shortcutKeys'><div class='shortcutKeys'><div class='shortcutKey newBranch1'>Ctrl</div><div class='shortcutKey newBranch2'>Alt</div><div class='shortcutKey'>menu</div></div></div></div>
                 <div class='keyboardShortcut'><div class='shortcutAction'>Create random color</div><div class='shortcutKeys'><div class='shortcutKeys'><div class='shortcutKey'>Alt</div><div class='shortcutKey'>Color menu</div></div></div></div>
-                <div class='keyboardShortcut'><div class='shortcutAction'>Reactivate active nodes</div><div class='shortcutKeys'><div class='shortcutKeys'><div class='shortcutKey'>Ctrl</div><div class='shortcutKey'>Enter</div></div></div></div>
-            </div>
-            <div class='keyboardGroup nextGroup'>
-                <div class='keyboardShortcut'><div class='shortcutAction'>Rename</div><div class='shortcutKeys'><div class='shortcutKeys'><div class='shortcutKey'>Ctrl</div><div class='shortcutKey shortcutChar'>R</div></div></div></div>
-                <div class='keyboardShortcut'><div class='shortcutAction'>Enable/disable</div><div class='shortcutKeys'><div class='shortcutKeys'><div class='shortcutKey ctrlShift'>Ctrl</div><div class='shortcutKey ctrlShift'>Shift</div><div class='shortcutKey shortcutChar'>E</div></div></div></div>
-                <div class='keyboardShortcut'><div class='shortcutAction'>Show/hide node icons</div><div class='shortcutKeys'><div class='shortcutKeys'><div class='shortcutKey ctrlShift'>Ctrl</div><div class='shortcutKey ctrlShift'>Shift</div><div class='shortcutKey shortcutCharNarrow'>I</div></div></div></div>
-                <div class='keyboardShortcut'><div class='shortcutAction'>Show/hide operation results</div><div class='shortcutKeys'><div class='shortcutKeys'><div class='shortcutKey ctrlShift'>Ctrl</div><div class='shortcutKey ctrlShift'>Shift</div><div class='shortcutKey shortcutChar'>R</div></div></div></div>
-                <div class='keyboardShortcut'><div class='shortcutAction'>Layout selected nodes</div><div class='shortcutKeys'><div class='shortcutKeys'><div class='shortcutKey ctrlShift'>Ctrl</div><div class='shortcutKey ctrlShift'>Shift</div><div class='shortcutKey shortcutChar'>L</div></div></div></div>
             </div>
         </div>
- 
+        
+        
+        <div class='keyboardPage' id='keyboardPageNodes'>
 
-        <div class='keyboardPage' id='keyboardPageConnections'>
             <div class='keyboardGroup'>
                 <div class='keyboardLabel'>While connecting from an output...</div>
                 <div class='keyboardShortcut'><div class='shortcutAction'>Copy input value back to output</div><div class='shortcutKeys'><div class='shortcutKeys'><div class='shortcutKey'>Ctrl</div></div></div></div>
-            </div>
-        </div>
-
-        
-        <div class='keyboardPage' id='keyboardPageCursor'>
-            <div class='keyboardGroup'>
                 <div class='keyboardLabel'>While adjusting (some) values...</div>
                 <div class='keyboardShortcut'><div class='shortcutAction'>Allow values outside the visible limits</div><div class='shortcutKeys'><div class='shortcutKeys'><div class='shortcutKey'>Shift</div></div></div></div>
             </div>
+
+            <div class='keyboardGroup nextGroup'>
+                <div class='keyboardShortcut'><div class='shortcutAction'>Rename</div><div class='shortcutKeys'><div class='shortcutKeys'><div class='shortcutKey'>Ctrl</div><div class='shortcutKey shortcutChar'>R</div></div></div></div>
+                <div class='keyboardShortcut'><div class='shortcutAction'>Reactivate active nodes</div><div class='shortcutKeys'><div class='shortcutKeys'><div class='shortcutKey'>Ctrl</div><div class='shortcutKey'>Enter</div></div></div></div>
+                <div class='keyboardShortcut'><div class='shortcutAction'>Activate node</div><div class='shortcutKeys'><div class='shortcutEvent'>Double click</div></div></div>
+                <div class='keyboardShortcut'><div class='shortcutAction'>Activate more than one node</div><div class='shortcutKeys'><div class='shortcutKey'>Shift</div><div class='shortcutEvent'>double click</div></div></div>
+                <div class='keyboardShortcut'><div class='shortcutAction'>Reactivate active nodes</div><div class='shortcutKeys'><div class='shortcutKeys'><div class='shortcutKey'>Ctrl</div><div class='shortcutKey'>Enter</div></div></div></div>
+            </div>
+
         </div>
 
         
