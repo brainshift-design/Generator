@@ -119,7 +119,10 @@ document.addEventListener('keydown', e =>
     // select all
     else if (e.code == 'KeyA'
           && getCtrlKey(e))
+    {
+        e.preventDefault();
         graphView.selectAllNodes(e.shiftKey);
+    }
 
     // group selected
     else if (e.code == 'KeyG'
