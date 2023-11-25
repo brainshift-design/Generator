@@ -30,6 +30,14 @@ extends FigmaShape
 
 
 
+    applyTransform(xform, affectSpace)
+    {
+        for (const obj of this.children)
+            obj.applyTransform(xform, affectSpace);
+    }
+
+
+
     toJsonObject()
     {
         return {

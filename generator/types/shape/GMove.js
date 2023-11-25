@@ -113,19 +113,13 @@ extends GOperator1
         {
             this.value.objects = getValidObjects(this.input.value);
 
+
             if (isListType(this.value.type))
             {
                 for (let i = 0; i < this.value.items.length; i++)
                     this.value.items[i].objects = this.value.objects.filter(o => o.itemIndex == i);
             }
-            // else if (this.value.type == SHAPE_GROUP_VALUE)
-            // {
-            //     const group = this.value.objects[0];
-
-            //     for (let i = 0; i < group.children.length; i++)
-            //         group.children[i].objects = this.value.objects.filter(o => o.itemIndex == i);
-            // }
-    
+   
             
             const moveType    = options.moveType   .value;
             const x           = options.x          .value;
