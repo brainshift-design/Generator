@@ -67,7 +67,7 @@ function genRequest(request, save)
     {
         for (const node of paramNodes) 
         { 
-            if (await checkStop(parse)) 
+            if (await checkStop(parse.requestId)) 
                 return;
 
             await node.eval(parse);
@@ -76,14 +76,14 @@ function genRequest(request, save)
 
         for (const node of topLevelNodes) 
         { 
-            if (await checkStop(parse)) 
+            if (await checkStop(parse.requestId)) 
                 return;
 
             await node.eval(parse); 
         }
 
 
-        if (await checkStop(parse)) 
+        if (await checkStop(parse.requestId)) 
             return;
 
 
@@ -144,7 +144,7 @@ function genRequest(request, save)
         }
 
 
-        genUpdateValuesAndObjects(
+        await genUpdateValuesAndObjects(
             requestId,
             actionId,
             objectBatchSize,
@@ -159,11 +159,11 @@ function genRequest(request, save)
 
 
 
-async function checkStop(parse)
+async function checkStop(requestId)
 {
     const uiCurRequestId = await genGetValueFromUi('curRequestId');
 
-    if (uiCurRequestId.value > parse.requestId) 
+    if (uiCurRequestId.value > requestId) 
     { 
         genQueueMessageToUi({cmd: 'uiEndGlobalProgress'});
         return true; 
@@ -231,7 +231,7 @@ function clearLastUpdate()
 
 
 
-function genUpdateValuesAndObjects(requestId, actionId, objectBatchSize, updateNodeId, updateParamId, updateValues, updateObjects, updateStyles, save)
+async function genUpdateValuesAndObjects(requestId, actionId, objectBatchSize, updateNodeId, updateParamId, updateValues, updateObjects, updateStyles, save)
 {
     if (   isEmpty(updateValues )
         && isEmpty(updateObjects)
@@ -366,6 +366,10 @@ function genUpdateValuesAndObjects(requestId, actionId, objectBatchSize, updateN
 
             isFirstChunk = false;
         }
+
+
+        if (await checkStop(requestId)) 
+            return;
     }
 
 
