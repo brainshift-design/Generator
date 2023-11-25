@@ -202,7 +202,7 @@ const presetRender = '\
             "z": "12",\
             "params":\
             [\
-                    ["NUM#", "name", "2,0"],\
+                    ["NUM#", "name", "1,0"],\
                     ["NUM#", "index", "11,0"]\
             ]\
             },\

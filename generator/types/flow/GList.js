@@ -1,6 +1,10 @@
 class GList
 extends GOperator1
 {
+    cachedValue = null;
+
+
+
     constructor(nodeId, options)
     {
         super(LIST, nodeId, options);
@@ -30,11 +34,33 @@ extends GOperator1
 
     async eval(parse)
     {
-        if (this.isCached())
+        // if (this.isCached())
+        //     return this;
+
+
+        // if (!this.frozen)
+        //     this.value = this.input ? (await this.input.eval(parse)).toValue() : ListValue.NaN;
+
+
+        // this.frozen = true;
+
+        if (   this.isCached()
+            && this.cachedValue)
             return this;
 
 
-        this.value = this.input ? (await this.input.eval(parse)).toValue() : ListValue.NaN;
+        if (this.cachedValue)
+            this.value = this.cachedValue.copy();
+
+        else
+        {
+            this.value = 
+                this.input 
+                ? (await this.input.eval(parse)).toValue() 
+                : NullValue;
+
+            this.cachedValue = this.value.copy();
+        }
 
 
         this.updateValues = [];

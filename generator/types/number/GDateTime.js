@@ -77,6 +77,7 @@ extends GOperator
         
         if (this.options.enabled)
         {
+            console.log('time');
             const dateTime = new Date();
 
             const seconds   = new NumberValue(dateTime.getSeconds() );

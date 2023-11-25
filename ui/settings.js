@@ -15,7 +15,7 @@ const settings =
     showOperationResults:          false,
     showClearUndoWarning:          true,
     shareUsageMetrics:             true,
-    showObjectCount:               false,
+    showObjectCount:               true,
     showDebugMenu:                 false,
         
     showNodeId:                    false, // instead of name

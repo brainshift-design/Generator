@@ -101,6 +101,8 @@ extends Action
         connectAction_restoreInputValues(this);
         connectAction_restoreOutputValues(this);
 
+        pushUnique(updateNodes, nodeFromId(this.outputNodeId));
+        
         //this.deactivateNewActiveNodes();
         //connectAction_activateOldActiveNodes(this, updateNodes); 
 

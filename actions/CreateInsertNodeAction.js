@@ -83,6 +83,8 @@ extends Action
 
         createInsertNodeAction_activateOldInputs(this, updateNodes);
 
+        pushUnique(updateNodes, this.prevSelectedIds.map(id => nodeFromId(id))); 
+
         this.prevConnections = [];
             
         graphView.selectByIds(this.prevSelectedIds);
@@ -202,13 +204,16 @@ function createInsertNodeAction_activateOldInputs(act, updateNodes)
     if (act.oldInputActiveNodeIds.length == 0)
         return;
 
-    const oldInputActiveNodes = act.oldInputActiveNodeIds.map(id => nodeFromId(id));
+    const oldInputActiveNodes = 
+        act.oldInputActiveNodeIds
+            .map(id => nodeFromId(id))
+            .filter(n => n);
     
     for (const node of oldInputActiveNodes)
     {
         uiMakeNodeActive(node);
         pushUnique(updateNodes, node);
-
-        act.oldInputActiveNodeIds = [];
     }
+
+    act.oldInputActiveNodeIds = [];
 }
