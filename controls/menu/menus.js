@@ -1041,9 +1041,7 @@ function initGeneratorMenus()
     btnPage.div.style.left        = '-26px';
 
 
-    objectCountInfo = createDiv('', 'objectCountInfo');
-    objectCountInfo.innerHTML = '0';
-    menuBar.appendChild(objectCountInfo);
+    createObjectCountInfo();
 
 
     btnSolo = new MenuButton('Highlight mode&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<span style="color: #888; font-weight: 500;">~</span>', null, {callback: () => 
@@ -1123,6 +1121,18 @@ function initGeneratorMenus()
 
 
     updateSaveSelectedMenu();
+}
+
+
+
+function createObjectCountInfo()
+{
+    objectCountInfo = createDiv('', 'objectCountInfo');
+    objectCountInfo.innerHTML = '0';
+    menuBar.appendChild(objectCountInfo);
+
+    createTooltip(ttObjectCount);
+    createTooltipSrc(objectCountInfo, objectCountInfo, () => ttObjectCount);
 }
 
 
