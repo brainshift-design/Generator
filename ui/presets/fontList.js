@@ -127,6 +127,7 @@ const presetFontList = '\
             "z": "7",\
             "params":\
             [\
+                    ["TEXT#", "name", "2,0"],\
                     ["NUM#", "index", "9,0"]\
             ]\
             },\

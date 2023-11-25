@@ -56,25 +56,42 @@ extends GOperator
         await this.node.eval(parse);
 
 
-        this.param = 
-            this.node.type == LIST
-            ? this.node[this.paramId]//.copy();
-            : this.node.paramFromId(this.paramId);
+        this.param = this.node.paramFromId(this.paramId);
 
+        if (this.node.type == LIST)
+            this.param = this.node[this.paramId];//.copy();
         
+
         if (isValid(this.param))
         {
-            // const value = (await this.param.eval(parse)).toValue();
-            // this.value = value;
-            this.value = this.param;
+            const value = (await this.param.eval(parse)).toValue();
+            this.value = value;
+            
+            return this.value;
         }
         else
-            this.value = NullValue.copy();
+            return this.value = NullValue.copy();
+        
+        
+        // this.param = 
+        //     this.node.type == LIST
+        //     ? this.node[this.paramId]//.copy();
+        //     : this.node.paramFromId(this.paramId);
+
+        
+        // if (isValid(this.param))
+        // {
+        //     // const value = (await this.param.eval(parse)).toValue();
+        //     // this.value = value;
+        //     this.value = this.param;
+        // }
+        // else
+        //     this.value = NullValue.copy();
 
 
-        this.validate();
+        // this.validate();
 
-        return this;
+        // return this;
     }
 
 
@@ -90,6 +107,54 @@ extends GOperator
     toValue()
     {
         return this.value.copy();
+    }
+
+
+
+    pushValueUpdates(parse)
+    {
+        super.pushValueUpdates(parse);
+        if (this.node) this.node.pushValueUpdates(parse);
+    }
+    
+
+
+    invalidateInputs(parse, from, force)
+    {
+        super.invalidateInputs(parse, from, force);
+        if (this.node) this.node.invalidateInputs(parse, from, force);
+    }
+
+
+
+    initLoop(parse, nodeId)
+    {
+        const node = parse.parsedNodes.find(n => n.nodeId == this.nodeId);
+        node.initLoop(parse, nodeId);
+    }
+
+
+
+    invalidateLoop(parse, nodeId)
+    {
+        const node = parse.parsedNodes.find(n => n.nodeId == this.nodeId);
+        node.invalidateLoop(parse, nodeId);
+    }
+
+
+
+    iterateLoop(parse)
+    {
+        const node = parse.parsedNodes.find(n => n.nodeId == this.nodeId);
+        node.iterateLoop(parse);
+    }
+
+
+
+    resetLoop(parse, nodeId)
+    {
+        const node = parse.parsedNodes.find(n => n.nodeId == this.nodeId);
+        node.resetLoop(parse, nodeId);
     }
 
 

@@ -13,8 +13,8 @@ extends OperatorBase
 
         this.addOutput(new Output([TEXT_VALUE], this.output_genRequest));
 
-        this.addParam(this.paramName  = new SelectParam('name', 'name', false,  true,  true, ['day of week', 'month', 'font name'], 0));
-        this.addParam(this.paramIndex = new NumberParam('index', 'index', true,  true,  true, 1, 1));
+        this.addParam(this.paramName  = new SelectParam('name',  'name',  false, true, true, ['day of week', 'month', 'font name'], 0));
+        this.addParam(this.paramIndex = new NumberParam('index', 'index', true,  true, true, 1, 1));
     }
 
 
