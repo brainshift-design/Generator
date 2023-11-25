@@ -76,7 +76,7 @@ const presetRoughStar = '\
             "name": "random",\
             "renamed": "false",\
             "enabled": "true",\
-            "highlight": "7",\
+            "highlight": "1",\
             "x": "1438",\
             "y": "2361",\
             "z": "4",\
@@ -384,7 +384,7 @@ const presetRoughStar = '\
             "name": "freeze",\
             "renamed": "false",\
             "enabled": "false",\
-            "highlight": "1",\
+            "highlight": "2",\
             "x": "2128",\
             "y": "2058",\
             "z": "22"\
@@ -487,7 +487,7 @@ const presetRoughStar = '\
             "name": "",\
             "renamed": "false",\
             "enabled": "true",\
-            "highlight": "7",\
+            "highlight": "1",\
             "x": "1395",\
             "y": "2311",\
             "z": "29",\

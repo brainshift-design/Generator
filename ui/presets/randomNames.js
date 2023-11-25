@@ -194,7 +194,7 @@ const presetRandomNames = '\
             "name": "vowels",\
             "renamed": "true",\
             "enabled": "true",\
-            "highlight": "7",\
+            "highlight": "1",\
             "x": "4768",\
             "y": "5716",\
             "z": "12",\
@@ -360,7 +360,7 @@ const presetRandomNames = '\
             "name": "final%20name",\
             "renamed": "true",\
             "enabled": "true",\
-            "highlight": "7",\
+            "highlight": "1",\
             "x": "5914",\
             "y": "6027",\
             "z": "22",\
@@ -392,7 +392,7 @@ const presetRandomNames = '\
             "name": "syllable",\
             "renamed": "true",\
             "enabled": "true",\
-            "highlight": "7",\
+            "highlight": "1",\
             "x": "5489",\
             "y": "5683",\
             "z": "24",\
@@ -455,7 +455,7 @@ const presetRandomNames = '\
             "name": "consonants",\
             "renamed": "true",\
             "enabled": "true",\
-            "highlight": "7",\
+            "highlight": "1",\
             "x": "4769",\
             "y": "5588",\
             "z": "28",\

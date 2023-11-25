@@ -8,7 +8,7 @@ const presetNamesLogos = '\
             "name": "TEXT",\
             "renamed": "true",\
             "enabled": "true",\
-            "highlight": "3",\
+            "highlight": "4",\
             "x": "151",\
             "y": "1145",\
             "z": "0",\
@@ -428,7 +428,7 @@ const presetNamesLogos = '\
             "name": "vowels",\
             "renamed": "true",\
             "enabled": "true",\
-            "highlight": "7",\
+            "highlight": "1",\
             "x": "338",\
             "y": "1453",\
             "z": "26",\
@@ -477,7 +477,7 @@ const presetNamesLogos = '\
             "name": "random",\
             "renamed": "false",\
             "enabled": "true",\
-            "highlight": "7",\
+            "highlight": "1",\
             "x": "-1190",\
             "y": "608",\
             "z": "29",\
@@ -492,7 +492,7 @@ const presetNamesLogos = '\
             "name": "SHAPES",\
             "renamed": "true",\
             "enabled": "true",\
-            "highlight": "1",\
+            "highlight": "2",\
             "x": "166",\
             "y": "-923",\
             "z": "30",\
@@ -838,7 +838,7 @@ const presetNamesLogos = '\
             "name": "syllable",\
             "renamed": "true",\
             "enabled": "true",\
-            "highlight": "7",\
+            "highlight": "1",\
             "x": "1059",\
             "y": "1420",\
             "z": "49",\
@@ -871,7 +871,7 @@ const presetNamesLogos = '\
             "name": "SEEDS",\
             "renamed": "true",\
             "enabled": "true",\
-            "highlight": "7",\
+            "highlight": "1",\
             "x": "-1275",\
             "y": "534",\
             "z": "51",\
@@ -903,7 +903,7 @@ const presetNamesLogos = '\
             "name": "consonants",\
             "renamed": "true",\
             "enabled": "true",\
-            "highlight": "7",\
+            "highlight": "1",\
             "x": "339",\
             "y": "1325",\
             "z": "53",\
@@ -1079,7 +1079,7 @@ const presetNamesLogos = '\
             "name": "color",\
             "renamed": "false",\
             "enabled": "true",\
-            "highlight": "4",\
+            "highlight": "5",\
             "x": "503",\
             "y": "-91",\
             "z": "64",\

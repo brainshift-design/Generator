@@ -75,7 +75,7 @@ const presetNumberLine = '\
             "name": "repeat",\
             "renamed": "false",\
             "enabled": "true",\
-            "highlight": "1",\
+            "highlight": "2",\
             "x": "1069",\
             "y": "322.271",\
             "z": "4",\

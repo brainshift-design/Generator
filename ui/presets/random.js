@@ -135,7 +135,7 @@ const presetRandom = '\
             "name": "random",\
             "renamed": "false",\
             "enabled": "true",\
-            "highlight": "7",\
+            "highlight": "1",\
             "x": "950",\
             "y": "2751",\
             "z": "8",\

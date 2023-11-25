@@ -8,7 +8,7 @@ const presetWave = '\
             "name": "wave",\
             "renamed": "false",\
             "enabled": "true",\
-            "highlight": "7",\
+            "highlight": "1",\
             "x": "602",\
             "y": "2372",\
             "z": "0",\

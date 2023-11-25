@@ -109,7 +109,7 @@ const presetBasicVariables = '\
             "name": "color",\
             "renamed": "false",\
             "enabled": "true",\
-            "highlight": "4",\
+            "highlight": "5",\
             "x": "1040",\
             "y": "973",\
             "z": "7",\
@@ -331,7 +331,7 @@ const presetBasicVariables = '\
             "name": "",\
             "renamed": "false",\
             "enabled": "true",\
-            "highlight": "3",\
+            "highlight": "4",\
             "x": "987",\
             "y": "730",\
             "z": "25",\

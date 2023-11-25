@@ -86,7 +86,7 @@ const presetTextFromBackground = '\
             "name": "background",\
             "renamed": "true",\
             "enabled": "true",\
-            "highlight": "7",\
+            "highlight": "1",\
             "x": "2144",\
             "y": "3639.25",\
             "z": "5",\
@@ -155,7 +155,7 @@ const presetTextFromBackground = '\
             "name": "condition",\
             "renamed": "false",\
             "enabled": "true",\
-            "highlight": "7",\
+            "highlight": "1",\
             "x": "2650",\
             "y": "3261",\
             "z": "9",\

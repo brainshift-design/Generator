@@ -41,7 +41,7 @@ const presetIfElse = '\
             "name": "if%2Felse",\
             "renamed": "false",\
             "enabled": "true",\
-            "highlight": "2",\
+            "highlight": "3",\
             "x": "2874",\
             "y": "3953",\
             "z": "2",\

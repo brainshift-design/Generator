@@ -242,7 +242,7 @@ const presetInvalidColors = '\
         "name": "",\
         "renamed": "false",\
         "enabled": "true",\
-        "highlight": "1",\
+        "highlight": "2",\
         "x": "3963",\
         "y": "5136",\
         "z": "14",\

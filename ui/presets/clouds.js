@@ -415,7 +415,7 @@ const presetClouds = '\
             "name": "random",\
             "renamed": "false",\
             "enabled": "true",\
-            "highlight": "7",\
+            "highlight": "1",\
             "x": "2435",\
             "y": "3145",\
             "z": "25",\
@@ -611,7 +611,7 @@ const presetClouds = '\
             "name": "",\
             "renamed": "false",\
             "enabled": "true",\
-            "highlight": "7",\
+            "highlight": "1",\
             "x": "3367",\
             "y": "2655",\
             "z": "37",\

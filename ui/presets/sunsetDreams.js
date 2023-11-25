@@ -159,7 +159,7 @@ const presetSunsetDreams = '\
             "name": "random",\
             "renamed": "false",\
             "enabled": "true",\
-            "highlight": "7",\
+            "highlight": "1",\
             "x": "-1920",\
             "y": "596",\
             "z": "10",\

@@ -63,7 +63,7 @@ const presetQuadraticFormula = '\
             "name": "a",\
             "renamed": "true",\
             "enabled": "true",\
-            "highlight": "7",\
+            "highlight": "1",\
             "x": "1535",\
             "y": "3490",\
             "z": "5",\
@@ -80,7 +80,7 @@ const presetQuadraticFormula = '\
             "name": "b",\
             "renamed": "true",\
             "enabled": "true",\
-            "highlight": "7",\
+            "highlight": "1",\
             "x": "1534",\
             "y": "3562",\
             "z": "6",\
@@ -97,7 +97,7 @@ const presetQuadraticFormula = '\
             "name": "c",\
             "renamed": "true",\
             "enabled": "true",\
-            "highlight": "7",\
+            "highlight": "1",\
             "x": "1534",\
             "y": "3634",\
             "z": "7",\
@@ -290,7 +290,7 @@ const presetQuadraticFormula = '\
             "name": "number",\
             "renamed": "false",\
             "enabled": "true",\
-            "highlight": "7",\
+            "highlight": "1",\
             "x": "2803",\
             "y": "3519",\
             "z": "19",\
@@ -307,7 +307,7 @@ const presetQuadraticFormula = '\
             "name": "number",\
             "renamed": "false",\
             "enabled": "true",\
-            "highlight": "7",\
+            "highlight": "1",\
             "x": "2804",\
             "y": "3629",\
             "z": "20",\

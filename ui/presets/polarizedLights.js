@@ -84,7 +84,7 @@ const presetPolarizedLights = '\
             "name": "random",\
             "renamed": "false",\
             "enabled": "true",\
-            "highlight": "7",\
+            "highlight": "1",\
             "x": "3048",\
             "y": "2624",\
             "z": "5",\
@@ -272,7 +272,7 @@ const presetPolarizedLights = '\
             "name": "",\
             "renamed": "false",\
             "enabled": "true",\
-            "highlight": "7",\
+            "highlight": "1",\
             "x": "3005",\
             "y": "2576",\
             "z": "17",\

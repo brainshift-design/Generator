@@ -19,7 +19,7 @@ const presetRandomSeeds = '\
             "name": "random",\
             "renamed": "false",\
             "enabled": "true",\
-            "highlight": "4",\
+            "highlight": "5",\
             "x": "3042",\
             "y": "5637",\
             "z": "1",\
@@ -76,7 +76,7 @@ const presetRandomSeeds = '\
             "name": "random",\
             "renamed": "false",\
             "enabled": "true",\
-            "highlight": "4",\
+            "highlight": "5",\
             "x": "3042",\
             "y": "5837",\
             "z": "5",\
@@ -202,7 +202,7 @@ const presetRandomSeeds = '\
             "name": "",\
             "renamed": "false",\
             "enabled": "true",\
-            "highlight": "1",\
+            "highlight": "2",\
             "x": "2763",\
             "y": "5401",\
             "z": "13",\
@@ -245,7 +245,7 @@ const presetRandomSeeds = '\
             "name": "random",\
             "renamed": "false",\
             "enabled": "true",\
-            "highlight": "5",\
+            "highlight": "6",\
             "x": "2844",\
             "y": "5734",\
             "z": "16",\
@@ -328,7 +328,7 @@ const presetRandomSeeds = '\
             "name": "random",\
             "renamed": "false",\
             "enabled": "true",\
-            "highlight": "1",\
+            "highlight": "2",\
             "x": "4285.17",\
             "y": "5586",\
             "z": "22",\
@@ -359,7 +359,7 @@ const presetRandomSeeds = '\
             "name": "seeds",\
             "renamed": "true",\
             "enabled": "true",\
-            "highlight": "5",\
+            "highlight": "6",\
             "x": "4770.56",\
             "y": "5585",\
             "z": "24",\
@@ -409,7 +409,7 @@ const presetRandomSeeds = '\
             "name": "random%20W",\
             "renamed": "true",\
             "enabled": "true",\
-            "highlight": "4",\
+            "highlight": "5",\
             "x": "5085",\
             "y": "5122",\
             "z": "27",\
@@ -425,7 +425,7 @@ const presetRandomSeeds = '\
             "name": "random%20H",\
             "renamed": "true",\
             "enabled": "true",\
-            "highlight": "4",\
+            "highlight": "5",\
             "x": "5085",\
             "y": "5312",\
             "z": "28",\
@@ -470,7 +470,7 @@ const presetRandomSeeds = '\
             "name": "random%20W",\
             "renamed": "true",\
             "enabled": "true",\
-            "highlight": "4",\
+            "highlight": "5",\
             "x": "5085",\
             "y": "5504",\
             "z": "31",\
@@ -486,7 +486,7 @@ const presetRandomSeeds = '\
             "name": "random%20H",\
             "renamed": "true",\
             "enabled": "true",\
-            "highlight": "4",\
+            "highlight": "5",\
             "x": "5084.56",\
             "y": "5701",\
             "z": "32",\
@@ -618,7 +618,7 @@ const presetRandomSeeds = '\
             "name": "freeze",\
             "renamed": "false",\
             "enabled": "true",\
-            "highlight": "5",\
+            "highlight": "6",\
             "x": "4608",\
             "y": "5585",\
             "z": "41"\
@@ -629,7 +629,7 @@ const presetRandomSeeds = '\
             "name": "",\
             "renamed": "false",\
             "enabled": "true",\
-            "highlight": "5",\
+            "highlight": "6",\
             "x": "4249",\
             "y": "5853",\
             "z": "42",\

@@ -635,7 +635,7 @@ const presetAvatars = '\
             "name": "",\
             "renamed": "false",\
             "enabled": "true",\
-            "highlight": "7",\
+            "highlight": "1",\
             "x": "-1481",\
             "y": "6688",\
             "z": "38",\
@@ -1074,7 +1074,7 @@ const presetAvatars = '\
             "name": "GLASSES",\
             "renamed": "true",\
             "enabled": "true",\
-            "highlight": "3",\
+            "highlight": "4",\
             "x": "930",\
             "y": "7495",\
             "z": "68",\
@@ -1475,7 +1475,7 @@ const presetAvatars = '\
             "name": "",\
             "renamed": "false",\
             "enabled": "true",\
-            "highlight": "7",\
+            "highlight": "1",\
             "x": "927",\
             "y": "6364",\
             "z": "90",\
@@ -1522,7 +1522,7 @@ const presetAvatars = '\
             "name": "",\
             "renamed": "false",\
             "enabled": "true",\
-            "highlight": "1",\
+            "highlight": "2",\
             "x": "1739",\
             "y": "6936",\
             "z": "93",\
@@ -1957,7 +1957,7 @@ const presetAvatars = '\
             "name": "",\
             "renamed": "false",\
             "enabled": "true",\
-            "highlight": "5",\
+            "highlight": "6",\
             "x": "1719",\
             "y": "6492",\
             "z": "120",\

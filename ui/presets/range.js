@@ -135,7 +135,7 @@ const presetRange = '\
             "name": "range",\
             "renamed": "false",\
             "enabled": "true",\
-            "highlight": "7",\
+            "highlight": "1",\
             "x": "788",\
             "y": "2485",\
             "z": "8",\

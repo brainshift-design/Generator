@@ -25,7 +25,7 @@ const presetSequence = '\
             "name": "sequence",\
             "renamed": "false",\
             "enabled": "true",\
-            "highlight": "7",\
+            "highlight": "1",\
             "x": "707",\
             "y": "2229",\
             "z": "1",\

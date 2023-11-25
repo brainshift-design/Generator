@@ -144,7 +144,7 @@ const presetNoise = '\
             "name": "noise",\
             "renamed": "false",\
             "enabled": "true",\
-            "highlight": "7",\
+            "highlight": "1",\
             "x": "1600",\
             "y": "3400",\
             "z": "9",\

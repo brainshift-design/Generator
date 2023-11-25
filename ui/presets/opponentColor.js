@@ -8,7 +8,7 @@ const presetOpponentColor = '\
             "name": "",\
             "renamed": "false",\
             "enabled": "true",\
-            "highlight": "3",\
+            "highlight": "4",\
             "x": "2986.24",\
             "y": "4034",\
             "z": "0",\
@@ -36,7 +36,7 @@ const presetOpponentColor = '\
             "name": "Large%20cones",\
             "renamed": "true",\
             "enabled": "true",\
-            "highlight": "1",\
+            "highlight": "2",\
             "x": "2395",\
             "y": "4186",\
             "z": "2",\
@@ -53,7 +53,7 @@ const presetOpponentColor = '\
             "name": "math",\
             "renamed": "true",\
             "enabled": "true",\
-            "highlight": "7",\
+            "highlight": "1",\
             "x": "2796.24",\
             "y": "4039",\
             "z": "3",\
@@ -100,7 +100,7 @@ const presetOpponentColor = '\
             "name": "",\
             "renamed": "false",\
             "enabled": "true",\
-            "highlight": "4",\
+            "highlight": "5",\
             "x": "2985.24",\
             "y": "4147",\
             "z": "6",\
@@ -158,7 +158,7 @@ const presetOpponentColor = '\
             "name": "math",\
             "renamed": "true",\
             "enabled": "true",\
-            "highlight": "7",\
+            "highlight": "1",\
             "x": "3009.24",\
             "y": "4181",\
             "z": "10",\
@@ -203,7 +203,7 @@ const presetOpponentColor = '\
             "name": "Medium%20cones",\
             "renamed": "true",\
             "enabled": "true",\
-            "highlight": "4",\
+            "highlight": "5",\
             "x": "2395",\
             "y": "4084",\
             "z": "13",\
@@ -232,7 +232,7 @@ const presetOpponentColor = '\
             "name": "",\
             "renamed": "false",\
             "enabled": "true",\
-            "highlight": "1",\
+            "highlight": "2",\
             "x": "2985.24",\
             "y": "4215",\
             "z": "15",\
@@ -249,7 +249,7 @@ const presetOpponentColor = '\
             "name": "Small%20cones",\
             "renamed": "true",\
             "enabled": "true",\
-            "highlight": "5",\
+            "highlight": "6",\
             "x": "2396",\
             "y": "3984",\
             "z": "16",\
@@ -266,7 +266,7 @@ const presetOpponentColor = '\
             "name": "",\
             "renamed": "false",\
             "enabled": "true",\
-            "highlight": "5",\
+            "highlight": "6",\
             "x": "2986.24",\
             "y": "3966",\
             "z": "17",\
@@ -306,7 +306,7 @@ const presetOpponentColor = '\
             "name": "math",\
             "renamed": "true",\
             "enabled": "true",\
-            "highlight": "7",\
+            "highlight": "1",\
             "x": "3009.24",\
             "y": "3997",\
             "z": "20",\

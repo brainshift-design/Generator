@@ -26,7 +26,7 @@ const presetOrganize = '\
             "name": "number",\
             "renamed": "false",\
             "enabled": "true",\
-            "highlight": "5",\
+            "highlight": "6",\
             "x": "908",\
             "y": "1625",\
             "z": "1",\
@@ -73,7 +73,7 @@ const presetOrganize = '\
             "name": "number",\
             "renamed": "false",\
             "enabled": "true",\
-            "highlight": "1",\
+            "highlight": "2",\
             "x": "293",\
             "y": "1626",\
             "z": "4",\
@@ -91,7 +91,7 @@ const presetOrganize = '\
             "name": "number",\
             "renamed": "false",\
             "enabled": "true",\
-            "highlight": "4",\
+            "highlight": "5",\
             "x": "754",\
             "y": "1625",\
             "z": "5",\
@@ -127,7 +127,7 @@ const presetOrganize = '\
             "name": "number",\
             "renamed": "false",\
             "enabled": "true",\
-            "highlight": "2",\
+            "highlight": "3",\
             "x": "447",\
             "y": "1626",\
             "z": "7",\
@@ -145,7 +145,7 @@ const presetOrganize = '\
             "name": "",\
             "renamed": "false",\
             "enabled": "true",\
-            "highlight": "5",\
+            "highlight": "6",\
             "x": "154",\
             "y": "2031",\
             "z": "8",\
@@ -264,7 +264,7 @@ const presetOrganize = '\
             "name": "",\
             "renamed": "false",\
             "enabled": "true",\
-            "highlight": "3",\
+            "highlight": "4",\
             "x": "689",\
             "y": "2029",\
             "z": "16",\
@@ -280,7 +280,7 @@ const presetOrganize = '\
             "name": "number",\
             "renamed": "false",\
             "enabled": "true",\
-            "highlight": "3",\
+            "highlight": "4",\
             "x": "600",\
             "y": "1625",\
             "z": "17",\

@@ -117,7 +117,7 @@ const presetLoopLock = '\
             "name": "combine",\
             "renamed": "false",\
             "enabled": "true",\
-            "highlight": "7",\
+            "highlight": "1",\
             "x": "751",\
             "y": "479",\
             "z": "7",\

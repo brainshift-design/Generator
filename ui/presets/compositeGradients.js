@@ -63,7 +63,7 @@ const presetCompositeGradients = '\
             "name": "random",\
             "renamed": "false",\
             "enabled": "true",\
-            "highlight": "7",\
+            "highlight": "1",\
             "x": "4788",\
             "y": "5861",\
             "z": "3",\
@@ -264,7 +264,7 @@ const presetCompositeGradients = '\
             "name": "",\
             "renamed": "false",\
             "enabled": "true",\
-            "highlight": "7",\
+            "highlight": "1",\
             "x": "4745",\
             "y": "5817",\
             "z": "15",\
@@ -395,7 +395,7 @@ const presetCompositeGradients = '\
             "name": "",\
             "renamed": "false",\
             "enabled": "true",\
-            "highlight": "6",\
+            "highlight": "7",\
             "x": "5554",\
             "y": "5280",\
             "z": "23",\

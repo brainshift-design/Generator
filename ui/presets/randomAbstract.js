@@ -92,7 +92,7 @@ const presetRandomAbstract = '\
             "name": "random",\
             "renamed": "false",\
             "enabled": "true",\
-            "highlight": "7",\
+            "highlight": "1",\
             "x": "-201",\
             "y": "662",\
             "z": "4",\
@@ -171,7 +171,7 @@ const presetRandomAbstract = '\
             "name": "noise",\
             "renamed": "false",\
             "enabled": "true",\
-            "highlight": "1",\
+            "highlight": "2",\
             "x": "507",\
             "y": "-369",\
             "z": "9",\
@@ -205,7 +205,7 @@ const presetRandomAbstract = '\
             "name": "noise",\
             "renamed": "false",\
             "enabled": "true",\
-            "highlight": "7",\
+            "highlight": "1",\
             "x": "1128",\
             "y": "318",\
             "z": "11",\
@@ -307,7 +307,7 @@ const presetRandomAbstract = '\
             "name": "noise",\
             "renamed": "false",\
             "enabled": "true",\
-            "highlight": "7",\
+            "highlight": "1",\
             "x": "856",\
             "y": "315",\
             "z": "17",\
@@ -487,7 +487,7 @@ const presetRandomAbstract = '\
             "name": "noise",\
             "renamed": "false",\
             "enabled": "true",\
-            "highlight": "7",\
+            "highlight": "1",\
             "x": "993",\
             "y": "317",\
             "z": "28",\
@@ -562,7 +562,7 @@ const presetRandomAbstract = '\
             "name": "",\
             "renamed": "false",\
             "enabled": "true",\
-            "highlight": "7",\
+            "highlight": "1",\
             "x": "-248",\
             "y": "620",\
             "z": "33",\

@@ -251,7 +251,7 @@ const presetBlurryBackgrounds = '\
             "name": "",\
             "renamed": "false",\
             "enabled": "true",\
-            "highlight": "7",\
+            "highlight": "1",\
             "x": "3579",\
             "y": "727",\
             "z": "15",\
@@ -382,7 +382,7 @@ const presetBlurryBackgrounds = '\
             "name": "random",\
             "renamed": "false",\
             "enabled": "true",\
-            "highlight": "7",\
+            "highlight": "1",\
             "x": "3631",\
             "y": "766",\
             "z": "23",\

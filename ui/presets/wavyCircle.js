@@ -8,7 +8,7 @@ const presetWobblyCircle = '\
             "name": "",\
             "renamed": "false",\
             "enabled": "true",\
-            "highlight": "5",\
+            "highlight": "6",\
             "x": "2533",\
             "y": "2097",\
             "z": "0",\
@@ -25,7 +25,7 @@ const presetWobblyCircle = '\
             "name": "",\
             "renamed": "false",\
             "enabled": "true",\
-            "highlight": "5",\
+            "highlight": "6",\
             "x": "2660",\
             "y": "1951",\
             "z": "1",\
@@ -375,7 +375,7 @@ const presetWobblyCircle = '\
             "name": "",\
             "renamed": "false",\
             "enabled": "true",\
-            "highlight": "7",\
+            "highlight": "1",\
             "x": "2279",\
             "y": "2510",\
             "z": "28",\

@@ -8,7 +8,7 @@ const presetTintsAndShades = '\
             "name": "color",\
             "renamed": "false",\
             "enabled": "true",\
-            "highlight": "7",\
+            "highlight": "1",\
             "x": "2792",\
             "y": "3998",\
             "z": "0",\
@@ -147,7 +147,7 @@ const presetTintsAndShades = '\
             "name": "list",\
             "renamed": "false",\
             "enabled": "true",\
-            "highlight": "7",\
+            "highlight": "1",\
             "x": "3669",\
             "y": "4005",\
             "z": "8",\

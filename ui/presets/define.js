@@ -158,7 +158,7 @@ const presetDefine = '\
             "name": "define",\
             "renamed": "false",\
             "enabled": "true",\
-            "highlight": "7",\
+            "highlight": "1",\
             "x": "893",\
             "y": "2558",\
             "z": "10"\

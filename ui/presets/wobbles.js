@@ -134,7 +134,7 @@ const presetWobbles = '\
             "name": "",\
             "renamed": "true",\
             "enabled": "true",\
-            "highlight": "4",\
+            "highlight": "5",\
             "x": "2663",\
             "y": "731",\
             "z": "8",\
@@ -335,7 +335,7 @@ const presetWobbles = '\
             "name": "",\
             "renamed": "true",\
             "enabled": "true",\
-            "highlight": "5",\
+            "highlight": "6",\
             "x": "1237.1",\
             "y": "418",\
             "z": "21",\
@@ -419,7 +419,7 @@ const presetWobbles = '\
             "name": "sequence",\
             "renamed": "false",\
             "enabled": "true",\
-            "highlight": "2",\
+            "highlight": "3",\
             "x": "2458",\
             "y": "1719",\
             "z": "26",\

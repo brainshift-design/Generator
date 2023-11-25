@@ -470,7 +470,7 @@ const presetClock = '\
             "name": "timer",\
             "renamed": "false",\
             "enabled": "false",\
-            "highlight": "1",\
+            "highlight": "2",\
             "x": "7997",\
             "y": "5225",\
             "z": "28",\

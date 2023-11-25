@@ -27,7 +27,7 @@ const presetPaletteFromColor = '\
             "name": "list",\
             "renamed": "false",\
             "enabled": "true",\
-            "highlight": "7",\
+            "highlight": "1",\
             "x": "4753.44",\
             "y": "5398",\
             "z": "1",\
@@ -85,7 +85,7 @@ const presetPaletteFromColor = '\
             "name": "color",\
             "renamed": "false",\
             "enabled": "true",\
-            "highlight": "7",\
+            "highlight": "1",\
             "x": "4035",\
             "y": "5368",\
             "z": "4",\
@@ -152,7 +152,7 @@ const presetPaletteFromColor = '\
             "name": "",\
             "renamed": "false",\
             "enabled": "true",\
-            "highlight": "3",\
+            "highlight": "4",\
             "x": "4258",\
             "y": "5562",\
             "z": "8",\

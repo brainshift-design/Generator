@@ -137,7 +137,7 @@ const presetNodeBasics = '\
             "name": "",\
             "renamed": "false",\
             "enabled": "true",\
-            "highlight": "4",\
+            "highlight": "5",\
             "x": "1486",\
             "y": "877",\
             "z": "10",\
@@ -153,7 +153,7 @@ const presetNodeBasics = '\
             "name": "",\
             "renamed": "false",\
             "enabled": "true",\
-            "highlight": "4",\
+            "highlight": "5",\
             "x": "1486",\
             "y": "987",\
             "z": "11",\
@@ -268,7 +268,7 @@ const presetNodeBasics = '\
             "name": "",\
             "renamed": "false",\
             "enabled": "true",\
-            "highlight": "1",\
+            "highlight": "2",\
             "x": "647",\
             "y": "193",\
             "z": "21",\
@@ -285,7 +285,7 @@ const presetNodeBasics = '\
             "name": "",\
             "renamed": "false",\
             "enabled": "true",\
-            "highlight": "3",\
+            "highlight": "4",\
             "x": "938",\
             "y": "409",\
             "z": "22",\

@@ -63,7 +63,7 @@ const presetBrushStrokes = '\
             "name": "number",\
             "renamed": "false",\
             "enabled": "true",\
-            "highlight": "2",\
+            "highlight": "3",\
             "x": "4954",\
             "y": "7207",\
             "z": "3",\
@@ -710,7 +710,7 @@ const presetBrushStrokes = '\
             "name": "number",\
             "renamed": "false",\
             "enabled": "true",\
-            "highlight": "2",\
+            "highlight": "3",\
             "x": "5009",\
             "y": "6381",\
             "z": "43",\
@@ -859,7 +859,7 @@ const presetBrushStrokes = '\
             "name": "gradient",\
             "renamed": "false",\
             "enabled": "true",\
-            "highlight": "3",\
+            "highlight": "4",\
             "x": "6927",\
             "y": "6718",\
             "z": "52",\
@@ -923,7 +923,7 @@ const presetBrushStrokes = '\
             "name": "",\
             "renamed": "false",\
             "enabled": "true",\
-            "highlight": "7",\
+            "highlight": "1",\
             "x": "4658",\
             "y": "6615",\
             "z": "56",\
@@ -1065,7 +1065,7 @@ const presetBrushStrokes = '\
             "name": "number",\
             "renamed": "false",\
             "enabled": "true",\
-            "highlight": "2",\
+            "highlight": "3",\
             "x": "5377",\
             "y": "6533",\
             "z": "65",\
@@ -1180,7 +1180,7 @@ const presetBrushStrokes = '\
             "name": "random",\
             "renamed": "false",\
             "enabled": "true",\
-            "highlight": "7",\
+            "highlight": "1",\
             "x": "4698",\
             "y": "6657",\
             "z": "72",\
@@ -1212,7 +1212,7 @@ const presetBrushStrokes = '\
             "name": "repeat",\
             "renamed": "false",\
             "enabled": "true",\
-            "highlight": "1",\
+            "highlight": "2",\
             "x": "8215",\
             "y": "7347",\
             "z": "74",\
@@ -1227,7 +1227,7 @@ const presetBrushStrokes = '\
             "name": "sequence",\
             "renamed": "false",\
             "enabled": "true",\
-            "highlight": "7",\
+            "highlight": "1",\
             "x": "4374",\
             "y": "7421",\
             "z": "75",\

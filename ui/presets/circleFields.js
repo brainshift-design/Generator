@@ -419,7 +419,7 @@ const presetCircleFields = '\
             "name": "",\
             "renamed": "false",\
             "enabled": "true",\
-            "highlight": "7",\
+            "highlight": "1",\
             "x": "-1093",\
             "y": "354",\
             "z": "24",\

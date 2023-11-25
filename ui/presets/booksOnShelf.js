@@ -579,7 +579,7 @@ const presetBooksOnShelf = '\
             "name": "",\
             "renamed": "false",\
             "enabled": "true",\
-            "highlight": "4",\
+            "highlight": "5",\
             "x": "3711",\
             "y": "-1658",\
             "z": "35",\
@@ -595,7 +595,7 @@ const presetBooksOnShelf = '\
             "name": "",\
             "renamed": "false",\
             "enabled": "true",\
-            "highlight": "5",\
+            "highlight": "6",\
             "x": "4876",\
             "y": "-725",\
             "z": "36",\
@@ -803,7 +803,7 @@ const presetBooksOnShelf = '\
             "name": "",\
             "renamed": "false",\
             "enabled": "true",\
-            "highlight": "3",\
+            "highlight": "4",\
             "x": "6732",\
             "y": "-515",\
             "z": "49",\
@@ -913,7 +913,7 @@ const presetBooksOnShelf = '\
             "name": "",\
             "renamed": "false",\
             "enabled": "true",\
-            "highlight": "4",\
+            "highlight": "5",\
             "x": "3720",\
             "y": "-1051",\
             "z": "56",\
@@ -1009,7 +1009,7 @@ const presetBooksOnShelf = '\
             "name": "seeds",\
             "renamed": "true",\
             "enabled": "true",\
-            "highlight": "7",\
+            "highlight": "1",\
             "x": "1784",\
             "y": "-933",\
             "z": "62",\
@@ -1169,7 +1169,7 @@ const presetBooksOnShelf = '\
             "name": "combine",\
             "renamed": "false",\
             "enabled": "true",\
-            "highlight": "7",\
+            "highlight": "1",\
             "x": "6408",\
             "y": "-458",\
             "z": "72",\
@@ -1249,7 +1249,7 @@ const presetBooksOnShelf = '\
             "name": "probability",\
             "renamed": "false",\
             "enabled": "true",\
-            "highlight": "5",\
+            "highlight": "6",\
             "x": "4327",\
             "y": "150",\
             "z": "77",\

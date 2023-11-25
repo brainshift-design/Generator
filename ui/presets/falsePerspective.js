@@ -23,7 +23,7 @@ const presetFalsePerspective = '\
             "name": "range",\
             "renamed": "false",\
             "enabled": "true",\
-            "highlight": "2",\
+            "highlight": "3",\
             "x": "847",\
             "y": "2277",\
             "z": "1",\
@@ -100,7 +100,7 @@ const presetFalsePerspective = '\
             "name": "COUNT",\
             "renamed": "true",\
             "enabled": "true",\
-            "highlight": "2",\
+            "highlight": "3",\
             "x": "287",\
             "y": "942",\
             "z": "6",\
@@ -176,7 +176,7 @@ const presetFalsePerspective = '\
             "name": "repeat",\
             "renamed": "false",\
             "enabled": "true",\
-            "highlight": "2",\
+            "highlight": "3",\
             "x": "2070",\
             "y": "915",\
             "z": "11",\
@@ -338,7 +338,7 @@ const presetFalsePerspective = '\
             "name": "select",\
             "renamed": "false",\
             "enabled": "true",\
-            "highlight": "3",\
+            "highlight": "4",\
             "x": "1201",\
             "y": "184",\
             "z": "21",\
@@ -400,7 +400,7 @@ const presetFalsePerspective = '\
             "name": "repeat",\
             "renamed": "false",\
             "enabled": "true",\
-            "highlight": "2",\
+            "highlight": "3",\
             "x": "2091",\
             "y": "2207",\
             "z": "25",\
@@ -521,7 +521,7 @@ const presetFalsePerspective = '\
             "name": "select",\
             "renamed": "false",\
             "enabled": "true",\
-            "highlight": "3",\
+            "highlight": "4",\
             "x": "1201",\
             "y": "611",\
             "z": "33",\

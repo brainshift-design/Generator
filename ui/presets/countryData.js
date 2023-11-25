@@ -357,7 +357,7 @@ const presetCountryData = '\
             "name": "repeat",\
             "renamed": "false",\
             "enabled": "true",\
-            "highlight": "4",\
+            "highlight": "5",\
             "x": "6766",\
             "y": "1230",\
             "z": "23",\
@@ -416,7 +416,7 @@ const presetCountryData = '\
             "name": "count",\
             "renamed": "false",\
             "enabled": "true",\
-            "highlight": "4",\
+            "highlight": "5",\
             "x": "6565",\
             "y": "1228",\
             "z": "27",\
@@ -465,7 +465,7 @@ const presetCountryData = '\
             "name": "",\
             "renamed": "false",\
             "enabled": "true",\
-            "highlight": "4",\
+            "highlight": "5",\
             "x": "6499",\
             "y": "1371",\
             "z": "30",\

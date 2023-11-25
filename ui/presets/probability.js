@@ -209,7 +209,7 @@ const presetProbability = '\
             "name": "probability",\
             "renamed": "false",\
             "enabled": "true",\
-            "highlight": "7",\
+            "highlight": "1",\
             "x": "1197",\
             "y": "3202",\
             "z": "13",\

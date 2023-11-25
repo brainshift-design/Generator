@@ -121,7 +121,7 @@ const presetSelect = '\
             "name": "select",\
             "renamed": "false",\
             "enabled": "true",\
-            "highlight": "4",\
+            "highlight": "5",\
             "x": "2073",\
             "y": "3181",\
             "z": "8",\

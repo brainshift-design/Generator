@@ -21,7 +21,7 @@ const presetColorSwatches = '\
             "name": "color",\
             "renamed": "false",\
             "enabled": "true",\
-            "highlight": "7",\
+            "highlight": "1",\
             "x": "3447",\
             "y": "2800",\
             "z": "1",\

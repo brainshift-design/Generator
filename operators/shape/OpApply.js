@@ -68,7 +68,6 @@ extends OpShape
     {
         super.updateParams();
 
-
         this.paramReplace.enableControlText(true);
 
         updateParamConditionText(this.paramReplace, this.paramReplace.isUnknown(), false, 1);

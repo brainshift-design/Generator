@@ -24,7 +24,7 @@ const presetWavyDots = '\
             "name": "sequence",\
             "renamed": "false",\
             "enabled": "true",\
-            "highlight": "2",\
+            "highlight": "3",\
             "x": "90",\
             "y": "896",\
             "z": "1",\
@@ -102,7 +102,7 @@ const presetWavyDots = '\
             "name": "sequence%20Y",\
             "renamed": "true",\
             "enabled": "true",\
-            "highlight": "4",\
+            "highlight": "5",\
             "x": "901",\
             "y": "1142",\
             "z": "6",\
@@ -118,7 +118,7 @@ const presetWavyDots = '\
             "name": "acceleration",\
             "renamed": "true",\
             "enabled": "true",\
-            "highlight": "1",\
+            "highlight": "2",\
             "x": "579",\
             "y": "1608",\
             "z": "7",\
@@ -179,7 +179,7 @@ const presetWavyDots = '\
             "name": "sequence%20X",\
             "renamed": "true",\
             "enabled": "true",\
-            "highlight": "4",\
+            "highlight": "5",\
             "x": "1081",\
             "y": "877",\
             "z": "11",\
@@ -223,7 +223,7 @@ const presetWavyDots = '\
             "name": "noise",\
             "renamed": "false",\
             "enabled": "true",\
-            "highlight": "5",\
+            "highlight": "6",\
             "x": "903",\
             "y": "1318",\
             "z": "14",\
@@ -241,7 +241,7 @@ const presetWavyDots = '\
             "name": "offset%20rate",\
             "renamed": "true",\
             "enabled": "true",\
-            "highlight": "1",\
+            "highlight": "2",\
             "x": "736",\
             "y": "1559",\
             "z": "15",\

@@ -60,7 +60,7 @@ const presetLinesOfFire = '\
             "name": "random",\
             "renamed": "false",\
             "enabled": "true",\
-            "highlight": "7",\
+            "highlight": "1",\
             "x": "2809",\
             "y": "2262",\
             "z": "3",\
@@ -308,7 +308,7 @@ const presetLinesOfFire = '\
             "name": "",\
             "renamed": "false",\
             "enabled": "true",\
-            "highlight": "7",\
+            "highlight": "1",\
             "x": "2762",\
             "y": "2209",\
             "z": "18",\
@@ -361,7 +361,7 @@ const presetLinesOfFire = '\
             "name": "number",\
             "renamed": "false",\
             "enabled": "true",\
-            "highlight": "6",\
+            "highlight": "7",\
             "x": "3813",\
             "y": "2133",\
             "z": "21",\

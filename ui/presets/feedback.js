@@ -8,7 +8,7 @@ const presetFeedback = '\
             "name": "start",\
             "renamed": "false",\
             "enabled": "true",\
-            "highlight": "4",\
+            "highlight": "5",\
             "x": "2716",\
             "y": "336",\
             "z": "0",\

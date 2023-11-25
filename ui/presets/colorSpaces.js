@@ -28,7 +28,7 @@ const presetColorSpaces = '\
             "name": "color",\
             "renamed": "false",\
             "enabled": "true",\
-            "highlight": "7",\
+            "highlight": "1",\
             "x": "2022",\
             "y": "2835",\
             "z": "1",\

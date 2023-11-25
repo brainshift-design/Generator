@@ -204,7 +204,7 @@ const presetTargets = '\
             "name": "repeat",\
             "renamed": "false",\
             "enabled": "true",\
-            "highlight": "5",\
+            "highlight": "6",\
             "x": "7350.12",\
             "y": "6938",\
             "z": "12",\
@@ -233,7 +233,7 @@ const presetTargets = '\
             "name": "random",\
             "renamed": "false",\
             "enabled": "true",\
-            "highlight": "4",\
+            "highlight": "5",\
             "x": "6395",\
             "y": "7112",\
             "z": "14",\

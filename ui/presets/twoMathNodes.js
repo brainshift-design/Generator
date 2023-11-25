@@ -75,7 +75,7 @@ const presetTwoMathNodes = '\
             "name": "math",\
             "renamed": "false",\
             "enabled": "true",\
-            "highlight": "2",\
+            "highlight": "3",\
             "x": "1016",\
             "y": "1463",\
             "z": "4",\
@@ -221,7 +221,7 @@ const presetTwoMathNodes = '\
             "name": "",\
             "renamed": "false",\
             "enabled": "true",\
-            "highlight": "4",\
+            "highlight": "5",\
             "x": "1649",\
             "y": "1793",\
             "z": "13",\
@@ -254,7 +254,7 @@ const presetTwoMathNodes = '\
             "name": "math",\
             "renamed": "false",\
             "enabled": "true",\
-            "highlight": "4",\
+            "highlight": "5",\
             "x": "2022",\
             "y": "2798",\
             "z": "15",\
@@ -311,7 +311,7 @@ const presetTwoMathNodes = '\
             "name": "math",\
             "renamed": "false",\
             "enabled": "true",\
-            "highlight": "2",\
+            "highlight": "3",\
             "x": "1055",\
             "y": "2799",\
             "z": "19",\
@@ -378,7 +378,7 @@ const presetTwoMathNodes = '\
             "name": "",\
             "renamed": "false",\
             "enabled": "true",\
-            "highlight": "4",\
+            "highlight": "5",\
             "x": "1690",\
             "y": "1214",\
             "z": "23",\
@@ -411,7 +411,7 @@ const presetTwoMathNodes = '\
             "name": "math",\
             "renamed": "false",\
             "enabled": "true",\
-            "highlight": "4",\
+            "highlight": "5",\
             "x": "1960",\
             "y": "1489",\
             "z": "25",\
@@ -455,7 +455,7 @@ const presetTwoMathNodes = '\
             "name": "math",\
             "renamed": "false",\
             "enabled": "true",\
-            "highlight": "4",\
+            "highlight": "5",\
             "x": "1959",\
             "y": "2002",\
             "z": "28",\
@@ -511,7 +511,7 @@ const presetTwoMathNodes = '\
             "name": "",\
             "renamed": "false",\
             "enabled": "true",\
-            "highlight": "2",\
+            "highlight": "3",\
             "x": "811.359",\
             "y": "1213",\
             "z": "32",\
@@ -567,7 +567,7 @@ const presetTwoMathNodes = '\
             "name": "",\
             "renamed": "false",\
             "enabled": "true",\
-            "highlight": "2",\
+            "highlight": "3",\
             "x": "759",\
             "y": "2465.36",\
             "z": "36",\
@@ -595,7 +595,7 @@ const presetTwoMathNodes = '\
             "name": "",\
             "renamed": "false",\
             "enabled": "true",\
-            "highlight": "4",\
+            "highlight": "3",\
             "x": "1616",\
             "y": "2459.36",\
             "z": "38",\

@@ -35,7 +35,7 @@ const presetFontList = '\
             "name": "font%20page",\
             "renamed": "true",\
             "enabled": "true",\
-            "highlight": "1",\
+            "highlight": "2",\
             "x": "4596.46",\
             "y": "3825",\
             "z": "2",\

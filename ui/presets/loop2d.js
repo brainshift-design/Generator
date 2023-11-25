@@ -191,7 +191,7 @@ const presetLoop2d = '\
             "name": "",\
             "renamed": "false",\
             "enabled": "true",\
-            "highlight": "4",\
+            "highlight": "5",\
             "x": "2871",\
             "y": "2790",\
             "z": "13",\
@@ -208,7 +208,7 @@ const presetLoop2d = '\
             "name": "",\
             "renamed": "false",\
             "enabled": "true",\
-            "highlight": "4",\
+            "highlight": "5",\
             "x": "2931",\
             "y": "2811",\
             "z": "14",\
@@ -225,7 +225,7 @@ const presetLoop2d = '\
             "name": "",\
             "renamed": "false",\
             "enabled": "true",\
-            "highlight": "4",\
+            "highlight": "5",\
             "x": "2991",\
             "y": "2829",\
             "z": "15",\
@@ -242,7 +242,7 @@ const presetLoop2d = '\
             "name": "",\
             "renamed": "false",\
             "enabled": "true",\
-            "highlight": "4",\
+            "highlight": "5",\
             "x": "2875",\
             "y": "2616",\
             "z": "16",\
@@ -259,7 +259,7 @@ const presetLoop2d = '\
             "name": "",\
             "renamed": "false",\
             "enabled": "true",\
-            "highlight": "4",\
+            "highlight": "5",\
             "x": "2935",\
             "y": "2637",\
             "z": "17",\
@@ -276,7 +276,7 @@ const presetLoop2d = '\
             "name": "",\
             "renamed": "false",\
             "enabled": "true",\
-            "highlight": "4",\
+            "highlight": "5",\
             "x": "2995",\
             "y": "2655",\
             "z": "18",\
@@ -293,7 +293,7 @@ const presetLoop2d = '\
             "name": "",\
             "renamed": "false",\
             "enabled": "true",\
-            "highlight": "4",\
+            "highlight": "5",\
             "x": "2537",\
             "y": "3123",\
             "z": "19",\
