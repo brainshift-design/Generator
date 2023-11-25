@@ -112,6 +112,10 @@ extends OperatorBase
         updateParamConditionText(this.paramShowCenter, this.paramShowCenter.isUnknown(), false, 1);
 
 
+        this.paramCenterX.controls[0].resetRanges();
+        this.paramCenterY.controls[0].resetRanges();
+
+
         const units = this.paramUnits.value.value;
 
         this.paramCenterX.controls[0].suffix     = units == 0 ? '%' : '';
