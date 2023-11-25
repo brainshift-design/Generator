@@ -190,8 +190,9 @@ function getObjectCount(objects)
             {
                 case SHAPE_GROUP: count += getObjectCount(obj[FO_GROUP_CHILDREN]); break;
                 case FRAME:       count += getObjectCount(obj[FO_FRAME_CHILDREN]); break;
-                default:          count++;                                         break;
             }
+
+            count++;
         }
     }
     

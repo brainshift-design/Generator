@@ -444,6 +444,4 @@ function loadLocalSettings()
         
     uiGetLocalData('logRawRequests'               );
     uiGetLocalData('logRawValues'                 );
-
-    uiGetLocalData('sessionId'                    );
 }
