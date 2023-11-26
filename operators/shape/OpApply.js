@@ -16,7 +16,7 @@ extends OpShape
 
         
         this.addInput (this.createInputForObjects(SHAPE_VALUES, getNodeInputValuesForUndo));
-        this.addOutput(new Output([...SHAPE_VALUES, SHAPE_LIST_VALUE], this.output_genRequest));
+        this.addOutput(new Output([SHAPE_VALUE], this.output_genRequest));
         
         
         this.addBaseParams();
@@ -60,6 +60,16 @@ extends OpShape
         pushUnique(gen.passedNodes, this.node);
 
         return request;
+    }
+
+    
+
+    updateValues(requestId, actionId, updateParamId, paramIds, values)
+    {
+        super.updateValues(requestId, actionId, updateParamId, paramIds, values);
+
+        const type  = values[paramIds.findIndex(id => id == 'type')];
+        if (type) this.outputs[0].types = [type.value];
     }
 
 

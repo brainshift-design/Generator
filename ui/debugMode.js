@@ -11,6 +11,17 @@ function initDebugMode()
 
 
 
+debugModeView.addEventListener('pointerdown', e =>
+{
+    e.preventDefault();
+
+    if (   e.button == 0
+        || e.button == 2)
+        hideAllMenus();
+});
+
+
+
 debugModePagesWrapper.addEventListener('pointerdown', e =>
 {
     e.preventDefault();

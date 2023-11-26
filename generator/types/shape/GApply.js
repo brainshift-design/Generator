@@ -58,7 +58,7 @@ extends GShape
         }
         else
         {
-            await this.evalShapeBase(parse); // to updated anything connected to styles
+            await this.evalShapeBase(parse); // to update anything connected to styles
             this.value = NullValue.copy();
         }
 

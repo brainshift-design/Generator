@@ -69,7 +69,7 @@ extends GShapeBase
                 {
                     this.value.props = new ListValue();
 
-                    
+                    console.log('this.input =', this.input);
                     if (this.input.toValue().props.type == LIST_VALUE)
                         this.value.props.items.push(...this.input.toValue().props.items);
                     else

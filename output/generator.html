@@ -32604,7 +32604,7 @@ extends GShapeBase
                 {
                     this.value.props = new ListValue();
 
-                    
+                    console.log('this.input =', this.input);
                     if (this.input.toValue().props.type == LIST_VALUE)
                         this.value.props.items.push(...this.input.toValue().props.items);
                     else
@@ -36463,7 +36463,7 @@ extends GShape
         }
         else
         {
-            await this.evalShapeBase(parse); // to updated anything connected to styles
+            await this.evalShapeBase(parse); // to update anything connected to styles
             this.value = NullValue.copy();
         }
 
