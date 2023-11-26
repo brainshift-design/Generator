@@ -63,26 +63,28 @@ extends GShapeBase
         
         if (this.value)
         {
-            if (this.input)
-            {
-                if (add)
-                {
-                    this.value.props = new ListValue();
+            // if (   this.input
+            //     && props)
+            // {
+                // if (add)
+                // {
+                    // if (!this.value.props)
+                    //     this.value.props = new ListValue();
 
-                    console.log('this.input =', this.input);
-                    if (this.input.toValue().props.type == LIST_VALUE)
-                        this.value.props.items.push(...this.input.toValue().props.items);
-                    else
-                        this.value.props.items.push(input.props);
+                    
+                    // if (this.input.toValue().props.type == LIST_VALUE)
+                    //     this.value.props.items.push(...this.input.toValue().props.items);
+                    // else
+                    //     this.value.props.items.push(input.props);
                     
 
-                    if (props)
-                        this.value.props.items.push(...props.items);
-                }
-                else
-                    this.value.props = props ?? this.input.toValue().props;
-            }
-            else
+                    // if (props)
+                        //this.value.props.items.push(...props.items);
+                //}
+                //else
+                    //this.value.props = props;// ?? this.input.toValue().props;
+            // }
+            // else
                 this.value.props = props;
 
                     
