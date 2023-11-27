@@ -297,6 +297,10 @@ async function genUpdateValuesAndObjects(requestId, actionId, objectBatchSize, u
     });
 
 
+    let totalObjects = 0;
+    updateObjects.forEach(o => totalObjects += o.getCount());
+
+    
     while (   n < nodeIds      .length
            || o < updateObjects.length
            || s < updateStyles .length)
@@ -351,7 +355,7 @@ async function genUpdateValuesAndObjects(requestId, actionId, objectBatchSize, u
                 updateNodeId,
                 updateParamId,
                 objectBatchSize,
-                updateObjects.length,
+                totalObjects,
                 nodeValChunkId++,
                 nodeValChunk,
                 objChunk,
@@ -389,7 +393,7 @@ async function genUpdateValuesAndObjects(requestId, actionId, objectBatchSize, u
             updateNodeId,
             updateParamId,
             objectBatchSize,
-            updateObjects.length,
+            totalObjects,
             nodeValChunkId++,
             nodeValChunk,
             objChunk,

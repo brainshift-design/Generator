@@ -1,6 +1,6 @@
-var totalObjectCount      = 0;
-var objectTotalCount = 0;
-var totalObjectProgress   = 0;
+var totalObjectCount    = 0;
+var objectTotalCount    = 0;
+var totalObjectProgress = 0;
 
 
 

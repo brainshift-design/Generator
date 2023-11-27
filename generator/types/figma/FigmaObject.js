@@ -76,6 +76,13 @@ class FigmaObject
 
 
 
+    getCount()
+    {
+        return 1;
+    }
+
+
+
     createDefaultSpace(cx = 0, cy = 0)
     {
         this.sp0 = point(cx,   cy  );

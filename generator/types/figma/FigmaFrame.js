@@ -57,6 +57,13 @@ extends FigmaShape
 
 
 
+    getCount()
+    {
+        return super.getCount() + this.children.length;
+    }
+
+
+    
     toJsonObject()
     {
         return {

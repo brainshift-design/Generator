@@ -30,6 +30,13 @@ extends FigmaShape
 
 
 
+    getCount()
+    {
+        return super.getCount() + this.children.length;
+    }
+
+
+
     applyTransform(xform, affectSpace)
     {
         for (const obj of this.children)

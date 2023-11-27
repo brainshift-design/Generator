@@ -2663,6 +2663,8 @@ figma.ui.onmessage = function(msg)
         case 'figDeleteAllObjects':                   figDeleteAllObjects                  ();                                            break;
 
         case 'figUpdateObjectsAndStyles':
+            curObjectCount = 0;
+
             figUpdateObjects(
                 null, 
                 msg.objects, 
@@ -3608,6 +3610,8 @@ async function figGetValueFromUi(key, params = null)
 var _genIgnoreNodeIds = [];
 var _genIgnoreObjects = [];
 
+var  curObjectCount   = 0;
+var  objUpdateCount   = 0;
 
 
 function makeObjectName(obj)
@@ -3674,6 +3678,9 @@ function figCreateObject(genObj, addObject = null)
             }
 
             addObject(figObj);
+
+            curObjectCount++;
+            objUpdateCount++;
         }
     }
         
@@ -3717,14 +3724,20 @@ function figUpdateObject(figObj, genObj)
 
     if (genObj[FO_DECO])
         updateDecoObject(figObj);
+
+
+    curObjectCount++;
+    objUpdateCount++;
 }
 
 
 
 async function figUpdateObjects(figParent, genObjects, batchSize, nodeIds = [], firstChunk = false, lastChunk = false, zoomToFit = false)
 {
-    let   curNodeId     = NULL;
-    let   figObjects    = null;
+    let curNodeId   = NULL;
+    let figObjects  = null;
+
+    let abort       = false;
 
     const updateObjects = [];
 
@@ -3732,8 +3745,6 @@ async function figUpdateObjects(figParent, genObjects, batchSize, nodeIds = [], 
     _genIgnoreNodeIds.push(...nodeIds);
 
 
-    let curObjectCount = 0;
-    let abort          = false;
 
     for (const genObj of genObjects)
     {
@@ -3826,12 +3837,13 @@ async function figUpdateObjects(figParent, genObjects, batchSize, nodeIds = [], 
         }
 
 
-        curObjectCount++;
-
-        if (curObjectCount % batchSize == 0)
+        if (objUpdateCount >= batchSize)
         {
             const result = await figGetValueFromUiSync('returnObjectUpdate', { objectCount: curObjectCount }) as { key: string, value: boolean };
             abort = result.value;
+
+            objUpdateCount = 0;
+
             if (abort) break;
         }
     }
@@ -3862,7 +3874,6 @@ async function figUpdateObjects(figParent, genObjects, batchSize, nodeIds = [], 
             point.parent.appendChild(point);
 
 
-            
     if (    lastChunk
         && !abort)
     {
@@ -3888,6 +3899,9 @@ async function figUpdateObjects(figParent, genObjects, batchSize, nodeIds = [], 
                 figma.viewport.bounds.height * figma.viewport.zoom / bounds.height - 0.05);
         }
     }
+
+
+    await figGetValueFromUiSync('returnObjectUpdate', { objectCount: curObjectCount })
 }
 
 
