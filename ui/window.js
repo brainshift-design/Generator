@@ -81,12 +81,14 @@ function uiResizeWindow(width, height)
 
 function updateObjectCountDisplay()
 {
-    if (!objectCountInfo)
+    if (   !objectCountWrapper
+        || !objectCountNumber)
         return;
 
-    objectCountInfo.innerHTML = objectCount;
+    objectCountNumber.innerHTML     = objectCount;
+    objectCountProgress.style.width = objectProgress * 41;
 
-    objectCountInfo.style.display = 
+    objectCountWrapper.style.display = 
            settings.showObjectCount
         && window.innerWidth >= 650 
         ? 'inline-block' 

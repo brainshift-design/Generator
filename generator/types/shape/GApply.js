@@ -41,9 +41,7 @@ extends GShape
 
         
         const [, , , ] = await this.evalBaseParams(parse);
-        
-        const props    = this.props   ? (await this.props  .eval(parse)).toValue() : null;
-        const replace  = this.replace ? (await this.replace.eval(parse)).toValue() : null;
+        const replace  = (await this.replace.eval(parse)).toValue();
 
 
 
@@ -51,28 +49,20 @@ extends GShape
         {
             const input = (await this.input.eval(parse)).toValue();
 
-            this.value = input;//.copy();
+            this.value = input.copy();
 
             if (this.options.enabled)
-            {
-                console.log('this.value =', this.value.copy());
-                if (isListType(this.value.type))
-                    this.value.items.forEach(item => this.applyProps(item, props, replace));
-                else
-                    this.applyProps(this.value, props, replace);
-            }
+                await this.evalShapeBase(parse, replace.value == 0, input);
 
             await this.evalObjects(parse);
         }
         else
         {
+            await this.evalShapeBase(parse); // to update anything connected to styles
             this.value = NullValue.copy();
         }
-        
 
-        //await this.evalShapeBase(parse);
        
-
         this.setUpdateValues(parse, 
         [
             ['value', this.value       ],
@@ -87,27 +77,6 @@ extends GShape
 
 
 
-    applyProps(item, props, replace)
-    {
-        if (replace.value == 0)
-        {
-            if (!isListType(item.props.type))
-                item.props = new ListValue([item.props]);
-    
-            if (props)
-            {
-                if (isListType(props.type))
-                    item.props.items.push(...props.items);
-                else
-                    item.props.items.push(props);
-            }
-        }
-        else
-            item.props = props;
-    }
-    
-
-    
     async evalObjects(parse, options = {})
     {
         if (this.value.isValid())

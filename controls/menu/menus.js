@@ -14,7 +14,10 @@ var btnHand;
 var btnComment;
 var btnPanel;
 var btnPage;
+var objectCountWrapper;
 var objectCountInfo;
+var objectCountProgress;
+var objectCountNumber;
 var btnSolo;
 var btnZoom;
 
@@ -1127,12 +1130,21 @@ function initGeneratorMenus()
 
 function createObjectCountInfo()
 {
-    objectCountInfo = createDiv('', 'objectCountInfo');
-    objectCountInfo.innerHTML = '0';
-    menuBar.appendChild(objectCountInfo);
+    objectCountWrapper  = createDiv('', 'objectCountWrapper' );
+    objectCountInfo     = createDiv('', 'objectCountInfo'    );
+    objectCountProgress = createDiv('', 'objectCountProgress');
+    objectCountNumber   = createDiv('', 'objectCountNumber'  );
+
+    objectCountNumber.innerHTML = '0';
+    
+    objectCountInfo.appendChild(objectCountProgress);
+    objectCountInfo.appendChild(objectCountNumber);
+ 
+    objectCountWrapper.appendChild(objectCountInfo);
+    menuBar.appendChild(objectCountWrapper);
 
     createTooltip(ttObjectCount);
-    createTooltipSrc(objectCountInfo, objectCountInfo, () => ttObjectCount);
+    createTooltipSrc(objectCountWrapper, objectCountWrapper, () => ttObjectCount);
 }
 
 

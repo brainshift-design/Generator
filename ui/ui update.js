@@ -1,8 +1,9 @@
-var objectCount = 0;
+var objectCount    = 0;
+var objectProgress = 1;
 
 
 
-function uiUpdateValuesAndObjects(requestId, actionId, updateNodeId, updateParamId, values, objects, styles, updatedNodes, totalNodes, isFirstChunk, isLastChunk, save)
+function uiUpdateValuesAndObjects(requestId, actionId, updateNodeId, updateParamId, currentObjects, totalObjects, values, objects, styles, updatedNodes, totalNodes, isFirstChunk, isLastChunk, save)
 {
     if (loadRestartTimer > -1)
     {
@@ -70,7 +71,9 @@ function uiUpdateValuesAndObjects(requestId, actionId, updateNodeId, updateParam
     }
 
     
-    objectCount = getObjectCount(objects);
+    objectCount    = totalObjects;
+    objectProgress = currentObjects / totalObjects;
+
     updateObjectCountDisplay();
 
 

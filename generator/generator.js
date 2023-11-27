@@ -350,6 +350,8 @@ async function genUpdateValuesAndObjects(requestId, actionId, objectBatchSize, u
                 actionId,
                 updateNodeId,
                 updateParamId,
+                o,
+                updateObjects.length,
                 nodeValChunkId++,
                 nodeValChunk,
                 objChunk,
@@ -386,6 +388,8 @@ async function genUpdateValuesAndObjects(requestId, actionId, objectBatchSize, u
             actionId,
             updateNodeId,
             updateParamId,
+            o,
+            updateObjects.length,
             nodeValChunkId++,
             nodeValChunk,
             objChunk,
@@ -406,23 +410,25 @@ async function genUpdateValuesAndObjects(requestId, actionId, objectBatchSize, u
 
 
 
-function genQueueChunk(requestId, actionId, updateNodeId, updateParamId, nodeValChunkId, nodeValChunk, objChunk, styleChunk, updatedNodes, totalNodes, isFirstChunk, isLastChunk, save)
+function genQueueChunk(requestId, actionId, updateNodeId, updateParamId, currentObjects, totalObjects, nodeValChunkId, nodeValChunk, objChunk, styleChunk, updatedNodes, totalNodes, isFirstChunk, isLastChunk, save)
 {
     genQueueMessageToUi({
-        cmd:          'uiUpdateValuesAndObjects',
-        requestId:     requestId,
-        actionId:      actionId,
-        updateNodeId:  updateNodeId,
-        updateParamId: updateParamId,
-        chunkId:       nodeValChunkId,
-        values:        [...nodeValChunk].map(v => v.toString()),
-        objects:       [...objChunk    ],
-        styles:        [...styleChunk  ],
-        updatedNodes:  updatedNodes,
-        totalNodes:    totalNodes,
-        isFirstChunk:  isFirstChunk,
-        isLastChunk:   isLastChunk,
-        save:          save
+        cmd:           'uiUpdateValuesAndObjects',
+        requestId:      requestId,
+        actionId:       actionId,
+        updateNodeId:   updateNodeId,
+        updateParamId:  updateParamId,
+        currentObjects: currentObjects,
+        totalObjects:   totalObjects,
+        chunkId:        nodeValChunkId,
+        values:         [...nodeValChunk].map(v => v.toString()),
+        objects:        [...objChunk    ],
+        styles:         [...styleChunk  ],
+        updatedNodes:   updatedNodes,
+        totalNodes:     totalNodes,
+        isFirstChunk:   isFirstChunk,
+        isLastChunk:    isLastChunk,
+        save:           save
     });
 
 

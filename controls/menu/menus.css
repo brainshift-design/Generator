@@ -29,7 +29,42 @@
 }
 
 
+#objectCountWrapper
+{
+    width:            41px;
+    height:           40px;
+    line-height:      21px;
+    position:         absolute;
+    right:            114px;
+}
+
+
 #objectCountInfo
+{
+    width:            41px;
+    height:           20px;
+    line-height:      20px;
+    background-color: #222;
+    border-radius:    12px;
+    margin-top:       11px;
+    position:         relative;
+    overflow:         hidden;
+}
+
+
+#objectCountProgress
+{
+    width:            41px;
+    height:           20px;
+    line-height:      20px;
+    background-color: #444;
+    position:         absolute;
+    top:              0;
+    left:             0;
+}
+
+
+#objectCountNumber
 {
     width:            41px;
     height:           20px;
@@ -37,16 +72,12 @@
     font-family:      Inter;
     font-size:        11px;
     color:            #fff;
-    background-color: #444;
-    border-radius:    12px;
     text-align:       center;
-    vertical-align:   middle;
     position:         absolute;
-    right:            114px;
-    margin-top:       10px;
-    padding-top:      1px;
+    top:              0;
+    left:             0;
+    vertical-align:   middle;
 }
-
 
 
 #btnZoom
