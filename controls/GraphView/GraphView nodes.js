@@ -79,6 +79,20 @@ GraphView.prototype.updateNodeWireTransforms = function(nodes)
 
 
 
+GraphView.prototype.updatePanels = function()
+{
+    const panels = graph.nodes.filter(n => n.type == PANEL);
+        
+    panels.sort((a, b) => 
+          b.measureData.divBounds.width * b.measureData.divBounds.height
+        - a.measureData.divBounds.width * a.measureData.divBounds.height);
+
+    for (let i = 0; i < panels.length; i++)
+        panels[i].div.style.zIndex = i;
+};
+
+
+
 GraphView.prototype.soloNode = function(node)
 {
     this._soloNode = node;

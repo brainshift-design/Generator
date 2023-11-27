@@ -587,3 +587,19 @@ function replaceLast(str, _what, _with)
 
     return str.substring(0, lastIndex) + _with + str.substring(lastIndex + _what.length);
 }
+
+
+
+function getPanelHeaderUnder(x, y)
+{
+    const unders = document.elementsFromPoint(x, y)
+        .filter(el => 
+               el.node
+            && el.className == 'nodeLabelWrapper');
+
+    unders.reverse();
+
+    return unders.length > 0 
+         ? unders[0]
+         : null;
+}

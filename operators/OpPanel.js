@@ -92,6 +92,15 @@ extends ResizableBase
     }
 
 
+
+    updateNode()
+    {
+        super.updateNode();
+        graphView.updatePanels();
+    }
+
+
+
     updateHeader()
     {
         super.updateHeader();

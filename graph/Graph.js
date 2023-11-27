@@ -51,7 +51,7 @@ class Graph
         if (placeNode)
             graphView.placeNewNode(node, fromSearch);
 
-        node.div.style.zIndex = graph.nodes.length-1;
+        node.div.style.zIndex = 1000000 + graph.nodes.length-1; // this is so that 1000000 panels can be sorted underneath, that seems high enough :)
         graphView.putNodeOnTop(node);
 
 

@@ -1,6 +1,7 @@
 Operator.prototype.createLabel = function()
 {
     this.labelWrapper         = createDiv('nodeLabelWrapper');
+    this.labelWrapper.node    = this;
   
     this.label                = createDiv('nodeLabel');
     this.label.node           = this;

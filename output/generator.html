@@ -3381,6 +3381,22 @@ function replaceLast(str, _what, _with)
 }
 
 
+
+function getPanelHeaderUnder(x, y)
+{
+    const unders = document.elementsFromPoint(x, y)
+        .filter(el => 
+               el.node
+            && el.className == 'nodeLabelWrapper');
+
+    unders.reverse();
+
+    return unders.length > 0 
+         ? unders[0]
+         : null;
+}
+
+
 "use strict";
 
 // Base64 / binary data / UTF-8 strings utilities
