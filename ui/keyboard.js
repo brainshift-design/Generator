@@ -240,8 +240,8 @@ document.addEventListener('keydown', e =>
         else if (!isEmpty(graphView.selectedNodes))
             graphView.deselectAllNodes(e.shiftKey);
 
-        // else
-        //     stopRequestId = curRequestId;
+        else
+            uiDeactivateAllNodes();
     }
 
     //

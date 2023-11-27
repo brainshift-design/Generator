@@ -310,7 +310,7 @@ function figNotify(text, prefix = 'Generator ', delay = 400, error = false, butt
 
 async function figGetValueFromUiSync(key, params = null) 
 {
-    await figGetValueFromUi(key, params);
+    return await figGetValueFromUi(key, params);
 }
 
 
@@ -343,7 +343,7 @@ async function figGetValueFromUi(key, params = null)
                 resolve(
                 { 
                     key:   msg.key, 
-                    value: msg.value 
+                    value: msg.value
                 });
 
                 figma.ui.off('message', handleMessage);

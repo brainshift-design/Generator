@@ -2356,7 +2356,7 @@ function figNotify(text, prefix = 'Generator ', delay = 400, error = false, butt
 }
 function figGetValueFromUiSync(key, params = null) {
     return __awaiter(this, void 0, void 0, function* () {
-        yield figGetValueFromUi(key, params);
+        return yield figGetValueFromUi(key, params);
     });
 }
 function figGetValueFromUi(key, params = null) {
@@ -2506,6 +2506,7 @@ function figUpdateObjects(figParent, genObjects, batchSize, nodeIds = [], firstC
         const updateObjects = [];
         _genIgnoreNodeIds.push(...nodeIds);
         let curObjectCount = 0;
+        let abort = false;
         for (const genObj of genObjects) {
             _genIgnoreObjects.push(genObj);
             if (genObj[FO_NODE_ID] != curNodeId) {
@@ -2569,10 +2570,10 @@ function figUpdateObjects(figParent, genObjects, batchSize, nodeIds = [], firstC
             }
             curObjectCount++;
             if (curObjectCount % batchSize == 0) {
-                yield figGetValueFromUiSync('returnObjectUpdate', {
-                    objectCount: curObjectCount,
-                    totalObjects: genObjects.length
-                });
+                const result = yield figGetValueFromUiSync('returnObjectUpdate', { objectCount: curObjectCount });
+                abort = result.value;
+                if (abort)
+                    break;
             }
         }
         // delete removed objects from parent
@@ -2591,7 +2592,8 @@ function figUpdateObjects(figParent, genObjects, batchSize, nodeIds = [], firstC
             if (!point.removed
                 && !point.parent.removed)
                 point.parent.appendChild(point);
-        if (lastChunk) {
+        if (lastChunk
+            && !abort) {
             // delete old content
             figDeleteObjectsExcept(_genIgnoreNodeIds, _genIgnoreObjects);
             _genIgnoreNodeIds = [];
@@ -2602,10 +2604,6 @@ function figUpdateObjects(figParent, genObjects, batchSize, nodeIds = [], firstC
                 const bounds = figGetObjectBounds(updateObjects);
                 figma.viewport.zoom = Math.min(figma.viewport.bounds.width * figma.viewport.zoom / bounds.width - 0.05, figma.viewport.bounds.height * figma.viewport.zoom / bounds.height - 0.05);
             }
-            yield figGetValueFromUiSync('returnObjectUpdate', {
-                objectCount: genObjects.length,
-                totalObjects: genObjects.length
-            });
         }
     });
 }

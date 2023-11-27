@@ -3560,7 +3560,7 @@ function figNotify(text, prefix = 'Generator ', delay = 400, error = false, butt
 
 async function figGetValueFromUiSync(key, params = null) 
 {
-    await figGetValueFromUi(key, params);
+    return await figGetValueFromUi(key, params);
 }
 
 
@@ -3593,7 +3593,7 @@ async function figGetValueFromUi(key, params = null)
                 resolve(
                 { 
                     key:   msg.key, 
-                    value: msg.value 
+                    value: msg.value
                 });
 
                 figma.ui.off('message', handleMessage);
@@ -3733,6 +3733,7 @@ async function figUpdateObjects(figParent, genObjects, batchSize, nodeIds = [], 
 
 
     let curObjectCount = 0;
+    let abort          = false;
 
     for (const genObj of genObjects)
     {
@@ -3829,12 +3830,9 @@ async function figUpdateObjects(figParent, genObjects, batchSize, nodeIds = [], 
 
         if (curObjectCount % batchSize == 0)
         {
-            await figGetValueFromUiSync(
-                'returnObjectUpdate', 
-                { 
-                    objectCount:  curObjectCount, 
-                    totalObjects: genObjects.length 
-                });
+            const result = await figGetValueFromUiSync('returnObjectUpdate', { objectCount: curObjectCount }) as { key: string, value: boolean };
+            abort = result.value;
+            if (abort) break;
         }
     }
 
@@ -3849,7 +3847,7 @@ async function figUpdateObjects(figParent, genObjects, batchSize, nodeIds = [], 
             if (    figObj.removed
                 || !genObjects.find(o => 
                            o[FO_OBJECT_ID] == figObj.getPluginData('objectId')
-                        && figObj.getPluginData('userId'   ) == figma.currentUser.id))
+                        && figObj.getPluginData('userId') == figma.currentUser.id))
                         //&& figObj.getPluginData('sessionId') == figma.currentUser.sessionId.toString()))
                 figObj.remove();
         }
@@ -3865,7 +3863,8 @@ async function figUpdateObjects(figParent, genObjects, batchSize, nodeIds = [], 
 
 
             
-    if (lastChunk)
+    if (    lastChunk
+        && !abort)
     {
         // delete old content
 
@@ -3888,14 +3887,6 @@ async function figUpdateObjects(figParent, genObjects, batchSize, nodeIds = [], 
                 figma.viewport.bounds.width  * figma.viewport.zoom / bounds.width  - 0.05,
                 figma.viewport.bounds.height * figma.viewport.zoom / bounds.height - 0.05);
         }
-
-
-        await figGetValueFromUiSync(
-            'returnObjectUpdate', 
-            { 
-                objectCount:  genObjects.length, 
-                totalObjects: genObjects.length 
-            });
     }
 }
 

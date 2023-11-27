@@ -1,4 +1,5 @@
-var importZoomToNodes = false;
+var importZoomToNodes  = false;
+var deactivateAllNodes = false;
 
 
 
@@ -1256,6 +1257,9 @@ function setNodeHighlight(nodes, color)
 
 function uiDeactivateAllNodes()
 {
+    deactivateAllNodes = true;
+
+    
     const activeNodes = [];
 
     for (const node of graph.nodes)

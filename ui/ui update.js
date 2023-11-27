@@ -6,6 +6,9 @@ var totalObjectProgress   = 0;
 
 function uiUpdateValuesAndObjects(requestId, actionId, updateNodeId, updateParamId, objectBatchSize, totalObjects, values, objects, styles, updatedNodes, totalNodes, isFirstChunk, isLastChunk, save)
 {
+    deactivateAllNodes = false;
+
+
     if (loadRestartTimer > -1)
     {
         clearTimeout(loadRestartTimer);
@@ -273,13 +276,18 @@ function uiGetValueForFigma(msg)
     {
         case 'returnObjectUpdate':  
         {
-            totalObjectProgress = msg.objectCount / totalObjectCount;
+            totalObjectProgress = 
+                totalObjectCount > 0
+                ? msg.objectCount / totalObjectCount
+                : 1;
+            
             updateObjectCountDisplay();
 
             uiPostMessageToFigma(
             {
                 cmd:  'returnUiGetValueForFigma',
-                key:   msg.key
+                key:   msg.key,
+                value: deactivateAllNodes
             });
            
             break;
