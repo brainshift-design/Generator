@@ -69,6 +69,8 @@ onmessage = e =>
 
         case 'uiUpdateGroupBounds':               uiUpdateGroupBounds              (msg);               break;
 
+        case 'uiGetValueForFigma':                uiGetValueForFigma               (msg);               break;
+
         case 'updateMetrics':                     updateMetrics                    ();                  break;       
     }
 };
@@ -200,7 +202,7 @@ generator.onmessage = function(e)
                 msg.actionId, 
                 msg.updateNodeId, 
                 msg.updateParamId,
-                msg.currentObjects, 
+                msg.objectBatchSize, 
                 msg.totalObjects,
                 msg.values, 
                 msg.objects, 
@@ -243,12 +245,12 @@ generator.onmessage = function(e)
             break;
         }
 
-        case 'uiInitGlobalProgress': uiInitGlobalProgress(msg.requestId);        break;
-        case 'uiEndGlobalProgress':  uiEndGlobalProgress();                      break;
+        case 'uiInitGlobalProgress':   uiInitGlobalProgress(msg.requestId);      break;
+        case 'uiEndGlobalProgress':    uiEndGlobalProgress();                    break;
   
-        case 'uiGetValue':           uiGetValue(msg.key);                        break;
+        case 'uiGetValueForGenerator': uiGetValueForGenerator(msg);              break;
         
-        case 'uiForwardToFigma':     uiPostMessageToFigma(msg.msg);              break;
+        case 'uiForwardToFigma':       uiPostMessageToFigma(msg.msg);            break;
     }
 };
 

@@ -1,9 +1,10 @@
-var objectCount    = 0;
-var objectProgress = 1;
+var totalObjectCount      = 0;
+var objectTotalCount = 0;
+var totalObjectProgress   = 0;
 
 
 
-function uiUpdateValuesAndObjects(requestId, actionId, updateNodeId, updateParamId, currentObjects, totalObjects, values, objects, styles, updatedNodes, totalNodes, isFirstChunk, isLastChunk, save)
+function uiUpdateValuesAndObjects(requestId, actionId, updateNodeId, updateParamId, objectBatchSize, totalObjects, values, objects, styles, updatedNodes, totalNodes, isFirstChunk, isLastChunk, save)
 {
     if (loadRestartTimer > -1)
     {
@@ -71,9 +72,8 @@ function uiUpdateValuesAndObjects(requestId, actionId, updateNodeId, updateParam
     }
 
     
-    objectCount    = totalObjects;
-    objectProgress = currentObjects / totalObjects;
-
+    totalObjectCount    = totalObjects;
+    totalObjectProgress = 0;
     updateObjectCountDisplay();
 
 
@@ -93,15 +93,16 @@ function uiUpdateValuesAndObjects(requestId, actionId, updateNodeId, updateParam
 
         uiQueueMessageToFigma(
         {
-            cmd:          'figUpdateObjectsAndStyles',
-            updateNodeId:  updateNodeId,
-            updateParamId: updateParamId,
-            nodeIds:       nodes.map(n => n.id),
-            objects:       [...objects],
-            styles:        [...styles ],
-            firstChunk:    isFirstChunk,
-            lastChunk:     isLastChunk,
-            zoomToFit:     graphView._zoomToFitObjects
+            cmd:            'figUpdateObjectsAndStyles',
+            updateNodeId:    updateNodeId,
+            updateParamId:   updateParamId,
+            nodeIds:         nodes.map(n => n.id),
+            objectBatchSize, objectBatchSize,
+            objects:         [...objects],
+            styles:          [...styles ],
+            firstChunk:      isFirstChunk,
+            lastChunk:       isLastChunk,
+            zoomToFit:       graphView._zoomToFitObjects
         });
     }
 
@@ -246,22 +247,41 @@ function uiEndGlobalProgress()
 
 
 
-function uiGetValue(key)
+function uiGetValueForGenerator(msg)
 {
-    switch (key)
+    switch (msg.key)
     {
         case 'curRequestId':  
         {
             uiPostMessageToGenerator(
             {
-                cmd:  'returnUiGetValue',
-                key:   key,
+                cmd:  'returnUiGetValueForGenerator',
+                key:   msg.key,
                 value: curRequestId
             });
 
-            //if (graphView.loadingNodes)
-            //    restartLoadingTimer();
-            
+            break;
+        }
+    }
+}
+
+
+
+function uiGetValueForFigma(msg)
+{
+    switch (msg.key)
+    {
+        case 'returnObjectUpdate':  
+        {
+            totalObjectProgress = msg.objectCount / totalObjectCount;
+            updateObjectCountDisplay();
+
+            uiPostMessageToFigma(
+            {
+                cmd:  'returnUiGetValueForFigma',
+                key:   msg.key
+            });
+           
             break;
         }
     }

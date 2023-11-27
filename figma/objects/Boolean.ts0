@@ -52,7 +52,10 @@ function figUpdateBoolean(figBool, genBool)
 
     setObjectTransform(figBool, genBool);
 
-    figUpdateObjects(figBool, genBool.children);
+    figUpdateObjects(
+        figBool, 
+        genBool.children, 
+        genBool.children.length);
 }
 
 

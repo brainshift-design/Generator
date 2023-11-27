@@ -2569,6 +2569,11 @@ figma.ui.onmessage = function(msg)
 {
     msg = JSON.parse(msg);
     
+
+    if (msg.cmd == 'returnUiGetValueForFigma') // ignore this message in the queue
+        return;
+
+
     switch (msg.cmd)
     {
         case 'figStartGenerator':                     figStartGenerator                    ();                                            break;
@@ -2658,8 +2663,17 @@ figma.ui.onmessage = function(msg)
         case 'figDeleteAllObjects':                   figDeleteAllObjects                  ();                                            break;
 
         case 'figUpdateObjectsAndStyles':
-            figUpdateObjects(null, msg.objects, msg.nodeIds, msg.firstChunk, msg.lastChunk, msg.zoomToFit);
+            figUpdateObjects(
+                null, 
+                msg.objects, 
+                msg.objectBatchSize, 
+                msg.nodeIds, 
+                msg.firstChunk, 
+                msg.lastChunk, 
+                msg.zoomToFit);
+            
             figUpdateStyles(msg);
+            
             break;
      
         case 'figDeleteObjectsAndStyles':
@@ -3543,6 +3557,54 @@ function figNotify(text, prefix = 'Generator ', delay = 400, error = false, butt
 }
 
 
+
+async function figGetValueFromUiSync(key, params = null) 
+{
+    await figGetValueFromUi(key, params);
+}
+
+
+async function figGetValueFromUi(key, params = null) 
+{
+    return new Promise((resolve, reject) => 
+    {
+        const timeout = 60000;
+
+
+        figPostMessageToUi(
+        {
+            cmd: 'uiGetValueForFigma',
+            key:  key,
+            ...(params || {})
+        });
+
+        const timeoutId = setTimeout(() => 
+            reject(new Error('Timeout: Result not received by Figma within the specified time')),
+            timeout);
+
+        function handleMessage(msg) 
+        {
+            msg = JSON.parse(msg);
+
+            if (msg.cmd === 'returnUiGetValueForFigma') 
+            {
+                clearTimeout(timeoutId);
+
+                resolve(
+                { 
+                    key:   msg.key, 
+                    value: msg.value 
+                });
+
+                figma.ui.off('message', handleMessage);
+            }
+        }
+
+        figma.ui.on('message', handleMessage);
+    });
+}
+
+
 var _genIgnoreNodeIds = [];
 var _genIgnoreObjects = [];
 
@@ -3659,7 +3721,7 @@ function figUpdateObject(figObj, genObj)
 
 
 
-function figUpdateObjects(figParent, genObjects, nodeIds = [], firstChunk = false, lastChunk = false, zoomToFit = false)
+async function figUpdateObjects(figParent, genObjects, batchSize, nodeIds = [], firstChunk = false, lastChunk = false, zoomToFit = false)
 {
     let   curNodeId     = NULL;
     let   figObjects    = null;
@@ -3669,6 +3731,8 @@ function figUpdateObjects(figParent, genObjects, nodeIds = [], firstChunk = fals
 
     _genIgnoreNodeIds.push(...nodeIds);
 
+
+    let curObjectCount = 0;
 
     for (const genObj of genObjects)
     {
@@ -3759,6 +3823,19 @@ function figUpdateObjects(figParent, genObjects, nodeIds = [], firstChunk = fals
 
             figCreateObject(genObj, addObject);
         }
+
+
+        curObjectCount++;
+
+        if (curObjectCount % batchSize == 0)
+        {
+            await figGetValueFromUiSync(
+                'returnObjectUpdate', 
+                { 
+                    objectCount:  curObjectCount, 
+                    totalObjects: genObjects.length 
+                });
+        }
     }
 
 
@@ -3811,6 +3888,14 @@ function figUpdateObjects(figParent, genObjects, nodeIds = [], firstChunk = fals
                 figma.viewport.bounds.width  * figma.viewport.zoom / bounds.width  - 0.05,
                 figma.viewport.bounds.height * figma.viewport.zoom / bounds.height - 0.05);
         }
+
+
+        await figGetValueFromUiSync(
+            'returnObjectUpdate', 
+            { 
+                objectCount:  genObjects.length, 
+                totalObjects: genObjects.length 
+            });
     }
 }
 
@@ -4900,7 +4985,10 @@ function figUpdateBoolean(figBool, genBool)
 
     setObjectTransform(figBool, genBool);
 
-    figUpdateObjects(figBool, genBool.children);
+    figUpdateObjects(
+        figBool, 
+        genBool.children, 
+        genBool.children.length);
 }
 
 
@@ -5014,7 +5102,10 @@ function figUpdateFrame(figFrame, genFrame)
 {
     figUpdateFrameData(figFrame, genFrame);
 
-    figUpdateObjects(figFrame, genFrame[FO_FRAME_CHILDREN]);
+    figUpdateObjects(
+        figFrame, 
+        genFrame[FO_FRAME_CHILDREN], 
+        genFrame[FO_FRAME_CHILDREN].length);
 }
 
 
@@ -5070,7 +5161,10 @@ function figUpdateShapeGroup(figGroup, genGroup)
         return;
     }
 
-    figUpdateObjects(figGroup, genGroup[FO_GROUP_CHILDREN]);
+    figUpdateObjects(
+        figGroup, 
+        genGroup[FO_GROUP_CHILDREN],
+        genGroup[FO_GROUP_CHILDREN].length);
 }
 
 

@@ -85,8 +85,8 @@ function updateObjectCountDisplay()
         || !objectCountNumber)
         return;
 
-    objectCountNumber.innerHTML     = objectCount;
-    objectCountProgress.style.width = objectProgress * 41;
+    objectCountNumber.innerHTML     = totalObjectCount;
+    objectCountProgress.style.width = totalObjectProgress * 41;
 
     objectCountWrapper.style.display = 
            settings.showObjectCount

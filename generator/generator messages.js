@@ -19,7 +19,7 @@ onmessage = function(e)
     const msg = JSON.parse(e.data);
 
 
-    if (msg.cmd == 'returnUiGetValue') // ignore this message in the queue
+    if (msg.cmd == 'returnUiGetValueForGenerator') // ignore this message in the queue
         return;
     
 

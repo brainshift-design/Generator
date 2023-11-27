@@ -308,11 +308,11 @@ function initGeneratorMenus()
         menuItemShowDebugMenu              = new MenuItem('Show debug menu',                    null, {checkCallback: () => settings.showDebugMenu,              callback: () => { uiGetLocalData('debugWarning'); }}),
                                              new MenuItem('',                                   null, {separator: true}),    
         menuItemMinZoomForParams           = new MenuItem('Zoom level for values . . .',        null, {callback: () => showMinZoomDialog()}),
-        menuPrefSep2                       = new MenuItem('',                                   null, {separator: true}),    
+        //menuPrefSep2                       = new MenuItem('',                                   null, {separator: true}),    
         // menuItemEnableMultiplayer       = new MenuItem('Enable multiplayer on this canvas',  null, {checkCallback: () => multiplayerEnabled,                  callback: () => { updateSettingAndMenu('showPages',                  true, !settings.showPages);                  enableMultiplayer(!multiplayerEnabled);     }}),
         //                                   new MenuItem('',                                   null, {separator: true}),    
         // menuItemEnableBetaFeatures      = new MenuItem('Enable beta features',               null, {checkCallback: () => settings.enableBetaFeatures,         callback: () => { updateSettingAndMenu('enableBetaFeatures',         true, !settings.enableBetaFeatures);         enableFeatures(true, settings.enableBetaFeatures); }}),
-        //                                   new MenuItem('',                                   null, {separator: true}),    
+                                             new MenuItem('',                                   null, {separator: true}),    
         menuItemObjectBatchSize            = new MenuItem('Update batch size . . .',            null, {callback: () => showObjectBatchDialog()})]);
         
 

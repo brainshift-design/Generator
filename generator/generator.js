@@ -267,9 +267,9 @@ async function genUpdateValuesAndObjects(requestId, actionId, objectBatchSize, u
 
     // send updates in chunks
 
-    const approxNodeChunkSize = 1000000;//20;
-    const objChunkSize        = objectBatchSize;
-    const styleChunkSize      = 1000000;//20;
+    const approxNodeChunkSize = 1000000;
+    const objChunkSize        = 1000000;
+    const styleChunkSize      = 1000000;
 
     
     let n  = 0; // node
@@ -350,7 +350,7 @@ async function genUpdateValuesAndObjects(requestId, actionId, objectBatchSize, u
                 actionId,
                 updateNodeId,
                 updateParamId,
-                o,
+                objChunkSize,
                 updateObjects.length,
                 nodeValChunkId++,
                 nodeValChunk,
@@ -388,7 +388,7 @@ async function genUpdateValuesAndObjects(requestId, actionId, objectBatchSize, u
             actionId,
             updateNodeId,
             updateParamId,
-            o,
+            objChunkSize,
             updateObjects.length,
             nodeValChunkId++,
             nodeValChunk,
@@ -410,25 +410,25 @@ async function genUpdateValuesAndObjects(requestId, actionId, objectBatchSize, u
 
 
 
-function genQueueChunk(requestId, actionId, updateNodeId, updateParamId, currentObjects, totalObjects, nodeValChunkId, nodeValChunk, objChunk, styleChunk, updatedNodes, totalNodes, isFirstChunk, isLastChunk, save)
+function genQueueChunk(requestId, actionId, updateNodeId, updateParamId, objectBatchSize, totalObjects, nodeValChunkId, nodeValChunk, objChunk, styleChunk, updatedNodes, totalNodes, isFirstChunk, isLastChunk, save)
 {
     genQueueMessageToUi({
-        cmd:           'uiUpdateValuesAndObjects',
-        requestId:      requestId,
-        actionId:       actionId,
-        updateNodeId:   updateNodeId,
-        updateParamId:  updateParamId,
-        currentObjects: currentObjects,
-        totalObjects:   totalObjects,
-        chunkId:        nodeValChunkId,
-        values:         [...nodeValChunk].map(v => v.toString()),
-        objects:        [...objChunk    ],
-        styles:         [...styleChunk  ],
-        updatedNodes:   updatedNodes,
-        totalNodes:     totalNodes,
-        isFirstChunk:   isFirstChunk,
-        isLastChunk:    isLastChunk,
-        save:           save
+        cmd:            'uiUpdateValuesAndObjects',
+        requestId:       requestId,
+        actionId:        actionId,
+        updateNodeId:    updateNodeId,
+        updateParamId:   updateParamId,
+        objectBatchSize: objectBatchSize,
+        totalObjects:    totalObjects,
+        chunkId:         nodeValChunkId,
+        values:          [...nodeValChunk].map(v => v.toString()),
+        objects:         [...objChunk    ],
+        styles:          [...styleChunk  ],
+        updatedNodes:    updatedNodes,
+        totalNodes:      totalNodes,
+        isFirstChunk:    isFirstChunk,
+        isLastChunk:     isLastChunk,
+        save:            save
     });
 
 
@@ -525,19 +525,19 @@ async function genGetValueFromUi(key)
 
         genPostMessageToUi(
         {
-            cmd: 'uiGetValue',
+            cmd: 'uiGetValueForGenerator',
             key:  key 
         });
 
         const timeoutId = setTimeout(() => 
-            reject(new Error('Timeout: Result not received within the specified time')),
+            reject(new Error('Timeout: Result not received by Generator within the specified time')),
             timeout);
 
         function handleMessage(event) 
         {
             const msg = JSON.parse(event.data);
 
-            if (msg.cmd === 'returnUiGetValue') 
+            if (msg.cmd === 'returnUiGetValueForGenerator') 
             {
                 clearTimeout(timeoutId);
 

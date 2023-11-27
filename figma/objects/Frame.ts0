@@ -42,7 +42,10 @@ function figUpdateFrame(figFrame, genFrame)
 {
     figUpdateFrameData(figFrame, genFrame);
 
-    figUpdateObjects(figFrame, genFrame[FO_FRAME_CHILDREN]);
+    figUpdateObjects(
+        figFrame, 
+        genFrame[FO_FRAME_CHILDREN], 
+        genFrame[FO_FRAME_CHILDREN].length);
 }
 
 

@@ -1649,6 +1649,8 @@ function figOnPluginClose() {
 ///////////////////////////////////////////////////////////////////////////////////////////////////
 figma.ui.onmessage = function (msg) {
     msg = JSON.parse(msg);
+    if (msg.cmd == 'returnUiGetValueForFigma') // ignore this message in the queue
+        return;
     switch (msg.cmd) {
         case 'figStartGenerator':
             figStartGenerator();
@@ -1812,7 +1814,7 @@ figma.ui.onmessage = function (msg) {
             figDeleteAllObjects();
             break;
         case 'figUpdateObjectsAndStyles':
-            figUpdateObjects(null, msg.objects, msg.nodeIds, msg.firstChunk, msg.lastChunk, msg.zoomToFit);
+            figUpdateObjects(null, msg.objects, msg.objectBatchSize, msg.nodeIds, msg.firstChunk, msg.lastChunk, msg.zoomToFit);
             figUpdateStyles(msg);
             break;
         case 'figDeleteObjectsAndStyles':
@@ -2352,6 +2354,32 @@ function figNotify(text, prefix = 'Generator ', delay = 400, error = false, butt
         notifyNotificationHandler.cancel();
     notifyNotificationHandler = figma.notify(prefix + text, options);
 }
+function figGetValueFromUiSync(key, params = null) {
+    return __awaiter(this, void 0, void 0, function* () {
+        yield figGetValueFromUi(key, params);
+    });
+}
+function figGetValueFromUi(key, params = null) {
+    return __awaiter(this, void 0, void 0, function* () {
+        return new Promise((resolve, reject) => {
+            const timeout = 60000;
+            figPostMessageToUi(Object.assign({ cmd: 'uiGetValueForFigma', key: key }, (params || {})));
+            const timeoutId = setTimeout(() => reject(new Error('Timeout: Result not received by Figma within the specified time')), timeout);
+            function handleMessage(msg) {
+                msg = JSON.parse(msg);
+                if (msg.cmd === 'returnUiGetValueForFigma') {
+                    clearTimeout(timeoutId);
+                    resolve({
+                        key: msg.key,
+                        value: msg.value
+                    });
+                    figma.ui.off('message', handleMessage);
+                }
+            }
+            figma.ui.on('message', handleMessage);
+        });
+    });
+}
 var _genIgnoreNodeIds = [];
 var _genIgnoreObjects = [];
 function makeObjectName(obj) {
@@ -2471,101 +2499,115 @@ function figUpdateObject(figObj, genObj) {
     if (genObj[FO_DECO])
         updateDecoObject(figObj);
 }
-function figUpdateObjects(figParent, genObjects, nodeIds = [], firstChunk = false, lastChunk = false, zoomToFit = false) {
-    let curNodeId = NULL;
-    let figObjects = null;
-    const updateObjects = [];
-    _genIgnoreNodeIds.push(...nodeIds);
-    for (const genObj of genObjects) {
-        _genIgnoreObjects.push(genObj);
-        if (genObj[FO_NODE_ID] != curNodeId) {
-            curNodeId = genObj[FO_NODE_ID];
-            figObjects = figObjectArrays.find(a => a.nodeId == genObj[FO_NODE_ID]);
-            if (!figObjects) {
-                figObjectArrays.push(figObjects =
-                    {
-                        nodeId: genObj[FO_NODE_ID],
-                        objects: []
-                    });
+function figUpdateObjects(figParent, genObjects, batchSize, nodeIds = [], firstChunk = false, lastChunk = false, zoomToFit = false) {
+    return __awaiter(this, void 0, void 0, function* () {
+        let curNodeId = NULL;
+        let figObjects = null;
+        const updateObjects = [];
+        _genIgnoreNodeIds.push(...nodeIds);
+        let curObjectCount = 0;
+        for (const genObj of genObjects) {
+            _genIgnoreObjects.push(genObj);
+            if (genObj[FO_NODE_ID] != curNodeId) {
+                curNodeId = genObj[FO_NODE_ID];
+                figObjects = figObjectArrays.find(a => a.nodeId == genObj[FO_NODE_ID]);
+                if (!figObjects) {
+                    figObjectArrays.push(figObjects =
+                        {
+                            nodeId: genObj[FO_NODE_ID],
+                            objects: []
+                        });
+                }
+            }
+            const addObject = figObj => {
+                if (figParent
+                    && !figParent.removed)
+                    figParent.appendChild(figObj);
+                else
+                    figObjects.objects.push(figObj);
+            };
+            let objects = figParent
+                && !figParent.removed
+                ? figParent.children
+                : figObjects.objects;
+            let figObj = objects.find(o => o.removed
+                || o.getPluginData('userId') == figma.currentUser.id
+                    //&& o.getPluginData('sessionId') == figma.currentUser.sessionId.toString()
+                    && o.getPluginData('objectId') == genObj[FO_OBJECT_ID]);
+            if (figObj != undefined
+                && figObj != null
+                && figObj.removed) {
+                removeFrom(objects, figObj);
+                if (figPoints.includes(figObj))
+                    removeFromArray(figPoints, figObj);
+                if (figEmptyObjects.includes(figObj))
+                    removeFromArray(figEmptyObjects, figObj);
+            }
+            if (figObj == undefined
+                || figObj == null
+                || figObj.removed) // no existing object, create new one
+             {
+                const newObj = figCreateObject(genObj, addObject);
+                updateObjects.push(newObj);
+            }
+            else if (!figObj.removed
+                && figObj.getPluginData('type') == genObj[FO_TYPE].toString()) // update existing object
+             {
+                figUpdateObject(figObj, genObj);
+                if (figObj
+                    && !figObj.removed)
+                    updateObjects.push(figObj);
+            }
+            else // delete existing object, create new one
+             {
+                figObj.remove();
+                if (figPoints.includes(figObj))
+                    removeFromArray(figPoints, figObj);
+                if (figEmptyObjects.includes(figObj))
+                    removeFromArray(figEmptyObjects, figObj);
+                figCreateObject(genObj, addObject);
+            }
+            curObjectCount++;
+            if (curObjectCount % batchSize == 0) {
+                yield figGetValueFromUiSync('returnObjectUpdate', {
+                    objectCount: curObjectCount,
+                    totalObjects: genObjects.length
+                });
             }
         }
-        const addObject = figObj => {
-            if (figParent
-                && !figParent.removed)
-                figParent.appendChild(figObj);
-            else
-                figObjects.objects.push(figObj);
-        };
-        let objects = figParent
-            && !figParent.removed
-            ? figParent.children
-            : figObjects.objects;
-        let figObj = objects.find(o => o.removed
-            || o.getPluginData('userId') == figma.currentUser.id
-                //&& o.getPluginData('sessionId') == figma.currentUser.sessionId.toString()
-                && o.getPluginData('objectId') == genObj[FO_OBJECT_ID]);
-        if (figObj != undefined
-            && figObj != null
-            && figObj.removed) {
-            removeFrom(objects, figObj);
-            if (figPoints.includes(figObj))
-                removeFromArray(figPoints, figObj);
-            if (figEmptyObjects.includes(figObj))
-                removeFromArray(figEmptyObjects, figObj);
+        // delete removed objects from parent
+        if (figParent
+            && !figParent.removed) {
+            for (const figObj of figParent.children) {
+                if (figObj.removed
+                    || !genObjects.find(o => o[FO_OBJECT_ID] == figObj.getPluginData('objectId')
+                        && figObj.getPluginData('userId') == figma.currentUser.id))
+                    //&& figObj.getPluginData('sessionId') == figma.currentUser.sessionId.toString()))
+                    figObj.remove();
+            }
         }
-        if (figObj == undefined
-            || figObj == null
-            || figObj.removed) // no existing object, create new one
-         {
-            const newObj = figCreateObject(genObj, addObject);
-            updateObjects.push(newObj);
+        // put points on top
+        for (const point of figPoints)
+            if (!point.removed
+                && !point.parent.removed)
+                point.parent.appendChild(point);
+        if (lastChunk) {
+            // delete old content
+            figDeleteObjectsExcept(_genIgnoreNodeIds, _genIgnoreObjects);
+            _genIgnoreNodeIds = [];
+            _genIgnoreObjects = [];
+            if (zoomToFit
+                && updateObjects.length > 0) {
+                figma.viewport.scrollAndZoomIntoView(updateObjects);
+                const bounds = figGetObjectBounds(updateObjects);
+                figma.viewport.zoom = Math.min(figma.viewport.bounds.width * figma.viewport.zoom / bounds.width - 0.05, figma.viewport.bounds.height * figma.viewport.zoom / bounds.height - 0.05);
+            }
+            yield figGetValueFromUiSync('returnObjectUpdate', {
+                objectCount: genObjects.length,
+                totalObjects: genObjects.length
+            });
         }
-        else if (!figObj.removed
-            && figObj.getPluginData('type') == genObj[FO_TYPE].toString()) // update existing object
-         {
-            figUpdateObject(figObj, genObj);
-            if (figObj
-                && !figObj.removed)
-                updateObjects.push(figObj);
-        }
-        else // delete existing object, create new one
-         {
-            figObj.remove();
-            if (figPoints.includes(figObj))
-                removeFromArray(figPoints, figObj);
-            if (figEmptyObjects.includes(figObj))
-                removeFromArray(figEmptyObjects, figObj);
-            figCreateObject(genObj, addObject);
-        }
-    }
-    // delete removed objects from parent
-    if (figParent
-        && !figParent.removed) {
-        for (const figObj of figParent.children) {
-            if (figObj.removed
-                || !genObjects.find(o => o[FO_OBJECT_ID] == figObj.getPluginData('objectId')
-                    && figObj.getPluginData('userId') == figma.currentUser.id))
-                //&& figObj.getPluginData('sessionId') == figma.currentUser.sessionId.toString()))
-                figObj.remove();
-        }
-    }
-    // put points on top
-    for (const point of figPoints)
-        if (!point.removed
-            && !point.parent.removed)
-            point.parent.appendChild(point);
-    if (lastChunk) {
-        // delete old content
-        figDeleteObjectsExcept(_genIgnoreNodeIds, _genIgnoreObjects);
-        _genIgnoreNodeIds = [];
-        _genIgnoreObjects = [];
-        if (zoomToFit
-            && updateObjects.length > 0) {
-            figma.viewport.scrollAndZoomIntoView(updateObjects);
-            const bounds = figGetObjectBounds(updateObjects);
-            figma.viewport.zoom = Math.min(figma.viewport.bounds.width * figma.viewport.zoom / bounds.width - 0.05, figma.viewport.bounds.height * figma.viewport.zoom / bounds.height - 0.05);
-        }
-    }
+    });
 }
 function genObjectIsValid(genObj) {
     switch (genObj[FO_TYPE]) {
@@ -3262,7 +3304,7 @@ function figUpdateBoolean(figBool, genBool) {
         return;
     }
     setObjectTransform(figBool, genBool);
-    figUpdateObjects(figBool, genBool.children);
+    figUpdateObjects(figBool, genBool.children, genBool.children.length);
 }
 function genEllipseIsValid(genEllipse) {
     return genEllipse[FO_X] != null && !isNaN(genEllipse[FO_X])
@@ -3322,7 +3364,7 @@ function figCreateFrame(genFrame) {
 }
 function figUpdateFrame(figFrame, genFrame) {
     figUpdateFrameData(figFrame, genFrame);
-    figUpdateObjects(figFrame, genFrame[FO_FRAME_CHILDREN]);
+    figUpdateObjects(figFrame, genFrame[FO_FRAME_CHILDREN], genFrame[FO_FRAME_CHILDREN].length);
 }
 function figUpdateFrameData(figFrame, genFrame) {
     figFrame.cornerRadius = genFrame[FO_FRAME_ROUND];
@@ -3351,7 +3393,7 @@ function figUpdateShapeGroup(figGroup, genGroup) {
         figGroup.remove();
         return;
     }
-    figUpdateObjects(figGroup, genGroup[FO_GROUP_CHILDREN]);
+    figUpdateObjects(figGroup, genGroup[FO_GROUP_CHILDREN], genGroup[FO_GROUP_CHILDREN].length);
 }
 function genLineIsValid(genLine) {
     return genLine[FO_X] != null && !isNaN(genLine[FO_X])

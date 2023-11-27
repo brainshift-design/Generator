@@ -114,7 +114,7 @@ function figUpdateObject(figObj, genObj)
 
 
 
-function figUpdateObjects(figParent, genObjects, nodeIds = [], firstChunk = false, lastChunk = false, zoomToFit = false)
+async function figUpdateObjects(figParent, genObjects, batchSize, nodeIds = [], firstChunk = false, lastChunk = false, zoomToFit = false)
 {
     let   curNodeId     = NULL;
     let   figObjects    = null;
@@ -124,6 +124,8 @@ function figUpdateObjects(figParent, genObjects, nodeIds = [], firstChunk = fals
 
     _genIgnoreNodeIds.push(...nodeIds);
 
+
+    let curObjectCount = 0;
 
     for (const genObj of genObjects)
     {
@@ -214,6 +216,19 @@ function figUpdateObjects(figParent, genObjects, nodeIds = [], firstChunk = fals
 
             figCreateObject(genObj, addObject);
         }
+
+
+        curObjectCount++;
+
+        if (curObjectCount % batchSize == 0)
+        {
+            await figGetValueFromUiSync(
+                'returnObjectUpdate', 
+                { 
+                    objectCount:  curObjectCount, 
+                    totalObjects: genObjects.length 
+                });
+        }
     }
 
 
@@ -266,6 +281,14 @@ function figUpdateObjects(figParent, genObjects, nodeIds = [], firstChunk = fals
                 figma.viewport.bounds.width  * figma.viewport.zoom / bounds.width  - 0.05,
                 figma.viewport.bounds.height * figma.viewport.zoom / bounds.height - 0.05);
         }
+
+
+        await figGetValueFromUiSync(
+            'returnObjectUpdate', 
+            { 
+                objectCount:  genObjects.length, 
+                totalObjects: genObjects.length 
+            });
     }
 }
 

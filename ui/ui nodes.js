@@ -1280,6 +1280,7 @@ function uiDeactivateAllNodes()
     uiDeleteObjectsAndStyles(activeNodes.map(n => n.id));
 
 
-    objectCount = 0;
+    totalObjectCount    = 0;
+    totalObjectProgress = 1;
     updateObjectCountDisplay();
 }

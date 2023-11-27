@@ -57,7 +57,8 @@ function loadPresetGraph(graphId)
     graph.clear();
 
 
-    objectCount = 0;
+    totalObjectCount    = 0;
+    totalObjectProgress = 0;
     updateObjectCountDisplay();
 
 

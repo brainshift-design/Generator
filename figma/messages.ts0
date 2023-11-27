@@ -5,6 +5,11 @@ figma.ui.onmessage = function(msg)
 {
     msg = JSON.parse(msg);
     
+
+    if (msg.cmd == 'returnUiGetValueForFigma') // ignore this message in the queue
+        return;
+
+
     switch (msg.cmd)
     {
         case 'figStartGenerator':                     figStartGenerator                    ();                                            break;
@@ -94,8 +99,17 @@ figma.ui.onmessage = function(msg)
         case 'figDeleteAllObjects':                   figDeleteAllObjects                  ();                                            break;
 
         case 'figUpdateObjectsAndStyles':
-            figUpdateObjects(null, msg.objects, msg.nodeIds, msg.firstChunk, msg.lastChunk, msg.zoomToFit);
+            figUpdateObjects(
+                null, 
+                msg.objects, 
+                msg.objectBatchSize, 
+                msg.nodeIds, 
+                msg.firstChunk, 
+                msg.lastChunk, 
+                msg.zoomToFit);
+            
             figUpdateStyles(msg);
+            
             break;
      
         case 'figDeleteObjectsAndStyles':

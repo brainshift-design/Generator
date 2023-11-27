@@ -40,5 +40,8 @@ function figUpdateShapeGroup(figGroup, genGroup)
         return;
     }
 
-    figUpdateObjects(figGroup, genGroup[FO_GROUP_CHILDREN]);
+    figUpdateObjects(
+        figGroup, 
+        genGroup[FO_GROUP_CHILDREN],
+        genGroup[FO_GROUP_CHILDREN].length);
 }
