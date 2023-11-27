@@ -2664,7 +2664,8 @@ figma.ui.onmessage = function(msg)
 
         case 'figUpdateObjectsAndStyles':
             curObjectCount = 0;
-
+            objUpdateCount = 0;
+            
             figUpdateObjects(
                 null, 
                 msg.objects, 

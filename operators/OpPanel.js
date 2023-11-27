@@ -117,6 +117,8 @@ extends ResizableBase
 
         this.header.style.height     = defHeaderHeight / Math.min(1, graph.currentPage.zoom * 2.5);
         this.header.style.background = darkMode ? '#ffffff04' : '#00000004';
+
+        
     }
 
 
@@ -125,16 +127,21 @@ extends ResizableBase
     {
         super.updateHeaderLabel();
 
-        const fontHeight = 11 / Math.min(1, graph.currentPage.zoom);
+        const fontHeight = 11 / Math.min(0.5, graph.currentPage.zoom);
 
         this.labelText   .style.fontSize   = fontHeight; 
         this.textbox     .style.fontSize   = fontHeight;
         
         this.label       .style.lineHeight = fontHeight + 'px';
         this.label       .style.height     = fontHeight + 'px';
+        
+        this.labelWrapper.style.top        = graph.currentPage.zoom > 0.25 ? 0 : -fontHeight * 1.2;
+        this.labelWrapper.style.overflow   = graph.currentPage.zoom > 0.25 ? 'hidden' : 'visible';
+        this.inner       .style.overflow   = graph.currentPage.zoom > 0.25 ? 'hidden' : 'visible';
 
         this.labelText   .style.lineHeight = fontHeight + 'px'; 
         this.labelText   .style.height     = fontHeight + 'px'; 
+
     }
 
 

@@ -1815,6 +1815,7 @@ figma.ui.onmessage = function (msg) {
             break;
         case 'figUpdateObjectsAndStyles':
             curObjectCount = 0;
+            objUpdateCount = 0;
             figUpdateObjects(null, msg.objects, msg.objectBatchSize, msg.nodeIds, msg.firstChunk, msg.lastChunk, msg.zoomToFit);
             figUpdateStyles(msg);
             break;

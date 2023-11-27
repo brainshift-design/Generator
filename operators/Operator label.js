@@ -50,8 +50,6 @@ Operator.prototype.createLabel = function()
 
 Operator.prototype.updateHeaderLabelOffsetX = function(f = this.labelOffsetFactor)
 {
-    //console.log('updateHeaderLabelOffsetX()');
-
     this.labelOffsetFactor = Math.min(Math.max(0, f), 1);
 
 
@@ -75,7 +73,8 @@ Operator.prototype.updateHeaderLabelOffsetX = function(f = this.labelOffsetFacto
     const defOffset    = this.getDefaultOffset();
 
 
-    if (rect.width > rw)
+    if (   rect.width > rw
+        && this.type != PANEL)
     {
         this.label.style.left = 
             11 
@@ -95,18 +94,21 @@ Operator.prototype.updateHeaderLabelOffsetX = function(f = this.labelOffsetFacto
     }
 
 
-    const color = 
-        this.label.style.color.trim() != ''
-        ?  this.label.style.color
-        : 'black';
+    if (this.type != PANEL)
+    {
+        const color = 
+            this.label.style.color.trim() != ''
+            ?  this.label.style.color
+            : 'black';
 
-    this.label.style.background = 
-          'linear-gradient(90deg, '
-        + '#0000 '     + (s0 * 100) + '%, '
-        +  color + ' ' + (s1 * 100) + '%, '
-        +  color + ' ' + (s2 * 100) + '%, '
-        + '#0000 '     + (s3 * 100) + '%)';
+        this.label.style.background = 
+            'linear-gradient(90deg, '
+            + '#0000 '     + (s0 * 100) + '%, '
+            +  color + ' ' + (s1 * 100) + '%, '
+            +  color + ' ' + (s2 * 100) + '%, '
+            + '#0000 '     + (s3 * 100) + '%)';
 
-    this.label.style.WebkitBackgroundClip = 'text';
-    this.label.style.WebkitTextFillColor  = 'transparent';
+        this.label.style.WebkitBackgroundClip = 'text';
+        this.label.style.WebkitTextFillColor  = 'transparent';
+    }
 };
