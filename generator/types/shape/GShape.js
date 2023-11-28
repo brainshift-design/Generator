@@ -52,7 +52,7 @@ extends GShapeBase
 
 
 
-    async evalShapeBase(parse, add = false, input = null)
+    async evalShapeBase(parse)
     {
         let props = this.props ? (await this.props.eval(parse)).toValue() : null;
 
@@ -64,53 +64,7 @@ extends GShapeBase
         if (this.value)
         {
             if (this.input)
-            {
-                const inputValue = this.input.toValue();
-
-                if (inputValue.type == LIST_VALUE)
-                {
-                    for (const item of inputValue.items)
-                    {
-                        if (add)
-                        {
-                            const _props = new ListValue();
-
-                            if (props)
-                                _props.items.push(...props.items);
-
-
-                            if (item.props.type == LIST_VALUE)
-                                _props.items.push(...item.props.items);
-                            else
-                                _props.items.push(item.props);
-
-
-                            item.props = _props;
-                        }
-                        else
-                            item.props = props ?? item.props;
-                    }
-                }
-                else
-                {
-                    if (add)
-                    {
-                        this.value.props = new ListValue();
-
-
-                        if (props)
-                            this.value.props.items.push(...props.items);
-
-
-                        if (inputValue.props.type == LIST_VALUE)
-                            this.value.props.items.push(...inputValue.props.items);
-                        else
-                            this.value.props.items.push(inputValue.props);
-                    }
-                    else
-                        this.value.props = props ?? inputValue.props;
-                }
-            }
+                this.value.props = props ?? this.input.toValue().props;
             else
                 this.value.props = props;
 
@@ -121,7 +75,7 @@ extends GShapeBase
             {
                 this.setUpdateValues(parse, 
                 [
-                    ['props', this.value.props]
+                    ['props', props]
                 ], 
                 true);
 
@@ -141,7 +95,7 @@ extends GShapeBase
 
         for (const obj of this.value.objects)
         {
-            consoleAssert(obj.fills,   'obj.fills must not be null'  );
+            consoleAssert(obj.fills,   'obj.fills   must not be null');
             consoleAssert(obj.strokes, 'obj.strokes must not be null');
             consoleAssert(obj.effects, 'obj.effects must not be null');
 
@@ -205,21 +159,4 @@ extends GShapeBase
         if (this.input) this.input.iterateLoop(parse);
         if (this.props) this.props.iterateLoop(parse);
     }
-}
-
-
-
-function addProp(obj, prop)
-{
-         if (prop.type ==         COLOR_VALUE)  addColorProp       (obj, prop);
-    else if (prop.type ==          FILL_VALUE)  addFillProp        (obj, prop);
-    else if (prop.type ==      GRADIENT_VALUE)  addGradientProp    (obj, prop);
-    else if (prop.type ==        STROKE_VALUE)  addStrokeProp      (obj, prop);
-    else if (prop.type == ROUND_CORNERS_VALUE)  addRoundCornersProp(obj, prop);
-    else if (prop.type ==   DROP_SHADOW_VALUE)  addDropShadowProp  (obj, prop);
-    else if (prop.type ==  INNER_SHADOW_VALUE)  addInnerShadowProp (obj, prop);
-    else if (prop.type ==    LAYER_BLUR_VALUE)  addLayerBlurProp   (obj, prop);
-    else if (prop.type ==     BACK_BLUR_VALUE)  addBackBlurProp    (obj, prop);
-    else if (prop.type ==   LAYER_BLEND_VALUE)  addLayerBlendProp  (obj, prop);
-    else if (prop.type ==    LAYER_MASK_VALUE)  addMaskProp        (obj, prop);
 }

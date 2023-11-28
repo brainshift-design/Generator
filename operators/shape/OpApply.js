@@ -1,6 +1,7 @@
 class   OpApply
-extends OpShape
+extends OperatorBase//Shape
 {
+    paramProps;
     paramReplace;
 
 
@@ -20,7 +21,16 @@ extends OpShape
         
         
         this.addBaseParams();
+        this.addParam(this.paramProps = new ListParam('props', 'styles', false, true, true));
         this.addParam(this.paramReplace = new NumberParam('replace', 'replace', true, true, true, 0, 0, 1));
+
+        
+        this.paramProps.controls[0].valueText = 'style';
+        
+        this.paramProps.itemName  = ['style'];
+        this.paramProps.showZero  = false;
+        this.paramProps.listTypes = [...STYLE_VALUES];
+        this.paramProps.input.types.push(...this.paramProps.listTypes, SHAPE_LIST_VALUE);
         
         
         //this.setAllParamDividers(0.5);

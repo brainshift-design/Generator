@@ -1,7 +1,8 @@
 class GApply
-extends GShape
+extends GOperator1//Shape
 {
-    replace;
+    props   = null;
+    replace = null;
 
 
 
@@ -16,6 +17,7 @@ extends GShape
     {
         super.reset();
 
+        this.props   = null;
         this.replace = null;
     }
 
@@ -27,6 +29,7 @@ extends GShape
 
         copy.copyBase(this);
 
+        if (this.props  ) copy.props   = this.props  .copy();
         if (this.replace) copy.replace = this.replace.copy();
 
         return copy;
@@ -40,33 +43,33 @@ extends GShape
             return this;
 
         
-        const [, , , ] = await this.evalBaseParams(parse);
-        const replace  = (await this.replace.eval(parse)).toValue();
+        const input   = this.input   ? (await this.input  .eval(parse)).toValue() : null;
+        const props   = this.props   ? (await this.props  .eval(parse)).toValue() : null;
+        const replace = this.replace ? (await this.replace.eval(parse)).toValue() : null;
 
 
 
-        if (this.input)
+        if (input)
         {
-            const input = (await this.input.eval(parse)).toValue();
-
-            this.value = input.copy();
-
-            if (this.options.enabled)
-                await this.evalShapeBase(parse, replace.value == 0, input);
-
-            await this.evalObjects(parse);
+            this.value         = input;
+            this.value.props   = props;
+            this.value.replace = replace;
         }
         else
         {
-            await this.evalShapeBase(parse); // to update anything connected to styles
             this.value = NullValue.copy();
         }
 
        
+        await this.evalObjects(parse);
+
+
         this.setUpdateValues(parse, 
         [
-            ['value', this.value       ],
-            ['type',  this.outputType()]
+            ['type',    this.outputType()],
+            ['value',   this.value       ],
+            ['props',   props            ],
+            ['replace', replace          ]
         ]);
 
 
@@ -94,13 +97,25 @@ extends GShape
             obj.nodeId   = this.nodeId;
             obj.objectId = obj.objectId + OBJECT_SEPARATOR + this.nodeId;
 
+
             if (this.options.enabled)
             {
-                obj.fills    = [];
-                obj.strokes  = [];
-                obj.effects  = [];
+                if (this.value.replace.value == 1)
+                {
+                    obj.fills    = [];
+                    obj.strokes  = [];
+                    obj.effects  = [];
+                    obj.maskType = 0;
+                }
 
-                obj.maskType = 0;
+
+                if (isListType(this.value.props.type))
+                {               
+                    for (let i = this.value.props.items.length-1; i >= 0; i--)
+                        addProp(obj, this.value.props.items[i]);
+                }
+                else
+                    addProp(obj, this.value.props);
             }
         }
 
@@ -115,5 +130,44 @@ extends GShape
         return this.value
              ? this.value.copy()
              : null;
+    }
+
+
+    
+    isValid()
+    {
+        return super.isValid()
+            && this.props   && this.props  .isValid()
+            && this.replace && this.replace.isValid();
+    }
+
+
+
+    pushValueUpdates(parse)
+    {
+        super.pushValueUpdates(parse);
+
+        if (this.props  ) this.props  .pushValueUpdates(parse);
+        if (this.replace) this.replace.pushValueUpdates(parse);
+    }
+
+
+
+   invalidateInputs(parse, from, force)
+    {
+        super.invalidateInputs(parse, from, force);
+
+        if (this.props  ) this.props  .invalidateInputs(parse, from, force);
+        if (this.replace) this.replace.invalidateInputs(parse, from, force);
+    }
+
+
+
+    iterateLoop(parse)
+    {
+        super.iterateLoop(parse);
+
+        if (this.props  ) this.props  .iterateLoop(parse);
+        if (this.replace) this.replace.iterateLoop(parse);
     }
 }
