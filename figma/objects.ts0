@@ -61,16 +61,6 @@ function figCreateObject(genObj, addObject = null)
                 figObj.setPluginData('nodeId',    genObj[FO_NODE_ID  ]);
                 figObj.setPluginData('objectId',  genObj[FO_OBJECT_ID]);
                 figObj.setPluginData('isCenter',  boolToString(genObj[FO_IS_CENTER]));
-<<<<<<< Updated upstream
-<<<<<<< Updated upstream
-<<<<<<< Updated upstream
-
-=======
->>>>>>> Stashed changes
-=======
->>>>>>> Stashed changes
-=======
->>>>>>> Stashed changes
                 
 
                 if (genObj[FO_TYPE] == POINT)
