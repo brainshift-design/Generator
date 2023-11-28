@@ -190,14 +190,14 @@ extends FigmaShape
         return [
             ...super.toData(),
    
-            /* 21 */ this.x,
-            /* 22 */ this.y,
-            /* 23 */ this.width,
-            /* 24 */ this.height,
+            /* 24 */ this.x,
+            /* 25 */ this.y,
+            /* 26 */ this.width,
+            /* 27 */ this.height,
 
-            /* 25 */ this.pathData,
-            /* 26 */ this.winding,
-            /* 27 */ this.round * Math.abs(this.scaleCorners)
+            /* 28 */ this.pathData,
+            /* 29 */ this.winding,
+            /* 30 */ this.round * Math.abs(this.scaleCorners)
         ];
     }
 }

@@ -136,7 +136,8 @@ function genRequest(request, save)
                                     true,
                                     '1, 2',
                                     [12, 140, 233], 
-                                    XFORM_SUFFIX));
+                                    XFORM_SUFFIX,
+                                    false));
                         }
                     }
                 }

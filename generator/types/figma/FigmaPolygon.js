@@ -59,13 +59,13 @@ extends FigmaShape
         return [
             ...super.toData(),
    
-            /* 23 */ this.x,
-            /* 24 */ this.y,
-            /* 25 */ this.width,
-            /* 26 */ this.height,
+            /* 24 */ this.x,
+            /* 25 */ this.y,
+            /* 26 */ this.width,
+            /* 27 */ this.height,
 
-            /* 27 */ this.round * Math.abs(this.scaleCorners),
-            /* 28 */ this.corners
+            /* 28 */ this.round * Math.abs(this.scaleCorners),
+            /* 29 */ this.corners
         ];
     }
 }

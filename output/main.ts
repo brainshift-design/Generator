@@ -3672,7 +3672,10 @@ function figCreateObject(genObj, addObject = null)
                 figObj.setPluginData('nodeId',    genObj[FO_NODE_ID  ]);
                 figObj.setPluginData('objectId',  genObj[FO_OBJECT_ID]);
                 figObj.setPluginData('isCenter',  boolToString(genObj[FO_IS_CENTER]));
+<<<<<<< Updated upstream
 
+=======
+>>>>>>> Stashed changes
                 
 
                 if (genObj[FO_TYPE] == POINT)
@@ -4899,11 +4902,19 @@ function setObjectTransform(figObj, genObj, setSize = true, noHeight = 0.01)
         return;
 
 
+<<<<<<< Updated upstream
     let xp0 = genObj[FO_XP0];
     let xp1 = genObj[FO_XP1];
     let xp2 = genObj[FO_XP2];
 
 
+=======
+    const xp0 = genObj[FO_XP0];
+    const xp1 = genObj[FO_XP1];
+    const xp2 = genObj[FO_XP2];
+
+    
+>>>>>>> Stashed changes
     applyFigmaTransform(figObj, xp0, xp1, xp2)
     
 

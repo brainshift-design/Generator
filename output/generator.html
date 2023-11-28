@@ -6189,6 +6189,7 @@ function addObjectCenter(node, obj, zoom)
     const sp1 = addv(sp0, mulvs(      subv(obj.sp1, obj.sp0),      length));
     const sp2 = addv(sp0, mulvs(mulvs(subv(obj.sp2, obj.sp0), -1), length));    
 
+<<<<<<< Updated upstream
     const center = createDecoPoly(
         node, 
         sp0, 
@@ -6201,11 +6202,23 @@ function addObjectCenter(node, obj, zoom)
     center.isCenter = true;
 
     node.value.objects.push(center);
+=======
+    node.value.objects.push(
+        createDecoPoly(
+            node, 
+            sp0, 
+            [sp2, sp0, sp1],
+            false,
+            '',
+            [242, 72, 34], 
+            CENTER_SUFFIX,
+            true));
+>>>>>>> Stashed changes
 }
 
 
 
-function createDecoPoly(node, center, points, closed, dashes, color, suffix)
+function createDecoPoly(node, center, points, closed, dashes, color, suffix, isCenter)
 {
     const path = new FigmaVectorPath(
         node.nodeId,
@@ -6226,12 +6239,22 @@ function createDecoPoly(node, center, points, closed, dashes, color, suffix)
         100, 
         'NORMAL']);
 
+<<<<<<< Updated upstream
     path.strokeWeight =  1;
     path.strokeAlign  = 'CENTER';
     path.strokeJoin   = 'MITER';
     path.strokeCap    = 'NONE';
     path.strokeDashes =  dashes;
     path.isDeco       =  true;
+=======
+    line.strokeWeight =  1;
+    line.strokeAlign  = 'CENTER';
+    line.strokeJoin   = 'MITER';
+    line.strokeCap    = 'NONE';
+    line.strokeDashes =  dashes;
+    line.isDeco       =  true;
+    line.isCenter     =  isCenter;
+>>>>>>> Stashed changes
 
 
     path.createDefaultTransform(center.x, center.y);
@@ -6754,12 +6777,12 @@ extends FigmaShape
         return [
             ...super.toData(),
    
-            /* 23 */ this.x,
-            /* 24 */ this.y,
-            /* 25 */ this.width,
-            /* 26 */ this.height,
+            /* 25 */ this.x,
+            /* 26 */ this.y,
+            /* 27 */ this.width,
+            /* 28 */ this.height,
 
-            /* 27 */ this.round * Math.abs(this.scaleCorners)
+            /* 29 */ this.round * Math.abs(this.scaleCorners)
         ];
     }
 }
@@ -6816,9 +6839,9 @@ extends FigmaShape
         return [
             ...super.toData(),
    
-            /* 23 */ this.x,
-            /* 24 */ this.y,
-            /* 25 */ this.width
+            /* 24 */ this.x,
+            /* 25 */ this.y,
+            /* 26 */ this.width
         ];
     }
 }
@@ -7098,14 +7121,14 @@ extends FigmaShape
         return [
             ...super.toData(),
    
-            /* 21 */ this.x,
-            /* 22 */ this.y,
-            /* 23 */ this.width,
-            /* 24 */ this.height,
+            /* 24 */ this.x,
+            /* 25 */ this.y,
+            /* 26 */ this.width,
+            /* 27 */ this.height,
 
-            /* 25 */ this.pathData,
-            /* 26 */ this.winding,
-            /* 27 */ this.round * Math.abs(this.scaleCorners)
+            /* 28 */ this.pathData,
+            /* 29 */ this.winding,
+            /* 30 */ this.round * Math.abs(this.scaleCorners)
         ];
     }
 }
@@ -7789,13 +7812,13 @@ extends FigmaShape
         return [
             ...super.toData(),
    
-            /* 23 */ this.x,
-            /* 24 */ this.y,
-            /* 25 */ this.width,
-            /* 26 */ this.height,
+            /* 24 */ this.x,
+            /* 25 */ this.y,
+            /* 26 */ this.width,
+            /* 27 */ this.height,
 
-            /* 27 */ this.round * Math.abs(this.scaleCorners),
-            /* 28 */ this.corners
+            /* 28 */ this.round * Math.abs(this.scaleCorners),
+            /* 29 */ this.corners
         ];
     }
 }
@@ -7864,14 +7887,14 @@ extends FigmaShape
         return [
             ...super.toData(),
    
-            /* 23 */ this.x,
-            /* 24 */ this.y,
-            /* 25 */ this.width,
-            /* 26 */ this.height,
+            /* 24 */ this.x,
+            /* 25 */ this.y,
+            /* 26 */ this.width,
+            /* 27 */ this.height,
 
-            /* 27 */ this.round * Math.abs(this.scaleCorners),
-            /* 28 */ this.points,
-            /* 29 */ this.convex
+            /* 28 */ this.round * Math.abs(this.scaleCorners),
+            /* 29 */ this.points,
+            /* 20 */ this.convex
         ];
     }
 }
@@ -8006,25 +8029,25 @@ extends FigmaShape
         return [
             ...super.toData(),
    
-            /* 23 */ this.x,
-            /* 24 */ this.y,
-            /* 25 */ this.width,
-            /* 26 */ this.height,
+            /* 24 */ this.x,
+            /* 25 */ this.y,
+            /* 26 */ this.width,
+            /* 27 */ this.height,
             
-            /* 27 */ this.figWidth,
-            /* 28 */ this.figHeight,
+            /* 28 */ this.figWidth,
+            /* 29 */ this.figHeight,
             
-            /* 29 */ this.text,
+            /* 30 */ this.text,
 
-            /* 30 */ this.font,
-            /* 31 */ this.size,
-            /* 32 */ this.style,
+            /* 31 */ this.font,
+            /* 32 */ this.size,
+            /* 33 */ this.style,
             
-            /* 33 */ this.alignH,
-            /* 34 */ this.alignV,
+            /* 34 */ this.alignH,
+            /* 35 */ this.alignV,
             
-            /* 35 */ this.lineHeight,
-            /* 36 */ this.letterSpacing
+            /* 36 */ this.lineHeight,
+            /* 37 */ this.letterSpacing
         ];
     }
 }
@@ -8099,9 +8122,8 @@ extends FigmaShape
         return [
             ...super.toData(),
    
-            /* 23 */ this.x,
-            /* 24 */ this.y,
-            /* 25 */ this.isCenter
+            /* 24 */ this.x,
+            /* 25 */ this.y
         ];
     }
 }
@@ -8312,14 +8334,14 @@ extends FigmaShape
         return [
             ...super.toData(),
    
-            /* 23 */ this.x,
-            /* 24 */ this.y,
-            /* 25 */ this.width,
-            /* 26 */ this.height,
+            /* 24 */ this.x,
+            /* 25 */ this.y,
+            /* 26 */ this.width,
+            /* 27 */ this.height,
 
-            /* 27 */ this.round,
+            /* 28 */ this.round,
 
-            /* 28 */ this.children.map(o => o.toData())
+            /* 29 */ this.children.map(o => o.toData())
         ];
     }
 }
@@ -39899,7 +39921,8 @@ function genRequest(request, save)
                                     true,
                                     '1, 2',
                                     [12, 140, 233], 
-                                    XFORM_SUFFIX));
+                                    XFORM_SUFFIX,
+                                    false));
                         }
                     }
                 }

@@ -126,25 +126,25 @@ extends FigmaShape
         return [
             ...super.toData(),
    
-            /* 23 */ this.x,
-            /* 24 */ this.y,
-            /* 25 */ this.width,
-            /* 26 */ this.height,
+            /* 24 */ this.x,
+            /* 25 */ this.y,
+            /* 26 */ this.width,
+            /* 27 */ this.height,
             
-            /* 27 */ this.figWidth,
-            /* 28 */ this.figHeight,
+            /* 28 */ this.figWidth,
+            /* 29 */ this.figHeight,
             
-            /* 29 */ this.text,
+            /* 30 */ this.text,
 
-            /* 30 */ this.font,
-            /* 31 */ this.size,
-            /* 32 */ this.style,
+            /* 31 */ this.font,
+            /* 32 */ this.size,
+            /* 33 */ this.style,
             
-            /* 33 */ this.alignH,
-            /* 34 */ this.alignV,
+            /* 34 */ this.alignH,
+            /* 35 */ this.alignV,
             
-            /* 35 */ this.lineHeight,
-            /* 36 */ this.letterSpacing
+            /* 36 */ this.lineHeight,
+            /* 37 */ this.letterSpacing
         ];
     }
 }
