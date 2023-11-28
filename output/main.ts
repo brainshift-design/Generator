@@ -3674,7 +3674,10 @@ function figCreateObject(genObj, addObject = null)
                 figObj.setPluginData('isCenter',  boolToString(genObj[FO_IS_CENTER]));
 <<<<<<< Updated upstream
 <<<<<<< Updated upstream
+<<<<<<< Updated upstream
 
+=======
+>>>>>>> Stashed changes
 =======
 >>>>>>> Stashed changes
 =======
@@ -4907,6 +4910,7 @@ function setObjectTransform(figObj, genObj, setSize = true, noHeight = 0.01)
 
 <<<<<<< Updated upstream
 <<<<<<< Updated upstream
+<<<<<<< Updated upstream
     let xp0 = genObj[FO_XP0];
     let xp1 = genObj[FO_XP1];
     let xp2 = genObj[FO_XP2];
@@ -4915,12 +4919,17 @@ function setObjectTransform(figObj, genObj, setSize = true, noHeight = 0.01)
 =======
 =======
 >>>>>>> Stashed changes
+=======
+>>>>>>> Stashed changes
     const xp0 = genObj[FO_XP0];
     const xp1 = genObj[FO_XP1];
     const xp2 = genObj[FO_XP2];
 
     
 <<<<<<< Updated upstream
+<<<<<<< Updated upstream
+>>>>>>> Stashed changes
+=======
 >>>>>>> Stashed changes
 =======
 >>>>>>> Stashed changes
