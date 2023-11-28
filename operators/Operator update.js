@@ -160,14 +160,30 @@ Operator.prototype.updateDisabled = function()
     if (!this.measureData)
         return;
 
-    const height = Math.min(this.measureData.divOffset.width, this.measureData.divOffset.height) + 70;
+    const zoom = graph.currentPage.zoom;
+
+    const ax = 2;
+    const bx = 0.15;
+    const fx = 1 - Math.pow(1 - Math.min(zoom, 1), ax) / Math.pow(ax, bx)
+
+    const ay = 2;
+    const by = 1;
+    const fy = 1 - Math.pow(1 - Math.min(zoom, 1), ay) / Math.pow(ay, by);
+
+    const width   = 8;
+    const height  = Math.min(this.measureData.divOffset.width, this.measureData.divOffset.height) + 100;
+
+    console.log('fy =', fy);
+    const _width  = width /fx;
+    const _height = height/fy;
 
     this.divDisabled.style.display   =  this.enabled ? 'none' : 'inline-block';
     this.divDisabled.style.zIndex    =  10000;
-    this.divDisabled.style.height    =  height;
+    this.divDisabled.style.width     =  _width;
+    this.divDisabled.style.height    =  _height;
     this.divDisabled.style.transform = 'rotate(45deg)';
     this.divDisabled.style.left      =  (this.measureData.divOffset.width  - this.measureData.disabledOffset.width ) / 2;
-    this.divDisabled.style.top       =  (this.measureData.divOffset.height - height) / 2;
+    this.divDisabled.style.top       =  (this.measureData.divOffset.height - _height) / 2;
 }
 
 

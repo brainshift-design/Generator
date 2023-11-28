@@ -59,43 +59,44 @@ extends GOperator
         this.value.objects = [];
 
 
-        if (this.options.enabled)
+        for (let i = 0; i < this.inputs.length; i++)
         {
-            for (let i = 0; i < this.inputs.length; i++)
+            const input = (await this.inputs[i].eval(parse)).toValue();
+
+
+            if (   input
+                && this.options.enabled)
             {
-                const input = (await this.inputs[i].eval(parse)).toValue();
-
-
-                if (input)
+                if (isListType(input.type))
                 {
-                    if (isListType(input.type))
-                    {
-                        if (input.condensed === true)
-                            this.value.items.push(input);
-                        else
-                        {
-                            for (const item of input.items)
-                                this.value.items.push(item);
-                        }
-                    }
-                    else
+                    if (input.condensed === true)
                         this.value.items.push(input);
+                    else
+                    {
+                        for (const item of input.items)
+                            this.value.items.push(item);
+                    }
                 }
-
-
-                const inputObjects = this.copyObjects(input, i);
-                inputObjects.forEach(o => o.itemIndex = i);
-
-                this.value.objects.push(...inputObjects);
+                else
+                    this.value.items.push(input);
             }
 
 
+            const inputObjects = this.copyObjects(input, i);
+            inputObjects.forEach(o => o.itemIndex = i);
+
+            this.value.objects.push(...inputObjects);
+        }
+
+
+        if (this.options.enabled)
+        {
             // reset object space
 
             const bounds = getObjBounds(this.value.objects);
 
             const singlePoint =
-                   this.value.objects.length  == 1 
+                    this.value.objects.length  == 1 
                 && this.value.objects[0].type == POINT;
 
 
@@ -105,7 +106,7 @@ extends GOperator
                 obj.resetSpace(bounds, singlePoint);
             }
         }
-
+        
 
         const preview = new ListValue(this.value.items.slice(0, Math.min(this.value.items.length, 10)));
         const length  = new NumberValue(this.value.items.length);

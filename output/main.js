@@ -2939,10 +2939,11 @@ function updateDecoObject(figObj) {
         let t = { x: parseFloat(parts[1]), y: parseFloat(parts[2]) };
         let c = { x: parseFloat(parts[4]), y: parseFloat(parts[5]) };
         let r = { x: parseFloat(parts[7]), y: parseFloat(parts[8]) };
-        const a = 0.2;
-        const f = (1 - a) * curZoom + a * Math.pow(Math.E, curZoom - 1);
-        t = addv(c, mulvs(unitv(subv(t, c)), 10 / Math.min(f, 1)));
-        r = addv(c, mulvs(unitv(subv(r, c)), 10 / Math.min(f, 1)));
+        const a = 2;
+        const b = 0.05;
+        const f = 1 - Math.pow(1 - Math.min(curZoom, 1), a) / Math.pow(a, b);
+        t = addv(c, mulvs(unitv(subv(t, c)), 10 / f));
+        r = addv(c, mulvs(unitv(subv(r, c)), 10 / f));
         parts[1] = t.x;
         parts[2] = t.y;
         parts[4] = c.x;
