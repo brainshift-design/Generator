@@ -65,21 +65,51 @@ extends GShapeBase
         {
             if (this.input)
             {
-                if (add)
+                const inputValue = this.input.toValue();
+
+                if (inputValue.type == LIST_VALUE)
                 {
-                    this.value.props = new ListValue();
+                    for (const item of inputValue.items)
+                    {
+                        if (add)
+                        {
+                            const _props = new ListValue();
 
-                    if (this.input.toValue().props.type == LIST_VALUE)
-                        this.value.props.items.push(...this.input.toValue().props.items);
-                    else
-                        this.value.props.items.push(input.props);
-                    
+                            if (props)
+                                _props.items.push(...props.items);
 
-                    if (props)
-                        this.value.props.items.push(...props.items);
+
+                            if (item.props.type == LIST_VALUE)
+                                _props.items.push(...item.props.items);
+                            else
+                                _props.items.push(item.props);
+
+
+                            item.props = _props;
+                        }
+                        else
+                            item.props = props ?? item.props;
+                    }
                 }
                 else
-                    this.value.props = props ?? this.input.toValue().props;
+                {
+                    if (add)
+                    {
+                        this.value.props = new ListValue();
+
+
+                        if (props)
+                            this.value.props.items.push(...props.items);
+
+
+                        if (inputValue.props.type == LIST_VALUE)
+                            this.value.props.items.push(...inputValue.props.items);
+                        else
+                            this.value.props.items.push(inputValue.props);
+                    }
+                    else
+                        this.value.props = props ?? inputValue.props;
+                }
             }
             else
                 this.value.props = props;
