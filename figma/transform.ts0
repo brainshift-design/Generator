@@ -46,19 +46,11 @@ function applyFigmaTransform(figObj, tl, tr, bl)
 {
     const xform = getFigmaTransform(tl, tr, bl);
 
-
-    // if (xform)
-        figObj.relativeTransform = 
-        [
-            xform[0],
-            xform[1]
-        ];
-
-    // else
-    //     figObj.remove();
-
-
-    // return xform;
+    figObj.relativeTransform = 
+    [
+        xform[0],
+        xform[1]
+    ];
 }
 
 
@@ -71,20 +63,13 @@ function setObjectTransform(figObj, genObj, setSize = true, noHeight = 0.01)
         return;
 
 
-    const xp0 = genObj[FO_XP0];//point(genObj[FO_XP0].x, genObj[FO_XP0].y);
-    const xp1 = genObj[FO_XP1];//point(genObj[FO_XP1].x, genObj[FO_XP1].y);
-    const xp2 = genObj[FO_XP2];//point(genObj[FO_XP2].x, genObj[FO_XP2].y);
+    let xp0 = genObj[FO_XP0];
+    let xp1 = genObj[FO_XP1];
+    let xp2 = genObj[FO_XP2];
 
-    
-    //const xform = 
+
     applyFigmaTransform(figObj, xp0, xp1, xp2)
     
-    // if (!xform)
-    // {
-    //     genObj.badTransform = true;        
-    //     return;
-    // }
-
 
     if (setSize)
     {
@@ -123,7 +108,7 @@ function setPointTransform(figPoint, genPoint)
     figPoint.x        = genPoint[FO_X];
     figPoint.y        = genPoint[FO_Y];
 
-    figPoint.rotation = genPoint[FO_POINT_IS_CENTER] ? 45 : 0;
+    figPoint.rotation = genPoint[FO_IS_CENTER] ? 45 : 0;
 }
 
 

@@ -4,7 +4,6 @@ extends FigmaShape
     x;
     y;
     smooth;
-    isCenter;
 
 
 

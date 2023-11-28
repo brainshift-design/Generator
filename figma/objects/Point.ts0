@@ -13,12 +13,12 @@ function genPointIsValid(genPoint)
 function figCreatePoint(genPoint)
 {    
     const figPoint = 
-        genPoint[FO_POINT_IS_CENTER]
+        genPoint[FO_IS_CENTER]
         ? figma.createRectangle()
         : figma.createEllipse();
 
 
-    figPoint.setPluginData('isCenter', boolToString(genPoint[FO_POINT_IS_CENTER]));
+    // figPoint.setPluginData('isCenter', boolToString(genPoint[FO_IS_CENTER]));
 
 
     if (!genPointIsValid(genPoint))

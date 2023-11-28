@@ -17,6 +17,7 @@ extends FigmaObject
     effects = [];
 
     isDeco;
+    isCenter;
     isXform;
 
     opacity;
@@ -30,14 +31,15 @@ extends FigmaObject
     {
         super(type, nodeId, objectId, objectName);
 
-        this.skewX   = 0;
-        this.skewY   = 0;
+        this.skewX    = 0;
+        this.skewY    = 0;
 
-        this.isDeco  = isDeco;
-        this.isXform = isXform;
+        this.isDeco   = isDeco;
+        this.isCenter = false;
+        this.isXform  = isXform;
 
-        this.opacity = 1;
-        this.blend   = 'PASS_THROUGH';
+        this.opacity  = 1;
+        this.blend    = 'PASS_THROUGH';
     }
 
 
@@ -62,6 +64,7 @@ extends FigmaObject
         this.effects          = clone(base.effects);
 
         this.isDeco           = base.isDeco;
+        this.isCenter         = base.isCenter;
         this.isXform          = base.isXform;
 
         this.opacity          = base.opacity;
@@ -100,10 +103,11 @@ extends FigmaObject
             /* 18 */ this.effects,
 
             /* 19 */ this.isDeco,
+            /* 20 */ this.isCenter,
 
-            /* 20 */ this.opacity,
-            /* 21 */ this.blend,
-            /* 22 */ this.maskType
+            /* 21 */ this.opacity,
+            /* 22 */ this.blend,
+            /* 23 */ this.maskType
         ];
     }
 }

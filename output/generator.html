@@ -5776,29 +5776,30 @@ const FO_STROKE_DASHES  = 17;
 const FO_EFFECTS        = 18;
 
 const FO_DECO           = 19;
+const FO_IS_CENTER      = 20;   
 
-const FO_OPACITY        = 20;
-const FO_BLEND          = 21;
-const FO_MASK           = 22;
+const FO_OPACITY        = 21;
+const FO_BLEND          = 22;
+const FO_MASK           = 23;
 
-const FO_X              = 23;                                                                                                                                                                                                         const FO_GROUP_CHILDREN = 23;
-const FO_Y              = 24;                                    
-const FO_WIDTH          = 25;   const FO_POINT_IS_CENTER = 25;   
-const FO_HEIGHT         = 26;                                    
+const FO_X              = 24;                                                                                                                                                                                                         const FO_GROUP_CHILDREN = 24;
+const FO_Y              = 25;                                    
+const FO_WIDTH          = 26;   
+const FO_HEIGHT         = 27;                                    
 
-const FO_RECT_ROUND     = 27;   const FO_ELLIPSE_ROUND   = 27;   const FO_VECTOR_NETWORK_DATA = 27;   const FO_VECTOR_PATH_DATA    = 27;   const FO_POLY_ROUND   = 27;   const FO_STAR_ROUND  = 27;   const FO_FIG_WIDTH      = 27;   const FO_FRAME_ROUND    = 27;
-                                const FO_ELLIPSE_FROM    = 28;                                        const FO_VECTOR_PATH_WINDING = 28;   const FO_POLY_CORNERS = 28;   const FO_STAR_POINTS = 28;   const FO_FIG_HEIGHT     = 28;   const FO_FRAME_CHILDREN = 28;
-                                const FO_ELLIPSE_TO      = 29;                                        const FO_VECTOR_PATH_ROUND   = 29;                                 const FO_STAR_CONVEX = 29;   const FO_TEXT           = 29; 
-                                const FO_ELLIPSE_INNER   = 30;                                                                                                 
-                                                                                                                                                                                                      const FO_FONT           = 30;
-                                                                                                                                                                                                      const FO_FONT_SIZE      = 31;
-                                                                                                                                                                                                      const FO_FONT_STYLE     = 32;
+const FO_RECT_ROUND     = 28;   const FO_ELLIPSE_ROUND   = 28;   const FO_VECTOR_NETWORK_DATA = 28;   const FO_VECTOR_PATH_DATA    = 28;   const FO_POLY_ROUND   = 28;   const FO_STAR_ROUND  = 28;   const FO_FIG_WIDTH      = 28;   const FO_FRAME_ROUND    = 28;
+                                const FO_ELLIPSE_FROM    = 29;                                        const FO_VECTOR_PATH_WINDING = 29;   const FO_POLY_CORNERS = 29;   const FO_STAR_POINTS = 29;   const FO_FIG_HEIGHT     = 29;   const FO_FRAME_CHILDREN = 29;
+                                const FO_ELLIPSE_TO      = 30;                                        const FO_VECTOR_PATH_ROUND   = 30;                                 const FO_STAR_CONVEX = 30;   const FO_TEXT           = 30; 
+                                const FO_ELLIPSE_INNER   = 31;                                                                                                 
+                                                                                                                                                                                                      const FO_FONT           = 32;
+                                                                                                                                                                                                      const FO_FONT_SIZE      = 33;
+                                                                                                                                                                                                      const FO_FONT_STYLE     = 34;
                                                                                                                                                                                                                                     
-                                                                                                                                                                                                      const FO_ALIGN_H        = 33;
-                                                                                                                                                                                                      const FO_ALIGN_V        = 34;
+                                                                                                                                                                                                      const FO_ALIGN_H        = 35;
+                                                                                                                                                                                                      const FO_ALIGN_V        = 36;
                                                                                                                                                                                                                                     
-                                                                                                                                                                                                      const FO_LINE_HEIGHT    = 35;
-                                                                                                                                                                                                      const FO_LETTER_SPACING = 36;                                
+                                                                                                                                                                                                      const FO_LINE_HEIGHT    = 37;
+                                                                                                                                                                                                      const FO_LETTER_SPACING = 38;
 
 
 class FigmaObject
@@ -6188,22 +6189,25 @@ function addObjectCenter(node, obj, zoom)
     const sp1 = addv(sp0, mulvs(      subv(obj.sp1, obj.sp0),      length));
     const sp2 = addv(sp0, mulvs(mulvs(subv(obj.sp2, obj.sp0), -1), length));    
 
-    node.value.objects.push(
-        createDecoPoly(
-            node, 
-            sp0, 
-            [sp2, sp0, sp1],
-            false,
-            '',
-            [242, 72, 34], 
-            CENTER_SUFFIX));
+    const center = createDecoPoly(
+        node, 
+        sp0, 
+        [sp2, sp0, sp1],
+        false,
+        '',
+        [242, 72, 34], 
+        CENTER_SUFFIX);
+
+    center.isCenter = true;
+
+    node.value.objects.push(center);
 }
 
 
 
 function createDecoPoly(node, center, points, closed, dashes, color, suffix)
 {
-    const line = new FigmaVectorPath(
+    const path = new FigmaVectorPath(
         node.nodeId,
         node.nodeId   + suffix,
         node.nodeName + suffix,
@@ -6214,7 +6218,7 @@ function createDecoPoly(node, center, points, closed, dashes, color, suffix)
         0);
 
 
-    line.strokes.push([
+    path.strokes.push([
         'SOLID', 
         color[0], 
         color[1], 
@@ -6222,18 +6226,18 @@ function createDecoPoly(node, center, points, closed, dashes, color, suffix)
         100, 
         'NORMAL']);
 
-    line.strokeWeight =  1;
-    line.strokeAlign  = 'CENTER';
-    line.strokeJoin   = 'MITER';
-    line.strokeCap    = 'NONE';
-    line.strokeDashes =  dashes;
-    line.isDeco       =  true;
+    path.strokeWeight =  1;
+    path.strokeAlign  = 'CENTER';
+    path.strokeJoin   = 'MITER';
+    path.strokeCap    = 'NONE';
+    path.strokeDashes =  dashes;
+    path.isDeco       =  true;
 
 
-    line.createDefaultTransform(center.x, center.y);
+    path.createDefaultTransform(center.x, center.y);
 
 
-    return line;
+    return path;
 }
 
 
@@ -6595,6 +6599,7 @@ extends FigmaObject
     effects = [];
 
     isDeco;
+    isCenter;
     isXform;
 
     opacity;
@@ -6608,14 +6613,15 @@ extends FigmaObject
     {
         super(type, nodeId, objectId, objectName);
 
-        this.skewX   = 0;
-        this.skewY   = 0;
+        this.skewX    = 0;
+        this.skewY    = 0;
 
-        this.isDeco  = isDeco;
-        this.isXform = isXform;
+        this.isDeco   = isDeco;
+        this.isCenter = false;
+        this.isXform  = isXform;
 
-        this.opacity = 1;
-        this.blend   = 'PASS_THROUGH';
+        this.opacity  = 1;
+        this.blend    = 'PASS_THROUGH';
     }
 
 
@@ -6640,6 +6646,7 @@ extends FigmaObject
         this.effects          = clone(base.effects);
 
         this.isDeco           = base.isDeco;
+        this.isCenter         = base.isCenter;
         this.isXform          = base.isXform;
 
         this.opacity          = base.opacity;
@@ -6678,10 +6685,11 @@ extends FigmaObject
             /* 18 */ this.effects,
 
             /* 19 */ this.isDeco,
+            /* 20 */ this.isCenter,
 
-            /* 20 */ this.opacity,
-            /* 21 */ this.blend,
-            /* 22 */ this.maskType
+            /* 21 */ this.opacity,
+            /* 22 */ this.blend,
+            /* 23 */ this.maskType
         ];
     }
 }
@@ -6884,15 +6892,15 @@ extends FigmaShape
         return [
             ...super.toData(),
    
-            /* 23 */ this.x,
-            /* 24 */ this.y,
-            /* 25 */ this.width,
-            /* 26 */ this.height,
-            /* 27 */ this.round,
+            /* 24 */ this.x,
+            /* 25 */ this.y,
+            /* 26 */ this.width,
+            /* 27 */ this.height,
+            /* 28 */ this.round,
 
-            /* 28 */ this.from,
-            /* 29 */ this.to,
-            /* 30 */ this.inner
+            /* 29 */ this.from,
+            /* 30 */ this.to,
+            /* 31 */ this.inner
         ];
     }
 }
@@ -8029,7 +8037,6 @@ extends FigmaShape
     x;
     y;
     smooth;
-    isCenter;
 
 
 
@@ -8210,7 +8217,7 @@ extends FigmaShape
         return [
             ...super.toData(),
    
-            /* 23 */ this.children.map(o => o.toData())
+            /* 24 */ this.children.map(o => o.toData())
         ];
     }
 }

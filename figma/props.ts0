@@ -379,6 +379,35 @@ function updateDecoObject(figObj)
     figObj.strokeWeight = Math.max(0, 1 / curZoom);
 
 
+    if (parseBool(figObj.getPluginData('isCenter')))
+    {
+        const path  = figObj.vectorPaths[0];
+        const parts = path.data.split(' ');
+        
+        let t = { x: parseFloat(parts[1]), y: parseFloat(parts[2]) };
+        let c = { x: parseFloat(parts[4]), y: parseFloat(parts[5]) };
+        let r = { x: parseFloat(parts[7]), y: parseFloat(parts[8]) };
+
+        const a = 0.2;
+        const f = (1-a) * curZoom + a * Math.pow(Math.E, curZoom - 1);
+
+        t = addv(c, mulvs(unitv(subv(t, c)), 10/Math.min(f, 1)));
+        r = addv(c, mulvs(unitv(subv(r, c)), 10/Math.min(f, 1)));
+ 
+        parts[1] = t.x; parts[2] = t.y;
+        parts[4] = c.x; parts[5] = c.y;
+        parts[7] = r.x; parts[8] = r.y;
+
+        const newPath = 
+        {
+            windingRule: path.windingRule,
+            data:        parts.join(' ')
+        };
+
+        figObj.vectorPaths = [newPath];
+    }
+
+
     const dashes = figObj.getPluginData('dashes');
 
     if (dashes != '')

@@ -385,22 +385,25 @@ function addObjectCenter(node, obj, zoom)
     const sp1 = addv(sp0, mulvs(      subv(obj.sp1, obj.sp0),      length));
     const sp2 = addv(sp0, mulvs(mulvs(subv(obj.sp2, obj.sp0), -1), length));    
 
-    node.value.objects.push(
-        createDecoPoly(
-            node, 
-            sp0, 
-            [sp2, sp0, sp1],
-            false,
-            '',
-            [242, 72, 34], 
-            CENTER_SUFFIX));
+    const center = createDecoPoly(
+        node, 
+        sp0, 
+        [sp2, sp0, sp1],
+        false,
+        '',
+        [242, 72, 34], 
+        CENTER_SUFFIX);
+
+    center.isCenter = true;
+
+    node.value.objects.push(center);
 }
 
 
 
 function createDecoPoly(node, center, points, closed, dashes, color, suffix)
 {
-    const line = new FigmaVectorPath(
+    const path = new FigmaVectorPath(
         node.nodeId,
         node.nodeId   + suffix,
         node.nodeName + suffix,
@@ -411,7 +414,7 @@ function createDecoPoly(node, center, points, closed, dashes, color, suffix)
         0);
 
 
-    line.strokes.push([
+    path.strokes.push([
         'SOLID', 
         color[0], 
         color[1], 
@@ -419,18 +422,18 @@ function createDecoPoly(node, center, points, closed, dashes, color, suffix)
         100, 
         'NORMAL']);
 
-    line.strokeWeight =  1;
-    line.strokeAlign  = 'CENTER';
-    line.strokeJoin   = 'MITER';
-    line.strokeCap    = 'NONE';
-    line.strokeDashes =  dashes;
-    line.isDeco       =  true;
+    path.strokeWeight =  1;
+    path.strokeAlign  = 'CENTER';
+    path.strokeJoin   = 'MITER';
+    path.strokeCap    = 'NONE';
+    path.strokeDashes =  dashes;
+    path.isDeco       =  true;
 
 
-    line.createDefaultTransform(center.x, center.y);
+    path.createDefaultTransform(center.x, center.y);
 
 
-    return line;
+    return path;
 }
 
 
