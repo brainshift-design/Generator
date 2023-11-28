@@ -409,6 +409,9 @@ function addObjectCenter(node, obj, zoom)
             [242, 72, 34], 
             CENTER_SUFFIX,
             true));
+<<<<<<< Updated upstream
+>>>>>>> Stashed changes
+=======
 >>>>>>> Stashed changes
 }
 
@@ -450,6 +453,9 @@ function createDecoPoly(node, center, points, closed, dashes, color, suffix, isC
     line.strokeDashes =  dashes;
     line.isDeco       =  true;
     line.isCenter     =  isCenter;
+<<<<<<< Updated upstream
+>>>>>>> Stashed changes
+=======
 >>>>>>> Stashed changes
 
 
