@@ -91,15 +91,17 @@ extends GOperator1//Shape
                 : [];
         }
 
-            
-        for (const obj of this.value.objects)
+
+        if (this.value.objects)
         {
-            obj.nodeId   = this.nodeId;
-            obj.objectId = obj.objectId + OBJECT_SEPARATOR + this.nodeId;
+            for (const obj of this.value.objects)
+            {
+                obj.nodeId   = this.nodeId;
+                obj.objectId = obj.objectId + OBJECT_SEPARATOR + this.nodeId;
+            }
+
+            this.applyProps(this.value.objects, this.value.props, this.value.replace.value);
         }
-
-
-        this.applyProps(this.value.objects, this.value.props, this.value.replace.value);
 
         
         await super.evalObjects(parse);
@@ -113,10 +115,15 @@ extends GOperator1//Shape
         {
             if (this.options.enabled)
             {
-                if (obj.type == SHAPE_GROUP)
-                    this.applyProps(obj.children, props, replace);
+                // if (obj.type == SHAPE_GROUP)
+                //     this.applyProps(obj.children, props, replace);
 
-                else
+                // else
+
+                // apply doesn't work on groups because there's no clear way
+                // to determine how deep it should go in case of nested groups
+                
+                //if (!obj.type == SHAPE_GROUP)
                 {
                     if (replace == 1)
                     {
