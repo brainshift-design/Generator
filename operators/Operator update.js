@@ -173,7 +173,6 @@ Operator.prototype.updateDisabled = function()
     const width   = 8;
     const height  = Math.min(this.measureData.divOffset.width, this.measureData.divOffset.height) + 100;
 
-    console.log('fy =', fy);
     const _width  = width /fx;
     const _height = height/fy;
 
