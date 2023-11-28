@@ -96,31 +96,47 @@ extends GOperator1//Shape
         {
             obj.nodeId   = this.nodeId;
             obj.objectId = obj.objectId + OBJECT_SEPARATOR + this.nodeId;
-
-
-            if (this.options.enabled)
-            {
-                if (this.value.replace.value == 1)
-                {
-                    obj.fills    = [];
-                    obj.strokes  = [];
-                    obj.effects  = [];
-                    obj.maskType = 0;
-                }
-
-
-                if (isListType(this.value.props.type))
-                {               
-                    for (let i = this.value.props.items.length-1; i >= 0; i--)
-                        addProp(obj, this.value.props.items[i]);
-                }
-                else
-                    addProp(obj, this.value.props);
-            }
         }
+
+
+        this.applyProps(this.value.objects, this.value.props, this.value.replace.value);
 
         
         await super.evalObjects(parse);
+    }
+
+
+
+    applyProps(objects, props, replace)
+    {
+        for (const obj of objects)
+        {
+            if (this.options.enabled)
+            {
+                if (obj.type == SHAPE_GROUP)
+                    this.applyProps(obj.children, props, replace);
+
+                else
+                {
+                    if (replace == 1)
+                    {
+                        obj.fills    = [];
+                        obj.strokes  = [];
+                        obj.effects  = [];
+                        obj.maskType = 0;
+                    }
+
+
+                    if (isListType(props.type))
+                    {               
+                        for (let i = props.items.length-1; i >= 0; i--)
+                            addProp(obj, props.items[i]);
+                    }
+                    else
+                        addProp(obj, props);
+                }
+            }
+        }
     }
 
 
