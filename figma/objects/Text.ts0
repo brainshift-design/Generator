@@ -74,12 +74,12 @@ function figUpdateText_(figText, genText, fontName)
     figText.letterSpacing = {unit: 'PERCENT', value: genText[FO_LETTER_SPACING]};
 
 
-            if (genText[FO_ALIGN_H] == 0) figText.textAlignHorizontal = 'LEFT';
+         if (genText[FO_ALIGN_H] == 0) figText.textAlignHorizontal = 'LEFT';
     else if (genText[FO_ALIGN_H] == 1) figText.textAlignHorizontal = 'CENTER';
     else if (genText[FO_ALIGN_H] == 2) figText.textAlignHorizontal = 'RIGHT';
     else if (genText[FO_ALIGN_H] == 3) figText.textAlignHorizontal = 'JUSTIFIED';
 
-            if (genText[FO_ALIGN_V] == 0) figText.textAlignVertical   = 'TOP';
+         if (genText[FO_ALIGN_V] == 0) figText.textAlignVertical   = 'TOP';
     else if (genText[FO_ALIGN_V] == 1) figText.textAlignVertical   = 'CENTER';
     else if (genText[FO_ALIGN_V] == 2) figText.textAlignVertical   = 'BOTTOM';
 
@@ -101,7 +101,7 @@ function figUpdateText_(figText, genText, fontName)
 
 
     if (     genText[FO_FIG_WIDTH ] == 0
-            && genText[FO_FIG_HEIGHT] == 0) figText.textAutoResize = 'WIDTH_AND_HEIGHT';
+          && genText[FO_FIG_HEIGHT] == 0) figText.textAutoResize = 'WIDTH_AND_HEIGHT';
     else if (genText[FO_FIG_WIDTH ] == 0) figText.textAutoResize = 'HEIGHT';
     else                                  figText.textAutoResize = 'NONE';
 }

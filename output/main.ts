@@ -1873,16 +1873,16 @@ const FO_HEIGHT         = 27;
 const FO_RECT_ROUND     = 28;   const FO_ELLIPSE_ROUND   = 28;   const FO_VECTOR_NETWORK_DATA = 28;   const FO_VECTOR_PATH_DATA    = 28;   const FO_POLY_ROUND   = 28;   const FO_STAR_ROUND  = 28;   const FO_FIG_WIDTH      = 28;   const FO_FRAME_ROUND    = 28;
                                 const FO_ELLIPSE_FROM    = 29;                                        const FO_VECTOR_PATH_WINDING = 29;   const FO_POLY_CORNERS = 29;   const FO_STAR_POINTS = 29;   const FO_FIG_HEIGHT     = 29;   const FO_FRAME_CHILDREN = 29;
                                 const FO_ELLIPSE_TO      = 30;                                        const FO_VECTOR_PATH_ROUND   = 30;                                 const FO_STAR_CONVEX = 30;   const FO_TEXT           = 30; 
-                                const FO_ELLIPSE_INNER   = 31;                                                                                                 
-                                                                                                                                                                                                      const FO_FONT           = 32;
-                                                                                                                                                                                                      const FO_FONT_SIZE      = 33;
-                                                                                                                                                                                                      const FO_FONT_STYLE     = 34;
+                                                                                                                                 
+                                const FO_ELLIPSE_INNER   = 31;                                                                                                                                        const FO_FONT           = 31;
+                                                                                                                                                                                                      const FO_FONT_SIZE      = 32;
+                                                                                                                                                                                                      const FO_FONT_STYLE     = 33;
                                                                                                                                                                                                                                     
-                                                                                                                                                                                                      const FO_ALIGN_H        = 35;
-                                                                                                                                                                                                      const FO_ALIGN_V        = 36;
+                                                                                                                                                                                                      const FO_ALIGN_H        = 34;
+                                                                                                                                                                                                      const FO_ALIGN_V        = 35;
                                                                                                                                                                                                                                     
-                                                                                                                                                                                                      const FO_LINE_HEIGHT    = 37;
-                                                                                                                                                                                                      const FO_LETTER_SPACING = 38;
+                                                                                                                                                                                                      const FO_LINE_HEIGHT    = 36;
+                                                                                                                                                                                                      const FO_LETTER_SPACING = 37;
 
 
 const base32chars = '12345679ABCDEFGHJKLMNPQRSTUVWXYZ';
@@ -5552,12 +5552,12 @@ function figUpdateText_(figText, genText, fontName)
     figText.letterSpacing = {unit: 'PERCENT', value: genText[FO_LETTER_SPACING]};
 
 
-            if (genText[FO_ALIGN_H] == 0) figText.textAlignHorizontal = 'LEFT';
+         if (genText[FO_ALIGN_H] == 0) figText.textAlignHorizontal = 'LEFT';
     else if (genText[FO_ALIGN_H] == 1) figText.textAlignHorizontal = 'CENTER';
     else if (genText[FO_ALIGN_H] == 2) figText.textAlignHorizontal = 'RIGHT';
     else if (genText[FO_ALIGN_H] == 3) figText.textAlignHorizontal = 'JUSTIFIED';
 
-            if (genText[FO_ALIGN_V] == 0) figText.textAlignVertical   = 'TOP';
+         if (genText[FO_ALIGN_V] == 0) figText.textAlignVertical   = 'TOP';
     else if (genText[FO_ALIGN_V] == 1) figText.textAlignVertical   = 'CENTER';
     else if (genText[FO_ALIGN_V] == 2) figText.textAlignVertical   = 'BOTTOM';
 
@@ -5579,7 +5579,7 @@ function figUpdateText_(figText, genText, fontName)
 
 
     if (     genText[FO_FIG_WIDTH ] == 0
-            && genText[FO_FIG_HEIGHT] == 0) figText.textAutoResize = 'WIDTH_AND_HEIGHT';
+          && genText[FO_FIG_HEIGHT] == 0) figText.textAutoResize = 'WIDTH_AND_HEIGHT';
     else if (genText[FO_FIG_WIDTH ] == 0) figText.textAutoResize = 'HEIGHT';
     else                                  figText.textAutoResize = 'NONE';
 }
