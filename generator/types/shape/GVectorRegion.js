@@ -146,12 +146,12 @@ extends GShape
             {
                 const loop = this.loops.items[i];
 
-
+                console.log('loop.items =', loop.items);
                 const points = [];
     
                 for (let j = 0; j < loop.items.length; j++)
                 {
-                    const edge = loop.items[j  ];
+                    const edge = loop.items[j];
                     const next = loop.items[j == loop.items.length-1 ? 0 : j+1];
 
                     points.push(

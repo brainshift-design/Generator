@@ -716,12 +716,12 @@ function initGeneratorMenus()
         new MenuItem('Circle center',             null,          {icon: iconCircleCenter,     createType: CIRCLE_CENTER,     callback: e => actionManager.do(getCreateNodeAction(CIRCLE_CENTER,     btnShape.div, getCreateOptions(e)))}),
         new MenuItem('',                          null,          {separator: true}),
         new MenuItem('Vector length',             null,          {icon: iconVectorLength,     createType: VECTOR_LENGTH,     callback: e => actionManager.do(getCreateNodeAction(VECTOR_LENGTH,     btnShape.div, getCreateOptions(e)))}),
-        new MenuItem('Measure points',            null,          {icon: iconMeasurePoints,    createType: MEASURE_POINTS,    callback: e => actionManager.do(getCreateNodeAction(MEASURE_POINTS,    btnShape.div, getCreateOptions(e)))}),
-        new MenuItem('',                          null,          {separator: true}),
-        new MenuItem('Vertex',                    null,          {icon: iconVectorVertex,     createType: VECTOR_VERTEX,     callback: e => actionManager.do(getCreateNodeAction(VECTOR_VERTEX,     btnShape.div, getCreateOptions(e)))}),
-        new MenuItem('Edge',                      null,          {icon: iconVectorEdge,       createType: VECTOR_EDGE,       callback: e => actionManager.do(getCreateNodeAction(VECTOR_EDGE,       btnShape.div, getCreateOptions(e)))}),
-        new MenuItem('Region',                    null,          {icon: iconVectorRegion,     createType: VECTOR_REGION,     callback: e => actionManager.do(getCreateNodeAction(VECTOR_REGION,     btnShape.div, getCreateOptions(e)))}),
-        new MenuItem('Network',                   null,          {icon: iconVectorNetwork,    createType: VECTOR_NETWORK,    callback: e => actionManager.do(getCreateNodeAction(VECTOR_NETWORK,    btnShape.div, getCreateOptions(e)))})]);
+        new MenuItem('Measure points',            null,          {icon: iconMeasurePoints,    createType: MEASURE_POINTS,    callback: e => actionManager.do(getCreateNodeAction(MEASURE_POINTS,    btnShape.div, getCreateOptions(e)))})]);
+        // new MenuItem('',                          null,          {separator: true}),
+        // new MenuItem('Vertex',                    null,          {icon: iconVectorVertex,     createType: VECTOR_VERTEX,     callback: e => actionManager.do(getCreateNodeAction(VECTOR_VERTEX,     btnShape.div, getCreateOptions(e)))}),
+        // new MenuItem('Edge',                      null,          {icon: iconVectorEdge,       createType: VECTOR_EDGE,       callback: e => actionManager.do(getCreateNodeAction(VECTOR_EDGE,       btnShape.div, getCreateOptions(e)))}),
+        // new MenuItem('Region',                    null,          {icon: iconVectorRegion,     createType: VECTOR_REGION,     callback: e => actionManager.do(getCreateNodeAction(VECTOR_REGION,     btnShape.div, getCreateOptions(e)))}),
+        // new MenuItem('Network',                   null,          {icon: iconVectorNetwork,    createType: VECTOR_NETWORK,    callback: e => actionManager.do(getCreateNodeAction(VECTOR_NETWORK,    btnShape.div, getCreateOptions(e)))})]);
 
 
     menuRectangle = new Menu('Rectangle', true, false);
