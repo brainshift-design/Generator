@@ -411,8 +411,8 @@ const TEXT_SHAPE_VALUE     = 'TXTS#';
 const TEXT_SHAPE           = 'TXTS'; 
 const TEXT_SHAPE_TYPES     = [TEXT_SHAPE_VALUE, TEXT_SHAPE];
   
-const POINT                = 'PT';
 const POINT_VALUE          = 'PT#';
+const POINT                = 'PT';
 const POINT_TYPES          = [POINT_VALUE, POINT];
 
 const POINT_CORNER         = 'PCORN';

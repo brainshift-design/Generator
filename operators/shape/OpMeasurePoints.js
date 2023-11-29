@@ -13,8 +13,8 @@ extends OpShapeBase
         this.iconOffsetY = 1;
 
 
-        this.addInput (new Input ([POINT_VALUE], getNodeInputValuesForUndo));//, this.input_getBackInitValue));
-        this.addInput (new Input ([POINT_VALUE], getNodeInputValuesForUndo));//, this.input_getBackInitValue));
+        this.addInput (new Input ([POINT_VALUE, VECTOR_VERTEX_VALUE], getNodeInputValuesForUndo));//, this.input_getBackInitValue));
+        this.addInput (new Input ([POINT_VALUE, VECTOR_VERTEX_VALUE], getNodeInputValuesForUndo));//, this.input_getBackInitValue));
 
         this.addParam(this.paramDistance = new NumberParam('distance', 'distance', true, false, true, 0));
         this.addParam(this.paramAngle    = new NumberParam('angle',    'angle',    true, false, true, 0, -180, 180));

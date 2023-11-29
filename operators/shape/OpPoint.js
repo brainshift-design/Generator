@@ -16,7 +16,7 @@ extends OpShapeBase
         this.iconOffsetY = -1;
 
 
-        this.addInput (new Input ([POINT_VALUE], getNodeInputValuesForUndo, this.input_getBackInitValue));
+        this.addInput (new Input ([POINT_VALUE, VECTOR_VERTEX_VALUE], getNodeInputValuesForUndo, this.input_getBackInitValue));
         this.addOutput(new Output([POINT_VALUE], this.output_genRequest, getNodeOutputValuesForUndo, this.output_backInit));
 
         this.addParam(this.paramX = new NumberParam('x', 'X', true, true, true, 0));

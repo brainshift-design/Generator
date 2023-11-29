@@ -21,8 +21,8 @@ extends OpShapeBase
         this.addParam(this.paramStartTangent = new PointParam('startTangent', 'start', true, true, true, PointValue.NaN));
         this.addParam(this.paramEndTangent   = new PointParam('endTangent',   'end',   true, true, true, PointValue.NaN));
 
-        this.paramStartTangent.divider = 0.45;
-        this.paramEndTangent  .divider = 0.45;
+        this.paramStartTangent.divider = 0.4;
+        this.paramEndTangent  .divider = 0.4;
 
         this.paramStartTangent.input.types.push(VECTOR_VERTEX_VALUE);
         this.paramEndTangent  .input.types.push(VECTOR_VERTEX_VALUE);

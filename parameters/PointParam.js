@@ -33,6 +33,7 @@ extends Parameter
             ''));
 
         this.controls[0].textbox.style.textAlign = 'center';
+        this.controls[0].textbox.style.whiteSpace = 'no-wrap';
         this.controls[0].highlightText           = false;
        
         this.divControls.appendChild(this.controls[0].div);

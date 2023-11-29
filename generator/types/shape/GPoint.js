@@ -44,15 +44,15 @@ extends GOperator1
             return this;
 
         
-        const x = this.x ? (await this.x.eval(parse)).toValue() : null;
-        const y = this.y ? (await this.y.eval(parse)).toValue() : null;
+        let   input = this.input ? (await this.input.eval(parse)).toValue() : null;
+        const x     = this.x     ? (await this.x    .eval(parse)).toValue() : null;
+        const y     = this.y     ? (await this.y    .eval(parse)).toValue() : null;
 
 
-        let input = null;
-
-        if (this.input)
+        if (input)
         {
-            input = (await this.input.eval(parse)).toValue();
+            if (input.type == VECTOR_VERTEX_VALUE)
+                input = new PointValue(input.nodeId, input.x, input.y);
 
             this.value = new PointValue(
                 this.nodeId,

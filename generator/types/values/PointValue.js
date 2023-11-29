@@ -219,11 +219,11 @@ function parsePointValue(str, i = -1)
     const y = parseNumberValue(str[i]); i += y[1];
 
 
-    const rect = new PointValue(
+    const point = new PointValue(
         '', // set node ID elsewhere
         x[0],
         y[0]);
 
 
-    return [rect, i - iStart];
+    return [point, i - iStart];
 }
