@@ -1287,4 +1287,11 @@ function uiDeactivateAllNodes()
     totalObjectCount    = 0;
     totalObjectProgress = 1;
     updateObjectCountDisplay();
+
+    
+    if (objectProgressTimer)
+    {
+        clearTimeout(objectProgressTimer);
+        objectProgressTimer = null;
+    }
 }

@@ -9,8 +9,8 @@ const presetAvatars = '\
             "renamed": "false",\
             "enabled": "true",\
             "highlight": "0",\
-            "x": "1961",\
-            "y": "4344",\
+            "x": "2011",\
+            "y": "4394",\
             "z": "0",\
             "params":\
             [\
@@ -26,8 +26,8 @@ const presetAvatars = '\
             "renamed": "false",\
             "enabled": "true",\
             "highlight": "0",\
-            "x": "1824",\
-            "y": "10638",\
+            "x": "1874",\
+            "y": "10688",\
             "z": "1",\
             "params":\
             [\
@@ -43,8 +43,8 @@ const presetAvatars = '\
             "renamed": "false",\
             "enabled": "true",\
             "highlight": "0",\
-            "x": "2112",\
-            "y": "3494",\
+            "x": "2162",\
+            "y": "3544",\
             "z": "2",\
             "params":\
             [\
@@ -59,8 +59,8 @@ const presetAvatars = '\
             "renamed": "false",\
             "enabled": "true",\
             "highlight": "0",\
-            "x": "2079",\
-            "y": "5252",\
+            "x": "2129",\
+            "y": "5302",\
             "z": "3",\
             "params":\
             [\
@@ -75,8 +75,8 @@ const presetAvatars = '\
             "renamed": "false",\
             "enabled": "true",\
             "highlight": "0",\
-            "x": "1250",\
-            "y": "7795",\
+            "x": "1300",\
+            "y": "7845",\
             "z": "4",\
             "params":\
             [\
@@ -93,8 +93,8 @@ const presetAvatars = '\
             "renamed": "false",\
             "enabled": "true",\
             "highlight": "0",\
-            "x": "2111",\
-            "y": "4344",\
+            "x": "2161",\
+            "y": "4394",\
             "z": "5",\
             "params":\
             [\
@@ -112,8 +112,8 @@ const presetAvatars = '\
             "renamed": "false",\
             "enabled": "true",\
             "highlight": "0",\
-            "x": "1974",\
-            "y": "10638",\
+            "x": "2024",\
+            "y": "10688",\
             "z": "6",\
             "params":\
             [\
@@ -128,8 +128,8 @@ const presetAvatars = '\
             "renamed": "false",\
             "enabled": "true",\
             "highlight": "0",\
-            "x": "1437",\
-            "y": "6519",\
+            "x": "1487",\
+            "y": "6569",\
             "z": "7",\
             "params":\
             [\
@@ -145,8 +145,8 @@ const presetAvatars = '\
             "renamed": "false",\
             "enabled": "true",\
             "highlight": "0",\
-            "x": "1451",\
-            "y": "7147",\
+            "x": "1501",\
+            "y": "7197",\
             "z": "8",\
             "params":\
             [\
@@ -162,8 +162,8 @@ const presetAvatars = '\
             "renamed": "false",\
             "enabled": "true",\
             "highlight": "0",\
-            "x": "2230",\
-            "y": "5469",\
+            "x": "2280",\
+            "y": "5519",\
             "z": "9",\
             "params":\
             [\
@@ -179,8 +179,8 @@ const presetAvatars = '\
             "renamed": "false",\
             "enabled": "true",\
             "highlight": "0",\
-            "x": "2229",\
-            "y": "5252",\
+            "x": "2279",\
+            "y": "5302",\
             "z": "10",\
             "params":\
             [\
@@ -195,8 +195,8 @@ const presetAvatars = '\
             "renamed": "false",\
             "enabled": "true",\
             "highlight": "0",\
-            "x": "-1183",\
-            "y": "6846",\
+            "x": "-985",\
+            "y": "6896",\
             "z": "11",\
             "params":\
             [\
@@ -210,8 +210,8 @@ const presetAvatars = '\
             "renamed": "false",\
             "enabled": "true",\
             "highlight": "0",\
-            "x": "5656",\
-            "y": "7232",\
+            "x": "5706",\
+            "y": "7282",\
             "z": "12",\
             "params":\
             [\
@@ -225,8 +225,8 @@ const presetAvatars = '\
             "renamed": "false",\
             "enabled": "true",\
             "highlight": "0",\
-            "x": "1672",\
-            "y": "7664",\
+            "x": "1722",\
+            "y": "7714",\
             "z": "13",\
             "params":\
             [\
@@ -241,8 +241,8 @@ const presetAvatars = '\
             "renamed": "false",\
             "enabled": "true",\
             "highlight": "0",\
-            "x": "1073",\
-            "y": "5520",\
+            "x": "1120",\
+            "y": "5587",\
             "z": "14",\
             "params":\
             [\
@@ -258,8 +258,8 @@ const presetAvatars = '\
             "renamed": "false",\
             "enabled": "true",\
             "highlight": "0",\
-            "x": "1585",\
-            "y": "4100",\
+            "x": "1635",\
+            "y": "4150",\
             "z": "15",\
             "params":\
             [\
@@ -275,8 +275,8 @@ const presetAvatars = '\
             "renamed": "false",\
             "enabled": "true",\
             "highlight": "0",\
-            "x": "1917",\
-            "y": "4663",\
+            "x": "1967",\
+            "y": "4713",\
             "z": "16",\
             "params":\
             [\
@@ -292,8 +292,8 @@ const presetAvatars = '\
             "renamed": "false",\
             "enabled": "true",\
             "highlight": "0",\
-            "x": "5658",\
-            "y": "7484",\
+            "x": "5708",\
+            "y": "7534",\
             "z": "17",\
             "active": "true",\
             "params":\
@@ -308,8 +308,8 @@ const presetAvatars = '\
             "renamed": "false",\
             "enabled": "true",\
             "highlight": "0",\
-            "x": "1084",\
-            "y": "5709",\
+            "x": "1118",\
+            "y": "5772",\
             "z": "18",\
             "params":\
             [\
@@ -325,8 +325,8 @@ const presetAvatars = '\
             "renamed": "false",\
             "enabled": "true",\
             "highlight": "0",\
-            "x": "1210",\
-            "y": "10403",\
+            "x": "1267",\
+            "y": "10399",\
             "z": "19",\
             "params":\
             [\
@@ -342,8 +342,8 @@ const presetAvatars = '\
             "renamed": "false",\
             "enabled": "true",\
             "highlight": "0",\
-            "x": "1210",\
-            "y": "10845",\
+            "x": "1261",\
+            "y": "10963",\
             "z": "20",\
             "params":\
             [\
@@ -359,8 +359,8 @@ const presetAvatars = '\
             "renamed": "false",\
             "enabled": "true",\
             "highlight": "0",\
-            "x": "1210",\
-            "y": "10704",\
+            "x": "1260",\
+            "y": "10779",\
             "z": "21",\
             "params":\
             [\
@@ -376,8 +376,8 @@ const presetAvatars = '\
             "renamed": "false",\
             "enabled": "true",\
             "highlight": "0",\
-            "x": "1212",\
-            "y": "11355",\
+            "x": "1255",\
+            "y": "11532",\
             "z": "22",\
             "params":\
             [\
@@ -392,8 +392,8 @@ const presetAvatars = '\
             "renamed": "false",\
             "enabled": "true",\
             "highlight": "0",\
-            "x": "734",\
-            "y": "7229",\
+            "x": "788",\
+            "y": "7313",\
             "z": "23",\
             "params":\
             [\
@@ -409,8 +409,8 @@ const presetAvatars = '\
             "renamed": "false",\
             "enabled": "true",\
             "highlight": "0",\
-            "x": "738",\
-            "y": "7078",\
+            "x": "788",\
+            "y": "7128",\
             "z": "24",\
             "params":\
             [\
@@ -426,8 +426,8 @@ const presetAvatars = '\
             "renamed": "false",\
             "enabled": "true",\
             "highlight": "0",\
-            "x": "730",\
-            "y": "7552",\
+            "x": "779",\
+            "y": "7580",\
             "z": "25",\
             "params":\
             [\
@@ -441,8 +441,8 @@ const presetAvatars = '\
             "renamed": "false",\
             "enabled": "true",\
             "highlight": "0",\
-            "x": "1805",\
-            "y": "10021",\
+            "x": "1855",\
+            "y": "10071",\
             "z": "26",\
             "params":\
             [\
@@ -457,8 +457,8 @@ const presetAvatars = '\
             "renamed": "false",\
             "enabled": "true",\
             "highlight": "0",\
-            "x": "1807",\
-            "y": "9861",\
+            "x": "1853",\
+            "y": "9879",\
             "z": "27",\
             "params":\
             [\
@@ -474,8 +474,8 @@ const presetAvatars = '\
             "renamed": "false",\
             "enabled": "true",\
             "highlight": "0",\
-            "x": "2192",\
-            "y": "9998",\
+            "x": "2242",\
+            "y": "10048",\
             "z": "28",\
             "params":\
             [\
@@ -491,8 +491,8 @@ const presetAvatars = '\
             "renamed": "false",\
             "enabled": "true",\
             "highlight": "0",\
-            "x": "2472",\
-            "y": "7127",\
+            "x": "2522",\
+            "y": "7177",\
             "z": "29",\
             "params":\
             [\
@@ -508,8 +508,8 @@ const presetAvatars = '\
             "renamed": "false",\
             "enabled": "true",\
             "highlight": "0",\
-            "x": "2474",\
-            "y": "7288",\
+            "x": "2524",\
+            "y": "7363",\
             "z": "30",\
             "params":\
             [\
@@ -525,8 +525,8 @@ const presetAvatars = '\
             "renamed": "true",\
             "enabled": "true",\
             "highlight": "0",\
-            "x": "987",\
-            "y": "9006",\
+            "x": "1037",\
+            "y": "9056",\
             "z": "31",\
             "params":\
             [\
@@ -542,8 +542,8 @@ const presetAvatars = '\
             "renamed": "true",\
             "enabled": "true",\
             "highlight": "0",\
-            "x": "991",\
-            "y": "9372",\
+            "x": "1037",\
+            "y": "9458",\
             "z": "32",\
             "params":\
             [\
@@ -559,8 +559,8 @@ const presetAvatars = '\
             "renamed": "true",\
             "enabled": "true",\
             "highlight": "0",\
-            "x": "985",\
-            "y": "9206",\
+            "x": "1035",\
+            "y": "9256",\
             "z": "33",\
             "params":\
             [\
@@ -576,8 +576,8 @@ const presetAvatars = '\
             "renamed": "false",\
             "enabled": "true",\
             "highlight": "0",\
-            "x": "731",\
-            "y": "7828",\
+            "x": "781",\
+            "y": "7878",\
             "z": "34",\
             "params":\
             [\
@@ -591,8 +591,8 @@ const presetAvatars = '\
             "renamed": "false",\
             "enabled": "true",\
             "highlight": "0",\
-            "x": "-1333",\
-            "y": "6846",\
+            "x": "-1135",\
+            "y": "6896",\
             "z": "35",\
             "params":\
             [\
@@ -607,8 +607,8 @@ const presetAvatars = '\
             "renamed": "false",\
             "enabled": "true",\
             "highlight": "0",\
-            "x": "2070",\
-            "y": "9292",\
+            "x": "2120",\
+            "y": "9342",\
             "z": "36",\
             "params":\
             [\
@@ -623,8 +623,8 @@ const presetAvatars = '\
             "renamed": "false",\
             "enabled": "true",\
             "highlight": "0",\
-            "x": "2067",\
-            "y": "9141",\
+            "x": "2117",\
+            "y": "9191",\
             "z": "37",\
             "params":\
             [\
@@ -639,11 +639,11 @@ const presetAvatars = '\
             "renamed": "false",\
             "enabled": "true",\
             "highlight": "1",\
-            "x": "-1381",\
-            "y": "6788",\
+            "x": "-1173.07",\
+            "y": "6838",\
             "z": "38",\
-            "width": "675",\
-            "height": "850.2387442741393",\
+            "width": "517.0684803639474",\
+            "height": "850",\
             "params":\
             [\
             ]\
@@ -655,8 +655,8 @@ const presetAvatars = '\
             "renamed": "false",\
             "enabled": "true",\
             "highlight": "0",\
-            "x": "1048",\
-            "y": "7068",\
+            "x": "1098",\
+            "y": "7118",\
             "z": "39",\
             "width": "677.7812629633441",\
             "height": "374",\
@@ -671,8 +671,8 @@ const presetAvatars = '\
             "renamed": "false",\
             "enabled": "true",\
             "highlight": "0",\
-            "x": "1823",\
-            "y": "5231",\
+            "x": "1873",\
+            "y": "5281",\
             "z": "40",\
             "params":\
             [\
@@ -688,8 +688,8 @@ const presetAvatars = '\
             "renamed": "true",\
             "enabled": "true",\
             "highlight": "0",\
-            "x": "1348",\
-            "y": "5137",\
+            "x": "1398",\
+            "y": "5187",\
             "z": "41",\
             "width": "1286.9697655449204",\
             "height": "813.2472771288833",\
@@ -704,8 +704,8 @@ const presetAvatars = '\
             "renamed": "false",\
             "enabled": "true",\
             "highlight": "0",\
-            "x": "2317",\
-            "y": "4603",\
+            "x": "2367",\
+            "y": "4653",\
             "z": "42",\
             "params":\
             [\
@@ -719,8 +719,8 @@ const presetAvatars = '\
             "renamed": "false",\
             "enabled": "true",\
             "highlight": "0",\
-            "x": "5412",\
-            "y": "7006",\
+            "x": "5462",\
+            "y": "7056",\
             "z": "43",\
             "params":\
             [\
@@ -735,8 +735,8 @@ const presetAvatars = '\
             "renamed": "false",\
             "enabled": "true",\
             "highlight": "0",\
-            "x": "2777",\
-            "y": "7047",\
+            "x": "2827",\
+            "y": "7097",\
             "z": "44",\
             "params":\
             [\
@@ -751,8 +751,8 @@ const presetAvatars = '\
             "renamed": "true",\
             "enabled": "true",\
             "highlight": "0",\
-            "x": "1509",\
-            "y": "10513",\
+            "x": "1559",\
+            "y": "10563",\
             "z": "45",\
             "width": "914.7946695395184",\
             "height": "834",\
@@ -767,8 +767,8 @@ const presetAvatars = '\
             "renamed": "false",\
             "enabled": "true",\
             "highlight": "0",\
-            "x": "2781",\
-            "y": "6836",\
+            "x": "2831",\
+            "y": "6886",\
             "z": "46",\
             "params":\
             [\
@@ -783,8 +783,8 @@ const presetAvatars = '\
             "renamed": "false",\
             "enabled": "true",\
             "highlight": "0",\
-            "x": "1757",\
-            "y": "3748",\
+            "x": "1807",\
+            "y": "3798",\
             "z": "47",\
             "params":\
             [\
@@ -798,8 +798,8 @@ const presetAvatars = '\
             "renamed": "false",\
             "enabled": "true",\
             "highlight": "0",\
-            "x": "1659",\
-            "y": "8977",\
+            "x": "1709",\
+            "y": "9027",\
             "z": "48",\
             "params":\
             [\
@@ -814,8 +814,8 @@ const presetAvatars = '\
             "renamed": "false",\
             "enabled": "true",\
             "highlight": "0",\
-            "x": "1832",\
-            "y": "9551",\
+            "x": "1882",\
+            "y": "9601",\
             "z": "49",\
             "params":\
             [\
@@ -829,8 +829,8 @@ const presetAvatars = '\
             "renamed": "false",\
             "enabled": "true",\
             "highlight": "0",\
-            "x": "1828",\
-            "y": "9185",\
+            "x": "1878",\
+            "y": "9235",\
             "z": "50",\
             "params":\
             [\
@@ -845,8 +845,8 @@ const presetAvatars = '\
             "renamed": "false",\
             "enabled": "true",\
             "highlight": "0",\
-            "x": "1828",\
-            "y": "9360",\
+            "x": "1878",\
+            "y": "9410",\
             "z": "51",\
             "params":\
             [\
@@ -861,8 +861,8 @@ const presetAvatars = '\
             "renamed": "false",\
             "enabled": "true",\
             "highlight": "0",\
-            "x": "1743",\
-            "y": "5745",\
+            "x": "1793",\
+            "y": "5795",\
             "z": "52",\
             "params":\
             [\
@@ -876,8 +876,8 @@ const presetAvatars = '\
             "renamed": "false",\
             "enabled": "true",\
             "highlight": "0",\
-            "x": "1432",\
-            "y": "6935",\
+            "x": "1482",\
+            "y": "6985",\
             "z": "53"\
         },\
         {\
@@ -887,8 +887,8 @@ const presetAvatars = '\
             "renamed": "false",\
             "enabled": "true",\
             "highlight": "0",\
-            "x": "1617",\
-            "y": "4598",\
+            "x": "1667",\
+            "y": "4648",\
             "z": "54",\
             "params":\
             [\
@@ -902,8 +902,8 @@ const presetAvatars = '\
             "renamed": "true",\
             "enabled": "true",\
             "highlight": "0",\
-            "x": "1902",\
-            "y": "7237",\
+            "x": "1952",\
+            "y": "7287",\
             "z": "55"\
         },\
         {\
@@ -913,20 +913,9 @@ const presetAvatars = '\
             "renamed": "true",\
             "enabled": "true",\
             "highlight": "0",\
-            "x": "1895",\
-            "y": "6812",\
+            "x": "1945",\
+            "y": "6862",\
             "z": "56"\
-        },\
-        {\
-            "type": "FRZ",\
-            "id": "freeze",\
-            "name": "freeze",\
-            "renamed": "false",\
-            "enabled": "true",\
-            "highlight": "0",\
-            "x": "-1033",\
-            "y": "6846",\
-            "z": "57"\
         },\
         {\
             "type": "ELPS",\
@@ -935,9 +924,9 @@ const presetAvatars = '\
             "renamed": "false",\
             "enabled": "true",\
             "highlight": "0",\
-            "x": "1264",\
-            "y": "6520",\
-            "z": "58",\
+            "x": "1314",\
+            "y": "6570",\
+            "z": "57",\
             "params":\
             [\
             ]\
@@ -949,9 +938,9 @@ const presetAvatars = '\
             "renamed": "false",\
             "enabled": "true",\
             "highlight": "0",\
-            "x": "4610",\
-            "y": "6992",\
-            "z": "59",\
+            "x": "4660",\
+            "y": "7042",\
+            "z": "58",\
             "width": "120",\
             "height": "51"\
         },\
@@ -962,9 +951,9 @@ const presetAvatars = '\
             "renamed": "false",\
             "enabled": "true",\
             "highlight": "0",\
-            "x": "1017",\
-            "y": "8276",\
-            "z": "60",\
+            "x": "1067",\
+            "y": "8326",\
+            "z": "59",\
             "params":\
             [\
                 ["NUM#", "seed", "1702,0"],\
@@ -979,9 +968,9 @@ const presetAvatars = '\
             "renamed": "false",\
             "enabled": "true",\
             "highlight": "0",\
-            "x": "1524",\
-            "y": "7798",\
-            "z": "61",\
+            "x": "1574",\
+            "y": "7848",\
+            "z": "60",\
             "width": "120",\
             "height": "51"\
         },\
@@ -992,9 +981,9 @@ const presetAvatars = '\
             "renamed": "false",\
             "enabled": "true",\
             "highlight": "0",\
-            "x": "3017",\
-            "y": "6973",\
-            "z": "62",\
+            "x": "3067",\
+            "y": "7023",\
+            "z": "61",\
             "width": "120",\
             "height": "51"\
         },\
@@ -1005,9 +994,9 @@ const presetAvatars = '\
             "renamed": "false",\
             "enabled": "true",\
             "highlight": "0",\
-            "x": "2092",\
-            "y": "6674",\
-            "z": "63",\
+            "x": "2142",\
+            "y": "6724",\
+            "z": "62",\
             "width": "120",\
             "height": "64"\
         },\
@@ -1018,9 +1007,9 @@ const presetAvatars = '\
             "renamed": "false",\
             "enabled": "true",\
             "highlight": "0",\
-            "x": "1965",\
-            "y": "10987",\
-            "z": "64",\
+            "x": "2015",\
+            "y": "11037",\
+            "z": "63",\
             "params":\
             [\
                 ["NUM#", "scaleX", "150,0"],\
@@ -1034,9 +1023,9 @@ const presetAvatars = '\
             "renamed": "false",\
             "enabled": "true",\
             "highlight": "0",\
-            "x": "2508",\
-            "y": "4560",\
-            "z": "65",\
+            "x": "2558",\
+            "y": "4610",\
+            "z": "64",\
             "width": "120",\
             "height": "51"\
         },\
@@ -1047,9 +1036,9 @@ const presetAvatars = '\
             "renamed": "false",\
             "enabled": "true",\
             "highlight": "0",\
-            "x": "1917",\
-            "y": "3654",\
-            "z": "66",\
+            "x": "1967",\
+            "y": "3704",\
+            "z": "65",\
             "prevSpace": "hclok",\
             "params":\
             [\
@@ -1066,9 +1055,9 @@ const presetAvatars = '\
             "renamed": "true",\
             "enabled": "true",\
             "highlight": "0",\
-            "x": "2440",\
-            "y": "5390",\
-            "z": "67",\
+            "x": "2490",\
+            "y": "5440",\
+            "z": "66",\
             "width": "120",\
             "height": "51"\
         },\
@@ -1079,9 +1068,9 @@ const presetAvatars = '\
             "renamed": "true",\
             "enabled": "true",\
             "highlight": "4",\
-            "x": "1030",\
-            "y": "7595",\
-            "z": "68",\
+            "x": "1080",\
+            "y": "7645",\
+            "z": "67",\
             "width": "1257.5823961519156",\
             "height": "442",\
             "params":\
@@ -1095,9 +1084,9 @@ const presetAvatars = '\
             "renamed": "false",\
             "enabled": "true",\
             "highlight": "0",\
-            "x": "1086",\
-            "y": "7767",\
-            "z": "69",\
+            "x": "1136",\
+            "y": "7817",\
+            "z": "68",\
             "prevSpace": "rgb",\
             "params":\
             [\
@@ -1114,9 +1103,9 @@ const presetAvatars = '\
             "renamed": "false",\
             "enabled": "true",\
             "highlight": "0",\
-            "x": "1815",\
-            "y": "10987",\
-            "z": "70",\
+            "x": "1865",\
+            "y": "11037",\
+            "z": "69",\
             "params":\
             [\
                 ["NUM#", "y", "130,0"],\
@@ -1132,9 +1121,9 @@ const presetAvatars = '\
             "renamed": "false",\
             "enabled": "true",\
             "highlight": "0",\
-            "x": "1432",\
-            "y": "5412",\
-            "z": "71",\
+            "x": "1482",\
+            "y": "5462",\
+            "z": "70",\
             "prevSpace": "hsl",\
             "params":\
             [\
@@ -1151,9 +1140,9 @@ const presetAvatars = '\
             "renamed": "false",\
             "enabled": "true",\
             "highlight": "0",\
-            "x": "1903",\
-            "y": "5651",\
-            "z": "72",\
+            "x": "1953",\
+            "y": "5701",\
+            "z": "71",\
             "prevSpace": "hclok",\
             "params":\
             [\
@@ -1170,9 +1159,9 @@ const presetAvatars = '\
             "renamed": "false",\
             "enabled": "true",\
             "highlight": "0",\
-            "x": "1069",\
-            "y": "6703",\
-            "z": "73",\
+            "x": "1119",\
+            "y": "6753",\
+            "z": "72",\
             "prevSpace": "hex",\
             "params":\
             [\
@@ -1189,9 +1178,9 @@ const presetAvatars = '\
             "renamed": "true",\
             "enabled": "true",\
             "highlight": "0",\
-            "x": "2542",\
-            "y": "9142",\
-            "z": "74",\
+            "x": "2592",\
+            "y": "9192",\
+            "z": "73",\
             "params":\
             [\
                 ["LIST#", "points", "3 PT# 39,0 89.02,2 PT# 50,0 92.98,2 PT# 61,0 89.02,2"]\
@@ -1204,9 +1193,9 @@ const presetAvatars = '\
             "renamed": "false",\
             "enabled": "true",\
             "highlight": "0",\
-            "x": "1633",\
-            "y": "11147",\
-            "z": "75",\
+            "x": "1683",\
+            "y": "11197",\
+            "z": "74",\
             "prevSpace": "hsv",\
             "params":\
             [\
@@ -1223,9 +1212,9 @@ const presetAvatars = '\
             "renamed": "false",\
             "enabled": "true",\
             "highlight": "0",\
-            "x": "1905",\
-            "y": "5411",\
-            "z": "76",\
+            "x": "1955",\
+            "y": "5461",\
+            "z": "75",\
             "prevSpace": "hsl",\
             "params":\
             [\
@@ -1242,9 +1231,9 @@ const presetAvatars = '\
             "renamed": "false",\
             "enabled": "true",\
             "highlight": "0",\
-            "x": "2078",\
-            "y": "7108",\
-            "z": "77",\
+            "x": "2128",\
+            "y": "7158",\
+            "z": "76",\
             "width": "130.0792025208136",\
             "height": "64"\
         },\
@@ -1255,9 +1244,9 @@ const presetAvatars = '\
             "renamed": "false",\
             "enabled": "true",\
             "highlight": "0",\
-            "x": "1599",\
-            "y": "6810",\
-            "z": "78",\
+            "x": "1649",\
+            "y": "6860",\
+            "z": "77",\
             "params":\
             [\
                 ["NUM#", "replace", "1,0"]\
@@ -1270,9 +1259,9 @@ const presetAvatars = '\
             "renamed": "false",\
             "enabled": "true",\
             "highlight": "0",\
-            "x": "2379",\
-            "y": "9280",\
-            "z": "79",\
+            "x": "2429",\
+            "y": "9330",\
+            "z": "78",\
             "params":\
             [\
                 ["LIST#", "fills", "1 FILL# 163,0 91,0 91,0 100,0 0,0"],\
@@ -1288,9 +1277,9 @@ const presetAvatars = '\
             "renamed": "false",\
             "enabled": "true",\
             "highlight": "0",\
-            "x": "1586",\
-            "y": "5652",\
-            "z": "80",\
+            "x": "1636",\
+            "y": "5702",\
+            "z": "79",\
             "prevSpace": "hclok",\
             "params":\
             [\
@@ -1307,9 +1296,9 @@ const presetAvatars = '\
             "renamed": "false",\
             "enabled": "true",\
             "highlight": "0",\
-            "x": "1210",\
-            "y": "10544",\
-            "z": "81",\
+            "x": "1263",\
+            "y": "10591",\
+            "z": "80",\
             "params":\
             [\
                 ["NUM#", "seed", "4123,0"],\
@@ -1324,9 +1313,9 @@ const presetAvatars = '\
             "renamed": "false",\
             "enabled": "true",\
             "highlight": "0",\
-            "x": "1267",\
-            "y": "8269",\
-            "z": "82",\
+            "x": "1317",\
+            "y": "8319",\
+            "z": "81",\
             "params":\
             [\
                 ["NUM#", "seed", "3691,0"],\
@@ -1340,9 +1329,9 @@ const presetAvatars = '\
             "renamed": "false",\
             "enabled": "true",\
             "highlight": "0",\
-            "x": "2611",\
-            "y": "6929",\
-            "z": "83",\
+            "x": "2661",\
+            "y": "6979",\
+            "z": "82",\
             "params":\
             [\
                 ["NUM#", "value", "-21,0"],\
@@ -1356,9 +1345,9 @@ const presetAvatars = '\
             "renamed": "true",\
             "enabled": "true",\
             "highlight": "0",\
-            "x": "2224",\
-            "y": "10846",\
-            "z": "84"\
+            "x": "2274",\
+            "y": "10896",\
+            "z": "83"\
         },\
         {\
             "type": "PROB",\
@@ -1367,9 +1356,9 @@ const presetAvatars = '\
             "renamed": "false",\
             "enabled": "true",\
             "highlight": "0",\
-            "x": "1701",\
-            "y": "8259",\
-            "z": "85",\
+            "x": "1751",\
+            "y": "8309",\
+            "z": "84",\
             "params":\
             [\
                 ["NUM#", "seed", "2266,0"],\
@@ -1383,9 +1372,9 @@ const presetAvatars = '\
             "renamed": "false",\
             "enabled": "true",\
             "highlight": "0",\
-            "x": "-881",\
-            "y": "6846",\
-            "z": "86",\
+            "x": "-831",\
+            "y": "6896",\
+            "z": "85",\
             "width": "142.46670185875394",\
             "height": "758",\
             "params":\
@@ -1432,9 +1421,9 @@ const presetAvatars = '\
             "renamed": "false",\
             "enabled": "true",\
             "highlight": "0",\
-            "x": "730",\
-            "y": "7688",\
-            "z": "87",\
+            "x": "780",\
+            "y": "7766",\
+            "z": "86",\
             "params":\
             [\
                 ["NUM#", "seed", "85,0"]\
@@ -1447,9 +1436,9 @@ const presetAvatars = '\
             "renamed": "false",\
             "enabled": "true",\
             "highlight": "0",\
-            "x": "1822",\
-            "y": "7664",\
-            "z": "88",\
+            "x": "1872",\
+            "y": "7714",\
+            "z": "87",\
             "params":\
             [\
                 ["NUM#", "scaleX", "33,0"],\
@@ -1465,9 +1454,9 @@ const presetAvatars = '\
             "renamed": "true",\
             "enabled": "true",\
             "highlight": "0",\
-            "x": "1351",\
-            "y": "4245",\
-            "z": "89",\
+            "x": "1401",\
+            "y": "4295",\
+            "z": "88",\
             "width": "1332",\
             "height": "624.5304244661015",\
             "params":\
@@ -1481,9 +1470,9 @@ const presetAvatars = '\
             "renamed": "false",\
             "enabled": "true",\
             "highlight": "1",\
-            "x": "1027",\
-            "y": "6464",\
-            "z": "90",\
+            "x": "1077",\
+            "y": "6514",\
+            "z": "89",\
             "width": "723.8278993022228",\
             "height": "560",\
             "params":\
@@ -1497,9 +1486,9 @@ const presetAvatars = '\
             "renamed": "false",\
             "enabled": "true",\
             "highlight": "0",\
-            "x": "1979",\
-            "y": "7668",\
-            "z": "91",\
+            "x": "2029",\
+            "y": "7718",\
+            "z": "90",\
             "params":\
             [\
                 ["NUM#", "condition", "0,0"]\
@@ -1512,9 +1501,9 @@ const presetAvatars = '\
             "renamed": "false",\
             "enabled": "true",\
             "highlight": "0",\
-            "x": "2063",\
-            "y": "8997",\
-            "z": "92",\
+            "x": "2113",\
+            "y": "9047",\
+            "z": "91",\
             "params":\
             [\
                 ["NUM#", "x", "39,0"],\
@@ -1528,9 +1517,9 @@ const presetAvatars = '\
             "renamed": "false",\
             "enabled": "true",\
             "highlight": "2",\
-            "x": "1839",\
-            "y": "7036",\
-            "z": "93",\
+            "x": "1889",\
+            "y": "7086",\
+            "z": "92",\
             "width": "426.40765806349543",\
             "height": "327.05733753723734",\
             "params":\
@@ -1544,9 +1533,9 @@ const presetAvatars = '\
             "renamed": "false",\
             "enabled": "true",\
             "highlight": "0",\
-            "x": "2177",\
-            "y": "9421",\
-            "z": "94",\
+            "x": "2227",\
+            "y": "9471",\
+            "z": "93",\
             "prevSpace": "hsv",\
             "params":\
             [\
@@ -1563,9 +1552,9 @@ const presetAvatars = '\
             "renamed": "false",\
             "enabled": "true",\
             "highlight": "0",\
-            "x": "1828",\
-            "y": "9263",\
-            "z": "95",\
+            "x": "1878",\
+            "y": "9324",\
+            "z": "94",\
             "params":\
             [\
                 ["NUM#", "value", "92.98,2"]\
@@ -1578,9 +1567,9 @@ const presetAvatars = '\
             "renamed": "false",\
             "enabled": "true",\
             "highlight": "0",\
-            "x": "1287",\
-            "y": "7146",\
-            "z": "96",\
+            "x": "1337",\
+            "y": "7196",\
+            "z": "95",\
             "params":\
             [\
                 ["NUM#", "x", "-1,0"],\
@@ -1594,9 +1583,9 @@ const presetAvatars = '\
             "renamed": "false",\
             "enabled": "true",\
             "highlight": "0",\
-            "x": "1091",\
-            "y": "7328",\
-            "z": "97",\
+            "x": "1141",\
+            "y": "7378",\
+            "z": "96",\
             "prevSpace": "hex",\
             "params":\
             [\
@@ -1613,9 +1602,9 @@ const presetAvatars = '\
             "renamed": "false",\
             "enabled": "true",\
             "highlight": "0",\
-            "x": "5189",\
-            "y": "7218",\
-            "z": "98",\
+            "x": "5239",\
+            "y": "7268",\
+            "z": "97",\
             "params":\
             [\
                 ["NUM#", "add", "230,0"],\
@@ -1629,9 +1618,9 @@ const presetAvatars = '\
             "renamed": "true",\
             "enabled": "true",\
             "highlight": "0",\
-            "x": "1491",\
-            "y": "3410",\
-            "z": "99",\
+            "x": "1541",\
+            "y": "3460",\
+            "z": "98",\
             "width": "994.5560192854539",\
             "height": "486",\
             "params":\
@@ -1645,9 +1634,9 @@ const presetAvatars = '\
             "renamed": "false",\
             "enabled": "true",\
             "highlight": "0",\
-            "x": "3869",\
-            "y": "6978",\
-            "z": "100",\
+            "x": "3919",\
+            "y": "7028",\
+            "z": "99",\
             "width": "120",\
             "height": "51"\
         },\
@@ -1658,9 +1647,9 @@ const presetAvatars = '\
             "renamed": "true",\
             "enabled": "true",\
             "highlight": "0",\
-            "x": "952",\
-            "y": "6381",\
-            "z": "101",\
+            "x": "1002",\
+            "y": "6431",\
+            "z": "100",\
             "width": "2263.529228220072",\
             "height": "1732.364936588097",\
             "params":\
@@ -1674,9 +1663,9 @@ const presetAvatars = '\
             "renamed": "false",\
             "enabled": "true",\
             "highlight": "0",\
-            "x": "2281",\
-            "y": "9154",\
-            "z": "102",\
+            "x": "2331",\
+            "y": "9204",\
+            "z": "101",\
             "width": "120",\
             "height": "64"\
         },\
@@ -1687,9 +1676,9 @@ const presetAvatars = '\
             "renamed": "false",\
             "enabled": "true",\
             "highlight": "0",\
-            "x": "1210",\
-            "y": "11213",\
-            "z": "103",\
+            "x": "1256",\
+            "y": "11342",\
+            "z": "102",\
             "params":\
             [\
                 ["NUM#", "seed", "6009,0"],\
@@ -1703,9 +1692,9 @@ const presetAvatars = '\
             "renamed": "false",\
             "enabled": "true",\
             "highlight": "0",\
-            "x": "5181",\
-            "y": "7473",\
-            "z": "104",\
+            "x": "5231",\
+            "y": "7523",\
+            "z": "103",\
             "params":\
             [\
                 ["NUM#", "add", "320,0"],\
@@ -1719,9 +1708,9 @@ const presetAvatars = '\
             "renamed": "false",\
             "enabled": "true",\
             "highlight": "0",\
-            "x": "2262",\
-            "y": "3494",\
-            "z": "105",\
+            "x": "2312",\
+            "y": "3544",\
+            "z": "104",\
             "params":\
             [\
                 ["NUM#", "scaleX", "50,0"]\
@@ -1734,9 +1723,9 @@ const presetAvatars = '\
             "renamed": "false",\
             "enabled": "true",\
             "highlight": "0",\
-            "x": "2080",\
-            "y": "5469",\
-            "z": "106",\
+            "x": "2130",\
+            "y": "5519",\
+            "z": "105",\
             "params":\
             [\
                 ["NUM#", "y", "-8,0"],\
@@ -1751,9 +1740,9 @@ const presetAvatars = '\
             "renamed": "false",\
             "enabled": "true",\
             "highlight": "0",\
-            "x": "1460",\
-            "y": "4505",\
-            "z": "107",\
+            "x": "1510",\
+            "y": "4555",\
+            "z": "106",\
             "prevSpace": "hclok",\
             "params":\
             [\
@@ -1770,9 +1759,9 @@ const presetAvatars = '\
             "renamed": "true",\
             "enabled": "true",\
             "highlight": "0",\
-            "x": "1221",\
-            "y": "8726",\
-            "z": "108",\
+            "x": "1271",\
+            "y": "8776",\
+            "z": "107",\
             "width": "1543",\
             "height": "963.124627409665",\
             "params":\
@@ -1786,9 +1775,9 @@ const presetAvatars = '\
             "renamed": "false",\
             "enabled": "true",\
             "highlight": "0",\
-            "x": "1310",\
-            "y": "7402",\
-            "z": "109",\
+            "x": "1465",\
+            "y": "7461",\
+            "z": "108",\
             "params":\
             [\
                 ["NUM#", "seed", "8634,0"],\
@@ -1803,9 +1792,9 @@ const presetAvatars = '\
             "renamed": "false",\
             "enabled": "true",\
             "highlight": "0",\
-            "x": "1842",\
-            "y": "8872",\
-            "z": "110",\
+            "x": "1892",\
+            "y": "8922",\
+            "z": "109",\
             "params":\
             [\
                 ["NUM#", "value", "39,0"]\
@@ -1818,9 +1807,9 @@ const presetAvatars = '\
             "renamed": "false",\
             "enabled": "true",\
             "highlight": "0",\
-            "x": "1387",\
-            "y": "7826",\
-            "z": "111",\
+            "x": "1437",\
+            "y": "7876",\
+            "z": "110",\
             "params":\
             [\
                 ["NUM#", "y", "1,0"],\
@@ -1835,9 +1824,9 @@ const presetAvatars = '\
             "renamed": "false",\
             "enabled": "true",\
             "highlight": "0",\
-            "x": "1210",\
-            "y": "11077",\
-            "z": "112",\
+            "x": "1260",\
+            "y": "11149",\
+            "z": "111",\
             "params":\
             [\
                 ["NUM#", "seed", "4664,0"],\
@@ -1851,9 +1840,9 @@ const presetAvatars = '\
             "renamed": "false",\
             "enabled": "true",\
             "highlight": "0",\
-            "x": "4228",\
-            "y": "6988",\
-            "z": "113",\
+            "x": "4278",\
+            "y": "7038",\
+            "z": "112",\
             "width": "120",\
             "height": "51"\
         },\
@@ -1864,9 +1853,9 @@ const presetAvatars = '\
             "renamed": "false",\
             "enabled": "true",\
             "highlight": "0",\
-            "x": "1073",\
-            "y": "5385",\
-            "z": "114",\
+            "x": "1123",\
+            "y": "5407",\
+            "z": "113",\
             "params":\
             [\
                 ["NUM#", "seed", "6685,0"],\
@@ -1881,9 +1870,9 @@ const presetAvatars = '\
             "renamed": "false",\
             "enabled": "true",\
             "highlight": "0",\
-            "x": "2125",\
-            "y": "4548",\
-            "z": "115",\
+            "x": "2175",\
+            "y": "4598",\
+            "z": "114",\
             "params":\
             [\
                 ["NUM#", "value", "-46,0"],\
@@ -1897,9 +1886,9 @@ const presetAvatars = '\
             "renamed": "false",\
             "enabled": "true",\
             "highlight": "0",\
-            "x": "1489",\
-            "y": "8259",\
-            "z": "116",\
+            "x": "1539",\
+            "y": "8309",\
+            "z": "115",\
             "params":\
             [\
                 ["NUM#", "seed", "6510,0"],\
@@ -1914,9 +1903,9 @@ const presetAvatars = '\
             "renamed": "false",\
             "enabled": "true",\
             "highlight": "0",\
-            "x": "1075",\
-            "y": "5253",\
-            "z": "117",\
+            "x": "1125",\
+            "y": "5226",\
+            "z": "116",\
             "params":\
             [\
                 ["NUM#", "seed", "8111,0"],\
@@ -1931,9 +1920,9 @@ const presetAvatars = '\
             "renamed": "true",\
             "enabled": "true",\
             "highlight": "0",\
-            "x": "989",\
-            "y": "8880",\
-            "z": "118",\
+            "x": "1039",\
+            "y": "8930",\
+            "z": "117",\
             "width": "120",\
             "height": "54",\
             "params":\
@@ -1948,9 +1937,9 @@ const presetAvatars = '\
             "renamed": "false",\
             "enabled": "true",\
             "highlight": "0",\
-            "x": "2315",\
-            "y": "4346",\
-            "z": "119",\
+            "x": "2365",\
+            "y": "4396",\
+            "z": "118",\
             "params":\
             [\
                 ["NUM#", "x", "-46,0"]\
@@ -1963,9 +1952,9 @@ const presetAvatars = '\
             "renamed": "false",\
             "enabled": "true",\
             "highlight": "6",\
-            "x": "1819",\
-            "y": "6592",\
-            "z": "120",\
+            "x": "1869",\
+            "y": "6642",\
+            "z": "119",\
             "width": "457.30574642817976",\
             "height": "350.86625466129954",\
             "params":\
@@ -1979,9 +1968,9 @@ const presetAvatars = '\
             "renamed": "false",\
             "enabled": "true",\
             "highlight": "0",\
-            "x": "1777",\
-            "y": "4504",\
-            "z": "121",\
+            "x": "1827",\
+            "y": "4554",\
+            "z": "120",\
             "prevSpace": "hclok",\
             "params":\
             [\
@@ -1998,9 +1987,9 @@ const presetAvatars = '\
             "renamed": "false",\
             "enabled": "true",\
             "highlight": "0",\
-            "x": "1663",\
-            "y": "10823",\
-            "z": "122"\
+            "x": "1713",\
+            "y": "10873",\
+            "z": "121"\
         },\
         {\
             "type": "COL",\
@@ -2009,9 +1998,9 @@ const presetAvatars = '\
             "renamed": "false",\
             "enabled": "true",\
             "highlight": "0",\
-            "x": "1600",\
-            "y": "3655",\
-            "z": "123",\
+            "x": "1650",\
+            "y": "3705",\
+            "z": "122",\
             "prevSpace": "hclok",\
             "params":\
             [\
@@ -2028,9 +2017,9 @@ const presetAvatars = '\
             "renamed": "false",\
             "enabled": "true",\
             "highlight": "0",\
-            "x": "3511",\
-            "y": "6969",\
-            "z": "124",\
+            "x": "3561",\
+            "y": "7019",\
+            "z": "123",\
             "width": "120",\
             "height": "64"\
         },\
@@ -2041,9 +2030,9 @@ const presetAvatars = '\
             "renamed": "false",\
             "enabled": "true",\
             "highlight": "0",\
-            "x": "1761",\
-            "y": "4100",\
-            "z": "125",\
+            "x": "1811",\
+            "y": "4150",\
+            "z": "124",\
             "params":\
             [\
                 ["NUM#", "seed", "6117,0"],\
@@ -2671,14 +2660,6 @@ const presetAvatars = '\
             "list": "false"\
         },\
         {\
-            "outputNodeId": "repeat3",\
-            "outputId": "h0",\
-            "outputOrder": "0",\
-            "inputNodeId": "freeze",\
-            "inputId": "h0",\
-            "list": "true"\
-        },\
-        {\
             "outputNodeId": "color6",\
             "outputId": "h0",\
             "outputOrder": "0",\
@@ -3087,7 +3068,7 @@ const presetAvatars = '\
             "list": "false"\
         },\
         {\
-            "outputNodeId": "freeze",\
+            "outputNodeId": "repeat3",\
             "outputId": "h0",\
             "outputOrder": "0",\
             "inputNodeId": "list",\

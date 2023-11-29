@@ -1,6 +1,8 @@
 var totalObjectCount    = 0;
 var objectTotalCount    = 0;
-var totalObjectProgress = 0;
+var totalObjectProgress = 1;
+
+var objectProgressTimer = null;
 
 
 
@@ -75,8 +77,13 @@ function uiUpdateValuesAndObjects(requestId, actionId, updateNodeId, updateParam
     }
 
     
-    totalObjectCount    = totalObjects;
-    totalObjectProgress = 0;
+    totalObjectCount = totalObjects;
+    
+    if (objects.length > 40)
+        totalObjectProgress = 0;
+    else
+        uiStartObjectProgress();
+    
     updateObjectCountDisplay();
 
 
@@ -208,6 +215,23 @@ function getObjectCount(objects)
 
 
 
+function uiStartObjectProgress()
+{
+    if (objectProgressTimer)
+        clearTimeout(objectProgressTimer);
+
+    objectProgressTimer = setTimeout(() => 
+    {
+        totalObjectProgress = 0;
+        updateObjectCountDisplay();
+
+        objectProgressTimer = null;
+    },
+    500);
+}
+
+
+
 function uiUpdateAnimateNodes()
 {
     const anims = graph.nodes.filter(n => 
@@ -226,8 +250,6 @@ function uiInitGlobalProgress(requestId)
 {
     commonProgressBar.style.width   = 0;
     commonProgressBar.style.display = 'block';
-
-    //isGenerating = true;
 }
 
 
@@ -244,8 +266,6 @@ function uiUpdateGlobalProgress(progress)
 function uiEndGlobalProgress()
 {
     commonProgressBar.style.display = 'none';
-
-    //isGenerating = false;
 }
 
 
@@ -276,6 +296,13 @@ function uiGetValueForFigma(msg)
     {
         case 'returnObjectUpdate':  
         {
+            if (objectProgressTimer)
+            {
+                clearTimeout(objectProgressTimer);
+                objectProgressTimer = null;
+            }
+
+
             totalObjectProgress = 
                 totalObjectCount > 0
                 ? msg.objectCount / totalObjectCount
