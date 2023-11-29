@@ -79,7 +79,7 @@ function uiUpdateValuesAndObjects(requestId, actionId, updateNodeId, updateParam
     
     totalObjectCount = totalObjects;
     
-    if (objects.length > 40)
+    if (getObjectCount(objects) > 40)
         totalObjectProgress = 0;
     else
         uiStartObjectProgress();
