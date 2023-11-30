@@ -22,7 +22,8 @@ const settings =
     showTransformPoints:           false,
     enableAsserts:                 false,
 
-    showTooltipLongText:           true,
+    showTooltipLongText:           false,
+    showTooltipLists:              false,
     showTooltipColorInterpolation: true,
     showTooltipColorBlindness:     true,
     showTooltipColorContrast:      true,
@@ -83,6 +84,7 @@ function updateSetting(settingName, value)
         case 'showTransformPoints':           settings.showTransformPoints           = value;  break;
         case 'enableAsserts':                 settings.enableAsserts                 = value;  break;
 
+        case 'showTooltipLists':              settings.showTooltipLists              = value;  break;
         case 'showTooltipLongText':           settings.showTooltipLongText           = value;  break;
         case 'showTooltipColorInterpolation': settings.showTooltipColorInterpolation = value;  break;
         case 'showTooltipColorBlindness':     settings.showTooltipColorBlindness     = value;  break;
@@ -142,6 +144,7 @@ function updateSettingAndMenu(settingName, valid, value, save = true)
         case 'showTransformPoints':           updateSettingAndMenu_(valid, settingName, value, menuItemShowTransformPoints          ); break;
         case 'enableAsserts':                 updateSettingAndMenu_(valid, settingName, value, menuItemEnableAsserts                ); enableAsserts = value; break;
         
+        case 'showTooltipLists':              updateSettingAndMenu_(valid, settingName, value, menuItemShowTooltipLists             ); break;
         case 'showTooltipLongText':           updateSettingAndMenu_(valid, settingName, value, menuItemShowTooltipLongText          ); break;
         case 'showTooltipColorContrast':      updateSettingAndMenu_(valid, settingName, value, menuItemShowTooltipColorContrast     ); break;
         case 'showTooltipColorInterpolation': updateSettingAndMenu_(valid, settingName, value, menuItemShowTooltipColorInterpolation); break;
@@ -224,6 +227,7 @@ function updateSettingsMenus()
     menuItemShowTransformPoints          .setChecked(settings.showTransformPoints          );
     menuItemEnableAsserts                .setChecked(settings.enableAsserts                );
 
+    menuItemShowTooltipLists             .setChecked(settings.showTooltipLists             );
     menuItemShowTooltipLongText          .setChecked(settings.showTooltipLongText          );
     menuItemShowTooltipColorInterpolation.setChecked(settings.showTooltipColorInterpolation);
     menuItemShowTooltipColorBlindness    .setChecked(settings.showTooltipColorBlindness    );
@@ -415,6 +419,7 @@ function loadLocalSettings()
     uiGetLocalData('showTransformPoints'          );
     uiGetLocalData('enableAsserts'                );
 
+    uiGetLocalData('showTooltipLists'             );
     uiGetLocalData('showTooltipLongText'          );
     uiGetLocalData('showTooltipColorInterpolation');
     uiGetLocalData('showTooltipColorBlindness'    );

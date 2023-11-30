@@ -1476,7 +1476,11 @@ function idFromNodePath(path)
 
 function createHeaderTooltip(node)
 {
-    createTooltipSrc(node.header, node.header, () => ttText, () => node.showHeaderTooltip);
+    createTooltipSrc(
+        node.header, 
+        node.header, 
+        () => ttText, 
+        () => node.showHeaderTooltip && settings.showTooltipLists);
 
 
     node.header.addEventListener('pointerenter', e =>

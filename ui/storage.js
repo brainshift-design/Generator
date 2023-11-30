@@ -75,6 +75,7 @@ async function uiReturnFigGetLocalData(msg)
         case 'showTransformPoints':       
         case 'enableAsserts':       
 
+        case 'showTooltipLists':
         case 'showTooltipLongText':
         case 'showTooltipColorInterpolation':
         case 'showTooltipColorBlindness':

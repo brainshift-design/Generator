@@ -105,6 +105,7 @@ var menuConnData;
 var menuConnDataConns;
 
 var menuItemShowTooltipLongText;
+var menuItemShowTooltipLists;
 var menuItemShowTooltipColorInterpolation;
 var menuItemShowTooltipColorContrast;
 var menuItemShowTooltipColorBlindness;
@@ -277,6 +278,7 @@ function initGeneratorMenus()
 {
     menuShowTooltips = new Menu('Show tooltips', false);
     menuShowTooltips.addItems([
+        menuItemShowTooltipLists              = new MenuItem('List items',          null, {checkCallback: () => settings.showTooltipLists,              callback: () => { updateSettingAndMenu('showTooltipLists',              true, !settings.showTooltipLists             ); }}),
         menuItemShowTooltipLongText           = new MenuItem('Long text',           null, {checkCallback: () => settings.showTooltipLongText,           callback: () => { updateSettingAndMenu('showTooltipLongText',           true, !settings.showTooltipLongText          ); }}),
         menuItemShowTooltipColorContrast      = new MenuItem('Color contrast',      null, {checkCallback: () => settings.showTooltipColorContrast,      callback: () => { updateSettingAndMenu('showTooltipColorContrast',      true, !settings.showTooltipColorContrast     ); }}),
         menuItemShowTooltipColorInterpolation = new MenuItem('Color interpolation', null, {checkCallback: () => settings.showTooltipColorInterpolation, callback: () => { updateSettingAndMenu('showTooltipColorInterpolation', true, !settings.showTooltipColorInterpolation); }}),
