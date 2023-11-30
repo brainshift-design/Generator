@@ -45,6 +45,26 @@ extends OperatorBase
 
     
 
+    isOrPrecededByUncached()
+    {
+        if (this.inputs[0].connected && this.paramCondition.value.value == 1) return this.inputs[0].connectedOutput.node.isOrPrecededByUncached();
+        if (this.inputs[1].connected && this.paramCondition.value.value == 0) return this.inputs[1].connectedOutput.node.isOrPrecededByUncached();
+
+        return false;//super.isOrPrecededByUncached();
+    }
+
+
+
+    isOrPrecededByMultiplier()
+    {
+        if (this.inputs[0].connected && this.paramCondition.value.value == 1) return this.inputs[0].connectedOutput.node.isOrPrecededByMultiplier();
+        if (this.inputs[1].connected && this.paramCondition.value.value == 0) return this.inputs[1].connectedOutput.node.isOrPrecededByMultiplier();
+
+        return false;//super.isOrPrecededByMultiplier();
+    }
+
+
+
     output_genRequest(gen)
     {
         // 'this' is the output

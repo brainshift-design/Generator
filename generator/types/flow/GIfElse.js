@@ -60,37 +60,17 @@ extends GOperator
             return this;
 
         
-        const cond = (await this.condition.eval(parse)).toValue();
+        const input0 = this.input0    ? (await this.input0   .eval(parse)).toValue() : null;
+        const input1 = this.input1    ? (await this.input1   .eval(parse)).toValue() : null;
+        
+        const cond   = this.condition ? (await this.condition.eval(parse)).toValue() : null;
 
 
-        if (   this.input0 
-            && this.input1)
-        {
-            const input0 = (await this.input0.eval(parse)).toValue();
-            const input1 = (await this.input1.eval(parse)).toValue();
-
-            this.value = cond.value != 0 ? input0 : input1;
-        }
-        else if (this.input0)
-        {
-            const input0 = (await this.input0.eval(parse)).toValue();
-
-            this.value = 
-                cond.value != 0
-                ? input0
-                : null;
-        }
-        else if (this.input1)
-        {
-            const input1 = (await this.input1.eval(parse)).toValue();
-
-            this.value = 
-                cond.value == 0
-                ? input1
-                : null;
-        }
-        else                  
-            this.value = null;
+          if (   input0 
+              && input1) this.value = cond.value != 0 ? input0 : input1;
+        else if (input0) this.value = cond.value != 0 ? input0 : NullValue.copy();
+        else if (input1) this.value = cond.value == 0 ? input1 : NullValue.copy();
+        else             this.value = NullValue.copy();
 
 
         this.updateValueObjects();
@@ -98,8 +78,8 @@ extends GOperator
 
         this.setUpdateValues(parse,
         [
-            ['type',      new TextValue(this.value ? this.value.type : ANY_VALUE)],
-            ['condition', cond                                                   ]
+            ['type',      this.outputType()],
+            ['condition', cond             ]
         ]);
         
         
