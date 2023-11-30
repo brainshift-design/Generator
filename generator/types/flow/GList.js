@@ -66,6 +66,7 @@ extends GOperator1
 
         
         if (    this.value.isValid()
+            &&  this.value.items
             && !isEmpty(this.value.items))
         {
             for (let i = 0; i < this.value.items.length; i++)
