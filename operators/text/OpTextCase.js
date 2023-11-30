@@ -1,5 +1,5 @@
 class   OpTextCase
-extends OperatorWithValue
+extends OperatorBase
 {
     paramCase;
 
@@ -12,13 +12,10 @@ extends OperatorWithValue
         this.canDisable = true;
         
 
-        this.addInput (new Input ([TEXT_VALUE]));
+        this.addInput (new Input ([TEXT_VALUE, TEXT_LIST_VALUE, LIST_VALUE]));
         this.addOutput(new Output([TEXT_VALUE], this.output_genRequest));
 
-        this.addParam(this.paramValue);
         this.addParam(this.paramCase = new SelectParam('case', 'case', false, true, true, ['lower', 'First capital', 'All Capitals', 'UPPER'], 1));
-
-        setControlFont(this.paramValue.controls[0].textbox, 'Roboto Mono', 10, 'center');
     }
 
 
@@ -54,12 +51,21 @@ extends OperatorWithValue
 
 
 
+    updateValues(requestId, actionId, updateParamId, paramIds, values)
+    {
+        const type = values[paramIds.findIndex(id => id == 'type')];
+
+        if (type)
+            this.outputs[0].types = [type.value];
+
+        super.updateValues(requestId, actionId, updateParamId, paramIds, values);
+    }
+
+
+
     updateParams()
     {
-        this.paramValue.enableControlText(true, this.isUnknown());
-        // this.paramValue.controls[0].valueText = this.isUnknown() ? UNKNOWN_DISPLAY : '';
-
-        this.paramCase.enableControlText(true);
+        this.paramCase.enableControlText(true, this.paramCase.isUnknown());
 
         this.updateParamControls();
     }

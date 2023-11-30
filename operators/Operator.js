@@ -168,13 +168,13 @@ class Operator
 
     get headerConnected       () { return !isEmpty(this.headerInputs.filter(i => i.connected)); }
 
-    get headerInputs          () { return this.inputs .filter(i => !i.param);                   }
+    get headerInputs          () { return this. inputs.filter(i => !i.param);                   }
     get headerOutputs         () { return this.outputs.filter(o => !o.param);                   }
    
-    get connectedInputs       () { return this.inputs .filter(i => i.connected);                }
+    get connectedInputs       () { return this. inputs.filter(i => i.connected);                }
     get connectedOutputs      () { return this.outputs.filter(o => o.connected);                }
 
-    get connectedHeaderInputs () { return this.inputs .filter(i => !i.param && i.connected);    }
+    get connectedHeaderInputs () { return this. inputs.filter(i => !i.param && i.connected);    }
     get connectedHeaderOutputs() { return this.outputs.filter(o => !o.param && o.connected);    }
 
 
@@ -871,6 +871,14 @@ class Operator
 
 
 
+    isOrPrecededByMultiplier()
+    {
+        return this.isMultiplier
+            || this.hasMultipliedInputs();
+    }
+
+
+
     isOrFollowedByMultiplier()
     {
         return this.isMultiplier
@@ -884,6 +892,18 @@ class Operator
     {
         for (const input of this.inputs)
             if (input.isUncached())
+                return true;
+
+        return false;
+    }
+
+
+
+    hasMultipliedInputs()
+    {
+        for (const input of this.inputs)
+            if (   input.connectedOutput
+                && input.connectedOutput.node.isOrPrecededByMultiplier())
                 return true;
 
         return false;

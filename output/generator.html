@@ -4,7 +4,7 @@
 
 
 
-const generatorVersion = 314;
+const generatorVersion = 315;
 
 
 const MAX_INT32        = 2147483647;
@@ -25908,63 +25908,45 @@ extends GOperator1
             return this;
 
 
-        const _case = (await this.case.eval(parse)).toValue();
+        const input = this.input ? (await this.input.eval(parse)).toValue() : null;
+        const _case = this.case  ? (await this.case .eval(parse)).toValue() : null;
 
 
-        if (this.input)
+        if (input)
         {
-            this.value = (await this.input.eval(parse)).toValue();
-            
-            consoleAssert(this.value.type == TEXT_VALUE, 'this.value.type must be TEXT_VALUE');
-                
-                
             if (this.options.enabled)
             {
-                const val = this.value.value;
-
-                if (_case.value == 0) 
-                     this.value.value = val.toLowerCase();
-
-                else if (_case.value == 1)
+                if (isListType(input.type))
                 {
-                    this.value.value = '';
+                    this.value = new ListValue();
 
-                    if (val.length > 0) this.value.value += val.substring(0, 1).toUpperCase();
-                    if (val.length > 1) this.value.value += val.substring(1)   .toLowerCase();
-                }
-
-                else if (_case.value == 2)
-                {
-                    this.value.value = '';
-
-                    let i = 0;
-                    while (i < val.length)
+                    for (let i = 0; i < input.items.length; i++)
                     {
-                        while (i < val.length
-                            && /\s/.test(val.charAt(i)))
-                            this.value.value += val.charAt(i++);
+                        const item = input.items[i];
 
-                        if (i < val.length)
-                            this.value.value += val.charAt(i++).toUpperCase();
-
-                        while (i < val.length
-                            && !/\s/.test(val.charAt(i)))
-                            this.value.value += val.charAt(i++).toLowerCase();
+                        this.value.items.push(
+                            item.type == TEXT_VALUE
+                            ? getTextCaseValue(item, _case)
+                            : new TextValue());   
                     }
                 }
-
-                else if (_case.value == 3) 
-                    this.value.value = val.toUpperCase();
+                else
+                {
+                    this.value = getTextCaseValue(input, _case);
+                }
             }
+            else
+                this.value = input;
         }
         else
-            this.value = new TextValue();//TextValue.NaN;
+            this.value = new TextValue();
 
 
         this.setUpdateValues(parse,
         [
-            ['value', this.value],
-            ['case',  _case     ]
+            ['value', this.value        ],
+            ['type',   this.outputType()],
+            ['case',  _case             ]
         ]);
 
 
@@ -26009,6 +25991,49 @@ extends GOperator1
     }
 }
 
+
+
+function getTextCaseValue(input, _case)
+{
+    consoleAssert(input.type == TEXT_VALUE, 'input.type must be TEXT_VALUE');
+
+    const val   = input.value;
+    const value = new TextValue();
+    
+
+    if (_case.value == 0) 
+         value.value = val.toLowerCase();
+
+    else if (_case.value == 1)
+    {
+        if (val.length > 0) value.value += val.substring(0, 1).toUpperCase();
+        if (val.length > 1) value.value += val.substring(1)   .toLowerCase();
+    }
+
+    else if (_case.value == 2)
+    {
+        let i = 0;
+        while (i < val.length)
+        {
+            while (i < val.length
+                && /\s/.test(val.charAt(i)))
+                value.value += val.charAt(i++);
+
+            if (i < val.length)
+                value.value += val.charAt(i++).toUpperCase();
+
+            while (i < val.length
+                && !/\s/.test(val.charAt(i)))
+                value.value += val.charAt(i++).toLowerCase();
+        }
+    }
+
+    else if (_case.value == 3) 
+        value.value = val.toUpperCase();
+
+
+    return value;
+}
 
 
 class GNumberToText

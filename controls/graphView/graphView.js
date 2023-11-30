@@ -323,8 +323,8 @@ class GraphView
     {
         const topIndices = 
                1 
-            +  node.inputs.filter(i => i.connected).length 
-            + (node.outputs.find(o => o.connected) ? 1 : 0);
+            + (node.inputs ? node.inputs.filter(i => i.connected).length : 0)
+            + (node.outputs && node.outputs.find(o => o.connected) ? 1 : 0);
             
         for (const n of graph.pageNodes)
             n.div.style.zIndex = Math.max(0, Number(n.div.style.zIndex) - topIndices);

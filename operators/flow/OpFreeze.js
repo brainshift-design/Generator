@@ -34,6 +34,13 @@ extends OperatorBase
 
 
 
+    isOrPrecededByMultiplier()
+    {
+        return false;
+    }
+
+
+
     output_genRequest(gen)
     {
         // 'this' is the output

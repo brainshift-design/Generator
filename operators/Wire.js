@@ -169,9 +169,9 @@ class Wire
         this.clientY = y;
     
 
-        const listType = 
-               this.connection.output
-            && arraysIntersect(this.connection.output.types, LIST_TYPES);
+        // const listType = 
+        //        this.connection.output
+        //     && arraysIntersect(this.connection.output.types, LIST_TYPES);
     
         const yOffset = getTopHeight();// + (listType ? 1/graph.currentPage.zoom : 0);
     
@@ -233,16 +233,14 @@ class Wire
         }
     
         
-        const senseElbow0 = 100;
-        const maxElbow0   = 40;
-        const nd          = Math.min(Math.max(-1, (x2 - x1) / senseElbow0), 0);
-        const diag        = 1 + Math.min((x2 - x1) / nozero(y2 - y1), 0.5);
-        const r0          = Math.min(Math.max(Math.abs(nd), diag) * maxElbow0, Math.abs(y2 - y1) / 6);
+        // const senseElbow0 = 100;
+        // const maxElbow0   = 40;
+        // const nd          = Math.min(Math.max(-1, (x2 - x1) / senseElbow0), 0);
+        // const diag        = 1 + Math.min((x2 - x1) / nozero(y2 - y1), 0.5);
+        // const r0          = Math.min(Math.max(Math.abs(nd), diag) * maxElbow0, Math.abs(y2 - y1) / 6);
         
-        const mx = (x1 + x2)/2;
-        const my = (y1 + y2)/2;
-
-        //const 
+        // const mx = (x1 + x2)/2;
+        // const my = (y1 + y2)/2;
 
 
         // this.elbowCircle0.setAttribute('cx',      x1);
@@ -615,18 +613,20 @@ class Wire
                conn.output 
             && (      conn.output.param
                    && conn.output.param.isNodeValue
-                   && conn.output.param.node.isOrPrecededByUncached()
+                   && (   conn.output.param.node.isOrPrecededByUncached()
+                       || conn.output.param.node.isOrPrecededByMultiplier())
                 ||     conn.output.param
                    && !conn.output.param.isNodeValue
                    &&  conn.output.param.input
                    &&  conn.output.param.input.isUncached()
                 ||   !conn.output.param
-                   && conn.output.node.isOrPrecededByUncached())
-            && conn.input  
-            && (      conn.input.param 
-                   && conn.input.node.hasMultipliedOutputs()
-                ||   !conn.input.param
-                   && conn.input.node.isOrFollowedByMultiplier());
+                   && (   conn.output.node.isOrPrecededByUncached()
+                       || conn.output.node.isOrPrecededByMultiplier()));
+            // && conn.input  
+            // && (      conn.input.param 
+            //        && conn.input.node.hasMultipliedOutputs()
+            //     ||   !conn.input.param
+            //        && conn.input.node.isOrFollowedByMultiplier());
 
                 
         this.curve .style.stroke = wireStyle;
