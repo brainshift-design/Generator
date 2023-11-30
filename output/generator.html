@@ -5146,6 +5146,7 @@ const TEXT_JOIN      = 'TJOIN';
 const TEXT_PAD       = 'TPAD';
 const TEXT_COMPARE   = 'TCMP';
 const TEXT_CHAR      = 'TCHAR';
+const TEXT_UNICODE   = 'TUNI';
 const INDEX_TO_NAME  = 'INDEX';
 const NUMBER_TO_TEXT = 'N2T';
 const COLOR_TO_TEXT  = 'C2T';
@@ -18144,7 +18145,6 @@ extends GOperator1
         else
         {
             if (   input
-                && this.order
                 && reverse)
             {
                 const order = this.order ? (await this.order.eval(parse)).toValue() : null;
@@ -18152,8 +18152,7 @@ extends GOperator1
                     
                 if (this.options.enabled)
                 {
-                    if (   input 
-                        && this.order
+                    if (   this.order
                         && this.order.getOrderNode)
                     {
                         const orderNode = this.order.getOrderNode(parse);
@@ -18277,7 +18276,6 @@ async function asyncSort(parse, array, orderNode, node, order, reverseMultiplier
     for (const item of array)
     {
         const criterion = await getSortCriterion(parse, orderNode, node, order, item);
-        //console.log('criterion =', criterion);
         sorted.push({item, criterion});
     }
 
@@ -18303,6 +18301,7 @@ async function getSortCriterion(parse, orderNode, node, order, item)
     orderNode.input = item.copy();
     order.invalidateInputs(parse, node, true); 
 
+    console.log('order =', order);
     return (await order.eval(parse)).toValue().value;
 }
 
@@ -26198,13 +26197,13 @@ extends GOperator1
                 this.value = getNumberToTextValue(input, base, decimals, thousands);
             }
         }
-
         else
-            this.value = TextValue.NaN;
+            this.value = TextValue.NaN.copy();
 
 
         this.setUpdateValues(parse,
         [
+            ['value',     this.value       ],
             ['type',      this.outputType()],
             ['base',      base             ],
             ['decimals',  decimals         ],
@@ -26698,13 +26697,9 @@ function getTextToColorValue(input)
 }
 
 
-class GTextCharacter
+class GCodeToCharacter
 extends GOperator1
 {
-    code;
-
-
-    
     constructor(nodeId, options)
     {
         super(TEXT_CHAR, nodeId, options);
@@ -26712,22 +26707,11 @@ extends GOperator1
 
 
     
-    reset()
-    {
-        super.reset();
-
-        this.code = null;
-    }
-
-
-
     copy()
     {
-        const copy = new GTextCharacter(this.nodeId, this.options);
+        const copy = new GCodeToCharacter(this.nodeId, this.options);
 
         copy.copyBase(this);
-
-        copy.code = this.code.copy();
 
         return copy;
     }
@@ -26740,16 +26724,38 @@ extends GOperator1
             return this;
 
 
-        const code = (await this.code.eval(parse)).toValue();
+        const input = this.input ? (await this.input.eval(parse)).toValue() : null;
 
 
-        this.value = new TextValue(String.fromCharCode(code.value));
+        if (input)
+        {
+            if (isListType(input.type))
+            {
+                this.value = new ListValue();
+
+                for (let i = 0; i < input.items.length; i++)
+                {
+                    const item = input.items[i];
+
+                    this.value.items.push(
+                        item.type == NUMBER_VALUE
+                        ? getCodeToCharacterValue(item)
+                        : TextValue.NaN.copy());   
+                }
+            }
+            else
+            {
+                this.value = getCodeToCharacterValue(input);
+            }
+        }
+        else
+            this.value = TextValue.NaN.copy();
 
 
         this.setUpdateValues(parse,
         [
-            ['value', this.value],
-            ['code',  code      ]
+            ['value', this.value       ],
+            ['type',  this.outputType()]
         ]);
 
 
@@ -26757,42 +26763,16 @@ extends GOperator1
 
         return this;
     }
-
-
-
-    isValid()
-    {
-        return super.isValid()
-            && this.code && this.code.isValid();
-    }
-
-
-
-    pushValueUpdates(parse)
-    {
-        super.pushValueUpdates(parse);
-
-        if (this.code) this.code.pushValueUpdates(parse);
-    }
-
-
-
-    invalidateInputs(parse, from, force)
-    {
-        super.invalidateInputs(parse, from, force);
-
-        if (this.code) this.code.invalidateInputs(parse, from, force);
-    }
-
-
-
-    iterateLoop(parse)
-    {
-        super.iterateLoop(parse);
-
-        if (this.code) this.code.iterateLoop(parse);
-    }
 }
+
+
+
+function getCodeToCharacterValue(input)
+{
+    return new TextValue(String.fromCharCode(Math.max(0, input.value)));
+}
+
+
 
 
 
@@ -47061,12 +47041,12 @@ function genParseTextCompare(parse)
 
 
 
-function genParseTextCharacter(parse)
+function genParseCodeToCharacter(parse)
 {
     const [, nodeId, options, ignore] = genParseNodeStart(parse);
 
 
-    const char = new GTextCharacter(nodeId, options);
+    const code2char = new GCodeToCharacter(nodeId, options);
    
 
     let nInputs = -1;
@@ -47079,12 +47059,12 @@ function genParseTextCharacter(parse)
 
     
     if (parse.settings.logRequests) 
-        logReq(char, parse, ignore, nInputs);
+        logReq(code2char, parse, ignore, nInputs);
 
 
     if (ignore) 
     {
-        genParseNodeEnd(parse, char);
+        genParseNodeEnd(parse, code2char);
         return parse.parsedNodes.find(n => n.nodeId == nodeId);
     }
 
@@ -47093,16 +47073,14 @@ function genParseTextCharacter(parse)
 
 
     if (nInputs == 1)
-        char.input = genParse(parse);
-
-    char.code = genParse(parse);
+        code2char.input = genParse(parse);
 
     
     parse.nTab--;
 
 
-    genParseNodeEnd(parse, char);
-    return char;
+    genParseNodeEnd(parse, code2char);
+    return code2char;
 }
 
 
@@ -47768,8 +47746,8 @@ function genParse(parse, inParam = true)
     else if (parse.next == TEXT_SUBSTRING         ) result = genParseTextSubstring     (parse);
     else if (parse.next == TEXT_CONTAINS          ) result = genParseTextContains      (parse);
     else if (parse.next == TEXT_CASE              ) result = genParseTextCase          (parse);
-    else if (parse.next == TEXT_CHAR              ) result = genParseTextCharacter     (parse);
-    else if (parse.next == INDEX_TO_NAME          ) result = genParseIndexToName          (parse);
+    else if (parse.next == TEXT_CHAR              ) result = genParseCodeToCharacter   (parse);
+    else if (parse.next == INDEX_TO_NAME          ) result = genParseIndexToName       (parse);
     else if (parse.next == NUMBER_TO_TEXT         ) result = genParseNumberToText      (parse);
     else if (parse.next == COLOR_TO_TEXT          ) result = genParseColorToText       (parse);
     else if (parse.next == TEXT_TO_NUMBER         ) result = genParseTextToNumber      (parse);

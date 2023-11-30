@@ -207,6 +207,7 @@ const TEXT_JOIN      = 'TJOIN';
 const TEXT_PAD       = 'TPAD';
 const TEXT_COMPARE   = 'TCMP';
 const TEXT_CHAR      = 'TCHAR';
+const TEXT_UNICODE   = 'TUNI';
 const INDEX_TO_NAME  = 'INDEX';
 const NUMBER_TO_TEXT = 'N2T';
 const COLOR_TO_TEXT  = 'C2T';

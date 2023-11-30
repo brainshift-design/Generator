@@ -319,6 +319,30 @@ extends EventTarget
 
 
 
+    isOrder()
+    {
+        return this.connectedInputs.find(i =>
+        {
+            if (   i.param
+                && i.param.id == 'order'
+                && i.node.type == SORT)
+                return true;
+
+            // if (   i.param
+            //     && i.param.output
+            //     && i.param.output.isOrder())
+            //     return true;
+
+            for (const output of i.node.outputs)
+                if (output.isOrder())
+                    return true;
+
+            return false;
+        }) != null;
+    }
+
+
+
     toJsCode(gen)
     {
         return this.param

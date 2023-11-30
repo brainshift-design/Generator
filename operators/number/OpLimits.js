@@ -1,5 +1,5 @@
 class   OpLimits
-extends OperatorWithValue
+extends OperatorBase//WithValue
 {
     paramMin;
     paramMax;
@@ -17,7 +17,7 @@ extends OperatorWithValue
         this.addInput (new Input (NUMBER_TYPES));
         this.addOutput(new Output([NUMBER_VALUE], this.output_genRequest));
 
-        this.addParam(this.paramValue);
+        //this.addParam(this.paramValue);
         this.addParam(this.paramMin = new NumberParam('min', 'min', true, true, true,   0));
         this.addParam(this.paramMax = new NumberParam('max', 'max', true, true, true, 100));
 
@@ -61,7 +61,7 @@ extends OperatorWithValue
 
     updateParams()
     {
-        this.paramValue.enableControlText(false, this.isUnknown());
+        //this.paramValue.enableControlText(false, this.isUnknown());
         this.paramMin  .enableControlText(true);
         this.paramMax  .enableControlText(true);
 

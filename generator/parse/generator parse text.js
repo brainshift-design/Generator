@@ -529,12 +529,12 @@ function genParseTextCompare(parse)
 
 
 
-function genParseTextCharacter(parse)
+function genParseCodeToCharacter(parse)
 {
     const [, nodeId, options, ignore] = genParseNodeStart(parse);
 
 
-    const char = new GTextCharacter(nodeId, options);
+    const code2char = new GCodeToCharacter(nodeId, options);
    
 
     let nInputs = -1;
@@ -547,12 +547,12 @@ function genParseTextCharacter(parse)
 
     
     if (parse.settings.logRequests) 
-        logReq(char, parse, ignore, nInputs);
+        logReq(code2char, parse, ignore, nInputs);
 
 
     if (ignore) 
     {
-        genParseNodeEnd(parse, char);
+        genParseNodeEnd(parse, code2char);
         return parse.parsedNodes.find(n => n.nodeId == nodeId);
     }
 
@@ -561,16 +561,14 @@ function genParseTextCharacter(parse)
 
 
     if (nInputs == 1)
-        char.input = genParse(parse);
-
-    char.code = genParse(parse);
+        code2char.input = genParse(parse);
 
     
     parse.nTab--;
 
 
-    genParseNodeEnd(parse, char);
-    return char;
+    genParseNodeEnd(parse, code2char);
+    return code2char;
 }
 
 

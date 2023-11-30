@@ -73,13 +73,13 @@ extends GOperator1
                 this.value = getNumberToTextValue(input, base, decimals, thousands);
             }
         }
-
         else
-            this.value = TextValue.NaN;
+            this.value = TextValue.NaN.copy();
 
 
         this.setUpdateValues(parse,
         [
+            ['value',     this.value       ],
             ['type',      this.outputType()],
             ['base',      base             ],
             ['decimals',  decimals         ],

@@ -925,10 +925,22 @@ class Operator
 
 
 
+    hasOrderOutputs()
+    {
+        for (const output of this.outputs)
+            if (output.isOrder())
+                return true;
+
+        return false;
+    }
+
+
+
     isUnknown()
     {
-        return this.hasUncachedInputs()
-            && this.hasMultipliedOutputs();
+        return    this.hasUncachedInputs()
+               && this.hasMultipliedOutputs()
+            || this.hasOrderOutputs();
     }
 
 

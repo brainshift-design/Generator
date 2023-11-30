@@ -66,7 +66,6 @@ extends GOperator1
         else
         {
             if (   input
-                && this.order
                 && reverse)
             {
                 const order = this.order ? (await this.order.eval(parse)).toValue() : null;
@@ -74,8 +73,7 @@ extends GOperator1
                     
                 if (this.options.enabled)
                 {
-                    if (   input 
-                        && this.order
+                    if (   this.order
                         && this.order.getOrderNode)
                     {
                         const orderNode = this.order.getOrderNode(parse);
@@ -199,7 +197,6 @@ async function asyncSort(parse, array, orderNode, node, order, reverseMultiplier
     for (const item of array)
     {
         const criterion = await getSortCriterion(parse, orderNode, node, order, item);
-        //console.log('criterion =', criterion);
         sorted.push({item, criterion});
     }
 
@@ -225,5 +222,6 @@ async function getSortCriterion(parse, orderNode, node, order, item)
     orderNode.input = item.copy();
     order.invalidateInputs(parse, node, true); 
 
+    console.log('order =', order);
     return (await order.eval(parse)).toValue().value;
 }
