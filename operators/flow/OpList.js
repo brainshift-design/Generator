@@ -260,7 +260,7 @@ extends ResizableBase
     updateParams()
     {
         for (const param of this.params)
-            param.enableControlText(false, this.isUnknown());
+            param.enableControlText(false, param.isUnknown());
 
         this.updateParamControls();
     }
