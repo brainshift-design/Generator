@@ -70,5 +70,5 @@ extends GOperator1
 
 function getCodeToCharacterValue(input)
 {
-    return new TextValue(String.fromCharCode(Math.max(0, input.value)));
+    return new TextValue(String.fromCharCode(Math.min(Math.max(0, input.value), 0xffff)));
 }

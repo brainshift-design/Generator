@@ -224,6 +224,7 @@ function genParse(parse, inParam = true)
     else if (parse.next == TEXT_CONTAINS          ) result = genParseTextContains      (parse);
     else if (parse.next == TEXT_CASE              ) result = genParseTextCase          (parse);
     else if (parse.next == TEXT_CHAR              ) result = genParseCodeToCharacter   (parse);
+    else if (parse.next == TEXT_UNICODE           ) result = genParseCharacterToCode   (parse);
     else if (parse.next == INDEX_TO_NAME          ) result = genParseIndexToName       (parse);
     else if (parse.next == NUMBER_TO_TEXT         ) result = genParseNumberToText      (parse);
     else if (parse.next == COLOR_TO_TEXT          ) result = genParseColorToText       (parse);
