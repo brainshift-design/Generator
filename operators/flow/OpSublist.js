@@ -22,7 +22,7 @@ extends OperatorBase
         this.addOutput(new Output([LIST_VALUE], this.output_genRequest));
 
         this.addParam(this.paramStart = new NumberParam('start', '[ start', true, true, true, 0, 0));
-        this.addParam(this.paramEnd   = new NumberParam('end',   '] end',   true, true, true, 0, 0));
+        this.addParam(this.paramEnd   = new NumberParam('end',   '] end',   true, true, true, Number.NaN, 0));
 
 
         this.paramStart.controls[0].allowEditDecimals = false;
