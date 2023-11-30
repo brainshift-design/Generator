@@ -34,16 +34,6 @@ extends GOperator1
 
     async eval(parse)
     {
-        // if (this.isCached())
-        //     return this;
-
-
-        // if (!this.frozen)
-        //     this.value = this.input ? (await this.input.eval(parse)).toValue() : ListValue.NaN;
-
-
-        // this.frozen = true;
-
         if (   this.isCached()
             && this.cachedValue)
             return this;

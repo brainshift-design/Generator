@@ -15943,7 +15943,7 @@ extends GOperator1
 
 
                 const nRepeats = 
-                       this.options.enabled 
+                    this.options.enabled 
                     ? count.value 
                     : 0;
                 
@@ -17653,6 +17653,8 @@ extends GOperator1
     start = null;
     end   = null;
 
+    cachedValue = null;
+
 
     
     constructor(nodeId, options)
@@ -17688,66 +17690,67 @@ extends GOperator1
 
     async eval(parse)
     {
-        if (this.isCached())
+        if (   this.isCached()
+            && this.cachedValue)
             return this;
 
 
+        const input = this.input ? (await this.input.eval(parse)).toValue() : null;
         const start = this.start ? (await this.start.eval(parse)).toValue() : null;
         const end   = this.end   ? (await this.end  .eval(parse)).toValue() : null;
 
 
-        this.value = new ListValue();
-        this.value.objects = [];
+        if (this.cachedValue)
+            this.value = this.cachedValue.copy();
 
-        let length = 0;
-        
-
-        if (   this.input
-            && start
-            && end)
+        else
         {
-            const input = (await this.input.eval(parse)).toValue();
+            this.value = new ListValue();
+            this.value.objects = [];
 
-            
             if (   input
-                && input.items)
+                && start
+                && end)
             {
-                length = input.items.length;
-
-
-                const _end =
-                    end.isValid()
-                    ? end
-                    : new NumberValue(input.items.length);
-
-
-                if (start.value < _end.value)
+                if (input.items)
                 {
-                    if (this.options.enabled)
-                    {
-                        for (let i = start.value, j = 0; i < _end.value; i++, j++)
-                        {
-                            const item = input.items[i];
-                            
-                            this.value.items.push(item ? item.copy() : NullValue);
-                            
-                            if (   item
-                                && this.value.objects
-                                && input.objects)
-                            {
-                                const objects = input.objects.filter(o => o.itemIndex == i);
-                                objects.forEach(o => o.itemIndex = j);
+                    const _end =
+                        end.isValid()
+                        ? end
+                        : new NumberValue(input.items.length);
 
-                                this.value.objects.push(...objects);
+
+                    if (start.value < _end.value)
+                    {
+                        if (this.options.enabled)
+                        {
+                            for (let i = start.value, j = 0; i < _end.value; i++, j++)
+                            {
+                                const item = input.items[i];
+                                
+                                this.value.items.push(item ? item.copy() : NullValue);
+                                
+                                if (   item
+                                    && this.value.objects
+                                    && input.objects)
+                                {
+                                    const objects = input.objects.filter(o => o.itemIndex == i);
+                                    objects.forEach(o => o.itemIndex = j);
+
+                                    this.value.objects.push(...objects);
+                                }
                             }
                         }
+                        else
+                            this.value = input;//.copy();
                     }
-                    else
-                        this.value = input;//.copy();
                 }
+                else
+                    this.value = ListValue.NaN.copy();
             }
-            else
-                this.value = ListValue.NaN.copy();
+
+
+            this.cachedValue = this.value.copy();
         }
 
 
@@ -17759,7 +17762,7 @@ extends GOperator1
             ['preview',    new ListValue(this.value.items.slice(0, Math.min(this.value.items.length, 11)))],
             ['type',       this.outputListType()                                                          ],
             ['length',     new NumberValue(this.value.items.length)                                       ], // used to set start and end maxima
-            ['fullLength', new NumberValue(length)                                                        ], // used to set start and end maxima
+            ['fullLength', new NumberValue(input ? input.items.length : 0)                                ], // used to set start and end maxima
             ['start',      start                                                                          ],
             ['end',        end                                                                            ]
         ]);
@@ -17818,6 +17821,8 @@ extends GOperator1
     counts  = null;
     indices = null;
 
+    cachedValue = null;
+
 
     
     constructor(nodeId, options)
@@ -17861,40 +17866,49 @@ extends GOperator1
         this.indices = new ListValue();
 
 
-        if (input)
+        if (this.cachedValue)
+            this.value = this.cachedValue.copy();
+
+        else
         {
-            if (this.options.enabled)
+            if (input)
             {
-                this.value = new ListValue();
-
-                for (let i = 0; i < input.items.length; i++)
+                if (this.options.enabled)
                 {
-                    const item       = input.items[i];
-                    const foundIndex = this.value.items.findIndex(i => i.equals(item));
+                    this.value = new ListValue();
 
-                    if (foundIndex < 0)
+                    for (let i = 0; i < input.items.length; i++)
                     {
-                        this.value.items.push(item.copy());
+                        const item       = input.items[i];
+                        const foundIndex = this.value.items.findIndex(i => i.equals(item));
 
-                        if (   this.value.objects
-                            && item.objects)
-                            this.value.objects.push(...item.objects);
+                        if (foundIndex < 0)
+                        {
+                            this.value.items.push(item.copy());
 
-                        this.counts.items.push(new NumberValue(1));
-                        this.indices.items.push(new ListValue([new NumberValue(i)]));
-                    }
-                    else
-                    {
-                        this.counts .items[foundIndex].value++;
-                        this.indices.items[foundIndex].items.push(new NumberValue(i));
+                            if (   this.value.objects
+                                && item.objects)
+                                this.value.objects.push(...item.objects);
+
+                            this.counts.items.push(new NumberValue(1));
+                            this.indices.items.push(new ListValue([new NumberValue(i)]));
+                        }
+                        else
+                        {
+                            this.counts .items[foundIndex].value++;
+                            this.indices.items[foundIndex].items.push(new NumberValue(i));
+                        }
                     }
                 }
+                else
+                    this.value = input.copy();
             }
             else
-                this.value = input.copy();
+                this.value = new ListValue();//TextValue.NaN;
+
+
+            this.cachedValue = this.value.copy();
         }
-        else
-            this.value = new ListValue();//TextValue.NaN;
 
 
         this.updateValueObjects();
@@ -18715,16 +18729,6 @@ extends GOperator1
 
     async eval(parse)
     {
-        // if (this.isCached())
-        //     return this;
-
-
-        // if (!this.frozen)
-        //     this.value = this.input ? (await this.input.eval(parse)).toValue() : ListValue.NaN;
-
-
-        // this.frozen = true;
-
         if (   this.isCached()
             && this.cachedValue)
             return this;

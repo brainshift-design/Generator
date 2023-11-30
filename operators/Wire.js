@@ -614,14 +614,16 @@ class Wire
             && (      conn.output.param
                    && conn.output.param.isNodeValue
                    && (   conn.output.param.node.isOrPrecededByUncached()
-                       || conn.output.param.node.isOrPrecededByMultiplier())
+                       /*|| conn.output.param.node.isOrPrecededByMultiplier()*/)
                 ||     conn.output.param
                    && !conn.output.param.isNodeValue
                    &&  conn.output.param.input
                    &&  conn.output.param.input.isUncached()
                 ||   !conn.output.param
                    && (   conn.output.node.isOrPrecededByUncached()
-                       || conn.output.node.isOrPrecededByMultiplier()));
+                       /*|| conn.output.node.isOrPrecededByMultiplier()*/));
+            // && (   !conn.input
+            //     || !conn.input.isLoop());
             // && conn.input  
             // && (      conn.input.param 
             //        && conn.input.node.hasMultipliedOutputs()
@@ -642,11 +644,11 @@ class Wire
             : '0';
     
 
-        this. inBall.style.fill   = wireStyle;
-        this.outBall.style.fill   = wireStyle;
+        this. inBall.style.fill = wireStyle;
+        this.outBall.style.fill = wireStyle;
 
-        this.arrow1 .style.fill   = arrowStyle;
-        this.arrow2 .style.fill   = arrowStyle;
+        this.arrow1 .style.fill = arrowStyle;
+        this.arrow2 .style.fill = arrowStyle;
     
     
         if (conn.output) conn.output.wireBall.style.background = wireStyle;

@@ -11,6 +11,7 @@ extends OperatorBase
     {
         super(REPEAT, 'repeat', 'repeat', iconRepeat, defNodeWidth, true);
 
+        
         this.isMultiplier = true;
         this.canDisable   = true;
 
@@ -34,6 +35,14 @@ extends OperatorBase
     }
     
     
+
+    isOrPrecededByUncached()
+    {
+        return !this.paramLoop.input.connected
+            || !this.paramLoop.input.connectedOutput.node.isOrPrecededByUncached();
+    }
+
+
 
     output_genRequest(gen)
     {

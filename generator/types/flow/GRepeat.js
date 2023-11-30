@@ -79,7 +79,7 @@ extends GOperator1
 
 
                 const nRepeats = 
-                       this.options.enabled 
+                    this.options.enabled 
                     ? count.value 
                     : 0;
                 

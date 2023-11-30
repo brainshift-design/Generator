@@ -4,6 +4,8 @@ extends GOperator1
     start = null;
     end   = null;
 
+    cachedValue = null;
+
 
     
     constructor(nodeId, options)
@@ -39,66 +41,67 @@ extends GOperator1
 
     async eval(parse)
     {
-        if (this.isCached())
+        if (   this.isCached()
+            && this.cachedValue)
             return this;
 
 
+        const input = this.input ? (await this.input.eval(parse)).toValue() : null;
         const start = this.start ? (await this.start.eval(parse)).toValue() : null;
         const end   = this.end   ? (await this.end  .eval(parse)).toValue() : null;
 
 
-        this.value = new ListValue();
-        this.value.objects = [];
+        if (this.cachedValue)
+            this.value = this.cachedValue.copy();
 
-        let length = 0;
-        
-
-        if (   this.input
-            && start
-            && end)
+        else
         {
-            const input = (await this.input.eval(parse)).toValue();
+            this.value = new ListValue();
+            this.value.objects = [];
 
-            
             if (   input
-                && input.items)
+                && start
+                && end)
             {
-                length = input.items.length;
-
-
-                const _end =
-                    end.isValid()
-                    ? end
-                    : new NumberValue(input.items.length);
-
-
-                if (start.value < _end.value)
+                if (input.items)
                 {
-                    if (this.options.enabled)
-                    {
-                        for (let i = start.value, j = 0; i < _end.value; i++, j++)
-                        {
-                            const item = input.items[i];
-                            
-                            this.value.items.push(item ? item.copy() : NullValue);
-                            
-                            if (   item
-                                && this.value.objects
-                                && input.objects)
-                            {
-                                const objects = input.objects.filter(o => o.itemIndex == i);
-                                objects.forEach(o => o.itemIndex = j);
+                    const _end =
+                        end.isValid()
+                        ? end
+                        : new NumberValue(input.items.length);
 
-                                this.value.objects.push(...objects);
+
+                    if (start.value < _end.value)
+                    {
+                        if (this.options.enabled)
+                        {
+                            for (let i = start.value, j = 0; i < _end.value; i++, j++)
+                            {
+                                const item = input.items[i];
+                                
+                                this.value.items.push(item ? item.copy() : NullValue);
+                                
+                                if (   item
+                                    && this.value.objects
+                                    && input.objects)
+                                {
+                                    const objects = input.objects.filter(o => o.itemIndex == i);
+                                    objects.forEach(o => o.itemIndex = j);
+
+                                    this.value.objects.push(...objects);
+                                }
                             }
                         }
+                        else
+                            this.value = input;//.copy();
                     }
-                    else
-                        this.value = input;//.copy();
                 }
+                else
+                    this.value = ListValue.NaN.copy();
             }
-            else
-                this.value = ListValue.NaN.copy();
+
+
+            this.cachedValue = this.value.copy();
         }
 
 
@@ -110,7 +113,7 @@ extends GOperator1
             ['preview',    new ListValue(this.value.items.slice(0, Math.min(this.value.items.length, 11)))],
             ['type',       this.outputListType()                                                          ],
             ['length',     new NumberValue(this.value.items.length)                                       ], // used to set start and end maxima
-            ['fullLength', new NumberValue(length)                                                        ], // used to set start and end maxima
+            ['fullLength', new NumberValue(input ? input.items.length : 0)                                ], // used to set start and end maxima
             ['start',      start                                                                          ],
             ['end',        end                                                                            ]
         ]);

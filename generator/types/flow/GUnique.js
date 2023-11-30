@@ -4,6 +4,8 @@ extends GOperator1
     counts  = null;
     indices = null;
 
+    cachedValue = null;
+
 
     
     constructor(nodeId, options)
@@ -47,40 +49,49 @@ extends GOperator1
         this.indices = new ListValue();
 
 
-        if (input)
+        if (this.cachedValue)
+            this.value = this.cachedValue.copy();
+
+        else
         {
-            if (this.options.enabled)
+            if (input)
             {
-                this.value = new ListValue();
-
-                for (let i = 0; i < input.items.length; i++)
+                if (this.options.enabled)
                 {
-                    const item       = input.items[i];
-                    const foundIndex = this.value.items.findIndex(i => i.equals(item));
+                    this.value = new ListValue();
 
-                    if (foundIndex < 0)
+                    for (let i = 0; i < input.items.length; i++)
                     {
-                        this.value.items.push(item.copy());
+                        const item       = input.items[i];
+                        const foundIndex = this.value.items.findIndex(i => i.equals(item));
 
-                        if (   this.value.objects
-                            && item.objects)
-                            this.value.objects.push(...item.objects);
+                        if (foundIndex < 0)
+                        {
+                            this.value.items.push(item.copy());
 
-                        this.counts.items.push(new NumberValue(1));
-                        this.indices.items.push(new ListValue([new NumberValue(i)]));
-                    }
-                    else
-                    {
-                        this.counts .items[foundIndex].value++;
-                        this.indices.items[foundIndex].items.push(new NumberValue(i));
+                            if (   this.value.objects
+                                && item.objects)
+                                this.value.objects.push(...item.objects);
+
+                            this.counts.items.push(new NumberValue(1));
+                            this.indices.items.push(new ListValue([new NumberValue(i)]));
+                        }
+                        else
+                        {
+                            this.counts .items[foundIndex].value++;
+                            this.indices.items[foundIndex].items.push(new NumberValue(i));
+                        }
                     }
                 }
+                else
+                    this.value = input.copy();
             }
             else
-                this.value = input.copy();
+                this.value = new ListValue();//TextValue.NaN;
+
+
+            this.cachedValue = this.value.copy();
         }
-        else
-            this.value = new ListValue();//TextValue.NaN;
 
 
         this.updateValueObjects();
