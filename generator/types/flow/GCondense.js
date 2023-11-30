@@ -1,6 +1,10 @@
 class GCondense
 extends GOperator1
 {
+    cachedValue = null;
+
+
+
     constructor(nodeId, options)
     {
         super(CONDENSE, nodeId, options);
@@ -8,6 +12,15 @@ extends GOperator1
 
 
     
+    reset()
+    {
+        super.reset();
+
+        this.cachedValue = null;
+    }
+
+
+
     copy()
     {
         const copy = new GCondense(this.nodeId, this.options);
@@ -23,7 +36,8 @@ extends GOperator1
 
     async eval(parse)
     {
-        if (this.isCached())
+        if (   this.isCached()
+            && this.cachedValue)
             return this;
 
 
@@ -33,16 +47,19 @@ extends GOperator1
         let length = 0;
 
 
-        if (this.input)
+        const input = this.input ? (await this.input.eval(parse)).toValue() : null;
+
+
+        if (this.cachedValue)
+            this.value = this.cachedValue.copy();
+
+        else
         {
-            const input = (await this.input.eval(parse)).toValue();
-
-
-            length = input.items.length;
-               
-                
             if (input)
             {
+                length = input.items.length;
+                
+                    
                 if (   isListType(input.type)
                     && this.options.enabled)
                 {
@@ -62,8 +79,13 @@ extends GOperator1
                     this.value.objects.push(...copy.objects);
                 }
             }
-        }
+            else
+                this.value = new ListValue();
 
+
+            this.cachedValue = this.value.copy();
+        }
+    
 
         this.updateValueObjects();
     

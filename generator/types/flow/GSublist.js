@@ -1,8 +1,8 @@
 class GSublist
 extends GOperator1
 {
-    start = null;
-    end   = null;
+    start       = null;
+    end         = null;
 
     cachedValue = null;
 
@@ -19,8 +19,10 @@ extends GOperator1
     {
         super.reset();
 
-        this.start = null;
-        this.end   = null;
+        this.start       = null;
+        this.end         = null;
+
+        this.cachedValue = null;
     }
 
 

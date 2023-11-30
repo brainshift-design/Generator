@@ -1,10 +1,12 @@
 class GSort
 extends GOperator1
 {
-    order   = null;
-    reverse = null;
+    order         = null;
+    reverse       = null;
 
     firstSortNode = null;
+
+    cachedValue   = null;
 
 
     
@@ -19,8 +21,10 @@ extends GOperator1
     {
         super.reset();
 
-        this.order   = null;
-        this.reverse = null;
+        this.order       = null;
+        this.reverse     = null;
+        
+        this.cachedValue = null;
     }
 
 
@@ -41,7 +45,8 @@ extends GOperator1
 
     async eval(parse)
     {
-        if (this.isCached())
+        if (   this.isCached()
+            && this.cachedValue)
             return this;
 
 
@@ -55,66 +60,75 @@ extends GOperator1
         let maxColumns = 0;
 
         
-        if (   input
-            && this.order
-            && reverse)
+        if (this.cachedValue)
+            this.value = this.cachedValue.copy();
+
+        else
         {
-            const order = this.order ? (await this.order.eval(parse)).toValue() : null;
-
-                
-            if (this.options.enabled)
+            if (   input
+                && this.order
+                && reverse)
             {
-                if (   input 
-                    && this.order
-                    && this.order.getOrderNode)
+                const order = this.order ? (await this.order.eval(parse)).toValue() : null;
+
+                    
+                if (this.options.enabled)
                 {
-                    const orderNode = this.order.getOrderNode(parse);
-
-
-                    if (orderNode)
+                    if (   input 
+                        && this.order
+                        && this.order.getOrderNode)
                     {
-                        const reverseMultiplier = reverse.value > 0 ? -1 : 1;
-                        const unsorted          = [...input.items];
+                        const orderNode = this.order.getOrderNode(parse);
 
 
-                        input.items = await asyncSort(
-                            parse, 
-                            unsorted, 
-                            orderNode, 
-                            this,
-                            this.order, 
-                            reverseMultiplier);
-                        
-
-                        input.items.forEach(i => maxColumns = Math.max(maxColumns, isListType(i.type) ? i.items.length : 1));
-                        
-
-                        for (let i = 0; i < input.items.length; i++)
+                        if (orderNode)
                         {
-                            const row       = input   .items[i];
-                            const itemIndex = unsorted.indexOf(row);
+                            const reverseMultiplier = reverse.value > 0 ? -1 : 1;
+                            const unsorted          = [...input.items];
 
-                            this.value.items.push(row.copy());
 
-                            if (   row.objects
-                                && this.value.objects)
+                            input.items = await asyncSort(
+                                parse, 
+                                unsorted, 
+                                orderNode, 
+                                this,
+                                this.order, 
+                                reverseMultiplier);
+                            
+
+                            input.items.forEach(i => maxColumns = Math.max(maxColumns, isListType(i.type) ? i.items.length : 1));
+                            
+
+                            for (let i = 0; i < input.items.length; i++)
                             {
-                                const objects = input.objects.filter(o => o.itemIndex == itemIndex).map(o => o.copy());
-                                objects.forEach(o => o.itemIndex = i);
+                                const row       = input   .items[i];
+                                const itemIndex = unsorted.indexOf(row);
 
-                                this.value.objects.push(...objects);
+                                this.value.items.push(row.copy());
+
+                                if (   row.objects
+                                    && this.value.objects)
+                                {
+                                    const objects = input.objects.filter(o => o.itemIndex == itemIndex).map(o => o.copy());
+                                    objects.forEach(o => o.itemIndex = i);
+
+                                    this.value.objects.push(...objects);
+                                }
                             }
                         }
                     }
+                    else
+                        this.value = input;
                 }
                 else
                     this.value = input;
             }
             else
-                this.value = input;
+                this.value = new ListValue();
+
+
+            this.cachedValue = this.value.copy();
         }
-        else
-            this.value = new ListValue();
 
 
         this.updateValueObjects();

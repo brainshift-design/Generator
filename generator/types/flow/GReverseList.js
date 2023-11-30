@@ -1,6 +1,10 @@
 class GReverseList
 extends GOperator1
 {
+    cachedValue = null;
+
+
+
     constructor(nodeId, options)
     {
         super(REVERSE_LIST, nodeId, options);
@@ -8,6 +12,15 @@ extends GOperator1
 
 
     
+    reset()
+    {
+        super.reset();
+
+        this.cachedValue = null;
+    }
+
+
+
     copy()
     {
         const copy = new GReverseList(this.nodeId, this.options);
@@ -21,7 +34,8 @@ extends GOperator1
 
     async eval(parse)
     {
-        if (this.isCached())
+        if (   this.isCached()
+            && this.cachedValue)
             return this;
 
 
@@ -31,28 +45,37 @@ extends GOperator1
         this.counts = new ListValue();
 
 
-        if (input)
+        if (this.cachedValue)
+            this.value = this.cachedValue.copy();
+
+        else
         {
-            if (this.options.enabled)
+            if (input)
             {
-                this.value = new ListValue();
-                this.value.objects = [];
-
-                for (let i = input.items.length-1; i >= 0; i--)
-                    this.value.items.push(input.items[i]);//.copy());
-
-                if (input.objects)
+                if (this.options.enabled)
                 {
-                    for (let i = input.objects.length-1; i >= 0; i--)
-                        this.value.objects.push(input.objects[i]);
+                    this.value = new ListValue();
+                    this.value.objects = [];
+
+                    for (let i = input.items.length-1; i >= 0; i--)
+                        this.value.items.push(input.items[i]);//.copy());
+
+                    if (input.objects)
+                    {
+                        for (let i = input.objects.length-1; i >= 0; i--)
+                            this.value.objects.push(input.objects[i]);
+                    }
                 }
+                else
+                    this.value = input;//.copy();
             }
             else
-                this.value = input;//.copy();
-        }
-        else
-            this.value = ListValue.NaN.copy();
+                this.value = ListValue.NaN.copy();
 
+
+            this.cachedValue = this.value.copy();
+        }
+    
 
         this.updateValueObjects();
 

@@ -1,7 +1,9 @@
 class GExtract
 extends GOperator1
 {
-    indices;
+    indices     = null;
+
+    cachedValue = null;
 
 
     
@@ -17,6 +19,8 @@ extends GOperator1
         super.reset();
 
         this.indices = null;
+    
+        this.cachedValue = null;
     }
 
 
@@ -40,6 +44,7 @@ extends GOperator1
             return this;
 
 
+        const input   = this.input   ? (await this.input  .eval(parse)).toValue() : null;
         const indices = this.indices ? (await this.indices.eval(parse)).toValue() : null;
 
 
@@ -48,13 +53,13 @@ extends GOperator1
         let length = 0;
         
 
-        if (   this.input
-            && indices)
-        {
-            const input = (await this.input.eval(parse)).toValue();
+        if (this.cachedValue)
+            this.value = this.cachedValue.copy();
 
-            
+        else
+        {
             if (   input
+                && indices
                 && input.items)
             {
                 length = input.items.length;
@@ -74,9 +79,12 @@ extends GOperator1
                             this.value.objects.push(...item.objects);//input.items[i].objects);
                     }
                 }
-           }
+            }
             else
                 this.value = ListValue.NaN.copy();
+
+
+            this.cachedValue = this.value.copy();
         }
 
 

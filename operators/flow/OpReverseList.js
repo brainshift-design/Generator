@@ -19,6 +19,20 @@ extends OperatorBase
 
 
 
+    isOrPrecededByUncached()
+    {
+        return false;
+    }
+
+
+
+    isOrPrecededByMultiplier()
+    {
+        return false;
+    }
+
+
+
     output_genRequest(gen)
     {
         // 'this' is the output

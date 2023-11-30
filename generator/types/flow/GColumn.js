@@ -1,7 +1,9 @@
 class GColumn
 extends GOperator1
 {
-    index;
+    index       = null;
+
+    cachedValue = null;
 
 
     
@@ -16,7 +18,9 @@ extends GOperator1
     {
         super.reset();
 
-        this.index = null;
+        this.index       = null;
+
+        this.cachedValue = null;
     }
 
 
@@ -36,11 +40,13 @@ extends GOperator1
 
     async eval(parse)
     {
-        if (this.isCached())
+        if (   this.isCached()
+            && this.cachedValue)
             return this;
 
 
-        const index = (await this.index.eval(parse)).toValue();
+        const input = this.input ? (await this.input.eval(parse)).toValue() : null;
+        const index = this.index ? (await this.index.eval(parse)).toValue() : null;
 
         
         this.value = new ListValue();
@@ -48,38 +54,48 @@ extends GOperator1
         let maxColumns = 0;
 
 
-        if (   this.input
-            && index)
+        if (this.cachedValue)
+            this.value = this.cachedValue.copy();
+
+        else
         {
-            const input = (await this.input.eval(parse)).toValue();
-
-            if (isTable(input))
+            if (   input
+                && index)
             {
-                input.items.forEach(i => maxColumns = Math.max(maxColumns, i.items.length));
-
-                if (index.value < maxColumns)
+                if (isTable(input))
                 {
-                    for (let i = 0; i < input.items.length; i++)
+                    input.items.forEach(i => maxColumns = Math.max(maxColumns, i.items.length));
+
+                    if (index.value < maxColumns)
                     {
-                        const row = input.items[i];
-
-                        if (index.value < row.items.length)
+                        for (let i = 0; i < input.items.length; i++)
                         {
-                            this.value.items.push(row.items[index.value].copy());
+                            const row = input.items[i];
 
-                            if (   this.value.objects 
-                                && row.items[index.value].objects)
-                                this.value.objects.push(...row.items[index.value].objects);
+                            if (index.value < row.items.length)
+                            {
+                                this.value.items.push(row.items[index.value].copy());
+
+                                if (   this.value.objects 
+                                    && row.items[index.value].objects)
+                                    this.value.objects.push(...row.items[index.value].objects);
+                            }
                         }
                     }
                 }
+                else if (isListType(input.type))
+                {
+                    this.value = input.copy();
+                    maxColumns = 1;
+                }
             }
-            else if (isListType(input.type))
-            {
-                this.value = input.copy();
-                maxColumns = 1;
-            }
+
+
+            this.cachedValue = this.value.copy();
         }
+
+
+        this.updateValueObjects();
 
 
         this.setUpdateValues(parse,

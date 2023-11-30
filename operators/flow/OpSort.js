@@ -4,7 +4,6 @@ extends OperatorBase
     paramOrder;
     paramReverse;
 
-    //length;
 
     menuBoolReverse;
 
@@ -33,6 +32,20 @@ extends OperatorBase
         this.paramOrder.valueText = 'order';
 
         this.menuBoolReverse = createBoolMenu(this.paramReverse);
+    }
+
+
+
+    isOrPrecededByUncached()
+    {
+        return false;
+    }
+
+
+
+    isOrPrecededByMultiplier()
+    {
+        return false;
     }
 
 

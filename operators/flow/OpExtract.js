@@ -3,6 +3,7 @@ extends OperatorBase
 {
     paramIndices;
 
+
     length;
 
     _connected = false;
@@ -26,6 +27,20 @@ extends OperatorBase
         this.paramIndices.itemName = ['index', 'indices'];
 
         this.inputs[0].addEventListener('disconnect', () => OpExtract_onDisconnectInput(this));
+    }
+
+
+
+    isOrPrecededByUncached()
+    {
+        return false;
+    }
+
+
+
+    isOrPrecededByMultiplier()
+    {
+        return false;
     }
 
 

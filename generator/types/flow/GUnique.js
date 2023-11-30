@@ -1,8 +1,8 @@
 class GUnique
 extends GOperator1
 {
-    counts  = null;
-    indices = null;
+    counts      = null;
+    indices     = null;
 
     cachedValue = null;
 
@@ -19,8 +19,10 @@ extends GOperator1
     {
         super.reset();
 
-        this.counts  = null;
-        this.indices = null;
+        this.counts      = null;
+        this.indices     = null;
+        
+        this.cachedValue = null;
     }
 
 
@@ -38,7 +40,8 @@ extends GOperator1
 
     async eval(parse)
     {
-        if (this.isCached())
+        if (   this.isCached()
+            && this.cachedValue)
             return this;
 
 
