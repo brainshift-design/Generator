@@ -135,7 +135,7 @@ class MenuItem
             this.div.appendChild(this.divName     );
             this.div.appendChild(this.divExpand   );
             this.div.appendChild(this.divShortcut );
-            this.div.appendChild(this.divPro);
+            this.div.appendChild(this.divPro      );
         }
         else
             this.div.appendChild(this.divSeparator);

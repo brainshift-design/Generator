@@ -33,6 +33,9 @@ extends GOperator1
 
         copy.copyBase(this);
 
+        if (this.counts ) copy.counts  = this.counts .copy();
+        if (this.indices) copy.indices = this.indices.copy();
+
         return copy;
     }
 
@@ -76,7 +79,7 @@ extends GOperator1
                                 && item.objects)
                                 this.value.objects.push(...item.objects);
 
-                            this.counts.items.push(new NumberValue(1));
+                            this.counts .items.push(new NumberValue(1));
                             this.indices.items.push(new ListValue([new NumberValue(i)]));
                         }
                         else
@@ -90,7 +93,7 @@ extends GOperator1
                     this.value = input.copy();
             }
             else
-                this.value = new ListValue();//TextValue.NaN;
+                this.value = new ListValue();
 
 
             this.cachedValue = this.value.copy();
@@ -115,9 +118,40 @@ extends GOperator1
 
 
 
-    isValid()
-    {
-        return super.isValid()
-            && this.counts && this.counts.isValid();
-    }
+    // isValid()
+    // {
+    //     return super.isValid()
+    //         && this.counts  && this.counts .isValid()
+    //         && this.indices && this.indices.isValid();
+    // }
+
+
+
+    // pushValueUpdates(parse)
+    // {
+    //     super.pushValueUpdates(parse);
+
+    //     if (this.counts ) this.counts .pushValueUpdates(parse);
+    //     if (this.indices) this.indices.pushValueUpdates(parse);
+    // }
+
+
+
+    // invalidateInputs(parse, from, force)
+    // {
+    //     super.invalidateInputs(parse, from, force);
+
+    //     if (this.counts ) this.counts .invalidateInputs(parse, from, force);
+    //     if (this.indices) this.indices.invalidateInputs(parse, from, force);
+    // }
+
+
+
+    // iterateLoop(parse)
+    // {
+    //     super.iterateLoop(parse);
+
+    //     if (this.counts ) this.counts .iterateLoop(parse);
+    //     if (this.indices) this.indices.iterateLoop(parse);
+    // }
 }
