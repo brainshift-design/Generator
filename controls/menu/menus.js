@@ -308,13 +308,14 @@ function initGeneratorMenus()
         menuItemShowClearUndoWarning       = new MenuItem('Show clear undo warning',            null, {checkCallback: () => settings.showClearUndoWarning,       callback: () => { updateSettingAndMenu('showClearUndoWarning',       true, !settings.showClearUndoWarning);                                                   }}),
         menuItemShowObjectCount            = new MenuItem('Show object count',                  null, {checkCallback: () => settings.showObjectCount,            callback: () => { updateSettingAndMenu('showObjectCount',            true, !settings.showObjectCount);            updateObjectCountDisplay();                 }}),
         menuItemShowDebugMenu              = new MenuItem('Show debug menu',                    null, {checkCallback: () => settings.showDebugMenu,              callback: () => { uiGetLocalData('debugWarning'); }}),
+                                             new MenuItem('',                     null, {separator: true}),
+        menuItemShareUsageMetrics          = new MenuItem('Share anonymous metrics',           null, {checkCallback: () => settings.shareUsageMetrics,      callback: () => { updateSettingAndMenu('shareUsageMetrics',      true, !settings.shareUsageMetrics);                                              }}),
                                              new MenuItem('',                                   null, {separator: true}),    
         menuItemMinZoomForParams           = new MenuItem('Zoom level for values . . .',        null, {callback: () => showMinZoomDialog()}),
         //menuPrefSep2                       = new MenuItem('',                                   null, {separator: true}),    
         // menuItemEnableMultiplayer       = new MenuItem('Enable multiplayer on this canvas',  null, {checkCallback: () => multiplayerEnabled,                  callback: () => { updateSettingAndMenu('showPages',                  true, !settings.showPages);                  enableMultiplayer(!multiplayerEnabled);     }}),
         //                                   new MenuItem('',                                   null, {separator: true}),    
         // menuItemEnableBetaFeatures      = new MenuItem('Enable beta features',               null, {checkCallback: () => settings.enableBetaFeatures,         callback: () => { updateSettingAndMenu('enableBetaFeatures',         true, !settings.enableBetaFeatures);         enableFeatures(true, settings.enableBetaFeatures); }}),
-                                             new MenuItem('',                                   null, {separator: true}),    
         menuItemObjectBatchSize            = new MenuItem('Update batch size . . .',            null, {callback: () => showObjectBatchDialog()})]);
         
 
@@ -422,15 +423,12 @@ function initGeneratorMenus()
 
     menuMainHelp = new Menu('Help and subscription', false);
     menuMainHelp.addItems([
-                                  new MenuItem('Tutorials & examples', null, {callback: () => showPresets()}),
-                                  new MenuItem('Youtube . . .',        null, {callback: () => window.open('https://www.youtube.com/playlist?list=PLXbRBjG6htkQE-1_gJ4XtgW5KP7mPzYcV', '_blank')}),
-                                  new MenuItem('',                     null, {separator: true}),
                                   new MenuItem('Keyboard shortcuts',   null, {shortcut: osCtrlShift() + '?', callback: () => showKeyboardPanel()}),
+                                  new MenuItem('Tutorials & examples', null, {callback: () => showPresets()}),
+                                  new MenuItem('Video tutorials',        null, {callback: () => window.open('https://www.youtube.com/playlist?list=PLXbRBjG6htkQE-1_gJ4XtgW5KP7mPzYcV', '_blank')}),
                                   // new MenuItem('Help page',         null, {callback:  () => window.open('http://www.bourt.com/generator/help', '_blank')}),
                                   new MenuItem('',                     null, {separator: true}),
                                   new MenuItem('Subscription',         null, {callback:  () => showSubscriptionDialog(false)}),
-                                  new MenuItem('',                     null, {separator: true}),
-      menuItemShareUsageMetrics = new MenuItem('Share anonymous metrics',           null, {checkCallback: () => settings.shareUsageMetrics,      callback: () => { updateSettingAndMenu('shareUsageMetrics',      true, !settings.shareUsageMetrics);                                              }}),
                                   new MenuItem('About',                null, {callback:  () => showAboutDialog()})]);
 
 
