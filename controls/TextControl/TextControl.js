@@ -35,7 +35,7 @@ extends Control
 
     constructor(param, id, name, defaultValue = '')
     {
-        const textBehind = createDiv('textControlHighlight');
+        const textBehind = createDiv     ('textControlHighlight');
         const textbox    = createTextarea('textControlTextarea');
 
 
@@ -144,12 +144,12 @@ extends Control
 
         const style = getComputedStyle(this.textbox);
 
-        this.textBehind.style.fontFamily   = style.fontFamily;
-        this.textBehind.style.fontSize     = style.fontSize;
-        this.textBehind.style.lineHeight   = style.lineHeight;
-        this.textBehind.style.textAlign    = style.textAlign;
+        this.textBehind.style.fontFamily   =  style.fontFamily;
+        this.textBehind.style.fontSize     =  style.fontSize;
+        this.textBehind.style.lineHeight   =  style.lineHeight;
+        this.textBehind.style.textAlign    =  style.textAlign;
         this.textBehind.style.height       = 'calc(' + style.height + ' - 0.6em)';
-        this.textBehind.style.display      = this.highlightText ? 'display-block' : 'none';
+        this.textBehind.style.display      =  this.highlightText ? 'display-block' : 'none';
     }
 
 
@@ -177,7 +177,7 @@ extends Control
 
 
         this.textbox.style.height        = '100%';
-        this.textbox.style.pointerEvents = this.readOnly ? 'none' : 'all';
+        this.textbox.style.pointerEvents =  this.readOnly ? 'none' : 'all';
 
 
         if (this.param.showName)

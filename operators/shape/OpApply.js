@@ -21,8 +21,8 @@ extends OperatorBase//Shape
         
         
         this.addBaseParams();
-        this.addParam(this.paramProps = new ListParam('props', 'styles', false, true, true));
-        this.addParam(this.paramReplace = new NumberParam('replace', 'replace', true, true, true, 0, 0, 1));
+        this.addParam(this.paramProps   = new ListParam  ('props',   'styles',  false, true, true));
+        this.addParam(this.paramReplace = new NumberParam('replace', 'replace', true,  true, true, 0, 0, 1));
 
         
         this.paramProps.controls[0].valueText = 'style';
@@ -78,7 +78,7 @@ extends OperatorBase//Shape
     {
         super.updateValues(requestId, actionId, updateParamId, paramIds, values);
 
-        const type  = values[paramIds.findIndex(id => id == 'type')];
+        const type = values[paramIds.findIndex(id => id == 'type')];
         if (type) this.outputs[0].types = [type.value];
     }
 

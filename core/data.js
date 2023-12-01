@@ -5,39 +5,39 @@ function rgbFromType(type, active)
 
 
 
-function rgbFromTypeMode(type, active, mode)
+function rgbFromTypeMode(type, active, darkMode)
 {
     if (NUMBER_TYPES.includes(type))
         return active 
-            ? (mode ? rgbActiveNumberDark : rgbActiveNumberLight)
-            : (mode ? rgbNumberDark       : rgbNumberLight      );
+            ? (darkMode ? rgbActiveNumberDark : rgbActiveNumberLight)
+            : (darkMode ? rgbNumberDark       : rgbNumberLight      );
 
     else if (TEXT_TYPES.includes(type))
         return active 
-            ? (mode ? rgbActiveTextDark   : rgbActiveTextLight)
-            : (mode ? rgbTextDark         : rgbTextLight      );
+            ? (darkMode ? rgbActiveTextDark   : rgbActiveTextLight)
+            : (darkMode ? rgbTextDark         : rgbTextLight      );
 
     else if (SHAPE_TYPES.includes(type)
          || EFFECT_TYPES.includes(type))
         return active 
-            ? (mode ? rgbActiveShapeDark  : rgbActiveShapeLight)
-            : (mode ? rgbShapeDark        : rgbShapeLight      );
+            ? (darkMode ? rgbActiveShapeDark  : rgbActiveShapeLight)
+            : (darkMode ? rgbShapeDark        : rgbShapeLight      );
 
     else if (GROUP_TYPES.includes(type))
         return active 
-            ? (mode ? rgbActiveGroupDark  : rgbActiveGroupLight)
-            : (mode ? rgbGroupDark        : rgbGroupLight      );
+            ? (darkMode ? rgbActiveGroupDark  : rgbActiveGroupLight)
+            : (darkMode ? rgbGroupDark        : rgbGroupLight      );
 
     else if (FLOW_TYPES.includes(type)
           || type == ANY_VALUE)
         return active 
-            ? (mode ? rgbActiveFlowDark   : rgbActiveFlowLight)
-            : (mode ? rgbFlowDark         : rgbFlowLight      );
+            ? (darkMode ? rgbActiveFlowDark   : rgbActiveFlowLight)
+            : (darkMode ? rgbFlowDark         : rgbFlowLight      );
 
     else if (type == COLOR_STYLE)
         return active 
-            ? (mode ? rgbActiveFlowDark   : rgbActiveFlowLight)
-            : (mode ? rgbFlowDark         : rgbFlowLight      );
+            ? (darkMode ? rgbActiveFlowDark   : rgbActiveFlowLight)
+            : (darkMode ? rgbFlowDark         : rgbFlowLight      );
 
 
     switch (type)
@@ -58,18 +58,18 @@ function rgbFromTypeMode(type, active, mode)
         case COLOR_STOP:
         case GRADIENT:
 
-            return mode 
+            return darkMode 
                  ? rgbFlowDark         
                  : rgbFlowLight;
 
             // return active 
-            //     ? (mode ? rgbActiveFlowDark   : rgbActiveFlowLight)
-            //     : (mode ? rgbFlowDark         : rgbFlowLight      );
+            //     ? (mode ? rgbActiveFlowDark : rgbActiveFlowLight)
+            //     : (mode ? rgbFlowDark       : rgbFlowLight      );
     }
 
     
     // return [0xff, 0, 0xff];
-    return mode 
+    return darkMode 
          ? rgbFlowDark         
          : rgbFlowLight;
 }

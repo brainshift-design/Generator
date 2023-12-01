@@ -1,3 +1,12 @@
+function rgbLightenHsv(rgb, amount)
+{
+    const hsv = rgb2hsv(rgb);
+    hsv[2] *= amount;
+    return hsv2rgb(hsv);
+}
+
+
+
 function rgbSaturateHsv(rgb, amount)
 {
     const hsv = rgb2hsv(rgb);

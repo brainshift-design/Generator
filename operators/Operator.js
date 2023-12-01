@@ -1100,8 +1100,8 @@ class Operator
 
         const rgbaText   = isDark(rgbaBack) ? [1, 1, 1, 1] : [0, 0, 0, 1]; 
 
-        const colInput   = this.active ? rgb_a(rgbaText, 0.4 ) : rgb_a(rgbSaturateHsv(rgbFromType(this.type, true), 0.5), 0.8);
-        const colOutput  = this.active ? rgb_a(rgbaText, 0.35) : rgb_a(rgbSaturateHsv(rgbFromType(this.type, true), 0.5), 0.7);
+        const colInput   = this.active ? rgb_a(rgbaText, 0.4 ) : rgb_a(rgbLightenHsv(rgbSaturateHsv(rgbFromType(this.type, true), TEXT_TYPES.includes(this.type) ? 1   : 0.5), 0.9), 1  );
+        const colOutput  = this.active ? rgb_a(rgbaText, 0.35) : rgb_a(rgbLightenHsv(rgbSaturateHsv(rgbFromType(this.type, true), TEXT_TYPES.includes(this.type) ? 0.9 : 0.5), 0.9), 0.9);
         
         const colWire    = rgbFromType(this.type, true);
 
