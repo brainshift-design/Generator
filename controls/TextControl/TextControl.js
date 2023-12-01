@@ -129,6 +129,15 @@ extends Control
         let highlight = '';
 
 
+        const lb = 30;
+        const tf = (Math.min(Math.max(1, this.textbox.value.length), lb) - 1) / (lb - 1);
+
+        const textBehindBack =
+            darkMode
+            ? '#fff1'
+            : rgba2style([0, 0, 0, 0.07 - tf * 0.03]);
+
+
         for (let i = 0; i < lines.length; i++)
         {
             // lines[i] = lines[i].replaceAll(' ', ' ');
@@ -136,7 +145,7 @@ extends Control
             if (i > 0)
                 highlight += '<br>';
 
-            highlight += '<span class="textBehind">' + lines[i] + '</span>';
+            highlight += '<span class="textBehind" style="background-color: ' + textBehindBack + '">' + lines[i] + '</span>';
         }
 
         this.textBehind.innerHTML = highlight;

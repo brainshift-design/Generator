@@ -15,15 +15,15 @@
     word-break:    break-word;
 }
 
-.figma-light .textBehind
+/* .figma-light .textBehind
 {
-    background-color: #0000000d;
+    background-color: #0001;
 }
 
 .figma-dark .textBehind
 {
     background-color: #fff1;
-}
+} */
 
 
 .textControlHighlight
