@@ -27,7 +27,7 @@
                    translateY(-50%);
 
     width:         370px;
-    height:        235px;
+    height:        234px;
     
     color:         var(--figma-color-text);
     background:    var(--figma-color-bg);
@@ -208,7 +208,7 @@
     position:      absolute;
     left:          50%;
     transform:     translateX(-50%);
-    top:           74px;
+    top:           58px;
     width:         260px;
     padding:       13px 6px 13px 6px;
     box-shadow:    0 1px 0 0 var(--figma-color-bg-tertiary);
@@ -218,6 +218,12 @@
 {
     box-shadow:    0 0 0 1px var(--figma-color-bg-tertiary);
 }
+
+#subEmail:focus
+{
+    box-shadow:    0 0 0 2px var(--figma-color-bg-brand);
+}
+
 
 #licenseInfo
 {
@@ -230,7 +236,7 @@
     position:      absolute;
     left:          50%;
     transform:     translateX(-50%);
-    top:           107px;
+    top:           89px;
     width:         260px;
     padding:       13px 6px 13px 6px;
     box-shadow:    0 1px 0 0 var(--figma-color-bg-tertiary);
@@ -239,6 +245,11 @@
 #subLicenseKey:hover
 {
     box-shadow:    0 0 0 1px var(--figma-color-bg-tertiary);
+}
+
+#subLicenseKey:focus
+{
+    box-shadow:    0 0 0 2px var(--figma-color-bg-brand);
 }
 
 
@@ -251,14 +262,15 @@
     left:           50%;
     transform:      translateX(-50%);
 
-    top:            160px;
+    top:            139px;
 }
 
-#validateProductKeyButton:focus
+#validateProductKeyButton:active, #validateProductKeyButton:focus-visible
 {
-    border: none;
-    outline: none;
+    border:     none;
+    outline:    none;
     box-shadow: 0 0 0 2px var(--figma-color-bg-brand) inset;
+    background: var(--figma-color-bg-hover);
 }
 
 
@@ -273,7 +285,7 @@
     position:       absolute;
     left:           50%;
     transform:      translateX(-50%);
-    top:            185px;
+    top:            180px;
 
     color:          var(--figma-color-bg-disabled);
 }

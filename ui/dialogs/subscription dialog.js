@@ -147,7 +147,7 @@ function showSubscriptionDialog(activate, showBack = true)
     dialogShown             = true;
     subscriptionDialogShown = true;
 
-    subscribeWebsite.style.display = activate || !subscriptionActive || subscribed() ? 'none' : 'block';
+    subscribeWebsite.style.display = 'block';//activate || !subscriptionActive || subscribed() ? 'none' : 'block';
 }
 
 

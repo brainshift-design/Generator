@@ -99,7 +99,7 @@ class MenuItem
         this.divName      = createDiv('menuItemName'     );
         this.divExpand    = createDiv('menuItemExpand'   );
         this.divShortcut  = createDiv('menuItemShortcut' );
-        this.divPro = createDiv('menuItemSubscribe');
+        this.divPro       = createDiv('menuItemSubscribe');
 
         this.divSeparator = createDiv('menuSeparator'    );
 
@@ -118,7 +118,7 @@ class MenuItem
 
     
         this.divShortcut .innerHTML = this.shortcut;
-        this.divPro.innerHTML = 'PRO';
+        this.divPro.innerHTML = 'Pro';
 
     
         this.divHighlight.style.zIndex = -2;
@@ -388,8 +388,11 @@ class MenuItem
         if (!isNaN(x)) e.clientX = x;
         if (!isNaN(y)) e.clientY = y;
 
-        if (this.callback)
+        if (   this.callback
+            && this.sub)
             this.callback(e);
+        else
+            showSubscriptionDialog(false);
 
 
         addMetricsEvent(METRICS_MENU_ITEM, this.name);
@@ -436,11 +439,15 @@ class MenuItem
             ? 'inline-block' 
             : 'none';
 
-        this.divCheck   .style.visibility = this.checked ? 'visible'      : 'hidden';
-        this.div        .style.opacity    = this.enabled ? '100%'         : '40%';
+        this.divCheck   .style.visibility      = this.checked ? 'visible'      : 'hidden';
+        this.div        .style.opacity         = this.enabled ? '100%'         : '40%';
 
-        this.divShortcut.style.display    = this.sub     ? 'inline-block' : 'none';
-        this.divPro     .style.display    = this.sub     ? 'none'         : 'inline-block';
+        this.divShortcut.style.display         = this.sub     ? 'inline-block' : 'none';
+        this.divPro     .style.display         = this.sub     ? 'none'         : 'inline-block';
+
+        this.divPro     .style.backgroundColor = this.mouseOver ? 'var(--figma-color-bg-brand)' : '#1e1e1e'; 
+        this.divPro     .style.color           = this.mouseOver ? '#0008' : '#09f8'; 
+        this.divPro     .style.boxShadow       = this.mouseOver ? '0 0 0 1px #0008 inset' : '0 0 0 1px #09f8 inset'; 
 
         this.updateLegend();
     }

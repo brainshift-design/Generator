@@ -345,20 +345,20 @@ function updateMenuItemShowOperationResults()
 function enableFeatures(sub, beta = false)
 {
     //enableMenuItem(menuItemVarGroup,    sub,  sub);
-    enableMenuItem(menuItemTimer,        sub, sub);
-    enableMenuItem(menuItemAnimate,      sub, sub);
-    enableMenuItem(menuItemSaveToFile,   sub, sub);
-    enableMenuItem(menuItemFetch,        sub, sub);
-    enableMenuItem(menuItemTextFile,     sub, sub);
-    enableMenuItem(menuItemIndexToName,  sub, sub);
-    enableMenuItem(menuItemDateTime,     sub, sub);
-    enableMenuItem(menuItemSolve,        sub, sub);
-    enableMenuItem(menuItemTextJson,     sub, sub);
-    enableMenuItem(menuItemValidColor,   sub, sub);
-    enableMenuItem(menuItemCorrectColor, sub, sub);
-    enableMenuItem(menuItemConvertToP3,  sub, sub);
-    enableMenuItem(menuItemColorblind,   sub, sub);
-    enableMenuItem(menuItemShapeRender,  sub, sub);
+    enableMenuItem(menuItemTimer,        true, sub);
+    enableMenuItem(menuItemAnimate,      true, sub);
+    enableMenuItem(menuItemSaveToFile,   true, sub);
+    enableMenuItem(menuItemFetch,        true, sub);
+    enableMenuItem(menuItemTextFile,     true, sub);
+    enableMenuItem(menuItemIndexToName,  true, sub);
+    enableMenuItem(menuItemDateTime,     true, sub);
+    enableMenuItem(menuItemSolve,        true, sub);
+    enableMenuItem(menuItemTextJson,     true, sub);
+    enableMenuItem(menuItemValidColor,   true, sub);
+    enableMenuItem(menuItemCorrectColor, true, sub);
+    enableMenuItem(menuItemConvertToP3,  true, sub);
+    enableMenuItem(menuItemColorblind,   true, sub);
+    enableMenuItem(menuItemShapeRender,  true, sub);
 
     graph.nodes.forEach(n => n.updateSubscribeStatus(sub));
 }
