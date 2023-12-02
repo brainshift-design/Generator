@@ -109,33 +109,3 @@ function updateMetrics()
         consoleError(error);
     });
 }
-
-
-
-function hashUserId(userId, rounds = 10, salt = '')
-{
-    const saltBuffer = new Uint8Array(16);
-    
-    crypto.getRandomValues(saltBuffer);
-
-    if (salt == '')
-    {
-        salt = Array.from(saltBuffer)
-            .map(byte => ('0' + (byte & 0xFF).toString(16)).slice(-2))
-            .join('');
-    }
-    
-
-    const encoder = new TextEncoder();
-    const data    = encoder.encode(userId + salt);
-  
-    let hash = sha256(data);
-  
-    for (let i = 0; i < rounds - 1; i++)
-        hash = sha256(hash);
-
- 
-    return { 
-        hash: hash.slice(0, 16), 
-        salt };
-}

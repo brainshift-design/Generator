@@ -4,7 +4,6 @@
 ../core/math.js
 ../core/geometry.js
 ../core/bezier.js
-../core/bigmath.js
 ../core/Point.js
 ../core/Rect.js
 ../core/random.js

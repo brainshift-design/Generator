@@ -53,8 +53,6 @@
 
     ../core/base32.js
     
-    ../license/*.js
-
     [../autojoin/types.aj]
 
     ../ui/settings.js
