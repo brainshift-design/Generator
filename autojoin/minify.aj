@@ -3050,7 +3050,7 @@ updateDisabled
 updateSubscribe
 visibleParams
 highlightScale
-updateHeaderInputsAndOutputs
+updateHeaderInputsAnsetRectdOutputs
 updateParamControls
 _width
 _height
@@ -3078,14 +3078,6 @@ createParamFromType
 updateValues
 windowBorderWidth
 sizeBorderWidth
-sizerL
-sizerR
-sizerT
-sizerB
-sizerTL
-sizerTR
-sizerBL
-sizerBR
 defWidth
 defHeaderHeight
 initSizers

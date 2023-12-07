@@ -160,7 +160,7 @@ function getReplaceValue(input, _what, _with, _regex)
 
             value.value = input.value.replace(
                 regex,
-                _with.value);
+                () => unescapeString(_with.value));
         }
         catch (e)
         {
