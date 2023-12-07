@@ -139,7 +139,7 @@ function initMenuSelect(select)
         select.menu.focus();
 
         document.menuHadFocus = true;
-    }        
+    };
     
 
 

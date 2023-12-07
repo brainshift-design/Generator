@@ -38,7 +38,7 @@ extends GOperator
     {
         if (this.isCached())
             return this;
-``
+
 
         const maskType = (await this.maskType.eval(parse)).toValue();
 

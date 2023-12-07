@@ -25,9 +25,9 @@ const METRICS_ERROR       = 'ERROR';
 
 
 
-function createMetricsEvent(type, data = '')
+function createMetricsEvent(_event, data = '')
 {
-    // console.log('type =', type);
+    // console.log('event =', event);
     // console.log('data =', data);
     
     const event =
@@ -36,7 +36,7 @@ function createMetricsEvent(type, data = '')
         sessionId: sessionId,
         version:   generatorVersion,
         dateTime:  new Date(),
-        type:      type,
+        event:     _event,
         data:      data
     };
 
@@ -45,9 +45,9 @@ function createMetricsEvent(type, data = '')
 
 
 
-function addMetricsEvent(type, data, atStart = false)
+function addMetricsEvent(_event, data, atStart = false)
 {
-    const event = createMetricsEvent(type, data);
+    const event = createMetricsEvent(_event, data);
 
     if (atStart) metricsEvents.unshift(event);
     else         metricsEvents.push   (event);

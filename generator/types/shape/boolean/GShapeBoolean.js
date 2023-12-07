@@ -3,7 +3,7 @@ extends GShapeBase
 {
     input     = null;
 
-    operation = null
+    operation = null;
     children  = null;
 
 

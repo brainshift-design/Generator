@@ -68,7 +68,7 @@ function setObjectTransform(figObj, genObj, setSize = true, noHeight = 0.01)
     const xp2 = genObj[FO_XP2];
 
     
-    applyFigmaTransform(figObj, xp0, xp1, xp2)
+    applyFigmaTransform(figObj, xp0, xp1, xp2);
     
 
     if (setSize)
@@ -79,7 +79,7 @@ function setObjectTransform(figObj, genObj, setSize = true, noHeight = 0.01)
         const height =
             genObj[FO_TYPE] == TEXT_SHAPE
             ? genObj[FO_FIG_HEIGHT]
-            : genObj[FO_HEIGHT]
+            : genObj[FO_HEIGHT];
     
         if (!figObj.removed)
         {

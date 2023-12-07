@@ -203,7 +203,7 @@ function getSimpleMathValue(input, operand, op, invert, enabled)
         }
 
 
-        consoleError('invalid math operation')
+        consoleError('invalid math operation');
         return input;
     }
     else

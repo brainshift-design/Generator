@@ -73,7 +73,7 @@ extends OperatorBase
         this.headerCircle.addEventListener('pointerdown',  e => 
         { 
             e.stopPropagation();
-``
+
             if (e.button == 0)
             {
                 hideAllMenus();

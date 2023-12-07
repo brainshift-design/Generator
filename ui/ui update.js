@@ -141,7 +141,7 @@ function uiUpdateValuesAndObjects(requestId, actionId, updateNodeId, updateParam
 
 
     if (graphView.loadingNodes)
-        setLoadingProgress((0.7 + 0.3 * updatedNodes / totalNodes) / 0.7)
+        setLoadingProgress((0.7 + 0.3 * updatedNodes / totalNodes) / 0.7);
 
         
     if (isLastChunk)

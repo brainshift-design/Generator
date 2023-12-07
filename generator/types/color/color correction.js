@@ -377,7 +377,7 @@ function getMinCorrections(space, order)
     switch (space)
     {
         case 'hex':
-        case 'rgb':    min = [0, 0, 0]; break
+        case 'rgb':    min = [0, 0, 0]; break;
 
         case 'hsv': 
         case 'hsl':    min = [0, 0, 0]; break;

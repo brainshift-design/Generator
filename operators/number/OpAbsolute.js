@@ -82,7 +82,7 @@ extends OperatorWithValue
         
         js += gen.NL + 'return ';
         js += conn ? 'Math.abs(input)' : this.toJsCode();
-        js += ';'
+        js += ';';
 
 
         gen.nTab--;

@@ -120,8 +120,8 @@ class GraphView
         this.scrollbarY              = createDiv('scrollbar', 'scrollbarY');
 
 
-        this.scrollbarX.style.zIndex = MAX_INT32-1;
-        this.scrollbarY.style.zIndex = MAX_INT32-2;
+        this.scrollbarX.style.zIndex = MAX_INT32 - 1;
+        this.scrollbarY.style.zIndex = MAX_INT32 - 2;
 
         this.scrollbarX.moving       = false;
         this.scrollbarY.moving       = false;
@@ -329,7 +329,7 @@ class GraphView
         for (const n of graph.pageNodes)
             n.div.style.zIndex = Math.max(0, Number(n.div.style.zIndex) - topIndices);
             
-        node.div.style.zIndex = MAX_INT32-3; // -3 is for scrollbars;
+        node.div.style.zIndex = MAX_INT32 - 3; // -3 is for scrollbars;
 
         this.putWiresOnTop(node);
     }

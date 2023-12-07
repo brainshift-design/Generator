@@ -21,7 +21,7 @@ function showDeleteConnectionsDialog()
     updateDeleteConnectionsInputBack();
 
 
-    window.setTimeout(() => document.getElementById('deleteConnectionsInput').focus(), 0);
+    window.setTimeout(() => document.getElementById("deleteConnectionsInput").focus(), 0);
 }
 
 

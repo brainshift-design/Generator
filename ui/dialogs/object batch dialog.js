@@ -19,7 +19,7 @@ function showObjectBatchDialog()
     objectBatchInput.value = numToString(settings.objectBatchSize);
     objectBatchInput.select();
 
-    window.setTimeout(() => document.getElementById('objectBatchInput').focus(), 0);
+    window.setTimeout(() => document.getElementById("objectBatchInput").focus(), 0);
 }
 
 

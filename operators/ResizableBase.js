@@ -179,7 +179,7 @@ extends OperatorBase
             sizer.startRect.y, 
             sizer.startRect.w + dx, 
             sizer.startRect.h);
-    }
+    };
 
 
 
@@ -201,7 +201,7 @@ extends OperatorBase
             sizer.startRect.y, 
             sizer.startRect.w, 
             sizer.startRect.h + dy);
-    }
+    };
 
 
 
@@ -223,7 +223,7 @@ extends OperatorBase
             sizer.startRect.y + dy, 
             sizer.startRect.w + dx, 
             sizer.startRect.h - dy);
-    }
+    };
 
 
 
@@ -245,7 +245,7 @@ extends OperatorBase
             sizer.startRect.y, 
             sizer.startRect.w + dx, 
             sizer.startRect.h + dy);
-    }
+    };
 
 
     // setSize(w, h, updateTransform = true)

@@ -181,7 +181,7 @@ function validateInit(eulaAgreed)
         })
         .catch(error =>
         {
-            uiError('Error while checking for subscription.')
+            uiError('Error while checking for subscription.');
             finalizeInit(eulaAgreed);
         });
     }

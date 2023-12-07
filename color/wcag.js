@@ -19,7 +19,7 @@ function getContrastRating2(ratio)
 {
          if (ratio >= 7  ) return 'AAA';
     else if (ratio >= 4.5) return 'AA';
-    else if (ratio >= 3  ) return 'AA<sub>L</sub>'
+    else if (ratio >= 3  ) return 'AA<sub>L</sub>';
     else                   return '';
 }
 

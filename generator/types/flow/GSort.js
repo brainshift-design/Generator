@@ -50,7 +50,7 @@ extends GOperator1
             return this;
 
 
-        const input   = this.input ? (await this.input.eval(parse)).toValue() : null;
+        const input   = this.input   ? (await this.input  .eval(parse)).toValue() : null;
         const reverse = this.reverse ? (await this.reverse.eval(parse)).toValue() : null;
 
 
@@ -222,6 +222,6 @@ async function getSortCriterion(parse, orderNode, node, order, item)
     orderNode.input = item.copy();
     order.invalidateInputs(parse, node, true); 
 
-    console.log('order =', order);
+    //console.log('order =', order);
     return (await order.eval(parse)).toValue().value;
 }

@@ -75,7 +75,7 @@ Operator.prototype.createNode = function()
 
     this.div.appendChild(this.proCover);
     this.div.appendChild(this.proLabel);
-}     
+};     
 
 
 
@@ -558,7 +558,7 @@ Operator.prototype.setPosition = function(x, y, updateTransform = true)
 
     if (updateTransform)
         graphView.updateNodeTransforms([this]);
-}
+};
 
 
 

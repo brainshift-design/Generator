@@ -1,164 +1,164 @@
-<div id='presets'>
+<div id="presets">
 
-    <div id='presetTabsHolder'>
-        <div id='presetTabs'>
-            <div class='presetTab' onclick="setCurrentPresetTab(0);">Basics</div>
-            <div class='presetTab' onclick="setCurrentPresetTab(1);">Lists & data</div>
-            <div class='presetTab' onclick="setCurrentPresetTab(2);">Sets...</div>
-            <div class='presetTab' onclick="setCurrentPresetTab(3);">Loops</div>
-            <div class='presetTab' onclick="setCurrentPresetTab(4);">Shapes</div>
-            <div class='presetTab' onclick="setCurrentPresetTab(5);">Colors</div>
-            <div class='presetTab' onclick="setCurrentPresetTab(6);">Numbers & Text</div>
-            <div class='presetTab' onclick="setCurrentPresetTab(7);">Examples</div>
+    <div id="presetTabsHolder">
+        <div id="presetTabs">
+            <div class="presetTab" onclick="setCurrentPresetTab(0);">Basics</div>
+            <div class="presetTab" onclick="setCurrentPresetTab(1);">Lists & data</div>
+            <div class="presetTab" onclick="setCurrentPresetTab(2);">Sets...</div>
+            <div class="presetTab" onclick="setCurrentPresetTab(3);">Loops</div>
+            <div class="presetTab" onclick="setCurrentPresetTab(4);">Shapes</div>
+            <div class="presetTab" onclick="setCurrentPresetTab(5);">Colors</div>
+            <div class="presetTab" onclick="setCurrentPresetTab(6);">Numbers & Text</div>
+            <div class="presetTab" onclick="setCurrentPresetTab(7);">Examples</div>
         </div>
-        <div id='presetClose' onclick="hidePresets();"></div>
+        <div id="presetClose" onclick="hidePresets();"></div>
     </div>
     
-    <div id='presetContent'>
+    <div id="presetContent">
 
 
-        <div class='presetPage' id='presetPageBasics'>
-            <div class='presetGroup'>
-                <div class='preset' onclick="loadPresetGraph('basics');">Node basics</div>
-                <div class='preset' onclick="loadPresetGraph('dataTypes');">Data types</div>
-                <div class='preset' onclick="loadPresetGraph('organize');">Organizing nodes</div>
+        <div class="presetPage" id="presetPageBasics">
+            <div class="presetGroup">
+                <div class="preset" onclick="loadPresetGraph('basics');">Node basics</div>
+                <div class="preset" onclick="loadPresetGraph('dataTypes');">Data types</div>
+                <div class="preset" onclick="loadPresetGraph('organize');">Organizing nodes</div>
             </div>
-            <div class='presetGroup'>
-                <div class='preset' onclick="loadPresetGraph('active');">Where are my objects?</div>
-                <div class='preset' onclick="loadPresetGraph('render');">Keep objects on canvas</div>
+            <div class="presetGroup">
+                <div class="preset" onclick="loadPresetGraph('active');">Where are my objects?</div>
+                <div class="preset" onclick="loadPresetGraph('render');">Keep objects on canvas</div>
             </div>
-            <div class='presetGroup'>
-                <div class='preset' onclick="loadPresetGraph('basicVariables');">Variables</div>
+            <div class="presetGroup">
+                <div class="preset" onclick="loadPresetGraph('basicVariables');">Variables</div>
             </div>
         </div>
 
 
-        <div class='presetPage' id='presetPageListsAndData'>
-            <div class='presetGroup'>
-                <div class='preset' onclick="loadPresetGraph('ifElse');">If / else</div>
-                <div class='preset' onclick="loadPresetGraph('select');">Select from list</div>
-                <div class='preset' onclick="loadPresetGraph('sorting');">Sorting</div>
-                <div class='preset' onclick="loadPresetGraph('encodingValues');">Encoding values</div>
+        <div class="presetPage" id="presetPageListsAndData">
+            <div class="presetGroup">
+                <div class="preset" onclick="loadPresetGraph('ifElse');">If / else</div>
+                <div class="preset" onclick="loadPresetGraph('select');">Select from list</div>
+                <div class="preset" onclick="loadPresetGraph('sorting');">Sorting</div>
+                <div class="preset" onclick="loadPresetGraph('encodingValues');">Encoding values</div>
             </div>
-            <div class='presetGroup'>
-                <div class='preset' onclick="loadPresetGraph('tableBasics');">CSV and tables</div>
-                <div class='preset' onclick="loadPresetGraph('countryData');">Country data</div>
-            </div>
-        </div>
-
-
-        <div class='presetPage' id='presetPageSetsAndRandom'>
-            <div class='presetGroup'>
-                <div class='preset' onclick="loadPresetGraph('sequence');">Sequence...</div>
-                <div class='preset' onclick="loadPresetGraph('range');">Range...</div>
-                <div class='preset' onclick="loadPresetGraph('wave');">Wave...</div>
-                <div class='preset' onclick="loadPresetGraph('define');">Define...</div>
-            </div>
-            <div class='presetGroup'>
-                <div class='preset' onclick="loadPresetGraph('random');">Random...</div>
-                <div class='preset' onclick="loadPresetGraph('noise');">Noise...</div>
-                <div class='preset' onclick="loadPresetGraph('probability');">Probability...</div>
-                <div class='preset' onclick="loadPresetGraph('randomSeeds');">Random seeds</div>
+            <div class="presetGroup">
+                <div class="preset" onclick="loadPresetGraph('tableBasics');">CSV and tables</div>
+                <div class="preset" onclick="loadPresetGraph('countryData');">Country data</div>
             </div>
         </div>
 
 
-        <div class='presetPage' id='presetPageRepeatAndLoops'>
-            <div class='presetGroup'>
-                <div class='preset' onclick="loadPresetGraph('loop1d');">1D loop</div>
-                <div class='preset' onclick="loadPresetGraph('loop2d');">2D loop</div>
-                <div class='preset' onclick="loadPresetGraph('loopLock');">Complex loops</div>
-                <div class='preset' onclick="loadPresetGraph('feedback');">Loop feedback</div>
+        <div class="presetPage" id="presetPageSetsAndRandom">
+            <div class="presetGroup">
+                <div class="preset" onclick="loadPresetGraph('sequence');">Sequence...</div>
+                <div class="preset" onclick="loadPresetGraph('range');">Range...</div>
+                <div class="preset" onclick="loadPresetGraph('wave');">Wave...</div>
+                <div class="preset" onclick="loadPresetGraph('define');">Define...</div>
             </div>
-            <div class='presetGroup'>
-                <div class='preset' onclick="loadPresetGraph('targets');">Targets</div>
-                <div class='preset' onclick="loadPresetGraph('wavyDots');">Wavy dots</div>
-                <div class='preset' onclick="loadPresetGraph('rays');">Sun rays</div>
+            <div class="presetGroup">
+                <div class="preset" onclick="loadPresetGraph('random');">Random...</div>
+                <div class="preset" onclick="loadPresetGraph('noise');">Noise...</div>
+                <div class="preset" onclick="loadPresetGraph('probability');">Probability...</div>
+                <div class="preset" onclick="loadPresetGraph('randomSeeds');">Random seeds</div>
             </div>
-            <div class='presetGroup'>
-                <div class='preset' onclick="loadPresetGraph('spiderWeb');">Spider web icon</div>
-                <div class='preset' onclick="loadPresetGraph('brickWall');">Brick wall</div>
-                <div class='preset' onclick="loadPresetGraph('cairoTiles');">Cairo tiles</div>
+        </div>
+
+
+        <div class="presetPage" id="presetPageRepeatAndLoops">
+            <div class="presetGroup">
+                <div class="preset" onclick="loadPresetGraph('loop1d');">1D loop</div>
+                <div class="preset" onclick="loadPresetGraph('loop2d');">2D loop</div>
+                <div class="preset" onclick="loadPresetGraph('loopLock');">Complex loops</div>
+                <div class="preset" onclick="loadPresetGraph('feedback');">Loop feedback</div>
+            </div>
+            <div class="presetGroup">
+                <div class="preset" onclick="loadPresetGraph('targets');">Targets</div>
+                <div class="preset" onclick="loadPresetGraph('wavyDots');">Wavy dots</div>
+                <div class="preset" onclick="loadPresetGraph('rays');">Sun rays</div>
+            </div>
+            <div class="presetGroup">
+                <div class="preset" onclick="loadPresetGraph('spiderWeb');">Spider web icon</div>
+                <div class="preset" onclick="loadPresetGraph('brickWall');">Brick wall</div>
+                <div class="preset" onclick="loadPresetGraph('cairoTiles');">Cairo tiles</div>
             </div>
         </div>
         
         
-        <div class='presetPage' id='presetPageShapes'>
-            <div class='presetGroup'>
-                <div class='preset' onclick="loadPresetGraph('shapesStyles');">Shapes & styles</div>
-                <div class='preset' onclick="loadPresetGraph('basicTransform');">Basic transform</div>
-                <div class='preset' onclick="loadPresetGraph('combinedTransform');">Combined transform</div>
+        <div class="presetPage" id="presetPageShapes">
+            <div class="presetGroup">
+                <div class="preset" onclick="loadPresetGraph('shapesStyles');">Shapes & styles</div>
+                <div class="preset" onclick="loadPresetGraph('basicTransform');">Basic transform</div>
+                <div class="preset" onclick="loadPresetGraph('combinedTransform');">Combined transform</div>
             </div>
-            <div class='presetGroup'>
-                <div class='preset' onclick="loadPresetGraph('blurryBackgrounds');">Blurry backgrounds</div>
-                <div class='preset' onclick="loadPresetGraph('wobblyCircle');">Wavy circle</div>
-                <div class='preset' onclick="loadPresetGraph('wobbles');">Wobbles</div>
-                <div class='preset' onclick="loadPresetGraph('roughStar');">Rough star</div>
+            <div class="presetGroup">
+                <div class="preset" onclick="loadPresetGraph('blurryBackgrounds');">Blurry backgrounds</div>
+                <div class="preset" onclick="loadPresetGraph('wobblyCircle');">Wavy circle</div>
+                <div class="preset" onclick="loadPresetGraph('wobbles');">Wobbles</div>
+                <div class="preset" onclick="loadPresetGraph('roughStar');">Rough star</div>
             </div>
-            <div class='presetGroup'>
-                <div class='preset' onclick="loadPresetGraph('namesLogos');">Random logos</div>
-                <div class='preset' onclick="loadPresetGraph('avatars');">Random avatars</div>
-                <div class='preset' onclick="loadPresetGraph('falsePerspective');">Fake perspective</div>
-                <div class='preset' onclick="loadPresetGraph('twistedTower');">Twisted tower</div>
-            </div>
-        </div>
-        
-        
-        <div class='presetPage' id='presetPageColors'>
-            <div class='presetGroup'>
-                <div class='preset' onclick="loadPresetGraph('colorSpaces');">Color spaces</div>
-                <div class='preset' onclick="loadPresetGraph('colorContrast');">Color contrast</div>
-                <div class='preset' onclick="loadPresetGraph('invalidColors');">Invalid colors</div>
-            </div>
-            <div class='presetGroup'>
-                <div class='preset' onclick="loadPresetGraph('randomColors');">Random colors</div>
-                <div class='preset' onclick="loadPresetGraph('tintsAndShades');">Tints & shades</div>
-                <div class='preset' onclick="loadPresetGraph('paletteFromColor');">Palette from base color</div>
-            </div>
-            <div class='presetGroup'>
-                <div class='preset' onclick="loadPresetGraph('textFromBackground');">Text color from background</div>
-                <div class='preset' onclick="loadPresetGraph('colorSwatches');">Color swatches</div>
-                <div class='preset' onclick="loadPresetGraph('compositeGradients');">Composite gradients</div>
+            <div class="presetGroup">
+                <div class="preset" onclick="loadPresetGraph('namesLogos');">Random logos</div>
+                <div class="preset" onclick="loadPresetGraph('avatars');">Random avatars</div>
+                <div class="preset" onclick="loadPresetGraph('falsePerspective');">Fake perspective</div>
+                <div class="preset" onclick="loadPresetGraph('twistedTower');">Twisted tower</div>
             </div>
         </div>
         
         
-        <div class='presetPage' id='presetPageMathText'>
-            <div class='presetGroup'>
-                <div class='preset' onclick="loadPresetGraph('twoMathNodes');">The two math nodes</div>
-                <div class='preset' onclick="loadPresetGraph('quadraticFormula');">Quadratic formula</div>
-                <div class='preset' onclick="loadPresetGraph('opponentColor');">Opponent process color</div>
+        <div class="presetPage" id="presetPageColors">
+            <div class="presetGroup">
+                <div class="preset" onclick="loadPresetGraph('colorSpaces');">Color spaces</div>
+                <div class="preset" onclick="loadPresetGraph('colorContrast');">Color contrast</div>
+                <div class="preset" onclick="loadPresetGraph('invalidColors');">Invalid colors</div>
             </div>
-            <div class='presetGroup'>
-                <div class='preset' onclick="loadPresetGraph('numberLine');">Number line</div>
-                <div class='preset' onclick="loadPresetGraph('randomNames');">Random names</div>
-                <div class='preset' onclick="loadPresetGraph('letterSalad');">Letter salad</div>
-                <div class='preset' onclick="loadPresetGraph('fontList');">Font list</div>
+            <div class="presetGroup">
+                <div class="preset" onclick="loadPresetGraph('randomColors');">Random colors</div>
+                <div class="preset" onclick="loadPresetGraph('tintsAndShades');">Tints & shades</div>
+                <div class="preset" onclick="loadPresetGraph('paletteFromColor');">Palette from base color</div>
             </div>
-            <div class='presetGroup'>
-                <div class='preset' onclick="loadPresetGraph('clock');">Clock</div>
+            <div class="presetGroup">
+                <div class="preset" onclick="loadPresetGraph('textFromBackground');">Text color from background</div>
+                <div class="preset" onclick="loadPresetGraph('colorSwatches');">Color swatches</div>
+                <div class="preset" onclick="loadPresetGraph('compositeGradients');">Composite gradients</div>
+            </div>
+        </div>
+        
+        
+        <div class="presetPage" id="presetPageMathText">
+            <div class="presetGroup">
+                <div class="preset" onclick="loadPresetGraph('twoMathNodes');">The two math nodes</div>
+                <div class="preset" onclick="loadPresetGraph('quadraticFormula');">Quadratic formula</div>
+                <div class="preset" onclick="loadPresetGraph('opponentColor');">Opponent process color</div>
+            </div>
+            <div class="presetGroup">
+                <div class="preset" onclick="loadPresetGraph('numberLine');">Number line</div>
+                <div class="preset" onclick="loadPresetGraph('randomNames');">Random names</div>
+                <div class="preset" onclick="loadPresetGraph('letterSalad');">Letter salad</div>
+                <div class="preset" onclick="loadPresetGraph('fontList');">Font list</div>
+            </div>
+            <div class="presetGroup">
+                <div class="preset" onclick="loadPresetGraph('clock');">Clock</div>
             </div>
         </div>
  
 
-        <div class='presetPage' id='presetPageExamples'>
-            <div class='presetGroup'>
-                <div class='preset' onclick="loadPresetGraph('booksOnShelf');">Books on shelf</div>
-                <div class='preset' onclick="loadPresetGraph('nestedTorus');">Nested torus</div>
-                <div class='preset' onclick="loadPresetGraph('circleFields');">Circle fields</div>
-                <div class='preset' onclick="loadPresetGraph('hotSpring');">Hot spring</div>
+        <div class="presetPage" id="presetPageExamples">
+            <div class="presetGroup">
+                <div class="preset" onclick="loadPresetGraph('booksOnShelf');">Books on shelf</div>
+                <div class="preset" onclick="loadPresetGraph('nestedTorus');">Nested torus</div>
+                <div class="preset" onclick="loadPresetGraph('circleFields');">Circle fields</div>
+                <div class="preset" onclick="loadPresetGraph('hotSpring');">Hot spring</div>
             </div>
-            <div class='presetGroup'>
-                <div class='preset' onclick="loadPresetGraph('randomAbstract');">Random abstract</div>
-                <div class='preset' onclick="loadPresetGraph('afterTheStorm');">After the storm</div>
-                <div class='preset' onclick="loadPresetGraph('sunsetDreams');">Sunset dreams</div>
-                <div class='preset' onclick="loadPresetGraph('brushStrokes');">Brush strokes</div>
+            <div class="presetGroup">
+                <div class="preset" onclick="loadPresetGraph('randomAbstract');">Random abstract</div>
+                <div class="preset" onclick="loadPresetGraph('afterTheStorm');">After the storm</div>
+                <div class="preset" onclick="loadPresetGraph('sunsetDreams');">Sunset dreams</div>
+                <div class="preset" onclick="loadPresetGraph('brushStrokes');">Brush strokes</div>
             </div>
-            <div class='presetGroup'>
-                <div class='preset' onclick="loadPresetGraph('gradientCircles');">Gradient circles</div>
-                <div class='preset' onclick="loadPresetGraph('polarizedLights');">Polarized lights</div>
-                <div class='preset' onclick="loadPresetGraph('linesOfFire');">Lines of fire</div>
-                <div class='preset' onclick="loadPresetGraph('clouds');">Clouds</div>
+            <div class="presetGroup">
+                <div class="preset" onclick="loadPresetGraph('gradientCircles');">Gradient circles</div>
+                <div class="preset" onclick="loadPresetGraph('polarizedLights');">Polarized lights</div>
+                <div class="preset" onclick="loadPresetGraph('linesOfFire');">Lines of fire</div>
+                <div class="preset" onclick="loadPresetGraph('clouds');">Clouds</div>
             </div>
         </div>
 

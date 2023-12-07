@@ -17,8 +17,8 @@ GraphView.prototype.updateScroll = function(x, w, h, bounds, yOffset)
     this.updateScrollX(   w, h, bounds);
     this.updateScrollY(x, w, h, bounds, yOffset);
 
-    this.scrollbarX.style.zIndex = MAX_INT32-1;
-    this.scrollbarY.style.zIndex = MAX_INT32-2;
+    this.scrollbarX.style.zIndex = MAX_INT32 - 1;
+    this.scrollbarY.style.zIndex = MAX_INT32 - 2;
 };
 
 
@@ -238,4 +238,4 @@ GraphView.prototype.createScrollbarMethods = function()
                 this.panStart.y - (e.clientY - this.scrollbarY.pStart) / this.scrollbarY.hStart * this.div.clientHeight);
         }
     });
-}
+};

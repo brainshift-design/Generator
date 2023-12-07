@@ -1,7 +1,7 @@
-var tooltipTimer    = -1;
-var tooltipOutTimer = -1;
+var tooltipTimer         = -1;
+var tooltipOutTimer      = -1;
 
-var inTooltip = null;
+var inTooltip            = null;
 
 
 var currentTooltipSource = null;

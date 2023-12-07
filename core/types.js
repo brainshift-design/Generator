@@ -484,7 +484,7 @@ const BOOLEAN_TYPES =
     BOOL_SUBTRACT,
     BOOL_INTERSECT,
     BOOL_EXCLUDE
-]
+];
 
 
 const RENDER             = 'RENDER';
@@ -652,7 +652,7 @@ const MATH_OPS =
     [NUMBER_MODULO,   '%' ],
     [NUMBER_DIVIDE,   '/' ], //'÷' ],
     [NUMBER_MULTIPLY, '×' ],
-    [NUMBER_EXPONENT, 'e<sup>x'] 
+    [NUMBER_EXPONENT, 'e<sup>x</sup>'] 
 ];
 
 

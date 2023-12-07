@@ -41,7 +41,7 @@ extends GOperator
     {
         if (this.isCached())
             return this;
-``
+
 
         const opacity = (await this.opacity.eval(parse)).toValue();
         const blend   = (await this.blend  .eval(parse)).toValue();

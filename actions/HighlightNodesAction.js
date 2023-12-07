@@ -36,7 +36,7 @@ extends Action
             this.prevColorIndices.push(node.highlight);
             node.highlight = this.newColorIndex;
             
-            if (node.type == PANEL) node.updateNode()
+            if (node.type == PANEL) node.updateNode();
             else                    node.updateBorder();
         }
 
@@ -53,7 +53,7 @@ extends Action
         {
             nodes[i].highlight = this.prevColorIndices[i];
 
-            if (nodes[i].type == PANEL) nodes[i].updateNode()
+            if (nodes[i].type == PANEL) nodes[i].updateNode();
             else                        nodes[i].updateBorder();
         }
 

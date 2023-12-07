@@ -272,7 +272,7 @@ var menuItemNodeEnableDisable;
 var menuItemLicenseSep1;
 var menuItemLicenseRemove;
 
-``
+
 
 function initGeneratorMenus()
 {
@@ -319,7 +319,7 @@ function initGeneratorMenus()
         menuItemObjectBatchSize            = new MenuItem('Update batch size . . .',            null, {callback: () => showObjectBatchDialog()})]);
         
 
-    menuItemShowBoolValues.divName.innerHTML = 'Show boolean values as   <span style="position: relative; top: 1px;">' + TRUE_DISPLAY_MENU + '</span>  <span>' + FALSE_DISPLAY_MENU + '</span>'
+    menuItemShowBoolValues.divName.innerHTML = 'Show boolean values as   <span style="position: relative; top: 1px;">' + TRUE_DISPLAY_MENU + '</span>  <span>' + FALSE_DISPLAY_MENU + '</span>';
 
 
     menuLogGenerator = new Menu('Log generator', false);
@@ -1131,10 +1131,10 @@ function initGeneratorMenus()
 
 function createObjectCountInfo()
 {
-    objectCountWrapper  = createDiv('', 'objectCountWrapper' );
-    objectCountInfo     = createDiv('', 'objectCountInfo'    );
-    objectCountProgress = createDiv('', 'objectCountProgress');
-    objectCountNumber   = createDiv('', 'objectCountNumber'  );
+    objectCountWrapper  = createDiv('', "objectCountWrapper" );
+    objectCountInfo     = createDiv('', "objectCountInfo"    );
+    objectCountProgress = createDiv('', "objectCountProgress");
+    objectCountNumber   = createDiv('', "objectCountNumber"  );
 
     objectCountNumber.innerHTML = '0';
     

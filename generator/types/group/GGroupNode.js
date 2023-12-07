@@ -74,8 +74,8 @@ extends GOperator
     {
         super.pushValueUpdates(parse);
 
-        this.inputs.forEach(i => i.pushValueUpdates(parse))
-        this.params.forEach(p => p.pushValueUpdates(parse))
+        this.inputs.forEach(i => i.pushValueUpdates(parse));
+        this.params.forEach(p => p.pushValueUpdates(parse));
     }
 
 
@@ -84,8 +84,8 @@ extends GOperator
     {
         super.invalidateInputs(parse, from, force);
 
-        this.inputs.forEach(i => i.invalidateInputs(parse, from, force))
-        this.params.forEach(p => p.invalidateInputs(parse, from, force))
+        this.inputs.forEach(i => i.invalidateInputs(parse, from, force));
+        this.params.forEach(p => p.invalidateInputs(parse, from, force));
     }
 
 
@@ -94,7 +94,7 @@ extends GOperator
     {
         super.iterateLoop(parse);
 
-        this.inputs.forEach(i => i.iterateLoop(parse))
-        this.params.forEach(p => p.iterateLoop(parse))
+        this.inputs.forEach(i => i.iterateLoop(parse));
+        this.params.forEach(p => p.iterateLoop(parse));
     }
 }

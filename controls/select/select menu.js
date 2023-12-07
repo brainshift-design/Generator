@@ -9,7 +9,7 @@ function initSelectMenu(select)
     select.menu.style.height     = 'auto';
     select.menu.style.textAlign  = 'center';
     select.menu.style.background = '#222';
-    select.menu.style.zIndex     =  MAX_INT32-3;
+    select.menu.style.zIndex     =  MAX_INT32 - 3;
     
 
 

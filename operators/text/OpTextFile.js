@@ -66,7 +66,6 @@ extends ResizableBase
 
                 this.file = file;
 
-                this.update
                 this.paramPath.setValue(filePath, false, true);
                 this.updateCachedValue(true);
             });

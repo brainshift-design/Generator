@@ -31,7 +31,7 @@ function showSaveAsTemplateDialog()
     updateSaveAsTemplateInputBack();
 
 
-    window.setTimeout(() => document.getElementById('saveAsTemplateInput').focus(), 0);
+    window.setTimeout(() => document.getElementById("saveAsTemplateInput").focus(), 0);
 }
 
 

@@ -74,7 +74,7 @@ GraphView.prototype.updateSelectBox = function(shiftKey, ctrlKey)
         selectBox.style.height  = selection.height;
 
         selectBox.style.display = 'block';
-        selectBox.style.zIndex  = MAX_INT32-3;
+        selectBox.style.zIndex  = MAX_INT32 - 3;
 
 
         const selected = [];
@@ -98,7 +98,7 @@ GraphView.prototype.updateSelectBox = function(shiftKey, ctrlKey)
             this.selectedNodes = selected;
         
             
-        selectBox.style.zIndex = MAX_INT32-3;
+        selectBox.style.zIndex = MAX_INT32 - 3;
             
             
         const nodes = [
@@ -193,4 +193,4 @@ GraphView.prototype.selectFromClick = function(node, ctrl, shift, alt)
             }, 300);
         }
     }
-}
+};

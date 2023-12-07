@@ -81,7 +81,7 @@ extends OperatorWithValue
         
         js += gen.NL + 'return ';
         js += conn ? 'Math.sign(input)' : this.toJsCode();
-        js += ';'
+        js += ';';
 
 
         gen.nTab--;

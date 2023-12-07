@@ -53,7 +53,7 @@ extends GOperator1
     {
         if (this.isCached())
             return this;
-``
+
 
         const x      = this.x      ? (await this.x     .eval(parse)).toValue() : null;
         const y      = this.y      ? (await this.y     .eval(parse)).toValue() : null;

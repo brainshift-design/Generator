@@ -227,7 +227,7 @@ extends GShape
             // }
             // else
             // {
-                text.createDefaultTransformPoints(x, y, w, h)
+                text.createDefaultTransformPoints(x, y, w, h);
 
                 this.value.objects.push(text);
             // }

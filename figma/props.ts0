@@ -390,7 +390,7 @@ function updateDecoObject(figObj)
 
         const a = 2;
         const b = 0.05;
-        const f = 1 - Math.pow(1 - Math.min(curZoom, 1), a) / Math.pow(a, b)
+        const f = 1 - Math.pow(1 - Math.min(curZoom, 1), a) / Math.pow(a, b);
     
         t = addv(c, mulvs(unitv(subv(t, c)), 10/f));
         r = addv(c, mulvs(unitv(subv(r, c)), 10/f));

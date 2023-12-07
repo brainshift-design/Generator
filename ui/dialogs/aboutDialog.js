@@ -37,7 +37,7 @@ function hideAboutDialog()
 function copyUserId()
 {
     writeTextToClipboard(currentUser.id);
-    selectElementText('aboutUserId');
+    selectElementText("aboutUserId");
     uiNotify('Copied user ID');
 }
 

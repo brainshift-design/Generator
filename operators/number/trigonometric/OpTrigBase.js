@@ -3,7 +3,7 @@ extends OperatorWithValue
 {
     constructor(type, id, name, icon)
     {
-        super(type, id, name, icon)
+        super(type, id, name, icon);
 
         this.canDisable       = true;
         this.alwaysLoadParams = true;

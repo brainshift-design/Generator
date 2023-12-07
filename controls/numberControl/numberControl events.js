@@ -630,4 +630,4 @@ NumberControl.prototype.initEvents = function()
             &&  this.pointerEvents)
             this.showTextbox();
     });
-}
+};

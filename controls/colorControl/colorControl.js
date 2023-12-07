@@ -107,7 +107,6 @@ extends Control
         //if (!(value instanceof ColorValue))
             //console.error('ColorControl.setValue(value) is ' + typeof value + ', must be a ColorValue');
 
-
         const oldValue = this.value.copy();
 
         this.value = value.copy();
@@ -115,7 +114,6 @@ extends Control
         
         this.dispatchSetEvents(fireChangeEvent, value, oldValue, confirm);
     };
-
 
 
 

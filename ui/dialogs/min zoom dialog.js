@@ -19,7 +19,7 @@ function showMinZoomDialog()
     minZoomInput.value = numToString(settings.minZoomForParams * 100, -1) + '%';
     minZoomInput.select();
 
-    window.setTimeout(() => document.getElementById('minZoomInput').focus(), 0);
+    window.setTimeout(() => document.getElementById("minZoomInput").focus(), 0);
 }
 
 

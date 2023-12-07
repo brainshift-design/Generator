@@ -136,7 +136,7 @@ extends GAffine
 
     invalidateInputs(parse, from, force)
     {
-        super.invalidateInputs(parse, from, force)
+        super.invalidateInputs(parse, from, force);
 
         if (this.angle) this.angle.invalidateInputs(parse, from, force);
     }

@@ -124,7 +124,7 @@ GraphView.prototype.updateZoomSelectBox = function()
     selectBox.style.width  = Math.abs(selection.w);
     selectBox.style.height = Math.abs(selection.h);
 
-    selectBox.style.zIndex = MAX_INT32-3;
+    selectBox.style.zIndex = MAX_INT32 - 3;
 };
 
 
@@ -267,7 +267,7 @@ function updateZoomIcon()
     }
 
 
-    const _zoomIconOverlay = document.getElementById('zoomIconOverlay');
+    const _zoomIconOverlay = document.getElementById("zoomIconOverlay");
 
     if (_zoomIconOverlay)
     {

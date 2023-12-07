@@ -69,7 +69,7 @@ extends GOperator
                     const _row = input.items[row.value];
 
                     if (column.value < columns)
-                        this.value = _row.items[column.value].copy()
+                        this.value = _row.items[column.value].copy();
                     else
                         this.value = NullValue.copy();
                 }

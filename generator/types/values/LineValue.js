@@ -27,7 +27,7 @@ extends ShapeValue
             this.nodeId,
             this.x    .copy(), 
             this.y    .copy(), 
-            this.width.copy())
+            this.width.copy());
 
         copy.copyBase(this);
 

@@ -166,7 +166,7 @@ Operator.prototype.initLabelTextbox = function()
                 this.div.focus({preventScroll: true});
         });
     };    
-}
+};
 
 
 
@@ -200,4 +200,4 @@ Operator.prototype.showLabelTextbox = function()
     
     this.textbox.focus({preventScroll: true});
     this.textbox.select();
-}
+};

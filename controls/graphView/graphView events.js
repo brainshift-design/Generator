@@ -400,7 +400,7 @@ GraphView.prototype.createEvents = function()
 
         e.preventDefault();
     });
-}
+};
 
 
 

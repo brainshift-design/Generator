@@ -1,4 +1,4 @@
-const generatorVersion = 317;
+const generatorVersion = 318;
 
 
 const MAX_INT32        = 2147483647;
@@ -667,7 +667,7 @@ function removeAt(array, index)
 {
     if (   index > -1 
         && index < array.length)
-        array.splice(index, 1)
+        array.splice(index, 1);
 }
 
 
@@ -678,7 +678,7 @@ function removeLast(array)
         return null;
 
     let last = array.at(-1);
-    array.splice(array.length-1, 1)
+    array.splice(array.length-1, 1);
 
     return last;
 }
@@ -960,7 +960,7 @@ function getObjectFills(genObjFills)
                             a: Math.min(Math.max(0, stop[3]), 1)
                         },
                         position: stop[4]
-                    })    
+                    });  
                 }
 
 

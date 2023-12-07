@@ -109,7 +109,7 @@ function filterUnique(array)
 
 function createSvg(element)
 {
-    const svg = document.createElementNS('http://www.w3.org/2000/svg', element);
+    const svg = document.createElementNS("http://www.w3.org/2000/svg", element);
     svg.style.pointerEvents = 'none';
     return svg;
 }
@@ -346,7 +346,7 @@ function daysInMonth(month, year)
 
 function getFontStyles(fontName)
 {
-    let fonts = figFonts.filter(f => f.fontName.family == fontName)
+    let fonts = figFonts.filter(f => f.fontName.family == fontName);
 
 
     fonts.sort((a, b) =>
@@ -535,7 +535,7 @@ String.prototype.replaceAt = function(index, replacement)
     return this.substring(0, index) 
          + replacement 
          + this.substring(index+1);// + replacement.length);
-}
+};
 
 
 

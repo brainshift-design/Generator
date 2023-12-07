@@ -6,7 +6,7 @@ Operator.prototype.updateTransform = function()
     
     this.setTransform(nodeLeft, nodeTop, nodeRect);
     this.updateWireTransform();
-}
+};
 
 
 
@@ -25,7 +25,7 @@ Operator.prototype.updateWireTransform = function()
                 wires.push(connInput.connection.wire);
 
     graphView.updateWires(wires);
-}
+};
 
 
 
@@ -62,7 +62,7 @@ Operator.prototype.updateNode = function()
         this.inner .style.borderRadius = '4px';        
         this.header.style.borderRadius = '4px';        
     }
-}
+};
 
 
 
@@ -108,7 +108,7 @@ Operator.prototype.updateBorder = function()
         && !this._selected
         ? '1px solid #0001'
         : 'none';
-}
+};
 
 
 
@@ -133,7 +133,7 @@ Operator.prototype.updateHeader = function()
             ? rgb2style_a(colors.text, 0.5) 
             : 'var(--figma-color-bg-brand)';
     }
-}
+};
 
 
 
@@ -143,7 +143,7 @@ Operator.prototype.updateParams = function()
         param.enableControlText(true, param.isUnknown());
 
     this.updateParamControls();
-}
+};
 
 
 
@@ -151,7 +151,7 @@ Operator.prototype.updateParamControls = function()
 {
     for (const param of this.params)
         param.updateControls();
-}
+};
 
 
 
@@ -164,7 +164,7 @@ Operator.prototype.updateDisabled = function()
 
     const ax = 2;
     const bx = 0.15;
-    const fx = 1 - Math.pow(1 - Math.min(zoom, 1), ax) / Math.pow(ax, bx)
+    const fx = 1 - Math.pow(1 - Math.min(zoom, 1), ax) / Math.pow(ax, bx);
 
     const ay = 2;
     const by = 1;
@@ -183,7 +183,7 @@ Operator.prototype.updateDisabled = function()
     this.divDisabled.style.transform = 'rotate(45deg)';
     this.divDisabled.style.left      =  (this.measureData.divOffset.width  - this.measureData.disabledOffset.width ) / 2;
     this.divDisabled.style.top       =  (this.measureData.divOffset.height - _height) / 2;
-}
+};
 
 
 
@@ -194,7 +194,7 @@ Operator.prototype.updateSubscribe = function()
 
     this.proCover.style.top    = this.measureData.headerOffset.height;
     this.proCover.style.height = this.measureData.divOffset.height - this.measureData.headerOffset.height;
-}
+};
 
 
 
@@ -210,7 +210,7 @@ Operator.prototype.updateSubscribeStatus = function(sub)
 
     if (sub)
         this.updateSubscribe();
-}
+};
 
 
 
@@ -240,7 +240,7 @@ Operator.prototype.updateMeasureData = function()
             if (p. input) p. input.updateMeasureData();
             if (p.output) p.output.updateMeasureData();
         });
-}
+};
 
 
 
@@ -277,7 +277,7 @@ Operator.prototype.updateHeaderLabel = function()
 
 
     this.updateIcon();
-}
+};
 
 
 
@@ -294,7 +294,7 @@ Operator.prototype.updateIcon = function()
             || this.alwaysShowIcon)
         ? 'inline' 
         : 'none';
-}
+};
 
 
 
@@ -337,9 +337,9 @@ Operator.prototype.updateHeaderLabelText = function()
         : '';
     
 
-    html = html.replaceAll('</', '%%@@%%!!)77')
+    html = html.replaceAll('</', '%%@@%%!!)77');
     html = html.replaceAll('/', ' / ');
-    html = html.replaceAll('%%@@%%!!)77', '</')
+    html = html.replaceAll('%%@@%%!!)77', '</');
 
     this.labelText.innerHTML = html;
 
@@ -348,7 +348,7 @@ Operator.prototype.updateHeaderLabelText = function()
         settings.showNodeId 
         ? 'Roboto Mono' 
         : 'Inter';
-}
+};
 
 
 

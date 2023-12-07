@@ -128,7 +128,7 @@ extends ResizableBase
 
         js += gen.NL + 'return ';
         js += conn ? 'input' : this.toJsCode(gen);
-        js += ';'
+        js += ';';
 
 
         gen.nTab--;

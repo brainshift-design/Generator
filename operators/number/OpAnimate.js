@@ -2,7 +2,7 @@ class   OpAnimate
 extends OperatorBase //WithValue
 {
     paramFrom;
-    paramTo
+    paramTo;
     paramCurve;
     paramRepeat;
     paramLength;

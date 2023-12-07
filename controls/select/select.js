@@ -142,7 +142,7 @@ function initSelect(select, items)
         select.menu.focus();
 
         document.menuHadFocus = true;
-    }        
+    };
     
 
 
@@ -194,7 +194,7 @@ function initSelect(select, items)
         select.value = value;
         select.update(select.getSelectedIndex());
         select.dispatchChangeEvent();
-    }
+    };
 
 
 

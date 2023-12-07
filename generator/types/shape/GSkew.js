@@ -135,7 +135,7 @@ extends GAffine
 
     pushValueUpdates(parse)
     {
-        super.pushValueUpdates(parse);GVectorPath
+        super.pushValueUpdates(parse);
 
         if (this.skewX) this.skewX.pushValueUpdates(parse);
         if (this.skewY) this.skewY.pushValueUpdates(parse);
@@ -155,7 +155,7 @@ extends GAffine
 
     iterateLoop(parse)
     {
-        super.iterateLoop(parse);GVectorPath
+        super.iterateLoop(parse);
 
         if (this.skewX) this.skewX.iterateLoop(parse);
         if (this.skewY) this.skewY.iterateLoop(parse);

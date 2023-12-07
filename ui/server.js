@@ -176,10 +176,10 @@ function checkActiveSubscription(userId)
 function postToServer(cmd)
 {
     return fetch(
-        'https://brainshift.design/license/',
+        "https://brainshift.design/license/",
         {
-            method:  'POST',
-            headers: { 'Content-Type': 'application/json' },
+            method:  "POST",
+            headers: { "Content-Type": "application/json" },
             body:    JSON.stringify(cmd)
         })
         .then(response => 
