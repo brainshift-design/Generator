@@ -287,9 +287,10 @@ function initGeneratorMenus()
 
     menuMainFile = new Menu('File', false);
     menuMainFile.addItems([
-                             new MenuItem('Import from file . . .',      null, {callback: () => { hideAllMenus(); uiImportFromLocalFile(); }}),
+                             new MenuItem('Open file . . .',          null, {callback: () => { hideAllMenus(); checkDeleteNodesWarning(); }}),
+                             new MenuItem('Import from file . . .',   null, {callback: () => { hideAllMenus(); uiImportFromLocalFile(); }}),
         menuFileSep1       = new MenuItem('',                         null, {separator: true}),    
-        menuItemSaveToFile = new MenuItem('Save to file . . .', null, {shortcut: osCtrlShift() + 'S', callback: () => { hideAllMenus(); uiSaveSelectionToLocalFile(); }})]);
+        menuItemSaveToFile = new MenuItem('Save to file . . .',       null, {shortcut: osCtrlShift() + 'S', callback: () => { hideAllMenus(); uiSaveSelectionToLocalFile(); }})]);
 
 
     menuMainPreferences = new Menu('Preferences', false);

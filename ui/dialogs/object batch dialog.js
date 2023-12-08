@@ -4,6 +4,10 @@ var objectBatchDialogVisible = false;
 
 function showObjectBatchDialog()
 {
+    if (minZoomDialogVisible)
+        hideMinZoomDialog();
+
+
     objectBatchDialog.style.left      = '50%';
     objectBatchDialog.style.top       = '50%';
     objectBatchDialog.style.transform = 'translateX(-50%) translateY(-50%)';

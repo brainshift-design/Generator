@@ -1062,12 +1062,42 @@ function uiUpdateViewportRect()
 
 
 
+function uiOpenLocalFile()
+{
+    hideAllMenus();
+
+
+    if (isEmpty(graph.pages))
+        graph.createPage('');
+
+    uiDeleteAllObjects();
+    uiRemoveAllSavedNodesAndConns();
+    graph.clear();
+
+
+    totalObjectCount = 0;
+    updateObjectCountDisplay();
+
+
+    loadFromLocalFile(json => 
+    {
+        importZoomToNodes = true;
+        actionManager.do(new PasteNodesAction(json, false, false, true, Number.NaN, Number.NaN, true, true));
+
+        addMetricsEvent(METRICS_LOAD_FILE);
+    });
+}
+
+
+
 function uiImportFromLocalFile()
 {
     loadFromLocalFile(json => 
     {
         importZoomToNodes = true;
         actionManager.do(new PasteNodesAction(json, false, false, true, Number.NaN, Number.NaN, true, true));
+
+        addMetricsEvent(METRICS_IMPORT_FILE);
     });
 }
 

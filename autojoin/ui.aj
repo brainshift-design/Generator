@@ -26,6 +26,7 @@
 ../html/multiplayer.html
 ../html/about.html
 ../html/deleteConnections.html
+../html/deleteNodesWarning.html
 ../html/saveAsTemplate.html
 ../html/manageTemplates.html
 ../html/subscription.html

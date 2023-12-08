@@ -16,6 +16,8 @@ const METRICS_WINDOW_SIZE = 'WINDOW_SIZE';
 const METRICS_PAN_ZOOM    = 'PAN_ZOOM';
 const METRICS_DEBUG_MODE  = 'DEBUG_MODE';
 const METRICS_LOAD_PRESET = 'LOAD_PRESET';
+const METRICS_LOAD_FILE   = 'LOAD_FILE';
+const METRICS_IMPORT_FILE = 'IMPORT_FILE';
 const METRICS_SEARCH      = 'SEARCH';
 const METRICS_ACTION_DO   = 'ACTION_DO';
 const METRICS_ACTION_UNDO = 'ACTION_UNDO';
@@ -45,7 +47,7 @@ function createMetricsEvent(_event, data = '')
 
 
 
-function addMetricsEvent(_event, data, atStart = false)
+function addMetricsEvent(_event, data = '', atStart = false)
 {
     const event = createMetricsEvent(_event, data);
 
