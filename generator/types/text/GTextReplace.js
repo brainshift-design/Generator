@@ -156,11 +156,24 @@ function getReplaceValue(input, _what, _with, _regex)
     {
         try
         {
-            const regex = new RegExp(_what.value, 'g');
-
             value.value = input.value.replace(
-                regex,
+                new RegExp(_what.value, 'gu'),
                 () => unescapeString(_with.value));
+
+            // value.value = input.value.replaceAll(
+            //     new RegExp(_what.value, 'g'),
+            //     match => 
+            //     {
+            //         return match
+            //             .split('')
+            //             .map(function(c) 
+            //             {
+            //                 return c >= '\uD800' 
+            //                     && c <= '\uDBFF'
+            //                     ? c
+            //                     : unescapeString(_with.value);
+            //             }).join('');
+            //     });
         }
         catch (e)
         {

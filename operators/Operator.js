@@ -1182,7 +1182,7 @@ class Operator
         let json =
               pos + tab + '"type": "'      + this.type                                     + '",\n'
             + pos + tab + '"id": "'        + (this.stripIdForCopy ? this.nodeId : this.id) + '",\n'
-            + pos + tab + '"name": "'      + encodeURIComponent(this.name)                 + '",\n'
+            + pos + tab + '"name": "'      + encodeURIComponent(btoa(this.name))                 + '",\n'
             + pos + tab + '"renamed": "'   + boolToString(this.renamed)                    + '",\n'
             + pos + tab + '"enabled": "'   + boolToString(this.enabled)                    + '",\n'
             + pos + tab + '"highlight": "' + this.highlight                                + '",\n'
@@ -1240,7 +1240,7 @@ class Operator
     loadFromParsedJson(_node, pasting)
     {
         this.id   = _node.id;
-        this.name = decodeURIComponent(_node.name);
+        this.name = atob(decodeURIComponent(_node.name));
     
         if (_node.renamed  ) this.renamed   = parseBool(_node.renamed);
         if (_node.enabled  ) this.enabled   = parseBool(_node.enabled);

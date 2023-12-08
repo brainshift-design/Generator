@@ -366,7 +366,7 @@ function getFontStyles(fontName)
 
 function unescapeString(str)
 {
-    return str.replace(/\\(.)/g, (match, char) => 
+    return str.replaceAll(/\\(.)/g, (match, char) => 
     {
         const replacements = 
         {

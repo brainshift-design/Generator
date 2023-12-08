@@ -108,14 +108,14 @@ function arrayToBase64(bytes)
         }
     }
 
-    return base64.substr(0, base64.length - 2 + mod3) + (mod3 === 2 ? '' : mod3 === 1 ? '=' : '==');
+    return base64.substring(0, base64.length - 2 + mod3) + (mod3 === 2 ? '' : mod3 === 1 ? '=' : '==');
 }
 
 
 
 // UTF-8 array to DOMString and vice versa
 
-function UTF8ArrToStr(bytes) 
+function utf8ArrToStr(bytes) 
 {
     let   str    = "";
 
@@ -154,7 +154,7 @@ function UTF8ArrToStr(bytes)
 
 
 
-function strToUTF8Arr(str) 
+function strToUtf8Arr(str) 
 {
     let strLen = str.length, 
         arrLen = 0;
@@ -164,7 +164,7 @@ function strToUTF8Arr(str)
 
     for (let i = 0; i < strLen; i++) 
     {
-        chr = str.charCodeAt(i);
+        const chr = str.charCodeAt(i);
         arrLen += chr < 0x80 ? 1 : chr < 0x800 ? 2 : chr < 0x10000 ? 3 : chr < 0x200000 ? 4 : chr < 0x4000000 ? 5 : 6;
     }
 
