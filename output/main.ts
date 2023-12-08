@@ -3393,7 +3393,7 @@ function figResizeWindow(width, height)
     {
         // let x, y;
 
-        let position = false;
+        //let position = false;
 
 
         // const bounds = figma.viewport.bounds;
@@ -3462,8 +3462,8 @@ function figResizeWindow(width, height)
 
         // x      = Math.round(x     );
         // y      = Math.round(y     );
-        width  = Math.round(width );
-        height = Math.round(height);
+        // width  = Math.round(width );
+        // height = Math.round(height);
 
 
         // console.log('width =',  width);
@@ -3471,8 +3471,8 @@ function figResizeWindow(width, height)
 
         figma.ui.resize(width, height);
 
-        figma.currentPage.setPluginData(figma.currentUser.id+',windowWidth',  width .toString());
-        figma.currentPage.setPluginData(figma.currentUser.id+',windowHeight', height.toString());
+        figma.currentPage.setPluginData(figma.currentUser.id + ',windowWidth',  width .toString());
+        figma.currentPage.setPluginData(figma.currentUser.id + ',windowHeight', height.toString());
 
 
         // if (position)
@@ -4085,7 +4085,8 @@ function getObjectEffects(genObjEffects, canSpread)
                         radius:               radius,
                         visible:              visible,
                         blendMode:            blend,
-                        showShadowBehindNode: behind
+                        showShadowBehindNode: behind,
+                        boundVariables:       {}
                     });
 
                     if (    canSpread
@@ -4122,16 +4123,19 @@ function getObjectEffects(genObjEffects, canSpread)
                     && !isNaN(offset.y)
                     && !isNaN(radius)
                     && !isNaN(spread))
+                {
                     effects.push(
                     {
-                        type:       type, 
-                        color:      color,
-                        offset:     offset,
-                        radius:     radius,
-                        spread:     spread,
-                        visible:    visible,
-                        blendMode:  blend
+                        type:           type, 
+                        color:          color,
+                        offset:         offset,
+                        radius:         radius,
+                        spread:         spread,
+                        visible:        visible,
+                        blendMode:      blend,
+                        boundVariables: {}
                     });
+                }
 
                 break;
             }
@@ -4142,12 +4146,15 @@ function getObjectEffects(genObjEffects, canSpread)
                 const visible = effect[2];
 
                 if (!isNaN(radius))
+                {
                     effects.push(
                     {
-                        type:    type, 
-                        visible: visible,
-                        radius:  Math.max(0, radius)
+                        type:           type, 
+                        visible:        visible,
+                        radius:         Math.max(0, radius),
+                        boundVariables: {}
                     });
+                }
 
                 break;
             }
@@ -4158,12 +4165,15 @@ function getObjectEffects(genObjEffects, canSpread)
                 const visible = effect[2];
 
                 if (!isNaN(radius))
+                {
                     effects.push(
                     {
-                        type:    type, 
-                        visible: visible,
-                        radius:  Math.max(0, radius)
+                        type:           type, 
+                        visible:        visible,
+                        radius:         Math.max(0, radius),
+                        boundVariables: {}
                     });
+                }
 
                 break;
             }

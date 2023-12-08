@@ -28,15 +28,23 @@
     /* box-shadow:   0 0 0 1px yellow inset; */
 }
 
-
 #objectCountWrapper
 {
-    width:            41px;
-    height:           40px;
-    line-height:      21px;
-    position:         absolute;
-    right:            114px;
+    width:       41px;
+    height:      40px;
+    line-height: 21px;
+    position:    absolute;
+    right:       114px;
 }
+
+
+/* @keyframes moveObjectStripes 
+{
+    to 
+    {
+        background-position: 84px 0px;
+    }
+} */
 
 
 #objectCountInfo
@@ -49,6 +57,18 @@
     margin-top:       11px;
     position:         relative;
     overflow:         hidden;
+
+    /* background:       repeating-linear-gradient(
+                          -45deg, 
+                          #222 0 5px,
+                          #444 5px 10px,
+                          #222 10px 15px,
+                          #444 15px 20px);
+    
+    background-position: 0 0;
+    background-size:     84px 20px;
+     
+    animation:        moveObjectStripes 5s linear infinite; */
 }
 
 
