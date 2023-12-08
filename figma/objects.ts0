@@ -109,11 +109,15 @@ function figUpdateObject(figObj, genObj)
     }
 
 
-    figObj.parent.appendChild(figObj);
+    if (    figObj != undefined
+        &&  figObj != null
+        && !figObj.removed)
+    {
+        figObj.parent.appendChild(figObj);
 
-
-    if (genObj[FO_DECO])
-        updateDecoObject(figObj);
+        if (genObj[FO_DECO])
+            updateDecoObject(figObj);
+    }
 }
 
 

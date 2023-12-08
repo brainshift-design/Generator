@@ -112,10 +112,12 @@ extends GShapeBase
                 this.nodeName);
 
 
-            for (const input of options.inputs)
+            for (let i = 0; i < options.inputs.length; i++)
             {
-                for (let i = 0; i < input.objects.length; i++)
-                    this.addChildObject(group.children, input.objects[i]);
+                const input = options.inputs[i];
+                
+                for (let j = 0; j < input.objects.length; j++)
+                    this.addChildObject(group.children, input.objects[j], i);
             }
 
 
@@ -150,12 +152,12 @@ extends GShapeBase
 
 
 
-    addChildObject(objects, _obj)
+    addChildObject(objects, _obj, inputIndex)
     {
         const obj = copyFigmaObject(_obj);
 
         obj.nodeId   = this.nodeId;
-        obj.objectId = obj.objectId + OBJECT_SEPARATOR + this.nodeId;
+        obj.objectId = obj.objectId + OBJECT_SEPARATOR + this.nodeId + OBJECT_SEPARATOR + inputIndex;
         obj.listId   = -1;
 
         objects.push(obj);

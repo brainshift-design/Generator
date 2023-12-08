@@ -27,13 +27,16 @@ GraphView.prototype.updateNodes = function(nodes = null, updateNodes = true)
     }
 
 
-    const x = this.measureData.clientRect.left;
-    const w = this.measureData.clientRect.width;
-    const h = this.measureData.clientRect.height;
-    
-    const bounds = this.getAllNodeBounds();
+    if (this.measureData.clientRect)
+    {
+        const x = this.measureData.clientRect.left;
+        const w = this.measureData.clientRect.width;
+        const h = this.measureData.clientRect.height;
+        
+        const bounds = this.getAllNodeBounds();
 
-    this.updateScroll(x, w, h, bounds, getTopHeight());
+        this.updateScroll(x, w, h, bounds, getTopHeight());
+    }
 };
 
 

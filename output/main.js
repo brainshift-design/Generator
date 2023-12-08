@@ -2502,7 +2502,9 @@ function figUpdateObject(figObj, genObj) {
             figUpdateFrame(figObj, genObj);
             break;
     }
-    if (!figObj.removed) {
+    if (figObj != undefined
+        && figObj != null
+        && !figObj.removed) {
         figObj.parent.appendChild(figObj);
         if (genObj[FO_DECO])
             updateDecoObject(figObj);

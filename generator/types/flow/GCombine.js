@@ -83,7 +83,12 @@ extends GOperator
 
 
             const inputObjects = this.copyObjects(input, i);
-            inputObjects.forEach(o => o.itemIndex = i);
+            
+            for (const obj of inputObjects)
+            {
+                obj.objectId += OBJECT_SEPARATOR + i;
+                obj.itemIndex = i;
+            }
 
             this.value.objects.push(...inputObjects);
         }

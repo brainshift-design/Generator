@@ -3722,7 +3722,9 @@ function figUpdateObject(figObj, genObj)
     }
 
 
-    if (!figObj.removed)
+    if (    figObj != undefined
+        &&  figObj != null
+        && !figObj.removed)
     {
         figObj.parent.appendChild(figObj);
 
