@@ -3652,6 +3652,8 @@ function figCreateObject(genObj, addObject = null)
 
 
     if (    addObject
+        &&  figObj != undefined
+        &&  figObj != null
         && !figObj.removed)
     {
         figObj.name = makeObjectName(genObj);
@@ -3662,7 +3664,8 @@ function figCreateObject(genObj, addObject = null)
             'no Figma object created');
 
 
-        if (figObj)
+        if (   figObj != undefined
+            && figObj != null)
         {
             figObj.setPluginData('retain', genObj[FO_RETAIN].toString());
 
@@ -3696,6 +3699,8 @@ function figCreateObject(genObj, addObject = null)
 function figUpdateObject(figObj, genObj)
 {
     if (  !genObjectIsValid(genObj)
+        || figObj == undefined
+        || figObj == null
         || figObj.removed)
         return;
 
@@ -3774,7 +3779,8 @@ async function figUpdateObjects(figParent, genObjects, batchSize, nodeIds = [], 
 
         const addObject = figObj =>
         {
-            if (    figParent
+            if (    figParent != undefined
+                &&  figParent != null
                 && !figParent.removed) 
                 figParent.appendChild(figObj);
             else
@@ -3783,7 +3789,8 @@ async function figUpdateObjects(figParent, genObjects, batchSize, nodeIds = [], 
 
 
         let objects =
-                figParent
+                figParent != undefined
+            &&  figParent != null
             && !figParent.removed
             ? figParent.children
             : figObjects.objects;
@@ -3817,12 +3824,15 @@ async function figUpdateObjects(figParent, genObjects, batchSize, nodeIds = [], 
             updateObjects.push(newObj);
         }
 
-        else if (!figObj.removed
-               && figObj.getPluginData('type') == genObj[FO_TYPE].toString()) // update existing object
+        else if (  figObj != undefined
+               &&  figObj != null
+               && !figObj.removed
+               &&  figObj.getPluginData('type') == genObj[FO_TYPE].toString()) // update existing object
         {
             figUpdateObject(figObj, genObj);
 
-            if (    figObj
+            if (    figObj != undefined
+                &&  figObj != null
                 && !figObj.removed) 
                 updateObjects.push(figObj);
         }
@@ -3866,12 +3876,15 @@ async function figUpdateObjects(figParent, genObjects, batchSize, nodeIds = [], 
 
     // delete removed objects from parent
     
-    if (    figParent
+    if (    figParent != undefined
+        &&  figParent != null
         && !figParent.removed)
     {
         for (const figObj of figParent.children)
         {
-            if (    figObj.removed
+            if (      figObj != undefined
+                   && figObj != null
+                   && figObj.removed
                 || !genObjects.find(o => 
                            o[FO_OBJECT_ID] == figObj.getPluginData('objectId')
                         && figObj.getPluginData('userId') == figma.currentUser.id))
@@ -3884,9 +3897,13 @@ async function figUpdateObjects(figParent, genObjects, batchSize, nodeIds = [], 
     // put points on top
     
     for (const point of figPoints)
-        if (   !point.removed
+    {
+        if (    point != undefined
+            &&  point != null
+            && !point.removed
             && !point.parent.removed)
             point.parent.appendChild(point);
+    }
 
 
     if (    lastChunk
@@ -3915,6 +3932,9 @@ async function figUpdateObjects(figParent, genObjects, batchSize, nodeIds = [], 
         }
     }
 
+
+    // console.log('nominalObjectCount =', nominalObjectCount);
+    // console.log('actualObjectCount =', actualObjectCount);
 
     await figGetValueFromUiSync(
         'returnObjectUpdate', 

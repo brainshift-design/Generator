@@ -2435,11 +2435,14 @@ function figCreateObject(genObj, addObject = null) {
             break;
     }
     if (addObject
+        && figObj != undefined
+        && figObj != null
         && !figObj.removed) {
         figObj.name = makeObjectName(genObj);
         consoleAssert(genObj[FO_TYPE] == SHAPE_GROUP // cannot exist without children
             || !!figObj, 'no Figma object created');
-        if (figObj) {
+        if (figObj != undefined
+            && figObj != null) {
             figObj.setPluginData('retain', genObj[FO_RETAIN].toString());
             if (genObj[FO_RETAIN] < 2) {
                 figObj.setPluginData('userId', figma.currentUser.id);
@@ -2460,6 +2463,8 @@ function figCreateObject(genObj, addObject = null) {
 }
 function figUpdateObject(figObj, genObj) {
     if (!genObjectIsValid(genObj)
+        || figObj == undefined
+        || figObj == null
         || figObj.removed)
         return;
     figObj.name = makeObjectName(genObj);
@@ -2532,13 +2537,15 @@ function figUpdateObjects(figParent, genObjects, batchSize, nodeIds = [], firstC
                 }
             }
             const addObject = figObj => {
-                if (figParent
+                if (figParent != undefined
+                    && figParent != null
                     && !figParent.removed)
                     figParent.appendChild(figObj);
                 else
                     figObjects.objects.push(figObj);
             };
-            let objects = figParent
+            let objects = figParent != undefined
+                && figParent != null
                 && !figParent.removed
                 ? figParent.children
                 : figObjects.objects;
@@ -2562,11 +2569,14 @@ function figUpdateObjects(figParent, genObjects, batchSize, nodeIds = [], firstC
                 const newObj = figCreateObject(genObj, addObject);
                 updateObjects.push(newObj);
             }
-            else if (!figObj.removed
+            else if (figObj != undefined
+                && figObj != null
+                && !figObj.removed
                 && figObj.getPluginData('type') == genObj[FO_TYPE].toString()) // update existing object
              {
                 figUpdateObject(figObj, genObj);
-                if (figObj
+                if (figObj != undefined
+                    && figObj != null
                     && !figObj.removed)
                     updateObjects.push(figObj);
             }
@@ -2593,10 +2603,13 @@ function figUpdateObjects(figParent, genObjects, batchSize, nodeIds = [], firstC
             }
         }
         // delete removed objects from parent
-        if (figParent
+        if (figParent != undefined
+            && figParent != null
             && !figParent.removed) {
             for (const figObj of figParent.children) {
-                if (figObj.removed
+                if (figObj != undefined
+                    && figObj != null
+                    && figObj.removed
                     || !genObjects.find(o => o[FO_OBJECT_ID] == figObj.getPluginData('objectId')
                         && figObj.getPluginData('userId') == figma.currentUser.id))
                     //&& figObj.getPluginData('sessionId') == figma.currentUser.sessionId.toString()))
@@ -2604,10 +2617,13 @@ function figUpdateObjects(figParent, genObjects, batchSize, nodeIds = [], firstC
             }
         }
         // put points on top
-        for (const point of figPoints)
-            if (!point.removed
+        for (const point of figPoints) {
+            if (point != undefined
+                && point != null
+                && !point.removed
                 && !point.parent.removed)
                 point.parent.appendChild(point);
+        }
         if (lastChunk
             && !abort) {
             // delete old content
@@ -2621,6 +2637,8 @@ function figUpdateObjects(figParent, genObjects, batchSize, nodeIds = [], firstC
                 figma.viewport.zoom = Math.min(figma.viewport.bounds.width * figma.viewport.zoom / bounds.width - 0.05, figma.viewport.bounds.height * figma.viewport.zoom / bounds.height - 0.05);
             }
         }
+        // console.log('nominalObjectCount =', nominalObjectCount);
+        // console.log('actualObjectCount =', actualObjectCount);
         yield figGetValueFromUiSync('returnObjectUpdate', {
             nominalObjectCount: nominalObjectCount,
             actualObjectCount: actualObjectCount
