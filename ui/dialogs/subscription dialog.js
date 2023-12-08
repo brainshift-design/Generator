@@ -147,7 +147,7 @@ function showSubscriptionDialog(activate, showBack = true)
     dialogShown             = true;
     subscriptionDialogShown = true;
 
-    subscribeWebsite.style.display = 'block';//activate || !subscriptionActive || subscribed() ? 'none' : 'block';
+    //subscribeWebsite.style.display = 'block';//activate || !subscriptionActive || subscribed() ? 'none' : 'block';
 }
 
 
@@ -164,8 +164,9 @@ function updateSubscriptionDialog()
 
         checkRemainingSubscriptionDays().then(result =>
         {
-            licenseInfo.innerHTML = 'Your Pro subscription is active!'; 
-                //formatDaysLeft(result) + ' of your Pro subscription.';
+            licenseInfo.innerHTML = 'Your Pro subscription is active!';
+            //formatDaysLeft(result) + ' of your Pro subscription.';
+            subscribeWebsite.style.display = 'none';
         });
     }
     else
@@ -174,7 +175,7 @@ function updateSubscriptionDialog()
         subEmail                .style.display = 'block';
         subLicenseKey           .style.display = 'block';
         validateProductKeyButton.style.display = 'block';
-        subscribeWebsite        .style.display = 'block';
+        subscribeWebsite        .style.display = 'inline-block';
     }
 }
 
