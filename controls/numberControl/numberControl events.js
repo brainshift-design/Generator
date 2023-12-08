@@ -253,7 +253,9 @@ NumberControl.prototype.initEvents = function()
             {
                 numberControlChanging = this;
 
+
                 this.movedX += e.movementX;
+                
                 
                 if (!isNaN(this.value))
                 {

@@ -303,6 +303,9 @@ function uiMakeNodeActive(node, makePassive = true)
 
 function uiMakeNodesActive(nodes, shiftKey = false, deactivate = true)
 {
+    curRequestId = nextRequestId++;
+
+
     if (!shiftKey)
     {
         if (deactivate)

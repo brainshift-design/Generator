@@ -1060,7 +1060,7 @@ const MATH_OPS = [
     [NUMBER_MODULO, '%'],
     [NUMBER_DIVIDE, '/'],
     [NUMBER_MULTIPLY, '×'],
-    [NUMBER_EXPONENT, 'e<sup>x</sup>']
+    [NUMBER_EXPONENT, 'e<sup>x']
 ];
 const MATH_OPS_SHORT = [
     [NUMBER_SUBTRACT, '−'],
