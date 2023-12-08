@@ -3722,11 +3722,13 @@ function figUpdateObject(figObj, genObj)
     }
 
 
-    figObj.parent.appendChild(figObj);
+    if (!figObj.removed)
+    {
+        figObj.parent.appendChild(figObj);
 
-
-    if (genObj[FO_DECO])
-        updateDecoObject(figObj);
+        if (genObj[FO_DECO])
+            updateDecoObject(figObj);
+    }
 }
 
 
@@ -5162,7 +5164,7 @@ function figUpdateFrameData(figFrame, genFrame)
 
 function genShapeGroupIsValid(genGroup)
 {
-    return genGroup[FO_GROUP_CHILDREN].length > 0;
+    return true;//genGroup[FO_GROUP_CHILDREN].length > 0;
 }
 
 
@@ -5180,18 +5182,22 @@ function figCreateShapeGroup(genGroup)
         ? figma.group(objects, figma.currentPage)
         : null;
 
-    return figUpdateShapeGroup(figGroup, genGroup);
+
+    if (figGroup)
+        figUpdateShapeGroup(figGroup, genGroup);
+
+
+    return figGroup;
 }
 
 
 
 function figUpdateShapeGroup(figGroup, genGroup)
 {
-    if (   !figGroup
-        || !genShapeGroupIsValid(genGroup))
+    if (genGroup[FO_GROUP_CHILDREN].length == 0)
     {
         figGroup.remove();
-        return null;
+        return;
     }
 
 
@@ -5202,9 +5208,6 @@ function figUpdateShapeGroup(figGroup, genGroup)
         figGroup, 
         genGroup[FO_GROUP_CHILDREN],
         genGroup[FO_GROUP_CHILDREN].length);
-
-
-    return figGroup;
 }
 
 

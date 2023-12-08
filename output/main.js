@@ -2502,9 +2502,11 @@ function figUpdateObject(figObj, genObj) {
             figUpdateFrame(figObj, genObj);
             break;
     }
-    figObj.parent.appendChild(figObj);
-    if (genObj[FO_DECO])
-        updateDecoObject(figObj);
+    if (!figObj.removed) {
+        figObj.parent.appendChild(figObj);
+        if (genObj[FO_DECO])
+            updateDecoObject(figObj);
+    }
 }
 function figUpdateObjects(figParent, genObjects, batchSize, nodeIds = [], firstChunk = false, lastChunk = false, zoomToFit = false) {
     return __awaiter(this, void 0, void 0, function* () {
@@ -3403,7 +3405,7 @@ function figUpdateFrameData(figFrame, genFrame) {
     setObjectProps(figFrame, genFrame, genFrame[FO_FRAME_CHILDREN].length == 0);
 }
 function genShapeGroupIsValid(genGroup) {
-    return genGroup[FO_GROUP_CHILDREN].length > 0;
+    return true; //genGroup[FO_GROUP_CHILDREN].length > 0;
 }
 function figCreateShapeGroup(genGroup) {
     let objects = [];
@@ -3412,17 +3414,17 @@ function figCreateShapeGroup(genGroup) {
     const figGroup = !isEmpty(objects)
         ? figma.group(objects, figma.currentPage)
         : null;
-    return figUpdateShapeGroup(figGroup, genGroup);
+    if (figGroup)
+        figUpdateShapeGroup(figGroup, genGroup);
+    return figGroup;
 }
 function figUpdateShapeGroup(figGroup, genGroup) {
-    if (!figGroup
-        || !genShapeGroupIsValid(genGroup)) {
+    if (genGroup[FO_GROUP_CHILDREN].length == 0) {
         figGroup.remove();
-        return null;
+        return;
     }
     actualObjectCount++;
     figUpdateObjects(figGroup, genGroup[FO_GROUP_CHILDREN], genGroup[FO_GROUP_CHILDREN].length);
-    return figGroup;
 }
 function genLineIsValid(genLine) {
     return genLine[FO_X] != null && !isNaN(genLine[FO_X])
