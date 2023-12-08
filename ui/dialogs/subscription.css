@@ -228,7 +228,7 @@
 #licenseInfo
 {
     position: absolute; 
-    top:      120px;
+    top:      116px;
 }
 
 #subLicenseKey
@@ -276,6 +276,7 @@
 
 #subscribeWebsite
 {
+    display:        none;
     font-size:      11px;
     text-align:     center;
 
