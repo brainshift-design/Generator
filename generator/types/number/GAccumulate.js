@@ -1,5 +1,5 @@
 class GAccumulate
-extends GOperator
+extends GOperator1
 {
     current;
     when;
@@ -45,28 +45,38 @@ extends GOperator
             return this;
 
 
-        const when = (await this.when.eval(parse)).toValue();
+        const input = this.input ? (await this.input.eval(parse)).toValue() : null;
+        const when  = this.when  ? (await this.when .eval(parse)).toValue() : null;
             
 
-        if (this.input)
+        if (   input
+            && when)
         {
-            const input = (await this.input.eval(parse)).toValue();
-
-            if (when.value == 0)
-                this.value = this.current.copy();
-
-            if (input)
+            if (this.options.enabled)
             {
-                this.current.value += input.value;
-                this.current.decimals = Math.max(this.current.decimals, input.decimals);
+                if (when.value == 0)
+                    this.value = this.current.copy();
+
+                if (input)
+                {
+                    this.current.value += input.value;
+                    this.current.decimals = Math.max(this.current.decimals, input.decimals);
+                }
+
+                if (when.value > 0)
+                    this.value = this.current.copy();
             }
-
-            if (when.value > 0)
-                this.value = this.current.copy();
+            else
+                this.value = input;
         }
+        else
+            this.value = NumberValue.NaN.copy()
 
 
-        this.setUpdateValues(parse, [['', NullValue]]);
+        this.setUpdateValues(parse, 
+        [
+            ['when', when]
+        ]);
         
 
         this.validate();
@@ -97,8 +107,7 @@ extends GOperator
     {
         super.pushValueUpdates(parse);
 
-        if (this.start) this.start.pushValueUpdates(parse);
-        if (this.step ) this.step .pushValueUpdates(parse);
+        if (this.when) this.when.pushValueUpdates(parse);
     }
 
 
@@ -107,8 +116,7 @@ extends GOperator
     {
         super.invalidateInputs(parse, from, force);
 
-        if (this.start) this.start.invalidateInputs(parse, from, force);
-        if (this.step ) this.step .invalidateInputs(parse, from, force);
+        if (this.when) this.when.invalidateInputs(parse, from, force);
     }
 
 
@@ -117,8 +125,7 @@ extends GOperator
     {
         super.iterateLoop(parse);
 
-        if (this.start) this.start.iterateLoop(parse);
-        if (this.step ) this.step .iterateLoop(parse);
+        if (this.when) this.when.iterateLoop(parse);
     }
 
 

@@ -4,7 +4,7 @@
 
 
 
-const generatorVersion = 318;
+const generatorVersion = 319;
 
 
 const MAX_INT32        = 2147483647;
@@ -21546,36 +21546,40 @@ extends GOperator
         }
 
 
-
-        let f = this.random.get(this.iteration + this.uniqueOffset);
-        f = getSpreadBias(f, bias.value, spread.value);
-        
-        f = min.value + f * (max.value - min.value);
-        
-        this.value = new NumberValue(f, Math.max(min.decimals, max.decimals));
-
+        if (this.options.enabled)
+        {
+            let f = this.random.get(this.iteration + this.uniqueOffset);
+            f = getSpreadBias(f, bias.value, spread.value);
             
-        const _unique = unique.value/100;
-        
+            f = min.value + f * (max.value - min.value);
+            
+            this.value = new NumberValue(f, Math.max(min.decimals, max.decimals));
 
-        if (max.value - min.value >= 1)
-        {
-            while (this.value.toNumber() == this.lastValue1
-                && this.randomUnique.get(this.iteration) < _unique)
-                this.value = new NumberValue(
-                    min.value + this.random.get(this.iteration + ++this.uniqueOffset) * (max.value - min.value),
-                    Math.max(min.decimals, max.decimals));
+                
+            const _unique = unique.value/100;
+            
+
+            if (max.value - min.value >= 1)
+            {
+                while (this.value.toNumber() == this.lastValue1
+                    && this.randomUnique.get(this.iteration) < _unique)
+                    this.value = new NumberValue(
+                        min.value + this.random.get(this.iteration + ++this.uniqueOffset) * (max.value - min.value),
+                        Math.max(min.decimals, max.decimals));
+            }
+
+            if (max.value - min.value >= 2)
+            {
+                while ((   this.value.toNumber() == this.lastValue1
+                        || this.value.toNumber() == this.lastValue2)
+                    && this.randomUnique.get(this.iteration) < Math.max(_unique - 1))
+                    this.value = new NumberValue(
+                        min.value + this.random.get(this.iteration + ++this.uniqueOffset) * (max.value - min.value),
+                        Math.max(min.decimals, max.decimals));
+            }        
         }
-
-        if (max.value - min.value >= 2)
-        {
-            while ((   this.value.toNumber() == this.lastValue1
-                    || this.value.toNumber() == this.lastValue2)
-                && this.randomUnique.get(this.iteration) < Math.max(_unique - 1))
-                this.value = new NumberValue(
-                    min.value + this.random.get(this.iteration + ++this.uniqueOffset) * (max.value - min.value),
-                    Math.max(min.decimals, max.decimals));
-        }        
+        else
+            this.value = min;
 
 
         if (this.value.isValid())
@@ -22036,7 +22040,7 @@ extends GOperator
 
 
 class GAccumulate
-extends GOperator
+extends GOperator1
 {
     current;
     when;
@@ -22082,28 +22086,38 @@ extends GOperator
             return this;
 
 
-        const when = (await this.when.eval(parse)).toValue();
+        const input = this.input ? (await this.input.eval(parse)).toValue() : null;
+        const when  = this.when  ? (await this.when .eval(parse)).toValue() : null;
             
 
-        if (this.input)
+        if (   input
+            && when)
         {
-            const input = (await this.input.eval(parse)).toValue();
-
-            if (when.value == 0)
-                this.value = this.current.copy();
-
-            if (input)
+            if (this.options.enabled)
             {
-                this.current.value += input.value;
-                this.current.decimals = Math.max(this.current.decimals, input.decimals);
+                if (when.value == 0)
+                    this.value = this.current.copy();
+
+                if (input)
+                {
+                    this.current.value += input.value;
+                    this.current.decimals = Math.max(this.current.decimals, input.decimals);
+                }
+
+                if (when.value > 0)
+                    this.value = this.current.copy();
             }
-
-            if (when.value > 0)
-                this.value = this.current.copy();
+            else
+                this.value = input;
         }
+        else
+            this.value = NumberValue.NaN.copy()
 
 
-        this.setUpdateValues(parse, [['', NullValue]]);
+        this.setUpdateValues(parse, 
+        [
+            ['when', when]
+        ]);
         
 
         this.validate();
@@ -22134,8 +22148,7 @@ extends GOperator
     {
         super.pushValueUpdates(parse);
 
-        if (this.start) this.start.pushValueUpdates(parse);
-        if (this.step ) this.step .pushValueUpdates(parse);
+        if (this.when) this.when.pushValueUpdates(parse);
     }
 
 
@@ -22144,8 +22157,7 @@ extends GOperator
     {
         super.invalidateInputs(parse, from, force);
 
-        if (this.start) this.start.invalidateInputs(parse, from, force);
-        if (this.step ) this.step .invalidateInputs(parse, from, force);
+        if (this.when) this.when.invalidateInputs(parse, from, force);
     }
 
 
@@ -22154,8 +22166,7 @@ extends GOperator
     {
         super.iterateLoop(parse);
 
-        if (this.start) this.start.iterateLoop(parse);
-        if (this.step ) this.step .iterateLoop(parse);
+        if (this.when) this.when.iterateLoop(parse);
     }
 
 
