@@ -32,6 +32,10 @@ function figUpdateStar(figStar, genStar)
     figStar.pointCount   = genStar[FO_STAR_POINTS];
     figStar.innerRadius  = Math.min(Math.max(0, genStar[FO_STAR_CONVEX] / 100), 1);
 
+
     setObjectTransform(figStar, genStar);
     setObjectProps    (figStar, genStar);
+
+
+    actualObjectCount++;
 }

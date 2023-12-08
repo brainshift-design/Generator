@@ -35,5 +35,8 @@ function figUpdateVectorPath(figPath, genPath)
 
     setObjectTransform(figPath, genPath, false);
     setObjectProps    (figPath, genPath);
+
+
+    actualObjectCount++;
 }
 

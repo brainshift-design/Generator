@@ -32,7 +32,9 @@ extends FigmaShape
 
     getCount()
     {
-        return super.getCount() + this.children.length;
+        return this.children.length > 0
+             ? super.getCount() + this.children.length
+             : 0;
     }
 
 

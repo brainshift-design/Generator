@@ -43,6 +43,8 @@ function figUpdatePoint(figPoint, genPoint)
 {
     setPointTransform(figPoint, genPoint);
     updatePointStyles(figPoint);
+
+    actualObjectCount++;
 }
 
 

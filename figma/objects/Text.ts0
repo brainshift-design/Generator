@@ -45,8 +45,8 @@ function figUpdateText(figText, genText)
         {
             figma.loadFontAsync(fontName).then(() =>
             {
-                figUpdateText_(figText, genText, fontName);
                 loadedFonts.push(fontName);
+                figUpdateText_(figText, genText, fontName);
             });
         }
         else
@@ -86,6 +86,9 @@ function figUpdateText_(figText, genText, fontName)
 
     setObjectTransform(figText, genText);
     setObjectProps    (figText, genText);
+
+
+    actualObjectCount++;
 
 
     // const xp0 = genText[FO_XP0];

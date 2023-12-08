@@ -18,30 +18,29 @@ function figCreateShapeGroup(genGroup)
         ? figma.group(objects, figma.currentPage)
         : null;
 
-    if (figGroup)
-    {
-        //setObjectTransform(figGroup, genGroup);
-
-        if (!genShapeGroupIsValid(genGroup))
-            return figGroup;
-    }
-
-
-    return figGroup;
+    return figUpdateShapeGroup(figGroup, genGroup);
 }
 
 
 
 function figUpdateShapeGroup(figGroup, genGroup)
 {
-    if (!genShapeGroupIsValid(genGroup))
+    if (   !figGroup
+        || !genShapeGroupIsValid(genGroup))
     {
         figGroup.remove();
-        return;
+        return null;
     }
+
+
+    actualObjectCount++;
+
 
     figUpdateObjects(
         figGroup, 
         genGroup[FO_GROUP_CHILDREN],
         genGroup[FO_GROUP_CHILDREN].length);
+
+
+    return figGroup;
 }

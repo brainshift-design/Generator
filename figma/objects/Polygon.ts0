@@ -34,6 +34,10 @@ function figUpdatePolygon(figPoly, genPoly)
     figPoly.cornerRadius = genPoly[FO_POLY_ROUND];
     figPoly.pointCount   = Math.max(3, genPoly[FO_POLY_CORNERS]);
 
+
     setObjectTransform(figPoly, genPoly);
     setObjectProps    (figPoly, genPoly);
+
+
+    actualObjectCount++;
 }

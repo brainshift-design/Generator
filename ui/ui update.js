@@ -305,11 +305,12 @@ function uiGetValueForFigma(msg)
 
             totalObjectProgress = 
                 totalObjectCount > 0
-                ? msg.objectCount / totalObjectCount
+                ? msg.nominalObjectCount / totalObjectCount
                 : 1;
             
             updateObjectCountDisplay();
 
+            
             uiPostMessageToFigma(
             {
                 cmd:  'returnUiGetValueForFigma',

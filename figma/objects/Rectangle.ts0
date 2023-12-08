@@ -44,6 +44,10 @@ function figUpdateRect(figRect, genRect)
     else
         figRect.cornerRadius = genRect[FO_RECT_ROUND];
 
+
     setObjectTransform(figRect, genRect);
     setObjectProps    (figRect, genRect);
+
+
+    actualObjectCount++;
 }

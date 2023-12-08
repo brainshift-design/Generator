@@ -2734,8 +2734,8 @@ figGetValueFromUi
 timeoutId
 _genIgnoreNodeIds
 _genIgnoreObjects
-curObjectCount
-objUpdateCount
+nominalObjectCount
+actualObjectCount
 figCreateVectorPath
 figCreateVectorNetwork
 figCreateBoolean

@@ -41,6 +41,9 @@ function figUpdateEllipse(figEllipse, genEllipse)
     figUpdateEllipseData(figEllipse, genEllipse);
 
     setObjectProps(figEllipse, genEllipse);
+
+
+    actualObjectCount++;
 }
 
 

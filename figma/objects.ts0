@@ -1,8 +1,8 @@
 var _genIgnoreNodeIds = [];
 var _genIgnoreObjects = [];
 
-var  curObjectCount   = 0;
-var  objUpdateCount   = 0;
+var  nominalObjectCount   = 0;
+var  actualObjectCount   = 0;
 
 
 function makeObjectName(obj)
@@ -71,9 +71,6 @@ function figCreateObject(genObj, addObject = null)
             }
 
             addObject(figObj);
-
-            curObjectCount++;
-            objUpdateCount++;
         }
     }
         
@@ -117,22 +114,19 @@ function figUpdateObject(figObj, genObj)
 
     if (genObj[FO_DECO])
         updateDecoObject(figObj);
-
-
-    curObjectCount++;
-    objUpdateCount++;
 }
 
 
 
 async function figUpdateObjects(figParent, genObjects, batchSize, nodeIds = [], firstChunk = false, lastChunk = false, zoomToFit = false)
 {
-    let curNodeId   = NULL;
-    let figObjects  = null;
+    let curNodeId           = NULL;
+    let figObjects          = null;
+        
+    let abort               = false;
 
-    let abort       = false;
-
-    const updateObjects = [];
+    const updateObjects     = [];
+    let   updateObjectCount = 0;
 
 
     _genIgnoreNodeIds.push(...nodeIds);
@@ -230,12 +224,23 @@ async function figUpdateObjects(figParent, genObjects, batchSize, nodeIds = [], 
         }
 
 
-        if (objUpdateCount >= batchSize)
+        nominalObjectCount++;
+        updateObjectCount++;
+        
+
+        if (updateObjectCount >= batchSize)
         {
-            const result = await figGetValueFromUiSync('returnObjectUpdate', { objectCount: curObjectCount }) as { key: string, value: boolean };
+            const result = await figGetValueFromUiSync(
+                'returnObjectUpdate', 
+                { 
+                    nominalObjectCount: nominalObjectCount,
+                    actualObjectCount:  actualObjectCount 
+                }
+                ) as { key: string, value: boolean };
+
             abort = result.value;
 
-            objUpdateCount = 0;
+            updateObjectCount = 0;
 
             if (abort) break;
         }
@@ -294,7 +299,12 @@ async function figUpdateObjects(figParent, genObjects, batchSize, nodeIds = [], 
     }
 
 
-    await figGetValueFromUiSync('returnObjectUpdate', { objectCount: curObjectCount })
+    await figGetValueFromUiSync(
+        'returnObjectUpdate', 
+        { 
+            nominalObjectCount: nominalObjectCount,
+            actualObjectCount:  actualObjectCount 
+        });
 }
 
 
