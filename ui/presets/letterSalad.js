@@ -9,8 +9,8 @@ const presetLetterSalad = '\
             "renamed": "false",\
             "enabled": "true",\
             "highlight": "0",\
-            "x": "4407",\
-            "y": "1624",\
+            "x": "4507",\
+            "y": "1724",\
             "z": "0",\
             "prevSpace": "hex",\
             "params":\
@@ -28,8 +28,8 @@ const presetLetterSalad = '\
             "renamed": "false",\
             "enabled": "true",\
             "highlight": "0",\
-            "x": "4015",\
-            "y": "1576",\
+            "x": "4115",\
+            "y": "1676",\
             "z": "1",\
             "params":\
             [\
@@ -43,8 +43,8 @@ const presetLetterSalad = '\
             "renamed": "false",\
             "enabled": "true",\
             "highlight": "0",\
-            "x": "4014",\
-            "y": "1415",\
+            "x": "4114",\
+            "y": "1515",\
             "z": "2",\
             "params":\
             [\
@@ -58,8 +58,8 @@ const presetLetterSalad = '\
             "renamed": "false",\
             "enabled": "true",\
             "highlight": "0",\
-            "x": "2861",\
-            "y": "1016",\
+            "x": "2961",\
+            "y": "1116",\
             "z": "3",\
             "params":\
             [\
@@ -74,8 +74,8 @@ const presetLetterSalad = '\
             "renamed": "false",\
             "enabled": "true",\
             "highlight": "0",\
-            "x": "1882",\
-            "y": "1106",\
+            "x": "1982",\
+            "y": "1206",\
             "z": "4",\
             "width": "120",\
             "height": "54",\
@@ -91,8 +91,8 @@ const presetLetterSalad = '\
             "renamed": "false",\
             "enabled": "true",\
             "highlight": "0",\
-            "x": "2128",\
-            "y": "1751",\
+            "x": "2228",\
+            "y": "1851",\
             "z": "5",\
             "width": "60",\
             "height": "64"\
@@ -104,8 +104,8 @@ const presetLetterSalad = '\
             "renamed": "false",\
             "enabled": "true",\
             "highlight": "0",\
-            "x": "1868",\
-            "y": "1598",\
+            "x": "1968",\
+            "y": "1698",\
             "z": "6",\
             "params":\
             [\
@@ -121,8 +121,8 @@ const presetLetterSalad = '\
             "renamed": "false",\
             "enabled": "true",\
             "highlight": "0",\
-            "x": "1440",\
-            "y": "1688",\
+            "x": "1540",\
+            "y": "1788",\
             "z": "7",\
             "params":\
             [\
@@ -138,8 +138,8 @@ const presetLetterSalad = '\
             "renamed": "false",\
             "enabled": "true",\
             "highlight": "0",\
-            "x": "1872",\
-            "y": "1915",\
+            "x": "1972",\
+            "y": "2015",\
             "z": "8",\
             "params":\
             [\
@@ -156,8 +156,8 @@ const presetLetterSalad = '\
             "renamed": "false",\
             "enabled": "true",\
             "highlight": "0",\
-            "x": "1526",\
-            "y": "2014",\
+            "x": "1626",\
+            "y": "2114",\
             "z": "9",\
             "prevSpace": "hsv",\
             "params":\
@@ -175,8 +175,8 @@ const presetLetterSalad = '\
             "renamed": "false",\
             "enabled": "true",\
             "highlight": "0",\
-            "x": "1302",\
-            "y": "2173",\
+            "x": "1402",\
+            "y": "2273",\
             "z": "10",\
             "params":\
             [\
@@ -191,8 +191,8 @@ const presetLetterSalad = '\
             "renamed": "false",\
             "enabled": "true",\
             "highlight": "0",\
-            "x": "1703",\
-            "y": "2215",\
+            "x": "1803",\
+            "y": "2315",\
             "z": "11",\
             "params":\
             [\
@@ -207,30 +207,13 @@ const presetLetterSalad = '\
             "renamed": "false",\
             "enabled": "true",\
             "highlight": "0",\
-            "x": "2718",\
-            "y": "1652",\
+            "x": "2818",\
+            "y": "1752",\
             "z": "12",\
             "params":\
             [\
                 ["NUM#", "add", "34,0"],\
                 ["NUM#", "end", "?,0"]\
-            ]\
-        },\
-        {\
-            "type": "NUM",\
-            "id": "num4",\
-            "name": "number",\
-            "renamed": "false",\
-            "enabled": "true",\
-            "highlight": "0",\
-            "x": "3180.64",\
-            "y": "1121",\
-            "z": "13",\
-            "width": "120",\
-            "height": "54",\
-            "params":\
-            [\
-                ["NUM#", "value", "200,0"]\
             ]\
         },\
         {\
@@ -240,9 +223,9 @@ const presetLetterSalad = '\
             "renamed": "false",\
             "enabled": "true",\
             "highlight": "0",\
-            "x": "3163.64",\
-            "y": "1273",\
-            "z": "14",\
+            "x": "3263.64",\
+            "y": "1373",\
+            "z": "13",\
             "params":\
             [\
                 ["NUM#", "distance", "209.60916010518244,10"],\
@@ -256,9 +239,9 @@ const presetLetterSalad = '\
             "renamed": "false",\
             "enabled": "true",\
             "highlight": "0",\
-            "x": "3014.64",\
-            "y": "1228",\
-            "z": "15",\
+            "x": "3114.64",\
+            "y": "1328",\
+            "z": "14",\
             "params":\
             [\
                 ["NUM#", "x", "130,0"],\
@@ -272,9 +255,9 @@ const presetLetterSalad = '\
             "renamed": "false",\
             "enabled": "true",\
             "highlight": "0",\
-            "x": "1877",\
-            "y": "1017",\
-            "z": "16",\
+            "x": "1977",\
+            "y": "1117",\
+            "z": "15",\
             "width": "120",\
             "height": "54",\
             "params":\
@@ -289,9 +272,9 @@ const presetLetterSalad = '\
             "renamed": "false",\
             "enabled": "true",\
             "highlight": "0",\
-            "x": "1537",\
-            "y": "1018",\
-            "z": "17",\
+            "x": "1637",\
+            "y": "1118",\
+            "z": "16",\
             "params":\
             [\
                 ["NUM#", "seed", "7214,0"],\
@@ -301,31 +284,15 @@ const presetLetterSalad = '\
             ]\
         },\
         {\
-            "type": "MATH",\
-            "id": "math2",\
-            "name": "math",\
-            "renamed": "false",\
-            "enabled": "true",\
-            "highlight": "0",\
-            "x": "3327.64",\
-            "y": "1193",\
-            "z": "18",\
-            "params":\
-            [\
-                ["NUM#", "value", "-9.60916010518244,10"],\
-                ["NUM#", "operation", "0,0"]\
-            ]\
-        },\
-        {\
             "type": "SMATH",\
             "id": "math",\
             "name": "math",\
             "renamed": "false",\
             "enabled": "true",\
             "highlight": "0",\
-            "x": "3627",\
-            "y": "1217",\
-            "z": "19",\
+            "x": "3727",\
+            "y": "1317",\
+            "z": "17",\
             "params":\
             [\
                 ["NUM#", "operation", "4,0"],\
@@ -339,9 +306,9 @@ const presetLetterSalad = '\
             "renamed": "false",\
             "enabled": "true",\
             "highlight": "0",\
-            "x": "2716",\
-            "y": "1486",\
-            "z": "20",\
+            "x": "2816",\
+            "y": "1586",\
+            "z": "18",\
             "params":\
             [\
                 ["NUM#", "add", "30,0"],\
@@ -355,9 +322,9 @@ const presetLetterSalad = '\
             "renamed": "false",\
             "enabled": "true",\
             "highlight": "0",\
-            "x": "3020.64",\
-            "y": "1319",\
-            "z": "21",\
+            "x": "3120.64",\
+            "y": "1419",\
+            "z": "19",\
             "params":\
             [\
                 ["NUM#", "x", "270,0"],\
@@ -371,9 +338,9 @@ const presetLetterSalad = '\
             "renamed": "false",\
             "enabled": "true",\
             "highlight": "0",\
-            "x": "1675",\
-            "y": "1675",\
-            "z": "22",\
+            "x": "1775",\
+            "y": "1775",\
+            "z": "20",\
             "prevSpace": "hex",\
             "params":\
             [\
@@ -390,9 +357,9 @@ const presetLetterSalad = '\
             "renamed": "false",\
             "enabled": "true",\
             "highlight": "0",\
-            "x": "2645",\
-            "y": "1013",\
-            "z": "23",\
+            "x": "2745",\
+            "y": "1113",\
+            "z": "21",\
             "params":\
             [\
             ]\
@@ -404,9 +371,9 @@ const presetLetterSalad = '\
             "renamed": "false",\
             "enabled": "true",\
             "highlight": "0",\
-            "x": "2267",\
-            "y": "1009",\
-            "z": "24",\
+            "x": "2367",\
+            "y": "1109",\
+            "z": "22",\
             "params":\
             [\
                 ["TEXT#", "text", "L", "center"],\
@@ -424,9 +391,9 @@ const presetLetterSalad = '\
             "renamed": "false",\
             "enabled": "true",\
             "highlight": "0",\
-            "x": "1680",\
-            "y": "1534",\
-            "z": "25",\
+            "x": "1780",\
+            "y": "1634",\
+            "z": "23",\
             "prevSpace": "hsv",\
             "params":\
             [\
@@ -443,9 +410,9 @@ const presetLetterSalad = '\
             "renamed": "false",\
             "enabled": "true",\
             "highlight": "0",\
-            "x": "1869",\
-            "y": "2110",\
-            "z": "26",\
+            "x": "1969",\
+            "y": "2210",\
+            "z": "24",\
             "params":\
             [\
                 ["NUM#", "y", "2,0"],\
@@ -455,31 +422,15 @@ const presetLetterSalad = '\
             ]\
         },\
         {\
-            "type": "MINMAX",\
-            "id": "minmax",\
-            "name": "min%2Fmax",\
-            "renamed": "false",\
-            "enabled": "true",\
-            "highlight": "0",\
-            "x": "3477",\
-            "y": "1217",\
-            "z": "27",\
-            "params":\
-            [\
-                ["NUM#", "value", "10,0"],\
-                ["NUM#", "operation", "1,0"]\
-            ]\
-        },\
-        {\
             "type": "ROT",\
             "id": "rotate",\
             "name": "rotate",\
             "renamed": "false",\
             "enabled": "true",\
             "highlight": "0",\
-            "x": "2478",\
-            "y": "1113",\
-            "z": "28",\
+            "x": "2578",\
+            "y": "1213",\
+            "z": "25",\
             "params":\
             [\
                 ["NUM#", "angle", "90,0"],\
@@ -493,9 +444,9 @@ const presetLetterSalad = '\
             "renamed": "false",\
             "enabled": "true",\
             "highlight": "0",\
-            "x": "1704",\
-            "y": "1018",\
-            "z": "29"\
+            "x": "1804",\
+            "y": "1118",\
+            "z": "26"\
         },\
         {\
             "type": "NUM",\
@@ -504,31 +455,14 @@ const presetLetterSalad = '\
             "renamed": "false",\
             "enabled": "true",\
             "highlight": "0",\
-            "x": "1883",\
-            "y": "1168",\
-            "z": "30",\
+            "x": "1983",\
+            "y": "1268",\
+            "z": "27",\
             "width": "120",\
             "height": "54",\
             "params":\
             [\
                 ["NUM#", "value", "45,0"]\
-            ]\
-        },\
-        {\
-            "type": "NUM",\
-            "id": "num5",\
-            "name": "number",\
-            "renamed": "false",\
-            "enabled": "true",\
-            "highlight": "0",\
-            "x": "3334",\
-            "y": "1293",\
-            "z": "31",\
-            "width": "120",\
-            "height": "54",\
-            "params":\
-            [\
-                ["NUM#", "value", "10,0"]\
             ]\
         },\
         {\
@@ -538,9 +472,9 @@ const presetLetterSalad = '\
             "renamed": "true",\
             "enabled": "true",\
             "highlight": "0",\
-            "x": "4566",\
-            "y": "1438",\
-            "z": "32",\
+            "x": "4666",\
+            "y": "1538",\
+            "z": "28",\
             "active": "true",\
             "params":\
             [\
@@ -556,9 +490,9 @@ const presetLetterSalad = '\
             "renamed": "false",\
             "enabled": "true",\
             "highlight": "0",\
-            "x": "1899",\
-            "y": "1255",\
-            "z": "33",\
+            "x": "1999",\
+            "y": "1355",\
+            "z": "29",\
             "params":\
             [\
                 ["NUM#", "seed", "5563,0"],\
@@ -573,9 +507,9 @@ const presetLetterSalad = '\
             "renamed": "false",\
             "enabled": "true",\
             "highlight": "0",\
-            "x": "2483",\
-            "y": "1262",\
-            "z": "34",\
+            "x": "2583",\
+            "y": "1362",\
+            "z": "30",\
             "params":\
             [\
                 ["NUM#", "seed", "2620,0"],\
@@ -589,9 +523,9 @@ const presetLetterSalad = '\
             "renamed": "false",\
             "enabled": "true",\
             "highlight": "0",\
-            "x": "3796",\
-            "y": "1018",\
-            "z": "35",\
+            "x": "3896",\
+            "y": "1118",\
+            "z": "31",\
             "params":\
             [\
                 ["NUM#", "scaleX", "5,1"],\
@@ -607,9 +541,9 @@ const presetLetterSalad = '\
             "renamed": "false",\
             "enabled": "true",\
             "highlight": "0",\
-            "x": "1440",\
-            "y": "1507",\
-            "z": "36",\
+            "x": "1540",\
+            "y": "1607",\
+            "z": "32",\
             "params":\
             [\
                 ["NUM#", "seed", "1391,0"],\
@@ -624,14 +558,47 @@ const presetLetterSalad = '\
             "renamed": "false",\
             "enabled": "true",\
             "highlight": "0",\
-            "x": "1302",\
-            "y": "1992",\
-            "z": "37",\
+            "x": "1402",\
+            "y": "2092",\
+            "z": "33",\
             "params":\
             [\
                 ["NUM#", "seed", "1174,0"],\
                 ["NUM#", "min", "50,0"],\
                 ["NUM#", "max", "100,0"]\
+            ]\
+        },\
+        {\
+            "type": "SMINMAX",\
+            "id": "minmax2",\
+            "name": "min%2Fmax",\
+            "renamed": "false",\
+            "enabled": "true",\
+            "highlight": "0",\
+            "x": "3577",\
+            "y": "1318",\
+            "z": "34",\
+            "params":\
+            [\
+                ["NUM#", "operand", "10,0"],\
+                ["NUM#", "operation", "1,0"]\
+            ]\
+        },\
+        {\
+            "type": "SMATH",\
+            "id": "math2",\
+            "name": "math",\
+            "renamed": "false",\
+            "enabled": "true",\
+            "highlight": "0",\
+            "x": "3430",\
+            "y": "1318",\
+            "z": "35",\
+            "params":\
+            [\
+                ["NUM#", "operand", "200,0"],\
+                ["NUM#", "operation", "0,0"],\
+                ["NUM#", "invert", "1,0"]\
             ]\
         }\
         ],\
@@ -790,23 +757,7 @@ const presetLetterSalad = '\
             "list": "false"\
         },\
         {\
-            "outputNodeId": "num4",\
-            "outputId": "h0",\
-            "outputOrder": "0",\
-            "inputNodeId": "math2",\
-            "inputId": "h0",\
-            "list": "false"\
-        },\
-        {\
-            "outputNodeId": "measure",\
-            "outputId": "distance",\
-            "outputOrder": "0",\
-            "inputNodeId": "math2",\
-            "inputId": "h1",\
-            "list": "false"\
-        },\
-        {\
-            "outputNodeId": "minmax",\
+            "outputNodeId": "minmax2",\
             "outputId": "h0",\
             "outputOrder": "0",\
             "inputNodeId": "math",\
@@ -926,22 +877,6 @@ const presetLetterSalad = '\
             "list": "false"\
         },\
         {\
-            "outputNodeId": "math2",\
-            "outputId": "h0",\
-            "outputOrder": "0",\
-            "inputNodeId": "minmax",\
-            "inputId": "h0",\
-            "list": "false"\
-        },\
-        {\
-            "outputNodeId": "num5",\
-            "outputId": "h0",\
-            "outputOrder": "0",\
-            "inputNodeId": "minmax",\
-            "inputId": "h1",\
-            "list": "false"\
-        },\
-        {\
             "outputNodeId": "text2",\
             "outputId": "h0",\
             "outputOrder": "0",\
@@ -995,6 +930,22 @@ const presetLetterSalad = '\
             "outputOrder": "1",\
             "inputNodeId": "scale",\
             "inputId": "scaleY",\
+            "list": "false"\
+        },\
+        {\
+            "outputNodeId": "math2",\
+            "outputId": "h0",\
+            "outputOrder": "0",\
+            "inputNodeId": "minmax2",\
+            "inputId": "h0",\
+            "list": "false"\
+        },\
+        {\
+            "outputNodeId": "measure",\
+            "outputId": "distance",\
+            "outputOrder": "0",\
+            "inputNodeId": "math2",\
+            "inputId": "h0",\
             "list": "false"\
         }\
         ]\

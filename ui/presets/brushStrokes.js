@@ -9,8 +9,8 @@ const presetBrushStrokes = '\
             "renamed": "false",\
             "enabled": "true",\
             "highlight": "0",\
-            "x": "7712",\
-            "y": "7077",\
+            "x": "7862",\
+            "y": "7227",\
             "z": "0",\
             "params":\
             [\
@@ -27,8 +27,8 @@ const presetBrushStrokes = '\
             "renamed": "false",\
             "enabled": "true",\
             "highlight": "0",\
-            "x": "7712",\
-            "y": "6888",\
+            "x": "7862",\
+            "y": "7038",\
             "z": "1",\
             "params":\
             [\
@@ -45,8 +45,8 @@ const presetBrushStrokes = '\
             "renamed": "false",\
             "enabled": "true",\
             "highlight": "0",\
-            "x": "7185",\
-            "y": "7015",\
+            "x": "7335",\
+            "y": "7165",\
             "z": "2",\
             "params":\
             [\
@@ -64,8 +64,8 @@ const presetBrushStrokes = '\
             "renamed": "false",\
             "enabled": "true",\
             "highlight": "3",\
-            "x": "4954",\
-            "y": "7207",\
+            "x": "5104",\
+            "y": "7357",\
             "z": "3",\
             "width": "120",\
             "height": "54",\
@@ -81,8 +81,8 @@ const presetBrushStrokes = '\
             "renamed": "false",\
             "enabled": "true",\
             "highlight": "0",\
-            "x": "5779",\
-            "y": "6952",\
+            "x": "5929",\
+            "y": "7102",\
             "z": "4",\
             "params":\
             [\
@@ -97,8 +97,8 @@ const presetBrushStrokes = '\
             "renamed": "false",\
             "enabled": "true",\
             "highlight": "0",\
-            "x": "5941",\
-            "y": "6872",\
+            "x": "6091",\
+            "y": "7022",\
             "z": "5",\
             "params":\
             [\
@@ -113,8 +113,8 @@ const presetBrushStrokes = '\
             "renamed": "false",\
             "enabled": "true",\
             "highlight": "0",\
-            "x": "6278",\
-            "y": "6960",\
+            "x": "6428",\
+            "y": "7110",\
             "z": "6"\
         },\
         {\
@@ -124,8 +124,8 @@ const presetBrushStrokes = '\
             "renamed": "false",\
             "enabled": "true",\
             "highlight": "0",\
-            "x": "6607",\
-            "y": "6960",\
+            "x": "6757",\
+            "y": "7110",\
             "z": "7",\
             "params":\
             [\
@@ -140,8 +140,8 @@ const presetBrushStrokes = '\
             "renamed": "false",\
             "enabled": "true",\
             "highlight": "0",\
-            "x": "5444",\
-            "y": "6624",\
+            "x": "5594",\
+            "y": "6774",\
             "z": "8",\
             "width": "120",\
             "height": "54",\
@@ -157,13 +157,13 @@ const presetBrushStrokes = '\
             "renamed": "false",\
             "enabled": "true",\
             "highlight": "0",\
-            "x": "5617",\
-            "y": "6602",\
+            "x": "5767",\
+            "y": "6752",\
             "z": "9",\
             "params":\
             [\
-                ["NUM#", "value", "-3,0"],\
-                ["NUM#", "operation", "0,0"]\
+                ["NUM#", "operation", "0,0"],\
+                ["NUM#", "value", "-3,0"]\
             ]\
         },\
         {\
@@ -173,8 +173,8 @@ const presetBrushStrokes = '\
             "renamed": "false",\
             "enabled": "true",\
             "highlight": "0",\
-            "x": "5791",\
-            "y": "6556",\
+            "x": "5941",\
+            "y": "6706",\
             "z": "10",\
             "params":\
             [\
@@ -190,8 +190,8 @@ const presetBrushStrokes = '\
             "renamed": "false",\
             "enabled": "true",\
             "highlight": "0",\
-            "x": "5793",\
-            "y": "6406",\
+            "x": "5943",\
+            "y": "6556",\
             "z": "11",\
             "params":\
             [\
@@ -206,8 +206,8 @@ const presetBrushStrokes = '\
             "renamed": "false",\
             "enabled": "true",\
             "highlight": "0",\
-            "x": "6842",\
-            "y": "6551",\
+            "x": "6992",\
+            "y": "6701",\
             "z": "12",\
             "width": "120",\
             "height": "51"\
@@ -219,8 +219,8 @@ const presetBrushStrokes = '\
             "renamed": "false",\
             "enabled": "true",\
             "highlight": "0",\
-            "x": "6475",\
-            "y": "6620",\
+            "x": "6625",\
+            "y": "6770",\
             "z": "13",\
             "params":\
             [\
@@ -237,8 +237,8 @@ const presetBrushStrokes = '\
             "renamed": "false",\
             "enabled": "true",\
             "highlight": "0",\
-            "x": "6339",\
-            "y": "6620",\
+            "x": "6489",\
+            "y": "6770",\
             "z": "14",\
             "params":\
             [\
@@ -255,8 +255,8 @@ const presetBrushStrokes = '\
             "renamed": "false",\
             "enabled": "true",\
             "highlight": "0",\
-            "x": "6641",\
-            "y": "6635",\
+            "x": "6791",\
+            "y": "6785",\
             "z": "15",\
             "prevSpace": "hsl",\
             "params":\
@@ -274,8 +274,8 @@ const presetBrushStrokes = '\
             "renamed": "false",\
             "enabled": "true",\
             "highlight": "0",\
-            "x": "7374",\
-            "y": "6540",\
+            "x": "7524",\
+            "y": "6690",\
             "z": "16",\
             "params":\
             [\
@@ -290,8 +290,8 @@ const presetBrushStrokes = '\
             "renamed": "false",\
             "enabled": "true",\
             "highlight": "0",\
-            "x": "7749",\
-            "y": "6540",\
+            "x": "7899",\
+            "y": "6690",\
             "z": "17"\
         },\
         {\
@@ -301,8 +301,8 @@ const presetBrushStrokes = '\
             "renamed": "false",\
             "enabled": "true",\
             "highlight": "0",\
-            "x": "7547",\
-            "y": "7780",\
+            "x": "7697",\
+            "y": "7930",\
             "z": "18",\
             "params":\
             [\
@@ -320,8 +320,8 @@ const presetBrushStrokes = '\
             "renamed": "false",\
             "enabled": "true",\
             "highlight": "0",\
-            "x": "7815",\
-            "y": "7552",\
+            "x": "7965",\
+            "y": "7702",\
             "z": "19",\
             "prevSpace": "hsv",\
             "params":\
@@ -339,8 +339,8 @@ const presetBrushStrokes = '\
             "renamed": "false",\
             "enabled": "true",\
             "highlight": "0",\
-            "x": "7862",\
-            "y": "8375",\
+            "x": "8012",\
+            "y": "8525",\
             "z": "20",\
             "width": "120",\
             "height": "54"\
@@ -352,8 +352,8 @@ const presetBrushStrokes = '\
             "renamed": "false",\
             "enabled": "true",\
             "highlight": "0",\
-            "x": "8000",\
-            "y": "8342",\
+            "x": "8150",\
+            "y": "8492",\
             "z": "21"\
         },\
         {\
@@ -363,8 +363,8 @@ const presetBrushStrokes = '\
             "renamed": "false",\
             "enabled": "true",\
             "highlight": "0",\
-            "x": "7998",\
-            "y": "8069",\
+            "x": "8148",\
+            "y": "8219",\
             "z": "22",\
             "params":\
             [\
@@ -379,8 +379,8 @@ const presetBrushStrokes = '\
             "renamed": "false",\
             "enabled": "true",\
             "highlight": "0",\
-            "x": "7846",\
-            "y": "8000",\
+            "x": "7996",\
+            "y": "8150",\
             "z": "23",\
             "width": "120",\
             "height": "54"\
@@ -392,8 +392,8 @@ const presetBrushStrokes = '\
             "renamed": "false",\
             "enabled": "true",\
             "highlight": "0",\
-            "x": "7984",\
-            "y": "7967",\
+            "x": "8134",\
+            "y": "8117",\
             "z": "24"\
         },\
         {\
@@ -403,8 +403,8 @@ const presetBrushStrokes = '\
             "renamed": "false",\
             "enabled": "true",\
             "highlight": "0",\
-            "x": "8150",\
-            "y": "7766",\
+            "x": "8300",\
+            "y": "7916",\
             "z": "25",\
             "params":\
             [\
@@ -418,8 +418,8 @@ const presetBrushStrokes = '\
             "renamed": "false",\
             "enabled": "true",\
             "highlight": "0",\
-            "x": "8170",\
-            "y": "7562",\
+            "x": "8320",\
+            "y": "7712",\
             "z": "26",\
             "width": "120",\
             "height": "64"\
@@ -431,8 +431,8 @@ const presetBrushStrokes = '\
             "renamed": "false",\
             "enabled": "true",\
             "highlight": "0",\
-            "x": "8470",\
-            "y": "7208",\
+            "x": "8620",\
+            "y": "7358",\
             "z": "27",\
             "active": "true",\
             "params":\
@@ -448,8 +448,8 @@ const presetBrushStrokes = '\
             "renamed": "false",\
             "enabled": "true",\
             "highlight": "0",\
-            "x": "6100",\
-            "y": "6323",\
+            "x": "6250",\
+            "y": "6473",\
             "z": "28",\
             "params":\
             [\
@@ -463,8 +463,8 @@ const presetBrushStrokes = '\
             "renamed": "false",\
             "enabled": "true",\
             "highlight": "0",\
-            "x": "7714",\
-            "y": "7364",\
+            "x": "7864",\
+            "y": "7514",\
             "z": "29",\
             "width": "62.174222782259434",\
             "height": "142"\
@@ -476,8 +476,8 @@ const presetBrushStrokes = '\
             "renamed": "false",\
             "enabled": "true",\
             "highlight": "0",\
-            "x": "7710",\
-            "y": "6693",\
+            "x": "7860",\
+            "y": "6843",\
             "z": "30",\
             "params":\
             [\
@@ -494,8 +494,8 @@ const presetBrushStrokes = '\
             "renamed": "false",\
             "enabled": "true",\
             "highlight": "0",\
-            "x": "7863",\
-            "y": "6810",\
+            "x": "8013",\
+            "y": "6960",\
             "z": "31",\
             "width": "76.61290503628408",\
             "height": "64"\
@@ -507,8 +507,8 @@ const presetBrushStrokes = '\
             "renamed": "false",\
             "enabled": "true",\
             "highlight": "0",\
-            "x": "7186",\
-            "y": "6806",\
+            "x": "7336",\
+            "y": "6956",\
             "z": "32",\
             "params":\
             [\
@@ -526,8 +526,8 @@ const presetBrushStrokes = '\
             "renamed": "false",\
             "enabled": "true",\
             "highlight": "0",\
-            "x": "5274",\
-            "y": "7188",\
+            "x": "5424",\
+            "y": "7338",\
             "z": "33",\
             "params":\
             [\
@@ -543,8 +543,8 @@ const presetBrushStrokes = '\
             "renamed": "false",\
             "enabled": "true",\
             "highlight": "0",\
-            "x": "6207",\
-            "y": "6619",\
+            "x": "6357",\
+            "y": "6769",\
             "z": "34",\
             "params":\
             [\
@@ -561,8 +561,8 @@ const presetBrushStrokes = '\
             "renamed": "false",\
             "enabled": "true",\
             "highlight": "0",\
-            "x": "5432",\
-            "y": "7188",\
+            "x": "5582",\
+            "y": "7338",\
             "z": "35",\
             "width": "120",\
             "height": "54",\
@@ -578,8 +578,8 @@ const presetBrushStrokes = '\
             "renamed": "false",\
             "enabled": "true",\
             "highlight": "0",\
-            "x": "7361",\
-            "y": "6810",\
+            "x": "7511",\
+            "y": "6960",\
             "z": "36",\
             "params":\
             [\
@@ -597,8 +597,8 @@ const presetBrushStrokes = '\
             "renamed": "false",\
             "enabled": "true",\
             "highlight": "0",\
-            "x": "7862",\
-            "y": "8307",\
+            "x": "8012",\
+            "y": "8457",\
             "z": "37",\
             "width": "120",\
             "height": "54",\
@@ -614,13 +614,13 @@ const presetBrushStrokes = '\
             "renamed": "false",\
             "enabled": "true",\
             "highlight": "0",\
-            "x": "5605",\
-            "y": "7166",\
+            "x": "5755",\
+            "y": "7316",\
             "z": "38",\
             "params":\
             [\
-                ["NUM#", "value", "16,0"],\
-                ["NUM#", "operation", "0,0"]\
+                ["NUM#", "operation", "0,0"],\
+                ["NUM#", "value", "16,0"]\
             ]\
         },\
         {\
@@ -630,12 +630,12 @@ const presetBrushStrokes = '\
             "renamed": "false",\
             "enabled": "true",\
             "highlight": "0",\
-            "x": "7104",\
-            "y": "6531",\
+            "x": "7254",\
+            "y": "6681",\
             "z": "39",\
             "params":\
             [\
-                ["LIST#", "points", "80 PT# 0,0 -89.99543067229081,0 PT# 0,0 -89.99543067229081,0 PT# 0,0 -89.99543067229081,0 PT# 0,0 -89.99543067229081,0 PT# 0,0 -89.99543067229081,0 PT# 0,0 -89.99543067229081,0 PT# 0,0 -89.99543067229081,0 PT# 0,0 -89.99543067229081,0 PT# 0,0 -89.99543067229081,0 PT# 0,0 -89.99543067229081,0 PT# 0,0 -89.99543067229081,0 PT# 0,0 -89.99543067229081,0 PT# 0,0 -89.99543067229081,0 PT# 0,0 -89.99543067229081,0 PT# 0,0 -89.99543067229081,0 PT# 0,0 -89.99543067229081,0 PT# 0,0 -89.99543067229081,0 PT# 0,0 -89.99543067229081,0 PT# 0,0 -89.99543067229081,0 PT# 0,0 -89.99543067229081,0 PT# 0,0 -89.99543067229081,0 PT# 0,0 -89.99543067229081,0 PT# 0,0 -89.99543067229081,0 PT# 0,0 -89.99543067229081,0 PT# 0,0 -89.99543067229081,0 PT# 0,0 -89.99543067229081,0 PT# 0,0 -89.99543067229081,0 PT# 0,0 -89.99543067229081,0 PT# 0,0 -89.99543067229081,0 PT# 0,0 -89.99543067229081,0 PT# 0,0 -89.99543067229081,0 PT# 0,0 -89.99543067229081,0 PT# 0,0 -89.99543067229081,0 PT# 0,0 -89.99543067229081,0 PT# 0,0 -89.99543067229081,0 PT# 0,0 -89.99543067229081,0 PT# 0,0 -89.99543067229081,0 PT# 0,0 -89.99543067229081,0 PT# 0,0 -89.99543067229081,0 PT# 0,0 -89.99543067229081,0 PT# 0,0 89.99543067229081,0 PT# 0,0 89.99543067229081,0 PT# 0,0 89.99543067229081,0 PT# 0,0 89.99543067229081,0 PT# 0,0 89.99543067229081,0 PT# 0,0 89.99543067229081,0 PT# 0,0 89.99543067229081,0 PT# 0,0 89.99543067229081,0 PT# 0,0 89.99543067229081,0 PT# 0,0 89.99543067229081,0 PT# 0,0 89.99543067229081,0 PT# 0,0 89.99543067229081,0 PT# 0,0 89.99543067229081,0 PT# 0,0 89.99543067229081,0 PT# 0,0 89.99543067229081,0 PT# 0,0 89.99543067229081,0 PT# 0,0 89.99543067229081,0 PT# 0,0 89.99543067229081,0 PT# 0,0 89.99543067229081,0 PT# 0,0 89.99543067229081,0 PT# 0,0 89.99543067229081,0 PT# 0,0 89.99543067229081,0 PT# 0,0 89.99543067229081,0 PT# 0,0 89.99543067229081,0 PT# 0,0 89.99543067229081,0 PT# 0,0 89.99543067229081,0 PT# 0,0 89.99543067229081,0 PT# 0,0 89.99543067229081,0 PT# 0,0 89.99543067229081,0 PT# 0,0 89.99543067229081,0 PT# 0,0 89.99543067229081,0 PT# 0,0 89.99543067229081,0 PT# 0,0 89.99543067229081,0 PT# 0,0 89.99543067229081,0 PT# 0,0 89.99543067229081,0 PT# 0,0 89.99543067229081,0 PT# 0,0 89.99543067229081,0 PT# 0,0 89.99543067229081,0 PT# 0,0 89.99543067229081,0 PT# 0,0 89.99543067229081,0"],\
+                ["LIST#", "points", "80 PT# 0,0 -89.99543067229081,0 PT# 0,0 -89.99543067229081,0 PT# 0,0 -89.99543067229081,0 PT# 0,0 -89.99543067229081,0 PT# 0,0 -89.99543067229081,0 PT# 0,0 -89.99543067229081,0 PT# 0,0 -89.99543067229081,0 PT# 0,0 -89.99543067229081,0 PT# 0,0 -89.99543067229081,0 PT# 0,0 -89.99543067229081,0 PT# 0,0 -89.99543067229081,0 PT# 0,0 -89.99543067229081,0 PT# 0,0 -89.99543067229081,0 PT# 0,0 -89.99543067229081,0 PT# 0,0 -89.99543067229081,0 PT# 0,0 -89.99543067229081,0 PT# 0,0 -89.99543067229081,0 PT# 0,0 -89.99543067229081,0 PT# 0,0 -89.99543067229081,0 PT# 0,0 -89.99543067229081,0 PT# 0,0 -89.99543067229081,0 PT# 0,0 -89.99543067229081,0 PT# 0,0 -89.99543067229081,0 PT# 0,0 -89.99543067229081,0 PT# 0,0 -89.99543067229081,0 PT# 0,0 -89.99543067229081,0 PT# 0,0 -89.99543067229081,0 PT# 0,0 -89.99543067229081,0 PT# 0,0 -89.99543067229081,0 PT# 0,0 -89.99543067229081,0 PT# 0,0 -89.99543067229081,0 PT# 0,0 -89.99543067229081,0 PT# 0,0 -89.99543067229081,0 PT# 0,0 -89.99543067229081,0 PT# 0,0 -89.99543067229081,0 PT# 0,0 -89.99543067229081,0 PT# 0,0 -89.99543067229081,0 PT# 0,0 -89.99543067229081,0 PT# 0,0 -89.99543067229081,0 PT# 0,0 -89.99543067229081,0 PT# 0,0 88.13585419121006,0 PT# 0,0 88.13585419121006,0 PT# 0,0 88.13585419121006,0 PT# 0,0 88.13585419121006,0 PT# 0,0 88.13585419121006,0 PT# 0,0 88.13585419121006,0 PT# 0,0 88.13585419121006,0 PT# 0,0 88.13585419121006,0 PT# 0,0 88.13585419121006,0 PT# 0,0 88.13585419121006,0 PT# 0,0 88.13585419121006,0 PT# 0,0 88.13585419121006,0 PT# 0,0 88.13585419121006,0 PT# 0,0 88.13585419121006,0 PT# 0,0 88.13585419121006,0 PT# 0,0 88.13585419121006,0 PT# 0,0 88.13585419121006,0 PT# 0,0 88.13585419121006,0 PT# 0,0 88.13585419121006,0 PT# 0,0 88.13585419121006,0 PT# 0,0 88.13585419121006,0 PT# 0,0 88.13585419121006,0 PT# 0,0 88.13585419121006,0 PT# 0,0 88.13585419121006,0 PT# 0,0 88.13585419121006,0 PT# 0,0 88.13585419121006,0 PT# 0,0 88.13585419121006,0 PT# 0,0 88.13585419121006,0 PT# 0,0 88.13585419121006,0 PT# 0,0 88.13585419121006,0 PT# 0,0 88.13585419121006,0 PT# 0,0 88.13585419121006,0 PT# 0,0 88.13585419121006,0 PT# 0,0 88.13585419121006,0 PT# 0,0 88.13585419121006,0 PT# 0,0 88.13585419121006,0 PT# 0,0 88.13585419121006,0 PT# 0,0 88.13585419121006,0 PT# 0,0 88.13585419121006,0 PT# 0,0 88.13585419121006,0"],\
                 ["NUM#", "closed", "1,0"],\
                 ["NUM#", "degree", "0,0"]\
             ]\
@@ -647,8 +647,8 @@ const presetBrushStrokes = '\
             "renamed": "false",\
             "enabled": "true",\
             "highlight": "0",\
-            "x": "4850",\
-            "y": "6647",\
+            "x": "5000",\
+            "y": "6797",\
             "z": "40",\
             "width": "120",\
             "height": "384",\
@@ -679,8 +679,8 @@ const presetBrushStrokes = '\
             "renamed": "false",\
             "enabled": "true",\
             "highlight": "0",\
-            "x": "5654",\
-            "y": "6855",\
+            "x": "5804",\
+            "y": "7005",\
             "z": "41",\
             "params":\
             [\
@@ -694,8 +694,8 @@ const presetBrushStrokes = '\
             "renamed": "false",\
             "enabled": "true",\
             "highlight": "0",\
-            "x": "6314",\
-            "y": "7159",\
+            "x": "6464",\
+            "y": "7309",\
             "z": "42",\
             "params":\
             [\
@@ -711,8 +711,8 @@ const presetBrushStrokes = '\
             "renamed": "false",\
             "enabled": "true",\
             "highlight": "3",\
-            "x": "5009",\
-            "y": "6381",\
+            "x": "5159",\
+            "y": "6531",\
             "z": "43",\
             "width": "120",\
             "height": "54",\
@@ -728,8 +728,8 @@ const presetBrushStrokes = '\
             "renamed": "false",\
             "enabled": "true",\
             "highlight": "0",\
-            "x": "7415",\
-            "y": "7779",\
+            "x": "7565",\
+            "y": "7929",\
             "z": "44",\
             "params":\
             [\
@@ -746,13 +746,13 @@ const presetBrushStrokes = '\
             "renamed": "false",\
             "enabled": "true",\
             "highlight": "0",\
-            "x": "5162",\
-            "y": "6313",\
+            "x": "5312",\
+            "y": "6463",\
             "z": "45",\
             "params":\
             [\
-                ["NUM#", "value", "-10,0"],\
-                ["NUM#", "operation", "0,0"]\
+                ["NUM#", "operation", "0,0"],\
+                ["NUM#", "value", "-10,0"]\
             ]\
         },\
         {\
@@ -762,8 +762,8 @@ const presetBrushStrokes = '\
             "renamed": "false",\
             "enabled": "true",\
             "highlight": "0",\
-            "x": "5323",\
-            "y": "6899",\
+            "x": "5473",\
+            "y": "7049",\
             "z": "46",\
             "params":\
             [\
@@ -781,13 +781,13 @@ const presetBrushStrokes = '\
             "renamed": "false",\
             "enabled": "true",\
             "highlight": "0",\
-            "x": "5536",\
-            "y": "6398",\
+            "x": "5709",\
+            "y": "6520",\
             "z": "47",\
             "params":\
             [\
-                ["NUM#", "value", "-89.99543067229081,0"],\
-                ["NUM#", "operation", "0,0"]\
+                ["NUM#", "operation", "0,0"],\
+                ["NUM#", "value", "-89.99543067229081,0"]\
             ]\
         },\
         {\
@@ -797,8 +797,8 @@ const presetBrushStrokes = '\
             "renamed": "false",\
             "enabled": "true",\
             "highlight": "0",\
-            "x": "7489",\
-            "y": "6692",\
+            "x": "7639",\
+            "y": "6842",\
             "z": "48",\
             "params":\
             [\
@@ -813,8 +813,8 @@ const presetBrushStrokes = '\
             "renamed": "false",\
             "enabled": "true",\
             "highlight": "0",\
-            "x": "8311",\
-            "y": "8009",\
+            "x": "8461",\
+            "y": "8159",\
             "z": "49",\
             "params":\
             [\
@@ -830,8 +830,8 @@ const presetBrushStrokes = '\
             "renamed": "false",\
             "enabled": "true",\
             "highlight": "0",\
-            "x": "6776",\
-            "y": "7059",\
+            "x": "6926",\
+            "y": "7209",\
             "z": "50",\
             "params":\
             [\
@@ -846,11 +846,12 @@ const presetBrushStrokes = '\
             "renamed": "false",\
             "enabled": "true",\
             "highlight": "0",\
-            "x": "7899",\
-            "y": "6540",\
+            "x": "8049",\
+            "y": "6690",\
             "z": "51",\
             "params":\
             [\
+                ["LIST#", "props", "3 INSH# -1,0 1,0 2,0 0,0 255,0 255,0 255,0 10,0 0,0 0,0 INSH# -1,0 -1,0 2,0 0,0 0,0 0,0 0,0 5,0 0,0 0,0 DRSH# 0,0 0,0 0,0 0,0 0,0 0,0 0,0 35,0 0,0 0,0 1,0"]\
             ]\
         },\
         {\
@@ -860,8 +861,8 @@ const presetBrushStrokes = '\
             "renamed": "false",\
             "enabled": "true",\
             "highlight": "4",\
-            "x": "6927",\
-            "y": "6718",\
+            "x": "7077",\
+            "y": "6868",\
             "z": "52",\
             "params":\
             [\
@@ -875,8 +876,8 @@ const presetBrushStrokes = '\
             "renamed": "false",\
             "enabled": "true",\
             "highlight": "0",\
-            "x": "4698",\
-            "y": "6798",\
+            "x": "4848",\
+            "y": "7001",\
             "z": "53",\
             "params":\
             [\
@@ -890,8 +891,8 @@ const presetBrushStrokes = '\
             "renamed": "false",\
             "enabled": "true",\
             "highlight": "0",\
-            "x": "8166",\
-            "y": "8141",\
+            "x": "8316",\
+            "y": "8291",\
             "z": "54",\
             "params":\
             [\
@@ -905,8 +906,8 @@ const presetBrushStrokes = '\
             "renamed": "false",\
             "enabled": "true",\
             "highlight": "0",\
-            "x": "7834",\
-            "y": "7707",\
+            "x": "7984",\
+            "y": "7857",\
             "z": "55",\
             "prevSpace": "hex",\
             "params":\
@@ -924,8 +925,8 @@ const presetBrushStrokes = '\
             "renamed": "false",\
             "enabled": "true",\
             "highlight": "1",\
-            "x": "4658",\
-            "y": "6615",\
+            "x": "4808",\
+            "y": "6765",\
             "z": "56",\
             "width": "347",\
             "height": "444.2434882662275",\
@@ -940,8 +941,8 @@ const presetBrushStrokes = '\
             "renamed": "false",\
             "enabled": "true",\
             "highlight": "0",\
-            "x": "8006",\
-            "y": "7630",\
+            "x": "8156",\
+            "y": "7780",\
             "z": "57",\
             "params":\
             [\
@@ -956,8 +957,8 @@ const presetBrushStrokes = '\
             "renamed": "false",\
             "enabled": "true",\
             "highlight": "0",\
-            "x": "6648",\
-            "y": "7214",\
+            "x": "6798",\
+            "y": "7364",\
             "z": "58",\
             "params":\
             [\
@@ -976,8 +977,8 @@ const presetBrushStrokes = '\
             "renamed": "false",\
             "enabled": "true",\
             "highlight": "0",\
-            "x": "8311",\
-            "y": "7771",\
+            "x": "8461",\
+            "y": "7921",\
             "z": "59",\
             "params":\
             [\
@@ -991,8 +992,8 @@ const presetBrushStrokes = '\
             "renamed": "false",\
             "enabled": "true",\
             "highlight": "0",\
-            "x": "6438",\
-            "y": "6960",\
+            "x": "6588",\
+            "y": "7110",\
             "z": "60"\
         },\
         {\
@@ -1002,8 +1003,8 @@ const presetBrushStrokes = '\
             "renamed": "false",\
             "enabled": "true",\
             "highlight": "0",\
-            "x": "5793",\
-            "y": "6323",\
+            "x": "5943",\
+            "y": "6473",\
             "z": "61",\
             "params":\
             [\
@@ -1017,8 +1018,8 @@ const presetBrushStrokes = '\
             "renamed": "false",\
             "enabled": "true",\
             "highlight": "0",\
-            "x": "6117",\
-            "y": "6957",\
+            "x": "6267",\
+            "y": "7107",\
             "z": "62",\
             "params":\
             [\
@@ -1032,8 +1033,8 @@ const presetBrushStrokes = '\
             "renamed": "false",\
             "enabled": "true",\
             "highlight": "0",\
-            "x": "7683",\
-            "y": "7780",\
+            "x": "7833",\
+            "y": "7930",\
             "z": "63",\
             "params":\
             [\
@@ -1051,8 +1052,8 @@ const presetBrushStrokes = '\
             "renamed": "false",\
             "enabled": "true",\
             "highlight": "0",\
-            "x": "6931",\
-            "y": "7151",\
+            "x": "7081",\
+            "y": "7301",\
             "z": "64",\
             "params":\
             [\
@@ -1066,8 +1067,8 @@ const presetBrushStrokes = '\
             "renamed": "false",\
             "enabled": "true",\
             "highlight": "3",\
-            "x": "5377",\
-            "y": "6533",\
+            "x": "5527",\
+            "y": "6683",\
             "z": "65",\
             "width": "120",\
             "height": "54",\
@@ -1083,13 +1084,13 @@ const presetBrushStrokes = '\
             "renamed": "false",\
             "enabled": "true",\
             "highlight": "0",\
-            "x": "5556",\
-            "y": "6477",\
+            "x": "5706",\
+            "y": "6627",\
             "z": "66",\
             "params":\
             [\
-                ["NUM#", "value", "-15,0"],\
-                ["NUM#", "operation", "0,0"]\
+                ["NUM#", "operation", "0,0"],\
+                ["NUM#", "value", "-15,0"]\
             ]\
         },\
         {\
@@ -1099,8 +1100,8 @@ const presetBrushStrokes = '\
             "renamed": "false",\
             "enabled": "true",\
             "highlight": "0",\
-            "x": "7599",\
-            "y": "6540",\
+            "x": "7749",\
+            "y": "6690",\
             "z": "67",\
             "params":\
             [\
@@ -1114,8 +1115,8 @@ const presetBrushStrokes = '\
             "renamed": "false",\
             "enabled": "true",\
             "highlight": "0",\
-            "x": "5782",\
-            "y": "7123",\
+            "x": "5932",\
+            "y": "7273",\
             "z": "68",\
             "params":\
             [\
@@ -1131,8 +1132,8 @@ const presetBrushStrokes = '\
             "renamed": "false",\
             "enabled": "true",\
             "highlight": "0",\
-            "x": "7846",\
-            "y": "7932",\
+            "x": "7996",\
+            "y": "8082",\
             "z": "69",\
             "width": "120",\
             "height": "54",\
@@ -1148,8 +1149,8 @@ const presetBrushStrokes = '\
             "renamed": "false",\
             "enabled": "true",\
             "highlight": "0",\
-            "x": "5289",\
-            "y": "6629",\
+            "x": "5439",\
+            "y": "6779",\
             "z": "70",\
             "params":\
             [\
@@ -1165,8 +1166,8 @@ const presetBrushStrokes = '\
             "renamed": "false",\
             "enabled": "true",\
             "highlight": "0",\
-            "x": "5943",\
-            "y": "6323",\
+            "x": "6093",\
+            "y": "6473",\
             "z": "71",\
             "params":\
             [\
@@ -1181,8 +1182,8 @@ const presetBrushStrokes = '\
             "renamed": "false",\
             "enabled": "true",\
             "highlight": "1",\
-            "x": "4698",\
-            "y": "6657",\
+            "x": "4848",\
+            "y": "6807",\
             "z": "72",\
             "params":\
             [\
@@ -1197,13 +1198,13 @@ const presetBrushStrokes = '\
             "renamed": "false",\
             "enabled": "true",\
             "highlight": "0",\
-            "x": "5106",\
-            "y": "7139",\
+            "x": "5256",\
+            "y": "7289",\
             "z": "73",\
             "params":\
             [\
-                ["NUM#", "value", "-35,0"],\
-                ["NUM#", "operation", "0,0"]\
+                ["NUM#", "operation", "0,0"],\
+                ["NUM#", "value", "-35,0"]\
             ]\
         },\
         {\
@@ -1213,8 +1214,8 @@ const presetBrushStrokes = '\
             "renamed": "false",\
             "enabled": "true",\
             "highlight": "2",\
-            "x": "8215",\
-            "y": "7347",\
+            "x": "8365",\
+            "y": "7497",\
             "z": "74",\
             "params":\
             [\
@@ -1228,8 +1229,8 @@ const presetBrushStrokes = '\
             "renamed": "false",\
             "enabled": "true",\
             "highlight": "1",\
-            "x": "4374",\
-            "y": "7421",\
+            "x": "4524",\
+            "y": "7571",\
             "z": "75",\
             "params":\
             [\
@@ -1238,27 +1239,15 @@ const presetBrushStrokes = '\
             ]\
         },\
         {\
-            "type": "FRZ",\
-            "id": "freeze",\
-            "name": "freeze",\
-            "renamed": "false",\
-            "enabled": "true",\
-            "highlight": "0",\
-            "x": "4698",\
-            "y": "6915",\
-            "z": "76"\
-        },\
-        {\
             "type": "ROUND",\
             "id": "round",\
             "name": "round",\
             "renamed": "false",\
             "enabled": "true",\
             "highlight": "0",\
-            "x": "7512",\
-            "y": "6809",\
-            "z": "77",\
-            "active": "true"\
+            "x": "7662",\
+            "y": "6959",\
+            "z": "76"\
         }\
         ],\
         "connections":\
@@ -1792,7 +1781,7 @@ const presetBrushStrokes = '\
             "list": "true"\
         },\
         {\
-            "outputNodeId": "freeze",\
+            "outputNodeId": "repeat3",\
             "outputId": "h0",\
             "outputOrder": "0",\
             "inputNodeId": "list",\
@@ -2157,7 +2146,7 @@ const presetBrushStrokes = '\
             "outputOrder": "0",\
             "inputNodeId": "repeat4",\
             "inputId": "h0",\
-            "list": "true"\
+            "list": "false"\
         },\
         {\
             "outputNodeId": "combine2",\
@@ -2165,14 +2154,6 @@ const presetBrushStrokes = '\
             "outputOrder": "0",\
             "inputNodeId": "repeat4",\
             "inputId": "loop",\
-            "list": "true"\
-        },\
-        {\
-            "outputNodeId": "repeat3",\
-            "outputId": "h0",\
-            "outputOrder": "0",\
-            "inputNodeId": "freeze",\
-            "inputId": "h0",\
             "list": "true"\
         },\
         {\

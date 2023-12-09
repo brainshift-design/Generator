@@ -42,9 +42,7 @@ const presetNestedTorus = '\
             "y": "3010",\
             "z": "2",\
             "params":\
-            [\
-                    ["NUM#", "value", "3.1415926536,10"]\
-            ]\
+            []\
             },\
             {\
             "type": "SMATH",\
@@ -58,7 +56,6 @@ const presetNestedTorus = '\
             "z": "3",\
             "params":\
             [\
-                    ["NUM#", "value", "1.5,1"],\
                     ["NUM#", "operand", "0.5,1"]\
             ]\
             },\
@@ -305,9 +302,7 @@ const presetNestedTorus = '\
             "y": "3222",\
             "z": "19",\
             "params":\
-            [\
-                    ["NUM#", "value", "1,0"]\
-            ]\
+            []\
             },\
             {\
             "type": "SEQ",\
@@ -435,7 +430,6 @@ const presetNestedTorus = '\
             "z": "27",\
             "params":\
             [\
-                    ["NUM#", "value", "2,0"],\
                     ["NUM#", "operand", "1,0"]\
             ]\
             },\
@@ -463,9 +457,7 @@ const presetNestedTorus = '\
             "y": "3166",\
             "z": "29",\
             "params":\
-            [\
-                    ["NUM#", "value", "1,0"]\
-            ]\
+            []\
             },\
             {\
             "type": "TRIG",\
