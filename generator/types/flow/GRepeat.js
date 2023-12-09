@@ -169,8 +169,11 @@ extends GOperator1
                         parse.currentProgress++;
 
 
-                    if (await checkStop(parse))
+                    if (await checkStop(parse.requestId))
+                    {
+                        genEndNodeProgress(this.nodeId);
                         return this;
+                    }
 
 
                     if (showProgress)
