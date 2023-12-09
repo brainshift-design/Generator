@@ -9,8 +9,8 @@ const presetColorSwatches = '\
             "renamed": "false",\
             "enabled": "true",\
             "highlight": "0",\
-            "x": "4620",\
-            "y": "3990",\
+            "x": "5020",\
+            "y": "4390",\
             "z": "0",\
             "width": "120",\
             "height": "51"\
@@ -22,8 +22,8 @@ const presetColorSwatches = '\
             "renamed": "false",\
             "enabled": "true",\
             "highlight": "0",\
-            "x": "2764",\
-            "y": "3634",\
+            "x": "3164",\
+            "y": "4034",\
             "z": "1",\
             "params":\
             [\
@@ -37,8 +37,8 @@ const presetColorSwatches = '\
             "renamed": "false",\
             "enabled": "true",\
             "highlight": "0",\
-            "x": "4267",\
-            "y": "3987",\
+            "x": "4667",\
+            "y": "4387",\
             "z": "2",\
             "params":\
             [\
@@ -53,8 +53,8 @@ const presetColorSwatches = '\
             "renamed": "false",\
             "enabled": "true",\
             "highlight": "0",\
-            "x": "4268",\
-            "y": "3706",\
+            "x": "4668",\
+            "y": "4106",\
             "z": "3",\
             "params":\
             [\
@@ -69,8 +69,8 @@ const presetColorSwatches = '\
             "renamed": "false",\
             "enabled": "true",\
             "highlight": "0",\
-            "x": "3156",\
-            "y": "4591",\
+            "x": "3556",\
+            "y": "4991",\
             "z": "4",\
             "params":\
             [\
@@ -86,8 +86,8 @@ const presetColorSwatches = '\
             "renamed": "false",\
             "enabled": "true",\
             "highlight": "0",\
-            "x": "3335",\
-            "y": "4723",\
+            "x": "3735",\
+            "y": "5123",\
             "z": "5",\
             "width": "120",\
             "height": "54",\
@@ -103,8 +103,8 @@ const presetColorSwatches = '\
             "renamed": "false",\
             "enabled": "true",\
             "highlight": "0",\
-            "x": "3483",\
-            "y": "4665",\
+            "x": "3883",\
+            "y": "5065",\
             "z": "6",\
             "params":\
             [\
@@ -117,8 +117,8 @@ const presetColorSwatches = '\
             "renamed": "true",\
             "enabled": "true",\
             "highlight": "0",\
-            "x": "3882",\
-            "y": "4516",\
+            "x": "4282",\
+            "y": "4916",\
             "z": "7",\
             "params":\
             [\
@@ -139,8 +139,8 @@ const presetColorSwatches = '\
             "renamed": "false",\
             "enabled": "true",\
             "highlight": "0",\
-            "x": "3693",\
-            "y": "3235",\
+            "x": "4093",\
+            "y": "3635",\
             "z": "8",\
             "params":\
             [\
@@ -155,8 +155,8 @@ const presetColorSwatches = '\
             "renamed": "false",\
             "enabled": "true",\
             "highlight": "0",\
-            "x": "3693",\
-            "y": "2965",\
+            "x": "4093",\
+            "y": "3360",\
             "z": "9",\
             "prevSpace": "hclok",\
             "params":\
@@ -174,8 +174,8 @@ const presetColorSwatches = '\
             "renamed": "false",\
             "enabled": "true",\
             "highlight": "0",\
-            "x": "3693",\
-            "y": "3094",\
+            "x": "4093",\
+            "y": "3502",\
             "z": "10",\
             "params":\
             [\
@@ -191,8 +191,8 @@ const presetColorSwatches = '\
             "renamed": "false",\
             "enabled": "true",\
             "highlight": "0",\
-            "x": "3205",\
-            "y": "3601",\
+            "x": "3605",\
+            "y": "4001",\
             "z": "11",\
             "prevSpace": "hex",\
             "params":\
@@ -210,8 +210,8 @@ const presetColorSwatches = '\
             "renamed": "false",\
             "enabled": "true",\
             "highlight": "0",\
-            "x": "2956",\
-            "y": "3508",\
+            "x": "3356",\
+            "y": "3908",\
             "z": "12",\
             "params":\
             [\
@@ -226,8 +226,8 @@ const presetColorSwatches = '\
             "renamed": "false",\
             "enabled": "true",\
             "highlight": "0",\
-            "x": "2254",\
-            "y": "3324",\
+            "x": "2654",\
+            "y": "3724",\
             "z": "13",\
             "width": "285.1468395020149",\
             "height": "54",\
@@ -243,8 +243,8 @@ const presetColorSwatches = '\
             "renamed": "false",\
             "enabled": "true",\
             "highlight": "0",\
-            "x": "2331",\
-            "y": "3406",\
+            "x": "2731",\
+            "y": "3806",\
             "z": "14",\
             "params":\
             [\
@@ -259,8 +259,8 @@ const presetColorSwatches = '\
             "renamed": "false",\
             "enabled": "true",\
             "highlight": "0",\
-            "x": "3103",\
-            "y": "3373",\
+            "x": "3503",\
+            "y": "3773",\
             "z": "15",\
             "params":\
             [\
@@ -274,8 +274,8 @@ const presetColorSwatches = '\
             "renamed": "false",\
             "enabled": "true",\
             "highlight": "0",\
-            "x": "3294",\
-            "y": "3149",\
+            "x": "3694",\
+            "y": "3549",\
             "z": "16",\
             "params":\
             [\
@@ -290,8 +290,8 @@ const presetColorSwatches = '\
             "renamed": "false",\
             "enabled": "true",\
             "highlight": "0",\
-            "x": "2483",\
-            "y": "3990",\
+            "x": "2883",\
+            "y": "4390",\
             "z": "17",\
             "params":\
             [\
@@ -306,8 +306,8 @@ const presetColorSwatches = '\
             "renamed": "false",\
             "enabled": "true",\
             "highlight": "0",\
-            "x": "3859",\
-            "y": "2712",\
+            "x": "4259",\
+            "y": "3112",\
             "z": "18",\
             "params":\
             [\
@@ -323,8 +323,8 @@ const presetColorSwatches = '\
             "renamed": "false",\
             "enabled": "true",\
             "highlight": "0",\
-            "x": "4050",\
-            "y": "3070",\
+            "x": "4450",\
+            "y": "3470",\
             "z": "19",\
             "width": "120",\
             "height": "90"\
@@ -336,8 +336,8 @@ const presetColorSwatches = '\
             "renamed": "false",\
             "enabled": "true",\
             "highlight": "0",\
-            "x": "4619",\
-            "y": "3870",\
+            "x": "5019",\
+            "y": "4270",\
             "z": "20",\
             "params":\
             [\
@@ -351,8 +351,8 @@ const presetColorSwatches = '\
             "renamed": "false",\
             "enabled": "true",\
             "highlight": "0",\
-            "x": "3335",\
-            "y": "4632",\
+            "x": "3735",\
+            "y": "5032",\
             "z": "21",\
             "width": "120",\
             "height": "54",\
@@ -368,8 +368,8 @@ const presetColorSwatches = '\
             "renamed": "false",\
             "enabled": "true",\
             "highlight": "0",\
-            "x": "3104",\
-            "y": "3095",\
+            "x": "3504",\
+            "y": "3495",\
             "z": "22",\
             "width": "120",\
             "height": "54",\
@@ -385,8 +385,8 @@ const presetColorSwatches = '\
             "renamed": "false",\
             "enabled": "true",\
             "highlight": "0",\
-            "x": "3155",\
-            "y": "4695",\
+            "x": "3555",\
+            "y": "5100",\
             "z": "23",\
             "params":\
             [\
@@ -402,8 +402,8 @@ const presetColorSwatches = '\
             "renamed": "false",\
             "enabled": "true",\
             "highlight": "1",\
-            "x": "3497",\
-            "y": "2850",\
+            "x": "3897",\
+            "y": "3246",\
             "z": "24",\
             "prevSpace": "hsl",\
             "params":\
@@ -421,8 +421,8 @@ const presetColorSwatches = '\
             "renamed": "false",\
             "enabled": "true",\
             "highlight": "0",\
-            "x": "3496",\
-            "y": "2996",\
+            "x": "3896",\
+            "y": "3394",\
             "z": "25"\
         },\
         {\
@@ -432,8 +432,8 @@ const presetColorSwatches = '\
             "renamed": "false",\
             "enabled": "true",\
             "highlight": "0",\
-            "x": "2331",\
-            "y": "3505",\
+            "x": "2731",\
+            "y": "3905",\
             "z": "26",\
             "params":\
             [\
@@ -448,8 +448,8 @@ const presetColorSwatches = '\
             "renamed": "true",\
             "enabled": "true",\
             "highlight": "0",\
-            "x": "3881",\
-            "y": "4065",\
+            "x": "4281",\
+            "y": "4465",\
             "z": "27",\
             "params":\
             [\
@@ -469,8 +469,8 @@ const presetColorSwatches = '\
             "renamed": "false",\
             "enabled": "true",\
             "highlight": "0",\
-            "x": "2244",\
-            "y": "2640",\
+            "x": "2644",\
+            "y": "3040",\
             "z": "28",\
             "width": "304",\
             "height": "75.0504125326314",\
@@ -486,8 +486,8 @@ const presetColorSwatches = '\
             "renamed": "false",\
             "enabled": "true",\
             "highlight": "0",\
-            "x": "3329",\
-            "y": "4400",\
+            "x": "3729",\
+            "y": "4800",\
             "z": "29",\
             "params":\
             [\
@@ -502,8 +502,8 @@ const presetColorSwatches = '\
             "renamed": "false",\
             "enabled": "true",\
             "highlight": "0",\
-            "x": "4872",\
-            "y": "3929",\
+            "x": "5272",\
+            "y": "4329",\
             "z": "30",\
             "active": "true",\
             "params":\
@@ -518,8 +518,8 @@ const presetColorSwatches = '\
             "renamed": "true",\
             "enabled": "true",\
             "highlight": "0",\
-            "x": "2212",\
-            "y": "2580",\
+            "x": "2612",\
+            "y": "2980",\
             "z": "31",\
             "width": "366",\
             "height": "329.70577545683966",\
@@ -534,8 +534,8 @@ const presetColorSwatches = '\
             "renamed": "true",\
             "enabled": "true",\
             "highlight": "0",\
-            "x": "2215",\
-            "y": "3267",\
+            "x": "2615",\
+            "y": "3667",\
             "z": "32",\
             "width": "366",\
             "height": "357.48800985484553",\
@@ -550,8 +550,8 @@ const presetColorSwatches = '\
             "renamed": "true",\
             "enabled": "true",\
             "highlight": "0",\
-            "x": "3877",\
-            "y": "3615",\
+            "x": "4277",\
+            "y": "4015",\
             "z": "33",\
             "params":\
             [\
@@ -570,8 +570,8 @@ const presetColorSwatches = '\
             "renamed": "false",\
             "enabled": "true",\
             "highlight": "0",\
-            "x": "4635",\
-            "y": "3091",\
+            "x": "5035",\
+            "y": "3491",\
             "z": "34",\
             "params":\
             [\
@@ -586,8 +586,8 @@ const presetColorSwatches = '\
             "renamed": "false",\
             "enabled": "true",\
             "highlight": "0",\
-            "x": "2334",\
-            "y": "2756",\
+            "x": "2734",\
+            "y": "3156",\
             "z": "35",\
             "params":\
             [\
@@ -602,8 +602,8 @@ const presetColorSwatches = '\
             "renamed": "false",\
             "enabled": "true",\
             "highlight": "0",\
-            "x": "2334",\
-            "y": "2854",\
+            "x": "2734",\
+            "y": "3254",\
             "z": "36"\
         },\
         {\
@@ -613,8 +613,8 @@ const presetColorSwatches = '\
             "renamed": "false",\
             "enabled": "true",\
             "highlight": "0",\
-            "x": "3336",\
-            "y": "4538",\
+            "x": "3736",\
+            "y": "4938",\
             "z": "37",\
             "width": "120",\
             "height": "54",\
@@ -630,8 +630,8 @@ const presetColorSwatches = '\
             "renamed": "false",\
             "enabled": "true",\
             "highlight": "0",\
-            "x": "3615",\
-            "y": "4059",\
+            "x": "4015",\
+            "y": "4459",\
             "z": "38",\
             "params":\
             [\
@@ -646,8 +646,8 @@ const presetColorSwatches = '\
             "renamed": "false",\
             "enabled": "true",\
             "highlight": "0",\
-            "x": "3451",\
-            "y": "4018",\
+            "x": "3851",\
+            "y": "4418",\
             "z": "39",\
             "params":\
             [\
@@ -661,8 +661,8 @@ const presetColorSwatches = '\
             "renamed": "false",\
             "enabled": "true",\
             "highlight": "0",\
-            "x": "3505",\
-            "y": "3289",\
+            "x": "3905",\
+            "y": "3689",\
             "z": "40",\
             "params":\
             [\
@@ -677,8 +677,8 @@ const presetColorSwatches = '\
             "renamed": "false",\
             "enabled": "true",\
             "highlight": "0",\
-            "x": "2709",\
-            "y": "2852",\
+            "x": "3109",\
+            "y": "3252",\
             "z": "41",\
             "params":\
             [\
@@ -692,11 +692,11 @@ const presetColorSwatches = '\
             "renamed": "false",\
             "enabled": "true",\
             "highlight": "0",\
-            "x": "3496",\
-            "y": "3065",\
+            "x": "3896",\
+            "y": "3465",\
             "z": "42",\
             "width": "120",\
-            "height": "98",\
+            "height": "120",\
             "params":\
             [\
                 ["TEXT#", "what", "%5E", "center"],\
@@ -711,8 +711,8 @@ const presetColorSwatches = '\
             "renamed": "false",\
             "enabled": "true",\
             "highlight": "0",\
-            "x": "3617",\
-            "y": "4541",\
+            "x": "4017",\
+            "y": "4941",\
             "z": "43",\
             "params":\
             [\
@@ -725,8 +725,8 @@ const presetColorSwatches = '\
             "renamed": "false",\
             "enabled": "true",\
             "highlight": "0",\
-            "x": "3558",\
-            "y": "3865",\
+            "x": "3958",\
+            "y": "4265",\
             "z": "44",\
             "params":\
             [\
@@ -741,8 +741,8 @@ const presetColorSwatches = '\
             "renamed": "false",\
             "enabled": "true",\
             "highlight": "0",\
-            "x": "3446",\
-            "y": "3576",\
+            "x": "3846",\
+            "y": "3976",\
             "z": "45",\
             "params":\
             [\
@@ -755,8 +755,8 @@ const presetColorSwatches = '\
             "renamed": "false",\
             "enabled": "true",\
             "highlight": "0",\
-            "x": "3860",\
-            "y": "3208",\
+            "x": "4260",\
+            "y": "3608",\
             "z": "46",\
             "params":\
             [\
@@ -776,8 +776,8 @@ const presetColorSwatches = '\
             "renamed": "false",\
             "enabled": "true",\
             "highlight": "0",\
-            "x": "4673",\
-            "y": "3691",\
+            "x": "5073",\
+            "y": "4091",\
             "z": "47",\
             "width": "120",\
             "height": "51"\
@@ -789,8 +789,8 @@ const presetColorSwatches = '\
             "renamed": "false",\
             "enabled": "true",\
             "highlight": "0",\
-            "x": "4853",\
-            "y": "3627",\
+            "x": "5253",\
+            "y": "4027",\
             "z": "48",\
             "params":\
             [\
@@ -804,8 +804,8 @@ const presetColorSwatches = '\
             "renamed": "false",\
             "enabled": "true",\
             "highlight": "0",\
-            "x": "3207",\
-            "y": "3514",\
+            "x": "3607",\
+            "y": "3914",\
             "z": "49",\
             "prevSpace": "hex",\
             "params":\

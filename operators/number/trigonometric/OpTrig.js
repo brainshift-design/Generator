@@ -1,5 +1,5 @@
 class   OpTrig
-extends OperatorWithValue
+extends OperatorBase
 {
     paramFunction;
 
@@ -16,7 +16,6 @@ extends OperatorWithValue
         this.addInput(new Input([NUMBER_VALUE]));
         this.addOutput(new Output([NUMBER_VALUE], this.output_genRequest));
 
-        this.addParam(this.paramValue);
         this.addParam(this.paramFunction = new SelectParam('function', '', false, true, true, TRIG_OPS.map(s => s[1]), 0));
     }
 
@@ -56,8 +55,7 @@ extends OperatorWithValue
 
     updateParams()
     {
-        this.paramValue   .enableControlText(false, this.isUnknown());
-        this.paramFunction.enableControlText(true);
+        this.paramFunction.enableControlText(true, this.paramFunction.isUnknown());
 
 
         switch (this.paramFunction.value.value)

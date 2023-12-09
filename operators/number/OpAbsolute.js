@@ -1,5 +1,5 @@
 class   OpAbsolute
-extends OperatorWithValue
+extends OperatorBase
 {
     constructor()
     {
@@ -10,8 +10,6 @@ extends OperatorWithValue
 
         this.addInput (new Input (NUMBER_TYPES));
         this.addOutput(new Output([NUMBER_VALUE], this.output_genRequest));
-
-        this.addParam(this.paramValue);
     }
 
 
@@ -41,15 +39,6 @@ extends OperatorWithValue
         pushUnique(gen.passedNodes, this.node);
 
         return request;
-    }
-
-
-
-    updateParams()
-    {
-        this.paramValue.enableControlText(false, this.isUnknown());
-
-        this.updateParamControls();
     }
 
 

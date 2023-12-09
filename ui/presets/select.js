@@ -9,8 +9,8 @@ const presetSelect = '\
             "renamed": "false",\
             "enabled": "true",\
             "highlight": "0",\
-            "x": "1601",\
-            "y": "3082",\
+            "x": "1701",\
+            "y": "3189",\
             "z": "0",\
             "params":\
             [\
@@ -23,8 +23,8 @@ const presetSelect = '\
             "renamed": "false",\
             "enabled": "true",\
             "highlight": "0",\
-            "x": "1600",\
-            "y": "2850",\
+            "x": "1700",\
+            "y": "2916",\
             "z": "1",\
             "params":\
             [\
@@ -37,8 +37,8 @@ const presetSelect = '\
             "renamed": "false",\
             "enabled": "true",\
             "highlight": "0",\
-            "x": "1332",\
-            "y": "3140",\
+            "x": "1432",\
+            "y": "3240",\
             "z": "2",\
             "prevSpace": "hsv",\
             "params":\
@@ -56,8 +56,8 @@ const presetSelect = '\
             "renamed": "false",\
             "enabled": "true",\
             "highlight": "0",\
-            "x": "1602",\
-            "y": "2665",\
+            "x": "1702",\
+            "y": "2731",\
             "z": "3",\
             "params":\
             [\
@@ -70,8 +70,8 @@ const presetSelect = '\
             "renamed": "false",\
             "enabled": "true",\
             "highlight": "0",\
-            "x": "1601",\
-            "y": "3298",\
+            "x": "1701",\
+            "y": "3398",\
             "z": "4",\
             "params":\
             [\
@@ -84,8 +84,8 @@ const presetSelect = '\
             "renamed": "true",\
             "enabled": "true",\
             "highlight": "0",\
-            "x": "1863",\
-            "y": "3293",\
+            "x": "1963",\
+            "y": "3393",\
             "z": "5",\
             "active": "true"\
             },\
@@ -96,8 +96,8 @@ const presetSelect = '\
             "renamed": "true",\
             "enabled": "true",\
             "highlight": "0",\
-            "x": "1864",\
-            "y": "3339",\
+            "x": "1964",\
+            "y": "3439",\
             "z": "6",\
             "active": "true"\
             },\
@@ -108,8 +108,8 @@ const presetSelect = '\
             "renamed": "false",\
             "enabled": "true",\
             "highlight": "0",\
-            "x": "1601",\
-            "y": "3522",\
+            "x": "1701",\
+            "y": "3622",\
             "z": "7",\
             "params":\
             [\
@@ -122,8 +122,8 @@ const presetSelect = '\
             "renamed": "false",\
             "enabled": "true",\
             "highlight": "5",\
-            "x": "2073",\
-            "y": "3181",\
+            "x": "2173",\
+            "y": "3281",\
             "z": "8",\
             "active": "true",\
             "params":\
@@ -138,8 +138,8 @@ const presetSelect = '\
             "renamed": "false",\
             "enabled": "true",\
             "highlight": "0",\
-            "x": "1862",\
-            "y": "3152",\
+            "x": "1962",\
+            "y": "3252",\
             "z": "9",\
             "width": "120",\
             "height": "90"\

@@ -1,5 +1,5 @@
 class   OpConvertAngle
-extends OperatorWithValue
+extends OperatorBase
 {
     paramFrom;
 
@@ -16,7 +16,6 @@ extends OperatorWithValue
         this.addInput (new Input (NUMBER_TYPES));
         this.addOutput(new Output([NUMBER_VALUE], this.output_genRequest));
 
-        this.addParam(this.paramValue);
         this.addParam(this.paramFrom = new SelectParam('from', '', false, true,  true, ['deg ⟶ rad', 'rad ⟶ deg'], 0));
     }
 
@@ -56,8 +55,7 @@ extends OperatorWithValue
 
     updateParams()
     {
-        this.paramValue.enableControlText(false, this.isUnknown());
-        this.paramFrom .enableControlText(true);
+        this.paramFrom.enableControlText(true, this.paramFrom.isUnknown());
 
         this.updateParamControls();
     }

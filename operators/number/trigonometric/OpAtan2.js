@@ -1,5 +1,5 @@
 class   OpAtan2
-extends OperatorWithValue
+extends OperatorBase
 {
     paramX;
     paramY;
@@ -15,7 +15,6 @@ extends OperatorWithValue
 
         this.addOutput(new Output([NUMBER_VALUE], this.output_genRequest));
 
-        this.addParam(this.paramValue);
         this.addParam(this.paramX = new NumberParam('x', 'X', true, true, true, 0));
         this.addParam(this.paramY = new NumberParam('y', 'Y', true, true, true, 0));
 
@@ -50,8 +49,6 @@ extends OperatorWithValue
 
     updateParams()
     {
-        this.paramValue.enableControlText(false, this.isUnknown());
-
         this.paramX.enableControlText(true, this.paramX.isUnknown());
         this.paramY.enableControlText(true, this.paramY.isUnknown());
 

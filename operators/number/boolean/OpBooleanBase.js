@@ -1,5 +1,5 @@
 class   OpBooleanBase
-extends OperatorWithValue
+extends OperatorBase
 {
     constructor(type, id, name, icon)
     {
@@ -12,8 +12,6 @@ extends OperatorWithValue
 
         this.addNewInput();
         this.addOutput(new Output([NUMBER_VALUE], this.output_genRequest));
-        
-        this.addParam(this.paramValue);
     }
     
     
@@ -63,31 +61,31 @@ extends OperatorWithValue
 
 
 
-    updateParams()
-    {
-        this.paramValue.enableControlText(false);
+    // updateParams()
+    // {
+    //     // this.paramValue.enableControlText(false);
         
 
-        const v = Math.round(this.paramValue.value.value);
+    //     // const v = Math.round(this.paramValue.value.value);
 
-             if (this.isUnknown())        this.paramValue.controls[0].valueText = UNKNOWN_DISPLAY;
-        else if (settings.showBoolValues
-              && !isNaN(v))               this.paramValue.controls[0].valueText = v != 0 ? getTrueDisplay() : getFalseDisplay();
-        else                              this.paramValue.controls[0].valueText = '';
-
-
-        this.paramValue.controls[0].text.style.fontStyle = 
-               settings.showBoolValues 
-            && this.paramValue.value.isValid()
-            ? 'normal' 
-            : 'italic';
+    //     //      if (this.isUnknown())        this.paramValue.controls[0].valueText = UNKNOWN_DISPLAY;
+    //     // else if (settings.showBoolValues
+    //     //       && !isNaN(v))               this.paramValue.controls[0].valueText = v != 0 ? getTrueDisplay() : getFalseDisplay();
+    //     // else                              this.paramValue.controls[0].valueText = '';
 
 
-        this.paramValue.controls[0].showBar = !this.isUnknown();
+    //     // this.paramValue.controls[0].text.style.fontStyle = 
+    //     //        settings.showBoolValues 
+    //     //     && this.paramValue.value.isValid()
+    //     //     ? 'normal' 
+    //     //     : 'italic';
 
 
-        this.updateParamControls();
-    }
+    //     // this.paramValue.controls[0].showBar = !this.isUnknown();
+
+
+    //     this.updateParamControls();
+    // }
 
 
 

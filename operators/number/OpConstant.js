@@ -1,5 +1,5 @@
 class   OpConstant
-extends OperatorWithValue
+extends OperatorBase
 {
     paramConstant;
     
@@ -14,7 +14,6 @@ extends OperatorWithValue
 
         this.addOutput(new Output([NUMBER_VALUE], this.output_genRequest));
 
-        this.addParam(this.paramValue);
         this.addParam(this.paramConstant = new SelectParam('constant', 'constant', false, true, true, ['√2', 'e', 'φ', 'Φ', 'π', 'τ'], 4));
 
         this.paramConstant.reverseMenu = true;
@@ -47,7 +46,6 @@ extends OperatorWithValue
 
     updateParams()
     {
-        this.paramValue   .enableControlText(false, this.isUnknown());
         this.paramConstant.enableControlText(true);
 
         this.updateParamControls();

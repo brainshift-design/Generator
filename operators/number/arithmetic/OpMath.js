@@ -1,5 +1,5 @@
 class   OpMath
-extends OperatorWithValue
+extends OperatorBase
 {
     paramOperation;
 
@@ -18,7 +18,6 @@ extends OperatorWithValue
         this.addNewInput();
         this.addOutput(new Output([NUMBER_VALUE], this.output_genRequest));
         
-        this.addParam(this.paramValue);
         this.addParam(this.paramOperation = new SelectParam('operation', '', false, true, true, MATH_OPS.map(s => s[1]), 1));
 
         this.paramOperation.controls[0].allowEditDecimals = false;
@@ -76,7 +75,6 @@ extends OperatorWithValue
 
     updateParams()
     {
-        this.paramValue    .enableControlText(false, this.isUnknown());
         this.paramOperation.enableControlText(true);
 
         

@@ -1,5 +1,5 @@
 class   OpMinMax
-extends OperatorWithValue
+extends OperatorBase
 {
     paramOperation;
 
@@ -19,7 +19,6 @@ extends OperatorWithValue
         this.addNewInput();
         this.addOutput(new Output([NUMBER_VALUE], this.output_genRequest));
         
-        this.addParam(this.paramValue);
         this.addParam(this.paramOperation = new SelectParam('operation', '', false, true, true, ['min', 'max'], 0));
 
         this.paramOperation.reverseMenu = true;
@@ -76,7 +75,6 @@ extends OperatorWithValue
 
     updateParams()
     {
-        this.paramValue    .enableControlText(false, this.isUnknown());
         this.paramOperation.enableControlText(true);
 
         this.updateParamControls();

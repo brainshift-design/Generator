@@ -1,5 +1,5 @@
 class   OpTextSubstring
-extends OperatorWithValue
+extends OperatorBase
 {
     paramStart;
     paramEnd;
@@ -17,14 +17,9 @@ extends OperatorWithValue
         this.addInput (new Input ([TEXT_VALUE]));
         this.addOutput(new Output([TEXT_VALUE], this.output_genRequest));
 
-        this.addParam(this.paramValue);
         this.addParam(this.paramStart = new NumberParam('start', '[ start', true, true, true, 0, 0));
         this.addParam(this.paramEnd   = new NumberParam('end',   '] end',   true, true, true, Number.NaN, 0));
 
-
-        ///this.paramValue.controls[0].textbox.defPlaceholder = '';
-
-        setControlFont(this.paramValue.controls[0].textbox, 'Roboto Mono', 10, 'center');
 
         this.paramStart.controls[0].allowEditDecimals = false;
         this.paramEnd  .controls[0].allowEditDecimals = false;
@@ -87,11 +82,8 @@ extends OperatorWithValue
 
     updateParams()
     {
-        this.paramValue.enableControlText(true, this.isUnknown());
-        // this.paramValue.controls[0].valueText = this.isUnknown() ? UNKNOWN_DISPLAY : '';
-
-        this.paramStart.enableControlText(true);
-        this.paramEnd  .enableControlText(true);
+        this.paramStart.enableControlText(true, this.paramStart.isUnknown());
+        this.paramEnd  .enableControlText(true, this.paramEnd  .isUnknown());
 
         this.updateParamControls();
     }

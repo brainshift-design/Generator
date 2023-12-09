@@ -1,5 +1,5 @@
 class   OpCondition
-extends OperatorWithValue
+extends OperatorBase
 {
     paramOperation;
     paramOperand;
@@ -17,7 +17,6 @@ extends OperatorWithValue
 
         this.addOutput(new Output([NUMBER_VALUE], this.output_genRequest));
 
-        this.addParam(this.paramValue);
         this.addParam(this.paramOperation = new SelectParam('operation', '', false, true, true, CONDITION_OPS.map(s => s[1]), 3));
         this.addParam(this.paramOperand   = new NumberParam('operand',   'operand', false, true, true, 0));
 
@@ -61,10 +60,8 @@ extends OperatorWithValue
 
     updateParams()
     {
-        this.paramOperation.enableControlText(true);
-        this.paramOperand  .enableControlText(true);
-
-        updateParamConditionText(this.paramValue, this.paramValue.isUnknown(), true);
+        this.paramOperation.enableControlText(true, this.paramOperation.isUnknown());
+        this.paramOperand  .enableControlText(true, this.paramOperand  .isUnknown());
 
 
         switch (this.paramOperation.value.value)

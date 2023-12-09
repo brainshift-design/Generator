@@ -204,7 +204,7 @@ const presetRays = '\
             "params":\
             [\
                     ["NUM#", "seed", "7347,0"],\
-                    ["NUM#", "max", "5,0"],\
+                    ["NUM#", "max", "8,0"],\
                     ["NUM#", "scale", "4,0"],\
                     ["NUM#", "offset", "0,1"]\
             ]\

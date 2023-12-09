@@ -1,5 +1,5 @@
 class   OpArithmetic
-extends OperatorWithValue
+extends OperatorBase
 {
     constructor(type, id, name, icon)
     {
@@ -11,8 +11,6 @@ extends OperatorWithValue
 
         this.addNewInput();
         this.addOutput(new Output([NUMBER_VALUE], this.output_genRequest));
-        
-        this.addParam(this.paramValue);
     }
     
     
@@ -58,18 +56,6 @@ extends OperatorWithValue
         pushUnique(gen.passedNodes, this.node);
         
         return request;
-    }
-
-
-
-    updateParams()
-    {
-        this.paramValue.enableControlText(false);
-                
-        this.paramValue.controls[0].valueText =  this.isUnknown() ? UNKNOWN_DISPLAY : '';
-        this.paramValue.controls[0].showBar   = !this.isUnknown();
-
-        this.updateParamControls();
     }
 
 

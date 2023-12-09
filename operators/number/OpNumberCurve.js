@@ -1,5 +1,5 @@
 class   OpNumberCurve
-extends OperatorWithValue
+extends OperatorBase
 {
     paramMin;
     paramMax;
@@ -19,7 +19,6 @@ extends OperatorWithValue
         this.addInput (new Input (NUMBER_TYPES));
         this.addOutput(new Output([NUMBER_VALUE], this.output_genRequest));
 
-        this.addParam(this.paramValue);
         this.addParam(this.paramMin    = new NumberParam('min',    'min',    true, true, true,   0));
         this.addParam(this.paramMax    = new NumberParam('max',    'max',    true, true, true, 100));
         this.addParam(this.paramPower  = new NumberParam('power',  'power',  true, true, true, 1));
@@ -74,12 +73,11 @@ extends OperatorWithValue
 
     updateParams()
     {
-        this.paramValue .enableControlText(false, this.isUnknown());
-        this.paramMin   .enableControlText(true);
-        this.paramMax   .enableControlText(true);
-        this.paramPower .enableControlText(true);
-        this.paramBias  .enableControlText(true);
-        this.paramSpread.enableControlText(true);
+        this.paramMin   .enableControlText(true, this.paramMin   .isUnknown());
+        this.paramMax   .enableControlText(true, this.paramMax   .isUnknown());
+        this.paramPower .enableControlText(true, this.paramPower .isUnknown());
+        this.paramBias  .enableControlText(true, this.paramBias  .isUnknown());
+        this.paramSpread.enableControlText(true, this.paramSpread.isUnknown());
 
         this.updateParamControls();
     }

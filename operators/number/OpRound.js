@@ -1,5 +1,5 @@
 class   OpRound
-extends OperatorWithValue
+extends OperatorBase
 {
     paramType;
     paramDecimals;
@@ -16,7 +16,6 @@ extends OperatorWithValue
         this.addInput (new Input (NUMBER_TYPES));
         this.addOutput(new Output([NUMBER_VALUE], this.output_genRequest));
 
-        this.addParam(this.paramValue);
         this.addParam(this.paramType     = new SelectParam('type',     'type',     false, true,  true, ['floor', 'round', 'ceiling'], 1));
         this.addParam(this.paramDecimals = new NumberParam('decimals', 'decimals', true,  true,  true, 0, 0, 10));
 
@@ -63,9 +62,8 @@ extends OperatorWithValue
 
     updateParams()
     {
-        this.paramValue   .enableControlText(false, this.isUnknown());
-        this.paramType    .enableControlText(true);
-        this.paramDecimals.enableControlText(true);
+        this.paramType    .enableControlText(true, this.paramType    .isUnknown());
+        this.paramDecimals.enableControlText(true, this.paramDecimals.isUnknown());
 
         this.updateParamControls();
     }
