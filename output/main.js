@@ -1818,7 +1818,7 @@ figma.ui.onmessage = function (msg) {
         case 'figUpdateObjectsAndStyles':
             nominalObjectCount = 0;
             actualObjectCount = 0;
-            figUpdateObjects(null, msg.objects, msg.objectBatchSize, msg.nodeIds, msg.firstChunk, msg.lastChunk, msg.zoomToFit);
+            figUpdateObjects(null, msg.objects, msg.objectBatchSize, msg.totalObjects, msg.nodeIds, msg.firstChunk, msg.lastChunk, msg.zoomToFit);
             figUpdateStyles(msg);
             break;
         case 'figDeleteObjectsAndStyles':
@@ -2515,7 +2515,7 @@ function figUpdateObject(figObj, genObj) {
             updateDecoObject(figObj);
     }
 }
-function figUpdateObjects(figParent, genObjects, batchSize, nodeIds = [], firstChunk = false, lastChunk = false, zoomToFit = false) {
+function figUpdateObjects(figParent, genObjects, batchSize, totalObjects = -1, nodeIds = [], firstChunk = false, lastChunk = false, zoomToFit = false) {
     return __awaiter(this, void 0, void 0, function* () {
         let curNodeId = NULL;
         let figObjects = null;
@@ -2523,6 +2523,7 @@ function figUpdateObjects(figParent, genObjects, batchSize, nodeIds = [], firstC
         const updateObjects = [];
         let updateObjectCount = 0;
         _genIgnoreNodeIds.push(...nodeIds);
+        nominalObjectCount = totalObjects;
         for (const genObj of genObjects) {
             _genIgnoreObjects.push(genObj);
             if (genObj[FO_NODE_ID] != curNodeId) {
@@ -2589,7 +2590,6 @@ function figUpdateObjects(figParent, genObjects, batchSize, nodeIds = [], firstC
                     removeFromArray(figEmptyObjects, figObj);
                 figCreateObject(genObj, addObject);
             }
-            nominalObjectCount++;
             updateObjectCount++;
             if (updateObjectCount >= batchSize) {
                 const result = yield figGetValueFromUiSync('returnObjectUpdate', {
@@ -2637,8 +2637,6 @@ function figUpdateObjects(figParent, genObjects, batchSize, nodeIds = [], firstC
                 figma.viewport.zoom = Math.min(figma.viewport.bounds.width * figma.viewport.zoom / bounds.width - 0.05, figma.viewport.bounds.height * figma.viewport.zoom / bounds.height - 0.05);
             }
         }
-        // console.log('nominalObjectCount =', nominalObjectCount);
-        // console.log('actualObjectCount =', actualObjectCount);
         yield figGetValueFromUiSync('returnObjectUpdate', {
             nominalObjectCount: nominalObjectCount,
             actualObjectCount: actualObjectCount
@@ -3355,8 +3353,9 @@ function figCreateBoolean(genBool) {
     }
     return figBool;
 }
-function figUpdateBoolean(figBool, genBool) {
-    if (!genBooleanIsValid(genBool)) {
+function figUpdateBoolean(figBool, genBool, isValid = false) {
+    if (!isValid
+        && !genBooleanIsValid(genBool)) {
         figBool.remove();
         return;
     }
@@ -3378,16 +3377,24 @@ function figCreateEllipse(genEllipse) {
     if (!genEllipseIsValid(genEllipse))
         return null;
     const figEllipse = figma.createEllipse();
+    figUpdateEllipse(figEllipse, genEllipse, true);
+    // figUpdateEllipseData(figEllipse, genEllipse);
+    // if (figPoints.includes(figEllipse))
+    //     updatePointObject(figEllipse);
+    // else
+    //     setObjectProps(figEllipse, genEllipse);
+    return figEllipse;
+}
+function figUpdateEllipse(figEllipse, genEllipse, isValid = false) {
+    if (!isValid
+        && !genEllipseIsValid(genEllipse))
+        return;
     figUpdateEllipseData(figEllipse, genEllipse);
     if (figPoints.includes(figEllipse))
         updatePointObject(figEllipse);
     else
         setObjectProps(figEllipse, genEllipse);
-    return figEllipse;
-}
-function figUpdateEllipse(figEllipse, genEllipse) {
-    figUpdateEllipseData(figEllipse, genEllipse);
-    setObjectProps(figEllipse, genEllipse);
+    // setObjectProps(figEllipse, genEllipse);
     actualObjectCount++;
 }
 function figUpdateEllipseData(figEllipse, genEllipse) {
@@ -3462,10 +3469,13 @@ function figCreateLine(genLine) {
     if (!genLineIsValid(genLine))
         return null;
     const figLine = figma.createLine();
-    figUpdateLine(figLine, genLine);
+    figUpdateLine(figLine, genLine, true);
     return figLine;
 }
-function figUpdateLine(figLine, genLine) {
+function figUpdateLine(figLine, genLine, isValid = false) {
+    if (!isValid
+        && !genLineIsValid(genLine))
+        return;
     setObjectTransform(figLine, genLine, true, 0);
     setObjectProps(figLine, genLine);
     actualObjectCount++;
@@ -3483,8 +3493,10 @@ function figCreatePoint(genPoint) {
     if (!genPointIsValid(genPoint))
         return figPoint;
     //figPoint.rotation = 0;
-    if (figPoints.includes(figPoint))
+    if (figPoints.includes(figPoint)) {
         updatePointObject_(figPoint, genPoint);
+        actualObjectCount++;
+    }
     else
         figUpdatePoint(figPoint, genPoint);
     return figPoint;
@@ -3543,11 +3555,12 @@ function figCreatePolygon(genPoly) {
     if (!genPolygonIsValid(genPoly))
         return null;
     const figPoly = figma.createPolygon();
-    figUpdatePolygon(figPoly, genPoly);
+    figUpdatePolygon(figPoly, genPoly, true);
     return figPoly;
 }
-function figUpdatePolygon(figPoly, genPoly) {
-    if (!genPolygonIsValid(genPoly))
+function figUpdatePolygon(figPoly, genPoly, isValid = false) {
+    if (!isValid
+        && !genPolygonIsValid(genPoly))
         return;
     figPoly.cornerRadius = genPoly[FO_POLY_ROUND];
     figPoly.pointCount = Math.max(3, genPoly[FO_POLY_CORNERS]);
@@ -3566,11 +3579,12 @@ function figCreateRect(genRect) {
     if (!genRectIsValid(genRect))
         return null;
     const figRect = figma.createRectangle();
-    figUpdateRect(figRect, genRect);
+    figUpdateRect(figRect, genRect, true);
     return figRect;
 }
-function figUpdateRect(figRect, genRect) {
-    if (!genRectIsValid(genRect))
+function figUpdateRect(figRect, genRect, isValid = false) {
+    if (!isValid
+        && !genRectIsValid(genRect))
         return;
     const found = genRect[FO_EFFECTS].findIndex(e => e[0] == 'ROUND_CORNERS');
     if (found > -1) {
@@ -3599,10 +3613,13 @@ function figCreateStar(genStar) {
     if (!genStarIsValid(genStar))
         return null;
     const figStar = figma.createStar();
-    figUpdateStar(figStar, genStar);
+    figUpdateStar(figStar, genStar, true);
     return figStar;
 }
-function figUpdateStar(figStar, genStar) {
+function figUpdateStar(figStar, genStar, isValid = false) {
+    if (!isValid
+        && !genStarIsValid(genStar))
+        return;
     figStar.cornerRadius = genStar[FO_STAR_ROUND];
     figStar.pointCount = genStar[FO_STAR_POINTS];
     figStar.innerRadius = Math.min(Math.max(0, genStar[FO_STAR_CONVEX] / 100), 1);
@@ -3624,10 +3641,13 @@ function figCreateText(genText) {
     if (!genTextIsValid(genText))
         return null;
     const figText = figma.createText();
-    figUpdateText(figText, genText);
+    figUpdateText(figText, genText, true);
     return figText;
 }
-function figUpdateText(figText, genText) {
+function figUpdateText(figText, genText, isValid = false) {
+    if (!isValid
+        && !genTextIsValid(genText))
+        return null;
     const fontName = {
         family: genText[FO_FONT],
         style: genText[FO_FONT_STYLE]
@@ -3690,16 +3710,18 @@ function genVectorNetworkIsValid(genNetwork) {
     return true; //genNetwork[FO_VECTOR_NETWORK_DATA] != null && !isNaN(genNetwork[FO_VECTOR_NETWORK_DATA]);
 }
 function figCreateVectorNetwork(genNetwork) {
-    const figNetwork = figma.createVector();
     if (!genVectorNetworkIsValid(genNetwork))
-        return figNetwork;
-    figNetwork.vectorNetwork = genNetwork[FO_VECTOR_NETWORK_DATA];
-    setObjectTransform(figNetwork, genNetwork, false);
-    setObjectProps(figNetwork, genNetwork);
+        return null;
+    const figNetwork = figma.createVector();
+    figUpdateVectorNetwork(figNetwork, genNetwork, true);
+    // figNetwork.vectorNetwork = genNetwork[FO_VECTOR_NETWORK_DATA];
+    // setObjectTransform(figNetwork, genNetwork, false);
+    // setObjectProps    (figNetwork, genNetwork);
     return figNetwork;
 }
-function figUpdateVectorNetwork(figNetwork, genNetwork) {
-    if (!genVectorNetworkIsValid(genNetwork))
+function figUpdateVectorNetwork(figNetwork, genNetwork, isValid = false) {
+    if (!isValid
+        && !genVectorNetworkIsValid(genNetwork))
         return;
     figNetwork.vectorNetwork = genNetwork[FO_VECTOR_NETWORK_DATA];
     setObjectTransform(figNetwork, genNetwork, false);
@@ -3712,11 +3734,12 @@ function genVectorPathIsValid(genPath) {
 }
 function figCreateVectorPath(genPath) {
     const figPath = figma.createVector();
-    figUpdateVectorPath(figPath, genPath);
+    figUpdateVectorPath(figPath, genPath, true);
     return figPath;
 }
-function figUpdateVectorPath(figPath, genPath) {
-    if (!genVectorPathIsValid(genPath))
+function figUpdateVectorPath(figPath, genPath, isValid = false) {
+    if (!isValid
+        && !genVectorPathIsValid(genPath))
         return;
     figPath.vectorPaths = [{
             windingRule: genPath[FO_VECTOR_PATH_WINDING] == 1 ? 'NONZERO' : 'EVENODD',

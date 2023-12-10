@@ -2667,12 +2667,13 @@ figma.ui.onmessage = function(msg)
 
         case 'figUpdateObjectsAndStyles':
             nominalObjectCount = 0;
-            actualObjectCount = 0;
+            actualObjectCount  = 0;
             
             figUpdateObjects(
                 null, 
                 msg.objects, 
                 msg.objectBatchSize, 
+                msg.totalObjects,
                 msg.nodeIds, 
                 msg.firstChunk, 
                 msg.lastChunk, 
@@ -3611,11 +3612,11 @@ async function figGetValueFromUi(key, params = null)
 }
 
 
-var _genIgnoreNodeIds = [];
-var _genIgnoreObjects = [];
+var _genIgnoreNodeIds   = [];
+var _genIgnoreObjects   = [];
 
-var  nominalObjectCount   = 0;
-var  actualObjectCount   = 0;
+var  nominalObjectCount = 0;
+var  actualObjectCount  = 0;
 
 
 function makeObjectName(obj)
@@ -3649,7 +3650,7 @@ function figCreateObject(genObj, addObject = null)
         case SHAPE_GROUP:    figObj = figCreateShapeGroup   (genObj);  break;
         case FRAME:          figObj = figCreateFrame        (genObj);  break;
     }
-
+ 
 
     if (    addObject
         &&  figObj != undefined
@@ -3740,7 +3741,7 @@ function figUpdateObject(figObj, genObj)
 
 
 
-async function figUpdateObjects(figParent, genObjects, batchSize, nodeIds = [], firstChunk = false, lastChunk = false, zoomToFit = false)
+async function figUpdateObjects(figParent, genObjects, batchSize, totalObjects = -1, nodeIds = [], firstChunk = false, lastChunk = false, zoomToFit = false)
 {
     let curNodeId           = NULL;
     let figObjects          = null;
@@ -3753,6 +3754,7 @@ async function figUpdateObjects(figParent, genObjects, batchSize, nodeIds = [], 
 
     _genIgnoreNodeIds.push(...nodeIds);
 
+    nominalObjectCount = totalObjects;
 
 
     for (const genObj of genObjects)
@@ -3851,7 +3853,6 @@ async function figUpdateObjects(figParent, genObjects, batchSize, nodeIds = [], 
         }
 
 
-        nominalObjectCount++;
         updateObjectCount++;
         
 
@@ -3932,9 +3933,6 @@ async function figUpdateObjects(figParent, genObjects, batchSize, nodeIds = [], 
         }
     }
 
-
-    // console.log('nominalObjectCount =', nominalObjectCount);
-    // console.log('actualObjectCount =', actualObjectCount);
 
     await figGetValueFromUiSync(
         'returnObjectUpdate', 
@@ -5045,9 +5043,10 @@ function figCreateBoolean(genBool)
 
 
 
-function figUpdateBoolean(figBool, genBool)
+function figUpdateBoolean(figBool, genBool, isValid = false)
 {
-    if (!genBooleanIsValid(genBool))
+    if (   !isValid
+        && !genBooleanIsValid(genBool))
     {
         figBool.remove();
         return;
@@ -5089,14 +5088,16 @@ function figCreateEllipse(genEllipse)
     const figEllipse = figma.createEllipse();
 
 
-    figUpdateEllipseData(figEllipse, genEllipse);
+    figUpdateEllipse(figEllipse, genEllipse, true);
+
+    // figUpdateEllipseData(figEllipse, genEllipse);
 
     
-    if (figPoints.includes(figEllipse))
-        updatePointObject(figEllipse);
+    // if (figPoints.includes(figEllipse))
+    //     updatePointObject(figEllipse);
         
-    else
-        setObjectProps(figEllipse, genEllipse);
+    // else
+    //     setObjectProps(figEllipse, genEllipse);
 
     
     return figEllipse;
@@ -5104,11 +5105,23 @@ function figCreateEllipse(genEllipse)
 
 
 
-function figUpdateEllipse(figEllipse, genEllipse)
+function figUpdateEllipse(figEllipse, genEllipse, isValid = false)
 {
+    if (   !isValid
+        && !genEllipseIsValid(genEllipse))
+        return;
+
+
     figUpdateEllipseData(figEllipse, genEllipse);
 
-    setObjectProps(figEllipse, genEllipse);
+
+    if (figPoints.includes(figEllipse))
+        updatePointObject(figEllipse);
+    else
+        setObjectProps(figEllipse, genEllipse);
+    
+    
+    // setObjectProps(figEllipse, genEllipse);
 
 
     actualObjectCount++;
@@ -5261,15 +5274,19 @@ function figCreateLine(genLine)
 
     const figLine = figma.createLine();
 
-    figUpdateLine(figLine, genLine);
+    figUpdateLine(figLine, genLine, true);
     
     return figLine;
 }
 
 
 
-function figUpdateLine(figLine, genLine)
+function figUpdateLine(figLine, genLine, isValid = false)
 {
+    if (   !isValid
+        && !genLineIsValid(genLine))
+        return;
+
     setObjectTransform(figLine, genLine, true, 0);
     setObjectProps    (figLine, genLine);
 
@@ -5310,7 +5327,10 @@ function figCreatePoint(genPoint)
 
     
     if (figPoints.includes(figPoint))
+    {
         updatePointObject_(figPoint, genPoint);
+        actualObjectCount++;
+    }
     else
         figUpdatePoint(figPoint, genPoint);
 
@@ -5418,16 +5438,17 @@ function figCreatePolygon(genPoly)
         
     const figPoly = figma.createPolygon();
 
-    figUpdatePolygon(figPoly, genPoly);
+    figUpdatePolygon(figPoly, genPoly, true);
 
     return figPoly;
 }
 
 
 
-function figUpdatePolygon(figPoly, genPoly)
+function figUpdatePolygon(figPoly, genPoly, isValid = false)
 {
-    if (!genPolygonIsValid(genPoly))
+    if (   !isValid
+        && !genPolygonIsValid(genPoly))
         return;
 
         
@@ -5463,16 +5484,17 @@ function figCreateRect(genRect)
 
     const figRect = figma.createRectangle();
 
-    figUpdateRect(figRect, genRect);
+    figUpdateRect(figRect, genRect, true);
 
     return figRect;
 }
 
 
 
-function figUpdateRect(figRect, genRect)
+function figUpdateRect(figRect, genRect, isValid = false)
 {
-    if (!genRectIsValid(genRect))
+    if (   !isValid
+        && !genRectIsValid(genRect))
         return;
 
 
@@ -5521,15 +5543,20 @@ function figCreateStar(genStar)
     
     const figStar = figma.createStar();
 
-    figUpdateStar(figStar, genStar);
+    figUpdateStar(figStar, genStar, true);
 
     return figStar;
 }
 
 
 
-function figUpdateStar(figStar, genStar)
+function figUpdateStar(figStar, genStar, isValid = false)
 {
+    if (   !isValid
+        && !genStarIsValid(genStar))
+        return;
+
+
     figStar.cornerRadius = genStar[FO_STAR_ROUND ];
     figStar.pointCount   = genStar[FO_STAR_POINTS];
     figStar.innerRadius  = Math.min(Math.max(0, genStar[FO_STAR_CONVEX] / 100), 1);
@@ -5569,7 +5596,7 @@ function figCreateText(genText)
 
     const figText = figma.createText();
 
-    figUpdateText(figText, genText);
+    figUpdateText(figText, genText, true);
 
     
     return figText;
@@ -5577,8 +5604,13 @@ function figCreateText(genText)
 
 
 
-function figUpdateText(figText, genText)
+function figUpdateText(figText, genText, isValid = false)
 {
+    if (   !isValid
+        && !genTextIsValid(genText))
+        return null;
+
+
     const fontName = 
     { 
         family: genText[FO_FONT      ], 
@@ -5666,27 +5698,28 @@ function genVectorNetworkIsValid(genNetwork)
 
 function figCreateVectorNetwork(genNetwork)
 {
+    if (!genVectorNetworkIsValid(genNetwork))
+        return null;
+
     const figNetwork = figma.createVector();
 
-    if (!genVectorNetworkIsValid(genNetwork))
-        return figNetwork;
+    figUpdateVectorNetwork(figNetwork, genNetwork, true);
+    
+    // figNetwork.vectorNetwork = genNetwork[FO_VECTOR_NETWORK_DATA];
 
     
-    figNetwork.vectorNetwork = genNetwork[FO_VECTOR_NETWORK_DATA];
-
-    
-    setObjectTransform(figNetwork, genNetwork, false);
-    setObjectProps    (figNetwork, genNetwork);
-
+    // setObjectTransform(figNetwork, genNetwork, false);
+    // setObjectProps    (figNetwork, genNetwork);
 
     return figNetwork;
 }
 
 
 
-function figUpdateVectorNetwork(figNetwork, genNetwork)
+function figUpdateVectorNetwork(figNetwork, genNetwork, isValid = false)
 {
-    if (!genVectorNetworkIsValid(genNetwork))
+    if (   !isValid
+        && !genVectorNetworkIsValid(genNetwork))
         return;
 
 
@@ -5714,16 +5747,17 @@ function figCreateVectorPath(genPath)
 {
     const figPath = figma.createVector();
 
-    figUpdateVectorPath(figPath, genPath);
+    figUpdateVectorPath(figPath, genPath, true);
 
     return figPath;
 }
 
 
 
-function figUpdateVectorPath(figPath, genPath)
+function figUpdateVectorPath(figPath, genPath, isValid = false)
 {
-    if (!genVectorPathIsValid(genPath))
+    if (   !isValid
+        && !genVectorPathIsValid(genPath))
         return;
 
 

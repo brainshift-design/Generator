@@ -23,7 +23,7 @@ function figCreateText(genText)
 
     const figText = figma.createText();
 
-    figUpdateText(figText, genText);
+    figUpdateText(figText, genText, true);
 
     
     return figText;
@@ -31,8 +31,13 @@ function figCreateText(genText)
 
 
 
-function figUpdateText(figText, genText)
+function figUpdateText(figText, genText, isValid = false)
 {
+    if (   !isValid
+        && !genTextIsValid(genText))
+        return null;
+
+
     const fontName = 
     { 
         family: genText[FO_FONT      ], 

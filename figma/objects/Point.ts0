@@ -29,7 +29,10 @@ function figCreatePoint(genPoint)
 
     
     if (figPoints.includes(figPoint))
+    {
         updatePointObject_(figPoint, genPoint);
+        actualObjectCount++;
+    }
     else
         figUpdatePoint(figPoint, genPoint);
 

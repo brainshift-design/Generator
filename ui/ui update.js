@@ -108,6 +108,7 @@ function uiUpdateValuesAndObjects(requestId, actionId, updateNodeId, updateParam
             updateParamId:   updateParamId,
             nodeIds:         nodes.map(n => n.id),
             objectBatchSize, objectBatchSize,
+            totalObjects:    totalObjects,
             objects:         [...objects],
             styles:          [...styles ],
             firstChunk:      isFirstChunk,

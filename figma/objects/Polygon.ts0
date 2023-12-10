@@ -18,16 +18,17 @@ function figCreatePolygon(genPoly)
         
     const figPoly = figma.createPolygon();
 
-    figUpdatePolygon(figPoly, genPoly);
+    figUpdatePolygon(figPoly, genPoly, true);
 
     return figPoly;
 }
 
 
 
-function figUpdatePolygon(figPoly, genPoly)
+function figUpdatePolygon(figPoly, genPoly, isValid = false)
 {
-    if (!genPolygonIsValid(genPoly))
+    if (   !isValid
+        && !genPolygonIsValid(genPoly))
         return;
 
         

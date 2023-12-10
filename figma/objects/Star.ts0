@@ -19,15 +19,20 @@ function figCreateStar(genStar)
     
     const figStar = figma.createStar();
 
-    figUpdateStar(figStar, genStar);
+    figUpdateStar(figStar, genStar, true);
 
     return figStar;
 }
 
 
 
-function figUpdateStar(figStar, genStar)
+function figUpdateStar(figStar, genStar, isValid = false)
 {
+    if (   !isValid
+        && !genStarIsValid(genStar))
+        return;
+
+
     figStar.cornerRadius = genStar[FO_STAR_ROUND ];
     figStar.pointCount   = genStar[FO_STAR_POINTS];
     figStar.innerRadius  = Math.min(Math.max(0, genStar[FO_STAR_CONVEX] / 100), 1);

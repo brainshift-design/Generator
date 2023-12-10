@@ -11,16 +11,17 @@ function figCreateVectorPath(genPath)
 {
     const figPath = figma.createVector();
 
-    figUpdateVectorPath(figPath, genPath);
+    figUpdateVectorPath(figPath, genPath, true);
 
     return figPath;
 }
 
 
 
-function figUpdateVectorPath(figPath, genPath)
+function figUpdateVectorPath(figPath, genPath, isValid = false)
 {
-    if (!genVectorPathIsValid(genPath))
+    if (   !isValid
+        && !genVectorPathIsValid(genPath))
         return;
 
 

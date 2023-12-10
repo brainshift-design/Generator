@@ -17,16 +17,17 @@ function figCreateRect(genRect)
 
     const figRect = figma.createRectangle();
 
-    figUpdateRect(figRect, genRect);
+    figUpdateRect(figRect, genRect, true);
 
     return figRect;
 }
 
 
 
-function figUpdateRect(figRect, genRect)
+function figUpdateRect(figRect, genRect, isValid = false)
 {
-    if (!genRectIsValid(genRect))
+    if (   !isValid
+        && !genRectIsValid(genRect))
         return;
 
 

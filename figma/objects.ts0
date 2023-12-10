@@ -1,8 +1,8 @@
-var _genIgnoreNodeIds = [];
-var _genIgnoreObjects = [];
+var _genIgnoreNodeIds   = [];
+var _genIgnoreObjects   = [];
 
-var  nominalObjectCount   = 0;
-var  actualObjectCount   = 0;
+var  nominalObjectCount = 0;
+var  actualObjectCount  = 0;
 
 
 function makeObjectName(obj)
@@ -36,7 +36,7 @@ function figCreateObject(genObj, addObject = null)
         case SHAPE_GROUP:    figObj = figCreateShapeGroup   (genObj);  break;
         case FRAME:          figObj = figCreateFrame        (genObj);  break;
     }
-
+ 
 
     if (    addObject
         &&  figObj != undefined
@@ -127,7 +127,7 @@ function figUpdateObject(figObj, genObj)
 
 
 
-async function figUpdateObjects(figParent, genObjects, batchSize, nodeIds = [], firstChunk = false, lastChunk = false, zoomToFit = false)
+async function figUpdateObjects(figParent, genObjects, batchSize, totalObjects = -1, nodeIds = [], firstChunk = false, lastChunk = false, zoomToFit = false)
 {
     let curNodeId           = NULL;
     let figObjects          = null;
@@ -140,6 +140,7 @@ async function figUpdateObjects(figParent, genObjects, batchSize, nodeIds = [], 
 
     _genIgnoreNodeIds.push(...nodeIds);
 
+    nominalObjectCount = totalObjects;
 
 
     for (const genObj of genObjects)
@@ -238,7 +239,6 @@ async function figUpdateObjects(figParent, genObjects, batchSize, nodeIds = [], 
         }
 
 
-        nominalObjectCount++;
         updateObjectCount++;
         
 
@@ -319,9 +319,6 @@ async function figUpdateObjects(figParent, genObjects, batchSize, nodeIds = [], 
         }
     }
 
-
-    // console.log('nominalObjectCount =', nominalObjectCount);
-    // console.log('actualObjectCount =', actualObjectCount);
 
     await figGetValueFromUiSync(
         'returnObjectUpdate', 

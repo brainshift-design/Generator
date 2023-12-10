@@ -8,27 +8,28 @@ function genVectorNetworkIsValid(genNetwork)
 
 function figCreateVectorNetwork(genNetwork)
 {
+    if (!genVectorNetworkIsValid(genNetwork))
+        return null;
+
     const figNetwork = figma.createVector();
 
-    if (!genVectorNetworkIsValid(genNetwork))
-        return figNetwork;
+    figUpdateVectorNetwork(figNetwork, genNetwork, true);
+    
+    // figNetwork.vectorNetwork = genNetwork[FO_VECTOR_NETWORK_DATA];
 
     
-    figNetwork.vectorNetwork = genNetwork[FO_VECTOR_NETWORK_DATA];
-
-    
-    setObjectTransform(figNetwork, genNetwork, false);
-    setObjectProps    (figNetwork, genNetwork);
-
+    // setObjectTransform(figNetwork, genNetwork, false);
+    // setObjectProps    (figNetwork, genNetwork);
 
     return figNetwork;
 }
 
 
 
-function figUpdateVectorNetwork(figNetwork, genNetwork)
+function figUpdateVectorNetwork(figNetwork, genNetwork, isValid = false)
 {
-    if (!genVectorNetworkIsValid(genNetwork))
+    if (   !isValid
+        && !genVectorNetworkIsValid(genNetwork))
         return;
 
 

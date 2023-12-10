@@ -41,9 +41,10 @@ function figCreateBoolean(genBool)
 
 
 
-function figUpdateBoolean(figBool, genBool)
+function figUpdateBoolean(figBool, genBool, isValid = false)
 {
-    if (!genBooleanIsValid(genBool))
+    if (   !isValid
+        && !genBooleanIsValid(genBool))
     {
         figBool.remove();
         return;

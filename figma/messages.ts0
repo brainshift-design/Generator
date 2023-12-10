@@ -100,12 +100,13 @@ figma.ui.onmessage = function(msg)
 
         case 'figUpdateObjectsAndStyles':
             nominalObjectCount = 0;
-            actualObjectCount = 0;
+            actualObjectCount  = 0;
             
             figUpdateObjects(
                 null, 
                 msg.objects, 
                 msg.objectBatchSize, 
+                msg.totalObjects,
                 msg.nodeIds, 
                 msg.firstChunk, 
                 msg.lastChunk, 
