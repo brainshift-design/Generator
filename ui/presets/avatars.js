@@ -803,7 +803,6 @@ const presetAvatars = '\
             "z": "48",\
             "params":\
             [\
-                ["NUM#", "value", "-11,0"],\
                 ["NUM#", "operation", "0,0"]\
             ]\
         },\
@@ -818,9 +817,7 @@ const presetAvatars = '\
             "y": "9651",\
             "z": "49",\
             "params":\
-            [\
-                ["NUM#", "value", "61,0"]\
-            ]\
+            []\
         },\
         {\
             "type": "MATH",\
@@ -834,7 +831,6 @@ const presetAvatars = '\
             "z": "50",\
             "params":\
             [\
-                ["NUM#", "value", "89.02,2"],\
                 ["NUM#", "operation", "0,0"]\
             ]\
         },\
@@ -850,7 +846,6 @@ const presetAvatars = '\
             "z": "51",\
             "params":\
             [\
-                ["NUM#", "value", "89.02,2"],\
                 ["NUM#", "operation", "0,0"]\
             ]\
         },\
@@ -1334,7 +1329,6 @@ const presetAvatars = '\
             "z": "82",\
             "params":\
             [\
-                ["NUM#", "value", "-21,0"],\
                 ["NUM#", "operation", "0,0"]\
             ]\
         },\
@@ -1556,9 +1550,7 @@ const presetAvatars = '\
             "y": "9374",\
             "z": "94",\
             "params":\
-            [\
-                ["NUM#", "value", "92.98,2"]\
-            ]\
+            []\
         },\
         {\
             "type": "ELPS",\
@@ -1796,9 +1788,7 @@ const presetAvatars = '\
             "y": "8972",\
             "z": "109",\
             "params":\
-            [\
-                ["NUM#", "value", "39,0"]\
-            ]\
+            []\
         },\
         {\
             "type": "DRSH",\
@@ -1875,7 +1865,6 @@ const presetAvatars = '\
             "z": "114",\
             "params":\
             [\
-                ["NUM#", "value", "-46,0"],\
                 ["NUM#", "operation", "0,0"]\
             ]\
         },\

@@ -1,5 +1,5 @@
 class   OpTextJoin
-extends ResizableOperatorWithValue
+extends ResizableBase
 {
     paramWith;
 
@@ -15,13 +15,11 @@ extends ResizableOperatorWithValue
         this.addNewInput();
         this.addOutput(new Output([TEXT_VALUE], this.output_genRequest));
 
-        this.addParam(this.paramValue);
         this.addParam(this.paramWith = new TextParam('with', 'with', false, true, true));
 
         this.paramWith.controls[0].textbox.defPlaceholder = 'with';
 
 
-        setControlFont(this.paramValue.controls[0].textbox, 'Roboto Mono', 10, 'center');
         setControlFont(this.paramWith .controls[0].textbox, 'Roboto Mono', 10, 'center');
     }
     
@@ -44,10 +42,7 @@ extends ResizableOperatorWithValue
 
     setRect(x, y, w, h, updateTransform = true)
     {
-        const height =
-            settings.showOperationResults
-            ? this.headerHeight + 2*defParamHeight
-            : this.headerHeight +   defParamHeight;
+        const height = this.headerHeight + defParamHeight;
         
         ResizableBase.prototype.setRect.call(this, 
             x, 
@@ -95,7 +90,6 @@ extends ResizableOperatorWithValue
 
     updateParams()
     {
-        this.paramValue.enableControlText(true, this.isUnknown());
         this.paramWith .enableControlText(true, this.paramWith.isUnknown());
 
         this.updateValueParam();
@@ -107,19 +101,7 @@ extends ResizableOperatorWithValue
 
     updateValueParam()
     {
-        const headerHeight = boundingRect(this.header).height / graph.currentPage.zoom;
-
-        const totalParamHeight = 
-              this.div.offsetHeight 
-            - Math.max(defHeaderHeight, headerHeight);
-
-        const hWith  = defParamHeight;
-        const hValue = Math.max(defParamHeight, totalParamHeight - hWith);
-
-        this.paramValue.div.style.width  = this.div.offsetWidth;
-        this.paramValue.div.style.height = hValue;    
-
         this.paramWith.div.style.width  = this.div.offsetWidth;
-        this.paramWith.div.style.height = hWith;    
+        this.paramWith.div.style.height = defParamHeight;    
     }
 }

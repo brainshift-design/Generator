@@ -533,7 +533,6 @@ const presetBlurryBackgrounds = '\
             "z": "32",\
             "params":\
             [\
-                ["NUM#", "value", "-400,0"],\
                 ["NUM#", "operation", "0,0"]\
             ]\
         },\

@@ -122,7 +122,6 @@ var menuItemShowColorLegendInMenus;
 var menuItemShowBoolValues;
 var menuItemSeparateThousands;
 var menuItemInvertSimpleMathParamOrder;
-var menuItemShowOperationResults;
 var menuItemShowClearUndoWarning;
 var menuItemShareUsageMetrics;
 var menuItemShowTooltips;
@@ -298,7 +297,6 @@ function initGeneratorMenus()
         // menuItemShowPages               = new MenuItem('Show pages',                         null, {checkCallback: () => settings.showAllColorSpaces,         callback: () => { updateSettingAndMenu('showPages',                  true, !settings.showPages);                  updateMenuItemShowPages();                  }}),
         // menuPrefSep1                    = new MenuItem('',                                   null, {separator: true}),    
         menuItemShowAllColorSpaces         = new MenuItem('Show all color spaces',              null, {checkCallback: () => settings.showAllColorSpaces,         callback: () => { updateSettingAndMenu('showAllColorSpaces',         true, !settings.showAllColorSpaces);         updateMenuItemShowAllColorSpaces();         }}),
-        //menuItemShowOperationResults       = new MenuItem('Show operation results',             null, {checkCallback: () => settings.showOperationResults,       callback: () => { updateSettingAndMenu('showOperationResults',       true, !settings.showOperationResults);       updateMenuItemShowOperationResults();       }}),
         menuItemShowNodeIcons              = new MenuItem('Show node icons',                    null, {checkCallback: () => settings.showNodeIcons,              callback: () => { updateSettingAndMenu('showNodeIcons',              true, !settings.showNodeIcons);              updateMenuItemShowNodeIcons();              }}),
         menuItemShowBoolValues             = new MenuItem('Show boolean values as   ✓ ✗',      null, {checkCallback: () => settings.showBoolValues,             callback: () => { updateSettingAndMenu('showBoolValues',             true, !settings.showBoolValues);             updateMenuItemShowBoolValues();             }}),
         menuItemSeparateThousands          = new MenuItem('Separate thousands in numbers',      null, {checkCallback: () => settings.separateThousands,          callback: () => { updateSettingAndMenu('separateThousands',          true, !settings.separateThousands);          updateMenuItemSeparateThousands();          }}),

@@ -1,5 +1,5 @@
 class   OpTextFetch
-extends ResizableOperatorWithValue
+extends ResizableBase
 {
     paramRequest;
 
@@ -37,10 +37,7 @@ extends ResizableOperatorWithValue
     {
         const headerHeight = Math.max(defHeaderHeight, boundingRect(this.header).height / graph.currentPage.zoom);
 
-        const height =
-            settings.showOperationResults
-            ? Math.max(headerHeight + 2 * defParamHeight, h)
-            : headerHeight + 2 * defParamHeight;
+        const height = headerHeight + 2 * defParamHeight;
 
         super.setRect(
             x, 

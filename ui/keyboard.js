@@ -190,15 +190,6 @@ document.addEventListener('keydown', e =>
         updateMenuItemShowNodeIcons();          
     }
 
-    // toggle operation results
-    else if (e.code == 'KeyR'
-          && getCtrlKey(e)
-          && e.shiftKey)
-    {
-        updateSettingAndMenu('showOperationResults',  true, !settings.showOperationResults);  
-        updateMenuItemShowOperationResults();          
-    }
-
     // rename selected node
     else if (e.code == 'KeyR'
           && getCtrlKey(e)

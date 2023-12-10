@@ -385,6 +385,20 @@ function unescapeString(str)
 
 
 
+function unescapeRegexPattern(str)
+{
+    return str.replace(/\\([\\.*+?^${}()|\[\]])/g, '$1');
+}
+
+
+
+function unescapeRegexReplacement(str)
+{
+    return str.replace(/\\([\\$&`'])/g, '$1');
+}
+
+
+
 function getEditDistance(str1, str2)
 {
     // calculate the Levenshtein distance between two strings

@@ -253,12 +253,7 @@ extends OperatorBase
     //     let headerHeight = getStyleValue(this.header, 'offset-height');
     //     if (typeof headerHeight == 'string') headerHeight = defHeaderHeight;
 
-    //     const paramHeight = 
-    //            this instanceof ResizableOperatorWithValue
-    //         && settings.showOperationResults
-    //         ? defParamHeight 
-    //         : 0;
-
+    //     const paramHeight = 0;
 
     //     const _w = Math.max(60, w);
     //     const _h = Math.max(parseFloat(headerHeight) + paramHeight, h);
@@ -276,11 +271,7 @@ extends OperatorBase
     {
         const headerHeight = this.header.offsetHeight;//getStyleValue(this.header, 'height');
 
-        const paramHeight = 
-               this instanceof ResizableOperatorWithValue
-            && settings.showOperationResults
-            ? defParamHeight 
-            : 0;
+        const paramHeight = 0;
 
         const _w = Math.max(60, w);
         const _h = Math.max(parseFloat(headerHeight) + paramHeight, h);
@@ -303,11 +294,7 @@ extends OperatorBase
     {
         const headerHeight = this.header.offsetHeight;//getStyleValue(this.header, 'height');
 
-        const paramHeight = 
-               this instanceof ResizableOperatorWithValue
-            && settings.showOperationResults 
-            ? defParamHeight 
-            : 0;
+        const paramHeight = 0;
 
         const _h = Math.max(parseFloat(headerHeight) + paramHeight, h);
 

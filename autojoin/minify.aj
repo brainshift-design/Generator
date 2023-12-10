@@ -655,7 +655,6 @@ menuItemShowColorLegendInMenus
 menuItemShowBoolValues
 menuItemSeparateThousands
 menuItemInvertSimpleMathParamOrder
-menuItemShowOperationResults
 menuItemShowClearUndoWarning
 menuItemShareUsageMetrics
 menuItemShowTooltips
@@ -2294,7 +2293,6 @@ OpPanel
 Output
 OutputProxy
 ResizableBase
-ResizableOperatorWithValue
 Wire
 BackBlurParam
 ColorParam
@@ -2526,7 +2524,6 @@ showBoolValues
 separateThousands
 invertSimpleMathParamOrder
 showColorLegendInMenus
-showOperationResults
 showClearUndoWarning
 shareUsageMetrics
 showObjectCount

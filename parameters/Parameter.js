@@ -385,7 +385,6 @@ function checkParamVisible(param)
 {
     param.div.style.display = 
           !param.isResult
-        || settings.showOperationResults
         ? 'inline-block'
         : 'none';
 }

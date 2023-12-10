@@ -157,8 +157,8 @@ function getReplaceValue(input, _what, _with, _regex)
         try
         {
             value.value = input.value.replace(
-                new RegExp(_what.value, 'gu'),
-                () => unescapeString(_with.value));
+                new RegExp(unescapeRegexPattern(_what.value), 'gu'),
+                unescapeRegexReplacement(_with.value));
 
             // value.value = input.value.replaceAll(
             //     new RegExp(_what.value, 'g'),

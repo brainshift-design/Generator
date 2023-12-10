@@ -40,9 +40,8 @@ Operator.prototype.updateNode = function()
 
 
     const visibleParams = this.params.filter(p => 
-           p.isVisible()
-        && (  !p.isResult
-            || settings.showOperationResults));
+            p.isVisible()
+        && !p.isResult);
 
     
     if (  !isEmpty(visibleParams)

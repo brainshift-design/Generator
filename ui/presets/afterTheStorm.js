@@ -126,9 +126,7 @@ const presetAfterTheStorm = '\
             "y": "424",\
             "z": "7",\
             "params":\
-            [\
-                ["NUM#", "value", "18.849291214091316,1"]\
-            ]\
+            []\
         },\
         {\
             "type": "PT",\

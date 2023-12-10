@@ -41,9 +41,7 @@
 ../operators/Operator textbox.js
 ../operators/Operator update.js
 ../operators/OperatorBase.js
-../operators/OperatorWithValue.js
 ../operators/ResizableBase.js
-../operators/ResizableOperatorWithValue.js
 
 
 ../operators/flow/OpStart.js

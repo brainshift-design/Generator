@@ -12,7 +12,6 @@ const settings =
     separateThousands:             true,
     invertSimpleMathParamOrder:    true,
     showColorLegendInMenus:        false,
-    showOperationResults:          false,
     showClearUndoWarning:          true,
     shareUsageMetrics:             true,
     showObjectCount:               true,
@@ -74,7 +73,6 @@ function updateSetting(settingName, value)
         case 'separateThousands':             settings.separateThousands             = value;  break;
         case 'invertSimpleMathParamOrder':    settings.invertSimpleMathParamOrder    = value;  break;
         case 'showColorLegendInMenus':        settings.showColorLegendInMenus        = value;  break;
-        case 'showOperationResults':          settings.showOperationResults          = value;  break;
         case 'showClearUndoWarning':          settings.showClearUndoWarning          = value;  break;
         case 'shareUsageMetrics':             settings.shareUsageMetrics             = value;  break;
         case 'showObjectCount':               settings.showObjectCount               = value;  break;
@@ -134,7 +132,6 @@ function updateSettingAndMenu(settingName, valid, value, save = true)
         case 'separateThousands':             updateSettingAndMenu_(valid, settingName, value, menuItemSeparateThousands            ); break;
         case 'invertSimpleMathParamOrder':    updateSettingAndMenu_(valid, settingName, value, menuItemInvertSimpleMathParamOrder   ); break;
         case 'showColorLegendInMenus':        updateSettingAndMenu_(valid, settingName, value, menuItemShowColorLegendInMenus       ); break;
-        case 'showOperationResults':          updateSettingAndMenu_(valid, settingName, value, menuItemShowOperationResults         ); break;
         case 'showClearUndoWarning':          updateSettingAndMenu_(valid, settingName, value, menuItemShowClearUndoWarning         ); break;
         case 'shareUsageMetrics':             updateSettingAndMenu_(valid, settingName, value, menuItemShareUsageMetrics            ); break;
         case 'showObjectCount':               updateSettingAndMenu_(valid, settingName, value, menuItemShowObjectCount              ); break;
@@ -217,7 +214,6 @@ function updateSettingsMenus()
     menuItemSeparateThousands            .setChecked(settings.separateThousands            );
     menuItemInvertSimpleMathParamOrder   .setChecked(settings.invertSimpleMathParamOrder   );
     menuItemShowColorLegendInMenus       .setChecked(settings.showColorLegendInMenus       );
-    menuItemShowOperationResults         .setChecked(settings.showOperationResults         );
     menuItemShowClearUndoWarning         .setChecked(settings.showClearUndoWarning         );
     menuItemShareUsageMetrics            .setChecked(settings.shareUsageMetrics            );
     menuItemShowObjectCount              .setChecked(settings.showObjectCount              );
@@ -323,25 +319,6 @@ function updateMenuItemShowColorLegendInMenus()
 
 
 
-function updateMenuItemShowOperationResults()
-{
-    const nodes = graph.nodes
-        .filter(n => n.params.find(p => p.isResult));
-
-    nodes.forEach(n => 
-    {
-        const rectd = n.measureData.divOffset;
-        const recth = n.measureData.headerOffset;
-
-        n.setRect(rectd.x, rectd.y, recth.w, recth.h, false);
-        n.updateNode();
-    });
-
-    graphView.updateNodeTransforms(nodes);
-}
-
-
-
 function enableFeatures(sub, beta = false)
 {
     //enableMenuItem(menuItemVarGroup,    sub,  sub);
@@ -409,7 +386,6 @@ function loadLocalSettings()
     uiGetLocalData('invertSimpleMathParamOrder'   );
     uiGetLocalData('showColorLegendInMenus'       );
     uiGetLocalData('showPages'                    );
-    uiGetLocalData('showOperationResults'         );
     uiGetLocalData('showClearUndoWarning'         );
     uiGetLocalData('shareUsageMetrics'            );
     uiGetLocalData('showObjectCount'              );
