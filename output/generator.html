@@ -38357,42 +38357,42 @@ extends GOperator2
 
 
 
-    isValid()
-    {
-        return super.isValid()
-            && this.distance && this.distance.isValid()
-            && this.angle    && this.angle   .isValid();
-    }
+    // isValid()
+    // {
+    //     return super.isValid()
+    //         && this.distance && this.distance.isValid()
+    //         && this.angle    && this.angle   .isValid();
+    // }
 
 
 
-    pushValueUpdates(parse)
-    {
-        super.pushValueUpdates(parse);
+    // pushValueUpdates(parse)
+    // {
+    //     super.pushValueUpdates(parse);
 
-        if (this.distance) this.distance.pushValueUpdates(parse);
-        if (this.angle   ) this.angle   .pushValueUpdates(parse);
-    }
-
-
-
-    invalidateInputs(parse, from, force)
-    {
-        super.invalidateInputs(parse, from, force);
-
-        if (this.distance) this.distance.invalidateInputs(parse, from, force);
-        if (this.angle   ) this.angle   .invalidateInputs(parse, from, force);
-    }
+    //     if (this.distance) this.distance.pushValueUpdates(parse);
+    //     if (this.angle   ) this.angle   .pushValueUpdates(parse);
+    // }
 
 
 
-    iterateLoop(parse)
-    {
-        super.iterateLoop(parse);
+    // invalidateInputs(parse, from, force)
+    // {
+    //     super.invalidateInputs(parse, from, force);
 
-        if (this.distance) this.distance.iterateLoop(parse);
-        if (this.angle   ) this.angle   .iterateLoop(parse);
-    }
+    //     if (this.distance) this.distance.invalidateInputs(parse, from, force);
+    //     if (this.angle   ) this.angle   .invalidateInputs(parse, from, force);
+    // }
+
+
+
+    // iterateLoop(parse)
+    // {
+    //     super.iterateLoop(parse);
+
+    //     if (this.distance) this.distance.iterateLoop(parse);
+    //     if (this.angle   ) this.angle   .iterateLoop(parse);
+    // }
 }
 
 

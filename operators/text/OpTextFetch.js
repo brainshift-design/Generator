@@ -21,11 +21,8 @@ extends ResizableBase
 
         this.addOutput(new Output([TEXT_VALUE], this.output_genRequest));
 
-        this.addParam(this.paramValue);
         this.addParam(this.paramRequest = new TextParam('request', 'request', false, true, true));
 
-
-        setControlFont(this.paramValue  .controls[0].textbox, 'Roboto Mono', 10, 'center');
         setControlFont(this.paramRequest.controls[0].textbox, 'Roboto Mono', 10, 'center');
 
         this.paramRequest.controls[0].textbox.defPlaceholder = 'request';
@@ -37,7 +34,7 @@ extends ResizableBase
     {
         const headerHeight = Math.max(defHeaderHeight, boundingRect(this.header).height / graph.currentPage.zoom);
 
-        const height = headerHeight + 2 * defParamHeight;
+        const height = headerHeight + defParamHeight;
 
         super.setRect(
             x, 
@@ -90,9 +87,6 @@ extends ResizableBase
 
     updateParams()
     {
-        this.paramValue.enableControlText(true, this.isUnknown());
-        // this.paramValue.controls[0].valueText = this.isUnknown() ? UNKNOWN_DISPLAY : '';
-
         this.paramRequest.enableControlText(true);
 
         this.updateValueParam();
@@ -104,15 +98,7 @@ extends ResizableBase
 
     updateValueParam()
     {
-        const totalHeight = 
-              this.div.offsetHeight 
-            - Math.max(defHeaderHeight, this.header.offsetHeight);
-
         const hRequest = defParamHeight;
-        const hValue   = totalHeight - hRequest;
-
-        this.paramValue.div.style.width    = this.div.offsetWidth;
-        this.paramValue.div.style.height   = hValue;    
 
         this.paramRequest.div.style.width  = this.div.offsetWidth;
         this.paramRequest.div.style.height = hRequest;    
