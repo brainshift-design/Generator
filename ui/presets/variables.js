@@ -14,7 +14,6 @@ const presetBasicVariables = '\
             "z": "0",\
             "params":\
             [\
-                    ["NUM#", "value", "1,0"],\
                     ["NUM#", "operation", "4,0"],\
                     ["NUM#", "operand", "40,0"]\
             ]\
@@ -42,7 +41,6 @@ const presetBasicVariables = '\
             "z": "2",\
             "params":\
             [\
-                    ["NUM#", "value", "1,0"],\
                     ["NUM#", "operation", "4,0"],\
                     ["NUM#", "operand", "96,0"]\
             ]\
@@ -59,7 +57,6 @@ const presetBasicVariables = '\
             "z": "3",\
             "params":\
             [\
-                    ["NUM#", "value", "1,0"],\
                     ["NUM#", "operation", "4,0"],\
                     ["NUM#", "operand", "57,0"]\
             ]\

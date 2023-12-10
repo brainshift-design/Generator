@@ -250,7 +250,6 @@ const presetCairoTiles = '\
             "z": "16",\
             "params":\
             [\
-                    ["NUM#", "value", "-57,0"],\
                     ["NUM#", "operation", "0,0"]\
             ]\
             },\
@@ -363,7 +362,6 @@ const presetCairoTiles = '\
             "z": "23",\
             "params":\
             [\
-                    ["NUM#", "value", "-100,0"],\
                     ["NUM#", "operation", "0,0"]\
             ]\
             },\

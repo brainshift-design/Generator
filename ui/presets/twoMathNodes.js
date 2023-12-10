@@ -260,9 +260,7 @@ const presetTwoMathNodes = '\
             "z": "15",\
             "active": "true",\
             "params":\
-            [\
-                    ["NUM#", "value", "100,0"]\
-            ]\
+            []\
             },\
             {\
             "type": "CMB",\
@@ -417,9 +415,7 @@ const presetTwoMathNodes = '\
             "z": "25",\
             "active": "true",\
             "params":\
-            [\
-                    ["NUM#", "value", "10,0"]\
-            ]\
+            []\
             },\
             {\
             "type": "CMNT",\
@@ -462,7 +458,6 @@ const presetTwoMathNodes = '\
             "active": "true",\
             "params":\
             [\
-                    ["NUM#", "value", "-123,0"],\
                     ["NUM#", "operation", "0,0"]\
             ]\
             },\

@@ -203,8 +203,7 @@ const presetNumberLine = '\
             "z": "11",\
             "params":\
             [\
-                ["NUM#", "operation", "4,0"],\
-                ["NUM#", "value", "660,0"]\
+                ["NUM#", "operation", "4,0"]\
             ]\
         },\
         {\

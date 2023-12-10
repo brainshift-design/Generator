@@ -16,7 +16,6 @@ const presetRender = '\
             "height": "99",\
             "params":\
             [\
-                ["TEXT#", "value", "Updated%20on%205%20November%202023", "center"],\
                 ["TEXT#", "with", "%20", "center"]\
             ]\
         },\
@@ -357,9 +356,7 @@ const presetRender = '\
             "y": "5535",\
             "z": "21",\
             "params":\
-            [\
-                ["TEXT#", "value", "November", "center"]\
-            ]\
+            []\
         },\
         {\
             "type": "RANGE",\

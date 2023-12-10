@@ -66,9 +66,7 @@ const presetClouds = '\
             "y": "3108",\
             "z": "3",\
             "params":\
-            [\
-                ["NUM#", "value", "330.8758067242062,0"]\
-            ]\
+            []\
         },\
         {\
             "type": "RANGE",\
@@ -288,8 +286,7 @@ const presetClouds = '\
             "z": "17",\
             "params":\
             [\
-                ["NUM#", "operation", "0,0"],\
-                ["NUM#", "value", "-100,0"]\
+                ["NUM#", "operation", "0,0"]\
             ]\
         },\
         {\
@@ -552,8 +549,7 @@ const presetClouds = '\
             "z": "33",\
             "params":\
             [\
-                ["NUM#", "operation", "0,0"],\
-                ["NUM#", "value", "-500,0"]\
+                ["NUM#", "operation", "0,0"]\
             ]\
         },\
         {\
@@ -567,9 +563,7 @@ const presetClouds = '\
             "y": "3236",\
             "z": "34",\
             "params":\
-            [\
-                ["NUM#", "value", "248.97754003451368,0"]\
-            ]\
+            []\
         },\
         {\
             "type": "MOVE",\

@@ -74,7 +74,6 @@ const presetColorSwatches = '\
             "z": "4",\
             "params":\
             [\
-                ["NUM#", "value", "1,0"],\
                 ["NUM#", "operation", "4,0"],\
                 ["NUM#", "operand", "7,0"]\
             ]\
@@ -179,7 +178,6 @@ const presetColorSwatches = '\
             "z": "10",\
             "params":\
             [\
-                ["NUM#", "value", "1,0"],\
                 ["NUM#", "operation", "0,0"],\
                 ["NUM#", "operand", "60,0"]\
             ]\
@@ -279,7 +277,6 @@ const presetColorSwatches = '\
             "z": "16",\
             "params":\
             [\
-                ["NUM#", "value", "95,0"],\
                 ["NUM#", "operation", "0,0"]\
             ]\
         },\
@@ -390,7 +387,6 @@ const presetColorSwatches = '\
             "z": "23",\
             "params":\
             [\
-                ["NUM#", "value", "1,0"],\
                 ["NUM#", "operation", "4,0"],\
                 ["NUM#", "operand", "4.5,1"]\
             ]\

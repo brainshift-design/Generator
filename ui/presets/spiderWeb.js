@@ -115,7 +115,6 @@ const presetSpiderWeb = '\
             "z": "6",\
             "params":\
             [\
-                ["NUM#", "value", "45,0"],\
                 ["NUM#", "operation", "3,0"]\
             ]\
         },\
@@ -148,7 +147,6 @@ const presetSpiderWeb = '\
             "z": "8",\
             "params":\
             [\
-                ["NUM#", "value", "-45,0"],\
                 ["NUM#", "operation", "0,0"]\
             ]\
         },\

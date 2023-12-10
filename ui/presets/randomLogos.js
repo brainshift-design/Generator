@@ -680,7 +680,6 @@ const presetNamesLogos = '\
             "height": "82",\
             "params":\
             [\
-                ["TEXT#", "value", "RYGYHA", "center"],\
                 ["TEXT#", "with", "", "center"]\
             ]\
         },\
@@ -846,7 +845,6 @@ const presetNamesLogos = '\
             "height": "95",\
             "params":\
             [\
-                ["TEXT#", "value", "HA", "center"],\
                 ["TEXT#", "with", "", "center"]\
             ]\
         },\

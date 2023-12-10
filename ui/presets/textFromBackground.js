@@ -59,9 +59,7 @@ const presetTextFromBackground = '\
             "y": "3261",\
             "z": "3",\
             "params":\
-            [\
-                    ["NUM#", "value", "68.38478086073042,1"]\
-            ]\
+            []\
             },\
             {\
             "type": "NUM",\
@@ -161,7 +159,6 @@ const presetTextFromBackground = '\
             "z": "9",\
             "params":\
             [\
-                    ["NUM#", "value", "1,0"],\
                     ["NUM#", "operation", "5,0"],\
                     ["NUM#", "operand", "35,0"]\
             ]\

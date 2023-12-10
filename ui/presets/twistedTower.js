@@ -27,7 +27,6 @@ const presetTwistedTower = '\
             "z": "1",\
             "params":\
             [\
-                ["NUM#", "value", "-10,0"],\
                 ["NUM#", "operation", "0,0"]\
             ]\
         },\

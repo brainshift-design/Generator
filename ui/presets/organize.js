@@ -52,9 +52,7 @@ const presetOrganize = '\
             "width": "120",\
             "height": "73.00000491969925",\
             "params":\
-            [\
-                    ["TEXT#", "value", "AB", "center"]\
-            ]\
+            []\
             },\
             {\
             "type": "CMNT",\
@@ -196,9 +194,7 @@ const presetOrganize = '\
             "z": "11",\
             "active": "true",\
             "params":\
-            [\
-                    ["NUM#", "value", "3,0"]\
-            ]\
+            []\
             },\
             {\
             "type": "TEXT",\

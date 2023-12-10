@@ -77,9 +77,7 @@ const presetClock = '\
             "y": "6415",\
             "z": "4",\
             "params":\
-            [\
-                    ["NUM#", "value", "947,0"]\
-            ]\
+            []\
             },\
             {\
             "type": "SMATH",\
@@ -492,7 +490,6 @@ const presetClock = '\
             "z": "29",\
             "params":\
             [\
-                    ["NUM#", "value", "270,0"],\
                     ["NUM#", "operation", "0,0"]\
             ]\
             },\
@@ -755,9 +752,7 @@ const presetClock = '\
             "y": "6290",\
             "z": "46",\
             "params":\
-            [\
-                    ["NUM#", "value", "2869,0"]\
-            ]\
+            []\
             },\
             {\
             "type": "CMB",\

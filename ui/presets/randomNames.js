@@ -33,7 +33,6 @@ const presetRandomNames = '\
             "height": "82",\
             "params":\
             [\
-                ["TEXT#", "value", "PUTUVO", "center"],\
                 ["TEXT#", "with", "", "center"]\
             ]\
         },\
@@ -271,8 +270,7 @@ const presetRandomNames = '\
             "z": "16",\
             "params":\
             [\
-                ["NUM#", "case", "2,0"],\
-                ["TEXT#", "value", "Fefe%20Putuvo", "left"]\
+                ["NUM#", "case", "2,0"]\
             ]\
         },\
         {\
@@ -403,7 +401,6 @@ const presetRandomNames = '\
             "height": "95",\
             "params":\
             [\
-                ["TEXT#", "value", "VO", "center"],\
                 ["TEXT#", "with", "", "center"]\
             ]\
         },\

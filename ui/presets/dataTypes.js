@@ -33,7 +33,6 @@ const presetDataTypes = '\
             "height": "98",\
             "params":\
             [\
-                    ["TEXT#", "value", "%221234567%22", "center"],\
                     ["TEXT#", "what", "(.*)", "center"],\
                     ["TEXT#", "with", "%22%241", "center"],\
                     ["NUM#", "regex", "1,0"]\

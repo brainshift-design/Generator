@@ -162,8 +162,7 @@ const presetBrushStrokes = '\
             "z": "9",\
             "params":\
             [\
-                ["NUM#", "operation", "0,0"],\
-                ["NUM#", "value", "-3,0"]\
+                ["NUM#", "operation", "0,0"]\
             ]\
         },\
         {\
@@ -619,8 +618,7 @@ const presetBrushStrokes = '\
             "z": "38",\
             "params":\
             [\
-                ["NUM#", "operation", "0,0"],\
-                ["NUM#", "value", "16,0"]\
+                ["NUM#", "operation", "0,0"]\
             ]\
         },\
         {\
@@ -751,8 +749,7 @@ const presetBrushStrokes = '\
             "z": "45",\
             "params":\
             [\
-                ["NUM#", "operation", "0,0"],\
-                ["NUM#", "value", "-10,0"]\
+                ["NUM#", "operation", "0,0"]\
             ]\
         },\
         {\
@@ -786,8 +783,7 @@ const presetBrushStrokes = '\
             "z": "47",\
             "params":\
             [\
-                ["NUM#", "operation", "0,0"],\
-                ["NUM#", "value", "-89.99543067229081,0"]\
+                ["NUM#", "operation", "0,0"]\
             ]\
         },\
         {\
@@ -1089,8 +1085,7 @@ const presetBrushStrokes = '\
             "z": "66",\
             "params":\
             [\
-                ["NUM#", "operation", "0,0"],\
-                ["NUM#", "value", "-15,0"]\
+                ["NUM#", "operation", "0,0"]\
             ]\
         },\
         {\
@@ -1203,8 +1198,7 @@ const presetBrushStrokes = '\
             "z": "73",\
             "params":\
             [\
-                ["NUM#", "operation", "0,0"],\
-                ["NUM#", "value", "-35,0"]\
+                ["NUM#", "operation", "0,0"]\
             ]\
         },\
         {\

@@ -60,7 +60,6 @@ const presetBrickWall = '\
             "z": "3",\
             "params":\
             [\
-                ["NUM#", "value", "-0.3,1"],\
                 ["NUM#", "operation", "0,0"]\
             ]\
         },\
@@ -257,9 +256,7 @@ const presetBrickWall = '\
             "y": "5054",\
             "z": "15",\
             "params":\
-            [\
-                ["NUM#", "value", "695.9,1"]\
-            ]\
+            []\
         },\
         {\
             "type": "NUM",\
@@ -378,9 +375,7 @@ const presetBrickWall = '\
             "y": "4900",\
             "z": "23",\
             "params":\
-            [\
-                ["NUM#", "value", "485.7,1"]\
-            ]\
+            []\
         },\
         {\
             "type": "RAND",\

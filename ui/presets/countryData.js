@@ -189,7 +189,6 @@ const presetCountryData = '\
             "z": "12",\
             "params":\
             [\
-                    ["NUM#", "value", "0.5,1"],\
                     ["NUM#", "operation", "1,0"]\
             ]\
             },\

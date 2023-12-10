@@ -99,9 +99,7 @@ const presetNodeBasics = '\
             "y": "1077",\
             "z": "7",\
             "params":\
-            [\
-                    ["NUM#", "value", "579,0"]\
-            ]\
+            []\
             },\
             {\
             "type": "CMNT",\

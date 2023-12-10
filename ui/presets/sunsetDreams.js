@@ -348,9 +348,7 @@ const presetSunsetDreams = '\
             "y": "474",\
             "z": "21",\
             "params":\
-            [\
-                ["NUM#", "value", "12.566989030672797,0"]\
-            ]\
+            []\
         },\
         {\
             "type": "SEQ",\

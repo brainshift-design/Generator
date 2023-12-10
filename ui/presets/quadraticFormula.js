@@ -120,7 +120,6 @@ const presetQuadraticFormula = '\
             "z": "8",\
             "params":\
             [\
-                    ["NUM#", "value", "-5,0"],\
                     ["NUM#", "operation", "0,0"]\
             ]\
             },\
@@ -136,7 +135,6 @@ const presetQuadraticFormula = '\
             "z": "9",\
             "params":\
             [\
-                    ["NUM#", "value", "225,0"],\
                     ["NUM#", "operation", "0,0"]\
             ]\
             },\
@@ -152,7 +150,6 @@ const presetQuadraticFormula = '\
             "z": "10",\
             "params":\
             [\
-                    ["NUM#", "value", "25,0"],\
                     ["NUM#", "operation", "4,0"]\
             ]\
             },\
@@ -168,7 +165,6 @@ const presetQuadraticFormula = '\
             "z": "11",\
             "params":\
             [\
-                    ["NUM#", "value", "-200,0"],\
                     ["NUM#", "operation", "4,0"]\
             ]\
             },\
@@ -216,9 +212,7 @@ const presetQuadraticFormula = '\
             "y": "3508",\
             "z": "14",\
             "params":\
-            [\
-                    ["NUM#", "value", "10,1"]\
-            ]\
+            []\
             },\
             {\
             "type": "MATH",\
@@ -232,7 +226,6 @@ const presetQuadraticFormula = '\
             "z": "15",\
             "params":\
             [\
-                    ["NUM#", "value", "-20,1"],\
                     ["NUM#", "operation", "0,0"]\
             ]\
             },\
@@ -264,7 +257,6 @@ const presetQuadraticFormula = '\
             "z": "17",\
             "params":\
             [\
-                    ["NUM#", "value", "2.5,1"],\
                     ["NUM#", "operation", "3,0"]\
             ]\
             },\
@@ -280,7 +272,6 @@ const presetQuadraticFormula = '\
             "z": "18",\
             "params":\
             [\
-                    ["NUM#", "value", "-5,1"],\
                     ["NUM#", "operation", "3,0"]\
             ]\
             },\

@@ -46,9 +46,7 @@ const presetRoughStar = '\
             "y": "2215",\
             "z": "2",\
             "params":\
-            [\
-                ["NUM#", "value", "543.6226647821652,1"]\
-            ]\
+            []\
         },\
         {\
             "type": "NOISE",\
