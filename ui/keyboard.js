@@ -7,10 +7,10 @@ document.addEventListener('keydown', e =>
     //console.log('e.code =', e.code);
 
 
-    if (   crashed
-        || graphView.loadingNodes
-        || graphView.pastingNodes
-        || graphView.restoringNodes)
+    if (   crashed)
+        // || graphView.loadingNodes
+        // || graphView.pastingNodes
+        // || graphView.restoringNodes)
     {
         e.preventDefault();
         e.stopPropagation();

@@ -39,7 +39,8 @@ function pushUpdateFromParam(action, nodes, param, save = true)
     const set =
           ((settings.showAllColorSpaces  ? 1 : 0) << 0)
         | ((settings.logRequests         ? 1 : 0) << 1)
-        | ((settings.showTransformPoints ? 1 : 0) << 2);
+        | ((settings.showTransformPoints ? 1 : 0) << 2)
+        | ((graphView.loadingNodes       ? 1 : 0) << 3);
 
 
     if (action)

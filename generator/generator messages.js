@@ -134,6 +134,7 @@ function genEndFigMessage()
     {
         genUpdateValuesAndObjects(
             lastRequestId,
+            false,
             -1, 
             Number.MAX_SAFE_INTEGER, 
             lastUpdateNodeId, 

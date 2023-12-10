@@ -168,7 +168,7 @@
 
 .nodeLabelText
 {
-    font-family:    Inter;
+    font-family:    Inter, sans-serif;
     font-size:      11px;
     padding:        0;
     margin:         0;
@@ -186,7 +186,7 @@
 
 .nodeLabelTextbox
 {
-    font-family: Inter;
+    font-family: Inter, sans-serif;
     font-size:   11;
  /* box-shadow:  0 0 0 1px #a0a inset; */
     overflow:    visible;
@@ -213,7 +213,7 @@
 
 .proLabel
 {
-    font-family:    Inter;
+    font-family:    Inter, sans-serif;
     font-size:      26px;
     font-weight:    700;
     color:          var(--figma-color-bg-brand);
@@ -238,7 +238,7 @@
 
 /* .proLabel
 {
-    font-family:    Inter;
+    font-family:    Inter, sans-serif;
     font-size:      16px;
     font-weight:    700;
     color:          #e88b;

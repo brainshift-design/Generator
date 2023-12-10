@@ -1,7 +1,7 @@
 
 .select
 {
-    font-family:         Inter;
+    font-family:         Inter, sans-serif;
     font-size:           11;
     vertical-align:      middle;
     padding-left:        6;
@@ -52,7 +52,7 @@
     height:        auto;
     color:         white;
     background:    #222;
-    font-family:   Inter;
+    font-family:   Inter, sans-serif;
     font-size:     13;
     text-align:    center;
     outline:       0.5px solid rgba(0, 0, 0, 0.1);

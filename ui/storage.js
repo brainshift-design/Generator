@@ -513,6 +513,7 @@ function finishLoading(_nodes)
         clearTimeout(loadRestartTimer);
         loadRestartTimer = -1;
 
+        //console.log('stopped in finish loading');
         loadingOverlay.style.display = 'none';
     }
 

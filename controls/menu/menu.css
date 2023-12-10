@@ -1,7 +1,7 @@
 .menuButton
 {
     display:       inline-block;
-    font-family:   Inter;
+    font-family:   Inter, sans-serif;
     font-size:     11px;
     width:         50px;
     height:        40px;
@@ -56,7 +56,7 @@
     height:           auto;
     padding:          8px 0 8px 0;
     border-radius:    2px;
-    font-family:      Inter;
+    font-family:      Inter, sans-serif;
     font-size:        11px;
     overflow:         hidden;
     overflow-y:       hidden;
@@ -129,7 +129,7 @@
     display:     inline-block;
     width:       100%;
     height:      auto;
-    font-family: Inter;
+    font-family: Inter, sans-serif;
     font-size:   12px;
     position:    relative;
     /* box-shadow:  0 0 0 1px red inset; */

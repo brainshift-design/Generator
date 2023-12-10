@@ -190,7 +190,7 @@
 
 .shortcutKey
 {
-    font-family:             Inter;
+    font-family:             Inter, sans-serif;
     display:                 inline-block;
     font-size:               11px;
     color:                   #bcbcbc;
@@ -210,7 +210,7 @@
 
 .shortcutEvent
 {
-    font-family:             Inter;
+    font-family:             Inter, sans-serif;
     display:                 inline-block;
     font-size:               11px;
     color:                   #bcbcbc;

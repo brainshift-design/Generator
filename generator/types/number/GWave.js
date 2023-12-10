@@ -69,44 +69,49 @@ extends GOperator
         const iteration = repeat ? repeat.iteration : 0;
 
  
-        let t;
-        
-        
-        if (   repeat
-            && shape
-            && freq
-            && offset)
+        if (this.options.enabled)
         {
-            t = (iteration/repeat.total) * freq.value - offset.value/freq.value*2;
-
-            switch (shape.value)
+            let t;
+            
+            
+            if (   repeat
+                && shape
+                && freq
+                && offset)
             {
-                case 0: t = (t%1) < 0.5 ? 1 : -1;      break; // square
-                case 1: t = (1 - (t%1)*2);             break; // saw
-                case 2: t = ((t%1)*2 - 1);             break; // back saw
-                case 3: t = 1 - 2*Math.abs(2*(t%1)-1); break; // triangle
-                case 4: t = Math.sin(t * Tau);         break; // sine
+                t = (iteration/repeat.total) * freq.value - offset.value/freq.value*2;
+
+                switch (shape.value)
+                {
+                    case 0: t = (t%1) < 0.5 ? 1 : -1;      break; // square
+                    case 1: t = (1 - (t%1)*2);             break; // saw
+                    case 2: t = ((t%1)*2 - 1);             break; // back saw
+                    case 3: t = 1 - 2*Math.abs(2*(t%1)-1); break; // triangle
+                    case 4: t = Math.sin(t * Tau);         break; // sine
+                }
             }
-        }
-        else 
-            t = 0;
+            else 
+                t = 0;
 
+            
+            if (bias)
+            {
+                const b = bias.value / 100;
+
+                if (b >= 0) t = t / (1+b) + b/2;
+                else        t = t / (1-b) + b/2;
+            }
+
+
+            if (amp ) t = t * amp .value;
+            if (base) t = t + base.value;
+
+
+            this.value = new NumberValue(t);
+        }
+        else
+            this.value = base;
         
-        if (bias)
-        {
-            const b = bias.value / 100;
-
-            if (b >= 0) t = t / (1+b) + b/2;
-            else        t = t / (1-b) + b/2;
-        }
-
-
-        if (amp ) t = t * amp .value;
-        if (base) t = t + base.value;
-
-
-        this.value = new NumberValue(t);
-
 
         this.setUpdateValues(parse,
         [

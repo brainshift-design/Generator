@@ -162,15 +162,6 @@ function uiUpdateValuesAndObjects(requestId, actionId, updateNodeId, updateParam
         }
 
 
-        graphView.creatingNodes  = false;
-        graphView.pastingNodes   = false;
-        graphView.loadingNodes   = false;
-        graphView.restoringNodes = false;
-
-        actionManager.undoing    = false;
-        actionManager.redoing    = false;
-        
-
         loadingOverlay.style.display = 'none'; // for loading
 
 
@@ -184,6 +175,22 @@ function uiUpdateValuesAndObjects(requestId, actionId, updateNodeId, updateParam
         }
 
         graphView._zoomToFitObjects = false;
+
+
+        if (graphView.loadingNodes)
+        {
+            graph.pageNodes.forEach(n => n.updateNode());
+            graphView.updateNodeTransforms(graph.pageNodes);
+        }
+
+
+        graphView.creatingNodes  = false;
+        graphView.pastingNodes   = false;
+        graphView.loadingNodes   = false;
+        graphView.restoringNodes = false;
+
+        actionManager.undoing    = false;
+        actionManager.redoing    = false;
 
 
         uiUpdateAnimateNodes();

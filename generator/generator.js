@@ -25,9 +25,10 @@ function genRequest(request, save)
 
     const settings =
     {
-        showAllColorSpaces:  (set >> 0) & 1 != 0,
-        logRequests:         (set >> 1) & 1 != 0,
-        showTransformPoints: (set >> 2) & 1 != 0
+        showAllColorSpaces:  ((set >> 0) & 1) != 0,
+        logRequests:         ((set >> 1) & 1) != 0,
+        showTransformPoints: ((set >> 2) & 1) != 0,
+        loadingNodes:        ((set >> 3) & 1) != 0
     };
 
 
@@ -65,32 +66,33 @@ function genRequest(request, save)
 
     (async () =>
     {
-        for (const node of paramNodes) 
+        for (const node of paramNodes)
         { 
-            if (await checkStop(parse.requestId)) 
-                return;
+            if (await checkStop(parse.requestId))
+                break;
 
             await node.eval(parse);
         } 
 
 
-        for (const node of topLevelNodes) 
+        for (const node of topLevelNodes)
         { 
-            if (await checkStop(parse.requestId)) 
-                return;
+            if (await checkStop(parse.requestId))
+                break;
 
-            await node.eval(parse); 
+            await node.eval(parse);
         }
 
 
-        if (await checkStop(parse.requestId)) 
+        if (    await checkStop(parse.requestId)
+            && !settings.loadingNodes)
             return;
 
 
         genQueueMessageToUi({cmd: 'uiEndGlobalProgress'});
 
        
-        for (const node of topLevelNodes) 
+        for (const node of topLevelNodes)
             node.pushValueUpdates(parse);
         
         
@@ -122,9 +124,9 @@ function genRequest(request, save)
                             && obj.xp1
                             && obj.xp2)
                         {
-                            const xp0 = clone(obj.xp0);//.toPoint();
-                            const xp1 = clone(obj.xp1);//.toPoint();
-                            const xp2 = clone(obj.xp2);//.toPoint();
+                            const xp0 = clone(obj.xp0);
+                            const xp1 = clone(obj.xp1);
+                            const xp2 = clone(obj.xp2);
                             const xp3 = addv(xp2, subv(xp1, xp0));
 
                             genPushUpdateObject(
@@ -147,6 +149,7 @@ function genRequest(request, save)
 
         await genUpdateValuesAndObjects(
             requestId,
+            settings.loadingNodes,
             actionId,
             objectBatchSize,
             parse.updateNodeId,
@@ -232,7 +235,7 @@ function clearLastUpdate()
 
 
 
-async function genUpdateValuesAndObjects(requestId, actionId, objectBatchSize, updateNodeId, updateParamId, updateValues, updateObjects, updateStyles, save)
+async function genUpdateValuesAndObjects(requestId, loadingNodes, actionId, objectBatchSize, updateNodeId, updateParamId, updateValues, updateObjects, updateStyles, save)
 {
     if (   isEmpty(updateValues )
         && isEmpty(updateObjects)
@@ -376,7 +379,7 @@ async function genUpdateValuesAndObjects(requestId, actionId, objectBatchSize, u
 
 
         if (await checkStop(requestId)) 
-            return;
+            break;
     }
 
 
@@ -386,7 +389,8 @@ async function genUpdateValuesAndObjects(requestId, actionId, objectBatchSize, u
         || !isEmpty(styleChunk  );
 
 
-    if (lastChunkNotEmpty)
+    if (   lastChunkNotEmpty
+        || loadingNodes)
     {
         genQueueChunk(
             requestId,
