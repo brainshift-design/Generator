@@ -49,7 +49,7 @@ extends GOperator1
 
 
         if (this.cachedValue)
-            this.value = this.cachedValue.copy();
+           this.value = this.cachedValue.copy();
 
         else
         {
@@ -128,4 +128,43 @@ extends GOperator1
     {
         return this.value.copy();
     }
+
+
+
+    invalidateInputs(parse, from, force)
+    {
+        super.invalidateInputs(parse, from, force);
+    }
+
+
+
+    initLoop(parse, nodeId)
+    {
+        super.initLoop(parse, nodeId);
+    }
+
+
+
+    invalidateLoop(parse, nodeId)
+    {
+        super.invalidateLoop(parse, nodeId);
+    }
+
+
+
+    iterateLoop(parse)
+    {
+        super.iterateLoop(parse);
+
+        // console.log('iterating loop');
+        // this.cachedValue = null;
+        // this.valid = false;
+    }
+
+
+
+    resetLoop(parse, nodeId)
+    {
+        super.resetLoop(parse, nodeId);
+    }    
 }

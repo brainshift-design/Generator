@@ -53,7 +53,8 @@ extends GOperator
         consoleAssert(this.node, 'can\'t find parameter node \'' + this.nodeId + '\'');
 
 
-        await this.node.eval(parse);
+        if (this.node.type != LIST)
+            await this.node.eval(parse);
 
 
         this.param = this.node.paramFromId(this.paramId);
@@ -114,6 +115,7 @@ extends GOperator
     pushValueUpdates(parse)
     {
         super.pushValueUpdates(parse);
+
         if (this.node) this.node.pushValueUpdates(parse);
     }
     
@@ -122,6 +124,7 @@ extends GOperator
     invalidateInputs(parse, from, force)
     {
         super.invalidateInputs(parse, from, force);
+        
         if (this.node) this.node.invalidateInputs(parse, from, force);
     }
 
@@ -130,6 +133,7 @@ extends GOperator
     initLoop(parse, nodeId)
     {
         const node = parse.parsedNodes.find(n => n.nodeId == this.nodeId);
+        
         node.initLoop(parse, nodeId);
     }
 
@@ -138,6 +142,7 @@ extends GOperator
     invalidateLoop(parse, nodeId)
     {
         const node = parse.parsedNodes.find(n => n.nodeId == this.nodeId);
+        
         node.invalidateLoop(parse, nodeId);
     }
 
@@ -146,6 +151,7 @@ extends GOperator
     iterateLoop(parse)
     {
         const node = parse.parsedNodes.find(n => n.nodeId == this.nodeId);
+        
         node.iterateLoop(parse);
     }
 
@@ -154,6 +160,7 @@ extends GOperator
     resetLoop(parse, nodeId)
     {
         const node = parse.parsedNodes.find(n => n.nodeId == this.nodeId);
+        
         node.resetLoop(parse, nodeId);
     }
 

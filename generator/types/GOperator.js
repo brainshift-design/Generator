@@ -33,8 +33,6 @@ extends GNode
 
     reset()
     {
-        super.reset();
-        
         this.customParams = [];
         this.options      = {};
         this.updateValues = [];
@@ -147,6 +145,15 @@ extends GNode
 
 
 
+    toValue()
+    {
+        return this.value
+             ? this.value.copy()
+             : null;
+    }
+
+
+
     invalidateInputs(parse, from, force)
     {
         super.invalidateInputs(parse, from, force);
@@ -201,15 +208,6 @@ extends GNode
         this.valid     = false;
         this.iteration = 0;
     }    
-
-
-
-    toValue()
-    {
-        return this.value
-             ? this.value.copy()
-             : null;
-    }
 
 
 

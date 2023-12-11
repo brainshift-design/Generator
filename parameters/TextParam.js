@@ -184,11 +184,19 @@ extends Parameter
 
 
 
-    // updateControls()
-    // {
+    updateControls()
+    {
+        super.updateControls();
 
-    //     super.updateControls();
-    // }
+        setTimeout(() =>
+        {
+            if (   this.controls[0].textbox
+                && this.controls[0].textBehind)
+            {
+                syncTextScroll(this.controls[0].textbox, this.controls[0].textBehind);
+            }
+        });
+    }
 
 
 

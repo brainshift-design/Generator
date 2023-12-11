@@ -95,9 +95,9 @@ extends Control
     setSize(w, h)
     {
         h = Math.max(defParamHeight, h);
-
+       
         super.setSize(w, h);
-   }
+    }
 
 
 
